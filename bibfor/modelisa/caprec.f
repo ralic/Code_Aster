@@ -2,9 +2,9 @@
       IMPLICIT NONE
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 18/12/2012   AUTEUR SELLENET N.SELLENET 
+C MODIF MODELISA  DATE 12/02/2013   AUTEUR PELLET J.PELLET 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -52,10 +52,10 @@ C -----------------
       CHARACTER*1 K1B
       CHARACTER*2 TYPLAG
       CHARACTER*3 K3B
-      CHARACTER*8 CABLPR,K8B,MODELE,NPARA
+      CHARACTER*8 CABLPR,K8B,K8VIDE,MODELE,NPARA
       CHARACTER*19 LIGRMO,LIRELA,SIGCAB,SIGCHA,LISNOM,LISAN1,LISAN2
       CHARACTER*24 GRNOMA,LISNOE,LIGRNO,NOEUMA,NOMANC,NOMAN1,NOMAN2
-      CHARACTER*24 K8VIDE
+      CHARACTER*24 K24VID
       LOGICAL EXISDG
       INTEGER INDIK8,NDDLA
       INTEGER IDIMAX,JLIST,INO,JGRO,IN,INDNOE,LONLIS
@@ -73,7 +73,8 @@ C -----------------
       INTEGER NBNOM,NBAN1,NBAN2,JLSNOM,JLSAN1,JLSAN2,INOMC
       INTEGER NUMCAB,NUMCA0,N1
       CHARACTER*8 EFFNOR
-      CHARACTER*19 LRLTMP,LISREL,TABLE
+      CHARACTER*19 LRLTMP,LISREL
+      CHARACTER*24 TABLE
       INTEGER      IARG
 
       DATA EFFNOR/'N       '/
@@ -83,6 +84,7 @@ C-------------------   DEBUT DU CODE EXECUTABLE    ---------------------
 
       CALL JEMARQ()
       K8VIDE = ' '
+      K24VID = ' '
 
 C%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 C     DECOMPTE DES OCCURRENCES DU MOT-CLE FACTEUR 'RELA_CINE_BP'
@@ -301,7 +303,7 @@ C ---  A LIAISON_SOLIDE (CETTE LISTE EST NON REDONDANTE)
          NUMCA0 = 0
 
 C         NOMANC = ''
-         NOMANC = K8VIDE
+         NOMANC = K24VID
 
          DO 145 INOMC = 1,NBNOM
            NUMCAB = ZI(JLSNOM-1+INOMC)
@@ -313,7 +315,7 @@ C         NOMANC = ''
 
              DO 150 NANC = 1,2
 C               NOMANC = '        '
-               NOMANC = K8VIDE
+               NOMANC = K24VID
 
                 IF (NANC.EQ.1) THEN
                   NOMANC = NOMAN1
@@ -324,11 +326,11 @@ C               NOMANC = '        '
                 END IF
 
 C                IF (NOMANC.NE.'        ') THEN
-                IF (NOMANC.NE.K8VIDE) THEN
+                IF (NOMANC.NE.K24VID) THEN
 
                   LISNOE = '&&CAPREC.LISTNOE'
                   TYPLAG = '12'
-                  LIGRNO = CABLPR//'           '//'.LTNT      '
+                  LIGRNO = CABLPR//'           '//'.LTNT'
                   CALL JEEXIN(LIGRNO,IRET)
 
                   GRNOMA = MAILLA//'.GROUPENO'

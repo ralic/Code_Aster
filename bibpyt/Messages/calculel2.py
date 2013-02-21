@@ -1,4 +1,4 @@
-#@ MODIF calculel2 Messages  DATE 14/01/2013   AUTEUR FLEJOU J-L.FLEJOU 
+#@ MODIF calculel2 Messages  DATE 12/02/2013   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -472,7 +472,9 @@ Conseil :
 """),
 
 81: _(u"""
- pas de champ de géométrie
+Erreur utilisateur :
+  Calcul de la déformation thermique d'un élément de grille.
+  On ne trouve pas de température sur le maille %(k1)s.
 """),
 
 82: _(u"""

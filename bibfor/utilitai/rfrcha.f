@@ -2,9 +2,9 @@
       IMPLICIT NONE
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 18/12/2012   AUTEUR SELLENET N.SELLENET 
+C MODIF UTILITAI  DATE 12/02/2013   AUTEUR PELLET J.PELLET 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -36,7 +36,7 @@ C     ------------------------------------------------------------------
       CHARACTER*16 NOMCMD,TYPCON,TYPCHA
       CHARACTER*19 NOMFON,CHAM19
       CHARACTER*24 NOGNO,NOGMA
-      INTEGER      IARG
+      INTEGER      IARG,VALI
 C     ------------------------------------------------------------------
       CALL JEMARQ()
 C --- RECUPERATION DU NIVEAU D'IMPRESSION
@@ -141,7 +141,7 @@ C ---  ET GROUP_NO (OU NOEUD OU POINT) DANS LE CAS D'UN CHAM_ELEM
           END IF
           CALL UTCMP1(NOMGD,' ',1,CMP,IVARI)
           CALL UTCH19(CHAM19,NOMA,MAILLE,NOEUD,NPOINT,NUSP,
-     &                IVARI,CMP,TYPE,VALR,VALC,IRET)
+     &                IVARI,CMP,TYPE,VALR,VALC,VALI,IRET)
           IF (IRET.EQ.0) THEN
             CALL FOCSTE(NOMFON,CMP,VALR,'G')
           END IF

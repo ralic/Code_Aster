@@ -8,9 +8,9 @@
       REAL*8 PARTPS(*)
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
+C MODIF ALGORITH  DATE 12/02/2013   AUTEUR PELLET J.PELLET 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -44,7 +44,7 @@ C VAR LVECHZ  : VECT_ELEM
 
 
 C-----------------------------------------------------------------------
-      INTEGER JLCHIN ,NBCHMX 
+      INTEGER JLCHIN ,NBCHMX
 C-----------------------------------------------------------------------
       PARAMETER (NBCHMX=13)
       INTEGER JCHAR,JINF,JTYP
@@ -58,7 +58,7 @@ C-----------------------------------------------------------------------
       CHARACTER*24 CHGEOM,CHCARA(18),CHTIME,LIGREL
       CHARACTER*24 LIGRMO,LIGRCH,LCHIN(27),LCHOUT(1)
       CHARACTER*24 CHARGE,INFCHA
-      LOGICAL EXIGEO,EXICAR,BIDON
+      LOGICAL EXICAR,BIDON
       COMPLEX*16 CBID
 
       DATA NOMLIG/'.FORNO','.F3D3D','.F2D3D','.F1D3D','.F2D2D','.F1D2D',
@@ -98,7 +98,7 @@ C-----------------------------------------------------------------------
       CALL REAJRE(LVECHP,' ','V')
       IF(BIDON) GO TO 30
 
-      CALL MEGEOM(MODELE,ZK24(JCHAR) (1:8),EXIGEO,CHGEOM)
+      CALL MEGEOM(MODELE,CHGEOM)
       CALL MECARA(CARELE,EXICAR,CHCARA)
 
       CHTIME = '&&VEFPME.CH_INST_R'

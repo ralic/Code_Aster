@@ -1,9 +1,9 @@
-# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
+# MODIF  DATE 12/02/2013   AUTEUR PELLET J.PELLET 
 # TITRE PLAQUE EN BETON ARME CHAUFFEE
 # hsns102a.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -83,50 +83,43 @@ LACAR=AFFE_CARA_ELEM(    MODELE=LEMOD,
 # ------------------------------------------------
 #
 # LA TEMPERATURE DE REFERENCE TO EST COMMUNE AUX DEUX MAILLES
-# ENSUITE IL FAUT TOUT FAIRE EN DOUBLE ACIER ET BETON) CAR LES MAILLES S'APPUIENT SUR LES MEMES NOEUDS
+# IL FAUT TOUT FAIRE EN DOUBLE ACIER ET BETON) CAR LES MAILLES S'APPUIENT SUR LES MEMES NOEUDS
 
-T0=CREA_CHAMP( OPERATION='AFFE', TYPE_CHAM='NOEU_TEMP_R',
-               MAILLAGE=MAILTOT,
-                          AFFE=_F(
-                           TOUT = 'OUI',
-                           NOM_CMP = ('TEMP', 'TEMP_INF', 'TEMP_SUP',),
-                           VALE = (20., 20., 20.,),
-                               )
-                      )
-
-T1A=CREA_CHAMP( OPERATION='AFFE', TYPE_CHAM='NOEU_TEMP_R',
-               MAILLAGE=MAILTOT,
+T0A=CREA_CHAMP( OPERATION='AFFE', TYPE_CHAM='NOEU_TEMP_R', MAILLAGE=MAILTOT,
                           AFFE=(_F(GROUP_MA = 'GEOA',
-                                  NOM_CMP = ('TEMP', 'TEMP_INF', 'TEMP_SUP',),
-                                   VALE = (120.,    120.,       120.,     ),),
-                                  )
-                      )
-T1B=CREA_CHAMP( OPERATION='AFFE', TYPE_CHAM='NOEU_TEMP_R',
-               MAILLAGE=MAILTOT,
+                                  NOM_CMP = ('TEMP',),
+                                   VALE = (20., ))))
+
+T1A=CREA_CHAMP( OPERATION='AFFE', TYPE_CHAM='NOEU_TEMP_R', MAILLAGE=MAILTOT,
+                          AFFE=(_F(GROUP_MA = 'GEOA',
+                                  NOM_CMP = ('TEMP',),
+                                   VALE = (120., ))))
+
+T0B=CREA_CHAMP( OPERATION='AFFE', TYPE_CHAM='NOEU_TEMP_R', MAILLAGE=MAILTOT,
                           AFFE=(_F(GROUP_MA = 'GEOB',
                                    NOM_CMP = ('TEMP', 'TEMP_INF', 'TEMP_SUP',),
-                                   VALE = (20.,    20.,       20.,     ),),
-                                  )
-                      )
+                                   VALE = (20.,    20.,       20.,     ))))
 
-
+T1B=CREA_CHAMP( OPERATION='AFFE', TYPE_CHAM='NOEU_TEMP_R', MAILLAGE=MAILTOT,
+                          AFFE=(_F(GROUP_MA = 'GEOB',
+                                   NOM_CMP = ('TEMP', 'TEMP_INF', 'TEMP_SUP',),
+                                   VALE = (20.,    20.,       20.,     ))))
 LATEMPA=CREA_RESU(
              OPERATION='AFFE', TYPE_RESU='EVOL_THER',
               NOM_CHAM='TEMP',AFFE=(
-           _F( CHAM_GD = T0,  INST = 0.,),
+           _F( CHAM_GD = T0A,  INST = 0.,),
            _F( CHAM_GD = T1A,  INST = 1.,),
                                    )
                  )
 LATEMPB=CREA_RESU(
              OPERATION='AFFE', TYPE_RESU='EVOL_THER',
               NOM_CHAM='TEMP',AFFE=(
-           _F( CHAM_GD = T0,  INST = 0.,),
+           _F( CHAM_GD = T0B,  INST = 0.,),
            _F( CHAM_GD = T1B,  INST = 1.,),
                                    )
                  )
 
-TEMPERA=CREA_RESU(  OPERATION='PREP_VRC2', TYPE_RESU='EVOL_THER',
-    PREP_VRC2= _F(  MODELE=LEMOD, CARA_ELEM=LACAR, EVOL_THER = LATEMPA, ),)
+
 TEMPERB=CREA_RESU(  OPERATION='PREP_VRC2', TYPE_RESU='EVOL_THER',
     PREP_VRC2= _F(  MODELE=LEMOD, CARA_ELEM=LACAR, EVOL_THER = LATEMPB, ),)
 
@@ -147,7 +140,7 @@ MATAF=AFFE_MATERIAU( INFO=2,
 
                                )
                                ),
-                          AFFE_VARC=(  _F(GROUP_MA='GEOA',EVOL=TEMPERA,NOM_VARC='TEMP',
+                          AFFE_VARC=(  _F(GROUP_MA='GEOA',EVOL=LATEMPA,NOM_VARC='TEMP',
                                           NOM_CHAM='TEMP',VALE_REF=20.0),
                                        _F(GROUP_MA='GEOB',EVOL=TEMPERB,NOM_VARC='TEMP',
                                           NOM_CHAM='TEMP',VALE_REF=20.0),
@@ -269,5 +262,4 @@ TEST_RESU(RESU=(_F(INST=1.0,
 
 #TU2_1 = CREA_TABLE(RESU=_F(RESULTAT=LEDEP,TOUT='OUI',NOM_CHAM='SIEF_ELGA',TOUT_CMP='OUI'))
 
-#IMPR_TABLE(TABLE=TU2_1)
 FIN()

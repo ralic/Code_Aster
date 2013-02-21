@@ -8,9 +8,9 @@
       CHARACTER*24 NKCHA,NKCMP
       LOGICAL      TOUCMP
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 19/12/2012   AUTEUR PELLET J.PELLET 
+C MODIF UTILITAI  DATE 12/02/2013   AUTEUR PELLET J.PELLET 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -44,12 +44,12 @@ C
 C ----------------------------------------------------------------------
 
       INTEGER NBPARA,N,JKCHA,JCNSD,JCNSC,JCESD,JCESC,JPARAK,JTYPEK
-      INTEGER KK,I,J,JCMP
+      INTEGER KK,I,J,JCMP,IRET
       CHARACTER*19 CHAMNS,CHAMES
 C     ------------------------------------------------------------------
 
       CALL JEMARQ()
-      CALL ASSERT(TYCH.EQ.'ELGA'.OR.TYCH.EQ.'ELNO'.OR.TYCH.EQ.'NOEU')
+      CALL ASSERT(TYCH(1:2).EQ.'EL'.OR.TYCH.EQ.'CART'.OR.TYCH.EQ.'NOEU')
 C
 C --- 0. INITIALISATION
 C     -----------------
@@ -80,9 +80,24 @@ C        -- NOEUD
          KK=KK+1
       ENDIF
 
-      IF(TYCH(1:2).EQ.'EL')THEN
+      IF(TYCH.EQ.'ELNO')THEN
 C        -- MAILLE + NOEUD + SOUS_POINT
          KK=KK+3
+      ENDIF
+
+      IF(TYCH.EQ.'ELGA')THEN
+C        -- MAILLE + POINT + SOUS_POINT
+         KK=KK+3
+      ENDIF
+
+      IF(TYCH.EQ.'ELEM')THEN
+C        -- MAILLE + SOUS_POINT
+         KK=KK+2
+      ENDIF
+
+      IF(TYCH.EQ.'CART')THEN
+C        -- MAILLE
+         KK=KK+1
       ENDIF
 
 C     -- COOR_X, ...
@@ -97,6 +112,7 @@ C     -- COOR_X, ...
 C     -- CMPS :
       N=NBCMP
       CALL JEVEUO(NKCHA,'L',JKCHA)
+C     -- JE NE COMPRENDS PAS LA BOUCLE I=1,NBVAL (J. PELLET)
       DO 60 I=1,NBVAL
          IF(ZK24(JKCHA+I-1)(1:18).NE.'&&CHAMP_INEXISTANT')THEN
            IF(TOUCMP)THEN
@@ -105,31 +121,26 @@ C     -- CMPS :
                  CALL JEVEUO(CHAMNS//'.CNSD','L',JCNSD)
                  CALL JEVEUO(CHAMNS//'.CNSC','L',JCNSC)
                  N=ZI(JCNSD+1)
-              ELSE
+              ELSEIF(TYCH(1:2).EQ.'EL')THEN
                  CALL CELCES(ZK24(JKCHA+I-1),'V',CHAMES)
                  CALL JEVEUO(CHAMES//'.CESD','L',JCESD)
                  CALL JEVEUO(CHAMES//'.CESC','L',JCESC)
                  N=ZI(JCESD+1)
+              ELSEIF(TYCH.EQ.'CART')THEN
+                 CALL CARCES(ZK24(JKCHA+I-1),'ELEM',' ','V',CHAMES,
+     &                       ' ',IRET)
+                 CALL ASSERT(IRET.EQ.0)
+                 CALL JEVEUO(CHAMES//'.CESD','L',JCESD)
+                 CALL JEVEUO(CHAMES//'.CESC','L',JCESC)
+                 N=ZI(JCESD+1)
+              ELSE
+                 CALL ASSERT(.FALSE.)
               ENDIF
            ENDIF
          ENDIF
  60   CONTINUE
+      KK=KK+N
 
-      IF(TOUCMP)THEN
-          IF(TYCH.EQ.'NOEU')THEN
-             DO 190 J=1,N
-                KK=KK+1
- 190         CONTINUE
-          ELSE IF(TYCH(1:2).EQ.'EL')THEN
-             DO 191 J=1,N
-                KK=KK+1
- 191         CONTINUE
-          ENDIF
-      ELSE
-          DO 195 J=1,N
-              KK=KK+1
- 195      CONTINUE
-      ENDIF
       NBPARA=KK
 
 
@@ -166,7 +177,7 @@ C     ------------------------------------------------------------------
         KK=KK+1
       ENDIF
 
-      IF(TYCH(1:2).EQ.'EL')THEN
+      IF(TYCH(1:2).EQ.'EL'.OR.TYCH.EQ.'CART')THEN
          ZK16(JPARAK+KK)='MAILLE'
          ZK8(JTYPEK+KK)='K8'
          KK=KK+1
@@ -207,7 +218,7 @@ C        -- TOUS LES CHAMPS ELXX PEUVENT AVOIR DES SOUS_POINT :
                 ZK8(JTYPEK+KK)='R'
                 KK=KK+1
  90          CONTINUE
-          ELSE IF(TYCH(1:2).EQ.'EL')THEN
+          ELSE IF(TYCH(1:2).EQ.'EL'.OR.TYCH.EQ.'CART')THEN
              DO 91 J=1,N
                 ZK16(JPARAK+KK)=ZK8(JCESC+J-1)
                 ZK8(JTYPEK+KK)='R'

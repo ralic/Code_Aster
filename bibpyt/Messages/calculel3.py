@@ -1,8 +1,8 @@
-#@ MODIF calculel3 Messages  DATE 29/10/2012   AUTEUR SELLENET N.SELLENET 
+#@ MODIF calculel3 Messages  DATE 12/02/2013   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -79,7 +79,17 @@ cata_msg = {
  Par défaut on utilise l'estimateur basé sur les contraintes lissées version 2 ERZ2_ELEM.
 """),
 
+17 : _(u"""
+Erreur utilisateur dans la commande CREA_CHAMP / EXTR :
+   Le champ que l'on veut extraire (%(k1)s n'existe pas dans la structure
+   de donnée CARA_ELEM ou CHAR_MECA.
 
+Conseil :
+  Pour "voir" les champs existants dans la structure de donnée XXXX,
+  vous pouvez utiliser la commande :
+   IMPR_CO(CONCEPT=_F(NOM=XXXX), NIVEAU=-1)
+
+"""),
 
 
 
@@ -87,6 +97,8 @@ cata_msg = {
 19 : _(u"""
  problème à l'appel de ALCHML pour  %(k1)s
 """),
+
+
 
 
 22 : _(u"""
@@ -120,9 +132,9 @@ PROJ_CHAMP / METHODE='ECLA_PG' :
  pour le calcul de cette option.
 """),
 
-30 : _(u"""
- il faut un modèle ou des charges.
-"""),
+
+
+
 
 31 : _(u"""
  la masse du MACR_ELEM : %(k1)s  n'a pas encore été calculée.
@@ -308,9 +320,9 @@ Risques & conseils :
  composante non définie
 """),
 
-63 : _(u"""
- champ de géométrie non trouve
-"""),
+
+
+
 
 71 : _(u"""
  il faut 1 chargement de rotation et un seul.

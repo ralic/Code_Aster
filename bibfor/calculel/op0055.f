@@ -2,7 +2,7 @@
       IMPLICIT   NONE
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 07/01/2013   AUTEUR LADIER A.LADIER 
+C MODIF CALCULEL  DATE 12/02/2013   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -34,12 +34,12 @@ C
       INTEGER       IRET1, IRET2, IRET, IRETS
       INTEGER       N1, N2
       CHARACTER*6   K6B, NOMPRO
-      CHARACTER*8   K8B, RESU, NOMA, ENTNOM, TYPFON
+      CHARACTER*8   K8B, RESU, NOMA, TYPFON
       CHARACTER*9   ENTIT(8)
       CHARACTER*13  MOTCL(8)
       CHARACTER*16  TYPRES, OPER
       CHARACTER*19  BASFON, BASLOC, CNXINV, FONTYP, LNNO, LTNO
-      CHARACTER*24  VALK(2), FONDFI, FONOEU
+      CHARACTER*24  VALK(2),ENTNOM, FONDFI, FONOEU
       INTEGER      IARG
 C DEB-------------------------------------------------------------------
 C

@@ -2,9 +2,9 @@
      &                  CHLAPM,CHLAPP,VERES)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
+C MODIF CALCULEL  DATE 12/02/2013   AUTEUR PELLET J.PELLET 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -48,11 +48,11 @@ C OUT VERES   : VECTEURS ELEMENTAIRES (SECOND MEMBRE)
       CHARACTER*24 LIGRMO,LCHIN(7),LCHOUT(4)
       CHARACTER*24 CHVITE,CONVCH,CHGEOM,CHCARA(18)
       INTEGER IRET,JVITES
-      LOGICAL EXIGEO,EXICAR
+      LOGICAL EXICAR
 
 C DEB ------------------------------------------------------------------
 C-----------------------------------------------------------------------
-      INTEGER IBID ,ICHA ,ICHAR ,ICONV ,JCHAR ,JINF ,NCHAR 
+      INTEGER IBID ,ICHA ,ICHAR ,ICONV ,JCHAR ,JINF ,NCHAR
 
 C-----------------------------------------------------------------------
       CALL JEMARQ()
@@ -67,7 +67,7 @@ C-----------------------------------------------------------------------
         NCHAR = 0
       END IF
 
-      CALL MEGEOM(MODELE,'      ',EXIGEO,CHGEOM)
+      CALL MEGEOM(MODELE,CHGEOM)
       CALL MECARA(CARELE,EXICAR,CHCARA)
 
       LPAOUT(1) = 'PVECTTR'

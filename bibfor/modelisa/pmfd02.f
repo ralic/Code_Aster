@@ -4,7 +4,7 @@
       CHARACTER*19   CESDEC
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 21/01/2013   AUTEUR FLEJOU J-L.FLEJOU 
+C MODIF MODELISA  DATE 12/02/2013   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -25,13 +25,12 @@ C ----------------------------------------------------------------------
 C                       AFFE_CARA_ELEM
 C
 C       CONSTRUCTION DU CHAM_ELEM_S DE NBSP_I (CESDEC)
-C          IMA ->  COQ_NCOU   GRI_NCOU   TUY_NCOU   TUY_NSEC
+C          IMA ->  COQ_NCOU   TUY_NCOU   TUY_NSEC
 C
 C     TRAITEMENT DES MOTS CLES :
-C           COQUE  /COQUE_NCOU
-C           GRILLE /GRILLE_NCOU
-C           POUTRE /TUYAU_NCOU
-C           POUTRE /TUYAU_NSEC
+C           COQUE  / COQUE_NCOU
+C           POUTRE / TUYAU_NCOU
+C           POUTRE / TUYAU_NSEC
 C
 C ----------------------------------------------------------------------
       INCLUDE 'jeveux.h'
@@ -39,19 +38,19 @@ C ----------------------------------------------------------------------
       INTEGER        NBOCC,IOCC,IRET,NBMA,NBCOU,NBV,NBSEC
       INTEGER        NBAP,K,I,JNCMP,JVALV,JMA,IARG
       CHARACTER*8    K8B
-      CHARACTER*16   MOCLES(2),TYPMCL(2),MOCLEF(4)
+      CHARACTER*16   MOCLES(2),TYPMCL(2),MOCLEF(2)
       CHARACTER*19   CARTE
       CHARACTER*24   MESMAI
 
       DATA MOCLES/'MAILLE','GROUP_MA'/
       DATA TYPMCL/'MAILLE','GROUP_MA'/
-      DATA MOCLEF/'COQUE','GRILLE','POUTRE','MEMBRANE'/
+      DATA MOCLEF/'COQUE','POUTRE'/
 C     ------------------------------------------------------------------
       CALL JEMARQ()
-C
+
       MESMAI = '&&PMFD02.MES_MAILLES'
       NBAP = 0
-      DO 100 I = 1 , 4
+      DO 100 I = 1 , 2
          CALL GETFAC ( MOCLEF(I), NBOCC )
          NBAP = NBAP + NBOCC
          DO 105 K = 1 , NBOCC
@@ -60,13 +59,13 @@ C
             IF ( NBMA .NE. 0 )  CALL JEDETR ( MESMAI )
 105      CONTINUE
 100   CONTINUE
-C
+
       IF (NBAP.EQ.0) THEN
          CALL CESCRE('V',CESDEC,'ELEM',NOMA,'NBSP_I',1,'COQ_NCOU',
      &               -1,-1,-1)
          GO TO 9999
       END IF
-C
+
       CARTE='&&PMFD02.NBSP_I'
       CALL ALCART ( 'V', CARTE, NOMA, 'NBSP_I' )
       CALL JEVEUO ( CARTE//'.NCMP', 'E', JNCMP )
@@ -77,66 +76,37 @@ C --- MOT CLE "COQUE" :
       DO 210 IOCC = 1,NBOCC
          CALL RELIEM(' ',NOMA,'NU_MAILLE','COQUE',IOCC,2,MOCLES,
      &               TYPMCL,MESMAI,NBMA)
-C
+
          CALL GETVIS('COQUE','COQUE_NCOU',IOCC,IARG,1,NBCOU,NBV)
          ZK8(JNCMP-1+1) = 'COQ_NCOU'
          ZI(JVALV-1+1)  =  NBCOU
-C
+
          CALL JEVEUO(MESMAI,'L',JMA )
          CALL NOCART(CARTE, 3, K8B, 'NUM', NBMA, K8B,
      &               ZI(JMA),' ', 1 )
          CALL JEDETR(MESMAI)
 210   CONTINUE
-C
+
 C --- MOT CLE "POUTRE" :
       CALL GETFAC ( 'POUTRE', NBOCC )
       DO 220 IOCC = 1,NBOCC
          CALL RELIEM(' ',NOMA,'NU_MAILLE','POUTRE',IOCC,2,MOCLES,
      &               TYPMCL,MESMAI ,NBMA)
-C
+
          CALL GETVIS('POUTRE','TUYAU_NCOU',IOCC,IARG,1,NBCOU,NBV)
          CALL GETVIS('POUTRE','TUYAU_NSEC',IOCC,IARG,1,NBSEC,NBV)
          ZK8(JNCMP-1+1) = 'TUY_NCOU'
          ZK8(JNCMP-1+2) = 'TUY_NSEC'
          ZI(JVALV-1+1)  =  NBCOU
          ZI(JVALV-1+2)  =  NBSEC
-C
+
          CALL JEVEUO(MESMAI,'L',JMA )
          CALL NOCART(CARTE, 3, K8B, 'NUM', NBMA, K8B,
      &               ZI(JMA), ' ', 2 )
          CALL JEDETR(MESMAI)
 220   CONTINUE
-C
-C --- MOT CLE "GRILLE" :
-      CALL GETFAC ( 'GRILLE', NBOCC )
-      DO 230 IOCC = 1,NBOCC
-         CALL RELIEM(' ',NOMA,'NU_MAILLE','GRILLE',IOCC,2,MOCLES,
-     &               TYPMCL,MESMAI ,NBMA)
-C
-         ZK8(JNCMP-1+1) = 'GRI_NCOU'
-         ZI(JVALV-1+1)  =  1
-C
-         CALL JEVEUO (MESMAI , 'L', JMA )
-         CALL NOCART ( CARTE, 3, K8B, 'NUM', NBMA, K8B,
-     &                ZI(JMA), ' ', 1 )
-         CALL JEDETR(MESMAI)
-230   CONTINUE
-C
-C --- MOT CLE "MEMBRANE" :
-      CALL GETFAC ( 'MEMBRANE', NBOCC )
-      DO 240 IOCC = 1,NBOCC
-         CALL RELIEM(' ',NOMA,'NU_MAILLE','MEMBRANE',IOCC,2,MOCLES,
-     &               TYPMCL,MESMAI ,NBMA)
-C
-         ZK8(JNCMP-1+1) = 'GRI_NCOU'
-         ZI(JVALV-1+1)  =  1
-C
-         CALL JEVEUO(MESMAI , 'L', JMA )
-         CALL NOCART(CARTE, 3, K8B, 'NUM', NBMA, K8B,
-     &               ZI(JMA), ' ', 1 )
-         CALL JEDETR(MESMAI)
-240   CONTINUE
-C
+
+
 C --- TRANSFORME LA CARTE EN CHAM_ELEM_S
       CALL CARCES(CARTE,'ELEM',' ','V',CESDEC,'A',IRET)
       CALL DETRSD('CARTE',CARTE)

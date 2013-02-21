@@ -1,8 +1,8 @@
-      SUBROUTINE MEGEOM(MODELZ,CHARGZ,EXIGEO,CHGEOZ)
+      SUBROUTINE MEGEOM(MODELZ,CHGEOZ)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
+C MODIF CALCULEL  DATE 12/02/2013   AUTEUR PELLET J.PELLET 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -22,72 +22,32 @@ C
 C     ARGUMENTS:
 C     ----------
       INCLUDE 'jeveux.h'
-      CHARACTER*(*) MODELZ, CHARGZ, CHGEOZ
-      CHARACTER*8 MODELE,CHARGE
-      CHARACTER*24 CHGEOM
-      LOGICAL EXIGEO
+      CHARACTER*(*) MODELZ, CHGEOZ
+      CHARACTER*8 MODELE
 C ----------------------------------------------------------------------
 C
-C     ON CHERCHE 1 NOM DE CHAMP DE GEOMETRIE DANS 1 MODELE OU 1 CHARGE
-C
+C     ON CHERCHE LE NOM DU CHAMP DE GEOMETRIE DANS 1 MODELE
 C
 C     ENTREES:
 C        MODELZ : NOM DU MODELE
-C        CHARGZ : NOM D'UN CHARGE
 C
 C     SORTIES:
-C        EXIGEO : VRAI SI ON TROUVE 1 CHAMP DE GEOMETRIE
 C        CHGEOZ : NOM DU CHAMP DE GEOMETRIE TROUVE.
 C
 C ----------------------------------------------------------------------
 C
-C     FONCTIONS EXTERNES:
-C     -------------------
-C
 C     VARIABLES LOCALES:
 C     ------------------
       CHARACTER*8 NOMO
-C
-C
-C-----------------------------------------------------------------------
-      INTEGER ICHAR ,IRET1 ,IRET2 ,IRET3 ,JNOMA ,JNOMO 
+      CHARACTER*24 CHGEOM
+      INTEGER JLGRF
 C-----------------------------------------------------------------------
       CALL JEMARQ()
       MODELE = MODELZ
-      CHARGE = CHARGZ
-      CHGEOM = CHGEOZ
 C
-      EXIGEO = .FALSE.
-      IF (MODELE.EQ.'        ') THEN
-         IF (CHARGE.NE.'        ') THEN
-C           CE QUI SUIT EST UN PEU GONFLE, JE TROUVE (JMP)
-
-C           CHGEOM = ZK8(ICHAR-1+1)//'.COORDO'
-            CALL JEEXIN(CHARGE//'.CHME.MODEL.NOMO',IRET1)
-            IF (IRET1.NE.0) THEN
-               CALL JEVEUO(CHARGE//'.CHME.MODEL.NOMO','L',JNOMO)
-               NOMO = ZK8(JNOMO)
-            ELSE
-               CALL JEEXIN(CHARGE//'.CHTH.MODEL.NOMO',IRET2)
-               IF (IRET2.NE.0) THEN
-                  CALL JEVEUO(CHARGE//'.CHTH.MODEL.NOMO','L',JNOMO)
-                  NOMO = ZK8(JNOMO)
-               ELSE
-                 CALL JEEXIN(CHARGE//'.CHAC.MODEL.NOMO',IRET3)
-                 CALL ASSERT(IRET3.NE.0)
-                 CALL JEVEUO(CHARGE//'.CHAC.MODEL.NOMO','L',JNOMO)
-                 NOMO = ZK8(JNOMO)
-               END IF
-            END IF
-            CALL JEVEUO(NOMO//'.MODELE    .LGRF','L',JNOMA)
-            CHGEOM = ZK8(JNOMA)//'.COORDO'
-            EXIGEO = .TRUE.
-         END IF
-      ELSE
-         CALL JEVEUO(MODELE//'.MODELE    .LGRF','L',ICHAR)
-         CHGEOM = ZK8(ICHAR-1+1)//'.COORDO'
-         EXIGEO = .TRUE.
-      END IF
+      CALL ASSERT(MODELE.NE.' ')
+      CALL JEVEUO(MODELE//'.MODELE    .LGRF','L',JLGRF)
+      CHGEOM = ZK8(JLGRF-1+1)//'.COORDO'
       CHGEOZ = CHGEOM
       CALL JEDEMA()
       END

@@ -1,7 +1,7 @@
-#& MODIF COMMANDE  DATE 20/06/2012   AUTEUR ABBAS M.ABBAS 
+#& MODIF COMMANDE  DATE 12/02/2013   AUTEUR PELLET J.PELLET 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -129,18 +129,39 @@ CREA_CHAMP=OPER(nom="CREA_CHAMP",op= 195,sd_prod=crea_champ_prod,
                              ),
 #        ------------------------------------------------------------------
          b_extr          =BLOC(condition = "OPERATION == 'EXTR'",
-             regles=(AU_MOINS_UN('MAILLAGE','FISSURE','RESULTAT','TABLE'),
-                     PRESENT_ABSENT('MAILLAGE','FISSURE','RESULTAT'),
-                     PRESENT_ABSENT('FISSURE','MAILLAGE','RESULTAT','TABLE'),
-                     PRESENT_ABSENT('RESULTAT','FISSURE','MAILLAGE','TABLE'),
-                     PRESENT_ABSENT('TABLE','RESULTAT','FISSURE'),
+             regles=(AU_MOINS_UN('MAILLAGE','FISSURE','RESULTAT','TABLE','CARA_ELEM','CHARGE'),
+                     PRESENT_ABSENT('MAILLAGE','FISSURE','RESULTAT','CARA_ELEM','CHARGE'),
+                     PRESENT_ABSENT('FISSURE','MAILLAGE','RESULTAT','TABLE','CARA_ELEM','CHARGE'),
+                     PRESENT_ABSENT('RESULTAT','FISSURE','MAILLAGE','TABLE','CARA_ELEM','CHARGE'),
+                     PRESENT_ABSENT('TABLE','RESULTAT','FISSURE','CARA_ELEM','CHARGE'),
+                     PRESENT_ABSENT('CARA_ELEM','MAILLAGE','TABLE','RESULTAT','FISSURE','CHARGE'),
+                     PRESENT_ABSENT('CHARGE','MAILLAGE','TABLE','RESULTAT','FISSURE','CARA_ELEM'),
                      ),
              MAILLAGE        =SIMP(statut='f',typ=(maillage_sdaster) ),
              FISSURE         =SIMP(statut='f',typ=(fiss_xfem) ),
              RESULTAT        =SIMP(statut='f',typ=(resultat_sdaster) ),
              TABLE           =SIMP(statut='f',typ=(table_sdaster),min=1,max=1),
+             CARA_ELEM       =SIMP(statut='f',typ=(cara_elem),min=1,max=1),
+             CHARGE          =SIMP(statut='f',typ=(char_meca),min=1,max=1),
              b_extr_maillage =BLOC(condition = "MAILLAGE != None and TABLE == None",
                  NOM_CHAM        =SIMP(statut='o',typ='TXM',validators=NoRepeat(),into=("GEOMETRIE",)),
+             ),
+
+             b_extr_cara_elem =BLOC(condition = "CARA_ELEM != None",
+                 NOM_CHAM        =SIMP(statut='o',typ='TXM',validators=NoRepeat(),
+                 into=('.CARGENBA', '.CARMASSI', '.CARCABLE', '.CARCOQUE', '.CARGEOBA', '.CARDISCK',
+                       '.CARARCPO', '.CARGENPO', '.CARDISCM', '.CARORIEN', '.CARDISCA', '.CVENTCXF',
+                       '.CARPOUFL', '.CARGEOPO', '.CARDNSCK', '.CARDNSCM', '.CARDNSCA', '.CARDINFO',
+                       '.CAFIBR',   '.CANBSP',)),
+             ),
+
+             b_extr_charge =BLOC(condition = "CHARGE != None",
+                 NOM_CHAM        =SIMP(statut='o',typ='TXM',validators=NoRepeat(),
+                 into=('.CHME.EPSIN', '.CHME.F1D1D', '.CHME.F1D2D', '.CHME.F1D3D', '.CHME.F2D2D',
+                       '.CHME.F2D3D', '.CHME.F3D3D', '.CHME.FCO2D', '.CHME.FCO3D', '.CHME.FELEC',
+                       '.CHME.FL101', '.CHME.FL102', '.CHME.FLUX',  '.CHME.FORNO', '.CHME.IMPE',
+                       '.CHME.ONDE',  '.CHME.ONDPL', '.CHME.ONDPR', '.CHME.PESAN', '.CHME.PRESS',
+                       '.CHME.ROTAT', '.CHME.SIGIN', '.CHME.SIINT', '.CHME.VNOR',)),
              ),
 
              b_extr_fissure  = BLOC(condition = "FISSURE != None",

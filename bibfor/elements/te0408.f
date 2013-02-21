@@ -5,7 +5,7 @@
       CHARACTER*16 OPTION,NOMTE
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 15/01/2013   AUTEUR DELMAS J.DELMAS 
+C MODIF ELEMENTS  DATE 12/02/2013   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -27,70 +27,46 @@ C     CHARACTER*32 JEXNUM,JEXNOM,JEXR8,JEXATR
       INTEGER NDIM,NNO,NNOS,NPG,IPOIDS,IVF,IDFDX,JGANO,ISP
       INTEGER IER,IGAUH,ICOU,JNBSPI,IRET,ITEMPF,JRESU,ICACOQ
       REAL*8 TPINF,TPMOY,TPSUP,CP1,CP2,CP3,TPC,ZIC,ZMIN
-      REAL*8 INST,DISTN,VALPU(2),HIC,H,R8VIDE,DENOM,VALR(4)
+      REAL*8 INST,VALPU(2),HIC,H,R8VIDE,DENOM,VALR(4)
       LOGICAL TEMPNO,GRILLE,LTEATT,LPB1,LPB2
       CHARACTER*8 NOMPU(2),ALIAS8
 
       CALL TEATTR(' ','S','ALIAS8',ALIAS8,IBID)
-      GRILLE= LTEATT(' ','GRILLE','OUI')
+      GRILLE=LTEATT(' ','GRILLE','OUI')
+      CALL ASSERT(.NOT.GRILLE)
 
       CALL ELREF4(' ','RIGI',NDIM,NNO,NNOS,NPG,IPOIDS,IVF,IDFDX,JGANO)
       CALL JEVECH('PTEMPCR','E',JRESU)
-C      CALL JEVECH('PNBSP_I','L',JNBSPI)
+      CALL JEVECH('PNBSP_I','L',JNBSPI)
 C     NBCOU : NOMBRE DE COUCHES
-      CALL TECACH('NNN','PNBSP_I','L',1,JNBSPI,IRET)
-      IF (IRET.EQ.0) THEN
-        NBCOU = ZI(JNBSPI-1+1)
-      ELSE
-C       CAS DES GRILLES
-        NBCOU = 1
-      ENDIF
+      NBCOU=ZI(JNBSPI-1+1)
       CALL JEVECH('PCACOQU','L',ICACOQ)
-      H = ZR(ICACOQ)
-      HIC = H/NBCOU
+      H=ZR(ICACOQ)
+      HIC=H/NBCOU
 
 
 C     1- SI LA TEMPERATURE EST AUX NOEUDS (TEMP/TEMP_SUP/TEMP_INF):
 C        ------------------------------------------------------------
       CALL TECACH('ONN','PTEMPER','L',8,ITABP,IRET)
       IF (IRET.EQ.0 .OR. IRET.EQ.3) THEN
-        TEMPNO = .TRUE.
-        ITEMPP = ITABP(1)
+        TEMPNO=.TRUE.
+        ITEMPP=ITABP(1)
 C       -- CALCUL DES TEMPERATURES INF, SUP ET MOY
 C          (MOYENNE DES NNO NOEUDS) ET DES COEF. DES POLY. DE DEGRE 2 :
 C          ------------------------------------------------------------
-        TPINF = 0.D0
-        TPMOY = 0.D0
-        TPSUP = 0.D0
-        DO 10,INO = 1,NNO
-          CALL DXTPIF(ZR(ITEMPP+3* (INO-1)),ZL(ITABP(8)+3* (INO-1)))
-          TPMOY = TPMOY + ZR(ITEMPP-1+3* (INO-1)+1)/DBLE(NNO)
-          TPINF = TPINF + ZR(ITEMPP-1+3* (INO-1)+2)/DBLE(NNO)
-          TPSUP = TPSUP + ZR(ITEMPP-1+3* (INO-1)+3)/DBLE(NNO)
+        TPINF=0.D0
+        TPMOY=0.D0
+        TPSUP=0.D0
+        DO 10,INO=1,NNO
+          CALL DXTPIF(ZR(ITEMPP+3*(INO-1)),ZL(ITABP(8)+3*(INO-1)))
+          TPMOY=TPMOY+ZR(ITEMPP-1+3*(INO-1)+1)/DBLE(NNO)
+          TPINF=TPINF+ZR(ITEMPP-1+3*(INO-1)+2)/DBLE(NNO)
+          TPSUP=TPSUP+ZR(ITEMPP-1+3*(INO-1)+3)/DBLE(NNO)
    10   CONTINUE
 
-        IF (GRILLE) THEN
-C         -- FICHE 19147 : POUR LES GRILLES, ON N'ACCEPTE QUE LE CAS
-C            TPINF=TPSUP=TPMOY
-          DENOM=MAX(ABS(TPMOY),ABS(TPINF),ABS(TPSUP))
-          IF (DENOM.GT.1.D-3) THEN
-            LPB1=(ABS(TPINF-TPMOY)/DENOM .GT.1.D-2)
-            LPB2=(ABS(TPSUP-TPMOY)/DENOM .GT.1.D-2)
-            IF (LPB1.OR.LPB2) THEN
-               VALR(1)=TPINF
-               VALR(2)=TPMOY
-               VALR(3)=TPSUP
-               CALL U2MESR('F','CALCULEL4_20',3,VALR)
-            ENDIF
-          ENDIF
-          CP1=TPMOY
-          CP2=0.D0
-          CP3=0.D0
-        ELSE
-          CP1 = TPMOY
-          CP2 = (TPSUP-TPINF)/H
-          CP3 = 2.D0* (TPINF+TPSUP-2.D0*TPMOY)/ (H*H)
-        ENDIF
+        CP1=TPMOY
+        CP2=(TPSUP-TPINF)/H
+        CP3=2.D0*(TPINF+TPSUP-2.D0*TPMOY)/(H*H)
 
 
       ELSE
@@ -99,61 +75,43 @@ C        -------------------------------------------------------
         CALL TECACH('ONN','PTEMPEF','L',1,ITEMPF,IRET)
         CALL ASSERT(IRET.EQ.0)
         CALL JEVECH('PINST_R','L',ITEMPS)
-        INST = ZR(ITEMPS)
-        TEMPNO = .FALSE.
-        NOMPU(1) = 'INST'
-        NOMPU(2) = 'EPAIS'
+        INST=ZR(ITEMPS)
+        TEMPNO=.FALSE.
+        NOMPU(1)='INST'
+        NOMPU(2)='EPAIS'
       ENDIF
 
 
 C     -- CALCUL DE LA TEMPERATURE SUR LES COUCHES :
 C     ----------------------------------------------
 C     NPGH  : NOMBRE DE POINTS PAR COUCHE
-      IF (GRILLE) THEN
-        NPGH = 1
-        CALL ASSERT(NBCOU.EQ.1)
-      ELSE
-        NPGH = 3
-      ENDIF
-
-C     LA TEMPERATURE EST CONNUE SUR LA COQUE EVENTUELLEMENT EXCENTREE
-C     MAIS LA GRILLE PEUT ETRE DECALEE VIS-A-VIS DE LA COQUE
-C     SOUS-JACENTE (DIST_N) :
-      DISTN=R8VIDE()
-      IF (GRILLE)  DISTN = ZR(ICACOQ-1+4)
-
-      IF (GRILLE) THEN
-        ZMIN = -H/2.D0 + DISTN
-      ELSE
-        ZMIN = -H/2.D0
-      ENDIF
+      NPGH=3
 
 
-      DO 30,ICOU = 1,NBCOU
-        DO 20,IGAUH = 1,NPGH
-          ISP = (ICOU-1)*NPGH + IGAUH
+      ZMIN=-H/2.D0
+
+
+      DO 30,ICOU=1,NBCOU
+        DO 20,IGAUH=1,NPGH
+          ISP=(ICOU-1)*NPGH+IGAUH
 
           IF (IGAUH.EQ.1) THEN
-            IF (GRILLE) THEN
-              ZIC = ZMIN + HIC/2.D0
-            ELSE
-              ZIC = ZMIN + (ICOU-1)*HIC
-            ENDIF
+            ZIC=ZMIN+(ICOU-1)*HIC
           ELSEIF (IGAUH.EQ.2) THEN
-            ZIC = ZMIN + HIC/2.D0 + (ICOU-1)*HIC
+            ZIC=ZMIN+HIC/2.D0+(ICOU-1)*HIC
           ELSE
-            ZIC = ZMIN + HIC + (ICOU-1)*HIC
+            ZIC=ZMIN+HIC+(ICOU-1)*HIC
           ENDIF
 
           IF (TEMPNO) THEN
-            TPC = CP3*ZIC*ZIC + CP2*ZIC + CP1
+            TPC=CP3*ZIC*ZIC+CP2*ZIC+CP1
           ELSE
-            VALPU(2) = ZIC
-            VALPU(1) = INST
+            VALPU(2)=ZIC
+            VALPU(1)=INST
             CALL FOINTE('FM',ZK8(ITEMPF),2,NOMPU,VALPU,TPC,IER)
           ENDIF
 
-          ZR(JRESU-1+ISP) = TPC
+          ZR(JRESU-1+ISP)=TPC
    20   CONTINUE
    30 CONTINUE
 

@@ -11,9 +11,9 @@
       LOGICAL      LMOD
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 18/12/2012   AUTEUR SELLENET N.SELLENET 
+C MODIF PREPOST  DATE 12/02/2013   AUTEUR PELLET J.PELLET 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -52,9 +52,9 @@ C       NIVE    : NIVEAU IMPRESSION CASTEM 3 OU 10
 C     ------------------------------------------------------------------
       INTEGER       IBID,IERR,NBTYMA
       REAL*8        RBID
-      CHARACTER*8   KTYPE,KBID,NOMOB,GTYPE
+      CHARACTER*8   KTYPE,KBID,GTYPE
       CHARACTER*9   TOTO
-      CHARACTER*24  NOLILI, NOMJV
+      CHARACTER*24  NOLILI,NOMJV,NOMOB
 C     ------------------------------------------------------------------
 C
 C-----------------------------------------------------------------------
@@ -435,12 +435,14 @@ C
   85      CONTINUE
   87    CONTINUE
         NOMOB =ZK24(JNOM-1+NBGNO+IJK)
+        IF (NOMOB(9:24).NE.' ') WRITE(6,*) 'DEBUG NOMOB= >',NOMOB,'<'
+        CALL ASSERT(NOMOB(9:24).EQ.' ')
         IF(IGM.LE.NBGRM)  THEN
            TOTO = '&&IRMA.G.'
         ELSE
            TOTO = '&&IRMA.M.'
         ENDIF
-        CALL JEVEUO(TOTO//NOMOB//KTYPE(1:7),'L',IAD)
+        CALL JEVEUO(TOTO//NOMOB(1:8)//KTYPE(1:7),'L',IAD)
         IMA = ZI(IAD)
         IPOIN=POINT(IMA)
         NNOE=POINT(IMA+1)-IPOIN

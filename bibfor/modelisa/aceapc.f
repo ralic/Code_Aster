@@ -6,9 +6,9 @@
       CHARACTER*8         NOMU, NOMA
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 18/12/2012   AUTEUR SELLENET N.SELLENET 
+C MODIF MODELISA  DATE 12/02/2013   AUTEUR PELLET J.PELLET 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -36,11 +36,11 @@ C ----------------------------------------------------------------------
       INTEGER VALI
       REAL*8 XCEN(3),XTAN(3),X1(3),X2(3),XC1(3),XC2(3)
       REAL*8 ANGL(3),XM(3),V1(3),TM(3)
-      CHARACTER*8  CRIT, ZK8BID, NOMAIL
+      CHARACTER*8  CRIT, ZK8BID
       CHARACTER*16  MCLEPT(3), MCLEPC(3)
       CHARACTER*19 CARTAR
       CHARACTER*24 TMPNAR, TMPVAR, MLGGMA, MLGNMA, MLGCNX, MLGCOO
-      CHARACTER*24 VALK(2)
+      CHARACTER*24 NOMAIL, VALK(2)
       INTEGER      IARG
 C     ------------------------------------------------------------------
 C-----------------------------------------------------------------------

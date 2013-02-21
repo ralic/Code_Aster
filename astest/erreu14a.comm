@@ -1,0 +1,139 @@
+# MODIF  DATE 12/02/2013   AUTEUR PELLET J.PELLET 
+# TITRE POUR TESTER L'EMISSION DE MESSAGES D'ERREUR LIES A UN MAUVAIS USAGE DES VARIABLES DE COMMANDE
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
+# (AT YOUR OPTION) ANY LATER VERSION.                                                    
+#                                                                       
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
+#                                                                       
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# ======================================================================
+#-----------------------------------------------------------------------------------------------------
+DEBUT(CODE=_F(NOM='ERREU14A',NIV_PUB_WEB='INTERNET', VISU_EFICAS='NON'),DEBUG=_F(SDVERI='OUI'),
+      ERREUR=_F(ERREUR_F='EXCEPTION',),IGNORE_ALARM=('SUPERVIS_1',), PAR_LOT='NON',)
+
+import re
+fmt_raison='-'*80+"""
+
+   Exception interceptee
+   Raison : %s
+
+"""+'-'*80+'\n'
+
+MAIL=LIRE_MAILLAGE()
+
+MO=AFFE_MODELE(MAILLAGE=MAIL, AFFE=_F(  TOUT = 'OUI',  PHENOMENE = 'MECANIQUE',
+                         MODELISATION = 'D_PLAN')  )
+
+if 0 :
+   E = FORMULE(NOM_PARA = ('SECH',), VALE='1.+SECH')
+else :
+   E = DEFI_FONCTION(NOM_PARA = ('SECH',), VALE=(0., 1.,   100.,  100.,))
+
+NU=DEFI_CONSTANTE(VALE= 0.35)
+
+ACIER=DEFI_MATERIAU(ELAS_FO=_F(  E = E, NU = NU,))
+
+CHMAT=AFFE_MATERIAU(MAILLAGE=MAIL, AFFE=_F(  TOUT = 'OUI', MATER = ACIER)  )
+
+CHARGT=AFFE_CHAR_MECA(    MODELE=MO,DDL_IMPO=(
+                            _F(  GROUP_MA = 'BORD1', DX = 0.,  DY = 0.),
+                            _F(  GROUP_MA = 'BORD2',           DY = 1.)))
+
+
+
+# 1. Toutes les mailles sont affectees mais la composante ne s'appelle pas TEMP
+#------------------------------------------------------------------------------
+CH1=CREA_CHAMP(OPERATION='AFFE', TYPE_CHAM='CART_TEMP_R', MAILLAGE=MAIL,
+               AFFE=( _F(MAILLE='M3', NOM_CMP= 'LAGR', VALE= 0.3)))
+CHMAT1=AFFE_MATERIAU(MAILLAGE=MAIL, AFFE=_F(  TOUT = 'OUI', MATER = ACIER),
+       AFFE_VARC=(_F( TOUT='OUI',  CHAMP_GD=CH1, NOM_VARC='SECH', VALE_REF=0.)))
+
+is_ok = 0
+try :
+   DEF1=MECA_STATIQUE( MODELE=MO, CHAM_MATER=CHMAT1,  EXCIT=_F(CHARGE = CHARGT)  )
+except aster.error,err:
+   print fmt_raison % str(err)
+   # on verifie que l'erreur fatale est bien celle que l'on attendait :
+   if err.id_message == "CALCULEL6_62":
+      is_ok = 1
+
+# TEST_RESU
+TAB1=CREA_TABLE(LISTE=(_F(PARA='TEST',TYPE_K='K8',LISTE_K='VALEUR  ',),
+                       _F(PARA='BOOLEEN',LISTE_I=is_ok,),),)
+
+TEST_TABLE(REFERENCE='ANALYTIQUE', VALE_CALC_I=1, VALE_REFE_I=1,
+           NOM_PARA='BOOLEEN', TABLE=TAB1,
+           FILTRE=_F(NOM_PARA='TEST', VALE_K='VALEUR  ',))
+
+
+# 2. Toutes les mailles sont correctement affectees (pas d'erreur) :
+#------------------------------------------------------------------------------
+CH2=CREA_CHAMP(OPERATION='AFFE', TYPE_CHAM='CART_TEMP_R', MAILLAGE=MAIL,
+             AFFE=( _F(TOUT='OUI', NOM_CMP= 'TEMP', VALE= 0.3)))
+CHMAT2=AFFE_MATERIAU(MAILLAGE=MAIL, AFFE=_F(  TOUT = 'OUI', MATER = ACIER),
+       AFFE_VARC=(_F( TOUT='OUI',  CHAMP_GD=CH2, NOM_VARC='SECH', VALE_REF=0.)))
+
+DEF2=MECA_STATIQUE( MODELE=MO, CHAM_MATER=CHMAT2,  EXCIT=_F(CHARGE = CHARGT)  )
+
+
+# 3. Toutes les mailles sont ne sont pas correctement affectees (cas 1):
+#------------------------------------------------------------------------------
+CH3=CREA_CHAMP(OPERATION='AFFE', TYPE_CHAM='CART_TEMP_R', MAILLAGE=MAIL,
+             AFFE=( _F(MAILLE='M1', NOM_CMP= 'TEMP', VALE= 0.3)))
+CHMAT3=AFFE_MATERIAU(MAILLAGE=MAIL, AFFE=_F(  TOUT = 'OUI', MATER = ACIER),
+       AFFE_VARC=(_F( TOUT='OUI',  CHAMP_GD=CH3, NOM_VARC='SECH', VALE_REF=0.)))
+
+is_ok = 0
+try :
+   DEF3=MECA_STATIQUE( MODELE=MO, CHAM_MATER=CHMAT3,  EXCIT=_F(CHARGE = CHARGT)  )
+except aster.error,err:
+   print fmt_raison % str(err)
+   # on verifie que l'erreur fatale est bien celle que l'on attendait :
+   if err.id_message == "CALCULEL6_62":
+      is_ok = 1
+
+# TEST_RESU
+TAB3=CREA_TABLE(LISTE=(_F(PARA='TEST',TYPE_K='K8',LISTE_K='VALEUR  ',),
+                       _F(PARA='BOOLEEN',LISTE_I=is_ok,),),)
+
+TEST_TABLE(REFERENCE='ANALYTIQUE', VALE_CALC_I=1, VALE_REFE_I=1,
+           NOM_PARA='BOOLEEN', TABLE=TAB3,
+           FILTRE=_F(NOM_PARA='TEST', VALE_K='VALEUR  ',))
+
+
+# 4. Toutes les mailles sont ne sont pas correctement affectees (cas 2):
+#------------------------------------------------------------------------------
+CH4=CREA_CHAMP(OPERATION='AFFE', TYPE_CHAM='CART_TEMP_R', MAILLAGE=MAIL,
+             AFFE=( _F(TOUT='OUI', NOM_CMP= 'TEMP', VALE= 0.3)))
+CHMAT4=AFFE_MATERIAU(MAILLAGE=MAIL, AFFE=_F(  TOUT = 'OUI', MATER = ACIER),
+       AFFE_VARC=(_F( MAILLE='M1',  CHAMP_GD=CH4, NOM_VARC='SECH', VALE_REF=0.)))
+
+is_ok = 0
+try :
+   DEF4=MECA_STATIQUE( MODELE=MO, CHAM_MATER=CHMAT4,  EXCIT=_F(CHARGE = CHARGT)  )
+except aster.error,err:
+   print fmt_raison % str(err)
+   # on verifie que l'erreur fatale est bien celle que l'on attendait :
+   if err.id_message == "CALCULEL6_62":
+      is_ok = 1
+
+# TEST_RESU
+TAB4=CREA_TABLE(LISTE=(_F(PARA='TEST',TYPE_K='K8',LISTE_K='VALEUR  ',),
+                       _F(PARA='BOOLEEN',LISTE_I=is_ok,),),)
+
+TEST_TABLE(REFERENCE='ANALYTIQUE', VALE_CALC_I=1, VALE_REFE_I=1,
+           NOM_PARA='BOOLEEN', TABLE=TAB4,
+           FILTRE=_F(NOM_PARA='TEST', VALE_K='VALEUR  ',))
+
+
+FIN()

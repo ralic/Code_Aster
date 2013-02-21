@@ -1,4 +1,4 @@
-%& MODIF COMPELEM  DATE 29/01/2013   AUTEUR FERTE G.FERTE 
+%& MODIF COMPELEM  DATE 12/02/2013   AUTEUR PELLET J.PELLET 
 % RESPONSABLE PROIX
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
@@ -1301,17 +1301,14 @@ FORC_C   = C    FX       FY       FZ       MX       MY       MZ       BX       R
     MATE_F   = K8   MATE
 
 %   COMPOSANTES CARACTERISTIQUES DES ELEMENTS A SOUS-POINTS
-<<  NBSP_I Type:I Caracteristique des sous-points
+<<  NBSP_I Type:I Caractéristiques des éléments de structure a sous-points
        COQ_NCOU : nombre de couches (COQUE)
-       GRI_NCOU : nombre de couches (GRILLE)
        TUY_NCOU : nombre de couches (TUYAU)
        TUY_NSEC : nombre de secteurs (TUYAU)
-       NBGRFI : nombre de groupes de fibres (Poutre MULTI-FIBRE)
-       NUG* : numéros des groupes de fibres (DE 1 A 10)
+       NBGRFI   : nombre de groupes de fibres (Poutre MULTI-FIBRE)
+       NUG1,..  : numéros des groupes de fibres (DE 1 A 10)
 >>
-    NBSP_I   = I    NBFIBR   COQ_NCOU   GRI_NCOU   TUY_NCOU   TUY_NSEC  NBGRFI    NUG1
-                    NUG2     NUG3     NUG4     NUG5     NUG6     NUG7     NUG8    NUG9
-                    NUG10
+    NBSP_I   = I    NBFIBR   COQ_NCOU  TUY_NCOU   TUY_NSEC  NBGRFI    NUG[10]
 
 
 <<  NEUT_F Type:K8 Grandeur ''neutre'' de type K8

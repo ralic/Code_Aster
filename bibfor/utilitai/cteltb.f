@@ -13,9 +13,9 @@
       CHARACTER*24 NKCHA,NKCMP,MESMAI,NIVAL,NRVAL,NIORD
       LOGICAL      TOUCMP
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 19/12/2012   AUTEUR PELLET J.PELLET 
+C MODIF UTILITAI  DATE 12/02/2013   AUTEUR PELLET J.PELLET 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -32,7 +32,7 @@ C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C     ----- OPERATEUR CREA_TABLE , MOT-CLE FACTEUR RESU   --------------
 C
-C        BUT : REMPLISSAGE DE LA TABLE POUR UN CHAM_ELEM
+C        BUT : REMPLISSAGE DE LA TABLE POUR UN CHAM_ELEM OU UNE CARTE
 C
 C        IN     : NKCHA (K24)  : OBJET DES NOMS DE CHAMP
 C                 RESU  (K8)   : NOM DU RESULTAT (SI RESULTAT,SINON ' ')
@@ -48,7 +48,7 @@ C                 NRVAL (K16)  : OBJET DES VALEURS D'ACCES (REELS)
 C                 NIVAL (K16)  : OBJET DES VALEURS D'ACCES (ENTIERS)
 C                 NIORD (K16)  : NOM D'OBJET DES NUMEROS D'ORDRE
 C                 NSYMB (K16)  : NOM SYMBOLIQUE DU CHAMP
-C                 TYCH  (K4)   : TYPE DE CHAMP (ELNO OU ELGA)
+C                 TYCH  (K4)   : TYPE DE CHAMP (ELNO,ELEM,ELGA,CART)
 C                 CHPGS (K19)  : CHAMP DES COORD DES POINTS DE GAUSS
 C                 NBMA  (I)    : NOMBRE DE MAILLES UTILISATEUR
 C
@@ -60,7 +60,7 @@ C ----------------------------------------------------------------------
       INTEGER JCPGV,JCPGL,JCPGD,I,J,JCESV,JCESL,JCESD,JCESC,NBMAX,NBCMPX
       INTEGER N,JVAL,JKVAL,IMA,IPT,ISPT,ICMP,INDMA,INDIIS,INDIK8,NBPT,KK
       INTEGER NBCMPT,NBSPT,INOT,KCP,INDCMP,IAD,NI,NK,NR,JI,JR,JK
-      INTEGER NBPARA,JPARAK
+      INTEGER NBPARA,JPARAK,IRET
       CHARACTER*8 KMA,KNO
       COMPLEX*16 CBID
       CHARACTER*19 CHAMES
@@ -94,20 +94,29 @@ C     TABLEAU DE REELS DE LA TABLE: ZR(JR)
 C     TABLEAU DE CARACTERES DE LA TABLE: ZK16(JK)
 C     POUR DES RAISONS DE PERF, CES TABLEAUX ONT ETE SORTIS DE
 C     LA BOUCLE, D'OU DES DIMENSIONS EN DUR (NOMBRE SUFFISANT)
-      CALL WKVECT('&&CTELTB.TABLE_VALR','V V R',50,JR)
-      CALL WKVECT('&&CTELTB.TABLE_VALI','V V I',50,JI)
-      CALL WKVECT('&&CTELTB.TABLE_VALK','V V K16',50,JK)
+      CALL WKVECT('&&CTELTB.TABLE_VALR','V V R',250,JR)
+      CALL WKVECT('&&CTELTB.TABLE_VALI','V V I',250,JI)
+      CALL WKVECT('&&CTELTB.TABLE_VALK','V V K16',250,JK)
 C
 C --- 1. LECTURE DES CHAMPS ET REMPLISSAGE DE LA TABLE
 C      -----------------------------------------------
 
       DO 100 I=1,NBVAL
+C     -- JE NE COMPRENDS PAS LA BOUCLE I=1,NBVAL (J. PELLET)
 
           IF(ZK24(JKCHA+I-1)(1:18).NE.'&&CHAMP_INEXISTANT')THEN
 
 
-C            -- PASSAGE CHAM_ELEM => CHAM_ELEM_S
-              CALL CELCES(ZK24(JKCHA+I-1),'V',CHAMES)
+C            -- PASSAGE CHAMP => CHAM_ELEM_S
+              IF (TYCH(1:2).EQ.'EL') THEN
+                CALL CELCES(ZK24(JKCHA+I-1),'V',CHAMES)
+              ELSEIF (TYCH.EQ.'CART') THEN
+                CALL CARCES(ZK24(JKCHA+I-1),'ELEM',' ','V',CHAMES,
+     &                       ' ',IRET)
+                CALL ASSERT(IRET.EQ.0)
+              ELSE
+                CALL ASSERT(.FALSE.)
+              ENDIF
               CALL JEVEUO(CHAMES//'.CESV','L',JCESV)
               CALL JEVEUO(CHAMES//'.CESL','L',JCESL)
               CALL JEVEUO(CHAMES//'.CESD','L',JCESD)
@@ -187,13 +196,17 @@ C                      LA MAILLE IMA: ZR(JCESV+IAD-1)
 C
  230                CONTINUE
                     IF(KCP.EQ.0)GOTO 225
+C                   -- POUR NE PAS DEBORDER DES OBJETS (L=250):
+                    CALL ASSERT(KCP.LE.200)
 C
 C                   SOIT NI LE NOMBRE DE ENTIERS DE LA TABLE
 C                   SOIT NR LE NOMBRE DE REELS DE LA TABLE
 C                   SOIT NK LE NOMBRE DE CARACTERES DE LA TABLE
                     NI=1
                     NK=3
-                    NR=NDIM+KCP
+                    NR=KCP
+                    IF(TYCH.EQ.'ELNO'.OR.TYCH.EQ.'ELGA') NR=NR+NDIM
+
                     IF(RESU.NE.' ')THEN
                        IF(TYPAC.EQ.'FREQ' .OR. TYPAC.EQ.'INST')THEN
                           NR=NR+1
@@ -204,18 +217,21 @@ C                   SOIT NK LE NOMBRE DE CARACTERES DE LA TABLE
                        NI=0
                        NK=2
                     ENDIF
+
                     IF(TYCH.EQ.'ELNO')THEN
+C                      -- noeud + sous_point
                        NK=NK+1
                        NI=NI+1
                     ELSEIF(TYCH.EQ.'ELGA')THEN
+C                      -- point + sous_point
                        NI=NI+2
                     ENDIF
 
 C                   ON REMPLIT LES TABLEAUX ZI(JI),ZR(JR),ZK16(JK)
                     KK=0
                     IF(TYPAC.EQ.'FREQ' .OR. TYPAC.EQ.'INST')THEN
-                           ZR(JR+KK)=ZR(JRVAL+I-1)
-                           KK=KK+1
+                       ZR(JR+KK)=ZR(JRVAL+I-1)
+                       KK=KK+1
                     ENDIF
                     IF(TYCH.EQ.'ELNO')THEN
                        DO 240 J=1,NDIM
@@ -249,10 +265,8 @@ C                   ON REMPLIT LES TABLEAUX ZI(JI),ZR(JR),ZK16(JK)
                     IF(TYCH.EQ.'ELGA')THEN
                         ZI(JI+KK)=IPT
                         KK=KK+1
-                        ZI(JI+KK)=ISPT
-                        KK=KK+1
                     ENDIF
-                    IF(TYCH.EQ.'ELNO')THEN
+                    IF(TYCH(1:2).EQ.'EL')THEN
                         ZI(JI+KK)=ISPT
                         KK=KK+1
                     ENDIF
@@ -310,18 +324,26 @@ C                   TABLEAU DES NOMS DE PARAMETRES DE LA TABLE
                        ZK16(JPARAK+KK)='POINT'
                        KK=KK+1
                     ENDIF
-                    ZK16(JPARAK+KK)='SOUS_POINT'
-                    KK=KK+1
-                    ZK16(JPARAK+KK)='COOR_X'
-                    KK=KK+1
-                    IF(NDIM.GE.2)THEN
-                       ZK16(JPARAK+KK)='COOR_Y'
-                       KK=KK+1
+                    IF(TYCH(1:2).EQ.'EL')THEN
+                      ZK16(JPARAK+KK)='SOUS_POINT'
+                      KK=KK+1
                     ENDIF
-                    IF(NDIM.EQ.3)THEN
-                       ZK16(JPARAK+KK)='COOR_Z'
-                       KK=KK+1
+
+C                   -- COORDONNEES :
+                    IF(TYCH.EQ.'ELNO'.OR.TYCH.EQ.'ELGA')THEN
+                      ZK16(JPARAK+KK)='COOR_X'
+                      KK=KK+1
+                      IF(NDIM.GE.2)THEN
+                         ZK16(JPARAK+KK)='COOR_Y'
+                         KK=KK+1
+                      ENDIF
+                      IF(NDIM.EQ.3)THEN
+                         ZK16(JPARAK+KK)='COOR_Z'
+                         KK=KK+1
+                      ENDIF
                     ENDIF
+
+C                   -- COMPOSANTES :
                     DO 260 J=1,KCP
                        ZK16(JPARAK+KK)=ZK8(JKVAL+J-1)
                        KK=KK+1

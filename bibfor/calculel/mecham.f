@@ -1,15 +1,15 @@
-      SUBROUTINE MECHAM (OPTION,MODELE,NCHAR,LCHAR,CARA,NH,
-     &                          CHGEOZ,CHCARA,CHHARZ,ICODE )
+      SUBROUTINE MECHAM(OPTION,MODELE,CARA,NH,CHGEOZ,CHCARA,CHHARZ,IRET)
       IMPLICIT NONE
       INCLUDE 'jeveux.h'
-      INTEGER                          NCHAR,        ICODE,  NH
-      CHARACTER*(*)      OPTION,MODELE,      LCHAR(*),CARA
-      CHARACTER*(*)      CHGEOZ,CHCARA(*),CHHARZ
+      INTEGER IRET,NH
+      CHARACTER*(*) OPTION,MODELE,CARA
+      CHARACTER*(*) CHGEOZ,CHCARA(*),CHHARZ
+
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
+C MODIF CALCULEL  DATE 12/02/2013   AUTEUR PELLET J.PELLET 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -30,127 +30,100 @@ C        - ON VERIFIE S'IL Y A 1 LIGREL DANS LE MODELE
 C     ------------------------------------------------------------------
 C IN  : OPTION : OPTION DE CALCUL
 C IN  : MODELE : MODELE
-C IN  : NCHAR  : NOMBRE DE CHARGES
-C IN  : LCHAR  : LISTE DES CHARGES
 C IN  : CARA   : CHAMP DE CARA_ELEM
 C IN  : NH     : NUMERO D'HARMONIQUE DE FOURIER
 C OUT : CHGEOZ : NOM DE CHAMP DE GEOMETRIE TROUVE
 C OUT : CHCARA : NOMS DES CHAMPS DE CARACTERISTIQUES TROUVES
 C OUT : CHHARZ : NOM DU CHAMP D'HARMONIQUE DE FOURIER TROUVE
-C OUT : ICODE  : CODE RETOUR
-C                = 0 : TOUT EST OK, LE MODELE EST DONNE EN ARGUMENT
-C                = 1 : LE MODELE EST ISSU DU CHARGEMENT
-C                = 2 : PAS D'ELEMENTS FINIS ET MODELE EN ARGUMENT
-C                = 3 : PAS D'ELEMENTS FINIS ET MODELE ISSU DES CHARGES
+C OUT : IRET  : CODE RETOUR
+C                = 0 : LE MODELE CONTIENT DES ELEMENTS FINIS
+C                = 1 : LE MODELE NE CONTIENT PAS D'ELEMENTS FINIS
 C     ------------------------------------------------------------------
-      CHARACTER*8   K8B, NOMO, NOMA, NOMACR, EXIELE
-      CHARACTER*24  CHGEOM,CHHARM
-      LOGICAL       EXIMOD, EXIGEO,  EXICAR
+      CHARACTER*8 K8B,NOMO,NOMA,NOMACR,EXIELE
+      CHARACTER*24 CHGEOM,CHHARM
+      LOGICAL EXICAR
 C
 C-----------------------------------------------------------------------
-      INTEGER IANMCR ,IASSSA ,IBID ,IER ,IMA ,IRET ,NBSMA 
-      INTEGER NBSS 
+      INTEGER IANMCR,IASSSA,IBID,IER,IMA,IEXI,NBSMA
+      INTEGER NBSS
 C-----------------------------------------------------------------------
       CALL JEMARQ()
-      CHGEOM = CHGEOZ
-      CHHARM = CHHARZ
-      ICODE = 1
-      EXIMOD = .FALSE.
-      IF (MODELE(1:1).NE.' ') THEN
-         EXIMOD = .TRUE.
-         ICODE = 0
-         NOMO = MODELE
-      ENDIF
-      IF (ICODE.EQ.1 .AND. NCHAR.LE.0)
-     &   CALL U2MESS('F','CALCULEL3_30')
-C
-C     --- ON RECUPERE LE MODELE DES CHARGES ---
-      IF (NCHAR.GT.0)
-     &   CALL DISMOI('F','NOM_MODELE',LCHAR(1),'CHARGE',IBID,NOMO,IER)
+      CHGEOM=' '
+      CHHARM=' '
+
+      CALL ASSERT(MODELE(1:1).NE.' ')
+      NOMO=MODELE
 C
 C     --- ON VERIFIE LES EVENTUELLES SOUS-STRUCTURES STATIQUES:
-      IF ( EXIMOD ) THEN
-         CALL DISMOI('F','NB_SS_ACTI',NOMO,'MODELE',NBSS,K8B,IER)
-         IF (NBSS.GT.0) THEN
-           CALL DISMOI('F','NB_SM_MAILLA',NOMO,'MODELE',NBSMA,K8B,IER)
-            CALL DISMOI('F','NOM_MAILLA',NOMO,'MODELE',IBID,NOMA,IER)
-            CALL JEVEUO(NOMA//'.NOMACR','L',IANMCR)
-            CALL JEVEUO(NOMO//'.MODELE    .SSSA','L',IASSSA)
+      CALL DISMOI('F','NB_SS_ACTI',NOMO,'MODELE',NBSS,K8B,IER)
+      IF (NBSS.GT.0) THEN
+        CALL DISMOI('F','NB_SM_MAILLA',NOMO,'MODELE',NBSMA,K8B,IER)
+        CALL DISMOI('F','NOM_MAILLA',NOMO,'MODELE',IBID,NOMA,IER)
+        CALL JEVEUO(NOMA//'.NOMACR','L',IANMCR)
+        CALL JEVEUO(NOMO//'.MODELE    .SSSA','L',IASSSA)
 C
-C           --- BOUCLE SUR LES (SUPER)MAILLES ---
-            IER = 0
-            IF (OPTION(1:9).EQ.'MASS_MECA') THEN
-              DO 20 IMA = 1, NBSMA
-                  IF (ZI(IASSSA-1+IMA).EQ.1) THEN
-                     NOMACR = ZK8(IANMCR-1+IMA)
-C                     CALL JEEXIN(NOMACR//'.MP_EE',IRET)
-                     CALL JEEXIN(NOMACR//'.MAEL_MASS_VALE',IRET)
-                     IF (IRET.EQ.0) THEN
-                        IER = IER + 1
-                        CALL U2MESK('E','CALCULEL3_31',1,NOMACR)
-                     ENDIF
-                  ENDIF
- 20            CONTINUE
-               IF (IER.GT.0) THEN
-                  CALL U2MESS('F','CALCULEL3_32')
-               ENDIF
-            ELSEIF (OPTION(1:9).EQ.'RIGI_MECA') THEN
-               DO 22 IMA = 1, NBSMA
-                  IF (ZI(IASSSA-1+IMA).EQ.1) THEN
-                     NOMACR = ZK8(IANMCR-1+IMA)
-C                     CALL JEEXIN(NOMACR//'.KP_EE',IRET)
-                     CALL JEEXIN(NOMACR//'.MAEL_RAID_VALE',IRET)
-                     IF (IRET.EQ.0) THEN
-                        IER = IER + 1
-                        CALL U2MESK('E','CALCULEL3_33',1,NOMACR)
-                     ENDIF
-                  ENDIF
- 22            CONTINUE
-               IF (IER.GT.0) THEN
-                  CALL U2MESS('F','CALCULEL3_34')
-               ENDIF
-            ELSEIF (OPTION(1:9).EQ.'AMOR_MECA') THEN
-              DO 24 IMA = 1, NBSMA
-                  IF (ZI(IASSSA-1+IMA).EQ.1) THEN
-                     NOMACR = ZK8(IANMCR-1+IMA)
-                     CALL JEEXIN(NOMACR//'.MAEL_AMOR_VALE',IRET)
-                     IF (IRET.EQ.0) THEN
-                        IER = IER + 1
-                        CALL U2MESK('E','CALCULEL6_80',1,NOMACR)
-                     ENDIF
-                  ENDIF
- 24            CONTINUE
-               IF (IER.GT.0) THEN
-                  CALL U2MESS('F','CALCULEL6_81')
-               ENDIF
+C        --- BOUCLE SUR LES (SUPER)MAILLES ---
+        IER=0
+        IF (OPTION(1:9).EQ.'MASS_MECA') THEN
+          DO 10 IMA=1,NBSMA
+            IF (ZI(IASSSA-1+IMA).EQ.1) THEN
+              NOMACR=ZK8(IANMCR-1+IMA)
+              CALL JEEXIN(NOMACR//'.MAEL_MASS_VALE',IEXI)
+              IF (IEXI.EQ.0) THEN
+                IER=IER+1
+                CALL U2MESK('E','CALCULEL3_31',1,NOMACR)
+              ENDIF
             ENDIF
-         ENDIF
+   10     CONTINUE
+          IF (IER.GT.0) CALL U2MESS('F','CALCULEL3_32')
+        ELSEIF (OPTION(1:9).EQ.'RIGI_MECA') THEN
+          DO 20 IMA=1,NBSMA
+            IF (ZI(IASSSA-1+IMA).EQ.1) THEN
+              NOMACR=ZK8(IANMCR-1+IMA)
+              CALL JEEXIN(NOMACR//'.MAEL_RAID_VALE',IEXI)
+              IF (IEXI.EQ.0) THEN
+                IER=IER+1
+                CALL U2MESK('E','CALCULEL3_33',1,NOMACR)
+              ENDIF
+            ENDIF
+   20     CONTINUE
+          IF (IER.GT.0) THEN
+            CALL U2MESS('F','CALCULEL3_34')
+          ENDIF
+        ELSEIF (OPTION(1:9).EQ.'AMOR_MECA') THEN
+          DO 30 IMA=1,NBSMA
+            IF (ZI(IASSSA-1+IMA).EQ.1) THEN
+              NOMACR=ZK8(IANMCR-1+IMA)
+              CALL JEEXIN(NOMACR//'.MAEL_AMOR_VALE',IEXI)
+              IF (IEXI.EQ.0) THEN
+                IER=IER+1
+                CALL U2MESK('E','CALCULEL6_80',1,NOMACR)
+              ENDIF
+            ENDIF
+   30     CONTINUE
+          IF (IER.GT.0) CALL U2MESS('F','CALCULEL6_81')
+        ENDIF
       ENDIF
-C
+
 C     --- ON REGARDE S'IL Y A 1 LIGREL DANS LE MODELE ---
       CALL DISMOI('F','EXI_ELEM',NOMO,'MODELE',IBID,EXIELE,IER)
-      IF ( EXIELE(1:3).EQ.'NON' .AND. NBSS.EQ.0 ) THEN
-         CALL U2MESS('F','CALCULEL3_35')
-C
-      ELSEIF (EXIELE(1:3).EQ.'NON') THEN
-C        --- SI IL N'Y A PAS D'ELEMENTS, ON SORT ---
-         ICODE = ICODE + 2
-         GOTO 9999
-      ENDIF
-C
-      IF ( NCHAR.GT.0 ) THEN
-         CALL MEGEOM(NOMO,LCHAR(1),EXIGEO,CHGEOM)
+      IF (EXIELE(1:3).EQ.'OUI') THEN
+        IRET=0
       ELSE
-         CALL MEGEOM(NOMO,'        ',EXIGEO,CHGEOM)
+        IRET=1
       ENDIF
+      IF (IRET.EQ.1 .AND. NBSS.EQ.0) CALL U2MESS('F','CALCULEL3_35')
+C
+C     --- SI IL N'Y A PAS D'ELEMENTS, ON SORT :
+      IF (IRET.EQ.1)GOTO 40
+C
+      CALL MEGEOM(NOMO,CHGEOM)
       CALL MECARA(CARA,EXICAR,CHCARA)
 C     --- ON CREE UN CHAMP D'HARMONIQUE DE FOURIER (CARTE CSTE) ---
       CALL MEHARM(NOMO,NH,CHHARM)
 C
- 9999 CONTINUE
-C
-C     --- RESTITUTION DES SORTIES
-      CHGEOZ = CHGEOM
-      CHHARZ = CHHARM
+   40 CONTINUE
+      CHGEOZ=CHGEOM
+      CHHARZ=CHHARM
       CALL JEDEMA()
       END

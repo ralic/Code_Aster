@@ -1,4 +1,4 @@
-#@ MODIF calculel4 Messages  DATE 21/01/2013   AUTEUR FLEJOU J-L.FLEJOU 
+#@ MODIF calculel4 Messages  DATE 12/02/2013   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -152,14 +152,14 @@ Risques et conseils :
    Vous devez d'abord extraire %(k1)s sur un sous-point avec la commande POST_CHAMP.
 """),
 
-20 : _(u"""
- Option PREP_VRC :
- Il est impossible d'utiliser la température comme variable de commande pour les éléments de grille
- car celle-ci varie dans l'épaisseur de la coque :
-   température sur la peau inférieure : %(r1)f
-   température sur le feuillet moyen  : %(r2)f
-   température sur la peau supérieure : %(r3)f
-"""),
+
+
+
+
+
+
+
+
 
 21 : _(u"""
  Erreur utilisateur :
@@ -181,6 +181,14 @@ Risques et conseils :
    Incohérence du MODELE et du CHAM_MATER :
      Le MODELE de calcul est associé au maillage %(k1)s
      Le CHAM_MATER de calcul est associé au maillage %(k2)s
+"""),
+
+24 : _(u"""
+ Alarme utilisateur :
+   IMPR_RESU / CONCEPT / FORMAT='MED'
+     Le format MED n'accepte pas plus de 80 composantes pour un champ.
+     Le champ %(k1)s ayant plus de 80 composantes, on n'imprime
+     que les 80 premières.
 """),
 
 

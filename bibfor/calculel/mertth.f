@@ -2,9 +2,9 @@
      &                  CHTNI,MERIGI)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
+C MODIF CALCULEL  DATE 12/02/2013   AUTEUR PELLET J.PELLET 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -47,11 +47,11 @@ C OUT MERIGI  : MATRICES ELEMENTAIRES
       CHARACTER*24 LIGREL(2),LCHIN(6),LCHOUT(1)
       CHARACTER*24 CHGEOM,CHCARA(18)
       INTEGER IRET,NCHAR,ILIRES,ICHA,JCHAR,JINF
-      LOGICAL EXICAR,EXIGEO
+      LOGICAL EXICAR
 C ----------------------------------------------------------------------
       INTEGER NBCHMX
 C-----------------------------------------------------------------------
-      INTEGER K 
+      INTEGER K
 C-----------------------------------------------------------------------
       PARAMETER (NBCHMX=4)
       INTEGER NBOPT(NBCHMX),NLIGR(NBCHMX)
@@ -74,7 +74,7 @@ C DEB ------------------------------------------------------------------
         NCHAR = 0
       END IF
 
-      CALL MEGEOM(MODELE,'       ',EXIGEO,CHGEOM)
+      CALL MEGEOM(MODELE,CHGEOM)
       CALL MECARA(CARELE,EXICAR,CHCARA)
 
       CALL JEEXIN(MERIGI,IRET)

@@ -6,9 +6,9 @@
       CHARACTER*8    MODEL
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 24/07/2012   AUTEUR PELLET J.PELLET 
+C MODIF ALGORITH  DATE 12/02/2013   AUTEUR PELLET J.PELLET 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -45,7 +45,6 @@ C     ------------------------------------------------------------------
       CHARACTER*8    LPAIN(1),LPAOUT(1)
       CHARACTER*19   CELLC
       CHARACTER*24   LIGREL,CHGEOM,LCHIN(1),LCHOUT(1)
-      LOGICAL        EXIGEO
 
 C-----------------------------------------------------------------------
 C     DEBUT
@@ -57,7 +56,7 @@ C-----------------------------------------------------------------------
 
       CELLC='&&XPRCFL.CELLC'
 
-      CALL MEGEOM(MODEL,' ',EXIGEO,CHGEOM)
+      CALL MEGEOM(MODEL,CHGEOM)
       LIGREL=MODEL//'.MODELE'
       LPAIN(1)='PGEOMER'
       LCHIN(1)=CHGEOM

@@ -1,4 +1,4 @@
-#@ MODIF sd_cham_mater SD  DATE 14/01/2013   AUTEUR FLEJOU J-L.FLEJOU 
+#@ MODIF sd_cham_mater SD  DATE 12/02/2013   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -43,7 +43,6 @@ class sd_cham_mater_varc(AsBase):
     nomj = SDNom(fin=8)
     CVRCNOM  = AsVK8()
     CVRCGD   = AsVK8()
-    CVRCDEF  = AsVR()
     CVRCVARC = AsVK8()
     CVRCCMP  = AsVK8()
 
@@ -83,15 +82,13 @@ class sd_cham_mater_varc(AsBase):
         cvrcnom =self.CVRCNOM.get_stripped()
         cvrcgd  =self.CVRCGD.get_stripped()
         cvrcvarc=self.CVRCVARC.get_stripped()
-        cvrcdef =self.CVRCDEF.get()
 
-        # Les 6 objets ont la meme longueur > 0 :
+        # Les 5 objets ont la meme longueur > 0 :
         nbcvrc=len(cvrcnom)
         assert nbcvrc > 0, (self)
         assert len(cvrccmp)  == nbcvrc , (cvrccmp,cvrcnom,self)
         assert len(cvrcgd)   == nbcvrc , (cvrcgd,cvrcnom,self)
         assert len(cvrcvarc) == nbcvrc , (cvrcvarc,cvrcnom,self)
-        assert len(cvrcdef)  == nbcvrc , (cvrcdef,cvrcnom,self)
 
         # Les 4 objets sont "non blancs" :
         sdu_tous_non_blancs(self.CVRCCMP,checker)

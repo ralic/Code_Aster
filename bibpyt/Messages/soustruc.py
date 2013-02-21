@@ -1,8 +1,8 @@
-#@ MODIF soustruc Messages  DATE 24/07/2012   AUTEUR PELLET J.PELLET 
+#@ MODIF soustruc Messages  DATE 12/02/2013   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -388,14 +388,17 @@ cata_msg={
 """),
 
 89: _(u"""
-  Pour le noeud %(k1)s de la maille %(k2)s, la coordonnée x est strictement négative (x=%(r1)G).
+  Pour le noeud %(k1)s de la maille %(k2)s, la coordonnée X est négative (x=%(r1)G).
 """),
 
 90: _(u"""
- Or, pour une modélisation axisymétrique, la coordonnée x doit être positive ou nulle.
+ Or, pour une modélisation axisymétrique, la coordonnée X doit être positive, nulle ou
+ très faiblement négative ( > -1.d-6 * X_MAX)
 
- Conseil :
-  Vérifiez votre maillage.
+ Conseils :
+  * Vérifiez votre maillage.
+  * Vous pouvez utiliser MODI_MAILLAGE / DEFORME pour repositionner votre maillage
+    dans le demi espace  X >= 0
 """),
 
 93: _(u"""

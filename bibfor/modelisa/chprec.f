@@ -1,9 +1,9 @@
       SUBROUTINE CHPREC(CHOU)
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 18/09/2012   AUTEUR LADIER A.LADIER 
+C MODIF MODELISA  DATE 12/02/2013   AUTEUR PELLET J.PELLET 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -39,11 +39,11 @@ C
       PARAMETER ( NOMPRO = 'CHPREC' )
 C
       INTEGER IBID,ICORET,IRET,JORDR,N1,N2,N3,N4,N5,NBORDR,NC,NP,IE
-      INTEGER IFM,NIV
+      INTEGER IFM,NIV,IEXI
       REAL*8 INST,EPSI
       CHARACTER*1 BASE
-      CHARACTER*8 RESUCO,INTERP,CRIT,PROLDR,PROLGA,TYPMAX
-      CHARACTER*8 NOMGD
+      CHARACTER*8 RESUCO,INTERP,CRIT,PROLDR,PROLGA,TYPMAX,CARA
+      CHARACTER*8 NOMGD,CHARME
       CHARACTER*16 K16BID,NOMCMD,NOMCH,ACCES,TYSD,TYCHLU,TYCH
       CHARACTER*19 CHEXTR,NOCH19,KNUM
       CHARACTER*24 VALK(3)
@@ -67,15 +67,15 @@ C
       TYCHLU=' '
       CALL GETVTX(' ','TYPE_CHAM',0,IARG,1,TYCHLU,N2)
 
+
 C     1. CAS DE LA RECUPERATION DU CHAMP DE GEOMETRIE D'UN MAILLAGE
 C     ==============================================================
       IF (NOMCH.EQ.'GEOMETRIE') THEN
         CALL GETVID(' ','MAILLAGE',0,IARG,1,MA,N1)
         IF (N1.EQ.0) CALL U2MESS('F','MODELISA4_17')
 C
-C     ON VERIFIE QUE LE MOT-CLE TYPE_CHAMP EST COHERENT AVEC LE
-C     TYPE DU CHAMP EXTRAIT.
-C
+C       ON VERIFIE QUE LE MOT-CLE TYPE_CHAMP EST COHERENT AVEC LE
+C       TYPE DU CHAMP EXTRAIT.
         CALL DISMOI('F','TYPE_CHAMP',MA//'.COORDO','CHAMP',
      &              IBID,TYCH,IE)
         CALL DISMOI('F','NOM_GD',MA//'.COORDO','CHAMP',
@@ -91,66 +91,119 @@ C
         GO TO 20
       END IF
 
+
 C     2. CAS DE LA RECUPERATION D'UN CHAMP DANS UNE SD FISS_XFEM
 C     ==============================================================
       CALL GETVID(' ','FISSURE',0,IARG,1,FIS,N1)
-             IF (N1.EQ.1) THEN
+      IF (N1.EQ.1) THEN
 
-C              VERIFIE SI UNE GRILLE AUXILIAIRE EST DEFINIE POUR LA FISS
-               CALL JEEXIN(FIS//'.GRI.MODELE',IBID)
-               IF (IBID.EQ.0) THEN
-                  GRILLE=.FALSE.
-               ELSE
-                  GRILLE=.TRUE.
-               ENDIF
+C       VERIFIE SI UNE GRILLE AUXILIAIRE EST DEFINIE POUR LA FISS
+        CALL JEEXIN(FIS//'.GRI.MODELE',IBID)
+        IF (IBID.EQ.0) THEN
+           GRILLE=.FALSE.
+        ELSE
+           GRILLE=.TRUE.
+        ENDIF
 
-               IF (NOMCH.EQ.'LTNO') THEN
-                 CHEXTR = FIS//'.LTNO'
-               ELSE IF (NOMCH.EQ.'LNNO') THEN
-                 CHEXTR = FIS//'.LNNO'
-               ELSE IF (NOMCH.EQ.'GRLNNO') THEN
-                 CHEXTR = FIS//'.GRLNNO'
-               ELSE IF (NOMCH.EQ.'GRLTNO') THEN
-                 CHEXTR = FIS//'.GRLTNO'
-               ELSE IF (NOMCH.EQ.'STNO') THEN
-                 CHEXTR = FIS//'.STNO'
-               ELSE IF (NOMCH.EQ.'STNOR') THEN
-                 CHEXTR = FIS//'.STNOR'
-               ELSE IF (NOMCH.EQ.'BASLOC') THEN
-                 CHEXTR = FIS//'.BASLOC'
-               ELSE
-                 IF (GRILLE) THEN
-                     IF (NOMCH.EQ.'GRI.LTNO') THEN
-                        CHEXTR = FIS//'.GRI.LTNO'
-                     ELSE IF (NOMCH.EQ.'GRI.LNNO') THEN
-                        CHEXTR = FIS//'.GRI.LNNO'
-                     ELSE IF (NOMCH.EQ.'GRI.GRLNNO') THEN
-                        CHEXTR = FIS//'.GRI.GRLNNO'
-                     ELSE IF (NOMCH.EQ.'GRI.GRLTNO') THEN
-                        CHEXTR = FIS//'.GRI.GRLTNO'
-                     END IF
-                 ELSE
-                     CALL U2MESS('F','XFEM2_98')
-                 ENDIF
-               ENDIF
+        IF (NOMCH.EQ.'LTNO') THEN
+          CHEXTR = FIS//'.LTNO'
+        ELSE IF (NOMCH.EQ.'LNNO') THEN
+          CHEXTR = FIS//'.LNNO'
+        ELSE IF (NOMCH.EQ.'GRLNNO') THEN
+          CHEXTR = FIS//'.GRLNNO'
+        ELSE IF (NOMCH.EQ.'GRLTNO') THEN
+          CHEXTR = FIS//'.GRLTNO'
+        ELSE IF (NOMCH.EQ.'STNO') THEN
+          CHEXTR = FIS//'.STNO'
+        ELSE IF (NOMCH.EQ.'STNOR') THEN
+          CHEXTR = FIS//'.STNOR'
+        ELSE IF (NOMCH.EQ.'BASLOC') THEN
+          CHEXTR = FIS//'.BASLOC'
+        ELSE
+          IF (GRILLE) THEN
+              IF (NOMCH.EQ.'GRI.LTNO') THEN
+                 CHEXTR = FIS//'.GRI.LTNO'
+              ELSE IF (NOMCH.EQ.'GRI.LNNO') THEN
+                 CHEXTR = FIS//'.GRI.LNNO'
+              ELSE IF (NOMCH.EQ.'GRI.GRLNNO') THEN
+                 CHEXTR = FIS//'.GRI.GRLNNO'
+              ELSE IF (NOMCH.EQ.'GRI.GRLTNO') THEN
+                 CHEXTR = FIS//'.GRI.GRLTNO'
+              END IF
+          ELSE
+              CALL U2MESS('F','XFEM2_98')
+          ENDIF
+        ENDIF
 C
-C     ON VERIFIE QUE LE MOT-CLE TYPE_CHAMP EST COHERENT AVEC LE
-C     TYPE DU CHAMP EXTRAIT.
-C
-               CALL DISMOI('F','TYPE_CHAMP',CHEXTR,'CHAMP',IBID,TYCH,IE)
-               CALL DISMOI('F','NOM_GD',CHEXTR,'CHAMP',IBID,NOMGD,IE)
+C       ON VERIFIE QUE LE MOT-CLE TYPE_CHAMP EST COHERENT AVEC LE
+C       TYPE DU CHAMP EXTRAIT.
+        CALL DISMOI('F','TYPE_CHAMP',CHEXTR,'CHAMP',IBID,TYCH,IE)
+        CALL DISMOI('F','NOM_GD',CHEXTR,'CHAMP',IBID,NOMGD,IE)
 
-               IF ((TYCHLU(1:4).NE.TYCH).OR.(TYCHLU(6:12).NE.NOMGD))THEN
-                    VALK(1) = TYCHLU
-                    VALK(2) = TYCH(1:4)
-                    VALK(3) = NOMGD
-                    CALL U2MESK('F','MODELISA4_18', 3 ,VALK)
-               END IF
-               CALL COPISD('CHAMP_GD','G',CHEXTR,NOCH19)
-               GOTO 20
-             END IF
+        IF ((TYCHLU(1:4).NE.TYCH).OR.(TYCHLU(6:12).NE.NOMGD))THEN
+             VALK(1) = TYCHLU
+             VALK(2) = TYCH(1:4)
+             VALK(3) = NOMGD
+             CALL U2MESK('F','MODELISA4_18', 3 ,VALK)
+        END IF
+        CALL COPISD('CHAMP_GD','G',CHEXTR,NOCH19)
+        GOTO 20
+      END IF
 
-C     3. CAS DE LA RECUPERATION D'UN CHAMP D'UNE SD RESULTAT
+
+C     3. CAS DE LA RECUPERATION D'UN CHAMP DANS UNE SD CARA_ELEM
+C     ==============================================================
+      CALL GETVID(' ','CARA_ELEM',0,IARG,1,CARA,N1)
+      IF (N1.EQ.1) THEN
+
+        CALL ASSERT(NOMCH(1:1).EQ.'.')
+        CHEXTR = CARA//NOMCH
+        CALL EXISD('CHAMP',CHEXTR,IEXI)
+        IF (IEXI.EQ.0) CALL U2MESK('F','CALCULEL3_17',1,CHEXTR)
+
+C       ON VERIFIE QUE LE MOT-CLE TYPE_CHAMP EST COHERENT AVEC LE
+C       TYPE DU CHAMP EXTRAIT.
+        CALL DISMOI('F','TYPE_CHAMP',CHEXTR,'CHAMP',IBID,TYCH,IE)
+        CALL DISMOI('F','NOM_GD',CHEXTR,'CHAMP',IBID,NOMGD,IE)
+
+        IF ((TYCHLU(1:4).NE.TYCH).OR.(TYCHLU(6:).NE.NOMGD))THEN
+             VALK(1) = TYCHLU
+             VALK(2) = TYCH(1:4)
+             VALK(3) = NOMGD
+             CALL U2MESK('F','MODELISA4_18', 3 ,VALK)
+        END IF
+        CALL COPISD('CHAMP_GD','G',CHEXTR,NOCH19)
+        GOTO 20
+      END IF
+
+
+C     4. CAS DE LA RECUPERATION D'UN CHAMP DANS UNE SD CHAR_MECA
+C     ==============================================================
+      CALL GETVID(' ','CHARGE',0,IARG,1,CHARME,N1)
+      IF (N1.EQ.1) THEN
+
+        CALL ASSERT(NOMCH(1:1).EQ.'.')
+        CHEXTR = CHARME//NOMCH
+        CALL EXISD('CHAMP',CHEXTR,IEXI)
+        IF (IEXI.EQ.0) CALL U2MESK('F','CALCULEL3_17',1,CHEXTR)
+
+C       ON VERIFIE QUE LE MOT-CLE TYPE_CHAMP EST COHERENT AVEC LE
+C       TYPE DU CHAMP EXTRAIT.
+        CALL DISMOI('F','TYPE_CHAMP',CHEXTR,'CHAMP',IBID,TYCH,IE)
+        CALL DISMOI('F','NOM_GD',CHEXTR,'CHAMP',IBID,NOMGD,IE)
+
+        IF ((TYCHLU(1:4).NE.TYCH).OR.(TYCHLU(6:).NE.NOMGD))THEN
+             VALK(1) = TYCHLU
+             VALK(2) = TYCH(1:4)
+             VALK(3) = NOMGD
+             CALL U2MESK('F','MODELISA4_18', 3 ,VALK)
+        END IF
+        CALL COPISD('CHAMP_GD','G',CHEXTR,NOCH19)
+        GOTO 20
+      END IF
+
+
+C     5. CAS DE LA RECUPERATION D'UN CHAMP D'UNE SD RESULTAT
 C     ==============================================================
       CALL GETVID(' ','RESULTAT',0,IARG,1,RESUCO,N1)
       INTERP=' '
@@ -238,7 +291,6 @@ C         ===========================
         END IF
       END IF
 
-C============= FIN DE LA BOUCLE SUR LE NOMBRE DE PASSAGES ==============
 
       GO TO 20
    10 CONTINUE

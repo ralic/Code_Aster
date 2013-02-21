@@ -2,9 +2,9 @@
       IMPLICIT NONE
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
+C MODIF CALCULEL  DATE 12/02/2013   AUTEUR PELLET J.PELLET 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -57,7 +57,6 @@ C     -------------------
 C     VARIABLES LOCALES:
 C     ------------------
 C*
-      LOGICAL EXIGEO
 C*
       CHARACTER*8 LPAIN(4),LPAOUT(1)
       CHARACTER*16 OPTION
@@ -66,10 +65,10 @@ C*
       CHARACTER*24 LIGRMO
 
 C-----------------------------------------------------------------------
-      INTEGER ICHA ,ILIRES ,IRET 
+      INTEGER ICHA ,ILIRES ,IRET
 C-----------------------------------------------------------------------
       CALL JEMARQ()
-      CALL MEGEOM(MODELE,LCHAR(1),EXIGEO,CHGEOM)
+      CALL MEGEOM(MODELE,CHGEOM)
 C*
       CALL JEEXIN(MATEL//'.RERR',IRET)
       IF (IRET.GT.0) THEN

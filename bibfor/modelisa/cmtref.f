@@ -6,7 +6,7 @@
       CHARACTER*8 CHMAT,NOMAIL
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 21/01/2013   AUTEUR PELLET J.PELLET 
+C MODIF MODELISA  DATE 12/02/2013   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -40,7 +40,6 @@ C
       CHARACTER*19 CARCM1,CARCM2,CARTRF
 C ----------------------------------------------------------------------
 C
-      write(6,*) 'AJACOT DEBUT CMTREF'
       CALL JEMARQ()
 C
       CARCM1 = CHMAT//'.CHAMP_MAT'
@@ -192,5 +191,4 @@ C     ---------------------------------------------------------------
 C
    50 CONTINUE
       CALL JEDEMA()
-      write(6,*) 'AJACOT FIN CMTREF'
       END

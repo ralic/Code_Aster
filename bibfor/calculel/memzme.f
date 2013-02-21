@@ -1,9 +1,9 @@
       SUBROUTINE MEMZME(MODELE,MATEL)
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
+C MODIF CALCULEL  DATE 12/02/2013   AUTEUR PELLET J.PELLET 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -27,19 +27,17 @@ C IN  : MATEL  : NOM DU MATR_ELEM RESULTAT
 C ----------------------------------------------------------------------
 C ----------------------------------------------------------------------
       INCLUDE 'jeveux.h'
-      LOGICAL EXIGEO
       CHARACTER*19 MATEL
       CHARACTER*8 LPAIN(1),LPAOUT(1),MODELE
       CHARACTER*24 LIGRMO,LCHIN(1),LCHOUT(1),OPTION,CHGEOM
 
 C-----------------------------------------------------------------------
-      INTEGER IAREFE 
+      INTEGER IAREFE
 C-----------------------------------------------------------------------
       CALL JEMARQ()
       IF (MODELE(1:1).EQ.' ') CALL U2MESS('F','CALCULEL2_82')
 
-      CALL MEGEOM(MODELE,' ',EXIGEO,CHGEOM)
-      IF (.NOT.EXIGEO) CALL U2MESS('F','CALCULEL3_63')
+      CALL MEGEOM(MODELE,CHGEOM)
 
       CALL MEMARE('V',MATEL,MODELE,' ',' ','MASS_ZZ1')
       CALL JEVEUO(MATEL//'.RERR','E',IAREFE)

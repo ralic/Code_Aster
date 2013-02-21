@@ -8,9 +8,9 @@
       CHARACTER*19 MATEL
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
+C MODIF CALCULEL  DATE 12/02/2013   AUTEUR PELLET J.PELLET 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -36,7 +36,7 @@ C VAR : MATEL  : NOM DU MATEL (N RESUELEM) PRODUIT
 C IN  : BASE   : BASE POUR LA CREATION DE MATEL ('G'/'V')
 C ----------------------------------------------------------------------
 C     ------------------------------------------------------------------
-      CHARACTER*8 LPAIN(12),LPAOUT(1),CHARG
+      CHARACTER*8 LPAIN(12),LPAOUT(1)
       CHARACTER*16 OPTION
       CHARACTER*24 LIGRMO,LCHIN(12),LCHOUT(1)
       CHARACTER*24 CHGEOM,CHCARA(18),CHHARM
@@ -44,15 +44,13 @@ C     ------------------------------------------------------------------
       CHARACTER*19 PMILTO
 
 C-----------------------------------------------------------------------
-      INTEGER ICODE ,IER 
+      INTEGER ICODE ,IER
 C-----------------------------------------------------------------------
       CALL JEMARQ()
       IF (MODELE(1:1).EQ.' ') CALL U2MESS('F','CALCULEL2_82')
 
-      CHARG = ' '
       OPTION = 'RIGI_GEOM'
-      CALL MECHAM(OPTION,MODELE,0,CHARG,CARA,NH,CHGEOM,CHCARA,CHHARM,
-     &            ICODE)
+      CALL MECHAM(OPTION,MODELE,CARA,NH,CHGEOM,CHCARA,CHHARM,ICODE)
 
       CALL MEMARE(BASE,MATEL,MODELE,' ',CARA,OPTION)
 

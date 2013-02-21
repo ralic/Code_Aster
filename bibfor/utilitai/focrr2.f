@@ -9,10 +9,10 @@
       CHARACTER*16  NOMCHA
       CHARACTER*19  NOMFON,RESU
 C     ------------------------------------------------------------------
-C MODIF UTILITAI  DATE 09/11/2012   AUTEUR DELMAS J.DELMAS 
+C MODIF UTILITAI  DATE 12/02/2013   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -61,7 +61,7 @@ C-----------------------------------------------------------------------
       INTEGER IRET ,IVARI ,JINST ,JLIR8 ,L1 ,L2 ,LFON
       INTEGER LG1 ,LG2 ,LPRO ,LVAL1 ,LVAL2 ,LVAR ,LXLGUT
       INTEGER N1 ,N2 ,N3 ,N4 ,NBINST ,NBORDR ,NPOINT
-      INTEGER NUSP
+      INTEGER NUSP,VALI1,VALI2
       REAL*8 R1 ,R2 ,R8B ,RBASE ,RVAL ,VALR1 ,VALR2
 
 C-----------------------------------------------------------------------
@@ -328,7 +328,7 @@ C           -------------------------
 
           IF (RBASE.EQ.0.0D0) THEN
             CALL UTCH19(CH1,NOMA,MAILLE,NOEUZ,NPOINZ,NUSPZ,IVARI,CMP,
-     &                  TYPE,VALR1,VALC1,IRET)
+     &                  TYPE,VALR1,VALC1,VALI1,IRET)
             CALL ASSERT(IRET.EQ.0)
             ZR(LVAR+IORDR) = RVAL
             IF (TYPE.EQ.'R') THEN
@@ -345,10 +345,10 @@ C           -------------------------
           R2 = (RVAL-ZR(JLIR8-1+I1))/RBASE
 
           CALL UTCH19(CH1,NOMA,MAILLE,NOEUZ,NPOINZ,NUSPZ,IVARI,CMP,TYPE,
-     &                VALR1,VALC1,IRET)
+     &                VALR1,VALC1,VALI1,IRET)
           CALL ASSERT (IRET.EQ.0)
           CALL UTCH19(CH2,NOMA,MAILLE,NOEUZ,NPOINZ,NUSPZ,IVARI,CMP,TYPE,
-     &                VALR2,VALC2,IRET)
+     &                VALR2,VALC2,VALI2,IRET)
           CALL ASSERT (IRET.EQ.0)
 
           ZR(LVAR+IORDR) = RVAL

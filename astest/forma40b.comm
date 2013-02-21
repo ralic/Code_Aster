@@ -1,22 +1,22 @@
-# MODIF  DATE 23/10/2012   AUTEUR DELMAS J.DELMAS 
-# TITRE FORMATION GC : PLAQUE CONSOLE EN FLEXION 
+# MODIF  DATE 12/02/2013   AUTEUR PELLET J.PELLET 
+# TITRE FORMATION GC : PLAQUE CONSOLE EN FLEXION
 # forma40b.para = tps_job 60 mem_job 250Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
-# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-# (AT YOUR OPTION) ANY LATER VERSION.                                                    
-#                                                                       
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-#                                                                       
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 # MODELISATION B : DKT + GRILLE_EXCENTREE
 
@@ -126,7 +126,7 @@ FMULT=DEFI_FONCTION(NOM_PARA='INST',
                            2.,1.,),);
 
 # ----------------------------------------------
-# CALCUL 
+# CALCUL
 # ----------------------------------------------
 
 ZLIST=DEFI_LIST_REEL(DEBUT=0.,
@@ -155,11 +155,6 @@ LEDEP=CALC_CHAMP(reuse =LEDEP,
                  CONTRAINTE=('SIEF_ELNO','SIGM_ELNO',),
                  CRITERES=('SIEQ_ELNO'),
                  FORCE='FORC_NODA');
-
-RESUPOS=POST_CHAMP(RESULTAT=LEDEP,
-                   EXTR_COQUE=_F(NOM_CHAM=('SIGM_ELNO','SIEQ_ELNO',),
-                                 NUME_COUCHE=1,
-                                 NIVE_COUCHE='MOY',),);
 
 IMPR_RESU(FORMAT='MED',
           RESU=_F(RESULTAT=LEDEP,
@@ -239,14 +234,14 @@ SIG_ACP=POST_RELEVE_T(ACTION=_F(OPERATION='EXTREMA',
                                RESULTAT=LEDEP,
                                NOM_CHAM='SIEF_ELNO',
                                GROUP_MA='ACPLUS'
-                               ,),);                               
+                               ,),);
 IMPR_TABLE(TABLE=SIG_ACP)
 SIG_BET=POST_RELEVE_T(ACTION=_F(OPERATION='EXTREMA',
                                INTITULE='BETON',
                                RESULTAT=LEDEP,
                                NOM_CHAM='SIEF_ELNO',
                                GROUP_MA='CONSOLE'
-                               ,),);                                                    
+                               ,),);
 IMPR_TABLE(TABLE=SIG_BET)
 ###################################################################################
 # TEST DE NON-REGRESSION

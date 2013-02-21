@@ -3,9 +3,9 @@
       CHARACTER*(*) MODELE,LIGREL,MATEZ,SIGMA,SIGNO,CHVARC,RESU
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
+C MODIF CALCULEL  DATE 12/02/2013   AUTEUR PELLET J.PELLET 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -41,8 +41,7 @@ C      RESU   : NOM DU CHAM_ELEM_ERREUR PRODUIT
 C               SI RESU EXISTE DEJA, ON LE DETRUIT.
 C ......................................................................
 
-      LOGICAL EXIGEO
-      CHARACTER*8 LCHAR,LPAIN(5),LPAOUT(1)
+      CHARACTER*8 LPAIN(5),LPAOUT(1)
       CHARACTER*16 OPTION
       CHARACTER*24 LCHIN(5),LCHOUT(1),CHGEOM,MATE
 
@@ -51,9 +50,7 @@ C DEB-------------------------------------------------------------------
 C-----------------------------------------------------------------------
 C-----------------------------------------------------------------------
       MATE = MATEZ
-      LCHAR = ' '
-      CALL MEGEOM(MODELE,LCHAR,EXIGEO,CHGEOM)
-      IF (.NOT.EXIGEO) CALL U2MESS('F','CALCULEL2_81')
+      CALL MEGEOM(MODELE,CHGEOM)
 
       IF (MATE.EQ.' ') CALL U2MESS('F','CALCULEL4_66')
 

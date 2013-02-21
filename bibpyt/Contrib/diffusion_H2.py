@@ -1,21 +1,21 @@
-#@ MODIF diffusion_H2 Contrib  DATE 27/08/2012   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF diffusion_H2 Contrib  DATE 12/02/2013   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
-# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-# (AT YOUR OPTION) ANY LATER VERSION.                                                  
-#                                                                       
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-#                                                                       
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 
 from Cata.cata import *
@@ -58,10 +58,10 @@ def FLUX(cl,GRSHx,GRSHy,DIME,Grshz,Vh,R,T):
    Coef=Vh/R/T*cl
    Flux=GRSHx*Coef
    Fluy=GRSHy*Coef
-   if DIME==3 : 
+   if DIME==3 :
       Fluz=GRSHz*Coef
       return Flux,Fluy,Fluz
-   else : 
+   else :
       return Flux,Fluy
 
 
@@ -77,16 +77,16 @@ def char_grad_impo_ops(self,RESU_H2,TINIT,TFIN,RESUMECA,GRMAVOL,DIME,Ctot0,CHARG
    from Accas import _F
    ier=0
   #La macro compte pour 1 dans la numerotation des commandes
-   self.set_icmd(1)   
+   self.set_icmd(1)
   #    Le concept sortant dans le contexte de la macro
-   self.DeclareOut('chth',self.sd) 
-   
+   self.DeclareOut('chth',self.sd)
+
   #On importe les definitions des commandes a utiliser dans la macro
    CREA_CHAMP = self.get_cmd('CREA_CHAMP')
    AFFE_CHAR_THER = self.get_cmd('AFFE_CHAR_THER')
    CALC_CHAMP = self.get_cmd('CALC_CHAMP')
    CALC_CHAM_ELEM = self.get_cmd('CALC_CHAM_ELEM')
-   
+
    dt = TFIN-TINIT
 
   # Recuperation du modele a partir du resultat
@@ -101,8 +101,8 @@ def char_grad_impo_ops(self,RESU_H2,TINIT,TFIN,RESUMECA,GRMAVOL,DIME,Ctot0,CHARG
   # Recuperation du modele mecanique a partir du resultat
    iret,ibid,nom_momec = aster.dismoi('F','MODELE',RESUMECA.nom,'RESULTAT')
    __MOME = self.get_concept(nom_momec.rstrip())
-   
-   # extraction du champ de cl instant - 
+
+   # extraction du champ de cl instant -
    __C20=CREA_CHAMP( OPERATION='EXTR',TYPE_CHAM='NOEU_TEMP_R',RESULTAT=RESU_H2,NOM_CHAM='TEMP',INST=TINIT)
 
    # on suppose que les noeuds du maillage thermique et mecaniqeu sont les memes (pour eviter un PROJ_CHAMP)
@@ -123,7 +123,7 @@ def char_grad_impo_ops(self,RESU_H2,TINIT,TFIN,RESUMECA,GRMAVOL,DIME,Ctot0,CHARG
                TOUT_ORDRE='OUI')
    __SIEQ =CREA_CHAMP( OPERATION='EXTR',TYPE_CHAM='NOEU_SIEF_R',
                        RESULTAT=__SIEQN,NOM_CHAM='SIEQ_NOEU',INST=TFIN) ;
- 
+
    # on renome la CMP pour pouvoir calculer le flux "thermique"
    __TRSIG = CREA_CHAMP( OPERATION= 'ASSE', TYPE_CHAM='NOEU_TEMP_R',MODELE=__MOTH,PROL_ZERO='OUI',
                       ASSE=(_F(CHAM_GD =__SIEQ,GROUP_MA=GRMAVOL,NOM_CMP = 'TRSIG',NOM_CMP_RESU ='TEMP',COEF_R=1./3.),))
@@ -131,12 +131,12 @@ def char_grad_impo_ops(self,RESU_H2,TINIT,TFIN,RESUMECA,GRMAVOL,DIME,Ctot0,CHARG
    __MAT1=DEFI_MATERIAU(THER=_F(LAMBDA=-1., RHO_CP=0.));
    __CMT1=AFFE_MATERIAU(MAILLAGE=__MAIL,AFFE=_F(TOUT='OUI',MATER=__MAT1,),);
    __GRSH=CALC_CHAM_ELEM(MODELE=__MOTH,CHAM_MATER=__CMT1,GROUP_MA=GRMAVOL,OPTION='FLUX_ELGA',TEMP=__TRSIG)
-   
+
    gradsighe=__GRSH.EXTR_COMP('FLUX',[],1)
    gradsighx=gradsighe.valeurs
    gradsighy=__GRSH.EXTR_COMP('FLUY',[],0).valeurs
    if (DIME==3) : gradsighz=__GRSH.EXTR_COMP('FLUZ',[],0).valeurs
- 
+
    fx=NP.zeros(nbnode)
    fy=NP.zeros(nbnode)
    if (DIME==3) : fz=NP.zeros(nbnode)
@@ -144,13 +144,13 @@ def char_grad_impo_ops(self,RESU_H2,TINIT,TFIN,RESUMECA,GRMAVOL,DIME,Ctot0,CHARG
       cl=c_t0[ino]
       grsigx=gradsighx[ino]
       grsigy=gradsighy[ino]
-      if (DIME==3) : 
+      if (DIME==3) :
          grsigz=gradsighz[ino]
          fx[ino],fx[ino],fz[ino]=FLUX(cl,grsigx,grsigy,DIME,grsigz,Vh,R,T)
       else :
          grsigz=0.
          fx[ino],fx[ino]=FLUX(cl,grsigx,grsigy,DIME,grsigz,Vh,R,T)
-         
+
    # pour gagner du temps on evite la construction du mot-cle PRE_GRAD_TEMP
    nomvale=CHARGRD0.nom.ljust(8)+'.CHTH.GRAIN.VALE'
    nomlima=CHARGRD0.nom.ljust(8)+'.CHTH.GRAIN.LIMA'
@@ -159,7 +159,7 @@ def char_grad_impo_ops(self,RESU_H2,TINIT,TFIN,RESUMECA,GRMAVOL,DIME,Ctot0,CHARG
    tabdesc=aster.getvectjev( nomdesc)
    dicolima = aster.getcolljev(nomlima)
 
-   nbrvale=len(tabvale)    
+   nbrvale=len(tabvale)
    champ=NP.zeros(nbrvale)
    bidon=NP.zeros(nbrvale)
 
@@ -169,9 +169,9 @@ def char_grad_impo_ops(self,RESU_H2,TINIT,TFIN,RESUMECA,GRMAVOL,DIME,Ctot0,CHARG
    nbzone=tabdesc[1]
 #   print "tabdesc",tabdesc
 #   print "tablima",dicolima
-   
+
    for izone in dicolima.keys() :
-      
+
       # chaque maille du groupe est affectee
       for index,ima in enumerate(dicolima[izone]):
           if ima==0 : break
@@ -185,7 +185,7 @@ def char_grad_impo_ops(self,RESU_H2,TINIT,TFIN,RESUMECA,GRMAVOL,DIME,Ctot0,CHARG
               lflux=fx[lnoeu]
               flux=NP.add.reduce(lflux)
               flux=flux/nbno
- 
+
               lfluy=fy[lnoeu]
               fluy=NP.add.reduce(lfluy)
               fluy=fluy/nbno
@@ -193,9 +193,9 @@ def char_grad_impo_ops(self,RESU_H2,TINIT,TFIN,RESUMECA,GRMAVOL,DIME,Ctot0,CHARG
 #              print 'essai, numa, ima',numa, ima, groupma, lnoeu, nbno
               champ[9*(numa-1)+1]=-flux
               champ[9*(numa-1)+2]=-fluy
-      
+
    aster.putvectjev(nomvale,nbrvale,tuple(range(1,nbrvale+1)),tuple(champ),tuple(bidon),1 )
- 
+
    ################################################################
 
 
@@ -231,13 +231,13 @@ def char_grad_ini_ops(self,RESU_H2,GRMAVOL,DIME,INFO,**args):
    from Accas import _F
    ier=0
   #La macro compte pour 1 dans la numerotation des commandes
-   self.set_icmd(1)   
+   self.set_icmd(1)
   #    Le concept sortant dans le contexte de la macro
-   self.DeclareOut('chth',self.sd) 
-   
+   self.DeclareOut('chth',self.sd)
+
    grad=[]
    # On boucle sur les mailles du groupe de mailles GRMAVOL
- 
+
   # Recuperation du modele a partir du resultat
    iret,ibid,__n_modele = aster.dismoi('F','MODELE',RESU_H2.nom,'RESULTAT')
    __n_modele=__n_modele.rstrip()
@@ -246,11 +246,11 @@ def char_grad_ini_ops(self,RESU_H2,GRMAVOL,DIME,INFO,**args):
   # Recuperation du maillage a partir du resultat
    iret,ibid,nom_ma = aster.dismoi('F','NOM_MAILLA',RESU_H2.nom,'RESULTAT')
    __MAIL = self.get_concept(nom_ma.strip())
-   
+
    nommai =__MAIL.sdj.NOMMAI.get()
    connex =__MAIL.sdj.CONNEX.get()
    groupma=__MAIL.sdj.GROUPEMA.get()[GRMAVOL.ljust(8)]
- 
+
    for ima in groupma :
       # ATTENTION : dans Python, les tableaux commencent a 0
       # mais dans la connectivite, les noeuds commencent a 1!
@@ -261,15 +261,15 @@ def char_grad_ini_ops(self,RESU_H2,GRMAVOL,DIME,INFO,**args):
       mon_dico={}
       mon_dico["MAILLE"]=nom_maille
       mon_dico["FLUX_X"]=0.
-      mon_dico["FLUX_Y"]=0. 
+      mon_dico["FLUX_Y"]=0.
       if DIME == 3 :
          mon_dico["FLUX_Z"]=0.
       grad.append(mon_dico)
- 
+
    chth=AFFE_CHAR_THER(MODELE=__MOTH,
                        PRE_GRAD_TEMP=grad,INFO=1,
                        )
-                       
+
    ################################################################
 
 CHAR_GRAD_INI =MACRO(nom       = "CHAR_GRAD_INI",
@@ -298,17 +298,17 @@ def char_source_ops(self,RESU_H2,TINIT,TFIN,RESUMECA,GRMAVOL,DIME,Ctot0,Nl,Kt,a1
    from Accas import _F
    ier=0
   #La macro compte pour 1 dans la numerotation des commandes
-   self.set_icmd(1)   
+   self.set_icmd(1)
   #    Le concept sortant dans le contexte de la macro
-   self.DeclareOut('chth',self.sd) 
-   
+   self.DeclareOut('chth',self.sd)
+
   #On importe les definitions des commandes a utiliser dans la macro
    DETRUIRE = self.get_cmd('DETRUIRE')
    CREA_CHAMP = self.get_cmd('CREA_CHAMP')
    AFFE_CHAR_THER = self.get_cmd('AFFE_CHAR_THER')
    AFFE_CHAR_CINE = self.get_cmd('AFFE_CHAR_CINE')
    CALC_CHAMP = self.get_cmd('CALC_CHAMP')
-   
+
    dt = TFIN-TINIT
 
   # Recuperation du modele thermique a partir du resultat
@@ -323,8 +323,8 @@ def char_source_ops(self,RESU_H2,TINIT,TFIN,RESUMECA,GRMAVOL,DIME,Ctot0,Nl,Kt,a1
   # Recuperation du modele mecanique a partir du resultat
    iret,ibid,nom_momec = aster.dismoi('F','MODELE',RESUMECA.nom,'RESULTAT')
    __MOME = self.get_concept(nom_momec.rstrip())
-   
-   # extraction du champ de Cl instant - 
+
+   # extraction du champ de Cl instant -
    __C20=CREA_CHAMP( OPERATION='EXTR',TYPE_CHAM='NOEU_TEMP_R',RESULTAT=RESU_H2,NOM_CHAM='TEMP',INST=TINIT)
    __EPEQN2=CALC_CHAMP(INST=(TINIT,TFIN),RESULTAT=RESUMECA,VARI_INTERNE='VARI_NOEU')
    __EPEQN = PROJ_CHAMP(
@@ -335,13 +335,13 @@ def char_source_ops(self,RESU_H2,TINIT,TFIN,RESUMECA,GRMAVOL,DIME,Ctot0,Nl,Kt,a1
                NOM_CHAM ='VARI_NOEU',
                TOUT_ORDRE='OUI')
    __VINT0=CREA_CHAMP( OPERATION='EXTR',TYPE_CHAM='NOEU_VAR2_R',RESULTAT=__EPEQN,NOM_CHAM='VARI_NOEU',INST=TINIT)
-   __VINT1=CREA_CHAMP( OPERATION='EXTR',TYPE_CHAM='NOEU_VAR2_R',RESULTAT=__EPEQN,NOM_CHAM='VARI_NOEU',INST=TFIN) 
-   
+   __VINT1=CREA_CHAMP( OPERATION='EXTR',TYPE_CHAM='NOEU_VAR2_R',RESULTAT=__EPEQN,NOM_CHAM='VARI_NOEU',INST=TFIN)
+
    # recopie du champ C20 pour initialiser le futur champ source
    __chtmp=CREA_CHAMP(OPERATION='AFFE',TYPE_CHAM='NOEU_NEUT_R',MAILLAGE=__MAIL,
                     AFFE=(_F(VALE=0.,GROUP_MA=GRMAVOL,NOM_CMP='X1',),))
    nomcham = __chtmp.sdj.nomj()
-                    
+
    # on suppose que les noeuds du maillage thermique et mecaniqeu sont les memes (pour eviter un PROJ_CHAMP)
    lc_t0=__C20.EXTR_COMP('TEMP',[],1)
    c_t0   =lc_t0.valeurs
@@ -366,14 +366,14 @@ def char_source_ops(self,RESU_H2,TINIT,TFIN,RESUMECA,GRMAVOL,DIME,Ctot0,Nl,Kt,a1
    nomvect = '%-19s.VALE' % __chtmp.nom
    aster.putvectjev(nomvect, nbnode,tuple(range(1,nbnode+1)),tuple(source),tuple(bidon),1 )
    __NEUTG =CREA_CHAMP( OPERATION='DISC',TYPE_CHAM='ELGA_NEUT_R',MODELE=__MOTH,PROL_ZERO='OUI',CHAM_GD=__chtmp,) ;
-   __CHSOUR=CREA_CHAMP( OPERATION='ASSE',TYPE_CHAM='ELGA_SOUR_R',MODELE=__MOTH,INFO=1,
+   __CHSOUR=CREA_CHAMP( OPERATION='ASSE',TYPE_CHAM='ELGA_SOUR_R',MODELE=__MOTH,INFO=1,PROL_ZERO='OUI',
                     ASSE=(_F(CHAM_GD =__NEUTG,GROUP_MA=GRMAVOL,NOM_CMP = 'X1',NOM_CMP_RESU ='SOUR',),))
-                    
+
    chth=AFFE_CHAR_THER(MODELE=__MOTH,
                            SOURCE=_F(SOUR_CALCULEE=__CHSOUR,),
                            )
 
-                       
+
    ################################################################
 
 
@@ -414,15 +414,15 @@ def champ_detoile_ops(self,RESU_H2,TINIT,TFIN,RESUMECA,GRMAVOL,DIME,Ctot0,Nl,Kt,
    from Accas import _F
    ier=0
   #La macro compte pour 1 dans la numerotation des commandes
-   self.set_icmd(1)   
+   self.set_icmd(1)
   #    Le concept sortant dans le contexte de la macro
-   self.DeclareOut('NEUTG',self.sd) 
-   
+   self.DeclareOut('NEUTG',self.sd)
+
   #On importe les definitions des commandes a utiliser dans la macro
    DETRUIRE = self.get_cmd('DETRUIRE')
    CREA_CHAMP = self.get_cmd('CREA_CHAMP')
    CALC_CHAMP = self.get_cmd('CALC_CHAMP')
-   
+
   # Recuperation du modele a partir du resultat
    iret,ibid,__n_modele = aster.dismoi('F','MODELE',RESU_H2.nom,'RESULTAT')
    __n_modele=__n_modele.rstrip()
@@ -435,8 +435,8 @@ def champ_detoile_ops(self,RESU_H2,TINIT,TFIN,RESUMECA,GRMAVOL,DIME,Ctot0,Nl,Kt,
   # Recuperation du modele mecanique a partir du resultat
    iret,ibid,nom_momec = aster.dismoi('F','MODELE',RESUMECA.nom,'RESULTAT')
    __MOME = self.get_concept(nom_momec.rstrip())
-   
-   # extraction du champ de Cl instant - 
+
+   # extraction du champ de Cl instant -
    __C20=CREA_CHAMP( OPERATION='EXTR',TYPE_CHAM='NOEU_TEMP_R',RESULTAT=RESU_H2,NOM_CHAM='TEMP',INST=TINIT)
    __EPEQN2=CALC_CHAMP(INST=(TINIT,TFIN),RESULTAT=RESUMECA,VARI_INTERNE='VARI_NOEU')
    __EPEQN = PROJ_CHAMP(
@@ -446,13 +446,13 @@ def champ_detoile_ops(self,RESU_H2,TINIT,TFIN,RESUMECA,GRMAVOL,DIME,Ctot0,Nl,Kt,
                MODELE_2=__MOTH,
                NOM_CHAM ='VARI_NOEU',
                TOUT_ORDRE='OUI')
-   __VINT1=CREA_CHAMP( OPERATION='EXTR',TYPE_CHAM='NOEU_VAR2_R',RESULTAT=__EPEQN,NOM_CHAM='VARI_NOEU',INST=TFIN) 
-   
+   __VINT1=CREA_CHAMP( OPERATION='EXTR',TYPE_CHAM='NOEU_VAR2_R',RESULTAT=__EPEQN,NOM_CHAM='VARI_NOEU',INST=TFIN)
+
    # recopie du champ C20 pour initialiser le futur champ source
    __chtmp=CREA_CHAMP(OPERATION='AFFE',TYPE_CHAM='NOEU_NEUT_R',MAILLAGE=__MAIL,
                     AFFE=(_F(VALE=0.,GROUP_MA=GRMAVOL,NOM_CMP='X1',),))
    nomcham = __chtmp.sdj.nomj()
-                    
+
    # on suppose que les noeuds du maillage thermique et mecaniqeu sont les memes (pour eviter un PROJ_CHAMP)
    lc_t0=__C20.EXTR_COMP('TEMP',[],1)
    c_t0   =lc_t0.valeurs
@@ -472,7 +472,7 @@ def champ_detoile_ops(self,RESU_H2,TINIT,TFIN,RESUMECA,GRMAVOL,DIME,Ctot0,Nl,Kt,
    nomvect = '%-19s.VALE' % __chtmp.nom
    aster.putvectjev(nomvect, nbnode,tuple(range(1,nbnode+1)),tuple(detoile),tuple(bidon),1 )
    NEUTG =CREA_CHAMP( OPERATION='DISC',TYPE_CHAM='ELNO_NEUT_R',MODELE=__MOTH,PROL_ZERO='OUI',CHAM_GD=__chtmp,) ;
-                       
+
    ################################################################
 
 

@@ -1,10 +1,10 @@
-# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
+# MODIF  DATE 12/02/2013   AUTEUR PELLET J.PELLET 
 #
 # TITRE : PLAQUE HOMOGENE ISOTROPE RECTANGULAIRE EXCENTREE
 # ssls122b.para = tps_job 60 mem_job 256Mo ncpus 1 liste_test V
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -167,6 +167,8 @@ CARA=AFFE_CARA_ELEM(MODELE=MODEL,
                            ),
                     );
 
+
+
 ACIER=DEFI_MATERIAU(ELAS=_F(E=young,
                             NU=poisson,),);
 
@@ -189,8 +191,7 @@ COND_LIM=AFFE_CHAR_MECA(MODELE=MODEL,
 # Chargement
 
 FORCE=AFFE_CHAR_MECA(MODELE=MODEL,
-                     FORCE_ARETE=_F(GROUP_MA='BE',
-                                    FZ=force,),);
+                     FORCE_ARETE=_F(GROUP_MA='BE', FZ=force,),);
 
 RESU=MECA_STATIQUE(MODELE=MODEL,
                    CHAM_MATER=MATER,
@@ -279,5 +280,57 @@ TEST_RESU(RESU=_F(NUME_ORDRE=1,
                   VALE_REFE=-5.E5,
                   MAILLE='M12',),
           )
+
+#---------------------------------------------------------------------------------------
+# Validation de CREA_CHAMP / EXTR + CARA_ELEM :
+#-----------------------------------------------
+#IMPR_CO(CONCEPT=_F(NOM=CARA), NIVEAU=-1)
+
+# Champ .CARCOQUE (carte) :
+#---------------------------
+CACOQU=CREA_CHAMP(TYPE_CHAM='CART_CACOQU', OPERATION='EXTR', CARA_ELEM=CARA,
+               NOM_CHAM='.CARCOQUE', INFO=2,)
+TEST_RESU(CARTE=_F(REFERENCE='ANALYTIQUE', NOM_CMP='EP',  VALE_REFE=8.0E-2,
+          VALE_CALC=8.0E-2, MAILLE='M14', CHAM_GD=CACOQU,))
+TEST_RESU(CARTE=_F(REFERENCE='ANALYTIQUE', NOM_CMP='KAPPA', VALE_REFE=8.333333E-01,
+          VALE_CALC=8.333333E-01, MAILLE='M14', CHAM_GD=CACOQU,))
+
+# On verifie egalement que la carte extraite peut etre transformee en table :
+TABCOQ=CREA_TABLE(RESU=_F(CHAM_GD=CACOQU, MAILLE=('M13','M14'), TOUT_CMP='OUI',),)
+#IMPR_TABLE(TABLE=TABCOQ)
+TEST_TABLE(REFERENCE='ANALYTIQUE',NOM_PARA='EP',TABLE=TABCOQ,
+           FILTRE=_F(NOM_PARA='MAILLE',VALE_K='M14',),
+           VALE_CALC= 8.E-2, VALE_REFE=8.E-2,)
+
+# Champ .CANBSP (cham_elem) :
+#----------------------------
+CANBSP=CREA_CHAMP(TYPE_CHAM='ELEM_NBSP_I', OPERATION='EXTR', CARA_ELEM=CARA,
+               NOM_CHAM='.CANBSP', INFO=2,)
+TEST_RESU(CHAM_ELEM=_F( CHAM_GD = CANBSP, MAILLE='SM3', POINT=1, SOUS_POINT=1,
+          REFERENCE='ANALYTIQUE', NOM_CMP = 'COQ_NCOU', VALE_REFE_I=1, VALE_CALC_I=1,))
+
+#---------------------------------------------------------------------------------------
+
+
+#---------------------------------------------------------------------------------------
+# Validation de CREA_CHAMP / EXTR + CHAR_MECA :
+#-----------------------------------------------
+#IMPR_CO(CONCEPT=_F(NOM=FORCE), NIVEAU=-1)
+
+# Champ .CHME.F1D3D (carte) :
+#---------------------------
+F1D3D=CREA_CHAMP(TYPE_CHAM='CART_FORC_R', OPERATION='EXTR', CHARGE=FORCE,
+               NOM_CHAM='.CHME.F1D3D', INFO=2,)
+TEST_RESU(CARTE=_F(REFERENCE='ANALYTIQUE', NOM_CMP='FZ', VALE_CALC=-2.E5, VALE_REFE=-2.E5,
+          MAILLE='M13', CHAM_GD=F1D3D,))
+
+# On verifie egalement que la carte extraite peut etre transformee en table :
+TABF13=CREA_TABLE(RESU=_F(CHAM_GD=F1D3D, MAILLE=('M13','M14'), TOUT_CMP='OUI',),)
+#IMPR_TABLE(TABLE=TABF13)
+TEST_TABLE(REFERENCE='ANALYTIQUE',NOM_PARA='FZ',TABLE=TABF13,
+           FILTRE=_F(NOM_PARA='MAILLE',VALE_K='M13',),
+           VALE_CALC=-2.E5 , VALE_REFE=-2.E5,)
+
+#---------------------------------------------------------------------------------------
 
 FIN();

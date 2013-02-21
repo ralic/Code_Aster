@@ -9,9 +9,9 @@
       REAL*8       EPAIS
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 18/12/2012   AUTEUR SELLENET N.SELLENET 
+C MODIF ALGELINE  DATE 12/02/2013   AUTEUR PELLET J.PELLET 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -109,7 +109,7 @@ C
 C --- RECUPERATION DU NOMBRE DE NOEUDS A AJOUTER
 C     POUR DIMENSIONNER LES VECTEURS
 C     -------------------------------------------
-      CALL WKVECT ( '&&CMCOVO.NEW_NOEUDS', 'V V K8', NBNIN, JNONEW )
+      CALL WKVECT ( '&&CMCOVO.NEW_NOEUDS', 'V V K24', NBNIN, JNONEW )
       CALL WKVECT ( '&&CMCOVO.NOEUDS'    , 'V V I' , NBNIN, JNOSTO )
       DO 10 IMA = 1, NBMA
          NUMA = LIMA(IMA)
@@ -305,7 +305,7 @@ C
          CALL JEEXIN ( JEXNOM(NOMNOE,NOMG), IRET )
          IF (IRET.EQ.0) THEN
             CALL JECROC ( JEXNOM(NOMNOE,NOMG) )
-            ZK8(JNONEW+INO-1) = NOMG
+            ZK24(JNONEW+INO-1) = NOMG
          ELSE
             VALK(1) = NOMG
             CALL U2MESG('F', 'ALGELINE4_5',1,VALK,0,0,0,0.D0)
@@ -464,7 +464,7 @@ C
                ZI(JNPT-1+INO) = ZI(JOPT-1+INO)
  102         CONTINUE
             DO 104 INO = 5 , 8
-            CALL JENONU(JEXNOM(NOMNOE,ZK8(JNONEW+ZI(JOPT-1+INO-4)-1)),
+            CALL JENONU(JEXNOM(NOMNOE,ZK24(JNONEW+ZI(JOPT-1+INO-4)-1)),
      &                               ZI(JNPT-1+INO))
  104        CONTINUE
             IQ4 = IQ4 + 1
@@ -482,7 +482,7 @@ C
                ZI(JNPT-1+INO) = ZI(JOPT-1+INO)
  106         CONTINUE
             DO 108 INO = 4 , 6
-            CALL JENONU(JEXNOM(NOMNOE,ZK8(JNONEW+ZI(JOPT-1+INO-3)-1)),
+            CALL JENONU(JEXNOM(NOMNOE,ZK24(JNONEW+ZI(JOPT-1+INO-3)-1)),
      &                               ZI(JNPT-1+INO))
 
  108        CONTINUE

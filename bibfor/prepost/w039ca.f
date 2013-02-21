@@ -5,7 +5,7 @@
       CHARACTER*(*) FORM
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 14/01/2013   AUTEUR FLEJOU J-L.FLEJOU 
+C MODIF PREPOST  DATE 12/02/2013   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -111,7 +111,7 @@ C       ----------------
           CALL W039C1(CARELE//'.CARDNSCA',IFI,FORM,LIGREL,TITRE)
 
           TITRE='Caracteristiques geom. des coques'
-          CALL W039C4(CARELE//'.CARCOQUE',IFI,FORM)
+          CALL W039C1(CARELE//'.CARCOQUE',IFI,FORM,LIGREL,TITRE)
 
           TITRE='Orientation des elements 2D et 3D'
           CALL W039C1(CARELE//'.CARMASSI',IFI,FORM,LIGREL,TITRE)

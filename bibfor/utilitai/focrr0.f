@@ -8,10 +8,10 @@
       CHARACTER*16  NOMCHA
       CHARACTER*19  NOMFON,RESU
 C     ------------------------------------------------------------------
-C MODIF UTILITAI  DATE 24/07/2012   AUTEUR PELLET J.PELLET 
+C MODIF UTILITAI  DATE 12/02/2013   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -54,7 +54,7 @@ C     ------------------------------------------------------------------
 C-----------------------------------------------------------------------
       INTEGER IBID ,IDDL ,IE ,IERD ,II ,INOEUD ,IORDR
       INTEGER IRET ,LACCE ,LFON ,LG1 ,LG2 ,LPRO ,LVACC
-      INTEGER LVALE ,LVAR ,LXLGUT ,NBACC ,NUSP
+      INTEGER LVALE ,LVAR ,LXLGUT ,NBACC ,NUSP,VALI
       REAL*8 VALR
 C-----------------------------------------------------------------------
       CALL JEMARQ()
@@ -182,7 +182,7 @@ C           --- EXTRACTION DU CHAMP ET DE LA VALEUR DE L'ACCES ----
           IF (IE.EQ.0) THEN
             CALL RSADPA(RESU,'L',1,NOMACC,LORDR(IORDR),0,LACCE,K8B)
             CALL UTCH19(CHAM19,NOMA,MAILLE,NOEUZ,NPOINZ,NUSPZ,IVARI,CMP,
-     &                  TYPE,VALR,VALC,IRET)
+     &                  TYPE,VALR,VALC,VALI,IRET)
             IF (IRET.EQ.0) THEN
               ZR(LVAR+IORDR-1) = ZR(LACCE)
               IF (TYPE.EQ.'R') THEN

@@ -2,9 +2,9 @@
       IMPLICIT NONE
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
+C MODIF ALGORITH  DATE 12/02/2013   AUTEUR PELLET J.PELLET 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -45,11 +45,11 @@ C               POSITION 7-8  : NUMERO DE LA CHARGE
       CHARACTER*24 CHGEOM,CHTIME
       CHARACTER*24 LIGRMO,LCHIN(5),LCHOUT(1),PHIB24,VE2
       INTEGER IBID,IRET
-      LOGICAL EXIGEO,PREM
+      LOGICAL PREM
       COMPLEX*16 CBID
 
 C-----------------------------------------------------------------------
-      INTEGER JLVE ,NBCHTE 
+      INTEGER JLVE ,NBCHTE
 C-----------------------------------------------------------------------
       CALL JEMARQ()
 
@@ -76,7 +76,7 @@ C-----------------------------------------------------------------------
 
       LIGRMO = MODELE(1:8)//'.MODELE'
 
-      CALL MEGEOM(MODELE(1:8),ACCEL,EXIGEO,CHGEOM)
+      CALL MEGEOM(MODELE(1:8),CHGEOM)
 
       PHIB24 = PHIBAR
 

@@ -7,9 +7,9 @@
       CHARACTER*(*) RESU,MODELE
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 18/12/2012   AUTEUR SELLENET N.SELLENET 
+C MODIF UTILITAI  DATE 12/02/2013   AUTEUR PELLET J.PELLET 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -40,7 +40,7 @@ C     ------------------------------------------------------------------
       CHARACTER*24 LCHIN(15),LCHOUT(1),LIGREL,MLGGMA,MLGNMA
       CHARACTER*24 CHGEOM
       COMPLEX*16 C16B
-      LOGICAL NSYMX,NSYMY,EXIGEO
+      LOGICAL NSYMX,NSYMY
       INTEGER      IARG
 C     ------------------------------------------------------------------
       DATA NOPARR/'LIEU','ENTITE','A_M','CDG_Y_M','CDG_Z_M','IY_G_M',
@@ -67,7 +67,7 @@ C --- RECUPERATION DU NIVEAU D'IMPRESSION
 C      CALL MECHAM ( OPTION, MODELE, NCHAR, LCHAR, CARA, NH,
 C     &                              CHGEOM, CHCARA, CHHARM, IRET )
 C      IF ( IRET .NE. 0 ) GOTO 9999
-      CALL MEGEOM(MODELE,' ',EXIGEO,CHGEOM)
+      CALL MEGEOM(MODELE,CHGEOM)
       ZERO = 0.0D0
       ORIG(1) = ZERO
       ORIG(2) = ZERO

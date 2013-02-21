@@ -1,18 +1,18 @@
       SUBROUTINE CTDATA (MESNOE,MESMAI,NKCHA,TYCH,TOUCMP,NKCMP,NBCMP,
-     &                   NDIM,CHPGS,NOMA,NBNO,NBMA,NBVAL,TYPGD)
+     &                   NDIM,CHPGS,NOMA,NBNO,NBMA,NBVAL,TSCA)
       IMPLICIT   NONE
       INCLUDE 'jeveux.h'
       INTEGER      NBCMP,NDIM,NBNO,NBMA,NBVAL
-      CHARACTER*1  TYPGD
+      CHARACTER*1  TSCA
       CHARACTER*4  TYCH
       CHARACTER*8  NOMA
       CHARACTER*24 MESNOE,MESMAI,NKCHA,NKCMP
       CHARACTER*19 CHPGS
       LOGICAL      TOUCMP
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF UTILITAI  DATE 12/02/2013   AUTEUR PELLET J.PELLET 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -39,7 +39,7 @@ C                 MESMAI (K24) : OBJET DES NOMS DE MAILLE
 C                 NKCMP  (K24) : OBJET DES NOMS DE COMPOSANTES
 C                 NCHSPG (K24) : NOM DU CHAM_ELEM_S DES COORDONNES DES
 C                                POINTS DE GAUSS (REMPLI SI TYCH='ELGA')
-C        OUT    : TYCH   (K4)  : TYPE DE CHAMP (=NOEU,ELNO,ELGA)
+C        OUT    : TYCH   (K4)  : TYPE DE CHAMP (=NOEU,ELXX,CART)
 C                 TOUCMP (L)   : INDIQUE SI TOUT_CMP EST RENSEIGNE
 C                 NBCMP  (I)   : NOMBRE DE COMPOSANTES LORSQUE
 C                                NOM_CMP EST RENSEIGNE, 0 SINON
@@ -47,7 +47,7 @@ C                 NDIM   (I)   : DIMENSION GEOMETRIQUE (=2 OU 3)
 C                 NOMA   (K8)  : NOM DU MAILLAGE
 C                 NBNO   (I)   : NOMBRE DE NOEUDS UTILISATEUR
 C                 NBMA   (I)   : NOMBRE DE MAILLES UTILISATEUR
-C                 TYPGD  (K1)  : TYPE DE LA GRANDEUR (REEL/COMPLEXE)
+C                 TSCA  (K1)  : TYPE DE LA GRANDEUR (REEL)
 C
 C ----------------------------------------------------------------------
       CHARACTER*8 K8B
@@ -57,7 +57,7 @@ C ----------------------------------------------------------------------
       CHARACTER*16 MOTCLE(4)
       CHARACTER*19 LIGREL
       CHARACTER*24 CHGEOM,LCHIN(6),LCHOUT(1)
-      LOGICAL EXIGEO,EXICAR
+      LOGICAL EXICAR
       INTEGER      IARG
 C     ------------------------------------------------------------------
 
@@ -70,7 +70,7 @@ C
       TYCH=' '
       LIGREL = ' '
       NOMO=' '
-      TYPGD=' '
+      TSCA=' '
       EXICAR=.FALSE.
       CALL GETVID('RESU','RESULTAT'  ,1,IARG,0,K8B,N0)
       CALL GETVID('RESU','CHAM_GD'  ,1,IARG,0,K8B,N4)
@@ -87,8 +87,8 @@ C
              CALL DISMOI('F','DIM_GEOM',NOMA,'MAILLAGE',NDIM,K8B,IRET)
              CALL DISMOI('F','NOM_GD',ZK24(JKCHA+I-1)(1:19),
      &                   'CHAMP',IBID,NOMGD,IRET)
-             TYPGD=NOMGD(6:6)
-             IF(TYPGD.EQ.'C')CALL U2MESS('F','TABLE0_42')
+             CALL DISMOI('F','TYPE_SCA',NOMGD,'GRANDEUR',IBID,TSCA,IBID)
+             IF (TSCA.NE.'R') CALL U2MESS('F','TABLE0_42')
              IF(TYCH(1:2).EQ.'EL')THEN
                 CALL DISMOI('F','NOM_MODELE',ZK24(JKCHA+I-1)(1:19),
      &                     'CHAMP',IBID,NOMO,IRET)
@@ -149,7 +149,7 @@ C
            ENDIF
            NBMA=0
 
-      ELSEIF(TYCH(1:2).EQ.'EL')THEN
+      ELSEIF(TYCH(1:2).EQ.'EL'.OR.TYCH.EQ.'CART')THEN
 
 C          VERIFICATIONS
            CALL GETVTX('RESU','NOEUD',1,IARG,0,K8B, N1)
@@ -176,7 +176,7 @@ C          VERIFICATIONS
 
             IF(TYCH.EQ.'ELGA')THEN
 
-              CALL MEGEOM(NOMO,' ',EXIGEO,CHGEOM)
+              CALL MEGEOM(NOMO,CHGEOM)
               LCHIN(1)=CHGEOM(1:19)
               LPAIN(1)='PGEOMER'
               NCHI=1
