@@ -10,7 +10,7 @@
       CHARACTER*(*)     MCLF
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 12/02/2013   AUTEUR PELLET J.PELLET 
+C MODIF MODELISA  DATE 18/02/2013   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -176,7 +176,7 @@ C            ON RECHERCHE NOMSEC DANS LA 1ER COLONNE
                GOTO 96
  103           CONTINUE
                JJ=JJ+1
-               ZK8(JCARA-1+JJ) = ZK24(ITBLP+4*I)
+               ZK8(JCARA-1+JJ) = ZK24(ITBLP+4*I)(1:8)
                CALL JEVEUO(ZK24(ITBLP+4*I+2),'L',IVECT)
                ZR(JVALE-1+JJ)=ZR(IVECT-1+IISEC)
  96          CONTINUE
