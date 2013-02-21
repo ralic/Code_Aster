@@ -1,4 +1,4 @@
-#& MODIF COMMUN  DATE 11/02/2013   AUTEUR DESOZA T.DESOZA 
+#& MODIF COMMUN  DATE 18/02/2013   AUTEUR DESOZA T.DESOZA 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -321,7 +321,7 @@ def C_SOLVEUR( COMMAND, BASE=None ) :  #COMMUN#
 #
 # ----------------------------------------------------------------------------------------------------------------------------------
 
-   _BlocPE['ALGORITHME'] = SIMP(statut='f', typ='TXM', defaut="GCR", into=("CG", "CR", "GMRES", "GCR", ), )
+   _BlocPE['ALGORITHME'] = SIMP(statut='f', typ='TXM', defaut="GMRES", into=("CG", "CR", "GMRES", "GCR", ), )
 
 # ----------------------------------------------------------------------------------------------------------------------------------
 
