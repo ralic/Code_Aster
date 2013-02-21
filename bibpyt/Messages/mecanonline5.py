@@ -1,4 +1,4 @@
-#@ MODIF mecanonline5 Messages  DATE 14/01/2013   AUTEUR TARDIEU N.TARDIEU 
+#@ MODIF mecanonline5 Messages  DATE 18/02/2013   AUTEUR GREFFET N.GREFFET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -245,5 +245,10 @@ Il faut préciser un concept EVOL_NOLI en prédiction de type 'DEPL_CALCULE'
 55 : _(u"""
   Vous utilisez l'indicateur de convergence RESI_REFE_RELA et une modélisation %(k1)s.
   Vous devez renseigner la valeur de référence %(k2)s dans CONVERGENCE.
+"""),
+
+56 : _(u"""
+  Il n'est pas possible actuellement de calculer des modes vibratoires (MODE_VIBR) 
+  sur un modèle dont au moins une matrice assemblée (masse ou raideur) est non-symétrique.
 """),
 }

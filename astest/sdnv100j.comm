@@ -1,9 +1,9 @@
-# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
+# MODIF  DATE 18/02/2013   AUTEUR GREFFET N.GREFFET 
 # TITRE IMPACT POUTRE AVEC ELEMENTS 3D SUR PLAN RIGIDE
 # sdnv100j.para = tps_job 250 mem_job 512Mo liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -23,7 +23,7 @@
 
 # CALCUL AVEC BASCULES DE SCHEMA
 DEBUT(CODE=_F(NOM='SDNV100J',
-              NIV_PUB_WEB='INTERNET',),);
+              NIV_PUB_WEB='INTERNET',),IGNORE_ALARM=('DYNAMIQUE_3'),);
 
 from Contrib.macro_bascule_schema_cata import MACRO_BASCULE_SCHEMA
 
@@ -120,7 +120,8 @@ DT_IMP=np*DT_EXP;
 
 temfi1=2.0E-5;
 temfi2=(9.0E-5)+(2*DT_IMP);
-temfin=2.0E-4;
+temfi3=2.0E-4;
+temfin=2.1E-4;
 
 L_IMP=DEFI_LIST_REEL(DEBUT=0., INTERVALLE=(_F(JUSQU_A=temfi2, PAS=DT_IMP,),
                                            _F(JUSQU_A=(temfi2+DT_IMP),PAS=(10*DT_EXP),),
@@ -128,7 +129,7 @@ L_IMP=DEFI_LIST_REEL(DEBUT=0., INTERVALLE=(_F(JUSQU_A=temfi2, PAS=DT_IMP,),
 
 L_EXP=DEFI_LIST_REEL(DEBUT=0., INTERVALLE=_F(JUSQU_A=temfin, PAS=DT_EXP,),);
 
-L_BAS=DEFI_LIST_REEL(VALE=(temfi1, temfi2, temfin),);
+L_BAS=DEFI_LIST_REEL(VALE=(temfi1, temfi2, temfi3),);
 
 #L_ARCH=DEFI_LIST_REEL(DEBUT=0.,
 #                      INTERVALLE=_F(JUSQU_A=temfi,
@@ -164,7 +165,7 @@ U = MACRO_BASCULE_SCHEMA(MODE=MODE,
                  INIT=_F(DEPL=CHAMP2, VITE=CHAMP1,),
                  TP_BAS     = L_BAS,
                  SCH_INI    ='IMPLICITE',
-                 EQUILIBRAGE=_F(EQU_EXP_IMP='NON',
+                 EQUILIBRAGE=_F(EQU_EXP_IMP='OUI',
                                 DT_IMP=DT_IMP,
                                 DT_EXP=DT_EXP,
                                 ),
@@ -225,8 +226,7 @@ TEST_RESU(RESU=(_F(INST=1.0000000000000001E-05,
                    NOM_CMP='DZ',
                    VALE_CALC= 1.00000000E-03,
                    VALE_REFE=1.E-3,
-                   CRITERE=('RELATIF', 'ABSOLU'),
-                   PRECISION=1.E-3, TOLE_MACHINE=(1.E-3, 1.E-08),),
+                   PRECISION=1.E-3,),
                 _F(INST=2.4000000000000001E-05,
                    REFERENCE='ANALYTIQUE',
                    RESULTAT=U,
@@ -235,38 +235,34 @@ TEST_RESU(RESU=(_F(INST=1.0000000000000001E-05,
                    NOM_CMP='DZ',
                    VALE_CALC=-4.00000000E-04,
                    VALE_REFE=-3.8000000000000002E-4,
-                   CRITERE=('RELATIF', 'ABSOLU'),
-                   PRECISION=0.059999999999999998, TOLE_MACHINE=(0.059999999999999998, 1.E-08),),
+                   PRECISION=0.059999999999999998,),
                 _F(INST=8.0000000000000007E-05,
                    REFERENCE='ANALYTIQUE',
                    RESULTAT=U,
                    NOM_CHAM='DEPL',
                    NOEUD='N5',
                    NOM_CMP='DZ',
-                   VALE_CALC=-8.24283604E-04,
+                   VALE_CALC=-8.2322212281782E-04,
                    VALE_REFE=-8.0000000000000004E-4,
-                   CRITERE=('RELATIF', 'ABSOLU'),
-                   PRECISION=0.040000000000000001, TOLE_MACHINE=(0.040000000000000001, 1.E-08),),
+                   PRECISION=0.040000000000000001, ),
                 _F(INST=1.2E-4,
                    REFERENCE='ANALYTIQUE',
                    RESULTAT=U,
                    NOM_CHAM='VITE',
                    NOEUD='N5',
                    NOM_CMP='DZ',
-                   VALE_CALC=112.178549706,
+                   VALE_CALC=114.60503547967,
                    VALE_REFE=100.0,
-                   CRITERE=('RELATIF', 'ABSOLU'),
-                   PRECISION=0.14999999999999999, TOLE_MACHINE=(0.14999999999999999, 1.E-08),),
+                   PRECISION=0.15, ),
                 _F(INST=1.2E-4,
                    REFERENCE='ANALYTIQUE',
                    RESULTAT=U,
                    NOM_CHAM='DEPL',
                    NOEUD='N5',
                    NOM_CMP='DZ',
-                   VALE_CALC= 2.02100896E-03,
+                   VALE_CALC= 2.0015472453282E-03,
                    VALE_REFE=2.E-3,
-                   CRITERE=('RELATIF', 'ABSOLU'),
-                   PRECISION=0.050000000000000003, TOLE_MACHINE=(0.050000000000000003, 1.E-08),),
+                   PRECISION=0.05, ),
                 ),
           )
 
@@ -289,8 +285,8 @@ TEST_TABLE(REFERENCE='ANALYTIQUE',
            )
 
 TEST_TABLE(REFERENCE='ANALYTIQUE',
-           PRECISION=0.02,
-           VALE_CALC=786.933080993,
+           PRECISION=0.03,
+           VALE_CALC=780.83385989845,
            VALE_REFE=800.0,
            NOM_PARA='TOTALE',
            TABLE=tpost,

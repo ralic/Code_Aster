@@ -1,8 +1,8 @@
-#@ MODIF macro_bascule_schema_ops Contrib  DATE 07/05/2012   AUTEUR GREFFET N.GREFFET 
+#@ MODIF macro_bascule_schema_ops Contrib  DATE 18/02/2013   AUTEUR GREFFET N.GREFFET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
@@ -79,7 +79,7 @@ def macro_bascule_schema_ops (self,MODE,MATE,CARA,
           if dschi[-1][i]==None : del dschi[-1][i]
   #
   dsche=[]
-  for j in SCH_TEMPS_I :
+  for j in SCH_TEMPS_E :
       dsche.append(j.cree_dict_valeurs(j.mc_liste))
       for i in dsche[-1].keys():
           if dsche[-1][i]==None : del dsche[-1][i]
@@ -147,7 +147,7 @@ def macro_bascule_schema_ops (self,MODE,MATE,CARA,
        dincre1[-1]['INST_FIN']= __L0[0]
        nomres=DYNA_NON_LINE(MODELE      =MODE,
                             CHAM_MATER  =MATE,
-                            MASS_DIAG='OUI',
+                            MASS_DIAG   ='OUI',
                             CARA_ELEM   =CARA,
                             EXCIT       =dexct,
                             COMP_INCR   =dComp_incre,
@@ -179,8 +179,11 @@ def macro_bascule_schema_ops (self,MODE,MATE,CARA,
         __Vae=CREA_CHAMP(OPERATION='EXTR', PRECISION=1.E-7, RESULTAT=nomres,
                          TYPE_CHAM='ELGA_VARI_R', NOM_CHAM='VARI_ELGA', INST=__L0[j-1],)
         dincre1=copy.copy(dincre)
-        dincre1[-1]['INST_FIN'] = __L0[j]
         dincre1[-1]['INST_INIT']= __L0[j-1]
+        if ( j < __nb ) :
+           dincre1[-1]['INST_FIN'] = __L0[j]
+        else :
+           del dincre1[-1]['INST_FIN']
         nomres=DYNA_NON_LINE(reuse=nomres,
                              MODELE=MODE,
                              CHAM_MATER=MATE,
@@ -194,9 +197,9 @@ def macro_bascule_schema_ops (self,MODE,MATE,CARA,
                              NEWTON=dnew,)
         #
         __prc='EXPLICITE'
-        j = j + 1
         bool = (j!=(__nb))
         if (not bool): break
+        j = j + 1
         #
      if __prc=='EXPLICITE' :
             # calcul sur la zone de recouvrement
@@ -220,12 +223,10 @@ def macro_bascule_schema_ops (self,MODE,MATE,CARA,
                                   INTERVALLE=_F(JUSQU_A=(__L0[j-1])+(10*(__dtexp)),
                                                 PAS=__dtexp),)
             schema_equi = dscheq[-1]['SCHEMA']
-            #print 'schema_equi =',schema_equi
             if ( schema_equi == 'TCHAMWA') or (schema_equi == 'DIFF_CENT') :
               masse_diago = 'OUI'
             else :
               masse_diago = 'NON'            
-            #print 'MASS_DIAG=',masse_diago
             __u_rec=DYNA_NON_LINE(MODELE=MODE,
                                   CHAM_MATER=MATE,
                                   MASS_DIAG=masse_diago,
@@ -283,8 +284,11 @@ def macro_bascule_schema_ops (self,MODE,MATE,CARA,
             #
             print('calcul implicite après équilibrage')
             dincri1=copy.copy(dincri)
-            dincri1[-1]['INST_FIN'] = __L0[j]
             dincri1[-1]['INST_INIT']= ((__L0[j-1])+(10*(__dtexp)))
+            if ( j < __nb ) :
+               dincri1[-1]['INST_FIN'] = __L0[j]
+            else :
+               del dincri1[-1]['INST_FIN']
             nomres=DYNA_NON_LINE(reuse=nomres,
                                  MODELE=MODE,
                                  CHAM_MATER=MATE,
@@ -299,9 +303,9 @@ def macro_bascule_schema_ops (self,MODE,MATE,CARA,
                                  NEWTON=dnew,)
             #
             __prc='IMPLICITE'
-            j = j + 1
             bool = (j!=(__nb))
             if (not bool): break
+            j = j + 1
   #
   RetablirAlarme('COMPOR1_70')
   return ier
