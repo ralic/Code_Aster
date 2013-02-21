@@ -1,4 +1,4 @@
-%& MODIF TYPELEM  DATE 22/01/2013   AUTEUR SFAYOLLE S.FAYOLLE 
+%& MODIF TYPELEM  DATE 11/02/2013   AUTEUR SFAYOLLE S.FAYOLLE 
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -99,6 +99,7 @@ MODE_LOCAL__
     ZVARINO  = VARI_R   ELNO__ IDEN__  (VARI     )
     EVOISIN  = VOISIN   ELEM__         (V0       V1       V2       V3       V4       V5       V6
                                         T0       T1       T2       T3       T4       T5       T6       )
+    ESOURCR  = SOUR_R   ELGA__ RIGI    (SOUR)
     ENORME   = NEUT_R   ELEM__         (X1       )
     EMNEUT_R = NEUT_R   ELEM__         (X[30]    )
     EGNEUT_R = NEUT_R   ELGA__ RIGI    (X[30]    )
@@ -148,16 +149,16 @@ OPTION__
                               OUT__  EERREUR  PERREUR
     ERME_ELNO           379   IN__   EERREUR  PERREUR
                               OUT__  EERRENO  PERRENO
-    FORC_NODA           455   IN__   CCOMPOR  PCOMPOR  ECONTPG  PCONTMR  DDL_MECA PDEPLMR  DDL_MECA PDEPLPR
+    FORC_NODA           591   IN__   CCOMPOR  PCOMPOR  ECONTPG  PCONTMR  DDL_MECA PDEPLMR  DDL_MECA PDEPLPR
                                      NGEOMER  PGEOMER  CMATERC  PMATERC  ZVARCPG  PVARCRR  ZVARCPG  PVARCPR
                               OUT__  MVECTUR  PVECTUR
-    FULL_MECA           454   IN__   CCARCRI  PCARCRI  CCOMPOR  PCOMPOR  ECONTPG  PCONTMR  DDL_MECA PDEPLMR
+    FULL_MECA           590   IN__   CCARCRI  PCARCRI  CCOMPOR  PCOMPOR  ECONTPG  PCONTMR  DDL_MECA PDEPLMR
                                      DDL_MECA PDEPLPR  NGEOMER  PGEOMER  CTEMPSR  PINSTMR  CTEMPSR  PINSTPR
                                      CMATERC  PMATERC  ZVARCPG  PVARCMR  ZVARCPG  PVARCPR  ZVARCPG  PVARCRR
                                      ZVARIPG  PVARIMR  ZVARIPG  PVARIMP
                               OUT__  ECODRET  PCODRET  ECONTPG  PCONTPR  MMATUUR  PMATUUR  ZVARIPG  PVARIPR
                                      MVECTUR  PVECTUR  MMATUNS  PMATUNS
-    FULL_MECA_ELAS      454   IN__   CCARCRI  PCARCRI  CCOMPOR  PCOMPOR  ECONTPG  PCONTMR  DDL_MECA PDEPLMR
+    FULL_MECA_ELAS      590   IN__   CCARCRI  PCARCRI  CCOMPOR  PCOMPOR  ECONTPG  PCONTMR  DDL_MECA PDEPLMR
                                      DDL_MECA PDEPLPR  NGEOMER  PGEOMER  CTEMPSR  PINSTMR  CTEMPSR  PINSTPR
                                      CMATERC  PMATERC  ZVARCPG  PVARCMR  ZVARCPG  PVARCPR  ZVARCPG  PVARCRR
                                      ZVARIPG  PVARIMR  ZVARIPG  PVARIMP
@@ -188,31 +189,33 @@ OPTION__
                               OUT__  EERREUR  PERREUR
     QIRE_ELNO           379   IN__   EERREUR  PERREUR
                               OUT__  EERRENO  PERRENO
-    RAPH_MECA           454   IN__   CCARCRI  PCARCRI  CCOMPOR  PCOMPOR  ECONTPG  PCONTMR  DDL_MECA PDEPLMR
+    RAPH_MECA           590   IN__   CCARCRI  PCARCRI  CCOMPOR  PCOMPOR  ECONTPG  PCONTMR  DDL_MECA PDEPLMR
                                      DDL_MECA PDEPLPR  NGEOMER  PGEOMER  CTEMPSR  PINSTMR  CTEMPSR  PINSTPR
                                      CMATERC  PMATERC  ZVARCPG  PVARCMR  ZVARCPG  PVARCPR  ZVARCPG  PVARCRR
                                      ZVARIPG  PVARIMR  ZVARIPG  PVARIMP
                               OUT__  ECODRET  PCODRET  ECONTPG  PCONTPR  ZVARIPG  PVARIPR  MVECTUR  PVECTUR
-    REFE_FORC_NODA      456   IN__   NGEOMER  PGEOMER  EREFCO   PREFCO
+    REFE_FORC_NODA      593   IN__   NGEOMER  PGEOMER  EREFCO   PREFCO  CCOMPOR  PCOMPOR
                               OUT__  MVECTUR  PVECTUR
     REPERE_LOCAL        133   IN__   CCAMASS  PCAMASS  NGEOMER  PGEOMER
                               OUT__  CGEOMER  PREPLO1  CGEOMER  PREPLO2  CGEOMER  PREPLO3
     RICE_TRACEY         -1    IN__   OUT__    XXXXXX   XXXXXX
-    RIGI_MECA           -1    IN__   OUT__    XXXXXX   XXXXXX
-    RIGI_MECA_ELAS      454   IN__   CCARCRI  PCARCRI  CCOMPOR  PCOMPOR  ECONTPG  PCONTMR  DDL_MECA PDEPLMR
+    RIGI_MECA           592   IN__   CCAMASS  PCAMASS  NGEOMER  PGEOMER  CMATERC  PMATERC  ZVARCPG  PVARCPR
+                                     ZVARCPG  PVARCPR
+                              OUT__  MMATUUR  PMATUUR
+    RIGI_MECA_ELAS      590   IN__   CCARCRI  PCARCRI  CCOMPOR  PCOMPOR  ECONTPG  PCONTMR  DDL_MECA PDEPLMR
                                      DDL_MECA PDEPLPR  NGEOMER  PGEOMER  CTEMPSR  PINSTMR  CTEMPSR  PINSTPR
                                      CMATERC  PMATERC  ZVARCPG  PVARCMR  ZVARCPG  PVARCPR  ZVARCPG  PVARCRR
                                      ZVARIPG  PVARIMR
                               OUT__  MMATUUR  PMATUUR  MMATUNS  PMATUNS
     RIGI_MECA_GE        -1    IN__   OUT__    XXXXXX   XXXXXX
     RIGI_MECA_RO        -1    IN__   OUT__    XXXXXX   XXXXXX
-    RIGI_MECA_TANG      454   IN__   CCARCRI  PCARCRI  CCOMPOR  PCOMPOR  ECONTPG  PCONTMR  DDL_MECA PDEPLMR
+    RIGI_MECA_TANG      590   IN__   CCARCRI  PCARCRI  CCOMPOR  PCOMPOR  ECONTPG  PCONTMR  DDL_MECA PDEPLMR
                                      DDL_MECA PDEPLPR  NGEOMER  PGEOMER  CTEMPSR  PINSTMR  CTEMPSR  PINSTPR
                                      CMATERC  PMATERC  ZVARCPG  PVARCMR  ZVARCPG  PVARCPR  ZVARCPG  PVARCRR
                                      ZVARIPG  PVARIMR
                               OUT__  MMATUUR  PMATUUR  MMATUNS  PMATUNS
     SIEF_ELGA           -1    IN__   OUT__    XXXXXX   XXXXXX
-    SIEF_ELNO            4    IN__   ECONTPG  PCONTRR
+    SIEF_ELNO           4     IN__   ECONTPG  PCONTRR
                               OUT__  ECONTNO  PSIEFNOR ECONTNC  PSIEFNOC
     SIEQ_ELGA           335   IN__   ECONTPG  PCONTRR
                               OUT__  ECOEQPG  PCONTEQ
@@ -226,6 +229,7 @@ OPTION__
                               OUT__  MMATUUR  PSYM
     TOU_INI_ELGA        99    IN__
                               OUT__  ECONTPG  PSIEF_R  ZVARIPG  PVARI_R  EGNEUT_R PNEUT_R EGNEUT_F PNEUT_F
+                                     ESOURCR  PSOUR_R  
     TOU_INI_ELNO        99    IN__
                               OUT__  ECONTNO  PSIEF_R  ZVARINO  PVARI_R  ENNEUT_F PNEUT_F ENNEUT_R PNEUT_R
     VARI_ELNO           4     IN__   ZVARIPG  PVARIGR

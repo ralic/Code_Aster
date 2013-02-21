@@ -1,4 +1,4 @@
-%& MODIF COMPELEM  DATE 22/01/2013   AUTEUR SFAYOLLE S.FAYOLLE 
+%& MODIF COMPELEM  DATE 11/02/2013   AUTEUR SFAYOLLE S.FAYOLLE 
 % ======================================================================
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
@@ -1016,13 +1016,13 @@ PHENOMENE_MODELISATION__
               MAILLE__ SEG2      ELEMENT__ MEPLSE2
 
        MODELISATION__ 'D_PLAN_INCO_LOG'     DIM__ 2 2   CODE__ 'PLG'
-              ATTRIBUT__  NBSIGM=X4  TYPMOD=D_PLAN
+              ATTRIBUT__  NBSIGM=X4 D_PLAN=OUI  TYPMOD=D_PLAN
               MAILLE__ TRIA6     ELEMENT__ LGPLTR6
               MAILLE__ QUAD8     ELEMENT__ LGPLQU8
               MAILLE__ SEG3      ELEMENT__ MEPLSE3
 
        MODELISATION__ 'D_PLAN_INCO_GD'      DIM__ 2 2   CODE__ 'PGI'
-              ATTRIBUT__  NBSIGM=X4  TYPMOD=D_PLAN
+              ATTRIBUT__  NBSIGM=X4 D_PLAN=OUI  TYPMOD=D_PLAN
               MAILLE__ TRIA6     ELEMENT__ GIPLTR6
               MAILLE__ QUAD8     ELEMENT__ GIPLQU8
               MAILLE__ SEG3      ELEMENT__ MEPLSE3
