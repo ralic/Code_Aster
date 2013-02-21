@@ -1,8 +1,8 @@
-#@ MODIF utilitai Messages  DATE 24/07/2012   AUTEUR PELLET J.PELLET 
+#@ MODIF utilitai Messages  DATE 18/02/2013   AUTEUR SELLENET N.SELLENET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -130,7 +130,17 @@ Cette grandeur ne peut pas accepter plus de %(i2)d composantes (%(i1)d fournies)
  on ne trouve aucun champ.
 """),
 
-
+24 : _(u"""
+ Lors de la recopie du champ "%(k1)s" vers le champ "%(k2)s" utilisant
+ le NUME_DDL "%(k3)s" certaines composantes de "%(k2)s" ont du être
+ mises à zéro.
+ 
+ En effet, certaines parties attendues dans le champ "%(k2)s" n'étaient
+ pas présentes dans "%(k1)s", elles ont donc étaient mises à zéros.
+ 
+ Ce problème peut survenir lorsque la numérotation du champ "%(k1)s"
+ n'est pas intégralement incluse dans celle de "%(k2)s".
+"""),
 
 
 

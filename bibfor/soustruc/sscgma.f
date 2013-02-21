@@ -2,9 +2,9 @@
       IMPLICIT NONE
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF SOUSTRUC  DATE 18/12/2012   AUTEUR SELLENET N.SELLENET 
+C MODIF SOUSTRUC  DATE 18/02/2013   AUTEUR SELLENET N.SELLENET 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -462,8 +462,8 @@ C     --------------------------
      &    'NOMBRE  DE GROUPES DE MAILLES CREES : ',NBGNAJ
 
         WRITE (IFM,'(/,15X,54(''-''),2(/,15X,A),/,15X,54(''-''))')
-     &    '! NOM DU GROUPE ! NBRE DE MAILLES DU !',
-     &    '!    MAILLES    !     GROUPE_MA      !'
+     &    '!         NOM DU GROUPE         ! NBRE DE MAILLES DU !',
+     &    '!            MAILLES            !     GROUPE_MA      !'
 
         DO 220 I = 1,NBGNAJ
           II = NBGMIN + I

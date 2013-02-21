@@ -1,9 +1,9 @@
-# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
+# MODIF  DATE 18/02/2013   AUTEUR SELLENET N.SELLENET 
 # TITRE IMPACT POUTRE AVEC ELEMENTS 3D SUR PLAN RIGIDE
 # sdnv100d.para = tps_job 60 mem_job 512Mo liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -89,6 +89,8 @@ CH2 = DEFI_CONTACT(MODELE         = MODE,
 
 CHAMP1=CREA_CHAMP( OPERATION='AFFE', TYPE_CHAM='NOEU_DEPL_R',
 MAILLAGE=MAILL,AFFE=(
+          _F( TOUT = 'OUI',          NOM_CMP = ('DX', 'DY', 'DZ', 'LAGS_C',),
+                                    VALE = (  0.0,  0.0,  0.0,  0.0,),),
           _F( GROUP_NO = 'POUTRE',   NOM_CMP = ('DX', 'DY', 'DZ',),
                                     VALE = (  0.0,  0.0,  -100.,)),
           _F( GROUP_NO = 'VSOL',     NOM_CMP = ('DX', 'DY', 'DZ',),
@@ -100,6 +102,8 @@ MAILLAGE=MAILL,AFFE=(
 
 CHAMP2=CREA_CHAMP( OPERATION='AFFE', TYPE_CHAM='NOEU_DEPL_R',
 MAILLAGE=MAILL,AFFE=(
+          _F( TOUT = 'OUI',          NOM_CMP = ('DX', 'DY', 'DZ', 'LAGS_C',),
+                                    VALE = (  0.0,  0.0,  0.0,  0.0,),),
           _F( GROUP_NO = 'POUTRE',   NOM_CMP = ('DX', 'DY', 'DZ',),
                                     VALE = (  0.0,  0.0,  0.0, )),
           _F( GROUP_NO = 'VSOL',     NOM_CMP = ('DX', 'DY', 'DZ',),

@@ -1,4 +1,4 @@
-# MODIF  DATE 29/01/2013   AUTEUR KHAM M.KHAM 
+# MODIF  DATE 18/02/2013   AUTEUR SELLENET N.SELLENET 
 # TITRE SOLLICITATION SISMIQUE D UNE COLONNE DE SOL
 #  APRES CONSTRUCTION PAR COUCHES AVEC LOI DE HUJEUX
 # wdnp101a.para = tps_job 500 mem_job 512Mo ncpus 1 liste_test S
@@ -300,6 +300,13 @@ U[0]=CALC_CHAMP(reuse=U[0],
                 VARI_INTERNE=('VARI_ELNO'),
                 RESULTAT=U[0]);
 
+CHPNUL = CREA_CHAMP(TYPE_CHAM='NOEU_DEPL_R',
+                   OPERATION='AFFE',
+                   MODELE=MOD[n],
+                   AFFE=_F(TOUT = 'OUI',
+                           NOM_CMP = ('DX','DY','PRE1'),
+                           VALE = (0.,0.,0.),),);
+
 #         -------------------------
 # SUITE-  Pose couches 3 a nbcouche
 #         -------------------------
@@ -477,7 +484,9 @@ for n in range(1,nbcouche-1):
                       OPERATION='ASSE',
                       MODELE=MOD[n],
                       PROL_ZERO='OUI',
-                      ASSE=(_F(GROUP_MA=GrMa,
+                      ASSE=(_F(TOUT='OUI',
+                               CHAM_GD=CHPNUL,),
+                            _F(GROUP_MA=GrMa,
                                CHAM_GD=INIDEP,
                                CUMUL='OUI',
                                COEF_R=1.0),
@@ -908,8 +917,8 @@ ACCE0 = CREA_CHAMP(TYPE_CHAM='NOEU_DEPL_R',
                    OPERATION='AFFE',
                    MODELE=MOD[9],
                    AFFE=_F(TOUT='OUI',
-                           NOM_CMP=('DX', 'DY', 'DZ',),
-                           VALE = (0., 0., 0.,),),);
+                           NOM_CMP=('DX', 'DY', 'DZ', 'PRE1'),
+                           VALE = (0., 0., 0., 0.,),),);
 
 U9B2=DYNA_NON_LINE(MODELE=MOD[9],
                  CHAM_MATER=AFFMAT1,

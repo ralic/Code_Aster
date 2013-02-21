@@ -1,9 +1,9 @@
-# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
+# MODIF  DATE 18/02/2013   AUTEUR SELLENET N.SELLENET 
 # TITRE CONSTRUCTION PAR COUCHES EN HYDROMECANIQUE DRAINE AVEC LA LOI DE HUJEUX
 # wtnv132a.para = tps_job 1000 mem_job 256Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -360,6 +360,13 @@ IMPR_TABLE(TABLE=T_SIG[1]);
 
 IMPR_TABLE(TABLE=T_VAR[1]);
 
+CHNUL=CREA_CHAMP(TYPE_CHAM='NOEU_DEPL_R',
+                 OPERATION='AFFE',
+                 MAILLAGE=MA,
+                 AFFE=_F(TOUT='OUI',
+                         NOM_CMP=('DX','DY','DZ','PRE1',),
+                         VALE=(0.,0.,0.,0.),),);
+
 
 #         -------------------------
 # SUITE-  Pose couches 3 a nbcouche
@@ -576,7 +583,9 @@ for n in range(1,nbcouche-1):
                       OPERATION='ASSE',
                       MODELE=MOD[n],
                       PROL_ZERO='OUI',
-                      ASSE=(_F(GROUP_MA=list_group_ma[:n+1],
+                      ASSE=(_F(TOUT='OUI',
+                               CHAM_GD=CHNUL,),
+                            _F(GROUP_MA=list_group_ma[:n+1],
                                CHAM_GD=INIDEP,
                                CUMUL='OUI',
                                COEF_R=1.0),

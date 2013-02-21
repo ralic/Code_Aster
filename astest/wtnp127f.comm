@@ -1,4 +1,4 @@
-# MODIF  DATE 15/01/2013   AUTEUR DELMAS J.DELMAS 
+# MODIF  DATE 18/02/2013   AUTEUR SELLENET N.SELLENET 
 # TITRE  MODELISATION D UN GRADIENT D'EAU SUR UN BARREAU SATURE EN LIQUIDE
 # wtnp127f.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -160,6 +160,9 @@ PINIT=CREA_CHAMP(MAILLAGE=MAIL,
                     OPERATION='AFFE',
                     TYPE_CHAM='NOEU_DEPL_R',
                     AFFE=(
+                    _F( TOUT='OUI',
+                        NOM_CMP  = ('DX','DY') ,
+                        VALE = (0.,0.) ),
                     _F( GROUP_MA=('GAUCHE','DROITE'),
                         NOM_CMP  = 'PRE1' ,
                         VALE = P0 ),

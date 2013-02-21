@@ -1,5 +1,5 @@
 
-# MODIF  DATE 06/02/2013   AUTEUR COURTOIS M.COURTOIS 
+# MODIF  DATE 18/02/2013   AUTEUR SELLENET N.SELLENET 
 # TITRE   PRESSURISATION THERMIQUE D'UNE EPROUVETTE SATUREE NON DRAINE
 # wtna112a.para = tps_job 50 mem_job 512Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -177,6 +177,7 @@ DDL_INIT= CREA_CHAMP(MAILLAGE = MA,
                      OPERATION = 'AFFE',
                      TYPE_CHAM = 'NOEU_DEPL_R',
                      AFFE=(
+                     _F(TOUT = 'OUI', NOM_CMP = ('DX','DY'),  VALE = (0.,0.),),
                      _F(TOUT = 'OUI', NOM_CMP = 'PRE1',  VALE = PINI,),
                      _F(TOUT = 'OUI', NOM_CMP = 'TEMP',  VALE = 20.,),
                      ),);

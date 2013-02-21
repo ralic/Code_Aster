@@ -1,9 +1,9 @@
-# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
+# MODIF  DATE 18/02/2013   AUTEUR SELLENET N.SELLENET 
 # TITRE   TEST HM, 2D , MODELISATION THMC=GAZ
 # wtnp126b.para = tps_job 200 mem_job 512Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -255,8 +255,8 @@ CHAMNO=CREA_CHAMP(MAILLAGE=MA,
                     TYPE_CHAM='NOEU_DEPL_R',
                     AFFE=(
                            _F(TOUT='OUI',
-                             NOM_CMP='PRE1',
-                             VALE=pini,),
+                             NOM_CMP=('DX','DY','PRE1','LH1',),
+                             VALE=(0.,0.,pini,0.),),
                              ),);
 
 SIGINIT=CREA_CHAMP(TYPE_CHAM='CART_SIEF_R',

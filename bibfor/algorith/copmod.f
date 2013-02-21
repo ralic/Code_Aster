@@ -3,7 +3,7 @@
       IMPLICIT NONE
 C***********************************************************************
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 12/02/2013   AUTEUR SELLENET N.SELLENET 
+C MODIF ALGORITH  DATE 18/02/2013   AUTEUR SELLENET N.SELLENET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -162,7 +162,13 @@ C               AVEC LA BONNE NUMEROTATION
           CREFE(2) = NUMER//'.NUME'
           TMPCHA   = '&&COPMOD.CHAMP'
           CALL VTCREA ( TMPCHA, CREFE, 'V', TYPC, NEQ )
-          CALL VTCOPY ( NOMCHA, TMPCHA, 'F', IRET )
+          CALL VTCOPY ( NOMCHA, TMPCHA, ' ', IRET )
+          IF ( IRET.NE.0 ) THEN
+            VALK(1) = NOMCHA
+            VALK(2) = TMPCHA
+            VALK(3) = CREFE(2)(1:8)
+            CALL U2MESK('A','UTILITAI_24',3,VALK)
+          ENDIF
           NOMCHA = TMPCHA
         ENDIF
 C

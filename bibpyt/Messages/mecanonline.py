@@ -1,4 +1,4 @@
-#@ MODIF mecanonline Messages  DATE 12/02/2013   AUTEUR SELLENET N.SELLENET 
+#@ MODIF mecanonline Messages  DATE 18/02/2013   AUTEUR SELLENET N.SELLENET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -31,7 +31,7 @@ cata_msg = {
  ont du être mises à zéro.
  
  Ce problème survient lorsque le champ donné dans ETAT_INIT ne comporte
- pas assez de composantes, on complète donc pas des zéros.
+ pas assez de composantes, on complète donc par des zéros.
 """),
 
 23 : _(u"""
