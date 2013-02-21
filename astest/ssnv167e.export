@@ -3,8 +3,7 @@ P memory_limit 512
 P ncpus 1
 P mpi_nbcpu 1
 P mpi_nbnoeud 1
-P testlist C 
+P testlist R 
 
 F comm ssnv167e.comm D 1
 F mail ssnv167a.mail D 20
-F msh ssnv167d.msh D 19
