@@ -1,9 +1,8 @@
-      SUBROUTINE CALKBP( NNO, NDIM, AXI, R, KPG, GEOM, IVF,
-     &                   IPOIDS, IDFDE, KBP )
+      SUBROUTINE CALKBP(NNO,NDIM,W,DFF1,G,VFF,NPG,KBP)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGORITH  DATE 19/02/2013   AUTEUR SFAYOLLE S.FAYOLLE 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
@@ -21,90 +20,47 @@ C ======================================================================
 C RESPONSABLE SFAYOLLE S.FAYOLLE
 C TOLE CRS_1404
       IMPLICIT NONE
-
       INCLUDE 'jeveux.h'
-      LOGICAL AXI
 
-      INTEGER NDIM, NNO, IPOIDS, IDFDE, IVF
-
-      REAL*8 GEOM(NDIM,NNO), KBP(NDIM,NNO), R
-
-C......................................................................
+      INTEGER      NDIM,NNO,NPG
+      INTEGER      G
+      REAL*8       VFF(NNO,NPG),W,DFF1(NNO,NDIM)
+      REAL*8       KBP(NDIM,NNO)
+C-----------------------------------------------------------------------
 C     BUT:  CALCUL LE TERME DE COUPLAGE KBP
 C     ON UTILISE UNE FORMULATION AVEC UN SEULE POINT DE GAUSS
 C     SITUE AU BARYCENTRE DE L ELEMENT ET DONT LE POIDS EST EGAL
-C......................................................................
-C IN  NNO     : NOMBRE DE NOEUDS DE L'ELEMENT
-C IN  NDIM    : DIMENSION DE L'ESPACE
-C IN  AXI     : CALCUL AXISYMETRIQUE OU NON
-C IN  R       : DISTANCE DU POINT DE GAUSS A L'AXE (EN AXISYMETRIQUE)*
-C IN  KGP     : NOMBRE DE POINTS DE GAUSS
-C IN  GEOM    : COORDONEES DES NOEUDS
-C IN  DEPL    : DEPLACEMENTS
-C IN  IVF     : VALEUR  DES FONCTIONS DE FORME LIES A LA PRESSION
-C IN  IPOIDS  : POIDS DES POINTS DE GAUSS
-C IN  IDFDE   : DERIVEE DES FONCTIONS DE FORME ELEMENT DE REFERENCE
-C OUT KBP     : MATRICE KBP
-C......................................................................
+C-----------------------------------------------------------------------
+C IN  AXI    : CALCUL AXISYMETRIQUE
+C IN  NDIM   : DIMENSION DE L'ESPACE
+C IN  NNO    : NOMBRE DE NOEUDS DE L'ELEMENT
+C IN  NPG    : NOMBRE DE POINTS DE GAUSS
+C IN  G      : POINTS DE GAUSS COURANT
+C IN  GEOM   : COORDONEES DES NOEUDS
+C IN  VFF    : VALEUR  DES FONCTIONS DE FORME
+C IN  IW     : POIDS DU POINT DE GAUSS
+C IN  IDFDE  : DERIVEE DES FONCTIONS DE FORME ELEMENT DE REFERENCE
+C IN  R      : RAYON DU POINT DE GAUSS COURANT (EN AXI)
+C OUT KBP    : MATRICE KBP
+C-----------------------------------------------------------------------
 
-
-      INTEGER I, N, M, KPG
-
-      REAL*8  DFDX(NNO), DFDY(NNO), DFDZ(NNO), POIDS
-      REAL*8  DFDI(NDIM), TMP
+      INTEGER      IA,NA,M
+C-----------------------------------------------------------------------
 
 
 C - INITIALISATION
-      CALL R8INIR(NNO*NDIM, 0.D0, KBP,1)
-
-C - CAS 3D
-C - CALCUL DE DNb/Dx,DNb/Dy,DNb/Dz POUR TOUS LES SOUS ELEMENTS
-
-      IF (NDIM .EQ. 3) THEN
-
-        CALL DFDM3B(NNO,KPG,IPOIDS,IDFDE, GEOM, DFDX, DFDY, DFDZ, POIDS)
+      CALL R8INIR(NNO*NDIM,0.D0,KBP,1)
 
 C - TERME KBP
 C - BOUCLE SUR LES SOUS ELEMENTS
-        DO 100 N = 1, NNO
-          DFDI(1)=DFDX(N)
-          DFDI(2)=DFDY(N)
-          DFDI(3)=DFDZ(N)
+      DO 100 NA = 1, NNO
 C - BOUCLE SUR LA DIMENSION
-          DO 99 I = 1, NDIM
+        DO 99 IA = 1, NDIM
 C - BOUCLE SUR LES FONCTION DE FORME LINEAIRE
-            DO 98 M = 1, NNO
-              TMP = DFDI(I)*ZR(IVF+M-1+(KPG-1)*NNO)
-              KBP(I,N) = KBP(I,N) + POIDS*TMP
- 98         CONTINUE
- 99       CONTINUE
- 100    CONTINUE
-
-C - CAS 2D
-C - CALCUL DE DNb/Dx,DNb/Dy,DNb/Dz POUR TOUS LES SOUS ELEMENTS
-      ELSE IF (NDIM .EQ. 2) THEN 
-        CALL DFDM2B(NNO,KPG,IPOIDS, IDFDE, GEOM, DFDX, DFDY, POIDS)
-
-        IF (AXI) THEN
-          POIDS=POIDS*R
-        END IF
-
-C - TERME KBP
-C - BOUCLE SUR LES SOUS ELEMENTS
-        DO 90 N = 1, NNO
-          DFDI(1)=DFDX(N)
-          DFDI(2)=DFDY(N)
-C - BOUCLE SUR LA DIMENSION
-          DO 89 I = 1, NDIM
-C - BOUCLE SUR LES FONCTION DE FORME LINEAIRE
-            DO 88 M = 1, NNO
-              TMP = DFDI(I)*ZR(IVF+M-1+(KPG-1)*NNO)
-              KBP(I,N) = KBP(I,N) + POIDS*TMP
- 88         CONTINUE
- 89       CONTINUE
- 90     CONTINUE
-      ELSE
-        CALL ASSERT(.FALSE.)
-      END IF
+          DO 98 M = 1, NNO
+            KBP(IA,NA) = KBP(IA,NA) + W*DFF1(NA,IA)*VFF(M,G)
+ 98       CONTINUE
+ 99     CONTINUE
+ 100  CONTINUE
 
       END

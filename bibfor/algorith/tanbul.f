@@ -1,7 +1,7 @@
-      SUBROUTINE TANBUL(OPTION, NDIM, KPG, IMATE, COMPOR, ALPHA, DSBDEP,
-     &                  TREPST)
+      SUBROUTINE TANBUL(OPTION,NDIM,G,IMATE,COMPOR,RESI,MINI,ALPHA,
+     &                  DSBDEP,TREPST)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 15/01/2013   AUTEUR DELMAS J.DELMAS 
+C MODIF ALGORITH  DATE 19/02/2013   AUTEUR SFAYOLLE S.FAYOLLE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -19,43 +19,44 @@ C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C RESPONSABLE SFAYOLLE S.FAYOLLE
+C TOLE CRS_1404
       IMPLICIT NONE
-
       INCLUDE 'jeveux.h'
-      INTEGER NDIM, KPG, IMATE
 
-      REAL*8 ALPHA, DSBDEP(6,6), TREPST
-
-      CHARACTER*16 COMPOR
-
-C......................................................................
-C     BUT:  CALCUL DE LA MATRICE TANGENTE BULLE
-C......................................................................
+      LOGICAL      RESI,MINI
+      INTEGER      NDIM,G,IMATE
+      REAL*8       ALPHA,DSBDEP(2*NDIM,2*NDIM),TREPST
+      CHARACTER*16 OPTION,COMPOR
+C-----------------------------------------------------------------------
+C          CALCUL DE LA MATRICE TANGENTE BULLE
+C-----------------------------------------------------------------------
+C IN  RESI    : CALCUL DES FORCES INTERNES
+C IN  MINI    : STABILISATION BULLE - MINI ELEMENT
+C IN  OPTION  : OPTION DE CALCUL
 C IN  NDIM    : DIMENSION DE L'ESPACE
-C IN  KPG     : NUMERO DU POINT DE GAUSS
+C IN  G       : NUMERO DU POINT DE GAUSS
 C IN  IMATE   : NUMERO DU MATERIAU
 C IN  COMPOR  : NOM DU COMPORTEMENT
-C OUT  ALPHA  : INVERSE DU MODULE DE COMPRESSIBILITE 1/KAPPA
-C OUT  DSBDEP : MATRICE TANGENTE BULLE
-C OUT  TREPST : TRACE DU TENSEUR DES DEFORMATIONS THERMIQUES
-C......................................................................
+C OUT ALPHA   : INVERSE DE KAPPA
+C OUT DSBDEP  : MATRICE TANGENTE BULLE
+C OUT TREPST  : TRACE DU TENSEUR DES DEFORMATIONS THERMIQUES
+C-----------------------------------------------------------------------
 
-      INTEGER K, L
-      INTEGER ICODRE(2),ITEMPS,IRET,IEPSV
-
-      REAL*8 E, NU, DEUXMU, TROISK, VALRES(2),VALPAR
-      REAL*8 XYZGAU(3), REPERE(7), EPSTH(6), R8MIEM
-
+      INTEGER      K
+      INTEGER      ICODRE(2),ITEMPS,IRET,IEPSV
+      REAL*8       E,NU,VALRES(2),VALPAR
+      REAL*8       XYZGAU(3),REPERE(7),EPSTH(6),R8MIEM
+      REAL*8       COEF,COEF1,COEF2,COEF3
       CHARACTER*4  FAMI
       CHARACTER*8  NOMRES(2),NOMPAR
-      CHARACTER*16 OPTION
+C-----------------------------------------------------------------------
 
 
 C - INITIALISATION
-      CALL R8INIR(36, 0.D0, DSBDEP, 1)
-      CALL R8INIR( 3, 0.D0, XYZGAU, 1)
-      CALL R8INIR( 7, 0.D0, REPERE, 1)
-      CALL R8INIR( 6, 0.D0, EPSTH, 1)
+      CALL R8INIR(2*NDIM*2*NDIM,0.D0,DSBDEP,1)
+      CALL R8INIR(3,0.D0,XYZGAU,1)
+      CALL R8INIR(7,0.D0,REPERE,1)
+      CALL R8INIR(6,0.D0,EPSTH, 1)
 
       NOMPAR = 'INST'
       FAMI   = 'RIGI'
@@ -80,42 +81,54 @@ C - RECUPERATION DE E ET NU DANS LE FICHIER PYTHON
       NOMRES(1)='E'
       NOMRES(2)='NU'
 
-      CALL RCVALB('RIGI',KPG,1,'+',IMATE,' ','ELAS',1,NOMPAR,VALPAR,2,
+      CALL RCVALB('RIGI',G,1,'+',IMATE,' ','ELAS',1,NOMPAR,VALPAR,2,
      &            NOMRES,VALRES,ICODRE,1)
 
       E  = VALRES(1)
       NU = VALRES(2)
       ALPHA=(3.D0*(1.D0-2.D0*NU))/E
 
-      DEUXMU = E/(1.D0+NU)
-      TROISK = E/(1.D0-2.D0*NU)
+      IF (MINI) THEN
+        COEF  = 1.D0/((1.D0+NU)*(1.D0-2.D0*NU))
+        COEF1 = E*(1.D0-NU)*COEF
+        COEF2 = E*NU*COEF
+        COEF3 = 2.D0*E/(1.D0+NU)
 
-      DO 10 K=1,3
-        DO 20 L=1,3
-          DSBDEP(K,L)=DSBDEP(K,L)+(TROISK/3.D0-DEUXMU/(3.D0))
- 20     CONTINUE
- 10   CONTINUE
-      DO 30 K=1,2*NDIM
-        DSBDEP(K,K) = DSBDEP(K,K) + DEUXMU
- 30   CONTINUE
+        DSBDEP(1,1) = COEF1
+        DSBDEP(1,2) = COEF2
+        DSBDEP(1,3) = COEF2
 
-      IF(OPTION(1:9)  .NE. 'FORC_NODA' .AND.
-     &   OPTION(1:10) .NE. 'RIGI_MECA ') THEN
-        CALL EPSTMC(FAMI, NDIM,VALPAR,'+',KPG,1,
-     &              XYZGAU,REPERE,IMATE, OPTION, EPSTH)
+        DSBDEP(2,1) = COEF2
+        DSBDEP(2,2) = COEF1
+        DSBDEP(2,3) = COEF2
+
+        DSBDEP(3,1) = COEF2
+        DSBDEP(3,2) = COEF2
+        DSBDEP(3,3) = COEF1
+
+        DSBDEP(4,4) = COEF3
+        IF(NDIM.EQ.3)THEN
+          DSBDEP(5,5) = COEF3
+          DSBDEP(6,6) = COEF3
+        ENDIF
       ENDIF
 
+      IF (RESI) THEN
+        CALL EPSTMC(FAMI, NDIM,VALPAR,'+',G,1,XYZGAU,REPERE,IMATE,
+     &              OPTION,EPSTH)
+
 C - TEST DE LA NULLITE DES DEFORMATIONS DUES AUX VARIABLES DE COMMANDE
-      IEPSV = 0
-      TREPST = 0.D0
-      DO 90 K = 1, 6
-        IF ( ABS(EPSTH(K)).GT.R8MIEM() ) IEPSV=1
- 90   CONTINUE
+        IEPSV = 0
+        DO 90 K = 1, 6
+          IF ( ABS(EPSTH(K)).GT.R8MIEM() ) IEPSV=1
+ 90     CONTINUE
 C - TOUTES DES COMPOSANTES SONT NULLES. ON EVITE DE CALCULER TREPST
-      IF (IEPSV.NE.0) THEN
-        DO 50 K = 1, NDIM
-          TREPST = TREPST + EPSTH(K)
- 50     CONTINUE
+        IF (IEPSV.NE.0) THEN
+          TREPST = 0.D0
+          DO 50 K = 1, 3
+            TREPST = TREPST + EPSTH(K)
+ 50       CONTINUE
+        ENDIF
       ENDIF
 
       END
