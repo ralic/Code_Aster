@@ -2,7 +2,7 @@
       IMPLICIT NONE
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 12/02/2013   AUTEUR PELLET J.PELLET 
+C MODIF MODELISA  DATE 25/02/2013   AUTEUR BERRO H.BERRO 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -44,7 +44,7 @@ C-----------------------------------------------------------------------
       COMPLEX*16 CBID
       CHARACTER*1 K1BID
       CHARACTER*7 INCR,IELEM,IMODE
-      CHARACTER*8 VETEL,LPAIN(3),LPAOUT(1),MODELE,MODMEC,GRMA8
+      CHARACTER*8 VETEL,LPAIN(3),LPAOUT(1),MODELE,MODMEC,K8B
       CHARACTER*8 MOINT,MAILLA,PARTIT
       CHARACTER*16 OPTION
       CHARACTER*19 NOMCHA,CHGEOM,MATAS,CHHARM
@@ -57,95 +57,45 @@ C-----------------------------------------------------------------------
       CALL JEMARQ()
 
       OPTION = 'ACCEPTANCE'
-      CALL GETVID(' ','MODELE_INTERFACE',0,IARG,1,MOINT,NI)
-      IF (NI.LE.0) THEN
-        CALL JEVEUO(MODMEC//'           .REFD','L',IREFE)
-        CALL RSEXCH(' ',MODMEC,'DEPL',1,NOMCHA,IRET)
-        MATAS = ZK24(IREFE) (1:19)
-        CALL JEVEUO(MATAS//'.LIME','L',ILIME)
-        CALL JEVEUO(ZK24(ILIME)(1:8)//'.ME001     .NOLI','L',INOLI)
-        MODELE = ZK24(INOLI) (1:8)
-        CALL JEVEUO(ZK24(INOLI)(1:19)//'.LGRF','L',J1)
-        MAILLA = ZK8(J1)
-
-        CALL GETVEM(MAILLA,'GROUP_MA',' ','GROUP_MA',0,IARG,1,GRMA,NMA)
-        IF (NMA.LE.0) THEN
-          LIGRMO = ZK24(INOLI)
-        ELSE
-          IF (GRMA(9:24).NE.' ') WRITE(6,*) 'DEBUG GRMA= >',GRMA,'<'
-          CALL ASSERT(GRMA(9:24).EQ.' ')
-          GRMA8=GRMA(1:8)
-          CALL JELIRA(MAILLA//'.GROUPEMA','NMAXOC',NBGMA,K1BID)
-          DO 10 JGMA = 1,NBGMA
-            CALL JENUNO(JEXNUM(MAILLA//'.GROUPEMA',JGMA),NOM)
-            IF (NOM.NE.GRMA) GO TO 10
-            NOCCU = JGMA
-   10     CONTINUE
-
-          CALL JELIRA(ZK24(INOLI) (1:19)//'.LIEL','NMAXOC',NBLIEL,K1BID)
-          CALL JEVEUO(JEXNUM(MAILLA//'.GROUPEMA',NOCCU),'L',IGRMA)
-          CALL JELIRA(JEXNUM(MAILLA//'.GROUPEMA',NOCCU),'LONMAX',NBELMA,
-     &                K1BID)
-
-C CREATION D UN .LIEL BASE SUR LE GROUP-MA UTILISATEUR
-
-          CALL JECREC(GRMA8//'.MODELE    .LIEL',
-     &                'G V                                          I',
-     &                'NU','CONTIG','VARIABLE',NBLIEL)
-          CALL JEECRA(GRMA8//'.MODELE    .LIEL','LONT',NBLIEL,' ')
-          CALL JEVEUO(GRMA8//'.MODELE    .LIEL','E',JDLI)
-          CALL JECROC(JEXNUM(GRMA8//'.MODELE    .LIEL',1))
-          CALL JEECRA(JEXNUM(GRMA8//'.MODELE    .LIEL',1),'LONMAX',
-     &                NBELMA+1,' ')
-          CALL JEVEUO(JEXNUM(GRMA8//'.MODELE    .LIEL',1),'E',INWMOD)
-
-          DO 40 JLIEL = 1,NBLIEL
-            CALL JEVEUO(JEXNUM(ZK24(INOLI) (1:19)//'.LIEL',JLIEL),'L',
-     &                  ILIEL)
-            TEMOIN = 0
-            DO 30 IELMA = 1,NBELMA
-              DO 20 JELMA = 1,NBELMA
-                IF (ZI(IGRMA+IELMA-1).EQ.ZI(ILIEL+JELMA-1)) THEN
-                  ZI(INWMOD+IELMA-1) = ZI(ILIEL+JELMA-1)
-                  TEMOIN = TEMOIN + 1
-                END IF
-   20         CONTINUE
-   30       CONTINUE
-   40     CONTINUE
-          ZI(INWMOD+NBELMA+1-1) = ZI(ILIEL+NBELMA+1-1)
-          IF (TEMOIN.EQ.0) CALL U2MESS('F','MODELISA_5')
-          CALL WKVECT(GRMA8//'.MODELE    .LGRF','V V K8',2,JLGRF)
-          ZK8(JLGRF) = MAILLA
-          CALL JEVEUO(ZK24(INOLI) (1:8)//'.MODELE    .NBNO','L',IVRAI)
-          CALL WKVECT(GRMA8//'.MODELE    .NBNO','V V I',1,JNBNO)
-          ZI(JNBNO) = ZI(IVRAI)
-          CALL JEVEUO(ZK24(INOLI) (1:8)//'.MAILLE','L',IMAIL)
-          CALL JELIRA(ZK24(INOLI) (1:8)//'.MAILLE','LONMAX',NBMAIL,
-     &                K1BID)
-          CALL WKVECT(GRMA8//'.MAILLE','V V I',NBMAIL,JMAIL)
-          DO 50 J = 1,NBMAIL
-            ZI(JMAIL+J-1) = ZI(IMAIL+J-1)
-   50     CONTINUE
-          CALL JEVEUO(ZK24(INOLI) (1:8)//'.MODELE    .PRNM','L',IPRNM)
-          CALL JELIRA(ZK24(INOLI) (1:8)//'.MODELE    .PRNM','LONMAX',
-     &                NBPRNM,K1BID)
-          CALL WKVECT(GRMA8//'.MODELE    .PRNM','V V I',NBPRNM,JPRNM)
-          DO 60 J = 1,NBPRNM
-            ZI(JPRNM+J-1) = ZI(IPRNM+J-1)
-   60     CONTINUE
-          LIGRMO = GRMA8//'.MODELE'
-          MODELE = GRMA8
-        END IF
-      ELSE
-        LIGRMO = MOINT//'.MODELE'
-        MODELE = MOINT
-      END IF
-
+      CALL GETVID(' ','MODELE_INTERFACE',0,IARG,1,MODELE,IRET)
+      IF (IRET.LE.0) THEN
+C       --- PAS DE MODELE D'INTERFACE, ALORS RECUPERER LE MODELE MECA
+C           GLOBAL A PARTIR DE LA MATRICE DE RIGIDITE ASSEMBLEE QUI
+C           EST REFERENCEE DANS LE .REFD DE LA BASE MODALE MODE_MECA
+        CALL GETVID(' ','MODE_MECA',0,IARG,1,K8B,IRET)
+        IF (IRET.GT.0) THEN
+          CALL JEVEUO(MODMEC//'           .REFD','L',IREFE)
+          CALL RSEXCH(' ',MODMEC,'DEPL',1,NOMCHA,IRET)
+          MATAS = ZK24(IREFE) (1:19)
+          CALL JEVEUO(MATAS//'.LIME','L',ILIME)
+          CALL JEVEUO(ZK24(ILIME)(1:8)//'.ME001     .NOLI','L',INOLI)
+          MODELE = ZK24(INOLI) (1:8)
+        ELSE 
+C         --- DEFORMEES MODALES PAR DES CHAM_NO MAIS AUCUNE INFORMATION
+C             N'EST PRESENTE SUR LE MODELE EF... 
+C             CE BLINDAGE EST REDONDANT AVEC LES REGLES DU CATALOGUE
+          CALL ASSERT(.FALSE.)
+        ENDIF
+      ENDIF
+C
+C     --- SCRUTER LES MOTS CLE TOUT/GROUP_MA/MAILLE POUR CREER
+C         UN LIGREL "REDUIT" DANS LIGRMO
+      CALL EXLIMA ( ' ', 0, 'V', MODELE, LIGRMO )
+      IF (LIGRMO(1:8).NE.MODELE) THEN
+C       --- RENOMMER LA SD_LIGREL OBTENUE
+        CALL COPISD ('LIGREL','V', LIGRMO, '&&ACCEP1.MODELE         ')
+        CALL DETRSD ('LIGREL',LIGRMO)
+        LIGRMO = '&&ACCEP1.MODELE         '
+        MODELE = LIGRMO(1:8)
+      ENDIF
+C
       CALL DISMOI('F','PARTITION',LIGRMO,'LIGREL',IBID,PARTIT,IBID)
       IF (PARTIT.NE.' ') CALL U2MESK('F','CALCULEL_25',1,LIGRMO)
 
 C CALCULS ELEMENTAIRES
-      CALL MEGEOM(MODELE,CHGEOM)
+      CALL JEVEUO(LIGRMO(1:19)//'.LGRF','L',JLGRF)
+      CHGEOM = ZK8(JLGRF-1+1)//'.COORDO'
+C
       LPAIN(1) = 'PGEOMER'
       LCHIN(1) = CHGEOM
       LPAIN(2) = 'PACCELR'

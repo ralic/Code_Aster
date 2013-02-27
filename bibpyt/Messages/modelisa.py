@@ -1,4 +1,4 @@
-#@ MODIF modelisa Messages  DATE 14/01/2013   AUTEUR FLEJOU J-L.FLEJOU 
+#@ MODIF modelisa Messages  DATE 25/02/2013   AUTEUR BERRO H.BERRO 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -38,11 +38,6 @@ cata_msg = {
 4 : _(u"""
  mauvaise définition pour l'abscisse curviligne
  détection de plusieurs chemins.
-"""),
-
-5 : _(u"""
-  le groupe de maille que vous donnez ne correspond pas
-  au modèle de structure que vous étudiez
 """),
 
 6 : _(u"""

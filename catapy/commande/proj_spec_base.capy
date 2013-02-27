@@ -1,7 +1,7 @@
-#& MODIF COMMANDE  DATE 24/07/2012   AUTEUR PELLET J.PELLET 
+#& MODIF COMMANDE  DATE 25/02/2013   AUTEUR BERRO H.BERRO 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
@@ -21,7 +21,8 @@ PROJ_SPEC_BASE=OPER(nom="PROJ_SPEC_BASE",op= 146,sd_prod=interspectre,reentrant=
             UIinfo={"groupes":("Matrices et vecteurs",)},
             fr="Projecter un ou plusieurs spectres de turbulence sur une (ou plusieurs) base(s) modale(s) ",
       regles=(UN_PARMI('BASE_ELAS_FLUI','MODE_MECA','CHAM_NO'),
-              UN_PARMI('TOUT','GROUP_MA','MAILLE'),),
+              UN_PARMI('TOUT','GROUP_MA','MAILLE'),
+              PRESENT_PRESENT('CHAM_NO','MODELE_INTERFACE'),),
          SPEC_TURB      =SIMP(statut='o',typ=spectre_sdaster,validators=NoRepeat(),max='**' ),
          TOUT_CMP       =SIMP(statut='f',typ='TXM',defaut="OUI",into=("OUI","NON")),
          BASE_ELAS_FLUI =SIMP(statut='f',typ=melasflu_sdaster ),
@@ -35,7 +36,7 @@ PROJ_SPEC_BASE=OPER(nom="PROJ_SPEC_BASE",op= 146,sd_prod=interspectre,reentrant=
          FREQ_FIN       =SIMP(statut='o',typ='R',val_min=0.E+0 ),  
          NB_POIN        =SIMP(statut='o',typ='I' ),  
          OPTION         =SIMP(statut='f',typ='TXM',defaut="TOUT",into=("TOUT","DIAG")),
-         TOUT           =SIMP(statut='f',typ='TXM',into=("OUI",) ),
+         TOUT           =SIMP(statut='f',typ='TXM',into=("OUI",), ),
          GROUP_MA       =SIMP(statut='f',typ=grma,validators=NoRepeat(),max='**'),
          MAILLE         =SIMP(statut='f',typ=ma,validators=NoRepeat(),max='**'),
 #  Quel est le type attendu derriere  MODELE_INTERFACE         
