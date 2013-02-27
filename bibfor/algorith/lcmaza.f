@@ -2,9 +2,9 @@
      &                   DEPS, VIM, TM,TP,TREF,
      &                   OPTION, SIG, VIP,  DSIDEP)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 09/10/2012   AUTEUR HAMON F.HAMON 
+C MODIF ALGORITH  DATE 25/02/2013   AUTEUR HAMON F.HAMON 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -82,7 +82,7 @@ C ----------------------------------------------------------------------
       REAL*8      TOL, TOLDYN, TR(6), TU(6), JACAUX(3), VECPE(3,3)
       REAL*8      RAC2, LAMBDA, DEUXMU,  COEF
       REAL*8      VALRES(7), VALPAR, COPLAN, D, TMP1,VALA,R,A,B
-      REAL*8      KRON(6),K
+      REAL*8      KRON(6),K,Y
       REAL*8      EPSFP(6), EPSCOU(6), EPSI(6), CHI,GAMA,RAP
       REAL*8      EPSEQC, EPSEND, EPSEPC(3), VECPEC(3,3)
       INTEGER     IDC
@@ -145,7 +145,6 @@ C   DES CONDITIONS D HYDRATATION OU DE SECHAGE
       ENDIF
 C  RECUPERATION DES CARACTERISTIQUES MATERIAUX QUI PEUVENT VARIER
 C  AVEC LA TEMPERATURE (MAXIMALE), L'HYDRATATION OU LE SECHAGE
-C-----------------------------------------------------
       NOMPAR = 'TEMP'
       VALPAR = TMAX
 C    LECTURE DES CARACTERISTIQUES ELASTIQUES
@@ -373,11 +372,11 @@ C----------------------------------------------------------------
         RAP = RAP + MIN(0.D0,SIGELP(I))
         GAMA = GAMA + (MIN(0.D0,SIGELP(I)))**2
 69    CONTINUE
-         IF (ABS(RAP).GT.1.D-10 ) THEN
+      IF ((ABS(RAP).GT.1.D-10).AND.(R.EQ.0.D0)) THEN
                 GAMA = -(SQRT(GAMA)/ RAP)
-         ELSE
+      ELSE
                 GAMA=1.D0
-         ENDIF
+      ENDIF
 C ======================================================================
 C       CALCUL DES CONTRAINTES ET VARIABLES INTERNES
 C           (OPTION FULL_MECA ET RAPH_MECA - (RESI) )
@@ -390,17 +389,16 @@ C    qui fait evoluer l endommagement
       ELSE
         EPSEND = EPSEQ
       ENDIF
-
-      IF (R.EQ.0.D0) EPSEND=GAMA*EPSEND
-      IF (EPSEND.LE.EPSD0) THEN
+      IF (GAMA.LE.0.D0) GAMA=1.D0
+        Y=GAMA*EPSEND
+      IF (Y.LE.EPSD0) THEN
 C         PAS DE PROGRESSION DE L'ENDOMMAGEMENT
         D = VIM(1)
       ELSE
         A=2.D0*R**2.D0*(AT-2.D0*K*AT+AC)-R*(AT*(1.D0-4.D0*K)+3.D0*AC)+AC
         B=R**2.D0*BT+(1.D0-R**2.D0)*BC
-        D=1.D0-EPSD0*(1.D0-A)/EPSEND
-     &-A*EXP(-B*(EPSEND-EPSD0))
-
+        D=1.D0-EPSD0*(1.D0-A)/Y
+     &-A*EXP(-B*(Y-EPSD0))
           D = MAX ( VIM(1), D)
           D = MIN(D , 0.99999D0)
             IF (D.GT.VIM(1)) PROG = .TRUE.
@@ -461,9 +459,10 @@ C ------------------------------------------------------------
          IF (EPSEQ.LT.0.0000001D0) THEN
             COEF=0.D0
          ELSE
-            COEF =(EPSD0*(1.D0- A)/EPSEQ**2 +
-     &             A*B/ EXP (B*(EPSEQ - EPSD0)))
+            COEF =(EPSD0*(1.D0- A)/(GAMA*EPSEQ)**2 +
+     &             A*B/ EXP (B*((GAMA*EPSEQ) - EPSD0)))
           COEF = COEF / EPSEQ
+        IF (R.EQ.0.D0) COEF=GAMA*COEF
         ENDIF
           CALL R8INIR(6, 0.D0, SIGEL,1)
           TR(1) = SIGELP(1)

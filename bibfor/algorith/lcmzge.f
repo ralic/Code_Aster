@@ -2,9 +2,9 @@
      &                   EPSTM,DEPST, VIM,
      &                   OPTION, SIG, VIP,  DSIDPT, PROJ)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 09/10/2012   AUTEUR HAMON F.HAMON 
+C MODIF ALGORITH  DATE 25/02/2013   AUTEUR HAMON F.HAMON 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -72,7 +72,7 @@ C ----------------------------------------------------------------------
       REAL*8      TOL, TOLDYN, TR(6), TU(6), TRR(6), JACAUX(3)
       REAL*8      VECPE(3,3), VECPER(3,3)
       REAL*8      COPLAN,  LAMBDA, DEUXMU
-      REAL*8      RAC2, COEF, TMP1, D,RAP,GAMA,K
+      REAL*8      RAC2, COEF, TMP1, D,RAP,GAMA,K,Y
       REAL*8      VALRES(7), VALPAR
       REAL*8      KRON(6)
       REAL*8      EPSFP(6), EPSCOU(6), CHI,VALA,R,A,B
@@ -271,8 +271,6 @@ C   AVANT DE DIAGONALISER
           EPSCOU(J) = EPSER(J) - (1.D0-CHI)*EPSFP(J)
 1010    CONTINUE
       ENDIF
-
-
 C  -   ON PASSE DANS LE REPERE PROPRE DE EPS
       NPERM  = 12
       TOL    = 1.D-10
@@ -284,7 +282,6 @@ C       MATRICE  TR = (XX XY XZ YY YZ ZZ) POUR JACOBI)
       TR(4) = EPSE(2)
       TR(5) = EPSE(6)
       TR(6) = EPSE(3)
-
 C       MATRICE UNITE = (1 0 0 1 0 1) (POUR JACOBI)
       TU(1) = 1.D0
       TU(2) = 0.D0
@@ -382,21 +379,21 @@ C----------------------------------------------------------------
         RAP = RAP + MIN(0.D0,SIGELP(I))
         GAMA = GAMA + (MIN(0.D0,SIGELP(I)))**2
 69    CONTINUE
-        IF (ABS(RAP).GT.1.D-10 ) THEN
+      IF ((ABS(RAP).GT.1.D-10).AND.(R.EQ.0.D0)) THEN
           GAMA = -(SQRT(GAMA)/ RAP)
-          ELSE
+      ELSE
           GAMA=1.D0
-        ENDIF
-        IF (R.EQ.0.D0) EPSEQ=GAMA*EPSEQ
+      ENDIF
+        IF (GAMA.LE.0.D0) GAMA=1.D0
+          Y=GAMA*EPSEQ
 C      CALCUL DES PARAMETRES D'ENDOMMAGEMENT
         IF (EPSEQ.LE.EPSD0) THEN
           D=VIM(1)
         ELSE
         A=2.D0*R**2.D0*(AT-2.D0*K*AT+AC)-R*(AT*(1.D0-4.D0*K)+3.D0*AC)+AC
         B=R**2.D0*BT+(1.D0-R**2.D0)*BC
-        D=1.D0-EPSD0*(1.D0-A)/EPSEQ
-     &-A*EXP(-B*(EPSEQ-EPSD0))
-
+        D=1.D0-EPSD0*(1.D0-A)/Y
+     &-A*EXP(-B*(Y-EPSD0))
           D = MIN(D , 0.99999D0)
           D = MAX ( VIM(1), D)
           IF (D.GT.VIM(1)) PROG = .TRUE.
@@ -445,18 +442,17 @@ C -- CONTRIBUTION ELASTIQUE
         DO 130 J = 1,NDIMSI
           DSIDPT(J,J,1) = DSIDPT(J,J,1) + (1-D)*DEUXMU
 130     CONTINUE
-
         IF ((.NOT.ELAS).AND.PROG.AND.(.NOT.RELA).AND.
      +(D.LT.0.99999D0)) THEN
                IF (EPSEQ.LT.1.D-10 ) THEN
           COEF=0.D0
                 ELSE
-          COEF =(EPSD0*(1.D0 - A)/EPSEQ**2 +
-     &             A*B/ EXP (B*(EPSEQ - EPSD0)))
+          COEF =(EPSD0*(1.D0 - A)/(GAMA*EPSEQ)**2 +
+     &             A*B/ EXP (B*((GAMA*EPSEQ) - EPSD0)))
           COEF = COEF/EPSEQ
+          COEF=GAMA*COEF
                ENDIF
 C      CALCUL DE EPS+
-C
           CALL R8INIR(6, 0.D0, TR,1)
           DO 160 J = 1,3
             IF (EPSPR(J).GT.0.D0) THEN
@@ -484,6 +480,5 @@ C
 200         CONTINUE
 190       CONTINUE
         ENDIF
-
       ENDIF
       END
