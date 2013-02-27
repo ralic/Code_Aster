@@ -5,9 +5,9 @@
         IMPLICIT NONE
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 18/12/2012   AUTEUR SELLENET N.SELLENET 
+C MODIF ALGORITH  DATE 25/02/2013   AUTEUR PROIX J-M.PROIX 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -36,12 +36,13 @@ C           NMAT   :  DIMENSION MATER
 C           MATER  :  COEFFICIENTS MATERIAU
 C       OUT DSDE   :  MATRICE DE COMPORTEMENT TANGENT = DSIG/DEPS
 C       ----------------------------------------------------------------
-        INTEGER         NMAT , NR, NVI, ITMAX, IRET, NFS, NSG
+        INTEGER         NMAT , NR, NVI, ITMAX, IRET, NFS, NSG,NDT,NDI,N2
         REAL*8          DSDE(6,6),EPSD(*),DEPS(*),TOLER
         REAL*8          MATER(NMAT,2)
         REAL*8 TOUTMS(NFS,NSG,6),HSR(NSG,NSG)
         CHARACTER*8     MOD
         CHARACTER*16    LOI,OPTION
+      COMMON /TDIM/   NDT  , NDI
 
       INTEGER         NBCOMM(NMAT,3)
       REAL*8  SIGF(*),SIGD(*),VIND(*),VINF(*),TIMED,TIMEF,PGL(3,3)
@@ -62,8 +63,9 @@ C       ----------------------------------------------------------------
             CALL BURJPL(NMAT,MATER,NR,DRDY,DSDE)
          ELSEIF ( LOI(1:4) .EQ. 'LETK' ) THEN
             CALL LKIJPL(NMAT,MATER,SIGF,NR,DRDY,DSDE)
-         ELSE  
-            CALL LCOPTG(NMAT,MATER,NR,NVI,DRDY,DSDE,IRET)
+         ELSE
+            N2=NR-NDT
+            CALL LCOPTG(NMAT,MATER,NR,N2,DRDY,DSDE,IRET)
          ENDIF
 C
          END

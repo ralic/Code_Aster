@@ -1,10 +1,10 @@
       SUBROUTINE HAYMAT(FAMI,KPG,KSP,MOD,IMAT,NMAT,POUM,
-     &                  COEFEL,COEFPL,NVI)
+     &                  COEFEL,COEFPL,NVI,NR)
       IMPLICIT NONE
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 09/11/2012   AUTEUR DELMAS J.DELMAS 
+C MODIF ALGORITH  DATE 25/02/2013   AUTEUR PROIX J-M.PROIX 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -41,15 +41,12 @@ C         NDI    :  NB DE COMPOSANTES DIRECTES  TENSEURS
 C         NR     :  NB DE COMPOSANTES SYSTEME NL
 C         NVI    :  NB DE VARIABLES INTERNES
 C     ----------------------------------------------------------------
-      INTEGER      KPG,KSP,NMAT,NVI,IOPTIO,IDNR,IMAT,CERR(16)
-      REAL*8        COEFEL(NMAT),COEFPL(NMAT),C1D,C2D
+      INTEGER      KPG,KSP,NMAT,NVI,IMAT,CERR(16),NR,NDT,NDI
+      REAL*8        COEFEL(NMAT),COEFPL(NMAT)
       CHARACTER*(*) FAMI,POUM
       CHARACTER*8   MOD, NOMC(16)
-      CHARACTER*11  METING
 C     ----------------------------------------------------------------
-      COMMON /OPTI/   IOPTIO , IDNR
-      COMMON /METI/   METING
-      COMMON /COED/   C1D , C2D
+      COMMON /TDIM/   NDT  , NDI
 C     ----------------------------------------------------------------
 C
 C -   RECUPERATION MATERIAU -----------------------------------------
@@ -82,8 +79,31 @@ C
         CALL RCVALB(FAMI,KPG,KSP,POUM,IMAT,' ', 'HAYHURST',0,' ',
      1              0.D0,13,NOMC(4),  COEFPL,  CERR(4), 1 )
 C
+        CALL ASSERT(COEFPL(11).EQ.0.D0)
+        
 C     NOMBRE DE COEF MATERIAU
       COEFPL(NMAT)=15
-      NVI=12
+      
+      IF (MOD(1:2).EQ.'3D') THEN
+C =================================================================
+C - MODELISATION DE TYPE 3D ---------------------------------------
+C =================================================================
+          NDT = 6
+          NDI = 3
+      ELSE IF ( MOD(1:6).EQ.'D_PLAN'.OR.
+     &          MOD(1:4).EQ.'AXIS'  .OR.
+     &          MOD(1:6).EQ.'C_PLAN'     ) THEN
+C =================================================================
+C - D_PLAN AXIS C_PLAN --------------------------------------------
+C =================================================================
+          NDT = 4
+          NDI = 3
+      ENDIF
+C =================================================================
+C - NOMBRE DE VARIABLES INTERNES 
+C =================================================================
+      NVI = 12
+      NR=NDT+4
+C     ON PEUT DIMINUER : NR=NDT+2
 
       END

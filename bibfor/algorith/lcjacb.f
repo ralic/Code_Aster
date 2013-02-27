@@ -2,13 +2,13 @@
      &                   MATERF,TIMED,TIMEF,YF,DEPS,
      &                   ITMAX,TOLER, NBCOMM, CPMONO,
      &                   PGL,NFS,NSG,TOUTMS,HSR,NR,COMP,NVI,
-     &                   VIND,VINF,EPSD, YD,DY, DRDY ,IRET)
+     &                   VIND,VINF,EPSD, YD,DY,CRIT, DRDY ,IRET)
         IMPLICIT   NONE
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 18/12/2012   AUTEUR SELLENET N.SELLENET 
+C MODIF ALGORITH  DATE 25/02/2013   AUTEUR PROIX J-M.PROIX 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -59,7 +59,7 @@ C           IRET   :  CODE RETOUR
 C       ----------------------------------------------------------------
 C
         INTEGER         NR,NMAT,KPG,KSP,ITMAX,IRET,NVI,NFS,NSG
-        REAL*8          DEPS(6) , EPSD(6), TOLER
+        REAL*8          DEPS(6) , EPSD(6), TOLER, CRIT(*)
         REAL*8          DRDY(NR,NR) , YF(NR), DY(NR),YD(NR)
 C
         REAL*8          MATERD(NMAT,2),MATERF(NMAT,2)
@@ -98,6 +98,10 @@ C
       ELSEIF ( LOI(1:4)  .EQ. 'LETK' ) THEN
          CALL LKIJAC (MOD, NMAT,MATERF,TIMED,TIMEF,YF,DEPS,NR,NVI,
      &                VIND,VINF,YD,DY,DRDY,IRET)
+
+      ELSEIF ( LOI  .EQ. 'HAYHURST' ) THEN
+         CALL HAYJAC (MOD, NMAT,MATERF(1,1),MATERF(1,2),TIMED,TIMEF,
+     &                YF,DEPS,NR,NVI,VIND,VINF,YD,DY,CRIT,DRDY,IRET)
 
       ENDIF
 C
