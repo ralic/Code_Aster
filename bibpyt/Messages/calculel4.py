@@ -1,4 +1,4 @@
-#@ MODIF calculel4 Messages  DATE 12/02/2013   AUTEUR PELLET J.PELLET 
+#@ MODIF calculel4 Messages  DATE 25/02/2013   AUTEUR CHEIGNON E.CHEIGNON 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -191,7 +191,16 @@ Risques et conseils :
      que les 80 premières.
 """),
 
+25 : _(u"""
+ Erreur utilisateur (variables de commandes) :
+   Le champ %(k1)s est associé à un LIGREL %(k2)s qui n'est pas celui du calcul %(k3)s
+"""),
 
+26 : _(u"""
+ Erreur utilisateur (variables de commandes) :
+   Le champ %(k1)s est associé à une OPTION %(k2)s qui n'est pas 'INIT_VARC'
+   Ce champ n'a sans doute pas été produit par PROJ_CHAMP / METHODE='SOUS_POINT'
+"""),
 
 
 
