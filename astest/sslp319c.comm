@@ -1,4 +1,4 @@
-# MODIF  DATE 22/01/2013   AUTEUR LADIER A.LADIER 
+# MODIF  DATE 25/02/2013   AUTEUR GENIAUT S.GENIAUT 
 # TITRE PROPAGATION DE DEUX FISSURES XFEM DEBOUCHANTES SOLLICITEE EN MODE I
 # sslp319c.para = tps_job 250 mem_job 512Mo liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -191,7 +191,7 @@ for i in range(1,NPS-1) :
     IMPR_TABLE(TABLE=SIFL[i],);
     IMPR_TABLE(TABLE=SIFR[i],);
 
-    if ( i != NPS ) :
+    if ( i != NPS-2 ) :
       MaFiL[i+1]=CO('MaFiL_%d'%(i+1))
       MaFiR[i+1]=CO('MaFiR_%d'%(i+1))
       MATOT[i+1]=CO('MATOT_%d'%(i+1))
