@@ -2,7 +2,7 @@
      &                  IRET  )
       IMPLICIT NONE
 !           CONFIGURATION MANAGEMENT OF EDF VERSION
-!& MODIF APMAIN PETSC  DATE 21/01/2013   AUTEUR DESOZA T.DESOZA 
+!& MODIF APMAIN PETSC  DATE 26/02/2013   AUTEUR BOITEAU O.BOITEAU 
 ! ==================================================================
 ! COPYRIGHT (C) 1991 - 2013  EDF R&D              WWW.CODE-ASTER.ORG
 !
@@ -62,6 +62,7 @@
 !     VARIABLES LOCALES
       INTEGER      IFM,NIV,IERD,IBID,NMAXIT,PTSERR,JNEQU
       INTEGER      LMAT,IDVALC,JSLVI,JSLVK,JSLVR
+      INTEGER*4    COMCOU,MPICOU
 !
       CHARACTER*24 PRECON
       CHARACTER*19 NOMAT,NOSOLV
@@ -100,6 +101,8 @@
       KSP                ksp
 !----------------------------------------------------------------
       CALL JEMARQ()
+!---- COMMUNICATEUR MPI DE TRAVAIL
+      MPICOU=COMCOU(1)
 
 !     -- ON DESACTIVE LA LEVEE D'EXCEPTION FPE DANS LES MKL
       CALL MATFPE(-1)
@@ -146,7 +149,7 @@
 !        1.4 CREATION DU PRECONDITIONNEUR PETSc (EXTRAIT DU KSP) :
 !        ---------------------------------------------------------
 
-         call KSPCreate(PETSC_COMM_WORLD,Kp(KPTSC),ierr)
+         call KSPCreate(MPICOU,Kp(KPTSC),ierr)
          CALL ASSERT(ierr.EQ.0)
 !
          call KSPSetOperators(Kp(KPTSC),Ap(KPTSC),Ap(KPTSC),

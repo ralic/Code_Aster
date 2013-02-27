@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 14/01/2013   AUTEUR BRIE N.BRIE 
+#& MODIF COMMANDE  DATE 26/02/2013   AUTEUR BOITEAU O.BOITEAU 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -157,7 +157,14 @@ MODE_ITER_SIMULT=OPER(nom="MODE_ITER_SIMULT",op=  45, sd_prod= mode_iter_simult_
 #        Catalogue commun SOLVEUR
          SOLVEUR         =C_SOLVEUR('MODE_ITER_SIMULT'),
 #-------------------------------------------------------------------
-
+#-------------------------------------------------------------------
+#  Mot-cles caches pour activer le parallelisme au sein d'une macro-commande
+         PARALLELISME_MACRO=FACT(statut='d',min=0,
+           TYPE_COM   =SIMP(statut='c',typ='I',defaut=-999,into=(-999,1),fr="Type de communication"),
+           IPARA1_COM  =SIMP(statut='c',typ='I',defaut=-999,fr="Parametre entier n 1 de la communication"),
+           IPARA2_COM  =SIMP(statut='c',typ='I',defaut=-999,fr="Parametre entier n 2 de la communication"),
+         ),
+#-------------------------------------------------------------------
          VERI_MODE       =FACT(statut='d',min=0,
            STOP_ERREUR     =SIMP(statut='f',typ='TXM',defaut="OUI",into=("OUI","NON") ),
            PREC_SHIFT      =SIMP(statut='f',typ='R',defaut= 5.E-3,val_min=0.E+0 ),

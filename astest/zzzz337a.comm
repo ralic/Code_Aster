@@ -1,0 +1,511 @@
+# MODIF  DATE 26/02/2013   AUTEUR BOITEAU O.BOITEAU 
+# TITRE VALIDATION DU PARALLELISME MULTI-NIVEAUX DE MACRO_MODE_MECA
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
+# (AT YOUR OPTION) ANY LATER VERSION.                                                    
+#                                                                       
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
+#                                                                       
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# ======================================================================
+# zzzz337a.para = tps_job 100 mem_job 512Mo nproc_mpi 4 nnoeud_mpi 1 ncpus 1 liste_test RI
+################################################################################
+# CAS TEST EST CALQUE SUR LA PREMIERE PARTIE DE FDLV112B.
+# IL EST A LANCER SUR  PROCESSUS MPI.
+# IL EST DEDIE A LA VALIDATION INFORMATIQUE ET FONCTIONELLE DES DIFFERENTS
+# SCENARIOS DE PARALLELISME UTILISABLE AVEC MACRO_MODE_MECA:
+# - EN PARALLELISANT LA DISTRIBUTION EN FREQUENCE, LE SOLVEUR LINEAIRE OU LES 2.
+# - EN JOUANT SUR LA REPARTITION DES PROCESSEURS SUR CES DIFFERENTS NIVEAUX.
+# - EN JOUANT SUR LE CRITERE DE STURM DE POST-VERIFICATION (COM SUPPLEMENTAIRE).
+# - EN JOUANT SUR LES DIFFERENTS ALGORITHMES MODAUX ET SOLVEURS LINEAIRES DISPO
+#   NIBLES.
+################################################################################
+DEBUT(CODE=_F(NOM='ZZZZ337A', NIV_PUB_WEB='INTRANET',),DEBUG=_F(SDVERI='OUI') );
+#
+mail0 = LIRE_MAILLAGE(FORMAT='MED', VERI_MAIL=_F(VERIF='OUI'));
+
+mail=CREA_MAILLAGE(MAILLAGE=mail0,
+                      CREA_POI1 =(
+                                  _F(NOM_GROUP_MA = 'PBASE',
+                                    NOEUD = 'N316'),
+                                  _F(NOM_GROUP_MA = 'PFONDAT',
+                                    GROUP_MA = 'SURFBAS2'),
+                                 ),
+                     );
+
+mail=DEFI_GROUP(reuse =mail,
+                MAILLAGE=mail,
+                CREA_GROUP_NO=_F(NOM='ISOLSTR',
+                                 GROUP_MA=('SURFBAS2'),
+                                ),
+               );
+
+mail=MODI_MAILLAGE( reuse=mail,
+                    MAILLAGE=mail,
+                    ORIE_NORM_COQUE=(_F( VECT_NORM = (0., 0., 1.,),
+                                         NOEUD = 'N963',
+                                         GROUP_MA = 'IFLUSOL2'),
+                                     _F( VECT_NORM = (1., 0., 0.,),
+                                         NOEUD = 'N221',
+                                         GROUP_MA = 'IFLUSTR2'),
+                                     _F( VECT_NORM = (0., 0., -1.,),
+                                         NOEUD = 'N316',
+                                         GROUP_MA = 'SURFBAS2'),
+                                     _F( VECT_NORM = (0., 0., 1.,),
+                                         NOEUD = 'N1043',
+                                         GROUP_MA = 'SLIBREM2'),
+                                    ),
+                   );
+modele=AFFE_MODELE( MAILLAGE= mail,
+                      AFFE=( _F(GROUP_MA=( 'STRVOU2' ),
+                                PHENOMENE= 'MECANIQUE',
+                                MODELISATION= '3D'),
+                             _F(GROUP_MA = 'PBASE',
+                                PHENOMENE = 'MECANIQUE',
+                                MODELISATION = 'DIS_TR'),
+                           ),
+                      );
+mat1= DEFI_MATERIAU( ELAS=_F( E= 3.6E+10,
+                              RHO= 2400.,
+                              NU= 0.2,
+                            ),
+                       ) ;
+
+champmat = AFFE_MATERIAU( MAILLAGE= mail,
+                            AFFE=_F( GROUP_MA= ('STRVOU2'),
+                                   MATER= mat1 )
+                           );
+
+cara_ele=AFFE_CARA_ELEM(MODELE=modele,
+                        DISCRET=(_F(GROUP_MA='PBASE',
+                                    REPERE='GLOBAL',
+                                    CARA='M_TR_D_N',
+                                    VALE=(0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,)),
+                                 _F(GROUP_MA='PBASE',
+                                    REPERE='GLOBAL',
+                                    CARA='K_TR_D_N',
+                                    VALE=(0.,0.,0.,0.,0.,0.))
+                                 ),
+                        );
+
+
+cond_lim = AFFE_CHAR_MECA( MODELE= modele,
+                           DDL_IMPO=_F(
+                                          #GROUP_NO=('ISOLSTR',),
+                                          NOEUD = 'N316',
+                                          DX= 0.,
+                                          DY= 0.,
+                                          DZ= 0.,
+                                          DRX= 0.,
+                                          DRY= 0.,
+                                          DRZ= 0.,
+                                      ),
+                           LIAISON_SOLIDE=_F(GROUP_NO=('ISOLSTR',),)
+                          );
+
+
+rigi_ele = CALC_MATR_ELEM( MODELE= modele ,
+                           OPTION= 'RIGI_MECA',
+                           CHAM_MATER= champmat,
+                           CHARGE= cond_lim,
+                           CARA_ELEM=cara_ele,
+                         );
+#
+mass_ele = CALC_MATR_ELEM( MODELE= modele ,
+                           OPTION= 'MASS_MECA',
+                           CHAM_MATER= champmat,
+                           CHARGE= cond_lim,
+                           CARA_ELEM=cara_ele,
+                         );
+
+nume_ddl = NUME_DDL( MATR_RIGI= rigi_ele );
+
+MATRIGI= ASSE_MATRICE( MATR_ELEM= rigi_ele, NUME_DDL= nume_ddl );
+MATMASS= ASSE_MATRICE( MATR_ELEM= mass_ele, NUME_DDL= nume_ddl );
+
+
+# DIFFERENTS SCENARIOS PARALLELES AVEC SOLVEUR LINEAIRE MUMPS
+#------------------------------------------------------------
+
+para_sturm='GLOBAL'
+# PARALLELISME 4x1 (1 PROC POUR CHACUNE DES 4 BANDES x 1 PROC POUR MUMPS)
+mode41=MACRO_MODE_MECA(MATR_RIGI=MATRIGI,MATR_MASS=MATMASS,
+                       CALC_FREQ=_F(FREQ=(0.1, 10.,20.,30.,40.,),),              
+                       SOLVEUR=_F(METHODE='MUMPS',RENUM='QAMD',GESTION_MEMOIRE='IN_CORE',),
+                       NIVEAU_PARALLELISME='COMPLET',
+                       VERI_MODE=_F(STURM=para_sturm),
+                       FILTRE_MODE=_F(SEUIL=0.0003,),
+                       IMPRESSION=_F(),);
+
+
+# PARALLELISME 1x4 (PARALLELISME UNIQUEMENT SUR MUMPS, 4 PROCS)
+mode14=MACRO_MODE_MECA(MATR_RIGI=MATRIGI,MATR_MASS=MATMASS,
+                       CALC_FREQ=_F(FREQ=(0.1, 10.,20.,30.,40.,),),              
+                       SOLVEUR=_F(METHODE='MUMPS',RENUM='QAMD',GESTION_MEMOIRE='IN_CORE'),
+                       NIVEAU_PARALLELISME='PARTIEL',
+                       VERI_MODE=_F(STURM=para_sturm),
+                       FILTRE_MODE=_F(SEUIL=0.0003,),
+                       IMPRESSION=_F(),);
+
+para_sturm='LOCAL'
+# PARALLELISME 2x2 (1 PROC POUR 2 BANDES x 2 PROCS POUR MUMPS)
+mode22=MACRO_MODE_MECA(MATR_RIGI=MATRIGI,MATR_MASS=MATMASS,
+                       CALC_FREQ=_F(FREQ=(0.1, 20.,40.,),),              
+                       SOLVEUR=_F(METHODE='MUMPS',RENUM='QAMD',GESTION_MEMOIRE='IN_CORE'),
+                       NIVEAU_PARALLELISME='COMPLET',
+                       VERI_MODE=_F(STURM=para_sturm),
+                       FILTRE_MODE=_F(SEUIL=0.0003,),
+                       IMPRESSION=_F(),);
+para_sturm='NON'
+# PARALLELISME AVEC DESEQUILIBRAGE: 1x2 POUR LA PREMIERE SOUS-BANDE, 1x1 POUR LES AUTRES
+mode211=MACRO_MODE_MECA(MATR_RIGI=MATRIGI,MATR_MASS=MATMASS,
+                       CALC_FREQ=_F(FREQ=(0.1, 20.,30.,40.,),),          
+                       SOLVEUR=_F(METHODE='MUMPS',RENUM='QAMD',GESTION_MEMOIRE='IN_CORE'),
+                       NIVEAU_PARALLELISME='COMPLET',
+                       VERI_MODE=_F(STURM=para_sturm),
+                       FILTRE_MODE=_F(SEUIL=0.0003,),
+                       IMPRESSION=_F(),);
+
+# DIFFERENTS SCENARIOS PARALLELES EN PANACHANT SOLVEUR MODAL ET LINEAIRE
+#------------------------------------------------------------------------
+
+para_sturm='GLOBAL'
+# PARALLELISME 4x1 (SORENSEN + MULT_FRONT)
+modeSM=MACRO_MODE_MECA(MATR_RIGI=MATRIGI,MATR_MASS=MATMASS,
+                       CALC_FREQ=_F(FREQ=(0.1, 10.,20.,30.,40.,),),              
+                       METHODE='SORENSEN',SOLVEUR=_F(METHODE='MULT_FRONT'),
+                       NIVEAU_PARALLELISME='COMPLET',
+                       VERI_MODE=_F(STURM=para_sturm),
+                       FILTRE_MODE=_F(SEUIL=0.0003,),
+                       IMPRESSION=_F(),);
+para_sturm='LOCAL'
+# PARALLELISME 4x1 (TRI_DIAG + MULT_FRONT)
+modeLM=MACRO_MODE_MECA(MATR_RIGI=MATRIGI,MATR_MASS=MATMASS,
+                       CALC_FREQ=_F(FREQ=(0.1, 10.,20.,30.,40.,),COEF_DIM_ESPACE=8),
+                       METHODE='TRI_DIAG',SOLVEUR=_F(METHODE='MULT_FRONT'),              
+                       NIVEAU_PARALLELISME='COMPLET',
+                       VERI_MODE=_F(STURM=para_sturm),
+                       FILTRE_MODE=_F(SEUIL=0.0003,),
+                       IMPRESSION=_F(),);
+
+para_sturm='NON'
+# PARALLELISME 4x1 (JACOBI + MULT_FRONT)
+modeJM=MACRO_MODE_MECA(MATR_RIGI=MATRIGI,MATR_MASS=MATMASS,
+                       CALC_FREQ=_F(FREQ=(0.1, 10.,20.,30.,40.,),),
+                       METHODE='JACOBI',SOLVEUR=_F(METHODE='MULT_FRONT'),
+                       NIVEAU_PARALLELISME='COMPLET',
+                       VERI_MODE=_F(STURM=para_sturm),
+                       FILTRE_MODE=_F(SEUIL=0.0003,),
+                       IMPRESSION=_F(),);
+
+
+# TEST_RESU SUR QUELQUES FREQS ET COMPOSANTES DE VECTEURS PROPRES
+#
+# ON TESTE LES VALEURS PROPRES SITUEES AUX FRONTIERES DES BORNES
+# DE CALCUL ET QUELQUES COMPOSANTES DE MODES EN FAISANT TOURNER
+# LES COMPOSANTES: DX/DY/DZ PUIS N100, N200, N300...
+#----------------------------------------------------------------
+sd_testee=mode41
+TEST_RESU(RESU=(_F(NUME_ORDRE=1,TOLE_MACHINE=1.E-3,
+                  PARA='FREQ',
+                  RESULTAT=sd_testee,
+                  VALE_CALC=4.4422183935934,),
+               _F(NUME_ORDRE=1,TOLE_MACHINE=1.E-3,
+                  NOM_CHAM='DEPL',
+                  NOEUD='N500',
+                  NOM_CMP='DX',
+                  RESULTAT=sd_testee,
+                  VALE_CALC=-0.12288872510158,),
+               _F(NUME_ORDRE=7,TOLE_MACHINE=1.E-3,
+                  PARA='FREQ',
+                  RESULTAT=sd_testee,
+                  VALE_CALC=11.713585425023,),
+               _F(NUME_ORDRE=7,TOLE_MACHINE=1.E-3,
+                  NOM_CHAM='DEPL',
+                  NOEUD='N200',
+                  NOM_CMP='DY',
+                  RESULTAT=sd_testee,
+                  VALE_CALC=0.050695505283635,),
+               _F(NUME_ORDRE=15,TOLE_MACHINE=1.E-3,
+                  PARA='FREQ',
+                  RESULTAT=sd_testee,
+                  VALE_CALC=21.031466763776,),
+               _F(NUME_ORDRE=15,TOLE_MACHINE=1.E-3,
+                  NOM_CHAM='DEPL',
+                  NOEUD='N300',
+                  NOM_CMP='DZ',
+                  RESULTAT=sd_testee,
+                  VALE_CALC=0.099889192145868,),
+               _F(NUME_ORDRE=28,TOLE_MACHINE=1.E-3,
+                  PARA='FREQ',
+                  RESULTAT=sd_testee,
+                  VALE_CALC=31.354123521276,),
+               _F(NUME_ORDRE=28,TOLE_MACHINE=1.E-3,
+                  NOM_CHAM='DEPL',
+                  NOEUD='N400',
+                  NOM_CMP='DX',
+                  RESULTAT=sd_testee,
+                  VALE_CALC=0.035662505693371,),),)
+
+sd_testee=mode14
+TEST_RESU(RESU=(_F(NUME_ORDRE=1,TOLE_MACHINE=1.E-3,
+                  PARA='FREQ',
+                  RESULTAT=sd_testee,
+                  VALE_CALC=4.4422183935934,),
+               _F(NUME_ORDRE=1,TOLE_MACHINE=1.E-3,
+                  NOM_CHAM='DEPL',
+                  NOEUD='N500',
+                  NOM_CMP='DX',
+                  RESULTAT=sd_testee,
+                  VALE_CALC=-0.12288872510158,),
+               _F(NUME_ORDRE=7,TOLE_MACHINE=1.E-3,
+                  PARA='FREQ',
+                  RESULTAT=sd_testee,
+                  VALE_CALC=11.713585425023,),
+               _F(NUME_ORDRE=7,TOLE_MACHINE=1.E-3,
+                  NOM_CHAM='DEPL',
+                  NOEUD='N200',
+                  NOM_CMP='DY',
+                  RESULTAT=sd_testee,
+                  VALE_CALC=0.050695505283635,),
+               _F(NUME_ORDRE=15,TOLE_MACHINE=1.E-3,
+                  PARA='FREQ',
+                  RESULTAT=sd_testee,
+                  VALE_CALC=21.031466763776,),
+               _F(NUME_ORDRE=15,TOLE_MACHINE=1.E-3,
+                  NOM_CHAM='DEPL',
+                  NOEUD='N300',
+                  NOM_CMP='DZ',
+                  RESULTAT=sd_testee,
+                  VALE_CALC=0.099889192145868,),
+               _F(NUME_ORDRE=28,TOLE_MACHINE=1.E-3,
+                  PARA='FREQ',
+                  RESULTAT=sd_testee,
+                  VALE_CALC=31.354123521276,),
+               _F(NUME_ORDRE=28,TOLE_MACHINE=1.E-3,
+                  NOM_CHAM='DEPL',
+                  NOEUD='N400',
+                  NOM_CMP='DX',
+                  RESULTAT=sd_testee,
+                  VALE_CALC=0.035662505693371,),),)
+sd_testee=mode22
+TEST_RESU(RESU=(_F(NUME_ORDRE=1,TOLE_MACHINE=1.E-3,
+                  PARA='FREQ',
+                  RESULTAT=sd_testee,
+                  VALE_CALC=4.4422183935934,),
+               _F(NUME_ORDRE=1,TOLE_MACHINE=1.E-3,
+                  NOM_CHAM='DEPL',
+                  NOEUD='N500',
+                  NOM_CMP='DX',
+                  RESULTAT=sd_testee,
+                  VALE_CALC=-0.12288872510158,),
+               _F(NUME_ORDRE=7,TOLE_MACHINE=1.E-3,
+                  PARA='FREQ',
+                  RESULTAT=sd_testee,
+                  VALE_CALC=11.713585425023,),
+               _F(NUME_ORDRE=7,TOLE_MACHINE=1.E-3,
+                  NOM_CHAM='DEPL',
+                  NOEUD='N200',
+                  NOM_CMP='DY',
+                  RESULTAT=sd_testee,
+                  VALE_CALC=0.050695505283635,),
+               _F(NUME_ORDRE=15,TOLE_MACHINE=1.E-3,
+                  PARA='FREQ',
+                  RESULTAT=sd_testee,
+                  VALE_CALC=21.031466763776,),
+               _F(NUME_ORDRE=15,TOLE_MACHINE=1.E-3,
+                  NOM_CHAM='DEPL',
+                  NOEUD='N300',
+                  NOM_CMP='DZ',
+                  RESULTAT=sd_testee,
+                  VALE_CALC=0.099889192145868,),
+               _F(NUME_ORDRE=28,TOLE_MACHINE=1.E-3,
+                  PARA='FREQ',
+                  RESULTAT=sd_testee,
+                  VALE_CALC=31.354123521276,),
+               _F(NUME_ORDRE=28,TOLE_MACHINE=1.E-3,
+                  NOM_CHAM='DEPL',
+                  NOEUD='N400',
+                  NOM_CMP='DX',
+                  RESULTAT=sd_testee,
+                  VALE_CALC=0.035662505693371,),),)
+sd_testee=mode211
+TEST_RESU(RESU=(_F(NUME_ORDRE=1,TOLE_MACHINE=1.E-3,
+                  PARA='FREQ',
+                  RESULTAT=sd_testee,
+                  VALE_CALC=4.4422183935934,),
+               _F(NUME_ORDRE=1,TOLE_MACHINE=1.E-3,
+                  NOM_CHAM='DEPL',
+                  NOEUD='N500',
+                  NOM_CMP='DX',
+                  RESULTAT=sd_testee,
+                  VALE_CALC=-0.12288872510158,),
+               _F(NUME_ORDRE=7,TOLE_MACHINE=1.E-3,
+                  PARA='FREQ',
+                  RESULTAT=sd_testee,
+                  VALE_CALC=11.713585425023,),
+               _F(NUME_ORDRE=7,TOLE_MACHINE=1.E-3,
+                  NOM_CHAM='DEPL',
+                  NOEUD='N200',
+                  NOM_CMP='DY',
+                  RESULTAT=sd_testee,
+                  VALE_CALC=0.050695505283635,),
+               _F(NUME_ORDRE=15,TOLE_MACHINE=1.E-3,
+                  PARA='FREQ',
+                  RESULTAT=sd_testee,
+                  VALE_CALC=21.031466763776,),
+               _F(NUME_ORDRE=15,TOLE_MACHINE=1.E-3,
+                  NOM_CHAM='DEPL',
+                  NOEUD='N300',
+                  NOM_CMP='DZ',
+                  RESULTAT=sd_testee,
+                  VALE_CALC=0.099889192145868,),
+               _F(NUME_ORDRE=28,TOLE_MACHINE=1.E-3,
+                  PARA='FREQ',
+                  RESULTAT=sd_testee,
+                  VALE_CALC=31.354123521276,),
+               _F(NUME_ORDRE=28,TOLE_MACHINE=1.E-3,
+                  NOM_CHAM='DEPL',
+                  NOEUD='N400',
+                  NOM_CMP='DX',
+                  RESULTAT=sd_testee,
+                  VALE_CALC=0.035662505693371,),),)
+sd_testee=modeSM
+TEST_RESU(RESU=(_F(NUME_ORDRE=1,TOLE_MACHINE=1.E-3,
+                  PARA='FREQ',
+                  RESULTAT=sd_testee,
+                  VALE_CALC=4.4422183935934,),
+               _F(NUME_ORDRE=1,TOLE_MACHINE=1.E-3,
+                  NOM_CHAM='DEPL',
+                  NOEUD='N500',
+                  NOM_CMP='DX',
+                  RESULTAT=sd_testee,
+                  VALE_CALC=-0.12288872510158,),
+               _F(NUME_ORDRE=7,TOLE_MACHINE=1.E-3,
+                  PARA='FREQ',
+                  RESULTAT=sd_testee,
+                  VALE_CALC=11.713585425023,),
+               _F(NUME_ORDRE=7,TOLE_MACHINE=1.E-3,
+                  NOM_CHAM='DEPL',
+                  NOEUD='N200',
+                  NOM_CMP='DY',
+                  RESULTAT=sd_testee,
+                  VALE_CALC=0.050695505283635,),
+               _F(NUME_ORDRE=15,TOLE_MACHINE=1.E-3,
+                  PARA='FREQ',
+                  RESULTAT=sd_testee,
+                  VALE_CALC=21.031466763776,),
+               _F(NUME_ORDRE=15,TOLE_MACHINE=1.E-3,
+                  NOM_CHAM='DEPL',
+                  NOEUD='N300',
+                  NOM_CMP='DZ',
+                  RESULTAT=sd_testee,
+                  VALE_CALC=0.099889192145868,),
+               _F(NUME_ORDRE=28,TOLE_MACHINE=1.E-3,
+                  PARA='FREQ',
+                  RESULTAT=sd_testee,
+                  VALE_CALC=31.354123521276,),
+               _F(NUME_ORDRE=28,TOLE_MACHINE=1.E-3,
+                  NOM_CHAM='DEPL',
+                  NOEUD='N400',
+                  NOM_CMP='DX',
+                  RESULTAT=sd_testee,
+                  VALE_CALC=0.035662505693371,),),)
+sd_testee=modeLM
+TEST_RESU(RESU=(_F(NUME_ORDRE=1,TOLE_MACHINE=1.E-3,
+                  PARA='FREQ',
+                  RESULTAT=sd_testee,
+                  VALE_CALC=4.4422183935934,),
+               _F(NUME_ORDRE=1,TOLE_MACHINE=1.E-3,
+                  NOM_CHAM='DEPL',
+                  NOEUD='N500',
+                  NOM_CMP='DX',
+                  RESULTAT=sd_testee,
+                  VALE_CALC=-0.12288872510158,),
+               _F(NUME_ORDRE=7,TOLE_MACHINE=1.E-3,
+                  PARA='FREQ',
+                  RESULTAT=sd_testee,
+                  VALE_CALC=11.713585425023,),
+               _F(NUME_ORDRE=7,TOLE_MACHINE=1.E-3,
+                  NOM_CHAM='DEPL',
+                  NOEUD='N200',
+                  NOM_CMP='DY',
+                  RESULTAT=sd_testee,
+                  VALE_CALC=0.050695505283635,),
+               _F(NUME_ORDRE=15,TOLE_MACHINE=1.E-3,
+                  PARA='FREQ',
+                  RESULTAT=sd_testee,
+                  VALE_CALC=21.031466763776,),
+               _F(NUME_ORDRE=15,TOLE_MACHINE=1.E-3,
+                  NOM_CHAM='DEPL',
+                  NOEUD='N300',
+                  NOM_CMP='DZ',
+                  RESULTAT=sd_testee,
+                  VALE_CALC=0.099889192145868,),
+               _F(NUME_ORDRE=28,TOLE_MACHINE=1.E-3,
+                  PARA='FREQ',
+                  RESULTAT=sd_testee,
+                  VALE_CALC=31.354123521276,),
+               _F(NUME_ORDRE=28,TOLE_MACHINE=1.E-3,
+                  NOM_CHAM='DEPL',
+                  NOEUD='N400',
+                  NOM_CMP='DX',
+                  RESULTAT=sd_testee,
+                  VALE_CALC=0.035662505693371,),),)
+sd_testee=modeJM
+TEST_RESU(RESU=(_F(NUME_ORDRE=1,TOLE_MACHINE=1.E-3,
+                  PARA='FREQ',
+                  RESULTAT=sd_testee,
+                  VALE_CALC=4.4422183935934,),
+               _F(NUME_ORDRE=1,TOLE_MACHINE=1.E-3,
+                  NOM_CHAM='DEPL',
+                  NOEUD='N500',
+                  NOM_CMP='DX',
+                  RESULTAT=sd_testee,
+                  VALE_CALC=-0.12288872510158,),
+               _F(NUME_ORDRE=7,TOLE_MACHINE=1.E-3,
+                  PARA='FREQ',
+                  RESULTAT=sd_testee,
+                  VALE_CALC=11.713585425023,),
+               _F(NUME_ORDRE=7,TOLE_MACHINE=1.E-3,
+                  NOM_CHAM='DEPL',
+                  NOEUD='N200',
+                  NOM_CMP='DY',
+                  RESULTAT=sd_testee,
+                  VALE_CALC=0.050695505283635,),
+               _F(NUME_ORDRE=15,TOLE_MACHINE=1.E-3,
+                  PARA='FREQ',
+                  RESULTAT=sd_testee,
+                  VALE_CALC=21.031466763776,),
+               _F(NUME_ORDRE=15,TOLE_MACHINE=1.E-3,
+                  NOM_CHAM='DEPL',
+                  NOEUD='N300',
+                  NOM_CMP='DZ',
+                  RESULTAT=sd_testee,
+                  VALE_CALC=0.099889192145868,),
+               _F(NUME_ORDRE=28,TOLE_MACHINE=1.E-3,
+                  PARA='FREQ',
+                  RESULTAT=sd_testee,
+                  VALE_CALC=31.354123521276,),
+               _F(NUME_ORDRE=28,TOLE_MACHINE=1.E-3,
+                  NOM_CHAM='DEPL',
+                  NOEUD='N400',
+                  NOM_CMP='DX',
+                  RESULTAT=sd_testee,
+                  VALE_CALC=0.035662505693371,),),)
+FIN( );
+
+
+
+
+
+

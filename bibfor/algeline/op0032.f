@@ -2,7 +2,7 @@
       IMPLICIT NONE
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 14/01/2013   AUTEUR BRIE N.BRIE 
+C MODIF ALGELINE  DATE 26/02/2013   AUTEUR BOITEAU O.BOITEAU 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -28,38 +28,73 @@ C
       INCLUDE 'jeveux.h'
       INTEGER      ISLVK,ISLVI,JREFA,ITEST,NMULTC,LAMOR,JLMOD,JLMOE,
      &             PIVOT1,PIVOT2,MXDDL,NBRSS,IERD,II,IFAPM,K,NBMOD,
-     &             NBLAGR,NBCINE,NEQACT,NEQ,NITERC,NPIVOT(2),
-     &             L,LMASSE,LRAIDE,LDDL,LDYNAM,NK,NBROW,L1,L2,L3,
-     &             LPROD,IRET,NBFREQ,KREFA,IDET(2),JSTU,
-     &             IFM,NIV,NBTETC,NBTET0,NBTET1,
-     &             NBTET2,NBEV0,NBEV1,NBEV2,MITERC,IARG,IBID
+     &             NBLAGR,NBCINE,NEQACT,NEQ,NITERC,NPIVOT(2),MPICOU,
+     &             L,LMASSE,LRAIDE,LDDL,LDYNAM,NK,NBROW,
+     &             LPROD,IRET,NBFREQ,KREFA,IDET(2),JSTU,VALI(3),
+     &             IFM,NIV,NBTETC,NBTET0,NBTET1,TYPECO,RANG,NBPROC,
+     &             NBTET2,NBEV0,NBEV1,NBEV2,MITERC,IARG,IBID,MPICOW,
+     &             K1,K2,JKPAR,L1,L2,L3,L11,L21,FRECOU,IZERO
+      INTEGER*4    COMCOU
       REAL*8       OMEGA2,OMGMIN,OMGMAX,OMIN,OMAX,FCORIG,OMECOR,FREQOM,
-     &             PRECSH,RAYONC,DIMC1,
-     &             CALPAR(2),CALPAC(3),CALPAF(2),RBID,DET(2)
+     &             PRECSH,RAYONC,DIMC1,RZERO,CALPAR(2),CALPAC(3),
+     &             CALPAF(2),RBID,DET(2)
       COMPLEX*16   CENTRC,ZIMC1,CBID
-      LOGICAL      LTEST,LC,LDYNA,LFLAMB
+      LOGICAL      LTEST,LC,LDYNA,LFLAMB,LFIRST,LCOMOD
       CHARACTER*1  TYPEP,TPPARN(1),TPPARR(2),TPPARC(3),TPPARF(2),
      &             TPPARM(2)
       CHARACTER*3  IMPR
-      CHARACTER*8  TYPCON,TYPMET,TYPCHA,TABLE
+      CHARACTER*8  TYPCON,TYPMET,TYPCHA,TABLE,KOPT1,KOPTN
       CHARACTER*14 MATRA,MATRB,MATRC
       CHARACTER*16 CONCEP,NOMCMD,TYPMOD,
      &             NMPARN(1),NMPARR(2),NMPARC(3),NMPARF(2),NMPARM(2)
       CHARACTER*19 MASSE,RAIDE,DYNAM,SOLVEU,AMOR,MATREF
-      CHARACTER*24 VALK(2),METRES,K24RC,KBID,K24MOD,K24STU,K24MOE
+      CHARACTER*24 VALK(3),METRES,K24RC,KBID,K24MOD,K24STU,K24MOE,
+     &             K24PAR
       PARAMETER   ( MXDDL=1,MITERC=10000,NMULTC=2)
 C     ------------------------------------------------------------------
 C
       CALL JEMARQ()
       CALL INFMAJ()
       CALL INFNIV(IFM,NIV)
-
+      RZERO=0.D0
+      IZERO=0
 C-----------------------------------------------------------------------
 C------------------ INITIALIZATIONS/READING OF THE USER-DATA -----------
 C-----------------------------------------------------------------------
 
 C     --- OUTPUT CONCEPT ---
-      CALL GETRES( TABLE , CONCEP , NOMCMD )
+      CALL GETRES(TABLE,CONCEP,NOMCMD)
+
+C     ------------------------------------------------------------------
+C     ------------------------MACRO_MODE_MECA PARALLELE (PART I)--------
+C     ------------------------------------------------------------------
+C     --- RECUPERATION ET TEST DE VALIDITE DES PARAMETRES
+C     ------------------------------------------------------------------
+      MPICOW=COMCOU(0)
+      MPICOU=COMCOU(1)
+      CALL MPIEXE('MPI_RANG_SIZE',MPICOW,IBID,RANG,NBPROC)
+      IF (MPICOW.NE.MPICOU) CALL ASSERT(.FALSE.)
+      CALL GETVIS('PARALLELISME_MACRO','TYPE_COM',1,IARG,1,TYPECO,L)
+      VALK(1)='TYPE_COM'
+      VALK(2)='RANG'
+      VALK(3)='NBPROC'
+      VALI(1)=TYPECO
+      VALI(2)=RANG
+      VALI(3)=NBPROC
+      IF (L.NE.1)
+     &  CALL U2MESG('F','APPELMPI_6',1,VALK,1,VALI,IZERO,RZERO)
+
+      IF ((((TYPECO.NE.1).AND.(TYPECO.NE.2).AND.(TYPECO.NE.-999))
+     &      .OR.(NBPROC.LT.1).OR.(RANG.LT.0)))
+     &  CALL U2MESG('F','APPELMPI_8',3,VALK,3,VALI,IZERO,RZERO)
+
+      IF (((TYPECO.EQ.1).OR.(TYPECO.EQ.2)).AND.(NBPROC.GT.1)) THEN
+        LCOMOD=.TRUE.
+      ELSE
+        LCOMOD=.FALSE.
+      ENDIF
+C     ------------------------------------------------------------------
+
 
 C     --- READ OF MATRICES, CHECK OF REFERENCES ---
 C     --- COMPUTATION OF THE MATRIX DESCRIPTORS ---
@@ -183,15 +218,19 @@ C     --- COUPLE OR LIST OF FREQUENCIES ---
         CALL WKVECT(K24STU,'V V I',NBMOD-1,JSTU)
         CALL GETVR8(' ','FREQ',1,IARG,NBMOD,ZR(JLMOD),L)
         IF (L.NE.NBMOD) CALL ASSERT(.FALSE.)
-        DO 10 K=1,NBMOD
-          ZR(JLMOE+K-1)=-9999.D0
+        DO 10 K=1,NBMOD-1
+          ZI(JSTU+K-1)=IZERO
+          ZR(JLMOE+K-1)=RZERO
+          IF (ZR(JLMOD+K).LE.ZR(JLMOD+K-1)) CALL ASSERT(.FALSE.)
    10   CONTINUE
+        ZR(JLMOE+NBMOD-1)=RZERO
 
       ELSE IF (TYPMOD(1:13).EQ.'MODE_COMPLEXE') THEN
 C     --- CHARACTERISTIC OF THE COMPLEX SHAPE ---
         CALL GETVTX(' ','TYPE_CONTOUR',1,IARG,1,TYPCON,L1)
         CALL GETVR8(' ','RAYON_CONTOUR',1,IARG,1,RAYONC,L2)
         CALL GETVC8(' ','CENTRE_CONTOUR',1,IARG,1,CENTRC,L3)
+        IF ((ABS(L1)*ABS(L2)*ABS(L3)).NE.1) CALL ASSERT(.FALSE.)
         CALPAC(1) = DBLE(CENTRC)
         CALPAC(2) = DIMAG(CENTRC)
         CALPAC(3) = RAYONC
@@ -201,15 +240,23 @@ C     --- CHARACTERISTIC OF THE COMPLEX SHAPE ---
 C     --- COUPLE OR LIST OF BUCKLING MODES ---
         LFLAMB=.TRUE.
         CALL GETVR8(' ','CHAR_CRIT',1,IARG,0,RBID,L)
-        NBMOD=ABS(L)
-        CALL WKVECT(K24MOD,'V V R',NBMOD,JLMOD)
-        CALL WKVECT(K24MOE,'V V R',NBMOD,JLMOE)
-        CALL WKVECT(K24STU,'V V I',NBMOD-1,JSTU)
-        CALL GETVR8(' ','CHAR_CRIT',1,IARG,NBMOD,ZR(JLMOD),L)
-        IF (L.NE.NBMOD) CALL ASSERT(.FALSE.)
-        DO 12 K=1,NBMOD
-          ZR(JLMOE+K-1)=-9999.D0
-   12   CONTINUE
+        IF (ABS(L).GE.2) THEN
+          NBMOD=ABS(L)
+          CALL WKVECT(K24MOD,'V V R',NBMOD,JLMOD)
+          CALL WKVECT(K24MOE,'V V R',NBMOD,JLMOE)
+          CALL WKVECT(K24STU,'V V I',NBMOD-1,JSTU)
+          CALL GETVR8(' ','CHAR_CRIT',1,IARG,NBMOD,ZR(JLMOD),L)
+          IF (L.NE.NBMOD) CALL ASSERT(.FALSE.)
+          DO 12 K=1,NBMOD-1
+            ZI(JSTU+K-1)=IZERO
+            ZR(JLMOE+K-1)=RZERO
+            IF (ZR(JLMOD+K).LE.ZR(JLMOD+K-1)) CALL ASSERT(.FALSE.)
+   12     CONTINUE
+          ZR(JLMOE+NBMOD-1)=RZERO
+        ELSE
+C       --- PARAMETRIZATION PB
+          CALL ASSERT(.FALSE.)
+        ENDIF
 
       ELSE
 C     --- BAD VALUE OF TYMOD ---
@@ -308,6 +355,116 @@ C-----------------------------------------------------------------------
         IF (NBMOD.LT.2) CALL ASSERT(.FALSE.)
         NBROW=NBMOD-1
 
+C     ------------------------------------------------------------------
+C     ------------------------MACRO_MODE_MECA PARALLELE (PART II)-------
+C     ------------------------------------------------------------------
+C     --- SI TYPECO=1 OU 2 ON PASSE EN COM LOCAL + DISTRIBUTION DES
+C     ---     TESTS DE STURM + ON REVIENT AU COMM_WORLD.
+C     ------------------------------------------------------------------
+        IF (LCOMOD) THEN
+C         --- CALCUL DU VECTEUR DE COULEURS POUR DETERMINER LES SOUS-
+C         --- COMMUNICATEURS ASSOCIES A CHAQUE ANALYSE+FACTO. MUMPS
+C         --- VECTEUR COULEUR ZI(JKPAR+I)= FREQ A TRAITER PAR LE PROC
+C         --- DE RANG I. ON COMMENCE PAR FREQ=0,1...NBROW.
+C         --- DONC ZI(JKPAR+NBPROC-1)=NBROW (IMPORTANT POUR VPFOPR).
+C         --- ON GARDE CONTIGUES LES PROCS DEDIES A UNE FACTO MUMPS 
+C         --- ET EN CAS DE DESEQUILIBRAGE DE CHARGE ON DONNE 1 PROC
+C         --- DE PLUS AUX PREMIERES FREQUENCES.
+          K24PAR='&&OP0032.COULEUR'
+          CALL WKVECT(K24PAR,'V V I',NBPROC,JKPAR)
+          CALL VECINT(NBPROC,-9999,ZI(JKPAR))
+          IF (TYPECO.EQ.1) THEN
+C           --- VERIF REDONDANTE AU CAS OU (DEJA FAIT DS MACRO PYTHON)
+            IF (NBPROC.LT.NBROW) CALL ASSERT(.FALSE.)
+            IF ((NBPROC.GT.NBROW).AND.(METRES(1:5).NE.'MUMPS'))
+     &        CALL ASSERT(.FALSE.)
+            L1=NBPROC/NBROW
+            L11=L1+1
+            L2=NBPROC-L1*NBROW
+            L21=L2+1
+            L3=L11*L2
+            DO 40 K=1,L2
+              CALL VECINT(L11,K,ZI(JKPAR+(K-1)*L11))
+   40       CONTINUE
+            DO 41 K=L21,NBROW
+              CALL VECINT(L1,K,ZI(JKPAR+L3+(K-L21)*L1))
+   41       CONTINUE             
+          ELSE IF (TYPECO.EQ.2) THEN
+            IF (NBROW.NE.1) CALL ASSERT(.FALSE.)
+            L1=NBPROC/2
+            L2=NBPROC-2*L1
+            L11=L1+L2
+            CALL VECINT(L11,0,ZI(JKPAR))
+            CALL VECINT(L1,1,ZI(JKPAR+L11))
+            IF (L11.NE.L1) THEN
+              VALI(1)=L11
+              VALI(2)=L1
+              CALL U2MESG('I','MODAL_13',0,KBID,2,VALI,0,RBID)
+            ENDIF
+          ENDIF
+C         --- ULTIME VERIF VECTEUR COULEUR
+          DO 42 K=1,NBPROC
+            L1=ZI(JKPAR+K-1)
+            IF ((L1.LT.0).OR.(L1.GT.NBROW)) CALL ASSERT(.FALSE.)
+   42     CONTINUE
+
+C         --- FREQUENCE COURANTE CAD FREQ A TRAITER PAR LE PROC COURANT
+          FRECOU=ZI(JKPAR+RANG)
+C         --- ON AFFECTE UN COMMUNICATEUR LOCAL MPICOU POUR NE PAS
+C         --- INTERFERER AVEC LA FACTORISATION NUMERIQUE.
+C         --- ON REMET LE COMM_WORLD MPICOW AU SEIN DE VPFOPR.
+C         --- ON DETRUIT LE MPICOU QU'APRES LA DESTRUCTION DE L'OCCU
+C         --- RENCE MUMPS ASSOCIEE.
+          CALL MPIEXE('MPI_COMM_SPLIT',MPICOW,MPICOU,FRECOU,0)
+          IF (MPICOW.EQ.MPICOU) CALL ASSERT(.FALSE.)
+          CALL MPIEXE('AFFE_COMM_REFE',MPICOU,IBID,1,IBID)
+          IF (TYPECO.EQ.1) THEN
+C         --- CALCUL // TYPE 1
+            KOPT1='STURML1P'
+            KOPTN='STURMLNP'
+            IF (FRECOU.EQ.1) THEN
+C         --- LE PROC (ET SES AMIS DU MEME SOUS-COMMUNICATEUR) TRAITE LA
+C         --- PREMIERE SOUS-BANDE
+              LFIRST=.TRUE.
+              K1=1
+              K2=0
+            ELSE
+C         --- LE PROC (ET SES AMIS DU MEME SOUS-COMMUNICATEUR) SAUTENT
+C         --- LA PREMIERE SOUS-BANDE ET TRAITE LA FREQ FRECOU
+              LFIRST=.FALSE.
+              K1=FRECOU
+              K2=K1
+            ENDIF
+          ELSE IF (TYPECO.EQ.2) THEN
+C         --- CALCUL // TYPE 2
+            IF (FRECOU.EQ.0) THEN
+C         --- LE PROC (ET SES AMIS DU MEME SOUS-COMMUNICATEUR) TRAITE
+C         --- LA PREMIERE FREQUENCE DE LA PREMIERE SOUS-BANDE
+              KOPT1='STURML10'
+            ELSE IF (FRECOU.EQ.1) THEN
+C         --- LE PROC (ET SES AMIS DU MEME SOUS-COMMUNICATEUR) TRAITE
+C         --- LA SECONDE FREQUENCE DE LA PREMIERE SOUS-BANDE
+              KOPT1='STURML11'
+            ENDIF
+            KOPTN='XXXXXXXX'
+            LFIRST=.TRUE.
+            K1=1
+            K2=0
+          ELSE
+            CALL ASSERT(.FALSE.)
+          ENDIF
+
+        ELSE
+C         --- CALCUL SEQ: LE PROC FAIT LES NBROW CALCULS
+          K1=2
+          K2=NBROW
+          LFIRST=.TRUE.
+          KOPT1='STURML1'
+          KOPTN='STURMLN'
+        ENDIF
+        NPIVOT(1)=-9999
+        NPIVOT(2)=-9999
+
 C       --- TO PERFORM A LIST OF BANDES ---
 C       --- STEP 1: FIRST BANDE         ---
         IF (LDYNA) THEN
@@ -319,29 +476,31 @@ C       --- STEP 1: FIRST BANDE         ---
         ELSE
           CALL ASSERT(.FALSE.)
         ENDIF
-        CALL VPFOPR('STURML1',TYPMOD,LMASSE,LRAIDE,LDYNAM,OMIN,OMAX,
-     &              RBID,ZI(JSTU),NPIVOT,OMECOR,PRECSH,NBRSS,NBLAGR,
-     &              SOLVEU,DET,IDET)
-C        --- WE STORE THE POSSIBLY CORRECTED FREQUENCY/BUCKLING MODE
-        IF (LDYNA) THEN
-          ZR(JLMOE)=FREQOM(OMIN)
-          ZR(JLMOE+1)=FREQOM(OMAX)
-        ELSE
-          ZR(JLMOE)=OMIN
-          ZR(JLMOE+1)=OMAX
-        ENDIF
-
-        DO 20 K=2,NBROW
-C        --- STEP K: BANDE NUMBER K
-          OMIN=OMAX
+        IF (LFIRST) THEN
+          CALL VPFOPR(KOPT1,TYPMOD,LMASSE,LRAIDE,LDYNAM,OMIN,OMAX,
+     &                RBID,ZI(JSTU),NPIVOT,OMECOR,PRECSH,NBRSS,NBLAGR,
+     &                SOLVEU,DET,IDET)
+C          --- WE STORE THE POSSIBLY CORRECTED FREQUENCY/BUCKLING MODE
           IF (LDYNA) THEN
+            ZR(JLMOE)=FREQOM(OMIN)
+            ZR(JLMOE+1)=FREQOM(OMAX)
+          ELSE
+            ZR(JLMOE)=OMIN
+            ZR(JLMOE+1)=OMAX
+          ENDIF
+        ENDIF
+        DO 20 K=K1,K2
+C        --- STEP K: BANDE NUMBER K
+          IF (LDYNA) THEN
+            OMIN=OMEGA2(ZR(JLMOD+K-1))
             OMAX=OMEGA2(ZR(JLMOD+K))
           ELSE
+            OMIN=ZR(JLMOD+K-1)
             OMAX=ZR(JLMOD+K)
           ENDIF
           NPIVOT(1)=NPIVOT(2)
           NPIVOT(2)=K
-          CALL VPFOPR('STURMLN',TYPMOD,LMASSE,LRAIDE,LDYNAM,OMIN,OMAX,
+          CALL VPFOPR(KOPTN,TYPMOD,LMASSE,LRAIDE,LDYNAM,OMIN,OMAX,
      &                RBID,ZI(JSTU+K-1),NPIVOT,OMECOR,PRECSH,NBRSS,
      &                NBLAGR,SOLVEU,DET,IDET)
           IF (LDYNA) THEN
@@ -351,6 +510,16 @@ C        --- STEP K: BANDE NUMBER K
           ENDIF
    20   CONTINUE
 
+C     ------------------------------------------------------------------
+C     -----------------------MACRO_MODE_MECA PARALLELE (PART III)-------
+C     ------------------------------------------------------------------
+C     --- SI TYPECO=1/2 ON COMMUNIQUE TOUS LES RESULTATS DES CALCULS.
+C     ------------------------------------------------------------------
+        IF (LCOMOD) THEN
+          CALL MPICM1('MPI_SUM','I',NBMOD-1,IBID,ZI(JSTU),RBID,CBID)
+          CALL MPICM1('MPI_SUM','R',NBMOD,IBID,IBID,ZR(JLMOE),CBID)
+          CALL JEDETR(K24PAR)
+        ENDIF
 
 C-----------------------------------------------------------------------
 C------------------------ ARGUMENT PRINCIPAL METHOD --------------------
@@ -459,10 +628,21 @@ C-----------------------------------------------------------------------
 C-------------------------- POSTTRAITEMENTS ----------------------------
 C-----------------------------------------------------------------------
 
-      IF ((TYPMET(1:5).EQ.'STURM').OR.
-     &   ((TYPMET(1:3).EQ.'APM').AND.(TYPCHA(1:4).EQ.'LDLT'))) THEN
 C   --- DESTRUCTION OF THE DYNAMIC MATRIX
-        CALL DETRSD('MATR_ASSE',DYNAM)
+      IF ((TYPMET(1:5).EQ.'STURM').OR.
+     &   ((TYPMET(1:3).EQ.'APM').AND.(TYPCHA(1:4).EQ.'LDLT')))
+     &  CALL DETRSD('MATR_ASSE',DYNAM)
+
+C     ------------------------------------------------------------------
+C     -----------------------MACRO_MODE_MECA PARALLELE (PART IV) -------
+C     ------------------------------------------------------------------
+C     --- AVANT DE QUITTER L'OP. ON REMET LE COM WORLD (AU CAS OU)
+C     --- DESTRUCTION DES SOUS-COMMUNICATEURS EVENTUELLEMENT ASSOCIES A
+C     --- UNE OCCURENCE MUMPS (APRES CELLE DE LADITE OCCURENCE)
+C     ------------------------------------------------------------------
+      IF (LCOMOD) THEN
+        CALL MPIEXE('AFFE_COMM_REFE',MPICOW,IBID,1,IBID)
+        CALL MPIEXE('MPI_COMM_FREE',MPICOU,IBID,IBID,IBID)
       ENDIF
 
 C   --- PRINT THE RESULTS TO THE MSG FILE AND SAVE  THE EVALUATED ---

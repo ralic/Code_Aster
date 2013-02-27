@@ -1,7 +1,7 @@
       SUBROUTINE APALMC(KPTSC)
       IMPLICIT NONE
 !           CONFIGURATION MANAGEMENT OF EDF VERSION
-!& MODIF APALMC PETSC  DATE 21/01/2013   AUTEUR DESOZA T.DESOZA 
+!& MODIF APALMC PETSC  DATE 26/02/2013   AUTEUR BOITEAU O.BOITEAU 
 ! ==================================================================
 ! COPYRIGHT (C) 1991 - 2013  EDF R&D              WWW.CODE-ASTER.ORG
 !
@@ -47,6 +47,7 @@
       INTEGER      NSMDI,NSMHC,NZ,TBLOC,NBLLOC
       INTEGER      JSMDI,JSMHC,JIDXD,JIDXO
       INTEGER      I,K,ILIG,JCOL,NBO,NBD,NZDEB,NZFIN
+      INTEGER*4    COMCOU,MPICOU
 !
       CHARACTER*19 NOMAT,NOSOLV
       CHARACTER*16 IDXO, IDXD
@@ -69,6 +70,8 @@
       Vec tmp
 !----------------------------------------------------------------
       CALL JEMARQ()
+!---- COMMUNICATEUR MPI DE TRAVAIL
+      MPICOU=COMCOU(1)
 
 !     -- LECTURE DU COMMUN
       NOMAT  = NOMATS(KPTSC)
@@ -94,7 +97,7 @@
 
 !     ON EST OBLIGE DE PASSER PAR UN VECTEUR TEMPORAIRE CONSTRUIT
 !     PAR MORCEAUX POUR OBTENIR LE BON DECOUPAGE PAR BLOC
-      call VecCreate(PETSC_COMM_WORLD,tmp,ierr)
+      call VecCreate(MPICOU,tmp,ierr)
       CALL ASSERT(ierr.EQ.0)
       call VecSetBlockSize(tmp,bs,ierr)
       CALL ASSERT(ierr.EQ.0)
@@ -168,7 +171,7 @@
          END DO
       END DO
 
-      CALL MatCreate(PETSC_COMM_WORLD,Ap(KPTSC),ierr)
+      CALL MatCreate(MPICOU,Ap(KPTSC),ierr)
       CALL ASSERT(ierr.EQ.0)
       CALL MatSetSizes(Ap(KPTSC),NBLLOC,NBLLOC,neq,neq,ierr)
       CALL ASSERT(ierr.EQ.0)

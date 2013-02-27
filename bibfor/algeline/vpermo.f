@@ -6,9 +6,9 @@
       REAL*8             VECP(*),VALP(*),OMECOR,ERNORM(*)
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
+C MODIF ALGELINE  DATE 26/02/2013   AUTEUR BOITEAU O.BOITEAU 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -44,16 +44,17 @@ C IN  FCORIG : R8 : FREQUENCE DE CORPS RIGIDE
 C OUT ERNORM : R8 : TABLEAU DES NORMES D'ERREUR
 C     ------------------------------------------------------------------
       REAL*8       ANORM1, ANORM2
-C
-C
+
+
 C     --- SEUIL EN PULSATION POUR LES MODES DE CORPS RIGIDE ---
 C-----------------------------------------------------------------------
-      INTEGER I ,IAUX1 ,IAUX2 ,IVEC ,J ,NEQ 
-      REAL*8 R8MAEM ,XSEUIL 
+      INTEGER   I ,IAUX1 ,IAUX2 ,J ,NEQ, IVEC 
+      REAL*8    XSEUIL,RMIN,R8MIEM,RAUX
+      INTEGER*4 NBI4,NEQ4 
 C-----------------------------------------------------------------------
       CALL JEMARQ()
       XSEUIL = OMECOR
-C
+
 C     ------------------------------------------------------------------
 C     ---------------------- DONNEES SUR LES MATRICES ------------------
 C     ------------------------------------------------------------------
@@ -66,50 +67,51 @@ C     ------------------------------------------------------------------
 C     ------------------------------------------------------------------
 C     ---------------------- CALCUL DES NORMES D'ERREUR ----------------
 C     ------------------------------------------------------------------
-      DO 10 I = 1, NBPROP
-C
+      RMIN=100.D0*R8MIEM()
+
+      NBI4=NBPROP
+      NEQ4=NEQ
 C        --- NON PRISE EN COMPTE DES DDLS EXCLUS
-         IVEC=(I-1)*NEQ+1
-         DO 15 J = 0, NEQ-1
-            VECP(IVEC+J) = VECP(IVEC+J) * EXCL(J+1)
- 15      CONTINUE
-C
-C        -- PRODUIT DU VECTEUR PROPRE AVEC LA MATRICE DE RAIDEUR SHIFTEE
-         CALL MRMULT('ZERO',LRAIDE,VECP(IVEC),ZR(IAUX1),1,.FALSE.)
-C
-C        --- PRODUIT DU VECTEUR PROPRE AVEC LA MATRICE DE MASSE
-         CALL MRMULT('ZERO',LMASSE,VECP(IVEC),ZR(IAUX2),1,.FALSE.)
-C
-C        --- CALCUL DU VECTEUR ERREUR
-         DO 20 J = 0, NEQ-1
-            ZR(IAUX2+J) = ZR(IAUX1+J) - VALP(I) * ZR(IAUX2+J)
- 20      CONTINUE
-C
-C        --- ON PREND LA NORME EUCLIDIENNE DU VECTEUR ERREUR ---
-C
-         ANORM1 = 0.D0
-         ANORM2 = 0.D0
-         DO 30 J = 0, NEQ-1
-            ANORM1 = ANORM1+ZR(IAUX1+J)*ZR(IAUX1+J)*EXCL(J+1)
-            ANORM2 = ANORM2+ZR(IAUX2+J)*ZR(IAUX2+J)*EXCL(J+1)
- 30      CONTINUE
-         IF ( ABS(VALP(I)) .GT. XSEUIL ) THEN
-            IF (  ANORM1 .NE. 0.D0 ) THEN
-               ERNORM(I)= SQRT( ANORM2 / ANORM1 )
-            ELSE
-               ERNORM(I)= R8MAEM()
-            ENDIF
-         ELSE
-            ERNORM(I) = ABS(VALP(I)) * SQRT( ANORM2 )
-         ENDIF
-C
- 10   CONTINUE
+      DO 15 I=1,NEQ
+        RAUX=EXCL(I)
+        CALL DSCAL(NBI4,RAUX,VECP(I),NEQ4)
+ 15   CONTINUE
+
+      DO 30 I=1,NBPROP
+        IVEC=(I-1)*NEQ+1
+        CALL MRMULT('ZERO',LRAIDE,VECP(IVEC),ZR(IAUX1),1,.FALSE.)
+        CALL MRMULT('ZERO',LMASSE,VECP(IVEC),ZR(IAUX2),1,.FALSE.)
+        ANORM1 = 0.D0
+        DO 20 J = 1, NEQ
+          RAUX=ZR(IAUX1+J-1)
+          ANORM1 = ANORM1+RAUX*RAUX*EXCL(J)
+ 20     CONTINUE
+        RAUX=-VALP(I)
+        CALL DAXPY(NEQ4,RAUX,ZR(IAUX2),1,ZR(IAUX1),1)
+        ANORM2 = 0.D0
+        DO 25 J = 1, NEQ
+          RAUX=ZR(IAUX1+J-1)
+          ANORM2 = ANORM2+RAUX*RAUX*EXCL(J)
+ 25     CONTINUE
+
+ 
+        IF (ABS(VALP(I)).GT.XSEUIL) THEN
+          IF (ANORM1.GE.RMIN) THEN
+            ERNORM(I)= SQRT(ANORM2/ANORM1)
+          ELSE
+            ERNORM(I)= 1.D+70
+          ENDIF
+        ELSE
+          ERNORM(I) = ABS(VALP(I)) * SQRT(ANORM2)
+        ENDIF
+ 30   CONTINUE  
+
 C     ----------------------------------------------------------------
 C     -------------- DESALLOCATION DES ZONES DE TRAVAIL --------------
 C     ----------------------------------------------------------------
-C
+
       CALL JEDETR('&&VPERMO.TAMPON.PROV_1' )
       CALL JEDETR('&&VPERMO.TAMPON.PROV_2' )
-C
+
       CALL JEDEMA()
       END

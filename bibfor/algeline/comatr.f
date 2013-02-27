@@ -1,0 +1,343 @@
+      SUBROUTINE COMATR(OPTION,TYPEV,NBPROC,RANG,VNCONV,DIM1I,DIM2I,
+     &                  VECTI,DIM1R,DIM2R,VECTR,DIM1C,DIM2C,VECTC)
+C            CONFIGURATION MANAGEMENT OF EDF VERSION
+C MODIF ALGELINE  DATE 26/02/2013   AUTEUR BOITEAU O.BOITEAU 
+C ======================================================================
+C COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
+C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
+C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
+C (AT YOUR OPTION) ANY LATER VERSION.                                   
+C                                                                       
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
+C                                                                       
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
+C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.         
+C ======================================================================
+C ======================================================================
+C     COMMUNICATION VIA LE COMMUNICATEUR MPI COURANT D'UNE MATRICE SOIT 
+C     REELLE, SOIT ENTIERE, SOIT DE CHAR*, SOIT COMPLEXE.
+C     ROUTINE CREE POUR LES BESOINS DU PARALLELISME MPI DANS LES MACROS.
+C     EN INPUT: SEULES LES VNCONV(RANG) COLONNES (SI OPTION='S') ET
+C              LIGNES (SI OPTION='T') SONT SIGNIFIANTES POUR LE PROCES
+C              SUS COURANT.
+C     EN OUTPUT: TOUS LES PROCESSUS RECUPERENT LA MEME MATRICE. ELLE EST
+C              COMPOSEE DES NBPROC PAQUETS DE VNCONV(I) COLONNES 
+C              (RESP. LIGNES) DE TOUS LES PROCESSUS I. CHAQUE PAQUET EST
+C              RANGE DS LA MATRICE PAR ORDRE DE RANG CROISSANT:
+C              EN PREMIER LES VNCONV(1) COLONNES OU LIGNES DU PROCESSUS
+C              DE RANG 0, PUIS LES VNCONV(2) DE CELUI DE RANG 1...
+C ======================================================================
+C IN  OPTION  : K1  : 'S' POUR STANDARD , 'T' POUR TRANSPOSE.
+C IN  TYPEV   : K1  : 'R' POUR REEL (AVEC VECTR), 'I' POUR ENTIER (AVEC 
+C                    VECTI) ET 'C' POUR COMPLEXE (VECTC).
+C IN  NBPROC  : IS  : ENTIER CORRESPONDANT AU NBRE DE PROCESSUS MPI.
+C IN  RANG    : IS  : ENTIER CORRESPONDANT AU RANG DU PROCESSUS MPI.
+C IN  DIM1   : IS  : VECTEURS DU NBRE DE LIGNES DE LA MATRICE CONSIDEREE
+C IN  DIM2   : IS  : IDEM NBRE DE COLONNES.
+C IN  VNCONV  : IS  : VECTEUR DE NBPROC ENTIERS CORRESPONDANT AUX
+C                     DECALAGES PAR PROC.
+C IN/OUT VECTI: IS  : MATRICE D'ENTIERS A COMMUNIQUER (DIM1I X DIM2I)
+C IN/OUT VECTR: R8  : MATRICE REELLE A COMMUNIQUER    (DIM1R X DIM2R)
+C IN/OUT VECTC: C8  : MATRICE COMPLEXE A COMMUNIQUER  (DIM1C X DIM2C)
+C ======================================================================
+C RESPONSABLE BOITEAU O.BOITEAU
+      IMPLICIT NONE
+
+C PARAMETRES D'APPEL
+      INCLUDE 'jeveux.h'
+      INTEGER       NBPROC,RANG,DIM1I,DIM2I,DIM1R,DIM2R,DIM1C,DIM2C,
+     &              VNCONV(NBPROC),
+     &              VECTI(DIM1I,*)
+      REAL*8        VECTR(DIM1R,*)
+      COMPLEX*16    VECTC(DIM1C,*)
+      CHARACTER*1   OPTION,TYPEV
+
+C VARIABLES LOCALES
+      INTEGER       NCONV,NCONVG,I,J,IDECAL,IAUX1,IBID,IZERO,IDIM1,
+     &              IDIM2,IFM,NIV
+      INTEGER*4     I40,I41
+      REAL*8        RZERO,RBID,DNRM2
+      COMPLEX*16    CZERO,CBID,DCMPLX
+      LOGICAL       LDEBUG
+
+C --- INIT.
+      CALL JEMARQ()
+      CALL INFNIV(IFM,NIV)
+      IZERO=0
+      RZERO=0.D0
+      CZERO=DCMPLX(0.D0,0.D0)
+      LDEBUG=.FALSE.
+C      LDEBUG=.TRUE.
+
+C ----------------------------------------------------------------------
+C --- VERIF PARAMETRES INPUT
+C-----------------------------------------------------------------------
+      IF ((OPTION.NE.'S').AND.(OPTION.NE.'T')) CALL ASSERT(.FALSE.)
+      IF ((TYPEV.NE.'R').AND.(TYPEV.NE.'I').AND.(TYPEV.NE.'C'))
+     &  CALL ASSERT(.FALSE.)
+      IF ((NBPROC.LT.1).OR.(RANG.LT.0).OR.(RANG+1.GT.NBPROC))
+     &  CALL ASSERT(.FALSE.)
+
+      IF (TYPEV.EQ.'I') THEN
+        IDIM1=DIM1I
+        IDIM2=DIM2I
+      ELSE IF (TYPEV.EQ.'R') THEN
+        IDIM1=DIM1R
+        IDIM2=DIM2R
+      ELSE IF (TYPEV.EQ.'C') THEN
+        IDIM1=DIM1C
+        IDIM2=DIM2C
+      ELSE
+        CALL ASSERT(.FALSE.)
+      ENDIF
+
+C ----------------------------------------------------------------------
+C --- CALCULS PRELIMINAIRES
+C-----------------------------------------------------------------------
+C --- NCONV:  NBRE DE PREMIERES COLONNES A DECALER
+C --- NCONVG: SOMME DE DECALAGES
+C --- IDECAL: DECALAGE POUR LE PROC COURANT
+      NCONV=VNCONV(RANG+1)
+      NCONVG=0
+      IDECAL=0
+      DO 10 I=1,NBPROC
+        IF (VNCONV(I).LT.0) CALL ASSERT(.FALSE.)
+        IF ((I-1).LT.RANG) IDECAL=IDECAL+VNCONV(I)
+        NCONVG=NCONVG+VNCONV(I)
+   10 CONTINUE
+      IF (OPTION.EQ.'S') THEN
+        IF (IDIM2.NE.NCONVG) CALL ASSERT(.FALSE.)
+      ELSE IF (OPTION.EQ.'T') THEN
+        IF (IDIM1.NE.NCONVG) CALL ASSERT(.FALSE.)
+      ENDIF
+
+C --- VERIF INIT.
+      IF (LDEBUG) THEN
+        WRITE(IFM,*)'INITIALISATION***************************'
+        IF ((TYPEV.EQ.'R').AND.(OPTION.EQ.'S')) THEN
+          I40=IDIM1
+          I41=1
+          DO 18 J=1,IDIM2
+            WRITE(IFM,*)J,DNRM2(I40,VECTR(1,J),I41)
+   18     CONTINUE
+        ELSE IF ((TYPEV.EQ.'R').AND.(OPTION.EQ.'T')) THEN
+C --- ON NE FAIT QU'IMPRIMER LES TERMES CAR CERTAINS SONT EN 1.E+308
+          DO 19 I=1,IDIM1
+            WRITE(IFM,*)I,(VECTR(I,J),J=1,IDIM2)
+   19     CONTINUE
+        ELSE
+          WRITE(IFM,*)'! ATTENTION: DEBUG OPTION NON PRISE EN COMPTE !' 
+        ENDIF
+      ENDIF      
+
+C ----------------------------------------------------------------------
+C --- COMMUNICATIONS PROPREMENTS DITES
+C-----------------------------------------------------------------------
+C --- STEP 1:
+C --- POUR LE PROCESSUS COURANT, ON INITIALISE LA FIN DE LA MATRICE
+C --- A ZERO: COMME SEULS LES NCONV PREMIERES COLONNES (RESP. LIGNES)
+C --- SONT SIGNIFIANTES.
+      IF (OPTION.EQ.'S') THEN
+        IAUX1=IDIM1*(IDIM2-NCONV)
+      ELSE
+        IAUX1=IDIM1-NCONV
+      ENDIF
+      IF ((OPTION.EQ.'S').AND.(IAUX1.GT.0)) THEN
+C
+        IF (TYPEV.EQ.'R') THEN
+          CALL VECINI(IAUX1,RZERO,VECTR(1,NCONV+1))
+        ELSE IF (TYPEV.EQ.'I') THEN
+          CALL VECINT(IAUX1,IZERO,VECTI(1,NCONV+1))
+        ELSE IF (TYPEV.EQ.'C') THEN
+          CALL VECINC(IAUX1,CZERO,VECTC(1,NCONV+1))
+        ENDIF
+C
+      ELSE IF ((OPTION.EQ.'T').AND.(IAUX1.GT.0)) THEN
+C
+        IF (TYPEV.EQ.'R') THEN
+          DO 20 J=1,IDIM2
+            CALL VECINI(IAUX1,RZERO,VECTR(NCONV+1,J))
+   20     CONTINUE
+        ELSE IF (TYPEV.EQ.'I') THEN
+          DO 21 J=1,IDIM2
+            CALL VECINT(IAUX1,IZERO,VECTI(NCONV+1,J))
+   21     CONTINUE
+        ELSE IF (TYPEV.EQ.'C') THEN
+          DO 22 J=1,IDIM2
+            CALL VECINC(IAUX1,CZERO,VECTC(NCONV+1,J))
+   22     CONTINUE
+        ENDIF
+C
+      ENDIF
+
+C --- VERIF STEP 1.
+      IF (LDEBUG) THEN
+        WRITE(IFM,*)'STEP 1***************************'
+        IF ((TYPEV.EQ.'R').AND.(OPTION.EQ.'S')) THEN
+          I40=IDIM1
+          I41=1
+          DO 28 J=1,IDIM2
+            WRITE(IFM,*)J,DNRM2(I40,VECTR(1,J),I41)
+   28     CONTINUE
+        ELSE IF ((TYPEV.EQ.'R').AND.(OPTION.EQ.'T')) THEN
+          DO 29 I=1,IDIM1
+            WRITE(IFM,*)I,(VECTR(I,J),J=1,IDIM2)
+   29     CONTINUE
+        ELSE
+          WRITE(IFM,*)'! ATTENTION: DEBUG OPTION NON PRISE EN COMPTE !' 
+        ENDIF
+      ENDIF
+
+C --- STEP 2:
+C --- ON DECALE LES NCONV PREMIERES LIGNES OU COLONNES POUR LES METTRE
+C --- BIEN EN PLACE DS LE BUFFER DE COMMUNICATION. ON DECALE EN COMMEN
+C --- CANT PAR LES COLONNES OU LES LIGNES LES PLUS ELOIGNEES DE MANIERE
+C --- A NE PAS ECRASER DE DONNEES.
+      IF ((OPTION.EQ.'S').AND.(IDECAL.GT.0)) THEN
+C
+        IF (TYPEV.EQ.'R') THEN
+          DO 30 J=NCONV,1,-1
+            DO 301 I=1,IDIM1
+              VECTR(I,J+IDECAL)=VECTR(I,J)
+  301       CONTINUE
+   30     CONTINUE
+        ELSE IF (TYPEV.EQ.'I') THEN
+          DO 31 J=NCONV,1,-1
+            DO 311 I=1,IDIM1
+              VECTI(I,J+IDECAL)=VECTI(I,J)
+  311       CONTINUE
+   31     CONTINUE
+        ELSE IF (TYPEV.EQ.'C') THEN
+          DO 32 J=NCONV,1,-1
+            DO 321 I=1,IDIM1
+              VECTC(I,J+IDECAL)=VECTC(I,J)
+  321       CONTINUE
+   32     CONTINUE
+        ENDIF
+C
+      ELSE IF ((OPTION.EQ.'T').AND.(IDECAL.GT.0)) THEN
+C
+        IF (TYPEV.EQ.'R') THEN
+          DO 34 J=1,IDIM2
+            DO 341 I=NCONV,1,-1
+              VECTR(I+IDECAL,J)=VECTR(I,J)
+  341       CONTINUE
+   34     CONTINUE
+        ELSE IF (TYPEV.EQ.'I') THEN
+          DO 35 J=1,IDIM2
+            DO 351 I=NCONV,1,-1
+              VECTI(I+IDECAL,J)=VECTI(I,J)
+  351       CONTINUE
+   35     CONTINUE
+        ELSE IF (TYPEV.EQ.'C') THEN
+          DO 36 J=1,IDIM2
+            DO 361 I=NCONV,1,-1
+              VECTC(I+IDECAL,J)=VECTC(I,J)
+  361       CONTINUE
+   36     CONTINUE
+        ENDIF
+C
+      ENDIF
+
+C --- VERIF STEP2.
+      IF (LDEBUG) THEN
+        WRITE(IFM,*)'STEP 2***************************'
+        IF ((TYPEV.EQ.'R').AND.(OPTION.EQ.'S')) THEN
+          I40=IDIM1
+          I41=1
+          DO 38 J=1,IDIM2
+            WRITE(IFM,*)J,DNRM2(I40,VECTR(1,J),I41)
+   38     CONTINUE
+        ELSE IF ((TYPEV.EQ.'R').AND.(OPTION.EQ.'T')) THEN
+          DO 39 I=1,IDIM1
+            WRITE(IFM,*)I,(VECTR(I,J),J=1,IDIM2)
+   39     CONTINUE
+        ELSE
+          WRITE(IFM,*)'! ATTENTION: DEBUG OPTION NON PRISE EN COMPTE !' 
+        ENDIF
+      ENDIF
+ 
+C --- STEP 3:
+C --- ON ANNULE LES IDECAL PREMIERES COLONNES OU LIGNES
+      IF ((OPTION.EQ.'S').AND.(IDECAL.GT.0)) THEN
+C
+        IAUX1=IDIM1*IDECAL
+        IF (TYPEV.EQ.'R') THEN
+          CALL VECINI(IAUX1,RZERO,VECTR(1,1))
+        ELSE IF (TYPEV.EQ.'I') THEN
+          CALL VECINT(IAUX1,IZERO,VECTI(1,1))
+        ELSE IF (TYPEV.EQ.'C') THEN
+          CALL VECINC(IAUX1,CZERO,VECTC(1,1))
+        ENDIF
+C
+      ELSE IF ((OPTION.EQ.'T').AND.(IDECAL.GT.0)) THEN
+C
+        IF (TYPEV.EQ.'R') THEN
+          DO 40 J=1,IDIM2
+            CALL VECINI(IDECAL,RZERO,VECTR(1,J))
+   40     CONTINUE
+        ELSE IF (TYPEV.EQ.'I') THEN
+          DO 41 J=1,IDIM2
+            CALL VECINT(IDECAL,IZERO,VECTI(1,J))
+   41     CONTINUE
+        ELSE IF (TYPEV.EQ.'C') THEN
+          DO 42 J=1,IDIM2
+            CALL VECINC(IDECAL,CZERO,VECTC(1,J))
+   42     CONTINUE
+        ENDIF
+C
+      ENDIF
+
+C --- VERIF STEP3.
+      IF (LDEBUG) THEN
+        WRITE(IFM,*)'STEP 3***************************'
+        IF ((TYPEV.EQ.'R').AND.(OPTION.EQ.'S')) THEN
+          I40=IDIM1
+          I41=1
+          DO 48 J=1,IDIM2
+            WRITE(IFM,*)J,DNRM2(I40,VECTR(1,J),I41)
+   48     CONTINUE
+        ELSE IF ((TYPEV.EQ.'R').AND.(OPTION.EQ.'T')) THEN
+          DO 49 I=1,IDIM1
+            WRITE(IFM,*)I,(VECTR(I,J),J=1,IDIM2)
+   49     CONTINUE
+        ELSE
+          WRITE(IFM,*)'! ATTENTION: DEBUG OPTION NON PRISE EN COMPTE !' 
+        ENDIF
+      ENDIF
+
+C --- STEP 4 FINAL:
+C --- ON COMMUNIQUE TOUTE LA MATRICE
+      IAUX1=IDIM1*IDIM2
+      IF (TYPEV.EQ.'R') THEN
+        CALL MPICM1('MPI_SUM','R',IAUX1,IBID,IBID,VECTR(1,1),CBID)
+      ELSE IF (TYPEV.EQ.'I') THEN
+        CALL MPICM1('MPI_SUM','I',IAUX1,IBID,VECTI(1,1),RBID,CBID)
+      ELSE IF (TYPEV.EQ.'C') THEN
+        CALL MPICM1('MPI_SUM','C',IAUX1,IBID,IBID,RBID,VECTC(1,1))
+      ENDIF
+
+C --- VERIF FINALIZATION.
+      IF (LDEBUG) THEN
+        WRITE(IFM,*)'FINALISATION***************************'
+        IF ((TYPEV.EQ.'R').AND.(OPTION.EQ.'S')) THEN
+          I40=IDIM1
+          I41=1
+          DO 58 J=1,IDIM2
+            WRITE(IFM,*)J,DNRM2(I40,VECTR(1,J),I41)
+   58     CONTINUE
+        ELSE IF ((TYPEV.EQ.'R').AND.(OPTION.EQ.'T')) THEN
+          DO 59 I=1,IDIM1
+            WRITE(IFM,*)I,(VECTR(I,J),J=1,IDIM2)
+   59     CONTINUE
+        ELSE
+          WRITE(IFM,*)'! ATTENTION: DEBUG OPTION NON PRISE EN COMPTE !' 
+        ENDIF
+      ENDIF
+      CALL JEDEMA()
+      END

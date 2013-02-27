@@ -2,10 +2,10 @@
      &                  LPAOU,BASE,MPIC)
       IMPLICIT NONE
 
-C MODIF CALCULEL  DATE 19/12/2012   AUTEUR PELLET J.PELLET 
+C MODIF CALCULEL  DATE 26/02/2013   AUTEUR BOITEAU O.BOITEAU 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -75,6 +75,7 @@ C ----------------------------------------------------------------------
 C-----------------------------------------------------------------------
       LOGICAL LFETMO,LFETTS,LFETTD,LDIST,LFETI,LFETIC,DBG,LDGREL
       REAL*8 RBID,TEMP1(6),TEMP2(6)
+      COMPLEX*16 CBID
       CHARACTER*8  LPAIN2(NIN),LPAOU2(NOU)
       CHARACTER*19 LCHIN2(NIN),LCHOU2(NOU)
       CHARACTER*19 LIGREL
@@ -110,7 +111,7 @@ C DEB-------------------------------------------------------------------
 C     -- POUR QUE LES MESURES DE TEMPS EN // SOIENT COMPREHENSIBLES
 C        PAR LES UTILISATEURS, IL FAUT FORCER UNE SYNCHRO AVANT LES
 C        MESURES :
-      CALL MPICM1('BARRIER',' ',0,IBID,RBID)
+      CALL MPICM1('BARRIER',' ',IBID,IBID,IBID,RBID,CBID)
       CALL UTTCPU('CPU.CALC.1','DEBUT',' ')
       CALL UTTCPU('CPU.CALC.2','DEBUT',' ')
 
@@ -530,7 +531,7 @@ C     ----------------------------------------------------
 
 C     9- MESURE DU TEMPS CONSOMME :
 C     ----------------------------------
-      CALL MPICM1('BARRIER',' ',0,IBID,RBID)
+      CALL MPICM1('BARRIER',' ',IBID,IBID,IBID,RBID,CBID)
       CALL UTTCPU('CPU.CALC.2','FIN',' ')
       CALL UTTCPU('CPU.CALC.1','FIN',' ')
 

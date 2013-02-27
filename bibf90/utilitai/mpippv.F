@@ -1,7 +1,7 @@
       SUBROUTINE MPIPPV(OPTMPI,TYPSCA,NBV,VI,VI4,
      &                  VR,NUDEST,NUMESS)
 !           CONFIGURATION MANAGEMENT OF EDF VERSION                  
-!& MODIF MPIPPV UTILITAI  DATE 14/01/2013   AUTEUR COURTOIS M.COURTOIS 
+!& MODIF MPIPPV UTILITAI  DATE 26/02/2013   AUTEUR BOITEAU O.BOITEAU 
 ! ================================================================== 
 ! COPYRIGHT (C) 1991 - 2013  EDF R&D              WWW.CODE-ASTER.ORG 
 !                                                                    
@@ -53,32 +53,26 @@
       CHARACTER*2  TYPSC1
       INTEGER      LOISEM,IRET
       INTEGER*4    IERMPI,LR8,LINT,LINT4,NBV4,NBPRO4,NUDES4,NUMES4
-      LOGICAL      FIRST
-      SAVE         FIRST,LR8,LINT,LINT4
-      DATA         FIRST /.TRUE./
+      INTEGER*4    COMCOU,MPICOU
 ! ---------------------------------------------------------------------
       CALL JEMARQ()
+!---- COMMUNICATEUR MPI DE TRAVAIL
+      MPICOU=COMCOU(1)
 ! --- COMPTEUR
       CALL UTTCPU('CPU.CMPI.1','DEBUT',' ')
 !
 !     -- INITIALISATIONS :
 !     --------------------
-      IF (FIRST) THEN
-!       -- POUR LA GESTION DES ERREURS :
-        CALL MPI_ERRHANDLER_SET(MPI_COMM_WORLD,MPI_ERRORS_RETURN,IERMPI)
-        CALL MPIERR(IERMPI)
-        IF (LOISEM().EQ.8) THEN
-          LINT=MPI_INTEGER8
-        ELSE
-          LINT=MPI_INTEGER
-        ENDIF
-        LINT4=MPI_INTEGER4
-        LR8 = MPI_DOUBLE_PRECISION
-        FIRST= .FALSE.
+      IF (LOISEM().EQ.8) THEN
+        LINT=MPI_INTEGER8
+      ELSE
+        LINT=MPI_INTEGER
       ENDIF
+      LINT4=MPI_INTEGER4
+      LR8 = MPI_DOUBLE_PRECISION
 !
 !     -- S'IL N'Y A QU'UN SEUL PROC, IL N'Y A RIEN A FAIRE :
-      CALL MPI_COMM_SIZE(MPI_COMM_WORLD,NBPRO4,IERMPI)
+      CALL MPI_COMM_SIZE(MPICOU,NBPRO4,IERMPI)
       CALL MPIERR(IERMPI)
       IF (NBPRO4.EQ.1) GOTO 9999
 !
@@ -93,13 +87,13 @@
 !     ---------------------------------
         IF (TYPSC1.EQ.'R') THEN
           CALL MPI_SEND(VR,NBV4,LR8,NUDES4,NUMES4,
-     &                  MPI_COMM_WORLD,IERMPI)
+     &                  MPICOU,IERMPI)
         ELSEIF (TYPSC1.EQ.'I') THEN
           CALL MPI_SEND(VI,NBV4,LINT,NUDES4,NUMES4,
-     &                  MPI_COMM_WORLD,IERMPI)
+     &                  MPICOU,IERMPI)
         ELSEIF (TYPSC1.EQ.'I4') THEN
           CALL MPI_SEND(VI4,NBV4,LINT4,NUDES4,NUMES4,
-     &                  MPI_COMM_WORLD,IERMPI)
+     &                  MPICOU,IERMPI)
         ELSE
           CALL ASSERT(.FALSE.)
         ENDIF
@@ -108,15 +102,15 @@
 !     ---------------------------------
         IF (TYPSC1.EQ.'R ') THEN
           CALL MPI_RECV(VR,NBV4,LR8,NUDES4,NUMES4,
-     &                  MPI_COMM_WORLD,MPI_STATUS_IGNORE,
+     &                  MPICOU,MPI_STATUS_IGNORE,
      &                  IERMPI)
         ELSEIF (TYPSC1.EQ.'I ') THEN
           CALL MPI_RECV(VI,NBV4,LINT,NUDES4,NUMES4,
-     &                  MPI_COMM_WORLD,MPI_STATUS_IGNORE,
+     &                  MPICOU,MPI_STATUS_IGNORE,
      &                  IERMPI)
         ELSEIF (TYPSC1.EQ.'I4') THEN
           CALL MPI_RECV(VI4,NBV4,LINT4,NUDES4,NUMES4,
-     &                  MPI_COMM_WORLD,MPI_STATUS_IGNORE,
+     &                  MPICOU,MPI_STATUS_IGNORE,
      &                  IERMPI)
         ELSE
           CALL ASSERT(.FALSE.)

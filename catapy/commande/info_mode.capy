@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 14/01/2013   AUTEUR BRIE N.BRIE 
+#& MODIF COMMANDE  DATE 26/02/2013   AUTEUR BOITEAU O.BOITEAU 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -95,6 +95,11 @@ INFO_MODE=OPER(nom="INFO_MODE",op=32,sd_prod=table_sdaster,
 #        Catalogue commun SOLVEUR
          SOLVEUR         =C_SOLVEUR('INFO_MODE'),
 #-------------------------------------------------------------------
-
+#-------------------------------------------------------------------
+#  Mot-cles caches pour activer le parallelisme au sein d'une macro-commande
+         PARALLELISME_MACRO=FACT(statut='d',min=0,
+           TYPE_COM   =SIMP(statut='c',typ='I',defaut=-999,into=(-999,1,2),fr="Type de communication"),
+         ),
+#-------------------------------------------------------------------
 
 )  ;

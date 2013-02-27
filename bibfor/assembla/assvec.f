@@ -2,7 +2,7 @@
      &                  TYPE)
       IMPLICIT NONE
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ASSEMBLA  DATE 18/02/2013   AUTEUR SELLENET N.SELLENET 
+C MODIF ASSEMBLA  DATE 26/02/2013   AUTEUR BOITEAU O.BOITEAU 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -86,12 +86,13 @@ C ---------------------------------------------------------------------
       INTEGER LSHIFT
 
       REAL*8 TEMPS(6),RBID
+      COMPLEX*16 CBID
       INTEGER VALI(4)
 
 C --- DEBUT ------------------------------------------------------------
       CALL JEMARQ()
 
-      CALL MPICM1('BARRIER',' ',0,IBID,RBID)
+      CALL MPICM1('BARRIER',' ',IBID,IBID,IBID,RBID,CBID)
       CALL UTTCPU('CPU.CALC.1','DEBUT',' ')
       CALL UTTCPU('CPU.ASSE.1','DEBUT',' ')
       CALL UTTCPU('CPU.ASSE.3','DEBUT',' ')
@@ -970,6 +971,7 @@ C     ----------------------------------------------------------
             CALL ASSERT(TYPE.EQ.1)
             C19='&&ASSVEC.CHAMNO'
             CALL VTCREB(C19,NU,'V',KTYP,NEQUA)
+
             CALL VTCOPY(B19,C19,'F',IRET)
             CALL JEVEUO(C19//'.VALE','L',JVALE2)
             DO 280,J=1,NEQUA
@@ -989,7 +991,7 @@ C     ----------------------------------------------------------
       CALL JEDETR('&&ASSVEC.NUMLOC')
 
 
-      CALL MPICM1('BARRIER',' ',0,IBID,RBID)
+      CALL MPICM1('BARRIER',' ',IBID,IBID,IBID,RBID,CBID)
       CALL UTTCPU('CPU.CALC.1','FIN',' ')
       CALL UTTCPU('CPU.ASSE.1','FIN',' ')
       CALL UTTCPU('CPU.ASSE.3','FIN',' ')

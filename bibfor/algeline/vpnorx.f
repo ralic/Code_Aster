@@ -5,9 +5,9 @@
       CHARACTER*(*)                                  RESUFK(*)
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 14/05/97   AUTEUR CIBHHLV L.VIVAN 
+C MODIF ALGELINE  DATE 26/02/2013   AUTEUR BOITEAU O.BOITEAU 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
@@ -22,27 +22,34 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
 C ======================================================================
-C
+C TOLE CRP_4
 C     NORMALISE A LA PLUS GRANDE DES VALEURS SUR UN DDL QUI N'EST PAS
 C     EXCLUS
 C     ------------------------------------------------------------------
 C
-      INTEGER   IMODE, IEQ
-      REAL*8    NORMX
-C
+      INTEGER      IMODE,IEQ
+      INTEGER*4    NBI4
+      REAL*8       NORMX,INVX,ABSNX,REXC,AREXC
+      CHARACTER*24 K24B
+
+      K24B='SANS_CMP: LAGR'
+      NBI4=NEQ
       DO 100 IMODE = 1, NBMODE
           NORMX = VECP(1,IMODE)*EXCLUS(1)
+          ABSNX=ABS(NORMX)
           DO 110 IEQ = 2, NEQ
-             IF (ABS(NORMX).LT.ABS(VECP(IEQ,IMODE)*EXCLUS(IEQ))) THEN
-                NORMX  = VECP(IEQ,IMODE)*EXCLUS(IEQ)
+             REXC=VECP(IEQ,IMODE)*EXCLUS(IEQ)
+             AREXC=ABS(REXC)
+             IF (ABSNX.LT.AREXC) THEN
+               NORMX  = REXC
+               ABSNX  = AREXC
              ENDIF
   110     CONTINUE
-          IF ( NORMX .NE. 0.0D0 ) THEN
-             DO 120 IEQ = 1, NEQ
-                VECP(IEQ,IMODE) = VECP(IEQ,IMODE) / NORMX
-  120        CONTINUE
+          IF (NORMX.NE.0.D0) THEN
+             INVX=1.D0/NORMX
+             CALL DSCAL(NBI4,INVX,VECP(1,IMODE),1)
           ENDIF
-          RESUFK(IMODE) = 'SANS_CMP: LAGR'
   100 CONTINUE
-C
+      CALL VECINK(NBMODE,K24B,RESUFK)
+
       END

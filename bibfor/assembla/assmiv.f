@@ -3,7 +3,7 @@
       IMPLICIT NONE
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ASSEMBLA  DATE 21/01/2013   AUTEUR PELLET J.PELLET 
+C MODIF ASSEMBLA  DATE 26/02/2013   AUTEUR BOITEAU O.BOITEAU 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -77,6 +77,7 @@ C     S.D. MANIPULEES DANS LE SOUS PROGRAMME
 C ----------------------------------------------------------------------
       INTEGER VALI(4)
       REAL*8 R8MAEM
+      COMPLEX*16 CBID
 
 C --- DEBUT ------------------------------------------------------------
 C-----------------------------------------------------------------------
@@ -370,7 +371,8 @@ C             -- IL SE PEUT QUE LE GREL IGR SOIT VIDE :
       CALL JEDETR('&&ASSMIV.NUMLOC')
 
 C        -- REDUCTION + DIFFUSION DE VECAS A TOUS LES PROC
-      IF (LDIST) CALL MPICM1('MPI_MIN','R',NEQUA,IBID,ZR(JVALE))
+      IF (LDIST)
+     &  CALL MPICM1('MPI_MIN','R',NEQUA,IBID,IBID,ZR(JVALE),CBID)
 
 
       CALL JEDEMA()

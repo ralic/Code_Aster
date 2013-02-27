@@ -3,9 +3,9 @@
      &                  LPRECO)
       IMPLICIT NONE
 !           CONFIGURATION MANAGEMENT OF EDF VERSION
-!& MODIF AMUMPP MUMPS  DATE 19/12/2012   AUTEUR DESOZA T.DESOZA 
+!& MODIF AMUMPP MUMPS  DATE 26/02/2013   AUTEUR BOITEAU O.BOITEAU 
 ! ==================================================================
-! COPYRIGHT (C) 1991 - 2012  EDF R&D              WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2013  EDF R&D              WWW.CODE-ASTER.ORG
 
 !
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR
@@ -217,13 +217,16 @@
                   ENDDO
                ENDIF
 
-!              --- REDUCTION DU SECOND MEMBRE AU PROC MAITRE EN DISTRIBUE
-!              --- POUR ETRE COHERENT AVEC LA MATRICE QUI CONTIENT DES N SUR LA DIAGONALE
+!         --- REDUCTION DU SECOND MEMBRE AU PROC MAITRE EN DISTRIBUE
+!         --- POUR ETRE COHERENT AVEC LA MATRICE QUI CONTIENT DES N
+!         --- SUR LA DIAGONALE
                IF (LDIST) THEN
                   IF (LTYPR) THEN
-                     CALL MPICM1('REDUCE','R',NNBSOL,IBID,RSOLU)
+                     CALL MPICM1('REDUCE','R',NNBSOL,IBID,IBID,RSOLU,
+     &                           CBID)
                   ELSE
-                     CALL MPICM1('REDUCE','R',2*NNBSOL,IBID,CSOLU)
+                     CALL MPICM1('REDUCE','R',2*NNBSOL,IBID,IBID,CSOLU,
+     &                           CBID)
                   ENDIF
                ENDIF
 
@@ -390,9 +393,9 @@
 
 !       -- BROADCAST DE SOLU A TOUS LES PROC
         IF (LTYPR) THEN
-          CALL MPICM1('BCAST','R',NNBSOL,IBID,RSOLU)
+          CALL MPICM1('BCASTP','R',NNBSOL,0,IBID,RSOLU,CBID)
         ELSE
-          CALL MPICM1('BCAST','R',2*NNBSOL,IBID,CSOLU)
+          CALL MPICM1('BCASTP','R',2*NNBSOL,0,IBID,CSOLU,CBID)
         ENDIF
 
 !       -- IMPRESSION DU/DES SOLUTIONS (SI DEMANDE) :

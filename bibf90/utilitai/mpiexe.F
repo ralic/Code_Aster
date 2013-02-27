@@ -1,0 +1,220 @@
+      SUBROUTINE MPIEXE(OPTMPI,MPICO8,MPICOU,INTCOU,INTKEY)
+!           CONFIGURATION MANAGEMENT OF EDF VERSION                  
+!& MODIF MPIEXE UTILITAI  DATE 26/02/2013   AUTEUR BOITEAU O.BOITEAU 
+! ================================================================== 
+! COPYRIGHT (C) 1991 - 2013  EDF R&D              WWW.CODE-ASTER.ORG 
+!                                                                    
+! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR      
+! MODIFY IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS     
+! PUBLISHED BY THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE 
+! LICENSE, OR (AT YOUR OPTION) ANY LATER VERSION.                    
+! THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL,    
+! BUT WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF     
+! MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU   
+! GENERAL PUBLIC LICENSE FOR MORE DETAILS.                           
+!                                                                    
+! YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE  
+! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO : EDF R&D CODE_ASTER,    
+!    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.     
+! ================================================================== 
+!-----------------------------------------------------------------------
+!    - FONCTION REALISEE : SUR-COUCHE MPI
+!
+!      SI OPTMPI='MPI_COMM_WORLD' -> RETOURNE LE COMMUNICATEUR ORIGINEL
+!         MPI_COMM_WORLD DANS MPICO8.
+!
+!      SI OPTMPI='MPI_COMM_SPLIT' -> DIVISE LE COMMUNICATEUR MPICO8
+!         EN PLUSIEURS COMMUNICATEURS (SUIVANT LA
+!         REGLE MENTIONNEE VIA LES ENTIERS INTCOU ET INTKEY).
+!         RETOURNE LE COMMUNICATEUR COURANT ASSOCIE AU PROC DANS MPICOU.
+!
+!      SI OPTMPI='MPI_RANG_SIZE' -> DONNE LE RANG DU PROCESSUS DS LE
+!         COMMUNICATEUR MPICO8 (INTCOU) AINSI QUE LA TAILLE DE CE
+!         DERNIER (INTKEY).
+!
+!      SI OPTMPI='MPI_ERRHANDLER_SET' -> ASSOCIE LE COMMUNICATEUR MPICO8
+!         AU ERRORHANDLER PREDEFINI MPI_ERRORS_RETURN, DE MANIERE A
+!         ARRETER L'EXECUTION PROPREMENT EN CAS DE PB.
+!         (CF. ROUTINE ASTER BIBF/DBG/MPIERR) 
+!
+!      SI OPTMPI='MPI_COMM_FREE' -> LIBERE LE COMMUNICATEUR MPICO8. 
+!
+! METHODES D'ACCES A L'OBJET 'COMMUNICATEUR_MPI.REFE' DE LA BASE GLOBALE
+!      SI OPTMPI='SET_COMM_REFE' -> CREE L'OBJET JEVEUX SI IL N'EXISTE
+!          PAS ET SI IL N'A JAMAIS ETE CREE. SI IL A DEJA ETE CREE ET
+!          DETRUIT, PLANTON VIA CALL ASSERT. 
+!          SI IL EXISTE, ON NE FAIT RIEN.
+!
+!      SI OPTMPI='AFFE_COMM_REFE' -> AFFECTE LE COMMUNICATEUR FOURNI
+!         EN ENTREE A L'ENTIER INTCOU (UNIQUEMENT 1 POUR L'INSTANT).
+!
+! ARGUMENTS D'APPELS
+! IN  OPTMPI        : NOM DE L'OPTION DE CALCUL
+! IN/OUT INTCOU/KEY : ENTIERS AUXILIAIRES
+! IN/OUT MPICO8     : COMMUNICATEUR
+! OUT MPICOU        : COMMUNICATEUR
+!----------------------------------------------------------------------
+C RESPONSABLE BOITEAU O.BOITEAU
+      IMPLICIT NONE
+! DECLARATION PARAMETRES D'APPELS
+      INCLUDE 'jeveux.h'
+      INTEGER       MPICO8,MPICOU,INTCOU,INTKEY
+      CHARACTER*(*) OPTMPI
+
+! DECLARATION VARIABLES LOCALES
+      INTEGER       IRET,JCO,IFM,NIV
+      INTEGER*4     IERMPI,I41,I42,I43,I44
+      CHARACTER*24  K24BID
+      LOGICAL       FIRSTC,DBG
+      SAVE          FIRSTC
+      DATA          FIRSTC /.TRUE./
+
+#ifdef _USE_MPI
+
+      INCLUDE       'mpif.h'
+!     FLAG POUR DEBUG
+      DBG=.FALSE.
+      IF (DBG) CALL INFNIV(IFM,NIV)
+
+      IF (OPTMPI.EQ.'MPI_COMM_WORLD') THEN
+!     ---------------------------------
+        MPICO8=MPI_COMM_WORLD
+        IF (DBG) WRITE(IFM,*)'MPI_COMM_WORLD :',MPICO8
+
+      ELSE IF (OPTMPI.EQ.'MPI_COMM_SPLIT') THEN
+!     ---------------------------------
+        I41=MPICO8
+        I42=INTCOU
+        I43=INTKEY
+        CALL MPI_COMM_SPLIT(I41,I42,I43,I44,IERMPI)
+        CALL MPIERR(IERMPI)
+        MPICOU=I44
+        IF (DBG) WRITE(IFM,*)'MPI_COMM_SPLIT :',MPICO8,MPICOU
+
+      ELSE IF (OPTMPI.EQ.'SET_COMM_REFE') THEN
+!     -------------------------------------
+        K24BID='COMMUNICATEUR_MPI.REFE'
+        CALL JEEXIN(K24BID,IRET)
+        IF (IRET.EQ.0) THEN
+          IF (FIRSTC) THEN
+            CALL WKVECT(K24BID,'G V I',2,JCO)
+            ZI(JCO)=MPI_COMM_WORLD
+            ZI(JCO+1)=MPI_COMM_WORLD
+            FIRSTC=.FALSE.
+          ELSE
+            CALL ASSERT(.FALSE.)
+          ENDIF
+        ENDIF
+        IF (DBG) WRITE(IFM,*)'SET_COMM_REFE :',MPI_COMM_WORLD
+
+      ELSE IF (OPTMPI.EQ.'AFFE_COMM_REFE') THEN
+!     -------------------------------------
+        K24BID='COMMUNICATEUR_MPI.REFE'
+        CALL JEEXIN(K24BID,IRET)
+        IF (IRET.EQ.0) THEN
+          CALL ASSERT(.FALSE.)
+        ELSE
+          IF (INTCOU.EQ.0) CALL ASSERT(.FALSE.)
+          CALL JEVEUO(K24BID,'E',JCO)
+          ZI(JCO+INTCOU)=MPICO8
+        ENDIF
+        IF (DBG) WRITE(IFM,*)'AFFE_COMM_FREE :',INTCOU,MPICO8
+
+      ELSE IF (OPTMPI.EQ.'MPI_RANG_SIZE') THEN
+!     --------------------------------------
+        I41=MPICO8
+        CALL MPI_COMM_RANK(I41,I42,IERMPI)
+        CALL MPIERR(IERMPI)
+        INTCOU=I42
+
+        CALL MPI_COMM_SIZE(I41,I43,IERMPI)
+        CALL MPIERR(IERMPI)
+        INTKEY=I43
+        IF (DBG) WRITE(IFM,*)'MPI_RANG_SIZE :',MPICO8,INTCOU,INTKEY
+
+      ELSE IF (OPTMPI.EQ.'MPI_ERRHANDLER_SET') THEN
+!     --------------------------------------
+        I41=MPICO8
+        CALL MPI_ERRHANDLER_SET(I41,MPI_ERRORS_RETURN,IERMPI)
+        CALL MPIERR(IERMPI)
+        IF (DBG) WRITE(IFM,*)'MPI_ERRHANDLER_SET :',MPICO8
+
+      ELSE IF (OPTMPI.EQ.'MPI_COMM_FREE') THEN
+!     --------------------------------------
+        I41=MPICO8
+        CALL MPI_COMM_FREE(I41,IERMPI)
+        CALL MPIERR(IERMPI)
+        IF (DBG) WRITE(IFM,*)'MPI_COMM_FREE :',MPICO8
+
+      ELSE
+!     ----
+        CALL ASSERT(.FALSE.)
+
+      ENDIF
+!     -----
+
+  999 CONTINUE
+
+#else
+
+!     FLAG POUR DEBUG
+      DBG=.FALSE.
+      IF (DBG) THEN
+        CALL INFNIV(IFM,NIV)
+        WRITE(IFM,*)'NOT_USE_MPI :',OPTMPI
+      ENDIF
+
+      IF (OPTMPI.EQ.'MPI_COMM_WORLD') THEN
+!     ---------------------------------
+        MPICO8=-999
+
+      ELSE IF (OPTMPI.EQ.'MPI_COMM_SPLIT') THEN
+!     ---------------------------------
+        MPICOU=-999
+
+      ELSE IF (OPTMPI.EQ.'SET_COMM_REFE') THEN
+!     -------------------------------------
+        K24BID='COMMUNICATEUR_MPI.REFE'
+        CALL JEEXIN(K24BID,IRET)
+        IF (IRET.EQ.0) THEN
+          IF (FIRSTC) THEN
+            CALL WKVECT(K24BID,'G V I',2,JCO)
+            ZI(JCO)=-999
+            ZI(JCO+1)=-999
+            FIRSTC=.FALSE.
+          ELSE
+            CALL ASSERT(.FALSE.)
+          ENDIF
+        ENDIF
+
+      ELSE IF (OPTMPI.EQ.'AFFE_COMM_REFE') THEN
+!     -------------------------------------
+        K24BID='COMMUNICATEUR_MPI.REFE'
+        CALL JEEXIN(K24BID,IRET)
+        IF (IRET.EQ.0) THEN
+          CALL ASSERT(.FALSE.)
+        ELSE
+          CALL JEVEUO(K24BID,'E',JCO)
+          ZI(JCO+INTCOU)=MPICO8
+        ENDIF
+
+      ELSE IF (OPTMPI.EQ.'MPI_RANG_SIZE') THEN
+!     --------------------------------------
+        INTCOU=0
+        INTKEY=1
+
+      ELSE IF (OPTMPI.EQ.'MPI_ERRHANDLER_SET') THEN
+!     --------------------------------------
+
+      ELSE IF (OPTMPI.EQ.'MPI_COMM_FREE') THEN
+!     --------------------------------------
+
+      ELSE
+!     ----
+        CALL ASSERT(.FALSE.)
+
+      ENDIF
+!     -----
+#endif
+
+      END

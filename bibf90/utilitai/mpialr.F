@@ -1,6 +1,6 @@
       SUBROUTINE MPIALR()
 !           CONFIGURATION MANAGEMENT OF EDF VERSION                  
-!& MODIF MPIALR UTILITAI  DATE 14/01/2013   AUTEUR COURTOIS M.COURTOIS 
+!& MODIF MPIALR UTILITAI  DATE 26/02/2013   AUTEUR BOITEAU O.BOITEAU 
 ! ================================================================== 
 ! COPYRIGHT (C) 1991 - 2013  EDF R&D              WWW.CODE-ASTER.ORG 
 !                                                                    
@@ -30,13 +30,16 @@
       INCLUDE 'aster_constant.h'
 !
       LOGICAL   GTSTAT
-      INTEGER*4 RANK, NBPRO4, IERMPI, IVAL, MPST(MPI_STATUS_SIZE)
+      INTEGER*4 RANK, NBPRO4, IERMPI, IVAL, MPST(MPI_STATUS_SIZE),
+     &          COMCOU,MPICOU
       INTEGER   I, NP1, VALI(2)
       LOGICAL   VU
 !
-      CALL MPI_COMM_RANK(MPI_COMM_WORLD, RANK, IERMPI)
+! --- COMMUNICATEUR MPI DE TRAVAIL
+      MPICOU=COMCOU(1)
+      CALL MPI_COMM_RANK(MPICOU, RANK, IERMPI)
       CALL MPIERR(IERMPI)
-      CALL MPI_COMM_SIZE(MPI_COMM_WORLD, NBPRO4, IERMPI)
+      CALL MPI_COMM_SIZE(MPICOU, NBPRO4, IERMPI)
       CALL MPIERR(IERMPI)
       NP1 = NBPRO4 - 1
 !
@@ -56,7 +59,7 @@
 !       CHAQUE PROCESSEUR ENVOIE LA LISTE DES ALARMES EMISES AU PROC #0
         IVAL = I
         CALL MPI_SEND(IVAL, 1, MPI_INTEGER4, 0, ST_TAG_ALR,
-     &                 MPI_COMM_WORLD, IERMPI)
+     &                 MPICOU, IERMPI)
         CALL MPIERR(IERMPI)
 !
 !     SUR LE PROCESSEUR #0
@@ -66,7 +69,7 @@
         VU = .FALSE.
         DO 10 I=1, NP1
           CALL MPI_RECV(IVAL, 1, MPI_INTEGER4, I, ST_TAG_ALR,
-     &                   MPI_COMM_WORLD, MPST, IERMPI)
+     &                   MPICOU, MPST, IERMPI)
           CALL MPIERR(IERMPI)
           IF ( IVAL .NE. 0) THEN
             VU = .TRUE.

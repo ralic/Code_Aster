@@ -1,8 +1,8 @@
-#@ MODIF appelmpi Messages  DATE 15/10/2012   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF appelmpi Messages  DATE 26/02/2013   AUTEUR BOITEAU O.BOITEAU 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -32,6 +32,26 @@ cata_msg={
 
 5: _(u"""
  Erreur MPI: %(k1)s
+"""),
+6: _(u"""
+ Problème lié a la distribution parallèle de calculs au sein d'une macro-commande.
+ Le paramètre %(k1)s=%(i1)d est incohérent.
+ 
+ Conseil:
+ =======
+   * Contacter l'équipe de développement.
+"""),
+
+8: _(u"""
+ Problème lié a la distribution parallèle de calculs au sein d'une macro-commande.
+ Parmi les paramètres suivants, au moins un est incohérent. 
+     - %(k1)s=%(i1)d,
+     - %(k2)s=%(i2)d,
+     - %(k3)s=%(i3)d.
+ 
+ Conseil:
+ =======
+   * Contacter l'équipe de développement.
 """),
 
 80 : _(u"""  Le processeur #0 demande d'interrompre l'exécution."""),

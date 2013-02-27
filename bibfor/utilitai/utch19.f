@@ -7,7 +7,7 @@
       COMPLEX*16 VALC
       CHARACTER*(*) CHAM19,NOMMA,NOMAIL,NONOEU,NOCMP,TYPRES
 C ----------------------------------------------------------------------
-C MODIF UTILITAI  DATE 12/02/2013   AUTEUR PELLET J.PELLET 
+C MODIF UTILITAI  DATE 26/02/2013   AUTEUR BOITEAU O.BOITEAU 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -46,6 +46,7 @@ C ----------------------------------------------------------------------
 
       INTEGER IBID,ICMP,JCELV
       REAL*8 R8VIDE,R1,R2
+      COMPLEX*16 CBID
       CHARACTER*1 TYPREZ
       CHARACTER*4 TYPE ,KMPIC
       CHARACTER*19 CHM19Z
@@ -88,12 +89,12 @@ C     -- SI LE CHAMP N'EST PAS MPI_COMPLET, IL FAUT COMMUNIQUER
 C        LA VALEUR EXTRAITE :
       IF (KMPIC.EQ.'NON') THEN
         IF (TYPREZ.EQ.'R') THEN
-          CALL MPICM1('MPI_SUM','R',1,IBID,VALR)
+          CALL MPICM1('MPI_SUM','R',1,IBID,IBID,VALR,CBID)
         ELSE IF (TYPREZ.EQ.'C') THEN
           R1=DBLE(VALC)
           R2=DIMAG(VALC)
-          CALL MPICM1('MPI_SUM','R',1,IBID,R1)
-          CALL MPICM1('MPI_SUM','R',1,IBID,R2)
+          CALL MPICM1('MPI_SUM','R',1,IBID,IBID,R1,CBID)
+          CALL MPICM1('MPI_SUM','R',1,IBID,IBID,R2,CBID)
           VALC=DCMPLX(R1,R2)
         ENDIF
       ENDIF

@@ -1,7 +1,7 @@
       SUBROUTINE OP0045()
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 14/01/2013   AUTEUR BRIE N.BRIE 
+C MODIF ALGELINE  DATE 26/02/2013   AUTEUR BOITEAU O.BOITEAU 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -48,37 +48,42 @@ C VARIABLES LOCALES
       INTEGER       NBPARI, NBPARR, NBPARK, NBPARA, MXDDL
       PARAMETER    ( NBPARI=8 , NBPARR=16 , NBPARK=3, NBPARA=27 )
       PARAMETER    ( MXDDL=1 )
-      INTEGER      INDF,ISNNEM,IADX,IMET,I,IADY,IEQ,IERX,IRET,
+      INTEGER      IADX,IMET,I,IADY,IERX,IRET,
      &             IADRB,IADZ,IER1,IFM,ITEMAX,IADRH,IBID,IERD,IFREQ
-      INTEGER      LMAT(3),LSELEC,LRESID,LDSOR,LAMOR,LBRSS,LMASSE,
+      INTEGER      LMAT(3),LSELEC,LRESID,LDSOR,LAMOR,LBRSS,LMASSE,IAUXK,
      &             LMTPSC,LRESUR,LTYPRI,LWORKD,LAUX,LRAIDE,LSIGN,LVALPR,
-     &             LWORKL,LDIAGR,LRESUI,LSURDR,LVEC,LWORKV,
-     &             L,LBORVP,LMF,LPROD,LRESUK,LTYPRE,LXRIG,KQRNR,
+     &             LWORKL,LDIAGR,LRESUI,LSURDR,LVEC,LWORKV,IAUXI,IAUXR,
+     &             LBORVP,LMF,LPROD,LRESUK,LTYPRE,LXRIG,KQRNR,
      &             LDDL,LMATRA,LONWL,LMET,NBVEC2,ICOEF,NPIV2(2)
       INTEGER      NPIVOT,NBVECT,PRIRAM(8),MAXITR,NEQACT,MFREQ,IDET(2),
-     &             NBORTO,NFREQ,NITV,NPARR,NBCINE,NEQ,NITQRM,
+     &             NBORTO,NFREQ,NITV,NPARR,NBCINE,NEQ,NITQRM,IZERO,
      &             NBRSS,NITBAT,NIV,MXRESF,NBLAGR,NPERM,
-     &             NITJAC,N1,NSTOC,NCONV,IEXIN,LWORKR,LAUR,
+     &             NITJAC,N1,NSTOC,NCONV,IEXIN,LWORKR,LAUR,MPICOU,
      &             QRN,QRLWOR,IQRN,LQRN,QRAR,QRAI,QRBA,QRVL,KQRN,
-     &             QRN2,ILSCAL,IRSCAL,LAUC,LAUL,
-     &             ICSCAL,IVSCAL,IISCAL,IBSCAL,JREFA,
-     &             ISLVI,NPREC,ISLVK,KREFA,NNVALP
-      REAL*8       PRORTO,OMEGA2,FMIN,FMAX,ALPHA,TOLSOR,DET(2),
-     &             UNDF,R8VIDE,FREQOM,R8PREM,OMEMIN,OMEMAX,OMESHI,
+     &             QRN2,ILSCAL,IRSCAL,LAUC,LAUL,ICSCAL,IVSCAL,IISCAL,
+     &             IBSCAL,JREFA,ISLVI,NPREC,ISLVK,KREFA,NNVALP,IARG,
+     &             MPICOW,RANG,NBPROC,TYPECO,VALI(5),NBVECG,NFREQG,
+     &             RANGL,ICOM1,ICOM2,L,L1,L2,L3,ISNNEM,INDF
+C     &             ,IETFIN,IETDEB,IETRAT,IETMAX
+      INTEGER*4    COMCOU
+      REAL*8       PRORTO,OMEGA2,FMIN,FMAX,ALPHA,TOLSOR,DET(2),RZERO,
+     &             FREQOM,R8PREM,OMEMIN,OMEMAX,OMESHI,R8VIDE,UNDF,
      &             OMECOR,FCORIG,PRECDC,SEUIL,VPINF,PRECSH,TOL,VPMAX,
-     &             PRSUDG,RBID,TOLDYN,EFFMIN,EFFMAX,EPS, R8DEPI,QUAPI2
-      COMPLEX*16   SIGMA,CBID
+     &             PRSUDG,RBID,TOLDYN,EFFMIN,EFFMAX,EPS,R8DEPI,QUAPI2
+C     &             RETFIN
+      COMPLEX*16   SIGMA,CBID,CZERO,DCMPLX
       CHARACTER*1  CTYP,APPR,KTYP
       CHARACTER*8  MODES,KNEGA,METHOD,ARRET
       CHARACTER*9  TYPEVP
       CHARACTER*14 MATRA,MATRB,MATRC
-      CHARACTER*16 MODRIG,TYPCON,NOMCMD,OPTIOF,OPTIOV,TYPRES,TYPEQZ
+      CHARACTER*16 MODRIG,TYPCON,NOMCMD,OPTIOF,OPTIOV,TYPRES,TYPEQZ,
+     &             K16BID
       CHARACTER*19 MASSE0,MASSE,RAIDE0,RAIDE,AMOR,MATPSC,MATOPA,VECRIG,
      &             NUMEDD,SOLVEU,TABMOD
-      CHARACTER*24 CBORVP,VALK(2),NOPARA(NBPARA),METRES
-      LOGICAL      FLAGE,LQZ,LKR,LC,LNS,LNSC,LNSK,LNSM,LTABMO,LPG
-      INTEGER      IARG
-
+      CHARACTER*24 CBORVP,VALK(5),NOPARA(NBPARA),METRES,KZERO
+      LOGICAL      FLAGE,LQZ,LKR,LC,LNS,LNSC,LNSK,LNSM,LTABMO,LPG,
+     &             LCOMOD,LBID
+C    &             ,LCPU
 C     ------------------------------------------------------------------
       DATA CBORVP / '&&OP0045.BORNE.VALP.USR ' /
       DATA  NOPARA /
@@ -99,13 +104,23 @@ C     -------  LECTURE DES DONNEES  ET PREMIERES VERIFICATION   --------
 C     ------------------------------------------------------------------
 
       CALL JEMARQ()
+C     --- POUR MESURER LE TEMPS CONSOMMEE DS LES ETAPES DE OP0045
+C     --- IL FAUT AUSSI DECOMMENTER LES APPELS A SYSTEM_CLOCK (UTILES
+C     --- MAIS REFUSES PAR L'AGLA).
+C      LCPU=.TRUE.
+C      LCPU=.FALSE.
+C      IF (LCPU) CALL SYSTEM_CLOCK(IETDEB,IETRAT,IETMAX)
+      UNDF=R8VIDE()
+      INDF=ISNNEM()   
+      RZERO=0.D0
+      IZERO=0
+      KZERO=' '
+      CZERO=DCMPLX(0.D0,0.D0)
       FLAGE = .FALSE.
       NCONV = 0
       ICOEF = 0
       LKR = .TRUE.
       LPG = .FALSE.
-      UNDF = R8VIDE()
-      INDF = ISNNEM()
       CALL INFMAJ
       CALL INFNIV(IFM,NIV)
       IF (NIV.EQ.2) THEN
@@ -118,9 +133,7 @@ C     ------------------------------------------------------------------
         PRIRAM(7) = 0
         PRIRAM(8) = 2
       ELSE
-        DO 5 I = 1,8
-          PRIRAM(I) = 0
-   5    CONTINUE
+        CALL VECINT(8,IZERO,PRIRAM)
       ENDIF
       EPS=100.D0*R8PREM()
       QUAPI2 = R8DEPI() * R8DEPI()
@@ -129,6 +142,59 @@ C     ------------------------------------------------------------------
 C     --- RECUPERATION DU RESULTAT  ---
       CALL GETRES(MODES,TYPCON,NOMCMD)
 
+C     ------------------------------------------------------------------
+C     --------------------MACRO_MODE_MECA PARALLELE (PART I)------------
+C     ------------------------------------------------------------------
+C     --- RECUPERATION ET TEST DE VALIDITE DES PARAMETRES DEDIES 
+C     ------------------------------------------------------------------
+      ICOM1=-999
+      ICOM2=-999
+      MPICOW=COMCOU(0)
+      MPICOU=COMCOU(1)
+C     --- ON EST CENSE FONCTIONNER EN COMM_WORLD
+      IF (MPICOW.NE.MPICOU) CALL ASSERT(.FALSE.)
+      CALL MPIEXE('MPI_RANG_SIZE',MPICOW,IBID,RANG,NBPROC)
+      CALL GETVIS('PARALLELISME_MACRO','TYPE_COM',1,IARG,1,TYPECO,L1)
+      CALL GETVIS('PARALLELISME_MACRO','IPARA1_COM',1,IARG,1,ICOM1,L2)
+      CALL GETVIS('PARALLELISME_MACRO','IPARA2_COM',1,IARG,1,ICOM2,L3)
+      VALK(1)='TYPE_COM'
+      VALK(2)='IPARA1_COM'
+      VALK(3)='IPARA2_COM'
+      VALK(4)='RANG'
+      VALK(5)='NBPROC'
+      VALI(1)=TYPECO
+      VALI(2)=ICOM1
+      VALI(3)=ICOM2
+      VALI(4)=RANG
+      VALI(5)=NBPROC
+      IF (L1*L2*L3.NE.1)
+     &  CALL U2MESG('F','APPELMPI_6',3,VALK,3,VALI,0,RBID)
+
+      IF ((((TYPECO.NE.1).AND.(TYPECO.NE.-999))
+     & .OR.((ICOM1.NE.-999).AND.((ICOM1.LT.1).OR.(ICOM1.GT.NBPROC)))
+     & .OR.((ICOM2.NE.-999).AND.((ICOM2.LT.1).OR.(ICOM2.GT.NBPROC)))
+     & .OR.(ICOM1.GT.ICOM2)
+     & .OR.(NBPROC.LT.1).OR.(RANG.LT.0)))
+     &  CALL U2MESG('F','APPELMPI_8',5,VALK,5,VALI,0,RBID)
+
+      IF ((TYPECO.EQ.1).AND.(NBPROC.GT.1)) THEN
+        LCOMOD=.TRUE.
+C       --- DECOMPOSE LE COM GLOBAL MPICOW EN COM LOCAL MPICOU
+C       --- PLUS AFFECTATION DE CE NOUVEAU COM AFIN DE NE PAS PERTURBER 
+C       --- LA FACTO DE LA DEMI-BANDE
+        CALL MPIEXE('MPI_COMM_SPLIT',MPICOW,MPICOU,ICOM1,0)
+        IF (MPICOW.EQ.MPICOU) CALL ASSERT(.FALSE.)
+        CALL MPIEXE('AFFE_COMM_REFE',MPICOU,IBID,1,IBID)
+C       --- RANG DANS LE SOUS-COMM MPICOU LIE A CHAQUE OCCURENCE
+C       --- MUMPS: RANGL
+        CALL MPIEXE('MPI_RANG_SIZE',MPICOU,IBID,RANGL,IBID)
+C       --- TAILLE MAXIMUM DU BUFFER MPI
+      ELSE
+        RANGL=-9999
+        MPICOU=-9999
+        LCOMOD=.FALSE.
+      ENDIF
+C     ------------------------------------------------------------------
 
 C     --- TYPE DE CALCUL : DYNAMIQUE OU FLAMBEMENT OU GENERAL  ---
 C     TYPE_RESU : 'DYNAMIQUE' OU 'MODE_FLAMB' OU 'GENERAL'
@@ -265,7 +331,7 @@ C     --- RECUPERATION PARAM QZ ---
 C     --- RECUPERATION PARAM MODES RIGIDES ---
 C     FCORIG : SEUIL DE FREQUENCE CORPS RIGIDE
       CALL GETVR8('CALC_'//TYPEVP,'SEUIL_'//TYPEVP,1,IARG,1,FCORIG,L)
-      OMECOR = 0.D0
+      OMECOR = RZERO
       IF (TYPRES.EQ.'DYNAMIQUE') OMECOR = OMEGA2(FCORIG)
 
 C     --- LISTES DES FREQUENCES/CHARGES CRITIQUES ---
@@ -277,23 +343,20 @@ C     --- LISTES DES FREQUENCES/CHARGES CRITIQUES ---
          CALL GETVR8('CALC_'//TYPEVP,TYPEVP,1,IARG,NNVALP,ZR(LBORVP),L)
       ELSE
          CALL WKVECT(CBORVP,' V V R',1,LBORVP)
-         ZR(LBORVP)=0.D0
+         ZR(LBORVP)=RZERO
       ENDIF
 
 C     --- APPROCHE (CAS AVEC AMORTISSEMENT) ---
 C     UTILISE SI LMAMOR.NE.0 ET SI METHODE.NE.QZ
       CALL GETVTX('CALC_'//TYPEVP,'APPROCHE',1,IARG,1,APPR,IBID)
 
-
 C     ------------------------------------------------------------------
 C     --------------------  REGLES D'EXCLUSION   -----------------------
 C     ------------------------------------------------------------------
-
 C     --- MODES RIGIDES---
       IF ((MODRIG.EQ.'MODE_RIGIDE').AND.(METHOD.NE.'TRI_DIAG'))
      &  CALL U2MESS('F','ALGELINE2_65')
 
-C       --- AMORTISSEMENT ---
       IF (LC) THEN
          VALK(1) = MATRA
          VALK(2) = MATRC
@@ -357,14 +420,14 @@ C     --- VERIFICATION DES "REFE" ---
       IF (IRET.GT.0) THEN
         VALK(1) = RAIDE
         VALK(2) = MASSE
-        CALL U2MESK('F','ALGELINE2_58',2,VALK)
+        CALL U2MESK('F','ALGELINE2_58', 2 ,VALK)
       ENDIF
       IF (LC) THEN
         CALL VRREFE(RAIDE,AMOR,IRET)
         IF (IRET.GT.0) THEN
           VALK(1) = RAIDE
           VALK(2) = AMOR
-          CALL U2MESK('F','ALGELINE2_58',2,VALK)
+          CALL U2MESK('F','ALGELINE2_58', 2 ,VALK)
         ENDIF
       ENDIF
 
@@ -442,14 +505,15 @@ C        CMDE ECLATEE NUME_DDL LORS DE LA CONSTITUTION DES MATRICES.
 
       NPREC=ZI(ISLVI)
       METRES=ZK24(ISLVK)
+
 C     ------------------------------------------------------------------
 C     ------------  CONSTRUCTION DE LA MATRICE SHIFTEE   ---------------
 C     ------------------------------------------------------------------
 
 C     --- VERIFICATION DES FREQUENCES MIN ET MAX, PASSAGE EN OMEGA2
       IF (TYPRES.EQ.'DYNAMIQUE') THEN
-        FMIN = 0.D0
-        FMAX = 0.D0
+        FMIN = RZERO
+        FMAX = RZERO
         IF (NNVALP.GT.0) FMIN = ZR(LBORVP)
         IF (NNVALP.GT.1) FMAX = ZR(LBORVP+1)
         IF (LC.AND.(FMIN.LT.0.D0)) THEN
@@ -465,8 +529,8 @@ C     --- VERIFICATION DES FREQUENCES MIN ET MAX, PASSAGE EN OMEGA2
         OMEMIN = OMEGA2(FMIN)
         OMEMAX = OMEGA2(FMAX)
       ELSE
-        OMEMIN = 0.D0
-        OMEMAX = 0.D0
+        OMEMIN = RZERO
+        OMEMAX = RZERO
         IF (NNVALP.GT.0) OMEMIN = ZR(LBORVP)
         IF (NNVALP.GT.1) OMEMAX = ZR(LBORVP+1)
         FMIN=OMEMIN
@@ -491,14 +555,19 @@ C     ------------------------------------------------------------------
         CALL UTTCPU('CPU.RESO.4','FIN',' ')
         IF (NSTOC.NE.0) CALL JEVEUO(VECRIG,'E',LXRIG)
       ENDIF
-
+C      IF (LCPU) THEN
+C        CALL SYSTEM_CLOCK(IETFIN)
+C        RETFIN=REAL(IETFIN-IETDEB)/REAL(IETRAT)
+C        WRITE(IFM,*)'<OP0045> COUT LECTURE PARAMETRES: ',RETFIN
+C        CALL SYSTEM_CLOCK(IETDEB,IETRAT,IETMAX)
+C      ENDIF
 C     ------------------------------------------------------------------
 C     ----  CREATION DE LA MATRICE DYNAMIQUE ET DE SA FACTORISEE  ------
 C     ------------------------------------------------------------------
       MATPSC = '&&OP0045.DYN_FAC_R '
       MATOPA = '&&OP0045.DYN_FAC_C '
-      OMESHI=0.D0
-      SIGMA=(0.D0,0.D0)
+      OMESHI=RZERO
+      SIGMA=CZERO
       NPIVOT=0
       LMTPSC= 0
       LMATRA=0
@@ -596,6 +665,12 @@ C     --- PROBLEME QUADRATIQUE COMPLEXE SYM ---
         ENDIF
       ENDIF
 
+C      IF (LCPU) THEN
+C        CALL SYSTEM_CLOCK(IETFIN)
+C        RETFIN=REAL(IETFIN-IETDEB)/REAL(IETRAT)
+C        WRITE(IFM,*)'<OP0045> COUT MATRICE DYNAMIQUE + FACTO: ',RETFIN
+C        CALL SYSTEM_CLOCK(IETDEB,IETRAT,IETMAX)
+C      ENDIF
 C    --- ON BLINDE LES STRUCTURES DE DONNEES DE TYPE MATR_ASSE
 C    --- ON NE MANIPULE PAR LA SUITE QUE LEUR DESCRIPTEUR
 C    --- MATOPA --> LMATRA ET MATPSC --> LMTPSC
@@ -707,25 +782,63 @@ C     --- CORRECTION DE NBVECT DANS LE CAS QUADRATIQUE
 C     ------------------------------------------------------------------
 C     --------------  ALLOCATION DES ZONES DE TRAVAIL   ----------------
 C     ------------------------------------------------------------------
+C     ------------------------------------------------------------------
+C     --------------------MACRO_MODE_MECA PARALLELE (PART II)-----------
+C     ------------------------------------------------------------------
+C     --- REDIMENSIONNEMENT DES BUFFERS DE COM
+C     ------------------------------------------------------------------
+      NBVECG=-9999
+      NFREQG=-9999
+      IF (LCOMOD) THEN
+C       --- ON REMET LE COM WORLD POUR COMMUNIQUER NBVECT/NBFREQ
+        CALL MPIEXE('AFFE_COMM_REFE',MPICOW,IBID,1,IBID)
+C       --- EST-ON LE PROCESSUS MAITRE DU COM LOCAL: RANGL=0 ?
+C       --- SI OUI, ON ENVOI LES BONNES VALEURS DE NBVECT/NFREQ
+C       --- SUR LE COM GLOBAL MPICOW, SINON ON RENVOI ZERO POUR NE PAS
+C       --- COMPTER PLUSIEURS FOIS L'INFO.
+        IF (RANGL.EQ.0) THEN        
+          NBVECG=NBVECT
+          NFREQG=NFREQ
+        ELSE
+          NBVECG=0
+          NFREQG=0
+        ENDIF
+        CALL MPICM1('MPI_SUM','I',1,IBID,NBVECG,RBID,CBID)
+        CALL MPICM1('MPI_SUM','I',1,IBID,NFREQG,RBID,CBID)
+C         --- ON REMET LE COM LOCAL POUR LES FACTO ET SOLVES A SUIVRE
+        CALL MPIEXE('AFFE_COMM_REFE',MPICOU,IBID,1,IBID)
+      ENDIF
+C     ------------------------------------------------------------------
 
-      MXRESF = NFREQ
-      CALL WKVECT('&&OP0045.RESU_I','V V I'  ,NBPARI*NBVECT, LRESUI)
-      CALL WKVECT('&&OP0045.RESU_','V V R'  ,NBPARR*NBVECT, LRESUR)
-      CALL WKVECT('&&OP0045.RESU_K','V V K24',NBPARK*NBVECT, LRESUK)
-
-C     --- INITIALISATION A UNDEF DE LA STRUCTURE DE DONNEES RESUF ---
-      DO 20 IEQ = 1, NBPARR*NBVECT
-        ZR(LRESUR+IEQ-1) = UNDF
-  20  CONTINUE
-      DO 22 IEQ = 1, NBPARI*NBVECT
-        ZI(LRESUI+IEQ-1) = INDF
-  22  CONTINUE
+C     --- CREATION ET INITIALISATION DES SD
+      IF (LCOMOD) THEN
+        MXRESF = NFREQG
+        IAUXR=NBPARR*NBVECG
+        IAUXI=NBPARI*NBVECG
+        IAUXK=NBPARK*NBVECG
+      ELSE
+        MXRESF = NFREQ
+        IAUXR=NBPARR*NBVECT
+        IAUXI=NBPARI*NBVECT
+        IAUXK=NBPARK*NBVECT
+      ENDIF
+      CALL WKVECT('&&OP0045.RESU_I','V V I'  ,IAUXI,LRESUI)
+      CALL WKVECT('&&OP0045.RESU_','V V R'   ,IAUXR,LRESUR)
+      CALL WKVECT('&&OP0045.RESU_K','V V K24',IAUXK,LRESUK)
+      CALL VECINT(IAUXI,INDF,ZI(LRESUI))
+      CALL VECINI(IAUXR,UNDF,ZR(LRESUR))
+      CALL VECINK(IAUXK,KZERO,ZK24(LRESUK))
 
 C     --- CAS GENERALISE REEL ---
       IF (LKR.AND.(.NOT.LC).AND.(.NOT.LNS)) THEN
-        CALL WKVECT('&&OP0045.VECTEUR_PROPRE','V V R',NEQ*NBVECT,LVEC)
+        IF (LCOMOD) THEN
+          CALL WKVECT('&&OP0045.VECTEUR_PROPRE','V V R',NEQ*NBVECG,LVEC)
+        ELSE
+          CALL WKVECT('&&OP0045.VECTEUR_PROPRE','V V R',NEQ*NBVECT,LVEC)
+        ENDIF
       ELSE
 C     --- CAS GENERALISE COMPLEXE OU QUADRATIQUE REEL ET COMPLEXE ---
+        IF (LCOMOD) CALL ASSERT(.FALSE.)
         CALL WKVECT('&&OP0045.VECTEUR_PROPRE','V V C',NEQ*NBVECT,LVEC)
       ENDIF
 
@@ -879,6 +992,12 @@ C     -------  CALCUL DES VALEURS PROPRES ET VECTEURS PROPRES   --------
 C     ------------------------------------------------------------------
 C     ------------------------------------------------------------------
 
+C      IF (LCPU) THEN
+C        CALL SYSTEM_CLOCK(IETFIN)
+C        RETFIN=REAL(IETFIN-IETDEB)/REAL(IETRAT)
+C        WRITE(IFM,*)'<OP0045> COUT PRETRAITEMENTS: ',RETFIN
+C        CALL SYSTEM_CLOCK(IETDEB,IETRAT,IETMAX)
+C      ENDIF
       IF (.NOT.LC) THEN
 
 C     ------------------------------------------------------------------
@@ -895,21 +1014,21 @@ C     ------------------------------------------------------------------
      &         ZR(LVEC), ZR(LRESID), ZR(LWORKD), ZR(LWORKL), LONWL,
      &         ZL(LSELEC), ZR(LDSOR), OMESHI, ZR(LAUX), ZR(LWORKV),
      &         ZI(LPROD), ZI(LDDL), NEQACT, MAXITR, IFM, NIV, PRIRAM,
-     &         ALPHA, OMECOR, NCONV, FLAGE, SOLVEU)
-          CALL RECTFR(NCONV, NCONV, OMESHI, NPIVOT, NBLAGR,
-     &         ZR(LDSOR), NFREQ+1, ZI(LRESUI), ZR(LRESUR), NFREQ)
+     &         ALPHA,OMECOR,NCONV,FLAGE,SOLVEU)
+          CALL RECTFR(NCONV,NCONV,OMESHI,NPIVOT,NBLAGR,
+     &         ZR(LDSOR),NFREQ+1,ZI(LRESUI),ZR(LRESUR),MXRESF)
           CALL VPBOST (TYPRES, NCONV, NCONV, OMESHI, ZR(LDSOR),
      &         NFREQ+1, VPINF, VPMAX, PRECDC, METHOD, OMECOR)
           IF (TYPRES .EQ. 'DYNAMIQUE')
      &      CALL VPORDI(1,0,NCONV,ZR(LRESUR+MXRESF),ZR(LVEC),NEQ,
      &                  ZI(LRESUI))
           DO 37 IMET = 1,NCONV
-            ZI(LRESUI-1+  MXRESF+IMET) = 0
+            ZI(LRESUI-1+  MXRESF+IMET) = IZERO
             ZR(LRESUR-1+IMET) = FREQOM(ZR(LRESUR-1+MXRESF+IMET))
 C           SI OPTION 'PLUS_GRANDE' : CONVERSION EN VALEUR PHYSIQUE
             IF (LPG)
      &         ZR(LRESUR-1+IMET) = +1.D0 / (QUAPI2 * ZR(LRESUR-1+IMET))
-            ZR(LRESUR-1+2*MXRESF+IMET) = 0.0D0
+            ZR(LRESUR-1+2*MXRESF+IMET) = RZERO
             ZK24(LRESUK-1+  MXRESF+IMET) = 'SORENSEN'
  37       CONTINUE
           IF (TYPRES .NE. 'DYNAMIQUE') THEN
@@ -919,11 +1038,11 @@ C           SI OPTION 'PLUS_GRANDE' : CONVERSION EN VALEUR PHYSIQUE
               ZI(LRESUI-1+IMET) = IMET
  38         CONTINUE
           ENDIF
-
         ELSE IF ((METHOD(1:8).EQ.'SORENSEN').AND.(LNS.OR..NOT.LKR)) THEN
 C     ------------------------------------------------------------------
 C     -------  SORENSEN PB GENERALISE COMPLEXE OU REEL NON SYM  --------
 C     ------------------------------------------------------------------
+          IF (LCOMOD) CALL ASSERT(.FALSE.)
           CALL VPSORC (LMASSE, LMATRA, NEQ, NBVECT, NFREQ, TOLSOR,
      &       ZC(LVEC), ZC(LRESID), ZC(LWORKD), ZC(LWORKL), LONWL,
      &       ZL(LSELEC), ZC(LDSOR), SIGMA,
@@ -936,7 +1055,7 @@ C     ------------------------------------------------------------------
           CALL VPBOSC (TYPRES, NCONV, NCONV, SIGMA, ZC(LDSOR),
      &       NFREQ+1, VPINF, VPMAX, PRECDC, METHOD, OMECOR)
           DO 377 IMET = 1,NCONV
-            ZI(LRESUI-1+  MXRESF+IMET) = 0
+            ZI(LRESUI-1+  MXRESF+IMET) = IZERO
             ZR(LRESUR-1+IMET) = FREQOM(ZR(LRESUR-1+MXRESF+IMET))
             ZK24(LRESUK-1+  MXRESF+IMET) = 'SORENSEN'
  377      CONTINUE
@@ -951,20 +1070,20 @@ C     ------------------------------------------------------------------
      &         OPTIOF, TYPRES, OMEMIN, OMEMAX, OMESHI, ZI(LPROD), NFREQ,
      &         LMASSE, LRAIDE, LAMOR, NUMEDD, SIGMA, ICSCAL, IVSCAL,
      &         IISCAL, IBSCAL, FLAGE)
-          CALL RECTFR(NCONV, NCONV, OMESHI, NPIVOT, NBLAGR,
-     &         ZR(LVALPR), NFREQ, ZI(LRESUI), ZR(LRESUR), NFREQ)
+          CALL RECTFR(NCONV,NCONV,OMESHI,NPIVOT,NBLAGR,
+     &         ZR(LVALPR),NFREQ,ZI(LRESUI),ZR(LRESUR),MXRESF)
           CALL VPBOST(TYPRES, NCONV, NCONV, OMESHI, ZR(LVALPR),
      &         NFREQ, VPINF, VPMAX, PRECDC, METHOD, OMECOR)
           IF (TYPRES .EQ. 'DYNAMIQUE')
      &      CALL VPORDI(1,0,NCONV,ZR(LRESUR+MXRESF),ZR(LVEC),NEQ,
      &                    ZI(LRESUI))
           DO 125 IMET = 1,NCONV
-            ZI(LRESUI-1+  MXRESF+IMET) = 0
+            ZI(LRESUI-1+  MXRESF+IMET) = IZERO
             ZR(LRESUR-1+IMET) = FREQOM(ZR(LRESUR-1+MXRESF+IMET))
 C           SI OPTION 'PLUS_GRANDE' : CONVERSION EN VALEUR PHYSIQUE
             IF (LPG)
      &         ZR(LRESUR-1+IMET) = +1.D0 / (QUAPI2 * ZR(LRESUR-1+IMET))
-            ZR(LRESUR-1+2*MXRESF+IMET) = 0.0D0
+            ZR(LRESUR-1+2*MXRESF+IMET) = RZERO
             ZK24(LRESUK-1+  MXRESF+IMET) = TYPEQZ
   125     CONTINUE
           IF (TYPRES .NE. 'DYNAMIQUE') THEN
@@ -979,6 +1098,7 @@ C           SI OPTION 'PLUS_GRANDE' : CONVERSION EN VALEUR PHYSIQUE
 C     ------------------------------------------------------------------
 C     -------  QZ PB GENERALISE COMPLEXE OU REEL NON SYM  --------
 C     ------------------------------------------------------------------
+          IF (LCOMOD) CALL ASSERT(.FALSE.)
           CALL VPQZLA(TYPEQZ, QRN, IQRN, LQRN, QRAR, QRAI, QRBA,
      &         QRVL, LVEC, KQRN, LVALPR, NCONV,
      &         OMECOR, KTYP, KQRNR, NEQACT, ILSCAL, IRSCAL,
@@ -994,7 +1114,7 @@ C     ------------------------------------------------------------------
      &         NFREQ, VPINF, VPMAX, PRECDC, METHOD, OMECOR)
 
           DO 127 IMET = 1,NCONV
-            ZI(LRESUI-1+  MXRESF+IMET) = 0
+            ZI(LRESUI-1+  MXRESF+IMET) = IZERO
             ZR(LRESUR-1+IMET) = FREQOM(ZR(LRESUR-1+MXRESF+IMET))
             ZK24(LRESUK-1+  MXRESF+IMET) = TYPEQZ
   127     CONTINUE
@@ -1003,16 +1123,18 @@ C     ------------------------------------------------------------------
 C     ------------------------------------------------------------------
 C     -------  JACOBI PB GENERALISE REEL   --------
 C     ------------------------------------------------------------------
+          IF ((.NOT.LKR).OR.LNS) CALL ASSERT(.FALSE.)
           CALL SSPACE(LMTPSC,LMATRA,LMASSE,NEQ,NBVECT,NFREQ,ZI(LPROD),
      &             ITEMAX,NPERM,TOL,TOLDYN,ZR(LVEC),ZR(LVALPR),
      &             NITJAC,NITBAT,SOLVEU)
           CALL RECTFR(NFREQ,NBVECT,OMESHI,NPIVOT,NBLAGR,
-     &                  ZR(LVALPR),NBVECT,ZI(LRESUI),ZR(LRESUR),NFREQ)
+     &             ZR(LVALPR),NBVECT,ZI(LRESUI),ZR(LRESUR),MXRESF)
           CALL VPBOST(TYPRES,NFREQ,NBVECT,OMESHI,ZR(LVALPR),NBVECT,
      &                  VPINF, VPMAX,PRECDC,METHOD,OMECOR)
           IF (TYPRES .EQ. 'DYNAMIQUE')
      &      CALL VPORDI (1,0,NFREQ,ZR(LRESUR+MXRESF),ZR(LVEC),NEQ,
      &                  ZI(LRESUI))
+
           DO 30 IMET = 1,NFREQ
             ZI(LRESUI-1+2*MXRESF+IMET) = NITBAT
             ZI(LRESUI-1+4*MXRESF+IMET) = NITJAC
@@ -1020,7 +1142,7 @@ C     ------------------------------------------------------------------
 C           SI OPTION 'PLUS_GRANDE' : CONVERSION EN VALEUR PHYSIQUE
             IF (LPG)
      &         ZR(LRESUR-1+IMET) = +1.D0 / (QUAPI2 * ZR(LRESUR-1+IMET))
-            ZR(LRESUR-1+2*MXRESF+IMET) = 0.0D0
+            ZR(LRESUR-1+2*MXRESF+IMET) = RZERO
             ZK24(LRESUK-1+  MXRESF+IMET) = 'BATHE_WILSON'
  30       CONTINUE
           IF (TYPRES .NE. 'DYNAMIQUE') THEN
@@ -1035,6 +1157,7 @@ C           SI OPTION 'PLUS_GRANDE' : CONVERSION EN VALEUR PHYSIQUE
 C     ------------------------------------------------------------------
 C     -------  LANCZOS PB GENERALISE REEL   --------
 C     ------------------------------------------------------------------
+          IF ((.NOT.LKR).OR.LNS) CALL ASSERT(.FALSE.)
           IF (NSTOC .GE. NBVECT) CALL U2MESS('A','ALGELINE2_72')
           IF (NSTOC .NE. 0) THEN
             DO 26 I =1, NEQ * NSTOC
@@ -1048,7 +1171,7 @@ C     ------------------------------------------------------------------
      &                  ZR(IADZ),NITV,NITQRM)
           CALL VPRECO(NBVECT,NEQ,ZR(IADZ),ZR(LVEC))
           CALL RECTFR(NFREQ,NBVECT,OMESHI,NPIVOT,NBLAGR,
-     &                  ZR(LDIAGR),NBVECT,ZI(LRESUI),ZR(LRESUR),NFREQ)
+     &             ZR(LDIAGR),NBVECT,ZI(LRESUI),ZR(LRESUR),MXRESF)
           CALL VPBOST(TYPRES,NFREQ,NBVECT,OMESHI,ZR(LDIAGR),NBVECT,
      &                  VPINF, VPMAX,PRECDC,METHOD,OMECOR)
           IF (TYPRES .EQ. 'DYNAMIQUE')
@@ -1060,7 +1183,7 @@ C     ------------------------------------------------------------------
 C           SI OPTION 'PLUS_GRANDE' : CONVERSION EN VALEUR PHYSIQUE
             IF (LPG)
      &         ZR(LRESUR-1+IMET) = +1.D0 / (QUAPI2 * ZR(LRESUR-1+IMET))
-            ZR(LRESUR-1+2*MXRESF+IMET) = 0.0D0
+            ZR(LRESUR-1+2*MXRESF+IMET) = RZERO
             ZK24(LRESUK-1+  MXRESF+IMET) = 'LANCZOS'
  32       CONTINUE
           IF (TYPRES .NE. 'DYNAMIQUE') THEN
@@ -1073,6 +1196,8 @@ C           SI OPTION 'PLUS_GRANDE' : CONVERSION EN VALEUR PHYSIQUE
         ENDIF
 
       ELSE
+      
+        IF (LCOMOD) CALL ASSERT(.FALSE.)
 
 C     ------------------------------------------------------------------
 C     ------------------------------------------------------------------
@@ -1117,7 +1242,7 @@ C     ------------------------------------------------------------------
      &           ZC(LVALPR),ZC(LVEC),MXRESF,
      &           ZI(LRESUI),ZR(LRESUR),ZI(LPROD),ZC(LAUC),OMECOR)
           DO 578 IMET = 1,NFREQ
-            ZI(LRESUI-1+MXRESF+IMET) = 0
+            ZI(LRESUI-1+MXRESF+IMET) = IZERO
             ZR(LRESUR-1+IMET) = FREQOM(ZR(LRESUR-1+MXRESF+IMET))
             ZK24(LRESUK-1+MXRESF+IMET) = TYPEQZ
  578      CONTINUE
@@ -1156,7 +1281,7 @@ C     ------------------------------------------------------------------
      &           ZI(LRESUI),ZR(LRESUR),ZI(LPROD),ZC(LAUC),OMECOR)
             ENDIF
             DO 378 IMET = 1,NFREQ
-              ZI(LRESUI-1+MXRESF+IMET) = 0
+              ZI(LRESUI-1+MXRESF+IMET) = IZERO
               ZR(LRESUR-1+IMET) = FREQOM(ZR(LRESUR-1+MXRESF+IMET))
               ZK24(LRESUK-1+MXRESF+IMET) = 'SORENSEN'
  378        CONTINUE
@@ -1176,7 +1301,7 @@ C     ------------------------------------------------------------------
             CALL WP5VEC(OPTIOF,NFREQ,NCONV,NEQ,ZC(LDSOR),ZC(LVEC),
      &         MXRESF,ZI(LRESUI),ZR(LRESUR),ZC(LAUC))
             DO 379 IMET = 1,NFREQ
-              ZI(LRESUI-1+MXRESF+IMET) = 0
+              ZI(LRESUI-1+MXRESF+IMET) = IZERO
               ZR(LRESUR-1+IMET) = FREQOM(ZR(LRESUR-1+MXRESF+IMET))
               ZK24(LRESUK-1+MXRESF+IMET) = 'SORENSEN'
  379        CONTINUE
@@ -1204,6 +1329,14 @@ C     --- SI OPTION BANDE ON NE GARDE QUE LES FREQUENCES DANS LA BANDE
         IF (MFREQ.NE.NCONV) CALL U2MESS('I','ALGELINE2_17')
       ENDIF
 
+
+C      IF (LCPU) THEN
+C        CALL SYSTEM_CLOCK(IETFIN)
+C        RETFIN=REAL(IETFIN-IETDEB)/REAL(IETRAT)
+C        WRITE(IFM,*)'<OP0045> COUT SOLVEUR MODAL + POST 1: ',RETFIN
+C        CALL SYSTEM_CLOCK(IETDEB,IETRAT,IETMAX)
+C      ENDIF
+       
 C     ------------------------------------------------------------------
 C     -------------- CALCUL DES PARAMETRES GENERALISES  ----------------
 C     ----------- CALCUL DE LA NORME D'ERREUR SUR LE MODE  -------------
@@ -1214,17 +1347,30 @@ C     --- POSITION MODALE NEGATIVE DES MODES INTERDITE
       KNEGA = 'NON'
       NPARR = NBPARR
       IF (TYPCON.EQ.'MODE_ACOU') NPARR = 7
+
+C     ------------------------------------------------------------------
+C     --------------------MACRO_MODE_MECA PARALLELE (PART III)----------
+C     ------------------------------------------------------------------
       IF ((.NOT.LC).AND.LKR.AND.(.NOT.LNS)) THEN
         CALL VPPARA(MODES,TYPCON,KNEGA,LRAIDE,LMASSE,LAMOR,
      &              MXRESF,NEQ,NCONV,OMECOR,ZI(LDDL),ZI(LPROD),
-     &              ZR(LVEC),CBID, NBPARI, NPARR, NBPARK, NOPARA,'    ',
-     &              ZI(LRESUI), ZR(LRESUR), ZK24(LRESUK),KTYP)
+     &              ZR(LVEC),CBID,NBPARI,NPARR,NBPARK,NOPARA,'    ',
+     &              ZI(LRESUI),ZR(LRESUR),ZK24(LRESUK),KTYP,
+     &              LCOMOD,ICOM1,ICOM2,TYPRES,NFREQG)
       ELSE
+        IF (LCOMOD) CALL ASSERT(.FALSE.)
         CALL VPPARA(MODES,TYPCON,KNEGA,LRAIDE,LMASSE,LAMOR,
      &              MXRESF,NEQ,NCONV,OMECOR,ZI(LDDL),ZI(LPROD),
      &              RBID,ZC(LVEC), NBPARI, NPARR, NBPARK, NOPARA,'    ',
-     &              ZI(LRESUI), ZR(LRESUR), ZK24(LRESUK),KTYP)
+     &              ZI(LRESUI),ZR(LRESUR),ZK24(LRESUK),KTYP,
+     &              LCOMOD,IBID,IBID,K16BID,IBID)
       ENDIF
+C      IF (LCPU) THEN
+C        CALL SYSTEM_CLOCK(IETFIN)
+C        RETFIN=REAL(IETFIN-IETDEB)/REAL(IETRAT)
+C        WRITE(IFM,*)'<OP0045> COUT VPPARA HORS COM: ',RETFIN
+C        CALL SYSTEM_CLOCK(IETDEB,IETRAT,IETMAX)
+C      ENDIF
 
 C     --- IMPRESSIONS LIEES A LA METHODE ---
       CALL VPWECF (' ', TYPRES, NCONV, MXRESF, ZI(LRESUI), ZR(LRESUR),
@@ -1239,7 +1385,7 @@ C     ------------------------------------------------------------------
       IF (OPTIOV.EQ.'OUI') THEN
         CTYP = 'E'
       ELSE
-       CTYP = 'A'
+        CTYP = 'A'
       ENDIF
 
       CALL GETVR8('VERI_MODE','SEUIL',1,IARG,1,SEUIL,LMF)
@@ -1266,6 +1412,22 @@ C     ET DE SON EVENTUELLE OCCURENCE EXTERNE (MUMPS)
       IF ((LMTPSC.NE.LMATRA).AND.(LMATRA.NE.0))
      &  CALL DETRSD('MATR_ASSE',MATOPA)
 
+C     ------------------------------------------------------------------
+C     --------------------MACRO_MODE_MECA PARALLELE (PART IV)-----------
+C     ------------------------------------------------------------------
+C     --- EN CAS DE TEST DE STURM LOCAL A CHAQUE SOUS-BANDE, REMISE A
+C     --- JOUR DES BORNES VIA LE COM WORLD.
+C     --- PUIS ON REMET LE COMCOU POUR NE PAS GENER LES FACTOS EVENTUEL
+C     --- LES DE VPCNTL.
+C     ------------------------------------------------------------------
+      IF (LCOMOD) THEN
+        CALL MPIEXE('AFFE_COMM_REFE',MPICOW,IBID,1,IBID)
+        CALL MPICM1('MPI_MIN','R',1,IBID,IBID,OMEMIN,CBID)
+        CALL MPICM1('MPI_MIN','R',1,IBID,IBID,VPINF,CBID)
+        CALL MPICM1('MPI_MAX','R',1,IBID,IBID,OMEMAX,CBID)
+        CALL MPICM1('MPI_MAX','R',1,IBID,IBID,VPMAX,CBID)
+        CALL MPIEXE('AFFE_COMM_REFE',MPICOU,IBID,1,IBID)
+      ENDIF
       CALL VPCNTL
      &  (CTYP,MODES,OPTIOV,OMEMIN,OMEMAX,SEUIL,NCONV,ZI(LRESUI),
      &   LMAT,OMECOR,PRECDC,IERX,VPINF,VPMAX,ZR(LRESUR),
@@ -1290,8 +1452,26 @@ C     TION DE NOM CI-DESSOUS
         MATPSC=ZK24(ZI(LMTPSC+1))(1:19)
         CALL DETRSD('MATR_ASSE',MATPSC)
       ENDIF
+
+C     ------------------------------------------------------------------
+C     -----------------------MACRO_MODE_MECA PARALLELE (PART V) -------
+C     ------------------------------------------------------------------
+C     --- AVANT DE QUITTER L'OP. ON REMET LE COM WORLD (AU CAS OU)
+C     --- DESTRUCTION DES SOUS-COMMUNICATEURS EVENTUELLEMENT ASSOCIES A
+C     --- UNE OCCURENCE MUMPS (APRES CELLE DE LADITE OCCURENCE)
+C     ------------------------------------------------------------------
+      IF (LCOMOD) THEN
+        CALL MPIEXE('AFFE_COMM_REFE',MPICOW,IBID,1,IBID)
+        CALL MPIEXE('MPI_COMM_FREE',MPICOU,IBID,IBID,IBID)
+      ENDIF
+C      IF (LCPU) THEN
+C        CALL SYSTEM_CLOCK(IETFIN)
+C        RETFIN=REAL(IETFIN-IETDEB)/REAL(IETRAT)
+C        WRITE(IFM,*)'<OP0045> COUT POST 3: ',RETFIN
+C        CALL SYSTEM_CLOCK(IETDEB,IETRAT,IETMAX)
+C      ENDIF
       CALL JEDEMA()
-C
+
 C     FIN DE OP0045
-C
+
       END

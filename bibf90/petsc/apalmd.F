@@ -1,7 +1,7 @@
       SUBROUTINE APALMD(KPTSC)
       IMPLICIT NONE
 !           CONFIGURATION MANAGEMENT OF EDF VERSION
-!& MODIF APALMD PETSC  DATE 21/01/2013   AUTEUR DESOZA T.DESOZA 
+!& MODIF APALMD PETSC  DATE 26/02/2013   AUTEUR BOITEAU O.BOITEAU 
 ! ==================================================================
 ! COPYRIGHT (C) 1991 - 2013  EDF R&D              WWW.CODE-ASTER.ORG
 !
@@ -49,6 +49,7 @@
       INTEGER      I,K,ILIG,JCOL,NBO,NBD,NZDEB,NZFIN,JCOLG,ILIGL,JAUX
       INTEGER      PROLIG,ILIGG,IAUX,NUMPRO,JJOINT,JVALEU,NUMLOC
       INTEGER      LGENVO,NUMGLO,IBID,COMPLE
+      INTEGER*4    COMCOU,MPICOU
 !
       REAL*8       RBID
 !
@@ -77,6 +78,8 @@
       Vec tmp
 !----------------------------------------------------------------
       CALL JEMARQ()
+!---- COMMUNICATEUR MPI DE TRAVAIL
+      MPICOU=COMCOU(1)
 !
       CALL MPICM0(RANG,NBPROC)
 !
@@ -113,7 +116,7 @@
         PROCOL = ZI(JPRDDL-1+JCOLL)
         IF ( PROCOL.EQ.RANG ) NDPROP = NDPROP+1
       END DO
-      call VecCreateMPI(PETSC_COMM_WORLD,NDPROP,neqg,tmp,ierr)
+      call VecCreateMPI(MPICOU,NDPROP,neqg,tmp,ierr)
       CALL ASSERT(ierr.EQ.0)
       call VecGetOwnershipRange(tmp,low,high,ierr)
       CALL ASSERT(ierr.EQ.0)
@@ -236,7 +239,7 @@
         ZI4(JIDXO+IAUX-1)=MIN(ZI4(JIDXO+IAUX-1),COMPLE)
       ENDDO
 !
-      CALL MatCreate(PETSC_COMM_WORLD,Ap(KPTSC),ierr)
+      CALL MatCreate(MPICOU,Ap(KPTSC),ierr)
       CALL ASSERT(ierr.EQ.0)
       CALL MatSetSizes(Ap(KPTSC),NDPROP,NDPROP,neqg,neqg,ierr)
       CALL ASSERT(ierr.EQ.0)

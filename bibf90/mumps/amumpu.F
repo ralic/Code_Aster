@@ -1,7 +1,7 @@
       SUBROUTINE AMUMPU(OPTION,TYPE,KXMPS,USERSM,NPREC,LRESOL,KVERS)
       IMPLICIT NONE
 !           CONFIGURATION MANAGEMENT OF EDF VERSION
-!& MODIF AMUMPU MUMPS  DATE 14/01/2013   AUTEUR COURTOIS M.COURTOIS 
+!& MODIF AMUMPU MUMPS  DATE 26/02/2013   AUTEUR BOITEAU O.BOITEAU 
 ! ==================================================================
 ! COPYRIGHT (C) 1991 - 2013  EDF R&D              WWW.CODE-ASTER.ORG
 !
@@ -88,8 +88,8 @@
      &              IAUX1,IAUX2,INFO3,NBPROC,IFM,NIV,IBID,IPIV,INFO28,
      &              INFO12,I,IERR,TMAX,TMAXB,LTOT,IRET,ISIZEMU,NSIZEMU,
      &              NSIZEMA,EXECMU,INFO34,ICNT33
-c      INTEGER*4     getpid
-      INTEGER*4     PID
+!      INTEGER*4     getpid
+      INTEGER*4     PID,COMCOU,MPICOU
       LOGICAL       LPARA,LPEAK,LPB1
       CHARACTER*1   ROUCS(NMXINS),PRECS(NMXINS)
       CHARACTER*2   FSTRING
@@ -109,8 +109,10 @@ c      INTEGER*4     getpid
       COMMON /MUMPSH/ NONUS,NOMATS,NOSOLS,ETAMS,ROUCS,PRECS
 
       CALL JEMARQ()
+! --- COMMUNICATEUR MPI DE TRAVAIL
+      MPICOU=COMCOU(1)
       CALL INFNIV(IFM,NIV)
-
+      
 !       ------------------------------------------------
 ! ---   INITS
 !       ------------------------------------------------
@@ -155,7 +157,7 @@ c      INTEGER*4     getpid
         SELECT CASE(TYPE)
         CASE ('S')
           SMPSK=>SMPS(KXMPS)
-          SMPSK%COMM=MPI_COMM_WORLD
+          SMPSK%COMM=MPICOU
           SMPSK%SYM=0
           SMPSK%PAR=1
           SMPSK%JOB=-1
@@ -165,7 +167,7 @@ c      INTEGER*4     getpid
           CALL SMUMPS(SMPSK)
         CASE ('C')
           CMPSK=>CMPS(KXMPS)
-          CMPSK%COMM=MPI_COMM_WORLD
+          CMPSK%COMM=MPICOU
           CMPSK%SYM=0
           CMPSK%PAR=1
           CMPSK%JOB=-1
@@ -175,7 +177,7 @@ c      INTEGER*4     getpid
           CALL CMUMPS(CMPSK)
         CASE ('D')
           DMPSK=>DMPS(KXMPS)
-          DMPSK%COMM=MPI_COMM_WORLD
+          DMPSK%COMM=MPICOU
           DMPSK%SYM=0
           DMPSK%PAR=1
           DMPSK%JOB=-1
@@ -185,7 +187,7 @@ c      INTEGER*4     getpid
           CALL DMUMPS(DMPSK)
         CASE ('Z')
           ZMPSK=>ZMPS(KXMPS)
-          ZMPSK%COMM=MPI_COMM_WORLD
+          ZMPSK%COMM=MPICOU
           ZMPSK%SYM=0
           ZMPSK%PAR=1
           ZMPSK%JOB=-1

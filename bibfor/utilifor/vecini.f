@@ -1,11 +1,11 @@
         SUBROUTINE VECINI( N , S , X )
-      IMPLICIT NONE
+        IMPLICIT NONE
 C       ----------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILIFOR  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
+C MODIF UTILIFOR  DATE 26/02/2013   AUTEUR BOITEAU O.BOITEAU 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -25,6 +25,8 @@ C       INITIALISATION DU VECTEUR   X = S
 C       IN  S      :  SCALAIRE
 C       IN  N      :  DIMENSION DE X
 C       OUT X      :  VECTEUR RESULTAT
+C       POUR TOUS LES TYPES DE DONNEES VOIR AUSSI VECINI, VECINT, VECINK
+C       ET VECINC.
 C       ----------------------------------------------------------------
         INTEGER         N ,I
         REAL*8          X(N)  , S

@@ -1,7 +1,7 @@
-#& MODIF COMMANDE  DATE 19/11/2012   AUTEUR BOITEAU O.BOITEAU 
+#& MODIF COMMANDE  DATE 26/02/2013   AUTEUR BOITEAU O.BOITEAU 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -62,7 +62,8 @@ MACRO_MODE_MECA=MACRO(nom="MACRO_MODE_MECA",
 
 #-------------------------------------------------------------------
 #        Catalogue commun SOLVEUR
-         SOLVEUR         =C_SOLVEUR('INFO_MODE'),
+         SOLVEUR              =C_SOLVEUR('INFO_MODE'),
+         NIVEAU_PARALLELISME  =SIMP(statut='f',typ='TXM',defaut="COMPLET",into=("PARTIEL","COMPLET") ),
 #-------------------------------------------------------------------
 
          VERI_MODE       =FACT(statut='d',min=0,

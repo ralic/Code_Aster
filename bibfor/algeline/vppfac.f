@@ -8,9 +8,9 @@
       REAL*8                          MASMOD(MXVECT,*),FACPAR(MXVECT,*)
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 09/11/2012   AUTEUR DELMAS J.DELMAS 
+C MODIF ALGELINE  DATE 26/02/2013   AUTEUR BOITEAU O.BOITEAU 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -33,19 +33,20 @@ C     ------------------------------------------------------------------
 C     PRESUME L'EXECUTION PREALABLE DE VPPGEN : CALCUL DES PARAMETRES
 C     MODAUX.
 C     ------------------------------------------------------------------
-C
-C
-      INTEGER       IER, LDDL, LAUX1, LAUX2, IDDL, IA, IEQ, IVECT, MXDDL
+
+
+      INTEGER       IER,LDDL,LAUX1,LAUX2,IDDL,IA,IEQ,IVECT,MXDDL,NEQ1
       PARAMETER     ( MXDDL=6 )
       CHARACTER*8   NOMDDL(MXDDL)
       CHARACTER*14  NUME
       CHARACTER*19  MASSE
       CHARACTER*24  POSDDL, VECAU1, VECAU2
-      REAL*8        RVAL, R8MAEM
+      REAL*8        DDOT,RMIN,R8MIEM,RMAX,R8MAEM,RAUX,RVAL
+      INTEGER*4     NBI4
 C     ------------------------------------------------------------------
       DATA NOMDDL / 'DX      ', 'DY      ', 'DZ      ' ,
      &              'DRX     ', 'DRY     ', 'DRZ     ' /
-C
+
 C     ------------------------------------------------------------------
       DATA  POSDDL/'&&VPPFAC.POSITION.DDL'/
       DATA  VECAU1/'&&VPPFAC.VECTEUR.AUX1'/
@@ -54,53 +55,55 @@ C     ------------------------------------------------------------------
 C     ------------------------------------------------------------------
 C     ------ RECUPERATION DES POSITIONS DES PARAMETRES DE LAGRANGE -----
 C     ------------------------------------------------------------------
-C
+
       CALL JEMARQ()
       MASSE = ZK24(ZI(LMASSE+1))
       CALL DISMOI('F','NOM_NUME_DDL',MASSE,'MATR_ASSE',IA,NUME,IER)
-C
+
       CALL WKVECT(POSDDL,'V V I',NEQ*MXDDL,LDDL)
       CALL PTEDDL( 'NUME_DDL', NUME  , MXDDL , NOMDDL , NEQ , ZI(LDDL))
-C
+
 C     ------------------------------------------------------------------
 C     ----------------- CREATION DE VECTEURS DE TRAVAIL ----------------
 C     ------------------------------------------------------------------
-C
+
       CALL WKVECT( VECAU1,'V V R', NEQ , LAUX1 )
       CALL WKVECT( VECAU2,'V V R', NEQ , LAUX2 )
-C
+
 C     ------------------------------------------------------------------
 C     ----------- CALCUL DE  FREQ * MASSE * UNITAIRE_DIRECTION ---------
 C     ------------------------------------------------------------------
-C
+      NBI4=NEQ
+      NEQ1=NEQ-1
+      RMIN=100.D0*R8MIEM()
+      RMAX=0.01D0*R8MAEM()
       DO 100 IDDL = 1 , 3
          IA = (IDDL-1)*NEQ
-         DO 110 IEQ = 0, NEQ-1
+         DO 110 IEQ = 0, NEQ1
              ZR(LAUX1+IEQ) = ZI(LDDL+IA+IEQ)
   110    CONTINUE
+         CALL MRMULT('ZERO',LMASSE,ZR(LAUX1),ZR(LAUX2),1,.FALSE.)
          DO 200 IVECT = 1, NBVECT
-            CALL MRMULT('ZERO',LMASSE,ZR(LAUX1),ZR(LAUX2),1,.FALSE.)
-            RVAL = 0.0D0
-            DO 210 IEQ = 1, NEQ
-               RVAL  = RVAL  + VECT(IEQ,IVECT) * ZR(LAUX2+IEQ-1)
-  210       CONTINUE
-            IF ( MASGEN(IVECT) .EQ. 0.0D0 ) THEN
-               MASMOD(IVECT,IDDL) = R8MAEM()
-               FACPAR(IVECT,IDDL) = R8MAEM()
+            RVAL = DDOT(NBI4,VECT(1,IVECT),1,ZR(LAUX2),1)
+            RAUX = MASGEN(IVECT)
+            IF (ABS(RAUX).LT.RMIN) THEN
+               MASMOD(IVECT,IDDL) = RMAX
+               FACPAR(IVECT,IDDL) = RMAX
             ELSE
-               MASMOD(IVECT,IDDL) = RVAL * RVAL / MASGEN(IVECT)
-               FACPAR(IVECT,IDDL) = RVAL / MASGEN(IVECT)
+               RAUX=RVAL/RAUX
+               MASMOD(IVECT,IDDL) = RVAL * RAUX
+               FACPAR(IVECT,IDDL) = RAUX
             ENDIF
   200    CONTINUE
   100 CONTINUE
-C
+
 C     ------------------------------------------------------------------
 C     ----------------- DESTRUCTION DES VECTEURS DE TRAVAIL ------------
 C     ------------------------------------------------------------------
-C
+
       CALL JEDETR( POSDDL )
       CALL JEDETR( VECAU1 )
       CALL JEDETR( VECAU2 )
-C
+
       CALL JEDEMA()
       END

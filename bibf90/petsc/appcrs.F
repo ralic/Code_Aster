@@ -1,7 +1,7 @@
       SUBROUTINE APPCRS(KPTSC,LMD)
       IMPLICIT NONE
 !           CONFIGURATION MANAGEMENT OF EDF VERSION
-!& MODIF APPCRS PETSC  DATE 21/01/2013   AUTEUR DESOZA T.DESOZA 
+!& MODIF APPCRS PETSC  DATE 26/02/2013   AUTEUR BOITEAU O.BOITEAU 
 ! ==================================================================
 ! COPYRIGHT (C) 1991 - 2013  EDF R&D              WWW.CODE-ASTER.ORG
 !
@@ -47,6 +47,7 @@
       INTEGER RANG,NBPROC
       INTEGER JSLVK,JSLVR,JSLVI,JNEQU,JNEQUL,JPRDDL,JCOLL,NLOC
       INTEGER NIREMP,NSMDI
+      INTEGER*4 COMCOU,MPICOU
 !
       CHARACTER*24 PRECON
       CHARACTER*19 NOMAT ,NOSOLV
@@ -82,6 +83,8 @@
       PC  pc,pcp
 !----------------------------------------------------------------
       CALL JEMARQ()
+!---- COMMUNICATEUR MPI DE TRAVAIL
+      MPICOU=COMCOU(1)
 
 !     -- LECTURE DU COMMUN
       NOMAT  = NOMATS(KPTSC)
@@ -156,14 +159,14 @@
             END DO
 !
             CALL ASSERT(xlocal.EQ.0)
-            call VecCreateMPI(PETSC_COMM_WORLD,ndprop,neq,
+            call VecCreateMPI(MPICOU,ndprop,neq,
      &                        xlocal,ierr)
          ELSE
             CALL JELIRA(NONU//'.SMOS.SMDI','LONMAX',NSMDI,KBID)
             neq=NSMDI
 !
             CALL ASSERT(xlocal.EQ.0)
-            call VecCreateMPI(PETSC_COMM_WORLD,PETSC_DECIDE,neq,
+            call VecCreateMPI(MPICOU,PETSC_DECIDE,neq,
      &                        xlocal,ierr)
          ENDIF
          CALL ASSERT(ierr.EQ.0)

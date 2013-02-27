@@ -1,7 +1,7 @@
       SUBROUTINE APVSMB(KPTSC,LMD,RSOLU)
       IMPLICIT NONE
 !           CONFIGURATION MANAGEMENT OF EDF VERSION
-!& MODIF APVSMB PETSC  DATE 21/01/2013   AUTEUR DESOZA T.DESOZA 
+!& MODIF APVSMB PETSC  DATE 26/02/2013   AUTEUR BOITEAU O.BOITEAU 
 ! ==================================================================
 ! COPYRIGHT (C) 1991 - 2013  EDF R&D              WWW.CODE-ASTER.ORG
 !
@@ -44,6 +44,7 @@
 !     VARIABLES LOCALES
       INTEGER      NSMDI,TBLOC,RANG,NBPROC,JNEQU,JNEQUL,JNUGL,JNUGLP
       INTEGER      JPRDDL,NLOC,NGLO,NDPROP,JCOLL,JINDIC,JVALEU,NUMGLO
+      INTEGER*4 COMCOU,MPICOU
 !
       CHARACTER*4  KBID
       CHARACTER*14 NONU
@@ -63,6 +64,8 @@
       PetscOffset xidx
 !----------------------------------------------------------------
       CALL JEMARQ()
+!---- COMMUNICATEUR MPI DE TRAVAIL
+      MPICOU=COMCOU(1)
 !
 !     -- LECTURE DU COMMUN
       NOMAT  = NOMATS(KPTSC)
@@ -88,7 +91,7 @@
           IF ( ZI(JPRDDL+JCOLL).EQ.RANG ) NDPROP = NDPROP+1
         END DO
 !
-        call VecCreate(PETSC_COMM_WORLD,b,ierr)
+        call VecCreate(MPICOU,b,ierr)
         CALL ASSERT(ierr.EQ.0)
         call VecSetBlockSize(b,bs,ierr)
         CALL ASSERT(ierr.EQ.0)
@@ -116,7 +119,7 @@
         CALL JELIRA(NONU//'.SMOS.SMDI','LONMAX',NSMDI,KBID)
         neq=NSMDI
 !
-        call VecCreate(PETSC_COMM_WORLD,b,ierr)
+        call VecCreate(MPICOU,b,ierr)
         CALL ASSERT(ierr.EQ.0)
         call VecSetBlockSize(b,bs,ierr)
         CALL ASSERT(ierr.EQ.0)
