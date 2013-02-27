@@ -1,0 +1,2736 @@
+========================================================================
+Version 11.3.10 du : 27/02/2013
+========================================================================
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR berro        BERRO Hassan           DATE 02/25/2013 - 06:21:41
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 020358 DU 2013-02-08 10:43:34
+TYPE evolution concernant Code_Aster (VERSION )
+TITRE
+    [IFS-13-SPEC] La liste de groupe de mailles sur lesquelles portent la projection des spectres n'est pas correctement prise en compte
+FONCTIONNALITE
+   >> Cette fiche corrige aussi la fiche issue20340 <<
+   
+   . . . . . . . . . *********************
+   . . . . . . . . .* Analyse du problème *
+   . . . . . . . . . *********************
+   
+   Il s'agit d'une mauvaise programmation dans PROJ_SPEC_BASE de la gestion des entités du 
+   maillage (GROUP_MA, MAILLE) sur lequelles la projection du spectre de turbulence est 
+   effectuée.
+   
+   Les erreurs se trouvent principalement dans la routine accep1.f, qui traite le calcul 
+   des coefficients d'acceptance pour des spectres de type SPEC_CORR_CONV_1 et 2.
+   
+   ========================
+   Avant cette correction : 
+   ========================
+   
+   1) le mot-clé MAILLE était toujours ignoré en faveur de TOUT='OUI'
+   >>!!! Risque de résultats faux !!!<< (1)
+   
+   2) le mot-clé GROUP_MA était pris en compte seulement si ça contient un seul groupe
+   
+   ===== Fiche issue20340 ===================================================================
+   
+   >>> Quand on disposait d'un groupe de mailles sous GROUP_MA, on l'utilisait pour extraire, 
+   . . à partir du modèle mécanique de la structure, un LIGREL réduit. 
+   >>> Ce LIGREL était nommé d'après le nom du GROUP_MA.
+   >>> Passage de GROUP_MA de K8 à K24 => Objets jeveux de plus de 24 charactères...
+   
+   ==========================================================================================
+   
+   3) dans le cas où une liste de plusieurs GROUP_MA était fournie, on prenait TOUT='OUI'
+   >>!!! Risque de résultats faux !!!<< (2)
+   
+   4) quand un modèle thermique d'interface était donné par le mot-clé MODELE_INTERFACE, on
+   prenait la totalité des mailles associées à ce modèle. (les mot-clés TOUT/GROUP_MA/MAILLE
+   étaient donc ignorés)
+   >>!!! Risque de résultats faux !!!<< (3)
+   
+   5) le code s’arrête brutalement si on défini la base par des cham_no (mot-clé CHAM_NO) et
+   qu'on procède à la projection sans avoir donner des informations sur le modèle EF par le
+   mot-clé MODELE_INTERFACE.
+   
+   6) si une base de projection est définie par une liste des cham_no, on récupère uniquement le 
+   premier cham_no. La projection se fait donc sur un seul mode de déformation structurelle. 
+   >>!!! Risque de résultats faux !!!<< (4)
+   
+   . . . . . . . . . ***************************
+   . . . . . . . . .* Proposition de correction *
+   . . . . . . . . . ***************************
+   
+   On apporte des corrections aux routines accep1 et sfifj ainsi qu'au catalogue de commande
+   de l'opérateur PROJ_SPEC_BASE comme la suite :
+   
+   - Désormais, les informations sur les entités de maillage où l'on souhaite calculer les
+   coefficients d'acceptance sont toujours prises en compte. Ceci est fait par des appels à
+   la routine EXLIMA qui permet de lire les informations sur les mot-clés TOUT/GROUP_MA/MAILLE
+   et d'extraire un LIGREL réduit à partir du modèle complet.
+   
+   - Le nom du LIGREL "réduit" n'est plus généré à partir du nom du GROUP_MA, ce qui corrige
+   la fiche issue20340. 
+   
+   - Le mot-clé MODELE_INTERFACE devient obligatoire si on dispose uniquement des CHAM_NO 
+   pour définir la base de projection du spectre turbulent. Il peut être donc soit un modèle 
+   (thermique) d'interface fluide-structure ou bien un modèle mécanique de la structure si 
+   celle-ci est modélisée en DKT.
+   
+   - On apporte des clarifications à la doc U4.63.14 concernant tous les aspects mentionnés 
+   dans cette fiche.
+   
+   . . . . . . . . . *********
+   . . . . . . . . .* Impacts *
+   . . . . . . . . . *********
+   
+   FORTRAN ----------------------------------------------------------------------------------
+   . . MODIF : ACCEP1 ; SFIFJ (2 fichiers)
+   
+   CATAPY -----------------------------------------------------------------------------------
+   . . MODIF : PROJ_SPEC_BASE (1 fichier)
+   
+   PYTHON -----------------------------------------------------------------------------------
+   . . MODIF : MODELISA . . . (1 fichier)
+   
+   DOCUMENTATION ----------------------------------------------------------------------------
+   . . MODIF : U4.63.14 . . . (1 fichier)
+   
+   
+   . . . . . . . . . ***************
+   . . . . . . . . .* Report en V10 *
+   . . . . . . . . . ***************
+   
+   Au vu des risques du risque résultats faux, il faut reporter ces corrections en version 
+   d'exploitation.
+   
+   
+   
+   
+   
+   . . . . . . . . . *************************************************
+   . . . . . . . . .* Point détaillé sur le risque des résultats faux *
+   . . . . . . . . . *************************************************
+   
+   Avant cette correction, l'interspectre d'excitation turbulente obtenu par l'opérateur 
+   PROJ_SPEC_BASE était faux dans les deux cas suivants :
+   
+   ------------------------------------------------------------------------------
+   Cas 1 : lié à la projection d'un spectre turbulent sur une partie du maillage
+   ------------------------------------------------------------------------------
+   
+   Le résultat est faux si les 3 conditions suivantes sont satisfaites en même temps :
+   
+   1. Le spectre à projeter, défini dans DEFI_SPEC_TURB, est de type SPEC_CORR_CONV_1 ou
+   . .SPEC_CORR_CONV_2.
+   
+   2. La projection ne porte pas sur la totalité du maillage.
+   
+   3. a) Un modèle d'interface est renseigné par le mot-clé MODELE_INTERFACE
+   . . <OU>  
+   . .b) La partie du maillage sur laquelle on souhaite projeter est spécifiée : 
+   . . - soit par le mot-clé MAILLE, en donnant alors une liste avec les numéros des mailles 
+   . . - soit par le mot-clé GROUP_MA, en combinant un nombre de groupes supérieur ou égal à 2
+   
+   ----------------------------------------------------------------------------------------
+   Cas 2 : lié à la définition de la base de projection par une liste des champs aux noeuds
+   ----------------------------------------------------------------------------------------
+   
+   Le résultat est faux si les 3 conditions suivantes sont satisfaites en même temps :
+   
+   1. Le spectre à projeter, défini par DEFI_SPEC_TURB, est de type SPEC_CORR_CONV_1 ou
+   . .SPEC_CORR_CONV_2.
+   
+   2. La base modale de projection est définie sous forme d'une liste des champs de déformées 
+   . .aux noeuds par le mot-clé CHAM_NO.
+   
+   3. Le nombre de champs de la liste CHAM_NO est supérieur ou égal à 2
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  OUI
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : U4.63.14
+VALIDATION
+    liste restreinte des cas-tests
+NB_JOURS_TRAV  : 5.5
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 020340 DU 2013-02-07 14:55:25
+TYPE anomalie concernant Code_Aster (VERSION 10.5)
+TITRE
+    [IFS-13-SPEC] Troncature de chaines de caractères dans accep1 suite de issue17686
+FONCTIONNALITE
+   >> Cette fiche est corrigée dans la fiche issue20358 <<
+   
+   En résumé, on ne crée plus de LIGREL dont le nom est basé sur le nom de GROUP_MA.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+    liste restreinte des cas-tests
+NB_JOURS_TRAV  : 0.01
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR boiteau      BOITEAU Olivier        DATE 02/26/2013 - 05:36:46
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 017078 DU 2011-06-08 12:54:15
+TYPE evolution concernant Code_Aster (VERSION )
+TITRE
+    MOD6 - MACRO_MODE_MECA en parallele
+FONCTIONNALITE
+   OBJET
+   ======
+      Parallélisation de MACRO_MODE_MECA, l'opérateur de Code_Aster dévolu au gros et/ou longs
+      calculs modaux.
+      Ce chantier logiciel est la dernière étape des améliorations fonctionnelles et des 
+      optimisations de perf conduites en octobre/novembre dernier sur les ops. INFO_MODE et 
+      MACRO_MODE_MECA en mode séquentiel.
+      Cette parallélisation s'appuie sur la nouvelle fonctionnalité introduite, pour l'occa
+      sion, dans la fiche 20309 (et aussi ds une moindre mesure, la fiche 20294): 
+         Introduction de différents niveaux de //isme MPI au sein d'un même calcul Aster.
+   
+      Soit un gain total en temps par rapport à la version séquentielle d'oct.
+      pouvant aller jusqu'à un facteur 30, suivant le nbre de procs disponibles !
+   
+     Par exemple, sur IVANOE,
+     L'étude GENEIV qui nécessitait en oct 2h22min en oct sur 1 proc,
+     _________________ne requiert plus que 1h27min sur 1 proc
+     _________________________________________7min sur 20 procs
+     _________________________________________4min sur 80 procs
+   
+     Le gros cas-test perf013a .....en oct 4h46min en oct sur 1 proc,
+     _________________ne requiert plus que 1h32min sur 1 proc
+     _______________________________________ 17min sur 8 procs
+     ________________________________________10min sur 64 procs
+   
+   
+   QUELQUES TESTS PERF/FAISABILITE
+   ===============================
+   
+   * Sur Ivanoe, cas-test perf013a_raffiné (N=4M, 50 modes en 8 paquets).
+      2 Niveaux de parallélisme: MACRO + MUMPS
+      
+       ____1proc________________V11.2.21_oct2012__17164s/23.2Go
+    
+      ___________________MACRO//________Vmpeak______gain_total
+       ____1proc___________ 5524s________16.9Go________x_3.1
+       ____8procs___________1002s________19.5Go________x_17.1
+       ___16procs____________722s________15.7Go________x_23.8
+       ___32procs____________643s________13.4Go________x_26.7
+       ___64procs___________ 591s________13.2Go________x_29.0
+   
+   
+      * Sur Ivanoe, étude GENEIV (N=0.7M, 450 modes en 20 paquets).
+      2 Niveaux de parallélisme: MACRO + MUMPS
+      
+       ____1proc________________V11.2.21_oct2012__8518s/7Go
+    
+      ___________________MACRO//________Vmpeak______gain_total
+       ____1proc___________ 5200s________10.5Go_______x_1.6
+       ___20procs____________407s________12.1Go_______x_21.0
+       ___40procs____________327s________10.6Go_______x_26.0
+       ___80procs____________270s_________9.4Go_______x_31.5
+    
+      * Même étude mais cette fois en 5 paquets.
+      ___________________MACRO//_________Vmpeak______gain_total
+       ____1proc___________ 4660s________8.2Go________x_1.8
+       ____5procs___________1097s________11.8Go_______x_7.8
+       ___10procs___________1020s________10.4Go_______x_8.3
+       ___20procs____________925s_________9.5Go_______x_9.2
+   
+   
+         ---> Bref, il y'a encore des possibilités d'amélioration pour essayer de limiter le
+              surcoût de ces coms.
+        
+        ---> Pour l'instant, j'ai fait les choses le plus rapidement possible, en préservant
+            en priorité:
+              - l'iso-fonctionnalité;
+              - la consistance des comportements séq-parallèles;
+              - la cohérence et la lisibilité des sources (je n'ai rien révolutionné, seulement
+                   qqes centaines nouvelles lignes, un vecteur d'entiers ds la base globale
+                   et 3 mot-clés cachés ds 2 capy);
+             tout en recherchant la perf en temps puis en mémoire.
+   
+   PRINCIPE GENERAL
+   ================
+       On parallélise les 3 boucles gérées en internes de la macro: 
+              - celle au niveau de l'INFO_MODE initial,     
+              - celle au niveau des MODE_ITER_SIMULT + NORM_MODE + IMPR_STURM
+              - celle au niveau de l'INFO_MODE final (si STURM='GLOBAL', valeur par défaut).
+       
+      Comme il s'agit de calculs quasi-indépendants (au contingence de création de concept
+       utilisateur près), les gains en temps sont notables et beaucoup plus intéressants, ds
+      ce cas de figure, que ceux qu'on peut obtenir en parallélisant uniquement la brique 
+      solveur linéaire.
+      Par contre, contrairement à ce dernier schéma de parallélisation, on ne gagne pas en
+      mémoire, au contraire celle-ci augmente notablement, du fait des buffers de com. MPI et
+      de la règle que l'on s'impose actuellement (cf. paragraphe doctrine de la fiche 20309):
+        
+        En fin de cmde, la base globale doit contenir les mêmes objets sur tous les procs (et 
+        qu'en séquentiel). Pas de sd_mode_méca distribuée (pour l'instant) !
+   
+      CETTE PARALLELISATION A GROS GRAIN PEUT,
+                                   SE CUMULER OU SE SUBSTITUER
+      AVEC LE PARALLELISME A GRAIN PLUS FIN BASE SUR MUMPS.
+      
+      Suivant le nbre de procs et le paramétrage, on choisit pour l'utilisateur le mode de 
+      parallélisation le plus efficace et, si nécessaire:
+        - on l'avertit du caractère sous-optimal de son paramétrage (déséquilibrage de charge),
+        - on plante proprement si celui-ci est inadéquat.
+     Dans les deux cas on prodigue le maximum de conseils et on explicite le problème ds le 
+     fichier message.
+   
+   IMPACT FONCTIONNEL
+   ==================
+      Nouveau mot-clé dont la terminologie proposée est NIVEAU_PARALLELISME= 'PARTIEL' 
+     ou 'COMPLET' (par  défaut).
+      L'objectif est d'automatiser autant que faire se peut le paramétrage. Suivant le
+     nbre de procs et le paramétrage on va distribuer le calcul au mieux des intérêts de 
+     l'utilisateur (et de ceux des autres users de la machine !).
+   
+      * Si l'utilisateur laisse la valeur 'COMPLET', on va //ser en priorité les boucles de la
+      macro et ensuite, si il reste des procs, les facto et solves du solveur linéaire.
+           ---> Gain important en temps + surcoût ou gain sur le pic mémoire suivant le nbre de
+                procs.
+           ---> C'EST L'USAGE A PRIVILEGIER.
+   
+      * Si l'utilisateur paramétre explicitement la valeur 'PARTIEL': c'est le mode qui existe
+       depuis nov. dernier, on parallélise uniquement les aspects solveur linéaire.
+           ---> Gain moyen en temps + gain moyen à important sur le pic mémoire.
+           ---> C'EST L'USAGE A RESERVER AUX PBS TROP COUTEUX EN MEMOIRE (après avoir testé
+                le mode précédent avec RENUM='METIS' + GESTION_EMMOIRE='OUT_OF_CORE') ou
+                POUR FAIRE DES TESTS ET BENCHMARKS.
+   
+   
+   REGLES D'USAGE
+   ==============
+   
+     Sachant que l'on fait un calcul modal en proposant à la macro une liste de nbfreq
+     valeurs de la fréquence. Celles-ci permettent donc de définir nbsbande de calcul indépen
+     dantes (nbsbande=nbfreq-1).
+   
+     * Si NIVEAU_PARALLELISME='PARTIEL' et METHODE<>MUMPS: UTMESS_F (MODAL_14).
+   
+     * Si NIVEAU_PARALLELISME='COMPLET': 
+   
+        si nbproc<nbsbande                   -----> UTMESS_F(MODAL_9/10),
+        si nbproc>nbsbande et METHODE<>MUMPS -----> UTMESS_F(MODAL_9/10) ,
+        si nbproc>nbsbande et METHODE=MUMPS: 
+          on distribue les procs sur les nbsbande avec comme règles:
+             
+             - on regroupe côte à côte les procs travaillant sur la même fréquence (pour
+                 INFO_MODE init ou final) ou la même sous-bande (pour MODE_ITER_SIMULT+NORM).
+   
+             - si nbproc n'est pas un multiple de nbsbande, on redistribue en priorité sur
+               les premiers procs: ds l'INFO_MODE init, le proc 0 à deux fois plus de travail
+               que les autres, donc cela ne peut qu'aider !
+               ---> Dans ce cas, on imforme l'utilisateur de ce déséquilibrage de charge
+                    via UTMESS_I(MODAL_11/12).
+   
+    
+        RQ 1. 
+        En fait, après l'INFO_MODE initial, on a récupére pour chaque nbsbande, le nbre de 
+        fréquences à calculer par la suite. Si une sous-bande est vide, on l'éjecte du calcul
+       (accompagné d'un UTMESS_F/A suivant le paramètre STOP_FREQ...).
+        On en déduit le nouvel entier nbsbande_nonvide <= nbsbande.
+        On travaille alors avec ce nouvel entier en lieu et place de nbsbande pour distribuer
+        les calculs et gérer les incompatibilités fonctionnelles.
+   
+        RQ2.
+        L'utilisateur doit utiliser un nbproc >= nbfreq-1. Ds le cas contraire, on s'arrête en
+        ERREUR. C'est une étourderie de sa part.
+        On aurait put prévoir un autre mode de fonctionnement plus user-friendly (paramétré 
+        par un GESTION_FREQUENCE='AUTO' sur le mode GESTION_MEMOIRE='AUTO' de MUMPS):
+           par exemple, on regroupe les sous-bandes contiguës les moins bien dotées de 
+           manière à comporter nbfreq_corrige - 1 <= nbproc.
+   
+        RQ3.
+        Dans la même veine on pourrait prévoir différents types de mécanismes (à la NASTRAN)
+        pour essayer d'équilibrer au mieux les sous-bandes de manière transparente pour l'uti
+        lisateur. Il paramétrait juste un souhait de taille min et max de sous-bandes.
+        On pourrait le faire via des heuristiques ou par une dichotomie comme ds MODE_ITER_INV.
+              ---> Ds tous les cas, il y'aura un surcoût en temps... pas forcément compensé
+                   ds la suite du calcul.
+              ---> Cela pourrait être une option dédiée d'INFO_MODE appelée ensuite ds la
+                   MACRO (cf. fiche 19738).
+   
+        RQ4.
+        J'ai interdit de gaspiller des procs à faire le même calcul MF ou LDLT (sauf pour
+        l'INFO_MODE final bien sûr). C'est discutable fonctionnellement. J'aurais pu prévoir
+        un message dédié et switcher automatiquement sur MUMPS, par exemple.
+              ---> Pb moins prégrant dès que MUMPS va devenir le solveur linéaire by default.
+   
+        RQ5.
+        Je n'ai pas cherché à optimiser finement le // de l'INFO_MODE initial. Léger déséqui
+        librage qui influe peu ou pas sur le temps d'un vrai gros calcul.
+             ---> Cela créerait beaucoup de boulot pour peu de gains.
+   
+        RQ6.
+        Pour simplifier la programmation et parce que cela n'avait pas d'influence sur les
+        perfs de MACRO_MODE_MECA, je débranche automatiquement en début de macro le //isme
+         sur les calculs élémentaires et les assemblages (via MODI_MODELE+CENTRALISE).
+           ---> Si on arrive pas à récupérer le nom de la SD_MODELE (cf. routine DISMOI), on
+                plante ds la macro en call ASSERT.
+        Je remet la valeur paramétrée en fin d'op.
+            ---> Ds d'autres macros, il faudrait prendre en compte ce //isme.
+    
+        RQ7. Gestion des sous-bandes vides et test de Sturm identique au mode séquentiel:
+             MODAL_2/3/4/5/6/7       
+   
+   TEST NON-REGRESSION
+   ====================
+        * Liste complète en seq sur Aster4,
+        * Liste complète en // (sauf perf*) sur Aster4.
+   
+   VALIDATION
+   ==========
+     * Nouveau cas-test parallèle (qui reprend un calcul MACRO_MODE_MECA de fdlv112b)
+       ZZZZ337a (doc. V1.01.337): test du //isme multi-niveaux de MACRO_MODE_MECA:
+       calcul MACRO_MODE_MECA sur 4 sous-bandes (solveur modal par défaut):
+           * 1 calcul 4 x 1 + MUMPS + STURM='GLOBAL' (chaque sous-bande indépendante utilise 
+             MUMPS seq).
+           * 1 calcul 1 x 4 + MUMPS + STURM='GLOBAL' (MUMPS sur 4 procs, sous-bandes traitees
+             en seq).
+           * 2 x 2 + MUMPS + STURM='LOCAL'
+   
+        calcul avec 3 sous-bandes (test déséquilibrage):
+           * 2 + 1 + 1 (sbande n°1 utilise 2 proc pour MUMPS, les 2 autres, 1 seul chacune).
+   
+        calculs pour tester la souplesse du processus vis-à-vis des solveurs modaux et autres
+        solveurs linéaires:
+           * 4 x 1 avec SORENSEN + MULT_FRONT + STURM='GLOBAL'
+           * 4 x 1 avec JACOBI + MULT_FRONT + STURM='LOCAL'
+           * 4 x 1 avec TRI_DIAG + MULT_FRONT + STURM='NON'
+   
+         Pour chaque calcul on teste 4 valeurs propres (aux bornes des sous-bandes pour tester
+         les coms) et une composante de vecteurs propres (N500 DX, N200 DY, N300 DZ, N400 DX).
+   
+   
+   
+      * Nouveau cas-tests de perf (copie conforme de perf013c):
+        PERF016a,b,c,d,e   : MACRO_MODE_MECA sur 4 sous-bandes
+   
+        resultat de référence de oct dernier: 9296s et 23.5Go
+   
+        perf016_______a________b_______c_______d________e
+        Type//_______1x1______4x1_____4x4_____1x4_____1x16
+        Temps______3569s_____1121s___663s____2084s___1698s
+       VMPeak______17.2Go____19.5Go__12.9Go__10.6Go___9.5Go
+   
+        Machine IVANOE (1 ou 2 processus MPI par noeud)
+     
+   DETAILS D'IMPLEMENTATION
+   ========================
+     Depuis le version de nov. dernier, l'utilisateur bénéficiait d'un gain en temps entre 30
+     et 70% (du fait de la refonte algo. et de l'accès à MUMPS au lieu de seulement MF). 
+     Pour aller plus loin ds les gains en temps et en mémoire, l'utilisateur pouvait utiliser
+     le parallélisme MPI de MUMPS.
+     Mais ce //isme ne s'appliquait qu'à une partie du calcul, celle concernant les facto. et
+     les descente-remontées du solveur linéaire. D'où des gains supplémentaires en temps
+     limités: 10% à 15% en temps (par rapport aux chiffres de la version non optimisée), 30 à
+     50% en pic mémoire.
+   
+     D'où l'idée d'introduire un niveau de // supplémentaire, là oû il est le plus efficace,
+     c'est-à-dire, dans les boucles de distributions de calcul modaux. En effet cette macro ds
+     sa nouvelle forme optimisée est composée de trois boucles (par défaut):
+   
+          * un INFO_MODE initial (pour déterminer les nbres de modes par sous-bandes):
+          _______boucle de 1 à nb_freq (nbfreq=nbsbande+1)
+          
+          * des MODE_ITER_SIMULT (pour déterminer les modes propres et créer les sd_mode_méca)
+          _______boucle de 1 à nbsb_bande_nonvide
+            des traitements auxilaires ds la même boucle (NORM_MODE, IMPR_RESU)
+          
+          * Test de Sturm de post-vérification (par défaut)
+            INFO_MODE final
+          ______boucle de 1 à 2 (freq_min et freq_max)
+          
+          * Filtrage des sd_mode_méca via EXTR_MODE.
+   
+     On propose donc d'introduire 2 niveaux de //isme au niveau de chacunes des 3 boucles.
+     On distribue les coeurs alloués pour le calcul en priorité pour ces boucles, et ensuite,
+     on distribue le reliquat au sein de chaque itéré pour lancer des occurences de MUMPS //.
+     Par exemple, si on a nbsb_bande=8 et
+        8 procs alloués:
+           * INFO_MODE initial: le proc 0 traite 2 freqs, les autres 1 seule; Elles utilisent
+             le solveur linéaire sur 1 proc.
+           * La boucle centrale: tous les sb_bandes sont gérées par 1 proc et elles utilisent
+               donc le solveur linéaire sur 1 proc.
+           * INFO_MODE final  : les procs 1 à 4 traitent la frequence freq_min et utilisent
+               la même ocurrence du solveur linéaire //isée 4 procs, idem pour les 4 autres.
+    
+        17 procs alloués:
+            * INFO_MODE initial: les proc 0/1 traitent 2 freqs, les autres 1 seule; Elles 
+              utilisent le solveur linéaire sur 2 ou 3 procs.
+           * La boucle centrale: tous les sb_bandes sont gérées par 2 procs et elles utilisent
+               donc le solveur linéaire sur 2 procs (sauf la première, 3 procs).
+           * INFO_MODE final  : les procs 1 à 9 traitent la frequence freq_min et utilisent
+               le solveur linéaire sur 9 procs, idem pour les 8 autres.
+    
+   
+      On organisme le //isme à deux niveaux:
+        * ds le PYTHON de la macro:
+             - on stipule aux opérateurs INFO_MODE et MODE_ITER_SIMULT qu'ils doivent travail
+               ler en mode "parallélisme MACRO" via un jeu de mot-clé cachés:
+   
+                PARALLELISME_MACRO=FACT(statut='d',min=0
+                   TYPE_COM=SIMP(statut='f',typ='I',defaut=-999, into=(-999,1,2), fr=".....)
+                   IPARA1_COM=SIMP(statut='f',typ='I',defaut=-999, fr=".....)
+   
+               Par défaut, le mot-clé TYPE_COM=-999 et les op. fonctionnent comme en séquentiel
+               ou en ne parallélisant que MUMPS (comportement NIVEAU_PARALLELISME=1).
+   
+            - on filtre la boucle PYTHON grâce à un vecteur proc_sb_nvide[], qui pour un rang 
+              donné renseigne qu'en à l'itération de la boucle qui le concerne,
+    
+                  " if (((nbproc>1)&(proc_sb_nvide[rang]==it
+                       le proc va faire le job..."
+   
+           On "ferme le robinet" des itérations. Chaque proc ne va rentrer que ds un et
+           un seul calcul MODE_ITER_SIMULT+NORM_MODE+IMPR_STURM et générer une SD MODE_MECA 
+           non vide. 
+   
+        * Ensuite, ds le fortran, grâce à ces paramètres (cachés) renseignés ds le macro,
+          on sait qu'elle partie du calcul on traite. On peut ainsi:
+             - redimensionner certains objets (pour générer, après com, la sd globale, cf 
+               op0045),
+             - réorganiser certains calculs (cf. op0032/vpfopr),
+             - réorganiser les schémas de com entre les ops et le solveur linéaire (on dit
+               à MUMPS ne travailler que sur une sous-partie des procs),
+             - mettre en oeuvre des schémas de com entre sous-communicateurs (op0045).
+   
+        Ainsi, avec ces seules astuces et en travaillant avec différents sous-commumnicateurs
+        MPI au niveau du FORTRAN, on peut
+           - "tarir localement" le flot de données afin de "virtuellement" distribuer les 
+              tâches indépendantes,
+           - "bluffer" proprement certains traitements (tels les olveurs linéaires) de manière
+             à leur consacrer qu'une partie des procs.
+   
+        RQ1.
+        Initialement, j'ai essayé de ménager un équilibrage de charge empirique en distribuant
+        plusieurs sous-bandes par proc. C'était trop compliqué à gérer et cela obligait à
+        traiter à part le cas des sous-bandes vides. Donc je suis revenu à un principe simple:
+             une sous-bande non vide est traitée par un paquet de proc et chaque proc va
+             donc gérér une sd mode_méca non vide.
+   
+       RQ2.
+       Initialement, j'ai essayé de ne communiquer que des données les plus petites et synthé
+       tiques possibles. Les sd_mode_mécas en fin de processus, après l'EXTR_MODE. C'est trop
+       compliqué à faire depuis le fortran en quelques jours.
+         ---> Il faudrait prévoir un mécanisme général pour les principaux concepts 
+              utilisateur, depuis le PYTHON.
+   
+       RQ3.
+       Finalement, je me suis rabattue sur une communication MPI comme on fait habituellement
+       ds Aster avec MUMPS, PETSc ou FETI. On communique les données numériques (RHS, matrice,
+       entiers indiquant une singularité...), le plus tôt possible, car après le cheminement
+       algorithmique se ramifie trop et la combinatoire des coms à prévoir est trop importante.
+       Ici, j'ai en fait pris une stratégie intermédiaire: 
+            je ne communique pas trop tôt (juste après le solveur modal) car cela m'aurait 
+           obligé à prévoir des coms supplémentaires), mais pas trop tard non plus (après la
+           construction de la sd_mode_méca). Je communique juste avant la construction de la
+           sd.
+       Cela permet de garantir la consistance:
+                - des comportements algorithmiques,
+                - des comportements fonctionnels,
+                - des structures de données.
+   
+       RQ4. < Cf. fiches 20294/20309>
+       Pour optimiser les coms, particulièrement celles des vecteurs propres, je communique 
+       les objets en cascades (entre différents sous-communicateurs) et en découpant les
+        gros vecteurs en sous-paquets (nouvelle option MPICM1).
+   
+       RQ5.
+       Afin d'éviter les pbs de deadlock:
+          - je ne gère que des sous-communicateurs encapsulés,
+          - après un com sur un sous-communicateur, je fait un MPI_BARRIER sur le COMM_WORLD,
+           et je remet le COMM_WORLD comme communicateur par défaut.
+   
+       RQ6.
+       Pour préserver la lisibilité du python de la macro, j'ai découpé les travaux auxi
+       liaires  en sous-fonctions:
+      - recup_modele_partition() --> pour récupérer le MODELE puis l'option de PARTITIONNEMENT
+                      éventuelle.
+      - gestion_sous_bande   --> gestion de la distribution des modes par sous-bandes de
+                     calcul et messages associés.
+      - gestion_frequence    --> idem avec les fréquences initiales.
+   
+        RQ7.
+        Pour ménager la lisibilité du python, les messages sont effectués via UTMESS, 
+        aster.affiche ou assert(false).
+   
+        RQ8.
+        Seule entorse à la doctrine "tout le MPI est confiné ds le Fortran": appel aux méthodes
+        mpi_info de aster_core pour récupérer ds le PYTHON, le rang et le nbre de procs.
+   
+   DETAILS (suite)
+   =======
+     Les résultats présentés ds la fiche sont appréciables (jusqu'à un facteur 10 à 20) mais 
+     encore loin des speed-ups théoriques. J'ai cherché à en comprendre la ou les raisons.
+   
+     En fait, contrairement à ce qu'on pourrait penser de prime abord, la cause du tassement
+     des perfs après quelques dizaines de procs, n'est pas uniquement due:
+            - aux coûts des communications MPI (on communique ici, peu souvent, mais de gros
+               volumes de données).
+     mais aussi:
+       - aux vieilles routines Aster de post-traitements modaux peu optimisées ou effectuant
+         des traitements redondants (cf. fiche "vppara and Co" à venir).
+   
+       - aux déséquilibrages de charges (pb difficiles à traiter sur un coin de table, cf.
+           fiche INFO_MODE + option="équilibré") des différentes recherches modales.
+   
+       - au périmètre parallèle de la macro qui n'était pas optimal. Je communiquait toutes
+         les données résultats à tous les procs un peu trop tôt. En réécrivant les routines
+         de posttraitements pré-citées afin d'optimiseer leur efficacité séquentielle, j'en ai
+         aussi profité pour décaler ces coms cette fois le plus tard possible (ds la philoso
+         phie actuelle du //isme ds Aster): 
+              juste avant la constitution de la sd_mode_méca (routine VPSTOR).
+    
+    * RQ FONCTIONNELLE1:
+           En séquentiel, on préconise de découper ces recherches de modes en paquets de
+           l'ordre de 80, en parallèle, si on dispose de suffisamment de procs, on peut
+           découper plus finement: 10 ou 20 modes par paquet.
+   
+     * RQ2: La remarque précédente s'étend pour tous les solveurs modaux et linéaires
+            possibles. On verra si l'amélioration du solveur modal change la donne.
+   
+   ROUTINES IMPACTEES
+   ===================
+   CAPY/
+   info_mode.capy  macro_mode_meca.capy	mode_iter_simult.capy
+   PY/
+   appelmpi.py  macro_mode_meca_ops.py  modal.py
+   F77/
+   
+   MODIF: op0032.f  op0045.f  vpfopr.f
+   
+   NEW: comatr.f  comcou.f somint.f  vecinc.f maxint.f  vecini.f  vecink.f  vecint.f
+   
+     vpermo.f, vpnorx.f, vppara.f, vppfac.f, vppgen.f, vpstor.f
+     + nouvelle routine: vppcom.f
+     + par adhérence: nmop45.f, op0044.f
+     + par gentillesse (je propage les mêmes optimisations ds des routines connexes):
+      mcmmvc.f  mcmmvr.f  mrmmvr.f  vpermc.f vppgec.f  wpnorx.f  wppgen.f
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : U2.08.06,U4.52.02,V1.01.337,V1.01.338,R5.01.01,D6.00.01
+VALIDATION
+    informatique,fonctionnelle,non-régression,performance
+NB_JOURS_TRAV  : 35.0
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 020309 DU 2013-02-01 17:22:49
+TYPE evolution concernant Code_Aster (VERSION )
+TITRE
+    Gestion de plusieurs niveaux de parallélisme MPI au sein d'un même calcul
+FONCTIONNALITE
+   OBJET
+   =====
+      Depuis l'introduction du //isme MPI dans Code_Aster (il y'a bientôt 10 ans), on souhaite
+      proposer aux utilisateurs des fonctionnalités permettant de tirer profit de quelques
+      dizaines à quelques centaines de coeurs.
+    
+      Or, le parallélisme mis en place jusqu'alors, basé sur une distribution des mailles 
+      entre les processus MPI et centré principalement sur la brique logicielle solveur 
+      linéaire (soit en tant que solveur direct, soit en tant que préconditionneur), sature
+      rapidement et n'apporte plus de gains en temps significatifs à partir de 8, 16 ou 32 proc
+      (pour des pbs de tailles < 5M).
+     D'où l'idée de dégager d'autres voies d'amélioration en cumulant différents niveaux de
+     parallélisme emboîtés. Par exemple, pour le calcul modal de MACRO_MODE_MECA, qui m'a 
+     servis de cas démonstratif (cf. issue17078), on peut "facilement" dégager 3 ou 4 niveaux 
+     de //
+          - niveau 1: on distribue par paquets de coeurs les bandes fréquentielles de calculs,
+          - niveau 2: chaque sous-paquet est redistribué à un solveur modal // (ex. Slepc ou 
+                     PARPACK),
+          - niveau 3: au sein de chaque sous-paquets on lance différentes occurences MUMPS
+                     indépendantes.
+   
+      Voire si on ajoute MPI + Threads pour utiliser tous les coeurs contiguës d'un proc:
+          - niveau 4: BLAS threadées appelées par le solveur modal et le solveur linéaire.
+   
+     On peut donc cumuler les avantages des 4 niveaux (en terme de gains en temps et/ou
+     en mémoire) en se ménageant des bras de levier supplémentaires pour ne pas les saturer.
+   
+     Ainsi ds l'exemple précédent, clairement il faut mettre le paquet sur le premier échelon
+     qui exhibe un très bon niveau de // (calculs indépendant). Donc, si on doit calculer 10
+     bandes de fréquences, on ménage 10 paquets de coeurs.
+   
+     Cependant, ce //isme requiert un peu plus de mémoire du fait des buffers MPI, donc pour
+     annhiler ce surcoût, voire aller plus loin ds le gain mémoire, il faut utiliser un solveur
+     modal // + un solveur linéaire //. Avec, par exemple, pour rester ds leurs "zones d'excel
+     lence parallèle" sur nos pbs de taille moyenne, 4 coeurs chacuns.
+     D'où un calcul // possible sur 10 x 4 x 4 ou 10 x 4 (si on ne garde que 2 niveau).
+   
+     Ce cas de figure est détaillé ds la fiche 17078.
+     
+   PRINCIPES DE FONCTIONNEMENT
+   ===========================
+     Jusqu'à présent ds Aster, les communications MPI s'opéraient sur le communicateur global, 
+     MPI_COMM_WORLD (qui englobe tous les coeurs), valeur retenue par défaut ds les routines
+     chapeaux:
+        - effectuant des coms MPI pour le compte de routines Aster F77 ou F90,
+        - gérant les occurences MUMPS //,
+        - gérant les occurences PETSc //,
+        - gérant des services de type supervision de calcul en mode // (kill de process, 
+          récapitulatifs d'arlarmes...).
+     
+     On propose de substituer à ce mode de fonctionnement le suivant:
+   
+     En début de chaque routines utilisant explicitement un communicateur MPI, on appelle la
+     fonction COMCOU (pour COMmunicateur COUrant). Celle-ci va interroger un objet de la base
+     globale stockant le nom de ce communicateur et renvoyer ce nom.
+     Par défaut, en début d'exécution on affecte ds cet objet le COMM_WORLD habituel, mais
+     ensuite, au sein d'un opérateur, libre au programmeur de changer la règle du jeu et d'en
+     créer un nouveau et de l'affecter en tant que com courant.
+     Bien sûr, après usage, il doit remettre le COMM_WORLD standard (cf. paragraphe sur les
+     conseils d'utilisation et proposition de doctrine).
+   
+     Par exemple, ds le cas de MACRO_MODE_MECA:
+   
+        Pour gérer 10 bandes de fréquences, chacunes faisant travailler une ocurrence MUMPS
+        sur 4 coeurs (soit 10 x 4 =40 coeurs), on distribue les 10 INFO_MODE + ITER_SIMULT
+        indépendants par un filtre ds le python de la macro:
+              les 4 premiers coeurs vont traiter la première bande,
+              les 4 suivants la deuxième etc.
+        
+        Puis, au sein de chacun de ces sous-paquets, on bluffe les appels à MUMPS on lui
+        donnant à voir, non pas le COMM_WORLD habituel mais un sous-communicateur dédié
+        limité aux 4 procs de son périmètre. 
+        Une fois que le calcul MUMPS // est achevé, on revient au COMM_WORLD standard pour 
+        exploiter le résultat et généralement le communiquer à tous les procs (plus sûr pour
+        l'instant, ds le respect de la doctrine).
+   
+        RQ. Cela marche aussi avec un solveur direct non // type MF ou LDLT, mais on gaspille
+        des ressources machines, on va juste lancer 4 calculs MF identiques ! Donc j'ai 
+        ce genre de pratique ds MACRO_MODE_MECA // car elle n'est pas optimale pour la 
+        communauté !
+   
+        On peut même rafiner le processus, et je l'ai fait ds MACRO_MODE_MECA, et gérer des
+        sous-communicateurs uniquement pour:
+             - améliorer la lisibilité de la programmation,
+            - diminuer les coûts des coms (qui sont collectives !).
+        
+        Par exemple, pour reprendre mon calcul 10 x4 précédent, lorsqu'il s'agit de 
+        communiquer les vecteurs propres entre les 40 occurences Aster afin qu'elles prennent
+        les mêmes décisions en terme de post-traitements qu'en séquentiel (filtrage, mise en
+        formes, tests...) et qu'elles construisent la même sd mode_méca (sur tous les proc et 
+        qu'en séquentiel), je communique via 2 sous-coms en cascade:
+              
+          1/les procs de rang 0 de chacun des 10 paquets vont s'échanger les vecteurs propres
+            que chacun à exhumé ds sa bande fréquentielle,
+          puis, en cascade,
+          2/ chacun va renvoyer le résultat à ces 3 autres compagnons MUMPS.
+          
+          D'où le besoin de 2 sous-coms en plus du com_world.
+   
+   DETAILS
+   ========
+      * L'objet stockant le communicateur MPI courant (+ le COM_WORLD) est sur la base globale
+        et s'appelle: 'COMMUNICATEUR_MPI.REFE'. C'est une vecteur de 2 entiers:
+                     V(1) = le COMM_WORLD (à ne pas toucher, peut servir pour vérification
+                             ou remise en mode std du schéma de com).
+                     V(2) = le com courant (modifiable à loisir).
+    
+      * ON NE TOUCHE PAS DIRECTEMENT CET OBJET. ON LE MANIPULE UNIQUEMENT VIA DES "METHODES"
+        CODEES ds la routine MPIEXE.F:
+           - création et initialisation de l'objet lors du premier appel
+                 CALL MPIEXE('SET_COMM_REFE'...)
+           - consultation du com local: MPICOU= COMCOU(1)
+           - consultation du COM_WORLD: MPICOW= COMCOU(0)
+           - changement de communicateur courant: CALL MPIEXE('AFFE_COMM_REFE'...).
+   
+      * On génère les sous-communicateurs via LE MEME ROUTINE MPIEXE.F:
+          - création de sous_communicateurs: CALL MPIEXE('MPI_COMM_SPLIT'...)
+          - destruction de sous-communicateurs: CALL MPIEXE('SET_COMM_FREE'..)
+   
+        Pour l'instant, je pense plus sage de ne permettre que la création de SOUS-COMMUNICA
+        TEURS EMBOITES: on divise un paquets en sous-paquets et ainsi de suite...
+        Ainsi, one n'oublie personne. Il est possible avec MPI de faire beaucoup plus compli
+        qué, mais je pense que ds Aster c'est trop dangereux pour l'instant !
+   
+       * On a aussi besoin de fonctionnalités auxiliaires pour gérer proprement ces sous-coms:
+   
+             - détermination du rang et du nbre de procs d'un sous-com: 
+                CALL MPIEXE('MPI_RANG_SIZE'...
+              Fonctionnalité qui n'est pas en doublons de MPICM0 contrairement aux apparences.
+              Car MPICM0 travaille sur le proc courant lu ds la base global alors que cette
+              option permet de faire la même opération:
+                 - mais sur le communicateur que l'on veut (éventuellement sans changer le com 
+                   courant pour cela)
+                 - et surtout sans que la base globale soit créée pour autant (cf. routine
+                   ENTETE.F).
+   
+           - affectation d'un objet MPI permettant de gérer les erreurs (MPI_ERRHANDLER_SET)
+             au communicateur de notre choix (et non plus uniquement sur le COMM_WORLD).
+                  CALL MPIEXE('MPI_ERRHANDLER_SET'....)
+   
+            En fait je ne le fait qu'une fois au début de l'exécution sur le COMM_WORLD,
+           ensuite, tous les sous-coms déduits de ce dernier par splitting restent naturel
+            lement rattachés à ce dernier (c'est un autre avantage du MPI_COMM_SPLIT).
+            Bref, quelques soient les sous-coms utilisés, les messages vont remonter de la
+            même façon et pour tous les process MPI du COMM_WORLD, comme si on travaillait
+            avec le COMM_WORLD std.
+   
+           - recherche du COM_WORLD: CALL MPIEXE('MPI_COMM_WORLD'.. ou MPICOW=COMCOU(1).
+   
+   GARDE-FOUS LOGICIELS EN CAS DE MAUVAISE PROGRAMMATION (MAINTENANCE PREVENTIVE)
+   ======================================================
+      Lorsqu'on a mis en oeuvre un schéma de calcul // avec des structures de données incom
+      plètes, celui-ci peut-être rapidement démoli (planton mais aussi résultats faux) par
+      une erreur de programmation.
+      Pour essayer de se prémunir de ce genre de surprise, au fil du temps, on a mis en place
+      quelques garde-fous: caractère MPI_COMPLET ou non de certaines SD, messages + palliatifs 
+      à des endroits clés du code (pd matrice-vecteur...)...
+   
+      Le fait de travailler avec potentiellement plusieurs sous-communicateurs ne déroge pas
+      à la règle ! Il faut prendre quelques précautions.
+   
+      Outre les conseils méthodologiques déjà évoqués ds la fiche (à tracer ds une doc. D ad 
+     hoc), et dont les principaux sur ce points sont rappelés plus bas,
+     on peut mentionner 4 gardes-fous logiciels pour circonscrire beaucoup de dérives:
+   
+       1/ juste avant de rentrer ou sortir d'un op, on vérifie bien que le 
+         COM_COURANT=COMM_WORLD (via EXECOP.f).
+       2/ avant d'utiliser MUMPS pour faire une descente-remontée, on vérifie bien que le 
+         communicateur associé à sa matrice factorisée = COM_COURANT (via AMUMPI.F).
+   
+       3/ Il faudrait faire la même chose ds PETSc (je suis prêt à la faire).
+     
+       4/ Il faudrait faire la même chose pour le //isme des calculs élémentaires + assemblages
+         en stockant ds la SD_PARTITION (par exemple le .PRTI(2), le numéro du communicateur
+         qui a présidé à la décomposition mailles/procs). Ensuite lorsqu'on cherche à mettre
+         en oeuvre ce //, il faut vérifier que COM_COURANT = le COM_stocké (je suis prêt à la 
+         faire).
+   
+   
+   CONSEILS ET ELEMENTS DE DOCTRINES
+   =================================
+       * Jusqu'à présent on a respecter certaines règles de programmation concernant le 
+         // MPI:
+            - limiter les appels MPI à quelques routines chapeaux dédiées: FETMPI, 
+              MPICM0/1/2...
+   
+            - découper le pbs en sous-tâches indépendantes de manière simple, lisible et
+              robuste: on n'oublie personne donc pas de risque de résultats faux à ce niveau.
+   
+            - limiter les comm (en volume et nombre) et/ou privilégier la lisibilité à la
+              limitation du nbre de données communiquées: par ex., on communique un vecteur
+              en fin de MUMPS alors qu'on pourrait ds certains cas attendre et
+              ne communiquer que le résultat final (par ex. un entier en fin d'INFO_MODE).
+   
+           - on communique sur tous les processus MPI actifs (MPI_COMM_WORLD),
+   
+           - en fin de cmde, on effectue les coms requises afin que chaque occurence Aster 
+             connaisse tout et qu'elle ait la même base globale que ses copines (et qu'en 
+             séquentiel).
+    
+        * J'enrichis ces éléments de:
+   
+           - on peut aussi organiser son travail algorithmique par sous-communicateurs, mais
+             il faut le faire de manière claire et lisible et, ds tous les cas, revenir le
+             plus tot possible au COMM_WORLD (on affecte comme com courant le COM_WORLD).
+   
+           - en fin de commande, on remet ds tous les cas, comme com courant le COM_WORLD.
+          
+           - il faut détruire les sous-communicateurs le plus tard possible si ils sont liés à
+             une occurence MUMPS ou PETSc.
+             Typiquement en fin d'opérateur ou après la destruction
+             explicite de l'occurence MUMPS/PETSc associée (en générale via celle de la
+             MATR_ASSE associée).
+             Sinon, lorsuq'on cherche à détruire l'occurence MUMPS/PETSc (directement ou via
+             un processsus automatique "ramasse miettes"), celle-ci plantent avec un mauvais
+             msgs induisant en erreur(pb transmis à l'équipe MUMPS).
+   
+           - lors des coms entre sous-communicateurs, il faut bien faire attention aux initial
+             lisations des données à communiquer:
+                * préférer 0.D0 à -999.0 ou UNDEF si on doit faire un MPI_REDUCE ensuite !
+                * attention à ne pas compter plusieurs fois la même chose (par ex. concernant
+                  les 4 occurences MUMPS appelées par INFO_MODE ou MODE_SIMULT ds mon exemple
+                  précédent).
+   
+       - Limiter les changements de communicateurs MPI à quelques zones très courtes et
+          très ciblées d'un opérateur. Par exemple, ds op0045.f on change 4 ou 5 fois de
+          communicateurs pour organiser les comms et optimiser leur coût. Mais on le fait
+          en l'espace de 30 lignes.
+   
+        - Ne jamais faire cela ds une routine de bas niveau appelable par tous le monde (type
+          CALCUL.f ou PRERES.f). Limiter ce type de manip aux opérateurs (ex. op0045/op0032.f)
+          ou aux grosses routines peu partagées (ex. vpfopr.f).
+   
+        - Ré-imposer communicateur courant = MPI_COMM_WORLD dés qu'on a plus besoin de jouer
+          avec les sous-communicateurs.
+   
+        - Entre les appels aux sous-coms, prévoir des retours au COMM_WORLD + BARRIER pour
+          que tous le monde soit synchronisé (optionnel, sécurité).
+   
+        - Dans tous les cas, on rentre et on sort d'un op avec com_courant=COMM_WORLD (revéri
+          fié ds EXECOP.f).
+   
+   CAS PARTICULIERS
+   ================
+        * ENTETE.F: on va interroger le MPI_COMM_WORLD pour connaître sa taille. La base globa
+                    le n'existant pas encore, je ne peux pas utiliser le mécanisme usuel via
+                    la nouvelle fonction COMCOU. Je vais donc explicitement chercher la taille
+                    du COMM_WORLD:
+                        CALL MPIEXE('MPI_COMM_WORLD'..) + CALL MPIEXE('MPI_RANG_SIZE'..)
+                    J'en profite pour lui raccrocher (ainsi qu'à tous ses sous-coms fils) le
+                    MPI_ERRHANDLER (j'enlève donc ce rattachement de tous les fonctions
+                    chapeaux MPI).
+   
+         * DEBUT.f: création et initialisation de l'objet 'COMMUNICATEUR_MPI.REFE'. Les
+                    utiliaires COMCOU et MPIEXE vont pouvoir fonctionner (sinon CALL ASSERT).
+   
+         * Les routines gérant PETSC: je remplace le PETSC_COMM_WORLD par le com courant lu
+            via COMCOU.
+   
+         * U2MESG.f: en cas de planton au fin fond d'un calcul //, il faut pouvoir arrêter
+               tous les procs et non pas seulement ceux liés au com courant. Mathieu a 
+              développé tout un mécanisme d'oscultation pour cela. Pour ne pas perturber
+              ces derniers (le mécanisme et Mathieu!) je remet donc comme com courant le 
+              COM_WORLD en début de cette routine.
+              Je ne le fais bien sûr pas si UTMESS('A' ou 'I'.
+   
+   SOURCES IMPACTEES
+   ==================
+      Hormis les nouvelles routines utilitaires, MPIEXE.F et COMCOU.f, et qqqes cas 
+      particuliers (citées précédemment), seulement 3 ou 4 lignes changées par routine:
+   
+   amumpi.F  amumpu.F  apmain.F  apsolu.F	fetmpi.F  mpichk.F  mpicm1.F  mpicmw.F	mpisst.F
+   amumpp.F  apallc.F  appcrs.F  entete.F	mpialr.F  mpicm0.F  mpicm2.F.
+   
+   UTILISATION ET VALIDATION
+   ==========================
+     Voir fiche 17078 (MACRO_MODE_MECA//)
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+    informatique,non-régression
+NB_JOURS_TRAV  : 10.0
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 020294 DU 2013-01-31 10:53:43
+TYPE evolution concernant Code_Aster (VERSION )
+TITRE
+    Amélioration des fonctionnalités de la routine MPICM1
+FONCTIONNALITE
+   OBJET
+   =====
+      Les appels aux fonctions MPI sont encapsulées dans des routines utilitaires F90. Parmis
+      celle-ci on trouve la routine MPICM1. Elle permet d'effectuer un MPI_BARRIER ou un BCAST
+      et certains REDUCE et ALLREDUCE.
+      L'objectif de cette fiche est d'enrichir ces fonctionnalités pour:
+        - traiter des très gros problèmes,
+        - traiter des vecteurs complexes,
+        - proposer d'autres fonctionnalités MPI.
+      Ces fonctionnalités ont été introduites pour le chantier MACRO_MODE_MECA // mais elles
+      peuvent s'avèrer utiles pour d'autres.
+   
+   NOUVELLE INTERFACE
+   ==================
+     SUBROUTINE MPICM1(OPTMPI,TYPSCA,NBV,BCRANK,VI,VR,VC)
+   ______________________^ nouvelle option activable
+   _____________________________________ ^____________^ nouveaux paramêtres   
+   
+   DETAILS    
+   =======
+     1/Nouvelle option OPTMPI'BACSTP' pour BCAST par Paquets
+     -------------------------------------------------------
+     Pour traiter de très gros problèmes (des millions de données à transmettre), il faut
+     découper le buffer de communication en plusieurs paquets. Sinon les coms deviennent plus
+     couteuses (rétention mémoire), moins fiables et surtout on peut atteindre certaines
+     limites de l'implémentation MPI retenue (entier court, taille de buffer temporaire...)
+     Nous dédoublons les options proposées pour faire ce découpage automatiquement dès que la 
+     taille du paquet dépasse la valeur SIZBMPI fixée en dur ds la source à 10**6 .
+   
+     RQ. Idéalement il faudrait aller lire ou tester la souche MPI pour fixer dynamiquement ce
+         type de bornes (il y'en a d'autres: nbre de sous-communicateurs, leur taille max...).
+         On attend d'avoir concrétement le pb pour s'atteler à cette tâche.
+     
+     On a limité pour l'instant cette initiative au BCAST avec la nouvelle option 
+     OPTMPI='BCASTP'. Il faut absolument essayer de ne pas faire de REDUCE ou ALLREDUCE sur de
+     tels gros volumes. On a donc pas développé les options similaires (mais cela ne serait pas
+     grand chose à faire).
+   
+     On a appliqué cette nouvelle option:
+        - avec MUMPS //, communications de seconds menbres et vecteurs solutions
+          (potentiellement plusieurs RHS et X_SOL) ds AMUMPP,
+        - communications de vecteurs propres ds MACRO_MODE_MECA //.
+   
+   2/Possibilité de transmettre des vecteurs de complexes
+     -----------------------------------------------------
+     Nouveau paramètre 'VC' après 'VI' et 'VR'.
+     C'est plus propre de faire ce type de com sur des complexes plutôt que d'envoyer un
+     vecteur de partie réelle et un, de partie imaginaire. C'est sans doute plus efficace et
+     cela évite de faire parfois n'importe quoi:
+       - du genre un MPI_REDUCE + MAX (resp. MIN) sur partie réelle et partie imaginaire en 
+         pensant l'avoir fait sur le module du complexe associé.
+       - transmettre des vecteurs partie réelles et imaginaires décalés ou qui n'ont pas de
+         lien entre eux.
+       - on limite les erreurs d'arrondis de la troncature + REDUCE + retransformation en com
+         plexe.
+     
+      On interdit donc les MPI_REDUCE + MAX/MIN sur des complexes.
+   
+   3/ Possibilité de faire un BCAST à partir de n'importe quel processus MPI
+      ----------------------------------------------------------------------
+     au lieu du processus de rang 0 codé en dur: c'est l'objet du nouveau paramètre BCRANK.
+   
+   SOURCES IMPACTEES
+   =================
+   F90:
+   mpicm1.F amumpp.F apsolu.F
+   F77:
+   ajlipa.f  assmam.f  assmiv.f  assvec.f	calcul.f  echmat.f  memaxm.f  mesomm.f	mrmult.f  
+   redetr.f  typmat.f  utch19.f	uttcpi.f
+   
+   VALIDATION
+   ==========
+     Via les cas-tests testant la fonctionnalité MACRO_MODE_MECA //.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : D6.00.01
+VALIDATION
+    informatique,non-régression
+NB_JOURS_TRAV  : 1.0
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR boyere       BOYERE Emmanuel        DATE 02/25/2013 - 02:27:03
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 020286 DU 2013-01-30 07:53:23
+TYPE aide utilisation concernant Code_Aster (VERSION 11.1)
+TITRE
+    Calcul de modes propres avec xc3xa9lxc3xa9ments trxc3xa8s rigides
+FONCTIONNALITE
+   Sur un modèle de pont roulant qui présente de nombreuses liaisons et surtout des éléments
+   de poutre très raides, le calcul modal se passe mal : arrêt du calcul en matrice singulière.
+   En utilisant MUMPS comme solveur linéaire et en augmentant sa précision, le calcul passe.
+       >>>            SOLVEUR=_F(METHODE='MUMPS',NPREC=12,),
+   
+   L'utilisateur se satisfait de la solution de contournement qui lui a été fournie.
+   Mais on garde cette étude en mémoire dans le cadre de la fiche 19158 : 
+   MN03 - chantier d'amélioration du calcul modal
+   J'y ajoute un pointeur vers cette présente fiche.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+    sans objet
+NB_JOURS_TRAV  : 2.0
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR brie         BRIE Nicolas           DATE 02/25/2013 - 02:28:58
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 019994 DU 2012-11-26 10:58:28
+TYPE anomalie concernant Code_Aster (VERSION 11.3)
+TMA : Phimeca
+TITRE
+    Couverture de code suite à la fiche 19830
+FONCTIONNALITE
+   Anomalie
+   --------
+   En version 11.2.25, la fiche 19830 implique une modification des tests sdld27a et
+   sdll123b. La couverture de code remonte alors le manque suivant : 
+   
+   MODE_ITER_INV       CALC_CHAR_CRIT      OPTION = 'SEPARE'                  
+   MODE_ITER_SIMULT    CALC_CHAR_CRIT      APPROCHE = 'IMAG'             
+   MODE_ITER_SIMULT    CALC_CHAR_CRIT      COEF_DIM_ESPACE            
+   MODE_ITER_SIMULT    CALC_CHAR_CRIT      OPTION = 'CENTRE' 
+   CALC_MODAL          CALC_FREQ           STOP_BANDE_VIDE = 'NON'  
+   MACRO_MODE_MECA     CALC_FREQ           STOP_BANDE_VIDE = 'OUI' 
+   
+   Solution
+   --------
+   - Modification de ssll103a.comm : 
+   Modification de MOD_1 : DIM_SOUS_ESPACE=40 => CEOF_DIM_ESPACE=4.
+   Duplication de MOD_1 (+TEST_RESU) => MOD_1_IM avec modifications : + APPROCHE='IMAG' et +
+   OPTION = 'CENTRE', CHAR_CRIT = 0.,.
+   
+   diff :
+   131c131
+   <                             DIM_SOUS_ESPACE = 40,   )
+   ---
+   >                             COEF_DIM_ESPACE = 4,   )
+   159a160,197
+   > #
+   > 
+   > MOD_1_IM=MODE_ITER_SIMULT(   MATR_RIGI=RIGAS,
+   >                               MATR_RIGI_GEOM=RIGASG_1,
+   >                               TYPE_RESU='MODE_FLAMB',
+   >                             CALC_CHAR_CRIT=_F(  NMAX_CHAR_CRIT = 20,
+   >                             COEF_DIM_ESPACE = 4,
+   >                             APPROCHE='IMAG',
+   >                             OPTION = 'CENTRE',
+   >                             CHAR_CRIT = 0.,   )
+   >                           )
+   > 
+   > #
+   > 
+   > TEST_RESU(RESU=(_F(PARA='CHAR_CRIT',
+   >                    NUME_MODE=20,
+   >                    RESULTAT=MOD_1_IM,
+   >                    VALE_CALC=-6.91154293E+05,
+   >                    VALE_REFE=-6.9253170999999996E5,
+   >                    REFERENCE='NON_DEFINI',
+   >                    PRECISION=3.0000000000000001E-3,),
+   >                 _F(PARA='CHAR_CRIT',
+   >                    NUME_MODE=13,
+   >                    RESULTAT=MOD_1_IM,
+   >                    VALE_CALC=-1.49004790E+06,
+   >                    VALE_REFE=-1.5048738999999999E6,
+   >                    REFERENCE='NON_DEFINI',
+   >                    PRECISION=1.E-2,),
+   >                 _F(PARA='CHAR_CRIT',
+   >                    NUME_MODE=2,
+   >                    RESULTAT=MOD_1_IM,
+   >                    VALE_CALC=-9.69429478E+06,
+   >                    VALE_REFE=-1.0058989E7,
+   >                    REFERENCE='NON_DEFINI',
+   >                    PRECISION=0.040000000000000001,),
+   >                 ),
+   >           )
+   > 
+   
+   
+   - Modification de ssll404a.comm et la documentation V3.01.404 : 
+   Duplication de MODE2 (+TEST_RESU) => MODE3 et MODE4 tel que : 
+   
+   221a222,327
+   > MODE3=MODE_ITER_INV(       MATR_RIGI=K_ASSE,
+   >                                 MATR_RIGI_GEOM=KS_ASSE,
+   >                              TYPE_RESU='MODE_FLAMB',
+   >                             CALC_CHAR_CRIT=_F(  OPTION = 'SEPARE',
+   >                                         CHAR_CRIT = ( -16., -10.,
+   >                                             -5., 2., 10.,15.),
+   >                                        ),
+   >                             CALC_MODE=_F(  OPTION = 'RAYLEIGH',     )
+   >                          )
+   > 
+   > TEST_RESU(RESU=(_F(NUME_ORDRE=1,
+   >                    PARA='CHAR_CRIT',
+   >                    REFERENCE='ANALYTIQUE',
+   >                    RESULTAT=MODE3,
+   >                    VALE_CALC=-13.932163821,
+   >                    VALE_REFE=-14.4147,
+   >                    CRITERE='RELATIF',
+   >                    PRECISION=0.034000000000000002,),
+   >                 _F(NUME_ORDRE=2,
+   >                    PARA='CHAR_CRIT',
+   >                    REFERENCE='ANALYTIQUE',
+   >                    RESULTAT=MODE3,
+   >                    VALE_CALC=-8.306132481,
+   >                    VALE_REFE=-8.6320700000000006,
+   >                    CRITERE='RELATIF',
+   >                    PRECISION=0.037999999999999999,),
+   >                 _F(NUME_ORDRE=3,
+   >                    PARA='CHAR_CRIT',
+   >                    REFERENCE='ANALYTIQUE',
+   >                    RESULTAT=MODE3,
+   >                    VALE_CALC=-2.751372938,
+   >                    VALE_REFE=-2.8607399999999998,
+   >                    CRITERE='RELATIF',
+   >                    PRECISION=0.039,),
+   >                 _F(NUME_ORDRE=4,
+   >                    PARA='CHAR_CRIT',
+   >                    REFERENCE='ANALYTIQUE',
+   >                    RESULTAT=MODE3,
+   >                    VALE_CALC=8.395545951,
+   >                    VALE_REFE=8.7838200000000004,
+   >                    CRITERE='RELATIF',
+   >                    PRECISION=0.044999999999999998,),
+   >                 _F(NUME_ORDRE=5,
+   >                    PARA='CHAR_CRIT',
+   >                    REFERENCE='ANALYTIQUE',
+   >                    RESULTAT=MODE3,
+   >                    VALE_CALC=14.011043612,
+   >                    VALE_REFE=14.555099999999999,
+   >                    CRITERE='RELATIF',
+   >                    PRECISION=0.037999999999999999,),
+   >                 ),
+   >           )
+   > 
+   > MODE4=MODE_ITER_INV(       MATR_RIGI=K_ASSE,
+   >                                 MATR_RIGI_GEOM=KS_ASSE,
+   >                              TYPE_RESU='MODE_FLAMB',
+   >                             CALC_CHAR_CRIT=_F(  OPTION = 'AJUSTE',
+   >                                         CHAR_CRIT = ( -16., -10.,
+   >                                             -5., 2., 10.,15.),
+   >                                        ),
+   >                             CALC_MODE=_F(  OPTION = 'RAYLEIGH',     )
+   >                          )
+   >                          
+   > TEST_RESU(RESU=(_F(NUME_ORDRE=1,
+   >                    PARA='CHAR_CRIT',
+   >                    REFERENCE='ANALYTIQUE',
+   >                    RESULTAT=MODE4,
+   >                    VALE_CALC=-13.932163821,
+   >                    VALE_REFE=-14.4147,
+   >                    CRITERE='RELATIF',
+   >                    PRECISION=0.034000000000000002,),
+   >                 _F(NUME_ORDRE=2,
+   >                    PARA='CHAR_CRIT',
+   >                    REFERENCE='ANALYTIQUE',
+   >                    RESULTAT=MODE4,
+   >                    VALE_CALC=-8.306132481,
+   >                    VALE_REFE=-8.6320700000000006,
+   >                    CRITERE='RELATIF',
+   >                    PRECISION=0.037999999999999999,),
+   >                 _F(NUME_ORDRE=3,
+   >                    PARA='CHAR_CRIT',
+   >                    REFERENCE='ANALYTIQUE',
+   >                    RESULTAT=MODE4,
+   >                    VALE_CALC=-2.751372938,
+   >                    VALE_REFE=-2.8607399999999998,
+   >                    CRITERE='RELATIF',
+   >                    PRECISION=0.039,),
+   >                 _F(NUME_ORDRE=4,
+   >                    PARA='CHAR_CRIT',
+   >                    REFERENCE='ANALYTIQUE',
+   >                    RESULTAT=MODE4,
+   >                    VALE_CALC=8.395545951,
+   >                    VALE_REFE=8.7838200000000004,
+   >                    CRITERE='RELATIF',
+   >                    PRECISION=0.044999999999999998,),
+   >                 _F(NUME_ORDRE=5,
+   >                    PARA='CHAR_CRIT',
+   >                    REFERENCE='ANALYTIQUE',
+   >                    RESULTAT=MODE4,
+   >                    VALE_CALC=14.011043612,
+   >                    VALE_REFE=14.555099999999999,
+   >                    CRITERE='RELATIF',
+   >                    PRECISION=0.037999999999999999,),
+   >                 ),
+   >           )
+   >           
+   
+   
+   - Modification de perf003a.comm :
+   Modification de MODES : STOP_BANDE_VIDE='OUI' => STOP_BANDE_VIDE='NON'
+   
+   diff :
+   43c43
+   <                  CALC_FREQ=_F(OPTION='BANDE', FREQ=( 840.0, 1600.0)))   # pour les
+   frequences 11, ..., 20
+   ---
+   >                  CALC_FREQ=_F(OPTION='BANDE', STOP_BANDE_VIDE='NON', FREQ=( 840.0,
+   1600.0)))   # pour les frequences 11, ..., 20
+   
+   
+   - Modification de forma11c.comm : 
+   Modification de MODES2 : STOP_BANDE_VIDE='NON' => STOP_BANDE_VIDE='OUI' 
+   
+   diff : 
+   161c161
+   <                        CALC_FREQ=_F(FREQ=(0.0,2.0,4.0),),
+   ---
+   >                        CALC_FREQ=_F(FREQ=(0.0,2.0,4.0),STOP_BANDE_VIDE='OUI',),
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : V3.01.404
+VALIDATION
+    ssll103a, ssll404a, perf003a, forma11c
+--------------------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR geniaut      GENIAUT Samuel         DATE 02/25/2013 - 02:28:59
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 020244 DU 2013-01-23 16:04:40
+TYPE anomalie concernant Code_Aster (VERSION 11.4)
+TMA : Phimeca
+TITRE
+    En NEW11.03.05, sslp318a est NOOK sur Calibre7, sslp320a et sslp318b sont NOOK sur Rocks et Calibre7.
+FONCTIONNALITE
+   Anomalie
+   --------
+   En NEW11.03.05, sslp318a est NOOK sur Calibre7. De plus, sslp318b et sslp320a sont NOOK
+   sur Rocks et Calibre7. 
+   
+   Solution
+   --------
+   On augmente les TOLE_MACHINE des TEST_RESU problématique tel que : 
+   
+   
+   - sslp318a.comm
+   194c194
+   <  13550.320850581,
+   ---
+   >  13550.320850572,
+   220a221
+   >               TOLE_MACHINE=5.E-6,
+   
+   - sslp318b.comm
+   221c221
+   <               TOLE_MACHINE=1.2E-6    )
+   ---
+   >               TOLE_MACHINE=5.E-5    )
+   
+   - sslp320a.comm
+   239c239
+   <                TOLE_MACHINE=2.1E-6, #TODO TOLE_MACHINE
+   ---
+   >                TOLE_MACHINE=1.E-4, #TODO TOLE_MACHINE
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+    cas tests incrimines
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR pellet       PELLET Jacques         DATE 25/02/2013 - 15:21:10
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 019583 DU 2012-09-26 08:19:57
+TYPE evolution concernant Code_Aster (VERSION )
+TMA : Necs
+TITRE
+    STAT_NON_LINE + VARC aux ELGA xc3xa0 sous-points
+FONCTIONNALITE
+   Besoin :
+   ===============
+   On veut pouvoir faire un calcul m�canique avec des variables de commandes obtenues par :
+   PROJ_CHAMP / METHODE='SOUS_POINT'
+   
+   
+   Evolution :
+   ================
+   On modifie vrcin1.f pour accepter les champs ELGA (famille 'MATER') obtenus par PROJ_CHAMP
+   / METHODE='SOUS_POINT'.
+   
+   Routines modifi�es : vrcin1.f, celces.f, calculel4.py
+   
+   Validation :
+   ------------
+   
+   Nouveau test zzzz336a : ce test valide la prise en compte des variables de commandes aux
+   sous-points pour les DKT et les GRILLE_EXCENTREE. La validation est faite � partir d'une
+   r�f�rence AUTRE_ASTER sur des coques et les grilles en utilisant l'option de CREA_RESU
+   PREP_VRC1.
+   
+   Le test de validation des PMF sera restitu� avec issue20443, car des modifications sur les
+   lois de comportement des PMF sont � faire pour ne plus prendre en compte la temp�rature
+   moyenne et pour avoir acc�s au mat�riau de chaque fibre.
+   
+   Impact doc :
+   ----------
+   
+   V1.01.336
+   U4.43.03 : AFFE_MATERIAU, on indique que les champs ELGA sont autoris�s uniquement s'ils
+   sont issues de PROJ_CHAMP/SOUS_POINT. (doc actuellement en modification par Xavier Desroches).
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : V1.01.336 U4.43.03
+VALIDATION
+    zzzz336a
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR cuvillie     CUVILLIEZ Sam          DATE 02/26/2013 - 09:03:42
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 020375 DU 2013-02-12 10:43:42
+TYPE evolution concernant Code_Aster (VERSION )
+TITRE
+    XFEM: transitoires thermiques linxc3xa9aires
+FONCTIONNALITE
+   Rq : Cette fiche est une sous-fiche de issue15335 (calculs thermomécaniques avec X-FEM),
+   et correspond à la livraison d'un premier ensemble de nouvelles fonctionnalités.
+   
+   
+   
+   But :Extension de X-FEM à l'opérateur THER_LINEAIRE  (thermique linéaire transitoire) avec
+   les restrictions suivantes :
+    . . - éléments linéaires 2D/3D (pas de modélisation axisymétrique)
+    . . - conductivité scalaire (isotropie)
+    . . - fissures adiabatiques (flux nul et température discontinue à travers l'interface)
+    . . - pas de jonction de fissure
+    . . - chargements appliqués « loin » de la fissure (pas de chargement pour les EF X-FEM)
+   
+   1. On introduit de nouveaux éléments linéaires X-FEM thermiques de type XH, XT, XHT
+   (enrichissement singulier en sqrt(r)*sin(thêta/2) pour les fissures adiabatiques) sur les
+   mailles support suivantes :QUAD4 / TRIA3 / HEXA8 / PENTA6 / PYRA5 / TETRA4. Seuls les
+   éléments principaux sont introduits (pas d'éléments de bord pour l'instant)
+   
+   2. Outre les options de sous-découpage réalisées en pre-traitement (calculées dans
+   MODI_MODELE_XFEM), on ne calcule pour ces éléments que les options suivantes, avec une
+   approximation enrichie du champ de température :
+   - RIGI_THER : Matrice de rigidité 
+   - MASS_THER : Matrice de masse 
+   - CHAR_THER_EVOL : 2nd membre dû au transitoire
+   
+   3. On étend de plus l'opérateur POST_CHAM_XFEM au traitement des evol_ther
+   
+   
+   
+   ----------------------
+   Impact pre-traitement
+   ----------------------
+   
+   DEFI_FISS_XFEM :
+   ----------------
+   
+   CATA (M) : gener_th3d_3.cata, gener_thpl_2.cata
+   ajout de l'option GRAD_NEUT_R dans les catalogues des EF thermiques classiques pour les
+   calcul des levels-set et de leurs gradient 
+   
+   FORTRAN (M) : op0041.f
+   on interdit la jonction de fissure pour X-FEM en thermique
+   
+   PYTHON (M) : xfem.py
+   message d'erreur si jonction de fissure pour X-FEM en thermique
+   
+   
+   MODI_MODELE_XFEM
+   ----------------
+   
+   CATA (M) : phenomene_modelisation__.cata
+   nouveaux EF X-FEM thermiques
+   
+   CATA (A) : gener_th3d_xh_3.cata, gener_th3d_xht_3.cata, gener_th3d_xt_3.cata
+   gener_thpl_xh_2.cata, gener_thpl_xh_2.cata, gener_thpl_xh_2.cata
+   catalogues des nouveaux EF X-FEM thermiques + options liées à l'algo de sous-découpage
+   
+   FORTRAN (M) : xcodec.f, xmoimp.f, xmoini.f, xmolig.f, xstan2.f
+   traiter dans ces routines le cas des nouveaux éléments thermique
+   
+   FORTRAN (A) : xpheop.f
+   routine utilitaire
+   
+   ------------------------------
+   Impact calcul (THER_LINEAIRE)
+   ------------------------------
+   
+   CATA (M) : grandeur_simple__.cata, rigi_ther.cata, mass_ther.cata, char_ther_evol.cata
+   ajouts des ddls enrichis dans TEMP_R + champs in spécifiques à XFEM dans les catalogues
+   d'options 
+   
+   CATA (A) : gener_th3d_xh_3.cata, gener_th3d_xht_3.cata, gener_th3d_xt_3.cata
+   gener_thpl_xh_2.cata, gener_thpl_xht_2.cata, gener_thpl_xt_2.cata
+   catalogues des nouveaux EF X-FEM thermiques, options RIGI_THER, MASS_THER, et CHAR_THER_EVOL
+   
+   FORTRAN (M) : memsth.f, mergth.f, vetnth.f
+   appels à calcul avec champs in spécifiques à XFEM : options MASS_THER, RIGI_THER, et
+   CHAR_THER_EVOL 
+   
+   FORTRAN (A) : reeret.f, te0571.f, te0572.f, te0577.f, xmasth.f, xrigth.f, xthddl.f,
+   xthini.f, xvetth.f
+   calculs élémentaires de MASS_THER, RIGI_THER, et CHAR_THER_EVOL pour les EF X-FEM
+   
+   ----------------------------------------------------
+   Impact post-traitement (POST_CHAM_XFEM)
+   -----------------------------------------------------
+   
+   CAPY (M) : post_cham_xfem.capy
+   autoriser les evol_ther en resultat in et produire une evol_ther en out
+   
+   FORTRAN (M) : op0196.f, xpoajd.f, xpoajm.f, xpocmp.f, xpoco2.f, xpodim.f, xpoini.f, xpomax.f
+   traiter la température au lieu du déplacement si le résultat in est une evol_ther
+   
+   FORTRAN (A) : xismec.f
+   routine utilitaire
+   
+   
+   ----------------------------------------------------
+   Validation
+   -----------------------------------------------------
+   
+   - tous les cas-tests X-FEM + tous les cas-tests thermiques
+   
+   - un nouveau cas test tplp305 « barreau à températures imposées avec interface adiabatique
+   de type X-FEM : 
+   validation (olution analytique) de l'enrichissement heaviside et de l'annulation des ddls
+   Heaviside enrichis à tort ou pour problèmes de conditionnement (QUAD4/HEXA8)
+   
+   - on remplace hsnv132 « fissure en thermo-élasticité » (qui se résume donc une résolution
+   thermique pour le moment et qui évoluera avec issue15335) :
+   référence 'AUTRE_ASTER' (solution overkill)
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : U2.05.02, R7.02.12, U4.82.08, U4.41.11, U4.82.22, V7.22.132, V4.05.305
+VALIDATION
+    tous les tests thermiques, tous les tests X-FEM, hsnv132, tplp305
+NB_JOURS_TRAV  : 25.0
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR desroche     DESROCHES Xavier       DATE 02/26/2013 - 10:08:03
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 018394 DU 2012-02-10 17:49:55
+TYPE evolution concernant Code_Aster (VERSION )
+TITRE
+    déformations anélastiques pour GLRC_DM
+FONCTIONNALITE
+   Développement des déformations thermiques pour GLRC_DM (élément DKTG)
+   
+   Développements réalisés :
+   -----------------------
+   
+   modification de la varc TEMP en ajoutant 2 cmp : TEMP_SUP et TEMP_INF
+   (la 1-ère cmp TEMP est conservée)
+   A partir de ces 3 valeurs on calcule un profil de température dans l'épaisseur
+   servant à calculer les déformations thermiques généralisées.
+   
+   ajout du chargement CHAR_MECA_TEMP_R pour l'élément DKTG (te0423)
+   ajout des efforts généralisés thermiques (dxefg2 et dxefn2)
+   ajout du calcul de la déformation généralisée thermique avant intégration de 
+   la loi de comportement (routine dxglrc)
+   
+   La modification de la varc TEMP a eu un impact sur le code et a mené à des corrections 
+   dans les routines op0006 rcvalb et nmvcmx.
+   
+   Validation :
+   ----------
+   
+   HPLA100 (cylindre creux thermoélastique) : ajout de la modélisation K pour comparer 
+   les résultats avec le dkt.
+   
+   SSNS106 (endommagement d'une plaque en béton armé) :
+   ajout de la modélisation L : chargement thermique évolutif équivalent au chargement en
+   traction/compression de la modélisation A.
+   ajout de la modélisation M : chargement thermique avec gradient dans l'épaisseur 
+   équivalent au chargement en flexion de la modélisation B.
+   
+   Documentation :
+   -------------
+   V7.01.100 : ajout de la modélisation K
+   V6.05.106 : ajout des modélisations A et B
+   R3.07.03 : préciser la gestion de la température pour les éléments à sous-points et 
+   les éléments globaux.
+   U2.02.01 : possibilité de faire des calculs thermo-mécaniques
+   U4.43.03 : AFFE_MATERIAU : variable de commande TEMP
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : R3.07.03 U2.02.01 U4.43.03 V6.05.106 V7.01.100
+VALIDATION
+    hpla100k ssns106l ssns106m
+NB_JOURS_TRAV  : 30.0
+--------------------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR pellet       PELLET Jacques         DATE 02/26/2013 - 10:08:04
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 020346 DU 2013-02-08 08:07:40
+TYPE evolution concernant Code_Aster (VERSION )
+TITRE
+    Calcul du ferraillage pour les xc3xa9lxc3xa9ments Q4GG
+FONCTIONNALITE
+   Problème :
+   ----------
+   Le calcul du ferraillage n'est pas possible avec les éléments de la nouvelle modélisation
+   Q4GG.
+                                                                                            
+                                                                                 
+   Evolution proposée :
+   --------------------
+   On ajoute dans le catalogue des éléments Q4GG le bloc nécessaire au calcul de ferraillage
+   (proposé par S. Abouri et D. Markovic).
+                                                                                            
+                                                                                 
+   Validation :
+   ------------
+   Je modifie le test ssls126c pour ajouter le calcul du ferraillage.
+    
+   Liste des fichiers impactés par la correction de la fiche:  20346
+     gener_medkg1.cata
+     ssls126c.comm
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+    ssls126c
+NB_JOURS_TRAV  : 0.15
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR flejou       FLEJOU Jean Luc        DATE 02/25/2013 - 02:27:18
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 020406 DU 2013-02-18 15:52:28
+TYPE aide utilisation concernant Code_Aster (VERSION 11.3)
+TITRE
+    CALC_MATR_ELEM exception pb liste de mailles carte
+FONCTIONNALITE
+   En faisant tourner avec la version 11, message d'erreur plus explicite :
+   
+   <EXCEPTION <MODELISA2_10>
+   Le nombre de noeuds du radier et le nombre d'éléments discrets du groupe GPOIRAD sont
+   différents :
+   * Nombre de noeuds du radier : 973
+   * Nombre d'éléments discrets : 969
+   
+   Cf image jointe, il manque 4 points qui sont situés dans certains coins.
+   
+   Message sur Forum qui confirme la résolution du problème 
+   * http://www.code-aster.org/forum2/viewtopic.php?id=18547
+   
+   Message par mail qui confirme également la résolution du problème
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+    passage étude
+NB_JOURS_TRAV  : 0.1
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 020263 DU 2013-01-25 13:01:17
+TYPE aide utilisation concernant Code_Aster (VERSION 11.3)
+TITRE
+    ssnl106h ne converge pas si on remplace POU_D_TGM par POU_D_EM
+FONCTIONNALITE
+   Dans ce cas précis la convergence est obtenue à la 1ère itération de Newton (10E-10), sans
+   avoir besoin de la recherche linéaire.
+   
+   Pour le 1er STAT_NON_LINE : 
+   Dans le cas présent sans pilotage il y a 2 itérations de Newton, la prédiction, puis
+   convergence à 10E-15, avec une MATRICE=ELASTIQUE. Donc utiliser la recherche linéaire sur
+   ce cas n'a aucun intérêt. Initialement la méthode de recherche linéaire est 'MIXTE', si on
+   prend l'option par défaut 'CORDE' cela fonctionne.
+   
+   Pour le 2nd STAT_NON_LINE : 
+   Le matériau a un module d'écrouissage plastique nul, la recherche linéaire est CORDE et
+   MATRICE=ELASTIQUE. Au temps 2.8 il faut 55 itérations pour converger. Si on enlève la
+   recherche linéaire il faut 2 itérations pour converger, la prédiction puis convergence à
+   10E-10. Là encore la recherche linéaire n'est pas nécessaire.
+   
+   Je considère que cette fiche est close.
+   
+   J'émets une fiche d'anomalie car ce n'est pas normal que la convergence soit dégradée à ce
+   point par la recherche linéaire.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+    passage cas test
+NB_JOURS_TRAV  : 0.2
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 020430 DU 2013-02-21 12:33:27
+TYPE anomalie concernant Documentation (VERSION 11.*)
+TITRE
+    impacts oubliés sur doc R Plasticité dans les poutres
+FONCTIONNALITE
+   Ce document décrit le modèle de comportement élastoplastique des éléments de poutre
+   POU_D_E, POU_D_T et POU_D_TG.
+   
+   On ne peut plus avoir de comportement élastoplastique sur ces éléments. Il faut utiliser
+   les poutres multifibre POU_D_EM, POU_D_TGM
+   
+   Cette documentation n'a plus lieu d'être ==> suppression
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : R5.03.30
+VALIDATION
+    aucune
+NB_JOURS_TRAV  : 0.001
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR geniaut      GENIAUT Samuel         DATE 02/25/2013 - 01:31:55
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 020363 DU 2013-02-08 14:46:02
+TYPE anomalie concernant Code_Aster (VERSION 11.4)
+TITRE
+    boucle incoherente dans sslp319
+FONCTIONNALITE
+   Problème :
+   ----------
+   
+   Dans les cas test sslp319, il y a une incohérence dans la boucle PROPA_FISS. Par exemple,
+   dans la modélisation sslp319a, dans la ligne 158 on teste s'il faut faire le calcul en
+   propa_fiss
+      if ( i != NPS ) :
+   Or cette condition est toujours respectée car dans la boucle i varie de 1 à NPS-2
+   (ligne 130 :  for i in range(1,NPS-1)).
+   Cette incohérence ne donne pas d'erreur, mais fait propager la fissure une fois de trop
+   par rapport à la demande.
+   
+   
+   Solution :
+   ----------
+   
+   Le tests devient
+      if ( i != NPS-2 ) :
+   Dans ce cas là on ferra pas le dernier calcul en propa_fiss et on ferra tout juste la mise
+   à jour de la modélisation pour le post-traitement.
+   
+   impact :
+   sslp319[a, b, c, d, e].comm
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+    sslp319
+NB_JOURS_TRAV  : 0.1
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 020445 DU 2013-02-22 13:07:59
+TYPE express concernant Code_Aster (VERSION 11.4)
+TITRE
+    MAC3COEUR : erreur dans impression message sur les permutations
+FONCTIONNALITE
+   Problème :
+   ----------
+   
+   la commande PERM_MAC3COEUR imprime un message à chaque permutation (coeur0_3), mais ce
+   message contient une erreur : on imprime 2 fois la position initiale.
+   
+   
+   
+   
+   Solution :
+   ----------
+   
+   3 : _(u"""
+   Permutation de l\'assemblage %(k1)s en position %(k1)s
+   """),
+   
+   >
+   
+   3 : _(u"""
+   Permutation de l\'assemblage %(k1)s en position %(k2)s
+   """),
+   
+   impact : coeur0.py
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  OUI
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+    tests mac3*
+NB_JOURS_TRAV  : 0.1
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR hamon        HAMON François        DATE 02/25/2013 - 04:33:09
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 020407 DU 2013-02-18 16:12:13
+TYPE express concernant Code_Aster (VERSION 11.3)
+TITRE
+    Mazars Révisité
+FONCTIONNALITE
+   Bonjour
+   J'ai passé la fiche en résolu. Sous les conseils de J-L.Fléjou j'ai simplifié la
+   correction en éliminant la boucle IF. Dans ce cas Gamma est égal à partout sauf dans les
+   zones de bi-compression.
+   J'ai fais passé plusieurs cas tests, et cela ne change pas les résultats et le nombre
+   d'itération. Cette correction est mineur sur la pseudo matrice tangente. Par ailleurs,
+   dans le calcul de celle matrice j'ai explicité Y pour éviter les confusions.
+   Bonne journée
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : R7.01.08
+VALIDATION
+    Passage cas test Mazars
+NB_JOURS_TRAV  : 0.5
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR desroche     DESROCHES Xavier       DATE 02/26/2013 - 01:07:04
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 020228 DU 2013-01-22 08:30:08
+TYPE evolution concernant Code_Aster (VERSION )
+TMA : Phimeca
+TITRE
+    Norme L2 : Pouvoir passer un CHAM_GD de type NEUT_R avec une liste de pondération
+FONCTIONNALITE
+   Problème:
+   ---------
+   Le calcul de la norme L2 d'un champ via la commande POST_ELEM n'est permise que pour les
+   champs de type : DEPL, FLUX, TEMP, EPSI et SIEF. La pondération de chacune des composantes
+   de ces champs est prédeterminée.
+   On souhaite pouvoir passer un champ de type NEUT_R avec une liste de coefficients réels
+   qui servira à pondérer chaque composante du champ.
+   
+   Réalisation:
+   ------------
+   - Dans c_nom_cham_into.capy:
+   Ajout de d['POST_ELEM']={ DEPL, TEMP,FLUX_NOEU,FLUX_ELNO,FLUX_ELGA
+                            EPSI_NOEU,EPSI_ELNO,EPSI_ELGA
+                            SIEF_NOEU,SIEF_ELNO,SIEF_ELGA
+                            NEUT_R}
+   
+   - Dans post_elem.capy:
+   
+   Modification:     NOM_CHAM       = SIMP(statut='f',typ='TXM',validators=NoRepeat(),
+                                                into=C_NOM_CHAM_INTO(phenomene='POST_ELEM')),
+   Ajout :      COEF_MULT      = SIMP(statut='f',typ='R',max=30),
+   
+   On met max=30 car le vecteur contenant les coefficients dans penorm.f (ZR(JCOEF)) est
+   dimensionné à 30.
+   Cela permet de faire une boucle sur la liste de COEF_MULT pour remplir ZR(JCOEF).
+   
+   On met par défaut les coefficients à 1.D0 (ZR(JCOEF)).
+   Si la taille de la liste est inférieure au nombre de composantes du champ,
+   la liste est complétée par des valeurs nulles.
+   
+   - Dans zzzz291a.comm :
+   
+   Ajout :
+   
+   TEMPC=CREA_CHAMP(OPERATION='ASSE',TYPE_CHAM='ELGA_NEUT_R',MODELE=MO,
+                   PROL_ZERO='OUI',
+                   ASSE=(_F(CHAM_GD=SIGA,GROUP_MA='3D',
+                            NOM_CMP_RESU='X1',NOM_CMP='SIXX',),
+                         _F(CHAM_GD=SIGA,GROUP_MA='3D',
+                            NOM_CMP_RESU='X2',NOM_CMP='SIYY',),
+                         _F(CHAM_GD=SIGA,GROUP_MA='3D',
+                            NOM_CMP_RESU='X3',NOM_CMP='SIZZ',),
+                         _F(CHAM_GD=SIGA,GROUP_MA='3D',
+                            NOM_CMP_RESU='X4',NOM_CMP='SIXY',),
+                         _F(CHAM_GD=SIGA,GROUP_MA='3D',
+                            NOM_CMP_RESU='X5',NOM_CMP='SIXZ',),
+                         _F(CHAM_GD=SIGA,GROUP_MA='3D',
+                            NOM_CMP_RESU='X6',NOM_CMP='SIYZ',)))
+   
+   TBC1=POST_ELEM(NORME=_F(TYPE_NORM='L2',
+                           CHAM_GD=TEMPC,
+                           GROUP_MA='CUBE',
+                           MODELE=MO,
+                           COEF_MULT=(1.,1.,1.,2.,2.,2.)),)
+   
+   + un TEST_TABLE(REFERENCE='AUTRE_ASTER') comme pour les autres TEST_TABLE
+   
+   
+   Impacts:
+   --------
+   
+   F:
+   penorm
+   
+   CAPY:
+   post_elem
+   c_nom_cham_into
+   
+   CAS-TEST:
+   zzzz291a
+   
+   DOC:
+   U4.81.22
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : U4.81.22
+VALIDATION
+    zzzz291a
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR laverne      LAVERNE Jérôme       DATE 02/25/2013 - 01:45:25
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 020351 DU 2013-02-08 10:01:07
+TYPE anomalie concernant Code_Aster (VERSION 10.5)
+TITRE
+    En NEW11.03.07, les cas-tests ssnp162j, k et l s'arretent en erreur fatale sur Calibre7.
+FONCTIONNALITE
+   C'est effectivement un problème de mémoire. Pour ces trois tests je passe de 256Mo à 512Mo
+   dans le .para.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+    ssnp162jkl
+NB_JOURS_TRAV  : 0.1
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR pellet       PELLET Jacques         DATE 02/26/2013 - 10:02:19
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 020368 DU 2013-02-11 10:42:51
+TYPE evolution concernant Code_Aster (VERSION )
+TITRE
+    Noms de groupes de 24 caractères pour les maillages au format Aster.
+FONCTIONNALITE
+   Problème :
+   ----------
+   Si les noms de groupes (de mailles et de noeuds) peuvent avoir 24 caractères au format
+   MED, il est assez logique d'étendre aussi ces noms au format Aster.
+   De cette façon, l'IMPR_RESU au format Aster d'un fichier MED restera cohérent.
+                                                                                            
+                                   
+   Cette évolution facilitera également la validation de l'usage de noms longs dans les
+   différentes commandes du code.
+                                                                                            
+                                   
+   Evolution proposée :
+   --------------------
+   On permet maintenant aux noms des GROUP_MA et des GROUP_NO au format Aster d'avoir 24
+   caractères.
+                                                                                            
+                                   
+   Validation :
+   ------------
+   1) Je modifie le maillage du test zzzz323b pour utiliser des noms de groupes de plus de 8
+   caractères.
+      Je modifie également zzzz323b.comm pour lire, écrire et relire le maillage au format
+   'Aster' afin de vérifier que l'écriture au format Aster ne tronque pas les noms longs.
+                                                                                            
+                                   
+   2) Je profite de l'évolution proposée pour vérifier que les différentes commandes du code
+   acceptent bien les noms de groupes "longs".
+      Pour cela, je modifie 52 tests utilisant des fichiers de maillage au format Aster :
+      2.1) : J'ajoute dans les fichiers .mail le préfixe 'GROUP_MA' (ou 'GROUP_NO') devant
+   tous les GROUP_MA et GROUP_NO.
+      2.2) : Je modifie les fichiers .comm pour y ajouter le meme préfixe derière les mots
+   clés GROUP_MA_XXX et GROUP_NO_XXX.
+                                                                                            
+                                   
+      Résultat :
+        *) 23 tests se plantent de différentes façons.
+           J'ai émis une fiche d'anomalie pour traiter ces problèmes (issue20371)
+        *) 29 tests sont OK. Ils valident les mots clés :
+          affe_cara_elem    discret              group_ma
+          affe_cara_elem    discret              group_no
+          affe_cara_elem    grille               group_ma
+          affe_cara_elem    massif               group_ma
+          affe_cara_elem    orientation          group_no
+          affe_char_meca    ddl_poutre           group_ma
+          affe_char_meca    face_impo            group_ma
+          affe_char_meca    force_nodale         group_no
+          affe_char_meca    force_poutre         group_ma
+          affe_char_meca    inte_elec            group_ma
+          affe_char_meca    inte_elec            group_ma_2
+          affe_char_meca    liaison_group        group_no_2
+          affe_char_meca    liaison_rbe3         group_no_escl
+          affe_char_meca    liaison_rbe3         group_no_mait
+          affe_char_meca    liaison_solide       group_no
+          affe_char_meca_f  force_poutre         group_ma
+          affe_char_meca_f  liaison_solide       group_ma
+          affe_char_meca_f  liaison_solide       group_no
+          affe_char_meca_f  liaison_unif         group_no
+          affe_char_ther    echange              group_ma
+          affe_char_ther    liaison_group        group_no_2
+          affe_char_ther    temp_impo            group_no
+          affe_materiau     affe                 group_ma
+          affe_modele       affe                 group_no
+          comb_sism_modal   depl_mult_appui      group_no
+          comb_sism_modal   excit                group_no
+          comb_sism_modal   group_appui          group_no
+          crea_table        resu                 group_ma
+          dyna_line_tran    excit                group_no
+          dyna_non_line     comp_elas            group_ma
+          dyna_tran_modal   anti_sism            group_no_1
+          dyna_tran_modal   anti_sism            group_no_2
+          dyna_tran_modal   choc                 group_ma
+          dyna_tran_modal   choc                 group_no_1
+          dyna_tran_modal   choc                 group_no_2
+          dyna_tran_modal   flambage             group_no_1
+          dyna_tran_modal   flambage             group_no_2
+          dyna_vibra        anti_sism            group_no_1
+          dyna_vibra        anti_sism            group_no_2
+          dyna_vibra        choc                 group_ma
+          dyna_vibra        choc                 group_no_1
+          dyna_vibra        choc                 group_no_2
+          dyna_vibra        flambage             group_no_1
+          dyna_vibra        flambage             group_no_2
+          mode_statique     mode_stat            group_no
+          post_releve_t     action               group_ma
+          recu_fonction     __                   group_no
+          recu_fonction     __                   group_no_choc
+          rest_gene_phys    __                   group_no
+                                                                                            
+                                   
+          Je propose de restituer ces 29 tests modifiés pour valider la bonne prise en compte
+   des noms longs.
+                                                                                            
+                                   
+   Impact documentaire :
+   ---------------------
+   U3.01.00 Description du fichier de maillage au format Aster.
+            Dire que les noms de groupes peuvent avoir 24 caractères.
+                                                                                            
+                                   
+   Liste des fichiers impactés par la correction de la fiche:  20368
+     lecgrp.f  lirtet.f  vermot.f
+     sdld103a.comm    sdld103a.export  sdld103a.mail    sdld106a.comm
+     sdld106a.export  sdld106a.mail    sdld27c.comm     sdld27c.export
+     sdld27c.mail     sdld33a.comm     sdld33a.export   sdld33a.mail
+     sdld34a.comm     sdld34a.export   sdld34a.mail     sdld400a.comm
+     sdld400a.export  sdld400a.mail    sdlx400a.comm    sdlx400a.export
+     sdlx400a.mail    sdnd105b.comm    sdnd105b.export  sdnd105b.mail
+     sdnd120a.comm    sdnd120a.export  sdnd120a.mail    sdnl101a.comm
+     sdnl101a.export  sdnl101a.mail    sdnl105a.comm    sdnl105a.export
+     sdnl105a.mail    sdnl32a.comm     sdnl32a.export   ssll102f.comm
+     ssll102f.export  ssll10a.comm     ssll10a.export   ssll10a.mail
+     ssll118b.comm    ssll118b.export  ssll118b.mail    ssll11a.comm
+     ssll11a.export   ssll11a.mail     sslp107a.comm    sslp107a.export
+     sslp107a.mail    sslv114a.comm    sslv114a.export  sslv114a.mail
+     sslv114b.comm    sslv114b.export  sslv114b.mail    sslv157a.comm
+     sslv157a.export  sslv157a.mail    sslx100a.comm    sslx100a.export
+     sslx100a.mail    ssnv163b.comm    ssnv163b.export  ssnv163b.mail
+     tpla301a.comm    tpla301a.export  tpla301a.mail    tplp303b.comm
+     tplp303b.export  tplp303b.mail    tplv101a.comm    tplv101a.export
+     tplv101a.mail    zzzz294d.comm    zzzz294d.export  zzzz294d.mail
+     zzzz323b.comm    zzzz323b.export  zzzz323b.mail    zzzz323c.comm
+     zzzz323c.export  zzzz323c.mail    zzzz323e.comm    zzzz323e.export
+     zzzz323e.mail
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : U3.01.00
+VALIDATION
+    zzzz323b + ...
+NB_JOURS_TRAV  : 0.8
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 020255 DU 2013-01-24 14:53:45
+TYPE evolution concernant Code_Aster (VERSION )
+TITRE
+    AR14 : Mutualisation des maillages
+FONCTIONNALITE
+   Problème :
+   ----------
+   On veut diminuer la taille des fichiers des cas tests (pour minimiser la taille du futur
+   dépôt mercurial).
+   
+   Evolution :
+   -----------
+   On permet maintenant aux cas tests de mutualiser leurs fichiers de donnée, en particulier
+   les fichiers de maillage.
+   L'identification des fichiers "doublons" a été faite et les fichiers .export des tests ont
+   été produits (et restitués) dans le cadre de issue20250.
+   
+   On peut fermer cette fiche.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+    rien de particulier
+NB_JOURS_TRAV  : 1.0
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR proix        PROIX Jean-Michel      DATE 02/25/2013 - 06:32:51
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 020440 DU 2013-02-21 16:27:02
+TYPE express concernant Code_Aster (VERSION 10.5)
+TITRE
+    Amelioration de la convergence pour la loi de Hayhurst implicite
+FONCTIONNALITE
+   Une petite évolution dans la loi de Hayhurst (projet MatCom)
+   
+   modification du calcul du résidu : on réduit le système en passant de 18 équations a 10, et
+   on prend mieux en compte la theta-methode.
+   
+   Cela améliore  la convergence de la loi de Hayhurst, et la solution est plus précise :
+   elle est plus proche des valeurs de référence (modélisation A, pas de temps fin en explicite).
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : R5.03.13
+VALIDATION
+    ssnv225b
+NB_JOURS_TRAV  : 1.0
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR sellenet     SELLENET Nicolas       DATE 02/25/2013 - 02:48:22
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 020364 DU 2013-02-08 14:51:35
+TYPE evolution concernant Code_Aster (VERSION )
+TITRE
+    Impression des tables avec noms de groupes longs
+FONCTIONNALITE
+   Problème :
+   ----------
+   IMPR_TABLE ne tient pas compte de "l'élargissement" qui a eu lieu sur les noms de groupes
+   (passage à 24 caractères).
+   
+   
+   Solution :
+   ----------
+   En fait, c'est la table créée par POST_ELEM qui n'était pas de la bonne taille. En
+   modifiant les arguments donnés à la routine TBAJPA, la table se retrouve être à la bonne
+   taille.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+    adlv312a modifie
+NB_JOURS_TRAV  : 0.5
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 020413 DU 2013-02-19 10:20:42
+TYPE anomalie concernant Code_Aster (VERSION 10.5)
+TITRE
+    Plantage impression format MED
+FONCTIONNALITE
+   Problème :
+   ----------
+   Dans l'AOM issue20406, JLF a voulu faire un IMPR_RESU du maillage et "plouf" !!
+   #0  0x000000000053cf4b in jjlidy_ ()
+   #0  0x000000000053cf4b in jjlidy_ ()
+   #1  0x0000000000533922 in jedetr_ ()
+   #2  0x000000000162e4d3 in irmmf1_ ()
+   #3  0x000000000120b4c7 in irmmfa_ ()
+   #4  0x000000000120b0c4 in irmhdf_ ()
+   #5  0x00000000012027b8 in irmail_ ()
+   #6  0x0000000001208042 in irmfac_ ()
+   #7  0x0000000000b61aff in op0039_ ()
+   #8  0x00000000005dbb1f in ex0000_ ()
+   #9  0x000000000058a446 in execop_ ()
+   #10 0x0000000000544c70 in expass_ ()
+   #11 0x000000000052e058 in aster_oper ()
+   
+   
+   Solution :
+   ----------
+   Le problème vient des groupes vides. Quand LIRE_MAILLAGE créé un groupe vide, il
+   dimensionne le groupe à 1.
+   
+   Côté IMPR_RESU, on voit un groupe de longueur 1 et on essaye de l'imprimer sauf que la
+   seule "entité" (maille ou noeud) présente dedans a pour numéro 0 (ce qui pour Aster n'a
+   pas de sens car on numérote à partir de 1).
+   
+   Dans irmmf2, on fait confiance à ce qui se trouve dans .GROUPEMA et .GROUPENO donc on
+   essaye d'ajouter l'entité 0 (qui n'existe pas) dans les familles à imprimer. On se sert de
+   0 comme un indice de tableau => carton mémoire !
+   
+   Pour résoudre le problème, on rajoute un test sur le numéro de l'entité. S'il est nul, on
+   ne l'imprime pas au format MED.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  OUI
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+    unitaire
+NB_JOURS_TRAV  : 0.5
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 020404 DU 2013-02-18 12:15:39
+TYPE evolution concernant Code_Aster (VERSION )
+TITRE
+    Utilisation de typ=geom dans les catalogues de commande
+FONCTIONNALITE
+   Il ne reste plus qu'un typ=geom dans le catalogue de post_mail_xfem.capy.
+   
+   Il faut le remplacer par typ=grno car ce mot-clé sert à définir un groupe de noeud.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+    unitaire
+NB_JOURS_TRAV  : 0.01
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 020421 DU 2013-02-20 12:19:01
+TYPE anomalie concernant Code_Aster (VERSION 10.5)
+TITRE
+    Routine plus appelee en 11.3.9
+FONCTIONNALITE
+   Les routines DFDM2B, DFDM3B, NIFN2B, NIFN2C, NIFN3B, NIFN3C, NIPL2B, NIPL2C, NIPL3B,
+   NIPL3C, NIRM2B, NIRM2C, NIRM3B, NIRM3C, TE0048, TE0121, TE0213, TE0214, TE0215 et TE0216
+   ne sont lus appelées. Il faut les supprimer.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+    aucune
+NB_JOURS_TRAV  : 0.1
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 020422 DU 2013-02-20 12:38:43
+TYPE anomalie concernant Code_Aster (VERSION 10.5)
+TITRE
+    Couverture GCPC
+FONCTIONNALITE
+   Suite à ma restitution, j'ai décidé de retirer définitivement les tests de perfs de la
+   liste des tests utilisée pour la couverture de code (Ce n'était pas le cas avant, il y en
+   avait quelques-uns).
+   
+   A l'issue du passage de la couverture, je me suis rendu compte que perf005d, e et f sont
+   les seuls à valider les routines PCINFE et PCTRII.
+   
+   Pour qu'un autre test valide ces routines, il suffit d'ajouter NIVE_REMPLISSAGE=1 à un
+   test utilisant le solveur GCPC : gcpc002c.comm.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+    gcpc002c
+NB_JOURS_TRAV  : 0.1
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR sfayolle     FAYOLLE Sebastien      DATE 02/25/2013 - 01:59:18
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 020433 DU 2013-02-21 13:17:34
+TYPE anomalie concernant Code_Aster (VERSION 11.4)
+TITRE
+    En NEW11.03.09, les cas-tests sslv130a, b, c et d sont NOOK sur Rocks.
+FONCTIONNALITE
+   Anomalies
+   ~~~~~~~~~~~
+   
+   En NEW11.03.09, les cas-tests sslv130a, b, c et d sont NOOK sur Rocks. 
+   
+   Correction
+   ~~~~~~~~~~~~
+   
+   L'erreur a été introduite lors de la restitution de la routine tanbul.f
+   Cette routine calcule, entres autres, la trace du tenseur des déformations 
+   thermiques lorsque l'on est en RAPH_MECA et FULL_MECA. L'initialisation de TREPST 
+   est pas mal située et dans certains cas on initialise pas la variable, on a :
+   
+         IF (RESI) THEN
+           CALL EPSTMC(FAMI, NDIM,VALPAR,'+',G,1,XYZGAU,REPERE,IMATE,
+        &              OPTION,EPSTH)
+   
+   C - TEST DE LA NULLITE DES DEFORMATIONS DUES AUX VARIABLES DE COMMANDE
+           IEPSV = 0
+           DO 90 K = 1, 6
+             IF ( ABS(EPSTH(K)).GT.R8MIEM() ) IEPSV=1
+    90     CONTINUE
+   C - TOUTES DES COMPOSANTES SONT NULLES. ON EVITE DE CALCULER TREPST
+           IF (IEPSV.NE.0) THEN
+             TREPST = 0.D0
+             DO 50 K = 1, 3
+               TREPST = TREPST + EPSTH(K)
+    50       CONTINUE
+           ENDIF
+         ENDIF
+   
+   Alors qu'il faut :
+   
+         IF (RESI) THEN
+           CALL EPSTMC(FAMI, NDIM,VALPAR,'+',G,1,XYZGAU,REPERE,IMATE,
+        &              OPTION,EPSTH)
+   
+   C - TEST DE LA NULLITE DES DEFORMATIONS DUES AUX VARIABLES DE COMMANDE
+           IEPSV = 0
+           TREPST = 0.D0
+           DO 90 K = 1, 6
+             IF ( ABS(EPSTH(K)).GT.R8MIEM() ) IEPSV=1
+    90     CONTINUE
+   C - TOUTES DES COMPOSANTES SONT NULLES. ON EVITE DE CALCULER TREPST
+           IF (IEPSV.NE.0) THEN
+             DO 50 K = 1, 3
+               TREPST = TREPST + EPSTH(K)
+    50       CONTINUE
+           ENDIF
+         ENDIF
+   
+   Validation
+   ~~~~~~~~~~~~~
+   
+   Ensemble des cas tests INCO_UP sur Aster4 et Rocks
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+    cas test sur Rocks, Aster4
+NB_JOURS_TRAV  : 0.5
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 020434 DU 2013-02-21 13:23:29
+TYPE anomalie concernant Code_Aster (VERSION 11.4)
+TITRE
+    En NEW11.03.09, les cas-tests sslv134j, k et sslv154c s'arrxc3xaatent en erreur fatale sur Rocks.
+FONCTIONNALITE
+   Anomalies
+   ~~~~~~~~~~~
+   
+   En NEW11.03.09, les cas-tests sslv130a, b, c et d sont NOOK sur Rocks. 
+   
+   Correction
+   ~~~~~~~~~~~~
+   
+   L'erreur a été introduite lors de la restitution de la routine tanbul.f
+   Cette routine calcule, entres autres, la trace du tenseur des déformations 
+   thermiques lorsque l'on est en RAPH_MECA et FULL_MECA. L'initialisation de TREPST 
+   est pas mal située et dans certains cas on initialise pas la variable, on a :
+   
+         IF (RESI) THEN
+           CALL EPSTMC(FAMI, NDIM,VALPAR,'+',G,1,XYZGAU,REPERE,IMATE,
+        &              OPTION,EPSTH)
+   
+   C - TEST DE LA NULLITE DES DEFORMATIONS DUES AUX VARIABLES DE COMMANDE
+           IEPSV = 0
+           DO 90 K = 1, 6
+             IF ( ABS(EPSTH(K)).GT.R8MIEM() ) IEPSV=1
+    90     CONTINUE
+   C - TOUTES DES COMPOSANTES SONT NULLES. ON EVITE DE CALCULER TREPST
+           IF (IEPSV.NE.0) THEN
+             TREPST = 0.D0
+             DO 50 K = 1, 3
+               TREPST = TREPST + EPSTH(K)
+    50       CONTINUE
+           ENDIF
+         ENDIF
+   
+   Alors qu'il faut :
+   
+         IF (RESI) THEN
+           CALL EPSTMC(FAMI, NDIM,VALPAR,'+',G,1,XYZGAU,REPERE,IMATE,
+        &              OPTION,EPSTH)
+   
+   C - TEST DE LA NULLITE DES DEFORMATIONS DUES AUX VARIABLES DE COMMANDE
+           IEPSV = 0
+           TREPST = 0.D0
+           DO 90 K = 1, 6
+             IF ( ABS(EPSTH(K)).GT.R8MIEM() ) IEPSV=1
+    90     CONTINUE
+   C - TOUTES DES COMPOSANTES SONT NULLES. ON EVITE DE CALCULER TREPST
+           IF (IEPSV.NE.0) THEN
+             DO 50 K = 1, 3
+               TREPST = TREPST + EPSTH(K)
+    50       CONTINUE
+           ENDIF
+         ENDIF
+   
+   Validation
+   ~~~~~~~~~~~~~
+   
+   Ensemble des cas tests INCO_UP sur Aster4 et Rocks
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+    cas test sur Rocks, Aster4
+NB_JOURS_TRAV  : 0.5
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 020446 DU 2013-02-22 14:05:26
+TYPE express concernant Code_Aster (VERSION 11.4)
+TITRE
+    DEF5 : INCO - UPG Erreur dans RIGI_MECA
+FONCTIONNALITE
+   Anomalies
+   ~~~~~~~~~~~
+   
+   Dans le calcul de l'option RIGI_MECA des formulations à 3 champs (INCO, INCO_GD et 
+   INCO_LOG), il y a une erreur dans le calcul par la notation de Voigt de 
+   Bt:dSig/dDep:B.
+   
+   Correction
+   ~~~~~~~~~~~~
+   
+   Dans nirmtd.f, on modifie :
+   _la matrice B issue de BMATMC pour multiplier les termes suivants XY,XZ et YZ par 
+   2/RAC(2).
+   _la matrice D issue de DMATMC pour avoir RAC(2) sur les termes simplement croisés 
+   (XXXY,XXXZ,...) et 2 sur les termes doublements croisés (XYXY,XZXZ,...).
+   
+   Validation
+   ~~~~~~~~~~~
+   
+   Cas test zzzz289 modélisations d, e et f
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+    cas test
+NB_JOURS_TRAV  : 0.5
+--------------------------------------------------------------------------------
+
+
+
+========================================================================
+=== Recapitulation des operations demandees pour toutes les restitutions
+========================================================================
+
+
+    TYPE Action    unite                      user      Auteur         nblg  ajout suppr.
+
+ CASTEST AJOUT hpla100k                     desroche X.DESROCHES        583    583      0
+ CASTEST AJOUT perf016a                      boiteau O.BOITEAU           97     97      0
+ CASTEST AJOUT perf016b                      boiteau O.BOITEAU           97     97      0
+ CASTEST AJOUT perf016c                      boiteau O.BOITEAU           98     98      0
+ CASTEST AJOUT perf016d                      boiteau O.BOITEAU           98     98      0
+ CASTEST AJOUT perf016e                      boiteau O.BOITEAU           99     99      0
+ CASTEST AJOUT ssns106l                     desroche X.DESROCHES        663    663      0
+ CASTEST AJOUT ssns106m                     desroche X.DESROCHES        944    944      0
+ CASTEST AJOUT tplp305a                     cuvillie M.CUVILLIEZ        244    244      0
+ CASTEST AJOUT tplp305b                     cuvillie M.CUVILLIEZ        244    244      0
+ CASTEST AJOUT tplp305c                     cuvillie M.CUVILLIEZ        244    244      0
+ CASTEST AJOUT tplp305d                     cuvillie M.CUVILLIEZ        266    266      0
+ CASTEST AJOUT tplp305e                     cuvillie M.CUVILLIEZ        249    249      0
+ CASTEST AJOUT tplp305f                     cuvillie M.CUVILLIEZ        246    246      0
+ CASTEST AJOUT tplp305g                     cuvillie M.CUVILLIEZ        244    244      0
+ CASTEST AJOUT tplp305h                     cuvillie M.CUVILLIEZ        249    249      0
+ CASTEST AJOUT zzzz336a                     cheignon E.CHEIGNON         164    164      0
+ CASTEST AJOUT zzzz337a                      boiteau O.BOITEAU          511    511      0
+ CASTEST MODIF forma11c                     chansard F.CHANSARD         207      3      3
+ CASTEST MODIF gcpc002c                     sellenet N.SELLENET         794      3      2
+ CASTEST MODIF hsnv132a                     cuvillie M.CUVILLIEZ        162    127    166
+ CASTEST MODIF hsnv132b                     cuvillie M.CUVILLIEZ        184    151    220
+ CASTEST MODIF hsnv132c                     cuvillie M.CUVILLIEZ        230    196    153
+ CASTEST MODIF perf003a                     chansard F.CHANSARD          56      2      2
+ CASTEST MODIF sdld103a                       pellet J.PELLET          1708     10     10
+ CASTEST MODIF sdld106a                       pellet J.PELLET           231     12     12
+ CASTEST MODIF sdld27c                        pellet J.PELLET           755      8      8
+ CASTEST MODIF sdld33a                        pellet J.PELLET           483     23     23
+ CASTEST MODIF sdld34a                        pellet J.PELLET           283     13     13
+ CASTEST MODIF sdld34b                        pellet J.PELLET           176      8      8
+ CASTEST MODIF sdld400a                       pellet J.PELLET           488      9      9
+ CASTEST MODIF sdlx400a                       pellet J.PELLET           389     14     14
+ CASTEST MODIF sdnd105b                       pellet J.PELLET           252     13     13
+ CASTEST MODIF sdnd120a                       pellet J.PELLET           389     14     14
+ CASTEST MODIF sdnl101a                       pellet J.PELLET           706     52     52
+ CASTEST MODIF sdnl105a                       pellet J.PELLET           589     11     11
+ CASTEST MODIF sdnl32a                        pellet J.PELLET           407      9      9
+ CASTEST MODIF ssll102f                       pellet J.PELLET           182      5      5
+ CASTEST MODIF ssll103a                     chansard F.CHANSARD         411     41      3
+ CASTEST MODIF ssll10a                        pellet J.PELLET           423      8      8
+ CASTEST MODIF ssll118b                       pellet J.PELLET           199      5      5
+ CASTEST MODIF ssll11a                        pellet J.PELLET           379      5      5
+ CASTEST MODIF ssll404a                     chansard F.CHANSARD         335    108      2
+ CASTEST MODIF sslp107a                       pellet J.PELLET           395      5      5
+ CASTEST MODIF sslp318a                     chansard F.CHANSARD         256      3      2
+ CASTEST MODIF sslp318b                     chansard F.CHANSARD         252      2      2
+ CASTEST MODIF sslp319a                      geniaut S.GENIAUT          272      2      2
+ CASTEST MODIF sslp319b                      geniaut S.GENIAUT          266      2      2
+ CASTEST MODIF sslp319c                      geniaut S.GENIAUT          297      2      2
+ CASTEST MODIF sslp319d                      geniaut S.GENIAUT          295      2      2
+ CASTEST MODIF sslp319e                      geniaut S.GENIAUT          264      2      2
+ CASTEST MODIF sslp320a                     chansard F.CHANSARD         298      2      2
+ CASTEST MODIF sslv114a                       pellet J.PELLET           232      4      4
+ CASTEST MODIF sslv114b                       pellet J.PELLET           215      4      4
+ CASTEST MODIF sslv157a                       pellet J.PELLET           208     12     12
+ CASTEST MODIF sslx100a                       pellet J.PELLET           164      9      9
+ CASTEST MODIF ssnp162j                      laverne J.LAVERNE          575      2      2
+ CASTEST MODIF ssnp162k                      laverne J.LAVERNE          635      2      2
+ CASTEST MODIF ssnp162l                      laverne J.LAVERNE          634      2      2
+ CASTEST MODIF ssnv225b                        proix J-M.PROIX          216      7      6
+ CASTEST MODIF tpla301a                       pellet J.PELLET           184      6      6
+ CASTEST MODIF tplp303b                       pellet J.PELLET           167      4      4
+ CASTEST MODIF tplv101a                       pellet J.PELLET           228      5      5
+ CASTEST MODIF tplv101c                       pellet J.PELLET           241      5      5
+ CASTEST MODIF zzzz289d                     sfayolle S.FAYOLLE          110      3      3
+ CASTEST MODIF zzzz289e                     sfayolle S.FAYOLLE          111      3      3
+ CASTEST MODIF zzzz289f                     sfayolle S.FAYOLLE          107      3      3
+ CASTEST MODIF zzzz291a                       ladier A.LADIER           557     33      2
+ CASTEST MODIF zzzz294d                       pellet J.PELLET           103      9      9
+ CASTEST MODIF zzzz323b                       pellet J.PELLET           288     10      5
+ CASTEST MODIF zzzz323c                       pellet J.PELLET           222      4      4
+ CASTEST MODIF zzzz323e                       pellet J.PELLET           354      4      4
+ CASTEST MODIF zzzz331a                       flejou J-L.FLEJOU         213      2      2
+ CASTEST SUPPR hsnv132d.comm                cuvillie M.CUVILLIEZ        207      0    207
+CATALOGU AJOUT typelem/gener_th3d_xh_3      cuvillie M.CUVILLIEZ         93     93      0
+CATALOGU AJOUT typelem/gener_th3d_xht_3     cuvillie M.CUVILLIEZ         93     93      0
+CATALOGU AJOUT typelem/gener_th3d_xt3       cuvillie M.CUVILLIEZ         93     93      0
+CATALOGU AJOUT typelem/gener_thpl_xh_2      cuvillie M.CUVILLIEZ         81     81      0
+CATALOGU AJOUT typelem/gener_thpl_xht_2     cuvillie M.CUVILLIEZ         81     81      0
+CATALOGU AJOUT typelem/gener_thpl_xt_2      cuvillie M.CUVILLIEZ         81     81      0
+CATALOGU MODIF compelem/grandeur_simple__   cuvillie M.CUVILLIEZ       2155      4      2
+CATALOGU MODIF compelem/phenomene_modelisation__   cuvillie M.CUVILLIEZ       1909     35      1
+CATALOGU MODIF options/char_ther_evol       cuvillie M.CUVILLIEZ         44     11      1
+CATALOGU MODIF options/mass_ther            cuvillie M.CUVILLIEZ         40     11      1
+CATALOGU MODIF options/rigi_ther            cuvillie M.CUVILLIEZ         42     11      1
+CATALOGU MODIF typelem/gener_medkg1         desroche X.DESROCHES        272     17      6
+CATALOGU MODIF typelem/gener_th3d_3         cuvillie M.CUVILLIEZ        249      9      5
+CATALOGU MODIF typelem/gener_thpl_2         cuvillie M.CUVILLIEZ        340      5      1
+CATALOPY MODIF commande/affe_materiau       desroche X.DESROCHES        206      3      3
+CATALOPY MODIF commande/info_mode            boiteau O.BOITEAU          105      7      2
+CATALOPY MODIF commande/macro_mode_meca      boiteau O.BOITEAU           95      3      2
+CATALOPY MODIF commande/mode_iter_simult     boiteau O.BOITEAU          178      9      2
+CATALOPY MODIF commande/post_cham_xfem      cuvillie M.CUVILLIEZ         35      2      1
+CATALOPY MODIF commande/post_elem             ladier A.LADIER           586      8      3
+CATALOPY MODIF commande/post_mail_xfem      sellenet N.SELLENET          31      2      3
+CATALOPY MODIF commande/proj_spec_base         berro H.BERRO             48      5      4
+CATALOPY MODIF commun/c_nom_cham_into         ladier A.LADIER           468     28      2
+ FORTRAN AJOUT algeline/comatr               boiteau O.BOITEAU          343    343      0
+ FORTRAN AJOUT algeline/vppcom               boiteau O.BOITEAU          225    225      0
+ FORTRAN AJOUT algorith/hayjac                 proix J-M.PROIX          240    240      0
+ FORTRAN AJOUT algorith/hayres                 proix J-M.PROIX          192    192      0
+ FORTRAN AJOUT elements/dxefg2              desroche X.DESROCHES        126    126      0
+ FORTRAN AJOUT elements/dxefn2              desroche X.DESROCHES        153    153      0
+ FORTRAN AJOUT elements/dxmat1              desroche X.DESROCHES        134    134      0
+ FORTRAN AJOUT elements/reeret              cuvillie M.CUVILLIEZ        111    111      0
+ FORTRAN AJOUT elements/te0423              desroche X.DESROCHES         78     78      0
+ FORTRAN AJOUT elements/te0571              cuvillie M.CUVILLIEZ        111    111      0
+ FORTRAN AJOUT elements/te0572              cuvillie M.CUVILLIEZ        112    112      0
+ FORTRAN AJOUT elements/te0577              cuvillie M.CUVILLIEZ        114    114      0
+ FORTRAN AJOUT elements/xmasth              cuvillie M.CUVILLIEZ        260    260      0
+ FORTRAN AJOUT elements/xrigth              cuvillie M.CUVILLIEZ        273    273      0
+ FORTRAN AJOUT elements/xthddl              cuvillie M.CUVILLIEZ        172    172      0
+ FORTRAN AJOUT elements/xthini              cuvillie M.CUVILLIEZ         74     74      0
+ FORTRAN AJOUT elements/xvetth              cuvillie M.CUVILLIEZ        289    289      0
+ FORTRAN AJOUT modelisa/moyte2              desroche X.DESROCHES         44     44      0
+ FORTRAN AJOUT utilifor/maxint               boiteau O.BOITEAU           34     34      0
+ FORTRAN AJOUT utilifor/somint               boiteau O.BOITEAU           34     34      0
+ FORTRAN AJOUT utilifor/vecinc               boiteau O.BOITEAU           34     34      0
+ FORTRAN AJOUT utilifor/vecink               boiteau O.BOITEAU           34     34      0
+ FORTRAN AJOUT utilifor/vecint               boiteau O.BOITEAU           34     34      0
+ FORTRAN AJOUT utilitai/comcou               boiteau O.BOITEAU           44     44      0
+ FORTRAN AJOUT utilitai/xismec              cuvillie M.CUVILLIEZ         53     53      0
+ FORTRAN AJOUT utilitai/xpheop              cuvillie M.CUVILLIEZ         46     46      0
+ FORTRAN MODIF algeline/mrmult               boiteau O.BOITEAU          110      9     10
+ FORTRAN MODIF algeline/nmop45               boiteau O.BOITEAU          489     10      7
+ FORTRAN MODIF algeline/op0032               boiteau O.BOITEAU          747    205     25
+ FORTRAN MODIF algeline/op0044               boiteau O.BOITEAU          716      8      6
+ FORTRAN MODIF algeline/op0045               boiteau O.BOITEAU         1477    253     73
+ FORTRAN MODIF algeline/typmat               boiteau O.BOITEAU           88      5      4
+ FORTRAN MODIF algeline/vpermo               boiteau O.BOITEAU          117     39     37
+ FORTRAN MODIF algeline/vpfopr               boiteau O.BOITEAU          569     94     11
+ FORTRAN MODIF algeline/vpnorx               boiteau O.BOITEAU           55     21     14
+ FORTRAN MODIF algeline/vppara               boiteau O.BOITEAU          210     51     26
+ FORTRAN MODIF algeline/vppfac               boiteau O.BOITEAU          109     30     27
+ FORTRAN MODIF algeline/vppgen               boiteau O.BOITEAU           97     16     28
+ FORTRAN MODIF algeline/vpstor               boiteau O.BOITEAU          362      8     12
+ FORTRAN MODIF algorith/ajlipa               boiteau O.BOITEAU          314      4      4
+ FORTRAN MODIF algorith/haymat                 proix J-M.PROIX          109     30     10
+ FORTRAN MODIF algorith/lc0050              desroche X.DESROCHES        366      9      1
+ FORTRAN MODIF algorith/lcafyd                 proix J-M.PROIX          169     14      2
+ FORTRAN MODIF algorith/lcjacb                 proix J-M.PROIX          108      8      4
+ FORTRAN MODIF algorith/lcjplc                 proix J-M.PROIX           71      6      4
+ FORTRAN MODIF algorith/lcmate                 proix J-M.PROIX          158      9      2
+ FORTRAN MODIF algorith/lcmatt                 proix J-M.PROIX           74      4      7
+ FORTRAN MODIF algorith/lcmaza                 hamon F.HAMON            499     12     13
+ FORTRAN MODIF algorith/lcmzge                 hamon F.HAMON            484     11     16
+ FORTRAN MODIF algorith/lcplnf                 proix J-M.PROIX          104     17      3
+ FORTRAN MODIF algorith/lcplnl                 proix J-M.PROIX          287      2      2
+ FORTRAN MODIF algorith/lcresi                 proix J-M.PROIX           93      5      2
+ FORTRAN MODIF algorith/memsth              cuvillie M.CUVILLIEZ        122     45      6
+ FORTRAN MODIF algorith/mergth              cuvillie M.CUVILLIEZ        190     44      5
+ FORTRAN MODIF algorith/nirmtd              sfayolle S.FAYOLLE          294     23      7
+ FORTRAN MODIF algorith/nmvcmx              desroche X.DESROCHES        165      7      3
+ FORTRAN MODIF algorith/nufipd              sfayolle S.FAYOLLE          335      2      1
+ FORTRAN MODIF algorith/nurmtd              sfayolle S.FAYOLLE          259      8      8
+ FORTRAN MODIF algorith/op0041              cuvillie M.CUVILLIEZ        494      6      4
+ FORTRAN MODIF algorith/tanbul              sfayolle S.FAYOLLE          134      2      2
+ FORTRAN MODIF algorith/vetnth              cuvillie M.CUVILLIEZ        297     51      3
+ FORTRAN MODIF algorith/xcodec              cuvillie M.CUVILLIEZ        102      8      6
+ FORTRAN MODIF algorith/xstan2              cuvillie M.CUVILLIEZ        284      4      3
+ FORTRAN MODIF assembla/assmam               boiteau O.BOITEAU          847      5      4
+ FORTRAN MODIF assembla/assmiv               boiteau O.BOITEAU          379      4      2
+ FORTRAN MODIF assembla/assvec               boiteau O.BOITEAU          999      5      3
+ FORTRAN MODIF calculel/calcul               boiteau O.BOITEAU          549      5      4
+ FORTRAN MODIF calculel/celces              cheignon E.CHEIGNON         351      3      3
+ FORTRAN MODIF calculel/echmat               boiteau O.BOITEAU          113      5      4
+ FORTRAN MODIF calculel/memaxm               boiteau O.BOITEAU          222      5      4
+ FORTRAN MODIF calculel/mesomm               boiteau O.BOITEAU          264      5      4
+ FORTRAN MODIF calculel/vrcin1              cheignon E.CHEIGNON         320     36      7
+ FORTRAN MODIF calculel/vrcins              desroche X.DESROCHES        205      1      2
+ FORTRAN MODIF elements/crgdm               desroche X.DESROCHES        252     58     10
+ FORTRAN MODIF elements/dxefgv              desroche X.DESROCHES         89     11      3
+ FORTRAN MODIF elements/dxglrc              desroche X.DESROCHES        610     21      5
+ FORTRAN MODIF elements/dxmate              desroche X.DESROCHES        471      5      1
+ FORTRAN MODIF elements/dxsith              desroche X.DESROCHES        127      4      3
+ FORTRAN MODIF elements/dxtpif              desroche X.DESROCHES         55      3      3
+ FORTRAN MODIF elements/lgdmvm              desroche X.DESROCHES        422      8      6
+ FORTRAN MODIF elements/te0413              desroche X.DESROCHES        165      5      4
+ FORTRAN MODIF elements/te0592              sfayolle S.FAYOLLE           74      2      2
+ FORTRAN MODIF modelisa/accep1                 berro H.BERRO            220     30     80
+ FORTRAN MODIF modelisa/lecgrp                pellet J.PELLET           150      5      4
+ FORTRAN MODIF modelisa/lirtet                pellet J.PELLET           157      6      5
+ FORTRAN MODIF modelisa/op0006              desroche X.DESROCHES        337     10     12
+ FORTRAN MODIF modelisa/orilgm              sellenet N.SELLENET         367     25     25
+ FORTRAN MODIF modelisa/orishb              sellenet N.SELLENET         226      7      7
+ FORTRAN MODIF modelisa/pamano              sellenet N.SELLENET         402      2      2
+ FORTRAN MODIF modelisa/raire2              sellenet N.SELLENET         279      4      4
+ FORTRAN MODIF modelisa/rairep              sellenet N.SELLENET         384      4      4
+ FORTRAN MODIF modelisa/rapo2d              sellenet N.SELLENET         502      4      4
+ FORTRAN MODIF modelisa/rapo3d              sellenet N.SELLENET         840      4      4
+ FORTRAN MODIF modelisa/rapoco              sellenet N.SELLENET         788      4      4
+ FORTRAN MODIF modelisa/rcvalb              desroche X.DESROCHES         75      4      4
+ FORTRAN MODIF modelisa/sfifj                  berro H.BERRO            307      6      5
+ FORTRAN MODIF modelisa/vermot                pellet J.PELLET            81      4      4
+ FORTRAN MODIF modelisa/xmoimp              cuvillie M.CUVILLIEZ        196     35      4
+ FORTRAN MODIF modelisa/xmoini              cuvillie M.CUVILLIEZ        117     11      3
+ FORTRAN MODIF modelisa/xmolig              cuvillie M.CUVILLIEZ        528     55      5
+ FORTRAN MODIF prepost/irmmf2               sellenet N.SELLENET         377      4      2
+ FORTRAN MODIF prepost/op0196               cuvillie M.CUVILLIEZ        213      3      3
+ FORTRAN MODIF prepost/xpoajd               cuvillie M.CUVILLIEZ        260     43     21
+ FORTRAN MODIF prepost/xpoajm               cuvillie M.CUVILLIEZ        201      7      6
+ FORTRAN MODIF prepost/xpocmp               cuvillie M.CUVILLIEZ        132     13      5
+ FORTRAN MODIF prepost/xpoco2               cuvillie M.CUVILLIEZ        245     29      9
+ FORTRAN MODIF prepost/xpodim               cuvillie M.CUVILLIEZ        355     19      6
+ FORTRAN MODIF prepost/xpoini               cuvillie M.CUVILLIEZ        154     25     13
+ FORTRAN MODIF prepost/xpomax               cuvillie M.CUVILLIEZ        588     14      8
+ FORTRAN MODIF soustruc/piqini              sellenet N.SELLENET         202      4      4
+ FORTRAN MODIF soustruc/piquag              sellenet N.SELLENET         199      4      3
+ FORTRAN MODIF supervis/debut                boiteau O.BOITEAU           91      7      3
+ FORTRAN MODIF supervis/execop               boiteau O.BOITEAU          146     18      4
+ FORTRAN MODIF utilifor/vecini               boiteau O.BOITEAU           36      4      2
+ FORTRAN MODIF utilitai/peaire              sellenet N.SELLENET          95     11     11
+ FORTRAN MODIF utilitai/peecin              sellenet N.SELLENET         359     15     15
+ FORTRAN MODIF utilitai/peepot              sellenet N.SELLENET         308     15     15
+ FORTRAN MODIF utilitai/peingl              sellenet N.SELLENET         724     16     16
+ FORTRAN MODIF utilitai/pemain              sellenet N.SELLENET         214     15     14
+ FORTRAN MODIF utilitai/penorm                ladier A.LADIER           558     35      5
+ FORTRAN MODIF utilitai/peritr              sellenet N.SELLENET         386     11     11
+ FORTRAN MODIF utilitai/peweib              sellenet N.SELLENET         419     16     16
+ FORTRAN MODIF utilitai/redetr               boiteau O.BOITEAU          163      7      6
+ FORTRAN MODIF utilitai/utch19               boiteau O.BOITEAU          104      5      4
+ FORTRAN MODIF utilitai/uttcpi               boiteau O.BOITEAU          197      6      5
+ FORTRAN SUPPR algorith/nifn2b              sellenet N.SELLENET          26      0     26
+ FORTRAN SUPPR algorith/nifn2c              sellenet N.SELLENET          27      0     27
+ FORTRAN SUPPR algorith/nifn3b              sellenet N.SELLENET          26      0     26
+ FORTRAN SUPPR algorith/nifn3c              sellenet N.SELLENET          26      0     26
+ FORTRAN SUPPR algorith/nipl2b              sellenet N.SELLENET          26      0     26
+ FORTRAN SUPPR algorith/nipl2c              sellenet N.SELLENET          26      0     26
+ FORTRAN SUPPR algorith/nipl3b              sellenet N.SELLENET          26      0     26
+ FORTRAN SUPPR algorith/nipl3c              sellenet N.SELLENET          26      0     26
+ FORTRAN SUPPR algorith/nirm2b              sellenet N.SELLENET          26      0     26
+ FORTRAN SUPPR algorith/nirm2c              sellenet N.SELLENET          26      0     26
+ FORTRAN SUPPR algorith/nirm3b              sellenet N.SELLENET          26      0     26
+ FORTRAN SUPPR algorith/nirm3c              sellenet N.SELLENET          26      0     26
+ FORTRAN SUPPR elements/dfdm2b              sellenet N.SELLENET          91      0     91
+ FORTRAN SUPPR elements/dfdm3b              sellenet N.SELLENET         105      0    105
+ FORTRAN SUPPR elements/te0048              sellenet N.SELLENET          27      0     27
+ FORTRAN SUPPR elements/te0121              sellenet N.SELLENET          27      0     27
+ FORTRAN SUPPR elements/te0213              sellenet N.SELLENET          27      0     27
+ FORTRAN SUPPR elements/te0214              sellenet N.SELLENET          27      0     27
+ FORTRAN SUPPR elements/te0215              sellenet N.SELLENET          27      0     27
+ FORTRAN SUPPR elements/te0216              sellenet N.SELLENET          27      0     27
+FORTRAN90 AJOUT utilitai/mpiexe               boiteau O.BOITEAU          220    220      0
+FORTRAN90 MODIF mumps/amumpi                  boiteau O.BOITEAU          473     23      7
+FORTRAN90 MODIF mumps/amumpp                  boiteau O.BOITEAU          424     10      7
+FORTRAN90 MODIF mumps/amumpu                  boiteau O.BOITEAU          603      9      7
+FORTRAN90 MODIF petsc/apalmc                  boiteau O.BOITEAU          207      6      3
+FORTRAN90 MODIF petsc/apalmd                  boiteau O.BOITEAU          264      6      3
+FORTRAN90 MODIF petsc/apmain                  boiteau O.BOITEAU          388      5      2
+FORTRAN90 MODIF petsc/appcrs                  boiteau O.BOITEAU          199      6      3
+FORTRAN90 MODIF petsc/apvsmb                  boiteau O.BOITEAU          148      6      3
+FORTRAN90 MODIF utilitai/entete               boiteau O.BOITEAU           81      6      4
+FORTRAN90 MODIF utilitai/fetmpi               boiteau O.BOITEAU          458     18     24
+FORTRAN90 MODIF utilitai/mpialr               boiteau O.BOITEAU           92      9      6
+FORTRAN90 MODIF utilitai/mpichk               boiteau O.BOITEAU          156      7      5
+FORTRAN90 MODIF utilitai/mpicm0               boiteau O.BOITEAU           60      8     14
+FORTRAN90 MODIF utilitai/mpicm1               boiteau O.BOITEAU          303    125     43
+FORTRAN90 MODIF utilitai/mpicm2               boiteau O.BOITEAU          216     20     24
+FORTRAN90 MODIF utilitai/mpicmw               boiteau O.BOITEAU           81     15      4
+FORTRAN90 MODIF utilitai/mpippv               boiteau O.BOITEAU          128     11     17
+FORTRAN90 MODIF utilitai/mpisst               boiteau O.BOITEAU           96      7      5
+  PYTHON MODIF Macro/macro_mode_meca_ops     boiteau O.BOITEAU          544    344     63
+  PYTHON MODIF Messages/algorith17          desroche X.DESROCHES        141      5      2
+  PYTHON MODIF Messages/appelmpi             boiteau O.BOITEAU           95     22      2
+  PYTHON MODIF Messages/calculel4           cheignon E.CHEIGNON         449     10      1
+  PYTHON MODIF Messages/calculel6           desroche X.DESROCHES        456      2      9
+  PYTHON MODIF Messages/coeur0               geniaut S.GENIAUT           47      3      3
+  PYTHON MODIF Messages/modal                boiteau O.BOITEAU          154     85     10
+  PYTHON MODIF Messages/modelisa               berro H.BERRO            537      1      6
+  PYTHON MODIF Messages/postelem              ladier A.LADIER            57      6      5
+  PYTHON MODIF Messages/xfem                cuvillie M.CUVILLIEZ        478      7      1
+
+
+        nb unites  nb lignes  ajouts  suppr.  difference
+ AJOUT :   51        9446      9446             +9446
+ MODIF :  199       62769      3794    2069     +1725
+ SUPPR :   21         878               878      -878
+ DEPLA :    0           0 
+         ----      ------     ------  ------   ------
+ TOTAL :  271       73093     13240    2947    +10293 
