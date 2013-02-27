@@ -1,0 +1,93 @@
+%& MODIF TYPELEM  DATE 26/02/2013   AUTEUR CUVILLIE M.CUVILLIEZ 
+%            CONFIGURATION MANAGEMENT OF EDF VERSION
+% ======================================================================
+% COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
+% THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
+% IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
+% THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
+% (AT YOUR OPTION) ANY LATER VERSION.                                   
+%                                                                       
+% THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
+% WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
+% MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
+% GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
+%                                                                       
+% YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
+% ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
+%    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+% ======================================================================
+% RESPONSABLE CUVILLIEZ
+GENER_TH3D_XH_3
+TYPE_GENE__
+
+%  CATALOGUES DES ELEMENTS THERMIQUES 3D X-FEM HEAVISIDE (LINEAIRES)
+
+ENTETE__ ELEMENT__ THER_XH_HEXA8       MAILLE__ HEXA8
+   ELREFE__  HE8       GAUSS__  RIGI=FPG8  XFEM=XFEM480  FPG_LISTE__  MATER = (XFEM)
+   ELREFE__  TE4       GAUSS__  XINT=FPG15
+   ELREFE__  TR3       GAUSS__  FPG4=FPG4  XCON=FPG12
+   ATTRIBUT__  XFEM=XH
+ENTETE__ ELEMENT__ THER_XH_PENTA6      MAILLE__ PENTA6
+   ELREFE__  PE6       GAUSS__  RIGI=FPG6  XFEM=XFEM240  FPG_LISTE__  MATER = (XFEM)
+   ELREFE__  TE4       GAUSS__  XINT=FPG15
+   ELREFE__  TR3       GAUSS__  FPG4=FPG4  XCON=FPG12
+   ATTRIBUT__  XFEM=XH
+ENTETE__ ELEMENT__ THER_XH_PYRAM5      MAILLE__ PYRAM5
+   ELREFE__  PY5       GAUSS__  RIGI=FPG5  XFEM=XFEM180  FPG_LISTE__  MATER = (XFEM)
+   ELREFE__  TE4       GAUSS__  XINT=FPG15
+   ELREFE__  TR3       GAUSS__  FPG4=FPG4  XCON=FPG12
+   ATTRIBUT__  XFEM=XH
+ENTETE__ ELEMENT__ THER_XH_TETRA4      MAILLE__ TETRA4
+   ELREFE__  TE4       GAUSS__  RIGI=FPG1  XINT=FPG15  XFEM=XFEM90 FPG_LISTE__  MATER = (XFEM)
+   ELREFE__  TR3       GAUSS__  FPG4=FPG4  XCON=FPG12
+   ATTRIBUT__  XFEM=XH
+
+MODE_LOCAL__
+    CMATERC  = ADRSJEVE ELEM__         (I1       )
+    CTEMPSR  = INST_R   ELEM__         (INST     DELTAT   THETA    KHI      R        RHO      )
+    DDL_THER = TEMP_R   ELNO__ IDEN__  (TEMP     H1       )
+    E3NEUTI  = NEUT_I   ELEM__         (X[3]     )
+    E10NEUTI = NEUT_I   ELEM__         (X[10]    )
+    E15NEUTI = NEUT_I   ELEM__         (X[15]    )
+    E21NEUTR = NEUT_R   ELEM__         (X[21]    )
+    E30NEUTR = NEUT_R   ELEM__         (X[30]    )
+    E35NEUTR = NEUT_R   ELEM__         (X[35]    )
+    E320NEUI = NEUT_I   ELEM__         (X[320]   )
+    E32NEUTI = NEUT_I   ELEM__         (X[32]    )
+    E33NEUTR = NEUT_R   ELEM__         (X[33]    )
+    E63NEUTR = NEUT_R   ELEM__         (X[63]    )
+    N1NEUT_R = NEUT_R   ELNO__ IDEN__  (X1       )
+    N3NEUT_R = NEUT_R   ELNO__ IDEN__  (X[3]     )
+    N9NEUT_R = NEUT_R   ELNO__ IDEN__  (X[9]     )
+    NGEOMER  = GEOM_R   ELNO__ IDEN__  (X        Y        Z        )
+    STANO_I  = NEUT_I   ELNO__ IDEN__  (X1       )
+    ZVARCPG  = VARI_R   ELGA__ MATER   (VARI     )
+
+VECTEUR__
+    MVECTTR = VTEM_R DDL_THER
+    
+MATRICE__
+    MMATTTR = MTEM_R DDL_THER DDL_THER
+    
+OPTION__
+    CARA_GEOM           -1    IN__    OUT__    XXXXXX   XXXXXX
+    CHAR_THER_EVOL      577   IN__   NGEOMER  PGEOMER  CMATERC  PMATERC  DDL_THER PTEMPER  CTEMPSR  PTEMPSR  
+                                     STANO_I  PSTANO   E33NEUTR PPINTTO  E320NEUI PCNSETO  E32NEUTI PHEAVTO  
+                                     E10NEUTI PLONCHA  N9NEUT_R PBASLOR  N1NEUT_R PLSN     N1NEUT_R PLST     
+                                     ZVARCPG  PVARCPR
+                              OUT__  MVECTTR  PVECTTR
+    MASS_THER           572   IN__   NGEOMER  PGEOMER  CMATERC  PMATERC  CTEMPSR  PTEMPSR  STANO_I  PSTANO
+                                     E33NEUTR PPINTTO  E320NEUI PCNSETO  E32NEUTI PHEAVTO  E10NEUTI PLONCHA  
+                                     N9NEUT_R PBASLOR  N1NEUT_R PLSN     N1NEUT_R PLST     ZVARCPG  PVARCPR
+                              OUT__  MMATTTR  PMATTTR
+    RIGI_THER           571   IN__   NGEOMER  PGEOMER  CMATERC  PMATERC  CTEMPSR  PTEMPSR  STANO_I  PSTANO
+                                     E33NEUTR PPINTTO  E320NEUI PCNSETO  E32NEUTI PHEAVTO  E10NEUTI PLONCHA  
+                                     N9NEUT_R PBASLOR  N1NEUT_R PLSN     N1NEUT_R PLST     ZVARCPG  PVARCPR
+                              OUT__  MMATTTR  PMATTTR                                     
+    TOPOFA              510   IN__   NGEOMER  PGEOMER  N1NEUT_R PLSN     N1NEUT_R PLST     N3NEUT_R PGRADLT
+                                     N3NEUT_R PGRADLN  N3NEUT_R PGRADLT
+                              OUT__  E21NEUTR PPINTER  E35NEUTR PAINTER  E15NEUTI PCFACE   E3NEUTI  PLONCHA
+                                     E63NEUTR PBASECO  E21NEUTR PGESCLA  E21NEUTR PGMAITR  E21NEUTR PGESCLO
+    TOPOSE              514   IN__   NGEOMER  PGEOMER  N1NEUT_R PLEVSET
+                              OUT__  E33NEUTR PPINTTO  E320NEUI PCNSETO  E32NEUTI PHEAVTO  E10NEUTI  PLONCHA
+                                     E30NEUTR PAINTER

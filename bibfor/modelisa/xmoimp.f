@@ -1,7 +1,8 @@
       SUBROUTINE XMOIMP(NH8,NH20,NP6,NP15,NP5,NP13,NT4,NT10,NCPQ4,
      &                  NCPQ8,NCPT3,NCPT6,NDPQ4,NDPQ8,NDPT3,NDPT6,
      &                  NF4,NF8,NF3,NF6,NPF2,NPF3,NAXT3,NAXQ4,
-     &                  NAXQ8,NAXT6,NAX2, NAX3)
+     &                  NAXQ8,NAXT6,NAX2,NAX3,NTH8,NTP6,NTP5,NTT4,
+     &                  NTPQ4,NTPT3)
       IMPLICIT NONE
 
       INCLUDE 'jeveux.h'
@@ -11,11 +12,12 @@
       INTEGER       NDPQ8(7),NDPT3(14),NDPT6(7),NF4(11),NF8(7),NF3(11)
       INTEGER       NF6(7),NPF2(11),NPF3(7)
       INTEGER       NAXT3(7),NAXQ4(7),NAXQ8(7),NAXT6(7),NAX2(7),NAX3(7)
+      INTEGER       NTH8(7),NTP6(7),NTP5(7),NTT4(7),NTPQ4(7),NTPT3(7)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 19/12/2012   AUTEUR PELLET J.PELLET 
+C MODIF MODELISA  DATE 26/02/2013   AUTEUR CUVILLIE M.CUVILLIEZ 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -54,6 +56,8 @@ C
       WRITE(IFM,*)'IMPRESSION DES ELEMENTS X-FEM '
       WRITE(IFM,807)'TYPE','XH','XT','XHT','XHC','XTC','XHTC',
      &'XH1','XH2','XH3','XH4','XH2C','XH3C','XH4C'
+
+C     ELEMENTS MECANIQUES
       IF(NH8(7).NE.0) WRITE(IFM,810)'HEXA8'  ,
      &    NH8(1)  ,NH8(2)  ,NH8(3),  NH8(4)  ,NH8(5)  ,NH8(6),
      &    NH8(8)  ,NH8(9),  NH8(10), NH8(11) ,
@@ -143,13 +147,40 @@ C
      &    WRITE(IFM,808)'ARETE-AXI 3' ,NAX3(1) ,NAX3(2) ,NAX3(3)
       WRITE(IFM,*)'  '
 
+C     ELEMENTS THERMIQUES
+      IF(NTH8(7).NE.0) WRITE(IFM,810)'HEXA8'  ,
+     &    NTH8(1), NTH8(2), NTH8(3), NTH8(4), NTH8(5), 
+     &    NTH8(6), 0      , 0      , 0      , 0      ,
+     &    0      , 0      , 0      
+      IF(NTP6(7).NE.0) WRITE(IFM,810)'PENTA6'  ,
+     &    NTP6(1), NTP6(2), NTP6(3), NTP6(4), NTP6(5), 
+     &    NTP6(6), 0      , 0      , 0      , 0      ,
+     &    0      , 0      , 0      
+      IF(NTP5(7).NE.0) WRITE(IFM,810)'PYRAM5'  ,
+     &    NTP5(1), NTP5(2), NTP5(3), NTP5(4), NTP5(5), 
+     &    NTP5(6), 0      , 0      , 0      , 0      ,
+     &    0      , 0      , 0      
+      IF(NTT4(7).NE.0) WRITE(IFM,810)'TETRA4'  ,
+     &    NTT4(1), NTT4(2), NTT4(3), NTT4(4), NTT4(5), 
+     &    NTT4(6), 0      , 0      , 0      , 0      ,
+     &    0      , 0      , 0      
+      IF(NTPQ4(7).NE.0) WRITE(IFM,810)'PLAN QUAD4'  ,
+     &    NTPQ4(1),NTPQ4(2),NTPQ4(3),NTPQ4(4),NTPQ4(5), 
+     &    NTPQ4(6),0       ,0        ,0      ,0       ,
+     &    0       ,0       ,0      
+      IF(NTPT3(7).NE.0) WRITE(IFM,810)'PLAN TRIA3'  ,
+     &    NTPT3(1),NTPT3(2),NTPT3(3),NTPT3(4),NTPT3(5), 
+     &    NTPT3(6),0       ,0        ,0      ,0       ,
+     &    0       ,0       ,0      
+
       NBELX =   NH8(7) + NH20(7) + NP6(7) + NP15(7)
      &        + NP5(7) + NP13(7) + NT4(7) + NT10(7)
      &        + NCPQ4(7) + NCPQ8(7) + NCPT3(7) + NCPT6(7)
      &        + NDPQ4(7) + NDPQ8(7) + NDPT3(7) + NDPT6(7)
      &        + NAXQ4(7) + NAXQ8(7) + NAXT3(7) + NAXT6(7)
      &        + NAX2(7) + NAX3(7) + NPF2(7) + NPF3(7)
-     &        + NF3(7) + NF6(7)
+     &        + NF3(7) + NF6(7) + NTH8(7) + NTP6(7) + NTP5(7) 
+     &        + NTT4(7) + NTPQ4(7) + NTPT3(7)
 
       IF (NBELX.EQ.0) CALL U2MESS('F','XFEM_16')
 

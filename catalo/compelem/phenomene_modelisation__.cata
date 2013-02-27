@@ -1,4 +1,4 @@
-%& MODIF COMPELEM  DATE 11/02/2013   AUTEUR SFAYOLLE S.FAYOLLE 
+%& MODIF COMPELEM  DATE 26/02/2013   AUTEUR CUVILLIE M.CUVILLIEZ 
 % ======================================================================
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
@@ -1819,6 +1819,40 @@ PHENOMENE_MODELISATION__
               MAILLE__ QUAD9     ELEMENT__ THCOQU9
               MAILLE__ SEG3      ELEMENT__ THCOSE3
               MAILLE__ SEG2      ELEMENT__ THCOSE2
+
+%-------------------------------------------------------------------
+% modelisations 3d X-FEM non affectables par AFFE_MODELE
+       MODELISATION__ '3D1XH'            DIM__ 3 3   CODE__ '3X1'
+              MAILLE__ HEXA8     ELEMENT__ THER_XH_HEXA8
+              MAILLE__ PENTA6    ELEMENT__ THER_XH_PENTA6
+              MAILLE__ PYRAM5    ELEMENT__ THER_XH_PYRAM5
+              MAILLE__ TETRA4    ELEMENT__ THER_XH_TETRA4
+
+       MODELISATION__ '3D1XT'            DIM__ 3 3   CODE__ '3X2'
+              MAILLE__ HEXA8     ELEMENT__ THER_XT_HEXA8
+              MAILLE__ PENTA6    ELEMENT__ THER_XT_PENTA6
+              MAILLE__ PYRAM5    ELEMENT__ MECA_XT_PYRAM5
+              MAILLE__ TETRA4    ELEMENT__ THER_XT_TETRA4
+
+       MODELISATION__ '3D1XHT'           DIM__ 3 3   CODE__ '3X3'
+              MAILLE__ HEXA8     ELEMENT__ THER_XHT_HEXA8
+              MAILLE__ PENTA6    ELEMENT__ THER_XHT_PENTA6
+              MAILLE__ PYRAM5    ELEMENT__ THER_XHT_PYRAM5
+              MAILLE__ TETRA4    ELEMENT__ THER_XHT_TETRA4
+%-------------------------------------------------------------------
+% modelisations 2d X-FEM non affectables par AFFE_MODELE
+       MODELISATION__ 'PLAN_XH'          DIM__ 2 2   CODE__ 'PX1'
+              MAILLE__ TRIA3     ELEMENT__ THPLTR3_XH
+              MAILLE__ QUAD4     ELEMENT__ THPLQU4_XH
+
+       MODELISATION__ 'PLAN_XT'          DIM__ 2 2   CODE__ 'PX2'
+              MAILLE__ TRIA3     ELEMENT__ THPLTR3_XT
+              MAILLE__ QUAD4     ELEMENT__ THPLQU4_XT
+
+       MODELISATION__ 'PLAN_XHT'         DIM__ 2 2   CODE__ 'PX3'
+              MAILLE__ TRIA3     ELEMENT__ THPLTR3_XHT
+              MAILLE__ QUAD4     ELEMENT__ THPLQU4_XHT
+%-------------------------------------------------------------------
 
    PHENOMENE__  ACOUSTIQUE       CODE__  'AC'
 

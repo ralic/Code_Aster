@@ -1,0 +1,289 @@
+      SUBROUTINE XVETTH(NDIM,ELREFP,NNOP,IMATE,ITPS,IGEOM,TEMPER,LONCH,
+     &                  CNSET,JPINTT,LSN,LST,BASLOC,HEAVT,NFH,NFE,VECTT)
+C            CONFIGURATION MANAGEMENT OF EDF VERSION
+C MODIF ELEMENTS  DATE 26/02/2013   AUTEUR CUVILLIE M.CUVILLIEZ 
+C ======================================================================
+C COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
+C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
+C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
+C (AT YOUR OPTION) ANY LATER VERSION.                                   
+C                                                                       
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
+C                                                                       
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
+C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.         
+C ======================================================================
+C TOLE CRS_1404
+C RESPONSABLE CUVILLIEZ
+C.......................................................................
+      IMPLICIT NONE
+
+C     BUT: SECOND MEMBRE ELEMENTAIRE EN THERMIQUE LINEAIRE CORRESPONDANT
+C          A UN PROBLEME TRANSITOIRE ELEMENTS X-FEM LINEAIRES
+C          
+C          OPTION : 'CHAR_THER_EVOL'
+C
+C IN :
+C ---
+C NDIM   --> DIMENSION DE L'ESPACE (2 OU 3)
+C ELREFP --> NOM DE L'ELT PARENT DE REFERENCE
+C NNOP   --> NBRE DE NOEUDS DE L'ELT PARENT DE REFERENCE
+C IMATE  --> ADRESSE DU MATERIAU
+C ITPS   --> ADRESSE DES PARAMETRES DE LA DICRETISATION EN TEMPS
+C IGEOM  --> ADRESSE DES COORDONEES DES NOEUDS DE L'ELT PARENT
+C LONCH  --> LONGUEURS DES CHAMPS UTILISES
+C CNSET  --> CONNECTIVITE DES SOUS-ELEMENTS
+C PINTT  --> ADRESSE DES COORDONEES DES POINTS D'INTERSECTION
+C LSN    --> VALEUR DE LA LEVEL SET NORMALE AUX NOEUDS PARENTS
+C LST    --> VALEUR DE LA LEVEL SET TANGENTIELLE AUX NOEUDS PARENTS
+C BASLOC --> BASE LOCALE AU FOND DE FISSURE
+C HEAVT  --> VALEURS DE L'HEAVISIDE SUR LES SS-ELTS
+C NFH    --> NBRE DE FONCTION D'ENRICHISSEMENT HEAVISIDE (0 OU 1)
+C NFE    --> NBRE DE FONCTION D'ENRICHISSEMENT CRACKTIP  (0 OU 1)
+C
+C OUT :
+C ----
+C VECTT  --> VECTEUR ELEMENTAIRE
+C.......................................................................
+      INCLUDE 'jeveux.h'
+C-----------------------------------------------------------------------
+      CHARACTER*8 ELREFP
+      INTEGER     NDIM,NNOP,IMATE,ITPS,IGEOM,NFH,NFE,JPINTT
+      INTEGER     LONCH(10),CNSET(4*32),HEAVT(36)
+      REAL*8      TEMPER(NNOP*(1+NFH+NFE)),LSN(NNOP),LST(NNOP)
+      REAL*8      BASLOC(*),VECTT(*)
+C-----------------------------------------------------------------------
+      CHARACTER*8 NOMRES(2),ELRESE(3),FAMI(3)
+      INTEGER ICODRE,IPOS
+      CHARACTER*8 POUM
+      CHARACTER*16 PHENOM
+      REAL*8 VALRES(2),LAMBDA,RHOCP,THETA,HE,DELTAT
+      REAL*8 VALPAR(1),BASLOG(3*NDIM),TEM,DTEM(NDIM)
+      REAL*8 P(3,3),POIDS,LSNG,LSTG,JAC,PDSCAL
+      REAL*8 COORSE(81),XG(NDIM),XE(NDIM)
+      REAL*8 FEMEC(4),DGDMEC(4,NDIM),FETH,DGDTH(NDIM)
+      REAL*8 FF(NNOP),DFDI(NNOP,NDIM)
+      REAL*8 FFENR(NNOP,1+NFH+NFE),DFFENR(NNOP,1+NFH+NFE,NDIM)
+      INTEGER IPOIDS,IVF,IDFDE,KPG,SPT,IBID
+      INTEGER NNO,NPG,I,J
+      INTEGER IRET,NSE,ISE,INP,IN,INO,NOSEMA,KDDL,NBDDL
+      LOGICAL ISELLI,AXI
+      INTEGER IND1,LDDL,JNP,IDDLMA,IDIM,IND2,MXSTAC
+C
+      PARAMETER   (MXSTAC=1000)
+C
+C     NBRE MAX DE NOEUDS D'UN SOUS-ELEMENT (TRIA3,TETRA4,TRIA6 -> 6)
+      PARAMETER (NOSEMA = 6)
+      REAL*8 R8BID1(NOSEMA),R8BID2(NOSEMA),R8BID3(NOSEMA)
+
+      DATA    ELRESE /'SE2','TR3','TE4'/
+      DATA    FAMI   /'BID','XINT','XINT'/
+C-----------------------------------------------------------------------
+C
+C     VERIF QUE LES TABLEAUX LOCAUX DYNAMIQUES NE SONT PAS TROP GRANDS
+C     (VOIR CRS 1404)
+      CALL ASSERT(NNOP.LE.MXSTAC)
+C
+C     POUR L'INSTANT PAS DE MODELISATION AXI
+      AXI = .FALSE.
+C
+C     NBRE DE DDLS PAR NOEUD
+      NBDDL = 1+NFH+NFE
+C
+C     RECUP DONNEES TEMPORELLES (POUR LE THETA SCHEMA)
+      DELTAT = ZR(ITPS-1+2)
+      THETA  = ZR(ITPS-1+3)
+C
+C     POUR PREPARER L'APPEL A RCVALB
+      CALL RCCOMA(ZI(IMATE),'THER',1,PHENOM,ICODRE)
+      IF (ICODRE.NE.0) CALL U2MESS('F','ELEMENTS2_63')
+C     POUR L'INSTANT ON NE TRAITE PAS 'THER_ORTH'
+      CALL ASSERT(PHENOM.EQ.'THER')
+      VALPAR(1) = ZR(ITPS-1+1)
+      SPT = 1
+      POUM = '+'
+C
+C     SOUS-ELEMENT DE REFERENCE : RECUP DE NNO,NPG,IPOIDS,IVF,IDFDE
+      CALL ELREF5(ELRESE(NDIM),FAMI(NDIM),IBID,NNO,IBID,NPG,IPOIDS,IBID,
+     &            IVF,IDFDE,IBID,IBID)
+C
+C     RECUPERATION DE LA SUBDIVISION DE L'ELEMENT EN NSE SOUS ELEMENT
+      NSE=LONCH(1)
+C
+C ----------------------------------------------------------------------
+C --- BOUCLE SUR LES NSE SOUS-ELEMENTS
+C ----------------------------------------------------------------------
+C
+      DO 1000 ISE=1,NSE
+C
+C       VALEUR (CSTE) DE LA FONCTION HEAVISIDE SUR LE SS-ELT
+        HE = 1.D0*HEAVT(ISE)
+C
+C       BOUCLE SUR LES SOMMETS DU SOUS-TETRA/TRIA -> COORDS NOEUDS
+        DO 1100 IN=1,NNO
+          INO=CNSET(NNO*(ISE-1)+IN)
+          DO 1110 J=1,NDIM
+            IF (INO.LT.1000) THEN
+              COORSE(NDIM*(IN-1)+J)=ZR(IGEOM-1+NDIM*(INO-1)+J)
+            ELSEIF (INO.GT.1000 .AND. INO.LT.2000) THEN
+              COORSE(NDIM*(IN-1)+J)=ZR(JPINTT-1+NDIM*(INO-1000-1)+J)
+            ELSE 
+              CALL ASSERT(.FALSE.)
+            ENDIF
+ 1110     CONTINUE
+ 1100   CONTINUE
+C
+C ----------------------------------------------------------------------
+C ----- BOUCLE SUR LES POINTS DE GAUSS
+C ----------------------------------------------------------------------
+C       
+        DO 1200 KPG=1,NPG
+C
+C         COORDONNÉES DU PT DE GAUSS DANS LE REPÈRE RÉEL : XG
+          CALL VECINI(NDIM,0.D0,XG)
+          DO 1210 J=1,NDIM
+            DO 1211 IN=1,NNO
+              XG(J)=XG(J)+ZR(IVF-1+NNO*(KPG-1)+IN)*COORSE(NDIM*(IN-1)+J)
+ 1211       CONTINUE
+ 1210     CONTINUE
+C
+C         XG -> XE (DANS LE REPERE DE l'ELREFP) ET VALEURS DES FF EN XE
+          CALL VECINI(NDIM,0.D0,XE)
+          CALL REERET(ELREFP,AXI,NNOP,ZR(IGEOM),
+     &                XG,NDIM,'OUI',XE,FF,DFDI)
+C
+C ------- SI ENRICHISSEMENT SINGULIER
+          IF (NFE.GT.0) THEN
+C           BASE LOCALE ET LEVEL SETS AU POINT DE GAUSS
+            CALL VECINI(3*NDIM,0.D0,BASLOG)
+            LSNG = 0.D0
+            LSTG = 0.D0
+            DO 1220 INP=1,NNOP
+              LSNG = LSNG + LSN(INP) * FF(INP)
+              LSTG = LSTG + LST(INP) * FF(INP)
+              DO 1221 J=1,3*NDIM
+                BASLOG(J) = BASLOG(J)
+     &                    + BASLOC(3*NDIM*(INP-1)+J) * FF(INP)
+ 1221         CONTINUE
+ 1220       CONTINUE
+C           FONCTION D'ENRICHISSEMENT (MECA) AU PG ET DÉRIVÉES
+            IF (NDIM.EQ.2) THEN
+              CALL XCALF2(HE,LSNG,LSTG,BASLOG,FEMEC,DGDMEC,IRET)
+            ELSEIF (NDIM.EQ.3) THEN
+              CALL XCALFE(HE,LSNG,LSTG,BASLOG,FEMEC,DGDMEC,IRET)
+            ENDIF
+C           PB DE CALCUL DES DERIVEES DES FONCTIONS SINGULIERES
+C           CAR ON SE TROUVE SUR LE FOND DE FISSURE
+            CALL ASSERT(IRET.NE.0)
+C           ON NE GARDE QUE LES ENRICHISSEMENTS UTILES EN THERMIQUE
+            CALL VECINI(NDIM,0.D0,DGDTH)
+            FETH = FEMEC(1)
+            DO 1230 J=1,NDIM
+              DGDTH(J) = DGDMEC(1,J)
+ 1230       CONTINUE
+          ENDIF
+C ------- FIN SI ENRICHISSEMENT SINGULIER
+C
+C         CALCULER LE JACOBIEN DE LA TRANSFO SSTET->SSTET REF
+C         AVEC LES COORDONNEES DU SOUS-ELEMENT
+          IF (NDIM.EQ.2) THEN
+            CALL DFDM2D(NNO,KPG,IPOIDS,IDFDE,COORSE,
+     &                  R8BID1,R8BID2,JAC)
+          ELSEIF (NDIM.EQ.3) THEN
+            CALL DFDM3D(NNO,KPG,IPOIDS,IDFDE,COORSE,
+     &                  R8BID1,R8BID2,R8BID3,JAC)
+          ENDIF
+C
+C         RECUPERER LES PARAMETRES MATERIAUX
+          NOMRES(1) = 'LAMBDA'
+          NOMRES(2) = 'RHO_CP'
+          CALL RCVALB('XFEM',KPG,SPT,POUM,ZI(IMATE),' ',PHENOM,
+     &                1,'INST',VALPAR,2,NOMRES,VALRES,ICODRE,1)
+          LAMBDA = VALRES(1)
+          RHOCP  = VALRES(2)
+C
+C         FFENR : TABLEAU DES FF ENRICHIES
+C         DFFENR : TABLEAU DES DERIVEES DES FF ENRICHIES
+          DO 1250 INP=1,NNOP
+C           DDL CLASSIQUE (TEMP)
+            FFENR(INP,1) = FF(INP)
+            DO 1251 J=1,NDIM
+              DFFENR(INP,1,J) = DFDI(INP,J)
+ 1251       CONTINUE
+C           DDL HEAVISIDE (H1)
+            IF (NFH.EQ.1) THEN
+              FFENR(INP,1+NFH) = HE*FF(INP)
+              DO 1252 J=1,NDIM
+                DFFENR(INP,1+NFH,J) = HE*DFDI(INP,J)
+ 1252         CONTINUE
+            ENDIF
+C           DDL CRACK-TIP (E1)
+            IF (NFE.EQ.1) THEN
+              FFENR(INP,1+NFH+NFE) = FETH*FF(INP)
+              DO 1253 J=1,NDIM
+                DFFENR(INP,1+NFH+NFE,J) = FETH*DFDI(INP,J)
+     &                                  + FF(INP)*DGDTH(J)
+ 1253         CONTINUE
+            ENDIF
+ 1250     CONTINUE
+C
+C         CALCUL DE T-
+          TEM = 0.D0
+          DO 1270 INP=1,NNOP
+            DO 1271 KDDL=1,NBDDL
+              TEM = TEM + TEMPER(NBDDL*(INP-1)+KDDL)*FFENR(INP,KDDL)
+ 1271       CONTINUE
+ 1270     CONTINUE
+C         CALCUL DE GRAD(T-)
+          CALL VECINI(NDIM,0.D0,DTEM)
+          DO 1280 INP=1,NNOP
+            DO 1281 KDDL=1,NBDDL
+              DO 1282 IDIM=1,NDIM
+                DTEM(IDIM) = DTEM(IDIM) + TEMPER(NBDDL*(INP-1)+KDDL)*
+     &                       DFFENR(INP,KDDL,IDIM)
+ 1282         CONTINUE
+ 1281       CONTINUE
+ 1280     CONTINUE
+C
+C ------- REMPLISSAGE DU VECTEUR ELEMENTAIRE
+C
+          IPOS = 0
+          DO 1290 INP=1,NNOP
+C
+            DO 1291 KDDL=1,NBDDL
+C
+              IPOS = IPOS + 1
+C
+C             TERME DE MASSE
+              VECTT(IPOS) = VECTT(IPOS)+RHOCP/DELTAT*JAC*
+     &                      FFENR(INP,KDDL)*TEM
+C
+C             TERME DE RIGIDITE
+              PDSCAL = 0.D0
+              DO 1292 IDIM=1,NDIM
+                PDSCAL = PDSCAL + DFFENR(INP,KDDL,IDIM)*DTEM(IDIM)
+ 1292         CONTINUE
+              VECTT(IPOS) = VECTT(IPOS) - (1.0D0-THETA)*
+     &                      LAMBDA*JAC*PDSCAL
+C
+ 1291       CONTINUE
+ 1290     CONTINUE
+C
+ 1200   CONTINUE
+C
+C ----------------------------------------------------------------------
+C ----- FIN BOUCLE SUR LES POINTS DE GAUSS
+C ----------------------------------------------------------------------
+C       
+ 1000   CONTINUE
+C
+C ----------------------------------------------------------------------
+C --- FIN BOUCLE SUR LES SOUS-ELEMENTS
+C ----------------------------------------------------------------------
+C
+      END

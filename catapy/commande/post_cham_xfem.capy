@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 29/01/2013   AUTEUR FERTE G.FERTE 
+#& MODIF COMMANDE  DATE 26/02/2013   AUTEUR CUVILLIE M.CUVILLIEZ 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -20,8 +20,9 @@
 def post_cham_xfem_prod(RESULTAT,**args ):
  
   if AsType(RESULTAT) == evol_noli  : return evol_noli
-  if AsType(RESULTAT) == mode_meca : return mode_meca
+  if AsType(RESULTAT) == mode_meca  : return mode_meca
   if AsType(RESULTAT) == evol_elas  : return evol_elas
+  if AsType(RESULTAT) == evol_ther  : return evol_ther
 
   raise AsException("type de concept resultat non prevu")
 

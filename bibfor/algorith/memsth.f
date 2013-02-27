@@ -1,6 +1,6 @@
       SUBROUTINE MEMSTH(MODELE,CARELE,MATE,INST,MEMASS)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 12/02/2013   AUTEUR PELLET J.PELLET 
+C MODIF ALGORITH  DATE 26/02/2013   AUTEUR CUVILLIE M.CUVILLIEZ 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -32,11 +32,12 @@ C OUT MEMASS  : MATRICES ELEMENTAIRES
 
 
 
-      CHARACTER*8 LPAIN(5),LPAOUT(1)
+      CHARACTER*8 LPAIN(13),LPAOUT(1)
       CHARACTER*16 OPTION
-      CHARACTER*24 LIGRMO,LCHIN(5),LCHOUT(1)
+      CHARACTER*24 LIGRMO,LCHIN(13),LCHOUT(1)
       CHARACTER*24 CHGEOM,CHCARA(18)
-      CHARACTER*19 CHVARC
+      CHARACTER*19 CHVARC,STANO,PINTTO,CNSETO,HEAVTO
+      CHARACTER*19 LONCHA,BASLOC,LSN,LST
       INTEGER IRET,ILIRES
       LOGICAL EXICAR
 
@@ -59,22 +60,60 @@ C-----------------------------------------------------------------------
       LCHOUT(1) = MEMASS(1:8)//'.ME001'
       ILIRES = 0
 
+C     CADRE X-FEM
+      CALL EXIXFE(MODELE,IRET)
+      IF (IRET.NE.0) THEN
+        STANO  = MODELE(1:8)//'.STNO'
+        PINTTO = MODELE(1:8)//'.TOPOSE.PIN'
+        CNSETO = MODELE(1:8)//'.TOPOSE.CNS'
+        HEAVTO = MODELE(1:8)//'.TOPOSE.HEA'
+        LONCHA = MODELE(1:8)//'.TOPOSE.LON'
+        BASLOC = MODELE(1:8)//'.BASLOC'
+        LSN    = MODELE(1:8)//'.LNNO'
+        LST    = MODELE(1:8)//'.LTNO'
+      ELSE
+        STANO  = '&&MEMSTH.STNO.BID'
+        PINTTO = '&&MEMSTH.PINTTO.BID'
+        CNSETO = '&&MEMSTH.CNSETO.BID'
+        HEAVTO = '&&MEMSTH.HEAVTO.BID'
+        LONCHA = '&&MEMSTH.LONCHA.BID'
+        BASLOC = '&&MEMSTH.BASLOC.BID'
+        LSN    = '&&MEMSTH.LNNO.BID'
+        LST    = '&&MEMSTH.LTNO.BID'
+      ENDIF
+
       IF (MODELE.NE.'        ') THEN
-        LPAIN(1) = 'PGEOMER'
-        LCHIN(1) = CHGEOM
-        LPAIN(2) = 'PMATERC'
-        LCHIN(2) = MATE
-        LPAIN(3) = 'PCACOQU'
-        LCHIN(3) = CHCARA(7)
-        LPAIN(4) = 'PTEMPSR'
-        LCHIN(4) = INST
-        LPAIN(5) = 'PVARCPR'
-        LCHIN(5) = CHVARC
+        LPAIN(1)  = 'PGEOMER'
+        LCHIN(1)  = CHGEOM
+        LPAIN(2)  = 'PMATERC'
+        LCHIN(2)  = MATE
+        LPAIN(3)  = 'PCACOQU'
+        LCHIN(3)  = CHCARA(7)
+        LPAIN(4)  = 'PTEMPSR'
+        LCHIN(4)  = INST
+        LPAIN(5)  = 'PVARCPR'
+        LCHIN(5)  = CHVARC
+        LPAIN(6)  = 'PSTANO'
+        LCHIN(6)  = STANO
+        LPAIN(7)  = 'PPINTTO'
+        LCHIN(7)  = PINTTO
+        LPAIN(8)  = 'PCNSETO'
+        LCHIN(8)  = CNSETO
+        LPAIN(9)  = 'PHEAVTO'
+        LCHIN(9)  = HEAVTO
+        LPAIN(10) = 'PLONCHA'
+        LCHIN(10) = LONCHA
+        LPAIN(11) = 'PBASLOR'
+        LCHIN(11) = BASLOC
+        LPAIN(12) = 'PLSN'
+        LCHIN(12) = LSN
+        LPAIN(13) = 'PLST'
+        LCHIN(13) = LST
         OPTION = 'MASS_THER'
         ILIRES = 1
         CALL CODENT(ILIRES,'D0',LCHOUT(1) (12:14))
-        CALL CALCUL('S',OPTION,LIGRMO,5,LCHIN,LPAIN,1,LCHOUT,LPAOUT,'V',
-     &                 'OUI')
+        CALL CALCUL('S',OPTION,LIGRMO,13,LCHIN,LPAIN,1,LCHOUT,LPAOUT,
+     &              'V','OUI')
         CALL JEDETR(MEMASS)
         CALL REAJRE(MEMASS, LCHOUT(1),'V')
       END IF

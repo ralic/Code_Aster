@@ -1,0 +1,114 @@
+      SUBROUTINE TE0577(OPTION,NOMTE)
+C            CONFIGURATION MANAGEMENT OF EDF VERSION
+C MODIF ELEMENTS  DATE 26/02/2013   AUTEUR CUVILLIE M.CUVILLIEZ 
+C ======================================================================
+C COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
+C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
+C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
+C (AT YOUR OPTION) ANY LATER VERSION.                                   
+C                                                                       
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
+C                                                                       
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
+C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.         
+C ======================================================================
+C RESPONSABLE CUVILLIEZ
+C.......................................................................
+      IMPLICIT NONE
+
+C     BUT: CALCUL DU SECOND MEMBRE ELEMENTAIRE EN THERMIQUE LINEAIRE
+C          CORRESPONDANT A UN PROBLEME TRANSITOIRE ELEMENTS X-FEM 
+C          LINEAIRES
+C
+C          OPTION : 'CHAR_THER_EVOL'
+C
+C     ENTREES  ---> OPTION : OPTION DE CALCUL
+C              ---> NOMTE  : NOM DU TYPE ELEMENT
+C.......................................................................
+
+
+      INCLUDE 'jeveux.h'
+
+C-----------------------------------------------------------------------
+      INTEGER ICAMAS ,IJ ,L ,N1 ,N2 ,NDIM, NFH,NFE,IBID
+      INTEGER NNOS ,NUNO, NDDLNO
+      REAL*8 ALPHA ,BETA ,R8DGRD,HE
+C-----------------------------------------------------------------------
+      CHARACTER*8 NOMRES(1),LAG
+      INTEGER ICODRE(1)
+      CHARACTER*8 POUM,ELREFP
+      CHARACTER*16 NOMTE,OPTION,PHENOM
+      REAL*8 VALRES(1),LAMBDA,THETA,FLULOC(3),FLUGLO(3)
+      REAL*8 VALPAR(1),LAMBOR(3),ORIG(3),DIRE(3),BASLOG(3*3)
+      REAL*8 P(3,3),DFDX(27),DFDY(27),DFDZ(27),POIDS,LSNG,LSTG,JAC
+      REAL*8 POINT(3),ANGL(3),COORSE(81),XG(3),XE(3),R8BID
+      INTEGER IPOIDS,IVF,IDFDE,IGEOM,IMATE,KPG,SPT
+      INTEGER JGANO,NNO,KP,NPG,I,J,IVECTT,ITPS,ITEMP
+      INTEGER JSTNO,JPINTT,JCNSET,JHEAVT,JLONCH,JBASLO,JLSN,JLST,JPMILT
+      INTEGER IRET,NNOP,NSE,IN,INP,ISE,INO,NOPAMA,NOSEMA,KDDL
+      LOGICAL ISELLI
+
+C     NBRE MAX DE NOEUDS D'UN ELEMENT PARENT
+      PARAMETER (NOPAMA = 8)
+C     NBRE MAX DE NOEUDS D'UN SOUS-ELEMENT (TRIA3,TETRA4,TRIA6 -> 6)
+      PARAMETER (NOSEMA = 6)
+      REAL*8 FEMEC(4),DGDMEC(4,3),FETH,DGDTH(3)
+      REAL*8 FF(NOPAMA),DFDI(NOPAMA,3)
+      REAL*8 R8BID1(NOSEMA),R8BID2(NOSEMA),R8BID3(NOSEMA)
+      REAL*8 DFFENR(NOPAMA,3,3)
+C
+C ----------------------------------------------------------------------
+C --- PREALABLES AU CALCUL DU VECTEUR ELEMENTAIRE
+C ----------------------------------------------------------------------
+C
+C     ON INTERDIT LES ELTS QUADRATIQUES
+      CALL ELREF1(ELREFP)
+      CALL ASSERT(ISELLI(ELREFP))
+C
+C     CHAMPS IN 'CLASSIQUES'
+      CALL JEVECH('PGEOMER','L',IGEOM )
+      CALL JEVECH('PMATERC','L',IMATE )
+      CALL JEVECH('PTEMPER','L',ITEMP)
+      CALL JEVECH('PTEMPSR','L',ITPS)
+C     CHAMPS IN X-FEM
+      CALL JEVECH('PSTANO' ,'L',JSTNO )
+      CALL JEVECH('PPINTTO','L',JPINTT)
+      CALL JEVECH('PCNSETO','L',JCNSET)
+      CALL JEVECH('PHEAVTO','L',JHEAVT)
+      CALL JEVECH('PLONCHA','L',JLONCH)
+      CALL JEVECH('PBASLOR','L',JBASLO)
+      CALL JEVECH('PLSN'   ,'L',JLSN  )
+      CALL JEVECH('PLST'   ,'L',JLST  )
+C     CHAMP OUT
+      CALL JEVECH('PVECTTR','E',IVECTT)
+C
+C     ELT DE REF PARENT : RECUP NDIM ET NNOP (NOEUDS PARENT)
+C     -> RQ : 'RIGI' POUR LA FAMILLE DE PG EST DONC SANS CONSQUENCE
+      CALL ELREF4(' ','RIGI',NDIM,NNOP,IBID,IBID,IBID,IBID,IBID,IBID)
+C
+C     NBRE DE DDLS PAR NOEUD
+      CALL XTHINI(NOMTE,NFH,NFE)
+      NDDLNO = 1+NFH+NFE
+C
+C ----------------------------------------------------------------------
+C --- CALCUL DU VECTEUR ELEMENTAIRE
+C ----------------------------------------------------------------------
+C
+      CALL XVETTH(NDIM,ELREFP,NNOP,IMATE,ITPS,IGEOM,ZR(ITEMP),
+     &            ZI(JLONCH),ZI(JCNSET),JPINTT,ZR(JLSN),ZR(JLST),
+     &            ZR(JBASLO),ZI(JHEAVT),NFH,NFE,ZR(IVECTT))
+C
+C ----------------------------------------------------------------------
+C --- SUPPRESSION DES DDLS SUPERFLUS
+C ----------------------------------------------------------------------
+C
+C     SUPPRESSION DES DDLS SUPERFLUS
+      CALL XTHDDL(NFH,NDDLNO,NNOP,ZI(JSTNO),OPTION,NOMTE,R8BID,
+     &            ZR(IVECTT))
+C
+      END

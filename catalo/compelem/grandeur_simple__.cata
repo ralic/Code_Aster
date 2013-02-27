@@ -1,4 +1,4 @@
-%& MODIF COMPELEM  DATE 12/02/2013   AUTEUR PELLET J.PELLET 
+%& MODIF COMPELEM  DATE 26/02/2013   AUTEUR CUVILLIE M.CUVILLIEZ 
 % RESPONSABLE PROIX
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
@@ -2030,8 +2030,10 @@ FORC_C   = C    FX       FY       FZ       MX       MY       MZ       BX       R
        TEMP_SUP : température sur la face supérieure (coques)
        LAGR : paramètre de lagrange du a la dualisation des
        conditions aux limites
+       H1 : ddl Heaviside X-FEM
+       E1 : ddl Cracktip X-FEM
 >>
-    TEMP_R   = R    TEMP     TEMP_INF TEMP_SUP LAGR
+    TEMP_R   = R    TEMP     TEMP_INF TEMP_SUP LAGR H1 E1
 
 <<  VALO_R Type:R
        VALEUR :

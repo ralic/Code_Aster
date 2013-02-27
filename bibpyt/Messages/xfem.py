@@ -1,4 +1,4 @@
-#@ MODIF xfem Messages  DATE 07/01/2013   AUTEUR LADIER A.LADIER 
+#@ MODIF xfem Messages  DATE 26/02/2013   AUTEUR CUVILLIE M.CUVILLIEZ 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -467,6 +467,12 @@ cata_msg={
   -> Conseil:
      Veuillez revoir la définition de votre fissure.
 
+"""),
+
+71: _(u"""
+  -> DEFI_FISS_XFEM :
+     La jonction de fissures n'est pas une fonctionnalité disponible pour les modèles 
+     thermiques. Or le modèle %(k1)s est un modèle thermique.
 """),
 
 }
