@@ -2,7 +2,7 @@
       IMPLICIT   NONE
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 12/02/2013   AUTEUR PELLET J.PELLET 
+C MODIF MODELISA  DATE 26/02/2013   AUTEUR DESROCHE X.DESROCHES 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -41,7 +41,7 @@ C ----------------------------------------------------------------------
       CHARACTER*16 MOTFAC(NMXFAC),LIMFAC(NMXFAC),MOFAC
       CHARACTER*19 CART1,CART2,CARVID
       CHARACTER*8  NOVARC,NOVAR1,NOVAR2,LIVARC(NMXFAC),KNUMER
-      REAL*8 VRCREF(NMXCMP),R8NNEM,RCMP(10),R8VIDE
+      REAL*8 VRCREF(NMXCMP),R8NNEM,RCMP(10),R8VIDE,VREF
       LOGICAL ERRGD
 C ----------------------------------------------------------------------
 
@@ -167,7 +167,6 @@ C       ------------------------------------------------------------
             ZK8(JCVGD +NBCVRC-1+K) = NOMGD
    49   CONTINUE
 
-
         DO 80,IOCC = 1,NBOCCV
           CALL GETVTX('AFFE_VARC','NOM_VARC',IOCC,IARG,1,NOVAR2,N1)
           CALL ASSERT(N1.EQ.1)
@@ -176,19 +175,18 @@ C       ------------------------------------------------------------
 C         2-3 CALCUL DE  VRCREF(:) :
 C         ---------------------------
           CALL GETVR8('AFFE_VARC','VALE_REF',IOCC,IARG,NMXCMP,VRCREF,N1)
+C         -- ON NE PEUT DONNER QU'UNE SEULE VALEUR (TEMP OU SECH) :
           NREF=N1
-          CALL ASSERT(NREF.GE.0)
-          IF (NREF.GT.0) THEN
-            IF(NREF.NE.NCMP) THEN
-              VALK(1) = CHMAT
-              VALK(2) = NOVARC
-              CALL U2MESK('F','CALCULEL6_60', 2 ,VALK)
-            ENDIF
+          CALL ASSERT(N1.EQ.0 .OR. N1.EQ.1)
+          IF (N1.EQ.1) THEN
+            VREF=VRCREF(1)
           ELSE
-            DO 60,K = 1,NCMP
-              VRCREF(K) = R8VIDE()
-   60       CONTINUE
-          END IF
+            VREF=R8VIDE()
+          ENDIF
+C         -- IL FAUT RECOPIER VREF POUR TEMP QUI A PLUSIEURS CMPS :
+          DO 60,K = 1,NCMP
+            VRCREF(K) = VREF
+   60     CONTINUE
 
 
 C         2-4 CALCUL DE EVOL,CHAMGD,NOMCHA ET VERIFICATIONS :

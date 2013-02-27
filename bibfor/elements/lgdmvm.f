@@ -1,9 +1,9 @@
       SUBROUTINE LGDMVM(IMATE,COMPOR,EPSM,DEPS,VIM,OPTION,SIGM,
      &                  SIG,VIP,DSIDEP,CRIT,IRET)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 22/10/2012   AUTEUR IDOUX L.IDOUX 
+C MODIF ELEMENTS  DATE 26/02/2013   AUTEUR DESROCHE X.DESROCHES 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -24,7 +24,7 @@ C RESPONSABLE SFAYOLLE S.FAYOLLE
       INCLUDE 'jeveux.h'
       CHARACTER*16       OPTION,COMPOR
       REAL*8             EPSM(6),DEPS(6),VIM(*),EP
-      REAL*8             R8BID, CRIT(*)
+      REAL*8             R8BID(6), CRIT(*)
       REAL*8             SIGM(*),SIG(*),VIP(*),DSIDEP(6,*)
       INTEGER            IMATE, IRET
 C ----------------------------------------------------------------------
@@ -51,7 +51,7 @@ C ----------------------------------------------------------------------
       REAL*8   SIG2DM(6),SIG2DP(6),SCM(4),SIGPEQ,CRITCP,SIGNUL,PREC
       REAL*8   DDEMP(6),TANLOC(6,6),TANPOM(6,6),PRECR
       REAL*8   LAMBDA,DEUXMU,LAMF,DEUMUF,GT,GC,GF,SEUIL,ALPHA,ALFMC
-      LOGICAL  RIGI,RESI
+      LOGICAL  RIGI,RESI,LBID
       CHARACTER*8   TYPMOD(2)
 
       RAC2 = SQRT(2.D0)
@@ -92,7 +92,9 @@ C-----TOLERANCE POUR LA CONTRAINTE HORS PLAN
 
 C-----LECTURE DES PARAMETRES D ENDOMMAGEMENT
       CALL CRGDM(IMATE,'GLRC_DM         ',LAMBDA,DEUXMU,LAMF,DEUMUF,
-     &                 GT,GC,GF,SEUIL,ALPHA,ALFMC,EP,.FALSE.)
+     &                 GT,GC,GF,SEUIL,ALPHA,ALFMC,EP,.FALSE.,
+     &                 1,LBID,R8BID(1),R8BID(2),R8BID(3),R8BID(4),
+     &                 R8BID(5),R8BID(6))
 
 C-----OBTENTION DU MODULE ELASTIQUE INITIAL
       DO 100, I = 1,6
@@ -209,7 +211,7 @@ C     --    POUR POUVOIR UTILISER NMISOT
             CALL NMISOT ('RIGI',1,1,3,TYPMOD,IMATE,'VMIS_ISOT_LINE  ',
      &                   CRBID,DEPS2D,SIG2DM,VIM(5),
      &                   'FULL_MECA       ',SIG2DP,VIP(5),TAN3D,
-     &                   R8BID,R8BID,IRET)
+     &                   R8BID(1),R8BID(2),IRET)
           ENDIF
 
           D22    = TAN3D(3,3)

@@ -1,7 +1,7 @@
-%& MODIF TYPELEM  DATE 27/11/2012   AUTEUR CHEIGNON E.CHEIGNON 
+%& MODIF TYPELEM  DATE 26/02/2013   AUTEUR DESROCHE X.DESROCHES 
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
-% COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+% COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 % THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 % IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 % THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -31,12 +31,14 @@ ENTETE__ ELEMENT__ MEQ4GG4          MAILLE__ QUAD4
    OPTION__   DISS_ELGA      -1
    OPTION__   DISS_ELNO      -1
    OPTION__   DISS_ELEM      -1
+   OPTION__   CHAR_MECA_TEMP_R -1
 ENTETE__ ELEMENT__ MET3GG3          MAILLE__ TRIA3
    ELREFE__  TR3       GAUSS__  RIGI=FPG1   MASS=FPG4   NOEU=NOEU  FPG1=FPG1  FPG_LISTE__  MATER = (RIGI NOEU FPG1)
    ELREFE__  SE2       GAUSS__  RIGI=FPG2
    OPTION__   DISS_ELGA      -1
    OPTION__   DISS_ELNO      -1
    OPTION__   DISS_ELEM      -1
+   OPTION__   CHAR_MECA_TEMP_R -1
 
 MODE_LOCAL__
     EGGEOP_R = GEOM_R   ELGA__ RIGI    (X        Y        Z        W       )
@@ -66,6 +68,10 @@ MODE_LOCAL__
                                         GAX      GAY      )
     EDEFGPG  = EPSI_R   ELGA__ RIGI    (EXX      EYY      EXY      KXX      KYY      KXY
                                         GAX      GAY      )
+    CFER1_R  = FER1_R   ELEM__         (TYPCOMB  ENROBG   CEQUI    SIGACI   SIGBET   PIVA
+                                        PIVB     )
+    CFER2_R  = FER2_R   ELEM__         (DNSXI    DNSXS    DNSYI    DNSYS    DNST     SIGMBE
+                                        EPSIBE   )
     CFORCEF  = FORC_F   ELEM__         (FX       FY       FZ       MX       MY       MZ
                                         REP      PLAN     )
     ECASECT  = NEUT_R   ELEM__         (X[16]    )
@@ -118,6 +124,8 @@ OPTION__
     CARA_SECT_POUT4     513   IN__   NGEOMER  PGEOMER  CGEOMER  PORIGIN
                               OUT__  MVECTUR  PVECTU1  MVECTUR  PVECTU2
     CHAR_LIMITE         -1    IN__     OUT__  XXXXXX   XXXXXX
+    FERRAILLAGE         146   IN__   CCACOQU  PCACOQU  CFER1_R  PFERRA1  EEFGENO PEFFORR
+                              OUT__  CFER2_R  PFERRA2
     CHAR_MECA_EPSI_R    35    IN__   CCACOQU  PCACOQU  CEPSINR  PEPSINR  NGEOMER  PGEOMER  CMATERC  PMATERC
                               OUT__  MVECTUR  PVECTUR
     CHAR_MECA_FFCO3D    32    IN__   CCACOQU  PCACOQU  CFORCEF  PFFCO3D  NGEOMER  PGEOMER  CTEMPSR  PTEMPSR
@@ -138,7 +146,9 @@ OPTION__
                               OUT__  MVECTUR  PVECTUR
     CHAR_MECA_SFCO3D    -1    IN__     OUT__  XXXXXX   XXXXXX
     CHAR_MECA_SRCO3D    -1    IN__     OUT__  XXXXXX   XXXXXX
-    CHAR_MECA_TEMP_R    -1    IN__     OUT__  XXXXXX   XXXXXX
+    CHAR_MECA_TEMP_R    423   IN__   CCACOQU  PCACOQU  NGEOMER  PGEOMER  CMATERC  PMATERC
+                                     ZVARCPG  PVARCPR  CTEMPSR  PTEMPSR  ZVARCPG  PVARCRR
+                              OUT__  MVECTUR  PVECTUR
     COOR_ELGA           488   IN__   NGEOMER  PGEOMER
                               OUT__  EGGEOP_R PCOORPG
     DEGE_ELNO           33    IN__   CCACOQU  PCACOQU  DDL_MECA PDEPLAR  NGEOMER  PGEOMER  CMATERC  PMATERC
@@ -150,6 +160,9 @@ OPTION__
     DISS_ELGA           413   IN__   NGEOMER  PGEOMER  CMATERC  PMATERC  CCACOQU  PCACOQU
                                      CCOMPOR  PCOMPOR  ZVARIPG  PVARIGR
                               OUT__  EDISSPG  PDISSPG
+    DISS_ELEM           413   IN__   CCOMPOR  PCOMPOR  NGEOMER  PGEOMER  CMATERC  PMATERC  ZVARIPG  PVARIPR
+                                     CCACOQU  PCACOQU
+                              OUT__  EDISSR   PDISSD1
     DISS_ELNO           4     IN__   EDISSPG  PDISSPG
                               OUT__  EDISSNO  PDISSNO
     ECIN_ELEM           409   IN__   CCACOQU  PCACOQU  DDL_MECA PDEPLAR  COMEG2R  POMEGA2   NGEOMER  PGEOMER
@@ -167,9 +180,6 @@ OPTION__
                               OUT__  EENERPG  PENERDR
     ENEL_ELNO           4     IN__   EENERPG  PENERPG
                               OUT__  EENERNO  PENERNO
-    DISS_ELEM           413   IN__   CCOMPOR  PCOMPOR  NGEOMER  PGEOMER  CMATERC  PMATERC  ZVARIPG  PVARIPR
-                                     CCACOQU  PCACOQU
-                              OUT__  EDISSR   PDISSD1
     ENEL_ELEM           412   IN__   CCOMPOR  PCOMPOR  EEFGEGA  PCONTPR  DDL_MECA PDEPLR   NGEOMER  PGEOMER
                                      CMATERC  PMATERC  ZVARCPG  PVARCPR  ZVARCPG  PVARCRR  ZVARIPG  PVARIPR
                                      CCACOQU  PCACOQU
@@ -243,6 +253,7 @@ OPTION__
                                      ZVARCPG  PVARCPR  ZVARIPG  PVARIMP  ZVARIPG  PVARIMR  CITERAT  PITERAT
                               OUT__  MMATUUR  PMATUUR
     SIEF_ELGA          422    IN__   CCACOQU  PCACOQU  NGEOMER  PGEOMER  DDL_MECA PDEPLAR  CMATERC  PMATERC
+                                     ZVARCPG  PVARCPR  ZVARCPG  PVARCRR 
                               OUT__  EEFGEGA  PCONTRR
     SIEF_ELNO           4     IN__   EEFGEGA  PCONTRR
                               OUT__  EEFGENO  PSIEFNOR EEFGENC  PSIEFNOC

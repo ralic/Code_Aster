@@ -4,7 +4,7 @@
       CHARACTER*16      OPTION,NOMTE
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 15/01/2013   AUTEUR DELMAS J.DELMAS 
+C MODIF ELEMENTS  DATE 26/02/2013   AUTEUR DESROCHE X.DESROCHES 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -42,7 +42,7 @@ C.......................................................................
       REAL*8   PGL(3,3)
       REAL*8   QSI,ETA,XYZL(3,4),JACOB(5),POIDS,CARA(25)
       REAL*8   DISSE(NPGMX),DSE
-      REAL*8   R8B(9),EP,SEUIL
+      REAL*8   R8B(15),EP,SEUIL
 
       INTEGER  NDIM,NNO,NNOEL,NPG,IPOIDS,ICOOPG,IVF,IDFDX,IDFD2,JGANO
       INTEGER  JGEOM,IPG,IDENER,IMATE
@@ -50,7 +50,7 @@ C.......................................................................
       INTEGER  IRET
 
       CHARACTER*16 VALK(2)
-      LOGICAL  DKQ,LKIT
+      LOGICAL  DKQ,LKIT,LBID
 
       IF (NOMTE(1:8).EQ.'MEDKQG4 ') THEN
         DKQ = .TRUE.
@@ -117,7 +117,8 @@ C      ===================================
 
         CALL CRGDM(ZI(IMATE),'GLRC_DM         ',R8B(1),R8B(2),
      &             R8B(3),R8B(4),R8B(5),R8B(6),R8B(7),SEUIL,R8B(8),
-     &             R8B(9),EP,.FALSE.)
+     &R8B(9),EP,.FALSE.,IPG,LBID,R8B(10),R8B(11),R8B(12),R8B(13),
+     &R8B(14),R8B(15))
 
 C  --    CALCUL DE LA DENSITE D'ENERGIE POTENTIELLE ELASTIQUE :
 C        ==========================================================

@@ -6,7 +6,7 @@
       CHARACTER*16 NOMTE
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 15/01/2013   AUTEUR DELMAS J.DELMAS 
+C MODIF ELEMENTS  DATE 26/02/2013   AUTEUR DESROCHE X.DESROCHES 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -37,7 +37,7 @@ C
       PARAMETER (NBEPSG=8)
 
       INTEGER NDIM,NNOEL,NNOS,NPG,IPOIDS,ICOOPG,IVF,IDFDX,IDFD2,JGANO
-      INTEGER I,J,ICOU,ICPG,IGAUH,IPG,IRET,IBID,NBCMP,NBCOU,NPGH
+      INTEGER I,J,ICOU,ICPG,IGAUH,IPG,IPGH,IRET,IBID,NBCMP,NBCOU,NPGH
       INTEGER JNBSPI,ITAB(8)
 
       REAL*8 D(4,4),REPERE(7),INST,ZERO,EPSTH(NBEPSG)
@@ -97,7 +97,8 @@ C     ---------------------------------------------
 C
 C         -- INTERPOLATION DE ALPHA EN FONCTION DE LA TEMPERATURE
 C         ----------------------------------------------------
-            CALL VERIFT('RIGI',IPG,IGAUH,'+',MATER,'ELAS',
+            IPGH=NPGH*(ICOU-1)+IGAUH
+            CALL VERIFT('RIGI',IPG,IPGH,'+',MATER,'ELAS',
      &           1,EPSTH(1),IRET)
 
             EPSTH(2) = EPSTH(1)

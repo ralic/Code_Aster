@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 12/02/2013   AUTEUR PELLET J.PELLET 
+#& MODIF COMMANDE  DATE 26/02/2013   AUTEUR DESROCHE X.DESROCHES 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -107,10 +107,10 @@ AFFE_MATERIAU=OPER(nom="AFFE_MATERIAU",op=6,sd_prod=cham_mater,
          VARC_TEMP    =FACT(statut='d',
            NOM_VARC        =SIMP(statut='c',typ='TXM',defaut="TEMP"),
            GRANDEUR        =SIMP(statut='c',typ='TXM',defaut="TEMP_R"),
-           CMP_GD          =SIMP(statut='c',typ='TXM',max=1,min=1,defaut=("TEMP",)),
-           CMP_VARC        =SIMP(statut='c',typ='TXM',max=1,min=1,defaut=("TEMP",)),
+           CMP_GD          =SIMP(statut='c',typ='TXM',max=3,min=3,defaut=("TEMP","TEMP_INF","TEMP_SUP",)),
+           CMP_VARC        =SIMP(statut='c',typ='TXM',max=3,min=3,defaut=("TEMP","TEMP_INF","TEMP_SUP",)),
          ),
-
+           
          #  mots clés cachés pour variable de commande GEOM :
          #  --------------------------------------------------
          VARC_GEOM    =FACT(statut='d',
