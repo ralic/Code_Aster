@@ -1,9 +1,9 @@
-# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
+# MODIF  DATE 26/02/2013   AUTEUR PELLET J.PELLET 
 # TITRE TREILLIS DE BARRES ARTICULEES SOUS CHARGE PONCTUELLE
 # ssll11a.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -324,14 +324,14 @@ TEST_TABLE(
 
 T3 = POST_RELEVE_T ( ACTION=_F( INTITULE = 'CH1',
                                 OPERATION = 'MOYENNE_ARITH',
-                                GROUP_NO = ('GNAB',),
+                                GROUP_NO = ('GROUP_NO_GNAB',),
                                 NOEUD = ('C','D',),
                                 CHAM_GD = CH1,         ), )  ;
 IMPR_TABLE( TABLE = T3 )  ;
 
 T4 = POST_RELEVE_T ( ACTION=_F( INTITULE = 'CH1',
                                 OPERATION = 'MOYENNE_ARITH',
-                                GROUP_MA = ('GMACD',),
+                                GROUP_MA = ('GROUP_MA_GMACD',),
                                 MAILLE = ('BD',),
                                 CHAM_GD = CH1,         ), )  ;
 IMPR_TABLE( TABLE = T4 )  ;
@@ -340,7 +340,7 @@ T5 = POST_RELEVE_T ( ACTION=_F( INTITULE = 'DEPL',
                                 OPERATION = 'MOYENNE_ARITH',
                                 NOM_CHAM = 'DEPL',
                                 NOM_CMP = ('DX','DZ'),
-                                GROUP_NO = ('GNAB',),
+                                GROUP_NO = ('GROUP_NO_GNAB',),
                                 NOEUD = ('C','D',),
                                 RESULTAT = RESU1       ), )  ;
 IMPR_TABLE( TABLE = T5 )  ;

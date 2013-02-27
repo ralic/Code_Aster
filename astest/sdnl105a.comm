@@ -1,9 +1,9 @@
-# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
+# MODIF  DATE 26/02/2013   AUTEUR PELLET J.PELLET 
 # TITRE CHOC DE 3 POUTRES ENTRE ELLES : CALCUL DE REFERENCE
 # sdnl105a.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -45,22 +45,22 @@ MATERIO2=DEFI_MATERIAU(ELAS=_F(E=1.E15,
 #
 
 CHMAT=AFFE_MATERIAU(MAILLAGE=MAYA,
-                    AFFE=(_F(GROUP_MA='TOUT',
+                    AFFE=(_F(GROUP_MA='GROUP_MA_TOUT',
                              MATER=MATERIO1,),
-                          _F(GROUP_MA='RIGIDE',
+                          _F(GROUP_MA='GROUP_MA_RIGIDE',
                              MATER=MATERIO2,),),);
 
 #
 
 BARRE=AFFE_MODELE(MAILLAGE=MAYA,
-                  AFFE=_F(GROUP_MA='TOUT',
+                  AFFE=_F(GROUP_MA='GROUP_MA_TOUT',
                           PHENOMENE='MECANIQUE',
                           MODELISATION='POU_D_E',),);
 
 #
 
 CARA=AFFE_CARA_ELEM(MODELE=BARRE,
-                    POUTRE=_F(GROUP_MA='TOUT',
+                    POUTRE=_F(GROUP_MA='GROUP_MA_TOUT',
                               SECTION='CERCLE',
                               CARA=('R','EP',),
                               VALE=(0.1,0.01,),),);
@@ -68,12 +68,12 @@ CARA=AFFE_CARA_ELEM(MODELE=BARRE,
 #
 
 GUIDAGE=AFFE_CHAR_MECA(MODELE=BARRE,
-                       DDL_IMPO=(_F(GROUP_MA='TOUT',
+                       DDL_IMPO=(_F(GROUP_MA='GROUP_MA_TOUT',
                                     DX=0.,
                                     DZ=0.,
                                     DRX=0.,
                                     DRY=0.,),
-                                 _F(GROUP_NO='L1',
+                                 _F(GROUP_NO='GROUP_NO_L1',
                                     DY=0.,
                                     DRZ=0.,),),);
 
@@ -179,7 +179,7 @@ TRAN_GE1=DYNA_VIBRA( TYPE_CALCUL='TRAN',
                          EXCIT=_F(VECT_ASSE_GENE=F_PROJ,
                                   COEF_MULT=1000.,),
                          CHOC=_F(INTITULE='CHOC1_2',
-                                 GROUP_MA='GMC12',
+                                 GROUP_MA='GROUP_MA_GMC12',
                                  OBSTACLE=OBSTACLE,
                                  NORM_OBST=(1.,0.,0.,),
                                  DIST_1=0.0995,
@@ -204,7 +204,7 @@ TRAN_GE2=DYNA_VIBRA( TYPE_CALCUL='TRAN',
                                   COEF_MULT=1000.,),
                          CHOC=(_F(INTITULE='CHOC1',
                                   NOEUD_1='N8',
-                                  GROUP_NO_2='GROUP2',
+                                  GROUP_NO_2='GROUP_NO_GROUP2',
                                   OBSTACLE=OBSTACLE,
                                   NORM_OBST=(1.,0.,0.,),
                                   DIST_1=0.0995,
@@ -212,7 +212,7 @@ TRAN_GE2=DYNA_VIBRA( TYPE_CALCUL='TRAN',
                                   RIGI_NOR=1.E+8,),
                                _F(INTITULE='CHOC2',
                                   NOEUD_2='O8',
-                                  GROUP_NO_1='GROUP2',
+                                  GROUP_NO_1='GROUP_NO_GROUP2',
                                   OBSTACLE=OBSTACLE,
                                   NORM_OBST=(1.,0.,0.,),
                                   DIST_1=0.0995,

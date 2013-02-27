@@ -1,4 +1,4 @@
-# MODIF  DATE 05/02/2013   AUTEUR ALARCON A.ALARCON 
+# MODIF  DATE 26/02/2013   AUTEUR PELLET J.PELLET 
 # TITRE SYSTEME MASSES-RESSORTS LINEAIRE MULTI-SUPPORTE (TRANSLATION)
 # sdld103a.para = tps_job 90 mem_job 512Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -35,33 +35,33 @@ MAILLAGE=LIRE_MAILLAGE( )
 
 MAILLAGE=DEFI_GROUP(reuse=MAILLAGE,
                     MAILLAGE=MAILLAGE,
-                    CREA_GROUP_NO=_F( NOM='GN5',
+                    CREA_GROUP_NO=_F( NOM='GROUP_NO_GN5',
                                       NOEUD=('NO5',),),);
 
 MODELE=AFFE_MODELE(  MAILLAGE=MAILLAGE,AFFE=(
          _F(  PHENOMENE = 'MECANIQUE', MODELISATION = 'DIS_T',
-                GROUP_MA = 'RESSORT'),
+                GROUP_MA = 'GROUP_MA_RESSORT'),
               _F(  PHENOMENE = 'MECANIQUE', MODELISATION = 'DIS_T',
-                GROUP_NO = 'MASSES'))
+                GROUP_NO = 'GROUP_NO_MASSES'))
                     )
 
 #
 CARA_ELE=AFFE_CARA_ELEM(  MODELE=MODELE,DISCRET=(
                 _F(  CARA = 'K_T_D_L',  REPERE = 'GLOBAL',
-                          GROUP_MA = 'RESSORT',
+                          GROUP_MA = 'GROUP_MA_RESSORT',
                           VALE = (10000., 0., 10000., )),
                 _F(  CARA = 'M_T_L',  REPERE = 'GLOBAL',
-                          GROUP_MA = 'RESSORT',
+                          GROUP_MA = 'GROUP_MA_RESSORT',
                           VALE = (0., 0., 0., 0., 0., 0., 0., 0., 0.,
                           0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., )),
-                        _F(  CARA = 'M_T_D_N',  GROUP_NO = 'MASSES',  VALE = 10.))
+                        _F(  CARA = 'M_T_D_N',  GROUP_NO = 'GROUP_NO_MASSES',  VALE = 10.))
                          )
 
 #
 CON_LIM=AFFE_CHAR_MECA(  MODELE=MODELE,DDL_IMPO=(
 # ------------ LES DEPL_IMPO SONT DEFINIS DANS LE REPERE GLOBAL
-               _F(  GROUP_NO = 'ENCASTRE',  DX = 0.,  DY = 0.,  DZ = 0.),
-               _F(  GROUP_NO = 'MASSES',    DY = 0.,  DZ = 0.))
+               _F(  GROUP_NO = 'GROUP_NO_ENCASTRE',  DX = 0.,  DY = 0.,  DZ = 0.),
+               _F(  GROUP_NO = 'GROUP_NO_MASSES',    DY = 0.,  DZ = 0.))
                         )
 
 #
@@ -196,7 +196,7 @@ TRAN_PHY=DYNA_VIBRA(TYPE_CALCUL='TRAN',BASE_CALCUL='PHYS',
                            VITE = VITESSE1, DEPL = DEPLACE1),
                      _F( VECT_ASSE = MULT_X2,  ACCE = ACCELER2,
                            MULT_APPUI = 'OUI',
-                           DIRECTION = ( 1., 0., 0.,), GROUP_NO = 'GN5',
+                           DIRECTION = ( 1., 0., 0.,), GROUP_NO = 'GROUP_NO_GN5',
                            VITE = VITESSE2, DEPL = DEPLACE2),),
                      ARCHIVAGE=_F(  PAS_ARCH = 100, CHAM_EXCLU=('VITE','ACCE',),),
                      INCREMENT=_F(  LIST_INST=L_INST2,),

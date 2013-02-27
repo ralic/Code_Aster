@@ -1,9 +1,9 @@
-# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
+# MODIF  DATE 26/02/2013   AUTEUR PELLET J.PELLET 
 # TITRE MELANGE 3D-PLAQUE-POUTRE
 # sslx100a.para = tps_job 60 mem_job 256Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -27,10 +27,10 @@ MO=AFFE_MODELE(MAILLAGE=MA,
                AFFE=(_F(MAILLE='HE1',
                         PHENOMENE='MECANIQUE',
                         MODELISATION='3D',),
-                     _F(GROUP_MA='GRMA1',
+                     _F(GROUP_MA='GROUP_MA_GRMA1',
                         PHENOMENE='MECANIQUE',
                         MODELISATION='DKT',),
-                     _F(GROUP_MA='GRMA2',
+                     _F(GROUP_MA='GROUP_MA_GRMA2',
                         PHENOMENE='MECANIQUE',
                         MODELISATION='POU_D_E',),),);
 
@@ -43,15 +43,15 @@ CHMA=AFFE_MATERIAU(MAILLAGE=MA,
                            MATER=MAT,),);
 
 CARA=AFFE_CARA_ELEM(MODELE=MO,
-                    POUTRE=_F(GROUP_MA='GRMA2',
+                    POUTRE=_F(GROUP_MA='GROUP_MA_GRMA2',
                               SECTION='RECTANGLE',
                               CARA=('HZ','HY',),
                               VALE=(3.0,1.0,),),
-                    COQUE=_F(GROUP_MA='GRMA1',
+                    COQUE=_F(GROUP_MA='GROUP_MA_GRMA1',
                              EPAIS=1.0,),);
 
 CHME=AFFE_CHAR_MECA(MODELE=MO,
-                    DDL_IMPO=(_F(GROUP_NO='GRNO1',
+                    DDL_IMPO=(_F(GROUP_NO='GROUP_NO_GRNO1',
                                  DX=0.0,
                                  DY=0.0,
                                  DZ=0.0,),
@@ -87,14 +87,14 @@ CHME=AFFE_CHAR_MECA(MODELE=MO,
                                       COEF_MULT_2=-1.0,
                                       COEF_IMPO=0.0,),
                                    _F(NOEUD_1=('N5','N11','N17',),
-                                      GROUP_NO_2='GRNO3',
+                                      GROUP_NO_2='GROUP_NO_GRNO3',
                                       DDL_1='DX',
                                       COEF_MULT_1=1.0,
                                       DDL_2='DRZ',
                                       COEF_MULT_2=0.5,
                                       COEF_IMPO=0.0,),
                                    _F(NOEUD_1=('N3','N15','N10',),
-                                      GROUP_NO_2='GRNO3',
+                                      GROUP_NO_2='GROUP_NO_GRNO3',
                                       DDL_1='DX',
                                       COEF_MULT_1=1.0,
                                       DDL_2='DRZ',

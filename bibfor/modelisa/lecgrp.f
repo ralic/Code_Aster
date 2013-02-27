@@ -3,9 +3,9 @@
       IMPLICIT NONE
 C       ----------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 19/12/2012   AUTEUR PELLET J.PELLET 
+C MODIF MODELISA  DATE 26/02/2013   AUTEUR PELLET J.PELLET 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -46,9 +46,9 @@ C
         COMMON          /OPMAIL/        CMD
         CHARACTER*(*)   CV
 C-----------------------------------------------------------------------
-      INTEGER I ,ICL ,IER ,IFL ,IFM ,IFN ,ILEC 
-      INTEGER INOM ,IRTET ,IRTETI ,IUNIFI ,IV ,NBG ,NBM 
-      INTEGER NBTAV ,NUMTCL 
+      INTEGER I ,ICL ,IER ,IFL ,IFM ,IFN ,ILEC
+      INTEGER INOM ,IRTET ,IRTETI ,IUNIFI ,IV ,NBG ,NBM
+      INTEGER NBTAV ,NUMTCL
 C-----------------------------------------------------------------------
         IRTETI = 0
 C
@@ -78,7 +78,7 @@ C
 C -----    LECTURE NOM DU GROUPE SI IL N Y A PAS D'ENTETE
 C
            IF(NBG.GE.1)WRITE(IFM,*)'       LIRITM : ICL = ',ICL,
-     &     ' IV = ',IV,' RV = ',RV,' CV(1:8) = ',CV(1:8),
+     &     ' IV = ',IV,' RV = ',RV,' CV(1:24) = ',CV(1:24),
      &     ' DEBLIG =',DEBLIG
            CALL VERDBL(DEBLIG,CNL,IER,IRTET)
            IF ( IRTET.GT.0 ) GOTO (2), IRTET
@@ -103,7 +103,8 @@ C
  6      CONTINUE
         CALL LIRITM(IFL,ICL,IV,RV,CV,CNL,DEBLIG,1)
         IF(NBG.GE.1)WRITE(IFM,*)'       LIRITM : ICL = ',ICL,
-     &  ' IV = ',IV,' RV = ',RV,' CV(1:8) = ',CV(1:8),' DEBLIG =',DEBLIG
+     &  ' IV = ',IV,' RV = ',RV,' CV(1:24) = ',CV(1:24),
+     &  ' DEBLIG =',DEBLIG
 C
         IF(DEBLIG.EQ.1)CALL TESFIN(ICL,IV,CV,IRTET)
         IF ( IRTET.GT.0 ) GOTO (7,8), IRTET

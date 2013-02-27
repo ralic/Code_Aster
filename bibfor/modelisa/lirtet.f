@@ -2,9 +2,9 @@
       IMPLICIT NONE
 C       ----------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 19/12/2012   AUTEUR PELLET J.PELLET 
+C MODIF MODELISA  DATE 26/02/2013   AUTEUR PELLET J.PELLET 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -96,13 +96,14 @@ C -     IL Y A UNE ENTETE
           IF (ICL.EQ.3) THEN
 C -       L'ITEM LU EST UN IDENTIFICATEUR
              IF (CV(1:3).EQ.'NOM') THEN
-             CALL LIRITM(IFL,ICL,IV,RV,CV(1:8),CNL,DEBLIG,ILEC)
+             CALL LIRITM(IFL,ICL,IV,RV,CV(1:24),CNL,DEBLIG,ILEC)
                 IF (ICL.EQ.3) THEN
-                   IF (IV.GT.8) THEN
+                   IF (IV.GT.24) THEN
                    CVZ = CV
                    CALL U2MESK('A','MODELISA4_97',1,CVZ(1:IV))
                    ENDIF
-                LCV=MIN(IV,8)
+                LCV=MIN(IV,24)
+                CALL ASSERT(LEN(CV).GE.LCV)
                 NOM=CV(1:LCV)
                 ELSE
                 CALL U2MESS('F','MODELISA4_98')

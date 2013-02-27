@@ -1,9 +1,9 @@
-# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
+# MODIF  DATE 26/02/2013   AUTEUR PELLET J.PELLET 
 # TITRE IMPACT D'UNE POUTRE ARTICULEE SUR APPUI ELASTIQUE
 # sdnl32a.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -25,10 +25,10 @@ DEBUT( CODE=_F(  NOM = 'SDNL32A',NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
 POUTRE=LIRE_MAILLAGE( )
 
 POUTRE=DEFI_GROUP( reuse=POUTRE,   MAILLAGE=POUTRE,
-  CREA_GROUP_MA=_F(  NOM = 'TOUT', TOUT = 'OUI'))
+  CREA_GROUP_MA=_F(  NOM = 'GROUP_MA_TOUT', TOUT = 'OUI'))
 
 POUTRE=DEFI_GROUP( reuse=POUTRE,  MAILLAGE=POUTRE,
-                        CREA_GROUP_NO=_F(  NOM = 'GRNO_CH',
+                        CREA_GROUP_NO=_F(  NOM = 'GROUP_NO_GRNO_CH',
                                         NOEUD = 'NO11')   )
 
 MODELE=AFFE_MODELE(  MAILLAGE=POUTRE,
@@ -42,7 +42,7 @@ CHAMPMAT=AFFE_MATERIAU(  MAILLAGE=POUTRE,
 
 CHAMPCAR=AFFE_CARA_ELEM(  MODELE=MODELE,
                             POUTRE=_F(
-       GROUP_MA = 'TOUT',
+       GROUP_MA = 'GROUP_MA_TOUT',
  SECTION = 'RECTANGLE',
                                      CARA = 'H',   VALE = 0.014)     )
 
@@ -126,7 +126,7 @@ TRANGEN=DYNA_VIBRA( TYPE_CALCUL='TRAN',
                         INCREMENT=_F(  INST_INIT = 0.,  INST_FIN = 0.02,
                                          PAS = 1.E-5),
                         ARCHIVAGE=_F(   PAS_ARCH = 6),
-                        CHOC=_F(  GROUP_NO_1 = 'GRNO_CH',
+                        CHOC=_F(  GROUP_NO_1 = 'GROUP_NO_GRNO_CH',
                                     NOEUD_2 = 'NO11',
                                     OBSTACLE = PLAN,
                                     ORIG_OBST = ( 0.783,  0.1,  0., ),
@@ -243,7 +243,7 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=1,
                 ),
           )
 
-F1=RECU_FONCTION(  RESU_GENE=TRANGEN,   GROUP_NO_CHOC='GRNO_CH',
+F1=RECU_FONCTION(  RESU_GENE=TRANGEN,   GROUP_NO_CHOC='GROUP_NO_GRNO_CH',
                       LIST_PARA=LISTER,
                       PARA_X='INST',   PARA_Y='FN'         )
 
@@ -268,7 +268,7 @@ TRANGEN2=DYNA_VIBRA( TYPE_CALCUL='TRAN',
                                          PAS = 1.E-5),
                         ARCHIVAGE=_F(   PAS_ARCH = 6),
                         CHOC=_F(  NOEUD_1 = 'NO11',
-                                    GROUP_NO_2 = 'GRNO_CH',
+                                    GROUP_NO_2 = 'GROUP_NO_GRNO_CH',
                                     OBSTACLE = PLAN,
                                     ORIG_OBST = ( 0.783,  0.1,  0., ),
                                     NORM_OBST = ( 1.,     0.,   0., ),
@@ -278,7 +278,7 @@ TRANGEN2=DYNA_VIBRA( TYPE_CALCUL='TRAN',
                              )
 
 DYNATRA2=REST_GENE_PHYS(  RESU_GENE=TRANGEN2,   NOM_CHAM='DEPL',
-                              GROUP_NO='GRNO_CH',
+                              GROUP_NO='GROUP_NO_GRNO_CH',
                              LIST_INST=LISTER,     INTERPOL='LIN'  )
 
 TEST_RESU(RESU=(_F(NUME_ORDRE=1,

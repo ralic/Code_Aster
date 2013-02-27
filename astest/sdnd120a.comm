@@ -1,9 +1,9 @@
-# MODIF  DATE 16/10/2012   AUTEUR ALARCON A.ALARCON 
+# MODIF  DATE 26/02/2013   AUTEUR PELLET J.PELLET 
 # TITRE LACHER D'UNE MASSE AVEC DISPOSITIF ANTI SISMIQUE
 # sdnd120a.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -26,20 +26,20 @@ MAILLAGE=LIRE_MAILLAGE( )
 
 MAILLAGE=DEFI_GROUP(reuse=MAILLAGE,
                     MAILLAGE=MAILLAGE,
-                    CREA_GROUP_NO=_F( NOM='GN2',
+                    CREA_GROUP_NO=_F( NOM='GROUP_NO_GN2',
                                       NOEUD=('NO2',),),)
 
 MAILLAGE=DEFI_GROUP(reuse=MAILLAGE,
                     MAILLAGE=MAILLAGE,
-                    CREA_GROUP_NO=_F( NOM='GN12',
+                    CREA_GROUP_NO=_F( NOM='GROUP_NO_GN12',
                                       NOEUD=('NO12',),),)
 
 #
 MODELE=AFFE_MODELE(  MAILLAGE=MAILLAGE,AFFE=(
               _F(  PHENOMENE = 'MECANIQUE', MODELISATION = 'DIS_T',
-                     GROUP_MA = 'RESSORTS'),
+                     GROUP_MA = 'GROUP_MA_RESSORTS'),
                    _F(  PHENOMENE = 'MECANIQUE', MODELISATION = 'DIS_T',
-                     GROUP_NO = ( 'MASSES1', 'MASSES2',)))
+                     GROUP_NO = ( 'GROUP_NO_MASSES1', 'GROUP_NO_MASSES2',)))
                     )
 
 #
@@ -48,18 +48,18 @@ M=25.
 K=1.E+10
 
 CARA_ELE=AFFE_CARA_ELEM(  MODELE=MODELE,DISCRET=(
-      _F( GROUP_MA = 'RESSORTS',  CARA = 'K_T_D_L',  VALE = (K, K, K,)),
-      _F(  CARA = 'M_T_L',  GROUP_MA = 'RESSORTS',
+      _F( GROUP_MA = 'GROUP_MA_RESSORTS',  CARA = 'K_T_D_L',  VALE = (K, K, K,)),
+      _F(  CARA = 'M_T_L',  GROUP_MA = 'GROUP_MA_RESSORTS',
                      VALE = (0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,
                         0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,)),
-      _F( GROUP_NO = 'MASSES1',  CARA = 'M_T_D_N',  VALE = M),
-      _F( GROUP_NO = 'MASSES2',  CARA = 'M_T_D_N',  VALE = M))
+      _F( GROUP_NO = 'GROUP_NO_MASSES1',  CARA = 'M_T_D_N',  VALE = M),
+      _F( GROUP_NO = 'GROUP_NO_MASSES2',  CARA = 'M_T_D_N',  VALE = M))
                          )
 
 #
 CON_LIM=AFFE_CHAR_MECA(  MODELE=MODELE,DDL_IMPO=(
-              _F(  GROUP_NO = 'ENCBICHO',    DX = 0.,  DY = 0.,  DZ = 0.),
-              _F(  GROUP_NO = ( 'MASSES1', 'MASSES2',), DY = 0.,  DZ = 0.))
+              _F(  GROUP_NO = 'GROUP_NO_ENCBICHO',    DX = 0.,  DY = 0.,  DZ = 0.),
+              _F(  GROUP_NO = ( 'GROUP_NO_MASSES1', 'GROUP_NO_MASSES2',), DY = 0.,  DZ = 0.))
                        )
 
 #
@@ -215,8 +215,8 @@ TRAN_GE2=DYNA_VIBRA(TYPE_CALCUL='TRAN',BASE_CALCUL='GENE',
                        DIRECTION = ( 1., 0., 0.,), NOEUD = 'NO11',
                        VITE = VITESSE2,  DEPL = DEPLACE2)),
                     ARCHIVAGE=_F(  PAS_ARCH = 80),
-                    ANTI_SISM=_F(  GROUP_NO_1 = 'GN2',
-                            GROUP_NO_2 = 'GN12',
+                    ANTI_SISM=_F(  GROUP_NO_1 = 'GROUP_NO_GN2',
+                            GROUP_NO_2 = 'GROUP_NO_GN12',
                             RIGI_K1 = 6.E+06,
                             RIGI_K2 = 0.53E+06,
                             SEUIL_FX = 1200.,

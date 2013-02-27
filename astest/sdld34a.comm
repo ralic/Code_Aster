@@ -1,9 +1,9 @@
-# MODIF  DATE 13/11/2012   AUTEUR BRIE N.BRIE 
+# MODIF  DATE 26/02/2013   AUTEUR PELLET J.PELLET 
 # TITRE LACHER D'UN SIMPLE MASSE-RESSORT
 # sdld34a.para = tps_job 60 mem_job 256Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -43,7 +43,7 @@ ainit = (-(k) / m);
 MAIL=LIRE_MAILLAGE();
 
 MODELE=AFFE_MODELE(MAILLAGE=MAIL,
-                   AFFE=_F(GROUP_MA='N',
+                   AFFE=_F(GROUP_MA='GROUP_MA_N',
                            PHENOMENE='MECANIQUE',
                            MODELISATION='DIS_T',),);
 
@@ -52,21 +52,21 @@ ACIER=DEFI_MATERIAU(ELAS=_F(E=2.0E11,
                             RHO=7800.0,),);
 
 CHMAT=AFFE_MATERIAU(MAILLAGE=MAIL,
-                    AFFE=_F(GROUP_MA='N',
+                    AFFE=_F(GROUP_MA='GROUP_MA_N',
                             MATER=ACIER,),);
 
 CARELEM=AFFE_CARA_ELEM(MODELE=MODELE,
                        DISCRET=(_F(CARA='K_T_D_N',
-                                   GROUP_MA='N',
+                                   GROUP_MA='GROUP_MA_N',
                                    VALE=(k,0.,0.,),),
                                 _F(CARA='M_T_D_N',
-                                   GROUP_MA='N',
+                                   GROUP_MA='GROUP_MA_N',
                                    VALE=m,),),);
 
 # CONDITIONS AUX LIMITES
 
 BLOQUAGE=AFFE_CHAR_MECA(MODELE=MODELE,
-                        DDL_IMPO=_F(GROUP_NO='N',
+                        DDL_IMPO=_F(GROUP_NO='GROUP_NO_N',
                                     DY=0.,
                                     DZ=0.,),);
 
@@ -92,7 +92,7 @@ DEPLINI=CREA_CHAMP(TYPE_CHAM='NOEU_DEPL_R',
                    NUME_DDL=NUMEDDL,
                    OPERATION='AFFE',
                    MODELE=MODELE,
-                   AFFE=_F(GROUP_NO='N',
+                   AFFE=_F(GROUP_NO='GROUP_NO_N',
                            NOM_CMP='DX',
                            VALE=dinit,),);
 
@@ -110,7 +110,7 @@ TRANSI=DYNA_VIBRA(TYPE_CALCUL='TRAN',BASE_CALCUL='PHYS',
 DX_DIS2=RECU_FONCTION(RESULTAT=TRANSI,
                       NOM_CHAM='DEPL',
                       NOM_CMP='DX',
-                      GROUP_NO='N',);
+                      GROUP_NO='GROUP_NO_N',);
 
 TRANSIV=DYNA_VIBRA(TYPE_CALCUL='TRAN',BASE_CALCUL='PHYS',
                       MODELE=MODELE,
@@ -131,7 +131,7 @@ TRANSIV=DYNA_VIBRA(TYPE_CALCUL='TRAN',BASE_CALCUL='PHYS',
 VX_DIS2=RECU_FONCTION(RESULTAT=TRANSIV,
                       NOM_CHAM='VITE',
                       NOM_CMP='DX',
-                      GROUP_NO='N',);
+                      GROUP_NO='GROUP_NO_N',);
 
 TRANSX=DYNA_VIBRA(TYPE_CALCUL='TRAN',BASE_CALCUL='PHYS',
                       MODELE=MODELE,
@@ -147,7 +147,7 @@ TRANSX=DYNA_VIBRA(TYPE_CALCUL='TRAN',BASE_CALCUL='PHYS',
 DXXDIS2=RECU_FONCTION(RESULTAT=TRANSX,
                       NOM_CHAM='DEPL',
                       NOM_CMP='DX',
-                      GROUP_NO='N',);
+                      GROUP_NO='GROUP_NO_N',);
 
 MODES=MODE_ITER_SIMULT(MATR_RIGI=RIGIDITE,
                        MATR_MASS=MASSE,
@@ -202,7 +202,7 @@ TRANSMO=DYNA_VIBRA(TYPE_CALCUL='TRAN',BASE_CALCUL='GENE',
 DXGEDIS2=RECU_FONCTION(RESU_GENE=TRANSMO,
                        NOM_CHAM='DEPL',
                        NOM_CMP='DX',
-                       GROUP_NO='N',);
+                       GROUP_NO='GROUP_NO_N',);
 
 DXGEMO=RECU_FONCTION(RESU_GENE=TRANSMO,
                      NOM_CHAM='DEPL',
@@ -223,11 +223,11 @@ IMPR_GENE(GENE=_F(RESU_GENE=TRANSMOV,
                   NOM_CHAM='VITE',
                   NUME_CMP_GENE=1,
                   TOUT_INST=('OUI'),),);
-                  
+
 VXGEDIS2=RECU_FONCTION(RESU_GENE=TRANSMOV,
                        NOM_CHAM='VITE',
                        NOM_CMP='DX',
-                       GROUP_NO='N',);
+                       GROUP_NO='GROUP_NO_N',);
 
 
 TEST_FONCTION(VALEUR=(_F(VALE_CALC=0.999999866513,

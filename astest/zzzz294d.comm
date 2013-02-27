@@ -1,9 +1,9 @@
-# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
+# MODIF  DATE 26/02/2013   AUTEUR PELLET J.PELLET 
 # TITRE VALIDATION DU CALCUL DES COORDONNEES DES SOUS POINTS D'INTEGRATION POUR LA MODELISATION GRILLE_EXCENTRE
 # zzzz294d.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -25,18 +25,18 @@ DEBUT(CODE=_F(NOM='zzzz294d',NIV_PUB_WEB='INTERNET'),IGNORE_ALARM='MODELISA4_8',
 MA=LIRE_MAILLAGE(UNITE=20);
 
 MO=AFFE_MODELE( MAILLAGE=MA,
-                AFFE=(    _F(GROUP_MA='PLA', PHENOMENE='MECANIQUE', MODELISATION='DKT',),
-                        _F(GROUP_MA='GRI', PHENOMENE='MECANIQUE', MODELISATION='GRILLE_EXCENTRE',))
+                AFFE=(    _F(GROUP_MA='GROUP_MA_PLA', PHENOMENE='MECANIQUE', MODELISATION='DKT',),
+                        _F(GROUP_MA='GROUP_MA_GRI', PHENOMENE='MECANIQUE', MODELISATION='GRILLE_EXCENTRE',))
                         );
 
 BETON=DEFI_MATERIAU(ELAS=_F(E=3.7272000000E10, NU=0.0,  RHO=2400.0,),)
 
 PLAQUE=AFFE_CARA_ELEM(  MODELE=MO,
                         INFO=1,
-                        COQUE  =_F( GROUP_MA=('PLA'),
+                        COQUE  =_F( GROUP_MA=('GROUP_MA_PLA'),
                                     EPAIS = 0.05,
                                     ),
-                        GRILLE = _F( GROUP_MA=('GRI'),
+                        GRILLE = _F( GROUP_MA=('GROUP_MA_GRI'),
                                     SECTION = 0.01,
                                     EXCENTREMENT = 0.05,
                                     ANGL_REP = (10,10),
@@ -49,10 +49,10 @@ CHMAT=AFFE_MATERIAU(MAILLAGE=MA,
                     );
 
 BLOCAGE=AFFE_CHAR_MECA( MODELE=MO,
-                        DDL_IMPO=(_F(GROUP_NO='ENC', DX=0.0, DY=0.0, DZ=0.0, DRX=0.0, DRY=0.0, DRZ=0.0,),
+                        DDL_IMPO=(_F(GROUP_NO='GROUP_NO_ENC', DX=0.0, DY=0.0, DZ=0.0, DRX=0.0, DRY=0.0, DRZ=0.0,),
                                  ),);
 CHARGE=AFFE_CHAR_MECA(  MODELE=MO,
-                        FORCE_NODALE=(_F(GROUP_NO='CHA',FX = 0,FY = 0,FZ = -100.)
+                        FORCE_NODALE=(_F(GROUP_NO='GROUP_NO_CHA',FX = 0,FY = 0,FZ = -100.)
                                  ),);
 
 U=MECA_STATIQUE(MODELE=MO,
@@ -61,7 +61,7 @@ U=MECA_STATIQUE(MODELE=MO,
                    EXCIT=(_F(CHARGE=BLOCAGE,),
                           _F(CHARGE=CHARGE,),),);
 
-TB=CREA_TABLE(RESU=_F(RESULTAT=U,GROUP_MA='GRI',NOM_CHAM='SIEF_ELGA',TOUT_CMP='OUI',NUME_ORDRE = 1))
+TB=CREA_TABLE(RESU=_F(RESULTAT=U,GROUP_MA='GROUP_MA_GRI',NOM_CHAM='SIEF_ELGA',TOUT_CMP='OUI',NUME_ORDRE = 1))
 IMPR_TABLE(TABLE=TB)
 
 TEST_TABLE(REFERENCE='ANALYTIQUE',

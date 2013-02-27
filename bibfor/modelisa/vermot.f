@@ -2,9 +2,9 @@
       IMPLICIT NONE
 C       ----------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
+C MODIF MODELISA  DATE 26/02/2013   AUTEUR PELLET J.PELLET 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -39,7 +39,7 @@ C       ----------------------------------------------------------------
         COMMON          /OPMAIL/        CMD
 C
 C-----------------------------------------------------------------------
-      INTEGER IRTETI ,JV 
+      INTEGER IRTETI ,JV
 C-----------------------------------------------------------------------
         IRTETI = 0
         IF(ICL.NE.3)THEN
@@ -54,8 +54,8 @@ C-----------------------------------------------------------------------
         GOTO 9999
         ENDIF
 C
-        IF(IV.GT.8)THEN
-        CALL U2MESK('E','MODELISA7_82',1,CNL)
+        IF(IV.GT.24)THEN
+        CALL U2MESK('F','MODELISA7_82',1,CNL)
         IER = 1
         IRTETI = 1
         GOTO 9999

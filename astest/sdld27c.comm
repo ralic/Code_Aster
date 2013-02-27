@@ -1,9 +1,9 @@
-# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
+# MODIF  DATE 26/02/2013   AUTEUR PELLET J.PELLET 
 # TITRE SYSTEME MASSE-RESSORT AVEC AMORTISSEUR VISQUEUX NONPROPORTIONNEL
 # sdld27c.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -35,7 +35,7 @@ MA=LIRE_MAILLAGE( )
 
 MO=AFFE_MODELE(  MAILLAGE=MA,AFFE=(
        _F(  TOUT = 'OUI',    PHENOMENE = 'MECANIQUE',  MODELISATION = 'DIS_T'),
-            _F(  GROUP_NO = 'P',   MODELISATION = 'DIS_T',
+            _F(  GROUP_NO = 'GROUP_NO_P',   MODELISATION = 'DIS_T',
             PHENOMENE = 'MECANIQUE')) )
 
 CH=AFFE_CHAR_MECA(  MODELE=MO,
@@ -52,26 +52,26 @@ CH=AFFE_CHAR_MECA(  MODELE=MO,
                    )
 
 CARELEM=AFFE_CARA_ELEM(   MODELE=MO,
-       ORIENTATION=_F(  GROUP_NO = 'P',     CARA = 'ANGL_NAUT',
+       ORIENTATION=_F(  GROUP_NO = 'GROUP_NO_P',     CARA = 'ANGL_NAUT',
                                      VALE = ( 53.130102,  0.,   0.,  )),DISCRET=(
 
-          _F(  CARA = 'K_T_L',   REPERE = 'LOCAL',      GROUP_MA = 'GRMA',
+          _F(  CARA = 'K_T_L',   REPERE = 'LOCAL',      GROUP_MA = 'GROUP_MA_GRMA',
                            VALE = ( 1.E5, 0.,  0.,   0.,   0.,   0.,
                                 -1.E5, 0.,   0.,   1.E5, 0.,
                                  0.,   0.,   0.,   0.,   0.,
                                  0.,   0.,   0.,   0.,   0.,     )),
-          _F(  CARA = 'M_T_L',   REPERE = 'LOCAL',      GROUP_MA = 'GRMA',
+          _F(  CARA = 'M_T_L',   REPERE = 'LOCAL',      GROUP_MA = 'GROUP_MA_GRMA',
                            VALE = ( 0., 0.,  0.,   0.,   0.,   0.,
                                  0., 0.,   0.,   0., 0.,
                                  0.,   0.,   0.,   0.,   0.,
                                  0.,   0.,   0.,   0.,   0.,     )),
-                                 
+
           _F(  CARA = 'K_T_N',   REPERE = 'LOCAL',      NOEUD = ( 'P1',  'P8', ),
                            VALE = ( 1.E+5, 0.,  0.,  0.,   0.,   0.,  )),
           _F(  CARA = 'M_T_N',   REPERE = 'LOCAL',      NOEUD = ( 'P1',  'P8', ),
                            VALE = ( 0. , 0.,  0.,  0.,   0.,   0.,  )),
-                           
-          _F(  CARA = 'A_T_L',   REPERE = 'LOCAL',      GROUP_MA = 'GRMA',
+
+          _F(  CARA = 'A_T_L',   REPERE = 'LOCAL',      GROUP_MA = 'GROUP_MA_GRMA',
                            VALE = ( 50.,  0.,  0.,   0.,   0.,   0.,
                                 -50.,  0.,   0.,   50.,  0.,
                                  0.,   0.,   0.,   0.,   0.,
@@ -80,7 +80,7 @@ CARELEM=AFFE_CARA_ELEM(   MODELE=MO,
                            VALE = ( 250.,  0.,  0.,  0.,   0.,   0.,  )),
           _F(  CARA = 'A_T_N',   REPERE = 'LOCAL',      NOEUD = 'P8',
                            VALE = ( 25.,  0.,  0.,   0.,   0.,   0.,  )),
-          _F(  CARA = 'M_T_N',   REPERE = 'GLOBAL',     GROUP_NO = 'P',
+          _F(  CARA = 'M_T_N',   REPERE = 'GLOBAL',     GROUP_NO = 'GROUP_NO_P',
                            VALE = ( 10.,  0.,  10.,  0.,  0.,  10., ))) )
 
 # --------------------------------------------------------------------

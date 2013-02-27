@@ -1,13 +1,13 @@
-# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
+# MODIF  DATE 26/02/2013   AUTEUR PELLET J.PELLET 
 # TITRE LIAISON DE TYPE RBE3 ENTRE UN CUBE ET UN DISCRET
 # sslv157a.para = tps_job 60 mem_job 256Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
-# (AT YOUR OPTION) ANY LATER VERSION.                                           
+# (AT YOUR OPTION) ANY LATER VERSION.
 #
 # THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
 # WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
@@ -26,49 +26,49 @@ MAIL=LIRE_MAILLAGE(FORMAT='ASTER',VERI_MAIL=_F(VERIF='OUI',),)
 
 MODMECA=AFFE_MODELE(MAILLAGE=MAIL,
                     AFFE=(
-             _F(GROUP_MA='GMA00001',PHENOMENE='MECANIQUE',MODELISATION='3D',), # MASSIF
-             _F(GROUP_MA='GMA00003',PHENOMENE='MECANIQUE',MODELISATION='DIS_TR',), # DISCRET
+             _F(GROUP_MA='GROUP_MA_GMA00001',PHENOMENE='MECANIQUE',MODELISATION='3D',), # MASSIF
+             _F(GROUP_MA='GROUP_MA_GMA00003',PHENOMENE='MECANIQUE',MODELISATION='DIS_TR',), # DISCRET
                   ),)
 
 MAT00001=DEFI_MATERIAU(ELAS=_F(E=210000.0, NU=0.3,),)
-              
+
 CHMAT=AFFE_MATERIAU(MAILLAGE=MAIL,
                     AFFE=(
-                          _F(GROUP_MA='GMA00002', MATER=MAT00001,),
+                          _F(GROUP_MA='GROUP_MA_GMA00002', MATER=MAT00001,),
                          )
                     )
 
 CINE1=AFFE_CHAR_CINE(MODELE=MODMECA,
                         MECA_IMPO=(
-                                 _F(GROUP_NO='GNO00001',DZ=0.0,),  
-                                 _F(GROUP_NO='GNO00002',DX=0.0,DY=0.0,DZ=0.0,),  
-                                 _F(GROUP_NO='GNO00003',DX=0.0,DZ=0.0,),  
+                                 _F(GROUP_NO='GROUP_NO_GNO00001',DZ=0.0,),
+                                 _F(GROUP_NO='GROUP_NO_GNO00002',DX=0.0,DY=0.0,DZ=0.0,),
+                                 _F(GROUP_NO='GROUP_NO_GNO00003',DX=0.0,DZ=0.0,),
         ),)
 
 
 BRBE3=AFFE_CHAR_MECA(MODELE=MODMECA,
         LIAISON_RBE3=(
                 _F(
-                      GROUP_NO_MAIT='GNO00006',
+                      GROUP_NO_MAIT='GROUP_NO_GNO00006',
                       DDL_MAIT=('DX','DY','DZ','DRX','DRY','DRZ'),
-                      GROUP_NO_ESCL=('GNO00005',),
+                      GROUP_NO_ESCL=('GROUP_NO_GNO00005',),
                       DDL_ESCL=('DX-DY-DZ',),
                       COEF_ESCL=(1.,), # NUME_LAGR='APRES'
                 ),
-        ), 
+        ),
 )
 
 
 CHARGE1=AFFE_CHAR_MECA(MODELE=MODMECA,
         FORCE_NODALE=(
-                  _F(GROUP_NO='GNO00004',FX=-0.123456701636,FY=-0.246913403273,FZ=-0.370370090008,),),
-                       )                      
-                       
+                  _F(GROUP_NO='GROUP_NO_GNO00004',FX=-0.123456701636,FY=-0.246913403273,FZ=-0.370370090008,),),
+                       )
+
 CAEL=AFFE_CARA_ELEM(MODELE=MODMECA,
         DISCRET=(
-                _F(CARA='K_TR_D_N', GROUP_MA='GMA00003',VALE=(0,0,0,0,0,0),),
-              )              
-                  )                       
+                _F(CARA='K_TR_D_N', GROUP_MA='GROUP_MA_GMA00003',VALE=(0,0,0,0,0,0),),
+              )
+                  )
 
 
 RES_RBE3=MECA_STATIQUE(MODELE=MODMECA,
