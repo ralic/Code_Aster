@@ -1,0 +1,48 @@
+========================================================================
+Version 11.3.11 du : 27/02/2013
+========================================================================
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR lefebvre     LEFEBVRE Jean-Pierre   DATE 02/27/2013 - 09:45:36
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 020465 DU 2013-02-27 08:46:10
+TYPE express concernant Code_Aster (VERSION 11.3)
+TITRE
+    La routine MPICMW ne se compile pas en version MPI
+FONCTIONNALITE
+   La routine MPICMW restituée en version NEW11.3.10 ne pas être compilée en version MPI. La
+   variable IBID n'a pas été déclarée. On livre une version corrigée de MPICMW pour pouvoir
+   reconstruire une version MPI.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+    Passage du compilateur en version MPI
+NB_JOURS_TRAV  : 0.5
+--------------------------------------------------------------------------------
+
+
+
+========================================================================
+=== Recapitulation des operations demandees pour toutes les restitutions
+========================================================================
+
+
+    TYPE Action    unite                      user      Auteur         nblg  ajout suppr.
+
+FORTRAN90 MODIF utilitai/mpicmw              lefebvre J-P.LEFEBVRE        81      2      2
+
+
+        nb unites  nb lignes  ajouts  suppr.  difference
+ AJOUT :    0           0         0                +0
+ MODIF :    1          81         2       2        +0
+ SUPPR :    0           0                 0        +0
+ DEPLA :    0           0 
+         ----      ------     ------  ------   ------
+ TOTAL :    1          81         2       2        +0 
