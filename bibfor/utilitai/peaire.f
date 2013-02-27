@@ -7,9 +7,9 @@
       CHARACTER*(*)     RESU, MODELE
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 18/12/2012   AUTEUR SELLENET N.SELLENET 
+C MODIF UTILITAI  DATE 25/02/2013   AUTEUR SELLENET N.SELLENET 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -40,7 +40,7 @@ C
       INTEGER      IARG
 C     ------------------------------------------------------------------
       DATA NOPARR / 'GROUP_MA' , 'AIRE' , 'LONGUEUR' /
-      DATA TYPARR / 'K8' , 'R' , 'R' /
+      DATA TYPARR / 'K24' , 'R' , 'R' /
 C     ------------------------------------------------------------------
 C
       CALL JEMARQ ( )
@@ -62,22 +62,22 @@ C
      &                                IOCC,IARG,0,K8B,NGB)
          IF ( NGB .NE. 0 ) THEN
             NGB = -NGB
-            CALL WKVECT ( '&&PEAIRE.GROUP_NO', 'V V K8', NGB, JGB )
+            CALL WKVECT ( '&&PEAIRE.GROUP_NO', 'V V K24', NGB, JGB )
             CALL GETVEM(NOMA,'GROUP_MA','AIRE_INTERNE','GROUP_MA_BORD',
-     &                                   IOCC,IARG,NGB,ZK8(JGB),NG)
+     &                                   IOCC,IARG,NGB,ZK24(JGB),NG)
             DO 40 IGB = 1 , NGB
-               CALL JEEXIN ( JEXNOM(GRPMA,ZK8(JGB+IGB-1)), IRET )
+               CALL JEEXIN ( JEXNOM(GRPMA,ZK24(JGB+IGB-1)), IRET )
                IF ( IRET .EQ. 0 ) THEN
-                  CALL U2MESK('A','UTILITAI3_46',1,ZK8(JGB+IGB-1))
+                  CALL U2MESK('A','UTILITAI3_46',1,ZK24(JGB+IGB-1))
                   GOTO 40
                ENDIF
-               CALL JELIRA ( JEXNOM(GRPMA,ZK8(JGB+IGB-1)),
+               CALL JELIRA ( JEXNOM(GRPMA,ZK24(JGB+IGB-1)),
      &                                             'LONMAX', NBB, K8B )
                IF ( NBB .EQ. 0 ) THEN
-                  CALL U2MESK('A','UTILITAI3_47',1,ZK8(JGB+IGB-1))
+                  CALL U2MESK('A','UTILITAI3_47',1,ZK24(JGB+IGB-1))
                   GOTO 40
                ENDIF
-               CALL JEVEUO(JEXNOM(GRPMA,ZK8(JGB+IGB-1)),'L',IADGMA)
+               CALL JEVEUO(JEXNOM(GRPMA,ZK24(JGB+IGB-1)),'L',IADGMA)
 C
 C              BORD DU TROU : CALCUL DE L'AIRE
 C
@@ -85,7 +85,7 @@ C
                VALPAR(1) = AIRE
                VALPAR(2) = LONG
                CALL TBAJLI ( RESU, NBPARR, NOPARR, IBID,
-     &                             VALPAR, C16B, ZK8(JGB+IGB-1),0 )
+     &                             VALPAR, C16B, ZK24(JGB+IGB-1),0 )
  40         CONTINUE
             CALL JEDETR ( '&&PEAIRE.GROUP_NO' )
          ENDIF

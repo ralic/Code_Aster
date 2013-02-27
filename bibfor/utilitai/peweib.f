@@ -8,7 +8,7 @@
       CHARACTER*(*) RESU,MODELE,MATE,CARA,NOMCMD,LCHAR(*)
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 12/02/2013   AUTEUR PELLET J.PELLET 
+C MODIF UTILITAI  DATE 25/02/2013   AUTEUR SELLENET N.SELLENET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -51,17 +51,17 @@ C     ------------------------------------------------------------------
      &             NOPARR(NBPARR),NOPARD(NBPARD),MOTCL1,MOTCL2,MOTCL3
       CHARACTER*19 CHELEM,KNUM,KINS,TABTYP(3),CHVARC
       CHARACTER*24 CHGEOM,CHCARA(18),CHHARM
-      CHARACTER*24 VALK(2)
+      CHARACTER*24 VALK(2),NOMMA2
       CHARACTER*24 MLGGMA,MLGNMA,LIGREL,LCHIN(9),COMPOR
       CHARACTER*24 LCHOUT(2),CONTG,DEFOG,VARIG,DEPLA,SSOUP
-      CHARACTER*24 KVALRC,KVALRK
+      CHARACTER*24 KVALRC,KVALRK,VALE2(2)
       LOGICAL OPTI
       COMPLEX*16 C16B
       INTEGER      IARG
 
       DATA NOPARR/'NUME_ORDRE','INST','LIEU','ENTITE','SIGMA_WEIBULL',
      &     'PROBA_WEIBULL','SIGMA_WEIBULL**M'/
-      DATA TYPARR/'I','R','K8','K8','R','R','R'/
+      DATA TYPARR/'I','R','K24','K8','R','R','R'/
       DATA NOPARD/'LIEU','ENTITE','SIGMA_WEIBULL','PROBA_WEIBULL',
      &     'SIGMA_WEIBULL**M'/
       DATA TYPARD/'K8','K8','R','R','R'/
@@ -320,24 +320,24 @@ C        RECOPIE DE SIGIS DANS SIGIE
 
           IF (NG.NE.0) THEN
             NBGRMA = -NG
-            CALL WKVECT('&&PEWEIB_GROUPM','V V K8',NBGRMA,JGR)
+            CALL WKVECT('&&PEWEIB_GROUPM','V V K24',NBGRMA,JGR)
             CALL GETVEM(NOMA,'GROUP_MA',MOTCL3,'GROUP_MA',INUM,IARG,
      &                  NBGRMA,
-     &                  ZK8(JGR),NG)
-            VALEK(2) = 'GROUP_MA'
+     &                  ZK24(JGR),NG)
+            VALE2(2) = 'GROUP_MA'
             DO 50 IG = 1,NBGRMA
-              NOMMAI = ZK8(JGR+IG-1)
-              CALL JEEXIN(JEXNOM(MLGGMA,NOMMAI),IRET)
+              NOMMA2 = ZK24(JGR+IG-1)
+              CALL JEEXIN(JEXNOM(MLGGMA,NOMMA2),IRET)
               IF (IRET.EQ.0) THEN
-                CALL U2MESK('A','UTILITAI3_46',1,NOMMAI)
+                CALL U2MESK('A','UTILITAI3_46',1,NOMMA2)
                 GO TO 50
               END IF
-              CALL JELIRA(JEXNOM(MLGGMA,NOMMAI),'LONUTI',NBMA,K8B)
+              CALL JELIRA(JEXNOM(MLGGMA,NOMMA2),'LONUTI',NBMA,K8B)
               IF (NBMA.EQ.0) THEN
-                CALL U2MESK('A','UTILITAI3_47',1,NOMMAI)
+                CALL U2MESK('A','UTILITAI3_47',1,NOMMA2)
                 GO TO 50
               END IF
-              CALL JEVEUO(JEXNOM(MLGGMA,NOMMAI),'L',JAD)
+              CALL JEVEUO(JEXNOM(MLGGMA,NOMMA2),'L',JAD)
               CALL MESOMM(CHELEM,MXVALE,IBID,ZR(LVALE),C16B,NBMA,
      &                    ZI(JAD))
               SIGMAW = COESYM*ZR(LVALE)* (SREF**MREF)
@@ -346,15 +346,15 @@ C        RECOPIE DE SIGIS DANS SIGIE
               RTVAL(3) = SIGMAW
               RTVAL(2) = PROBAW
               RTVAL(1) = SIGMAW** (1.0D0/MREF)
-              VALEK(1) = NOMMAI
+              VALE2(1) = NOMMA2
               IF (NR.NE.0) THEN
                 VALER(2) = RTVAL(1)
                 VALER(3) = RTVAL(2)
                 VALER(4) = RTVAL(3)
-                CALL TBAJLI(RESU,NBPARR,NOPARR,NUMORD,VALER,C16B,VALEK,
+                CALL TBAJLI(RESU,NBPARR,NOPARR,NUMORD,VALER,C16B,VALE2,
      &                      0)
               ELSE
-                CALL TBAJLI(RESU,NBPARD,NOPARD,NUMORD,RTVAL,C16B,VALEK,
+                CALL TBAJLI(RESU,NBPARD,NOPARD,NUMORD,RTVAL,C16B,VALE2,
      &                      0)
               END IF
    50       CONTINUE

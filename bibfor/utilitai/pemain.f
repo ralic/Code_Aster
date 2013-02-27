@@ -8,7 +8,7 @@
       CHARACTER*(*) RESU,MODELE,MATE,CARA,LCHAR(*),DEFORM
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 12/02/2013   AUTEUR PELLET J.PELLET 
+C MODIF UTILITAI  DATE 25/02/2013   AUTEUR SELLENET N.SELLENET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -39,7 +39,7 @@ C     ------------------------------------------------------------------
      &            VALEK(2)
       CHARACTER*16 NOPARR(NBPAR2)
       CHARACTER*19 CHELEM,CHDEF
-      CHARACTER*24 LCHIN(16),LCHOUT(1),MLGGMA,MLGNMA
+      CHARACTER*24 LCHIN(16),LCHOUT(1),MLGGMA,MLGNMA,VALE2(2)
       CHARACTER*24 CHGEOM,CHGEO2,CHCARA(18),CHHARM,LIGREL
       COMPLEX*16 C16B
       INTEGER      IARG
@@ -48,8 +48,8 @@ C     ------------------------------------------------------------------
      &     'IX_G','IY_G','IZ_G','IXY_G','IXZ_G','IYZ_G','IX_PRIN_G',
      &     'IY_PRIN_G','IZ_PRIN_G','ALPHA','BETA','GAMMA','X_P','Y_P',
      &     'Z_P','IX_P','IY_P','IZ_P','IXY_P','IXZ_P','IYZ_P'/
-      DATA TYPARR/'K8','K8','R','R','R','R','R','R','R','R','R','R','R',
-     &     'R','R','R','R','R','R','R','R','R','R','R','R','R','R'/
+      DATA TYPARR/'K24','K8','R','R','R','R','R','R','R','R','R','R',
+     &     'R','R','R','R','R','R','R','R','R','R','R','R','R','R','R'/
 C     ------------------------------------------------------------------
 
       CALL JEMARQ()
@@ -157,26 +157,27 @@ C     --- CREATION DE LA TABLE ---
         END IF
         IF (NG.NE.0) THEN
           NBGRMA = -NG
-          CALL WKVECT('&&PEMAIN_GROUPM','V V K8',NBGRMA,JGR)
+          CALL WKVECT('&&PEMAIN_GROUPM','V V K24',NBGRMA,JGR)
           CALL GETVEM(NOMA,'GROUP_MA','MASS_INER','GROUP_MA',IOCC,IARG,
-     &                NBGRMA,ZK8(JGR),NG)
-          VALEK(2) = 'GROUP_MA'
+     &                NBGRMA,ZK24(JGR),NG)
+          VALE2(2) = 'GROUP_MA'
           DO 30 IG = 1,NBGRMA
-            CALL JEEXIN(JEXNOM(MLGGMA,ZK8(JGR+IG-1)),IRET)
+            CALL JEEXIN(JEXNOM(MLGGMA,ZK24(JGR+IG-1)),IRET)
             IF (IRET.EQ.0) THEN
-              CALL U2MESK('A','UTILITAI3_46',1,ZK8(JGR+IG-1))
+              CALL U2MESK('A','UTILITAI3_46',1,ZK24(JGR+IG-1))
               GO TO 30
             END IF
-            CALL JELIRA(JEXNOM(MLGGMA,ZK8(JGR+IG-1)),'LONUTI',NBMA,K8B)
+            CALL JELIRA(JEXNOM(MLGGMA,ZK24(JGR+IG-1)),'LONUTI',NBMA,K8B)
             IF (NBMA.EQ.0) THEN
-              CALL U2MESK('A','UTILITAI3_47',1,ZK8(JGR+IG-1))
+              CALL U2MESK('A','UTILITAI3_47',1,ZK24(JGR+IG-1))
               GO TO 30
             END IF
-            CALL JEVEUO(JEXNOM(NOMA//'.GROUPEMA',ZK8(JGR+IG-1)),'L',JAD)
+            CALL JEVEUO(JEXNOM(NOMA//'.GROUPEMA',
+     &                  ZK24(JGR+IG-1)),'L',JAD)
             CALL PEMICA(CHELEM,MXVALE,ZR(LVALE),NBMA,ZI(JAD),ORIG,IORIG,
      &                  ICAGE)
-            VALEK(1) = ZK8(JGR+IG-1)
-            CALL TBAJLI(RESU,NBPARR,NOPARR,IBID,ZR(LVALE),C16B,VALEK,0)
+            VALE2(1) = ZK24(JGR+IG-1)
+            CALL TBAJLI(RESU,NBPARR,NOPARR,IBID,ZR(LVALE),C16B,VALE2,0)
    30     CONTINUE
           CALL JEDETR('&&PEMAIN_GROUPM')
         END IF

@@ -6,7 +6,7 @@
       INTEGER NCHAR,NH,NBOCC
       CHARACTER*(*) RESU,MODELE,MATE,CARA,LCHAR(*)
 C     ------------------------------------------------------------------
-C MODIF UTILITAI  DATE 12/02/2013   AUTEUR PELLET J.PELLET 
+C MODIF UTILITAI  DATE 25/02/2013   AUTEUR SELLENET N.SELLENET 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -44,14 +44,14 @@ C     ------------------------------------------------------------------
       CHARACTER*19 CHELEM,KNUM,KINS,DEPLA,LIGREL,CHVARC,CHVREF
       CHARACTER*24 CHMASD,CHFREQ,CHAMGD,CHNUMC,TYPCHA,CHTIME,K24B,
      &             CHGEOM,CHCARA(18),CHTEMP,OPT,
-     &             MLGGMA,MLGNMA,CHHARM
+     &             MLGGMA,MLGNMA,CHHARM,NOMMA2,VALE2(2)
       LOGICAL EXITIM
       COMPLEX*16 C16B,CALPHA
       INTEGER      IARG
 
       DATA NOPARR/'NUME_ORDRE','FREQ','LIEU','ENTITE','TOTALE',
      &     'POUR_CENT'/
-      DATA TYPARR/'I','R','K8','K8','R','R'/
+      DATA TYPARR/'I','R','K24','K8','R','R'/
       DATA NOPARD/'LIEU','ENTITE','TOTALE','POUR_CENT'/
       DATA TYPARD/'K8','K8','R','R'/
       DATA TABTYP/'NOEU#DEPL_R','NOEU#TEMP_R','ELEM#ENER_R'/
@@ -283,33 +283,33 @@ C        --- ON CALCULE L'ENERGIE TOTALE ---
           END IF
           IF (NG.NE.0) THEN
             NBGRMA = -NG
-            CALL WKVECT('&&PEECIN_GROUPM','V V K8',NBGRMA,JGR)
+            CALL WKVECT('&&PEECIN_GROUPM','V V K24',NBGRMA,JGR)
             CALL GETVEM(NOMA,'GROUP_MA',OPTION(1:9),'GROUP_MA',IOCC,
      &                  IARG,
-     &                  NBGRMA,ZK8(JGR),NG)
-            VALEK(2) = 'GROUP_MA'
+     &                  NBGRMA,ZK24(JGR),NG)
+            VALE2(2) = 'GROUP_MA'
             DO 40 IG = 1,NBGRMA
-              NOMMAI = ZK8(JGR+IG-1)
-              CALL JEEXIN(JEXNOM(MLGGMA,NOMMAI),IRET)
+              NOMMA2 = ZK24(JGR+IG-1)
+              CALL JEEXIN(JEXNOM(MLGGMA,NOMMA2),IRET)
               IF (IRET.EQ.0) THEN
-                CALL U2MESK('A','UTILITAI3_46',1,NOMMAI)
+                CALL U2MESK('A','UTILITAI3_46',1,NOMMA2)
                 GO TO 40
               END IF
-              CALL JELIRA(JEXNOM(MLGGMA,NOMMAI),'LONUTI',NBMA,K8B)
+              CALL JELIRA(JEXNOM(MLGGMA,NOMMA2),'LONUTI',NBMA,K8B)
               IF (NBMA.EQ.0) THEN
-                CALL U2MESK('A','UTILITAI3_47',1,NOMMAI)
+                CALL U2MESK('A','UTILITAI3_47',1,NOMMA2)
                 GO TO 40
               END IF
-              CALL JEVEUO(JEXNOM(MLGGMA,NOMMAI),'L',JAD)
+              CALL JEVEUO(JEXNOM(MLGGMA,NOMMA2),'L',JAD)
               CALL PEENCA(CHELEM,NBPAEP,VARPEP,NBMA,ZI(JAD))
-              VALEK(1) = NOMMAI
+              VALE2(1) = NOMMA2
               IF (NR.NE.0) THEN
                 VALER(2) = VARPEP(1)
                 VALER(3) = VARPEP(2)
-                CALL TBAJLI(RESU,NBPARR,NOPARR,NUMORD,VALER,C16B,VALEK,
+                CALL TBAJLI(RESU,NBPARR,NOPARR,NUMORD,VALER,C16B,VALE2,
      &                      0)
               ELSE
-                CALL TBAJLI(RESU,NBPARD,NOPARD,NUMORD,VARPEP,C16B,VALEK,
+                CALL TBAJLI(RESU,NBPARD,NOPARD,NUMORD,VARPEP,C16B,VALE2,
      &                      0)
               END IF
    40       CONTINUE

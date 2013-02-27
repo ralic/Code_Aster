@@ -1,7 +1,7 @@
       SUBROUTINE ORILGM ( NOMA )
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -22,7 +22,7 @@ C ======================================================================
       CHARACTER*32 JEXNOM
       CHARACTER*8    NOMA
 C ======================================================================
-C MODIF MODELISA  DATE 19/12/2012   AUTEUR PELLET J.PELLET 
+C MODIF MODELISA  DATE 25/02/2013   AUTEUR SELLENET N.SELLENET 
 C
 C     ORILGM  --  LE BUT EST DE REORIENTER, SI C'EST NECESSAIRE,
 C                 LES MAILLES DE PEAU DE GROUPES DE MAILLES
@@ -45,10 +45,10 @@ C -----  VARIABLES LOCALES
       REAL*8        VECT(3), R8B, PREC, ARMIN
       COMPLEX*16    CBID
       LOGICAL       REORIE, ORIVEC
-      CHARACTER*8   K8B, GMAT
+      CHARACTER*8   K8B
       CHARACTER*16  MOFA2D, MOFA3D, MOFB3D, MOFC3D
       CHARACTER*19  NOMT19
-      CHARACTER*24   NOMNOE, GRMAMA, PARA, NNOEUD
+      CHARACTER*24   NOMNOE, GRMAMA, PARA, NNOEUD, GMAT
       CHARACTER*24 VALK
       INTEGER      IARG
 C
@@ -103,17 +103,17 @@ C
          CALL GETVEM ( NOMA, 'GROUP_MA', MOFA2D, 'GROUP_MA',
      &                                           IOCC,IARG, 0, K8B, NG )
          NG = -NG
-         CALL WKVECT ( '&&ORILGM.WORK', 'V V K8', NG, JJJ )
+         CALL WKVECT ( '&&ORILGM.WORK', 'V V K24', NG, JJJ )
          CALL GETVEM ( NOMA, 'GROUP_MA', MOFA2D, 'GROUP_MA',
-     &                                     IOCC,IARG, NG, ZK8(JJJ), NG )
+     &                 IOCC,IARG, NG, ZK24(JJJ), NG )
 C        PRESENCE DE GROUP_MA_SURF ?
 C        ---------------------------
          CALL GETVTX(MOFA2D,'GROUP_MA_SURF',IOCC,IARG, 0,K8B, NGS )
          IF(NGS.NE.0)THEN
            NGS = -NGS
-           CALL WKVECT ( '&&ORILGM.WORK2', 'V V K8', NGS, JGS )
+           CALL WKVECT ( '&&ORILGM.WORK2', 'V V K24', NGS, JGS )
            CALL GETVEM ( NOMA, 'GROUP_MA', MOFA2D, 'GROUP_MA_SURF',
-     &                                     IOCC,IARG, NGS, ZK8(JGS),
+     &                                     IOCC,IARG, NGS, ZK24(JGS),
      &                                      NGS )
            CALL DISMOI('F','NB_MA_MAILLA',NOMA,'MAILLAGE',NBMATO,
      &                 K8B,IRET)
@@ -122,7 +122,7 @@ C        ---------------------------
               ZI(JJV+IMA-1)=0
  101       CONTINUE
            DO 102 IGR = 1, NGS
-             GMAT = ZK8(JGS+IGR-1)
+             GMAT = ZK24(JGS+IGR-1)
              CALL JELIRA (JEXNOM(GRMAMA,GMAT), 'LONMAX', NBMAVI, K8B )
              CALL JEVEUO (JEXNOM(GRMAMA,GMAT), 'L', JMAVI )
              DO 103 IMA=1,NBMAVI
@@ -151,7 +151,7 @@ C          LISTE DES MAILLES 'VOLUMIQUES' (SANS DOUBLON) : ZI(JMASU)
          ENDIF
 C
          DO 110 IGR = 1, NG
-            GMAT = ZK8(JJJ+IGR-1)
+            GMAT = ZK24(JJJ+IGR-1)
             CALL JELIRA (JEXNOM(GRMAMA,GMAT), 'LONUTI', NBMAIL, K8B )
             CALL JEVEUO (JEXNOM(GRMAMA,GMAT), 'L', JGRO )
             WRITE(IFM,1000) GMAT, NBMAIL
@@ -173,18 +173,18 @@ C
          CALL GETVEM ( NOMA, 'GROUP_MA', MOFA3D, 'GROUP_MA',
      &                                           IOCC,IARG, 0, K8B, NG )
          NG = -NG
-         CALL WKVECT ( '&&ORILGM.WORK', 'V V K8', NG, JJJ )
+         CALL WKVECT ( '&&ORILGM.WORK', 'V V K24', NG, JJJ )
          CALL GETVEM ( NOMA, 'GROUP_MA', MOFA3D, 'GROUP_MA',
-     &                                     IOCC,IARG, NG, ZK8(JJJ), NG )
+     &                 IOCC,IARG, NG, ZK24(JJJ), NG )
 
 C        PRESENCE DE GROUP_MA_VOLU ?
 C        ---------------------------
          CALL GETVTX(MOFA3D,'GROUP_MA_VOLU',IOCC,IARG, 0,K8B, NGV )
          IF(NGV.NE.0)THEN
            NGV = -NGV
-           CALL WKVECT ( '&&ORILGM.WORK2', 'V V K8', NGV, JGV )
+           CALL WKVECT ( '&&ORILGM.WORK2', 'V V K24', NGV, JGV )
            CALL GETVEM ( NOMA, 'GROUP_MA', MOFA3D, 'GROUP_MA_VOLU',
-     &                                     IOCC,IARG, NGV, ZK8(JGV),
+     &                                     IOCC,IARG, NGV, ZK24(JGV),
      &                                      NGV )
            CALL DISMOI('F','NB_MA_MAILLA',NOMA,'MAILLAGE',NBMATO,
      &                 K8B,IRET)
@@ -193,7 +193,7 @@ C        ---------------------------
               ZI(JJV+IMA-1)=0
  201       CONTINUE
            DO 202 IGR = 1, NGV
-             GMAT = ZK8(JGV+IGR-1)
+             GMAT = ZK24(JGV+IGR-1)
              CALL JELIRA (JEXNOM(GRMAMA,GMAT), 'LONMAX', NBMAVI, K8B )
              CALL JEVEUO (JEXNOM(GRMAMA,GMAT), 'L', JMAVI )
              DO 203 IMA=1,NBMAVI
@@ -223,7 +223,7 @@ C          LISTE DES MAILLES 'VOLUMIQUES' (SANS DOUBLON) : ZI(JMAVO)
 C
 C
          DO 210 IGR = 1, NG
-            GMAT = ZK8(JJJ+IGR-1)
+            GMAT = ZK24(JJJ+IGR-1)
             CALL JELIRA (JEXNOM(GRMAMA,GMAT), 'LONUTI', NBMAIL, K8B )
             CALL JEVEUO (JEXNOM(GRMAMA,GMAT), 'L', JGRO )
             WRITE(IFM,1000) GMAT,  NBMAIL
@@ -268,12 +268,12 @@ C
          CALL GETVEM ( NOMA, 'GROUP_MA', MOFB3D, 'GROUP_MA',
      &                                           IOCC,IARG, 0, K8B, NG )
          NG = -NG
-         CALL WKVECT ( '&&ORILGM.WORK', 'V V K8', NG, JJJ )
+         CALL WKVECT ( '&&ORILGM.WORK', 'V V K24', NG, JJJ )
          CALL GETVEM ( NOMA, 'GROUP_MA', MOFB3D, 'GROUP_MA',
-     &                                     IOCC,IARG, NG, ZK8(JJJ), NG )
+     &                 IOCC,IARG, NG, ZK24(JJJ), NG )
          IF ( ORIVEC ) THEN
             DO 310 IGR = 1, NG
-               GMAT = ZK8(JJJ+IGR-1)
+               GMAT = ZK24(JJJ+IGR-1)
                CALL JELIRA (JEXNOM(GRMAMA,GMAT), 'LONUTI', NBMAIL,K8B)
                CALL JEVEUO (JEXNOM(GRMAMA,GMAT), 'L', JGRO )
                WRITE(IFM,1000) GMAT,  NBMAIL
@@ -284,7 +284,7 @@ C
  310        CONTINUE
          ELSE
             DO 320 IGR = 1, NG
-               GMAT = ZK8(JJJ+IGR-1)
+               GMAT = ZK24(JJJ+IGR-1)
                CALL JELIRA (JEXNOM(GRMAMA,GMAT), 'LONUTI', NBMAIL,K8B)
                CALL JEVEUO (JEXNOM(GRMAMA,GMAT), 'L', JGRO )
                WRITE(IFM,1000) GMAT,  NBMAIL
@@ -327,12 +327,12 @@ C
          CALL GETVEM ( NOMA, 'GROUP_MA', MOFC3D, 'GROUP_MA',
      &                                           IOCC,IARG, 0, K8B, NG )
          NG = -NG
-         CALL WKVECT ( '&&ORILGM.WORK', 'V V K8', NG, JJJ )
+         CALL WKVECT ( '&&ORILGM.WORK', 'V V K24', NG, JJJ )
          CALL GETVEM ( NOMA, 'GROUP_MA', MOFC3D, 'GROUP_MA',
-     &                                     IOCC,IARG, NG, ZK8(JJJ), NG )
+     &                 IOCC,IARG, NG, ZK24(JJJ), NG )
          IF ( ORIVEC ) THEN
             DO 410 IGR = 1, NG
-               GMAT = ZK8(JJJ+IGR-1)
+               GMAT = ZK24(JJJ+IGR-1)
                CALL JELIRA (JEXNOM(GRMAMA,GMAT), 'LONUTI', NBMAIL,K8B)
                CALL JEVEUO (JEXNOM(GRMAMA,GMAT), 'L', JGRO )
                WRITE(IFM,1000) GMAT,  NBMAIL
@@ -343,7 +343,7 @@ C
  410        CONTINUE
          ELSE
             DO 420 IGR = 1, NG
-               GMAT = ZK8(JJJ+IGR-1)
+               GMAT = ZK24(JJJ+IGR-1)
                CALL JELIRA (JEXNOM(GRMAMA,GMAT), 'LONUTI', NBMAIL,K8B)
                CALL JEVEUO (JEXNOM(GRMAMA,GMAT), 'L', JGRO )
                WRITE(IFM,1000) GMAT,  NBMAIL
@@ -358,7 +358,7 @@ C
 C
       IF ( NORIT .NE. 0 )  WRITE(IFM,1010) NORIT
 C
- 1000 FORMAT('TRAITEMENT DU GROUP_MA: ',A8,' DE ',I7,' MAILLES')
+ 1000 FORMAT('TRAITEMENT DU GROUP_MA: ',A24,' DE ',I7,' MAILLES')
  1100 FORMAT(24X,I7,' MAILLE(S) ONT ETE ORIENTEE(S)')
  1110 FORMAT(24X,I7,' MAILLE(S) N''ONT PAS ETE TRAITEE(S) ')
  1010 FORMAT('AU TOTAL ', I7, ' MAILLE(S) ORIENTEE(S) ')

@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 29/01/2013   AUTEUR FERTE G.FERTE 
+#& MODIF COMMANDE  DATE 25/02/2013   AUTEUR SELLENET N.SELLENET 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -25,8 +25,7 @@ POST_MAIL_XFEM=OPER(nom="POST_MAIL_XFEM",op= 187,sd_prod=maillage_sdaster,
     PREF_NOEUD_M   =SIMP(statut='f',typ='TXM',defaut="NM",validators=LongStr(1,2),),
     PREF_NOEUD_P   =SIMP(statut='f',typ='TXM',defaut="NP",validators=LongStr(1,2),),
     PREF_MAILLE_X  =SIMP(statut='f',typ='TXM',defaut="MX",validators=LongStr(1,2),),
-    PREF_GROUP_CO  =SIMP(statut='f',typ=geom ,defaut="NFISSU",),
+    PREF_GROUP_CO  =SIMP(statut='f',typ=grno ,defaut="NFISSU",),
     TITRE         = SIMP(statut='f',typ='TXM',max='**'),
     INFO           =SIMP(statut='f',typ='I',defaut= 1,into=(1,2,) ),
-
-);                     
+);

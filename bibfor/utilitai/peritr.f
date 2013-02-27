@@ -7,7 +7,7 @@
       CHARACTER*(*) RESU,MODELE,CARA,LCHAR(*)
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 12/02/2013   AUTEUR PELLET J.PELLET 
+C MODIF UTILITAI  DATE 25/02/2013   AUTEUR SELLENET N.SELLENET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -43,7 +43,7 @@ C     ------------------------------------------------------------------
      &             NOPARR(NBPARR),NOPARD(NBPARD),TABTYP(3)
       CHARACTER*19 CHELEM,KNUM,KINS,VARNUL
       CHARACTER*24 CHGEOM,CHCARA(18),CHHARM,LIGREL,LCHIN(7)
-      CHARACTER*24 MLGGMA,MLGNMA,COMPOR
+      CHARACTER*24 MLGGMA,MLGNMA,COMPOR,NOMMA2
       CHARACTER*24 LCHOUT(2),CONTG,VARIPG,VARIMG,DEPLA,SSOUP
       CHARACTER*1 K1BID
       COMPLEX*16 C16B
@@ -51,7 +51,7 @@ C     ------------------------------------------------------------------
 
       DATA NOPARR/'NUME_ORDRE','INST','LIEU','ENTITE',
      &     'TX_CROIS_CAVITES','VOLUME_CONCERNE'/
-      DATA TYPARR/'I','R','K8','K8','R','R'/
+      DATA TYPARR/'I','R','K24','K8','R','R'/
       DATA NOPARD/'LIEU','ENTITE','TX_CROIS_CAVITES','VOLUME_CONCERNE'/
       DATA TYPARD/'K8','K8','R','R'/
 C      DATA VARIMG /'&&PERITR.VARIMR'/
@@ -246,23 +246,23 @@ C            OPTION DE CALCUL RICE_TRACEY ---
 
           IF (NG.NE.0) THEN
             NBGRMA = -NG
-            CALL WKVECT('&&PERITR_GROUPM','V V K8',NBGRMA,JGR)
+            CALL WKVECT('&&PERITR_GROUPM','V V K24',NBGRMA,JGR)
             CALL GETVEM(NOMA,'GROUP_MA',OPTION(1:11),'GROUP_MA',IOCC,
      &                  IARG,
-     &                  NBGRMA,ZK8(JGR),NG)
+     &                  NBGRMA,ZK24(JGR),NG)
             DO 50 IG = 1,NBGRMA
-              NOMMAI = ZK8(JGR+IG-1)
-              CALL JEEXIN(JEXNOM(MLGGMA,NOMMAI),IRET)
+              NOMMA2 = ZK24(JGR+IG-1)
+              CALL JEEXIN(JEXNOM(MLGGMA,NOMMA2),IRET)
               IF (IRET.EQ.0) THEN
-                CALL U2MESK('A','UTILITAI3_46',1,NOMMAI)
+                CALL U2MESK('A','UTILITAI3_46',1,NOMMA2)
                 GO TO 50
               END IF
-              CALL JELIRA(JEXNOM(MLGGMA,NOMMAI),'LONUTI',NBMA,K8B)
+              CALL JELIRA(JEXNOM(MLGGMA,NOMMA2),'LONUTI',NBMA,K8B)
               IF (NBMA.EQ.0) THEN
-                CALL U2MESK('A','UTILITAI3_47',1,NOMMAI)
+                CALL U2MESK('A','UTILITAI3_47',1,NOMMA2)
                 GO TO 50
               END IF
-              CALL JEVEUO(JEXNOM(MLGGMA,NOMMAI),'L',JAD)
+              CALL JEVEUO(JEXNOM(MLGGMA,NOMMA2),'L',JAD)
               IF (OPTCAL(2).EQ.'OUI') THEN
                 CALL MEMAXM('MAX',CHELEM,'RSR0',MXVALE,TABCMP,
      &                            VR,NBMA,ZI(JAD))

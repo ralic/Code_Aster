@@ -10,9 +10,9 @@
       REAL*8       RIGNOE(*), RIGTO(*), AMOTO(*),RIROT(3)
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 18/12/2012   AUTEUR SELLENET N.SELLENET 
+C MODIF MODELISA  DATE 25/02/2013   AUTEUR SELLENET N.SELLENET 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -30,8 +30,8 @@ C ======================================================================
 C     ------------------------------------------------------------------
 C
       CHARACTER*8  K8B
-      CHARACTER*8  NOMGR, NOMNOE,TYPM
-      CHARACTER*24 MAGRNO, MANONO, MAGRMA, MANOMA,MATYMA
+      CHARACTER*8  NOMNOE,TYPM
+      CHARACTER*24 NOMGR, MAGRNO, MANONO, MAGRMA, MANOMA,MATYMA
       REAL*8       R8B, ZERO, X(9), Y(9), Z(9), RIGI(6)
       REAL*8       A(3), B(3), C(3), U(3)
       LOGICAL      LFONC, TRANS

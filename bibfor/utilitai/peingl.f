@@ -8,7 +8,7 @@
       CHARACTER*(*) RESU,MODELE,MATE,CARA,LCHAR(1),MOTFAZ
 C.======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 12/02/2013   AUTEUR PELLET J.PELLET 
+C MODIF UTILITAI  DATE 25/02/2013   AUTEUR SELLENET N.SELLENET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -135,14 +135,14 @@ C -----  VARIABLES LOCALES
       CHARACTER*19 KNUM,LIGREL,KINS,COMPOR
       CHARACTER*19 CHVARC,CHVREF
       CHARACTER*24 CHGEOM,CHCARA(18),CHHARM,CHVARI,CHDEPL
-      CHARACTER*24 VALK(2)
+      CHARACTER*24 VALK(2),VALE2(2),NOMMA2
       CHARACTER*24 CHSIG,LCHIN(10),LCHOUT(2)
       CHARACTER*24 MLGGMA,MLGNMA
       CHARACTER*24 CHSIGM,CHDEPM,CHBID
       LOGICAL EXISDG
       INTEGER      IARG
 
-      DATA TYPARR/'I','R','K8','K8','R','R','R'/
+      DATA TYPARR/'I','R','K24','K8','R','R','R'/
       DATA CHVARC,CHVREF /'&&PEINGL.CHVARC','&&PEINGL.CHVARC.REF'/
 C.========================= DEBUT DU CODE EXECUTABLE ==================
 
@@ -526,25 +526,25 @@ C ---   SUR LE GROUP_MA COURANT :
 C       -----------------------
           IF (NG.NE.0) THEN
             NBGRMA = -NG
-            CALL WKVECT('&&PEINGL_GROUPM','V V K8',NBGRMA,JGR)
+            CALL WKVECT('&&PEINGL_GROUPM','V V K24',NBGRMA,JGR)
             CALL GETVEM(NOMA,'GROUP_MA',MOTFAC,'GROUP_MA',IOCC,IARG,
      &                  NBGRMA,
-     &                  ZK8(JGR),NG)
+     &                  ZK24(JGR),NG)
 
 C ---     BOUCLE SUR LES GROUPES DE MAILLES :
 C         ---------------------------------
-            VALEK(2) = 'GROUP_MA'
+            VALE2(2) = 'GROUP_MA'
             DO 30 IG = 1,NBGRMA
-              NOMMAI = ZK8(JGR+IG-1)
-              CALL JEEXIN(JEXNOM(MLGGMA,NOMMAI),IRET)
+              NOMMA2 = ZK24(JGR+IG-1)
+              CALL JEEXIN(JEXNOM(MLGGMA,NOMMA2),IRET)
               IF (IRET.EQ.0) THEN
-                CALL U2MESK('F','UTILITAI3_46',1,NOMMAI)
+                CALL U2MESK('F','UTILITAI3_46',1,NOMMA2)
               END IF
-              CALL JELIRA(JEXNOM(MLGGMA,NOMMAI),'LONUTI',NBMA,K8B)
+              CALL JELIRA(JEXNOM(MLGGMA,NOMMA2),'LONUTI',NBMA,K8B)
               IF (NBMA.EQ.0) THEN
-                CALL U2MESK('F','UTILITAI3_47',1,NOMMAI)
+                CALL U2MESK('F','UTILITAI3_47',1,NOMMA2)
               END IF
-              CALL JEVEUO(JEXNOM(MLGGMA,NOMMAI),'L',JAD)
+              CALL JEVEUO(JEXNOM(MLGGMA,NOMMA2),'L',JAD)
 
               IF (MOTFAC.EQ.'INDIC_ENER' .OR.
      &            MOTFAC.EQ.'INDIC_SEUIL') THEN
@@ -566,11 +566,11 @@ C          -------------------------------------------
                 END IF
 
                 IF (VOLUME.LE.R8PREM()) THEN
-                  CALL U2MESK('F','UTILITAI3_81',1,NOMMAI)
+                  CALL U2MESK('F','UTILITAI3_81',1,NOMMA2)
                 END IF
 
                 VALER(2) = INDIC1/VOLUME
-                VALEK(1) = NOMMAI
+                VALE2(1) = NOMMA2
 
               ELSE IF (MOTFAC.EQ.'ENER_ELAS' .OR.
      &                 MOTFAC.EQ.'ENER_TOTALE' .OR.
@@ -602,7 +602,7 @@ C ---  L ENERGIE TOTAL
                 VALER(2) = ENERGI
                 VALER(3) = WORK(2)
                 VALER(4) = WORK(3)
-                VALEK(1) = NOMMAI
+                VALE2(1) = NOMMA2
 
               END IF
 
@@ -612,7 +612,7 @@ C        ------------------------------------------------------
 
 C ---      ECRITURE DE L'INDICATEUR DANS LA TABLE :
 C          --------------------------------------
-              CALL TBAJLI(RESU,NBPARR,NOPARR,NUMORD,VALER,C16B,VALEK,0)
+              CALL TBAJLI(RESU,NBPARR,NOPARR,NUMORD,VALER,C16B,VALE2,0)
    30       CONTINUE
 
             CALL JEDETR('&&PEINGL_GROUPM')
