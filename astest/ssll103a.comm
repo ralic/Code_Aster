@@ -1,9 +1,9 @@
-# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
+# MODIF  DATE 25/02/2013   AUTEUR CHANSARD F.CHANSARD 
 # TITRE FLAMBEMENT D'UNE CORNIERE ELASTIQUE
 # ssll103a.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -128,7 +128,7 @@ MOD_1=MODE_ITER_SIMULT(   MATR_RIGI=RIGAS,
                               MATR_RIGI_GEOM=RIGASG_1,
                               TYPE_RESU='MODE_FLAMB',
                             CALC_CHAR_CRIT=_F(  NMAX_CHAR_CRIT = 20,
-                            DIM_SOUS_ESPACE = 40,   )
+                            COEF_DIM_ESPACE = 4,   )
                           )
 
 #
@@ -150,6 +150,44 @@ TEST_RESU(RESU=(_F(PARA='CHAR_CRIT',
                 _F(PARA='CHAR_CRIT',
                    NUME_MODE=2,
                    RESULTAT=MOD_1,
+                   VALE_CALC=-9.69429478E+06,
+                   VALE_REFE=-1.0058989E7,
+                   REFERENCE='NON_DEFINI',
+                   PRECISION=0.040000000000000001,),
+                ),
+          )
+
+#
+
+MOD_1_IM=MODE_ITER_SIMULT(   MATR_RIGI=RIGAS,
+                              MATR_RIGI_GEOM=RIGASG_1,
+                              TYPE_RESU='MODE_FLAMB',
+                            CALC_CHAR_CRIT=_F(  NMAX_CHAR_CRIT = 20,
+                            COEF_DIM_ESPACE = 4,
+                            APPROCHE='IMAG',
+                            OPTION = 'CENTRE',
+                            CHAR_CRIT = 0.,   )
+                          )
+
+#
+
+TEST_RESU(RESU=(_F(PARA='CHAR_CRIT',
+                   NUME_MODE=20,
+                   RESULTAT=MOD_1_IM,
+                   VALE_CALC=-6.91154293E+05,
+                   VALE_REFE=-6.9253170999999996E5,
+                   REFERENCE='NON_DEFINI',
+                   PRECISION=3.0000000000000001E-3,),
+                _F(PARA='CHAR_CRIT',
+                   NUME_MODE=13,
+                   RESULTAT=MOD_1_IM,
+                   VALE_CALC=-1.49004790E+06,
+                   VALE_REFE=-1.5048738999999999E6,
+                   REFERENCE='NON_DEFINI',
+                   PRECISION=1.E-2,),
+                _F(PARA='CHAR_CRIT',
+                   NUME_MODE=2,
+                   RESULTAT=MOD_1_IM,
                    VALE_CALC=-9.69429478E+06,
                    VALE_REFE=-1.0058989E7,
                    REFERENCE='NON_DEFINI',

@@ -1,9 +1,9 @@
-# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
+# MODIF  DATE 25/02/2013   AUTEUR CHANSARD F.CHANSARD 
 # TITRE CALCUL DES MOMENTS CRITIQUES D'UNE ARCHE
 # ssll404a.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -219,6 +219,112 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=1,
                 ),
           )
 
+MODE3=MODE_ITER_INV(       MATR_RIGI=K_ASSE,
+                                MATR_RIGI_GEOM=KS_ASSE,
+                             TYPE_RESU='MODE_FLAMB',
+                            CALC_CHAR_CRIT=_F(  OPTION = 'SEPARE',
+                                        CHAR_CRIT = ( -16., -10.,
+                                            -5., 2., 10.,15.),
+                                       ),
+                            CALC_MODE=_F(  OPTION = 'RAYLEIGH',     )
+                         )
+
+TEST_RESU(RESU=(_F(NUME_ORDRE=1,
+                   PARA='CHAR_CRIT',
+                   REFERENCE='ANALYTIQUE',
+                   RESULTAT=MODE3,
+                   VALE_CALC=-13.932163821,
+                   VALE_REFE=-14.4147,
+                   CRITERE='RELATIF',
+                   PRECISION=0.034000000000000002,),
+                _F(NUME_ORDRE=2,
+                   PARA='CHAR_CRIT',
+                   REFERENCE='ANALYTIQUE',
+                   RESULTAT=MODE3,
+                   VALE_CALC=-8.306132481,
+                   VALE_REFE=-8.6320700000000006,
+                   CRITERE='RELATIF',
+                   PRECISION=0.037999999999999999,),
+                _F(NUME_ORDRE=3,
+                   PARA='CHAR_CRIT',
+                   REFERENCE='ANALYTIQUE',
+                   RESULTAT=MODE3,
+                   VALE_CALC=-2.751372938,
+                   VALE_REFE=-2.8607399999999998,
+                   CRITERE='RELATIF',
+                   PRECISION=0.039,),
+                _F(NUME_ORDRE=4,
+                   PARA='CHAR_CRIT',
+                   REFERENCE='ANALYTIQUE',
+                   RESULTAT=MODE3,
+                   VALE_CALC=8.395545951,
+                   VALE_REFE=8.7838200000000004,
+                   CRITERE='RELATIF',
+                   PRECISION=0.044999999999999998,),
+                _F(NUME_ORDRE=5,
+                   PARA='CHAR_CRIT',
+                   REFERENCE='ANALYTIQUE',
+                   RESULTAT=MODE3,
+                   VALE_CALC=14.011043612,
+                   VALE_REFE=14.555099999999999,
+                   CRITERE='RELATIF',
+                   PRECISION=0.037999999999999999,),
+                ),
+          )
+
+MODE4=MODE_ITER_INV(       MATR_RIGI=K_ASSE,
+                                MATR_RIGI_GEOM=KS_ASSE,
+                             TYPE_RESU='MODE_FLAMB',
+                            CALC_CHAR_CRIT=_F(  OPTION = 'AJUSTE',
+                                        CHAR_CRIT = ( -16., -10.,
+                                            -5., 2., 10.,15.),
+                                       ),
+                            CALC_MODE=_F(  OPTION = 'RAYLEIGH',     )
+                         )
+                         
+TEST_RESU(RESU=(_F(NUME_ORDRE=1,
+                   PARA='CHAR_CRIT',
+                   REFERENCE='ANALYTIQUE',
+                   RESULTAT=MODE4,
+                   VALE_CALC=-13.932163821,
+                   VALE_REFE=-14.4147,
+                   CRITERE='RELATIF',
+                   PRECISION=0.034000000000000002,),
+                _F(NUME_ORDRE=2,
+                   PARA='CHAR_CRIT',
+                   REFERENCE='ANALYTIQUE',
+                   RESULTAT=MODE4,
+                   VALE_CALC=-8.306132481,
+                   VALE_REFE=-8.6320700000000006,
+                   CRITERE='RELATIF',
+                   PRECISION=0.037999999999999999,),
+                _F(NUME_ORDRE=3,
+                   PARA='CHAR_CRIT',
+                   REFERENCE='ANALYTIQUE',
+                   RESULTAT=MODE4,
+                   VALE_CALC=-2.751372938,
+                   VALE_REFE=-2.8607399999999998,
+                   CRITERE='RELATIF',
+                   PRECISION=0.039,),
+                _F(NUME_ORDRE=4,
+                   PARA='CHAR_CRIT',
+                   REFERENCE='ANALYTIQUE',
+                   RESULTAT=MODE4,
+                   VALE_CALC=8.395545951,
+                   VALE_REFE=8.7838200000000004,
+                   CRITERE='RELATIF',
+                   PRECISION=0.044999999999999998,),
+                _F(NUME_ORDRE=5,
+                   PARA='CHAR_CRIT',
+                   REFERENCE='ANALYTIQUE',
+                   RESULTAT=MODE4,
+                   VALE_CALC=14.011043612,
+                   VALE_REFE=14.555099999999999,
+                   CRITERE='RELATIF',
+                   PRECISION=0.037999999999999999,),
+                ),
+          )
+          
 FIN()
 #
 

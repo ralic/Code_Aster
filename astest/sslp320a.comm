@@ -1,4 +1,4 @@
-# MODIF  DATE 22/01/2013   AUTEUR LADIER A.LADIER 
+# MODIF  DATE 25/02/2013   AUTEUR CHANSARD F.CHANSARD 
 # TITRE PROPAGATION D UNE FISSURE X-FEM DEBOUCHANTE SOLLICITEE EN MODE I
 # sslp320a.para = tps_job 150 mem_job 512Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -236,7 +236,7 @@ for i in range(NPAS+1) :
                NOM_PARA='K2',
                TYPE_TEST='MAX',
                VALE_CALC=VAL_CALC[ct],
-               TOLE_MACHINE=2.1E-6, #TODO TOLE_MACHINE
+               TOLE_MACHINE=1.E-4, #TODO TOLE_MACHINE
                VALE_REFE=0,
                CRITERE='ABSOLU',
                PRECISION=(10**(-4))*K1REF[i],
