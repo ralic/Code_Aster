@@ -1,9 +1,9 @@
-# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
+# MODIF  DATE 26/02/2013   AUTEUR LADIER A.LADIER 
 # TITRE VALIDATION DE POST_ELEM NORME EN 3D
 # zzzz291a.para = tps_job 60 mem_job 256Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -315,6 +315,29 @@ TBB6=POST_ELEM(NORME=_F(TYPE_NORM='L2',
                         TYPE_MAILLE='2D',
                         MODELE=MO),)
 
+# champ NEUT_R
+
+TEMPC=CREA_CHAMP(OPERATION='ASSE',TYPE_CHAM='ELGA_NEUT_R',MODELE=MO,
+                PROL_ZERO='OUI',
+                ASSE=(_F(CHAM_GD=SIGA,GROUP_MA='3D',
+                         NOM_CMP_RESU='X1',NOM_CMP='SIXX',),
+                      _F(CHAM_GD=SIGA,GROUP_MA='3D',
+                         NOM_CMP_RESU='X2',NOM_CMP='SIYY',),
+                      _F(CHAM_GD=SIGA,GROUP_MA='3D',
+                         NOM_CMP_RESU='X3',NOM_CMP='SIZZ',),
+                      _F(CHAM_GD=SIGA,GROUP_MA='3D',
+                         NOM_CMP_RESU='X4',NOM_CMP='SIXY',),
+                      _F(CHAM_GD=SIGA,GROUP_MA='3D',
+                         NOM_CMP_RESU='X5',NOM_CMP='SIXZ',),
+                      _F(CHAM_GD=SIGA,GROUP_MA='3D',
+                         NOM_CMP_RESU='X6',NOM_CMP='SIYZ',)))
+
+TBC1=POST_ELEM(NORME=_F(TYPE_NORM='L2',
+                        CHAM_GD=TEMPC,
+                        GROUP_MA='CUBE',
+                        MODELE=MO,
+                        COEF_MULT=(1.,1.,1.,2.,2.,2.)),)
+
 #  tests
 # =======
 
@@ -451,6 +474,14 @@ TEST_TABLE(
            
            NOM_PARA='VALE_NORM',
            TABLE=TBB6,
+           )
+
+# champ NEUT_R (3D) :  GROUP_MA='CUBE'
+TEST_TABLE(REFERENCE='AUTRE_ASTER',
+           VALE_CALC= 9.03146507E+10,
+           VALE_REFE=9.0314650667997864E10,
+           NOM_PARA='VALE_NORM',
+           TABLE=TBC1,
            )
 
 #  VERIFICATION DE LA PRISE EN COMPTE DU FILTRAGE DES ELEMENTS FINIS

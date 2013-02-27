@@ -1,8 +1,8 @@
-#@ MODIF postelem Messages  DATE 22/10/2012   AUTEUR BARGELLI R.BARGELLINI 
+#@ MODIF postelem Messages  DATE 26/02/2013   AUTEUR LADIER A.LADIER 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -26,9 +26,10 @@ cata_msg={
  Un instant demandé dans POST_ELEM, option CHAR_LIMITE n'est pas présent dans le résultat <%(k1)s>.
 """),
 
-
-
-
+2: _(u"""
+ L'utilisation d'une liste de coefficients COEF_MULT dans POST_ELEM option NORME n'est valable que pour un
+ champ de type NEUT_R.
+"""),
 
 3: _(u"""
  Le résultat <%(k1)s> utilisé dans POST_ELEM, option CHAR_LIMITE n'a pas été produit par un STAT_NON_LINE avec pilotage.
