@@ -1,0 +1,144 @@
+      SUBROUTINE MMRELI(ALIAS ,NNO   ,NDIM  ,COORMA,COORPT,
+     &                  KSI1  ,KSI2  ,DKSI1 ,DKSI2 ,ALPHA )
+C            CONFIGURATION MANAGEMENT OF EDF VERSION
+C MODIF ALGORITH  DATE 05/03/2013   AUTEUR DESOZA T.DESOZA 
+C ======================================================================
+C COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
+C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
+C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
+C (AT YOUR OPTION) ANY LATER VERSION.                                   
+C                                                                       
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
+C                                                                       
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
+C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.         
+C ======================================================================
+C RESPONSABLE ABBAS M.ABBAS
+      IMPLICIT NONE
+      CHARACTER*8  ALIAS
+      INTEGER      NNO   ,NDIM
+      REAL*8       COORMA(27),COORPT(3)
+      REAL*8       KSI1      ,KSI2     ,DKSI1 ,DKSI2
+      REAL*8       ALPHA
+C ----------------------------------------------------------------------
+C
+C ROUTINE CONTACT (TOUTES METHODES - APPARIEMENT)
+C
+C ALGORITHME DE NEWTON POUR CALCULER LA PROJECTION D'UN POINT SUR UNE
+C MAILLE - VERSION GENERALE
+C
+C DETERMINATION DU PARAMETRE DE RECHERCHE LINEAIRE
+C                                     __
+C ==> FONCTION G(ALPHA)  ==  1/2 * || \/D(KSI+ALPHA*DKSI) ||^2
+C
+C
+C ----------------------------------------------------------------------
+C
+C IN  ALIAS  : TYPE DE MAILLE
+C IN  NNO    : NOMBRE DE NOEUD SUR LA MAILLE
+C IN  NDIM   : DIMENSION DE LA MAILLE (2 OU 3)
+C IN  COORMA : COORDONNEES DES NOEUDS DE LA MAILLE
+C IN  COORPT : COORDONNEES DU NOEUD A PROJETER SUR LA MAILLE
+C IN  KSI1   : PREMIERE COORDONNEE PARAMETRIQUE DU POINT PROJETE
+C IN  KSI2   : SECONDE COORDONNEE PARAMETRIQUE DU POINT PROJETE
+C IN  DKSI1  : DIRECTION DE RECHERCHE SUIVANT LA PREMIERE COORDONNEE
+C IN  DKSI2  : DIRECTION DE RECHERCHE SUIVANT LA SECONDE COORDONNEE
+C OUT ALPHA  : PARAMETRE D'AVANCEMENT SUIVANT LA DIRECTION DE RECHERCHE
+C
+C ----------------------------------------------------------------------
+C
+      REAL*8       G0,GP0
+      REAL*8       ALPHA1,KSIA1 ,GA1   ,RES1
+      REAL*8       ALPHA2,KSIA2 ,GA2   ,RES2
+      REAL*8       COEFFA,COEFFB,UNSDET
+      REAL*8       OMEGA1      ,AMIN      ,AMAX
+      REAL*8       R8PREM
+      PARAMETER   (OMEGA1=1.D-4,AMIN=1.D-1,AMAX=5.D-1)
+      INTEGER      NADAMX   ,IADA
+      PARAMETER   (NADAMX=2)
+C
+C ----------------------------------------------------------------------
+C                                  __
+C --- CALCUL DE G(0)  ==  1/2 * || \/D(KSI) ||^2
+C
+      CALL MMRESI(ALIAS ,NNO   ,NDIM  ,COORMA,COORPT,
+     &            KSI1  ,KSI2  ,G0)
+C
+C --- CALCUL DE G'(0) == -2 * G(0)
+C
+      GP0 = -2.D0 * G0
+C
+C ----------------------------------------------------------------------
+C
+C --- PREMIER PARAMETRE D'AVANCEMENT (ALPHA == 1)
+C
+      ALPHA1 = 1.D0
+      KSIA1 = KSI1 + ALPHA1 * DKSI1
+      KSIA2 = KSI2 + ALPHA1 * DKSI2
+      CALL MMRESI(ALIAS ,NNO   ,NDIM  ,COORMA,COORPT,
+     &            KSIA1 ,KSIA2 ,GA1)
+      IF (GA1.LE.(G0+OMEGA1*GP0)) THEN
+         ALPHA = ALPHA1
+         GOTO 9999
+      ENDIF
+      RES1 = GA1-G0-GP0*ALPHA1
+C
+C ----------------------------------------------------------------------
+C
+C --- DEUXIEME PARAMETRE D'AVANCEMENT AVEC APPROXIMATION QUADRATIQUE
+C
+      ALPHA2 = -GP0/(2.D0*RES1)
+      IF (ALPHA2.LT.AMIN*ALPHA1) ALPHA2=AMIN*ALPHA1
+      IF (ALPHA2.GT.AMAX*ALPHA1) ALPHA2=AMAX*ALPHA1
+      KSIA1 = KSI1 + ALPHA2 * DKSI1
+      KSIA2 = KSI2 + ALPHA2 * DKSI2
+      CALL MMRESI(ALIAS ,NNO   ,NDIM  ,COORMA,COORPT,
+     &            KSIA1 ,KSIA2 ,GA2)
+      IF (GA2.LE.(G0+OMEGA1*GP0*ALPHA2)) THEN
+         ALPHA = ALPHA2
+         GOTO 9999
+      ENDIF
+      RES2 = GA2-G0-GP0*ALPHA2
+C
+C ----------------------------------------------------------------------
+C
+C --- ADAPTATION DU PARAMETRE D'AVANCEMENT AVEC APPROXIMATION CUBIQUE
+C
+      DO 1 IADA = 1,NADAMX
+
+         CALL ASSERT(ABS(ALPHA1 - ALPHA2).GT.R8PREM())
+         UNSDET = (1.D0 / (ALPHA1 - ALPHA2))
+         COEFFA = UNSDET*(        RES1/ALPHA1**2-       RES2/ALPHA2**2)
+         COEFFB = UNSDET*(-ALPHA2*RES1/ALPHA1**2+ALPHA1*RES2/ALPHA2**2)
+         ALPHA1 = ALPHA2
+         GA1    = GA2
+         RES1   = RES2
+         IF (ABS(COEFFA).LE.R8PREM()) THEN
+            ALPHA = ALPHA2
+            GOTO 9999
+         ENDIF
+         ALPHA2 = (-COEFFB+SQRT(COEFFB*COEFFB-3.D0*COEFFA*GP0))/
+     &                           (3.D0*COEFFA)
+         IF (ALPHA2.LT.AMIN*ALPHA1) ALPHA2=AMIN*ALPHA1
+         IF (ALPHA2.GT.AMAX*ALPHA1) ALPHA2=AMAX*ALPHA1
+         KSIA1 = KSI1 + ALPHA2 * DKSI1
+         KSIA2 = KSI2 + ALPHA2 * DKSI2
+         CALL MMRESI(ALIAS ,NNO   ,NDIM  ,COORMA,COORPT,
+     &               KSIA1 ,KSIA2 ,GA2)
+         IF (GA2.LE.(G0+OMEGA1*GP0*ALPHA2)) THEN
+            ALPHA = ALPHA2
+            GOTO 9999
+         ENDIF
+         RES2 = GA2-G0-GP0*ALPHA2
+
+   1  CONTINUE
+C
+C ----------------------------------------------------------------------
+C
+9999  CONTINUE
+      END
