@@ -1,0 +1,1176 @@
+========================================================================
+Version 11.3.12 du : 06/03/2013
+========================================================================
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR alarcon      ALARCON Albert         DATE 03/04/2013 - 01:59:48
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 020427 DU 2013-02-21 06:58:31
+TYPE anomalie concernant Code_Aster (VERSION 10.5)
+TITRE
+    Titre de test erronxc3xa9 : sdld106a
+FONCTIONNALITE
+   Le titre du cas test n'a rien à voir avec son contenu.
+   
+   Je change de:
+   
+   # TITRE VALIDATION INFORMATIQUE DE MACR_ADAP_MAIL
+   
+   à 
+   
+   # TITRE SYSTEME MASSE-RESSORT-AMORTISSEMENT SOUS SOLLICITATION HARMONIQUE
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+    sdld106a
+NB_JOURS_TRAV  : 0.01
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 020467 DU 2013-02-27 09:37:09
+TYPE anomalie concernant Code_Aster (VERSION 10.5)
+TITRE
+    Erreur dans la programmation du calcul du pas de temps optimal des algorithmes de Runge-Kutta.
+FONCTIONNALITE
+   Problème
+   ----------------
+   
+   A l'écriture de la doc R5.06.04 sur les schémas en temps de Runge-Kutta dans DTM je me
+   suis aperçu qu'il y avait une erreur dans la programmation de la formule qui calcule le
+   pas de temps optimal qui doit être théoriquement:
+   
+   dt_{opt}=0.9*dt*(1/err)^(1/(p+1))
+   
+   alors que dans la routine mdruku.f on avait codé:
+   
+   dt_{opt}=0.9*dt*(1/err)^(1/p)
+   
+   Modifications
+   ----------------
+   
+   On modifie donc la routine mdruku.f en conséquence et les cas-tests suivants qui se sont
+   vus impactés par cette modification (changements légers des valeurs de TEST_RESU):sdld22b,
+   sdld102a, sdld103a, sdld321b, sdld325a, sdld325b, sdnd104a.
+   
+   
+   Impact doc
+   ----------------
+   
+   Impacts associés aux changements des valeurs de TEST_RESU: v5.06.04,
+   v2.01.102,v2.01.321,v5.01.104
+   
+   Je profite également de cette fiche pour clarifier une formulation de la doc r5.06.04
+   (algos en temps de l'opérateur DTM).
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : v5.06.04, v2.01.102,v2.01.321,v5.01.104,r5.06.04
+VALIDATION
+    sdld22b, sdld102a, sdld103a, sdld321b, sdld325a, sdld325b, sdnd104a
+NB_JOURS_TRAV  : 0.5
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR assire       ASSIRE Aimery          DATE 03/04/2013 - 01:22:21
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 020185 DU 2013-01-11 14:35:43
+TYPE anomalie concernant Code_Aster (VERSION 10.5)
+TITRE
+    [FORUM] Erreur MACR_RECAL
+FONCTIONNALITE
+   Message du forum : http://www.code-aster.org/forum2/viewtopic.php?id=18475
+   
+   Un utilisateur avait un problème avec MACR_RECAL (paramètre dans une fonction).
+   C'est une limitation indiquée dans la doc et pour laquelle on préconise de passer par le
+   mode DISTRIBUTION. Après correction du .export, l'étude fonctionne bien.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+    xc3xa9tude jointe
+NB_JOURS_TRAV  : 0.5
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR brie         BRIE Nicolas           DATE 03/05/2013 - 01:13:23
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 020154 DU 2013-01-08 10:27:16
+TYPE evolution concernant Code_Aster (VERSION )
+TITRE
+    Valider MACR_LIGN_COUPE sur mode_meca
+FONCTIONNALITE
+   -----------
+   1. Objectif
+   -----------
+   Valider physiquement l'opérateur MACR_LIGN_COUPE sur un résultat de type mode_meca,
+   notamment avec le filtre d'accès NUME_MODE.
+   
+   
+   --------------
+   2. Réalisation
+   --------------
+   Le cas-test SDLS106 présente une configuration bien adaptée pour valider des déformées
+   modales avec MACR_LIGN_COUPE. En effet, c'est une plaque rectangulaire simplement appuyée
+   sur tous ses bords, et dans ce cas les modes propres peuvent se calculer analytiquement à
+   la fois en fréquences et en déformées (Blevins, Formulas for natural frequency and mode
+   shape).
+   On ajoute donc une modélisation (h) au cas-test SDLS106. Dans toutes les autres
+   modélisations, le calcul des modes se faisait par sous-structuration. Dans cette nouvelle
+   modélisation, on fait le calcul de manière directe. Il faut donc changer le titre du
+   cas-test qui mentionnait explicitement la sous-structuration. Le nouveau nom du cas-test est :
+   "Calcul modal d'une plaque rectangulaire simplement appuyée sur tous ses bords".
+   
+   On teste la déformée des modes 3 et 4 suivant trois lignes de coupe : la diagonale et les
+   deux axes médians de la plaque rectangulaire. Pour tester la distinction entre NUME_ORDRE
+   et NUME_MODE, on découpe le calcul des modes en deux MODE_ITER_SIMULT sur deux bandes
+   adjacentes : l'un qui contient les deux premiers modes (concept dans lequel on a donc
+   NUME_ORDRE = NUME_MODE) et l'autre qui contient les modes suivants (concept dans lequel on
+   a donc NUME_ORDRE != NUME_MODE).
+   
+   -----------
+   3. Impacts sur les sources
+   -----------
+   création de sdls106h.comm et d'un maillage sdls106h.mmed associé (différent de ceux des autres
+   modélisations existantes).
+   
+   -----------
+   4. Impacts documentaires
+   -----------
+   documentation V2.03.106 : modification du titre, du résumé et ajout d'une modélisation.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : V2.03.106
+VALIDATION
+    sdls106h
+NB_JOURS_TRAV  : 2.5
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 020389 DU 2013-02-13 18:10:37
+TYPE evolution concernant Code_Aster (VERSION )
+TMA : Phimeca
+TITRE
+    NORM_MODE : pouvoir utiliser un GROUP_NO au lieu d'un NOEUD
+FONCTIONNALITE
+   1. Objectif:
+   -----------
+   Dans NORM_MODE, on peut donner des contraintes à vérifier en un NOEUD donné : soit on
+   force une composante donnée à 1 quand le mot-clé NOEUD est un mot-clé principal, soit on
+   force une composante donnée à être d'un SIGNE donné quand le mot-clé NOEUD est situé sous
+   le mot-clé facteur MODE_SIGNE.
+   
+   Pour une meilleure ergonomie, il faut pouvoir fournir un GROUP_NO au lieu d'un NOEUD. Bien
+   sûr, il faut que ce GROUP_NO contienne un seul noeud.
+   
+   
+   2. Réalisation:
+   --------------
+   
+      - catalogue de commande de NORM_MODE :
+   Ajout de GROUP_NO dans UN_PARMI('NORME','NOEUD','AVEC_CMP','SANS_CMP')
+   Ajout GROUP_NO avec UN_PARMI(NOEUD,GROUP_NO) sous le mot-clé facteur MODE_SIGNE.
+   
+      - fortran de NORM_MODE (op0037) :
+   Si pas de NOEUD renseigné, appel à la routine UTNONO pour récupérer le noeud contenu dans
+   le GROUP_NO. S'il y a plus d'un noeud dans le groupe, le message d'alarme SOUSTRUC_87 est
+   émis.
+   On en profite pour :
+   - déclarer la variable NOEUD comme CH8 et non comme CH16
+   - rendre plus clair le message SOUSTRUC_87 (et on modifie les quelques routines qui
+   l'appellent)
+   
+   
+   3. Validation:
+   -------------
+   - sdld02b : ajout de la création de 2 groupes de noeuds et remplacement de NOEUD par GROUP_NO.
+   - sdls106h : nouvelle modélisation introduite aussi pour la fiche issue20154.
+   
+   
+   4. Impacts sur les sources:
+   ---------------------------
+    * catalogue de commandes : norm_mode.capy
+    * fortran : immeca.f    mdchge.f    op0037.f    orilgm.f    rfnoch.f
+                rfrcha.f    rfresu.f    topoca.f    utreno.f
+    * messages : soustruc.py (n°87)
+   
+   5. Impacts documentaires:
+   -------------------------
+   Documentation Utilisateur de NORM_MODE : u4.52.11
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : u4.52.11
+VALIDATION
+    sdld02b, sdls106h
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR flejou       FLEJOU Jean Luc        DATE 05/03/2013 - 13:46:15
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 019235 DU 2012-07-24 12:31:31
+TYPE evolution concernant Code_Aster (VERSION )
+TMA : Necs
+TITRE
+    GROT_GDEP sur tous les �l�ments de poutre POU_D_E, POU_D_T et POU_D_TG.
+FONCTIONNALITE
+   But :
+   ===
+   Ajouter la DEFORMATION = GROT_GDEP aux �l�ments de poutre POU_D_E, POU_D_T et POU_D_TG.
+   
+   Travail effectu� : 
+   ================
+   
+   D�veloppements :
+   --------------
+   
+   1/ Remplacement de PETIT_REAC par GROT_GDEP
+   2/ Ajout de la r�actualisation de l'orientation dans les options FORC_NODA quand cela
+   n'existait pas (appel � la nouvelle routine porea2.f)
+   3/ Correction de la r�actualisation de l'angle de vrille GAMMA comme cela a �t� fait pour
+   les POU_D_TGM (appel � porea1.f pour les options FULL_MECA RAPH_MECA et RIGI_MECA_TANG,
+   appel � porea2.f pour FORC_NODA)
+   4/ Calcul de la matrice de rigidit� g�om�trique pour les options FULL_MECA et
+   RIGI_MECA_TANG en recopiant dans les te en question ce qui est fait dans l'option
+   RIGI_MECA_GE (te0143).
+   
+   
+   D�tails des modifs et ajouts :
+   
+   dismmo.f : ajout de exi_str2 (dans le cas ou on veut calculer l'option STRX_ELGA)
+   dismlg.f : EXI_STR2 correspond uniquement au POU_D_EM
+   op0046.f : remplacement de exi_strx par exi_str2
+   op0048.f : remplacement de exi_strx par exi_str2
+   ccfnrn.f : remplacement de exi_strx par exi_str2
+   te0023.f : option INI_STRX, ajout des autres poutres et initialisation en copiant PCAORIE.
+   te0346.f : FULL_MECA pour les POU_D_TG -> matrice de rigidit� geometrique + appel � POREA1
+   te0347.f : FORC_NODA pour POU_D_E POU_D_T POU_D_TG -> appel � POREA2
+   te0247.f : FULL_MECA pour POU_D_E POU_D_T -> matrice de rigidit� geometrique + appel � POREA1
+   te0517.f : FORC_NODA pour PMF, gros m�nage, suppression des VARI_ELNO qui n'a rien � faire
+   la + appel � POREA2
+   te0156.f : FULL_MECA pour POU_D_TGM, appel � porea1.f
+   
+   porea1.f : actualisation de la g�ometrie pour FULL_MECA
+   porea2.f : actualisation de la g�ometrie pour FORC_NODA
+   
+   element3.py : ajout de message 40
+                 suppression de message 78
+                 suppression de message 58
+   
+   element4.py : suppression de message 15, en doublon avec elements3_40
+                 suppression de message 16 (VARI_ELNO)
+   
+   
+   EXI_STR et EXI_STR2 :
+   ===================
+   EXI_STR  : pour tous les �l�ments utilisant le champs STRX_ELGA
+   EXi_STR2 : pour les �l�ments calculant l'option STRX_ELGA
+   
+   
+   
+   Cas tests :
+   
+   sdnl102a : utilisait PETIT_REAC on remplace par GROT_GDEP -> OK
+   
+   
+   Validation :
+   ----------
+   On cr�e de nouvelles mod�lisations au test ssnl133 :
+   c -> POU_D_TG
+   d -> POU_D_T
+   e -> POU_D_E
+   
+   Ce test valide GROT_GDEP pour les POU_D_TGM par comparaison � la mod�lisation POU_D_T_GD.
+   Les TEST_RESU sont tous OK pour chacun des 3 tests.
+   
+   Impact doc :
+   ==========
+   Doc V : V6.02.133
+   
+   Doc R :  R3.08.09 - Poutres multi-fibres en grands d�placements
+   Cette doc est renomm�e et reprise pour �tre commune � tous les �l�ments de poutres sauf
+   les POU_D_T_GD.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : V6.02.133 , R3.08.09
+VALIDATION
+    ssnl133c,d,e
+--------------------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR assire       ASSIRE Aimery          DATE 05/03/2013 - 13:46:16
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 018798 DU 2012-04-28 16:55:44
+TYPE evolution concernant Code_Aster (VERSION )
+TMA : Necs
+TITRE
+    CALC_EUROPLEXUS : utiliser l'API Python de MED
+FONCTIONNALITE
+   Contexte :
+   ========
+   
+   Pour relire les champs de contraintes et de variables internes contenus dans le fichier
+   MED issu d'EPX, la macro-commande CALC_EUROPLEXUS utilise un m�canisme de try/except avec
+   des appels � LIRE_CHAMP dans le fichier MED.
+   Les choses sont faites ainsi car on ne connait pas d'avance ni le nombre de champs de
+   contraintes et de variables internes ni les noms des composantes de ces champs.
+   
+   Sur demande d'Aimery, Nicolas Sellenet a cr�� le module med_aster_module.c qui pour un
+   fichier med donn� renvoie la liste des noms des champs contenu dans le fichier. Ce module
+   est d�j� pr�sent dans le code.
+   
+   Demande :
+   =======
+   Utiliser le module med_aster_module.c de Aster afin de supprimer le m�canisme de
+   try/except pour la r�cup�ration des champs de contraintes et de variables internes.
+   
+   
+   Travail effectu� :
+   ================
+   
+   Pour faire cela il faut disposer des noms des champs mais aussi des noms des composantes
+   des champs.
+   Mais dans EPX les composantes des contraintes sont not�es : SIG1, SIG2, SIG3 .....
+   et les composantes des variables internes : VAR1, VAR2 ....
+   Ainsi il suffit de disposer du nombre de composantes pour conna�tre leurs noms.
+   
+   Pour cela, on a modifi� le module med_aster_module.c pour qu'il retourne un dictionnaire
+   {nom de champs : tuple avec les noms de composantes} au lieu de la liste des noms de champs.
+   
+   Avec ces informations, on peut supprimer les try/except dans calc_europlexus_ops.py.
+   
+   Cons�quences :
+   
+   - le code est plus clair
+   - on peut supprimer les MasquerAlarme MED_83, MED_98, MED_54, MED_77 et MED_37.
+   - pas de gain de temps de calcul (contrairement � ce qu'on a pu esp�rer lors de l'�mission
+   de cette fiche)
+   
+   Sources impact�es : med_aster_module.c, calc_europlexus_ops.py
+   
+   Validation : passage de tous les tests plexu*
+   
+   Impact doc : Aucun
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+    plexu*
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR cuvillie     CUVILLIEZ Sam          DATE 03/04/2013 - 02:47:24
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 020473 DU 2013-02-27 14:32:37
+TYPE anomalie concernant Code_Aster (VERSION 10.5)
+TITRE
+    DEFI_FISS_XFEM_floating point
+FONCTIONNALITE
+   Problème :
+   -----------
+   
+   Erreur d'utilisation.
+   
+   Dans CALC_G , depuis la version 11.2.7, la syntaxe à adopter sous le mot clé facteur THETA
+   n'est pas la même selon que le résultat renseigné sous le mot clé RESULTAT provienne d'un
+   calcul FEM ou d'un calcul X-FEM. Plus précisément :
+   
+    . 1. dans le cas d'une fissure maillée
+    . ----------------------------------
+   
+    . - appel à STAT_NON_LINE ou MECA_STATIQUE, 
+    . - appel à DEFI_FOND_FISS pour définir les caractéristiques de la fissure qui seront
+   utilisées par CALC_G
+    . - appel à CALC_G, en renseignant le mot clé FOND_FISS du mot clé facteur THETA
+   
+    . 2. dans le cas d'un résultat X-FEM :
+    . ---------------------------------------
+   
+    . - appel à DEFI_FISS_XFEM + MODI_MODELE_XFEM
+    . - appel à STAT_NON_LINE ou MECA_STATIQUE, 
+    . - appel à CALC_G, en renseignant le mot clé FISSURE du mot clé facteur THETA
+   
+   L'utilisateur se trouve en STA11 dans la configuration 1., il ne faut donc pas appeler
+   DEFI_FISS_XFEM. Il se trouve qu'une anomalie (issue20380) non encore corrigée dans
+   DEFI_FISS_XFEM à fait planter le code avant l'appel à CALC_G. Sans cette anomalie, le code
+   se serait arrêté proprement en erreur fatale dans CALC_G avec le message utilisateur suivant :
+   
+   « Lorsque le modèle n'est pas de type X-FEM il n'est pas possible d'utiliser
+   le mot-clé FISSURE de la commande CALC_G.
+   -> Risque et Conseil :
+   Veuillez utiliser les mots-clés FOND_FISS ou THETA ou revoir votre modèle. »
+   
+   Impact :
+   ---------
+   
+   Aucun, les docs U4.82.03 (opérateur CALC_G) et U2.05.01 (Notice d'utilisation des
+   opérateurs de mécanique de la rupture pour l'approche classique) sont claires sur ce point
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+    aucun
+NB_JOURS_TRAV  : 0.25
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR desoza       DE SOZA Thomas         DATE 05/03/2013 - 13:12:54
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 020449 DU 2013-02-22 16:29:30
+TYPE anomalie concernant Code_Aster (VERSION 10.5)
+TITRE
+    Fuite mémoire dans te0347
+FONCTIONNALITE
+   '''
+   Si on ajoute à la ligne 152 de te0347.f la ligne suivante :
+   CALL JEVECH ( 'PCOMPOR', 'L', ICOMPO )
+   ou 
+   CALL TECACH('ONN','PCOMPOR','L',1,ICOMPO,IRET)
+   
+   Le test zzzz234a plante en floating point exception.
+   
+   En regardant de plus près on voit que la valeur de XL est modifiée lors de l'appel à RCVALB.
+   '''
+   
+   Le code retour IRET donné à RCVALB est de taille 1 alors que 2 valeurs sont écrites (pour
+   E et NU) d'où un écrasement.
+   
+   La correction de ce bug est prise en compte dans issue19235.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+    perso
+NB_JOURS_TRAV  : 0.1
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 020415 DU 2013-02-19 12:59:59
+TYPE aide utilisation concernant Code_Aster (VERSION 10.5)
+TITRE
+    Amélioration du calcul des résultantes FORC_NODA
+FONCTIONNALITE
+   Contexte
+   ========
+   
+   '''
+   Dans le cadre des modélisations que nous menons au Centre d'Ingénierie Hydraulique, nous
+   avons souvent 
+   besoin de connaitre de manière exacte les transmissions d'efforts entre les différentes
+   parties des 
+   structures (notamment résultantes des efforts transmis du barrage vers sa fondation
+   rocheuse). Pour cela, 
+   nous utilisons FORC_NODA, cependant les résultats sont inexacts et il n'est pas rare de
+   détecter des erreurs 
+   allant jusqu'à 5%.
+   
+   Je vous joins un fichier avec le cas d'un ouvrage réel. Le barrage a un volume de
+   3,53203E4 m3, une masse 
+   volumique de 2400 kg/m3 et une constante de pesanteur de 9,81 sont prises en compte, la
+   résultante devrait 
+   donc être de 8,31581E8 N. le calcul FORC_NODA donne une résultante de 8,22676E8 N, soit
+   une erreur de 1,1%.
+   '''
+   
+   Explication
+   ===========
+   
+   Les écarts constatés en calculant la résultante suivant Z du champ de forces nodales sont
+   normaux et liés aux charges réparties dont la pesanteur est un cas particulier.
+   
+   En éléments finis, les charges réparties se traduisent par l'application d'une force en
+   **chacun** des noeuds de la zone chargée. Cette force dépend de la taille des éléments qui
+   concourent en ce noeud.
+   
+   Le champ FORC_NODA dans Code_Aster est un champ de vecteurs qui englobe les forces nodales
+   en chaque noeud du modèle. À convergence, ce champ ne contient plus que les forces issues
+   du chargement extérieur et des réactions d'appui :
+   
+   1. Pour un FORC_NODA calculé sur le modèle complet, les réactions d'appui correspondent
+   aux efforts au niveau des conditions aux limites.
+   2. Pour un FORC_NODA calculé sur une partie isolée du modèle (avec CALC_CHAMP/GROUP_MA),
+   les réactions d'appui correspondent à l'effort exercé par le reste de la structure sur la
+   partie isolée.
+   
+   Ainsi en présence d'un chargement de pesanteur, lorsque l'on se place à l'interface entre
+   la partie isolée et le reste de la structure (groupe 'CONTACT' dans le cas transmis), les
+   forces nodales sont constituées à la fois de la réaction du reste de la structure et d'une
+   contribution au chargement de pesanteur (d'autant plus petite que les mailles limitrophes
+   de l'interface sont petites). Lorsque l'on calcule la résultante on ne trouve donc pas
+   exactement le poids de la structure.
+   
+   ==> J'ai illustré cette particularité sur un exemple très simple d'une poutre à 4 éléments
+   chargée sur une seule moitié, cf. PDF joint. On voit que sur le noeud 3, F3 qui est la
+   résultante sur l'interface n'est pas égale au poids de la structure chargée (25% d'erreur
+   pour un maillage découpé en 4).
+   
+   Solution
+   ========
+   
+   Pour pallier cela, il suffit de retirer les forces nodales issues du chargement de
+   pesanteur, c'est exactement ce à quoi sert l'option REAC_NODA.
+   En calculant la résultante des REAC_NODA, on retrouve le résultat attendu.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : U4.81.04
+VALIDATION
+    étude jointe
+NB_JOURS_TRAV  : 0.5
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 020412 DU 2013-02-19 10:18:07
+TYPE anomalie concernant Code_Aster (VERSION 10.5)
+TITRE
+    faute de frappe dans dxtbm.f
+FONCTIONNALITE
+   On corrige une coquille (sans conséquence) dans la routine de calcul de la matrice de
+   membrane des éléments de plaque triangulaires (dxtbm.f).
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+    néant
+NB_JOURS_TRAV  : 0.1
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 016860 DU 2011-05-02 11:28:32
+TYPE evolution concernant Code_Aster (VERSION )
+TITRE
+    CTC5 - Recherche lineaire dans l'algorithme de projection du contact
+FONCTIONNALITE
+   Contexte
+   ========
+   
+   La fiche issue16830 a montré des défauts dans l'algorithme de projection actuel pour le
+   contact. En particulier dans certaines situations (notamment projection sur un quadrangle
+   distordu) on constate que l'algorithme trouve une solution de très mauvaise qualité bien
+   que celle-ci vérifie parfaitement le critère de convergence.
+   
+   L'analyse du problème a conduit à pointer les défauts suivants :
+   - le point de départ de l'algorithme a une influence importante sur la solution obtenue
+   (on est dans un cas où l'unicité n'est plus garantie)
+   - dès la 2ème itération de Newton, l'itéré produit est très mauvais et très en dehors de
+   l'élément de référence
+   
+   Concernant le premier point, il est difficile de faire mieux que ce qu'il y a actuellement
+   : prendre le point de coordonnées paramétriques (0,0).
+   S'agissant du second point, on propose dans cette fiche une amélioration de l'algorithme.
+   
+   Détails
+   =======
+   
+   On a ajouté à l'algorithme de Newton réalisant la projection la capacité de faire de la
+   recherche linéaire.
+   Le type de recherche linéaire choisi est dit "à rebroussement" et est calqué sur celui
+   implanté dans l'algorithme de Newton d'intégration du comportement (PLASTI, décrit dans
+   R5.03.14). Avec cette recherche linéaire, on ne cherche un paramètre d'avancement que dans
+   la gamme [0,1], ce qui est cohérent avec l'idée d'empêcher l'algorithme de trop s'éloigner
+   de la maille de référence.
+   
+   Le paramètre d'avancement choisi est construit par approximation quadratique ou cubique de
+   la fonctionnelle à annuler. On commence toujours par tester un paramètre d'avancement égal
+   à 1. Le critère de choix s'appuie sur la règle d'Armijo.
+   
+   Utilisation
+   ===========
+   
+   La recherche linéaire est activée automatiquement sans action de la part de l'utilisateur.
+   Par ailleurs cet apport de robustesse a conduit à réactiver l'erreur fatale en cas d'échec
+   de la projection (auparavant on sélectionnait l'itéré minimisant la distance au cours des
+   itérations).
+   
+   Validation
+   ==========
+   
+   L'intégralité des tests faisant appel à l'appariement ont été passés avec succès (353 tests).
+   
+   Performances
+   ============
+   
+   Cet ajout à l'algorithme dégrade très légèrement les performances. Sur le test SSNP157A
+   qui réalise plus de 200 appariements on passe d'environ 21s à 23s pour l'appariement mais
+   cette variation est du même ordre que celle liée à la reproductibilité des temps.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : R5.03.50
+VALIDATION
+    astout contact
+NB_JOURS_TRAV  : 2.5
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR geniaut      GENIAUT Samuel         DATE 03/05/2013 - 01:23:34
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 020454 DU 2013-02-25 12:53:05
+TYPE anomalie concernant Code_Aster (VERSION 11.4)
+TITRE
+    MAC3COEUR : perte de temps dans les sous-decoupage des pas de temps
+FONCTIONNALITE
+   Dans MAC3COEUR, on utilise en dur : ITER_GLOB_MAXI = 30 lors des appels à STAT_NON_LINE.
+   Cette valeur est passée de 10 à 20 (en 11.1.22) puis de 20 à 30 (en 11.1.23) mais la
+   raison n'a pas été indiquée.
+   
+   Cela occasionne une perte de temps non négligeable lors de la sous-découpe du pas de
+   temps, car dès les 6-7 premières itérations de Newton, on voit que l'on ne convergera pas.
+   
+   De plus, de manière générale, la convergence (quand elle a lieu) se fait en maximum 7
+   itérations. Il n'y a donc aucune raison de choisir ITER_GLOB_MAXI = 30.
+   
+   
+   -> on remet la valeur par défaut (ITER_GLOB_MAXI = 10).
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  OUI
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+    tests mac3*
+NB_JOURS_TRAV  : 0.5
+--------------------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR perony       PERONY Raphael         DATE 03/05/2013 - 01:23:35
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 020476 DU 2013-02-27 16:56:01
+TYPE evolution concernant Code_Aster (VERSION )
+TITRE
+    MAC3COEUR : retrait du contact qu'au dernier STAT_NON_LINE
+FONCTIONNALITE
+   Suite aux fiches issue19170 et issue19812, la simulation d'un cycle d'irradiation se
+   décompose en 3 STAT_NON_LINE :
+     --> Le 1er STAT_NON_LINE simule : fermeture de cuve + montée en température + 100%PN +
+   descente en température
+     --> Le 2ème STAT_NON_LINE simule une 1ère partie de l'ouverture de cuve : on relâche les
+   contacts entre assemblages et on relache progressivement la flèche des ressorts de
+   maintien de 2 tiers.
+     --> Le 3ème STAT_NON_LINE simule une 2ème partie de l'ouverture de cuve : on retire le
+   chargement de maintien (décharge "brusque")
+   
+   
+   Le SEPTEN a observé des problèmes de convergence lors du 2ème STAT_NON_LINE.
+   Pour résoudre le problème, nous proposons de ne relâcher les contacts entre assemblages
+   qu'au dernier STAT_NON_LINE, ce qui est d'ailleur plus réaliste.
+   
+   Impact sur le fichier calc_mac3coeur_ops.py : dans le 2ème STAT_NON_LINE, on remplace
+   "CHAM_MATER=_AF_MSC" par "CHAM_MATER=_AF_MAC".
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+    tous les cas test mac3coeur
+NB_JOURS_TRAV  : 1.0
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 020468 DU 2013-02-27 09:58:51
+TYPE evolution concernant Code_Aster (VERSION )
+TITRE
+    MAC3COEUR : mise à jour des flèches des ressorts de maintien
+FONCTIONNALITE
+   Suite aux fiches issue19170 et issue19812, l'objet de cette fiche est de mettre 
+   à jour la valeur des flèches des ressorts de maintien, à la fermeture de la 
+   cuve, pour les palier CPY et 1300 MWe.
+   
+   Fichiers impactés :
+   Coeur_900.datg, Coeur_1300.datg
+   
+   La note associée pour le descriptif des phénomènes physiques est la suivante :
+   H-T64-2012-01646-FR.
+   Cette note sert de validation pour les simulations sur les paliers CPY et 1300MWe.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+    tous les cas test mac3coeur
+NB_JOURS_TRAV  : 0.1
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 020458 DU 2013-02-26 15:25:48
+TYPE evolution concernant Code_Aster (VERSION )
+TITRE
+    Extension au cas mono-assemblage de PERM_MAC3COEUR
+FONCTIONNALITE
+   Suite à l'extension de CALC_MAC3COEUR au cas mono-assemblage (cf. issue20143) et afin de
+   simuler plusieurs cycle de fonctionnement, il est également nécessaire d'étendre
+   PERM_MAC3COEUR au cas mono-assemblage.
+   
+   Concrètement, ce (mono-)assemblage est permuté avec lui même, mais il s'agit surtout de
+   créer un état initial lisible par le mot clé RESU_INIT de CALC_MAC3COEUR.
+   
+   Impact sur le fichier perm_mac3coeur.capy : On ajoute simplement "MONO" comme valeur
+   possible de TYPE_COEUR.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : U4.90.13
+VALIDATION
+    mac3c03a
+NB_JOURS_TRAV  : 0.1
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR martin       MARTIN Alexandre       DATE 03/04/2013 - 02:27:21
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 020380 DU 2013-02-12 14:40:09
+TYPE anomalie concernant Code_Aster (VERSION 11.3)
+TITRE
+    X-FEM : amélioration du "Fit-To-Vertex" en quadratique
+FONCTIONNALITE
+   Problème :
+   ----------
+   
+   Dans le calcul proposé, le code s'arrête dans DEFI_FISS_XFEM sur une "Floatting Point
+   Exception".
+   
+   Analyse :
+   ---------
+   
+   Une première analyse menée par Samuel a permis d'identifier que le problème se située dans
+   la routine xajuls, lors de l'étape de "fit to vertex" pour les noeuds milieux des éléments
+   quadratiques. L'algorithme utilisé dans cette étape est le suivant. On a calculé les
+   maxima lsnmax et lstmax des valeurs absolues des level-sets normales et tangentes,
+   respectivement. On compare lsn(M)/lsnmax et lst(M)/lstmax au seuil fixé pour savoir si on
+   doit ramener lsn(M) ou lst(M) à zéro.
+   
+   La fissure définie par l'utilisateur est telle que la level-set tangente est nulle sur
+   toute une partie du bord de la pièce. Pour les mailles situées dans cette partie du bord,
+   on a lstmax = 0 et l'évaluation de lst(M)/lstmax provoque donc une division par 0.
+   
+   Correction :
+   ------------
+   
+   Après avoir essayé plusieurs démarches, j'ai choisi d'appliquer une stratégie proposée par
+   Samuel. On peut avoir lsnmax = 0 ou lstmax = 0 seulement dans le cas des mailles de bord.
+   Or, il n'est pas nécessaire de parcourir les mailles de bord lors de l'étape de "fit to
+   vertex". En effet, le parcours des mailles principales va réaliser le "fit to vertex" pour
+   les noeuds du bord. J'ai donc ajouté deux appels à DISMOI pour connaître la dimension du
+   maillage NDIME et la dimension topologique de la maille courante NDIM. Si NDIM < NDIME, la
+   maille courante est un point ou une maille de bord et n'est donc pas traitée.
+   
+   Corrections supplémentaires :
+   -----------------------------
+   
+   Afin de pousser l'analyse jusqu'au bout, j'ai travaillé sur un cas où lsnmax devient nul
+   sur une partie des mailles du bord. J'ai ainsi pu constater quelques bugs supplémentaires.
+   
+   Dans les routines xdecqu et xdecqv qui réalise le découpage en sous-éléments des éléments
+   quadratiques, l'algorithme pour déterminer si l'élément doit être découpé est :
+     1- chercher l'indice i du premier noeud de l'élément qui a une lsn non nulle,
+     2- chercher s'il existe un noeud k tel que lsn(i)*lsn(k) < 0. Si tel est le cas, alors
+   l'élément doit être coupé.
+   Le problème est que dans la programmation actuelle, la boucle qui réalise l'étape 1- ne
+   s'arrête pas si toutes les lsn sont nulles. Je l'ai réécrite sous la forme d'une boucle
+   "tant que i < nombre de noeuds de l'élément".
+   
+   Dans la programmation actuelle, le code plante ensuite dans la routine te0514, car il
+   détecte trois points d'intersection --- ce qui est normal puisqu'on considère un segment à
+   trois noeuds coïncidant avec la fissure --- car seuls deux points d'intersection sont
+   attendus. Ce bug vient d'un sous-dimensionnement du champ PPINTO dans les catalogues
+   d'éléments X-FEM 1D définissant des éléments quadratiques (i.e. gener_medpl1_xh,
+   gener_medpl1_xht et gener_medpl1_xt). J'ai donc passé la taille du champ PPINTO à 6, soit
+   la taille nécessaire pour stocker les coordonnées 2D de trois points d'intersection.
+   
+   Enfin, une analyse du code de la routine xdecqv m'a permis d'identifier que le critère
+   indiquant si la valeur de la fonction d'Heaviside pour un sous-élément de bord doit être
+   recalculé plus tard dans xoripe est faux pour les éléments quadratiques. En effet, le
+   critère stipule que le nombre de points d'intersection de l'élément de bord NINTER et le
+   nombre de points d'intersection coïncidant avec un noeud sommet NPTS doit être égal à la
+   dimension NDIM. Pour les éléments linéaires, on a :
+      - en 2D : NINTER = NPTS = 2, pour les segments à deux noeuds,
+      - en 3D : NINTER = NPTS = 3, pour les triangles à trois noeuds.
+   Cependant, pour les éléments quadratiques, on a :
+      - en 2D : NINTER = 3 et NPTS = 2, pour les segments à trois noeuds,
+      - en 3D : NINTER = 6 et NPTS = 3, pour les triangles à six noeuds.
+   J'ai donc remplacé le critère pour les éléments quadratiques par : NPTS = NDIM.
+   
+   Impact :
+   --------
+   
+   - sources fortran : xajuls.f, xdecqu.f et xdecqv.f,
+   - catalogues : gener_medpl1_xh.cata, gener_medpl1_xht.cata et gener_medpl1_xt.cata.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  OUI   DEPUIS : 11.2.7
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+    passage du calcul problématique + passage de l'ensemble des cas-tests X-FEM
+NB_JOURS_TRAV  : 4.0
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR sellenet     SELLENET Nicolas       DATE 03/04/2013 - 02:00:07
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 020432 DU 2013-02-21 13:04:23
+TYPE anomalie concernant Code_Aster (VERSION 10.5)
+TITRE
+    En NEW11.03.09, le cas-test feti007a est NOOK sur Rocks.
+FONCTIONNALITE
+   Problème :
+   ----------
+   En NEW11.03.09, le cas-test feti007a est NOOK sur Rocks.
+   
+   
+   Solution :
+   ----------
+   J'ai modifié le maillage de feti007a, il faut que je modifie aussi les valeurs de
+   référence pour que le test passe sur Rocks (clpaster).
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+    feti007a sur aster4 et clpaster
+NB_JOURS_TRAV  : 0.1
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 020428 DU 2013-02-21 09:28:02
+TYPE anomalie concernant Code_Aster (VERSION 10.5)
+TITRE
+    zzzz112c: fichier identique sur les unitxc3xa9s 22 et 23
+FONCTIONNALITE
+   Ce sont des fichiers résultats produits par PRE_IDEAS : à supprimer.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+    aucune
+NB_JOURS_TRAV  : 0.01
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 020435 DU 2013-02-21 13:52:12
+TYPE anomalie concernant Code_Aster (VERSION 10.5)
+TITRE
+    En NEW11.03.09, le cas-test wtnv135d est NOOK sur Rocks (clpaster)
+FONCTIONNALITE
+   Problème :
+   ----------
+   En NEW11.03.09, le cas-test wtnv135d est NOOK sur Rocks (clpaster).
+   
+   
+   Solution :
+   ----------
+   Il est à nouveau ok cette semaine. Cela ne va sans doute pas durer mais en attendant, je
+   classe la fiche.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+    wtnv135d sur Rocks (clpaster)
+NB_JOURS_TRAV  : 0.1
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 020463 DU 2013-02-26 17:26:06
+TYPE anomalie concernant Code_Aster (VERSION 10.5)
+TITRE
+    [FORUM] Assert dans LIAISON_MAIL/COQUE_MASSIF
+FONCTIONNALITE
+   Problème :
+   ----------
+   Dans le calcul joint, on plante dans un ASSERT lors de la définition d'une liaison
+   massif-coque avec AFFE_CHAR_MECA/LIAISON_MAIL.
+   
+   Le maillage laisse à penser que l'on essaye de faire une liaison non conforme (pas dans le
+   plan de la coque).
+   
+   
+   Solution :
+   ----------
+   Le plantage vient du fait que le champ donné dans le mot-clé simple CHAM_NORMALE de
+   LIAISON_MAIL n'est pas défini sur tous les noeuds donnés dans GROUP_NO_ESCL.
+   
+   Il faut donc préciser le message :
+   """
+    Le champ norcoext n'est pas défini sur la totalité des noeuds précisés
+    dans le mot-clé GROUP_MA_ESCL, GROUP_NO_ESCL, MAILLE_ESCL ou
+    NOEUD_ESCL.
+   
+    Il vous faut compléter le champ norcoext.
+   """
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+    etude jointe
+NB_JOURS_TRAV  : 0.5
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR tardieu      TARDIEU Nicolas        DATE 03/04/2013 - 02:16:00
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 015988 DU 2010-11-29 17:16:18
+TYPE evolution concernant Code_Aster (VERSION )
+TMA : DeltaCad
+TITRE
+    Permettre la definition d'un discret 1D type "charniere"
+FONCTIONNALITE
+   Résumé :
+   ----------
+   Le sujet de cette fiche est la production d'un élément fini ou d'un ensemble de discrets pour permettre la 
+   modélisation d'une charnière.
+   Il s'agit d'une idée qui est apparue lors d'une réunion Omarisi ce qui explique l'attribution initiale à 
+   ce projet.
+   Depuis 2 ans maintenant, les discussions se sont succédées mais sans converger et sans que le besoin ne se 
+   fasse particulièrement sentir.
+   Je classe donc la fiche sans suite.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+    sans objet
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 020483 DU 2013-02-28 09:01:07
+TYPE anomalie concernant Code_Aster (VERSION 10.5)
+TITRE
+    Mettre zzzz337a.comm en internet
+FONCTIONNALITE
+   Problème :
+   ----------
+   zzzz337a.comm est en intranet. Faut-il le garder ainsi?
+   
+   Solution :
+   ----------
+   zzzz337a.comm est en intranet par héritage du fdlv112b.comm, qui l'est lui-même pour son usage de miss3D.
+   Dans la mesure où miss3D n'est pas utilisé dans ce test, rien ne s'oppose à sa mise en internet.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+    sans objet
+NB_JOURS_TRAV  : 0.1
+--------------------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR taheri       TAHERI Said            DATE 03/04/2013 - 02:16:01
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 019955 DU 2012-11-19 08:45:46
+TYPE evolution concernant Code_Aster (VERSION )
+TMA : Necs
+TITRE
+    Macro de mise en forme de champs de variables internes et de contraintes Aster-EPX
+FONCTIONNALITE
+   Le but est de construire une macro Aster permettant de mettre les champs de variables
+   internes issue de la loi Johnson Cook d'Aster au format de cette même loi Johnson Cook
+   d'EPX, et inversement.
+   
+   2 macros ont été livrées.
+   
+   Macro 1 : crée, à partir d'un résultat utilisant la loi VMIS_JOHN_COOK et d'un instant
+   donné, un résultat contenant les déplacements et les contraintes du résultats en entrée à
+   l'instant donnés et le champ de variables internes de JOHNSON COOK mis en forme pour EPX.
+   
+   Macro 2 : lit les champs de déplacement, contraintes et variables internes contenus dans
+   un fichier MED issus d'EPX (calcul avec la loi VMJC) pour un instant donné.
+   On transforme ensuite les variables internes EPX en variables internes aster et construit
+   un résultat avec les champ DEPL SIEF_ELGA et VARI_ELGA.
+   On calcule le champ EPSP_ELGA. Puis à l'aide de CREA_CHAMP on fabrique un champ de
+   contraintes à partir de EPSP_ELGA.
+   Enfin on construit le résultat final à partir de ce champ de contrainte,le champ DEPL lu
+   dans le fichier med et le champ VARI_ELGA transformé pour Aster.
+   
+   
+   Par contre, aucun source ne sera livré dans le code, le périmètre fonctionnel du développement étant 
+   réduit à l'application visée dans la thèse sur le grenaillage.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+    test perso
+--------------------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR tardieu      TARDIEU Nicolas        DATE 03/04/2013 - 02:16:02
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 020490 DU 2013-02-28 13:46:31
+TYPE anomalie concernant Code_Aster (VERSION 10.5)
+TITRE
+    En NEW11.03.11, le cas-test sdlx400c sxe2x80x99arrxc3xaate en erreur fatale sur Aster4, Rocks et Calibre7.
+FONCTIONNALITE
+   Problème :
+   ----------
+   En NEW11.03.11, le cas-test sdlx400c s’arrête en erreur fatale sur Aster4, Rocks et Calibre7. 
+   
+   Solution :
+   ----------
+   Il s'agit d'un oubli de modification des noms de groupes de mailles et de noeuds préfixés dans le maillage 
+   par GROUP_MA* et GROUP_NO* dans le cadre de la fiche issue20368.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+    Passage cas test
+NB_JOURS_TRAV  : 0.2
+--------------------------------------------------------------------------------
+
+
+
+========================================================================
+=== Recapitulation des operations demandees pour toutes les restitutions
+========================================================================
+
+
+    TYPE Action    unite                      user      Auteur         nblg  ajout suppr.
+
+       C MODIF supervis/med_aster_module    cheignon E.CHEIGNON          93     11     13
+ CASTEST AJOUT sdls106h                         brie N.BRIE             357    357      0
+ CASTEST AJOUT ssnl133c                     cheignon E.CHEIGNON         356    356      0
+ CASTEST AJOUT ssnl133d                     cheignon E.CHEIGNON         356    356      0
+ CASTEST AJOUT ssnl133e                     cheignon E.CHEIGNON         356    356      0
+ CASTEST MODIF feti007a                     sellenet N.SELLENET         283      3      2
+ CASTEST MODIF sdld102a                      alarcon A.ALARCON         1134      9      9
+ CASTEST MODIF sdld103a                      alarcon A.ALARCON         1708      3      3
+ CASTEST MODIF sdld106a                      alarcon A.ALARCON          231      2      2
+ CASTEST MODIF sdld22b                       alarcon A.ALARCON          993     22     22
+ CASTEST MODIF sdld321b                      alarcon A.ALARCON         1009     37     35
+ CASTEST MODIF sdld325a                      alarcon A.ALARCON         1446     47     47
+ CASTEST MODIF sdld325b                      alarcon A.ALARCON         1594     51     51
+ CASTEST MODIF sdls106a                         brie N.BRIE             541      8     12
+ CASTEST MODIF sdls106b                         brie N.BRIE             368      9     13
+ CASTEST MODIF sdls106c                         brie N.BRIE             370      9     13
+ CASTEST MODIF sdls106d                         brie N.BRIE             333      9     13
+ CASTEST MODIF sdls106e                         brie N.BRIE             369      8     12
+ CASTEST MODIF sdls106f                         brie N.BRIE             272      8     12
+ CASTEST MODIF sdls106g                         brie N.BRIE             306     14     15
+ CASTEST MODIF sdlx400c                      tardieu N.TARDIEU          357    238    271
+ CASTEST MODIF sdnd104a                      alarcon A.ALARCON         1014      2      2
+ CASTEST MODIF sdnl102a                     cheignon E.CHEIGNON         300      3      3
+ CASTEST MODIF ssnl133b                     cheignon E.CHEIGNON         372      2      2
+ CASTEST MODIF zzzz337a                      tardieu N.TARDIEU          511      2      2
+CATALOGU MODIF typelem/gener_medpl1_xh        martin A.MARTIN            88      8      7
+CATALOGU MODIF typelem/gener_medpl1_xht       martin A.MARTIN            89      8      7
+CATALOGU MODIF typelem/gener_medpl1_xt        martin A.MARTIN            90     13     12
+CATALOGU MODIF typelem/gener_mepde1         cheignon E.CHEIGNON         290     10      6
+CATALOGU MODIF typelem/gener_mepdg1         cheignon E.CHEIGNON         279     10      7
+CATALOGU MODIF typelem/gener_mepdt1         cheignon E.CHEIGNON         290     10      6
+CATALOPY MODIF commande/norm_mode               brie N.BRIE              56     10      7
+CATALOPY MODIF commande/perm_mac3coeur       geniaut S.GENIAUT           30      3      3
+    DATG MODIF Coeur_1300.datg             S.GENIAUT 109                  2      2      0
+    DATG MODIF Coeur_900.datg              S.GENIAUT 111                  2      2      0
+ FORTRAN AJOUT algorith/mmreli                desoza T.DESOZA           144    144      0
+ FORTRAN AJOUT algorith/mmresi                desoza T.DESOZA           110    110      0
+ FORTRAN AJOUT elements/porea1              cheignon E.CHEIGNON         109    109      0
+ FORTRAN AJOUT elements/porea2              cheignon E.CHEIGNON          86     86      0
+ FORTRAN MODIF algeline/op0037                  brie N.BRIE             620     31      7
+ FORTRAN MODIF algorith/mdchge                  brie N.BRIE             230      9      7
+ FORTRAN MODIF algorith/mdruku               alarcon A.ALARCON          480      3      3
+ FORTRAN MODIF algorith/mm2onf                desoza T.DESOZA           100      4      4
+ FORTRAN MODIF algorith/mmnewt                desoza T.DESOZA           254     14     24
+ FORTRAN MODIF algorith/op0046              cheignon E.CHEIGNON         252      3      3
+ FORTRAN MODIF algorith/op0048              cheignon E.CHEIGNON         297      2      2
+ FORTRAN MODIF algorith/xajuls                martin A.MARTIN           206     27     19
+ FORTRAN MODIF algorith/xdecqu                martin A.MARTIN           362     16      8
+ FORTRAN MODIF algorith/xdecqv                martin A.MARTIN           362     38     22
+ FORTRAN MODIF calculel/ccfnrn              cheignon E.CHEIGNON         478      9      5
+ FORTRAN MODIF elements/dxtbm                 desoza T.DESOZA            51      3      3
+ FORTRAN MODIF elements/te0023              cheignon E.CHEIGNON          74     14      2
+ FORTRAN MODIF elements/te0247              cheignon E.CHEIGNON         417     74     41
+ FORTRAN MODIF elements/te0346              cheignon E.CHEIGNON         188     58     38
+ FORTRAN MODIF elements/te0347              cheignon E.CHEIGNON         238     25      6
+ FORTRAN MODIF elements/te0516              cheignon E.CHEIGNON         559     22     55
+ FORTRAN MODIF elements/te0517              cheignon E.CHEIGNON         197     60    130
+ FORTRAN MODIF modelisa/calir3              sellenet N.SELLENET         108      5      2
+ FORTRAN MODIF modelisa/immeca                  brie N.BRIE             521      9      7
+ FORTRAN MODIF modelisa/orilgm                  brie N.BRIE             367     10     10
+ FORTRAN MODIF modelisa/topoca                  brie N.BRIE             484      8      6
+ FORTRAN MODIF soustruc/utreno                  brie N.BRIE              69      6      5
+ FORTRAN MODIF utilitai/dismlg              cheignon E.CHEIGNON         471     13      5
+ FORTRAN MODIF utilitai/dismmo              cheignon E.CHEIGNON         237      3      3
+ FORTRAN MODIF utilitai/rfnoch                  brie N.BRIE              86      6      5
+ FORTRAN MODIF utilitai/rfrcha                  brie N.BRIE             168      7      5
+ FORTRAN MODIF utilitai/rfresu                  brie N.BRIE             123      5      4
+  PYTHON MODIF Mac3coeur/calc_mac3coeur_ops    geniaut S.GENIAUT          403      2     13
+  PYTHON MODIF Macro/calc_europlexus_ops    cheignon E.CHEIGNON        2632     80    191
+  PYTHON MODIF Messages/champs              sellenet N.SELLENET          94      8      4
+  PYTHON MODIF Messages/elements3           cheignon E.CHEIGNON         261      8     17
+  PYTHON MODIF Messages/elements4           cheignon E.CHEIGNON         239      2     10
+  PYTHON MODIF Messages/soustruc                brie N.BRIE             433      3      2
+
+
+        nb unites  nb lignes  ajouts  suppr.  difference
+ AJOUT :    8        1874      1874             +1874
+ MODIF :   65       26881      1160    1277      -117
+ SUPPR :    0           0                 0        +0
+ DEPLA :    0           0 
+         ----      ------     ------  ------   ------
+ TOTAL :   73       28755      3034    1277     +1757 
