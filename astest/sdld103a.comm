@@ -1,4 +1,4 @@
-# MODIF  DATE 26/02/2013   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 04/03/2013   AUTEUR ALARCON A.ALARCON 
 # TITRE SYSTEME MASSES-RESSORTS LINEAIRE MULTI-SUPPORTE (TRANSLATION)
 # sdld103a.para = tps_job 90 mem_job 512Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -351,7 +351,7 @@ RESRRK54=REST_GENE_PHYS(  RESU_GENE=TRA_RK54,
                          LIST_INST=L_RECU,
                         TOUT_CHAM='OUI',)
 
-RESRRK32=REST_GENE_PHYS(  RESU_GENE=TRA_RK54,
+RESRRK32=REST_GENE_PHYS(  RESU_GENE=TRA_RK32,
                          INTERPOL='LIN',
                          PRECISION=4.E-3,
                          LIST_INST=L_RECU,
@@ -1034,7 +1034,7 @@ TEST_FONCTION(VALEUR=(_F(VALE_CALC=-0.4096041,
                          VALE_REFE= XRNO4a(1.),
                          VALE_PARA=1.0,
                          FONCTION=NO4DXR_A,),
-                      _F(VALE_CALC=-11.03806,
+                      _F(VALE_CALC=-11.0380598,
                          PRECISION=1.E-3,
                          REFERENCE='ANALYTIQUE',
                          VALE_REFE= XRNO4a(0.30),
