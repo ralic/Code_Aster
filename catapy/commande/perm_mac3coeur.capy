@@ -1,7 +1,7 @@
-#& MODIF COMMANDE  DATE 04/09/2012   AUTEUR FERNANDES R.FERNANDES 
+#& MODIF COMMANDE  DATE 05/03/2013   AUTEUR GENIAUT S.GENIAUT 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
@@ -22,7 +22,7 @@ PERM_MAC3COEUR = MACRO(nom="PERM_MAC3COEUR",
                        op=OPS("Mac3coeur.perm_mac3coeur_ops.perm_mac3coeur_ops"),
                        sd_prod=evol_noli,
 
-         TYPE_COEUR   = SIMP(statut='o',typ='TXM',into=("TEST","900","1300","N4","EPR") ),
+         TYPE_COEUR   = SIMP(statut='o',typ='TXM',into=("MONO","TEST","900","1300","N4","EPR") ),
          TABLE_N      = SIMP(statut='o',typ=table_sdaster),         # TABLE INITIALE DES DAMAC A L INSTANT N
          RESU_N       = SIMP(statut='o',typ=evol_noli),             # RESULTAT A L INSTANT N A PERMUTER
          TABLE_NP1    = SIMP(statut='o',typ=table_sdaster),         # TABLE INITIALE DES DAMAC A L INSTANT N+1

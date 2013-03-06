@@ -1,4 +1,4 @@
-#@ MODIF calc_mac3coeur_ops Mac3coeur  DATE 04/02/2013   AUTEUR PERONY R.PERONY 
+#@ MODIF calc_mac3coeur_ops Mac3coeur  DATE 05/03/2013   AUTEUR GENIAUT S.GENIAUT 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -53,9 +53,6 @@ def calc_mac3coeur_ops(self, **args):
 
     _TAB_N       = self['TABLE_N']
     _tabn1       = _TAB_N.EXTR_TABLE()
-
-    # ITER_GLOB_MAXI pour STAT_NON_LINE
-    NITER=30
 
     # on recupere le nom du coeur
     name = _tabn1.para[0]
@@ -172,7 +169,6 @@ def calc_mac3coeur_ops(self, **args):
                       INCREMENT   = _F(LIST_INST = _time, INST_FIN=_coeur.temps_simu['T8']),
                       NEWTON      = _F(MATRICE='TANGENTE', REAC_ITER=1,),
                       SOLVEUR     = _F(METHODE='MUMPS',RENUM='AMF',GESTION_MEMOIRE='OUT_OF_CORE',ELIM_LAGR2='NON',PCENT_PIVOT=200,),
-                      CONVERGENCE=_F(ITER_GLOB_MAXI=NITER),
                                       );
        else:
           RESUC1 = STAT_NON_LINE(
@@ -199,11 +195,10 @@ def calc_mac3coeur_ops(self, **args):
                       INCREMENT   = _F(LIST_INST = _time, INST_FIN=_coeur.temps_simu['T8']),
                       NEWTON      = _F(MATRICE='TANGENTE', REAC_ITER=1,),
                       SOLVEUR     = _F(METHODE='MUMPS',RENUM='AMF',GESTION_MEMOIRE='OUT_OF_CORE',ELIM_LAGR2='NON',PCENT_PIVOT=200,),
-                      CONVERGENCE=_F(ITER_GLOB_MAXI=NITER),
                                       );
        RESUC1 = STAT_NON_LINE( reuse = RESUC1,
                       MODELE      = _MO_N,
-                      CHAM_MATER  = _AF_MSC,
+                      CHAM_MATER  = _AF_MAC,
                       CARA_ELEM   = _CARA,
                       ETAT_INIT   = _F(EVOL_NOLI=RESUC1),
                       EXCIT       =(
@@ -222,7 +217,6 @@ def calc_mac3coeur_ops(self, **args):
                       INCREMENT   = _F(LIST_INST = _time, INST_FIN=_coeur.temps_simu['T8b']),
                       NEWTON      = _F(MATRICE='TANGENTE', REAC_ITER=1,),
                       SOLVEUR     = _F(METHODE='MUMPS',RENUM='AMF',GESTION_MEMOIRE='OUT_OF_CORE',ELIM_LAGR2='NON',PCENT_PIVOT=200,),
-                      CONVERGENCE=_F(ITER_GLOB_MAXI=NITER),
                        );
                        
        RESUC1 = STAT_NON_LINE( reuse = RESUC1,
@@ -245,9 +239,6 @@ def calc_mac3coeur_ops(self, **args):
                       INCREMENT   = _F(LIST_INST = _time),
                       NEWTON      = _F(MATRICE='TANGENTE', REAC_ITER=1,),
                       SOLVEUR     = _F(METHODE='MUMPS',RENUM='AMF',GESTION_MEMOIRE='OUT_OF_CORE',ELIM_LAGR2='NON',PCENT_PIVOT=200,),
-                      CONVERGENCE=_F(ITER_GLOB_MAXI=NITER
-                                     #RESI_GLOB_MAXI=1e-10,
-                                     ),
                        );
 
 
@@ -315,7 +306,6 @@ def calc_mac3coeur_ops(self, **args):
                               INCREMENT   = _F(LIST_INST = _time, INST_FIN = _coeur.temps_simu['T1'],),
                               NEWTON      = _F(MATRICE='TANGENTE', REAC_ITER=1,),
                               SOLVEUR     = _F(METHODE='MUMPS',RENUM='AMF',GESTION_MEMOIRE='OUT_OF_CORE',ELIM_LAGR2='NON',PCENT_PIVOT=80,),
-                              CONVERGENCE=_F(ITER_GLOB_MAXI=NITER),
                               )
 
        _TAB_NP1   = _LAME['TABLE_NP1']
@@ -409,6 +399,5 @@ def calc_mac3coeur_ops(self, **args):
                               INCREMENT   = _F(LIST_INST = _timep1, INST_FIN = _coeurp1.temps_simu['T4'],),
                               NEWTON      = _F(MATRICE='TANGENTE',REAC_ITER=1,),
                               SOLVEUR     = _F(METHODE='MUMPS',RENUM='AMF',GESTION_MEMOIRE='OUT_OF_CORE',ELIM_LAGR2='NON',PCENT_PIVOT=200,),
-                              CONVERGENCE=_F(ITER_GLOB_MAXI=NITER),
                               );
 
