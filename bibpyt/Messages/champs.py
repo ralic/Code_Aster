@@ -1,8 +1,8 @@
-#@ MODIF champs Messages  DATE 24/07/2012   AUTEUR PELLET J.PELLET 
+#@ MODIF champs Messages  DATE 04/03/2013   AUTEUR SELLENET N.SELLENET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -25,9 +25,13 @@ cata_msg={
  On ne trouve pas de valeurs dans le champ.
 """),
 
-
-
-
+2 : _(u"""
+ Le champ %(k1)s n'est pas défini sur la totalité des noeuds précisés
+ dans le mot-clé GROUP_MA_ESCL, GROUP_NO_ESCL, MAILLE_ESCL ou
+ NOEUD_ESCL.
+ 
+ Il vous faut compléter le champ %(k1)s.
+"""),
 
 3: _(u"""
  La composante %(k1)s du champ  n'existe pas.

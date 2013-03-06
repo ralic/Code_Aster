@@ -1,4 +1,4 @@
-# MODIF  DATE 18/02/2013   AUTEUR SELLENET N.SELLENET 
+# MODIF  DATE 04/03/2013   AUTEUR SELLENET N.SELLENET 
 # ======================================================================
 # TITRE VALIDATION ARCHITECTURE PARTITIONNEMENT SCOTCH ET CALCUL FETI
 # feti007a.para = tps_job 190 mem_job 1024Mo ncpus 4 liste_test SI
@@ -115,7 +115,7 @@ RESU=MECA_STATIQUE(MODELE=MODM,
                           _F(CHARGE=CH2,),),
                    SOLVEUR=_F(METHODE='FETI',
                               PARTITION=SDFETI,
-                              RESI_RELA=1.E-7,
+                              RESI_RELA=5.E-8,
                               NMAX_ITER=100,
                               NB_REORTHO_DD=100,
                               INFO_FETI='FFFFFFFFFFT',
@@ -212,6 +212,7 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=1,
                    VALE_CALC=2.0438603038089E-04,
                    VALE_REFE=2.0438603038089E-04,
                    CRITERE='RELATIF',
+                   TOLE_MACHINE=2.E-2,
                    PRECISION=0.014999999999999999,),
                 _F(NUME_ORDRE=1,
                    GROUP_NO='N3',
