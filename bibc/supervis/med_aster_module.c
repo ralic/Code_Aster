@@ -1,7 +1,7 @@
 /*           CONFIGURATION MANAGEMENT OF EDF VERSION                  */
-/* MODIF med_aster_module supervis  DATE 16/10/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE */
+/* MODIF med_aster_module supervis  DATE 05/03/2013   AUTEUR CHEIGNON E.CHEIGNON */
 /* ================================================================== */
-/* COPYRIGHT (C) 1991 - 2012  EDF R&D              WWW.CODE-ASTER.ORG */
+/* COPYRIGHT (C) 1991 - 2013  EDF R&D              WWW.CODE-ASTER.ORG */
 /*                                                                    */
 /* THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR      */
 /* MODIFY IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS     */
@@ -29,67 +29,65 @@ static PyObject * aster_nom_ch_med(self, args)
 PyObject *self; /* Not used */
 PyObject *args;
 {
-   PyObject *listeChamps = (PyObject*)0 ;
-   char* nomFichierMed;
-   int nbChamps;
-   char* nomChamp;
-   char* nomMaillage;
-   char* dtUnit;
-   int iChamp;
-   int nbComp;
-   char* nomsComp;
-   char* unitesComp;
-   med_idt numFichier = 0;
-   med_bool mailLoc;
-   med_field_type typeChamp;
-   med_int nbCstp;
+    PyObject *dic_champ_comp = (PyObject*)0;
+    PyObject *tupstr;
+    char* nomFichierMed;
+    int nbChamps;
+    char* nomChamp;
+    char* nomMaillage;
+    char* dtUnit;
+    int iChamp;
+    int nbComp;
+    char* nomsComp;
+    char* unitesComp;
+    med_idt numFichier = 0;
+    med_bool mailLoc;
+    med_field_type typeChamp;
+    med_int nbCstp;
 
-   if (!PyArg_ParseTuple(args, "s", &nomFichierMed)) return NULL;
+    if (!PyArg_ParseTuple(args, "s", &nomFichierMed)) return NULL;
 
-   numFichier = MEDfileOpen(nomFichierMed,MED_ACC_RDONLY);
-   if ( numFichier <= 0 ) return PyList_New(0);
+    numFichier = MEDfileOpen(nomFichierMed,MED_ACC_RDONLY);
+    if ( numFichier <= 0 ) return PyList_New(0);
 
-   nbChamps = (int)MEDnField(numFichier);
+    nbChamps = (int)MEDnField(numFichier);
 
-   listeChamps = PyList_New(nbChamps);
+    nomChamp = MakeBlankFStr(MED_NAME_SIZE);
+    nomMaillage = MakeBlankFStr(MED_NAME_SIZE);
+    dtUnit = MakeBlankFStr(MED_NAME_SIZE);
+    dic_champ_comp = PyDict_New();
+    for (iChamp = 1; iChamp <= nbChamps; ++iChamp) {
+        nbComp = (int)MEDfieldnComponent(numFichier,iChamp);
+        nomsComp = MakeBlankFStr(nbComp*MED_SNAME_SIZE);
+        unitesComp = MakeBlankFStr(nbComp*MED_SNAME_SIZE);
 
-   nomChamp = MakeBlankFStr(MED_NAME_SIZE);
-   nomMaillage = MakeBlankFStr(MED_NAME_SIZE);
-   dtUnit = MakeBlankFStr(MED_NAME_SIZE);
-   for ( iChamp = 1; iChamp <= nbChamps; ++iChamp )
-   {
-      nbComp = (int)MEDfieldnComponent(numFichier,iChamp);
+        MEDfieldInfo(numFichier, iChamp, nomChamp, nomMaillage, &mailLoc, &typeChamp,
+                     nomsComp, unitesComp, dtUnit, &nbCstp);
+        tupstr = MakeTupleString((long)nbComp, nomsComp, (STRING_SIZE)MED_SNAME_SIZE, NULL);
 
-      nomsComp = MakeBlankFStr(nbComp*MED_SNAME_SIZE);
-      unitesComp = MakeBlankFStr(nbComp*MED_SNAME_SIZE);
+        PyDict_SetItem(dic_champ_comp, PyString_FromString(nomChamp), tupstr);
+        FreeStr(nomsComp);
+        FreeStr(unitesComp);
+    }
+    MEDfileClose(numFichier);
 
-      MEDfieldInfo(numFichier,iChamp,nomChamp,nomMaillage,&mailLoc,&typeChamp,nomsComp,
-                   unitesComp,dtUnit,&nbCstp);
+    FreeStr(nomChamp);
+    FreeStr(nomMaillage);
+    FreeStr(dtUnit);
 
-      PyList_SetItem(listeChamps,iChamp-1,PyString_FromString(nomChamp));
-
-      FreeStr(nomsComp);
-      FreeStr(unitesComp);
-   }
-   MEDfileClose(numFichier);
-
-   FreeStr(nomChamp);
-   FreeStr(nomMaillage);
-   FreeStr(dtUnit);
-
-   return listeChamps;
+    return dic_champ_comp;
 }
 
 #ifndef _WITHOUT_PYMOD_
 static PyMethodDef methods[] = {
-   {"get_nom_champ_med", aster_nom_ch_med, METH_VARARGS},
-   { NULL, NULL, 0, NULL }
+    {"get_nom_champ_med", aster_nom_ch_med, METH_VARARGS},
+    { NULL, NULL, 0, NULL }
 };
 
 
 PyMODINIT_FUNC initmed_fonctions(void)
 {
-   Py_InitModule("med_aster", methods);
+    Py_InitModule("med_aster", methods);
 }
 #endif
 #endif

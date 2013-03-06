@@ -1,8 +1,8 @@
-#@ MODIF elements3 Messages  DATE 18/12/2012   AUTEUR SELLENET N.SELLENET 
+#@ MODIF elements3 Messages  DATE 05/03/2013   AUTEUR CHEIGNON E.CHEIGNON 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -110,6 +110,12 @@ cata_msg = {
  un champ de vitesse de vent est impose sans donner un Cx dépendant de la vitesse sur un des câbles.
 """),
 
+40 : _(u"""
+ DEFORMATION = %(k1)s non programmé.
+ Seules les déformations PETIT et GROT_GDEP sont autorisées avec les 
+ éléments de type %(k2)s.
+"""),
+
 46 : _(u"""
  le paramètre "pnosym" n'existe pas dans le catalogue de l'élément  %(k1)s  .
 """),
@@ -152,17 +158,6 @@ cata_msg = {
 
 56 : _(u"""
  valeurs utilisateurs de RHO ou de rof nulles
-"""),
-
-58 : _(u"""
-  -> La réactualisation de la géométrie (DEFORMATION='PETIT_REAC' sous
-     le mot clé COMP_INCR) est déconseillée pour les éléments POU_D_T et POU_D_E.
-  -> Risque & Conseil :
-     En présence de grands déplacements et grandes rotations, avec une loi de comportement
-     non linéaire, il est préférable  d'utiliser la modélisation POU_D_TGM
-     (poutre multifibre) avec DEFORMATION=GROT_GDEP. Si le comportement reste
-     élastique, il est également possible d'utiliser la modélisation POU_D_T_GD avec
-     DEFORMATION='GROT_GDEP'.
 """),
 
 59 : _(u"""
@@ -212,10 +207,6 @@ cata_msg = {
   -> Risque & Conseil :
      Vérifiez que cette expression est valide avec votre loi de comportement.
 
-"""),
-
-78 : _(u"""
-  la réactualisation de la géométrie (déformation : PETIT_REAC sous le mot clé COMP_INCR) est déconseillée pour les éléments POU_D_TG
 """),
 
 80 : _(u"""

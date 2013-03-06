@@ -1,8 +1,8 @@
-#@ MODIF elements4 Messages  DATE 29/10/2012   AUTEUR FLEJOU J-L.FLEJOU 
+#@ MODIF elements4 Messages  DATE 05/03/2013   AUTEUR CHEIGNON E.CHEIGNON 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -36,14 +36,6 @@ cata_msg = {
 14 : _(u"""
   Vous utilisez un élément de type multifibre <%(k1)s>.
   Il faut que sous COMP_INCR le mot clef RELATION='MULTIFIBRE'.
-"""),
-
-15 : _(u"""
-  déformation :  %(k1)s non implantée sur les éléments "POU_D_TGM" : utiliser PETIT ou GROT_GDEP
-"""),
-
-16 : _(u"""
- option "VARI_ELNO" impossible actuellement
 """),
 
 31 : _(u"""

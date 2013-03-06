@@ -1,25 +1,25 @@
 # MODIF  DATE 05/03/2013   AUTEUR CHEIGNON E.CHEIGNON 
 # TITRE POST-FLAMBEMENT ELASTIQUE D'UNE STRUCTURE EN L
-# ssnl133b.para = tps_job 300 mem_job 512Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
-# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
-# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
-# (AT YOUR OPTION) ANY LATER VERSION.
-#
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
-#
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
+# (AT YOUR OPTION) ANY LATER VERSION.                                                    
+#                                                                       
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
+#                                                                       
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
 # ======================================================================
+# ssnl133d.para = tps_job 300 mem_job 512Mo ncpus 1 liste_test S
 
-DEBUT(CODE=_F( NOM = 'SSNL133B',NIV_PUB_WEB='INTERNET',VISU_EFICAS='OUI'));
+DEBUT(CODE=_F( NOM = 'SSNL133D',NIV_PUB_WEB='INTERNET',VISU_EFICAS='OUI'));
 
 MA=LIRE_MAILLAGE(UNITE=17,FORMAT='MED',);
 
@@ -27,30 +27,17 @@ MA=DEFI_GROUP(reuse =MA,
               MAILLAGE=MA,
               CREA_GROUP_NO=_F(TOUT_GROUP_MA='OUI',),);
 
-MA_SECT=LIRE_MAILLAGE(UNITE=18,FORMAT='MED',);
-
 MO=AFFE_MODELE(MAILLAGE=MA,
                AFFE=_F(TOUT='OUI',
                        PHENOMENE='MECANIQUE',
-                       MODELISATION='POU_D_TGM',),);
+                       MODELISATION='POU_D_T',),);
 
 ACIER=DEFI_MATERIAU(ELAS=_F(E=71240.0,
                             NU=0.3,),);
 
-GF=DEFI_GEOM_FIBRE(
-   SECTION =_F(GROUP_FIBRE='SECF',
-             GROUP_MA_SECT='SECT',
-             MAILLAGE_SECT=MA_SECT,
-            COOR_AXE_POUTRE=(0.,0.,),),)
-
-COMPF=DEFI_COMPOR(GEOM_FIBRE=GF,MATER_SECT=ACIER,
-                  MULTIFIBRE=_F(GROUP_FIBRE='SECF',MATER=ACIER,
-                                 RELATION='ELAS',),
-                     )
 
 MAT=AFFE_MATERIAU(MAILLAGE=MA,
                   AFFE=_F(TOUT='OUI',MATER=ACIER,),
-                  AFFE_COMPOR=_F(TOUT='OUI',COMPOR=COMPF),
                  );
 
 CARA=AFFE_CARA_ELEM(MODELE=MO,
@@ -61,10 +48,7 @@ CARA=AFFE_CARA_ELEM(MODELE=MO,
                     ORIENTATION=_F(GROUP_MA='LAME',
                                    CARA='ANGL_VRIL',
                                    VALE=0.,),
-                    GEOM_FIBRE=GF,
-                    MULTIFIBRE=_F(GROUP_MA='LAME',
-                                 GROUP_FIBRE='SECF',
-                                 ),);
+                    );
 
 CL=AFFE_CHAR_MECA(MODELE=MO,
                   DDL_IMPO=_F(GROUP_NO='PA',
@@ -105,7 +89,7 @@ RESO0=STAT_NON_LINE(MODELE=MO,
                     EXCIT=(_F(CHARGE=CL,),
                            _F(CHARGE=FORCE,
                               FONC_MULT=FORCE_F,),),
-                    COMP_INCR=_F(RELATION='MULTIFIBRE',DEFORMATION='GROT_GDEP',),
+                    COMP_INCR=_F(RELATION='ELAS',DEFORMATION='GROT_GDEP',),
                     INCREMENT=_F(LIST_INST=TEMPS,
                                  INST_FIN=tforc,),
                     NEWTON=_F(MATRICE='TANGENTE',
@@ -125,7 +109,7 @@ RESO=STAT_NON_LINE(MODELE=MO,
                    EXCIT=(_F(CHARGE=CL,),
                           _F(CHARGE=FORCE,
                              TYPE_CHARGE='FIXE_PILO',),),
-                   COMP_INCR=_F(RELATION='MULTIFIBRE',DEFORMATION='GROT_GDEP',),
+                   COMP_INCR=_F(RELATION='ELAS',DEFORMATION='GROT_GDEP',),
                    INCREMENT=_F(LIST_INST=DEFLIST,
                                 INST_FIN=tsuiv,),
                    NEWTON=_F(MATRICE='TANGENTE',
@@ -152,7 +136,7 @@ RESO=STAT_NON_LINE(reuse=RESO,
                    EXCIT=(_F(CHARGE=CL,),
                           _F(CHARGE=FORCE,
                              TYPE_CHARGE='FIXE_PILO',),),
-                   COMP_INCR=_F(RELATION='MULTIFIBRE',DEFORMATION='GROT_GDEP',),
+                   COMP_INCR=_F(RELATION='ELAS',DEFORMATION='GROT_GDEP',),
                    INCREMENT=_F(LIST_INST=DEFLIST,
                                 INST_FIN=tfin,),
                    NEWTON=_F(MATRICE='TANGENTE',
@@ -235,7 +219,7 @@ IMPR_FONCTION(FORMAT='TABLEAU',
 
 
 # REFERENCE MODELISATION A (POU_D_T_GD)
-TEST_FONCTION(VALEUR=(_F(VALE_CALC=0.199238140077,
+TEST_FONCTION(VALEUR=(_F(VALE_CALC=0.1968175470,
                          VALE_REFE=0.19557897264105001,
                          CRITERE='RELATIF',
                          VALE_PARA=1.0,
@@ -243,7 +227,7 @@ TEST_FONCTION(VALEUR=(_F(VALE_CALC=0.199238140077,
                          TOLE_MACHINE=1.E-5,
                          PRECISION=0.050000000000000003,
                          FONCTION=DX_ETA,),
-                      _F(VALE_CALC=23.3050387076,
+                      _F(VALE_CALC=22.5909722,
                          VALE_REFE=22.003741156650001,
                          CRITERE='RELATIF',
                          VALE_PARA=1.2,
@@ -251,7 +235,7 @@ TEST_FONCTION(VALEUR=(_F(VALE_CALC=0.199238140077,
                          TOLE_MACHINE=1.E-5,
                          PRECISION=0.059999999999999998,
                          FONCTION=DX_ETA,),
-                      _F(VALE_CALC=52.4533466206,
+                      _F(VALE_CALC=52.2480749,
                          VALE_REFE=51.370567219176998,
                          CRITERE='RELATIF',
                          VALE_PARA=1.3999999999999999,
@@ -259,7 +243,7 @@ TEST_FONCTION(VALEUR=(_F(VALE_CALC=0.199238140077,
                          TOLE_MACHINE=1.E-5,
                          PRECISION=0.050000000000000003,
                          FONCTION=DX_ETA,),
-                      _F(VALE_CALC=73.1616029364,
+                      _F(VALE_CALC=73.0979272,
                          VALE_REFE=72.308828300357007,
                          CRITERE='RELATIF',
                          VALE_PARA=1.6000000000000001,
@@ -267,7 +251,7 @@ TEST_FONCTION(VALEUR=(_F(VALE_CALC=0.199238140077,
                          TOLE_MACHINE=1.E-5,
                          PRECISION=0.050000000000000003,
                          FONCTION=DX_ETA,),
-                      _F(VALE_CALC=100.408365742,
+                      _F(VALE_CALC=100.365272,
                          VALE_REFE=99.955783482342994,
                          CRITERE='RELATIF',
                          VALE_PARA=2.0,
@@ -275,7 +259,7 @@ TEST_FONCTION(VALEUR=(_F(VALE_CALC=0.199238140077,
                          TOLE_MACHINE=1.E-5,
                          PRECISION=0.050000000000000003,
                          FONCTION=DX_ETA,),
-                      _F(VALE_CALC=133.706510093,
+                      _F(VALE_CALC=133.726898,
                          VALE_REFE=134.14461679369001,
                          CRITERE='RELATIF',
                          VALE_PARA=3.0,
@@ -283,7 +267,7 @@ TEST_FONCTION(VALEUR=(_F(VALE_CALC=0.199238140077,
                          REFERENCE='AUTRE_ASTER',
                          PRECISION=0.050000000000000003,
                          FONCTION=DX_ETA,),
-                      _F(VALE_CALC=149.673069345,
+                      _F(VALE_CALC=149.670538,
                          VALE_REFE=150.69734947084001,
                          CRITERE='RELATIF',
                          VALE_PARA=4.0,
@@ -291,7 +275,7 @@ TEST_FONCTION(VALEUR=(_F(VALE_CALC=0.199238140077,
                          TOLE_MACHINE=1.E-5,
                          PRECISION=0.050000000000000003,
                          FONCTION=DX_ETA,),
-                      _F(VALE_CALC=159.400211197,
+                      _F(VALE_CALC=159.449907,
                          VALE_REFE=160.91941068726001,
                          CRITERE='RELATIF',
                          VALE_PARA=5.0,
@@ -302,15 +286,15 @@ TEST_FONCTION(VALEUR=(_F(VALE_CALC=0.199238140077,
                       ),
               )
 
-TEST_FONCTION(VALEUR=(_F(VALE_CALC=0.872346186892,
+TEST_FONCTION(VALEUR=(_F(VALE_CALC=0.8282476115,
                          VALE_REFE=0.81895376497696004,
                          CRITERE='RELATIF',
                          VALE_PARA=1.0,
                          REFERENCE='AUTRE_ASTER',
-                         TOLE_MACHINE=2.E-5,
+                         TOLE_MACHINE=1.E-5,
                          PRECISION=0.070000000000000007,
                          FONCTION=DZ_ETA,),
-                      _F(VALE_CALC=45.2869082365,
+                      _F(VALE_CALC=45.0232508,
                          VALE_REFE=45.086149006059998,
                          CRITERE='RELATIF',
                          VALE_PARA=1.2,
@@ -318,7 +302,7 @@ TEST_FONCTION(VALEUR=(_F(VALE_CALC=0.872346186892,
                          TOLE_MACHINE=1.E-5,
                          PRECISION=0.050000000000000003,
                          FONCTION=DZ_ETA,),
-                      _F(VALE_CALC=58.322723085,
+                      _F(VALE_CALC=58.4935553,
                          VALE_REFE=59.127395933838997,
                          CRITERE='RELATIF',
                          VALE_PARA=1.3999999999999999,
@@ -326,7 +310,7 @@ TEST_FONCTION(VALEUR=(_F(VALE_CALC=0.872346186892,
                          TOLE_MACHINE=1.E-5,
                          PRECISION=0.050000000000000003,
                          FONCTION=DZ_ETA,),
-                      _F(VALE_CALC=59.9054223016,
+                      _F(VALE_CALC=60.0099490,
                          VALE_REFE=61.007516217061998,
                          CRITERE='RELATIF',
                          VALE_PARA=1.6000000000000001,
@@ -334,7 +318,7 @@ TEST_FONCTION(VALEUR=(_F(VALE_CALC=0.872346186892,
                          TOLE_MACHINE=1.E-5,
                          PRECISION=0.050000000000000003,
                          FONCTION=DZ_ETA,),
-                      _F(VALE_CALC=54.8326863825,
+                      _F(VALE_CALC=54.8184364,
                          VALE_REFE=55.986094960434997,
                          CRITERE='RELATIF',
                          VALE_PARA=2.0,
@@ -342,7 +326,7 @@ TEST_FONCTION(VALEUR=(_F(VALE_CALC=0.872346186892,
                          TOLE_MACHINE=1.E-5,
                          PRECISION=0.050000000000000003,
                          FONCTION=DZ_ETA,),
-                      _F(VALE_CALC=38.5441147781,
+                      _F(VALE_CALC=38.4624198,
                          VALE_REFE=39.191654438340002,
                          CRITERE='RELATIF',
                          VALE_PARA=3.0,
@@ -350,7 +334,7 @@ TEST_FONCTION(VALEUR=(_F(VALE_CALC=0.872346186892,
                          TOLE_MACHINE=1.E-5,
                          PRECISION=0.050000000000000003,
                          FONCTION=DZ_ETA,),
-                      _F(VALE_CALC=27.4676628635,
+                      _F(VALE_CALC=27.3166927,
                          VALE_REFE=27.663660137343001,
                          CRITERE='RELATIF',
                          VALE_PARA=4.0,
@@ -358,7 +342,7 @@ TEST_FONCTION(VALEUR=(_F(VALE_CALC=0.872346186892,
                          TOLE_MACHINE=1.E-5,
                          PRECISION=0.050000000000000003,
                          FONCTION=DZ_ETA,),
-                      _F(VALE_CALC=20.2729749168,
+                      _F(VALE_CALC=20.0705765,
                          VALE_REFE=20.201862127005001,
                          CRITERE='RELATIF',
                          VALE_PARA=5.0,

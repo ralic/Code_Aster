@@ -1,6 +1,6 @@
       SUBROUTINE TE0347(OPTION,NOMTE)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 15/01/2013   AUTEUR DELMAS J.DELMAS 
+C MODIF ELEMENTS  DATE 05/03/2013   AUTEUR CHEIGNON E.CHEIGNON 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -43,15 +43,17 @@ C IN  NOMTE  : NOM DU TYPE ELEMENT
 C
 C --- ------------------------------------------------------------------
       INTEGER     JTAB(7),NNO,NC,ICHG,ICOMPO,ICHN,LGPG,NBVAR,I,K,NPG
-      INTEGER     LORIEN,ICGP,ICONTN,ICONTG,IVECTU,IN,IRET,IPLOUF
+      INTEGER     LORIEN,ICGP,ICONTN,ICONTG,IVECTU,IN,IRET(2),IPLOUF
       INTEGER     ISECT,IGEOM,KP,KK,IMATE
+      INTEGER     ISTRXM,IRETC
 C
-      LOGICAL     LEFGNO,OKELEM
+      LOGICAL     LEFGNO,OKELEM,REACTU
 C
       REAL*8      PGL(3,3),FS(14),D1B3(2,3),KSI1,FORREF,MOMREF
-      REAL*8      SIGP(7),D1B(7,14),XL,CO(3),XD(3),EY,EZ,XL2,TEMP
+      REAL*8      SIGP(7),D1B(7,14),CO(3),XD(3),EY,EZ,XL,TEMP
       REAL*8      VALRES(2),E,NU,G,DDOT,AA,XIY,XIZ,ALFAY,ALFAZ
-      REAL*8      PHIY,PHIZ
+      REAL*8      PHIY,PHIZ,GAMMA,XL2
+
 C
       CHARACTER*2 NOMRES(2)
       CHARACTER*4 FAMI
@@ -148,11 +150,18 @@ C           NPG=3 : RECOPIE DES POINTS 1 ET 3
             CALL JEVECH('PCONTMR','L',ICONTG)
             CALL JEVECH('PCAORIE','L',LORIEN)
             CALL JEVECH('PVECTUR','E',IVECTU)
+            CALL JEVECH('PGEOMER','L',IGEOM)
+
+            CALL TECACH('ONN','PCOMPOR','L',3,ICOMPO,IRETC)
+            REACTU = .FALSE.
+            IF (IRETC.EQ.0) REACTU = (ZK16(ICOMPO+2).EQ.'GROT_GDEP')
+
 
             IF (NOMTE .EQ. 'MECA_POU_D_TG') THEN
-               CALL JEVECH('PGEOMER','L',IGEOM)
+
                CALL JEVECH('PCAGNPO','L',ISECT)
                CALL JEVECH('PMATERC','L',IMATE)
+
                CALL VDIFF(3,ZR(IGEOM-1+4),ZR(IGEOM),XD)
                XL2=DDOT(3,XD,1,XD,1)
                XL   = SQRT(XL2)
@@ -177,6 +186,9 @@ C              THERMIQUE A T+
                XIZ    = ZR(ISECT-1+3)
                ALFAY = ZR(ISECT-1+4)
                ALFAZ = ZR(ISECT-1+5)
+
+
+
                PHIY = E*XIZ*12.D0*ALFAY/ (XL*XL*G*AA)
                PHIZ = E*XIY*12.D0*ALFAZ/ (XL*XL*G*AA)
 
@@ -211,7 +223,14 @@ C              PRENDRE EN COMPTE CENTRE DE TORSION
                ENDIF
             ENDIF
 
-            CALL MATROT ( ZR(LORIEN) , PGL )
+            IF (REACTU)THEN
+              CALL JEVECH('PSTRXMR','L',ISTRXM)
+              GAMMA = ZR(ISTRXM+3-1)
+              CALL POREA2(NNO,NC,ZR(IGEOM),GAMMA,PGL,XL)
+            ELSE
+               CALL MATROT ( ZR(LORIEN) , PGL )
+            ENDIF
+
             CALL UTPVLG ( NNO, NC, PGL, FS, ZR(IVECTU) )
          ENDIF
 C

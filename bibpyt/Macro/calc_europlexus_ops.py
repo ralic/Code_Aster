@@ -1,8 +1,8 @@
-#@ MODIF calc_europlexus_ops Macro  DATE 05/11/2012   AUTEUR CHEIGNON E.CHEIGNON 
+#@ MODIF calc_europlexus_ops Macro  DATE 05/03/2013   AUTEUR CHEIGNON E.CHEIGNON 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -121,11 +121,10 @@ def calc_europlexus_ops(self,EXCIT,MODELE=None,CARA_ELEM=None,CHAM_MATER=None,FO
     # Pour masquer certaines alarmes
     from Utilitai.Utmess import UTMESS, MasquerAlarme, RetablirAlarme
     MasquerAlarme('MED_1')
-    MasquerAlarme('MED_54')
-    MasquerAlarme('MED_77')
-    MasquerAlarme('MED_37')
+#    MasquerAlarme('MED_54')
+#    MasquerAlarme('MED_77')
+#    MasquerAlarme('MED_37')
 
-    MasquerAlarme('MED_98')
     MasquerAlarme('ALGELINE4_43')
     MasquerAlarme('JEVEUX_57')
 
@@ -185,11 +184,10 @@ def calc_europlexus_ops(self,EXCIT,MODELE=None,CARA_ELEM=None,CHAM_MATER=None,FO
 
     # Pour la gestion des alarmes
     RetablirAlarme('MED_1')
-    RetablirAlarme('MED_54')
-    RetablirAlarme('MED_77')
-    RetablirAlarme('MED_37')
+    #RetablirAlarme('MED_54')
+    #RetablirAlarme('MED_77')
+    #RetablirAlarme('MED_37')
 
-    RetablirAlarme('MED_98')
     RetablirAlarme('ALGELINE4_43')
     RetablirAlarme('JEVEUX_57')
 
@@ -2005,6 +2003,7 @@ class EUROPLEXUS:
   #-----------------------------------------------------------------------
     def get_resu(self,fichier_med='auto'):
 
+      import med_aster # lire tous les champs du fichier med
       # Rendre global le resu pour qu'il soit accepte dans self.DeclareOut
       global resu
 
@@ -2049,15 +2048,10 @@ class EUROPLEXUS:
 
                                      }
 
-      dic_cmp_gauss['ECROUISSAGE'] = {
-                                     'Q4GS' : {'NOM_CMP'     : ('V1','V2','V3','V4','V5','V6','V7','V8','V9','V10','V11','V12','V13','V14','V15','V16','V17','V18','V19'),
-                                              'NOM_CMP_MED'  : ('VAR1','VAR2','VAR3','VAR4','VAR5','VAR6','VAR7','VAR8','VAR9','VAR10','VAR11','VAR12','VAR13','VAR14','VAR15','VAR16','VAR17','VAR18','VAR19'),},
-                                     'POUT' : {},
-                                     'BR3D': {'NOM_CMP'    : ('V1,V2'),
-                                              'NOM_CMP_MED': ('VAR1,VAR2')}
-
-                                      }
+      tupCont = ('SIG1','SIG2','SIG3','SIG4','SIG5','SIG6','SIG7','SIG8')
       tupVar = ('X1','X2','X3','X4','X5','X6','X7','X8','X9','X10','X11','X12','X13','X14','X15','X16','X17','X18','X19')
+      tupVarInt = ('V1','V2','V3','V4','V5','V6','V7','V8','V9','V10','V11','V12','V13','V14','V15','V16','V17','V18','V19')
+      tupVarIntMed =('VAR1','VAR2','VAR3','VAR4','VAR5','VAR6','VAR7','VAR8','VAR9','VAR10','VAR11','VAR12','VAR13','VAR14','VAR15','VAR16','VAR17','VAR18','VAR19')
 
       # Dictionnaire permettant de traduire le champ epx en med au nom asscie dans aster
       epx2aster = {'CONTRAINTE':'SIEF_ELGA','DEFORMATION':'EPSI_ELGA','ECROUISSAGE':'VARI_ELGA'}
@@ -2221,109 +2215,67 @@ class EUROPLEXUS:
       listEffg = []
       i=0
       listType=[]
-      __SIG11 = [None]*10
-      __SIG21 = [None]*10
-      __ECR11 = [None]*10
 
-      # Pour masquer certaines alarmes
-      from Utilitai.Utmess import MasquerAlarme, RetablirAlarme
-      MasquerAlarme('MED_83')
-      MasquerAlarme('MED_98')
-
-      while 1:
-          # index=1
-          # pas = self.ARCHIVAGE['PAS_NBRE']
-          # dicDetr=[]
-          # if 'Q4GS' ou 'T3GS' in self.modelisations :
-              err = 0
-              try :
-                  __SIG11[i] = LIRE_CHAMP(
-                      INFO        = self.INFO,
-                      TYPE_CHAM   = 'ELGA_SIEF_R',
-                      UNITE       = 99,
-                      NUME_PT     = 0,
-                      MODELE      = self.MODELE,
-                      MAILLAGE    = self.recupere_structure(self.MODELE,'MAILLAGE'),
-                      PROL_ZERO   = 'OUI',
-                      NOM_MED     = 'CHAMP___CONTRAINTE___00%d'%(i+1),
-                      NOM_CMP     = dic_cmp_gauss['CONTRAINTE']['Q4GS']['NOM_CMP'],
-                      NOM_CMP_MED = dic_cmp_gauss['CONTRAINTE']['Q4GS']['NOM_CMP_MED'])
-                  # dicDetr.append({'NOM' : __SIG11})
-                  DETRUIRE(CONCEPT=_F(NOM = __SIG11[i]), INFO=1)
-                  listType.append('Q4GS')
-                  # index=2
-              except :
-                  err+=1
-              try :
-                  __SIG11[i] = LIRE_CHAMP(
-                      INFO        = self.INFO,
-                      TYPE_CHAM   = 'ELGA_SIEF_R',
-                      UNITE       = 99,
-                      NUME_PT     = 0,
-                      MODELE      = self.MODELE,
-                      MAILLAGE    = self.recupere_structure(self.MODELE,'MAILLAGE'),
-                      PROL_ZERO   = 'OUI',
-                      NOM_MED     = 'CHAMP___CONTRAINTE___00%d'%(i+1),
-                      NOM_CMP     = dic_cmp_gauss['CONTRAINTE']['BR3D']['NOM_CMP'],
-                      NOM_CMP_MED = dic_cmp_gauss['CONTRAINTE']['BR3D']['NOM_CMP_MED']),
-                  DETRUIRE(CONCEPT=_F(NOM = __SIG11[i]), INFO=1)
-                  if len(listType)<i+1 :
-                      listType.append('BR3D')
-              except :
-                  err+=1
-              if err<2 :
-                  i+=1
-              else :
-                  break
+#     on utilise le module med_aster pour obtenir les noms des champs
+#     et les noms des composantes de ces champs
 
 
-      # Pour la gestion des alarmes
-      RetablirAlarme('MED_83')
+      dic_champ_med = med_aster.get_nom_champ_med(fichier_med)
+      dic_champ_cont={}
+      dic_champ_var_int={}
 
+      k_cont = 0
+      k_var_int =0
 
+#     a partir du dictionnaire {nom de champ : noms des composantes}
+#     ont construit deux dictionnaires :
+#
 
-      nbChamp = i
+      dic_nbcomp_elem={8:'Q4GS',1:'BR3D'}
+      nb_max_var=0
+      for key in dic_champ_med.keys() :
 
-      listVari = [0]*nbChamp
+        if key[:21]=="CHAMP___CONTRAINTE___":
+          k_cont+=1
 
-      for i in xrange(nbChamp) :
-              if listType[i] == 'Q4GS' :
-                 try :
-                     __ECR11[i] = LIRE_CHAMP(
-                         INFO        = self.INFO,
-                         TYPE_CHAM   = 'ELGA_VARI_R',
-                         UNITE       = 99,
-                         NUME_PT     = 0,
-                         MODELE      = self.MODELE,
-                         MAILLAGE    = self.recupere_structure(self.MODELE,'MAILLAGE'),
-                         PROL_ZERO   = 'OUI',
-                         NOM_MED     = 'CHAMP___ECROUISSAGE__00%d'%(i+1),
-                         NOM_CMP     = dic_cmp_gauss['ECROUISSAGE']['Q4GS']['NOM_CMP'],
-                         NOM_CMP_MED = dic_cmp_gauss['ECROUISSAGE']['Q4GS']['NOM_CMP_MED'])
-                     # dicDetr.append({'NOM' : __SIG11})
-                     DETRUIRE(CONCEPT=_F(NOM = __ECR11[i]), INFO=1)
-                     listVari[i]=1
-                 except :
-                     err+=1
-              elif listType[i] == 'BR3D' :
-                 try :
-                     __ECR11[i] = LIRE_CHAMP(
-                         INFO        = self.INFO,
-                         TYPE_CHAM   = 'ELGA_VARI_R',
-                         UNITE       = 99,
-                         NUME_PT     = 0,
-                         MODELE      = self.MODELE,
-                         MAILLAGE    = self.recupere_structure(self.MODELE,'MAILLAGE'),
-                         PROL_ZERO   = 'OUI',
-                         NOM_MED     = 'CHAMP___ECROUISSAGE__00%d'%(i+1),
-                         NOM_CMP     = dic_cmp_gauss['ECROUISSAGE']['BR3D']['NOM_CMP'],
-                         NOM_CMP_MED = dic_cmp_gauss['ECROUISSAGE']['BR3D']['NOM_CMP_MED'])
-                     # dicDetr.append({'NOM' : __SIG11})
-                     DETRUIRE(CONCEPT=_F(NOM = __ECR11[i]), INFO=1)
-                     listVari[i]=1
-                 except :
-                    err+=1
+          nbcomp = len(dic_champ_med[key])
 
+          if nbcomp ==1:
+              varx=('X10')
+          elif nbcomp == 8 :
+              varx=('X1','X2','X3','X4','X5','X6','X7','X8')
+          else:
+            raise Exception("""Nombre de composantes de comtraintes inattendu""")
+
+#         sert juste a tester le module med aster
+          for i,nom_comp in enumerate(dic_champ_med[key]):
+            if nom_comp!=tupCont[i]:
+              raise Exception("Les composantes du champ de contraintes n'ont pas les valeurs attendues")
+
+          dico={'NBCOMP'  : nbcomp,
+                'TYPELEM' : dic_nbcomp_elem[nbcomp],
+                'VAR_X'   : varx}
+
+          dic_champ_cont[key]=dico
+
+        if key[:21]=="CHAMP___ECROUISSAGE__":
+          k_var_int+=1
+          nbcomp = len(dic_champ_med[key])
+          if nbcomp==25:
+            nbcomp=19 # cas de GLRC
+          elif nbcomp==2 :
+            nbcomp=1 # cas ELAS
+          else:
+            raise Exception("""Nombre de composantes de variables internes inattendu""")
+          if nbcomp> nb_max_var : nb_max_var = nbcomp
+          dic_champ_var_int[key]=nbcomp
+
+          for i,nom_comp in enumerate(dic_champ_med[key][:nbcomp]):
+            if nom_comp!=tupVarIntMed[i]:
+              raise Exception("Les composantes du champ de variables internes n'ont pas les valeurs attendues")
+
+      if k_cont!=k_var_int : raise Exception("""Il est anormal qu'il n'y ait pas le meme nombre de champs de contraintes que de variables internes dans le fichier MED""")
+      nbChamp = k_cont
 
 
       itot=len(resu.LIST_PARA()['INST'])
@@ -2331,11 +2283,7 @@ class EUROPLEXUS:
       # __EPSG=[None]*itot
       __ECRG=[None]*itot
       __SIG1 = [None]*nbChamp
-      __SIG2 = [None]*nbChamp
-      __SIG3 = [None]*nbChamp
       __ECR1 = [None]*nbChamp
-      __ECR2 = [None]*nbChamp
-      __ECR3 = [None]*nbChamp
       for i in xrange(itot) :
           dicAffe=[]
           dicAffe2=[]
@@ -2353,99 +2301,40 @@ class EUROPLEXUS:
           dicAsse3.append({'TOUT' : 'OUI', 'CHAM_GD' : __UNDEU, 'NOM_CMP' : 'X22', 'NOM_CMP_RESU' : 'X22', 'CUMUL' : 'OUI','COEF_R':1.})
           dicDetr=[]
 
-          # if 'Q4GS' in self.modelisations :
-          for j in xrange(nbChamp) :
+          for j,champ in enumerate(dic_champ_cont.keys()) :
 
-              if listType[j] == 'Q4GS' :
-                  __SIG1[j] = LIRE_CHAMP(
-                      INFO        = self.INFO,
-                      TYPE_CHAM   = 'ELGA_SIEF_R',
-                      UNITE       = 99,
-                      NUME_PT     = resu.LIST_PARA()['NUME_ORDRE'][i],
-                      MODELE      = self.MODELE,
-                      MAILLAGE    = self.recupere_structure(self.MODELE,'MAILLAGE'),
-                      PROL_ZERO   = 'OUI',
-                      NOM_MED     = 'CHAMP___CONTRAINTE___00%d'%(j+1),
-                      NOM_CMP     = dic_cmp_gauss['CONTRAINTE']['Q4GS']['NOM_CMP'],
-                      NOM_CMP_MED = dic_cmp_gauss['CONTRAINTE']['Q4GS']['NOM_CMP_MED'],
-                          )
-                  dicDetr.append({'NOM' : __SIG1[j]})
-                  dicAsse.append({'TOUT' : 'OUI', 'CHAM_GD' : __SIG1[j], 'NOM_CMP' : tuple(dic_cmp_gauss['CONTRAINTE']['Q4GS']['NOM_CMP']),
-                              'NOM_CMP_RESU' : ('X1','X2','X3','X4','X5','X6','X7','X8'), 'CUMUL' : 'OUI','COEF_R':1.})
-                  # __EPS1 = LIRE_CHAMP(
-                      # INFO        = self.INFO,
-                      # TYPE_CHAM   = 'ELGA_EPSI_R',
-                      # UNITE       = 99,
-                      # NUME_PT     = resu.LIST_PARA()['NUME_ORDRE'][i],
-                      # MODELE      = self.MODELE,
-                      # MAILLAGE    = self.recupere_structure(self.MODELE,'MAILLAGE'),
-                      # PROL_ZERO   = 'OUI',
-                      # NOM_MED     = 'CHAMP___DEFORM_TOT___001',
-                      # NOM_CMP     = dic_cmp_gauss['DEFORMATION']['Q4GS']['NOM_CMP'],
-                      # NOM_CMP_MED = dic_cmp_gauss['DEFORMATION']['Q4GS']['NOM_CMP_MED'])
-                  if listVari[j] :
-                      __ECR1[j] = LIRE_CHAMP(
-                          INFO     = self.INFO,
-                          TYPE_CHAM   = 'ELGA_VARI_R',
-                          UNITE    = 99,
-                          NUME_PT  = resu.LIST_PARA()['NUME_ORDRE'][i],
-                          MODELE   = self.MODELE,
-                          MAILLAGE         = self.recupere_structure(self.MODELE,'MAILLAGE'),
-                          PROL_ZERO   = 'OUI',
-                          NOM_MED  = 'CHAMP___ECROUISSAGE__00%d'%(j+1),
-                          NOM_CMP  = dic_cmp_gauss['ECROUISSAGE']['Q4GS']['NOM_CMP'],
-                          NOM_CMP_MED = dic_cmp_gauss['ECROUISSAGE']['Q4GS']['NOM_CMP_MED'])
-                      dicAsse3.append({'TOUT' : 'OUI', 'CHAM_GD' : __ECR1[j], 'NOM_CMP' : tuple(dic_cmp_gauss['ECROUISSAGE']['Q4GS']['NOM_CMP']),
-                               'NOM_CMP_RESU' : tupVar, 'CUMUL' : 'OUI','COEF_R':1.})
-                      dicDetr.append({'NOM' : __ECR1[j]})
-                  # dicAsse2.append({'TOUT' : 'OUI', 'CHAM_GD' : __EPS1, 'NOM_CMP' : tuple(dic_cmp_gauss['DEFORMATION']['Q4GS']['NOM_CMP']),
-                              # 'NOM_CMP_RESU' : ('X1','X2','X3','X4','X5','X6','X7','X8'), 'CUMUL' : 'OUI','COEF_R':1.})
-              elif listType[j] == 'BR3D' :
-                  __SIG3[j] = LIRE_CHAMP(
-                      INFO        = self.INFO,
-                      TYPE_CHAM   = 'ELGA_SIEF_R',
-                      UNITE       = 99,
-                      NUME_PT     = resu.LIST_PARA()['NUME_ORDRE'][i],
-                      MODELE      = self.MODELE,
-                      MAILLAGE    = self.recupere_structure(self.MODELE,'MAILLAGE'),
-                      PROL_ZERO   = 'OUI',
-                      NOM_MED     = 'CHAMP___CONTRAINTE___00%d'%(j+1),
-                      NOM_CMP     = dic_cmp_gauss['CONTRAINTE']['BR3D']['NOM_CMP'],
-                      NOM_CMP_MED = dic_cmp_gauss['CONTRAINTE']['BR3D']['NOM_CMP_MED'],
-                          )
-                  dicDetr.append({'NOM' : __SIG3[j]})
-                  dicAsse.append({'TOUT' : 'OUI', 'CHAM_GD' : __SIG3[j], 'NOM_CMP' : tuple(dic_cmp_gauss['CONTRAINTE']['BR3D']['NOM_CMP']),
-                              'NOM_CMP_RESU' : ('X10',), 'CUMUL' : 'OUI','COEF_R':1.})
+            __SIG1[j] = LIRE_CHAMP(
+                INFO        = self.INFO,
+                TYPE_CHAM   = 'ELGA_SIEF_R',
+                UNITE       = 99,
+                NUME_PT     = resu.LIST_PARA()['NUME_ORDRE'][i],
+                MODELE      = self.MODELE,
+                MAILLAGE    = self.recupere_structure(self.MODELE,'MAILLAGE'),
+                PROL_ZERO   = 'OUI',
+                NOM_MED     = champ,
+                NOM_CMP     = dic_cmp_gauss['CONTRAINTE'][dic_champ_cont[champ]['TYPELEM']]['NOM_CMP'],
+                NOM_CMP_MED = dic_cmp_gauss['CONTRAINTE'][dic_champ_cont[champ]['TYPELEM']]['NOM_CMP_MED'],
+                    )
+            dicDetr.append({'NOM' : __SIG1[j]})
+            dicAsse.append({'TOUT' : 'OUI', 'CHAM_GD' : __SIG1[j], 'NOM_CMP' : tuple(dic_cmp_gauss['CONTRAINTE'][dic_champ_cont[champ]['TYPELEM']]['NOM_CMP']),
+                        'NOM_CMP_RESU' : dic_champ_cont[champ]['VAR_X'], 'CUMUL' : 'OUI','COEF_R':1.})
 
-                  # __EPS1 = LIRE_CHAMP(
-                      # INFO        = self.INFO,
-                      # TYPE_CHAM   = 'ELGA_EPSI_R',
-                      # UNITE       = 99,
-                      # NUME_PT     = resu.LIST_PARA()['NUME_ORDRE'][i],
-                      # MODELE      = self.MODELE,
-                      # MAILLAGE    = self.recupere_structure(self.MODELE,'MAILLAGE'),
-                      # PROL_ZERO   = 'OUI',
-                      # NOM_MED     = 'CHAMP___DEFORM_TOT___001',
-                      # NOM_CMP     = dic_cmp_gauss['DEFORMATION']['Q4GS']['NOM_CMP'],
-                      # NOM_CMP_MED = dic_cmp_gauss['DEFORMATION']['Q4GS']['NOM_CMP_MED'])
-                  if listVari[j] :
-                      __ECR3[j] = LIRE_CHAMP(
-                          INFO     = self.INFO,
-                          TYPE_CHAM   = 'ELGA_VARI_R',
-                          UNITE    = 99,
-                          NUME_PT  = resu.LIST_PARA()['NUME_ORDRE'][i],
-                          MODELE   = self.MODELE,
-                          MAILLAGE         = self.recupere_structure(self.MODELE,'MAILLAGE'),
-                          PROL_ZERO   = 'OUI',
-                          NOM_MED  = 'CHAMP___ECROUISSAGE__00%d'%(j+1),
-                          NOM_CMP  = dic_cmp_gauss['ECROUISSAGE']['BR3D']['NOM_CMP'],
-                          NOM_CMP_MED = dic_cmp_gauss['ECROUISSAGE']['BR3D']['NOM_CMP_MED'])
-                      dicAsse3.append({'TOUT' : 'OUI', 'CHAM_GD' : __ECR3[j], 'NOM_CMP' : tuple(dic_cmp_gauss['ECROUISSAGE']['BR3D']['NOM_CMP']),
-                               'NOM_CMP_RESU' : tupVar, 'CUMUL' : 'OUI','COEF_R':1.})
-                      dicDetr.append({'NOM' : __ECR3[j]})
-          # if 'DKT3' in self.modelisations:
-          
-#          RetablirAlarme('MED_98')
+          for j,champ in enumerate(dic_champ_var_int.keys()):
+            __ECR1[j] = LIRE_CHAMP(
+                INFO     = self.INFO,
+                TYPE_CHAM   = 'ELGA_VARI_R',
+                UNITE    = 99,
+                NUME_PT  = resu.LIST_PARA()['NUME_ORDRE'][i],
+                MODELE   = self.MODELE,
+                MAILLAGE         = self.recupere_structure(self.MODELE,'MAILLAGE'),
+                PROL_ZERO   = 'OUI',
+                NOM_MED  = champ,
+                NOM_CMP  = tupVarInt[:dic_champ_var_int[champ]],
+                NOM_CMP_MED = tupVarIntMed[:dic_champ_var_int[champ]],)
+            dicAsse3.append({'TOUT' : 'OUI', 'CHAM_GD' : __ECR1[j],'NOM_CMP':tupVarInt[:dic_champ_var_int[champ]],
+                    'NOM_CMP_RESU' : tupVar[:dic_champ_var_int[champ]], 'CUMUL' : 'OUI','COEF_R':1.})
+            dicDetr.append({'NOM' : __ECR1[j]})
+
 
           __SIGN = CREA_CHAMP(
               INFO      = self.INFO,
@@ -2527,8 +2416,8 @@ class EUROPLEXUS:
               ASSE      = _F(
                   TOUT = 'OUI',
                   CHAM_GD = __ECRGN,
-                  NOM_CMP = tupVar,
-                  NOM_CMP_RESU = tuple(dic_cmp_gauss['ECROUISSAGE']['Q4GS']['NOM_CMP'])))
+                  NOM_CMP = tupVar[:nb_max_var],
+                  NOM_CMP_RESU = tupVarInt[:nb_max_var]))
   # AA        dicAffe.append({'CHAM_GD' : __EFFG[i], 'MODELE' : self.MODELE,'CHAM_MATER' : self.CHAM_MATER,'INST': resu.LIST_PARA()['INST'][i]})
           dicAffe.append({'CHAM_GD' : __EFFG[i], 'MODELE' : self.MODELE,'CHAM_MATER' : self.CHAM_MATER, 'CARA_ELEM' : self.CARA_ELEM, 'INST': resu.LIST_PARA()['INST'][i]})
           # dicAffe2.append({'CHAM_GD' : __EPSG[i], 'MODELE' : self.MODELE,'CHAM_MATER' : self.CHAM_MATER,'INST': resu.LIST_PARA()['INST'][i]})

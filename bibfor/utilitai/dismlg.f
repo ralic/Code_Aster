@@ -6,10 +6,10 @@
       INTEGER REPI,IERD
       CHARACTER*(*) QUESTI,REPKZ,NOMOBZ
 C ----------------------------------------------------------------------
-C MODIF UTILITAI  DATE 09/11/2012   AUTEUR DELMAS J.DELMAS 
+C MODIF UTILITAI  DATE 05/03/2013   AUTEUR CHEIGNON E.CHEIGNON 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -132,7 +132,8 @@ C     -----------------------------------------------------------------
      &        (QUESTI.EQ.'EXI_TUYAU') .OR. (QUESTI.EQ.'EXI_COQ3D') .OR.
      &        (QUESTI.EQ.'EXI_COQ1D') .OR. (QUESTI.EQ.'EXI_GRILLE') .OR.
      &        (QUESTI.EQ.'EXI_PLAQUE') .OR. (QUESTI.EQ.'EXI_COQUE') .OR.
-     &        (QUESTI.EQ.'CALC_RIGI') .OR. (QUESTI.EQ.'EXI_STRX')) THEN
+     &        (QUESTI.EQ.'CALC_RIGI') .OR. (QUESTI.EQ.'EXI_STRX')   .OR.
+     &        (QUESTI.EQ.'EXI_STR2')                             ) THEN
 
 C     -----------------------------------------------------------------
         CALL JEEXIN(NOMOB//'.LIEL',IEXI)
@@ -229,8 +230,15 @@ C     -----------------------------------------------------------------
               ENDIF
 
             ELSEIF (QUESTI.EQ.'EXI_STRX') THEN
-              IF ((NOMTE.EQ.'MECA_POU_D_EM') .OR.
-     &            (NOMTE.EQ.'MECA_POU_D_TGM')) THEN
+              IF ((NOMTE(1:10).EQ.'MECA_POU_D') .AND.
+     &            (NOMTE.NE.'MECA_POU_D_T_GD')) THEN
+                REPK='OUI'
+                GOTO 110
+
+              ENDIF
+
+            ELSEIF (QUESTI.EQ.'EXI_STR2') THEN
+              IF (NOMTE.EQ.'MECA_POU_D_EM') THEN
                 REPK='OUI'
                 GOTO 110
 

@@ -1,4 +1,4 @@
-%& MODIF TYPELEM  DATE 21/01/2013   AUTEUR PELLET J.PELLET 
+%& MODIF TYPELEM  DATE 05/03/2013   AUTEUR CHEIGNON E.CHEIGNON 
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -98,6 +98,7 @@ MODE_LOCAL__
     EENEUT_F = NEUT_F   ELNO__ IDEN__  (X[30]    )
     EENEUT_R = NEUT_R   ELNO__ IDEN__  (X[30]    )
     ENONLIN  = NEUT_I   ELEM__         (X1       )
+    ESTRAUX  = STRX_R   ELGA__ RIGI    (ALPHA    BETA     GAMMA)
 
 VECTEUR__
     MVECTUC = VDEP_C NDEPLAC
@@ -179,18 +180,20 @@ OPTION__
                               OUT__  EENEDNO  PENERDR
     FORC_NODA           347   IN__   CCAGNPO  PCAGNPO  CCAORIE  PCAORIE  CCOMPOR  PCOMPOR  EEFGEGA  PCONTMR
                                      DDL_MECA PDEPLMR  DDL_MECA PDEPLPR  NGEOMER  PGEOMER  CMATERC  PMATERC
-                                     ZVARCPG  PVARCPR
+                                     ZVARCPG  PVARCPR  ESTRAUX  PSTRXMR
                               OUT__  MVECTUR  PVECTUR
     FULL_MECA           346   IN__   CCAGNPO  PCAGNPO  CCAORIE  PCAORIE  CCARCRI  PCARCRI  CCOMPOR  PCOMPOR
                                      EEFGEGA  PCONTMR  DDL_MECA PDEPLMR  DDL_MECA PDEPLPR  NGEOMER  PGEOMER
                                      CTEMPSR  PINSTMR  CTEMPSR  PINSTPR  CMATERC  PMATERC  ZVARCPG  PVARCPR
                                      ZVARCPG  PVARCRR  ZVARCPG  PVARCMR
-                                     ZVARIPG  PVARIMR
-                              OUT__  ECODRET  PCODRET  EEFGEGA  PCONTPR  MMATUUR  PMATUUR  ZVARIPG  PVARIPR
+                                     ZVARIPG  PVARIMR  ESTRAUX  PSTRXMR
+                              OUT__  ECODRET  PCODRET  EEFGEGA  PCONTPR  MMATUUR  PMATUUR  ZVARIPG  PVARIPR  ESTRAUX  PSTRXPR
                                      MVECTUR  PVECTUR
     FULL_MECA_ELAS      -1    IN__     OUT__  XXXXXX   XXXXXX
     INDIC_ENER          -1    IN__     OUT__  XXXXXX   XXXXXX
     INDIC_SEUIL         -1    IN__     OUT__  XXXXXX   XXXXXX
+    INI_STRX            23    IN__   CCAORIE  PCAORIE
+                              OUT__  ESTRAUX  PSTRX_R
     INIT_VARC           99    IN__
                               OUT__  ZVARCPG  PVARCPR
     MASS_FLUI_STRU      141   IN__   CABSCUR  PABSCUR  CCAGEPO  PCAGEPO  CCAGNPO  PCAGNPO  CCAORIE  PCAORIE
@@ -221,8 +224,8 @@ OPTION__
                                      EEFGEGA  PCONTMR  DDL_MECA PDEPLMR  DDL_MECA PDEPLPR  NGEOMER  PGEOMER
                                      CTEMPSR  PINSTMR  CTEMPSR  PINSTPR  CMATERC  PMATERC
                                      ZVARCPG  PVARCRR   ZVARCPG  PVARCMR
-                                     ZVARCPG  PVARCPR  ZVARIPG  PVARIMR
-                              OUT__  ECODRET  PCODRET  EEFGEGA  PCONTPR  ZVARIPG  PVARIPR  MVECTUR  PVECTUR
+                                     ZVARCPG  PVARCPR  ZVARIPG  PVARIMR  ESTRAUX  PSTRXMR
+                              OUT__  ECODRET  PCODRET  EEFGEGA  PCONTPR  ZVARIPG  PVARIPR  MVECTUR  PVECTUR  ESTRAUX  PSTRXPR
     REFE_FORC_NODA      347   IN__   EREFCO   PREFCO
                               OUT__  MVECTUR  PVECTUR
     REPERE_LOCAL        135   IN__   CCAORIE  PCAORIE
@@ -246,7 +249,7 @@ OPTION__
                                      EEFGEGA  PCONTMR  DDL_MECA PDEPLMR  DDL_MECA PDEPLPR  NGEOMER  PGEOMER
                                      CTEMPSR  PINSTMR  CTEMPSR  PINSTPR  CMATERC  PMATERC
                                      ZVARCPG  PVARCRR  ZVARCPG  PVARCMR
-                                     ZVARCPG  PVARCPR  ZVARIPG  PVARIMR
+                                     ZVARCPG  PVARCPR  ZVARIPG  PVARIMR  ESTRAUX  PSTRXMR
                               OUT__  MMATUUR  PMATUUR
     SIEF_ELGA           342   IN__   CCAGNPO  PCAGNPO  CCAORIE  PCAORIE  DDL_MECA PDEPLAR  NGEOMER  PGEOMER
                                      CMATERC  PMATERC  ZVARCPG  PVARCPR  ZVARCPG  PVARCRR
