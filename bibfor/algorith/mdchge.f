@@ -14,9 +14,9 @@
       CHARACTER*16        TYPNUM
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 18/12/2012   AUTEUR SELLENET N.SELLENET 
+C MODIF ALGORITH  DATE 05/03/2013   AUTEUR BRIE N.BRIE 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -63,8 +63,8 @@ C     ------------------------------------------------------------------
       CHARACTER*10  MOTFAC
       CHARACTER*14  NUME1, NUME2
       CHARACTER*24  MDGENE, MDSSNO, REFO, NOMGR1, NOMGR2
-      CHARACTER*24 VALK
-      INTEGER      IARG
+      CHARACTER*24  VALK(2)
+      INTEGER       IARG
 C     ------------------------------------------------------------------
 C
       CALL GETFAC ( 'CHOC', NBCHOC )
@@ -98,8 +98,9 @@ C
             IF (IRET.EQ.10) THEN
                CALL U2MESK('F','ELEMENTS_67',1,NOMGR1)
             ELSEIF (IRET.EQ.1) THEN
-                  VALK = NOMNO1
-               CALL U2MESG('A', 'SOUSTRUC_87',1,VALK,0,0,0,0.D0)
+               VALK(1) = NOMGR1
+               VALK(2) = NOMNO1
+               CALL U2MESK('A', 'SOUSTRUC_87',2,VALK)
             ENDIF
             NOECHO(I,1) = NOMNO1
          ENDIF
@@ -129,8 +130,9 @@ C
                IF (IRET.EQ.10) THEN
                   CALL U2MESK('F','ELEMENTS_67',1,NOMGR2)
                ELSEIF (IRET.EQ.1) THEN
-                  VALK = NOMNO2
-                  CALL U2MESG('A', 'SOUSTRUC_87',1,VALK,0,0,0,0.D0)
+                  VALK(1) = NOMGR2
+                  VALK(2) = NOMNO2
+                  CALL U2MESK('A', 'SOUSTRUC_87',2,VALK)
                ENDIF
                NOECHO(I,5) = NOMNO2
             ENDIF

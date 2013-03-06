@@ -2,7 +2,7 @@
       IMPLICIT NONE
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 11/02/2013   AUTEUR BOYERE E.BOYERE 
+C MODIF ALGELINE  DATE 05/03/2013   AUTEUR BRIE N.BRIE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -28,7 +28,7 @@ C     PARAMETRES "MODE_MECA"
 C-----------------------------------------------------------------------
       INTEGER I ,IB ,IC ,IDEB ,IE ,IEQ ,IERD
       INTEGER IEX ,IFIN ,ILGCON ,IM ,IND ,IPREC ,ISIGN
-      INTEGER IVAL ,L ,LADPA ,LCMP ,LCOEF ,LG ,LMOD
+      INTEGER IVAL ,L ,LADPA ,LCMP ,LCOEF ,LG ,LMOD,LGR,LN
       INTEGER LMODE ,LNORM ,LNUMOR ,LPROD ,LVALI ,LVALK ,LVALR
       INTEGER LXLGUT ,MOSIGN ,NBMOD ,NBMODE ,NBPAFI ,NBPAFK ,NBPAFR
       INTEGER NBPAFT ,NBPAMI ,NBPAMK ,NBPAMR ,NBPAMT ,NBPARA ,NBPARI
@@ -50,14 +50,14 @@ C     PARAMETRES "MODE_FLAMB"
       CHARACTER*24 VALK(4)
       CHARACTER*8   MODEOU, MODEIN, NOMCMP(7), K8B, CMP,
      &                NOMA, MAT1,KBID,
-     &              MAT2, MAT3
+     &              MAT2, MAT3, NOEUD
       CHARACTER*14  NUME
-      CHARACTER*16  TYPCON, NOMCMD, NORM, NOEUD, NOMSY
+      CHARACTER*16  TYPCON, NOMCMD, NORM, NOMSY
       CHARACTER*19  K19B,CHAMNO
       CHARACTER*24  MASSE, AMOR, RAIDE, REFE, METHOD,
      &              KVEC, KVALI, KVALR, KVALK,
      &              NOPARM(NBPAMT), NOPARF(NBPAFT), NOPARA(NBPAMT),
-     &              MATE, CARA, MODELE,TYPEBA, OLDNOR
+     &              MATE, CARA, MODELE,TYPEBA, OLDNOR, NOMGRN
 
       INTEGER      IARG
 C     ------------------------------------------------------------------
@@ -319,8 +319,21 @@ C        --- CALCUL DE LA MASSE DU MODELE
          ENDIF
       ENDIF
 C
-      CALL GETVEM(NOMA,'NOEUD',' ','NOEUD',1,IARG,1,NOEUD,L)
-      IF ( L .NE. 0 ) THEN
+      CALL GETVEM(NOMA,'NOEUD',' ','NOEUD',1,IARG,1,NOEUD,LN)
+      CALL GETVTX(' ','GROUP_NO',1,IARG,1,NOMGRN,LGR)
+
+      IF ( LGR .NE. 0 ) THEN
+         CALL UTNONO(' ',NOMA,'NOEUD',NOMGRN,NOEUD,L)
+         IF (L.EQ.10) THEN
+            CALL U2MESK('F','ELEMENTS_67',1,NOMGRN)
+         ELSEIF (L.EQ.1) THEN
+            VALK(1) = NOMGRN
+            VALK(2) = NOEUD
+            CALL U2MESK('A', 'SOUSTRUC_87',2,VALK)
+         ENDIF
+      ENDIF
+C
+      IF ( (LN .NE. 0) .OR. (LGR .NE. 0)) THEN
          NORM   = 'POINT'
          NCMP   = 1
          METHOD(1:6) = 'NOEUD:'
@@ -476,6 +489,17 @@ C     --- SIGNE DES MODES ---
       IF ( MOSIGN .NE. 0 ) THEN
          CALL GETVEM(NOMA,'NOEUD','MODE_SIGNE','NOEUD',
      &             1,IARG,1,NOEUD,L)
+         IF (L.EQ.0) THEN
+           CALL GETVTX('MODE_SIGNE','GROUP_NO',1,IARG,1,NOMGRN,L)
+           CALL UTNONO(' ',NOMA,'NOEUD',NOMGRN,NOEUD,L)
+           IF (L.EQ.10) THEN
+               CALL U2MESK('F','ELEMENTS_67',1,NOMGRN)
+           ELSEIF (L.EQ.1) THEN
+              VALK(1) = NOMGRN
+              VALK(2) = NOEUD
+              CALL U2MESK('A', 'SOUSTRUC_87',2,VALK)
+           ENDIF
+         ENDIF
          CALL GETVTX('MODE_SIGNE','NOM_CMP',1,IARG,1,CMP  ,L)
          IF (LREFE) THEN
            CALL POSDDL('NUME_DDL', NUME,NOEUD,CMP,NUMNOE,NUMDDL)

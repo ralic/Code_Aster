@@ -5,9 +5,9 @@
       CHARACTER*(*)       MCF , MCS
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF SOUSTRUC  DATE 18/12/2012   AUTEUR SELLENET N.SELLENET 
+C MODIF SOUSTRUC  DATE 05/03/2013   AUTEUR BRIE N.BRIE 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -34,8 +34,8 @@ C     ------------------------------------------------------------------
       INTEGER       N1, IRET
       CHARACTER*8   K8B
       CHARACTER*16  MCNOEU, MCGRNO
-      CHARACTER*24 VALK, NOGNO
-      INTEGER      IARG
+      CHARACTER*24  VALK(2), NOGNO
+      INTEGER       IARG
 C     ------------------------------------------------------------------
 C
       NOEUD = '        '
@@ -60,8 +60,9 @@ C
          IF ( IRET .EQ. 10 ) THEN
             CALL U2MESK('F','ELEMENTS_67',1,NOGNO)
          ELSEIF ( IRET .EQ. 1 ) THEN
-            VALK = NOEUD
-            CALL U2MESG('A', 'SOUSTRUC_87',1,VALK,0,0,0,0.D0)
+            VALK(1) = NOGNO
+            VALK(2) = NOEUD
+            CALL U2MESK('A', 'SOUSTRUC_87',2,VALK)
          ENDIF
       ENDIF
 C

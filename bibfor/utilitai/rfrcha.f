@@ -2,7 +2,7 @@
       IMPLICIT NONE
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 12/02/2013   AUTEUR PELLET J.PELLET 
+C MODIF UTILITAI  DATE 05/03/2013   AUTEUR BRIE N.BRIE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -26,13 +26,13 @@ C     ------------------------------------------------------------------
       INTEGER N1,IRET,IVARI
       INTEGER NM,NGM,NPOINT,NP,NN
       INTEGER NGN,IBID,IE,NC,IFM,NIV,NUSP
-      REAL*8 EPSI,VALR
-      COMPLEX*16 VALC
-      CHARACTER*1 TYPE
+      REAL*8  EPSI,VALR
+      COMPLEX*16   VALC
+      CHARACTER*1  TYPE
       CHARACTER*24 VALK(2)
-      CHARACTER*4 TYPCH2
-      CHARACTER*8 K8B,CRIT,MAILLE,NOMA,INTRES
-      CHARACTER*8 NOEUD,CMP,NOMGD
+      CHARACTER*4  TYPCH2
+      CHARACTER*8  K8B,CRIT,MAILLE,NOMA,INTRES
+      CHARACTER*8  NOEUD,CMP,NOMGD
       CHARACTER*16 NOMCMD,TYPCON,TYPCHA
       CHARACTER*19 NOMFON,CHAM19
       CHARACTER*24 NOGNO,NOGMA
@@ -78,8 +78,9 @@ C       ----------------------------------
             IF (IRET.EQ.10) THEN
               CALL U2MESK('F','ELEMENTS_67',1,NOGNO)
             ELSE IF (IRET.EQ.1) THEN
-              VALK (1) = NOEUD
-              CALL U2MESG('A', 'SOUSTRUC_87',1,VALK,0,0,0,0.D0)
+              VALK (1) = NOGNO
+              VALK (2) = NOEUD
+              CALL U2MESK('A', 'SOUSTRUC_87',2,VALK)
             END IF
           END IF
           CALL GETVTX(' ','NOM_CMP',0,IARG,1,CMP,NC)
@@ -115,8 +116,9 @@ C ---  ET GROUP_NO (OU NOEUD OU POINT) DANS LE CAS D'UN CHAM_ELEM
             IF (IRET.EQ.10) THEN
               CALL U2MESK('F','ELEMENTS_67',1,NOGNO)
             ELSE IF (IRET.EQ.1) THEN
-              VALK (1) = NOEUD
-              CALL U2MESG('A', 'SOUSTRUC_87',1,VALK,0,0,0,0.D0)
+              VALK (1) = NOGNO
+              VALK (2) = NOEUD
+              CALL U2MESK('A', 'SOUSTRUC_87',2,VALK)
             END IF
           END IF
           CALL DISMOI('F','TYPE_CHAMP',CHAM19,'CHAMP',IBID,TYPCH2,IE)

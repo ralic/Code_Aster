@@ -1,4 +1,4 @@
-#@ MODIF soustruc Messages  DATE 12/02/2013   AUTEUR PELLET J.PELLET 
+#@ MODIF soustruc Messages  DATE 05/03/2013   AUTEUR BRIE N.BRIE 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -380,7 +380,8 @@ cata_msg={
 """),
 
 87: _(u"""
- trop de noeuds dans le GROUP_NO  noeud utilise:  %(k1)s
+ Le groupe de noeuds %(k1)s contient plus qu'un seul noeud. 
+ Noeud utilisé pour réaliser l'opération demandée :  %(k2)s
 """),
 
 88: _(u"""

@@ -22,7 +22,7 @@ C ======================================================================
       CHARACTER*32 JEXNOM
       CHARACTER*8    NOMA
 C ======================================================================
-C MODIF MODELISA  DATE 25/02/2013   AUTEUR SELLENET N.SELLENET 
+C MODIF MODELISA  DATE 05/03/2013   AUTEUR BRIE N.BRIE 
 C
 C     ORILGM  --  LE BUT EST DE REORIENTER, SI C'EST NECESSAIRE,
 C                 LES MAILLES DE PEAU DE GROUPES DE MAILLES
@@ -48,9 +48,9 @@ C -----  VARIABLES LOCALES
       CHARACTER*8   K8B
       CHARACTER*16  MOFA2D, MOFA3D, MOFB3D, MOFC3D
       CHARACTER*19  NOMT19
-      CHARACTER*24   NOMNOE, GRMAMA, PARA, NNOEUD, GMAT
-      CHARACTER*24 VALK
-      INTEGER      IARG
+      CHARACTER*24  NOMNOE, GRMAMA, PARA, NNOEUD, GMAT
+      CHARACTER*24  VALK(2)
+      INTEGER       IARG
 C
 C ========================= DEBUT DU CODE EXECUTABLE ==================
 C
@@ -256,11 +256,11 @@ C
                CALL GETVTX(MOFB3D,'GROUP_NO',IOCC,IARG,1,NNOEUD,N3)
                CALL UTNONO(' ',NOMA,'NOEUD',NNOEUD,K8B,IER)
                IF ( IER .EQ. 10 ) THEN
-                  VALK = NNOEUD
-                  CALL U2MESG('F', 'MODELISA8_75',1,VALK,0,0,0,0.D0)
+                  CALL U2MESK('F', 'MODELISA8_75',1,NNOEUD)
                ELSEIF ( IER .EQ. 1 ) THEN
-                  VALK = K8B
-                  CALL U2MESG('A', 'SOUSTRUC_87',1,VALK,0,0,0,0.D0)
+                  VALK(1) = NNOEUD
+                  VALK(2) = K8B
+                  CALL U2MESK('A', 'SOUSTRUC_87',2,VALK)
                ENDIF
                CALL JENONU ( JEXNOM(NOMNOE,K8B), NOEUD )
             ENDIF
@@ -315,11 +315,11 @@ C
                CALL GETVTX(MOFC3D,'GROUP_NO',IOCC,IARG,1,NNOEUD,N3)
                CALL UTNONO(' ',NOMA,'NOEUD',NNOEUD,K8B,IER)
                IF ( IER .EQ. 10 ) THEN
-                  VALK = NNOEUD
-                  CALL U2MESG('F', 'MODELISA8_75',1,VALK,0,0,0,0.D0)
+                  CALL U2MESK('F', 'MODELISA8_75',1,NNOEUD)
                ELSEIF ( IER .EQ. 1 ) THEN
-                  VALK = K8B
-                  CALL U2MESG('A', 'SOUSTRUC_87',1,VALK,0,0,0,0.D0)
+                  VALK(1) = NNOEUD
+                  VALK(2) = K8B
+                  CALL U2MESK('A', 'SOUSTRUC_87',2,VALK)
                ENDIF
                CALL JENONU ( JEXNOM(NOMNOE,K8B), NOEUD )
             ENDIF

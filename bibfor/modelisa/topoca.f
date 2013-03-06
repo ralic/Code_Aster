@@ -2,7 +2,7 @@
       IMPLICIT NONE
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 12/02/2013   AUTEUR PELLET J.PELLET 
+C MODIF MODELISA  DATE 05/03/2013   AUTEUR BRIE N.BRIE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -176,17 +176,19 @@ C
          IF ( IRET.EQ.10 ) THEN
             CALL U2MESK('F','ELEMENTS_67',1,NOGRNA(1))
          ELSE IF ( IRET.EQ.1 ) THEN
-            VALK(1) = K8B
-            CALL U2MESG('A', 'SOUSTRUC_87',1,VALK,0,0,0,0.D0)
+            VALK(1) = NOGRNA(1)
+            VALK(2) = K8B
+            CALL U2MESK('A', 'SOUSTRUC_87',2,VALK)
          ENDIF
          NOANCR(1) = K8B
 C
          CALL UTNONO(' ',MAILLA,'NOEUD',NOGRNA(2),K8B,IRET)
          IF ( IRET.EQ.10 ) THEN
-            CALL U2MESK('F','ELEMENTS_67',1,NOGRNA(1))
+            CALL U2MESK('F','ELEMENTS_67',1,NOGRNA(2))
          ELSE IF ( IRET.EQ.1 ) THEN
-            VALK(1) = K8B
-            CALL U2MESG('A', 'SOUSTRUC_87',1,VALK,0,0,0,0.D0)
+            VALK(1) = NOGRNA(2)
+            VALK(2) = K8B
+            CALL U2MESK('A', 'SOUSTRUC_87',2,VALK)
          ENDIF
          NOANCR(2) = K8B
 C
