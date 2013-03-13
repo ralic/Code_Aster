@@ -1,7 +1,7 @@
-#& MODIF COMMANDE  DATE 19/12/2012   AUTEUR PELLET J.PELLET 
+#& MODIF COMMANDE  DATE 11/03/2013   AUTEUR PROIX J-M.PROIX 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -867,7 +867,7 @@ DEFI_MATERIAU=OPER(nom="DEFI_MATERIAU",op=5,sd_prod=mater_sdaster,
              DELTA2       =SIMP(statut='o',typ='R'),
              H1ST         =SIMP(statut='o',typ='R'),
              H2ST         =SIMP(statut='o',typ='R'),
-             KC           =SIMP(statut='f',typ='R',defaut=0.),
+             KC           =SIMP(statut='f',typ='R',defaut=0.,into=(0.,)),
              BIGA         =SIMP(statut='o',typ='R'),
              SIG0         =SIMP(statut='o',typ='R'),
              ALPHAD       =SIMP(statut='f',typ='R',defaut=0.),
@@ -3083,8 +3083,8 @@ DEFI_MATERIAU=OPER(nom="DEFI_MATERIAU",op=5,sd_prod=mater_sdaster,
              H4              =SIMP(statut='f',typ='R',defaut=0.122,fr="matrice d'interaction, terme a_Lomer",),
              H5              =SIMP(statut='f',typ='R',defaut=0.07,fr="matrice d'interaction, terme a_Hirth",),
 
-             DZ_IRRA         =SIMP(statut='o',typ='R',fr="Parametre dzeta pour irradiation"),
-             XI_IRRA         =SIMP(statut='o',typ='R',fr="Parametre xi pour irradiation"),
+             DZ_IRRA         =SIMP(statut='o',typ='R',val_min=0.E+0,fr="Parametre dzeta pour irradiation"),
+             XI_IRRA         =SIMP(statut='o',typ='R',val_min=0.E+0,fr="Parametre xi pour irradiation"),
              RHO_VOID        =SIMP(statut='o',typ='R',fr="Parametre rho_voids pour irradiation"),
              PHI_LOOP        =SIMP(statut='o',typ='R',fr="Parametre phi_loops pour irradiation"),
              ALP_VOID        =SIMP(statut='o',typ='R',fr="Parametre alpha_voids pour irradiation"),

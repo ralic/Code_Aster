@@ -6,5 +6,4 @@ P mpi_nbnoeud 1
 P testlist C
 
 F comm ssnv194g.comm D 1
-F libr ssnv194g.38 D 38
-F libr ssnv194d.91 D 91
+F libr ssnv194g.91 D 91

@@ -1,9 +1,9 @@
-# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
+# MODIF  DATE 11/03/2013   AUTEUR PROIX J-M.PROIX 
 # TITRE  TEST LOI DE COMPORTEMENT HAYHURST
 # comp002l.para = tps_job 120 mem_job 512Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
@@ -52,8 +52,6 @@ Kcoef=aK*(Tdegc+273.)+bK;
 A0 = fA*exp(-QA/(8.314*(Tdegc+273.)));
 sig0val = f0*exp(-Q0/(8.314*(Tdegc+273.)));
 
-#Kcoef=Kcoef*100.
-
 # def des materiaux
 ACIER = [None]*2
 #unite en Pa
@@ -68,7 +66,7 @@ H2=-280.
 H1_Pa= H1* C_Pa
 H2_Pa= H2* C_Pa
 sig0Pa=sig0val* C_Pa
-kc=1.e-10
+kc=0.0
 
 
 #unite en MPa
@@ -169,10 +167,12 @@ for i in range(Ncal):
    DEFLIST =DEFI_LIST_INST(DEFI_LIST=_F(LIST_INST = temps,),)
    # Resout le pb a deformation imposee
    RESU[i]=SIMU_POINT_MAT(
-                          COMP_INCR=_F(RELATION=compor,RESI_INTE_RELA=1.E-6),
-                          NEWTON=_F(PREDICTION='EXTRAPOLE',
-                               MATRICE='ELASTIQUE',
-                               REAC_ITER=0,),
+                          COMP_INCR=_F(RELATION=compor,
+                                      RESI_INTE_RELA=1.E-6,
+                                      ITER_INTE_MAXI=100,
+                                      ITER_INTE_PAS=-10,
+                          ),
+                          NEWTON=_F(REAC_ITER=1,),
                           MATER       = ACIER[imat],  
                           ARCHIVAGE   =_F(LIST_INST = temps),
                           INCREMENT   =_F(LIST_INST=DEFLIST,),
@@ -238,19 +238,5 @@ TEST_TABLE(
 
 FIN()
 
-# quand il y aura une matrice tangente:
 
-tabresu=TEST_COMPOR(OPTION='MECA',INFO=2,
-                   COMP_INCR=_F(RELATION=compor,RESI_INTE_RELA=1.E-6),
-                     NEWTON=_F(PREDICTION='EXTRAPOLE',
-                               MATRICE='ELASTIQUE',
-                               REAC_ITER=0,),
-              LIST_MATER=ACIER,
-              LIST_NPAS=4*[10] + [10, 15, 25],              
-              VARI_TEST=('V7','V8','V9','V11','VMIS','TRACE'),
-              LIST_TOLE=4*[1.E-10] + [5.] + [2.] + [1.E-2]+ [1.E-4],
-              YOUNG=YOUNG,POISSON=0.3,
-              )
-
-IMPR_TABLE(TABLE=tabresu)
 

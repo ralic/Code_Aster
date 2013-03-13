@@ -2,7 +2,7 @@
      &             NBVAL,VALRES,NMAT,ITBINT,NFS,NSG,HSRI,NBSYS)
       IMPLICIT NONE
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 28/01/2013   AUTEUR PROIX J-M.PROIX 
+C MODIF ALGORITH  DATE 11/03/2013   AUTEUR PROIX J-M.PROIX 
 C TOLE CRS_1404
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -41,6 +41,9 @@ C     ----------------------------------------------------------------
       INTEGER ICODRE(NMAT)
       CHARACTER*(*)   FAMI,POUM
       CHARACTER*16    NMATER, NECOUL, NECRIS,PHENOM
+      INTEGER IRR,DECIRR,NBSYST,DECAL,GDEF
+C     ----------------------------------------------------------------
+      COMMON/POLYCR/IRR,DECIRR,NBSYST,DECAL,GDEF
 C     ----------------------------------------------------------------
 C
       IF (NECOUL.EQ.'MONO_VISC1') THEN
@@ -173,7 +176,9 @@ C         CALCUL ET STOCKAGE DE MU
           VALLUE(NBVAL)=MU
           NBVAL=NBVAL+1
           VALLUE(NBVAL)=0.D0
+          IRR=0
           IF (NECOUL.EQ.'MONO_DD_CC_IRRA') THEN
+             IRR=1
              VALLUE(NBVAL)=1.D0
              NOMRES(1)='A_IRRA'
              NOMRES(2)='XI_IRRA'

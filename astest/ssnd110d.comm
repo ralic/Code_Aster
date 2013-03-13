@@ -1,4 +1,4 @@
-# MODIF  DATE 18/02/2013   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 11/03/2013   AUTEUR PROIX J-M.PROIX 
 # TITRE VALIDATION MONOCRISTAL LOI DD_CC_IRRA THERMIQUE + A-THERMIQUE
 # ssnd110d.para = tps_job 300 mem_job 512Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -171,6 +171,53 @@ TIMP=DEFI_FONCTION(
                       NOM_PARA='INST',  NOM_RESU='TEMP',
                        VALE=(  0. , TEMP, 1. , TEMP)
                         )
+
+
+# DD_CFC  en IMPLICITE
+
+COMPODDI=DEFI_COMPOR(MONOCRISTAL=_F(MATER=ACIERDD,
+                                    ECOULEMENT='MONO_DD_CC_IRRA',
+                                    ELAS='ELAS',
+                                    FAMI_SYST_GLIS='CUBIQUE1',
+                                    ),
+                                    );
+
+LINSTDDI=DEFI_LIST_REEL(DEBUT=0.0,
+                       INTERVALLE=(
+                                   _F(JUSQU_A=1.,
+                                      NOMBRE=500,),
+                                  ),
+                      );
+
+LIS2DDI=DEFI_LIST_INST(INFO=1,
+                        DEFI_LIST=_F(LIST_INST=LINSTDDI),
+                        ECHEC=_F(SUBD_NIVEAU=20,
+                                 SUBD_PAS=10),
+                        );
+IMPLDD=SIMU_POINT_MAT(INFO=1,
+                      MATER=ACIERDD,
+                      COMP_INCR=(_F(RELATION='MONOCRISTAL',
+                                    COMPOR=COMPODDI,
+                                    ALGO_INTE='NEWTON_PERT',
+                                    ITER_INTE_MAXI=100,
+                                    TOUT='OUI',),),
+                      INCREMENT=(_F(LIST_INST=LIS2DDI,),),
+                      NEWTON=(_F(REAC_ITER=1,
+                                 PREDICTION='EXTRAPOLE',
+                                 ),),
+                      CONVERGENCE=(_F(ITER_GLOB_MAXI=10,),),
+                      VARI_INIT=_F(VALE=lvari,
+                                  ),
+                      SIGM_IMPOSE=(
+                                   _F(SIXX=S1,SIYY=S2,SIZZ=S3,SIXY=S4,SIXZ=S5,SIYZ=S6),
+                                  ),
+                      ARCHIVAGE=_F(LIST_INST=LISTARCH),
+                      SUPPORT='POINT',
+                      AFFE_VARC=_F(  NOM_VARC='TEMP',
+                                     VALE_FONC=TIMP,
+                                     VALE_REF=TEMP),
+                       );
+
 
 EXPLDD=SIMU_POINT_MAT(INFO=1,
                       MATER=ACIERDD,
@@ -378,51 +425,6 @@ EVIYZ=RECU_FONCTION(TABLE=EXPLDD,
                    INTERPOL='LIN');
                    
 
-
-# DD_CFC  en IMPLICITE
-
-COMPODDI=DEFI_COMPOR(MONOCRISTAL=_F(MATER=ACIERDD,
-                                    ECOULEMENT='MONO_DD_CC_IRRA',
-                                    ELAS='ELAS',
-                                    FAMI_SYST_GLIS='CUBIQUE1',
-                                    ),
-                                    );
-
-LINSTDDI=DEFI_LIST_REEL(DEBUT=0.0,
-                       INTERVALLE=(
-                                   _F(JUSQU_A=1.,
-                                      NOMBRE=500,),
-                                  ),
-                      );
-
-LIS2DDI=DEFI_LIST_INST(INFO=1,
-                        DEFI_LIST=_F(LIST_INST=LINSTDDI),
-                        ECHEC=_F(SUBD_NIVEAU=20,
-                                 SUBD_PAS=10),
-                        );
-IMPLDD=SIMU_POINT_MAT(INFO=1,
-                      MATER=ACIERDD,
-                      COMP_INCR=(_F(RELATION='MONOCRISTAL',
-                                    COMPOR=COMPODDI,
-                                    ALGO_INTE='NEWTON_PERT',
-                                    ITER_INTE_MAXI=100,
-                                    TOUT='OUI',),),
-                      INCREMENT=(_F(LIST_INST=LIS2DDI,),),
-                      NEWTON=(_F(REAC_ITER=1,
-                                 PREDICTION='EXTRAPOLE',
-                                 ),),
-                      CONVERGENCE=(_F(ITER_GLOB_MAXI=10,),),
-                      VARI_INIT=_F(VALE=lvari,
-                                  ),
-                      SIGM_IMPOSE=(
-                                   _F(SIXX=S1,SIYY=S2,SIZZ=S3,SIXY=S4,SIXZ=S5,SIYZ=S6),
-                                  ),
-                      ARCHIVAGE=_F(LIST_INST=LISTARCH),
-                      SUPPORT='POINT',
-                      AFFE_VARC=_F(  NOM_VARC='TEMP',
-                                     VALE_FONC=TIMP,
-                                     VALE_REF=TEMP),
-                       );
 
 
 gammi=[None]*13

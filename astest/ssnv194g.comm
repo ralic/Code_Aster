@@ -1,4 +1,4 @@
-# MODIF  DATE 18/02/2013   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 11/03/2013   AUTEUR PROIX J-M.PROIX 
 # TITRE : VALIDATION POLYCRISTAL LOI DD_CFC_IRRA
 # ssnv194g.para = tps_job 300 mem_job 512Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -37,11 +37,11 @@ from numpy import *
 MU=80000. # MPa
 NU=0.3
 E=MU*2*(1.+NU)
-TAU_F  = 20.
+TAU_F  = 80.
 RHO_0  = 1.E5    # en mm**-2
 RHOREF = 1.E6    # en mm**-2
 
-N      = 5.
+N      = 20.
 GAMMA0 = 1.E-3
 ALPHA=0.35
 BETA=2.54E-7     # 2.54 Angstrom
@@ -58,11 +58,11 @@ ALPHA=0.0
 
 # pour DD_CFC_IRRA
 # variable adimensionnee, voir R5.03.11
-RHO_LOOPS=RHO_0
-PHI_VOIDS=1.e-8 # 10 nm
+RHO_LOOPS=7.4E13*BETA*BETA
 
+PHI_VOIDS=1.e-3
 
-ACIERDD=DEFI_MATERIAU(ELAS=_F(E=E,
+ACIERDDi=DEFI_MATERIAU(ELAS=_F(E=E,
                             NU=NU,
                             ALPHA=0.),
                       MONO_DD_CFC_IRRA=_F(TAU_F  = TAU_F,  # MPa
@@ -74,62 +74,83 @@ ACIERDD=DEFI_MATERIAU(ELAS=_F(E=E,
                                      RHO_REF= RHOREF,    # en mm**-2
                                      ALPHA=ALPHA,
                                      BETA=BETA,          # 2.54 Angstrom
-                                     H1      = 1.0,
-                                     H2      = 1.0,
-                                     H3      = 1.0,
-                                     H4      = 1.0,
-                                     H5      = 1.0,
-                                       
+                                     H1      = 0.124,
+                                     H2      = 0.625,
+                                     H3      = 0.137,
+                                     H4      = 0.122,
+                                     H5      = 0.07,                                       
                                      RHO_VOID =1.E3,
-                                     PHI_LOOP =1.E-3,
-                                  # valeurs sans signification physique
-                                     ALP_VOID =1.E-6,
-                                     ALP_LOOP =1.E-6,
-                                  #   ALP_VOID =0.,  #essai pour retrouver la solution sans irradiation (SSND110A)
-                                  #   ALP_LOOP =0.,  #essai pour retrouver la solution sans irradiation (SSND110A)
-                                     RHO_SAT  =RHO_0*4.,
+                                     PHI_LOOP =5.9E-6,
+                                     ##ALP_VOID =0.,  #essai pour retrouver la solution sans irradiation (SSND110A)
+                                     ##ALP_LOOP =0.,  #essai pour retrouver la solution sans irradiation (SSND110A)
+                                     ALP_VOID =0.,
+                                     ALP_LOOP =0.1,
+                                     RHO_SAT  =RHO_LOOPS*0.,
                                      PHI_SAT  =4.E-2,
-                                     XI_IRRA  =1.e7,
-                                     DZ_IRRA  =1.e7,
-                                       
+                                     XI_IRRA  =1.,
+                                     DZ_IRRA  =1.e7,  
+                                   ),
+                      );
+
+
+ACIERDD=DEFI_MATERIAU(ELAS=_F(E=E,
+                            NU=NU,
+                            ALPHA=0.),
+                      MONO_DD_CFC=_F(TAU_F  = TAU_F,  # MPa
+                                     Y      = Y      ,  # 2.5 Angstrom
+                                     N      = N,
+                                     GAMMA0 = GAMMA0,
+                                     A      = A,
+                                     B      = B,
+                                     RHO_REF= RHOREF,    # en mm**-2
+                                     ALPHA=ALPHA,
+                                     BETA=BETA,          # 2.54 Angstrom
+                                     H1      = 0.124,
+                                     H2      = 0.625,
+                                     H3      = 0.137,
+                                     H4      = 0.122,
+                                     H5      = 0.07,                                       
                                    ),
                       );
 
 
 
 
-
 # DD_CFC
-COMPORT=DEFI_COMPOR(MONOCRISTAL=_F(MATER=ACIERDD,
+COMPORTi=DEFI_COMPOR(MONOCRISTAL=_F(MATER=ACIERDDi,
                                     ECOULEMENT='MONO_DD_CFC_IRRA',
                                     ELAS='ELAS',
                                     FAMI_SYST_GLIS='OCTAEDRIQUE',
                                     ),);
 
+COMPORT=DEFI_COMPOR(MONOCRISTAL=_F(MATER=ACIERDD,
+                                    ECOULEMENT='MONO_DD_CFC',
+                                    ELAS='ELAS',
+                                    FAMI_SYST_GLIS='OCTAEDRIQUE',
+                                    ),);
 
 #Orientations cristallographiques
 INCLUDE(UNITE=91)
  
 ##chargement
-EpsMax=0.15
-viteps=3.e-4
-tmax=EpsMax/viteps
+
 
 EPSZZ=DEFI_FONCTION(
                       NOM_PARA='INST',  NOM_RESU='EPSI',
-                       VALE=(  0. , 0., tmax , EpsMax),
+                       VALE=(  0. , 0., 1. , 0.05),
                        PROL_DROITE='LINEAIRE',
                         )
 
 
 
 LINST=DEFI_LIST_REEL(DEBUT=0.0,
-                     INTERVALLE=(_F(JUSQU_A=tmax,
-                                    NOMBRE=500,),
+                     INTERVALLE=(_F(JUSQU_A=1.,
+                                    NOMBRE=1000,),
                                     ),);
 
 DEFLIST1 =DEFI_LIST_INST(DEFI_LIST=_F(LIST_INST = LINST),)
 
+# avec irradiation
 nbgr=100
 nb_syst=12
 nvarit=7+nbgr*(6+3*nb_syst+2*nb_syst+6)+1
@@ -152,6 +173,53 @@ for igr in range(nbgr):
 for igr in range(nbgr):
    for isy in range(12):
        avari[7+6*nbgr+nbgr*nvarpargr+12*nbgr+12*igr+isy]=PHI_VOIDS
+
+lvari=list(avari)
+
+                    
+SOLNLi=SIMU_POINT_MAT(INFO=1,
+                   COMP_INCR=_F(
+                                RELATION='POLYCRISTAL',
+                                COMPOR=COMPORPi,
+                                ALGO_INTE='RUNGE_KUTTA',
+                                RESI_INTE_RELA=1.E-4,
+                                ),
+                   NEWTON=_F(
+                             MATRICE='ELASTIQUE',
+                             PREDICTION='EXTRAPOLE',
+                             REAC_ITER=0
+                             ),
+                   CONVERGENCE=_F(ITER_GLOB_MAXI=50,
+                                  RESI_GLOB_RELA=1.E-3
+                                     ),
+                   MATER      = ACIERDDi,
+
+                   NB_VARI_TABLE=6,
+                   
+                   VARI_INIT=_F(VALE=lvari,
+                                  ),
+
+                   INCREMENT=_F(LIST_INST=DEFLIST1),
+                   ARCHIVAGE=_F(LIST_INST=LINST),
+                   EPSI_IMPOSE=_F(EPZZ=EPSZZ),
+                        );
+
+
+IMPR_TABLE(TABLE=SOLNLi)
+
+# sans irradiation
+nbgr=100
+nb_syst=12
+nvarit=7+nbgr*(6+3*nb_syst+6)+1
+
+nvarpargr=3*nb_syst 
+
+                    
+# densites de dislocation initiales : variables internes de 0 a 44
+avari = zeros(nvarit)
+for igr in range(nbgr):
+   for isy in range(12):
+       avari[7+6*nbgr+igr*nvarpargr+isy*3]=RHO_0
 
 lvari=list(avari)
 
@@ -194,29 +262,40 @@ F_EP=RECU_FONCTION(TABLE=SOLNL,
                            PARA_X='INST',
                            PARA_Y='EPZZ',);
 
+F_SIi=RECU_FONCTION(TABLE=SOLNLi,
+                           PARA_X='INST',
+                           PARA_Y='SIZZ',);
+
+F_EPi=RECU_FONCTION(TABLE=SOLNLi,
+                           PARA_X='INST',
+                           PARA_Y='EPZZ',);
 
 IMPR_FONCTION(
                 FORMAT ='XMGRACE',
                 UNITE=38,
+                LEGENDE_X='\\f{Symbol}e\\f{}\\sll',
+                LEGENDE_Y='\\f{Symbol}s\\f{}\\sll (MPa)',
                 COURBE=(
                         _F(FONC_X=F_EP, FONC_Y=F_SI),
+                        _F(FONC_X=F_EPi, FONC_Y=F_SIi),
                         )
                 )
 
 
 
-TEST_FONCTION(VALEUR=_F(VALE_CALC=0.15,
-                        VALE_PARA=500.0,
+
+TEST_FONCTION(VALEUR=_F(VALE_CALC=658.5459,
+                        VALE_PARA=1.,
                         NOM_PARA='INST',
-                        FONCTION=F_EP,
+                        FONCTION=F_SIi,
                         ),
               )
 
-TEST_FONCTION(VALEUR=_F(VALE_CALC=2075.692,
-                        VALE_PARA=500.0,
+
+TEST_FONCTION(VALEUR=_F(VALE_CALC=461.9796,
+                        VALE_PARA=1.,
                         NOM_PARA='INST',
                         FONCTION=F_SI,
                         ),
               )
-
 FIN()
