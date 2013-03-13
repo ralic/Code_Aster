@@ -1,6 +1,6 @@
-      SUBROUTINE REERET(ELREFP,AXI,NNOP,GEOM,XG,NDIM,DERIV,XE,FF,DFDI)
+      SUBROUTINE REERET(ELREFP,NNOP,GEOM,XG,NDIM,DERIV,XE,FF,DFDI)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 26/02/2013   AUTEUR CUVILLIE M.CUVILLIEZ 
+C MODIF ELEMENTS  DATE 11/03/2013   AUTEUR CUVILLIE M.CUVILLIEZ 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -27,7 +27,6 @@ C.......................................................................
       REAL*8       XG(NDIM)
       REAL*8       XE(NDIM),FF(NNOP),DFDI(NNOP,NDIM)
       REAL*8       GEOM(*)
-      LOGICAL      AXI
 C
 C ----------------------------------------------------------------------
 C
@@ -41,7 +40,6 @@ C ----------------------------------------------------------------------
 C
 C
 C IN  ELREFP : TYPE DE L'ELEMENT DE REF PARENT
-C IN   AXI   : INDIQUER POUR MODEL AXIS
 C IN  NNOP   : NOMBRE DE NOEUDS DE L'ELT DE RÉF PARENT
 C   L'ORDRE DES DDLS DOIT ETRE 'DC' 'H1' 'E1' 'E2' 'E3' 'E4' 'LAGC'
 C IN  GEOM   : COORDONNEES DES NOEUDS

@@ -1,4 +1,4 @@
-#& MODIF COMMUN  DATE 26/02/2013   AUTEUR LADIER A.LADIER 
+#& MODIF COMMUN  DATE 11/03/2013   AUTEUR CUVILLIE M.CUVILLIEZ 
 # encoding: iso-8859-1
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -199,6 +199,8 @@ class NOM_CHAM_INTO:  #COMMUN#
                                  _(u"Flux hydrauliques aux points de Gauss"), ),
         }
         d['THERMIQUE'] = {
+            "TEMP_ELGA":        ( (),
+                                 _(u"Température aux points de Gauss"), ),
             "FLUX_ELGA":        ( (),
                                  _(u"Flux thermique aux points de Gauss"), ),
             "FLUX_ELNO":        ( (),

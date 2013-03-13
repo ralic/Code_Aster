@@ -1,4 +1,4 @@
-%& MODIF TYPELEM  DATE 26/02/2013   AUTEUR CUVILLIE M.CUVILLIEZ 
+%& MODIF TYPELEM  DATE 11/03/2013   AUTEUR CUVILLIE M.CUVILLIEZ 
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -44,6 +44,7 @@ ENTETE__ ELEMENT__ THER_XT_TETRA4      MAILLE__ TETRA4
 
 MODE_LOCAL__
     CMATERC  = ADRSJEVE ELEM__         (I1       )
+    ETEMPPG  = TEMP_R   ELGA__ MATER   (TEMP     )
     CTEMPSR  = INST_R   ELEM__         (INST     DELTAT   THETA    KHI      R        RHO      )
     DDL_THER = TEMP_R   ELNO__ IDEN__  (TEMP     E1       )
     E3NEUTI  = NEUT_I   ELEM__         (X[3]     )
@@ -84,6 +85,10 @@ OPTION__
                                      E33NEUTR PPINTTO  E320NEUI PCNSETO  E32NEUTI PHEAVTO  E10NEUTI PLONCHA  
                                      N9NEUT_R PBASLOR  N1NEUT_R PLSN     N1NEUT_R PLST     ZVARCPG  PVARCPR
                               OUT__  MMATTTR  PMATTTR                                     
+    TEMP_ELGA           578   IN__   NGEOMER  PGEOMER  DDL_THER PTEMPER  E33NEUTR PPINTTO  E320NEUI PCNSETO
+                                     E32NEUTI PHEAVTO  E10NEUTI PLONCHA  N9NEUT_R PBASLOR  N1NEUT_R PLSN   
+                                     N1NEUT_R PLST   
+                              OUT__  ETEMPPG  PTEMPPG
     TOPOFA              510   IN__   NGEOMER  PGEOMER  N1NEUT_R PLSN     N1NEUT_R PLST     N3NEUT_R PGRADLT
                                      N3NEUT_R PGRADLN  N3NEUT_R PGRADLT
                               OUT__  E21NEUTR PPINTER  E35NEUTR PAINTER  E15NEUTI PCFACE   E3NEUTI  PLONCHA

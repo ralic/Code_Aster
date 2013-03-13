@@ -1,0 +1,159 @@
+# MODIF  DATE 11/03/2013   AUTEUR CUVILLIE M.CUVILLIEZ 
+# TITRE : CYLINDRE AVEC FISSURE ADIABATIQUE A TEMPERATURES IMPOSEES (AXIS FISSURE MAILLEE)
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
+# (AT YOUR OPTION) ANY LATER VERSION.                                                    
+#                                                                       
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
+#                                                                       
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# ======================================================================
+
+DEBUT(CODE=_F(NOM='TTLA203A', NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
+
+#----------------------------------------------
+#            MAILLAGE
+#----------------------------------------------
+
+MA=LIRE_MAILLAGE(INFO=1,FORMAT='MED',);
+
+# COORDONNEES DU POINT POUR 'ENV_SPHERE'
+LX     = 1.
+LY     = 2.
+x_test = LX
+y_test = 0.5*LY
+
+MA=DEFI_GROUP(reuse =MA,
+              MAILLAGE=MA,
+              CREA_GROUP_MA=(
+                             _F(NOM='VOLUME',GROUP_MA=('G_2D_26')),
+                             ),
+              CREA_GROUP_NO=(
+                             _F(NOM='FACESUP',GROUP_MA=('G_1D_21')),
+                             _F(NOM='FACEINF',GROUP_MA=('G_1D_22')),
+# --------------------------  GROUPES SUR LESQUELS ON VA TESTER LES VALEURS DE T
+                              _F(NOM='GNOTMP',
+                                 OPTION='ENV_SPHERE',
+                                 POINT=(x_test,y_test),
+                                 RAYON=1.e-10*LX,
+                                 PRECISION=1.e-10*LX),
+                              _F(NOM='NTESTSUP',INTERSEC=('GNOTMP','LevrSUP')),
+                              _F(NOM='NTESTINF',INTERSEC=('GNOTMP','LevrINF')),
+                             ),
+              );
+
+#----------------------------------------------
+#            MODELE 
+#----------------------------------------------
+
+MODELTH=AFFE_MODELE(MAILLAGE=MA,
+                    AFFE=_F(GROUP_MA='VOLUME',
+                            PHENOMENE='THERMIQUE',
+                            MODELISATION='AXIS',
+                            ),);
+
+#----------------------------------------------
+#            MATERIAU
+#----------------------------------------------
+
+MATE=DEFI_MATERIAU(THER=_F(LAMBDA=1.0,RHO_CP = 2.0))
+
+CHMAT=AFFE_MATERIAU(MAILLAGE=MA,
+                    MODELE=MODELTH,
+                    AFFE=_F(TOUT='OUI',MATER=MATE,),)
+
+
+#----------------------------------------------
+#            CHARGEMENT THERMIQUE
+#----------------------------------------------
+
+TIMPSUP=DEFI_FONCTION(NOM_PARA='INST',
+                      NOM_RESU='TEMP',  
+        VALE=(0.,    20. ,
+              1.,    40.,))
+
+TIMPINF=DEFI_FONCTION(NOM_PARA='INST',
+                      NOM_RESU='TEMP',  
+        VALE=(0.,    10. ,
+              1.,    20.,))
+
+CHTH=AFFE_CHAR_THER_F(MODELE=MODELTH,
+                      TEMP_IMPO=(
+                               _F(GROUP_NO = 'FACESUP',TEMP = TIMPSUP),
+                               _F(GROUP_NO = 'FACEINF',TEMP = TIMPINF),
+                               ))
+
+#----------------------------------------------
+#            CALCUL THERMIQUE LINEAIRE TRANSITOIRE
+#----------------------------------------------
+
+LR8=DEFI_LIST_REEL(DEBUT=0.,
+                   INTERVALLE=(_F(JUSQU_A = 1., NOMBRE = 5)))
+
+TEMPE=THER_LINEAIRE(MODELE=MODELTH,
+                    CHAM_MATER=CHMAT,
+                    EXCIT=_F(CHARGE=CHTH),
+                    ETAT_INIT=_F( STATIONNAIRE = 'OUI'),
+                    INCREMENT=_F( LIST_INST = LR8),                    
+#                     SOLVEUR=_F(METHODE='GCPC',
+#                                PRE_COND='LDLT_INC',),
+                    )
+
+#----------------------------------------------
+#            RELEVES
+#----------------------------------------------
+
+TEMPSUP=POST_RELEVE_T(ACTION=_F(INTITULE='TEMPE',
+                                GROUP_NO='NTESTSUP',
+                                RESULTAT=TEMPE,
+                                NOM_CHAM='TEMP',
+                                TOUT_CMP='OUI',
+                                NUME_ORDRE = 5,
+                                OPERATION='EXTRACTION',),)
+
+TEMPINF=POST_RELEVE_T(ACTION=_F(INTITULE='TEMPE',
+                                GROUP_NO='NTESTINF',
+                                RESULTAT=TEMPE,
+                                NOM_CHAM='TEMP',
+                                TOUT_CMP='OUI',
+                                NUME_ORDRE = 5,
+                                OPERATION='EXTRACTION',),)
+
+IMPR_TABLE(TABLE=TEMPSUP)
+IMPR_TABLE(TABLE=TEMPINF)
+
+#----------------------------------------------
+#            TESTS
+#----------------------------------------------
+
+# Rq : la soution de reference est obtenue avec le meme fichier de commande, 
+#      avec une discretisation 1000x2000 (-> 2.10^6 ddls)
+
+TEST_TABLE(REFERENCE='AUTRE_ASTER',
+           VALE_CALC=23.547812236888,
+           VALE_REFE=23.559884847913,
+           NOM_PARA='TEMP',
+           TABLE=TEMPSUP,)
+
+TEST_TABLE(REFERENCE='AUTRE_ASTER',
+           VALE_CALC=15.604317657058,
+           VALE_REFE=15.592470476233,
+           NOM_PARA='TEMP',
+           TABLE=TEMPINF,)
+
+#----------------------------------------------
+#            IMPRESSIONS
+#----------------------------------------------
+
+IMPR_RESU(FORMAT='MED',UNITE=80,RESU=_F(RESULTAT=TEMPE))
+
+FIN();

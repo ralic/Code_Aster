@@ -1,0 +1,10 @@
+P time_limit 30
+P memory_limit 512
+P ncpus 1
+P mpi_nbcpu 1
+P mpi_nbnoeud 1
+P testlist C
+
+F comm ttla203b.comm D 1
+F datg ttla203b.datg D 16
+F mmed ttla203b.mmed D 20

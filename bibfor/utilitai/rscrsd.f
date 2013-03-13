@@ -7,9 +7,9 @@
       INTEGER NBORDR
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 13/11/2012   AUTEUR DELMAS J.DELMAS 
+C MODIF UTILITAI  DATE 11/03/2013   AUTEUR CUVILLIE M.CUVILLIEZ 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -56,7 +56,7 @@ C     ------------------------------------------------------------------
 C     ------------------------------------------------------------------
 C                      C H A M P _ T H E R M I Q U E
 C     ------------------------------------------------------------------
-      PARAMETER (NCTHER=16)
+      PARAMETER (NCTHER=17)
       CHARACTER*16 CHTHER(NCTHER)
 C     ------------------------------------------------------------------
 C                      C H A M P _ V A R C
@@ -155,7 +155,8 @@ C      '1234567890123456','1234567890123456','1234567890123456',
      & 'DURT_ELNO',       'DURT_NOEU',       'ETHE_ELEM',
      & 'HYDR_ELNO',       'HYDR_NOEU',
      & 'SOUR_ELGA',       'COMPORTHER',
-     & 'ERTH_ELEM',       'ERTH_ELNO',       'ERTH_NOEU'/
+     & 'ERTH_ELEM',       'ERTH_ELNO',       'ERTH_NOEU',
+     & 'TEMP_ELGA'/
 C     ------------------------------------------------------------------
 C                      C H A M P _ V A R C
 C     ------------------------------------------------------------------

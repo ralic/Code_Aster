@@ -1,4 +1,4 @@
-%& MODIF COMPELEM  DATE 26/02/2013   AUTEUR CUVILLIE M.CUVILLIEZ 
+%& MODIF COMPELEM  DATE 11/03/2013   AUTEUR CUVILLIE M.CUVILLIEZ 
 % ======================================================================
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
@@ -1852,6 +1852,21 @@ PHENOMENE_MODELISATION__
        MODELISATION__ 'PLAN_XHT'         DIM__ 2 2   CODE__ 'PX3'
               MAILLE__ TRIA3     ELEMENT__ THPLTR3_XHT
               MAILLE__ QUAD4     ELEMENT__ THPLQU4_XHT
+
+       MODELISATION__ 'AXIS_XH'          DIM__ 2 2   CODE__ 'AX1'
+              ATTRIBUT__  AXIS=OUI
+              MAILLE__ TRIA3     ELEMENT__ THAXTR3_XH
+              MAILLE__ QUAD4     ELEMENT__ THAXQU4_XH
+
+       MODELISATION__ 'AXIS_XT'          DIM__ 2 2   CODE__ 'AX2'
+              ATTRIBUT__  AXIS=OUI
+              MAILLE__ TRIA3     ELEMENT__ THAXTR3_XT
+              MAILLE__ QUAD4     ELEMENT__ THAXQU4_XT
+
+       MODELISATION__ 'AXIS_XHT'         DIM__ 2 2   CODE__ 'AX3'
+              ATTRIBUT__  AXIS=OUI
+              MAILLE__ TRIA3     ELEMENT__ THAXTR3_XHT
+              MAILLE__ QUAD4     ELEMENT__ THAXQU4_XHT
 %-------------------------------------------------------------------
 
    PHENOMENE__  ACOUSTIQUE       CODE__  'AC'

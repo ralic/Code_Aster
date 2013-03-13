@@ -1,4 +1,4 @@
-# MODIF  DATE 26/02/2013   AUTEUR CUVILLIE M.CUVILLIEZ 
+# MODIF  DATE 11/03/2013   AUTEUR CUVILLIE M.CUVILLIEZ 
 # RESPONSABLE CUVILLIEZ
 # TITRE BARREAU A TEMPERATURES IMPOSEES AVEC INTERFACE ADIABATIQUE DE TYPE X-FEM
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -210,6 +210,36 @@ TEST_TABLE(REFERENCE='ANALYTIQUE',
            TYPE_TEST='MAX',
            TABLE=TEMXINF,)
 
+# -- 
+
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           VALE_CALC=15.,
+           VALE_REFE=15.,
+           NOM_PARA='TEMP',
+           TYPE_TEST='MIN',
+           TABLE=TEMXSUP,)
+
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           VALE_CALC=5.,
+           VALE_REFE=5.,
+           NOM_PARA='H1',
+           TYPE_TEST='MIN',
+           TABLE=TEMXSUP,)
+
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           VALE_CALC=15.,
+           VALE_REFE=15.,
+           NOM_PARA='TEMP',
+           TYPE_TEST='MIN',
+           TABLE=TEMXINF,)
+
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           VALE_CALC=5.,
+           VALE_REFE=5.,
+           NOM_PARA='H1',
+           TYPE_TEST='MIN',
+           TABLE=TEMXINF,)
+
 # TESTS SUR LE RESULTAT VISU
 
 TEST_TABLE(REFERENCE='ANALYTIQUE',
@@ -225,6 +255,54 @@ TEST_TABLE(REFERENCE='ANALYTIQUE',
            NOM_PARA='TEMP',
            TYPE_TEST='MAX',
            TABLE=TEMCINF,)
+
+# --
+
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           VALE_CALC=20.,
+           VALE_REFE=20.,
+           NOM_PARA='TEMP',
+           TYPE_TEST='MIN',
+           TABLE=TEMCSUP,)
+
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           VALE_CALC=10.,
+           VALE_REFE=10.,
+           NOM_PARA='TEMP',
+           TYPE_TEST='MIN',
+           TABLE=TEMCINF,)
+
+# TESTS SUR LE CHAMP 'TEMP_ELGA' DANS LE RESULTAT XFEM
+
+# # POUR AFFICHER AU FORMAT TEXTE LE CHAMP TEMP_ELGA
+# CHTELGA=CREA_CHAMP(TYPE_CHAM = 'ELGA_TEMP_R',
+#                    OPERATION = 'EXTR',
+#                    RESULTAT  =  TEMPE,
+#                    NOM_CHAM  = 'TEMP_ELGA',
+#                    NUME_ORDRE = 0,
+#                    INFO = 2)
+
+TEST_RESU(RESU=(
+                _F(RESULTAT=TEMPE,
+                   NOM_CHAM='TEMP_ELGA',
+                   NOM_CMP='TEMP',
+                   NUME_ORDRE = 0,
+                   MAILLE='M3',
+                   POINT=1,
+                   REFERENCE = 'ANALYTIQUE' ,
+                   VALE_REFE=10.,
+                   VALE_CALC=10.,),
+                _F(RESULTAT=TEMPE,
+                   NOM_CHAM='TEMP_ELGA',
+                   NOM_CMP='TEMP',
+                   NUME_ORDRE = 0,
+                   MAILLE='M8',
+                   POINT=1,
+                   REFERENCE = 'ANALYTIQUE' ,
+                   VALE_REFE=20.,
+                   VALE_CALC=20.,),
+                ),
+          )
 
 IMPR_TABLE(TABLE=TEMXSUP)
 IMPR_TABLE(TABLE=TEMXINF)

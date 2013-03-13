@@ -19,7 +19,7 @@
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
 # ======================================================================
 
-DEBUT(CODE=_F(NOM='TPLP305E', NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
+DEBUT(CODE=_F(NOM='TPLP305J', NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
 
 #----------------------------------------------
 #            MAILLAGE
@@ -28,36 +28,38 @@ DEBUT(CODE=_F(NOM='TPLP305E', NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
 MAILLAG1=LIRE_MAILLAGE(INFO=1,FORMAT='MED',);
 
 # longueur du barreau
-LZ = 7.
+LY = 5.
 
 MAILLAG1=DEFI_GROUP(reuse =MAILLAG1,
                     MAILLAGE=MAILLAG1,
-                    CREA_GROUP_MA=_F(NOM='VOL',GROUP_MA='G_3D_29',),
+                    CREA_GROUP_MA=_F(NOM='SURF',GROUP_MA='G_2D_7',),
                     CREA_GROUP_NO=(
 #                                  GROUPES SUR LESQUELS ON VA IMPOSER LES DIRICHLETS
-                                   _F(NOM = 'SURFSUP',
+                                   _F(NOM = 'LIGNSUP',
                                       OPTION = 'PLAN',
-                                      POINT = (0.,0.,0.5*LZ,),
-                                      VECT_NORMALE = (0.,0.,1.,),
-                                      PRECISION = 0.1*LZ,),
-                                   _F(NOM = 'SURFINF',
+                                      POINT = (0.,0.5*LY,),
+                                      VECT_NORMALE = (0.,1.,),
+                                      PRECISION = 0.1*LY,),
+                                   _F(NOM = 'LIGNINF',
                                       OPTION = 'PLAN',
-                                      POINT = (0.,0.,-0.5*LZ,),
-                                      VECT_NORMALE = (0.,0.,1.,),
-                                      PRECISION = 0.1*LZ,),
+                                      POINT = (0.,-0.5*LY,),
+                                      VECT_NORMALE = (0.,1.,),
+                                      PRECISION = 0.1*LY,),
 #                                 GROUPES SUR LESQUELS ON VA TESTER LES VALEURS DE T
                                    _F(NOM = 'NOXHSUP',
                                       OPTION = 'PLAN',
-                                      POINT = (0.,0.,2.5*LZ/7.,),
-                                      VECT_NORMALE = (0.,0.,1.,),
-                                      PRECISION = 0.1*LZ,),
+                                      POINT = (0.,0.5*LY/5.,),
+                                      VECT_NORMALE = (0.,1.,),
+                                      PRECISION = 0.1*LY,),
                                    _F(NOM = 'NOXHINF',
                                       OPTION = 'PLAN',
-                                      POINT = (0.,0.,-2.5*LZ/7.,),
-                                      VECT_NORMALE = (0.,0.,1.,),
-                                      PRECISION = 0.1*LZ,),
+                                      POINT = (0.,-0.5*LY/5.,),
+                                      VECT_NORMALE = (0.,1.,),
+                                      PRECISION = 0.1*LY,),
                                    ),
                     );
+
+IMPR_RESU(FORMAT='MED',UNITE=83,RESU=_F(MAILLAGE=MAILLAG1))
 
 #----------------------------------------------
 #            MODELE ET FISSURE (INTERFACE)
@@ -66,14 +68,9 @@ MAILLAG1=DEFI_GROUP(reuse =MAILLAG1,
 MODELEIN=AFFE_MODELE(MAILLAGE=MAILLAG1,
                      AFFE=_F(TOUT='OUI',
                              PHENOMENE='THERMIQUE',
-                             MODELISATION='3D',),);
+                             MODELISATION='AXIS',),);
 
-# h longeur des cotes des hexa
-NBZ = 7
-h = LZ/float(NBZ)
-delta = 0.05
-
-LN1=FORMULE(NOM_PARA=('X','Y','Z'),VALE='-X+Y+Z-h*(-0.5+delta)');
+LN1=FORMULE(NOM_PARA=('X','Y'),VALE='Y');
 
 FISS1=DEFI_FISS_XFEM(MODELE=MODELEIN,
                      TYPE_DISCONTINUITE='INTERFACE',
@@ -101,8 +98,8 @@ CHMAT=AFFE_MATERIAU(MAILLAGE=MAILLAG1,
 
 CHTH=AFFE_CHAR_THER(MODELE=MODELEX,
                     TEMP_IMPO=(
-                             _F(GROUP_NO = 'SURFSUP',TEMP = 20.),
-                             _F(GROUP_NO = 'SURFINF',TEMP = 10.),
+                             _F(GROUP_NO = 'LIGNSUP',TEMP = 20.),
+                             _F(GROUP_NO = 'LIGNINF',TEMP = 10.),
                              ))
 
 #----------------------------------------------
@@ -126,21 +123,21 @@ MA_VISU=DEFI_GROUP(reuse =MA_VISU,
 #                                 GROUPES SUR LESQUELS ON VA TESTER LES VALEURS DE T
                                   _F(NOM = 'NOCSUP',
                                      OPTION = 'PLAN',
-                                     POINT = (0.,0.,2.5*LZ/7.,),
-                                     VECT_NORMALE = (0.,0.,1.,),
-                                     PRECISION = 1.e-6*LZ,),
+                                     POINT = (0.,0.5*LY/5.,),
+                                     VECT_NORMALE = (0.,1.,),
+                                     PRECISION = 1.e-2*LY,),
                                   _F(NOM = 'NOCINF',
                                      OPTION = 'PLAN',
-                                     POINT = (0.,0.,-2.5*LZ/7.,),
-                                     VECT_NORMALE = (0.,0.,1.,),
-                                     PRECISION = 1.e-6*LZ,),
+                                     POINT = (0.,-0.5*LY/5.,),
+                                     VECT_NORMALE = (0.,1.,),
+                                     PRECISION = 1.e-2*LY,),
                                   ),
                    )
 
 MOD_VISU=AFFE_MODELE(MAILLAGE=MA_VISU,
                      AFFE=_F(TOUT='OUI',
                              PHENOMENE='THERMIQUE',
-                             MODELISATION='3D',),)
+                             MODELISATION='PLAN',),)
 
 RES_VISU=POST_CHAM_XFEM(MODELE_VISU   = MOD_VISU,
                         RESULTAT      = TEMPE)
@@ -188,29 +185,29 @@ TEMCINF=POST_RELEVE_T(ACTION=_F(INTITULE='TEMPE',
 # TESTS SUR LE RESULTAT XFEM
 
 TEST_TABLE(REFERENCE='ANALYTIQUE',
-           VALE_CALC=20.,
-           VALE_REFE=20.,
+           VALE_CALC=15.,
+           VALE_REFE=15.,
            NOM_PARA='TEMP',
            TYPE_TEST='MAX',
            TABLE=TEMXSUP,)
 
 TEST_TABLE(REFERENCE='ANALYTIQUE',
-           VALE_CALC=0.,
-           VALE_REFE=0.,
+           VALE_CALC=5.,
+           VALE_REFE=5.,
            NOM_PARA='H1',
            TYPE_TEST='MAX',
            TABLE=TEMXSUP,)
 
 TEST_TABLE(REFERENCE='ANALYTIQUE',
-           VALE_CALC=10.,
-           VALE_REFE=10.,
+           VALE_CALC=15.,
+           VALE_REFE=15.,
            NOM_PARA='TEMP',
            TYPE_TEST='MAX',
            TABLE=TEMXINF,)
 
 TEST_TABLE(REFERENCE='ANALYTIQUE',
-           VALE_CALC=0.,
-           VALE_REFE=0.,
+           VALE_CALC=5.,
+           VALE_REFE=5.,
            NOM_PARA='H1',
            TYPE_TEST='MAX',
            TABLE=TEMXINF,)
@@ -218,29 +215,29 @@ TEST_TABLE(REFERENCE='ANALYTIQUE',
 # -- 
 
 TEST_TABLE(REFERENCE='ANALYTIQUE',
-           VALE_CALC=20.,
-           VALE_REFE=20.,
+           VALE_CALC=15.,
+           VALE_REFE=15.,
            NOM_PARA='TEMP',
            TYPE_TEST='MIN',
            TABLE=TEMXSUP,)
 
 TEST_TABLE(REFERENCE='ANALYTIQUE',
-           VALE_CALC=0.,
-           VALE_REFE=0.,
+           VALE_CALC=5.,
+           VALE_REFE=5.,
            NOM_PARA='H1',
            TYPE_TEST='MIN',
            TABLE=TEMXSUP,)
 
 TEST_TABLE(REFERENCE='ANALYTIQUE',
-           VALE_CALC=10.,
-           VALE_REFE=10.,
+           VALE_CALC=15.,
+           VALE_REFE=15.,
            NOM_PARA='TEMP',
            TYPE_TEST='MIN',
            TABLE=TEMXINF,)
 
 TEST_TABLE(REFERENCE='ANALYTIQUE',
-           VALE_CALC=0.,
-           VALE_REFE=0.,
+           VALE_CALC=5.,
+           VALE_REFE=5.,
            NOM_PARA='H1',
            TYPE_TEST='MIN',
            TABLE=TEMXINF,)
@@ -261,7 +258,7 @@ TEST_TABLE(REFERENCE='ANALYTIQUE',
            TYPE_TEST='MAX',
            TABLE=TEMCINF,)
 
-# -- 
+# --
 
 TEST_TABLE(REFERENCE='ANALYTIQUE',
            VALE_CALC=20.,
@@ -292,7 +289,7 @@ TEST_RESU(RESU=(
                    NOM_CHAM='TEMP_ELGA',
                    NOM_CMP='TEMP',
                    NUME_ORDRE = 0,
-                   MAILLE='M2',
+                   MAILLE='M3',
                    POINT=1,
                    REFERENCE = 'ANALYTIQUE' ,
                    VALE_REFE=10.,
@@ -301,7 +298,7 @@ TEST_RESU(RESU=(
                    NOM_CHAM='TEMP_ELGA',
                    NOM_CMP='TEMP',
                    NUME_ORDRE = 0,
-                   MAILLE='M6',
+                   MAILLE='M8',
                    POINT=1,
                    REFERENCE = 'ANALYTIQUE' ,
                    VALE_REFE=20.,
