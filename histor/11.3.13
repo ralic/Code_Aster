@@ -1,0 +1,457 @@
+========================================================================
+Version 11.3.13 du : 13/03/2013
+========================================================================
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR berro        BERRO Hassan           DATE 03/11/2013 - 06:17:38
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 020505 DU 2013-03-05 12:19:10
+TYPE anomalie concernant Code_Aster (VERSION 10.5)
+TITRE
+    [FORUM] DYNA_VIBRA : assert dans VTCOP1
+FONCTIONNALITE
+   . . . . . . . . . ****************************
+   . . . . . . . . .* Identification du problème *
+   . . . . . . . . . ****************************
+   
+   Un calcul DYNA_VIBRA transitoire sur base physique échoue lorsque l'utilisateur entre
+   un ou plusieurs cham_no DEPL, VITE, ou ACCE sous le mot-clé facteur ETAT_INIT, dont un au 
+   minimum satisfait les 2 conditions suivantes :
+   
+   - Disposer d'une numérotation différente de celle du NUME_DDL des matrices assemblées.
+   - Ne pas contenir des valeurs pour tous les composants.
+   
+   Dans ce cas, et dans la routine DLTINI, au moment de ramener le cham_no à la numérotation
+   des matrices [VTCOPY => VTCOP1], le code s'arrête avec un CALL ASSERT (issue20283) quand
+   il détecte que des valeurs nulles ont été imposées à des composants qui n'existait pas 
+   dans le cham_no original.
+   
+   
+   . . . . . . . . . ***************************
+   . . . . . . . . .* Proposition de correction *
+   . . . . . . . . . ***************************
+   
+   Il n'y a pas de danger lié à la mise à zéro des composants non présents dans un champ 
+   d'état initial du système. J'ai vérifié pour le cas d'étude sur le forum que le code 
+   réussi bien de renuméroter les cham_no de l'état initial .
+   
+   Je propose de changer les 3 appels à VTCOPY dans DLTINI de :
+   
+   . . . . CALL VTCOPY(CHAMP,CHAM2,'F',IRET)
+   . . . . . . . . . . . à
+   . . . . CALL VTCOPY(CHAMP,CHAM2,' ',IRET)
+   
+   Et dans la doc de DYNA_LINE_TRAN, je clarifie que lorsqu'on définit un état initial par
+   ses cham_no de DEPL, VITE, et/ou ACCE, les composants qui ne sont pas renseignés dans le
+   cham_no sont considérés nuls.
+   
+   
+   . . . . . . . . . *********
+   . . . . . . . . .* Impacts *
+   . . . . . . . . . *********
+   
+   FORTRAN ----------------------------------------------------------------------------------
+   . . MODIF : DLTINI . . . . (1 fichier)
+   
+   DOCUMENTATION ----------------------------------------------------------------------------
+   . . MODIF : U4.53.02 . . . (1 fichier)
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : U4.53.02
+VALIDATION
+    liste restreinte + cas test du forum
+NB_JOURS_TRAV  : 0.5
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR cuvillie     CUVILLIEZ Sam          DATE 03/11/2013 - 01:14:49
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 020510 DU 2013-03-06 08:22:52
+TYPE evolution concernant Code_Aster (VERSION )
+TITRE
+    X-FEMxc2xa0: calcul de l'option TEMP_ELGA pour X-FEM en thermique
+FONCTIONNALITE
+   Rq : Cette fiche est une sous-fiche de issue15335 (calculs thermomécaniques avec X-FEM),
+   
+   
+   But : Transfert thermique vers mécanique
+   ------
+   
+   Pour préparer le champ de température qui servira de variable de commande du calcul
+   mécanique, il faut calculer le champ 'TEMP_ELGA' (température au point de Gauss) sur les
+   éléments X-FEM du modèle enrichi en fin d'opérateur THER_LINEAIRE.
+   
+   
+   On introduit une nouvelle option 'TEMP_ELGA' uniquement pour les éléments X-FEM
+   thermiques. En fin de op0025, et uniquement dans le cas d'un modèle X-FEM, on calcule
+   cette option pour tous les instant ou le champ d'inconnues nodales 'TEMP' a été archivé. 
+   
+   On stocke alors ces cham_elem dans la SD evol_ther produite par THER_LINEAIRE.
+   
+   Comme pour le stockage du champ SIEF_ELGA en mécanique, le cham_elem TEMP_ELGA est
+   dimensionné « au max » pour chaque grel (d'éléments X-FEM) du ligrel, et est rempli selon
+   l'ordre donné par le sous-découpage. Mais contrairement à la mécanique, TEMP_ELGA n'est
+   calculé que sur les EF XFEM (il ne servira que pour le transfert thermique -> méca par
+   variable de commande), le cham_elem n'est donc alloué que sur ces éléments.
+   
+   
+   Impact
+   ---------
+   
+   CATA (M) : gener_th3d_xh_3.cata, gener_th3d_xht_3.cata, gener_th3d_xt3.cata,
+   gener_thpl_xh_2.cata, gener_thpl_xht_2.cata, gener_thpl_xt_2.cata
+   -> ajout de l'option TEMP_ELGA
+   
+   
+   CATA (A) : temp_elga.cata
+   -> ajout de l'option TEMP_ELGA
+   
+   FORTRAN (A) : te0578, xtelga
+   -> calcul de l'option TEMP_ELGA
+   
+   FORTRAN (M) : op0025.f
+   FORTRAN (A) : xthpos.f, xthpoc.f
+   -> calcul de l'option TEMP_ELGA et stockage des cham_elem créés (si modèle X-FEM)
+   
+   
+   FORTRAN (M) : rscrsd.f
+   CAPY    (M) : c_nom_cham_into.capy
+   -> ajout du nom symbolique TEMP_ELGA
+   
+   CASTEST (M) : tplp305*
+   -> TEST_RESU sur TEMP_ELGA
+   
+   Validation
+   -------------
+   
+   Tous les tests X-FEM, tous les tests thermiques. J'ajoute dans toutes les modélisations de
+   tlpl305 (référence analytique) un TEST_RESU sur le champ TEMP_ELGA
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : V4.05.305
+VALIDATION
+    tous les tests thermiques, tous les tests X-FEM, tplp305
+NB_JOURS_TRAV  : 2.5
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 020512 DU 2013-03-06 10:50:36
+TYPE anomalie concernant Code_Aster (VERSION 11.4)
+TITRE
+    Element PYRAM5 en thermique 3D_DIAG
+FONCTIONNALITE
+   La ligne :
+   
+    MAILLE__ PYRAM5     ELEMENT__ THER_PYRAM5_D
+   
+   a été retirée de phenomene_modelisation__.cata pour la modélisation 3D_DIAG à l'occasion
+   de la fiche issue14270, mais l'élémént fini correspondant :
+   
+    ENTETE__ ELEMENT__ THER_PYRAM5_D    MAILLE__ PYRAM5
+       ELREFE__  PY5       GAUSS__  RIGI=FPG5   FPG1=FPG1  MASS=FPG5   NOEU=NOEU_S FPG_LISTE__
+    MATER = (FPG1)
+       ELREFE__  QU4       GAUSS__  RIGI=FPG4   MASS=FPG4
+       ELREFE__  TR3       GAUSS__  RIGI=COT3   MASS=COT3
+       OPTION__   INIT_MAIL_VOIS          -1
+       OPTION__   ERTH_ELEM               -1
+       OPTION__   ERTH_ELNO               -1
+   
+   n'a pas été retiré de gener_th3d_3.cata. Je le retire.
+   
+   Impact : gener_th3d_3.cata
+   --------
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+    aucun
+NB_JOURS_TRAV  : 0.1
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 020527 DU 2013-03-07 15:16:03
+TYPE evolution concernant Code_Aster (VERSION 10.5)
+TITRE
+    X-FEM :ajout des xc3xa9lxc3xa9ments thermiques AXIS
+FONCTIONNALITE
+   Rq : Cette fiche est une sous-fiche de issue15335 (calculs thermomécaniques avec X-FEM)
+   
+   
+   But : Ajout des éléments thermiques X-FEM AXIS
+   ------
+   
+   Les éléments thermiques X-FEM axisymétrique n'avaient pas été restitués avec les éléments
+    2D et 3D dans la sous-fiche issue20375, le but de cette fiche est de les ajouter.
+   Comme pour les éléments 2D et
+    3D, on se restreint au cadre suivant
+   
+    . - transitoires linéaires (THER_LINEAIRE)
+   
+    . - éléments linéaires
+   
+    . - conductivité scalaire (isotropie)
+   
+    . - fissures adiabatiques (flux nul et température discontinue à travers l'interface)
+   
+    . - pas de jonction de fissure
+   
+    . - chargements appliqués « loin » de la fissure (pas de chargement pour les EF X-FEM)
+   
+   
+   Impact
+   ---------
+   
+   CATA (M) : phenomene_modelisation__.cata, gener_thpl_xh_2.cata, gener_thpl_xht_2.cata,
+   gener_thpl_xt_2.cata
+   -> ajout des éléments axis 
+   
+   
+   FORTRAN (M) : xmoimp.f, xmoini.f, xmolig.f
+   -> dans MODI_MODELE_XFEM, prise en compte de ces nouveaux éléments
+   
+   FORTRAN (M) : xrigth.f,xmasth.f,xvetth.f
+   -> prise en compte de l'axisymétrie pour les options RIGI_THER, MASS_THER, CHAR_THER_EVOL
+   
+   FORTRAN (M) : reeret.f,te0571.f,te0572.f,te0577.f
+   -> j'en profite pour faire le ménage (variables inutilisées...)
+   
+   CASTEST (A) : tplp305i, tplp305j
+   -> on teste les éléments axis affectés sur des TRIA3 et des QUAD4
+   
+   CASTEST (A) : ttla203*
+   -> "Cylindre avec fissure adiabatique à températures imposées"
+   
+   Validation
+   -------------
+   
+   - Tous les tests X-FEM, tous les tests thermiques. 
+   - J'ajoute les modélisations i et j pour tlpl305 (test des éléments axis affectés sur des
+   TRIA3 et des QUAD4)
+   - J'ajoute un nouveau cas-test ttla203 : "Cylindre avec fissure adiabatique à températures
+   imposées". 
+    .->Solution de référence 'AUTRE_ASTER'. Il s'agit de la modélisation A avec un maillage
+   "ultra-fin"
+    . . -Modélisation A : FEM AXIS fissure maillée
+    . . -Modélisation B : X-FEM AXIS
+    . . -Modélisation C : FEM 3D fissure maillée
+    . . -Modélisation D : X-FEM 3D
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : V4.05.305,V4.19.203,U2.05.02,R7.02.12
+VALIDATION
+    tous les tests thermiques, tous les tests X-FEM, ttla203
+NB_JOURS_TRAV  : 2.5
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR proix        PROIX Jean-Michel      DATE 03/11/2013 - 11:09:23
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 020488 DU 2013-02-28 13:36:18
+TYPE anomalie concernant Code_Aster (VERSION 10.5)
+TITRE
+    En NEW11.03.11, le cas-test comp002l sxe2x80x99arrxc3xaate en erreur fatale sur Aster4, Rocks et Calibre7.
+FONCTIONNALITE
+   Suite à la restitution de la fiche 20440, j'ai laissé traîner un "call assert" pour
+   vérifier que le paramètre Kc=0. Je le supprime.
+   
+   Kc est bien nul pour les tests SSNV225A et B, mais j'avais oublié COMP002L.
+   
+   Pour que COMP002L fonctionne, il suffit de spécifier Kc=0.
+   
+   Question subsidiaire : à quoi sert Kc ? Il gère une équation d'endommagement
+   micro-structurel, difficile à tester car on n' a pas de référence. 
+   
+   Pour le moment je préfère blinder (on ajoute dans DEFI_MATERIAU pour Kc : into=0.)
+   
+   Dans une prochaine évolution du comportement, on ajoutera un test spécifique pour
+   permettre Kc non nul.
+   
+   Validation :
+   comp002l dans lequel on impose Kc=0
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+    comp002l
+NB_JOURS_TRAV  : 0.2
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 019839 DU 2012-10-29 10:32:49
+TYPE evolution concernant Code_Aster (VERSION )
+TITRE
+    Validation complxc3xa9mentaire de DD_CFC_IRRA
+FONCTIONNALITE
+   Demande :
+   =========
+   Suite à la correction de DD_CFC_IRRA (issue19771) l'EDA a demandé l'émission d'une fiche
+   pour penser à valider ce comportement avec des valeurs de référence significatives, pour
+   des cas non triviaux.
+   
+   Restitution :
+   =============
+   Travail commun avec Nicolas : les coefficients du modèle ont été adaptés, et, moyennant
+   une précision ajoutée dans la doc R concernant la mise à l'échelle des densités de
+   dislocations, les courbes obtenues sur monocristal (ssnd110e) et polycristal homogénéisé
+   (ssnv194g) ont la bonne allure que l'on retrouve dans la littérature : sur-écrouissage
+   puis adoucissement.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : v6.04.194, v6.08.110
+VALIDATION
+    ssnv194g,ssnd110e
+NB_JOURS_TRAV  : 1.0
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 019444 DU 2012-09-06 14:51:38
+TYPE evolution concernant Code_Aster (VERSION 10.5)
+TITRE
+    Capitaliser les etudes participant a la validation en plasticite cristalline
+FONCTIONNALITE
+   But de la fiche : validation de la loi de plasticite cristalline DD_CC sur l'acier de cuve.
+   
+   Dans le cadre du projet Peerform, des simulations ont été effectuées sur acier de cuve par
+   EDF/CEA pour vérifier le bon comportement du modèle vis a vis de la température et de
+   l'irradiation. 
+   
+   La note ci-joint (publiée dans le cadre du projet européen PERFORM-60, donc restreinte à
+   EDF) illustre ce travail de validation de la loi DD_CC sur différentes nuances d'acier de
+   cuve (validation par comparaison avec les résultats CEA et les résultats expérimentaux).
+   
+   0.1 jour pour templir la fiche, mais beaucoup plus pour réaliser les calculs !
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+    cf. la note
+NB_JOURS_TRAV  : 0.1
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR sellenet     SELLENET Nicolas       DATE 03/11/2013 - 02:53:07
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 020504 DU 2013-03-04 14:47:06
+TYPE evolution concernant Code_Aster (VERSION )
+TITRE
+    Crxc3xa9er test de l'API Python de MED
+FONCTIONNALITE
+   Demande :
+   ---------
+   Dans le cadre de issue18798 a été utilisée l'API Python de MED dans la commande
+   CALC_EUROPLEXUS.
+   Par contre, il n'existe pas de test de cette API. 
+   
+   L'objectif de cette fiche est d'en créer un dans la mesure où elle est accessible depuis
+   le superviseur.
+   
+   
+   Solution :
+   ----------
+   Le but est de rajouter un appel à la fonction python "get_nom_champ_med" pour tester les
+   valeurs retournées.
+   
+   Je modifie le test zzzz162a pour ajouter un appel à cette fonction et ajouter un test de
+   ce qui est retourné.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+    zzzz162a
+NB_JOURS_TRAV  : 0.5
+--------------------------------------------------------------------------------
+
+
+
+========================================================================
+=== Recapitulation des operations demandees pour toutes les restitutions
+========================================================================
+
+
+    TYPE Action    unite                      user      Auteur         nblg  ajout suppr.
+
+ CASTEST AJOUT tplp305i                     cuvillie M.CUVILLIEZ        342    342      0
+ CASTEST AJOUT tplp305j                     cuvillie M.CUVILLIEZ        324    324      0
+ CASTEST AJOUT ttla203a                     cuvillie M.CUVILLIEZ        159    159      0
+ CASTEST AJOUT ttla203b                     cuvillie M.CUVILLIEZ        191    191      0
+ CASTEST AJOUT ttla203c                     cuvillie M.CUVILLIEZ        158    158      0
+ CASTEST AJOUT ttla203d                     cuvillie M.CUVILLIEZ        218    218      0
+ CASTEST MODIF comp002l                        proix J-M.PROIX          242      9     23
+ CASTEST MODIF ssnd110d                        proix J-M.PROIX          646     48     46
+ CASTEST MODIF ssnd110e                        proix J-M.PROIX          395    190    591
+ CASTEST MODIF ssnv194g                        proix J-M.PROIX          301    113     34
+ CASTEST MODIF tplp305a                     cuvillie M.CUVILLIEZ        340     97      1
+ CASTEST MODIF tplp305b                     cuvillie M.CUVILLIEZ        322     79      1
+ CASTEST MODIF tplp305c                     cuvillie M.CUVILLIEZ        323     80      1
+ CASTEST MODIF tplp305d                     cuvillie M.CUVILLIEZ        344     79      1
+ CASTEST MODIF tplp305e                     cuvillie M.CUVILLIEZ        327     79      1
+ CASTEST MODIF tplp305f                     cuvillie M.CUVILLIEZ        342     97      1
+ CASTEST MODIF tplp305g                     cuvillie M.CUVILLIEZ        322     79      1
+ CASTEST MODIF tplp305h                     cuvillie M.CUVILLIEZ        327     79      1
+ CASTEST MODIF zzzz162a                     sellenet N.SELLENET        1050     34      3
+CATALOGU AJOUT options/temp_elga            cuvillie M.CUVILLIEZ         38     38      0
+CATALOGU MODIF compelem/phenomene_modelisation__   cuvillie M.CUVILLIEZ       1924     16      1
+CATALOGU MODIF typelem/gener_th3d_3         cuvillie M.CUVILLIEZ        242      1      8
+CATALOGU MODIF typelem/gener_th3d_xh_3      cuvillie M.CUVILLIEZ         98      6      1
+CATALOGU MODIF typelem/gener_th3d_xht_3     cuvillie M.CUVILLIEZ         98      6      1
+CATALOGU MODIF typelem/gener_th3d_xt3       cuvillie M.CUVILLIEZ         98      6      1
+CATALOGU MODIF typelem/gener_thpl_xh_2      cuvillie M.CUVILLIEZ         95     16      2
+CATALOGU MODIF typelem/gener_thpl_xht_2     cuvillie M.CUVILLIEZ         95     16      2
+CATALOGU MODIF typelem/gener_thpl_xt_2      cuvillie M.CUVILLIEZ         95     16      2
+CATALOPY MODIF commande/defi_materiau          proix J-M.PROIX         3594      5      5
+CATALOPY MODIF commun/c_nom_cham_into       cuvillie M.CUVILLIEZ        470      3      1
+ FORTRAN AJOUT algorith/xthpoc              cuvillie M.CUVILLIEZ         85     85      0
+ FORTRAN AJOUT algorith/xthpos              cuvillie M.CUVILLIEZ         85     85      0
+ FORTRAN AJOUT elements/te0578              cuvillie M.CUVILLIEZ         76     76      0
+ FORTRAN AJOUT elements/xtelga              cuvillie M.CUVILLIEZ        193    193      0
+ FORTRAN MODIF algorith/dltini                 berro H.BERRO            189      4      4
+ FORTRAN MODIF algorith/haymat                 proix J-M.PROIX          107      1      3
+ FORTRAN MODIF algorith/lcmafl                 proix J-M.PROIX          253      6      1
+ FORTRAN MODIF algorith/op0025              cuvillie M.CUVILLIEZ        274     11      4
+ FORTRAN MODIF elements/reeret              cuvillie M.CUVILLIEZ        109      2      4
+ FORTRAN MODIF elements/te0571              cuvillie M.CUVILLIEZ         91     15     35
+ FORTRAN MODIF elements/te0572              cuvillie M.CUVILLIEZ         92     15     35
+ FORTRAN MODIF elements/te0577              cuvillie M.CUVILLIEZ         94     15     35
+ FORTRAN MODIF elements/xmasth              cuvillie M.CUVILLIEZ        267     28     21
+ FORTRAN MODIF elements/xrigth              cuvillie M.CUVILLIEZ        281     28     20
+ FORTRAN MODIF elements/xvetth              cuvillie M.CUVILLIEZ        297     29     21
+ FORTRAN MODIF modelisa/xmoimp              cuvillie M.CUVILLIEZ        207     14      3
+ FORTRAN MODIF modelisa/xmoini              cuvillie M.CUVILLIEZ        120      5      2
+ FORTRAN MODIF modelisa/xmolig              cuvillie M.CUVILLIEZ        543     18      3
+ FORTRAN MODIF utilitai/rscrsd              cuvillie M.CUVILLIEZ        464      5      4
+
+
+        nb unites  nb lignes  ajouts  suppr.  difference
+ AJOUT :   11        1869      1869             +1869
+ MODIF :   38       15478      1350     924      +426
+ SUPPR :    0           0                 0        +0
+ DEPLA :    0           0 
+         ----      ------     ------  ------   ------
+ TOTAL :   49       17347      3219     924     +2295 
