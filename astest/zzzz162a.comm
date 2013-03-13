@@ -1,9 +1,9 @@
-# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
+# MODIF  DATE 11/03/2013   AUTEUR SELLENET N.SELLENET 
 # TITRE VALIDATION LIRE_RESU AU FORMAT MED
 # zzzz162a.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -19,7 +19,10 @@
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 
-DEBUT(CODE=_F(NOM='ZZZZ162A', NIV_PUB_WEB='INTERNET'), DEBUG=_F(SDVERI='OUI'))
+DEBUT(CODE=_F(NOM='ZZZZ162A', NIV_PUB_WEB='INTERNET'),
+      PAR_LOT='NON',
+      DEBUG=_F(SDVERI='OUI'),
+      IGNORE_ALARM='SUPERVIS_1',)
 #......................................................................
 # CECI EST UN TEST DE L ECRITURE ET LA RELECTURE DES CHAMPS
 # AU FORMAT MED - C EST LA RECOPIE DE HSNV100A
@@ -166,6 +169,34 @@ TEMPE1=THER_LINEAIRE(MODELE=MOTHER,
 DEFI_FICHIER(FICHIER='MED_70', UNITE=70, TYPE='LIBRE')
 
 IMPR_RESU(FORMAT='MED', UNITE=70, RESU=_F( RESULTAT=TEMPE1,),);
+
+import med_aster
+dic_champ_med = med_aster.get_nom_champ_med("MED_70")
+tab1 = []
+tab2 = []
+tab3 = []
+compteur = 1
+for nom_cham,cmps in dic_champ_med.iteritems():
+    for nom_cmp in cmps:
+        tab1.append(nom_cham)
+        tab2.append(nom_cmp)
+        tab3.append(compteur)
+        compteur += 1
+
+TAB=CREA_TABLE(LISTE=(_F(PARA='NUMERO',
+                         LISTE_I=tab3,),
+                      _F(PARA='NOM_CHAM',
+                         LISTE_K=tab1,
+                         TYPE_K='K24',),
+                      _F(PARA='NOM_CMP',
+                         LISTE_K=tab2,
+                         TYPE_K='K24',),),);
+
+IMPR_TABLE(TABLE=TAB,UNITE=50,);
+TEST_FICHIER(FICHIER='./fort.50',
+             VALE_CALC_K='666f340cc43122a704807d6f9bd896c7',
+             #VALE_CALC=2.1560300000000e+03,
+             NB_VALE=10,)
 
 TEMPE=LIRE_RESU(TYPE_RESU='EVOL_THER',
                 FORMAT='MED',
