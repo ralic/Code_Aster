@@ -1,8 +1,8 @@
-# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
+# MODIF  DATE 11/03/2013   AUTEUR IDOUX L.IDOUX 
 # TITRE PLAQUE DE BETON PRECONTRAINT AVEC CABLE EXCENTRE EN FLEXION
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
@@ -213,5 +213,31 @@ TEST_RESU(RESU=_F(GROUP_NO='NODE_REF',
                   CRITERE='RELATIF',
                   PRECISION=1.E-2,),
           )
+
+# Test de la reentrance de MODI_REPERE. La valeur de l'effort normal dans 
+# les barres est recopiee et le tenseur d'effort dans les Q4GG est mis 
+# dans le repere intrinseque.
+# ------------------------------------------------------------------------
+
+RES1 = MODI_REPERE(reuse=RES1,
+                   RESULTAT=RES1,
+                   MODI_CHAM=_F(TYPE_CHAM='COQUE_GENE',
+                                NOM_CHAM='SIEF_ELGA',
+                                NOM_CMP=('NXX','NYY','NXY','MXX','MYY','MXY','QX','QY',),),
+                   REPERE='COQUE_UTIL_INTR')
+
+TEST_RESU(RESU=_F(INST=1.0,
+                  REFERENCE='ANALYTIQUE',
+                  POINT=1,
+                  RESULTAT=RES1,
+                  NOM_CHAM='SIEF_ELGA',
+                  NOM_CMP='N',
+                  VALE_CALC= 3.75000000E+05,
+                  VALE_REFE=3.75000E5,
+                  CRITERE='RELATIF',
+                  PRECISION=1.E-3,
+                  MAILLE='M10',),
+          )
+                    
 
 FIN();

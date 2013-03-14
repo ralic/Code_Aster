@@ -1,4 +1,4 @@
-#@ MODIF calc_europlexus_ops Macro  DATE 05/03/2013   AUTEUR CHEIGNON E.CHEIGNON 
+#@ MODIF calc_europlexus_ops Macro  DATE 11/03/2013   AUTEUR IDOUX L.IDOUX 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -94,7 +94,7 @@ def calc_europlexus_ops(self,EXCIT,MODELE=None,CARA_ELEM=None,CHAM_MATER=None,FO
 
     global _F,INFO_EXEC_ASTER,DETRUIRE,IMPR_RESU,DEFI_FICHIER,LIRE_RESU,CREA_MAILLAGE
     global DEFI_GROUP,LIRE_MAILLAGE,CREA_TABLE,IMPR_TABLE,AFFE_MODELE,EXEC_LOGICIEL
-    global LIRE_CHAMP,CREA_CHAMP,CREA_RESU,FORMULE
+    global LIRE_CHAMP,CREA_CHAMP,CREA_RESU,FORMULE,MODI_REPERE
 
     INFO_EXEC_ASTER = self.get_cmd('INFO_EXEC_ASTER')
     DETRUIRE        = self.get_cmd('DETRUIRE')
@@ -112,6 +112,7 @@ def calc_europlexus_ops(self,EXCIT,MODELE=None,CARA_ELEM=None,CHAM_MATER=None,FO
     CREA_CHAMP      = self.get_cmd('CREA_CHAMP')
     CREA_RESU       = self.get_cmd('CREA_RESU')
     FORMULE         = self.get_cmd('FORMULE')
+    MODI_REPERE     = self.get_cmd('MODI_REPERE')
 
     # Pour la gestion des Exceptions
     prev_onFatalError = aster.onFatalError()
@@ -462,13 +463,34 @@ class EUROPLEXUS:
             RESULTAT = self.ETAT_INIT['RESULTAT']
 
             list_cham=['DEPL']
-            if self.ETAT_INIT['CONTRAINTE']=='OUI': list_cham.append('SIEF_ELGA')
+            if self.ETAT_INIT['CONTRAINTE']=='OUI':
+                list_cham.append('SIEF_ELGA')
+                if 'T3GS' in self.modelisations or 'Q4GS' in self.modelisations :
+                    MODI_REPERE(RESULTAT=RESULTAT,reuse=RESULTAT,
+                    REPERE='COQUE_UTIL_INTR',
+                    MODI_CHAM=_F(TYPE_CHAM = 'COQUE_GENE',
+                                 NOM_CHAM  = 'SIEF_ELGA',
+                                 NOM_CMP   = ('NXX','NYY','NXY',
+                                              'MXX','MYY','MXY',
+                                              'QX','QY')))
             # on imprime des champs du dernier instant de calcul
             nume_ordre =RESULTAT.LIST_PARA()['NUME_ORDRE'][-1]
             IMPR_RESU(UNITE  = unite,
                   FORMAT = 'MED',
                   RESU   = _F(NUME_ORDRE=nume_ordre,RESULTAT=RESULTAT,NOM_CHAM=list_cham)
                  )
+                 
+            # on remet les contraintes des coques dans le repère utilisateur pour ne pas 
+            # modifier le resultat
+            if self.ETAT_INIT['CONTRAINTE']=='OUI':
+                if 'T3GS' in self.modelisations or 'Q4GS' in self.modelisations :
+                    MODI_REPERE(RESULTAT=RESULTAT,reuse=RESULTAT,
+                    REPERE='COQUE_INTR_UTIL',
+                    MODI_CHAM=_F(TYPE_CHAM = 'COQUE_GENE',
+                                 NOM_CHAM  = 'SIEF_ELGA',
+                                 NOM_CMP   = ('NXX','NYY','NXY',
+                                              'MXX','MYY','MXY',
+                                              'QX','QY')))
         else:
 
             IMPR_RESU(UNITE  = unite,
@@ -2442,6 +2464,16 @@ class EUROPLEXUS:
               NOM_CHAM  = 'VARI_ELGA',
               AFFE = dicAffe3,
               )
+
+      if 'T3GS' in self.modelisations or 'Q4GS' in self.modelisations :
+        print 'APPEL A MODI_REPERE'
+        MODI_REPERE(RESULTAT=resu,reuse=resu,
+                    REPERE='COQUE_INTR_UTIL',
+                    MODI_CHAM=_F(TYPE_CHAM = 'COQUE_GENE',
+                                 NOM_CHAM  = 'SIEF_ELGA',
+                                 NOM_CMP   = ('NXX','NYY','NXY',
+                                              'MXX','MYY','MXY',
+                                              'QX','QY')))
 
       DEFI_FICHIER(UNITE=unite,ACTION='LIBERER');
 

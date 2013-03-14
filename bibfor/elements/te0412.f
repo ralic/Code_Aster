@@ -4,7 +4,7 @@
       CHARACTER*16      OPTION,NOMTE
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 15/01/2013   AUTEUR DELMAS J.DELMAS 
+C MODIF ELEMENTS  DATE 11/03/2013   AUTEUR IDOUX L.IDOUX 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -41,7 +41,6 @@ C.......................................................................
       INTEGER    NNOMX
       PARAMETER (NNOMX=4)
       INTEGER    NBSM,NBSIG
-      PARAMETER (NBSIG=6)
       PARAMETER (NBSM=3)
       INTEGER    NPGMX
       PARAMETER (NPGMX=4)
@@ -52,11 +51,14 @@ C.......................................................................
       REAL*8   UL(6,NNOMX),QSI,ETA,XYZL(3,4),JACOB(5),POIDS,CARA(25)
       REAL*8   NMM(NBSM),NMF(NBSM),MFF(NBSM),ENELM(NPGMX),ENELF(NPGMX)
       REAL*8   ENELT(NPGMX),ENM,ENF,ENT
-      REAL*8   EFFINT(32)
+      REAL*8   EFFINT(32),EFFORT(32)
+      REAL*8   ALPHA, BETA, R8DGRD
+      REAL*8   T2EV(4),T2VE(4), C, S
 
       INTEGER  NDIM,NNO,NNOEL,NPG,IPOIDS,ICOOPG,IVF,IDFDX,IDFD2,JGANO
       INTEGER  JGEOM,IPG,INO,JDEPM,ISIG,JSIG,IDENER,IRET
       INTEGER  ICOMPO,ICACOQ,ICONTP,JVARI,NBVAR,IVPG
+      INTEGER  JCARA
 
       CHARACTER*16 VALK(3)
       LOGICAL  DKQ,DKG,LKIT
@@ -64,18 +66,21 @@ C.......................................................................
       DKQ = .FALSE.
       DKG = .FALSE.
 
+      NBSIG = 6
       IF (NOMTE.EQ.'MEDKQU4 ') THEN
         DKQ = .TRUE.
       ELSEIF (NOMTE.EQ.'MEDKQG4 '.OR.
      &        NOMTE.EQ.'MEQ4GG4 ') THEN
         DKQ = .TRUE.
         DKG = .TRUE.
+        NBSIG = 8
       ELSEIF (NOMTE.EQ.'MEDKTR3 ') THEN
         DKQ = .FALSE.
       ELSEIF (NOMTE.EQ.'MEDKTG3 '.OR.
      &        NOMTE.EQ.'MET3GG3 ') THEN
         DKQ = .FALSE.
         DKG = .TRUE.
+        NBSIG = 8
       ELSE
         CALL U2MESK('F','ELEMENTS_34',1,NOMTE)
       END IF
@@ -158,10 +163,24 @@ C     -------------------------------------------------
       IF(DKG) THEN
         DO 40 IPG = 1, NPG
           DO 50 ISIG = 1, NBSIG
-            EFFINT((IPG-1)*NBSIG + ISIG) =
+            EFFORT((IPG-1)*NBSIG + ISIG) =
      &               ZR(ICONTP-1 + (IPG-1)*8 + ISIG )
  50       CONTINUE
  40     CONTINUE
+C --- CALCUL DES MATRICES DE CHANGEMENT DE REPERES 
+C
+C     T2EV : LA MATRICE DE PASSAGE (2X2) : UTILISATEUR -> INTRINSEQUE
+C     T2VE : LA MATRICE DE PASSAGE (2X2) : INTRINSEQUE -> UTILISATEUR
+C
+        CALL JEVECH ('PCACOQU', 'L', JCARA)
+        ALPHA = ZR(JCARA+1) * R8DGRD()
+        BETA  = ZR(JCARA+2) * R8DGRD()
+        CALL COQREP(PGL,ALPHA,BETA,T2EV,T2VE,C,S)
+C
+C --- PASSAGE DU VECTEUR DES EFFORTS GENERALISES AUX POINTS
+C --- D'INTEGRATION DU REPERE LOCAL AU REPERE INTRINSEQUE
+C
+        CALL DXEFRO(NPG,T2EV,EFFORT,EFFINT)
       ELSE
         CALL DXEFFI ( OPTION, NOMTE, PGL, ZR(ICONTP),NBSIG, EFFINT )
       ENDIF

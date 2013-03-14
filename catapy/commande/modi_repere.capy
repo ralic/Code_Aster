@@ -1,7 +1,7 @@
-#& MODIF COMMANDE  DATE 17/10/2011   AUTEUR DELMAS J.DELMAS 
+#& MODIF COMMANDE  DATE 11/03/2013   AUTEUR IDOUX L.IDOUX 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -20,7 +20,7 @@
 def modi_repere_prod(RESULTAT,**args):
   if AsType(RESULTAT) != None : return AsType(RESULTAT)
 
-MODI_REPERE=OPER(nom="MODI_REPERE",op=191,sd_prod=modi_repere_prod,reentrant='n',
+MODI_REPERE=OPER(nom="MODI_REPERE",op=191,sd_prod=modi_repere_prod,reentrant='f',
             UIinfo={"groupes":("Post-traitements","Résultats et champs",)},
                     fr="Calcule des résultats dans le repère cylindrique",
          RESULTAT        =SIMP(statut='o',typ=resultat_sdaster),
@@ -61,28 +61,41 @@ MODI_REPERE=OPER(nom="MODI_REPERE",op=191,sd_prod=modi_repere_prod,reentrant='n'
            b_coque_gene    =BLOC(condition = "TYPE_CHAM=='COQUE_GENE'",
               NOM_CMP         =SIMP(statut='o',typ='TXM',min=8,max=8 ),),
          ),
-         REPERE          =SIMP(statut='f',typ='TXM',defaut="UTILISATEUR",position='global',
-                                 into=("UTILISATEUR","CYLINDRIQUE","COQUE"),),
-         AFFE     =FACT(statut='o',max='**',
-           b_cyl      =BLOC(condition = "REPERE == 'CYLINDRIQUE'",            
-             ORIGINE         =SIMP(statut='f',typ='R',min=2,max=3),
-             AXE_Z           =SIMP(statut='f',typ='R',min=3,max=3),),
-           b_uti      =BLOC(condition = "REPERE == 'UTILISATEUR'",             
+         b_reuse =BLOC(condition = "reuse",fr="en mode concept reentrant : COQUE_INTR_UTIL ou COQUE_UTIL_INTR autorise",
+           REPERE          =SIMP(statut='o',typ='TXM',position='global',
+                                 into=("COQUE_INTR_UTIL","COQUE_UTIL_INTR"),),
+           AFFE     =FACT(statut='o',max='**',
+            GROUP_MA        =SIMP(statut='f',typ=grma,validators=NoRepeat(),max='**'),
+            MAILLE          =SIMP(statut='f',typ=ma  ,validators=NoRepeat(),max='**'),
+           ),
+          ),
+
+         b_not_reuse =BLOC(condition = "not reuse",fr="en mode concept non reentrant ",
+           REPERE          =SIMP(statut='f',typ='TXM',defaut="UTILISATEUR",position='global',
+                                 into=("UTILISATEUR","CYLINDRIQUE","COQUE",
+                                       "COQUE_INTR_UTIL","COQUE_UTIL_INTR"),),
+
+           AFFE     =FACT(statut='o',max='**',
+            b_cyl      =BLOC(condition = "REPERE == 'CYLINDRIQUE'",            
+              ORIGINE         =SIMP(statut='f',typ='R',min=2,max=3),
+              AXE_Z           =SIMP(statut='f',typ='R',min=3,max=3),),
+            b_uti      =BLOC(condition = "REPERE == 'UTILISATEUR'",             
                             regles=(UN_PARMI('ANGL_NAUT','VECT_X'),
                                     UN_PARMI('ANGL_NAUT','VECT_Y'),
                             ),
-             ANGL_NAUT       =SIMP(statut='f',typ='R',max=3),
-             VECT_X          =SIMP(statut='f',typ='R',min=3,max=3 ),
-             VECT_Y          =SIMP(statut='f',typ='R',min=3,max=3 ),),
-           b_coq      =BLOC(condition = "REPERE == 'COQUE'",             
+              ANGL_NAUT       =SIMP(statut='f',typ='R',max=3),
+              VECT_X          =SIMP(statut='f',typ='R',min=3,max=3 ),
+              VECT_Y          =SIMP(statut='f',typ='R',min=3,max=3 ),),
+            b_coq      =BLOC(condition = "REPERE == 'COQUE'",             
                             regles=(UN_PARMI('ANGL_REP','VECTEUR'),),
-             ANGL_REP        =SIMP(statut='f',typ='R',min=2,max=2),
-             VECTEUR         =SIMP(statut='f',typ='R',min=3,max=3),),
-           GROUP_MA        =SIMP(statut='f',typ=grma,validators=NoRepeat(),max='**'),
-           GROUP_NO        =SIMP(statut='f',typ=grno,validators=NoRepeat(),max='**'),
-           MAILLE          =SIMP(statut='f',typ=ma  ,validators=NoRepeat(),max='**'),
-           NOEUD           =SIMP(statut='f',typ=no  ,validators=NoRepeat(),max='**'),
+              ANGL_REP        =SIMP(statut='f',typ='R',min=2,max=2),
+              VECTEUR         =SIMP(statut='f',typ='R',min=3,max=3),),
+            GROUP_MA        =SIMP(statut='f',typ=grma,validators=NoRepeat(),max='**'),
+            GROUP_NO        =SIMP(statut='f',typ=grno,validators=NoRepeat(),max='**'),
+            MAILLE          =SIMP(statut='f',typ=ma  ,validators=NoRepeat(),max='**'),
+            NOEUD           =SIMP(statut='f',typ=no  ,validators=NoRepeat(),max='**'),
+          ),
          ),
-         TITRE           =SIMP(statut='f',typ='TXM',max='**'),
+          TITRE           =SIMP(statut='f',typ='TXM',max='**'),
          INFO            =SIMP(statut='f',typ='I',defaut=1,into=(1,2)),
 )  ;

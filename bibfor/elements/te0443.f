@@ -1,6 +1,6 @@
       SUBROUTINE TE0443(OPTION,NOMTE)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 15/01/2013   AUTEUR DELMAS J.DELMAS 
+C MODIF ELEMENTS  DATE 11/03/2013   AUTEUR IDOUX L.IDOUX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -47,6 +47,7 @@ C-----------------------------------------------------------------------
       REAL*8        MATVN2(2,2,10), MATVG2(2,2,10)
       REAL*8        VECTA(9,2,3),VECTN(9,3),VECTPT(9,2,3)
       REAL*8        VECTG(2,3),VECTT(3,3),CONIN(NPTMAX*NCPMAX*NSPMAX)
+      REAL*8        REP
       CHARACTER*8   PAIN, PAOUT
       ZERO = 0.0D0
 C
@@ -128,6 +129,7 @@ C
 
       ALPHA = ZR(JANG)
       BETA  = ZR(JANG+1)
+      REP   = ZR(JANG+2)
       CALL JEVETE('&INEL.'//NOMTE(1:8)//'.DESI',' ', LZI )
       NB1  =ZI(LZI-1+1)
       NB2  =ZI(LZI-1+2)
@@ -149,6 +151,7 @@ C     --------------------------------------------------------------
           DO 130 I = 1, 3
             K = K + 1
             ZR(LZR+2000+K-1) = VECTT(I,J)
+
  130      CONTINUE
  120    CONTINUE
  110  CONTINUE
@@ -167,41 +170,106 @@ C
 C  ON PREND L INVERSE DES MATRICES
 C  (CAR ON REVIENT EN REPERE INTRINSEQUE)
 C
-      DO 8 I=1,NP
-        S = MATVN1(1,2,I)
-        MATVN1(2,1,I) = S
-        MATVN1(1,2,I) = -S
-8     CONTINUE
+      IF(REP.EQ.0.D0.OR.REP.EQ.2) THEN
+        IF (PAIN(4:5).EQ.'NO') THEN
+          DO 8 I=1,NP
+            S = MATVN1(1,2,I)
+            MATVN1(2,1,I) =  S
+            MATVN1(1,2,I) = -S
+8         CONTINUE
+        ELSE IF (PAIN(4:5).EQ.'GA') THEN
+          DO 9 I=1,NP
+            S = MATVG1(1,2,I)
+            MATVG1(2,1,I) =  S
+            MATVG1(1,2,I) = -S
+9         CONTINUE
+        ENDIF
+      ENDIF
+
+      IF(REP.EQ.0.D0) THEN
 
 C --- PASSAGE DES CONTRAINTES DU REPERE LOCAL 1
 C --- A L'ELEMENT AU REPERE INTRINSEQUE DE LA COQUE
 C     ---------------------------------------
-      IF (OPTION.EQ.'REPE_TENS' ) THEN
-        CALL VDSIRO(NP,NBSP,MATVN1,'IU','N',ZR(JIN),CONIN)
-      ELSE IF (OPTION.EQ.'REPE_GENE' ) THEN
-        CALL VDEFRO(NP,MATVN1,ZR(JIN),CONIN)
-      ENDIF
+        IF (OPTION.EQ.'REPE_TENS' ) THEN
+          IF (PAIN(4:5).EQ.'NO') THEN
+            CALL VDSIRO(NP,NBSP,MATVN1,'IU','N',ZR(JIN),CONIN)
+          ELSE IF (PAIN(4:5).EQ.'GA') THEN
+            CALL VDSIRO(NP,NBSP,MATVG1,'IU','G',ZR(JIN),CONIN)
+          ENDIF
+        ELSE IF (OPTION.EQ.'REPE_GENE' ) THEN
+          IF (PAIN(4:5).EQ.'NO') THEN
+            CALL VDEFRO(NP,MATVN1,ZR(JIN),CONIN)
+          ELSE IF (PAIN(4:5).EQ.'GA') THEN
+            CALL VDEFRO(NP,MATVG1,ZR(JIN),CONIN)
+          ENDIF
+        ENDIF
 C
 C ---  CALCUL DES MATRICES DE PASSAGE DU CHGT DE REPERE
 C       -----------------------------------------------
-      CALL JEVETE('&INEL.'//NOMTE(1:8)//'.DESI',' ', LZI )
-      CALL JEVETE('&INEL.'//NOMTE(1:8)//'.DESR',' ', LZR )
-      CALL VDREP2(ALPHA,BETA,ZI(LZI),ZR(LZR),MATVN2,MATVG2)
+        CALL JEVETE('&INEL.'//NOMTE(1:8)//'.DESI',' ', LZI )
+        CALL JEVETE('&INEL.'//NOMTE(1:8)//'.DESR',' ', LZR )
+        CALL VDREP2(ALPHA,BETA,ZI(LZI),ZR(LZR),MATVN2,MATVG2)
 
 C ---   PASSAGE DES QUANTITES DU REPERE INTRINSEQUE
 C ---   A L'ELEMENT AU REPERE LOCAL DE LA COQUE
 C       ---------------------------------------
-      IF (OPTION.EQ.'REPE_TENS' ) THEN
-        IF (PAIN(4:5).EQ.'NO') THEN
-          CALL VDSIRO(NP,NBSP,MATVN2,'IU','N',CONIN,ZR(JOUT))
-        ELSE IF (PAIN(4:5).EQ.'GA') THEN
-          CALL VDSIRO(NP,NBSP,MATVG2,'IU','G',CONIN,ZR(JOUT))
+        IF (OPTION.EQ.'REPE_TENS' ) THEN
+          IF (PAIN(4:5).EQ.'NO') THEN
+            CALL VDSIRO(NP,NBSP,MATVN2,'IU','N',CONIN,ZR(JOUT))
+          ELSE IF (PAIN(4:5).EQ.'GA') THEN
+            CALL VDSIRO(NP,NBSP,MATVG2,'IU','G',CONIN,ZR(JOUT))
+          ENDIF
+        ELSE IF (OPTION.EQ.'REPE_GENE' ) THEN
+          IF (PAIN(4:5).EQ.'NO') THEN
+            CALL VDEFRO(NP,MATVN2,CONIN,ZR(JOUT))
+          ELSE IF (PAIN(4:5).EQ.'GA') THEN
+            CALL VDEFRO(NP,MATVG2,CONIN,ZR(JOUT))
+          ENDIF
         ENDIF
-      ELSE IF (OPTION.EQ.'REPE_GENE' ) THEN
-        IF (PAIN(4:5).EQ.'NO') THEN
-          CALL VDEFRO(NP,MATVN2,CONIN,ZR(JOUT))
-        ELSE IF (PAIN(4:5).EQ.'GA') THEN
-          CALL VDEFRO(NP,MATVG2,CONIN,ZR(JOUT))
+C
+C --- PASSAGE DES CONTRAINTES DU REPERE INTRINSEQUE
+C --- A L'ELEMENT AU REPERE LOCAL 1 DE LA COQUE
+C     REPERE = 'COQUE_INTR_UTIL'
+C     ---------------------------------------
+      ELSE IF(REP.EQ.1.D0) THEN
+
+C --- PASSAGE DES CONTRAINTES DU REPERE INTRINSEQUE 
+C --- A L'ELEMENT AU REPERE LOCAL 1 DE LA COQUE
+C     REPERE = 'COQUE_INTR_UTIL'
+C     ---------------------------------------
+        IF (OPTION.EQ.'REPE_TENS' ) THEN
+          IF (PAIN(4:5).EQ.'NO') THEN
+            CALL VDSIRO(NP,NBSP,MATVN1,'IU','N',ZR(JIN),ZR(JOUT))
+          ELSE IF (PAIN(4:5).EQ.'GA') THEN
+            CALL VDSIRO(NP,NBSP,MATVG1,'IU','G',ZR(JIN),ZR(JOUT))
+          ENDIF
+        ELSE IF (OPTION.EQ.'REPE_GENE' ) THEN
+          IF (PAIN(4:5).EQ.'NO') THEN
+            CALL VDEFRO(NP,MATVN1,ZR(JIN),ZR(JOUT))
+          ELSE IF (PAIN(4:5).EQ.'GA') THEN
+            CALL VDEFRO(NP,MATVG1,ZR(JIN),ZR(JOUT))
+          ENDIF
+        ENDIF
+C
+C --- PASSAGE DES CONTRAINTES DU REPERE LOCAL 1
+C --- A L'ELEMENT AU REPERE INTRINSEQUE DE LA COQUE
+C     REPERE = 'COQUE_UTIL_INTR'
+C     ---------------------------------------
+      ELSE IF(REP.EQ.2.D0) THEN
+        IF (OPTION.EQ.'REPE_TENS' ) THEN
+          IF (PAIN(4:5).EQ.'NO') THEN
+            CALL VDSIRO(NP,NBSP,MATVN1,'IU','N',ZR(JIN),ZR(JOUT))
+          ELSE IF (PAIN(4:5).EQ.'GA') THEN
+            CALL VDSIRO(NP,NBSP,MATVG1,'IU','G',ZR(JIN),ZR(JOUT))
+          ENDIF
+        ELSE IF (OPTION.EQ.'REPE_GENE' ) THEN
+          IF (PAIN(4:5).EQ.'NO') THEN
+            CALL VDEFRO(NP,MATVN1,ZR(JIN),ZR(JOUT))
+          ELSE IF (PAIN(4:5).EQ.'GA') THEN
+            CALL VDEFRO(NP,MATVG1,ZR(JIN),ZR(JOUT))
+          ENDIF
         ENDIF
       ENDIF
+
       END

@@ -1,5 +1,5 @@
 
-# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
+# MODIF  DATE 11/03/2013   AUTEUR IDOUX L.IDOUX 
 # RESPONSABLE SFAYOLLE S.FAYOLLE
 #  DATE   : 27/10/03
 #  AUTEUR : F. LEBOUVIER (DeltaCAD)
@@ -7,7 +7,7 @@
 # ssls127b.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -226,7 +226,7 @@ TEST_RESU(RESU=_F(NUME_ORDRE=2,
                   VALE_CALC= 2.14816164E-04,
                   VALE_REFE=2.1929999999999999E-4,
                   CRITERE='RELATIF',
-                  PRECISION=0.080000000000000002,
+                  PRECISION=0.03,
                   MAILLE='M133',),
           )
 
@@ -239,8 +239,253 @@ TEST_RESU(RESU=_F(NUME_ORDRE=2,
                   VALE_CALC= 2.14816164E-04,
                   VALE_REFE=2.1929999999999999E-4,
                   CRITERE='RELATIF',
-                  PRECISION=0.080000000000000002,
+                  PRECISION=0.03,
                   MAILLE='M133',),
           )
 
+CARA_EL1=AFFE_CARA_ELEM(MODELE=MOD,
+                        COQUE=_F(GROUP_MA='MESH',
+                                 EPAIS=EP,
+                                 ANGL_REP=(33.,12.),),);
+
+RESU1=STAT_NON_LINE( MODELE=MOD,
+                      CHAM_MATER= CHMAT,
+                      CARA_ELEM = CARA_EL1,
+                      COMP_INCR=_F(
+                                    RELATION = 'GLRC_DAMAGE',
+                                    ),
+                      CONVERGENCE=_F(ITER_GLOB_MAXI=10),
+                      INCREMENT=_F( LIST_INST = INST,
+                                    PRECISION =1.E-1),
+                      EXCIT=(   _F( CHARGE = COND_LIM,),
+                                _F( CHARGE = PRES,
+                                    FONC_MULT = CH_FO,),
+                     ),);
+
+RESU1=CALC_CHAMP(reuse=RESU1,
+                CONTRAINTE=('EFGE_ELNO','EFGE_ELGA'),
+                VARI_INTERNE=('VARI_ELNO'),
+                DEFORMATION=('DEGE_ELNO','DEGE_ELGA'),
+                RESULTAT=RESU1)
+
+
+TEST_RESU(RESU=(
+           _F( RESULTAT = RESU1,
+               NUME_ORDRE = 2,
+               NOM_CHAM = 'DEPL',
+               CRITERE = 'RELATIF',
+               PRECISION = 0.12,
+               GROUP_NO = 'A1',
+               NOM_CMP = 'DZ',
+               VALE_CALC = 7.6666691824089E-05,
+               VALE_REFE = 6.926E-5,
+               REFERENCE = 'ANALYTIQUE'),
+             ),
+          );
+
+TEST_RESU(RESU=(
+           _F( RESULTAT = RESU1,
+               NUME_ORDRE = 2,
+               NOM_CHAM = 'EFGE_ELNO',
+               CRITERE = 'RELATIF',
+               PRECISION = 0.08,
+               GROUP_NO = 'A1',
+               MAILLE='M133',
+               NOM_CMP = 'MXX',
+               VALE_CALC = 1450.0972570977,
+               VALE_REFE = 1550.,
+               REFERENCE = 'ANALYTIQUE'),
+             ),
+           );
+TEST_RESU(RESU=(
+           _F( RESULTAT = RESU1,
+               NUME_ORDRE = 2,
+               NOM_CHAM = 'EFGE_ELNO',
+               CRITERE = 'RELATIF',
+               PRECISION = 0.08,
+               GROUP_NO = 'A1',
+               MAILLE='M133',
+               NOM_CMP = 'MYY',
+               VALE_CALC = 1450.1036994234,
+               VALE_REFE = 1550.,
+               REFERENCE = 'ANALYTIQUE'),
+             ),
+          );
+
+TEST_RESU(RESU=(
+           _F( RESULTAT = RESU1,
+               NUME_ORDRE = 2,
+               NOM_CHAM = 'EFGE_ELNO',
+               CRITERE = 'ABSOLU',
+               PRECISION = 0.01,
+               GROUP_NO = 'A1',
+               MAILLE='M133',
+               NOM_CMP = 'MXY',
+               VALE_CALC = -1.4314970594995E-03,
+               VALE_REFE = 0.,
+               REFERENCE = 'ANALYTIQUE'),
+             ),
+          );
+
+
+TEST_RESU(RESU=(
+           _F( RESULTAT = RESU1,
+               NUME_ORDRE = 2,
+               NOM_CHAM = 'DEGE_ELNO',
+               CRITERE = 'RELATIF',
+               PRECISION = 0.03,
+               GROUP_NO = 'A1',
+               MAILLE='M133',
+               NOM_CMP = 'KXX',
+               VALE_CALC = 2.1481616411236E-04,
+               VALE_REFE = 2.193E-4,
+               REFERENCE = 'ANALYTIQUE'),
+             ),
+          );
+TEST_RESU(RESU=(
+           _F( RESULTAT = RESU1,
+               NUME_ORDRE = 2,
+               NOM_CHAM = 'DEGE_ELNO',
+               CRITERE = 'RELATIF',
+               PRECISION = 0.03,
+               GROUP_NO = 'A1',
+               MAILLE='M133',
+               NOM_CMP = 'KYY',
+               VALE_CALC = 2.1481616411237E-04,
+               VALE_REFE = 2.193E-4,
+               REFERENCE = 'ANALYTIQUE'),
+             ),
+           );
+TEST_RESU(RESU=(
+           _F( RESULTAT = RESU1,
+               NUME_ORDRE = 2,
+               NOM_CHAM = 'DEGE_ELNO',
+               CRITERE = 'ABSOLU',
+               PRECISION = 0.001,
+               GROUP_NO = 'A1',
+               MAILLE='M133',
+               NOM_CMP = 'KXY',
+               VALE_CALC = -1.268516541808E-17,
+               VALE_REFE = 0.,
+               REFERENCE = 'ANALYTIQUE'),
+             ),
+           );
+
+TEST_RESU(RESU=(
+           _F( RESULTAT = RESU1,
+               NUME_ORDRE = 2,
+               NOM_CHAM = 'EFGE_ELGA',
+               CRITERE = 'RELATIF',
+               PRECISION = 1.E-10,
+               POINT=4,
+               MAILLE='M133',
+               NOM_CMP = 'MXX',
+               VALE_CALC = 1444.9991949506,
+               VALE_REFE = 1444.9991949506,
+               REFERENCE = 'NON_DEFINI'),
+             ),
+           );
+TEST_RESU(RESU=(
+           _F( RESULTAT = RESU1,
+               NUME_ORDRE = 2,
+               NOM_CHAM = 'EFGE_ELGA',
+               CRITERE = 'RELATIF',
+               PRECISION = 1.E-10,
+               POINT=4,
+               MAILLE='M133',
+               NOM_CMP = 'MYY',
+               VALE_CALC = 1447.9756658022,
+               VALE_REFE = 1447.9756658022,
+               REFERENCE = 'NON_DEFINI'),
+             ),
+          );
+
+TEST_RESU(RESU=(
+           _F( RESULTAT = RESU1,
+               NUME_ORDRE = 2,
+               NOM_CHAM = 'DEGE_ELGA',
+               CRITERE = 'RELATIF',
+               PRECISION = 1.E-10,
+               POINT=4,
+               MAILLE='M133',
+               NOM_CMP = 'KXX',
+               VALE_CALC = 2.1394064100901E-04,
+               VALE_REFE = 2.1394064100901E-04,
+               REFERENCE = 'NON_DEFINI'),
+             ),
+          );
+TEST_RESU(RESU=(
+           _F( RESULTAT = RESU1,
+               NUME_ORDRE = 2,
+               NOM_CHAM = 'DEGE_ELGA',
+               CRITERE = 'RELATIF',
+               PRECISION = 1.E-10,
+               POINT=4,
+               MAILLE='M133',
+               NOM_CMP = 'KYY',
+               VALE_CALC = 2.1462122196333E-04,
+               VALE_REFE = 2.1462122196333E-04,
+               REFERENCE = 'NON_DEFINI'),
+             ),
+           );
+TEST_RESU(RESU=(
+           _F( RESULTAT = RESU1,
+               NUME_ORDRE = 2,
+               NOM_CHAM = 'DEGE_ELGA',
+               CRITERE = 'RELATIF',
+               PRECISION = 1.E-10,
+               POINT=4,
+               MAILLE='M133',
+               NOM_CMP = 'KXY',
+               VALE_CALC = -1.5150708178717E-07,
+               VALE_REFE = -1.5150708178717E-07,
+               REFERENCE = 'NON_DEFINI'),
+             ),
+           );
+
+TEST_RESU(RESU=(
+           _F( RESULTAT = RESU1,
+               NUME_ORDRE = 2,
+               NOM_CHAM = 'SIEF_ELGA',
+               CRITERE = 'RELATIF',
+               PRECISION = 1.E-10,
+               POINT=4,
+               MAILLE='M133',
+               NOM_CMP = 'MXX',
+               VALE_CALC = 1444.9991949506,
+               VALE_REFE = 1444.9991949506,
+               REFERENCE = 'NON_DEFINI'),
+             ),
+           );
+TEST_RESU(RESU=(
+           _F( RESULTAT = RESU1,
+               NUME_ORDRE = 2,
+               NOM_CHAM = 'SIEF_ELGA',
+               CRITERE = 'RELATIF',
+               PRECISION = 1.E-10,
+               POINT=4,
+               MAILLE='M133',
+               NOM_CMP = 'MYY',
+               VALE_CALC = 1447.9756658022,
+               VALE_REFE = 1447.9756658022,
+               REFERENCE = 'NON_DEFINI'),
+             ),
+          );
+
+TEST_RESU(RESU=(
+           _F( RESULTAT = RESU1,
+               NUME_ORDRE = 2,
+               NOM_CHAM = 'SIEF_ELGA',
+               CRITERE = 'RELATIF',
+               PRECISION = 1.E-10,
+               POINT=4,
+               MAILLE='M133',
+               NOM_CMP = 'MXY',
+               VALE_CALC = -0.66260510213010,
+               VALE_REFE = -0.66260510213010,
+               REFERENCE = 'NON_DEFINI'),
+             ),
+          );
+
 FIN();
+

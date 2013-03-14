@@ -1,4 +1,4 @@
-%& MODIF COMPELEM  DATE 26/02/2013   AUTEUR CUVILLIE M.CUVILLIEZ 
+%& MODIF COMPELEM  DATE 11/03/2013   AUTEUR IDOUX L.IDOUX 
 % RESPONSABLE PROIX
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
@@ -276,10 +276,15 @@ GRANDEUR_SIMPLE__
        RCOURB :
        ANGCOU :
        ANGZZK :
+       REP    : définition du repère 
+                = 1 : COQUE_INTR_UTIL permet le passage du repère 
+                      intrinséque de l'élément au repère local de l'élément
+                = 2 : COQUE_UTIL_INTR permet le passage du repère 
+                      local de l'élément au repère intrinséque de l'élément
 >>
     CAORIE   = R    ALPHA    BETA     GAMMA    ALPHA2   BETA2    GAMMA2   ALPHA3   BETA3
                     GAMMA3   ALPHA4   BETA4    GAMMA4   ICOUDE   DN1N2    RCOURB   ANGCOU
-                    ANGZZK
+                    ANGZZK   REP
 
 <<  CAPOUF Type:R Caractéristiques géométriques des éléments poutre fluide
        B_T : terme correcteur transverse
