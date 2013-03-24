@@ -1,8 +1,8 @@
-#@ MODIF calc_mode_rotation_ops Macro  DATE 26/09/2012   AUTEUR LEBOUVIER F.LEBOUVIER 
+#@ MODIF calc_mode_rotation_ops Macro  DATE 19/03/2013   AUTEUR BRIE N.BRIE 
 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
@@ -26,8 +26,8 @@ from types import ListType, TupleType
 def calc_mode_rotation_ops(self,MATR_RIGI, MATR_MASS, MATR_AMOR, MATR_GYRO,
                          VITE_ROTA,METHODE,CALC_FREQ,VERI_MODE,**args):
 # Macro pour calculer les frequences et modes en fonction des vitesses de rotation
-# MATR_A, matrice de raideur
-# MATR_B, matrice de masse
+# MATR_RIGI, matrice de raideur
+# MATR_MASS, matrice de masse
 # MATR_AMOR, matrice d'amortissement
 # MATR_GYRO, matrice de gyroscopie
 # VITE_ROTA, liste de vitesses de rotation

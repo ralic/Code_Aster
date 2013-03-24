@@ -5,9 +5,9 @@
       CHARACTER*8  NOMRES
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 09/11/2012   AUTEUR DELMAS J.DELMAS 
+C MODIF ALGORITH  DATE 19/03/2013   AUTEUR BRIE N.BRIE 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -98,7 +98,7 @@ C          NUMBIS(15:19)='.NUME'
             VALK (2) = NUMBIS(1:8)
             VALK (3) = INTF
             VALK (4) = NUMDDL(1:8)
-            CALL U2MESG('F', 'ALGORITH14_24',4,VALK,0,0,0,0.D0)
+            CALL U2MESK('F', 'ALGORITH14_24',4,VALK)
           ENDIF
 10      CONTINUE
         CALL JEDETR('&&'//NOMPRO//'.MODE_MECA')
@@ -117,7 +117,7 @@ C
         CALL GETVID('    ','NUME_REF',1,IARG,1,NUMDDL,IBID)
         IF ((IBID.EQ.0).AND.NOSEUL) THEN
 C         si on a plus d'un mode_meca en entree, preciser NUME_REF
-          CALL U2MESG('E', 'ALGORITH17_8',0,' ',0,0,0,0.D0)
+          CALL U2MESS('E', 'ALGORITH17_9')
         ENDIF
 C        NUMDDL(15:19)='.NUME'
         CALL GETVID('  ','INTERF_DYNA',1,IARG,0,INTF,IOCI)

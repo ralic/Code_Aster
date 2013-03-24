@@ -1,8 +1,8 @@
-#@ MODIF prepost Messages  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
+#@ MODIF prepost Messages  DATE 19/03/2013   AUTEUR BRIE N.BRIE 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -35,7 +35,7 @@ Attention :
 """),
 
 4 : _(u"""
- méthode  %(k1)s  illicite
+ La méthode  %(k1)s  est illicite
 """),
 
 5 : _(u"""
@@ -61,7 +61,7 @@ Attention :
 """),
 
 14 : _(u"""
- NUME_DDL a été déterminé à partir de la matrice de masse MATR_B.
+ Le NUME_DDL a été déterminé à partir de la matrice de rigidité %(k1)s.
 """),
 
 21 : _(u"""

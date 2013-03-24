@@ -1,4 +1,4 @@
-#@ MODIF algorith17 Messages  DATE 26/02/2013   AUTEUR DESROCHE X.DESROCHES 
+#@ MODIF algorith17 Messages  DATE 19/03/2013   AUTEUR BRIE N.BRIE 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -52,9 +52,14 @@ cata_msg={
 """),
 
 8 : _(u"""
-  Il manque le nume_ddl pour le résultat. Propositions :
-   - renseigner le mot-clé NUME_REF dans DEFI_BASE_MODALE,
-   - utiliser les mots-clés MATR_A et MATR_B dans CREA_RESU.
+  Il manque le nume_ddl dans le concept %(k1)s.
+  Propositions :
+   - Si ce concept est issu de l'opérateur DEFI_BASE_MODALE, renseigner le mot-clé NUME_REF dans DEFI_BASE_MODALE.
+   - Si ce concept est issu de l'opérateur CREA_RESU, utiliser les mots-clés MATR_RIGI et MATR_MASS dans CREA_RESU.
+"""),
+
+9 : _(u"""
+  Il faut renseigner le mot-clé NUME_REF.
 """),
 
 10 : _(u"""

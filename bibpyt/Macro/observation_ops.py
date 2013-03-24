@@ -1,8 +1,8 @@
-#@ MODIF observation_ops Macro  DATE 23/08/2011   AUTEUR DELMAS J.DELMAS 
+#@ MODIF observation_ops Macro  DATE 19/03/2013   AUTEUR BRIE N.BRIE 
 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -26,8 +26,8 @@ def observation_ops(self,
                     MODELE_1     = None,
                     MODELE_2     = None,
                     RESULTAT     = None,
-                    MATR_A       = None,
-                    MATR_B       = None,
+                    MATR_RIGI    = None,
+                    MATR_MASS    = None,
                     MODI_REPERE  = None,
                     NOM_CHAM     = None,
                     FILTRE       = None,
@@ -119,9 +119,9 @@ def observation_ops(self,
                              NOM_PARA='FREQ',);
         afreq  = __freq.EXTR_TABLE().Array('NUME_ORDRE','FREQ')
         # noms des matrices
-        if MATR_A !=None or MATR_B !=None:
+        if MATR_RIGI !=None or MATR_MASS !=None:
             # recherche du nume_ddl associe
-            iret,ibid,nom_nume_ddl = aster.dismoi('F','NOM_NUME_DDL',MATR_A.nom,'MATR_ASSE')
+            iret,ibid,nom_nume_ddl = aster.dismoi('F','NOM_NUME_DDL',MATR_RIGI.nom,'MATR_ASSE')
             NUME_DDL = self.get_concept(nom_nume_ddl)
             # coherence avec le nom associe a MODELE_2 :
             iret,ibid,nom_modele = aster.dismoi('F','NOM_MODELE',nom_nume_ddl,'NUME_DDL')
@@ -688,8 +688,8 @@ def observation_ops(self,
             ## on recopie les matrices associees au MODELE_2 dans le resultat final
             ## NB : ce n'est peut-etre pas propre, car ces matrices ne
             ## veulent plus rien dire si on a filtre des DDL !!!!!
-                argsr = { 'MATR_A' : MATR_A,
-                         'MATR_B' : MATR_B
+                argsr = { 'MATR_RIGI' : MATR_RIGI,
+                         'MATR_MASS' : MATR_MASS
                         }
 
               if isinstance( RESULTAT, evol_elas):

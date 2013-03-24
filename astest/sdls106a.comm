@@ -1,4 +1,4 @@
-# MODIF  DATE 05/03/2013   AUTEUR BRIE N.BRIE 
+# MODIF  DATE 19/03/2013   AUTEUR BRIE N.BRIE 
 # TITRE CALCUL MODAL D'UNE PLAQUE RECTANGULAIRE SIMPLEMENT APPUYEE SUR TOUS SES BORDS
 #
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -36,7 +36,6 @@ DEBUT(CODE=_F(NOM='SDLS106A', NIV_PUB_WEB='INTERNET'),
       DEBUG=_F(SDVERI='OUI'))
 
 #
-
 PRE_IDEAS()
 
 MAILLA=LIRE_MAILLAGE( )
@@ -323,16 +322,15 @@ MODGLO=REST_SOUS_STRUC(   RESU_GENE=RESGEN,
                       TOUT_CHAM='OUI')
 
 #
-MODGLO=NORM_MODE(       reuse=MODGLO,
-                                MODE=MODGLO,
-                               NORME='TRAN_ROTA',
+MODGLO=NORM_MODE( reuse=MODGLO,
+                  MODE=MODGLO,
+                  NORME='TRAN',
+                  MODE_SIGNE=_F( NOEUD = 'NO616',
+                                 NOM_CMP = 'DZ',
+                                 SIGNE = 'POSITIF')
+                )
 
-                              MODE_SIGNE=_F(
-                      NOEUD = 'NO3',
-                      NOM_CMP = 'DZ',
-                      SIGNE = 'POSITIF')
-                       )
-
+#
 MODGLO2=REST_SOUS_STRUC(   RESU_GENE=RESGEN,
                            SOUS_STRUC='CARRE1',
                            TOUT_ORDRE='OUI',
@@ -360,24 +358,14 @@ MODGLBIS=REST_SOUS_STRUC(   SQUELETTE=SQUELBIS,
                             )
 
 MODGLBIS=NORM_MODE( reuse=MODGLBIS, MODE=MODGLBIS,
-                        NORME='TRAN_ROTA',
+                        NORME='TRAN',
 
-                        MODE_SIGNE=_F( NOEUD = 'NO1074',
-                         NOM_CMP = 'DZ',
-                         SIGNE = 'POSITIF')
-                          )
+                        MODE_SIGNE=_F( NOEUD = 'NO616',
+                                       NOM_CMP = 'DZ',
+                                       SIGNE = 'POSITIF')
+                   )
 
-MODGLO=NORM_MODE(       reuse=MODGLO,
-                                MODE=MODGLO,
-                               NORME='TRAN_ROTA',
 
-                              MODE_SIGNE=_F(
-                      NOEUD = 'NO3',
-                      NOM_CMP = 'DZ',
-                      SIGNE = 'POSITIF')
-                       )
-
-#
 #
 # COMPARAISON DE RESULTATS AVEC DES NOEUDS QUI ONT FUSIONNE
 #
@@ -386,7 +374,7 @@ TEST_RESU(RESU=(_F(NUME_MODE=1,
                    NOM_CHAM='DEPL',
                    NOEUD='NO1',
                    NOM_CMP='DZ',
-                   VALE_CALC=0.41435,
+                   VALE_CALC=0.86603,
                    TOLE_MACHINE=1.E-3,
                    CRITERE='RELATIF',
                    ),
@@ -395,7 +383,7 @@ TEST_RESU(RESU=(_F(NUME_MODE=1,
                    NOM_CHAM='DEPL',
                    NOEUD='NO1072',
                    NOM_CMP='DZ',
-                   VALE_CALC=0.41435,
+                   VALE_CALC=0.86603,
                    TOLE_MACHINE=1.E-3,
                    CRITERE='RELATIF',
                    ),
@@ -407,7 +395,7 @@ TEST_RESU(RESU=(_F(NUME_MODE=3,
                    NOM_CHAM='DEPL',
                    NOEUD='NO2',
                    NOM_CMP='DZ',
-                   VALE_CALC=0.17741000000000001,
+                   VALE_CALC=0.74721,
                    TOLE_MACHINE=1.E-3,
                    CRITERE='RELATIF',
                    ),
@@ -416,7 +404,7 @@ TEST_RESU(RESU=(_F(NUME_MODE=3,
                    NOM_CHAM='DEPL',
                    NOEUD='NO1073',
                    NOM_CMP='DZ',
-                   VALE_CALC=0.17741000000000001,
+                   VALE_CALC=0.74721,
                    TOLE_MACHINE=1.E-3,
                    CRITERE='RELATIF',
                    ),
@@ -428,7 +416,7 @@ TEST_RESU(RESU=(_F(NUME_MODE=4,
                    NOM_CHAM='DEPL',
                    NOEUD='NO3',
                    NOM_CMP='DZ',
-                   VALE_CALC=0.19719999999999999,
+                   VALE_CALC=-0.95107,
                    TOLE_MACHINE=1.E-3,
                    CRITERE='RELATIF',
                    ),
@@ -437,7 +425,7 @@ TEST_RESU(RESU=(_F(NUME_MODE=4,
                    NOM_CHAM='DEPL',
                    NOEUD='NO1074',
                    NOM_CMP='DZ',
-                   VALE_CALC=0.19719999999999999,
+                   VALE_CALC=-0.95107,
                    TOLE_MACHINE=1.E-3,
                    CRITERE='RELATIF',
                    ),
@@ -446,7 +434,7 @@ TEST_RESU(RESU=(_F(NUME_MODE=4,
                    NOM_CHAM='DEPL',
                    NOEUD='NO1292',
                    NOM_CMP='DZ',
-                   VALE_CALC=0.1623,
+                   VALE_CALC=-0.78273,
                    TOLE_MACHINE=1.E-3,
                    CRITERE='RELATIF',
                    ),
@@ -455,7 +443,7 @@ TEST_RESU(RESU=(_F(NUME_MODE=4,
                    NOM_CHAM='DEPL',
                    NOEUD='NO1292',
                    NOM_CMP='DZ',
-                   VALE_CALC=0.1623,
+                   VALE_CALC=-0.78273,
                    TOLE_MACHINE=1.E-3,
                    CRITERE='RELATIF',
                    ),
@@ -464,48 +452,281 @@ TEST_RESU(RESU=(_F(NUME_MODE=4,
 
 #
 
+# VALIDATION DES DEFORMEES MODALES
+# AVEC L'OPERATEUR MACR_LIGNE_COUPE, SELON DIFFERENTES LIGNES
+
+from math import pi, sqrt
+a = 2.            # longueur de la plaque
+b = 1.5           # largeur
+h = 0.01          # épaisseur
+E = 2.1e11
+nu = 0.3
+gamma = 7800.*h   # masse surfacique
+
+
+
+# VALEURS DE REFERENCE ANALYTIQUE
+# LES COUPLES [i,j] SONT LE NOMBRE DE DEMI-ONDES LE LONG DU GRAND AXE
+# ET DU PETIT AXE POUR CHAQUE DEFORMEE MODALE (DANS L'ORDRE CROISSANT
+# DES MODES)
+c_ij = [ [1,1], [2,1], [1,2], [3,1], [2,2], [3,2] ]
+
+
+#  - FREQUENCES PROPRES ANALYTIQUES
+f_an = []
+for nm in range(0, len(c_ij)):
+   i = float( c_ij[nm][0] )
+   j = float( c_ij[nm][1] )
+   lambda_2 = pi**2*(i**2 + j**2*(a/b)**2)
+   f_an.append( lambda_2/(2*pi*a**2) * sqrt(E*h**3/(12*gamma*(1-nu**2))) )
+
+
+# RECUPERATION DE LA DEFORMEE DU TROISIEME MODE, SUIVANT TROIS LIGNES DE COUPE
+nb_points = 10
+MLCDIAG3=MACR_LIGN_COUPE( RESULTAT= MODGLO,
+                      NOM_CHAM= 'DEPL',
+                      NUME_MODE= 3,
+                      LIGN_COUPE=   _F( NB_POINTS= nb_points,
+                                         COOR_ORIG= ( -1.5, -0.5 ),
+                                         COOR_EXTR= (  0.5,  1. ), ),)
+
+MLC_X3=MACR_LIGN_COUPE( RESULTAT= MODGLO,
+                      NOM_CHAM= 'DEPL',
+                      NUME_MODE= 3,
+                      LIGN_COUPE=   _F( NB_POINTS= nb_points,
+                                         COOR_ORIG= ( -1.5, 0.25 ),
+                                         COOR_EXTR= (  0.5, 0.25 ), ),)
+
+MLC_Y3=MACR_LIGN_COUPE( RESULTAT= MODGLO,
+                      NOM_CHAM= 'DEPL',
+                      NUME_MODE= 3,
+                      LIGN_COUPE=   _F( NB_POINTS= nb_points,
+                                         COOR_ORIG= ( -0.5, -0.5 ),
+                                         COOR_EXTR= ( -0.5,  1. ), ),)
+
+
+IMPR_TABLE( TABLE=MLCDIAG3 )
+
+IMPR_TABLE( TABLE=MLC_X3 )
+
+IMPR_TABLE( TABLE=MLC_Y3 )
+
+
+
+# LECTURE DES VALEURS DE NON REGRESSION POUR LES TEST_*
+# SUR LES DEFORMEES ET LES FREQUENCES PROPRES
+INCLUDE(UNITE=38)
+
+
+
+# VALIDATION DE LA DEFORMEE DU TROISIEME MODE
+i = float( c_ij[3-1][0] )
+j = float( c_ij[3-1][1] )
+
+for np in range(0,nb_points) :
+   # valeur analytique le long de la diagonale
+   x = float(np) / (nb_points-1) * a
+   y = float(np) / (nb_points-1) * b
+   val_an = - sin(i*pi*x/a) * sin(j*pi*y/b)
+   critere = 'RELATIF'
+   if (val_an < 1.e-12):  # si valeur de référence très petite, il faut tester en absolu
+      critere = 'ABSOLU'
+
+   TEST_TABLE(
+      TABLE=MLCDIAG3,
+      NOM_PARA='DZ',
+      FILTRE=(
+         _F(NOM_PARA='ABSC_CURV', CRIT_COMP='EQ', VALE= sqrt(x**2 + y**2) )
+      ),
+      VALE_CALC=diag3_nonreg[np],
+      VALE_REFE=val_an,
+      REFERENCE='ANALYTIQUE',
+      PRECISION=2.0e-2,
+      CRITERE=critere,
+      )
+
+   # valeur analytique le long de la ligne milieu parallèle à Y
+   x = a / 2.
+   y = float(np) / (nb_points-1) * b
+   val_an = - sin(i*pi*x/a) * sin(j*pi*y/b)
+   critere = 'RELATIF'
+   if (val_an < 1.e-12):  # si valeur de référence très petite, il faut tester en absolu
+      critere = 'ABSOLU'
+
+   TEST_TABLE(
+      TABLE=MLC_Y3,
+      NOM_PARA='DZ',
+      FILTRE=(
+         _F(NOM_PARA='ABSC_CURV', CRIT_COMP='EQ', VALE= y )
+      ),
+      VALE_CALC=y3_nonreg[np],
+      VALE_REFE=val_an,
+      REFERENCE='ANALYTIQUE',
+      PRECISION=1.e-2,
+      CRITERE=critere,
+      )
+
+   # valeur analytique le long de la ligne milieu parallèle à X : 0
+TEST_TABLE(
+      TABLE=MLC_X3,
+      NOM_PARA='DZ',
+      TYPE_TEST='SOMM_ABS',
+      VALE_CALC=x3_nonreg,
+      VALE_REFE=0.,
+      REFERENCE='ANALYTIQUE',
+      CRITERE='ABSOLU',
+      )
+
+
+
+
+# RECUPERATION DE LA DEFORMEE DU QUATRIEME MODE, SUIVANT TROIS LIGNES DE COUPE
+nb_points = 10
+MLCDIAG4=MACR_LIGN_COUPE( RESULTAT= MODGLO,
+                      NOM_CHAM= 'DEPL',
+                      NUME_ORDRE= 4,
+                      LIGN_COUPE=   _F( NB_POINTS= nb_points,
+                                         COOR_ORIG= ( -1.5, -0.5 ),
+                                         COOR_EXTR= (  0.5,  1. ), ),)
+
+MLC_X4=MACR_LIGN_COUPE( RESULTAT= MODGLO,
+                      NOM_CHAM= 'DEPL',
+                      NUME_ORDRE= 4,
+                      LIGN_COUPE=   _F( NB_POINTS= nb_points,
+                                         COOR_ORIG= ( -1.5, 0.25 ),
+                                         COOR_EXTR= (  0.5, 0.25 ), ),)
+
+MLC_Y4=MACR_LIGN_COUPE( RESULTAT= MODGLO,
+                      NOM_CHAM= 'DEPL',
+                      NUME_ORDRE= 4,
+                      LIGN_COUPE=   _F( NB_POINTS= nb_points,
+                                         COOR_ORIG= ( -0.5, -0.5 ),
+                                         COOR_EXTR= ( -0.5,  1. ), ),)
+
+
+IMPR_TABLE( TABLE=MLCDIAG4 )
+
+IMPR_TABLE( TABLE=MLC_X4 )
+
+IMPR_TABLE( TABLE=MLC_Y4 )
+
+
+# VALIDATION DE LA DEFORMEE DU QUATRIEME MODE
+i = c_ij[4-1][0]
+j = c_ij[4-1][1]
+
+for np in range(0,nb_points) :
+   # valeur analytique le long de la diagonale
+   x = float(np) / (nb_points-1) * a
+   y = float(np) / (nb_points-1) * b
+   val_an = sin(i*pi*x/a) * sin(j*pi*y/b)
+   critere = 'RELATIF'
+   if (val_an < 1.e-12):  # si valeur de référence très petite, il faut tester en absolu
+      critere = 'ABSOLU'
+
+   TEST_TABLE(
+      TABLE=MLCDIAG4,
+      NOM_PARA='DZ',
+      FILTRE=(
+         _F(NOM_PARA='ABSC_CURV', CRIT_COMP='EQ', VALE= sqrt(x**2 + y**2) )
+      ),
+      VALE_CALC=diag4_nonreg[np],
+      VALE_REFE=val_an,
+      REFERENCE='ANALYTIQUE',
+      PRECISION=4.e-2,
+      CRITERE=critere,
+      )
+
+   # valeur analytique le long de la ligne milieu parallèle à X
+   x = float(np) / (nb_points-1) * a
+   y = b / 2.
+   val_an = sin(i*pi*x/a) * sin(j*pi*y/b)
+   critere = 'RELATIF'
+   if (val_an < 1.e-12):  # si valeur de référence très petite, il faut tester en absolu
+      critere = 'ABSOLU'
+
+   TEST_TABLE(
+      TABLE=MLC_X4,
+      NOM_PARA='DZ',
+      FILTRE=(
+         _F(NOM_PARA='ABSC_CURV', CRIT_COMP='EQ', VALE= x )
+      ),
+      VALE_CALC=x4_nonreg[np],
+      VALE_REFE=val_an,
+      REFERENCE='ANALYTIQUE',
+      PRECISION=4.e-2,
+      CRITERE=critere,
+      )
+
+
+   # valeur analytique le long de la ligne milieu parallèle à Y
+   x = a / 2.
+   y = float(np) / (nb_points-1) * b
+   val_an = sin(i*pi*x/a) * sin(j*pi*y/b)
+   critere = 'RELATIF'
+   if (val_an < 1.e-12):  # si valeur de référence très petite, il faut tester en absolu
+      critere = 'ABSOLU'
+
+   TEST_TABLE(
+      TABLE=MLC_Y4,
+      NOM_PARA='DZ',
+      FILTRE=(
+         _F(NOM_PARA='ABSC_CURV', CRIT_COMP='EQ', VALE= y )
+      ),
+      VALE_CALC=y4_nonreg[np],
+      VALE_REFE=val_an,
+      REFERENCE='ANALYTIQUE',
+      PRECISION=1.e-2,
+      CRITERE=critere,
+      )
+
+
+
+# VALIDATION DES FREQUENCES PROPRES
 TEST_RESU(RESU=(_F(PARA='FREQ',
                    NUME_MODE=1,
                    REFERENCE='ANALYTIQUE',
                    RESULTAT=MODGLO,
-                   VALE_CALC=17.121008941,
-                   VALE_REFE=17.120000000000001,
+                   VALE_CALC=f_nonreg[0],
+                   VALE_REFE=f_an[0],
                    CRITERE='RELATIF',
-                   PRECISION=0.012500000000000001,),
+                   PRECISION=5.e-3,),
                 _F(PARA='FREQ',
                    NUME_MODE=2,
                    REFERENCE='ANALYTIQUE',
                    RESULTAT=MODGLO,
-                   VALE_CALC=35.587724353,
-                   VALE_REFE=35.609999999999999,
+                   VALE_CALC=f_nonreg[1],
+                   VALE_REFE=f_an[1],
                    CRITERE='RELATIF',
-                   PRECISION=0.012500000000000001,),
+                   PRECISION=5.e-3,),
                 _F(PARA='FREQ',
                    NUME_MODE=3,
                    REFERENCE='ANALYTIQUE',
                    RESULTAT=MODGLO,
-                   VALE_CALC=50.036071157,
-                   VALE_REFE=49.990000000000002,
+                   VALE_CALC=f_nonreg[2],
+                   VALE_REFE=f_an[2],
                    CRITERE='RELATIF',
-                   PRECISION=0.012500000000000001,),
+                   PRECISION=5.e-3,),
                 _F(PARA='FREQ',
                    NUME_MODE=4,
                    REFERENCE='ANALYTIQUE',
                    RESULTAT=MODGLO,
-                   VALE_CALC=66.571895331,
-                   VALE_REFE=66.420000000000002,
+                   VALE_CALC=f_nonreg[3],
+                   VALE_REFE=f_an[3],
                    CRITERE='RELATIF',
-                   PRECISION=0.012500000000000001,),
+                   PRECISION=5.e-3,),
                 _F(PARA='FREQ',
                    NUME_MODE=5,
                    REFERENCE='ANALYTIQUE',
                    RESULTAT=MODGLO,
-                   VALE_CALC=68.359173552,
-                   VALE_REFE=68.480000000000004,
+                   VALE_CALC=f_nonreg[4],
+                   VALE_REFE=f_an[4],
                    CRITERE='RELATIF',
-                   PRECISION=0.012500000000000001,),
+                   PRECISION=5.e-3,),
                 ),
           )
+
+
 
 # ON TESTE DEUX VALEURS DE DEPLACEMENT POUR VALIDER L'OPTION DIAG_MASS DE DEFI_BASE_MODALE
 
@@ -530,12 +751,6 @@ TEST_RESU(RESU=(_F(NUME_MODE=99,
                 ),
           )
 
+
 FIN()
 #
-#
-
-
-
-
-
-

@@ -1,8 +1,8 @@
-#@ MODIF outils_ihm Calc_essai  DATE 06/11/2012   AUTEUR BODEL C.BODEL 
+#@ MODIF outils_ihm Calc_essai  DATE 19/03/2013   AUTEUR BRIE N.BRIE 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -1718,8 +1718,8 @@ class ObservationWindow(Frame):
                                  MODELE_2  = modele.obj,
                                  PROJECTION  = proj,
                                  TOUT_ORDRE  = 'OUI',
-                                 MATR_A = modele.kass,
-                                 MATR_B = modele.mass,
+                                 MATR_RIGI = modele.kass,
+                                 MATR_MASS = modele.mass,
                                  NOM_CHAM = 'DEPL',
                                  FILTRE   = get_filtres(grp_no, grp_ma),
                                  MODI_REPERE = get_chgt_repere(grp_no, grp_ma)

@@ -1,4 +1,4 @@
-# MODIF  DATE 12/02/2013   AUTEUR SELLENET N.SELLENET 
+# MODIF  DATE 19/03/2013   AUTEUR BRIE N.BRIE 
 # TITRE SYSTEME MASSE RESSORT A 8 DEGRES DE LIBERTE T_N
 # sdld02b.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -34,6 +34,11 @@
 DEBUT( CODE=_F(  NOM = 'SDLD02B',NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
 
 MA=LIRE_MAILLAGE( )
+
+MA=DEFI_GROUP(reuse=MA,  MAILLAGE=MA,
+              CREA_GROUP_NO=(_F( NOM = 'GP1', NOEUD = 'P1',),
+                             _F( NOM = 'GP2', NOEUD = 'P2',),)
+              )
 
 MO=AFFE_MODELE(  MAILLAGE=MA,AFFE=(
        _F(  TOUT = 'OUI',    PHENOMENE = 'MECANIQUE',  MODELISATION = 'DIS_T'),
@@ -103,7 +108,7 @@ FREQ=MODE_ITER_SIMULT(   MATR_RIGI=MATASSR,      MATR_MASS=MATASSM,
 
 FREQ=NORM_MODE( reuse=FREQ,    MODE=FREQ,
                       NORME='TRAN_ROTA',
-                    MODE_SIGNE=_F(  NOEUD = 'P2',
+                    MODE_SIGNE=_F(  GROUP_NO = 'GP2',
                                  NOM_CMP = 'DY',
                                  SIGNE = 'POSITIF')   )
 
@@ -907,7 +912,7 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=1,
 
 # ---------------------------------------------------------------------
 
-FREQ=NORM_MODE(reuse=FREQ,   MODE=FREQ,  NOEUD='P1',  NOM_CMP='DX',
+FREQ=NORM_MODE(reuse=FREQ,   MODE=FREQ,  GROUP_NO='GP1',  NOM_CMP='DX',
                      TITRE='NORME NOEUD P1 NOM_CMP DX'  )
 
 #

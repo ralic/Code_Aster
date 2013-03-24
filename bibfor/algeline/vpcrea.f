@@ -5,9 +5,9 @@
       CHARACTER*(*)      MODES,MASSE, AMOR, RAIDE, NUME
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
+C MODIF ALGELINE  DATE 19/03/2013   AUTEUR BRIE N.BRIE 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -28,12 +28,10 @@ C
 C     ------------------------------------------------------------------
 C
       INTEGER       NBVAL, LMODE, IRET, IBID,IMAT(3), I4,I,IER1
-      CHARACTER*8   CBID
-      CHARACTER*16  NOMCMD
       CHARACTER*14  NUME2, NUMAT(3)
       CHARACTER*19  NUMDDL,NUMTMP, NOMAT(3)
-      CHARACTER*24   REFD
-      CHARACTER*24 VALK(4)
+      CHARACTER*24  REFD
+      CHARACTER*24  VALK(4)
 C     ------------------------------------------------------------------
 C-----------------------------------------------------------------------
 C-----------------------------------------------------------------------
@@ -102,7 +100,6 @@ C On remplie les champs relatifs aux matrices assemblees
          IF ( ZK24(LMODE+1) .NE. MASSE  ) IER = IER + 1
          IF ( ZK24(LMODE+2) .NE. AMOR     ) IER = IER + 1
          IF ( IER.NE.0 ) THEN
-           CALL GETRES(CBID,CBID,NOMCMD)
            IF ( ZK24(LMODE+2)(1:8) .NE. ' ' ) THEN
                VALK(1) = REFD(1:8)
                VALK(2) = ZK24(LMODE)(1:8)

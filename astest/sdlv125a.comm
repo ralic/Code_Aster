@@ -1,9 +1,9 @@
-# MODIF  DATE 26/11/2012   AUTEUR ALARCON A.ALARCON 
+# MODIF  DATE 19/03/2013   AUTEUR BRIE N.BRIE 
 # TITRE CREATION D'UNE SD RESULTAT A PARTIR DE MESURES AVEC OBSERVATION
 # sdlv125a.para = tps_job 520 mem_job 512Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -219,8 +219,8 @@ MODEIDE1 = OBSERVATION( INFO = 1,
                         MODELE_2 = MODELEXP,
                         PROJECTION = 'OUI',
                         TOUT_ORDRE = 'OUI',
-                        MATR_A   = KASSEXP,
-                        MATR_B   = MASSEXP,
+                        MATR_RIGI   = KASSEXP,
+                        MATR_MASS   = MASSEXP,
                         NOM_CHAM = 'DEPL',
                         MODI_REPERE = (
                                        _F( GROUP_NO = 'GPSUPRED',
@@ -260,8 +260,8 @@ MODEIDE2 = LIRE_RESU( TYPE_RESU = 'MODE_MECA',
                       MODELE    = MODELEXP,
                       UNITE     = 31,
                       NOM_CHAM  = ('DEPL','VITE','EPSI_NOEU',),
-                      MATR_A    = KASSEXP,
-                      MATR_B    = MASSEXP,
+                      MATR_RIGI    = KASSEXP,
+                      MATR_MASS    = MASSEXP,
                       FORMAT_IDEAS =( _F( NOM_CHAM       = 'DEPL',
                                          NUME_DATASET   = 55,
                                      #    RECORD_6       = (1,2,3,8,2,6,),
@@ -371,8 +371,8 @@ MODEACT = OBSERVATION( INFO = 1,
                        MODELE_2 = MODELACT,
                        PROJECTION = 'OUI',
                        TOUT_ORDRE = 'OUI',
-                       MATR_A = KASSACT,
-                       MATR_B = MASSACT,
+                       MATR_RIGI = KASSACT,
+                       MATR_MASS = MASSACT,
                        NOM_CHAM = 'DEPL',
                        FILTRE = (
                                   _F( GROUP_NO = 'N2',

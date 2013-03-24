@@ -1,8 +1,8 @@
-#@ MODIF calcessai0 Messages  DATE 31/10/2011   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF calcessai0 Messages  DATE 19/03/2013   AUTEUR BRIE N.BRIE 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -21,45 +21,56 @@
 # RESPONSABLE BODEL C.BODEL
 
 cata_msg={
+
 1: _(u"""
 Le modèle mesuré doit être un concept de type DYNA_HARMO ou MODE_MECA.
 """),
+
 3: _(u"""
 Calcul de MAC impossible : bases incompatibles.
 """),
+
 4: _(u"""
 Problème inverse impossible : problème de cohérence entre les données.
 """),
+
 5: _(u"""
 Problème de NUME_DDL dans MACRO_EXPANS : il est possible de le préciser
 a l'appel de la macro-commande. Conséquence : erreur fatale possible dans les
 opérations ultérieures (notamment l'opérateur MAC_MODE)
 """),
+
 6: _(u"""
 Si vous n'avez pas sélectionné de NUME_ORDRE ou de NUME_MODE dans %(k1)s.
 Il ne faut pas déclarer de concept en sortie de type %(k2)s.
 Cela risque de causer une erreur fatale par la suite.
 """),
+
 7: _(u"""
 Erreur dans MACRO_EXPANS
 """),
+
 8: _(u"""
 Impossible de trouver le modèle associe a la base de modes %(k1)s.
 Cela peut empêcher certains calculs de se dérouler normalement.
 """),
+
 9: _(u"""
-Les mots-clés MATR_A et MATR_B n'ont pas été renseignés dans OBSERVATION.
-Cela peut s'avérer indispensable pour la suite des calculs (les calculs
-d'expansion et de MAC ne seront pas possibles).
+Les mots-clés MATR_RIGI et MATR_MASS n'ont pas été renseignés dans OBSERVATION.
+Sans ces matrices, certains calculs (par exemple : calcul d'expansion, de MAC, etc.)
+ne seront pas possibles.
 """),
+
 10: _(u"""
-Le modèle associé aux matrices MATR_A et MATR_B doit être le même que MODELE_2.
+Le modèle associé aux matrices MATR_RIGI et MATR_MASS doit être le même que MODELE_2.
 """),
+
 13: _(u"""
 Le résultat expérimental est un DYNA_HARMO : il n'est pas possible d'en extraire
 des numéros d'ordre avec MACRO_EXPANS. Le mots-clés NUME_MODE et NUME_ORDRE
 sont ignorés.
 """),
+
 14: _(u"""
 Erreur dans le calcul de MAC : le NUME_DDL associé à la base %(k1)s
 n'existe pas. Si cette base a été créée avec PROJ_CHAMP, ne pas oublier

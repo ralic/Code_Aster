@@ -1,10 +1,10 @@
-# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
+# MODIF  DATE 19/03/2013   AUTEUR BRIE N.BRIE 
 
 # TITRE  :  VALIDATION DES ELEMENTS BARRES EN DYNAMIQUE
 # sdll146a.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -269,8 +269,8 @@ __DZ = CREA_CHAMP(OPERATION = 'AFFE',
 MODES_RG = CREA_RESU(OPERATION ='AFFE',
                     TYPE_RESU  = 'MODE_MECA',
                     NOM_CHAM   = 'DEPL',
-        MATR_A  = KASS,
-        MATR_B  = MASS,
+        MATR_RIGI  = KASS,
+        MATR_MASS  = MASS,
         AFFE = (_F(CHAM_GD = __DX,
                   MODELE = MODEL,
                   CHAM_MATER = CHMAT,
@@ -312,8 +312,8 @@ mr_py = __MR.EXTR_MATR_GENE()
 MOD_RG_D = CREA_RESU(OPERATION ='AFFE',
                     TYPE_RESU  = 'MODE_MECA',
                     NOM_CHAM   = 'DEPL',
-        MATR_A  = KASS,
-        MATR_B  = MASS_DIA,
+        MATR_RIGI  = KASS,
+        MATR_MASS  = MASS_DIA,
         AFFE = (_F(CHAM_GD = __DX,
                   MODELE = MODEL,
                   CHAM_MATER = CHMAT,

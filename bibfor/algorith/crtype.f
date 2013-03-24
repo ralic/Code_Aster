@@ -3,7 +3,7 @@
 C TOLE CRP_20
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 14/01/2013   AUTEUR FLEJOU J-L.FLEJOU 
+C MODIF ALGORITH  DATE 19/03/2013   AUTEUR BRIE N.BRIE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -501,14 +501,14 @@ C     REMPLISSAGE DE .REFD POUR LES MODE_MECA  ET DYNA_*:
          ELSE
             CALL JEVEUO(RESU19//'.REFD','E',JREFD)
          ENDIF
-         CALL GETVID(' ','MATR_A',0,IARG,1,MATR,N1)
+         CALL GETVID(' ','MATR_RIGI',0,IARG,1,MATR,N1)
          IF (N1.EQ.1) THEN
             ZK24(JREFD-1+1)=MATR
             CALL DISMOI('F','NOM_NUME_DDL',MATR,'MATR_ASSE',IBID,
      &                  NUMEDD,IER)
             ZK24(JREFD-1+4)=NUMEDD
          ENDIF
-         CALL GETVID(' ','MATR_B',0,IARG,1,MATR,N1)
+         CALL GETVID(' ','MATR_MASS',0,IARG,1,MATR,N1)
          IF (N1.EQ.1) ZK24(JREFD-1+2)=MATR
       ENDIF
 C

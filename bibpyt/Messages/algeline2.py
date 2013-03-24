@@ -1,4 +1,4 @@
-#@ MODIF algeline2 Messages  DATE 14/01/2013   AUTEUR BRIE N.BRIE 
+#@ MODIF algeline2 Messages  DATE 19/03/2013   AUTEUR BRIE N.BRIE 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -371,7 +371,7 @@ cata_msg = {
 """),
 
 79 : _(u"""
- Les NUME_DDL associés aux matrices MATR_A et MATR_B sont différents.
+ Les NUME_DDL associés aux matrices MATR_RIGI et MATR_MASS sont différents.
 """),
 
 80 : _(u"""

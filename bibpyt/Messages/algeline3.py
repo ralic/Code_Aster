@@ -1,4 +1,4 @@
-#@ MODIF algeline3 Messages  DATE 14/01/2013   AUTEUR BRIE N.BRIE 
+#@ MODIF algeline3 Messages  DATE 19/03/2013   AUTEUR BRIE N.BRIE 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -288,17 +288,17 @@ La matrice : %(k1)s a une numérotation incohérente avec le NUME_DDL.
 """),
 
 61: _(u"""
-Le concept MODE "%(k1)s" a été créé avec les matrices
- MATR_A:  %(k2)s
- MATR_B:  %(k3)s
- MATR_C:  %(k4)s
+Le concept "%(k1)s" a été créé avec les matrices
+ MATR_RIGI (ou MATR_A) :                   %(k2)s
+ MATR_MASS (ou MATR_RIGI_GEOM ou MATR_B) : %(k3)s
+ MATR_AMOR (ou MATR_C) :                   %(k4)s
  et non avec celles passées en arguments.
 """),
 
 62: _(u"""
-Le concept MODE "%(k1)s" a été créé avec les matrices
- MATR_A:  %(k2)s
- MATR_B:  %(k3)s
+Le concept "%(k1)s" a été créé avec les matrices
+ MATR_RIGI (ou MATR_A) :                   %(k2)s
+ MATR_MASS (ou MATR_RIGI_GEOM ou MATR_B) : %(k3)s
  et non avec celles passées en arguments.
 """),
 

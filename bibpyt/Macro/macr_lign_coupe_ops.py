@@ -1,8 +1,8 @@
-#@ MODIF macr_lign_coupe_ops Macro  DATE 19/11/2012   AUTEUR DURAND C.DURAND 
+#@ MODIF macr_lign_coupe_ops Macro  DATE 19/03/2013   AUTEUR BRIE N.BRIE 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -641,6 +641,8 @@ def macr_lign_coupe_ops(self,RESULTAT,CHAM_GD,UNITE_MAILLAGE,LIGN_COUPE,
 
   mcORDR={}
 
+  l_mode_meca_sans_modele = False
+
   if RESULTAT != None:
     if args['NUME_ORDRE'] != None :
       mcORDR['NUME_ORDRE']=args['NUME_ORDRE']
@@ -658,12 +660,19 @@ def macr_lign_coupe_ops(self,RESULTAT,CHAM_GD,UNITE_MAILLAGE,LIGN_COUPE,
       mcORDR['TOUT_ORDRE']='OUI'
 
     nomresu=RESULTAT.nom
+    type_resu = AsType(RESULTAT).__name__
     iret,ibid,n_modele = aster.dismoi('F','MODELE',nomresu,'RESULTAT')
     n_modele=n_modele.strip()
     if n_modele in ('', '#AUCUN'):
-      if MODELE == None:
-        UTMESS('F','POST0_9',valk=nomresu)
-      else : n_modele=MODELE.nom
+       if MODELE == None:
+          if (type_resu != 'mode_meca'):  UTMESS('F','POST0_9',valk=nomresu)
+          # si le résultat en entrée est un mode_meca et qu'il ne contient pas de modèle (il est obtenu par sous-structuration, par exemple)
+          # on passe le message fatal et on récupérera directement le maillage (ou squelette)
+          else :
+             l_mode_meca_sans_modele = True
+             UTMESS('I','POST0_23',valk=nomresu)
+       else : n_modele=MODELE.nom
+    iret,ibid,l_mailla = aster.dismoi('F','NOM_MAILLA',nomresu,'RESULTAT')
 
   elif CHAM_GD != None:
     mcORDR['TOUT_ORDRE']='OUI'
@@ -693,8 +702,10 @@ def macr_lign_coupe_ops(self,RESULTAT,CHAM_GD,UNITE_MAILLAGE,LIGN_COUPE,
                        NOM_CHAM=NOM_CHAM, TYPE_RESU=TYPE_RESU,
                        AFFE=_F(CHAM_GD=CHAM_GD,INST=0.),)
     RESULTAT=__resuch
-  l_mailla=aster.getvectjev(n_modele.ljust(8)+'.MODELE    .LGRF')
-  n_mailla=l_mailla[0].strip()
+    iret,ibid,l_mailla = aster.dismoi('F','NOM_MAILLA',n_cham,'CHAMP')
+
+  # Maillage sur lequel s'appuie le résultat à projeter
+  n_mailla=l_mailla.strip()
   # le maillage est-il 2D ou 3D ?
   iret,dime,kbid = aster.dismoi('F','DIM_GEOM',n_mailla,'MAILLAGE')
   collgrma=aster.getcolljev(n_mailla.ljust(8)+'.GROUPEMA')
@@ -823,19 +834,36 @@ def macr_lign_coupe_ops(self,RESULTAT,CHAM_GD,UNITE_MAILLAGE,LIGN_COUPE,
       elif v['MAILLE_1']!=None:
          motscles['VIS_A_VIS'].append(_F(MAILLE_1 = v['MAILLE_1'],TOUT_2='OUI'),)
 
-  if n_modele in self.get_global_contexte().keys() : MODELE_1=self.get_global_contexte()[n_modele]
-  else                                             : MODELE_1=self.jdc.current_context[n_modele]
-
 
   if NOM_CHAM[5:9]=='ELGA' : UTMESS('F','POST0_18',valk=[NOM_CHAM,])
 
-  __recou=PROJ_CHAMP(METHODE='COLLOCATION',
-                     RESULTAT=RESULTAT,
-                     MODELE_1=MODELE_1,
-                     DISTANCE_MAX=m['DISTANCE_MAX'],
-                     MODELE_2=__mocou,
-                     TYPE_CHAM='NOEU',
-                     NOM_CHAM=NOM_CHAM, **motscles);
+
+  if ( l_mode_meca_sans_modele == False ) :
+     # on utilise le modèle pour projeter le champ
+     if n_modele in self.get_global_contexte().keys() : MODELE_1=self.get_global_contexte()[n_modele]
+     else                                             : MODELE_1=self.jdc.current_context[n_modele]
+
+     __recou=PROJ_CHAMP(METHODE='COLLOCATION',
+                        RESULTAT=RESULTAT,
+                        MODELE_1=MODELE_1,
+                        DISTANCE_MAX=m['DISTANCE_MAX'],
+                        MODELE_2=__mocou,
+                        TYPE_CHAM='NOEU',
+                        NOM_CHAM=NOM_CHAM, **motscles);
+
+
+  else :
+     # on utilise directement le maillage (ou squelette) pour projeter le champ
+     if n_mailla in self.get_global_contexte().keys() : MAILLAGE_1=self.get_global_contexte()[n_mailla]
+     else                                             : MAILLAGE_1=self.jdc.current_context[n_mailla]
+
+     __recou=PROJ_CHAMP(METHODE='COLLOCATION',
+                        RESULTAT=RESULTAT,
+                        MAILLAGE_1=MAILLAGE_1,
+                        DISTANCE_MAX=m['DISTANCE_MAX'],
+                        MODELE_2=__mocou,
+                        TYPE_CHAM='NOEU',
+                        NOM_CHAM=NOM_CHAM, **motscles);
 
   __remodr=__recou
   icham=0

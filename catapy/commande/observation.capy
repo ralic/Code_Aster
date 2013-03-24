@@ -1,7 +1,7 @@
-#& MODIF COMMANDE  DATE 28/06/2011   AUTEUR COURTOIS M.COURTOIS 
+#& MODIF COMMANDE  DATE 19/03/2013   AUTEUR BRIE N.BRIE 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -70,8 +70,8 @@ OBSERVATION=MACRO(nom="OBSERVATION",
 #                fr="Si le résultat est un mode_xxx ou une base_xxx, on peut prolonger"
 #                   +" les champs par zéro la ou la projection ne donne pas de valeurs."),
 
-         MATR_A          =SIMP(statut='f',typ=(matr_asse_depl_r) ),
-         MATR_B          =SIMP(statut='f',typ=(matr_asse_depl_r) ),
+         MATR_RIGI       =SIMP(statut='f',typ=(matr_asse_depl_r) ),
+         MATR_MASS       =SIMP(statut='f',typ=(matr_asse_depl_r) ),
          VIS_A_VIS       =FACT(statut='f',max='**',
              regles=(AU_MOINS_UN('TOUT_1','GROUP_MA_1','MAILLE_1','GROUP_NO_1','NOEUD_1'),
                      AU_MOINS_UN('TOUT_2','GROUP_MA_2','MAILLE_2','GROUP_NO_2','NOEUD_2'),),

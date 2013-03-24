@@ -1,8 +1,8 @@
-#@ MODIF post0 Messages  DATE 30/01/2012   AUTEUR BOTTONI M.BOTTONI 
+#@ MODIF post0 Messages  DATE 19/03/2013   AUTEUR BRIE N.BRIE 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -117,6 +117,11 @@ Le point à l'occurrence %(i1)d n a que 3 coordonnées. Pour le calcul
 des déformations on doit rentrer une position dans l'épaisseur.
 """),
 
+23: _(u"""
+Le concept résultat %(k1)s ne contient pas de modèle.
+On ne pourra donc pas projeter de champs aux éléments (champs de contraintes, etc.).
+Pour projeter des champs aux noeuds, on utilisera directement le maillage. 
+"""),
 
 24: _(u"""
 Attention la ligne de coupe %(i1)d traverse des zones sans matière :
