@@ -2,7 +2,7 @@
      &                  LPAOU,BASE,MPIC)
       IMPLICIT NONE
 
-C MODIF CALCULEL  DATE 26/02/2013   AUTEUR BOITEAU O.BOITEAU 
+C MODIF CALCULEL  DATE 19/03/2013   AUTEUR ASSIRE A.ASSIRE 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -443,9 +443,15 @@ C                    TOUT (C'EST DEJA ASSEZ COMPLIQUE COMME CELA !)
                 IF (.NOT.LDGREL) THEN
 C                 - LIGREL DE MODELE, ON TAGUE EN SE BASANT SUR
 C                   PARTIT//'.NUPROC.MAILLE'
-                  IF (((IMA.LT.0).AND.(RANG.EQ.0)) .OR.
-     &              ((IMA.GT.0).AND.(ZI(JNUMSD-1+IMA).EQ.RANG)))
-     &              ZL(JPARAL-1+IEL)=.TRUE.
+                  IF (IMA.LT.0) THEN
+                     IF(RANG.EQ.0) THEN
+                        ZL(JPARAL-1+IEL)=.TRUE.
+                     ENDIF
+                  ELSEIF (IMA.GT.0) THEN
+                     IF(ZI(JNUMSD-1+IMA).EQ.RANG) THEN
+                        ZL(JPARAL-1+IEL)=.TRUE.
+                     ENDIF
+                  ENDIF
                 ELSE
 C                 -- SI LDGREL, ON EST SUR LE BON PROC :
                   ZL(JPARAL-1+IEL)=.TRUE.
