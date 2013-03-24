@@ -1,8 +1,8 @@
       SUBROUTINE JELIBZ ( CLAS )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF JEVEUX  DATE 13/11/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF JEVEUX  DATE 18/03/2013   AUTEUR LEFEBVRE J-P.LEFEBVRE 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -46,6 +46,11 @@ C
      +                 DN2(N)
       INTEGER          NRHCOD    , NREMAX    , NREUTI
       COMMON /ICODJE/  NRHCOD(N) , NREMAX(N) , NREUTI(N)
+      INTEGER          ICLAS ,ICLAOS , ICLACO , IDATOS , IDATCO , IDATOC
+      COMMON /IATCJE/  ICLAS ,ICLAOS , ICLACO , IDATOS , IDATCO , IDATOC
+      CHARACTER *24                     NOMCO
+      CHARACTER *32    NOMUTI , NOMOS ,         NOMOC , BL32
+      COMMON /NOMCJE/  NOMUTI , NOMOS , NOMCO , NOMOC , BL32
       INTEGER        IVNMAX               , IDIADM     ,
      +               IDMARQ                ,
      +                 IDNUM
@@ -54,11 +59,13 @@ C
      +                 IDNUM  = 10 )
 C ----------------------------------------------------------------------
       INTEGER          NCLA1,NCLA2,IBACOL,IBMARQ,IC,ID,IRET,IX
-      INTEGER          J,K,MARQI
-      CHARACTER*32     CRNOM
+      INTEGER          J,K,MARQI,ICLASI
+      CHARACTER*32     CRNOM, D32
       CHARACTER*1      KCLAS
+      DATA             D32 /'$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$'/
 C DEB ------------------------------------------------------------------
       KCLAS  = CLAS
+      ICLASI = ICLAS
       IF ( KCLAS .EQ. ' ' ) THEN
          NCLA1 = 1
          NCLA2 = INDEX ( CLASSE , '$' ) - 1
@@ -72,8 +79,16 @@ C DEB ------------------------------------------------------------------
           CRNOM = RNOM(JRNOM(IC)+J)
           IF ( CRNOM(1:1) .EQ. '?' .OR.
      &         CRNOM(25:26) .EQ. '$$' ) GOTO 150
-          CALL JJCREN ( CRNOM , 0 , IRET )
+C          CALL JJCREN ( CRNOM , 0 , IRET )
           IF ( GENR(JGENR(IC)+J) .EQ. 'X' ) THEN
+             ICLAS = IC
+             ICLACO = IC
+             IDATCO = J
+             NOMCO = CRNOM
+             NOMOC = D32
+             IF ( ICLASI .NE. ICLACO ) THEN
+                NOMOS = D32
+             ENDIF
              IBACOL = IADM(JIADM(IC)+2*J-1)
              IF ( IBACOL .EQ. 0 ) GOTO 150
              ID = ISZON(JISZON + IBACOL + IDIADM)
@@ -110,6 +125,14 @@ C
 C
 C --------- OBJET SIMPLE
 C
+             ICLAS = IC
+             ICLAOS = IC
+             IDATOS = J
+             NOMOS = CRNOM
+             IF ( ICLASI .NE. ICLAOS ) THEN
+               NOMCO = D32
+               NOMOC = D32
+             ENDIF
              MARQI = IMARQ(JMARQ(IC)+2*J-1)
              IF ( MARQI .EQ. -1 ) THEN
                CALL JJLIDE ( 'JELIBZ' , CRNOM , 1 )
