@@ -1,6 +1,7 @@
-      SUBROUTINE NIINIT(NOMTE,TYPMOD,NDIM,NNO1,NNO2,NNO3,VU,VG,VP)
+      SUBROUTINE NIINIT(NOMTE,TYPMOD,NDIM,NNO1,NNO2,NNO3,NNO4,VU,VG,VP,
+     &                  VPI)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 19/02/2013   AUTEUR SFAYOLLE S.FAYOLLE 
+C MODIF ALGORITH  DATE 18/03/2013   AUTEUR SFAYOLLE S.FAYOLLE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -20,8 +21,8 @@ C ======================================================================
 C RESPONSABLE SFAYOLLE S.FAYOLLE
       IMPLICIT NONE
 
-      INTEGER      NDIM,NNO1,NNO2,NNO3
-      INTEGER      VU(3,27),VG(27),VP(27),IRET,IEFM
+      INTEGER      NDIM,NNO1,NNO2,NNO3,NNO4
+      INTEGER      VU(3,27),VG(27),VP(27),VPI(3,27),IRET,IEFM
       CHARACTER*8  TYPMOD(*)
       CHARACTER*16 NOMTE,ALIAS
 C ----------------------------------------------------------------------
@@ -33,17 +34,21 @@ C IN  NDIM      DIMENSION DE L'ESPACE
 C IN  NNO1      NOMBRE DE NOEUDS POUR L'ELEMENT PORTANT LES DEPLACEMENTS
 C IN  NNO2      NOMBRE DE NOEUDS POUR L'ELEMENT PORTANT LES GONFELEMENTS
 C IN  NNO3      NOMBRE DE NOEUDS POUR L'ELEMENT PORTANT LES PRESSIONS
+C IN  NNO4      NOMBRE DE NOEUDS POUR L'ELEMENT PORTANT LES GRADIENTS DE
+C               PRESSIONS
 C OUT VU      : TABLEAU DES INDICES DES DDL DE DEPLACEMENTS
 C OUT VG      : TABLEAU DES INDICES DES DDL DE GONFELEMENTS
 C OUT VP      : TABLEAU DES INDICES DES DDL DE PRESSION
+C OUT VPI     : TABLEAU DES INDICES DES DDL DE GRADIENTS DE PRESSION
 C LOC IEFM : INDENTIFIANT DE L ELEMENT FINI MIXTE : 1 = P2-P1-P1
 C                                                   2 = P2-P1-P2
 C                                                   3 = P2-P0-P0
 C                                                   4 = P2-P1-CR
 C                                                   5 = P2-P2-P2
 C                                                   6 = P1-P1-P1
-C                                                   7 = P2-P1
-C                                                   8 = P1+-P1
+C                                                   7 = P1+-P1
+C                                                   8 = P2-P1
+C                                                   9 = P1 OSGS-P1
 C
 C RM : POUR L INSTANT ON NE TRAITE QUE LES ELEMENTS P2-P1-P1 ET P2-P1-P2
 C      A TERME IL FAUDRA ACTER DE L ELEMENT LE PLUS EFFICACE
@@ -94,13 +99,18 @@ C       3D-P2.P1.CR
 C        IF (ALIAS(6:8).EQ.'T14')  IEFM = 4
         ENDIF
       ELSE
+        IF(NNO4 .EQ. 0) THEN
 C       ON EST DANS LE CAS DES FORMULATIONS A 2 CHAMPS
-        IF(NNO1 .EQ. NNO3) THEN
+          IF(NNO1 .EQ. NNO3) THEN
 C       P1+.P1
-          IEFM = 7
-        ELSE
+            IEFM = 7
+          ELSE
 C       P2.P1
-          IEFM = 8
+            IEFM = 8
+          ENDIF
+        ELSE
+C       P1 OSGS.P1
+          IEFM = 9
         ENDIF
       ENDIF
 
@@ -191,6 +201,18 @@ C       3D-P2.P1
             VU(2,N+NNO3) = 2 + (N-1)*3 + OS
             VU(3,N+NNO3) = 3 + (N-1)*3 + OS
  210       CONTINUE
+          GOTO 1000
+        ELSEIF (IEFM .EQ. 9) THEN
+C       3D-P1 OSGS.P1
+          DO 250 N = 1,NNO1
+            VU(1,N)  = 1 + (N-1)*7
+            VU(2,N)  = 2 + (N-1)*7
+            VU(3,N)  = 3 + (N-1)*7
+            VP(N)    = 4 + (N-1)*7
+            VPI(1,N) = 5 + (N-1)*7
+            VPI(2,N) = 6 + (N-1)*7
+            VPI(3,N) = 7 + (N-1)*7
+ 250      CONTINUE
           GOTO 1000
         END IF
       ELSEIF(NDIM .EQ. 2)THEN
@@ -283,6 +305,18 @@ C       2D-P2.P1
             VU(2,N+NNO3) = 2 + (N-1)*2 + OS
             VU(3,N+NNO3) = 0
  240       CONTINUE
+          GOTO 1000
+        ELSEIF (IEFM .EQ. 9) THEN
+C       2D-P1 OSGS.P1
+          DO 260 N = 1,NNO1
+            VU(1,N) = 1 + (N-1)*5
+            VU(2,N) = 2 + (N-1)*5
+            VU(3,N) = 0
+            VP(N)   = 3 + (N-1)*5
+            VPI(1,N) = 4 + (N-1)*5
+            VPI(2,N) = 5 + (N-1)*5
+            VPI(3,N) = 0
+ 260      CONTINUE
           GOTO 1000
         END IF
       ENDIF

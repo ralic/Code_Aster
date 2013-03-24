@@ -1,6 +1,6 @@
       SUBROUTINE CALKCE(NNO,NDIM,KBP,KBB,PM,DP,KCE,RCE)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 19/02/2013   AUTEUR SFAYOLLE S.FAYOLLE 
+C MODIF ALGORITH  DATE 18/03/2013   AUTEUR SFAYOLLE S.FAYOLLE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -21,29 +21,27 @@ C RESPONSABLE SFAYOLLE S.FAYOLLE
 C TOLE CRS_1404
       IMPLICIT NONE
 
-      INTEGER NNO, NDIM
-
-      REAL*8 KBP(NDIM,NNO), KBB(NDIM,NDIM), RCE(NNO)
-      REAL*8 KCE(NNO,NNO), PM(NNO), DP(NNO)
-
-C......................................................................
-C     BUT:  CALCUL  DE LA MATRICE CE POUR LA CONDENSATION STATIQUE
-C           ET DU PRODUIT CEP
-C......................................................................
+      INTEGER      NNO,NDIM
+      REAL*8       KBP(NDIM,NNO),KBB(NDIM,NDIM),RCE(NNO)
+      REAL*8       KCE(NNO,NNO),PM(NNO),DP(NNO)
+C-----------------------------------------------------------------------
+C          CALCUL DE LA MATRICE CE POUR LA CONDENSATION STATIQUE
+C          ET DU PRODUIT CEP
+C-----------------------------------------------------------------------
 C IN  NNO     : NOMBRE DE NOEUDS DE L'ELEMENT
 C IN  NDIM    : DIMENSION DE L'ESPACE 
 C IN  KBP     : DISTANCE DU POINT DE GAUSS A L'AXE (EN AXISYMETRIQUE)
 C IN  KBB     : COORDONEES DES NOEUDS
 C IN  PM      : P A L'INSTANT PRECEDENT
 C IN  DP      : INCREMENT POUR P
-C OUT  CE     : MATRICE DE CONDENSATION STATIQUE
-C OUT  RCE    : PRODUIT MATRICE DE CONDENSATION-PRESSION
-C......................................................................
+C OUT CE      : MATRICE DE CONDENSATION STATIQUE
+C OUT RCE     : PRODUIT MATRICE DE CONDENSATION-PRESSION
+C-----------------------------------------------------------------------
 
-      INTEGER I
-
-      REAL*8 KPB(NNO,NDIM),KBBI(NDIM,NDIM)
-      REAL*8 DET,PP(NNO,1),PROD(NDIM,NNO)
+      INTEGER      I
+      REAL*8       KPB(NNO,NDIM),KBBI(NDIM,NDIM)
+      REAL*8       DET,PP(NNO,1),PROD(NDIM,NNO)
+C-----------------------------------------------------------------------
 
       CALL R8INIR(NNO*NNO,0.D0,KCE,1)
       CALL R8INIR(NNO,0.D0,RCE,1)

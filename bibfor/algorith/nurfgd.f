@@ -1,4 +1,4 @@
-      SUBROUTINE NURFPD(NDIM,NNO1,NNO2,NPG,IW,VFF1,VFF2,IDFF1,
+      SUBROUTINE NURFGD(NDIM,NNO1,NNO2,NPG,IW,VFF1,VFF2,IDFF1,
      &                  VU,VP,TYPMOD,GEOMI,SIGREF,EPSREF,VECT)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C MODIF ALGORITH  DATE 18/03/2013   AUTEUR SFAYOLLE S.FAYOLLE 
@@ -32,7 +32,7 @@ C RESPONSABLE SFAYOLLE S.FAYOLLE
 
 C-----------------------------------------------------------------------
 C          CALCUL DE REFE_FORC_NODA POUR LES ELEMENTS
-C          INCOMPRESSIBLES POUR LES PETITES DEFORMATIONS
+C          INCOMPRESSIBLES POUR LES GRANDES DEFORMATIONS
 C          3D/D_PLAN/AXIS
 C          ROUTINE APPELEE PAR TE0598
 C-----------------------------------------------------------------------
@@ -54,71 +54,43 @@ C OUT VECT    : REFE_FORC_NODA
 C-----------------------------------------------------------------------
 
       LOGICAL      AXI
-      INTEGER      NDDL,G
-      INTEGER      KL,SA,NA,IA,KK
-      INTEGER      NDIMSI
-      REAL*8       R,W,SIGMA(6)
-      REAL*8       RAC2
-      REAL*8       F(3,3)
-      REAL*8       DEF(2*NDIM,NNO1,NDIM)
-      REAL*8       DDOT,T1,DFF1(NNO1,4)
+      INTEGER      NDDL,NDU,G
+      INTEGER      KL,SA,RA,NA,IA,JA,KK
+      INTEGER      NDIMSI,VIJ(3,3),LIJ(3,3)
+      REAL*8       R,W,TAU(6)
+      REAL*8       T1,DFF1(NNO1,4)
 
-      DATA         F    / 1.D0, 0.D0, 0.D0,
-     &                    0.D0, 1.D0, 0.D0,
-     &                    0.D0, 0.D0, 1.D0 /
+      DATA         VIJ  / 1, 4, 5,
+     &                    4, 2, 6,
+     &                    5, 6, 3 /
 C-----------------------------------------------------------------------
 
 C - INITIALISATION
 
       AXI  = TYPMOD(1).EQ.'AXIS'
       NDDL = NNO1*NDIM + NNO2
-      RAC2  = SQRT(2.D0)
-      NDIMSI = 2*NDIM
+      NDU  = NDIM
+      IF (AXI) NDU = 3
+      NDIMSI = 2*NDU
 
       CALL R8INIR(NDDL,0.D0,VECT,1)
 
       DO 1000 G = 1,NPG
 
         CALL DFDMIP(NDIM,NNO1,AXI,GEOMI,G,IW,VFF1(1,G),IDFF1,R,W,DFF1)
-
-C - CALCUL DE LA MATRICE B EPS_ij=B_ijkl U_kl
-        IF (NDIM.EQ.2) THEN
-          DO 35 NA=1,NNO1
-            DO 45 IA=1,NDIM
-              DEF(1,NA,IA)= F(IA,1)*DFF1(NA,1)
-              DEF(2,NA,IA)= F(IA,2)*DFF1(NA,2)
-              DEF(3,NA,IA)= 0.D0
-              DEF(4,NA,IA)=(F(IA,1)*DFF1(NA,2)+F(IA,2)*DFF1(NA,1))/RAC2
- 45         CONTINUE
- 35       CONTINUE
-        ELSE
-          DO 36 NA=1,NNO1
-            DO 46 IA=1,NDIM
-              DEF(1,NA,IA)= F(IA,1)*DFF1(NA,1)
-              DEF(2,NA,IA)= F(IA,2)*DFF1(NA,2)
-              DEF(3,NA,IA)= F(IA,3)*DFF1(NA,3)
-              DEF(4,NA,IA)=(F(IA,1)*DFF1(NA,2)+F(IA,2)*DFF1(NA,1))/RAC2
-              DEF(5,NA,IA)=(F(IA,1)*DFF1(NA,3)+F(IA,3)*DFF1(NA,1))/RAC2
-              DEF(6,NA,IA)=(F(IA,2)*DFF1(NA,3)+F(IA,3)*DFF1(NA,2))/RAC2
- 46         CONTINUE
- 36       CONTINUE
-        ENDIF
-
-C - TERME DE CORRECTION (3,3) AXI QUI PORTE EN FAIT SUR LE DDL 1
-        IF (AXI) THEN
-          DO 47 NA=1,NNO1
-            DEF(3,NA,1) = F(3,3)*VFF1(NA,G)/R
- 47       CONTINUE
-        END IF
+        CALL NMMALU(NNO1,AXI,R,VFF1(1,G),DFF1,LIJ)
 
 C - VECTEUR FINT:U
         DO 10 KL = 1,NDIMSI
-          CALL R8INIR(6,0.D0,SIGMA,1)
-          SIGMA(KL) = SIGREF
+          CALL R8INIR(6,0.D0,TAU,1)
+          TAU(KL) = SIGREF
           DO 300 NA=1,NNO1
-            DO 310 IA=1,NDIM
+            DO 310 IA=1,NDU
               KK = VU(IA,NA)
-              T1 = DDOT(2*NDIM, SIGMA,1, DEF(1,NA,IA),1)
+              T1 = 0.D0
+              DO 320 JA = 1,NDU
+                T1 = T1 + TAU(VIJ(IA,JA))*DFF1(NA,LIJ(IA,JA))
+ 320          CONTINUE
               VECT(KK) = VECT(KK) + ABS(W*T1)/NDIMSI
  310        CONTINUE
  300      CONTINUE

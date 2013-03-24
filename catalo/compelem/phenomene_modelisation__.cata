@@ -1,4 +1,4 @@
-%& MODIF COMPELEM  DATE 11/03/2013   AUTEUR CUVILLIE M.CUVILLIEZ 
+%& MODIF COMPELEM  DATE 18/03/2013   AUTEUR SFAYOLLE S.FAYOLLE 
 % ======================================================================
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
@@ -101,9 +101,13 @@ PHENOMENE_MODELISATION__
 %  FOURIER =  'OUI' : l'élément est destiné a une étude par décomposition en modes de fourier.
 %          Le maillage est 2D (OXY) (comme pour AXIS='OUI').
 %
-%  INCO =  'OUI' : éléments "incompressibles" (R3.06.08)
+%  INCO   : Type d'éléments "incompressibles" (R3.06.08)
 %           - Le volume de l'élément reste constant (trace(epsilon)=0)
 %           - Il existe des ddls qui "dualisent" la condition précédente (PRES,GONF)
+%  INCO =  Cxijk
+%          x  = nombre de champ : 3 champs UPG ou 2 champs UP
+%          ij = PD (petites déformations), SM (Simo_Miehe) et LG (GDEF_LOG)
+%          k  = stabilisation de l'élément : O (OSGS)
 %
 %  LUMPE = 'OUI' : éléments "lumpés" (R3.06.07):
 %           - Ce sont des éléments de thermique
@@ -375,7 +379,7 @@ PHENOMENE_MODELISATION__
               MAILLE__ HEXA20    ELEMENT__ MECA_XHC_HEXA20
               MAILLE__ PENTA15   ELEMENT__ MECA_XHC_PENTA15
               MAILLE__ PYRAM13   ELEMENT__ MECA_XHC_PYRAM13
-              MAILLE__ TETRA10   ELEMENT__ MECA_XHC_TETRA10              
+              MAILLE__ TETRA10   ELEMENT__ MECA_XHC_TETRA10
 
        MODELISATION__ '3DXTC'            DIM__ 3 3   CODE__ '3X8'
               ATTRIBUT__  NBSIGM=X6  TYPMOD=COMP3D
@@ -386,7 +390,7 @@ PHENOMENE_MODELISATION__
               MAILLE__ HEXA20    ELEMENT__ MECA_XTC_HEXA20
               MAILLE__ PENTA15   ELEMENT__ MECA_XTC_PENTA15
               MAILLE__ PYRAM13   ELEMENT__ MECA_XTC_PYRAM13
-              MAILLE__ TETRA10   ELEMENT__ MECA_XTC_TETRA10             
+              MAILLE__ TETRA10   ELEMENT__ MECA_XTC_TETRA10
 
        MODELISATION__ '3DXHTC'           DIM__ 3 3   CODE__ '3X9'
               ATTRIBUT__  NBSIGM=X6  TYPMOD=COMP3D
@@ -397,7 +401,7 @@ PHENOMENE_MODELISATION__
               MAILLE__ HEXA20    ELEMENT__ MECA_XHTC_HE20
               MAILLE__ PENTA15   ELEMENT__ MECA_XHTC_PE15
               MAILLE__ PYRAM13   ELEMENT__ MECA_XHTC_PY13
-              MAILLE__ TETRA10   ELEMENT__ MECA_XHTC_TE10             
+              MAILLE__ TETRA10   ELEMENT__ MECA_XHTC_TE10
 
        MODELISATION__ '3DXH1'            DIM__ 3 3   CODE__ '3XA'
               ATTRIBUT__  NBSIGM=X6  TYPMOD=COMP3D
@@ -485,7 +489,7 @@ PHENOMENE_MODELISATION__
               MAILLE__ SEG2      ELEMENT__ MECA_ARETE2
 
        MODELISATION__ '3D_INCO'          DIM__ 3 3   CODE__ '3DI'
-              ATTRIBUT__  NBSIGM=X6  INCO=OUI  TYPMOD=COMP3D
+              ATTRIBUT__  NBSIGM=X6  INCO=C3PD  TYPMOD=COMP3D
               MAILLE__ HEXA20    ELEMENT__ MINC_HEXA20
               MAILLE__ PENTA15   ELEMENT__ MINC_PENTA15
               MAILLE__ TETRA10   ELEMENT__ MINC_TETRA10
@@ -494,7 +498,7 @@ PHENOMENE_MODELISATION__
               MAILLE__ SEG3      ELEMENT__ MECA_ARETE3
 
        MODELISATION__ '3D_INCO_UP'          DIM__ 3 3   CODE__ '3UP'
-              ATTRIBUT__  NBSIGM=X6  INCO=OUI  TYPMOD=COMP3D
+              ATTRIBUT__  NBSIGM=X6  INCO=C2PD  TYPMOD=COMP3D
               MAILLE__ HEXA20    ELEMENT__ MINCUP_HEXA20
               MAILLE__ PENTA15   ELEMENT__ MINCUP_PENTA15
               MAILLE__ TETRA10   ELEMENT__ MINCUP_TETRA10
@@ -506,7 +510,7 @@ PHENOMENE_MODELISATION__
               MAILLE__ SEG2      ELEMENT__ MECA_ARETE2
 
        MODELISATION__ '3D_INCO_OSGS'        DIM__ 3 3   CODE__ '3OS'
-              ATTRIBUT__  NBSIGM=X6  INCO=OUI  TYPMOD=COMP3D
+              ATTRIBUT__  NBSIGM=X6  INCO=C2PDO  TYPMOD=COMP3D
               MAILLE__ HEXA8     ELEMENT__ MINCOS_HEXA8
               MAILLE__ PENTA6    ELEMENT__ MINCOS_PENTA6
               MAILLE__ PYRAM5    ELEMENT__ MINCOS_PYRAM5
@@ -517,7 +521,7 @@ PHENOMENE_MODELISATION__
               MAILLE__ SEG2      ELEMENT__ MECA_ARETE2
 
        MODELISATION__ '3D_INCO_LOG'       DIM__ 3 3   CODE__ '3LG'
-              ATTRIBUT__  NBSIGM=X6  TYPMOD=COMP3D
+              ATTRIBUT__  NBSIGM=X6  INCO=C3LG  TYPMOD=COMP3D
               MAILLE__ TETRA10   ELEMENT__ LGIN_TETRA10
               MAILLE__ PENTA15   ELEMENT__ LGIN_PENTA15
               MAILLE__ HEXA20    ELEMENT__ LGIN_HEXA20
@@ -525,8 +529,17 @@ PHENOMENE_MODELISATION__
               MAILLE__ QUAD8     ELEMENT__ MECA_FACE8
               MAILLE__ SEG3      ELEMENT__ MECA_ARETE3
 
+       MODELISATION__ '3D_INCO_LUP'       DIM__ 3 3   CODE__ '3LP'
+              ATTRIBUT__  NBSIGM=X6  INCO=C2LG  TYPMOD=COMP3D
+              MAILLE__ TETRA10   ELEMENT__ LPIN_TETRA10
+              MAILLE__ PENTA15   ELEMENT__ LPIN_PENTA15
+              MAILLE__ HEXA20    ELEMENT__ LPIN_HEXA20
+              MAILLE__ TRIA6     ELEMENT__ MECA_FACE6
+              MAILLE__ QUAD8     ELEMENT__ MECA_FACE8
+              MAILLE__ SEG3      ELEMENT__ MECA_ARETE3
+
        MODELISATION__ '3D_INCO_GD'        DIM__ 3 3   CODE__ '3GI'
-              ATTRIBUT__  NBSIGM=X6  TYPMOD=COMP3D
+              ATTRIBUT__  NBSIGM=X6  INCO=C3SM  TYPMOD=COMP3D
               MAILLE__ TETRA10   ELEMENT__ GDIN_TETRA10
               MAILLE__ PENTA15   ELEMENT__ GDIN_PENTA15
               MAILLE__ HEXA20    ELEMENT__ GDIN_HEXA20
@@ -590,13 +603,13 @@ PHENOMENE_MODELISATION__
               MAILLE__ SEG3      ELEMENT__ MEFOSE3
 
        MODELISATION__ 'AXIS_INCO'        DIM__ 2 2   CODE__ 'AXC'
-              ATTRIBUT__  AXIS=OUI  NBSIGM=X4   TYPMOD=AXIS INCO=OUI
+              ATTRIBUT__  AXIS=OUI  NBSIGM=X4   TYPMOD=AXIS INCO=C3PD
               MAILLE__ TRIA6     ELEMENT__ MIAXTR6
               MAILLE__ QUAD8     ELEMENT__ MIAXQU8
               MAILLE__ SEG3      ELEMENT__ MEAXSE3
 
        MODELISATION__ 'AXIS_INCO_UP'        DIM__ 2 2   CODE__ 'AUP'
-              ATTRIBUT__  AXIS=OUI  NBSIGM=X4   TYPMOD=AXIS INCO=OUI
+              ATTRIBUT__  AXIS=OUI  NBSIGM=X4   TYPMOD=AXIS INCO=C2PD
               MAILLE__ TRIA6     ELEMENT__ MIAXUPTR6
               MAILLE__ TRIA3     ELEMENT__ MIAXUPTR3
               MAILLE__ QUAD8     ELEMENT__ MIAXUPQU8
@@ -604,20 +617,26 @@ PHENOMENE_MODELISATION__
               MAILLE__ SEG2      ELEMENT__ MEAXSE2
 
        MODELISATION__ 'AXIS_INCO_OSGS'        DIM__ 2 2   CODE__ 'AOS'
-              ATTRIBUT__  AXIS=OUI  NBSIGM=X4   TYPMOD=AXIS INCO=OUI
+              ATTRIBUT__  AXIS=OUI  NBSIGM=X4   TYPMOD=AXIS INCO=C2PDO
               MAILLE__ TRIA3     ELEMENT__ MIAXOSTR3
               MAILLE__ QUAD4     ELEMENT__ MIAXOSQU4
               MAILLE__ SEG3      ELEMENT__ MEAXSE3
               MAILLE__ SEG2      ELEMENT__ MEAXSE2
 
        MODELISATION__ 'AXIS_INCO_LOG'    DIM__ 2 2   CODE__ 'ALG'
-              ATTRIBUT__ AXIS=OUI  NBSIGM=X4   TYPMOD=AXIS
+              ATTRIBUT__ AXIS=OUI  NBSIGM=X4   TYPMOD=AXIS INCO=C3LG
               MAILLE__ TRIA6     ELEMENT__ LGAXTR6
               MAILLE__ QUAD8     ELEMENT__ LGAXQU8
               MAILLE__ SEG3      ELEMENT__ MEAXSE3
 
+       MODELISATION__ 'AXIS_INCO_LUP'    DIM__ 2 2   CODE__ 'ALP'
+              ATTRIBUT__ AXIS=OUI  NBSIGM=X4   TYPMOD=AXIS INCO=C2LG
+              MAILLE__ TRIA6     ELEMENT__ LPAXTR6
+              MAILLE__ QUAD8     ELEMENT__ LPAXQU8
+              MAILLE__ SEG3      ELEMENT__ MEAXSE3
+
        MODELISATION__ 'AXIS_INCO_GD'     DIM__ 2 2   CODE__ 'AGI'
-              ATTRIBUT__ AXIS=OUI  NBSIGM=X4   TYPMOD=AXIS
+              ATTRIBUT__ AXIS=OUI  NBSIGM=X4   TYPMOD=AXIS INCO=C3SM
               MAILLE__ TRIA6     ELEMENT__ GIAXTR6
               MAILLE__ QUAD8     ELEMENT__ GIAXQU8
               MAILLE__ SEG3      ELEMENT__ MEAXSE3
@@ -995,13 +1014,13 @@ PHENOMENE_MODELISATION__
               MAILLE__ SEG2      ELEMENT__ MEPLSE2
 
        MODELISATION__ 'D_PLAN_INCO'      DIM__ 2 2   CODE__ 'PLI'
-              ATTRIBUT__  NBSIGM=X4 D_PLAN=OUI TYPMOD=D_PLAN  INCO=OUI
+              ATTRIBUT__  NBSIGM=X4 D_PLAN=OUI TYPMOD=D_PLAN  INCO=C3PD
               MAILLE__ TRIA6     ELEMENT__ MIPLTR6
               MAILLE__ QUAD8     ELEMENT__ MIPLQU8
               MAILLE__ SEG3      ELEMENT__ MEPLSE3
 
        MODELISATION__ 'D_PLAN_INCO_UP'      DIM__ 2 2   CODE__ 'PUP'
-              ATTRIBUT__  NBSIGM=X4 D_PLAN=OUI TYPMOD=D_PLAN  INCO=OUI
+              ATTRIBUT__  NBSIGM=X4 D_PLAN=OUI TYPMOD=D_PLAN  INCO=C2PD
               MAILLE__ TRIA6     ELEMENT__ MIPLUPTR6
               MAILLE__ TRIA3     ELEMENT__ MIPLUPTR3
               MAILLE__ QUAD8     ELEMENT__ MIPLUPQU8
@@ -1009,20 +1028,26 @@ PHENOMENE_MODELISATION__
               MAILLE__ SEG2      ELEMENT__ MEPLSE2
 
        MODELISATION__ 'D_PLAN_INCO_OSGS'    DIM__ 2 2   CODE__ 'POS'
-              ATTRIBUT__  NBSIGM=X4 D_PLAN=OUI TYPMOD=D_PLAN  INCO=OUI
+              ATTRIBUT__  NBSIGM=X4 D_PLAN=OUI TYPMOD=D_PLAN  INCO=C2PDO
               MAILLE__ TRIA3     ELEMENT__ MIPLOSTR3
               MAILLE__ QUAD4     ELEMENT__ MIPLOSQU4
               MAILLE__ SEG3      ELEMENT__ MEPLSE3
               MAILLE__ SEG2      ELEMENT__ MEPLSE2
 
        MODELISATION__ 'D_PLAN_INCO_LOG'     DIM__ 2 2   CODE__ 'PLG'
-              ATTRIBUT__  NBSIGM=X4 D_PLAN=OUI  TYPMOD=D_PLAN
+              ATTRIBUT__  NBSIGM=X4 D_PLAN=OUI  TYPMOD=D_PLAN  INCO=C3LG
               MAILLE__ TRIA6     ELEMENT__ LGPLTR6
               MAILLE__ QUAD8     ELEMENT__ LGPLQU8
               MAILLE__ SEG3      ELEMENT__ MEPLSE3
 
+       MODELISATION__ 'D_PLAN_INCO_LUP'     DIM__ 2 2   CODE__ 'PLP'
+              ATTRIBUT__  NBSIGM=X4 D_PLAN=OUI  TYPMOD=D_PLAN  INCO=C2LG
+              MAILLE__ TRIA6     ELEMENT__ LPPLTR6
+              MAILLE__ QUAD8     ELEMENT__ LPPLQU8
+              MAILLE__ SEG3      ELEMENT__ MEPLSE3
+
        MODELISATION__ 'D_PLAN_INCO_GD'      DIM__ 2 2   CODE__ 'PGI'
-              ATTRIBUT__  NBSIGM=X4 D_PLAN=OUI  TYPMOD=D_PLAN
+              ATTRIBUT__  NBSIGM=X4 D_PLAN=OUI  TYPMOD=D_PLAN  INCO=C3SM
               MAILLE__ TRIA6     ELEMENT__ GIPLTR6
               MAILLE__ QUAD8     ELEMENT__ GIPLQU8
               MAILLE__ SEG3      ELEMENT__ MEPLSE3

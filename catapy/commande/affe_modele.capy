@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 29/01/2013   AUTEUR FERTE G.FERTE 
+#& MODIF COMMANDE  DATE 18/03/2013   AUTEUR SFAYOLLE S.FAYOLLE 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -73,11 +73,12 @@ AFFE_MODELE=OPER(nom="AFFE_MODELE",op=18,sd_prod=modele_sdaster,
                                   "3D_FAISCEAU",     # RESP. : VOLDOIRE F.VOLDOIRE
                                   "3D_FLUI_ABSO",    # RESP. : DEVESA G.DEVESA
                                   "3D_FLUIDE",       # RESP. : GREFFET N.GREFFET
-                                  "3D_INCO",         # RESP. : MICHEL S.MICHEL
+                                  "3D_INCO",         # RESP. : SFAYOLLE S.FAYOLLE
                                   "3D_INCO_UP",      # RESP. : SFAYOLLE S.FAYOLLE
                                   "3D_INCO_OSGS",    # RESP. : SFAYOLLE S.FAYOLLE
-                                  "3D_INCO_GD",      # RESP. : MICHEL S.MICHEL
+                                  "3D_INCO_GD",      # RESP. : SFAYOLLE S.FAYOLLE
                                   "3D_INCO_LOG",     # RESP. : SFAYOLLE S.FAYOLLE
+                                  "3D_INCO_LUP",     # RESP. : SFAYOLLE S.FAYOLLE
                                   "3D_SI",           # RESP. : DESROCHES X.DESROCHES
                                   "3D_GRAD_EPSI",    # RESP. : MICHEL S.MICHEL
                                   "3D_GRAD_VARI",    # RESP. : MICHEL S.MICHEL
@@ -90,11 +91,12 @@ AFFE_MODELE=OPER(nom="AFFE_MODELE",op=18,sd_prod=modele_sdaster,
                                   "AXIS_FLUI_STRU",  # RESP. : GREFFET N.GREFFET
                                   "AXIS_FLUIDE",     # RESP. : GREFFET N.GREFFET
                                   "AXIS_FOURIER",    # RESP. : DESROCHES X.DESROCHES
-                                  "AXIS_INCO",       # RESP. : MICHEL S.MICHEL
+                                  "AXIS_INCO",       # RESP. : SFAYOLLE S.FAYOLLE
                                   "AXIS_INCO_UP",    # RESP. : SFAYOLLE S.FAYOLLE
                                   "AXIS_INCO_OSGS",  # RESP. : SFAYOLLE S.FAYOLLE
-                                  "AXIS_INCO_GD",    # RESP. : MICHEL S.MICHEL
+                                  "AXIS_INCO_GD",    # RESP. : SFAYOLLE S.FAYOLLE
                                   "AXIS_INCO_LOG",   # RESP. : SFAYOLLE S.FAYOLLE
+                                  "AXIS_INCO_LUP",   # RESP. : SFAYOLLE S.FAYOLLE
                                   "AXIS_SI",         # RESP. : DESROCHES X.DESROCHES
                                   "AXIS_GRAD_VARI",  # RESP. : MICHEL S.MICHEL
                                   "AXIS_GVNO",       # RESP. : BEAURAIN J.BEAURAIN
@@ -124,11 +126,12 @@ AFFE_MODELE=OPER(nom="AFFE_MODELE",op=18,sd_prod=modele_sdaster,
                                   "PLAN_INTERFACE_S",# RESP. : LAVERNE J.LAVERNE
                                   "PLAN_ELDI",       # RESP. : LAVERNE J.LAVERNE
                                   "D_PLAN_ABSO",     # RESP. : DEVESA G.DEVESA
-                                  "D_PLAN_INCO",     # RESP. : MICHEL S.MICHEL
+                                  "D_PLAN_INCO",     # RESP. : SFAYOLLE S.FAYOLLE
                                   "D_PLAN_INCO_UP",  # RESP. : SFAYOLLE S.FAYOLLE
                                   "D_PLAN_INCO_OSGS",# RESP. : SFAYOLLE S.FAYOLLE
-                                  "D_PLAN_INCO_GD",  # RESP. : MICHEL S.MICHEL
+                                  "D_PLAN_INCO_GD",  # RESP. : SFAYOLLE S.FAYOLLE
                                   "D_PLAN_INCO_LOG", # RESP. : SFAYOLLE S.FAYOLLE
+                                  "D_PLAN_INCO_LUP", # RESP. : SFAYOLLE S.FAYOLLE
                                   "D_PLAN_SI",       # RESP. : DESROCHES X.DESROCHES
                                   "DIS_T",           # RESP. : FLEJOU J.L.FLEJOU
                                   "DIS_TR",          # RESP. : FLEJOU J.L.FLEJOU
@@ -153,7 +156,7 @@ AFFE_MODELE=OPER(nom="AFFE_MODELE",op=18,sd_prod=modele_sdaster,
                                   "SHB",             # RESP. : DESROCHES X.DESROCHES
                                   "D_PLAN_HHM",      # RESP. : GRANET S.GRANET
                                   "D_PLAN_HM",       # RESP. : GRANET S.GRANET
-                                  "D_PLAN_HM_SI",       # RESP. : GRANET S.GRANET
+                                  "D_PLAN_HM_SI",    # RESP. : GRANET S.GRANET
                                   "D_PLAN_THM",      # RESP. : GRANET S.GRANET
                                   "D_PLAN_HHMD",     # RESP. : GRANET S.GRANET
                                   "D_PLAN_HH2MD",    # RESP. : GRANET S.GRANET
@@ -209,7 +212,7 @@ AFFE_MODELE=OPER(nom="AFFE_MODELE",op=18,sd_prod=modele_sdaster,
                                   "AXIS_HH2S",       # RESP. : GRANET S.GRANET
                                   "3D_HHM" ,         # RESP. : GRANET S.GRANET
                                   "3D_HM",           # RESP. : GRANET S.GRANET
-                                  "3D_HM_SI",           # RESP. : GRANET S.GRANET
+                                  "3D_HM_SI",        # RESP. : GRANET S.GRANET
                                   "3D_THHM",         # RESP. : GRANET S.GRANET
                                   "3D_THM",          # RESP. : GRANET S.GRANET
                                   "3D_HHMD",         # RESP. : GRANET S.GRANET

@@ -3,7 +3,7 @@
      &                  LGPG,CRIT,INSTM,INSTP,DDLM,DDLD,ANGMAS,SIGM,VIM,
      &                  SIGP,VIP,RESI,RIGI,VECT,MATR,CODRET)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 11/02/2013   AUTEUR SFAYOLLE S.FAYOLLE 
+C MODIF ALGORITH  DATE 18/03/2013   AUTEUR SFAYOLLE S.FAYOLLE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -24,7 +24,6 @@ C TOLE CRP_21
 C TOLE CRS_1404
 C RESPONSABLE SFAYOLLE S.FAYOLLE
       IMPLICIT NONE
-      INCLUDE 'jeveux.h'
 
       LOGICAL      RESI,RIGI
       INTEGER      NDIM,NNO1,NNO2,NNO3,NPG,IW,IDFF1,IDFF2,LGPG
@@ -259,8 +258,8 @@ C - CONTRAINTE HYDROSTATIQUE ET DEVIATEUR
  100      CONTINUE
 
 C - VECTEUR FINT:U
-          DO 200 NA=1,NNO1
-            DO 210 IA=1,NDU
+          DO 200 NA = 1,NNO1
+            DO 210 IA = 1,NDU
               KK = VU(IA,NA)
               T1 = 0.D0
               DO 220 JA = 1,NDU
@@ -273,14 +272,14 @@ C - VECTEUR FINT:U
 
 C - VECTEUR FINT:G
           T2 = TAUHY*AA - PP*DBOA
-          DO 230 RA=1,NNO2
+          DO 230 RA = 1,NNO2
             KK = VG(RA)
             T1 = VFF2(RA,G)*T2
             VECT(KK) = VECT(KK) + W*T1
  230      CONTINUE
 
           IF (NONLOC) THEN
-            DO 235 RA=1,NNO2
+            DO 235 RA = 1,NNO2
               KK = VG(RA)
               T1 = C*DDOT(NDIM,GRADGP,1,DFF2(RA,1),NNO2)
               VECT(KK) = VECT(KK) + W*T1
