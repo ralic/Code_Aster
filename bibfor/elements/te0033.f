@@ -3,7 +3,7 @@
       INCLUDE 'jeveux.h'
       CHARACTER*16        OPTION, NOMTE
 C ----------------------------------------------------------------------
-C MODIF ELEMENTS  DATE 21/01/2013   AUTEUR DELMAS J.DELMAS 
+C MODIF ELEMENTS  DATE 18/03/2013   AUTEUR IDOUX L.IDOUX 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -174,6 +174,11 @@ C
             CALL DSQSIE(OPTION,FAMI,XYZL,PGL,DEPL,NBCOU,ZR(JSIGM))
          ELSE IF (NOMTE.EQ.'MEQ4QU4' ) THEN
             CALL Q4GSIE(OPTION,FAMI,XYZL,PGL,DEPL,NBCOU,ZR(JSIGM))
+         ELSE IF (NOMTE.EQ.'MET3TR3' ) THEN
+            CALL T3GSIE(OPTION,FAMI,XYZL,PGL,DEPL,NBCOU,ZR(JSIGM))
+         ELSE
+C TYPE D ELEMENT INVALIDE
+            CALL ASSERT(.FALSE.)
          END IF
 C
          CALL RCCOMA (ZI(JMATE),'ELAS',1,PHENOM,ICODRE)

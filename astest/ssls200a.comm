@@ -1,4 +1,4 @@
-# MODIF  DATE 05/02/2013   AUTEUR LEBOUVIER F.LEBOUVIER 
+# MODIF  DATE 18/03/2013   AUTEUR IDOUX L.IDOUX 
 # TITRE NON-REGRESSION THERMO-ELASTICITE POUR TOUTES COQUES SURFACIQUES
 # RESPONSABLE PELLET J.PELLET
 # ssls200a.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test R
@@ -219,13 +219,13 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=1,
                    TYPE_TEST='SOMM_ABS',
                    RESULTAT=MESTAT,
                    NOM_CHAM='SIEF_ELGA',
-                   VALE_CALC=1.3966885948028001E6,
+                   VALE_CALC=1.3665737994839E+06,
                    ),
                 _F(NUME_ORDRE=1,
                    TYPE_TEST='SOMM_ABS',
                    RESULTAT=MESTAT,
                    NOM_CHAM='SIGM_ELNO',
-                   VALE_CALC=1.6880698817572E6,
+                   VALE_CALC=1.5977254958006E+06,
                    ),
                 _F(NUME_ORDRE=1,
                    TYPE_TEST='SOMM_ABS',
