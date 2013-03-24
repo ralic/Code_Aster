@@ -1,9 +1,9 @@
-# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
+# MODIF  DATE 15/03/2013   AUTEUR LEBOUVIER F.LEBOUVIER 
 # TITRE CYLINDRE EN C.P. (TRIA6 QUAD8) AXISYM
 # sslv04i.para = tps_job 60 mem_job 256Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -627,6 +627,81 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=1,
                    ),
                 ),
           )
+
+
+CHFO=AFFE_CHAR_MECA(MODELE=MO2,
+                  PRES_REP=_F(GROUP_MA='GRMA13',
+                              PRES=60.,),);
+
+RESUF=MACRO_ELAS_MULT(MODELE=MO2,
+                      CHAM_MATER=CM,
+                      CHAR_MECA_GLOBAL=CHDIR,
+                      CAS_CHARGE=_F(MODE_FOURIER=0,
+                                    CHAR_MECA=CHFO,),);
+RESUF = CALC_CHAMP(reuse=RESUF,
+                    RESULTAT=RESUF,
+                    DEFORMATION='EPSI_ELNO')
+
+RESUFO=COMB_FOURIER(RESULTAT=RESUF,
+                      ANGL=48.5,
+                      NOM_CHAM=('DEPL','EPSI_ELNO'));
+
+
+TEST_RESU(RESU=(_F(NUME_ORDRE=1,
+                   GROUP_NO='A',
+                   REFERENCE='ANALYTIQUE',
+                   RESULTAT=RESUFO,
+                   NOM_CHAM='EPSI_ELNO',
+                   NOM_CMP='EPXX',
+                   VALE_CALC=-4.4934594759824E-04,
+                   VALE_REFE=-4.5E-4,
+                   TOLE_MACHINE=1.E-3,
+                   CRITERE='RELATIF',
+                   MAILLE='M2',
+                   PRECISION=1.E-2,
+                   ),
+                _F(NUME_ORDRE=1,
+                   GROUP_NO='A',
+                   REFERENCE='ANALYTIQUE',
+                   RESULTAT=RESUFO,
+                   NOM_CHAM='EPSI_ELNO',
+                   NOM_CMP='EPZZ',
+                   VALE_CALC=5.8945913120086E-04,
+                   VALE_REFE=5.9E-4,
+                   TOLE_MACHINE=1.E-3,
+                   CRITERE='RELATIF',
+                   MAILLE='M2',
+                   PRECISION=1.E-2,
+                   ),
+                _F(NUME_ORDRE=1,
+                   GROUP_NO='B',
+                   REFERENCE='ANALYTIQUE',
+                   RESULTAT=RESUFO,
+                   NOM_CHAM='EPSI_ELNO',
+                   NOM_CMP='EPXX',
+                   VALE_CALC=-5.9803511193802E-05,
+                   VALE_REFE=-6.E-5,
+                   TOLE_MACHINE=1.E-3,
+                   CRITERE='RELATIF',
+                   MAILLE='M59',
+                   PRECISION=1.E-2,
+                   ),
+                _F(NUME_ORDRE=1,
+                   GROUP_NO='B',
+                   REFERENCE='ANALYTIQUE',
+                   RESULTAT=RESUFO,
+                   NOM_CHAM='EPSI_ELNO',
+                   NOM_CMP='EPZZ',
+                   VALE_CALC=1.998256312526E-04,
+                   VALE_REFE=2.E-4,
+                   TOLE_MACHINE=1.E-3,
+                   CRITERE='RELATIF',
+                   MAILLE='M59',
+                   PRECISION=1.E-2,
+                   ),
+                ),
+          )
+
 
 FIN();
 
