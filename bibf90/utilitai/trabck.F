@@ -1,4 +1,6 @@
       SUBROUTINE TRABCK (CMESS,IEXIT)
+! aslint: disable=W0104
+! Dummy argument si _USE_INTEL_IFORT n'est pas defini
 ! ----------------------------------------------------------------------
 ! IMPRIME LA REMONTEE DES APPELS
 !
@@ -7,9 +9,9 @@
 !              AVEC LE COMPILO INTEL <0 ON REDONNE LA MAIN
 ! ----------------------------------------------------------------------
 !           CONFIGURATION MANAGEMENT OF EDF VERSION                  
-!& MODIF TRCBCK UTILITAI  DATE 28/09/2009   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+!& MODIF TRABCK UTILITAI  DATE 18/03/2013   AUTEUR COURTOIS M.COURTOIS 
 ! ================================================================== 
-! COPYRIGHT (C) 1991 - 2009  EDF R&D              WWW.CODE-ASTER.ORG 
+! COPYRIGHT (C) 1991 - 2013  EDF R&D              WWW.CODE-ASTER.ORG 
 !                                                                    
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR      
 ! MODIFY IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS     
@@ -32,6 +34,9 @@
       INTEGER*4          IEXIT
 #ifdef _USE_INTEL_IFORT
       CALL TRACEBACKQQ(STRING=CMESS,USER_EXIT_CODE=IEXIT)
+#else
+C     ON NE PEUT PAS APPELER U2MESS (RECURSIVITE)
+      WRITE(6,*) 'Traceback is not provided by the compiler'
 #endif 
 
       END

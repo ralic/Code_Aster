@@ -1,4 +1,4 @@
-#@ MODIF calculel6 Messages  DATE 26/02/2013   AUTEUR DESROCHE X.DESROCHES 
+#@ MODIF calculel6 Messages  DATE 18/03/2013   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -241,13 +241,11 @@ Conseils :
 """),
 
 61:_(u"""
- Erreur de programmation (fointa) :
     Le type de la fonction est invalide : %(k1)s
 """),
 
 62: _(u"""
- Erreur de programmation (fointa) :
-    Pour l'interpolation de la fonction %(k1)s sur la maille %(k3)s,
+    Erreur lors de l'interpolation de la fonction %(k1)s sur la maille %(k3)s,
     il manque le paramètre %(k2)s
 """),
 
