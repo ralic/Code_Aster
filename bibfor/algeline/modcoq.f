@@ -3,7 +3,7 @@
       IMPLICIT NONE
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 12/02/2013   AUTEUR PELLET J.PELLET 
+C MODIF ALGELINE  DATE 18/03/2013   AUTEUR BERRO H.BERRO 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -68,7 +68,6 @@ C
       CHARACTER*14 NUMDDL
       CHARACTER*19 NOMRC
       CHARACTER*24 REFEBA,MATRIA,COORNO,RCVALK,RCVALR,NOMGRP(*)
-      CHARACTER*24 COQUEI,COQUEX
       CHARACTER*32 GRPNO
 C
 C-----------------------------------------------------------------------
@@ -101,8 +100,6 @@ C
         IDDL(2) = 2
       ENDIF
 C
-      COQUEI = NOMGRP(1)
-      COQUEX = NOMGRP(2)
 C
       IFM = IUNIFI('MESSAGE')
  500  FORMAT('*******************************************')
@@ -216,10 +213,12 @@ C
 C
 C --- 4.ACCES AUX OBJETS DU CONCEPT MAILLAGE
 C
-      GRPNO = '&&MEFGMN.'//COQUEI(1:8)
+C     GROUPE DE NOEUDS DE LA COQUE INTERNE
+      GRPNO = '&&MEFGMN.00000001       '
       CALL JELIRA(GRPNO,'LONMAX',NBNOIN,K1BID)
       CALL JEVEUO(GRPNO,'L',INUNOI)
-      GRPNO = '&&MEFGMN.'//COQUEX(1:8)
+C     GROUPE DE NOEUDS DE LA COQUE EXTERNE
+      GRPNO = '&&MEFGMN.00000002       '
       CALL JELIRA(GRPNO,'LONMAX',NBNOEX,K1BID)
       CALL JEVEUO(GRPNO,'L',INUNOE)
 C

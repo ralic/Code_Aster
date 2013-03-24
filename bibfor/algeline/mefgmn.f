@@ -9,7 +9,7 @@ C
       INTEGER             NBGMA
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 12/02/2013   AUTEUR PELLET J.PELLET 
+C MODIF ALGELINE  DATE 18/03/2013   AUTEUR BERRO H.BERRO 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -37,8 +37,8 @@ C IN  : LIGRMA : LISTE DES NOMS DES GROUPES DE MAILLES.
 C-----------------------------------------------------------------------
 C
       CHARACTER*1   K1BID
-      CHARACTER*8   K8B
-      CHARACTER*24  GRPMA, GRPNO, NOMGMA, NOMGNO
+      CHARACTER*8   K8B, NUMGNO
+      CHARACTER*24  GRPMA, GRPNO, NOMGMA
 C DEB-------------------------------------------------------------------
 C
 C-----------------------------------------------------------------------
@@ -79,11 +79,9 @@ C --- CREATION DES GROUPES DE NOEUDS
 C
 C
       DO 40 I = 1 , NBGMA
-         NOMGNO = LIGRMA(I)
          N1 = ZI(IANBNO-1+I)
-         IF (NOMGNO(9:24).NE.' ')WRITE(6,*)'DEBUG NOMGNO= >',NOMGNO,'<'
-         CALL ASSERT(NOMGNO(9:24).EQ.' ')
-         GRPNO='&&MEFGMN.'//NOMGNO(1:8)
+         CALL CODENT(I,'D0',NUMGNO)
+         GRPNO='&&MEFGMN.'//NUMGNO//'       '
          CALL WKVECT(GRPNO,'V V I', N1,IGRNO)
          DO 30 J = 1,N1
             ZI(IGRNO+J-1)=ZI(IALINO+I*NBNOTO+J-1)

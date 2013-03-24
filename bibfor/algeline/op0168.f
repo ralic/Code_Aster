@@ -2,9 +2,9 @@
       IMPLICIT NONE
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 09/11/2012   AUTEUR DELMAS J.DELMAS 
+C MODIF ALGELINE  DATE 18/03/2013   AUTEUR BERRO H.BERRO 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -76,7 +76,6 @@ C
       IFR = IUNIFI('RESULTAT')
 C
 C     --- RECUPERATION DU NOMBRE DE MODES A EXTRAIRE ---
-C
       KMODE = '&&OP0168.MODE.RETENU'
       NBMR = 0
       NDIMT = 0
@@ -85,12 +84,9 @@ C
          CALL WKVECT('&&OP0168.NOM_MODE','V V K8',NBFILT,JNOM)
          CALL JECREC(KMODE,'V V I','NU','DISPERSE','VARIABLE',NBFILT)
          DO 10 I = 1 , NBFILT
-C
             CALL GETVID ( 'FILTRE_MODE', 'MODE', I,IARG,1, MODEIN, N1 )
-C
             CALL JELIRA ( MODEIN//'           .ORDR','LONUTI',IRET,K8B)
             IF ( IRET .EQ. 0 ) GOTO 10
-C
             NBMR = NBMR + 1
 C
             IF ( NBMR .EQ. 1 ) THEN
@@ -380,9 +376,15 @@ C     --- LES IMPRESSIONS ---
 C
       CALL GETFAC ( 'IMPRESSION' , IMPR )
       IF ( IMPR .NE. 0 ) THEN
+         WRITE(IFR,800)
+         WRITE(IFR,900) MODEOU, TYPCON, NOMCMD
          CALL GETVTX('IMPRESSION','CUMUL'  ,1,IARG,1,OUINON,N1)
          CALL GETVTX('IMPRESSION','CRIT_EXTR',1,IARG,1,CRITFI,N2)
-         IF ( CRITFI .EQ. 'MASS_EFFE_UN'.AND.
+
+         CALL RSVPAR (MODEOU,1,'MASS_EFFE_UN_DX',IBID,UNDF,K8B,IRET)
+         CALL RSADPA (MODEOU,'L',1,'MASS_EFFE_UN_DX',1,0,JADR,K8B)
+
+         IF ( IRET.NE.100 .AND. CRITFI .EQ. 'MASS_EFFE_UN'.AND.
      &          TYPCON(1:9).EQ.'MODE_MECA' ) THEN
             IF ( OUINON .EQ. 'OUI' ) THEN
                WRITE(IFR,1000)
@@ -444,10 +446,16 @@ C
                ENDIF
  301        CONTINUE
          ENDIF
+         WRITE(IFR,800)
       ENDIF
 C
       CALL TITRE()
 C
+ 800  FORMAT('----------------------------------------------------------
+     &------------------------------------------------------------------
+     &--')
+ 900  FORMAT('CONCEPT ', A8, ' DE TYPE ', A11,
+     &       ' ISSU DE L OPERATEUR ', A16)
  1000 FORMAT(/,50X,'M A S S E      E F F E C T I V E      ',
      &              'U N I T A I R E')
  1010 FORMAT('NUME_ORDRE  NUME_MODE     FREQUENCE   ',
@@ -468,5 +476,4 @@ C
  1320 FORMAT(1P,4X,I6,5X,I6,3X,D12.5,3X,D12.5)
 C
       CALL JEDEMA ( )
-C
       END

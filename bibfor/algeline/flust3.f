@@ -10,7 +10,7 @@
       CHARACTER*19 MELFLU
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 12/02/2013   AUTEUR PELLET J.PELLET 
+C MODIF ALGELINE  DATE 18/03/2013   AUTEUR BERRO H.BERRO 
 C TOLE CRP_20
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -57,7 +57,7 @@ C-----------------------------------------------------------------------
 C     ------------------------------------------------------------------
 C
       CHARACTER*1  K1BID
-      CHARACTER*8  MAILLA,K8B,PROMAS,PROVIS
+      CHARACTER*8  MAILLA,K8B,PROMAS,PROVIS,NUMGNO
       CHARACTER*14 NUMDDL
       CHARACTER*19 CAELEM
       CHARACTER*24 FSVI,FSVK,FSVR,FSGM,FSCR,FSGR
@@ -70,7 +70,7 @@ C-----------------------------------------------------------------------
       INTEGER I ,IADMAG ,IADNOG ,IAXE ,IBI ,ICDG ,ICENCY
       INTEGER ICPG ,IDEFM ,IENCEI ,IEPAIG ,IEQUIV ,IFPART ,IFREQI
       INTEGER IFSCR ,IFSGM ,IFSGR ,IFSVI ,IFSVK ,IFSVR ,IGREQ
-      INTEGER IGRMA ,IKN ,ILARGG ,ILONGG ,IM ,IMATAA ,IMATMA
+      INTEGER IKN ,ILARGG ,ILONGG ,IM ,IMATAA ,IMATMA
       INTEGER IMATRA ,INBMAG ,INBNEQ ,INBNOG ,INOMCY ,INOMEQ ,INUM
       INTEGER IOR ,IPHIX ,IPHIY ,IRE ,IREFEI ,IREQ ,IRINT
       INTEGER IRUGG ,IXINT ,IYINT ,IZ ,IZG ,IZINT ,J
@@ -319,10 +319,8 @@ C --- 4.CREATION DE GROUPES DE NOEUDS A PARTIR DES GROUPES DE MAILLES
 C ---   LES GROUPES DE NOEUDS ET DE MAILLES PORTENT LE MEME NOM
 C
       IF ( IEQUIV .EQ. 1 ) THEN
-         IGRMA=INOMEQ
          CALL MEFGMN(MAILLA,NBGRP,ZK24(INOMEQ))
       ELSE
-         IGRMA=INOMCY
          CALL MEFGMN(MAILLA,NBCYL,ZK24(INOMCY))
       ENDIF
 C
@@ -337,7 +335,8 @@ C --- DES CYLINDRES, ET POUR LE NOMBRE DE NOEUDS DE CHAQUE CYLINDRE
       IADMAG = INBNOG + NBGRP
       INBMAG = IADMAG + NBGRP
       DO 150 I = 1,NBGRP
-         GRPNO='&&MEFGMN.'//ZK24(IGRMA-1+I)(1:8)
+         CALL CODENT(I,'D0',NUMGNO)
+         GRPNO='&&MEFGMN.'//NUMGNO//'       '
          CALL JEVEUO(GRPNO                                      ,
      &               'L',ZI(IADNOG+I-1))
          CALL JELIRA(GRPNO                                      ,
@@ -517,7 +516,9 @@ C
 C --- MENAGE
 C
       DO 170 I = 1,NBGRP
-         CALL JEDETR('&&MEFGMN.'//ZK24(IGRMA-1+I)(1:8))
+         CALL CODENT(I,'D0',NUMGNO)
+         GRPNO='&&MEFGMN.'//NUMGNO
+         CALL JEDETR(GRPNO)
   170 CONTINUE
       CALL JEDETR('&&FLUST3.TMP.NBCC')
       CALL JEDETR('&&FLUST3.TMP.REQ')

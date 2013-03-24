@@ -2,7 +2,7 @@
       IMPLICIT NONE
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 05/03/2013   AUTEUR BRIE N.BRIE 
+C MODIF ALGELINE  DATE 18/03/2013   AUTEUR BERRO H.BERRO 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -41,11 +41,11 @@ C     PARAMETRES "MODE_FLAMB"
       PARAMETER   ( NBPAFI=1 , NBPAFR=1  , NBPAFK=1, NBPAFT=3  )
       INTEGER       LMAT(2), IBID, IFM , NIV, LDDL2
       INTEGER VALI
-      INTEGER       IRET
+      INTEGER       IRET, JADR
       INTEGER       L1,L2,L3,LMASSE,LRAIDE,LAMOR,LDDL
       REAL*8        R8B, R8VIDE
       COMPLEX*16    C16B
-      LOGICAL       LMASIN, LREFE, LBASM, LAMO, LCMPLX
+      LOGICAL       LMASIN, LREFE, LBASM, LAMO, LCMPLX, LPARAM
       CHARACTER*1    TYPMOD
       CHARACTER*24 VALK(4)
       CHARACTER*8   MODEOU, MODEIN, NOMCMP(7), K8B, CMP,
@@ -83,7 +83,15 @@ C
       LBASM = .FALSE.
       LAMO  = .FALSE.
       LCMPLX= .FALSE.
+      LPARAM= .FALSE.
+
       CALL GETVID('  ','MODE',1,IARG,1,MODEIN,L)
+
+      REFE = MODEIN//'           .REFD'
+      CALL JEVEUO(REFE,'L',LMODE)
+      TYPEBA=ZK24(LMODE+6)
+      IF (TYPEBA(1:1).NE.' ') LBASM=.TRUE.
+
 
       IF ( IEX .GT. 0 ) THEN
          IF ( MODEOU .NE. MODEIN ) THEN
@@ -95,10 +103,21 @@ C
 C
       IF ( TYPCON(1:9) .EQ. 'MODE_MECA' ) THEN
          NOMSY = 'DEPL'
+C         
+C        --- VERIFIER SI TOUS LES PARAMETRES MODAUX EXISTENT DANS LA SD
+C          - OU BIEN ILS SERONT CALCULES DANS NORM_MODE
+C          - (CAS DES MODE_MECA NON DYNAMIQUES)
+         CALL RSVPAR (MODEIN,1,'FACT_PARTICI_DX',IBID,R8VIDE(),K8B,IRET)
+         IF ((IRET.EQ.110).OR.LBASM) LPARAM=.TRUE.
+C
          NBPARI = NBPAMI
          NBPARR = NBPAMR
          NBPARK = NBPAMK
          NBPARA = NBPAMT
+         IF (.NOT.LPARAM) THEN
+           NBPARR = NBPAMR - 9
+           NBPARA = NBPAMT - 9
+         ENDIF
          DO 1 I = 1 , NBPARA
             NOPARA(I) = NOPARM(I)
  1       CONTINUE
@@ -182,12 +201,7 @@ C     --- INITIALISATION ---
 C
 C     --- MATRICES DE REFERENCE DES MODES ---
       LREFE = .TRUE.
-      REFE = MODEIN//'           .REFD'
-      CALL JEVEUO(REFE,'L',LMODE)
-      TYPEBA=ZK24(LMODE+6)
-      IF (TYPEBA(1:1).NE.' ') LBASM=.TRUE.
-
-      IF (TYPEBA(1:1).NE.' ') THEN
+      IF (LBASM) THEN
         CALL GETVID(' ','RAIDE',0,IARG,1,MAT1,L1)
         CALL GETVID(' ','MASSE',0,IARG,1,MAT2,L2)
         CALL GETVID(' ','AMOR',0,IARG,1,MAT3,L3)
@@ -429,10 +443,11 @@ C
       ENDIF
 C
 C     --- RECUPERATION DES VECTEURS PROPRES ET DES GRANDEURS MODALES ---
-
+C
       CALL VPRECU ( MODEIN, NOMSY, NBMOD, ZI(LNUMOR), KVEC,
      &              NBPARA, NOPARA, KVALI, KVALR, KVALK,
      &              NEQ, NBMODE, TYPMOD, NPARI, NPARR, NPARK )
+C
       IF(.NOT.LBASM)THEN
          IF (NPARI.NE.NBPARI) THEN
             CALL U2MESS('F','ALGELINE2_38')
@@ -557,63 +572,60 @@ C        CALCUL DES FACTEURS DE PARTICIPATIONS ET DES MASSES EFFECTIVES
      &            NBMODE,NBMODE,ZR(LVALR+6*NBMODE), ZR(LVALR+9*NBMODE))
       ENDIF
 
-
 C     --- NORMALISATION DES MODES ET ARCHIVAGE ---
-        ILGCON = LXLGUT(TYPCON)
-        IF ( TYPCON(ILGCON-1:ILGCON) .EQ. '_C' ) ILGCON = ILGCON -2
-        CALL RSEXIS(MODEOU,IRET)
-        IF (IRET.EQ.0) CALL RSCRSD('G',MODEOU,TYPCON(:ILGCON),NBMODE)
-        IPREC = 0
-        IF ( TYPMOD .EQ. 'R' ) THEN
-          IF ( TYPCON(1:10) .EQ. 'MODE_FLAMB' ) THEN
-             CALL VPNOR1 ( NORM, NEQ, NBMODE, ZI(LDDL), ZR(LMOD),
-     &                     ISIGN, NUMDDL, ZR(LCOEF) )
-          ELSE
-             CALL RSVPAR ( MODEIN,1,'FACT_PARTICI_DX',IBID,R8VIDE(),
-     &                     KBID, IRET)
-          
-             IF (IRET.EQ.100) THEN
-                CALL VPNORM (NORM,'NON',LMAT,NEQ,NBMODE,ZI(LDDL),
-     &                       ZR(LMOD), ZR(LVALR), LMASIN, XMASTR,
-     &                       ISIGN, NUMDDL, ZR(LCOEF) )
-             ELSE
-                CALL VPNORM (NORM,'OUI',LMAT,NEQ,NBMODE,ZI(LDDL),
-     &                       ZR(LMOD), ZR(LVALR), LMASIN, XMASTR,
-     &                       ISIGN, NUMDDL, ZR(LCOEF) )
-             ENDIF
-          ENDIF
-          CALL VPSTOR ( -1, TYPMOD, MODEOU, NBMODE, NEQ, ZR(LMOD),
-     &                  ZC(1),NBMODE,NBPARI,NBPARR,NBPARK,NOPARA,'    ',
-     &                  ZI(LVALI),ZR(LVALR),ZK24(LVALK),IPREC)
-          CALL VPNOR2 ( MODEOU, NBMODE, ZI(LNUMOR), ZR(LCOEF) )
-
-
-
-        ELSEIF ( TYPMOD .EQ. 'C' ) THEN
-          CALL WPNORM ( NORM, 'OUI', LMAT, NEQ, NBMODE, ZI(LDDL),
-     &                  ZC(LMOD), ZR(LVALR) ,ZR(LCOEF))
-          CALL VPSTOR ( -1,TYPMOD,MODEOU,NBMODE,NEQ,ZR(1),
-     &               ZC(LMOD),NBMODE,NBPARI,NBPARR,NBPARK,NOPARA,'    ',
-     &                 ZI(LVALI),ZR(LVALR),ZK24(LVALK),IPREC )
-        ELSE
-          CALL U2MESK('F','ALGELINE2_44',1,TYPMOD)
-        ENDIF
+      ILGCON = LXLGUT(TYPCON)
+      IF ( TYPCON(ILGCON-1:ILGCON) .EQ. '_C' ) ILGCON = ILGCON -2
+      CALL RSEXIS(MODEOU,IRET)
+      IF (IRET.EQ.0) CALL RSCRSD('G',MODEOU,TYPCON(:ILGCON),NBMODE)
+      IPREC = 0
 C
-        DO 60 IM = 1,NBMODE
-         CALL RSADPA(MODEOU,'E',1,'NORME',ZI(LNUMOR+IM-1),0,LNORM,K8B)
-         ZK24(LNORM) = METHOD
- 60     CONTINUE
+      IF ( TYPMOD .EQ. 'R' ) THEN
+        IF ( TYPCON(1:10) .EQ. 'MODE_FLAMB' ) THEN
+           CALL VPNOR1 ( NORM, NEQ, NBMODE, ZI(LDDL), ZR(LMOD),
+     &                   ISIGN, NUMDDL, ZR(LCOEF) )
+        ELSE
+           IF (LPARAM) THEN         
+              CALL VPNORM (NORM,'OUI',LMAT,NEQ,NBMODE,ZI(LDDL),
+     &                     ZR(LMOD), ZR(LVALR), LMASIN, XMASTR,
+     &                     ISIGN, NUMDDL, ZR(LCOEF) )
+           ELSE
+              CALL VPNORM (NORM,'NON',LMAT,NEQ,NBMODE,ZI(LDDL),
+     &                     ZR(LMOD), ZR(LVALR), LMASIN, XMASTR,
+     &                     ISIGN, NUMDDL, ZR(LCOEF) )
+           ENDIF
+        ENDIF
+        CALL VPSTOR ( -1, TYPMOD, MODEOU, NBMODE, NEQ, ZR(LMOD),
+     &                ZC(1),NBMODE,NBPARI,NBPARR,NBPARK,
+     &                NOPARA,'    ',ZI(LVALI),ZR(LVALR),
+     &                ZK24(LVALK),IPREC)
+        CALL VPNOR2 ( MODEOU, NBMODE, ZI(LNUMOR), ZR(LCOEF) )
+C
+      ELSEIF ( TYPMOD .EQ. 'C' ) THEN
+C
+        CALL WPNORM ( NORM, 'OUI', LMAT, NEQ, NBMODE, ZI(LDDL),
+     &                ZC(LMOD), ZR(LVALR) ,ZR(LCOEF))
+        CALL VPSTOR ( -1,TYPMOD,MODEOU,NBMODE,NEQ,ZR(1),
+     &          ZC(LMOD),NBMODE,NBPARI,NBPARR,NBPARK,NOPARA,'    ',
+     &          ZI(LVALI),ZR(LVALR),ZK24(LVALK),IPREC )
+C
+      ELSE
+        CALL U2MESK('F','ALGELINE2_44',1,TYPMOD)
+      ENDIF
+C
+      DO 60 IM = 1,NBMODE
+       CALL RSADPA(MODEOU,'E',1,'NORME',ZI(LNUMOR+IM-1),0,LNORM,K8B)
+       ZK24(LNORM) = METHOD
+ 60   CONTINUE
 
 C     --- ON MET UN TITRE ----
       CALL TITRE
 C
 C
  1000 FORMAT(/,'NORMALISATION DES MODES : ',A8)
- 1010 FORMAT(' NUME_ORDRE         ANCIENNE NORME            ',
-     &       'NOUVELLE NORME')
- 1040 FORMAT(' NUME_ORDRE         NORME            ')
- 1050 FORMAT(I12,8(' '),A24)
- 1020 FORMAT(I12,A24,A24)
+ 1010 FORMAT(' NUME_ORDRE     ANCIENNE NORME          NOUVELLE NORME')
+ 1040 FORMAT(' NUME_ORDRE     NORME')
+ 1050 FORMAT(I12,2(' '),A24)
+ 1020 FORMAT(I12,2(' '),A24,A24)
  1030 FORMAT('BANDE DE FREQUENCE VIDE !!!')
  9999 CONTINUE
       CALL JEDEMA()
