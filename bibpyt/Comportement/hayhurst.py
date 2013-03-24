@@ -1,8 +1,8 @@
-#@ MODIF hayhurst Comportement  DATE 18/06/2012   AUTEUR PROIX J-M.PROIX 
+#@ MODIF hayhurst Comportement  DATE 18/03/2013   AUTEUR PROIX J-M.PROIX 
 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
@@ -22,8 +22,7 @@ from cata_comportement import LoiComportement
 
 loi = LoiComportement(
    nom            = 'HAYHURST',
-   doc = """Modele viscoplastique couple a l'endommagement isotrope de Kachanov.
-   Ce modele s'emploie avec les mots cles DEFORMATION = PETIT ou PETIT_REAC ou GDEF_HYPO_ELAS ou GDEF_LOG.""",
+   doc = """Modele viscoplastique couple a l'endommagement isotrope de Kachanov.""",
    num_lc         = 32,
    nb_vari        = 12,
    nom_vari       = ('EPSPXX','EPSPYY','EPSPZZ','EPSPXY','EPSPXZ','EPSPYZ','EPSPEQ','H1','H2','PHI','ENDO','VIDE'),
@@ -31,7 +30,7 @@ loi = LoiComportement(
    modelisation   = ('3D','AXIS','D_PLAN'),
    deformation    = ('PETIT','PETIT_REAC','GDEF_HYPO_ELAS','GDEF_LOG'),
    nom_varc       = ('TEMP'),
-   algo_inte         = ('RUNGE_KUTTA','NEWTON_PERT'),
+   algo_inte      = ('NEWTON','RUNGE_KUTTA','NEWTON_PERT',),
    type_matr_tang = ('PERTURBATION', 'VERIFICATION'),
    proprietes     = None,
 )

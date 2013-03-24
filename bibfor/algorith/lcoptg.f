@@ -1,6 +1,6 @@
-       SUBROUTINE LCOPTG ( NMAT,MATER,NR,NVI,DRDY,DSDE ,IRET)
+       SUBROUTINE LCOPTG(NMAT,MATER,NR,NVI,DRDY,SIGEPS,DSDE,IRET)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 14/01/2013   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGORITH  DATE 18/03/2013   AUTEUR PROIX J-M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -26,13 +26,14 @@ C         NMAT   :  DIMENSION MATER
 C         MATER  :  COEFFICIENTS MATERIAU
 C         NR     :  DIMENSION MATRICE JACOBIENNE
 C         DRDY   :  MATRICE JACOBIENNE
+C         SIGEPS :  =1 si DY=(DSIG, DZ) et =0 si DY=(DEPSE, DZ) 
 C     OUT DSDE   :  MATRICE TANGENTE EN VITESSE
 C     ----------------------------------------------------------------
       IMPLICIT NONE
 C     ----------------------------------------------------------------
       COMMON /TDIM/   NDT  , NDI
 C     ----------------------------------------------------------------
-      INTEGER NMAT,NR,IRET,NDT,NDI,I,J,NVI,NORM
+      INTEGER NMAT,NR,IRET,NDT,NDI,I,J,K,NVI,NORM,SIGEPS
       REAL*8  HOOK(6,6),DRDY(NR,NR),DSDE(6,6),MATER(NMAT,2)
       REAL*8  Y0(NDT,NDT),Y1(NDT,NVI),Y2(NVI,NDT),Y3(NVI,NVI)
       REAL*8  Y4(NDT,NDT),Y5(NDT,NDT),DET,R8PREM,MAXI,MINI
@@ -128,11 +129,17 @@ C --- INVERSION DU TERME Y5
          CALL LCEQMA(HOOK,DSDE)
       ELSE
          CALL R8INIR(36,0.D0,DSDE,1)
-         DO 12 I=1,NDT
+         IF (SIGEPS.EQ.1) THEN
+            CALL LCEQMA(DSDEB,DSDE)
+         ELSE
+            DO 12 I=1,NDT
             DO 11 J=1,NDT
-               DSDE(I,J)=DSDEB(I,J)
+            DO 10 K=1,NDT
+               DSDE(I,J)=DSDE(I,J)+HOOK(I,K)*DSDEB(K,J)
+ 10         CONTINUE
  11         CONTINUE
- 12      CONTINUE
+ 12         CONTINUE
+         ENDIF
          
       ENDIF
 

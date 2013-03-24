@@ -1,7 +1,7 @@
       SUBROUTINE HAYJAC (MOD,NMAT,COEFEL,COEFT,TIMED,TIMEF,
      &                   YF,DEPS,NR,NVI,VIND,VINF,YD,DY,CRIT,DRDY,IRET)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 25/02/2013   AUTEUR PROIX J-M.PROIX 
+C MODIF ALGORITH  DATE 18/03/2013   AUTEUR PROIX J-M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -43,20 +43,19 @@ C     --------------------------------------------------------------
       REAL*8          TIMED,TIMEF,VIND(NVI),VINF(NVI)
       CHARACTER*8     MOD
 C
-      INTEGER         NDT,NDI,ITENS,NDIM
-      REAL*8          R8PREM,FKOOH(6,6),DEV(6),LCNRTS,S,N(6),N1(6)
-      REAL*8          KRON(6),EPS0,PK,PH1,PH2,DELTA1,DELTA2,H1ST,H2ST
-      REAL*8          BIGA,SIG0,PKC,ALPHAD,SEQUID,DT,THETA,EPSI,COEF
-      REAL*8          H1,H2,H,D,DP,COSH1,COSH2,SINH1,SINH2,DMGMI,GRJ0
-      REAL*8          SEQ,SEQ0,SEQUI,SHMAX,SINN,TERME1,TRSIG,TRSIG0
-      REAL*8          SMX(6),EQUI(16),DM1
-      
-      REAL*8          DGDS(6,6),I6(6,6),ID(6,6),NXN(6,6),DFSDS(6,6)
-      REAL*8          UN  , ZERO , D23 , D13
-      PARAMETER       ( UN   =  1.D0      )
-      PARAMETER       ( ZERO =  0.D0      )
-      PARAMETER       ( D23  =  2.D0/3.D0 )
-      PARAMETER       ( D13  = -1.D0/3.D0 )
+      INTEGER NDT,NDI,ITENS,NDIM
+      REAL*8  R8PREM,FKOOH(6,6),DEV(6),LCNRTS,S,N(6),N1(6)
+      REAL*8  KRON(6),EPS0,PK,PH1,PH2,DELTA1,DELTA2,H1ST,H2ST
+      REAL*8  BIGA,SIG0,PKC,ALPHAD,SEQUID,DT,THETA,EPSI,COEF
+      REAL*8  H1,H2,H,D,DP,COSH1,COSH2,SINH1,SINH2,DMGMI,GRJ0
+      REAL*8  SEQ,SEQ0,SEQUI,SHMAX,SINN,TERME1,TRSIG,TRSIG0,DDMG
+      REAL*8  SIGF(6),EQUI(16),DM1,EPSEF(6),YOUNG,POISS,DEUXMU,DMG
+      REAL*8  DGDS(6,6),I6(6,6),ID(6,6),NXN(6,6),DFEDEE(6,6),DH1,DH2
+      REAL*8  UN,ZERO,D23,D13,DSEQDE(6),HOOKF(6,6),TROISK,GH1,GH2
+      PARAMETER ( UN   =  1.D0      )
+      PARAMETER ( ZERO =  0.D0      )
+      PARAMETER ( D23  =  2.D0/3.D0 )
+      PARAMETER ( D13  = -1.D0/3.D0 )
 
 C     --------------------------------------------------------------
       COMMON /TDIM/   NDT  , NDI
@@ -81,39 +80,53 @@ C
       H2ST   = COEFT(8)
       BIGA   = COEFT(9)
       SIG0   = COEFT(10)
-C      PKC    = COEFT(11)
+      PKC    = COEFT(11)
       ALPHAD = COEFT(12)
       SEQUID = COEFT(13)
+      YOUNG=COEFEL(1)
+      POISS=COEFEL(2)
+      DEUXMU=YOUNG/(1.D0+POISS)
+      TROISK=YOUNG/(1.D0-2.D0*POISS)
       DT=TIMEF-TIMED
       THETA=CRIT(4)      
       EPSI=R8PREM()*PK
+      DMGMI=1.D0-(1.D0+PKC*TIMEF)**D13
       
-      DMGMI=0.D0
       NDIM=3
 
-      H1=YF(8)
-      H2=YF(9)
+      GH1=YD(8)
+      GH2=YD(9)
+      DH1=DY(8)
+      DH2=DY(9)
+      H1=GH1+THETA*DH1
+      H2=GH2+THETA*DH2
       H=H1+H2
-      D=YF(10)
+      DMG=YD(10)
+      DDMG=DY(10)
+      D=DMG+THETA*DDMG
       DP=DY(7)
       DM1=1.D0-D
       
 C  INITIALISATION DE LA MATRICE DRDY
       CALL R8INIR ( NR*NR, 0.D0 , DRDY, 1 )
-C     Inverse de la matrice de Hooke
-      CALL LCOPIL  ( 'ISOTROPE' , MOD , COEFEL , DGDS )
-      DO 1 I=7,10
+      DO 1 I=1,10
          DRDY(I,I)=1.D0
    1  CONTINUE
 
 C
 C------------CALCUL DES INVARIANTS DE CONTRAINTE  -------
 C     attention FGEQUI ne prend pas en compte les SQRT(2)
-      CALL DCOPY(NDT,YF,1,SMX,1)      
-      CALL DSCAL(3,1.D0/SQRT(2.D0),SMX(4),1)
-      CALL FGEQUI(SMX,'SIGM_DIR',NDIM,EQUI)
+      DO 11 ITENS=1,NDT
+        EPSEF(ITENS)=YD(ITENS)+THETA*DY(ITENS)
+   11 CONTINUE
+      CALL LCOPLI('ISOTROPE',MOD,COEFEL,HOOKF)
+      CALL LCPRMV ( HOOKF , EPSEF , SIGF)
+      CALL LCPRSV (DM1, SIGF, SIGF)
+
+      CALL DSCAL(3,1.D0/SQRT(2.D0),SIGF(4),1)
+      CALL FGEQUI(SIGF,'SIGM_DIR',NDIM,EQUI)
 C     on retablit le tenseur
-      CALL DSCAL(3,SQRT(2.D0),SMX(4),1)
+      CALL DSCAL(3,SQRT(2.D0),SIGF(4),1)
       TRSIG=EQUI(16)
       GRJ0=MAX(EQUI(3),EQUI(4))
       GRJ0=MAX(GRJ0,EQUI(5))
@@ -128,9 +141,9 @@ C     on retablit le tenseur
 C------------ CALCUL DU TENSEUR DEVIATORIQUE DES CONTRAINTES ---
       DO 10 ITENS=1,NDT
         IF (ITENS.LE.3) THEN
-           DEV(ITENS)=SMX(ITENS)-TRSIG/3.D0
+           DEV(ITENS)=SIGF(ITENS)-TRSIG/3.D0
         ELSE
-           DEV(ITENS)=SMX(ITENS)*SQRT(2.0D0)
+           DEV(ITENS)=SIGF(ITENS)*SQRT(2.0D0)
         ENDIF
    10 CONTINUE
    
@@ -162,48 +175,46 @@ C
       ENDIF
       COSH2=SQRT(1.D0+SINH2*SINH2)
       
-      IF (DP.GT.0.D0) THEN
-C        dFs/dp=n*(1-D)    
-C        YF(1a6) CONTIENT SIG
+      IF (SEQ.GT.0.D0) THEN
+C        dFe/dEel   
          CALL LCPRSV ( 1.5D0 / SEQ , DEV , N )
-C - DGDS(T+DT)
          CALL LCPRTE ( N  , N  , NXN )
-         CALL LCPRSM ( 1.5D0   , ID    , DFSDS )
-         CALL LCDIMA ( DFSDS,  NXN , DFSDS )
-         CALL LCPRSM ( DP*THETA*DM1/SEQ , DFSDS, DFSDS )
-         CALL LCSOMA ( DFSDS , DGDS   , DGDS  )
-
+         CALL LCPRSM ( 1.5D0   , ID    , DFEDEE )
+         CALL LCDIMA ( DFEDEE,  NXN , DFEDEE )
+         DO 12 I=1,6
+         DO 12 J=1,6
+            DRDY(I,J)=DRDY(I,J)+DEUXMU*THETA*DP/SEQ*DM1*DFEDEE(I,J)
+   12    CONTINUE
+C        dFe/dp
          DO 20 I=1,6
-            DRDY(I,7)=N(I)*DM1
+            DRDY(I,7)=N(I)
    20    CONTINUE
-C        dFs/dD=    
-C        YF(1a6) CONTIENT SIG
+C        dSeq/dEel         
          DO 30 I=1,6
-            DRDY(I,10)=THETA*(DEPS(I)-N(I)*DP)
+            DSEQDE(I)=DEUXMU*THETA*(1.D0-D)*N(I)
    30    CONTINUE
-         
-C        dFp/dSig=
-         COEF=-EPS0*DT*COSH1*(1.D0-H)/PK
+C        dFp/dEel=
+         COEF=-EPS0*DT*COSH1*(1.D0-H)/PK/(1.D0-DMGMI)/(1.D0-D)
          DO 40 I=1,6
-            DRDY(7,I)=COEF*N(I)
+            DRDY(7,I)=COEF*DSEQDE(I)
    40    CONTINUE
 C        dFp/dp=
          DRDY(7,7)=1.D0
 C        dFp/dH1=
-         DRDY(7,8)=EPS0*DT*COSH1*THETA*SEQ0/PK
-         DRDY(7,9)=EPS0*DT*COSH1*THETA*SEQ0/PK
+         DRDY(7,8)=EPS0*DT*COSH1*THETA*SEQ0/PK/(1.D0-DMGMI)
+         DRDY(7,9)=DRDY(7,8)
 C        dFp/dD=
-         DRDY(7,10)=EPS0*DT*COSH1*THETA*SEQ0/PK*(1.D0-H)/(1-D)**2
+         DRDY(7,10)=0.D0
          
-C        dFH1/ds=
+C        dFH1/dEel=
          COEF=PH1*DP*(H1ST-DELTA1*H1)/SEQ/SEQ
          DO 50 I=1,6
-            DRDY(8,I)=COEF*N(I)
+            DRDY(8,I)=COEF*DSEQDE(I)
    50    CONTINUE
 C        dFH2/ds=
          COEF=PH2*DP*(H2ST-DELTA2*H2)/SEQ/SEQ
          DO 60 I=1,6
-            DRDY(9,I)=COEF*N(I)
+            DRDY(9,I)=COEF*DSEQDE(I)
    60    CONTINUE
 C        dFH1/dp=
          DRDY(8,7)=-PH1*(H1ST-DELTA1*H1)/SEQ
@@ -211,30 +222,33 @@ C        dFH1/dp=
 C        dFH1/dH1=
          DRDY(8,8)=1.D0+PH1*DP*DELTA1*THETA/SEQ
          DRDY(9,9)=1.D0+PH2*DP*DELTA2*THETA/SEQ
-C        dFH1/dD=
-         DRDY(8,10)=PH1*DP*(H1ST-DELTA1*H1)/SEQ*THETA/(1-D)
-         DRDY(9,10)=PH2*DP*(H2ST-DELTA2*H2)/SEQ*THETA/(1-D)
+C        dFH1/dD= - ou + ?
+         DRDY(8,10)=-PH1*DP*(H1ST-DELTA1*H1)*SEQ0*THETA/SEQ/SEQ
+         DRDY(9,10)=-PH2*DP*(H2ST-DELTA2*H2)*SEQ0*THETA/SEQ/SEQ
 
-C        DFPHI/DPHI non programme
-C        DFD/DS
-         COEF=-BIGA*DT*COSH2/SIG0*THETA
+C        dFD/dEe
+         COEF=-BIGA*DT*COSH2/SIG0
          DO 70 I=1,6
-            DRDY(10,I)=COEF*N(I)*(1.D0-ALPHAD)
+            DRDY(10,I)=COEF*DSEQDE(I)*(1.D0-ALPHAD)
    70    CONTINUE
 
 C        DFD/DD
          DRDY(10,10)=1.D0+BIGA*DT*COSH2/SIG0*(1-ALPHAD)*THETA*SEQ0
-         IF (TRSIG.GT.EPSI) THEN
-            DRDY(10,10)=DRDY(10,10)+
-     &      BIGA*DT*COSH2/SIG0*ALPHAD*THETA*TRSIG0
-            DO 80 I=1,6
-               DRDY(10,I)=DRDY(10,I)+COEF*ALPHAD*KRON(I)
-   80       CONTINUE
+         IF (SEQUID.GT.0) THEN
+            IF (TRSIG.GT.EPSI) THEN
+               DRDY(10,10)=DRDY(10,10)+
+     &         BIGA*DT*COSH2/SIG0*ALPHAD*THETA*TRSIG0
+               DO 80 I=1,6
+                  DRDY(10,I)=DRDY(10,I)+
+     &                       COEF*TROISK*THETA*ALPHAD*KRON(I)*(1.D0-D)
+   80          CONTINUE
+            ENDIF
          ENDIF
 
       ENDIF
       
-      CALL LCICMA(DGDS, 6,6,NDT,NDT,1,1,DRDY,NR,NR,1,1)
       
 9999  CONTINUE
+
+
       END

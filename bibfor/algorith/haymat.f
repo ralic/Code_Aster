@@ -2,7 +2,7 @@
      &                  COEFEL,COEFPL,NVI,NR)
       IMPLICIT NONE
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 11/03/2013   AUTEUR PROIX J-M.PROIX 
+C MODIF ALGORITH  DATE 18/03/2013   AUTEUR PROIX J-M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -94,7 +94,8 @@ C =================================================================
 C =================================================================
 C - D_PLAN AXIS C_PLAN --------------------------------------------
 C =================================================================
-          NDT = 4
+C         ON DEVRAIT AVOIR NDT=4 MAIS PB DANS LCJACP
+          NDT = 6
           NDI = 3
       ENDIF
 C =================================================================

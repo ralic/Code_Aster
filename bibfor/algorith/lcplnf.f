@@ -2,12 +2,12 @@
      &                  MATERD,MATERF,ITER,NVI,ITMAX,TOLER,
      &                  PGL,NFS,NSG,TOUTMS,HSR,DT,DY,YD,
      &                  YF,VINF,TAMPON,COMP,SIGD,SIGF,DEPS,
-     &                  NR,MOD,CODRET)
+     &                  NR,MOD,TIMED,TIMEF,CODRET)
 
 C RESPONSABLE PROIX J-M.PROIX
         IMPLICIT NONE
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 25/02/2013   AUTEUR PROIX J-M.PROIX 
+C MODIF ALGORITH  DATE 18/03/2013   AUTEUR PROIX J-M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -56,8 +56,8 @@ C     VINF   :  VARIABLES INTERNES A T+DT
 C       ----------------------------------------------------------------
       INTEGER  NDT,NVI,NMAT,NDI,NBCOMM(NMAT,3),ITER,ITMAX,NR,CODRET,I
       INTEGER  NFS,NSG
-      REAL*8   MATERD(NMAT,2),MATERF(NMAT,2)
-      REAL*8   YD(*),VIND(*),TOLER,PGL(3,3),DT,TAMPON(*)
+      REAL*8   MATERD(NMAT,2),MATERF(NMAT,2),TIMED,TIMEF,PKC,M13,DTOT
+      REAL*8   YD(*),VIND(*),TOLER,PGL(3,3),DT,TAMPON(*),HOOKF(6,6)
       REAL*8   TOUTMS(NFS,NSG,6),HSR(NSG,NSG),DY(*),YF(*),VINF(*)
       CHARACTER*16 LOI,COMP(*)
       CHARACTER*24 CPMONO(5*NMAT+1)
@@ -66,6 +66,9 @@ C       ----------------------------------------------------------------
 
       COMMON /TDIM/   NDT  , NDI
 C --- -------------------------------------------------------------
+C
+C     MISE A JOUR DE SIGF , VINF
+      CALL LCEQVN( NDT ,   YF(1)     , SIGF )
 C
       IF (LOI(1:8).EQ.'MONOCRIS') THEN
 C ---    DEFORMATION PLASTIQUE EQUIVALENTE CUMULEE MACROSCOPIQUE
@@ -88,9 +91,17 @@ C        H1
          VINF(8) = YF(NDT+2)
 C        H2
          VINF(9) = YF(NDT+3)
+C        PHI
+         PKC=MATERF(11,2)
+         M13=-1.D0/3.D0
+         VINF(10)=1.D0-(1.D0+PKC*TIMEF)**M13
+C        DEFORMATION PLASTIQUE         
 C        D
          VINF(11) = YF(NDT+4)
-C        DEFORMATION PLASTIQUE         
+         DTOT=(1.D0-VINF(11))
+         CALL LCOPLI  ( 'ISOTROPE' , MOD , MATERF(1,1) , HOOKF )
+         CALL LCPRMV ( HOOKF , YF , SIGF)
+         CALL LCPRSV ( DTOT, SIGF, SIGF)
          DO 10 I=1,NDT
             VINF(I) = 0.D0
   10     CONTINUE

@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 11/03/2013   AUTEUR PROIX J-M.PROIX 
+#& MODIF COMMANDE  DATE 18/03/2013   AUTEUR PROIX J-M.PROIX 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -867,7 +867,7 @@ DEFI_MATERIAU=OPER(nom="DEFI_MATERIAU",op=5,sd_prod=mater_sdaster,
              DELTA2       =SIMP(statut='o',typ='R'),
              H1ST         =SIMP(statut='o',typ='R'),
              H2ST         =SIMP(statut='o',typ='R'),
-             KC           =SIMP(statut='f',typ='R',defaut=0.,into=(0.,)),
+             KC           =SIMP(statut='f',typ='R',defaut=0.),
              BIGA         =SIMP(statut='o',typ='R'),
              SIG0         =SIMP(statut='o',typ='R'),
              ALPHAD       =SIMP(statut='f',typ='R',defaut=0.),
