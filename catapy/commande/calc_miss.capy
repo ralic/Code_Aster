@@ -1,7 +1,7 @@
-#& MODIF COMMANDE  DATE 13/11/2012   AUTEUR GREFFET N.GREFFET 
+#& MODIF COMMANDE  DATE 25/03/2013   AUTEUR DEVESA G.DEVESA 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -131,14 +131,16 @@ CALC_MISS = MACRO(nom="CALC_MISS",
     ),    
     # si post-traitement
     b_donnees   = BLOC(condition="TYPE_RESU != 'FICHIER' and TYPE_RESU != 'FICHIER_TEMPS'",
-                       regles=(ENSEMBLE('GROUP_MA_FLU_STR', 'GROUP_MA_FLU_SOL', 'GROUP_MA_SOL_SOL'),),
+                       regles=(ENSEMBLE('GROUP_MA_FLU_STR', 'GROUP_MA_FLU_SOL', 'GROUP_MA_SOL_SOL'),
+                               UN_PARMI('MATR_AMOR', 'AMOR_REDUIT'),),
         MACR_ELEM_DYNA  = SIMP(statut='f', typ=macr_elem_dyna,
                                fr="Macro élément produit en amont"),
         BASE_MODALE     = SIMP(statut='o', typ=mode_meca,
                                fr="Base de modes"),
         MATR_RIGI       = SIMP(statut='o', typ=(matr_asse_depl_r, matr_asse_depl_c),),
-        MATR_MASS       = SIMP(statut='o', typ=matr_asse_depl_r ),
-        AMOR_REDUIT     = SIMP(statut='o', typ='R', max='**'),
+        MATR_MASS       = SIMP(statut='o', typ=matr_asse_depl_r ),        
+        MATR_AMOR       = SIMP(statut='f', typ=matr_asse_depl_r ),
+        AMOR_REDUIT     = SIMP(statut='f', typ='R', max='**'),
         GROUP_MA_INTERF = SIMP(statut='o', typ=grma, max='**',
                                fr="Groupe de mailles de l'interface"),
         GROUP_MA_FLU_STR = SIMP(statut='f', typ=grma, max='**',
@@ -182,23 +184,40 @@ CALC_MISS = MACRO(nom="CALC_MISS",
     ),
     # Post-traitement type 1 - tran_gene
     b_post_tran_gene = BLOC(condition="TYPE_RESU == 'TRAN_GENE'",
-                       regles=(AU_MOINS_UN('ACCE_X', 'ACCE_Y', 'ACCE_Z'),),
+                       regles=(AU_MOINS_UN('ACCE_X', 'ACCE_Y', 'ACCE_Z','DEPL_X', 'DEPL_Y', 'DEPL_Z',),
+                               PRESENT_ABSENT('ACCE_X','DEPL_X', 'DEPL_Y', 'DEPL_Z',),
+                               PRESENT_ABSENT('ACCE_Y','DEPL_X', 'DEPL_Y', 'DEPL_Z',),
+                               PRESENT_ABSENT('ACCE_Z','DEPL_X', 'DEPL_Y', 'DEPL_Z',),
+                              ),
         MODELE         = SIMP(statut='o', typ=(modele_sdaster),),
+        GROUP_NO       = SIMP(statut='f', typ=grno, max='**',),
         ACCE_X         = SIMP(statut='f', typ=fonction_sdaster,),
         ACCE_Y         = SIMP(statut='f', typ=fonction_sdaster,),
         ACCE_Z         = SIMP(statut='f', typ=fonction_sdaster,),
+        DEPL_X         = SIMP(statut='f', typ=fonction_sdaster,),
+        DEPL_Y         = SIMP(statut='f', typ=fonction_sdaster,),
+        DEPL_Z         = SIMP(statut='f', typ=fonction_sdaster,),
         INST_FIN       = SIMP(statut='o', typ='R', fr="Instant final du calcul"),
         PAS_INST       = SIMP(statut='o', typ='R', fr="Pas de temps du calcul"),
     ),
     # Post-traitement type 1 - harm_gene
     b_post_harm_gene  = BLOC(condition="TYPE_RESU == 'HARM_GENE'",
-                       regles=(AU_MOINS_UN('EXCIT_HARMO', 'ACCE_X', 'ACCE_Y', 'ACCE_Z'),
+                       regles=(#AU_MOINS_UN('EXCIT_HARMO', 'ACCE_X', 'ACCE_Y', 'ACCE_Z',),
+                               AU_MOINS_UN('EXCIT_HARMO', 'ACCE_X', 'ACCE_Y', 'ACCE_Z','DEPL_X','DEPL_Y','DEPL_Z'),
                                PRESENT_ABSENT('EXCIT_HARMO', 'ACCE_X', 'ACCE_Y', 'ACCE_Z', 'INST_FIN'),
+                               PRESENT_ABSENT('EXCIT_HARMO', 'DEPL_X', 'DEPL_Y', 'DEPL_Z'),
+                               PRESENT_ABSENT('ACCE_X','DEPL_X', 'DEPL_Y', 'DEPL_Z',),
+                               PRESENT_ABSENT('ACCE_Y','DEPL_X', 'DEPL_Y', 'DEPL_Z',),
+                               PRESENT_ABSENT('ACCE_Z','DEPL_X', 'DEPL_Y', 'DEPL_Z',),
                                ENSEMBLE('INST_FIN', 'PAS_INST'),),
         MODELE         = SIMP(statut='o', typ=(modele_sdaster),),
+        GROUP_NO       = SIMP(statut='f', typ=grno, max='**',),
         ACCE_X         = SIMP(statut='f', typ=fonction_sdaster,),
         ACCE_Y         = SIMP(statut='f', typ=fonction_sdaster,),
         ACCE_Z         = SIMP(statut='f', typ=fonction_sdaster,),
+        DEPL_X         = SIMP(statut='f', typ=fonction_sdaster,),
+        DEPL_Y         = SIMP(statut='f', typ=fonction_sdaster,),
+        DEPL_Z         = SIMP(statut='f', typ=fonction_sdaster,),
         INST_FIN       = SIMP(statut='f', typ='R', fr="Instant final du calcul"),
         PAS_INST       = SIMP(statut='f', typ='R', fr="Pas de temps du calcul"),
         # identique à EXCIT de DYNA_LINE_HARM au type attendu pour VECT_ASSE près

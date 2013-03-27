@@ -1,8 +1,8 @@
-#@ MODIF miss_post Miss  DATE 13/11/2012   AUTEUR GREFFET N.GREFFET 
+#@ MODIF miss_post Miss  DATE 25/03/2013   AUTEUR DEVESA G.DEVESA 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE  YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION  EITHER VERSION 2 OF THE LICENSE, OR
@@ -107,6 +107,19 @@ class POST_MISS(object):
                 _acz = CALC_FONCTION(COMB=_F(FONCTION=self.param['ACCE_Z'], COEF=1.0,),
                                      LIST_PARA=__linst)
                 self.acce_z = _acz
+            if self.param['GROUP_NO'] is None:
+              if self.param['DEPL_X']:
+                _acx = CALC_FONCTION(COMB=_F(FONCTION=self.param['DEPL_X'], COEF=1.0,),
+                                     LIST_PARA=__linst)
+                self.depl_x = _acx
+              if self.param['DEPL_Y']:
+                _acy = CALC_FONCTION(COMB=_F(FONCTION=self.param['DEPL_Y'], COEF=1.0,),
+                                     LIST_PARA=__linst)
+                self.depl_y = _acy
+              if self.param['DEPL_Z']:
+                _acz = CALC_FONCTION(COMB=_F(FONCTION=self.param['DEPL_Z'], COEF=1.0,),
+                                     LIST_PARA=__linst)
+                self.depl_z = _acz
 
 
     def execute(self):
@@ -133,6 +146,11 @@ class POST_MISS(object):
                                    NUME_DDL_GENE=self.nddlgen,
                                    MATR_ASSE=self.param['MATR_MASS'])
         self.massgen = __massgen
+        if self.param['MATR_AMOR']:
+           __amorgen = PROJ_MATR_BASE(BASE=self.param['BASE_MODALE'],
+                                   NUME_DDL_GENE=self.nddlgen,
+                                   MATR_ASSE=self.param['MATR_AMOR'])
+           self.amorgen = __amorgen
         self.set_fft_accelero()
         self.set_freq_dlh()
 
@@ -148,6 +166,16 @@ class POST_MISS(object):
         if self.acce_z:
             _zff = CALC_FONCTION(FFT=_F(FONCTION=self.acce_z, METHODE=self.methode_fft,),)
             self.zff = _zff
+            
+        if self.depl_x:
+            _xff = CALC_FONCTION(FFT=_F(FONCTION=self.depl_x, METHODE=self.methode_fft,),)
+            self.xff = _xff
+        if self.depl_y:
+            _yff = CALC_FONCTION(FFT=_F(FONCTION=self.depl_y, METHODE=self.methode_fft,),)
+            self.yff = _yff
+        if self.depl_z:
+            _zff = CALC_FONCTION(FFT=_F(FONCTION=self.depl_z, METHODE=self.methode_fft,),)
+            self.zff = _zff            
 
 
     def set_freq_dlh(self):
@@ -177,6 +205,7 @@ class POST_MISS(object):
     def suppr_acce_fft(self):
         """Marque pour suppression les accéléros interpolés et leur FFT."""
         for co in (self.acce_x, self.acce_y, self.acce_z,
+                   self.depl_x, self.depl_y, self.depl_z,
                    self.xff, self.yff, self.zff):
             if co:
                 self._to_delete.append(co)
@@ -189,7 +218,9 @@ class POST_MISS(object):
           propre.
         """
         self.nddlgen = self.rigigen = self.massgen = None
+        self.amorgen = None
         self.acce_x = self.acce_y = self.acce_z = None
+        self.depl_x = self.depl_y = self.depl_z = None
         self.xff = self.yff = self.zff = None
         if len(self._to_delete) > 0:
             DETRUIRE(CONCEPT=_F(NOM=tuple(self._to_delete),),)
@@ -308,15 +339,53 @@ class POST_MISS_TRAN(POST_MISS):
                                     FREQ_EXTR=freq,)
             excit.append(_F(VECT_ASSE_GENE = __fosz,
                             FONC_MULT_C = self.zff))
+        if self.depl_x:
+            __fosx = LIRE_FORC_MISS(BASE=self.param['BASE_MODALE'],
+                                    NUME_DDL_GENE=self.nddlgen,
+                                    ISSF=self.param['ISSF'],
+                                    NOM_CMP='DX',
+                                    NOM_CHAM='DEPL',
+                                    UNITE_RESU_FORC=self.param['UNITE_RESU_FORC'],
+                                    FREQ_EXTR=freq,)
+            excit.append(_F(VECT_ASSE_GENE = __fosx,
+                            FONC_MULT_C = self.xff))
+        if self.depl_y:
+            __fosy = LIRE_FORC_MISS(BASE=self.param['BASE_MODALE'],
+                                    NUME_DDL_GENE=self.nddlgen,
+                                    ISSF=self.param['ISSF'],
+                                    NOM_CMP='DY',
+                                    NOM_CHAM='DEPL',
+                                    UNITE_RESU_FORC=self.param['UNITE_RESU_FORC'],
+                                    FREQ_EXTR=freq,)
+            excit.append(_F(VECT_ASSE_GENE = __fosy,
+                            FONC_MULT_C = self.yff))
+        if self.depl_z:
+            __fosz = LIRE_FORC_MISS(BASE=self.param['BASE_MODALE'],
+                                    NUME_DDL_GENE=self.nddlgen,
+                                    ISSF=self.param['ISSF'],
+                                    NOM_CMP='DZ',
+                                    NOM_CHAM='DEPL',
+                                    UNITE_RESU_FORC=self.param['UNITE_RESU_FORC'],
+                                    FREQ_EXTR=freq,)
+            excit.append(_F(VECT_ASSE_GENE = __fosz,
+                            FONC_MULT_C = self.zff))
         if len(self.excit_harmo) > 0:
             excit.extend( self.excit_harmo )
-        dyge = self.dyna_line_harm(MATR_MASS=self.massgen,
+        if self.amorgen :
+          dyge = self.dyna_line_harm(MATR_MASS=self.massgen,
+                                   MATR_AMOR=self.amorgen,
+                                   MATR_RIGI=rigtot,
+                                   FREQ=freq,
+                                   EXCIT=excit,
+                                   **opts)
+        else :
+          dyge = self.dyna_line_harm(MATR_MASS=self.massgen,
                                    MATR_RIGI=rigtot,
                                    FREQ=freq,
                                    AMOR_MODAL=_F(
                                    AMOR_REDUIT=self.param['AMOR_REDUIT'],),
                                    EXCIT=excit,
-                                   **opts)
+                                   **opts)        
         return dyge
 
 

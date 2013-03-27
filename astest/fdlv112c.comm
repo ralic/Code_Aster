@@ -1,0 +1,224 @@
+# MODIF  DATE 25/03/2013   AUTEUR DEVESA G.DEVESA 
+# TITRE ANALYSE MODALE D UN BARRAGE AVEC MASSE AJOUTEE DISCRETE
+# fdlv112c.para = tps_job 300 mem_job 512Mo ncpus 1 liste_test S
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
+# (AT YOUR OPTION) ANY LATER VERSION.                                                    
+#                                                                       
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
+#                                                                       
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# ======================================================================
+#
+DEBUT(CODE=_F(NOM='FDLV112C', NIV_PUB_WEB='INTERNET',) );
+#
+mail0 = LIRE_MAILLAGE(FORMAT='MED', VERI_MAIL=_F(VERIF='OUI'),);
+#
+# Modification du maillage pour creer des mailles a un noeud pour
+# placer les impedances sous la fondation du barrages.
+#
+mail=CREA_MAILLAGE(MAILLAGE=mail0,
+                      CREA_POI1 =(
+                                  _F(NOM_GROUP_MA = 'PBASE',
+                                    NOEUD = 'N316'),
+                                  _F(NOM_GROUP_MA = 'PFONDAT',
+                                    GROUP_MA = 'SURFBAS2'),
+                                  _F(NOM_GROUP_MA = 'PFLUSTR',
+                                    GROUP_MA = 'IFLUSTR2'),
+                                 ),
+                     );
+#
+# Modification du maillage pour creer des mailles a un noeud pour
+# placer les impedances sous la fondation du barrages.
+#
+
+
+mail=DEFI_GROUP(reuse =mail,
+                MAILLAGE=mail,
+                CREA_GROUP_NO=_F(NOM='ISOLSTR',
+                                 GROUP_MA=('SURFBAS2'),
+                                ),
+               );
+
+
+#
+# Orientation des elements d interface.
+#
+mail=MODI_MAILLAGE( reuse=mail,
+                    MAILLAGE=mail,
+                    ORIE_NORM_COQUE=(_F( VECT_NORM = (0., 0., 1.,),
+                                         NOEUD = 'N963',
+                                         GROUP_MA = 'IFLUSOL2'),
+                                     _F( VECT_NORM = (1., 0., 0.,),
+                                         NOEUD = 'N221',
+                                         GROUP_MA = 'IFLUSTR2'),
+                                     _F( VECT_NORM = (0., 0., -1.,),
+                                         NOEUD = 'N316',
+                                         GROUP_MA = 'SURFBAS2'),
+                                     _F( VECT_NORM = (0., 0., 1.,),
+                                         NOEUD = 'N1043',
+                                         GROUP_MA = 'SLIBREM2'),
+                                    ),
+                   );
+modele=AFFE_MODELE( MAILLAGE= mail,
+                      AFFE=( _F(GROUP_MA=( 'STRVOU2' ),
+                                PHENOMENE= 'MECANIQUE',
+                                MODELISATION= '3D'),
+                             _F(GROUP_MA = 'PBASE',
+                                PHENOMENE = 'MECANIQUE',
+                                MODELISATION = 'DIS_TR'),
+                             _F(GROUP_MA = 'PFLUSTR',
+                                PHENOMENE = 'MECANIQUE',
+                                MODELISATION = 'DIS_T'),
+                           ),
+                      );
+#
+mat1= DEFI_MATERIAU( ELAS=_F( E= 3.6E+10,
+                              RHO= 2400.,
+                              NU= 0.2,
+                            ),
+                       ) ;
+#
+champmat = AFFE_MATERIAU( MAILLAGE= mail,
+                            AFFE=_F( GROUP_MA= ('STRVOU2'),
+                                   MATER= mat1 )
+                           );
+                           
+
+fonz = DEFI_FONCTION (
+NOM_PARA = 'Z',
+PROL_GAUCHE = 'CONSTANT',
+PROL_DROITE = 'CONSTANT',
+INTERPOL = 'LIN',
+VALE = (-72.,63000.,0., 0.,) );
+
+cara_ele=AFFE_CARA_ELEM(MODELE=modele,
+                        #INFO=2,
+                        DISCRET=(_F(GROUP_MA='PBASE',
+                                    REPERE='GLOBAL',
+                                    CARA='M_TR_D_N',
+                                    VALE=(0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,)),
+                                 _F(GROUP_MA='PBASE',
+                                    REPERE='GLOBAL',
+                                    CARA='K_TR_D_N',
+                                    VALE=(0.,0.,0.,0.,0.,0.)),
+                                 _F(GROUP_MA='PFLUSTR',
+                                    REPERE='GLOBAL',
+                                    CARA='K_T_D_N',
+                                    VALE=(0.,0.,0.,)),
+                                 ),
+                     MASS_AJOU=_F(
+                                       FONC_GROUP=fonz,
+                                       GROUP_MA='IFLUSTR2',
+                                       GROUP_MA_POI1='PFLUSTR',
+                                 ),     
+                        );
+                        
+
+#
+#========================================
+# ETAPE 1: Calul des impedances de sols
+# --------
+#========================================
+#
+#
+# La structure est encastree a l interface
+#-----------------------------------------
+
+cond_lim = AFFE_CHAR_MECA( MODELE= modele,
+                           DDL_IMPO=_F(
+                                          #GROUP_NO=('ISOLSTR',),
+                                          NOEUD = 'N316',
+                                          DX= 0.,
+                                          DY= 0.,
+                                          DZ= 0.,
+                                          DRX= 0.,
+                                          DRY= 0.,
+                                          DRZ= 0.,
+                                      ),
+                           LIAISON_SOLIDE=_F(GROUP_NO=('ISOLSTR',),)
+                          );
+
+#
+#
+# Calcul des matrices et vecteurs elementaires
+#----------------------------------------------
+rigi_ele = CALC_MATR_ELEM( MODELE= modele ,
+                           OPTION= 'RIGI_MECA',
+                           CHAM_MATER= champmat,
+                           CHARGE= cond_lim,
+                           CARA_ELEM=cara_ele,
+                         );
+#
+mass_ele = CALC_MATR_ELEM( MODELE= modele ,
+                           OPTION= 'MASS_MECA',
+                           CHAM_MATER= champmat,
+                           CHARGE= cond_lim,
+                           CARA_ELEM=cara_ele,
+                         );
+#
+nume_ddl = NUME_DDL( MATR_RIGI= rigi_ele );
+#
+# Assemblage des matrices et vecteurs
+#-------------------------------------
+#
+MATRIGI= ASSE_MATRICE( MATR_ELEM= rigi_ele, NUME_DDL= nume_ddl );
+MATMASS= ASSE_MATRICE( MATR_ELEM= mass_ele, NUME_DDL= nume_ddl );
+#
+# Calcul de la masse du barrage voute
+#-------------------------------------
+#
+mass_bar=POST_ELEM( MODELE= modele ,
+                    INFO= 1,
+                    CHAM_MATER= champmat,
+                    CARA_ELEM=cara_ele,
+                    MASS_INER=_F(TOUT='OUI'),
+                   );
+IMPR_TABLE(TABLE=mass_bar);
+#
+# calcul des modes
+#------------------
+#
+#
+#
+mode_rig =MACRO_MODE_MECA(MATR_RIGI= MATRIGI,
+                       MATR_MASS= MATMASS,
+                       CALC_FREQ=_F(FREQ=(0.1, 
+                                          10.,
+                                          ),
+                                  ),
+                       VERI_MODE=_F(STOP_ERREUR='NON',),
+                       FILTRE_MODE=_F(SEUIL=0.0003,),
+                       IMPRESSION=_F(),);
+                       
+TEST_RESU(RESU=(
+    _F(   RESULTAT = mode_rig,        PARA = 'FREQ',
+            CRITERE = 'RELATIF',     TOLE_MACHINE = 1.E-4,
+            NUME_ORDRE = 1,         VALE_CALC = 3.5459,
+             ),
+    _F(   RESULTAT = mode_rig,        PARA = 'FREQ',
+            CRITERE = 'RELATIF',     TOLE_MACHINE = 1.E-4,
+            NUME_ORDRE = 2,         VALE_CALC = 3.6502,
+             ),
+    _F(   RESULTAT = mode_rig,        PARA = 'FREQ',
+            CRITERE = 'RELATIF',     TOLE_MACHINE = 1.E-4,
+            NUME_ORDRE = 3,         VALE_CALC = 4.9423,
+             ),
+    _F(   RESULTAT = mode_rig,        PARA = 'FREQ',
+            CRITERE = 'RELATIF',     TOLE_MACHINE = 1.E-4,
+            NUME_ORDRE = 4,         VALE_CALC = 6.0402,
+             ),
+                         ),
+               );
+
+
+FIN( );
