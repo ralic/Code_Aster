@@ -118,7 +118,7 @@ def get_tag(ctx):
 
 def get_branch(ctx):
     """Return an official branch name"""
-    BR = ('unstable', 'testing', 'stable-updates', 'stable')
+    BR = ['default'] + ['v%d' % i for i in range(10, 20)]
     return ctx.branch() in BR and ctx.branch() or None
 
 def get_tag_in_branch(ctx):
