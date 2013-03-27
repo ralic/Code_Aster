@@ -1,4 +1,4 @@
-#@ MODIF diffusion_H2 Contrib  DATE 12/02/2013   AUTEUR PELLET J.PELLET 
+#@ MODIF diffusion_H2 Contrib  DATE 26/03/2013   AUTEUR PROIX J-M.PROIX 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -54,7 +54,7 @@ def DETOILE(cl,epsp,Ctot0,Nl,Kt,a1,a2,a3):
    return (cl+Ct*(1.-theta))/cl
 
 
-def FLUX(cl,GRSHx,GRSHy,DIME,Grshz,Vh,R,T):
+def FLUX(cl,GRSHx,GRSHy,DIME,GRSHz,Vh,R,T):
    Coef=Vh/R/T*cl
    Flux=GRSHx*Coef
    Fluy=GRSHy*Coef
@@ -103,7 +103,7 @@ def char_grad_impo_ops(self,RESU_H2,TINIT,TFIN,RESUMECA,GRMAVOL,DIME,Ctot0,CHARG
    __MOME = self.get_concept(nom_momec.rstrip())
 
    # extraction du champ de cl instant -
-   __C20=CREA_CHAMP( OPERATION='EXTR',TYPE_CHAM='NOEU_TEMP_R',RESULTAT=RESU_H2,NOM_CHAM='TEMP',INST=TINIT)
+   __C20=CREA_CHAMP( OPERATION='EXTR',TYPE_CHAM='NOEU_TEMP_R',RESULTAT=RESU_H2,NOM_CHAM='TEMP',INST=TINIT,INFO=INFO)
 
    # on suppose que les noeuds du maillage thermique et mecaniqeu sont les memes (pour eviter un PROJ_CHAMP)
    lc_t0=__C20.EXTR_COMP('TEMP',[],1)
@@ -113,7 +113,7 @@ def char_grad_impo_ops(self,RESU_H2,TINIT,TFIN,RESUMECA,GRMAVOL,DIME,Ctot0,CHARG
 
    # contruction du terme Grad SigmaH
    # trace de sigma aux noeuds
-   __SIEQN2=CALC_CHAMP(INST=TFIN,RESULTAT=RESUMECA, CRITERES='SIEQ_NOEU')
+   __SIEQN2=CALC_CHAMP(INST=TFIN,RESULTAT=RESUMECA, CRITERES='SIEQ_NOEU',INFO=INFO)
    __SIEQN = PROJ_CHAMP(
                METHODE='COLLOCATION',
                RESULTAT=__SIEQN2,
@@ -122,11 +122,11 @@ def char_grad_impo_ops(self,RESU_H2,TINIT,TFIN,RESUMECA,GRMAVOL,DIME,Ctot0,CHARG
                NOM_CHAM ='SIEQ_NOEU',
                TOUT_ORDRE='OUI')
    __SIEQ =CREA_CHAMP( OPERATION='EXTR',TYPE_CHAM='NOEU_SIEF_R',
-                       RESULTAT=__SIEQN,NOM_CHAM='SIEQ_NOEU',INST=TFIN) ;
+                       RESULTAT=__SIEQN,NOM_CHAM='SIEQ_NOEU',INST=TFIN,INFO=INFO) ;
 
    # on renome la CMP pour pouvoir calculer le flux "thermique"
    __TRSIG = CREA_CHAMP( OPERATION= 'ASSE', TYPE_CHAM='NOEU_TEMP_R',MODELE=__MOTH,PROL_ZERO='OUI',
-                      ASSE=(_F(CHAM_GD =__SIEQ,GROUP_MA=GRMAVOL,NOM_CMP = 'TRSIG',NOM_CMP_RESU ='TEMP',COEF_R=1./3.),))
+                      ASSE=(_F(CHAM_GD =__SIEQ,GROUP_MA=GRMAVOL,NOM_CMP = 'TRSIG',NOM_CMP_RESU ='TEMP',COEF_R=1./3.),),INFO=INFO)
    # calcul du gradient de Trace(Sigma)
    __MAT1=DEFI_MATERIAU(THER=_F(LAMBDA=-1., RHO_CP=0.));
    __CMT1=AFFE_MATERIAU(MAILLAGE=__MAIL,AFFE=_F(TOUT='OUI',MATER=__MAT1,),);
@@ -266,8 +266,8 @@ def char_grad_ini_ops(self,RESU_H2,GRMAVOL,DIME,INFO,**args):
          mon_dico["FLUX_Z"]=0.
       grad.append(mon_dico)
 
-   chth=AFFE_CHAR_THER(MODELE=__MOTH,
-                       PRE_GRAD_TEMP=grad,INFO=1,
+   chth=AFFE_CHAR_THER(MODELE=__MOTH,INFO=INFO,
+                       PRE_GRAD_TEMP=grad,
                        )
 
    ################################################################
@@ -325,8 +325,8 @@ def char_source_ops(self,RESU_H2,TINIT,TFIN,RESUMECA,GRMAVOL,DIME,Ctot0,Nl,Kt,a1
    __MOME = self.get_concept(nom_momec.rstrip())
 
    # extraction du champ de Cl instant -
-   __C20=CREA_CHAMP( OPERATION='EXTR',TYPE_CHAM='NOEU_TEMP_R',RESULTAT=RESU_H2,NOM_CHAM='TEMP',INST=TINIT)
-   __EPEQN2=CALC_CHAMP(INST=(TINIT,TFIN),RESULTAT=RESUMECA,VARI_INTERNE='VARI_NOEU')
+   __C20=CREA_CHAMP( OPERATION='EXTR',TYPE_CHAM='NOEU_TEMP_R',RESULTAT=RESU_H2,NOM_CHAM='TEMP',INST=TINIT,INFO=INFO)
+   __EPEQN2=CALC_CHAMP(INST=(TINIT,TFIN),RESULTAT=RESUMECA,VARI_INTERNE='VARI_NOEU',INFO=INFO)
    __EPEQN = PROJ_CHAMP(
                METHODE='COLLOCATION',
                RESULTAT=__EPEQN2,
@@ -334,8 +334,8 @@ def char_source_ops(self,RESU_H2,TINIT,TFIN,RESUMECA,GRMAVOL,DIME,Ctot0,Nl,Kt,a1
                MODELE_2=__MOTH,
                NOM_CHAM ='VARI_NOEU',
                TOUT_ORDRE='OUI')
-   __VINT0=CREA_CHAMP( OPERATION='EXTR',TYPE_CHAM='NOEU_VAR2_R',RESULTAT=__EPEQN,NOM_CHAM='VARI_NOEU',INST=TINIT)
-   __VINT1=CREA_CHAMP( OPERATION='EXTR',TYPE_CHAM='NOEU_VAR2_R',RESULTAT=__EPEQN,NOM_CHAM='VARI_NOEU',INST=TFIN)
+   __VINT0=CREA_CHAMP( OPERATION='EXTR',TYPE_CHAM='NOEU_VAR2_R',RESULTAT=__EPEQN,NOM_CHAM='VARI_NOEU',INST=TINIT,INFO=INFO)
+   __VINT1=CREA_CHAMP( OPERATION='EXTR',TYPE_CHAM='NOEU_VAR2_R',RESULTAT=__EPEQN,NOM_CHAM='VARI_NOEU',INST=TFIN,INFO=INFO)
 
    # recopie du champ C20 pour initialiser le futur champ source
    __chtmp=CREA_CHAMP(OPERATION='AFFE',TYPE_CHAM='NOEU_NEUT_R',MAILLAGE=__MAIL,
@@ -365,11 +365,11 @@ def char_source_ops(self,RESU_H2,TINIT,TFIN,RESUMECA,GRMAVOL,DIME,Ctot0,Nl,Kt,a1
 
    nomvect = '%-19s.VALE' % __chtmp.nom
    aster.putvectjev(nomvect, nbnode,tuple(range(1,nbnode+1)),tuple(source),tuple(bidon),1 )
-   __NEUTG =CREA_CHAMP( OPERATION='DISC',TYPE_CHAM='ELGA_NEUT_R',MODELE=__MOTH,PROL_ZERO='OUI',CHAM_GD=__chtmp,) ;
-   __CHSOUR=CREA_CHAMP( OPERATION='ASSE',TYPE_CHAM='ELGA_SOUR_R',MODELE=__MOTH,INFO=1,PROL_ZERO='OUI',
+   __NEUTG =CREA_CHAMP( OPERATION='DISC',TYPE_CHAM='ELGA_NEUT_R',MODELE=__MOTH,PROL_ZERO='OUI',CHAM_GD=__chtmp,INFO=INFO) ;
+   __CHSOUR=CREA_CHAMP( OPERATION='ASSE',TYPE_CHAM='ELGA_SOUR_R',MODELE=__MOTH,INFO=INFO,PROL_ZERO='OUI',
                     ASSE=(_F(CHAM_GD =__NEUTG,GROUP_MA=GRMAVOL,NOM_CMP = 'X1',NOM_CMP_RESU ='SOUR',),))
 
-   chth=AFFE_CHAR_THER(MODELE=__MOTH,
+   chth=AFFE_CHAR_THER(MODELE=__MOTH,INFO=INFO,
                            SOURCE=_F(SOUR_CALCULEE=__CHSOUR,),
                            )
 
@@ -437,7 +437,7 @@ def champ_detoile_ops(self,RESU_H2,TINIT,TFIN,RESUMECA,GRMAVOL,DIME,Ctot0,Nl,Kt,
    __MOME = self.get_concept(nom_momec.rstrip())
 
    # extraction du champ de Cl instant -
-   __C20=CREA_CHAMP( OPERATION='EXTR',TYPE_CHAM='NOEU_TEMP_R',RESULTAT=RESU_H2,NOM_CHAM='TEMP',INST=TINIT)
+   __C20=CREA_CHAMP( OPERATION='EXTR',TYPE_CHAM='NOEU_TEMP_R',RESULTAT=RESU_H2,NOM_CHAM='TEMP',INST=TINIT,INFO=INFO)
    __EPEQN2=CALC_CHAMP(INST=(TINIT,TFIN),RESULTAT=RESUMECA,VARI_INTERNE='VARI_NOEU')
    __EPEQN = PROJ_CHAMP(
                METHODE='COLLOCATION',
@@ -446,7 +446,7 @@ def champ_detoile_ops(self,RESU_H2,TINIT,TFIN,RESUMECA,GRMAVOL,DIME,Ctot0,Nl,Kt,
                MODELE_2=__MOTH,
                NOM_CHAM ='VARI_NOEU',
                TOUT_ORDRE='OUI')
-   __VINT1=CREA_CHAMP( OPERATION='EXTR',TYPE_CHAM='NOEU_VAR2_R',RESULTAT=__EPEQN,NOM_CHAM='VARI_NOEU',INST=TFIN)
+   __VINT1=CREA_CHAMP( OPERATION='EXTR',TYPE_CHAM='NOEU_VAR2_R',RESULTAT=__EPEQN,NOM_CHAM='VARI_NOEU',INST=TFIN,INFO=INFO)
 
    # recopie du champ C20 pour initialiser le futur champ source
    __chtmp=CREA_CHAMP(OPERATION='AFFE',TYPE_CHAM='NOEU_NEUT_R',MAILLAGE=__MAIL,
@@ -471,7 +471,7 @@ def champ_detoile_ops(self,RESU_H2,TINIT,TFIN,RESUMECA,GRMAVOL,DIME,Ctot0,Nl,Kt,
 
    nomvect = '%-19s.VALE' % __chtmp.nom
    aster.putvectjev(nomvect, nbnode,tuple(range(1,nbnode+1)),tuple(detoile),tuple(bidon),1 )
-   NEUTG =CREA_CHAMP( OPERATION='DISC',TYPE_CHAM='ELNO_NEUT_R',MODELE=__MOTH,PROL_ZERO='OUI',CHAM_GD=__chtmp,) ;
+   NEUTG =CREA_CHAMP( OPERATION='DISC',TYPE_CHAM='ELNO_NEUT_R',MODELE=__MOTH,PROL_ZERO='OUI',CHAM_GD=__chtmp,INFO=INFO) ;
 
    ################################################################
 

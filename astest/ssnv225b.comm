@@ -1,4 +1,4 @@
-# MODIF  DATE 18/03/2013   AUTEUR PROIX J-M.PROIX 
+# MODIF  DATE 26/03/2013   AUTEUR PROIX J-M.PROIX 
 # TITRE VALIDATION LOI HAYHURST IMPLICITE SUR ESSAI DE FLUAGE
 # ssnv225b.para = tps_job 300 mem_job 512Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -106,7 +106,7 @@ soluce=SIMU_POINT_MAT(MATER=MAT,INFO=1,
                      SUPPORT='ELEMENT',
                      COMP_INCR=_F(RELATION='HAYHURST',
                                   DEFORMATION='GDEF_LOG',
-                                 ALGO_INTE='NEWTON_PERT',
+                                  ALGO_INTE='NEWTON_PERT',
                                   PARM_THETA=0.5,
                                   ),
                      INCREMENT=_F(LIST_INST=listtps,),
@@ -146,21 +146,21 @@ IMPR_FONCTION(
 
 #fluage secondaire comparasion s ssnv225a
 tsec=2000
-TEST_FONCTION(VALEUR=_F(VALE_CALC=0.02087339,
+TEST_FONCTION(VALEUR=_F(VALE_CALC=0.02089497,
                         VALE_REFE=0.020968,
                         REFERENCE='AUTRE_ASTER',
-                        PRECISION=0.01,
+                        PRECISION=0.004,
                         VALE_PARA=2000,
                         NOM_PARA='INST',
                         FONCTION=epsYY,
                         ),
               )
 
-TEST_FONCTION(VALEUR=_F(VALE_CALC=3.216063E-02,
+TEST_FONCTION(VALEUR=_F(VALE_CALC=0.03217489,
                         VALE_REFE=0.03230,
                         REFERENCE='AUTRE_ASTER',
                         VALE_PARA=2000,
-                        PRECISION=0.01,
+                        PRECISION=0.005,
                         NOM_PARA='INST',
                         FONCTION=endo,
                         ),
@@ -168,17 +168,17 @@ TEST_FONCTION(VALEUR=_F(VALE_CALC=3.216063E-02,
 
 # fluage tertiaire
 tter=4000
-TEST_FONCTION(VALEUR=_F(VALE_CALC=5.037927E-02,
+TEST_FONCTION(VALEUR=_F(VALE_CALC=0.05057478,
                         VALE_REFE=0.05093,
                         REFERENCE='AUTRE_ASTER',
-                        PRECISION=0.04,
+                        PRECISION=0.01,
                         VALE_PARA=4000,
                         NOM_PARA='INST',
                         FONCTION=epsYY,
                         ),
               )
 
-TEST_FONCTION(VALEUR=_F(VALE_CALC=6.788383E-02,
+TEST_FONCTION(VALEUR=_F(VALE_CALC=0.06792738,
                         VALE_REFE=0.06808,
                         REFERENCE='AUTRE_ASTER',
                         PRECISION=0.005,
@@ -202,10 +202,10 @@ IMPR_FONCTION(
 tvit = 1520.
 
 
-TEST_FONCTION(VALEUR=_F(VALE_CALC=6.629749E-06,
+TEST_FONCTION(VALEUR=_F(VALE_CALC=6.640908E-06,
                         VALE_REFE=6.653918E-06,
                         REFERENCE='AUTRE_ASTER',
-                        PRECISION=0.015,
+                        PRECISION=0.003,
                         VALE_PARA=1520.0,
                         NOM_PARA='INST',
                         FONCTION=depsdt,

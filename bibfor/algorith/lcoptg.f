@@ -1,6 +1,6 @@
        SUBROUTINE LCOPTG(NMAT,MATER,NR,NVI,DRDY,SIGEPS,DSDE,IRET)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 18/03/2013   AUTEUR PROIX J-M.PROIX 
+C MODIF ALGORITH  DATE 26/03/2013   AUTEUR PROIX J-M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -130,7 +130,13 @@ C --- INVERSION DU TERME Y5
       ELSE
          CALL R8INIR(36,0.D0,DSDE,1)
          IF (SIGEPS.EQ.1) THEN
-            CALL LCEQMA(DSDEB,DSDE)
+            DO 22 I=1,NDT
+            DO 21 J=1,NDT
+            DO 20 K=1,NDT
+               DSDE(I,J)=DSDEB(I,J)
+ 20         CONTINUE
+ 21         CONTINUE
+ 22         CONTINUE
          ELSE
             DO 12 I=1,NDT
             DO 11 J=1,NDT

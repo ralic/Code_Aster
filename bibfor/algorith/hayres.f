@@ -3,7 +3,7 @@
       IMPLICIT NONE
 C       ================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 18/03/2013   AUTEUR PROIX J-M.PROIX 
+C MODIF ALGORITH  DATE 26/03/2013   AUTEUR PROIX J-M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -54,7 +54,6 @@ C-----------------------------------------------------------------------
       THETA=CRIT(4)
       CALL LCEQVN(1,YD(8),GH1)
       CALL LCEQVN(1,YD(9),GH2)
-      CALL LCEQVN(1,YD(10),DMG)
       CALL LCEQVN(1,DY(7),DP)
       CALL LCEQVN(1,DY(8),DH1)
       CALL LCEQVN(1,DY(9),DH2)
@@ -92,9 +91,10 @@ C-----------------------------------------------------------------------
       GH=GH1+THETA*DH1+GH2+THETA*DH2
       M13=-1.D0/3.D0
       DMGMI=1.D0-(1.D0+PKC*TIMEF)**M13
+      DMG=YD(10)+THETA*DDDMG
 
 C----------------------------------------------------------------
-      DTOT=(1.D0-YF(10))
+      DTOT=(1.D0-DMG)
       CALL LCOPLI('ISOTROPE',MOD,MATERF(1,1),HOOKF)
       CALL LCPRMV ( HOOKF , EPSEF , SIGF)
       CALL LCPRSV ( DTOT, SIGF, SIGF)
@@ -123,7 +123,7 @@ C
 C----- EQUATION DONNANT LA DERIVEE DE LA DEF VISCO PLAST
 C----- CUMULEE
 C
-      TERME1=(GRJ2V*(1-GH))/(PK*(1-DMGMI)*(1-DMG))
+      TERME1=(GRJ2V*(1-GH))/(PK*(1-DMGMI)*DTOT)
       IF (GRJ2V .LE. EPSI) THEN
          DEVCUM=ZE
       ELSEIF (ABS(TERME1).LT.SHMAX) THEN
