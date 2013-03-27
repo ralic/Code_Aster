@@ -34,6 +34,7 @@ class create_asrun_files(Task.Task):
         env['LD_LIBRARY_PATH'] = os.environ.get('LD_LIBRARY_PATH', '').split(os.pathsep)
         ld_path = list(chain(*[Utils.to_list(env[name])
                        for name in ('LIBPATH', 'LIBDIR', 'LD_LIBRARY_PATH') if env[name]]))
+        ld_path = [path for path in ld_path if path]
         sep = os.pathsep + '\\\n'
         dico = dict([(k, as_str(env[k])) \
                         for k in ('PREFIX', 'PYTHON', 'PYTHONARCHDIR', 'ASTERDATADIR')])
@@ -103,9 +104,9 @@ REPDEX         | exec    | 02-05 | $ASTER_VERSION_DIR/datg
 
 TMPL_PROFILE = r"""# created by waftools/legacy
 
-LD_LIBRARY_PATH=$LD_LIBRARY_PATH:\
-$ASTER_VERSION_DIR/lib:\
-%(LD_LIBRARY_PATH)s
+LD_LIBRARY_PATH=$ASTER_VERSION_DIR/lib:\
+%(LD_LIBRARY_PATH)s:\
+$LD_LIBRARY_PATH
 
 export LD_LIBRARY_PATH
 
