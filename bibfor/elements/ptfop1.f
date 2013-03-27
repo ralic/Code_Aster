@@ -6,9 +6,9 @@
       LOGICAL             GLOBAL
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 05/02/2008   AUTEUR FLEJOU J-L.FLEJOU 
+C MODIF ELEMENTS  DATE 26/03/2013   AUTEUR CHEIGNON E.CHEIGNON 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -30,26 +30,54 @@ C     ------------------------------------------------------------------
 C
       SECT1 = COEF1
       SECT2 = COEF2
+
+C     LES MOMENTS REPARTIS SONT AUTORISES QUE POUR LES POUTRES DROITES
+C     A SECTION CONSTANTE
+      IF ( ITYPE .EQ. 1 .OR. ITYPE.EQ.2.OR. ITYPE.EQ.10) THEN
+        IF (QQ(4).NE.0.D0 .OR. QQ(10).NE.0.D0 .OR.
+     &         QQ(5).NE.0.D0 .OR. QQ(11).NE.0.D0 .OR.
+     &         QQ(6).NE.0.D0 .OR. QQ(12).NE.0.D0 ) THEN
+             CALL U2MESS('F','ELEMENTS2_59')
+        ENDIF
+      ENDIF
 C
 C     --- CALCUL DES FORCES NODALES EQUIVALENTES EN REPERE LOCAL ---
       IF ( ITYPE .EQ. 0 .OR. ITYPE.EQ.30.OR. ITYPE.EQ.20) THEN
 C        -- ELEMENTS DROITS A SECTION CONSTANTE - ON TIENT COMPTE DES
 C        -- EFFORTS TRANCHANTS
 C        --- LA CHARGE EST CONSTANTE OU VARIE LINEAIREMENT ---
-         SECT1   =  SECT1 * XL
-         FE(1)   =  ( QQ(1)/3.D0 + QQ(7)/6.D0 ) * SECT1
-         FE(7)   =  ( QQ(1)/6.D0 + QQ(7)/3.D0 ) * SECT1
-         FE(2)   =  ( 7.D0*QQ(2) + 3.D0* QQ(8)) * SECT1 / 20.D0
-         FE(8)   =  ( 3.D0*QQ(2) + 7.D0* QQ(8)) * SECT1 / 20.D0
-         FE(3)   =  ( 7.D0*QQ(3) + 3.D0* QQ(9)) * SECT1 / 20.D0
-         FE(9)   =  ( 3.D0*QQ(3) + 7.D0* QQ(9)) * SECT1 / 20.D0
-         SECT1   =  SECT1 * XL
-         FE(4)   =   0.D0
-         FE(10)  =   0.D0
-         FE(5)   = -( QQ(3)/20.D0+ QQ(9)/30.D0) * SECT1
-         FE(11)  =  ( QQ(3)/30.D0+ QQ(9)/20.D0) * SECT1
-         FE(6)   =  ( QQ(2)/20.D0+ QQ(8)/30.D0) * SECT1
-         FE(12)  = -( QQ(2)/30.D0+ QQ(8)/20.D0) * SECT1
+
+         IF (SECT1.NE.1.D0) THEN
+           IF (QQ(4).NE.0.D0 .OR. QQ(10).NE.0.D0 .OR.
+     &         QQ(5).NE.0.D0 .OR. QQ(11).NE.0.D0 .OR.
+     &         QQ(6).NE.0.D0 .OR. QQ(12).NE.0.D0 ) THEN
+             CALL ASSERT(.FALSE.)
+           ENDIF
+         ENDIF
+         COEF   =  SECT1 * XL
+
+         FE(1)   =  ( QQ(1)/3.D0 + QQ(7)/6.D0 ) * COEF
+         FE(7)   =  ( QQ(1)/6.D0 + QQ(7)/3.D0 ) * COEF
+         FE(2)   =  ( 7.D0*QQ(2) + 3.D0* QQ(8)) * COEF / 20.D0
+     &           -  (QQ(6)+QQ(12))/2.D0
+         FE(8)   =  ( 3.D0*QQ(2) + 7.D0* QQ(8)) * COEF / 20.D0
+     &           +  (QQ(6)+QQ(12))/2.D0
+         FE(3)   =  ( 7.D0*QQ(3) + 3.D0* QQ(9)) * COEF / 20.D0
+     &           +  (QQ(5)+QQ(11))/2.D0
+         FE(9)   =  ( 3.D0*QQ(3) + 7.D0* QQ(9)) * COEF / 20.D0
+     &           -  (QQ(5)+QQ(11))/2.D0
+         FE(4)   =  ( QQ(4)/3.D0 + QQ(10)/6.D0 ) * XL
+         FE(10)  =  ( QQ(4)/6.D0 + QQ(10)/3.D0 ) * XL
+
+         COEF   =  COEF * XL
+         FE(5)   = -( QQ(3)/20.D0+ QQ(9)/30.D0) * COEF
+     &           -  (QQ(11)-QQ(5))*XL/12.D0
+         FE(11)  =  ( QQ(3)/30.D0+ QQ(9)/20.D0) * COEF
+     &           +  (QQ(11)-QQ(5))*XL/12.D0
+         FE(6)   =  ( QQ(2)/20.D0+ QQ(8)/30.D0) * COEF
+     &           -  (QQ(12)-QQ(6))*XL/12.D0
+         FE(12)  = -( QQ(2)/30.D0+ QQ(8)/20.D0) * COEF
+     &           +  (QQ(12)-QQ(6))*XL/12.D0
 C
       ELSE IF ( ITYPE .EQ. 1 ) THEN
 C        --- ELEMENTS DROITS A SECTION VARIABLE TYPE 1 /

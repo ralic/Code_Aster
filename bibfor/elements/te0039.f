@@ -1,9 +1,9 @@
       SUBROUTINE TE0039(OPTION,NOMTE)
 C ----------------------------------------------------------------------
-C MODIF ELEMENTS  DATE 08/10/2012   AUTEUR PELLET J.PELLET 
+C MODIF ELEMENTS  DATE 26/03/2013   AUTEUR CHEIGNON E.CHEIGNON 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -18,6 +18,7 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
+C TOLE  CRP_20
       IMPLICIT       NONE
       INCLUDE 'jeveux.h'
       CHARACTER*16   OPTION,NOMTE
@@ -40,7 +41,6 @@ C        'MECA_POU_D_TG'  : AVEC GAUCHISSEMENT
 C        'MECA_POU_D_TGM' : AVEC GAUCHISSEMENT, SECTION MULTIFIBRES
 C     POUTRE COURBE DE TIMOSHENKO
 C        'MECA_POU_C_T'   : SECTION CONSTANTE
-C
 C     ------------------------------------------------------------------
       INTEGER        NBRES
       PARAMETER     (NBRES=4)
@@ -66,10 +66,10 @@ C     ------------------------------------------------------------------
       INTEGER  IELEM,IREPE,NDIM,IADZI,IAZK24
       INTEGER  IPLOUF,NPG,INFODI,ITYPE,IBID
       INTEGER  IGEOM,IDEPLM,IDEPLP,ICOMPO,NBT,JDC,IREP,IFONO,ILOGIC
+      INTEGER  INBFIB,NBFIB,JACF
 
       PARAMETER (ZERO=0.0D0, DEUX=2.0D0, UN=1.0D0)
 C     ------------------------------------------------------------------
-
       CALL JEMARQ()
       INFODI = 1
       IREPE  = 0
@@ -295,9 +295,19 @@ C           --- CARACTERISTIQUES GENERALES DES SECTIONS ---
             CALL JEVECH('PCAGNPO','L',LSECT)
             LSECT = LSECT - 1
 C           --- SECTION INITIALE ---
-            A     = ZR(LSECT+1)
-            XIY   = ZR(LSECT+2)
-            XIZ   = ZR(LSECT+3)
+            IF (NOMTE.EQ.'MECA_POU_D_TGM')  THEN
+              CALL JEVECH('PNBSP_I','L',INBFIB)
+              NBFIB = ZI(INBFIB)
+              CALL JEVECH('PFIBRES','L',JACF)
+              CALL PMFITG(NBFIB,3,ZR(JACF),CARSEC)
+              A     = CARSEC(1)
+              XIY   = CARSEC(5)
+              XIZ   = CARSEC(4)
+            ELSE
+              A     = ZR(LSECT+1)
+              XIY   = ZR(LSECT+2)
+              XIZ   = ZR(LSECT+3)
+            ENDIF
             ALFAY = ZR(LSECT+4)
             ALFAZ = ZR(LSECT+5)
             XJX   = ZR(LSECT+8)
@@ -322,8 +332,7 @@ C              --- SECTION FINALE ---
                FS(4) = 0.D0
                FS(5) = E*XIY*XKY
                FS(6) = E*XIZ*XKZ
-               IF ( (NOMTE.EQ.'MECA_POU_D_TG').OR.
-     &              (NOMTE.EQ.'MECA_POU_D_TGM') )THEN
+               IF ( (NOMTE.EQ.'MECA_POU_D_TG'))THEN
                   FS( 7) = 0.D0
                   FS( 8) = E*A*EPX
                   FS( 9) = 0.D0
@@ -332,13 +341,24 @@ C              --- SECTION FINALE ---
                   FS(12) = E*XIY*XKY
                   FS(13) = E*XIZ*XKZ
                   FS(14) = 0.D0
+               ELSE IF (NOMTE.EQ.'MECA_POU_D_TGM') THEN
+C                 RECUPERATION DES CARACTERISTIQUES DES FIBRES
+                  CALL PMFITX(ZI(LMATER),1,CARSEC,R8BID)
+                  FS(1) = CARSEC(1)*EPX
+                  FS(5) = CARSEC(5)*XKY
+                  FS(6) = CARSEC(4)*XKZ
+                  FS( 7) = 0.D0
+                  FS( 8) = FS(1)
+                  FS( 9) = 0.D0
+                  FS(10) = 0.D0
+                  FS(11) = 0.D0
+                  FS(12) = FS(5)
+                  FS(13) = FS(6)
+                  FS(14) = 0.D0
                ELSE IF (NOMTE.EQ.'MECA_POU_D_EM') THEN
 C                 RECUPERATION DES CARACTERISTIQUES DES FIBRES
                   CALL PMFITX(ZI(LMATER),1,CARSEC,R8BID)
                   FS(1) = CARSEC(1)*EPX
-                  FS(2) = 0.D0
-                  FS(3) = 0.D0
-                  FS(4) = 0.D0
                   FS(5) = CARSEC(5)*XKY
                   FS(6) = CARSEC(4)*XKZ
                   FS(7) = FS(1)

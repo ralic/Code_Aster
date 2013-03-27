@@ -9,7 +9,7 @@
       REAL*8            A,A2,XL,RAD,ANGS2
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 15/01/2013   AUTEUR DELMAS J.DELMAS 
+C MODIF ELEMENTS  DATE 26/03/2013   AUTEUR CHEIGNON E.CHEIGNON 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -48,7 +48,7 @@ C
       REAL*8  DIMAG,DDOT,R8MIEM
 C     ------------------------------------------------------------------
 C-----------------------------------------------------------------------
-      INTEGER K 
+      INTEGER K
 C-----------------------------------------------------------------------
       DATA         NOMPAR/'X','Y','Z','INST'/
       DATA         NOMPAV/'VITE'/
@@ -76,7 +76,6 @@ C *********************************************************************
 C
       CALL JEVECH('PGEOMER', 'L',LX)
       LX = LX-1
-
       CALL JEVECH('PCAORIE','L',IORIEN)
 
       IF ( OPTION .EQ. 'CHAR_MECA_SR1D1D' .OR.
@@ -137,7 +136,8 @@ C          -- DIR EST NORME :
          ENDIF
 
          CALL JEVECH('PMATERC','L',LMATE)
-         IF(NOMTE(1:13).EQ.'MECA_POU_D_EM')THEN
+         IF(NOMTE(1:13).EQ.'MECA_POU_D_EM' .OR.
+     &      NOMTE(1:14).EQ.'MECA_POU_D_TGM')THEN
             IF (IST.EQ.1)THEN
               CALL PMFITX(ZI(LMATE),2,CASECT,R8BID)
             ELSE
@@ -206,11 +206,9 @@ C        POUR LE CAS DU VENT
            XXX = ABS(ZR(LFORC+6))
            GLOBAL = XXX .LT. 1.D-3
            NORMAL = XXX .GT. 1.001D0
-           DO 40 I = 1, 3
+           DO 40 I = 1, 6
              Q(I)   =  ZR(LFORC-1+I)
              Q(I+6) =  Q(I)
-             XXX    =  ABS(ZR(LFORC+2+I))
-             IF (XXX .GT. 1.D-20) CALL U2MESS('F','ELEMENTS2_46')
 40         CONTINUE
          ENDIF
 C
@@ -228,7 +226,7 @@ C     --- FORCES REPARTIES PAR FONCTIONS ---
           CALL JEVECH ('PFF1D1D','L',LFORC)
           NORMAL = ZK8(LFORC+6) .EQ. 'VENT'
           GLOBAL = ZK8(LFORC+6) .EQ. 'GLOBAL'
-          DO 50 I = 1, 3
+          DO 50 I = 1, 6
              J = I + 6
              CALL FOINTE('FM',ZK8(LFORC+I-1),NBPAR,NOMPAR,W(1),Q(I),IER)
              CALL FOINTE('FM',ZK8(LFORC+I-1),NBPAR,NOMPAR,W(5),Q(J),IER)
@@ -241,7 +239,7 @@ C
 C
 C     --- CONTROLE DE VALIDITE DE FORCES VARIANT LINEAIREMENT ---
       IF ( ITYPE .NE. 0 ) THEN
-         DO 342 I=1,3
+         DO 342 I=1,6
             IF ( QQ(I) .NE. QQ(I+6)  ) THEN
                IF ( ITYPE .EQ. 10 ) THEN
                   CALL U2MESS('F','ELEMENTS2_49')

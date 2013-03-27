@@ -5,9 +5,9 @@
       CHARACTER*(*) OPTION,NOMTE
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 09/11/2012   AUTEUR DELMAS J.DELMAS 
+C MODIF ELEMENTS  DATE 26/03/2013   AUTEUR CHEIGNON E.CHEIGNON 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -39,16 +39,19 @@ C     ------------------------------------------------------------------
       REAL*8 VALRES(NBRES),R8B
       INTEGER CODRES(NBRES)
       CHARACTER*8 NOMRES(NBRES),NOMAIL,FAMI,POUM
-      INTEGER I, LMATER,J
+      CHARACTER*24 MATOR
+      INTEGER I, LMATER,J,IRET
       INTEGER LORIEN, LMAT
-      INTEGER NNO, NC,KPG,SPT
+      INTEGER NNO, NC,KPG,SPT,NBGFMX
       INTEGER ITYPE, LSECT, LX,IADZI,IAZK24,IROTA
+      INTEGER INBFIB,NBFIB,JACF,ICOMPO,ISICOM,NPG,ISDCOM
       REAL*8  OMEGA(3),OMEGL(3),S
       REAL*8  XL
       REAL*8  ZERO, UN, DEUX
       REAL*8  E, G, XNU, RHO
       REAL*8  A, XIY, XIZ, ALFAY, ALFAZ
       REAL*8  PGL(3,3),MLV(105),MATP1(105)
+      REAL*8  CARSEC(6),TEMP,RBID,CASRHO(6),CASECE(6)
 C     ------------------------------------------------------------------
       DATA NOMRES/'E','NU','RHO','RHO_F_IN','RHO_F_EX','CM'/
 C     ------------------------------------------------------------------
@@ -62,30 +65,56 @@ C
       NNO    = 2
       NC     = 7
       ITYPE  = 0
-C
-C     --- RECUPERATION DES CARACTERISTIQUES MATERIAUX ---
 
-      DO 10 I = 1,NBRES
-         VALRES(I) = ZERO
-10    CONTINUE
-
-      CALL JEVECH('PMATERC','L',LMATER)
-      FAMI='FPG1'
-      KPG=1
-      SPT=1
-      POUM='+'
-      CALL RCVALB(FAMI,KPG,SPT,POUM,ZI(LMATER),' ','ELAS',0,' ',R8B,3,
-     &            NOMRES,VALRES,CODRES,1)
-      E = VALRES(1)
-      XNU = VALRES(2)
-      RHO = VALRES(3)
-      G   = E / ( DEUX * ( UN + XNU ) )
 C     --- CARACTERISTIQUES GENERALES DES SECTIONS ---
       CALL JEVECH('PCAGNPO','L',LSECT)
       LSECT = LSECT - 1
-      A = ZR(LSECT+1)
-      XIY = ZR(LSECT+2)
-      XIZ = ZR(LSECT+3)
+C
+C     --- RECUPERATION DES CARACTERISTIQUES MATERIAUX ---
+      CALL JEVECH('PMATERC','L',LMATER)
+
+      IF (NOMTE.EQ.'MECA_POU_D_TG')THEN
+        DO 10 I = 1,NBRES
+           VALRES(I) = ZERO
+10      CONTINUE
+
+
+        FAMI='FPG1'
+        KPG=1
+        SPT=1
+        POUM='+'
+        CALL RCVALB(FAMI,KPG,SPT,POUM,ZI(LMATER),' ','ELAS',0,' ',R8B,
+     &            3,NOMRES,VALRES,CODRES,1)
+        E = VALRES(1)
+        XNU = VALRES(2)
+        RHO = VALRES(3)
+        G   = E / ( DEUX * ( UN + XNU ) )
+
+        A = ZR(LSECT+1)
+        XIY = ZR(LSECT+2)
+        XIZ = ZR(LSECT+3)
+
+      ELSEIF (NOMTE.EQ.'MECA_POU_D_TGM') THEN
+C       CALCUL DE E ET G
+        CALL PMFITX(ZI(LMATER),1,CASECE,G)
+
+C       CALCUL DE RHO MOYEN
+        CALL PMFITX(ZI(LMATER),2,CASRHO,RBID)
+
+
+        CALL JEVECH('PNBSP_I','L',INBFIB)
+        NBFIB = ZI(INBFIB)
+        CALL JEVECH('PFIBRES','L',JACF)
+        CALL PMFITG(NBFIB,3,ZR(JACF),CARSEC)
+        A     = CARSEC(1)
+        XIY   = CARSEC(5)
+        XIZ   = CARSEC(4)
+
+        RHO = CASRHO(1)/A
+        E   = CASECE(1)/A
+
+      ENDIF
+
       ALFAY = ZR(LSECT+4)
       ALFAZ = ZR(LSECT+5)
 C     --- COORDONNEES DES NOEUDS ---
@@ -123,43 +152,7 @@ CCC     --- CALCUL DE LA MATRICE DE MASSE LOCALE ---
 C        --- POUTRE DROITE SECTION CONSTANTE OU VARIABLE (1 OU 2)
         CALL PORIRO(ITYPE,MATP1,RHO,OMEGL,E,A,A,XL,XIY,XIY,XIZ,
      &              XIZ,G,ALFAY,ALFAY,ALFAZ,ALFAZ)
-
-         DO 100 I = 1 , 21
-            MLV(I) = MATP1(I)
-100      CONTINUE
-         DO 102 I = 22 , 28
-            MLV(I) = 0.D0
-102      CONTINUE
-         DO 104 I = 29 , 34
-            MLV(I) = MATP1(I-7)
-104      CONTINUE
-         MLV(35) = 0.D0
-         DO 106 I = 36 , 42
-            MLV(I) = MATP1(I-8)
-106      CONTINUE
-         MLV(43) = 0.D0
-         DO 108 I = 44 , 51
-            MLV(I) = MATP1(I-9)
-108      CONTINUE
-         MLV(52) = 0.D0
-         DO 110 I = 53 , 61
-            MLV(I) = MATP1(I-10)
-110      CONTINUE
-         MLV(62) = 0.D0
-         DO 112 I = 63 , 72
-            MLV(I) = MATP1(I-11)
-112      CONTINUE
-         MLV(73) = 0.D0
-         DO 114 I = 74 , 84
-            MLV(I) = MATP1(I-12)
-114      CONTINUE
-         MLV(85) = 0.D0
-         DO 116 I = 86 , 91
-            MLV(I) = MATP1(I-13)
-116      CONTINUE
-         DO 118 I = 92 , 105
-            MLV(I) = 0.D0
-118      CONTINUE
+        CALL MASSTG(MATP1,MLV)
 
 
       CALL JEVECH('PMATUUR','E',LMAT)

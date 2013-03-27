@@ -1,9 +1,9 @@
-# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
+# MODIF  DATE 26/03/2013   AUTEUR CHEIGNON E.CHEIGNON 
 # TITRE VALEUR DE REFERENCE POUR LES ELEMENTS POUTRES
-# zzzz234a.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test R
+# zzzz234a.para = tps_job 150 mem_job 512Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -632,7 +632,7 @@ TEST_RESU(CHAM_NO=_F(NOEUD='N2',
 MO_D_EM = AFFE_MODELE(MAILLAGE=MA,
                      AFFE=_F(GROUP_MA='POUD',PHENOMENE='MECANIQUE',MODELISATION='POU_D_EM'),)
 
-CA_D_EM = AFFE_CARA_ELEM(  POUTRE=_F( GROUP_MA='POUD',
+CA_D_EM = AFFE_CARA_ELEM( POUTRE=_F( GROUP_MA='POUD',
                                   SECTION='CERCLE',CARA= 'R',VALE=0.02,
   PREC_AIRE = 2.E-2),
     MULTIFIBRE = _F (GROUP_MA='POUD',GROUP_FIBRE= 'ACIER',),
@@ -759,12 +759,19 @@ TEST_RESU(CHAM_NO=_F(NOEUD='N2',
 MO_D_TGM = AFFE_MODELE(MAILLAGE=MA,
                      AFFE=_F(GROUP_MA='POUD',PHENOMENE='MECANIQUE',MODELISATION='POU_D_TGM'),)
 
-CA_D_TGM = AFFE_CARA_ELEM(  POUTRE=_F( GROUP_MA='POUD',
-                                  SECTION='CERCLE',CARA= 'R',VALE=0.02,
-  PREC_AIRE = 2.E-2),
-    MULTIFIBRE = _F (GROUP_MA='POUD',GROUP_FIBRE= 'ACIER',),
-                            GEOM_FIBRE = GFF ,
-                            MODELE=MO_D_TGM)
+CA_D_TGM = AFFE_CARA_ELEM( INFO = 2,
+                           POUTRE=_F( GROUP_MA='POUD',
+                                      SECTION='CERCLE',CARA= 'R',VALE=0.02,
+                                      #SECTION='GENERALE',
+                                      #CARA=('A','IY','IZ','AY','AZ',
+                                            #'JX','JG','IYR2','IZR2',),
+                                      #VALE=(1.242331416492100E-003,1.211243949751886E-007,1.212422573585321E-007,1.16667E+00,1.16667E+00,
+                                            #2.51327E-07,0.0,0.0,0.0,),
+                                      PREC_AIRE = 2.E-2),
+                           MULTIFIBRE = _F (GROUP_MA='POUD',
+                                            GROUP_FIBRE= 'ACIER',),
+                           GEOM_FIBRE = GFF ,
+                           MODELE=MO_D_TGM)
 
 CL_D_TGM = AFFE_CHAR_MECA(MODELE=MO_D_TGM,
                     DDL_IMPO=_F(GROUP_NO='A',
@@ -814,7 +821,7 @@ TEST_RESU(RESU=_F(GROUP_NO='B',
                   RESULTAT=RE_D_TGM,
                   NOM_CHAM='DEPL',
                   NOM_CMP='DY',
-                  VALE_CALC=0.043867417634707001,
+                  VALE_CALC=0.043867580284803,
                   ),
           )
 
@@ -832,7 +839,7 @@ TEST_RESU(CHAM_ELEM=_F(REFERENCE='ANALYTIQUE',
                        SOUS_POINT=1,
                        MAILLE='M1',
                        CHAM_GD=NELG05,
-                       VALE_CALC=-2.29905468E+08,
+                       VALE_CALC=-2.2990950117E+08,
                        VALE_REFE=-2.2990566066E8,),
           )
 

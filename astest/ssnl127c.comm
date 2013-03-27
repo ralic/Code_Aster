@@ -1,9 +1,9 @@
-# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
+# MODIF  DATE 26/03/2013   AUTEUR CHEIGNON E.CHEIGNON 
 # TITRE POUTRE ENCASTREE A UNE EXTREMITE ET CHARGEE PAR UNE TRACTION
 # ssnl127c.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -37,9 +37,12 @@ MO=AFFE_MODELE(        MAILLAGE=MA,
 
 GF=DEFI_GEOM_FIBRE(
            FIBRE = _F( GROUP_FIBRE='SFIB',
-                       CARA = 'DIAMETRE',
+                       CARA = 'SURFACE',
                            COOR_AXE_POUTRE = (0.,0.,),
-                            VALE =( 0.0, 0.0, 6.E-3,
+                            VALE =( 1.4999993959751172E-3, 1.4999993959751172E-3,7.0685834705770344e-06,
+                                    1.4999993959751172E-3, -1.4999993959751172E-3,7.0685834705770344e-06,
+                                    -1.4999993959751172E-3, -1.4999993959751172E-3,7.0685834705770344e-06,
+                                    -1.4999993959751172E-3, 1.4999993959751172E-3,7.0685834705770344e-06,
                                   ),),
             )
 
@@ -166,13 +169,17 @@ DdeU=RECU_FONCTION(RESULTAT=REST,
                    NOM_CHAM='VARI_ELGA',
                    NOM_CMP='V2',
                    MAILLE='SR1',
-                   POINT=1,);
+                   POINT=1,
+                   SOUS_POINT=1,
+                   );
 
 PdeU=RECU_FONCTION(RESULTAT=REST,
                    NOM_CHAM='VARI_ELGA',
                    NOM_CMP='V1',
                    MAILLE='SR1',
-                   POINT=1,);
+                   POINT=1,
+                   SOUS_POINT=1,
+                   );
 
 IMPR_FONCTION(FORMAT='TABLEAU',
               COURBE=_F(FONCTION=NdeU,),
@@ -239,13 +246,17 @@ DdeU2=RECU_FONCTION(RESULTAT=REST2,
                     NOM_CHAM='VARI_ELGA',
                     NOM_CMP='V2',
                     MAILLE='SR1',
-                    POINT=1,);
+                    POINT=1,
+                    SOUS_POINT=1,
+                    );
 
 PdeU2=RECU_FONCTION(RESULTAT=REST2,
                     NOM_CHAM='VARI_ELGA',
                     NOM_CMP='V1',
                     MAILLE='SR1',
-                    POINT=1,);
+                    POINT=1,
+                    SOUS_POINT=1,
+                    );
 
 IMPR_FONCTION(FORMAT='TABLEAU',
               COURBE=_F(FONCTION=NdeU2,),
@@ -312,13 +323,17 @@ DdeU3=RECU_FONCTION(RESULTAT=REST3,
                     NOM_CHAM='VARI_ELGA',
                     NOM_CMP='V2',
                     MAILLE='SR1',
-                    POINT=1,);
+                    POINT=1,
+                    SOUS_POINT=1,
+                    );
 
 PdeU3=RECU_FONCTION(RESULTAT=REST3,
                     NOM_CHAM='VARI_ELGA',
                     NOM_CMP='V1',
                     MAILLE='SR1',
-                    POINT=1,);
+                    POINT=1,
+                    SOUS_POINT=1,
+                    );
 
 IMPR_FONCTION(FORMAT='TABLEAU',
               COURBE=_F(FONCTION=NdeU3,),
@@ -351,6 +366,7 @@ TEST_RESU(RESU=(_F(INST=0.019,
                    ),
                 _F(INST=0.02,
                    POINT=1,
+                   SOUS_POINT=1,
                    RESULTAT=REST,
                    NOM_CHAM='VARI_ELGA',
                    NOM_CMP='V1',
@@ -360,6 +376,7 @@ TEST_RESU(RESU=(_F(INST=0.019,
                    ),
                 _F(INST=0.019199999999999998,
                    POINT=1,
+                   SOUS_POINT=1,
                    RESULTAT=REST,
                    NOM_CHAM='VARI_ELGA',
                    NOM_CMP='V2',
@@ -389,6 +406,7 @@ TEST_RESU(RESU=(_F(INST=0.016400000000000001,
                    ),
                 _F(INST=0.017999999999999999,
                    POINT=1,
+                   SOUS_POINT=1,
                    RESULTAT=REST2,
                    NOM_CHAM='VARI_ELGA',
                    NOM_CMP='V1',
@@ -398,6 +416,7 @@ TEST_RESU(RESU=(_F(INST=0.016400000000000001,
                    ),
                 _F(INST=0.0172,
                    POINT=1,
+                   SOUS_POINT=1,
                    RESULTAT=REST2,
                    NOM_CHAM='VARI_ELGA',
                    NOM_CMP='V2',
@@ -427,6 +446,7 @@ TEST_RESU(RESU=(_F(INST=7.4999999999999997E-3,
                    ),
                 _F(INST=8.0000000000000002E-3,
                    POINT=1,
+                   SOUS_POINT=1,
                    RESULTAT=REST3,
                    NOM_CHAM='VARI_ELGA',
                    NOM_CMP='V1',
@@ -436,6 +456,7 @@ TEST_RESU(RESU=(_F(INST=7.4999999999999997E-3,
                    ),
                 _F(INST=7.6666700000000004E-3,
                    POINT=1,
+                   SOUS_POINT=1,
                    RESULTAT=REST3,
                    NOM_CHAM='VARI_ELGA',
                    NOM_CMP='V2',

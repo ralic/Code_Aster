@@ -1,8 +1,8 @@
-# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
+# MODIF  DATE 26/03/2013   AUTEUR CHEIGNON E.CHEIGNON 
 # TITRE  : POUTRE ENCASTREE SOUMISE A UNE PRESSION UNIFORME
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -45,11 +45,17 @@ MOD_F=AFFE_MODELE(AFFE=_F(TOUT='OUI',
                           MODELISATION='POU_D_TGM',),
                   MAILLAGE=MAIL_F,);
 
-CAR_ELE=AFFE_CARA_ELEM(MODELE=MOD_F,
-                       POUTRE=_F(SECTION='RECTANGLE',
-                                 GROUP_MA='TOUT_ELT',
+CAR_ELE=AFFE_CARA_ELEM(MODELE=MOD_F,INFO = 2,
+                       POUTRE=_F(GROUP_MA='TOUT_ELT',
+                                 SECTION='RECTANGLE',
                                  VALE=(0.15,0.025),
-                                 CARA=('HZ','HY'),),
+                                 CARA=('HZ','HY'),
+                                 #SECTION='GENERALE',
+                                 #VALE=(3.74999999999999986E-003,7.02438354492187556E-006,
+                                 #1.95121765136718780E-007,
+                                 #1.20000E+00,1.20000E+00,6.99224E-07,2.46127E-02),
+                                 #CARA=('A','IY','IZ','AY','AZ','JX','RT'),
+                                 ),
                        GEOM_FIBRE=GF,
                        MULTIFIBRE=_F(GROUP_MA='TOUT_ELT',
                                      GROUP_FIBRE='TRAN',),);
@@ -163,7 +169,7 @@ DEPL=CREA_CHAMP(NOM_CHAM='DEPL',
 TEST_RESU(RESU=(_F(NUME_ORDRE=10,
                    PARA='ETA_PILOTAGE',
                    RESULTAT=RESULTAT,
-                   VALE_CALC=1.084214434,
+                   VALE_CALC=1.084212755427,
                    VALE_REFE=1.0,
                    REFERENCE='NON_DEFINI',
                    PRECISION=0.14000000000000001,),

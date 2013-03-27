@@ -5,7 +5,7 @@
       CHARACTER*16 OPTION,NOMTE
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 05/03/2013   AUTEUR CHEIGNON E.CHEIGNON 
+C MODIF ELEMENTS  DATE 26/03/2013   AUTEUR CHEIGNON E.CHEIGNON 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -35,6 +35,7 @@ C
       INTEGER NC,NNO
       INTEGER CODRES(2)
       CHARACTER*2 NOMRES(2)
+      CHARACTER*24 MATOR
 
       REAL*8 PGL(3,3),FL(14),XIY,XIZ
       REAL*8 NX,TY,TZ,MX,MY,MZ
@@ -42,12 +43,13 @@ C
       INTEGER NBFIB,KP,NCOMP,I,JACF
       INTEGER ICOMPO,IORIEN,IVECTU
       INTEGER JTAB(7),INO,ISTRXM,NBSP
+      INTEGER ISICOM,NBGFMX,ISDCOM
 C
       INTEGER IGEOM,IRET,ISECT,IMATE,K,NPG,IFGM,IRETC
       REAL*8  XD(3),DDOT,EY,EZ,TEMP
       REAL*8  XL,XL2,GAMMA,VALRES(2)
       REAL*8  XLS2,D1B(7,14),CO(3),AA,E,NU,G,ALFAY,ALFAZ,PHIY,PHIZ
-      REAL*8  FORREF,MOMREF
+      REAL*8  FORREF,MOMREF,CARSEC(6)
       LOGICAL REACTU
 
 C ----------------------------------------------------------------------
@@ -144,9 +146,10 @@ C
             CALL JEVECH('PCAGNPO','L',ISECT)
 
 C           -- CARACTERISTIQUES DE LA SECTION
-            AA    = ZR(ISECT)
-            XIY   = ZR(ISECT + 1)
-            XIZ   = ZR(ISECT + 2)
+            CALL PMFITG(NBFIB,3,ZR(JACF),CARSEC)
+            AA    = CARSEC(1)
+            XIY   = CARSEC(5)
+            XIZ   = CARSEC(4)
             ALFAY = ZR(ISECT + 3)
             ALFAZ = ZR(ISECT + 4)
 C           -- PASSAGE DE G (CENTRE DE GRAVITE) A C (CENTRE DE TORSION)
@@ -155,13 +158,13 @@ C           -- PASSAGE DE G (CENTRE DE GRAVITE) A C (CENTRE DE TORSION)
 
             CALL JEVECH('PMATERC','L',IMATE)
             CALL MOYTEM('RIGI',NPG,1,'+',TEMP,IRET)
-            NOMRES(1) = 'E'
-            NOMRES(2) = 'NU'
-            CALL RCVALB('RIGI',1,1,'+',ZI(IMATE),' ','ELAS',
-     &              0,'TEMP',TEMP,2,
-     &              NOMRES, VALRES, CODRES, 1)
-            E = VALRES(1)
-            NU = VALRES(2)
+
+            CALL JEVEUO(ZK16(ICOMPO-1+7)(1:8)//'.CPRI','L',ISICOM)
+            CALL JEVEUO(ZK16(ICOMPO-1+7),'L',ISDCOM)
+            NBGFMX = ZI(ISICOM+2)
+            MATOR  = ZK24(ISDCOM-1+NBGFMX*6+1)(1:8)
+            CALL MATELA(ZI(IMATE),MATOR,1,TEMP,E,NU)
+
             G = E / (2.D0*(1.D0+NU))
             PHIY = E*XIZ*12.D0*ALFAY/ (XL*XL*G*AA)
             PHIZ = E*XIY*12.D0*ALFAZ/ (XL*XL*G*AA)

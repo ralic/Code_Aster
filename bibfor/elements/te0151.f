@@ -20,7 +20,7 @@ C ======================================================================
       INCLUDE 'jeveux.h'
       CHARACTER*(*)       OPTION , NOMTE
 C     ------------------------------------------------------------------
-C MODIF ELEMENTS  DATE 15/01/2013   AUTEUR DELMAS J.DELMAS 
+C MODIF ELEMENTS  DATE 26/03/2013   AUTEUR CHEIGNON E.CHEIGNON 
 C TOLE CRP_6
 C     CALCUL
 C       - ENERGIE DE DEFORMATION
@@ -31,9 +31,15 @@ C IN  OPTION : K16 : NOM DE L'OPTION A CALCULER
 C        'EPOT_ELEM' : ENERGIE DE DEFORMATION
 C        'ECIN_ELEM' : ENERGIE CINETIQUE
 C IN  NOMTE  : K16 : NOM DU TYPE ELEMENT
-C        'MECA_POU_D_E' : POUTRE DROITE D'EULER       (SECTION VARIABLE)
-C        'MECA_POU_D_T' : POUTRE DROITE DE TIMOSHENKO (SECTION VARIABLE)
-C        'MECA_POU_C_T' : POUTRE COURBE DE TIMOSHENKO(SECTION CONSTANTE)
+C     'MECA_POU_D_E'   : POUTRE DROITE D'EULER       (SECTION VARIABLE)
+C     'MECA_POU_D_T'   : POUTRE DROITE DE TIMOSHENKO (SECTION VARIABLE)
+C     'MECA_POU_C_T'   : POUTRE COURBE DE TIMOSHENKO(SECTION CONSTANTE)
+C     'MECA_POU_D_TG'  : POUTRE DROITE DE TIMOSHENKO(SECTION CONSTANTE)
+C                        AVEC GAUCHISSEMENT
+C     'MECA_POU_D_EM'  : POUTRE DROITE D'EULER MULTI-FIBRE
+C                        (SECTION CONSTANTE)
+C     'MECA_POU_D_TGM' :POUTRE DROITE DE TIMOSHENKO(SECTION CONSTANTE)
+C                        MULTIFIBRE AVEC GAUCHISSEMENT
 C     ------------------------------------------------------------------
 C
 C-----------------------------------------------------------------------
@@ -100,7 +106,12 @@ C     --- RECUPERATION DES CARACTERISTIQUES GENERALES DES SECTIONS ---
       LSECT = LSECT-1
       ITYPE =  NINT(ZR(LSECT+23))
 
-      IF (NOMTE.NE.'MECA_POU_D_EM')THEN
+C
+C       --- RECUPERATION DES ORIENTATIONS ---
+        CALL JEVECH ('PCAORIE', 'L',LORIEN)
+
+      IF ((NOMTE.NE.'MECA_POU_D_EM').AND.
+     &    (NOMTE.NE.'MECA_POU_D_TGM')) THEN
 C
 C       --- SECTION INITIALE ---
         A     =  ZR(LSECT+ 1)
@@ -123,21 +134,19 @@ C       --- SECTION FINALE ---
         EY     = -(ZR(LSECT+6)+ZR(LSECT2+6))/DEUX
         EZ     = -(ZR(LSECT+7)+ZR(LSECT2+7))/DEUX
         XJX2   = ZR(LSECT2+ 8)
-      ENDIF
-C
-C     --- RECUPERATION DES ORIENTATIONS ---
-      CALL JEVECH ('PCAORIE', 'L',LORIEN)
-C
-C     --- RECUPERATION DES COORDONNEES DES NOEUDS ---
-      CALL JEVECH ('PGEOMER', 'L',LX)
-      LX = LX - 1
-      XL = SQRT( (ZR(LX+4)-ZR(LX+1))**2
-     &  + (ZR(LX+5)-ZR(LX+2))**2 + (ZR(LX+6)-ZR(LX+3))**2 )
-      CALL TECAEL(IADZI,IAZK24)
-        NOMAIL = ZK24(IAZK24-1+3)(1:8)
-      IF( XL .EQ. ZERO ) THEN
 
-        CALL U2MESK('F','ELEMENTS2_43',1,NOMAIL)
+C
+C       --- RECUPERATION DES COORDONNEES DES NOEUDS ---
+        CALL JEVECH ('PGEOMER', 'L',LX)
+        LX = LX - 1
+        XL = SQRT( (ZR(LX+4)-ZR(LX+1))**2
+     &     + (ZR(LX+5)-ZR(LX+2))**2 + (ZR(LX+6)-ZR(LX+3))**2 )
+        CALL TECAEL(IADZI,IAZK24)
+          NOMAIL = ZK24(IAZK24-1+3)(1:8)
+        IF( XL .EQ. ZERO ) THEN
+          CALL U2MESK('F','ELEMENTS2_43',1,NOMAIL)
+        ENDIF
+
       ENDIF
 C
       IF     ( NOMTE .EQ. 'MECA_POU_D_E' )  THEN
@@ -244,10 +253,10 @@ C
 C        --- CALCUL DE LA MATRICE DE RIGIDITE LOCALE
          IF ( ITYPE .EQ. 0 ) THEN
 C           --- POUTRE DROITE A SECTION CONSTANTE ---
-            IF (NOMTE.EQ.'MECA_POU_D_EM') THEN
+            IF ((NOMTE.EQ.'MECA_POU_D_EM') .OR.
+     &              (NOMTE.EQ.'MECA_POU_D_TGM'))THEN
                CALL PMFRIG(NOMTE,ZI(LMATER),KLV)
-            ELSEIF (NOMTE.EQ.'MECA_POU_D_TG'.OR.
-     &              NOMTE.EQ.'MECA_POU_D_TGM') THEN
+            ELSEIF (NOMTE.EQ.'MECA_POU_D_TG') THEN
                 CALL PTKA21(KLV,E,A,XL,XIY,XIZ,XJX,
      &                      XIG,G,ALFAY,ALFAZ,EY,EZ)
             ELSE

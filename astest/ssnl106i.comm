@@ -1,9 +1,9 @@
-# MODIF  DATE 20/11/2012   AUTEUR DELMAS J.DELMAS 
+# MODIF  DATE 26/03/2013   AUTEUR CHEIGNON E.CHEIGNON 
 # TITRE POUTRE ENCASTREE A UNE EXTREMITE ET CHARGEE PAR UNE TRACTION
 # ssnl106i.para = tps_job 60 mem_job 256Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -51,13 +51,29 @@ MO=AFFE_MODELE(        MAILLAGE=MA,
      AFFE=_F( TOUT = 'OUI', PHENOMENE = 'MECANIQUE',MODELISATION = 'POU_D_TGM')
                         )
 
-CAREL=AFFE_CARA_ELEM(   MODELE=MO,POUTRE=(
-          # SECTION CERCLE :
-           _F(  GROUP_MA = 'GC1',   SECTION = 'CERCLE',
-          CARA = (   'R',   ), VALE = (  0.1,)),
-          # SECTION RECTANGLE  :
-           _F(  GROUP_MA = 'GR1',   SECTION = 'RECTANGLE',
-          CARA = (   'HY', 'HZ',  ), VALE = (  0.2,  0.1, ))),
+CAREL=AFFE_CARA_ELEM(MODELE=MO,
+                  POUTRE=(
+   # SECTION CERCLE :
+                           _F(GROUP_MA = 'GC1',
+                              #SECTION ='CERCLE',
+                              #CARA = (   'R',   ), VALE = (  0.1,),
+                              SECTION='GENERALE',
+                                      CARA=('A','IY','IZ','AY','AZ',
+                                            'JX','JG','IYR2','IZR2',),
+                                      VALE=(3.121445152258052E-002,7.700068676116401E-005,7.700302561600435E-005,1.16667E+00,1.16667E+00,
+                                            1.570796326794897E-004,0.0,0.0,0.0,),
+                             ),
+   # SECTION RECTANGLE  :
+                           _F(GROUP_MA = 'GR1',
+                           #SECTION = 'RECTANGLE',
+                              #CARA = (   'HY', 'HZ',  ), VALE = (  0.2,  0.1, ),
+                           SECTION='GENERALE',
+                                      CARA=('A','IY','IZ','AY','AZ',
+                                            'JX','JG','IYR2','IZR2',),
+                                      VALE=(1.999999999999996E-002,1.650000000000002E-005,6.650000000000002E-005,1.2E+00,1.2E+00,
+                                            4.577604166666668E-005,0.0,0.0,0.0,),
+                          ),
+                         ),
                   GEOM_FIBRE=GF,
                   MULTIFIBRE=(_F(GROUP_MA='GC1',GROUP_FIBRE='S_CERC'),
                               _F(GROUP_MA='GR1',GROUP_FIBRE='S_RECT'),
@@ -223,7 +239,7 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=11,
                    RESULTAT=REST,
                    NOM_CHAM='VARI_ELGA',
                    NOM_CMP='V1',
-                   VALE_CALC= 1.48528443E-03,
+                   VALE_CALC= 1.4852826724355E-03,
                    VALE_REFE=1.5E-3,
                    PRECISION=0.014999999999999999,
                    MAILLE='SC2',),

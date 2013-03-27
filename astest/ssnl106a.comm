@@ -1,8 +1,8 @@
-# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
+# MODIF  DATE 26/03/2013   AUTEUR CHEIGNON E.CHEIGNON 
 # TITRE POUTRE ENCASTREE A UNE EXTREMITE ET CHARGEE PAR UNE TRACTION
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -20,7 +20,7 @@
 #
 # ssnl106a.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test S
 # --------------------------------------------------------------------
-# MODELISATION POU_D_TG. DEUX SECTIONS : RECTANGLE ET CERCLE
+# MODELISATION POU_D_TGM. DEUX SECTIONS : RECTANGLE ET CERCLE
 # --------------------------------------------------------------------
 
 
@@ -56,11 +56,25 @@ MO=AFFE_MODELE(
 CAREL=AFFE_CARA_ELEM(MODELE=MO,
                   POUTRE=(
    # SECTION CERCLE :
-                           _F(GROUP_MA = 'GC1',   SECTION ='CERCLE',
-                              CARA = (   'R',   ), VALE = (  0.1,),),
+                           _F(GROUP_MA = 'GC1',
+                              SECTION ='CERCLE',
+                              CARA = (   'R',   ), VALE = (  0.1,),
+                              #SECTION='GENERALE',
+                                      #CARA=('A','IY','IZ','AY','AZ',
+                                            #'JX','JG','IYR2','IZR2',),
+                                      #VALE=(3.121445152258052E-002,7.700068676116401E-005,7.700302561600435E-005,1.16667E+00,1.16667E+00,
+                                            #1.570796326794897E-004,0.0,0.0,0.0,),
+                             ),
    # SECTION RECTANGLE  :
-                           _F(GROUP_MA = 'GR1',   SECTION = 'RECTANGLE',
-                              CARA = (   'HY', 'HZ',  ), VALE = (  0.2,  0.1, ),)
+                           _F(GROUP_MA = 'GR1',
+                           SECTION = 'RECTANGLE',
+                              CARA = (   'HY', 'HZ',  ), VALE = (  0.2,  0.1, ),
+                           #SECTION='GENERALE',
+                                      #CARA=('A','IY','IZ','AY','AZ',
+                                            #'JX','JG','IYR2','IZR2',),
+                                      #VALE=(1.999999999999996E-002,1.650000000000002E-005,6.650000000000002E-005,1.2E+00,1.2E+00,
+                                            #4.577604166666668E-005,0.0,0.0,0.0,),
+                          ),
                          ),
                   GEOM_FIBRE=GF,
                   MULTIFIBRE=(_F(GROUP_MA='GC1',GROUP_FIBRE='S_CERC'),
@@ -233,7 +247,7 @@ COMPPMF1=DEFI_COMPOR(GEOM_FIBRE=GF,
                       )
 
 CHMAT2=AFFE_MATERIAU(   MAILLAGE=MA,
-                        AFFE=(_F( GROUP_MA = ('GC1','GR1'), MATER = MATR1)),
+                        AFFE=(_F( GROUP_MA = ('GC1','GR1'), MATER = (MATR1,MATC1,MATR3))),
                    AFFE_COMPOR= _F( TOUT='OUI', COMPOR = COMPPMF1))
 
 
@@ -564,7 +578,7 @@ COMPPMFE=DEFI_COMPOR(GEOM_FIBRE=GF,
 # AFFECTE SUR LA SECTION RECTANGLE
 
 CHMATE=AFFE_MATERIAU(   MAILLAGE=MA,
-                        AFFE=(_F( GROUP_MA = ('GC1','GR1'), MATER = ELAS)),
+                        AFFE=(_F( GROUP_MA = ('GC1','GR1'), MATER = (ELAS,MATR3))),
                    AFFE_COMPOR= _F( TOUT='OUI', COMPOR = COMPPMFE))
 
 
@@ -647,7 +661,7 @@ TEST_RESU(RESU=(_F(INST=1.0,
                    NOM_CHAM='EFGE_ELNO',
                    NOEUD='R1',
                    NOM_CMP='MFY',
-                   VALE_CALC=-7.36604650E+04,
+                   VALE_CALC=-73681.035047364,
                    VALE_REFE=-7.0225899206654154E4,
                    PRECISION=0.055,
                    MAILLE='SR1',),
@@ -657,7 +671,7 @@ TEST_RESU(RESU=(_F(INST=1.0,
                    NOM_CHAM='EFGE_ELNO',
                    NOEUD='C1',
                    NOM_CMP='MFY',
-                   VALE_CALC=-3.38495750E+05,
+                   VALE_CALC=-3.3889547245815E+05,
                    VALE_REFE=-3.2644016746984009E5,
                    PRECISION=0.044999999999999998,
                    MAILLE='SC1',),

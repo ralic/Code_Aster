@@ -4,7 +4,7 @@
       CHARACTER*(*) OPTION,NOMTE
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 21/01/2013   AUTEUR DELMAS J.DELMAS 
+C MODIF ELEMENTS  DATE 26/03/2013   AUTEUR CHEIGNON E.CHEIGNON 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -63,7 +63,9 @@ C     --- RECUPERATION DES CARACTERISTIQUES MATERIAUX ---
 
       CALL JEVECH('PMATERC','L',LMATER)
 
-      IF( NOMTE.NE.'MECA_POU_D_EM') THEN
+
+      IF(( NOMTE.NE.'MECA_POU_D_EM' ).AND.
+     &   ( NOMTE.NE.'MECA_POU_D_TGM'))THEN
          CALL RCCOMA(ZI(LMATER),'ELAS',1,PHENOM,CODRES)
 
          IF (PHENOM.EQ.'ELAS' .OR. PHENOM.EQ.'ELAS_FO' .OR.
@@ -104,7 +106,8 @@ C     --- ORIENTATION DE LA POUTRE ---
             MATINL(I) = 0.D0
 10       CONTINUE
 
-         IF( NOMTE.EQ.'MECA_POU_D_EM') THEN
+         IF( (NOMTE.EQ.'MECA_POU_D_EM').OR.
+     &       (NOMTE.EQ.'MECA_POU_D_TGM')) THEN
 C           RECUPERATION DES CARACTERISTIQUES DES FIBRES :
             CALL JEVECH('PNBSP_I','L',INBF)
             NBGF=ZI(INBF+1)
@@ -261,7 +264,8 @@ C     --- CALCUL DES CARACTERISTIQUES ELEMENTAIRES 'MASS_INER' ----
 C        --- POUTRE A SECTION CONSTANTE ---
          IF (ITYPE.EQ.0) THEN
 C           -------- MASSE
-            IF( NOMTE.EQ.'MECA_POU_D_EM') THEN
+            IF( NOMTE.EQ.'MECA_POU_D_EM' .OR.
+     &          NOMTE.EQ.'MECA_POU_D_TGM') THEN
                DO 15 I = 1,6
                   CASECT(I) = ZERO
    15          CONTINUE
@@ -411,6 +415,7 @@ C           -------- INERTIE
         ZR(LCASTR+3+4) = MATINE(2)
         ZR(LCASTR+3+5) = MATINE(4)
         ZR(LCASTR+3+6) = MATINE(5)
+
       ELSE
         CH16 = OPTION
         CALL U2MESK('F','ELEMENTS2_84',1,CH16)

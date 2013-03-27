@@ -4,7 +4,7 @@
       CHARACTER*(*)     OPTION,NOMTE
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 15/01/2013   AUTEUR DELMAS J.DELMAS 
+C MODIF ELEMENTS  DATE 26/03/2013   AUTEUR CHEIGNON E.CHEIGNON 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -58,15 +58,16 @@ C     ------------------------------------------------------------------
       REAL*8       A2  ,  XIY2,  XIZ2,  ALFAY2,  ALFAZ2,  XJX2,  XL
       REAL*8       ANG ,  RAD ,ANGARC,   ANGS2,   ALONG,   XFLY, XFLZ
       REAL*8       PGL(3,3), PGL1(3,3), PGL2(3,3), DE(14), FFE(14)
-      REAL*8       BSM(14,14),MATK(105) ,CARSEC(6), R8BID
+      REAL*8       BSM(14,14),MATK(105) ,CARSEC(6), CARS1(6)
       REAL*8       XFL, TEMP, F, TRIGOM,ZERO, XJG
       REAL*8       FR(14), FI(14), FGR(14), FGI(14)
       REAL*8       FER(12), FEI(12)
-
+      REAL*8       EA
       REAL*8       KENDOG,KDESSI,SECH,HYDR,INSTAN,SECHG(3),HYDRG(3),SREF
       INTEGER      NDIM,NNO,NNOS,NPG,IPOIDS
       INTEGER      IVF,IDFDX,JGANO
       INTEGER      ICOMPO,ISDCOM,NBGFMX,IADZI,IAZK24,ISICOM
+      INTEGER      INBFIB,NBFIB,JACF
       LOGICAL      LRHO
 C
       DATA NOMRES / 'E', 'NU' /
@@ -95,23 +96,49 @@ C
       NBPAR  = 1
       NOMPAR(1) = 'TEMP'
 C
+      E = 0.D0
+C
       MATERI=' '
-      IF(NOMTE.EQ.'MECA_POU_D_EM')THEN
-        IF(OPTION(13:16).NE.'1D1D'.AND..NOT.LRHO) THEN
+      IF ((NOMTE.EQ.'MECA_POU_D_EM')  .OR.
+     &    (NOMTE.EQ.'MECA_POU_D_TGM') )THEN
 C       -- POUTRES MULTIFIBRES
 C    --- APPEL INTEGRATION SUR SECTION
-            CALL PMFITX(ZI(LMATER),1,CARSEC,R8BID)
+        IF(OPTION(13:16).NE.'1D1D'.AND..NOT.LRHO) THEN
+
 C    --- RECUPERATION DU MATERIAU TORSION POUR ALPHA
             CALL JEVECH('PCOMPOR','L',ICOMPO)
             CALL JEVEUO(ZK16(ICOMPO-1+7),'L',ISDCOM)
             CALL JEVEUO(ZK16(ICOMPO-1+7)(1:8)//'.CPRI','L',ISICOM)
             NBGFMX=ZI(ISICOM+2)
             MATERI=ZK24(ISDCOM+6*NBGFMX)(1:8)
-         ELSE
-            ITYPE=0
+            CALL PMFITX(ZI(LMATER),1,CARSEC,G)
+            IF (NOMTE.EQ.'MECA_POU_D_TGM') THEN
+                EA = CARSEC(1)
+                CALL JEVECH('PNBSP_I','L',INBFIB)
+                NBFIB = ZI(INBFIB)
+                CALL JEVECH('PFIBRES','L',JACF)
+                CALL PMFITG(NBFIB,3,ZR(JACF),CARS1)
+                A = CARS1(1)
+                XIY = CARS1(5)
+                XIZ = CARS1(4)
+                E = EA/A
+                CALL JEVECH ('PCAGNPO', 'L',LSECT)
+                LSECT = LSECT-1
+                ALFAY =  ZR(LSECT+4)
+                ALFAZ =  ZR(LSECT+5)
+                XJX   =  ZR(LSECT+8)
+                XJG   =  ZR(LSECT+12)
+            ENDIF
+        ELSE
+            IF (NOMTE.EQ.'MECA_POU_D_TGM') THEN
+              CALL JEVECH ('PCAGNPO', 'L',LSECT)
+              ITYPE=30
+            ELSE
+              ITYPE=0
+            ENDIF
             A   = ZERO
             A2  = ZERO
-         ENDIF
+        ENDIF
       ELSE
 C       -- POUTRES CLASSIQUES
          IF (OPTION(13:16).NE.'1D1D'.AND..NOT.LRHO) THEN
@@ -235,6 +262,7 @@ C           (GAUCHISSEMENT, MULTIFIBRES)---
          NNO = 2
          NC  = 7
          CALL MATROT ( ZR(LORIEN) , PGL )
+         A2 = A
          EY    = -ZR(LSECT+6)
          EZ    = -ZR(LSECT+7)
          XJG   =  ZR(LSECT+12)
@@ -297,7 +325,6 @@ C     --- PASSAGE DU REPERE LOCAL AU REPERE GLOBAL ---
             FFE(7) = 0.D0
             FFE(14) = 0.D0
          ENDIF
-
       ELSE
          IF ( ITYPE .EQ. 0 ) THEN
 C        --- POUTRE DROITE A SECTION CONSTANTE ---
@@ -409,7 +436,6 @@ C        ET DE L HYDRATATION
             IF (CODRES(1).NE.0) KENDOG=0.D0
 C        DEPLACEMENT INDUIT PAR L'HYDRATATION
             F = -KENDOG*HYDR
-
          ELSE
             CH16 = OPTION
             CALL U2MESK('F','ELEMENTS2_47',1,CH16)

@@ -1,7 +1,7 @@
-#& MODIF COMMANDE  DATE 24/07/2012   AUTEUR PELLET J.PELLET 
+#& MODIF COMMANDE  DATE 26/03/2013   AUTEUR CHEIGNON E.CHEIGNON 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -151,7 +151,7 @@ AFFE_CHAR_MECA=OPER(nom="AFFE_CHAR_MECA",op=   7,sd_prod=char_meca,
              LAGS_F2         =SIMP(statut='f',typ='R' ),
              LAG2_C          =SIMP(statut='f',typ='R' ),
              LAG2_F1         =SIMP(statut='f',typ='R' ),
-             LAG2_F2         =SIMP(statut='f',typ='R' ),       
+             LAG2_F2         =SIMP(statut='f',typ='R' ),
              LAG3_C          =SIMP(statut='f',typ='R' ),
              LAG3_F1         =SIMP(statut='f',typ='R' ),
              V11             =SIMP(statut='f',typ='R' ),
@@ -408,22 +408,22 @@ AFFE_CHAR_MECA=OPER(nom="AFFE_CHAR_MECA",op=   7,sd_prod=char_meca,
                +" avec une poutre ou avec un tuyau, d'une plaque avec une poutre",
             regles      =(UN_PARMI('GROUP_MA_1','MAILLE_1'), UN_PARMI('GROUP_NO_2','NOEUD_2'),),
             OPTION      =SIMP(statut='o',typ='TXM',into=("3D_TUYAU","3D_POU","2D_POU","COQ_POU","COQ_TUYAU","PLAQ_POUT_ORTH") ),
-            
+
             GROUP_MA_1  =SIMP(statut='f',typ=grma,validators=NoRepeat(),max='**'),
             MAILLE_1    =SIMP(statut='f',typ=ma  ,validators=NoRepeat(),max='**'),
             GROUP_NO_2  =SIMP(statut='f',typ=grno,validators=NoRepeat(),max='**'),
             NOEUD_2     =SIMP(statut='f',typ=no  ,validators=NoRepeat(),max='**'),
-                           
+
             b_plaq_pout_orth =BLOC( condition = "OPTION == 'PLAQ_POUT_ORTH'",
                VERIF_EXCENT   =SIMP(statut='o',typ='TXM',defaut="OUI",into=("OUI","NON") ),
             ),
-            
+
             b_cara_pout =BLOC( condition = "OPTION == 'COQ_POU' or OPTION == '3D_TUYAU' or OPTION == 'COQ_TUYAU'",
                CARA_ELEM   =SIMP(statut='o',typ=(cara_elem) ),
                AXE_POUTRE  =SIMP(statut='o',typ='R',max=3),
             ),
-            
-            
+
+
             NUME_LAGR   =SIMP(statut='f',typ='TXM',defaut="NORMAL",into=("NORMAL","APRES") ),
             ANGL_MAX    =SIMP(statut='f',typ='R',defaut= 1. ),
 
@@ -448,7 +448,7 @@ AFFE_CHAR_MECA=OPER(nom="AFFE_CHAR_MECA",op=   7,sd_prod=char_meca,
            ),
 
          LIAISON_RBE3    =FACT(statut='f',max='**',
-            fr="""Modélise des relations linéaires de type RBE3 entre 
+            fr="""Modélise des relations linéaires de type RBE3 entre
                 les degrés de liberté d'un noeud maître et des noeuds esclaves.""",
             regles          =(UN_PARMI('GROUP_NO_MAIT','NOEUD_MAIT'), UN_PARMI('GROUP_NO_ESCL','NOEUD_ESCL'),),
             GROUP_NO_MAIT   =SIMP(statut='f',typ=grno,max=1),
@@ -602,25 +602,56 @@ AFFE_CHAR_MECA=OPER(nom="AFFE_CHAR_MECA",op=   7,sd_prod=char_meca,
              fr="Applique des forces linéiques sur des éléments de type poutre",
              regles=(AU_MOINS_UN('TOUT','GROUP_MA','MAILLE'),
                      PRESENT_ABSENT('TOUT','GROUP_MA','MAILLE'),
-                     AU_MOINS_UN('FX','FY','FZ','N','VY','VZ'),
-                     PRESENT_ABSENT('FX','N','VY','VZ'),
-                     PRESENT_ABSENT('FY','N','VY','VZ'),
-                     PRESENT_ABSENT('FZ','N','VY','VZ'),
-                     PRESENT_ABSENT('N','FX','FY','FZ'),
-                     PRESENT_ABSENT('VY','FX','FY','FZ'),
-                     PRESENT_ABSENT('VZ','FX','FY','FZ'),),
+                     ),
              TOUT            =SIMP(statut='f',typ='TXM',into=("OUI",) ),
              GROUP_MA        =SIMP(statut='f',typ=grma,validators=NoRepeat(),max='**'),
              MAILLE          =SIMP(statut='f',typ=ma  ,validators=NoRepeat(),max='**'),
              TYPE_CHARGE     =SIMP(statut='f',typ='TXM',defaut="FORCE",into=("VENT","FORCE",) ),
 #  rajour d'un mot clé REPERE :/ LOCAL /GLOBAL
-               FX              =SIMP(statut='f',typ='R' ),
-               FY              =SIMP(statut='f',typ='R' ),
-               FZ              =SIMP(statut='f',typ='R' ),
-
-               N               =SIMP(statut='f',typ='R' ),
-               VY              =SIMP(statut='f',typ='R' ),
-               VZ              =SIMP(statut='f',typ='R' ),
+               b_force = BLOC(condition = "TYPE_CHARGE == 'FORCE'",
+                          regles=(
+                    AU_MOINS_UN('FX','FY','FZ','MX','MY','MZ','N','VY','VZ','MT','MFY','MFZ'),
+                   PRESENT_ABSENT('FX','N','VY','VZ','MT','MFY','MFZ'),
+                     PRESENT_ABSENT('FY','N','VY','VZ','MT','MFY','MFZ'),
+                     PRESENT_ABSENT('FZ','N','VY','VZ','MT','MFY','MFZ'),
+                     PRESENT_ABSENT('MX','N','VY','VZ','MT','MFY','MFZ'),
+                     PRESENT_ABSENT('MY','N','VY','VZ','MT','MFY','MFZ'),
+                     PRESENT_ABSENT('MZ','N','VY','VZ','MT','MFY','MFZ'),
+                     PRESENT_ABSENT('N','FX','FY','FZ','MX','MY','MZ'),
+                     PRESENT_ABSENT('VY','FX','FY','FZ','MX','MY','MZ'),
+                     PRESENT_ABSENT('VZ','FX','FY','FZ','MX','MY','MZ'),
+                     PRESENT_ABSENT('MT','FX','FY','FZ','MX','MY','MZ'),
+                     PRESENT_ABSENT('MFY','FX','FY','FZ','MX','MY','MZ'),
+                     PRESENT_ABSENT('MFZ','FX','FY','FZ','MX','MY','MZ'),),
+                    FX              =SIMP(statut='f',typ='R' ),
+                    FY              =SIMP(statut='f',typ='R' ),
+                    FZ              =SIMP(statut='f',typ='R' ),
+                    MX              =SIMP(statut='f',typ='R' ),
+                    MY              =SIMP(statut='f',typ='R' ),
+                    MZ              =SIMP(statut='f',typ='R' ),
+                    N               =SIMP(statut='f',typ='R' ),
+                    VY              =SIMP(statut='f',typ='R' ),
+                    VZ              =SIMP(statut='f',typ='R' ),
+                    MT              =SIMP(statut='f',typ='R' ),
+                    MFY             =SIMP(statut='f',typ='R' ),
+                    MFZ             =SIMP(statut='f',typ='R' ),
+                                  ),
+           b_vent = BLOC(condition = "TYPE_CHARGE == 'VENT'",
+                         regles=(
+                    AU_MOINS_UN('FX','FY','FZ','N','VY','VZ',),
+                   PRESENT_ABSENT('FX','N','VY','VZ',),
+                     PRESENT_ABSENT('FY','N','VY','VZ',),
+                     PRESENT_ABSENT('FZ','N','VY','VZ',),
+                     PRESENT_ABSENT('N','FX','FY','FZ',),
+                     PRESENT_ABSENT('VY','FX','FY','FZ',),
+                     PRESENT_ABSENT('VZ','FX','FY','FZ',),),
+                    FX              =SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule) ),
+                    FY              =SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule) ),
+                    FZ              =SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule) ),
+                    N               =SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule) ),
+                    VY              =SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule) ),
+                    VZ              =SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule) ),
+                                  ),
 
            ),
 
@@ -794,8 +825,8 @@ AFFE_CHAR_MECA=OPER(nom="AFFE_CHAR_MECA",op=   7,sd_prod=char_meca,
            UNITE_RESU_MASS =SIMP(statut='f',typ='I', ),
            UNITE_RESU_RIGI =SIMP(statut='f',typ='I', ),
            UNITE_RESU_AMOR =SIMP(statut='f',typ='I', ),
-           UNITE_RESU_FORC =SIMP(statut='f',typ='I', ), 
-         ), 
+           UNITE_RESU_FORC =SIMP(statut='f',typ='I', ),
+         ),
 
          INFO            =SIMP(statut='f',typ='I',defaut= 1,into=( 1 , 2) ),
 )  ;

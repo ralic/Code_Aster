@@ -1,4 +1,4 @@
-%& MODIF TYPELEM  DATE 21/01/2013   AUTEUR PELLET J.PELLET 
+%& MODIF TYPELEM  DATE 26/03/2013   AUTEUR CHEIGNON E.CHEIGNON 
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -87,7 +87,8 @@ MODE_LOCAL__
     CLISTMA  = LISTMA   ELEM__         (LISTMA   TRANS    )
     EMASSINE = MASS_R   ELEM__         (M        CDGX     CDGY     CDGZ     IXX      IYY
                                         IZZ      IXY      IXZ      IYZ      )
-    ENBSP_I  = NBSP_I   ELEM__         (NBFIBR   NBGRFI   NUG1     )
+    ENBSP_I  = NBSP_I   ELEM__         (NBFIBR   NBGRFI   NUG1     NUG2     NUG3     NUG4
+                                        NUG5     NUG6     NUG7     NUG8     NUG9     NUG10    )
     CPESANR  = PESA_R   ELEM__         (G        AG       BG       CG       )
     CROTATR  = ROTA_R   ELEM__         (OME    AR     BR     CR     X      Y     Z  )
     EEFGENO  = SIEF_R   ELNO__ IDEN__  (N        VY       VZ       MT       MFY      MFZ
@@ -134,7 +135,7 @@ OPTION__
     CARA_GEOM           -1    IN__    OUT__    XXXXXX   XXXXXX
     CHAR_LIMITE         -1    IN__    OUT__    XXXXXX   XXXXXX
     CHAR_MECA_EPSI_R    39    IN__   CCAGNPO  PCAGNPO  CCAORIE  PCAORIE  CEPSINR  PEPSINR  NGEOMER  PGEOMER
-                                     CMATERC  PMATERC
+                                     CMATERC  PMATERC  ENBSP_I  PNBSP_I  ECAFIEL  PFIBRES
                               OUT__  MVECTUR  PVECTUR
     CHAR_MECA_FC1D1D    150   IN__   CCAGNPO  PCAGNPO  CCAORIE  PCAORIE  CFORCEC  PFC1D1D  NGEOMER  PGEOMER
 
@@ -150,10 +151,10 @@ OPTION__
     CHAR_MECA_FRLAPL    148   IN__   CFLAPLA  PFLAPLA  NGEOMER  PGEOMER  CLISTMA  PLISTMA
                               OUT__  MVECTUR  PVECTUR
     CHAR_MECA_PESA_R    150   IN__   CCAGNPO  PCAGNPO  CCAORIE  PCAORIE  NGEOMER  PGEOMER  CMATERC  PMATERC
-                                     CPESANR  PPESANR
+                                     CPESANR  PPESANR  ENBSP_I  PNBSP_I  ECAFIEL  PFIBRES  CCOMPOR  PCOMPOR
                               OUT__  MVECTUR  PVECTUR
     CHAR_MECA_ROTA_R    150   IN__   CCAGNPO  PCAGNPO  CCAORIE  PCAORIE  NGEOMER  PGEOMER  CMATERC  PMATERC
-                                     CROTATR  PROTATR
+                                     CROTATR  PROTATR  ENBSP_I  PNBSP_I  ECAFIEL  PFIBRES  CCOMPOR  PCOMPOR
                               OUT__  MVECTUR  PVECTUR
     CHAR_MECA_SF1D1D    150   IN__   CCAGNPO  PCAGNPO  CCAORIE  PCAORIE  DDL_MECA PDEPLMR  DDL_MECA PDEPLPR
                                      CFORCEF  PFF1D1D  NGEOMER  PGEOMER  CTEMPSR  PTEMPSR
@@ -162,11 +163,12 @@ OPTION__
                                      NGEOMER  PGEOMER  CVENTCX  PVENTCX  NVITER   PVITER
                               OUT__  MVECTUR  PVECTUR
     CHAR_MECA_TEMP_R    150   IN__   CCAGNPO  PCAGNPO  CCAORIE  PCAORIE  NGEOMER  PGEOMER  CMATERC  PMATERC
-                                     ZVARCPG  PVARCPR  ZVARCPG  PVARCRR
+                                     ZVARCPG  PVARCPR  ZVARCPG  PVARCRR  ECAFIEL  PFIBRES  ENBSP_I  PNBSP_I
+                                     CCOMPOR  PCOMPOR
                               OUT__  MVECTUR  PVECTUR
     CHAR_MECA_SECH_R    150   IN__   CCAGNPO  PCAGNPO  CCAORIE  PCAORIE  NGEOMER  PGEOMER  CMATERC  PMATERC
                                      ZVARCPG  PVARCPR  ZVARCPG  PVARCRR  CTEMPSR  PTEMPSR  ENBSP_I  PNBSP_I
-                                     ECAFIEL  PFIBRES
+                                     ECAFIEL  PFIBRES  CCOMPOR  PCOMPOR
                               OUT__  MVECTUR  PVECTUR
     CHAR_MECA_HYDR_R    150   IN__   NGEOMER  PGEOMER  CMATERC  PMATERC
                                      ZVARCPG  PVARCPR  ZVARCPG  PVARCRR  CTEMPSR  PTEMPSR
@@ -196,7 +198,8 @@ OPTION__
     EPSI_ELGA           -1    IN__    OUT__    XXXXXX   XXXXXX
     EPSI_ELNO           -1    IN__    OUT__    XXXXXX   XXXXXX
     EPOT_ELEM           151   IN__   CCAGNPO  PCAGNPO  CCAORIE  PCAORIE  DDL_MECA PDEPLAR  NGEOMER  PGEOMER
-                                     CMATERC  PMATERC  ZVARCPG  PVARCPR  ZVARCPG  PVARCRR ENBSP_I  PNBSP_I
+                                     CMATERC  PMATERC  ZVARCPG  PVARCPR  ZVARCPG  PVARCRR  ENBSP_I  PNBSP_I
+                                     ECAFIEL  PFIBRES  CCOMPOR  PCOMPOR
                               OUT__  EENEDNO  PENERDR
     FORC_NODA           517   IN__   CCAGNPO  PCAGNPO  CCAORIE  PCAORIE  CCOMPOR  PCOMPOR  ECONTPG  PCONTMR
                                      DDL_MECA PDEPLMR  DDL_MECA PDEPLPR  ECAFIEL  PFIBRES  NGEOMER  PGEOMER
@@ -223,18 +226,21 @@ OPTION__
                                      NGEOMER  PGEOMER  CMATERC  PMATERC  ZVARCPG  PVARCPR
                               OUT__  MMATUUR  PMATUUR
     MASS_INER           38    IN__   CCAGNPO  PCAGNPO  CCAORIE  PCAORIE  NGEOMER  PGEOMER  CMATERC  PMATERC
+                                     ENBSP_I  PNBSP_I  ECAFIEL  PFIBRES  CCOMPOR  PCOMPOR
                               OUT__  EMASSINE PMASSINE
     MASS_MECA           141   IN__   CCAGNPO  PCAGNPO  CCAORIE  PCAORIE  NGEOMER  PGEOMER  CMATERC  PMATERC
-                                     ZVARCPG  PVARCPR
+                                     ZVARCPG  PVARCPR  ENBSP_I  PNBSP_I  ECAFIEL  PFIBRES  CCOMPOR  PCOMPOR
                               OUT__  MMATUUR  PMATUUR
     MASS_MECA_DIAG      141   IN__   CCAGNPO  PCAGNPO  CCAORIE  PCAORIE  ECAFIEL  PFIBRES  NGEOMER  PGEOMER
                                      CMATERC  PMATERC  ENBSP_I  PNBSP_I  ZVARCPG  PVARCPR  CCOMPOR  PCOMPOR
+                                     ENBSP_I  PNBSP_I  ECAFIEL  PFIBRES  CCOMPOR  PCOMPOR
                               OUT__  MMATUUR  PMATUUR
     MASS_MECA_EXPLI     141   IN__   CCAGNPO  PCAGNPO  CCAORIE  PCAORIE  ECAFIEL  PFIBRES  NGEOMER  PGEOMER
-                                     CMATERC  PMATERC  ENBSP_I  PNBSP_I  ZVARCPG  PVARCPR
+                                     CMATERC  PMATERC  ENBSP_I  PNBSP_I  ZVARCPG  PVARCPR  ENBSP_I  PNBSP_I
+                                     ECAFIEL  PFIBRES  CCOMPOR  PCOMPOR
                               OUT__  MMATUUR  PMATUUR
-    MECA_GYRO           259   IN__   CCAGNPO  PCAGNPO  CCAGNPO  PCAGNPO  CCAORIE  PCAORIE  NGEOMER  PGEOMER
-                                     ECAFIEL  PFIBRES  CMATERC  PMATERC  CCOMPOR  PCOMPOR  ENBSP_I  PNBSP_I
+    MECA_GYRO           259   IN__   CCAGNPO  PCAGNPO  CCAORIE  PCAORIE  NGEOMER  PGEOMER  ECAFIEL  PFIBRES
+                                     CMATERC  PMATERC  CCOMPOR  PCOMPOR  ENBSP_I  PNBSP_I
                               OUT__  MMATUNS  PMATUNS
     M_GAMMA             141   IN__   CCAGNPO  PCAGNPO  CCAORIE  PCAORIE  DDL_MECA PACCELR  NGEOMER  PGEOMER
                                      CMATERC  PMATERC  ZVARCPG  PVARCPR
@@ -256,20 +262,21 @@ OPTION__
     REPERE_LOCAL        135   IN__   CCAORIE  PCAORIE
                               OUT__  CGEOMER  PREPLO1  CGEOMER  PREPLO2  CGEOMER  PREPLO3
     RICE_TRACEY         -1    IN__    OUT__    XXXXXX   XXXXXX
-    RIGI_FLUI_STRU      140   IN__   CCAGNPO  PCAGNPO  CCAORIE  PCAORIE  NGEOMER  PGEOMER
-                                     CMATERC  PMATERC  ZVARCPG  PVARCPR
+    RIGI_FLUI_STRU      140   IN__   CCAGNPO  PCAGNPO  CCAORIE  PCAORIE  NGEOMER  PGEOMER  CMATERC  PMATERC
+                                     ZVARCPG  PVARCPR  ENBSP_I  PNBSP_I  ECAFIEL  PFIBRES
                               OUT__  MMATUUR  PMATUUR
     RIGI_MECA           140   IN__   CCAGNPO  PCAGNPO  CCAORIE  PCAORIE  NGEOMER  PGEOMER  CMATERC  PMATERC
-                                     ZVARCPG  PVARCPR
+                                     ZVARCPG  PVARCPR  ENBSP_I  PNBSP_I  ECAFIEL  PFIBRES  CCOMPOR  PCOMPOR
                               OUT__  MMATUUR  PMATUUR
     RIGI_MECA_ELAS      -1    IN__    OUT__    XXXXXX   XXXXXX
     RIGI_MECA_GE        143   IN__   CCAGNP1  PCAGNPO  CCAORIE  PCAORIE  ECONTPG  PEFFORR  NGEOMER  PGEOMER
-                                     ENBSP_I  PNBSP_I  ESTRAUX  PSTRXRR
+                                     ENBSP_I  PNBSP_I  ESTRAUX  PSTRXRR  ENBSP_I  PNBSP_I  ECAFIEL  PFIBRES
                               OUT__  MMATUUR  PMATUUR
     RIGI_MECA_HYST      50    IN__   NGEOMER  PGEOMER  CMATERC  PMATERC  MMATUUR  PRIGIEL  ZVARCPG  PVARCPR
                               OUT__  MMATUUC  PMATUUC
     RIGI_MECA_RO        235   IN__   NGEOMER  PGEOMER  CMATERC  PMATERC  CROTATR  PROTATR  ZVARCPG  PVARCPR
-                                     CCAGNPO  PCAGNPO  CCAORIE  PCAORIE
+                                     CCAGNPO  PCAGNPO  CCAORIE  PCAORIE  ENBSP_I  PNBSP_I  ECAFIEL  PFIBRES
+                                     CCOMPOR  PCOMPOR
                               OUT__  MMATUUR  PMATUUR
     RIGI_MECA_TANG      516   IN__   CCAGNP2  PCAGNPO  CCAORIE  PCAORIE  CCARCRI  PCARCRI  CCOMPOR  PCOMPOR
                                      ECONTPG  PCONTMR  DDL_MECA PDEPLMR  DDL_MECA PDEPLPR  ECAFIEL  PFIBRES

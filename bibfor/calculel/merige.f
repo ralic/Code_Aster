@@ -8,7 +8,7 @@
       CHARACTER*19 MATEL
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 12/02/2013   AUTEUR PELLET J.PELLET 
+C MODIF CALCULEL  DATE 26/03/2013   AUTEUR CHEIGNON E.CHEIGNON 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -131,11 +131,13 @@ C
         LPAIN(8) = 'PHARMON'
         LCHIN(8) = CHHARM
         LPAIN(9) = 'PNBSP_I'
-        LCHIN(9) = CARA(1:8)//'.CANBSP'
+        LCHIN(9) = CHCARA(16)
         LPAIN(10) = 'PSTRXRR'
         LCHIN(10) = STRX
+        LPAIN(11) = 'PFIBRES'
+        LCHIN(11) = CHCARA(17)
         OPTION = 'RIGI_MECA_GE'
-        CALL CALCUL('S',OPTION,LIGRMO,10,LCHIN,LPAIN,1,LCHOUT,
+        CALL CALCUL('S',OPTION,LIGRMO,11,LCHIN,LPAIN,1,LCHOUT,
      &              LPAOUT,BASE,'OUI')
         CALL REAJRE(MATEL,LCHOUT(1),BASE)
 

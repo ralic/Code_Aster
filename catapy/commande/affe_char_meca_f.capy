@@ -1,7 +1,7 @@
-#& MODIF COMMANDE  DATE 24/07/2012   AUTEUR PELLET J.PELLET 
+#& MODIF COMMANDE  DATE 26/03/2013   AUTEUR CHEIGNON E.CHEIGNON 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -327,24 +327,58 @@ AFFE_CHAR_MECA_F=OPER(nom="AFFE_CHAR_MECA_F",op=7,sd_prod=char_meca,
                +" l'intermédiaire d'un concept fonction",
            regles=(AU_MOINS_UN('TOUT','GROUP_MA','MAILLE'),
                    PRESENT_ABSENT('TOUT','GROUP_MA','MAILLE'),
-                   AU_MOINS_UN('FX','FY','FZ','N','VY','VZ'),
-                   PRESENT_ABSENT('FX','N','VY','VZ'),
-                   PRESENT_ABSENT('FY','N','VY','VZ'),
-                   PRESENT_ABSENT('FZ','N','VY','VZ'),
-                   PRESENT_ABSENT('N','FX','FY','FZ'),
-                   PRESENT_ABSENT('VY','FX','FY','FZ'),
-                   PRESENT_ABSENT('VZ','FX','FY','FZ'),),
+
+                     ),
 #  rajout d un mot cle REPERE : / GLOBAL / LOCAL
            TOUT            =SIMP(statut='f',typ='TXM',into=("OUI",) ),
            GROUP_MA        =SIMP(statut='f',typ=grma,validators=NoRepeat(),max='**'),
            MAILLE          =SIMP(statut='f',typ=ma  ,validators=NoRepeat(),max='**'),
            TYPE_CHARGE     =SIMP(statut='f',typ='TXM',defaut="FORCE",into=("VENT","FORCE") ),
-           FX              =SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule) ),
-           FY              =SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule) ),
-           FZ              =SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule) ),
-           N               =SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule) ),
-           VY              =SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule) ),
-           VZ              =SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule) ),
+           # moment interdit avec VENT
+           b_force = BLOC(condition = "TYPE_CHARGE == 'FORCE'",
+                          regles=(
+                    AU_MOINS_UN('FX','FY','FZ','MX','MY','MZ','N','VY','VZ','MT','MFY','MFZ'),
+                   PRESENT_ABSENT('FX','N','VY','VZ','MT','MFY','MFZ'),
+                     PRESENT_ABSENT('FY','N','VY','VZ','MT','MFY','MFZ'),
+                     PRESENT_ABSENT('FZ','N','VY','VZ','MT','MFY','MFZ'),
+                     PRESENT_ABSENT('MX','N','VY','VZ','MT','MFY','MFZ'),
+                     PRESENT_ABSENT('MY','N','VY','VZ','MT','MFY','MFZ'),
+                     PRESENT_ABSENT('MZ','N','VY','VZ','MT','MFY','MFZ'),
+                     PRESENT_ABSENT('N','FX','FY','FZ','MX','MY','MZ'),
+                     PRESENT_ABSENT('VY','FX','FY','FZ','MX','MY','MZ'),
+                     PRESENT_ABSENT('VZ','FX','FY','FZ','MX','MY','MZ'),
+                     PRESENT_ABSENT('MT','FX','FY','FZ','MX','MY','MZ'),
+                     PRESENT_ABSENT('MFY','FX','FY','FZ','MX','MY','MZ'),
+                     PRESENT_ABSENT('MFZ','FX','FY','FZ','MX','MY','MZ'),),
+                    FX              =SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule) ),
+                    FY              =SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule) ),
+                    FZ              =SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule) ),
+                    MX              =SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule) ),
+                    MY              =SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule) ),
+                    MZ              =SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule) ),
+                    N               =SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule) ),
+                    VY              =SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule) ),
+                    VZ              =SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule) ),
+                    MT              =SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule) ),
+                    MFY             =SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule) ),
+                    MFZ             =SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule) ),
+                                  ),
+           b_vent = BLOC(condition = "TYPE_CHARGE == 'VENT'",
+                         regles=(
+                    AU_MOINS_UN('FX','FY','FZ','N','VY','VZ',),
+                   PRESENT_ABSENT('FX','N','VY','VZ',),
+                     PRESENT_ABSENT('FY','N','VY','VZ',),
+                     PRESENT_ABSENT('FZ','N','VY','VZ',),
+                     PRESENT_ABSENT('N','FX','FY','FZ',),
+                     PRESENT_ABSENT('VY','FX','FY','FZ',),
+                     PRESENT_ABSENT('VZ','FX','FY','FZ',),),
+                    FX              =SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule) ),
+                    FY              =SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule) ),
+                    FZ              =SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule) ),
+                    N               =SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule) ),
+                    VY              =SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule) ),
+                    VZ              =SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule) ),
+                                  ),
          ),
 
          FORCE_TUYAU     =FACT(statut='f',max='**',

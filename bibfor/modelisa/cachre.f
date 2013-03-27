@@ -9,9 +9,9 @@
       CHARACTER*(*)     LIGRMO, MOTCL
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 18/12/2012   AUTEUR SELLENET N.SELLENET 
+C MODIF MODELISA  DATE 26/03/2013   AUTEUR CHEIGNON E.CHEIGNON 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -123,7 +123,7 @@ C
             CALL GETVC8 ( MOTCLF, 'FY', IOCC,IARG, 1, CFY, NFY )
             CALL GETVC8 ( MOTCLF, 'FZ', IOCC,IARG, 1, CFZ, NFZ )
             IF ( MOTCLF .NE. 'FORCE_INTERNE' .AND.
-     &           MOTCLF .NE. 'FORCE_POUTRE'  .AND.
+     &           MOTCLF .NE. 'FORCE_POUTRE' .AND.
      &           MOTCLF .NE. 'FORCE_FACE'    ) THEN
               CALL GETVC8 ( MOTCLF, 'MX', IOCC,IARG, 1, CMX, NMX )
               CALL GETVC8 ( MOTCLF, 'MY', IOCC,IARG, 1, CMY, NMY )
@@ -139,9 +139,9 @@ C
                  CALL GETVC8 ( MOTCLF, 'N'  , IOCC,IARG, 1, CFX, NFX )
                  CALL GETVC8 ( MOTCLF, 'VY' , IOCC,IARG, 1, CFY, NFY )
                  CALL GETVC8 ( MOTCLF, 'VZ' , IOCC,IARG, 1, CFZ, NFZ )
-C                CALL GETVC8 ( MOTCLF, 'MT' , IOCC, 1, 1, CMX, NMX )
-C                CALL GETVC8 ( MOTCLF, 'MFY', IOCC, 1, 1, CMY, NMY )
-C                CALL GETVC8 ( MOTCLF, 'MFZ', IOCC, 1, 1, CMZ, NMZ )
+C                 CALL GETVC8 ( MOTCLF, 'MT' , IOCC,IARG, 1, CMX, NMX )
+C                 CALL GETVC8 ( MOTCLF, 'MFY', IOCC,IARG, 1, CMY, NMY )
+C                 CALL GETVC8 ( MOTCLF, 'MFZ', IOCC,IARG, 1, CMZ, NMZ )
                ELSE IF ( MOTCLF .EQ. 'FORCE_COQUE' ) THEN
                  NREP = 1
                  CALL GETVC8 ( MOTCLF, 'PRES', IOCC,IARG, 1,CVPRE, NFZ )
@@ -205,7 +205,6 @@ C                CALL GETVC8 ( MOTCLF, 'MFZ', IOCC, 1, 1, CMZ, NMZ )
             CALL GETVR8 ( MOTCLF, 'FY', IOCC,IARG, 1, FY, NFY )
             CALL GETVR8 ( MOTCLF, 'FZ', IOCC,IARG, 1, FZ, NFZ )
             IF ( MOTCLF .NE. 'FORCE_INTERNE' .AND.
-     &           MOTCLF .NE. 'FORCE_POUTRE'  .AND.
      &           MOTCLF .NE. 'FORCE_FACE'    ) THEN
               CALL GETVR8 ( MOTCLF, 'MX', IOCC,IARG, 1, MX, NMX )
               CALL GETVR8 ( MOTCLF, 'MY', IOCC,IARG, 1, MY, NMY )
@@ -221,9 +220,9 @@ C                CALL GETVC8 ( MOTCLF, 'MFZ', IOCC, 1, 1, CMZ, NMZ )
                   CALL GETVR8 ( MOTCLF, 'N'  , IOCC,IARG, 1, FX, NFX )
                   CALL GETVR8 ( MOTCLF, 'VY' , IOCC,IARG, 1, FY, NFY )
                   CALL GETVR8 ( MOTCLF, 'VZ' , IOCC,IARG, 1, FZ, NFZ )
-C                 CALL GETVR8 ( MOTCLF, 'MT' , IOCC, 1, 1, MX, NMX )
-C                 CALL GETVR8 ( MOTCLF, 'MFY', IOCC, 1, 1, MY, NMY )
-C                 CALL GETVR8 ( MOTCLF, 'MFZ', IOCC, 1, 1, MZ, NMZ )
+                  CALL GETVR8 ( MOTCLF, 'MT' , IOCC,IARG, 1, MX, NMX )
+                  CALL GETVR8 ( MOTCLF, 'MFY', IOCC,IARG, 1, MY, NMY )
+                  CALL GETVR8 ( MOTCLF, 'MFZ', IOCC,IARG, 1, MZ, NMZ )
                ELSE IF ( MOTCLF .EQ. 'FORCE_COQUE' ) THEN
                   NREP = 1
                   CALL GETVR8 (MOTCLF,'PRES', IOCC,IARG, 1,VPRE, NFZ)
@@ -290,7 +289,6 @@ C                 CALL GETVR8 ( MOTCLF, 'MFZ', IOCC, 1, 1, MZ, NMZ )
             CALL GETVID ( MOTCLF, 'FY', IOCC,IARG,1, KFY, NFY )
             CALL GETVID ( MOTCLF, 'FZ', IOCC,IARG,1, KFZ, NFZ )
             IF ( MOTCLF .NE. 'FORCE_INTERNE' .AND.
-     &           MOTCLF .NE. 'FORCE_POUTRE'  .AND.
      &           MOTCLF .NE. 'FORCE_FACE'    ) THEN
               CALL GETVID ( MOTCLF, 'MX', IOCC,IARG,1, KMX, NMX )
               CALL GETVID ( MOTCLF, 'MY', IOCC,IARG,1, KMY, NMY )
@@ -306,9 +304,9 @@ C                 CALL GETVR8 ( MOTCLF, 'MFZ', IOCC, 1, 1, MZ, NMZ )
                   CALL GETVID ( MOTCLF, 'N'  , IOCC,IARG,1, KFX, NFX )
                   CALL GETVID ( MOTCLF, 'VY' , IOCC,IARG,1, KFY, NFY )
                   CALL GETVID ( MOTCLF, 'VZ' , IOCC,IARG,1, KFZ, NFZ )
-C                 CALL GETVID ( MOTCLF, 'MT' , IOCC,1,1, KMX, NMX )
-C                 CALL GETVID ( MOTCLF, 'MFY', IOCC,1,1, KMY, NMY )
-C                 CALL GETVID ( MOTCLF, 'MFZ', IOCC,1,1, KMZ, NMZ )
+                  CALL GETVID ( MOTCLF, 'MT' , IOCC,IARG,1, KMX, NMX )
+                  CALL GETVID ( MOTCLF, 'MFY', IOCC,IARG,1, KMY, NMY )
+                  CALL GETVID ( MOTCLF, 'MFZ', IOCC,IARG,1, KMZ, NMZ )
                ELSE IF ( MOTCLF .EQ. 'FORCE_COQUE' ) THEN
                   NREP = 1
                   CALL GETVID ( MOTCLF, 'PRES', IOCC,IARG,1, KFZ, NFZ )

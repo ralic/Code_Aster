@@ -1,0 +1,433 @@
+# MODIF  DATE 26/03/2013   AUTEUR CHEIGNON E.CHEIGNON 
+# TITRE POUTRES SOUMISES A DES MOMENTS REPARTIS
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
+# (AT YOUR OPTION) ANY LATER VERSION.                                                    
+#                                                                       
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
+#                                                                       
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# ======================================================================
+# ssll119b.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test S
+DEBUT(CODE=_F(NOM='SSLL119B',NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
+
+#
+
+MA=LIRE_MAILLAGE( )
+
+ACIER=DEFI_MATERIAU(ELAS=_F( E = 2.0E+11,NU = 0.,RHO = 0.,ALPHA = 0.) )
+
+# longueur totale
+L = 1.0
+
+MOREP=DEFI_FONCTION(    NOM_PARA='Z',
+                     VALE=( 0.,  1000.0,  L, 2000., ),
+                     INTERPOL='LIN'
+                     )
+
+MOREPM=DEFI_FONCTION(    NOM_PARA='Z',
+                     VALE=( 0.,  -1000.0,  L, -2000., ),
+                     INTERPOL='LIN'
+                     )
+
+GF=DEFI_GEOM_FIBRE(
+           FIBRE = _F( GROUP_FIBRE='SFIB',
+                       CARA = 'SURFACE',
+                           COOR_AXE_POUTRE = (0.,0.,),
+                            VALE =( 1.4999993959751172E-3, 1.4999993959751172E-3,7.0685834705770344e-06,
+                                    1.4999993959751172E-3, -1.4999993959751172E-3,7.0685834705770344e-06,
+                                    -1.4999993959751172E-3, -1.4999993959751172E-3,7.0685834705770344e-06,
+                                    -1.4999993959751172E-3, 1.4999993959751172E-3,7.0685834705770344e-06,
+                                  ),),
+            )
+
+COMPF=DEFI_COMPOR(GEOM_FIBRE=GF,MATER_SECT=ACIER,
+                  MULTIFIBRE=(_F(GROUP_FIBRE='SFIB',
+                                 MATER=ACIER, RELATION='ELAS'),))
+
+LINST=DEFI_LIST_REEL(DEBUT=0.0,
+                     INTERVALLE=(_F(JUSQU_A=1.,
+                                    NOMBRE=1,),
+                                ),
+                    )
+
+# valeurs de non regression
+r_non_reg = { 'POU_D_E' : {'MZ' : [-1500.0],
+                           'MY' : [1625.0,125.0,-1625.0],
+                           'MX' : [1625.0,-125.0,-1625.0],
+                          },
+              'POU_D_T' : {'MZ' : [-1500.0],
+                           'MY' : [1624.9700071983,124.97000719827,-1624.9700071983],
+                           'MX' : [1624.9700071983,-124.97000719827,-1624.9700071983],
+                          },
+              'POU_D_TG': {'MZ' : [-1500.0],
+                           'MY' : [1624.9700071983,124.97000719827,-1624.9700071983],
+                           'MX' : [1624.9700071983,-124.97000719827,-1624.9700071983],
+                          },
+              'POU_D_EM': {'MZ' : [-1500.0],
+                           'MY' : [1625.0,125.0,-1625.0],
+                           'MX' : [1625.0,-125.0,-1625.0],
+                          },
+              'POU_D_TGM':{'MZ' : [-1500.0],
+                           'MY' : [1624.9983125221,124.99831252212,-1624.9983125221],
+                           'MX' : [1624.9983125221,-124.99831252212,-1624.9983125221],
+                          },
+            }
+
+
+for mode in ['POU_D_E','POU_D_T','POU_D_TG','POU_D_EM','POU_D_TGM',]:
+    MODELE=AFFE_MODELE( MAILLAGE=MA,
+                        AFFE=_F( GROUP_MA = 'POUTRE',PHENOMENE = 'MECANIQUE',
+                                        MODELISATION = mode) )
+    if mode[-1] == 'M':
+        CAREL=AFFE_CARA_ELEM(MODELE=MODELE,
+                     POUTRE=_F(GROUP_MA='POUTRE',
+                    SECTION='GENERALE',
+                               CARA=('A','AY','AZ','IY','IZ','JX','EY','EZ'),
+                               VALE=(2.82743e-5,1.0,1.0,6.36172e-11,6.36172e-11,12.72344e-11,0.,0.),
+                               PREC_AIRE=1.1984e-6,
+                               PREC_INERTIE=1.),
+                     GEOM_FIBRE=GF,
+                     MULTIFIBRE=_F(GROUP_MA = 'POUTRE',GROUP_FIBRE='SFIB'),
+                     )
+        CHMAT=AFFE_MATERIAU(MAILLAGE=MA, AFFE=_F( GROUP_MA = 'POUTRE',MATER = ACIER),
+                        AFFE_COMPOR=_F(GROUP_MA = 'POUTRE',COMPOR=COMPF))
+    else :
+        CAREL=AFFE_CARA_ELEM( MODELE=MODELE,
+                    POUTRE=(_F( GROUP_MA = 'POUTRE', SECTION = 'RECTANGLE',
+                                CARA = ('H',),        VALE = (0.02,)  ),
+                            ))
+        CHMAT=AFFE_MATERIAU(MAILLAGE=MA, AFFE=_F( GROUP_MA = 'POUTRE',MATER = ACIER),)
+
+
+
+# CONDITIONS AUX LIMITES
+
+    CLZ=AFFE_CHAR_MECA( MODELE=MODELE,
+                        DDL_IMPO=(
+                                    _F( GROUP_NO ='ENCAST',
+                                        DX =0.,DY=0.,DZ = 0.,DRX = 0.,DRY = 0.,DRZ=0.),
+                                ),
+            )
+
+    CLX=AFFE_CHAR_MECA( MODELE=MODELE,
+                        DDL_IMPO=(
+                                    _F( GROUP_NO ='ENCAST',
+                                        DX =0.,DY=0.,DZ = 0.,DRX = 0.,DRY = 0.,DRZ=0.),
+                                    _F( GROUP_NO ='APPUI',
+                                        DX = 0.,
+                                        ),
+                                ),
+            )
+
+    CLY=AFFE_CHAR_MECA( MODELE=MODELE,
+                        DDL_IMPO=(
+                                _F( GROUP_NO ='ENCAST',
+                                        DX =0.,DY=0.,DZ = 0.,DRX = 0.,DRY = 0.,DRZ=0.),
+                                    _F( GROUP_NO ='APPUI',
+                                        DY = 0.,
+                                        ),
+                                ),
+            )
+
+
+    # TORSION
+    MORE_MZ=AFFE_CHAR_MECA_F(    MODELE=MODELE,
+                                FORCE_POUTRE=_F(GROUP_MA ='POUTRE',   MZ = MOREP)
+                                )
+    MORE_MT=AFFE_CHAR_MECA_F(    MODELE=MODELE,
+                                FORCE_POUTRE=_F(GROUP_MA ='POUTRE',   MT = MOREP)
+                                )
+
+    # FLEXION
+    MORE_MY=AFFE_CHAR_MECA_F(    MODELE=MODELE,
+                                FORCE_POUTRE=_F(GROUP_MA ='POUTRE',   MY = MOREP)
+                                )
+    MORE_MFY=AFFE_CHAR_MECA_F(    MODELE=MODELE,
+                                FORCE_POUTRE=_F(GROUP_MA ='POUTRE',   MFY = MOREP)
+                                )
+
+    MORE_MX=AFFE_CHAR_MECA_F(    MODELE=MODELE,
+                                FORCE_POUTRE=_F(GROUP_MA ='POUTRE',   MX = MOREPM)
+                                )
+    MORE_MFZ=AFFE_CHAR_MECA_F(    MODELE=MODELE,
+                                FORCE_POUTRE=_F(GROUP_MA ='POUTRE',   MFZ = MOREP)
+                                )
+    if mode[:8] != 'POU_D_TG':
+        # MZ
+        RES_MZ=MECA_STATIQUE(        MODELE=MODELE,     CHAM_MATER=CHMAT,
+                    CARA_ELEM=CAREL,EXCIT=( _F( CHARGE = CLZ),
+                                            _F( CHARGE = MORE_MZ),
+                                            ))
+        # MT
+        RES_MT=MECA_STATIQUE(        MODELE=MODELE,     CHAM_MATER=CHMAT,
+                    CARA_ELEM=CAREL,EXCIT=( _F( CHARGE = CLZ),
+                                            _F( CHARGE = MORE_MT),
+                                            ))
+        # MY
+        RES_MY=MECA_STATIQUE(        MODELE=MODELE,     CHAM_MATER=CHMAT,
+                    CARA_ELEM=CAREL,EXCIT=( _F( CHARGE = CLX),
+                                            _F( CHARGE = MORE_MY),
+                                            ))
+        # MFY
+        RES_MFY=MECA_STATIQUE(        MODELE=MODELE,     CHAM_MATER=CHMAT,
+                    CARA_ELEM=CAREL,EXCIT=( _F( CHARGE = CLX),
+                                            _F( CHARGE = MORE_MFY),
+                                            ))
+        # MX
+        RES_MX=MECA_STATIQUE(        MODELE=MODELE,     CHAM_MATER=CHMAT,
+                    CARA_ELEM=CAREL,EXCIT=( _F( CHARGE = CLY),
+                                            _F( CHARGE = MORE_MX),
+                                            ))
+        # MFZ
+        RES_MFZ=MECA_STATIQUE(        MODELE=MODELE,     CHAM_MATER=CHMAT,
+                    CARA_ELEM=CAREL,EXCIT=( _F( CHARGE = CLY),
+                                            _F( CHARGE = MORE_MFZ),
+                                            ))
+    else:
+        if mode[-1]=='M':
+            rela ='MULTIFIBRE'
+        else :
+            rela = 'ELAS'
+        # MZ
+        RES_MZ=STAT_NON_LINE(        MODELE=MODELE,     CHAM_MATER=CHMAT,
+                    CARA_ELEM=CAREL,EXCIT=( _F( CHARGE = CLZ),
+                                            _F( CHARGE = MORE_MZ),),
+                    COMP_INCR=_F(RELATION=rela,
+                                GROUP_MA='POUTRE',),
+                    INCREMENT=_F(LIST_INST=LINST,),
+                                            )
+        # MT
+        RES_MT=STAT_NON_LINE(        MODELE=MODELE,     CHAM_MATER=CHMAT,
+                    CARA_ELEM=CAREL,EXCIT=( _F( CHARGE = CLZ),
+                                            _F( CHARGE = MORE_MT),
+                                            ),
+                    COMP_INCR=_F(RELATION=rela,
+                                 GROUP_MA='POUTRE',),
+                    INCREMENT=_F(LIST_INST=LINST,),
+                                            )
+        # MY
+        RES_MY=STAT_NON_LINE(        MODELE=MODELE,     CHAM_MATER=CHMAT,
+                    CARA_ELEM=CAREL,EXCIT=( _F( CHARGE = CLX),
+                                            _F( CHARGE = MORE_MY),
+                    ),
+                    COMP_INCR=_F(RELATION=rela,
+                                GROUP_MA='POUTRE',),
+                    INCREMENT=_F(LIST_INST=LINST,),
+                                            )
+        # MFY
+        RES_MFY=STAT_NON_LINE(        MODELE=MODELE,     CHAM_MATER=CHMAT,
+                    CARA_ELEM=CAREL,EXCIT=( _F( CHARGE = CLX),
+                                            _F( CHARGE = MORE_MFY),
+                                            ),
+                    COMP_INCR=_F(RELATION=rela,
+                                GROUP_MA='POUTRE',),
+                    INCREMENT=_F(LIST_INST=LINST,),
+                                            )
+        # MX
+        RES_MX=STAT_NON_LINE(        MODELE=MODELE,     CHAM_MATER=CHMAT,
+                    CARA_ELEM=CAREL,EXCIT=( _F( CHARGE = CLY),
+                                            _F( CHARGE = MORE_MX),
+                                            ),
+                    COMP_INCR=_F(RELATION=rela,
+                                GROUP_MA='POUTRE',),
+                    INCREMENT=_F(LIST_INST=LINST,),
+                                            )
+        # MFZ
+        RES_MFZ=STAT_NON_LINE(        MODELE=MODELE,     CHAM_MATER=CHMAT,
+                    CARA_ELEM=CAREL,EXCIT=( _F( CHARGE = CLY),
+                                            _F( CHARGE = MORE_MFZ),
+                                            ),
+                    COMP_INCR=_F(RELATION=rela,
+                                GROUP_MA='POUTRE',),
+                    INCREMENT=_F(LIST_INST=LINST,),
+                                            )
+
+    RES_MX=CALC_CHAMP(reuse=RES_MX,FORCE=('REAC_NODA'),RESULTAT=RES_MX)
+    RES_MT=CALC_CHAMP(reuse=RES_MT,FORCE=('REAC_NODA'),RESULTAT=RES_MT)
+    RES_MY=CALC_CHAMP(reuse=RES_MY,FORCE=('REAC_NODA'),RESULTAT=RES_MY)
+    RES_MFY=CALC_CHAMP(reuse=RES_MFY,FORCE=('REAC_NODA'),RESULTAT=RES_MFY)
+    RES_MZ=CALC_CHAMP(reuse=RES_MZ,FORCE=('REAC_NODA'),RESULTAT=RES_MZ)
+    RES_MFZ=CALC_CHAMP(reuse=RES_MFZ,FORCE=('REAC_NODA'),RESULTAT=RES_MFZ)
+
+    # TEST_RESU
+
+    TEST_RESU(RESU=(_F(
+                    NUME_ORDRE = 1,
+                    RESULTAT=RES_MZ,
+                    NOM_CHAM='REAC_NODA',
+                    NOEUD='N1',
+                    NOM_CMP='DRZ',
+                    VALE_REFE = -1500.0,
+                    VALE_CALC = r_non_reg[mode]['MZ'][0],
+                    REFERENCE = 'ANALYTIQUE',
+                    ),
+                    _F(
+                    NUME_ORDRE = 1,
+                    RESULTAT=RES_MT,
+                    NOM_CHAM='REAC_NODA',
+                    NOEUD='N1',
+                    NOM_CMP='DRZ',
+                    VALE_REFE =  -1500.0,
+                    VALE_CALC =r_non_reg[mode]['MZ'][0],
+                    REFERENCE = 'ANALYTIQUE',
+                    ),
+                    ),
+            )
+
+    TEST_RESU(RESU=(_F(
+                    NUME_ORDRE = 1,
+                    RESULTAT=RES_MY,
+                    NOM_CHAM='REAC_NODA',
+                    NOEUD='N1',
+                    NOM_CMP='DX',
+                    VALE_REFE = 1625.0,
+                    VALE_CALC = r_non_reg[mode]['MY'][0],
+                    REFERENCE = 'ANALYTIQUE',
+                    ),
+                    _F(
+                    NUME_ORDRE = 1,
+                    RESULTAT=RES_MY,
+                    NOM_CHAM='REAC_NODA',
+                    NOEUD='N1',
+                    NOM_CMP='DRY',
+                    VALE_REFE = 125.0,
+                    VALE_CALC = r_non_reg[mode]['MY'][1],
+                    REFERENCE = 'ANALYTIQUE',
+                    ),
+                    _F(
+                    NUME_ORDRE = 1,
+                    RESULTAT=RES_MY,
+                    NOM_CHAM='REAC_NODA',
+                    NOEUD='N11',
+                    NOM_CMP='DX',
+                    VALE_REFE = -1625.0,
+                    VALE_CALC = r_non_reg[mode]['MY'][2],
+                    REFERENCE = 'ANALYTIQUE',
+                    ),
+                    _F(
+                    NUME_ORDRE = 1,
+                    RESULTAT=RES_MFY,
+                    NOM_CHAM='REAC_NODA',
+                    NOEUD='N1',
+                    NOM_CMP='DX',
+                    VALE_REFE = 1625.0,
+                    VALE_CALC = r_non_reg[mode]['MY'][0],
+                    REFERENCE = 'ANALYTIQUE',
+                    ),
+                    _F(
+                    NUME_ORDRE = 1,
+                    RESULTAT=RES_MFY,
+                    NOM_CHAM='REAC_NODA',
+                    NOEUD='N1',
+                    NOM_CMP='DRY',
+                    VALE_REFE = 125.0,
+                    VALE_CALC = r_non_reg[mode]['MY'][1],
+                    REFERENCE = 'ANALYTIQUE',
+                    ),
+                    _F(
+                    NUME_ORDRE = 1,
+                    RESULTAT=RES_MFY,
+                    NOM_CHAM='REAC_NODA',
+                    NOEUD='N11',
+                    NOM_CMP='DX',
+                    VALE_REFE = -1625.0,
+                    VALE_CALC = r_non_reg[mode]['MY'][2],
+                    REFERENCE = 'ANALYTIQUE',
+                    ),
+                    ),
+            )
+
+    TEST_RESU(RESU=(_F(
+                    NUME_ORDRE = 1,
+                    RESULTAT=RES_MX,
+                    NOM_CHAM='REAC_NODA',
+                    NOEUD='N1',
+                    NOM_CMP='DY',
+                    VALE_REFE = 1625.0,
+                    VALE_CALC = r_non_reg[mode]['MX'][0],
+                    REFERENCE = 'ANALYTIQUE',
+                    ),
+                    _F(
+                    NUME_ORDRE = 1,
+                    RESULTAT=RES_MX,
+                    NOM_CHAM='REAC_NODA',
+                    NOEUD='N1',
+                    NOM_CMP='DRX',
+                    VALE_REFE = -125.0,
+                    VALE_CALC = r_non_reg[mode]['MX'][1],
+                    REFERENCE = 'ANALYTIQUE',
+                    ),
+                    _F(
+                    NUME_ORDRE = 1,
+                    RESULTAT=RES_MX,
+                    NOM_CHAM='REAC_NODA',
+                    NOEUD='N11',
+                    NOM_CMP='DY',
+                    VALE_REFE = -1625.0,
+                    VALE_CALC = r_non_reg[mode]['MX'][2],
+                    REFERENCE = 'ANALYTIQUE',
+                    ),
+                    _F(
+                    NUME_ORDRE = 1,
+                    RESULTAT=RES_MFZ,
+                    NOM_CHAM='REAC_NODA',
+                    NOEUD='N1',
+                    NOM_CMP='DY',
+                    VALE_REFE = 1625.0,
+                    VALE_CALC = r_non_reg[mode]['MX'][0],
+                    REFERENCE = 'ANALYTIQUE',
+                    ),
+                    _F(
+                    NUME_ORDRE = 1,
+                    RESULTAT=RES_MFZ,
+                    NOM_CHAM='REAC_NODA',
+                    NOEUD='N1',
+                    NOM_CMP='DRX',
+                    VALE_REFE = -125.0,
+                    VALE_CALC = r_non_reg[mode]['MX'][1],
+                    REFERENCE = 'ANALYTIQUE',
+                    ),
+                    _F(
+                    NUME_ORDRE = 1,
+                    RESULTAT=RES_MFZ,
+                    NOM_CHAM='REAC_NODA',
+                    NOEUD='N11',
+                    NOM_CMP='DY',
+                    VALE_REFE = -1625.0,
+                    VALE_CALC = r_non_reg[mode]['MX'][2],
+                    REFERENCE = 'ANALYTIQUE',
+                    ),
+                    ),
+            )
+    DETRUIRE(INFO = 1,CONCEPT=(_F(NOM = MODELE,),
+                      _F(NOM = CAREL,),
+                      _F(NOM = CLX,),
+                      _F(NOM = CLY,),
+                      _F(NOM = CLZ,),
+                      _F(NOM = MORE_MX,),
+                      _F(NOM = MORE_MT,),
+                      _F(NOM = MORE_MY,),
+                      _F(NOM = MORE_MFY,),
+                      _F(NOM = MORE_MZ,),
+                      _F(NOM = MORE_MFZ,),
+                      _F(NOM = RES_MX,),
+                      _F(NOM = RES_MT,),
+                      _F(NOM = RES_MY,),
+                      _F(NOM = RES_MFY,),
+                      _F(NOM = RES_MZ,),
+                      _F(NOM = RES_MFZ,),
+                      _F(NOM = RES_MX,),
+                      _F(NOM = CHMAT,),
+                     )
+            )
+FIN()

@@ -1,8 +1,8 @@
-# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
+# MODIF  DATE 26/03/2013   AUTEUR CHEIGNON E.CHEIGNON 
 # TITRE VALIDATION DE LA COMMANDE CREA_RESU MOT CLE FACTEUR PERM_CHAM
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -89,7 +89,7 @@ MAT1_1=DEFI_MATERIAU(
 
 MAT1_2=DEFI_MATERIAU(
            ELAS=_F( E = 2.E11, NU = 0.3),
-           ECRO_LINE=_F( D_SIGM_EPSI = 0., SY = 150.E6),
+           ECRO_LINE=_F( D_SIGM_EPSI = 2.E9, SY = 150.E6),
                         )
 
 COMPPMF1=DEFI_COMPOR(GEOM_FIBRE=GF,
@@ -101,7 +101,7 @@ COMPPMF1=DEFI_COMPOR(GEOM_FIBRE=GF,
                       )
 
 CHMAT1=AFFE_MATERIAU(   MAILLAGE=MA1,AFFE=(
-                       _F( GROUP_MA = ('POU1','POU2'),MATER = MAT1_1)),
+                       _F( GROUP_MA = ('POU1','POU2'),MATER = (MAT1_1,MAT1_2))),
                    AFFE_COMPOR=
                                _F( TOUT='OUI', COMPOR = COMPPMF1))
 
@@ -311,7 +311,7 @@ MAT2_1=DEFI_MATERIAU(
 
 MAT2_2=DEFI_MATERIAU(
            ELAS=_F( E = 2.E11, NU = 0.3),
-             ECRO_LINE=_F( D_SIGM_EPSI = 0., SY = 150.E6),
+             ECRO_LINE=_F( D_SIGM_EPSI = 2.E9, SY = 150.E6),
                         )
 
 COMPPMF2=DEFI_COMPOR(GEOM_FIBRE=GF,
@@ -323,7 +323,7 @@ COMPPMF2=DEFI_COMPOR(GEOM_FIBRE=GF,
                       )
 
 CHMAT2=AFFE_MATERIAU(   MAILLAGE=MA2,AFFE=(
-                       _F( GROUP_MA = ('POU3','POU4'),MATER = MAT2_1)),
+                       _F( GROUP_MA = ('POU3','POU4'),MATER = (MAT2_1,MAT2_2))),
                    AFFE_COMPOR=
                                _F( TOUT='OUI', COMPOR = COMPPMF2))
 

@@ -1,7 +1,7 @@
       SUBROUTINE ME2MME(MODELZ,NCHAR,LCHAR,MATE,CARAZ,EXITIM,TIME,
      &                  MATELZ,NH,BASEZ)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 12/02/2013   AUTEUR PELLET J.PELLET 
+C MODIF CALCULEL  DATE 26/03/2013   AUTEUR CHEIGNON E.CHEIGNON 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -463,6 +463,8 @@ C ====================================================================
           LCHIN(2)=MATE
           LPAIN(4)='PROTATR'
           LCHIN(4)=LIGRCH(1:13)//'.ROTAT.DESC'
+          LPAIN(15)='PCOMPOR'
+          LCHIN(15)=MATE(1:8)//'.COMPOR'
           ILIRES=ILIRES+1
           CALL CODENT(ILIRES,'D0',LCHOUT(1)(12:14))
           CALL CALCUL('S',OPTION,LIGRMO,NBIN,LCHIN,LPAIN,1,LCHOUT,
