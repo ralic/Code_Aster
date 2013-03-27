@@ -1,10 +1,10 @@
 
-# MODIF  DATE 16/10/2012   AUTEUR SELLENET N.SELLENET 
+# MODIF  DATE 25/03/2013   AUTEUR LEBOUVIER F.LEBOUVIER 
 # TITRE PLAQUE STRATIFIEE EN FLEXION - DKT
 # ssls113a.para = tps_job 60 mem_job 256Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -41,7 +41,7 @@
 DEBUT(CODE=_F(NOM='SSLS113A', NIV_PUB_WEB='INTERNET'), DEBUG=_F(SDVERI='OUI'))
 #
 
-MA=LIRE_MAILLAGE(FORMAT='MED',);
+MA=LIRE_MAILLAGE(FORMAT='MED');
 
 MA=DEFI_GROUP(reuse =MA,
               MAILLAGE=MA,
@@ -349,7 +349,8 @@ STA2=MECA_STATIQUE(MODELE=MO,
                    CARA_ELEM=EP2,
                    EXCIT=_F(CHARGE=CHME,),);
 
-STA2=CALC_CHAMP(reuse=STA2,RESULTAT=STA2,CONTRAINTE=('EFGE_ELNO'))
+STA2=CALC_CHAMP(reuse=STA2,RESULTAT=STA2,
+                           CONTRAINTE=('EFGE_ELNO'))
 
 
 # ______________________________________________________________________
@@ -559,6 +560,185 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=1,
                    MAILLE='M5',),
                 ),
           )
+#
+#--------------------------------------------------------
+#
+# TEST DE L'OPTION ENEL_ELNO, ENEL_ELGA ET ENEL_ELEM
+#
+STA3=CALC_CHAMP(RESULTAT=STA3,reuse=STA3,
+                ENERGIE=('ENEL_ELNO','ENEL_ELGA','ENEL_ELEM'));
 
+#IMPR_RESU(RESU=_F(RESULTAT=STA3,NOM_CHAM=('ENEL_ELGA','ENEL_ELNO','ENEL_ELEM')))
+
+
+TEST_RESU(RESU=(_F(RESULTAT=STA3,
+                   NUME_ORDRE=1,
+                   NOEUD='N1',
+                   MAILLE='M5',
+                   CRITERE='RELATIF',
+                   REFERENCE='NON_DEFINI',
+                   NOM_CMP='TOTALE',
+                   PRECISION=1.E-3,
+                   NOM_CHAM='ENEL_ELNO',
+                   VALE_CALC=9.4274357985211E-03,
+                   VALE_REFE=9.4274357985211E-03,),
+                _F(RESULTAT=STA3,
+                   NUME_ORDRE=1,
+                   NOEUD='N1',
+                   MAILLE='M5',
+                   CRITERE='RELATIF',
+                   REFERENCE='NON_DEFINI',
+                   NOM_CMP='MEMBRANE',
+                   PRECISION=1.E-3,
+                   NOM_CHAM='ENEL_ELNO',
+                   VALE_CALC=4.3200451125764E-03,
+                   VALE_REFE=4.3200451125764E-03,),
+                _F(RESULTAT=STA3,
+                   NUME_ORDRE=1,
+                   NOEUD='N1',
+                   MAILLE='M5',
+                   CRITERE='RELATIF',
+                   REFERENCE='NON_DEFINI',
+                   NOM_CMP='FLEXION',
+                   PRECISION=1.E-3,
+                   NOM_CHAM='ENEL_ELNO',
+                   VALE_CALC=3.8059891690055E-03,
+                   VALE_REFE=3.8059891690055E-03,),
+                _F(RESULTAT=STA3,
+                   NUME_ORDRE=1,
+                   NOEUD='N1',
+                   MAILLE='M5',
+                   CRITERE='RELATIF',
+                   REFERENCE='NON_DEFINI',
+                   NOM_CMP='CISAILLE',
+                   PRECISION=1.E-3,
+                   NOM_CHAM='ENEL_ELNO',
+                   VALE_CALC=1.4571484955755E-07,
+                   VALE_REFE=1.4571484955755E-07,),
+                _F(RESULTAT=STA3,
+                   NUME_ORDRE=1,
+                   NOEUD='N1',
+                   MAILLE='M5',
+                   CRITERE='RELATIF',
+                   REFERENCE='NON_DEFINI',
+                   NOM_CMP='COUPL_MF',
+                   PRECISION=1.E-3,
+                   NOM_CHAM='ENEL_ELNO',
+                   VALE_CALC=1.3012558020897E-03,
+                   VALE_REFE=1.3012558020897E-03,),
+                ),
+          )
+
+
+TEST_RESU(RESU=(_F(RESULTAT=STA3,
+                   NUME_ORDRE=1,
+                   POINT=1,
+                   MAILLE='M5',
+                   CRITERE='RELATIF',
+                   REFERENCE='NON_DEFINI',
+                   NOM_CMP='TOTALE',
+                   PRECISION=1.E-3,
+                   NOM_CHAM='ENEL_ELGA',
+                   VALE_CALC=8.5231581313362E-03,
+                   VALE_REFE=8.5231581313362E-03,),
+                _F(RESULTAT=STA3,
+                   NUME_ORDRE=1,
+                   POINT=1,
+                   MAILLE='M5',
+                   CRITERE='RELATIF',
+                   REFERENCE='NON_DEFINI',
+                   NOM_CMP='MEMBRANE',
+                   PRECISION=1.E-3,
+                   NOM_CHAM='ENEL_ELGA',
+                   VALE_CALC=4.3200451125764E-03,
+                   VALE_REFE=4.3200451125764E-03,),
+                _F(RESULTAT=STA3,
+                   NUME_ORDRE=1,
+                   POINT=1,
+                   MAILLE='M5',
+                   CRITERE='RELATIF',
+                   REFERENCE='NON_DEFINI',
+                   NOM_CMP='FLEXION',
+                   PRECISION=1.E-3,
+                   NOM_CHAM='ENEL_ELGA',
+                   VALE_CALC=3.2599511049684E-03,
+                   VALE_REFE=3.2599511049684E-03,),
+                _F(RESULTAT=STA3,
+                   NUME_ORDRE=1,
+                   POINT=1,
+                   MAILLE='M5',
+                   CRITERE='RELATIF',
+                   REFERENCE='NON_DEFINI',
+                   NOM_CMP='CISAILLE',
+                   PRECISION=1.E-3,
+                   NOM_CHAM='ENEL_ELGA',
+                   VALE_CALC=1.4571484955755E-07,
+                   VALE_REFE=1.4571484955755E-07,),
+                _F(RESULTAT=STA3,
+                   NUME_ORDRE=1,
+                   POINT=1,
+                   MAILLE='M5',
+                   CRITERE='RELATIF',
+                   REFERENCE='NON_DEFINI',
+                   NOM_CMP='COUPL_MF',
+                   PRECISION=1.E-3,
+                   NOM_CHAM='ENEL_ELGA',
+                   VALE_CALC=9.4301619894179E-04,
+                   VALE_REFE=9.4301619894179E-04,),
+                ),
+          )
+
+TEST_RESU(RESU=(_F(RESULTAT=STA3,
+                   NUME_ORDRE=1,
+                   MAILLE='M5',
+                   CRITERE='RELATIF',
+                   REFERENCE='NON_DEFINI',
+                   NOM_CMP='TOTALE',
+                   PRECISION=1.E-3,
+                   NOM_CHAM='ENEL_ELEM',
+                   VALE_CALC=2.4680754079357E-05,
+                   VALE_REFE=2.4680754079357E-05,),
+                _F(RESULTAT=STA3,
+                   NUME_ORDRE=1,
+                   MAILLE='M5',
+                   CRITERE='RELATIF',
+                   REFERENCE='NON_DEFINI',
+                   NOM_CMP='MEMBRANE',
+                   PRECISION=1.E-3,
+                   NOM_CHAM='ENEL_ELEM',
+                   VALE_CALC=1.1932323512898E-05,
+                   VALE_REFE=1.1932323512898E-05,),
+                _F(RESULTAT=STA3,
+                   NUME_ORDRE=1,
+                   MAILLE='M5',
+                   CRITERE='RELATIF',
+                   REFERENCE='NON_DEFINI',
+                   NOM_CMP='FLEXION',
+                   PRECISION=1.E-3,
+                   NOM_CHAM='ENEL_ELEM',
+                   VALE_CALC=9.4840518501932E-06,
+                   VALE_REFE=9.4840518501932E-06,),
+                _F(RESULTAT=STA3,
+                   NUME_ORDRE=1,
+                   MAILLE='M5',
+                   CRITERE='RELATIF',
+                   REFERENCE='NON_DEFINI',
+                   NOM_CMP='CISAILLE',
+                   PRECISION=1.E-3,
+                   NOM_CHAM='ENEL_ELEM',
+                   VALE_CALC=4.0247652055584E-10,
+                   VALE_REFE=4.0247652055584E-10,),
+                _F(RESULTAT=STA3,
+                   NUME_ORDRE=1,
+                   MAILLE='M5',
+                   CRITERE='RELATIF',
+                   REFERENCE='NON_DEFINI',
+                   NOM_CMP='COUPL_MF',
+                   PRECISION=1.E-3,
+                   NOM_CHAM='ENEL_ELEM',
+                   VALE_CALC=3.2639762397448E-06,
+                   VALE_REFE=3.2639762397448E-06,),
+                ),
+          )
 FIN();
 #

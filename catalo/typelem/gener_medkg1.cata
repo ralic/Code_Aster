@@ -1,4 +1,4 @@
-%& MODIF TYPELEM  DATE 11/03/2013   AUTEUR IDOUX L.IDOUX 
+%& MODIF TYPELEM  DATE 25/03/2013   AUTEUR LEBOUVIER F.LEBOUVIER 
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -61,9 +61,9 @@ MODE_LOCAL__
     EDISSR   = DISS_R   ELEM__         (ENDO     )
     EDISSPG  = DISS_R   ELGA__ RIGI    (ENDO     )
     EDISSNO  = DISS_R   ELNO__ IDEN__  (ENDO     )
-    EENERR   = ENER_R   ELEM__         (TOTALE   MEMBRANE FLEXION  )
-    EENERPG  = ENER_R   ELGA__ RIGI    (TOTALE   MEMBRANE FLEXION  )
-    EENERNO  = ENER_R   ELNO__ IDEN__  (TOTALE   MEMBRANE FLEXION  )
+    EENERR   = ENER_R   ELEM__         (TOTALE   MEMBRANE FLEXION  CISAILLE COUPL_MF  )
+    EENERPG  = ENER_R   ELGA__ RIGI    (TOTALE   MEMBRANE FLEXION  CISAILLE COUPL_MF  )
+    EENERNO  = ENER_R   ELNO__ IDEN__  (TOTALE   MEMBRANE FLEXION  CISAILLE COUPL_MF  )
     CEPSINR  = EPSI_R   ELEM__         (EXX      EYY      EXY      KXX      KYY      KXY      )
     EDEFGNO  = EPSI_R   ELNO__ IDEN__  (EXX      EYY      EXY      KXX      KYY      KXY
                                         GAX      GAY      )

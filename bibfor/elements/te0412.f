@@ -4,7 +4,7 @@
       CHARACTER*16      OPTION,NOMTE
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 11/03/2013   AUTEUR IDOUX L.IDOUX 
+C MODIF ELEMENTS  DATE 25/03/2013   AUTEUR LEBOUVIER F.LEBOUVIER 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -26,7 +26,9 @@ C
 C FONCTIONS REALISEES:
 C
 C      CALCUL DE LA DENSITE D'ENERGIE POTENTIELLE THERMOELASTIQUE
-C      A L'EQUILIBRE POUR LES ELEMENTS DKT
+C      A L'EQUILIBRE POUR LES ELEMENTS :
+C             - LINEAIRE      : DKT, DST, Q4GG, DKTG ET Q4GG
+C             - NON-LINEAIRE  : DKT, DKTG ET Q4GG
 C      .SOIT AUX POINTS D'INTEGRATION : OPTION 'ENEL_ELGA'
 C      .SOIT AUX NOEUDS               : OPTION 'ENEL_ELNO'
 C      .SOIT L INTEGRALE PAR ELEMENT  : OPTION 'ENEL_ELEM'
@@ -46,37 +48,48 @@ C.......................................................................
       PARAMETER (NPGMX=4)
 
       REAL*8   PGL(3,3)
-      REAL*8   EPS(3),KHI(3)
+      REAL*8   EPS(3),KHI(3),GAM(2)
       REAL*8   BF(3,3*NNOMX),BM(3,2*NNOMX),UM(2,NNOMX),UF(3,NNOMX)
       REAL*8   UL(6,NNOMX),QSI,ETA,XYZL(3,4),JACOB(5),POIDS,CARA(25)
-      REAL*8   NMM(NBSM),NMF(NBSM),MFF(NBSM),ENELM(NPGMX),ENELF(NPGMX)
-      REAL*8   ENELT(NPGMX),ENM,ENF,ENT
-      REAL*8   EFFINT(32),EFFORT(32)
+      REAL*8   NMM(NBSM),MFF(NBSM)
+      REAL*8   ENELM(NPGMX),ENELF(NPGMX)
+      REAL*8   ENELT(NPGMX),ENELC(NPGMX),ENEMF(NPGMX)
+      REAL*8   ENT,ENM,ENF,ENC,ENMF
+      REAL*8   EFFINT(32),EFFORT(32),DEGPG(32)
       REAL*8   ALPHA, BETA, R8DGRD
       REAL*8   T2EV(4),T2VE(4), C, S
+      REAL*8   DMEPS(3),DFKHI(3),DCGAM(3)
+      REAL*8   DF(9),DM(9),DMF(9),DC(4),DCI(4)
+      REAL*8   DMC(3,2),DFC(3,2)
+      REAL*8   T1VE(9)
+
 
       INTEGER  NDIM,NNO,NNOEL,NPG,IPOIDS,ICOOPG,IVF,IDFDX,IDFD2,JGANO
       INTEGER  JGEOM,IPG,INO,JDEPM,ISIG,JSIG,IDENER,IRET
-      INTEGER  ICOMPO,ICACOQ,ICONTP,JVARI,NBVAR,IVPG
+      INTEGER  ICOMPO,ICONTP,JVARI,NBVAR,IVPG
+      INTEGER  MULTIC
       INTEGER  JCARA
 
-      CHARACTER*16 VALK(3)
-      LOGICAL  DKQ,DKG,LKIT
-
-      DKQ = .FALSE.
-      DKG = .FALSE.
+      CHARACTER*16 VALK(3),OPTIO2
+      LOGICAL  DKQ,DKG,LKIT,COUPMF
 
       NBSIG = 6
-      IF (NOMTE.EQ.'MEDKQU4 ') THEN
+      IF (NOMTE.EQ.'MEDKQU4 ' .OR.
+     &     NOMTE.EQ.'MEDSQU4 ' .OR.
+     &     NOMTE.EQ.'MEQ4QU4 ') THEN
         DKQ = .TRUE.
-      ELSEIF (NOMTE.EQ.'MEDKQG4 '.OR.
-     &        NOMTE.EQ.'MEQ4GG4 ') THEN
+        DKG = .FALSE.
+      ELSEIF (NOMTE.EQ.'MEDKQG4 ' .OR.
+     &        NOMTE.EQ.'MEQ4GG4' ) THEN
         DKQ = .TRUE.
         DKG = .TRUE.
         NBSIG = 8
-      ELSEIF (NOMTE.EQ.'MEDKTR3 ') THEN
+      ELSEIF (NOMTE.EQ.'MEDKTR3 ' .OR.
+     &        NOMTE.EQ.'MEDSTR3 ' .OR.
+     &        NOMTE.EQ.'MET3TR3 ') THEN
         DKQ = .FALSE.
-      ELSEIF (NOMTE.EQ.'MEDKTG3 '.OR.
+        DKG = .FALSE.
+      ELSEIF (NOMTE.EQ.'MEDKTG3 ' .OR.
      &        NOMTE.EQ.'MET3GG3 ') THEN
         DKQ = .FALSE.
         DKG = .TRUE.
@@ -89,13 +102,40 @@ C.......................................................................
      +                                         IVF,IDFDX,IDFD2,JGANO)
 
       CALL JEVECH('PGEOMER','L',JGEOM)
-      CALL JEVECH('PCOMPOR','L',ICOMPO)
+
       IF (NNO.EQ.3) THEN
          CALL DXTPGL ( ZR(JGEOM), PGL )
       ELSE IF (NNO.EQ.4) THEN
          CALL DXQPGL ( ZR(JGEOM), PGL, 'S', IRET )
       END IF
 
+      CALL UTPVGL(NNO,3,PGL,ZR(JGEOM),XYZL)
+
+      IF ( DKQ ) THEN
+         CALL GQUAD4(XYZL,CARA)
+      ELSE
+         CALL GTRIA3(XYZL,CARA)
+      END IF
+C
+C --- INITIALISATION
+C
+      CALL R8INIR(NPGMX,0.D0,ENELT,1)
+      CALL R8INIR(NPGMX,0.D0,ENELM,1)
+      CALL R8INIR(NPGMX,0.D0,ENELF,1)
+      CALL R8INIR(NPGMX,0.D0,ENELC,1)
+      CALL R8INIR(NPGMX,0.D0,ENEMF,1)
+      ENT = 0.0D0
+      ENM = 0.0D0
+      ENF = 0.0D0
+      ENC = 0.0D0
+      ENMF= 0.0D0
+C
+C - ON REGARDE SI ON EST EN LINEAIRE OU ENN NON-LINEAIRE
+C
+      CALL TECACH('NNN','PCOMPOR','L',1,ICOMPO,IRET)
+
+      IF(IRET.EQ.0) THEN
+C
       LKIT = ZK16(ICOMPO)(1:7).EQ.'KIT_DDI'
 
       IF ( ZK16(ICOMPO)(1:4).EQ.'ELAS'   .OR.
@@ -125,16 +165,6 @@ C ---     PASSAGE DES CONTRAINTES DANS LE REPERE INTRINSEQUE :
         ENDIF
       ENDIF
 
-      CALL JEVECH('PGEOMER','L',JGEOM)
-      CALL JEVECH('PCACOQU','L',ICACOQ)
-
-      CALL UTPVGL(NNO,3,PGL,ZR(JGEOM),XYZL)
-
-      IF ( DKQ ) THEN
-         CALL GQUAD4(XYZL,CARA)
-      ELSE
-         CALL GTRIA3(XYZL,CARA)
-      END IF
 
       IF(DKG .AND. (LKIT .OR. ZK16(ICOMPO)(1:11).EQ.'GLRC_DAMAGE'.OR.
      &   ZK16(ICOMPO)(1:4).EQ.'ELAS')) THEN
@@ -184,13 +214,6 @@ C
       ELSE
         CALL DXEFFI ( OPTION, NOMTE, PGL, ZR(ICONTP),NBSIG, EFFINT )
       ENDIF
-
-      CALL R8INIR(NPGMX,0.D0,ENELM,1)
-      CALL R8INIR(NPGMX,0.D0,ENELF,1)
-      CALL R8INIR(NPGMX,0.D0,ENELT,1)
-      ENM = 0.0D0
-      ENF = 0.0D0
-      ENT = 0.0D0
 
 C ---- BOUCLE SUR LES POINTS D'INTEGRATION :
 C      ===================================
@@ -242,7 +265,6 @@ C  --      DENSITE D'ENERGIE POTENTIELLE ELASTIQUE AU POINT
 C  --      D'INTEGRATION COURANT
 C          ---------------------
            CALL R8INIR(NBSM,0.D0,NMM,1)
-           CALL R8INIR(NBSM,0.D0,NMF,1)
            CALL R8INIR(NBSM,0.D0,MFF,1)
 
               DO 70 ISIG = 1, NBSM
@@ -261,8 +283,117 @@ C          ---------------------
            ENT = ENT + ENELT(IPG)*POIDS
          ENDIF
 C
-  20  CONTINUE
+  20    CONTINUE
+        ENDIF
 C
+C --- CALCUL DES OPTIONS ENEL_ELGA ELEM_ELEM DANS LE CAS LINEAIRE
+C     POUR LES ELEMENTS DKT, DST, Q4G, DKTG ET Q4GG
+C
+      ELSE 
+
+        IF (OPTION.EQ.'ENEL_ELGA') THEN
+          CALL JEVECH('PDEPLAR','L',JDEPM)
+        ELSE IF(OPTION.EQ.'ENEL_ELEM') THEN
+          CALL JEVECH('PDEPLR','L',JDEPM)
+        ENDIF
+
+        CALL UTPVGL(NNO,6,PGL,ZR(JDEPM),UL)
+
+        CALL DXMATE('RIGI',DF,DM,DMF,DC,DCI,DMC,DFC,NNO,PGL,MULTIC,
+     &               COUPMF,T2EV,T2VE,T1VE)
+
+C     -- CALCUL DES DEFORMATIONS GENERALISEES AUX POINTS DE GAUSS
+C     -----------------------------------------------------------
+        OPTIO2='DEGE_ELGA'
+        IF (NOMTE.EQ.'MEDKTR3' .OR.
+     &      NOMTE.EQ.'MEDKTG3' ) THEN
+           CALL DKTEDG(XYZL,OPTIO2,PGL,UL,DEGPG,MULTIC)
+        ELSE IF (NOMTE.EQ.'MEDSTR3' ) THEN
+           CALL DSTEDG(XYZL,OPTIO2,PGL,UL,DEGPG)
+        ELSE IF (NOMTE.EQ.'MEDKQU4' .OR.
+     &           NOMTE.EQ.'MEDKQG4' ) THEN
+           CALL DKQEDG(XYZL,OPTIO2,PGL,UL,DEGPG)
+        ELSE IF (NOMTE.EQ.'MEDSQU4' ) THEN
+           CALL DSQEDG(XYZL,OPTIO2,PGL,UL,DEGPG)
+        ELSE IF (NOMTE.EQ.'MEQ4QU4'.OR.
+     &           NOMTE.EQ.'MEQ4GG4' ) THEN
+           CALL Q4GEDG(XYZL,OPTIO2,PGL,UL,DEGPG)
+        ELSE IF (NOMTE.EQ.'MET3TR3'.OR.
+     &           NOMTE.EQ.'MET3GG3') THEN
+           CALL T3GEDG(XYZL,OPTIO2,PGL,UL,DEGPG)
+        END IF
+
+C ---- BOUCLE SUR LES POINTS D'INTEGRATION :
+C      ===================================
+        DO 80 IPG = 1, NPG
+
+          QSI = ZR(ICOOPG-1+NDIM*(IPG-1)+1)
+          ETA = ZR(ICOOPG-1+NDIM*(IPG-1)+2)
+          IF ( DKQ ) THEN
+            CALL JQUAD4 ( XYZL, QSI, ETA, JACOB )
+            POIDS = ZR(IPOIDS+IPG-1)*JACOB(1)
+          ELSE
+            POIDS = ZR(IPOIDS+IPG-1)*CARA(7)
+          ENDIF
+
+C  --    CALCUL DE LA DENSITE D'ENERGIE POTENTIELLE ELASTIQUE :
+C        ==========================================================
+          IF ((OPTION.EQ.'ENEL_ELGA').OR.
+     &         (OPTION.EQ.'ENEL_ELEM')) THEN
+C
+            DO 90 ISIG = 1, NBSM
+              EPS(ISIG) =  DEGPG((IPG-1)*8 + ISIG)
+              KHI(ISIG) =  DEGPG((IPG-1)*8 + ISIG +3)
+              IF(ISIG.LE.2) THEN
+                GAM(ISIG) =  DEGPG((IPG-1)*8 + ISIG +6)
+              ENDIF
+  90        CONTINUE
+C
+C --- CALCUL DES PRODUITS :
+C           MEMBRANE     : [DM]{EPSI}
+C           FLEXION      : [DF]{KHI}
+C           CISAILLEMENT : [DC]{GAM}
+C
+            EPS(3) = EPS(3)*2.D0
+            KHI(3) = KHI(3)*2.D0
+
+            CALL PMRVEC('ZERO',3,3, DM, EPS, DMEPS)
+            CALL PMRVEC('ZERO',3,3, DF, KHI, DFKHI)
+            CALL PMRVEC('ZERO',2,2, DC, GAM, DCGAM)
+
+            DO 650 ISIG = 1, NBSM
+              ENELM(IPG)  = ENELM(IPG)  + 0.5D0*EPS(ISIG)*DMEPS(ISIG)
+              ENELF(IPG)  = ENELF(IPG)  + 0.5D0*KHI(ISIG)*DFKHI(ISIG)
+              IF(ISIG.LE.2) THEN
+                ENELC(IPG)  = ENELC(IPG)  + 0.5D0*GAM(ISIG)*DCGAM(ISIG)
+              ENDIF
+  650      CONTINUE
+
+C --- COUPLAGE MEMBRANE - FLEXION (ELAS_COQUE)
+
+           IF(COUPMF) THEN
+             CALL PMRVEC('ZERO',3,3, DMF, EPS, DMEPS)
+             CALL PMRVEC('ZERO',3,3, DMF, KHI, DFKHI)
+
+             DO 110 ISIG=1,NBSM
+               ENEMF(IPG)= ENEMF(IPG)+0.5D0*(EPS(ISIG)*DFKHI(ISIG)+
+     &                                        KHI(ISIG)*DMEPS(ISIG)) 
+110          CONTINUE
+           ENDIF
+
+             ENELT(IPG) = ENELM(IPG) + ENELF(IPG)+ 
+     &                     ENELC(IPG) + ENEMF(IPG)
+             ENM  = ENM  + ENELM(IPG)*POIDS
+             ENF  = ENF  + ENELF(IPG)*POIDS
+             ENC  = ENC  + ENELC(IPG)*POIDS
+             ENMF = ENMF + ENEMF(IPG)*POIDS
+             ENT  = ENT  + ENELT(IPG)*POIDS
+          ENDIF
+C
+  80    CONTINUE
+
+      ENDIF
+
 C ---- RECUPERATION DU CHAMP DES DENSITES D'ENERGIE DE DEFORMATION
 C ---- ELASTIQUE EN SORTIE
 C      -------------------
@@ -272,29 +403,33 @@ C      -------------------
         CALL JEVECH('PENERD1','E',IDENER)
       ENDIF
 C
-C --- OPTIONS ENEL_ELGA
-C     ==============================
-      IF (OPTION.EQ.'ENEL_ELGA') THEN
-         DO 100 IPG = 1, NPG
-           ZR(IDENER-1+(IPG-1)*3 +1) = ENELT(IPG)
-           ZR(IDENER-1+(IPG-1)*3 +2) = ENELM(IPG)
-           ZR(IDENER-1+(IPG-1)*3 +3) = ENELF(IPG)
- 100     CONTINUE
+C --- OPTION ENEL_ELGA
+C     ================
+        IF (OPTION.EQ.'ENEL_ELGA') THEN
+          DO 100 IPG = 1, NPG
+            ZR(IDENER-1+(IPG-1)*5 +1) = ENELT(IPG)
+            ZR(IDENER-1+(IPG-1)*5 +2) = ENELM(IPG)
+            ZR(IDENER-1+(IPG-1)*5 +3) = ENELF(IPG)
+            ZR(IDENER-1+(IPG-1)*5 +4) = ENELC(IPG)
+            ZR(IDENER-1+(IPG-1)*5 +5) = ENEMF(IPG)
+ 100      CONTINUE
 C
 C --- OPTION ENEL_ELEM
 C     ================
-      ELSEIF (OPTION.EQ.'ENEL_ELEM') THEN
-        ZR(IDENER   ) = ENT
-        ZR(IDENER +1) = ENM
-        ZR(IDENER +2) = ENF
-      ENDIF
-
-      ELSE
-C      OPTION NON DISPONIBLE
-        VALK(1) = OPTION
-        VALK(2) = NOMTE
-        VALK(3) = ZK16(ICOMPO)
-        CALL U2MESK('F','ELEMENTS_88',3,VALK)
-      ENDIF
+        ELSEIF (OPTION.EQ.'ENEL_ELEM') THEN
+          ZR(IDENER   ) = ENT
+          ZR(IDENER +1) = ENM
+          ZR(IDENER +2) = ENF
+          ZR(IDENER +3) = ENC
+          ZR(IDENER +4) = ENMF
+        ELSE
+C
+C  --- OPTION NON DISPONIBLE
+C      =====================
+          VALK(1) = OPTION
+          VALK(2) = NOMTE
+          VALK(3) = ZK16(ICOMPO)
+          CALL U2MESK('F','ELEMENTS_88',3,VALK)
+        ENDIF
 
       END

@@ -8,7 +8,7 @@
       CHARACTER*(*) RESU,MODELE,MATE,CARA,LCHAR(1),MOTFAZ
 C.======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 25/02/2013   AUTEUR SELLENET N.SELLENET 
+C MODIF UTILITAI  DATE 25/03/2013   AUTEUR LEBOUVIER F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -495,7 +495,7 @@ C              -------------
               IF(MOTFAC.EQ.'ENER_TOTALE') THEN
                 CALL MESOMM(LCHOUT(1),1,IBID,WORK(1),C16B,0,IBID)
               ELSE
-                CALL MESOMM(LCHOUT(1),3,IBID,WORK,C16B,0,IBID)
+                CALL MESOMM(LCHOUT(1),5,IBID,WORK,C16B,0,IBID)
               ENDIF
 C ---  BOUCLE SUR LES PAS DE TEMPS ON SOMME LES TERMES DE
 C ---  L ENERGIE TOTAL
@@ -582,7 +582,7 @@ C              -------------
               IF(MOTFAC.EQ.'ENER_TOTALE') THEN
                 CALL MESOMM(LCHOUT(1),1,IBID,WORK(1),C16B,NBMA,ZI(JAD))
               ELSE
-                CALL MESOMM(LCHOUT(1),3,IBID,WORK,C16B,NBMA,ZI(JAD))
+                CALL MESOMM(LCHOUT(1),5,IBID,WORK,C16B,NBMA,ZI(JAD))
               ENDIF
 
 C ---  BOUCLE SUR LES PAS DE TEMPS ON SOMME LES TERMES DE
@@ -673,7 +673,7 @@ C              -------------
               IF(MOTFAC.EQ.'ENER_TOTALE') THEN
                 CALL MESOMM(LCHOUT(1),1,IBID,WORK(1),C16B,1,NUME)
               ELSE
-                CALL MESOMM(LCHOUT(1),3,IBID,WORK,C16B,1,NUME)
+                CALL MESOMM(LCHOUT(1),5,IBID,WORK,C16B,1,NUME)
               ENDIF
 
                 IF ((COMPT(1:9).NE.'VMIS_ISOT') .AND.

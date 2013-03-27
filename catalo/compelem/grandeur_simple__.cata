@@ -1,4 +1,4 @@
-%& MODIF COMPELEM  DATE 11/03/2013   AUTEUR IDOUX L.IDOUX 
+%& MODIF COMPELEM  DATE 25/03/2013   AUTEUR LEBOUVIER F.LEBOUVIER 
 % RESPONSABLE PROIX
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
@@ -734,9 +734,12 @@ GRANDEUR_SIMPLE__
        DRX : énergie suivant DRX
        DRY : énergie suivant DRY
        DRZ : énergie suivant DRZ
+       CISAILLE : énergie en cisaillement
+       COUPL_MF : énergie en couplage membrane-flexion
 >>
     ENER_R   = R    TOTALE   TRAC_COM TORSION  MEMBRANE FLEXION  FLEX_Y   FLEX_Z   PLAN_XY
-                    PLAN_XZ  DX       DY       DZ       DRX      DRY      DRZ
+                    PLAN_XZ  DX       DY       DZ       DRX      DRY      DRZ      CISAILLE
+                    COUPL_MF
 
 <<  EPSI_F Type:K8 Déformation (fonction)
        EPXX : epsilon_xx déformation d'un milieu continu
