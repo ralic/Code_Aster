@@ -1,4 +1,4 @@
-%& MODIF TYPELEM  DATE 11/03/2013   AUTEUR CUVILLIE M.CUVILLIEZ 
+%& MODIF TYPELEM  DATE 26/03/2013   AUTEUR CUVILLIE M.CUVILLIEZ 
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -44,6 +44,8 @@ ENTETE__ ELEMENT__ THER_XT_TETRA4      MAILLE__ TETRA4
 
 MODE_LOCAL__
     CMATERC  = ADRSJEVE ELEM__         (I1       )
+    CHECHPF  = COEH_F   ELEM__         (H        )
+    EHECHPR  = COEH_R   ELEM__         (H        )
     ETEMPPG  = TEMP_R   ELGA__ MATER   (TEMP     )
     CTEMPSR  = INST_R   ELEM__         (INST     DELTAT   THETA    KHI      R        RHO      )
     DDL_THER = TEMP_R   ELNO__ IDEN__  (TEMP     E1       )
@@ -51,12 +53,11 @@ MODE_LOCAL__
     E10NEUTI = NEUT_I   ELEM__         (X[10]    )
     E15NEUTI = NEUT_I   ELEM__         (X[15]    )
     E21NEUTR = NEUT_R   ELEM__         (X[21]    )
-    E30NEUTR = NEUT_R   ELEM__         (X[30]    )
     E35NEUTR = NEUT_R   ELEM__         (X[35]    )
-    E320NEUI = NEUT_I   ELEM__         (X[320]   )
     E32NEUTI = NEUT_I   ELEM__         (X[32]    )
     E33NEUTR = NEUT_R   ELEM__         (X[33]    )
     E63NEUTR = NEUT_R   ELEM__         (X[63]    )
+    E128NEUI = NEUT_I   ELEM__         (X[128]   )
     N1NEUT_R = NEUT_R   ELNO__ IDEN__  (X1       )
     N3NEUT_R = NEUT_R   ELNO__ IDEN__  (X[3]     )
     N9NEUT_R = NEUT_R   ELNO__ IDEN__  (X[9]     )
@@ -73,19 +74,35 @@ MATRICE__
 OPTION__
     CARA_GEOM           -1    IN__    OUT__    XXXXXX   XXXXXX
     CHAR_THER_EVOL      577   IN__   NGEOMER  PGEOMER  CMATERC  PMATERC  DDL_THER PTEMPER  CTEMPSR  PTEMPSR  
-                                     STANO_I  PSTANO   E33NEUTR PPINTTO  E320NEUI PCNSETO  E32NEUTI PHEAVTO  
+                                     STANO_I  PSTANO   E33NEUTR PPINTTO  E128NEUI PCNSETO  E32NEUTI PHEAVTO  
                                      E10NEUTI PLONCHA  N9NEUT_R PBASLOR  N1NEUT_R PLSN     N1NEUT_R PLST     
                                      ZVARCPG  PVARCPR
                               OUT__  MVECTTR  PVECTTR
+    CHAR_THER_PARO_F    599   IN__   NGEOMER  PGEOMER  CHECHPF  PHECHPF  DDL_THER PTEMPER  CTEMPSR  PTEMPSR
+                                     E21NEUTR PPINTER  E35NEUTR PAINTER  E15NEUTI PCFACE   E3NEUTI  PLONGCO
+                                     N1NEUT_R PLST     STANO_I  PSTANO   E63NEUTR PBASECO
+                              OUT__  MVECTTR  PVECTTR
+    CHAR_THER_PARO_R    599   IN__   NGEOMER  PGEOMER  EHECHPR  PHECHPR  DDL_THER PTEMPER  CTEMPSR  PTEMPSR
+                                     E21NEUTR PPINTER  E35NEUTR PAINTER  E15NEUTI PCFACE   E3NEUTI  PLONGCO
+                                     N1NEUT_R PLST     STANO_I  PSTANO   E63NEUTR PBASECO
+                              OUT__  MVECTTR  PVECTTR
     MASS_THER           572   IN__   NGEOMER  PGEOMER  CMATERC  PMATERC  CTEMPSR  PTEMPSR  STANO_I  PSTANO
-                                     E33NEUTR PPINTTO  E320NEUI PCNSETO  E32NEUTI PHEAVTO  E10NEUTI PLONCHA  
+                                     E33NEUTR PPINTTO  E128NEUI PCNSETO  E32NEUTI PHEAVTO  E10NEUTI PLONCHA  
                                      N9NEUT_R PBASLOR  N1NEUT_R PLSN     N1NEUT_R PLST     ZVARCPG  PVARCPR
                               OUT__  MMATTTR  PMATTTR
     RIGI_THER           571   IN__   NGEOMER  PGEOMER  CMATERC  PMATERC  CTEMPSR  PTEMPSR  STANO_I  PSTANO
-                                     E33NEUTR PPINTTO  E320NEUI PCNSETO  E32NEUTI PHEAVTO  E10NEUTI PLONCHA  
+                                     E33NEUTR PPINTTO  E128NEUI PCNSETO  E32NEUTI PHEAVTO  E10NEUTI PLONCHA  
                                      N9NEUT_R PBASLOR  N1NEUT_R PLSN     N1NEUT_R PLST     ZVARCPG  PVARCPR
                               OUT__  MMATTTR  PMATTTR                                     
-    TEMP_ELGA           578   IN__   NGEOMER  PGEOMER  DDL_THER PTEMPER  E33NEUTR PPINTTO  E320NEUI PCNSETO
+    RIGI_THER_PARO_F    594   IN__   NGEOMER  PGEOMER  CHECHPF  PHECHPF  CTEMPSR  PTEMPSR  E21NEUTR PPINTER
+                                     E35NEUTR PAINTER  E15NEUTI PCFACE   E3NEUTI  PLONGCO  N1NEUT_R PLST
+                                     STANO_I  PSTANO   E63NEUTR PBASECO
+                              OUT__  MMATTTR  PMATTTR
+    RIGI_THER_PARO_R    594   IN__   NGEOMER  PGEOMER  EHECHPR  PHECHPR  CTEMPSR  PTEMPSR  E21NEUTR PPINTER
+                                     E35NEUTR PAINTER  E15NEUTI PCFACE   E3NEUTI  PLONGCO  N1NEUT_R PLST   
+                                     STANO_I  PSTANO   E63NEUTR PBASECO
+                              OUT__  MMATTTR  PMATTTR
+    TEMP_ELGA           578   IN__   NGEOMER  PGEOMER  DDL_THER PTEMPER  E33NEUTR PPINTTO  E128NEUI PCNSETO
                                      E32NEUTI PHEAVTO  E10NEUTI PLONCHA  N9NEUT_R PBASLOR  N1NEUT_R PLSN   
                                      N1NEUT_R PLST   
                               OUT__  ETEMPPG  PTEMPPG
@@ -94,5 +111,10 @@ OPTION__
                               OUT__  E21NEUTR PPINTER  E35NEUTR PAINTER  E15NEUTI PCFACE   E3NEUTI  PLONCHA
                                      E63NEUTR PBASECO  E21NEUTR PGESCLA  E21NEUTR PGMAITR  E21NEUTR PGESCLO
     TOPOSE              514   IN__   NGEOMER  PGEOMER  N1NEUT_R PLEVSET
-                              OUT__  E33NEUTR PPINTTO  E320NEUI PCNSETO  E32NEUTI PHEAVTO  E10NEUTI  PLONCHA
-                                     E30NEUTR PAINTER
+                              OUT__  E33NEUTR PPINTTO  E128NEUI PCNSETO  E32NEUTI PHEAVTO  E10NEUTI  PLONCHA
+                                     E35NEUTR PAINTER
+
+
+
+
+

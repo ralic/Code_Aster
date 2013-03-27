@@ -1,7 +1,7 @@
-#& MODIF COMMANDE  DATE 18/09/2012   AUTEUR PELLET J.PELLET 
+#& MODIF COMMANDE  DATE 26/03/2013   AUTEUR CUVILLIE M.CUVILLIEZ 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -128,12 +128,14 @@ AFFE_CHAR_THER_F=OPER(nom="AFFE_CHAR_THER_F",op=34,sd_prod=char_ther,
          ),
 
          ECHANGE_PAROI   =FACT(statut='f',max='**',
-           regles=(UN_PARMI('GROUP_MA_1','MAILLE_1'),
-                        UN_PARMI('GROUP_MA_2','MAILLE_2'),),
+           regles=(UN_PARMI('GROUP_MA_1','MAILLE_1','FISSURE'),
+                   UN_PARMI('GROUP_MA_2','MAILLE_2','FISSURE'),
+                   PRESENT_ABSENT('FISSURE','TRAN'),),
            GROUP_MA_1      =SIMP(statut='f',typ=grma,validators=NoRepeat(),max='**'),
            MAILLE_1        =SIMP(statut='f',typ=ma  ,validators=NoRepeat(),max='**'),
            GROUP_MA_2      =SIMP(statut='f',typ=grma,validators=NoRepeat(),max='**'),
            MAILLE_2        =SIMP(statut='f',typ=ma  ,validators=NoRepeat(),max='**'),
+           FISSURE         =SIMP(statut='f',typ=fiss_xfem,validators=NoRepeat(),min=1,max=100,),
            COEF_H          =SIMP(statut='o',typ=(fonction_sdaster,nappe_sdaster,formule) ),
            TRAN            =SIMP(statut='f',typ='R',min=2,max=3),
          ),

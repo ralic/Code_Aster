@@ -1,4 +1,4 @@
-%& MODIF COMPELEM  DATE 18/03/2013   AUTEUR SFAYOLLE S.FAYOLLE 
+%& MODIF COMPELEM  DATE 26/03/2013   AUTEUR CUVILLIE M.CUVILLIEZ 
 % ======================================================================
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
@@ -1856,7 +1856,7 @@ PHENOMENE_MODELISATION__
        MODELISATION__ '3D1XT'            DIM__ 3 3   CODE__ '3X2'
               MAILLE__ HEXA8     ELEMENT__ THER_XT_HEXA8
               MAILLE__ PENTA6    ELEMENT__ THER_XT_PENTA6
-              MAILLE__ PYRAM5    ELEMENT__ MECA_XT_PYRAM5
+              MAILLE__ PYRAM5    ELEMENT__ THER_XT_PYRAM5
               MAILLE__ TETRA4    ELEMENT__ THER_XT_TETRA4
 
        MODELISATION__ '3D1XHT'           DIM__ 3 3   CODE__ '3X3'

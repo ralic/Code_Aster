@@ -1,6 +1,6 @@
       SUBROUTINE MERGTH(MODELE,CHARGE,INFCHA,CARELE,MATE,INST,MERIGI)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 26/02/2013   AUTEUR CUVILLIE M.CUVILLIEZ 
+C MODIF ALGORITH  DATE 26/03/2013   AUTEUR CUVILLIE M.CUVILLIEZ 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -38,12 +38,12 @@ C OUT MERIGI  : MATRICES ELEMENTAIRES
 
       CHARACTER*8 NOMCHA,LPAIN(15),LPAOUT(1),K8BID
       CHARACTER*16 OPTION
-      CHARACTER*24 LIGREL(2),LCHIN(15),LCHOUT(1)
+      CHARACTER*24 LIGREL(2),LCHIN(15),LCHOUT(1),LIGCAL
       CHARACTER*24 CHGEOM,CHCARA(18),CHHARM
-      CHARACTER*19 CHVARC,STANO,PINTTO,CNSETO,HEAVTO
-      CHARACTER*19 LONCHA,BASLOC,LSN,LST
+      CHARACTER*19 CHVARC,STANO,PINTTO,CNSETO,HEAVTO,LONCHA,BASLOC
+      CHARACTER*19 LSN,LST,PINTER,AINTER,CFACE,LONGCO,BASECO
       INTEGER IRET,NCHAR,ILIRES,ICHA,JCHAR,JINF
-      LOGICAL EXICAR
+      LOGICAL EXICAR,LXFEM
 C ----------------------------------------------------------------------
       INTEGER NBCHMX
 C-----------------------------------------------------------------------
@@ -90,8 +90,10 @@ C  FATAL S'IL Y A DES ELEMENTS DE FOURIER DANS LE MODELE
       ILIRES = 0
 
 C     CADRE X-FEM
+      LXFEM = .FALSE.
       CALL EXIXFE(MODELE,IRET)
-      IF (IRET.NE.0) THEN
+      IF (IRET.NE.0) LXFEM = .TRUE.
+      IF (LXFEM) THEN
         STANO  = MODELE(1:8)//'.STNO'
         PINTTO = MODELE(1:8)//'.TOPOSE.PIN'
         CNSETO = MODELE(1:8)//'.TOPOSE.CNS'
@@ -100,6 +102,11 @@ C     CADRE X-FEM
         BASLOC = MODELE(1:8)//'.BASLOC'
         LSN    = MODELE(1:8)//'.LNNO'
         LST    = MODELE(1:8)//'.LTNO'
+        PINTER = MODELE(1:8)//'.TOPOFAC.OE'
+        AINTER = MODELE(1:8)//'.TOPOFAC.AI'
+        CFACE  = MODELE(1:8)//'.TOPOFAC.CF'
+        LONGCO = MODELE(1:8)//'.TOPOFAC.LO'
+        BASECO = MODELE(1:8)//'.TOPOFAC.BA'
       ELSE
         STANO  = '&&MERGTH.STNO.BID'
         PINTTO = '&&MERGTH.PINTTO.BID'
@@ -109,6 +116,11 @@ C     CADRE X-FEM
         BASLOC = '&&MERGTH.BASLOC.BID'
         LSN    = '&&MERGTH.LNNO.BID'
         LST    = '&&MERGTH.LTNO.BID'
+        PINTER = '&&MERGTH.PINTER.BID'
+        AINTER = '&&MERGTH.AINTER.BID'
+        CFACE  = '&&MERGTH.CFACE.BID'
+        LONGCO = '&&MERGTH.LONGCO.BID'
+        BASECO = '&&MERGTH.BASECO.BID'
       ENDIF
 
       IF (MODELE.NE.'        ') THEN
@@ -168,16 +180,38 @@ C     CADRE X-FEM
               OPTION = 'RIGI_THER_    _F'
               LPAIN(3) = '      F'
             END IF
+
+C           CADRE X-FEM
+            LPAIN(4)  = 'PPINTER'
+            LCHIN(4)  = PINTER
+            LPAIN(5)  = 'PAINTER'
+            LCHIN(5)  = AINTER
+            LPAIN(6)  = 'PCFACE'
+            LCHIN(6)  = CFACE
+            LPAIN(7)  = 'PLONGCO'
+            LCHIN(7)  = LONGCO
+            LPAIN(8)  = 'PLST'
+            LCHIN(8)  = LST
+            LPAIN(9)  = 'PSTANO'
+            LCHIN(9)  = STANO
+            LPAIN(10) = 'PBASECO'
+            LCHIN(10) = BASECO
+
             DO 10 K = 1,NBCHMX
               LCHIN(3) = NOMCHA//'.CHTH'//NOMCHP(K)//'.DESC'
               CALL JEEXIN(LCHIN(3),IRET3)
               IF (IRET3.GT.0) THEN
+                IF (LXFEM) THEN
+                  LIGCAL = LIGREL(1)
+                ELSE
+                  LIGCAL = LIGREL(NLIGR(K))
+                ENDIF
                 OPTION(10:15) = NOMOPT(K)
                 LPAIN(3) (1:6) = NOMPAR(K)
                 ILIRES = ILIRES + 1
                 CALL CODENT(ILIRES,'D0',LCHOUT(1) (12:14))
-                CALL CALCUL('S',OPTION,LIGREL(NLIGR(K)),3,LCHIN,LPAIN,1,
-     &                      LCHOUT,LPAOUT,'V','OUI')
+                CALL CALCUL('S',OPTION,LIGCAL,10,LCHIN,LPAIN,
+     &                      1,LCHOUT,LPAOUT,'V','OUI')
                 CALL REAJRE(MERIGI,LCHOUT(1),'V')
               END IF
    10       CONTINUE

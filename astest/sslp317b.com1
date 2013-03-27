@@ -1,0 +1,85 @@
+# AJOUT
+# TITRE VALIDATION DE LA MACRO-COMMANDE RAFF_XFEM SUR UNE PLAQUE MULTI-FISSUREE
+
+POURSUITE(CODE=_F(NOM='SSLP317B'))
+
+MO=AFFE_MODELE(MAILLAGE=MA[nb_raff],
+               AFFE=(_F(GROUP_MA=('SURF','LIG2','LIG3','LIG4'),
+                        PHENOMENE='MECANIQUE',
+                        MODELISATION='D_PLAN',),),);
+
+# entaille
+FISS1=DEFI_FISS_XFEM(MODELE=MO,  
+                     TYPE_DISCONTINUITE='INTERFACE', 
+                     DEFI_FISS=_F(FORM_FISS     = 'ENTAILLE',
+                                  DEMI_LONGUEUR = 0.3,
+                                  RAYON_CONGE   = 0.05,
+                                  CENTRE        = (0., -0.3, 0.),
+                                  VECT_X        = (1., 0., 0.),
+                                  VECT_Y        = (0., 1., 0.),
+                                  ))
+
+# inclusion circulaire
+FISS2=DEFI_FISS_XFEM(MODELE=MO,  
+                     TYPE_DISCONTINUITE='INTERFACE',
+                     DEFI_FISS=_F(FORM_FISS      = 'ELLIPSE',
+                                  DEMI_GRAND_AXE = 0.05,
+                                  DEMI_PETIT_AXE = 0.05,
+                                  CENTRE         = (0., 0., 0.),
+                                  VECT_X         = (1., 0., 0. ),
+                                  VECT_Y         = (0., 1., 0. ),
+                                  ),)
+
+FISS3=DEFI_FISS_XFEM(MODELE=MO,  
+                     DEFI_FISS=_F(FORM_FISS  = 'SEGMENT',
+                                  PFON_ORIG  = (0.2, 0.25, 0.),
+                                  PFON_EXTR  = (0.4, 0.25, 0.),))
+
+
+FISS4=DEFI_FISS_XFEM(MODELE=MO,  
+                     DEFI_FISS=_F(FORM_FISS  = 'SEGMENT',
+                                  PFON_ORIG  = (-0.3, 0.25, 0.),
+                                  PFON_EXTR  = (-0.1, 0.25, 0.),))
+
+DEFI_GROUP(reuse=MA[nb_raff],
+           MAILLAGE=MA[nb_raff],
+           CREA_GROUP_MA = _F(NOM='XFEM',
+                               OPTION='FISS_XFEM',
+                               FISSURE=(FISS1,FISS2,FISS3,FISS4),
+                               TYPE_GROUP='XFEM',),)
+
+R1ELGA=CREA_CHAMP(OPERATION='AFFE', TYPE_CHAM='ELGA_NEUT_R',
+                  MODELE=MO,  PROL_ZERO='OUI',
+                  AFFE=_F( TOUT='OUI', NOM_CMP = ('X1'), VALE = 1.,),)
+
+MATBID=DEFI_MATERIAU(ELAS=_F(E=1.,
+                             NU=0.,),)
+
+
+CHMATBID=AFFE_MATERIAU(MAILLAGE=MA[nb_raff],
+                       AFFE=_F(TOUT='OUI',MATER=MATBID),)
+
+VOLUMEX=POST_ELEM(MODELE=MO,
+                  CHAM_MATER=CHMATBID,
+                  CHAM_GD=R1ELGA,
+                  INTEGRALE=_F(NOM_CHAM='NEUT',NOM_CMP='X1',GROUP_MA='XFEM',),);
+
+# Suite a issue20559, on teste ici la valeur de la surface du GROUP_MA obtenu en faisant :
+# ->  DEFI_GROUP / CREA_GROUP_MA / OPTION='FISS_XFEM' / TYPE_GROUP='XFEM' / FISSURE
+# avec les 4 fissures definies ci-dessus.
+
+TEST_TABLE(REFERENCE='NON_DEFINI',
+           VALE_CALC=0.035224609374999,
+           VALE_REFE=0.035224609374999,
+           NOM_PARA='INTE_X1',
+           TABLE=VOLUMEX,)
+
+TEST_TABLE(REFERENCE='NON_DEFINI',
+           VALE_CALC=1.,
+           VALE_REFE=1.,
+           NOM_PARA='MOYE_X1',
+           TABLE=VOLUMEX,)
+
+IMPR_TABLE(TABLE=VOLUMEX)
+
+FIN()

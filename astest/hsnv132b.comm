@@ -1,4 +1,4 @@
-# MODIF  DATE 26/02/2013   AUTEUR CUVILLIE M.CUVILLIEZ 
+# MODIF  DATE 26/03/2013   AUTEUR CUVILLIE M.CUVILLIEZ 
 # TITRE : FISSURE X-FEM EN THERMO-ELASTICITE 2D 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -85,6 +85,10 @@ CHTH=AFFE_CHAR_THER_F(MODELE=MODTHX,
                                _F(GROUP_NO = 'LIGNINF',TEMP = TIMPINF),
                                ))
 
+CHTHEPR=AFFE_CHAR_THER(MODELE=MODTHX,
+                       ECHANGE_PAROI=_F(FISSURE = FISSTH,
+                                        COEF_H  =  2.,),)
+
 #----------------------------------------------
 #            CALCUL THERMIQUE LINEAIRE TRANSITOIRE
 #----------------------------------------------
@@ -94,7 +98,10 @@ LR8=DEFI_LIST_REEL(DEBUT=0.,
 
 TEMPEX=THER_LINEAIRE(MODELE=MODTHX,
                      CHAM_MATER=CHMAT,
-                     EXCIT=_F(CHARGE=CHTH),
+                     EXCIT=(
+                            _F(CHARGE=CHTH,),
+                            _F(CHARGE=CHTHEPR,),
+                            ),
                      ETAT_INIT=_F( STATIONNAIRE = 'OUI'),
                      INCREMENT=_F( LIST_INST = LR8),                    
                      )
@@ -119,6 +126,9 @@ MA_VISU=DEFI_GROUP(reuse =MA_VISU,
                    CREA_GROUP_NO=(
                                   _F(GROUP_MA='MASUPTMP',),
                                   _F(GROUP_MA='MAINFTMP',),
+                                  _F(NOM='GNFOND',OPTION='ENV_SPHERE',
+                                     POINT=(0.5*L,0.5*L,),RAYON=1.e-6*hfiss,
+                                     PRECISION=1.e-6*hfiss),
                                   _F(NOM='GNOTMP',OPTION='ENV_SPHERE',
                                      POINT=(L,0.5*L,),RAYON=1.e-6*hfiss,
                                      PRECISION=1.e-6*hfiss),
@@ -154,21 +164,45 @@ TEMPINF=POST_RELEVE_T(ACTION=_F(INTITULE='TEMPE',
                                 NUME_ORDRE = 5,
                                 OPERATION='EXTRACTION',),)
 
+TEMPFON=POST_RELEVE_T(ACTION=_F(INTITULE='TEMPE',
+                                GROUP_NO='GNFOND',
+                                RESULTAT=RES_VISU,
+                                NOM_CHAM='TEMP',
+                                TOUT_CMP='OUI',
+                                NUME_ORDRE = 5,
+                                OPERATION='EXTRACTION',),)
+
 #----------------------------------------------
 #            TESTS
 #----------------------------------------------
 
 TEST_TABLE(REFERENCE='AUTRE_ASTER',
-           VALE_CALC=32.997436791237,
-           VALE_REFE=33.001136136669,
+           VALE_CALC=29.157706782019,
+           VALE_REFE=29.156091860463,
            NOM_PARA='TEMP',
            TABLE=TEMPSUP,)
 
 TEST_TABLE(REFERENCE='AUTRE_ASTER',
-           VALE_CALC=19.557074996375,
-           VALE_REFE=19.553396825242,
+           VALE_CALC=23.396807122262,
+           VALE_REFE=23.393394671258,
            NOM_PARA='TEMP',
            TABLE=TEMPINF,)
+
+TEST_TABLE(REFERENCE='AUTRE_ASTER',
+           VALE_CALC=26.277386230747,
+           VALE_REFE=26.25259365185,
+           PRECISION=5.E-3,
+           NOM_PARA='TEMP',
+           TYPE_TEST='MIN',
+           TABLE=TEMPFON,)
+
+TEST_TABLE(REFERENCE='AUTRE_ASTER',
+           VALE_CALC=26.277386230747,
+           VALE_REFE=26.25259365185,
+           PRECISION=5.E-3,
+           NOM_PARA='TEMP',
+           TYPE_TEST='MAX',
+           TABLE=TEMPFON,)
 
 #----------------------------------------------
 #            IMPRESSIONS
@@ -176,6 +210,7 @@ TEST_TABLE(REFERENCE='AUTRE_ASTER',
 
 IMPR_TABLE(TABLE=TEMPSUP)
 IMPR_TABLE(TABLE=TEMPINF)
+IMPR_TABLE(TABLE=TEMPFON)
 
 IMPR_RESU(FORMAT='MED',UNITE=83,RESU=_F(MAILLAGE=MA))
 IMPR_RESU(FORMAT='MED',UNITE=81,RESU=_F(MAILLAGE=MA_VISU))

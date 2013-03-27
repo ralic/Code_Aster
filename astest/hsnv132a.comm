@@ -1,4 +1,4 @@
-# MODIF  DATE 26/02/2013   AUTEUR CUVILLIE M.CUVILLIEZ 
+# MODIF  DATE 26/03/2013   AUTEUR CUVILLIE M.CUVILLIEZ 
 # TITRE : FISSURE CLASSIQUE EN THERMO-ELASTICITE 2D 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -96,6 +96,12 @@ CHTH=AFFE_CHAR_THER_F(MODELE=MODELTH,
                                _F(GROUP_NO = 'LIGNINF',TEMP = TIMPINF),
                                ))
 
+CHTHEPR=AFFE_CHAR_THER(
+                       MODELE=MODELTH,
+                       ECHANGE_PAROI=_F(GROUP_MA_1 = 'LEVINF',
+                                        GROUP_MA_2 = 'LEVSUP',
+                                        COEF_H    =  2.,))
+
 #----------------------------------------------
 #            CALCUL THERMIQUE LINEAIRE TRANSITOIRE
 #----------------------------------------------
@@ -105,7 +111,10 @@ LR8=DEFI_LIST_REEL(DEBUT=0.,
 
 TEMPE=THER_LINEAIRE(MODELE=MODELTH,
                     CHAM_MATER=CHMAT,
-                    EXCIT=_F(CHARGE=CHTH),
+                    EXCIT=(
+                           _F(CHARGE=CHTH,),
+                           _F(CHARGE=CHTHEPR,),
+                           ),
                     ETAT_INIT=_F( STATIONNAIRE = 'OUI'),
                     INCREMENT=_F( LIST_INST = LR8),                    
                     )
@@ -130,6 +139,14 @@ TEMPINF=POST_RELEVE_T(ACTION=_F(INTITULE='TEMPE',
                                 NUME_ORDRE = 5,
                                 OPERATION='EXTRACTION',),)
 
+TEMPFON=POST_RELEVE_T(ACTION=_F(INTITULE='TEMPE',
+                                GROUP_NO='PFON',
+                                RESULTAT=TEMPE,
+                                NOM_CHAM='TEMP',
+                                TOUT_CMP='OUI',
+                                NUME_ORDRE = 5,
+                                OPERATION='EXTRACTION',),)
+
 #----------------------------------------------
 #            TESTS
 #----------------------------------------------
@@ -138,16 +155,23 @@ TEMPINF=POST_RELEVE_T(ACTION=_F(INTITULE='TEMPE',
 #      avec une discretisation 500x500 de la plaque 
 
 TEST_TABLE(REFERENCE='AUTRE_ASTER',
-           VALE_CALC=32.990418465294,
-           VALE_REFE=33.001136136669,
+           VALE_CALC=29.144358857446,
+           VALE_REFE=29.156091860463,
            NOM_PARA='TEMP',
            TABLE=TEMPSUP,)
 
 TEST_TABLE(REFERENCE='AUTRE_ASTER',
-           VALE_CALC=19.564096142699,
-           VALE_REFE=19.553396825242,
+           VALE_CALC=23.38500333439,
+           VALE_REFE=23.393394671258,
            NOM_PARA='TEMP',
            TABLE=TEMPINF,)
+
+TEST_TABLE(REFERENCE='AUTRE_ASTER',
+           VALE_CALC=26.178170782313,
+           VALE_REFE=26.25259365185,
+           PRECISION=5.E-3,
+           NOM_PARA='TEMP',
+           TABLE=TEMPFON,)
 
 #----------------------------------------------
 #            IMPRESSIONS
@@ -155,6 +179,7 @@ TEST_TABLE(REFERENCE='AUTRE_ASTER',
 
 IMPR_TABLE(TABLE=TEMPSUP)
 IMPR_TABLE(TABLE=TEMPINF)
+IMPR_TABLE(TABLE=TEMPFON)
 
 IMPR_RESU(FORMAT='MED',UNITE=83,RESU=_F(MAILLAGE=MA))
 IMPR_RESU(FORMAT='MED',UNITE=80,RESU=_F(RESULTAT=TEMPE))

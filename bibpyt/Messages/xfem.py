@@ -1,4 +1,4 @@
-#@ MODIF xfem Messages  DATE 26/02/2013   AUTEUR CUVILLIE M.CUVILLIEZ 
+#@ MODIF xfem Messages  DATE 26/03/2013   AUTEUR CUVILLIE M.CUVILLIEZ 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -473,6 +473,21 @@ cata_msg={
   -> DEFI_FISS_XFEM :
      La jonction de fissures n'est pas une fonctionnalité disponible pour les modèles 
      thermiques. Or le modèle %(k1)s est un modèle thermique.
+"""),
+
+72: _(u"""
+  -> Vous utilisez le mot-clé FISSURE, or le modèle %(k1)s que vous avez renseigné 
+     pour le mot clé MODELE n'est pas un modèle X-FEM.
+  -> Conseil:
+     Veuillez utiliser un autre mot-clé ou revoyez la définition de votre modèle.
+"""),
+
+73: _(u"""
+  -> Vous avez renseigné %(k1)s pour le mot-clé FISSURE, or cette fissure est absente
+     du modèle %(k2)s que vous avez renseigné pour le mot-clé MODELE.
+  -> Conseil:
+     Assurez vous de renseigner pour le mot-clé FISSURE une liste de fissures 
+     présentes dans le modèle ou revoyez la définition de votre modèle.
 """),
 
 }

@@ -1,17 +1,18 @@
-      SUBROUTINE CAECHP (CHAR,LIGRCH,LIGRMO,IGREL,INEMA,NOMA,FONREE)
+      SUBROUTINE CAECHP (CHAR,LIGRCH,LIGRMO,IGREL,INEMA,NOMA,FONREE,
+     &                   NDIM)
       IMPLICIT NONE
       INCLUDE 'jeveux.h'
 
       CHARACTER*32 JEXNUM
-      INTEGER           IGREL, INEMA
+      INTEGER           IGREL, INEMA, NDIM
       CHARACTER*4       FONREE
       CHARACTER*8       CHAR, NOMA
       CHARACTER*(*)     LIGRCH, LIGRMO
 C---------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 18/12/2012   AUTEUR SELLENET N.SELLENET 
+C MODIF MODELISA  DATE 26/03/2013   AUTEUR CUVILLIE M.CUVILLIEZ 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -41,17 +42,19 @@ C IN   FONREE K4  : 'FONC' OU 'REEL'
 C
       INTEGER       NBTYMX,NECHP,IBID, IERD,
      &              JNCMP, JVALV, IOCC, NH, NT, I, J,
-     &              NBTYP, JLISTT, NBM
+     &              NBTYP, JLISTT, NBM, NFISS, NFISMX, JMA
+      PARAMETER    (NFISMX=100)
 C-----------------------------------------------------------------------
       INTEGER JLIGR ,NCMP
 C-----------------------------------------------------------------------
       PARAMETER    (NBTYMX=7)
 C --- NOMBRE MAX DE TYPE_MAIL DE COUPLAGE ENTRE 2 PAROIS
-      REAL*8        T(3)
-      CHARACTER*8   MO, K8B
+      REAL*8        T(3), CECHPR
+      CHARACTER*8   MO, K8B, CECHPF, FISS(NFISMX)
       CHARACTER*16  MOTCLF
       CHARACTER*24  LIEL, MODL, LLIST1, LLIST2, LLISTT
       CHARACTER*19  CARTE
+      CHARACTER*24  MESMAI,LISMAI
       INTEGER      IARG
 C     ------------------------------------------------------------------
       CALL JEMARQ()
@@ -74,57 +77,109 @@ C
         CALL U2MESK('F','MODELISA2_37',1,FONREE)
       END IF
 C
-C     MISE A JOUR DE LIGRCH ET STOCKAGE DANS LA CARTE
-C
+C     NOM DE LA CMP DU COEFFICIENT D'ECHANGE DANS LA CARTE
       CALL JEVEUO ( CARTE//'.NCMP', 'E', JNCMP )
       CALL JEVEUO ( CARTE//'.VALV', 'E', JVALV )
       NCMP = 1
       ZK8(JNCMP) = 'H'
 C
-      LLIST1 = '&&CAECHP.LLIST1'
-      LLIST2 = '&&CAECHP.LLIST2'
-      LLISTT = '&&CAECHP.LLIST.TRIE'
-C
+C ----------------------------
+C --- BOUCLE SUR LES OCCURENCES DU MCF
+C ----------------------------
       DO 100 IOCC = 1, NECHP
 C
+C        RECUPERATION DU COEFFICIENT D'ECHANGE
          IF (FONREE.EQ.'REEL') THEN
-            CALL GETVR8 (MOTCLF,'COEF_H',IOCC,IARG,1,
-     &                   ZR(JVALV) , NH )
+            CALL GETVR8 (MOTCLF,'COEF_H',IOCC,IARG,1,CECHPR,NH)
          ELSE IF (FONREE.EQ.'FONC') THEN
-            CALL GETVID (MOTCLF,'COEF_H',IOCC,IARG,1,
-     &                   ZK8(JVALV), NH )
+            CALL GETVID (MOTCLF,'COEF_H',IOCC,IARG,1,CECHPF,NH)
          ENDIF
 C
+C        RECUPERATION DU VECTEUR DE TRANSLATION POUR PATRMA
          DO 101 I = 1 , 3
             T(I) = 0.0D0
 101      CONTINUE
          CALL GETVR8 ( MOTCLF, 'TRAN', IOCC,IARG,3, T, NT )
+         CALL GETVID(MOTCLF,'FISSURE',IOCC,IARG,0,K8B,NFISS)
 C
-         CALL PALIMA (NOMA,MOTCLF,'GROUP_MA_1','MAILLE_1',IOCC,LLIST1)
-         CALL PALIMA (NOMA,MOTCLF,'GROUP_MA_2','MAILLE_2',IOCC,LLIST2)
+C ----------------------------
+C ------ CAS MOT-CLEF FISSURE
+C ----------------------------
+         IF (NFISS.NE.0) THEN
 C
-         CALL PATRMA(LLIST1,LLIST2,T,NBTYMX,NOMA,LLISTT,NBTYP)
+C          RECUPERATION DU NOM DES FISSURES
+           NFISS = -NFISS
+           CALL GETVID(MOTCLF,'FISSURE',IOCC,IARG,NFISS,FISS , IBID )
+C          VERIFICATION DE LA COHERENCE ENTRE LES FISSURES ET LE MODELE
+           CALL XVELFM(NFISS,FISS,LIGRMO(1:8))
 C
-         DO 200 J = 1,NBTYP
-            IGREL = IGREL+1
-            CALL JEVEUO(JEXNUM(LLISTT,J),'L',JLISTT)
-            CALL PALIGI('THER',MODL,LIGRCH,IGREL,INEMA,ZI(JLISTT))
+C          ON NOTE 0.D0 OU '&FOZERO' DANS LA CARTE POUR TOUT LE MAILLAGE
+           IF (FONREE.EQ.'REEL') THEN
+             ZR(JVALV) = 0.D0
+           ELSE IF (FONREE.EQ.'FONC') THEN
+             ZK8(JVALV) = '&FOZERO'
+           ENDIF
+           CALL NOCART(CARTE, 1, ' ', 'NOM', 0, ' ', 0,' ', NCMP)
 C
-C   STOCKAGE DANS LA CARTE
+C          RECUPERATION DES MAILLES PRINCIPALES X-FEM POUR FISS(1:NFISS)
+           MESMAI = '&&CAECHP.MES_MAILLES'
+           LISMAI = '&&CAECHP.NUM_MAILLES'
+           CALL XTMAFI(NOMA,NDIM,FISS,NFISS,LISMAI,MESMAI,NBM)
+           CALL JEVEUO ( MESMAI, 'L', JMA )
 C
-            CALL JEVEUO ( JEXNUM(LIEL,IGREL), 'E', JLIGR )
-            CALL JELIRA ( JEXNUM(LIEL,IGREL), 'LONMAX', NBM, K8B )
-            NBM = NBM - 1
-           CALL NOCART(CARTE,-3,' ','NUM',NBM,' ',ZI(JLIGR),LIGRCH,NCMP)
-200      CONTINUE
+C          STOCKAGE DANS LA CARTE SUR CES MAILLES
+           IF (FONREE.EQ.'REEL') THEN
+             ZR(JVALV) = CECHPR
+           ELSE IF (FONREE.EQ.'FONC') THEN
+             ZK8(JVALV) = CECHPF
+           ENDIF
+           CALL NOCART (CARTE,3,' ','NOM',NBM,ZK8(JMA),IBID,' ',NCMP)
+C
+C          MENAGE
+           CALL JEDETR ( MESMAI )
+           CALL JEDETR ( LISMAI )
+C
+C ----------------------------
+C ------ CAS MOTS-CLEFS GROUP_MA_1 MAILLE_1 GROUP_MA_2 MAILLE_2
+C ----------------------------
+         ELSE
+C
+           LLIST1 = '&&CAECHP.LLIST1'
+           LLIST2 = '&&CAECHP.LLIST2'
+           LLISTT = '&&CAECHP.LLIST.TRIE'
+C
+           CALL PALIMA (NOMA,MOTCLF,'GROUP_MA_1','MAILLE_1',IOCC,LLIST1)
+           CALL PALIMA (NOMA,MOTCLF,'GROUP_MA_2','MAILLE_2',IOCC,LLIST2)
+C
+           CALL PATRMA(LLIST1,LLIST2,T,NBTYMX,NOMA,LLISTT,NBTYP)
+C
+C          MISE A JOUR DE LIGRCH ET STOCKAGE DANS LA CARTE
+           DO 200 J = 1,NBTYP
+             IGREL = IGREL+1
+             CALL JEVEUO(JEXNUM(LLISTT,J),'L',JLISTT)
+             CALL PALIGI('THER',MODL,LIGRCH,IGREL,INEMA,ZI(JLISTT))
+C            STOCKAGE DANS LA CARTE
+             CALL JEVEUO ( JEXNUM(LIEL,IGREL), 'E', JLIGR )
+             CALL JELIRA ( JEXNUM(LIEL,IGREL), 'LONMAX', NBM, K8B )
+             NBM = NBM - 1
+             IF (FONREE.EQ.'REEL') THEN
+               ZR(JVALV) = CECHPR
+             ELSE IF (FONREE.EQ.'FONC') THEN
+               ZK8(JVALV) = CECHPF
+             ENDIF
+             CALL NOCART(CARTE,-3,' ','NUM',NBM,' ',ZI(JLIGR),LIGRCH,
+     &                   NCMP)
+200        CONTINUE
+C
+C          MENAGE
+           CALL JEDETR(LLIST1)
+           CALL JEDETR(LLIST2)
+           CALL JEDETR(LLISTT)
+C ------ 
+         ENDIF
+C
 100   CONTINUE
 C
-C --- MENAGE
-C
-      CALL JEDETR('&&CAECHP.LLIST1')
-      CALL JEDETR('&&CAECHP.LLIST2')
-      CALL JEDETR('&&CAECHP.LLIST.TRIE')
-
  9999 CONTINUE
       CALL JEDEMA()
       END

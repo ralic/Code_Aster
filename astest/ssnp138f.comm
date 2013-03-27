@@ -1,9 +1,9 @@
-# MODIF  DATE 20/11/2012   AUTEUR TRAN V-X.TRAN 
+# MODIF  DATE 26/03/2013   AUTEUR CUVILLIE M.CUVILLIEZ 
 # TITRE FISSURE INCLINEE EN 2D AVEC X-FEM
 # ssnp138f.para = tps_job 300 mem_job 512Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
@@ -114,20 +114,20 @@ SIF_2 = [None]*(nbc*nbcalc)
 TG_1 = [None]*(nbc*nbcalc)
 
 VAL_CALC = [
-   2.5366307097737E+05  ,
-   2.5366307097737E+05  ,
-   0.26142031174627     ,
-   144.06665905413      ,
-   -144.06665905452     ,
-   2.53534524597E+05    ,
-   2.53534524597E+05    ,
-   0.26168519050340     ,
-   -87.155829856669     ,
-   87.155829856487      ,
-   2.3300963078231E+05  ,
-   61.517148206708      ,
-   2.3300963078231E+05  ,
-   -61.517148205543     ,    
+   2.5602007310303E+05  ,
+   2.5602007310303E+05  ,
+   0.27899394209646     ,
+   244.30855512747      ,
+   -244.30855512795     ,
+   2.5608409925131E+05  ,
+   2.5608409925131E+05  ,
+   0.27896451374224     ,
+   -122.9298220835      ,
+   122.92982208325      ,
+   2.491948361951E+05   ,
+   430.54681664567      ,
+   2.491948361951E+05   ,
+   -430.54681664678     ,    
 ]
 ct = -1
 for i in range(nbcalc) :
@@ -232,14 +232,14 @@ for i in range(nbcalc) :
                     NOM_PARA='K2',
                     VALE_CALC=VAL_CALC[ct], VALE_REFE=K2REF,
                     CRITERE='ABSOLU',
-                    PRECISION=K1REF/1000., 
+                    PRECISION=K1REF/500., 
                     REFERENCE='ANALYTIQUE')
          ct = ct +1
          TEST_TABLE(TABLE=SIF_2[k],
                     NOM_PARA='K2',
                     VALE_CALC=VAL_CALC[ct], VALE_REFE=K2REF,
                     CRITERE='ABSOLU',
-                    PRECISION=K1REF/1000., 
+                    PRECISION=K1REF/500., 
                     REFERENCE='ANALYTIQUE')
 
    # K1 SUR LE 1er FOND
@@ -275,7 +275,7 @@ for i in range(nbcalc) :
                  NOM_PARA='K2',
                  VALE_CALC=VAL_CALC[ct], VALE_REFE=K2REF,
                  CRITERE='ABSOLU',
-                 PRECISION=K1REF/1000., 
+                 PRECISION=K1REF/500., 
                  REFERENCE='ANALYTIQUE')
 
 
@@ -312,7 +312,7 @@ for i in range(nbcalc) :
                 NOM_PARA='K2',
                 VALE_CALC=VAL_CALC[ct], VALE_REFE=K2REF,
                 CRITERE='ABSOLU',
-                PRECISION=K1REF/1000., 
+                PRECISION=K1REF/500., 
                 REFERENCE='ANALYTIQUE')
 
 

@@ -6,5 +6,6 @@ P mpi_nbnoeud 1
 P testlist C
 
 F comm sslp317b.comm D 1
+F comm sslp317b.com1 D 1
 F datg sslp317b.datg D 16
 F mgib sslp317b.mgib D 19

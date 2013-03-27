@@ -1,4 +1,4 @@
-# MODIF  DATE 26/02/2013   AUTEUR CUVILLIE M.CUVILLIEZ 
+# MODIF  DATE 26/03/2013   AUTEUR CUVILLIE M.CUVILLIEZ 
 # TITRE : FISSURE X-FEM EN THERMO-ELASTICITE 3D 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -86,6 +86,12 @@ CHTH=AFFE_CHAR_THER_F(MODELE=MODTHX,
                                _F(GROUP_NO = 'SURFINF',TEMP = TIMPINF),
                                ))
 
+COECHP=DEFI_CONSTANTE(VALE=2.)
+
+CHTHEPF=AFFE_CHAR_THER_F(MODELE=MODTHX,
+                         ECHANGE_PAROI=_F(FISSURE = FISSTH,
+                                          COEF_H  = COECHP,),)
+
 #----------------------------------------------
 #            CALCUL THERMIQUE LINEAIRE TRANSITOIRE
 #----------------------------------------------
@@ -95,7 +101,10 @@ LR8=DEFI_LIST_REEL(DEBUT=0.,
 
 TEMPEX=THER_LINEAIRE(MODELE=MODTHX,
                      CHAM_MATER=CHMAT,
-                     EXCIT=_F(CHARGE=CHTH),
+                    EXCIT=(
+                           _F(CHARGE=CHTH,),
+                           _F(CHARGE=CHTHEPF,),
+                           ),
                      ETAT_INIT=_F( STATIONNAIRE = 'OUI'),
                      INCREMENT=_F( LIST_INST = LR8),                    
                      )
@@ -127,6 +136,12 @@ MA_VISU=DEFI_GROUP(reuse =MA_VISU,
                    CREA_GROUP_NO=(
                                   _F(GROUP_MA='MASUPTMP',),
                                   _F(GROUP_MA='MAINFTMP',),
+                                  _F(NOM='GNFON1',OPTION='ENV_SPHERE',
+                                     POINT=(0.5*L,0.5*L,0.),RAYON=1.e-6*hfiss,
+                                     PRECISION=1.e-6*hfiss),
+                                  _F(NOM='GNFON2',OPTION='ENV_SPHERE',
+                                     POINT=(0.5*L,0.5*L,LZ),RAYON=1.e-6*hfiss,
+                                     PRECISION=1.e-6*hfiss),
                                   _F(NOM='GNOTMP1',OPTION='ENV_SPHERE',
                                      POINT=(L,0.5*L,0.    ),RAYON=1.e-6*hfiss,PRECISION=1.e-6*hfiss),
                                   _F(NOM='GNOTMP2',OPTION='ENV_SPHERE',
@@ -182,37 +197,85 @@ TEMPINF2=POST_RELEVE_T(ACTION=_F(INTITULE='TEMPE',
                                 NUME_ORDRE = 5,
                                 OPERATION='EXTRACTION',),)
 
+TEMPFON1=POST_RELEVE_T(ACTION=_F(INTITULE='TEMPE',
+                                GROUP_NO='GNFON1',
+                                RESULTAT=RES_VISU,
+                                NOM_CHAM='TEMP',
+                                TOUT_CMP='OUI',
+                                NUME_ORDRE = 5,
+                                OPERATION='EXTRACTION',),)
+
+TEMPFON2=POST_RELEVE_T(ACTION=_F(INTITULE='TEMPE',
+                                GROUP_NO='GNFON2',
+                                RESULTAT=RES_VISU,
+                                NOM_CHAM='TEMP',
+                                TOUT_CMP='OUI',
+                                NUME_ORDRE = 5,
+                                OPERATION='EXTRACTION',),)
+
 #----------------------------------------------
 #            TESTS
 #----------------------------------------------
 
 TEST_TABLE(REFERENCE='AUTRE_ASTER',
-           VALE_CALC=32.953743711903,
-           VALE_REFE=33.001136136669,
-           PRECISION=5.E-3,
+           VALE_CALC=29.147198346097,
+           VALE_REFE=29.156091860463,
+           PRECISION=1.E-3,
            NOM_PARA='TEMP',
            TABLE=TEMPSUP1,)
 
 TEST_TABLE(REFERENCE='AUTRE_ASTER',
-           VALE_CALC=32.953740018756,
-           VALE_REFE=33.001136136669,
-           PRECISION=5.E-3,
+           VALE_CALC=29.147196329322,
+           VALE_REFE=29.156091860463,
+           PRECISION=1.E-3,
            NOM_PARA='TEMP',
            TABLE=TEMPSUP2,)
 
 TEST_TABLE(REFERENCE='AUTRE_ASTER',
-           VALE_CALC=19.600974623678,
-           VALE_REFE=19.553396825242,
-           PRECISION=5.E-3,
+           VALE_CALC=23.407327209161,
+           VALE_REFE=23.393394671258,
+           PRECISION=1.E-3,
            NOM_PARA='TEMP',
            TABLE=TEMPINF1,)
 
 TEST_TABLE(REFERENCE='AUTRE_ASTER',
-           VALE_CALC=19.600980762265,
-           VALE_REFE=19.553396825242,
-           PRECISION=5.E-3,
+           VALE_CALC=23.407330322254,
+           VALE_REFE=23.393394671258,
+           PRECISION=1.E-3,
            NOM_PARA='TEMP',
            TABLE=TEMPINF2,)
+
+TEST_TABLE(REFERENCE='AUTRE_ASTER',
+           VALE_CALC=26.292041634221,
+           VALE_REFE=26.25259365185,
+           PRECISION=5.E-3,
+           NOM_PARA='TEMP',
+           TYPE_TEST='MIN',
+           TABLE=TEMPFON1,)
+
+TEST_TABLE(REFERENCE='AUTRE_ASTER',
+           VALE_CALC=26.292041634221,
+           VALE_REFE=26.25259365185,
+           PRECISION=5.E-3,
+           NOM_PARA='TEMP',
+           TYPE_TEST='MAX',
+           TABLE=TEMPFON1,)
+
+TEST_TABLE(REFERENCE='AUTRE_ASTER',
+           VALE_CALC=26.291992880553,
+           VALE_REFE=26.25259365185,
+           PRECISION=5.E-3,
+           NOM_PARA='TEMP',
+           TYPE_TEST='MIN',
+           TABLE=TEMPFON2,)
+
+TEST_TABLE(REFERENCE='AUTRE_ASTER',
+           VALE_CALC=26.291992880553,
+           VALE_REFE=26.25259365185,
+           PRECISION=5.E-3,
+           NOM_PARA='TEMP',
+           TYPE_TEST='MAX',
+           TABLE=TEMPFON2,)
 
 #----------------------------------------------
 #            IMPRESSIONS
@@ -222,6 +285,8 @@ IMPR_TABLE(TABLE=TEMPSUP1)
 IMPR_TABLE(TABLE=TEMPSUP2)
 IMPR_TABLE(TABLE=TEMPINF1)
 IMPR_TABLE(TABLE=TEMPINF2)
+IMPR_TABLE(TABLE=TEMPFON1)
+IMPR_TABLE(TABLE=TEMPFON2)
 
 IMPR_RESU(FORMAT='MED',UNITE=83,RESU=_F(MAILLAGE=MA))
 IMPR_RESU(FORMAT='MED',UNITE=81,RESU=_F(MAILLAGE=MA_VISU))
