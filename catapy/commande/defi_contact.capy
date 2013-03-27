@@ -1,7 +1,7 @@
-#& MODIF COMMANDE  DATE 19/12/2012   AUTEUR PELLET J.PELLET 
+#& MODIF COMMANDE  DATE 26/03/2013   AUTEUR ABBAS M.ABBAS 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -430,8 +430,6 @@ DEFI_CONTACT=OPER(nom       = "DEFI_CONTACT",
                                           SANS_GROUP_NO   =SIMP(statut='f',typ=grno ,validators=NoRepeat(),max='**'),
                                           SANS_MAILLE     =SIMP(statut='f',typ=ma   ,validators=NoRepeat(),max='**'),
                                           SANS_GROUP_MA   =SIMP(statut='f',typ=grma ,validators=NoRepeat(),max='**'),
-#
-                                          EXCLUSION_PIV_NUL=SIMP(statut='f',typ='TXM',defaut="NON",into=("OUI","NON",),),
 # -- Mode sans calcul
                                           RESOLUTION       =SIMP(statut='f',typ='TXM',defaut="OUI",into=("OUI","NON")),
                                           b_verif=BLOC(condition = "RESOLUTION == 'NON' ",
@@ -495,13 +493,6 @@ DEFI_CONTACT=OPER(nom       = "DEFI_CONTACT",
                                             b_frot_pena     =BLOC(condition = "ALGO_FROT == 'PENALISATION' ",
                                                                   fr="Paramètres de la méthode pénalisée",
                                                                   COEF_PENA_FROT  =SIMP(statut='o',typ='R'),
-                                                                  ),
-#
-                                            USURE           =SIMP(statut='f',typ='TXM',defaut="SANS",into=("SANS","ARCHARD",),),
-                                            b_usure         =BLOC(condition = "USURE == 'ARCHARD' ",
-                                                                  fr="Parametres de la loi d'usure d'Archard",
-                                                                  K =SIMP(statut='o',typ='R',),
-                                                                  H =SIMP(statut='o',typ='R',val_min=1E-8),
                                                                   ),
 
                                             ), #fin bloc b_frottement

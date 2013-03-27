@@ -1,9 +1,9 @@
       SUBROUTINE SURFC2(CHAR,NOMA,IFM)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF DEBUG  DATE 09/11/2012   AUTEUR DELMAS J.DELMAS 
+C MODIF DEBUG  DATE 26/03/2013   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -22,8 +22,6 @@ C RESPONSABLE ABBAS M.ABBAS
 C
       IMPLICIT NONE
       INCLUDE 'jeveux.h'
-
-      CHARACTER*32 JEXNUM
       CHARACTER*8 CHAR
       CHARACTER*8 NOMA
       INTEGER     IFM
@@ -42,9 +40,9 @@ C IN  CHAR   : NOM UTILISATEUR DU CONCEPT DE CHARGE
 C IN  NOMA   : NOM DU MAILLAGE
 C IN  IFM    : UNITE D'IMPRESSION
 C
+C ----------------------------------------------------------------------
 C
-C
-C
+      CHARACTER*32 JEXNUM
       INTEGER      CFDISI,MMINFI,NZOCO,NNOCO,NMACO
       REAL*8       MMINFR,TOLINT
       LOGICAL      MMINFL,LVERI
@@ -163,14 +161,6 @@ C
      &                      ZR(JCMCF+ZCMCF*(IZONE-1)-1+11)
           WRITE (IFM,1071) 'EXCL_FROT_X     ',
      &                      ZR(JCMCF+ZCMCF*(IZONE-1)-1+12)
-          WRITE (IFM,1071) 'USURE           ',
-     &                      ZR(JCMCF+ZCMCF*(IZONE-1)-1+13)
-          WRITE (IFM,1071) 'K               ',
-     &                      ZR(JCMCF+ZCMCF*(IZONE-1)-1+14)
-          WRITE (IFM,1071) 'H               ',
-     &                      ZR(JCMCF+ZCMCF*(IZONE-1)-1+15)
-          WRITE (IFM,1071) 'EXCLUSION_PIV_NUL',
-     &                      ZR(JCMCF+ZCMCF*(IZONE-1)-1+16)
         ENDIF
 
  320  CONTINUE

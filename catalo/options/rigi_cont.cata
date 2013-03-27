@@ -1,4 +1,4 @@
-%& MODIF OPTIONS  DATE 21/01/2013   AUTEUR DELMAS J.DELMAS 
+%& MODIF OPTIONS  DATE 26/03/2013   AUTEUR ABBAS M.ABBAS 
 % RESPONSABLE ABBAS
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
@@ -18,36 +18,37 @@
 %    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
 % ======================================================================
 RIGI_CONT
+        << RIGI_CONT: CALCUL DE LA MATRICE
+           ELEMENTAIRE DE CONTACT AVEC LA METHODE CONTINUE ET XFEM >>
 OPTION__
    IN__
-        PGEOMER  GEOM_R
-        PDEPL_M  DEPL_R
-        PDEPL_P  DEPL_R
-        PVITE_P  DEPL_R
-        PCAR_PT  NEUT_R
-        PCAR_PI  NEUT_R
-        PCAR_AI  NEUT_R
-        PCAR_CF  NEUT_I
-        PCONFR   NEUT_R
-        PVITE_M  DEPL_R
-        PACCE_M  DEPL_R
-        PUSULAR  NEUT_R
-        PINDCOI  NEUT_I
-        PDONCO   XCONTAC
-        PLSN     NEUT_R
-        PLST     NEUT_R
-        PPINTER  NEUT_R
-        PAINTER  NEUT_R
-        PCFACE   NEUT_I
-        PLONCHA  NEUT_I 'MODL!.TOPOSE.LON' <<  XFEM - NBRE DE TETRAEDRES ET DE SOUS-ELEMENTS  >>
-        PBASECO  NEUT_R
-        PSEUIL   NEUT_R
-        PSTANO   NEUT_I
-        PCOHES   NEUT_R
-        PMATERC  ADRSJEVE 'CHMA!.MATE_CODE' <<  PMATERC : CHAMP DE MATERIAU  >>
-        PFISNO   NEUT_I
-        PHEAVNO  NEUT_I
-        PHEAVFA  NEUT_I
+        PGEOMER  GEOM_R    << COORDONNEES INITIALES DES NOEUDS >>
+        PMATERC  ADRSJEVE  << CHAMP DE MATERIAU  >>
+        PDEPL_M  DEPL_R    << DEPLACEMENTS POUR T- >>
+        PDEPL_P  DEPL_R    << INCREMENT DE DEPLACEMENT CUMULE DEPUIS LE DEBUT DU PAS DE TEMPS >>
+        PVITE_M  DEPL_R    << VITESSES POUR T- >>
+        PVITE_P  DEPL_R    << VITESSES POUR T+ >>
+        PACCE_M  DEPL_R    << ACCELERATIONS POUR T- >>
+        PCONFR   NEUT_R    << INFORMATION AUX POINTS POUR LE CONTACT - VOIR MMCHML >>
+        PCAR_PT  NEUT_R    << XFEM - INFORMATIONS AUX POINTS >>
+        PCAR_PI  NEUT_R    << XFEM >>
+        PCAR_AI  NEUT_R    << XFEM >>
+        PCAR_CF  NEUT_I    << XFEM >>
+        PINDCOI  NEUT_I    << XFEM >>
+        PDONCO   XCONTAC   << XFEM >>
+        PLSN     NEUT_R    << XFEM >>
+        PLST     NEUT_R    << XFEM >>
+        PPINTER  NEUT_R    << XFEM >>
+        PAINTER  NEUT_R    << XFEM >>
+        PCFACE   NEUT_I    << XFEM >>
+        PLONCHA  NEUT_I    << XFEM - NBRE DE TETRAEDRES ET DE SOUS-ELEMENTS  >>
+        PBASECO  NEUT_R    << XFEM >>
+        PSEUIL   NEUT_R    << XFEM >>
+        PSTANO   NEUT_I    << XFEM >>
+        PCOHES   NEUT_R    << XFEM >>
+        PFISNO   NEUT_I    << XFEM >>
+        PHEAVNO  NEUT_I    << XFEM >>
+        PHEAVFA  NEUT_I    << XFEM >>
    OUT__
         PMATUUR MDEP_R RESL__ << MATRICE RIGIDITE TANGENTE SYMETRIQUE >>
         PMATUNS MDNS_R RESL__ << MATRICE RIGIDITE TANGENTE NON-SYMETRIQUE >>

@@ -2,9 +2,9 @@
      &                  NUMINS)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 09/11/2012   AUTEUR DELMAS J.DELMAS 
+C MODIF ALGORITH  DATE 26/03/2013   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -22,7 +22,6 @@ C ======================================================================
 C
       IMPLICIT NONE
       INCLUDE 'jeveux.h'
-
       CHARACTER*32 JEXNUM
       CHARACTER*8  NOMA
       CHARACTER*24 DEFICO,RESOCO
@@ -61,8 +60,7 @@ C
       REAL*8       NDYNRE,THETA
       REAL*8       MMINFR
       INTEGER      MMINFI,IFORM
-      INTEGER      IUSURE
-      REAL*8       COEFFF,KWEAR,HWEAR
+      REAL*8       COEFFF
       REAL*8       COEFAC,COEFAF
       INTEGER      IALGOC,IALGOF
       INTEGER      CFDISI,IRESOF,IRESOG
@@ -168,9 +166,6 @@ C         MAILLE TARDIVE ZI(JLIEL-1+IEL) < 0
           IPTC   = -ZI(JLIEL-1+IEL)
           IZONE  = NINT(ZR(JTABF+ZTABF*(IPTC-1)+13))
           COEFFF = MMINFR(DEFICO,'COEF_COULOMB'     ,IZONE )
-          IUSURE = MMINFI(DEFICO,'USURE'            ,IZONE )
-          KWEAR  = MMINFR(DEFICO,'USURE_K'          ,IZONE )
-          HWEAR  = MMINFR(DEFICO,'USURE_H'          ,IZONE )
           IALGOC = MMINFI(DEFICO,'ALGO_CONT'        ,IZONE )
           IALGOF = MMINFI(DEFICO,'ALGO_FROT'        ,IZONE )
           CALL CFMMCO(DEFICO,RESOCO,IZONE,'COEF_AUGM_CONT','L',
@@ -202,20 +197,16 @@ C ------- ALGO/COEF DU CONTACT
           ZR(JVALV-1+16) = COEFAC
 C ------- ALGO/COEF DU FROTTEMENT
           ZR(JVALV-1+17) = IRESOF
-          ZR(JVALV-1+28) = IRESOG
+          ZR(JVALV-1+25) = IRESOG
           ZR(JVALV-1+18) = IALGOF
           ZR(JVALV-1+19) = COEFAF
           ZR(JVALV-1+20) = COEFFF
-C ------- USURE
-          ZR(JVALV-1+21) = IUSURE
-          ZR(JVALV-1+22) = KWEAR
-          ZR(JVALV-1+23) = HWEAR
 C ------- EXCLUSION
-          ZR(JVALV-1+24) = ZR(JTABF+ZTABF*(IPTC-1)+19)
+          ZR(JVALV-1+21) = ZR(JTABF+ZTABF*(IPTC-1)+19)
 C ------- DYNAMIQUE
-          ZR(JVALV-1+25) = IFORM
-          ZR(JVALV-1+26) = DELTAT
-          ZR(JVALV-1+27) = THETA
+          ZR(JVALV-1+22) = IFORM
+          ZR(JVALV-1+23) = DELTAT
+          ZR(JVALV-1+24) = THETA
 C
           IF (NIV.GE.2) THEN
             CALL MMIMP3(IFM,NOMA,IPTC,JVALV,JTABF)
