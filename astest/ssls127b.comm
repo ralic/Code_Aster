@@ -1,5 +1,5 @@
 
-# MODIF  DATE 11/03/2013   AUTEUR IDOUX L.IDOUX 
+# MODIF  DATE 25/03/2013   AUTEUR IDOUX L.IDOUX 
 # RESPONSABLE SFAYOLLE S.FAYOLLE
 #  DATE   : 27/10/03
 #  AUTEUR : F. LEBOUVIER (DeltaCAD)
@@ -178,6 +178,23 @@ RESU=STAT_NON_LINE( MODELE=MOD,
 
 RESU=CALC_CHAMP(reuse=RESU,CONTRAINTE=('EFGE_ELNO'),VARI_INTERNE=('VARI_ELNO'),DEFORMATION=('DEGE_ELNO'),RESULTAT=RESU)
 
+RESU=MODI_REPERE(RESULTAT=RESU,
+                    reuse=RESU,
+                    REPERE='COQUE_UTIL_INTR',
+                    MODI_CHAM=_F(TYPE_CHAM = 'COQUE_GENE',
+                                 NOM_CHAM  = 'EFGE_ELNO',
+                                 NOM_CMP   = ('NXX','NYY','NXY',
+                                              'MXX','MYY','MXY',
+                                              'QX','QY')))
+
+RESU=MODI_REPERE(RESULTAT=RESU,
+                    reuse=RESU,
+                    REPERE='COQUE_INTR_UTIL',
+                    MODI_CHAM=_F(TYPE_CHAM = 'COQUE_GENE',
+                                 NOM_CHAM  = 'EFGE_ELNO',
+                                 NOM_CMP   = ('NXX','NYY','NXY',
+                                              'MXX','MYY','MXY',
+                                              'QX','QY')))
 
 TEST_RESU(RESU=_F(NUME_ORDRE=2,
                   GROUP_NO='A1',
@@ -277,7 +294,7 @@ TEST_RESU(RESU=(
                PRECISION = 0.12,
                GROUP_NO = 'A1',
                NOM_CMP = 'DZ',
-               VALE_CALC = 7.6666691824089E-05,
+               VALE_CALC = 7.6666691824096E-05,
                VALE_REFE = 6.926E-5,
                REFERENCE = 'ANALYTIQUE'),
              ),
@@ -292,7 +309,7 @@ TEST_RESU(RESU=(
                GROUP_NO = 'A1',
                MAILLE='M133',
                NOM_CMP = 'MXX',
-               VALE_CALC = 1450.0972570977,
+               VALE_CALC = 1450.0972630657,
                VALE_REFE = 1550.,
                REFERENCE = 'ANALYTIQUE'),
              ),
@@ -306,7 +323,7 @@ TEST_RESU(RESU=(
                GROUP_NO = 'A1',
                MAILLE='M133',
                NOM_CMP = 'MYY',
-               VALE_CALC = 1450.1036994234,
+               VALE_CALC = 1450.1036934555,
                VALE_REFE = 1550.,
                REFERENCE = 'ANALYTIQUE'),
              ),
@@ -337,7 +354,7 @@ TEST_RESU(RESU=(
                GROUP_NO = 'A1',
                MAILLE='M133',
                NOM_CMP = 'KXX',
-               VALE_CALC = 2.1481616411236E-04,
+               VALE_CALC = 2.1481616411239E-04,
                VALE_REFE = 2.193E-4,
                REFERENCE = 'ANALYTIQUE'),
              ),
@@ -351,7 +368,7 @@ TEST_RESU(RESU=(
                GROUP_NO = 'A1',
                MAILLE='M133',
                NOM_CMP = 'KYY',
-               VALE_CALC = 2.1481616411237E-04,
+               VALE_CALC = 2.1481616411238E-04,
                VALE_REFE = 2.193E-4,
                REFERENCE = 'ANALYTIQUE'),
              ),
@@ -433,7 +450,7 @@ TEST_RESU(RESU=(
                NUME_ORDRE = 2,
                NOM_CHAM = 'DEGE_ELGA',
                CRITERE = 'RELATIF',
-               PRECISION = 1.E-10,
+               PRECISION = 1.E-8,
                POINT=4,
                MAILLE='M133',
                NOM_CMP = 'KXY',
@@ -477,7 +494,7 @@ TEST_RESU(RESU=(
                NUME_ORDRE = 2,
                NOM_CHAM = 'SIEF_ELGA',
                CRITERE = 'RELATIF',
-               PRECISION = 1.E-10,
+               PRECISION = 1.E-8,
                POINT=4,
                MAILLE='M133',
                NOM_CMP = 'MXY',
