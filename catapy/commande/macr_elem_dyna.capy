@@ -1,7 +1,7 @@
-#& MODIF COMMANDE  DATE 31/01/2012   AUTEUR IDOUX L.IDOUX 
+#& MODIF COMMANDE  DATE 02/04/2013   AUTEUR BODEL C.BODEL 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
@@ -19,10 +19,23 @@
 # RESPONSABLE CORUS M.CORUS
 
 MACR_ELEM_DYNA=OPER(nom="MACR_ELEM_DYNA",op=  81,sd_prod=macr_elem_dyna,
-                    fr="Définition d'un macro élément pour analyse modale ou harmonique par sous structuration dynamique",
+                    fr="Definition d'un macro element pour analyse modale ou harmonique par sous structuration dynamique",
                     reentrant='n',
             UIinfo={"groupes":("Matrices et vecteurs","Dynamique",)},
-         regles=(EXCLUS('MATR_AMOR','AMOR_REDUIT' ),
+         regles=(
+                 # AMOR_REDUIT et MATR_AMOR sont redondants
+                 EXCLUS('MATR_AMOR','AMOR_REDUIT' ),
+                 
+                 # Si MODELE_MESURE, on ne rentre pas de donnees pour le calcul
+                 EXCLUS('MODELE_MESURE','MATR_RIGI' ),
+                 EXCLUS('MODELE_MESURE','MATR_MASS' ),
+                 EXCLUS('MODELE_MESURE','MATR_AMOR' ),
+                 EXCLUS('MODELE_MESURE','AMOR_REDUIT' ),
+                 EXCLUS('MODELE_MESURE','MATR_IMPE' ),
+                 EXCLUS('MODELE_MESURE','MATR_IMPE_RIGI' ),
+                 EXCLUS('MODELE_MESURE','MATR_IMPE_MASS' ),
+                 EXCLUS('MODELE_MESURE','MATR_IMPE_AMOR' ),
+                 
                  PRESENT_ABSENT('MATR_IMPE','MATR_IMPE_RIGI'),
                  PRESENT_ABSENT('MATR_IMPE','MATR_IMPE_MASS'),
                  PRESENT_ABSENT('MATR_IMPE','MATR_IMPE_AMOR'),
@@ -40,6 +53,11 @@ MACR_ELEM_DYNA=OPER(nom="MACR_ELEM_DYNA",op=  81,sd_prod=macr_elem_dyna,
          MATR_IMPE_RIGI  =SIMP(statut='f',typ=matr_asse_gene_c ),
          MATR_IMPE_MASS  =SIMP(statut='f',typ=matr_asse_gene_c ),
          MATR_IMPE_AMOR  =SIMP(statut='f',typ=matr_asse_gene_c ),
+         MODELE_MESURE   =FACT(statut='f',
+           FREQ            =SIMP(statut='o',typ='R',max='**' ),
+           MASS_GENE       =SIMP(statut='o',typ='R',max='**' ),
+           AMOR_REDUIT     =SIMP(statut='f',typ='R',max='**' ),
+                              ),
          b_matr_impe     =BLOC(condition = "MATR_IMPE != None",
              FREQ_EXTR       =SIMP(statut='o',typ='R' ),
              AMOR_SOL        =SIMP(statut='f',typ='R',defaut=0.E+0 ),

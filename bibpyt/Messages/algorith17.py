@@ -1,4 +1,4 @@
-#@ MODIF algorith17 Messages  DATE 19/03/2013   AUTEUR BRIE N.BRIE 
+#@ MODIF algorith17 Messages  DATE 02/04/2013   AUTEUR BODEL C.BODEL 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -142,5 +142,17 @@ cata_msg={
 """),
 30 : _(u"""
   On n'arrive pas à récupérer la température au temps T-.
+"""),
+31 : _(u"""
+  Il faut donner autant de coefficients pour le paramètre %(k1)s 
+  qu'il y a de modes propres dans la base sur laquelle est fabriquée
+  le macro-élément.
+   - Nombre de modes de la base : %(i1)d
+   - Nombre de coefficients donnés : %(i2)d.
+"""),
+32 : _(u"""
+  Le macro-élément est assemblé à partir de données mesurées.
+  Le calcul des masses effectives est impossible. Ne pas en tenir
+  compte dans les calculs postérieurs.
 """),
 }

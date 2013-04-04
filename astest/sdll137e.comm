@@ -1,0 +1,392 @@
+# MODIF  DATE 02/04/2013   AUTEUR BODEL C.BODEL 
+# TITRE MODIFICATION STRUCTURALE D UNE POUTRE
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
+# (AT YOUR OPTION) ANY LATER VERSION.                                                    
+#                                                                       
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
+#                                                                       
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# ======================================================================
+# RESPONSABLE BODEL
+
+DEBUT( CODE=_F( NOM = 'SDLL137E',
+                NIV_PUB_WEB='INTERNET'),
+       DEBUG=_F(SDVERI='OUI'),
+       );
+
+#**********************************
+# CREATION DU MODELE EXPERIMENTAL
+#**********************************
+
+PRE_IDEAS(UNITE_IDEAS=21,
+          UNITE_MAILLAGE=22,);
+
+MAILEXP=LIRE_MAILLAGE(UNITE=22,);
+
+MODLEXP=AFFE_MODELE(MAILLAGE=MAILEXP,
+                    AFFE=_F(TOUT='OUI',
+                            PHENOMENE='MECANIQUE',
+                            MODELISATION='DIS_TR',),);
+
+CHCAREXP=AFFE_CARA_ELEM(MODELE=MODLEXP,
+                        DISCRET=(_F(REPERE='GLOBAL',
+                                    CARA='K_TR_D_L',
+                                    GROUP_MA='POUTRE',
+                                    VALE=[1.0]*6,),
+                                 _F(REPERE='GLOBAL',
+                                    CARA='M_TR_L',
+                                    GROUP_MA='POUTRE',
+                                    VALE=[0.0]*78,),),);
+
+ASSEMBLAGE(MODELE=MODLEXP,
+                CARA_ELEM=CHCAREXP,
+                NUME_DDL=CO('NUMEXP'),
+                MATR_ASSE=(_F(MATRICE=CO('KASSEXP'),
+                              OPTION='RIGI_MECA',),
+                           _F(MATRICE=CO('MASSEXP'),
+                              OPTION='MASS_MECA',),),);
+
+
+# LECTURE DES MODES IDENTIFIES
+MODMtmp=LIRE_RESU(TYPE_RESU='MODE_MECA',
+                  FORMAT='IDEAS',
+                  MODELE=MODLEXP,
+                  UNITE=21,
+                  NOM_CHAM='DEPL',
+                  FORMAT_IDEAS=_F(NOM_CHAM='DEPL',
+                                  NUME_DATASET=55,
+                                  RECORD_6=(1,2,3,8,2,6,),
+                                  POSI_ORDRE=(7,4,),
+                                  POSI_NUME_MODE=(7,4,),
+                                  POSI_MASS_GENE=(8,2,),
+                                  POSI_AMOR_GENE=(8,3,),
+                                  POSI_FREQ=(8,1,),
+                                  NOM_CMP=('DX','DY','DZ','DRX','DRY','DRZ',),),
+                  MATR_RIGI=KASSEXP,
+                  MATR_MASS=MASSEXP,
+                  TOUT_ORDRE='OUI',);
+
+# TRI EVENTUEL
+_nume_mode = (1, 2, 3, 4, 5);
+
+MODMESU=EXTR_MODE(FILTRE_MODE=_F(MODE=MODMtmp,
+                                 NUME_MODE=_nume_mode,),);
+
+
+#************************
+# CREATION MODELE SUPPORT
+#************************
+
+# Le modele support doit etre cree AVEC LA MODIFICATION, pour bien
+# prendre en compte la rigidification apportee par celle-ci dans le
+# calcul des RELEVES STATIQUES a l'interface. La modification est
+# prise en compte en utilisant un materiau different la ou elle est
+# ajoutee.
+# Avec cette maniere de faire, le macro-element associe a la structure
+# ne comprendra que les modes propres, pas les releves statiques a
+# l'interface, qui sont de toute facon faux.
+# Consequence : dans le modele defini ci-dessous, les caracteristiques
+# materiau de la poutre au niveau de la modif sont doublees. Dans un
+# calcul plus complexe, avec noeuds non coincidents entre structure et
+# modif, il conviendra de realiser un LIAISON_MAIL, ou un LIAISON_DDL
+# entre les DDL de la structure et de la modif.
+
+MAILSUP=LIRE_MAILLAGE(UNITE=20,);
+
+MAILSUP=DEFI_GROUP(reuse=MAILSUP,MAILLAGE=MAILSUP,
+                   CREA_GROUP_NO=_F(NOM='CAPT2',
+                                    DIFFE=('CAPTEUR','EXTERNE'),),);
+
+MODLSUP=AFFE_MODELE(MAILLAGE=MAILSUP,
+                    AFFE=_F(GROUP_MA=('SIMPLE','VISUAL',),
+                            PHENOMENE='MECANIQUE',
+                            MODELISATION='POU_D_E',),);
+
+MATSUP=DEFI_MATERIAU(ELAS=_F(E=2.1E11,
+                             NU=0.3,
+                             RHO=7800.,),);
+
+MATDBL=DEFI_MATERIAU(ELAS=_F(E=4.2E11,
+                             NU=0.3,
+                             RHO=15600.,),);
+
+# 'SIMPLE' : groupe ne portant pas la modif. 'VISUAL' : groupe
+# supportant la modif
+CHMATSUP=AFFE_MATERIAU(MAILLAGE=MAILSUP,
+                       MODELE=MODLSUP,
+                       AFFE=(_F(GROUP_MA='SIMPLE',
+                                MATER=MATSUP,),
+                             _F(GROUP_MA='VISUAL',
+                                MATER=MATDBL,),),);
+
+CHCARSUP=AFFE_CARA_ELEM(MODELE=MODLSUP,
+                        POUTRE=_F(GROUP_MA='POUTRE',
+                                  SECTION='RECTANGLE',
+                                  CARA=('HY','HZ',),
+                                  VALE=(9E-3,38E-3,),),
+                        ORIENTATION=_F(GROUP_MA='POUTRE',
+                                       CARA='VECT_Y',
+                                       VALE=(0.,0.,1.,),),);
+
+CONDLSUP=AFFE_CHAR_MECA(MODELE=MODLSUP,
+                        DDL_IMPO=(_F(GROUP_NO='FIXE',
+                                   LIAISON='ENCASTRE')));
+
+##CONDLSUP=AFFE_CHAR_MECA(MODELE=MODLSUP,
+##                        DDL_IMPO=(_F(GROUP_NO='FIXE',
+##                                     LIAISON='ENCASTRE'),
+##                                  _F(GROUP_NO=('CAPT2','EXTERNE'),
+##                                     DY=0.0,DZ=0.0),),);
+
+ASSEMBLAGE(MODELE=MODLSUP,
+                CHAM_MATER=CHMATSUP,
+                CARA_ELEM=CHCARSUP,
+                CHARGE=CONDLSUP,
+                NUME_DDL=CO('NUMSUP'),
+                MATR_ASSE=(_F(MATRICE=CO('KASSUP'),
+                              OPTION='RIGI_MECA',),
+                           _F(MATRICE=CO('MASSUP'),
+                              OPTION='MASS_MECA',),),);
+
+mod=MODE_ITER_SIMULT(MATR_RIGI=KASSUP,MATR_MASS=MASSUP)
+
+# Fabrication "classique" de la base d'expansion, faisable
+# si les capteurs sont places sur de noeuds du maillage numerique
+BAMO=MODE_STATIQUE(MATR_RIGI=KASSUP,
+                   MATR_MASS=MASSUP,
+                   FORCE_NODALE=(_F(GROUP_NO=('CAPT2','EXTERNE'),
+                                 AVEC_CMP=('DY','DZ',),),),);
+
+# On peut passer indifferemment par FORCE_NODALE ou MODE_STAT.
+# Si on prend MODE_STAT, choisir un CONDSUP qui bloque
+# les DDL capteurs et externe.
+# Attention, ce n'est plus vrai si on ne prend pas tous les vecteurs
+# Les deux bases ne sont pas equivalentes.
+##BAMO=MODE_STATIQUE(MATR_RIGI=KASSUP,
+##                   MATR_MASS=MASSUP,
+##                   MODE_STAT=(_F(GROUP_NO=('CAPT2','EXTERNE'),
+##                                 AVEC_CMP=('DY','DZ',),),),);
+
+
+### Si les capteurs ne sont pas confondus avec des noeuds du maillage
+### numerique, on va creer BAMOEXP en calculant la correspondance
+### experimental numerique :
+##
+##INCLUDE(UNITE=2);
+##
+##calc_modestat_capteurs(MAILSUP,MAILEXP,MODLSUP,
+##                       CHMATSUP,CHCARSUP,CONDLSUP,
+##                       NUMSUP,MASSUP,KASSUP,
+##                       ['DY','DZ'],['FY','FZ'])
+
+
+#**********************************************
+# BASE D'EXPANSION POUR LES MODES EXPERIMENTAUX
+#**********************************************
+# calcul des modes d'interface par reorthonormalisation des
+# modes de BASEMO
+
+PROJ_BASE( BASE=BAMO,
+           STOCKAGE='PLEIN',
+           MATR_ASSE_GENE=(_F(MATRICE=CO('KPROJ'),
+                              MATR_ASSE=KASSUP,),
+                           _F(MATRICE=CO('MPROJ'),
+                              MATR_ASSE=MASSUP,),),);
+
+# PARAMETRE DE PILOTAGE : LE NOMBRE DE MODES DANS LA BASE D'EXPANSION
+# Inferieur a 8 (nombre de donnees experimentales aux capteurs).
+# On remarque que si on prend plus de 5 modes, les modes etendus
+# deviennent fortement irreguliers.
+nbmod_expans = 5
+MODGENE=MODE_ITER_SIMULT(MATR_RIGI=KPROJ,
+                         MATR_MASS=MPROJ,
+                         CALC_FREQ=_F(OPTION='PLUS_PETITE',
+                                      NMAX_FREQ=nbmod_expans,),
+                         VERI_MODE=_F(STOP_ERREUR='NON'));
+
+
+MODREPHY=REST_GENE_PHYS(RESU_GENE=MODGENE,NOM_CHAM='DEPL')
+
+#***********************************************************
+# EXPANSION DES MODES EXPERIMENTAUX SUR LA BASE DES MODREPHY
+#***********************************************************
+
+# base de modes etendue pour la structure
+tmp=PROJ_MESU_MODAL(MODELE_CALCUL=_F(MODELE=MODLSUP,
+                                     BASE=MODREPHY,),
+                    MODELE_MESURE=_F(MODELE=MODLEXP,
+                                     MESURE=MODMESU,),);
+
+# base de modes etendue pour la structure
+MODEET=REST_GENE_PHYS(RESU_GENE=tmp)
+
+#****************************************
+#    MACRO-ELEMENT ASSOCIE A LA STRUCTURE
+#****************************************
+
+## NB : il n'est pas possible d'utiliser CREA_ELEM_SSD ici, car les
+## modes dynamiques ne sont les modes calcules : ce sont les modes
+## etendus dans l'etape precedente.
+INTSTRU=DEFI_INTERF_DYNA(NUME_DDL=NUMSUP,
+                         INTERFACE=_F(NOM = 'INTSTRU',
+                                      TYPE = 'MNEAL',
+                                      GROUP_NO = 'EXTERNE'))
+
+BAMOSTRU=DEFI_BASE_MODALE(RITZ=_F( MODE_MECA = MODEET),
+                          INTERF_DYNA=INTSTRU)
+
+
+### Creation "classique" de macro-element
+##MACELSTR=MACR_ELEM_DYNA( BASE_MODALE=BAMOSTRU,
+##                         MATR_MASS=MASSUP,
+##                         MATR_RIGI=KASSUP,
+##                         )
+
+# Les matrices projetees PHI^T.M.PHI et PHI^T.K.PHI sont basees sur
+# des matrices Met K fausses, car le modele support peut etre faux.
+# On cree un macr_elem contenant les valeurs modales identifiees.
+# RECUPERATION AUTOMATIQUE DES PARAMETRES : 
+##freq = MODMESU.LIST_PARA()['FREQ']
+##amor = MODMESU.LIST_PARA()['AMOR_REDUIT']
+##mass = MODMESU.LIST_PARA()['MASS_GENE']
+
+# ECRITURE MANUELLE DES PARAMETRES (POUR SE METTRE EN PAR_LOT='OUI')
+freq = [9.3125, 39.267000000000003, 58.335999999999984, 163.28, 244.06000000000003]
+amor = [0.0, 0.0, 0.0, 0.0, 0.0]
+mass = [0.25664999999999999, 0.25783, 0.021293000000000006, 0.0079034999999999991, 0.021723000000000006]
+
+
+MACELSTR=MACR_ELEM_DYNA( BASE_MODALE=BAMOSTRU,
+                         MODELE_MESURE=_F(FREQ=freq,
+                                          MASS_GENE=mass,
+                                          AMOR_REDUIT=amor,));
+
+
+#*********************************************
+# MODELE MODIFICATION ET MACRO-ELEMENT ASSOCIE
+#*********************************************
+MAILMODI=LIRE_MAILLAGE(UNITE=24)
+
+MODMODI=AFFE_MODELE(MAILLAGE=MAILMODI,
+                    AFFE=_F(GROUP_MA=('POUTRE',),
+                            PHENOMENE='MECANIQUE',
+                            MODELISATION='POU_D_E',),);
+
+CARAMODI=AFFE_CARA_ELEM(MODELE=MODMODI,
+                        POUTRE=(_F(GROUP_MA='POUTRE',
+                                   SECTION='RECTANGLE',
+                                   CARA=('HY','HZ',),
+                                   VALE=(9.E-3,38.E-3,),),),
+                        ORIENTATION=(_F(GROUP_MA='POUTRE',
+                                        CARA='VECT_Y',
+                                        VALE=(0.,0.,1.),),),);
+
+CHMAMODI=AFFE_MATERIAU(MAILLAGE=MAILMODI,
+                       MODELE=MODMODI,
+                       AFFE=_F(GROUP_MA='POUTRE',
+                               MATER=MATSUP,),);
+
+CONDMODI=AFFE_CHAR_MECA(MODELE=MODMODI,
+                        DDL_IMPO=_F(GROUP_NO='EXTERNE',
+                                    LIAISON='ENCASTRE'),);
+
+MACELMOD = CREA_ELEM_SSD(
+                 MODELE = MODMODI,
+                 CHARGE = CONDMODI,
+                 CHAM_MATER = CHMAMODI,
+                 CARA_ELEM = CARAMODI,
+                 INTERFACE = _F( NOM = 'INTMODI',
+                                 TYPE = 'CRAIGB',
+                                 GROUP_NO = 'EXTERNE'),
+                 BASE_MODALE = _F( TYPE = 'RITZ',
+                                   TYPE_MODE = 'STATIQUE',
+                                   ),
+                 CALC_FREQ = _F(OPTION='SANS'),);
+
+
+#**************************************
+#    ASSEMBLAGE DES SOUS-STRUCTURES
+#**************************************
+
+ASSE_ELEM_SSD(RESU_ASSE_SSD = _F(
+                                 MODELE = CO('MODEGE'),
+                                 NUME_DDL_GENE = CO('NUMEGE'),
+                                 RIGI_GENE = CO('RIGGEN'),
+                                 MASS_GENE = CO('MASGEN'),
+                               ),
+              SOUS_STRUC = (_F(NOM = 'MODIF',
+                               MACR_ELEM_DYNA = MACELMOD,),
+                            _F(NOM = 'STRUCT',
+                               MACR_ELEM_DYNA = MACELSTR,),),
+              LIAISON=_F( SOUS_STRUC_2='STRUCT',
+                          INTERFACE_2='INTSTRU',
+                          SOUS_STRUC_1='MODIF',
+                          INTERFACE_1='INTMODI',
+                          GROUP_MA_MAIT_2='toto',
+                          OPTION='REDUIT'),
+              VERIF = _F( STOP_ERREUR = 'OUI',
+                          PRECISION = 1.E-6,
+                          CRITERE = 'RELATIF'),
+              METHODE = 'ELIMINE',
+              ),
+
+#***************************************************
+#   CALCUL DES MODES PROPRES DE LA STRUCTURE GLOBALE
+#***************************************************
+
+RESGEN=MODE_ITER_SIMULT( MATR_RIGI=RIGGEN,
+                         MATR_MASS=MASGEN,
+                         CALC_FREQ=_F( OPTION = 'BANDE',
+                                       FREQ = (1.0,1000.0),
+                                       DIM_SOUS_ESPACE=10,),
+                         VERI_MODE=_F(STOP_ERREUR='NON',
+                                      STURM='NON',),
+                         SOLVEUR=_F(METHODE='MUMPS'),
+                        );
+
+FREQ=RECU_TABLE(CO=RESGEN,NOM_PARA='FREQ')
+
+###*******************************************
+###  RESTITUTION SUR BASE PHYSIQUE (SI BESOIN)
+###*******************************************
+##
+##SQUEL=DEFI_SQUELETTE(MODELE_GENE=MODEGE,
+##                     SOUS_STRUC=(
+##                                 _F( NOM = 'MODIF',
+##                                     TOUT='OUI',),
+##                                 _F( NOM = 'STRUCT',
+##                                     TOUT='OUI',),
+##                                 ),);
+##
+##
+##MODGLO=REST_SOUS_STRUC(RESU_GENE=RESGEN,
+##                       SQUELETTE=SQUEL,
+##                       TOUT_ORDRE='OUI',
+##                       TOUT_CHAM='OUI')
+
+TEST_RESU(GENE=(
+                _F(RESU_GENE=RESGEN, NUME_ORDRE=1, PARA='FREQ',
+                   VALE_REFE=7.77E+0,VALE_CALC=7.7748068E+0,
+                   CRITERE='RELATIF', PRECISION=1.E-2,
+                   REFERENCE='AUTRE_ASTER',),
+                _F(RESU_GENE=RESGEN, NUME_ORDRE=2, PARA='FREQ',
+                   VALE_REFE=3.277E+1,VALE_CALC=3.2773357E+1,
+                   CRITERE='RELATIF', PRECISION=1.E-2,
+                   REFERENCE='AUTRE_ASTER',),
+                ),);
+
+
+FIN();
+
+
+
