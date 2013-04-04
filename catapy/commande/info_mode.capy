@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 26/02/2013   AUTEUR BOITEAU O.BOITEAU 
+#& MODIF COMMANDE  DATE 02/04/2013   AUTEUR BOITEAU O.BOITEAU 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -94,6 +94,9 @@ INFO_MODE=OPER(nom="INFO_MODE",op=32,sd_prod=table_sdaster,
 #-------------------------------------------------------------------
 #        Catalogue commun SOLVEUR
          SOLVEUR         =C_SOLVEUR('INFO_MODE'),
+#        Mot-cle pour piloter les niveaux de parallelismes de l'operateur (a ne pas confondre avec le mot-cle
+#        cache PARALLELISME_MACRO)
+         NIVEAU_PARALLELISME  =SIMP(statut='f',typ='TXM',defaut="COMPLET",into=("PARTIEL","COMPLET") ),  
 #-------------------------------------------------------------------
 #-------------------------------------------------------------------
 #  Mot-cles caches pour activer le parallelisme au sein d'une macro-commande

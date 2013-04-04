@@ -1,4 +1,4 @@
-#@ MODIF modal Messages  DATE 26/02/2013   AUTEUR BOITEAU O.BOITEAU 
+#@ MODIF modal Messages  DATE 02/04/2013   AUTEUR BOITEAU O.BOITEAU 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -81,7 +81,7 @@ Opérateur MACRO_MODE_MECA:
   Le concept résultat sera vide.
 """),
 9: _(u"""
-Opérateur MACRO_MODE_MECA:
+Opérateur MACRO_MODE_MECA en mode parallèle:
   Le nombre de processeurs, %(i1)d, et le nombre de sous-bandes fréquentielles non vides, %(i2)d,
   sont incompatibles !
   Avec le solveur linéaire MUMPS, ce nombre de processeurs peut être supérieur ou égale
@@ -94,7 +94,7 @@ Opérateur MACRO_MODE_MECA:
       le solveur linéaire en conséquence.
 """),
 10: _(u"""
-Opérateur MACRO_MODE_MECA:
+Opérateurs INFO_MODE ou MACRO_MODE_MECA en mode parallèle:
   Le nombre de processeurs, %(i1)d, et le nombre de fréquences, %(i2)d, sont incompatibles !
   Avec le solveur linéaire MUMPS, ce nombre de processeurs peut être supérieur ou égale
   (idéalement proportionnel) au nombre de fréquences - 1.
@@ -106,7 +106,7 @@ Opérateur MACRO_MODE_MECA:
       le solveur linéaire en conséquence.
 """),
 11: _(u"""
-Opérateur MACRO_MODE_MECA:
+Opérateurs INFO_MODE ou MACRO_MODE_MECA en mode parallèle:
   Chacune des %(i1)d fréquences (autre que l'initiale) utilise le solveur linéaire
   MUMPS sur son propre paquet de processeurs.
   Cependant ces occurrences MUMPS sont parallélisées sur un nombre de processeurs
@@ -118,7 +118,7 @@ Opérateur MACRO_MODE_MECA:
       en conséquence. Par exemple, un nombre de processeurs = %(i1)d  x 2, 4 ou 8.
 """),
 12: _(u"""
-Opérateur MACRO_MODE_MECA:
+Opérateur MACRO_MODE_MECA en mode parallèle:
   Chacune des %(i1)d sous-bandes fréquentielles non vides utilise, indépendamment des autres,
   le solveur linéaire parallèle MUMPS.
   Cependant ces occurrences de solveur linéaires sont parallélisées sur un nombre de processeurs
@@ -130,7 +130,7 @@ Opérateur MACRO_MODE_MECA:
       en conséquence. Par exemple, un nombre de processeurs = %(i1)d  x 2, 4 ou 8.
 """),
 13: _(u"""
-Opérateur MACRO_MODE_MECA:
+Opérateur MACRO_MODE_MECA en mode parallèle:
   Chacune des 2 fréquences du test de Sturm de post-vérification utilise le solveur linéaire
   MUMPS sur son propre paquet de processeurs.
   Cependant ces occurrences MUMPS sont parallélisées sur un nombre de processeurs
@@ -141,7 +141,7 @@ Opérateur MACRO_MODE_MECA:
     * Idéalement, le nombre de processeurs devrait être pair.
 """),
 14: _(u"""
-Opérateur MACRO_MODE_MECA:
+Opérateurs INFO_MODE ou MACRO_MODE_MECA en mode parallèle:
   Vous avez demandé la parallélisation, sur %(i1)d processeurs, de la partie solveur linéaire
    de votre calcul. Mais vous avez paramétré un solveur linéaire séquentiel: %(k1)s !
   
@@ -149,6 +149,6 @@ Opérateur MACRO_MODE_MECA:
     * Lancez votre calcul en séquentiel,
     * Changez votre solveur linéaire pour MUMPS (mot-clé facteur SOLVEUR + METHODE='MUMPS' + 
        plus pour de meilleures performances en modal GESTION_MEMOIRE='IN_CORE' + RENUM='QAMD'),
-    * Changez le niveau de parallélisme (mot-clé NIVEAU_PARALLELISME='TOTAL').
+    * Changez le niveau de parallélisme (mot-clé NIVEAU_PARALLELISME='COMPLET').
 """),
 }

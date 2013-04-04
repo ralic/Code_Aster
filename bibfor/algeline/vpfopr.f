@@ -3,7 +3,7 @@
      &                   PRECSH, NBRSSA, NBLAGR, SOLVEU, DET, IDET)
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 26/02/2013   AUTEUR BOITEAU O.BOITEAU 
+C MODIF ALGELINE  DATE 02/04/2013   AUTEUR BOITEAU O.BOITEAU 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -111,7 +111,7 @@ C PARAMETRES D'APPEL
 
 
 C VARIABLES LOCALES
-      CHARACTER*1  TYPEP
+      CHARACTER*1  TYPEP,K1BID
       CHARACTER*8  K8BID
       CHARACTER*16 CH16,VALK(3)
       CHARACTER*24 K24C,K24PAR
@@ -322,7 +322,7 @@ C --- CE N'EST PLUS LA PEINE DE DECALER, C'EST INUTILE
         OMEMAX=OMGMAX
 
 C     ------------------------------------------------------------------
-C     ------------------------MACRO_MODE_MECA PARALLELE (PART I) -------
+C     ---------INFO_MODE OU MACRO_MODE_MECA PARALLELE (PART I) ---------
 C     ------------------------------------------------------------------
 C     --- COMMUNICATION DES PIVOTS POUR LE BON CALCUL DE STURM  
         IF ((OPTION.EQ.'STURML1P').OR.(OPTION.EQ.'STURMLNP').OR.
@@ -333,6 +333,7 @@ C     --- COMMUNICATION DES PIVOTS POUR LE BON CALCUL DE STURM
 C         --- ON REMPLACE LE COMM LOCAL PAR LE COMM WORLD
           CALL MPIEXE('MPI_RANG_SIZE',MPICOU,IBID,RANGL,IBID)
           CALL MPIEXE('AFFE_COMM_REFE',MPICOW,IBID,1,IBID)
+          CALL MPICM1('BARRIER',K1BID,IBID,IBID,IBID,RBID,CBID)
           CALL MPIEXE('MPI_RANG_SIZE',MPICOW,IBID,RANG,NBPROC)
 C         --- BUFFER DE COM K24C
 C         --- K24C(FREQUENCE_COURANTE)=NBFMIN OU MAX
@@ -389,7 +390,7 @@ C         --- K24C(FREQUENCE_COURANTE)=NBFMIN OU MAX
      &              NBFREQ,NBLAGR,TYPEP,K8BID,0.D0,DCMPLX(0.D0,0.D0))
 
 C     ------------------------------------------------------------------
-C     ------------------------MACRO_MODE_MECA PARALLELE (PART II)-------
+C     ---------INFO_MODE OU MACRO_MODE_MECA PARALLELE (PART II) --------
 C     ------------------------------------------------------------------
 C     --- SEULS CERTAINS PROCS REMONTENT LES OUTPUTS SINON LA COMM
 C     --- EN FIN DE OP0032 VA CUMULER DES INFOS REDONDANTES.    

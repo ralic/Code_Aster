@@ -2,7 +2,7 @@
       IMPLICIT NONE
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 26/02/2013   AUTEUR BOITEAU O.BOITEAU 
+C MODIF ALGELINE  DATE 02/04/2013   AUTEUR BOITEAU O.BOITEAU 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -30,7 +30,7 @@ C
      &             PIVOT1,PIVOT2,MXDDL,NBRSS,IERD,II,IFAPM,K,NBMOD,
      &             NBLAGR,NBCINE,NEQACT,NEQ,NITERC,NPIVOT(2),MPICOU,
      &             L,LMASSE,LRAIDE,LDDL,LDYNAM,NK,NBROW,
-     &             LPROD,IRET,NBFREQ,KREFA,IDET(2),JSTU,VALI(3),
+     &             LPROD,IRET,NBFREQ,KREFA,IDET(2),JSTU,VALI(4),
      &             IFM,NIV,NBTETC,NBTET0,NBTET1,TYPECO,RANG,NBPROC,
      &             NBTET2,NBEV0,NBEV1,NBEV2,MITERC,IARG,IBID,MPICOW,
      &             K1,K2,JKPAR,L1,L2,L3,L11,L21,FRECOU,IZERO
@@ -39,16 +39,16 @@ C
      &             PRECSH,RAYONC,DIMC1,RZERO,CALPAR(2),CALPAC(3),
      &             CALPAF(2),RBID,DET(2)
       COMPLEX*16   CENTRC,ZIMC1,CBID
-      LOGICAL      LTEST,LC,LDYNA,LFLAMB,LFIRST,LCOMOD
+      LOGICAL      LTEST,LC,LDYNA,LFLAMB,LFIRST,LCOMOD,LCOINF
       CHARACTER*1  TYPEP,TPPARN(1),TPPARR(2),TPPARC(3),TPPARF(2),
-     &             TPPARM(2)
+     &             TPPARM(2),K1BID
       CHARACTER*3  IMPR
       CHARACTER*8  TYPCON,TYPMET,TYPCHA,TABLE,KOPT1,KOPTN
       CHARACTER*14 MATRA,MATRB,MATRC
-      CHARACTER*16 CONCEP,NOMCMD,TYPMOD,
+      CHARACTER*16 CONCEP,NOMCMD,TYPMOD,TYPPAR,
      &             NMPARN(1),NMPARR(2),NMPARC(3),NMPARF(2),NMPARM(2)
       CHARACTER*19 MASSE,RAIDE,DYNAM,SOLVEU,AMOR,MATREF
-      CHARACTER*24 VALK(3),METRES,K24RC,KBID,K24MOD,K24STU,K24MOE,
+      CHARACTER*24 VALK(4),METRES,K24RC,KBID,K24MOD,K24STU,K24MOE,
      &             K24PAR
       PARAMETER   ( MXDDL=1,MITERC=10000,NMULTC=2)
 C     ------------------------------------------------------------------
@@ -66,32 +66,47 @@ C     --- OUTPUT CONCEPT ---
       CALL GETRES(TABLE,CONCEP,NOMCMD)
 
 C     ------------------------------------------------------------------
-C     ------------------------MACRO_MODE_MECA PARALLELE (PART I)--------
+C     ------- INFO_MODE // SEUL OU DS MACRO_MODE_MECA (PART I)  --------
 C     ------------------------------------------------------------------
 C     --- RECUPERATION ET TEST DE VALIDITE DES PARAMETRES
 C     ------------------------------------------------------------------
       MPICOW=COMCOU(0)
       MPICOU=COMCOU(1)
-      CALL MPIEXE('MPI_RANG_SIZE',MPICOW,IBID,RANG,NBPROC)
       IF (MPICOW.NE.MPICOU) CALL ASSERT(.FALSE.)
+      CALL MPIEXE('MPI_RANG_SIZE',MPICOW,IBID,RANG,NBPROC)
+      
+C     INFO // DS MACRO_MODE_MECA
+      TYPECO=-999
       CALL GETVIS('PARALLELISME_MACRO','TYPE_COM',1,IARG,1,TYPECO,L)
       VALK(1)='TYPE_COM'
+      VALI(1)=TYPECO
+      IF (L.NE.1)
+     &  CALL U2MESG('F','APPELMPI_6',1,VALK,1,VALI,0,RBID)
       VALK(2)='RANG'
       VALK(3)='NBPROC'
-      VALI(1)=TYPECO
       VALI(2)=RANG
       VALI(3)=NBPROC
-      IF (L.NE.1)
-     &  CALL U2MESG('F','APPELMPI_6',1,VALK,1,VALI,IZERO,RZERO)
-
       IF ((((TYPECO.NE.1).AND.(TYPECO.NE.2).AND.(TYPECO.NE.-999))
      &      .OR.(NBPROC.LT.1).OR.(RANG.LT.0)))
-     &  CALL U2MESG('F','APPELMPI_8',3,VALK,3,VALI,IZERO,RZERO)
-
+     &  CALL U2MESG('F','APPELMPI_8',3,VALK,3,VALI,0,RBID)
       IF (((TYPECO.EQ.1).OR.(TYPECO.EQ.2)).AND.(NBPROC.GT.1)) THEN
         LCOMOD=.TRUE.
       ELSE
         LCOMOD=.FALSE.
+      ENDIF
+
+C     INFO // SEUL
+      TYPPAR='XXXXXXXXXXXXXXXX'
+      CALL GETVTX(' ','NIVEAU_PARALLELISME',1,IARG,1,TYPPAR,L)
+      IF (L.NE.1) CALL ASSERT(.FALSE.)
+      IF ((TYPPAR.NE.'COMPLET').AND.(TYPPAR.NE.'PARTIEL'))
+     &  CALL ASSERT(.FALSE.)
+      IF ((TYPPAR.EQ.'COMPLET').AND.(NBPROC.GT.1).AND.(.NOT.LCOMOD))
+     &THEN
+        LCOINF=.TRUE.
+        TYPECO=1
+      ELSE
+        LCOINF=.FALSE.
       ENDIF
 C     ------------------------------------------------------------------
 
@@ -313,6 +328,39 @@ C     --- CURRENT SCOPE OF USE OF THE OPTION TYPCHA='ROMBOUT'   ---
      &    CALL U2MESS('F','ALGELINE4_17')
       ENDIF
 
+C      --- SCHEMAS PARALLELES
+
+C      --- INFO_MODE OU MACRO_MODE_MECA // VALIDES QU'AVEC STURM
+       IF (LCOMOD.OR.LCOINF) THEN
+C      --- PROBABLEMENT MAUVAISE PROGRAMMATION EN AMONT
+         IF (TYPMET(1:5).NE.'STURM') CALL ASSERT(.FALSE.)
+       ENDIF
+       
+C      --- INFO_MODE PARALLELE: INCOMPATIBILITES FONCTIONNELLES ET
+C      --- DESEQUILIBRAGE DE CHARGE POTENTIEL.
+       IF (LCOINF) THEN
+         IF ((TYPPAR.EQ.'PARTIEL').AND.(METRES(1:5).NE.'MUMPS').AND.
+     &     (NBPROC.GT.1)) THEN
+           VALI(1)=NBPROC
+           VALK(1)=METRES
+           CALL U2MESG('F','MODAL_14',1,VALK,1,VALI,0,RBID)
+         ENDIF
+         IF ((NBPROC.LT.(NBMOD-1)).OR.
+     &       ((NBPROC.GT.(NBMOD-1)).AND.(METRES(1:5).NE.'MUMPS'))) THEN
+           VALI(1)=NBPROC
+           VALI(2)=NBMOD
+           VALK(1)=METRES
+           CALL U2MESG('F','MODAL_10',1,VALK,2,VALI,0,RBID)
+         ENDIF
+         L1=NBPROC/(NBMOD-1)
+         L2=NBPROC-(NBMOD-1)*L1
+         IF ((NBPROC.GT.(NBMOD-1)).AND.(L2.NE.0)) THEN
+           VALI(1)=NBMOD-1
+           VALI(2)=L1
+           VALI(3)=L1+1
+           CALL U2MESG('I','MODAL_11',0,KBID,3,VALI,0,RBID)
+         ENDIF
+       ENDIF
 
 C-----------------------------------------------------------------------
 C-------------------------- PRE-TRAITEMENTS ----------------------------
@@ -356,28 +404,38 @@ C-----------------------------------------------------------------------
         NBROW=NBMOD-1
 
 C     ------------------------------------------------------------------
-C     ------------------------MACRO_MODE_MECA PARALLELE (PART II)-------
+C     ------- INFO_MODE // SEUL OU DS MACRO_MODE_MECA (PART II)  -------
 C     ------------------------------------------------------------------
 C     --- SI TYPECO=1 OU 2 ON PASSE EN COM LOCAL + DISTRIBUTION DES
 C     ---     TESTS DE STURM + ON REVIENT AU COMM_WORLD.
 C     ------------------------------------------------------------------
-        IF (LCOMOD) THEN
+        IF (LCOMOD.OR.LCOINF) THEN
 C         --- CALCUL DU VECTEUR DE COULEURS POUR DETERMINER LES SOUS-
-C         --- COMMUNICATEURS ASSOCIES A CHAQUE ANALYSE+FACTO. MUMPS
-C         --- VECTEUR COULEUR ZI(JKPAR+I)= FREQ A TRAITER PAR LE PROC
-C         --- DE RANG I. ON COMMENCE PAR FREQ=0,1...NBROW.
-C         --- DONC ZI(JKPAR+NBPROC-1)=NBROW (IMPORTANT POUR VPFOPR).
-C         --- ON GARDE CONTIGUES LES PROCS DEDIES A UNE FACTO MUMPS 
-C         --- ET EN CAS DE DESEQUILIBRAGE DE CHARGE ON DONNE 1 PROC
-C         --- DE PLUS AUX PREMIERES FREQUENCES.
+C         --- COMMUNICATEURS ASSOCIES A CHAQUE ANALYSE+FACTO. MUMPS.
+C         --- VECTEUR COULEUR ZI(JKPAR+I)= FREQ DONNE LE NUMERO DE LA
+C         --- FREQUENCE A TRAITER PAR LE PROC DE RANG I.
+C         --- PAR DEFAUT, LA PREMIERE FREQUENCE A LE NUMERO 0.
+C         --- * AVEC TYPECO=1,LE PROC 0 TRAITE A LA FOIS FREQ0 ET FREQ1,
+C         ---   PUIS LES AUTRES FREQS SONT DISTRIBUEES SUR LES AUTRES
+C         ---   PROCS. REGLE PARTICULIERE EN CAS DE DESEQUILIBRAGE CF.
+C         ---   COMMENTAIRE PLUS LOIN.
+C         --- * AVEC TYPECO=2, PROC 0 TRAITE FREQ0, PROC 1 TRAITE FREQ1.
+C         --- REGLE 1: ZI(JKPAR+NBPROC-1)=NBROW (IMPORTANT POUR VPFOPR).
+C         --- REGLE 2: ON GARDE CONTIGUES LES PROCS DEDIES A UNE FACTO 
+C         --- MUMPS ET EN CAS DE DESEQUILIBRAGE DE CHARGE ON DONNE 1
+C         --- PROC DE PLUS AUX PREMIERES FREQUENCES (SI TYPECO=1) OU A
+C         --- LA PREMIERE (SI TYPECO=2).
           K24PAR='&&OP0032.COULEUR'
           CALL WKVECT(K24PAR,'V V I',NBPROC,JKPAR)
           CALL VECINT(NBPROC,-9999,ZI(JKPAR))
+C         --- CAS PARTICULIER: INFO_MODE INITIAL SUR 1 SEULE SOUS-BANDE.
+C         --- IL EST EGAL FONCTIONNELLEMENT A L'INFO_MODE FINAL.
+          IF ((TYPECO.EQ.1).AND.(NBROW.EQ.1)) TYPECO=2
+C         --- ULTIME VERIF (DEJA FAIT PAR AILLEURS NORMALEMENT)
+            IF ((NBPROC.LT.NBROW).OR.
+     &          ((NBPROC.GT.NBROW).AND.(METRES(1:5).NE.'MUMPS')
+     &           .AND.(TYPECO.EQ.1))) CALL ASSERT(.FALSE.)
           IF (TYPECO.EQ.1) THEN
-C           --- VERIF REDONDANTE AU CAS OU (DEJA FAIT DS MACRO PYTHON)
-            IF (NBPROC.LT.NBROW) CALL ASSERT(.FALSE.)
-            IF ((NBPROC.GT.NBROW).AND.(METRES(1:5).NE.'MUMPS'))
-     &        CALL ASSERT(.FALSE.)
             L1=NBPROC/NBROW
             L11=L1+1
             L2=NBPROC-L1*NBROW
@@ -417,6 +475,7 @@ C         --- ON DETRUIT LE MPICOU QU'APRES LA DESTRUCTION DE L'OCCU
 C         --- RENCE MUMPS ASSOCIEE.
           CALL MPIEXE('MPI_COMM_SPLIT',MPICOW,MPICOU,FRECOU,0)
           IF (MPICOW.EQ.MPICOU) CALL ASSERT(.FALSE.)
+          CALL MPICM1('BARRIER',K1BID,IBID,IBID,IBID,RBID,CBID)   
           CALL MPIEXE('AFFE_COMM_REFE',MPICOU,IBID,1,IBID)
           IF (TYPECO.EQ.1) THEN
 C         --- CALCUL // TYPE 1
@@ -511,11 +570,11 @@ C        --- STEP K: BANDE NUMBER K
    20   CONTINUE
 
 C     ------------------------------------------------------------------
-C     -----------------------MACRO_MODE_MECA PARALLELE (PART III)-------
+C     ------ INFO_MODE // SEUL OU DS MACRO_MODE_MECA (PART III)  -------
 C     ------------------------------------------------------------------
 C     --- SI TYPECO=1/2 ON COMMUNIQUE TOUS LES RESULTATS DES CALCULS.
 C     ------------------------------------------------------------------
-        IF (LCOMOD) THEN
+        IF (LCOMOD.OR.LCOINF) THEN
           CALL MPICM1('MPI_SUM','I',NBMOD-1,IBID,ZI(JSTU),RBID,CBID)
           CALL MPICM1('MPI_SUM','R',NBMOD,IBID,IBID,ZR(JLMOE),CBID)
           CALL JEDETR(K24PAR)
@@ -634,14 +693,15 @@ C   --- DESTRUCTION OF THE DYNAMIC MATRIX
      &  CALL DETRSD('MATR_ASSE',DYNAM)
 
 C     ------------------------------------------------------------------
-C     -----------------------MACRO_MODE_MECA PARALLELE (PART IV) -------
+C     ------- INFO_MODE // SEUL OU DS MACRO_MODE_MECA (PART IV)  -------
 C     ------------------------------------------------------------------
 C     --- AVANT DE QUITTER L'OP. ON REMET LE COM WORLD (AU CAS OU)
 C     --- DESTRUCTION DES SOUS-COMMUNICATEURS EVENTUELLEMENT ASSOCIES A
 C     --- UNE OCCURENCE MUMPS (APRES CELLE DE LADITE OCCURENCE)
 C     ------------------------------------------------------------------
-      IF (LCOMOD) THEN
+      IF (LCOMOD.OR.LCOINF) THEN
         CALL MPIEXE('AFFE_COMM_REFE',MPICOW,IBID,1,IBID)
+        CALL MPICM1('BARRIER',K1BID,IBID,IBID,IBID,RBID,CBID)   
         CALL MPIEXE('MPI_COMM_FREE',MPICOU,IBID,IBID,IBID)
       ENDIF
 
