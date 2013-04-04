@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 26/03/2013   AUTEUR CUVILLIE M.CUVILLIEZ 
+#& MODIF COMMANDE  DATE 02/04/2013   AUTEUR CUVILLIE M.CUVILLIEZ 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -172,16 +172,26 @@ AFFE_CHAR_THER=OPER(nom="AFFE_CHAR_THER",op=34,sd_prod=char_ther
 
          ECHANGE_PAROI   =FACT(statut='f',max='**',
            regles=(UN_PARMI('GROUP_MA_1','MAILLE_1','FISSURE'),
-                   UN_PARMI('GROUP_MA_2','MAILLE_2','FISSURE'),
-                   PRESENT_ABSENT('FISSURE','TRAN'),),
+                   UN_PARMI('GROUP_MA_2','MAILLE_2','FISSURE'),),
            GROUP_MA_1      =SIMP(statut='f',typ=grma,validators=NoRepeat(),max='**'),
            MAILLE_1        =SIMP(statut='f',typ=ma  ,validators=NoRepeat(),max='**'),
            GROUP_MA_2      =SIMP(statut='f',typ=grma,validators=NoRepeat(),max='**'),
            MAILLE_2        =SIMP(statut='f',typ=ma  ,validators=NoRepeat(),max='**'),
            FISSURE         =SIMP(statut='f',typ=fiss_xfem,validators=NoRepeat(),min=1,max=100,),
-           COEF_H          =SIMP(statut='f',typ='R'),
-           TRAN            =SIMP(statut='f',typ='R',min=2,max=3),
-                         ),
+#          ----------------------
+           b_paroi_maillee =BLOC(
+             condition = "FISSURE == None",
+             COEF_H        =SIMP(statut='o',typ='R'),
+             TRAN          =SIMP(statut='f',typ='R',min=2,max=3),
+                                 ),
+#          ----------------------
+           b_xfem         =BLOC(
+             condition = "FISSURE != None",
+             regles    =(UN_PARMI('COEF_H','TEMP_CONTINUE'),),
+             COEF_H        =SIMP(statut='f',typ='R'),
+             TEMP_CONTINUE =SIMP(statut='f',typ='TXM',into=("OUI",)),
+                                 ),
+         ),
 
          LIAISON_UNIF    =FACT(statut='f',max='**',
            regles=(UN_PARMI('GROUP_NO','NOEUD','GROUP_MA','MAILLE'),),
