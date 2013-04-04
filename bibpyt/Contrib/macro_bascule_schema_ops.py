@@ -1,4 +1,4 @@
-#@ MODIF macro_bascule_schema_ops Contrib  DATE 18/02/2013   AUTEUR GREFFET N.GREFFET 
+#@ MODIF macro_bascule_schema_ops Contrib  DATE 02/04/2013   AUTEUR GREFFET N.GREFFET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -18,11 +18,12 @@
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
 # ======================================================================
 
-def macro_bascule_schema_ops (self,MODE,MATE,CARA,
-                        INCR_I,INCR_E,
-                        SCH_TEMPS_I,SCH_TEMPS_E,SCH_TEMPS_EQ,
-                        C_INCR_I,C_INCR_E,
-                        EXC_T,NEWT,INIT,TP_BAS,SCH_INI,EQUILIBRAGE,**args):
+def macro_bascule_schema_ops (self,MODELE,CHAM_MATER,CARA_ELEM,
+                        INCR_IMPL,INCR_EXPL,
+                        SCHEMA_TEMPS_IMPL,SCHEMA_TEMPS_EXPL,SCHEMA_TEMPS_EQUI,
+                        COMP_INCR_IMPL,COMP_INCR_EXPL,CONVERGENCE,
+                        EXCIT,NEWTON,ETAT_INIT,LIST_INST_BASCULE,SCHEMA_INIT,EQUILIBRAGE,
+                        SOLVEUR,ARCHIVAGE,OBSERVATION,ENERGIE,**args):
   ier=0
   import copy
   import aster
@@ -41,63 +42,74 @@ def macro_bascule_schema_ops (self,MODE,MATE,CARA,
   # 'nomres' dans le contexte de la macro
   self.DeclareOut('nomres',self.sd)
   #
+  motscles = {}
+  motscles['MODELE']       =MODELE
+  motscles['CHAM_MATER']   =CHAM_MATER
+  if CARA_ELEM  != None: motscles['CARA_ELEM']   =CARA_ELEM
+  
   #
   dexct=[]
-  for j in EXC_T :
+  for j in EXCIT :
       dexct.append(j.cree_dict_valeurs(j.mc_liste))
       for i in dexct[-1].keys():
           if dexct[-1][i]==None : del dexct[-1][i]
   #
   dComp_incri=[]
-  for j in C_INCR_I :
+  for j in COMP_INCR_IMPL :
       dComp_incri.append(j.cree_dict_valeurs(j.mc_liste))
       for i in dComp_incri[-1].keys():
           if dComp_incri[-1][i]==None : del dComp_incri[-1][i]
   #
   dComp_incre=[]
-  for j in C_INCR_E :
+  for j in COMP_INCR_EXPL :
       dComp_incre.append(j.cree_dict_valeurs(j.mc_liste))
       for i in dComp_incre[-1].keys():
           if dComp_incre[-1][i]==None : del dComp_incre[-1][i]
   #
   dincri=[]
-  for j in INCR_I :
+  for j in INCR_IMPL :
       dincri.append(j.cree_dict_valeurs(j.mc_liste))
       for i in dincri[-1].keys():
           if dincri[-1][i]==None : del dincri[-1][i]
   #
   dincre=[]
-  for j in INCR_E :
+  for j in INCR_EXPL :
       dincre.append(j.cree_dict_valeurs(j.mc_liste))
       for i in dincre[-1].keys():
           if dincre[-1][i]==None : del dincre[-1][i]
   #
   dschi=[]
-  for j in SCH_TEMPS_I :
+  for j in SCHEMA_TEMPS_IMPL :
       dschi.append(j.cree_dict_valeurs(j.mc_liste))
       for i in dschi[-1].keys():
           if dschi[-1][i]==None : del dschi[-1][i]
   #
   dsche=[]
-  for j in SCH_TEMPS_E :
+  for j in SCHEMA_TEMPS_EXPL :
       dsche.append(j.cree_dict_valeurs(j.mc_liste))
       for i in dsche[-1].keys():
           if dsche[-1][i]==None : del dsche[-1][i]
   #
   dscheq=[]
-  for j in SCH_TEMPS_EQ :
+  for j in SCHEMA_TEMPS_EQUI :
       dscheq.append(j.cree_dict_valeurs(j.mc_liste))
       for i in dscheq[-1].keys():
           if dscheq[-1][i]==None : del dscheq[-1][i]
   #
   dnew=[]
-  for j in NEWT :
+  for j in NEWTON :
       dnew.append(j.cree_dict_valeurs(j.mc_liste))
       for i in dnew[-1].keys():
           if dnew[-1][i]==None : del dnew[-1][i]
   #
+  dconv=[]
+  for j in CONVERGENCE :
+      dconv.append(j.cree_dict_valeurs(j.mc_liste))
+      for i in dconv[-1].keys():
+          if dconv[-1][i]==None : del dconv[-1][i]
+  #
   dini=[]
-  for j in INIT :
+  for j in ETAT_INIT :
       dini.append(j.cree_dict_valeurs(j.mc_liste))
       for i in dini[-1].keys():
           if dini[-1][i]==None : del dini[-1][i]
@@ -108,12 +120,39 @@ def macro_bascule_schema_ops (self,MODE,MATE,CARA,
       for i in dequi[-1].keys():
           if dequi[-1][i]==None : del dequi[-1][i]
   #
-  __L0   = TP_BAS['VALE']
+  dsolv=[]
+  for j in SOLVEUR :
+      dsolv.append(j.cree_dict_valeurs(j.mc_liste))
+      for i in dsolv[-1].keys():
+          if dsolv[-1][i]==None : del dsolv[-1][i]
+  #
+  dobs=[]
+  if type(OBSERVATION) is not types.NoneType :
+      for j in OBSERVATION :
+          dobs.append(j.cree_dict_valeurs(j.mc_liste))
+          for i in dobs[-1].keys():
+              if dobs[-1][i]==None : del dobs[-1][i]
+  #
+  darch=[]
+  if type(ARCHIVAGE) is not types.NoneType :
+      for j in ARCHIVAGE :
+          darch.append(j.cree_dict_valeurs(j.mc_liste))
+          for i in darch[-1].keys():
+              if darch[-1][i]==None : del darch[-1][i]
+  #
+  dener=[]
+  if type(ENERGIE) is not types.NoneType:
+      for j in ENERGIE :
+          dener.append(j.cree_dict_valeurs(j.mc_liste))
+          for i in dener[-1].keys():
+              if dener[-1][i]==None : del dener[-1][i]
+  #
+  __L0   = LIST_INST_BASCULE['VALE']
   dincri1=copy.copy(dincri)
   dincri1[-1]['INST_FIN']= __L0[0]
   #
-  __dtimp=dequi[-1]['DT_IMP']
-  __dtexp=dequi[-1]['DT_EXP']
+  __dtimp=dequi[-1]['PAS_IMPL']
+  __dtexp=dequi[-1]['PAS_EXPL']
   #
   __dim=(-1)*len(dComp_incri)
   __lis=range(0,__dim,-1)
@@ -128,33 +167,29 @@ def macro_bascule_schema_ops (self,MODE,MATE,CARA,
   # alarme de DYNA_NON_LINE si les mot-cles de COMP_INCR sont renseignes a tort
   MasquerAlarme('COMPOR1_70')
 
-  if SCH_INI=='IMPLICITE':
+  if SCHEMA_INIT=='IMPLICITE':
        dincri1=copy.copy(dincri)
        dincri1[-1]['INST_FIN']= __L0[0]
-       nomres=DYNA_NON_LINE(MODELE      =MODE,
-                            CHAM_MATER  =MATE,
-                            CARA_ELEM   =CARA,
-                            EXCIT       =dexct,
+       nomres=DYNA_NON_LINE(EXCIT       =dexct,
                             COMP_INCR   =dComp_incri,
                             INCREMENT   =dincri1,
                             SCHEMA_TEMPS=dschi,
-                            NEWTON=dnew,
-                            ETAT_INIT=dini,           )
+                            NEWTON=dnew,CONVERGENCE=dconv,
+                            SOLVEUR=dsolv,ENERGIE=dener,OBSERVATION=dobs,ARCHIVAGE=darch,
+                            ETAT_INIT=dini,**motscles           )
        __prc = 'IMPLICITE'
   #
-  if SCH_INI=='EXPLICITE':
+  if SCHEMA_INIT=='EXPLICITE':
        dincre1=copy.copy(dincre)
        dincre1[-1]['INST_FIN']= __L0[0]
-       nomres=DYNA_NON_LINE(MODELE      =MODE,
-                            CHAM_MATER  =MATE,
-                            MASS_DIAG   ='OUI',
-                            CARA_ELEM   =CARA,
+       nomres=DYNA_NON_LINE(MASS_DIAG   ='OUI',
                             EXCIT       =dexct,
                             COMP_INCR   =dComp_incre,
                             INCREMENT   =dincre1,
                             SCHEMA_TEMPS=dsche,
-                            NEWTON=dnew,
-                            ETAT_INIT=dini,           )
+                            NEWTON=dnew,CONVERGENCE=dconv,
+                            SOLVEUR=dsolv,ENERGIE=dener,OBSERVATION=dobs,ARCHIVAGE=darch,
+                            ETAT_INIT=dini,**motscles           )
 
        __prc = 'EXPLICITE'
 
@@ -185,16 +220,14 @@ def macro_bascule_schema_ops (self,MODE,MATE,CARA,
         else :
            del dincre1[-1]['INST_FIN']
         nomres=DYNA_NON_LINE(reuse=nomres,
-                             MODELE=MODE,
-                             CHAM_MATER=MATE,
-                             CARA_ELEM=CARA,
                              EXCIT=dexct,
                              ETAT_INIT=_F(DEPL=__Ue, VITE=__Ve, ACCE=__Ae,
                                           SIGM=__Ce, VARI=__Vae,),
                              COMP_INCR=dComp_incre,
                              INCREMENT=dincre1,
                              SCHEMA_TEMPS=dsche,
-                             NEWTON=dnew,)
+                             SOLVEUR=dsolv,ENERGIE=dener,OBSERVATION=dobs,ARCHIVAGE=darch,
+                             NEWTON=dnew,CONVERGENCE=dconv,**motscles )
         #
         __prc='EXPLICITE'
         bool = (j!=(__nb))
@@ -203,7 +236,7 @@ def macro_bascule_schema_ops (self,MODE,MATE,CARA,
         #
      if __prc=='EXPLICITE' :
             # calcul sur la zone de recouvrement
-            print('calcul d''une solution explicite stabilisée')
+            print('Calcul d''une solution explicite stabilisée')
             __U1=CREA_CHAMP(OPERATION='EXTR', PRECISION=1.E-7, RESULTAT=nomres,
                             TYPE_CHAM='NOEU_DEPL_R', NOM_CHAM='DEPL', INST=__L0[j-1],)
             #
@@ -227,10 +260,7 @@ def macro_bascule_schema_ops (self,MODE,MATE,CARA,
               masse_diago = 'OUI'
             else :
               masse_diago = 'NON'            
-            __u_rec=DYNA_NON_LINE(MODELE=MODE,
-                                  CHAM_MATER=MATE,
-                                  MASS_DIAG=masse_diago,
-                                  CARA_ELEM=CARA,
+            __u_rec=DYNA_NON_LINE(MASS_DIAG=masse_diago,
                                   EXCIT=dexct,
                                   ETAT_INIT=_F(DEPL=__U1, VITE=__V1, ACCE=__A1,
                                                SIGM=__C1, VARI=__Va1,),
@@ -239,7 +269,8 @@ def macro_bascule_schema_ops (self,MODE,MATE,CARA,
                                                INST_INIT=__L0[j-1],
                                                INST_FIN=(__L0[j-1])+(10*(__dtexp))),
                                   SCHEMA_TEMPS=dscheq,
-                                  NEWTON=dnew,)
+                                  SOLVEUR=dsolv,ENERGIE=dener,OBSERVATION=dobs,ARCHIVAGE=darch,
+                                  NEWTON=dnew,CONVERGENCE=dconv,**motscles )
             #
             __Ui =CREA_CHAMP(OPERATION='EXTR',        PRECISION=1.E-7,      RESULTAT=__u_rec,
                              TYPE_CHAM='NOEU_DEPL_R', NOM_CHAM='DEPL',      INST=(__L0[j-1])+(10*(__dtexp)),)
@@ -251,21 +282,19 @@ def macro_bascule_schema_ops (self,MODE,MATE,CARA,
                              TYPE_CHAM='NOEU_DEPL_R', NOM_CHAM='ACCE',      INST=(__L0[j-1])+(10*(__dtexp)),)
             #
             # equilibrage du premier pas implicite
-            print('equilibrage du pas explicite stabilisée')
+            print('Equilibrage du pas explicite stabilisée')
             dincri1=copy.copy(dincri)
             dincri1[-1]['INST_FIN'] = ((__L0[j-1])+(10*(__dtexp)))
             dincri1[-1]['INST_INIT']=  (__L0[j-1])
             nomres=DYNA_NON_LINE(reuse=nomres,
-                                 MODELE=MODE,
-                                 CHAM_MATER=MATE,
-                                 CARA_ELEM=CARA,
                                  EXCIT=dexct,
                                  ETAT_INIT=_F(DEPL=__Ui, VITE=__Vi, ACCE=__Ai,
                                               SIGM=__C1, VARI=__Va1,),
                                  COMP_INCR=dComp_incri,
                                  INCREMENT=dincri1,
                                  SCHEMA_TEMPS=dschi,
-                                 NEWTON=dnew,)
+                                 SOLVEUR=dsolv,ENERGIE=dener,OBSERVATION=dobs,ARCHIVAGE=darch,
+                                 NEWTON=dnew,CONVERGENCE=dconv,**motscles)
             #
             __Ui =CREA_CHAMP(OPERATION='EXTR',        PRECISION=1.E-7,      RESULTAT=nomres,
                              TYPE_CHAM='NOEU_DEPL_R', NOM_CHAM='DEPL',      INST=(__L0[j-1])+(10*(__dtexp)),)
@@ -282,7 +311,7 @@ def macro_bascule_schema_ops (self,MODE,MATE,CARA,
             __Vai=CREA_CHAMP(OPERATION='EXTR',        PRECISION=1.E-7,      RESULTAT=nomres,
                              TYPE_CHAM='ELGA_VARI_R', NOM_CHAM='VARI_ELGA', INST=(__L0[j-1])+(10*(__dtexp)),)
             #
-            print('calcul implicite après équilibrage')
+            print('Calcul implicite après équilibrage')
             dincri1=copy.copy(dincri)
             dincri1[-1]['INST_INIT']= ((__L0[j-1])+(10*(__dtexp)))
             if ( j < __nb ) :
@@ -290,9 +319,6 @@ def macro_bascule_schema_ops (self,MODE,MATE,CARA,
             else :
                del dincri1[-1]['INST_FIN']
             nomres=DYNA_NON_LINE(reuse=nomres,
-                                 MODELE=MODE,
-                                 CHAM_MATER=MATE,
-                                 CARA_ELEM=CARA,
                                  EXCIT=dexct,
                                  ETAT_INIT=_F(DEPL=__Ui, VITE=__Vi, ACCE=__Ai,
                                               SIGM=__Ci, VARI=__Vai,
@@ -300,7 +326,8 @@ def macro_bascule_schema_ops (self,MODE,MATE,CARA,
                                  COMP_INCR=dComp_incri,
                                  INCREMENT=dincri1,
                                  SCHEMA_TEMPS=dschi,
-                                 NEWTON=dnew,)
+                                 SOLVEUR=dsolv,ENERGIE=dener,OBSERVATION=dobs,ARCHIVAGE=darch,
+                                 NEWTON=dnew,CONVERGENCE=dconv,**motscles)
             #
             __prc='IMPLICITE'
             bool = (j!=(__nb))

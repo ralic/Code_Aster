@@ -1,4 +1,4 @@
-# MODIF  DATE 18/02/2013   AUTEUR GREFFET N.GREFFET 
+# MODIF  DATE 02/04/2013   AUTEUR GREFFET N.GREFFET 
 # TITRE IMPACT POUTRE AVEC ELEMENTS 3D SUR PLAN RIGIDE
 # sdnv100j.para = tps_job 250 mem_job 512Mo liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -141,33 +141,32 @@ L_BAS=DEFI_LIST_REEL(VALE=(temfi1, temfi2, temfi3),);
 #                                                   #
 #---------------------------------------------------#
 
-U = MACRO_BASCULE_SCHEMA(MODE=MODE,
-                 MATE=CM,
-                 CARA =CAR,
-                 INCR_I=_F(LIST_INST=L_IMP,),
-                 INCR_E=_F(LIST_INST=L_EXP,),
-                 SCH_TEMPS_I  =_F(SCHEMA='HHT', FORMULATION='DEPLACEMENT', ALPHA = -0.1, MODI_EQUI='OUI',),
-                 SCH_TEMPS_E  =_F(SCHEMA='TCHAMWA', FORMULATION='ACCELERATION',PHI = 1.05,),
+U = MACRO_BASCULE_SCHEMA(MODELE=MODE,
+                 CHAM_MATER=CM,
+                 CARA_ELEM =CAR,
+                 INCR_IMPL=_F(LIST_INST=L_IMP,),
+                 INCR_EXPL=_F(LIST_INST=L_EXP,),
+                 SCHEMA_TEMPS_IMPL  =_F(SCHEMA='HHT', FORMULATION='DEPLACEMENT', ALPHA = -0.1, MODI_EQUI='OUI',),
+                 SCHEMA_TEMPS_EXPL  =_F(SCHEMA='TCHAMWA', FORMULATION='ACCELERATION',PHI = 1.05,),
 # Pour tester avec equilibrage explicite :
-#                 SCH_TEMPS_EQ =_F(SCHEMA='TCHAMWA', FORMULATION='ACCELERATION',PHI = 1.05,),
+#                 SCH_TEMPS_EXPLQ =_F(SCHEMA='TCHAMWA', FORMULATION='ACCELERATION',PHI = 1.05,),
 # Pour tester avec equilibrage implicite :
-                 SCH_TEMPS_EQ  =_F(SCHEMA='HHT', FORMULATION='DEPLACEMENT', ALPHA = -0.1, MODI_EQUI='OUI',),
-                 C_INCR_I   =(_F(RELATION='DIS_CHOC', GROUP_MA='BASE',),
+                 SCHEMA_TEMPS_EQUI  =_F(SCHEMA='HHT', FORMULATION='DEPLACEMENT', ALPHA = -0.1, MODI_EQUI='OUI',),
+                 COMP_INCR_IMPL  =(_F(RELATION='DIS_CHOC', GROUP_MA='BASE',),
                                  _F(RELATION='ELAS',     GROUP_MA='BARRE',),),
-                 C_INCR_E   =(_F(RELATION='DIS_CHOC', GROUP_MA='BASE',),
+                 COMP_INCR_EXPL   =(_F(RELATION='DIS_CHOC', GROUP_MA='BASE',),
                                  _F(RELATION='ELAS',     GROUP_MA='BARRE',),),
-#                  C_INCR_I   =(_F(RELATION='DIS_CHOC', GROUP_MA='BASE',),
+#                  COMP_INCR_IMPL  =(_F(RELATION='DIS_CHOC', GROUP_MA='BASE',),
 #                                  _F(RELATION='VMIS_ISOT_LINE',     GROUP_MA='BARRE',),),
-#                  C_INCR_E   =(_F(RELATION='DIS_CHOC', GROUP_MA='BASE',),
+#                  COMP_INCR_EXPL   =(_F(RELATION='DIS_CHOC', GROUP_MA='BASE',),
 #                                  _F(RELATION='VMIS_ISOT_LINE',     GROUP_MA='BARRE',),),
-                 EXC_T      =_F(CHARGE=CH, FONC_MULT=RAMPE,),
-                 NEWT=_F(MATRICE='TANGENTE',REAC_ITER=1,),
-                 INIT=_F(DEPL=CHAMP2, VITE=CHAMP1,),
-                 TP_BAS     = L_BAS,
-                 SCH_INI    ='IMPLICITE',
-                 EQUILIBRAGE=_F(EQU_EXP_IMP='OUI',
-                                DT_IMP=DT_IMP,
-                                DT_EXP=DT_EXP,
+                 EXCIT      =_F(CHARGE=CH, FONC_MULT=RAMPE,),
+                 NEWTON=_F(MATRICE='TANGENTE',REAC_ITER=1,),
+                 ETAT_INIT=_F(DEPL=CHAMP2, VITE=CHAMP1,),
+                 LIST_INST_BASCULE     = L_BAS,
+                 SCHEMA_INIT    ='IMPLICITE',
+                 EQUILIBRAGE=_F(PAS_IMPL=DT_IMP,
+                                PAS_EXPL=DT_EXP,
                                 ),
                 );
 #
