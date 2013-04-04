@@ -3,9 +3,9 @@
       INCLUDE 'jeveux.h'
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 19/12/2012   AUTEUR PELLET J.PELLET 
+C MODIF PREPOST  DATE 02/04/2013   AUTEUR TRAN V-X.TRAN 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -34,7 +34,7 @@ C     -----------------------------------------------------------------
       INTEGER       TSPAQ, K, JRWORK, NBCMP, ORDINI
 
       REAL*8        RBID, PHMAX, CISSIO, SPHERE, PCORR, VAL(2), VMAX,
-     &              VMIN, DOMAGE, RCRIT,VRESU(24), RESU(4), VALPAR(22)
+     &              VMIN, DOMAGE, RCRIT,VRESU(24), RESU(7), VALPAR(22)
       COMPLEX*16    CBID
       LOGICAL       LHAIGH, LKE, POST, FORDEF, PLCICR, LBID
       LOGICAL       CRSIGM, CREPST, CREPSE,CREPSP
@@ -46,7 +46,7 @@ C     -----------------------------------------------------------------
       CHARACTER*19  K19B
       CHARACTER*24  FVALE(6), ETVALE(6), PTVALE(6)
 C     --- POST_FATI_MULT -----------------------------------------------
-      PARAMETER    ( NBPAPF = 34  )
+      PARAMETER    ( NBPAPF = 37  )
       CHARACTER*3   TYPPPF(NBPAPF)
       CHARACTER*16  NOMPPF(NBPAPF)
       INTEGER      IARG
@@ -59,14 +59,15 @@ C     --- POST_FATI_MULT -----------------------------------------------
      &               'MPHYDR', 'DSIGEQ', 'SIGPR1', 'EPSNM1',
      &               'INVA2S', 'DSITRE', 'DEPTRE', 'EPSPAC',
      &               'RAYSPH', 'AMPCIS',
-     &               'VNMX',   'VNMY',   'VNMZ'  /
+     &               'VNM1X',  'VNM1Y', 'VNM1Z',
+     &               'VNM2X',  'VNM2Y',  'VNM2Z'  /
 
 
       DATA  TYPPPF /  'K16' , 'R' , 'R' , 'R' , 'R' , 'R' , 'R' , 'R',
      &                  'R' , 'R' , 'R' , 'R' , 'R' , 'R',  'R',
      &                  'R' , 'R' , 'R' , 'R' , 'R' , 'R',  'R',
      &                  'R' , 'R' , 'R' , 'R' , 'R' , 'R',  'R',
-     &                  'R',  'R',  'R' , 'R',  'R'/
+     &                  'R',  'R',  'R' , 'R' , 'R' , 'R' , 'R' , 'R'/
 
 C     ---------------------------------------------------------------
 C     ----------------------------------------------------------------
@@ -295,7 +296,7 @@ C
 
 
 
-      DO 601 J=1, 4
+      DO 601 J=1, 7
             RESU(J) = 0.0D0
  601     CONTINUE
 
@@ -401,6 +402,13 @@ C POUR CHARGEMENT NON-PERIODIQUE
      &                      K8B, ILIGN )
              CALL TBAJLI (RESULT, 1,NOMPPF(8), IBID,RESU(4),CBID,
      &                       K8B, ILIGN )
+     
+             CALL TBAJLI (RESULT, 1,NOMPPF(35), IBID,RESU(5),CBID,
+     &                      K8B, ILIGN )
+             CALL TBAJLI (RESULT, 1,NOMPPF(36), IBID,RESU(6),CBID,
+     &                      K8B, ILIGN )
+             CALL TBAJLI (RESULT, 1,NOMPPF(37), IBID,RESU(7),CBID,
+     &                      K8B, ILIGN )
 
           ENDIF
 

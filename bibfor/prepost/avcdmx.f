@@ -1,8 +1,8 @@
-      SUBROUTINE AVCDMX( NBVEC, DOMTOT, CUDOMX, VNORMX )
+      SUBROUTINE AVCDMX( NBVEC, DOMTOT, CUDOMX, VNORMX,NBPLAN)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF PREPOST  DATE 02/04/2013   AUTEUR TRAN V-X.TRAN 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
@@ -20,7 +20,7 @@ C ======================================================================
 C RESPONSABLE F1BHHAJ J.ANGLES
       IMPLICIT   NONE
       INCLUDE 'jeveux.h'
-      INTEGER    NBVEC, VNORMX
+      INTEGER    NBVEC, VNORMX(2)
       REAL*8     DOMTOT(NBVEC), CUDOMX
 C ----------------------------------------------------------------------
 C BUT: CALCULER LE MAX DES CUMULS DE DOMMAGE ET DETERMINER LE VECTEUR
@@ -35,23 +35,40 @@ C                     DE DOMMAGE.
 C  CUDOMX   OUT  R  : VALEUR DU MAX DES CUMULS DE DOMMAGE.
 C ----------------------------------------------------------------------
 C     ------------------------------------------------------------------
-      INTEGER    IVECT
+      INTEGER    IVECT, NBPLAN
+      REAL*8     PREC, R8PREM
 C     ------------------------------------------------------------------
 C234567                                                              012
 C     ------------------------------------------------------------------
 C
       CALL JEMARQ()
+      PREC=100.D0*R8PREM()
 C
       CUDOMX = 0.0D0
-      VNORMX = 1
+      VNORMX(1) = 1
+
+      NBPLAN = 1
+      
 C
       DO 10 IVECT=1, NBVEC
          IF ( DOMTOT(IVECT) .GT. CUDOMX ) THEN
             CUDOMX = DOMTOT(IVECT)
-            VNORMX = IVECT
+            VNORMX(1) = IVECT
          ENDIF
  10   CONTINUE
-C
+      
+C ON CHERCHE SI EXISTE DIFFERENT PLAN
+      VNORMX(2) = VNORMX(1)
+      
+      DO 431 IVECT=1, NBVEC
+         IF ( (ABS(DOMTOT(IVECT)-CUDOMX) .LT. PREC )
+     &           .AND. (IVECT .NE. VNORMX(1)) ) THEN
+            NBPLAN = NBPLAN + 1 
+            VNORMX(2) = IVECT
+         ENDIF
+
+ 431  CONTINUE           
+
       CALL JEDEMA()
 C
       END

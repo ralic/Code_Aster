@@ -2,9 +2,9 @@
      &                  NBNOP, TSPAQ, NOMCRI, NOMFOR,GRDVIE,
      &           FORVIE,FORDEF,NOMMAI,PROAXE,NOMMAP, CNSR, POST, RESU)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 19/12/2012   AUTEUR PELLET J.PELLET 
+C MODIF PREPOST  DATE 02/04/2013   AUTEUR TRAN V-X.TRAN 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -28,7 +28,7 @@ C
       INTEGER      TDISP, NBNOP, LISNOE(NBNOP), NBNOT, NBORDR, NNOINI
       INTEGER      TSPAQ
       LOGICAL      FORDEF, POST
-      REAL*8       VWORK(TDISP), RESU(4)
+      REAL*8       VWORK(TDISP), RESU(7)
       CHARACTER*8  NOMMAI, GRDVIE, NOMMAP
       CHARACTER*16 NOMCRI, PROAXE, NOMFOR, FORVIE
       CHARACTER*19 CNSR
@@ -72,7 +72,7 @@ C-----------------------------------------------------------------------
 C
       REAL*8        FATSOC, DGAM, GAMMA, PI, R8PI, DPHI, TAB1(18), PHI0
       REAL*8        VALA, VALB, COEFPA, CUDOMX
-      REAL*8        NXM, NYM, NZM
+      REAL*8        NXM(2), NYM(2), NZM(2)
       REAL*8        VRESU(24)
 
       LOGICAL       LBID, CRSIGM
@@ -260,22 +260,27 @@ C     VECTEUR NORMAL ASSOCIE.
             VRESU(ICMP) = 0.0D0
  600     CONTINUE
 
-          DO 601 ICMP=1, 4
+          DO 601 ICMP=1, 7
             RESU(ICMP) = 0.0D0
  601     CONTINUE
 
-         VRESU(2) = NXM
-         VRESU(3) = NYM
-         VRESU(4) = NZM
+         VRESU(2) = NXM(1)
+         VRESU(3) = NYM(1)
+         VRESU(4) = NZM(1)
          VRESU(11) = CUDOMX
+         VRESU(13) = NXM(2)
+         VRESU(14) = NYM(2)
+         VRESU(15) = NZM(2)
 
 C 12. AFFECTATION DES RESULTATS DANS UN CHAM_ELEM SIMPLE
          IF (POST) THEN
-            RESU(1) = NXM
-            RESU(2) = NYM
-            RESU(3) = NZM
+            RESU(1) = NXM(1)
+            RESU(2) = NYM(1)
+            RESU(3) = NZM(1)
             RESU(4) = CUDOMX
-
+            RESU(5) = NXM(2)
+            RESU(6) = NYM(2)
+            RESU(7) = NZM(2)
             GOTO 400
          ELSE
 

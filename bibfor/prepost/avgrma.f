@@ -2,9 +2,9 @@
      &                  NBMAP, NUMPAQ, TSPAQ, NOMCRI,NOMFOR,GRDVIE,
      &                  FORVIE,FORDEF, PROAXE,CESR)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF PREPOST  DATE 02/04/2013   AUTEUR TRAN V-X.TRAN 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -72,7 +72,7 @@ C-----------------------------------------------------------------------
 C
       REAL*8        FATSOC, DGAM, GAMMA, PI, R8PI, DPHI, TAB1(18), PHI0
       REAL*8        VALA, VALB, COEFPA, CUDOMX
-      REAL*8        NXM, NYM, NZM
+      REAL*8        NXM(2), NYM(2), NZM(2)
       REAL*8        VRESU(24)
 C
       CHARACTER*8  CHMAT1, NOMMAT
@@ -219,11 +219,15 @@ C RECUPERER LES RESULTATS
             DO 600 ICMP=1, 24
                VRESU(ICMP) = 0.0D0
  600        CONTINUE
-            VRESU(2) = NXM
-            VRESU(3) = NYM
-            VRESU(4) = NZM
+ 
+            VRESU(2) = NXM(1)
+            VRESU(3) = NYM(1)
+            VRESU(4) = NZM(1)
             VRESU(11) = CUDOMX
-
+            VRESU(13) = NXM(2)
+            VRESU(14) = NYM(2)
+            VRESU(15) = NZM(2)
+            
 C 12. AFFECTATION DES RESULTATS DANS UN CHAM_ELEM SIMPLE
 
             DO 610 ICMP=1, 24

@@ -1,7 +1,7 @@
       SUBROUTINE AVPLCR(NBVEC, VECTN, VECTU, VECTV, NBORDR, KWORK,
      &                   SOMNOW, VWORK, TDISP, TSPAQ, I, NOMCRI,
      &                   NOMFOR,GRDVIE, FORVIE,FORDEF,FATSOC,PROAXE,
-     &                   NOMMAT,VALA,COEFPA,POST,CUDOMX, NXM, NYM, NZM )
+     &                   NOMMAT,VALA,COEFPA,POST,CUDOMX, NXM, NYM, NZM)
       IMPLICIT      NONE
       INCLUDE 'jeveux.h'
       INTEGER       NBORDR, KWORK, I, NBVEC
@@ -12,10 +12,10 @@
       CHARACTER*16  NOMCRI,PROAXE,NOMFOR,FORVIE
       CHARACTER*8   NOMMAT,GRDVIE
       REAL*8        VALA, COEFPA
-      REAL*8        CUDOMX, NXM, NYM, NZM
+      REAL*8        CUDOMX, NXM(2), NYM(2), NZM(2)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 21/01/2013   AUTEUR DELMAS J.DELMAS 
+C MODIF PREPOST  DATE 02/04/2013   AUTEUR TRAN V-X.TRAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -32,7 +32,7 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
-C TOLE CRS_1404 CRP_21
+C TOLE CRS_1404 CRP_21 CRP_20
 C----------------------------------------------------------------------
 C BUT:  POUR LA FATIGUE A AMPLITUDE VARIABLE
 C       DETERMINER LE PLAN CRITIQUE OU DOMMAGE EST MAX
@@ -77,58 +77,76 @@ C  CUDOMX   OUT  R  : VALEUR DU MAX DES CUMULS DE DOMMAGE.
 C REMARQUE : CETTE ROUTINE SERT POUR LE TRAITEMENT DES POINTS DE GAUSS
 C            ET DES NOEUDS.
 C ----------------------------------------------------------------------
-      INTEGER       NCYCL(NBVEC), NBVEC1,NVAL
+      INTEGER       NCYCL(NBVEC), NBVEC1,NVAL, IBID, DIR
       INTEGER       OMIN(NBVEC*(NBORDR+2)), OMAX(NBVEC*(NBORDR+2))
+      INTEGER       VNORMX(2), IDEB,IFIN,N, K, DIM, J, KP, NBP
+      INTEGER       IARG, NBPLAN,VNORM(2)
       REAL*8        VMIN(NBVEC*(NBORDR+2)), VMAX(NBVEC*(NBORDR+2))
-      CHARACTER*8  METHOD
-      REAL*8        PSEUIL, GAMMAM, PHIM, DPHI2, EPSILO,GAMMA
-      INTEGER       VNORMX, IDEB,IFIN,N, K, DIM, J
+      REAL*8        PSEUIL, GAMMAM, PHIM, DPHI2, EPSILO,GAMMA      
       REAL*8        VECN2(3*NBVEC), VECU2(3*NBVEC), VECV2(3*NBVEC)
       REAL*8        VECN1(3*NBVEC), VECU1(3*NBVEC), VECV1(3*NBVEC)
-      REAL*8        DGAM2, PI, R8PI, PHI0
-      INTEGER      IARG
+      REAL*8        DGAM2, PI, R8PI, PHI0, CUDOM1, CUDOM2
+      REAL*8        PREC, R8PREM
+      CHARACTER*8   METHOD
 C     --------------------------
       EPSILO = 1.0D-7
       PI = R8PI()
+      
+      PREC=100.D0*R8PREM()
+      
+      NBVEC1 = 209
 
-         NBVEC1 = 209
+      METHOD = 'RAINFLOW'
 
-         METHOD = 'RAINFLOW'
+      CALL GETVR8(' ','DELTA_OSCI',1,IARG,1,PSEUIL,NVAL)
 
-         CALL GETVR8(' ','DELTA_OSCI',1,IARG,1,PSEUIL,NVAL)
-
-         CALL  AVCIPR( NBVEC1, VECTN, VECTU, VECTV,
-     &         NBORDR, KWORK, SOMNOW, VWORK, TDISP, TSPAQ,
-     &         I, NOMCRI, NOMFOR,FORDEF, FATSOC, PROAXE, PSEUIL,
-     &         METHOD,NCYCL,VMIN,VMAX, OMIN, OMAX)
+      CALL  AVCIPR( NBVEC1, VECTN, VECTU, VECTV,
+     &      NBORDR, KWORK, SOMNOW, VWORK, TDISP, TSPAQ,
+     &      I, NOMCRI, NOMFOR,FORDEF, FATSOC, PROAXE, PSEUIL,
+     &      METHOD,NCYCL,VMIN,VMAX, OMIN, OMAX)
 
 C REMPACER PAR SUBROUTINE AVGRDO
 
          CALL AVGRDO(NBVEC1, NBORDR, VECTN, VWORK, TDISP, KWORK,
      &             SOMNOW, TSPAQ, I, NOMMAT, NOMCRI,
-     &             NOMFOR,GRDVIE, FORVIE,VALA,
-     &      COEFPA, NCYCL,VMIN,VMAX, OMIN,OMAX,POST,CUDOMX,VNORMX)
+     &             NOMFOR,GRDVIE, FORVIE,VALA,COEFPA,NCYCL,
+     &       VMIN,VMAX, OMIN,OMAX,POST,CUDOMX,VNORM, NBPLAN)
 
 
 C 9. PREMIER RAFFINEMENT CONCERNANT LA DETERMINATION DU VECTEUR NORMAL
 C    CORRESPONDANT AU MAX DES CUMULS DE DOMMAGE.
 
-         NXM = VECTN((VNORMX-1)*3 + 1)
-         NYM = VECTN((VNORMX-1)*3 + 2)
-         NZM = VECTN((VNORMX-1)*3 + 3)
-         GAMMAM = ATAN2(SQRT(ABS(1.0D0-NZM**2)),NZM)
+      IF ((POST) .AND. (NBPLAN .GT. 2)) THEN
+         WRITE(6,*) 'IL EXISTE  PLUS DE 2 PLANS DU MAX DOMMAGE'
+      ENDIF
+      
+C      IF (NBPLAN .EQ. 2) THEN
+      
+      DO 901 KP = 1, 2
+         NXM(KP) = VECTN((VNORM(KP)-1)*3+1)
+         NYM(KP) = VECTN((VNORM(KP)-1)*3+2)
+         NZM(KP) = VECTN((VNORM(KP)-1)*3+3)
+901   CONTINUE 
+
+      DO 900 KP = 1, 2
+         
+         NXM(KP) = VECTN((VNORM(KP)-1)*3 + 1)
+         NYM(KP) = VECTN((VNORM(KP)-1)*3 + 2)
+         NZM(KP) = VECTN((VNORM(KP)-1)*3 + 3)        
+      
+         GAMMAM = ATAN2(SQRT(ABS(1.0D0-NZM(KP)**2)),NZM(KP))
          IF (GAMMAM .LT. 0.0D0) THEN
             GAMMAM = GAMMAM + PI
          ENDIF
 
-         IF ((ABS(NYM) .LT. EPSILO) .AND.
-     &       (ABS(NXM) .LT. EPSILO)) THEN
-           PHIM = 0.0D0
+         IF ((ABS(NYM(KP)) .LT. EPSILO) .AND.
+     &       (ABS(NXM(KP)) .LT. EPSILO)) THEN
+            PHIM = 0.0D0
          ELSE
-           PHIM = ATAN2(ABS(NYM),NXM)
+            PHIM = ATAN2(ABS(NYM(KP)),NXM(KP))
          ENDIF
          IF (PHIM .LT. 0.0D0) THEN
-           PHIM = PHIM + PI
+            PHIM = PHIM + PI
          ENDIF
 
          IF (ABS(GAMMAM) .LT. EPSILO) THEN
@@ -142,7 +160,7 @@ C    CORRESPONDANT AU MAX DES CUMULS DE DOMMAGE.
             PHI0 = 0.0D0
 
             CALL VECNUV(IDEB, IFIN, GAMMA, PHI0, DPHI2, N, K, DIM,
-     &                  VECN2, VECU2, VECV2)
+     &               VECN2, VECU2, VECV2)
             GAMMA = 0.0D0
             PHI0 = PI
             IDEB = 1
@@ -150,16 +168,16 @@ C    CORRESPONDANT AU MAX DES CUMULS DE DOMMAGE.
             K = 1
 
             CALL VECNUV(IDEB, IFIN, GAMMA, PHI0, DPHI2, N, K, DIM,
-     &                  VECN2, VECU2, VECV2)
+     &            VECN2, VECU2, VECV2)
 
 C 9.1 PROJECTION DE L'HISTORIQUE DU CISAILLEMENT SUR UN PLAN
 
             NBVEC1 = 7
 
             CALL  AVCIPR( NBVEC1, VECN2, VECU2, VECV2,
-     &         NBORDR, KWORK, SOMNOW, VWORK, TDISP, TSPAQ,
-     &         I, NOMCRI, NOMFOR,FORDEF, FATSOC, PROAXE, PSEUIL,
-     &         METHOD, NCYCL,VMIN,VMAX, OMIN, OMAX)
+     &      NBORDR, KWORK, SOMNOW, VWORK, TDISP, TSPAQ,
+     &      I, NOMCRI, NOMFOR,FORDEF, FATSOC, PROAXE, PSEUIL,
+     &      METHOD, NCYCL,VMIN,VMAX, OMIN, OMAX)
 
 
          ELSE
@@ -172,8 +190,8 @@ C 9.1 PROJECTION DE L'HISTORIQUE DU CISAILLEMENT SUR UN PLAN
             IFIN = 3
             DO 430 J=1, 3
                GAMMA = GAMMAM + (J-K)*DGAM2
-               CALL VECNUV(IDEB, IFIN, GAMMA, PHIM, DPHI2, N, K, DIM,
-     &                     VECN2, VECU2, VECV2)
+               CALL VECNUV(IDEB, IFIN, GAMMA, PHIM, DPHI2, N, K, 
+     &                   DIM,  VECN2, VECU2, VECV2)
  430        CONTINUE
 
             NBVEC1 = 9
@@ -188,29 +206,29 @@ C 9.1 PROJECTION DE L'HISTORIQUE DU CISAILLEMENT SUR UN PLAN
 C REMPACER PAR SUBROUTINE AVGRDO
 
          CALL AVGRDO(NBVEC1, NBORDR, VECN2, VWORK, TDISP, KWORK,
-     &             SOMNOW, TSPAQ, I, NOMMAT, NOMCRI,
-     &             NOMFOR,GRDVIE, FORVIE,VALA,
-     &      COEFPA,NCYCL,VMIN,VMAX, OMIN,OMAX,POST,CUDOMX, VNORMX )
+     &          SOMNOW, TSPAQ, I, NOMMAT, NOMCRI,
+     &          NOMFOR,GRDVIE, FORVIE,VALA, COEFPA,NCYCL,
+     &   VMIN,VMAX, OMIN,OMAX,POST,CUDOMX, VNORMX, IBID )
 
 
 
 C 10. SECOND RAFFINEMENT CONCERNANT LA DETERMINATION DU VECTEUR NORMAL
 C     CORRESPONDANT AU MAX DES CUMULS DE DOMMAGE.
+C        C
+         NXM(KP) = VECN2((VNORMX(KP)-1)*3+1)
+         NYM(KP) = VECN2((VNORMX(KP)-1)*3+2)
+         NZM(KP) = VECN2((VNORMX(KP)-1)*3+3)
 
-         NXM = VECN2((VNORMX-1)*3+1)
-         NYM = VECN2((VNORMX-1)*3+2)
-         NZM = VECN2((VNORMX-1)*3+3)
-
-         GAMMAM = ATAN2(SQRT(ABS(1.0D0-NZM**2)),NZM)
+         GAMMAM = ATAN2(SQRT(ABS(1.0D0-NZM(KP)**2)),NZM(KP))
          IF (GAMMAM .LT. 0.0D0) THEN
             GAMMAM = GAMMAM + PI
          ENDIF
 
-         IF ((ABS(NYM) .LT. EPSILO) .AND.
-     &       (ABS(NXM) .LT. EPSILO)) THEN
+         IF ((ABS(NYM(KP)) .LT. EPSILO) .AND.
+     &       (ABS(NXM(KP)) .LT. EPSILO)) THEN
            PHIM = 0.0D0
          ELSE
-           PHIM = ATAN2(ABS(NYM),NXM)
+           PHIM = ATAN2(ABS(NYM(KP)),NXM(KP))
          ENDIF
          IF (PHIM .LT. 0.0D0) THEN
            PHIM = PHIM + PI
@@ -272,27 +290,27 @@ C REMPACER PAR SUBROUTINE AVGRDO
 
          CALL AVGRDO(NBVEC1, NBORDR, VECN1, VWORK, TDISP, KWORK,
      &             SOMNOW, TSPAQ, I, NOMMAT, NOMCRI,
-     &             NOMFOR,GRDVIE, FORVIE,VALA,
-     &      COEFPA,NCYCL,VMIN,VMAX,OMIN,OMAX,POST,CUDOMX, VNORMX )
+     &             NOMFOR,GRDVIE, FORVIE,VALA, COEFPA,NCYCL,
+     &      VMIN,VMAX,OMIN,OMAX,POST,CUDOMX, VNORMX, IBID )
 
 
 C 11. 3E RAFFINEMENT CONCERNANT LA DETERMINATION DU VECTEUR NORMAL
 C     CORRESPONDANT AU MAX DES CUMULS DE DOMMAGE.
+C        C 
+         NXM(KP) = VECN1((VNORMX(KP)-1)*3+1)
+         NYM(KP) = VECN1((VNORMX(KP)-1)*3+2)
+         NZM(KP) = VECN1((VNORMX(KP)-1)*3+3)
 
-         NXM = VECN1((VNORMX-1)*3+1)
-         NYM = VECN1((VNORMX-1)*3+2)
-         NZM = VECN1((VNORMX-1)*3+3)
-
-         GAMMAM = ATAN2(SQRT(ABS(1.0D0-NZM**2)),NZM)
+         GAMMAM = ATAN2(SQRT(ABS(1.0D0-NZM(KP)**2)),NZM(KP))
          IF (GAMMAM .LT. 0.0D0) THEN
             GAMMAM = GAMMAM + PI
          ENDIF
 
-         IF ((ABS(NYM) .LT. EPSILO) .AND.
-     &       (ABS(NXM) .LT. EPSILO)) THEN
+         IF ((ABS(NYM(KP)) .LT. EPSILO) .AND.
+     &       (ABS(NXM(KP)) .LT. EPSILO)) THEN
            PHIM = 0.0D0
          ELSE
-           PHIM = ATAN2(ABS(NYM),NXM)
+           PHIM = ATAN2(ABS(NYM(KP)),NXM(KP))
          ENDIF
          IF (PHIM .LT. 0.0D0) THEN
            PHIM = PHIM + PI
@@ -354,26 +372,26 @@ C REMPACER PAR SUBROUTINE AVGRDO
 
          CALL AVGRDO(NBVEC1, NBORDR, VECN2, VWORK, TDISP, KWORK,
      &             SOMNOW, TSPAQ, I, NOMMAT, NOMCRI,
-     &             NOMFOR,GRDVIE, FORVIE,VALA,
-     &      COEFPA,NCYCL,VMIN,VMAX,OMIN,OMAX,POST,CUDOMX, VNORMX )
+     &             NOMFOR,GRDVIE, FORVIE,VALA,COEFPA, NCYCL,
+     &      VMIN,VMAX,OMIN,OMAX,POST,CUDOMX, VNORMX, IBID )
 
 C 12. 4E RAFFINEMENT CONCERNANT LA DETERMINATION DU VECTEUR NORMAL
 C     CORRESPONDANT AU MAX DES CUMULS DE DOMMAGE.
+C        C
+         NXM(KP) = VECN2((VNORMX(KP)-1)*3+1)
+         NYM(KP) = VECN2((VNORMX(KP)-1)*3+2)
+         NZM(KP) = VECN2((VNORMX(KP)-1)*3+3)
 
-         NXM = VECN2((VNORMX-1)*3+1)
-         NYM = VECN2((VNORMX-1)*3+2)
-         NZM = VECN2((VNORMX-1)*3+3)
-
-         GAMMAM = ATAN2(SQRT(ABS(1.0D0-NZM**2)),NZM)
+         GAMMAM = ATAN2(SQRT(ABS(1.0D0-NZM(KP)**2)),NZM(KP))
          IF (GAMMAM .LT. 0.0D0) THEN
             GAMMAM = GAMMAM + PI
          ENDIF
 
-         IF ((ABS(NYM) .LT. EPSILO) .AND.
-     &       (ABS(NXM) .LT. EPSILO)) THEN
+         IF ((ABS(NYM(KP)) .LT. EPSILO) .AND.
+     &       (ABS(NXM(KP)) .LT. EPSILO)) THEN
            PHIM = 0.0D0
          ELSE
-           PHIM = ATAN2(ABS(NYM),NXM)
+           PHIM = ATAN2(ABS(NYM(KP)),NXM(KP))
          ENDIF
          IF (PHIM .LT. 0.0D0) THEN
            PHIM = PHIM + PI
@@ -435,13 +453,47 @@ C REMPACER PAR SUBROUTINE AVGRDO
 
          CALL AVGRDO(NBVEC1, NBORDR, VECN1, VWORK, TDISP, KWORK,
      &             SOMNOW, TSPAQ, I, NOMMAT, NOMCRI,
-     &             NOMFOR,GRDVIE, FORVIE,VALA,
-     &      COEFPA,NCYCL,VMIN,VMAX,OMIN,OMAX,POST,CUDOMX, VNORMX )
+     &             NOMFOR,GRDVIE, FORVIE,VALA, COEFPA,NCYCL,
+     &      VMIN,VMAX,OMIN,OMAX,POST,CUDOMX, VNORMX, NBP )
 C  VECTEUR NORMAL ASSOCIE AUX PLAN CRITIQUE  TROUVE
 
-         NXM = VECN1((VNORMX-1)*3+1)
-         NYM = VECN1((VNORMX-1)*3+2)
-         NZM = VECN1((VNORMX-1)*3+3)
-
+         NXM(KP) = VECN1((VNORMX(KP)-1)*3+1)
+         NYM(KP) = VECN1((VNORMX(KP)-1)*3+2)
+         NZM(KP) = VECN1((VNORMX(KP)-1)*3+3)
+         
+         IF (KP .EQ. 1) CUDOM1 = CUDOMX
+         IF (KP .EQ. 2) CUDOM2 = CUDOMX
 C
+900   CONTINUE
+
+C      ENDIF
+      IF ( ABS(CUDOM1-CUDOM2) .LT. PREC ) THEN      
+         IF ((POST) .AND. (NBPLAN .EQ. 2)) THEN
+            WRITE(6,*) 'IL EXISTE  2 PLANS DU DOMMAGE MAXIMUM'
+         ENDIF
+
+      ENDIF
+
+      IF ( (CUDOM1-CUDOM2) .GT. PREC )  THEN      
+         IF ((POST) .AND. (NBPLAN .EQ. 2)) THEN
+            WRITE(6,*) 'IL EXISTE  1 PLAN DU DOMMAGE MAXIMUM'
+         ENDIF
+         
+         NXM(2) = NXM(1)
+         NYM(2) = NYM(1)
+         NZM(2) = NZM(1)
+         CUDOMX = CUDOM1
+      ENDIF
+
+      IF ( (CUDOM2-CUDOM1) .GT. PREC ) THEN      
+         IF ((POST) .AND. (NBPLAN .EQ. 2)) THEN
+            WRITE(6,*) 'IL EXISTE  1 PLAN DU DOMMAGE MAXIMUM'
+         ENDIF
+         
+         NXM(1) = NXM(2)
+         NYM(1) = NYM(2)
+         NZM(1) = NZM(2)
+         CUDOMX = CUDOM2
+      ENDIF
+                  
       END

@@ -1,4 +1,4 @@
-# MODIF  DATE 21/01/2013   AUTEUR DELMAS J.DELMAS 
+# MODIF  DATE 02/04/2013   AUTEUR TRAN V-X.TRAN 
 # TITRE TESTE DE DIRECTION DU PLAN CRITIQUE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -45,9 +45,10 @@ ZERO = DEFI_FONCTION(   NOM_PARA = 'INST',
                                  3, 0.0,
                                  ))
 
-# Angle calculated from VNMZ, absolute value of VNMZ is used because the sign could not be decided for this particular case
-PHIZ = FORMULE(   NOM_PARA = ('VNMZ'),
-                  VALE = ''' acos(abs(VNMZ))*180.0/pi '''
+# Angle calculated from VNM1Z, absolute value of VNM1Z is used because 
+# the sign could not be decided for this particular case
+PHIZ = FORMULE(   NOM_PARA = ('VNM1Z'),
+                  VALE = ''' acos(abs(VNM1Z))*180.0/pi '''
                )
 
 # Half amplitude of stress, the same value in X and Y directions

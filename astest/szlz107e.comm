@@ -1,4 +1,4 @@
-# MODIF  DATE 29/01/2013   AUTEUR TRAN V-X.TRAN 
+# MODIF  DATE 02/04/2013   AUTEUR TRAN V-X.TRAN 
 # TITRE CRITERES EN FORMULE POUR POST_FATIGUE AMPLITUDE VARIABLE POUR
 # szlz107e.para = tps_job 60 mem_job 256Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -220,13 +220,14 @@ CRIT[3] =  'DANG_VAN_MODI_AV'
 
 FATN = [None]*4
 
-NPAR = ['VNMX', 'VNMY', 'VNMZ', 'DOMMAGE']
+NPAR = ['VNM1X',   'VNM1Y',   'VNM1Z', 'DOMMAGE', 'VNM2X',  'VNM2Y',  'VNM2Z']
  
-RESU = [(-0.38268343236509,3.9073112848927E-01), (0.92387953251129,9.2050485345244E-01), 0, 7.0532362250862E-04,
+RESU = [(-0.38268343236509,0.38268343236509), (0.92387953251129,9.2050485345244E-01), 0, 7.0532362250862E-04,
+        (-0.38268343236509,0.38268343236509), (0.92387953251129,9.2050485345244E-01), 0,
 ##REFERENCE DE DV
-         0.70710678118655, 0.70710678118655, 0, 1.3419917535855E-04
+         0.70710678118655, 0.70710678118655, 0, 1.3419917535855E-04, -0.70710678118655, 0.70710678118655, 0
          ]
-CTEST = ['RELATIF', 'RELATIF', 'ABSOLU','RELATIF']
+CTEST = ['RELATIF', 'RELATIF', 'ABSOLU','RELATIF','RELATIF', 'RELATIF', 'ABSOLU']
 # 
 for i in range(2) :
 
@@ -255,11 +256,11 @@ for i in range(2) :
     
     IMPR_TABLE(TABLE = FATN[i])
     
-    for j in range(4) :     
+    for j in range(7) :     
 
         TEST_TABLE( TABLE=FATN[i],
                 NOM_PARA = NPAR[j],
-                VALE_CALC=RESU[j+ i*4],
+                VALE_CALC=RESU[j+ i*7],
                 CRITERE = CTEST[j],
                 TOLE_MACHINE=1.0E-10                
                 )
@@ -295,11 +296,11 @@ for i in range(2) :
     
     IMPR_TABLE(TABLE = FATNW[i])
     
-    for j in range(4) :     
+    for j in range(7) :     
 
         TEST_TABLE( TABLE=FATNW[i],
                 NOM_PARA = NPAR[j],
-                VALE_CALC=RESU[j+ i*4],
+                VALE_CALC=RESU[j+ i*7],
                 CRITERE = CTEST[j],
                 TOLE_MACHINE=1.0E-10                
                 )
@@ -307,8 +308,10 @@ for i in range(2) :
 ### FORMULE_VIE = WHOL_F,
 FATNF = [None]*2
 RESUF = [(-0.38268343236509,0.38268343236509), (0.92387953251129,9.2050485345244E-01), 6.1232339957368E-17, 3.3180845213285E-04 ,
+         (-0.38268343236509,0.38268343236509), (0.92387953251129,9.2050485345244E-01), 6.1232339957368E-17,
 ##REFERENCE DE DV
-         7.0710678118655E-01, 7.0710678118655E-01, 6.1232339957368E-17, 8.7960237413997E-05  ]
+         7.0710678118655E-01, 7.0710678118655E-01, 6.1232339957368E-17, 8.7960237413997E-05, 
+         -7.0710678118655E-01, 7.0710678118655E-01, 6.1232339957368E-17  ]
 
 for i in range(2) :
 
@@ -339,11 +342,11 @@ for i in range(2) :
     
     IMPR_TABLE(TABLE = FATNF[i])
     
-    for j in range(4) :     
+    for j in range(7) :     
 
         TEST_TABLE( TABLE=FATNF[i],
                 NOM_PARA = NPAR[j],
-                VALE_CALC=RESUF[j+ i*4],
+                VALE_CALC=RESUF[j+ i*7],
                 CRITERE = CTEST[j],
                 TOLE_MACHINE=1.0E-10                
                 ) 
@@ -376,11 +379,11 @@ for i in range(2) :
     
     IMPR_TABLE(TABLE = FATN[i+2])
     
-    for j in range(4) :     
+    for j in range(7) :     
 
         TEST_TABLE( TABLE=FATN[i+2],
                 NOM_PARA = NPAR[j],
-                VALE_CALC=RESU[j+ i*4],
+                VALE_CALC=RESU[j+ i*7],
                 CRITERE = CTEST[j],
                 TOLE_MACHINE=1.0E-10                
                 )                
@@ -423,7 +426,8 @@ CRIT_FAT =   FORMULE(
            VALE=''' 1.5*( abs(EPSPR_1-EPSPR_2)/2.0 * (1+ max(0,SIGN_1, SIGN_2) )) '''
            )
 
-RESU2 = [(-0.43051109680829,0.43051109680830), 0.90258528434986, 0, 0.16830578997527]
+RESU2 = [(-0.43051109680829,0.43051109680830), 0.90258528434986, 0, 0.16830578997527,
+         (-0.43051109680829,0.43051109680830), 0.90258528434986, 0, 0.16830578997527]
 
 FATN2=POST_FATIGUE(    CHARGEMENT='MULTIAXIAL',
                    HISTOIRE=_F(  
@@ -451,7 +455,7 @@ FATN2=POST_FATIGUE(    CHARGEMENT='MULTIAXIAL',
 
 IMPR_TABLE(TABLE = FATN2)
 
-for j in range(4) :     
+for j in range(7) :     
 
     TEST_TABLE( TABLE=FATN2,
             NOM_PARA = NPAR[j],
@@ -487,7 +491,7 @@ FATN2M=POST_FATIGUE(    CHARGEMENT='MULTIAXIAL',
 
 IMPR_TABLE(TABLE = FATN2M)
 
-for j in range(4) :     
+for j in range(7) :     
 
     TEST_TABLE( TABLE=FATN2M,
             NOM_PARA = NPAR[j],
@@ -496,7 +500,8 @@ for j in range(4) :
             TOLE_MACHINE=1.0E-10                
             )
 # POUR FORMULE_VIE = MANCO1,
-RESU2F = [(-0.43051109680829,0.43051109680830), 0.90258528434986, 0, 0.61539334669937]                      
+RESU2F = [(-0.43051109680829,0.43051109680830), 0.90258528434986, 0, 0.61539334669937,
+          (-0.43051109680829,0.43051109680830), 0.90258528434986, 0, 0.61539334669937]                      
 FATN2F=POST_FATIGUE(    CHARGEMENT='MULTIAXIAL',
                    HISTOIRE=_F(  
                                  SIGM_XX = SIGMXX,
@@ -523,7 +528,7 @@ FATN2F=POST_FATIGUE(    CHARGEMENT='MULTIAXIAL',
 
 IMPR_TABLE(TABLE = FATN2F)
 
-for j in range(4) :     
+for j in range(7) :     
 
     TEST_TABLE( TABLE=FATN2F,
             NOM_PARA = NPAR[j],
@@ -557,7 +562,7 @@ FATN2SF=POST_FATIGUE(    CHARGEMENT='MULTIAXIAL',
 
 IMPR_TABLE(TABLE = FATN2SF)
 
-for j in range(4) :     
+for j in range(7) :     
 
     TEST_TABLE( TABLE=FATN2SF,
             NOM_PARA = NPAR[j],
@@ -590,7 +595,7 @@ FATN2SF2=POST_FATIGUE(    CHARGEMENT='MULTIAXIAL',
 
 IMPR_TABLE(TABLE = FATN2SF2)
 
-for j in range(4) :     
+for j in range(7) :     
 
     TEST_TABLE( TABLE=FATN2SF2,
             NOM_PARA = NPAR[j],
