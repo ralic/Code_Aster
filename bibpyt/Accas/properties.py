@@ -1,8 +1,8 @@
-#@ MODIF properties Accas  DATE 27/03/2013   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF properties Accas  DATE 03/04/2013   AUTEUR COURTOIS M.COURTOIS 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # RESPONSABLE D6BHHHH J-P.LEFEBVRE
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
@@ -40,7 +40,7 @@ try:
     version = '.'.join([str(i) for i in pkginfo.pop(0)])
     parentid = pkginfo.pop(0)
     branch = pkginfo.pop(0)
-    exploit = branch in ('stable', 'stable-updates')
+    exploit = branch.startswith('v')
     date = pkginfo.pop(0)
     from_branch = pkginfo.pop(0)
     changes = pkginfo.pop(0)

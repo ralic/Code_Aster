@@ -1,8 +1,8 @@
-#@ MODIF E_Core Execution  DATE 18/06/2012   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF E_Core Execution  DATE 03/04/2013   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -347,16 +347,18 @@ def get_version_desc():
         'testing' : _(u"""DÉVELOPPEMENT STABILISÉE (testing)"""),
         'unstable' : _(u"""DÉVELOPPEMENT (unstable)"""),
     }
-    from_branch = aster_core.get_option('from_branch')
-    if from_branch == '?':
-        sta = aster_core.get_option('version').split('.')[-1] == '0'
-        expl = aster_core.get_option('exploit')
+    sta = aster_core.get_option('version').split('.')[-1] == '0'
+    expl = aster_core.get_option('exploit')
+    changes = aster_core.get_option('changes')
+    if not changes:
         if expl:
-            from_branch = sta and 'stable' or 'stable-updates'
+            tag = sta and 'stable' or 'stable-updates'
         else:
-            from_branch = sta and 'testing' or 'unstable'
-    unkn = _(u"""DÉVELOPPEMENT (%s)""") % from_branch
-    typvers = names.get(from_branch, unkn)
+            tag = sta and 'testing' or 'unstable'
+        typvers = names[tag]
+    else:
+        from_branch = aster_core.get_option('from_branch')
+        typvers = _(u"""DÉVELOPPEMENT (%s)""") % from_branch
     return typvers
 
 
