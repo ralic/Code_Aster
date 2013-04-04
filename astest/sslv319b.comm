@@ -1,4 +1,4 @@
-# MODIF  DATE 22/01/2013   AUTEUR LADIER A.LADIER 
+# MODIF  DATE 03/04/2013   AUTEUR NICOLAS G.NICOLAS 
 # TITRE PROPAGATION PLANE D'UNE FISSURE SEMI-ELLIPTIQUE
 # sslv319b.para = tps_job 180 mem_job 1536Mo liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -187,8 +187,7 @@ for i_raff in range(nb_raff+1) :
                      CRIT_RAFF_ABS      = crit,
                      USAGE_CMP          = 'RELATIF', 
                      MAILLAGE_N         = MAIT[i_tot],
-                     MAILLAGE_NP1       = MAIT[i_tot+1],
-                     ELEMENTS_NON_HOMARD= 'IGNORER')
+                     MAILLAGE_NP1       = MAIT[i_tot+1])
 
       DETRUIRE(CONCEPT=_F(NOM=(MO,FISS[i_propa],CHERR,MAIT[i_tot])),INFO=1)
 
@@ -379,8 +378,7 @@ for i_propa in xrange(nb_pas) :
                                    CHAM_MAJ = LSN[i_raff+1]),
                                 _F(TYPE_CHAM='NOEU_NEUT_R',
                                    CHAM_GD  = LST[i_raff],
-                                   CHAM_MAJ = LST[i_raff+1]),),                             
-                      ELEMENTS_NON_HOMARD='IGNORER',)
+                                   CHAM_MAJ = LST[i_raff+1]),),)
       
       DETRUIRE(CONCEPT=_F(NOM=(CHERR,MAIT[i_tot])),INFO=1)
 

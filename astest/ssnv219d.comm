@@ -1,4 +1,4 @@
-# MODIF  DATE 22/01/2013   AUTEUR LADIER A.LADIER 
+# MODIF  DATE 03/04/2013   AUTEUR NICOLAS G.NICOLAS 
 # TITRE METHODE DES SOLUTIONS MANUFACTUREES : CONTACT GRANDES DEFORMATIONS 3D
 # ssnv219d.para = tps_job 600 mem_job 512Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -411,7 +411,6 @@ for Raff in range(0,Nb_Raffinement):
                         GROUP_MA=('VOLUME','ESCLAVE'),
                         MAILLAGE_N =MAini[Raff],
                         MAILLAGE_NP1 =MAini[Raff+1],
-                        ELEMENTS_NON_HOMARD='IGNORER',
                         )
          MA[Raff+1]= CREA_MAILLAGE(MAILLAGE=MAini[Raff+1],
                                    HEXA20_27=_F(TOUT='OUI',),);

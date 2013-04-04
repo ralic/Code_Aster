@@ -1,4 +1,4 @@
-# MODIF  DATE 26/03/2013   AUTEUR CUVILLIE M.CUVILLIEZ 
+# MODIF  DATE 03/04/2013   AUTEUR NICOLAS G.NICOLAS 
 # TITRE VALIDATION DE LA MACRO-COMMANDE RAFF_XFEM SUR UNE PLAQUE MULTI-FISSUREE
 # sslp317b.para = tps_job 60 mem_job 512Mo liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -113,7 +113,6 @@ for i_raff in range(nb_raff) :
                   USAGE_CMP          = 'RELATIF', 
                   MAILLAGE_N         = MA[i_raff],
                   MAILLAGE_NP1       = MA[i_raff+1],
-                  ELEMENTS_NON_HOMARD= 'IGNORER',
                   ADD_CHAM = _F(CHAM_GD = DIAM[i_raff+1],
                                 CHAM_CAT='DIAMETRE'),
                   )

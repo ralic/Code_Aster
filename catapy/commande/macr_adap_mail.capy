@@ -1,8 +1,8 @@
-#& MODIF COMMANDE  DATE 27/11/2012   AUTEUR NICOLAS G.NICOLAS 
+#& MODIF COMMANDE  DATE 03/04/2013   AUTEUR NICOLAS G.NICOLAS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -480,15 +480,15 @@ MACR_ADAP_MAIL=MACRO(nom="MACR_ADAP_MAIL",
 #
 # 9.2.2. Type de la frontière
 #
-    TYPE = SIMP(statut='o',typ='TXM',into=("SPHERE", "CYLINDRE"),
+    TYPE = SIMP(statut='o',typ='TXM',into=("SPHERE", "CYLINDRE", "CONE_A", "CONE_R"),
                 fr="Type de la frontière analytique",
                 ang="Type of the analytic boundary" ),
 #
-# 9.2.3. Pour une sphere ou un cylindre : rayon et centre
+# 9.2.3. Pour une sphere, un cylindre ou un cone defini par ses rayons : rayon et centre
 #
-    b_fr_rayon = BLOC( condition = " (TYPE == 'SPHERE') or (TYPE == 'CYLINDRE') " ,
-                       fr="Le rayon et le centre d'une sphère ou d'un cylindre.",
-                       ang="The radius and the centre of a sphere or of a cylinder.",
+    b_fr_rayon = BLOC( condition = " (TYPE == 'SPHERE') or (TYPE == 'CYLINDRE') or (TYPE == 'CONE_R') " ,
+                       fr="Le rayon et le centre d'une sphère, d'un cylindre ou d'un cone.",
+                       ang="The radius and the centre of a sphere, of a cylinder or of a cone.",
       RAYON = SIMP(statut='o',typ='R',
                    fr="Rayon",
                    ang="Radius"),
@@ -496,16 +496,16 @@ MACR_ADAP_MAIL=MACRO(nom="MACR_ADAP_MAIL",
                       fr="Abscisse du centre",
                       ang="X for the center"),
       Y_CENTRE = SIMP(statut='o',typ='R',
-                      fr="Ordonneée du centre",
+                      fr="Ordonnée du centre",
                       ang="Y for the center"),
       Z_CENTRE = SIMP(statut='o',typ='R',
                       fr="Cote du centre",
                       ang="Z for the center"),
     ) ,
 #
-# 9.2.4. Complement pour un cylindre
+# 9.2.4. Pour un cylindre ou un cone defini par axe et angle : axe
 #
-    b_fr_cylindre = BLOC( condition = " (TYPE == 'CYLINDRE') " ,
+    b_fr_cylindre = BLOC( condition = " (TYPE == 'CYLINDRE') or (TYPE == 'CONE_A') " ,
                           fr="Pour un cylindre.",
                           ang="For a cylinder.",
       X_AXE = SIMP(statut='o',typ='R',
@@ -519,7 +519,45 @@ MACR_ADAP_MAIL=MACRO(nom="MACR_ADAP_MAIL",
                    ang="Z for the axial vector"),
     ) ,
 #
-# 9.2.5. Groupe(s) lie(s) a la frontière
+# 9.2.5. Pour un cone defini par ses rayons : second couple (rayon et centre)
+#
+    b_fr_rayon2 = BLOC( condition = " (TYPE == 'CONE_R') " ,
+                       fr="Le second rayon et centre d'un cone.",
+                       ang="The second radius and the centre of a cone.",
+      RAYON2 = SIMP(statut='o',typ='R',
+                   fr="Rayon",
+                   ang="Radius"),
+      X_CENTRE2 = SIMP(statut='o',typ='R',
+                      fr="Abscisse du centre",
+                      ang="X for the center"),
+      Y_CENTRE2 = SIMP(statut='o',typ='R',
+                      fr="Ordonnée du centre",
+                      ang="Y for the center"),
+      Z_CENTRE2 = SIMP(statut='o',typ='R',
+                      fr="Cote du centre",
+                      ang="Z for the center"),
+    ) ,
+#
+# 9.2.6. Pour un cone defini par axe et angle : centre et angle
+#
+    b_fr_angle = BLOC( condition = " (TYPE == 'CONE_A') " ,
+                       fr="L'angle et le centre d'un cone.",
+                       ang="The angle and the centre of a cone.",
+      ANGLE = SIMP(statut='o',typ='R',
+                   fr="Angle en degré",
+                   ang="Angle (degree)"),
+      X_CENTRE = SIMP(statut='o',typ='R',
+                      fr="Abscisse du centre",
+                      ang="X for the center"),
+      Y_CENTRE = SIMP(statut='o',typ='R',
+                      fr="Ordonnée du centre",
+                      ang="Y for the center"),
+      Z_CENTRE = SIMP(statut='o',typ='R',
+                      fr="Cote du centre",
+                      ang="Z for the center"),
+    ) ,
+#
+# 9.2.7. Groupe(s) lie(s) a la frontière
 #
     GROUP_MA = SIMP(statut='o',typ=grma,validators=NoRepeat(),max='**',
                     fr="Liste des groupes de mailles placées sur la frontière",
@@ -740,24 +778,24 @@ MACR_ADAP_MAIL=MACRO(nom="MACR_ADAP_MAIL",
                 fr="Langue des messages issus de HOMARD.",
                 ang="Language for HOMARD messages." ),
 #
-# 15.2. Gestion des mailles autres que celles compatibles avec HOMARD
-#       "REFUSER" : elles sont refusées (defaut)
-#       "IGNORER" : elles sont ignorées
+# 15.2. Gestion des mailles acceptees dans le maillage initial
+#       "HOMARD" : exclusivement les mailles pouvant etre decoupees (defaut)
+#       "IGNORE_PYRA" : elles sont ignorées
 #
   b_autres_mailles = BLOC( condition = " (ADAPTATION != 'LECTURE') " ,
-                           fr="Champs supplementaires.",
-                           ang="Additional fields.",
+                           fr="Gestion des pyramides.",
+                           ang="Pyramids.",
 #
-    ELEMENTS_NON_HOMARD = SIMP(statut='f',typ='TXM',defaut="REFUSER",into=("REFUSER", "IGNORER"),
-                              fr="Acceptation de mailles incompatibles avec HOMARD",
-                              ang="Incompatible meshes for HOMARD" ),
+    ELEMENTS_ACCEPTES = SIMP(statut='f',typ='TXM',defaut="HOMARD",into=("HOMARD", "IGNORE_PYRA"),
+                             fr="Acceptation des mailles dans le maillage initial",
+                             ang="Elements in the very first mesh" ),
 #
   ) ,
 #
 # 15.3. Version de HOMARD
 #
-  VERSION_HOMARD = SIMP(statut='f',typ='TXM',defaut="V10_5",
-                        into=("V10_5", "V10_N", "V10_N_PERSO"),
+  VERSION_HOMARD = SIMP(statut='f',typ='TXM',defaut="V10_6",
+                        into=("V10_6", "V10_N", "V10_N_PERSO"),
                         fr="Version de HOMARD",
                         ang="HOMARD release"),
 #

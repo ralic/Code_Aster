@@ -1,4 +1,4 @@
-# MODIF  DATE 22/01/2013   AUTEUR LADIER A.LADIER 
+# MODIF  DATE 03/04/2013   AUTEUR NICOLAS G.NICOLAS 
 # TITRE  FISSURE LENTILLE EN TRACTION
 # sslv155c.para = tps_job 300 mem_job 1536Mo liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -112,8 +112,7 @@ for i_raff in range(nb_iter) :
                   CRIT_RAFF_ABS      = 0.5,
                   DIAM_MIN           = hc,
                   MAILLAGE_N         = MA[i_raff],
-                  MAILLAGE_NP1       = MA[i_raff+1],
-                  ELEMENTS_NON_HOMARD= 'IGNORER')
+                  MAILLAGE_NP1       = MA[i_raff+1])
 
 assert(nb_iter == i_raff+1)
 

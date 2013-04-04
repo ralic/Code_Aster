@@ -1,4 +1,4 @@
-# MODIF  DATE 22/01/2013   AUTEUR LADIER A.LADIER 
+# MODIF  DATE 03/04/2013   AUTEUR NICOLAS G.NICOLAS 
 # TITRE VALIDATION DE L'UTILISATION D'UNE GRILLE AVEC UNE FISSURE X-FEM SUR UN MAILLAGE RAFFINE PAR HOMARD
 # zzzz283a.para = tps_job 120 mem_job 512Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -176,7 +176,6 @@ MACR_ADAP_MAIL(MAILLAGE_N=box10,
                        Y_MAXI=4.,
                        Z_MINI=-1.,
                        Z_MAXI=1.,),
-               ELEMENTS_NON_HOMARD='IGNORER',
                MAJ_CHAM=(_F(CHAM_GD=LSNraf[i+1],
                             TYPE_CHAM='NOEU_NEUT_R',
                             CHAM_MAJ=LSNlast,),

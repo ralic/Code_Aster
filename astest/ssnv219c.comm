@@ -1,4 +1,4 @@
-# MODIF  DATE 05/02/2013   AUTEUR COURTOIS M.COURTOIS 
+# MODIF  DATE 03/04/2013   AUTEUR NICOLAS G.NICOLAS 
 # TITRE METHODE DES SOLUTIONS MANUFACTUREES : CONTACT GRANDES DEFORMATIONS 3D
 # ssnv219c.para = tps_job 600 mem_job 512Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -406,7 +406,6 @@ for Raff in range(0,Nb_Raffinement):
                         GROUP_MA=('VOLUME','ESCLAVE'),
                         MAILLAGE_N =MA[Raff],
                         MAILLAGE_NP1 =MA[Raff+1],
-                        ELEMENTS_NON_HOMARD='IGNORER',
                         )
 
          # DESTRUCTION DES CONCEPTS INUTILISES DANS LES PROCHAINES ETAPES DE LA BOUCLE
@@ -521,7 +520,7 @@ BIDONU_S=DEFI_FONCTION(NOM_PARA='INST',
                            1., PenteL2U_Surf));
 
 TEST_FONCTION(VALEUR=_F(VALE_CALC=3.5146549999999999,
-                        TOLE_MACHINE=4.E-05,
+                        TOLE_MACHINE=6.E-05,
                         VALE_PARA=1.0,
                         FONCTION=BIDONU_S,
                         ),
@@ -539,6 +538,7 @@ BIDONU_V=DEFI_FONCTION(NOM_PARA='INST',
 TEST_FONCTION(VALEUR=_F(VALE_CALC=2.99233184337,
                         VALE_REFE=3.0,
                         VALE_PARA=1.0,
+                        TOLE_MACHINE=4.E-05,
                         REFERENCE='ANALYTIQUE',
                         PRECISION=1.E-2,
                         FONCTION=BIDONU_V,),

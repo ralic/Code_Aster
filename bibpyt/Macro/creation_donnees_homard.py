@@ -1,8 +1,8 @@
-#@ MODIF creation_donnees_homard Macro  DATE 27/11/2012   AUTEUR NICOLAS G.NICOLAS 
+#@ MODIF creation_donnees_homard Macro  DATE 03/04/2013   AUTEUR NICOLAS G.NICOLAS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -22,7 +22,7 @@
 Cette classe crée le fichier de configuration permettant de lancer HOMARD
 depuis Code_Aster.
 """
-__revision__ = "V1.13"
+__revision__ = "V1.14"
 __all__ = [ ]
 
 import os
@@ -60,7 +60,7 @@ class creation_donnees_homard:
       . Nom_Fichier_Donnees : nom du fichier de données (immuable)
       . mode_homard : le mode pour filtrer ici ("ADAP" ou "INFO")
       . mode_homard_texte : le mode d'utilisation, en francais ("ADAPTATION" ou "INFORMATION")
-      . mailles_incompatibles : que faire des mailles incompatibles avec HOMARD
+      . elements_acceptes : les mailles acceptees par HOMARD
    """
 # ------------------------------------------------------------------------------
   def __init__(self, nom_macro, mots_cles, dico_configuration ) :
@@ -92,13 +92,10 @@ class creation_donnees_homard:
 #
 # 3. Quel type de traitement des mailles incompatibles
 #
-    if mots_cles.has_key("ELEMENTS_NON_HOMARD") :
-      d_aux = {}
-      d_aux["REFUSER"] = "TOUS"
-      d_aux["IGNORER"] = "IGNORE_QUAD"
-      self.mailles_incompatibles = d_aux[mots_cles["ELEMENTS_NON_HOMARD"]]
+    if mots_cles.has_key("ELEMENTS_ACCEPTES") :
+      self.elements_acceptes = mots_cles["ELEMENTS_ACCEPTES"]
     else :
-      self.mailles_incompatibles = None
+      self.elements_acceptes = None
 #
 # 4. Attributs immuables
 #
@@ -134,7 +131,7 @@ class creation_donnees_homard:
 #
     message_erreur = None
 #
-    while message_erreur is None :
+    while message_erreur == None :
 #
 #     1. Les chaines liées aux numeros d'iteration
 #
@@ -250,7 +247,7 @@ class creation_donnees_homard:
           d_aux["CRIT_RAFF_MS"]  = ("SeuilHMS",   1)
           l_aux = d_aux.keys()
           for mot_cle in l_aux :
-            if self.mots_cles[mot_cle] is not None :
+            if self.mots_cles[mot_cle] != None :
               aux = self.mots_cles[mot_cle]*d_aux[mot_cle][1]
               self.critere_raffinement = (d_aux[mot_cle][0], aux)
               #print "... self.critere_raffinement = ", self.critere_raffinement
@@ -265,7 +262,7 @@ class creation_donnees_homard:
           d_aux["CRIT_DERA_MS"]  = ("SeuilBMS",   1)
           l_aux = d_aux.keys()
           for mot_cle in l_aux :
-            if self.mots_cles[mot_cle] is not None :
+            if self.mots_cles[mot_cle] != None :
               aux = self.mots_cles[mot_cle]*d_aux[mot_cle][1]
               self.critere_deraffinement = (d_aux[mot_cle][0], aux)
               #print "... self.critere_deraffinement = ", self.critere_deraffinement
@@ -275,7 +272,7 @@ class creation_donnees_homard:
         saux = " "
         for mot_cle in [ "NIVE_MIN", "NIVE_MAX", "DIAM_MIN" ] :
           if self.mots_cles.has_key(mot_cle) :
-            if self.mots_cles[mot_cle] is not None :
+            if self.mots_cles[mot_cle] != None :
               if mot_cle == "NIVE_MIN" :
                 aux = "NiveauMi"
               elif mot_cle == "NIVE_MAX" :
@@ -322,12 +319,12 @@ class creation_donnees_homard:
       if self.ModeHOMA == 3 :
         mot_cle = "DEGRE"
         if self.mots_cles.has_key(mot_cle) :
-          if self.mots_cles[mot_cle] is not None :
+          if self.mots_cles[mot_cle] != None :
             self.ModDegre = self.mots_cles[mot_cle]
 #
         mot_cle = "JOINT"
         if self.mots_cles.has_key(mot_cle) :
-          if self.mots_cles[mot_cle] is not None :
+          if self.mots_cles[mot_cle] != None :
             self.CreJoint = self.mots_cles[mot_cle]
           #print self.ModDegre, self.CreJoint
 #
@@ -344,7 +341,7 @@ class creation_donnees_homard:
 #
       break
 #
-    if message_erreur is not None :
+    if message_erreur != None :
       UTMESS("F", 'HOMARD0_2', valk=message_erreur)
 #
     return self.fic_homard_niter, self.fic_homard_niterp1
@@ -431,7 +428,7 @@ class creation_donnees_homard:
     """
     message_erreur = None
 #
-    while message_erreur is None :
+    while message_erreur == None :
 #
 #     1. Ouverture du fichier
 #
@@ -480,10 +477,10 @@ class creation_donnees_homard:
 #     5.1. Type d'adaptation
 #
         self.ecrire_ligne_configuration_2("TypeRaff", self.TypeRaff)
-        if self.critere_raffinement is not None :
+        if self.critere_raffinement != None :
           self.ecrire_ligne_configuration_2(self.critere_raffinement[0], self.critere_raffinement[1])
         self.ecrire_ligne_configuration_2("TypeDera", self.TypeDera)
-        if self.critere_deraffinement is not None :
+        if self.critere_deraffinement != None :
           self.ecrire_ligne_configuration_2(self.critere_deraffinement[0], self.critere_deraffinement[1])
 #
 #     5.2. L'eventuel indicateur d'erreur
@@ -562,14 +559,14 @@ class creation_donnees_homard:
 #     5.5. L'usage de l'indicateur
 #
         if self.mots_cles.has_key("USAGE_CHAMP") :
-          if self.mots_cles["USAGE_CHAMP"] is not None :
+          if self.mots_cles["USAGE_CHAMP"] != None :
             self.ecrire_ligne_configuration_2("CCModeFI", self.mots_cles["USAGE_CHAMP"])
 #
 #     5.6. Les eventuels groupes de filtrage du raffinement/deraffinement
 #
         for cle in ( "GROUP_MA", "GROUP_NO" ) :
           if self.mots_cles.has_key(cle) :
-            if self.mots_cles[cle] is not None :
+            if self.mots_cles[cle] != None :
               if not type(self.mots_cles[cle]) in EnumTypes :
                 self.ecrire_ligne_configuration_2("CCGroAda", self.mots_cles[cle])
               else :
@@ -584,7 +581,7 @@ class creation_donnees_homard:
 #
 #     5.8. L'eventuel maillage annexe
 #
-        if self.CCMaiAnn is not None :
+        if self.CCMaiAnn != None :
           self.ecrire_ligne_configuration_0("Maillage d'autre degre")
           self.ecrire_ligne_configuration_2("ModDegre", "oui")
           self.ecrire_ligne_configuration_2("CCNoMAnn", self.CCMaiAnn)
@@ -633,7 +630,7 @@ class creation_donnees_homard:
         self.ecrire_ligne_configuration_2("CCFronti", self.dico_configuration["Fichier_ASTER_vers_HOMARD"])
         self.ecrire_ligne_configuration_2("CCNoMFro", self.dico_configuration["NOM_MED_MAILLAGE_FRONTIERE"])
         if self.mots_cles.has_key("GROUP_MA_FRONT") :
-          if self.mots_cles["GROUP_MA_FRONT"] is not None :
+          if self.mots_cles["GROUP_MA_FRONT"] != None :
             if not type(self.mots_cles["GROUP_MA_FRONT"]) in EnumTypes :
               self.ecrire_ligne_configuration_2("CCGroFro", self.mots_cles["GROUP_MA_FRONT"])
             else :
@@ -653,6 +650,11 @@ class creation_donnees_homard:
         dico_frontiere["X_AXE"] = "FAXAxe"
         dico_frontiere["Y_AXE"] = "FAYAxe"
         dico_frontiere["Z_AXE"] = "FAZAxe"
+        dico_frontiere["RAYON2"] = "FARayon2"
+        dico_frontiere["X_CENTRE2"] = "FAXCen2"
+        dico_frontiere["Y_CENTRE2"] = "FAYCen2"
+        dico_frontiere["Z_CENTRE2"] = "FAZCen2"
+        dico_frontiere["ANGLE"] = "FAAngle"
         l_aux = dico_frontiere.keys()
         dico_frontiere["FGNomGro"] = "FGNomGro"
         dico_frontiere["FGNomFro"] = "FGNomFro"
@@ -689,17 +691,17 @@ class creation_donnees_homard:
       self.ecrire_ligne_configuration_0("Autres options")
       if self.mots_cles.has_key("LANGUE") :
         self.ecrire_ligne_configuration_2("Langue", self.mots_cles["LANGUE"])
-      if self.MessInfo is not None :
+      if self.MessInfo != None :
         self.ecrire_ligne_configuration_2("MessInfo", self.MessInfo)
       if self.dico_configuration["version_perso"] :
         VERSION_HOMARD = self.dico_configuration["VERSION_HOMARD"]
         self.ecrire_ligne_configuration_2("DicoOSGM", "$HOMARD_USER/"+VERSION_HOMARD+"/src/CONFIG/typobj.stu")
 #
-#     10. L'usage des mailles incompatibles avec HOMARD
+#     10. L'usage des mailles acceptees par HOMARD
 #
-      if self.mailles_incompatibles is not None :
-        self.ecrire_ligne_configuration_0("Les mailles incompatibles avec HOMARD")
-        self.ecrire_ligne_configuration_2("TypeElem", self.mailles_incompatibles)
+      if self.elements_acceptes != None :
+        self.ecrire_ligne_configuration_0("Les mailles acceptees par HOMARD")
+        self.ecrire_ligne_configuration_2("TypeElem", self.elements_acceptes)
 #
 #     11. L'eventuel complement
 #
@@ -719,7 +721,7 @@ class creation_donnees_homard:
       fichier.close()
       break
 #
-    if message_erreur is not None :
+    if message_erreur != None :
       message_erreur = "Ecriture de "+nomfic_global+". "+message_erreur
       UTMESS("F", 'HOMARD0_2', valk=message_erreur)
 #
@@ -731,7 +733,7 @@ class creation_donnees_homard:
     """
     message_erreur = None
 #
-    while message_erreur is None :
+    while message_erreur == None :
 #
 #     1. Ouverture du fichier
 #
@@ -749,7 +751,7 @@ class creation_donnees_homard:
       fichier.close()
       break
 #
-    if message_erreur is not None :
+    if message_erreur != None :
       UTMESS("F", 'HOMARD0_2', valk=message_erreur)
 #
     return nomfic_global

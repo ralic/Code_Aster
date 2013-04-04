@@ -1,4 +1,4 @@
-# MODIF  DATE 06/02/2013   AUTEUR COURTOIS M.COURTOIS 
+# MODIF  DATE 03/04/2013   AUTEUR NICOLAS G.NICOLAS 
 # TITRE  FISSURE SEMI-ELLIPTIQUE AVEC MILIEU INFINI
 # sslv110f.para = tps_job 450 mem_job 1024Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -112,8 +112,7 @@ if typ_ma == 'grossier' :
                      CRIT_RAFF_ABS      = 0.5,
                      DIAM_MIN           = hc,
                      MAILLAGE_N         = MA[i_raff],
-                     MAILLAGE_NP1       = MA[i_raff+1],
-                     ELEMENTS_NON_HOMARD= 'IGNORER')
+                     MAILLAGE_NP1       = MA[i_raff+1])
 
    assert(nb_iter == i_raff+1)
 

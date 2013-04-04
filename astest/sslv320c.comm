@@ -1,4 +1,4 @@
-# MODIF  DATE 22/01/2013   AUTEUR LADIER A.LADIER 
+# MODIF  DATE 03/04/2013   AUTEUR NICOLAS G.NICOLAS 
 # TITRE PROPAGATION PLANE D UNE FISSURE 3D SE DIVISANT ET FUSIONNANT AVEC X-FEM
 # sslv320c.para = tps_job 350 mem_job 1536Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -179,7 +179,6 @@ for i in range(nbcalc) :
                         CRIT_RAFF_ABS=-1*rayon_raff,
                         CRIT_DERA_ABS=-1*rayon_deraff,
                         NIVE_MAX=infit,
-                        ELEMENTS_NON_HOMARD='IGNORER',
                      MAJ_CHAM=(_F(TYPE_CHAM='NOEU_NEUT_R',
                                   CHAM_GD  = LSNHT[j],
                                   CHAM_MAJ = LSNHT[j+1]),
@@ -205,7 +204,6 @@ for i in range(nbcalc) :
                         CRIT_RAFF_ABS=-1*rayon_raff,
                         CRIT_DERA_ABS=-1*rayon_deraff,
                         NIVE_MAX=infit,
-                        ELEMENTS_NON_HOMARD='IGNORER',
                         MAJ_CHAM=(_F(CHAM_GD=LSNHT[j],
                                      TYPE_CHAM='NOEU_NEUT_R',
                                      CHAM_MAJ=LSNH[i],),

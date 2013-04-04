@@ -1,8 +1,8 @@
-#@ MODIF macr_adap_mail_ops Macro  DATE 27/08/2012   AUTEUR NICOLAS G.NICOLAS 
+#@ MODIF macr_adap_mail_ops Macro  DATE 03/04/2013   AUTEUR NICOLAS G.NICOLAS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -22,7 +22,7 @@
 """
 Traitement des macros MACR_ADAP_MAIL/MACR_INFO_MAIL
 """
-__revision__ = "V2.3"
+__revision__ = "V2.4"
 #
 import string
 import os
@@ -262,7 +262,7 @@ Sortie :
   ###print "==> dico[\"NOM_CHAM_MED\"] =", dico["NOM_CHAM_MED"]
 #
   if args.has_key("NOM_CMP") :
-    if args["NOM_CMP"] is not None :
+    if args["NOM_CMP"] != None :
       if not type(args["NOM_CMP"]) in EnumTypes :
         l_aux = [args["NOM_CMP"]]
       else :
@@ -344,7 +344,7 @@ Sortie :
 # A.5 Ajout des eventuels noms de composantes
 #
   if ( usage_champ == "MAJ_CHAM" ) :
-    if le_champ["NOM_CMP"] is not None :
+    if le_champ["NOM_CMP"] != None :
       if not type(le_champ["NOM_CMP"]) in EnumTypes :
         l_aux = [le_champ["NOM_CMP"]]
       else :
@@ -423,11 +423,20 @@ Sortie :
   les_front_analytiques = args["FRONTIERE_ANALYTIQUE"]
 #
   for frontiere in les_front_analytiques :
-    l_aux = [ "NOM", "TYPE", "GROUP_MA", "RAYON", "X_CENTRE", "Y_CENTRE", "Z_CENTRE"]
-    if ( frontiere["TYPE"] == "CYLINDRE" ) :
+    l_aux = [ "NOM", "TYPE", "GROUP_MA", "X_CENTRE", "Y_CENTRE", "Z_CENTRE"]
+    if ( frontiere["TYPE"] in ( "CYLINDRE", "CONE_A") ) :
       l_aux.append("X_AXE")
       l_aux.append("Y_AXE")
       l_aux.append("Z_AXE")
+    if ( frontiere["TYPE"] in ( "CYLINDRE", "SPHERE", "CONE_R" ) ) :
+      l_aux.append("RAYON")
+    if ( frontiere["TYPE"] in ( "CONE_A" ) ) :
+      l_aux.append("ANGLE")
+    if ( frontiere["TYPE"] in ( "CONE_R" ) ) :
+      l_aux.append("RAYON2")
+      l_aux.append("X_CENTRE2")
+      l_aux.append("Y_CENTRE2")
+      l_aux.append("Z_CENTRE2")
     dico = {}
     for aux in l_aux :
       dico[aux] = frontiere[aux]
@@ -1130,7 +1139,7 @@ def macr_adap_mail_ops ( self,
 #
       if args.has_key(usage_champ) :
 #
-        if args[usage_champ] is not None :
+        if args[usage_champ] != None :
           les_champs = args[usage_champ]
           for le_champ in les_champs :
             dico, iaux = argument_champ ( INFO, le_champ, usage_champ, iaux )
@@ -1140,7 +1149,7 @@ def macr_adap_mail_ops ( self,
     #print "\n.. Debut de 2.1.5."
 #
     if args.has_key("ZONE") :
-      if args["ZONE"] is not None :
+      if args["ZONE"] != None :
         liste_zones = argument_zone ( INFO, args )
 #
 # 2.2. ==> Donnees de pilotage de l'information
@@ -1172,7 +1181,7 @@ def macr_adap_mail_ops ( self,
   #print "\n.. Debut de 2.3.2."
 #
   if args.has_key("FRONTIERE_ANALYTIQUE") :
-    if args["FRONTIERE_ANALYTIQUE"] is not None :
+    if args["FRONTIERE_ANALYTIQUE"] != None :
       liste_front_analytiques = argument_frontiere_analytique ( INFO, args )
 #
 # 2.4. ==> Le numero de version de HOMARD
@@ -1434,7 +1443,7 @@ def macr_adap_mail_ops ( self,
       file_print ( INFO, Rep_Calc_HOMARD_global )
 #    if ( mode_homard == "ADAP" ) :
 #      if args.has_key("MAJ_CHAM") :
-#        if args["MAJ_CHAM"] is not None :
+#        if args["MAJ_CHAM"] != None :
 #          import time
 #          time.sleep(3600)
 #
@@ -1453,7 +1462,7 @@ def macr_adap_mail_ops ( self,
   #os.system(commande)
 #
     #print "LOGICIEL =", LOGICIEL
-    if ( LOGICIEL is not None ) :
+    if ( LOGICIEL != None ) :
       homard = str(LOGICIEL)
     else :
       homard = os.path.join(repertoire_outils, "homard")
@@ -1542,7 +1551,7 @@ def macr_adap_mail_ops ( self,
         nom_cham = dico["CHAM_GD"]
       else :
         nom_cham = None
-      if ( nom_cham is not None ) :
+      if ( nom_cham != None ) :
         #print ".... dico :", dico
 #
 # 8.2.1. ==> Constantes

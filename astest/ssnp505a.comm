@@ -1,4 +1,4 @@
-# MODIF  DATE 15/01/2013   AUTEUR LADIER A.LADIER 
+# MODIF  DATE 03/04/2013   AUTEUR NICOLAS G.NICOLAS 
 # TITRE PLAQUE MULTI-FISSUREE EN BITACTION-CISAILLEMENT AVEC XFEM
 # ssnp505a.para = tps_job 120 mem_job 768Mo liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -131,8 +131,7 @@ for num_calc in range(nb_raff+1):
                    CRIT_RAFF_PE = coef[num_calc],
                    USAGE_CMP = 'RELATIF',
                    MAILLAGE_N = MA[num_calc],
-                   MAILLAGE_NP1 = MA[num_calc+1],
-                   ELEMENTS_NON_HOMARD='IGNORER');
+                   MAILLAGE_NP1 = MA[num_calc+1])
 
     DETRUIRE(CONCEPT=_F( NOM=(MO,FISS1,FISS2,FISS3,FISS4,FISS5,FISS6,FISS7,FISS8)));
 
