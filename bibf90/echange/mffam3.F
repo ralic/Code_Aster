@@ -1,6 +1,6 @@
       SUBROUTINE MFFAM3(FID,MAA,IND,FAM,NUM,GRO,CRET)
 !           CONFIGURATION MANAGEMENT OF EDF VERSION                  
-!& MODIF MFFAM3 ECHANGE  DATE 14/01/2013   AUTEUR COURTOIS M.COURTOIS 
+!& MODIF MFFAM3 ECHANGE  DATE 02/04/2013   AUTEUR LEFEBVRE J-P.LEFEBVRE 
 ! ================================================================== 
 ! COPYRIGHT (C) 1991 - 2013  EDF R&D              WWW.CODE-ASTER.ORG 
 !                                                                    
@@ -28,9 +28,9 @@
 #ifdef _USE_MED_SHORT_INT
       INTEGER*4 FID4, NUM4
       INTEGER*4 CRET4, IND4
-      CALL ASSERT(LEN(MAA).EQ.32)
-      CALL ASSERT(LEN(FAM).EQ.32)
-      CALL ASSERT(LEN(GRO(1)).EQ.80)
+!      CALL ASSERT(LEN(MAA).EQ.32)
+!      CALL ASSERT(LEN(FAM).EQ.32)
+!      CALL ASSERT(LEN(GRO(1)).EQ.80)
       FID4 = FID
       IND4 = IND
 #ifdef _DEBUG_MED

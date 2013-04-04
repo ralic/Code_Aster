@@ -1,6 +1,6 @@
       SUBROUTINE MFNCO2(FID,CHA,N,CRET)
 !           CONFIGURATION MANAGEMENT OF EDF VERSION                  
-!& MODIF MFNCO2 ECHANGE  DATE 14/01/2013   AUTEUR COURTOIS M.COURTOIS 
+!& MODIF MFNCO2 ECHANGE  DATE 02/04/2013   AUTEUR LEFEBVRE J-P.LEFEBVRE 
 ! ================================================================== 
 ! COPYRIGHT (C) 1991 - 2013  EDF R&D              WWW.CODE-ASTER.ORG 
 !                                                                    

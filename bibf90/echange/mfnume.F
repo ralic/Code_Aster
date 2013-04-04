@@ -1,10 +1,10 @@
       SUBROUTINE MFNUME(FID, MAA, NUM, N,
      &                  TYPENT, TYPGEO, CRET)
 !           CONFIGURATION MANAGEMENT OF EDF VERSION                  
-!& MODIF MFNUME ECHANGE  DATE 10/05/2011   AUTEUR SELLENET N.SELLENET 
+!& MODIF MFNUME ECHANGE  DATE 02/04/2013   AUTEUR LEFEBVRE J-P.LEFEBVRE 
 ! RESPONSABLE SELLENET N.SELLENET
 ! ================================================================== 
-! COPYRIGHT (C) 1991 - 2011  EDF R&D              WWW.CODE-ASTER.ORG 
+! COPYRIGHT (C) 1991 - 2013  EDF R&D              WWW.CODE-ASTER.ORG 
 !                                                                    
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR      
 ! MODIFY IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS     
@@ -29,7 +29,7 @@
 #else
 ! BEGIN MED
 #ifdef _USE_MED_SHORT_INT
-      INTEGER*4 NUM4(N)
+      INTEGER*4, ALLOCATABLE :: NUM4(:)
       INTEGER*4 FID4, TYPEN4, TYPGE4, CRET4
       INTEGER*4 N4, MDNON4, MDNOI4
 #ifdef _DEBUG_MED
@@ -37,6 +37,7 @@
 #endif
       MDNONT = -1
       MDNOIT = -1
+      ALLOCATE ( NUM4(N) )
       CALL CONVI4(NUM, NUM4, N)
       FID4 = FID
       TYPEN4 = TYPENT
@@ -47,6 +48,7 @@
       CALL MMHENW(FID4, MAA, MDNON4, MDNOI4, TYPEN4, TYPGE4,
      &            N4, NUM4, CRET4)
       CRET = CRET4
+      DEALLOCATE (NUM4)
 #else
       MDNONT = -1
       MDNOIT = -1

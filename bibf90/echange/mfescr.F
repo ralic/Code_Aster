@@ -1,9 +1,9 @@
       SUBROUTINE MFESCR ( FID, NOMES, DIM, NOMMS, TYCELL,
      &                    TYGEMS, TYGEES, CRET )
 !           CONFIGURATION MANAGEMENT OF EDF VERSION                  
-!& MODIF MFESCR ECHANGE  DATE 16/10/2012   AUTEUR SELLENET N.SELLENET 
+!& MODIF MFESCR ECHANGE  DATE 02/04/2013   AUTEUR LEFEBVRE J-P.LEFEBVRE 
 ! ================================================================== 
-! COPYRIGHT (C) 1991 - 2012  EDF R&D              WWW.CODE-ASTER.ORG 
+! COPYRIGHT (C) 1991 - 2013  EDF R&D              WWW.CODE-ASTER.ORG 
 !                                                                    
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR      
 ! MODIFY IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS     

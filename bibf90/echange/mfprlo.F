@@ -1,7 +1,7 @@
       SUBROUTINE MFPRLO( FID, CHA, NUMDT, NUMO, TYPENT, TYPGEO,
      &                   ITERMA, NOMA, NOMPRO, NOMLOC, N, CRET )
 !           CONFIGURATION MANAGEMENT OF EDF VERSION                  
-!& MODIF MFPRLO ECHANGE  DATE 14/01/2013   AUTEUR COURTOIS M.COURTOIS 
+!& MODIF MFPRLO ECHANGE  DATE 02/04/2013   AUTEUR LEFEBVRE J-P.LEFEBVRE 
 ! ================================================================== 
 ! COPYRIGHT (C) 1991 - 2013  EDF R&D              WWW.CODE-ASTER.ORG 
 !                                                                    
@@ -37,8 +37,8 @@
       TYPEN4 = TYPENT
       TYPGE4 = TYPGEO
       ITERM4 = ITERMA
-      CALL MFDONP( FID, CHA, NUMDT, NUMO, TYPENT, TYPGEO,
-     &             ITERM4, NOMA, NOMPRO, NOMLOC, N, CRET )
+      CALL MFDONP( FID4, CHA, NUMDT4, NUMO4, TYPEN4, TYPGE4,
+     &             ITERM4, NOMA, NOMPRO, NOMLOC, N4, CRET4 )
       N = N4
       CRET = CRET4
 #else
