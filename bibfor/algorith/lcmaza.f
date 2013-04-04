@@ -2,7 +2,7 @@
      &                   DEPS, VIM, TM,TP,TREF,
      &                   OPTION, SIG, VIP,  DSIDEP)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 25/02/2013   AUTEUR HAMON F.HAMON 
+C MODIF ALGORITH  DATE 02/04/2013   AUTEUR PROIX J-M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -74,7 +74,7 @@ C ----------------------------------------------------------------------
       CHARACTER*8 NOMRES(7), NOMPAR
       INTEGER     NDIMSI, NPERM, NITJAC, TRIJ, ORDREJ
       INTEGER     I,J,L,IRET, IISNAN
-      REAL*8      E, NU, EPSTHE, KDESS, BENDO,R8NNEM
+      REAL*8      E, NU, EPSTHE, KDESS, BENDO,R8NNEM,RTEMP
       REAL*8       AC, AT, BC, BT, EPSD0
       REAL*8      EPS(6), EPSE(6), EPSPLU(6), EPSEP(3), EPSEQ
       REAL*8      SIGEL(6), SIGELP(3)
@@ -397,8 +397,12 @@ C         PAS DE PROGRESSION DE L'ENDOMMAGEMENT
       ELSE
         A=2.D0*R**2.D0*(AT-2.D0*K*AT+AC)-R*(AT*(1.D0-4.D0*K)+3.D0*AC)+AC
         B=R**2.D0*BT+(1.D0-R**2.D0)*BC
-        D=1.D0-EPSD0*(1.D0-A)/Y
-     &-A*EXP(-B*(Y-EPSD0))
+        RTEMP = B*(Y-EPSD0)
+        IF ( RTEMP .LE. 200.0D0 ) THEN
+            D=1.D0-EPSD0*(1.D0-A)/Y-A*EXP(-RTEMP)
+        ELSE
+            D=1.D0-EPSD0*(1.D0-A)/Y
+        ENDIF
           D = MAX ( VIM(1), D)
           D = MIN(D , 0.99999D0)
             IF (D.GT.VIM(1)) PROG = .TRUE.
@@ -459,8 +463,12 @@ C ------------------------------------------------------------
          IF (EPSEQ.LT.0.0000001D0) THEN
             COEF=0.D0
          ELSE
-            COEF =(EPSD0*(1.D0- A)/(GAMA*EPSEQ)**2 +
-     &             A*B/ EXP (B*((GAMA*EPSEQ) - EPSD0)))
+            RTEMP = B*((GAMA*EPSEQ) - EPSD0)
+            IF ( RTEMP .LE. 200.0D0 ) THEN
+               COEF =EPSD0*(1.D0- A)/(GAMA*EPSEQ)**2 + A*B/EXP(RTEMP)
+            ELSE
+               COEF =EPSD0*(1.D0- A)/(GAMA*EPSEQ)**2
+            ENDIF
           COEF = COEF / EPSEQ
         IF (R.EQ.0.D0) COEF=GAMA*COEF
         ENDIF

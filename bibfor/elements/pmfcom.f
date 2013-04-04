@@ -4,10 +4,10 @@
      &                  CONTM,DEFM,DDEFP,EPSM,MODF,
      &                  SIGF,VARIP,ISECAN,CODRET)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 18/12/2012   AUTEUR SELLENET N.SELLENET 
+C MODIF ELEMENTS  DATE 02/04/2013   AUTEUR PROIX J-M.PROIX 
 C TOLE CRP_21
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -73,24 +73,22 @@ C --- ------------------------------------------------------------------
       CHARACTER*16   COMPO,ALGO
       CHARACTER*30   VALKM(3)
 C
-      DATA NOECLB /'Y01','Y02','A1','A2','B1','B2','BETA1','BETA2',
-     &            'SIGF'/
+      DATA NOECLB /'Y01','Y02','A1','A2','B1',
+     &             'B2','BETA1','BETA2','SIGF'/
       DATA NOMPIM /'SY','EPSI_ULT','SIGM_ULT','EPSP_HAR','R_PM',
-     &             'EP_SUR_E','A1_PM','A2_PM','ELAN','A6_PM','C_PM',
-     &              'A_PM'/
-      DATA MAZARS /'EPSD0','K','AC','BC','AT','BT',
-     &             'SIGM_ELS','EPSI_ELU'/
-
-      DATA ECROLI /'D_SIGM_E','SY','SIGM_ELS','EPSI_ELU'/
-
+     &             'EP_SUR_E','A1_PM','A2_PM','ELAN','A6_PM',
+     &              'C_PM','A_PM'/
+      DATA MAZARS /'EPSD0','K','AC','BC','AT',
+     &             'BT','SIGM_LIM','EPSI_LIM'/
+      DATA ECROLI /'D_SIGM_E','SY','SIGM_LIM','EPSI_LIM'/
 C
 C --- ------------------------------------------------------------------
       CODRET = 0
       CODREP = 0
       FAMI   = 'RIGI'
       MATERI = COMPOR(1)(1:8)
-      COMPO  = COMPOR(2)
-      ALGO   = COMPOR(3)
+      COMPO  = COMPOR(2)(1:16)
+      ALGO   = COMPOR(3)(1:16)
 C
 C     CALCUL DE LA TEMPERATURE
       CALL RCVARC(' ','TEMP','REF',FAMI,1,1,TREF,IRET1)
@@ -146,7 +144,7 @@ C ---    BOUCLE COMPORTEMENT SUR CHAQUE FIBRE
      &                  OPTION)
 250      CONTINUE
 C
-      ELSE IF (COMPO.EQ.'MAZARS_1D') THEN
+      ELSE IF (COMPO.EQ.'MAZARS_GC') THEN
          DEPSTH = 0.D0
          CALL VERIFM(FAMI,KPG,NSPG,'T',ICDMAT,'ELAS',1,DEPSTH,IRET4)
 C ---    ON RECUPERE LES PARAMETRES MATERIAU
@@ -154,7 +152,7 @@ C ---    ON RECUPERE LES PARAMETRES MATERIAU
          CALL RCVALB(FAMI,1,1,'+',ICDMAT,MATERI,'MAZARS',
      &               0,' ',0.0D0,8,MAZARS,VALRES,ICODRE,1)
          IF ( ICODRE(7)+ICODRE(8).NE.0 ) THEN
-            VALKM(1)='MAZARS_1D'
+            VALKM(1)='MAZARS_GC'
             VALKM(2)=MAZARS(7)
             VALKM(3)=MAZARS(8)
             CALL U2MESK('F','COMPOR1_76',3,VALKM)
@@ -169,14 +167,14 @@ C ---    BOUCLE COMPORTEMENT SUR CHAQUE FIBRE
      &                  DDEFP(I),MODF(I),SIGF(I),VARIP(IVARI),OPTION)
 275      CONTINUE
 C
-      ELSE IF (COMPO.EQ.'ECRO_CINE_1D') THEN
+      ELSE IF (COMPO.EQ.'VMIS_CINE_GC') THEN
          CALL VERIFT(FAMI,KPG,NSPG,'T',ICDMAT,'ELAS',1,DEPSTH,IRET4)
-C ---    VERIFICATION SI SIGM_ELS, EPSI_ELU PRESENT
+C ---    VERIFICATION QUE SIGM_LIM, EPSI_LIM SONT PRESENT
          CALL R8INIR(NBVAL,0.D0,VALRES,1)
          CALL RCVALB(FAMI,1,1,'+',ICDMAT,MATERI,'ECRO_LINE',
      &               0,' ',0.D0,4,ECROLI,VALRES,ICODRE,1)
          IF ( ICODRE(3)+ICODRE(4).NE.0 ) THEN
-            VALKM(1)='ECRO_CINE_1D'
+            VALKM(1)='VMIS_CINE_GC'
             VALKM(2)=ECROLI(3)
             VALKM(3)=ECROLI(4)
             CALL U2MESK('F','COMPOR1_76',3,VALKM)

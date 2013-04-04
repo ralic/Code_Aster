@@ -4,9 +4,9 @@
      &                  SIGM, VIM,
      &                  SIGP, VIP, DSIDEP,CODRET)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGORITH  DATE 02/04/2013   AUTEUR PROIX J-M.PROIX 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -24,7 +24,7 @@ C ======================================================================
       IMPLICIT NONE
       INCLUDE 'jeveux.h'
       INTEGER       IMATE,CODRET,KPG,KSP
-      CHARACTER*16  COMPOR(*),OPTION,VALKM(2)
+      CHARACTER*16  COMPOR(*),OPTION,VALKM(3)
       CHARACTER*(*) FAMI
       REAL*8        EPSM,DEPS,SIGM,VIM(*)
       REAL*8        ANGMAS(3)
@@ -52,7 +52,7 @@ C     CODRET  : CODE RETOUR NON NUL SI SIGYY OU SIGZZ NON NULS
 C ----------------------------------------------------------------------
 C
 C
-      LOGICAL       CINE,ISOT,PINTO,COM1D,ELAS
+      LOGICAL       CINE,ISOT,PINTO,COM1D,ELAS,CINEGC
       REAL*8        E,ET,SIGY
       INTEGER       NVARPI
       PARAMETER    ( NVARPI=8)
@@ -60,80 +60,102 @@ C
       PARAMETER     (NCSTPM=13)
       REAL*8        CSTPM(NCSTPM)
       REAL*8        EM,EP,DEPSTH,DEPSM
-      INTEGER CODRES
+      INTEGER       CODRES
 
-      ELAS = .FALSE.
-      ISOT = .FALSE.
-      CINE = .FALSE.
-      PINTO = .FALSE.
-      COM1D=.FALSE.
-      CODRET=0
+      INTEGER        NBVAL
+      PARAMETER     (NBVAL=4)
+      INTEGER        ICODRE(NBVAL)
+      REAL*8         VALRES(NBVAL)
 
-      IF ( COMPOR(1)(1:16) .EQ. 'GRILLE_ISOT_LINE') THEN
-          ISOT = .TRUE.
+      CHARACTER*8    ECROLI(4)
+      DATA ECROLI    /'D_SIGM_E','SY','SIGM_LIM','EPSI_LIM'/
+C --- ------------------------------------------------------------------
+
+      ELAS   = .FALSE.
+      ISOT   = .FALSE.
+      CINE   = .FALSE.
+      CINEGC = .FALSE.
+      PINTO  = .FALSE.
+      COM1D  = .FALSE.
+      CODRET = 0
+
+      IF      ( COMPOR(1)(1:16) .EQ. 'GRILLE_ISOT_LINE') THEN
+         ISOT   = .TRUE.
       ELSE IF ( COMPOR(1)(1:16) .EQ. 'GRILLE_CINE_LINE') THEN
-          CINE = .TRUE.
+         CINE   = .TRUE.
+      ELSE IF ( COMPOR(1)(1:12) .EQ. 'VMIS_CINE_GC') THEN
+         CINEGC = .TRUE.
       ELSE IF ( COMPOR(1)(1:16) .EQ. 'GRILLE_PINTO_MEN') THEN
-          PINTO = .TRUE.
-      ELSE IF ( COMPOR(1)(1:4) .EQ. 'ELAS') THEN
-          ELAS = .TRUE.
+         PINTO  = .TRUE.
+      ELSE IF ( COMPOR(1)(1:4)  .EQ. 'ELAS') THEN
+         ELAS   = .TRUE.
       ELSE
-          COM1D=.TRUE.
-          IF ((COMPOR(5)(1:7).NE.'DEBORST').AND.
-     &        (COMPOR(1)(1:4).NE.'SANS')) THEN
-               VALKM(1) = COMPOR(1)
-               VALKM(2) = 'COMP_INCR'
-                CALL U2MESK('F','ALGORITH6_81',2,VALKM)
-          ENDIF
+         COM1D=.TRUE.
+         IF (  (COMPOR(5)(1:7).NE.'DEBORST').AND.
+     &         (COMPOR(1)(1:4).NE.'SANS')) THEN
+            VALKM(1) = COMPOR(1)
+            VALKM(2) = 'COMP_INCR'
+            CALL U2MESK('F','ALGORITH6_81',2,VALKM)
+         ENDIF
       ENDIF
-
+C
       IF (.NOT.COM1D) THEN
 C --- CARACTERISTIQUES ELASTIQUES A TMOINS
-
         CALL RCVALB(FAMI,KPG,KSP,'-',IMATE,' ','ELAS',0,' ',0.D0,
      &              1,'E',EM,CODRES,1)
-
 C --- CARACTERISTIQUES ELASTIQUES A TPLUS
-
         CALL RCVALB(FAMI,KPG,KSP,'+',IMATE,' ','ELAS',0,' ',0.D0,
      &              1,'E',EP,CODRES,1)
       ENDIF
-
-      IF (ISOT) THEN
-        CALL VERIFT(FAMI,KPG,KSP,'T',IMATE,'ELAS',1,DEPSTH,IRET)
-        DEPSM = DEPS-DEPSTH
-        CALL NM1DIS(FAMI,KPG,KSP,IMATE,EM,EP,SIGM,
-     &            DEPSM,VIM,OPTION,COMPOR,' ',SIGP,VIP,DSIDEP)
-      ELSE IF (CINE) THEN
-        CALL VERIFT(FAMI,KPG,KSP,'T',IMATE,'ELAS',1,DEPSTH,IRET)
-        DEPSM = DEPS-DEPSTH
-        CALL NM1DCI(FAMI,KPG,KSP,IMATE,EM,EP,SIGM,
-     &            DEPSM,VIM,OPTION,' ',SIGP,VIP,DSIDEP)
-      ELSE IF (ELAS) THEN
-
-        IF (OPTION.EQ.'FULL_MECA'.OR.
-     &      OPTION.EQ.'RIGI_MECA_TANG') THEN
-           DSIDEP = EP
+C
+      IF     (ISOT) THEN
+         CALL VERIFT(FAMI,KPG,KSP,'T',IMATE,'ELAS',1,DEPSTH,IRET)
+         DEPSM = DEPS-DEPSTH
+         CALL NM1DIS(FAMI,KPG,KSP,IMATE,EM,EP,SIGM,
+     &               DEPSM,VIM,OPTION,COMPOR,' ',SIGP,VIP,DSIDEP)
+C
+      ELSEIF (CINE) THEN
+         CALL VERIFT(FAMI,KPG,KSP,'T',IMATE,'ELAS',1,DEPSTH,IRET)
+         DEPSM = DEPS-DEPSTH
+         CALL NM1DCI(FAMI,KPG,KSP,IMATE,EM,EP,SIGM,
+     &               DEPSM,VIM,OPTION,' ',SIGP,VIP,DSIDEP)
+C
+      ELSEIF (CINEGC) THEN
+         CALL VERIFT(FAMI,KPG,KSP,'T',IMATE,'ELAS',1,DEPSTH,IRET)
+         DEPSM = DEPS-DEPSTH
+C ---    VERIFICATION QUE SIGM_LIM, EPSI_LIM SONT PRESENTS
+         CALL R8INIR(NBVAL,0.D0,VALRES,1)
+         CALL RCVALB(FAMI,1,1,'+',IMATE,' ','ECRO_LINE',
+     &               0,' ',0.D0,4,ECROLI,VALRES,ICODRE,1)
+         IF ( ICODRE(3)+ICODRE(4).NE.0 ) THEN
+            VALKM(1)='VMIS_CINE_GC'
+            VALKM(2)=ECROLI(3)
+            VALKM(3)=ECROLI(4)
+            CALL U2MESK('F','COMPOR1_76',3,VALKM)
+         ENDIF
+         CALL VMCI1D('RIGI',KPG,KSP,IMATE,EM,EP,SIGM,
+     &               DEPSM,VIM,OPTION,' ',SIGP,VIP,DSIDEP)
+      ELSEIF (ELAS) THEN
+        IF  (OPTION.EQ.'FULL_MECA'.OR.
+     &       OPTION.EQ.'RIGI_MECA_TANG') THEN
+            DSIDEP = EP
         ENDIF
         IF (OPTION.EQ.'RAPH_MECA'.OR.OPTION.EQ.'FULL_MECA') THEN
            VIP(1) = 0.D0
            CALL VERIFT(FAMI,KPG,KSP,'T',IMATE,'ELAS',1,DEPSTH,IRET)
            SIGP = EP* (SIGM/EM+DEPS-DEPSTH)
         ENDIF
-
-      ELSE IF (COM1D) THEN
-
-        CALL COMP1D(FAMI,KPG,KSP,OPTION,
-     &              SIGM,EPSM,DEPS,
-     &              ANGMAS,
-     &              VIM,VIP,SIGP,DSIDEP,CODRET)
-      ELSE IF (PINTO) THEN
-          CALL NMMABA (IMATE,COMPOR,E,ET,SIGY,
-     &             NCSTPM,CSTPM)
-        CALL VERIFT(FAMI,KPG,KSP,'T',IMATE,'ELAS',1,DEPSTH,IRET)
-        DEPSM = DEPS-DEPSTH
-        CALL NM1DPM(FAMI,KPG,KSP,IMATE,OPTION,NVARPI,NCSTPM,CSTPM,
-     &              SIGM,VIM,DEPSM,VIP,SIGP,DSIDEP)
+C
+      ELSEIF (COM1D) THEN
+         CALL COMP1D(FAMI,KPG,KSP,OPTION,SIGM,
+     &               EPSM,DEPS,ANGMAS,VIM,VIP,
+     &               SIGP,DSIDEP,CODRET)
+C
+      ELSEIF (PINTO) THEN
+         CALL NMMABA(IMATE,COMPOR,E,ET,SIGY,NCSTPM,CSTPM)
+         CALL VERIFT(FAMI,KPG,KSP,'T',IMATE,'ELAS',1,DEPSTH,IRET)
+         DEPSM = DEPS-DEPSTH
+         CALL NM1DPM(FAMI,KPG,KSP,IMATE,OPTION,NVARPI,NCSTPM,CSTPM,
+     &               SIGM,VIM,DEPSM,VIP,SIGP,DSIDEP)
       ENDIF
-
       END

@@ -1,9 +1,11 @@
       SUBROUTINE DIAGO3(TENS,VECP,VALP)
-
-C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 26/04/2011   AUTEUR COURTOIS M.COURTOIS 
+      IMPLICIT NONE
+      REAL*8   TENS(6),VALP(3),VECP(3,3)
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+C            CONFIGURATION MANAGEMENT OF EDF VERSION
+C MODIF ALGORITH  DATE 02/04/2013   AUTEUR PROIX J-M.PROIX 
+C ======================================================================
+C COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -18,42 +20,43 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
-
-      IMPLICIT NONE
-      REAL*8   TENS(6),VALP(3),VECP(3,3)
-
-C ----------------------------------------------------------------------
-C  DIAGONALISATION MATRICE 3x3 SYMETRIQUE
-C    IN    TENS   : TENSEUR SOUS LA FORME
-C                     (XX YY ZZ XY XZ YZ)
-C ----------------------------------------------------------------------
+C
+C              DIAGONALISATION MATRICE 3x3 SYMETRIQUE
+C
+C  IN
+C     TENS   : TENSEUR SOUS LA FORME (XX YY ZZ XY XZ YZ)
+C  OUT
+C     VECP   : VECTEURS PROPRES
+C     VALP   : VALEURS PROPRES
+C
+C --- ------------------------------------------------------------------
+C
       REAL*8      TOL, TOLDYN
       REAL*8      TR(6), TU(6) ,  JACAUX(3)
       INTEGER     NPERM, NITJAC, TTRIJ, OTRIJ,NBIND
-
-      DATA   NPERM ,TOL,TOLDYN    /12,1.D-10,1.D-2/
-      DATA   TTRIJ,OTRIJ  /2,2/
-C                          0 - tri en valeur relative
-C                          2 - pas de tri
-C                            0 - ordre croissant
-C                            2 - pas de tri
-
-
+C
+      DATA        NPERM , NBIND   / 12 , 3 /
+      DATA        TOL ,   TOLDYN  / 1.0D-10 , 1.0D-02/
+C     PAS DE TRI
+      DATA        TTRIJ , OTRIJ   / 2 , 2 /
+C
+C --- ------------------------------------------------------------------
+C
+C     MATRICE  TR = (XX XY XZ YY YZ ZZ) POUR JACOBI
       TR(1) = TENS(1)
       TR(2) = TENS(4)
       TR(3) = TENS(5)
       TR(4) = TENS(2)
       TR(5) = TENS(6)
       TR(6) = TENS(3)
-      NBIND=3
+C     MATRICE UNITE = (1 0 0 1 0 1) POUR JACOBI
       TU(1) = 1.D0
       TU(2) = 0.D0
       TU(3) = 0.D0
       TU(4) = 1.D0
       TU(5) = 0.D0
       TU(6) = 1.D0
-
-         CALL JACOBI(NBIND,NPERM,TOL,TOLDYN,TR,TU,VECP,VALP,JACAUX,
-     &               NITJAC,TTRIJ,OTRIJ)
-
+C
+      CALL JACOBI(NBIND,NPERM,TOL,TOLDYN,TR,TU,VECP,VALP,JACAUX,
+     &            NITJAC,TTRIJ,OTRIJ)
       END

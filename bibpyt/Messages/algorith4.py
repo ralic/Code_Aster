@@ -1,8 +1,8 @@
-#@ MODIF algorith4 Messages  DATE 13/11/2012   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF algorith4 Messages  DATE 02/04/2013   AUTEUR PROIX J-M.PROIX 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -20,6 +20,10 @@
 # RESPONSABLE DELMAS J.DELMAS
 
 cata_msg = {
+
+10 : _("""
+Pas de couplage possible avec UMLV et le comportement %(k1)s.
+"""),
 
 35 : _(u"""
  rang supérieur a dimension vecteur

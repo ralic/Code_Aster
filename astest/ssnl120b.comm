@@ -1,22 +1,22 @@
-# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
+# MODIF  DATE 02/04/2013   AUTEUR PROIX J-M.PROIX 
 # TITRE POUTRE EULER_BERNOULLI MULTIFIBRES (STATIQUE NON-LINEAIRE MAZARS)
 # ssnl120b.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
-# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-# (AT YOUR OPTION) ANY LATER VERSION.                                                    
-#                                                                       
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-#                                                                       
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 DEBUT(CODE=_F(NOM='SSNL120B', NIV_PUB_WEB='INTERNET'), DEBUG=_F(SDVERI='NON'))
 
@@ -35,13 +35,14 @@ GF=DEFI_GEOM_FIBRE(
 
 # Module d'Young
 EB = 3.7272E10
+Nu = 0.20
 BETON = DEFI_MATER_GC(
    MAZARS=_F(
       UNITE_LONGUEUR = 'M',
       FCJ      = 40.963E+06, EIJ=EB,
-      EPSI_C   = 1.75754E-03, NU=0.2,
-      SIGM_ELS = 35.0E+06,
-      EPSI_ELU = 3.5E-03,
+      EPSI_C   = 1.75754E-03, NU=Nu,
+      SIGM_LIM = 35.0E+06,
+      EPSI_LIM = 3.5E-03, AT=0.70,
    ),
    RHO=2400.0,  INFO=2,
 )
@@ -49,7 +50,7 @@ BETON = DEFI_MATER_GC(
 
 COMPF=DEFI_COMPOR(
    GEOM_FIBRE=GF,MATER_SECT=BETON,
-   MULTIFIBRE=_F(GROUP_FIBRE='SECF',MATER=BETON, RELATION='MAZARS_1D'),
+   MULTIFIBRE=_F(GROUP_FIBRE='SECF',MATER=BETON, RELATION='MAZARS_GC'),
 )
 
 CHMAT=AFFE_MATERIAU(
@@ -116,42 +117,46 @@ U1MAZAR=STAT_NON_LINE(
    NEWTON=_F(MATRICE='TANGENTE',REAC_ITER=1,),
 )
 
+import numpy as NP
 # Sigma est en MPa, il faut multiplier par 1.0E+06 dans le TEST_RESU
-instant = [ 0.6,     1.0,     2.0,     2.10 ,   3.0,      3.56,     4.0,      5.0,      5.68,     6.0    ]
-sigma   = [ 3.0572,  2.7195,  0.9712,  2.6735,  0.9177, -40.9490, -23.2204, -11.6102, -22.8269, -14.181  ]
-domtrac = [ 0.0235,  0.4788,  0.4788,  0.5053,  0.9754,   0.9754,   0.9754,   0.9754,   0.9754,   0.9754 ]
-domcomp = [ 0.0,     0.0,     0.0,     0.0,     0.0,      0.3896,   0.8443,   0.8443,   0.8484,   0.9239 ]
-sigma   = [ 3.0572,  2.7195,  0.9712,  2.6735,  0.9177, -40.9490, -23.2204, -11.6102, -22.8269, -14.181  ]
-# Pour tester V1 = CRITELS = sigma/SIGM_ELS = sigma / 35.0 pour les sigma <0 sinon 0
-critels = [ 0.0, 0.0, 0.0, 0.0, 0.0, 40.9490/35.0, 23.2204/35.0, 11.6102/35.0, 22.8269/35.0, 14.181/35.0]
-
+instant =           [ 0.6,       1.0,       2.0,       2.10 ,      3.0,      3.56,         4.0,        5.0,       5.68,       6.0    ]
+domtrac =           [ 0.0235302, 0.4788408, 0.4788408, 0.50532268, 0.975378, 0.9753784,    0.9753784,  0.9753784, 0.9753784,  0.9753784 ]
+domcomp =           [ 0.0,       0.0,       0.0,       0.0,        0.0,      0.38963675,   0.84425,    0.84425,   0.8484054,  0.9239058 ]
+sigma   = NP.array( [ 3.0571785, 2.7194502, 0.9712322, 2.6734539,  0.9176946, -40.94903, -23.220435, -11.610218, -22.826938, -14.180916  ] )
+# Pour tester V1 = CRITELS = sigma/SIGM_ELS = sigma / 35.0
+critels = sigma / 35.0
+# nom_vari       = ('CRITSIG','CRITEPS','ENDO','EPSEQT','EPSEQC','RSIGMA','TEMP_MAX','DISSIP',),
+#                    V1        V2        V3     V4       V5       V6       V7         V8
 MPa = 1.0E+06
 mclf = {}
 mclf['RESU'] = []
 for ii in range(len(instant)):
    mclf['RESU'].append( _F(RESULTAT=U1MAZAR,MAILLE='M1',POINT=1,SOUS_POINT=1,NOM_CMP='SIXX',INST=instant[ii],
-                           VALE_CALC=sigma[ii]*MPa, VALE_REFE=sigma[ii]*MPa,   #TODO vale_calc
-                           NOM_CHAM='SIEF_ELGA', REFERENCE='ANALYTIQUE', CRITERE=('RELATIF','ABSOLU'), PRECISION=1.0E-04, TOLE_MACHINE=(1.0E-04,1.0E-04), ), )
+                           VALE_CALC=sigma[ii]*MPa, VALE_REFE=sigma[ii]*MPa,
+                           NOM_CHAM='SIEF_ELGA', REFERENCE='ANALYTIQUE', CRITERE=('RELATIF','ABSOLU'), ), )
    mclf['RESU'].append( _F(RESULTAT=U1MAZAR,MAILLE='M1',POINT=1,SOUS_POINT=1,NOM_CMP='V1',  INST=instant[ii],
-                           VALE_CALC=critels[ii], VALE_REFE=critels[ii],   #TODO vale_calc
-                           NOM_CHAM='VARI_ELGA', REFERENCE='ANALYTIQUE', CRITERE=('RELATIF','ABSOLU'), PRECISION=2.0E-03, TOLE_MACHINE=(2.0E-03,2.0E-03), ), )
-   mclf['RESU'].append( _F(RESULTAT=U1MAZAR,MAILLE='M1',POINT=1,SOUS_POINT=1,NOM_CMP='V3',  INST=instant[ii],
-                           VALE_CALC=domtrac[ii], VALE_REFE=domtrac[ii],   #TODO vale_calc
-                           NOM_CHAM='VARI_ELGA', REFERENCE='ANALYTIQUE', CRITERE=('RELATIF','ABSOLU'), PRECISION=2.0E-03, TOLE_MACHINE=(2.0E-03,2.0E-03), ), )
-   mclf['RESU'].append( _F(RESULTAT=U1MAZAR,MAILLE='M1',POINT=1,SOUS_POINT=1,NOM_CMP='V4',  INST=instant[ii],
-                           VALE_CALC=domcomp[ii], VALE_REFE=domcomp[ii],   #TODO vale_calc
-                           NOM_CHAM='VARI_ELGA', REFERENCE='ANALYTIQUE', CRITERE=('RELATIF','ABSOLU'), PRECISION=2.0E-03, TOLE_MACHINE=(2.0E-03,2.0E-03), ), )
+                           VALE_CALC=critels[ii], VALE_REFE=critels[ii],
+                           NOM_CHAM='VARI_ELGA', REFERENCE='ANALYTIQUE', CRITERE=('RELATIF','ABSOLU'), ), )
+   if (sigma[ii] > 0.0 ):
+      mclf['RESU'].append( _F(RESULTAT=U1MAZAR,MAILLE='M1',POINT=1,SOUS_POINT=1,NOM_CMP='V3',  INST=instant[ii],
+                              VALE_CALC=domtrac[ii], VALE_REFE=domtrac[ii],
+                              NOM_CHAM='VARI_ELGA', REFERENCE='ANALYTIQUE', CRITERE=('ABSOLU'), ), )
+   else:
+      mclf['RESU'].append( _F(RESULTAT=U1MAZAR,MAILLE='M1',POINT=1,SOUS_POINT=1,NOM_CMP='V3',  INST=instant[ii],
+                              VALE_CALC=domcomp[ii], VALE_REFE=domcomp[ii],
+                              NOM_CHAM='VARI_ELGA', REFERENCE='ANALYTIQUE', CRITERE=('ABSOLU'), ), )
+
 TEST_RESU(**mclf)
 
-# Pour tester V2 = CRITELU = epsi / EPSI_ELU = DX /35.0E-04 pour les espi <0 sinon 0
-instant = [ 1.0, 2.0, 3.0,  4.0,       5.0,       6.0,      7.0  ]
-critelu = [ 0.0, 0.0, 0.0, 40.0/35.0, 20.0/35.0, 50.0/35.0, 0.0  ]
+# Pour tester V2 = CRITELU = epsi*sqrt(1.0+2.0*Nu*Nu)/EPSI_LIM = DX*sqrt(1.0+2.0*Nu*Nu)/35.0E-04
+instant =           [ 1.0,  2.0,  3.0,   4.0,   5.0,   6.0, 7.0 ]
+critelu = NP.array( [ 1.4,  0.5, 10.0, -40.0, -20.0, -50.0, 0.0 ] ) * NP.sqrt(1.0+2.0*Nu*Nu)/35.0
 mclf = {}
 mclf['RESU'] = []
 for ii in range(len(instant)):
    mclf['RESU'].append( _F(RESULTAT=U1MAZAR,MAILLE='M1',POINT=1,SOUS_POINT=1,NOM_CMP='V2',  INST=instant[ii],
-                           VALE_CALC=critelu[ii], VALE_REFE=critelu[ii],   #TODO vale_calc
-                           NOM_CHAM='VARI_ELGA', REFERENCE='ANALYTIQUE', CRITERE=('RELATIF','ABSOLU'), PRECISION=2.0E-03, TOLE_MACHINE=(2.0E-03, 2.0E-03), ), )
+                           VALE_CALC=critelu[ii], VALE_REFE=critelu[ii],
+                           NOM_CHAM='VARI_ELGA', REFERENCE='ANALYTIQUE', CRITERE=('ABSOLU'), ), )
 TEST_RESU(**mclf)
 
 FOFO2=DEFI_FONCTION(
@@ -189,40 +194,44 @@ U2MAZAR=STAT_NON_LINE(
 )
 
 # Sigma est en MPa, il faut multiplier par 1.0E+06 dans le TEST_RESU
-instant = [ 1.0,      2.0,     3.0,      4.0,    ]
-sigma   = [ 2.7195, -23.2204,  0.9177, -14.181,  ]
-domtrac = [ 0.4788,   0.4788,  0.9754,   0.9754, ]
-domcomp = [ 0.0,      0.8443,  0.8443,   0.9239, ]
-# Pour tester V1 = CRITELS = sigma/SIGM_ELS = sigma / 35.0 pour les sigma <0 sinon 0
-critels = [ 0.0,  23.2204/35.0, 0.0,  14.181/35.0]
+instant =            [ 1.0,        2.0,       3.0,         4.0,    ]
+sigma   = NP.array(  [ 2.71945,  -23.2204356, 0.917694,  -14.180916, ] )
+domtrac =            [ 0.478841,   0.4788408, 0.9753784,  0.9753784, ]
+domcomp =            [ 0.0,        0.84425,   0.84425,    0.9239058, ]
+# Pour tester V1 = CRITELS = sigma/SIGM_ELS = sigma / 35.0
+critels = sigma/35.0
+# nom_vari       = ('CRITSIG','CRITEPS','ENDO','EPSEQT','EPSEQC','RSIGMA','TEMP_MAX','DISSIP',),
+#                    V1        V2        V3     V4       V5       V6       V7         V8
 
 MPa = 1.0E+06
 mclf = {}
 mclf['RESU'] = []
 for ii in range(len(instant)):
    mclf['RESU'].append( _F(RESULTAT=U2MAZAR,MAILLE='M1',POINT=1,SOUS_POINT=1,NOM_CMP='SIXX',INST=instant[ii],
-                           VALE_CALC=sigma[ii]*MPa, VALE_REFE=sigma[ii]*MPa,   #TODO vale_calc
-                           NOM_CHAM='SIEF_ELGA', REFERENCE='ANALYTIQUE', CRITERE=('RELATIF','ABSOLU'), PRECISION=1.0E-04, TOLE_MACHINE=(1.0E-04, 1.0E-04), ), )
+                           VALE_CALC=sigma[ii]*MPa, VALE_REFE=sigma[ii]*MPa,
+                           NOM_CHAM='SIEF_ELGA', REFERENCE='ANALYTIQUE', CRITERE=('RELATIF','ABSOLU'), ), )
    mclf['RESU'].append( _F(RESULTAT=U2MAZAR,MAILLE='M1',POINT=1,SOUS_POINT=1,NOM_CMP='V1',  INST=instant[ii],
-                           VALE_CALC=critels[ii], VALE_REFE=critels[ii],   #TODO vale_calc
-                           NOM_CHAM='VARI_ELGA', REFERENCE='ANALYTIQUE', CRITERE=('RELATIF','ABSOLU'), PRECISION=1.0E-04, TOLE_MACHINE=(1.0E-04, 1.0E-04), ), )
-   mclf['RESU'].append( _F(RESULTAT=U2MAZAR,MAILLE='M1',POINT=1,SOUS_POINT=1,NOM_CMP='V3',  INST=instant[ii],
-                           VALE_CALC=domtrac[ii], VALE_REFE=domtrac[ii],   #TODO vale_calc
-                           NOM_CHAM='VARI_ELGA', REFERENCE='ANALYTIQUE', CRITERE=('RELATIF','ABSOLU'), PRECISION=2.0E-03, TOLE_MACHINE=(2.0E-03, 2.0E-03), ), )
-   mclf['RESU'].append( _F(RESULTAT=U2MAZAR,MAILLE='M1',POINT=1,SOUS_POINT=1,NOM_CMP='V4',  INST=instant[ii],
-                           VALE_CALC=domcomp[ii], VALE_REFE=domcomp[ii],   #TODO vale_calc
-                           NOM_CHAM='VARI_ELGA', REFERENCE='ANALYTIQUE', CRITERE=('RELATIF','ABSOLU'), PRECISION=2.0E-03, TOLE_MACHINE=(2.0E-03, 2.0E-03), ), )
+                           VALE_CALC=critels[ii], VALE_REFE=critels[ii],
+                           NOM_CHAM='VARI_ELGA', REFERENCE='ANALYTIQUE', CRITERE=('RELATIF','ABSOLU'), ), )
+   if (sigma[ii] > 0.0 ):
+      mclf['RESU'].append( _F(RESULTAT=U2MAZAR,MAILLE='M1',POINT=1,SOUS_POINT=1,NOM_CMP='V3',  INST=instant[ii],
+                              VALE_CALC=domtrac[ii], VALE_REFE=domtrac[ii],
+                              NOM_CHAM='VARI_ELGA', REFERENCE='ANALYTIQUE', CRITERE=('ABSOLU'), ), )
+   else:
+      mclf['RESU'].append( _F(RESULTAT=U2MAZAR,MAILLE='M1',POINT=1,SOUS_POINT=1,NOM_CMP='V3',  INST=instant[ii],
+                              VALE_CALC=domcomp[ii], VALE_REFE=domcomp[ii],
+                              NOM_CHAM='VARI_ELGA', REFERENCE='ANALYTIQUE', CRITERE=('ABSOLU'), ), )
 TEST_RESU(**mclf)
 
-# Pour tester V2 = CRITELU = epsi / EPSI_ELU = DX /35.0E-04 pour les espi <0 sinon 0
-instant = [  1.0,  2.0,      3.0,  4.0,      5.0 ]
-critelu = [  0.0, 40.0/35.0, 0.0, 50.0/35.0, 0.0 ]
+# Pour tester V2 = CRITELU = epsi*sqrt(1.0+2.0*Nu*Nu)/EPSI_LIM = DX*sqrt(1.0+2.0*Nu*Nu)/35.0E-04
+instant =            [ 1.0,  2.0,   3.0,   4.0, 5.0 ]
+critelu = NP.array(  [ 1.4, -40.0, 10.0, -50.0, 0.0 ] ) * NP.sqrt(1.0+2.0*Nu*Nu)/35.0
 mclf = {}
 mclf['RESU'] = []
 for ii in range(len(instant)):
    mclf['RESU'].append( _F(RESULTAT=U2MAZAR,MAILLE='M1',POINT=1,SOUS_POINT=1,NOM_CMP='V2',  INST=instant[ii],
-                           VALE_CALC=critelu[ii], VALE_REFE=critelu[ii],    #TODO vale_calc
-                           NOM_CHAM='VARI_ELGA', REFERENCE='ANALYTIQUE', CRITERE=('RELATIF','ABSOLU'), PRECISION=2.0E-03, TOLE_MACHINE=(2.0E-03, 2.0E-03), ), )
+                           VALE_CALC=critelu[ii], VALE_REFE=critelu[ii],
+                           NOM_CHAM='VARI_ELGA', REFERENCE='ANALYTIQUE', CRITERE=('ABSOLU'), ), )
 TEST_RESU(**mclf)
 
 

@@ -1,22 +1,22 @@
-# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
+# MODIF  DATE 02/04/2013   AUTEUR PROIX J-M.PROIX 
 # TITRE POUTRE EULER_BERNOULLI MULTIFIBRES (STATIQUE NON-LINEAIRE)
 # ssnl119b.para = tps_job 60 mem_job 256Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
-# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-# (AT YOUR OPTION) ANY LATER VERSION.                                                    
-#                                                                       
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-#                                                                       
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 # tps_job 480 mem_job 32Mo ncpus 1 liste_test S
 
@@ -71,8 +71,8 @@ PMFMAZAR=DEFI_COMPOR(
    GEOM_FIBRE=GF,
    MATER_SECT=MATOR,
    MULTIFIBRE=(
-      _F(GROUP_FIBRE='SACI', MATER=ACIER, RELATION='ECRO_CINE_1D'),
-      _F(GROUP_FIBRE='SBET', MATER=BETON, RELATION='MAZARS_1D'),),
+      _F(GROUP_FIBRE='SACI', MATER=ACIER, RELATION='VMIS_CINE_GC'),
+      _F(GROUP_FIBRE='SBET', MATER=BETON, RELATION='MAZARS_GC'),),
 )
 
 MATMAZAR=AFFE_MATERIAU(
@@ -150,7 +150,7 @@ U1MAZAR=STAT_NON_LINE(
 U1MAZAR=CALC_CHAMP(FORCE='REAC_NODA', reuse =U1MAZAR, RESULTAT=U1MAZAR, );
 
 # Instants
-Temps = [  0.100       ,   1.400       ,   2.680       ]
+instant=[  0.100       ,   1.400       ,   2.680       ]
 # reactions
 React = [  1.75623E+04 ,   1.10527E+05 ,   1.21222E+05 ]
 # contraintes acier tendu
@@ -166,184 +166,27 @@ Betot = [  2.92412E+06 ,   8.52817E+02 ,   5.02952E+03 ]
 
 U1MAZAR=CALC_CHAMP(reuse=U1MAZAR, RESULTAT=U1MAZAR, DEFORMATION=('EPSI_ELGA'), )
 
-TEST_RESU(RESU=(_F(GROUP_NO='A',
-                   INST=0.10000000000000001,
-                   RESULTAT=U1MAZAR,
-                   NOM_CHAM='REAC_NODA',
-                   NOM_CMP='DY',
-                   VALE_CALC=1.7562299999999999E4,
-                   TOLE_MACHINE=2.9999999999999997E-4,
-                   CRITERE=('RELATIF', 'ABSOLU'),
-                   ),
-                _F(GROUP_NO='A',
-                   INST=1.3999999999999999,
-                   RESULTAT=U1MAZAR,
-                   NOM_CHAM='REAC_NODA',
-                   NOM_CMP='DY',
-                   VALE_CALC=1.10527E5,
-                   TOLE_MACHINE=2.9999999999999997E-4,
-                   CRITERE=('RELATIF', 'ABSOLU'),
-                   ),
-                _F(GROUP_NO='A',
-                   INST=2.6800000000000002,
-                   RESULTAT=U1MAZAR,
-                   NOM_CHAM='REAC_NODA',
-                   NOM_CMP='DY',
-                   VALE_CALC=1.21222E5,
-                   TOLE_MACHINE=2.9999999999999997E-4,
-                   CRITERE=('RELATIF', 'ABSOLU'),
-                   ),
-                _F(INST=0.10000000000000001,
-                   POINT=1,
-                   SOUS_POINT=41,
-                   RESULTAT=U1MAZAR,
-                   NOM_CHAM='SIEF_ELGA',
-                   NOM_CMP='SIXX',
-                   VALE_CALC=1.9932600E7,
-                   TOLE_MACHINE=2.9999999999999997E-4,
-                   CRITERE=('RELATIF', 'ABSOLU'),
-                   MAILLE='M9',),
-                _F(INST=1.3999999999999999,
-                   POINT=1,
-                   SOUS_POINT=41,
-                   RESULTAT=U1MAZAR,
-                   NOM_CHAM='SIEF_ELGA',
-                   NOM_CMP='SIXX',
-                   VALE_CALC=4.00499000E8,
-                   TOLE_MACHINE=2.9999999999999997E-4,
-                   CRITERE=('RELATIF', 'ABSOLU'),
-                   MAILLE='M9',),
-                _F(INST=2.6800000000000002,
-                   POINT=1,
-                   SOUS_POINT=41,
-                   RESULTAT=U1MAZAR,
-                   NOM_CHAM='SIEF_ELGA',
-                   NOM_CMP='SIXX',
-                   VALE_CALC=4.35444000E8,
-                   TOLE_MACHINE=2.9999999999999997E-4,
-                   CRITERE=('RELATIF', 'ABSOLU'),
-                   MAILLE='M9',),
-                _F(INST=0.10000000000000001,
-                   POINT=1,
-                   SOUS_POINT=44,
-                   RESULTAT=U1MAZAR,
-                   NOM_CHAM='SIEF_ELGA',
-                   NOM_CMP='SIXX',
-                   VALE_CALC=-2.2139400E7,
-                   TOLE_MACHINE=2.9999999999999997E-4,
-                   CRITERE=('RELATIF', 'ABSOLU'),
-                   MAILLE='M9',),
-                _F(INST=1.3999999999999999,
-                   POINT=1,
-                   SOUS_POINT=44,
-                   RESULTAT=U1MAZAR,
-                   NOM_CHAM='SIEF_ELGA',
-                   NOM_CMP='SIXX',
-                   VALE_CALC=-1.77301000E8,
-                   TOLE_MACHINE=2.9999999999999997E-4,
-                   CRITERE=('RELATIF', 'ABSOLU'),
-                   MAILLE='M9',),
-                _F(INST=2.6800000000000002,
-                   POINT=1,
-                   SOUS_POINT=44,
-                   RESULTAT=U1MAZAR,
-                   NOM_CHAM='SIEF_ELGA',
-                   NOM_CMP='SIXX',
-                   VALE_CALC=-4.01893000E8,
-                   TOLE_MACHINE=2.9999999999999997E-4,
-                   CRITERE=('RELATIF', 'ABSOLU'),
-                   MAILLE='M9',),
-                _F(INST=0.10000000000000001,
-                   POINT=1,
-                   SOUS_POINT=41,
-                   RESULTAT=U1MAZAR,
-                   NOM_CHAM='EPSI_ELGA',
-                   NOM_CMP='EPXX',
-                   VALE_CALC=9.9391599999999999E-05,
-                   TOLE_MACHINE=2.9999999999999997E-4,
-                   CRITERE=('RELATIF', 'ABSOLU'),
-                   MAILLE='M9',),
-                _F(INST=1.3999999999999999,
-                   POINT=1,
-                   SOUS_POINT=41,
-                   RESULTAT=U1MAZAR,
-                   NOM_CHAM='EPSI_ELGA',
-                   NOM_CMP='EPXX',
-                   VALE_CALC=2.0991199999999999E-3,
-                   TOLE_MACHINE=2.9999999999999997E-4,
-                   CRITERE=('RELATIF', 'ABSOLU'),
-                   MAILLE='M9',),
-                _F(INST=2.6800000000000002,
-                   POINT=1,
-                   SOUS_POINT=41,
-                   RESULTAT=U1MAZAR,
-                   NOM_CHAM='EPSI_ELGA',
-                   NOM_CMP='EPXX',
-                   VALE_CALC=0.0107467,
-                   TOLE_MACHINE=2.9999999999999997E-4,
-                   CRITERE=('RELATIF', 'ABSOLU'),
-                   MAILLE='M9',),
-                _F(INST=0.10000000000000001,
-                   POINT=1,
-                   SOUS_POINT=1,
-                   RESULTAT=U1MAZAR,
-                   NOM_CHAM='SIEF_ELGA',
-                   NOM_CMP='SIXX',
-                   VALE_CALC=-4.476570E6,
-                   TOLE_MACHINE=2.9999999999999997E-4,
-                   CRITERE=('RELATIF', 'ABSOLU'),
-                   MAILLE='M9',),
-                _F(INST=1.3999999999999999,
-                   POINT=1,
-                   SOUS_POINT=1,
-                   RESULTAT=U1MAZAR,
-                   NOM_CHAM='SIEF_ELGA',
-                   NOM_CMP='SIXX',
-                   VALE_CALC=-3.5310500E7,
-                   TOLE_MACHINE=2.9999999999999997E-4,
-                   CRITERE=('RELATIF', 'ABSOLU'),
-                   MAILLE='M9',),
-                _F(INST=2.6800000000000002,
-                   POINT=1,
-                   SOUS_POINT=1,
-                   RESULTAT=U1MAZAR,
-                   NOM_CHAM='SIEF_ELGA',
-                   NOM_CMP='SIXX',
-                   VALE_CALC=-3.0641300E7,
-                   TOLE_MACHINE=2.9999999999999997E-4,
-                   CRITERE=('RELATIF', 'ABSOLU'),
-                   MAILLE='M9',),
-                _F(INST=0.10000000000000001,
-                   POINT=1,
-                   SOUS_POINT=40,
-                   RESULTAT=U1MAZAR,
-                   NOM_CHAM='SIEF_ELGA',
-                   NOM_CMP='SIXX',
-                   VALE_CALC=2.924120E6,
-                   TOLE_MACHINE=2.9999999999999997E-4,
-                   CRITERE=('RELATIF', 'ABSOLU'),
-                   MAILLE='M9',),
-                _F(INST=1.3999999999999999,
-                   POINT=1,
-                   SOUS_POINT=40,
-                   RESULTAT=U1MAZAR,
-                   NOM_CHAM='SIEF_ELGA',
-                   NOM_CMP='SIXX',
-                   VALE_CALC=852.81700000000001,
-                   TOLE_MACHINE=2.9999999999999997E-4,
-                   CRITERE=('RELATIF', 'ABSOLU'),
-                   MAILLE='M9',),
-                _F(INST=2.6800000000000002,
-                   POINT=1,
-                   SOUS_POINT=40,
-                   RESULTAT=U1MAZAR,
-                   NOM_CHAM='SIEF_ELGA',
-                   NOM_CMP='SIXX',
-                   VALE_CALC=5029.5200000000004,
-                   TOLE_MACHINE=2.9999999999999997E-4,
-                   CRITERE=('RELATIF', 'ABSOLU'),
-                   MAILLE='M9',),
-                ),
-          )
+mclf = {}
+mclf['RESU'] = []
+for ii in range(len(instant)):
+   mclf['RESU'].append( _F(INST=instant[ii], GROUP_NO='A',                        RESULTAT=U1MAZAR, NOM_CHAM='REAC_NODA',
+                           NOM_CMP='DY',   VALE_CALC=React[ii], TOLE_MACHINE=3.0E-4, CRITERE=('RELATIF', 'ABSOLU'), ), )
+
+   mclf['RESU'].append( _F(INST=instant[ii], MAILLE='M9', POINT=1, SOUS_POINT=41, RESULTAT=U1MAZAR, NOM_CHAM='SIEF_ELGA',
+                           NOM_CMP='SIXX', VALE_CALC=Aciet[ii], TOLE_MACHINE=3.0E-4, CRITERE=('RELATIF', 'ABSOLU'), ), )
+
+   mclf['RESU'].append( _F(INST=instant[ii], MAILLE='M9', POINT=1, SOUS_POINT=44, RESULTAT=U1MAZAR, NOM_CHAM='SIEF_ELGA',
+                           NOM_CMP='SIXX', VALE_CALC=Aciec[ii], TOLE_MACHINE=3.0E-4, CRITERE=('RELATIF', 'ABSOLU'), ), )
+
+   mclf['RESU'].append( _F(INST=instant[ii], MAILLE='M9', POINT=1, SOUS_POINT=41, RESULTAT=U1MAZAR, NOM_CHAM='EPSI_ELGA',
+                           NOM_CMP='EPXX', VALE_CALC=Eacit[ii], TOLE_MACHINE=3.0E-4, CRITERE=('RELATIF', 'ABSOLU'), ), )
+
+   mclf['RESU'].append( _F(INST=instant[ii], MAILLE='M9', POINT=1, SOUS_POINT=1,  RESULTAT=U1MAZAR, NOM_CHAM='SIEF_ELGA',
+                           NOM_CMP='SIXX', VALE_CALC=Betoc[ii], TOLE_MACHINE=3.0E-4, CRITERE=('RELATIF', 'ABSOLU'), ), )
+
+   mclf['RESU'].append( _F(INST=instant[ii], MAILLE='M9', POINT=1, SOUS_POINT=40, RESULTAT=U1MAZAR, NOM_CHAM='SIEF_ELGA',
+                           NOM_CMP='SIXX', VALE_CALC=Betot[ii], TOLE_MACHINE=3.0E-4, CRITERE=('RELATIF', 'ABSOLU'), ), )
+
+TEST_RESU(**mclf)
 
 FIN()

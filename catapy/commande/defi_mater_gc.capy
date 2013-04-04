@@ -1,20 +1,20 @@
-#& MODIF COMMANDE  DATE 13/03/2013   AUTEUR HAMON F.HAMON 
+#& MODIF COMMANDE  DATE 02/04/2013   AUTEUR PROIX J-M.PROIX 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
-# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-# (AT YOUR OPTION) ANY LATER VERSION.                                                  
-#                                                                       
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-#                                                                       
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 # RESPONSABLE FLEJOU J-L.FLEJOU
 # -*- coding: iso-8859-1 -*-
@@ -57,8 +57,8 @@ DEFI_MATER_GC=MACRO(nom="DEFI_MATER_GC",
       BT             =SIMP(statut='f',typ='R',     val_min=0.0E+0,
                            fr="Paramètre de décroissance post-pic en traction"),
       # Pour post-traitement ELS et ELU
-      SIGM_ELS       =SIMP(statut='f',typ='R',  fr="Contrainte limite ELS"),
-      EPSI_ELU       =SIMP(statut='f',typ='R',  fr="Déformation limite ELU"),
+      SIGM_LIM       =SIMP(statut='f',typ='R',  fr="Contrainte limite, post-traitement"),
+      EPSI_LIM       =SIMP(statut='f',typ='R',  fr="Déformation limite, post-traitement"),
    ),
    # ============================================================================
    ACIER       =FACT(statut= 'f',max= 1,
@@ -68,8 +68,8 @@ DEFI_MATER_GC=MACRO(nom="DEFI_MATER_GC",
       NU             =SIMP(statut='f',typ='R',  val_min=0.0E+0, val_max=0.5E+0,     fr="Coefficient de poisson"),
       D_SIGM_EPSI    =SIMP(statut='f',typ='R',                                      fr="Module plastique"),
       # Pour post-traitement ELS et ELU
-      SIGM_ELS       =SIMP(statut='f',typ='R',  fr="Contrainte limite ELS"),
-      EPSI_ELU       =SIMP(statut='f',typ='R',  fr="Déformation limite ELU"),
+      SIGM_LIM       =SIMP(statut='f',typ='R',  fr="Contrainte limite, post-traitement"),
+      EPSI_LIM       =SIMP(statut='f',typ='R',  fr="Déformation limite, post-traitement"),
    ),
    # ============================================================================
    INFO        =SIMP(statut='f',typ='I',     into=(1,2,),     defaut=1),

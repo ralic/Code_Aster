@@ -1,21 +1,21 @@
-#@ MODIF defi_mater_gc_ops Macro  DATE 09/10/2012   AUTEUR HAMON F.HAMON 
+#@ MODIF defi_mater_gc_ops Macro  DATE 02/04/2013   AUTEUR PROIX J-M.PROIX 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
-# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-# (AT YOUR OPTION) ANY LATER VERSION.                                                  
-#                                                                       
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-#                                                                       
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 # RESPONSABLE FLEJOU J-L.FLEJOU
 
@@ -49,8 +49,8 @@ def Mazars_Unil(DMATER,args):
       BC             = 1/(Déformation au pic en compression)
       AT             = Paramètre de décroissance post-pic en traction
       BT             = 1/(Déformation au pic en traction)
-      SIGM_ELS       = Contrainte limite ELS
-      EPSI_ELU       = Déformation limite ELU
+      SIGM_LIM       = Contrainte limite pour post-traitement
+      EPSI_LIM       = Déformation limite pour post-traitement
 
    Masse volumique, dilatation, amortissements
       RHO            = Masse volumique
@@ -73,7 +73,7 @@ def Mazars_Unil(DMATER,args):
       coeff = 1.0E+06
       MATER['UNITE'] = 'Pa'
    #
-   listepara = ['EIJ','FTJ','EPSI_C','NU','EPSD0','K','BT','AT','BC','AC','SIGM_ELS','EPSI_ELU']
+   listepara = ['EIJ','FTJ','EPSI_C','NU','EPSD0','K','BT','AT','BC','AC','SIGM_LIM','EPSI_LIM']
    for xx in listepara:
       if ( MATER.has_key(xx) ):
          if ( MATER[xx] != None ):
@@ -93,17 +93,17 @@ def Mazars_Unil(DMATER,args):
          elif ( xx == 'BT'):
             BT = EIJ/FTJ
          elif ( xx == 'AT'):
-            AT = 0.70
+            AT = 0.90
          elif ( xx == 'BC'):
             BC = 1.0/(NU*(2.0**0.5)*EPSI_C)
          elif ( xx == 'AC'):
             NUB = NU*(2.0**0.5)
             ECNUB = EPSI_C*NUB
             AC = (FCJ*NUB/EIJ - EPSD0)/(ECNUB*numpy.exp(BC*EPSD0-BC*ECNUB) - EPSD0)
-         elif ( xx == 'SIGM_ELS'):
-            SIGM_ELS = 0.6*FCJ
-         elif ( xx == 'EPSI_ELU'):
-            EPSI_ELU = 3.5/1000.0
+         elif ( xx == 'SIGM_LIM'):
+            SIGM_LIM = 0.6*FCJ
+         elif ( xx == 'EPSI_LIM'):
+            EPSI_LIM = 3.5/1000.0
    #
    mclef = {}
    #
@@ -118,7 +118,7 @@ def Mazars_Unil(DMATER,args):
          if ( args[xx] != None ): mclef['ELAS'][xx] = args[xx]
    # Mot clef MATER
    mclef['MAZARS'] = {'K':K, 'EPSD0':EPSD0, 'AC':AC, 'AT':AT, 'BC':BC, 'BT':BT,
-                           'SIGM_ELS':SIGM_ELS, 'EPSI_ELU':EPSI_ELU}
+                      'SIGM_LIM':SIGM_LIM, 'EPSI_LIM':EPSI_LIM}
    #
    # On affiche dans tous les cas
    message1 = FaitMessage( mclef['ELAS'] )
@@ -137,8 +137,8 @@ def Acier_Cine_Line(DMATER,args):
       E              = Module d'Young
       D_SIGM_EPSI    = Module plastique
       SY             = Limite élastique
-      SIGM_ELS       = Contrainte limite ELS
-      EPSI_ELU       = Déformation limite ELU
+      SIGM_LIM       = Contrainte limite pour post-traitement
+      EPSI_LIM       = Déformation limite pour post-traitement
 
    Masse volumique, dilatation, amortissements
       RHO            = Masse volumique
@@ -154,7 +154,7 @@ def Acier_Cine_Line(DMATER,args):
    # Obligatoire SY
    SY = MATER['SY']
    #
-   listepara = ['D_SIGM_EPSI','NU','SIGM_ELS','EPSI_ELU']
+   listepara = ['D_SIGM_EPSI','NU','SIGM_LIM','EPSI_LIM']
    for xx in listepara:
       if ( MATER.has_key(xx) ):
          if ( MATER[xx] != None ):
@@ -163,10 +163,10 @@ def Acier_Cine_Line(DMATER,args):
             NU = 0.30
          elif ( xx == 'D_SIGM_EPSI'):
             D_SIGM_EPSI = E/1.0E+04
-         elif ( xx == 'SIGM_ELS'):
-            SIGM_ELS = SY/1.1
-         elif ( xx == 'EPSI_ELU'):
-            EPSI_ELU = 10.0/1000.0
+         elif ( xx == 'SIGM_LIM'):
+            SIGM_LIM = SY/1.1
+         elif ( xx == 'EPSI_LIM'):
+            EPSI_LIM = 10.0/1000.0
    #
    mclef = {}
    #
@@ -181,7 +181,7 @@ def Acier_Cine_Line(DMATER,args):
          if ( args[xx] != None ): mclef['ELAS'][xx] = args[xx]
    # Mot clef MATER
    mclef['ECRO_LINE'] = {'D_SIGM_EPSI':D_SIGM_EPSI,'SY':SY,
-                          'SIGM_ELS':SIGM_ELS, 'EPSI_ELU':EPSI_ELU}
+                         'SIGM_LIM':SIGM_LIM, 'EPSI_LIM':EPSI_LIM}
    # On affiche dans tous les cas
    message1 = FaitMessage( mclef['ELAS'] )
    message2 = FaitMessage( mclef['ECRO_LINE'] )

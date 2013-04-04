@@ -1,8 +1,8 @@
-#@ MODIF cata_vari Comportement  DATE 17/09/2012   AUTEUR FOUCAULT A.FOUCAULT 
+#@ MODIF cata_vari Comportement  DATE 02/04/2013   AUTEUR PROIX J-M.PROIX 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -67,8 +67,12 @@ DICT_NOM_VARI = {
     "COHESION" : _(u"cohésion"),
     "COMPT" : _(u"itération de Newton courante,"),
     "COMR" : _(u"itération de Newton de rupture,"),
-    "CRITELS": _(u"Critère ELS, utilisé en Génie Civil"),
-    "CRITELU": _(u"Critère ELU, utilisé en Génie Civil"),
+
+    "CRITELS": _(u"Critère en contrainte, utilisé en Génie Civil"),
+    "CRITELU": _(u"Critère en déformation, utilisé en Génie Civil"),
+
+    "CRITSIG": _(u"Critère en contrainte, utilisé en Génie Civil"),
+    "CRITEPS": _(u"Critère en déformation, utilisé en Génie Civil"),
     "CRITHILL" : _(u"Critère de Hill : pour Hujeux : densité normalisée pour le travail du second ordre"),
     "DB1" : _(u"c_plan ou 1d algo Deborst, variable interne 1"),
     "DB2" : _(u"c_plan ou 1d algo Deborst, variable interne 2"),
@@ -174,7 +178,9 @@ DICT_NOM_VARI = {
     "ENEL_RES" : _(u"énegie résiduelle"),
     "EPAISSJO" : _(u"épaisseur du joint clavé"),
     "EPEQIRRA" : _(u"déformation plastique équivalente d'irradiation"),
-    "EPSEQ" : _(u"déformation équivalente au sens de Mazars"),
+    "EPSEQ" : _(u"déformation équivalente, au sens de Mazars"),
+    "EPSEQC" : _(u"déformation de compression équivalente, au sens de Mazars"),
+    "EPSEQT" : _(u"déformation de traction équivalente, au sens de Mazars"),
     "EPSEXX" : _(u"déformation élastique composante XX"),
     "EPSEXY" : _(u"déformation élastique composante XY"),
     "EPSEXZ" : _(u"déformation élastique composante XZ"),
@@ -326,6 +332,7 @@ DICT_NOM_VARI = {
     "RHXY" : _(u"Hujeux : rayon du seuil déviatoire atteint par  la surface de charge avant le décharge du mécanisme déviatoire du plan 3"),
     "RHXZ" : _(u"Hujeux : rayon du seuil déviatoire atteint par  la surface de charge avant le décharge du mécanisme déviatoire du plan 2"),
     "RHYZ" : _(u"Hujeux : rayon du seuil déviatoire atteint par  la surface de charge avant le décharge du mécanisme déviatoire du plan 1"),
+    "RSIGMA": _("Facteur de triaxialité des contraintes, modèle Mazars"),
     "SATLIQ" : _(u"LIQU_AD_GAZ v3"),
     "SAUT_N" : _(u"saut normal"),
     "SAUT_T1" : _(u"saut tangentiel 1"),
