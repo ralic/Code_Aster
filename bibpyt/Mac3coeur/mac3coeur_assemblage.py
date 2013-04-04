@@ -1,8 +1,8 @@
-#@ MODIF mac3coeur_assemblage Mac3coeur  DATE 05/11/2012   AUTEUR FERNANDES R.FERNANDES 
+#@ MODIF mac3coeur_assemblage Mac3coeur  DATE 02/04/2013   AUTEUR PERONY R.PERONY 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
@@ -184,10 +184,10 @@ class Assemblage(object):
     def mcf_geom_fibre(self):
         """Retourne les mots-clés facteurs pour DEFI_GEOM_FIBRE."""
         from Cata.cata import _F
-        def vale_4fibres(rayon, epais, surf):
+        def vale_4fibres(surf, iner):
             """Retourne les triplets (y, z, val) pour les 4 fibres."""
-            excent = rayon - epais / 2.
             squart = surf / 4.
+            excent = (iner/(2*squart))**0.5
             return (0., excent, squart,
                     0., -excent, squart,
                     excent, 0., squart,
@@ -197,22 +197,22 @@ class Assemblage(object):
             _F(GROUP_FIBRE='CR_' + self.idAST,
                COOR_AXE_POUTRE=(0., 0.),
                CARA="SURFACE",
-               VALE=vale_4fibres(self.RAYCRA, self.EPCRA, self.S_CR),),
+               VALE=vale_4fibres(self.S_CR, self.I_CR,),),
             # partie courante des tubes-guides
             _F(GROUP_FIBRE='LG_' + self.idAST,
                COOR_AXE_POUTRE=(0., 0.),
                CARA="SURFACE",
-               VALE=vale_4fibres(self.RAY1GU, self.EP1GU, self.S_TG_C),),
+               VALE=vale_4fibres(self.S_TG_C,self.I_TG_C,),),
             # biais des tubes-guides
             _F(GROUP_FIBRE='BI_' + self.idAST,
                COOR_AXE_POUTRE=(0., 0.),
                CARA="SURFACE",
-               VALE=vale_4fibres(self.RAY2GU, self.EPMOY, self.S_TG_B),),
+               VALE=vale_4fibres(self.S_TG_B,self.I_TG_B,),),
             # retreint des tubes-guides
             _F(GROUP_FIBRE='RE_' + self.idAST,
                COOR_AXE_POUTRE=(0., 0.),
                CARA="SURFACE",
-               VALE=vale_4fibres(self.RAY2GU, self.EP2GU, self.S_TG_R),),
+               VALE=vale_4fibres(self.S_TG_R,self.I_TG_R,),),
         )
         return mcf
 

@@ -1,4 +1,4 @@
-#@ MODIF mac3coeur_coeur Mac3coeur  DATE 04/02/2013   AUTEUR PERONY R.PERONY 
+#@ MODIF mac3coeur_coeur Mac3coeur  DATE 02/04/2013   AUTEUR PERONY R.PERONY 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -52,6 +52,8 @@ class Coeur(object):
         'Hcav1periph','Hcav2periph','Hcav3periph','Hcav4periph',
         #Températures caractérisitiques
         'TP_REF','ARRET_FR','ARRET_CH','TINFCUVE','TSUPCUVE','TENVELOP','TP_TG1','TP_TG2','TXX1','TXX2','TXX3','TXX4',
+        #Abscisses caracteristiques pour le profil de temperature des crayons
+        'SXX2','SXX3',
         # paramètres de l'interpolation linéaire
         #du coefficient de dilatation des internes de cuve
         'ALPH1','ALPH2',
@@ -899,8 +901,8 @@ class Coeur(object):
         ######################################################
 
         XX1 =            self.XINFC ;
-        XX2 = XX1 + self.LONCR*0.125 ;
-        XX3 = XX1 + self.LONCR*0.875 ;
+        XX2 = XX1 + self.LONCR*self.SXX2 ;
+        XX3 = XX1 + self.LONCR*self.SXX3 ;
         XX4 = XX1 + self.LONCR ;
 
         _F_CR3 = DEFI_FONCTION( NOM_PARA = 'X', NOM_RESU    = 'TEMP', PROL_DROITE = 'LINEAIRE', PROL_GAUCHE = 'LINEAIRE',
@@ -945,7 +947,7 @@ class Coeur(object):
            _M_RES  = DEFI_MATERIAU( DIS_CONTACT = _F( RIGI_NOR = 1.E9, ),);
         elif (CONTACT == 'NON'):
            _M_RES  = DEFI_MATERIAU( DIS_CONTACT = _F( RIGI_NOR = 1.E1, ),);
-
+        
         mcf_affe_mater = self.mcf_coeur_mater(_M_RES)
         mcf_compor     = self.mcf_compor_fibre(GFF)
 
@@ -986,11 +988,11 @@ class Coeur(object):
         # Definition d'un materiau bidon pour les elements de poutres
         _MAT_BID = DEFI_MATERIAU(ELAS = _F( E = 1.0,   NU = 0.0, RHO = 0.0, ALPHA = 0.0,),);
         _MAT_GR  = DEFI_MATERIAU(ELAS = _F( E = 1.E14, NU = 0.3, RHO = 0.0, ALPHA = 0.0,),);
-
+        
         mcf  = []
         mtmp = (_F(GROUP_MA = 'RES_TOT', MATER = _M_RES,),)
         mcf.extend(mtmp)
-
+        
         for ac in self.collAC.values():
             mcf.extend(ac.mcf_AC_mater())
             mtmp = (_F(GROUP_MA = ('GT_' + ac.idAST + '_M','GT_' + ac.idAST + '_E',), MATER = _MAT_BID,),
