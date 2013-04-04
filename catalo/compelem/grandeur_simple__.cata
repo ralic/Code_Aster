@@ -1,4 +1,4 @@
-%& MODIF COMPELEM  DATE 25/03/2013   AUTEUR LEBOUVIER F.LEBOUVIER 
+%& MODIF COMPELEM  DATE 03/04/2013   AUTEUR DESOZA T.DESOZA 
 % RESPONSABLE PROIX
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
@@ -355,7 +355,7 @@ GRANDEUR_SIMPLE__
        RELCOM : relation de comportement : 'ELAS' , 'VMIS_ISOT_LINE' , ...
        NBVARI : nombre de variables internes pour le comportement
        DEFORM : type de déformations : 'PETIT' , ...
-       INCELA : grand déplacement (E. Lorentz) . . .
+       INCELA : grand déplacement,  . . .
        LGPG : longueur d'un point de Gauss (quantité qui permet a IMPR_RESU
        l'écriture des points de Gauss sans les mélanger)
        NBCOUCH :Nombre de couches

@@ -1,4 +1,4 @@
-# MODIF  DATE 25/03/2013   AUTEUR LEBOUVIER F.LEBOUVIER 
+# MODIF  DATE 03/04/2013   AUTEUR DESOZA T.DESOZA 
 # TITRE PLAQUE CIRCULAIRE POSEE     SOUS PRESSION DKT    50 N - 76 TRIA3
 # ssls101a.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -362,6 +362,108 @@ TEST_TABLE(REFERENCE='ANALYTIQUE',
 #
 ENER=CALC_CHAMP(RESULTAT=RESU,
                 ENERGIE=('ENEL_ELNO','ENEL_ELGA','ENEL_ELEM'));
+
+ENER_EL = POST_ELEM(
+  RESULTAT = RESU,
+  MODELE=MODEL,
+  ENER_ELAS = _F(TOUT = 'OUI'),
+  )
+
+IMPR_TABLE(TABLE=ENER_EL)
+
+TEST_RESU(RESU=_F(
+           VALE_CALC=123.58906668398,
+           NOM_CHAM='ENEL_ELEM',
+           NOM_CMP='TOTALE',
+           TYPE_TEST='SOMM',
+           RESULTAT=ENER,
+           NUME_ORDRE=1,
+           ),)
+
+TEST_TABLE(VALE_CALC=123.58906668398,
+           VALE_REFE=123.58906668398,
+           NOM_PARA='TOTALE',
+           TABLE=ENER_EL,
+           REFERENCE='AUTRE_ASTER',
+           FILTRE=_F(NOM_PARA='INST',
+                     VALE=0.0,),
+           )
+
+TEST_RESU(RESU=_F(
+           VALE_CALC=0.0,
+           CRITERE='ABSOLU',
+           NOM_CHAM='ENEL_ELEM',
+           NOM_CMP='MEMBRANE',
+           TYPE_TEST='SOMM',
+           RESULTAT=ENER,
+           NUME_ORDRE=1,
+           ),)
+
+TEST_TABLE(VALE_CALC=0.0,
+           VALE_REFE=0.0,
+           CRITERE='ABSOLU',
+           NOM_PARA='MEMBRANE',
+           TABLE=ENER_EL,
+           REFERENCE='AUTRE_ASTER',
+           FILTRE=_F(NOM_PARA='INST',
+                     VALE=0.0,),
+           )
+
+TEST_RESU(RESU=_F(
+           VALE_CALC=123.10012743906,
+           NOM_CHAM='ENEL_ELEM',
+           NOM_CMP='FLEXION',
+           TYPE_TEST='SOMM',
+           RESULTAT=ENER,
+           NUME_ORDRE=1,
+           ),)
+
+TEST_TABLE(VALE_CALC=123.10012743906,
+           VALE_REFE=123.10012743906,
+           NOM_PARA='FLEXION',
+           TABLE=ENER_EL,
+           REFERENCE='AUTRE_ASTER',
+           FILTRE=_F(NOM_PARA='INST',
+                     VALE=0.0,),
+          ) 
+
+TEST_RESU(RESU=_F(
+           VALE_CALC=0.48893924492711,
+           NOM_CHAM='ENEL_ELEM',
+           NOM_CMP='CISAILLE',
+           TYPE_TEST='SOMM',
+           RESULTAT=ENER,
+           NUME_ORDRE=1,
+           ),)
+
+TEST_TABLE(VALE_CALC=0.48893924492711,
+           VALE_REFE=0.48893924492711,
+           NOM_PARA='CISAILLE',
+           TABLE=ENER_EL,
+           REFERENCE='AUTRE_ASTER',
+           FILTRE=_F(NOM_PARA='INST',
+                     VALE=0.0,),
+          )
+
+TEST_RESU(RESU=_F(
+           VALE_CALC=0.0,
+           CRITERE='ABSOLU',
+           NOM_CHAM='ENEL_ELEM',
+           NOM_CMP='COUPL_MF',
+           TYPE_TEST='SOMM',
+           RESULTAT=ENER,
+           NUME_ORDRE=1,
+           ),)
+
+TEST_TABLE(VALE_CALC=0.0,
+           VALE_REFE=0.0,
+           CRITERE='ABSOLU',
+           NOM_PARA='COUPL_MF',
+           TABLE=ENER_EL,
+           REFERENCE='AUTRE_ASTER',
+           FILTRE=_F(NOM_PARA='INST',
+                     VALE=0.0,),
+          )
 
 TEST_RESU(RESU=(_F(RESULTAT=ENER,
                    NUME_ORDRE=1,
@@ -997,6 +1099,22 @@ TEST_TABLE(REFERENCE='AUTRE_ASTER',
                      VALE=1.0,),
            )
 
+TEST_TABLE(VALE_CALC=0.,
+           CRITERE='ABSOLU',
+           NOM_PARA='CISAILLE',
+           TABLE=ENER_E,
+           FILTRE=_F(NOM_PARA='INST',
+                     VALE=1.0,),
+           )
+
+TEST_TABLE(VALE_CALC=0.,
+           CRITERE='ABSOLU',
+           NOM_PARA='COUPL_MF',
+           TABLE=ENER_E,
+           FILTRE=_F(NOM_PARA='INST',
+                     VALE=1.0,),
+           )
+
 TEST_TABLE(REFERENCE='AUTRE_ASTER',
            PRECISION=1.E-2,
            VALE_CALC=123.100127439,
@@ -1032,13 +1150,13 @@ TEST_RESU(RESU=(_F(RESULTAT=U3,
                 _F(RESULTAT=U3,
                    NUME_ORDRE=4,
                    MAILLE='M1',
-                   CRITERE='RELATIF',
                    REFERENCE='NON_DEFINI',
                    NOM_CMP='MEMBRANE',
                    PRECISION=2.E-3,
                    NOM_CHAM='ENEL_ELEM',
+                   CRITERE='ABSOLU',
                    VALE_CALC=5.5325261753512E-35,
-                   VALE_REFE=5.5325261753512E-35,),
+                   VALE_REFE=0.0,),
                 _F(RESULTAT=U3,
                    NUME_ORDRE=4,
                    MAILLE='M1',

@@ -1,8 +1,8 @@
-#@ MODIF utilitai3 Messages  DATE 24/07/2012   AUTEUR PELLET J.PELLET 
+#@ MODIF utilitai3 Messages  DATE 03/04/2013   AUTEUR DESOZA T.DESOZA 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -311,7 +311,7 @@ Erreur :
 """),
 
 77 : _(u"""
- on attend un résultat de type "EVOL_NOLI" .
+ on attend un résultat de type "EVOL_NOLI" ou "EVOL_ELAS".
 """),
 
 
