@@ -90,6 +90,7 @@ SRCCATA        | src     | 11-04 | %(SRC)s/catalo
 SRCCAPY        | src     | 11-04 | %(SRC)s/catapy
 SRCTEST        | src     | 11-04 | %(SRC)s/astest
 SRCTEST        | src     | 11-04 | %(SRC)s/../validation/astest
+SRCTEST        | src     | 11-04 | %(SRC)s/../tests_data/astest
 SRCMAT         | src     | 11-04 | %(SRC)s/../data/materiau
 SRCHIST        | src     | 11-04 | %(SRC)s/histor
 #

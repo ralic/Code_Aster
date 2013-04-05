@@ -49,6 +49,7 @@ def options(self):
     self.load('scotch', tooldir='waftools')
     self.load('petsc', tooldir='waftools')
     self.load('legacy', tooldir='waftools')
+    self.load('runtest', tooldir='waftools')
 
     group.add_option('-g', '--enable-debug', dest='debug',
                     action='store_true', default=False,
@@ -164,13 +165,19 @@ def all(self):
     lst = ['install_release', 'install_debug']
     Options.commands = lst + Options.commands
 
-###############################################################################
 class BuildElementContext(Build.BuildContext):
     """execute the build for elements catalog only using an installed Aster (also performed at install)"""
     cmd = 'buildelem'
     fun = 'build_elements'
 
-###############################################################################
+def runtest(self):
+    """Run a testcase"""
+    self.load('runtest', tooldir='waftools')
+
+class RunTest(Build.BuildContext):
+    """Facility to execute a testcase"""
+    cmd = 'test'
+    fun = 'runtest'
 
 @Configure.conf
 def uncompress64(self, compressed):
