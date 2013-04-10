@@ -1,4 +1,4 @@
-#@ MODIF cata_vari Comportement  DATE 02/04/2013   AUTEUR PROIX J-M.PROIX 
+#@ MODIF cata_vari Comportement  DATE 08/04/2013   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -332,7 +332,7 @@ DICT_NOM_VARI = {
     "RHXY" : _(u"Hujeux : rayon du seuil déviatoire atteint par  la surface de charge avant le décharge du mécanisme déviatoire du plan 3"),
     "RHXZ" : _(u"Hujeux : rayon du seuil déviatoire atteint par  la surface de charge avant le décharge du mécanisme déviatoire du plan 2"),
     "RHYZ" : _(u"Hujeux : rayon du seuil déviatoire atteint par  la surface de charge avant le décharge du mécanisme déviatoire du plan 1"),
-    "RSIGMA": _("Facteur de triaxialité des contraintes, modèle Mazars"),
+    "RSIGMA": _(u"Facteur de triaxialité des contraintes, modèle Mazars"),
     "SATLIQ" : _(u"LIQU_AD_GAZ v3"),
     "SAUT_N" : _(u"saut normal"),
     "SAUT_T1" : _(u"saut tangentiel 1"),
