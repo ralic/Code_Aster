@@ -1,4 +1,4 @@
-%& MODIF TYPELEM  DATE 26/03/2013   AUTEUR CUVILLIE M.CUVILLIEZ 
+%& MODIF TYPELEM  DATE 09/04/2013   AUTEUR NDEFFO M.NDEFFO 
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -267,14 +267,14 @@ OPTION__
                                      E9NEUTI  PLONCHA  N6NEUT_R PBASLOR  N1NEUT_R PLSN     N1NEUT_R PLST
                                      E22NEUTR PPMILTO
                               OUT__  MMATUUR  PMATUUR
-    SIEF_ELGA           261   IN__   CCAMASS  PCAMASS  CCOMPOR  PCOMPOR  E18NEUI  PCNSETO
+    SIEF_ELGA           261   IN__   CCAMASS  PCAMASS  CCOMPOR  PCOMPOR  E36NEUI  PCNSETO
                                      DDL_MECA PDEPLAR  NGEOMER  PGEOMER  STANO_I  PSTANO
                                      CMATERC  PMATERC  E6NEUTR  PPINTTO  E6NEUTI  PHEAVTO
                                      ZVARCPG  PVARCRR  ZVARCPG  PVARCPR  N6NEUT_R PBASLOR
                                      E9NEUTI  PLONCHA  N1NEUT_R PLSN
                                      N1NEUT_R PLST     E22NEUTR PPMILTO  FISNO_I  PFISNO
                               OUT__  ECONTPG  PCONTRR
-    SIEF_ELNO           289   IN__   ECONTPG  PCONTRR  E18NEUI  PCNSETO  E9NEUTI  PLONCHA
+    SIEF_ELNO           289   IN__   ECONTPG  PCONTRR  E36NEUI  PCNSETO  E9NEUTI  PLONCHA
                               OUT__  ECONTNO  PSIEFNOR ECONTNC  PSIEFNOC
     SIEQ_ELGA           -1    IN__    OUT__    XXXXXX   XXXXXX
     SIEQ_ELNO           -1    IN__    OUT__    XXXXXX   XXXXXX
