@@ -1,0 +1,488 @@
+# MODIF  DATE 08/04/2013   AUTEUR LEBOUVIER F.LEBOUVIER 
+
+DEBUT(CODE=_F(NOM='SSLP117B',NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'));
+
+#------------------------------------------------------------------
+#
+# TITRE : PLAQUE CARREE - GRADIENT DE TEMPERATURE VARIABLE
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
+# (AT YOUR OPTION) ANY LATER VERSION.                                                    
+#                                                                       
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
+#                                                                       
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# ======================================================================
+#
+#         MAILLE       : QUAD4
+#         MODELISATION : DKT
+#         7 COUCHES
+#
+# AUTEUR : F. LEBOUVIER (DeltaCAD)
+# DATE   : 31/01/2013
+#
+#------------------------------------------------------------------
+
+MAIL=LIRE_MAILLAGE(FORMAT='MED',INFO=2)
+
+MAIL=DEFI_GROUP(reuse=MAIL,MAILLAGE=MAIL,
+                 CREA_GROUP_NO=(_F(OPTION='NOEUD_ORDO',
+                                   NOM='AB_ordo',
+                                   GROUP_MA='AB',
+                                   GROUP_NO_ORIG='A')))
+
+MODELE=AFFE_MODELE(MAILLAGE=MAIL,
+                  AFFE=_F(TOUT='OUI', PHENOMENE='MECANIQUE', MODELISATION='DKT',),
+                  );
+
+# DEFINITION DES FONCTIONS DE TEMPERATURE
+# ---------------------------------------
+
+T_SUP = FORMULE(NOM_PARA=('X','Y'),VALE=' 100-5*abs(X)-5*abs(Y)+0.5*abs(X*Y)')
+T_MOY = FORMULE(NOM_PARA=('X','Y'),VALE='0.')
+T_INF = FORMULE(NOM_PARA=('X','Y'),VALE='-100+5*abs(X)+5*abs(Y)-0.5*abs(X*Y)')
+
+
+# CONSTRUCTION DES CHAMPS DE GEOMETRIE
+# ------------------------------------
+
+CH_GEOM=CREA_CHAMP(OPERATION='EXTR',
+                   TYPE_CHAM='NOEU_GEOM_R',
+                   NOM_CHAM='GEOMETRIE',
+                   MAILLAGE=MAIL,
+                  )
+
+#------------------------------------------------
+
+TEMP_S=CREA_CHAMP(OPERATION='AFFE',
+                 TYPE_CHAM='NOEU_NEUT_F',
+                 MAILLAGE=MAIL,
+                 AFFE=_F( TOUT = 'OUI',
+                          NOM_CMP = ('X1',),
+                          VALE_F = (T_SUP,)
+                         )
+                )
+
+TEMP_S0= CREA_CHAMP(OPERATION='EVAL',
+                 TYPE_CHAM='NOEU_NEUT_R',
+                 CHAM_F=TEMP_S,
+                 CHAM_PARA=(CH_GEOM)
+                 )
+
+#------------------------------------------------
+
+TEMP_M=CREA_CHAMP(OPERATION='AFFE',
+                 TYPE_CHAM='NOEU_NEUT_F',
+                 MAILLAGE=MAIL,
+                 AFFE=_F( TOUT = 'OUI',
+                          NOM_CMP = ('X1',),
+                          VALE_F = (T_MOY,)
+                         )
+                )
+
+TEMP_M0= CREA_CHAMP(OPERATION='EVAL',
+                 TYPE_CHAM='NOEU_NEUT_R',
+                 CHAM_F=TEMP_M,
+                 CHAM_PARA=(CH_GEOM)
+                 )
+
+#------------------------------------------------
+
+TEMP_I=CREA_CHAMP(OPERATION='AFFE',
+                 TYPE_CHAM='NOEU_NEUT_F',
+                 MAILLAGE=MAIL,
+                 AFFE=_F( TOUT = 'OUI',
+                          NOM_CMP = ('X1',),
+                          VALE_F = (T_INF,)
+                         )
+                )
+
+TEMP_I0= CREA_CHAMP(OPERATION='EVAL',
+                 TYPE_CHAM='NOEU_NEUT_R',
+                 CHAM_F=TEMP_I,
+                 CHAM_PARA=(CH_GEOM)
+                 )
+
+#------------------------------------------------
+
+TEMP_IMP =CREA_CHAMP(OPERATION='ASSE',
+                 TYPE_CHAM='NOEU_TEMP_R',
+                 MAILLAGE=MAIL,
+                 ASSE=(
+                       _F(TOUT    = 'OUI',
+                          CHAM_GD = TEMP_S0,
+                          NOM_CMP = ('X1',),
+                          NOM_CMP_RESU = ('TEMP_SUP',)),
+                       _F(TOUT    = 'OUI',
+                          CHAM_GD = TEMP_M0,
+                          NOM_CMP = ('X1',),
+                          NOM_CMP_RESU = ('TEMP',),),
+                       _F(TOUT    = 'OUI',
+                          CHAM_GD = TEMP_I0,
+                          NOM_CMP = ('X1',),
+                          NOM_CMP_RESU = ('TEMP_INF',),)
+                ))
+
+ACIER=DEFI_MATERIAU(ELAS=_F( E  = 30.E+6,
+                             NU = 0.3,
+                             ALPHA = 6.5E-6,))
+
+
+CARAELEM=AFFE_CARA_ELEM(MODELE=MODELE,
+                        COQUE=_F(GROUP_MA = 'Plaque',
+                                 COQUE_NCOU=7,
+                                 EPAIS=0.25))
+
+TEMPLI2=CREA_RESU( OPERATION='AFFE', TYPE_RESU='EVOL_THER', NOM_CHAM='TEMP',
+                   AFFE=(_F( CHAM_GD=TEMP_IMP, INST=0.0,      )))
+
+TEMPER2=CREA_RESU( OPERATION='PREP_VRC2', TYPE_RESU='EVOL_THER',
+                  PREP_VRC2= _F(  MODELE=MODELE, CARA_ELEM=CARAELEM, EVOL_THER = TEMPLI2))
+
+
+CHMAT=AFFE_MATERIAU(   MAILLAGE=MAIL,AFFE=
+                         _F( TOUT = 'OUI',
+                               MATER = ACIER,),
+                        AFFE_VARC=_F(NOM_VARC='TEMP', EVOL=TEMPER2,VALE_REF=0),
+                      )
+
+CLIM=AFFE_CHAR_CINE(MODELE=MODELE,
+                      MECA_IMPO=(
+                               _F(GROUP_MA='Plaque',
+                                  DRZ=0.0,),
+                               _F(GROUP_NO=('DA'),
+                                  DX=0.0,
+                                  DRY=0.0,),
+                               _F(GROUP_NO=('AB'),
+                                  DY=0.0,
+                                  DRX=0.0),
+                               _F(GROUP_NO=('BC','CD'),
+                                  DZ=0.0,),
+                                  ),)
+
+RESU=MECA_STATIQUE(MODELE=MODELE, 
+                   CHAM_MATER=CHMAT,
+                   CARA_ELEM=CARAELEM, 
+                   EXCIT=_F(CHARGE=CLIM,),);
+
+
+depl_AB=MACR_LIGN_COUPE(RESULTAT=RESU,
+                     NOM_CHAM='DEPL',
+                     LIGN_COUPE=_F(TYPE='SEGMENT', DISTANCE_MAX=0.001,
+                                   NB_POINTS=6,
+                                   COOR_ORIG=(0.,0.,0.,),
+                                   COOR_EXTR=(10.,0.,0.,),),);
+
+IMPR_TABLE(TABLE=depl_AB,NOM_PARA=('NOM_CHAM','ABSC_CURV','DZ'))
+
+TEST_RESU(RESU=(_F(NUME_ORDRE=1,
+                   NOEUD='N4',
+                   REFERENCE='SOURCE_EXTERNE',
+                   RESULTAT=RESU,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DZ',
+                   VALE_CALC=0.14711736116141,
+                   VALE_REFE=14.712E-2,
+                   CRITERE='RELATIF',
+                   PRECISION=0.1E-2,),
+              ))
+
+
+
+RESU=CALC_CHAMP(reuse =RESU,
+               RESULTAT=RESU,
+               NUME_ORDRE=1,
+               CONTRAINTE=('SIGM_ELNO','EFGE_ELNO','EFGE_NOEU'));
+
+
+Mxx_AB=MACR_LIGN_COUPE(RESULTAT=RESU,
+                     NOM_CHAM='EFGE_NOEU',
+                     LIGN_COUPE=_F(TYPE='SEGMENT', DISTANCE_MAX=0.001,
+                                   NB_POINTS=11,
+                                   COOR_ORIG=(0.,0.,0.,),
+                                   COOR_EXTR=(10.,0.,0.,),),);
+
+IMPR_TABLE(TABLE=Mxx_AB,NOM_PARA=('NOM_CHAM','ABSC_CURV','MXX'))
+
+
+TEST_RESU(RESU=(_F(NUME_ORDRE=1,
+                   NOEUD='N107',
+                   REFERENCE='SOURCE_EXTERNE',
+                   RESULTAT=RESU,
+                   NOM_CHAM='EFGE_NOEU',
+                   NOM_CMP='MXX',
+                   VALE_CALC=-98.842625087646,
+                   VALE_REFE=-103.80,
+                   CRITERE='RELATIF',
+                   PRECISION=5.E-2,),
+              ))
+#-------------------------------------------------------------
+#
+# COUCHE no 1 : z=  -0.125cm a z= -0.089cm
+#
+# ON TESTE LES CONTRAINTES SIXX, SIYY et SIXY SUR LES PEAUX
+# INF, MOY et SUP en X=0.
+#
+#-------------------------------------------------------------
+
+SIG_C1_I=POST_CHAMP(RESULTAT=RESU,
+                    EXTR_COQUE=_F(NOM_CHAM='SIGM_ELNO',
+                                  NUME_COUCHE=1,
+                                  NIVE_COUCHE='INF',),);
+
+TEST_RESU(RESU=(_F(NUME_ORDRE=1,
+                   MAILLE='M2700',
+                   GROUP_NO='A',
+                   REFERENCE='NON_DEFINI',
+                   RESULTAT=SIG_C1_I,
+                   NOM_CHAM='SIGM_ELNO',
+                   NOM_CMP='SIXX',
+                   VALE_CALC=9653.5602149509,
+                   VALE_REFE=9653.5602149509,
+                   CRITERE='RELATIF',
+                   PRECISION=1.E-6,),
+                 _F(NUME_ORDRE=1,
+                   MAILLE='M2700',
+                   GROUP_NO='A',
+                   REFERENCE='NON_DEFINI',
+                   RESULTAT=SIG_C1_I,
+                   NOM_CHAM='SIGM_ELNO',
+                   NOM_CMP='SIYY',
+                   VALE_CALC=9653.5602156366,
+                   VALE_REFE=9653.5602156366,
+                   CRITERE='RELATIF',
+                   PRECISION=1.E-6,),
+                 _F(NUME_ORDRE=1,
+                   MAILLE='M2700',
+                   GROUP_NO='A',
+                   REFERENCE='NON_DEFINI',
+                   RESULTAT=SIG_C1_I,
+                   NOM_CHAM='SIGM_ELNO',
+                   NOM_CMP='SIXY',
+                   VALE_CALC=-0.063818740729773,
+                   VALE_REFE=-0.063818740729773,
+                   CRITERE='RELATIF',
+                   PRECISION=1.E-6,),
+            ))
+
+SIG_C1_M=POST_CHAMP(RESULTAT=RESU,
+                    EXTR_COQUE=_F(NOM_CHAM='SIGM_ELNO',
+                                  NUME_COUCHE=1,
+                                  NIVE_COUCHE='MOY',),);
+
+TEST_RESU(RESU=(_F(NUME_ORDRE=1,
+                   MAILLE='M2700',
+                   GROUP_NO='A',
+                   REFERENCE='NON_DEFINI',
+                   RESULTAT=SIG_C1_M,
+                   NOM_CHAM='SIGM_ELNO',
+                   NOM_CMP='SIXX',
+                   VALE_CALC=8274.4801842436,
+                   VALE_REFE=8274.4801842436,
+                   CRITERE='RELATIF',
+                   PRECISION=1.E-6,),
+                 _F(NUME_ORDRE=1,
+                   MAILLE='M2700',
+                   GROUP_NO='A',
+                   REFERENCE='NON_DEFINI',
+                   RESULTAT=SIG_C1_M,
+                   NOM_CHAM='SIGM_ELNO',
+                   NOM_CMP='SIYY',
+                   VALE_CALC=8274.4801848314,
+                   VALE_REFE=8274.4801848314,
+                   CRITERE='RELATIF',
+                   PRECISION=1.E-6,),
+                _F(NUME_ORDRE=1,
+                   MAILLE='M2700',
+                   GROUP_NO='A',
+                   REFERENCE='NON_DEFINI',
+                   RESULTAT=SIG_C1_M,
+                   NOM_CHAM='SIGM_ELNO',
+                   NOM_CMP='SIXY',
+                   VALE_CALC=-0.054701777768378,
+                   VALE_REFE=-0.054701777768378,
+                   CRITERE='RELATIF',
+                   PRECISION=1.E-6,),
+            ))
+
+
+SIG_C1_S=POST_CHAMP(RESULTAT=RESU,
+                    EXTR_COQUE=_F(NOM_CHAM='SIGM_ELNO',
+                                  NUME_COUCHE=1,
+                                  NIVE_COUCHE='SUP',),);
+
+TEST_RESU(RESU=(_F(NUME_ORDRE=1,
+                   MAILLE='M2700',
+                   GROUP_NO='A',
+                   REFERENCE='NON_DEFINI',
+                   RESULTAT=SIG_C1_S,
+                   NOM_CHAM='SIGM_ELNO',
+                   NOM_CMP='SIXX',
+                   VALE_CALC=6895.4001535363,
+                   VALE_REFE=6895.4001535363,
+                   CRITERE='RELATIF',
+                   PRECISION=1.E-6,),
+                 _F(NUME_ORDRE=1,
+                   MAILLE='M2700',
+                   GROUP_NO='A',
+                   REFERENCE='NON_DEFINI',
+                   RESULTAT=SIG_C1_S,
+                   NOM_CHAM='SIGM_ELNO',
+                   NOM_CMP='SIYY',
+                   VALE_CALC=6895.4001540262,
+                   VALE_REFE=6895.4001540262,
+                   CRITERE='RELATIF',
+                   PRECISION=1.E-6,),
+                _F(NUME_ORDRE=1,
+                   MAILLE='M2700',
+                   GROUP_NO='A',
+                   REFERENCE='NON_DEFINI',
+                   RESULTAT=SIG_C1_S,
+                   NOM_CHAM='SIGM_ELNO',
+                   NOM_CMP='SIXY',
+                   VALE_CALC=-0.045584814806981,
+                   VALE_REFE=-0.045584814806981,
+                   CRITERE='RELATIF',
+                   PRECISION=1.E-6,),
+            ))
+
+#-------------------------------------------------------------
+#
+# COUCHE no 7 : z= 0.089 cm a z= 0.125 cm
+#
+# ON TESTE LES CONTRAINTES SIXX, SIYY et SIXY SUR LES PEAUX
+# INF, MOY et SUP en X=0.
+#
+#-------------------------------------------------------------
+
+SIG_C7_I=POST_CHAMP(RESULTAT=RESU,
+                    EXTR_COQUE=_F(NOM_CHAM='SIGM_ELNO',
+                                  NUME_COUCHE=7,
+                                  NIVE_COUCHE='INF',),);
+
+TEST_RESU(RESU=(_F(NUME_ORDRE=1,
+                   MAILLE='M2700',
+                   GROUP_NO='A',
+                   REFERENCE='NON_DEFINI',
+                   RESULTAT=SIG_C7_I,
+                   NOM_CHAM='SIGM_ELNO',
+                   NOM_CMP='SIXX',
+                   VALE_CALC=-6895.4001535363,
+                   VALE_REFE=-6895.4001535363,
+                   CRITERE='RELATIF',
+                   PRECISION=1.E-6,),
+                 _F(NUME_ORDRE=1,
+                   MAILLE='M2700',
+                   GROUP_NO='A',
+                   REFERENCE='NON_DEFINI',
+                   RESULTAT=SIG_C7_I,
+                   NOM_CHAM='SIGM_ELNO',
+                   NOM_CMP='SIYY',
+                   VALE_CALC=-6895.4001540262,
+                   VALE_REFE=-6895.4001540262,
+                   CRITERE='RELATIF',
+                   PRECISION=1.E-6,),
+                _F(NUME_ORDRE=1,
+                   MAILLE='M2700',
+                   GROUP_NO='A',
+                   REFERENCE='NON_DEFINI',
+                   RESULTAT=SIG_C7_I,
+                   NOM_CHAM='SIGM_ELNO',
+                   NOM_CMP='SIXY',
+                   VALE_CALC=0.045584814806981,
+                   VALE_REFE=0.045584814806981,
+                   CRITERE='RELATIF',
+                   PRECISION=1.E-6,),
+            ))
+
+SIG_C7_M=POST_CHAMP(RESULTAT=RESU,
+                    EXTR_COQUE=_F(NOM_CHAM='SIGM_ELNO',
+                                  NUME_COUCHE=7,
+                                  NIVE_COUCHE='MOY',),);
+
+TEST_RESU(RESU=(_F(NUME_ORDRE=1,
+                   MAILLE='M2700',
+                   GROUP_NO='A',
+                   REFERENCE='NON_DEFINI',
+                   RESULTAT=SIG_C7_M,
+                   NOM_CHAM='SIGM_ELNO',
+                   NOM_CMP='SIXX',
+                   VALE_CALC=-8274.4801842436,
+                   VALE_REFE=-8274.4801842436,
+                   CRITERE='RELATIF',
+                   PRECISION=1.E-6,),
+                 _F(NUME_ORDRE=1,
+                   MAILLE='M2700',
+                   GROUP_NO='A',
+                   REFERENCE='NON_DEFINI',
+                   RESULTAT=SIG_C7_M,
+                   NOM_CHAM='SIGM_ELNO',
+                   NOM_CMP='SIYY',
+                   VALE_CALC=-8274.4801848314,
+                   VALE_REFE=-8274.4801848314,
+                   CRITERE='RELATIF',
+                   PRECISION=1.E-6,),
+                _F(NUME_ORDRE=1,
+                   MAILLE='M2700',
+                   GROUP_NO='A',
+                   REFERENCE='NON_DEFINI',
+                   RESULTAT=SIG_C7_M,
+                   NOM_CHAM='SIGM_ELNO',
+                   NOM_CMP='SIXY',
+                   VALE_CALC=0.054701777768377,
+                   VALE_REFE=0.054701777768377,
+                   CRITERE='RELATIF',
+                   PRECISION=1.E-6,),
+            ))
+
+
+SIG_C7_S=POST_CHAMP(RESULTAT=RESU,
+                    EXTR_COQUE=_F(NOM_CHAM='SIGM_ELNO',
+                                  NUME_COUCHE=7,
+                                  NIVE_COUCHE='SUP',),);
+
+TEST_RESU(RESU=(_F(NUME_ORDRE=1,
+                   MAILLE='M2700',
+                   GROUP_NO='A',
+                   REFERENCE='NON_DEFINI',
+                   RESULTAT=SIG_C7_S,
+                   NOM_CHAM='SIGM_ELNO',
+                   NOM_CMP='SIXX',
+                   VALE_CALC=-9653.5602149509,
+                   VALE_REFE=-9653.5602149509,
+                   CRITERE='RELATIF',
+                   PRECISION=1.E-6,),
+                 _F(NUME_ORDRE=1,
+                   MAILLE='M2700',
+                   GROUP_NO='A',
+                   REFERENCE='NON_DEFINI',
+                   RESULTAT=SIG_C7_S,
+                   NOM_CHAM='SIGM_ELNO',
+                   NOM_CMP='SIYY',
+                   VALE_CALC=-9653.5602156367,
+                   VALE_REFE=-9653.5602156367,
+                   CRITERE='RELATIF',
+                   PRECISION=1.E-6,),
+                _F(NUME_ORDRE=1,
+                   MAILLE='M2700',
+                   GROUP_NO='A',
+                   REFERENCE='NON_DEFINI',
+                   RESULTAT=SIG_C7_S,
+                   NOM_CHAM='SIGM_ELNO',
+                   NOM_CMP='SIXY',
+                   VALE_CALC=0.063818740729773,
+                   VALE_REFE=0.063818740729773,
+                   CRITERE='RELATIF',
+                   PRECISION=1.E-6,),
+            ))
+
+FIN()

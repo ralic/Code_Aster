@@ -1,0 +1,418 @@
+# MODIF  DATE 08/04/2013   AUTEUR LEBOUVIER F.LEBOUVIER 
+
+#------------------------------------------------------------------
+#
+# TITRE : POUTRE EPAISSE EN CONTRAINTES PLANES AVEC 
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
+# (AT YOUR OPTION) ANY LATER VERSION.                                                    
+#                                                                       
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
+#                                                                       
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# ======================================================================
+#         VARIATION DE TEMPERATURE LINEAIRE SUIVANT LA LARGEUR
+#
+#         MAILLE       : TRIA3
+#         MODELISATION : DKT
+#         3 COUCHES
+#
+# AUTEUR : F. LEBOUVIER (DeltaCAD)
+# DATE   : 31/01/2013
+#
+#------------------------------------------------------------------
+
+DEBUT(CODE=_F(NOM='TPLS102A',NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'));
+
+
+MAIL=LIRE_MAILLAGE(FORMAT='MED',)
+
+
+MODELE=AFFE_MODELE(MAILLAGE=MAIL,
+                   AFFE=_F(TOUT='OUI', 
+                           PHENOMENE='MECANIQUE', 
+                           MODELISATION='DKT',),
+                  );
+
+# DEFINITION DE LA FONCTION DE TEMPERATURE
+# ----------------------------------------
+
+FTEMP = FORMULE(NOM_PARA=('Y'),VALE='50.*Y -50.')
+
+
+# CONSTRUCTION DES CHAMPS DE GEOMETRIE
+# ------------------------------------
+
+CH_GEOM=CREA_CHAMP(OPERATION='EXTR',
+                   TYPE_CHAM='NOEU_GEOM_R',
+                   NOM_CHAM='GEOMETRIE',
+                   MAILLAGE=MAIL,
+                  )
+
+
+TEMP_F=CREA_CHAMP(OPERATION='AFFE',
+                 TYPE_CHAM='NOEU_NEUT_F',
+                 MAILLAGE=MAIL,
+                 AFFE=_F( TOUT = 'OUI',
+                          NOM_CMP = ('X1',),
+                          VALE_F = (FTEMP,)
+                         )
+                )
+
+TEMP0= CREA_CHAMP(OPERATION='EVAL',
+                 TYPE_CHAM='NOEU_NEUT_R',
+                 CHAM_F=TEMP_F,
+                 CHAM_PARA=(CH_GEOM)
+                 )
+
+TEMP1=CREA_CHAMP(OPERATION='ASSE',
+                TYPE_CHAM='NOEU_TEMP_R',
+                MAILLAGE=MAIL,
+                ASSE=_F( TOUT = 'OUI',
+                        CHAM_GD = TEMP0,
+                        NOM_CMP = ('X1',),
+                        NOM_CMP_RESU = ('TEMP',),
+                    )
+                )
+
+ACIER=DEFI_MATERIAU(ELAS=_F( E  = 2.E+04,
+                             NU = 0.3,
+                             ALPHA = 1.E-5,))
+
+CHMAT=AFFE_MATERIAU(MAILLAGE=MAIL,
+                             AFFE=_F( TOUT = 'OUI',
+                                     MATER = ACIER,),
+                             AFFE_VARC=_F(NOM_VARC='TEMP', 
+                                          CHAMP_GD=TEMP1,
+                                          VALE_REF=0),)
+
+CARAELEM=AFFE_CARA_ELEM(MODELE=MODELE,
+                        COQUE=_F(GROUP_MA = 'POUTRE',
+                                 COQUE_NCOU=3,
+                                 EPAIS=0.1))
+CLIM=AFFE_CHAR_MECA(MODELE=MODELE,
+                      DDL_IMPO=(
+                               _F(GROUP_MA=('AB','CD'),
+                                  DX=0.0,
+                                  DZ=0.0,
+                                  DRZ=0.0,),
+                               _F(GROUP_MA='BC',
+                                  DY=0.0,),
+                                  ),)
+
+RESU=MECA_STATIQUE(MODELE=MODELE, 
+                   CHAM_MATER=CHMAT,
+                   CARA_ELEM=CARAELEM, 
+                   EXCIT=_F(CHARGE=CLIM,),);
+
+RESU=CALC_CHAMP(reuse =RESU,
+               RESULTAT=RESU,
+               NUME_ORDRE=1,
+               CONTRAINTE=('SIGM_ELNO',),);
+
+#-------------------------------------------------------------
+#
+# COUCHE no 1 : z=-0.05m a z=-0.0167m
+#
+# ON TESTE LES CONTRAINTES SIXX, SIYY et SIXY SUR LES PEAUX
+# INF, MOY et SUP en X=0.
+#
+#-------------------------------------------------------------
+
+#--- COUCHE N0 1 , PEAU INF , X=0 Y=0.
+#      SIXX = 10. 
+#      SIYY =  0. 
+#      SIXY =  0.
+
+SIG_C1_I=POST_CHAMP(RESULTAT=RESU,
+                    EXTR_COQUE=_F(NOM_CHAM='SIGM_ELNO',
+                                  NUME_COUCHE=1,
+                                  NIVE_COUCHE='INF',),);
+
+CON_C1_I=MACR_LIGN_COUPE(RESULTAT=SIG_C1_I,
+                     NOM_CHAM='SIGM_ELNO',
+                     LIGN_COUPE=_F(TYPE='SEGMENT', DISTANCE_MAX=0.001,
+                                   NB_POINTS=11,
+                                   COOR_ORIG=(0.,0.,0.,),
+                                   COOR_EXTR=(0.,2.,0.,),),);
+
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           PRECISION=2.0E-2,
+           VALE_CALC=10.186691822582,
+           VALE_REFE=10.,
+           NOM_PARA='SIXX',
+           TABLE=CON_C1_I,
+           FILTRE=_F(NOM_PARA='ABSC_CURV',
+                     VALE=0.0,),)
+
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           PRECISION=0.6,
+           CRITERE='ABSOLU',
+           VALE_CALC=0.52192699678199,
+           VALE_REFE=0.,
+           NOM_PARA='SIYY',
+           TABLE=CON_C1_I,
+           FILTRE=_F(NOM_PARA='ABSC_CURV',
+                     VALE=0.0,),)
+
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           PRECISION=0.05,
+           CRITERE='ABSOLU',
+           VALE_CALC=0.037534320767407,
+           VALE_REFE=0.,
+           NOM_PARA='SIXY',
+           TABLE=CON_C1_I,
+           FILTRE=_F(NOM_PARA='ABSC_CURV',
+                     VALE=0.0,),)
+
+#--- COUCHE N0 1 , PEAU MOY , X=0 Y=1.
+#      SIXX =  0. 
+#      SIYY =  0. 
+#      SIXY =  0.
+
+SIG_C1_M=POST_CHAMP(RESULTAT=RESU,
+                    EXTR_COQUE=_F(NOM_CHAM='SIGM_ELNO',
+                                  NUME_COUCHE=1,
+                                  NIVE_COUCHE='MOY',),);
+
+CON_C1_M=MACR_LIGN_COUPE(RESULTAT=SIG_C1_M,
+                     NOM_CHAM='SIGM_ELNO',
+                     LIGN_COUPE=_F(TYPE='SEGMENT', DISTANCE_MAX=0.001,
+                                   NB_POINTS=11,
+                                   COOR_ORIG=(0.,0.,0.,),
+                                   COOR_EXTR=(0.,2.,0.,),),);
+
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           CRITERE='ABSOLU',
+           PRECISION=0.05,
+           VALE_CALC=0.039940536495630,
+           VALE_REFE=0.,
+           NOM_PARA='SIXX',
+           TABLE=CON_C1_M,
+           FILTRE=_F(NOM_PARA='ABSC_CURV',
+                     VALE=1.0,),)
+
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           PRECISION=0.2,
+           CRITERE='ABSOLU',
+           VALE_CALC=0.17357539881737,
+           VALE_REFE=0.,
+           NOM_PARA='SIYY',
+           TABLE=CON_C1_M,
+           FILTRE=_F(NOM_PARA='ABSC_CURV',
+                     VALE=1.0,),)
+
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           PRECISION=0.0035,
+           CRITERE='ABSOLU',
+           VALE_CALC=2.8847713012661E-03,
+           VALE_REFE=0.,
+           NOM_PARA='SIXY',
+           TABLE=CON_C1_M,
+           FILTRE=_F(NOM_PARA='ABSC_CURV',
+                     VALE=1.0,),)
+
+#--- COUCHE N0 1 , PEAU SUP , X=0 Y=2.
+#      SIXX = -10. 
+#      SIYY =   0. 
+#      SIXY =   0.
+
+SIG_C1_S=POST_CHAMP(RESULTAT=RESU,
+                    EXTR_COQUE=_F(NOM_CHAM='SIGM_ELNO',
+                                  NUME_COUCHE=1,
+                                  NIVE_COUCHE='SUP',),);
+
+CON_C1_S=MACR_LIGN_COUPE(RESULTAT=SIG_C1_S,
+                     NOM_CHAM='SIGM_ELNO',
+                     LIGN_COUPE=_F(TYPE='SEGMENT', DISTANCE_MAX=0.001,
+                                   NB_POINTS=11,
+                                   COOR_ORIG=(0.,0.,0.,),
+                                   COOR_EXTR=(0.,2.,0.,),),);
+
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           PRECISION=1.5E-2,
+           VALE_CALC=-10.138238424413,
+           VALE_REFE=-10.,
+           NOM_PARA='SIXX',
+           TABLE=CON_C1_S,
+           FILTRE=_F(NOM_PARA='ABSC_CURV',
+                     VALE=2.0,),)
+
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           PRECISION=0.5,
+           CRITERE='ABSOLU',
+           VALE_CALC=-0.42895025513866,
+           VALE_REFE=0.,
+           NOM_PARA='SIYY',
+           TABLE=CON_C1_S,
+           FILTRE=_F(NOM_PARA='ABSC_CURV',
+                     VALE=2.0,),)
+
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           PRECISION=1.E-6,
+           CRITERE='ABSOLU',
+           VALE_CALC=0.0,
+           VALE_REFE=0.,
+           NOM_PARA='SIXY',
+           TABLE=CON_C1_S,
+           FILTRE=_F(NOM_PARA='ABSC_CURV',
+                     VALE=2.0,),)
+
+#-------------------------------------------------------------
+#
+# COUCHE no 3 : z=0.0167m a z=0.05m
+#
+# ON TESTE LES CONTRAINTES SIXX, SIYY et SIXY SUR LES PEAUX
+# INF, MOY et SUP en X=0.
+#
+#-------------------------------------------------------------
+
+#--- COUCHE N0 3 , PEAU INF , X=4, Y=0
+#      SIXX = 10. 
+#      SIYY =  0. 
+#      SIXY =  0.
+
+SIG_C3_I=POST_CHAMP(RESULTAT=RESU,
+                    EXTR_COQUE=_F(NOM_CHAM='SIGM_ELNO',
+                                  NUME_COUCHE=3,
+                                  NIVE_COUCHE='INF',),);
+
+CON_C3_I=MACR_LIGN_COUPE(RESULTAT=SIG_C3_I,
+                     NOM_CHAM='SIGM_ELNO',
+                     LIGN_COUPE=_F(TYPE='SEGMENT', DISTANCE_MAX=0.001,
+                                   NB_POINTS=11,
+                                   COOR_ORIG=(4.,0.,0.,),
+                                   COOR_EXTR=(4.,2.,0.,),),);
+
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           PRECISION=1.5E-2,
+           VALE_CALC=10.133980394121,
+           VALE_REFE=10.,
+           NOM_PARA='SIXX',
+           TABLE=CON_C3_I,
+           FILTRE=_F(NOM_PARA='ABSC_CURV',
+                     VALE=0.0,),)
+
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           PRECISION=0.5,
+           CRITERE='ABSOLU',
+           VALE_CALC=0.44641182378418,
+           VALE_REFE=0.,
+           NOM_PARA='SIYY',
+           TABLE=CON_C3_I,
+           FILTRE=_F(NOM_PARA='ABSC_CURV',
+                     VALE=0.0,),)
+
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           PRECISION=0.0001,
+           CRITERE='ABSOLU',
+           VALE_CALC=-4.9943436687192E-05,
+           VALE_REFE=0.,
+           NOM_PARA='SIXY',
+           TABLE=CON_C3_I,
+           FILTRE=_F(NOM_PARA='ABSC_CURV',
+                     VALE=0.0,),)
+
+#--- COUCHE N0 3 , PEAU MOY , X=4 Y=1.
+#      SIXX =  0. 
+#      SIYY =  0. 
+#      SIXY =  0.
+
+SIG_C3_M=POST_CHAMP(RESULTAT=RESU,
+                    EXTR_COQUE=_F(NOM_CHAM='SIGM_ELNO',
+                                  NUME_COUCHE=1,
+                                  NIVE_COUCHE='MOY',),);
+
+CON_C3_M=MACR_LIGN_COUPE(RESULTAT=SIG_C3_M,
+                     NOM_CHAM='SIGM_ELNO',
+                     LIGN_COUPE=_F(TYPE='SEGMENT', DISTANCE_MAX=0.001,
+                                   NB_POINTS=11,
+                                   COOR_ORIG=(4.,0.,0.,),
+                                   COOR_EXTR=(4.,2.,0.,),),);
+
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           CRITERE='ABSOLU',
+           PRECISION=1.E-4,
+           VALE_CALC=-6.808861352306E-06,
+           VALE_REFE=0.,
+           NOM_PARA='SIXX',
+           TABLE=CON_C3_M,
+           FILTRE=_F(NOM_PARA='ABSC_CURV',
+                     VALE=1.0,),)
+
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           PRECISION=1.E-4,
+           CRITERE='ABSOLU',
+           VALE_CALC=-1.8221251484966E-06,
+           VALE_REFE=0.,
+           NOM_PARA='SIYY',
+           TABLE=CON_C3_M,
+           FILTRE=_F(NOM_PARA='ABSC_CURV',
+                     VALE=1.0,),)
+
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           PRECISION=1.E-3,
+           CRITERE='ABSOLU',
+           VALE_CALC=-6.715868688499E-04,
+           VALE_REFE=0.,
+           NOM_PARA='SIXY',
+           TABLE=CON_C3_M,
+           FILTRE=_F(NOM_PARA='ABSC_CURV',
+                     VALE=1.0,),)
+
+#--- COUCHE N0 3 , PEAU SUP , X=4 Y=2.
+#      SIXX = -10. 
+#      SIYY =   0. 
+#      SIXY =   0.
+
+SIG_C3_S=POST_CHAMP(RESULTAT=RESU,
+                    EXTR_COQUE=_F(NOM_CHAM='SIGM_ELNO',
+                                  NUME_COUCHE=1,
+                                  NIVE_COUCHE='SUP',),);
+
+CON_C3_S=MACR_LIGN_COUPE(RESULTAT=SIG_C3_S,
+                     NOM_CHAM='SIGM_ELNO',
+                     LIGN_COUPE=_F(TYPE='SEGMENT', DISTANCE_MAX=0.001,
+                                   NB_POINTS=11,
+                                   COOR_ORIG=(4.,0.,0.,),
+                                   COOR_EXTR=(4.,2.,0.,),),);
+
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           PRECISION=1.5E-2,
+           VALE_CALC=-10.133889321838,
+           VALE_REFE=-10.,
+           NOM_PARA='SIXX',
+           TABLE=CON_C3_S,
+           FILTRE=_F(NOM_PARA='ABSC_CURV',
+                     VALE=2.0,),)
+
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           PRECISION=0.5,
+           CRITERE='ABSOLU',
+           VALE_CALC=-0.44648444102429,
+           VALE_REFE=0.,
+           NOM_PARA='SIYY',
+           TABLE=CON_C3_S,
+           FILTRE=_F(NOM_PARA='ABSC_CURV',
+                     VALE=2.0,),)
+
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           PRECISION=1.E-4,
+           CRITERE='ABSOLU',
+           VALE_CALC=-2.6900891483805E-05,
+           VALE_REFE=0.,
+           NOM_PARA='SIXY',
+           TABLE=CON_C3_S,
+           FILTRE=_F(NOM_PARA='ABSC_CURV',
+                     VALE=2.0,),)
+
+FIN()
