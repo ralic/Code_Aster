@@ -1,4 +1,4 @@
-# MODIF  DATE 18/03/2013   AUTEUR SFAYOLLE S.FAYOLLE 
+# MODIF  DATE 08/04/2013   AUTEUR SFAYOLLE S.FAYOLLE 
 # TITRE CYLINDRE EN INCOMPRESSIBLE GRANDES DEFORMATIONS (TRIA6 QUAD8) PLAN
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -77,9 +77,9 @@ EVOL=STAT_NON_LINE(MODELE=MO,
                                 DEFORMATION='GDEF_LOG'),
                    INCREMENT=_F(LIST_INST=L_INST1),
                    NEWTON=_F(REAC_ITER=1),
-#                   CONVERGENCE=_F(SIGM_REFE=60.0,
-#                                  EPSI_REFE=3.E-4,
-#                                  RESI_REFE_RELA=1.E-3),
+                  CONVERGENCE=_F(SIGM_REFE=60.0,
+                                 EPSI_REFE=3.E-4,
+                                 RESI_REFE_RELA=1.E-3),
                    SOLVEUR=_F(METHODE='MUMPS',
    NPREC=-1));
 

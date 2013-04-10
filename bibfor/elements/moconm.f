@@ -1,12 +1,12 @@
-      SUBROUTINE MOCONM(SIGB,SIGA,HH,NLIT,OM,RR,NUFSUP,NUFINF,
+      SUBROUTINE MOCONM(DIR,SIGB,SIGA,HH,NLIT,OM,RR,NUFSUP,NUFINF,
      &                  NUFSD1,NUFID1,NUFSD2,NUFID2,PREC)
       IMPLICIT NONE
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ELEMENTS  DATE 08/04/2013   AUTEUR SFAYOLLE S.FAYOLLE 
 C TOLE CRS_1404
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -25,6 +25,7 @@ C RESPONSABLE SFAYOLLE S.FAYOLLE
 
       INCLUDE 'jeveux.h'
       CHARACTER*8 NUFSUP,NUFINF,NUFSD1,NUFID1,NUFSD2,NUFID2
+      CHARACTER   DIR
       INTEGER      NLIT
       REAL*8       SIGB,SIGA(NLIT),HH,OM(NLIT),RR(NLIT),PREC,E1,SIGMA
       INTEGER   PTMAX,ORDLU
@@ -145,21 +146,21 @@ C     --- CREATION ET REMPLISSAGE DE L'OBJET NUFSUP.PROL ---
       ZK24(JPROL)   = 'FONCTION                '
       ZK24(JPROL+1) = 'LIN LIN                 '
       ZK24(JPROL+2) = 'X                       '
-      ZK24(JPROL+3) = 'TOUTRESU                '
+      ZK24(JPROL+3) = 'FME'//DIR//'1                   '
       ZK24(JPROL+4) = 'LL                      '
 
       CALL WKVECT ( NUFSD1//'           .PROL', 'G V K24', 6, JPROL )
       ZK24(JPROL)   = 'FONCTION                '
       ZK24(JPROL+1) = 'LIN LIN                 '
       ZK24(JPROL+2) = 'X                       '
-      ZK24(JPROL+3) = 'TOUTRESU                '
+      ZK24(JPROL+3) = 'DFME'//DIR//'1                  '
       ZK24(JPROL+4) = 'CC                      '
 
       CALL WKVECT ( NUFSD2//'           .PROL', 'G V K24', 6, JPROL )
       ZK24(JPROL)   = 'FONCTION                '
       ZK24(JPROL+1) = 'LIN LIN                 '
       ZK24(JPROL+2) = 'X                       '
-      ZK24(JPROL+3) = 'TOUTRESU                '
+      ZK24(JPROL+3) = 'DDFME'//DIR//'1                 '
       ZK24(JPROL+4) = 'CC                      '
 
 C--- NEGATIVE BENDING
@@ -236,21 +237,21 @@ C     --- CREATION ET REMPLISSAGE DE L'OBJET NUFSUP.PROL ---
       ZK24(JPROL)   = 'FONCTION                '
       ZK24(JPROL+1) = 'LIN LIN                 '
       ZK24(JPROL+2) = 'X                       '
-      ZK24(JPROL+3) = 'TOUTRESU                '
+      ZK24(JPROL+3) = 'FME'//DIR//'2                   '
       ZK24(JPROL+4) = 'LL                      '
 
       CALL WKVECT ( NUFID1//'           .PROL', 'G V K24', 6, JPROL )
       ZK24(JPROL)   = 'FONCTION                '
       ZK24(JPROL+1) = 'LIN LIN                 '
       ZK24(JPROL+2) = 'X                       '
-      ZK24(JPROL+3) = 'TOUTRESU                '
+      ZK24(JPROL+3) = 'DFME'//DIR//'2                  '
       ZK24(JPROL+4) = 'CC                      '
 
       CALL WKVECT ( NUFID2//'           .PROL', 'G V K24', 6, JPROL )
       ZK24(JPROL)   = 'FONCTION                '
       ZK24(JPROL+1) = 'LIN LIN                 '
       ZK24(JPROL+2) = 'X                       '
-      ZK24(JPROL+3) = 'TOUTRESU                '
+      ZK24(JPROL+3) = 'DDFME'//DIR//'2                 '
       ZK24(JPROL+4) = 'CC                      '
 
       END

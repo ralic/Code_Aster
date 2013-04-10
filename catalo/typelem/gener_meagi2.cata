@@ -1,4 +1,4 @@
-%& MODIF TYPELEM  DATE 11/02/2013   AUTEUR SFAYOLLE S.FAYOLLE 
+%& MODIF TYPELEM  DATE 08/04/2013   AUTEUR SFAYOLLE S.FAYOLLE 
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -23,13 +23,13 @@ TYPE_GENE__
 ENTETE__ ELEMENT__ GIAXQU8          MAILLE__ QUAD8
    ELREFE__  QU8       GAUSS__  RIGI=FPG4   MASS=FPG9  NOEU=NOEU  FPG1=FPG1  FPG_LISTE__  MATER=(RIGI MASS NOEU FPG1)
    ELREFE__  QU4       GAUSS__  RIGI=FPG4
-   ELREFE__  QU8       GAUSS__  RIGI=FPG4
+   ELREFE__  QU4       GAUSS__  RIGI=FPG4
    ENS_NOEUD__  EN1     =     1  2  3  4
    ENS_NOEUD__  EN2     =     5  6  7  8
 ENTETE__ ELEMENT__ GIAXTR6          MAILLE__ TRIA6
    ELREFE__  TR6       GAUSS__  RIGI=FPG3   MASS=FPG6  NOEU=NOEU  FPG1=FPG1   FPG_LISTE__  MATER=(RIGI MASS NOEU FPG1)
    ELREFE__  TR3       GAUSS__  RIGI=FPG3
-   ELREFE__  TR6       GAUSS__  RIGI=FPG3
+   ELREFE__  TR3       GAUSS__  RIGI=FPG3
    ENS_NOEUD__  EN1     =     1  2  3
    ENS_NOEUD__  EN2     =     4  5  6
 
@@ -45,7 +45,7 @@ MODE_LOCAL__
     EDCEL_I  = DCEL_I   ELEM__         (NPG_DYN  NCMP_DYN )
     DDL_MECA = DEPL_R   ELNO__ DIFF__
                                  EN1   (DX       DY       PRES     GONF     )
-                                 EN2   (DX       DY       PRES     )
+                                 EN2   (DX       DY       )
     NDEPLAR  = DEPL_R   ELNO__ IDEN__  (DX       DY       )
     EDEFOPG  = EPSI_R   ELGA__ RIGI    (EPXX     EPYY     EPZZ     EPXY     )
     EDEFOPC  = EPSI_C   ELGA__ RIGI    (EPXX     EPYY     EPZZ     EPXY     )

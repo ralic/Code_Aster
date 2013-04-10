@@ -1,10 +1,8 @@
       SUBROUTINE DGLRDA()
-      IMPLICIT NONE
-
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 09/11/2012   AUTEUR DELMAS J.DELMAS 
+C MODIF MODELISA  DATE 08/04/2013   AUTEUR SFAYOLLE S.FAYOLLE 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -21,20 +19,21 @@ C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C RESPONSABLE SFAYOLLE S.FAYOLLE
 C TOLE CRP_20
+      IMPLICIT NONE
+      INCLUDE 'jeveux.h'
+
 C ----------------------------------------------------------------------
 C
 C BUT : DETERMINATION DES PARAMETRES MATERIAU POUR LE MODELE GLRC_DAMAGE
 C
 C-----------------------------------------------------------------------
 
-      INCLUDE 'jeveux.h'
-
       INTEGER  NA
       PARAMETER (NA=10)
       INTEGER NNAP,NPREC,NLINER,IBID,II,ILIT,NLIT,JLM,JMELK
       INTEGER JMELR,JMELC,LONOBJ,IFON0,LONGF,IFON1,LONUTI
       REAL*8  EB,NUB,FT,FC,GAMMA
-      INTEGER NIMPR,IMPR,IFR,IBID1
+      INTEGER NIV,IMPR,IFM,IBID1
       REAL*8  QP1,QP2,CN(2,3),CM(2,3),PREX,PREY,NMIN0
       REAL*8  EA(3*NA),OMX(3*NA),OMY(3*NA),SY(3*NA),NUA(3*NA)
       REAL*8  RX(3*NA),RY(3*NA),RLR(NA),LINER(3*NA),BN11,BN12,BN22,BN33
@@ -69,19 +68,9 @@ C-----------------------------------------------------------------------
         RY(1)  = 0.0D0
       ENDIF
 
-
-      NIMPR = 0
-
-      CALL GETVIS(' ','INFO',1,IARG,1,IMPR,IBID1)
-
-      IF (IMPR .EQ. 2) THEN
-        NIMPR  = 1
-        IFR    = 0
-        FICHIE = ' '
-        IF ( .NOT. ULEXIS( IMPR ) ) THEN
-          CALL ULOPEN ( IMPR, ' ', FICHIE, 'NEW', 'O' )
-        ENDIF
-      END IF
+C --- RECUPERATION DU NIVEAU D'IMPRESSION
+      CALL INFMAJ
+      CALL INFNIV(IFM,NIV)
 
       CALL GETVID('BETON','MATER',1,IARG,1,MATER,IBID)
 
@@ -393,27 +382,27 @@ C       CALL JEECRA(MATER//'.GLRC_DAMAG.VALK','LONUTI',59,' ')
       ZK8(JMELK+27) = 'NORMN  '
       ZR(JMELR+27 ) = 1.0D0
 C---------IMPRESSION-------------
-      IF (NIMPR.GT.0) THEN
-        WRITE (IFR,1000)
-        WRITE (IFR,*) 'PARAMETRES HOMOGENEISES POUR GLRC_DAMAGE :'
-        WRITE (IFR,*) 'BN11, BN12, BN22, BN33 =   :',BN11,' ',BN12,' ',
+      IF (NIV.GT.0) THEN
+        WRITE (IFM,1000)
+        WRITE (IFM,*) 'PARAMETRES HOMOGENEISES POUR GLRC_DAMAGE :'
+        WRITE (IFM,*) 'BN11, BN12, BN22, BN33 =   :',BN11,' ',BN12,' ',
      &                BN22,' ',BN33
         IF (ICIS .EQ. 0) THEN
-          WRITE (IFR,*) 'BT1, BT2 =   :',BT1,' ',BT2
+          WRITE (IFM,*) 'BT1, BT2 =   :',BT1,' ',BT2
         ENDIF
-        WRITE (IFR,*) 'MF1, MF2 =   :',MF1,' ',MF2
-        WRITE (IFR,*) 'GAMMA, QP1, QP2 =   :',GAMMA,' ',QP1,' ',QP2
-        WRITE (IFR,*) 'C1N1, C1N2, C1N3 =   :',CN(1,1),' ',CN(1,2),' ',
+        WRITE (IFM,*) 'MF1, MF2 =   :',MF1,' ',MF2
+        WRITE (IFM,*) 'GAMMA, QP1, QP2 =   :',GAMMA,' ',QP1,' ',QP2
+        WRITE (IFM,*) 'C1N1, C1N2, C1N3 =   :',CN(1,1),' ',CN(1,2),' ',
      &                 CN(1,3)
-        WRITE (IFR,*) 'C2N1, C2N2, C2N3 =   :',CN(2,1),' ',CN(2,2),' ',
+        WRITE (IFM,*) 'C2N1, C2N2, C2N3 =   :',CN(2,1),' ',CN(2,2),' ',
      &                 CN(2,3)
-        WRITE (IFR,*) 'C1M1, C1M2, C1M3 =   :',CM(1,1),' ',CM(1,2),' ',
+        WRITE (IFM,*) 'C1M1, C1M2, C1M3 =   :',CM(1,1),' ',CM(1,2),' ',
      &                 CM(1,3)
-        WRITE (IFR,*) 'C2M1, C2M2, C2M3 =   :',CM(2,1),' ',CM(2,2),' ',
+        WRITE (IFM,*) 'C2M1, C2M2, C2M3 =   :',CM(2,1),' ',CM(2,2),' ',
      &                 CM(2,3)
-        WRITE (IFR,*) 'MODULE D YOUNG ET COEFFICIENT DE POISSON '
+        WRITE (IFM,*) 'MODULE D YOUNG ET COEFFICIENT DE POISSON '
      &                ,'EFFECTIFS EN FLEXION:'
-        WRITE (IFR,*) 'EF, NUF =   :',EEQ,' ',NUEQ
+        WRITE (IFM,*) 'EF, NUF =   :',EEQ,' ',NUEQ
       END IF
 C--------CREER LES FONCTIONS SEUILS---------
 
@@ -441,10 +430,10 @@ C--------L UTILISATEUR A ENTRE DES FONCTIONS
           CALL GCNCON('_',FICXD2)
           CALL GCNCON('_',FICYD2)
 C-----Mx/Nx -------------
-          CALL MOCON2(FC,SY,HH,NLIT,OMX,RX,FSNCX,FINCX,
+          CALL MOCON2('X',FC,SY,HH,NLIT,OMX,RX,FSNCX,FINCX,
      &            FSCXD,FICXD,FSCXD2,FICXD2,PREX)
 C-----My/Ny -------------
-          CALL MOCON2(FC,SY,HH,NLIT,OMY,RY,FSNCY,FINCY,
+          CALL MOCON2('Y',FC,SY,HH,NLIT,OMY,RY,FSNCY,FINCY,
      &            FSCYD,FICYD,FSCYD2,FICYD2,PREY)
         ELSE
 C--------L UTILISATEUR N A RIEN RENSEIGNE
@@ -462,10 +451,10 @@ C--------L UTILISATEUR N A RIEN RENSEIGNE
           CALL GCNCON('_',FICXD2)
           CALL GCNCON('_',FICYD2)
 C-----Mx/Nx -------------
-          CALL MOCONM(FC,SY,HH,NLIT,OMX,RX,FSNCX,FINCX,
+          CALL MOCONM('X',FC,SY,HH,NLIT,OMX,RX,FSNCX,FINCX,
      &            FSCXD,FICXD,FSCXD2,FICXD2,PREX)
 C-----My/Ny -------------
-          CALL MOCONM(FC,SY,HH,NLIT,OMY,RY,FSNCY,FINCY,
+          CALL MOCONM('Y',FC,SY,HH,NLIT,OMY,RY,FSNCY,FINCY,
      &            FSCYD,FICYD,FSCYD2,FICYD2,PREY)
         ENDIF
 
@@ -493,18 +482,27 @@ C-----My/Ny -------------
         ZK8(IFON1+10) = FICXD2
         ZK8(IFON0+11) = 'DDFMEY2 '
         ZK8(IFON1+11) = FICYD2
+
 C---------IMPRESSION-------------
-        IF (NIMPR.GT.0) THEN
-          WRITE (IFR,1000)
-          WRITE (IFR,*) 'FONCTIONS SEUIL POUR GLRC:'
-          WRITE (IFR,*) 'FMEX1, FMEY1, FMEX2, FMEY2 =   :',FSNCX,' ',
-     &                FSNCY,' ',FINCX,' ',FINCY
-          WRITE (IFR,*) 'DERIVEES PREMIERES :'
-          WRITE (IFR,*) 'DFMEX1, DFMEY1, DFMEX2, DFMEY2 =   :',FSCXD,
-     &                ' ',FSCYD,' ',FICXD,' ',FICYD
-          WRITE (IFR,*) 'DERIVEES SECONDES :'
-          WRITE (IFR,*) 'DDFMEX1, DDFMEY1, DDFMEX2, DDFMEY2 =   :',
-     &                FSCXD2,' ',FSCYD2,' ',FICXD2,' ',FICYD2
+        IF (NIV.GT.0) THEN
+          WRITE (IFM,1000)
+          WRITE (IFM,*) 'FONCTIONS SEUIL POUR GLRC:'
+          CALL FOIMPR(FSNCX,3,IFM,0,K8B)
+          CALL FOIMPR(FSNCY,3,IFM,0,K8B)
+          CALL FOIMPR(FINCX,3,IFM,0,K8B)
+          CALL FOIMPR(FINCY,3,IFM,0,K8B)
+
+          WRITE (IFM,*) 'DERIVEES PREMIERES :'
+          CALL FOIMPR(FSCXD,3,IFM,0,K8B)
+          CALL FOIMPR(FSCYD,3,IFM,0,K8B)
+          CALL FOIMPR(FICXD,3,IFM,0,K8B)
+          CALL FOIMPR(FICYD,3,IFM,0,K8B)
+
+          WRITE (IFM,*) 'DERIVEES SECONDES :'
+          CALL FOIMPR(FSCXD2,3,IFM,0,K8B)
+          CALL FOIMPR(FSCYD2,3,IFM,0,K8B)
+          CALL FOIMPR(FICXD2,3,IFM,0,K8B)
+          CALL FOIMPR(FICYD2,3,IFM,0,K8B)
         END IF
 
         NOMRES(1) = 'FMEX1'
@@ -581,7 +579,9 @@ C------CALCULER MAXMP,MINMP,NORMM,NORMN-----------------
       ELSE
         ZR(JMELR+34 ) = 1.D0
       ENDIF
+
  1000 FORMAT (/,80 ('-'))
+
       CALL JEDEMA()
 
       END
