@@ -1,7 +1,7 @@
       SUBROUTINE APPCPR(KPTSC)
       IMPLICIT NONE
 !           CONFIGURATION MANAGEMENT OF EDF VERSION
-!& MODIF APPCPR PETSC  DATE 21/01/2013   AUTEUR DESOZA T.DESOZA 
+!& MODIF APPCPR PETSC  DATE 08/04/2013   AUTEUR DESOZA T.DESOZA 
 ! ==================================================================
 ! COPYRIGHT (C) 1991 - 2013  EDF R&D              WWW.CODE-ASTER.ORG
 !
@@ -156,7 +156,9 @@
 !-----------------------------------------------------------------------
       ELSEIF (PRECON.EQ.'ML') THEN
          call PCSetType(pc,PCML,ierr)
-         CALL ASSERT(ierr.EQ.0)
+         IF (ierr.NE.0) THEN
+            CALL U2MESK('F','PETSC_19',1,PRECON)
+         ENDIF
          call PetscOptionsSetValue('-pc_type','ml',ierr)
          CALL ASSERT(ierr.EQ.0)
 !        CHOIX DE LA RESTRICTION (UNCOUPLED UNIQUEMENT ACTUELLEMENT)
@@ -171,7 +173,9 @@
 !-----------------------------------------------------------------------
       ELSEIF (PRECON.EQ.'BOOMER') THEN
          call PCSetType(pc,PCHYPRE,ierr)
-         CALL ASSERT(ierr.EQ.0)
+         IF (ierr.NE.0) THEN
+            CALL U2MESK('F','PETSC_19',1,PRECON)
+         ENDIF
          call PetscOptionsSetValue('-pc_hypre_type','boomeramg',ierr)
          CALL ASSERT(ierr.EQ.0)
 !        CHOIX DE LA RESTRICTION (PMIS UNIQUEMENT ACTUELLEMENT)

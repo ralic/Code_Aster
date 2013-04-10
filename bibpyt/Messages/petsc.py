@@ -1,4 +1,4 @@
-#@ MODIF petsc Messages  DATE 21/01/2013   AUTEUR DESOZA T.DESOZA 
+#@ MODIF petsc Messages  DATE 08/04/2013   AUTEUR DESOZA T.DESOZA 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -148,4 +148,15 @@ Solveur PETSc :
   - ne mélangez pas des modélisations dans votre calcul
   - utilisez le préconditionneur 'LDLT_SP' ou un solveur direct ('MULT_FRONT' ou 'MUMPS')
 """),
+
+19 : _(u"""
+Solveur PETSc :
+  La sélection du préconditionneur '%(k1)s' a échoué.
+  L'installation de PETSc dont vous disposez n'a vraisemblablement pas été compilée avec le support de ce préconditionneur.
+
+  Conseils :
+  - reconstruisez une version de PETSc avec le support des préconditionneurs BOOMER et ML
+  - utilisez un autre préconditionneur (comme 'LDLT_SP' par exemple)
+"""),
+
 }

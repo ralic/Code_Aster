@@ -1,8 +1,8 @@
       SUBROUTINE NMNKFT(SOLVEU,SDDISC,ITERAT)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 09/11/2012   AUTEUR DELMAS J.DELMAS 
+C MODIF ALGORITH  DATE 08/04/2013   AUTEUR DESOZA T.DESOZA 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -68,12 +68,12 @@ C     NEWTON'S METHOD", C.T. KELLEY, SIAM, PAGE 62-63
                 EPSI=EPSOLD
                 GO TO 10
             ENDIF
-            IF ((0.9D0*EPSOLD**2).GT. 0.1D0) THEN
-                EPSI=MIN(MAX(0.9D0*RESNEW**2/RESOLD**2,0.9D0*EPSOLD**2)
-     &                                                   ,5.D-1*EPSOLD)
+            IF ((0.9D0*EPSOLD**2).GT. 0.2D0) THEN
+                EPSI=MIN(MAX(0.1D0*RESNEW**2/RESOLD**2,0.9D0*EPSOLD**2)
+     &                                                   ,4.D-1*EPSOLD)
             ELSE
                 EPSMIN = ZR(JSLVR)
-                EPSI=MAX(MIN(0.9D0*RESNEW**2/RESOLD**2,5.D-1*EPSOLD)
+                EPSI=MAX(MIN(0.1D0*RESNEW**2/RESOLD**2,4.D-1*EPSOLD)
      &                                                      ,EPSMIN)
 
 
