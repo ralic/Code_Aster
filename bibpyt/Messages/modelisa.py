@@ -1,4 +1,4 @@
-#@ MODIF modelisa Messages  DATE 25/02/2013   AUTEUR BERRO H.BERRO 
+#@ MODIF modelisa Messages  DATE 08/04/2013   AUTEUR FLEJOU J-L.FLEJOU 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -409,7 +409,7 @@ cata_msg = {
  poutre :
  maille  %(k1)s
  section GENERALE
- élément poutre de Timoshenko : il manque la caractéristique  %(k2)s
+ élément poutre : il manque la caractéristique  %(k2)s
 """),
 
 79 : _(u"""

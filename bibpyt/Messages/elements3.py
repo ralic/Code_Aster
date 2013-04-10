@@ -1,4 +1,4 @@
-#@ MODIF elements3 Messages  DATE 05/03/2013   AUTEUR CHEIGNON E.CHEIGNON 
+#@ MODIF elements3 Messages  DATE 08/04/2013   AUTEUR FLEJOU J-L.FLEJOU 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -20,6 +20,9 @@
 # RESPONSABLE DELMAS J.DELMAS
 
 cata_msg = {
+1 : _(u"""
+ On ne peut pas affecter des moments répartis sur des éléments de type %(k1)s.
+"""),
 
 10 : _(u"""
  on ne peut pas affecter la modélisation "AXIS_DIAG" aux éléments de l'axe
@@ -112,7 +115,7 @@ cata_msg = {
 
 40 : _(u"""
  DEFORMATION = %(k1)s non programmé.
- Seules les déformations PETIT et GROT_GDEP sont autorisées avec les 
+ Seules les déformations PETIT et GROT_GDEP sont autorisées avec les
  éléments de type %(k2)s.
 """),
 
