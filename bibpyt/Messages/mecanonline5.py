@@ -1,4 +1,4 @@
-#@ MODIF mecanonline5 Messages  DATE 18/02/2013   AUTEUR GREFFET N.GREFFET 
+#@ MODIF mecanonline5 Messages  DATE 09/04/2013   AUTEUR ABBAS M.ABBAS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -224,7 +224,11 @@ Il faut préciser un concept EVOL_NOLI en prédiction de type 'DEPL_CALCULE'
 
 48 : _(u"""
   Le pilotage est incompatible avec la méthode NEWTON_KRYLOV.
+"""),
 
+49 : _(u"""
+Le maillage sur lequel s'appuie le modèle et le maillage du champ des variables internes fourni dans ETAT_INIT ne sont pas les mêmes.
+Conseils: Vérifiez la cohérence des maillages.
 """),
 
 50 : _(u"""
