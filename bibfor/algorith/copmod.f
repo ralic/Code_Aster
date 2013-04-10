@@ -3,7 +3,7 @@
       IMPLICIT NONE
 C***********************************************************************
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 18/02/2013   AUTEUR SELLENET N.SELLENET 
+C MODIF ALGORITH  DATE 08/04/2013   AUTEUR BOYERE E.BOYERE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -62,7 +62,7 @@ C     0.1 - DECLARATION DES VARIABLES D'ENTREE/SORTIE
 C
       CHARACTER*1         TYPC
       CHARACTER*8         BASEMO
-      CHARACTER*14        NUMER
+      CHARACTER*(*)        NUMER
       CHARACTER*(*)       CHAMP
       INTEGER             NEQ, NBMODE
       REAL*8              BMODR(NEQ*NBMODE)
@@ -70,11 +70,10 @@ C
 C
 C     0.2 - DECLARATION DES VARIABLES LOCALES
 C
-      LOGICAL             MODNUM
-      INTEGER             I,IB,IRET
+      LOGICAL             MODNUM, EXNUME
+      INTEGER             I,IB,IRET, PROCHO
       INTEGER             JREF, JDEEQ, JVAL
-      CHARACTER*14        NUMER1
-      CHARACTER*19        NOMCHA, TMPCHA
+      CHARACTER*19        NUMER1, NUMER2, NOMCHA, TMPCHA
       CHARACTER*24        MAILL1, MAILL2, VALK(4), CREFE(2),
      &                    VALCHA
 C
@@ -104,9 +103,26 @@ C
 C     1.2 - EXTRAIRE LE NOM DE MAILLAGE .REFE[1] ET DU NUME_DDL .REFE[2]
 C
       MAILL1  = ZK24(JREF)(1:8)
-      NUMER1  = ZK24(JREF+1)(1:14)
+      NUMER1  = ZK24(JREF+1)(1:19)
 C
-C     1.3 - LIBERER L'OBJET .REFE PARCE QU'ON N'EN A PLUS BESOIN
+C     1.3 - TRAITEMENT DES CAS AVEC UN PROF_CHNO ET NON PAS UN NUME_DDL
+C           COMPLET. 
+C
+      EXNUME = .FALSE.
+      NUMER2 = NUMER
+      IF (NUMER1(15:15).EQ.' ') NUMER1 = NUMER1(1:14)//'.NUME'
+      IF (NUMER2(15:15).EQ.' ') THEN
+        EXNUME = .TRUE.
+        NUMER2 = NUMER2(1:14)//'.NUME'
+      ELSE 
+C       --- ON NE FAIT PAS DE TEST DE COMPATIBILITE SUR LES MAILLAGES
+C         - SI ON NE DISPOSE PAS DE NUMEDDL COMPLET
+C         - IMPORTANT : LE TEST DOIT SE FAIRE QUAND MEME EN DEHORS DE
+C                       L'APPEL A COPMOD (VOIR OP0072 PAR EXEMPLE)
+        MAILL2 = MAILL1
+      ENDIF
+C
+C     1.4 - LIBERER L'OBJET .REFE PARCE QU'ON N'EN A PLUS BESOIN
 C
       CALL JELIBE(NOMCHA(1:19)//'.REFE')
 C  ____________________________________________________________________ 
@@ -119,10 +135,11 @@ C           RESTITUTION SUR SQUELLETE : CAS SPECIAL
 C
       CALL JEEXIN(MAILL1(1:8)//'.INV.SKELETON',IRET)
       MODNUM = .FALSE.
-      IF (NUMER.NE.' ') THEN
-        IF ((NUMER.NE.NUMER1).AND.(IRET.EQ.0)) THEN
+      IF (NUMER2.NE.' ') THEN
+        IF ((NUMER2.NE.NUMER1).AND.(IRET.EQ.0).AND.(EXNUME)) THEN
           MODNUM = .TRUE.
-          CALL DISMOI ('F','NOM_MAILLA',NUMER,'NUME_DDL',IB,MAILL2,IRET)
+          CALL DISMOI ('F','NOM_MAILLA',NUMER2(1:14),'NUME_DDL',IB,
+     &                 MAILL2,IRET)
         ENDIF
       ENDIF
 C
@@ -130,7 +147,7 @@ C     2.2 - SI OUI, VERIFIER LA COMPATIB. DES 2 MAILLAGES DES NUME_DDL
 C
       IF (MODNUM) THEN
         IF (MAILL1.NE.MAILL2) THEN
-          VALK (1) = NUMER
+          VALK (1) = NUMER2
           VALK (2) = MAILL2
           VALK (3) = NUMER1
           VALK (4) = MAILL1
@@ -141,9 +158,9 @@ C
 C     2.3 - RECUPERER L'OBJET .DEEQ
 C
       IF (MODNUM) THEN
-        CALL JEVEUO ( NUMER//'.NUME.DEEQ', 'L', JDEEQ )
+        CALL JEVEUO (NUMER2//'.DEEQ', 'L', JDEEQ )
       ELSE 
-        CALL JEVEUO (NUMER1//'.NUME.DEEQ', 'L', JDEEQ )
+        CALL JEVEUO (NUMER1//'.DEEQ', 'L', JDEEQ )
       ENDIF
 C  ____________________________________________________________________ 
 C                                                                       
@@ -159,7 +176,7 @@ C       3.1.2 - NOUVELLE NUMER.? ALORS CREER UN NOUVEAU CHAMP TEMPORAIRE
 C               AVEC LA BONNE NUMEROTATION 
         IF (MODNUM) THEN
           CREFE(1) = MAILL2
-          CREFE(2) = NUMER//'.NUME'
+          CREFE(2) = NUMER2
           TMPCHA   = '&&COPMOD.CHAMP'
           CALL VTCREA ( TMPCHA, CREFE, 'V', TYPC, NEQ )
           CALL VTCOPY ( NOMCHA, TMPCHA, ' ', IRET )
