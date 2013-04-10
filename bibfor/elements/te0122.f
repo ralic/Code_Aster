@@ -4,7 +4,7 @@
       CHARACTER*16 OPTION,NOMTE
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 15/01/2013   AUTEUR DELMAS J.DELMAS 
+C MODIF ELEMENTS  DATE 08/04/2013   AUTEUR CUVILLIE M.CUVILLIEZ 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -33,15 +33,27 @@ C ......................................................................
 
       INTEGER JGANO,NPG,NNOS,NNO,NDIM,NDIME,IPOIDS,IVF,IDFDE
       INTEGER ICHG,ICHN,JTAB(7),NCMP,IBID,I,J,IN,IG,NTROU
-      LOGICAL QUADRA,JHM,INTERF
+      LOGICAL QUADRA,JHM,INTERF,JLIN2D,JLIN3D,JQUAD
       CHARACTER*8 LIELRF(10)
 C     ------------------------------------------------------------------
-
+      
+      JLIN2D =  ((NOMTE(1:7) .EQ.'MFPLQU4' ).OR.
+     &           (NOMTE(1:7) .EQ.'MFAXQU4' )    )
+     
+      JLIN3D =  ((NOMTE(1:10).EQ.'MEFI_HEXA8' ).OR.
+     &           (NOMTE(1:11).EQ.'MEFI_PENTA6' )    )
+      
+      JQUAD  = ((NOMTE(1:7) .EQ.'MFPLQU8'     ).OR.
+     &          (NOMTE(1:11).EQ.'MEFI_HEXA20' ).OR.
+     &          (NOMTE(1:12).EQ.'MEFI_PENTA15')    )
+     
       JHM    =   NOMTE(1:6).EQ.'EJHYME'
+      
       INTERF = ((NOMTE(1:4).EQ.'EIPL').OR.
      &          (NOMTE(1:4).EQ.'EIAX').OR.
      &          (NOMTE(1:5).EQ.'MEEI_') )
-      QUADRA = JHM.OR.INTERF
+     
+      QUADRA = (JQUAD.OR.JHM.OR.INTERF)
 
 C RAPPEL DES INTERPOLATIONS POUR L'ESPACE
 C JOINT 2D (QUAD4)  EST BASE SUR LE QUAD4 A 2PG DONC NPG=2, NNO=4
@@ -67,13 +79,13 @@ C     INFORMATIONS SUR L'ELEMENT DE REFERENCE
         CALL ELREF2(NOMTE,2,LIELRF,NTROU)
         CALL ELREF4
      &       (LIELRF(2),'RIGI',NDIM,NNO,NNOS,NPG,IPOIDS,IVF,IDFDE,JGANO)
-C       DIMENSION DE L'ESPACE POUR LES JOINT_HYME OU INTERFACE    
+C       DIMENSION ESPACE POUR LES JOINTS QUADRA, HYME OU INTERFACE    
         NDIME = NDIM + 1
       ELSE
         CALL ELREF4(' ','RIGI',NDIM,NNO,NNOS,NPG,IPOIDS,IVF,IDFDE,JGANO)
-C       DIMENSION DE L'ESPACE POUR LES JOINTS    
-        IF (NOMTE(1:5).EQ.'MEFI_') NDIME = NDIM + 1
-        IF (NOMTE(1:2).EQ.'MF')    NDIME = NDIM 
+C       DIMENSION DE L'ESPACE POUR LES JOINTS LINEAIRES  
+        IF (JLIN2D) NDIME = NDIM 
+        IF (JLIN3D) NDIME = NDIM + 1
       ENDIF
 
 C     INFORMATIONS SUR LES CHAMPS
@@ -82,8 +94,8 @@ C     INFORMATIONS SUR LES CHAMPS
         CALL JEVECH('PCONTRR' ,'L',ICHG)
         CALL JEVECH('PSIEFNOR','E',ICHN)
 
-        IF (JHM) NCMP = 2*NDIME-1
-        IF (INTERF) NCMP = 2*NDIME
+        IF (JHM.OR.JQUAD)  NCMP = 2*NDIME-1
+        IF (INTERF)        NCMP = 2*NDIME
         IF (.NOT.(QUADRA)) NCMP = NDIME  
                   
       ELSEIF (OPTION.EQ.'VARI_ELNO') THEN
@@ -96,7 +108,7 @@ C     INFORMATIONS SUR LES CHAMPS
       ENDIF
 
 C ############################################################
-C     ELEMENTS INTERFACE, INTERFACE_S ET JOINT_HYME 2D ET 3D
+C     ELEMENTS QUADRATIQUE 2D ET 3D
 C ############################################################
 
       IF (QUADRA) THEN
@@ -170,9 +182,9 @@ C             A L'IDENTIQUE DES NOEUDS MILIEU DE LA PREMIERE FACE
 
         ENDIF
         
-C####################################
-C     ELEMENTS DE JOINT 2D ET 3D
-C####################################
+C#########################################
+C     ELEMENTS DE JOINT LINEAIRES 2D ET 3D
+C#########################################
       ELSE
 
         IF (NDIME.EQ.2) THEN

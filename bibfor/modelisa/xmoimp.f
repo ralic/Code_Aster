@@ -2,7 +2,7 @@
      &                  NCPQ8,NCPT3,NCPT6,NDPQ4,NDPQ8,NDPT3,NDPT6,
      &                  NF4,NF8,NF3,NF6,NPF2,NPF3,NAXT3,NAXQ4,
      &                  NAXQ8,NAXT6,NAX2,NAX3,NTH8,NTP6,NTP5,NTT4,
-     &                  NTPQ4,NTPT3,NTAQ4,NTAT3)
+     &                  NTPQ4,NTPT3,NTAQ4,NTAT3,NTF4,NTF3,NTPF2,NTAX2)
       IMPLICIT NONE
 
       INCLUDE 'jeveux.h'
@@ -13,10 +13,10 @@
       INTEGER       NF6(7),NPF2(11),NPF3(7)
       INTEGER       NAXT3(7),NAXQ4(7),NAXQ8(7),NAXT6(7),NAX2(7),NAX3(7)
       INTEGER       NTH8(7),NTP6(7),NTP5(7),NTT4(7),NTPQ4(7),NTPT3(7)
-      INTEGER       NTAQ4(7),NTAT3(7)
+      INTEGER       NTAQ4(7),NTAT3(7),NTF4(7),NTF3(7),NTPF2(7),NTAX2(7)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 11/03/2013   AUTEUR CUVILLIE M.CUVILLIEZ 
+C MODIF MODELISA  DATE 08/04/2013   AUTEUR CUVILLIE M.CUVILLIEZ 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -183,6 +183,25 @@ C     ELEMENTS THERMIQUES
      &    NTAT3(6),0       ,0        ,0      ,0       ,
      &    0       ,0       ,0      
 
+      IF(NTF4(7).NE.0) WRITE(IFM,810)'FACE4'  ,
+     &    NTF4(1), NTF4(2), NTF4(3), NTF4(4), NTF4(5), 
+     &    NTF4(6), 0      , 0      , 0      , 0      ,
+     &    0      , 0      , 0      
+      IF(NTF3(7).NE.0) WRITE(IFM,810)'FACE3'  ,
+     &    NTF3(1), NTF3(2), NTF3(3), NTF3(4), NTF3(5), 
+     &    NTF3(6), 0      , 0      , 0      , 0       ,
+     &    0      , 0      , 0      
+
+      IF(NTPF2(7).NE.0) WRITE(IFM,810)'ARETE 2'  ,
+     &    NTPF2(1),NTPF2(2),NTPF2(3),NTPF2(4),NTPF2(5), 
+     &    NTPF2(6),0       ,0        ,0      ,0       ,
+     &    0       ,0       ,0      
+
+      IF(NTAX2(7).NE.0) WRITE(IFM,810)'ARETE-AXI 2'  ,
+     &    NTAX2(1),NTAX2(2),NTAX2(3),NTAX2(4),NTAX2(5), 
+     &    NTAX2(6),0       ,0        ,0      ,0       ,
+     &    0       ,0       ,0      
+
       NBELX =   NH8(7) + NH20(7) + NP6(7) + NP15(7)
      &        + NP5(7) + NP13(7) + NT4(7) + NT10(7)
      &        + NCPQ4(7) + NCPQ8(7) + NCPT3(7) + NCPT6(7)
@@ -191,7 +210,8 @@ C     ELEMENTS THERMIQUES
      &        + NAX2(7) + NAX3(7) + NPF2(7) + NPF3(7)
      &        + NF3(7) + NF6(7) + NTH8(7) + NTP6(7) + NTP5(7) 
      &        + NTT4(7) + NTPQ4(7) + NTPT3(7) + NTAQ4(7) 
-     &        + NTAT3(7)
+     &        + NTAT3(7) + NTF4(7) + NTF3(7) + NTPF2(7) 
+     &        + NTAX2(7)
 
       IF (NBELX.EQ.0) CALL U2MESS('F','XFEM_16')
 

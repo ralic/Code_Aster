@@ -1,4 +1,4 @@
-# MODIF  DATE 26/03/2013   AUTEUR CUVILLIE M.CUVILLIEZ 
+# MODIF  DATE 08/04/2013   AUTEUR CUVILLIE M.CUVILLIEZ 
 # TITRE : FISSURE X-FEM EN THERMO-ELASTICITE 3D 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -18,7 +18,8 @@
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
 # ======================================================================
 
-DEBUT(CODE=_F(NOM='HSNV132C', NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
+DEBUT(CODE=_F(NOM='HSNV132C', NIV_PUB_WEB='INTERNET'),
+      DEBUG=_F(SDVERI='OUI'), IGNORE_ALARM=('CALCULEL2_63'))
 
 #----------------------------------------------
 #            MAILLAGE
@@ -40,7 +41,7 @@ MA=DEFI_GROUP(reuse =MA,
 #----------------------------------------------
 
 MODTHIN=AFFE_MODELE(MAILLAGE=MA,
-                    AFFE=_F(GROUP_MA='VOL',
+                    AFFE=_F(TOUT='OUI',
                             PHENOMENE='THERMIQUE',
                             MODELISATION='3D',),);
 
@@ -222,6 +223,15 @@ TEST_TABLE(REFERENCE='AUTRE_ASTER',
            VALE_REFE=29.156091860463,
            PRECISION=1.E-3,
            NOM_PARA='TEMP',
+           TYPE_TEST='MIN',
+           TABLE=TEMPSUP1,)
+
+TEST_TABLE(REFERENCE='AUTRE_ASTER',
+           VALE_CALC=29.147198346097,
+           VALE_REFE=29.156091860463,
+           PRECISION=1.E-3,
+           NOM_PARA='TEMP',
+           TYPE_TEST='MAX',
            TABLE=TEMPSUP1,)
 
 TEST_TABLE(REFERENCE='AUTRE_ASTER',
@@ -229,6 +239,15 @@ TEST_TABLE(REFERENCE='AUTRE_ASTER',
            VALE_REFE=29.156091860463,
            PRECISION=1.E-3,
            NOM_PARA='TEMP',
+           TYPE_TEST='MIN',
+           TABLE=TEMPSUP2,)
+
+TEST_TABLE(REFERENCE='AUTRE_ASTER',
+           VALE_CALC=29.147196329322,
+           VALE_REFE=29.156091860463,
+           PRECISION=1.E-3,
+           NOM_PARA='TEMP',
+           TYPE_TEST='MAX',
            TABLE=TEMPSUP2,)
 
 TEST_TABLE(REFERENCE='AUTRE_ASTER',
@@ -236,6 +255,15 @@ TEST_TABLE(REFERENCE='AUTRE_ASTER',
            VALE_REFE=23.393394671258,
            PRECISION=1.E-3,
            NOM_PARA='TEMP',
+           TYPE_TEST='MIN',
+           TABLE=TEMPINF1,)
+
+TEST_TABLE(REFERENCE='AUTRE_ASTER',
+           VALE_CALC=23.407327209161,
+           VALE_REFE=23.393394671258,
+           PRECISION=1.E-3,
+           NOM_PARA='TEMP',
+           TYPE_TEST='MAX',
            TABLE=TEMPINF1,)
 
 TEST_TABLE(REFERENCE='AUTRE_ASTER',
@@ -243,6 +271,15 @@ TEST_TABLE(REFERENCE='AUTRE_ASTER',
            VALE_REFE=23.393394671258,
            PRECISION=1.E-3,
            NOM_PARA='TEMP',
+           TYPE_TEST='MIN',
+           TABLE=TEMPINF2,)
+
+TEST_TABLE(REFERENCE='AUTRE_ASTER',
+           VALE_CALC=23.407330322254,
+           VALE_REFE=23.393394671258,
+           PRECISION=1.E-3,
+           NOM_PARA='TEMP',
+           TYPE_TEST='MAX',
            TABLE=TEMPINF2,)
 
 TEST_TABLE(REFERENCE='AUTRE_ASTER',

@@ -1,0 +1,54 @@
+%& MODIF TYPELEM  DATE 08/04/2013   AUTEUR CUVILLIE M.CUVILLIEZ 
+%            CONFIGURATION MANAGEMENT OF EDF VERSION
+% ======================================================================
+% COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
+% THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
+% IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
+% THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
+% (AT YOUR OPTION) ANY LATER VERSION.                                   
+%                                                                       
+% THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
+% WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
+% MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
+% GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
+%                                                                       
+% YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
+% ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
+%    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+% ======================================================================
+GENER_THPL_XHT_1
+TYPE_GENE__
+
+%  CATALOGUE DES ELEMENTS THERMIQUES PLAN ET AXIS DE BORD X-FEM HEAVISIDE-CRACKTIP LINEAIRES
+
+ENTETE__ ELEMENT__ THPLSE2_XHT     MAILLE__ SEG2
+   ELREFE__ SE2      GAUSS__  RIGI=FPG2
+   ATTRIBUT__    XFEM=XHT
+ENTETE__ ELEMENT__ THAXSE2_XHT     MAILLE__ SEG2
+   ELREFE__ SE2      GAUSS__  RIGI=FPG2
+   ATTRIBUT__    XFEM=XHT
+
+MODE_LOCAL__
+    DDL_THER = TEMP_R   ELNO__ IDEN__  (TEMP     H1       E1       )
+    E15NEUTR = NEUT_R   ELEM__        (X[15])
+    E2NEUTI  = NEUT_I   ELEM__         (X[2])
+    E4NEUTR  = NEUT_R   ELEM__         (X[4])
+    E6NEUTI  = NEUT_I   ELEM__         (X[6])
+    E6NEUTR  = NEUT_R   ELEM__         (X[6])
+    E8NEUTI  = NEUT_I   ELEM__         (X[8])
+    N1NEUT_R = NEUT_R   ELNO__ IDEN__  (X1       )
+    NGEOMER  = GEOM_R   ELNO__ IDEN__  (X        Y       )
+    STANO_I  = NEUT_I   ELNO__ IDEN__  (X1       )
+
+VECTEUR__
+    MVECTTR = VTEM_R DDL_THER
+    
+MATRICE__
+    MMATTTR = MTEM_R DDL_THER DDL_THER
+
+OPTION__
+    RIGI_THER           99    IN__   N1NEUT_R PLSN     N1NEUT_R PLST     STANO_I  PSTANO
+                              OUT__  MMATTTR  PMATTTR
+    TOPOSE              514   IN__   NGEOMER  PGEOMER  N1NEUT_R PLEVSET
+                              OUT__  E6NEUTR  PPINTTO  E6NEUTI  PCNSETO   E2NEUTI  PHEAVTO  E8NEUTI  PLONCHA
+                                     E15NEUTR PAINTER  E4NEUTR  PPMILTO

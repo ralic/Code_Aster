@@ -1,4 +1,4 @@
-#@ MODIF algorith17 Messages  DATE 02/04/2013   AUTEUR BODEL C.BODEL 
+#@ MODIF algorith17 Messages  DATE 08/04/2013   AUTEUR CUVILLIE M.CUVILLIEZ 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -73,24 +73,25 @@ cata_msg={
   Vérifier la cohérence chargement mécanique, fermeture asymptotique et ouverture
   initiale.
 """),
+
 12 : _(u"""
   La température de référence (exprimée en Kelvin) doit toujours être strictement supérieure à zéro.
 """),
+
 13 : _(u"""
   La pression de gaz de référence doit toujours être différente de zéro.
 """),
 
 14 : _(u"""
-  Les mots clés PRES_FLU et PRES_CLAV sont incompatibles avec les modélisations xxx_JOINT_HYME
+  Les mots clés PRES_FLUIDE et PRES_CLAVAGE sont incompatibles avec les modélisations xxx_JOINT_HYME
 """),
 
 15 : _(u"""
-  Les données matériau RHO_F, VISC_F et OUV_MIN sont obligatoires avec les modélisations xxx_JOINT_HYME
+  Les données matériau RHO_FLUIDE, VISC_FLUIDE et OUV_MIN sont obligatoires avec les modélisations xxx_JOINT_HYME
 """),
 
-
 16 : _(u"""
-  Les données matériau RHO_F, VISC_F et OUV_MIN sont incompatibles avec les modélisations xxx_JOINT
+  Les données matériau RHO_FLUIDE, VISC_FLUIDE et OUV_MIN sont incompatibles avec les modélisations xxx_JOINT
 """),
 
 17 : _(u"""

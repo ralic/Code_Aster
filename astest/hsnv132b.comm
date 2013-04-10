@@ -1,4 +1,4 @@
-# MODIF  DATE 26/03/2013   AUTEUR CUVILLIE M.CUVILLIEZ 
+# MODIF  DATE 08/04/2013   AUTEUR CUVILLIE M.CUVILLIEZ 
 # TITRE : FISSURE X-FEM EN THERMO-ELASTICITE 2D 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -18,7 +18,8 @@
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
 # ======================================================================
 
-DEBUT(CODE=_F(NOM='HSNV132B', NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'),);
+DEBUT(CODE=_F(NOM='HSNV132B', NIV_PUB_WEB='INTERNET'),
+      DEBUG=_F(SDVERI='OUI'), IGNORE_ALARM=('CALCULEL2_63'))
 
 #----------------------------------------------
 #            MAILLAGE
@@ -40,7 +41,7 @@ MA=DEFI_GROUP(reuse =MA,
 #----------------------------------------------
 
 MODTHIN=AFFE_MODELE(MAILLAGE=MA,
-                    AFFE=_F(GROUP_MA='SURF',
+                    AFFE=_F(TOUT='OUI',
                             PHENOMENE='THERMIQUE',
                             MODELISATION='PLAN',),);
 
@@ -180,11 +181,27 @@ TEST_TABLE(REFERENCE='AUTRE_ASTER',
            VALE_CALC=29.157706782019,
            VALE_REFE=29.156091860463,
            NOM_PARA='TEMP',
+           TYPE_TEST='MIN',
+           TABLE=TEMPSUP,)
+
+TEST_TABLE(REFERENCE='AUTRE_ASTER',
+           VALE_CALC=29.157706782019,
+           VALE_REFE=29.156091860463,
+           NOM_PARA='TEMP',
+           TYPE_TEST='MAX',
            TABLE=TEMPSUP,)
 
 TEST_TABLE(REFERENCE='AUTRE_ASTER',
            VALE_CALC=23.396807122262,
            VALE_REFE=23.393394671258,
+           TYPE_TEST='MIN',
+           NOM_PARA='TEMP',
+           TABLE=TEMPINF,)
+
+TEST_TABLE(REFERENCE='AUTRE_ASTER',
+           VALE_CALC=23.396807122262,
+           VALE_REFE=23.393394671258,
+           TYPE_TEST='MAX',
            NOM_PARA='TEMP',
            TABLE=TEMPINF,)
 

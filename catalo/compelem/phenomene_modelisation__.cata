@@ -1,4 +1,4 @@
-%& MODIF COMPELEM  DATE 26/03/2013   AUTEUR CUVILLIE M.CUVILLIEZ 
+%& MODIF COMPELEM  DATE 08/04/2013   AUTEUR CUVILLIE M.CUVILLIEZ 
 % ======================================================================
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
@@ -951,6 +951,7 @@ PHENOMENE_MODELISATION__
        MODELISATION__ 'PLAN_JOINT'     DIM__ 2 2   CODE__ 'PFI'
               ATTRIBUT__  TYPMOD=PLAN TYPMOD2=ELEMJOIN
               MAILLE__ QUAD4     ELEMENT__ MFPLQU4
+              MAILLE__ QUAD8     ELEMENT__ MFPLQU8
 
        MODELISATION__ 'AXIS_JOINT'     DIM__ 2 2   CODE__ 'AFI'
               ATTRIBUT__  AXIS=OUI  TYPMOD=AXIS TYPMOD2=ELEMJOIN
@@ -960,6 +961,8 @@ PHENOMENE_MODELISATION__
               ATTRIBUT__  TYPMOD=COMP3D  TYPMOD2=ELEMJOIN
               MAILLE__ HEXA8     ELEMENT__ MEFI_HEXA8
               MAILLE__ PENTA6    ELEMENT__ MEFI_PENTA6
+              MAILLE__ HEXA20    ELEMENT__ MEFI_HEXA20
+              MAILLE__ PENTA15   ELEMENT__ MEFI_PENTA15
 
        MODELISATION__ 'PLAN_JOINT_HYME'     DIM__ 2 2   CODE__ 'PFH'
               ATTRIBUT__  TYPMOD=PLAN TYPMOD2=EJ_HYME
@@ -1852,46 +1855,58 @@ PHENOMENE_MODELISATION__
               MAILLE__ PENTA6    ELEMENT__ THER_XH_PENTA6
               MAILLE__ PYRAM5    ELEMENT__ THER_XH_PYRAM5
               MAILLE__ TETRA4    ELEMENT__ THER_XH_TETRA4
+              MAILLE__ QUAD4     ELEMENT__ THER_XH_FACE4
+              MAILLE__ TRIA3     ELEMENT__ THER_XH_FACE3
 
        MODELISATION__ '3D1XT'            DIM__ 3 3   CODE__ '3X2'
               MAILLE__ HEXA8     ELEMENT__ THER_XT_HEXA8
               MAILLE__ PENTA6    ELEMENT__ THER_XT_PENTA6
               MAILLE__ PYRAM5    ELEMENT__ THER_XT_PYRAM5
               MAILLE__ TETRA4    ELEMENT__ THER_XT_TETRA4
+              MAILLE__ QUAD4     ELEMENT__ THER_XT_FACE4
+              MAILLE__ TRIA3     ELEMENT__ THER_XT_FACE3
 
        MODELISATION__ '3D1XHT'           DIM__ 3 3   CODE__ '3X3'
               MAILLE__ HEXA8     ELEMENT__ THER_XHT_HEXA8
               MAILLE__ PENTA6    ELEMENT__ THER_XHT_PENTA6
               MAILLE__ PYRAM5    ELEMENT__ THER_XHT_PYRAM5
               MAILLE__ TETRA4    ELEMENT__ THER_XHT_TETRA4
+              MAILLE__ QUAD4     ELEMENT__ THER_XHT_FACE4
+              MAILLE__ TRIA3     ELEMENT__ THER_XHT_FACE3
 %-------------------------------------------------------------------
 % modelisations 2d X-FEM non affectables par AFFE_MODELE
        MODELISATION__ 'PLAN_XH'          DIM__ 2 2   CODE__ 'PX1'
               MAILLE__ TRIA3     ELEMENT__ THPLTR3_XH
               MAILLE__ QUAD4     ELEMENT__ THPLQU4_XH
+              MAILLE__ SEG2      ELEMENT__ THPLSE2_XH
 
        MODELISATION__ 'PLAN_XT'          DIM__ 2 2   CODE__ 'PX2'
               MAILLE__ TRIA3     ELEMENT__ THPLTR3_XT
               MAILLE__ QUAD4     ELEMENT__ THPLQU4_XT
+              MAILLE__ SEG2      ELEMENT__ THPLSE2_XT
 
        MODELISATION__ 'PLAN_XHT'         DIM__ 2 2   CODE__ 'PX3'
               MAILLE__ TRIA3     ELEMENT__ THPLTR3_XHT
               MAILLE__ QUAD4     ELEMENT__ THPLQU4_XHT
+              MAILLE__ SEG2      ELEMENT__ THPLSE2_XHT
 
        MODELISATION__ 'AXIS_XH'          DIM__ 2 2   CODE__ 'AX1'
               ATTRIBUT__  AXIS=OUI
               MAILLE__ TRIA3     ELEMENT__ THAXTR3_XH
               MAILLE__ QUAD4     ELEMENT__ THAXQU4_XH
+              MAILLE__ SEG2      ELEMENT__ THAXSE2_XH
 
        MODELISATION__ 'AXIS_XT'          DIM__ 2 2   CODE__ 'AX2'
               ATTRIBUT__  AXIS=OUI
               MAILLE__ TRIA3     ELEMENT__ THAXTR3_XT
               MAILLE__ QUAD4     ELEMENT__ THAXQU4_XT
+              MAILLE__ SEG2      ELEMENT__ THAXSE2_XT
 
        MODELISATION__ 'AXIS_XHT'         DIM__ 2 2   CODE__ 'AX3'
               ATTRIBUT__  AXIS=OUI
               MAILLE__ TRIA3     ELEMENT__ THAXTR3_XHT
               MAILLE__ QUAD4     ELEMENT__ THAXQU4_XHT
+              MAILLE__ SEG2      ELEMENT__ THAXSE2_XHT
 %-------------------------------------------------------------------
 
    PHENOMENE__  ACOUSTIQUE       CODE__  'AC'

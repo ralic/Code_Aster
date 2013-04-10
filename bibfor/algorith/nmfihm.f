@@ -4,9 +4,9 @@
      &                  COMPOR,TYPMOD)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 17/12/2012   AUTEUR LAVERNE J.LAVERNE 
+C MODIF ALGORITH  DATE 08/04/2013   AUTEUR CUVILLIE M.CUVILLIEZ 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
@@ -35,7 +35,7 @@ C RESPONSABLE LAVERNE J.LAVERNE
       CHARACTER*8  TYPMOD(*)
       CHARACTER*16 OPTION, COMPOR(*)
 C-----------------------------------------------------------------------
-C  OPTIONS DE MECANIQUE NON LINEAIRE POUR LES JOINTS HM 2D ET 3D
+C  OPTIONS DE MECANIQUE NON LINEAIRE POUR JOINT ET JOINT_HYME 2D ET 3D
 C
 C    OPTIONS DE CALCUL 
 C       * RAPH_MECA      : DDL = DDL- + DDDL  ->   SIGP , FINT
@@ -73,7 +73,7 @@ C OUT MATR    : MATRICE DE RIGIDITE   (RIGI_MECA_* ET FULL_MECA_*)
 C OUT VECT    : FORCES INTERIEURES    (RAPH_MECA   ET FULL_MECA_*)
 C-----------------------------------------------------------------------
 
-      LOGICAL RESI,RIGI,AXI
+      LOGICAL RESI,RIGI,AXI,IFHYME
       INTEGER I,J,KK,M,N,OS,P,Q,IBID,KPG,NCOORO
       REAL*8 DSIDEP(6,6),B(2*NDIM-1,NDIM+1,2*NNO1+NNO2)
       REAL*8 SIGMO(6),SIGMA(6),EPSM(6),DEPS(6),WG
@@ -83,6 +83,12 @@ C-----------------------------------------------------------------------
       AXI  = .FALSE.
       RESI = OPTION.EQ.'RAPH_MECA' .OR. OPTION(1:9).EQ.'FULL_MECA'
       RIGI = OPTION(1:9).EQ.'FULL_MECA'.OR.OPTION(1:10).EQ.'RIGI_MECA_'
+           
+C IFHYME = TRUE  : CALCUL COUPLE HYDRO-MECA
+C IFHYME = FALSE : CALCUL MECA SANS HYDRO ET ELIMINATION DES DDL DE PRES
+C (FINT_P=0, KTAN_PP=IDENTITE, KTAN_UP=0)
+      IF (TYPMOD(2).EQ.'EJ_HYME')  IFHYME=.TRUE.
+      IF (TYPMOD(2).EQ.'ELEMJOIN') IFHYME=.FALSE.
 
       IF (.NOT. RESI .AND. .NOT. RIGI)
      &  CALL U2MESK('F','ALGORITH7_61',1,OPTION)
@@ -104,7 +110,7 @@ C       CALCUL DE LA MATRICE CINEMATIQUE
 C       CALCUL DES DEFORMATIONS (SAUTS ET GRADIENTS DE PRESSION)
         CALL R8INIR(6, 0.D0, EPSM ,1)
         CALL R8INIR(6, 0.D0, DEPS ,1)
-        
+
         DO 150 I = 1,NDIM
           DO 160 J = 1,NDIM    
           DO 161 N = 1,2*NNO1
@@ -149,7 +155,7 @@ C       CONTRAINTES -
         DO 13 N = 1,2*NDIM-1
           SIGMO(N) = SIGM(N,KPG)
  13     CONTINUE
- 
+
 C - APPEL A LA LOI DE COMPORTEMENT
         CALL NMCOMP('RIGI',KPG,1,NDIM,TYPMOD,MATE,COMPOR,CRIT,
      &              TM,TP,
@@ -178,9 +184,9 @@ C         VECTEUR FINT : U
               DO 320 J = 1,NDIM
                 TEMP = TEMP + B(J,I,N)*SIGP(J,KPG)
  320          CONTINUE
-  
+
               VECT(KK) = VECT(KK) + WG*TEMP
-            
+
  301        CONTINUE
  300      CONTINUE
 
@@ -192,9 +198,13 @@ C         VECTEUR FINT : P
             DO 321 I = NDIM+1,2*NDIM-1
               TEMP = TEMP + B(I,NDIM+1,2*NNO1+N)*SIGP(I,KPG)
  321        CONTINUE
- 
-            VECT(KK) = VECT(KK) + WG*TEMP
-                        
+            IF (IFHYME) THEN 
+              VECT(KK) = VECT(KK) + WG*TEMP
+            ELSE 
+C             SI IFHYME=FALSE => FINT_P=0
+              VECT(KK) = 0.D0
+            ENDIF                        
+            
  302      CONTINUE
 
         ENDIF 
@@ -245,8 +255,16 @@ C         MATRICE K:P(N),P(M)
      &                                     *B(Q,NDIM+1,2*NNO1+M)
  552            CONTINUE             
  542          CONTINUE
- 
-              MATR(KK) = MATR(KK) + WG*TEMP
+              IF (IFHYME) THEN  
+                MATR(KK) = MATR(KK) + WG*TEMP
+              ELSE
+C               SI IFHYME=FALSE => K_PP=IDENTITE
+                IF (N.EQ.M) THEN
+                  MATR(KK) = 1.D0
+                ELSE
+                  MATR(KK) = 0.D0
+                ENDIF
+              ENDIF
               
  522        CONTINUE
  502      CONTINUE
@@ -270,9 +288,14 @@ C         ATTENTION, TERME MIS A ZERO, VERIFICATION NECESSAIRE
      &                         *DSIDEP(P,Q)*B(Q,J,M)*0.D0
  553            CONTINUE             
  543          CONTINUE
-              
-              MATR(KK) = MATR(KK) + WG*TEMP
-              
+ 
+              IF (IFHYME) THEN              
+                MATR(KK) = MATR(KK) + WG*TEMP
+              ELSE
+C               SI IFHYME=FALSE => K_PU=0.
+                MATR(KK)=0.D0
+              ENDIF
+                            
  533        CONTINUE
  523        CONTINUE
  503      CONTINUE
@@ -287,7 +310,13 @@ C         MATRICE K:U(I,N),P(M)
             
               KK = OS + IP(M) 
               TEMP = -B(1,I,N)*VFF2(M,KPG)
-              MATR(KK) = MATR(KK) + WG*TEMP
+
+              IF (IFHYME) THEN
+                MATR(KK) = MATR(KK) + WG*TEMP
+              ELSE
+C               SI IFHYME=FALSE => K_UP=0.
+                MATR(KK)=0.D0
+              ENDIF
                                         
  524        CONTINUE
  
@@ -295,7 +324,6 @@ C         MATRICE K:U(I,N),P(M)
  504      CONTINUE
  
         ENDIF 
-
 
  11   CONTINUE
  
