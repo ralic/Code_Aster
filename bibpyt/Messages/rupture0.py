@@ -1,4 +1,4 @@
-#@ MODIF rupture0 Messages  DATE 22/01/2013   AUTEUR LADIER A.LADIER 
+#@ MODIF rupture0 Messages  DATE 08/04/2013   AUTEUR LADIER A.LADIER 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -19,12 +19,7 @@
 # ======================================================================
 
 cata_msg={
-1: _(u"""
-La valeur de KJ critique demandée n'est pas atteinte dans l'étude demandée;
-il n'est donc pas possible d'identifier le GP critique dans cette étude.
--> Risque et Conseil :
-Augmentez le chargement.
-"""),
+
 
 2: _(u"""
 Erreur dans la récupération de la dimension (du maillage ou du modèle).

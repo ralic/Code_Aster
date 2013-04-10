@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 05/02/2013   AUTEUR BARGELLI R.BARGELLINI 
+#& MODIF COMMANDE  DATE 08/04/2013   AUTEUR LADIER A.LADIER 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -20,13 +20,14 @@
 #Quoi qu'il en soit, on sort la table GP
 #Si on est sans copeau et que l'utilisateur souhaite verifier
 #les copeaux automatiquement crees, il peut grace a CHAMP_COP
-def calc_gp_prod(self,ZONE,GPMAX, **args):
+def calc_gp_prod(self,TRANCHE_2D,GPMAX, **args):
   """Typage des sd_prod
   """
-  if ZONE['ZONE_MAIL']== "NON":
-     for ss_cop in ZONE:
-         if ss_cop['CHAMP_VISU']!= None:
-             self.type_sdprod(ss_cop['CHAMP_VISU'], cham_elem)
+  if TRANCHE_2D!=None:
+    if TRANCHE_2D['ZONE_MAIL']== "NON":
+      for ss_cop in TRANCHE_2D:
+        if ss_cop['CHAMP_VISU']!= None:
+          self.type_sdprod(ss_cop['CHAMP_VISU'], cham_elem)
   if GPMAX !=None:
      self.type_sdprod(GPMAX, table_sdaster)
   return table_sdaster
@@ -38,11 +39,14 @@ CALC_GP =MACRO(nom="CALC_GP",
 #                   sd_prod=table_sdaster,
                    UIinfo={"groupes":("Outils-métier","Rupture",)},
                    reentrant='n',
-                   fr="calcul du parametre de clivage energetique Gp en 2D",
+                   fr="calcul du parametre de clivage energetique Gp en 2D et en 3D",
+                   regles=UN_PARMI('TRANCHE_2D','TRANCHE_3D'),
+         RESULTAT    =SIMP(statut='o',typ=resultat_sdaster,
+                                      fr="Resultat d'une commande globale STAT_NON_LINE"),
          LIST_INST   = SIMP(statut='o',typ=(listr8_sdaster) ),
          PRECISION   = SIMP(statut='f',typ='R',validators=NoRepeat(),val_min=0.,val_max=1E-3,defaut=1E-6),
          CRITERE     = SIMP(statut='f',typ='TXM',defaut="ABSOLU",into=("RELATIF","ABSOLU") ),                  
-         ZONE        = FACT(statut='o',max = 1,
+         TRANCHE_2D  = FACT(statut='f',max = 1,
                            ZONE_MAIL     = SIMP(statut='o',typ='TXM',into=("NON","OUI") ),
                            b_cop= BLOC(condition = "ZONE_MAIL=='OUI'",
                                        fr="Les copeaux sont mailles",
@@ -57,9 +61,13 @@ CALC_GP =MACRO(nom="CALC_GP",
                                  NB_ZONE        =SIMP(statut='o',typ='I',),
                                  CHAMP_VISU        =SIMP(statut='f',typ=CO),),
                              ),
-         RESULTAT        =SIMP(statut='o',typ=resultat_sdaster,
-                                      fr="Resultat d'une commande globale STAT_NON_LINE"),
-         SYME            =SIMP(statut='o',typ='TXM',into=("NON","OUI"),
-                      fr="multiplication par 2 si SYME=OUI"),
+         TRANCHE_3D  = FACT(statut='f',max ='**',
+                           GROUP_MA  = SIMP(statut='o', typ=grma, validators=NoRepeat(), max='**'),
+                             ),
+         b_tranche_2d = BLOC(condition="TRANCHE_2D!=None",
+                 SYME            =SIMP(statut='o',typ='TXM',into=("NON","OUI"),
+                      fr="multiplication par 2 si SYME=OUI"),),
+         b_tranche_3d = BLOC(condition="TRANCHE_3D!=None",
+                 FOND_FISS       =SIMP(statut='o',typ=fond_fiss,max=1,),),
          GPMAX           = SIMP(statut='f',typ=CO,),
            )

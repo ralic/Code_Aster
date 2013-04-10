@@ -1,4 +1,4 @@
-#@ MODIF rupture1 Messages  DATE 05/02/2013   AUTEUR BARGELLI R.BARGELLINI 
+#@ MODIF rupture1 Messages  DATE 08/04/2013   AUTEUR LADIER A.LADIER 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -123,7 +123,8 @@ de la couronne soient calculés avec les données du maillage.
 """),
 
 19: _(u"""
-L'opérateur CALC_GP ne supporte que les modélisations 2D.
+L'utilisation du mot-clé facteur %(k1)s n'est compatible qu'avec une modélisation %(k2)s.
+Veuillez vérifiez vos données.
 """),
 
 20: _(u"""
@@ -140,6 +141,11 @@ La liste de taille n'a pas la taille de la liste des groupes mailles.
 Vérifiez vos données.
 """),
 
+22: _(u"""
+Les mailles volumiques caractérisant les zones de calcul doivent absolument être des
+hexaèdres.
+Vérifiez votre maillage ou vos données.
+"""),
 
 23: _(u"""
 CALC_G - option CALC_G : détection de chargements non nuls sur l'axe,
@@ -172,11 +178,26 @@ il est indispensable de fournir la masse volumique du matériau considéré.
 La masse volumique doit être définie dans l'opérateur DEFI_MATERIAU.
 """),
 
+27: _(u"""
+La connexité entre les mailles caractérisant les zones de calcul n'est pas valide.
+-> Risque et Conseil :
+Veuillez vous assurer que les copeaux de chaque tranche définies dans
+GROUP_MA du mot-clé facteur TRANCHE_3D, suivent les règles précisées dans
+la documentation U de CALC_GP.
+"""),
+
 28: _(u"""
 Le champ de nom symbolique %(k1)s existe déjà dans la SD RESULTAT  %(k1)s.
 """),
 
-
+29: _(u"""
+Au moins une des mailles caractérisant les zones de calcul a une forme trop
+trapézoïdale.
+-> Risque et Conseil :
+Le calcul de la surface de sa face appartenant au plan de symétrie de
+l'entaille risque d'être altéré et par conséquent celui de GP également.
+Veuillez vérifier votre maillage.
+"""),
 
 30: _(u"""
 Il faut donner 3 composantes de la direction.

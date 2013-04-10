@@ -1,4 +1,4 @@
-# MODIF  DATE 05/02/2013   AUTEUR BARGELLI R.BARGELLINI 
+# MODIF  DATE 08/04/2013   AUTEUR LADIER A.LADIER 
 # TITRE CALCUL DU CRITERE ENERGETIQUE GP EN 2D
 # ssnp131a.para = tps_job 800 mem_job 512Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -171,21 +171,21 @@ L_COP=DEFI_LIST_REEL(DEBUT=0.02,
 #avec copeaux définis
 TESTCOP= CALC_GP(RESULTAT=RESU,
                LIST_INST=L_INSTGP,
-               ZONE=_F(ZONE_MAIL='OUI',
-                       GROUP_MA= l_copeaux,
-                       TAILLE=L_COP),
+               TRANCHE_2D=_F(ZONE_MAIL='OUI',
+                             GROUP_MA= l_copeaux,
+                             TAILLE=L_COP),
                SYME='OUI',
                ) 
 #avec definition automatique des copeaux
 TESTSCOP= CALC_GP(RESULTAT=RESU,
              LIST_INST=L_INSTGP,
-             ZONE=_F(ZONE_MAIL='NON',
-                     CENTRE=(0.,0.),
-                     RAYON=(0.1),
-                     ANGLE=0,
-                     TAILLE=0.02,
-                     NB_ZONE=10,
-                     CHAMP_VISU=CO('CH_VISU')
+             TRANCHE_2D=_F(ZONE_MAIL='NON',
+                          CENTRE=(0.,0.),
+                          RAYON=(0.1),
+                          ANGLE=0,
+                          TAILLE=0.02,
+                          NB_ZONE=10,
+                          CHAMP_VISU=CO('CH_VISU')
                         ),
              GPMAX=CO('GPMAXSCO'),
              SYME='OUI',
@@ -225,66 +225,6 @@ TEST_TABLE(CRITERE='RELATIF',
                       VALE=40,),
                    _F(NOM_PARA='ZONE',
                       VALE_K = 'COPS_3'),)
-           )
-#----------------------------------------------------------------------
-#---------------  POST_TRAITEMENT_POST_GP ------------------
-#----------------------------------------------------------------------
-
-# conversion MPa.m^1/2 vers MPa.mm^1/2
-conv = 1000 ** 0.5
-kjc1 = 25.684 * conv
-kjc2 = 34.228  * conv
-kjc3 = 38.498  * conv
-
-tab = POST_GP(RESULTAT=RESU,
-              MODELE=MOD,
-              MATER=ACIER,
-              COMP_ELAS=_F(RELATION='ELAS_VMIS_TRAC',
-                           DEFORMATION='PETIT'),
-              LIST_INST = L_INSTGP,
-              SYME='OUI',
-              DIRECTION=(1., 0., 0.),
-              THETA_2D=(_F(GROUP_NO='PFON_0',
-                           R_INF=0.25,
-                           R_SUP=0.5),
-                        _F(GROUP_NO='PFON_0',
-                           R_INF=0.5,
-                           R_SUP=1.),
-                        _F(GROUP_NO='PFON_0',
-                           R_INF=1.,
-                           R_SUP=2.),
-                        _F(GROUP_NO='PFON_0',
-                           R_INF=2.,
-                           R_SUP=5.),),
-              TRANCHE=_F(GROUP_MA=l_copeaux),
-              IDENTIFICATION=_F(KJ_CRIT=(kjc1, kjc2, kjc3),
-                                TEMP   =(100, 100, 100),),
-              TABL_GPMAX=CO('tabident'),
-              TABL_GP     = CO('tabgp'),
-              INFO=2)
-
-TEST_TABLE(CRITERE='RELATIF',
-           VALE_CALC=0.64998705424086001,
-           NOM_PARA='GP_CRIT',
-           TABLE=tabident,
-           FILTRE=_F(NOM_PARA='KJ_CRIT',
-                     VALE=812.19939423764652,),
-           )
-
-TEST_TABLE(CRITERE='RELATIF',
-           VALE_CALC=0.81698768976298997,
-           NOM_PARA='GP_CRIT',
-           TABLE=tabident,
-           FILTRE=_F(NOM_PARA='KJ_CRIT',
-                     VALE=1082.3843975224329,),
-           )
-
-TEST_TABLE(CRITERE='RELATIF',
-           VALE_CALC=0.90087666322161997,
-           NOM_PARA='GP_CRIT',
-           TABLE=tabident,
-           FILTRE=_F(NOM_PARA='KJ_CRIT',
-                     VALE=1217.4136536116225,),
            )
 
 FIN()

@@ -1,4 +1,4 @@
-#@ MODIF compor1 Messages  DATE 28/01/2013   AUTEUR PROIX J-M.PROIX 
+#@ MODIF compor1 Messages  DATE 08/04/2013   AUTEUR LADIER A.LADIER 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -376,6 +376,11 @@ Erreur dans le calcul du tenseur équivalent au sens de HILL.
 
 72: _(u"""
  Le nombre de variables internes initiales est incorrect : %(i1)d ; il devrait valoir %(i2)d
+"""),
+
+73: _(u"""
+Lors d'un calcul avec des poutres multifibres, il est nécessaire de renseigner le mot-clé 
+AFFE_COMPOR dans AFFE_MATERIAU.
 """),
 
 75 : _(u""" == Paramètres de la loi %(k1)s ==

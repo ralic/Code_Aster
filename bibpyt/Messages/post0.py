@@ -1,4 +1,4 @@
-#@ MODIF post0 Messages  DATE 19/03/2013   AUTEUR BRIE N.BRIE 
+#@ MODIF post0 Messages  DATE 08/04/2013   AUTEUR LADIER A.LADIER 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -154,24 +154,7 @@ Pour la commande POST_ENDO_FISS, le maillage doit être contenu dans un plan para
 Le champ pour la recherche de l'ouverture de fissure doit être un champ aux noeuds.
 """),
 
-36 : _(u"""
-L'instant où le "KJ critique" OU "GP critique" est atteint a été obtenu par interpolation linéaire
-entre les instants %(r1)f et %(r2)f ; ce type de grandeur étant non linéaire, le résultat est d'autant plus
-imprécis que l'intervalle d'interpolation est grand.
 
-Conseil : raffinez votre discrétisation en temps pour votre post-traitement, et si besoin pour votre calcul.
-"""),
-
-37 : _(u"""
-Le numéro d'ordre 0 ne peut pas être traité par la commande POST_GP.
-"""),
-
-38 : _(u"""
-Assurez vous que :
-- Votre fond d'entaille est dans un plan.
-- La direction de propagation correspond bien au produit vectoriel de la direction du fond d'entaille
-  et de la normale définis tous deux dans la commande DEFI_FOND_FISS.
-"""),
 
 39 : _(u"""
 En 3D, le mot-clé NORMALE doit être renseigné dans la commande DEFI_FOND_FISS.

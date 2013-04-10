@@ -1,4 +1,4 @@
-# MODIF  DATE 05/02/2013   AUTEUR BARGELLI R.BARGELLINI 
+# MODIF  DATE 08/04/2013   AUTEUR LADIER A.LADIER 
 # TITRE CALCUL DU PARAMETRE GP EN 2D AVEC MAILLAGE QUELCONQUE
 # ssnp131b.para = tps_job 500 mem_job 512Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -158,13 +158,13 @@ L_INSTGP=DEFI_LIST_REEL(DEBUT=4.0,
 
 TESTSCOP= CALC_GP(RESULTAT=RESU,
              LIST_INST=L_INSTGP,
-             ZONE=_F(ZONE_MAIL='NON',
-                     CENTRE=(27.4,0.),
-                     RAYON=(0.1),
-                     ANGLE=0,
-                     TAILLE=0.02,
-                     NB_ZONE=10,
-                     CHAMP_VISU=CO('CH_VISU')
+             TRANCHE_2D=_F(ZONE_MAIL='NON',
+                           CENTRE=(27.4,0.),
+                           RAYON=(0.1),
+                           ANGLE=0,
+                           TAILLE=0.02,
+                           NB_ZONE=10,
+                           CHAMP_VISU=CO('CH_VISU')
                         ),
              GPMAX=CO('GPMAXSCO'),
              SYME='OUI',
