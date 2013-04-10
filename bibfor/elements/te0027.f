@@ -1,7 +1,7 @@
       SUBROUTINE TE0027(OPTION,NOMTE)
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 21/01/2013   AUTEUR DELMAS J.DELMAS 
+C MODIF ELEMENTS  DATE 08/04/2013   AUTEUR BARGELLI R.BARGELLINI 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -584,6 +584,7 @@ C =======================================================
 621           CONTINUE
 631         CONTINUE
           END IF
+          TINI = TINI + (PROD1+PROD2)*POIDS
         END IF
 C ==================================================================
 C FIN DE BOUCLE PRINCIPALE SUR LES POINTS DE GAUSS
@@ -591,7 +592,6 @@ C ==================================================================
 800   CONTINUE
 C EXIT EN CAS DE THETA FISSURE NUL PARTOUT
 9999   CONTINUE
-
 C ASSEMBLAGE FINAL DES TERMES DE G OU DG
       ZR(IGTHET) = TTHE + TCLA + TFOR + TPLAS + TINI
       CALL JEDEMA()
