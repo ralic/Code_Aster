@@ -1,9 +1,9 @@
-#@ MODIF reca_calcul_aster Macro  DATE 10/07/2012   AUTEUR ASSIRE A.ASSIRE 
+#@ MODIF reca_calcul_aster Macro  DATE 09/04/2013   AUTEUR ASSIRE A.ASSIRE 
 # -*- coding: iso-8859-1 -*-
 # RESPONSABLE ASSIRE A.ASSIRE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -85,6 +85,8 @@ class CALCUL_ASTER:
       self.mem_aster             = CALCUL_ESCLAVE['mem_aster']
       self.memjob                = CALCUL_ESCLAVE['memjob']
       self.memjeveux             = CALCUL_ESCLAVE['memjeveux']
+      self.mpi_nbcpu             = CALCUL_ESCLAVE['mpi_nbcpu']
+      self.mpi_nbnoeud           = CALCUL_ESCLAVE['mpi_nbnoeud']
 
       self.INFO                  = INFO
 
@@ -454,11 +456,14 @@ class CALCUL_ASTER:
            break
 
      # Parametres ajoutes par le mot-cle CALCUL_ESCLAVE
-     if self.tpsjob:    prof.param['tpsjob']    = str(self.tpsjob)
-     if self.tpmax:     prof.args['tpmax']      = str(self.tpmax)
-     if self.mem_aster: prof.param['mem_aster'] = str(self.mem_aster)
-     if self.memjob:    prof.param['memjob']    = str(self.memjob)
-     if self.memjeveux: prof.args['memjeveux']  = str(self.memjeveux)
+     if self.tpsjob:      prof.param['tpsjob']      = str(self.tpsjob)
+     if self.tpmax:       prof.args['tpmax']        = str(self.tpmax)
+     if self.mem_aster:   prof.param['mem_aster']   = str(self.mem_aster)
+     if self.memjob:      prof.param['memjob']      = str(self.memjob)
+     if self.memjeveux:   prof.args['memjeveux']    = str(self.memjeveux)
+     if self.mpi_nbcpu:   prof.param['mpi_nbcpu']   = str(self.mpi_nbcpu)
+     if self.mpi_nbnoeud: prof.param['mpi_nbnoeud'] = str(self.mpi_nbnoeud)
+
 
      # En batch et distribue
      if self.MODE == 'BATCH':

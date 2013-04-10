@@ -1,4 +1,4 @@
-#@ MODIF calc_europlexus_ops Macro  DATE 11/03/2013   AUTEUR IDOUX L.IDOUX 
+#@ MODIF calc_europlexus_ops Macro  DATE 09/04/2013   AUTEUR ASSIRE A.ASSIRE 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -80,7 +80,7 @@ def tolist(x) :
 #-----------------------------------------------------------------------
 
 
-def calc_europlexus_ops(self,EXCIT,MODELE=None,CARA_ELEM=None,CHAM_MATER=None,FONC_PARASOL=None,
+def calc_europlexus_ops(self,EXCIT,COMP_INCR,MODELE=None,CARA_ELEM=None,CHAM_MATER=None,FONC_PARASOL=None,
                              DIME=None,OBSERVATION=None,ARCHIVAGE=None,COURBE=None,
                              CALCUL=None,DOMAINES=None,INTERFACES=None,ETAT_INIT=None,
                              INFO=1,**args):
@@ -151,7 +151,7 @@ def calc_europlexus_ops(self,EXCIT,MODELE=None,CARA_ELEM=None,CHAM_MATER=None,FO
     os.symlink(REPE_OUT, REPE_epx)
 
     # classs Europlexus permettant de faire le chainage avec le Code_Aster
-    EPX = EUROPLEXUS(ETAT_INIT,MODELE,CARA_ELEM,CHAM_MATER,FONC_PARASOL,EXCIT,DIME,
+    EPX = EUROPLEXUS(ETAT_INIT,MODELE,CARA_ELEM,CHAM_MATER,COMP_INCR,FONC_PARASOL,EXCIT,DIME,
                      OBSERVATION,ARCHIVAGE,COURBE,CALCUL,DOMAINES,INTERFACES,
                      REPE='REPE_OUT',EXEC=EXEC, INFO=INFO, REPE_epx=REPE_epx,
                      args=args)
@@ -203,7 +203,7 @@ def calc_europlexus_ops(self,EXCIT,MODELE=None,CARA_ELEM=None,CHAM_MATER=None,FO
 
 class EUROPLEXUS:
 
-    def __init__(self,ETAT_INIT,MODELE,CARA_ELEM,CHAM_MATER,FONC_PARASOL,EXCIT,DIME,OBSERVATION,ARCHIVAGE,COURBE,CALCUL,DOMAINES,INTERFACES,REPE,EXEC,INFO,REPE_epx,args):
+    def __init__(self,ETAT_INIT,MODELE,CARA_ELEM,CHAM_MATER,COMP_INCR,FONC_PARASOL,EXCIT,DIME,OBSERVATION,ARCHIVAGE,COURBE,CALCUL,DOMAINES,INTERFACES,REPE,EXEC,INFO,REPE_epx,args):
 
           if debug: print 'args_key %s'%args.keys()
           # Mettre toutes les entrees en attributs
@@ -233,6 +233,7 @@ class EUROPLEXUS:
           self.DOMAINES = DOMAINES
           self.INTERFACES = INTERFACES
           self.INFO = INFO
+          self.COMP_INCR = COMP_INCR
 
           self.REPE_epx = REPE_epx
           self.pwd = os.getcwd()
@@ -479,8 +480,8 @@ class EUROPLEXUS:
                   FORMAT = 'MED',
                   RESU   = _F(NUME_ORDRE=nume_ordre,RESULTAT=RESULTAT,NOM_CHAM=list_cham)
                  )
-                 
-            # on remet les contraintes des coques dans le repère utilisateur pour ne pas 
+
+            # on remet les contraintes des coques dans le repère utilisateur pour ne pas
             # modifier le resultat
             if self.ETAT_INIT['CONTRAINTE']=='OUI':
                 if 'T3GS' in self.modelisations or 'Q4GS' in self.modelisations :
@@ -700,9 +701,12 @@ class EUROPLEXUS:
         epx[MODULE].append('COMPLEMENT')
 
         # Dictionnaire conteant les donnees associees aux differents elements de structure
+        cara_elem_dispo = ['INFO','MODELE','DISCRET','COQUE','POUTRE','RIGI_PARASOL','BARRE','ORIENTATION']
         dic_elem = {}
-        for cle in ['DISCRET','COQUE','POUTRE','RIGI_PARASOL','BARRE']:
-            if cara_elem_struc.has_key(cle):
+        for cle in cara_elem_struc:
+            if cara_elem_dispo.count(cle)==0:
+                UTMESS('A','PLEXUS_18',valk=cle)
+            else :
                 fact = cara_elem_struc[cle]
                 if fact :
                     dic_elem[cle] = self.setlist(fact)
@@ -742,6 +746,11 @@ class EUROPLEXUS:
                     for gma in group_ma :
                         self.discretParasol[gma] = vale
                 if elem['CARA'] == 'A_TR_D_N' :
+                    group_ma = self.get_group_ma(elem)
+                    vale     = elem['VALE']
+                    for gma in group_ma :
+                        self.discretParasolAmor[gma] = vale
+                if elem['CARA'] == 'A_T_D_N' :
                     group_ma = self.get_group_ma(elem)
                     vale     = elem['VALE']
                     for gma in group_ma :
@@ -880,12 +889,16 @@ class EUROPLEXUS:
                 for f in ['NFAT', 'NFAR']:
                     if not f in dic_fonc_parasol.keys():
                         UTMESS('A','PLEXUS_15',valk=('A_TR_D_N', f) )
+            if 'A_T_D_N' in list_cara_rigi_parasol:
+                for f in ['NFAT', 'NFAR']:
+                    if not f in dic_fonc_parasol.keys():
+                        UTMESS('A','PLEXUS_15',valk=('A_T_D_N', f) )
 
             for f in ['NFKT', 'NFKR']:
                 if f in dic_fonc_parasol.keys() and not 'K_TR_D_N' in list_cara_rigi_parasol:
                     UTMESS('F','PLEXUS_16',valk=('K_TR_D_N', f) )
             for f in ['NFAT', 'NFAR']:
-                if f in dic_fonc_parasol.keys() and not 'A_TR_D_N' in list_cara_rigi_parasol:
+                if f in dic_fonc_parasol.keys() and ((not 'A_TR_D_N' in list_cara_rigi_parasol) and (not 'A_T_D_N' in list_cara_rigi_parasol)):
                     UTMESS('F','PLEXUS_16',valk=('A_TR_D_N', f) )
 
 
@@ -1116,6 +1129,14 @@ class EUROPLEXUS:
         affe_mater = self.recupere_structure(self.CHAM_MATER,'AFFE')
         affe_mater = self.setlist(affe_mater)
 
+        # Dicionnaire stoquant les relations pour chaque group_ma
+        dic_relation = {}
+        for comp in self.COMP_INCR :
+            for gr in comp['GROUP_MA']:
+                if gr in dic_relation: raise Exception('Une relation existe déjà pour le groupe %s' %gr)
+                dic_relation[gr] = comp['RELATION']
+
+
         # Dictionnaire stoquant les caracteristiques mecaniques et les group_ma associe a chaque materiau
         dic_mater = {}
         typMat = {}
@@ -1131,12 +1152,22 @@ class EUROPLEXUS:
             if debug: print 'nom_mater',nom_mater
             # Recuperer le group_ma concerne
             group_ma = self.get_group_ma(affe)
+            relation = ' '
+            for gr in group_ma :
+                if relation == ' ':
+                    relation = dic_relation[gr]
+                else:
+                    if relation !=dic_relation[gr]:
+                        UTMESS('F','PLEXUS_20',nom_mater)
+
             if debug: print 'type(group_ma) = %s'%type(group_ma)
             if not dic_mater.has_key(nom_mater):
                 dic_mater[nom_mater] = {'GROUP_MA':[]}
-                # Recuperer les caracteristiques elastiques du materiau
-                elas = self.recupere_structure(concept_mater,'ELAS')
-                if elas :
+
+                # Si relation == 'ELAS' on recupere les caracteristiques elastiques du materiau
+                if relation == 'ELAS':
+                   elas = self.recupere_structure(concept_mater,'ELAS')
+                   if not elas : UTMESS('F','PLEXUS_21',nom_mater)
                    typMat[nom_mater] = 'ELAS'
                    for car in ['E','RHO','NU']:
                      dic_mater[nom_mater][car] = elas[car]
@@ -1145,8 +1176,14 @@ class EUROPLEXUS:
                        dic_mater[nom_mater][car] = elas[car]
                      else :
                        dic_mater[nom_mater][car] = None
-                beton = self.recupere_structure(concept_mater,'BETON')
-                if beton  :
+
+                # Si relation == 'GLRC_DAMAGE'
+                elif relation == 'GLRC_DAMAGE':
+                    if relation != self.recupere_structure(concept_mater,'RELATION'):
+                        UTMESS('F','PLEXUS_22',nom_mater)
+                    beton = self.recupere_structure(concept_mater,'BETON')
+                    if not beton  : UTMESS('F','PLEXUS_23',nom_mater)
+
                     if debug: print 'on a trouve BETON'
                     typMat[nom_mater] = 'GLRC'
                     self.gmaGLRC.extend(group_ma)
@@ -1254,7 +1291,10 @@ class EUROPLEXUS:
                         dic_mater[nom_mater]['LINER'].append(dic_tmp)
 
             else:
-                if beton  :
+                if relation == 'ELAS' :
+                    if typMat[nom_mater] != 'ELAS': raise Exception("Le matériau n'a pas le bon type")
+                elif relation == 'GLRC_DAMAGE':
+                    if typMat[nom_mater] != 'GLRC': raise Exception("Le matériau n'a pas le bon type")
                     self.gmaGLRC.extend(group_ma)
 
             if debug: print 'MATER = %s \n type = %s \n dic = %s'%(nom_mater,typMat, dic_mater[nom_mater])
@@ -1408,9 +1448,16 @@ class EUROPLEXUS:
       # Initialisation des variables decrivant le chargement et les conditions de blocage
       CHARGEMENT = []
       LIAISON   = []
+      # INFO et MODELE ne sont pas des charges mais sont présents dans le dico definissant la charge
+      mot_cle_charge_OK=['INFO','MODELE','PRES_REP','DDL_IMPO','RELA_CINE_BP',]
 
       for excit in excit_list:
         concept_charge = excit['CHARGE']
+        list_char=self.recupere_structure(concept_charge)
+        list_char=list_char.keys()
+        for char in list_char:
+            if mot_cle_charge_OK.count(char)==0:
+                UTMESS('A','PLEXUS_19',char)
         pres_rep_list = self.recupere_structure(concept_charge,'PRES_REP')
         ddl_impo_list = self.recupere_structure(concept_charge,'DDL_IMPO')
         cable_bp_list = self.recupere_structure(concept_charge,'RELA_CINE_BP')

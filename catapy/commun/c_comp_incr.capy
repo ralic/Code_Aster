@@ -1,4 +1,4 @@
-#& MODIF COMMUN  DATE 26/03/2013   AUTEUR PROIX J-M.PROIX 
+#& MODIF COMMUN  DATE 09/04/2013   AUTEUR ASSIRE A.ASSIRE 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -17,7 +17,11 @@
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 # RESPONSABLE PROIX J.M.PROIX
-def C_COMP_INCR() : return FACT(statut='f',min=1,max='**',  #COMMUN#
+def C_COMP_INCR(COMMAND=None) :  #COMMUN#
+
+    if COMMAND !='CALC_EUROPLEXUS':
+        mcfact = FACT(statut='f',min=1,max='**',
+
            RELATION  =SIMP( statut='o',typ='TXM',defaut="ELAS",into=C_RELATION()),
            b_monox     = BLOC(condition = "RELATION == 'MONOCRISTAL' ",
                                  fr="SD issue de DEFI_COMPOR",
@@ -116,21 +120,21 @@ def C_COMP_INCR() : return FACT(statut='f',min=1,max='**',  #COMMUN#
 
            DEFORMATION       =SIMP(statut='f',typ='TXM',defaut="PETIT",
                                    into=("PETIT","PETIT_REAC","GROT_GDEP","SIMO_MIEHE","GDEF_HYPO_ELAS","GDEF_LOG")),
-           
+
            # gestion des contraintes planes par la méthode itérative
 
               RESI_CPLAN_MAXI    =SIMP(statut='f',typ='R',
                                       fr="Critère d'arret absolu pour assurer la condition de contraintes planes"),
-                                      
+
                    b_resi_cplan  =BLOC(condition = " RESI_CPLAN_MAXI == None ",
-                   
+
               RESI_CPLAN_RELA   =SIMP(statut='f',typ='R',defaut= 1.0E-6,
                                       fr="Critère d'arret relatif pour assurer la condition de contraintes planes"),
                                   ),
-                                  
+
               ITER_CPLAN_MAXI =SIMP(statut='f',typ='I',defaut= 1,
                                       fr="Nombre d'itérations maxi pour assurer la condition de contraintes planes"),
-           #  
+           #
            RESI_INTE_RELA    =SIMP(statut='f',typ='R',defaut= 1.0E-6),
            ITER_INTE_MAXI    =SIMP(statut='f',typ='I',defaut= 20 ),
 
@@ -139,7 +143,7 @@ def C_COMP_INCR() : return FACT(statut='f',min=1,max='**',  #COMMUN#
                ITER_INTE_PAS   =SIMP(statut='f',typ='I',defaut= 0 ),
                                      ),
 
-           ALGO_INTE         =SIMP(statut='f',typ='TXM',into=("ANALYTIQUE", "SECANTE", "DEKKER", "NEWTON_1D","BRENT", 
+           ALGO_INTE         =SIMP(statut='f',typ='TXM',into=("ANALYTIQUE", "SECANTE", "DEKKER", "NEWTON_1D","BRENT",
                                                               "NEWTON", "NEWTON_RELI", "NEWTON_PERT", "RUNGE_KUTTA",
                                                               "SPECIFIQUE", "SANS_OBJET")),
 
@@ -156,16 +160,16 @@ def C_COMP_INCR() : return FACT(statut='f',min=1,max='**',  #COMMUN#
                  AMPLITUDE    =SIMP(statut='f',typ='R',defaut= 1.5 ),
                  TAUX_RETOUR  =SIMP(statut='f',typ='R',defaut= 0.05 ),
                                   ),
-           
-           b_crirupt        = BLOC(condition = 
+
+           b_crirupt        = BLOC(condition =
            " RELATION in ('VMIS_ISOT_LINE','VMIS_ISOT_TRAC','VISCOCHAB','VISC_ISOT_LINE','VISC_ISOT_TRAC',)",
                                    fr="Critere de rupture selon une contrainte critique",
                  POST_ITER    =SIMP(statut='f',typ='TXM',into=("CRIT_RUPT",), ),
                                   ),
-           
+
            PARM_THETA      =SIMP(statut='f',typ='R',val_min=0.,val_max=1., defaut= 1.),
            PARM_ALPHA      =SIMP(statut='f',typ='R',defaut= 1. ),
-           
+
            b_radi          =BLOC(condition = "TYPE_MATR_TANG == None",
               RESI_RADI_RELA  =SIMP(statut='f',typ='R', ),
                                ),
@@ -175,4 +179,14 @@ def C_COMP_INCR() : return FACT(statut='f',min=1,max='**',  #COMMUN#
            GROUP_MA        =SIMP(statut='f',typ=grma,validators=NoRepeat(),max='**'),
            MAILLE          =SIMP(statut='f',typ=ma  ,validators=NoRepeat(),max='**'),
 
-         ) ;
+         )
+
+    else:
+        mcfact = FACT(statut='f',min=1,max='**',  #COMMUN#
+
+           RELATION  = SIMP( statut='o',typ='TXM',defaut="ELAS",into=('ELAS','GLRC_DAMAGE')),
+           GROUP_MA  = SIMP(statut='o',typ=grma,validators=NoRepeat(),max='**'),
+        )
+
+
+    return mcfact

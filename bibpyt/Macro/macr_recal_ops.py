@@ -1,8 +1,8 @@
-#@ MODIF macr_recal_ops Macro  DATE 05/11/2012   AUTEUR ASSIRE A.ASSIRE 
+#@ MODIF macr_recal_ops Macro  DATE 09/04/2013   AUTEUR ASSIRE A.ASSIRE 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -218,7 +218,8 @@ def macr_recal(self, UNITE_ESCL, RESU_EXP, POIDS, LIST_PARA, RESU_CALC,
    TOLE_FONC       = args['TOLE_FONC']
 
    # Pour les calculs esclaves
-   CALCUL_ESCLAVE  = {}.fromkeys( ['LANCEMENT', 'MODE', 'UNITE_SUIVI', 'CLASSE', 'ACTUALISATION', 'memjeveux', 'memjob', 'mem_aster', 'tpmax', 'tpsjob', 'NMAX_SIMULT', ] )
+   CALCUL_ESCLAVE  = {}.fromkeys( ['LANCEMENT', 'MODE', 'UNITE_SUIVI', 'CLASSE', 'ACTUALISATION', 'memjeveux', 'memjob', 'mem_aster', 'tpmax', 'tpsjob',
+                                   'mpi_nbnoeud', 'mpi_nbcpu', 'NMAX_SIMULT', ] )
 
    dESCLAVE=args['CALCUL_ESCLAVE'][0].cree_dict_valeurs(args['CALCUL_ESCLAVE'][0].mc_liste)
    for i in dESCLAVE.keys():
@@ -321,6 +322,20 @@ def macr_recal(self, UNITE_ESCL, RESU_EXP, POIDS, LIST_PARA, RESU_CALC,
           # Recuperation depuis le calcul maitre
           CALCUL_ESCLAVE['memjob']    = int(prof.param['memjob'][0])
           CALCUL_ESCLAVE['memjeveux'] = prof.args['memjeveux']
+
+       # Utilisation du mot-cle MPI_NBCPU
+       if dESCLAVE.has_key('MPI_NBCPU'):
+
+          # Verifie que le calcul maitre est bien en MPI sur 1 cpu
+          mpi_nbcpu = str(prof['mpi_nbcpu'][0])
+          if mpi_nbcpu != '1':
+              UTMESS('A','RECAL0_7')
+
+          CALCUL_ESCLAVE['mpi_nbcpu']   = int(dESCLAVE['MPI_NBCPU'])
+
+       # Utilisation du mot-cle MPI_NBNOEUD
+       if dESCLAVE.has_key('MPI_NBNOEUD'):
+          CALCUL_ESCLAVE['mpi_nbnoeud'] = int(dESCLAVE['MPI_NBNOEUD'])
 
        # Parametres batch
        if CALCUL_ESCLAVE['MODE']=='BATCH':
@@ -596,6 +611,8 @@ def macr_recal(self, UNITE_ESCL, RESU_EXP, POIDS, LIST_PARA, RESU_CALC,
 
           L_F = CALCUL_ASTER.L
           residu = fval
+          ecart_fonc = 0 # non calcule avec ces methodes
+          ecart_para = 0 # non calcule avec ces methodes
 
 
        #-------------------------------------------------------------------------------
@@ -715,18 +732,30 @@ def macr_recal(self, UNITE_ESCL, RESU_EXP, POIDS, LIST_PARA, RESU_CALC,
          reca_utilitaires.graphique(GRAPHIQUE['FORMAT'],L_F,RESU_EXP,RESU_CALC,iter,GRAPHE_UL_OUT,pilote,fichier)
 
    # Si pas de convergence alors diagnostic NOOK_TEST_RESU
-   if (residu > RESI_GLOB_RELA) and  (ecart_fonc > TOLE_FONC) and (ecart_para < TOLE_PARA):
+#   if (residu > RESI_GLOB_RELA) and  (ecart_fonc > TOLE_FONC) and (ecart_para < TOLE_PARA):
+
+   if debug:
+       print "residu, RESI_GLOB_RELA=", residu, RESI_GLOB_RELA, (residu > RESI_GLOB_RELA)
+       print "ecart_fonc, TOLE_FONC=", ecart_fonc, TOLE_FONC, (ecart_fonc > TOLE_FONC)
+       print "ecart_para, TOLE_PARA=", ecart_para, TOLE_PARA, (ecart_para > TOLE_PARA)
+
+   if (residu > RESI_GLOB_RELA):
       from Cata.cata import CREA_TABLE, TEST_TABLE
       _tmp = []
       _tmp.append( { 'PARA': 'ITER_MAXI', 'LISTE_R': 0.0, } )
       motscle = {'LISTE': _tmp }
 
-      TBL = CREA_TABLE(**motscle);
+      _TBL = CREA_TABLE(**motscle);
 
-      TEST_TABLE(TABLE=TBL,
-                 TYPE_TEST='SOMM',
-                 NOM_PARA='ITER_MAXI',
-                 VALE=1.,);
+      TEST_TABLE(
+           VALE_CALC=1.,
+           
+           NOM_PARA='ITER_MAXI',
+           TABLE=_TBL,
+           FILTRE=_F(NOM_PARA='ITER_MAXI',
+                     VALE_I=1,),
+           )
+
 
    #_____________________________________________
    #

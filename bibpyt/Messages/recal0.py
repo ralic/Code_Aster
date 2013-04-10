@@ -1,8 +1,8 @@
-#@ MODIF recal0 Messages  DATE 07/11/2011   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF recal0 Messages  DATE 09/04/2013   AUTEUR ASSIRE A.ASSIRE 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -30,7 +30,7 @@ cata_msg = {
 d'environnement ASTER_ROOT ou mettez à jour ASTK.
 """),
 
- 3 : _(u"""Le logiciel GNUPLOT ou le module python Gnuplot.py n'est pas disponible.
+ 3 : _(u"""Le logiciel GNUPLOT ou le module python Gnuplot n'est pas disponible.
 On désactive l'affichage des courbes par Gnuplot.
 """),
 
@@ -40,13 +40,14 @@ On désactive l'affichage des courbes par Gnuplot.
  5 : _(u"""Il y a plus d'un fichier .export dans le répertoire de travail !
 """),
 
- 6 : _(u"""Pour les calculs DISTRIBUES en mode INTERACTIF, il faut spécifier une valeur pour 'mem_aster'
+ 6 : _(u"""Pour les calculs DISTRIBUES en mode INTERACTIF, il faut spécifier une valeur pour mem_aster
 (menu Option de ASTK) pour limiter la mémoire allouée au calcul maître.
 """),
 
-# 7 : _(u""" """),
+ 7 : _(u"""Pour pouvoir lancer les calculs esclaves en MPI, le calcul maître doit être lancé 
+en MPI sur un processeur."""),
 
- 8 : _(u"""Vérifier les valeurs des paramètres 'mem_aster' et 'memjeveux'.
+ 8 : _(u"""Vérifier les valeurs des paramètres mem_aster et memjeveux.
 """),
 
 # 9 : _(u""" """),

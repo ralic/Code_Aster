@@ -1,0 +1,77 @@
+DEBUT();
+
+DSDE__ = 2000.;
+
+YOUN__ = 200000.;
+
+SIGY__ = 200.;
+
+MA=LIRE_MAILLAGE();
+
+MA=DEFI_GROUP(reuse =MA,
+              MAILLAGE=MA,
+              CREA_GROUP_NO=_F(TOUT_GROUP_MA='OUI',),);
+
+
+ACIER=DEFI_MATERIAU(ECRO_LINE=_F(D_SIGM_EPSI=DSDE__,
+                                 SY=SIGY__,),
+                    ELAS=_F(NU=0.3,
+                            E=YOUN__,),);
+
+CHMAT=AFFE_MATERIAU(AFFE=_F(MATER=ACIER,
+                            TOUT='OUI',),
+                    MAILLAGE=MA,);
+
+MO=AFFE_MODELE(AFFE=_F(TOUT='OUI',
+                       PHENOMENE='MECANIQUE',
+                       MODELISATION='AXIS',),
+               MAILLAGE=MA,);
+
+TRACTION=AFFE_CHAR_MECA(DDL_IMPO=(_F(DY=5.E-3,
+                                     GROUP_NO='CD',),
+                                  _F(DY=0.0,
+                                     GROUP_NO='AB',),),
+                        MODELE=MO,);
+
+
+RAMPE=DEFI_FONCTION(NOM_PARA='INST',
+                    VALE=(0.0,0.0,1.0,1.0),);
+
+INSTANTS=DEFI_LIST_REEL(INTERVALLE=_F(JUSQU_A=1.0,
+                                      NOMBRE=10,),
+                        DEBUT=0.0,);
+
+EVOL=STAT_NON_LINE(CHAM_MATER=CHMAT,
+                   MODELE=MO,
+                   ARCHIVAGE=_F(LIST_INST=INSTANTS,),
+                   CONVERGENCE=_F(ITER_GLOB_MAXI=10,
+                                  RESI_GLOB_RELA=1.E-05,),
+                   COMP_INCR=_F(RELATION='VMIS_ISOT_LINE',),
+                   INCREMENT=_F(LIST_INST=INSTANTS,
+                                ),
+                   NEWTON=_F(REAC_ITER=1,
+                             REAC_INCR=1,),
+                   EXCIT=_F(CHARGE=TRACTION,
+                            FONC_MULT=RAMPE,),);
+
+EVOL=CALC_CHAMP(reuse =EVOL,
+               RESULTAT=EVOL,
+               CONTRAINTE=('SIEF_ELNO',),
+               VARI_INTERNE=('VARI_ELNO',),);
+               
+REPONSE1=POST_RELEVE_T(ACTION=_F(OPERATION='EXTRACTION',
+                        INTITULE='SIGYY',
+                        RESULTAT =EVOL,
+                        NOM_CHAM ='SIEF_ELNO',
+                        NOM_CMP  = 'SIYY',
+                        GROUP_NO = 'A',),);
+                        
+REPONSE2=POST_RELEVE_T(ACTION=_F(OPERATION='EXTRACTION',
+                        INTITULE='V1',
+                        RESULTAT =EVOL,
+                        NOM_CHAM ='VARI_ELNO',
+                        NOM_CMP  = 'V1',
+                        GROUP_NO = 'A',),);
+                        
+
+FIN();

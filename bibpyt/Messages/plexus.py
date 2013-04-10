@@ -1,8 +1,8 @@
-#@ MODIF plexus Messages  DATE 18/06/2012   AUTEUR CHEIGNON E.CHEIGNON 
+#@ MODIF plexus Messages  DATE 09/04/2013   AUTEUR ASSIRE A.ASSIRE 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -79,6 +79,22 @@ le mot-clé %(k2)s est obligatoire dans AFFE_CARA_ELEM.
 """),
 
 17 : _(u"""On ne peut pas fournir un état initial de contraintes sur les éléments POU_D_EM.
+"""),
+
+18 : _(u"""Le mot clé %(k1)s du concept CARA_ELEM n'est pas pris en compte par CALC_EUROPLEXUS'
+"""),
+19 : _(u"""Le type de charge %(k1)s n'est pas pris en compte par CALC_EUROPLEXUS'
+"""),
+20 : _(u"""Les groupes de mailles auxquels le matériau %(k1)s est affecté n'ont pas tous la même relation.
+           Voir mot-clé COMP_INCR.
+"""),
+
+21 : _(u"""On ne trouve pas les caractéristiques élastiques du matériau %(k1)s.
+"""),
+22 : _(u"""La valeur du mot-clé RELATION du matériau %(k1)s est différente de GLRC_DAMAGE.
+"""),
+23 : _(u"""On ne trouve pas le mot-clé BETON dans le matériau %(k1)s.
+           Ce mot-clé est indispensable à la loi GLRC_DAMAGE.
 """),
 
 }
