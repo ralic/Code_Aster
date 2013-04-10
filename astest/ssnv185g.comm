@@ -1,4 +1,4 @@
-# MODIF  DATE 07/01/2013   AUTEUR LADIER A.LADIER 
+# MODIF  DATE 09/04/2013   AUTEUR PELLET J.PELLET 
 # TITRE FISSURE DEBOUCHANTE DANS UNE PLAQUE 3D DE LARGEUR FINIE AVEC X-FEM
 # ssnv185g.para = tps_job 310 mem_job 1024Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -35,7 +35,7 @@ h = 15.
 
 MAILLAG2=LIRE_MAILLAGE(FORMAT='MED',INFO=1);
 
-MAILLAGE=CREA_MAILLAGE(MAILLAGE=MAILLAG2,COPIE=_F());
+MAILLAGE= COPIER(CONCEPT= MAILLAG2)
 
 MAILLAG2=DEFI_GROUP(reuse =MAILLAG2,
                     MAILLAGE=MAILLAG2,
@@ -300,7 +300,7 @@ for i in range(0,nbc+1) :
    TEST_TABLE(TABLE=SIF[i],
               NOM_PARA='G',
               TYPE_TEST='MAX',
-              VALE_CALC=VAL_CALC[2*i+0], 
+              VALE_CALC=VAL_CALC[2*i+0],
               VALE_REFE=GREF,
               CRITERE='ABSOLU',
               PRECISION=0.0005,
@@ -309,7 +309,7 @@ for i in range(0,nbc+1) :
    TEST_TABLE(TABLE=SIF[i],
               NOM_PARA='G',
               TYPE_TEST='MIN',
-              VALE_CALC=VAL_CALC[2*i+1], 
+              VALE_CALC=VAL_CALC[2*i+1],
               VALE_REFE=GREF,
               CRITERE='ABSOLU',
               PRECISION=0.0005,
@@ -328,7 +328,7 @@ PK=POST_K1_K2_K3(MODELISATION='3D',
 IMPR_TABLE(TABLE = PK)
 TEST_TABLE(CRITERE='ABSOLU',
            VALE_CALC=7.9470501282119E-08,
-           
+
            NOM_PARA='G',
            TABLE=PK,
            FILTRE=_F(NOM_PARA='NUM_PT',

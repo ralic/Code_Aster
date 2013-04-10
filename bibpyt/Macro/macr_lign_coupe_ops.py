@@ -1,4 +1,4 @@
-#@ MODIF macr_lign_coupe_ops Macro  DATE 19/03/2013   AUTEUR BRIE N.BRIE 
+#@ MODIF macr_lign_coupe_ops Macro  DATE 09/04/2013   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -260,7 +260,7 @@ def crea_resu_local(self,dime,NOM_CHAM,m,resin,mail,nomgrma):
       coord   =aster.getvectjev(noma.ljust(8)+'.COORDO    .VALE')
       cnom    =aster.getvectjev(noma.ljust(8)+'.NOMNOE')
 
-      numa=collgrma[nomgrma.ljust(8)]
+      numa=collgrma[nomgrma.ljust(24)]
       dictu={}
 #     initialisations
       for ima in numa:
@@ -628,7 +628,7 @@ def macr_lign_coupe_ops(self,RESULTAT,CHAM_GD,UNITE_MAILLAGE,LIGN_COUPE,
   POST_RELEVE_T  =self.get_cmd('POST_RELEVE_T')
   CREA_TABLE     =self.get_cmd('CREA_TABLE')
   CREA_RESU      =self.get_cmd('CREA_RESU')
-  CREA_MAILLAGE  =self.get_cmd('CREA_MAILLAGE')
+  COPIER  =self.get_cmd('COPIER')
 
   # La macro compte pour 1 dans la numerotation des commandes
   self.set_icmd(1)
@@ -737,7 +737,7 @@ def macr_lign_coupe_ops(self,RESULTAT,CHAM_GD,UNITE_MAILLAGE,LIGN_COUPE,
            arcs.append((m['COOR_ORIG'],m['CENTRE'],m['NB_POINTS'],m['ANGLE'],m['DNOR']))
 
       elif m['TYPE']=='GROUP_NO':
-        ngrno=m['GROUP_NO'].ljust(8)
+        ngrno=m['GROUP_NO'].ljust(24)
         collgrno=aster.getcolljev(n_mailla.ljust(8)+'.GROUPENO')
         if ngrno not in collgrno.keys() :
           UTMESS('F','POST0_13',valk=[ngrno,n_mailla])
@@ -748,7 +748,7 @@ def macr_lign_coupe_ops(self,RESULTAT,CHAM_GD,UNITE_MAILLAGE,LIGN_COUPE,
         groups.append(l_coor_group)
 
       elif m['TYPE']=='GROUP_MA':
-        ngrma=m['GROUP_MA'].ljust(8)
+        ngrma=m['GROUP_MA'].ljust(24)
         if ngrma not in collgrma.keys() :
           UTMESS('F','POST0_14',valk=[ngrma,n_mailla])
         grpm=collgrma[ngrma]
@@ -756,7 +756,7 @@ def macr_lign_coupe_ops(self,RESULTAT,CHAM_GD,UNITE_MAILLAGE,LIGN_COUPE,
           if ltyma[typma[ma-1]-1][:3] != 'SEG' :
              nomma=aster.getvectjev(n_mailla.ljust(8)+'.NOMMAI')
              UTMESS('F','POST0_15',valk=[ngrma,nomma[ma-1]])
-        __mailla=CREA_MAILLAGE(MAILLAGE= m['MAILLAGE'],COPIE=_F(),)
+        __mailla=COPIER(CONCEPT= m['MAILLAGE'])
 
         m2 = m.cree_dict_valeurs(m.mc_liste)
         argsup={}
@@ -770,7 +770,7 @@ def macr_lign_coupe_ops(self,RESULTAT,CHAM_GD,UNITE_MAILLAGE,LIGN_COUPE,
                             CREA_GROUP_NO=_F(OPTION='NOEUD_ORDO',NOM=str(m['GROUP_MA']),GROUP_MA=m['GROUP_MA'],**argsup))
 
         collgrno=aster.getcolljev(__mailla.nom.ljust(8)+'.GROUPENO')
-        grpn=collgrno[str(m['GROUP_MA']).ljust(8)]
+        grpn=collgrno[str(m['GROUP_MA']).ljust(24)]
         l_coor_group=[ngrma,]
         for node in grpn:
           l_coor_group.append(aster.getvectjev(n_mailla.ljust(8)+'.COORDO    .VALE',3*(node-1),3))
@@ -804,7 +804,7 @@ def macr_lign_coupe_ops(self,RESULTAT,CHAM_GD,UNITE_MAILLAGE,LIGN_COUPE,
   motscles['CREA_GROUP_NO']=[]
   for m in LIGN_COUPE :
       if m['TYPE'] in ('GROUP_NO','GROUP_MA') :
-        motscles['CREA_GROUP_NO'].append(_F(GROUP_MA=m[m['TYPE']].ljust(8),) )
+        motscles['CREA_GROUP_NO'].append(_F(GROUP_MA=m[m['TYPE']].ljust(24),) )
       else :
         motscles['CREA_GROUP_NO'].append(_F(GROUP_MA='LICOU'+str(iocc),) )
         iocc=iocc+1

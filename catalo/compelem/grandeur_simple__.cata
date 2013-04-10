@@ -1,4 +1,4 @@
-%& MODIF COMPELEM  DATE 03/04/2013   AUTEUR DESOZA T.DESOZA 
+%& MODIF COMPELEM  DATE 09/04/2013   AUTEUR PELLET J.PELLET 
 % RESPONSABLE PROIX
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
@@ -2016,24 +2016,27 @@ FORC_C   = C    FX       FY       FZ       MX       MY       MZ       BX       R
 
 <<  TEMP_C Type:C Température inconnue du phénomène thermique
        TEMP : température
+       TEMP_MIL : température sur le feuillet moyen  (coques)
        TEMP_INF : température sur la face inférieure (coques)
        TEMP_SUP : température sur la face supérieure (coques)
        LAGR : paramètre de lagrange du a la dualisation des conditions aux
        limites
 >>
-    TEMP_C   = C    TEMP     TEMP_INF TEMP_SUP LAGR
+    TEMP_C   = C    TEMP     TEMP_MIL TEMP_INF TEMP_SUP LAGR
 
 <<  TEMP_F Type:K8 Température inconnue du phénomène thermique
        TEMP : température
+       TEMP_MIL : température sur le feuillet moyen  (coques)
        TEMP_INF : température sur la face inférieure (coques)
        TEMP_SUP : température sur la face supérieure (coques)
        LAGR : paramètre de lagrange du a la dualisation des
        conditions aux limites
 >>
-    TEMP_F   = K8   TEMP     TEMP_INF TEMP_SUP LAGR
+    TEMP_F   = K8   TEMP     TEMP_MIL TEMP_INF TEMP_SUP LAGR
 
 <<  TEMP_R Type:R Température inconnue du phénomène thermique
        TEMP : température
+       TEMP_MIL : température sur le feuillet moyen  (coques)
        TEMP_INF : température sur la face inférieure (coques)
        TEMP_SUP : température sur la face supérieure (coques)
        LAGR : paramètre de lagrange du a la dualisation des
@@ -2041,7 +2044,7 @@ FORC_C   = C    FX       FY       FZ       MX       MY       MZ       BX       R
        H1 : ddl Heaviside X-FEM
        E1 : ddl Cracktip X-FEM
 >>
-    TEMP_R   = R    TEMP     TEMP_INF TEMP_SUP LAGR H1 E1
+    TEMP_R   = R    TEMP     TEMP_MIL TEMP_INF TEMP_SUP LAGR H1 E1
 
 <<  VALO_R Type:R
        VALEUR :

@@ -24,11 +24,11 @@ CHMAT4=AFFE_MATERIAU(MAILLAGE=MAIL_HY,
                              MATER=MATE4,),);
 
 PRE1_IMP=AFFE_CHAR_CINE_F(MODELE=MODEHY,
-                          MECA_IMPO=_F(GROUP_MA='GM4',
+                          MECA_IMPO=_F(GROUP_MA='GXXXXXX_GM4',
                                       PRE1=PATM,),);
 
 FLUH_IMP=AFFE_CHAR_MECA_F(MODELE=MODEHY,
-                          FLUX_THM_REP=_F(GROUP_MA=('GM1','GM2','GM3',),
+                          FLUX_THM_REP=_F(GROUP_MA=('GXXXXXX_GM1','GXXXXXX_GM2','GXXXXXX_GM3',),
                                           FLUN_HYDR1=ZERO,),);
 
 ############
@@ -91,17 +91,17 @@ RESUPRE4=STAT_NON_LINE(MODELE=MODEHY,
 
 MAIL_HY=DEFI_GROUP(reuse =MAIL_HY,
                    MAILLAGE=MAIL_HY,
-                   CREA_GROUP_MA=_F(NOM='MA_00',
+                   CREA_GROUP_MA=_F(NOM='GXXXXXX_MA_00',
                                     TOUT='OUI',),
-                   CREA_GROUP_NO=_F(GROUP_MA='MA_00',
-                                    NOM='NO_00',),);
+                   CREA_GROUP_NO=_F(GROUP_MA='GXXXXXX_MA_00',
+                                    NOM='GXXXXXX_NO_00',),);
 
 EXTRPRE1=POST_RELEVE_T(ACTION=_F(OPERATION='EXTRACTION',
                                  INTITULE='MAIL_HY',
                                  RESULTAT=RESUPRE1,
                                  NOM_CHAM='DEPL',
                                  NUME_ORDRE=1,
-                                 GROUP_NO='NO_00',
+                                 GROUP_NO='GXXXXXX_NO_00',
                                  NOM_CMP='PRE1',),);
 
 EXTRPRE2=POST_RELEVE_T(ACTION=_F(OPERATION='EXTRACTION',
@@ -109,7 +109,7 @@ EXTRPRE2=POST_RELEVE_T(ACTION=_F(OPERATION='EXTRACTION',
                                  RESULTAT=RESUPRE2,
                                  NOM_CHAM='DEPL',
                                  NUME_ORDRE=1,
-                                 GROUP_NO='NO_00',
+                                 GROUP_NO='GXXXXXX_NO_00',
                                  NOM_CMP='PRE1',),);
 
 EXTRPRE3=POST_RELEVE_T(ACTION=_F(OPERATION='EXTRACTION',
@@ -117,7 +117,7 @@ EXTRPRE3=POST_RELEVE_T(ACTION=_F(OPERATION='EXTRACTION',
                                  RESULTAT=RESUPRE3,
                                  NOM_CHAM='DEPL',
                                  NUME_ORDRE=1,
-                                 GROUP_NO='NO_00',
+                                 GROUP_NO='GXXXXXX_NO_00',
                                  NOM_CMP='PRE1',),);
 
 EXTRPRE4=POST_RELEVE_T(ACTION=_F(OPERATION='EXTRACTION',
@@ -125,7 +125,7 @@ EXTRPRE4=POST_RELEVE_T(ACTION=_F(OPERATION='EXTRACTION',
                                  RESULTAT=RESUPRE4,
                                  NOM_CHAM='DEPL',
                                  NUME_ORDRE=1,
-                                 GROUP_NO='NO_00',
+                                 GROUP_NO='GXXXXXX_NO_00',
                                  NOM_CMP='PRE1',),);
 
 COMPPRE1=CALC_TABLE(TABLE=EXTRPRE1,

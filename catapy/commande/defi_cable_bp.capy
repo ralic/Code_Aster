@@ -1,7 +1,7 @@
-#& MODIF COMMANDE  DATE 28/06/2011   AUTEUR COURTOIS M.COURTOIS 
+#& MODIF COMMANDE  DATE 09/04/2013   AUTEUR PELLET J.PELLET 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -36,13 +36,23 @@ DEFI_CABLE_BP=MACRO(nom="DEFI_CABLE_BP",
            GROUP_MA        =SIMP(statut='f',typ=grma),
            NOEUD_ANCRAGE   =SIMP(statut='f',typ=no  ,validators=NoRepeat(),max=2),
            GROUP_NO_ANCRAGE=SIMP(statut='f',typ=grno,validators=NoRepeat(),max=2),
+           TENSION_CT      =SIMP(statut='f',typ=table_sdaster),
          ),
          TYPE_ANCRAGE    =SIMP(statut='o',typ='TXM',min=2,max=2,into=("ACTIF","PASSIF") ),
          TENSION_INIT    =SIMP(statut='o',typ='R',val_min=0.E+0 ),
          RECUL_ANCRAGE   =SIMP(statut='o',typ='R',val_min=0.E+0 ),
-         RELAXATION      =FACT(statut='f',min=0,
-           R_J             =SIMP(statut='o',typ='R',val_min=0.E+0 ),
-         ),
+         TYPE_RELAX      =SIMP(statut='o',typ='TXM',into=("SANS","BPEL","ETCC_DIRECT","ETCC_REPRISE"),defaut="SANS",), 
+           b_relax_bpel  =BLOC(condition = "TYPE_RELAX =='BPEL'",
+                       R_J   =SIMP(statut='o',typ='R',val_min=0.E+0),
+                                                ),
+           b_relax_etcc  =BLOC(condition = "((TYPE_RELAX=='ETCC_DIRECT') or (TYPE_RELAX=='ETCC_REPRISE'))",
+                      NBH_RELAX   =SIMP(statut='o',typ='R',val_min=0.E+0),
+                       ),
+#         PERT_ELAS       =SIMP(statut='o',typ='TXM',into=("OUI","NON"),defaut="NON"),
+#           b_pert_elas   =BLOC(condition = "PERT_ELAS=='OUI'",
+#                  EP_BETON  = SIMP(statut='o',typ='R',val_min=0.E+0),
+#                  ESP_CABLE = SIMP(statut='o',typ='R',val_min=0.E+0)
+#                  ) ,                                   
          CONE            =FACT(statut='f',
            RAYON             =SIMP(statut='o',typ='R',val_min=0.E+0 ),
            LONGUEUR          =SIMP(statut='o',typ='R',val_min=0.E+0 ),

@@ -1,4 +1,4 @@
-# MODIF  DATE 15/03/2013   AUTEUR LEBOUVIER F.LEBOUVIER 
+# MODIF  DATE 09/04/2013   AUTEUR PELLET J.PELLET 
 # TITRE CYLINDRE EN C.P. (TRIA6 QUAD8) AXISYM
 # sslv04i.para = tps_job 60 mem_job 256Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -595,7 +595,7 @@ RESU3=MACRO_ELAS_MULT(MODELE=MO2,
                                     CHAR_MECA=CH2,),);
 
 RESUFOUR=COMB_FOURIER(RESULTAT=RESU3,
-                      ANGL=0.,
+                      ANGLE=0.,
                       NOM_CHAM='DEPL',);
 
 TEST_RESU(RESU=(_F(NUME_ORDRE=1,
@@ -643,7 +643,7 @@ RESUF = CALC_CHAMP(reuse=RESUF,
                     DEFORMATION='EPSI_ELNO')
 
 RESUFO=COMB_FOURIER(RESULTAT=RESUF,
-                      ANGL=48.5,
+                      ANGLE=48.5,
                       NOM_CHAM=('DEPL','EPSI_ELNO'));
 
 

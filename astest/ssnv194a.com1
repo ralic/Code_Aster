@@ -3,7 +3,7 @@ POURSUITE(CODE=_F(NOM='SSNV194A'),);
 NB_GRAINS=10
 
 #####################################################################
-# Calcul des min et max 
+# Calcul des min et max
 #####################################################################
 
 
@@ -11,7 +11,7 @@ CUBE=DEFI_GROUP(reuse =CUBE,
               MAILLAGE=CUBE,
               CREA_GROUP_MA=_F(TOUT='OUI',NOM='ALL'),)
 
-MAX_SI=POST_ELEM(  
+MAX_SI=POST_ELEM(
                    MINMAX=_F(NOM_CHAM='SIEF_ELGA',
                                 NOM_CMP=('SIXX','SIYY','SIZZ'),
                                 TOUT='OUI',RESULTAT=SOLNL,))
@@ -34,7 +34,7 @@ VIMAX=CREA_CHAMP( OPERATION='EXTR',
                  ) ;
 
 
-MAX_VI=POST_ELEM(  
+MAX_VI=POST_ELEM(
                    MINMAX=_F(NOM_CHAM='VARI_ELGA',
                    CHAM_GD=VIMAX, MODELE=TROISD,
                                 NOM_CMP=('V1','V2','V3'),
@@ -47,7 +47,7 @@ TEST_TABLE(REFERENCE='AUTRE_ASTER',
            NOM_PARA='MIN_V3',
            TABLE=MAX_VI,)
 
-MAX_EP=POST_ELEM( 
+MAX_EP=POST_ELEM(
                    MINMAX=_F(NOM_CHAM='EPSP_ELGA',RESULTAT=SOLNL,
                                 NOM_CMP=('EPXX','EPYY','EPZZ'),
                                 GROUP_MA='ALL'),)
@@ -61,7 +61,7 @@ TEST_TABLE(REFERENCE='AUTRE_ASTER',
                      VALE=5.0000000000000001E-3,),
            )
 
-MAX_DE1=POST_ELEM(  
+MAX_DE1=POST_ELEM(
                    MINMAX=_F(NOM_CHAM='DEPL',RESULTAT=SOLNL,
                                 TOUT='OUI',
                                 NOM_CMP=('DY','DZ'),
@@ -82,7 +82,7 @@ TEST_TABLE(
            TABLE=MAX_DE1,
            )
 
-MAX_DE2=POST_ELEM(  
+MAX_DE2=POST_ELEM(
                    MINMAX=_F(NOM_CHAM='DEPL',RESULTAT=SOLNL,
                                 TOUT='OUI',
                                 NOM_CMP=('DX'),
@@ -105,7 +105,7 @@ TEST_TABLE(
 
 
 #####################################################################
-# Calcul des moyennes 
+# Calcul des moyennes
 #####################################################################
 
 INT_SI=POST_ELEM(  RESULTAT=SOLNL,
@@ -172,18 +172,18 @@ CH1=CREA_CHAMP(OPERATION = 'EXTR',TYPE_CHAM='ELGA_EPSI_R',NOM_CHAM  = 'EPSP_ELGA
 
 CH2=CREA_CHAMP(TYPE_CHAM = 'ELGA_NEUT_R', OPERATION = 'ASSE',MODELE = TROISD, PROL_ZERO = 'OUI',
                   ASSE = _F(TOUT='OUI',
-                            CHAM_GD = CH1, 
+                            CHAM_GD = CH1,
                             NOM_CMP=('EPXX','EPYY','EPZZ','EPXY','EPXZ','EPYZ'),
-                            NOM_CMP_RESU =('X1','X2','X3','X4','X5','X6'),),) 
+                            NOM_CMP_RESU =('X1','X2','X3','X4','X5','X6'),),)
 
 CH3=CREA_CHAMP(OPERATION = 'DISC', TYPE_CHAM = 'NOEU_NEUT_R',
-                 CHAM_GD=CH2, MODELE = TROISD, PROL_ZERO = 'OUI',);
+                 CHAM_GD=CH2, MODELE = TROISD);
 
-CH4=CREA_CHAMP(TYPE_CHAM = 'NOEU_EPSI_R', OPERATION = 'ASSE',MODELE = TROISD, PROL_ZERO = 'OUI',
+CH4=CREA_CHAMP(TYPE_CHAM = 'NOEU_EPSI_R', OPERATION = 'ASSE',MODELE = TROISD,
                   ASSE = _F(TOUT='OUI',
-                            CHAM_GD = CH3, 
+                            CHAM_GD = CH3,
                             NOM_CMP_RESU=('EPXX','EPYY','EPZZ','EPXY','EPXZ','EPYZ'),
-                            NOM_CMP =('X1','X2','X3','X4','X5','X6'),),) 
+                            NOM_CMP =('X1','X2','X3','X4','X5','X6'),),)
 
 INT2EPX=POST_ELEM(  CHAM_GD=CH4,
                     CHAM_MATER=MAT,
@@ -216,7 +216,7 @@ INT3EPX=POST_ELEM(  RESULTAT=SOLNL,
 ng=10
 prefix='GM'
 intesig = {}
-intesig['INTEGRALE'] = []			 
+intesig['INTEGRALE'] = []			
 for IP in range (ng):
    intesig['INTEGRALE'].append(_F(NOM_CHAM='SIEF_ELGA', NOM_CMP=('SIXX','SIYY','SIZZ'),
                                                        GROUP_MA=prefix+str(IP+1)))
@@ -235,7 +235,7 @@ IMPR_TABLE(TABLE=INSIG)
 
 
 # --- CHAMP NOEU ---
- 
+
 def masque(X1):
     val=0.
     if (-3.041313578E-03<=X1<-2.023665544E-03):
@@ -256,11 +256,11 @@ CHEXT=CREA_CHAMP(OPERATION = 'EXTR',TYPE_CHAM='NOEU_EPSI_R',NOM_CHAM  = 'EPSP_NO
                RESULTAT  = SOLNL, NUME_ORDRE=10,);
 
 
-CHNEXT=CREA_CHAMP(TYPE_CHAM = 'NOEU_NEUT_R', OPERATION = 'ASSE',MODELE = TROISD, PROL_ZERO = 'OUI',
+CHNEXT=CREA_CHAMP(TYPE_CHAM = 'NOEU_NEUT_R', OPERATION = 'ASSE',MODELE = TROISD,
                   ASSE = _F(TOUT='OUI',
-                            CHAM_GD = CHEXT, 
+                            CHAM_GD = CHEXT,
                             NOM_CMP='EPXX',
-                            NOM_CMP_RESU ='X1',),) 
+                            NOM_CMP_RESU ='X1',),)
 
 
 CHEVA=CREA_CHAMP(OPERATION='EVAL',
@@ -305,7 +305,7 @@ CHEXT2=CREA_CHAMP(OPERATION = 'EXTR',TYPE_CHAM='ELGA_EPSI_R',NOM_CHAM  = 'EPSP_E
 
 CHNEX2=CREA_CHAMP(TYPE_CHAM = 'ELGA_NEUT_R', OPERATION = 'ASSE',MODELE = TROISD, PROL_ZERO = 'OUI',
                   ASSE = _F(TOUT='OUI',
-                            CHAM_GD = CHEXT2, 
+                            CHAM_GD = CHEXT2,
                             NOM_CMP=('EPXX'),
                             NOM_CMP_RESU =('X1'),),),
 
@@ -316,7 +316,7 @@ CHEVA2=CREA_CHAMP(OPERATION='EVAL',
 
 CHEVA3=CREA_CHAMP(TYPE_CHAM = 'ELGA_NEUT_R', OPERATION = 'ASSE',MODELE = TROISD, PROL_ZERO = 'OUI',
                   ASSE = _F(TOUT='OUI',
-                            CHAM_GD = CHEVA2, 
+                            CHAM_GD = CHEVA2,
                             NOM_CMP=('X1'),
                             NOM_CMP_RESU =('X1'),),),
 
@@ -423,7 +423,7 @@ TEST_TABLE(
 ng=10
 prefix='GM'
 intesig = {}
-intesig['VOLUMOGRAMME'] = []			 
+intesig['VOLUMOGRAMME'] = []			
 for IP in range (ng):
    intesig['VOLUMOGRAMME'].append(_F(NOM_CHAM='EPSP_ELGA', NOM_CMP=('EPXX'),
                                                        GROUP_MA=prefix+str(IP+1)))
@@ -458,7 +458,7 @@ FEZ=[None]*NB_GRAINS
 
 for IP in range (NB_GRAINS):
   print 'GM'+str(IP+1)
-  
+
   INS[IP]=POST_ELEM( RESULTAT=SOLNL,
                    INTEGRALE=_F(NOM_CHAM='SIEF_ELGA',
                                 NOM_CMP=('SIXX','SIYY','SIZZ'),
@@ -469,37 +469,37 @@ for IP in range (NB_GRAINS):
                                 NOM_CMP=('EPXX','EPYY','EPZZ'),
                                 GROUP_MA = 'GM'+str(IP+1),
 				),)
-  INSX[IP]=CALC_TABLE(TABLE=INS[IP], 
+  INSX[IP]=CALC_TABLE(TABLE=INS[IP],
                  ACTION=(_F(OPERATION ='EXTR',
 		            NOM_PARA=('INST','INTE_SIXX'),),),)
 
-  EPSX[IP]=CALC_TABLE(TABLE=EPS[IP], 
+  EPSX[IP]=CALC_TABLE(TABLE=EPS[IP],
                  ACTION=(_F(OPERATION ='EXTR',
                             NOM_PARA=('INST','INTE_EPXX'),),),)
 
-  COMX[IP]=CALC_TABLE(TABLE=EPSX[IP], 
+  COMX[IP]=CALC_TABLE(TABLE=EPSX[IP],
                  ACTION=(_F(OPERATION ='COMB',TABLE=INSX[IP],NOM_PARA='INST',),),)
 
-  INSY[IP]=CALC_TABLE(TABLE=INS[IP], 
+  INSY[IP]=CALC_TABLE(TABLE=INS[IP],
                  ACTION=(_F(OPERATION ='EXTR',
                             NOM_PARA=('INST','INTE_SIYY'),),),)
 
-  EPSY[IP]=CALC_TABLE(TABLE=EPS[IP], 
+  EPSY[IP]=CALC_TABLE(TABLE=EPS[IP],
                  ACTION=(_F(OPERATION ='EXTR',
                            NOM_PARA=('INST','INTE_EPYY'),),),)
 
-  COMY[IP]=CALC_TABLE(TABLE=EPSY[IP], 
+  COMY[IP]=CALC_TABLE(TABLE=EPSY[IP],
                  ACTION=(_F(OPERATION ='COMB',TABLE = INSY[IP], NOM_PARA='INST',),),)
 
-  INSZ[IP]=CALC_TABLE(TABLE=INS[IP], 
+  INSZ[IP]=CALC_TABLE(TABLE=INS[IP],
                  ACTION=(_F(OPERATION ='EXTR',
                             NOM_PARA=('INST','INTE_SIZZ'),),),)
 
-  EPSZ[IP]=CALC_TABLE(TABLE=EPS[IP], 
+  EPSZ[IP]=CALC_TABLE(TABLE=EPS[IP],
                  ACTION=(_F(OPERATION ='EXTR',
                             NOM_PARA=('INST','INTE_EPZZ'),),),)
 
-  COMZ[IP]=CALC_TABLE(TABLE=EPS[IP], 
+  COMZ[IP]=CALC_TABLE(TABLE=EPS[IP],
                  ACTION=(_F(OPERATION ='COMB',TABLE = INS[IP], NOM_PARA='INST',),),)
 
   FSX[IP]=RECU_FONCTION(TABLE=COMX[IP],
@@ -517,18 +517,18 @@ for IP in range (NB_GRAINS):
   FEX[IP]=RECU_FONCTION(TABLE=COMX[IP],
                            PARA_X='INST',
                            PARA_Y='INTE_EPXX',);
-		       
+		
   FEY[IP]=RECU_FONCTION(TABLE=COMY[IP],
                            PARA_X='INST',
                            PARA_Y='INTE_EPYY',);
-		       
+		
   FEZ[IP]=RECU_FONCTION(TABLE=COMZ[IP],
                            PARA_X='INST',
                            PARA_Y='INTE_EPZZ',);
 
 
 motcles = {}
-motcles['COURBE'] = []			 
+motcles['COURBE'] = []			
 for IP in range (NB_GRAINS):
    motcles['COURBE'].append(_F(FONC_X=FEX[IP], FONC_Y=FSX[IP]))
    motcles['COURBE'].append(_F(FONC_X=FEY[IP], FONC_Y=FSY[IP]))

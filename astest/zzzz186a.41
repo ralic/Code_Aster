@@ -1121,7 +1121,7 @@ CM24=AFFE_MATERIAU(MAILLAGE=MA,
                              _F(GROUP_MA=('MAT10','MAT11','MAT13','MAT14','MAT19','MAT20',),MATER=MAT0),
                              _F(GROUP_MA='MAT18', MATER=MAT18)
                              ),
-                       AFFE_VARC=_F(NOM_VARC='TEMP', TOUT='OUI',CHAMP_GD=TEMP24, VALE_REF=TREF),
+                       AFFE_VARC=_F(NOM_VARC='TEMP', TOUT='OUI',CHAM_GD=TEMP24, VALE_REF=TREF),
                              );
 CM25=AFFE_MATERIAU(MAILLAGE=MA,
                        AFFE=(_F(TOUT='OUI', MATER=MAT1),
@@ -1132,7 +1132,7 @@ CM25=AFFE_MATERIAU(MAILLAGE=MA,
                              _F(GROUP_MA=('MAT10','MAT11','MAT13','MAT14','MAT19','MAT20',),MATER=MAT0),
                              _F(GROUP_MA='MAT18', MATER=MAT18)
                              ),
-                       AFFE_VARC=_F(NOM_VARC='TEMP', TOUT='OUI',CHAMP_GD=TEMP25, VALE_REF=TREF),
+                       AFFE_VARC=_F(NOM_VARC='TEMP', TOUT='OUI',CHAM_GD=TEMP25, VALE_REF=TREF),
                              );
 
 TABL_MAS=POST_ELEM(MASS_INER=_F(TOUT='OUI',), MODELE=MODELE, CHAM_MATER=CM24, CARA_ELEM=CARA_POU,);

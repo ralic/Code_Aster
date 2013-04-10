@@ -1,4 +1,4 @@
-#@ MODIF calculel6 Messages  DATE 18/03/2013   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF calculel6 Messages  DATE 09/04/2013   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -204,7 +204,8 @@ Conseils :
  Mais la température de référence n'est pas fournie sous AFFE_MATERIAU/AFFE_VARC/VALE_REF
 
  Conseil :
- Renseignez la température de référence à l'aide de AFFE_MATERIAU/AFFE_VARC/NOM_VARC='TEMP' + VALE_REF
+   Renseignez la température de référence à l'aide de :
+     AFFE_MATERIAU/AFFE_VARC/NOM_VARC='TEMP'     + VALE_REF
 """),
 
 57: _(u"""
@@ -232,13 +233,9 @@ Conseils :
  Émettez une fiche d'anomalie
 """),
 
-59: _(u"""
- Erreur d'utilisation (préparation des variables de commande) :
- Dans le CHAM_MATER %(k1)s et pour la variable de commande %(k2)s,
- on a trouvé la composante 'TEMP_INF'.
- Cela veut sans doute dire que vous avez oublié de "préparer"
- la variable de commande 'TEMP' avec   CREA_RESU / OPERATION='PREP_VRC2'
-"""),
+
+
+
 
 61:_(u"""
     Le type de la fonction est invalide : %(k1)s

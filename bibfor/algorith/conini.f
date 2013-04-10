@@ -1,9 +1,9 @@
       SUBROUTINE CONINI(MA,NOECON,MAICON,MARCON,NBMAR,NBNOE,NBMARC,
-     &        NOMMAR,JMICOR,MBCOR,NOMTYR,NBGCO,IO8GCO)
+     &                  NOMMAR,JMICOR,MBCOR,NOMTYR,NBGCO,IO8GCO)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 18/12/2012   AUTEUR SELLENET N.SELLENET 
+C MODIF ALGORITH  DATE 09/04/2013   AUTEUR PELLET J.PELLET 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -72,37 +72,38 @@ C
       INCLUDE 'jeveux.h'
 
       CHARACTER*32 JEXNUM,JEXNOM
-      INTEGER      IO8GCO,       NBGCO,IGCO
-      INTEGER             IMIGMA,IGMA
-      INTEGER                    NBMAG,IMAG
-      INTEGER                          IMAC
-      INTEGER             IMITYC,      ITYC
-      INTEGER             IMICOC,NBCOC,ICOC
-      INTEGER                          INOC
-      INTEGER                    NBMAR,IMAR
-      INTEGER             IMITYR,      ITYR
-      INTEGER             IMICOR,NBCOR,ICOR
-      INTEGER             IATYMA
+      INTEGER IO8GCO,NBGCO,IGCO
+      INTEGER IMIGMA,IGMA
+      INTEGER NBMAG,IMAG
+      INTEGER IMAC
+      INTEGER IMITYC,ITYC
+      INTEGER IMICOC,NBCOC,ICOC
+      INTEGER INOC
+      INTEGER NBMAR,IMAR
+      INTEGER IMITYR,ITYR
+      INTEGER IMICOR,NBCOR,ICOR
+      INTEGER IATYMA
 C
-      CHARACTER*8  KMAC,KTYC,KMAR,KTYR
+      CHARACTER*8 KMAC,KTYC,KMAR,KTYR
       CHARACTER*24 VALK(2)
-      CHARACTER*8  MA
+      CHARACTER*8 MA
 C
-      LOGICAL      INVAL
+      LOGICAL INVAL
       LOGICAL CAS2D,CAS3D,VALID
+
       CHARACTER*1 K1BID
       INTEGER NOECON(NBNOE),MAICON(NBMAR),MARCON(NBMAR)
       INTEGER MBCOR(NBMAR),JMICOR(NBMAR)
       CHARACTER*8 NOMMAR(NBMAR),NOMTYR(NBMAR)
-      INTEGER IERR ,IFM ,IMAI ,INOE ,INOR ,ITEST ,NBCOM
-      INTEGER NBMARC ,NBNOE ,NIV
+      INTEGER IERR,IFM,IMAI,INOE,INOR,ITEST,NBCOM
+      INTEGER NBMARC,NBNOE,NIV
 C-----------------------------------------------------------------------
 C     TYPES VALIDES POUR LES MAILLES DE REFERENCE
-      VALID()=(CAS2D.AND.
-     &(KTYR(:4).EQ.'TRIA'.OR.KTYC(:4).EQ.'QUAD')).OR.
-     &(CAS3D.AND.
-     &(KTYR(:5).EQ.'PENTA'.OR.KTYR(:4).EQ.'HEXA'.OR.
-     & KTYR(:5).EQ.'PYRAM'.OR.KTYR(:5).EQ.'TETRA'))
+      VALID()=(CAS2D .AND. (KTYR(:4).EQ.'TRIA'.OR.KTYC(:
+     &        4).EQ.'QUAD')) .OR. (CAS3D .AND.
+     &        (KTYR(:5).EQ.'PENTA'.OR.KTYR(:4).EQ.'HEXA'.OR.KTYR(:
+     &        5).EQ.'PYRAM'.OR.KTYR(:5).EQ.'TETRA'))
+
 C
       INVAL=.FALSE.
       CAS2D=.FALSE.
@@ -113,34 +114,33 @@ CCC      CALL JEMARQ()
 C
 C     ==================================================================
 C
-      DO 1 INOE=1,NBNOE
+      DO 10 INOE=1,NBNOE
         NOECON(INOE)=0
-    1 CONTINUE
+   10 CONTINUE
 C
-      DO 2 IMAI=1,NBMAR
+      DO 20 IMAI=1,NBMAR
         MAICON(IMAI)=0
-    2 CONTINUE
+   20 CONTINUE
 C
       NBMARC=0
       IERR=0
-   33 CONTINUE
+   30 CONTINUE
 C     ------------------------------------------------------------------
 C     BOUCLE SUR LES GROUPE_MA_FISSURE
 C     ------------------------------------------------------------------
-         DO 3 IGCO=1,NBGCO
+      DO 60 IGCO=1,NBGCO
 C     ------------------------------------------------------------------
 C     RECHERCHE D EXISTENCE DU GROUP_MA_FISSURE CONSIDERE
 C     ------------------------------------------------------------------
-            CALL JENONU(JEXNOM(MA//'.GROUPEMA',
-     &                  ZK24(IO8GCO+IGCO-1)),IGMA)
+        CALL JENONU(JEXNOM(MA//'.GROUPEMA',ZK24(IO8GCO+IGCO-1)),IGMA)
 C
-            IF ( IGMA.EQ.0) THEN
+        IF (IGMA.EQ.0) THEN
 C     ------------------------------------------------------------------
 C     TRAITEMENT DU CAS DE NON-EXISTENCE
 C     ------------------------------------------------------------------
-               CALL U2MESK('I','ALGORITH2_26',1,ZK24(IO8GCO+IGCO-1))
+          CALL U2MESK('I','ALGORITH2_26',1,ZK24(IO8GCO+IGCO-1))
 C
-            ELSE
+        ELSE
 C     ------------------------------------------------------------------
 C     TRAITEMENT DU CAS D EXISTENCE
 C     ------------------------------------------------------------------
@@ -148,132 +148,132 @@ C
 C     ------------------------------------------------------------------
 C     RECHERCHE DE L'ADRESSE DU GROUP_MA DANS ZI
 C     ------------------------------------------------------------------
-               CALL JEVEUO(JEXNUM(MA//'.GROUPEMA',IGMA),'L',IMIGMA)
+          CALL JEVEUO(JEXNUM(MA//'.GROUPEMA',IGMA),'L',IMIGMA)
 C     ------------------------------------------------------------------
 C     RECHERCHE DU NOMBRE DE MAILLE DU GROUP_MA
 C     ------------------------------------------------------------------
-               CALL JELIRA(JEXNUM(MA//'.GROUPEMA',IGMA),
-     &                     'LONMAX',NBMAG,K1BID)
+          CALL JELIRA(JEXNUM(MA//'.GROUPEMA',IGMA),'LONMAX',NBMAG,K1BID)
 C     ------------------------------------------------------------------
 C     BOUCLE SUR LES MAILLES DU GROUP_MA
 C     ------------------------------------------------------------------
-               DO 30 IMAG = 1,NBMAG
-                  IMAC = ZI(IMIGMA+IMAG-1)
-                  MAICON(IMAC)=MAICON(IMAC)+1
+          DO 50 IMAG=1,NBMAG
+            IMAC=ZI(IMIGMA+IMAG-1)
+            MAICON(IMAC)=MAICON(IMAC)+1
 C     ------------------------------------------------------------------
 C     RECHERCHE DU NOM DE LA MAILLE
 C     ------------------------------------------------------------------
-                  CALL JENUNO(JEXNUM(MA//'.NOMMAI' ,IMAC),KMAC)
+            CALL JENUNO(JEXNUM(MA//'.NOMMAI',IMAC),KMAC)
 C     ------------------------------------------------------------------
 C     RECHERCHE DE L'ADRESSE DU TYPE DE LA MAILLE DANS ZI
 C     ------------------------------------------------------------------
-                  CALL JEVEUO(MA//'.TYPMAIL','L',IATYMA)
-                  IMITYC=IATYMA-1+IMAC
-                  ITYC = ZI(IMITYC)
+            CALL JEVEUO(MA//'.TYPMAIL','L',IATYMA)
+            IMITYC=IATYMA-1+IMAC
+            ITYC=ZI(IMITYC)
 C     ------------------------------------------------------------------
 C     RECHERCHE DU TYPE DE LA MAILLE DANS CATA.TM.NOMTM
 C     ------------------------------------------------------------------
-                  CALL JENUNO(JEXNUM('&CATA.TM.NOMTM',ITYC),KTYC)
+            CALL JENUNO(JEXNUM('&CATA.TM.NOMTM',ITYC),KTYC)
 C
-      IF      (KTYC(:5).EQ.'QUAD4'.OR.KTYC(:5).EQ.'QUAD8') THEN
-        CAS2D=.TRUE.
-        IF (IERR.NE.0) WRITE(IFM,*) 'MAILLE 2D : ',KMAC,' DE TYPE ',KTYC
-      ELSE IF (KTYC(:5).EQ.'PENTA'.OR.KTYC(:4).EQ.'HEXA' ) THEN
-        CAS3D=.TRUE.
-        IF (IERR.NE.0) WRITE(IFM,*) 'MAILLE 3D : ',KMAC,' DE TYPE ',KTYC
-      ELSE
-        INVAL=.TRUE.
-         VALK(1) = KMAC
-         VALK(2) = KTYC
-         CALL U2MESK('E','ALGORITH2_27', 2 ,VALK)
-      ENDIF
+            IF (KTYC(:5).EQ.'QUAD4' .OR. KTYC(:5).EQ.'QUAD8') THEN
+              CAS2D=.TRUE.
+              IF (IERR.NE.0)WRITE (IFM,*)'MAILLE 2D : ',KMAC,
+     &            ' DE TYPE ',KTYC
+            ELSEIF (KTYC(:5).EQ.'PENTA' .OR. KTYC(:4).EQ.'HEXA') THEN
+              CAS3D=.TRUE.
+              IF (IERR.NE.0)WRITE (IFM,*)'MAILLE 3D : ',KMAC,
+     &            ' DE TYPE ',KTYC
+            ELSE
+              INVAL=.TRUE.
+              VALK(1)=KMAC
+              VALK(2)=KTYC
+              CALL U2MESK('E','ALGORITH2_27',2,VALK)
+            ENDIF
 C
 C     ------------------------------------------------------------------
 C     RECHERCHE DE L ADRESSE DES CONNEXIONS DE LA MAILLE
 C     ------------------------------------------------------------------
-                  CALL JEVEUO(JEXNUM(MA//'.CONNEX',IMAC),'E',IMICOC)
+            CALL JEVEUO(JEXNUM(MA//'.CONNEX',IMAC),'E',IMICOC)
 C     ------------------------------------------------------------------
 C     RECHERCHE DU NOMBRE DE CONNEXIONS DE LA MAILLE
 C     ------------------------------------------------------------------
-                  CALL JELIRA(JEXNUM(MA//'.CONNEX',IMAC),
-     &                        'LONMAX',NBCOC,K1BID)
+            CALL JELIRA(JEXNUM(MA//'.CONNEX',IMAC),'LONMAX',NBCOC,K1BID)
 C
 C     ------------------------------------------------------------------
 C     BOUCLE SUR LES CONNEXIONS DE LA MAILLE
 C     ------------------------------------------------------------------
-                  DO 300 ICOC = 1,NBCOC
-                     INOC = ZI(IMICOC+ICOC-1)
-                     NOECON(INOC)=NOECON(INOC)+1
-300            CONTINUE
-30             CONTINUE
+            DO 40 ICOC=1,NBCOC
+              INOC=ZI(IMICOC+ICOC-1)
+              NOECON(INOC)=NOECON(INOC)+1
+   40       CONTINUE
+   50     CONTINUE
 C     ------------------------------------------------------------------
-            ENDIF
+        ENDIF
 C     ------------------------------------------------------------------
-3        CONTINUE
-      IF (INVAL)
-     &CALL U2MESS('F','ALGORITH2_28')
+   60 CONTINUE
+      IF (INVAL) CALL U2MESS('F','ALGORITH2_28')
 C
-      IF (CAS2D.AND.CAS3D) THEN
+      IF (CAS2D .AND. CAS3D) THEN
         IF (IERR.EQ.0) THEN
 C       ON RETOURNE DANS LA BOUCLE AVEC DEMANDE DE MESSAGES
           IERR=1
-          GOTO 33
+          GOTO 30
+
         ELSE
           CALL U2MESS('F','ALGORITH2_29')
         ENDIF
       ENDIF
-      IF (CAS2D) ITEST=2
-      IF (CAS3D) ITEST=3
+      IF (CAS2D)ITEST=2
+      IF (CAS3D)ITEST=3
 C
 C     ------------------------------------------------------------------
 C     BOUCLE SUR LES MAILLES DU MAILLAGE
 C     ------------------------------------------------------------------
-                  DO 4 IMAR=1,NBMAR
-                     IF (MAICON(IMAR).NE.0) GOTO 4
+      DO 80 IMAR=1,NBMAR
+        IF (MAICON(IMAR).NE.0)GOTO 80
 C     ------------------------------------------------------------------
 C     RECHERCHE DU NOM DE LA MAILLE
 C     ------------------------------------------------------------------
-                     CALL JENUNO(JEXNUM(MA//'.NOMMAI' ,IMAR),KMAR)
-                     NOMMAR(IMAR)=KMAR
+        CALL JENUNO(JEXNUM(MA//'.NOMMAI',IMAR),KMAR)
+        NOMMAR(IMAR)=KMAR
 C
 C     ------------------------------------------------------------------
 C     RECHERCHE DE L ADRESSE DES CONNEXIONS DE LA MAILLE
 C     ------------------------------------------------------------------
-                     CALL JEVEUO(JEXNUM(MA//'.CONNEX',IMAR),'L',IMICOR)
-                     JMICOR(IMAR)=IMICOR
+        CALL JEVEUO(JEXNUM(MA//'.CONNEX',IMAR),'L',IMICOR)
+        JMICOR(IMAR)=IMICOR
 C     ------------------------------------------------------------------
 C     RECHERCHE DU NOMBRE DE CONNEXIONS DE LA MAILLE
 C     ------------------------------------------------------------------
-                     CALL JELIRA(JEXNUM(MA//'.CONNEX',IMAR),
-     &                           'LONMAX',NBCOR,K1BID)
-                     MBCOR(IMAR)=NBCOR
+        CALL JELIRA(JEXNUM(MA//'.CONNEX',IMAR),'LONMAX',NBCOR,K1BID)
+        MBCOR(IMAR)=NBCOR
 C     ------------------------------------------------------------------
 C     BOUCLE SUR LES CONNEXIONS DE LA MAILLE
 C     ------------------------------------------------------------------
-       NBCOM=0
-                     DO 40 ICOR = 1,NBCOR
-                        INOR = ZI(IMICOR+ICOR-1)
-                        IF (NOECON(INOR).NE.0) NBCOM=NBCOM+1
+        NBCOM=0
+        DO 70 ICOR=1,NBCOR
+          INOR=ZI(IMICOR+ICOR-1)
+          IF (NOECON(INOR).NE.0)NBCOM=NBCOM+1
 C
-  40  CONTINUE
-       IF (NBCOM.GE.ITEST) THEN
+   70   CONTINUE
+        IF (NBCOM.GE.ITEST) THEN
 C     ------------------------------------------------------------------
 C     RECHERCHE DE L'ADRESSE DU TYPE DE LA MAILLE DANS ZI
 C     ------------------------------------------------------------------
-                     CALL JEVEUO(MA//'.TYPMAIL','L',IATYMA)
-                     IMITYR=IATYMA-1+IMAR
-                     ITYR = ZI(IMITYR)
+          CALL JEVEUO(MA//'.TYPMAIL','L',IATYMA)
+          IMITYR=IATYMA-1+IMAR
+          ITYR=ZI(IMITYR)
 C     ------------------------------------------------------------------
 C     RECHERCHE DU TYPE DE LA MAILLE DANS CATA.TM.NOMTM
 C     ------------------------------------------------------------------
-                     CALL JENUNO(JEXNUM('&CATA.TM.NOMTM',ITYR),KTYR)
-                     NOMTYR(IMAR)=KTYR
-        IF (VALID()) THEN
-        NBMARC=NBMARC+1
-        MARCON(NBMARC)=IMAR
-       ENDIF
-       ENDIF
-  4   CONTINUE
+          CALL JENUNO(JEXNUM('&CATA.TM.NOMTM',ITYR),KTYR)
+          NOMTYR(IMAR)=KTYR
+
+          IF (VALID()) THEN
+            NBMARC=NBMARC+1
+            MARCON(NBMARC)=IMAR
+          ENDIF
+        ENDIF
+   80 CONTINUE
 C     ==================================================================
 CCC      ON COMMENTE JEMARQ CAR ADRESSES PASSEES EN ARGUMENT
 CCC      CALL JEDEMA()

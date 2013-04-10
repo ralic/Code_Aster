@@ -8,7 +8,7 @@
       CHARACTER*(*) RESU,MODELE,MATE,CARA,NOMCMD,LCHAR(*)
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 25/02/2013   AUTEUR SELLENET N.SELLENET 
+C MODIF UTILITAI  DATE 09/04/2013   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -51,7 +51,7 @@ C     ------------------------------------------------------------------
      &             NOPARR(NBPARR),NOPARD(NBPARD),MOTCL1,MOTCL2,MOTCL3
       CHARACTER*19 CHELEM,KNUM,KINS,TABTYP(3),CHVARC
       CHARACTER*24 CHGEOM,CHCARA(18),CHHARM
-      CHARACTER*24 VALK(2),NOMMA2
+      CHARACTER*24 VALK(2),NOMGRM
       CHARACTER*24 MLGGMA,MLGNMA,LIGREL,LCHIN(9),COMPOR
       CHARACTER*24 LCHOUT(2),CONTG,DEFOG,VARIG,DEPLA,SSOUP
       CHARACTER*24 KVALRC,KVALRK,VALE2(2)
@@ -326,18 +326,18 @@ C        RECOPIE DE SIGIS DANS SIGIE
      &                  ZK24(JGR),NG)
             VALE2(2) = 'GROUP_MA'
             DO 50 IG = 1,NBGRMA
-              NOMMA2 = ZK24(JGR+IG-1)
-              CALL JEEXIN(JEXNOM(MLGGMA,NOMMA2),IRET)
+              NOMGRM = ZK24(JGR+IG-1)
+              CALL JEEXIN(JEXNOM(MLGGMA,NOMGRM),IRET)
               IF (IRET.EQ.0) THEN
-                CALL U2MESK('A','UTILITAI3_46',1,NOMMA2)
+                CALL U2MESK('A','UTILITAI3_46',1,NOMGRM)
                 GO TO 50
               END IF
-              CALL JELIRA(JEXNOM(MLGGMA,NOMMA2),'LONUTI',NBMA,K8B)
+              CALL JELIRA(JEXNOM(MLGGMA,NOMGRM),'LONUTI',NBMA,K8B)
               IF (NBMA.EQ.0) THEN
-                CALL U2MESK('A','UTILITAI3_47',1,NOMMA2)
+                CALL U2MESK('A','UTILITAI3_47',1,NOMGRM)
                 GO TO 50
               END IF
-              CALL JEVEUO(JEXNOM(MLGGMA,NOMMA2),'L',JAD)
+              CALL JEVEUO(JEXNOM(MLGGMA,NOMGRM),'L',JAD)
               CALL MESOMM(CHELEM,MXVALE,IBID,ZR(LVALE),C16B,NBMA,
      &                    ZI(JAD))
               SIGMAW = COESYM*ZR(LVALE)* (SREF**MREF)
@@ -346,7 +346,7 @@ C        RECOPIE DE SIGIS DANS SIGIE
               RTVAL(3) = SIGMAW
               RTVAL(2) = PROBAW
               RTVAL(1) = SIGMAW** (1.0D0/MREF)
-              VALE2(1) = NOMMA2
+              VALE2(1) = NOMGRM
               IF (NR.NE.0) THEN
                 VALER(2) = RTVAL(1)
                 VALER(3) = RTVAL(2)

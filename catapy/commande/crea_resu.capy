@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 19/03/2013   AUTEUR BRIE N.BRIE 
+#& MODIF COMMANDE  DATE 09/04/2013   AUTEUR PELLET J.PELLET 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -205,12 +205,12 @@ CREA_RESU=OPER(nom="CREA_RESU",op=124,sd_prod=crea_resu_prod,reentrant='f',
 
          b_prep_vrc2      =BLOC(condition = "OPERATION == 'PREP_VRC2'",
            # calculer la temperature dans les couches des coques multicouche a partir d'un evol_ther "coque"
-           # contenant TEMP/TEMP_INF/TEMP_SUP
+           # contenant TEMP_MIL/TEMP_INF/TEMP_SUP
 
            TYPE_RESU    =SIMP(statut='o',position='global',typ='TXM',into=( "EVOL_THER",) ),
 
            PREP_VRC2        =FACT(statut='o',max=1,
-             EVOL_THER     =SIMP(statut='o',typ=(evol_ther)),       # evol_ther de type "coque" (TEMP/TEMP_INF/TEMP_SUP)
+             EVOL_THER     =SIMP(statut='o',typ=(evol_ther)),       # evol_ther de type "coque" (TEMP_MIL/TEMP_INF/TEMP_SUP)
              MODELE        =SIMP(statut='o',typ=modele_sdaster),    # modele mecanique contenant les coques multicouche
              CARA_ELEM     =SIMP(statut='o',typ=cara_elem),         # CARA_ELEM pour connaitre EPAIS et COQU_NCOU
            ),

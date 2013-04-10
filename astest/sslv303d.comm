@@ -1,9 +1,9 @@
-# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
+# MODIF  DATE 09/04/2013   AUTEUR PELLET J.PELLET 
 # TITRE CYLINDRE ENCASTRE SOUS POIDS PROPRE ET PRESSION
 # sslv303d.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -139,35 +139,35 @@ RSIG0_PR=CREA_RESU(OPERATION='AFFE',TYPE_RESU='FOURIER_ELAS',NOM_CHAM='SIGM_ELNO
 
 CO_FOUR1=COMB_FOURIER(   RESULTAT=RU0_GR,
                          NOM_CHAM=( 'DEPL',),
-                         ANGL=( 0., ),
+                         ANGLE=( 0., ),
                         )
 
 CO_FOUR2=COMB_FOURIER(   RESULTAT=RU0_PR,
                          NOM_CHAM=( 'DEPL',),
-                         ANGL=( 0., ),
+                         ANGLE=( 0., ),
                         )
 
 CO_FOUR3=COMB_FOURIER(   RESULTAT=RSIG0_GR,
                          NOM_CHAM=( 'SIGM_ELNO',),
-                         ANGL=( 0., ),
+                         ANGLE=( 0., ),
                         )
 
 CO_FOUR4=COMB_FOURIER(   RESULTAT=RSIG0_PR,
                          NOM_CHAM=( 'SIGM_ELNO',),
-                         ANGL=( 0., ),
+                         ANGLE=( 0., ),
                         )
 
 U_GR=CREA_CHAMP(OPERATION='EXTR',TYPE_CHAM='NOEU_DEPL_R',
-             RESULTAT=CO_FOUR1,ANGL=0.,NOM_CHAM='DEPL')
+             RESULTAT=CO_FOUR1,ANGLE=0.,NOM_CHAM='DEPL')
 
 U_PR=CREA_CHAMP(OPERATION='EXTR',TYPE_CHAM='NOEU_DEPL_R',
-             RESULTAT=CO_FOUR2,ANGL=0.,NOM_CHAM='DEPL')
+             RESULTAT=CO_FOUR2,ANGLE=0.,NOM_CHAM='DEPL')
 
 SIG_GR=CREA_CHAMP(OPERATION='EXTR',TYPE_CHAM='ELNO_SIEF_R',
-             RESULTAT=CO_FOUR3,ANGL=0.,NOM_CHAM='SIGM_ELNO')
+             RESULTAT=CO_FOUR3,ANGLE=0.,NOM_CHAM='SIGM_ELNO')
 
 SIG_PR=CREA_CHAMP(OPERATION='EXTR',TYPE_CHAM='ELNO_SIEF_R',
-             RESULTAT=CO_FOUR4,ANGL=0.,NOM_CHAM='SIGM_ELNO')
+             RESULTAT=CO_FOUR4,ANGLE=0.,NOM_CHAM='SIGM_ELNO')
 #
 TEST_RESU(CHAM_NO=(_F(NOEUD='N249',
                       NOM_CMP='DX',

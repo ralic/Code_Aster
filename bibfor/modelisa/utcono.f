@@ -9,9 +9,9 @@
       CHARACTER*(*)       MCFAC, MOCLE(3)
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 18/12/2012   AUTEUR SELLENET N.SELLENET 
+C MODIF MODELISA  DATE 09/04/2013   AUTEUR PELLET J.PELLET 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -35,7 +35,7 @@ C     ------------------------------------------------------------------
       REAL*8       R8B
       CHARACTER*8  K8B, NOEUD
       CHARACTER*16 CONCEP, CMD
-      CHARACTER*24 COORD, NOMNOE, NOEU2
+      CHARACTER*24 COORD, NOMNOE, NOMGRN
       CHARACTER*24 VALK(3)
       INTEGER      IARG
 C     ------------------------------------------------------------------
@@ -89,14 +89,13 @@ C
 C
        CALL GETVTX ( MCFAC, MOCLE(3), IOCC,IARG,1, K8B, N3 )
        IF ( N3 .NE. 0 ) THEN
-          CALL GETVTX ( MCFAC, MOCLE(3), IOCC,IARG,1, NOEUD, N3 )
-          NOEU2 = NOEUD
-          CALL UTNONO ( ' ', NOMAIL, 'NOEUD', NOEU2, K8B, IER )
+          CALL GETVTX ( MCFAC, MOCLE(3), IOCC,IARG,1, NOMGRN, N3 )
+          CALL UTNONO ( ' ', NOMAIL, 'NOEUD', NOMGRN, K8B, IER )
           IF ( IER .EQ. 10 ) THEN
              CALL GETRES ( K8B, CONCEP, CMD )
              VALK (1) = MCFAC
              VALK (2) = MOCLE(3)
-             VALK (3) = NOEUD
+             VALK (3) = NOMGRN
              VALI (1) = IOCC
              CALL U2MESG('F','MODELISA9_28',3,VALK,1,VALI,0,0.D0)
           ELSEIF ( IER .EQ. 1 ) THEN

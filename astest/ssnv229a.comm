@@ -1,0 +1,243 @@
+# MODIF  DATE 09/04/2013   AUTEUR PELLET J.PELLET 
+# TITRE  VALIDATION DES FORMULES ETCC DANS DEFI_CABLE_BP
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
+# (AT YOUR OPTION) ANY LATER VERSION.                                                    
+#                                                                       
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
+#                                                                       
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# ======================================================================
+# MODELISATION A : TYPE_RELAX = ETCC_DIRECT
+
+DEBUT(CODE=_F(NOM='SSNV229A',NIV_PUB_WEB='INTERNET'),IGNORE_ALARM='CALCULEL3_47'  );
+# <CALCULEL3_47> AVEC CALC_PRECONT, ON PASSE CONSCIEMMENT DE LA LDC 'SANS'
+# A UNE AUTRE LOI DE COMPORTEMENT
+
+#-----------------------------------------------------------# 
+#-----------------------------------------------------------#
+# VALIDATION DU CALCUL DES TENSIONS PAR METHODE ETCC        #
+# CALCUL  SANS PRISE EN COMPTE DES PERTES ELASTIQUES        #
+# PRISE EN COMPTE SIMPLIFIEE DES PERTES PAR RELAXATION      #
+#  GEOMETRIE : CYLINDRE AVEC  CABLES HORIZONTAUX            #
+#-----------------------------------------------------------#
+#-----------------------------------------------------------#
+
+#-----------------------------------------------------------#
+
+# UNITES
+# LONGUEUR   [M]
+# FORCE      [N]
+# PRESSION   [PA]
+#-----------------------------------------------------------# 
+#-----------------------------------------------------------# 
+
+########################################################################################################
+################################## DEFINITION DES PARAMETRES ##########################################
+########################################################################################################
+
+# PARAMETRES DES MATERIAUX
+# Béton
+E_bet = 30000.E6;
+NU_bet   = 0.13;
+ALPHA_b = 0.00001;
+
+
+# Câbles
+E_cab    = 191500.E6;
+NU_cab  = 0.3;
+S_cab=3*0.002641;
+
+f_prg=1814.E6;
+f0=0.82*f_prg  ; #Taux de tension 1487.E6
+
+T0=f0*S_cab;
+#PARAMETRES LIES AU FROTTEMENT DES CABLES
+mu_h=0.17;
+phi_h=0.0015;
+phi = 0.0015/mu_h;
+
+rh1000=2.5;
+
+g_cab=0.008;
+
+# DEFINITION DES INSTANTS DE CALCUL
+
+tps=DEFI_LIST_REEL(VALE=(0, 1.),);  
+
+########################################################################################################
+################################## DEFINITION DU MODELE ##########################################
+########################################################################################################
+
+# LECTURE DU MAILLAGE
+
+mail1=LIRE_MAILLAGE();
+
+
+#  Creation des groupes
+mail1 = DEFI_GROUP(reuse    = mail1,
+                   MAILLAGE = mail1,
+                   CREA_GROUP_MA=( _F(NOM='CAB_ODD',
+                                     UNION=('CAB1', 'CAB3', 'CAB5', 'CAB7', 'CAB9', ),),
+                                   _F(NOM='CAB_EVEN',
+                                     UNION=('CAB2', 'CAB4', 'CAB6', 'CAB8', 'CAB10', ),),
+                                   _F(NOM='CABLES',
+                                     UNION=('CAB1', 'CAB3', 'CAB5', 'CAB7', 'CAB9', 
+                                       'CAB2', 'CAB4', 'CAB6', 'CAB8', 'CAB10', ),),),
+                   CREA_GROUP_NO=( _F(TOUT_GROUP_MA = 'OUI'),),);
+
+# DEFINITION DES MATERIAUX
+bet=DEFI_MATERIAU(ELAS=_F(E   = E_bet,
+                          NU  = NU_bet,
+                          ALPHA = ALPHA_b,),
+                  ETCC_BETON=_F(),
+                      );
+
+aci_h=DEFI_MATERIAU(ELAS=_F(E   = E_cab,
+                            NU  = NU_cab,),
+                    ETCC_ACIER=_F(RELAX_1000=rh1000,
+                                  F_PRG=f_prg,
+                                  COEF_FROT=mu_h,
+                                  PERT_LIGNE=phi),
+      );
+
+mod=AFFE_MODELE(MAILLAGE=mail1,
+                AFFE=(_F(GROUP_MA = ('FUT',),PHENOMENE = 'MECANIQUE', MODELISATION = '3D',), 
+                     _F(GROUP_MA=('CABLES',), PHENOMENE='MECANIQUE', MODELISATION='BARRE',),),);
+                         
+cara=AFFE_CARA_ELEM(MODELE=mod,
+                    BARRE=(_F(GROUP_MA=('CABLES',),SECTION='GENERALE', CARA='A',VALE=S_cab),),);
+
+mat=AFFE_MATERIAU(MAILLAGE=mail1,
+                  MODELE=mod,
+                  AFFE=( _F(GROUP_MA='FUT', MATER=bet,),
+                         _F(GROUP_MA='CABLES', MATER=aci_h,),),); 
+
+
+########################################################################
+################################## DEFINITION DES CABLES ###############
+#########################################################################
+# DEFINITION DES CABLES 
+# CABLES IMPAIRS : SANS RELAXATION DES ACIERS
+cab_odd0=DEFI_CABLE_BP(MODELE=mod,CHAM_MATER=mat,CARA_ELEM=cara,GROUP_MA_BETON='FUT',
+               DEFI_CABLE=(
+                     _F(GROUP_MA='CAB1', GROUP_NO_ANCRAGE=('CAB1_I','CAB1_F',),),
+                     _F(GROUP_MA='CAB3', GROUP_NO_ANCRAGE=('CAB3_I','CAB3_F',),),
+                     _F(GROUP_MA='CAB5', GROUP_NO_ANCRAGE=('CAB5_I','CAB5_F',),),
+                     _F(GROUP_MA='CAB7', GROUP_NO_ANCRAGE=('CAB7_I','CAB7_F',),),
+                     _F(GROUP_MA='CAB9', GROUP_NO_ANCRAGE=('CAB9_I','CAB9_F',),),),
+                      TYPE_ANCRAGE=('ACTIF','ACTIF'), 
+                      TENSION_INIT=T0,RECUL_ANCRAGE=g_cab,);
+
+# CABLES PAIRS : AVEC RELAXATION DES ACIERS
+cab_eve0=DEFI_CABLE_BP(MODELE=mod,CHAM_MATER=mat,CARA_ELEM=cara,GROUP_MA_BETON='FUT', 
+             DEFI_CABLE=(
+                _F(GROUP_MA='CAB2', GROUP_NO_ANCRAGE=('CAB2_I','CAB2_F',),),
+                _F(GROUP_MA='CAB4', GROUP_NO_ANCRAGE=('CAB4_I','CAB4_F',),),
+                _F(GROUP_MA='CAB6', GROUP_NO_ANCRAGE=('CAB6_I','CAB6_F',),),
+                _F(GROUP_MA='CAB8', GROUP_NO_ANCRAGE=('CAB8_I','CAB8_F',),),
+                _F(GROUP_MA='CAB10', GROUP_NO_ANCRAGE=('CAB10_I','CAB10_F',),),),
+                TYPE_ANCRAGE=('ACTIF','ACTIF'),TENSION_INIT=T0,RECUL_ANCRAGE=g_cab,
+                TYPE_RELAX='ETCC_DIRECT',NBH_RELAX=569790.);
+
+
+tab_odd0=RECU_TABLE(CO=cab_odd0, NOM_TABLE='CABLE_BP',);
+tab_eve0=RECU_TABLE(CO=cab_eve0, NOM_TABLE='CABLE_BP',);
+#IMPR_TABLE(TABLE=tab_odd0,UNITE=11,NOM_PARA=('ABSC_CURV','ALPHA','TENSION',),
+#           FILTRE=_F(NOM_PARA='NOM_CABLE',VALE_K='CAB1'));
+#IMPR_TABLE(TABLE=tab_eve0,UNITE=11,NOM_PARA=('ABSC_CURV','ALPHA','TENSION',),
+#           FILTRE=_F(NOM_PARA='NOM_CABLE',VALE_K='CAB2'));
+
+
+#########################################################
+# VERIFICATION DES VALEURS OBTENUES
+#########################################################
+
+# A L'EXTREMITE DES CABLES IMPAIRS (SANS RELAXATION ACIER)
+
+TEST_TABLE(CRITERE='RELATIF',
+           REFERENCE='ANALYTIQUE',
+           PRECISION=0.5E-2,
+           VALE_CALC=9.5760612950808E+06,
+           VALE_REFE=9.537E+06,
+           TOLE_MACHINE=1.E-10,
+           NOM_PARA='TENSION',
+           TABLE=tab_odd0,
+           FILTRE=(_F(NOM_PARA='NOM_CABLE',VALE_K='CAB1'), 
+                   _F(NOM_PARA='ABSC_CURV', VALE=0.)))
+# A LA LIMITE DU RECUL D'ANCRAGE 
+# (ATTENTION ABSC_CURV PAS PARFAITEMENT COINCIDENTE)
+#(SANS RELAXATION ACIER)
+TEST_TABLE(CRITERE='RELATIF',
+           REFERENCE='ANALYTIQUE',
+           PRECISION=0.5E-2,
+           VALE_CALC=1.0458482047476E+07,
+           VALE_REFE=10.436E+06,
+           TOLE_MACHINE=1.E-10,
+           NOM_PARA='TENSION',
+           TABLE=tab_odd0,
+           FILTRE=(_F(NOM_PARA='NOM_CABLE',VALE_K='CAB1'), 
+                   _F(NOM_PARA='ABSC_CURV', VALE=9.200)))
+# AU MILIEU DU CABLE 
+#(SANS RELAXATION ACIER)                  
+TEST_TABLE(CRITERE='RELATIF',
+           REFERENCE='ANALYTIQUE',
+           PRECISION=0.5E-2,
+           VALE_CALC=6.2841275093704E+06,
+           VALE_REFE=6.273E+06,
+           TOLE_MACHINE=1.E-10,
+           NOM_PARA='TENSION',
+           TABLE=tab_odd0,
+           FILTRE=(_F(NOM_PARA='NOM_CABLE',VALE_K='CAB1'), 
+                   _F(NOM_PARA='ABSC_CURV', VALE=64.403)))
+# VERIFICATION DES VALEURS OBTENUES
+# A L'EXTREMITE DU CABLE
+
+TEST_TABLE(CRITERE='RELATIF',
+           REFERENCE='ANALYTIQUE',
+           PRECISION=0.5E-2,
+           VALE_CALC=9.3101788334773E+06,
+           VALE_REFE=9.286E+06,
+           TOLE_MACHINE=1.E-10,
+           NOM_PARA='TENSION',
+           TABLE=tab_eve0,
+           FILTRE=(_F(NOM_PARA='NOM_CABLE',VALE_K='CAB2'), 
+                   _F(NOM_PARA='ABSC_CURV', VALE=0.)))
+# A LA LIMITE DU RECUL D'ANCRAGE 
+# (ATTENTION ABSC_CURV PAS PARFAITEMENT COINCIDENTE)
+
+TEST_TABLE(CRITERE='RELATIF',
+           REFERENCE='ANALYTIQUE',
+           PRECISION=0.5E-2,
+           VALE_CALC=1.0079408711746E+07,
+           VALE_REFE=10.079E+06,
+           TOLE_MACHINE=1.E-10,
+           NOM_PARA='TENSION',
+           TABLE=tab_eve0,
+           FILTRE=(_F(NOM_PARA='NOM_CABLE',VALE_K='CAB2'), 
+                   _F(NOM_PARA='ABSC_CURV', VALE=9.200)))
+# AU MILIEU DU CABLE                   
+TEST_TABLE(CRITERE='RELATIF',
+           REFERENCE='ANALYTIQUE',
+           PRECISION=0.5E-2,
+           VALE_CALC=6.2195728853276E+06,
+           VALE_REFE=6.210E+06,
+           TOLE_MACHINE=1.E-10,
+           NOM_PARA='TENSION',
+           TABLE=tab_eve0,
+           FILTRE=(_F(NOM_PARA='NOM_CABLE',VALE_K='CAB2'), 
+                   _F(NOM_PARA='ABSC_CURV', VALE=64.403)))
+
+
+FIN();
+
+

@@ -1,9 +1,9 @@
-# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
+# MODIF  DATE 09/04/2013   AUTEUR PELLET J.PELLET 
 # TITRE CRITERES GEOMETRIQUES DANS DEFI_GROUP EN 2D
 # zzzz106b.para = tps_job 60 mem_job 256Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -35,17 +35,17 @@ MA=LIRE_MAILLAGE( )
 #
 MA=DEFI_GROUP( reuse = MA, MAILLAGE=MA,
                CREA_GROUP_NO=
-                 _F( NOM='GPNO',
+                 _F( NOM='GXXXXXX_GPNO',
                      NOEUD=('N10','N11','N25','N2','N3','N9','N1'),),)
 
 MA=DEFI_GROUP( reuse = MA, MAILLAGE=MA,
                CREA_GROUP_MA=(
                              _F(OPTION='APPUI',TYPE_APPUI='AU_MOINS_UN',
-                               GROUP_NO='GPNO',
-                               NOM='AU_MOINS'),
+                               GROUP_NO='GXXXXXX_GPNO',
+                               NOM='GXXXXXX_AU_MOINS'),
                             _F(OPTION='APPUI',TYPE_APPUI='TOUT',
-                               GROUP_NO='GPNO',
-                               NOM='TOUS'),),)
+                               GROUP_NO='GXXXXXX_GPNO',
+                               NOM='GXXXXXX_TOUS'),),)
 #
 # 1.2 CAS QUADRATIQUE
 #
@@ -53,18 +53,18 @@ MA2=CREA_MAILLAGE(MAILLAGE=MA,LINE_QUAD=_F(TOUT='OUI'),)
 
 MA2=DEFI_GROUP( reuse = MA2, MAILLAGE=MA2,
                CREA_GROUP_NO=
-                 _F( NOM='GPNS',
+                 _F( NOM='GXXXXXX_GPNS',
                      NOEUD=('N10','N11','N25','N2','N3','N9','N1',
                             'NS44','NS45','NS46','NS32','NS47'),),)
 
 MA2=DEFI_GROUP( reuse = MA2, MAILLAGE=MA2,
                CREA_GROUP_MA=(
                             _F(OPTION='APPUI',TYPE_APPUI='TOUT',
-                               GROUP_NO='GPNS',
-                               NOM='TOUS2'),
+                               GROUP_NO='GXXXXXX_GPNS',
+                               NOM='GXXXXXX_TOUS2'),
                             _F(OPTION='APPUI',TYPE_APPUI='SOMMET',
-                               GROUP_NO='GPNS',
-                               NOM='TOUS_SO2'),),)
+                               GROUP_NO='GXXXXXX_GPNS',
+                               NOM='GXXXXXX_TOUS_SO2'),),)
 
 #
 #  fin de la validation 1)
@@ -75,16 +75,16 @@ MA=DEFI_GROUP( reuse = MA, MAILLAGE=MA,
                CREA_GROUP_MA=(
                              _F(OPTION='APPUI',TYPE_APPUI='AU_MOINS_UN',
                                TYPE_MAILLE='TOUT',
-                               GROUP_NO='GPNO',
-                               NOM='G1D2D'),
+                               GROUP_NO='GXXXXXX_GPNO',
+                               NOM='GXXXXXX_G1D2D'),
                             _F(OPTION='APPUI',TYPE_APPUI='AU_MOINS_UN',
                                TYPE_MAILLE='1D',
-                               GROUP_NO='GPNO',
-                               NOM='G1D'),
+                               GROUP_NO='GXXXXXX_GPNO',
+                               NOM='GXXXXXX_G1D'),
                             _F(OPTION='APPUI',TYPE_APPUI='AU_MOINS_UN',
                                TYPE_MAILLE='2D',
-                               GROUP_NO='GPNO',
-                               NOM='G2D'),),)
+                               GROUP_NO='GXXXXXX_GPNO',
+                               NOM='GXXXXXX_G2D'),),)
 
 
 DEFI_FICHIER(UNITE=38)
@@ -100,30 +100,30 @@ DEFI_FICHIER (ACTION='LIBERER',UNITE=38)
 TEST_FICHIER(FICHIER='fort.38',
              NB_VALE=851,EXPR_IGNORE=('ASTER'),
              VALE_CALC=1.0936050000000e+04,
-             VALE_CALC_K='0fef0c70b98832a70a85dd0844ed22d0',)
+             VALE_CALC_K='ffcebec669c2b11afd3b027b076de349',)
 
 # fin de la validation 2
 # ----------------------------------------------------------------------
 
 MA=DEFI_GROUP(     reuse=MA,        MAILLAGE=MA,CREA_GROUP_MA=(
-                        _F(  NOM = 'GM1',
+                        _F(  NOM = 'GXXXXXX_GM1',
                                         OPTION = 'SPHERE',
                                         NOEUD_CENTRE = 'N1',
                                         RAYON = 2.),
-                        _F(   NOM = 'GM3',
+                        _F(   NOM = 'GXXXXXX_GM3',
                                          OPTION = 'BANDE',
                                          NOEUD_CENTRE = 'N1',
                                          DIST = 2.,
                                        VECT_NORMALE = (0.,1.,)),
-                        _F(   NOM = 'GM4',
+                        _F(   NOM = 'GXXXXXX_GM4',
                                          OPTION = 'FACE_NORMALE',
                                        VECT_NORMALE = (0.,-1.,))),CREA_GROUP_NO=(
-                        _F(  NOM = 'GN1',
+                        _F(  NOM = 'GXXXXXX_GN1',
                                         OPTION = 'ENV_SPHERE',
                                         NOEUD_CENTRE = 'N1',
                                         RAYON = 2.5,
                                         PRECISION = 0.1),
-                        _F(  NOM = 'GN3',
+                        _F(  NOM = 'GXXXXXX_GN3',
                                         OPTION = 'PLAN',
                                         NOEUD_CENTRE = 'N14',
                                        VECT_NORMALE = (1.,0.,),
@@ -151,7 +151,7 @@ CHMAT=AFFE_MATERIAU(  MAILLAGE=MA,
 #    --- CL1 : LES NOEUDS SONT REPERES 'A LA MAIN'
 
 CLDIRI1=AFFE_CHAR_MECA(  MODELE=MO,
-                          DDL_IMPO=_F(  GROUP_NO = 'COTE',
+                          DDL_IMPO=_F(  GROUP_NO = 'GXXXXXX_COTE',
                          DX = 0., DY = 0.))
 
 #
@@ -177,7 +177,7 @@ CHMEC1=AFFE_CHAR_MECA(  MODELE=MO,
 #    ---                DE CENTRE MILIEU DE LA PLAQUE ET DE RAYON 2.
 
 CHMEC2=AFFE_CHAR_MECA(  MODELE=MO,
-                         FORCE_INTERNE=_F( GROUP_MA = 'GM1',  FY = -1.) )
+                         FORCE_INTERNE=_F( GROUP_MA = 'GXXXXXX_GM1',  FY = -1.) )
 
 #
 #    --------------------------------------------------
@@ -199,7 +199,7 @@ CHMEC3=AFFE_CHAR_MECA(  MODELE=MO,
 # ---- LA LIGNE MOYENNE PASEE PAR LE CENTRE DE LA PLAQUE.
 #
 CHMEC4=AFFE_CHAR_MECA(  MODELE=MO,
-                          DDL_IMPO=_F(  GROUP_NO = 'COTE',
+                          DDL_IMPO=_F(  GROUP_NO = 'GXXXXXX_COTE',
                          DX = 0., DY = 0.),
                 FORCE_INTERNE=_F( MAILLE = ('TR5A','TR5B','TR6A','TR6B','TR7A','TR7B',
               'TR8A','TR8B','TR9A','TR9B','TR10A','TR10B','TR11A','TR11B','TR12A','TR12B',),
@@ -211,7 +211,7 @@ CHMEC4=AFFE_CHAR_MECA(  MODELE=MO,
 #    ---                 A LA BANDE DECRITE AU-DESSUS
 #
 CHMEC5=AFFE_CHAR_MECA(  MODELE=MO,
-                         FORCE_INTERNE=_F( GROUP_MA = 'GM3',  FY = -1.))
+                         FORCE_INTERNE=_F( GROUP_MA = 'GXXXXXX_GM3',  FY = -1.))
 
 #
 #    --------------------------------------------------
@@ -227,7 +227,7 @@ CHMEC6=AFFE_CHAR_MECA(  MODELE=MO,
 #    ---                 LES MAILLES // A X
 #
 CHMEC7=AFFE_CHAR_MECA(  MODELE=MO,
-                         PRES_REP=_F( GROUP_MA = 'GM4', PRES = -1.))
+                         PRES_REP=_F( GROUP_MA = 'GXXXXXX_GM4', PRES = -1.))
 
 #
 #    --------------------------------------------------
@@ -241,19 +241,19 @@ CHMEC8=AFFE_CHAR_MECA(  MODELE=MO,
 #
 #    --------------------------------------------------
 #    --- CHARGEMENT 9 : ON IMPOSE UNE FORCE NODALE EGALE A -1.
-#    ---                 SUR LES NOEUDS 3,5,7,9 DU GROUP_NO GN1
+#    ---                 SUR LES NOEUDS 3,5,7,9 DU GROUP_NO GXXXXXX_GN1
 #
 CHMEC9=AFFE_CHAR_MECA(  MODELE=MO,
-                         FORCE_NODALE=_F( GROUP_NO = 'GN1',
+                         FORCE_NODALE=_F( GROUP_NO = 'GXXXXXX_GN1',
                                        FY = -1.))
 
 #
 #    --------------------------------------------------
 #    --- CHARGEMENT 10 : ON IMPOSE UNE FORCE NODALE EGALE A  -1.
-#    ---                 SUR LES NOEUDS DU GROUP_NO GN3
+#    ---                 SUR LES NOEUDS DU GROUP_NO GXXXXXX_GN3
 #
 CHMEC10=AFFE_CHAR_MECA(  MODELE=MO,
-                         FORCE_NODALE=_F( GROUP_NO = 'GN3',
+                         FORCE_NODALE=_F( GROUP_NO = 'GXXXXXX_GN3',
                                        FY = -1.))
 
 #

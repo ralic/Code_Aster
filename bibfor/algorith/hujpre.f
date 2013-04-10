@@ -1,10 +1,10 @@
       SUBROUTINE HUJPRE (ETAT, MOD, CRIT, IMAT, MATER, DEPS, SIGD,
-     &                    SIGF, EPSD, VIND, IRET)
+     &                    SIGF, VIND, IRET)
       IMPLICIT NONE
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGORITH  DATE 09/04/2013   AUTEUR PELLET J.PELLET 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
@@ -55,7 +55,7 @@ C                              IRET=1 => ECHEC
       INCLUDE 'jeveux.h'
       INTEGER     NDT, NDI, IMAT, IRET, IADZI, IAZK24, I
       REAL*8      CRIT(*), VIND(*)
-      REAL*8      EPSD(6), DEPS(6), DEV(3), PF(3), Q, PD(3), DP(3)
+      REAL*8      DEPS(6), DEV(3), PF(3), Q, PD(3), DP(3)
       REAL*8      SIGD(6), SIGF(6), DSIG(6), DSDE(6,6), RTRAC
       REAL*8      MATER(22,2), I1, D13, TOLE1, TRACE, UN, ZERO
       REAL*8      PTRAC, PREF, MAXI, COHES, FACTOR
@@ -69,6 +69,7 @@ C                              IRET=1 => ECHEC
       DATA   UN, ZERO / 1.D0, 0.D0/
       DATA   D13, TOLE1 /0.33333333334D0, 1.0D-7/ 
 
+
       PREF  = MATER(8,2)
       PTRAC = MATER(21,2)
       RTRAC = ABS(PREF*1.D-6)
@@ -76,7 +77,7 @@ C                              IRET=1 => ECHEC
       IF (ETAT .EQ. 'ELASTIC') THEN
       
         CALL HUJELA (MOD, CRIT, MATER, DEPS, SIGD, SIGF, 
-     &               EPSD, IRET)
+     &               IRET)
      
       ELSEIF (ETAT .EQ. 'PLASTIC') THEN
       
@@ -106,7 +107,7 @@ C                              IRET=1 => ECHEC
      &      'DANS LA MAILLE ',NOMAIL
           ENDIF
           CALL HUJELA (MOD, CRIT, MATER, DEPS, SIGD, SIGF, 
-     &                 EPSD, IRET)
+     &                 IRET)
         ENDIF
         
       ENDIF

@@ -1,10 +1,10 @@
-# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
+# MODIF  DATE 09/04/2013   AUTEUR PELLET J.PELLET 
 # RESPONSABLE FLEJOU
 # TITRE STRUCTURE SYMETRIQUE DE POUTRES AVEC UN COUDE
 # ssll100a.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -189,7 +189,7 @@ CHMAT3=AFFE_MATERIAU(MAILLAGE=MA,
                              MATER=MATER,),
                      AFFE_VARC=_F(TOUT='OUI',
                                   NOM_VARC='TEMP',
-                                  CHAMP_GD=CHTEMP,
+                                  CHAM_GD=CHTEMP,
                                   VALE_REF=0.,),);
 
 VEL3=CALC_VECT_ELEM(OPTION='CHAR_MECA',

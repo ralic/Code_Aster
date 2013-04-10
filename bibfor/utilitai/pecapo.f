@@ -5,7 +5,7 @@
       CHARACTER*(*)     RESU, MODELE, CARA, LCHAR(*)
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 12/02/2013   AUTEUR PELLET J.PELLET 
+C MODIF UTILITAI  DATE 09/04/2013   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -163,16 +163,16 @@ C     -------------------
         CALL GETVTX('CARA_POUTRE','GROUP_MA_INTE',1,IARG,0,K8B,NGI)
         IF (NGI.NE.0) THEN
           NGI = -NGI
-          CALL WKVECT('&&PECAPO.GRMA_INTE','V V K8',NGI,IDGRMI)
+          CALL WKVECT('&&PECAPO.GRMA_INTE','V V K24',NGI,IDGRMI)
           CALL GETVTX('CARA_POUTRE','GROUP_MA_INTE',1,IARG,
-     &                NGI,ZK8(IDGRMI),NGRI)
+     &                NGI,ZK24(IDGRMI),NGRI)
         ELSE
-          CALL WKVECT('&&PECAPO.GRMA_INTE','V V K8',1,IDGRMI)
+          CALL WKVECT('&&PECAPO.GRMA_INTE','V V K24',1,IDGRMI)
         ENDIF
 C
 C --- CALCUL DE LA CONSTANTE DE TORSION JX :
 C     ------------------------------------
-        CALL PECAP1 ( CHGEOM, TEMPER, NGI, ZK8(IDGRMI), JX )
+        CALL PECAP1 ( CHGEOM, TEMPER, NGI, ZK24(IDGRMI), JX )
 C
 C --- AJOUT DE JX ET RT DANS LA TABLE 'RESU' :
 C     --------------------------------------

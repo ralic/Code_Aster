@@ -1,0 +1,69 @@
+      SUBROUTINE HUJCVX (MOD,MATERF,VINF, DEPS, SIGD, SIGF,SEUIL,IRET)
+C            CONFIGURATION MANAGEMENT OF EDF VERSION
+C MODIF ALGORITH  DATE 09/04/2013   AUTEUR PELLET J.PELLET 
+C ======================================================================
+C COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
+C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
+C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
+C (AT YOUR OPTION) ANY LATER VERSION.                                   
+C                                                                       
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
+C                                                                       
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
+C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.         
+C ======================================================================
+C RESPONSABLE FOUCAULT A.FOUCAULT
+      IMPLICIT NONE
+C   ------------------------------------------------------------------
+C   DEFINITION DU DOMAINE POTENTIEL DES MECANISMES ACTIFS
+C   IN  MOD    :  MODELISATION
+C       MATERF :  COEFFICIENTS MATERIAU A T+DT
+C       VINF   :  VARIABLES INTERNES  A T+DT
+C       DEPS   :  INCREMENT DE DEFORMATION
+C       SIGD   :  CONTRAINTE A T
+C       SIGF   :  CONTRAINTE A T+DT  (ELAS)
+C
+C   OUT VINF   :  VARIABLES INTERNES MODIFIEES PAR LES NOUVEAUX
+C                 MECANISMES
+C       SEUIL  :  POSITIF SI PLASTICITE A PRENDRE EN COMPTE 
+C       IRET   :  CODE RETOUR
+C   ------------------------------------------------------------------
+        INTEGER         IRET
+        REAL*8          MATERF(22,2),VINF(*),DEPS(6),SIGD(6),SIGF(6)
+        REAL*8          SEUIL
+        CHARACTER*8     MOD
+C
+        INTEGER         I
+        LOGICAL         RDCTPS
+        CHARACTER*7     ETATF
+        REAL*8          UN,BID66(6,6),ZERO,SOMME,R8PREM
+C
+        PARAMETER     ( ZERO = 0.D0 ) 
+        PARAMETER     ( UN   = 1.D0 ) 
+C ======================================================================
+C --- INTIALISATION ETATF
+      ETATF = 'ELASTIC'
+
+C --- CONTROLE DE LA NORME DE DEFORMATION
+      SOMME = ZERO
+      DO 10 I = 1, 6
+        SOMME = SOMME + ABS(DEPS(I))
+  10  CONTINUE
+      IF(SOMME.LT.R8PREM())GOTO 999
+      
+C --- DEFINITION DU DOMAINE POTENTIEL DES MECANISMES ACTIFS
+      CALL HUJPOT(MOD,MATERF,VINF,DEPS,SIGD,SIGF,ETATF,
+     &           RDCTPS,IRET,.TRUE.)
+C
+C --- SI ETATF = 'ELASTIC' --> SEUIL < 0       
+C
+ 999  CONTINUE
+      IF(ETATF.EQ.'ELASTIC')SEUIL = - UN
+
+
+      END

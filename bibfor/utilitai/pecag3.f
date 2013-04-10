@@ -1,19 +1,19 @@
       SUBROUTINE PECAG3 ( NDIM, NSYMX, NSYMY, NOMA, MOTCLE, NBMAIL,
-     &                    NOMMAI, VALPAR )
+     &                    NOMENT, VALPAR )
       IMPLICIT NONE
       INCLUDE 'jeveux.h'
 
       CHARACTER*32 JEXNUM,JEXNOM
       INTEGER             NDIM,                             NBMAIL
       REAL*8                      VALPAR(*)
-      CHARACTER*8         NOMMAI(*),          NOMA
+      CHARACTER*(*)       NOMENT(*),  NOMA
       CHARACTER*(*)                                  MOTCLE
       LOGICAL                   NSYMX, NSYMY
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 18/12/2012   AUTEUR SELLENET N.SELLENET 
+C MODIF UTILITAI  DATE 09/04/2013   AUTEUR PELLET J.PELLET 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -33,7 +33,7 @@ C     TRAITEMENT DU MOT CLE-FACTEUR "CARA_GEOM"
 C     ------------------------------------------------------------------
 C
 C
-      CHARACTER*8  K8B
+      CHARACTER*8  K8B,NOMA8
       CHARACTER*24  MLGGMA, MLGVAL, MLGCOX
 C     ------------------------------------------------------------------
 C
@@ -46,9 +46,10 @@ C-----------------------------------------------------------------------
       REAL*8 ZMIN
 C-----------------------------------------------------------------------
       CALL JEMARQ ( )
-      MLGGMA = NOMA//'.GROUPEMA'
-      MLGCOX = NOMA//'.CONNEX'
-      MLGVAL = NOMA//'.COORDO    .VALE'
+      NOMA8=NOMA
+      MLGGMA = NOMA8//'.GROUPEMA'
+      MLGCOX = NOMA8//'.CONNEX'
+      MLGVAL = NOMA8//'.COORDO    .VALE'
       CALL JEVEUO(MLGVAL,'L',JCOOR)
       CALL JELIRA (MLGVAL,'LONMAX',NBNOEU,K8B)
       NBNOEU = NBNOEU / 3
@@ -91,7 +92,7 @@ C
 C
       ELSEIF ( MOTCLE(1:6) .EQ. 'MAILLE' ) THEN
          DO 20 IM = 1 , NBMAIL
-            CALL JENONU (JEXNOM(NOMA//'.NOMMAI',NOMMAI(IM)),IBID)
+            CALL JENONU (JEXNOM(NOMA8//'.NOMMAI',NOMENT(IM)),IBID)
             CALL JEVEUO (JEXNUM(MLGCOX,IBID),'L',JDES)
             CALL JELIRA (JEXNUM(MLGCOX,IBID),'LONMAX',NBNO,K8B)
             DO 22 IN = 1 , NBNO
@@ -113,8 +114,8 @@ C
 C
       ELSEIF ( MOTCLE(1:8) .EQ. 'GROUP_MA' ) THEN
          DO 30 IG = 1 , NBMAIL
-            CALL JEVEUO (JEXNOM(MLGGMA,NOMMAI(IG)),'L',JGRO)
-            CALL JELIRA (JEXNOM(MLGGMA,NOMMAI(IG)),'LONUTI',NBMA,K8B)
+            CALL JEVEUO (JEXNOM(MLGGMA,NOMENT(IG)),'L',JGRO)
+            CALL JELIRA (JEXNOM(MLGGMA,NOMENT(IG)),'LONUTI',NBMA,K8B)
             DO 32 IM = 1 , NBMA
                NUMAIL = ZI(JGRO+IM-1)
                CALL JEVEUO (JEXNUM(MLGCOX,NUMAIL),'L',JDES)

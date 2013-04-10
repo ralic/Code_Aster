@@ -1,7 +1,7 @@
-#& MODIF COMMANDE  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
+#& MODIF COMMANDE  DATE 09/04/2013   AUTEUR PELLET J.PELLET 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -59,7 +59,7 @@ TEST_RESU=PROC(nom="TEST_RESU",op=23,
          ),
 
          RESU            =FACT(statut='f',max='**',
-           regles=(UN_PARMI('NUME_ORDRE','INST','FREQ','NUME_MODE','NOEUD_CMP','NOM_CAS','ANGL'),
+           regles=(UN_PARMI('NUME_ORDRE','INST','FREQ','NUME_MODE','NOEUD_CMP','NOM_CAS','ANGLE'),
                    UN_PARMI('NOM_CHAM','PARA'),
                    PRESENT_ABSENT('PARA','NOEUD','GROUP_NO','POINT','NOM_CMP',),
                    PRESENT_PRESENT('NOM_CMP','NOM_CHAM'),
@@ -74,7 +74,7 @@ TEST_RESU=PROC(nom="TEST_RESU",op=23,
            NUME_MODE       =SIMP(statut='f',typ='I'),
            NOEUD_CMP       =SIMP(statut='f',typ='TXM',min=2,max=2),
            NOM_CAS         =SIMP(statut='f',typ='TXM'),
-           ANGL            =SIMP(statut='f',typ='R'),
+           ANGLE           =SIMP(statut='f',typ='R'),
            PARA            =SIMP(statut='f',typ='TXM'),
            NOM_CHAM        =SIMP(statut='f',typ='TXM',validators=NoRepeat(),into=C_NOM_CHAM_INTO()),
            NOM_CMP         =SIMP(statut='f',typ='TXM',max=1),

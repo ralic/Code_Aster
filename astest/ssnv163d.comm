@@ -1,4 +1,4 @@
-# MODIF  DATE 06/02/2013   AUTEUR COURTOIS M.COURTOIS 
+# MODIF  DATE 09/04/2013   AUTEUR PELLET J.PELLET 
 # RESPONSABLE FOUCAULT A.FOUCAULT
 # TITRE ESSAI DE FLUAGE PROPRE (MODELE BETON_BURGER_FP)
 # ssnv163d.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test S
@@ -111,11 +111,11 @@ CM=AFFE_MATERIAU(  MAILLAGE=M,
                    AFFE=_F( TOUT = 'OUI',
                             MATER = BETON,),
                    AFFE_VARC=(_F(TOUT='OUI',
-                                CHAMP_GD=SECH,
+                                CHAM_GD=SECH,
                                 NOM_VARC='SECH',
                                 VALE_REF=1),
                              _F(TOUT='OUI',
-                                CHAMP_GD=TEMP,
+                                CHAM_GD=TEMP,
                                 NOM_VARC='TEMP',
                                 VALE_REF=20),),);
 

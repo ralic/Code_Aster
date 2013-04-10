@@ -1,4 +1,4 @@
-%& MODIF TYPELEM  DATE 12/02/2013   AUTEUR PELLET J.PELLET 
+%& MODIF TYPELEM  DATE 09/04/2013   AUTEUR PELLET J.PELLET 
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -47,7 +47,7 @@ MODE_LOCAL__
     CTEMPSR  = INST_R   ELEM__         (INST     )
     CTEMPEF  = TEMP_F   ELEM__         (TEMP     )
     CTEREFE  = TEMP_R   ELEM__         (TEMP     )
-    NTEMPER  = TEMP_R   ELNO__ IDEN__  (TEMP     TEMP_INF TEMP_SUP )
+    NTEMPER  = TEMP_R   ELNO__ IDEN__  (TEMP_MIL TEMP_INF TEMP_SUP )
     EDEFONO  = EPSI_R   ELNO__ IDEN__  (EXX      EYY      EXY      )
     EDEFOPG  = EPSI_R   ELGA__ RIGI    (EXX      EYY      EXY      )
     EENERR   = ENER_R   ELEM__         (TOTALE   )

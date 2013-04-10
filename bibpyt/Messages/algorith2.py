@@ -1,8 +1,8 @@
-#@ MODIF algorith2 Messages  DATE 19/12/2012   AUTEUR PELLET J.PELLET 
+#@ MODIF algorith2 Messages  DATE 09/04/2013   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -28,9 +28,9 @@ Erreur utilisateur dans la commande CREA_RESU / AFFE :
 """),
 
 2 : _(u"""
- L'état initial défini n'est pas plastiquement admissible pour le modèle LETK. 
- L'état initial de contraintes est erroné ou les propriétés matériaux ne sont pas adaptées au problème posé. 
- Le calcul s'arrête en erreur fatale par précautions. 
+ L'état initial défini n'est pas plastiquement admissible pour le modèle LETK.
+ L'état initial de contraintes est erroné ou les propriétés matériaux ne sont pas adaptées au problème posé.
+ Le calcul s'arrête en erreur fatale par précautions.
 """),
 
 3 : _(u"""
@@ -119,28 +119,37 @@ Erreur utilisateur dans la commande CREA_RESU / AFFE :
 """),
 
 27 : _(u"""
- maille  %(k1)s  de type  %(k2)s  invalide pour le contact
+ La maille  %(k1)s  de type  %(k2)s  est invalide pour ORIE_FISSURE.
 """),
 
 28 : _(u"""
- groupe de mailles de contact invalide
+ Le groupe de mailles pour ORIE_FISSURE est invalide.
 """),
 
 29 : _(u"""
- mailles de contact 2d et 3d
+ Dans le groupe à réorienter pour ORIE_FISSURE,
+ Il existe des mailles 2d et 3d.
+ C'est interdit.
 """),
 
 30 : _(u"""
- trois éléments
+Erreur d'utilisation pour MODI_MAILLAGE / ORIE_FISSURE :
+  On ne peut pas orienter les mailles.
+
+Risques & conseils :
+  Les mailles à orienter doivent correspondre à une mono couche d'éléments (2D ou 3D).
+  Ces éléments doivent s'appuyer sur d'autres éléments de même dimension (2D ou 3D)
+  pour pouvoir déterminer la direction transverse à la couche.
+  Consulter la documentation d'utilisation pour plus de détails.
 """),
 
-31 : _(u"""
- deux éléments sur la même face
-"""),
 
-33 : _(u"""
- pas de maille de référence trouvée
-"""),
+
+
+
+
+
+
 
 40 : _(u"""
  ! nombre de sous-domaines illicite !

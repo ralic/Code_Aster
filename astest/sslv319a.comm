@@ -1,4 +1,4 @@
-# MODIF  DATE 03/04/2013   AUTEUR NICOLAS G.NICOLAS 
+# MODIF  DATE 09/04/2013   AUTEUR PELLET J.PELLET 
 # TITRE PROPAGATION PLANE D'UNE FISSURE SEMI-ELLIPTIQUE
 # sslv319a.para = tps_job 180 mem_job 1024Mo liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -351,7 +351,7 @@ for i_propa in xrange(nb_pas) :
    #-----------------------------------------------------------------------------------------
 
    # feinte : il faut que homard reparte du meme maillage (meme nom) que le denier NP1
-   MAIT[i_tot]=CREA_MAILLAGE(MAILLAGE=MAIT[i_tot+1],COPIE=_F())
+   MAIT[i_tot]= COPIER(CONCEPT= MAIT[i_tot+1])
    DETRUIRE(CONCEPT=_F(NOM=MAIT[i_tot+1]),INFO=1)
 
    # ne pas affecter sur tout car le maillage total contient le maillage surfacique de la fissure      
@@ -481,7 +481,7 @@ for i_propa in xrange(nb_pas) :
 
    DETRUIRE(CONCEPT=_F(NOM=MAIT[i_tot]),INFO=1)
 
-   MAIT[i_tot]=CREA_MAILLAGE(MAILLAGE=MA_TMP,COPIE=_F())
+   MAIT[i_tot]= COPIER(CONCEPT= MA_TMP)
 
    DETRUIRE(CONCEPT=_F(NOM=MA_TMP),INFO=1)
 

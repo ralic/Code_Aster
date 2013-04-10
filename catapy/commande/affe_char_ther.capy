@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 02/04/2013   AUTEUR CUVILLIE M.CUVILLIEZ 
+#& MODIF COMMANDE  DATE 09/04/2013   AUTEUR PELLET J.PELLET 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -31,13 +31,14 @@ AFFE_CHAR_THER=OPER(nom="AFFE_CHAR_THER",op=34,sd_prod=char_ther
 
          TEMP_IMPO       =FACT(statut='f',max='**',
            regles=(AU_MOINS_UN('TOUT','GROUP_MA','MAILLE','GROUP_NO','NOEUD'),
-                   AU_MOINS_UN('TEMP_SUP','TEMP','TEMP_INF'),),
+                   AU_MOINS_UN('TEMP','TEMP_MIL','TEMP_SUP','TEMP_INF'),),
            TOUT            =SIMP(statut='f',typ='TXM',into=("OUI",) ),
            GROUP_MA        =SIMP(statut='f',typ=grma,validators=NoRepeat(),max='**'),
            MAILLE          =SIMP(statut='f',typ=ma  ,validators=NoRepeat(),max='**'),
            GROUP_NO        =SIMP(statut='f',typ=grno,validators=NoRepeat(),max='**'),
            NOEUD           =SIMP(statut='f',typ=no  ,validators=NoRepeat(),max='**'),
            TEMP            =SIMP(statut='f',typ='R'),
+           TEMP_MIL        =SIMP(statut='f',typ='R'),
            TEMP_INF        =SIMP(statut='f',typ='R'),
            TEMP_SUP        =SIMP(statut='f',typ='R'), ),
 
@@ -114,7 +115,7 @@ AFFE_CHAR_THER=OPER(nom="AFFE_CHAR_THER",op=34,sd_prod=char_ther
            GROUP_NO        =SIMP(statut='f',typ=grno,max='**'),
            NOEUD           =SIMP(statut='f',typ=no  ,max='**'),
            DDL             =SIMP(statut='f',typ='TXM',max='**',
-                                 into=("TEMP","TEMP_INF","TEMP_SUP") ),
+                                 into=("TEMP","TEMP_MIL","TEMP_INF","TEMP_SUP") ),
            COEF_MULT       =SIMP(statut='o',typ='R',max='**'),
            COEF_IMPO       =SIMP(statut='o',typ='R' ),
          ),
@@ -142,10 +143,10 @@ AFFE_CHAR_THER=OPER(nom="AFFE_CHAR_THER",op=34,sd_prod=char_ther
            SANS_NOEUD      =SIMP(statut='f',typ=no  ,validators=NoRepeat(),max='**'),
            SANS_GROUP_NO   =SIMP(statut='f',typ=grno,validators=NoRepeat(),max='**'),
            DDL_1           =SIMP(statut='f',typ='TXM',max='**',defaut="TEMP",
-                                 into=("TEMP","TEMP_INF","TEMP_SUP") ),
+                                 into=("TEMP","TEMP_MIL","TEMP_INF","TEMP_SUP") ),
            COEF_MULT_1     =SIMP(statut='o',typ='R',max='**'),
            DDL_2           =SIMP(statut='f',typ='TXM',max='**',defaut="TEMP",
-                                 into=("TEMP","TEMP_INF","TEMP_SUP",) ),
+                                 into=("TEMP","TEMP_MIL","TEMP_INF","TEMP_SUP",) ),
            COEF_MULT_2     =SIMP(statut='o',typ='R',max='**'),
            COEF_IMPO       =SIMP(statut='o',typ='R' ),
            SOMMET          =SIMP(statut='f',typ='TXM',into=("OUI",) ),
@@ -200,7 +201,7 @@ AFFE_CHAR_THER=OPER(nom="AFFE_CHAR_THER",op=34,sd_prod=char_ther
            GROUP_MA        =SIMP(statut='f',typ=grma,validators=NoRepeat(),max='**'),
            MAILLE          =SIMP(statut='f',typ=ma  ,validators=NoRepeat(),max='**'),
            DDL             =SIMP(statut='f',typ='TXM',max='**',defaut="TEMP",
-                                 into=("TEMP","TEMP_INF","TEMP_SUP") ),
+                                 into=("TEMP","TEMP_MIL","TEMP_INF","TEMP_SUP") ),
          ),
 
          LIAISON_CHAMNO  =FACT(statut='f',max='**',

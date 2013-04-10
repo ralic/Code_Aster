@@ -1,9 +1,9 @@
-# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
+# MODIF  DATE 09/04/2013   AUTEUR PELLET J.PELLET 
 # TITRE CYLINDRE CREUX THERMOELASTIQUE PESANT EN ROTATION UNIFORME
 # hpla100e.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -65,17 +65,17 @@ CARE=AFFE_CARA_ELEM( MODELE=MO,
 
 T_INIT=CREA_CHAMP( OPERATION='AFFE', TYPE_CHAM='NOEU_TEMP_R', MAILLAGE=MA,
                    AFFE=_F( TOUT='OUI',
-                            NOM_CMP=('TEMP_INF','TEMP','TEMP_SUP'),
+                            NOM_CMP=('TEMP_INF','TEMP_MIL','TEMP_SUP'),
                             VALE=   (    0.0   ,  0.0 ,    0.0   ), ), )
 
 T_FIN1=CREA_CHAMP( OPERATION='AFFE', TYPE_CHAM='NOEU_TEMP_R', MAILLAGE=MA,
                    AFFE=_F( TOUT='OUI',
-                            NOM_CMP=('TEMP_INF','TEMP','TEMP_SUP'),
+                            NOM_CMP=('TEMP_INF','TEMP_MIL','TEMP_SUP'),
                             VALE=   (   -0.5   ,   0. ,    0.5   ), ), )
 
 T_FIN2=CREA_CHAMP( OPERATION='AFFE', TYPE_CHAM='NOEU_TEMP_R', MAILLAGE=MA,
                    AFFE=_F( TOUT='OUI',
-                            NOM_CMP=('TEMP_INF','TEMP','TEMP_SUP'),
+                            NOM_CMP=('TEMP_INF','TEMP_MIL','TEMP_SUP'),
                             VALE=   (    0.1   ,  0.1 ,    0.1   ), ), )
 
 TEMPLI1=CREA_RESU( OPERATION='AFFE',

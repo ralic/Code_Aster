@@ -1,10 +1,10 @@
       SUBROUTINE OP0195()
       IMPLICIT  NONE
 C     -----------------------------------------------------------------
-C MODIF UTILITAI  DATE 04/09/2012   AUTEUR PELLET J.PELLET 
+C MODIF UTILITAI  DATE 09/04/2013   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -26,8 +26,8 @@ C     -----------------------------------------------------------------
       INTEGER N1,IB,IFM,NIV,IRET,I11,I12,TEST,IBID
       CHARACTER*3 PROL0
       CHARACTER*4 TYCHR,TYCH
-      CHARACTER*8 KBID,MO,MA,CHOU,NOMGD,NOMGD2,NOMPAR,MA2,NOPAR2,TA
-      CHARACTER*8 TSCA,NOGD
+      CHARACTER*8 KBID,MO,MA,CHOU,NOMGD,NOMGD2
+      CHARACTER*8 TSCA,NOGD,NOMGD1,NOMPAR,MA2,NOPAR2,TA
       CHARACTER*16 TYCHR1,OPERA,OPTIO2,TYPCO,OPTION
       CHARACTER*19 LIGREL,CHATMP,CELMOD,PRCHN1,CNS1,CH1,PRCHN2,CHIN
       CHARACTER*8 NU1
@@ -52,7 +52,9 @@ C      MA: MAILLAGE (OU ' ')
 C      CHOU  : CHAMP RESULTAT
 C      TYCHR : TYPE DU CHAMP RESULTAT (CART/NOEU/ELNO/ELGA/ELEM)
 C      NOMGD : GRANDEUR ASSOCIEE A CHOU
-C      PROL0 :/'OUI' POUR PROLONGER PAR ZERO LE CHAM_ELEM RESULTAT
+C      PROL0 :/'OUI' POUR PROLONGER PAR ZERO LE CHAMP RESULTAT
+C             (POUR LES CHAM_ELEM ET LES CHAM_NO POUR LESQUELS ON
+C              VEUT IMPOSER LA NUMEROTATION DES DDLS).
 C      OPTION: OPTION PERMETTANT D'ALLOUER UN CHAM_ELEM "MODELE"
 
 C     ------------------------------------------------------------------
@@ -242,18 +244,35 @@ C     -----------------------------------------
       ENDIF
 
 
-
 C 4.  SI ON A CREE UN CHAM_NO, ON PEUT IMPOSER SA NUMEROTATION :
 C --------------------------------------------------------------
       IF (TYCHR.EQ.'NOEU') THEN
         CALL GETVID(' ','CHAM_NO',0,IARG,1,CH1,I11)
         CALL GETVID(' ','NUME_DDL',0,IARG,1,NU1,I12)
         IF ((I11+I12).GT.0) THEN
+          CALL DISMOI('F','NOM_GD',CHOU,'CHAMP',IB,NOGD,IB)
           PRCHN1 = ' '
-          IF (I11.GT.0) CALL DISMOI('F','PROF_CHNO',CH1,'CHAM_NO',IB,
-     &                              PRCHN1,IB)
-          IF (I12.GT.0) CALL DISMOI('F','PROF_CHNO',NU1,'NUME_DDL',IB,
-     &                              PRCHN1,IB)
+          IF (I11.GT.0) THEN
+            CALL DISMOI('F','PROF_CHNO',CH1,'CHAM_NO',IB,PRCHN1,IB)
+            CALL DISMOI('F','NOM_GD',CH1,'CHAM_NO',IB,NOMGD1,IB)
+          ENDIF
+          IF (I12.GT.0) THEN
+            CALL DISMOI('F','PROF_CHNO',NU1,'NUME_DDL',IB,PRCHN1,IB)
+            CALL DISMOI('F','NOM_GD',NU1,'NUME_DDL',IB,NOMGD1,IB)
+          ENDIF
+
+          IF (NOMGD1.NE.NOGD) THEN
+C           -- ON ACCEPTE LES COUPLES XXXX_R / XXXX_C :
+            IF (NOMGD1(5:7).EQ.'_R '.OR.NOMGD1(5:7).EQ.'_C ') THEN
+              IF (NOGD(5:7).EQ.'_R '.OR.NOGD(5:7).EQ.'_C ') THEN
+                IF (NOGD(1:4).EQ.NOMGD1(1:4)) GOTO 1
+              ENDIF
+            ENDIF
+            VALK (1) = NOMGD1
+            VALK (2) = NOGD
+            CALL U2MESK('F', 'UTILITAI6_5',2,VALK)
+          END IF
+1         CONTINUE
 
           CALL DISMOI('F','PROF_CHNO',CHOU,'CHAM_NO',IB,PRCHN2,IB)
           IF (PRCHN1.NE.PRCHN2) THEN
@@ -261,7 +280,9 @@ C --------------------------------------------------------------
             CALL CNOCNS(CHOU,'V',CNS1)
             IF (PRCHN2(1:8).EQ.CHOU(1:8)) CALL DETRSD('PROF_CHNO',
      &          PRCHN2)
-            CALL CNSCNO(CNS1,PRCHN1,'NON','G',CHOU,'F',IBID)
+            PROL0='NON'
+            CALL GETVTX(' ','PROL_ZERO',0,IARG,1,PROL0,IBID)
+            CALL CNSCNO(CNS1,PRCHN1,PROL0,'G',CHOU,'F',IBID)
             CALL DETRSD('CHAM_NO_S',CNS1)
           ENDIF
         ENDIF

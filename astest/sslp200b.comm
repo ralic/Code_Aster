@@ -1,10 +1,10 @@
-# MODIF  DATE 26/11/2012   AUTEUR DELMAS J.DELMAS 
+# MODIF  DATE 09/04/2013   AUTEUR PELLET J.PELLET 
 # TITRE TEST DE NON-REGRESSION ASTER : MECANIQUE LINEAIRE 2D D_PLAN
 # RESPONSABLE PELLET J.PELLET
 # sslp200b.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -42,7 +42,7 @@ MA=LIRE_MAILLAGE();
 
 MA=DEFI_GROUP(reuse =MA,
               MAILLAGE=MA,
-              CREA_GROUP_MA=_F(NOM='TOUT',
+              CREA_GROUP_MA=_F(NOM='GXXXXXX_TOUT',
                                TOUT='OUI',),);
 
 #      TRIA3  QUAD4  TRIA6  QUAD8  QUAD9
@@ -154,9 +154,9 @@ FO17=DEFI_FONCTION(NOM_PARA='TEMP',VALE=(-12.5,5.2E1,
 # ----------------------------------------------------------------------
 
 CARA1=AFFE_CARA_ELEM(MODELE=MO,
-                     MASSIF=(_F(GROUP_MA='TOUT',
+                     MASSIF=(_F(GROUP_MA='GXXXXXX_TOUT',
                                 ANGL_REP=21.4,),
-                             _F(GROUP_MA=('GMA10','GMA11','GMA12',),
+                             _F(GROUP_MA=('GXXXXXX_GMA10','GXXXXXX_GMA11','GXXXXXX_GMA12',),
                                 ANGL_REP=0.,),),);
 
 # ----------------------------------------------------------------------
@@ -242,15 +242,15 @@ MAT6=DEFI_MATERIAU(ELAS_ORTH_FO=_F(E_L=FO1,
 CHMAT=AFFE_MATERIAU(MAILLAGE=MA,
                     AFFE=(_F(TOUT='OUI',
                              MATER=MAT1,),
-                          _F(GROUP_MA='GMA0',
+                          _F(GROUP_MA='GXXXXXX_GMA0',
                              MATER=MAT2,),
-                          _F(GROUP_MA='GMA9',
+                          _F(GROUP_MA='GXXXXXX_GMA9',
                              MATER=MAT3,),
-                          _F(GROUP_MA='GMA10',
+                          _F(GROUP_MA='GXXXXXX_GMA10',
                              MATER=MAT4,),
-                          _F(GROUP_MA='GMA11',
+                          _F(GROUP_MA='GXXXXXX_GMA11',
                              MATER=MAT5,),
-                          _F(GROUP_MA='GMA12',
+                          _F(GROUP_MA='GXXXXXX_GMA12',
                              MATER=MAT6,),),);
 
 # DANS CHAQUE GROUP_MA, TOUS LES TYPES DE MAILLES SONT REPRESENTES
@@ -296,37 +296,37 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=0,
 CHMAT2=AFFE_MATERIAU(MAILLAGE=MA,
                      AFFE=(_F(TOUT='OUI',
                               MATER=MAT1,),
-                           _F(GROUP_MA='GMA0',
+                           _F(GROUP_MA='GXXXXXX_GMA0',
                               MATER=MAT2,),
-                           _F(GROUP_MA='GMA9',
+                           _F(GROUP_MA='GXXXXXX_GMA9',
                               MATER=MAT3,),
-                           _F(GROUP_MA='GMA10',
+                           _F(GROUP_MA='GXXXXXX_GMA10',
                               MATER=MAT4,),
-                           _F(GROUP_MA='GMA11',
+                           _F(GROUP_MA='GXXXXXX_GMA11',
                               MATER=MAT5,),
-                           _F(GROUP_MA='GMA12',
+                           _F(GROUP_MA='GXXXXXX_GMA12',
                               MATER=MAT6,),),
                      AFFE_VARC=(_F(TOUT='OUI',
                                    NOM_VARC='TEMP',
                                    EVOL=THLIN,
                                    VALE_REF=4.8,),
-                                _F(GROUP_MA='GMA0',
+                                _F(GROUP_MA='GXXXXXX_GMA0',
                                    NOM_VARC='TEMP',
                                    EVOL=THLIN,
                                    VALE_REF=6.9,),
-                                _F(GROUP_MA='GMA9',
+                                _F(GROUP_MA='GXXXXXX_GMA9',
                                    NOM_VARC='TEMP',
                                    EVOL=THLIN,
                                    VALE_REF=0.,),
-                                _F(GROUP_MA='GMA10',
+                                _F(GROUP_MA='GXXXXXX_GMA10',
                                    NOM_VARC='TEMP',
                                    EVOL=THLIN,
                                    VALE_REF=11.7,),
-                                _F(GROUP_MA='GMA11',
+                                _F(GROUP_MA='GXXXXXX_GMA11',
                                    NOM_VARC='TEMP',
                                    EVOL=THLIN,
                                    VALE_REF=0.,),
-                                _F(GROUP_MA='GMA12',
+                                _F(GROUP_MA='GXXXXXX_GMA12',
                                    NOM_VARC='TEMP',
                                    EVOL=THLIN,
                                    VALE_REF=0.,),),);
@@ -349,7 +349,7 @@ CHMEC=AFFE_CHAR_MECA(VERI_NORM='NON',
                                         ANGL_NAUT=(18.7,35.1,),
                                         DX=5.95,),
                      LIAISON_GROUP=_F(MAILLE_1='M87',
-                                      GROUP_MA_2='GMA6',
+                                      GROUP_MA_2='GXXXXXX_GMA6',
                                       DDL_1='DX',
                                       COEF_MULT_1=1.8,
                                       DDL_2='DY',
@@ -379,19 +379,19 @@ CHMEC=AFFE_CHAR_MECA(VERI_NORM='NON',
 
 CHMECF=AFFE_CHAR_MECA_F(VERI_NORM='NON',
                         MODELE=MO,
-                        DDL_IMPO=_F(GROUP_NO='GNO1',
+                        DDL_IMPO=_F(GROUP_NO='GXXXXXX_GNO1',
                                     DY=FO7,),
-                        FACE_IMPO=_F(GROUP_MA='GMA3',
+                        FACE_IMPO=_F(GROUP_MA='GXXXXXX_GMA3',
                                      DX=FO9,),
-                        LIAISON_DDL=_F(GROUP_NO='GNO2',
+                        LIAISON_DDL=_F(GROUP_NO='GXXXXXX_GNO2',
                                        DDL=('DX','DY',),
                                        COEF_MULT=(2.5,-1.3,),
                                        COEF_IMPO=FO9,),
-                        LIAISON_OBLIQUE=_F(GROUP_NO='GNO3',
+                        LIAISON_OBLIQUE=_F(GROUP_NO='GXXXXXX_GNO3',
                                            ANGL_NAUT=(-25.4,2.7,18.9,),
                                            DX=FO9,),
                         LIAISON_GROUP=_F(NOEUD_1=('N145','N168',),
-                                         GROUP_NO_2='GNO4',
+                                         GROUP_NO_2='GXXXXXX_GNO4',
                                          SANS_NOEUD='N168',
                                          DDL_1=('DY','DX',),
                                          COEF_MULT_1=(1.1,-3.7,),
@@ -399,17 +399,17 @@ CHMECF=AFFE_CHAR_MECA_F(VERI_NORM='NON',
                                          COEF_MULT_2=2.8,
                                          COEF_IMPO=FO8,
                                          TRAN=(-0.2,-3.1,),),
-                        LIAISON_UNIF=_F(GROUP_MA='GMA7',
+                        LIAISON_UNIF=_F(GROUP_MA='GXXXXXX_GMA7',
                                         DDL='DY',),
-                        FORCE_NODALE=_F(GROUP_NO='GNO6',
+                        FORCE_NODALE=_F(GROUP_NO='GXXXXXX_GNO6',
                                         FY=FO6,),
-                        FORCE_CONTOUR=_F(GROUP_MA='GMA4',
+                        FORCE_CONTOUR=_F(GROUP_MA='GXXXXXX_GMA4',
                                          FX=FO6,),
-                        FORCE_INTERNE=_F(GROUP_MA='GMA1',
+                        FORCE_INTERNE=_F(GROUP_MA='GXXXXXX_GMA1',
                                          FY=FO4,),
-                        PRES_REP=_F(GROUP_MA='GMA5',
+                        PRES_REP=_F(GROUP_MA='GXXXXXX_GMA5',
                                     CISA_2D=FO6,),
-                        PRE_EPSI=_F(GROUP_MA='GMA2',
+                        PRE_EPSI=_F(GROUP_MA='GXXXXXX_GMA2',
                                      EPYY=FO7,),);
 
 CHCI=AFFE_CHAR_CINE(MODELE=MO,
@@ -417,7 +417,7 @@ CHCI=AFFE_CHAR_CINE(MODELE=MO,
                                  DY=0.0,),);
 
 CHCIF=AFFE_CHAR_CINE_F(MODELE=MO,
-                       MECA_IMPO=_F(GROUP_NO='GNO7',
+                       MECA_IMPO=_F(GROUP_NO='GXXXXXX_GNO7',
                                     DX=FO7,
                                     DY=FO9,),);
 
@@ -1051,7 +1051,7 @@ CHAMEL6=CREA_CHAMP(TYPE_CHAM='ELGA_EPSI_R',
 
 CHAMEL7=CALC_CHAM_ELEM(MODELE=MO,
                        CARA_ELEM=CARA1,
-                       GROUP_MA='GMA8',
+                       GROUP_MA='GXXXXXX_GMA8',
                        OPTION='COOR_ELGA',);
 
 ENGENDRE_TEST(CO=(CHAMNO1,CHAMNO2,),);
@@ -1114,7 +1114,7 @@ TEST_RESU(CHAM_ELEM=_F(
 
 # -------------------------------------------------------------------------------
 
-TABLE1=POST_ELEM(MASS_INER=(_F(GROUP_MA='GMA8',),
+TABLE1=POST_ELEM(MASS_INER=(_F(GROUP_MA='GXXXXXX_GMA8',),
                             _F(TOUT='OUI',),
                             _F(MAILLE='M54',),),
                  MODELE=MO,
@@ -1124,7 +1124,7 @@ TABLE1=POST_ELEM(MASS_INER=(_F(GROUP_MA='GMA8',),
 
 TABLE2=POST_ELEM(ENER_POT=(_F(TOUT='OUI',),
                             _F( MAILLE=('M44','M99',),),
-                             _F(GROUP_MA='GMA8',),),
+                             _F(GROUP_MA='GXXXXXX_GMA8',),),
                  RESULTAT=MSLI2,
                  INST=5.5,);
 

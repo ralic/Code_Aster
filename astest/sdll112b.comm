@@ -1,9 +1,9 @@
-# MODIF  DATE 16/10/2012   AUTEUR ALARCON A.ALARCON 
+# MODIF  DATE 09/04/2013   AUTEUR PELLET J.PELLET 
 # TITRE  CHEMINEE SOUS EXCITATION SISMIQUE MULTI-SUPPORTEE
 # sdll112b.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -32,10 +32,10 @@ MAILLAGE=LIRE_MAILLAGE(
                            )
 
 MAILLAGE=DEFI_GROUP( reuse=MAILLAGE,   MAILLAGE=MAILLAGE,
-  CREA_GROUP_MA=_F(  NOM = 'TOUT', TOUT = 'OUI'))
+  CREA_GROUP_MA=_F(  NOM = 'GXXXXXX_TOUT', TOUT = 'OUI'))
 
 MODELE=AFFE_MODELE(     MAILLAGE=MAILLAGE,
-                             AFFE=_F(  GROUP_MA = 'POU_D_T',
+                             AFFE=_F(  GROUP_MA = 'GXXXXXX_POU_D_T',
                                     PHENOMENE = 'MECANIQUE',
                                     MODELISATION = 'POU_D_E')
                            )
@@ -50,7 +50,7 @@ CHAMPMAT=AFFE_MATERIAU(   MAILLAGE=MAILLAGE,
 
 CARA_ELE=AFFE_CARA_ELEM(  MODELE=MODELE,
                              POUTRE=_F(
-       GROUP_MA = 'TOUT',
+       GROUP_MA = 'GXXXXXX_TOUT',
   SECTION = 'GENERALE',
                                       CARA = ( 'A',         'IZ',
                                              'IY',        'JX',        ),
@@ -61,9 +61,9 @@ CARA_ELE=AFFE_CARA_ELEM(  MODELE=MODELE,
 COND_LIM=AFFE_CHAR_MECA(  MODELE=MODELE,DDL_IMPO=(
                              _F(  TOUT = 'OUI',
                                         DY = 0.,     DRX = 0., DRZ = 0.),
-                                      _F(  GROUP_NO = 'ENCASTRE',
+                                      _F(  GROUP_NO = 'GXXXXXX_ENCASTRE',
                                         DX = 0.,     DZ = 0., DRY = 0.),
-                                      _F(  GROUP_NO = 'ATTACHE',  DX = 0.))
+                                      _F(  GROUP_NO = 'GXXXXXX_ATTACHE',  DX = 0.))
                            )
 
 # --------------------------------------------------------------------
@@ -623,7 +623,7 @@ SISM_MU1=COMB_SISM_MODAL(      MODE_MECA=MODE,
                                MASS_INER=MAS,
                                CORR_FREQ='NON',
                                MULTI_APPUI ='CORRELE',
-                               EXCIT=(_F( GROUP_NO = 'ENCASTRE',
+                               EXCIT=(_F( GROUP_NO = 'GXXXXXX_ENCASTRE',
                                           AXE = ( 1., 0., 0., ),
                                           SPEC_OSCI = SPECT_XY,
                                           ECHELLE = 1.),
@@ -635,7 +635,7 @@ SISM_MU1=COMB_SISM_MODAL(      MODE_MECA=MODE,
                                           AXE = ( 1., 0., 0., ),
                                           SPEC_OSCI = SPECT_XY,
                                           ECHELLE = 1.)),
-                         COMB_MULT_APPUI=(_F( GROUP_NO = 'ENCASTRE',
+                         COMB_MULT_APPUI=(_F( GROUP_NO = 'GXXXXXX_ENCASTRE',
                                               TYPE_COMBI = 'LINE'),
                                           _F( NOEUD = ( 'N5',  'N9', ),
                                               TYPE_COMBI = 'LINE')),
@@ -645,7 +645,7 @@ SISM_MU1=COMB_SISM_MODAL(      MODE_MECA=MODE,
                                    NOM_CAS ='DEPL EN N_ENCASTRE',
                                    MODE_STAT = MODE_STA,
                                    NOEUD_REFE = 'N1',
-                                   GROUP_NO = 'ENCASTRE',
+                                   GROUP_NO = 'GXXXXXX_ENCASTRE',
                                    DX = 0.),
                              _F(    NUME_CAS = 2,
                                     NOM_CAS ='DEPL EN N5 ET N9',
@@ -803,7 +803,7 @@ SISM_MU2=COMB_SISM_MODAL(  MODE_MECA=MODE,
                                CORR_FREQ='NON',
                                MODE_CORR=MODE_ST1,
                                MULTI_APPUI ='CORRELE',
-                               EXCIT=(_F( GROUP_NO = 'ENCASTRE',
+                               EXCIT=(_F( GROUP_NO = 'GXXXXXX_ENCASTRE',
                                           AXE = ( 1., 0., 0., ),
                                           SPEC_OSCI = SPECT_XY,
                                           ECHELLE = 1.),
@@ -815,7 +815,7 @@ SISM_MU2=COMB_SISM_MODAL(  MODE_MECA=MODE,
                                           AXE = ( 1., 0., 0., ),
                                           SPEC_OSCI = SPECT_XY,
                                           ECHELLE = 2.)),
-                         COMB_MULT_APPUI=(_F( GROUP_NO = 'ENCASTRE',
+                         COMB_MULT_APPUI=(_F( GROUP_NO = 'GXXXXXX_ENCASTRE',
                                               TYPE_COMBI = 'LINE'),
                                           _F( NOEUD = ( 'N5',  'N9', ),
                                               TYPE_COMBI = 'LINE')),
@@ -824,8 +824,8 @@ SISM_MU2=COMB_SISM_MODAL(  MODE_MECA=MODE,
                      _F(   NUME_CAS = 1,
                            NOM_CAS ='DEPL EN N_ENCASTRE',
                            MODE_STAT = MODE_STA,
-                           NOEUD_REFE = 'ENCASTRE',
-                           GROUP_NO = 'ENCASTRE',
+                           NOEUD_REFE = 'N1',
+                           GROUP_NO = 'GXXXXXX_ENCASTRE',
                            DX = 0.),
                        _F(  NUME_CAS = 2,
                             NOM_CAS ='DEPL EN N5 ET N9',

@@ -1,4 +1,4 @@
-# MODIF  DATE 22/01/2013   AUTEUR LADIER A.LADIER 
+# MODIF  DATE 09/04/2013   AUTEUR PELLET J.PELLET 
 # TITRE PLAQUE FISSUREE EN THERMOELASTICITE (CALCUL DE G,K1,K2)
 # hplp100a.para = tps_job 60 mem_job 256Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -82,7 +82,7 @@ MAT=DEFI_MATERIAU(            ELAS=_F(  E = 20000.,
 
 CM=AFFE_MATERIAU(        MAILLAGE=MA,
                     AFFE=_F(  TOUT = 'OUI', MATER = MAT ),
-                    AFFE_VARC=_F(NOM_VARC='TEMP',TOUT='OUI',CHAMP_GD=TEMP,VALE_REF=0.),
+                    AFFE_VARC=_F(NOM_VARC='TEMP',TOUT='OUI',CHAM_GD=TEMP,VALE_REF=0.),
                                   )
 
 CH=AFFE_CHAR_MECA(           MODELE=MO,
@@ -244,7 +244,7 @@ TEST_TABLE(PRECISION=0.040000000000000001,
 
 TEST_TABLE(CRITERE='ABSOLU',
            VALE_CALC=0.0E+00,
-           
+
            NOM_PARA='K2',
            TABLE=GK1,)
 
@@ -278,7 +278,7 @@ TEST_TABLE(PRECISION=0.040000000000000001,
 
 TEST_TABLE(CRITERE='ABSOLU',
            VALE_CALC=0.0E+00,
-           
+
            NOM_PARA='K2',
            TABLE=GK2,)
 
@@ -312,7 +312,7 @@ TEST_TABLE(PRECISION=0.040000000000000001,
 
 TEST_TABLE(CRITERE='ABSOLU',
            VALE_CALC=0.0E+00,
-           
+
            NOM_PARA='K2',
            TABLE=GK3,)
 
@@ -339,7 +339,7 @@ TEST_TABLE(PRECISION=0.040000000000000001,
 
 TEST_TABLE(CRITERE='ABSOLU',
            VALE_CALC=0.0E+00,
-           
+
            NOM_PARA='K2',
            TABLE=GK5,)
 

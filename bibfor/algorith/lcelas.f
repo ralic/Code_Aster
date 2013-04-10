@@ -1,13 +1,13 @@
-        SUBROUTINE LCELAS ( LOI,   MOD, NMAT,  MATERD, MATERF,
-     1                      MATCST,NVI,
+        SUBROUTINE LCELAS ( LOI,   MOD, IMAT, NMAT,  MATERD, MATERF,
+     1                      MATCST,NVI,ANGMAS,
      2                      DEPS, SIGD , VIND,  SIGF,   VINF,
-     3                      THETA )
+     3                      THETA, ETATD, CRIT, IRET )
         IMPLICIT   NONE
 C       ================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 26/03/2012   AUTEUR PROIX J-M.PROIX 
+C MODIF ALGORITH  DATE 09/04/2013   AUTEUR PELLET J.PELLET 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -29,24 +29,31 @@ C           MOD    :  MODELISATION
 C           NMAT   :  DIMENSION MATER
 C           MATERD :  COEFFICIENTS MATERIAU A T
 C           MATERF :  COEFFICIENTS MATERIAU A T+DT
+C           ANGMAS :  ANGLES DU MOT_CLEF MASSIF (AFFE_CARA_ELEM)
 C           VIND   :  VARIABLES INTERNES A T
 C           SIGD   :  CONTRAINTE  A T
 C       VAR DEPS   :  INCREMENT DE DEFORMATION
 C       OUT SIGF   :  CONTRAINTE A T+DT
 C           VINF   :  VARIABLES INTERNES A T+DT
+C           IRET   :  CODE RETOUR (O-->OK / 1-->NOOK)
 C       ----------------------------------------------------------------
-        INTEGER         NMAT ,  NVI
+        INTEGER         NMAT ,  NVI, IMAT, IRET
 C
         REAL*8          MATERD(NMAT,2) ,MATERF(NMAT,2)
         REAL*8          THETA
         REAL*8          SIGD(6) ,       SIGF(6)
         REAL*8          VIND(*) ,       VINF(*)
-        REAL*8          DEPS(6)
+        REAL*8          DEPS(6) ,       CRIT(*)
+        REAL*8          ANGMAS(3)
 C
         CHARACTER*8     MOD
         CHARACTER*16    LOI
         CHARACTER*3     MATCST
+        CHARACTER*7     ETATD
 C
+C --- INITIALISATION VARIABLE CODE RETOUR
+      IRET = 0
+
       IF   (LOI(1:8)   .EQ. 'ROUSS_PR'  .OR.
      &      LOI(1:10)  .EQ. 'ROUSS_VISC'    ) THEN
          CALL RSLLIN ( MOD , NMAT, MATERD, MATERF, MATCST,
@@ -54,6 +61,10 @@ C
       ELSEIF(LOI(1:4).EQ.'LETK')THEN
 C        ELASTICITE NON LINEAIRE ISOTROPE POUR LETK
          CALL LKSIGE (MOD,NMAT,MATERD,DEPS,SIGD,SIGF)
+      ELSEIF(LOI(1:6).EQ.'HUJEUX')THEN
+C        ELASTICITE NON LINEAIRE ISOTROPE POUR HUJEUX
+        CALL HUJPEL (ETATD,MOD,CRIT,IMAT,MATERF,ANGMAS,
+     &               DEPS,SIGD,NVI,VIND,SIGF,VINF,IRET)
       ELSE
 C        ELASTICITE LINEAIRE ISOTROPE OU ANISOTROPE
          CALL LCELIN(MOD, NMAT, MATERD, MATERF,

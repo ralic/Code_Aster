@@ -1,8 +1,8 @@
-#@ MODIF stanley_engine Stanley  DATE 04/12/2012   AUTEUR ASSIRE A.ASSIRE 
+#@ MODIF stanley_engine Stanley  DATE 09/04/2013   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -1347,17 +1347,17 @@ class SELECTION:
     if self.mode in ['Isovaleurs', 'SalomeIsovaleurs']:
       t_geom = ['TOUT_MAILLAGE']
       for nom_group in self.etat_geom.volu :
-        t_geom.append(string.ljust(nom_group,8) + " (3D)")
+        t_geom.append(string.ljust(nom_group,24) + " (3D)")
       for nom_group in self.etat_geom.surf :
-        t_geom.append(string.ljust(nom_group,8) + " (2D)")
+        t_geom.append(string.ljust(nom_group,24) + " (2D)")
       self.interface.geom.Change(t_geom,'TOUT_MAILLAGE')
 
     elif self.mode in ['Courbes', 'SalomeCourbes']:
       t_geom = []
       for nom_group in self.etat_geom.lign :
-        t_geom.append(string.ljust(nom_group,8) + " (1D)")
+        t_geom.append(string.ljust(nom_group,24) + " (1D)")
       for nom_group in self.etat_geom.poin :
-        t_geom.append(string.ljust(nom_group,8) + " (0D)")
+        t_geom.append(string.ljust(nom_group,24) + " (0D)")
       self.interface.geom.Change(t_geom)
 
     else : raise Exception('ERREUR_DVP')
@@ -1787,9 +1787,9 @@ class INTERFACE :
    # Liste des entites geometriques
     t_geom = ['TOUT_MAILLAGE']
     for nom_group in etat_geom.volu :
-      t_geom.append(string.ljust(nom_group,8) + " (3D)")
+      t_geom.append(string.ljust(nom_group,24) + " (3D)")
     for nom_group in etat_geom.surf :
-      t_geom.append(string.ljust(nom_group,8) + " (2D)")
+      t_geom.append(string.ljust(nom_group,24) + " (2D)")
 
    # Liste des numeros d'ordre
     t_no = ['TOUT_ORDRE'] + numeros
@@ -2928,7 +2928,7 @@ class DRIVER_SUP_GMSH(DRIVER) :
     INDICE=_NUM
 
     try:
-      _MA[INDICE] = CREA_MAILLAGE(MAILLAGE = __ma, COPIE=_F())
+      _MA[INDICE] = COPIER(CONCEPT = __ma)
     except aster.error,err:
       return self.erreur.Remonte_Erreur(err, [__ma, _MA[INDICE]], 1)
     except Exception,err:
@@ -2971,7 +2971,7 @@ class DRIVER_SUP_GMSH(DRIVER) :
     INDICE=_NUM
 
     try:
-      _MA[INDICE] = CREA_MAILLAGE(MAILLAGE = ma, COPIE=_F())
+      _MA[INDICE] = COPIER(CONCEPT = ma)
     except aster.error,err:
       return self.erreur.Remonte_Erreur(err, [ma, _MA[INDICE]], 1)
     except Exception,err:

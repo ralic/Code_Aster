@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 26/02/2013   AUTEUR DESROCHE X.DESROCHES 
+#& MODIF COMMANDE  DATE 09/04/2013   AUTEUR PELLET J.PELLET 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -54,11 +54,11 @@ AFFE_MATERIAU=OPER(nom="AFFE_MATERIAU",op=6,sd_prod=cham_mater,
           regles=(PRESENT_ABSENT('TOUT','GROUP_MA','MAILLE'),
                   PRESENT_ABSENT('GROUP_MA','TOUT'),
                   PRESENT_ABSENT('MAILLE','TOUT'),
-                # La règle suivante permet de donner VALE_REF sans donner EVOL ni CHAMP_GD
+                # La règle suivante permet de donner VALE_REF sans donner EVOL ni CHAM_GD
                 # Elle est nécessaire pour la THM (voir doc U4.43.03)
                 # Mais on ne peut plus l'écrire depuis de VALE_REF est dans un bloc
-                # AU_MOINS_UN('EVOL','CHAMP_GD','VALE_REF'),
-                  EXCLUS('EVOL','CHAMP_GD'),
+                # AU_MOINS_UN('EVOL','CHAM_GD','VALE_REF'),
+                  EXCLUS('EVOL','CHAM_GD'),
                   ),
 
           TOUT            =SIMP(statut='f',typ='TXM',into=("OUI",) ), # [défaut]
@@ -67,7 +67,7 @@ AFFE_MATERIAU=OPER(nom="AFFE_MATERIAU",op=6,sd_prod=cham_mater,
 
           NOM_VARC        =SIMP(statut='o',typ='TXM', into=("TEMP","GEOM","CORR","IRRA","HYDR","SECH","EPSA",
                                "M_ACIER","M_ZIRC","NEUT1","NEUT2","PTOT","DIVU",)),
-          CHAMP_GD        =SIMP(statut='f',typ=cham_gd_sdaster,),
+          CHAM_GD        =SIMP(statut='f',typ=cham_gd_sdaster,),
           EVOL            =SIMP(statut='f',typ=evol_sdaster,),
 
           B_EVOL          =BLOC(condition="EVOL!=None",
@@ -81,14 +81,14 @@ AFFE_MATERIAU=OPER(nom="AFFE_MATERIAU",op=6,sd_prod=cham_mater,
           ),
 
           # VALE_REF est nécessaire pour certaines VARC :
-          B_VALE_REF          =BLOC(condition="NOM_VARC in ('TEMP', 'SECH')",
+          B_VALE_REF          =BLOC(condition="NOM_VARC in ('TEMP','SECH')",
                VALE_REF          =SIMP(statut='o',typ='R'),
           ),
 
          ),
 
-         #  mots clés cachés pour les variables de commande NEUTi :
-         #  -------------------------------------------------------
+         #  mots clés cachés pour les variables de commande NEUT1/NEUT2 :
+         #  --------------------------------------------------------------
          VARC_NEUT1   =FACT(statut='d',
            NOM_VARC        =SIMP(statut='c',typ='TXM',defaut="NEUT1"),
            GRANDEUR        =SIMP(statut='c',typ='TXM',defaut="NEUT_R"),
@@ -107,10 +107,10 @@ AFFE_MATERIAU=OPER(nom="AFFE_MATERIAU",op=6,sd_prod=cham_mater,
          VARC_TEMP    =FACT(statut='d',
            NOM_VARC        =SIMP(statut='c',typ='TXM',defaut="TEMP"),
            GRANDEUR        =SIMP(statut='c',typ='TXM',defaut="TEMP_R"),
-           CMP_GD          =SIMP(statut='c',typ='TXM',max=3,min=3,defaut=("TEMP","TEMP_INF","TEMP_SUP",)),
-           CMP_VARC        =SIMP(statut='c',typ='TXM',max=3,min=3,defaut=("TEMP","TEMP_INF","TEMP_SUP",)),
+           CMP_GD          =SIMP(statut='c',typ='TXM',max=4,min=4,defaut=("TEMP","TEMP_MIL","TEMP_INF","TEMP_SUP",)),
+           CMP_VARC        =SIMP(statut='c',typ='TXM',max=4,min=4,defaut=("TEMP","TEMP_MIL","TEMP_INF","TEMP_SUP",)),
          ),
-           
+
          #  mots clés cachés pour variable de commande GEOM :
          #  --------------------------------------------------
          VARC_GEOM    =FACT(statut='d',

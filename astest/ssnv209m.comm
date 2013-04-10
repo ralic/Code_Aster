@@ -1,8 +1,8 @@
-# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
+# MODIF  DATE 09/04/2013   AUTEUR PELLET J.PELLET 
 # TITRE INTERFACE EN CONTACT FROTTANT AVEC X-FEM
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -140,7 +140,7 @@ CHAMPMA1=AFFE_MATERIAU(MAILLAGE=MAILLAG1,
                              _F(GROUP_MA=('BAT'),
                                 MATER=MATVAR)),
                        AFFE_VARC=_F(NOM_VARC='NEUT1',
-                                    CHAMP_GD=CHABNO));
+                                    CHAM_GD=CHABNO));
 
 #----------------------------------------------
 #                   CHARGEMENTS
@@ -231,7 +231,7 @@ UTOT1=STAT_NON_LINE(MODELE=MODELEK,
                                    RESI_GLOB_RELA=1.E-6,
                                    ),
                     SOLVEUR=_F(METHODE='MUMPS',
-   
+
                                NPREC=-1,
                                ),
                     NEWTON=_F(REAC_ITER=1),

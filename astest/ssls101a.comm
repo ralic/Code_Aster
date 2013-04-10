@@ -1,4 +1,4 @@
-# MODIF  DATE 03/04/2013   AUTEUR DESOZA T.DESOZA 
+# MODIF  DATE 09/04/2013   AUTEUR PELLET J.PELLET 
 # TITRE PLAQUE CIRCULAIRE POSEE     SOUS PRESSION DKT    50 N - 76 TRIA3
 # ssls101a.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -230,7 +230,7 @@ TEST_TABLE(REFERENCE='ANALYTIQUE',
 TEST_TABLE(CRITERE='ABSOLU',
            REFERENCE='ANALYTIQUE',
            PRECISION=1.E-2,
-           
+
            VALE_CALC= 9.72373445E-03,
            VALE_REFE=0.0,
            NOM_PARA='MXX',
@@ -241,7 +241,7 @@ TEST_TABLE(CRITERE='ABSOLU',
 
 TEST_TABLE(REFERENCE='ANALYTIQUE',
            PRECISION=0.059999999999999998,
-           
+
            VALE_CALC=-0.082873193,
            VALE_REFE=-0.087499999999999994,
            NOM_PARA='MYY',
@@ -252,7 +252,7 @@ TEST_TABLE(REFERENCE='ANALYTIQUE',
 
 TEST_TABLE(REFERENCE='ANALYTIQUE',
            PRECISION=0.13,
-           
+
            VALE_CALC=-0.038351844,
            VALE_REFE=-0.043749999999999997,
            NOM_PARA='MXX',
@@ -273,7 +273,7 @@ TEST_TABLE(REFERENCE='ANALYTIQUE',
 
 TEST_TABLE(REFERENCE='ANALYTIQUE',
            PRECISION=0.059999999999999998,
-           
+
            VALE_CALC=-0.082879701,
            VALE_REFE=-0.087499999999999994,
            NOM_PARA='MXX',
@@ -285,7 +285,7 @@ TEST_TABLE(REFERENCE='ANALYTIQUE',
 TEST_TABLE(CRITERE='ABSOLU',
            REFERENCE='ANALYTIQUE',
            PRECISION=1.E-2,
-           
+
            VALE_CALC= 9.71474814E-03,
            VALE_REFE=0.0,
            NOM_PARA='MYY',
@@ -296,7 +296,7 @@ TEST_TABLE(CRITERE='ABSOLU',
 
 TEST_TABLE(REFERENCE='ANALYTIQUE',
            PRECISION=5.0000000000000001E-3,
-           
+
            VALE_CALC=-0.154993742,
            VALE_REFE=-0.15468999999999999,
            NOM_PARA='MXX',
@@ -425,7 +425,7 @@ TEST_TABLE(VALE_CALC=123.10012743906,
            REFERENCE='AUTRE_ASTER',
            FILTRE=_F(NOM_PARA='INST',
                      VALE=0.0,),
-          ) 
+          )
 
 TEST_RESU(RESU=_F(
            VALE_CALC=0.48893924492711,
@@ -695,25 +695,25 @@ MATER_F=DEFI_MATERIAU(  ELAS_FO=_F(  E = E_F,      NU = NU_F,
 CHT0=CREA_CHAMP( OPERATION='AFFE', TYPE_CHAM='NOEU_TEMP_R',
                    MAILLAGE=MAILL,
                    AFFE=_F( TOUT='OUI',
-                            NOM_CMP=('TEMP_INF','TEMP','TEMP_SUP'),
+                            NOM_CMP=('TEMP_INF','TEMP_MIL','TEMP_SUP'),
                             VALE=   (    0.0   ,  0.0 ,    0.0   ), ), )
 
 CHT1=CREA_CHAMP( OPERATION='AFFE', TYPE_CHAM='NOEU_TEMP_R',
                    MAILLAGE=MAILL,
                         AFFE=_F(  TOUT = 'OUI',
-                               NOM_CMP = ('TEMP', 'TEMP_INF', 'TEMP_SUP',),
+                               NOM_CMP = ('TEMP_MIL', 'TEMP_INF', 'TEMP_SUP',),
                                VALE = ( T1,     TINF1,      TSUP1, )))
 
 CHT2=CREA_CHAMP( OPERATION='AFFE', TYPE_CHAM='NOEU_TEMP_R',
                    MAILLAGE=MAILL,
                         AFFE=_F(  TOUT = 'OUI',
-                               NOM_CMP = ('TEMP', 'TEMP_INF', 'TEMP_SUP',),
+                               NOM_CMP = ('TEMP_MIL', 'TEMP_INF', 'TEMP_SUP',),
                                VALE = ( T2,     TINF2,      TSUP2, )))
 
 CHT3=CREA_CHAMP( OPERATION='AFFE', TYPE_CHAM='NOEU_TEMP_R',
                    MAILLAGE=MAILL,
                         AFFE=_F(  TOUT = 'OUI',
-                               NOM_CMP = ('TEMP', 'TEMP_INF', 'TEMP_SUP',),
+                               NOM_CMP = ('TEMP_MIL', 'TEMP_INF', 'TEMP_SUP',),
                                VALE = ( T3,     TINF3,      TSUP3, )))
 
 LINST=DEFI_LIST_REEL( VALE=( 0., 1.,  2.,  3.,  )  )

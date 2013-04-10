@@ -1,4 +1,4 @@
-#@ MODIF sd_cham_mater SD  DATE 12/02/2013   AUTEUR PELLET J.PELLET 
+#@ MODIF sd_cham_mater SD  DATE 09/04/2013   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -61,7 +61,7 @@ class sd_cham_mater_varc(AsBase):
            sd2=sd_carte(nom2)  ; sd2.check(checker)
 
            # dans le cas de la temperature, on cree parfois des cartes sous-terraines
-           # (lorsque l'on indique VALE_REF sans donner de CHAMP_GD/EVOL) :
+           # (lorsque l'on indique VALE_REF sans donner de CHAM_GD/EVOL) :
            if nom.strip()=='TEMP':
                desc=sd2.DESC.get()
                ngdmax=desc[1]

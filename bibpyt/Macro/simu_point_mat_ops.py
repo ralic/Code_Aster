@@ -1,21 +1,21 @@
-#@ MODIF simu_point_mat_ops Macro  DATE 28/01/2013   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF simu_point_mat_ops Macro  DATE 09/04/2013   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
-# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-# (AT YOUR OPTION) ANY LATER VERSION.                                                  
-#                                                                       
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-#                                                                       
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 
 def simu_point_mat_ops(self, MATER, INCREMENT,SIGM_IMPOSE,EPSI_IMPOSE,SIGM_INIT,EPSI_INIT,VARI_INIT,NEWTON,CONVERGENCE,
@@ -27,7 +27,7 @@ def simu_point_mat_ops(self, MATER, INCREMENT,SIGM_IMPOSE,EPSI_IMPOSE,SIGM_INIT,
   # La macro compte pour 1 dans la numerotation des commandes
   self.set_icmd(1)
   import math
-  
+
   # On importe les definitions des commandes a utiliser dans la macro
   # Le nom de la variable doit etre obligatoirement le nom de la commande
   AFFE_CARA_ELEM  = self.get_cmd('AFFE_CARA_ELEM')
@@ -52,10 +52,10 @@ def simu_point_mat_ops(self, MATER, INCREMENT,SIGM_IMPOSE,EPSI_IMPOSE,SIGM_INIT,
   from Utilitai.UniteAster import UniteAster
   from Utilitai.Utmess import  UTMESS,MasquerAlarme, RetablirAlarme
   from Noyau.N_types import is_sequence
-  
+
   # alarme de STAT_NON_LINE si les mot-cles de COMP_INCR sont renseignes a tort
   MasquerAlarme('COMPOR1_70')
-  
+
 # -- Tests de cohérence
   __fonczero = DEFI_FONCTION(NOM_PARA = 'INST',
   VALE     = ( 0,0, 10,0 ),PROL_DROITE='CONSTANT',PROL_GAUCHE='CONSTANT')
@@ -71,13 +71,13 @@ def simu_point_mat_ops(self, MATER, INCREMENT,SIGM_IMPOSE,EPSI_IMPOSE,SIGM_INIT,
      lcomp = COMP_ELAS.List_F()[0]
 
   if SUPPORT != None :
-     if SUPPORT=='ELEMENT': 
+     if SUPPORT=='ELEMENT':
         itetra=1
   if itetra==0 :
-     if COMP_INCR != None : 
+     if COMP_INCR != None :
         if lcomp['DEFORMATION'] != 'PETIT' :
            if args.has_key('GRAD_IMPOSE'):
-              if args['GRAD_IMPOSE'] != None:  
+              if args['GRAD_IMPOSE'] != None:
                  if lcomp['DEFORMATION'] != 'SIMO_MIEHE' :
                     UTMESS('F','COMPOR2_22',valk=lcomp['DEFORMATION'] )
                  itetra=0
@@ -94,7 +94,7 @@ def simu_point_mat_ops(self, MATER, INCREMENT,SIGM_IMPOSE,EPSI_IMPOSE,SIGM_INIT,
 # cas ou il n'y a pas d'élement fini : appel à CALC_POINT_MAT
 #===============================================================
   if itetra == 0 :
-       
+
        isig=0
        ieps=0
        igrd=0
@@ -106,14 +106,14 @@ def simu_point_mat_ops(self, MATER, INCREMENT,SIGM_IMPOSE,EPSI_IMPOSE,SIGM_INIT,
           EPS=EPSI_IMPOSE[0].cree_dict_valeurs(EPSI_IMPOSE[0].mc_liste)
           ieps=1
        if args.has_key('GRAD_IMPOSE'):
-          if args['GRAD_IMPOSE'] != None:  
+          if args['GRAD_IMPOSE'] != None:
              FIJ=args['GRAD_IMPOSE'][0].cree_dict_valeurs(args['GRAD_IMPOSE'][0].mc_liste)
              igrd=1
        if args.has_key('MATR_C1') :
-          if args['MATR_C1'] != None:  
+          if args['MATR_C1'] != None:
              ic1c2=1
        if args.has_key('MATR_C2') :
-          if args['MATR_C2'] != None:  
+          if args['MATR_C2'] != None:
              ic1c2=1
 
        motscles={}
@@ -122,13 +122,13 @@ def simu_point_mat_ops(self, MATER, INCREMENT,SIGM_IMPOSE,EPSI_IMPOSE,SIGM_INIT,
             motscles[i]=FIJ[i]
        elif ic1c2 :
           if args.has_key('MATR_C1') :
-             if args['MATR_C1'] != None:  
-                motscles['MATR_C1']  = args['MATR_C1'].List_F() 
+             if args['MATR_C1'] != None:
+                motscles['MATR_C1']  = args['MATR_C1'].List_F()
           if args.has_key('MATR_C2'):
-             if args['MATR_C2'] != None:  
+             if args['MATR_C2'] != None:
                 motscles['MATR_C2']  = args['MATR_C2'].List_F()
           if args.has_key('VECT_IMPO'):
-             if args['VECT_IMPO'] != None:  
+             if args['VECT_IMPO'] != None:
                 motscles['VECT_IMPO']  = args['VECT_IMPO'].List_F()
        else :
           nbsig=6
@@ -173,20 +173,20 @@ def simu_point_mat_ops(self, MATER, INCREMENT,SIGM_IMPOSE,EPSI_IMPOSE,SIGM_INIT,
        motscles['INCREMENT']      = INCREMENT.List_F()
 
        if args.has_key('FORMAT_TABLE'):
-          if args['FORMAT_TABLE'] != None:  
+          if args['FORMAT_TABLE'] != None:
              motscles['FORMAT_TABLE']  = args['FORMAT_TABLE']
-  
+
        if args.has_key('OPER_TANGENT'):
-          if args['OPER_TANGENT'] != None:  
+          if args['OPER_TANGENT'] != None:
              motscles['OPER_TANGENT']  = args['OPER_TANGENT']
-  
+
        if args.has_key('NB_VARI_TABLE'):
-          if args['NB_VARI_TABLE'] != None:  
+          if args['NB_VARI_TABLE'] != None:
              motscles['NB_VARI_TABLE']  = args['NB_VARI_TABLE']
- 
+
        if   ARCHIVAGE   :
          motscles['ARCHIVAGE']   = ARCHIVAGE.List_F()
-         
+
          #     variables de commande
        mcvarc=[]
        if args.has_key('AFFE_VARC'):
@@ -197,7 +197,7 @@ def simu_point_mat_ops(self, MATER, INCREMENT,SIGM_IMPOSE,EPSI_IMPOSE,SIGM_INIT,
 
        Titre='CALC_POINT_MAT'
        if ARCHIVAGE != None :
-#         on ne prend en compte que ARCHIVAGE / LIST_INST 
+#         on ne prend en compte que ARCHIVAGE / LIST_INST
           if ARCHIVAGE['LIST_INST'] != None :
              __REP1 = CALC_POINT_MAT(INFO=INFO,MATER=MATER,ANGLE=ANGLE,**motscles)
              lr8=ARCHIVAGE['LIST_INST']
@@ -210,20 +210,20 @@ def simu_point_mat_ops(self, MATER, INCREMENT,SIGM_IMPOSE,EPSI_IMPOSE,SIGM_INIT,
              REPONSE = CALC_POINT_MAT(INFO=INFO,MATER=MATER,ANGLE=ANGLE,**motscles)
        else :
           REPONSE = CALC_POINT_MAT(INFO=INFO,MATER=MATER,ANGLE=ANGLE,**motscles)
-          
-  
+
+
 #===============================================================
 # cas ou on fait le calcul sur un TETRA4 A UN SEUL POINT DE GAUSS
 #===============================================================
   elif itetra==1 :
-  
+
       EPS={}
       SIG={}
       MODELISATION="3D"
       if args.has_key('MODELISATION'):
          if args['MODELISATION'] != None:
             MODELISATION=args['MODELISATION']
-            
+
       if MODELISATION=="3D":
           nbsig=6
           CMP_EPS=['EPXX','EPYY','EPZZ','EPXY','EPXZ','EPYZ']
@@ -232,8 +232,8 @@ def simu_point_mat_ops(self, MATER, INCREMENT,SIGM_IMPOSE,EPSI_IMPOSE,SIGM_INIT,
           nbsig=3
           CMP_EPS=['EPXX','EPYY','EPXY']
           CMP_SIG=['SIXX','SIYY','SIXY']
-      
- 
+
+
       if SIGM_IMPOSE:
          SIG=SIGM_IMPOSE[0].cree_dict_valeurs(SIGM_IMPOSE[0].mc_liste)
          for i in SIG.keys():
@@ -247,13 +247,13 @@ def simu_point_mat_ops(self, MATER, INCREMENT,SIGM_IMPOSE,EPSI_IMPOSE,SIGM_INIT,
       else:
          for i in range(nbsig):
              EPS[CMP_EPS[i]]=None
- 
+
       for index in range(nbsig):
           iks=CMP_SIG[index]
           ike=CMP_EPS[index]
           if EPS[ike]!=None and SIG[iks] != __fonczero :
              UTMESS('F','COMPOR2_3',valk= str(iks) +' '+ str(ike))
- 
+
 #     -- Definition du maillage
       if MODELISATION=="3D":
 
@@ -281,9 +281,9 @@ def simu_point_mat_ops(self, MATER, INCREMENT,SIGM_IMPOSE,EPSI_IMPOSE,SIGM_INIT,
            FINSF
            FIN
          """
- 
+
       else :
- 
+
          texte_ma = """
            COOR_2D
              P0  0.0   0.0
@@ -306,14 +306,14 @@ def simu_point_mat_ops(self, MATER, INCREMENT,SIGM_IMPOSE,EPSI_IMPOSE,SIGM_INIT,
            FINSF
            FIN
          """
- 
+
       fi_mail = open('simu.mail','w')
       fi_mail.write(texte_ma)
       fi_mail.close()
- 
+
       UL = UniteAster()
       umail = UL.Libre(action='ASSOCIER', nom='simu.mail' )
- 
+
       __MA  =  LIRE_MAILLAGE(UNITE=umail)
       UL.EtatInit()
 
@@ -325,7 +325,7 @@ def simu_point_mat_ops(self, MATER, INCREMENT,SIGM_IMPOSE,EPSI_IMPOSE,SIGM_INIT,
 ##     ANGLE : rotation de ANGLE autour de Z uniquement, et seulement pour les déformations
 ##             imposées.
          if ANGLE != 0. :
-            __MA=MODI_MAILLAGE(reuse=__MA ,MAILLAGE = __MA ,ROTATION=_F(POIN_1=(0.,0. ),ANGL = ANGLE),)
+            __MA=MODI_MAILLAGE(reuse=__MA ,MAILLAGE=__MA,ROTATION=_F(POIN_1=(0.,0.),ANGLE=ANGLE),)
             c=math.cos(ANGLE*math.pi/180.)
             s=math.sin(ANGLE*math.pi/180.)
             __C_RIGIDE=AFFE_CHAR_MECA(MODELE=__MO,
@@ -349,7 +349,7 @@ def simu_point_mat_ops(self, MATER, INCREMENT,SIGM_IMPOSE,EPSI_IMPOSE,SIGM_INIT,
 ##     ANGLE : rotation de ANGLE autour de Z uniquement, et seulement pour les déformations
 ##             imposées.
          if ANGLE != 0. :
-            __MA=MODI_MAILLAGE(reuse=__MA ,MAILLAGE=__MA,ROTATION=_F(POIN_1=(0.,0.),ANGL=ANGLE),)
+            __MA=MODI_MAILLAGE(reuse=__MA ,MAILLAGE=__MA,ROTATION=_F(POIN_1=(0.,0.),ANGLE=ANGLE),)
             c=math.cos(ANGLE*math.pi/180.)
             s=math.sin(ANGLE*math.pi/180.)
             __C_RIGIDE = AFFE_CHAR_MECA(MODELE = __MO,
@@ -360,7 +360,7 @@ def simu_point_mat_ops(self, MATER, INCREMENT,SIGM_IMPOSE,EPSI_IMPOSE,SIGM_INIT,
             __C_RIGIDE = AFFE_CHAR_MECA(MODELE = __MO,
                 DDL_IMPO = _F(NOEUD = 'P0',DX = 0,DY = 0),
                 LIAISON_DDL = (_F(NOEUD=('P2','P1'),DDL=('DX','DY'),COEF_MULT=(1,-1),COEF_IMPO=0),))
- 
+
 #     --MASSIF : orientation du materiau (monocristal, orthotropie)
       if MASSIF:
           ANGMAS=MASSIF[0].cree_dict_valeurs(MASSIF[0].mc_liste)
@@ -368,31 +368,31 @@ def simu_point_mat_ops(self, MATER, INCREMENT,SIGM_IMPOSE,EPSI_IMPOSE,SIGM_INIT,
              __CARA=AFFE_CARA_ELEM(MODELE=__MO,MASSIF=_F(MAILLE='VOLUME',ANGL_EULER=ANGMAS["ANGL_EULER"]),);
           else :
              __CARA=AFFE_CARA_ELEM(MODELE=__MO,MASSIF=_F(MAILLE='VOLUME',ANGL_REP=ANGMAS["ANGL_REP"]),);
- 
+
 #     -- Chargement en deformation
 
       __E = [None]*nbsig
 
       __E[0] = AFFE_CHAR_MECA(MODELE = __MO,
         LIAISON_OBLIQUE = _F(NOEUD='P1', DX=1, ANGL_NAUT=ANGLE))
- 
+
       __E[1] = AFFE_CHAR_MECA(MODELE = __MO,
         LIAISON_OBLIQUE = _F(NOEUD='P2', DY=1, ANGL_NAUT=ANGLE))
- 
+
       if MODELISATION=="3D":
- 
+
           __E[2] = AFFE_CHAR_MECA(MODELE = __MO,
              LIAISON_OBLIQUE = _F(NOEUD='P3', DZ=1, ANGL_NAUT=ANGLE))
- 
+
           __E[3] = AFFE_CHAR_MECA(MODELE = __MO,
             LIAISON_OBLIQUE = _F(NOEUD='P1', DY=1, ANGL_NAUT=ANGLE))
- 
+
           __E[4] = AFFE_CHAR_MECA(MODELE = __MO,
             LIAISON_OBLIQUE = _F(NOEUD='P1', DZ=1, ANGL_NAUT=ANGLE))
- 
+
           __E[5] = AFFE_CHAR_MECA(MODELE = __MO,
             LIAISON_OBLIQUE = _F(NOEUD='P2', DZ=1, ANGL_NAUT=ANGLE))
- 
+
       else:
           c=math.cos(ANGLE*math.pi/180.)
           s=math.sin(ANGLE*math.pi/180.)
@@ -402,61 +402,61 @@ def simu_point_mat_ops(self, MATER, INCREMENT,SIGM_IMPOSE,EPSI_IMPOSE,SIGM_INIT,
 #     -- Chargement en contrainte
 
       __S = [None]*nbsig
- 
+
       if MODELISATION=="3D":
- 
+
           r33 = 3**-0.5
           __S[0] = AFFE_CHAR_MECA(MODELE = __MO,FORCE_FACE = (
               _F(MAILLE='F1', FX=-1),
               _F(MAILLE='F4', FX= r33),))
- 
+
           __S[1] = AFFE_CHAR_MECA(MODELE = __MO,FORCE_FACE = (
               _F(MAILLE='F2', FY=-1),
               _F(MAILLE='F4', FY= r33),))
- 
+
           __S[2] = AFFE_CHAR_MECA(MODELE = __MO,FORCE_FACE = (
               _F(MAILLE='F3', FZ=-1),
               _F(MAILLE='F4', FZ= r33),))
- 
+
           __S[3] = AFFE_CHAR_MECA(MODELE = __MO,FORCE_FACE = (
               _F(MAILLE='F1', FY=-1),
               _F(MAILLE='F2', FX=-1),
               _F(MAILLE='F4', FX= r33, FY=r33),))
- 
+
           __S[4] = AFFE_CHAR_MECA(MODELE = __MO,FORCE_FACE = (
               _F(MAILLE='F1', FZ=-1),
               _F(MAILLE='F3', FX=-1),
               _F(MAILLE='F4', FX= r33, FZ=r33),))
- 
+
           __S[5] = AFFE_CHAR_MECA( MODELE = __MO, FORCE_FACE = (
               _F(MAILLE='F2', FZ=-1),
               _F(MAILLE='F3', FY=-1),
               _F(MAILLE='F4', FY= r33, FZ=r33), ) )
- 
+
       else:
           r22 = 2**-0.5
           __S[0] = AFFE_CHAR_MECA(MODELE = __MO,FORCE_CONTOUR = (
               _F(MAILLE='S1', FX=-1),
               _F(MAILLE='S3', FX= r22), ))
- 
+
           __S[1] = AFFE_CHAR_MECA(MODELE = __MO,FORCE_CONTOUR = (
               _F(MAILLE='S2', FY=-1),
               _F(MAILLE='S3', FY= r22), ) )
- 
+
           __S[2] = AFFE_CHAR_MECA(MODELE = __MO,FORCE_CONTOUR = (
               _F(MAILLE='S1', FY=-1),
               _F(MAILLE='S2', FX=-1),
               _F(MAILLE='S3', FX= r22, FY=r22), ) )
- 
+
 #     -- Construction de la charge
 
       l_char = [  _F(CHARGE=__C_RIGIDE)  ]
- 
+
       for i in xrange(nbsig) :
         ike=CMP_EPS[i]
         if EPS[ike]:
            l_char.append(  _F(CHARGE=__E[i],FONC_MULT=EPS[ike])  )
- 
+
       for i in xrange(nbsig) :
         iks=CMP_SIG[i]
         l_char.append(  _F(CHARGE=__S[i],FONC_MULT=SIG[iks])  )
@@ -489,7 +489,7 @@ def simu_point_mat_ops(self, MATER, INCREMENT,SIGM_IMPOSE,EPSI_IMPOSE,SIGM_INIT,
                           dicoch["INST"]=time
                           l_affe_cham.append(dicoch)
                       __EVOV=CREA_RESU(OPERATION='AFFE',TYPE_RESU='EVOL_VARC',NOM_CHAM='TEMP',
-                               AFFE = l_affe_cham)  
+                               AFFE = l_affe_cham)
                   elif(str(lvarc[ivarc]['NOM_VARC'])=='M_ZIRC'):
                       typech = 'ELNO_NEUT_R'
                       labsc =lvarc[ivarc]['V1'].Absc()
@@ -622,7 +622,7 @@ def simu_point_mat_ops(self, MATER, INCREMENT,SIGM_IMPOSE,EPSI_IMPOSE,SIGM_INIT,
                           dicoch["INST"]=time
                           l_affe_cham.append(dicoch)
                       __EVOV=CREA_RESU(OPERATION='AFFE',TYPE_RESU='EVOL_VARC',NOM_CHAM=str(lvarc[ivarc]['NOM_VARC']),
-                               AFFE = l_affe_cham)  
+                               AFFE = l_affe_cham)
                   dico["MAILLE"]='VOLUME'
                   dico["EVOL"]=__EVOV
                   if (str(lvarc[ivarc]['NOM_VARC'])=='M_ZIRC'):
@@ -662,7 +662,7 @@ def simu_point_mat_ops(self, MATER, INCREMENT,SIGM_IMPOSE,EPSI_IMPOSE,SIGM_INIT,
           __SIG_INIT=CREA_CHAMP(MAILLAGE=__MA,OPERATION='AFFE',TYPE_CHAM='CART_SIEF_R',
                     AFFE=_F(TOUT='OUI', NOM_CMP=LCSIG, VALE=LVSIG,))
           init_dico['SIGM']=__SIG_INIT
- 
+
 #     --variables internes initiales
       if VARI_INIT:
           etatinit=1
@@ -678,11 +678,11 @@ def simu_point_mat_ops(self, MATER, INCREMENT,SIGM_IMPOSE,EPSI_IMPOSE,SIGM_INIT,
 
           __NEUT=CREA_CHAMP(OPERATION='AFFE', TYPE_CHAM='CART_NEUT_R', MAILLAGE=__MA,
             AFFE=_F( MAILLE ='VOLUME', NOM_CMP = lnomneu, VALE = VARINI['VALE']))
- 
+
           __VAR_INIT=CREA_CHAMP(MODELE=__MO,OPERATION='ASSE',TYPE_CHAM='ELGA_VARI_R',
                        ASSE=_F(TOUT='OUI',CHAM_GD=__NEUT,NOM_CMP=lnomneu,NOM_CMP_RESU=lnomvar))
           init_dico['VARI']=__VAR_INIT
- 
+
       # --deformations initiales
       if EPSI_INIT:
           etatinit=1
@@ -696,7 +696,7 @@ def simu_point_mat_ops(self, MATER, INCREMENT,SIGM_IMPOSE,EPSI_IMPOSE,SIGM_INIT,
           mon_dico["NOM_CMP"]=("DX","DY","DZ")
           mon_dico["VALE"]=(0.,0.,0.)
           LIST_AFFE.append(mon_dico)
- 
+
           EPSINI=EPSI_INIT[0].cree_dict_valeurs(EPSI_INIT[0].mc_liste)
           mon_dico={}
           mon_dico["NOEUD"]='P1'
@@ -757,27 +757,27 @@ def simu_point_mat_ops(self, MATER, INCREMENT,SIGM_IMPOSE,EPSI_IMPOSE,SIGM_INIT,
               LIST_AFFE.append(mon_dico)
           __DEP_INI=CREA_CHAMP(MAILLAGE=__MA,OPERATION='AFFE',TYPE_CHAM='NOEU_DEPL_R',AFFE=LIST_AFFE)
           init_dico['DEPL']=__DEP_INI
- 
+
 #     -- Deroulement du calcul
       motscles={}
       if   COMP_INCR  :
           motscles['COMP_INCR']   = COMP_INCR.List_F()
       if   COMP_ELAS   :
           motscles['COMP_ELAS']   = COMP_ELAS.List_F()
-          
+
       motscles['CONVERGENCE'] = CONVERGENCE.List_F()
-      
+
       motscles['NEWTON']      = NEWTON.List_F()
-      
+
       if args.has_key('RECH_LINEAIRE'):
          if args['RECH_LINEAIRE'] != None:
              motscles['RECH_LINEAIRE']  = args['RECH_LINEAIRE'].List_F()
-             
+
       motscles['INCREMENT']   = INCREMENT.List_F()
-  
+
       if   ARCHIVAGE   :
          motscles['ARCHIVAGE']   = ARCHIVAGE.List_F()
-         
+
       if args.has_key('SUIVI_DDL'):
          if args['SUIVI_DDL'] != None:
             motscles['SUIVI_DDL']   = args['SUIVI_DDL'].List_F()
@@ -805,12 +805,12 @@ def simu_point_mat_ops(self, MATER, INCREMENT,SIGM_IMPOSE,EPSI_IMPOSE,SIGM_INIT,
          nomepsi='EPSG_ELNO'
       else :
          nomepsi='EPSI_ELNO'
-         
+
       __EVOL1 = CALC_CHAMP(reuse = __EVOL1,RESULTAT = __EVOL1,
         CONTRAINTE   = 'SIGM_ELNO',
         DEFORMATION  = nomepsi,
         VARI_INTERNE = 'VARI_ELNO',);
- 
+
       if MODELISATION=="3D":
           angles=(ANGLE,0,0)
           __EVOL=MODI_REPERE(RESULTAT=__EVOL1, MODI_CHAM=(
@@ -829,14 +829,14 @@ def simu_point_mat_ops(self, MATER, INCREMENT,SIGM_IMPOSE,EPSI_IMPOSE,SIGM_INIT,
                                   ),
                             REPERE='UTILISATEUR',
                             AFFE=_F(ANGL_NAUT=angles),);
- 
+
 #     -- Recuperation des courbes
 
       __REP_VARI = POST_RELEVE_T(ACTION = (
           _F(INTITULE='VARI_INT',RESULTAT=__EVOL1,NOM_CHAM='VARI_ELNO',
             TOUT_CMP='OUI',OPERATION='EXTRACTION',NOEUD='P0'),))
 
- 
+
       __REP_EPSI = POST_RELEVE_T(ACTION = (
           _F(INTITULE='EPSILON',RESULTAT=__EVOL,NOM_CHAM=nomepsi,
             TOUT_CMP='OUI',OPERATION='EXTRACTION',NOEUD     = 'P0'),))
@@ -844,16 +844,16 @@ def simu_point_mat_ops(self, MATER, INCREMENT,SIGM_IMPOSE,EPSI_IMPOSE,SIGM_INIT,
       __REP_SIGM = POST_RELEVE_T(ACTION = (
           _F(INTITULE  = 'SIGMA',RESULTAT  =  __EVOL,NOM_CHAM  = 'SIGM_ELNO',
             TOUT_CMP  = 'OUI',OPERATION = 'EXTRACTION',NOEUD     = 'P0'),))
- 
+
       __REP_INV = POST_RELEVE_T(ACTION = (
           _F(INTITULE  = 'INV',RESULTAT  =  __EVOL,NOM_CHAM  = 'SIGM_ELNO',
             INVARIANT  = 'OUI',OPERATION = 'EXTRACTION',NOEUD     = 'P0'),))
- 
+
       __REP_INV=CALC_TABLE( TABLE=__REP_INV,reuse=__REP_INV,
                ACTION=_F(OPERATION='EXTR',NOM_PARA=('INST','TRACE','VMIS'), ) )
 
       self.DeclareOut('REPONSE',self.sd)
- 
+
       REPONSE=CALC_TABLE( TABLE=__REP_EPSI,TITRE='TABLE ',ACTION=(
                        _F(OPERATION='COMB',TABLE=__REP_SIGM,NOM_PARA=('INST'), ),
                        _F(OPERATION='COMB',TABLE=__REP_INV ,NOM_PARA=('INST'), ),

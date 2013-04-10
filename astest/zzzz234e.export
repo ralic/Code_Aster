@@ -3,7 +3,7 @@ P memory_limit 512
 P ncpus 1
 P mpi_nbcpu 1
 P mpi_nbnoeud 1
-P testlist C 
+P testlist C
 
 F comm zzzz234e.comm D 1
 F mail zzzz234b.mail D 20

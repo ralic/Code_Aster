@@ -1,4 +1,4 @@
-# MODIF  DATE 18/02/2013   AUTEUR SELLENET N.SELLENET 
+# MODIF  DATE 09/04/2013   AUTEUR PELLET J.PELLET 
 # TITRE IMPACT D UNE BARRE DE TAYLOR ELASTOPLASTIQUE
 # sdnv103f.para = tps_job 360 mem_job 512Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -21,7 +21,7 @@
 #       CAS-TEST SDNV103D (3D), METHODE CONTINUE
 
 DEBUT(CODE=_F(NOM='SDNV103F',NIV_PUB_WEB='INTERNET'),
-           IGNORE_ALARM=('CONTACT2_14'), 
+           IGNORE_ALARM=('CONTACT2_14'),
            DEBUG=_F(SDVERI='OUI'))
 
 # IGNORE ALARM: CONTACT2_14: MODELE AXI EN METHODE CONTINUE
@@ -79,7 +79,7 @@ CH2 = DEFI_CONTACT(MODELE         = MODE,
 
 VIT_0=CREA_CHAMP( OPERATION='AFFE',
                   TYPE_CHAM='NOEU_DEPL_R',
-                  PROL_ZERO='NON',
+
                   MODELE=MODE,
                   AFFE=(
                      _F(TOUT='OUI',
@@ -105,7 +105,7 @@ IFIN        = +2.0E-5
 
 temps2=DEFI_LIST_REEL(DEBUT=-1.E-5,
                       INTERVALLE=(_F(JUSQU_A=IFIN,
-                                     NOMBRE=NPAS_IMPA,),   
+                                     NOMBRE=NPAS_IMPA,),
                                    ),);
 
 
@@ -124,7 +124,7 @@ liste2=DEFI_LIST_INST(  DEFI_LIST=_F(LIST_INST = temps2,),
                                SUBD_METHODE     = 'AUTO',
                                SUBD_INST = 1.7E-8,
                                SUBD_DUREE    = 1.5E-6,
-                              ),   
+                              ),
                           ),
                         )
 
@@ -143,7 +143,7 @@ RESU2=DYNA_NON_LINE(MODELE=MODE,
                   SCHEMA_TEMPS=_F(SCHEMA='HHT',
                                      FORMULATION='DEPLACEMENT',
                                      ALPHA = -0.6,
-                                ), 
+                                ),
                   NEWTON=_F(   REAC_INCR=1,
                                 MATRICE='TANGENTE',
                                 REAC_ITER=1,),

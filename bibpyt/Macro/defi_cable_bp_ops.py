@@ -1,8 +1,8 @@
-#@ MODIF defi_cable_bp_ops Macro  DATE 06/07/2009   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF defi_cable_bp_ops Macro  DATE 09/04/2013   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -47,7 +47,7 @@
 
 def defi_cable_bp_ops(self,MODELE,CHAM_MATER,CARA_ELEM,GROUP_MA_BETON,
                            DEFI_CABLE,TYPE_ANCRAGE,TENSION_INIT,RECUL_ANCRAGE,
-                           RELAXATION,CONE,TITRE,INFO,**args):
+                           TYPE_RELAX,CONE,TITRE,INFO,**args):
 
   """
      Ecriture de la macro DEFI_CABLE_BP
@@ -119,6 +119,10 @@ def defi_cable_bp_ops(self,MODELE,CHAM_MATER,CARA_ELEM,GROUP_MA_BETON,
   motscles['DEFI_CABLE']=[]
 
   for i in dDEFI_CABLE:
+#   CAS OU ON RENTRE UNE TENSION INITIALE DU CABLE (TYPE_RELAX='ETCC_REPRISE')
+    motscle3={}
+    if i.has_key('TENSION_CT') ==1:
+       motscle3 = {'TENSION_CT' : i['TENSION_CT']} 
 
     # CAS OU L'ON A DEFINI LE MOT-CLE "CONE"
     if CONE:
@@ -196,93 +200,123 @@ def defi_cable_bp_ops(self,MODELE,CHAM_MATER,CARA_ELEM,GROUP_MA_BETON,
         if i.has_key('GROUP_MA') == 1 and i.has_key('GROUP_NO_ANCRAGE') == 1:
           motscles['DEFI_CABLE'].append( _F(GROUP_MA=i['GROUP_MA'],
                                             GROUP_NO_ANCRAGE=i['GROUP_NO_ANCRAGE'],
-                                            GROUP_NO_FUT=( __NOM1,__NOM2, ), ), )
+                                            GROUP_NO_FUT=( __NOM1,__NOM2, ),
+                                            **motscle3 ), )
         if i.has_key('GROUP_MA') == 1 and i.has_key('NOEUD_ANCRAGE') == 1:
           motscles['DEFI_CABLE'].append( _F(GROUP_MA=i['GROUP_MA'],
                                             NOEUD_ANCRAGE=i['NOEUD_ANCRAGE'],
-                                            GROUP_NO_FUT=( __NOM1,__NOM2, ), ), )
+                                            GROUP_NO_FUT=( __NOM1,__NOM2, ),
+                                            **motscle3 ), )
 
       if dCONE['PRESENT'][0] == 'OUI' and dCONE['PRESENT'][1] == 'NON':
         if i.has_key('GROUP_MA') == 1 and i.has_key('GROUP_NO_ANCRAGE') == 1:
           motscles['DEFI_CABLE'].append( _F(GROUP_MA=i['GROUP_MA'],
                                             GROUP_NO_ANCRAGE=i['GROUP_NO_ANCRAGE'],
-                                            GROUP_NO_FUT=( __NOM1, ), ), )
+                                            GROUP_NO_FUT=( __NOM1, ),
+                                            **motscle3 ), )
         if i.has_key('GROUP_MA') == 1 and i.has_key('NOEUD_ANCRAGE') == 1:
           motscles['DEFI_CABLE'].append( _F(GROUP_MA=i['GROUP_MA'],
                                             NOEUD_ANCRAGE=i['NOEUD_ANCRAGE'],
-                                            GROUP_NO_FUT=( __NOM1, ), ), )
+                                            GROUP_NO_FUT=( __NOM1, ),
+                                            **motscle3 ), )
 
       if dCONE['PRESENT'][0] == 'NON' and dCONE['PRESENT'][1] == 'OUI':
         if i.has_key('GROUP_MA') == 1 and i.has_key('GROUP_NO_ANCRAGE') == 1:
           motscles['DEFI_CABLE'].append( _F(GROUP_MA=i['GROUP_MA'],
                                             GROUP_NO_ANCRAGE=i['GROUP_NO_ANCRAGE'],
-                                            GROUP_NO_FUT=( __NOM2, ), ), )
+                                            GROUP_NO_FUT=( __NOM2, ),
+                                            **motscle3 ), )
         if i.has_key('GROUP_MA') == 1 and i.has_key('NOEUD_ANCRAGE') == 1:
           motscles['DEFI_CABLE'].append( _F(GROUP_MA=i['GROUP_MA'],
                                             NOEUD_ANCRAGE=i['NOEUD_ANCRAGE'],
-                                            GROUP_NO_FUT=( __NOM2, ), ), )
+                                            GROUP_NO_FUT=( __NOM2, ),
+                                            **motscle3 ), )
 
       if dCONE['PRESENT'][0] == 'NON' and dCONE['PRESENT'][1] == 'NON':
         if i.has_key('GROUP_MA') == 1 and i.has_key('GROUP_NO_ANCRAGE') == 1:
           motscles['DEFI_CABLE'].append( _F(GROUP_MA=i['GROUP_MA'],
-                                            GROUP_NO_ANCRAGE=i['GROUP_NO_ANCRAGE'], ), )
+                                            GROUP_NO_ANCRAGE=i['GROUP_NO_ANCRAGE'],
+                                            **motscle3 ), )
         if i.has_key('GROUP_MA') == 1 and i.has_key('NOEUD_ANCRAGE') == 1:
           motscles['DEFI_CABLE'].append( _F(GROUP_MA=i['GROUP_MA'],
-                                            NOEUD_ANCRAGE=i['NOEUD_ANCRAGE'], ), )
+                                            NOEUD_ANCRAGE=i['NOEUD_ANCRAGE'],
+                                            **motscle3 ), )
 
 
     # CAS OU L'ON A PAS DEFINI LE MOT-CLE "CONE"
     else:
       if i.has_key('GROUP_MA') == 1 and i.has_key('GROUP_NO_ANCRAGE') == 1:
         motscles['DEFI_CABLE'].append( _F(GROUP_MA=i['GROUP_MA'],
-                                          GROUP_NO_ANCRAGE=i['GROUP_NO_ANCRAGE'], ), )
+                                          GROUP_NO_ANCRAGE=i['GROUP_NO_ANCRAGE'],
+                                          **motscle3 ), )
 
       if i.has_key('GROUP_MA') == 1 and i.has_key('NOEUD_ANCRAGE') == 1:
         motscles['DEFI_CABLE'].append( _F(GROUP_MA=i['GROUP_MA'],
-                                          NOEUD_ANCRAGE=i['NOEUD_ANCRAGE'], ), )
+                                          NOEUD_ANCRAGE=i['NOEUD_ANCRAGE'],
+                                          **motscle3 ), )
 
       if i.has_key('MAILLE') == 1 and i.has_key('GROUP_NO_ANCRAGE') == 1:
         motscles['DEFI_CABLE'].append( _F(MAILLE=i['MAILLE'],
-                                          GROUP_NO_ANCRAGE=i['GROUP_NO_ANCRAGE'], ), )
+                                          GROUP_NO_ANCRAGE=i['GROUP_NO_ANCRAGE'],
+                                          **motscle3 ), )
 
       if i.has_key('MAILLE') == 1 and i.has_key('NOEUD_ANCRAGE') == 1:
         motscles['DEFI_CABLE'].append( _F(MAILLE=i['MAILLE'],
-                                          NOEUD_ANCRAGE=i['NOEUD_ANCRAGE'], ), )
+                                          NOEUD_ANCRAGE=i['NOEUD_ANCRAGE'],
+                                          **motscle3 ), )
+
 
 
 # FIN BOUCLE sur i in DEFI_CABLE
 
-
+     
   # LANCEMENT DE DEFI_CABLE_BP
+#    TRAITEMENT DE LA RELAXATION 
+  
+  if TYPE_RELAX=='ETCC_DIRECT':
+    motscles['NBH_RELAX']=args['NBH_RELAX'];
 
-  if RELAXATION:
-    dRelaxation=RELAXATION[0].cree_dict_valeurs(RELAXATION[0].mc_liste)
-    for i in dRelaxation.keys():
-      if dRelaxation[i]==None : del dRelaxation[i]
+  if TYPE_RELAX=='ETCC_REPRISE':
+    motscles['NBH_RELAX']=args['NBH_RELAX'];
 
-    __DC=DEFI_CABLE_OP(MODELE=MODELE,
+  if TYPE_RELAX=='BPEL':
+    motscles['R_J']=args['R_J'];
+      
+#  if PERT_ELAS=='OUI':
+#    motscles['ESP_CABLE']=args['ESP_CABLE'] ;
+#    motscles['EP_BETON']=args['EP_BETON'] ; 
+      
+    
+#    dRelaxation=RELAXATION[0].cree_dict_valeurs(RELAXATION[0].mc_liste)
+#    for i in dRelaxation.keys():
+#      if dRelaxation[i]==None : del dRelaxation[i]
+#  if TYPE_RELAX!='SANS':
+
+  __DC=DEFI_CABLE_OP(MODELE=MODELE,
                        CHAM_MATER=CHAM_MATER,
                        CARA_ELEM=CARA_ELEM,
                        GROUP_MA_BETON=GROUP_MA_BETON,
                        TYPE_ANCRAGE=TYPE_ANCRAGE,
                        TENSION_INIT=TENSION_INIT,
                        RECUL_ANCRAGE=RECUL_ANCRAGE,
-                       RELAXATION=dRelaxation,
+                       TYPE_RELAX=TYPE_RELAX,
+                     #  RELAXATION=dRelaxation,
                        INFO=INFO,
                        **motscles
                        );
 
-  else:
+#  else:
 
-    __DC=DEFI_CABLE_OP(MODELE=MODELE,
-                       CHAM_MATER=CHAM_MATER,
-                       CARA_ELEM=CARA_ELEM,
-                       GROUP_MA_BETON=GROUP_MA_BETON,
-                       TYPE_ANCRAGE=TYPE_ANCRAGE,
-                       TENSION_INIT=TENSION_INIT,
-                       RECUL_ANCRAGE=RECUL_ANCRAGE,
-                       INFO=INFO,
-                       **motscles
-                       );
+#    __DC=DEFI_CABLE_OP(MODELE=MODELE,
+#                       CHAM_MATER=CHAM_MATER,
+#                       CARA_ELEM=CARA_ELEM,
+#                       GROUP_MA_BETON=GROUP_MA_BETON,
+#                       TYPE_ANCRAGE=TYPE_ANCRAGE,
+#                       TENSION_INIT=TENSION_INIT,
+#                       RECUL_ANCRAGE=RECUL_ANCRAGE,
+#                       PERT_ELAS=PERT_ELAS,
+#                       INFO=INFO,
+#                       **motscles
+#                       );
 
   return ier

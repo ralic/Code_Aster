@@ -1,6 +1,6 @@
 /* ------------------------------------------------------------------ */
 /*           CONFIGURATION MANAGEMENT OF EDF VERSION                  */
-/* MODIF astermodule supervis  DATE 28/01/2013   AUTEUR COURTOIS M.COURTOIS */
+/* MODIF astermodule supervis  DATE 09/04/2013   AUTEUR PELLET J.PELLET */
 /* ================================================================== */
 /* COPYRIGHT (C) 1991 - 2013  EDF R&D              WWW.CODE-ASTER.ORG */
 /*                                                                    */
@@ -491,11 +491,11 @@ void DEFSPS(GETTYP,gettyp, _IN char *typaster, _IN STRING_SIZE ltyp,
     char *typ;
     int ok = 0;
     int nval = 0;
-    
+
     typ = MakeCStrFromFStr(typaster, ltyp);
     res = PyObject_CallMethod(commande, "gettyp", "s", typ);
     if ( res == NULL ) MYABORT("erreur dans la partie Python de gettyp");
-    
+
     ok = PyArg_ParseTuple(res, "iO", &nval, &tup);
     if( !ok ) MYABORT("erreur dans la partie Python");
 
@@ -505,7 +505,7 @@ void DEFSPS(GETTYP,gettyp, _IN char *typaster, _IN STRING_SIZE ltyp,
         nval = nval > (int)*nbval ? (int)*nbval : nval;
         convertxt(nval, tup, txval, ltx);
     }
-    
+
     FreeStr(typ);
     Py_XDECREF(res);
     Py_XDECREF(tup);
@@ -1388,7 +1388,7 @@ PyObject *args;
     lng = (INTEGER)ilng;
     iob=0 ;
     nomsd32 = MakeFStrFromCStr(nomsd, 32);
-    nomob = MakeBlankFStr(8);
+    nomob = MakeBlankFStr(24);
 
     try {
         CALL_JEMARQ();
@@ -1496,7 +1496,7 @@ PyObject *args;
     /* Taille de la collection */
     nbval = 1;
     nomsd32 = MakeFStrFromCStr(nomsd, 32);
-    nomob = MakeBlankFStr(8);
+    nomob = MakeBlankFStr(24);
     val = (INTEGER *)malloc((nbval)*sizeof(INTEGER));
     nom = MakeFStrFromCStr("LIST_COLLECTION", 24);
     CALL_JEMARQ();
@@ -1514,7 +1514,7 @@ PyObject *args;
                 key=PyInt_FromLong( (long)j );
             }
             else {
-                key=PyString_FromStringAndSize(nomob,8);
+                key=PyString_FromStringAndSize(nomob,24);
             }
             switch ( ctype ) {
                 case 0 :
@@ -2272,16 +2272,16 @@ PyObject *args;
     int tmax = 100;  /* taille maximale dans OPTDEP/CCLIOP */
     INTEGER nbopt;
     PyObject *res;
-    
+
     if (!PyArg_ParseTuple(args, "s", &opt))
         return NULL;
-    
+
     Fopt = MakeFStrFromCStr(opt, 16);
     Fres = MakeBlankFStr(24 * tmax);
     CALL_OPTDEP(Fopt, Fres, &nbopt);
 
     res = MakeTupleString((long)(nbopt), Fres, 24, NULL);
-    
+
     FreeStr(Fopt);
     FreeStr(Fres);
     return res;

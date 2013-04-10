@@ -1,9 +1,9 @@
-# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
+# MODIF  DATE 09/04/2013   AUTEUR PELLET J.PELLET 
 # TITRE CHAINAGE 3D CODE_SATURNE CODE_ASTER
 # zzzz215b.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -47,7 +47,7 @@ FORM=FORMULE(NOM_PARA=('X','Y','Z','INST'),
 VALE=CREA_CHAMP(TYPE_CHAM='NOEU_PRES_F',
                 OPERATION='AFFE',
                 MODELE=MOFLUIDE,
-                PROL_ZERO='OUI',
+
                 AFFE=_F(TOUT='OUI',
                         NOM_CMP='PRES',
                         VALE_F=FORM,),
@@ -137,7 +137,7 @@ TEST_RESU(RESU=(_F(INST=1.0,
                    NOEUD='N134',
                    NOM_CMP='DX',
                    VALE_CALC=-9.3603275999999997,
-                   
+
                    MAILLE='M81',
                    ),
                 _F(INST=1.0,
@@ -146,7 +146,7 @@ TEST_RESU(RESU=(_F(INST=1.0,
                    NOEUD='N134',
                    NOM_CMP='DY',
                    VALE_CALC=-2.3152018999999999,
-                   
+
                    MAILLE='M81',
                    ),
                 _F(INST=1.0,
@@ -155,7 +155,7 @@ TEST_RESU(RESU=(_F(INST=1.0,
                    NOEUD='N134',
                    NOM_CMP='DZ',
                    VALE_CALC=-6.97205648,
-                   
+
                    MAILLE='M81',
                    ),
                 ),

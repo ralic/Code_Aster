@@ -1,4 +1,4 @@
-# MODIF  DATE 06/02/2013   AUTEUR COURTOIS M.COURTOIS 
+# MODIF  DATE 09/04/2013   AUTEUR PELLET J.PELLET 
 # RESPONSABLE A.FOUCAULT FOUCAULT
 # TITRE PRISE EN COMPTE DU RETRAIT DANS LE MODELE BETON_BURGER_FP
 # ssnv174b.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test S
@@ -168,7 +168,7 @@ CM=AFFE_MATERIAU(  MAILLAGE=M,
                                 NOM_CHAM='TEMP',
                                 VALE_REF=100),
                               _F(TOUT='OUI',
-                                CHAMP_GD=TEMP,
+                                CHAM_GD=TEMP,
                                 NOM_VARC='TEMP',
                                 VALE_REF=20),),);
 FORCE=DEFI_FONCTION( NOM_PARA='INST',

@@ -3,7 +3,7 @@ MATEM1A=AFFE_MATERIAU(MAILLAGE=MAIL_ME,
                        AFFE=_F(TOUT='OUI',
                                MATER=MATE1,),
                        AFFE_VARC=_F(TOUT='OUI',
-                                    CHAMP_GD=REPTO1A,
+                                    CHAM_GD=REPTO1A,
                                     NOM_VARC='PTOT',),);
 
 MATEM1B=AFFE_MATERIAU(MAILLAGE=MAIL_ME,
@@ -57,17 +57,17 @@ DEPLX = FORMULE(VALE=
 
 
 DEPLIM1=AFFE_CHAR_CINE(MODELE=MODE1,
-                       MECA_IMPO=(_F(GROUP_MA='GM1',
+                       MECA_IMPO=(_F(GROUP_MA='GXXXXXX_GM1',
                                       DX=0.,
                                       DY=0.,),
-                                   _F(GROUP_MA=('GM3','GM2',),
+                                   _F(GROUP_MA=('GXXXXXX_GM3','GXXXXXX_GM2',),
                                       DY=0.,),),);
 
 DEPLIM2=AFFE_CHAR_CINE(MODELE=MODE2,
-                       MECA_IMPO=(_F(GROUP_MA='GM1',
+                       MECA_IMPO=(_F(GROUP_MA='GXXXXXX_GM1',
                                       DX=0.,
                                       DY=0.,),
-                                   _F(GROUP_MA=('GM3','GM2',),
+                                   _F(GROUP_MA=('GXXXXXX_GM3','GXXXXXX_GM2',),
                                       DY=0.,),),);
 
 ####################
@@ -87,11 +87,11 @@ PESANT2=AFFE_CHAR_MECA(MODELE=MODE2,
 #####################################################
 
 FORMI1=AFFE_CHAR_MECA_F(MODELE=MODE1,
-                          PRES_REP=_F(GROUP_MA='GM4',
+                          PRES_REP=_F(GROUP_MA='GXXXXXX_GM4',
                                       PRES=PRES_IMP,),);
 
 FORMI2=AFFE_CHAR_MECA_F(MODELE=MODE2,
-                          PRES_REP=_F(GROUP_MA='GM4',
+                          PRES_REP=_F(GROUP_MA='GXXXXXX_GM4',
                                       PRES=PRES_IMP,),);
 
 #######################
@@ -177,11 +177,11 @@ RESUM4=STAT_NON_LINE(MODELE=MODE2,
 MAIL_ME=DEFI_GROUP(reuse =MAIL_ME,
                    MAILLAGE=MAIL_ME,
                    CREA_GROUP_NO=(_F(NOEUD='N14',
-                                     NOM='POURTEST',),
-                                  _F(GROUP_MA='GM3',),),);
+                                     NOM='GXXXXXX_POURTEST',),
+                                  _F(GROUP_MA='GXXXXXX_GM3',),),);
 
 TEST_RESU(RESU=_F(NUME_ORDRE=1,
-                  GROUP_NO='POURTEST',
+                  GROUP_NO='GXXXXXX_POURTEST',
                   REFERENCE='ANALYTIQUE',
                   RESULTAT=RESUM1A,
                   NOM_CHAM='DEPL',
@@ -193,7 +193,7 @@ TEST_RESU(RESU=_F(NUME_ORDRE=1,
           )
 
 TEST_RESU(RESU=_F(NUME_ORDRE=1,
-                  GROUP_NO='POURTEST',
+                  GROUP_NO='GXXXXXX_POURTEST',
                   REFERENCE='ANALYTIQUE',
                   RESULTAT=RESUM1B,
                   NOM_CHAM='DEPL',
@@ -205,7 +205,7 @@ TEST_RESU(RESU=_F(NUME_ORDRE=1,
           )
 
 TEST_RESU(RESU=_F(NUME_ORDRE=1,
-                  GROUP_NO='POURTEST',
+                  GROUP_NO='GXXXXXX_POURTEST',
                   REFERENCE='ANALYTIQUE',
                   RESULTAT=RESUM1C,
                   NOM_CHAM='DEPL',
@@ -217,7 +217,7 @@ TEST_RESU(RESU=_F(NUME_ORDRE=1,
           )
 
 TEST_RESU(RESU=_F(NUME_ORDRE=1,
-                  GROUP_NO='POURTEST',
+                  GROUP_NO='GXXXXXX_POURTEST',
                   REFERENCE='ANALYTIQUE',
                   RESULTAT=RESUM2,
                   NOM_CHAM='DEPL',
@@ -229,7 +229,7 @@ TEST_RESU(RESU=_F(NUME_ORDRE=1,
           )
 
 TEST_RESU(RESU=_F(NUME_ORDRE=1,
-                  GROUP_NO='POURTEST',
+                  GROUP_NO='GXXXXXX_POURTEST',
                   REFERENCE='ANALYTIQUE',
                   RESULTAT=RESUM3,
                   NOM_CHAM='DEPL',
@@ -241,7 +241,7 @@ TEST_RESU(RESU=_F(NUME_ORDRE=1,
           )
 
 TEST_RESU(RESU=_F(NUME_ORDRE=1,
-                  GROUP_NO='POURTEST',
+                  GROUP_NO='GXXXXXX_POURTEST',
                   REFERENCE='ANALYTIQUE',
                   RESULTAT=RESUM4,
                   NOM_CHAM='DEPL',

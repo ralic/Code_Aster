@@ -1,10 +1,11 @@
-        SUBROUTINE LCCONV ( LOI,  YD,DY, DDY,  NR, ITMAX, TOLER, ITER,
-     &          INTG, NMAT, MATER, R, RINI,EPSTR,TYPESS, ESSAI,
-     &          ICOMP, NVI, VINF, IRET)
+        SUBROUTINE LCCONV ( LOI,YD,DY, DDY, YE, NR, ITMAX, TOLER, 
+     &        ITER,INTG, NMAT,MATER, R, RINI,EPSTR,TYPESS, ESSAI,
+     &        ICOMP, NVI,VIND,VINF, VIND1, INDI,BNEWS,MTRAC,LRELI,
+     &        DEBUG,IRET)
         IMPLICIT   NONE
 C       ================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 14/01/2013   AUTEUR FOUCAULT A.FOUCAULT 
+C MODIF ALGORITH  DATE 09/04/2013   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -21,6 +22,7 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
+C TOLE CRP_21
 C     ----------------------------------------------------------------
 C     ROUTINE D AIGUILLAGE
 C     ----------------------------------------------------------------
@@ -48,6 +50,13 @@ C         ICOMP  :  COMPTEUR POUR LE REDECOUPAGE DU PAS DE TEMPS
 C         NVI    :  NOMBRE DE VARIABLES INTERNES 
 C         VINF   :  VARIABLES INTERNES A L'INSTANT T+DT
 C
+C         VIND1  :  VARIABLES INTERNES A T (SAUV. INITIALE - HUJEUX)
+C         INDI   :  MECANISMES POTENTIEL ACTIFS ( HUJEUX)
+C         BNEWS  :  INDICATEUR DES MECANISMES DE TRACTION (HUJEUX)
+C         MTRAC  :  INDICATEUR LIE A LA TRACTION(HUJEUX - BIS)
+C         YE     :  VALEURS DES INCONNUES APRES LCINIT
+C         LRELI  :  TYPE DE SCHEMA D'INTEGRATION 
+C
 C     OUT IRET = 0:  CONVERGENCE
 C         IRET = 1:  ITERATION SUIVANTE
 C         IRET = 2:  RE-INTEGRATION
@@ -55,10 +64,12 @@ C         IRET = 3:  REDECOUPAGE DU PAS DE TEMPS
 C         (VINF) UNIQUEMENT POUR LETK  - ETAT PLASTIQUE DESACTIVE?
 C     ----------------------------------------------------------------
       INTEGER         TYPESS, ITMAX,  ITER,   INTG, NR,  ICOMP
-      INTEGER         IRET, NMAT, NVI
+      INTEGER         IRET, NMAT, NVI, INDI(7)
       REAL*8          TOLER,ESSAI, DDY(*), DY(*),R(*),RINI(*),YD(*)
-      REAL*8          MATER(NMAT,2), EPSTR(6),VINF(NVI)
+      REAL*8          MATER(NMAT,2), EPSTR(6),VINF(NVI),VIND1(NVI)
+      REAL*8          YE(NR),VIND(NVI)
       CHARACTER*16    LOI
+      LOGICAL         BNEWS(3),MTRAC,LRELI,DEBUG
 C     ----------------------------------------------------------------
 C
       IF ( LOI(1:9) .EQ. 'VISCOCHAB' ) THEN
@@ -83,6 +94,12 @@ C
       ELSEIF ( LOI(1:4) .EQ. 'LETK' ) THEN
 
          CALL LKICVG (NR,ITMAX,TOLER,ITER,R,NVI,VINF,DY,IRET)
+     
+      ELSEIF ( LOI(1:6) .EQ. 'HUJEUX' ) THEN
+
+         CALL HUJCVG (MATER,NVI,VIND,VINF,VIND1,NR,YD,DY,R,
+     &                INDI,ITER,ITMAX,INTG,TOLER,BNEWS,MTRAC,
+     &                YE,LRELI,DEBUG,IRET)
      
       ELSE
 

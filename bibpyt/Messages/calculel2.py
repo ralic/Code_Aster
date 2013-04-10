@@ -1,4 +1,4 @@
-#@ MODIF calculel2 Messages  DATE 12/02/2013   AUTEUR PELLET J.PELLET 
+#@ MODIF calculel2 Messages  DATE 09/04/2013   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -103,8 +103,12 @@ Le CHAM_NO_S est vide (i.e. il n'a aucune valeur).
 """),
 
 13: _(u"""
-Erreur lors d'une transformation de CHAM_NO_S en CHAM_NO :
- Il manque la composante: %(k1)s  sur le noeud: %(k2)s pour le CHAM_NO: %(k3)s
+Erreur lors d'une transformation d'un CHAM_NO_S en CHAM_NO :
+  Il manque la composante: %(k1)s  sur le noeud: %(k2)s pour le CHAM_NO: %(k3)s
+
+Risques & conseils :
+  Si cette erreur se produit dans la commande CREA_CHAMP, il est possible de
+  mettre à zéro les composantes manquantes en utilisant le mot-clé PROL_ZERO.
 """),
 
 14: _(u"""

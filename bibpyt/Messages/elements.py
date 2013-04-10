@@ -1,4 +1,4 @@
-#@ MODIF elements Messages  DATE 21/01/2013   AUTEUR DELMAS J.DELMAS 
+#@ MODIF elements Messages  DATE 09/04/2013   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -229,8 +229,8 @@ Risque & Conseil : mettre un léger écrouissage peut permettre de passer cette di
 """),
 
 53 : _(u"""
- problème :
- température sur la maille: %(k1)s : il manque la composante "TEMP"
+Erreur utilisateur :
+  Température sur la maille: %(k1)s : il manque la composante "TEMP_MIL"
 """),
 
 55 : _(u"""

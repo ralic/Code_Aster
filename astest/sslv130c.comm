@@ -1,4 +1,4 @@
-# MODIF  DATE 18/03/2013   AUTEUR SFAYOLLE S.FAYOLLE 
+# MODIF  DATE 09/04/2013   AUTEUR PELLET J.PELLET 
 # TITRE CYLINDRE EN INCOMPRESSIBLE (TRIA6 QUAD8) PLAN
 # sslv130c.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -67,7 +67,7 @@ MA=DEFI_MATERIAU(ELAS_FO=_F(E=E_F, NU=NU_F,),);
 CM=AFFE_MATERIAU(MAILLAGE=M,
                  AFFE=_F(TOUT='OUI',
                          MATER=MA,),
-               # AFFE_VARC=_F(NOM_VARC='NEUT1', CHAMP_GD=CHYOUNG,),);
+               # AFFE_VARC=_F(NOM_VARC='NEUT1', CHAM_GD=CHYOUNG,),);
                  AFFE_VARC=_F(NOM_VARC='NEUT1', EVOL=EVYOUNG,),);
 
 CLIM=AFFE_CHAR_MECA(MODELE=MO,
@@ -1163,7 +1163,7 @@ CML=AFFE_MATERIAU(MAILLAGE=ML,
                  AFFE=_F(TOUT='OUI',
                          MATER=MA,),
                  AFFE_VARC=_F(NOM_VARC='NEUT1',
-                              CHAMP_GD=CHYOUNGL,),);
+                              CHAM_GD=CHYOUNGL,),);
 
 CLIMUPL=AFFE_CHAR_MECA(MODELE=MOUPL,
                      DDL_IMPO=_F(GROUP_MA='GRNM11',
@@ -1541,7 +1541,7 @@ CMOS=AFFE_MATERIAU(MAILLAGE=MLOS,
                  AFFE=_F(TOUT='OUI',
                          MATER=MA,),
                  AFFE_VARC=_F(NOM_VARC='NEUT1',
-                              CHAMP_GD=CHYOUNOS,),);
+                              CHAM_GD=CHYOUNOS,),);
 
 CLIMOS=AFFE_CHAR_MECA(MODELE=MOOS,
                      DDL_IMPO=_F(GROUP_MA='GRNM11',

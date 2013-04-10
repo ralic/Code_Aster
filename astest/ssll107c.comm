@@ -1,9 +1,9 @@
-# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
+# MODIF  DATE 09/04/2013   AUTEUR PELLET J.PELLET 
 # TITRE VALIDATION DE POST_ELEM MOT CLE FACTEUR CARA_GEOM
 # ssll107c.para = tps_job 60 mem_job 256Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -206,7 +206,7 @@ TCARA=POST_ELEM(          MODELE=MO,
                           CHAM_MATER=CHMAT,CARA_GEOM=(
                           _F(  TOUT = 'OUI'),
                                     _F(  MAILLE = 'M5'),
-                                    _F(  GROUP_MA = 'SURF1'))
+                                    _F(  GROUP_MA = 'GXXXXXX_SURF1'))
                     )
 
 TEST_TABLE(VALE_CALC=9.0000000000000006E-05,
@@ -262,7 +262,7 @@ TEST_TABLE(VALE_CALC=5.0525600000000004E-10,
            NOM_PARA='IY',
            TABLE=TCARA,
            FILTRE=_F(NOM_PARA='LIEU',
-                     VALE_K='SURF1',),
+                     VALE_K='GXXXXXX_SURF1',),
            )
 
 TEST_TABLE(VALE_CALC=5.1900200000000002E-09,
@@ -270,7 +270,7 @@ TEST_TABLE(VALE_CALC=5.1900200000000002E-09,
            NOM_PARA='IZ',
            TABLE=TCARA,
            FILTRE=_F(NOM_PARA='LIEU',
-                     VALE_K='SURF1',),
+                     VALE_K='GXXXXXX_SURF1',),
            )
 
 TEST_TABLE(VALE_CALC=104.1585,
@@ -278,7 +278,7 @@ TEST_TABLE(VALE_CALC=104.1585,
            NOM_PARA='ALPHA',
            TABLE=TCARA,
            FILTRE=_F(NOM_PARA='LIEU',
-                     VALE_K='SURF1',),
+                     VALE_K='GXXXXXX_SURF1',),
            )
 
 TEST_TABLE(VALE_CALC=2.2500000000000001E-05,
@@ -293,7 +293,7 @@ TMASS=POST_ELEM(          MODELE=MO,
                           CHAM_MATER=CHMAT,MASS_INER=(
                           _F(  TOUT = 'OUI'),
                                     _F(  MAILLE = 'M5'),
-                                    _F(  GROUP_MA = 'SURF1'))
+                                    _F(  GROUP_MA = 'GXXXXXX_SURF1'))
                     )
 
 TEST_TABLE(VALE_CALC=9.0000000000000006E-05,
@@ -357,7 +357,7 @@ TEST_TABLE(VALE_CALC=5.0525600000000004E-10,
            NOM_PARA='IX_PRIN_G',
            TABLE=TMASS,
            FILTRE=_F(NOM_PARA='LIEU',
-                     VALE_K='SURF1',),
+                     VALE_K='GXXXXXX_SURF1',),
            )
 
 TEST_TABLE(VALE_CALC=5.1900200000000002E-09,
@@ -365,7 +365,7 @@ TEST_TABLE(VALE_CALC=5.1900200000000002E-09,
            NOM_PARA='IY_PRIN_G',
            TABLE=TMASS,
            FILTRE=_F(NOM_PARA='LIEU',
-                     VALE_K='SURF1',),
+                     VALE_K='GXXXXXX_SURF1',),
            )
 
 TEST_TABLE(VALE_CALC=5.6952699999999999E-09,
@@ -373,7 +373,7 @@ TEST_TABLE(VALE_CALC=5.6952699999999999E-09,
            NOM_PARA='IZ_PRIN_G',
            TABLE=TMASS,
            FILTRE=_F(NOM_PARA='LIEU',
-                     VALE_K='SURF1',),
+                     VALE_K='GXXXXXX_SURF1',),
            )
 
 TEST_TABLE(VALE_CALC=104.1585,
@@ -381,7 +381,7 @@ TEST_TABLE(VALE_CALC=104.1585,
            NOM_PARA='ALPHA',
            TABLE=TMASS,
            FILTRE=_F(NOM_PARA='LIEU',
-                     VALE_K='SURF1',),
+                     VALE_K='GXXXXXX_SURF1',),
            )
 
 FIN( )

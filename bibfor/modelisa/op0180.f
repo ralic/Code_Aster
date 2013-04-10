@@ -2,9 +2,9 @@
       IMPLICIT NONE
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 18/12/2012   AUTEUR SELLENET N.SELLENET 
+C MODIF MODELISA  DATE 09/04/2013   AUTEUR PELLET J.PELLET 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -36,10 +36,10 @@ C -----------------
       CHARACTER*32 JEXNOM
       INTEGER       IBID, ICABL, ICMP, IRANA1, IRET, JCABA, JNBNO,
      &              JNCMP, JSIEF, JVALV, N1, N2, NBANCR, NBCABL, NBF0,
-     &              NBMAMA, NBNOBE, NBNOMA, NCABA, NRELAX, NSIEF,
-     &              NBMABE, JLIMAB
-      REAL*8        DELTA, EA, F0, FRCO, FRLI, MU0, RH1000, RJ,
-     &              SA, FPRG, XFLU, XRET
+     &              NBMAMA, NBNOBE, NBNOMA, NCABA, NSIEF,
+     &              NBMABE, JLIMAB,NBNOCA
+      REAL*8        DELTA, EA, F0, FRCO, FRLI, MU0, RH1000, 
+     &              SA, FPRG, XFLU, XRET, TRELAX
       LOGICAL       MAIL2D, RELAX
       CHARACTER*1   K1B
       CHARACTER*3   K3B
@@ -53,13 +53,14 @@ C -----------------
       INTEGER       NBPAR,NBNOBI
       PARAMETER    (NBPAR=13)
       CHARACTER*3   TYPPAR(NBPAR)
-      CHARACTER*24  NOMPAR(NBPAR)
+      CHARACTER*24  NOMPAR(NBPAR),TYPREL
+      CHARACTER*4   REGL
       INTEGER      IARG
 C
       DATA          AIRE  /'A1      '/
       DATA          EFFNOR/'N       '/
       DATA          TYPPAR /'I ','K8','R ','R ','R ',
-     &                      'K8','K8','I ','I ','R ','K8','K24','K24'/
+     &                      'K8','K8','I ','I ','R ','K24','K24','K24'/
       DATA          NOMPAR /'NUME_CABLE              ',
      &                      'NOEUD_CABLE             ',
      &                      'ABSC_CURV               ',
@@ -89,17 +90,26 @@ C
       NBCABL = ABS(NBCABL)
       CALL GETVR8(' ','TENSION_INIT',0,IARG,1,F0,IBID)
       CALL GETVR8(' ','RECUL_ANCRAGE',0,IARG,1,DELTA,IBID)
-      CALL GETFAC('RELAXATION',NRELAX)
-      IF ( NRELAX.NE.0 ) THEN
-         CALL GETVR8('RELAXATION','R_J',1,IARG,1,RJ,IBID)
-         IF ( RJ.EQ.0.0D0 ) THEN
-            RELAX = .FALSE.
-         ELSE
-            RELAX = .TRUE.
-         ENDIF
+      CALL GETVTX(' ','TYPE_RELAX'   ,1,IARG,1,TYPREL,IBID)
+      IF (TYPREL.EQ.'BPEL') THEN
+         RELAX = .TRUE.
+         CALL GETVR8(' ','R_J',0,IARG,1,TRELAX,IBID)
+      ELSEIF (TYPREL(1:4).EQ.'ETCC') THEN
+         RELAX = .TRUE.
+         CALL GETVR8(' ','NBH_RELAX',0,IARG,1,TRELAX,IBID)
       ELSE
-         RELAX = .FALSE.
+        RELAX = .FALSE.
       ENDIF
+C     RECUPERATION DES PERTES ELASTIQUES
+C     CALL GETVTX(' ','PERT_ELAS'   ,1,IARG,1,PELAS,IBID)
+C      IF (PELAS.EQ.'OUI') THEN
+C        PERTEL = .TRUE.
+C        CALL GETVR8(' ','EP_BETON',0,IARG,1,EPBET,IBID)
+C        CALL GETVR8(' ','ESP_CABLE',0,IARG,1,ESPCAB,IBID)
+C      ELSE
+C        PERTEL = .FALSE. 
+C      ENDIF      
+
 
 C
 C%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -301,7 +311,7 @@ C
      &                               'V', NCNCIN )
 C
       CALL TOMABE(CHMAT,NMABET,NBMABE,MAILLA,NBNOMA,
-     &            MAIL2D,NBNOBE,NUNOBE,XFLU,XRET)
+     &            MAIL2D,NBNOBE,NUNOBE,XFLU,XRET,REGL)
 
       CALL GROMAB(MAILLA,NMABET,NBMABE,MAIL2D,CAELEM,GROMAI)
 
@@ -318,7 +328,7 @@ C
 C 4.8.2  RECUPERATION DES CARACTERISTIQUES ELEMENTAIRES DU CABLE
 C .....
          CALL CAELCA(MODELE,CHMAT,CAELEM,IRANA1,
-     &               ICABL,ZI(JNBNO),NUMACA,
+     &               ICABL,ZI(JNBNO),NUMACA,REGL,
      &               RELAX,EA,RH1000,MU0,FPRG,FRCO,FRLI,SA)
 C
 C 4.8.3  INTERPOLATION DE LA TRAJECTOIRE DU CABLE
@@ -332,13 +342,14 @@ C .....
 C
 C 4.8.4  CALCUL DE LA TENSION LE LONG DU CABLE
 C .....
-         CALL TENSCA(NOMT19,ICABL,ZI(JNBNO),NBF0,F0,DELTA,RELAX,RJ,
-     &               XFLU,XRET,EA,RH1000,MU0,FPRG,FRCO,FRLI,SA)
+         NBNOCA= ZI(JNBNO+ICABL-1)
+         CALL TENSCA(NOMT19,ICABL,NBNOCA,NBF0,F0,DELTA,TYPREL,TRELAX,
+     &               XFLU,XRET,EA,RH1000,MU0,FPRG,FRCO,FRLI,SA,REGL)
 C
 C 4.8.5  MISE A JOUR DE LA CARTE ELEMENTAIRE DES CONTRAINTES INITIALES
 C .....
          CALL SIGMCA(NOMT19,CARSIG,ICABL,ZI(JNBNO),NUMACA)
-C
+C 
 C 4.8.6  DETERMINATION DES RELATIONS CINEMATIQUES ENTRE LES DDL DES
 C .....  NOEUDS DU CABLE ET CEUX DES NOEUDS DE LA STRUCTURE BETON
 C

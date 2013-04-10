@@ -1,22 +1,22 @@
-# MODIF  DATE 19/12/2012   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 09/04/2013   AUTEUR PELLET J.PELLET 
 # TITRE BARREAU FISSURE AVEC X-FEM
 # ssnv195c.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
-# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-# (AT YOUR OPTION) ANY LATER VERSION.                                                    
-#                                                                       
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-#                                                                       
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 
 DEBUT(CODE=_F(NOM='SSNV195C',NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'));
@@ -46,8 +46,8 @@ MAILLE=DEFI_GROUP(reuse = MAILLE,
                                 POINT  = (0.0,0.0,25.0),
                                 RAYON = 1E-3,
                                 PRECISION = 2E-3,
-                                ),   
-                            )    
+                                ),
+                            )
            );
 
 
@@ -75,24 +75,23 @@ MAILLE=DEFI_GROUP(reuse = MAILLE,
                                 VECT_NORMALE = (0.0,0.0,1.0),
                                 PRECISION = 1E-3,
                                 ),
-#                              _F(GROUP_MA='VOL'),                            
-                            )    
+#                              _F(GROUP_MA='VOL'),
+                            )
            );
 
 
-MAILLAGE=CREA_MAILLAGE(MAILLAGE=MAILLE,COPIE=_F(),
-                       );
+MAILLAGE= COPIER(CONCEPT= MAILLE)
 
 MAILLAGE=DEFI_GROUP(reuse =MAILLAGE,
                     MAILLAGE=MAILLAGE,
-                    CREA_GROUP_NO=_F(GROUP_MA='VOL'),   
+                    CREA_GROUP_NO=_F(GROUP_MA='VOL'),
                     );
 
 MODELEIN=AFFE_MODELE(MAILLAGE=MAILLAGE,
                    AFFE=_F(GROUP_MA=('VOL'),
                             PHENOMENE='MECANIQUE',
                             MODELISATION='3D'),
-                     );        
+                     );
 
 PENTE1=0.57735
 PENTE2=0.57735
@@ -104,29 +103,29 @@ LN1=FORMULE(NOM_PARA=('X','Y','Z'),VALE='Z-PENTE1*Y-B1');
 
 LN2=FORMULE(NOM_PARA=('X','Y','Z'),VALE='Z-PENTE2*Y-B2');
 
-     
 
-FISS1=DEFI_FISS_XFEM(MODELE=MODELEIN,  
+
+FISS1=DEFI_FISS_XFEM(MODELE=MODELEIN,
                     TYPE_DISCONTINUITE='INTERFACE',
                     DEFI_FISS=_F(FONC_LN=LN1));
 
-                    
-FISS2=DEFI_FISS_XFEM(MODELE=MODELEIN,  
+
+FISS2=DEFI_FISS_XFEM(MODELE=MODELEIN,
                     TYPE_DISCONTINUITE='INTERFACE',
                     DEFI_FISS=_F(FONC_LN=LN2));
-                    
+
 
 MODELEK=MODI_MODELE_XFEM(MODELE_IN=MODELEIN,
                          FISSURE=(FISS1,FISS2),
-                         CONTACT='P1P1',                         
+                         CONTACT='P1P1',
                         );
-                        
+
 
 CTXFEM = DEFI_CONTACT(MODELE         = MODELEK,
                       FORMULATION    = 'XFEM',
                       FROTTEMENT     = 'COULOMB',
-                      ITER_CONT_MAXI = 2, 
-                      ITER_FROT_MAXI = 6,                    
+                      ITER_CONT_MAXI = 2,
+                      ITER_FROT_MAXI = 6,
                       REAC_GEOM      = 'SANS',
                       ZONE=(
                             _F(
@@ -134,22 +133,22 @@ CTXFEM = DEFI_CONTACT(MODELE         = MODELEK,
                                INTEGRATION  = 'GAUSS',
                                CONTACT_INIT = 'OUI',
                                ALGO_CONT    = 'STANDARD',
-                               COEF_CONT    = 100.,   
+                               COEF_CONT    = 100.,
                                COULOMB      = 1.0,
-                               SEUIL_INIT   = -2.E11,   
+                               SEUIL_INIT   = -2.E11,
                                ALGO_FROT    = 'STANDARD',
-                               COEF_FROT    = 1000.), 
+                               COEF_FROT    = 1000.),
                             _F(
                                FISS_MAIT    = FISS2,
                                INTEGRATION  = 'GAUSS',
                                CONTACT_INIT = 'OUI',
                                ALGO_CONT    = 'STANDARD',
-                               COEF_CONT    = 100.,   
+                               COEF_CONT    = 100.,
                                COULOMB      = 1.0,
-                               SEUIL_INIT   = -2.E11,   
+                               SEUIL_INIT   = -2.E11,
                                ALGO_FROT    = 'STANDARD',
-                               COEF_FROT    = 1000.,        
-                             ),                              
+                               COEF_FROT    = 1000.,
+                             ),
                          ),
                    );
 
@@ -179,7 +178,7 @@ CH1=AFFE_CHAR_MECA(MODELE=MODELEK,
                                     ),
                                  _F(GROUP_NO='face_hau',
                                     DX=ZERO,
-                                    DY=ZERO,   
+                                    DY=ZERO,
                                     DZ=DEPZ),
                                  _F(GROUP_NO='face_bas',
                                     DX=ZERO,
@@ -198,10 +197,10 @@ L_INST=DEFI_LIST_REEL(DEBUT=0.0,
                                     NOMBRE=1));
 
 UTOT1=STAT_NON_LINE(MODELE=MODELEK,
-                   CHAM_MATER=CHAMPMAT,              
-                   EXCIT=(_F(CHARGE=CH1),                    
-                          _F(CHARGE=CHXFEM)), 
-                   CONTACT  = CTXFEM,                        
+                   CHAM_MATER=CHAMPMAT,
+                   EXCIT=(_F(CHARGE=CH1),
+                          _F(CHARGE=CHXFEM)),
+                   CONTACT  = CTXFEM,
                    COMP_ELAS=_F(RELATION='ELAS',
                                 GROUP_MA='VOL'),
                    INCREMENT=_F(LIST_INST=L_INST),
@@ -212,9 +211,9 @@ UTOT1=STAT_NON_LINE(MODELE=MODELEK,
                    INFO=2);
 
 
-# -------------------------------------------------------------   
-#            POST-TRAITEMENT POUR LA VISUALISATION X-FEM   
-# -------------------------------------------------------------   
+# -------------------------------------------------------------
+#            POST-TRAITEMENT POUR LA VISUALISATION X-FEM
+# -------------------------------------------------------------
 
 MA_XFEM=POST_MAIL_XFEM(
                        MODELE        = MODELEK,
@@ -223,20 +222,20 @@ MA_XFEM=POST_MAIL_XFEM(
 MOD_VISU=AFFE_MODELE(MAILLAGE=MA_XFEM,
                      AFFE=_F(TOUT='OUI',
                               PHENOMENE='MECANIQUE',
-                              MODELISATION='3D')) 
+                              MODELISATION='3D'))
 
 RES_XFEM=POST_CHAM_XFEM(
                         MODELE_VISU   = MOD_VISU,
                         RESULTAT      = UTOT1,
-                        
+
                         INFO          = 2)
- 
+
 #IMPR_RESU(FORMAT='GMSH',UNITE=81,RESU=_F(RESULTAT=RES_XFEM));
 
 
-# -------------------------------------------------------------   
+# -------------------------------------------------------------
 #            TEST_TABLE
-# -------------------------------------------------------------   
+# -------------------------------------------------------------
 
 
 DEP=POST_RELEVE_T(ACTION=_F(INTITULE='DEPLE',

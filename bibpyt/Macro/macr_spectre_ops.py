@@ -1,21 +1,21 @@
-#@ MODIF macr_spectre_ops Macro  DATE 06/08/2012   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF macr_spectre_ops Macro  DATE 09/04/2013   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
-# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-# (AT YOUR OPTION) ANY LATER VERSION.                                                  
-#                                                                       
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-#                                                                       
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 
 from Accas import _F
@@ -36,7 +36,7 @@ def macr_spectre_ops(self,MAILLAGE,PLANCHER,NOM_CHAM,CALCUL,RESU,IMPRESSION=None
   import string
   from types import ListType,TupleType,StringType
   EnumType=(ListType,TupleType)
-  
+
   ### On importe les definitions des commandes a utiliser dans la macro
   RECU_FONCTION    = self.get_cmd('RECU_FONCTION')
   CALC_FONCTION    = self.get_cmd('CALC_FONCTION')
@@ -64,12 +64,12 @@ def macr_spectre_ops(self,MAILLAGE,PLANCHER,NOM_CHAM,CALCUL,RESU,IMPRESSION=None
       if plancher['GROUP_NO']!=None :
          if type(plancher['GROUP_NO'])==StringType :
                 noms_no =[string.strip(l_nodes[n-1]) \
-                          for n in dic_gpno[plancher['GROUP_NO'].ljust(8)]]
+                          for n in dic_gpno[plancher['GROUP_NO'].ljust(24)]]
                 liste_no=liste_no+noms_no
          else :
              for group_no in plancher['GROUP_NO'] :
                 noms_no =[string.strip(l_nodes[n-1]) \
-                          for n in dic_gpno[group_no.ljust(8)]]
+                          for n in dic_gpno[group_no.ljust(24)]]
                 liste_no=liste_no+noms_no
       planch_nodes[plancher['NOM']]=liste_no
       l_plancher.append(plancher['NOM'])
@@ -119,7 +119,7 @@ def macr_spectre_ops(self,MAILLAGE,PLANCHER,NOM_CHAM,CALCUL,RESU,IMPRESSION=None
                                         PROL_GAUCHE  = 'CONSTANT',
                                         PROL_DROITE  = 'CONSTANT',
                                         NOEUD        = node , **motscles )
- 
+
                   if resu['RESULTAT' ]!=None :
                     motscles['RESULTAT']  = resu['RESULTAT']
                     __spo=RECU_FONCTION(NOM_CHAM     = NOM_CHAM,
@@ -215,7 +215,7 @@ def macr_spectre_ops(self,MAILLAGE,PLANCHER,NOM_CHAM,CALCUL,RESU,IMPRESSION=None
               __moyxa=[None]*len(AMOR_SPEC)
               __moyya=[None]*len(AMOR_SPEC)
               __moyza=[None]*len(AMOR_SPEC)
-              for i in range(len(AMOR_SPEC)) : 
+              for i in range(len(AMOR_SPEC)) :
                  amor = AMOR_SPEC[i]
                  __moyxa[i]=RECU_FONCTION(NAPPE          = __moy_x[indexn],
                                           VALE_PARA_FONC = AMOR_SPEC[i]   )
@@ -228,7 +228,7 @@ def macr_spectre_ops(self,MAILLAGE,PLANCHER,NOM_CHAM,CALCUL,RESU,IMPRESSION=None
               if dI.has_key('PILOTE')            : motscles['PILOTE'   ]=IMPRESSION['PILOTE']
               if IMPRESSION['FORMAT']!='TABLEAU' : motscles['ECHELLE_X']='LOG'
               if IMPRESSION['TRI']=='AMOR_SPEC' :
-                 for i in range(len(AMOR_SPEC)) : 
+                 for i in range(len(AMOR_SPEC)) :
                     TITRE   ='Spectres / Plancher = '+plancher+\
                                        ' / amor='+str(AMOR_SPEC[i])+\
                                        ' / noeud='+node
@@ -291,7 +291,7 @@ def macr_spectre_ops(self,MAILLAGE,PLANCHER,NOM_CHAM,CALCUL,RESU,IMPRESSION=None
   ### Renseignement de la table finale des résultats
       if   NOM_CHAM=='ACCE' :
            nbind=len(AMOR_SPEC)
-           for i in range(nbind) :  
+           for i in range(nbind) :
               dico_glob['FREQ'                    ]=__snx.Valeurs()[1][i][0]
               dico_glob['eX_%d_%s' % (i, plancher)]=__snx.Valeurs()[1][i][1]
               dico_glob['eY_%d_%s' % (i, plancher)]=__sny.Valeurs()[1][i][1]
@@ -314,7 +314,7 @@ def macr_spectre_ops(self,MAILLAGE,PLANCHER,NOM_CHAM,CALCUL,RESU,IMPRESSION=None
         __snya=[None]*len(AMOR_SPEC)
         __snza=[None]*len(AMOR_SPEC)
         __snha=[None]*len(AMOR_SPEC)
-        for i in range(nbind) : 
+        for i in range(nbind) :
            __snxa[i]=RECU_FONCTION(NAPPE          = __snx,
                                    VALE_PARA_FONC = AMOR_SPEC[i], )
            __snya[i]=RECU_FONCTION(NAPPE          = __sny,
@@ -324,7 +324,7 @@ def macr_spectre_ops(self,MAILLAGE,PLANCHER,NOM_CHAM,CALCUL,RESU,IMPRESSION=None
            __snha[i]=RECU_FONCTION(NAPPE          = __snh,
                                    VALE_PARA_FONC = AMOR_SPEC[i], )
         if IMPRESSION['TRI']=='AMOR_SPEC' :
-           for i in range(nbind) : 
+           for i in range(nbind) :
               TITRE   ='Spectres moyens / Plancher = '+plancher+' / amor='+str(AMOR_SPEC[i])
               IMPR_FONCTION(
                  FORMAT=IMPRESSION['FORMAT'],

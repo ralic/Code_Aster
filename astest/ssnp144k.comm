@@ -1,4 +1,4 @@
-# MODIF  DATE 15/01/2013   AUTEUR LADIER A.LADIER 
+# MODIF  DATE 09/04/2013   AUTEUR PELLET J.PELLET 
 # TITRE ZONE COHESIVE CZM_EXP_REG AVEC X-FEM
 # ssnp144d.para = tps_job 360 mem_job 128Mo ncpus 1 liste_test S
 # ssnp144k.para = tps_job 300 mem_job 512Mo ncpus 1 liste_test S
@@ -30,8 +30,7 @@ PRE_GIBI();
 
 MAILLAG1=LIRE_MAILLAGE();
 
-MAILLAG2=CREA_MAILLAGE(MAILLAGE=MAILLAG1,COPIE=_F(),
-                       );
+MAILLAG2= COPIER(CONCEPT= MAILLAG1)
 
 #----------------------------------------------
 #                   MODELE ET FISSURE
@@ -490,7 +489,7 @@ for i in range(0,nbc) :
               TYPE_TEST='MAX',
               VALE_CALC=VALE_CALC[i*4], VALE_REFE=LLAG[i],
               CRITERE='RELATIF',
-              PRECISION=TOLE, 
+              PRECISION=TOLE,
               REFERENCE='ANALYTIQUE');
 
    TEST_TABLE(TABLE=TAB1[i],
@@ -498,7 +497,7 @@ for i in range(0,nbc) :
               TYPE_TEST='MIN',
               VALE_CALC=VALE_CALC[i*4+1], VALE_REFE=LLAG[i],
               CRITERE='RELATIF',
-              PRECISION=TOLE, 
+              PRECISION=TOLE,
               REFERENCE='ANALYTIQUE');
 
    TEST_TABLE(TABLE=TAB4[i],
@@ -506,7 +505,7 @@ for i in range(0,nbc) :
               TYPE_TEST='MAX',
               VALE_CALC=VALE_CALC[i*4+2], VALE_REFE=LDEP[i],
               CRITERE='RELATIF',
-              PRECISION=TOLE, 
+              PRECISION=TOLE,
               REFERENCE='ANALYTIQUE');
 
    TEST_TABLE(TABLE=TAB4[i],
@@ -514,7 +513,7 @@ for i in range(0,nbc) :
               TYPE_TEST='MIN',
               VALE_CALC=VALE_CALC[i*4+3], VALE_REFE=LDEP[i],
               CRITERE='RELATIF',
-              PRECISION=TOLE, 
+              PRECISION=TOLE,
               REFERENCE='ANALYTIQUE');
 
 #--------------------------------------------------------
@@ -564,7 +563,7 @@ for i in range(0,nbc) :
               VALE_ABS='OUI',
               VALE_CALC=VALE_CALC[4*nbc+i*4], VALE_REFE=LLAG[i],
               CRITERE='RELATIF',
-              PRECISION=TOLE, 
+              PRECISION=TOLE,
               REFERENCE='ANALYTIQUE');
 
    TEST_TABLE(TABLE=TAB10[i],
@@ -573,7 +572,7 @@ for i in range(0,nbc) :
               VALE_ABS='OUI',
               VALE_CALC=VALE_CALC[4*nbc+i*4+1], VALE_REFE=LLAG[i],
               CRITERE='RELATIF',
-              PRECISION=TOLE, 
+              PRECISION=TOLE,
               REFERENCE='ANALYTIQUE');
 
    TEST_TABLE(TABLE=TAB40[i],
@@ -581,7 +580,7 @@ for i in range(0,nbc) :
               TYPE_TEST='MAX',
               VALE_CALC=VALE_CALC[4*nbc+i*4+2], VALE_REFE=LDEP[i],
               CRITERE='RELATIF',
-              PRECISION=TOLE, 
+              PRECISION=TOLE,
               REFERENCE='ANALYTIQUE');
 
    TEST_TABLE(TABLE=TAB40[i],
@@ -589,6 +588,6 @@ for i in range(0,nbc) :
               TYPE_TEST='MIN',
               VALE_CALC=VALE_CALC[4*nbc+i*4+3], VALE_REFE=LDEP[i],
               CRITERE='RELATIF',
-              PRECISION=TOLE, 
+              PRECISION=TOLE,
               REFERENCE='ANALYTIQUE');
 FIN();

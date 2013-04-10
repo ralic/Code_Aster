@@ -1,9 +1,9 @@
-# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
+# MODIF  DATE 09/04/2013   AUTEUR PELLET J.PELLET 
 # TITRE SOUS-STRUCTURATION TRANSITOIRE : POUTRE EN TRACTION SIMPLE
 # sdll113a.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -452,19 +452,19 @@ TEST_RESU(RESU=_F(NUME_ORDRE=12,
 #          VERIFICATION QUE LE CACUL DIRECT ET SSD DONNENT LE MEME RESULTAT         #
 #####################################################################################
 #
-D_direct=CREA_CHAMP(OPERATION='EXTR', 
+D_direct=CREA_CHAMP(OPERATION='EXTR',
                     INST=1.95E-2,
                     NOM_CHAM = 'DEPL',
                     TYPE_CHAM = 'NOEU_DEPL_R',
                     RESULTAT = RESULT1,);
 #
-V_direct=CREA_CHAMP(OPERATION='EXTR', 
+V_direct=CREA_CHAMP(OPERATION='EXTR',
                     INST=1.95E-2,
                     NOM_CHAM = 'VITE',
                     TYPE_CHAM = 'NOEU_DEPL_R',
                     RESULTAT = RESULT1,);
 #
-A_direct=CREA_CHAMP(OPERATION='EXTR', 
+A_direct=CREA_CHAMP(OPERATION='EXTR',
                     INST=1.95E-2,
                     NOM_CHAM = 'ACCE',
                     TYPE_CHAM = 'NOEU_DEPL_R',
@@ -479,26 +479,26 @@ TRG_PROJ = PROJ_CHAMP( RESULTAT = TRAN_GLO,
                       VIS_A_VIS=_F(TOUT_1='OUI',
                                    TOUT_2='OUI',),);
 #
-D_ssd=CREA_CHAMP(OPERATION='EXTR', 
+D_ssd=CREA_CHAMP(OPERATION='EXTR',
                     INST=1.95E-2,
                     NOM_CHAM = 'DEPL',
                     TYPE_CHAM = 'NOEU_DEPL_R',
                     RESULTAT = TRG_PROJ,);
 #
-V_ssd=CREA_CHAMP(OPERATION='EXTR', 
+V_ssd=CREA_CHAMP(OPERATION='EXTR',
                     INST=1.95E-2,
                     NOM_CHAM = 'VITE',
                     TYPE_CHAM = 'NOEU_DEPL_R',
                     RESULTAT = TRG_PROJ,);
 #
-A_ssd=CREA_CHAMP(OPERATION='EXTR', 
+A_ssd=CREA_CHAMP(OPERATION='EXTR',
                     INST=1.95E-2,
                     NOM_CHAM = 'ACCE',
                     TYPE_CHAM = 'NOEU_DEPL_R',
                     RESULTAT = TRG_PROJ,);
 #
 DIFF_D=CREA_CHAMP(OPERATION='ASSE', TYPE_CHAM='NOEU_DEPL_R',MODELE=POUTRE,
-                  PROL_ZERO='OUI',
+
                 ASSE=(_F(TOUT='OUI', CHAM_GD=D_direct,CUMUL='OUI',COEF_R=+1.,NOM_CMP='DX',NOM_CMP_RESU='DX',),
                       _F(TOUT='OUI', CHAM_GD=D_ssd, CUMUL='OUI',COEF_R=-1.,NOM_CMP='DX',NOM_CMP_RESU='DX',),
                       _F(TOUT='OUI', CHAM_GD=D_direct,CUMUL='OUI',COEF_R=+1.,NOM_CMP='DY',NOM_CMP_RESU='DY',),
@@ -514,7 +514,7 @@ DIFF_D=CREA_CHAMP(OPERATION='ASSE', TYPE_CHAM='NOEU_DEPL_R',MODELE=POUTRE,
                       ),);
 #
 DIFF_V=CREA_CHAMP(OPERATION='ASSE', TYPE_CHAM='NOEU_DEPL_R',MODELE=POUTRE,
-                  PROL_ZERO='OUI',
+
                 ASSE=(_F(TOUT='OUI', CHAM_GD=V_direct,CUMUL='OUI',COEF_R=+1.,NOM_CMP='DX',NOM_CMP_RESU='DX',),
                       _F(TOUT='OUI', CHAM_GD=V_ssd, CUMUL='OUI',COEF_R=-1.,NOM_CMP='DX',NOM_CMP_RESU='DX',),
                       _F(TOUT='OUI', CHAM_GD=V_direct,CUMUL='OUI',COEF_R=+1.,NOM_CMP='DY',NOM_CMP_RESU='DY',),
@@ -530,7 +530,7 @@ DIFF_V=CREA_CHAMP(OPERATION='ASSE', TYPE_CHAM='NOEU_DEPL_R',MODELE=POUTRE,
                       ),);
 #
 DIFF_A=CREA_CHAMP(OPERATION='ASSE', TYPE_CHAM='NOEU_DEPL_R',MODELE=POUTRE,
-                  PROL_ZERO='OUI',
+
                 ASSE=(_F(TOUT='OUI', CHAM_GD=A_direct,CUMUL='OUI',COEF_R=+1.,NOM_CMP='DX',NOM_CMP_RESU='DX',),
                       _F(TOUT='OUI', CHAM_GD=A_ssd, CUMUL='OUI',COEF_R=-1.,NOM_CMP='DX',NOM_CMP_RESU='DX',),
                       _F(TOUT='OUI', CHAM_GD=A_direct,CUMUL='OUI',COEF_R=+1.,NOM_CMP='DY',NOM_CMP_RESU='DY',),

@@ -1,22 +1,22 @@
-# MODIF  DATE 22/01/2013   AUTEUR LADIER A.LADIER 
+# MODIF  DATE 09/04/2013   AUTEUR PELLET J.PELLET 
 # TITRE METHODE DES SOLUTIONS MANUFACTUREES : THERMIQUE 2D
 # tplp107b.para = tps_job 600 mem_job 512Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
-# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-# (AT YOUR OPTION) ANY LATER VERSION.                                                    
-#                                                                       
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-#                                                                       
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 
 import math
@@ -127,7 +127,7 @@ def NormeAster(RESULTAT, Sol_Ana, MAIL, MODELE, GROUP_MA):
                             ),);
 
      DIFFN=CREA_CHAMP(OPERATION='ASSE', TYPE_CHAM='NOEU_TEMP_R',MODELE=MODELE,
-                      PROL_ZERO='OUI',
+
                       ASSE=(_F(GROUP_MA=GROUP_MA, CHAM_GD=Ucalc,CUMUL='OUI',COEF_R=1., NOM_CMP='TEMP',NOM_CMP_RESU='TEMP',),
                             _F(GROUP_MA=GROUP_MA, CHAM_GD=Uana, CUMUL='OUI',COEF_R=-1.,NOM_CMP='TEMP',NOM_CMP_RESU='TEMP',),
                             ),);
@@ -177,9 +177,9 @@ ACIER=DEFI_MATERIAU(THER=_F(LAMBDA=Lambda),);
 INCLUDE(UNITE=38)
 
 #================================================================================================
-# Debut de l'etude de la convergence           
+# Debut de l'etude de la convergence
 #================================================================================================
-  
+
 #nombre de remaillage
 nb_remail=4;
 
@@ -204,22 +204,22 @@ for remail in range(0,nb_remail):
 
 
      # ========================================================================================
-     #          Preparation de calcul sur le nouveau maillage        
+     #          Preparation de calcul sur le nouveau maillage
      # ========================================================================================
-     
+
      MO=AFFE_MODELE(MAILLAGE=MA[remail],
                     AFFE=_F(TOUT = 'OUI',
                              PHENOMENE='THERMIQUE',
                              MODELISATION='PLAN',),
-                   );    
-                               
-                               
-                                            
+                   );
+
+
+
      CHMAT=AFFE_MATERIAU(MAILLAGE=MA[remail],
                          AFFE=_F(TOUT='OUI',
                                  MATER=ACIER,),
-                         ); 
-                                  
+                         );
+
      CLIMIT=AFFE_CHAR_THER_F(MODELE=MO,
                              TEMP_IMPO=(_F(GROUP_MA='GAUCHE',
                                            TEMP=TT,),
@@ -232,39 +232,39 @@ for remail in range(0,nb_remail):
                                            FLUN=NN,),
                              SOURCE  = _F(GROUP_MA='SURFACE',
                                           SOUR=SS,),
-                            );                                           
-                                      
-     # Phase de resolution proprement dite 
+                            );
+
+     # Phase de resolution proprement dite
      resolut=THER_LINEAIRE(MODELE=MO,
                            CHAM_MATER=CHMAT,
                            EXCIT=_F(CHARGE=CLIMIT,),
                            );
-                           
+
 
      # ========================================================================================
-     #          Calcul des normes d'erreur 
+     #          Calcul des normes d'erreur
      # ========================================================================================
-     
+
      dicResu=NormeAster(resolut, [TT], MA[remail], MO, 'SURFACE');
-     
+
 
      NormeL2Erreur [remail]=dicResu['NormeL2Erreur']
 
-     
-   
+
+
      # ========================================================================================
      #          Adaptationn de maillage proprement dite
      # ========================================================================================
-     
+
      if remail<(nb_remail-1) :
          MA[remail+1]=CO('MA_%d' % (remail+1))
          MACR_ADAP_MAIL(ADAPTATION = 'RAFFINEMENT_UNIFORME',
                         MAILLAGE_N =MA[remail],
                         MAILLAGE_NP1 =MA[remail+1],
                          );
-                    
 
-                   
+
+
          # Destruction des concepts inutilises dans les prochaines etapes de la boucle
          DETRUIRE(CONCEPT=(_F(NOM=MO,),
                            _F(NOM=CHMAT),
@@ -276,8 +276,8 @@ for remail in range(0,nb_remail):
                            ),
                    INFO=1,
                   );
-                  
-                  
+
+
 print 'Norme L2 de l erreur= %e' %dicResu['NormeL2Erreur']
 
 PenteL2=-math.log( NormeL2Erreur[-1]/NormeL2Erreur[-2])/math.log(2.)

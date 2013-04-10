@@ -2,11 +2,12 @@
      &                   MATERF,TIMED,TIMEF,YF,DEPS,
      &                   ITMAX,TOLER, NBCOMM, CPMONO,
      &                   PGL,NFS,NSG,TOUTMS,HSR,NR,COMP,NVI,
-     &                   VIND,VINF,EPSD, YD,DY,CRIT, DRDY ,IRET)
+     &                   VIND,VINF,EPSD, YD,DY, YE,CRIT,INDI,
+     &                   VIND1,BNEWS,MTRAC,DRDY,IRET)
         IMPLICIT   NONE
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 25/02/2013   AUTEUR PROIX J-M.PROIX 
+C MODIF ALGORITH  DATE 09/04/2013   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -54,13 +55,21 @@ C           VINF   :  VARIABLE INTERNES A T+DT
 C           EPSD   :  DEFORMATION A T
 C           YD     :  VARIABLES A T   = ( SIGD  VARD  ) A T
 C           DY     :  SOLUTION           =    ( DSIG  DVIN  (DEPS3)  )
+C           CRIT   :  CRITERES LOCAUX
+C           INDI   :  MECANISMES POTENTIEL ACTIFS (HUJEUX)
+C           VIND1  :  VARIABLES INTERNES D'ORIGINE (HUJEUX)
+C           YE     :  VECTEUR SOLUTION APRES LCINIT
+C           BNEWS  :  INDICATEURS LIES A LA TRACTION (HUJEUX)
+C           MTRAC  :  INDICATEUR LIE A LA TRACTION (HUJEUX - BIS)
 C       OUT DRDY   :  JACOBIEN DU SYSTEME NON LINEAIRE
 C           IRET   :  CODE RETOUR
 C       ----------------------------------------------------------------
 C
         INTEGER         NR,NMAT,KPG,KSP,ITMAX,IRET,NVI,NFS,NSG
+        INTEGER         INDI(7)
         REAL*8          DEPS(6) , EPSD(6), TOLER, CRIT(*)
-        REAL*8          DRDY(NR,NR) , YF(NR), DY(NR),YD(NR)
+        REAL*8          DRDY(NR,NR) , YF(NR), DY(NR),YD(NR),VIND1(NVI)
+        REAL*8          YE(NR)
 C
         REAL*8          MATERD(NMAT,2),MATERF(NMAT,2)
         REAL*8          TIMED, TIMEF,VIND(*),VINF(*)
@@ -74,7 +83,8 @@ C
         REAL*8          PGL(3,3)
         CHARACTER*16    COMP(*)
         CHARACTER*24    CPMONO(5*NMAT+1)
-
+C
+        LOGICAL         PROX(4),PROXC(4),BNEWS(3),MTRAC
 C       ----------------------------------------------------------------
 
       IRET=0
@@ -102,6 +112,10 @@ C
       ELSEIF ( LOI  .EQ. 'HAYHURST' ) THEN
          CALL HAYJAC (MOD, NMAT,MATERF(1,1),MATERF(1,2),TIMED,TIMEF,
      &                YF,DEPS,NR,NVI,VIND,VINF,YD,DY,CRIT,DRDY,IRET)
+      
+      ELSEIF ( LOI(1:6)  .EQ. 'HUJEUX' ) THEN
+         CALL HUJJAC (MOD,MATERF,INDI,DEPS,NR,YD,YF,YE,NVI,VIND,
+     &                VIND1,VINF,DRDY,BNEWS,MTRAC,IRET)
 
       ENDIF
 C

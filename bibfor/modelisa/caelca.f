@@ -1,10 +1,10 @@
       SUBROUTINE CAELCA(MODELE,CHMAT,CAELEM,IRANA1,
-     &                  ICABL,NBNOCA,NUMACA,
-     &                  RELAX,EA,RH1000,MU0,FPRG,FRCO,FRLI,SA)
+     &                  ICABL,NBNOCA,NUMACA,REGL,
+     &                  RELAX,EA,RH1000,PRELAX,FPRG,FRCO,FRLI,SA)
       IMPLICIT NONE
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 14/01/2013   AUTEUR FLEJOU J-L.FLEJOU 
+C MODIF MODELISA  DATE 09/04/2013   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -24,6 +24,8 @@ C ======================================================================
 C-----------------------------------------------------------------------
 C  DESCRIPTION : RECUPERATION DES CARACTlERISTIQUES ELEMENTAIRES
 C  -----------   D'UN CABLE
+C                CES DONNEES PEUVENT ETRE DEFINI PAR BPEL_ACIER 
+C                                                OU ETCC_ACIER
 C                APPELANT : OP0180 , OPERATEUR DEFI_CABLE_BP
 C
 C  IN     : MODELE : CHARACTER*8 , SCALAIRE
@@ -43,6 +45,8 @@ C                    NOM D'UN VECTEUR D'ENTIERS POUR STOCKAGE DES
 C                    NUMEROS DES MAILLES APPARTENANT AUX CABLES
 C                    CE VECTEUR EST COMPLETE LORS DU PASSAGE PREALABLE
 C                    DANS LA ROUTINE TOPOCA
+C IN      : REGL    : CHARACTER*4, NOM DU REGLEMENT UTILISE
+C                     BPEL OU ETCC
 C  IN/OUT : RELAX  : LOGICAL , SCALAIRE
 C                    INDICATEUR DE PRISE EN COMPTE DES PERTES DE TENSION
 C                    PAR RELAXATION DE L'ACIER
@@ -51,7 +55,7 @@ C  OUT    : EA     : REAL*8 , SCALAIRE
 C                    VALEUR DU MODULE D'YOUNG DE L'ACIER
 C  OUT    : RH1000 : REAL*8 , SCALAIRE
 C                    VALEUR DE LA RELAXATION A 1000 HEURES EN %
-C  OUT    : MU0    : REAL*8 , SCALAIRE
+C  OUT    : PRELAX    : REAL*8 , SCALAIRE
 C                    VALEUR DU COEFFICIENT DE RELAXATION DE L'ACIER
 C                    PRECONTRAINT
 C  OUT    : FPRG  : REAL*8 , SCALAIRE
@@ -77,7 +81,7 @@ C ---------
       INTEGER       IRANA1, ICABL, NBNOCA(*)
       CHARACTER*19  NUMACA
       LOGICAL       RELAX
-      REAL*8        EA, RH1000, MU0, FPRG, FRCO, FRLI, SA
+      REAL*8        EA, RH1000, PRELAX, FPRG, FRCO, FRLI, SA
 C
 C VARIABLES LOCALES
 C -----------------
@@ -94,15 +98,17 @@ C -----------------
       CHARACTER*24  CADESC, CAPTMA, CAVALK, CAVALR, MODMAI, RCVALK,
      &              RCVALR
       CHARACTER*24  VALK(2)
+      CHARACTER*4    REGL
 C
       REAL*8        R8PREM
 C
-      CHARACTER*8   BPELA(5), YOUNG
+      CHARACTER*8   BPELA(5), ETCCA(4), YOUNG
       CHARACTER*16  NOMELE
 C
       DATA          NOMELE /'MECA_BARRE      '/
       DATA          BPELA  /'RELAX_10','MU0_RELA','F_PRG',
      &                      'FROT_COU','FROT_LIN'/
+      DATA          ETCCA  /'RELAX_10','F_PRG','COEF_FRO','PERT_LIG'/
       DATA          YOUNG  /'E       '/
 C
 C-------------------   DEBUT DU CODE EXECUTABLE    ---------------------
@@ -216,9 +222,15 @@ C
          CALL U2MESK('F','MODELISA2_53',1,K3CAB)
       ENDIF
 C
-C 2.3 RELATION DE COMPORTEMENT <BPEL_ACIER> DU MATERIAU ACIER
+C 2.3 RELATION DE COMPORTEMENT <BPEL_ACIER> OU <ETCC_ACIER>
+C      DU MATERIAU ACIER
 C ---
-      NOMRC =  ACIER//'.BPEL_ACIER'
+
+      IF (REGL.EQ.'BPEL') THEN 
+        NOMRC =  ACIER//'.BPEL_ACIER'
+      ELSE  
+        NOMRC =  ACIER//'.ETCC_ACIER' 
+      ENDIF  
       RCVALK = NOMRC//'.VALK'
       CALL JEEXIN(RCVALK,IRET)
       IF ( IRET.EQ.0 ) THEN
@@ -230,49 +242,83 @@ C ---
       CALL JEVEUO(RCVALR,'L',JVALR)
       CALL JELIRA(RCVALR,'LONMAX',NBCSTE,K1B)
 C
-      TROUV1 = .FALSE.
-      TROUV2 = .FALSE.
-      TROUV3 = .FALSE.
-      TROUV4 = .FALSE.
-      TROUV5 = .FALSE.
-      DO 40 ICSTE = 1, NBCSTE
-         IF ( ZK8(JVALK+ICSTE-1).EQ.BPELA(1) ) THEN
+C  2.3.1 CAS BPEL
+      IF (REGL.EQ.'BPEL') THEN 
+        TROUV1 = .FALSE.
+        TROUV2 = .FALSE.
+        TROUV3 = .FALSE.
+        TROUV4 = .FALSE.
+        TROUV5 = .FALSE.
+        DO 40 ICSTE = 1, NBCSTE
+          IF ( ZK8(JVALK+ICSTE-1).EQ.BPELA(1) ) THEN
             TROUV1 = .TRUE.
             RH1000 = ZR(JVALR+ICSTE-1)
-         ENDIF
-         IF ( ZK8(JVALK+ICSTE-1).EQ.BPELA(2) ) THEN
+          ENDIF
+          IF ( ZK8(JVALK+ICSTE-1).EQ.BPELA(2) ) THEN
             TROUV2 = .TRUE.
-            MU0 = ZR(JVALR+ICSTE-1)
-         ENDIF
-         IF ( ZK8(JVALK+ICSTE-1).EQ.BPELA(3) ) THEN
+            PRELAX = ZR(JVALR+ICSTE-1)
+          ENDIF
+          IF ( ZK8(JVALK+ICSTE-1).EQ.BPELA(3) ) THEN
             TROUV3 = .TRUE.
             FPRG = ZR(JVALR+ICSTE-1)
-         ENDIF
-         IF ( ZK8(JVALK+ICSTE-1).EQ.BPELA(4) ) THEN
+          ENDIF
+          IF ( ZK8(JVALK+ICSTE-1).EQ.BPELA(4) ) THEN
             TROUV4 = .TRUE.
             FRCO = ZR(JVALR+ICSTE-1)
-         ENDIF
-         IF ( ZK8(JVALK+ICSTE-1).EQ.BPELA(5) ) THEN
+          ENDIF
+          IF ( ZK8(JVALK+ICSTE-1).EQ.BPELA(5) ) THEN
             TROUV5 = .TRUE.
-            FRLI = ZR(JVALR+ICSTE-1)
-         ENDIF
+            FRLI = ZR(JVALR+ICSTE-1) 
+          ENDIF
          IF ( TROUV1 .AND. TROUV2 .AND. TROUV3 .AND. TROUV4 .AND.
      &        TROUV5 ) GO TO 41
-  40  CONTINUE
+  40    CONTINUE
 C
-  41  CONTINUE
-      IF ( ( RH1000.LT.0.0D0 ) .OR. ( MU0 .LT.0.0D0 ) .OR.
-     &     ( FRCO.LT.0.0D0 ) .OR.
-     &     ( FRLI  .LT.0.0D0 ) ) THEN
-         WRITE(K3CAB,'(I3)') ICABL
-         CALL U2MESK('F','MODELISA2_56',1,K3CAB)
-      ENDIF
+  41    CONTINUE
+      ELSE 
+C       LECTURE DES DONNEES ETCC_ACIER
+        TROUV1 = .FALSE.
+        TROUV2 = .FALSE.
+        TROUV3 = .FALSE.
+        TROUV4 = .FALSE.   
+      
+         DO 42 ICSTE = 1, NBCSTE
+           IF ( ZK8(JVALK+ICSTE-1).EQ.ETCCA(1) ) THEN
+            TROUV1 = .TRUE.
+            RH1000 = ZR(JVALR+ICSTE-1)
+           ENDIF
+           IF ( ZK8(JVALK+ICSTE-1).EQ.ETCCA(2) ) THEN
+            TROUV2 = .TRUE.
+            FPRG = ZR(JVALR+ICSTE-1)
+           ENDIF
+           IF ( ZK8(JVALK+ICSTE-1).EQ.ETCCA(3) ) THEN
+            TROUV3 = .TRUE.
+            FRCO = ZR(JVALR+ICSTE-1)
+           ENDIF
+           IF ( ZK8(JVALK+ICSTE-1).EQ.ETCCA(4) ) THEN
+            TROUV4 = .TRUE.
+            FRLI = ZR(JVALR+ICSTE-1)
+           ENDIF
+         IF ( TROUV1 .AND. TROUV2 .AND. TROUV3 .AND. TROUV4) GO TO 43 
+  42     CONTINUE
 C
-      IF ( RH1000.EQ.0.0D0 ) RELAX = .FALSE.
+  43     CONTINUE
+
+C     POUR ETCC, FRLI=FROTTEMENT*PERTE EN LIGNE
+         FRLI=FRLI*FRCO
+       ENDIF  
+C
+      
+      IF ( RH1000.EQ.0.0D0 ) THEN
+        RELAX = .FALSE.
+      ELSE
+        RELAX = .TRUE.
+      ENDIF     
       IF ( RELAX .AND. FPRG.LE.0.0D0) THEN
           WRITE(K3CAB,'(I3)') ICABL
           CALL U2MESK('F','MODELISA2_55',1,K3CAB)
       ENDIF
+
 C
 C%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 C 3   RECUPERATION DE L'AIRE DE LA SECTION DROITE DU CABLE

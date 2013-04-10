@@ -1,4 +1,4 @@
-# MODIF  DATE 18/02/2013   AUTEUR SELLENET N.SELLENET 
+# MODIF  DATE 09/04/2013   AUTEUR PELLET J.PELLET 
 # TITRE CONSTRUCTION PAR COUCHES EN HYDROMECANIQUE DRAINE AVEC LA LOI DE HUJEUX
 # wtnv132a.para = tps_job 1000 mem_job 256Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -38,7 +38,7 @@ INV_K_EAU = 1./K_EAU ;
 
 # Parametres Hujeux
 
-P0        =  -20.E+3 ;   # pression de consolidation initiale
+P0        =  -1.E+3 ;   # pression de consolidation initiale
 PCO       = -250.E+3 ;   # pression critique
 PREF      = -1.E+6   ;
 R_ELA_DEV = 0.025    ;
@@ -244,6 +244,7 @@ U[0]=STAT_NON_LINE(MODELE=MOD[0],
                                RESI_INTE_RELA=1.E-8,
                                ITER_INTE_PAS=-5,
                                RELATION='KIT_HM',
+                               ALGO_INTE='NEWTON_RELI',
                                RELATION_KIT=('HUJEUX','LIQU_SATU','HYDR_UTIL'),
                                GROUP_MA=list_group_ma[1])),
                  INCREMENT=_F(LIST_INST=DEFLIST,
@@ -504,7 +505,7 @@ for n in range(1,nbcouche-1):
                       OPERATION='ASSE',
                       MODELE=MOD[n],
                       OPTION='DEPL',
-                      PROL_ZERO='OUI',
+
                       ASSE=(_F(GROUP_MA=list_group_ma[:n+1],
                                CHAM_GD=DEP[n-1],),),);
 
@@ -582,7 +583,7 @@ for n in range(1,nbcouche-1):
                       TYPE_CHAM='NOEU_DEPL_R',
                       OPERATION='ASSE',
                       MODELE=MOD[n],
-                      PROL_ZERO='OUI',
+
                       ASSE=(_F(TOUT='OUI',
                                CHAM_GD=CHNUL,),
                             _F(GROUP_MA=list_group_ma[:n+1],
@@ -670,6 +671,7 @@ for n in range(1,nbcouche-1):
                                ITER_INTE_PAS=-5,
                                RESI_INTE_RELA=1.E-8,
                                RELATION='KIT_HM',
+                               ALGO_INTE='NEWTON_RELI',
                                RELATION_KIT=('HUJEUX','LIQU_SATU','HYDR_UTIL'),
                                GROUP_MA=list_group_ma[1:n+2])),
                  ETAT_INIT=_F(DEPL=DEPL_IN,

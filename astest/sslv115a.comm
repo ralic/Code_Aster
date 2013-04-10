@@ -1,10 +1,10 @@
-# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
+# MODIF  DATE 09/04/2013   AUTEUR PELLET J.PELLET 
 # TITRE ELEMENT DE BETON PRECONTRAINT EN COMPRESSION ET PESANTEUR
 # MODELISATION A: MAILLAGE HEXAEDRIQUE
 # sslv115a.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -32,40 +32,40 @@ MAILLAGE=DEFI_GROUP(reuse =MAILLAGE,
                     CREA_GROUP_NO=_F(TOUT_GROUP_MA='OUI',),);
 
 MAILLAGE = DEFI_GROUP( reuse=MAILLAGE, MAILLAGE=MAILLAGE, INFO=1,
-                CREA_GROUP_MA= _F( NOM = 'TOUT',
+                CREA_GROUP_MA= _F( NOM = 'GXXXXXX_TOUT',
                                    TOUT = 'OUI', ),
-                CREA_GROUP_NO=(_F( NOM = 'GRNO1',
+                CREA_GROUP_NO=(_F( NOM = 'GXXXXXX_GRNO1',
                                    OPTION = 'TUNNEL',
-                                   GROUP_MA = 'VOILE',
-                                   GROUP_MA_AXE = 'CABLE001',
+                                   GROUP_MA = 'GXXXXXX_VOILE',
+                                   GROUP_MA_AXE = 'GXXXXXX_CABLE001',
 #                                   NOEUD_ORIG = 'NC001001',
                                    RAYON = 3. ,
                                  ),
-                               _F( NOM = 'GRNO2',
+                               _F( NOM = 'GXXXXXX_GRNO2',
                                    OPTION = 'TUNNEL',
                                    MAILLE = 'toto1',
                                    MAILLE_AXE = ('SG001001','SG001002'),
-                                   GROUP_NO_ORIG = 'NC1',
+                                   GROUP_NO_ORIG = 'GXXXXXX_NC1',
                                    LONGUEUR = 0.75 ,
                                    RAYON = 3. ,
                                  ),
-                               _F( NOM = 'TOUT',
-                                   GROUP_MA = 'TOUT',
+                               _F( NOM = 'GXXXXXX_TOUT',
+                                   GROUP_MA = 'GXXXXXX_TOUT',
                                  ),
                                ),
                ) ;
 
-MODELE=AFFE_MODELE(AFFE=(_F(GROUP_MA='VOILE',
+MODELE=AFFE_MODELE(AFFE=(_F(GROUP_MA='GXXXXXX_VOILE',
                             PHENOMENE='MECANIQUE',
                             MODELISATION='3D',),
-                         _F(GROUP_MA='CABLE001',
+                         _F(GROUP_MA='GXXXXXX_CABLE001',
                             PHENOMENE='MECANIQUE',
                             MODELISATION='BARRE',),),
                    MAILLAGE=MAILLAGE,);
 
 CARAELEM=AFFE_CARA_ELEM(MODELE=MODELE,
                         BARRE=_F(SECTION='GENERALE',
-                                 GROUP_MA='CABLE001',
+                                 GROUP_MA='GXXXXXX_CABLE001',
                                  CARA=('A'),
                                  VALE=(0.00015),),);
 
@@ -83,17 +83,17 @@ ACIER=DEFI_MATERIAU(BPEL_ACIER=_F(),
                             E=2.1E11,),);
 
 CHMATER=AFFE_MATERIAU(AFFE=(_F(MATER=BETON,
-                               GROUP_MA='VOILE',),
+                               GROUP_MA='GXXXXXX_VOILE',),
                             _F(MATER=ACIER,
-                               GROUP_MA='CABLE001',),),
+                               GROUP_MA='GXXXXXX_CABLE001',),),
                       MAILLAGE=MAILLAGE,);
 
 CABLEPR=DEFI_CABLE_BP(CHAM_MATER=CHMATER,
                       MODELE=MODELE,
                       DEFI_CABLE=_F(NOEUD_ANCRAGE=('NC001001','NC001005'),
-                                    GROUP_MA='CABLE001',),
+                                    GROUP_MA='GXXXXXX_CABLE001',),
                       TYPE_ANCRAGE=('ACTIF','ACTIF'),
-                      GROUP_MA_BETON='VOILE',
+                      GROUP_MA_BETON='GXXXXXX_VOILE',
                       TENSION_INIT=2.E5,
                       RECUL_ANCRAGE=0.0,
                       CARA_ELEM=CARAELEM,
@@ -103,9 +103,9 @@ CHARMECA=AFFE_CHAR_MECA(MODELE=MODELE,
                         DDL_IMPO=(_F(NOEUD='NB001001',
                                      DY=0.0,),
                                   _F(DX=0.0,
-                                     GROUP_NO='VGAUCH',),
+                                     GROUP_NO='GXXXXXX_VGAUCH',),
                                   _F(DZ=0.0,
-                                     GROUP_NO='VINF',),),)
+                                     GROUP_NO='GXXXXXX_VINF',),),)
 
 CHARMEZ=AFFE_CHAR_MECA(MODELE=MODELE,
                        PESANTEUR=_F(GRAVITE=10.0,
@@ -162,7 +162,7 @@ EVOLNO2=CALC_CHAMP(reuse =EVOLNO2,
 
 FORC_DZ=POST_RELEVE_T(ACTION=_F(OPERATION='EXTRACTION',
                                 INTITULE='FORCDZ',
-                                GROUP_NO=('VOILE','CABLE001'),
+                                GROUP_NO=('GXXXXXX_VOILE','GXXXXXX_CABLE001'),
                                 RESULTANTE='DZ',
                                 NUME_ORDRE=2,
                                 RESULTAT=EVOLNOLI,
@@ -171,7 +171,7 @@ FORC_DZ=POST_RELEVE_T(ACTION=_F(OPERATION='EXTRACTION',
 
 FORC2_DX=POST_RELEVE_T(ACTION=_F(OPERATION='EXTRACTION',
                                  INTITULE='FORCDX',
-                                 GROUP_NO=('VOILE','CABLE001'),
+                                 GROUP_NO=('GXXXXXX_VOILE','GXXXXXX_CABLE001'),
                                  RESULTANTE='DX',
                                  RESULTAT=EVOLNO2,
                                  NUME_ORDRE=2,

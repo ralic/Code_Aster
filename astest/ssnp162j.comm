@@ -1,22 +1,22 @@
-# MODIF  DATE 25/02/2013   AUTEUR LAVERNE J.LAVERNE 
+# MODIF  DATE 09/04/2013   AUTEUR PELLET J.PELLET 
 # TITRE TEST DE LA LOI JOINT_MECA_FROT SUR LES ELEMENTS DE JOINT HYME QUAD8
 # ssnp162j.para = tps_job 60 mem_job 256Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
-# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-# (AT YOUR OPTION) ANY LATER VERSION.                                                    
-#                                                                       
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-#                                                                       
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 
 DEBUT(CODE=_F( NOM = 'SSNP162J',NIV_PUB_WEB='INTERNET',VISU_EFICAS='OUI'),IGNORE_ALARM=('MODELISA4_9',),PAR_LOT='OUI')
@@ -73,14 +73,14 @@ MA=CREA_MAILLAGE(MAILLAGE  = MA0, LINE_QUAD = _F(TOUT='OUI'))
 MA=DEFI_GROUP(reuse =MA,
               MAILLAGE=MA,
               CREA_GROUP_NO=(_F(NOEUD=('NO4','NO2','NS2'),
-                                NOM='DROITE',),
+                                NOM='GXXXXXX_DROITE',),
                               _F(NOEUD=('NO1','NO3','NS4'),
-                                NOM='GAUCHE',),
+                                NOM='GXXXXXX_GAUCHE',),
                                ),);
 
 MA=MODI_MAILLAGE(reuse =MA,
                    MAILLAGE=MA,
-                   ORIE_FISSURE=_F(GROUP_MA='G_CUBE_D'),
+                   ORIE_FISSURE=_F(GROUP_MA='GXXXXXX_G_CUBE_D'),
                    INFO=2)
 
 MO=AFFE_MODELE(
@@ -172,7 +172,7 @@ FCT=DEFI_FONCTION(NOM_PARA='INST',VALE=(linst[0], 0.,
                                         linst[1], delta_elas,              # TRACTION ELASTIQUE
                                         linst[2], delta_endo,              # TRACTION JUSQU'A L'OUVERTURE COMPLETE
                                         linst[3], -delta_ferm,             # DECHARGEMENT COMPRESSION
-                                        linst[4], delta_equi),             # TRACTION JUSQU'A POINT D'EQUILIBRE 
+                                        linst[4], delta_equi),             # TRACTION JUSQU'A POINT D'EQUILIBRE
                   PROL_DROITE='LINEAIRE',);
 
 
@@ -213,7 +213,7 @@ TFORCE=POST_RELEVE_T(ACTION=_F(OPERATION='EXTRACTION',
                                RESULTAT=U_F,
                                NOM_CHAM='FORC_NODA',
                                TOUT_ORDRE='OUI',
-                               GROUP_NO='DROITE',
+                               GROUP_NO='GXXXXXX_DROITE',
                                RESULTANTE=('DX','DY'),),);
 
 
@@ -370,7 +370,7 @@ F2DY=DEFI_FONCTION(NOM_PARA='INST',VALE=( 0.,0.,
                   PROL_DROITE='LINEAIRE',);
 
 TRAC_2=AFFE_CHAR_MECA_F(MODELE=MO,
-                      DDL_IMPO=(_F(GROUP_NO='DROITE',
+                      DDL_IMPO=(_F(GROUP_NO='GXXXXXX_DROITE',
                                     DX=F2DX,
                                     DY=F2DY,),
                                  ),
@@ -428,7 +428,7 @@ TFORCET=POST_RELEVE_T(ACTION=_F(OPERATION='EXTRACTION',
                                RESULTAT=U_2,
                                NOM_CHAM='FORC_NODA',
                                TOUT_ORDRE='OUI',
-                               GROUP_NO='DROITE',
+                               GROUP_NO='GXXXXXX_DROITE',
                                RESULTANTE=('DX','DY'),),);
 
 
@@ -463,7 +463,7 @@ TDELTA_T=POST_RELEVE_T(ACTION=_F(OPERATION='MOYENNE',
                               RESULTAT=U_2,
                               NOM_CHAM='VARI_NOEU',
                               TOUT_ORDRE='OUI',
-                              GROUP_NO='GAUCHE',
+                              GROUP_NO='GXXXXXX_GAUCHE',
                               NOM_CMP='V8',),);
 
 # FILTRAGE JUSTE DE LA VALEUR MOYENNE

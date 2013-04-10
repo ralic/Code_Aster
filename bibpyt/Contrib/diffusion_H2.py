@@ -1,4 +1,4 @@
-#@ MODIF diffusion_H2 Contrib  DATE 26/03/2013   AUTEUR PROIX J-M.PROIX 
+#@ MODIF diffusion_H2 Contrib  DATE 09/04/2013   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -125,7 +125,7 @@ def char_grad_impo_ops(self,RESU_H2,TINIT,TFIN,RESUMECA,GRMAVOL,DIME,Ctot0,CHARG
                        RESULTAT=__SIEQN,NOM_CHAM='SIEQ_NOEU',INST=TFIN,INFO=INFO) ;
 
    # on renome la CMP pour pouvoir calculer le flux "thermique"
-   __TRSIG = CREA_CHAMP( OPERATION= 'ASSE', TYPE_CHAM='NOEU_TEMP_R',MODELE=__MOTH,PROL_ZERO='OUI',
+   __TRSIG = CREA_CHAMP( OPERATION= 'ASSE', TYPE_CHAM='NOEU_TEMP_R',MODELE=__MOTH,
                       ASSE=(_F(CHAM_GD =__SIEQ,GROUP_MA=GRMAVOL,NOM_CMP = 'TRSIG',NOM_CMP_RESU ='TEMP',COEF_R=1./3.),),INFO=INFO)
    # calcul du gradient de Trace(Sigma)
    __MAT1=DEFI_MATERIAU(THER=_F(LAMBDA=-1., RHO_CP=0.));
@@ -165,7 +165,7 @@ def char_grad_impo_ops(self,RESU_H2,TINIT,TFIN,RESUMECA,GRMAVOL,DIME,Ctot0,CHARG
 
    nommai =__MAIL.sdj.NOMMAI.get()
    connex =__MAIL.sdj.CONNEX.get()
-   groupma=__MAIL.sdj.GROUPEMA.get()[GRMAVOL.ljust(8)]
+   groupma=__MAIL.sdj.GROUPEMA.get()[GRMAVOL.ljust(24)]
    nbzone=tabdesc[1]
 #   print "tabdesc",tabdesc
 #   print "tablima",dicolima
@@ -249,7 +249,7 @@ def char_grad_ini_ops(self,RESU_H2,GRMAVOL,DIME,INFO,**args):
 
    nommai =__MAIL.sdj.NOMMAI.get()
    connex =__MAIL.sdj.CONNEX.get()
-   groupma=__MAIL.sdj.GROUPEMA.get()[GRMAVOL.ljust(8)]
+   groupma=__MAIL.sdj.GROUPEMA.get()[GRMAVOL.ljust(24)]
 
    for ima in groupma :
       # ATTENTION : dans Python, les tableaux commencent a 0

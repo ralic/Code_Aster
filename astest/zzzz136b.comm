@@ -1,9 +1,9 @@
-# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
+# MODIF  DATE 09/04/2013   AUTEUR PELLET J.PELLET 
 # TITRE VALIDATION POST_RELEVE_T 2D EN DIFFERENTS REPERES
 # zzzz136b.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -40,40 +40,40 @@ DEBUT(CODE=_F(NOM='ZZZZ136B',NIV_PUB_WEB='INTERNET'),IMPR_MACRO='OUI',DEBUG=_F(S
 MA=LIRE_MAILLAGE(  )
 
 CHEM1=INTE_MAIL_2D(    MAILLAGE=MA,
-                           DEFI_SEGMENT=_F(  GROUP_NO_ORIG = 'P1',
-                                          GROUP_NO_EXTR = 'P2'),
+                           DEFI_SEGMENT=_F(  GROUP_NO_ORIG = 'GXXXXXX_P1',
+                                          GROUP_NO_EXTR = 'GXXXXXX_P2'),
                                 INFO=2
                        )
 
 CHEM2=INTE_MAIL_2D(    MAILLAGE=MA,
-                            DEFI_CHEMIN=_F(  GROUP_MA = 'P2P3'),
+                            DEFI_CHEMIN=_F(  GROUP_MA = 'GXXXXXX_P2P3'),
 #                             NOEUD_ORIG=('N14',),
-                             GROUP_NO_ORIG=('P2',),
+                             GROUP_NO_ORIG=('GXXXXXX_P2',),
                                 INFO=2
                        )
 
 CHEM3=INTE_MAIL_2D(    MAILLAGE=MA,
-                           DEFI_SEGMENT=_F(  GROUP_NO_ORIG = 'P4',
-                                          GROUP_NO_EXTR = 'P3'),
+                           DEFI_SEGMENT=_F(  GROUP_NO_ORIG = 'GXXXXXX_P4',
+                                          GROUP_NO_EXTR = 'GXXXXXX_P3'),
                                 INFO=2
                        )
 
 DEFI_GROUP( reuse=MA,   MAILLAGE=MA,CREA_GROUP_NO=(
-                       _F(  NOM = 'LIST1',
+                       _F(  NOM = 'GXXXXXX_LIST1',
                                        OPTION = 'NOEUD_ORDO',
-                                       GROUP_MA = 'P1P2',
-                                       GROUP_NO_ORIG = 'P1',
-                                       GROUP_NO_EXTR = 'P2'),
-                       _F(  NOM = 'LIST2',
+                                       GROUP_MA = 'GXXXXXX_P1P2',
+                                       GROUP_NO_ORIG = 'GXXXXXX_P1',
+                                       GROUP_NO_EXTR = 'GXXXXXX_P2'),
+                       _F(  NOM = 'GXXXXXX_LIST2',
                                        OPTION = 'NOEUD_ORDO',
-                                       GROUP_MA = 'P2P3',
-                                       GROUP_NO_ORIG = 'P2',
-                                       GROUP_NO_EXTR = 'P3'),
-                       _F(  NOM = 'LIST3',
+                                       GROUP_MA = 'GXXXXXX_P2P3',
+                                       GROUP_NO_ORIG = 'GXXXXXX_P2',
+                                       GROUP_NO_EXTR = 'GXXXXXX_P3'),
+                       _F(  NOM = 'GXXXXXX_LIST3',
                                        OPTION = 'NOEUD_ORDO',
-                                       GROUP_MA = 'P3P4',
-                                       GROUP_NO_ORIG = 'P4',
-                                       GROUP_NO_EXTR = 'P3'))
+                                       GROUP_MA = 'GXXXXXX_P3P4',
+                                       GROUP_NO_ORIG = 'GXXXXXX_P4',
+                                       GROUP_NO_EXTR = 'GXXXXXX_P3'))
                    )
 
 MO=AFFE_MODELE(    MAILLAGE=MA,
@@ -92,11 +92,11 @@ CH_MAT=AFFE_MATERIAU(    MAILLAGE=MA,
                          )
 
 CHARGE=AFFE_CHAR_MECA(    MODELE=MO,
-                              FACE_IMPO=_F(  GROUP_MA = 'P3P4',
+                              FACE_IMPO=_F(  GROUP_MA = 'GXXXXXX_P3P4',
                                           DNOR = 0.),
-                               DDL_IMPO=_F(  GROUP_MA = 'P1P2',
+                               DDL_IMPO=_F(  GROUP_MA = 'GXXXXXX_P1P2',
                                           DY = 0.),
-                               PRES_REP=_F(  GROUP_MA = 'P4P1',
+                               PRES_REP=_F(  GROUP_MA = 'GXXXXXX_P4P1',
                                           PRES = 1.)
                           )
 
@@ -137,7 +137,7 @@ IMPR_TABLE(   TABLE=S1_G,
                 NOM_PARA=( 'ABSC_CURV', 'SIXX', 'SIYY', 'SIZZ', 'SIXY', )
              )
 
-S1L_G=POST_RELEVE_T(  ACTION=_F(  GROUP_NO = 'LIST1',
+S1L_G=POST_RELEVE_T(  ACTION=_F(  GROUP_NO = 'GXXXXXX_LIST1',
                                     INTITULE = 'GLOBAL',
                                     RESULTAT = RESU,
                                     TOUT_CMP = 'OUI',
@@ -165,7 +165,7 @@ IMPR_TABLE(   TABLE=S1_L,
                 NOM_PARA=( 'ABSC_CURV', 'SIXX', 'SIYY', 'SIZZ', 'SIXY', )
              )
 
-S1L_L=POST_RELEVE_T(  ACTION=_F(  GROUP_NO = 'LIST1',
+S1L_L=POST_RELEVE_T(  ACTION=_F(  GROUP_NO = 'GXXXXXX_LIST1',
                                     INTITULE = 'LOCAL',
                                     RESULTAT = RESU,
                                     TOUT_CMP = 'OUI',
@@ -195,7 +195,7 @@ IMPR_TABLE(   TABLE=S1_U,
                 NOM_PARA=( 'ABSC_CURV', 'SIXX', 'SIYY', 'SIZZ', 'SIXY', )
              )
 
-S1L_U=POST_RELEVE_T(  ACTION=_F(  GROUP_NO = 'LIST1',
+S1L_U=POST_RELEVE_T(  ACTION=_F(  GROUP_NO = 'GXXXXXX_LIST1',
                                     INTITULE = 'UTILISAT',
                                     RESULTAT = RESU,
                                     TOUT_CMP = 'OUI',
@@ -225,7 +225,7 @@ IMPR_TABLE(   TABLE=S2_G,
                 NOM_PARA=( 'ABSC_CURV', 'SIXX', 'SIYY', 'SIZZ', 'SIXY', )
              )
 
-S2L_G=POST_RELEVE_T(  ACTION=_F(  GROUP_NO = 'LIST2',
+S2L_G=POST_RELEVE_T(  ACTION=_F(  GROUP_NO = 'GXXXXXX_LIST2',
                                     INTITULE = 'GLOBAL',
                                     RESULTAT = RESU,
                                     TOUT_CMP = 'OUI',
@@ -253,7 +253,7 @@ IMPR_TABLE(   TABLE=S2_L,
                 NOM_PARA=( 'ABSC_CURV', 'SIXX', 'SIYY', 'SIZZ', 'SIXY', )
              )
 
-S2L_L=POST_RELEVE_T(  ACTION=_F(  GROUP_NO = 'LIST2',
+S2L_L=POST_RELEVE_T(  ACTION=_F(  GROUP_NO = 'GXXXXXX_LIST2',
                                     INTITULE = 'LOCAL',
                                     RESULTAT = RESU,
                                     TOUT_CMP = 'OUI',
@@ -284,7 +284,7 @@ IMPR_TABLE(   TABLE=S2_C,
                 NOM_PARA=( 'ABSC_CURV', 'SIXX', 'SIYY', 'SIZZ', 'SIXY', )
              )
 
-S2L_C=POST_RELEVE_T(  ACTION=_F(  GROUP_NO = 'LIST2',
+S2L_C=POST_RELEVE_T(  ACTION=_F(  GROUP_NO = 'GXXXXXX_LIST2',
                                     INTITULE = 'CYLINDR',
                                     RESULTAT = RESU,
                                     TOUT_CMP = 'OUI',
@@ -315,7 +315,7 @@ IMPR_TABLE(   TABLE=S2_P,
                 NOM_PARA=( 'ABSC_CURV', 'SIXX', 'SIYY', 'SIZZ', 'SIXY', )
              )
 
-S2L_P=POST_RELEVE_T(  ACTION=_F(  GROUP_NO = 'LIST2',
+S2L_P=POST_RELEVE_T(  ACTION=_F(  GROUP_NO = 'GXXXXXX_LIST2',
                                     INTITULE = 'POLAIRE',
                                     RESULTAT = RESU,
                                     TOUT_CMP = 'OUI',
@@ -343,7 +343,7 @@ IMPR_TABLE(   TABLE=S3_G,
                 NOM_PARA=( 'ABSC_CURV', 'SIXX', 'SIYY', 'SIZZ', 'SIXY', )
              )
 
-S3L_G=POST_RELEVE_T(  ACTION=_F(  GROUP_NO = 'LIST3',
+S3L_G=POST_RELEVE_T(  ACTION=_F(  GROUP_NO = 'GXXXXXX_LIST3',
                                     INTITULE = 'GLOBAL',
                                     RESULTAT = RESU,
                                     TOUT_CMP = 'OUI',
@@ -371,7 +371,7 @@ IMPR_TABLE(   TABLE=S3_L,
                 NOM_PARA=( 'ABSC_CURV', 'SIXX', 'SIYY', 'SIZZ', 'SIXY', )
              )
 
-S3L_L=POST_RELEVE_T(  ACTION=_F(  GROUP_NO = 'LIST3',
+S3L_L=POST_RELEVE_T(  ACTION=_F(  GROUP_NO = 'GXXXXXX_LIST3',
                                     INTITULE = 'LOCAL',
                                     RESULTAT = RESU,
                                     TOUT_CMP = 'OUI',
@@ -401,7 +401,7 @@ IMPR_TABLE(   TABLE=S3_U,
                 NOM_PARA=( 'ABSC_CURV', 'SIXX', 'SIYY', 'SIZZ', 'SIXY', )
              )
 
-S3L_U=POST_RELEVE_T(  ACTION=_F(  GROUP_NO = 'LIST3',
+S3L_U=POST_RELEVE_T(  ACTION=_F(  GROUP_NO = 'GXXXXXX_LIST3',
                                     INTITULE = 'UTILISAT',
                                     RESULTAT = RESU,
                                     TOUT_CMP = 'OUI',
@@ -435,7 +435,7 @@ IMPR_TABLE(   TABLE=D1_G,
                 NOM_PARA=( 'ABSC_CURV', 'DX', 'DY', )
              )
 
-D1L_G=POST_RELEVE_T(  ACTION=_F(  GROUP_NO = 'LIST1',
+D1L_G=POST_RELEVE_T(  ACTION=_F(  GROUP_NO = 'GXXXXXX_LIST1',
                                     INTITULE = 'GLOBAL',
                                     RESULTAT = RESU,
                                     TOUT_CMP = 'OUI',
@@ -463,7 +463,7 @@ IMPR_TABLE(   TABLE=D1_L,
                 NOM_PARA=( 'ABSC_CURV', 'DX', 'DY', )
              )
 
-D1L_L=POST_RELEVE_T(  ACTION=_F(  GROUP_NO = 'LIST1',
+D1L_L=POST_RELEVE_T(  ACTION=_F(  GROUP_NO = 'GXXXXXX_LIST1',
                                     INTITULE = 'LOCAL',
                                     RESULTAT = RESU,
                                     TOUT_CMP = 'OUI',
@@ -493,7 +493,7 @@ IMPR_TABLE(   TABLE=D1_U,
                 NOM_PARA=( 'ABSC_CURV', 'DX', 'DY', )
              )
 
-D1L_U=POST_RELEVE_T(  ACTION=_F(  GROUP_NO = 'LIST1',
+D1L_U=POST_RELEVE_T(  ACTION=_F(  GROUP_NO = 'GXXXXXX_LIST1',
                                     INTITULE = 'UTILISAT',
                                     RESULTAT = RESU,
                                     TOUT_CMP = 'OUI',
@@ -523,7 +523,7 @@ IMPR_TABLE(   TABLE=D2_G,
                 NOM_PARA=( 'ABSC_CURV', 'DX', 'DY', )
              )
 
-D2L_G=POST_RELEVE_T(  ACTION=_F(  GROUP_NO = 'LIST2',
+D2L_G=POST_RELEVE_T(  ACTION=_F(  GROUP_NO = 'GXXXXXX_LIST2',
                                     INTITULE = 'GLOBAL',
                                     RESULTAT = RESU,
                                     TOUT_CMP = 'OUI',
@@ -551,7 +551,7 @@ IMPR_TABLE(   TABLE=D2_L,
                 NOM_PARA=( 'ABSC_CURV', 'DX', 'DY', )
              )
 
-D2L_L=POST_RELEVE_T(  ACTION=_F(  GROUP_NO = 'LIST2',
+D2L_L=POST_RELEVE_T(  ACTION=_F(  GROUP_NO = 'GXXXXXX_LIST2',
                                     INTITULE = 'LOCAL',
                                     RESULTAT = RESU,
                                     TOUT_CMP = 'OUI',
@@ -582,7 +582,7 @@ IMPR_TABLE(   TABLE=D2_C,
                 NOM_PARA=( 'ABSC_CURV', 'DX', 'DY', )
              )
 
-D2L_C=POST_RELEVE_T(  ACTION=_F(  GROUP_NO = 'LIST2',
+D2L_C=POST_RELEVE_T(  ACTION=_F(  GROUP_NO = 'GXXXXXX_LIST2',
                                     INTITULE = 'CYLINDR',
                                     RESULTAT = RESU,
                                     TOUT_CMP = 'OUI',
@@ -613,7 +613,7 @@ IMPR_TABLE(   TABLE=D2_P,
                 NOM_PARA=( 'ABSC_CURV', 'DX', 'DY', )
              )
 
-D2L_P=POST_RELEVE_T(  ACTION=_F(  GROUP_NO = 'LIST2',
+D2L_P=POST_RELEVE_T(  ACTION=_F(  GROUP_NO = 'GXXXXXX_LIST2',
                                     INTITULE = 'POLAIRE',
                                     RESULTAT = RESU,
                                     TOUT_CMP = 'OUI',
@@ -641,7 +641,7 @@ IMPR_TABLE(   TABLE=D3_G,
                 NOM_PARA=( 'ABSC_CURV', 'DX', 'DY', )
              )
 
-D3L_G=POST_RELEVE_T(  ACTION=_F(  GROUP_NO = 'LIST3',
+D3L_G=POST_RELEVE_T(  ACTION=_F(  GROUP_NO = 'GXXXXXX_LIST3',
                                     INTITULE = 'GLOBAL',
                                     RESULTAT = RESU,
                                     TOUT_CMP = 'OUI',
@@ -669,7 +669,7 @@ IMPR_TABLE(   TABLE=D3_L,
                 NOM_PARA=( 'ABSC_CURV', 'DX', 'DY', )
              )
 
-D3L_L=POST_RELEVE_T(  ACTION=_F(  GROUP_NO = 'LIST3',
+D3L_L=POST_RELEVE_T(  ACTION=_F(  GROUP_NO = 'GXXXXXX_LIST3',
                                     INTITULE = 'LOCAL',
                                     RESULTAT = RESU,
                                     TOUT_CMP = 'OUI',
@@ -699,7 +699,7 @@ IMPR_TABLE(   TABLE=D3_U,
                 NOM_PARA=( 'ABSC_CURV', 'DX', 'DY', )
              )
 
-D3L_U=POST_RELEVE_T(  ACTION=_F(  GROUP_NO = 'LIST3',
+D3L_U=POST_RELEVE_T(  ACTION=_F(  GROUP_NO = 'GXXXXXX_LIST3',
                                     INTITULE = 'UTILISAT',
                                     RESULTAT = RESU,
                                     TOUT_CMP = 'OUI',
@@ -738,7 +738,7 @@ IMPR_TABLE(   TABLE=S1_TN,
              NOM_PARA=( 'ABSC_CURV', 'TR_NOR_1', 'TR_NOR_2', 'TR_NOR_3', )
              )
 
-S1L_TN=POST_RELEVE_T(  ACTION=_F(  GROUP_NO = 'LIST1',
+S1L_TN=POST_RELEVE_T(  ACTION=_F(  GROUP_NO = 'GXXXXXX_LIST1',
                                     INTITULE = 'TRAC_NOR',
                                     RESULTAT = RESU,
                NOM_CMP = ( 'SIXX', 'SIYY', 'SIZZ', 'SIXY', ),
@@ -781,7 +781,7 @@ IMPR_TABLE(   TABLE=S1_TDX,
               NOM_PARA=( 'ABSC_CURV', 'TR_DIR_1', 'TR_DIR_2', 'TR_DIR_3', )
              )
 
-S1L_TDX=POST_RELEVE_T(  ACTION=_F(  GROUP_NO = 'LIST1',
+S1L_TDX=POST_RELEVE_T(  ACTION=_F(  GROUP_NO = 'GXXXXXX_LIST1',
                                     INTITULE = 'TRAC_DIRX',
                                     RESULTAT = RESU,
                NOM_CMP = ( 'SIXX', 'SIYY', 'SIZZ', 'SIXY', ),
@@ -813,7 +813,7 @@ IMPR_TABLE(   TABLE=S1_TDY,
               NOM_PARA=( 'ABSC_CURV', 'TR_DIR_1', 'TR_DIR_2', 'TR_DIR_3', )
              )
 
-S1L_TDY=POST_RELEVE_T(  ACTION=_F(  GROUP_NO = 'LIST1',
+S1L_TDY=POST_RELEVE_T(  ACTION=_F(  GROUP_NO = 'GXXXXXX_LIST1',
                                     INTITULE = 'TRAC_DIRY',
                                     RESULTAT = RESU,
                NOM_CMP = ( 'SIXX', 'SIYY', 'SIZZ', 'SIXY',),
@@ -845,7 +845,7 @@ IMPR_TABLE(   TABLE=S1_TDXY,
               NOM_PARA=( 'ABSC_CURV', 'TR_DIR_1', 'TR_DIR_2', 'TR_DIR_3', )
              )
 
-S1L_TDXY=POST_RELEVE_T(  ACTION=_F(  GROUP_NO = 'LIST1',
+S1L_TDXY=POST_RELEVE_T(  ACTION=_F(  GROUP_NO = 'GXXXXXX_LIST1',
                                     INTITULE = 'TRAC_DIRXY',
                                     RESULTAT = RESU,
                NOM_CMP = ( 'SIXX', 'SIYY', 'SIZZ', 'SIXY',),
@@ -881,7 +881,7 @@ IMPR_TABLE(   TABLE=D1_TDX,
                 NOM_PARA=( 'ABSC_CURV', 'TRAC_DIR', )
              )
 
-D1L_TDX=POST_RELEVE_T(  ACTION=_F(  GROUP_NO = 'LIST1',
+D1L_TDX=POST_RELEVE_T(  ACTION=_F(  GROUP_NO = 'GXXXXXX_LIST1',
                                     INTITULE = 'TRAC_DIRX',
                                     RESULTAT = RESU,
                                     NOM_CMP = ( 'DX', 'DY', ),
@@ -904,7 +904,7 @@ IMPR_TABLE(   TABLE=D1L_TDX,
 #======================================================================
 #
 
-INVA_EL = POST_RELEVE_T(  ACTION=_F( GROUP_NO = 'LIST1',
+INVA_EL = POST_RELEVE_T(  ACTION=_F( GROUP_NO = 'GXXXXXX_LIST1',
                                      INTITULE = 'INVARIANT',
                                      RESULTAT = RESU,
                                      NOM_CHAM = 'SIGM_ELNO',
@@ -919,7 +919,7 @@ IMPR_TABLE(   TABLE=INVA_EL,
               NOM_PARA=( 'NOM_CHAM', 'ABSC_CURV', 'NOEUD', 'VMIS', 'TRESCA', 'TRACE', 'DETER'),
              )
 
-INVA_NO = POST_RELEVE_T(  ACTION=_F( GROUP_NO = 'LIST1',
+INVA_NO = POST_RELEVE_T(  ACTION=_F( GROUP_NO = 'GXXXXXX_LIST1',
                                      INTITULE = 'INVARIANT',
                                      RESULTAT = RESU,
                                      NOM_CHAM = 'SIGM_NOEU',
@@ -942,7 +942,7 @@ IMPR_TABLE(   TABLE=INVA_NO,
 #======================================================================
 #
 
-PRIN_EL = POST_RELEVE_T(  ACTION=_F( GROUP_NO = 'LIST1',
+PRIN_EL = POST_RELEVE_T(  ACTION=_F( GROUP_NO = 'GXXXXXX_LIST1',
                                      INTITULE = 'INVARIANT',
                                      RESULTAT = RESU,
                                      NOM_CHAM = 'SIGM_ELNO',
@@ -957,7 +957,7 @@ IMPR_TABLE(   TABLE=PRIN_EL,
               NOM_PARA=( 'NOM_CHAM', 'ABSC_CURV', 'NOEUD', 'PRIN_1', 'PRIN_2', 'PRIN_3' )
              )
 
-PRIN_NO = POST_RELEVE_T(  ACTION=_F( GROUP_NO = 'LIST1',
+PRIN_NO = POST_RELEVE_T(  ACTION=_F( GROUP_NO = 'GXXXXXX_LIST1',
                                      INTITULE = 'INVARIANT',
                                      RESULTAT = RESU,
                                      NOM_CHAM = 'SIGM_NOEU',
@@ -988,14 +988,14 @@ IMPR_TABLE(   TABLE=PRIN_NO,
 M1L_G=MACR_LIGN_COUPE( RESULTAT= RESU,NOM_CHAM = 'SIGM_ELNO',
                       LIGN_COUPE = _F(TYPE='GROUP_NO', REPERE='GLOBAL',
                                       OPERATION='EXTRACTION',
-                                      GROUP_NO='LIST1',
+                                      GROUP_NO='GXXXXXX_LIST1',
                                       INTITULE='M1L_G: LISTE DE NOEUDS P1 P2, REPERE GLOBAL',
                                       DISTANCE_MAX=0.001,),)
 IMPR_TABLE(TABLE=M1L_G,
               NOM_PARA=( 'ABSC_CURV', 'SIXX', 'SIYY', 'SIZZ', 'SIXY', )
              )
 
-P1L_G=POST_RELEVE_T(  ACTION=_F(  GROUP_NO = 'LIST1',
+P1L_G=POST_RELEVE_T(  ACTION=_F(  GROUP_NO = 'GXXXXXX_LIST1',
                                     INTITULE = 'GLOBAL',
                                     RESULTAT = RESU,
                                     TOUT_CMP = 'OUI',
@@ -1014,7 +1014,7 @@ M1_L=MACR_LIGN_COUPE( RESULTAT= RESU,NOM_CHAM = 'SIGM_ELNO',
                       LIGN_COUPE = _F(TYPE='GROUP_NO', REPERE='LOCAL',
                                       VECT_Y = ( 1., 1.,),
                                       OPERATION='EXTRACTION',
-                                      GROUP_NO='LIST1',
+                                      GROUP_NO='GXXXXXX_LIST1',
                                       INTITULE='M1_L: LISTE DE NOEUDS P1 P2, REPERE LOCAL',
                                       DISTANCE_MAX=0.001,),)
 IMPR_TABLE(TABLE=M1_L,
@@ -1043,7 +1043,7 @@ M1_U=MACR_LIGN_COUPE( RESULTAT= RESU,NOM_CHAM = 'SIGM_ELNO',
                       LIGN_COUPE = _F(TYPE='GROUP_NO', REPERE='UTILISATEUR',
                                       ANGL_NAUT = ( 0., 0., 0., ),
                                       OPERATION='EXTRACTION',
-                                      GROUP_NO='LIST1',
+                                      GROUP_NO='GXXXXXX_LIST1',
                                       INTITULE='M1_U: LISTE DE NOEUDS P1 P2, REPERE UTILISATEUR, ANGL_NAUT: ( 0. 0. 0. )',
                                       DISTANCE_MAX=0.001,),)
 IMPR_TABLE(TABLE=M1_U,
@@ -1072,14 +1072,14 @@ IMPR_TABLE(   TABLE=P1_U,
 M2_G=MACR_LIGN_COUPE( RESULTAT= RESU,NOM_CHAM = 'SIGM_ELNO',
                       LIGN_COUPE = _F(TYPE='GROUP_NO', REPERE='GLOBAL',
                                       OPERATION='EXTRACTION',
-                                      GROUP_NO='LIST2',
+                                      GROUP_NO='GXXXXXX_LIST2',
                                       INTITULE='M2L_G: LISTE DE NOEUDS P2 P3, REPERE GLOBAL',
                                       DISTANCE_MAX=0.001,),)
 IMPR_TABLE(TABLE=M2_G,
               NOM_PARA=( 'ABSC_CURV', 'SIXX', 'SIYY', 'SIZZ', 'SIXY', )
              )
 
-P2L_G=POST_RELEVE_T(  ACTION=_F(  GROUP_NO = 'LIST2',
+P2L_G=POST_RELEVE_T(  ACTION=_F(  GROUP_NO = 'GXXXXXX_LIST2',
                                     INTITULE = 'GLOBAL',
                                     RESULTAT = RESU,
                                     TOUT_CMP = 'OUI',
@@ -1097,7 +1097,7 @@ M2_L=MACR_LIGN_COUPE( RESULTAT= RESU,NOM_CHAM = 'SIGM_ELNO',
                       LIGN_COUPE = _F(TYPE='GROUP_NO', REPERE='LOCAL',
                                       VECT_Y = ( 1., 1.,),
                                       OPERATION='EXTRACTION',
-                                      GROUP_NO='LIST2',
+                                      GROUP_NO='GXXXXXX_LIST2',
                                       INTITULE='M2_L: LISTE DE NOEUDS P1 P2, REPERE LOCAL',
                                       DISTANCE_MAX=0.001,),)
 IMPR_TABLE(TABLE=M2_L,
@@ -1122,7 +1122,7 @@ M2_C=MACR_LIGN_COUPE( RESULTAT= RESU,NOM_CHAM = 'SIGM_ELNO',
                       LIGN_COUPE = _F(TYPE='GROUP_NO', REPERE = 'CYLINDRIQUE',
                                       ORIGINE = ( 0., 0.,),
                                       OPERATION='EXTRACTION',
-                                      GROUP_NO='LIST2',
+                                      GROUP_NO='GXXXXXX_LIST2',
                                       INTITULE='M2L_C:  LISTE DE NOEUDS P2 P3, REPERE CYLINDRIQUE, ORIGINE: (0. 0. 0.), AXE_Z: (0. 0. 1.)',
                                       DISTANCE_MAX=0.001,),)
 IMPR_TABLE(TABLE=M2_C,
@@ -1130,7 +1130,7 @@ IMPR_TABLE(TABLE=M2_C,
              )
 
 
-P2L_C=POST_RELEVE_T(  ACTION=_F(  GROUP_NO = 'LIST2',
+P2L_C=POST_RELEVE_T(  ACTION=_F(  GROUP_NO = 'GXXXXXX_LIST2',
                                     INTITULE = 'CYLINDR',
                                     RESULTAT = RESU,
                                     TOUT_CMP = 'OUI',
@@ -1151,7 +1151,7 @@ IMPR_TABLE(   TABLE=P2L_C,
 M2_P=MACR_LIGN_COUPE( RESULTAT= RESU,NOM_CHAM = 'SIGM_ELNO',
                       LIGN_COUPE = _F(TYPE='GROUP_NO', REPERE = 'POLAIRE',
                                       OPERATION='EXTRACTION',
-                                      GROUP_NO='LIST2',
+                                      GROUP_NO='GXXXXXX_LIST2',
                                       INTITULE='M2L_P:  LISTE DE NOEUDS P2 P3, REPERE POLAIRE',
                                       DISTANCE_MAX=0.001,),)
 
@@ -1161,7 +1161,7 @@ IMPR_TABLE(TABLE=M2_P,
 
 
 
-P2L_P=POST_RELEVE_T(  ACTION=_F(  GROUP_NO = 'LIST2',
+P2L_P=POST_RELEVE_T(  ACTION=_F(  GROUP_NO = 'GXXXXXX_LIST2',
                                     INTITULE = 'POLAIRE',
                                     RESULTAT = RESU,
                                     TOUT_CMP = 'OUI',
@@ -1179,7 +1179,7 @@ IMPR_TABLE(   TABLE=P2L_P,
 M3_G=MACR_LIGN_COUPE( RESULTAT= RESU,NOM_CHAM = 'SIGM_ELNO',
                       LIGN_COUPE = _F(TYPE='GROUP_NO', REPERE='GLOBAL',
                                       OPERATION='EXTRACTION',
-                                      GROUP_NO='LIST3',
+                                      GROUP_NO='GXXXXXX_LIST3',
                                       INTITULE='M3L_G: LISTE DE NOEUDS P4 P3, REPERE GLOBAL',
                                       DISTANCE_MAX=0.001,),)
 IMPR_TABLE(TABLE=M3_G,
@@ -1187,7 +1187,7 @@ IMPR_TABLE(TABLE=M3_G,
              )
 
 
-P3L_G=POST_RELEVE_T(  ACTION=_F(  GROUP_NO = 'LIST3',
+P3L_G=POST_RELEVE_T(  ACTION=_F(  GROUP_NO = 'GXXXXXX_LIST3',
                                     INTITULE = 'GLOBAL',
                                     RESULTAT = RESU,
                                     TOUT_CMP = 'OUI',
@@ -1206,7 +1206,7 @@ M3_L=MACR_LIGN_COUPE( RESULTAT= RESU,NOM_CHAM = 'SIGM_ELNO',
                       LIGN_COUPE = _F(TYPE='GROUP_NO', REPERE='LOCAL',
                                       VECT_Y = ( 1., 1., ),
                                       OPERATION='EXTRACTION',
-                                      GROUP_NO='LIST3',
+                                      GROUP_NO='GXXXXXX_LIST3',
                                       INTITULE='M3_L: LISTE DE NOEUDS P4 P3, REPERE LOCAL',
                                       DISTANCE_MAX=0.001,),)
 IMPR_TABLE(TABLE=M3_L,
@@ -1233,7 +1233,7 @@ M3_U=MACR_LIGN_COUPE( RESULTAT= RESU,NOM_CHAM = 'SIGM_ELNO',
                       LIGN_COUPE = _F(TYPE='GROUP_NO', REPERE = 'UTILISATEUR',
                                       ANGL_NAUT = ( 45., 0., 0., ),
                                       OPERATION='EXTRACTION',
-                                      GROUP_NO='LIST3',
+                                      GROUP_NO='GXXXXXX_LIST3',
                                       INTITULE='M3_U: LISTE DE NOEUDS P4 P3, REPERE UTILISATEUR,ANGL_NAUT : ( 45. 0. 0. )',
                                       DISTANCE_MAX=0.001,),)
 IMPR_TABLE(TABLE=M3_U,
@@ -1263,7 +1263,7 @@ IMPR_TABLE(   TABLE=P3_U,
 N1_G=MACR_LIGN_COUPE( RESULTAT= RESU,NOM_CHAM = 'DEPL',
                       LIGN_COUPE = _F(TYPE='GROUP_NO', REPERE='GLOBAL',
                                       OPERATION='EXTRACTION',
-                                      GROUP_NO='LIST1',
+                                      GROUP_NO='GXXXXXX_LIST1',
                                       INTITULE='N1_G: CHEMIN P1 P2, REPERE GLOBAL ',
                                       DISTANCE_MAX=0.001,),)
 IMPR_TABLE(   TABLE=N1_G,
@@ -1291,7 +1291,7 @@ N1_L=MACR_LIGN_COUPE( RESULTAT= RESU,NOM_CHAM = 'DEPL',
                       LIGN_COUPE = _F(TYPE='GROUP_NO', REPERE='LOCAL',
                                       VECT_Y = ( 1., 1., ),
                                       OPERATION='EXTRACTION',
-                                      GROUP_NO='LIST1',
+                                      GROUP_NO='GXXXXXX_LIST1',
                                       INTITULE='N1_L: CHEMIN P1 P2 REPERE LOCAL',
                                       DISTANCE_MAX=0.001,),)
 IMPR_TABLE(   TABLE=N1_L,
@@ -1316,7 +1316,7 @@ IMPR_TABLE(   TABLE=Z1_L,
 N1_U=MACR_LIGN_COUPE( RESULTAT= RESU,NOM_CHAM = 'DEPL',
                       LIGN_COUPE = _F(TYPE='GROUP_NO', REPERE='UTILISATEUR',ANGL_NAUT = ( 0., 0., 0., ),
                                       OPERATION='EXTRACTION',
-                                      GROUP_NO='LIST1',
+                                      GROUP_NO='GXXXXXX_LIST1',
                                       INTITULE='N1_U: CHEMIN P1 P2, REPERE UTILISATEUR,ANGL_NAUT : ( 0. 0. 0. )',
                                       DISTANCE_MAX=0.001,),)
 IMPR_TABLE(   TABLE=N1_U,
@@ -1344,7 +1344,7 @@ IMPR_TABLE(   TABLE=Z1_U,
 N2_G=MACR_LIGN_COUPE( RESULTAT= RESU,NOM_CHAM = 'DEPL',
                       LIGN_COUPE = _F(TYPE='GROUP_NO', REPERE='GLOBAL',
                                       OPERATION='EXTRACTION',
-                                      GROUP_NO='LIST2',
+                                      GROUP_NO='GXXXXXX_LIST2',
                                       INTITULE='N2_G:  CHEMIN P2 P3, REPERE GLOBAL',
                                       DISTANCE_MAX=0.001,),)
 IMPR_TABLE(   TABLE=N2_G,
@@ -1370,7 +1370,7 @@ N2_L=MACR_LIGN_COUPE( RESULTAT= RESU,NOM_CHAM = 'DEPL',
                       LIGN_COUPE = _F(TYPE='GROUP_NO', REPERE='LOCAL',
                                       VECT_Y = ( 1., 1., ),
                                       OPERATION='EXTRACTION',
-                                      GROUP_NO='LIST2',
+                                      GROUP_NO='GXXXXXX_LIST2',
                                       INTITULE='N2_L: CHEMIN P2 P3 REPERE LOCAL',
                                       DISTANCE_MAX=0.001,),)
 IMPR_TABLE(   TABLE=N2_L,
@@ -1397,7 +1397,7 @@ N2_C=MACR_LIGN_COUPE( RESULTAT= RESU,NOM_CHAM = 'DEPL',
                       LIGN_COUPE = _F(TYPE='GROUP_NO', REPERE = 'CYLINDRIQUE',
                                       ORIGINE = ( 0., 0.,),
                                       OPERATION='EXTRACTION',
-                                      GROUP_NO='LIST2',
+                                      GROUP_NO='GXXXXXX_LIST2',
                                       INTITULE='N2L_C:  LISTE DE NOEUDS P2 P3, REPERE CYLINDRIQUE, ORIGINE: (0. 0. 0.), AXE_Z: (0. 0. 1.)',
                                       DISTANCE_MAX=0.001,),)
 
@@ -1406,7 +1406,7 @@ IMPR_TABLE(   TABLE=N2_C,
              )
 
 
-Z2L_C=POST_RELEVE_T(  ACTION=_F(  GROUP_NO = 'LIST2',
+Z2L_C=POST_RELEVE_T(  ACTION=_F(  GROUP_NO = 'GXXXXXX_LIST2',
                                     INTITULE = 'CYLINDR',
                                     RESULTAT = RESU,
                                     TOUT_CMP = 'OUI',
@@ -1427,7 +1427,7 @@ IMPR_TABLE(   TABLE=Z2L_C,
 N2_P=MACR_LIGN_COUPE( RESULTAT= RESU,NOM_CHAM = 'DEPL',
                       LIGN_COUPE = _F(TYPE='GROUP_NO', REPERE = 'POLAIRE',
                                       OPERATION='EXTRACTION',
-                                      GROUP_NO='LIST2',
+                                      GROUP_NO='GXXXXXX_LIST2',
                                       INTITULE='N2L_P:  LISTE DE NOEUDS P2 P3, REPERE POLAIRE',
                                       DISTANCE_MAX=0.001,),)
 
@@ -1436,7 +1436,7 @@ IMPR_TABLE(   TABLE=N2_P,
              )
 
 
-Z2L_P=POST_RELEVE_T(  ACTION=_F(  GROUP_NO = 'LIST2',
+Z2L_P=POST_RELEVE_T(  ACTION=_F(  GROUP_NO = 'GXXXXXX_LIST2',
                                     INTITULE = 'POLAIRE',
                                     RESULTAT = RESU,
                                     TOUT_CMP = 'OUI',
@@ -1455,7 +1455,7 @@ IMPR_TABLE(   TABLE=Z2L_P,
 N3_G=MACR_LIGN_COUPE( RESULTAT= RESU,NOM_CHAM = 'DEPL',
                       LIGN_COUPE = _F(TYPE='GROUP_NO', REPERE='GLOBAL',
                                       OPERATION='EXTRACTION',
-                                      GROUP_NO='LIST3',
+                                      GROUP_NO='GXXXXXX_LIST3',
                                       INTITULE='N3_G:  CHEMIN P4 P3, REPERE GLOBAL',
                                       DISTANCE_MAX=0.001,),)
 IMPR_TABLE(   TABLE=N3_G,
@@ -1482,7 +1482,7 @@ N3_L=MACR_LIGN_COUPE( RESULTAT= RESU,NOM_CHAM = 'DEPL',
                       LIGN_COUPE = _F(TYPE='GROUP_NO', REPERE='LOCAL',
                                       VECT_Y = ( 1., 1., ),
                                       OPERATION='EXTRACTION',
-                                      GROUP_NO='LIST3',
+                                      GROUP_NO='GXXXXXX_LIST3',
                                       INTITULE='N3_L: CHEMIN P4 P3 REPERE LOCAL',
                                       DISTANCE_MAX=0.001,),)
 IMPR_TABLE(   TABLE=N3_L,
@@ -1508,7 +1508,7 @@ IMPR_TABLE(   TABLE=Z3_L,
 N3_U=MACR_LIGN_COUPE( RESULTAT= RESU,NOM_CHAM = 'DEPL',
                       LIGN_COUPE = _F(TYPE='GROUP_NO', REPERE='UTILISATEUR',ANGL_NAUT = ( 45., 0., 0., ),
                                       OPERATION='EXTRACTION',
-                                      GROUP_NO='LIST3',
+                                      GROUP_NO='GXXXXXX_LIST3',
                                       INTITULE='N3_U: CHEMIN P1 P2, REPERE UTILISATEUR,ANGL_NAUT : ( 45. 0. 0. )',
                                       DISTANCE_MAX=0.001,),)
 IMPR_TABLE(   TABLE=N3_U,
@@ -1540,7 +1540,7 @@ IMPR_TABLE(   TABLE=Z3_U,
 # ==> TENSEUR
 
 O1_TN=MACR_LIGN_COUPE( RESULTAT= RESU,NOM_CHAM = 'SIGM_NOEU',
-                      LIGN_COUPE = _F(TYPE='GROUP_NO', REPERE='GLOBAL',GROUP_NO='LIST1',
+                      LIGN_COUPE = _F(TYPE='GROUP_NO', REPERE='GLOBAL',GROUP_NO='GXXXXXX_LIST1',
                                       OPERATION='EXTRACTION',TRAC_NOR = 'OUI',
                                       NOM_CMP = ( 'SIXX', 'SIYY', 'SIZZ', 'SIXY', ),
                                       INTITULE='O1_TN:LISTE DE NOEUDS P1 P2, TRAC_NOR ',
@@ -1581,7 +1581,7 @@ O1_TDX=MACR_LIGN_COUPE( RESULTAT= RESU,NOM_CHAM = 'SIGM_NOEU',
                       LIGN_COUPE = _F(TYPE='GROUP_NO', REPERE='GLOBAL',
                                       OPERATION='EXTRACTION',TRAC_DIR = 'OUI',
                                       NOM_CMP = ( 'SIXX', 'SIYY', 'SIZZ', 'SIXY', ),
-                                      GROUP_NO='LIST1',DIRECTION = ( 1., 0., 0., ),
+                                      GROUP_NO='GXXXXXX_LIST1',DIRECTION = ( 1., 0., 0., ),
                                       INTITULE='O1_TDX: CHEMIN P1 P2, TRAC_DIR DIRECTION: (1. 0. 0.)',
                                       DISTANCE_MAX=0.001,),)
 
@@ -1611,7 +1611,7 @@ O1_TDY=MACR_LIGN_COUPE( RESULTAT= RESU,NOM_CHAM = 'SIGM_NOEU',
                       LIGN_COUPE = _F(TYPE='GROUP_NO', REPERE='GLOBAL',
                                       OPERATION='EXTRACTION',TRAC_DIR = 'OUI',
                                       NOM_CMP = ( 'SIXX', 'SIYY', 'SIZZ', 'SIXY', ),
-                                      GROUP_NO='LIST1',DIRECTION = ( 0., 1., 0., ),
+                                      GROUP_NO='GXXXXXX_LIST1',DIRECTION = ( 0., 1., 0., ),
                                       INTITULE='O1_TDY: CHEMIN P1 P2, TRAC_DIR DIRECTION: (0. 1. 0.)',
                                       DISTANCE_MAX=0.001,),)
 
@@ -1639,7 +1639,7 @@ O1_TDXY=MACR_LIGN_COUPE( RESULTAT= RESU,NOM_CHAM = 'SIGM_NOEU',
                       LIGN_COUPE = _F(TYPE='GROUP_NO', REPERE='GLOBAL',
                                       OPERATION='EXTRACTION',TRAC_DIR = 'OUI',
                                       NOM_CMP = ( 'SIXX', 'SIYY', 'SIZZ', 'SIXY',  ),
-                                      GROUP_NO='LIST1',DIRECTION = ( 1., 1., 0., ),
+                                      GROUP_NO='GXXXXXX_LIST1',DIRECTION = ( 1., 1., 0., ),
                                       INTITULE='O1_TDXY: CHEMIN P1 P2, TRAC_DIR DIRECTION: (0. 1. 0.)',
                                       DISTANCE_MAX=0.001,),)
 
@@ -1670,7 +1670,7 @@ P1_TDX=MACR_LIGN_COUPE( RESULTAT= RESU,NOM_CHAM = 'DEPL',
                       LIGN_COUPE = _F(TYPE='GROUP_NO', REPERE='GLOBAL',
                                       OPERATION='EXTRACTION',TRAC_DIR = 'OUI',
                                       NOM_CMP = ( 'DX', 'DY', ),
-                                      GROUP_NO='LIST1',DIRECTION = ( 1., 0., 0., ),
+                                      GROUP_NO='GXXXXXX_LIST1',DIRECTION = ( 1., 0., 0., ),
                                       INTITULE='P1_TDX: CHEMIN P1 P2, TRAC_DIR DIRECTION: (1. 0. 0.)',
                                       DISTANCE_MAX=0.001,),)
 
@@ -1704,7 +1704,7 @@ IMPR_TABLE(   TABLE=Z1_TDX,
 INVA_M=MACR_LIGN_COUPE( RESULTAT= RESU,NOM_CHAM = 'SIGM_NOEU',
                       LIGN_COUPE = _F(TYPE='GROUP_NO', REPERE='GLOBAL',
                                       OPERATION='EXTRACTION',INVARIANT = 'OUI',
-                                      GROUP_NO='LIST1',
+                                      GROUP_NO='GXXXXXX_LIST1',
                                       INTITULE='INVA_M: LISTE DE NOEUDS P1 P2, INVARIANT, A PARTIR DE SIGM_NOEU',
                                       DISTANCE_MAX=0.001,),)
 
@@ -1713,7 +1713,7 @@ IMPR_TABLE(   TABLE=INVA_M,
              )
 
 
-INVA_P = POST_RELEVE_T(  ACTION=_F( GROUP_NO = 'LIST1',
+INVA_P = POST_RELEVE_T(  ACTION=_F( GROUP_NO = 'GXXXXXX_LIST1',
                                      INTITULE = 'INVARIANT',
                                      RESULTAT = RESU,
                                      NOM_CHAM = 'SIGM_NOEU',
@@ -1738,7 +1738,7 @@ IMPR_TABLE(   TABLE=INVA_P,
 PRIN_M=MACR_LIGN_COUPE( RESULTAT= RESU,NOM_CHAM = 'SIGM_NOEU',
                       LIGN_COUPE = _F(TYPE='GROUP_NO', REPERE='GLOBAL',
                                       OPERATION='EXTRACTION',ELEM_PRINCIPAUX = 'OUI',
-                                      GROUP_NO='LIST1',
+                                      GROUP_NO='GXXXXXX_LIST1',
                                       INTITULE='PRIN_M:LISTE DE NOEUDS P1 P2, ELEM_PRINCIPAUX A PARTIR DE SIGM_NOEU',
                                       DISTANCE_MAX=0.001,),)
 
@@ -1747,7 +1747,7 @@ IMPR_TABLE(   TABLE=PRIN_M,
              )
 
 
-PRIN_P = POST_RELEVE_T(  ACTION=_F( GROUP_NO = 'LIST1',
+PRIN_P = POST_RELEVE_T(  ACTION=_F( GROUP_NO = 'GXXXXXX_LIST1',
                                      INTITULE = 'INVARIANT',
                                      RESULTAT = RESU,
                                      NOM_CHAM = 'SIGM_NOEU',

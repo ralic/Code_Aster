@@ -2,9 +2,9 @@
      &                   YD, YF, VIND, R, DRDY, IRET )
       IMPLICIT NONE
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGORITH  DATE 09/04/2013   AUTEUR PELLET J.PELLET 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -123,7 +123,7 @@ C =====================================================================
 C --- PREMIER INVARIANT ET AUTRES GRANDEURS UTILES --------------------
 C =====================================================================
       I1F  = D13 * TRACE(NDI,YF)
-      IF ( (I1F/PREF) .LT. TOLE1 ) I1F = 1.D-12*PREF
+      IF ( (I1F/PREF) .LT. TOLE1 ) I1F = TOLE1*PREF
 
       DO 11 I = 1, 4
         PROX(I)  = .FALSE.
@@ -182,7 +182,7 @@ C =====================================================================
         ELSEIF (INDI(K) .EQ. 4) THEN
 
           KSI(K) = UN
-          P(K)   = I1F
+          P(K)   = (YF(1)+YF(2)+YF(3))*D13
 
         ELSEIF ((INDI(K) .LT. 8) .AND. (INDI(K) .GT. 4)) THEN
 
@@ -198,7 +198,7 @@ C =====================================================================
           TH(2) = VIND(4*INDI(K)-8)
           PROD  = SIGDC(3*K-2)*TH(1) + SIGDC(3*K)*TH(2)/DEUX
 
-          IF ((-Q(K)/PREF.LT.TOLE1).OR.((UN+PROD/Q(K)).LT.TOLE1)) THEN
+          IF ((-Q(K)/PREF.LT.TOLE1).OR.((UN+PROD/Q(K)).LT.1.D-2)) THEN
              KK = KK - 4
              CALL HUJPXD(INDI(K),MATER,SIGF,VIND,PROX(KK),PROXC(KK))
           ELSE
@@ -477,7 +477,7 @@ Ckh --- traction
 
          CALL LCPRMV (HOOKNL, DELTA, DLEDR1)
          DO 76 I = 1, NDT
-           DLEDR(I,K) = DLEDR1(I) /PREF
+           DLEDR(I,K) = DLEDR1(I) /ABS(PREF)
  76        CONTINUE
 
  71   CONTINUE
@@ -1021,7 +1021,7 @@ C =====================================================================
  200       CONTINUE
 
 C =====================================================================
-C --- XVII. CALCUL DE LE (6x6) ---------------------------------------
+C --- XVII. CALCUL DE LE (6) ---------------------------------------
 C =====================================================================
 C ---- XVII.1. CALCUL DE CDE = C*DEPSE
 C                        6X1
@@ -1142,7 +1142,7 @@ C =====================================================================
           IF (KK .LT. 4) THEN
             LF(K) = Q(K) + M*PK*RC(K)*( UN-B*LOG(PK/PC) )
           ELSEIF (KK .EQ. 4) THEN
-            LF(K) = ABS(I1F) + RC(K)*D*PC
+            LF(K) = ABS(P(K)) + RC(K)*D*PC
           ELSEIF ((KK .GT. 4) .AND. (KK .LT.8)) THEN
             LF(K) = Q(K) + M*PK*RC(K)*( UN-B*LOG(PK/PC) )
           ELSEIF (KK .EQ. 8) THEN

@@ -1,4 +1,4 @@
-#@ MODIF calculel4 Messages  DATE 25/02/2013   AUTEUR CHEIGNON E.CHEIGNON 
+#@ MODIF calculel4 Messages  DATE 09/04/2013   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -109,13 +109,13 @@ Risques et conseils :
  Risques & conseils :
    La cause la plus fréquente de cette erreur est d'avoir oublié de
    renseigner AFFE_MATERIAU/AFFE_VARC.
-   (Ou de n'avoir renseigné que AFFE_VARC/VALE_REF sans avoir renseigné EVOL ou CHAMP_GD)
+   (Ou de n'avoir renseigné que AFFE_VARC/VALE_REF sans avoir renseigné EVOL ou CHAM_GD)
 """),
 
 11 : _(u"""
  Erreur d'utilisation lors de l'affectation des variables de commande (AFFE_MATERIAU/AFFE_VARC):
    Pour la variable de commande %(k1)s,
-   Vous avez oublié d'utiliser l'un des 2 mots clés CHAMP_GD ou EVOL.
+   Vous avez oublié d'utiliser l'un des 2 mots clés CHAM_GD ou EVOL.
    L'absence de ces 2 mots clés n'est permise que pour NOM_VARC='TEMP' (modélisations THM)
 """),
 

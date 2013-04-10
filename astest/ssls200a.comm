@@ -1,4 +1,4 @@
-# MODIF  DATE 18/03/2013   AUTEUR IDOUX L.IDOUX 
+# MODIF  DATE 09/04/2013   AUTEUR PELLET J.PELLET 
 # TITRE NON-REGRESSION THERMO-ELASTICITE POUR TOUTES COQUES SURFACIQUES
 # RESPONSABLE PELLET J.PELLET
 # ssls200a.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test R
@@ -101,7 +101,7 @@ TEMPLIN=CREA_CHAMP(TYPE_CHAM='NOEU_TEMP_R',
                    OPERATION='AFFE',
                    MAILLAGE=MA,
                    AFFE=_F(TOUT='OUI',
-                           NOM_CMP=('TEMP_INF','TEMP','TEMP_SUP',),
+                           NOM_CMP=('TEMP_INF','TEMP_MIL','TEMP_SUP',),
                            VALE=(12.,18.,24.,),),);
 
 TEMPLI=CREA_RESU(OPERATION='AFFE',

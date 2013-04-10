@@ -7,9 +7,9 @@
       CHARACTER*(*)       LIGRMO
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 18/12/2012   AUTEUR SELLENET N.SELLENET 
+C MODIF MODELISA  DATE 09/04/2013   AUTEUR PELLET J.PELLET 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -42,10 +42,10 @@ C-----------------------------------------------------------------------
       REAL*8        R8B, AIRE, XLONG
       COMPLEX*16    C16B
       LOGICAL       ICRE1, ICRE2
-      CHARACTER*8   K8B, NOMTAB, MONGRM, TYPMCL(2)
+      CHARACTER*8   K8B, NOMTAB, TYPMCL(2)
       CHARACTER*16  MOTCLF, MOTCLE(2)
       CHARACTER*19  CART1, CART2
-      CHARACTER*24  PARA, MESMAI
+      CHARACTER*24  PARA, MESMAI, MONGRM
       CHARACTER*24 VALK(2)
       INTEGER      IARG
 C ----------------------------------------------------------------------

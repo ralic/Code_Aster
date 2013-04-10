@@ -1,8 +1,8 @@
-#@ MODIF modelisa5 Messages  DATE 24/07/2012   AUTEUR PELLET J.PELLET 
+#@ MODIF modelisa5 Messages  DATE 09/04/2013   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -219,7 +219,7 @@ cata_msg = {
 """),
 
 66 : _(u"""
- SPEC_EXCI_POINT : si INTE_SPEC alors autant d arguments pour nature, ANGL et noeud
+ SPEC_EXCI_POINT : si INTE_SPEC alors autant d arguments pour nature, ANGLE et noeud
 """),
 
 67 : _(u"""
@@ -231,7 +231,7 @@ cata_msg = {
 """),
 
 69 : _(u"""
- SPEC_EXCI_POINT : le nombre d arguments pour nature, ANGL et noeud doit être égal a la dimension de la matrice interspectrale
+ SPEC_EXCI_POINT : le nombre d arguments pour nature, ANGLE et noeud doit être égal a la dimension de la matrice interspectrale
 """),
 
 70 : _(u"""

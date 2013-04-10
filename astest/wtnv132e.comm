@@ -1,4 +1,4 @@
-# MODIF  DATE 18/02/2013   AUTEUR SELLENET N.SELLENET 
+# MODIF  DATE 09/04/2013   AUTEUR PELLET J.PELLET 
 # TITRE CONSTRUCTION PAR COUCHES D'UNE COLONNE DE SOL AVEC MODELE DE HUJEUX
 # wtnv132e.para = tps_job 450 mem_job 512Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -263,6 +263,7 @@ U[0]=STAT_NON_LINE(MODELE=MOD[0],
                                ITER_INTE_PAS=-5,
                                RESI_INTE_RELA=1.E-8,
                                RELATION='KIT_HM',
+                               ALGO_INTE='SPECIFIQUE',
                                RELATION_KIT=('HUJEUX','LIQU_SATU','HYDR_UTIL'),
                                GROUP_MA=list_group_ma[1])),
                  INCREMENT=_F(LIST_INST=DEFLISTT,
@@ -436,7 +437,7 @@ for n in range(1,nbcouche-1):
                       OPERATION='ASSE',
                       MODELE=MOD[n],
                       OPTION='DEPL',
-                      PROL_ZERO='OUI',
+
                       ASSE=_F(GROUP_MA=GrMa,
                               CHAM_GD=DEP[n-1]));
 
@@ -500,7 +501,7 @@ for n in range(1,nbcouche-1):
                       TYPE_CHAM='NOEU_DEPL_R',
                       OPERATION='ASSE',
                       MODELE=MOD[n],
-                      PROL_ZERO='OUI',
+
                       ASSE=(_F(TOUT='OUI',
                                CHAM_GD=CHNUL,),
                             _F(GROUP_MA=GrMa,
@@ -559,6 +560,7 @@ for n in range(1,nbcouche-1):
                                ITER_INTE_PAS=-5,
                                RESI_INTE_RELA=1.E-8,
                                RELATION='KIT_HM',
+                               ALGO_INTE='SPECIFIQUE',
                                RELATION_KIT=('HUJEUX','LIQU_SATU','HYDR_UTIL'),
                                GROUP_MA=list_group_ma[1:n+2])),
                  ETAT_INIT=_F(DEPL=DEPL_IN,

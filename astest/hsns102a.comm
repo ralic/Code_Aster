@@ -1,4 +1,4 @@
-# MODIF  DATE 12/02/2013   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 09/04/2013   AUTEUR PELLET J.PELLET 
 # TITRE PLAQUE EN BETON ARME CHAUFFEE
 # hsns102a.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -32,8 +32,8 @@ MAILL1=LIRE_MAILLAGE(   )
 MAILTOT=CREA_MAILLAGE(
                MAILLAGE=MAILL1,
                CREA_GROUP_MA=_F(
-                   NOM = 'GEOA',
-                   GROUP_MA = 'GEOB',
+                   NOM = 'GXXXXXX_GEOA',
+                   GROUP_MA = 'GXXXXXX_GEOB',
                    PREF_MAILLE = 'A',
                               )
                            )
@@ -57,10 +57,10 @@ ACIER=DEFI_MATERIAU(
 # -------------------------------------------------
 #
 LEMOD=AFFE_MODELE(    MAILLAGE=MAILTOT,     VERIF='MAILLE',
-                        AFFE=(_F(  GROUP_MA = 'GEOB',
+                        AFFE=(_F(  GROUP_MA = 'GXXXXXX_GEOB',
                                PHENOMENE = 'MECANIQUE',
                                MODELISATION = 'DKT',),
-                             _F(  GROUP_MA = 'GEOA',
+                             _F(  GROUP_MA = 'GXXXXXX_GEOA',
                                PHENOMENE = 'MECANIQUE',
                                MODELISATION = 'GRILLE_EXCENTRE',),
                               )
@@ -71,9 +71,9 @@ LEMOD=AFFE_MODELE(    MAILLAGE=MAILTOT,     VERIF='MAILLE',
 # -------------------------------------------------
 #
 LACAR=AFFE_CARA_ELEM(    MODELE=LEMOD,
-                       COQUE=_F( GROUP_MA = 'GEOB',
+                       COQUE=_F( GROUP_MA = 'GXXXXXX_GEOB',
                                   EPAIS=0.2),
-                       GRILLE=_F( GROUP_MA = 'GEOA',
+                       GRILLE=_F( GROUP_MA = 'GXXXXXX_GEOA',
                                 SECTION = .01,
                                 ANGL_REP=(0,0),
                                 EXCENTREMENT = -0.1)
@@ -86,23 +86,23 @@ LACAR=AFFE_CARA_ELEM(    MODELE=LEMOD,
 # IL FAUT TOUT FAIRE EN DOUBLE ACIER ET BETON) CAR LES MAILLES S'APPUIENT SUR LES MEMES NOEUDS
 
 T0A=CREA_CHAMP( OPERATION='AFFE', TYPE_CHAM='NOEU_TEMP_R', MAILLAGE=MAILTOT,
-                          AFFE=(_F(GROUP_MA = 'GEOA',
+                          AFFE=(_F(GROUP_MA = 'GXXXXXX_GEOA',
                                   NOM_CMP = ('TEMP',),
                                    VALE = (20., ))))
 
 T1A=CREA_CHAMP( OPERATION='AFFE', TYPE_CHAM='NOEU_TEMP_R', MAILLAGE=MAILTOT,
-                          AFFE=(_F(GROUP_MA = 'GEOA',
+                          AFFE=(_F(GROUP_MA = 'GXXXXXX_GEOA',
                                   NOM_CMP = ('TEMP',),
                                    VALE = (120., ))))
 
 T0B=CREA_CHAMP( OPERATION='AFFE', TYPE_CHAM='NOEU_TEMP_R', MAILLAGE=MAILTOT,
-                          AFFE=(_F(GROUP_MA = 'GEOB',
-                                   NOM_CMP = ('TEMP', 'TEMP_INF', 'TEMP_SUP',),
+                          AFFE=(_F(GROUP_MA = 'GXXXXXX_GEOB',
+                                   NOM_CMP = ('TEMP_MIL', 'TEMP_INF', 'TEMP_SUP',),
                                    VALE = (20.,    20.,       20.,     ))))
 
 T1B=CREA_CHAMP( OPERATION='AFFE', TYPE_CHAM='NOEU_TEMP_R', MAILLAGE=MAILTOT,
-                          AFFE=(_F(GROUP_MA = 'GEOB',
-                                   NOM_CMP = ('TEMP', 'TEMP_INF', 'TEMP_SUP',),
+                          AFFE=(_F(GROUP_MA = 'GXXXXXX_GEOB',
+                                   NOM_CMP = ('TEMP_MIL', 'TEMP_INF', 'TEMP_SUP',),
                                    VALE = (20.,    20.,       20.,     ))))
 LATEMPA=CREA_RESU(
              OPERATION='AFFE', TYPE_RESU='EVOL_THER',
@@ -131,18 +131,18 @@ TEMPERB=CREA_RESU(  OPERATION='PREP_VRC2', TYPE_RESU='EVOL_THER',
 MATAF=AFFE_MATERIAU( INFO=2,
                        MAILLAGE=MAILTOT,
                           AFFE=(
-                          _F(  GROUP_MA = ('GEOA',),
+                          _F(  GROUP_MA = ('GXXXXXX_GEOA',),
                                  MATER = ACIER,
 
                                ),
-                          _F(  GROUP_MA = ('GEOB'),
+                          _F(  GROUP_MA = ('GXXXXXX_GEOB'),
                                  MATER = BETON,
 
                                )
                                ),
-                          AFFE_VARC=(  _F(GROUP_MA='GEOA',EVOL=LATEMPA,NOM_VARC='TEMP',
+                          AFFE_VARC=(  _F(GROUP_MA='GXXXXXX_GEOA',EVOL=LATEMPA,NOM_VARC='TEMP',
                                           NOM_CHAM='TEMP',VALE_REF=20.0),
-                                       _F(GROUP_MA='GEOB',EVOL=TEMPERB,NOM_VARC='TEMP',
+                                       _F(GROUP_MA='GXXXXXX_GEOB',EVOL=TEMPERB,NOM_VARC='TEMP',
                                           NOM_CHAM='TEMP',VALE_REF=20.0),
                                      )
                       )

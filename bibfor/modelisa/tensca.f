@@ -1,11 +1,12 @@
-      SUBROUTINE TENSCA(TABLCA,ICABL,NBNOCA,NBF0,F0,DELTA,RELAX,RJ,
-     &                  XFLU,XRET,EA,RH1000,MU0,FPRG,FRCO,FRLI,SA)
+      SUBROUTINE TENSCA(TABLCA,ICABL,NBNOCA,NBF0,F0,DELTA,TYPREL,TRELAX,
+     &                  XFLU,XRET,EA,RH1000,MU0,FPRG,FRCO,FRLI,
+     &                  SA,REGL)
       IMPLICIT NONE
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 18/09/2012   AUTEUR LADIER A.LADIER 
+C MODIF MODELISA  DATE 09/04/2013   AUTEUR PELLET J.PELLET 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -33,8 +34,8 @@ C  IN     : TABLCA : CHARACTER*19
 C                    NOM DE LA TABLE DECRIVANT LES CABLES
 C  IN     : ICABL  : INTEGER , SCALAIRE
 C                    NUMERO DU CABLE
-C  IN     : NBNOCA : INTEGER , VECTEUR DE DIMENSION NBCABL
-C                    CONTIENT LES NOMBRES DE NOEUDS DE CHAQUE CABLE
+C  IN     : NBNOCA : INTEGER , 
+C                    CONTIENT LE NOMBRE DE NOEUDS DU CABLE ETUDIE
 C  IN     : NBF0   : INTEGER , SCALAIRE
 C                    NOMBRE D'ANCRAGES ACTIFS DU CABLE (0, 1 OU 2)
 C  IN     : F0     : REAL*8 , SCALAIRE
@@ -42,12 +43,12 @@ C                    VALEUR DE LA TENSION APPLIQUEE A L'UN OU AUX DEUX
 C                    ANCRAGES ACTIFS DU CABLE
 C  IN     : DELTA  : REAL*8 , SCALAIRE
 C                    VALEUR DU RECUL DE L'ANCRAGE
-C  IN     : RELAX  : LOGICAL , SCALAIRE
-C                    INDICATEUR DE PRISE EN COMPTE DES PERTES DE TENSION
-C                    PAR RELAXATION DE L'ACIER
-C  IN     : RJ     : REAL*8 , SCALAIRE
+C  IN     : TYPREL  : CHARACTER*24
+C                    TYPE DE RELAXATION UTILISEE
+C  IN     : TRELAX : REAL*8 , SCALAIRE
 C                    VALEUR DE LA FONCTION CARACTERISANT L'EVOLUTION DE
-C                    LA RELAXATION DE L'ACIER DANS LE TEMPS
+C                    LA RELAXATION DE L'ACIER DANS LE TEMPS POUR BPEL
+C                    OU NOMBRE D'HEURES POUR LA RELAXATION SI ETCC
 C                    UTILE SI RELAX = .TRUE.
 C  IN     : XFLU   : REAL*8 , SCALAIRE
 C                    VALEUR DU TAUX DE PERTE DE TENSION PAR FLUAGE DU
@@ -61,7 +62,8 @@ C  IN     : RH1000 : REAL*8 , SCALAIRE
 C                    VALEUR DE LA RELAXATION A 1000 HEURES EN %
 C  IN     : MU0    : REAL*8 , SCALAIRE
 C                    VALEUR DU COEFFICIENT DE RELAXATION DE L'ACIER
-C                    PRECONTRAINT
+C                    PRECONTRAINT POUR BPEL
+C                    
 C  IN     : FPRG     : REAL*8 , SCALAIRE
 C                    VALEUR DE LA CONTRAINTE LIMITE ELASTIQUE DE L'ACIER
 C  IN     : FRCO   : REAL*8 , SCALAIRE
@@ -72,6 +74,10 @@ C                    VALEUR DU COEFFICIENT DE FROTTEMENT EN LIGNE
 C                    (CONTACT ENTRE LE CABLE ACIER ET LE MASSIF BETON)
 C  IN     : SA     : REAL*8 , SCALAIRE
 C                    VALEUR DE L'AIRE DE LA SECTION DROITE DU CABLE
+C  IN     : REGL   : CHARACTER*4, INDICATION DU REGLEMENT UTILISE
+C                    BPEL OU ETCC
+
+
 C
 C-------------------   DECLARATION DES VARIABLES   ---------------------
 C
@@ -80,20 +86,25 @@ C ARGUMENTS
 C ---------
       INCLUDE 'jeveux.h'
       CHARACTER*19  TABLCA
-      INTEGER       ICABL, NBNOCA(*), NBF0
-      REAL*8        F0, DELTA, RJ, XFLU, XRET, EA, RH1000, MU0, FPRG,
-     &              FRCO, FRLI, SA
-      LOGICAL       RELAX
+      CHARACTER*4   REGL
+      CHARACTER*24  TYPREL
+      INTEGER       ICABL, NBNOCA, NBF0
+      REAL*8        F0, DELTA, TRELAX, XFLU, XRET, EA, RH1000, MU0, 
+     &              FPRG,FRCO, FRLI, SA
+
 C
 C VARIABLES LOCALES
 C -----------------
       INTEGER       IBID, IDECNO, INO, IPARA, JABSC, JALPH, JF, JTBLP,
-     &              JTBNP, NBLIGN, NBNO, NBPARA
-      REAL*8        DF, FLIM, KRELAX, ZERO
+     &              JTBNP, NBLIGN, NBPARA, IARG,N1,IRT,JTABX,JTABY,NBVAL
+      REAL*8        DF, FLIM, KRELAX, ZERO,FI, DFR,R8PREM,F2
       COMPLEX*16    CBID
-      LOGICAL       TROUV1, TROUV2
+      LOGICAL       TROUV1, TROUV2,EXI1,EXI2
       CHARACTER*3   K3B
       CHARACTER*24  ABSCCA, ALPHCA
+      CHARACTER*8   NTABLE,K8B
+      CHARACTER*19  NEWTAB
+      CHARACTER*24  TABX, TABY
 C
       CHARACTER*24  PARAM, PARCR(2)
       DATA          PARAM /'TENSION                 '/
@@ -110,14 +121,14 @@ C%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 C 1   TRAITEMENT DES CAS PARTICULIERS F0 = 0 OU PAS D'ANCRAGE ACTIF
 C%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 C
-      NBNO = NBNOCA(ICABL)
+C     NBNO = NBNOCA(ICABL)
 C
       CALL JEVEUO(TABLCA//'.TBNP','L',JTBNP)
       NBLIGN = ZI(JTBNP+1)
-      IDECNO = NBLIGN - NBNO
+      IDECNO = NBLIGN - NBNOCA
 C
       IF ( (F0.EQ.0.0D0).OR.(NBF0.EQ.0) ) THEN
-         DO 10 INO = 1, NBNO
+         DO 10 INO = 1, NBNOCA
             CALL TBAJLI(TABLCA,1,PARAM,IBID,ZERO,CBID,K3B,IDECNO+INO)
   10     CONTINUE
          GO TO 9999
@@ -151,50 +162,134 @@ C 4   CALCUL DE LA TENSION LE LONG DU CABLE
 C%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 C
   30  CONTINUE
+
 C
-      CALL WKVECT('&&TENSCA.F' ,'V V R',NBNO,JF )
+      CALL WKVECT('&&TENSCA.F' ,'V V R',NBNOCA,JF )
 C
 C 4.1 CALCUL DE LA TENSION LE LONG DU CABLE EN PRENANT EN COMPTE LES
 C --- PERTES PAR FROTTEMENT ET PAR RECUL DU(DES) ANCRAGE(S)
-C
+C    PAS DE DIFFERENCE ENTRE ETCC ET BPEL
+
       IF ( NBF0.EQ.1 ) THEN
-         CALL TENSK1(ICABL,NBNO,ZR(JABSC+IDECNO),ZR(JALPH+IDECNO),
+         CALL TENSK1(ICABL,NBNOCA,ZR(JABSC+IDECNO),ZR(JALPH+IDECNO),
      &               F0,DELTA,EA,FRCO,FRLI,SA,ZR(JF))
       ELSE
-         CALL TENSK2(ICABL,NBNO,ZR(JABSC+IDECNO),ZR(JALPH+IDECNO),
+         CALL TENSK2(ICABL,NBNOCA,ZR(JABSC+IDECNO),ZR(JALPH+IDECNO),
      &               F0,DELTA,EA,FRCO,FRLI,SA,ZR(JF))
       ENDIF
+
 C
 C 4.2 PRISE EN COMPTE LE CAS ECHEANT DES PERTES DE TENSION PAR
 C --- RELAXATION DE L'ACIER
 C
-      IF ( RELAX ) THEN
-         KRELAX = RJ * 5.0D-02 * RH1000
-         FLIM = FPRG * SA
-         DO 40 INO = 1, NBNO
+      IF (TYPREL.NE.'SANS') THEN
+        IF (RH1000.LE.R8PREM()) CALL U2MESS('A','MODELISA2_70')
+      ENDIF  
+      IF ( TYPREL.EQ.'BPEL' ) THEN
+C----------------------------------    
+C     CAS DU BPEL
+C-----------------------
+         FLIM = FPRG * SA           
+         KRELAX = TRELAX * 5.0D-02 * RH1000
+           
+         DO 40 INO = 1, NBNOCA
             ZR(JF+INO-1) = ZR(JF+INO-1)
-     &                   * ( 1.0D0 - KRELAX * (ZR(JF+INO-1)/FLIM-MU0) )
+     &         * ( 1.0D0 - KRELAX * (ZR(JF+INO-1)/FLIM-MU0) )
   40     CONTINUE
+         
+      ELSEIF (TYPREL.EQ.'ETCC_DIRECT') THEN
+C----------------------------------    
+C        CAS ETCC_DIRECT
+C----------------------------------
+         FLIM = FPRG * SA  
+         DO 45 INO = 1, NBNOCA
+           FI  = ZR(JF+INO-1) 
+           ZR(JF+INO-1) = FI - 0.8D0 *  FI
+     &          *  0.66D-05 *RH1000*EXP(9.1D0*FI/FLIM)*
+     &         (TRELAX/1000.D0)**(0.75D0*(1.D0-(FI/FLIM) ))
+
+  45     CONTINUE
+      ELSEIF (TYPREL.EQ.'ETCC_REPRISE') THEN
+C----------------------------------    
+C        CAS ETCC_REPRISE
+C----------------------------------        
+        CALL GETVID ( 'DEFI_CABLE', 'TENSION_CT' ,ICABL,IARG,1,
+     &                 NTABLE, N1 )
+        IF (N1.EQ.0) THEN
+          CALL U2MESS('F','MODELISA2_56')
+        ENDIF
+
+        NEWTAB=NTABLE
+        TABX   = '&&TENSCA_TABREF_CURV'
+        TABY   = '&&TENSCA_TABREF_TENS'
+ 
+        CALL JEEXIN ( NEWTAB//'.TBBA', IRT )
+        IF ( IRT .EQ. 0 ) THEN
+          CALL U2MESS('F','UTILITAI4_64')
+        ENDIF
+C     VERIFICATION DE LA PRESENCE DES BONS PARAMETRES
+        CALL TBEXIP ( NEWTAB, 'ABSC_CURV', EXI1, K8B )
+        CALL TBEXIP ( NEWTAB, 'N', EXI2, K8B )
+ 
+        IF(.NOT.EXI1 .AND. .NOT.EXI2)THEN
+          CALL U2MESS('F','MODELISA2_67')
+        ENDIF
+
+        CALL TBEXVE ( NEWTAB, 'ABSC_CURV', TABX, 'V', NBVAL, K8B)
+        CALL JEVEUO ( TABX, 'L', JTABX )
+        CALL TBEXVE ( NEWTAB, 'N', TABY, 'V', NBVAL, K8B)
+        CALL JEVEUO ( TABY, 'L', JTABY )
+        IF (NBVAL.NE.NBNOCA) THEN
+          CALL U2MESS('F','MODELISA2_68')
+        ENDIF
+C     ON VERIFIE A MINIMA QUE LES ABSCISSES CURVILIGNES SONT IDENTIQUES
+C     (MAIS PAS LES COORDONNES EXACTES)
+        DO 50 INO=1,NBNOCA
+          IF (ZR(JTABX+INO-1)-ZR(JABSC+INO-1).GE.R8PREM() ) THEN
+             CALL U2MESS('F','MODELISA2_69')
+          ENDIF
+50       CONTINUE      
+C%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+C  MISE A JOUR DE LA TENSION
+C%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+C
+        DO 60 INO = 1, NBNOCA
+           F2 = ZR(JTABY+INO-1)
+           ZR(JF+INO-1) = ZR(JF+INO-1) - 0.8D0 * 0.66D-05 *RH1000*
+     &             EXP(9.1D0*F2/FPRG/SA)*
+     &         (TRELAX/1000.D0)**(0.75D0*(1.D0-(F2/FPRG/SA) ))*F2
+  60    CONTINUE
+
+
+        CALL JEDETR(TABX)
+        CALL JEDETR(TABY)     
+      
+                              
       ENDIF
 C
 C 4.3 PRISE EN COMPTE LE CAS ECHEANT DES PERTES DE TENSION PAR
-C --- FLUAGE ET RETRAIT DU BETON
+C --- FLUAGE ET RETRAIT DU BETON - UNIQUEMENT POUR BPEL
 C
-      IF ( XFLU+XRET.NE.0.0D0 ) THEN
-         DF = ( XFLU + XRET ) * F0
-         DO 50 INO = 1, NBNO
-            ZR(JF+INO-1) = ZR(JF+INO-1) - DF
-  50     CONTINUE
-      ENDIF
+      IF (REGL.EQ.'BPEL') THEN
+      
+        IF ( XFLU+XRET.NE.0.0D0 ) THEN
+           DF = ( XFLU + XRET ) * F0
+           DO 80 INO = 1, NBNOCA
+              ZR(JF+INO-1) = ZR(JF+INO-1) - DF
+  80       CONTINUE
+        ENDIF
+
+       ENDIF        
+        
 C
 C%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 C 5   MISE A JOUR DES OBJETS DE SORTIE
 C%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 C
-      DO 60 INO = 1, NBNO
+      DO 90 INO = 1, NBNOCA
          CALL TBAJLI(TABLCA,1,PARAM,
      &               IBID,ZR(JF+INO-1),CBID,K3B,IDECNO+INO)
-  60  CONTINUE
+  90  CONTINUE
 C
 9999  CONTINUE
       CALL JEDETR('&&TENSCA.F')

@@ -1,8 +1,8 @@
-# MODIF  DATE 19/12/2012   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 09/04/2013   AUTEUR PELLET J.PELLET 
 # TITRE VALIDATION DE L'OPERATEUR DEFI_CABLE_BP
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -96,7 +96,9 @@ CABLEP1=DEFI_CABLE_BP(            MODELE=MODELE,
                                TYPE_ANCRAGE = ( 'ACTIF',   'ACTIF',  ),
                                 TENSION_INIT=2.0E+5,
                                RECUL_ANCRAGE=5.0E-4,
-                                  RELAXATION=_F(  R_J = 0.7970032677),
+                               TYPE_RELAX='BPEL',
+                               R_J = 0.7970032677, 
+                              #    RELAXATION=_F(  R_J = 0.7970032677),
                                        TITRE=(
                              'VALIDATION DE L OPERATEUR DEFI_CABLE_BP', )
                                            )

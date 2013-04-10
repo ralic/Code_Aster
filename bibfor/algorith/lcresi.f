@@ -1,12 +1,12 @@
         SUBROUTINE LCRESI( FAMI, KPG, KSP, LOI, TYPMOD, IMAT, NMAT,
      3                     MATERD, MATERF, COMP, NBCOMM, CPMONO,
      1         PGL,NFS,NSG,TOUTMS,HSR,NR,NVI,VIND,VINF,ITMAX, TOLER,
-     &   TIMED, TIMEF, YD,YF, DEPS, EPSD, DY, R, IRET ,CRIT)
+     &   TIMED, TIMEF, YD,YF, DEPS, EPSD, DY, R, IRET ,CRIT,INDI)
         IMPLICIT   NONE
 C TOLE CRP_21
 C       ================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 25/02/2013   AUTEUR PROIX J-M.PROIX 
+C MODIF ALGORITH  DATE 09/04/2013   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -43,10 +43,12 @@ C           VINF   :  VARIABLES INTERNES A T+DT
 C           YD     :  VARIABLES A T      =    ( SIGD  VIND  (EPSD3)  )
 C           YF     :  VARIABLES A T + DT =    ( SIGF  VINF  (EPS3F)  )
 C           DY     :  SOLUTION           =    ( DSIG  DVIN  (DEPS3)  )
+C           INDI   :  INDICATEURS DES MECANISMES POT.ACTIFS (HUJEUX)
 C       OUT R      :  SYSTEME NL A T + DT
 C       ----------------------------------------------------------------
 C
-        INTEGER  IMAT, NMAT, NR, NVI, KPG, KSP, ITMAX, IRET, NFS,NSG
+        INTEGER         IMAT, NMAT, NR, NVI, KPG, KSP, ITMAX, IRET
+        INTEGER         NFS, NSG, INDI(7)
         REAL*8          DEPS(6)  , EPSD(6), VIND(*), TOLER
         REAL*8          R(*) , YD(*) ,  YF(*), DY(*),VINF(*)
         REAL*8          MATERD(NMAT,2) ,MATERF(NMAT,2)
@@ -84,6 +86,8 @@ C
       ELSEIF ( LOI  .EQ. 'HAYHURST' ) THEN
          CALL HAYRES ( TYPMOD,NMAT,MATERD,MATERF,TIMED,TIMEF,
      &                 YD,YF,DEPS,DY,R,CRIT,IRET)
+      ELSEIF ( LOI(1:6)  .EQ. 'HUJEUX' ) THEN
+         CALL HURESI (TYPMOD,MATERF,INDI,DEPS,NR,YD,YF,NVI,VIND,R,IRET)
       ELSE         
          CALL LCRESA(FAMI,KPG,KSP,TYPMOD,IMAT,NMAT,MATERD,MATERF,
      &          COMP,NR,NVI,TIMED,TIMEF,DEPS,EPSD,YF,DY,R,IRET,YD,CRIT)

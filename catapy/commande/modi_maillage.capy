@@ -1,7 +1,7 @@
-#& MODIF COMMANDE  DATE 09/11/2010   AUTEUR DELMAS J.DELMAS 
+#& MODIF COMMANDE  DATE 09/04/2013   AUTEUR PELLET J.PELLET 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -141,7 +141,7 @@ MODI_MAILLAGE=OPER(nom="MODI_MAILLAGE",op= 154,sd_prod=maillage_sdaster,
          TRANSLATION     =SIMP(statut='f',typ='R',min=2,max=3),
          ROTATION        =FACT(statut='f',max='**',
            POIN_1           =SIMP(statut='o',typ='R',min=2,max=3),
-           ANGL             =SIMP(statut='o',typ='R',defaut= 0.E+0 ),
+           ANGLE            =SIMP(statut='o',typ='R',defaut= 0.E+0 ),
            regles=(EXCLUS('DIR','POIN_2'),),
            POIN_2           =SIMP(statut='f',typ='R',min=2,max=3),
            DIR              =SIMP(statut='f',typ='R',min=2,max=3),

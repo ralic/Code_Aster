@@ -1,10 +1,10 @@
-# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
+# MODIF  DATE 09/04/2013   AUTEUR PELLET J.PELLET 
 #
 # TITRE CADRE DE BARRES HAUBANE.
 # ssnl105a.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -28,20 +28,20 @@ MA=LIRE_MAILLAGE(  )
 
 MO=AFFE_MODELE(  MAILLAGE=MA,AFFE=(
 #           GROUPE DE  MAILLE : MODELE CABLE
-                    _F(  GROUP_MA = 'CABLE',
+                    _F(  GROUP_MA = 'GXXXXXX_CABLE',
                            PHENOMENE = 'MECANIQUE',
                            MODELISATION = 'CABLE'),
 #           GROUPE DE  MAILLE : MODELE POUTRE
-                         _F(  GROUP_MA = 'CADRE',
+                         _F(  GROUP_MA = 'GXXXXXX_CADRE',
                            PHENOMENE = 'MECANIQUE',
                            MODELISATION = 'BARRE'))   )
 
 CARELEM=AFFE_CARA_ELEM(   MODELE=MO,
 #     GROUPE DE MAILLE : MODELE CABLE
-                      CABLE=_F(  GROUP_MA = 'CABLE',
+                      CABLE=_F(  GROUP_MA = 'GXXXXXX_CABLE',
                               SECTION = 1.00E-04),
 #     GROUPE DE MAILLE : MODELE BARRE
-                      BARRE=_F(  GROUP_MA = 'CADRE',
+                      BARRE=_F(  GROUP_MA = 'GXXXXXX_CADRE',
                               SECTION = 'GENERALE',
                               CARA = 'A',
                               VALE = 1.00E-04)   )
@@ -53,8 +53,8 @@ MAT2=DEFI_MATERIAU(   ELAS=_F(E = 2.10E+11,NU=0.E0),
                   )
 
 CHMAT=AFFE_MATERIAU(   MAILLAGE=MA,AFFE=(
-                          _F(  GROUP_MA = 'CADRE', MATER = MAT1),
-                          _F(  GROUP_MA = 'CABLE', MATER = MAT2))  )
+                          _F(  GROUP_MA = 'GXXXXXX_CADRE', MATER = MAT1),
+                          _F(  GROUP_MA = 'GXXXXXX_CABLE', MATER = MAT2))  )
 
 FORCE=AFFE_CHAR_MECA(  MODELE=MO,DDL_IMPO=(
                    _F(  NOEUD = ('N01', 'N02', 'N03', 'N04',), DZ = 0.0),
@@ -82,13 +82,11 @@ RESU1=STAT_NON_LINE(
                 LIST_INST = LISNT,
                 NUME_INST_FIN = 2),
                          COMP_ELAS=_F(
-                GROUP_MA = (
-                  'CABLE',  ),
+                GROUP_MA = ( 'GXXXXXX_CABLE',  ),
                 RELATION = 'CABLE',
                 DEFORMATION = 'GROT_GDEP'),
                          COMP_INCR=_F(
-                GROUP_MA = (
-                  'CADRE',  ),
+                GROUP_MA = ( 'GXXXXXX_CADRE',  ),
                 RELATION = 'ELAS'),
                             NEWTON=_F(
                 REAC_ITER = 1),

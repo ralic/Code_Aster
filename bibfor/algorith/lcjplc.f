@@ -1,11 +1,11 @@
-        SUBROUTINE LCJPLC (LOI,MOD,NMAT,MATER,TIMED,TIMEF,COMP,
-     &                     NBCOMM,CPMONO,PGL,NFS,NSG,TOUTMS,HSR,
+        SUBROUTINE LCJPLC (LOI,MOD,ANGMAS,IMAT,NMAT,MATER,TIMED,TIMEF,
+     &                     COMP,NBCOMM,CPMONO,PGL,NFS,NSG,TOUTMS,HSR,
      &                     NR,NVI,EPSD,DEPS,ITMAX,TOLER,SIGF,VINF,
      &                     SIGD,VIND,DSDE,DRDY,OPTION,IRET)
         IMPLICIT NONE
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 18/03/2013   AUTEUR PROIX J-M.PROIX 
+C MODIF ALGORITH  DATE 09/04/2013   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -36,12 +36,12 @@ C           NMAT   :  DIMENSION MATER
 C           MATER  :  COEFFICIENTS MATERIAU
 C       OUT DSDE   :  MATRICE DE COMPORTEMENT TANGENT = DSIG/DEPS
 C       ----------------------------------------------------------------
-        INTEGER         NMAT , NR, NVI, ITMAX, IRET, NFS, NSG,NDT,NDI,N2
-        REAL*8          DSDE(6,6),EPSD(*),DEPS(*),TOLER
-        REAL*8          MATER(NMAT,2)
-        REAL*8 TOUTMS(NFS,NSG,6),HSR(NSG,NSG)
-        CHARACTER*8     MOD
-        CHARACTER*16    LOI,OPTION
+      INTEGER         IMAT,NMAT,NR,NVI,ITMAX,IRET,NFS,NSG,NDT,NDI,N2
+      REAL*8          DSDE(6,6),EPSD(*),DEPS(*),TOLER,ANGMAS(3)
+      REAL*8          MATER(NMAT,2)
+      REAL*8 TOUTMS(NFS,NSG,6),HSR(NSG,NSG)
+      CHARACTER*8     MOD
+      CHARACTER*16    LOI,OPTION
       COMMON /TDIM/   NDT  , NDI
 
       INTEGER         NBCOMM(NMAT,3)
@@ -66,7 +66,10 @@ C       ----------------------------------------------------------------
          ELSEIF (LOI.EQ.'HAYHURST') THEN
             N2=NR-NDT
             CALL LCOPTG(NMAT,MATER,NR,N2,DRDY,0,DSDE,IRET)
-         ELSE
+         ELSEIF ( LOI(1:6) .EQ. 'HUJEUX') THEN
+            CALL HUJOPT(MOD,ANGMAS,IMAT,MATER,NVI,VINF,NR,DRDY,
+     &                  SIGF,DSDE,IRET)
+         ELSE  
             N2=NR-NDT
             CALL LCOPTG(NMAT,MATER,NR,N2,DRDY,1,DSDE,IRET)
          ENDIF

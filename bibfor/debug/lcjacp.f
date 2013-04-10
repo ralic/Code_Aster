@@ -2,12 +2,12 @@
      &                    NMAT,MATERD,MATERF,NR,NVI,
      &                    TIMED,TIMEF, DEPS,EPSD,VIND,VINF,YD,
      &                    COMP,NBCOMM,CPMONO,PGL,NFS,NSG,TOUTMS,HSR,
-     &                    DY,R,DRDY,VERJAC,DRDYB,IRET,CRIT)
+     &                    DY,R,DRDY,VERJAC,DRDYB,IRET,CRIT,INDI)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF DEBUG  DATE 19/12/2012   AUTEUR PELLET J.PELLET 
+C MODIF DEBUG  DATE 09/04/2013   AUTEUR PELLET J.PELLET 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -60,7 +60,7 @@ C ----------------------------------------------------------------------
       IMPLICIT NONE
 
       INTEGER NMAT,NBCOMM(NMAT,3),NR,IMPR,VALI(2),NFS,NSG
-      INTEGER IMAT,I,J,ITMAX,IRET,KPG,KSP,NVI,VERJAC
+      INTEGER IMAT,I,J,ITMAX,IRET,KPG,KSP,NVI,VERJAC,INDI(7)
 
       REAL*8 TOLER,EPSD(6),DEPS(6),VIND(NVI),VINF(NVI),TIMED,TIMEF,ERR
 
@@ -124,7 +124,7 @@ C ----------------------------------------------------------------------
          CALL LCRESI ( FAMI,KPG,KSP,LOI,MOD,IMAT,NMAT,MATERD,MATERF,
      &           COMP,NBCOMM,CPMONO,PGL,NFS,NSG,TOUTMS,HSR,NR,NVI,VIND,
      &           VINF,ITMAX, TOLER,TIMED,TIMEF,YD,YFP,DEPS,EPSD,DYP,RP,
-     &              IRET ,CRIT)
+     &              IRET ,CRIT,INDI)
          IF (IRET.GT.0) THEN
             GOTO 9999
          ENDIF
@@ -138,7 +138,7 @@ C ----------------------------------------------------------------------
          CALL LCRESI ( FAMI,KPG,KSP,LOI,MOD,IMAT,NMAT,MATERD,MATERF,
      &           COMP,NBCOMM,CPMONO,PGL,NFS,NSG,TOUTMS,HSR,NR,NVI,VIND,
      &           VINF,ITMAX, TOLER,TIMED,TIMEF,YD,YFM,DEPS,EPSD,DYM,RM,
-     &              IRET ,CRIT)
+     &              IRET ,CRIT,INDI)
          IF (IRET.GT.0) THEN
             GOTO 9999
          ENDIF

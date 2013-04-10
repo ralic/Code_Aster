@@ -1,22 +1,22 @@
-# MODIF  DATE 03/04/2013   AUTEUR NICOLAS G.NICOLAS 
+# MODIF  DATE 09/04/2013   AUTEUR PELLET J.PELLET 
 # TITRE METHODE DES SOLUTIONS MANUFACTUREES : CONTACT GRANDES DEFORMATIONS 3D
 # ssnv219c.para = tps_job 600 mem_job 512Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
-# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-# (AT YOUR OPTION) ANY LATER VERSION.                                                    
-#                                                                       
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-#                                                                       
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 
 import math
@@ -205,7 +205,7 @@ def NormeAster(RESULTAT, Depl_Ana, P_ana, MAIL, MODELE, GROUP_MA_VOL, GROUP_MA_S
                             ),);
 
      DIFFUN=CREA_CHAMP(OPERATION='ASSE', TYPE_CHAM='NOEU_DEPL_R',MODELE=MODELE,
-                      PROL_ZERO='OUI',
+
                       ASSE=(_F(GROUP_MA=(GROUP_MA_VOL,GROUP_MA_SUR), CHAM_GD=Ucalc,CUMUL='OUI',COEF_R=1., NOM_CMP='DX',NOM_CMP_RESU='DX',),
                             _F(GROUP_MA=(GROUP_MA_VOL,GROUP_MA_SUR), CHAM_GD=Uana, CUMUL='OUI',COEF_R=-1.,NOM_CMP='DX',NOM_CMP_RESU='DX',),
                             _F(GROUP_MA=(GROUP_MA_VOL,GROUP_MA_SUR), CHAM_GD=Ucalc,CUMUL='OUI',COEF_R=1., NOM_CMP='DY',NOM_CMP_RESU='DY',),
@@ -322,7 +322,7 @@ for Raff in range(0,Nb_Raffinement):
    # ========================================================================================
    #          Preparation de calcul sur le nouveau maillage
    # ========================================================================================
-   
+
    # Correspondance Modele Maillage
    modl=AFFE_MODELE(MAILLAGE=MA[Raff],
                     AFFE=_F(TOUT='OUI',
@@ -390,7 +390,7 @@ for Raff in range(0,Nb_Raffinement):
    # ========================================================================================
    #          Calcul des normes d'erreur
    # ========================================================================================
-   
+
    dicResu=NormeAster(EVOLNOLI, [FUx, FUy, FUz], FcontNN, MA[Raff], modl, 'VOLUME','ESCLAVE');
 
    NormeL2ErreurU_Surf [Raff]=dicResu['NormeL2ErreurU_Surf']

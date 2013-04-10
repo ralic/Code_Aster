@@ -1,4 +1,4 @@
-# MODIF  DATE 25/03/2013   AUTEUR LEBOUVIER F.LEBOUVIER 
+# MODIF  DATE 09/04/2013   AUTEUR PELLET J.PELLET 
 # TITRE PLAQUE CIRCULAIRE POSEE     SOUS PRESSION DSQ  169 N - 147 QUAD4
 # ssls101g.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -769,19 +769,19 @@ MATER_F=DEFI_MATERIAU(  ELAS_FO=_F(  E = E_F,   NU = NU_F,
 CHT1=CREA_CHAMP( OPERATION='AFFE', TYPE_CHAM='NOEU_TEMP_R',
 MAILLAGE=MAILL,
                         AFFE=_F(  TOUT = 'OUI',
-                               NOM_CMP = ('TEMP', 'TEMP_INF', 'TEMP_SUP',),
+                               NOM_CMP = ('TEMP_MIL', 'TEMP_INF', 'TEMP_SUP',),
                                VALE = ( T1,     TINF1,      TSUP1, )))
 
 CHT2=CREA_CHAMP( OPERATION='AFFE', TYPE_CHAM='NOEU_TEMP_R',
 MAILLAGE=MAILL,
                         AFFE=_F(  TOUT = 'OUI',
-                               NOM_CMP = ('TEMP', 'TEMP_INF', 'TEMP_SUP',),
+                               NOM_CMP = ('TEMP_MIL', 'TEMP_INF', 'TEMP_SUP',),
                                VALE = ( T2,     TINF2,      TSUP2, )))
 
 CHT3=CREA_CHAMP( OPERATION='AFFE', TYPE_CHAM='NOEU_TEMP_R',
 MAILLAGE=MAILL,
                         AFFE=_F(  TOUT = 'OUI',
-                               NOM_CMP = ('TEMP', 'TEMP_INF', 'TEMP_SUP',),
+                               NOM_CMP = ('TEMP_MIL', 'TEMP_INF', 'TEMP_SUP',),
                                VALE = ( T3,     TINF3,      TSUP3, )))
 
 LINST=DEFI_LIST_REEL( VALE=( 1.,  2.,  3.,  )  )

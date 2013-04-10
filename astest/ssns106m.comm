@@ -1,30 +1,30 @@
-# MODIF  DATE 26/02/2013   AUTEUR DESROCHE X.DESROCHES 
+# MODIF  DATE 09/04/2013   AUTEUR PELLET J.PELLET 
 # RESPONSABLE SFAYOLLE S.FAYOLLE
 # TITRE  ENDOMMAGEMENT D UNE PLAQUE PLANE SOUS SOLLICITATIONS VARIEES
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
-# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-# (AT YOUR OPTION) ANY LATER VERSION.                                                    
-#                                                                       
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-#                                                                       
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 # ssns106m.para = tps_job 600 mem_job 512Mo ncpus 1 liste_test S
 # ======================================================================
 #  DETAILS : MODELISATION : MULTI-COUCHES
 #                           DKTG (GLRC_DM)
 #            MAILLAGE     : TRIA3
-#            CHARGEMENT   : THERMIQUE CYCLIQUE 
-#                           DELTAT PEAU INF - PEAU SUP EQUIVALENT A 
+#            CHARGEMENT   : THERMIQUE CYCLIQUE
+#                           DELTAT PEAU INF - PEAU SUP EQUIVALENT A
 #                           CHARGEMENT FLEXION DE LA MODELISATION B
 
 DEBUT(CODE=_F(NOM='SSNS106M',
@@ -139,17 +139,17 @@ MAT_G=DEFI_MATERIAU(ELAS=_F(E=EGM,
 
 TEMP0=CREA_CHAMP( OPERATION='AFFE', TYPE_CHAM='NOEU_TEMP_R', MAILLAGE=MA,
                    AFFE=_F( TOUT='OUI',
-                            NOM_CMP=('TEMP_INF','TEMP','TEMP_SUP'),
+                            NOM_CMP=('TEMP_INF','TEMP_MIL','TEMP_SUP'),
                             VALE=   (    10.   ,  10. ,    10.   ), ), )
 
 TEMP1=CREA_CHAMP( OPERATION='AFFE', TYPE_CHAM='NOEU_TEMP_R', MAILLAGE=MA,
                    AFFE=_F( TOUT='OUI',
-                            NOM_CMP=('TEMP_INF','TEMP','TEMP_SUP'),
+                            NOM_CMP=('TEMP_INF','TEMP_MIL','TEMP_SUP'),
                             VALE=   (    70.   ,  40. ,    10.   ), ), )
 
 TEMP2=CREA_CHAMP( OPERATION='AFFE', TYPE_CHAM='NOEU_TEMP_R', MAILLAGE=MA,
                    AFFE=_F( TOUT='OUI',
-                            NOM_CMP=('TEMP_INF','TEMP','TEMP_SUP'),
+                            NOM_CMP=('TEMP_INF','TEMP_MIL','TEMP_SUP'),
                             VALE=   (   -50.   , -20. ,   10.   ), ), )
 
 TEMPLI=CREA_RESU( OPERATION='AFFE',
@@ -157,23 +157,23 @@ TEMPLI=CREA_RESU( OPERATION='AFFE',
                    NOM_CHAM='TEMP',
                    AFFE=(
                    _F( CHAM_GD=TEMP0,
-                             INST=0.0,      ), 
+                             INST=0.0,      ),
                    _F( CHAM_GD=TEMP1,
-                             INST=1.0,      ), 
+                             INST=1.0,      ),
                    _F( CHAM_GD=TEMP0,
-                              INST=2.0,      ), 
+                              INST=2.0,      ),
                    _F( CHAM_GD=TEMP2,
-                             INST=3.0,      ), 
+                             INST=3.0,      ),
                    _F( CHAM_GD=TEMP0,
-                             INST=4.0,      ), 
+                             INST=4.0,      ),
                    _F( CHAM_GD=TEMP1,
-                             INST=5.0,      ), 
+                             INST=5.0,      ),
                    _F( CHAM_GD=TEMP0,
-                             INST=6.0,      ), 
+                             INST=6.0,      ),
                    _F( CHAM_GD=TEMP2,
-                             INST=7.0,      ), 
+                             INST=7.0,      ),
                    _F( CHAM_GD=TEMP0,
-                             INST=8.0,      ), 
+                             INST=8.0,      ),
                       ), );
 
 TEMPLI2=CREA_RESU( OPERATION='AFFE',
@@ -181,15 +181,15 @@ TEMPLI2=CREA_RESU( OPERATION='AFFE',
                    NOM_CHAM='TEMP',
                    AFFE=(
                    _F( CHAM_GD=TEMP0,
-                             INST=0.0,      ), 
+                             INST=0.0,      ),
                    _F( CHAM_GD=TEMP2,
-                             INST=1.0,      ), 
+                             INST=1.0,      ),
                    _F( CHAM_GD=TEMP0,
-                             INST=2.0,      ), 
+                             INST=2.0,      ),
                    _F( CHAM_GD=TEMP1,
-                             INST=3.0,      ), 
+                             INST=3.0,      ),
                    _F( CHAM_GD=TEMP0,
-                             INST=4.0,      ), 
+                             INST=4.0,      ),
                              ), );
 
 MATER=AFFE_MATERIAU(MAILLAGE=MA,

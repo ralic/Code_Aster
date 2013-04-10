@@ -1,4 +1,4 @@
-%& MODIF TYPELEM  DATE 11/03/2013   AUTEUR IDOUX L.IDOUX 
+%& MODIF TYPELEM  DATE 09/04/2013   AUTEUR PELLET J.PELLET 
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -114,7 +114,7 @@ MODE_LOCAL__
                                         GAX      GAY      )
     CTEMPEF  = TEMP_F   ELEM__         (TEMP     )
     CTEREFE  = TEMP_R   ELEM__         (TEMP     )
-    NTEMPER  = TEMP_R   ELNO__ IDEN__  (TEMP     TEMP_INF TEMP_SUP )
+    NTEMPER  = TEMP_R   ELNO__ IDEN__  (TEMP_MIL TEMP_INF TEMP_SUP )
     ZVARIPG  = VARI_R   ELGA__ MASS    (VARI     )
     ZVARINO  = VARI_R   ELNO__ IDEN__  (VARI     )
     CFER1_R  = FER1_R   ELEM__         (TYPCOMB  ENROBG   CEQUI    SIGACI   SIGBET   PIVA     PIVB     )

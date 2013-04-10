@@ -1,4 +1,4 @@
-%& MODIF TYPELEM  DATE 25/03/2013   AUTEUR LEBOUVIER F.LEBOUVIER 
+%& MODIF TYPELEM  DATE 09/04/2013   AUTEUR PELLET J.PELLET 
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -159,7 +159,7 @@ MODE_LOCAL__
                                         QX       QY       )
     CTEMPEF  = TEMP_F   ELEM__         (TEMP     )
     CTEREFE  = TEMP_R   ELEM__         (TEMP     )
-    NTEMPER  = TEMP_R   ELNO__ IDEN__  (TEMP     TEMP_INF TEMP_SUP )
+    NTEMPER  = TEMP_R   ELNO__ IDEN__  (TEMP_MIL TEMP_INF TEMP_SUP )
     ZVARCPG  = VARI_R   ELGA__ MATER   (VARI     )
     ZVARIPG  = VARI_R   ELGA__ RIGI    (VARI     )
     ZVARINO  = VARI_R   ELNO__ IDEN__  (VARI     )

@@ -1,4 +1,4 @@
-# MODIF  DATE 06/02/2013   AUTEUR COURTOIS M.COURTOIS 
+# MODIF  DATE 09/04/2013   AUTEUR PELLET J.PELLET 
 # TITRE IMPACT D UNE BARRE DE TAYLOR ELASTOPLASTIQUE
 # sdnv103g.para = tps_job 300 mem_job 512Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -101,7 +101,7 @@ CHCONT  = DEFI_CONTACT(MODELE         = MODE,
 VIT_0=CREA_CHAMP(TYPE_CHAM='NOEU_DEPL_R',
                  OPERATION='AFFE',
                  MODELE=MODE,
-                 PROL_ZERO='NON',
+
                  AFFE=(
                  _F(TOUT='OUI',
                     NOM_CMP=('DX','DY','DZ',),
@@ -231,7 +231,7 @@ TABJEU=POST_RELEVE_T(ACTION=_F(INTITULE='MESSAGE',
 
 TEST_TABLE(CRITERE='ABSOLU',
            VALE_CALC=0.0,
-           
+
            NOM_PARA='JEU',
            TABLE=TABJEU,
            FILTRE=_F(NOM_PARA='INST',

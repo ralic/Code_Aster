@@ -1,8 +1,8 @@
-#@ MODIF macr_cara_poutre_ops Macro  DATE 10/09/2012   AUTEUR FLEJOU J-L.FLEJOU 
+#@ MODIF macr_cara_poutre_ops Macro  DATE 09/04/2013   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -34,6 +34,7 @@ def macr_cara_poutre_ops(self,MAILLAGE,SYME_Y,SYME_Z,GROUP_MA_BORD,
    LIRE_MAILLAGE   =self.get_cmd('LIRE_MAILLAGE')
    DEFI_GROUP      =self.get_cmd('DEFI_GROUP')
    CREA_MAILLAGE   =self.get_cmd('CREA_MAILLAGE')
+   COPIER          =self.get_cmd('COPIER')
    AFFE_MODELE     =self.get_cmd('AFFE_MODELE')
    DEFI_MATERIAU   =self.get_cmd('DEFI_MATERIAU')
    AFFE_MATERIAU   =self.get_cmd('AFFE_MATERIAU')
@@ -61,7 +62,7 @@ def macr_cara_poutre_ops(self,MAILLAGE,SYME_Y,SYME_Z,GROUP_MA_BORD,
    self.DeclareOut('nomres',self.sd)
    #
    if ( MAILLAGE != None ):
-       __nomlma=CREA_MAILLAGE(MAILLAGE=MAILLAGE,COPIE=_F())
+       __nomlma=COPIER(CONCEPT=MAILLAGE)
    elif ( args.has_key('UNITE') and args.has_key('FORMAT') ):
        __nomlma=LIRE_MAILLAGE(UNITE=args['UNITE'],FORMAT=args['FORMAT'])
    else:
@@ -236,7 +237,7 @@ def macr_cara_poutre_ops(self,MAILLAGE,SYME_Y,SYME_Z,GROUP_MA_BORD,
          grthno = grthno[0]
          collgrno = aster.getcolljev('%-8s.GROUPENO' % __nomapi.nom)
          nomnoe = aster.getvectjev('%-8s.NOMNOE' % __nomapi.nom)
-         l_no = collgrno[string.ljust(grthno, 8)]
+         l_no = collgrno[string.ljust(grthno, 24)]
          if len(l_no) != 1:
             UTMESS('F','POUTRE0_3')
          nthno=nomnoe[l_no[0]-1]
@@ -508,7 +509,7 @@ def macr_cara_poutre_ops(self,MAILLAGE,SYME_Y,SYME_Z,GROUP_MA_BORD,
          nomnoe = aster.getvectjev('%-8s.NOMNOE' % __nomlma.nom)
          l_nu_no =[]
          for grno in args['GROUP_NO']:
-            l_nu_no.extend(collgrno[string.ljust(grno,8)])
+            l_nu_no.extend(collgrno[string.ljust(grno,24)])
          l_noeud = [nomnoe[no_i-1] for no_i in l_nu_no]
 
       if len(l_group_ma)!=len(l_group_ma_bord):

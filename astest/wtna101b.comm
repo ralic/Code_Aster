@@ -1,11 +1,11 @@
-# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
+# MODIF  DATE 09/04/2013   AUTEUR PELLET J.PELLET 
 # RESPONSABLE FERNANDES R.FERNANDES
 # ======================================================================
 # TITRE ETUDE  : ESSAI TRIAXIAL NON DRAINE AVEC LE MODELE DE TYPE
 # wtna101b.para = tps_job 380 mem_job 256Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -149,9 +149,24 @@ U1       = STAT_NON_LINE(
 U1=CALC_CHAMP(reuse=U1,CONTRAINTE=('SIGM_ELNO',),CRITERES=('SIEQ_ELNO',),VARI_INTERNE=('VARI_ELNO'),RESULTAT=U1)
 
 
-TEMPS2   = DEFI_LIST_REEL( DEBUT      = 1.,
-                           INTERVALLE = ( _F( JUSQU_A = 2.  , NOMBRE = 1000,))
-                         )
+############################################################################
+# POUR DES RESULTATS PLUS REALISTES,
+# IL EST PREFERABLE D'UTILISER UNE DISCRETISATION DU CHARGEMENT PLUS FINE,
+#
+# TEMPS2   = DEFI_LIST_REEL( DEBUT      = 1.,
+#                    INTERVALLE = ( _F( JUSQU_A = 2.  , NOMBRE = 1000,))
+#                         )
+############################################################################
+
+TEMPS2 = DEFI_LIST_REEL( DEBUT = 1.,
+                         INTERVALLE = (
+                                       _F( JUSQU_A = 1.004 , NOMBRE = 1,),
+                                       _F( JUSQU_A = 1.16  , NOMBRE = 1,),
+                                       _F( JUSQU_A = 1.34  , NOMBRE = 1,),
+                                       _F( JUSQU_A = 1.6   , NOMBRE = 1,),
+                                       _F( JUSQU_A = 2.    , NOMBRE = 1,),
+                                       )
+                        )
 
 DEP_V    = AFFE_CHAR_MECA( MODELE    = MODELE,
                            FACE_IMPO = _F( GROUP_MA = 'HAUT', DZ = 1., )

@@ -1,4 +1,4 @@
-# MODIF  DATE 26/03/2013   AUTEUR PROIX J-M.PROIX 
+# MODIF  DATE 09/04/2013   AUTEUR PELLET J.PELLET 
 # RESPONSABLE PROIX J-M.PROIX
 # TITRE DIFFUSION H2 DANS UN ACIER ELASTOPLASTIQUE 2D CPLAN
 # ssnp160a.para = tps_job 120 mem_job 512Mo ncpus 1 liste_test S
@@ -186,7 +186,7 @@ for k in range(1,NBPAS+1):
    CMTH=AFFE_MATERIAU(MAILLAGE=MA,INFO=1,
                       AFFE=_F(GROUP_MA='CUBE_G',MATER=ACIERTH,),
                          AFFE_VARC=(_F(GROUP_MA='CUBE_G',
-                                      CHAMP_GD=NEUTG,
+                                      CHAM_GD=NEUTG,
                                       NOM_VARC='NEUT1'),),
                       );
    UTH=THER_LINEAIRE(MODELE=MOTH,

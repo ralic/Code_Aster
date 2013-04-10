@@ -1,4 +1,4 @@
-# MODIF  DATE 22/01/2013   AUTEUR LADIER A.LADIER 
+# MODIF  DATE 09/04/2013   AUTEUR PELLET J.PELLET 
 # TITRE FISSURE DEBOUCHANTE DANS UNE PLAQUE 3D DE LARGEUR FINIE AVEC X-FEM
 # ssnv185n.para = tps_job 1600 mem_job 1536Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -22,16 +22,16 @@
 DEBUT(CODE    = _F(NOM='SSNV185N',NIV_PUB_WEB='INTERNET',VISU_EFICAS='NON'),
       DEBUG   = _F(SDVERI='OUI'),
      )
- 
+
 # MODELISATION N : PAREIL QUE MODELISATION C, AVEC ELEMENTS QUADRATIQUES
- 
+
 #----------------------------------------------
 #                MAILLAGE : hexa_5_31_51.mgib
 #----------------------------------------------
 
 MAILLAG1=LIRE_MAILLAGE(FORMAT='MED',INFO=1,);
 
-MAILLAGE=CREA_MAILLAGE(MAILLAGE=MAILLAG1,COPIE=_F(),);
+MAILLAGE= COPIER(CONCEPT= MAILLAG1,)
 
 MAILLAG1=DEFI_GROUP(reuse =MAILLAG1,
                     MAILLAGE=MAILLAG1,
@@ -135,7 +135,7 @@ UTOT1=MECA_STATIQUE(MODELE=MODELEK,
                           _F(CHARGE=CH2),
                           ),
                    INFO=1,
-                   ); 
+                   );
 #------------------------------------------------------------------------
 # POST-TRAITEMENT : CALCUL DES SIFS PAR LA METHODE ENERGETIQUE AVEC X-FEM
 #------------------------------------------------------------------------
@@ -229,38 +229,38 @@ VAL_CALC = [1.1151343025016E+07  ,
             1.1073052146445E+07  ,
             1.1126971196675E+07  ,
             1.1033120048631E+07  ];
-            
+
 for i in range(0,nbc+1) :
    TEST_TABLE(TABLE=SIF[i],
               NOM_PARA='K1',
               TYPE_TEST='MAX',
-              VALE_CALC=VAL_CALC[4*i+0], VALE_REFE=K1REF,    
+              VALE_CALC=VAL_CALC[4*i+0], VALE_REFE=K1REF,
               CRITERE='RELATIF',
-              PRECISION=0.01,    
+              PRECISION=0.01,
               REFERENCE='ANALYTIQUE');
 
    TEST_TABLE(TABLE=SIF[i],
               NOM_PARA='K1',
               TYPE_TEST='MIN',
-              VALE_CALC=VAL_CALC[4*i+1], VALE_REFE=K1REF,    
+              VALE_CALC=VAL_CALC[4*i+1], VALE_REFE=K1REF,
               CRITERE='RELATIF',
-              PRECISION=0.02,    
+              PRECISION=0.02,
               REFERENCE='ANALYTIQUE');
 
    TEST_TABLE(TABLE=SIF2[i],
               NOM_PARA='K1',
               TYPE_TEST='MAX',
-              VALE_CALC=VAL_CALC[4*i+2], VALE_REFE=K1REF,    
+              VALE_CALC=VAL_CALC[4*i+2], VALE_REFE=K1REF,
               CRITERE='RELATIF',
-              PRECISION=0.01,    
+              PRECISION=0.01,
               REFERENCE='ANALYTIQUE',);
 
    TEST_TABLE(TABLE=SIF2[i],
               NOM_PARA='K1',
               TYPE_TEST='MIN',
-              VALE_CALC=VAL_CALC[4*i+3], VALE_REFE=K1REF,    
+              VALE_CALC=VAL_CALC[4*i+3], VALE_REFE=K1REF,
               CRITERE='RELATIF',
-              PRECISION=0.02,    
+              PRECISION=0.02,
               REFERENCE='ANALYTIQUE',);
 
 
@@ -342,7 +342,7 @@ MOD_VISU=AFFE_MODELE(MAILLAGE=MA_XFEM,
 
 RES_XFEM=POST_CHAM_XFEM(MODELE_VISU   = MOD_VISU,
                         RESULTAT      = UTOT1,
-                        
+
                         INFO          = 2)
 
 #IMPR_RESU(FORMAT='GMSH',UNITE=82,RESU=_F(RESULTAT=RES_XFEM));

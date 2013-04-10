@@ -1,4 +1,4 @@
-#@ MODIF modelisa2 Messages  DATE 14/01/2013   AUTEUR FLEJOU J-L.FLEJOU 
+#@ MODIF modelisa2 Messages  DATE 09/04/2013   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -229,16 +229,15 @@ Risque & Conseil:
 """),
 
 54: _(u"""
- récupération des caractéristiques du matériau ACIER associé au câble no %(k1)s  : absence de relation de comportement de type <BPEL_ACIER>
+ récupération des caractéristiques du matériau ACIER associé au câble no %(k1)s  : absence de relation de comportement de type <BPEL_ACIER> ou <ETCC_ACIER>
 """),
 
 55: _(u"""
  récupération des caractéristiques du matériau ACIER associé au câble no %(k1)s , relation de comportement <BPEL_ACIER> : Le paramètre F_PRG doit être positif et non nul
  """),
-
-56: _(u"""
- récupération des caractéristiques du matériau ACIER associé au câble no %(k1)s , relation de comportement <BPEL_ACIER> : au moins une valeur de paramètre invalide
- """),
+56 : _(u"""
+ Pour faire un calcul de relaxation type ETCC_REPRISE, vous devez  renseigner le mot-clé TENSION_CT de DEFI_CABLE pour chaque câble de précontrainte, 
+"""),
 
 57: _(u"""
  les caractéristiques géométriques n'ont pas été affectées à la maille no %(k1)s  appartenant au câble no %(k2)s
@@ -255,8 +254,6 @@ Risque & Conseil:
 60: _(u"""
  des aires de section droite différentes ont été affectées aux mailles appartenant au câble no %(k1)s
 """),
-
-
 
 62: _(u"""
   numéro d'occurrence négatif
@@ -279,7 +276,22 @@ Risque & Conseil:
  trop de valeurs d'angles, on ne garde que les 3 premiers.
 """),
 
+67 : _(u"""
+La table fournie dans DEFI_CABLE doit contenir l'abscisse curviligne et la tension du câble.
+"""),
 
+68 : _(u"""
+La table fournie n'a pas la bonne dimension : vérifiez qu'il s'agit du bon câble ou que plusieurs 
+instants ne sont pas contenus dans la table.
+"""),
+
+69 : _(u"""
+Les abscisses curvilignes de la table fournie ne correspondent pas à celles du câble étudié
+"""),
+
+70 : _(u""" Attention, vous voulez calculer les pertes par relaxation de l'acier, mais 
+      le coefficient RELAX_1000 est nul. Les pertes associées sont donc nulles. 
+ """),
 82: _(u"""
  pour LIAISON_UNIF, entrer plus d'un seul noeud
 """),

@@ -1,5 +1,5 @@
 
-# MODIF  DATE 06/02/2013   AUTEUR COURTOIS M.COURTOIS 
+# MODIF  DATE 09/04/2013   AUTEUR PELLET J.PELLET 
 # TITRE COMPORTEMENTS ELASTOVISCOPLASTIQUES MONOCRISTALLINS
 # RESPONSABLE JMBHH01 J.M.PROIX
 # ssnv172a.para = tps_job 300 mem_job 512Mo ncpus 1 liste_test R
@@ -243,7 +243,7 @@ TEMPE=CREA_CHAMP(OPERATION='AFFE', TYPE_CHAM='NOEU_TEMP_R',
 
 MAT=AFFE_MATERIAU(MAILLAGE=CUBE,
                         AFFE_VARC=(_F(TOUT='OUI',
-                                     CHAMP_GD=TEMPE,
+                                     CHAM_GD=TEMPE,
                                      NOM_VARC='TEMP',
                                      VALE_REF=0),),
                   AFFE=_F(TOUT='OUI',
@@ -252,7 +252,7 @@ MAT=AFFE_MATERIAU(MAILLAGE=CUBE,
 
 MATKR=AFFE_MATERIAU(MAILLAGE=CUBE,
                         AFFE_VARC=(_F(TOUT='OUI',
-                                     CHAMP_GD=TEMPE,
+                                     CHAM_GD=TEMPE,
                                      NOM_VARC='TEMP',
                                      VALE_REF=0),),
                   AFFE=_F(TOUT='OUI',

@@ -1,22 +1,22 @@
-# MODIF  DATE 22/01/2013   AUTEUR LADIER A.LADIER 
+# MODIF  DATE 09/04/2013   AUTEUR PELLET J.PELLET 
 # TITRE FISSURE PLANE SEMI-INFINIE
 # sslp114a.para = tps_job 120 mem_job 512Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
-# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-# (AT YOUR OPTION) ANY LATER VERSION.                                                    
-#                                                                       
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-#                                                                       
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 # sslp114a.para=tps_job 120 mem_job 512Mo mem_aster 50 ncpus 1 liste_test S
 
@@ -24,13 +24,13 @@ DEBUT(CODE=_F(NOM='SSLP114A',NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'),PAR_
 
 import math;
 
-#facteurs intensite de contrainte 
+#facteurs intensite de contrainte
 KI=1.;
 KII=0.;
 #
 
 #ANGLE INCLINAISON :: -135 (degres) < alpha0 < 135 (degres)
-#Pour un tour complet voir conditions limites 
+#Pour un tour complet voir conditions limites
 alpha0=0.
 alpha=alpha0*math.pi/180.
 
@@ -54,16 +54,16 @@ elif (alpha0<0)&(alpha0>=-90) :
     Py=0.
 elif alpha0<-90 :
     Px=0.
-    Py=0.  
+    Py=0.
 elif alpha0>90 :
     Px=0.
     Py=1.
-      
+
 MAILLAGE=DEFI_GROUP( reuse =MAILLAGE,
                      MAILLAGE=MAILLAGE,
                      CREA_GROUP_MA=(_F(NOM='TEST_MA',OPTION='SPHERE',POINT=(Px,Py),RAYON=0.5),),
 #                    INFO=2,
-                   ); 
+                   );
 
 MODELEIN=AFFE_MODELE(MAILLAGE=MAILLAGE,
                      AFFE= _F(GROUP_MA=('SURF','LIG1','LIG2','LIG3','LIG4','TEST_MA'),
@@ -74,9 +74,9 @@ MODELEIN=AFFE_MODELE(MAILLAGE=MAILLAGE,
                      );
 
 #Pour utiliser sereinement la TAN :
-#Diviser quand TAN tend vers l'infini, multiplier quand TAN tend vers 0 !    
+#Diviser quand TAN tend vers l'infini, multiplier quand TAN tend vers 0 !
 if abs(alpha)<45*math.pi/180. :
-   PFONDX=-1.5  
+   PFONDX=-1.5
    PFONDY=0.5-2*math.tan(alpha)
 else :
    if alpha<0 :
@@ -95,7 +95,7 @@ FISS=DEFI_FISS_XFEM(MODELE=MODELEIN,
                     TYPE_ENRI_FOND='GEOMETRIQUE',
                     RAYON_ENRI=0.2*A,
 #                   TYPE_ENRI_FOND='TOPOLOGIQUE',
-                   );  
+                   );
 
 MODELK=MODI_MODELE_XFEM(MODELE_IN=MODELEIN,FISSURE=FISS);
 
@@ -107,7 +107,7 @@ CHMA=AFFE_MATERIAU(MAILLAGE=MAILLAGE,
 MAILLAGE=MODI_MAILLAGE(reuse =MAILLAGE, MAILLAGE=MAILLAGE,
                        ORIE_PEAU_2D=(_F(GROUP_MA=('LIG1','LIG2','LIG3','LIG4'),),),
                        INFO=2,
-                       ); 
+                       );
 
 def r(X,Y) :
     return ((X-0.5)**2+(Y-0.5)**2)**0.5
@@ -118,9 +118,9 @@ def theta(X,Y) :
         if Y==0.5 :
                 theta0=0
         else :
-                theta0=math.atan2((Y-0.5),(X-0.5))  
+                theta0=math.atan2((Y-0.5),(X-0.5))
     else :
-        theta0=math.atan2((Y-0.5),(X-0.5)) 
+        theta0=math.atan2((Y-0.5),(X-0.5))
 #la rotation de la fissure propage une discontinuite angulaire!!!
     if abs(alpha)>0 :
        if alpha<0 :
@@ -132,45 +132,45 @@ def theta(X,Y) :
           if theta0<(-math.pi+alpha) :
               return theta0-alpha+2*math.pi
           else :
-              return theta0-alpha 
+              return theta0-alpha
     else :
-       return theta0       
+       return theta0
 
 def cos1(X,Y) :
-    return math.cos(theta(X,Y)) 
-    
+    return math.cos(theta(X,Y))
+
 def sin1(X,Y) :
-    return math.sin(theta(X,Y))     
-     
+    return math.sin(theta(X,Y))
+
 def cos12(X,Y) :
-    return math.cos(theta(X,Y)/2) 
-    
+    return math.cos(theta(X,Y)/2)
+
 def sin12(X,Y) :
-    return math.sin(theta(X,Y)/2)   
-        
+    return math.sin(theta(X,Y)/2)
+
 #CHAMP DE DEPLACEMANT ANALYTIQUE ::
 def Ux(X,Y) :
-    global KI,E,nu    
+    global KI,E,nu
     return KI*(1+nu)/E*((r(X,Y)/(2*math.pi))**0.5)*cos12(X,Y)*(3-4*nu-cos1(X,Y))
-    
+
 def Uy(X,Y) :
-    global KI,E,nu    
-    return KI*(1+nu)/E*((r(X,Y)/(2*math.pi))**0.5)*sin12(X,Y)*(3-4*nu-cos1(X,Y))   
+    global KI,E,nu
+    return KI*(1+nu)/E*((r(X,Y)/(2*math.pi))**0.5)*sin12(X,Y)*(3-4*nu-cos1(X,Y))
 
 #Rotation du champ de DEPL
-def Vx(X,Y) : 
+def Vx(X,Y) :
     global alpha
     return Ux(X,Y)*math.cos(alpha)-Uy(X,Y)*math.sin(alpha)
-    
-def Vy(X,Y) : 
+
+def Vy(X,Y) :
     global alpha
-    return Ux(X,Y)*math.sin(alpha)+Uy(X,Y)*math.cos(alpha)    
-    
+    return Ux(X,Y)*math.sin(alpha)+Uy(X,Y)*math.cos(alpha)
+
 U1=FORMULE(NOM_PARA=('X','Y',),VALE='Vx(X,Y)');
 
 U2=FORMULE(NOM_PARA=('X','Y',),VALE='Vy(X,Y)');
 
-#TENSEUR DES CONTTRAINTES ANALYTIQUE :: 
+#TENSEUR DES CONTTRAINTES ANALYTIQUE ::
 PI=math.pi
 expo = [None]*2
 A1 = [None]*2
@@ -178,14 +178,14 @@ A2 = [None]*2
 expo[0]=1
 expo[1]=3
 A1[0]=KI*(1+nu)/(E*(2*PI)**0.5)*(4-4*nu)
-A1[1]=-KI*(1+nu)/(E*(2*PI)**0.5)*2 
+A1[1]=-KI*(1+nu)/(E*(2*PI)**0.5)*2
 A2[0]=KI*(1+nu)/(E*(2*PI)**0.5)*(2-4*nu)
 A2[1]=KI*(1+nu)/(E*(2*PI)**0.5)*2
 
 
-def SIGMA(X,Y,IND) : 
+def SIGMA(X,Y,IND) :
     global   PI,A1,A2,expo,E,nu,alpha
-    rxy=r(X,Y) 
+    rxy=r(X,Y)
     EPSREF = [None]*3
     SIGMAREF = [None]*3
     EPSREF[0]=0.
@@ -201,18 +201,18 @@ def SIGMA(X,Y,IND) :
         EPSREF[2]=EPSREF[2]+A1[I]*(cos12(X,Y)**(expo[I]-1))/(2*rxy**0.5)*(cos12(X,Y)*sin1(X,Y)-expo[I]*sin12(X,Y)*cos1(X,Y))+A2[I]*(sin12(X,Y)**(expo[I]-1))/(2*rxy**0.5)*(sin12(X,Y)*cos1(X,Y)-expo[I]*cos12(X,Y)*sin1(X,Y))
 
     EPSREF[2]=0.5*EPSREF[2]
-    
-    for I in range(2) :  
+
+    for I in range(2) :
          SIGMAREF[I]=E/(1+nu)*(EPSREF[I]+nu/(1-2*nu)*(EPSREF[0]+EPSREF[1]))
-    
+
     SIGMAREF[2]=E/(1+nu)*EPSREF[2]
-    
+
 #COPIE DE SIGMAREF :: WARNING :: TMP=SIGMAREF UTILISE UN POINTEUR ET NE COPIE PAS LES DONNEES ==> CARTON MEMOIRE DRAMATIQUE
     TMP=[None]*3
     for I in range(3) :
-        TMP[I]=SIGMAREF[I] 
+        TMP[I]=SIGMAREF[I]
 
-#Rotation du tenseur     
+#Rotation du tenseur
     cosa = math.cos(alpha)
     sina = math.sin(alpha)
     cos2a= math.cos(2*alpha)
@@ -222,10 +222,10 @@ def SIGMA(X,Y,IND) :
     SIGMAREF[2]=-0.5*sin2a*(-TMP[0]+TMP[1])+cos2a*TMP[2]
 
     return SIGMAREF[IND]
-    
+
 #Calcul des densites de force suivant les normales ex,ey,-ex,-ey
 FXX=FORMULE(NOM_PARA=('X','Y',),VALE='SIGMA(X,Y,0)');
-FXY=FORMULE(NOM_PARA=('X','Y',),VALE='SIGMA(X,Y,2)');       
+FXY=FORMULE(NOM_PARA=('X','Y',),VALE='SIGMA(X,Y,2)');
 
 FYX=FORMULE(NOM_PARA=('X','Y',),VALE='SIGMA(X,Y,2)');
 FYY=FORMULE(NOM_PARA=('X','Y',),VALE='SIGMA(X,Y,1)');
@@ -236,7 +236,7 @@ FXYF=FORMULE(NOM_PARA=('X','Y',),VALE='-SIGMA(X,Y,2)');
 FYXF=FORMULE(NOM_PARA=('X','Y',),VALE='-SIGMA(X,Y,2)');
 FYYF=FORMULE(NOM_PARA=('X','Y',),VALE='-SIGMA(X,Y,1)');
 
-#Conditions limites: Diriclet + Neumann 
+#Conditions limites: Diriclet + Neumann
 #Neumann => fissure
 #Dirichlet => modes rigides
 
@@ -346,7 +346,7 @@ Uana=CREA_CHAMP(OPERATION='ASSE',
                 );
 
 DIFF=CREA_CHAMP(OPERATION='ASSE', TYPE_CHAM='NOEU_DEPL_R',MODELE=MODELEIN,
-                PROL_ZERO='OUI',
+
 #               INFO=2,
                 ASSE=(_F(TOUT='OUI', CHAM_GD=DEPL,CUMUL='OUI', COEF_R=+1., NOM_CMP='DX', NOM_CMP_RESU='DX',),
                       _F(TOUT='OUI', CHAM_GD=Uana, CUMUL='OUI', COEF_R=-1., NOM_CMP='DX', NOM_CMP_RESU='DX',),

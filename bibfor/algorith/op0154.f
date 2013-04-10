@@ -2,9 +2,9 @@
       IMPLICIT   NONE
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGORITH  DATE 09/04/2013   AUTEUR PELLET J.PELLET 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -142,7 +142,7 @@ C     ---------------------------------------
          BIDIM = .FALSE.
          DO 10 I = 1 , NBOCC
             CALL GETVR8 ( 'ROTATION', 'POIN_1', I,IARG, 0, LTCHAR, DIM )
-            CALL GETVR8 ( 'ROTATION', 'ANGL', I,IARG, 1, ANGL, N1 )
+            CALL GETVR8 ('ROTATION','ANGLE',I,IARG,1,ANGL,N1)
             CALL GETVR8 ( 'ROTATION', 'POIN_2', I,IARG, 0, R8BID, N2 )
             DIM = - DIM
             IF ( DIM .EQ. 2 ) THEN

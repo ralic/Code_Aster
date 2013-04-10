@@ -7,7 +7,7 @@
       CHARACTER*(*) RESU,MODELE
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 12/02/2013   AUTEUR PELLET J.PELLET 
+C MODIF UTILITAI  DATE 09/04/2013   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -34,7 +34,8 @@ C     ------------------------------------------------------------------
       PARAMETER (MXVALE=29,NBPARR=46)
       REAL*8 VALPAR(NBPARR),R8B,XYP(2),ORIG(3),ZERO,R8VIDE
       CHARACTER*3 SYMEX,SYMEY,TYPARR(NBPARR)
-      CHARACTER*8 K8B,NOMA,LPAIN(15),LPAOUT(5),VALEK(2)
+      CHARACTER*8 K8B,NOMA,LPAIN(15),LPAOUT(5)
+      CHARACTER*24 VALK(2)
       CHARACTER*16 OPTION,NOPARR(NBPARR)
       CHARACTER*19 CHELEM
       CHARACTER*24 LCHIN(15),LCHOUT(1),LIGREL,MLGGMA,MLGNMA
@@ -50,10 +51,10 @@ C     ------------------------------------------------------------------
      &     'AY','AZ','EY','EZ','PCTY','PCTZ','JG','KY','KZ','IYR2_G',
      &     'IZR2_G','IYR2','IZR2','IYR2_P','IZR2_P','RY','RZ',
      &     'MAILLAGE'/
-      DATA TYPARR/'K8','K8','R','R','R','R','R','R','R','R','R','R','R',
+      DATA TYPARR/  'K24','K8','R','R','R','R','R','R','R','R','R','R',
      &     'R','R','R','R','R','R','R','R','R','R','R','R','R','R','R',
      &     'R','R','R','R','R','R','R','R','R','R','R','R','R','R','R',
-     &     'R','R','K8'/
+     &     'R','R','R','K8'/
 C     ------------------------------------------------------------------
 
       CALL JEMARQ()
@@ -119,43 +120,44 @@ C     --- CREATION DE LA TABLE ---
         DO 10 I = 1 , NBPARR
            VALPAR(I) = R8VIDE()
  10     CONTINUE
-        VALEK(1) = '????????'
-        VALEK(2) = '????????'
+        VALK(1) = '????????'
+        VALK(2) = '????????'
 
         IF (NT.NE.0) THEN
           CALL PEMICA(CHELEM,MXVALE,ZR(LVALE),0,IBID,ORIG,IORIG,ICAGE)
           CALL PECAG2(NDIM,NSYMX,NSYMY,NP,XYP,ZR(LVALE),VALPAR)
           CALL PECAG3(NDIM,NSYMX,NSYMY,NOMA,'TOUT',0,K8B,VALPAR)
-          VALEK(1) = NOMA
-          VALEK(2) = 'TOUT'
-          CALL TBAJLI(RESU,NBPARC,NOPARR,IBID,VALPAR,C16B,VALEK,0)
+          VALK(1) = NOMA
+          VALK(2) = 'TOUT'
+          CALL TBAJLI(RESU,NBPARC,NOPARR,IBID,VALPAR,C16B,VALK,0)
         END IF
 
         IF (NG.NE.0) THEN
           NBGRMA = -NG
-          CALL WKVECT('&&PECAGE_GROUPM','V V K8',NBGRMA,JGR)
+          CALL WKVECT('&&PECAGE_GROUPM','V V K24',NBGRMA,JGR)
           CALL GETVTX('CARA_GEOM','GROUP_MA',IOCC,IARG,NBGRMA,
-     &                ZK8(JGR),NG)
-          VALEK(2) = 'GROUP_MA'
+     &                ZK24(JGR),NG)
+          VALK(2) = 'GROUP_MA'
           DO 20 IG = 1,NBGRMA
-            CALL JEEXIN(JEXNOM(MLGGMA,ZK8(JGR+IG-1)),IRET)
+            CALL JEEXIN(JEXNOM(MLGGMA,ZK24(JGR+IG-1)),IRET)
             IF (IRET.EQ.0) THEN
-              CALL U2MESK('A','UTILITAI3_46',1,ZK8(JGR+IG-1))
+              CALL U2MESK('F','UTILITAI3_46',1,ZK24(JGR+IG-1))
               GO TO 20
             END IF
-            CALL JELIRA(JEXNOM(MLGGMA,ZK8(JGR+IG-1)),'LONUTI',NBMA,K8B)
+            CALL JELIRA(JEXNOM(MLGGMA,ZK24(JGR+IG-1)),'LONUTI',NBMA,K8B)
             IF (NBMA.EQ.0) THEN
-              CALL U2MESK('A','UTILITAI3_47',1,ZK8(JGR+IG-1))
+              CALL U2MESK('A','UTILITAI3_47',1,ZK24(JGR+IG-1))
               GO TO 20
             END IF
-            CALL JEVEUO(JEXNOM(NOMA//'.GROUPEMA',ZK8(JGR+IG-1)),'L',JAD)
+            CALL JEVEUO(JEXNOM(NOMA//'.GROUPEMA',ZK24(JGR+IG-1)),
+     &                  'L',JAD)
             CALL PEMICA(CHELEM,MXVALE,ZR(LVALE),NBMA,ZI(JAD),ORIG,IORIG,
      &                  ICAGE)
             CALL PECAG2(NDIM,NSYMX,NSYMY,NP,XYP,ZR(LVALE),VALPAR)
             CALL PECAG3(NDIM,NSYMX,NSYMY,NOMA,'GROUP_MA',1,
-     &                  ZK8(JGR+IG-1),VALPAR)
-            VALEK(1) = ZK8(JGR+IG-1)
-            CALL TBAJLI(RESU,NBPARC,NOPARR,IBID,VALPAR,C16B,VALEK,0)
+     &                  ZK24(JGR+IG-1),VALPAR)
+            VALK(1) = ZK24(JGR+IG-1)
+            CALL TBAJLI(RESU,NBPARC,NOPARR,IBID,VALPAR,C16B,VALK,0)
    20     CONTINUE
           CALL JEDETR('&&PECAGE_GROUPM')
         END IF
@@ -164,7 +166,7 @@ C     --- CREATION DE LA TABLE ---
           NBMAIL = -NM
           CALL WKVECT('&&PECAGE_MAILLE','V V K8',NBMAIL,JMA)
           CALL GETVTX('CARA_GEOM','MAILLE',IOCC,IARG,NBMAIL,ZK8(JMA),NM)
-          VALEK(2) = 'MAILLE'
+          VALK(2) = 'MAILLE'
           DO 30 IM = 1,NBMAIL
             CALL JEEXIN(JEXNOM(MLGNMA,ZK8(JMA+IM-1)),IRET)
             IF (IRET.EQ.0) THEN
@@ -176,8 +178,8 @@ C     --- CREATION DE LA TABLE ---
             CALL PECAG2(NDIM,NSYMX,NSYMY,NP,XYP,ZR(LVALE),VALPAR)
             CALL PECAG3(NDIM,NSYMX,NSYMY,NOMA,'MAILLE',NBMAIL,ZK8(JMA),
      &                  VALPAR)
-            VALEK(1) = ZK8(JMA+IM-1)
-            CALL TBAJLI(RESU,NBPARC,NOPARR,IBID,VALPAR,C16B,VALEK,0)
+            VALK(1) = ZK8(JMA+IM-1)
+            CALL TBAJLI(RESU,NBPARC,NOPARR,IBID,VALPAR,C16B,VALK,0)
    30     CONTINUE
 
           CALL JEDETR('&&PECAGE_MAILLE')

@@ -1,9 +1,9 @@
-# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
+# MODIF  DATE 09/04/2013   AUTEUR PELLET J.PELLET 
 # TITRE CRITERES GEOMETRIQUES DANS DEFI_GROUP EN 3D
 # zzzz106a.para = tps_job 60 mem_job 256Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -31,76 +31,76 @@ MA=LIRE_MAILLAGE(INFO=2, )
 MA1=LIRE_MAILLAGE(UNITE=14 )
 
 MA=DEFI_GROUP(  reuse=MA,   MAILLAGE=MA,
-                CREA_GROUP_MA=_F(  NOM = 'TOUT', TOUT = 'OUI'))
+                CREA_GROUP_MA=_F(  NOM = 'GXXXXXX_TOUT', TOUT = 'OUI'))
 
 MA=DEFI_GROUP(  reuse=MA,   MAILLAGE=MA,
-                CREA_GROUP_MA=( _F(  NOM = 'GD0',
+                CREA_GROUP_MA=( _F(  NOM = 'GXXXXXX_GD0',
                                      OPTION = 'SPHERE',
-                                     GROUP_NO_CENTRE = 'GRN1',
+                                     GROUP_NO_CENTRE = 'GXXXXXX_GRN1',
                                      RAYON = 4.0,
                                      CRIT_NOEUD ='AU_MOINS_UN',),
-                                _F(  NOM = 'GD1',
+                                _F(  NOM = 'GXXXXXX_GD1',
                                      OPTION = 'SPHERE',
-                                     GROUP_NO_CENTRE = 'GRN1',
+                                     GROUP_NO_CENTRE = 'GXXXXXX_GRN1',
                                      RAYON =  4.0,
                                      CRIT_NOEUD ='TOUS',),
-                                _F(  NOM = 'GD2',
+                                _F(  NOM = 'GXXXXXX_GD2',
                                    OPTION = 'SPHERE',
-                                   GROUP_NO_CENTRE = 'GRN1',
+                                   GROUP_NO_CENTRE = 'GXXXXXX_GRN1',
                                    RAYON = 4.0,
                                    CRIT_NOEUD ='MAJORITE',),
-                                _F(  NOM = 'GC1',
+                                _F(  NOM = 'GXXXXXX_GC1',
                                      OPTION = 'CYLINDRE',
                                      NOEUD_CENTRE = 'N1',
                                      RAYON = 4.,
                                      ANGL_NAUT = (0.,90.,),
                                      CRIT_NOEUD ='AU_MOINS_UN',),
-                                _F(  NOM = 'GC2',
+                                _F(  NOM = 'GXXXXXX_GC2',
                                        OPTION = 'CYLINDRE',
                                        NOEUD_CENTRE = 'N1',
                                        RAYON = 4.,
                                        ANGL_NAUT = (0.,90.,),
                                        CRIT_NOEUD ='TOUS',),
-                               _F(  NOM = 'GC3',
+                               _F(  NOM = 'GXXXXXX_GC3',
                                        OPTION = 'CYLINDRE',
                                        NOEUD_CENTRE = 'N1',
                                        RAYON = 4.,
                                        ANGL_NAUT = (0.,90.,),
                                        CRIT_NOEUD ='MAJORITE',),
-                                _F(  NOM = 'GT1',
+                                _F(  NOM = 'GXXXXXX_GT1',
                                        OPTION = 'BANDE',
                                        NOEUD_CENTRE = 'N1',
                                        DIST = 4.,
                                        VECT_NORMALE = (0.,1.,0.,),
                                        CRIT_NOEUD ='AU_MOINS_UN',),
-                                _F(  NOM = 'GT2',
+                                _F(  NOM = 'GXXXXXX_GT2',
                                        OPTION = 'BANDE',
                                        NOEUD_CENTRE = 'N1',
                                        DIST = 4.,
                                        VECT_NORMALE = (0.,1.,0.,),
                                        CRIT_NOEUD ='TOUS',),
-                                _F(  NOM = 'GT3',
+                                _F(  NOM = 'GXXXXXX_GT3',
                                        OPTION = 'BANDE',
                                        NOEUD_CENTRE = 'N1',
                                        DIST = 4.,
                                        VECT_NORMALE = (0.,1.,0.,),
                                        CRIT_NOEUD ='MAJORITE',),
-                                _F(  NOM = 'GM4',
+                                _F(  NOM = 'GXXXXXX_GM4',
                                        OPTION = 'FACE_NORMALE',
                                        VECT_NORMALE = (0.,0.,1.,)),),
                 CREA_GROUP_NO=(
-                                _F(  NOM = 'GN1',
+                                _F(  NOM = 'GXXXXXX_GN1',
                                        OPTION = 'ENV_SPHERE',
                                        NOEUD_CENTRE = 'N1',
                                        RAYON = 2.5,
                                        PRECISION = 0.1),
-                                _F(  NOM = 'GN2',
+                                _F(  NOM = 'GXXXXXX_GN2',
                                        OPTION = 'ENV_CYLINDRE',
                                        NOEUD_CENTRE = 'N1',
                                        RAYON = 2.5,
                                        VECT_NORMALE = (0.,0.,1.,),
                                        PRECISION = 0.1),
-                                _F(  NOM = 'GN3',
+                                _F(  NOM = 'GXXXXXX_GN3',
                                        OPTION = 'PLAN',
                                        NOEUD_CENTRE = 'N14',
                                        VECT_NORMALE = (1.,0.,0.,),
@@ -112,45 +112,45 @@ MA=DEFI_GROUP(  reuse=MA,   MAILLAGE=MA,
 # le group_ma ABCD de MA1 ne contient qu'1 quadrangle (ABCD) tel que
 # seuls 2 triangles TR11A et TR11B y sont totalement inclus :
 DEFI_GROUP(reuse=MA,   MAILLAGE=MA,
-             CREA_GROUP_NO=  _F(  NOM = 'TR11AB', OPTION = 'INCLUSION',
+             CREA_GROUP_NO=  _F(  NOM = 'GXXXXXX_TR11AB', OPTION = 'INCLUSION',
                                   MAILLAGE_INCL = MA1,
-                                  GROUP_MA_INCL = 'ABCD',
-                                  GROUP_MA      = 'CARRE11',
+                                  GROUP_MA_INCL = 'GXXXXXX_ABCD',
+                                  GROUP_MA      = 'GXXXXXX_CARRE11',
                                   CAS_FIGURE    = '2D'))
 
 DEFI_GROUP(reuse=MA,   MAILLAGE=MA,
-            CREA_GROUP_MA=_F( NOM = 'TR11AB',OPTION='APPUI',
-                              TYPE_APPUI='TOUT', GROUP_NO='TR11AB',))
+            CREA_GROUP_MA=_F( NOM = 'GXXXXXX_TR11AB',OPTION='APPUI',
+                              TYPE_APPUI='TOUT', GROUP_NO='GXXXXXX_TR11AB',))
 
 
 # -------  VALIDATION DE : DEFI_GROUP / DETR_GROUP_XX -----------
 
 MA=DEFI_GROUP(  reuse=MA,   MAILLAGE=MA,
-                DETR_GROUP_NO=(_F(NOM=('GN1','GN32'),),
-                               _F(NOM=('GN3','GN58'),),),
-                DETR_GROUP_MA=_F(NOM=('GM1','GM3','GM58','GM2'),),
-                CREA_GROUP_NO=_F( NOM = 'GN3',
+                DETR_GROUP_NO=(_F(NOM=('GXXXXXX_GN1','GXXXXXX_GN32'),),
+                               _F(NOM=('GXXXXXX_GN3','GXXXXXX_GN58'),),),
+                DETR_GROUP_MA=_F(NOM=('GXXXXXX_GM1','GXXXXXX_GM3','GXXXXXX_GM58','GXXXXXX_GM2'),),
+                CREA_GROUP_NO=_F( NOM = 'GXXXXXX_GN3',
                                   OPTION = 'PLAN',
                                   NOEUD_CENTRE = 'N14',
                                   VECT_NORMALE = (1.,0.,0.,),
                                   PRECISION = 0.1),
-                CREA_GROUP_MA=_F(  NOM = 'GM2',
+                CREA_GROUP_MA=_F(  NOM = 'GXXXXXX_GM2',
                                    OPTION = 'CYLINDRE',
                                    NOEUD_CENTRE = 'N1',
                                    RAYON = 2.,
                                    ANGL_NAUT = (0.,90.,),),)
 
 MA=DEFI_GROUP(  reuse=MA,   MAILLAGE=MA,
-                CREA_GROUP_NO=_F( NOM = 'GN1',
+                CREA_GROUP_NO=_F( NOM = 'GXXXXXX_GN1',
                                   OPTION = 'ENV_SPHERE',
                                   NOEUD_CENTRE = 'N1',
                                   RAYON = 2.5,
                                   PRECISION = 0.1),
-                CREA_GROUP_MA=(_F(  NOM = 'GM1',
+                CREA_GROUP_MA=(_F(  NOM = 'GXXXXXX_GM1',
                                        OPTION = 'SPHERE',
-                                       GROUP_NO_CENTRE = 'GRN1',
+                                       GROUP_NO_CENTRE = 'GXXXXXX_GRN1',
                                        RAYON = 2.),
-                               _F(  NOM = 'GM3',
+                               _F(  NOM = 'GXXXXXX_GM3',
                                        OPTION = 'BANDE',
                                        NOEUD_CENTRE = 'N1',
                                        DIST = 2.,
@@ -163,7 +163,7 @@ MO=AFFE_MODELE(  MAILLAGE=MA,
                   MODELISATION = 'DKT') )
 
 CARELEM=AFFE_CARA_ELEM(  MODELE=MO,
-                         COQUE=_F(  GROUP_MA = 'TOUT',
+                         COQUE=_F(  GROUP_MA = 'GXXXXXX_TOUT',
                                     EPAIS = 1.) )
 
 MAT=DEFI_MATERIAU( ELAS=_F(  E = 1.0,  NU = 0.3) )
@@ -182,7 +182,7 @@ CHMAT=AFFE_MATERIAU(  MAILLAGE=MA,
 #    --- CL1 : LES NOEUDS SONT REPERES 'A LA MAIN'
 
 CLDIRI1=AFFE_CHAR_MECA(  MODELE=MO,
-                         DDL_IMPO=_F(  GROUP_NO = 'COTE',
+                         DDL_IMPO=_F(  GROUP_NO = 'GXXXXXX_COTE',
                                        DX = 0., DY = 0., DZ = 0., DRY = 0.))
 
 #
@@ -193,7 +193,7 @@ CLDIRI1=AFFE_CHAR_MECA(  MODELE=MO,
 
 
 CHMEC1=AFFE_CHAR_MECA(  MODELE=MO,
-                        DDL_IMPO=_F(  GROUP_NO = 'COTE',
+                        DDL_IMPO=_F(  GROUP_NO = 'GXXXXXX_COTE',
                                       DX = 0., DY = 0., DZ = 0., DRY = 0.),
                         FORCE_COQUE=_F( MAILLE = ('TR6A','TR6B','TR7A','TR10B',
                                                   'TR11A','TR11B',),
@@ -206,7 +206,7 @@ CHMEC1=AFFE_CHAR_MECA(  MODELE=MO,
 #    ---                DE CENTRE MILIEU DE LA PLAQUE ET DE RAYON 2.
 
 CHMEC2=AFFE_CHAR_MECA(  MODELE=MO,
-                         FORCE_COQUE=_F( GROUP_MA = 'GM1',  PRES = -1.) )
+                         FORCE_COQUE=_F( GROUP_MA = 'GXXXXXX_GM1',  PRES = -1.) )
 
 #    --------------------------------------------------
 #    --- CHARGEMENT 3 : LES MAILLES SONT DEFINIES COMME APPARTENANT
@@ -215,7 +215,7 @@ CHMEC2=AFFE_CHAR_MECA(  MODELE=MO,
 #    ---                PAR LE MILIEU DE LA PLAQUE ET DE RAYON 2.
 
 CHMEC3=AFFE_CHAR_MECA(  MODELE=MO,
-                         FORCE_COQUE=_F( GROUP_MA = 'GM2',  PRES = -1.) )
+                         FORCE_COQUE=_F( GROUP_MA = 'GXXXXXX_GM2',  PRES = -1.) )
 
 #    --------------------------------------------------
 #    --- CHARGEMENT 4 : LES MAILLES SONT REPEREES 'A LA MAIN'
@@ -225,7 +225,7 @@ CHMEC3=AFFE_CHAR_MECA(  MODELE=MO,
 # ---- LA LIGNE MOYENNE PASEE PAR LE CENTRE DE LA PLAQUE.
 #
 CHMEC4=AFFE_CHAR_MECA(  MODELE=MO,
-                        DDL_IMPO=_F(  GROUP_NO = 'COTE',
+                        DDL_IMPO=_F(  GROUP_NO = 'GXXXXXX_COTE',
                                       DX = 0., DY = 0., DZ = 0., DRY = 0.),
                         FORCE_COQUE=_F( MAILLE = ('TR5A','TR5B','TR6A','TR6B','TR7A',
                                                   'TR7B','TR8A','TR8B','TR9A','TR9B',
@@ -239,7 +239,7 @@ CHMEC4=AFFE_CHAR_MECA(  MODELE=MO,
 #    ---                 A LA BANDE DECRITE AU-DESSUS
 #
 CHMEC5=AFFE_CHAR_MECA(  MODELE=MO,
-                         FORCE_COQUE=_F( GROUP_MA = 'GM3',  PRES = -1.))
+                         FORCE_COQUE=_F( GROUP_MA = 'GXXXXXX_GM3',  PRES = -1.))
 
 #
 #    --------------------------------------------------
@@ -247,7 +247,7 @@ CHMEC5=AFFE_CHAR_MECA(  MODELE=MO,
 #    ---                 LES MAILLES
 #
 CHMEC6=AFFE_CHAR_MECA(  MODELE=MO,
-                        FORCE_COQUE=_F(  GROUP_MA = 'TOUT',
+                        FORCE_COQUE=_F(  GROUP_MA = 'GXXXXXX_TOUT',
                                          PRES = 1.))
 
 #
@@ -256,7 +256,7 @@ CHMEC6=AFFE_CHAR_MECA(  MODELE=MO,
 #    ---                 LES MAILLES
 #
 CHMEC7=AFFE_CHAR_MECA(  MODELE=MO,
-                        FORCE_COQUE=_F( GROUP_MA = 'GM4', PRES = -1.))
+                        FORCE_COQUE=_F( GROUP_MA = 'GXXXXXX_GM4', PRES = -1.))
 
 #
 #    --------------------------------------------------
@@ -270,28 +270,28 @@ CHMEC8=AFFE_CHAR_MECA(  MODELE=MO,
 #
 #    --------------------------------------------------
 #    --- CHARGEMENT 9 : ON IMPOSE UNE FORCE NODALE EGALE A -1.
-#    ---                 SUR LES NOEUDS 3,5,7,9 DU GROUP_NO GN1
+#    ---                 SUR LES NOEUDS 3,5,7,9 DU GROUP_NO GXXXXXX_GN1
 #
 CHMEC9=AFFE_CHAR_MECA(  MODELE=MO,
-                        FORCE_NODALE=_F( GROUP_NO = 'GN1',
+                        FORCE_NODALE=_F( GROUP_NO = 'GXXXXXX_GN1',
                                          FZ = -1.))
 
 #
 #    --------------------------------------------------
 #    --- CHARGEMENT 10 : ON IMPOSE UNE FORCE NODALE EGALE A -1.
-#    ---                 SUR LES NOEUDS 3,5,7,9 DU GROUP_NO GN2
+#    ---                 SUR LES NOEUDS 3,5,7,9 DU GROUP_NO GXXXXXX_GN2
 #
 CHMEC10=AFFE_CHAR_MECA(  MODELE=MO,
-                         FORCE_NODALE=_F( GROUP_NO = 'GN2',
+                         FORCE_NODALE=_F( GROUP_NO = 'GXXXXXX_GN2',
                                           FZ = -1.))
 
 #
 #    --------------------------------------------------
 #    --- CHARGEMENT 11 : ON IMPOSE UNE FORCE NODALE EGALE A -1.
-#    ---                 SUR LES NOEUDS 14,15,16,17,18 DU GROUP_NO GN3
+#    ---                 SUR LES NOEUDS 14,15,16,17,18 DU GROUP_NO GXXXXXX_GN3
 #
 CHMEC11=AFFE_CHAR_MECA(  MODELE=MO,
-                         FORCE_NODALE=_F( GROUP_NO = 'GN3',
+                         FORCE_NODALE=_F( GROUP_NO = 'GXXXXXX_GN3',
                                           FZ = -1.))
 
 #
@@ -313,10 +313,10 @@ CHMEC13=AFFE_CHAR_MECA(  MODELE=MO,
 #
 #    --------------------------------------------------
 #    --- CHARGEMENT 14 : ON IMPOSE UNE PRESSION EGALE A -1.
-#    ---                 SUR LE GROUP_MA TR11AB
+#    ---                 SUR LE GROUP_MA GXXXXXX_TR11AB
 #
 CHMEC14=AFFE_CHAR_MECA(  MODELE=MO,
-                        FORCE_COQUE=_F(  GROUP_MA = 'TR11AB',
+                        FORCE_COQUE=_F(  GROUP_MA = 'GXXXXXX_TR11AB',
                                          PRES = -1.))
 
 #

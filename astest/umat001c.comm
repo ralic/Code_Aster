@@ -1,4 +1,4 @@
-# MODIF  DATE 02/04/2013   AUTEUR PROIX J-M.PROIX 
+# MODIF  DATE 09/04/2013   AUTEUR PELLET J.PELLET 
 # TITRE TEST UMAT VARIABLES DE COMMANDES
 # umat001c.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -190,7 +190,7 @@ CHUMAT = AFFE_MATERIAU (MAILLAGE = MA,
                                    EVOL=IRRA,
                                    NOM_VARC='IRRA',),
                        _F( TOUT='OUI',
-                                  CHAMP_GD=CORR,
+                                  CHAM_GD=CORR,
                                   NOM_VARC='CORR',),
                        _F( TOUT='OUI',
                                   EVOL=NEUT1,

@@ -1,9 +1,9 @@
-# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
+# MODIF  DATE 09/04/2013   AUTEUR PELLET J.PELLET 
 # TITRE BLOC AVEC INTERFACE EN CONTACT FROTTANT AVEC X-FEM
 # ssnv195d.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -25,15 +25,15 @@ MAILLAG1=LIRE_MAILLAGE();
 
 MAILLAG1=DEFI_GROUP(reuse =MAILLAG1,
                     MAILLAGE=MAILLAG1,
-                    CREA_GROUP_NO=(_F(NOM='SURFQUAD',
-                                     GROUP_MA='SURF'),
-                _F(NOM='PMED',
+                    CREA_GROUP_NO=(_F(NOM='GXXXXXX_SURFQUAD',
+                                     GROUP_MA='GXXXXXX_SURF'),
+                _F(NOM='GXXXXXX_PMED',
                                       OPTION ='ENV_SPHERE',
                   POINT  = (0.0,25.0),
                   RAYON = 1E-3,
                                       PRECISION = 2E-3,
                   ),
-                  _F(NOM='PHAU',
+                  _F(NOM='GXXXXXX_PHAU',
                      OPTION ='ENV_SPHERE',
                      POINT  = (0.0,50.0),
                      RAYON = 1E-3,
@@ -46,27 +46,27 @@ MAILLAG1=DEFI_GROUP(reuse =MAILLAG1,
                     MAILLAGE=MAILLAG1,
                 CREA_GROUP_NO =(
                              _F(
-                                NOM = 'LIGMED',
+                                NOM = 'GXXXXXX_LIGMED',
                                 OPTION = 'PLAN',
-                                GROUP_NO_CENTRE  = 'PMED',
+                                GROUP_NO_CENTRE  = 'GXXXXXX_PMED',
                                 VECT_NORMALE = (0.0,1.0),
                                 PRECISION = 1E-3,
                                 ),
                              _F(
-                                NOM = 'LIGSUP',
+                                NOM = 'GXXXXXX_LIGSUP',
                                 OPTION = 'PLAN',
-                                GROUP_NO_CENTRE  = 'PHAU',
+                                GROUP_NO_CENTRE  = 'GXXXXXX_PHAU',
                                 VECT_NORMALE = (0.0,1.0),
                                 PRECISION = 1E-3,
                                 ),
                      )
                    );
 MODELEIN=AFFE_MODELE(MAILLAGE=MAILLAG1,
-                     AFFE=(_F(GROUP_MA=('SURF'),
+                     AFFE=(_F(GROUP_MA=('GXXXXXX_SURF'),
                               PHENOMENE='MECANIQUE',
                               MODELISATION='D_PLAN',
                               ),
-                           _F(GROUP_MA=('LIGINF'),
+                           _F(GROUP_MA=('GXXXXXX_LIGINF'),
                               PHENOMENE='MECANIQUE',
                               MODELISATION='D_PLAN',
                               )));
@@ -98,7 +98,7 @@ ACIER=DEFI_MATERIAU(ELAS=_F(E=E,
 
 CHAMPMAT=AFFE_MATERIAU(MAILLAGE=MAILLAG1,
                        MODELE=MODELEK,
-                       AFFE=_F(GROUP_MA=('SURF','LIGINF'),
+                       AFFE=_F(GROUP_MA=('GXXXXXX_SURF','GXXXXXX_LIGINF'),
                                 MATER=ACIER,
                                 ));
 
@@ -107,13 +107,13 @@ DEPY=2.E-3
 ZERO=0.0
 
 CH1=AFFE_CHAR_MECA(MODELE=MODELEK,
-                   DDL_IMPO=(_F(GROUP_MA='LIGINF',
+                   DDL_IMPO=(_F(GROUP_MA='GXXXXXX_LIGINF',
                                           DX=0.0,
                                           DY=-DEPY),
-                             _F(GROUP_NO='LIGSUP',
+                             _F(GROUP_NO='GXXXXXX_LIGSUP',
                                           DX=0.0,
                                           DY=DEPY),
-                  _F(GROUP_NO='LIGMED',
+                  _F(GROUP_NO='GXXXXXX_LIGMED',
                                           DX=0.0,
                                           DY=0.0)),
                     INFO=1);
@@ -124,10 +124,10 @@ UTOT1=MECA_STATIQUE(MODELE=MODELEK,
                    EXCIT=(
                           _F(CHARGE=CH1),
                           ),
-                   SOLVEUR=_F(   
+                   SOLVEUR=_F(
                             METHODE='MUMPS'),
                    INFO=2,
-                   ); 
+                   );
 
 # -------------------------------------------------------------
 #            POST-TRAITEMENT POUR LA VISUALISATION X-FEM
@@ -144,14 +144,14 @@ MOD_VISU=AFFE_MODELE(MAILLAGE=MA_XFEM,
 
 RES_XFEM=POST_CHAM_XFEM(MODELE_VISU   = MOD_VISU,
                         RESULTAT      = UTOT1,
-                        
+
                         INFO          = 2)
 
 #IMPR_RESU(FORMAT='GMSH',UNITE=81,RESU=_F(RESULTAT=RES_XFEM));
 
-# -------------------------------------------------------------   
+# -------------------------------------------------------------
 #            TEST_TABLE
-# -------------------------------------------------------------   
+# -------------------------------------------------------------
 
 
 DEP=POST_RELEVE_T(ACTION=_F(INTITULE='DEPLE',

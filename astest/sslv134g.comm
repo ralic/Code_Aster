@@ -1,22 +1,22 @@
-# MODIF  DATE 06/02/2013   AUTEUR COURTOIS M.COURTOIS 
+# MODIF  DATE 09/04/2013   AUTEUR PELLET J.PELLET 
 # TITRE CALCUL 3D DE G FISSURE CIRCULAIRE EN MILIEU INFINI
 # sslv134g.para = tps_job 160 mem_job 512Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
-# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-# (AT YOUR OPTION) ANY LATER VERSION.                                                    
-#                                                                       
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-#                                                                       
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 # ======================================================================
 #     QUART DE FISSURE. TEST DE POST_K1_K2_K3 AVEC RECOLLEMENT DE NOEUDS
@@ -40,7 +40,7 @@ MA=DEFI_GROUP(reuse =MA,MAILLAGE=MA,
               CREA_GROUP_NO=_F(
               GROUP_MA =('SLA2_I','SLA2_S','SAV_I','SAV_S','FON_INF1','FON_SUP1',
                          'FON_INF2','FON_SUP2','LFF1'),),)
-     
+
 
 MA=DEFI_GROUP(reuse =MA,MAILLAGE=MA,
                 CREA_GROUP_NO=(_F(NOM='SLA2',UNION=('SLA2_I', 'SLA2_S')),
@@ -88,7 +88,7 @@ MA=DEFI_GROUP(reuse =MA,MAILLAGE=MA,
 # FISSURE INITIALE
 ######################
 
-MA0=CREA_MAILLAGE(MAILLAGE=MA,COPIE=_F(),)
+MA0= COPIER(CONCEPT= MA)
 
 MODI_MAILLAGE( reuse=MA0,MAILLAGE=MA0,
                   MODI_MAILLE=_F(  OPTION = 'NOEUD_QUART',
@@ -138,7 +138,7 @@ IMPR_TABLE(TABLE=TABL_K0 )
 # RECOLLEMENT SUR UN ELEMENT
 ############################
 
-MA1=CREA_MAILLAGE(MAILLAGE=MA,COPIE=_F(),)
+MA1= COPIER(CONCEPT= MA)
 
 MODI_MAILLAGE(     reuse=MA1,MAILLAGE=MA1,
                    MODI_MAILLE=_F(  OPTION = 'NOEUD_QUART',
@@ -155,34 +155,34 @@ MO1=AFFE_MODELE(  MAILLAGE=MA1,
 
 RCOL11 = AFFE_CHAR_MECA(MODELE=MO1,
                        LIAISON_GROUP=(_F(GROUP_NO_1='FON_INF1',
-                                          GROUP_NO_2='FON_SUP1', 
+                                          GROUP_NO_2='FON_SUP1',
                                           DDL_1 = 'DX',  DDL_2 = 'DX',
                                           COEF_MULT_1 = 1.,COEF_MULT_2 = -1.,
                                           COEF_IMPO = 0., ),
                                         _F(GROUP_NO_1='FON_INF1',
-                                             GROUP_NO_2='FON_SUP1',   
+                                             GROUP_NO_2='FON_SUP1',
                                              DDL_1 = 'DY',  DDL_2 = 'DY',
                                              COEF_MULT_1 = 1.,COEF_MULT_2 = -1.,
-                                             COEF_IMPO = 0., ), 
+                                             COEF_IMPO = 0., ),
                                         _F(GROUP_NO_1='FON_INF1',
-                                             GROUP_NO_2='FON_SUP1',  
+                                             GROUP_NO_2='FON_SUP1',
                                              DDL_1 = 'DZ',  DDL_2 = 'DZ',
                                              COEF_MULT_1 = 1.,COEF_MULT_2 = -1.,
                                              COEF_IMPO = 0., ),),);
 
 RCOL12 = AFFE_CHAR_MECA(MODELE=MO1,
                        LIAISON_GROUP=(_F(GROUP_NO_1='MIL_SUP1',
-                                          GROUP_NO_2='MIL_INF1',  
+                                          GROUP_NO_2='MIL_INF1',
                                           DDL_1 = 'DX',  DDL_2 = 'DX',
                                           COEF_MULT_1 = 1.,COEF_MULT_2 = -1.,
                                           COEF_IMPO = 0., ),
                                         _F(GROUP_NO_1='MIL_SUP1',
-                                             GROUP_NO_2='MIL_INF1', 
+                                             GROUP_NO_2='MIL_INF1',
                                              DDL_1 = 'DY',  DDL_2 = 'DY',
                                              COEF_MULT_1 = 1.,COEF_MULT_2 = -1.,
-                                             COEF_IMPO = 0., ), 
+                                             COEF_IMPO = 0., ),
                                         _F(GROUP_NO_1='MIL_SUP1',
-                                             GROUP_NO_2='MIL_INF1',  
+                                             GROUP_NO_2='MIL_INF1',
                                              DDL_1 = 'DZ',  DDL_2 = 'DZ',
                                              COEF_MULT_1 = 1.,COEF_MULT_2 = -1.,
                                              COEF_IMPO = 0., ),),);
@@ -235,7 +235,7 @@ IMPR_TABLE(  TABLE=TABL_K1 );
 # RECOLLEMENT SUR DEUX ELEMENTS
 ###############################
 
-MA2=CREA_MAILLAGE(MAILLAGE=MA,COPIE=_F(),)
+MA2= COPIER(CONCEPT= MA)
 
 MODI_MAILLAGE( reuse=MA2,    MAILLAGE=MA2,
                    MODI_MAILLE=_F(  OPTION = 'NOEUD_QUART',
@@ -252,68 +252,68 @@ MO2=AFFE_MODELE(  MAILLAGE=MA2,
 
 RCOL21 = AFFE_CHAR_MECA(MODELE=MO2,
                        LIAISON_GROUP=(_F(GROUP_NO_1='FON_INF1',
-                                          GROUP_NO_2='FON_SUP1', 
+                                          GROUP_NO_2='FON_SUP1',
                                           DDL_1 = 'DX',  DDL_2 = 'DX',
                                           COEF_MULT_1 = 1.,COEF_MULT_2 = -1.,
                                           COEF_IMPO = 0., ),
                                         _F(GROUP_NO_1='FON_INF1',
-                                             GROUP_NO_2='FON_SUP1',   
+                                             GROUP_NO_2='FON_SUP1',
                                              DDL_1 = 'DY',  DDL_2 = 'DY',
                                              COEF_MULT_1 = 1.,COEF_MULT_2 = -1.,
-                                             COEF_IMPO = 0., ), 
+                                             COEF_IMPO = 0., ),
                                         _F(GROUP_NO_1='FON_INF1',
-                                             GROUP_NO_2='FON_SUP1',  
+                                             GROUP_NO_2='FON_SUP1',
                                              DDL_1 = 'DZ',  DDL_2 = 'DZ',
                                              COEF_MULT_1 = 1.,COEF_MULT_2 = -1.,
                                              COEF_IMPO = 0., ),),);
 
 RCOL22 = AFFE_CHAR_MECA(MODELE=MO2,
                        LIAISON_GROUP=(_F(GROUP_NO_1='MIL_SUP1',
-                                          GROUP_NO_2='MIL_INF1',  
+                                          GROUP_NO_2='MIL_INF1',
                                           DDL_1 = 'DX',  DDL_2 = 'DX',
                                           COEF_MULT_1 = 1.,COEF_MULT_2 = -1.,
                                           COEF_IMPO = 0., ),
                                         _F(GROUP_NO_1='MIL_SUP1',
-                                             GROUP_NO_2='MIL_INF1', 
+                                             GROUP_NO_2='MIL_INF1',
                                              DDL_1 = 'DY',  DDL_2 = 'DY',
                                              COEF_MULT_1 = 1.,COEF_MULT_2 = -1.,
-                                             COEF_IMPO = 0., ), 
+                                             COEF_IMPO = 0., ),
                                         _F(GROUP_NO_1='MIL_SUP1',
-                                             GROUP_NO_2='MIL_INF1',  
+                                             GROUP_NO_2='MIL_INF1',
                                              DDL_1 = 'DZ',  DDL_2 = 'DZ',
                                              COEF_MULT_1 = 1.,COEF_MULT_2 = -1.,
                                              COEF_IMPO = 0., ),),);
 
 RCOL23 = AFFE_CHAR_MECA(MODELE=MO2,
                        LIAISON_GROUP=(_F(GROUP_NO_1='FON_INF2',
-                                          GROUP_NO_2='FON_SUP2',   
+                                          GROUP_NO_2='FON_SUP2',
                                           DDL_1 = 'DX',  DDL_2 = 'DX',
                                           COEF_MULT_1 = 1.,COEF_MULT_2 = -1.,
                                           COEF_IMPO = 0., ),
                                         _F(GROUP_NO_1='FON_INF2',
-                                             GROUP_NO_2='FON_SUP2',   
+                                             GROUP_NO_2='FON_SUP2',
                                              DDL_1 = 'DY',  DDL_2 = 'DY',
                                              COEF_MULT_1 = 1.,COEF_MULT_2 = -1.,
-                                             COEF_IMPO = 0., ), 
+                                             COEF_IMPO = 0., ),
                                         _F(GROUP_NO_1='FON_INF2',
-                                             GROUP_NO_2='FON_SUP2',  
+                                             GROUP_NO_2='FON_SUP2',
                                              DDL_1 = 'DZ',  DDL_2 = 'DZ',
                                              COEF_MULT_1 = 1.,COEF_MULT_2 = -1.,
                                              COEF_IMPO = 0.),),);
 
 RCOL24 = AFFE_CHAR_MECA(MODELE=MO2,
                        LIAISON_GROUP=(_F(GROUP_NO_1='MIL_SUP2',
-                                          GROUP_NO_2='MIL_INF2',   
+                                          GROUP_NO_2='MIL_INF2',
                                           DDL_1 = 'DX',  DDL_2 = 'DX',
                                           COEF_MULT_1 = 1.,COEF_MULT_2 = -1.,
                                           COEF_IMPO = 0., ),
                                         _F(GROUP_NO_1='MIL_SUP2',
-                                             GROUP_NO_2='MIL_INF2',   
+                                             GROUP_NO_2='MIL_INF2',
                                              DDL_1 = 'DY',  DDL_2 = 'DY',
                                              COEF_MULT_1 = 1.,COEF_MULT_2 = -1.,
-                                             COEF_IMPO = 0., ), 
+                                             COEF_IMPO = 0., ),
                                         _F(GROUP_NO_1='MIL_SUP2',
-                                             GROUP_NO_2='MIL_INF2',   
+                                             GROUP_NO_2='MIL_INF2',
                                              DDL_1 = 'DZ',  DDL_2 = 'DZ',
                                              COEF_MULT_1 = 1.,COEF_MULT_2 = -1.,
                                              COEF_IMPO = 0., ),),);
@@ -510,7 +510,7 @@ TABI2 = POST_RELEVE_T( ACTION=_F(  INTITULE = 'lev inf 2',
 
 # DETERMINATION DES K (MATERIAU DONT LES PROPRIETES
 # MATERIAUX CORRESPONDENT A UN ACIER A 100 DEGRES)
-# 
+#
 
 MAT8=DEFI_MATERIAU(ELAS=_F(  E = 1.9E11,
                              NU = 0.3,) )
@@ -536,7 +536,7 @@ TABL_K8=POST_K1_K2_K3(  MODELISATION='3D',
 IMPR_TABLE(TABLE=TABL_K8)
 
 # DETERMINATION DES K (MATERIAU DEPENDANT DE LA TEMPERATURE)
-# 
+#
 
 CH20=CREA_CHAMP(TYPE_CHAM='NOEU_TEMP_R',
                   MAILLAGE=MA0,
@@ -562,9 +562,9 @@ RESTH=CREA_RESU(OPERATION='AFFE',
 
 YOUNG=DEFI_FONCTION(NOM_PARA='TEMP',NOM_RESU='E',PROL_DROITE='LINEAIRE',PROL_GAUCHE='LINEAIRE',
                      VALE=(20.0,2.E11,100.0,1.9E11),);
- 
+
 NU=DEFI_FONCTION(NOM_PARA='TEMP',NOM_RESU='NU',PROL_DROITE='LINEAIRE',PROL_GAUCHE='LINEAIRE',
-                     VALE=(20.0,0.3,100.,0.3),);                    
+                     VALE=(20.0,0.3,100.,0.3),);
 
 ALPHA=DEFI_CONSTANTE(VALE=0.);
 MAT9=DEFI_MATERIAU(ELAS_FO=_F( E  = YOUNG,
@@ -602,7 +602,7 @@ IMPR_TABLE(TABLE=TABL_K9);
 # TEST_TABLE
 
 GMAX0=11.689685543213
-GMAX1=12.304932150751 
+GMAX1=12.304932150751
 
 TEST_TABLE(REFERENCE='NON_DEFINI',
            PRECISION=1.E-2,

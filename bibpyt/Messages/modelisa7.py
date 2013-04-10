@@ -1,8 +1,8 @@
-#@ MODIF modelisa7 Messages  DATE 03/09/2012   AUTEUR BERRO H.BERRO 
+#@ MODIF modelisa7 Messages  DATE 09/04/2013   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -209,15 +209,11 @@ cata_msg={
 """),
 
 48: _(u"""
- récupération des caractéristiques du matériau béton : absence de relation de comportement de type <BPEL_BETON>
+ récupération des caractéristiques du matériau béton : absence de relation de comportement de type <BPEL_BETON> ou <ETCC_BETON>
 """),
 
 49: _(u"""
  le calcul de la tension est fait selon BPEL. il ne peut y avoir qu'un seule jeu de données. vérifiez la cohérence du paramètre PERT_FLUA  dans les DEFI_MATERIAU
-"""),
-
-50: _(u"""
- le calcul de la tension est fait selon BPEL. il ne peut y avoir qu'un seul jeu de données. vérifiez la cohérence du paramètre PERT_FLUA dans les DEFI_MATERIAU
 """),
 
 51: _(u"""

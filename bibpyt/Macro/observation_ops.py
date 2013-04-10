@@ -1,4 +1,4 @@
-#@ MODIF observation_ops Macro  DATE 19/03/2013   AUTEUR BRIE N.BRIE 
+#@ MODIF observation_ops Macro  DATE 09/04/2013   AUTEUR PELLET J.PELLET 
 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -350,7 +350,6 @@ def observation_ops(self,
 
          __chame[ind] = CREA_CHAMP( OPERATION  = 'AFFE',
                           MODELE = MODELE_1,
-                          PROL_ZERO = 'OUI',
                           TYPE_CHAM  = TYPE_CHAM,
                           OPTION   = 'EPSI_NOEU',
                           **argsa
@@ -579,13 +578,13 @@ def observation_ops(self,
               if modi_rep['REPERE'] == 'CYLINDRIQUE' :
                     origine = modi_rep['ORIGINE']
                     axe_z   = modi_rep['AXE_Z']
-                    mcfact2.update({ 
+                    mcfact2.update({
                                      'ORIGINE' : origine,
                                      'AXE_Z'   : axe_z })
 
               elif modi_rep['REPERE'] == 'UTILISATEUR' :
                     angl_naut = modi_rep['ANGL_NAUT']
-                    mcfact2.update({ 
+                    mcfact2.update({
                                      'ANGL_NAUT' : angl_naut })
 
               argsm = {'MODI_CHAM'   : mcfact1,
@@ -667,7 +666,6 @@ def observation_ops(self,
               elif nomcham == 'EPSI_NOEU':
                 __chamf[ind] = CREA_CHAMP(TYPE_CHAM = TYPE_CHAM,
                                        OPERATION = 'ASSE',
-                                       PROL_ZERO = 'OUI',
                                        MODELE    = modele,
                                        ASSE      = filtres,
                                        );
@@ -1013,7 +1011,7 @@ def find_no(maya,mcsimp):
         list_no = list(mcsimp['NOEUD'])
     elif mcsimp.has_key('GROUP_NO') :
         for group in mcsimp['GROUP_NO'] :
-            list_ind_no = list(numpy.array(maya.sdj.GROUPENO.get()[group.ljust(8)])-1)
+            list_ind_no = list(numpy.array(maya.sdj.GROUPENO.get()[group.ljust(24)])-1)
             for ind_no in list_ind_no :
                 nomnoe = maya.sdj.NOMNOE.get()[ind_no]
                 if nomnoe not in list_no :
@@ -1030,7 +1028,7 @@ def find_no(maya,mcsimp):
     elif mcsimp.has_key('GROUP_MA') :
         for group in mcsimp['GROUP_MA'] :
             list_nu_ma = list(numpy.array(maya.sdj.GROUPEMA.get()
-                                            [group.ljust(8)]) - 1)
+                                            [group.ljust(24)]) - 1)
             for nu_ma in list_nu_ma:
                 for ind_no in maya.sdj.CONNEX.get()[nu_ma+1]:
                     nomnoe = maya.sdj.NOMNOE.get()[ind_no-1]
@@ -1061,7 +1059,7 @@ def find_ma(maya,mcsimp):
             list_ma.append(mail)
     elif mcsimp.has_key('GROUP_MA') :
         for group in mcsimp['GROUP_MA'] :
-            list_ind_ma = list(numpy.array(maya.sdj.GROUPEMA.get()[group.ljust(8)])-1)
+            list_ind_ma = list(numpy.array(maya.sdj.GROUPEMA.get()[group.ljust(24)])-1)
             for ind_ma in list_ind_ma :
                 nommail = maya.sdj.NOMMAI.get()[ind_ma]
                 if nommail not in list_ma :

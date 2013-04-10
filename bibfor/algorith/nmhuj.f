@@ -3,9 +3,9 @@
      &           DEPS, SIGD, VIND, OPT, SIGF, VINF, DSDE, IRET)
       IMPLICIT NONE
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 09/11/2012   AUTEUR DELMAS J.DELMAS 
+C MODIF ALGORITH  DATE 09/04/2013   AUTEUR PELLET J.PELLET 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -102,19 +102,19 @@ C
 C  ----------------------------------------------------------------
       INTEGER       IMAT, NDT, NDI, NVI, IRET, IRET1
       INTEGER       I, INC, INCMAX, NDTT, LIMSUP
-      REAL*8        CRIT(*), VIND(*), VINF(*), VIND0(50)
+      REAL*8        CRIT(*), VIND(50), VINF(50), VIND0(50)
       REAL*8        INSTAM, INSTAP, TEMPM, TEMPF, TREF
       REAL*8        EPSD(6), DEPS(6), DEPS0(6)
       REAL*8        SIGD(6), SIGF(6), DSDE(6,6), SEUIL
       REAL*8        PISO, DEPSR(6), DEPSQ(6), TIN(3)
-      REAL*8        D, Q, M, PHI, B, DEGR, ANGMAS(*)
+      REAL*8        D, Q, M, PHI, B, DEGR, ANGMAS(3)
       REAL*8        PC0, SIGD0(6), HILL, DSIG(6)
       CHARACTER*7   ETATD, ETATF
       CHARACTER*8    MOD, TYPMOD(*)
       CHARACTER*16  COMP(*), OPT
-      REAL*8        DEPSTH(6), EPSDTH(6), ALPHA(3)
+      REAL*8        DEPSTH(6), ALPHA(3)
       REAL*8        DET, R8PREM, R8VIDE, BID16(6), BID66(6,6)
-      REAL*8        MATERF(22,2), I1D, D13, ZERO, UN, DEUX, DIX
+      REAL*8        MATERF(22,2), ZERO, UN, DEUX, DIX
       REAL*8        NEPS, NSIG, PTRAC, RTRAC
       INTEGER        IISNAN
       LOGICAL       DEBUG, CONV, REORIE, TRACT
@@ -125,7 +125,6 @@ C     ----------------------------------------------------------------
       COMMON /TDIM/   NDT, NDI
       COMMON /MESHUJ/ DEBUG
 C     ----------------------------------------------------------------
-      DATA       D13  / 0.33333333334D0 /
       DATA       ZERO / 0.0D0 /
       DATA       UN   / 1.0D0 /
       DATA       DEUX / 2.0D0 /
@@ -166,10 +165,6 @@ C     DEFINI EN 3D
         NDT  = 6
       ENDIF
 
-      I1D = ZERO
-      DO 10 I = 1, NDI
-        I1D = I1D + D13*SIGD(I)
-   10   CONTINUE
 
 C     CALCUL DE DEPSTH ET EPSDTH
 C     --------------------------
@@ -203,7 +198,6 @@ C ---> COEF DE DILATATION LE MEME A TPLUS ET TMOINS
 
         DO 20 I = 1, NDI
           DEPSTH(I) = DEPS(I)
-          EPSDTH(I) = EPSD(I)
   20      CONTINUE
 
       ELSE
@@ -211,20 +205,17 @@ C ---> COEF DE DILATATION LE MEME A TPLUS ET TMOINS
         DO 25 I = 1, NDI
           DEPSTH(I) = DEPS(I) -
      &                ALPHA(I)*(TEMPF-TREF) + ALPHA(I)*(TEMPM-TREF)
-          EPSDTH(I) = EPSD(I) - ALPHA(I)*(TEMPM-TREF)
   25      CONTINUE
 
       ENDIF
 
       DO 21 I = NDI+1, NDT
         DEPSTH(I) = DEPS(I)
-        EPSDTH(I) = EPSD(I)
   21    CONTINUE
 
       IF (NDTT .LT. 6) THEN
         DO 22 I = NDTT+1, 6
           DEPSTH(I) = ZERO
-          EPSDTH(I) = ZERO
           SIGD(I)   = ZERO
   22      CONTINUE
       ENDIF
@@ -364,7 +355,7 @@ C -----------------------------------------------------
         INC = INC + 1
         CALL LCEQVE (DEPSQ, DEPSR)
         CALL HUJPRE (ETATD, MOD, CRIT, IMAT, MATERF, DEPSR, SIGD,
-     &               SIGF, EPSDTH, VIND0, IRET)
+     &               SIGF, VIND0, IRET)
         IF (IRET .EQ. 1) GOTO 9999
 
 C ----------------------------------------------------
@@ -389,16 +380,16 @@ C --- ON LIMITE LE REDECOUPAGE LOCAL A 20 POUR HUJDP
           DO 48 I=1, NDT
             DEPSQ(I)=DEPS0(I) /INCMAX
             DEPSR(I)=DEPS0(I) /INCMAX
-            CALL HUJPRE (ETATD, MOD, CRIT, IMAT, MATERF, DEPSR,
-     &                   SIGD, SIGF, EPSDTH, VIND0, IRET)
  48         CONTINUE
+          CALL HUJPRE (ETATD, MOD, CRIT, IMAT, MATERF, DEPSR,
+     &                 SIGD, SIGF, VIND0, IRET)
         ENDIF
 
 C ---------------------------------------------
 C CALCUL DE L'ETAT DE CONTRAINTES CORRESPONDANT
 C ---------------------------------------------
         IF(DEBUG)WRITE(6,*)'NMHUJ -- VINF =',(VINF(I),I=24,31)
-        CALL HUJRES(MOD, CRIT, MATERF, IMAT, NVI, EPSDTH, DEPSR,
+        CALL HUJRES(MOD, CRIT, MATERF, IMAT, NVI, DEPSR,
      &       SIGD, VIND, SIGF, VINF, IRET, ETATF)
         IF (IRET.EQ.1) GOTO 9999
 

@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 02/04/2013   AUTEUR PROIX J-M.PROIX 
+#& MODIF COMMANDE  DATE 09/04/2013   AUTEUR PELLET J.PELLET 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -42,6 +42,10 @@ DEFI_MATERIAU=OPER(nom="DEFI_MATERIAU",op=5,sd_prod=mater_sdaster,
                EXCLUS('VENDOCHAB','VENDOCHAB_FO'),
                EXCLUS('VISC_ENDO','VISC_ENDO_FO'),
                PRESENT_PRESENT('BPEL_ACIER','ELAS'),
+               PRESENT_PRESENT('ETCC_ACIER','ELAS'),
+               EXCLUS('ETCC_ACIER','BPEL_ACIER'),
+               EXCLUS('ETCC_BETON','BPEL_BETON'),
+
                EXCLUS('RCCM','RCCM_FO'),
                EXCLUS('WEIBULL','WEIBULL_FO'),
                PRESENT_PRESENT('LAIGLE','ELAS'),
@@ -910,6 +914,19 @@ DEFI_MATERIAU=OPER(nom="DEFI_MATERIAU",op=5,sd_prod=mater_sdaster,
              FROT_COURB      =SIMP(statut='f',typ='R',defaut=0.E+0),
              FROT_LINE       =SIMP(statut='f',typ='R',defaut=0.E+0),
            ),
+          ETCC_BETON      =FACT(statut='f',
+            EP_BETON           =SIMP(statut='f',typ='R',val_min=0.E+0,defaut=0. ),
+           ),
+          ETCC_ACIER      =FACT(statut='f',
+            regles=(PRESENT_PRESENT('RELAX_1000','F_PRG',),),
+             F_PRG           =SIMP(statut='f',typ='R',val_min=0.E+0),             
+             COEF_FROT       =SIMP(statut='f',typ='R',defaut=0.E+0,val_min=0.E+0),
+             PERT_LIGNE     =SIMP(statut='f',typ='R',defaut=0.E+0,val_min=0.E+0), 
+             RELAX_1000      =SIMP(statut='f',typ='R',defaut= 0.E+0,val_min=0.E+0 ),                         
+
+
+           ),
+           
            CAM_CLAY      =FACT(statut='f',
              MU              =SIMP(statut='o',typ='R'),
              PORO            =SIMP(statut='o',typ='R'),

@@ -1,4 +1,4 @@
-# MODIF  DATE 26/02/2013   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 09/04/2013   AUTEUR PELLET J.PELLET 
 # TITRE LACHER D'UN SIMPLE MASSE-RESSORT
 # sdld34a.para = tps_job 60 mem_job 256Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -90,7 +90,7 @@ LINST=DEFI_LIST_REEL(DEBUT=0.0,
 
 DEPLINI=CREA_CHAMP(TYPE_CHAM='NOEU_DEPL_R',
                    NUME_DDL=NUMEDDL,
-                   OPERATION='AFFE',
+                   OPERATION='AFFE', PROL_ZERO='OUI',
                    MODELE=MODELE,
                    AFFE=_F(GROUP_NO='GROUP_NO_N',
                            NOM_CMP='DX',

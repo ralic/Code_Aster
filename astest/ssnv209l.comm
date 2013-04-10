@@ -1,22 +1,22 @@
-# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
+# MODIF  DATE 09/04/2013   AUTEUR PELLET J.PELLET 
 # TITRE INTERFACE EN CONTACT FROTTANT AVEC X-FEM
 # ssnv209l.para = tps_job 600 mem_job 1024Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
-# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-# (AT YOUR OPTION) ANY LATER VERSION.                                                    
-#                                                                       
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-#                                                                       
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 #       CAS_TEST SSNV209L: 3D, ELEMENTS QUAD8, METHODE XFEM
 
@@ -84,9 +84,7 @@ MAILLAG1=DEFI_GROUP(reuse =MAILLAG1,
                                     ),
                     INFO=1);
 
-MAILLAG2=CREA_MAILLAGE(MAILLAGE=MAILLAG1,COPIE=_F(),
-                       #LINE_QUAD=_F(GROUP_MA=('VOLU')),
-                       );
+MAILLAG2= COPIER(CONCEPT= MAILLAG1)
 
 MAILLAG2=DEFI_GROUP(reuse =MAILLAG2,
                     MAILLAGE=MAILLAG2,
@@ -133,7 +131,7 @@ LN=FORMULE(NOM_PARA=('X','Y','Z'),VALE='Y');
 FISS=DEFI_FISS_XFEM(MODELE=MODELEIN,
                     TYPE_DISCONTINUITE='INTERFACE',
                     DEFI_FISS=_F(FONC_LN=LN))
-                    
+
 MODELEK=MODI_MODELE_XFEM(MODELE_IN=MODELEIN,
                          FISSURE=FISS,
                          CONTACT='P1P1',
@@ -166,7 +164,7 @@ CHAMPMA1=AFFE_MATERIAU(MAILLAGE=MAILLAG2,
                        MODELE=MODELEK,
                        AFFE=(_F(GROUP_MA=('VOLU'),
                                 MATER=MATVAR)),
-                       AFFE_VARC=_F(NOM_VARC='NEUT1',CHAMP_GD=CHABNO),
+                       AFFE_VARC=_F(NOM_VARC='NEUT1',CHAM_GD=CHABNO),
                        );
 
 #----------------------------------------------
@@ -188,14 +186,14 @@ CTXFEM = DEFI_CONTACT(MODELE         = MODELEK,
                                CONTACT_INIT   = 'OUI',
                                COULOMB        = 1.0,
                                ALGO_CONT      = 'PENALISATION',
-                               COEF_PENA_CONT = 1.E15, 
+                               COEF_PENA_CONT = 1.E15,
                                ALGO_FROT      = 'PENALISATION',
                                COEF_PENA_FROT = 1.0E7,
                               ALGO_LAGR      = 'VERSION2',
-                             ), 
+                             ),
                          ),
                    );
-                   
+
 
 CHXFEM=AFFE_CHAR_MECA(MODELE=MODELEK,
                       LIAISON_XFEM='OUI',
@@ -254,7 +252,7 @@ UTOT1=STAT_NON_LINE(MODELE=MODELEK,
                            _F(CHARGE=CHAF,
                               FONC_MULT=RAMPE),
                            ),
-                    CONTACT  = CTXFEM,       
+                    CONTACT  = CTXFEM,
                     COMP_ELAS=_F(RELATION='ELAS',
                                  GROUP_MA='VOLU'),
                     INCREMENT=_F(LIST_INST=L_INS1,
@@ -262,7 +260,7 @@ UTOT1=STAT_NON_LINE(MODELE=MODELEK,
                     CONVERGENCE=_F(ARRET='OUI',
                                    ITER_GLOB_MAXI=10),
                     SOLVEUR=_F(METHODE='MUMPS',
-   
+
                                RESI_RELA=-1.,
                                NPREC=-1),
                     NEWTON=_F(REAC_ITER=1),

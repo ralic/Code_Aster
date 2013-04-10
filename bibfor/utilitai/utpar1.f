@@ -5,9 +5,9 @@
       CHARACTER*32 LIPARA(NBPAMX)
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 18/09/2012   AUTEUR PELLET J.PELLET 
+C MODIF UTILITAI  DATE 09/04/2013   AUTEUR PELLET J.PELLET 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -193,7 +193,7 @@ C     --------------------------------
         ICO=ICO+1
         LIPARA(ICO)='INST#A#R'
         ICO=ICO+1
-C       -- FREQ ET CHAR_CRIT NE PEUTVENT  PAS ETRE UNE VARIABLE D'ACCES 
+C       -- FREQ ET CHAR_CRIT NE PEUTVENT  PAS ETRE UNE VARIABLE D'ACCES
 C       A CAUSE DE LRIDEA.F (TEST ZZZZ165A)
         LIPARA(ICO)='FREQ#P#R'
         ICO=ICO+1
@@ -252,11 +252,11 @@ C
         ICO=ICO+1
         LIPARA(ICO)='ITER_GLOB#P#I'
         ICO=ICO+1
-        LIPARA(ICO)='CHAR_MINI#P#R'       
+        LIPARA(ICO)='CHAR_MINI#P#R'
         ICO=ICO+1
         LIPARA(ICO)='TRAN_GENE_NOLI#P#K24'
         ICO=ICO+1
-        LIPARA(ICO)='COEF_MULT#P#R'                
+        LIPARA(ICO)='COEF_MULT#P#R'
         NBPARA=ICO
         CALL ASSERT(NBPARA.LE.NBPAMX)
 
@@ -265,7 +265,7 @@ C
       ELSEIF (TYPSD.EQ.'COMB_FOURIER') THEN
 C     --------------------------------
         ICO=ICO+1
-        LIPARA(ICO)='ANGL#A#R'
+        LIPARA(ICO)='ANGLE#A#R'
         ICO=ICO+1
         LIPARA(ICO)='MODELE#P#K8'
         ICO=ICO+1
@@ -309,7 +309,7 @@ C     --------------------------------
         CALL ASSERT(NBPARA.LE.NBPAMX)
 
 
-        
+
       ELSEIF (TYPSD.EQ.'MODE_STAB') THEN
 C     --------------------------------
         ICO=ICO+1
@@ -327,8 +327,8 @@ C     --------------------------------
         ICO=ICO+1
         LIPARA(ICO)='NUME_MODE#A#I'
         NBPARA=ICO
-        CALL ASSERT(NBPARA.LE.NBPAMX)              
-        
+        CALL ASSERT(NBPARA.LE.NBPAMX)
+
 
 
       ELSEIF ((TYPSD.EQ.'MODE_MECA').OR.

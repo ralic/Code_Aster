@@ -1,4 +1,4 @@
-# MODIF  DATE 18/02/2013   AUTEUR SELLENET N.SELLENET 
+# MODIF  DATE 09/04/2013   AUTEUR PELLET J.PELLET 
 # TITRE  MODELISATION D UN GRADIENT D'EAU SUR UN BARREAU SATURE EN LIQUIDE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -426,10 +426,10 @@ CH2=CREA_CHAMP(TYPE_CHAM = 'ELGA_NEUT_R', OPERATION = 'ASSE',
                             NOM_CMP_RESU =('X1')))
 
 CH3=CREA_CHAMP(OPERATION = 'DISC', TYPE_CHAM = 'NOEU_NEUT_R',
-                 CHAM_GD=CH2, MODELE = MODELT, PROL_ZERO = 'OUI');
+                 CHAM_GD=CH2, MODELE = MODELT );
 
 CH4=CREA_CHAMP(TYPE_CHAM = 'NOEU_SIEF_R', OPERATION = 'ASSE',
-               MODELE = MODELT, PROL_ZERO = 'OUI',
+               MODELE = MODELT,
                   ASSE = _F(TOUT='OUI',
                             CHAM_GD = CH3,
                             NOM_CMP_RESU=('M11'),
@@ -517,7 +517,7 @@ CHFON=CREA_CHAMP(OPERATION='AFFE',
 CHEXT=CREA_CHAMP(OPERATION = 'EXTR', TYPE_CHAM='NOEU_SIEF_R',
                  NOM_CHAM  = 'SIEF_NOEU', RESULTAT  = cal1, NUME_ORDRE=5);
 
-CHNEXT=CREA_CHAMP(TYPE_CHAM = 'NOEU_NEUT_R', OPERATION = 'ASSE',MODELE = MODELT, PROL_ZERO = 'OUI',
+CHNEXT=CREA_CHAMP(TYPE_CHAM = 'NOEU_NEUT_R', OPERATION = 'ASSE',MODELE = MODELT,
                   ASSE = _F(TOUT='OUI',
                             CHAM_GD = CHEXT,
                             NOM_CMP='M11',

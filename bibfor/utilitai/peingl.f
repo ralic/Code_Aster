@@ -8,7 +8,7 @@
       CHARACTER*(*) RESU,MODELE,MATE,CARA,LCHAR(1),MOTFAZ
 C.======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 03/04/2013   AUTEUR DESOZA T.DESOZA 
+C MODIF UTILITAI  DATE 09/04/2013   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -125,17 +125,17 @@ C -----  VARIABLES LOCALES
      &        NBIN,NT,NM,NG,IBID,NBGRMA,JGR,IG,NBMA,JAD,NBMAIL,JMA,IM,
      &        IOCC,NUME,NBOUT,NUMORM,IDESC,NGDMAX,NCMPMX,IVALE,
      &        IPTMA,IGD,IDEBGD,DG,IMA,ICONEX,NBNO,NEC,IVARI,I
-      REAL*8 WORK(5),INDIC1,VOLUME,INST,VALER(6),ZERO,PREC,R8PREM,ENERGI
+      REAL*8 WORK(5),INDIC1,VOLUME,INST,VALR(6),ZERO,PREC,R8PREM,ENERGI
       COMPLEX*16 C16B
       CHARACTER*2 CODRET
-      CHARACTER*8 RESUL,CRIT,NOMA,NOMMAI,VALEK(2),KIORDM
+      CHARACTER*8 RESUL,CRIT,NOMA,NOMMAI,VK8(2),KIORDM
       CHARACTER*8 KIORD,K8B,LPAIN(10),LPAOUT(2),TYPARR(9)
       CHARACTER*8 NOMGD
       CHARACTER*16 TYPRES,MOTFAC,NOPARR(9),LIGRMO,COMPT,OPTION
       CHARACTER*19 KNUM,LIGREL,KINS,COMPOR
       CHARACTER*19 CHVARC,CHVREF
       CHARACTER*24 CHGEOM,CHCARA(18),CHHARM,CHVARI,CHDEPL
-      CHARACTER*24 VALK(2),VALE2(2),NOMMA2
+      CHARACTER*24 VK24(2),NOMGRM
       CHARACTER*24 CHSIG,LCHIN(10),LCHOUT(2)
       CHARACTER*24 MLGGMA,MLGNMA
       CHARACTER*24 CHSIGM,CHDEPM,CHBID
@@ -187,7 +187,7 @@ C     ---------------
          WORK(I)=0.D0
  8    CONTINUE
       DO 9 I=1,6
-         VALER(I)=0.D0
+         VALR(I)=0.D0
  9    CONTINUE
 
 C --- RECUPERATION DU RESULTAT A TRAITER :
@@ -264,7 +264,7 @@ C      ------------------------------
 C ---  RECUPERATION DE L'INSTANT :
 C      -------------------------
         INST = ZR(JINS+IORD-1)
-        VALER(1) = INST
+        VALR(1) = INST
 
 C ---  RECUPERATION OU CONSTITUTION DU CHAMP DE VARIABLE DE COMMANDE
 C ---  ET DE LA VARIABLE DE COMMANDE DE REFERENCE :
@@ -349,7 +349,7 @@ C ---        RECUPERATION DES NUMEROS DES NOEUDS DE LA MAILLE
    20      CONTINUE
 
 CCC---FIN DE RECUPERATION DU COMPOR
-        
+
        ENDIF
 
 C ---  RECUPERATION DU CHAMP DE CONTRAINTES ASSOCIE AU
@@ -374,9 +374,9 @@ C      ----------------------
           IVARI=1
           IF (IRET.GT.0) THEN
             IF (MOTFAC.NE.'ENER_ELAS') THEN
-                VALK(1) = RESUL
-                VALK(2) = KIORD
-                CALL U2MESK('F','UTILITAI3_79', 2 ,VALK)
+                VK24(1) = RESUL
+                VK24(2) = KIORD
+                CALL U2MESK('F','UTILITAI3_79', 2 ,VK24)
             ELSE
 C CREATION D'UN CHAMP DE VARIABLES INTERNES NUL
                IVARI=0
@@ -494,9 +494,9 @@ C         -------------------------------------------
                 CALL U2MESS('F','UTILITAI3_80')
               END IF
 
-              VALER(2) = INDIC1/VOLUME
-              VALEK(1) = NOMA
-              VALEK(2) = 'TOUT'
+              VALR(2) = INDIC1/VOLUME
+              VK8(1) = NOMA
+              VK8(2) = 'TOUT'
 
             ELSE IF (MOTFAC.EQ.'ENER_ELAS'  .OR.
      &               MOTFAC.EQ.'ENER_TOTALE'.OR.
@@ -523,26 +523,26 @@ C ---  L ENERGIE TOTAL
                 ENERGI = WORK(1)
               END IF
 
-              VALER(2) = ENERGI
-              VALER(3) = WORK(2)
-              VALER(4) = WORK(3)
-              VALEK(1) = NOMA
-              VALEK(2) = 'TOUT'
+              VALR(2) = ENERGI
+              VALR(3) = WORK(2)
+              VALR(4) = WORK(3)
+              VK8(1) = NOMA
+              VK8(2) = 'TOUT'
               IF (MOTFAC.EQ.'ENER_ELAS') THEN
 C ---    AJOUT INUTILE POUR L INSTANT PUISQUE WORK(4) ET WORK(5)
 C        SONT NULS. EN PREVISION DU CALCUL DE L ENERGIE ELASTIQUE
 C        DE CISAILLEMENT ET DE COUPLAGE MEMBRANE FLEXION POUR LES
-C        PLAQUES EN MECA STATIQUE UNIQUEMENT, SI ON L AUTORISE 
+C        PLAQUES EN MECA STATIQUE UNIQUEMENT, SI ON L AUTORISE
 C        UN JOUR.
-                VALER(5) = WORK(4)
-                VALER(6) = WORK(5)
+                VALR(5) = WORK(4)
+                VALR(6) = WORK(5)
               ENDIF
 
             END IF
 
 C ---    ECRITURE DE L'INDICATEUR OU DE L'ENERGIE DANS LA TABLE :
 C        ------------------------------------------------------
-            CALL TBAJLI(RESU,NBPARR,NOPARR,NUMORD,VALER,C16B,VALEK,0)
+            CALL TBAJLI(RESU,NBPARR,NOPARR,NUMORD,VALR,C16B,VK8,0)
           END IF
 
 C ---   TRAITEMENT DU MOT CLE "GROUP_MA" ,LA QUANTITE EST CALCULEE
@@ -557,18 +557,18 @@ C       -----------------------
 
 C ---     BOUCLE SUR LES GROUPES DE MAILLES :
 C         ---------------------------------
-            VALE2(2) = 'GROUP_MA'
+            VK24(2) = 'GROUP_MA'
             DO 30 IG = 1,NBGRMA
-              NOMMA2 = ZK24(JGR+IG-1)
-              CALL JEEXIN(JEXNOM(MLGGMA,NOMMA2),IRET)
+              NOMGRM = ZK24(JGR+IG-1)
+              CALL JEEXIN(JEXNOM(MLGGMA,NOMGRM),IRET)
               IF (IRET.EQ.0) THEN
-                CALL U2MESK('F','UTILITAI3_46',1,NOMMA2)
+                CALL U2MESK('F','UTILITAI3_46',1,NOMGRM)
               END IF
-              CALL JELIRA(JEXNOM(MLGGMA,NOMMA2),'LONUTI',NBMA,K8B)
+              CALL JELIRA(JEXNOM(MLGGMA,NOMGRM),'LONUTI',NBMA,K8B)
               IF (NBMA.EQ.0) THEN
-                CALL U2MESK('F','UTILITAI3_47',1,NOMMA2)
+                CALL U2MESK('F','UTILITAI3_47',1,NOMGRM)
               END IF
-              CALL JEVEUO(JEXNOM(MLGGMA,NOMMA2),'L',JAD)
+              CALL JEVEUO(JEXNOM(MLGGMA,NOMGRM),'L',JAD)
 
               IF (MOTFAC.EQ.'INDIC_ENER' .OR.
      &            MOTFAC.EQ.'INDIC_SEUIL') THEN
@@ -590,11 +590,11 @@ C          -------------------------------------------
                 END IF
 
                 IF (VOLUME.LE.R8PREM()) THEN
-                  CALL U2MESK('F','UTILITAI3_81',1,NOMMA2)
+                  CALL U2MESK('F','UTILITAI3_81',1,NOMGRM)
                 END IF
 
-                VALER(2) = INDIC1/VOLUME
-                VALE2(1) = NOMMA2
+                VALR(2) = INDIC1/VOLUME
+                VK24(1) = NOMGRM
 
               ELSE IF (MOTFAC.EQ.'ENER_ELAS' .OR.
      &                 MOTFAC.EQ.'ENER_TOTALE' .OR.
@@ -625,18 +625,18 @@ C ---  L ENERGIE TOTAL
                   ENERGI = WORK(1)
                 END IF
 
-                VALER(2) = ENERGI
-                VALER(3) = WORK(2)
-                VALER(4) = WORK(3)
-                VALE2(1) = NOMMA2
+                VALR(2) = ENERGI
+                VALR(3) = WORK(2)
+                VALR(4) = WORK(3)
+                VK24(1) = NOMGRM
                 IF (MOTFAC.EQ.'ENER_ELAS') THEN
 C ---    AJOUT INUTILE POUR L INSTANT PUISQUE WORK(4) ET WORK(5)
 C        SONT NULS. EN PREVISION DU CALCUL DE L ENERGIE ELASTIQUE
 C        DE CISAILLEMENT ET DE COUPLAGE MEMBRANE FLEXION POUR LES
-C        PLAQUES EN MECA STATIQUE UNIQUEMENT, SI ON L AUTORISE 
+C        PLAQUES EN MECA STATIQUE UNIQUEMENT, SI ON L AUTORISE
 C        UN JOUR.
-                  VALER(5) = WORK(4)
-                  VALER(6) = WORK(5)
+                  VALR(5) = WORK(4)
+                  VALR(6) = WORK(5)
                 ENDIF
 
               END IF
@@ -647,7 +647,7 @@ C        ------------------------------------------------------
 
 C ---      ECRITURE DE L'INDICATEUR DANS LA TABLE :
 C          --------------------------------------
-              CALL TBAJLI(RESU,NBPARR,NOPARR,NUMORD,VALER,C16B,VALE2,0)
+              CALL TBAJLI(RESU,NBPARR,NOPARR,NUMORD,VALR,C16B,VK24,0)
    30       CONTINUE
 
             CALL JEDETR('&&PEINGL_GROUPM')
@@ -664,7 +664,7 @@ C       ----------------------
 
 C ---    BOUCLE SUR LES MAILLES :
 C        ----------------------
-            VALEK(2) = 'MAILLE'
+            VK8(2) = 'MAILLE'
             DO 40 IM = 1,NBMAIL
               NOMMAI = ZK8(JMA+IM-1)
               CALL JEEXIN(JEXNOM(MLGNMA,NOMMAI),IRET)
@@ -695,8 +695,8 @@ C          -------------------------------------------
                   CALL U2MESK('F','UTILITAI3_82',1,NOMMAI)
                 END IF
 
-                VALER(2) = INDIC1/VOLUME
-                VALEK(1) = NOMMAI
+                VALR(2) = INDIC1/VOLUME
+                VK8(1) = NOMMAI
 
               ELSE IF (MOTFAC.EQ.'ENER_ELAS' .OR.
      &                 MOTFAC.EQ.'ENER_TOTALE' .OR.
@@ -722,25 +722,25 @@ C              -------------
                   ENERGI = WORK(1)
                 END IF
 
-                VALER(2) = ENERGI
-                VALER(3) = WORK(2)
-                VALER(4) = WORK(3)
-                VALEK(1) = NOMMAI
+                VALR(2) = ENERGI
+                VALR(3) = WORK(2)
+                VALR(4) = WORK(3)
+                VK8(1) = NOMMAI
                 IF (MOTFAC.EQ.'ENER_ELAS') THEN
 C ---    AJOUT INUTILE POUR L INSTANT PUISQUE WORK(4) ET WORK(5)
 C        SONT NULS. EN PREVISION DU CALCUL DE L ENERGIE ELASTIQUE
 C        DE CISAILLEMENT ET DE COUPLAGE MEMBRANE FLEXION POUR LES
-C        PLAQUES EN MECA STATIQUE UNIQUEMENT, SI ON L AUTORISE 
+C        PLAQUES EN MECA STATIQUE UNIQUEMENT, SI ON L AUTORISE
 C        UN JOUR.
-                  VALER(5) = WORK(4)
-                  VALER(6) = WORK(5)
+                  VALR(5) = WORK(4)
+                  VALR(6) = WORK(5)
                 ENDIF
 
               END IF
 
 C ---      ECRITURE DE L'INDICATEUR DANS LA TABLE :
 C          --------------------------------------
-              CALL TBAJLI(RESU,NBPARR,NOPARR,NUMORD,VALER,C16B,VALEK,0)
+              CALL TBAJLI(RESU,NBPARR,NOPARR,NUMORD,VALR,C16B,VK8,0)
    40       CONTINUE
 
             CALL JEDETR('&&PEINGL_MAILLE')
@@ -764,6 +764,4 @@ C          --------------------------------------
 
    80 CONTINUE
       CALL JEDEMA()
-
-C.============================ FIN DE LA ROUTINE ======================
       END

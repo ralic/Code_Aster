@@ -1,21 +1,21 @@
-# MODIF  DATE 19/12/2012   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 09/04/2013   AUTEUR PELLET J.PELLET 
 # TITRE INTERFACE EN CONTACT FROTTANT AVEC X-FEM
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
-# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-# (AT YOUR OPTION) ANY LATER VERSION.                                                    
-#                                                                       
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-#                                                                       
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 # ssnv209r.para = tps_job 580 mem_job 800Mo mem_aster 50 liste_test S
 #
@@ -136,7 +136,7 @@ LN=FORMULE(NOM_PARA=('X','Y','Z'),VALE='Y');
 FISS=DEFI_FISS_XFEM(MODELE=MODELEIN,
                     TYPE_DISCONTINUITE='INTERFACE',
                     DEFI_FISS=_F(FONC_LN=LN),)
-                    
+
 MODELEK=MODI_MODELE_XFEM(MODELE_IN=MODELEIN,
                          FISSURE=FISS,
                          CONTACT='P2P1',
@@ -168,7 +168,7 @@ CHAMPMA1=AFFE_MATERIAU(MAILLAGE=MAILLAG2,
                        MODELE=MODELEK,
                        AFFE=(_F(GROUP_MA=('VOLU'),
                                 MATER=MATVAR,),),
-                       AFFE_VARC=_F(NOM_VARC='NEUT1',CHAMP_GD=CHABNO),
+                       AFFE_VARC=_F(NOM_VARC='NEUT1',CHAM_GD=CHABNO),
                        );
 
 #----------------------------------------------
@@ -182,7 +182,7 @@ CHAMPMA1=AFFE_MATERIAU(MAILLAGE=MAILLAG2,
 #                       FROTTEMENT     = 'COULOMB',
 #                       ITER_CONT_MAXI = 3,
 #                       ITER_FROT_MAXI = 20,
-#                       RESI_FROT      = 1.E-2,                    
+#                       RESI_FROT      = 1.E-2,
 #                       REAC_GEOM      = 'SANS',
 #                       ZONE=(
 #                             _F(
@@ -194,17 +194,17 @@ CHAMPMA1=AFFE_MATERIAU(MAILLAGE=MAILLAG2,
 #                                ALGO_CONT      = 'STANDARD',
 #                                COEF_CONT      = 120000.,
 #                                ALGO_FROT      = 'STANDARD',
-#                                COEF_FROT      = 100000.,                                  
+#                                COEF_FROT      = 100000.,
 #                                ALGO_LAGR      = 'VERSION2',
-#                              ), 
+#                              ),
 #                          ),
-#                    );                 
+#                    );
 CTXFEM = DEFI_CONTACT(MODELE         = MODELEK,
                       FORMULATION    = 'XFEM',
                       FROTTEMENT     = 'COULOMB',
                       ITER_CONT_MAXI = 5,
                       ITER_FROT_MAXI = 20,
-                      RESI_FROT      = 1.E-2,                    
+                      RESI_FROT      = 1.E-2,
                       REAC_GEOM      = 'SANS',
                       ZONE=(
                             _F(
@@ -215,11 +215,11 @@ CTXFEM = DEFI_CONTACT(MODELE         = MODELEK,
                                ALGO_CONT      = 'STANDARD',
                                COEF_CONT      = 120000.,
                                ALGO_FROT      = 'STANDARD',
-                               COEF_FROT      = 100000.,                                  
+                               COEF_FROT      = 100000.,
                                ALGO_LAGR      = 'VERSION2',
-                             ), 
+                             ),
                          ),
-                   ); 
+                   );
 CHXFEM=AFFE_CHAR_MECA(MODELE=MODELEK,
                       LIAISON_XFEM='OUI',
                       CONTACT_XFEM=CTXFEM,);
@@ -277,7 +277,7 @@ UTOT1=STAT_NON_LINE(MODELE=MODELEK,
                            _F(CHARGE=CHAF,
                               FONC_MULT=RAMPE),
                            ),
-                    CONTACT  = CTXFEM,       
+                    CONTACT  = CTXFEM,
                     COMP_ELAS=_F(RELATION='ELAS',
                                  GROUP_MA='VOLU',),
                     INCREMENT=_F(LIST_INST=L_INS1,

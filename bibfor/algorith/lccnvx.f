@@ -1,13 +1,13 @@
-        SUBROUTINE LCCNVX ( FAMI, KPG, KSP, LOI, IMAT, NMAT, MATERD,
+        SUBROUTINE LCCNVX ( FAMI, KPG, KSP, LOI, MOD,IMAT, NMAT, MATERD,
      &                      MATERF,SIGD,SIGF,DEPS,VIND, VINF,NBCOMM, 
      &                      CPMONO,PGL,NVI,VP,VECP,HSR,NFS,NSG,TOUTMS,
-     &                      TIMED,TIMEF,NR,YD,YF,TOLER,SEUIL)
+     &                      TIMED,TIMEF,NR,YD,YF,TOLER,SEUIL,IRET)
         IMPLICIT  NONE
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 18/12/2012   AUTEUR SELLENET N.SELLENET 
+C MODIF ALGORITH  DATE 09/04/2013   AUTEUR PELLET J.PELLET 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -41,7 +41,7 @@ C --- : TOLER  :  TOLERANCE DE CONVERGENCE LOCALE-----------------------
 C --- : MATERD :  COEFFICIENTS MATERIAU A T ----------------------------
 C --- : MATERF :  COEFFICIENTS MATERIAU A T+DT -------------------------
 C --- : NBCOMM :  INDICES DES COEF MATERIAU ----------------------------
-C --- : TYPMOD :  TYPE DE MODELISATION ---------------------------------
+C --- : MOD    :  TYPE DE MODELISATION ---------------------------------
 C --- : TIMED  :  INSTANT T --------------------------------------------
 C --- : TIMEF  :  INSTANT T+DT -----------------------------------------
 C --- : NR     :  DIMENSION VECTEUR INCONNUES --------------------------
@@ -50,9 +50,10 @@ C --- : VECP   :  VECTEURS PROPRES DU DEVIATEUR ELASTIQUE (HOEK-BROWN) -
 C --- : SEUIL  :  SEUIL  ELASTICITE  A T+DT ----------------------------
 C --- : YD     :  VECTEUR INCONNUES A T --------------------------------
 C --- : YF     :  VECTEUR INCONNUES A T+DT -----------------------------
+C --- : IRET   :  CODE RETOUR = 1 -> ECHEC D'INTEGRATION 
 C ----------------------------------------------------------------------
 C ======================================================================
-        INTEGER         NMAT , IMAT, NVI, KPG, KSP,NFS,NSG,NR
+        INTEGER         NMAT , IMAT, NVI, KPG, KSP,NFS,NSG,NR,IRET
         CHARACTER*(*)   FAMI
         REAL*8          MATERF(NMAT,2),MATERD(NMAT,2),SEUIL
         REAL*8          TIMED,TIMEF,TOLER,DEPS(6),VINF(*)
@@ -62,7 +63,7 @@ C ======================================================================
         REAL*8          PGL(3,3),VP(3),VECP(3,3),TOUTMS(NFS,NSG,6)
         REAL*8          YD(NR),YF(NR)
         CHARACTER*24    CPMONO(5*NMAT+1)
-        CHARACTER*8     TYPMOD
+        CHARACTER*8     MOD
 C ======================================================================
       IF ( LOI(1:8) .EQ. 'ROUSS_PR'  )THEN
          CALL RSLCVX ( FAMI, KPG, KSP, IMAT, NMAT, MATERF,
@@ -92,11 +93,15 @@ C ======================================================================
 C ======================================================================
       ELSEIF ( LOI(1:15)  .EQ. 'BETON_BURGER_FP') THEN
 C --- LE FLUAGE EST CONSIDERE POUR TOUT TYPE DE SOLLICITATION MECANIQUE
-         CALL BURCVX(TYPMOD,NMAT,MATERD,MATERF,TIMED,TIMEF,
+         CALL BURCVX(MOD,NMAT,MATERD,MATERF,TIMED,TIMEF,
      &               NVI,VIND,NR,SIGD,DEPS,YD,YF,TOLER,SEUIL)
 C ======================================================================
       ELSEIF ( LOI(1:4)  .EQ. 'LETK') THEN
          CALL LKCNVX (SIGD,SIGF,NVI,VIND,NMAT,MATERF,SEUIL,VINF)
+C ======================================================================
+      ELSEIF ( LOI(1:6)  .EQ. 'HUJEUX') THEN
+         CALL HUJCVX (MOD, MATERF, VINF, DEPS, 
+     &                SIGD, SIGF, SEUIL,IRET)
 C ======================================================================
       ENDIF
 C ======================================================================
