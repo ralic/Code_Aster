@@ -1,4 +1,4 @@
-# MODIF  DATE 03/04/2013   AUTEUR NICOLAS G.NICOLAS 
+# MODIF  DATE 09/04/2013   AUTEUR JAUBERT A.JAUBERT 
 # TITRE PROPAGATION PLANE D UNE FISSURE 3D SE DIVISANT ET FUSIONNANT AVEC X-FEM
 # sslv320c.para = tps_job 350 mem_job 1536Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -34,20 +34,15 @@ SIF10=CREA_TABLE(LISTE=(_F(LISTE_R=(1.,1.,1.,1.,1.,1.,1.,1.,1.,1.),PARA='K1'),
                         _F(LISTE_I=(1,1,1,1,1,1,1,1,1,1),PARA='NUME_ORDRE'),
                         _F(LISTE_I=(1,2,3,4,5,6,7,8,9,10),PARA='NUM_PT'),))
 
-#  MAILLAGE 20X20
-SIF20=CREA_TABLE(LISTE=(_F(LISTE_R=(1.,1.,1.,1.,1.,1.,1.,1.,1.,1.,
-                                    1.,1.,1.,1.,1.,1.,1.,1.,1.,1.),PARA='K1'),
-                        _F(LISTE_R=(0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,
-                                    0.,0.,0.,0.,0.,0.,0.,0.,0.,0.),PARA='K2'),
-                        _F(LISTE_R=(0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,
-                                    0.,0.,0.,0.,0.,0.,0.,0.,0.,0.),PARA='K3'),
-                        _F(LISTE_R=(1.,1.,1.,1.,1.,1.,1.,1.,1.,1.,
-                                    1.,1.,1.,1.,1.,1.,1.,1.,1.,1.),PARA='G'),
-                        _F(LISTE_R=(1.,1.,1.,1.,1.,1.,1.,1.,1.,1.,
-                                    1.,1.,1.,1.,1.,1.,1.,1.,1.,1.),PARA='G_IRWIN'),
-                        _F(LISTE_I=(1,1,1,1,1,1,1,1,1,1,2,2,2,2,2,2,2,2,2,2),PARA='NUME_FOND'),
-                        _F(LISTE_I=(1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1),PARA='NUME_ORDRE'),
-                        _F(LISTE_I=(1,2,3,4,5,6,7,8,9,10,1,2,3,4,5,6,7,8,9,10),PARA='NUM_PT'),))
+#  MAILLAGE 40X40
+SIF40=CREA_TABLE(LISTE=(_F(LISTE_R=(1.,1.,1.,1.,1.,1.,1.,1.,1.,1.,1.,1.,1.,1.,1.,1.,1.,1.,1.,1.,1.,1.,1.,1.,1.,1.,1.,1.,1.,1.,1.,1.,1.,1.,1.,1.,1.,1.,1.,1.),PARA='K1'),
+                        _F(LISTE_R=(0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.),PARA='K2'),
+                        _F(LISTE_R=(0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.),PARA='K3'),
+                        _F(LISTE_R=(1.,1.,1.,1.,1.,1.,1.,1.,1.,1.,1.,1.,1.,1.,1.,1.,1.,1.,1.,1.,1.,1.,1.,1.,1.,1.,1.,1.,1.,1.,1.,1.,1.,1.,1.,1.,1.,1.,1.,1.),PARA='G'),
+                        _F(LISTE_R=(1.,1.,1.,1.,1.,1.,1.,1.,1.,1.,1.,1.,1.,1.,1.,1.,1.,1.,1.,1.,1.,1.,1.,1.,1.,1.,1.,1.,1.,1.,1.,1.,1.,1.,1.,1.,1.,1.,1.,1.),PARA='G_IRWIN'),
+                        _F(LISTE_I=(1,1,1,1,1,1,1,1,1,1,2,2,2,2,2,2,2,2,2,2,3,3,3,3,3,3,3,3,3,3,4,4,4,4,4,4,4,4,4,4),PARA='NUME_FOND'),
+                        _F(LISTE_I=(1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1),PARA='NUME_ORDRE'),
+                        _F(LISTE_I=(1,2,3,4,5,6,7,8,9,10,1,2,3,4,5,6,7,8,9,10,1,2,3,4,5,6,7,8,9,10,1,2,3,4,5,6,7,8,9,10),PARA='NUM_PT'),))
 
 #----------------------------------------------
 #                 MAILLAGE
@@ -62,7 +57,8 @@ MeshSEB=LIRE_MAILLAGE(INFO=1,FORMAT='MED', UNITE=20,);
 #----------------------------------------------
 
 ModSEB=AFFE_MODELE(MAILLAGE=MeshSEB,
-                   AFFE=(_F(TOUT='OUI',
+                   AFFE=(_F(
+                                GROUP_MA='Vol',
                                PHENOMENE='MECANIQUE',
                                MODELISATION='3D',),),);
 
@@ -76,7 +72,8 @@ MaiGril=LIRE_MAILLAGE(FORMAT='MED', UNITE=41,
 Grille=DEFI_GRILLE(MAILLAGE=MaiGril);
 
 ModGri=AFFE_MODELE(GRILLE=Grille,
-                   AFFE=_F(TOUT='OUI',
+                   AFFE=_F(
+                           GROUP_MA='Vol',
                            PHENOMENE='MECANIQUE',
                            MODELISATION='3D',),
                    );
@@ -98,9 +95,9 @@ a0 = 4.0
 FISS = [None]*nbcalc
 
 FISS[0]=DEFI_FISS_XFEM(MODELE=ModSEB,
-                        MODELE_GRILLE=ModGri,
-                        GROUP_MA_ENRI='All',
-                        DEFI_FISS=_F(
+                       MODELE_GRILLE=ModGri,
+                       GROUP_MA_ENRI='Vol',
+                       DEFI_FISS=_F(
                                   FORM_FISS='DEMI_PLAN',
                                   PFON=(30.,4.,5.),
                                   NORMALE=(0.,0.,1.),
@@ -213,7 +210,8 @@ for i in range(nbcalc) :
                        );   
 
          ModH[i] = AFFE_MODELE(MAILLAGE=MeshH[i],
-                               AFFE=(_F(TOUT='OUI',
+                               AFFE=(_F(
+                               GROUP_MA='Vol',
                                PHENOMENE='MECANIQUE',
                                MODELISATION='3D',),),);
 
@@ -221,7 +219,7 @@ for i in range(nbcalc) :
                                    FISS_GRILLE=FISS[i],
                                    DEFI_FISS=_F(CHAM_NO_LSN=LSNH[i],
                                                 CHAM_NO_LST=LSTH[i],),
-                                   GROUP_MA_ENRI='All',);
+                                   GROUP_MA_ENRI='Vol',);
 
    DETRUIRE(CONCEPT=_F(NOM=CHERR[0],))          
 
@@ -245,8 +243,8 @@ for i in range(nbcalc) :
          PROPA_FISS(MODELE=MODX[i],
                  FISSURE=_F(FISS_ACTUELLE=FISSH[i],
                             FISS_PROPAGEE=FISS[i+1],
-                            NB_POINT_FOND=(10,10),
-                            TABLE=SIF20,
+                            NB_POINT_FOND=(10,10,10,10),
+                            TABLE=SIF40,
                            ),
                  METHODE_PROPA='UPWIND',
                  DA_MAX=da,
@@ -310,8 +308,8 @@ NB_FOND1=RECU_TABLE(CO=FISS[1],NOM_TABLE='NB_FOND_FISS')
 TB_FOND1=RECU_TABLE(CO=FISS[1],NOM_TABLE='FOND_FISS')
 
 TEST_TABLE(REFERENCE='ANALYTIQUE',
-           VALE_CALC_I=2,
-           VALE_REFE_I=2,
+           VALE_CALC_I=4,
+           VALE_REFE_I=4,
            NOM_PARA='NOMBRE',
            TYPE_TEST='MAX',
            TABLE=NB_FOND1,)

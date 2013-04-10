@@ -2,7 +2,7 @@
      &                JTAIL)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 07/01/2013   AUTEUR LADIER A.LADIER 
+C MODIF ALGORITH  DATE 09/04/2013   AUTEUR JAUBERT A.JAUBERT 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -47,7 +47,7 @@ C     JBAS  :  ADRESSE DES DIRECTIONS DE PROPAGATION ORDONNÉES
 C     JTAIL :  ADRESSE DES TAILLES MAXIMALES DE MAILLES ORDONNÉES
 
 C
-      INTEGER       INDIPT,IPT,K 
+      INTEGER       INDIPT,IPT,K  
       REAL*8        M(3),P(3),PADIST
 C
 C ----------------------------------------------------------------------
@@ -60,13 +60,13 @@ C
 
         DO 11 K=1,3
 
-          ZR(JFON-1+4*(IPT-1)+K)   = ZR(JFONO-1+4*(INDIPT-1)+K)
+          ZR(JFON-1+4*(IPT-1)+K)   = ZR(JFONO-1+11*(INDIPT-1)+K)
           ZR(JBAS-1+6*(IPT-1)+K)   = ZR(JBASO-1+6*(INDIPT-1)+K)
           ZR(JBAS-1+6*(IPT-1)+K+3) = ZR(JBASO-1+6*(INDIPT-1)+3+K)
 
  11     CONTINUE
 
-        ZR(JFON-1+4*(IPT-1)+4)     = ZR(JFONO-1+4*(INDIPT-1)+4)
+        ZR(JFON-1+4*(IPT-1)+4)   = ZR(JFONO-1+11*(INDIPT-1)+4)
         ZR(JTAIL-1+IPT)            = ZR(JTAILO-1+INDIPT)
 
  10   CONTINUE

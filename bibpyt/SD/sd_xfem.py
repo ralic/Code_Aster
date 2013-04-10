@@ -1,4 +1,4 @@
-#@ MODIF sd_xfem SD  DATE 07/01/2013   AUTEUR LADIER A.LADIER 
+#@ MODIF sd_xfem SD  DATE 09/04/2013   AUTEUR JAUBERT A.JAUBERT 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -59,6 +59,7 @@ class sd_fiss_xfem(AsBase):
     GRILLE_LTNO    = Facultatif(sd_cham_no(SDNom(nomj='.GRI.LTNO')))
     GRILLE_GRLNNO  = Facultatif(sd_cham_no(SDNom(nomj='.GRI.GRLNNO')))
     GRILLE_GRLTNO  = Facultatif(sd_cham_no(SDNom(nomj='.GRI.GRLTNO')))
+    FONDFISG       = Facultatif(AsVR())
 
 # I.2) objets relatifs a l'enrichissement
 

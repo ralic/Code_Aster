@@ -1,4 +1,4 @@
-#@ MODIF xfem Messages  DATE 26/03/2013   AUTEUR CUVILLIE M.CUVILLIEZ 
+#@ MODIF xfem Messages  DATE 09/04/2013   AUTEUR JAUBERT A.JAUBERT 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -488,6 +488,14 @@ cata_msg={
   -> Conseil:
      Assurez vous de renseigner pour le mot-clé FISSURE une liste de fissures 
      présentes dans le modèle ou revoyez la définition de votre modèle.
+"""),
+
+74: _(u"""
+     Nombre de points du fond de fissure sur la grille : %(i1)d
+"""),
+
+75: _(u"""
+     Coordonnées des points du fond de fissure sur la grille
 """),
 
 }

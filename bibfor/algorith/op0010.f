@@ -1,7 +1,7 @@
       SUBROUTINE OP0010()
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 22/01/2013   AUTEUR LADIER A.LADIER 
+C MODIF ALGORITH  DATE 09/04/2013   AUTEUR JAUBERT A.JAUBERT 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -50,7 +50,6 @@ C
       REAL*8         MESERR(3),R8B
       CHARACTER*8    TEST,MSGOUT(2)
       CHARACTER*1    K1BID
-
 C     MESSAGES
 
 C     CRACK ADVANCEMENT
@@ -84,8 +83,12 @@ C     DOMAINE LOCALISATION
       CHARACTER*19   GRLTC,GRLNC
       LOGICAL        LDPRE
       REAL*8         RADIMP,RADLIM
-      INTEGER      IARG
+      INTEGER        IARG
 
+C     FRONT SUR LA GRILLE 
+      LOGICAL       GOINOP
+      CHARACTER*19  CNSEG,CNSENG,CNSLJG
+      CHARACTER*24  LISMAG,LISNOG
 C
 C ----------------------------------------------------------------------
 C
@@ -273,7 +276,6 @@ C     SET THE DEFAULT VALUES FOR THE DOMAIN RESTRICTION FLAG
 C-----------------------------------------------------------------------
 C     RETRIEVE THE AUXILIARY GRID FOR THE LEVELSETS, IF THIS IS THE CASE
 C-----------------------------------------------------------------------
-
       IF (GRILLE) THEN
 
          UNOMO = GRIAUX
@@ -428,6 +430,29 @@ C     FOR THE SIMPLEXE AND UPWIND SCHEMA.
      &            DGRLT,NOESOM,NORESI,VCN,GRLR,LCMIN)
 
 C-----------------------------------------------------------------------
+C     CALCUL DES POINTS DU FOND DE FISSURE SUR LA GRILLE
+C     DANS LE CADRE DE L'UTILISATION D'UN FOND VIRTUEL
+C-----------------------------------------------------------------------
+
+      GOINOP=.FALSE.
+      IF ((GRILLE).AND.(NDIM.EQ.3).AND.(METHOD.NE.'GEOMETRI')) THEN
+        LISMAG = '&&OP0010.LISTE_MA_ENRICH'
+        LISNOG = '&&OP0010.LISTE_NO_ENRICH'
+        GOINOP=.TRUE.
+        CALL XLENRI(DNOMA  ,FISPRE  ,GOINOP,LISMAG,LISNOG)
+
+        CNSLJG = '&&OP0010.CNSLJG'
+        CNSEG='&&OP0010.CNSEG'
+        CNSENG='&&OP0010.CNSENG'
+        CALL XENRCH(DNOMO,DNOMA,DCNSLT,DCNSLN,CNSLJG,CNSEG,CNSENG,
+     &              NDIM,FISPRE,GOINOP,LISMAG,LISNOG)
+
+         CALL JEDETR(CNSLJG)
+         CALL JEDETR(CNSEG)
+         CALL JEDETR(CNSENG)
+      ENDIF
+
+C-----------------------------------------------------------------------
 C     CALCUL DES CHAM_NO_S DES VITESSES DE PROPAGATION
 C-----------------------------------------------------------------------
 
@@ -456,6 +481,8 @@ C-----------------------------------------------------------------------
       CALL XPRVIT(DNOMA,FISPRE,NDIM,VVIT,VBETA,LCMIN,CNSVT,CNSVN,VPOINT,
      &            CNSBL,CNSDIS,DISFR,CNSBET,LISTP,DAMAX,
      &            LOCDOM,RADIMP,RADTOR,DELTA,UCNSLT,UCNSLN)
+
+
 
 C-----------------------------------------------------------------------
 C     DOMAINS USED FOR THE RESTRICTION AND FOR THE PROJECTION
@@ -861,13 +888,12 @@ C-----------------------------------------------------------------------
       CNSLJ = '&&OP0010.CNSLJ'
       CNSEN='&&OP0010.CNSEN'
       CNSENR='&&OP0010.CNSENR'
-
+      GOINOP=.FALSE.
       CALL XENRCH(NOMO,NOMA,CNSLT,CNSLN,CNSLJ,CNSEN,CNSENR,
-     &                NDIM,FISS,LISMAE,LISNOE)
+     &            NDIM,FISS,GOINOP,LISMAE,LISNOE)
 
       CALL CNSCNO(CNSENR,' ','NON','G',FISS//'.STNOR','F',IBID)
       CALL CNSCNO(CNSEN,' ','NON','G',FISS//'.STNO','F',IBID)
-
 
 C-----------------------------------------------------------------------
 C     CALCUL DE LA BASE LOCALE AU FOND DE FISSURE

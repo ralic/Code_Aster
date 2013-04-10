@@ -1,5 +1,6 @@
       SUBROUTINE XPTFON(NOMA,NDIM,NMAFON,CNSLT,CNSLN,CNXINV,JMAFON,
-     &                  NXPTFF,JFON,NFON,JBAS,JTAIL,FISS,LISTPT,ORIENT)
+     &                  NXPTFF,JFON,NFON,JBAS,JTAIL,FISS,GOINOP,
+     &                  LISTPT,ORIENT)
       IMPLICIT NONE
 
       INCLUDE 'jeveux.h'
@@ -8,10 +9,10 @@
       INTEGER       NMAFON,JMAFON,JFON,NFON,JBAS,JTAIL,NXPTFF
       CHARACTER*8   NOMA,FISS
       CHARACTER*19  CNSLT,CNSLN,CNXINV,LISTPT
-      LOGICAL       ORIENT
+      LOGICAL       ORIENT,GOINOP
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 07/01/2013   AUTEUR LADIER A.LADIER 
+C MODIF ALGORITH  DATE 09/04/2013   AUTEUR JAUBERT A.JAUBERT 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -40,6 +41,8 @@ C     NXPTFF       :    NOMBRE MAXIMUM DE POINTS DU FOND DE FISSURE
 C     CNSLT,CNSLN  :    LEVEL-SETS
 C     CNXINV       :    CONNECTIVITE INVERSE
 C     FISS         :    SD FISS_XFEM (POUR RECUP DES GRADIENTS)
+C     GOINOP       :    .TRUE. SI OPOO10 AVEC UPWIND-SIMPLEXE/GRILLE/3D
+C                       .FALSE. SINON
 C
 C  SORTIES :
 C     JFON         :   ADRESSE DES POINTS DU FOND DE FISSURE
@@ -52,24 +55,22 @@ C
 C     ------------------------------------------------------------------
 C
       INTEGER         IPT,IMA,I,J,IBID,NDIM,INO,K,IFQ,IRET,IFM,NIV
-      INTEGER         NMAABS,NBF,NBNOMA,NUNO,NUNOA,NUNOB,NUNOC,CODRET
+      INTEGER         NMAABS,NBF,NBNOMA,NUNO,NUNOA,NUNOB,NUNOC,NUNOD
       INTEGER         FA(6,4),IBID3(12,3),VECIND(5)
       INTEGER         JCONX1,JCONX2,JCOOR,JLTSV,JLNSV,JMA
       INTEGER         JLSN,JLST,JGLSN,JGLST,IGEOM,JGT,JGN,ITYPMA
       INTEGER         INDIPT,JBORD,JBORL,JDIROL,JNVDIR,JLISTP
-      INTEGER         NBFACB,IPTBOR(2),NBPTMA,NDIME
-      REAL*8          A(3),B(3),C(3),M(3),P(3),GLN(3),GLT(3)
-      REAL*8          COORG(3),VECTN(12)
-      REAL*8          PREC,PADIST,LONCAR,NORMI
-      CHARACTER*8     TYPMA,K8B,NOMMAI
+      INTEGER         NBFACB,IPTBOR(2),NBPTMA,NDIME,INDPTF(3),CODRET
+      INTEGER         NUNOPA,NUNOPB,NUNOPC,NUNOPD
+      INTEGER         SNUNO,PNUNO,INUNO,SNUNOP,PNUNOP,INUNOP
+      REAL*8          M(3),P(3),GLN(3),GLT(3),COORG(3),VECTN(12)
+      REAL*8          PADIST,LONCAR,NORMI
+      CHARACTER*8     TYPMA,K8B,NOMMAI,ALIAS
       CHARACTER*19    GRLT,CHGRT,GRLN,CHGRN
-      LOGICAL         FABORD
+      LOGICAL         FABORD,INDIC
 C ----------------------------------------------------------------------
       CALL JEMARQ()
       CALL INFDBG('XFEM',IFM,NIV)
-
-C     PRECISION :
-      PREC = 1.D-4
 
       CALL JEVEUO(NOMA//'.COORDO    .VALE','L',JCOOR)
       CALL JEVEUO(NOMA//'.CONNEX','L',JCONX1)
@@ -80,13 +81,21 @@ C     PRECISION :
       CALL JEVEUO(CNSLN//'.CNSV','L',JLNSV)
 
 C     GRADIENT LST
-      GRLT = FISS//'.GRLTNO'
+      IF (GOINOP) THEN
+        GRLT = FISS//'.GRI.GRLTNO'
+      ELSE
+        GRLT = FISS//'.GRLTNO'
+      ENDIF
       CHGRT = '&&XPTFON.GRLN'
       CALL CNOCNS(GRLT,'V',CHGRT)
       CALL JEVEUO(CHGRT//'.CNSV','L',JGT)
 
 C     GRADIENT LSN
-      GRLN = FISS//'.GRLNNO'
+      IF (GOINOP) THEN
+        GRLN = FISS//'.GRI.GRLNNO'
+      ELSE
+        GRLN = FISS//'.GRLNNO'
+      ENDIF
       CHGRN = '&&XPTFON.GRLT'
       CALL CNOCNS(GRLN,'V',CHGRN)
       CALL JEVEUO(CHGRN//'.CNSV','L',JGN)
@@ -159,47 +168,94 @@ C       INITIALISATIONS
         IPTBOR(1)= 0
         IPTBOR(2)= 0
         NBPTMA   = 0
+        DO 130 I=1,3
+          INDPTF(I)=0
+ 130    CONTINUE
 
 C       BOUCLE SUR LES FACES
         DO 200 IFQ=1,NBF
+C         TYPE DE FACE
+          IF (FA(IFQ,4).EQ.0) THEN
+            ALIAS = 'TR3'
+          ELSE
+            ALIAS='QU4'
+          ENDIF
+
           INDIPT=0
 C         RECHERCHE DES INTERSECTION ENTRE LE FOND DE FISSURE ET LA FACE
-          CALL INTFAC(IFQ,FA,NBNOMA,ZR(JLST),ZR(JLSN),NDIM,'OUI',
-     &                JGLSN,JGLST,IGEOM,M,GLN,GLT,CODRET)
+          CALL INTFAC(NOMA,NMAABS,IFQ,FA,NBNOMA,ZR(JLST),ZR(JLSN),
+     &                NDIM,'OUI',JGLSN,JGLST,IGEOM,M,INDPTF,GLN,
+     &                GLT,CODRET)
 
           IF (CODRET .EQ. 0) GOTO 200
-
-C         LONGUEUR CARACTERISTIQUE
-          DO 210 I=1,NDIM
-            A(I) =  ZR(IGEOM-1+NDIM*(FA(IFQ,1)-1)+I)
-            B(I) =  ZR(IGEOM-1+NDIM*(FA(IFQ,2)-1)+I)
-            C(I) =  ZR(IGEOM-1+NDIM*(FA(IFQ,3)-1)+I)
- 210      CONTINUE
-          LONCAR = (PADIST(NDIM,A,B)+PADIST(NDIM,A,C))/2.D0
-
+C	  
 C         VERIFICATION SI CE POINT A DEJA ETE TROUVE
+          NUNOA = ZI(JCONX1-1+ZI(JCONX2+NMAABS-1)+FA(IFQ,1)-1)
+          NUNOB = ZI(JCONX1-1+ZI(JCONX2+NMAABS-1)+FA(IFQ,2)-1)
+          NUNOC = ZI(JCONX1-1+ZI(JCONX2+NMAABS-1)+FA(IFQ,3)-1)
+          IF (ALIAS.EQ.'QU4') THEN
+            NUNOD = ZI(JCONX1-1+ZI(JCONX2+NMAABS-1)+FA(IFQ,4)-1)
+          ENDIF
+
           DO 220 J=1,IPT
-            P(1) = ZR(JFON-1+4*(J-1)+1)
-            P(2) = ZR(JFON-1+4*(J-1)+2)
-            P(3) = ZR(JFON-1+4*(J-1)+3)
+            INDIC=.FALSE.
 
-            IF (PADIST(NDIM,P,M).LT.(LONCAR*PREC)) THEN
-C             POINT DEJA TROUVE
-C             SI CE POINT (J) AVAIT ETE TROUVE SUR UNE FACE INTERNE,
-C             IL FAUT APPELER XFABOR POUR VOIR SI LA FACE ACTUELLE
-C             EST UNE FACE DE BORD OU PAS ET METTRE A JOUR LE
-C             VECTEUR DE FACES DE BORD SI C'EST LE CAS
-C             (CF. FICHE 14067)
+C           VERIFICATION POUR UN POINT INTERIEUR (cf Doc R7.02.12)	    
+            IF ((INDPTF(1).EQ.3).AND.
+     &         (INT(ZR(JFON-1+11*(J-1)+9)).EQ.3)) THEN
+              NUNOPA = INT(ZR(JFON-1+11*(J-1)+5))
+              NUNOPB = INT(ZR(JFON-1+11*(J-1)+6))
+              NUNOPC = INT(ZR(JFON-1+11*(J-1)+7))
+              SNUNO=NUNOA+NUNOB+NUNOC
+              PNUNO=NUNOA*NUNOB*NUNOC
+              INUNO=NUNOA*NUNOB+NUNOA*NUNOC+NUNOB*NUNOC
+              SNUNOP=NUNOPA+NUNOPB+NUNOPC
+              PNUNOP=NUNOPA*NUNOPB*NUNOPC
+              INUNOP=NUNOPA*NUNOPB+NUNOPA*NUNOPC+NUNOPB*NUNOPC
+              IF (ALIAS.EQ.'QU4') THEN
+                NUNOPD = INT(ZR(JFON-1+11*(J-1)+8))
+                SNUNO=NUNOA+NUNOB+NUNOC+NUNOD
+                PNUNO=NUNOA*NUNOB*NUNOC*NUNOD
+                INUNO=NUNOA*NUNOB+NUNOA*NUNOC+NUNOB*NUNOC+
+     &          NUNOA*NUNOD+NUNOB*NUNOD+NUNOC*NUNOD
+                SNUNOP=NUNOPA+NUNOPB+NUNOPC+NUNOPD
+                PNUNOP=NUNOPA*NUNOPB*NUNOPC*NUNOPD
+                INUNOP=NUNOPA*NUNOPB+NUNOPA*NUNOPC+NUNOPB*NUNOPC+
+     &          NUNOPA*NUNOPD+NUNOPB*NUNOPD+NUNOPC*NUNOPD 
+              ENDIF
+              IF ((SNUNO.EQ.SNUNOP).AND.
+     &           (PNUNO.EQ.PNUNOP).AND.(INUNO.EQ.INUNOP)) THEN
+                INDIC=.TRUE.
+              ENDIF
+C           VERIFICATION POUR UN POINT ARETE (cf Doc R7.02.12)
+            ELSE IF ((INDPTF(1).EQ.2).AND.
+     &         (INT(ZR(JFON-1+11*(J-1)+9)).EQ.2))   THEN
+              SNUNO=INDPTF(2)+INDPTF(3)
+              PNUNO=(INDPTF(2))*(INDPTF(3)) 
+              NUNOPA = INT(ZR(JFON-1+11*(J-1)+10))
+              NUNOPB = INT(ZR(JFON-1+11*(J-1)+11))
+              SNUNOP=NUNOPA+NUNOPB
+              PNUNOP=NUNOPA*NUNOPB
+              IF ((SNUNO.EQ.SNUNOP).AND.(PNUNO.EQ.PNUNOP)) THEN
+                INDIC=.TRUE.
+              ENDIF
+C           VERIFICATION POUR UN POINT SOMMET (cf Doc R7.02.12)
+            ELSE IF ((INDPTF(1).EQ.1).AND.
+     &              (INT(ZR(JFON-1+11*(J-1)+9)).EQ.1))  THEN
+             NUNOPA = INT(ZR(JFON-1+11*(J-1)+10))
+             IF (INDPTF(2).EQ.NUNOPA) THEN
+                INDIC=.TRUE.
+             ENDIF
+            ENDIF
 
-C             CALCUL DE LA TAILLE MAX DE LA MAILLE IMA ET MISE A
-C             JOUR DU VECTEUR DES TAILLES DE MAILLES
-              CALL XTAILM(NDIM,GLT,NMAABS,TYPMA,JCOOR,JCONX1,JCONX2,
+            IF (INDIC)    THEN
+C               CALCUL DE LA TAILLE MAX DE LA MAILLE IMA ET MISE A
+C               JOUR DU VECTEUR DES TAILLES DE MAILLES
+                CALL XTAILM(NDIM,GLT,NMAABS,TYPMA,JCOOR,JCONX1,JCONX2,
      &                    J,JTAIL)
-
-              IF (NDIM.NE.3)     GOTO 200
-
-              INDIPT = J
-              GOTO 300
+               IF (NDIM.NE.3)     GOTO 200
+               INDIPT = J
+               GOTO 300
             ENDIF
  220      CONTINUE
 
@@ -208,13 +264,25 @@ C         CE POINT N'A PAS DEJA ETE TROUVE, ON LE GARDE
 C         AUGMENTER NXPTFF
           CALL ASSERT(IPT.LE.NXPTFF)
 
-C         STOCKAGE DES COORDONNEES DU POINT M
-C         ET DE LA BASE LOCALE (GRADIENT DE LSN ET LST)
+C         STOCKAGE DES COORDONNEES DU POINT M,
+C         DE LA BASE LOCALE (GRADIENT DE LSN ET LST) ET
+C         DES NUMEROS DES SOMMETS DE LA FACE CONTENANT M
           DO 230 K=1,NDIM
-            ZR(JFON-1+4*(IPT-1)+K)          =   M(K)
+            ZR(JFON-1+11*(IPT-1)+K)         =   M(K)
             ZR(JBAS-1+2*NDIM*(IPT-1)+K)     = GLN(K)
             ZR(JBAS-1+2*NDIM*(IPT-1)+K+NDIM)= GLT(K)
  230      CONTINUE
+          DO 231 K=1,3
+            ZR(JFON-1+11*(IPT-1)+4+K) =
+     &         ZI(JCONX1-1+ZI(JCONX2+NMAABS-1)+FA(IFQ,K)-1)
+            ZR(JFON-1+11*(IPT-1)+8+K) = INDPTF(K) 
+ 231      CONTINUE
+          IF (ALIAS.EQ.'QU4') THEN
+            ZR(JFON-1+11*(IPT-1)+8) = 
+     &       ZI(JCONX1-1+ZI(JCONX2+NMAABS-1)+FA(IFQ,4)-1) 
+          ELSE
+            ZR(JFON-1+11*(IPT-1)+8) = 0
+          ENDIF
 
           INDIPT = IPT
 
@@ -225,10 +293,6 @@ C         CALCUL DE LA TAILLE MAX DE LA MAILLE IMA
           IF (NDIM.NE.3) GOTO 200
 
  300      CONTINUE
-
-          NUNOA = ZI(JCONX1-1+ZI(JCONX2+NMAABS-1)+FA(IFQ,1)-1)
-          NUNOB = ZI(JCONX1-1+ZI(JCONX2+NMAABS-1)+FA(IFQ,2)-1)
-          NUNOC = ZI(JCONX1-1+ZI(JCONX2+NMAABS-1)+FA(IFQ,3)-1)
 
 C         ON VERIFIE SI LA FACE COURANTE EST UNE FACE DE BORD
 C         CELA N'A DE SENS QU'EN 3D
@@ -277,9 +341,9 @@ C             IMPRESSION DES POINTS DU FOND APPARTENANT A LA MAILLE
                 WRITE(IFM,797)
  797            FORMAT(7X,'X',13X,'Y',13X,'Z')
                 DO 250 J=1,NBPTMA
-                  P(1) = ZR(JFON-1+4*(VECIND(J)-1)+1)
-                  P(2) = ZR(JFON-1+4*(VECIND(J)-1)+2)
-                  P(3) = ZR(JFON-1+4*(VECIND(J)-1)+3)
+                  P(1) = ZR(JFON-1+11*(VECIND(J)-1)+1)
+                  P(2) = ZR(JFON-1+11*(VECIND(J)-1)+2)
+                  P(3) = ZR(JFON-1+11*(VECIND(J)-1)+3)
                   WRITE(IFM,798)(P(K),K=1,3)
  798              FORMAT(2X,3(E12.5,2X))
  250            CONTINUE
@@ -326,9 +390,9 @@ C     DANS LE CAS OU IL N'EST PAS POSSIBLE DE LES ORDONNER
         WRITE(IFM,897)
   897   FORMAT(7X,'X',13X,'Y',13X,'Z')
         DO 600 I=1,NFON
-          P(1) = ZR(JFON-1+4*(I-1)+1)
-          P(2) = ZR(JFON-1+4*(I-1)+2)
-          P(3) = ZR(JFON-1+4*(I-1)+3)
+          P(1) = ZR(JFON-1+11*(I-1)+1)
+          P(2) = ZR(JFON-1+11*(I-1)+2)
+          P(3) = ZR(JFON-1+11*(I-1)+3)
           WRITE(IFM,898)(P(K),K=1,3)
   898     FORMAT(2X,3(E12.5,2X))
   600   CONTINUE

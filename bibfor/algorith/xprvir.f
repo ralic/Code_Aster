@@ -12,9 +12,9 @@
       LOGICAL        LOCDOM
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGORITH  DATE 09/04/2013   AUTEUR JAUBERT A.JAUBERT 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
@@ -46,24 +46,24 @@ C       NVIT     : VECTEUR DES VITESSES DE PROPAGATION POUR CHAQUE POINT
 C                  DU FOND DE LA FISSURE (NOM DU CONCEPT)
 C       NBETA    : VECTEUR DES ANGLES DE PROPAGATION POUR CHAQUE POINT
 C                  DU FOND DE LA FISSURE (NOM DU CONCEPT)
-C       NUMFON   : NOMBRE DE POINT DU FOND DE FISSURE
+C       NUMFON   : NOMBRE DE FONDS DE FISSURE
 C       RADIMP   : RAYON DE LA ZONE DE REACTUALISATION DES LEVELS SETS
 C       RADTOR   : RAYON DE LA ZONE DE REPROJECTION DES LEVELS SETS
 C       DAMAX    : AVANCEMENT MAXIMUM DU FRONT DE FISSURE
 C       LOCDOM   : LOCALISATION DES LEVELS SETS ACTIVEE
-C       NBPTFF   : NOMBRE DE POINT DU FOND DE FISSURE
+C       NBPTFF   : NOMBRE DE POINTS DU FOND DE FISSURE
 C
 C    SORTIE
 C        NUMVIR  : VECTEUR CONTENANT LES POINTS DELIMITANT LES 
 C                  DIFFERENTS FRONTS DE FISSURE
-C        COVIR   : VECTEUR CONTENANT LES COORDONNEES DES POINTS DU FOND 
-C                   VIRTUEL
-C        BAVIR   : VECTEUR CONTENANT LES BASES LOCALES DES POINTS DU 
-C                  FOND  VIRTUEL
-C        VIRVIR  : VECTEUR CONTENANT LES VITESSES DES POINTS DU FOND 
-C                   VIRTUEL
+C        COVIR   : VECTEUR CONTENANT LES COORDONNEES DES POINTS
+C                  (REELS ET VIRTUELS) DU FOND
+C        BAVIR   : VECTEUR CONTENANT LES BASES LOCALES DES POINTS 
+C                  (REELS ET VIRTUELS) DU FOND
+C        VIRVIR  : VECTEUR CONTENANT LES VITESSES DES POINTS 
+C                  (REELS ET VIRTUELS) DU FOND
 C        ANGVIR  : VECTEUR CONTENANT LES ANGLES DE PROPAGATION DES 
-C                  POINTS DU FOND VIRTUEL
+C                  POINTS (REELS ET VIRTUELS) DU FOND
 C     ------------------------------------------------------------------
 
 
@@ -80,12 +80,9 @@ C     ------------------------------------------------------------------
                   
 C     MULTIPLE CRACK FRONTS
       INTEGER        JFMULT
-
 C-----------------------------------------------------------------------
 C     DEBUT
 C-----------------------------------------------------------------------
-     
-C     Recuperation des caracteristique du maillage et du fond de fissure
 
       CALL JEMARQ()
       CALL INFMAJ()
@@ -103,546 +100,475 @@ C     RETRIEVE THE DIFFERENT PIECES OF THE CRACK FRONT
       CALL JEVEUO(FISS//'.FONDMULT','L',JFMULT)
 
 C     RETRIEVE THE LOCAL REFERENCE SYSTEM FOR EACH NODE ON THE FRONT
-      CALL JEVEUO(FISS//'.BASEFOND','E',JBASEF)
+      CALL JEVEUO(FISS//'.BASEFOND','L',JBASEF)
 
 C     RETRIEVE THE CRACK'S SPEED AND PROPAGATION ANGLE FOR EACH NODE
 C     ON THE FRONT
       CALL JEVEUO(NVIT,'L',JVIT)
       CALL JEVEUO(NBETA,'L',JBETA)
 
-C     CREATION DES VECTEURS OU SONT STOCKES LES CARACTERISTIQUES
-C     DU FRONT VIRTUEL
+C     CREATION DES VECTEURS DE MISE A JOUR DES CARACTERISTIQUES DU FRONT
+C     DE FISSURE APRES CREATION DU FRONT VIRTUEL
       CALL JEVEUO(COVIR,'E',CFV)
       CALL JEVEUO(BAVIR,'E',BFV)
       CALL JEVEUO(VITVIR,'E',VFV)
       CALL JEVEUO(ANGVIR,'E',AFV)
       CALL JEVEUO(NUMVIR,'E',NFV)
 
-C     ON CREE DES VARIABLES DE GARAGES
-          CALL WKVECT('&&XPRVIR.CO_FON_VIRPR','V V R8',
-     &                4*(NBPTFF+2*NUMFON),CFVPR)
-          CALL WKVECT('&&XPRVIR.BA_FON_VIRPR','V V R8',
-     &             6*(NBPTFF+2*NUMFON),BFVPR)
-          CALL WKVECT('&&XPRVIR.VIT_FON_VIRPR','V V R8',
+C     ON CREE DES VARIABLES DE GARAGE
+      CALL WKVECT('&&XPRVIR.CO_FON_VIRPR','V V R8',
+     &            4*(NBPTFF+2*NUMFON),CFVPR)
+      CALL WKVECT('&&XPRVIR.BA_FON_VIRPR','V V R8',
+     &            6*(NBPTFF+2*NUMFON),BFVPR)
+      CALL WKVECT('&&XPRVIR.VIT_FON_VIRPR','V V R8',
      &               (NBPTFF+2*NUMFON),VFVPR)
-          CALL WKVECT('&&XPRVIR.ANG_FON_VIRPR','V V R8',
-     &                   (NBPTFF+2*NUMFON),AFVPR)
+      CALL WKVECT('&&XPRVIR.ANG_FON_VIRPR','V V R8',
+     &             (NBPTFF+2*NUMFON),AFVPR)
 
-C        creation du vecteur ou l on stocke les distances entre les
-C        differents fond de fissure
-          CALL WKVECT('&&XPRVIR.NUM_FON_VIRPR','V V I',
-     &                   (2*NUMFON),NFVPR)
+C     ON CREE UN VECTEUR OU SONT STOCKES LES DISTANCES
+C     ENTRE LES DIFFERENTS FONDS DE FISSURE
+      CALL WKVECT('&&XPRVIR.NUM_FON_VIRPR','V V I',
+     &           (2*NUMFON),NFVPR)
 
-C      On initialise les fonds de fissure actuels et precedents
+C     ON INITIALISE LES FONDS DE FISSURE ACTUEL
+      DO 1 I=1,(4*NBPTFF)
+           ZR(CFV+I-1)=ZR(JFONF+I-1)
+           ZR(CFVPR+I-1)=ZR(JFONF+I-1) 
+1     CONTINUE
+      DO 2 I=1,6*(NBPTFF)
+           ZR(BFV+I-1)=ZR(JBASEF+I-1)
+           ZR(BFVPR+I-1)=ZR(JBASEF+I-1)      
+2     CONTINUE
+      DO 3 I=1,(NBPTFF)
+           ZR(VFV+I-1)=ZR(JVIT+I-1)
+           ZR(VFVPR+I-1)=ZR(JVIT+I-1)
+3     CONTINUE
+      DO 4 I=1,(NBPTFF)
+           ZR(AFV+I-1)=ZR(JBETA+I-1)
+           ZR(AFVPR+I-1)=ZR(JBETA+I-1)    
+4     CONTINUE
+      DO 5 I=1,(2*NUMFON)
+           ZI(NFV+I-1)=ZI(JFMULT+I-1)
+           ZI(NFVPR+I-1)=ZI(JFMULT+I-1)
+5     CONTINUE
+      IF (NIV.GE.1) THEN
+          WRITE(IFM,*) ' '
+          WRITE(IFM,*) 'COORDONNEES DES POINTS VIRTUELS'
+      ENDIF  
+C
+C --- PARTIE 1: CREATION DE POINTS VIRTUELS ENTRE LES DIFFERENTS
+C     FRONTS DE FISSURE
 
-        DO 1 I=1,(4*NBPTFF)
-             ZR(CFV+I-1)=ZR(JFONF+I-1)
-             ZR(CFVPR+I-1)=ZR(JFONF+I-1) 
-1       CONTINUE     
+      IF (NUMFON.GT.1) THEN
+        IF (NIV.GE.1) THEN
+          WRITE(IFM,*) ' '
+          WRITE(IFM,*) 'POINTS VIRTUELS INTERIEURS'
+          WRITE(IFM,*) '------------------------------------------'
+        ENDIF
 
-        DO 2 I=1,6*(NBPTFF)
-             ZR(BFV+I-1)=ZR(JBASEF+I-1)
-             ZR(BFVPR+I-1)=ZR(JBASEF+I-1)      
-2       CONTINUE
+        DO 10  K=1,(NUMFON-1)
+C         ON REPERE LE DERNIER POINT DU Kieme FOND
+          NPOIN=ZI(NFV-1+2*K)
 
-        DO 3 I=1,(NBPTFF)
-             ZR(VFV+I-1)=ZR(JVIT+I-1)
-             ZR(VFVPR+I-1)=ZR(JVIT+I-1)      
-3       CONTINUE
-      
-        DO 4 I=1,(NBPTFF)
-             ZR(AFV+I-1)=ZR(JBETA+I-1)
-             ZR(AFVPR+I-1)=ZR(JBETA+I-1)    
-4       CONTINUE
-     
-        DO 5 I=1,(2*NUMFON)
-             ZI(NFV+I-1)=ZI(JFMULT+I-1)
-             ZI(NFVPR+I-1)=ZI(JFMULT+I-1)
-5       CONTINUE  
+C         COORDONNEES DES 2 DERNIERS POINTS DU FOND
+C         ET DES 2 PREMIERS POINTS DU FOND SUIVANT
+          DO 20  I=1,3 
+            PI(I)=ZR(CFVPR-1+4*(NPOIN-2)+I)
+            PJ(I)=ZR(CFVPR-1+4*(NPOIN-1)+I)
+            PK(I)=ZR(CFVPR-1+4*(NPOIN)+I)
+            PL(I)=ZR(CFVPR-1+4*(NPOIN+1)+I)
+20        CONTINUE
 
-C      PARTIE 1: CREATION DE POINTS VIRTUELS ENTRE LES DIFFERENTS
-C      FRONTS DE FISSURE
+C         CALCUL DES VECTEURS IJ ET KL
+          DO 30  I=1,3 
+            PIJ(I)=PJ(I)-PI(I)
+            PKL(I)=PL(I)-PK(I)
+30        CONTINUE
 
-        IF (NUMFON.GT.1) THEN
+C         CALCUL DES NORMES DES VECTEURS IJ ET KL
+          NORMIJ=SQRT(PIJ(1)**2+PIJ(2)**2+PIJ(3)**2)
+          NORMKL=SQRT(PKL(1)**2+PKL(2)**2+PKL(3)**2)  
+C         ON NORME LES VECTEURS PIJ et PKL
+          DO 40  I=1,3 
+            PIJ(I)=PIJ(I)/NORMIJ 
+            PKL(I)=PKL(I)/NORMKL 
+40        CONTINUE
 
-            DO 10  K=1,(NUMFON-1)
-C             On repere le dernier point du kieme fond de fissure
-              NPOIN=ZI(NFV-1+2*K)
+          IF (LOCDOM) THEN
+C         LE RAYON D'ACTUALISATION DES LEVEL SETS A BIEN ETE DEFINI
+            IF (RADIMP.GT.0.D0) THEN
+              DO 50 I=1,3 
+                P1(I)=PJ(I)+RADIMP*PIJ(I)
+                P2(I)=PK(I)-RADIMP*PKL(I) 
+50            CONTINUE
+            ELSE
+              DO 60 I=1,3 
+                P1(I)=PJ(I)+RADTOR*PIJ(I) 
+                P2(I)=PK(I)-RADTOR*PKL(I)
+60            CONTINUE
+            ENDIF
+          ELSE
+C         SINON ON UTILISE L'AVANCEMENT MAXIMAL DE LA FISSURE
+            DO 70 I=1,3
+              P1(I)=PJ(I)+7*DAMAX*PIJ(I)
+              P2(I)=PK(I)-7*DAMAX*PKL(I)
+70          CONTINUE
+          ENDIF
 
-C On extrait les numeros des noueuds delimitants le fond de fissure
+C         DISTANCE ENTRE LES FRONTS DE FISSURES
+          NORMJK=SQRT((PK(1)-PJ(1))**2+(PK(2)-PJ(2))**2+
+     &            (PK(3)-PJ(3))**2)
 
-C             Coordonne des deux derniers points du fond de fissure  
-              PI(1)=ZR(CFVPR-1+4*(NPOIN-2)+1)
-              PI(2)=ZR(CFVPR-1+4*(NPOIN-2)+2)
-              PI(3)=ZR(CFVPR-1+4*(NPOIN-2)+3)
+C         ON VERIFIE QUE LES 2 NOUVEAUX POINTS SONT BIEN ELOIGNES
+          NORMJ1=SQRT((P1(1)-PJ(1))**2+(P1(2)-PJ(2))**2+
+     &               (P1(3)-PJ(3))**2)
+          NORMK2=SQRT((P2(1)-PK(1))**2+(P2(2)-PK(2))**2+
+     &               (P2(3)-PK(3))**2)
 
-              PJ(1)=ZR(CFVPR-1+4*(NPOIN-1)+1)
-              PJ(2)=ZR(CFVPR-1+4*(NPOIN-1)+2)
-              PJ(3)=ZR(CFVPR-1+4*(NPOIN-1)+3)
+C         SI LA DISTANCE EST TROP GRANDE ON RAPPROCHE LE POINT VIRTUEL
+          IF (NORMJ1.GT.(NORMJK/3.D0)) THEN
+            NORMJ1=NORMJK/3.D0
+            DO 80 I=1,3
+              P1(I)=PJ(I)+(NORMJ1*PIJ(I))
+80          CONTINUE
+          ENDIF
+          IF (NORMK2.GT.(NORMJK/3.D0)) THEN
+            NORMK2=NORMJK/3.D0
+            DO 81 I=1,3
+              P2(I)=PK(I)-(NORMK2*PKL(I))
+81          CONTINUE
+          ENDIF 
 
-C             coordonne des deux premiers points du fond de
-C             fissure suivant
-              PK(1)=ZR(CFVPR-1+4*(NPOIN)+1)
-              PK(2)=ZR(CFVPR-1+4*(NPOIN)+2)
-              PK(3)=ZR(CFVPR-1+4*(NPOIN)+3)
-
-              PL(1)=ZR(CFVPR-1+4*(NPOIN+1)+1)
-              PL(2)=ZR(CFVPR-1+4*(NPOIN+1)+2)
-              PL(3)=ZR(CFVPR-1+4*(NPOIN+1)+3)
-
-C             Calcul des vecteurs IJ et KL
-              PIJ(1)=PJ(1)-PI(1)
-              PIJ(2)=PJ(2)-PI(2)
-              PIJ(3)=PJ(3)-PI(3)
-              PKL(1)=PL(1)-PK(1)
-              PKL(2)=PL(2)-PK(2)
-              PKL(3)=PL(3)-PK(3)
-
-C             Calcul des normes des vecteur IJ ET KL
-              NORMIJ=SQRT(PIJ(1)**2+PIJ(2)**2+PIJ(3)**2)
-              NORMKL=SQRT(PKL(1)**2+PKL(2)**2+PKL(3)**2)  
-C             On norme les vecteurs PIJ et PKL
-              PIJ(1)=PIJ(1)/NORMIJ 
-              PIJ(2)=PIJ(2)/NORMIJ  
-              PIJ(3)=PIJ(3)/NORMIJ  
-              PKL(1)=PKL(1)/NORMKL  
-              PKL(2)=PKL(2)/NORMKL  
-              PKL(3)=PKL(3)/NORMKL  
-
-              IF (LOCDOM) THEN
-C        LE rayon d'actualisation des levels sets a bien etait defini
-                IF (RADIMP.GT.0.D0) THEN
-                   P1(1)=PJ(1)+RADIMP*PIJ(1)
-                   P1(2)=PJ(2)+RADIMP*PIJ(2)
-                   P1(3)=PJ(3)+RADIMP*PIJ(3)
-                   P2(1)=PK(1)-RADIMP*PKL(1)
-                   P2(2)=PK(2)-RADIMP*PKL(2)
-                   P2(3)=PK(3)-RADIMP*PKL(3)
-                ELSE
-                   P1(1)=PJ(1)+RADTOR*PIJ(1)
-                   P1(2)=PJ(2)+RADTOR*PIJ(2)
-                   P1(3)=PJ(3)+RADTOR*PIJ(3)
-                   P2(1)=PK(1)-RADTOR*PKL(1)
-                   P2(2)=PK(2)-RADTOR*PKL(2)
-                   P2(3)=PK(3)-RADTOR*PKL(3)
-                 ENDIF
-               ELSE
-C          Sinon on utilise l'avancememt maximal de la fissure
-                P1(1)=PJ(1)+7*DAMAX*PIJ(1)
-                P1(2)=PJ(2)+7*DAMAX*PIJ(2)
-                P1(3)=PJ(3)+7*DAMAX*PIJ(3)
-                P2(1)=PK(1)-7*DAMAX*PKL(1)
-                P2(2)=PK(2)-7*DAMAX*PKL(2)
-                P2(3)=PK(3)-7*DAMAX*PKL(3)
-              ENDIF  
-
-C              distance entre les fonts de fissure
-                NORMJK=SQRT((PK(1)-PJ(1))**2+(PK(2)-PJ(2))**2+
-     &         (PK(3)-PJ(3))**2)
-           
-C          On verifie que les deux nouveauX points sont bien eloignes
-
-C           DISTANCE ENTRE LES POINTS 1 ET J 
-                NORMJ1=SQRT((P1(1)-PJ(1))**2+(P1(2)-PJ(2))**2+
-     &        (P1(3)-PJ(3))**2)
-  
-C           SI DISTANE EST TROP GRANDE ON RAPPROCHE LE POINT VIRTUEL
-                IF((NORMJ1).GT.(NORMJK/3.D0)) THEN
-                  NORMJ1=NORMJK/3.D0
-                  P1(1)=PJ(1)+(NORMJ1*PIJ(1))
-                  P1(2)=PJ(2)+(NORMJ1*PIJ(2))
-                  P1(3)=PJ(3)+(NORMJ1*PIJ(3))
-                ENDIF          
-            
-C              distance entre le point 2 et K
-                NORMK2=SQRT((P2(1)-PK(1))**2+(P2(2)-PK(2))**2+
-     &          (P2(3)-PK(3))**2)
-
-C           SI DISTANCE EST TROP GRANDE ON RAPPROCHE LE POINT VIRTUEL
-                IF((NORMK2).GT.(NORMJK/3.D0)) THEN
-                  NORMK2=NORMJK/3.D0
-                  P2(1)=PK(1)-(NORMK2*PKL(1))
-                  P2(2)=PK(2)-(NORMK2*PKL(2))
-                  P2(3)=PK(3)-(NORMK2*PKL(3))
-                ENDIF 
-
-C          On s assure que la vitesse de propagation est positive
-
-C             calcul des vitesses de propagations des levels sets
-C             aux points virtuels
-
-              VI=ZR(VFVPR+NPOIN-2)
-              VJ=ZR(VFVPR+NPOIN-1)
-              VK=ZR(VFVPR+NPOIN)
-              VL=ZR(VFVPR+NPOIN+1) 
-         
-              DV1=(VJ-VI)/NORMIJ
-              DV2=(VL-VK)/NORMKL  
-
-              V1=VJ+DV1*NORMJ1
-              V2=VK-DV2*NORMK2         
-
-                NORMJ1=SQRT((P1(1)-PJ(1))**2+(P1(2)-PJ(2))**2+
-     &        (P1(3)-PJ(3))**2)
+C         ON S'ASSURE QUE LA VITESSE DES POINTS VIRTUELS EST POSITIVE
+          VI=ZR(VFVPR+NPOIN-2)
+          VJ=ZR(VFVPR+NPOIN-1)
+          VK=ZR(VFVPR+NPOIN)
+          VL=ZR(VFVPR+NPOIN+1)
+          DV1=(VJ-VI)/NORMIJ
+          DV2=(VL-VK)/NORMKL
+          V1=VJ+DV1*NORMJ1
+          V2=VK-DV2*NORMK2
+          NORMJ1=SQRT((P1(1)-PJ(1))**2+(P1(2)-PJ(2))**2+
+     &               (P1(3)-PJ(3))**2)
 
 C         SI LES VITESSES SONT TROP FAIBLES, ON ELOIGNE OU ON
-C         RAPPROCHE LES POINTS POUR LE POINT 1
-              IF (ABS(V1).LT.ABS(2.D0*VJ/3.D0).OR.(ABS(V1).GT.
-     &         ABS((4.D0*VJ/3.D0)))) THEN
-                      NORMJ1=ABS(VJ/(3.D0*DV1))
-                      P1(1)=PJ(1)+(PIJ(1)*NORMJ1)              
-                      P1(2)=PJ(2)+(PIJ(2)*NORMJ1) 
-                      P1(3)=PJ(3)+(PIJ(3)*NORMJ1)                
-                      V1=VJ+(DV1*NORMJ1)
-              ENDIF
-
-C          POUR LE POINT 2                      
-              IF ((ABS(V2).LT.ABS(2.D0*VK/3.D0)).OR.(ABS(V2).GT.
-     &            ABS(4.D0*VK/3.D0))) THEN
-                      NORMK2=ABS(VK/(3.D0*DV2))
-                      P2(1)=PK(1)-(PKL(1)*NORMK2)              
-                       P2(2)=PK(2)-(PKL(2)*NORMK2) 
-                      P2(3)=PK(3)-(PKL(3)*NORMK2)               
-                      V2=VK-(DV2*NORMK2)
-              ENDIF
-
-              AI=ZR(AFVPR+(NPOIN-2))
-              AJ=ZR(AFVPR+(NPOIN-1))
-              AK=ZR(AFVPR+(NPOIN))
-              AL=ZR(AFVPR+(NPOIN+1))
-              DA1=(AI-AJ)/NORMIJ
-              DA2=(AL-AK)/NORMKL
-              A1=AJ+DA1*NORMJ1
-              A2=AK-DA2*NORMK2
-
-C            On verifie que l angle de propagation au front
-C            virtuel est compris entre -90 et 90 degre sinon
-C            on rappoche le point virtuel du front physique
-       
-C             POUR LE POINT 1
-              IF ((A1.GT.(1.51D0)).OR.(A1.LT.(-1.51D0))) THEN
-                      NORMJ1=(1.51D0-ABS(AI))/ABS(DA1)
-                      P1(1)=PJ(1)+(PIJ(1)*NORMJ1)              
-                      P1(2)=PJ(2)+(PIJ(2)*NORMJ1) 
-                      P1(3)=PJ(3)+(PIJ(3)*NORMJ1)                 
-                      V1=VJ+(DV1*NORMJ1)
-                      A1=AJ+DA1*NORMJ1
-              ENDIF
-
-C             POUR LE POINT 2
-              IF ((A2.GT.(1.51D0)).OR.(A2.LT.(-1.51D0)))  THEN
-                      NORMK2=(1.51D0-ABS(AL))/ABS(DA2)
-                      P2(1)=PK(1)-(PKL(1)*NORMK2)              
-                      P2(2)=PK(2)-(PKL(2)*NORMK2) 
-                      P2(3)=PK(3)-(PKL(3)*NORMK2)                  
-                      V2=VK-(DV2*NORMK2)
-                      A2=AK-DA2*NORMK2
-              ENDIF
-
-C             On rentre les coordonnes des vecteurs dans le vecteur
-C             coor contenant les coordonne de la fissure virtuel
-              ZR(CFV-1+4*NPOIN+1)=P1(1)
-              ZR(CFV-1+4*NPOIN+2)=P1(2)
-              ZR(CFV-1+4*NPOIN+3)=P1(3)
-
-              ZR(CFV-1+4*(NPOIN+1)+1)=P2(1)
-              ZR(CFV-1+4*(NPOIN+1)+2)=P2(2)
-              ZR(CFV-1+4*(NPOIN+1)+3)=P2(3)
-
-C             On alloue une abscisse curviligne  
-              ZR(CFV-1+4*NPOIN+4)=(ZR(CFVPR-1+4*(NPOIN-2)+4)+
-     &         ZR(CFVPR-1+4*(NPOIN-1)+4))/2.D0
-              ZR(CFV-1+4*(NPOIN+1)+4)=(ZR(CFVPR-1+4*(NPOIN)+4)+
-     &         ZR(CFVPR-1+4*(NPOIN+1)+4))/2.D0
-              
-              DO 11 I=(NPOIN+1),NBPTFF
-                ZR(CFV-1+4*(I+1)+1)=ZR(CFVPR-1+4*(I-1)+1)
-                ZR(CFV-1+4*(I+1)+2)=ZR(CFVPR-1+4*(I-1)+2)
-                ZR(CFV-1+4*(I+1)+3)=ZR(CFVPR-1+4*(I-1)+3)
-                ZR(CFV-1+4*(I+1)+4)=ZR(CFVPR-1+4*(I-1)+4)
-11            CONTINUE
-
-C            ON ECRIE LES VITESSES DANS LES EMPLACEMENTS RESERVES
-              ZR(VFV+NPOIN)=V1
-              ZR(VFV+NPOIN+1)=V2
-
-              DO 12 I=(NPOIN+1),NBPTFF
-                ZR(VFV+(I+1))=ZR(VFVPR+(I-1))
-12            CONTINUE
-              
-C            ON ECRIE LES VECTEURS DE LA BASE LOCALE DANS LES 
-C            EMPLACEMENTS RESERVES
-              DO 13 J=1,6
-                 ZR(BFV-1+6*NPOIN+J)=ZR(BFVPR-1+6*(NPOIN-1)+J)
-                 ZR(BFV-1+6*(NPOIN+1)+J)=ZR(BFVPR-1+6*(NPOIN)+J)
-                 DO 130 I=(NPOIN+1),NBPTFF
-                    ZR(BFV+6*(I+1)+J)=ZR(BFVPR+6*(I-1)+J)
-130               CONTINUE                
-13            CONTINUE           
-
-C            ON ECRIE LES ANGLES DE PROPAGATION DANS EMPLACEMENTS
-C            RESERVES                
-              DO 14 I=(NPOIN+1),NBPTFF
-                ZR(AFV+(I+1))=ZR(AFVPR+(I-1))
-14            CONTINUE
-
-C             REACTUALISATION DE LA FISSURE PRECEDENTE
-
-C             reactualisation des cooordonnes            
-              DO 15 I=1,4*(NBPTFF+2)
-                 ZR(CFVPR+I-1)=ZR(CFV+I-1)      
-15            CONTINUE
-
-C             reactualisation de la base locale             
-              DO 16 I=1,6*(NBPTFF+2)
-                ZR(BFVPR+I-1)=ZR(BFV+I-1)      
-16            CONTINUE
-
-C             reactualisation de la vitesse de propagation
-              DO 17 I=1,(NBPTFF+2)
-                 ZR(VFVPR+I-1)=ZR(VFV+I-1)      
-17           CONTINUE
-
-              DO 18 I=1,(NBPTFF+2)
-                  ZR(AFVPR+I-1)=ZR(AFV+I-1)      
-18            CONTINUE
-
-C            reactualisation du nombre de points du fond de
-C            fissure virtuel
-              NBPTFF=NBPTFF+2
-         
-C             reactualisatuion du vecteur FONDMULT
-              ZI(NFV+2*K-1)=ZI(NFVPR+2*K-1)+1
-              ZI(NFV+2*K)=ZI(NFVPR+2*K)+1
-              
-              DO 19, I=(2*(K+1)),(2*NUMFON)
-                   ZI(NFV+I-1)=ZI(NFVPR+I-1)+2
-19            CONTINUE
-
-              DO 191, I=1,(2*NUMFON)
-                   ZI(NFVPR+I-1)=ZI(NFV+I-1)
-191            CONTINUE
-
-10          CONTINUE
-    
+C         RAPPROCHE LES POINTS
+          IF (ABS(V1).LT.ABS(2.D0*VJ/3.D0).OR.(ABS(V1).GT.
+     &        ABS((4.D0*VJ/3.D0)))) THEN
+            NORMJ1=ABS(VJ/(3.D0*DV1))
+            DO 90 I=1,3
+              P1(I)=PJ(I)+(PIJ(I)*NORMJ1)
+90          CONTINUE
+            V1=VJ+(DV1*NORMJ1)
+          ENDIF
+          IF ((ABS(V2).LT.ABS(2.D0*VK/3.D0)).OR.(ABS(V2).GT.
+     &         ABS(4.D0*VK/3.D0))) THEN
+            NORMK2=ABS(VK/(3.D0*DV2))
+            DO 100 I=1,3
+              P2(I)=PK(I)-(PKL(I)*NORMK2)
+100          CONTINUE
+            V2=VK-(DV2*NORMK2)
           ENDIF
 
-C      PARTIE 2: CREATION DE POINTS VIRTUELS AUX EXTREMITES DU
-C                FRONTS DE FISSURE
+          AI=ZR(AFVPR+(NPOIN-2))
+          AJ=ZR(AFVPR+(NPOIN-1))
+          AK=ZR(AFVPR+(NPOIN))
+          AL=ZR(AFVPR+(NPOIN+1))
+          DA1=(AI-AJ)/NORMIJ
+          DA2=(AL-AK)/NORMKL
+          A1=AJ+DA1*NORMJ1
+          A2=AK-DA2*NORMK2
 
-C         coordonne du premier point du fond de fissure
-          PI(1)=ZR(CFVPR-1+1) 
-          PI(2)=ZR(CFVPR-1+2)
-          PI(3)=ZR(CFVPR-1+3)
-
-C         coordonne du deuxieme point
-          PJ(1)=ZR(CFVPR-1+4+1) 
-          PJ(2)=ZR(CFVPR-1+4+2)
-          PJ(3)=ZR(CFVPR-1+4+3)
-
-C         coordonne de l avant dernier point
-          PK(1)=ZR(CFVPR-1+4*(NBPTFF-2)+1) 
-          PK(2)=ZR(CFVPR-1+4*(NBPTFF-2)+2)
-          PK(3)=ZR(CFVPR-1+4*(NBPTFF-2)+3)
-
-C         coordonne du dernier point
-          PL(1)=ZR(CFVPR-1+4*(NBPTFF-1)+1) 
-          PL(2)=ZR(CFVPR-1+4*(NBPTFF-1)+2)
-          PL(3)=ZR(CFVPR-1+4*(NBPTFF-1)+3)
-
-C         Calcul des vecteurs IJ et KL
-          PIJ(1)=PJ(1)-PI(1)
-          PIJ(2)=PJ(2)-PI(2)
-          PIJ(3)=PJ(3)-PI(3)
-          PKL(1)=PL(1)-PK(1)
-          PKL(2)=PL(2)-PK(2)
-          PKL(3)=PL(3)-PK(3)
-
-C         Calcul des normes des vecteur IJ ET KL
-          NORMIJ=SQRT(PIJ(1)**2+PIJ(2)**2+PIJ(3)**2)
-          NORMKL=SQRT(PKL(1)**2+PKL(2)**2+PKL(3)**2)
-          
-C         On norme les vecteurs PIJ et PKL
-          PIJ(1)=PIJ(1)/NORMIJ 
-          PIJ(2)=PIJ(2)/NORMIJ  
-          PIJ(3)=PIJ(3)/NORMIJ  
-          PKL(1)=PKL(1)/NORMKL  
-          PKL(2)=PKL(2)/NORMKL  
-          PKL(3)=PKL(3)/NORMKL  
-
-C         CALCUL DES POINTS VIRTUELS A GAUCHE ET A DROITE
-
-              IF (LOCDOM) THEN
-C        LE rayon d actualisation des levels sets a bien etait defini
-                IF (RADIMP.GT.0.D0) THEN
-                P1(1)=PI(1)-RADIMP*PIJ(1)
-                P1(2)=PI(2)-RADIMP*PIJ(2)
-                P1(3)=PI(3)-RADIMP*PIJ(3)
-                P2(1)=PL(1)+RADIMP*PKL(1)
-                P2(2)=PL(2)+RADIMP*PKL(2)
-                P2(3)=PL(3)+RADIMP*PKL(3)
-                ELSE
-                 
-                P1(1)=PI(1)-RADTOR*PIJ(1)
-                P1(2)=PI(2)-RADTOR*PIJ(2)
-                P1(3)=PI(3)-RADTOR*PIJ(3)
-                P2(1)=PL(1)+RADTOR*PKL(1)
-                P2(2)=PL(2)+RADTOR*PKL(2)
-                P2(3)=PL(3)+RADTOR*PKL(3)
-                ENDIF
-            ELSE
-
-C          SInon on utilise l avancememt maximal de la fissure
-                P1(1)=PI(1)-7*DAMAX*PIJ(1)
-                P1(2)=PI(2)-7*DAMAX*PIJ(2)
-                P1(3)=PI(3)-7*DAMAX*PIJ(3)
-                P2(1)=PL(1)+7*DAMAX*PKL(1)
-                P2(2)=PL(2)+7*DAMAX*PKL(2)
-                P2(3)=PL(3)+7*DAMAX*PKL(3)
-          ENDIF
-
-C         Distance entre le premier et le dernier fond de fissure
-          NORMJK=SQRT((PI(1)-PL(1))**2+(PI(2)-PL(2))**2+
-     &         (PI(3)-PL(3))**2)
-           
-C          On verifie que les deux nouveaux points sont bien
-C          eloignes
-
-C              distance entre le point 1 et J
-          NORMJ1=SQRT((P1(1)-PI(1))**2+(P1(2)-PI(2))**2+
-     &     (P1(3)-PI(3))**2)
-
-C         SI DISTANCE EST TROP GRANDE ON RAPPROCHE LE POINT VIRTUEL
-                IF((NORMJ1).GT.(NORMJK/3.D0)) THEN
-                  NORMJ1=NORMJK/3.D0
-                  P1(1)=PI(1)-(NORMJ1*PIJ(1))
-                  P1(2)=PI(2)-(NORMJ1*PIJ(2))
-                  P1(3)=PI(3)-(NORMJ1*PIJ(3))
-                ENDIF          
-            
-C              distance entre le point 2 et K
-          NORMK2=SQRT((P2(1)-PL(1))**2+(P2(2)-PL(2))**2+
-     &     (P2(3)-PL(3))**2)
-
-C         SI DISTANCE EST TROP GRANDE ON RAPPROCHE LE POINT VIRTUEL
-                IF((NORMK2).GT.(NORMJK/3.D0)) THEN
-                  NORMK2=NORMJK/3.D0
-                  P2(1)=PL(1)+(NORMK2*PKL(1))
-                  P2(2)=PL(2)+(NORMK2*PKL(2))
-                  P2(3)=PL(3)+(NORMK2*PKL(3))
-                ENDIF 
-
-C        calcul de la vitesse de la fissure au point virtuel
-
-          VI=ZR(VFVPR)
-          VJ=ZR(VFVPR+1)
-          VK=ZR(VFVPR+(NBPTFF-2))
-          VL=ZR(VFVPR+(NBPTFF-1))           
-          DV1=(VJ-VI)/NORMIJ 
-          DV2=(VL-VK)/NORMKL          
-          V1=VI-DV1*NORMJ1
-          V2=VL+DV2*NORMK2
-          
-C       On verifie que la vitesse des points virtuels ne sont ni
-C       trop grandes ni trop petites
-        IF ((ABS(V1).LT.ABS(1.D0*VI/3.D0)).OR.(ABS(V1).GT.ABS(
-     &      5.D0*VI/3.D0))) THEN
-                      NORMJ1=ABS(2.D0*VI/(3.D0*DV1))
-                      P1(1)=PI(1)-(PIJ(1)*NORMJ1)              
-                      P1(2)=PI(2)-(PIJ(2)*NORMJ1) 
-                      P1(3)=PI(3)-(PIJ(3)*NORMJ1)                
-                      V1=VI-(DV1*NORMJ1)
-         ENDIF
-
-         IF ((ABS(V2).LT.ABS(1.D0*VL/3.D0)).OR.(ABS(V2).GT.ABS(5.D0
-     &             *VL/3.D0))) THEN
-                      NORMK2=ABS(2.D0*VL/(3.D0*DV2))
-                      P2(1)=PL(1)+(PKL(1)*NORMK2)              
-                      P2(2)=PL(2)+(PKL(2)*NORMK2) 
-                      P2(3)=PL(3)+(PKL(3)*NORMK2)                
-                      V2=VL+(DV2*NORMK2)
-         ENDIF
-
-              AI=ZR(AFVPR)
-              AJ=ZR(AFVPR+1)
-              AK=ZR(AFVPR+NBPTFF-2)
-              AL=ZR(AFVPR+NBPTFF-1)
-              DA1=(AJ-AI)/NORMIJ
-              DA2=(AL-AK)/NORMKL
-
-              A1=AI-DA1*NORMJ1
-              A2=AL+DA2*NORMK2
-
-C            On verifie que l angle de propagation au front virtuel
-C            est compris entre -90 et 90 degre sinon
-C            on rappoche le point virtuel du front physique
-
+C         SI L'ANGLE DE PROPAGATION SUR LE FRONT VIRTUEL
+C         N'EST PAS COMPRIS ENTRE -90 ET 90 DEGRES, ON
+C         RAPPROCHE LE POINT VIRTUEL DU FRONT PHYSIQUE
+C         POUR LE POINT 1
           IF ((A1.GT.(1.51D0)).OR.(A1.LT.(-1.51D0))) THEN
-                      NORMJ1=(1.51D0-ABS(AI))/ABS(DA1)
-                      P1(1)=PI(1)-(PIJ(1)*NORMJ1)              
-                      P1(2)=PI(2)-(PIJ(2)*NORMJ1) 
-                      P1(3)=PI(3)-(PIJ(3)*NORMJ1)                
-                      V1=VI-(DV1*NORMJ1)
-                      A1=AI-DA1*NORMJ1
-         ENDIF
-
+            NORMJ1=(1.51D0-ABS(AI))/ABS(DA1)
+            DO 110 I=1,3
+              P1(I)=PJ(I)+(PIJ(I)*NORMJ1)
+110         CONTINUE
+            V1=VJ+(DV1*NORMJ1)
+            A1=AJ+DA1*NORMJ1
+          ENDIF
+C         POUR LE POINT 2
           IF ((A2.GT.(1.51D0)).OR.(A2.LT.(-1.51D0)))  THEN
-                      NORMK2=(1.51D0-ABS(AL))/ABS(DA2)
-                      P2(1)=PL(1)+(PKL(1)*NORMK2)              
-                      P2(2)=PL(2)+(PKL(2)*NORMK2) 
-                      P2(3)=PL(3)+(PKL(3)*NORMK2)                
-                      V2=VL+(DV2*NORMK2)
-                      A2=AL+DA2*NORMK2
+            NORMK2=(1.51D0-ABS(AL))/ABS(DA2)
+            DO 120 I=1,3
+              P2(I)=PK(I)-(PKL(I)*NORMK2) 
+120         CONTINUE
+            V2=VK-(DV2*NORMK2)
+            A2=AK-DA2*NORMK2
+          ENDIF
+C         ON REMPLIT LE VECTEUR CONTENANT LES COORDONNEES DU FRONT
+          DO 130 I=1,3
+            ZR(CFV-1+4*NPOIN+I)=P1(I) 
+            ZR(CFV-1+4*(NPOIN+1)+I)=P2(I)
+130       CONTINUE
+
+C         IMPRESSION DES COORDONNEES DES POINTS VIRTUELS
+C         INTERIEURS EN INFO>0
+          IF (NIV.GE.1) THEN
+            WRITE(IFM,132) K,K+1
+            WRITE(IFM,131)(P1(J),J=1,3)
+            WRITE(IFM,131)(P2(J),J=1,3)
+132         FORMAT(1X,' ENTRE FOND DE FISSURE ',I2,1X,' ET ',I2)
+131         FORMAT(2X,3(E12.5,2X))
+            WRITE(IFM,*) '------------------------------------------'
           ENDIF
 
-C        On rentre les nouveaux points virtuels de la fissure
-C        dans la place reserve
+C         ON ALLOUE UNE ABSCISSE CURVILIGNE 
+          ZR(CFV-1+4*NPOIN+4)=(ZR(CFVPR-1+4*(NPOIN-2)+4)+
+     &         ZR(CFVPR-1+4*(NPOIN-1)+4))/2.D0
+          ZR(CFV-1+4*(NPOIN+1)+4)=(ZR(CFVPR-1+4*(NPOIN)+4)+
+     &         ZR(CFVPR-1+4*(NPOIN+1)+4))/2.D0
 
-          ZR(CFV-1+1)=P1(1)
-          ZR(CFV-1+2)=P1(2)
-          ZR(CFV-1+3)=P1(3)
-          ZR(CFV-1+4)=-100.D0
-          ZR(CFV-1+4*(1+NBPTFF)+1)=P2(1)
-          ZR(CFV-1+4*(1+NBPTFF)+2)=P2(2)
-          ZR(CFV-1+4*(1+NBPTFF)+3)=P2(3)
-          ZR(CFV-1+4*(1+NBPTFF)+4)=100.D0
+          DO 140 I=(NPOIN+1),NBPTFF
+            DO 150 J=1,4
+              ZR(CFV-1+4*(I+1)+J)=ZR(CFVPR-1+4*(I-1)+J)
+150         CONTINUE     
+140       CONTINUE
+C
+C         ON ECRIT LES VITESSES DANS LES EMPLACEMENTS RESERVES
+          ZR(VFV+NPOIN)=V1
+          ZR(VFV+NPOIN+1)=V2
+          DO 170 I=(NPOIN+1),NBPTFF
+            ZR(VFV+(I+1))=ZR(VFVPR+(I-1))
+170       CONTINUE
 
-C        On rentre les vitesses de la fissure au point virtuel
-        ZR(VFV)=V1
-        ZR(VFV+1+NBPTFF)=V2 
+C         ON ECRIE LES VECTEURS DE LA BASE LOCALE DANS LES 
+C         EMPLACEMENTS RESERVES
+          DO 180 J=1,6
+            ZR(BFV-1+6*NPOIN+J)=ZR(BFVPR-1+6*(NPOIN-1)+J)
+            ZR(BFV-1+6*(NPOIN+1)+J)=ZR(BFVPR-1+6*(NPOIN)+J)
+            DO 190 I=(NPOIN+1),NBPTFF
+              ZR(BFV+6*(I+1)+J)=ZR(BFVPR+6*(I-1)+J)
+190         CONTINUE
+180        CONTINUE
 
-C        IDEM POUR LA BASE LOCALE ET L'ANGLE DE PROPAGATION
-          DO 25 , J=1,6
-             ZR(BFV-1+J)=ZR(BFVPR-1+J)
-             ZR(BFV-1+6*(1+NBPTFF)+J)=ZR(BFVPR-1+6*(NBPTFF-1)+J)
-25        CONTINUE
+C         ON ECRIT LES ANGLES DE PROPAGATION DANS EMPLACEMENTS
+C         RESERVES		  
+          DO 200 I=(NPOIN+1),NBPTFF
+            ZR(AFV+(I+1))=ZR(AFVPR+(I-1))
+200       CONTINUE
 
-              ZR(AFV)=AI-DA1*NORMJ1
-              ZR(AFV+NBPTFF+1)=AL+DA2*NORMK2
-C         On copie les coordonnes,  du front physique dans
-C         l emplacememt dans les emplacements reserves au 
-C         front virtuel
+C         REACTUALISATION DE LA FISSURE PRECEDENTE
+C         REACTUALISATION DES COORDONNEES            
+          DO 210 I=1,4*(NBPTFF+2)
+            ZR(CFVPR+I-1)=ZR(CFV+I-1)      
+210       CONTINUE
+C         REACTUALISATION DE LA BASE LOCALE		
+          DO 220 I=1,6*(NBPTFF+2)
+            ZR(BFVPR+I-1)=ZR(BFV+I-1)
+220       CONTINUE
+C         REACTUALISATION DE LA VITESSE DE PROPAGATION
+          DO 230 I=1,(NBPTFF+2)
+            ZR(VFVPR+I-1)=ZR(VFV+I-1)
+230       CONTINUE
+C         REACTUALISATION DES ANGLES DE PROPAGATION
+          DO 240 I=1,(NBPTFF+2)
+            ZR(AFVPR+I-1)=ZR(AFV+I-1)
+240       CONTINUE
+C         REACTUALISATION DU NOMBRE DE POINTS DU FOND
+          NBPTFF=NBPTFF+2
+C         REACTUALISATION DU VECTEUR FONDMULT
+          ZI(NFV+2*K-1)=ZI(NFVPR+2*K-1)+1
+          ZI(NFV+2*K)=ZI(NFVPR+2*K)+1
+          DO 250 I=(2*(K+1)),(2*NUMFON)
+            ZI(NFV+I-1)=ZI(NFVPR+I-1)+2
+250       CONTINUE
+          DO 260 I=1,(2*NUMFON)
+            ZI(NFVPR+I-1)=ZI(NFV+I-1)
+260       CONTINUE
 
-          DO 26 I=1,NBPTFF
-                ZR(CFV-1+4*I+1)=ZR(CFVPR-1+4*(I-1)+1)
-                ZR(CFV-1+4*I+2)=ZR(CFVPR-1+4*(I-1)+2)
-                ZR(CFV-1+4*I+3)=ZR(CFVPR-1+4*(I-1)+3)
-                ZR(CFV-1+4*I+4)=ZR(CFVPR-1+4*(I-1)+4)
+10      CONTINUE
 
-                DO 261,J=1,6
-                   ZR(BFV-1+6*I+J)=ZR(BFVPR-1+6*(I-1)+J)
-261             CONTINUE
-      
-               ZR(VFV+I)=ZR(VFVPR+I-1)
-               ZR(AFV+I)=ZR(AFVPR+I-1)  
-26             CONTINUE
-          
-         DO 27 I=1,(2*NUMFON-1)
-               ZI(NFV+I)=1+ZI(NFV+I)
-27       CONTINUE
-         ZI(NFV+2*(NUMFON-1)+1)=1+ZI(NFV+2*(NUMFON-1)+1)
+      ENDIF
+C      
+C --- PARTIE 2: CREATION DE POINTS VIRTUELS AUX EXTREMITES DU
+C               FRONTS DE FISSURE
 
-       NBPTFF=NBPTFF+2
+C     COORDONNEES DES 2 PREMIERS ET DES
+C     2 DERNIERS POINTS DU FOND DE FISSURE
+      DO 270  I=1,3 
+        PI(I)=ZR(CFVPR-1+I)
+        PJ(I)=ZR(CFVPR-1+4+I) 
+        PK(I)=ZR(CFVPR-1+4*(NBPTFF-2)+I)
+        PL(I)=ZR(CFVPR-1+4*(NBPTFF-1)+I)
+270   CONTINUE
+
+C     CALCUL DES VECTEURS IJ ET KL
+      DO 280  I=1,3 
+        PIJ(I)=PJ(I)-PI(I)
+        PKL(I)=PL(I)-PK(I)
+280   CONTINUE
+
+C     CALCUL DES NORMES DES VECTEURS IJ ET KL
+      NORMIJ=SQRT(PIJ(1)**2+PIJ(2)**2+PIJ(3)**2)
+      NORMKL=SQRT(PKL(1)**2+PKL(2)**2+PKL(3)**2)
+
+C     ON NORME LES VECTEURS PIJ ET PKL
+      DO 290  I=1,3 
+        PIJ(I)=PIJ(I)/NORMIJ 
+        PKL(I)=PKL(I)/NORMKL
+290   CONTINUE
+
+C     CALCUL DES POINTS VIRTUELS A GAUCHE ET A DROITE
+      IF (LOCDOM) THEN
+C       LE RAYON D'ACTUALISATION DES LEVEL SETS A BIEN ETE DEFINI
+        IF (RADIMP.GT.0.D0) THEN
+          DO 300  I=1,3 
+            P1(I) = PI(I)-RADIMP*PIJ(I)
+            P2(I) = PL(I)+RADIMP*PKL(I)
+300       CONTINUE
+        ELSE
+          DO 310  I=1,3 
+            P1(I) = PI(I)-RADTOR*PIJ(I)
+            P2(I) = PL(I)+RADTOR*PKL(I)
+310       CONTINUE
+        ENDIF
+      ELSE
+C     SINON ON UTILISE L'AVANCEMENT MAXIMAL DE LA FISSURE
+        DO 320  I=1,3 
+          P1(I) = PI(I)-7*DAMAX*PIJ(I)
+          P2(I) = PL(I)+7*DAMAX*PKL(I)
+320     CONTINUE
+      ENDIF
+
+C     DISTANCE ENTRE LE PREMIER ET LE DERNIER FOND DE FISSURE
+      NORMJK = SQRT((PI(1)-PL(1))**2+(PI(2)-PL(2))**2+
+     &             (PI(3)-PL(3))**2)
+
+C     ON VERIFIE QUE LES 2 NOUVEAUX POINTS SONT BIEN ELOIGNES
+C     DISTANCE ENTRE LES POINTS 1 ET J
+      NORMJ1=SQRT((P1(1)-PI(1))**2+(P1(2)-PI(2))**2+
+     &           (P1(3)-PI(3))**2)
+C     SI DISTANCE EST TROP GRANDE ON RAPPROCHE LE POINT VIRTUEL
+      IF (NORMJ1.GT.(NORMJK/3.D0)) THEN
+        NORMJ1=NORMJK/3.D0
+        DO 330  I=1,3 
+          P1(I)=PI(I)-(NORMJ1*PIJ(I))
+330     CONTINUE
+      ENDIF
+
+C     DISTANCE ENTRE LES POINTS 2 ET K
+      NORMK2 = SQRT((P2(1)-PL(1))**2+(P2(2)-PL(2))**2+
+     &             (P2(3)-PL(3))**2)
+C     SI DISTANCE EST TROP GRANDE ON RAPPROCHE LE POINT VIRTUEL
+      IF (NORMK2.GT.(NORMJK/3.D0)) THEN
+        NORMK2=NORMJK/3.D0
+        DO 340  I=1,3 
+          P2(I)=PL(I)+(NORMK2*PKL(I))
+340     CONTINUE
+      ENDIF 
+
+C     CALCUL DE LA VITESSE AUX POINTS VIRTUELS
+      VI=ZR(VFVPR)
+      VJ=ZR(VFVPR+1)
+      VK=ZR(VFVPR+(NBPTFF-2))
+      VL=ZR(VFVPR+(NBPTFF-1))
+      DV1=(VJ-VI)/NORMIJ 
+      DV2=(VL-VK)/NORMKL
+      V1=VI-DV1*NORMJ1
+      V2=VL+DV2*NORMK2
+
+C     ON VERIFIE QUE LA VITESSE AUX POINTS VIRTUELS N'EST
+C     NI TROP GRANDE NI TROP PETITE
+      IF ((ABS(V1).LT.ABS(1.D0*VI/3.D0)).OR.(ABS(V1).GT.ABS(
+     &     5.D0*VI/3.D0))) THEN
+        NORMJ1=ABS(2.D0*VI/(3.D0*DV1))
+        DO 350  I=1,3 
+          P1(I)=PI(I)-(PIJ(I)*NORMJ1)
+350     CONTINUE
+        V1=VI-(DV1*NORMJ1)
+      ENDIF
+      IF ((ABS(V2).LT.ABS(1.D0*VL/3.D0)).OR.(ABS(V2).GT.ABS(5.D0
+     &             *VL/3.D0))) THEN
+        NORMK2=ABS(2.D0*VL/(3.D0*DV2))
+        DO 360  I=1,3 
+          P2(I)=PL(I)+(PKL(I)*NORMK2)
+360     CONTINUE   
+        V2=VL+(DV2*NORMK2)
+      ENDIF
+      AI=ZR(AFVPR)
+      AJ=ZR(AFVPR+1)
+      AK=ZR(AFVPR+NBPTFF-2)
+      AL=ZR(AFVPR+NBPTFF-1)
+      DA1=(AJ-AI)/NORMIJ
+      DA2=(AL-AK)/NORMKL
+      A1=AI-DA1*NORMJ1
+      A2=AL+DA2*NORMK2
+
+C     ON VERIFIE QUE L'ANGLE DE PROPAGATION AU FRONT VIRTUEL
+C     EST COMPRIS ENTRE -90 et 90 DEGRE SINON ON RAPPROCHE
+C     LE POINT VIRTUEL DU FRONT PHYSIQUE
+      IF ((A1.GT.(1.51D0)).OR.(A1.LT.(-1.51D0))) THEN
+        NORMJ1=(1.51D0-ABS(AI))/ABS(DA1)
+        DO 370  I=1,3 
+          P1(I)=PI(I)-(PIJ(I)*NORMJ1)
+370     CONTINUE
+        V1=VI-(DV1*NORMJ1)
+        A1=AI-DA1*NORMJ1
+      ENDIF
+      IF ((A2.GT.(1.51D0)).OR.(A2.LT.(-1.51D0)))  THEN
+        NORMK2=(1.51D0-ABS(AL))/ABS(DA2)
+        DO 380  I=1,3 
+          P2(I)=PL(I)+(PKL(I)*NORMK2)
+380     CONTINUE
+        V2=VL+(DV2*NORMK2)
+        A2=AL+DA2*NORMK2
+      ENDIF
+
+C     IMPRESSION DES COORDONNEES DES POINTS VIRTUELS
+C     EXTERIEURS EN INFO=2
+      IF (NIV.GE.1) THEN
+        WRITE(IFM,*) ' '
+        WRITE(IFM,*) 'POINTS VIRTUELS EXTERIEURS'
+        WRITE(IFM,381)(P1(J),J=1,3)
+        WRITE(IFM,381)(P2(J),J=1,3)
+381     FORMAT(2X,3(E12.5,2X))
+        WRITE(IFM,*) '------------------------------------------'
+      ENDIF
+
+C     ON RENTRE LES NOUVEAUX POINTS VIRTUELS
+      DO 390  I=1,3 
+        ZR(CFV-1+I)=P1(I)
+390   CONTINUE
+      ZR(CFV-1+4)=-100.D0
+      DO 400  I=1,3 
+        ZR(CFV-1+4*(1+NBPTFF)+I)=P2(I)
+400   CONTINUE
+      ZR(CFV-1+4*(1+NBPTFF)+4)=100.D0
+C 
+C     ON RENTRE LES VITESSES DE LA FISSURE AU POINT VIRTUEL
+      ZR(VFV)=V1
+      ZR(VFV+1+NBPTFF)=V2
+C     ON RENTRE LA BASE LOCALE ET L'ANGLE DE PROPAGATION
+      DO 420 J=1,6
+        ZR(BFV-1+J)=ZR(BFVPR-1+J)
+        ZR(BFV-1+6*(1+NBPTFF)+J)=ZR(BFVPR-1+6*(NBPTFF-1)+J)
+420   CONTINUE
+      ZR(AFV)=AI-DA1*NORMJ1
+      ZR(AFV+NBPTFF+1)=AL+DA2*NORMK2
+C     On copie les coordonnes,  du front physique dans
+C     l emplacememt dans les emplacements reserves au 
+C     front virtuel
+      DO 430 I=1,NBPTFF
+        DO 440 J=1,4
+          ZR(CFV-1+4*I+J)=ZR(CFVPR-1+4*(I-1)+J)
+440     CONTINUE
+        DO 450,J=1,6
+          ZR(BFV-1+6*I+J)=ZR(BFVPR-1+6*(I-1)+J)
+450     CONTINUE
+        ZR(VFV+I)=ZR(VFVPR+I-1)
+        ZR(AFV+I)=ZR(AFVPR+I-1)  
+430   CONTINUE
+      DO 460 I=1,(2*NUMFON-1)
+        ZI(NFV+I)=1+ZI(NFV+I)
+460   CONTINUE
+      ZI(NFV+2*(NUMFON-1)+1)=1+ZI(NFV+2*(NUMFON-1)+1)
+      NBPTFF=NBPTFF+2
+
 
       CALL JEDETR('&&XPRVIR.NUM_FON_VIRPR')
       CALL JEDETR('&&XPRVIR.CO_FON_VIRPR')

@@ -1,14 +1,16 @@
-      SUBROUTINE INTFAC(IFQ,FA,NNO,LST,LSN,NDIM,GRAD,JGLSN,JGLST,IGEOM,
-     &                  M,GLN,GLT,CODRET)
+      SUBROUTINE INTFAC(NOMA,NMAABS,IFQ,FA,NNO,LST,LSN,NDIM,GRAD,JGLSN,
+     &                  JGLST,IGEOM,M,INDPTF,GLN,GLT,CODRET)
       IMPLICIT NONE
 
       INCLUDE 'jeveux.h'
       INTEGER       IFQ,FA(6,4),NNO,NDIM,JGLSN,JGLST,IGEOM,CODRET
+      INTEGER       INDPTF(3),NMAABS 
       REAL*8        LSN(NNO),LST(NNO),M(NDIM),GLN(NDIM),GLT(NDIM)
-      CHARACTER*3   GRAD
+      CHARACTER*3   GRAD    
+      CHARACTER*8   NOMA 
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 25/03/2013   AUTEUR TRAN V-X.TRAN 
+C MODIF ALGORITH  DATE 09/04/2013   AUTEUR JAUBERT A.JAUBERT 
 C TOLE CRS_1404
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -31,6 +33,8 @@ C              TROUVER LES PTS D'INTERSECTION ENTRE LE FOND DE FISSURE
 C                 ET UNE FACE POUR LES ELEMENTS EN FOND DE FISSURE
 C
 C     ENTREE
+C  NOMA   : NOM DU MAILLAGE
+C  NMAABS : NUMERO DE LA MAILLE
 C  IFQ    : NUMERO LOCAL DE LA FACE DE LA MAILLE
 C  FA     : COONECTIVITE DES FACES DE LA MAILLE
 C  NNO    : NOMBRE DE NOEUDS DE LA MAILLE
@@ -44,6 +48,7 @@ C  IGEOM  : ADRESSE DU VECTEUR LOCAL DES COORDONNEES DES NOEUDS
 C
 C     SORTIE
 C  M      : POINT TROUVE
+C  INDPTF : VECTEUR INDICE DU POINT M TROUVE
 C  GLN    : GRAD DE LSN EN M (SI DEMANDE)
 C  GLT    : GRAD DE LST EN M (SI DEMANDE)
 C  CODRET : CODE RETOUR = 1 SI ON A BIEN TROUVE UN POINT M
@@ -51,12 +56,13 @@ C                       = 0 SI ON N'A PAS PU TROUVE UN UNIQUE POINT M
 C
 C     ------------------------------------------------------------------
 
-      INTEGER       NNOF,I,J,NNE,INO,IRET
+      INTEGER       NNOF,I,J,K,NNE,INO,IRET,JCONX1,JCONX2,NUMNOA,NUMNOB
       REAL*8        R8PREM,COORMA(8),PREC,MP(2),EPSI(2),FF(NNO),
-     &              LSTA,LSNA,LSTB,LSNB,SOLSN
+     &              LSTA,LSNA,LSTB,LSNB,SOLSN,A(NDIM),B(NDIM),
+     &              MEM(3),MEMO,NORMAB,COEFFK,PREC2,LENGTH(12)
       CHARACTER*8   ALIAS
+      CHARACTER*32  JEXATR
       LOGICAL       CHGSGN
-
 C ----------------------------------------------------------------------
 
       CALL JEMARQ()
@@ -66,8 +72,12 @@ C ----------------------------------------------------------------------
         CALL VECINI(NDIM,0.D0,GLN)
         CALL VECINI(NDIM,0.D0,GLT)
       ENDIF
+      DO 100 I=1,3
+        INDPTF(I)=0
+ 100  CONTINUE
 
       PREC=R8PREM()
+      PREC2= 1.D-4
       CODRET = 0
 
 C     INITIALISATION DES COORDONNÈES (LS) DES NOEUDS DE LA FACE
@@ -76,6 +86,10 @@ C     INITIALISATION DES COORDONNÈES (LS) DES NOEUDS DE LA FACE
       LSNA=0.D0
       LSTB=0.D0
       LSNB=0.D0
+
+C     RECUPERATION DES DONNEES SUR LE MAILLAGE 
+      CALL JEVEUO(NOMA//'.CONNEX','L',JCONX1)
+      CALL JEVEUO(JEXATR(NOMA//'.CONNEX','LONCUM'),'L',JCONX2)
 
 C     NOMBRE DE SOMMETS DE LA FACE
       IF (FA(IFQ,4).EQ.0) THEN
@@ -117,11 +131,23 @@ C       SI LE FOND COINCIDE AVEC UN COTE DE LA FACE, ON SORT
      &      LSTA.EQ.0.D0.AND.LSTB.EQ.0.D0) GOTO 999
 
 C       ON ACCEPTE TOUT DE SUITE LA FACE SI LE FRONT COINCIDE
-C       AVEC L'UN DES NOEUDS OU UN POINT DE L'ARETE
-        IF (((LSNA.EQ.0.D0).AND.(LSTA.EQ.0.D0)).OR.
-     &     (((LSNA.EQ.0.D0).AND.(LSNB.EQ.0.D0)).AND.
-     &      ((LSTA*LSTB).LT.R8PREM()))) THEN
+C       AVEC L'UN DES NOEUDS DE LA FACE
+        IF ((LSNA.EQ.0.D0).AND.(LSTA.EQ.0.D0)) THEN
          CHGSGN = .TRUE.
+         INDPTF(1)=1
+         INDPTF(2)=ZI(JCONX1-1+ZI(JCONX2+NMAABS-1)+FA(IFQ,I)-1)
+         GOTO 220
+
+        ENDIF
+
+C       ON ACCEPTE TOUT DE SUITE LA FACE SI LE FRONT COINCIDE
+C       AVEC UN POINT D'UNE ARETE DE LA FACE
+        IF (((LSNA.EQ.0.D0).AND.(LSNB.EQ.0.D0)).AND.
+     &      ((LSTA*LSTB).LT.R8PREM())) THEN
+         CHGSGN = .TRUE.
+         INDPTF(1)=2
+         INDPTF(2)=ZI(JCONX1-1+ZI(JCONX2+NMAABS-1)+FA(IFQ,I)-1)
+         INDPTF(3)=ZI(JCONX1-1+ZI(JCONX2+NMAABS-1)+FA(IFQ,J)-1)
          GOTO 220
 
         ENDIF
@@ -139,6 +165,9 @@ C       (ON A LSN(I)=LST(B)-LSN(B)*(LST(A)-LST(B))/(LSN(A)-LSN(B)))
      &        ((LSTA*LSTB).LT.R8PREM()))) THEN
 
               CHGSGN = .TRUE.
+              INDPTF(1)=3
+              INDPTF(2)=0
+              INDPTF(3)=0
 
           ENDIF
 
@@ -156,7 +185,7 @@ C     ON CHERCHE SUR LA MAILLE LE POINT CORRESPONDANT ‡ LSN=LST=0
       IF (IRET.EQ.1) GOTO 999
 
 C     ON NE PREND PAS EN COMPTE LES POINTS QUI SORTENT DU DOMAINE
-C     ON AJOUTE UN PETIT PREC ICI POUR RAISON DES PRECISION DANS 
+C     ON AJOUTE UN PETIT PREC ICI POUR RAISON DE PRECISION DANS 
 C     LA COMPARAISON, CF. LA FICHE 20170
       IF (ALIAS.EQ.'QU4') THEN
         IF (ABS(EPSI(1)).GT.(1.D0+PREC)) GOTO 999
@@ -166,7 +195,7 @@ C     LA COMPARAISON, CF. LA FICHE 20170
         IF (EPSI(2).LT.(0.D0-PREC))         GOTO 999
         IF (EPSI(1)+EPSI(2).GT.(1.D0+PREC)) GOTO 999
       ENDIF
-
+      
       MP(1)=EPSI(1)
       MP(2)=EPSI(2)
 C     ON DOIT MAINTENANT MULTIPLIER LES COORD. PARAM. DE M PAR CHACUNE
@@ -183,12 +212,108 @@ C     DES FF DES NOEUDS DE L'ÈLÈMENT POUR OBTENIR LES COORD. CART.
  240    CONTINUE
  230  CONTINUE
 
+C     TRAITEMENT DES POINTS M PROCHES DES SOMMETS (FIT TO VERTEX)
+      IF ((INDPTF(1).EQ.2).OR.(INDPTF(1).EQ.3)) THEN
+        DO 555 I=1,NNOF
+          MEMO=0.D0
+          DO 556 J=1,NDIM
+            A(J)=ZR(IGEOM-1+NDIM*(FA(IFQ,I)-1)+J)
+            MEMO=MEMO+(A(J)-M(J))**2
+ 556      CONTINUE
+          LENGTH(3*(I-1)+1)=SQRT(MEMO)
+          LENGTH(3*(I-1)+2)= 
+     &          ZI(JCONX1-1+ZI(JCONX2+NMAABS-1)+FA(IFQ,I)-1)
+          LENGTH(3*(I-1)+3)= 0
+ 555    CONTINUE
+C       ON TRIE LE VECTEUR LENGTH     
+        DO 655 I=1,NNOF-1  
+          DO 755 J=I+1,NNOF           
+            IF (LENGTH(3*(J-1)+1).LT.LENGTH(3*(I-1)+1)) THEN
+              DO 756 K=1,3
+                MEM(K) = LENGTH(3*(I-1)+K)
+ 756          CONTINUE
+              DO 757 K=1,3
+                LENGTH(3*(I-1)+K) = LENGTH(3*(J-1)+K)
+ 757          CONTINUE
+              DO 758 K=1,3
+                LENGTH(3*(J-1)+K) = MEM(K)
+ 758          CONTINUE
+            ENDIF       
+ 755      CONTINUE
+ 655    CONTINUE
+C       M EST PROCHE D'UN SOMMET ? SI OUI, ON LE REPLACE SUR LE SOMMET
+        IF (LENGTH(1).LT.(PREC2*LENGTH(4))) THEN
+           INDPTF(1)= 1
+           INDPTF(2)= INT(LENGTH(2))
+           INDPTF(3)= 0
+           GOTO 222
+        ENDIF
+      ENDIF
+C
+C     TRAITEMENT DES POINTS M PROCHES DES ARETES (FIT TO VERTEX)
+      IF (INDPTF(1).EQ.3) THEN
+        DO 955 I=1,NNOF
+          DO 105 J=1,NDIM
+            A(J)=ZR(IGEOM-1+NDIM*(FA(IFQ,I)-1)+J)
+ 105      CONTINUE
+          NUMNOA=ZI(JCONX1-1+ZI(JCONX2+NMAABS-1)+FA(IFQ,I)-1)
+          IF (I.EQ.NNOF) THEN
+            DO 106 J=1,NDIM
+              B(J)=ZR(IGEOM-1+NDIM*(FA(IFQ,1)-1)+J)
+ 106        CONTINUE
+            NUMNOB=ZI(JCONX1-1+ZI(JCONX2+NMAABS-1)+FA(IFQ,1)-1)
+          ELSE
+            DO 107 J=1,NDIM
+              B(J)=ZR(IGEOM-1+NDIM*(FA(IFQ,I+1)-1)+J)
+ 107        CONTINUE
+            NUMNOB=ZI(JCONX1-1+ZI(JCONX2+NMAABS-1)+FA(IFQ,I+1)-1)
+          ENDIF
+          NORMAB=0.D0
+          COEFFK=0.D0
+          MEMO=0.D0
+          DO 108 K=1,NDIM
+            NORMAB=NORMAB+(B(K)-A(K))**2
+            COEFFK=COEFFK+(B(K)-A(K))*(M(K)-A(K))
+ 108      CONTINUE
+          DO 109 K=1,NDIM
+            MEMO=MEMO+
+     &           (A(K)-M(K)+(COEFFK/NORMAB)*(B(K)-A(K)))**2 
+ 109      CONTINUE
+          LENGTH(3*(I-1)+1)= MEMO
+          LENGTH(3*(I-1)+2)= NUMNOA
+          LENGTH(3*(I-1)+3)= NUMNOB
+ 955    CONTINUE
+C       ON TRIE LE VECTEUR LENGTH     
+        DO 958 I=1,NNOF-1  
+          DO 959 J=I+1,NNOF           
+            IF (LENGTH(3*(J-1)+1).LT.LENGTH(3*(I-1)+1)) THEN
+              DO 960 K=1,3
+                MEM(K) = LENGTH(3*(I-1)+K)
+ 960          CONTINUE
+              DO 961 K=1,3
+                LENGTH(3*(I-1)+K) = LENGTH(3*(J-1)+K)
+ 961          CONTINUE
+              DO 962 K=1,3
+                LENGTH(3*(J-1)+K) = MEM(K)
+ 962          CONTINUE
+            ENDIF       
+ 959      CONTINUE        
+ 958    CONTINUE
+C       M EST PROCHE D'UNE ARETE ? SI OUI, ON LE REPLACE SUR L'ARETE
+        IF (LENGTH(1).LT.(PREC2*LENGTH(4))) THEN
+           INDPTF(1) = 2
+           INDPTF(2) = INT(LENGTH(2))
+           INDPTF(3) = INT(LENGTH(3))
+           GOTO 222
+        ENDIF
+      ENDIF
+
+ 222  CONTINUE
 
 C     TOUT S'EST BIEN PASSE
       CODRET = 1
 
 999   CONTINUE
-C      write(6,*) 'CODRET', CODRET
 
       CALL JEDEMA()
       END

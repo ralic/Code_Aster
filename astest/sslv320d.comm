@@ -1,4 +1,4 @@
-# MODIF  DATE 03/04/2013   AUTEUR NICOLAS G.NICOLAS 
+# MODIF  DATE 09/04/2013   AUTEUR JAUBERT A.JAUBERT 
 # TITRE PROPAGATION PLANE D UNE FISSURE 3D SE DIVISANT ET FUSIONNANT AVEC X-FEM
 # sslv320d.para = tps_job 350 mem_job 1280Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -58,17 +58,16 @@ SIF=CREA_TABLE(LISTE=(_F(LISTE_R=(1.,1.),PARA='K1'),
                         _F(LISTE_I=(1,2),PARA='NUM_PT'),
                         _F(LISTE_R=(0.,30.),PARA='ABSC_CURV'),))
 
-# DEUX FONDS
-SIF2=CREA_TABLE(LISTE=(_F(LISTE_R=(1.,1.,1.,1.),PARA='K1'),
-                       _F(LISTE_R=(0.,0.,0.,0.),PARA='K2'),
-                       _F(LISTE_R=(0.,0.,0.,0.),PARA='K3'),
-                       _F(LISTE_R=(1.,1.,1.,1.),PARA='G'),
-                       _F(LISTE_R=(1.,1.,1.,1.),PARA='G_IRWIN'),
-                       _F(LISTE_I=(1,1,2,2),PARA='NUME_FOND'),
-                       _F(LISTE_I=(1,1,1,1),PARA='NUME_ORDRE'),
-                       _F(LISTE_I=(1,2,1,2),PARA='NUM_PT'),
-                       _F(LISTE_R=(0.,15.,0.,15.),PARA='ABSC_CURV'),))
-
+# QUATRE FONDS
+SIF4=CREA_TABLE(LISTE=(_F(LISTE_R=(1.,1.,1.,1.,1.,1.,1.,1.),PARA='K1'),
+                       _F(LISTE_R=(0.,0.,0.,0.,0.,0.,0.,0.),PARA='K2'),
+                       _F(LISTE_R=(0.,0.,0.,0.,0.,0.,0.,0.),PARA='K3'),
+                       _F(LISTE_R=(1.,1.,1.,1.,1.,1.,1.,1.),PARA='G'),
+                       _F(LISTE_R=(1.,1.,1.,1.,1.,1.,1.,1.),PARA='G_IRWIN'),
+                       _F(LISTE_I=(1,1,2,2,3,3,4,4),PARA='NUME_FOND'),
+                       _F(LISTE_I=(1,1,1,1,1,1,1,1),PARA='NUME_ORDRE'),
+                       _F(LISTE_I=(1,2,1,2,1,2,1,2),PARA='NUM_PT'),
+                       _F(LISTE_R=(0.,15.,0.,15.,0.,15.,0.,15.),PARA='ABSC_CURV'),))
 
 #----------------------------------------------
 #                 MAILLAGE
@@ -112,7 +111,8 @@ PROPA_FISS(METHODE_PROPA='INITIALISATION',
 #----------------------------------------------
 
 Mod=AFFE_MODELE(MAILLAGE=MATOT[0],
-                AFFE=(_F(GROUP_MA=('All',),
+                AFFE=(_F(
+                         GROUP_MA='Vol',
                          PHENOMENE='MECANIQUE',
                          MODELISATION='3D',),),);
 
@@ -214,14 +214,15 @@ for i in range(nbcalc) :
                             OPERATION='SUPERPOSE')    
 
    ModH[i] = AFFE_MODELE(MAILLAGE=MeshH[i],
-                         AFFE=(_F(GROUP_MA=('All',),
+                         AFFE=(_F(
+                         GROUP_MA='Vol',
                          PHENOMENE='MECANIQUE',
                          MODELISATION='3D',),),);
 
    FISSH[i] = DEFI_FISS_XFEM(MODELE=ModH[i],
                              DEFI_FISS=_F(GROUP_MA_FISS='FISS_'+str(i),
                                           GROUP_MA_FOND='FOND_'+str(i)),
-                             GROUP_MA_ENRI='All',)
+                             GROUP_MA_ENRI='Vol',)
 
    LSNH[i]=CREA_CHAMP(TYPE_CHAM='NOEU_NEUT_R',
                        OPERATION='EXTR',
@@ -243,7 +244,7 @@ for i in range(nbcalc) :
 
    MatRaf=AFFE_MATERIAU(MAILLAGE=MeshH[i],
                         MODELE=ModH[i],
-                        AFFE=_F(TOUT = 'OUI',
+                        AFFE=_F(GROUP_MA='Vol',
                                 MATER=Alu,),);
 
    MODX[i]=MODI_MODELE_XFEM(MODELE_IN=ModH[i],FISSURE=FISSH[i],INFO=1,);
@@ -267,7 +268,7 @@ for i in range(nbcalc) :
                  FISSURE=_F(FISS_ACTUELLE=FISSH[i],
                             MAIL_ACTUEL =  MaFi[i],
                             MAIL_PROPAGE = MaFi[i+1],
-                            TABLE=SIF2,),
+                            TABLE=SIF4,),
                  DA_MAX=da,
                  LOI_PROPA=_F(LOI='PARIS',
                               C=3.,
@@ -301,7 +302,7 @@ for i in range(nbcalc) :
       
    DETRUIRE(CONCEPT=_F(NOM=Mod,)); 
    Mod=AFFE_MODELE(MAILLAGE=MATOT[i+1],
-                   AFFE=_F(GROUP_MA=('All'),
+                   AFFE=_F(GROUP_MA='Vol',
                            PHENOMENE='MECANIQUE',
                            MODELISATION='3D',),);
 
@@ -334,8 +335,8 @@ NB_FOND1=RECU_TABLE(CO=FISS[1],NOM_TABLE='NB_FOND_FISS')
 TB_FOND1=RECU_TABLE(CO=FISS[1],NOM_TABLE='FOND_FISS')
 
 TEST_TABLE(REFERENCE='ANALYTIQUE',
-           VALE_CALC_I=2,
-           VALE_REFE_I=2,
+           VALE_CALC_I=4,
+           VALE_REFE_I=4,
            NOM_PARA='NOMBRE',
            TYPE_TEST='MAX',
            TABLE=NB_FOND1,)

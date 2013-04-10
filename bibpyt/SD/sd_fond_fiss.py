@@ -1,4 +1,4 @@
-#@ MODIF sd_fond_fiss SD  DATE 07/01/2013   AUTEUR LADIER A.LADIER 
+#@ MODIF sd_fond_fiss SD  DATE 09/04/2013   AUTEUR JAUBERT A.JAUBERT 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -41,6 +41,7 @@ class sd_fond_fiss(AsBase):
     LNNO           = Facultatif(sd_cham_no())
     LTNO           = Facultatif(sd_cham_no())
     BASLOC         = Facultatif(sd_cham_no())
+    FONDFISG       = Facultatif(AsVR())
 
     def check_BASEFOND(self,checker):
         info = self.INFO.get_stripped()
