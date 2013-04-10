@@ -1,7 +1,7 @@
-#& MODIF COMMANDE  DATE 03/09/2012   AUTEUR ANDRIAM H.ANDRIAMBOLOLONA 
+#& MODIF COMMANDE  DATE 08/04/2013   AUTEUR ZENTNER I.ZENTNER 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -25,7 +25,7 @@ POST_DYNA_ALEA=MACRO(nom="POST_DYNA_ALEA",
                      reentrant='n',
                      UIinfo={"groupes":("Post-traitements","Dynamique",)},
          regles=(UN_PARMI('FRAGILITE','INTE_SPEC'),),
-         FRAGILITE  =FACT(statut='f',fr="donnees pour courbe de fragilite",max='**',
+         FRAGILITE  =FACT(statut='f',fr="donnees pour courbe de fragilite",max=1,
                     TABL_RESU  =SIMP(statut='o',typ=table_sdaster),
                     regles=(UN_PARMI('VALE','LIST_PARA'),),
                     VALE       = SIMP(statut='f',typ='R', min=1,validators=NoRepeat(),max='**' ),
