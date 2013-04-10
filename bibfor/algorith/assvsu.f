@@ -1,12 +1,12 @@
-      SUBROUTINE ASSVSU(   NNO,  NNOS, NFACE,  GEOM,  CRIT,
-     &                   DEPLM, DDEPL,CONGEM,CONGEP, VINTM,
-     &                   VINTP,DEFGEM,DEFGEP,  DSDE, MATUU,
-     &                   VECTU,RINSTM,RINSTP,OPTION, IMATE,
+      SUBROUTINE ASSVSU(NNO,  NNOS, NFACE,  GEOM,  CRIT,
+     &                  DEPLM, DDEPL,CONGEM,CONGEP, VINTM,
+     &                  VINTP,DEFGEM,DEFGEP,  DSDE, MATUU,
+     &                  VECTU,RINSTM,RINSTP,OPTION, IMATE,
      &                  MECANI,PRESS1,PRESS2, TEMPE,DIMDEF,
      &                  DIMCON,DIMUEL,NBVARI,  NDIM,COMPOR,
      &                  TYPMOD, TYPVF,   AXI,PERMAN,NVOIMA,
      &                  NSCOMA,NBVOIS,LIVOIS,NBNOVO,NBSOCO,
-     &                  LISOCO                             )
+     &                  LISOCO)
       IMPLICIT NONE
 
       INCLUDE 'jeveux.h'
@@ -33,7 +33,7 @@
       LOGICAL AXI,PERMAN
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 15/01/2013   AUTEUR DELMAS J.DELMAS 
+C MODIF ALGORITH  DATE 09/04/2013   AUTEUR GRANET S.GRANET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -71,7 +71,7 @@ C NE SERT QU EN EF
 C IN NDDLFA NB DE DDL SUR LES FACE DE DIMENSION DIM-1 NE SERT
 C QU EN VF
 C IN NDDLK NB DE DDL AU CENTRE
-C IN TYPVF 1 OU 2 : SCHEMA A DEUX POINTS OU SUDM
+C IN TYPVF 1 OU 2 : SCHEMA A DEUX POINTS (NON DISPONIBLE) OU SUDM
 C IN NDIM DIMENSION DE L'ESPACE
 C IN DIMUEL NB DE DDL TOTAL DE L'ELEMENT
 C IN DIMCON DIMENSION DES CONTRAINTES GENERALISEES ELEMENTAIRES
@@ -202,12 +202,10 @@ C PCP PRESSION CAPILLAIRE AU CENTRE DE LA MAILLE
 C PCPV PRESSION CAPILLAIRE CENTRE VOISIN
 C
 C PWP PRESSION EAU
-C PWPV PRESSION EAU VOISIN
 C DPWP1 DERIVEE PRESSION EAU PAR P1
 C DPWP2 DERIVEE PRESSION EAU PAR P2
 C
 C PGP PRESSION DE GAZ AU CENTRE DE LA MAILLE
-C PGPV PRESSION GAZ CENTRE VOISIN
 C
 C CVP CONCENTRATION VAPEUR DANS PHASE GAZEUSE
 C DCVP1 DERIVEE CVP /P1
@@ -216,12 +214,6 @@ C CVPV CONCENTRATION VAPEUR DANS PHASE GAZEUSE VOISIN
 C DCVP1V DERIVEE CVPV /P1V
 C DCVP2V DERIVEE CVPV /P2V
 C
-C CAS CONCENTRATION AIR SEC DANS PHASE GAZEUSE
-C DCAS1 DERIVEE CAS /P1
-C DCAS2 DERIVEE CAS /P2
-C CASV CONCENTRATION AIR SEC DANS PHASE GAZEUSE VOISIN
-C DCAS1V DERIVEE CASV /P1V
-C DCAS2V DERIVEE CASV /P2V
 C
 C CAD ENTRATION AIR DISSOUS
 C DCAD1 DERIVEE CAD /P1
@@ -258,30 +250,6 @@ C DASP2V DERIVEE MODIBILTE AIR SEC / PRESSION 2 DU VOISIN
 C DVPP2V DERIVEE MODIBILTE VAPEUR / PRESSION 2 DU VOISIN
 
 
-C FLUW FLUX MASSIQUE EAU SUR FACE POUR TPFA
-C FLUVP FLUX MASSIQUE VAPEUR SUR FACE POUR TPFA
-C FLUAS FLUX MASSIQUE AIR SEC SUR FACE POUR TPFA
-C FLUAD FLUX MASSIQUE AIR DISSOUS SUR FACE POUR TPFA
-C
-C FWP1 DERIVEE FLUX EAU SUR FACE / PRESSION 1 POUR TPFA
-C FWP2 DERIVEE FLUX EAU SUR FACE / PRESSION 2 POUR TPFA
-C FWP1V DERIVEE FLUX EAU SUR FACE / PRESSION 1 DU VOIS POUR TPFA
-C FWP2V DERIVEE FLUX EAU SUR FACE / PRESSION 2 DU VOIS POUR TPFA
-
-C FVPP1 DERIVEE FLUX VAPEUR SUR FACE / PRESSION 1 POUR TPFA
-C FVPP2 DERIVEE FLUX VAPEUR SUR FACE / PRESSION 2 POUR TPFA
-C FVPP1V DERIVEE FLUX VAPEUR SUR FACE / PRESSION 1 DU VOIS POUR TPFA
-C FVPP2V DERIVEE FLUX VAPEUR SUR FACE / PRESSION 2 DU VOIS POUR TPFA
-
-C FASP1 DERIVEE FLUX AIR SEC SUR FACE / PRESSION 1 POUR TPFA
-C FASP2 DERIVEE FLUX AIR SEC SUR FACE / PRESSION 2 POUR TPFA
-C FASP1V DERIVEE FLUX AIR SEC SUR FACE / PRESSION 1 DU VOIS POUR TPFA
-C FASPV2 DERIVEE FLUX AIR SEC SUR FACE / PRESSION 2 DU VOIS POUR TPFA
-C
-C FADP1 DERIVEE FLUX AIR DISSOUS SUR FACE / PRESSION 1 POUR TPFA
-C FADP2 DERIVEE FLUX AIR DISSOUS SUR FACE / PRESSION 2 POUR TPFA
-C FADP1V DERIVEE FLUX AIR DISSOUS SUR FACE/PRESSION1 DU VOIS POUR TPFA
-C FADP2V DERIVEE FLUX AIR DISSOUS SUR FACE/PRESSION 2 DU VOIS POUR TPFA
 C
 C =====================================================================
 C VARIABLES LOCALES POUR CALCULS VF SUSHI
@@ -300,10 +268,6 @@ C
 C CVPF CONCENTRATION VAPEUR DANS PHASE GAZEUSE SUR LA FACE
 C DCVP1F DERIVEE CVP /P1 SUR LA FACE
 C DCVP2F DERIVEE CVP /P2 SUR LA FACE
-C
-C CASF CONCENTRATION AIR SEC DANS PHASE GAZEUSE SUR LA FACE
-C DCAS1F DERIVEE CAS /P1 SUR LA FACE
-C DCAS2F DERIVEE CAS /P2 SUR LA FACE
 C
 C CADF CONCENTRATION AIR DISSOUS SUR LA FACE
 C DCAD1F DERIVEE CAD /P1 SUR LA FACE
@@ -566,16 +530,14 @@ C =====================================================================
 
       LOGICAL VF
       INTEGER NUMAV
-      REAL*8  XLK,YLK,TKL
       REAL*8  MFACE(MAXFA),DFACE(MAXFA),
      &        XFACE(MAXDIM,MAXFA),
      &        NORMFA(MAXDIM,MAXFA),VOL,VOLV
       INTEGER IFA,JFA,JFAV,IDIM
-      REAL*8  PCP,PCPV,DPWP1,DPWP2
-      REAL*8  PGP,PGPV,DPGP1,DPGP2
-      REAL*8  PWP,PWPV
+      REAL*8  PCP,DPWP1,DPWP2
+      REAL*8  PGP,DPGP1,DPGP2
+      REAL*8  PWP
       REAL*8  CVP,CVPV,DCVP1,DCVP2,DCVP1V,DCVP2V
-      REAL*8  CAS,CASV,DCAS1,DCAS2,DCAS1V,DCAS2V
       REAL*8  CAD,CADV,DCAD1,DCAD2,DCAD1V,DCAD2V
 
       INTEGER NFACEM
@@ -709,6 +671,7 @@ C NOUVELLE VARIABLES POUR SUSHI POUR TRAITER LA DIFFUSION PAR MOYENNE
       INTEGER  ZZADMA,IVOIS,LIG,COL
       INTEGER  IADP1K,IADP2K,IADP1,IADP2
       INTEGER  ADCM1,ADCM2,ADCF1,ADCF2
+C
 C---------------------------------------
 C FONCTIONS FORMULES D ADRESSAGE DES DDL
 C---------------------------------------
@@ -717,19 +680,31 @@ C---------------------------------------
       IADP2(FA)=2*(FA-1)+2
       ADCF1(FA)=2*(FA-1)+1
       ADCF2(FA)=2*(FA-1)+2
-      IF ( TYPVF.EQ.1) THEN
-       IADP1K= 1
-       IADP2K= 2
-       ADCM1 = 1
-       ADCM2 = 2
-      ELSE
-       IADP1K=2*NFACE+1
-       IADP2K=2*NFACE+2
-       ADCM1 = 2*NFACE+1
-       ADCM2 = 2*NFACE+2
-      ENDIF
+      IADP1K=2*NFACE+1
+      IADP2K=2*NFACE+2
+      ADCM1 = 2*NFACE+1
+      ADCM2 = 2*NFACE+2
       CALL INICSU(VALCEN,VALCEV, VALFAC, VALFAV,MAXFA)
 C
+C ================================================================
+C --- INITIALISATION
+C ================================================================
+      ZERO=0.D0
+      CALL VECINI(MAXDIM,ZERO,XG)
+C      
+      CALL VECINI(MAXFA,ZERO,PCPF)
+      CALL VECINI(MAXFA,ZERO,PGPF)
+      CALL VECINI(MAXFA,ZERO,DPGP1F)
+      CALL VECINI(MAXFA,ZERO,DPGP2F)
+      CALL VECINI(MAXFA,ZERO,PWPF)
+      CALL VECINI(MAXFA,ZERO,DPWP1F)
+      CALL VECINI(MAXFA,ZERO,DPWP2F)
+      CALL VECINI(MAXFA,ZERO,CVPF)
+      CALL VECINI(MAXFA,ZERO,DCVP1F)
+      CALL VECINI(MAXFA,ZERO,DCVP2F)
+      CALL VECINI(MAXFA,ZERO,CADF)
+      CALL VECINI(MAXFA,ZERO,DCAD1F)
+      CALL VECINI(MAXFA,ZERO,DCAD2F)
 C
       ALPHA = CRIT(13)
 C============================
@@ -761,7 +736,6 @@ C
          XG(IDIM)=GEOM(IDIM,NNO)
   100 CONTINUE
 C
-      ZERO=0.D0
 C
 C ====================================================================
 C --- DETERMINATION DES VARIABLES CARACTERISANT LE MILIEU ------------
@@ -847,27 +821,6 @@ C ====================================================================
     3 CONTINUE
       ENDIF
 C ================================================================
-C --- INITIALISATION
-C ================================================================
-      PCPV=0.D0
-      PGPV=0.D0
-      PWPV=0.D0
-      DO 31 I=1,MAXFA
-            PCPF(I)  =0.D0
-            PGPF(I)  =0.D0
-            DPGP1F(I)=0.D0
-            DPGP2F(I)=0.D0
-            PWPF(I)  =0.D0
-            DPWP1F(I)=0.D0
-            DPWP2F(I)=0.D0
-            CVPF(I)  =0.D0
-            DCVP1F(I)=0.D0
-            DCVP2F(I)=0.D0
-            CADF(I)  =0.D0
-            DCAD1F(I)=0.D0
-            DCAD2F(I)=0.D0
-   31 CONTINUE
-C ================================================================
 C --- CALCUL DES QUANTITES GEOMETRIQUES
 C ================================================================
       CALL CABHVF(MAXFA,MAXDIM,
@@ -879,7 +832,7 @@ C ON MET DANS LE TABLEAU DES DEF GENERALISES LES PRESSIONS
 C LES GRADIENTS SONT MIS A ZERO CAR ON NE SAIT PAS LES CALCULER
 C A CE NIVEAU EN VF4
 C ================================================================
-      IF((TYPVF.EQ.1).OR.(TYPVF.EQ.2)) THEN
+      IF(TYPVF.EQ.2) THEN
          IF (YAP1.EQ.1) THEN
             DEFGEM(ADDEP1)= DEPLM(IADP1K)
             DEFGEP(ADDEP1)= DDEPL(IADP1K)+DEPLM(IADP1K)
@@ -1046,9 +999,6 @@ C
             DCVP1F(IFA) = VALFAC(IFA,DCONP1,WVAP)
             DCVP2F(IFA) = VALFAC(IFA,DCONP2,WVAP)
    10    CONTINUE
-         CAS = 1-CVP
-         DCAS1 = -DCVP1
-         DCAS2 = -DCVP2
          CAD = VALCEN(CON,AIRDIS)
          DCAD1 = VALCEN(DCONP1,AIRDIS)
          DCAD2 = VALCEN(DCONP2,AIRDIS)
@@ -1322,14 +1272,6 @@ C ================================================================
          CALL ASSERT(IRET.EQ.0)
          CALL TECAC2('OOO',NUMAV,'PCONTMR','L',1,ICONMV,IRET)
          CALL ASSERT(IRET.EQ.0)
-         IF ( TYPVF.EQ.1) THEN
-C
-C TRANSMITIVITES EN VF DEUX POINTS
-C
-            XLK = ZR(IGEOMV+NDIM*(NNO-1))-GEOM(1,NNO)
-            YLK = ZR(IGEOMV+NDIM*(NNO-1)+1)-GEOM(2,NNO)
-            TKL = MFACE(FA)/(XLK*NORMFA(1,FA)+YLK*NORMFA(2,FA))
-         ENDIF
          IF (CONT) THEN
             CALL TECAC2('OOO',NUMAV,'PDEPLPR','L',1,IDDEPV,IRET)
             CALL ASSERT(IRET.EQ.0)
@@ -1433,9 +1375,6 @@ C COMMUNES A VF 2PNTS ET SUSHI
          DCVP1V = VALCEV(DCONP1,WVAP,FA)
          DCVP2V = VALCEV(DCONP2,WVAP,FA)
 C
-         CASV = 1.D0-CVPV
-         DCAS1V = -DCVP1V
-         DCAS2V = -DCVP2V
 C
          CADV = VALCEV(CON,AIRDIS,FA)
          DCAD1V = VALCEV(DCONP1,AIRDIS,FA)
@@ -1509,265 +1448,7 @@ C ========================================
      &                  MOYAD,MOYAD1,MOYAD2)
          ENDIF
 C====================================================================
-C====================================================================
-C VF À 2 POINTS
-C====================================================================
 C===================================================================
-         IF(TYPVF.EQ.1) THEN
-C
-C TERMES DE FLUX
-C
-            PCP = DDEPL(1)+DEPLM(1)+P10
-            PGP = DDEPL(2)+DEPLM(2)+P20
-            DPGP1 = 0.D0
-            DPGP2 = 1.D0
-C
-            PCPV = ZR(IDDEPV)+ZR(IDEPMV)+P10V
-            PGPV = ZR(IDDEPV+1)+ZR(IDEPMV+1)+P20V
-C
-            PWP = PGP-PCP
-            DPWP1 = -1.D0
-            DPWP2 = +1.D0
-            PWPV = PGPV-PCPV
-C
-            CVP = VALCEN(CON,WVAP)
-            DCVP1 = VALCEN(DCONP1,WVAP)
-            DCVP2 = VALCEN(DCONP2,WVAP)
-C
-            CAS = 1.D0-CVP
-            DCAS1 = -DCVP1
-            DCAS2 = -DCVP2
-C
-            CAD = VALCEN(CON,AIRDIS)
-            DCAD1 = VALCEN(DCONP1,AIRDIS)
-            DCAD2 = VALCEN(DCONP2,AIRDIS)
-C
-C NT.K.N POUR ELEMENT
-C
-            IF ( NDIM.EQ.2) THEN
-               KINTVF(1) = VALCEN(VKINT ,KXX)
-               KINTVF(2) = VALCEN(VKINT ,KYY)
-               KINTVF(3) = VALCEN(VKINT ,KXY)
-               KINTVF(4) = 0.D0
-               KINTVF(5) = 0.D0
-               KINTVF(6) = 0.D0
-            ELSE
-               KINTVF(1) = VALCEN(VKINT ,KXX)
-               KINTVF(2) = VALCEN(VKINT ,KYY)
-               KINTVF(3) = VALCEN(VKINT ,KZZ)
-               KINTVF(4) = VALCEN(VKINT ,KXY)
-               KINTVF(5) = VALCEN(VKINT ,KYZ)
-               KINTVF(6) = VALCEN(VKINT ,KZX)
-            ENDIF
-            NKN = 0.D0
-            CALL ASSERT((VALCEN(VKINT ,KXY).EQ.0.D0).AND.
-     &                  (VALCEN(VKINT ,KYZ).EQ.0.D0).AND.
-     &                  (VALCEN(VKINT ,KZX).EQ.0.D0))
-            DO 225 I = 1 , NDIM
-               NKN = NORMFA(I,FA)*NORMFA(I,FA)*KINTVF(I)
-  225       CONTINUE
-C
-C NT.K.N POUR VOISIN
-C
-            IF ( NDIM.EQ.2) THEN
-               KINTVF(1) = VALCEV(VKINT ,KXX,FA)
-               KINTVF(2) = VALCEV(VKINT ,KYY,FA)
-               KINTVF(3) = VALCEV(VKINT ,KXY,FA)
-               KINTVF(4) = 0.D0
-               KINTVF(5) = 0.D0
-               KINTVF(6) = 0.D0
-            ELSE
-               KINTVF(1) = VALCEV(VKINT ,KXX,FA)
-               KINTVF(2) = VALCEV(VKINT ,KYY,FA)
-               KINTVF(3) = VALCEV(VKINT ,KZZ,FA)
-               KINTVF(4) = VALCEV(VKINT ,KXY,FA)
-               KINTVF(5) = VALCEV(VKINT ,KYZ,FA)
-               KINTVF(6) = VALCEV(VKINT ,KZX,FA)
-            ENDIF
-            CALL ASSERT((VALCEV(VKINT ,KXY,FA).EQ.0.D0).AND.
-     &                  (VALCEV(VKINT ,KYZ,FA).EQ.0.D0).AND.
-     &                  (VALCEV(VKINT ,KZX,FA).EQ.0.D0))
-            NKNV = 0.D0
-            DO 226 I = 1 , NDIM
-               NKNV = NORMFA(I,FA)*NORMFA(I,FA)*KINTVF(I)
-  226       CONTINUE
-            KINTFA=NKN*NKNV/(NKN+NKNV)
-C
-C DARCY EAU ET AIR DISSOUS DECENTRES SELON PHASE LIQUIDE
-C
-            IF(PWPV.GT.PWP) THEN
-               MOBWFA = VALCEV(MOB,WLIQ,FA)
-               MOADFA = VALCEV(MOB,AIRDIS,FA)
-               DWP1V = VALCEV(DMOBP1,WLIQ,FA)
-               DADP1V = VALCEV(DMOBP1,AIRDIS,FA)
-               DWP2V = VALCEV(DMOBP2,WLIQ,FA)
-               DADP2V = VALCEV(DMOBP2,AIRDIS,FA)
-               DWP1 = 0.D0
-               DADP1 = 0.D0
-               DWP2 = 0.D0
-               DADP2 = 0.D0
-            ELSE
-               MOBWFA = VALCEN(MOB,WLIQ)
-               MOADFA = VALCEN(MOB,AIRDIS)
-               DWP1 = VALCEN(DMOBP1,WLIQ)
-               DADP1 = VALCEN(DMOBP1,AIRDIS)
-               DWP2 = VALCEN(DMOBP2,WLIQ)
-               DADP2 = VALCEN(DMOBP2,AIRDIS)
-               DWP1V = 0.D0
-               DADP1V = 0.D0
-               DWP2V = 0.D0
-               DADP2V = 0.D0
-            ENDIF
-C
-C DARCY AIR SEC ET VAPEUR DECENTRES SELON PHASE GAZ
-C
-            IF(PGPV.GT.PGP) THEN
-               MOASFA = VALCEV(MOB,AIRSEC,FA)
-               MOVPFA = VALCEV(MOB,WVAP,FA)
-               DASP1V = VALCEV(DMOBP1,AIRSEC,FA)
-               DVPP1V = VALCEV(DMOBP1,WVAP,FA)
-               DASP2V = VALCEV(DMOBP2,AIRSEC,FA)
-               DVPP2V = VALCEV(DMOBP2,WVAP,FA)
-               DASP1 = 0.D0
-               DVPP1 = 0.D0
-               DASP2 = 0.D0
-               DVPP2 = 0.D0
-            ELSE
-               MOASFA = VALCEN(MOB,AIRSEC)
-               MOVPFA = VALCEN(MOB,WVAP)
-               DASP1 = VALCEN(DMOBP1,AIRSEC)
-               DVPP1 = VALCEN(DMOBP1,WVAP)
-               DASP2 = VALCEN(DMOBP2,AIRSEC)
-               DVPP2 = VALCEN(DMOBP2,WVAP)
-               DASP1V = 0.D0
-               DVPP1V = 0.D0
-               DASP2V = 0.D0
-               DVPP2V = 0.D0
-            ENDIF
-C
-C CONTRIBUTION DARCY AUX FLUX
-C
-C ========== CALCUL DE FLUW,FWP1,FWP2,FWP1V ET FWP2V ================
-C
-            CALL CAFHVF(KINTFA,TKL,MOBWFA,DWP1,DWP2,DWP1V,DWP2V,PWPV,
-     &                  PWP,DPWP1,DPWP2,FLUW,FWP1,FWP2,FWP1V,FWP2V)
-C
-C ======== CALCUL DE FLUVP, FVPP1, FVPP2, FVPP1V ET FVPP2V ==========
-C
-            CALL CAFHVF(KINTFA,TKL,MOVPFA,DVPP1,DVPP2,DVPP1V,DVPP2V,
-     &                  PGPV,PGP,DPGP1,DPGP2,FLUVP,FVPP1,FVPP2,FVPP1V,
-     &                  FVPP2V)
-C
-C ======== CALCUL DE FLUAS, FASP1, FASP2, FASP1V ET FASP2V ==========
-C
-            CALL CAFHVF(KINTFA,TKL,MOASFA,DASP1,DASP2,DASP1V,DASP2V,
-     &                  PGPV,PGP,DPGP1,DPGP2,FLUAS,FASP1,FASP2,FASP1V,
-     &                  FASP2V)
-C
-C ======== CALCUL DE FLUAD, FADP1, FADP2, FADP1V ET FADP2V ==========
-C
-            CALL CAFHVF(KINTFA,TKL,MOADFA,DADP1,DADP2,DADP1V,DADP2V,
-     &                  PWPV,PWP,DPWP1,DPWP2,FLUAD,FADP1,FADP2,FADP1V,
-     &                  FADP2V)
-C
-C CONTRIBUTION FICK AUX FLUX
-            DIVP1V=0.D0
-            DIVP2V=0.D0
-            DIAS1V=0.D0
-            DIAS2V=0.D0
-            DIAD1V=0.D0
-            DIAD2V=0.D0
-C*****************************************************************
-C A VOIR SI BESOIN DE CETTE FONCTION OU SI ON PEUT METTRE CAFHVF
-C*****************************************************************
-C ======== CALCUL DE FLUVP, FVPP1, FVPP2, FVPP1V ET FVPP2V ==========
-            CALL CAFFVF(TKL,VALCEN(DIFFU,WVAP),
-     &                  VALCEN(DDIFP1,WVAP),
-     &                  VALCEN(DDIFP2,WVAP),
-     &                  DIVP1V,DIVP2V,CVPV,CVP,
-     &                  DCVP1V,DCVP2V,DCVP1,DCVP2,FLUVP,FVPP1,
-     &                  FVPP2,FVPP1V,FVPP2V)
-C
-C ======== CALCUL DE FLUAS, FASP1, FASP2, FASP1V ET FASP2V ==========
-            CALL CAFFVF(TKL,VALCEN(DIFFU,AIRSEC),
-     &                 VALCEN(DDIFP1,AIRSEC),
-     &                 VALCEN(DDIFP2,AIRSEC),
-     &                 DIAS1V,DIAS2V,CASV,CAS,
-     &                 DCAS1V,DCAS2V,DCAS1,DCAS2,FLUAS,FASP1,
-     &                 FASP2,FASP1V,FASP2V)
-C ======== CALCUL DE FLUAD, FADP1, FADP2, FADP1V ET FADP2V ==========
-            CALL CAFFVF(TKL,VALCEN(DIFFU,AIRDIS),
-     &                 VALCEN(DDIFP1,AIRDIS),
-     &                 VALCEN(DDIFP2,AIRDIS),
-     &                 DIAD1V,DIAD2V,CADV,CAD,
-     &                 DCAD1V,DCAD2V,DCAD1,DCAD2,FLUAD,FADP1,
-     &                 FADP2,FADP1V,FADP2V )
-            IF(CONT) THEN
-C
-C STOCKAGE DES FLUX DANS TABLEAU DES CONTRAINTES
-C
-               CONGEP(ADCP11+1,1)= CONGEP(ADCP11+1,1)+FLUW
-               CONGEP(ADCP12+1,1)= CONGEP(ADCP12+1,1)+FLUVP
-               CONGEP(ADCP21+1,1)= CONGEP(ADCP21+1,1)+FLUAS
-               CONGEP(ADCP22+1,1)= CONGEP(ADCP22+1,1)+FLUAD
-C
-C LES FLUX PAR FACE NE SONT STOCKES QUE POUR POST TRAITEMENT
-C
-               CONGEP(ADCP11+1,FA+1)=FLUW
-               CONGEP(ADCP12+1,FA+1)=FLUVP
-               CONGEP(ADCP21+1,FA+1)=FLUAS
-               CONGEP(ADCP22+1,FA+1)=FLUAD
-C
-C VECTEUR RESIDU
-C
-               VECTU(ADCM1)= VECTU(ADCM1)+FLUW+FLUVP
-               VECTU(ADCM2)= VECTU(ADCM2)+FLUAS+FLUAD
-            ENDIF
-            IF (TANGE) THEN
-C
-C DERIVEES CONSERVATION EAU / P1
-C
-               MATUU(ZZADMA(0,ADCM1,IADP1K))=
-     &               MATUU(ZZADMA(0,ADCM1,IADP1K))+ FWP1 + FVPP1
-C
-C DERIVEES CONSERVATION EAU / P2
-C
-               MATUU(ZZADMA(0,ADCM1,IADP2K))=
-     &               MATUU(ZZADMA(0,ADCM1,IADP2K))+ FWP2 + FVPP2
-
-C
-C DERIVEES CONSERVATION AIR / P1
-C
-               MATUU(ZZADMA(0,ADCM2,IADP1K))=
-     &               MATUU(ZZADMA(0,ADCM2,IADP1K))+ FASP1 + FADP1
-C
-C DERIVEES CONSERVATION AIR / P2
-C
-               MATUU(ZZADMA(0,ADCM2,IADP2K))=
-     &               MATUU(ZZADMA(0,ADCM2,IADP2K))+ FASP2 + FADP2
-
-C
-C DERIVEES CONSERVATION EAU / P1 DU VOISIN
-C
-               MATUU(ZZADMA(KVOIS,ADCM1,IADP1K))=
-     &               MATUU(ZZADMA(KVOIS,ADCM1,IADP1K))+ FWP1V + FVPP1V
-C
-C DERIVEES CONSERVATION EAU / P2 DU VOISIN
-C
-               MATUU(ZZADMA(KVOIS,ADCM1,IADP2K))=
-     &               MATUU(ZZADMA(KVOIS,ADCM1,IADP2K))+ FWP2V + FVPP2V
-C
-C DERIVEES CONSERVATION AIR / P1 DU VOISIN
-C
-               MATUU(ZZADMA(KVOIS,ADCM2,IADP1K))=
-     &               MATUU(ZZADMA(KVOIS,ADCM2,IADP1K))+ FASP1V + FADP1V
-C
-C DERIVEES CONSERVATION AIR / P2 DU VOISIN
-C
-               MATUU(ZZADMA(KVOIS,ADCM2,IADP2K))=
-     &               MATUU(ZZADMA(KVOIS,ADCM2,IADP2K))+ FASP2V + FADP2V
-            END IF
-         ENDIF
 C FIN DE LA BOUCLE SUR LES VOISINS
    22 CONTINUE
 C====================================================================

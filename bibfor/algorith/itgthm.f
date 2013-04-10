@@ -14,9 +14,9 @@
       CHARACTER*8  ELREFE,ELREF2
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 26/04/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGORITH  DATE 09/04/2013   AUTEUR GRANET S.GRANET 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -38,7 +38,7 @@ C --- ADAPTATION AU MODE D'INTEGRATION ---------------------------------
 C --- DEFINITION DE L'ELEMENT (NOEUDS, SOMMETS, POINTS DE GAUSS) -------
 C ======================================================================
 C VF        .TRUE. SI VF
-C TYPVF  TYPE DE VF : 1  = TPFA (FLUX A DEUX POINTS)
+C TYPVF  TYPE DE VF : 1  = TPFA (FLUX A DEUX POINTS - SUPPRIME)
 C                 2  = SUSHI AVEC VOISIN DECENTRE MAILLE (SUDM)
 C                 3  = SUSHI AVEC VOISIN DECENTRE ARETE (SUDA)
 C                 4  = SUSHI AVEC VOISIN CENTRE  (SUC)
@@ -127,12 +127,7 @@ C ======================================================================
        NNOM   = NNO - NNOS
        DIMUEL = NNOS*NDDLS + NNOM*NDDLM + NDDLK
       ELSE
-       IF ( TYPVF.EQ.1) THEN
-        NPG    = NPI
-        NDDLS  = 0
-        NDDLFA = 0
-        NDDLK  = PRESS1(1) + PRESS2(1) + TEMPE(1)
-       ELSE IF (( TYPVF.EQ.2).OR.( TYPVF.EQ.3)
+       IF (( TYPVF.EQ.2).OR.( TYPVF.EQ.3)
      >          .OR.( TYPVF.EQ.4)) THEN
         NPG    = NPI
         NDDLS  = 0
@@ -140,6 +135,11 @@ C ======================================================================
         NDDLK  = PRESS1(1) + PRESS2(1) + TEMPE(1)
        ELSE
         CALL U2MESG('F','VOLUFINI_9',0,' ',1,TYPVF,0,0.D0)
+C--      POUR UN SCHEMA A DEUX POINTS  ( TYPVF.EQ.1) ON AURAIT EU
+C        NPG    = NPI
+C        NDDLS  = 0
+C        NDDLFA = 0
+C--      NDDLK  = PRESS1(1) + PRESS2(1) + TEMPE(1)
        ENDIF
        DIMUEL = NNOS*NDDLS + NFACE*NDDLFA + NDDLK
       ENDIF

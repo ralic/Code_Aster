@@ -7,9 +7,9 @@
      &                  CODRET)
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 09/11/2012   AUTEUR DELMAS J.DELMAS 
+C MODIF ALGORITH  DATE 09/04/2013   AUTEUR GRANET S.GRANET 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -142,14 +142,12 @@ C
       ADCF1(FA)=2*(FA-1)+1
       ADCF2(FA)=2*(FA-1)+2
 
+      ADCM1 = 2*NFACE+1
+      ADCM2 = 2*NFACE+2
 
-      IF ( TYPVF.EQ.1) THEN
-       ADCM1 = 1
-       ADCM2 = 2
-      ELSE
-       ADCM1 = 2*NFACE+1
-       ADCM2 = 2*NFACE+2
-      ENDIF
+C      REMARQUE : POUR SCHEMA DEUX PONITS (TYPVF.EQ.1) ON AURAIT
+C       ADCM1 = 1
+C       ADCM2 = 2
 C
       CALL ASSERT(OPTION.EQ.'FORC_NODA')
 C =====================================================================
@@ -165,14 +163,7 @@ C =====================================================================
 C
 C TERMES DE FLUX
 C
-      IF(TYPVF.EQ.1) THEN
-         SFLUW = CONGEM(ADCP11+1,1)
-         SFLUVP = CONGEM(ADCP12+1,1)
-         SFLUAS =CONGEM(ADCP21+1,1)
-         SFLUAD = CONGEM(ADCP22+1,1)
-         VECTU(ADCM1) = SFLUW+SFLUVP
-         VECTU(ADCM2) = SFLUAS+SFLUAD
-      ELSE IF ((TYPVF.EQ.2)) THEN
+      IF ((TYPVF.EQ.2)) THEN
          DO 2 IFA=1,NFACE
             VECTU(ADCF1(IFA))=CONGEM(ADCP11+1,IFA+1)
             VECTU(ADCF2(IFA))=CONGEM(ADCP12+1,IFA+1)
@@ -185,6 +176,13 @@ C
          VECTU(ADCM2)= SFLUAS+SFLUAD
       ELSE
          CALL U2MESG('F','VOLUFINI_9',0,' ',1,TYPVF,0,0.D0)
+C REMARQUE POUR UN SCHEMA A DEUX POINT TYPVF=1
+C	  SFLUW = CONGEM(ADCP11+1,1)
+C	  SFLUVP = CONGEM(ADCP12+1,1)
+C	  SFLUAS =CONGEM(ADCP21+1,1)
+C	  SFLUAD = CONGEM(ADCP22+1,1)
+C	  VECTU(ADCM1) = SFLUW+SFLUVP
+C         VECTU(ADCM2) = SFLUAS+SFLUAD
       ENDIF
 C ======================================================================
 C ======================================================================
