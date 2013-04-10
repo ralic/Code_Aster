@@ -1,4 +1,4 @@
-#@ MODIF mac3coeur_coeur Mac3coeur  DATE 02/04/2013   AUTEUR PERONY R.PERONY 
+#@ MODIF mac3coeur_coeur Mac3coeur  DATE 09/04/2013   AUTEUR PERONY R.PERONY 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -41,7 +41,7 @@ class Coeur(object):
         # Position des grilles pour definition du champ de fluence
         'altitude',
         # Position des crayons et tubes-guides pour definition du champ de fluence
-        'XINFT', 'XSUPT', 'XINFC', 'XSUPC', 'LONCR',
+        'XINFT', 'XSUPT', 'XINFC', 'XSUPC', 'LONCR','LONTU',
         # Caractéristique de la cuve 
         'pas_assemblage',       
         'XINFCUVE','XSUPCUVE',
@@ -645,6 +645,67 @@ class Coeur(object):
                                _F(NOM='LISPG',UNION =tuple(LIS_PG),),),);
 
         return _MA
+        
+    def recuperation_donnees_geom(self,MAILL):
+        """recuperation de donnees géometrique a partir du maillage"""
+        from Accas import _F
+        CREA_MAILLAGE = self.macro.get_cmd('CREA_MAILLAGE')
+        RECU_TABLE = self.macro.get_cmd('RECU_TABLE')
+        DETRUIRE = self.macro.get_cmd('DETRUIRE')                
+                
+        #--- recuperation de donnees géometriques ---
+        # nombre d'assemblages dans le coeur
+        self.NBAC = len(self.collAC.values())
+        
+        # altitudes mini et maxi de la cavité de coeur
+        _ma_tmp = CREA_MAILLAGE(MAILLAGE = MAILL,RESTREINT = _F(GROUP_MA = 'EBOINF',),)
+        _TAB_tmp= RECU_TABLE(CO = _ma_tmp, NOM_TABLE = 'CARA_GEOM',)
+        self.XINFCUVE = _TAB_tmp['X_MIN',1]
+        DETRUIRE(CONCEPT=_F(NOM=_ma_tmp),INFO=1,);
+        DETRUIRE(CONCEPT=_F(NOM=_TAB_tmp),INFO=1,);
+        
+        _ma_tmp = CREA_MAILLAGE(MAILLAGE = MAILL,RESTREINT = _F(GROUP_MA = 'MAINTIEN',),)
+        _TAB_tmp= RECU_TABLE(CO = _ma_tmp, NOM_TABLE = 'CARA_GEOM',)
+        self.XSUPCUVE = _TAB_tmp['X_MAX',1]
+        DETRUIRE(CONCEPT=_F(NOM=_ma_tmp),INFO=1,);
+        DETRUIRE(CONCEPT=_F(NOM=_TAB_tmp),INFO=1,);
+        
+        # altitudes mini et maxi, et longueur de l'ensemble des crayons
+        _ma_tmp = CREA_MAILLAGE(MAILLAGE = MAILL,RESTREINT = _F(GROUP_MA = 'CRAYON',),)
+        _TAB_tmp= RECU_TABLE(CO = _ma_tmp, NOM_TABLE = 'CARA_GEOM',)
+        self.XINFC = _TAB_tmp['X_MIN',1]
+        self.XSUPC = _TAB_tmp['X_MAX',1]
+        self.LONCR = _TAB_tmp['X_MAX',1] - _TAB_tmp['X_MIN',1]
+        DETRUIRE(CONCEPT=_F(NOM=_ma_tmp),INFO=1,);
+        DETRUIRE(CONCEPT=_F(NOM=_TAB_tmp),INFO=1,);
+        
+        # altitudes mini et maxi, et longueur de l'ensemble des tubes
+        _ma_tmp = CREA_MAILLAGE(MAILLAGE = MAILL,RESTREINT = _F(GROUP_MA = 'T_GUIDE',),)
+        _TAB_tmp= RECU_TABLE(CO = _ma_tmp, NOM_TABLE = 'CARA_GEOM',)
+        self.XINFT = _TAB_tmp['X_MIN',1]
+        self.XSUPT = _TAB_tmp['X_MAX',1]
+        self.LONTU = _TAB_tmp['X_MAX',1] - _TAB_tmp['X_MIN',1]
+        DETRUIRE(CONCEPT=_F(NOM=_ma_tmp),INFO=1,);
+        DETRUIRE(CONCEPT=_F(NOM=_TAB_tmp),INFO=1,);
+        
+        # altitudes moyennes des grilles
+        self.altitude = []
+        _ma_tmp = CREA_MAILLAGE(MAILLAGE = MAILL,RESTREINT = _F(GROUP_MA = 'ELA',),)
+        _TAB_tmp= RECU_TABLE(CO = _ma_tmp, NOM_TABLE = 'CARA_GEOM',)
+        altimax = _TAB_tmp['X_MAX',1]
+        DETRUIRE(CONCEPT=_F(NOM=_ma_tmp),INFO=1,);
+        DETRUIRE(CONCEPT=_F(NOM=_TAB_tmp),INFO=1,);
+        altimaxtmp = 0
+        while altimaxtmp != altimax : #tant que l'on ne dépasse pas la grille la plus haute
+          _ma_tmp = CREA_MAILLAGE(MAILLAGE = MAILL,RESTREINT = _F(GROUP_MA = 'GRIL_'+str(len(self.altitude)+1),),)
+          _TAB_tmp= RECU_TABLE(CO = _ma_tmp, NOM_TABLE = 'CARA_GEOM',)
+          altimintmp = _TAB_tmp['X_MAX',1]
+          altimaxtmp = _TAB_tmp['X_MAX',1]
+          self.altitude.append((altimintmp + altimaxtmp )/2.)
+          DETRUIRE(CONCEPT=_F(NOM=_ma_tmp),INFO=1,);
+          DETRUIRE(CONCEPT=_F(NOM=_TAB_tmp),INFO=1,);
+        
+        return
 
     def cl_rigidite_grille(self):
         from Accas import _F

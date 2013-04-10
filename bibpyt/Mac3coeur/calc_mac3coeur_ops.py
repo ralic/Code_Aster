@@ -1,4 +1,4 @@
-#@ MODIF calc_mac3coeur_ops Mac3coeur  DATE 05/03/2013   AUTEUR GENIAUT S.GENIAUT 
+#@ MODIF calc_mac3coeur_ops Mac3coeur  DATE 09/04/2013   AUTEUR PERONY R.PERONY 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -79,7 +79,8 @@ def calc_mac3coeur_ops(self, **args):
        else:
           _MA_N = _coeur.affectation_maillage(_MA0)
           _MO_N = _coeur.affectation_modele(_MA_N)
-
+       
+       _coeur.recuperation_donnees_geom(_MA_N)
        _GFF  = _coeur.definition_geom_fibre()
        _CARA = _coeur.definition_cara_coeur(_MO_N,_GFF)
 
@@ -252,6 +253,7 @@ def calc_mac3coeur_ops(self, **args):
 
        _MA_N = _coeur.affectation_maillage(_MA0)
        _MO_N = _coeur.affectation_modele(_MA_N)
+       _coeur.recuperation_donnees_geom(_MA_N)
        _GFF  = _coeur.definition_geom_fibre()
        _CARA = _coeur.definition_cara_coeur(_MO_N,_GFF)
        _time    = _coeur.definition_time(_fluence,1.)
@@ -337,6 +339,7 @@ def calc_mac3coeur_ops(self, **args):
        _MO_NP1 = self.get_concept_by_type(nom_mo, modele_sdaster)
        _MA_NP1 = self.get_concept_by_type(nom_ma, maillage_sdaster)
 
+       _coeurp1.recuperation_donnees_geom(_MA_NP1)
        _GFF_NP1  = _coeurp1.definition_geom_fibre()
        _CARANP1  = _coeurp1.definition_cara_coeur(_MO_NP1,_GFF_NP1)
 

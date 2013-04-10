@@ -1,8 +1,8 @@
-#@ MODIF mac3coeur_ac_permute Mac3coeur  DATE 05/11/2012   AUTEUR FERNANDES R.FERNANDES 
+#@ MODIF mac3coeur_ac_permute Mac3coeur  DATE 09/04/2013   AUTEUR PERONY R.PERONY 
 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
@@ -166,6 +166,10 @@ def mac3coeur_ac_permute(self, **args):
                                  _F( GROUP_MA_INIT  = 'GT_'+ POS_INIT +'_M',
                                      GROUP_MA_FINAL = 'GT_'+ POS_FIN  +'_M',
                                      TRAN           = VECT,
+                                     PRECISION      = 1.E-10),
+                                 _F( GROUP_MA_INIT  = 'MNT_'+ POS_INIT,
+                                     GROUP_MA_FINAL = 'MNT_'+ POS_FIN,
+                                     TRAN           = VECT,
                                      PRECISION      = 1.E-10),))
 
    CREA_RESU( reuse          =  __RESU_F,
@@ -215,6 +219,10 @@ def mac3coeur_ac_permute(self, **args):
                                      PRECISION      = 1.E-10),
                                  _F( GROUP_MA_INIT  = 'GT_'+ POS_INIT +'_M',
                                      GROUP_MA_FINAL = 'GT_'+ POS_FIN  +'_M',
+                                     TRAN           = VECT,
+                                     PRECISION      = 1.E-10),
+                                 _F( GROUP_MA_INIT  = 'MNT_'+ POS_INIT,
+                                     GROUP_MA_FINAL = 'MNT_'+ POS_FIN,
                                      TRAN           = VECT,
                                      PRECISION      = 1.E-10),))
 

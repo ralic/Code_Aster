@@ -1,4 +1,4 @@
-#@ MODIF perm_mac3coeur_ops Mac3coeur  DATE 04/02/2013   AUTEUR PERONY R.PERONY 
+#@ MODIF perm_mac3coeur_ops Mac3coeur  DATE 09/04/2013   AUTEUR PERONY R.PERONY 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -82,6 +82,7 @@ def perm_mac3coeur_ops(self, **args):
     _MA1      = self['MAILLAGE_NP1']
     _MA_NP1   = _coeurp1.affectation_maillage(_MA1)
     _MO_NP1   = _coeurp1.affectation_modele(_MA_NP1)
+    _coeurp1.recuperation_donnees_geom(_MA_N)
     _GFF_NP1  = _coeurp1.definition_geom_fibre()
     _CARANP1  = _coeurp1.definition_cara_coeur(_MO_NP1,_GFF_NP1)
 
