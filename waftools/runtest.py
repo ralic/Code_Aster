@@ -12,12 +12,14 @@ def options(self):
     group = self.get_option_group("Aster options")
     group.add_option('-n', '--name', dest='testname',
                     action='append', default=None,
-                    help='Name of testcases to run, comma separated')
+                    help='Name of testcases to run (as_run must be in PATH)')
 
 @TaskGen.feature('test')
 def runtest(self):
     """Run a testcase by calling as_run"""
     from Options import options as opts
+    dtmp = tempfile.mkdtemp(prefix='runtest_')
+    Logs.info("destination of output files: %s" % dtmp)
     versdir = osp.join(self.env['PREFIX'], 'share', 'aster')
     for test in opts.testname:
         cmd = ['as_run', '--vers=%s' % versdir, '--test', test]
@@ -32,9 +34,9 @@ def runtest(self):
             func = Logs.info
         else:
             func = Logs.error
-            fd, fname = tempfile.mkstemp(prefix=test + '_')
-            fobj = os.fdopen(fd, 'wb')
-            fobj.write(''.join(output))
-            fobj.close()
-            Logs.warn("`- output in %s" % fname)
+        fname = osp.join(dtmp, osp.basename(test) + '.output')
+        fobj = open(fname, 'wb')
+        fobj.write(''.join(output))
+        fobj.close()
+        func("`- output in %s" % fname)
         func('`- exit %s' % retcode)
