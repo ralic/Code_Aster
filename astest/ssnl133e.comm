@@ -1,356 +1,235 @@
-# MODIF  DATE 05/03/2013   AUTEUR CHEIGNON E.CHEIGNON 
+# MODIF  DATE 15/04/2013   AUTEUR FLEJOU J-L.FLEJOU 
 # TITRE POST-FLAMBEMENT ELASTIQUE D'UNE STRUCTURE EN L
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
-# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-# (AT YOUR OPTION) ANY LATER VERSION.                                                    
-#                                                                       
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-#                                                                       
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 # ssnl133e.para = tps_job 300 mem_job 512Mo ncpus 1 liste_test S
 
-DEBUT(CODE=_F( NOM = 'SSNL133E',NIV_PUB_WEB='INTERNET',VISU_EFICAS='OUI'));
+DEBUT(CODE=_F( NOM = 'SSNL133E',NIV_PUB_WEB='INTERNET',VISU_EFICAS='OUI'))
 
-MA=LIRE_MAILLAGE(UNITE=17,FORMAT='MED',);
+MA=LIRE_MAILLAGE(UNITE=17,FORMAT='MED',)
 
 MA=DEFI_GROUP(reuse =MA,
-              MAILLAGE=MA,
-              CREA_GROUP_NO=_F(TOUT_GROUP_MA='OUI',),);
+   MAILLAGE=MA,
+   CREA_GROUP_NO=_F(TOUT_GROUP_MA='OUI',),)
 
-MO=AFFE_MODELE(MAILLAGE=MA,
-               AFFE=_F(TOUT='OUI',
-                       PHENOMENE='MECANIQUE',
-                       MODELISATION='POU_D_E',),);
+MO=AFFE_MODELE(
+   MAILLAGE=MA,
+   AFFE=_F(TOUT='OUI', PHENOMENE='MECANIQUE', MODELISATION='POU_D_E',),)
 
-ACIER=DEFI_MATERIAU(ELAS=_F(E=71240.0,
-                            NU=0.3,),);
+ACIER=DEFI_MATERIAU(ELAS=_F(E=71240.0, NU=0.3,),)
 
 
-MAT=AFFE_MATERIAU(MAILLAGE=MA,
-                  AFFE=_F(TOUT='OUI',MATER=ACIER,),
-                 );
+MAT=AFFE_MATERIAU(
+   MAILLAGE=MA,
+   AFFE=_F(TOUT='OUI',MATER=ACIER,), )
 
-CARA=AFFE_CARA_ELEM(MODELE=MO,
-                    POUTRE=_F(GROUP_MA='LAME',
-                              SECTION='GENERALE',
-                              CARA=('A','IY','IZ','AY','AZ','JX','JG',),
-                              VALE=(18.0,0.54,1350.0,1.2,1.2,2.16,0.0,),),
-                    ORIENTATION=_F(GROUP_MA='LAME',
-                                   CARA='ANGL_VRIL',
-                                   VALE=0.,),
-                    );
+CARA=AFFE_CARA_ELEM(
+   MODELE=MO,
+   POUTRE=_F(GROUP_MA='LAME', SECTION='GENERALE',
+             CARA=('A','IY','IZ','AY','AZ','JX','JG',),
+             VALE=(18.0,0.54,1350.0,1.2,1.2,2.16,0.0,),),
+   ORIENTATION=_F(GROUP_MA='LAME', CARA='ANGL_VRIL', VALE=0.,), )
 
-CL=AFFE_CHAR_MECA(MODELE=MO,
-                  DDL_IMPO=_F(GROUP_NO='PA',
-                              DX=0.,
-                              DY=0.,
-                              DZ=0.,
-                              DRX=0.,
-                              DRY=0.,
-                              DRZ=0.,),);
+CL=AFFE_CHAR_MECA(
+   MODELE=MO,
+   DDL_IMPO=_F(GROUP_NO='PA', DX=0., DY=0., DZ=0., DRX=0., DRY=0., DRZ=0.,),
+   #FORCE_NODALE=_F(GROUP_NO='PC', FZ=0.001,),
+)
 
-FORCE=AFFE_CHAR_MECA(MODELE=MO,
-                     FORCE_NODALE=_F(GROUP_NO='PC',
-                                     FX=1.0,
-                                     FZ=0.001,),);
+FORCE=AFFE_CHAR_MECA(
+   MODELE=MO,
+   FORCE_NODALE=_F(GROUP_NO='PC', FZ=0.001, FX=1.0, ),)
 
-FORCE_F=DEFI_FONCTION(NOM_PARA='INST',
-                      VALE=(0.,0.,20.0,20.0,),);
+FORCE_F=DEFI_FONCTION(NOM_PARA='INST', VALE=(0.,0.,20.0,20.0,),)
 
 tforc = 0.5
 tsuiv = 5.0
 tfin = 20.0
 
-TEMPS=DEFI_LIST_REEL(DEBUT=0.,
-                     INTERVALLE=(_F(JUSQU_A=tforc,
-                                    NOMBRE=2,),
-                                 _F(JUSQU_A=tfin,
-                                    PAS=0.1,),),
-                                 );
+TEMPS=DEFI_LIST_REEL(
+   DEBUT=0.,
+   INTERVALLE=(
+      _F(JUSQU_A=tforc, NOMBRE=2,),
+      _F(JUSQU_A=tfin,  PAS=0.1,),),
+)
 
-DEFLIST=DEFI_LIST_INST(DEFI_LIST=_F(LIST_INST=TEMPS,),
-                       );
+DEFLIST=DEFI_LIST_INST(DEFI_LIST=_F(LIST_INST=TEMPS,),  )
 
 # PREMIER CALCUL SANS PILOTAGE POUR INITIALISER
 # LE CHAMP DE DEPLACEMENT
-RESO0=STAT_NON_LINE(MODELE=MO,
-                    CHAM_MATER=MAT,
-                    CARA_ELEM=CARA,
-                    EXCIT=(_F(CHARGE=CL,),
-                           _F(CHARGE=FORCE,
-                              FONC_MULT=FORCE_F,),),
-                    COMP_INCR=_F(RELATION='ELAS',DEFORMATION='GROT_GDEP',),
-                    INCREMENT=_F(LIST_INST=TEMPS,
-                                 INST_FIN=tforc,),
-                    NEWTON=_F(MATRICE='TANGENTE',
-                              REAC_ITER=1,),
-                    CONVERGENCE=_F(RESI_GLOB_RELA=1.0E-6,
-                                   ITER_GLOB_MAXI=50,),
-                    INFO=1,
-                    );
+RESO0=STAT_NON_LINE(
+   MODELE=MO,
+   CHAM_MATER=MAT,
+   CARA_ELEM=CARA,
+   EXCIT=(
+      _F(CHARGE=CL,),
+      _F(CHARGE=FORCE, FONC_MULT=FORCE_F,),),
+   COMP_INCR=_F(RELATION='ELAS',DEFORMATION='GROT_GDEP',),
+   INCREMENT=_F(LIST_INST=TEMPS,  INST_FIN=tforc,),
+   NEWTON=_F(MATRICE='TANGENTE',  REAC_ITER=1,),
+   CONVERGENCE=_F(RESI_GLOB_RELA=1.0E-6,  ITER_GLOB_MAXI=50,),
+   INFO=1,
+)
 
 # SECOND CALCUL AVEC PILOTAGE LONGEUR D'ARC ET SELECTION PAR
 # MINIMISATION DE L'ANGLE ENTRE 2 DEPLACEMENTS SUCCESSIFS
 # ON NE FAIT PAS DE REPRISE POUR NE PAS AVOIR DE ETA_PILOTAGE
 # NON DISPONIBLE DANS LES INSTANTS SANS PILOTAGE
-RESO=STAT_NON_LINE(MODELE=MO,
-                   CHAM_MATER=MAT,
-                   CARA_ELEM=CARA,
-                   EXCIT=(_F(CHARGE=CL,),
-                          _F(CHARGE=FORCE,
-                             TYPE_CHARGE='FIXE_PILO',),),
-                   COMP_INCR=_F(RELATION='ELAS',DEFORMATION='GROT_GDEP',),
-                   INCREMENT=_F(LIST_INST=DEFLIST,
-                                INST_FIN=tsuiv,),
-                   NEWTON=_F(MATRICE='TANGENTE',
-                             REAC_ITER=1,),
-                   PILOTAGE=_F(TYPE='LONG_ARC',
-                               COEF_MULT=1.0,
-                               ETA_PILO_MAX=1.1,
-                               ETA_PILO_R_MIN=0.0,
-                               SELECTION='ANGL_INCR_DEPL',
-                               GROUP_NO='LAME',
-                               NOM_CMP=('DX','DY','DZ',),),
-                   ETAT_INIT = _F(EVOL_NOLI=RESO0,
-                                  ) ,
-                   CONVERGENCE=_F(RESI_GLOB_RELA=1.0E-6,
-                                  ITER_GLOB_MAXI=50,),
-                   );
+RESO=STAT_NON_LINE(
+   MODELE=MO,
+   CHAM_MATER=MAT,
+   CARA_ELEM=CARA,
+   EXCIT=(
+      _F(CHARGE=CL,),
+      _F(CHARGE=FORCE, TYPE_CHARGE='FIXE_PILO',),),
+   COMP_INCR=_F(RELATION='ELAS',DEFORMATION='GROT_GDEP',),
+   INCREMENT=_F(LIST_INST=DEFLIST, INST_FIN=tsuiv,),
+   NEWTON=_F(MATRICE='TANGENTE', REAC_ITER=1,),
+   PILOTAGE=_F(TYPE='LONG_ARC',
+               COEF_MULT=1.0,
+               ETA_PILO_MAX=1.1,
+               ETA_PILO_R_MIN=0.0,
+               SELECTION='ANGL_INCR_DEPL',
+               GROUP_NO='LAME',
+               NOM_CMP=('DX','DY','DZ',),),
+   ETAT_INIT = _F(EVOL_NOLI=RESO0, ) ,
+   CONVERGENCE=_F(RESI_GLOB_RELA=1.0E-6, ITER_GLOB_MAXI=50,),
+)
 
 # VALIDATION DE LA REPRISE D'UN CALCUL AVEC PILOTAGE
 # ET SELECTION PAR ANGL_INCR_DEPL
 RESO=STAT_NON_LINE(reuse=RESO,
-                   MODELE=MO,
-                   CHAM_MATER=MAT,
-                   CARA_ELEM=CARA,
-                   EXCIT=(_F(CHARGE=CL,),
-                          _F(CHARGE=FORCE,
-                             TYPE_CHARGE='FIXE_PILO',),),
-                   COMP_INCR=_F(RELATION='ELAS',DEFORMATION='GROT_GDEP',),
-                   INCREMENT=_F(LIST_INST=DEFLIST,
-                                INST_FIN=tfin,),
-                   NEWTON=_F(MATRICE='TANGENTE',
-                             REAC_ITER=1,),
-                   PILOTAGE=_F(TYPE='LONG_ARC',
-                               COEF_MULT=0.1,
-                               ETA_PILO_MAX=5.0,
-                               SELECTION='ANGL_INCR_DEPL',
-                               GROUP_NO='LAME',
-                               NOM_CMP=('DX','DY','DZ',),),
-                   ETAT_INIT = _F(EVOL_NOLI=RESO ,
-                                  ) ,
-                   CONVERGENCE=_F(RESI_GLOB_RELA=1.0E-6,
-                                  ITER_GLOB_MAXI=50,),
-                   );
+   MODELE=MO,
+   CHAM_MATER=MAT,
+   CARA_ELEM=CARA,
+   EXCIT=(
+      _F(CHARGE=CL,),
+      _F(CHARGE=FORCE, TYPE_CHARGE='FIXE_PILO',),),
+   COMP_INCR=_F(RELATION='ELAS',DEFORMATION='GROT_GDEP',),
+   INCREMENT=_F(LIST_INST=DEFLIST,  INST_FIN=tfin,),
+   NEWTON=_F(MATRICE='TANGENTE',  REAC_ITER=1,),
+   PILOTAGE=_F(TYPE='LONG_ARC',
+               COEF_MULT=0.1,
+               ETA_PILO_MAX=5.0,
+               SELECTION='ANGL_INCR_DEPL',
+               GROUP_NO='LAME',
+               NOM_CMP=('DX','DY','DZ',),),
+   ETAT_INIT = _F(EVOL_NOLI=RESO , ) ,
+   CONVERGENCE=_F(RESI_GLOB_RELA=1.0E-6,
+                  ITER_GLOB_MAXI=50,),
+)
 
-ETA_PILO=RECU_FONCTION(RESULTAT=RESO,
-                       NOM_PARA_RESU='ETA_PILOTAGE',);
+ETA_PILO=RECU_FONCTION(
+   RESULTAT=RESO, NOM_PARA_RESU='ETA_PILOTAGE',)
 
-DEPX=RECU_FONCTION(RESULTAT=RESO,
-                   TOUT_ORDRE='OUI',
-                   NOM_CHAM='DEPL',
-                   NOM_CMP='DX',
-                   GROUP_NO='PC',);
+DEPX=RECU_FONCTION(
+   RESULTAT=RESO, TOUT_ORDRE='OUI', NOM_CHAM='DEPL', NOM_CMP='DX', GROUP_NO='PC',)
 
-DEPZ=RECU_FONCTION(RESULTAT=RESO,
-                   TOUT_ORDRE='OUI',
-                   NOM_CHAM='DEPL',
-                   NOM_CMP='DZ',
-                   GROUP_NO='PC',);
+DEPZ=RECU_FONCTION(
+   RESULTAT=RESO, TOUT_ORDRE='OUI', NOM_CHAM='DEPL', NOM_CMP='DZ', GROUP_NO='PC',)
 
-IMPR_FONCTION(FORMAT='XMGRACE',
-              UNITE=29,
-              COURBE=(_F(FONC_X=DEPX,FONC_Y=ETA_PILO,LEGENDE='DX',MARQUEUR=0,),
-                      _F(FONC_X=DEPZ,FONC_Y=ETA_PILO,LEGENDE='DZ',MARQUEUR=0,),
-                      ),
-              TITRE='Reponse force-deplacement',
-              BORNE_X=(0.0,170.0,),
-              BORNE_Y=(0.0,5.0,),
-              ECHELLE_X='LIN',
-              ECHELLE_Y='LIN',
-              GRILLE_X=20,
-              GRILLE_Y=1,
-              LEGENDE_X='Deplacement (mm)',
-              LEGENDE_Y='Force (N)',);
+IMPR_FONCTION(
+   FORMAT='XMGRACE',
+   UNITE=29,
+   COURBE=(
+      _F(FONC_X=DEPX,FONC_Y=ETA_PILO,LEGENDE='DX',MARQUEUR=0,),
+      _F(FONC_X=DEPZ,FONC_Y=ETA_PILO,LEGENDE='DZ',MARQUEUR=0,), ),
+   TITRE='Reponse force-deplacement',
+   BORNE_X=(0.0,170.0,),
+   BORNE_Y=(0.0,5.0,),
+   ECHELLE_X='LIN',
+   ECHELLE_Y='LIN',
+   GRILLE_X=20,
+   GRILLE_Y=1,
+   LEGENDE_X='Deplacement (mm)',
+   LEGENDE_Y='Force (N)',)
 
-IMPR_RESU(FORMAT='CASTEM',
-          RESU=_F(MAILLAGE=MA,
-                  RESULTAT=RESO,
-                  NOM_CHAM='DEPL',),);
+IMPR_RESU(
+   FORMAT='CASTEM',
+   RESU=_F(MAILLAGE=MA, RESULTAT=RESO, NOM_CHAM='DEPL',),)
 
 # -------------------- TESTS / REFERENCE ET NON-REGRESSION ----------
 
-T_ETA=CREA_TABLE(FONCTION=_F(FONCTION=ETA_PILO,),);
-T_DEPX=CREA_TABLE(FONCTION=_F(FONCTION=DEPX,),);
-T_DEPZ=CREA_TABLE(FONCTION=_F(FONCTION=DEPZ,),);
+T_ETA=CREA_TABLE(FONCTION=_F(FONCTION=ETA_PILO,),)
+T_DEPX=CREA_TABLE(FONCTION=_F(FONCTION=DEPX,),)
+T_DEPZ=CREA_TABLE(FONCTION=_F(FONCTION=DEPZ,),)
 
-TAB_COMB=CALC_TABLE(TABLE=T_ETA,
-                    ACTION=(_F(OPERATION='COMB', TABLE=T_DEPX, NOM_PARA='INST'),
-                            _F(OPERATION='COMB', TABLE=T_DEPZ, NOM_PARA='INST'),),);
+TAB_COMB=CALC_TABLE(
+   TABLE=T_ETA,
+   ACTION=(
+      _F(OPERATION='COMB', TABLE=T_DEPX, NOM_PARA='INST'),
+      _F(OPERATION='COMB', TABLE=T_DEPZ, NOM_PARA='INST'),),)
 
-DX_ETA=RECU_FONCTION(TABLE=TAB_COMB,
-                     PARA_X='ETA_PILO',
-                     PARA_Y='DX',
-                     INTERPOL='LIN',
-                     PROL_DROITE='CONSTANT',
-                     PROL_GAUCHE='CONSTANT',);
+DX_ETA=RECU_FONCTION(
+   TABLE=TAB_COMB, PARA_X='ETA_PILO', PARA_Y='DX',
+   INTERPOL='LIN', PROL_DROITE='CONSTANT', PROL_GAUCHE='CONSTANT',)
 
-DZ_ETA=RECU_FONCTION(TABLE=TAB_COMB,
-                     PARA_X='ETA_PILO',
-                     PARA_Y='DZ',
-                     INTERPOL='LIN',
-                     PROL_DROITE='CONSTANT',
-                     PROL_GAUCHE='CONSTANT',);
+DZ_ETA=RECU_FONCTION(
+   TABLE=TAB_COMB, PARA_X='ETA_PILO', PARA_Y='DZ',
+   INTERPOL='LIN', PROL_DROITE='CONSTANT', PROL_GAUCHE='CONSTANT',)
 
+INST_ETA=RECU_FONCTION(
+   TABLE=TAB_COMB, PARA_X='ETA_PILO', PARA_Y='INST',
+   INTERPOL='LIN', PROL_DROITE='CONSTANT', PROL_GAUCHE='CONSTANT',)
 
-IMPR_FONCTION(FORMAT='TABLEAU',
-              COURBE=(_F(FONCTION=DX_ETA,),
-                      _F(FONCTION=DZ_ETA,),),);
+IMPR_FONCTION(
+   FORMAT='TABLEAU',
+   COURBE=(
+      _F(FONCTION=DX_ETA,),
+      _F(FONCTION=DZ_ETA,),
+      _F(FONCTION=INST_ETA,),),)
 
 
 # REFERENCE MODELISATION A (POU_D_T_GD)
-TEST_FONCTION(VALEUR=(_F(VALE_CALC=0.1962339150,
-                         VALE_REFE=0.19557897264105001,
-                         CRITERE='RELATIF',
-                         VALE_PARA=1.0,
-                         REFERENCE='AUTRE_ASTER',
-                         TOLE_MACHINE=1.E-5,
-                         PRECISION=0.050000000000000003,
-                         FONCTION=DX_ETA,),
-                      _F(VALE_CALC=22.4767983,
-                         VALE_REFE=22.003741156650001,
-                         CRITERE='RELATIF',
-                         VALE_PARA=1.2,
-                         REFERENCE='AUTRE_ASTER',
-                         TOLE_MACHINE=1.E-5,
-                         PRECISION=0.059999999999999998,
-                         FONCTION=DX_ETA,),
-                      _F(VALE_CALC=52.2062407,
-                         VALE_REFE=51.370567219176998,
-                         CRITERE='RELATIF',
-                         VALE_PARA=1.3999999999999999,
-                         REFERENCE='AUTRE_ASTER',
-                         TOLE_MACHINE=1.E-5,
-                         PRECISION=0.050000000000000003,
-                         FONCTION=DX_ETA,),
-                      _F(VALE_CALC=73.1707770,
-                         VALE_REFE=72.308828300357007,
-                         CRITERE='RELATIF',
-                         VALE_PARA=1.6000000000000001,
-                         REFERENCE='AUTRE_ASTER',
-                         TOLE_MACHINE=1.E-5,
-                         PRECISION=0.050000000000000003,
-                         FONCTION=DX_ETA,),
-                      _F(VALE_CALC=100.554664,
-                         VALE_REFE=99.955783482342994,
-                         CRITERE='RELATIF',
-                         VALE_PARA=2.0,
-                         REFERENCE='AUTRE_ASTER',
-                         TOLE_MACHINE=1.E-5,
-                         PRECISION=0.050000000000000003,
-                         FONCTION=DX_ETA,),
-                      _F(VALE_CALC=133.894016,
-                         VALE_REFE=134.14461679369001,
-                         CRITERE='RELATIF',
-                         VALE_PARA=3.0,
-                         TOLE_MACHINE=1.E-5,
-                         REFERENCE='AUTRE_ASTER',
-                         PRECISION=0.050000000000000003,
-                         FONCTION=DX_ETA,),
-                      _F(VALE_CALC=149.916810,
-                         VALE_REFE=150.69734947084001,
-                         CRITERE='RELATIF',
-                         VALE_PARA=4.0,
-                         REFERENCE='AUTRE_ASTER',
-                         TOLE_MACHINE=1.E-5,
-                         PRECISION=0.050000000000000003,
-                         FONCTION=DX_ETA,),
-                      _F(VALE_CALC=159.772309,
-                         VALE_REFE=160.91941068726001,
-                         CRITERE='RELATIF',
-                         VALE_PARA=5.0,
-                         REFERENCE='AUTRE_ASTER',
-                         TOLE_MACHINE=1.E-5,
-                         PRECISION=0.050000000000000003,
-                         FONCTION=DX_ETA,),
-                      ),
-              )
+ResuRefe = [
+# PARA    DXREFE                DZREFE              PRECISX   PRECISZ
+[ 1.0 , 1.9557493475982E-01 , 8.1849504440533E-01 , 4.0E-03 , 1.2E-02 ,],
+[ 1.2 , 2.2003159601578E+01 , 4.5085834614729E+01 , 2.3E-02 , 1.0E-02 ,],
+[ 1.4 , 5.1370721240215E+01 , 5.9127605459760E+01 , 2.0E-02 , 1.5E-02 ,],
+[ 1.6 , 7.2307885049332E+01 , 6.1008538728158E+01 , 1.5E-02 , 1.5E-02 ,],
+[ 2.0 , 9.9971229134146E+01 , 5.5985405418044E+01 , 7.0E-03 , 2.0E-02 ,],
+[ 3.0 , 1.3415730437940E+02 , 3.9186532467172E+01 , 2.0E-03 , 1.7E-02 ,],
+[ 4.0 , 1.5070726872507E+02 , 2.7659987903886E+01 , 5.5E-03 , 1.0E-02 ,],
+[ 5.0 , 1.6092765462757E+02 , 2.0199252710901E+01 , 1.0E-02 , 1.0E-03 ,],
+]
+ResuCalc = [
+# PARA    DXCALC                DZCALC              TOLEMAX   TOLEMAZ
+[ 1.0 , 1.9623401043309E-01 , 8.2826552665949E-01 , 1.0E-06 , 8.0E-06 ,],
+[ 1.2 , 2.2476808997287E+01 , 4.4703862982777E+01 , 1.5E-03 , 2.0E-03 ,],
+[ 1.4 , 5.2206248063423E+01 , 5.8502699568149E+01 , 1.0E-03 , 1.5E-03 ,],
+[ 1.6 , 7.3170781518143E+01 , 6.0180326751549E+01 , 8.0E-04 , 1.2E-03 ,],
+[ 2.0 , 1.0055466689389E+02 , 5.5031890434724E+01 , 6.0E-04 , 8.0E-04 ,],
+[ 3.0 , 1.3389401684585E+02 , 3.8546991131366E+01 , 6.0E-04 , 8.0E-04 ,],
+[ 4.0 , 1.4991681054783E+02 , 2.7408116359061E+01 , 5.0E-04 , 8.0E-04 ,],
+[ 5.0 , 1.5977230880629E+02 , 2.0179716282447E+01 , 5.0E-04 , 8.0E-04 ,],
+]
+# Par defaut TOLE_MACHINE=1.0E-06
 
-TEST_FONCTION(VALEUR=(_F(VALE_CALC=0.8282590789,
-                         VALE_REFE=0.81895376497696004,
-                         CRITERE='RELATIF',
-                         VALE_PARA=1.0,
-                         REFERENCE='AUTRE_ASTER',
-                         TOLE_MACHINE=1.E-5,
-                         PRECISION=0.070000000000000007,
-                         FONCTION=DZ_ETA,),
-                      _F(VALE_CALC=44.7038594,
-                         VALE_REFE=45.086149006059998,
-                         CRITERE='RELATIF',
-                         VALE_PARA=1.2,
-                         REFERENCE='AUTRE_ASTER',
-                         TOLE_MACHINE=1.E-5,
-                         PRECISION=0.050000000000000003,
-                         FONCTION=DZ_ETA,),
-                      _F(VALE_CALC=58.5027041,
-                         VALE_REFE=59.127395933838997,
-                         CRITERE='RELATIF',
-                         VALE_PARA=1.3999999999999999,
-                         REFERENCE='AUTRE_ASTER',
-                         TOLE_MACHINE=1.E-5,
-                         PRECISION=0.050000000000000003,
-                         FONCTION=DZ_ETA,),
-                      _F(VALE_CALC=60.1803320,
-                         VALE_REFE=61.007516217061998,
-                         CRITERE='RELATIF',
-                         VALE_PARA=1.6000000000000001,
-                         REFERENCE='AUTRE_ASTER',
-                         TOLE_MACHINE=1.E-5,
-                         PRECISION=0.050000000000000003,
-                         FONCTION=DZ_ETA,),
-                      _F(VALE_CALC=55.0318970,
-                         VALE_REFE=55.986094960434997,
-                         CRITERE='RELATIF',
-                         VALE_PARA=2.0,
-                         REFERENCE='AUTRE_ASTER',
-                         TOLE_MACHINE=1.E-5,
-                         PRECISION=0.050000000000000003,
-                         FONCTION=DZ_ETA,),
-                      _F(VALE_CALC=38.5469975,
-                         VALE_REFE=39.191654438340002,
-                         CRITERE='RELATIF',
-                         VALE_PARA=3.0,
-                         REFERENCE='AUTRE_ASTER',
-                         TOLE_MACHINE=1.E-5,
-                         PRECISION=0.050000000000000003,
-                         FONCTION=DZ_ETA,),
-                      _F(VALE_CALC=27.4081223,
-                         VALE_REFE=27.663660137343001,
-                         CRITERE='RELATIF',
-                         VALE_PARA=4.0,
-                         REFERENCE='AUTRE_ASTER',
-                         TOLE_MACHINE=1.E-5,
-                         PRECISION=0.050000000000000003,
-                         FONCTION=DZ_ETA,),
-                      _F(VALE_CALC=20.1797209,
-                         VALE_REFE=20.201862127005001,
-                         CRITERE='RELATIF',
-                         VALE_PARA=5.0,
-                         REFERENCE='AUTRE_ASTER',
-                         TOLE_MACHINE=1.E-5,
-                         PRECISION=0.050000000000000003,
-                         FONCTION=DZ_ETA,),
-                      ),
-              )
-
-FIN();
+motclef = {}
+motclef['VALEUR']= []
+for ii in range(len(ResuRefe)):
+   vpara, vdxrefe, vdzrefe, precisx, precisz = ResuRefe[ii]
+   vpara, vdxcalc, vdzcalc, tolemax, tolemaz = ResuCalc[ii]
+   motclef['VALEUR'].append( _F( VALE_PARA=vpara,   FONCTION=DX_ETA,   CRITERE='RELATIF' ,
+                                 VALE_REFE=vdxrefe, PRECISION= precisx, REFERENCE='AUTRE_ASTER',
+                                 VALE_CALC=vdxcalc, TOLE_MACHINE=tolemax, ) )
+   motclef['VALEUR'].append( _F(VALE_PARA=vpara,    FONCTION=DZ_ETA,   CRITERE='RELATIF' ,
+                                 VALE_REFE=vdzrefe, PRECISION= precisz, REFERENCE='AUTRE_ASTER',
+                                 VALE_CALC=vdzcalc, TOLE_MACHINE=tolemaz, ) )
+TEST_FONCTION(**motclef)
+FIN()

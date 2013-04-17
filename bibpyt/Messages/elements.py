@@ -1,4 +1,4 @@
-#@ MODIF elements Messages  DATE 09/04/2013   AUTEUR PELLET J.PELLET 
+#@ MODIF elements Messages  DATE 15/04/2013   AUTEUR FLEJOU J-L.FLEJOU 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -184,6 +184,29 @@ Risque & Conseil : mettre un léger écrouissage peut permettre de passer cette di
    grandeur autorisée  :%(k2)s
    grandeur du champ   :%(k3)s
 """),
+
+
+38 : _(u"""
+ Élément de poutre %(k1)s :
+ Vous faites des calculs avec l'option GROT_GDEP. Lors de la réactualisation de la géométrie,
+ un angle d'orientation de la poutre %(k1)s varie de plus de PI/8.
+ Angle concerné %(k2)s avec un saut de %(r1)f degrés.
+
+ * Cela peut arriver lorsque l'axe de la poutre correspond à l'axe global Z. Dans ce cas le
+ calcul des angles définissant l'orientation de la poutre peut présenter une indétermination.
+ -> Risque & Conseils :
+    Des problèmes de convergence peuvent survenir.
+    a) Essayez de définir une poutre qui n'est pas exactement verticale en déplaçant légèrement
+       un des noeuds.
+    b) Essayez de modifiez votre maillage, pour qu'au cours du calcul, l'axe de la poutre ne soit
+       jamais l'axe Z global.
+
+ * Cela peut être due à une instabilité de type flambement, déversement, ...
+ -> Risque & Conseils :
+    Des problèmes de convergence peuvent survenir.
+    L'utilisation du pilotage peut permettre de passer cette instabilité.
+"""),
+
 
 40 : _(u"""
   -> L'axe de référence pour le calcul du repère local est normal à un

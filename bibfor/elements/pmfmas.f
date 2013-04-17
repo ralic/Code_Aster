@@ -1,6 +1,6 @@
-      SUBROUTINE PMFMAS(NOMTE,ICDMAT,KANL,MLV)
+      SUBROUTINE PMFMAS(NOMTE,OPTION,RHOFLU,ICDMAT,KANL,MLV)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 26/03/2013   AUTEUR CHEIGNON E.CHEIGNON 
+C MODIF ELEMENTS  DATE 15/04/2013   AUTEUR FLEJOU J-L.FLEJOU 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -19,9 +19,11 @@ C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
       IMPLICIT NONE
       INCLUDE 'jeveux.h'
-      CHARACTER*(*) NOMTE
-      REAL*8 MLV(*)
+      CHARACTER*(*) NOMTE,OPTION
+      REAL*8 MLV(*),RHOFLU
       INTEGER KANL,ICDMAT
+C
+C     REMARQUE : RHOFLU EST UTILISE QUE POUR MASS_FLUI_STRU
 C     ------------------------------------------------------------------
 C     CALCULE LA MATRICE DE MASSE DES ELEMENTS DE POUTRE MULTIFIBRES
 
@@ -83,9 +85,13 @@ C       --- CALCUL DE LA MATRICE DE MASSE LOCALE
         A = CARS1(1)
         XIY = CARS1(5)
         XIZ = CARS1(4)
-
-        RHO = CASRHO(1)/A
-
+        
+        IF (OPTION .EQ. 'MASS_FLUI_STRU')THEN
+          RHO = RHOFLU
+        ELSE
+          RHO = CASRHO(1)/A
+        ENDIF
+        
         ITYPE  = 0
         ISTRUC = 1
 
@@ -99,9 +105,9 @@ C    --- APPEL INTEGRATION SUR SECTION
 20       CONTINUE
         CALL PTMA01(KANL,ITYPE,MATP1,ISTRUC,RHO,E,A,A,XL,XIY,XIY,XIZ,
      &                XIZ,G,ALFAY,ALFAY,ALFAZ,ALFAZ,EY,EZ )
-
+     
         CALL MASSTG(MATP1,MLV)
-
+        
       ENDIF
 
 

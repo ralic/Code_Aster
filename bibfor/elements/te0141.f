@@ -3,7 +3,7 @@
       INCLUDE 'jeveux.h'
       CHARACTER*(*) OPTION,NOMTE
 C     ------------------------------------------------------------------
-C MODIF ELEMENTS  DATE 26/03/2013   AUTEUR CHEIGNON E.CHEIGNON 
+C MODIF ELEMENTS  DATE 15/04/2013   AUTEUR FLEJOU J-L.FLEJOU 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -46,10 +46,12 @@ C     ------------------------------------------------------------------
       INTEGER CODRES(NBRES)
       CHARACTER*8 NOMPAR,NOMRES(NBRES),NOMAIL,FAMI,POUM
       CHARACTER*16 CH16
+      CHARACTER*24 MATOR
       INTEGER I, LMATER, IRET, NBPAR, LCAGE, LABSC
       INTEGER LORIEN, IACCE, IVECT, LRCOU, LMAT
       INTEGER NNO, NC, NTC, NBV, KANL,KPG,SPT
       INTEGER ITYPE, ISTRUC, LSECT, LX,IADZI,IAZK24
+      INTEGER ICOMPO,ISDCOM,ISICOM,NBGFMX
       REAL*8  XL, RAD, ANGS2
       REAL*8  ZERO, UN, DEUX, ABSMOY, ANGARC, TRIGOM
       REAL*8  E, G, XNU, RHO, RHOS, RHOFI, RHOFE, CM, PHIE, PHII
@@ -67,10 +69,10 @@ C     ------------------------------------------------------------------
 C     --- CARACTERISTIQUES DES ELEMENTS
 C
       NNO = 2
-      NC = 6
+      NC  = 6
       FAMI='FPG1'
-      KPG=1
-      SPT=1
+      KPG =1
+      SPT =1
       POUM='+'
       IF(NOMTE.EQ.'MECA_POU_D_TG' .OR. NOMTE.EQ.'MECA_POU_D_TGM') THEN
          NNO    = 2
@@ -82,26 +84,30 @@ C
       NBV = NTC*(NTC+1)/2
 C
 C     --- RECUPERATION DES CARACTERISTIQUES MATERIAUX ---
-
+      RHO = 0.D0
       DO 10 I = 1,NBRES
          VALRES(I) = ZERO
 10    CONTINUE
-
+C
       CALL JEVECH('PMATERC','L',LMATER)
       CALL MOYTEM('RIGI',2,1,'+',VALPAR,IRET)
       NOMPAR = 'TEMP'
       NBPAR = 1
-
+C
       IF (OPTION.EQ.'MASS_FLUI_STRU') THEN
-         IF (NOMTE .EQ.'POU_D_TGM') THEN
-            PRINT*,' CAS MASS_FLUI_STRU : QUEL MATERIAU ?'
-            CALL ASSERT(.FALSE.)
-         ENDIF
-
          CALL JEVECH('PCAGEPO','L',LCAGE)
          CALL JEVECH('PABSCUR','L',LABSC)
          ABSMOY = (ZR(LABSC-1+1)+ZR(LABSC-1+2))/DEUX
-         CALL RCVALB(FAMI,KPG,SPT,POUM,ZI(LMATER),' ','ELAS_FLUI',1,
+         IF (NOMTE .EQ.'MECA_POU_D_TGM')THEN
+            CALL JEVECH('PCOMPOR','L',ICOMPO)
+            CALL JEVEUO(ZK16(ICOMPO-1+7),'L',ISDCOM)
+            CALL JEVEUO(ZK16(ICOMPO-1+7)(1:8)//'.CPRI','L',ISICOM)
+            NBGFMX = ZI(ISICOM+2)
+            MATOR  = ZK24(ISDCOM-1+NBGFMX*6+1)(1:8)
+         ELSE
+            MATOR = ' '
+         ENDIF
+         CALL RCVALB(FAMI,KPG,SPT,POUM,ZI(LMATER),MATOR,'ELAS_FLUI',1,
      &               'ABSC',ABSMOY,NBRES,NOMRES,VALRES,CODRES,1)
          E = VALRES(1)
          XNU = VALRES(2)
@@ -116,7 +122,7 @@ C     --- RECUPERATION DES CARACTERISTIQUES MATERIAUX ---
          END IF
          PHII = (PHIE-DEUX*ZR(LCAGE-1+2))
          CALL RHOEQU(RHO,RHOS,RHOFI,RHOFE,CM,PHII,PHIE)
-
+C
       ELSE IF (OPTION.EQ.'MASS_MECA' .OR.
      &         OPTION.EQ.'MASS_MECA_DIAG' .OR.
      &         OPTION.EQ.'MASS_MECA_EXPLI' .OR.
@@ -153,22 +159,20 @@ C     --- COORDONNEES DES NOEUDS ---
      &           (ZR(LX+5)-ZR(LX+2))**2 +
      &           (ZR(LX+6)-ZR(LX+3))**2)
       IF (XL.EQ.ZERO) THEN
-        CALL TECAEL(IADZI,IAZK24)
-        NOMAIL = ZK24(IAZK24-1+3)(1:8)
-        CALL U2MESK('F','ELEMENTS2_43',1,NOMAIL)
+         CALL TECAEL(IADZI,IAZK24)
+         NOMAIL = ZK24(IAZK24-1+3)(1:8)
+         CALL U2MESK('F','ELEMENTS2_43',1,NOMAIL)
       ENDIF
-
 C     --- RECUPERATION DES ORIENTATIONS ---
       CALL JEVECH('PCAORIE','L',LORIEN)
-
 C     --- CALCUL DE LA MATRICE DE MASSE LOCALE ---
       KANL = 1
       IF (OPTION.EQ.'MASS_MECA_DIAG' .OR.
      &    OPTION.EQ.'MASS_MECA_EXPLI') KANL = 0
-
+C
       IF ((NOMTE.EQ.'MECA_POU_D_EM').OR.
      &    (NOMTE.EQ.'MECA_POU_D_TGM') ) THEN
-         CALL PMFMAS(NOMTE,ZI(LMATER),KANL,MLV)
+         CALL PMFMAS(NOMTE,OPTION,RHO,ZI(LMATER),KANL,MLV)
       ELSE IF (NOMTE.EQ.'MECA_POU_D_TG') THEN
          DO 20 I = 1 , 105
             MATP1(I) = 0.0D0
@@ -179,7 +183,7 @@ C     --- CALCUL DE LA MATRICE DE MASSE LOCALE ---
       ELSE
          CALL POMASS(NOMTE,E,XNU,RHO,KANL,MLV)
       END IF
-
+C
       IF (OPTION.EQ.'M_GAMMA') THEN
          CALL JEVECH('PACCELR','L',IACCE)
          CALL JEVECH('PVECTUR','E',IVECT)
@@ -187,7 +191,7 @@ C     --- CALCUL DE LA MATRICE DE MASSE LOCALE ---
      &       NOMTE(1:12).EQ.'MECA_POU_D_T') THEN
             CALL MATROT(ZR(LORIEN),PGL)
             CALL UTPSLG(NNO,NC,PGL,MLV,MATV)
-
+C
          ELSE IF (NOMTE.EQ.'MECA_POU_C_T') THEN
             CALL JEVECH('PCAARPO','L',LRCOU)
             RAD = ZR(LRCOU)
@@ -195,7 +199,7 @@ C     --- CALCUL DE LA MATRICE DE MASSE LOCALE ---
             ANGS2 = TRIGOM('ASIN',XL/ (DEUX*RAD))
             CALL MATRO2(ZR(LORIEN),ANGARC,ANGS2,PGL1,PGL2)
             CALL CHGREP('LG',PGL1,PGL2,MLV,MATV)
-
+C
          ELSE
             CH16 = NOMTE
             CALL U2MESK('F','ELEMENTS2_42',1,CH16)
@@ -204,7 +208,7 @@ C     --- CALCUL DE LA MATRICE DE MASSE LOCALE ---
          CALL PMAVEC('ZERO',NTC,MATP,ZR(IACCE),ZR(IVECT))
       ELSE
          CALL JEVECH('PMATUUR','E',LMAT)
-
+C
          IF (NOMTE(1:12).EQ.'MECA_POU_D_E' .OR.
      &       NOMTE(1:12).EQ.'MECA_POU_D_T') THEN
             CALL MATROT(ZR(LORIEN),PGL)
