@@ -1,9 +1,9 @@
-# MODIF  DATE 17/12/2012   AUTEUR LAVERNE J.LAVERNE 
+# MODIF  DATE 15/04/2013   AUTEUR LAVERNE J.LAVERNE 
 # TITRE TEST DE LA LOI JOINT_MECA_RUPT SUR LES ELEMENTS DE JOINT HYME PENTA15
 # ssnp162i.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
@@ -88,14 +88,14 @@ MA0=LIRE_MAILLAGE()
 
 MA=CREA_MAILLAGE(MAILLAGE  = MA0, LINE_QUAD = _F(TOUT='OUI'))
 
-#IMPR_RESU(FORMAT  = 'RESULTAT',RESU=_F(MAILLAGE=MA))
-
 MA=DEFI_GROUP(reuse =MA,
               MAILLAGE=MA,
               CREA_GROUP_NO=(_F(NOEUD=('NO2','NO4','NO8','NS7','NS8','NS9'),
                                 NOM='DROITE'),
                               _F(NOEUD=('NO1','NO3','NO7','NS1','NS2','NS3'),
                                 NOM='GAUCHE'),
+                               _F(NOEUD=('NO6','NO5','NO9','NS12','NS11','NS10'),
+                                NOM='GAUCHE2'),
                                ));
 
 MA=MODI_MAILLAGE(reuse =MA,
@@ -174,7 +174,9 @@ TRAC_1=AFFE_CHAR_MECA(
 # ON IMPOSE UNE PRESSION SUR NS13 ET ON TESTE LA VALEUR DE LA PRESSION SUR LES AUTRES NOEUDS
 PAM_J = AFFE_CHAR_MECA(
   MODELE = MO,
-  DDL_IMPO = (_F(NOEUD=('NS13'), PRE1=press ))
+  DDL_IMPO = (
+              _F(NOEUD=('NS13'), PRE1=press ),
+              )
   );
 
 # CREATION DE LISTE D'INSTANT
@@ -237,9 +239,9 @@ U_HM=CALC_CHAMP(reuse =U_HM,
 U_HM=CALC_CHAMP(reuse =U_HM,
             RESULTAT=U_HM,
             FORCE='FORC_NODA',
-            MAILLE='PRISM');
+            );
 
-# VECTEUR-FORCE NODALE RESULTANTE : (F_X,F_Y)
+# VECTEUR-FORCE NODALE RESULTANTE : (F_X,F_Y) SUR LA PARTIE CHARGEE
 TFORCE=POST_RELEVE_T(ACTION=_F(OPERATION='EXTRACTION',
                                INTITULE='F_PILOTE',
                                RESULTAT=U_HM,
@@ -248,18 +250,32 @@ TFORCE=POST_RELEVE_T(ACTION=_F(OPERATION='EXTRACTION',
                                GROUP_NO='DROITE',
                                RESULTANTE=('DX','DY'),
                                ));
-
+                               
+# VECTEUR-FORCE NODALE RESULTANTE : (F_X,F_Y) AU NIVEAU DE L'ENCASTREMENT
+TFORCE2=POST_RELEVE_T(ACTION=_F(OPERATION='EXTRACTION',
+                               INTITULE='F_PILOTE',
+                               RESULTAT=U_HM,
+                               NOM_CHAM='FORC_NODA',
+                               TOUT_ORDRE='OUI',
+                               GROUP_NO='GAUCHE2',
+                               RESULTANTE=('DX','DY'),
+                               ));
 
 # PROJECTEUR SUR LA NORMALE
 PNOR = FORMULE(VALE='DX*cos(angle)+DY*sin(angle)',
               NOM_PARA=('DX','DY'));
 
 # INSERTION D'UNE COLONNE AVEC LA PROJECTION NORMALE DE LA FORCE NODALE
-TFORCE=CALC_TABLE(reuse =TFORCE,
+TFORCE=CALC_TABLE(reuse=TFORCE,
                   TABLE=TFORCE,
                   ACTION=_F(OPERATION='OPER',
                             FORMULE=PNOR,
                             NOM_PARA='F_N'));
+TFORCE2=CALC_TABLE(reuse=TFORCE2,
+                   TABLE=TFORCE2,
+                   ACTION=_F(OPERATION='OPER',
+                             FORMULE=PNOR,
+                             NOM_PARA='F_N'));
 
 # DEPLACEMENT DU NOEUD EN_HAUT
 TDELTA_N=POST_RELEVE_T(ACTION=_F(OPERATION='EXTRACTION',
@@ -283,6 +299,10 @@ TDELTA_N=CALC_TABLE(reuse =TDELTA_N,
 
 # LA MANIPULATION POUR IMPRIMER LA COURBE FORCE-DEPLACEMENT AU FORMAT XMGRACE
 FN=RECU_FONCTION(TABLE=TFORCE,
+                  PARA_X='INST',
+                  PARA_Y='F_N');
+
+FN2=RECU_FONCTION(TABLE=TFORCE2,
                   PARA_X='INST',
                   PARA_Y='F_N');
 
@@ -320,6 +340,28 @@ TEST_FONCTION(VALEUR=(_F(VALE_CALC=49750.0,
                          REFERENCE='ANALYTIQUE',
                          NOM_PARA='INST',
                          FONCTION=FN,),
+                      ),
+              )
+
+# TEST POUR VALIDER L'OPTION FORC_NODA SUR LES JOINTS HYME
+TEST_FONCTION(VALEUR=(_F(VALE_CALC=-49750.0,
+                         VALE_REFE=-forc_max,
+                         VALE_PARA=linst[1],
+                         REFERENCE='ANALYTIQUE',
+                         NOM_PARA='INST',
+                         FONCTION=FN2,),
+                      _F(VALE_CALC=-9350.0,
+                         VALE_REFE=-forc_endo,
+                         VALE_PARA=linst[2],
+                         REFERENCE='ANALYTIQUE',
+                         NOM_PARA='INST',
+                         FONCTION=FN2,),
+                      _F(VALE_CALC=100000.0,
+                         VALE_REFE=-forc_pena,
+                         VALE_PARA=linst[3],
+                         REFERENCE='ANALYTIQUE',
+                         NOM_PARA='INST',
+                         FONCTION=FN2,),
                       ),
               )
 
@@ -367,10 +409,13 @@ TEST_RESU(RESU=_F(INST=insfin,
                   VALE_REFE=press,),
           )
 
-# IMPRESSION LA FORCE NODALE NORMALE
+# IMPRESSION DE LA FORCE NODALE NORMALE SUR LA PARTIE CHARGEE
 IMPR_TABLE(TABLE=TFORCE);
 
-# IMPRESSION DE L'OUVERTURE NORMALE
+# IMPRESSION DE LA FORCE NODALE NORMALE AU NIVEAU DE L'ENCASTREMENT
+IMPR_TABLE(TABLE=TFORCE2);
+
+# IMPRESSION DE L'OUVERTURE NORMALE DU JOINT
 IMPR_TABLE(TABLE=TDELTA_N);
 
 

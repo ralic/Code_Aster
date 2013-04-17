@@ -1,4 +1,4 @@
-%& MODIF TYPELEM  DATE 08/04/2013   AUTEUR CUVILLIE M.CUVILLIEZ 
+%& MODIF TYPELEM  DATE 15/04/2013   AUTEUR LAVERNE J.LAVERNE 
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -123,6 +123,8 @@ OPTION__
                                      NGEOMER  PGEOMER  CMATERC  PMATERC  ZVARCPG  PVARCMR  ZVARCPG  PVARCPR
                                      ZVARIPG  PVARIMR  CTEMPSR  PINSTMR  CTEMPSR  PINSTPR  ECONTPG  PCONTMR
                               OUT__  ECODRET  PCODRET  ECONTPG  PCONTPR  ZVARIPG  PVARIPR  MVECTUR  PVECTUR
+    FORC_NODA           323   IN__   NGEOMER  PGEOMER  ECONTPG  PCONTMR
+                              OUT__  MVECTUR  PVECTUR
     REFE_FORC_NODA      323   IN__   NGEOMER  PGEOMER  EREFCO   PREFCO
                               OUT__  MVECTUR  PVECTUR
     RICE_TRACEY         -1    IN__     OUT__  XXXXXX   XXXXXX  
