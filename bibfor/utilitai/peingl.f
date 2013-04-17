@@ -8,7 +8,7 @@
       CHARACTER*(*) RESU,MODELE,MATE,CARA,LCHAR(1),MOTFAZ
 C.======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 09/04/2013   AUTEUR PELLET J.PELLET 
+C MODIF UTILITAI  DATE 15/04/2013   AUTEUR IDOUX L.IDOUX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -150,6 +150,9 @@ C.========================= DEBUT DU CODE EXECUTABLE ==================
 
 C --- INITIALISATIONS :
 C     ---------------
+      IVARI=0
+      CHBID='&&PEINGL.VARINUL'
+      COMPOR='&&PEINGL.COMPNUL'
       COMPT='XXXXXXXXXXXXXXXX'
       EVOL=.FALSE.
       ZERO = 0.0D0
