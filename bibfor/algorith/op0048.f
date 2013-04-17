@@ -1,7 +1,7 @@
       SUBROUTINE OP0048()
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 05/03/2013   AUTEUR CHEIGNON E.CHEIGNON 
+C MODIF ALGORITH  DATE 15/04/2013   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -42,7 +42,7 @@ C
       PARAMETER ( NOMPRO = 'OP0048' )
 C
       INTEGER NVECA, NCHAR
-      INTEGER IMAT(3), NUME, NIV, IBID, IFM, IONDP, LADPA
+      INTEGER IMAT(3), NUME, NIV, IBID, IFM, IONDP, LADPA,NUMREP
       INTEGER IALIFO, IAADVE, NONDP, IFEXTE, IFAMOR, IFLIAI
       INTEGER NEQ, IDEPL0, IVITE0, IACCE0, IWK,IORDR
       INTEGER IINTEG,IRET
@@ -120,7 +120,7 @@ C
      &              NCHAR, NVECA, INFCHA, CHARGE, INFOCH, FOMULT,
      &              IAADVE, IALIFO, NONDP, IONDP,
      &              SOLVEU, IINTEG, T0, NUME,
-     &              BASENO )
+     &              BASENO,NUMREP)
 C
       NEQ = ZI(IMAT(1)+2)
 C
@@ -179,7 +179,7 @@ C
      &              NCHAR,NVECA,ZI(IAADVE),ZK24(IALIFO),
      &              MODELE,MATE,CARELE,
      &              CHARGE,INFOCH,FOMULT,NUMEDD,NUME,SOLVEU,CRITER,
-     &              ZK8(IONDP),NONDP)
+     &              ZK8(IONDP),NONDP,NUMREP)
 C
       ELSEIF ( IINTEG.EQ.2 ) THEN
 C
@@ -191,7 +191,7 @@ C
      &              NCHAR,NVECA,ZI(IAADVE),ZK24(IALIFO),
      &              MODELE,MATE,CARELE,
      &              CHARGE,INFOCH,FOMULT,NUMEDD,NUME,SOLVEU,CRITER,
-     &              ZK8(IONDP),NONDP)
+     &              ZK8(IONDP),NONDP,NUMREP)
 C
       ELSEIF ( IINTEG.EQ.3 ) THEN
 C
@@ -203,7 +203,7 @@ C
      &              NCHAR,NVECA,ZI(IAADVE),ZK24(IALIFO),
      &              MODELE,MATE,CARELE,
      &              CHARGE,INFOCH,FOMULT,NUMEDD,NUME,
-     &              SOLVEU)
+     &              SOLVEU,NUMREP)
 C
       ELSEIF ( IINTEG.EQ.4 ) THEN
 C
@@ -214,7 +214,7 @@ C
      &        NCHAR,NVECA,ZI(IAADVE),ZK24(IALIFO),
      &        MODELE,MATE,CARELE,
      &        CHARGE,INFOCH,FOMULT,NUMEDD,NUME,
-     &        SOLVEU)
+     &        SOLVEU,NUMREP)
 C
       ENDIF
 C

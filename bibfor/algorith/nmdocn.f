@@ -1,9 +1,9 @@
-      SUBROUTINE NMDOCN(MODELE,PARCRI,PARCON)
+      SUBROUTINE NMDOCN(PARCRI,PARCON)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 09/11/2012   AUTEUR DELMAS J.DELMAS 
+C MODIF ALGORITH  DATE 15/04/2013   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -22,9 +22,7 @@ C RESPONSABLE ABBAS M.ABBAS
 
       IMPLICIT NONE
       INCLUDE 'jeveux.h'
-
       REAL*8        PARCRI(*),PARCON(*)
-      CHARACTER*24  MODELE
 C
 C ----------------------------------------------------------------------
 C
@@ -35,7 +33,6 @@ C
 C ----------------------------------------------------------------------
 C
 C
-C IN  MODELE : NOM DU MODELE
 C OUT PARCRI : PARAMETRES DES CRITERES DE CONVERGENCE
 C                1 : ITER_GLOB_MAXI
 C                2 : RESI_GLOB_RELA
@@ -43,14 +40,9 @@ C                3 : RESI_GLOB_MAXI
 C                4 : ARRET (0=OUI, 1=NON)
 C                5 : ITER_GLOB_ELAS
 C                6 : RESI_REFE_RELA
-C                7 : TYPE DE CONVERGENCE (0: PIC ET 1: PLATEAU)
-C                8 : PLATEAU_ITER
-C                9 : PLATEAU_RELA
-C               10 : -- INUTILISE --
-C               11 : -- INUTILISE --
-C               12 : RESI_COMP_RELA
+C                7 : RESI_COMP_RELA
 C OUT PARCON : PARAMETRES DU CRITERE DE CONVERGENCE EN CONTRAINTE
-C                   SI PARCRI(6)=RESI_CONT_RELA != R8VIDE()
+C                   SI PARCRI(6)=RESI_REFE_RELA != R8VIDE()
 C                1 : SIGM_REFE
 C                2 : EPSI_REFE
 C                3 : FLUX_THER_REFE
@@ -62,10 +54,9 @@ C                8 : MOMENT
 C                9 : DEPL_REFE
 C               10 : LAGR_REFE
 C
+C ----------------------------------------------------------------------
 C
-C
-C
-      INTEGER      ITERAT,IRET,IRE1,IRE2,IRE3,IRE4,PLATIT
+      INTEGER      ITERAT,IRET,IRE1,IRE2,IRE3,IRE4
       REAL*8       R8VIDE,R8NNEM
       CHARACTER*8  REP
       INTEGER      IFM,NIV
@@ -85,12 +76,10 @@ C
 C
 C --- INITIALISATIONS
 C
-      PARCRI(7)  = R8VIDE()
-      PARCRI(8)  = R8VIDE()
-      PARCRI(9)  = R8VIDE()
-      PARCRI(10) = R8VIDE()
-      PARCRI(11) = R8VIDE()
-      PARCRI(12) = R8VIDE()
+      PARCRI(2) = R8VIDE()
+      PARCRI(3) = R8VIDE()
+      PARCRI(6) = R8VIDE()
+      PARCRI(7) = R8VIDE()
 C
 C --- RECUPERATION DES CRITERES DE CONVERGENCE GLOBAUX
 C
@@ -135,11 +124,8 @@ C
         IF (IRET.LE.0) PARCON(10)=R8NNEM()
       ENDIF
       CALL GETVR8('CONVERGENCE','RESI_COMP_RELA',1,IARG,1,
-     &            PARCRI(12),IRE4)
-      IF (IRE4.LE.0) PARCRI(12) = R8VIDE()
-
-
-
+     &            PARCRI(7),IRE4)
+      IF (IRE4.LE.0) PARCRI(7) = R8VIDE()
 C
 C --- VALEURS PAR DEFAUT DES RESI_*
 C
@@ -152,24 +138,6 @@ C
       PARCRI(4) = 0
       IF ( IRET .GT. 0 ) THEN
         IF ( REP  .EQ. 'NON' ) PARCRI(4) = 1
-      ENDIF
-C
-C --- TYPE DE CONVERGENCE: PIC OU PLATEAU
-C
-      CALL GETVTX('CONVERGENCE','TYPE',1,IARG,1,REP,IRET)
-      PARCRI(7) = 0
-      IF ( IRET .GT. 0 ) THEN
-        IF ( REP  .EQ. 'PIC' ) THEN
-          PARCRI(7) = 0
-        ELSEIF ( REP  .EQ. 'PLATEAU' ) THEN
-          PARCRI(7) = 1
-          CALL GETVR8('CONVERGENCE','PLATEAU_RELA',1,IARG,1,
-     &                PARCRI(9),IRET)
-          CALL GETVIS('CONVERGENCE','PLATEAU_ITER',1,IARG,1,PLATIT,IRET)
-          PARCRI(8) = PLATIT
-        ELSE
-          CALL ASSERT(.FALSE.)
-        ENDIF
       ENDIF
 C
 C --- ALARMES RELATIVES A LA QUALITE DE LA CONVERGENCE
