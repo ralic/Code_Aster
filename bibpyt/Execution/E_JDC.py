@@ -1,9 +1,9 @@
-#@ MODIF E_JDC Execution  DATE 10/09/2012   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF E_JDC Execution  DATE 15/04/2013   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 # RESPONSABLE COURTOIS M.COURTOIS
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -305,6 +305,19 @@ class JDC:
               # Si on ne peut pas pickler value on ne le met pas dans le contexte filtré
               pass
        self.save_pickled_attrs(d)
+       if self.info_level > 1:
+           keys = d.keys()
+           keys.sort()
+           for key in keys:
+              try:
+                 value = str(d[key])
+                 if len(value) > 1000:
+                     value = value[:1000] + '...'
+                 valk = key, value
+              except:
+                 valk = key, '...'
+              # on ne peut plus appeler UTMESS
+              print 'pickle: %s = %s' % valk
        return d
 
    def traiter_user_exception(self,exc_val):

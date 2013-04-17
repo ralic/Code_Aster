@@ -1,4 +1,4 @@
-#@ MODIF ops Cata  DATE 28/01/2013   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF ops Cata  DATE 15/04/2013   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -213,6 +213,18 @@ def POURSUITE(self, PAR_LOT, IMPR_MACRO, CODE, DEBUG, IGNORE_ALARM, LANG, INFO, 
          UTMESS('I', 'SUPERVIS_76', valk=(nom, typnam))
      if not interrupt:
          UTMESS('I', 'SUPERVIS_72')
+     if self.jdc.info_level > 1:
+         keys = pickle_context.keys()
+         keys.sort()
+         for key in keys:
+             try:
+                 value = str(pickle_context[key])
+                 if len(value) > 1000:
+                     value = value[:1000] + '...'
+                 valk = key, value
+             except:
+                 valk = key, '...'
+             UTMESS('I', 'SUPERVIS_73', valk=valk)
      self.g_context.update(pickle_context)
      return
 

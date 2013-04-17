@@ -1,9 +1,9 @@
-# MODIF  DATE 13/11/2012   AUTEUR COURTOIS M.COURTOIS 
+# MODIF  DATE 15/04/2013   AUTEUR COURTOIS M.COURTOIS 
 # TITRE TEST DES MESSAGES - INTERNATIONALISATION
 # supv002a.para = tps_job 180 mem_job 256Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -65,22 +65,22 @@ errors = checker.get_errors() + """\nNumber of errors : %d""" % nberr
 previous_errors = set([
     'ALCHML', 'ALITMI', 'AMDBAR', 'AMUMPS.F', 'ASCSEP', 'AU-YANG',
     'BiCG', 'CHARAC', 'CHARACTER', 'CHNO', 'CHNO.NUEQ', 'CHOUT', 'CHPVER',
-    'CINX', 'CINx', 'CLAV', 'CLO', 'COMBU', 'CVRC', 'D-POUTRE', 'DAMAX', 'DEEQ', 'DELG',
+    'CINX', 'CINx', 'CLO', 'COMBU', 'CVRC', 'D-POUTRE', 'DEEQ', 'DELG',
     'DEP', 'DEPSI', 'DEPSIMAX', 'DEUXMU', 'DISMOI', 'DLAHQR', 'DOMM', 'DPMAT',
-    'DPMAX', 'DPSIDS', 'DRMAX', 'DTREVC', 'DVP', 'ECLAU', 'EDITGD', 'EFNEMA',
+    'DPMAX', 'DPSIDS', 'DRMAX', 'DTREVC', 'ECLAU', 'EDITGD', 'EFNEMA',
     'ELREFA', 'ELREFE', 'ETENCA', 'FATEMI', 'FETG', 'FINSF', 'FLAHQR',
-    'FONREE', 'FTREVC', 'GAMDEV', 'GERPAS', 'GILIRE.INDIRECT', 'GL', 'GREL', 'Gnuplot.py',
+    'FONREE', 'FTREVC', 'GAMDEV', 'GERPAS', 'GILIRE.INDIRECT', 'GL', 'GREL',
     'HDFCRF', 'HEXS', 'HUJCI', 'HUJCRI', 'HUJDDD', 'HUJDP', 'HUJELA', 'HUJIID', 'HUJJID',
     'HUJKSI', 'HUJNVI', 'HUJPLA', 'HUJPOT', 'HUJTEL', 'HUJTID', 'ICHIN', 'ICOEF', 'IDDL',
     'IM', 'INFOG', 'JECROC', 'JENONU', 'JENUNO', 'JEXNOM', 'JEXNUM', 'JM', 'JUVECA', 'K.PHI',
     'K.U', 'KMOD', 'KSIB', 'KTILDA', "L'elrefe", 'LCDPPA', 'LIBRARY', 'LIGREL',
-    'LIGRELs', 'LMAT', 'LONCUM', 'LONT', 'LTNT', 'MOLOC', 'Map', 'NBCMP', 'NBCYCL', 'NBDDL',
-    'NBMECA', 'NBNOEUD', 'NBPOIN', 'NBRUP', 'NBSIGM', 'NDDL', 'NDS',
+    'LIGRELs', 'LMAT', 'LONCUM', 'LONT', 'LTNT', 'MOLOC', 'Map', 'NBCMP', 'NBDDL',
+    'NBMECA', 'NBPOIN', 'NBRUP', 'NBSIGM', 'NDDL', 'NDS',
     'NEMA', 'NEQUA', 'NMCOMP', 'NMCONV', 'NMHUJ', 'NMVPIR', 'NMXINS', 'NNOE', 'NOCART',
     'NOCP', 'NODE', 'NOMLI', 'NOSOLVE', 'NPQ', 'NSEUIL', 'NUEQ', 'NUME.LILI', 'NUMER',
     'NUMERO.F', 'NUMERO.f', 'NUTIOC', 'NV', 'NVI', 'NVIMAX', 'NaN', 'OMEGA', 'OPENDR',
     'PARAMETER', 'PATH', 'PERMEA', 'PFACY', 'PHYSICAL', 'PMAX', 'POLYNOME',
-    'POSTK', 'PREML', 'PRNO', 'RAPH', 'RCVALA', 'READDR', 'RESUEL', 'RINF', 'RM-EP',
+    'PREML', 'PRNO', 'RAPH', 'RCVALA', 'READDR', 'RESUEL', 'RINF', 'RM-EP',
     'ROMBOUT', 'ROOT', 'RREUR', 'RSEXCH', 'RSUP', 'SCHUR', 'SECHM', 'SECHP', 'SIF', 'SIGMMO',
     'SOCIE', 'SOLVE', 'SPD', 'SQRT', 'SSP', 'STOGI', 'SV', 'Scalar', 'TBLIVA', 'TGU', 'TGV',
     'TRIA-QUAD', 'TYPB', 'TYPEKE', 'TYPL', 'TYPVF', 'Tmax', 'UMC', 'UMOY',
@@ -101,7 +101,7 @@ previous_errors = set([
     'resuelem', 'resultat', 'rhocp', 'rof', 'rsexch', 'runSalomeScript', 'sch', 'sd',
     'skin.pos', 'svp', 'tbliva', 'texxxx.f', 'tmax', 'tmin', 'typelem', 'typesd',
     'typf', 'typgeo', 'uttcpu', 'uttrif', 'vari', 'vect', 'xxx', 'xxxxxx.py',
-    'hexa', 'lumpe'])
+    ])
 
 current_errors = checker.get_unknown_words()
 new = list(set(current_errors).difference(previous_errors))
@@ -109,13 +109,20 @@ new.sort()
 nbnew = len(new)
 correct = list(previous_errors.difference(current_errors))
 correct.sort()
-print "--- List of unknown words : "
-print current_errors
-print "--- List of new errors :"
-print new
-print "--- List of removed errors (please update previous_errors) :"
-print correct
 
+if nbnew > 0:
+    UTMESS('F', 'SUPERVIS2_5',
+           valk=("supv002a",
+                 "Liste des nouvelles erreurs introduites a corriger :",
+                 str(new)))
+UTMESS('A', 'SUPERVIS2_5',
+       valk=("supv002a",
+             "Liste des mots inconnus des dictionnaires :",
+             str(current_errors)))
+UTMESS('A', 'SUPERVIS2_5',
+       valk=("supv002a",
+             "Liste des erreurs qui n'apparaissent plus :",
+             str(correct)))
 if nberr > 0:
     UTMESS('A', 'SUPERVIS2_5', valk=("'CheckMessages'", errors, ""))
 if nbwrn > 0:
@@ -144,8 +151,8 @@ TEST_TABLE(CRITERE='ABSOLU',
            REFERENCE='ANALYTIQUE',
            VALE_CALC_I=0,
            VALE_REFE_I=0,
-           TOLE_MACHINE=309.1,
-           PRECISION=309.1,
+           TOLE_MACHINE=300,
+           PRECISION=300,
            NOM_PARA='NBWARN',
            TABLE=tabw,
            )

@@ -1,0 +1,7 @@
+VALE = (
+    _F(F_Norm=1.E6,     F_Tang=0.),         # cas de calcul n°1
+    _F(F_Norm=9.23879E5,F_Tang=-3.82683E5), # cas de calcul n°2
+    _F(F_Norm=7.07106E5,F_Tang=-7.07106E5), # cas de calcul n°3
+    _F(F_Norm=3.82683E5,F_Tang=-9.23879E5), # cas de calcul n°4
+    _F(F_Norm=0.,       F_Tang=-1.E6),      # cas de calcul n°5
+)

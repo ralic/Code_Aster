@@ -8,3 +8,5 @@ P testlist C
 F comm distr01a.comm D 1
 F comm distr01a.com1 D 1
 F mmed distr01a.mmed D 20
+F libr distr01a.50 D 50
+F libr distr01a.51 D 51

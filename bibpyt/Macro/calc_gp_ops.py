@@ -1,4 +1,4 @@
-#@ MODIF calc_gp_ops Macro  DATE 08/04/2013   AUTEUR LADIER A.LADIER 
+#@ MODIF calc_gp_ops Macro  DATE 15/04/2013   AUTEUR COURTOIS M.COURTOIS 
 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -150,7 +150,7 @@ def Calcul_mesure_3D(maya,nbcop,l_copo_tot,ltyma,nd_fiss,normale):
           mesure[C_k] = mesure[C_k-1]
 
        # Recuperation des coordonnees des noeuds appartenant au copeau courant
-       maille_courante = maya.sdj.GROUPEMA.get()['Mai_Plan'][0]
+       maille_courante = maya.sdj.GROUPEMA.get()['Mai_Plan'.ljust(24)][0]
        if ltyma[maya.sdj.TYPMAIL.get()[maille_courante]][0:4]=='QUAD':
           connexe = maya.sdj.CONNEX.get()[maille_courante]
           if C_k%nbcop!=0:
@@ -556,135 +556,3 @@ def calc_gp_ops(self,**args):
     RetablirAlarme('CALCCHAMP_1')
     return ier
 
-##########################################################################################
-# code issu de l'ancienne macro POST_GP concernant le 3D option TRAC_COMP
-# qui permet de prendre en compte la traction-compression dans le calcul de l'energie
-
-##########################################################################################
-# if self['TRAC_COMP']=='OUI':
-#   __res2=CALC_CHAMP(CRITERES='SIEQ_ELNO',
-#                      RESULTAT=__RESU,
-#                      )
-    # indices des mailles du dernier group_ma
-    # (pour avoir le nombre de mailles par tranche)
-#   l_mailles_last_gm = maya.sdj.GROUPEMA.get()[l_copo_tot[-1].ljust(8)]
-    # initialisation des concepts reutilises dans la boucle
-    # on suppose que chaque tranche a le meme nombre de mailles
-#   kk = 0
-#   __Eel = [None]*len(l_mailles_last_gm)*nb_tranches
-#   T_el = [None]*len(l_mailles_last_gm)*nb_tranches
-    # on recupere les sd en dehors de la boucle
-#   maya_GROUPEMA = maya.sdj.GROUPEMA.get()
-#   maya_NOMMAI = maya.sdj.NOMMAI.get()
-#   maya_CONNEX = maya.sdj.CONNEX.get()
-#   maya_NOMNOE = maya.sdj.NOMNOE.get()
-
-#   for i in range(0,nb_tranches):
-#      l_copo = l_copo_tot[i*nbcop:(i+1)*nbcop]
-#      if info >= 2 :
-#         print "<I> Calcul de la tranche %i"%(i+1)
-      # l_copo est une liste commulative de mailles
-      # il faut lancer POST_ELEM sur chaque maille de chaque copeau
-      # puis regarder la trace de SIEF_ELGA sur ce copeau
-
-      # on fera attention a ne pas lancer POST_ELEM sur une maille qui
-      # a deja ete calculee en stockant son resultat pour la maille en question
-#      d_groupma={}
-#      d_nomma={}
-      # indices des mailles des copeaux
-#      for group_ma in l_copo:
-#            d_groupma[group_ma] = maya_GROUPEMA[group_ma.ljust(8)]
-      # le dernier copeau contient tous les elements
-      # on calcule l energie de chaque element de ce copeau
-#      last_copo = l_copo[-1]
-#      d_ener = {}
-#      d_nomma = {}
-#      for k, id_elem in enumerate(d_groupma[last_copo]):
-            # les id des elements dans Aster commencent a 1
-            # la liste python commence a 0
-#            elem = maya_NOMMAI[id_elem-1]
-#            d_nomma[id_elem]=elem
-#            __Eel[kk] = POST_ELEM(MODELE=self['MODELE'],
-#                                 RESULTAT=__RESU,
-#                                 LIST_INST=__linstr8,
-#                                 ENER_ELAS=_F(MAILLE=elem),
-#                                 TITRE='Energie elastique',)
-
-#            T_el[kk] = __Eel[kk].EXTR_TABLE()
-#            l_enel = T_el[kk].TOTALE.values()
-            # signe de la trace <=> signe de la composante VMIS_SG du tenseur SIEQ_ELNO,
-            # mais E_enel est par element => on fait une moyenne sur les noeuds de l'element
-#            list_no = []
-#            for ind_no in maya_CONNEX[id_elem] :
-#               nomnoe = maya_NOMNOE[ind_no-1]
-#               if nomnoe not in list_no :
-#                  list_no.append(nomnoe)
-#            l_inst = T_el[kk].INST.values()
-#            nb_inst = len(l_inst)
-#            T_noeuds = Table()
-#            T_noeuds['INST']=l_inst
-            # pour chaque noeud de l'element on recupere sa trace
-#            for noeud in list_no:
-#               __VM=RECU_FONCTION(RESULTAT=__res2,
-#                                    LIST_INST=__linstr8,
-#                                    NOM_CHAM='SIEQ_ELNO',
-#                                    NOM_CMP='VMIS_SG',
-#                                    MAILLE=elem,
-#                                    NOEUD=noeud);
-#               T_noeuds[noeud]=__VM.Ordo()
-#            T_noeuds.fromfunction('VM_MAIL', moyenne, list_no)
-#            l_VM_MAIL = T_noeuds.VM_MAIL.values()
-#            for j, vm in enumerate(l_VM_MAIL):
-#               if vm < 0:
-#                  l_enel[j]=-l_enel[j]
-# #    pas l_enel[j]=0 au lieu de l_enel[j]=-l_enel[j] ?
-#            del T_el[kk]['TOTALE']
-#            T_el[kk][elem]=l_enel
-#            if k==0:
-               # Table de l'energie elastique sur le GROUP_MA
-#               T_el_gm = Table()
-#               T_el_gm['NUME_ORDRE'] = T_el[kk].NUME_ORDRE.values()
-#               T_el_gm['INST'] = T_el[kk].INST.values()
-#               T_el_gm['LIEU'] = [last_copo]*nb_inst
-#               T_el_gm['ENTITE'] = ['GROUP_MA']*nb_inst
-#            T_el_gm[elem]=l_enel
-#            kk+=1
-      # sommation sur les mailles du group_ma:
-#      l_nomma = d_nomma.values()
-#      T_el_gm.fromfunction('TOTALE', mysum, l_nomma)
-      # Table totale
-#      t_enel=Table(titr="Energie elastique")
-#      t_enel['NUME_ORDRE']=T_el_gm.NUME_ORDRE.values()
-#      t_enel['INST']=T_el_gm.INST.values()
-#      t_enel['LIEU']=T_el_gm.LIEU.values()
-#      t_enel['ENTITE']=T_el_gm.ENTITE.values()
-#      t_enel['TOTALE']=T_el_gm.TOTALE.values()
-      # t_enel ne contient jusqu'ici que l'energie elastique du dernier copeau
-      # calcul de l'energie elastique pour les autres copeaux
-#      T_el_sub = T_el_gm.copy()
-#      for k in range(len(l_copo)-2,-1,-1):
-#            group_ma = l_copo[k]
-#            T_el_sub = T_el_sub.copy()
-#            del T_el_sub['LIEU']
-#            del T_el_sub['TOTALE']
-#            T_el_sub['LIEU']=[group_ma]*nb_inst
-#            l_id_elem = d_groupma[group_ma]
-#            l_nom_elem = []
-#            for id_elem, nom_elem in d_nomma.items():
-#               if not id_elem in l_id_elem:
-                  # colonne a supprimer
-#                  del T_el_sub[nom_elem]
-#                  del d_nomma[id_elem]
-#               else:
-#                  l_nom_elem.append(nom_elem)
-#            T_el_sub.fromfunction('TOTALE', sum_and_check, l_nom_elem)
-            # Table de l'energie elastique sur le GROUP_MA
-#            T_el_gm_k = Table()
-#            T_el_gm_k['NUME_ORDRE'] =T_el_sub.NUME_ORDRE.values()
-#            T_el_gm_k['INST'] = T_el_sub.INST.values()
-#            T_el_gm_k['LIEU'] = [group_ma]*nb_inst
-#            T_el_gm_k['ENTITE'] = ['GROUP_MA']*nb_inst
-#            T_el_gm_k['TOTALE'] = T_el_sub.TOTALE.values()
-            # contribution du group_ma a la table totale:
-#            t_enel = merge(t_enel, T_el_gm_k)
-#      t_enel.sort('NUME_ORDRE')
