@@ -2,7 +2,7 @@
      &                  MODELE, CARELE, CHAMP0)
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 11/03/2013   AUTEUR IDOUX L.IDOUX 
+C MODIF ALGORITH  DATE 16/04/2013   AUTEUR DESROCHE X.DESROCHES 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -47,7 +47,7 @@ C
       INTEGER      IBID  , NBMA  , JCESK , IRET  , INOT  , INBNO
       INTEGER      NDIM  , LICMPU(6), NBM, IDMAIL, NBMAIL, IMAI
       INTEGER      INOEU , IRET0  , IRET1 , NBGNO , IGNO,NNCP,I2
-      INTEGER      IERK,  MNOGAK, MNOGAD, MNOGAL, MNOGAV, IADR
+      INTEGER      IERK,  MNOGAK, MNOGAD, MNOGAL, MNOGAV, IADR, IGAAXE
       INTEGER      IMAREF, NBNO,   NBPG,   NBNO2,   NBPG2, NUNO  , IPG
       LOGICAL TEST,EXICAR
       REAL*8       ANGNOT(3), PGL(3,3), VALER(6), VALED(6),DDOT
@@ -71,6 +71,7 @@ C
 C
       CALL JEMARQ()
       EPSI = 1.0D-6
+      IGAAXE = 0
       MOTCLE(1) = 'GROUP_MA'
       TYPMCL(1) = 'GROUP_MA'
       MOTCLE(2) = 'MAILLE'
@@ -686,7 +687,19 @@ C
                      XNORMR = 0.0D0
                      CALL NORMEV(AXER,XNORMR)
                      IF (XNORMR .LT. EPSI) THEN
-                        CALL ASSERT (.FALSE.)
+C   SI LE PT DE GAUSS EST SUR L'AXE ALORS L'AXE R N'EST PAS DEFINI
+C   ON PREND UN AXE ARBITRAIRE ORTHOGONAL A OZ POUR DEFINIR LE REPERE 
+C   CYLINDRIQUE EN CE POINT
+                        IF(AXEZ(1).NE.0.D0.OR.AXEZ(2).NE.0.D0) THEN
+                          AXER(1) = AXEZ(2)
+                          AXER(2) = -AXEZ(1)
+                          AXER(3) = 0.0D0
+                        ELSE
+                          AXER(1) = 1.0D0
+                          AXER(2) = 0.0D0
+                          AXER(3) = 0.0D0
+                        ENDIF
+                        IGAAXE = IGAAXE + 1
                      ENDIF
                      CALL PROVEC(AXEZ,AXER,AXET)
                      XNORMR = 0.0D0
@@ -929,6 +942,9 @@ C CHAMP COMPLEXE
          CALL CESCEL(CHAMS1,LIGREL,OPTION,' ','OUI',NNCP,'G',CHAMP1,'F',
      &            IBID)
          CALL DETRSD('CHAM_ELEM_S',CHAMS1)
+         IF(IGAAXE.NE.0) THEN
+            CALL U2MESI('A','ALGORITH17_22',1,IGAAXE)
+         ENDIF
 C
       ELSE IF((REPERE(1:5) .EQ.'COQUE') .OR.
      &        (REPERE(1:15).EQ.'COQUE_INTR_UTIL').OR.

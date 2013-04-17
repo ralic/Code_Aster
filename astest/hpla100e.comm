@@ -1,4 +1,4 @@
-# MODIF  DATE 09/04/2013   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 16/04/2013   AUTEUR DESROCHE X.DESROCHES 
 # TITRE CYLINDRE CREUX THERMOELASTIQUE PESANT EN ROTATION UNIFORME
 # hpla100e.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -86,6 +86,12 @@ TEMPLI1=CREA_RESU( OPERATION='AFFE',
                          _F( CHAM_GD=T_FIN1,
                              INST=1.0,      ), ), );
 
+TEMPLI1M=CREA_RESU( OPERATION='AFFE',
+                   TYPE_RESU='EVOL_THER',
+                   NOM_CHAM='TEMP',
+                   AFFE=(_F( CHAM_GD=T_FIN1,
+                             INST=0.0,      ), ), );
+
 TEMPLI2=CREA_RESU( OPERATION='AFFE',
                    TYPE_RESU='EVOL_THER',
                    NOM_CHAM='TEMP',
@@ -95,6 +101,9 @@ TEMPLI2=CREA_RESU( OPERATION='AFFE',
 TEMPER1=CREA_RESU(  OPERATION='PREP_VRC2', TYPE_RESU='EVOL_THER',
     PREP_VRC2= _F(  MODELE=MO, CARA_ELEM=CARE, EVOL_THER = TEMPLI1, ),)
 
+TEMPER1M=CREA_RESU(  OPERATION='PREP_VRC2', TYPE_RESU='EVOL_THER',
+    PREP_VRC2= _F(  MODELE=MO, CARA_ELEM=CARE, EVOL_THER = TEMPLI1M, ),)
+
 TEMPER2=CREA_RESU(  OPERATION='PREP_VRC2', TYPE_RESU='EVOL_THER',
     PREP_VRC2= _F(  MODELE=MO, CARA_ELEM=CARE, EVOL_THER = TEMPLI2, ),)
 # ------------------------------------------------------------------
@@ -103,6 +112,10 @@ CHMAT=AFFE_MATERIAU(  MAILLAGE=MA,
 CHMAT1=AFFE_MATERIAU(  MAILLAGE=MA,
                         AFFE=_F(  TOUT = 'OUI', MATER = MAT),
                         AFFE_VARC=  _F(TOUT='OUI',EVOL=TEMPER1,NOM_VARC='TEMP',
+                                     NOM_CHAM='TEMP',VALE_REF=0.0),)
+CHMAT1M=AFFE_MATERIAU(  MAILLAGE=MA,
+                        AFFE=_F(  TOUT = 'OUI', MATER = MAT),
+                        AFFE_VARC=  _F(TOUT='OUI',EVOL=TEMPER1M,NOM_VARC='TEMP',
                                      NOM_CHAM='TEMP',VALE_REF=0.0),)
 CHMAT2=AFFE_MATERIAU(  MAILLAGE=MA,
                         AFFE=_F(  TOUT = 'OUI', MATER = MAT),
@@ -170,6 +183,15 @@ DPES2=POST_CHAMP(RESULTAT=DEPLPES,
                  EXTR_COQUE=_F(NOM_CHAM='SIGM_ELNO',
                                NUME_COUCHE=1,
                                NIVE_COUCHE='INF',),);
+# ------------------------------------------------------------------
+# CALCUL DES CONTRAINTES AUX POINTS DE GAUSS SUR PLUSIEURS COUCHES
+#
+DEPLDILM=MECA_STATIQUE(MODELE=MO,
+                      CARA_ELEM=CARE,
+                      CHAM_MATER=CHMAT1M,
+                      EXCIT=_F(CHARGE=CHDIL),);
+
+DEPLDILM=CALC_CHAMP(reuse=DEPLDILM,RESULTAT=DEPLDILM,CONTRAINTE=('EFGE_ELGA','SIEF_ELGA'))
 # ------------------------------------------------------------------
 LISTIME=DEFI_LIST_REEL(VALE=( 0.0, 1.0, ), )
 
@@ -467,6 +489,16 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=1,
                    CRITERE='RELATIF',
                    PRECISION=1.E-3,
                    MAILLE='M20',),
+                _F(NUME_ORDRE=1,
+                   REFERENCE='ANALYTIQUE',
+                   RESULTAT=DEPLDILM,
+                   NOM_CHAM='SIEF_ELGA',
+                   NOM_CMP='SIXX',
+                   VALE_CALC= 0.0,
+                   VALE_REFE=0.0,
+                   CRITERE='ABSOLU',
+                   PRECISION=1.E-6,
+                   MAILLE='M1',POINT=1,SOUS_POINT=3),
                 _F(NUME_ORDRE=1,
                    REFERENCE='ANALYTIQUE',
                    RESULTAT=DPES2,

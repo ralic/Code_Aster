@@ -1,4 +1,4 @@
-#@ MODIF algorith17 Messages  DATE 08/04/2013   AUTEUR CUVILLIE M.CUVILLIEZ 
+#@ MODIF algorith17 Messages  DATE 16/04/2013   AUTEUR DESROCHE X.DESROCHES 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -121,6 +121,11 @@ cata_msg={
   Aucune valeur d'amortissement modal n'a été trouvée sous le mot-clé AMOR_MODAL. 
   Cette information est nécessaire pour la prise en compte d'un amortissement de type modal.
 
+"""),
+
+22 : _(u"""
+  Il y a %(i1)d points de Gauss sur l'axe de rotation. En ces points les axes Or et suivant thêta ne sont pas définis. On prend
+   un axe Or quelconque normal à Oz pour continuer le changement de repère mais seules les composantes suivant z ont un sens en ces points.
 """),
 
 25 : _(u"""
