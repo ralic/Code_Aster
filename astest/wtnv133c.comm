@@ -1,4 +1,4 @@
-# MODIF  DATE 09/04/2013   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 15/04/2013   AUTEUR FOUCAULT A.FOUCAULT 
 #
 # TITRE    ESSAI TRIAXIAL NON DRAINE AVEC LA LOI DE HUJEUX
 # wtnv133c.para = tps_job 200 mem_job 512Mo ncpus 1 liste_test S
@@ -258,9 +258,6 @@ U1=STAT_NON_LINE(MODELE=MODELE,INFO=1,
                  NEWTON=_F(MATRICE   = 'TANGENTE',
                            REAC_ITER = 1),
                  CONVERGENCE=_F(RESI_GLOB_RELA = 1.E-6,
-                                TYPE='PLATEAU',
-                                PLATEAU_ITER = 3,
-                                PLATEAU_RELA = 1E-2,
                                 ITER_GLOB_MAXI = 20),
                  ARCHIVAGE=_F(LIST_INST    = TEMPS1,),
                  INCREMENT=_F(LIST_INST    = TEMPS1,

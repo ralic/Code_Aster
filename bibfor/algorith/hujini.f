@@ -1,7 +1,7 @@
       SUBROUTINE HUJINI(MOD,MATER,INTG,DEPS,NR,YD,NVI,VIND,SIGD,SIGF,
      &                  BNEWS,MTRAC,DY,INDI,IRET)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 09/04/2013   AUTEUR PELLET J.PELLET 
+C MODIF ALGORITH  DATE 15/04/2013   AUTEUR FOUCAULT A.FOUCAULT 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -48,9 +48,9 @@ C     ----------------------------------------------------------------
       INTEGER        NR,NVI,IRET,INDI(7),INTG
       LOGICAL        BNEWS(3),MTRAC
 C
-      REAL*8         I1F,DSIG(6),ZERO,UN,TROIS,PREF,E0,DIFF
+      REAL*8         I1F,DSIG(6),ZERO,UN,TROIS,PREF,E0
       LOGICAL        LOOP,NODEF
-      INTEGER        NBMECA,NBMECT,I,II,NDT,NDI,INDIS(7)
+      INTEGER        NBMECA,NBMECT,I,II,NDT,NDI,INDIS(7),DIFF
 C
       PARAMETER     (NDI   = 3   )
       PARAMETER     (NDT   = 6   )
@@ -72,6 +72,9 @@ C --- GESTION DES BOUCLES
   10    CONTINUE
       ELSE
         LOOP = .FALSE.  
+        DO 11 I = 1, 7
+          INDIS(I) = 0
+  11    CONTINUE
       ENDIF
 C
       IRET = 0
@@ -123,7 +126,7 @@ C --- PREPARATION DE L'INCREMENT DE CONTRAINTES
 C
       DIFF = 0
       DO 15 I = 1, 7
-        DIFF = INDI(I)-INDIS(I)
+        DIFF = DIFF + INDI(I)-INDIS(I)
   15  CONTINUE
       IF((DIFF.EQ.0).AND.(NBMECA.EQ.1))LOOP=.FALSE.
 

@@ -1,4 +1,4 @@
-# MODIF  DATE 09/04/2013   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 15/04/2013   AUTEUR FOUCAULT A.FOUCAULT 
 # TITRE SOLLICITATION SISMIQUE D UNE COLONNE DE SOL
 #  APRES CONSTRUCTION PAR COUCHES AVEC LOI DE HUJEUX
 # wdnp101a.para = tps_job 500 mem_job 512Mo ncpus 1 liste_test S
@@ -1038,7 +1038,7 @@ SPOSCI = CALC_FONCTION(INFO=2,
 
 MAXSP = INFO_FONCTION(MAX=_F(FONCTION = SPOSCI,),);
 
-TEST_FONCTION(VALEUR=_F(VALE_CALC=0.88514,
+TEST_FONCTION(VALEUR=_F(VALE_CALC=0.88514247,
                         VALE_REFE=8.798585602334655e-01,
                         VALE_PARA=(0.02, 2.5),
                         REFERENCE='AUTRE_ASTER',
@@ -1154,7 +1154,7 @@ TAB_SIXY=CREA_TABLE(FONCTION=_F(FONCTION=ABSDSIXY),);
 TEST_TABLE(NOM_PARA='DX', TABLE=TAB_DEPX, TYPE_TEST='MAX',
            VALE_ABS='OUI',
            # Non-regression
-           TOLE_MACHINE=3.e-3,
+           TOLE_MACHINE=2.e-3,
            VALE_CALC=0.17277300236976,
            # Reference: Mod. HM adimensionnee et raffinee
            REFERENCE='AUTRE_ASTER',
@@ -1165,7 +1165,7 @@ TEST_TABLE(NOM_PARA='DX', TABLE=TAB_DEPX, TYPE_TEST='MAX',
 TEST_TABLE(NOM_PARA='DX', TABLE=TAB_VITX, TYPE_TEST='MAX',
            VALE_ABS='OUI',
            # Non-regression
-           TOLE_MACHINE=3.e-3,
+           TOLE_MACHINE=1e-3,
            VALE_CALC=0.032427169754969,
            # Reference: Mod. HM adimensionnee et raffinee
            REFERENCE='AUTRE_ASTER',
@@ -1176,7 +1176,7 @@ TEST_TABLE(NOM_PARA='DX', TABLE=TAB_VITX, TYPE_TEST='MAX',
 TEST_TABLE(NOM_PARA='PRE1', TABLE=TAB_PRE1, TYPE_TEST='MAX',
            VALE_ABS='OUI',
            # Non-regression
-           TOLE_MACHINE=3.e-3,
+           TOLE_MACHINE=2.e-6,
            VALE_CALC=0.93443561587374,
            # Reference: Mod. HM adimensionnee et raffinee
            REFERENCE='AUTRE_ASTER',
@@ -1187,7 +1187,7 @@ TEST_TABLE(NOM_PARA='PRE1', TABLE=TAB_PRE1, TYPE_TEST='MAX',
 TEST_TABLE(NOM_PARA='SIXY', TABLE=TAB_SIXY, TYPE_TEST='MAX',
            VALE_ABS='OUI',
            # Non-regression
-           TOLE_MACHINE=3.e-3,
+           TOLE_MACHINE=1e-3,
            VALE_CALC=0.21564886472988,
            # Reference: Mod. HM adimensionnee et raffinee
            REFERENCE='AUTRE_ASTER',
