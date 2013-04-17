@@ -24,19 +24,18 @@ def runtest(self):
     for test in opts.testname:
         cmd = ['as_run', '--vers=%s' % versdir, '--test', test]
         Logs.info("running %s" % test)
-        output = []
+        fname = osp.join(dtmp, osp.basename(test) + '.output')
+        fobj = open(fname, 'wb')
+        Logs.info("`- output in %s" % fname)
         proc = Popen(cmd, stdout=PIPE, bufsize=1)
         for line in iter(proc.stdout.readline, ''):
-            output.append(line)
+            fobj.write(line)
+            fobj.flush()
         proc.stdout.close()
+        fobj.close()
         retcode = proc.wait()
         if retcode == 0:
             func = Logs.info
         else:
             func = Logs.error
-        fname = osp.join(dtmp, osp.basename(test) + '.output')
-        fobj = open(fname, 'wb')
-        fobj.write(''.join(output))
-        fobj.close()
-        func("`- output in %s" % fname)
         func('`- exit %s' % retcode)
