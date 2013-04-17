@@ -1,8 +1,8 @@
-#@ MODIF salomeVisu Stanley  DATE 04/12/2012   AUTEUR ASSIRE A.ASSIRE 
+#@ MODIF salomeVisu Stanley  DATE 16/04/2013   AUTEUR ASSIRE A.ASSIRE 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -18,7 +18,7 @@
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 
-debug = True
+debug = False
 
 import os, commands, string, sys, socket, getpass
 from Utilitai.Utmess import UTMESS
@@ -55,6 +55,11 @@ class VISU:
         self.studyName     = None               # nom de l'etude SALOME dans laquelle on fait la visualisation
 
         if debug: print "AA1/param=", self.param, dir(self.param)
+
+        if param['Visualiseur'] == 'POSTPRO':
+            self.chemin_script = './Python/Templates/salomeScript.py'
+        else:
+            self.chemin_script = './Python/Templates/salomeParaviz.py'
 
         # Construction paramètre pour SALOME
         self.salome_host           = param['machine_salome']
@@ -235,7 +240,7 @@ class ISOVALEURS( VISU ):
         @param  visuType:      type de visualisation
         """
 
-        dSALOME = { 'CHEMIN_SCRIPT'    : './Python/Templates/salomeScript.py',
+        dSALOME = { 'CHEMIN_SCRIPT'    : self.chemin_script,
                     'SALOME_HOST'      : self.salome_host,
                     'SALOME_PORT'      : self.salome_port,
                     'FICHIERS_ENTREE'  : [ medFilePath ],
@@ -356,7 +361,7 @@ class COURBES( VISU ):
         Lecture d'un fichier MED par le composant VISU de SALOME.
         """
 
-        dSALOME = { 'CHEMIN_SCRIPT'    : './Python/Templates/salomeScript.py',
+        dSALOME = { 'CHEMIN_SCRIPT'    : self.chemin_script,
                     'SALOME_HOST'      : self.salome_host,
                     'SALOME_PORT'      : self.salome_port,
                     'FICHIERS_ENTREE'  : [ datafile ],

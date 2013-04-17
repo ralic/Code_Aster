@@ -1,4 +1,4 @@
-#@ MODIF stanley_engine Stanley  DATE 09/04/2013   AUTEUR PELLET J.PELLET 
+#@ MODIF stanley_engine Stanley  DATE 16/04/2013   AUTEUR ASSIRE A.ASSIRE 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -309,9 +309,10 @@ class PARAMETRES :
       'SHRINK'                : { 'label': _(u"Gmsh : Shrink"),                    'val': 1.,                 'type': types.FloatType,  'section': 'VISUALISATION',   'mode_graphique': ['Gmsh/Xmgrace'],                                                  'bulle': _(u"Parametre pour Gmsh : SHRINK\n\nFacteur de réduction homothétique permettant d'assurer la non interpénétration des mailles."), },
       'SKIN'                  : { 'label': _(u"Gmsh : Affichage sur la peau"),     'val': 'non',              'type': 'liste',          'section': 'VISUALISATION',   'mode_graphique': ['Gmsh/Xmgrace'], 'val_possible': ["oui", "non"],                  'bulle': _(u"Parametre pour Gmsh : affichage sur la peau uniquement."), },
       'version_fichier_gmsh'  : { 'label': _(u"Gmsh : Version du fichier"),        'val': '1.2',              'type': 'liste',          'section': 'VISUALISATION',   'mode_graphique': ['Gmsh/Xmgrace'], 'val_possible': ["1.0", "1.2"],                  'bulle': _(u"Parametre pour Gmsh : version du fichier resultat."), },
+      'Visualiseur'           : { 'label': _(u"Salome : Visualiseur"),             'val': 'PARAVIZ',          'type': 'liste',          'section': 'VISUALISATION',   'mode_graphique': ['Salome'],       'val_possible': ["POSTPRO", "PARAVIZ"],          'bulle': _(u"Parametre pour Salome : visualisation dans POSTPRO ou PARAVIZ."), },
 
       # Parametres du Poste de travail de l'utilisateur, de la machine des Services Salome ou Gmsh
-      'mode'                  : { 'label': _('Mode'),                             'val': 'LOCAL',            'type': 'liste',          'section': 'CONFIG',                                              'val_possible': ["LOCAL", "DISTANT", "WINDOWS"], 'bulle': '', },
+      'mode'                  : { 'label': _('Mode'),                              'val': 'LOCAL',            'type': 'liste',          'section': 'CONFIG',                                              'val_possible': ["LOCAL", "DISTANT", "WINDOWS"], 'bulle': '', },
       'machine_visu'          : { 'label': _(u"Machine de visualisation"),         'val': '',                 'type': 'texte',          'section': 'CONFIG',          'mode_graphique': ['Gmsh/Xmgrace'],             'mode': ['DISTANT'],      'bulle': _(u"Adresse du poste de travail"), },
 
       'machine_gmsh'          : { 'label': _(u"Machine de Gmsh"),                  'val': '',                 'type': 'texte',          'section': 'CONFIG',          'mode_graphique': ['Gmsh/Xmgrace'],             'mode': ['DISTANT'],                 'bulle': _(u"Machine hebergeant le service graphique Gmsh."), },
@@ -319,9 +320,10 @@ class PARAMETRES :
       'machine_gmsh_exe'      : { 'label': _(u"Machine Gmsh : chemin vers gmsh"),  'val': 'gmsh',             'type': 'texte',          'section': 'CONFIG',          'mode_graphique': ['Gmsh/Xmgrace'],             'mode': ['DISTANT'],                 'bulle': _(u"Adresse du poste de travail"), },
 
       'machine_salome'        : { 'label': _(u"Machine de Salome"),                'val': '',                 'type': 'texte',          'section': 'CONFIG',          'mode_graphique': ['Salome'],                   'mode': ['DISTANT'],                 'bulle': _(u"Machine hebergeant le service graphique Salome."), },
-      'machine_salome_login'  : { 'label': _(u"Login"),                            'val': '',                 'type': 'texte',          'section': 'CONFIG',          'mode_graphique': ['Salome'],   'mode': ['DISTANT'],                 'bulle': _(u"Login"), },
+      'machine_salome_login'  : { 'label': _(u"Login"),                            'val': '',                 'type': 'texte',          'section': 'CONFIG',          'mode_graphique': ['Salome'],                   'mode': ['DISTANT'],                 'bulle': _(u"Login"), },
       'machine_salome_port'   : { 'label': _(u"Port de Salome"),                   'val': '2810',             'type': 'texte',          'section': 'CONFIG',          'mode_graphique': ['Salome'],                   'mode': ['LOCAL', 'DISTANT'],        'bulle': _(u"Port de Salome sur la machine hebergeant le service Salome."), },
-      'machine_salome_runscript' : { 'label': _(u"Lanceur runSalomeScript"),       'val': os.path.join(aster_core.get_option('repout'), 'runSalomeScript'),             'type': 'texte',          'section': 'CONFIG',          'mode_graphique': ['Salome'],                   'mode': ['LOCAL', 'DISTANT'],        'bulle': _(u"Chemin vers le script runSalomeScript (dans l'arborescence de Salome)."), },
+      'machine_salome_runscript' : { 'label': _(u"Lanceur runSalomeScript"),       'val': os.path.join(aster_core.get_option('repout'), 'runSalomeScript'),
+                                                                                                              'type': 'texte',          'section': 'CONFIG',          'mode_graphique': ['Salome'],                   'mode': ['LOCAL', 'DISTANT'],        'bulle': _(u"Chemin vers le script runSalomeScript (dans l'arborescence de Salome)."), },
 
       'machine_win'           : { 'label': _(u"Machine Windows/Samba"),            'val': '',                 'type': 'texte',          'section': 'CONFIG',          'mode_graphique': ['Gmsh/Xmgrace'],             'mode': ['WINDOWS'],                 'bulle': _(u"Machine hebergeant le partage Windows/Samba."), },
       'partage_win_nom'       : { 'label': _(u"Nom de partage Windows/Samba"),     'val': '',                 'type': 'texte',          'section': 'CONFIG',          'mode_graphique': ['Gmsh/Xmgrace'],             'mode': ['WINDOWS'],                 'bulle': _(u"Nom de partage Windows/Samba"), },
@@ -2749,7 +2751,6 @@ class DRIVER_COURBES(DRIVER) :
 
 
     # Formatage du titre de la table Aster pour Salome
-    #title = '%s - %s' % ( selection.nom_cham, ' '.join(selection.nom_cmp) )
     title = '%s - %s' % ( selection.nom_cham, ' '.join(lnomTitle) )
     if selection.geom[0] == 'CHEMIN':
         ctitle = ' ABSC_CURV | ' + ' | '.join(lnomColonnne[1:])
@@ -2768,7 +2769,8 @@ COLUMN_UNITS: %s""" % ( title, ctitle, cunit)
 
     try:
         fw=open(datafile, 'w')
-        fw.write( str(_tbl) )
+        #fw.write( str(_tbl) )
+        fw.write(str(_tbl).replace(" NUME_ORDRE","#NUME_ORDRE"))  # Patch pour Paraviz
         fw.close()
     except Exception, e:
         print "Erreur lors de l'ecriture du fichier : %s" % datafile
