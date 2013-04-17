@@ -1,10 +1,10 @@
-# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
+# MODIF  DATE 16/04/2013   AUTEUR BRIE N.BRIE 
 # TITRE RECALAGE DES PARAMETRES D'UN MODELE DYNAMIQUE PAR ANALYSE MODALE
 # 3 calculs esclaves distribues : ncpus = 3 + 1 (maitre)
 # sdls121a.para = tps_job 600 mem_job 512Mo ncpus 4 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -101,13 +101,13 @@ OPTIM=DEFI_FONCTION(NOM_PARA='INST',
                     VALE_PARA=BIDON,
                     VALE_FONC=RESU);
 
-TEST_FONCTION(VALEUR=(_F(VALE_CALC=0.504193450213,
+TEST_FONCTION(VALEUR=(_F(VALE_CALC=0.50419188,
                          VALE_REFE=0.5,
                          VALE_PARA=1.0,
                          REFERENCE='ANALYTIQUE',
                          PRECISION=1.E-2,
                          FONCTION=OPTIM,),
-                      _F(VALE_CALC=49741.8065906,
+                      _F(VALE_CALC=49737.38,
                          VALE_REFE=5.E4,
                          VALE_PARA=2.0,
                          REFERENCE='ANALYTIQUE',
