@@ -1,4 +1,4 @@
-# MODIF  DATE 08/04/2013   AUTEUR LEBOUVIER F.LEBOUVIER 
+# MODIF  DATE 15/04/2013   AUTEUR PELLET J.PELLET 
 
 DEBUT(CODE=_F(NOM='SSLP116B',NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'));
 
@@ -8,19 +8,19 @@ DEBUT(CODE=_F(NOM='SSLP116B',NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'));
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
-# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-# (AT YOUR OPTION) ANY LATER VERSION.                                                    
-#                                                                       
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-#                                                                       
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 #
 # AUTEUR : F. LEBOUVIER (DeltaCAD)
@@ -68,7 +68,7 @@ TEMP_M=CREA_CHAMP(OPERATION='AFFE',
                  TYPE_CHAM='NOEU_TEMP_R',
                  MAILLAGE=MAIL,
                  AFFE=_F( TOUT = 'OUI',
-                          NOM_CMP = ('TEMP',),
+                          NOM_CMP = ('TEMP_MIL',),
                           VALE = (0.,)
                          )
                 )
@@ -96,7 +96,7 @@ TEMP_IMP =CREA_CHAMP(OPERATION='ASSE',
                           NOM_CMP = 'TEMP_SUP'),
                        _F(TOUT    = 'OUI',
                           CHAM_GD = TEMP_M,
-                          NOM_CMP = 'TEMP'),
+                          NOM_CMP = 'TEMP_MIL'),
                        _F(TOUT    = 'OUI',
                           CHAM_GD = TEMP_I,
                           NOM_CMP = 'TEMP_INF')
@@ -139,9 +139,9 @@ CLIM=AFFE_CHAR_CINE(MODELE=MODELE,
                                   DZ=0.0,),
                                   ),)
 
-RESU=MECA_STATIQUE(MODELE=MODELE, 
+RESU=MECA_STATIQUE(MODELE=MODELE,
                    CHAM_MATER=CHMAT,
-                   CARA_ELEM=CARAELEM, 
+                   CARA_ELEM=CARAELEM,
                    EXCIT=_F(CHARGE=CLIM,),);
 
 

@@ -1,4 +1,4 @@
-# MODIF  DATE 08/04/2013   AUTEUR DESOZA T.DESOZA 
+# MODIF  DATE 15/04/2013   AUTEUR PELLET J.PELLET 
 # TITRE CUBE ORTHOTROPE
 # tplv07a.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -176,7 +176,6 @@ FO_FLUN=FORMULE(NOM_PARA=('FLUX','FLUY','FLUZ','X','Y','Z',),
 FLUN_F=CREA_CHAMP(TYPE_CHAM='NOEU_NEUT_F',
                   OPERATION='AFFE',
                   MODELE=MOTH,
-                  PROL_ZERO='OUI',
                   AFFE=_F(GROUP_MA='F_NPJI',
                           VALE_F=FO_FLUN,
                           NOM_CMP='X1',),);

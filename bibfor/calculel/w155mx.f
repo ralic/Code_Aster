@@ -1,9 +1,9 @@
       SUBROUTINE W155MX(NOMRES,RESU,NBORDR,LIORDR)
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 24/07/2012   AUTEUR PELLET J.PELLET 
+C MODIF CALCULEL  DATE 15/04/2013   AUTEUR PELLET J.PELLET 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -27,7 +27,7 @@ C ----------------------------------------------------------------------
       CHARACTER*8 NOMRES,RESU
       INTEGER NBORDR,LIORDR(NBORDR)
 C
-      INTEGER IFM,NIV
+      INTEGER IFM,NIV,ICO
       INTEGER IRET,I,NUORDR,IBID,NOCC,IOCC,NCHOUT
       CHARACTER*8 MODELE,CARELE,MATE
       CHARACTER*8 MODEAV,NOCMP,TYMAXI
@@ -35,7 +35,7 @@ C
       CHARACTER*16 MOTFAC,NOMSYM,NOMSY2
       CHARACTER*19 CHIN,CHEXTR,EXCIT,LIGREL,RESU19
       CHARACTER*24 NOMPAR
-      INTEGER      IARG
+      INTEGER IARG
 C     ------------------------------------------------------------------
 C
       CALL JEMARQ()
@@ -53,7 +53,6 @@ C     ----------------------------------------
       IF (NOCC.EQ.0)GOTO 30
       CALL ASSERT(NOCC.LT.10)
 
-
       DO 20,IOCC=1,NOCC
 
 C     -- 2.  : NOMSYM, NOCMP, TYMAXI, TYCH :
@@ -66,9 +65,10 @@ C     --------------------------------------------------
         CALL ASSERT(TYCH.EQ.'ELNO' .OR. TYCH.EQ.'ELGA')
 
 
-C     -- 3. : BOUCLE SUR LES CHAMPS
+C     -- 3. : BOUCLE SUR LES NUME_ORDRE
 C     --------------------------------------------------
         MODEAV=' '
+        ICO=0
         DO 10,I=1,NBORDR
           NUORDR=LIORDR(I)
           CALL RSEXCH(' ',RESU19,NOMSYM,NUORDR,CHIN,IRET)
@@ -82,8 +82,8 @@ C         -- 3.1 : MODELE, CARELE, LIGREL :
             ENDIF
 
             NOMSY2='UTXX_'//TYCH
-        CALL GETVIS(MOTFAC,'NUME_CHAM_RESU',IOCC,IARG,1,NCHOUT,IBID)
-        CALL ASSERT(NCHOUT.GE.1 .AND. NCHOUT.LE.20)
+            CALL GETVIS(MOTFAC,'NUME_CHAM_RESU',IOCC,IARG,1,NCHOUT,IBID)
+            CALL ASSERT(NCHOUT.GE.1 .AND. NCHOUT.LE.20)
             CALL CODENT(NCHOUT,'D0',NOMSY2(3:4))
             IF (TYCH.EQ.'ELGA') THEN
               NOMPAR='PGAMIMA'
@@ -98,9 +98,11 @@ C         -- 3.1 : MODELE, CARELE, LIGREL :
             CALL ALCHML(LIGREL,'MINMAX_SP',NOMPAR,'G',CHEXTR,IRET,' ')
             CALL ASSERT(IRET.EQ.0)
             CALL W155M2(CHIN,CARELE,LIGREL,CHEXTR,NOMSYM,NOCMP,TYMAXI)
+            ICO=ICO+1
             CALL RSNOCH(NOMRES,NOMSY2,NUORDR)
           ENDIF
    10   CONTINUE
+        IF (ICO.EQ.0) CALL U2MESK('F','CALCULEL2_62',1,NOMSYM)
    20 CONTINUE
 
 

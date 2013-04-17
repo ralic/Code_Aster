@@ -1,4 +1,4 @@
-# MODIF  DATE 21/01/2013   AUTEUR FLEJOU J-L.FLEJOU 
+# MODIF  DATE 15/04/2013   AUTEUR PELLET J.PELLET 
 # TITRE ORIENTATION DE MAILLES PAR UNE BOUCLE PYTHON
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -70,7 +70,7 @@ def LIST_CARA_CIRCONF(GROUP_MA,AXE,MAILLAGE,**args):
   coordo=MAILLAGE.sdj.COORDO.VALE.get()
   connex=MAILLAGE.sdj.CONNEX.get()
   nommai=MAILLAGE.sdj.NOMMAI.get()
-  groupma=MAILLAGE.sdj.GROUPEMA.get()[GROUP_MA.ljust(8)]
+  groupma=MAILLAGE.sdj.GROUPEMA.get()[GROUP_MA.ljust(24)]
 
   # On met en forme les coordonnees : matrice 3 colonnes
   coordo=NP.reshape(coordo,[len(coordo)/3,3])

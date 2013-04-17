@@ -1,8 +1,8 @@
-#@ MODIF macr_aspic_mail_ops Macro  DATE 07/02/2012   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF macr_aspic_mail_ops Macro  DATE 15/04/2013   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -844,7 +844,7 @@ def macr_aspic_mail_ops(self,EXEC_MAILLAGE,TYPE_ELEM,RAFF_MAIL,TUBULURE,
       coord   =aster.getvectjev(nommail.ljust(8)+'.COORDO    .VALE')
       collgrno=aster.getcolljev(nommail.ljust(8)+'.GROUPENO')
 
-      grfo=collgrno['FONDORDO']
+      grfo=collgrno['FONDORDO'.ljust(24)]
       Nbno = len(grfo)
       listx = [None]*Nbno
       listy = [None]*Nbno
@@ -876,7 +876,7 @@ def macr_aspic_mail_ops(self,EXEC_MAILLAGE,TYPE_ELEM,RAFF_MAIL,TUBULURE,
             ZC = listz[k]
          d = max(dk, d)
 
-      grlev=collgrno['LEVRTUBU']
+      grlev=collgrno['LEVRTUBU'.ljust(24)]
       Nbnol = len(grlev)
       listxl = [None]*Nbnol
       listyl = [None]*Nbnol

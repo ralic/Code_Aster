@@ -1,8 +1,8 @@
-#@ MODIF dyna_iss_vari_ops Macro  DATE 16/10/2012   AUTEUR DEVESA G.DEVESA 
+#@ MODIF dyna_iss_vari_ops Macro  DATE 15/04/2013   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -43,7 +43,7 @@ def dyna_iss_vari_ops(self, NOM_CMP, PRECISION, INTERF,MATR_COHE, UNITE_RESU_FOR
    def get_group_coord(group):
       """Retourne les coordonnees des noeuds du groupe 'group'
       """
-      l_ind = NP.array(coll_grno.get('%-8s' % group, [])) - 1
+      l_ind = NP.array(coll_grno.get('%-24s' % group, [])) - 1
       return NP.take(t_coordo, l_ind, axis=0)
 
  #--------------------------------------------------------------------------------
@@ -208,7 +208,7 @@ def dyna_iss_vari_ops(self, NOM_CMP, PRECISION, INTERF,MATR_COHE, UNITE_RESU_FOR
 
 
  #  POUR TRANS, on sort le champ en déplacement: c'est équivalent du champ en deplacement si on applique un signal en ACCE
-   
+
    __CHAM=CREA_CHAMP( TYPE_CHAM='NOEU_DEPL_R',
                 OPERATION='EXTR',
                 NUME_ORDRE=nbmodd+1,
@@ -218,12 +218,12 @@ def dyna_iss_vari_ops(self, NOM_CMP, PRECISION, INTERF,MATR_COHE, UNITE_RESU_FOR
    MCMP =__CHAM.EXTR_COMP(NOM_CMP,[GROUP_NO_INTER]).valeurs #  on recupere la composante COMP (dx,dy,dz) des modes
 
    NNO =__CHAM.EXTR_COMP(NOM_CMP,[GROUP_NO_INTER], topo=1).noeud
-         
-   
+
+
    MCMP1=__CHAM.EXTR_COMP(' ',[ ],0).valeurs
    NNO1 =__CHAM.EXTR_COMP(' ',[ ], topo=1).noeud
    NCMP1 =__CHAM.EXTR_COMP(' ',[ ], topo=1).comp
-   
+
    MCMP2=__CHAM.EXTR_COMP(' ',[GROUP_NO_INTER],0).valeurs
    NNO2 =__CHAM.EXTR_COMP(' ',[GROUP_NO_INTER], topo=1).noeud
    NCMP2 =__CHAM.EXTR_COMP(' ',[GROUP_NO_INTER], topo=1).comp
@@ -244,7 +244,7 @@ def dyna_iss_vari_ops(self, NOM_CMP, PRECISION, INTERF,MATR_COHE, UNITE_RESU_FOR
       NNO =__CHAM.EXTR_COMP(NOM_CMP,[GROUP_NO_INTER], topo=1).noeud
       MCMP2=__CHAM.EXTR_COMP(' ',[GROUP_NO_INTER],0).valeurs
       PHI[:,mods]=MCMP2
-      
+
    PHIT=NP.transpose(PHI)
    PPHI=NP.dot(PHIT, PHI)
 
@@ -362,7 +362,7 @@ def dyna_iss_vari_ops(self, NOM_CMP, PRECISION, INTERF,MATR_COHE, UNITE_RESU_FOR
          MCMP =__CHAM.EXTR_COMP(NOM_CMP,[GROUP_NO_INTER]).valeurs #  on recupere la composante COMP (dx,dy,dz) des modes
 
          NNO =__CHAM.EXTR_COMP(NOM_CMP,[GROUP_NO_INTER], topo=1).noeud
-            
+
          som=NP.sum(MCMP)
          max1=NP.max(MCMP)
          min1=NP.min(MCMP)
@@ -448,38 +448,38 @@ def dyna_iss_vari_ops(self, NOM_CMP, PRECISION, INTERF,MATR_COHE, UNITE_RESU_FOR
       if ISSF=='OUI'  :
 
          if INTERF['MODE_INTERF'] =='CORP_RIGI':
-            U0=NP.dot(linalg.inv(KRS), FS0)  
+            U0=NP.dot(linalg.inv(KRS), FS0)
             XOe=XO[:,COMP-1]*U0[COMP-1]
             XO[:,COMP-1]=XOe
             U0[COMP-1]=0.0+0j
-            for k1 in range(0,nbme): 
+            for k1 in range(0,nbme):
                U0[COMP-1]=U0[COMP-1]+XOe[k1]
-             
-      if INTERF['MODE_INTERF'] =='QUELCONQUE':
-         U0=NP.dot(linalg.inv(KRS), FS0)  
-         XI=NP.dot(PHI, U0)        
 
-# 
+      if INTERF['MODE_INTERF'] =='QUELCONQUE':
+         U0=NP.dot(linalg.inv(KRS), FS0)
+         XI=NP.dot(PHI, U0)
+
+#
       if TYPE_RESU=="TRANS":
 
          if INTERF['MODE_INTERF']=='QUELCONQUE' :
             XPI=XI
             SI=0.0+0j
-            for k1 in range(0,nbme): 
+            for k1 in range(0,nbme):
               SI=SI+XOe[k1]
             for idd in range(0,nddi):
               if NCMP2[idd][0:2] == NOM_CMP:
-                XPI[idd]=SI*XI[idd]              
+                XPI[idd]=SI*XI[idd]
             QPI=NP.dot(PHIT, XPI)
-            U0=NP.dot(linalg.inv(PPHI), QPI)      
+            U0=NP.dot(linalg.inv(PPHI), QPI)
          if INTERF['MODE_INTERF']=='QUELCONQUE' or ISSF=='OUI' :
             FS = NP.dot(KRS, U0)
 
-         else:     
+         else:
            #   force sismique resultante: somme des mode POD
             XO_s=NP.sum(XO,0)
             FS = NP.dot(KRS,XO_s)
-         FSISM[nbmodd:nbmodt][:] =FS         
+         FSISM[nbmodd:nbmodt][:] =FS
         #  Calcul harmonique
          __fosi.RECU_VECT_GENE_C(FSISM)
          __dyge = DYNA_LINE_HARM(
@@ -503,9 +503,9 @@ def dyna_iss_vari_ops(self, NOM_CMP, PRECISION, INTERF,MATR_COHE, UNITE_RESU_FOR
               XPI=XI
               for idd in range(0,nddi):
                 if NCMP2[idd][0:2] == NOM_CMP:
-                  XPI[idd]=XOe[k1]*XI[idd]              
+                  XPI[idd]=XOe[k1]*XI[idd]
               QPI=NP.dot(PHIT, XPI)
-              U0=NP.dot(linalg.inv(PPHI), QPI)      
+              U0=NP.dot(linalg.inv(PPHI), QPI)
               FS = NP.dot(KRS, U0)
             else:
          #  calcul de la force sismique mode POD par mode POD

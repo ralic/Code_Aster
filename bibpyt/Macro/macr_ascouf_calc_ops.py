@@ -1,8 +1,8 @@
-#@ MODIF macr_ascouf_calc_ops Macro  DATE 27/08/2012   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF macr_ascouf_calc_ops Macro  DATE 15/04/2013   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -42,7 +42,7 @@ def macr_ascouf_calc_ops(self,TYPE_MAILLAGE,CL_BOL_P2_GV,MAILLAGE,MODELE,CHAM_MA
   AFFE_MATERIAU    =self.get_cmd('AFFE_MATERIAU'   )
   AFFE_CARA_ELEM   =self.get_cmd('AFFE_CARA_ELEM'  )
   AFFE_CHAR_THER_F =self.get_cmd('AFFE_CHAR_THER_F')
-  DEFI_CONTACT     =self.get_cmd('DEFI_CONTACT'    )  
+  DEFI_CONTACT     =self.get_cmd('DEFI_CONTACT'    )
   THER_LINEAIRE    =self.get_cmd('THER_LINEAIRE'   )
   AFFE_CHAR_MECA   =self.get_cmd('AFFE_CHAR_MECA'  )
   STAT_NON_LINE    =self.get_cmd('STAT_NON_LINE'   )
@@ -344,9 +344,9 @@ def macr_ascouf_calc_ops(self,TYPE_MAILLAGE,CL_BOL_P2_GV,MAILLAGE,MODELE,CHAM_MA
           mcfex.append(_F(CHARGE=_chtor[i],))
        i=i+1
 
-  contact = None          
+  contact = None
   if TYPE_MAILLAGE in ('FISS_COUDE','FISS_AXIS_DEB'):
-    contact = _chcont  
+    contact = _chcont
   motscles['EXCIT'] =mcfex
 #
   mcfci=[]  # mot clé facteur COMP_INCR :obligatoire pour les noeuds discrets dans STAT_NON_LINE
@@ -386,7 +386,7 @@ def macr_ascouf_calc_ops(self,TYPE_MAILLAGE,CL_BOL_P2_GV,MAILLAGE,MODELE,CHAM_MA
   motscles  ['RECH_LINEAIRE'] =dRechlin
   motscles  ['INCREMENT'    ] =dIncrem
   self.DeclareOut('nomres',self.sd)
-  
+
   if contact==None:
     nomres = STAT_NON_LINE( MODELE     = modele ,
                             CHAM_MATER = _affmth ,
@@ -397,7 +397,7 @@ def macr_ascouf_calc_ops(self,TYPE_MAILLAGE,CL_BOL_P2_GV,MAILLAGE,MODELE,CHAM_MA
                             CHAM_MATER = _affmth ,
                             CARA_ELEM  = _carael ,
                             CONTACT    = contact,
-                            INFO       = INFO   , **motscles)   
+                            INFO       = INFO   , **motscles)
 #
 #     --- commande CALC_CHAMP ---
 #
@@ -482,7 +482,7 @@ def macr_ascouf_calc_ops(self,TYPE_MAILLAGE,CL_BOL_P2_GV,MAILLAGE,MODELE,CHAM_MA
          else :
           if mc_IMPR_TABLE['TRANSFORMEE']=='TUBE': vecty=(0.,0.,1.)
           else :
-                 grpn=collgrno['FGAUTU  ']
+                 grpn=collgrno['FGAUTU'.ljust(24)]
                  LT1=coord[3*(grpn[0]-1)+2]
                  for node in grpn:
                   X = coord[3*(node-1)]

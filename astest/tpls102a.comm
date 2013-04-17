@@ -1,24 +1,24 @@
-# MODIF  DATE 08/04/2013   AUTEUR LEBOUVIER F.LEBOUVIER 
+# MODIF  DATE 15/04/2013   AUTEUR PELLET J.PELLET 
 
 #------------------------------------------------------------------
 #
-# TITRE : POUTRE EPAISSE EN CONTRAINTES PLANES AVEC 
+# TITRE : POUTRE EPAISSE EN CONTRAINTES PLANES AVEC
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
-# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-# (AT YOUR OPTION) ANY LATER VERSION.                                                    
-#                                                                       
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-#                                                                       
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 #         VARIATION DE TEMPERATURE LINEAIRE SUIVANT LA LARGEUR
 #
@@ -38,8 +38,8 @@ MAIL=LIRE_MAILLAGE(FORMAT='MED',)
 
 
 MODELE=AFFE_MODELE(MAILLAGE=MAIL,
-                   AFFE=_F(TOUT='OUI', 
-                           PHENOMENE='MECANIQUE', 
+                   AFFE=_F(TOUT='OUI',
+                           PHENOMENE='MECANIQUE',
                            MODELISATION='DKT',),
                   );
 
@@ -91,8 +91,8 @@ ACIER=DEFI_MATERIAU(ELAS=_F( E  = 2.E+04,
 CHMAT=AFFE_MATERIAU(MAILLAGE=MAIL,
                              AFFE=_F( TOUT = 'OUI',
                                      MATER = ACIER,),
-                             AFFE_VARC=_F(NOM_VARC='TEMP', 
-                                          CHAMP_GD=TEMP1,
+                             AFFE_VARC=_F(NOM_VARC='TEMP',
+                                          CHAM_GD=TEMP1,
                                           VALE_REF=0),)
 
 CARAELEM=AFFE_CARA_ELEM(MODELE=MODELE,
@@ -109,9 +109,9 @@ CLIM=AFFE_CHAR_MECA(MODELE=MODELE,
                                   DY=0.0,),
                                   ),)
 
-RESU=MECA_STATIQUE(MODELE=MODELE, 
+RESU=MECA_STATIQUE(MODELE=MODELE,
                    CHAM_MATER=CHMAT,
-                   CARA_ELEM=CARAELEM, 
+                   CARA_ELEM=CARAELEM,
                    EXCIT=_F(CHARGE=CLIM,),);
 
 RESU=CALC_CHAMP(reuse =RESU,
@@ -129,8 +129,8 @@ RESU=CALC_CHAMP(reuse =RESU,
 #-------------------------------------------------------------
 
 #--- COUCHE N0 1 , PEAU INF , X=0 Y=0.
-#      SIXX = 10. 
-#      SIYY =  0. 
+#      SIXX = 10.
+#      SIYY =  0.
 #      SIXY =  0.
 
 SIG_C1_I=POST_CHAMP(RESULTAT=RESU,
@@ -175,8 +175,8 @@ TEST_TABLE(REFERENCE='ANALYTIQUE',
                      VALE=0.0,),)
 
 #--- COUCHE N0 1 , PEAU MOY , X=0 Y=1.
-#      SIXX =  0. 
-#      SIYY =  0. 
+#      SIXX =  0.
+#      SIYY =  0.
 #      SIXY =  0.
 
 SIG_C1_M=POST_CHAMP(RESULTAT=RESU,
@@ -222,8 +222,8 @@ TEST_TABLE(REFERENCE='ANALYTIQUE',
                      VALE=1.0,),)
 
 #--- COUCHE N0 1 , PEAU SUP , X=0 Y=2.
-#      SIXX = -10. 
-#      SIYY =   0. 
+#      SIXX = -10.
+#      SIYY =   0.
 #      SIXY =   0.
 
 SIG_C1_S=POST_CHAMP(RESULTAT=RESU,
@@ -277,8 +277,8 @@ TEST_TABLE(REFERENCE='ANALYTIQUE',
 #-------------------------------------------------------------
 
 #--- COUCHE N0 3 , PEAU INF , X=4, Y=0
-#      SIXX = 10. 
-#      SIYY =  0. 
+#      SIXX = 10.
+#      SIYY =  0.
 #      SIXY =  0.
 
 SIG_C3_I=POST_CHAMP(RESULTAT=RESU,
@@ -323,8 +323,8 @@ TEST_TABLE(REFERENCE='ANALYTIQUE',
                      VALE=0.0,),)
 
 #--- COUCHE N0 3 , PEAU MOY , X=4 Y=1.
-#      SIXX =  0. 
-#      SIYY =  0. 
+#      SIXX =  0.
+#      SIYY =  0.
 #      SIXY =  0.
 
 SIG_C3_M=POST_CHAMP(RESULTAT=RESU,
@@ -370,8 +370,8 @@ TEST_TABLE(REFERENCE='ANALYTIQUE',
                      VALE=1.0,),)
 
 #--- COUCHE N0 3 , PEAU SUP , X=4 Y=2.
-#      SIXX = -10. 
-#      SIYY =   0. 
+#      SIXX = -10.
+#      SIYY =   0.
 #      SIXY =   0.
 
 SIG_C3_S=POST_CHAMP(RESULTAT=RESU,

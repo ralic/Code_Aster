@@ -1,4 +1,4 @@
-#@ MODIF calculel2 Messages  DATE 09/04/2013   AUTEUR PELLET J.PELLET 
+#@ MODIF calculel2 Messages  DATE 15/04/2013   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -300,10 +300,22 @@ Erreur utilisateur :
   le champ associe au paramètre :  %(k1)s  n'est pas dans la liste des champs paramètres.
 """),
 
+
+
+
+
+
+
+
 61: _(u"""
  Erreur développeur :
  L'option que l'on calcule ne connaît pas le paramètre :  %(k1)s
  Erreur probable dans un catalogue(typelem)
+"""),
+
+62: _(u"""
+ Erreur utilisateur POST_CHAMP /MIN_MAX_SP :
+  Il n'y a rien à calculer car le champ  %(k1)s n'existe pas pour les numéros d'ordre indiqués.
 """),
 
 63: _(u"""
