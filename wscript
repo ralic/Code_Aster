@@ -148,7 +148,7 @@ def build_elements(self):
 
 def init(self):
     from waflib.Build import BuildContext, CleanContext, InstallContext, UninstallContext
-    _all = (BuildContext, CleanContext, InstallContext, UninstallContext)
+    _all = (BuildContext, CleanContext, InstallContext, UninstallContext, TestContext)
     for x in ['debug', 'release']:
         for y in _all:
             name = y.__name__.replace('Context','').lower()
@@ -174,7 +174,7 @@ def runtest(self):
     """Run a testcase"""
     self.load('runtest', tooldir='waftools')
 
-class RunTest(Build.BuildContext):
+class TestContext(Build.BuildContext):
     """Facility to execute a testcase"""
     cmd = 'test'
     fun = 'runtest'

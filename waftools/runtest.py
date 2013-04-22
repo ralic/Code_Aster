@@ -23,7 +23,9 @@ def runtest(self):
     versdir = osp.join(self.env['PREFIX'], 'share', 'aster')
     for test in opts.testname:
         cmd = ['as_run', '--vers=%s' % versdir, '--test', test]
-        Logs.info("running %s" % test)
+        if self.variant == 'debug':
+            cmd.extend(['-g', '--nodebug_stderr'])
+        Logs.info("running %s in '%s'" % (test, self.variant))
         fname = osp.join(dtmp, osp.basename(test) + '.output')
         fobj = open(fname, 'wb')
         Logs.info("`- output in %s" % fname)
