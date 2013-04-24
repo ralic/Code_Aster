@@ -1,4 +1,4 @@
-# MODIF  DATE 08/04/2013   AUTEUR FLEJOU J-L.FLEJOU 
+# MODIF  DATE 22/04/2013   AUTEUR FLEJOU J-L.FLEJOU 
 # TITRE POUTRES SOUMISES A DES MOMENTS REPARTIS
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -89,11 +89,10 @@ for mode in ['POU_D_E','POU_D_T','POU_D_TG','POU_D_EM','POU_D_TGM',]:
          MODELE=MODELE,
          POUTRE=_F(  GROUP_MA='POUTRE', SECTION='GENERALE',
                      CARA=('A','AY','AZ','IY','IZ','JX','EY','EZ'),
-                     VALE=(2.82743e-5,1.0,1.0,6.36172e-11,6.36172e-11,12.72344e-11,0.,0.),
-                     PREC_AIRE=1.1984e-6,
-                     PREC_INERTIE=1.),
+                     VALE=(2.82743e-5,1.0,1.0,6.36172e-11,6.36172e-11,12.72344e-11,0.,0.), ),
          GEOM_FIBRE=GF,
-         MULTIFIBRE=_F(GROUP_MA = 'POUTRE',GROUP_FIBRE='SFIB'),
+         MULTIFIBRE=_F(GROUP_MA = 'POUTRE',GROUP_FIBRE='SFIB',PREC_AIRE=1.2E-06,
+                     PREC_INERTIE=1.0E-06),
       )
       CHMAT=AFFE_MATERIAU(
          MAILLAGE=MA,

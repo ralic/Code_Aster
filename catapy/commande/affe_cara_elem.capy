@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 21/01/2013   AUTEUR FLEJOU J-L.FLEJOU 
+#& MODIF COMMANDE  DATE 22/04/2013   AUTEUR FLEJOU J-L.FLEJOU 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -35,8 +35,6 @@ AFFE_CARA_ELEM=OPER(nom="AFFE_CARA_ELEM",op=  19,sd_prod=cara_elem,
       MAILLE               = SIMP(statut= 'f',typ= ma  ,validators= NoRepeat(),max= '**'),
       GROUP_MA             = SIMP(statut= 'f',typ= grma,validators= NoRepeat(),max= '**'),
       SECTION              = SIMP(statut= 'o',typ= 'TXM' ,into= ("GENERALE","RECTANGLE","CERCLE") ),
-      PREC_AIRE            = SIMP(statut= 'f',typ= 'R',defaut= 0.01),
-      PREC_INERTIE         = SIMP(statut= 'f',typ= 'R',defaut= 0.1),
       b_generale           = BLOC(condition = " SECTION == 'GENERALE'",
          VARI_SECT            = SIMP(statut= 'f',typ= 'TXM',into= ("CONSTANT","HOMOTHETIQUE"),defaut= "CONSTANT"),
          b_constant           = BLOC(condition = "VARI_SECT == 'CONSTANT'",
@@ -594,10 +592,13 @@ AFFE_CARA_ELEM=OPER(nom="AFFE_CARA_ELEM",op=  19,sd_prod=cara_elem,
 #============================================================================
    GEOM_FIBRE           = SIMP(statut='f',max=1,typ=gfibre_sdaster,
       fr="Donner le nom de la SD regroupant tous les groupes de fibres (issue de DEFI_GEOM_FIBRE)"),
+
    MULTIFIBRE           = FACT(statut='f',max='**',
       regles               = (AU_MOINS_UN('GROUP_MA','MAILLE'),),
       GROUP_MA             = SIMP(statut='f',typ=grma,validators=NoRepeat(),max='**'),
       MAILLE               = SIMP(statut='f',typ=ma  ,validators=NoRepeat(),max='**'),
       GROUP_FIBRE          = SIMP(statut='o',typ='TXM',max='**'),
+      PREC_AIRE            = SIMP(statut= 'f',typ= 'R',defaut= 0.01),
+      PREC_INERTIE         = SIMP(statut= 'f',typ= 'R',defaut= 0.1),
    ),
 );

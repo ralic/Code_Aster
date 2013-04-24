@@ -1,8 +1,8 @@
-#@ MODIF modelisa8 Messages  DATE 19/12/2012   AUTEUR PELLET J.PELLET 
+#@ MODIF modelisa8 Messages  DATE 22/04/2013   AUTEUR FLEJOU J-L.FLEJOU 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -22,57 +22,45 @@
 cata_msg = {
 
 1 : _(u"""
- la section de la poutre est nulle
+ La section de la poutre affectée à la maille %(k1)s est nulle.
 """),
 
 2 : _(u"""
- l'inertie de la poutre suivant OY est nulle
+ L'inertie %(k2)s de la poutre affectée à la maille %(k1)s est nulle
 """),
 
-3 : _(u"""
- l'inertie de la poutre suivant OZ est nulle
+3: _(u"""
+ Pour la poutre %(k1)s, l'une des composantes A, IY, IZ n'existe pas.
 """),
 
 4 : _(u"""
- La somme des aires des fibres est différente de l'aire de la section de la poutre.
-
+ La somme des aires des fibres est différente de l'aire de la section donnée sous
+ le mot clef facteur POUTRE.
  L'erreur relative est supérieure à la précision définie par le mot clé PREC_AIRE :
-
-   - occurrence de multifibre : %(r1).0f
-
-   - aire de la poutre        : %(r2)12.5E
-
-   - aire des fibres          : %(r3)12.5E
-
-   - erreur relative          : %(r4)12.5E
+   - occurrence de MULTIFIBRE : %(i1)d
+   - maille                   : %(k1)s
+   - aire de la poutre        : %(r1)12.5E
+   - aire des fibres          : %(r2)12.5E
+   - erreur relative          : %(r3)12.5E   > PREC_AIRE = %(r4)12.5E
 """),
 
 5 : _(u"""
- La somme des moments d'inertie des fibres par rapport à l'axe 0Y est différente du moment de la poutre.
-
+ La somme des moments d'inertie des fibres par rapport à l'axe %(k2)s est différente
+ du moment d'inertie donné sous le mot clef facteur POUTRE.
  L'erreur relative est supérieure à la précision définie par le mot clé PREC_INERTIE :
-
-   - occurrence de multifibre      : %(r1).0f
-
-   - moment d'inertie de la poutre : %(r2)12.5E
-
-   - aire d'inertie des fibres     : %(r3)12.5E
-
-   - erreur relative               : %(r4)12.5E
+   - occurrence de MULTIFIBRE      : %(i1)d
+   - maille                        : %(k1)s
+   - moment d'inertie de la poutre : %(r1)12.5E
+   - moment d'inertie des fibres   : %(r2)12.5E
+   - erreur relative               : %(r3)12.5E   > PREC_INERTIE = %(r4)12.5E
 """),
 
 6 : _(u"""
- La somme des moments d'inertie des fibres par rapport à l'axe 0Z est différente du moment de la poutre.
-
- L'erreur relative est supérieure à la précision définie par le mot clé PREC_INERTIE :
-
-   - occurrence de multifibre      : %(r1).0f
-
-   - moment d'inertie de la poutre : %(r2)12.5E
-
-   - aire d'inertie des fibres     : %(r3)12.5E
-
-   - erreur relative               : %(r4)12.5E
+ AFFE_CARA_ELEM / MULTIFIBRE
+ Les mots clefs PREC_AIRE et PREC_INERTIE servent à définir la tolérance entre les
+ caractéristiques de poutres affectées sous le mot clef facteur POUTRE et celles
+ calculées par intégration sur les fibres.
+ Les critères imposés par PREC_AIRE et PREC_INERTIE ne sont pas respectés.
 """),
 
 7 : _(u"""

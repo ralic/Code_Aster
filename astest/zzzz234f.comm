@@ -1,21 +1,21 @@
-# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
+# MODIF  DATE 22/04/2013   AUTEUR FLEJOU J-L.FLEJOU 
 # TITRE VALEUR DE REFERENCE POUR LES ELEMENTS POUTRES
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
-# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-# (AT YOUR OPTION) ANY LATER VERSION.                                                    
-#                                                                       
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-#                                                                       
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 # COMME ZZZZ234A SAUF QUE C'EST EN DYNAMIQUE
 # zzzz234f.para = tps_job 100 mem_job 512Mo ncpus 1 liste_test S
@@ -93,7 +93,7 @@ CH_D_T = AFFE_CHAR_MECA(MODELE=MO_D_T,
 RE_D_T=DYNA_NON_LINE(MODELE     = MO_D_T,
                      CHAM_MATER = CHMAT,
                      CARA_ELEM  = CA_D_T,
-                                           SCHEMA_TEMPS=_F(SCHEMA='NEWMARK', 
+                                           SCHEMA_TEMPS=_F(SCHEMA='NEWMARK',
                                  FORMULATION='DEPLACEMENT', ),
 
                      EXCIT      = (_F(CHARGE = CL_D_T),
@@ -107,7 +107,7 @@ RE_D_T=DYNA_NON_LINE(MODELE     = MO_D_T,
    );
 
 TB_D_T = RECU_TABLE(CO=RE_D_T,NOM_PARA=('ITER_GLOB'),)
-           
+
 TEST_TABLE(CRITERE='ABSOLU',
            VALE_CALC_I=1,
            NOM_PARA='ITER_GLOB',
@@ -154,7 +154,7 @@ CH_D_E = AFFE_CHAR_MECA(MODELE=MO_D_E,
 
 RE_D_E=DYNA_NON_LINE(MODELE     = MO_D_E,
                      CHAM_MATER = CHMAT,
-                                           SCHEMA_TEMPS=_F(SCHEMA='NEWMARK', 
+                                           SCHEMA_TEMPS=_F(SCHEMA='NEWMARK',
                                  FORMULATION='DEPLACEMENT', ),
 
                      CARA_ELEM  = CA_D_E,
@@ -197,11 +197,10 @@ MO_D_EM = AFFE_MODELE(MAILLAGE=MA,
                      AFFE=_F(GROUP_MA='POUD',PHENOMENE='MECANIQUE',MODELISATION='POU_D_EM'),)
 
 CA_D_EM = AFFE_CARA_ELEM(  POUTRE=_F( GROUP_MA='POUD',
-                                  SECTION='CERCLE',CARA= 'R',VALE=0.02,
-  PREC_AIRE = 2.E-2),
-    MULTIFIBRE = _F (GROUP_MA='POUD',GROUP_FIBRE= 'ACIER',),
-                            GEOM_FIBRE = GFF ,
-                            MODELE=MO_D_EM)
+                                  SECTION='CERCLE',CARA= 'R',VALE=0.02,),
+    MULTIFIBRE = _F(GROUP_MA='POUD',GROUP_FIBRE= 'ACIER', PREC_AIRE = 1.15E-02,PREC_INERTIE=4.0E-02,),
+   GEOM_FIBRE = GFF ,
+   MODELE=MO_D_EM)
 
 CL_D_EM = AFFE_CHAR_MECA(MODELE=MO_D_EM,
                     DDL_IMPO=_F(GROUP_NO='A',
@@ -220,7 +219,7 @@ CH_D_EM = AFFE_CHAR_MECA(MODELE=MO_D_EM,
 
 RE_D_EM=DYNA_NON_LINE(MODELE     = MO_D_EM,
                      CHAM_MATER = CHMAT,
-                                           SCHEMA_TEMPS=_F(SCHEMA='NEWMARK', 
+                                           SCHEMA_TEMPS=_F(SCHEMA='NEWMARK',
                                  FORMULATION='DEPLACEMENT', ),
 
                      CARA_ELEM  = CA_D_EM,
@@ -282,8 +281,8 @@ CH_D_TGD = AFFE_CHAR_MECA(MODELE=MO_D_TGD,
                                         ),)
 
 RE_D_TGD=DYNA_NON_LINE(
-   MODELE     = MO_D_TGD, 
-                        SCHEMA_TEMPS=_F(SCHEMA='NEWMARK', 
+   MODELE     = MO_D_TGD,
+                        SCHEMA_TEMPS=_F(SCHEMA='NEWMARK',
                                  FORMULATION='DEPLACEMENT', ),
    CHAM_MATER = CHMAT,
    CARA_ELEM  = CA_D_TGD,
@@ -339,7 +338,7 @@ CH_C_T = AFFE_CHAR_MECA(MODELE=MO_C_T,
 
 RE_C_T=DYNA_NON_LINE(MODELE     = MO_C_T,
                      CHAM_MATER = CHMAT,
-                                           SCHEMA_TEMPS=_F(SCHEMA='NEWMARK', 
+                                           SCHEMA_TEMPS=_F(SCHEMA='NEWMARK',
                                  FORMULATION='DEPLACEMENT', ),
 
                      CARA_ELEM  = CA_C_T,

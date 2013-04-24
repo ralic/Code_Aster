@@ -1,4 +1,4 @@
-# MODIF  DATE 26/03/2013   AUTEUR CHEIGNON E.CHEIGNON 
+# MODIF  DATE 22/04/2013   AUTEUR FLEJOU J-L.FLEJOU 
 # TITRE RAIDISSEMENT CENTRIFUGE D'UNE POUTRE EN ROTATION
 # sslv105b.para = tps_job 60 mem_job 256Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -62,19 +62,11 @@ CHAMPMAT=AFFE_MATERIAU(  MAILLAGE=MAILET,
 #
 
 cara=AFFE_CARA_ELEM(  MODELE=MODELE,INFO = 1,
-                       POUTRE=_F(  GROUP_MA = 'TOUT',
-                                PREC_INERTIE=0.3,
-                                SECTION = 'RECTANGLE',
-                                CARA = ( 'H',),
-                                VALE = ( 2.000000E-02,
-                                           )
-                                #SECTION = 'GENERALE',
-                                #CARA=('A','IY','IZ','AY','AZ','JX','JG',),
-                                #VALE=(4.0E-004,1.0E-008,1.0E-008,1.2,1.2,2.253333333333334E-008,0.0,),
+                       POUTRE=_F(  GROUP_MA = 'TOUT', SECTION = 'RECTANGLE',
+                                CARA = ( 'H',), VALE = ( 2.000000E-02, )
                                 ),
-                      GEOM_FIBRE=gf,
-                      MULTIFIBRE=_F(GROUP_MA='TOUT',
-                                   GROUP_FIBRE='SECF'),)
+   GEOM_FIBRE=gf,
+   MULTIFIBRE=_F(GROUP_MA='TOUT', GROUP_FIBRE='SECF', PREC_AIRE=1.0E-06, PREC_INERTIE=2.55E-01,),)
 #
 #
 CHARGE=AFFE_CHAR_MECA(  MODELE=MODELE,

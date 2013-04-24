@@ -1,4 +1,4 @@
-# MODIF  DATE 21/01/2013   AUTEUR FLEJOU J-L.FLEJOU 
+# MODIF  DATE 22/04/2013   AUTEUR FLEJOU J-L.FLEJOU 
 # RESPONSABLE SFAYOLLE S.FAYOLLE
 # TITRE  : ENDOMMAGEMENT D UNE PLAQUE PLANE SOUS SOLLICITATIONS VARIEES
 # ssns106h.para = tps_job 120 mem_job 512Mo ncpus 1 liste_test S
@@ -272,8 +272,6 @@ CAEL_L=AFFE_CARA_ELEM(MODELE=MO_L,
                       INFO=1,
                       POUTRE=_F(GROUP_MA='POUTRE',
                                 SECTION='RECTANGLE',
-                                PREC_AIRE=5.,
-                                PREC_INERTIE=10.,
                                 CARA=('HY','HZ',),
                                 VALE=(1.0,0.1,),),
                       ORIENTATION=_F(GROUP_MA='POUTRE',
@@ -281,7 +279,9 @@ CAEL_L=AFFE_CARA_ELEM(MODELE=MO_L,
                                      VALE=0.0,),
                       GEOM_FIBRE=GF,
                       MULTIFIBRE=_F(GROUP_MA='POUTRE',
-                                    GROUP_FIBRE=('SECF','SACI',),),);
+                                    GROUP_FIBRE=('SECF','SACI',),
+                                PREC_AIRE=1.61E-02,
+                                PREC_INERTIE=6.3E-02,),);
 
 # -- CONDITIONS LIMITES POUR ENDO_ISOT --
 

@@ -1,4 +1,4 @@
-# MODIF  DATE 09/04/2013   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 22/04/2013   AUTEUR FLEJOU J-L.FLEJOU 
 # TITRE VALEUR DE REFERENCE POUR LES ELEMENTS POUTRES
 # zzzz234a.para = tps_job 150 mem_job 512Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -633,9 +633,8 @@ MO_D_EM = AFFE_MODELE(MAILLAGE=MA,
                      AFFE=_F(GROUP_MA='POUD',PHENOMENE='MECANIQUE',MODELISATION='POU_D_EM'),)
 
 CA_D_EM = AFFE_CARA_ELEM( POUTRE=_F( GROUP_MA='POUD',
-                                  SECTION='CERCLE',CARA= 'R',VALE=0.02,
-  PREC_AIRE = 2.E-2),
-    MULTIFIBRE = _F (GROUP_MA='POUD',GROUP_FIBRE= 'ACIER',),
+                                  SECTION='CERCLE',CARA= 'R',VALE=0.02,),
+    MULTIFIBRE = _F(GROUP_MA='POUD',GROUP_FIBRE= 'ACIER',  PREC_AIRE = 1.15E-2,PREC_INERTIE=4.0e-02,),
                             GEOM_FIBRE = GFF ,
                             MODELE=MO_D_EM)
 
@@ -761,15 +760,9 @@ MO_D_TGM = AFFE_MODELE(MAILLAGE=MA,
 
 CA_D_TGM = AFFE_CARA_ELEM( INFO = 2,
                            POUTRE=_F( GROUP_MA='POUD',
-                                      SECTION='CERCLE',CARA= 'R',VALE=0.02,
-                                      #SECTION='GENERALE',
-                                      #CARA=('A','IY','IZ','AY','AZ',
-                                            #'JX','JG','IYR2','IZR2',),
-                                      #VALE=(1.242331416492100E-003,1.211243949751886E-007,1.212422573585321E-007,1.16667E+00,1.16667E+00,
-                                            #2.51327E-07,0.0,0.0,0.0,),
-                                      PREC_AIRE = 2.E-2),
-                           MULTIFIBRE = _F (GROUP_MA='POUD',
-                                            GROUP_FIBRE= 'ACIER',),
+                                      SECTION='CERCLE',CARA= 'R',VALE=0.02, ),
+                           MULTIFIBRE = _F(GROUP_MA='POUD', PREC_AIRE = 2.E-2,
+                                          GROUP_FIBRE= 'ACIER',),
                            GEOM_FIBRE = GFF ,
                            MODELE=MO_D_TGM)
 

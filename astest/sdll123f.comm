@@ -1,4 +1,4 @@
-# MODIF  DATE 26/03/2013   AUTEUR CHEIGNON E.CHEIGNON 
+# MODIF  DATE 22/04/2013   AUTEUR FLEJOU J-L.FLEJOU 
 # TITRE CALCUL MODAL POUTRE MULTIFIBRE AVEC GAUCHISSEMENT ET GYROSCOPIE
 # sdll123f.para = tps_job 900 mem_job 512Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -46,7 +46,7 @@ MODELE=AFFE_MODELE(MAILLAGE=MAIL,
                        )
 
 GF=DEFI_GEOM_FIBRE(
-           SECTION = _F ( GROUP_FIBRE='SECTIO',
+           SECTION = _F( GROUP_FIBRE='SECTIO',
                             MAILLAGE_SECT = SECTION , GROUP_MA_SECT = 'Face_1',
                             COOR_AXE_POUTRE = (0., 0.,)),
             )
@@ -69,10 +69,6 @@ CARELEM=AFFE_CARA_ELEM(MODELE=MODELE,INFO = 2,
                                  SECTION='CERCLE',
                                  CARA='R',
                                  VALE=(.025),),),
-                                 #SECTION='GENERALE',
-                                 #PREC_AIRE = 1E+100,
-                                 #CARA=('A','IY','IZ','JX','AY','AZ'),
-                                 #VALE=(1.958331774442254E+003, 3.041680230937098E-007,3.041590052204048E-007,6.135923151542566E-007,1.16667,1.16667),),),
                         DISCRET=(
                                    _F(GROUP_MA='DISQUES',
                                      CARA='M_TR_D_N',
@@ -85,7 +81,7 @@ CARELEM=AFFE_CARA_ELEM(MODELE=MODELE,INFO = 2,
                                      VALE=(0.,0.,0.,0.,0.,0.,), )
                         ),
                         GEOM_FIBRE=GF,
-                        MULTIFIBRE=(_F(GROUP_MA=('ROTOR'),
+                        MULTIFIBRE=(_F(GROUP_MA=('ROTOR'),PREC_AIRE=3.0E-03, PREC_INERTIE=9.0E-03,
                                        GROUP_FIBRE=('SECTIO')),
                         ))
 

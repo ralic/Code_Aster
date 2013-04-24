@@ -1,4 +1,4 @@
-# MODIF  DATE 12/02/2013   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 22/04/2013   AUTEUR FLEJOU J-L.FLEJOU 
 # TITRE VALIDATION DE L'IMPRESSION DES REPERES LOCAUX PAR IMPR_RESU/CONCEPT
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -95,7 +95,6 @@ CARAELEM=AFFE_CARA_ELEM(INFO=2,
                                          'TUY31','TUY32',),
                                  SECTION='CERCLE',
                                  CARA= 'R',VALE=0.20,
-                                 PREC_INERTIE=10.,
                                  ),
                              ),
 
@@ -132,11 +131,8 @@ CARAELEM=AFFE_CARA_ELEM(INFO=2,
                                      VALE=(90,-90.0,90.0)),
                                   ),
                       GEOM_FIBRE=GF,
-                      MULTIFIBRE=(_F( MAILLE=('POU6','POU7'),
-                                        GROUP_FIBRE=('SBET',)
-                                        ),
-                                    )
-                         )
+                      MULTIFIBRE=(_F( MAILLE=('POU6','POU7'),   PREC_AIRE=6.0E-04, PREC_INERTIE=1.1, GROUP_FIBRE=('SBET',)  ),  )
+)
 
 IMPR_RESU(
           CONCEPT=_F(CARA_ELEM=CARAELEM,REPERE_LOCAL='OUI',MODELE=MODELE
@@ -341,7 +337,6 @@ CARATUY4=AFFE_CARA_ELEM(INFO=2,
                       POUTRE=(_F(MAILLE=('TUY41'),
                                  SECTION='CERCLE',
                                  CARA= 'R',VALE=0.20,
-                                 PREC_INERTIE=10.,
                                  ),
                              ),
                       ORIENTATION=(

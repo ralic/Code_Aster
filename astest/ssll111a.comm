@@ -1,4 +1,4 @@
-# MODIF  DATE 09/04/2013   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 22/04/2013   AUTEUR FLEJOU J-L.FLEJOU 
 # TITRE  POUTRE EULER_BERNOULLI MULTIFIBRES (STATIQUE LINEAIRE)
 # ssll111a.para = tps_job 60 mem_job 256Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -56,16 +56,13 @@ POUCA=AFFE_CARA_ELEM(MODELE=MOPOU,    INFO=2,
            POUTRE=_F(GROUP_MA=('POUTRE'),
                      SECTION='GENERALE',
                      CARA = ('A','IY','IZ','JX'),
-                     VALE = (4.57e-2, 4.657e-4, 1.6806e-4, 9.77e-5),
-                     PREC_INERTIE=1.,
-                     PREC_AIRE=1.),
+                     VALE = (4.57e-2, 4.657e-4, 1.6806e-4, 9.77e-5), ),
            ORIENTATION=_F(GROUP_MA=('POUTRE'),
                           CARA='ANGL_VRIL', VALE=-90.0,),
-           MULTIFIBRE = _F ( GROUP_MA = 'POUTRE',
-                              GROUP_FIBRE= ('BETON','ACIER'),),
-
+           MULTIFIBRE = _F( GROUP_MA = 'POUTRE', GROUP_FIBRE= ('BETON','ACIER'),
+                           PREC_AIRE=1.0E-06, PREC_INERTIE=2.5E-01, ),
            GEOM_FIBRE = GFF ,
-                  )
+)
 
 
 # LES MATERIAUX
@@ -248,13 +245,11 @@ POUCAG=AFFE_CARA_ELEM(MODELE=MOPOU,    INFO=2,
            POUTRE=_F(GROUP_MA=('POUTRE'),
                      SECTION='GENERALE',
                      CARA = ('A','IY','IZ','JX'),
-                     VALE = (4.57e-2, 4.657e-4, 1.6806e-4, 9.77e-5),
-                     PREC_INERTIE=1.,
-                     PREC_AIRE=1.),
+                     VALE = (4.57e-2, 4.657e-4, 1.6806e-4, 9.77e-5), ),
            ORIENTATION=_F(GROUP_MA=('POUTRE'),
                           CARA='ANGL_VRIL', VALE=-90.0,),
-           MULTIFIBRE = _F ( GROUP_MA = 'POUTRE',
-                              GROUP_FIBRE= ('BETON','ACIER'),),
+           MULTIFIBRE = _F( GROUP_MA = 'POUTRE',PREC_INERTIE=1., PREC_AIRE=1. ,
+                            GROUP_FIBRE= ('BETON','ACIER'),),
            GEOM_FIBRE = GFG ,
                   )
 

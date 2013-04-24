@@ -1,8 +1,8 @@
-# MODIF  DATE 29/10/2012   AUTEUR FLEJOU J-L.FLEJOU 
+# MODIF  DATE 22/04/2013   AUTEUR FLEJOU J-L.FLEJOU 
 # TITRE VALIDATION DE LA REACTUALISATION DE L'ANGLE DE VRILLE DES POUTRES
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -41,14 +41,13 @@ POUCA=AFFE_CARA_ELEM(MODELE=MOPOU,    INFO=1,
            POUTRE=_F(GROUP_MA=('POUTRE'),
                      SECTION='RECTANGLE',
                      CARA = ('HY','HZ'),
-                     VALE = (0.1,0.2),
-                     PREC_INERTIE=0.3,
-                     PREC_AIRE=1.E-2),
+                     VALE = (0.1,0.2)),
            ORIENTATION=_F(GROUP_MA=('POUTRE'),
                           CARA='ANGL_VRIL', VALE=90.0,),
-           MULTIFIBRE = _F ( GROUP_MA = 'POUTRE',
-                              GROUP_FIBRE= ('BETON'),),
-
+           MULTIFIBRE = _F( GROUP_MA = 'POUTRE',
+                              GROUP_FIBRE= ('BETON'),
+                     PREC_INERTIE=1.1E-02,
+                     PREC_AIRE=1.0E-06 ,),
            GEOM_FIBRE = GFF ,
                   )
 
