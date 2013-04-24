@@ -1,4 +1,4 @@
-#@ MODIF mecanonline5 Messages  DATE 09/04/2013   AUTEUR ABBAS M.ABBAS 
+#@ MODIF mecanonline5 Messages  DATE 23/04/2013   AUTEUR ABBAS M.ABBAS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -91,6 +91,12 @@ en accélération est possible
 
 13 : _(u"""
  La matrice de masse diagonale (option MASS_DIAG) n'est pas utilisable avec un schéma implicite.
+"""),
+
+14 : _(u"""
+ Il n'est pas possible actuellement de calculer des modes de flambement
+ (CRIT_FLAMB) ou des modes vibratoires (MODE_VIBR) si on utilise la
+ méthode discrète du contact avec frottement ou la méthode pénalisée.
 """),
 
 19 : _(u"""

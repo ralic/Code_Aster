@@ -1,4 +1,4 @@
-#@ MODIF compor1 Messages  DATE 08/04/2013   AUTEUR LADIER A.LADIER 
+#@ MODIF compor1 Messages  DATE 23/04/2013   AUTEUR ABBAS M.ABBAS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -264,10 +264,6 @@ Ne renseignez pas le mot-clé COMP_INCR/%(k2)s, afin de sélectionner l'algorithme
 50: _(u"""
  Aucun comportement n'est défini sur la maille <%(k1)s>. Code_Aster a défini par défaut
   COMP_INCR='ELAS', DEFORMATION='PETIT'.
-"""),
-
-51: _(u"""
- La commande <%(k1)s> n'est pas prévue dans le traitement des mot-clé COMP_INCR / COMP_ELAS.
 """),
 
 52: _(u"""

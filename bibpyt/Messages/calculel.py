@@ -1,4 +1,4 @@
-#@ MODIF calculel Messages  DATE 21/01/2013   AUTEUR PELLET J.PELLET 
+#@ MODIF calculel Messages  DATE 23/04/2013   AUTEUR ABBAS M.ABBAS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -430,6 +430,11 @@ Risques et conseils :
 76 : _(u"""
  Votre modèle contient un mélange d'éléments 1D,2D ou 3D.
  Le lissage global n'est possible que pour les éléments 2D soit 3D.
+"""),
+
+90 : _(u"""
+ Le champ %(k2)s ne peut pas être créé à partir de %(k1)s car il est décrit sur des
+ mailles n'existant pas dans %(k1)s et il est de type VARI_ELGA.
 """),
 
 91 : _(u"""

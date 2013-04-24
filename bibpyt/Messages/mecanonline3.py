@@ -1,4 +1,4 @@
-#@ MODIF mecanonline3 Messages  DATE 28/01/2013   AUTEUR TARDIEU N.TARDIEU 
+#@ MODIF mecanonline3 Messages  DATE 23/04/2013   AUTEUR ABBAS M.ABBAS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -110,6 +110,13 @@ Contact méthode continue et pilotage sont incompatibles
      Changez de préconditionneur.
 """),
 
+98 : _(u"""
+  -> Vous utilisez la formulation 'CONTINUE' de contact avec le solveur linéaire 'PETSC' et vous demandez la distribution de la matrice (MATR_DISTRIBUEE='OUI').
+     La distribution de la matrice n'est pas possible dans ce cas d'utilisation.
+
+  -> Conseil :
+     Désactivez la distribution de la matrice en parallèle.
+"""),
 
 
 }

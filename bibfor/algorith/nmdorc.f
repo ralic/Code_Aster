@@ -1,7 +1,9 @@
       SUBROUTINE NMDORC(MODELZ,COMPOZ,CARCRI)
+C
+C MODIF ALGORITH  DATE 23/04/2013   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -17,21 +19,24 @@ C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C RESPONSABLE PROIX J-M.PROIX
+C
       IMPLICIT NONE
       INCLUDE 'jeveux.h'
       CHARACTER*(*) MODELZ,COMPOZ
       CHARACTER*24  CARCRI
-C ----------------------------------------------------------------------
-C MODIF ALGORITH  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
 C
-C     SAISIE ET VERIFICATION DES MOTS CLES COMP_INCR / COMP_ELAS
+C ----------------------------------------------------------------------
 C
-C IN  MODELZ  : NOM DU MODELE
-C OUT COMPOZ  : CARTE DECRIVANT LE TYPE DE COMPORTEMENT
+C SAISIE ET VERIFICATION DES MOTS CLES COMP_INCR / COMP_ELAS
+C
 C ----------------------------------------------------------------------
-
+C
+C IN  MODELZ : NOM DU MODELE
+C OUT COMPOZ : CARTE DECRIVANT LE TYPE DE COMPORTEMENT
+C OUT CARCRI : CARTE DE CRITERES LOCAUX
+C
 C ----------------------------------------------------------------------
-
+C
       INTEGER NCMPMA,DIMAKI,NBMO1,IRET,DIMANV
 C    DIMAKI = DIMENSION MAX DE LA LISTE DES RELATIONS KIT
       PARAMETER (DIMAKI=9)
@@ -43,18 +48,18 @@ C    DIMANV = DIMENSION MAX DE LA LISTE DU NOMBRE DE VAR INT EN THM
       CHARACTER*19 COMPOR
       CHARACTER*24 MODELE
       LOGICAL CRILOC,MECA
-
+C
       DATA NOMCMP/'RELCOM  ','NBVARI  ','DEFORM  ','INCELA  ',
      &     'C_PLAN  ','XXXX1','XXXX2','KIT1    ','KIT2    ','KIT3    ',
      &     'KIT4    ','KIT5    ','KIT6    ','KIT7    ','KIT8    ',
      &     'KIT9    ', 'NVI_C   ', 'NVI_T   ', 'NVI_H   ', 'NVI_M   '/
-C     ------------------------------------------------------------------
-
+C
+C ----------------------------------------------------------------------
+C
       CALL JEMARQ()
-
-C     initialisations
-      CRILOC=.FALSE.
-      MECA=.FALSE.
+C
+      CRILOC = .FALSE.
+      MECA   = .FALSE.
       MODELE = MODELZ
       COMPOR = '&&NMDORC.COMPOR'
 
@@ -71,6 +76,11 @@ C     MECA=COMMANDES MECANIQUE
         NBMO1 = 1
         MOCLEF(1) = 'COMP_INCR'
         MECA=.TRUE.
+      ELSE IF (NOMCMD.EQ.'CALC_FORC_NONL') THEN
+        NBMO1 = 1
+        MOCLEF(1) = 'COMP_INCR'
+        MECA=.TRUE.
+        CRILOC=.FALSE.
       ELSEIF (NOMCMD(1:6) .EQ.'CALC_G') THEN
         NBMO1 = 2
         MOCLEF(1) = 'COMP_INCR'
@@ -85,23 +95,20 @@ C     MECA=COMMANDES MECANIQUE
         MECA=.TRUE.
         CRILOC=.TRUE.
       ELSE
-         CALL U2MESG('F','COMPOR1_51',1,NOMCMD,0,0,0,0.D0)
+        CALL ASSERT(.FALSE.)
       ENDIF
-
-C ======================================================================
-C     CARTE COMPOR
+C
+C --- CARTE COMPOR
+C
       CALL NMDOCC(COMPOR,MODELE,NBMO1,MOCLEF,
      &            NOMCMP,NCMPMA,MECA,NOMCMD)
       COMPOZ = COMPOR
-
-C ======================================================================
-
-C     CARTE DE CRITERES LOCAUX
+C
+C --- CARTE DE CRITERES LOCAUX
+C
       IF (CRILOC) THEN
         CALL NMDOCR(CARCRI,MODELE,NBMO1,MOCLEF,IRET)
       ENDIF
-
-C ======================================================================
-
+C
       CALL JEDEMA()
       END

@@ -1,4 +1,4 @@
-# MODIF  DATE 18/02/2013   AUTEUR DELMAS J.DELMAS 
+# MODIF  DATE 23/04/2013   AUTEUR ABBAS M.ABBAS 
 # RESPONSABLE GNICOLAS G.NICOLAS
 # TITRE COUPLAGE ASTER-HOMARD SUR UN CALCUL STAT_NON_LINE
 # zzzz175a.para = tps_job 100 mem_job 256Mo ncpus 1 liste_test S
@@ -190,8 +190,7 @@ for num_calc in range(nbre_calcul):
                         EXCIT=(_F(CHARGE=bloq[num_calc],),
                                _F(CHARGE=pres[num_calc],),),
                         NEWTON=_F(REAC_ITER=1),
-                        CONVERGENCE=_F(ARRET='OUI',
-                                        TYPE='PIC',
+                        CONVERGENCE=_F(
                                         ITER_GLOB_MAXI=20,
                                         ITER_GLOB_ELAS=25),
                         COMP_INCR=_F(RELATION='VMIS_ISOT_LINE',),

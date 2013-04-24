@@ -1,9 +1,9 @@
       SUBROUTINE OP0183()
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 24/09/2012   AUTEUR ABBAS M.ABBAS 
+C MODIF PREPOST  DATE 23/04/2013   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -25,14 +25,6 @@ C-----------------------------------------------------------------------
 C     COMMANDE :  CALC_FORC_NONL
 C-----------------------------------------------------------------------
 C
-
-C 0.1. ==> ARGUMENTS
-
-C 0.2. ==> COMMUNS
-
-
-C 0.3. ==> VARIABLES LOCALES
-
       INCLUDE 'jeveux.h'
       INTEGER IBID
       INTEGER I,IACHAR,IAD,ICHAR
@@ -42,23 +34,15 @@ C 0.3. ==> VARIABLES LOCALES
       INTEGER LONCH,LREF,LVAFON,N0,N2,NBCHAR
       INTEGER NBDDL,NBORDR,NC,NEQ,NH,NP
       INTEGER II,LTPS,LTPS2
-      INTEGER JREF,NCMPMA,DIMAKI,DIMANV
-C     ------------------------------------------------------------------
-C     DIMAKI = DIMENSION MAX DE LA LISTE DES RELATIONS KIT
-      PARAMETER(DIMAKI=9)
-C     DIMANV = DIMENSION MAX DE LA LISTE DU NOMBRE DE VAR INT EN THM
-      PARAMETER(DIMANV=4)
-      PARAMETER(NCMPMA=7+DIMAKI+DIMANV)
-C     ------------------------------------------------------------------
-
+      INTEGER JREF
       REAL*8 TIME,PREC,PARTPS(3)
 
       CHARACTER*2 CODRET
       CHARACTER*6 NOMPRO
       CHARACTER*8 K8BID,CTYP,CRIT,MATERI
-      CHARACTER*8 KIORD,NMCMP2(NCMPMA)
+      CHARACTER*8 KIORD
       CHARACTER*16 OPTION,TYPE,OPER,K16BID
-      CHARACTER*16 COMPEX,MCL(2)
+      CHARACTER*16 COMPEX
       CHARACTER*19 RESUCO,KNUM,INFCHA,LIGREL,RESUC1,CHDEP2
       CHARACTER*24 MODELE,MATER,CARAC,CHARGE,INFOCH,CHAMNO
       CHARACTER*24 NUME,VFONO,VAFONO,SIGMA,CHDEPL,K24BID
@@ -76,11 +60,6 @@ C     ------------------------------------------------------------------
       DATA INFCHA/'&&INFCHA.INFCHA'/
       DATA K24BID/' '/
       DATA CHVARC/'&&OP0183.CHVARC'/
-      DATA NMCMP2/'RELCOM  ','NBVARI  ','DEFORM  ','INCELA  ',
-     &     'C_PLAN  ','XXXX1   ','XXXX2   ','KIT1    ','KIT2    ',
-     &     'KIT3    ','KIT4    ','KIT5    ','KIT6    ','KIT7    ',
-     &     'KIT8    ','KIT9    ','NVI_C   ','NVI_T   ','NVI_H   ',
-     &     'NVI_M   '/
 C     ------------------------------------------------------------------
 
       CALL JEMARQ()
@@ -279,9 +258,7 @@ C       -- CALCUL D'UN NUME_DDL "MINIMUM" POUR ASASVE :
 C       --- CALCUL DES VECTEURS ELEMENTAIRES ---
         IF (I.EQ.1) THEN
           COMPOR='&&OP0183.COMPOR'
-          MCL(1)='COMP_INCR'
-          CALL NMDOCC(COMPOR(1:19),MODELE,1,MCL,NMCMP2,NCMPMA,
-     &                .TRUE.,OPER)
+          CALL NMDORC(MODELE,COMPOR,K24BID)
         ENDIF
 
         FNOEVO=.FALSE.

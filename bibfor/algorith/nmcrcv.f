@@ -1,9 +1,9 @@
       SUBROUTINE NMCRCV(SDCRIT)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGORITH  DATE 23/04/2013   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -42,15 +42,9 @@ C                (5) PARAMETRE DE PILOTAGE ETA
 C                (6) CHARGEMENT EXTERIEUR
 C                (9) RESI_COMP_RELA
 C
+C ----------------------------------------------------------------------
 C
-C
-C
-      INTEGER      NRESI
-      PARAMETER    (NRESI=4)
-C
-      INTEGER      JCRR,JCRK,JCRP
-      REAL*8       R8MAEM
-      INTEGER      IRESI
+      INTEGER      JCRR,JCRK
 C
 C ----------------------------------------------------------------------
 C
@@ -69,16 +63,6 @@ C
       ZK16(JCRK+7-1)  = 'RESI_GLOB_MOINS'
       ZK16(JCRK+8-1)  = 'RESI_REFE'
       ZK16(JCRK+9-1)  = 'RESI_COMP'    
-C     
-C --- SD POUR TYPE DE CONVERGENCE EN PLATEAU
-C  
-      CALL WKVECT(SDCRIT(1:19)//'.PLAT','V V R8' ,4*NRESI,JCRP) 
-      DO 15 IRESI = 1,NRESI
-        ZR(JCRP+4*(IRESI-1)+1-1) = R8MAEM()
-        ZR(JCRP+4*(IRESI-1)+2-1) = -R8MAEM() 
-        ZR(JCRP+4*(IRESI-1)+3-1) = 0.D0
-        ZR(JCRP+4*(IRESI-1)+4-1) = 0.D0
- 15   CONTINUE 
 C
       CALL JEDEMA()
 

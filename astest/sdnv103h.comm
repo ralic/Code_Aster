@@ -1,4 +1,4 @@
-# MODIF  DATE 09/04/2013   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 23/04/2013   AUTEUR ABBAS M.ABBAS 
 # TITRE IMPACT D UNE BARRE DE TAYLOR ELASTOPLASTIQUE
 # sdnv103h.para = tps_job 300 mem_job 512Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -219,6 +219,8 @@ VITEB1_1=POST_RELEVE_T(ACTION=_F(INTITULE='VITE EN B1',
 #
 ### TESTS DE DEPLACEMENTS ET VITESSES
 #
+# Le test est instable suivant les plateformes (dynamique+frottement discret)
+# TOLE_MACHINE est relache
 
 TEST_RESU(RESU=(_F(GROUP_NO='B1',
                    INST=1.0000000000000001E-05,
@@ -226,7 +228,7 @@ TEST_RESU(RESU=(_F(GROUP_NO='B1',
                    NOM_CHAM='DEPL',
                    NOM_CMP='DX',
                    VALE_CALC=0.75715311454587997,
-                   TOLE_MACHINE=(1.5E-05,1.0E-9),
+                   TOLE_MACHINE=(5E-05,1.0E-9),
                    CRITERE=('RELATIF','RELATIF'),
                    ),
                 _F(GROUP_NO='A2',
@@ -244,7 +246,7 @@ TEST_RESU(RESU=(_F(GROUP_NO='B1',
                    NOM_CHAM='VITE',
                    NOM_CMP='DX',
                    VALE_CALC=7.8447637401480999E4,
-                   TOLE_MACHINE=(3.0E-05,1.0E-9),
+                   TOLE_MACHINE=(5.0E-05,1.0E-9),
                    CRITERE=('RELATIF','RELATIF'),
                    ),
                 _F(GROUP_NO='A2',
@@ -274,12 +276,12 @@ TEST_TABLE(CRITERE='ABSOLU',
 
 TEST_TABLE(CRITERE='RELATIF',
            VALE_CALC=289.96538798755,
-           TOLE_MACHINE=3.0000000000000002E-05,
+           TOLE_MACHINE=1.0000000000E-04,
            NOM_PARA='R',
            TABLE=CONTB1_1,
            FILTRE=_F(PRECISION=2.5000000000000001E-05,
                      NOM_PARA='INST',
-                     VALE=1.0000000000000001E-05,),
+                     VALE=1.000000000000E-05,),
            )
 
 #
@@ -407,6 +409,8 @@ VITEB1_2=POST_RELEVE_T(ACTION=_F(INTITULE='VITE EN B1',
 #
 ### TESTS DE DEPLACEMENTS ET VITESSES
 #
+# Le test est instable suivant les plateformes (dynamique+frottement discret)
+# TOLE_MACHINE est relache
 
 TEST_RESU(RESU=(_F(GROUP_NO='B1',
                    INST=1.0000000000000001E-05,
@@ -414,7 +418,7 @@ TEST_RESU(RESU=(_F(GROUP_NO='B1',
                    NOM_CHAM='DEPL',
                    NOM_CMP='DX',
                    VALE_CALC=0.75961887541710005,
-                   TOLE_MACHINE=(3.0000000000000001E-05,1.0E-9),
+                   TOLE_MACHINE=(5.0000000000000001E-05,1.0E-9),
                    CRITERE=('RELATIF','RELATIF'),
                    ),
                 _F(GROUP_NO='A2',
@@ -432,7 +436,7 @@ TEST_RESU(RESU=(_F(GROUP_NO='B1',
                    NOM_CHAM='VITE',
                    NOM_CMP='DX',
                    VALE_CALC=8.6687032089557993E4,
-                   TOLE_MACHINE=(1.2E-05,1.0E-9),
+                   TOLE_MACHINE=(5E-05,1.0E-9),
                    CRITERE=('RELATIF','RELATIF'),
                    ),
                 _F(GROUP_NO='A2',
@@ -462,7 +466,7 @@ TEST_TABLE(CRITERE='ABSOLU',
 
 TEST_TABLE(CRITERE='RELATIF',
            VALE_CALC=277.99589251312,
-           TOLE_MACHINE=6.9999999999999994E-05,
+           TOLE_MACHINE=1.E-04,
            NOM_PARA='R',
            TABLE=CONTB1_2,
            FILTRE=_F(PRECISION=1.E-10,
