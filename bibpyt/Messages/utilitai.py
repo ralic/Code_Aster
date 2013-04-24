@@ -1,4 +1,4 @@
-#@ MODIF utilitai Messages  DATE 18/02/2013   AUTEUR SELLENET N.SELLENET 
+#@ MODIF utilitai Messages  DATE 22/04/2013   AUTEUR BOYERE E.BOYERE 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -136,7 +136,7 @@ Cette grandeur ne peut pas accepter plus de %(i2)d composantes (%(i1)d fournies)
  mises à zéro.
  
  En effet, certaines parties attendues dans le champ "%(k2)s" n'étaient
- pas présentes dans "%(k1)s", elles ont donc étaient mises à zéros.
+ pas présentes dans "%(k1)s", elles ont donc été mises à zéros.
  
  Ce problème peut survenir lorsque la numérotation du champ "%(k1)s"
  n'est pas intégralement incluse dans celle de "%(k2)s".

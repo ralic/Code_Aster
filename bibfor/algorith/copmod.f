@@ -3,7 +3,7 @@
       IMPLICIT NONE
 C***********************************************************************
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 08/04/2013   AUTEUR BOYERE E.BOYERE 
+C MODIF ALGORITH  DATE 22/04/2013   AUTEUR BOYERE E.BOYERE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -131,29 +131,28 @@ C  - 2 - RECHERCHE DES INFORMATIONS SUR LA NUMEROTATION FINALE
 C  ____________________________________________________________________ 
 C
 C     2.1 - NOUVELLE NUMEROTATION ? (SUR UN UNIQUE MAILLAGE)
+C     2.2 - SI OUI, VERIFIER LA COMPATIB. DES 2 MAILLAGES DES NUME_DDL
 C           RESTITUTION SUR SQUELLETE : CAS SPECIAL
 C
       CALL JEEXIN(MAILL1(1:8)//'.INV.SKELETON',IRET)
       MODNUM = .FALSE.
       IF (NUMER2.NE.' ') THEN
         IF ((NUMER2.NE.NUMER1).AND.(IRET.EQ.0).AND.(EXNUME)) THEN
-          MODNUM = .TRUE.
           CALL DISMOI ('F','NOM_MAILLA',NUMER2(1:14),'NUME_DDL',IB,
      &                 MAILL2,IRET)
+           IF (MAILL1.NE.MAILL2) THEN
+             VALK (1) = NUMER2
+             VALK (2) = MAILL2
+             VALK (3) = NUMER1
+             VALK (4) = MAILL1
+             CALL U2MESG('F', 'ALGORITH12_62',4,VALK,0,0,0,0.D0)
+           ENDIF
+        ENDIF
+        IF ((NUMER2.NE.NUMER1).AND.(IRET.EQ.0)) THEN
+          MODNUM = .TRUE.
         ENDIF
       ENDIF
 C
-C     2.2 - SI OUI, VERIFIER LA COMPATIB. DES 2 MAILLAGES DES NUME_DDL
-C
-      IF (MODNUM) THEN
-        IF (MAILL1.NE.MAILL2) THEN
-          VALK (1) = NUMER2
-          VALK (2) = MAILL2
-          VALK (3) = NUMER1
-          VALK (4) = MAILL1
-          CALL U2MESG('F', 'ALGORITH12_62',4,VALK,0,0,0,0.D0)
-        ENDIF
-      ENDIF
 C
 C     2.3 - RECUPERER L'OBJET .DEEQ
 C
