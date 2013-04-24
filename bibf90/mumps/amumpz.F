@@ -2,9 +2,9 @@
      &                  IMPR,IFMUMP,PREPOS,PCENTP)
       IMPLICIT NONE
 !           CONFIGURATION MANAGEMENT OF EDF VERSION
-!& MODIF AMUMPZ MUMPS  DATE 19/12/2012   AUTEUR DESOZA T.DESOZA 
+!& MODIF AMUMPZ MUMPS  DATE 22/04/2013   AUTEUR BOITEAU O.BOITEAU 
 ! ==================================================================
-! COPYRIGHT (C) 1991 - 2012  EDF R&D              WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2013  EDF R&D              WWW.CODE-ASTER.ORG
 !
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR
 ! MODIFY IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS
@@ -79,7 +79,7 @@
       CHARACTER*24 KMONIT(12),K24AUX,KVERS
       REAL*8       EPSMAX,VALR(2),RCTDEB,RBID(1),TEMPS(6),EPSMAT
       LOGICAL      LQUALI,LDIST,LRESOL,LMD,LBID,LPRECO,LBIS,LPB13,
-     &             LDET
+     &             LDET,LOPFAC
       COMMON /MUMPSZ/ ZMPS
       COMMON /MUMPSH/ NONUS,NOMATS,NOSOLS,ETAMS,ROUCS,PRECS
 !=================================================================
@@ -122,6 +122,15 @@
       KLAG2=ZK24(JSLVK-1+6)
       LBIS=KLAG2(1:3).EQ.'OUI'
 
+! --- TRES PROBABLEMENT COMMANDE FACTORISER (POSTTRAITEMENTS
+! --- INITIALISE A 'XXXX'). ON NE DETRUIRA RIEN A L'ISSU DE LA
+! --- FACTO, AU CAS OU UN OP. RESOUDRE + RESI_RELA>0 SUIVRAIT
+      IF (ZK24(JSLVK-1+11)(1:4).EQ.'XXXX') THEN
+        LOPFAC=.TRUE.
+      ELSE
+        LOPFAC=.FALSE.
+      ENDIF
+
 ! --- TYPE DE RESOLUTION
       KTYPR=ZK24(JSLVK-1+3)
       IF (KTYPR(1:6).EQ.'SYMDEF') CALL U2MESS('F','FACTOR_80')
@@ -140,6 +149,7 @@
       LMD = ZK24(JSLVK-1+10)(1:3).EQ.'OUI'
 
 ! --- MUMPS EST-IL UTILISE COMME PRECONDITIONNEUR ?
+! --- SI OUI, ON DEBRANCHE LES ALARMES ET INFO (PAS LES UTMESS_F)
       LPRECO = ZK24(JSLVK-1+8)(1:3).EQ.'OUI'
 
 ! --- FILTRAGE DE LA MATRICE DONNEE A MUMPS (UNIQUEMENT NON LINEAIRE)
@@ -187,7 +197,8 @@
           CASE('4.10.0')
 ! --- ON DEBRANCHE ELIM_LAGR2='NON' CAR CELA FAUSSE LA VALEUR DU DETER
 ! --- MINANT PAR RAPPORT AUX AUTRES SOLVEURS DIRECTS
-            IF ((NIV.GE.2).AND.(LBIS)) CALL U2MESS('I','FACTOR_88')
+            IF ((NIV.GE.2).AND.(LBIS).AND.(.NOT.LPRECO))
+     &        CALL U2MESS('I','FACTOR_88')
             ZK24(JSLVK-1+6)='NON'
             KLAG2='NON'
             LBIS=.FALSE.
@@ -213,7 +224,8 @@
           CASE('4.10.0')
             ZMPSK%ICNTL(31)=1
           CASE('4.9.2')
-            IF (NIV.GE.2) CALL U2MESK('I','FACTOR_86',1,KVERS)
+            IF ((NIV.GE.2).AND.(.NOT.LPRECO))
+     &        CALL U2MESK('I','FACTOR_86',1,KVERS)
           END SELECT
         ENDIF
 
@@ -242,11 +254,11 @@
           IF (IAUX.LT.0) THEN
             CALL U2MESI('F','FACTOR_55',1,IAUX)
           ELSE
-            CALL U2MESI('A','FACTOR_55',1,IAUX)
+            IF (.NOT.LPRECO) CALL U2MESI('A','FACTOR_55',1,IAUX)
           ENDIF
         ENDIF
         IF(ZK24(JSLVK-1+4).NE.'AUTO' .AND.
-     &     ZMPSK%ICNTL(7).NE.ZMPSK%INFOG(7))
+     &     ZMPSK%ICNTL(7).NE.ZMPSK%INFOG(7).AND.(.NOT.LPRECO))
      &     CALL U2MESK('A','FACTOR_50',1,ZK24(JSLVK-1+4))
 
 !       -----------------------------------------------------
@@ -313,7 +325,7 @@
                 ZI(JSLVI-1+2)=ZMPSK%ICNTL(14)
                 IF ((IAUX.EQ.-9).OR.(IFACT.EQ.(IFACTM-1)))
      &            ZMPSK%ICNTL(22)=1
-                IF (NIV.GE.2) THEN
+                IF ((NIV.GE.2).AND.(.NOT.LPRECO)) THEN
                   VALI(1)=ZMPSK%ICNTL(14)/PCENTP(2)
                   VALI(2)=ZMPSK%ICNTL(14)
                   VALI(3)=IFACT
@@ -326,7 +338,7 @@
 ! --- CE N'EST UTILE QU' UNE FOIS D'OU LE CONTROLE DE LPB13
             ELSE IF ((IAUX.EQ.-13).AND.(.NOT.LPB13)) THEN
 ! ---  ICNTL(23): ON MODIFIE DES PARAMETRES POUR LA NOUVELLE TENTATIVE
-              IF (NIV.GE.2) THEN
+              IF ((NIV.GE.2).AND.(.NOT.LPRECO)) THEN
                 VALI(1)=ZMPSK%ICNTL(23)
                 CALL U2MESI('I','FACTOR_85',1,VALI)
               ENDIF
@@ -354,7 +366,7 @@
 !       ------------------------------------------------
         VALR(1)=(ZMPSK%INFOG(13)*100.D0)/ZMPSK%N
         VALR(2)=ZMPSK%ICNTL(14)*1.D0
-        IF (VALR(1).GE.VALR(2)) THEN
+        IF ((VALR(1).GE.VALR(2)).AND.(.NOT.LPRECO)) THEN
           IF (NIV.GE.2) CALL U2MESR('I','FACTOR_73',2,VALR)
         ENDIF
         IF (ZMPSK%INFOG(1).EQ.0) THEN
@@ -373,7 +385,7 @@
           IF (IAUX.LT.0) THEN
             CALL U2MESI('F','FACTOR_55',1,IAUX)
           ELSE
-            CALL U2MESI('A','FACTOR_55',1,IAUX)
+            IF (.NOT.LPRECO) CALL U2MESI('A','FACTOR_55',1,IAUX)
           ENDIF
         ENDIF
 
@@ -390,15 +402,15 @@
 !       ON SOULAGE LA MEMOIRE JEVEUX DES QUE POSSIBLE D'OBJETS MUMPS
 !       INUTILES
         IF ((( RANG.EQ.0).AND.(.NOT.LDIST)).OR.(LDIST)) THEN
-          IF (.NOT.LQUALI) THEN
+          IF (.NOT.LQUALI.AND..NOT.LOPFAC) THEN
             IF (LDIST) THEN
-              DEALLOCATE(ZMPSK%A_loc)
-              DEALLOCATE(ZMPSK%IRN_loc)
-              DEALLOCATE(ZMPSK%JCN_loc)
+              DEALLOCATE(ZMPSK%A_loc,STAT=IBID)
+              DEALLOCATE(ZMPSK%IRN_loc,STAT=IBID)
+              DEALLOCATE(ZMPSK%JCN_loc,STAT=IBID)
             ELSE
-              DEALLOCATE(ZMPSK%A)
-              DEALLOCATE(ZMPSK%IRN)
-              DEALLOCATE(ZMPSK%JCN)
+              DEALLOCATE(ZMPSK%A,STAT=IBID)
+              DEALLOCATE(ZMPSK%IRN,STAT=IBID)
+              DEALLOCATE(ZMPSK%JCN,STAT=IBID)
             ENDIF
           ENDIF
         ENDIF
@@ -439,7 +451,7 @@
 !              -- C'EST OK
         ELSE IF ((ZMPSK%INFOG(1).EQ.8).AND.(LQUALI)) THEN
           IAUX=ZMPSK%ICNTL(10)
-          CALL U2MESI('A','FACTOR_62',1,IAUX)
+          IF (.NOT.LPRECO) CALL U2MESI('A','FACTOR_62',1,IAUX)
         ELSE IF (ZMPSK%INFOG(1).LT.0) THEN
           IAUX=ZMPSK%ICNTL(1)
           CALL U2MESI('F','FACTOR_55',1,IAUX)
@@ -449,7 +461,7 @@
 !          -- PAS GRAVE POUR ASTER.
         ELSE
           IAUX=ZMPSK%INFOG(1)
-          CALL U2MESI('A','FACTOR_55',1,IAUX)
+          IF (.NOT.LPRECO) CALL U2MESI('A','FACTOR_55',1,IAUX)
         ENDIF
 ! --- CONTROLE DE L'ERREUR SUR LA SOLUTION :
         IF (LQUALI) THEN
@@ -484,16 +496,14 @@
 !       ------------------------------------------------
         IF (NOMATS(KXMPS).NE.' ') THEN
           IF ((( RANG.EQ.0).AND.(.NOT.LDIST)).OR.(LDIST)) THEN
-            IF (LQUALI) THEN
-              IF (LDIST) THEN
-                DEALLOCATE(ZMPSK%A_loc)
-                DEALLOCATE(ZMPSK%IRN_loc)
-                DEALLOCATE(ZMPSK%JCN_loc)
-              ELSE
-                DEALLOCATE(ZMPSK%A)
-                DEALLOCATE(ZMPSK%IRN)
-                DEALLOCATE(ZMPSK%JCN)
-              ENDIF
+            IF (LDIST) THEN
+              DEALLOCATE(ZMPSK%A_loc,STAT=IBID)
+              DEALLOCATE(ZMPSK%IRN_loc,STAT=IBID)
+              DEALLOCATE(ZMPSK%JCN_loc,STAT=IBID)
+            ELSE
+              DEALLOCATE(ZMPSK%A,STAT=IBID)
+              DEALLOCATE(ZMPSK%IRN,STAT=IBID)
+              DEALLOCATE(ZMPSK%JCN,STAT=IBID)
             ENDIF
           ENDIF
           ETAMS(KXMPS)=' '
