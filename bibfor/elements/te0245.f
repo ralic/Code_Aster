@@ -4,7 +4,7 @@
       CHARACTER*(*)     OPTION,NOMTE
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 21/01/2013   AUTEUR DELMAS J.DELMAS 
+C MODIF ELEMENTS  DATE 23/04/2013   AUTEUR SELLENET N.SELLENET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -46,11 +46,8 @@ C
       CALL RCCOMA (ZI(LMATER),'ELAS',1,PHENOM,CODRES)
 C
       IF ( PHENOM .EQ. 'ELAS'          .OR.
-     &     PHENOM .EQ. 'ELAS_FO'       .OR.
      &     PHENOM .EQ. 'ELAS_ISTR'     .OR.
-     &     PHENOM .EQ. 'ELAS_ISTR_FO'  .OR.
-     &     PHENOM .EQ. 'ELAS_ORTH'     .OR.
-     &     PHENOM .EQ. 'ELAS_ORTH_FO'  )  THEN
+     &     PHENOM .EQ. 'ELAS_ORTH'   )  THEN
          CALL RCVALB('FPG1',1,1,'+',ZI(LMATER),' ',PHENOM,0,' ',R8B,
      &                 1, 'RHO', RHO, CODRES, 1)
          IF(RHO.LE.R8PREM()) THEN

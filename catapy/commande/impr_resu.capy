@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 09/04/2013   AUTEUR PELLET J.PELLET 
+#& MODIF COMMANDE  DATE 23/04/2013   AUTEUR SELLENET N.SELLENET 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -128,7 +128,7 @@ IMPR_RESU=PROC(nom="IMPR_RESU",op=39,
              INST            =SIMP(statut='f',typ='R',validators=NoRepeat(),max='**'),
              LIST_INST       =SIMP(statut='f',typ=listr8_sdaster),
 
-             b_acce_reel     =BLOC(condition="(FREQ != None)or(LIST_FREQ != None)or(INST != None)or(LIST_INST != None)",
+             b_acce_reel     =BLOC(condition="(ANGLE != None)or(FREQ != None)or(LIST_FREQ != None)or(INST != None)or(LIST_INST != None)",
                 CRITERE         =SIMP(statut='f',typ='TXM',defaut="RELATIF",into=("RELATIF","ABSOLU",),),
                 b_prec_rela=BLOC(condition="(CRITERE=='RELATIF')",
                      PRECISION       =SIMP(statut='f',typ='R',defaut= 1.E-6,),),
@@ -155,7 +155,8 @@ IMPR_RESU=PROC(nom="IMPR_RESU",op=39,
            b_med=BLOC(condition="""((CHAM_GD != None)or(RESULTAT != None))and(FORMAT == 'MED')""",
                                 fr="renommage du champ",
              regles=(EXCLUS('NOM_CHAM_MED','NOM_RESU_MED'),),
-             NOM_CHAM_MED    =SIMP(statut='f',typ='TXM',validators=(LongStr(1,64),NoRepeat()),max='**'),
+             NOM_CHAM_MED    =SIMP(statut='f',typ='TXM',
+                                   validators=AndVal((LongStr(1,64), NoRepeat())), max='**'),
              NOM_RESU_MED    =SIMP(statut='f',typ='TXM'),
            ),
 ###

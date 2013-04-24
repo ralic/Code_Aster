@@ -5,7 +5,7 @@
       CHARACTER*(*) PHENO,PHENOM
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 21/01/2013   AUTEUR DELMAS J.DELMAS 
+C MODIF MODELISA  DATE 23/04/2013   AUTEUR SELLENET N.SELLENET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -23,24 +23,31 @@ C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C
-C     OBTENTION DU COMPORTEMENT COMPLET D'UN MATERIAU DONNE A PARTIR
-C     D'UN PREMISSE
+C     OBTENTION DU NOM DU MOT CLE FACTEUR CORRESPONDANT A UN NOM "COURT"
+C
+C     EXEMPLES :
+C      'ELAS' -> / 'ELAS'
+C                / 'ELAS_ISTR'
+C                / 'ELAS_GONF'
+C                / ...
+C      'ECRO' -> / 'ECRO_PUIS'
+C                / 'ECRO_LINE'
 C
 C     ARGUMENTS D'ENTREE:
-C        JMAT   : ADRESSE DE LA LISTE DE MATERIAU CODE
-C        PHENO  : NOM DU PHENOMENE INCOMPLET
+C        JMAT   : ADRESSE DU MATERIAU CODE
+C        PHENO  : NOM "COURT" RECHERCHE
 C        IARRET : = 0 ON REMPLIT ICODRE ET ON SORT SANS MESSAGE.
 C                 = 1 ON S'ARRETE AU PREMIER PROBLEME AVEC UN MESSAGE
 C     ARGUMENTS DE SORTIE:
-C        PHENOM : NOM DU PHENOMENE COMPLET
-C        ICODRE : = 0 SI ON A TROUVE
-C                 = 1 SI ON N'A RIEN TROUVE
-C                 = 2 SI ON A TROUVE PLUSIEURS COMPORTEMENT
-C                     DE TYPE PHENO
+C        PHENOM : NOM DU MOT-CLE FACTEUR (SANS SON EVENTUEL SUFFIXE _FO)
+C                 DONT LE NOM COMMENCE PAR LE NOM "COURT" (PHENO)
+C        ICODRE : = 0 SI ON A TROUVE 1 PHENOM UNIQUE
+C                 = 1 SI ON N'A TROUVE AUCUN PHENOM
+C                 = 2 SI ON A TROUVE PLUSIEURS PHENOM
 C
 C ----------------------------------------------------------------------
 C
-      INTEGER            NBMAT,IM,IMAT,ICOMP
+      INTEGER            NBMAT,IM,IMAT,ICOMP,IND
       CHARACTER*16       FENO
 C
 C ----------------------------------------------------------------------
@@ -49,6 +56,12 @@ C
       CALL ASSERT((IARRET.EQ.0) .OR. (IARRET.EQ.1))
 
       FENO = PHENO
+
+C     -- PHENO NE DOIT PAS CONTENIR LE SUFFIXE _FO :
+      IND = INDEX(FENO,'_FO')
+      CALL ASSERT(IND.EQ.0)
+
+
       ICODRE = 1
       PHENOM = ' '
       NBMAT=ZI(JMAT)

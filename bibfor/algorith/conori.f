@@ -1,6 +1,6 @@
       SUBROUTINE CONORI(MA)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 09/04/2013   AUTEUR PELLET J.PELLET 
+C MODIF ALGORITH  DATE 23/04/2013   AUTEUR SELLENET N.SELLENET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -212,10 +212,8 @@ C
 C     ------------------------------------------------------------------
 C     BOUCLE SUR LES MAILLES DU GROUP_MA
 C     ------------------------------------------------------------------
-            WRITE (6,*)'NBMAG=',NBMAG
             DO 80 IMAG=1,NBMAG
               IMAC=ZI(IMIGMA+IMAG-1)
-              WRITE (6,*)'IMAG,IMAC=',IMAG,IMAC
 C     ------------------------------------------------------------------
 C     RECHERCHE DU NOM DE LA MAILLE
 C     ------------------------------------------------------------------
