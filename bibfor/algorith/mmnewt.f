@@ -3,7 +3,7 @@
      &                     TAU2  ,NIVERR)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 05/03/2013   AUTEUR DESOZA T.DESOZA 
+C MODIF ALGORITH  DATE 23/04/2013   AUTEUR DESOZA T.DESOZA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -71,6 +71,7 @@ C
       REAL*8       ALPHA
       REAL*8       ZERO
       PARAMETER   (ZERO=0.D0)
+      REAL*8       DIST,DMIN,R8GAEM,KSI1M,KSI2M      
 C
 C ----------------------------------------------------------------------
 C
@@ -90,6 +91,7 @@ C
       EPSABS = EPSMAX/100.D0
       EPSREL = EPSMAX
       ALPHA  = 1.D0
+      DMIN   = R8GAEM()
 C
 C --- DEBUT DE LA BOUCLE
 C
@@ -136,6 +138,9 @@ C
         DO 35 IDIM = 1,NDIM
           VEC1(IDIM) = COORPT(IDIM) - VEC1(IDIM)
  35     CONTINUE
+        DIST  = SQRT(VEC1(1)*VEC1(1)+
+     &               VEC1(2)*VEC1(2)+
+     &               VEC1(3)*VEC1(3))
 C
 C --- CALCUL DU RESIDU
 C
@@ -210,6 +215,11 @@ C
         KSI2 = KSI2 + ALPHA*DKSI2
 
         ITER = ITER + 1
+        IF (DIST.LE.DMIN) THEN
+          DMIN  = DIST
+          KSI1M = KSI1
+          KSI2M = KSI2
+        ENDIF
 C
 C --- CALCUL DE LA REFERENCE POUR TEST DEPLACEMENTS
 C
@@ -230,7 +240,12 @@ C
         IF ((TEST.GT.EPS) .AND. (ITER.LT.ITEMAX)) THEN
           GOTO 20
         ELSEIF ((ITER.GE.ITEMAX).AND.(TEST.GT.EPS)) THEN
-          NIVERR = 1
+          KSI1 = KSI1M
+          KSI2 = KSI2M
+          CALL MMFONF(NDIM  ,NNO   ,ALIAS  ,KSI1   ,KSI2  ,
+     &                FF    ,DFF   ,DDFF   )          
+          CALL MMTANG(NDIM  ,NNO   ,COORMA,DFF   ,
+     &                TAU1  ,TAU2)            
         ENDIF
 C
 C --- FIN DE LA BOUCLE
@@ -239,8 +254,8 @@ C
   999 CONTINUE
 C
       IF (NIVERR.EQ.1) THEN
-        WRITE(6,*) 'POINT A PROJETER: ',COORPT(1),COORPT(2),COORPT(3)
-        WRITE(6,*) 'MAILLE          ',ALIAS,NNO
+        WRITE(6,*) 'POINT A PROJETER : ',COORPT(1),COORPT(2),COORPT(3)
+        WRITE(6,*) 'MAILLE             ',ALIAS,NNO
 
         DO 70 INO = 1,NNO
           WRITE(6,*) '  NOEUD ',INO
@@ -248,7 +263,8 @@ C
      &                            COORMA(3*(INO-1)+2),
      &                            COORMA(3*(INO-1)+3)
   70    CONTINUE
-        WRITE(6,*) 'KSI : ',KSI1,KSI2
+        WRITE(6,*) 'KSI   : ',KSI1,KSI2
+        WRITE(6,*) 'ALPHA : ',ALPHA
       ENDIF
 C
       END
