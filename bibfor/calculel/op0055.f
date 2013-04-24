@@ -2,7 +2,7 @@
       IMPLICIT   NONE
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 12/02/2013   AUTEUR PELLET J.PELLET 
+C MODIF CALCULEL  DATE 22/04/2013   AUTEUR CUVILLIE M.CUVILLIEZ 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -34,7 +34,7 @@ C
       INTEGER       IRET1, IRET2, IRET, IRETS
       INTEGER       N1, N2
       CHARACTER*6   K6B, NOMPRO
-      CHARACTER*8   K8B, RESU, NOMA, TYPFON
+      CHARACTER*8   K8B, RESU, NOMA, TYPFON, CONFIN
       CHARACTER*9   ENTIT(8)
       CHARACTER*13  MOTCL(8)
       CHARACTER*16  TYPRES, OPER
@@ -232,9 +232,12 @@ C     ---------------------------------------------------------------
 C     EXTRACTION DES NOEUDS DES LEVRES SUR DIRECTON NORMALE
 C     ---------------------------------------------------------------
 C
-      CALL JEEXIN(RESU//'.LEVRESUP.MAIL',IRETS)
-      IF(IRETS.NE.0) THEN
-        CALL  FONNOF ( RESU,NOMA,TYPFON,NBNOFF )
+      CALL GETVTX (' ', 'CONFIG_INIT',0,IARG,1,CONFIN,IBID)
+      IF(CONFIN.EQ.'COLLEE') THEN
+        CALL JEEXIN(RESU//'.LEVRESUP.MAIL',IRETS)
+        IF(IRETS.NE.0) THEN
+          CALL  FONNOF ( RESU,NOMA,TYPFON,NBNOFF )
+        ENDIF
       ENDIF
 
 C     ---------------------------------------------------------------
