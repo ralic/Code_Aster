@@ -1,4 +1,4 @@
-# MODIF  DATE 08/04/2013   AUTEUR LADIER A.LADIER 
+# MODIF  DATE 23/04/2013   AUTEUR BARGELLI R.BARGELLINI 
 # TITRE CALCUL DU PARAMETRE GP DANS LE CAS D'UNE ENTAILLE ELLIPTIQUE EN 3D
 # ssnv218a.para = tps_job 600 mem_job 1024Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -20,7 +20,9 @@
 # ======================================================================
 
 
-DEBUT(CODE=_F( NOM = 'SSNV218A',NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'),PAR_LOT='OUI' );
+DEBUT(CODE=_F( NOM = 'SSNV218A',NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'),PAR_LOT='OUI',
+      IGNORE_ALARM=('RUPTURE0_91','RUPTURE1_42', 'RUPTURE1_47'),
+);
 
 
 # LECTURE ET MODIFICATION DU MAILLAGE POUR L'UTILISATION DE POST_GP
@@ -167,7 +169,7 @@ RESX=STAT_NON_LINE(MODELE=MOD,
                        _F(CHARGE=CHARF,),),
                 COMP_INCR=_F(RELATION='VMIS_ISOT_TRAC',
                                DEFORMATION='PETIT',
-                               GROUP_MA='VBLOC',),
+                               GROUP_MA=('VBLOC','SINF'),),
                 INCREMENT=_F(LIST_INST=L_INST,),
                 NEWTON=_F(REAC_ITER=1,),
                 CONVERGENCE=_F(RESI_GLOB_RELA=1.E-6,
@@ -180,14 +182,17 @@ RESU = EXTR_RESU(RESULTAT=RESX,
                  ARCHIVAGE=_F(NUME_ORDRE=(
                  1,2,3,
                  ),),);
-# POST_TRAITEMENT VIA POST_GP
+
+# POST_TRAITEMENT VIA CALC_GP
 # DEFINITION DU FOND DE FISSURE
 
 FONFISS=DEFI_FOND_FISS(MAILLAGE=MA,
                        CONFIG_INIT='DECOLLEE',
                        FOND_FISS=_F(GROUP_MA='LFOND',
                                     GROUP_NO_ORIG='PFONI',),
-                       NORMALE=(0.,0.,1.,),);
+                       NORMALE=(0.,0.,1.,),
+
+                       );
 l_copeaux1 = ('CO_1_1','CO_1_2')
 l_copeaux4 = ('CO_4_1','CO_4_2')
 
@@ -195,6 +200,18 @@ L_INS_GP = DEFI_LIST_REEL(VALE=[1.0,3.0],);
 conv = 1000.**0.5
 kjc1=conv*57.739
 
+gtheta = CALC_G(COMP_ELAS=_F(RESI_INTE_RELA=9.9999999999999995E-07,
+                             DEFORMATION='PETIT',
+                             RELATION='ELAS_VMIS_TRAC',
+                             GROUP_MA=('VBLOC','SINF'),
+                             ITER_INTE_MAXI=10,),
+                THETA=_F(R_INF=0.25,
+                         R_SUP=0.5,
+                         MODULE=1.0,
+                         FOND_FISS=FONFISS,),
+                         RESULTAT=RESU,
+                         LIST_INST=L_INS_GP,                             
+                  )
 
 tabgp=CALC_GP(RESULTAT=RESU,
             FOND_FISS=FONFISS,
@@ -206,8 +223,20 @@ tabgp=CALC_GP(RESULTAT=RESU,
             GPMAX     = CO('tab2max'),);
 
 
-
 IMPR_TABLE(TABLE=tabgp);
+IMPR_TABLE(TABLE=gtheta,UNITE=8)
+#Test du calcul de G
+TEST_TABLE(VALE_CALC=10.399110363417,
+           NOM_PARA='G',
+           TABLE=gtheta,
+           FILTRE=(_F(NOM_PARA='NOEUD',
+                      VALE_K='N6375',),
+                   _F(PRECISION=9.9999999999999995E-07,
+                      NOM_PARA='INST',
+                      VALE=3.0,),
+                   ),
+           )
+
 
 
 #Test du calcul des GP
