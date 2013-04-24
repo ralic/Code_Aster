@@ -20,10 +20,10 @@ C
       LOGICAL                                   LRESU,LCOR
       LOGICAL           LSUP,LINF,              LMAX,LMIN,LGMSH
 C-----------------------------------------------------------------------
-C MODIF PREPOST  DATE 04/09/2012   AUTEUR PELLET J.PELLET 
+C MODIF PREPOST  DATE 22/04/2013   AUTEUR DELMAS J.DELMAS 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -103,11 +103,7 @@ C         (UNIQUEMENT FORMAT 'RESULTAT')
 C-----------------------------------------------------------------------
 C-----------------------------------------------------------------------
       CALL JEMARQ()
-      IF ( CECR(1:1) .EQ. 'E' ) THEN
-         CALL IRPARA(NOMCON,FORM,IFI,NBORDR,ORDR,NBPARA,PARA,'E')
-      ELSE
-         CALL IRPARA(NOMCON,FORM,IFI,NBORDR,ORDR,NBPARA,PARA,'T')
-      ENDIF
+      CALL IRPARA(NOMCON,FORM,IFI,NBORDR,ORDR,NBPARA,PARA,CECR)
 C
       NOMST = '&&IRECRI.SOUS_TITRE.TITR'
       NOMCO = NOMCON
