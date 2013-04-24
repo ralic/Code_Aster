@@ -29,13 +29,17 @@ def runtest(self):
         fname = osp.join(dtmp, osp.basename(test) + '.output')
         fobj = open(fname, 'wb')
         Logs.info("`- output in %s" % fname)
+        nook = False
         proc = Popen(cmd, stdout=PIPE, bufsize=1)
         for line in iter(proc.stdout.readline, ''):
             fobj.write(line)
+            nook = nook or 'NOOK_TEST_RESU' in line
             fobj.flush()
         proc.stdout.close()
         fobj.close()
         retcode = proc.wait()
+        if nook and retcode == 0:
+            retcode = 'nook'
         if retcode == 0:
             func = Logs.info
         else:
