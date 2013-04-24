@@ -1,4 +1,4 @@
-#@ MODIF xfem Messages  DATE 09/04/2013   AUTEUR JAUBERT A.JAUBERT 
+#@ MODIF xfem Messages  DATE 22/04/2013   AUTEUR MARTIN A.MARTIN 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -496,6 +496,14 @@ cata_msg={
 
 75: _(u"""
      Coordonnées des points du fond de fissure sur la grille
+"""),
+
+76: _(u"""
+  -> Il n'est pas possible d'utiliser des éléments quadratiques dans le cadre
+     d'un modèle X-FEM axisymétrique.
+
+  -> Risque & Conseil:
+     Veuillez utiliser un maillage linéaire.
 """),
 
 }
