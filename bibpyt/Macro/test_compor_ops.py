@@ -1,8 +1,8 @@
-#@ MODIF test_compor_ops Macro  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF test_compor_ops Macro  DATE 23/04/2013   AUTEUR PROIX J-M.PROIX 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -624,7 +624,7 @@ def test_compor_ops(self,OPTION,NEWTON,CONVERGENCE,COMP_INCR,COMP_ELAS,LIST_MATE
       Ncal = len(LIST_NPAS)
 
       # les differents calculs effectues et les precisions sur chaque TEST_RESU
-      label_cal=['_Pa_','_Th_','_sym_','_rot_'] + 6* ['_N']
+      label_cal=['_Pa_','_Th_','_sym_','_rot_'] + (Ncal-4)* ['_N']
       if args['LIST_TOLE'] != None :
          LIST_TOLE=args['LIST_TOLE']
       else :
@@ -686,7 +686,7 @@ def test_compor_ops(self,OPTION,NEWTON,CONVERGENCE,COMP_INCR,COMP_ELAS,LIST_MATE
       #pointeur deformation
       nomdef, symdef, rotdef = [0, 1, 2], [1, 0, 2], [3, 4, 5]
       P_idef = [nomdef, nomdef,symdef, rotdef]
-      for i in range(6): P_idef.append(nomdef)
+      for i in range(Ncal-4): P_idef.append(nomdef)
 
       ldicoeps=[]
       dicoeps={}
