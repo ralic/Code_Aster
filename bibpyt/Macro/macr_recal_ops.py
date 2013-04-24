@@ -1,4 +1,4 @@
-#@ MODIF macr_recal_ops Macro  DATE 09/04/2013   AUTEUR ASSIRE A.ASSIRE 
+#@ MODIF macr_recal_ops Macro  DATE 22/04/2013   AUTEUR ASSIRE A.ASSIRE 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -745,16 +745,15 @@ def macr_recal(self, UNITE_ESCL, RESU_EXP, POIDS, LIST_PARA, RESU_CALC,
       _tmp.append( { 'PARA': 'ITER_MAXI', 'LISTE_R': 0.0, } )
       motscle = {'LISTE': _tmp }
 
-      _TBL = CREA_TABLE(**motscle);
-
-      TEST_TABLE(
-           VALE_CALC=1.,
-           
-           NOM_PARA='ITER_MAXI',
-           TABLE=_TBL,
-           FILTRE=_F(NOM_PARA='ITER_MAXI',
-                     VALE_I=1,),
-           )
+#       _TBL = CREA_TABLE(**motscle);
+# 
+#       TEST_TABLE(
+#            VALE_CALC=1.,
+#            NOM_PARA='ITER_MAXI',
+#            TABLE=_TBL,
+#            FILTRE=_F(NOM_PARA='ITER_MAXI',
+#                      VALE_I=1,),
+#            )
 
 
    #_____________________________________________

@@ -1,4 +1,4 @@
-# MODIF  DATE 19/03/2013   AUTEUR BRIE N.BRIE 
+# MODIF  DATE 22/04/2013   AUTEUR ASSIRE A.ASSIRE 
 # TITRE RECALAGE MODAL PAR DIAGONALISATION DES MATRICES GENERALISEES
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -315,7 +315,7 @@ RESU=MACR_RECAL(
          RESU_CALC        = calcul,
          LIST_POIDS       = poids,
          UNITE_RESU       = 91,
-
+         PARA_DIFF_FINI   = 1.e-3,
          CALCUL_ESCLAVE=_F(
                LANCEMENT  = 'INCLUSION',
                            ),
@@ -339,10 +339,10 @@ TEST_FONCTION(VALEUR=(_F(VALE_CALC=0.503058789631,
                          PRECISION=1.E-2,
                          FONCTION=OPTIM,),
                       _F(VALE_CALC=48223.4026415,
-                         VALE_REFE=5.E4,
+                         VALE_REFE=50000.,
                          VALE_PARA=2.0,
                          REFERENCE='ANALYTIQUE',
-                         PRECISION=0.040000000000000001,
+                         PRECISION=4.E-2,
                          FONCTION=OPTIM,),
                       ),
               )

@@ -1,9 +1,9 @@
-# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
+# MODIF  DATE 22/04/2013   AUTEUR ASSIRE A.ASSIRE 
 # TITRE RECALAGE MODELE VISC_CIN2_CHAB SUR 4 COURBES DE TRACTION 
 # ssna110a.para = tps_job 120 mem_job 512Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
@@ -2059,7 +2059,6 @@ RESU=MACR_RECAL(
          LIST_PARA        = parametres,
          RESU_CALC        = calcul,
          UNITE_RESU       = 91,
-
          RESI_GLOB_RELA   = 1.e-3,
          TOLE_PARA        = 1.e-5,
          TOLE_FONC        = 1.e-5,
@@ -2088,26 +2087,30 @@ OPTIM=DEFI_FONCTION(NOM_PARA='INST',
 #          PETITW__ = 0.156711841212
 #          GAMA1__ = 466.699034883
 
-TEST_FONCTION(VALEUR=(_F(VALE_CALC=3.8904999999999998,
-                         TOLE_MACHINE=1.E-4,
+TEST_FONCTION(VALEUR=(_F(VALE_CALC=3.889668,
+                         VALE_REFE=3.89079687642,
                          VALE_PARA=1.0,
-                         FONCTION=OPTIM,
-                         ),
-                      _F(VALE_CALC=0.093216999999999994,
-                         TOLE_MACHINE=1.E-4,
+                         REFERENCE='ANALYTIQUE',
+                         PRECISION=1.E-2,
+                         FONCTION=OPTIM,),
+                      _F(VALE_CALC=0.09321811,
+                         VALE_REFE=0.0932226057662,
                          VALE_PARA=2.0,
-                         FONCTION=OPTIM,
-                         ),
-                      _F(VALE_CALC=0.15671199999999999,
-                         TOLE_MACHINE=1.E-4,
+                         REFERENCE='ANALYTIQUE',
+                         PRECISION=1.E-2,
+                         FONCTION=OPTIM,),
+                      _F(VALE_CALC=0.15671104,
+                         VALE_REFE=0.156711841212,
                          VALE_PARA=3.0,
-                         FONCTION=OPTIM,
-                         ),
-                      _F(VALE_CALC=466.75799999999998,
-                         TOLE_MACHINE=1.E-4,
+                         REFERENCE='ANALYTIQUE',
+                         PRECISION=1.E-2,
+                         FONCTION=OPTIM,),
+                      _F(VALE_CALC=466.7178,
+                         VALE_REFE=466.699034883,
                          VALE_PARA=4.0,
-                         FONCTION=OPTIM,
-                         ),
+                         REFERENCE='ANALYTIQUE',
+                         PRECISION=1.E-2,
+                         FONCTION=OPTIM,),
                       ),
               )
 
