@@ -1,8 +1,8 @@
-#@ MODIF miss_calcul Miss  DATE 23/10/2012   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF miss_calcul Miss  DATE 22/04/2013   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -44,9 +44,11 @@ from Utilitai.UniteAster      import UniteAster
 from Utilitai.utils           import set_debug, _print, _printDBG
 from Miss.miss_fichier_sol    import fichier_sol
 from Miss.miss_fichier_option import fichier_option
-from Miss.miss_resu_aster     import ResuAsterReader, ResuAsterISSFReader
-from Miss.miss_fichier_interf import fichier_mvol, fichier_chp, fichier_cmde 
-from Miss.miss_fichier_interf import fichier_cmde_inci
+from Miss.miss_resu_aster     import ResuAsterReader
+from Miss.miss_fichier_interf import (
+    fichier_mvol, fichier_chp, fichier_ext, fichier_sign,
+)
+from Miss.miss_fichier_cmde   import MissCmdeGen
 from Miss.miss_post           import PostMissFactory, info_freq
 
 
@@ -64,7 +66,7 @@ class CALCUL_MISS(object):
         self.data = None
         self.verbose = parameters['INFO'] >= 2
         self.debug = self.verbose
-        self.resu_aster_reader = ResuAsterReader()
+        self.resu_aster_reader = None
         if self.verbose:
             _print('Paramètres du calcul', self.param)
         if self.debug:
@@ -72,13 +74,27 @@ class CALCUL_MISS(object):
             self.timer = ASTER_TIMER()
             set_debug(True)
 
+    def run(self):
+        """Enchaine les tâches élémentaires"""
+        self.prepare_donnees()
+        self.execute()
+        self.post_traitement()
+
+    def init_reader(self):
+        """Initialise le lecteur de fichier Aster"""
+        mcgrp = []
+        for grp in self.param:
+            if grp.startswith('GROUP_MA_') and self.param[grp] is not None:
+                mcgrp.append(grp)
+        self.resu_aster_reader = ResuAsterReader(len(mcgrp))
 
     def prepare_donnees(self):
-        """Préparation des données
-        """
+        """Préparation des données"""
         self.cree_reptrav()
+        self.init_reader()
         self.cree_resultat_aster()
         self.cree_fichier_mvol()
+        self.cree_fichier_pc()
         self.cree_fichier_chp()
         self.cree_fichier_sol()
         self.cree_commande_miss()
@@ -135,9 +151,8 @@ class CALCUL_MISS(object):
         self.fichier_resultat()
 
         post = PostMissFactory(self.param['TYPE_RESU'], self.parent, self.param)
-        post.argument()
-        post.execute()
-        post.sortie()
+        post.set_filename_callback(self._fichier_tmp)
+        post.run()
         # nécessaire s'il y a deux exécutions Miss dans le même calcul Aster
         self.menage()
         self._dbg_trace("Stop")
@@ -187,9 +202,14 @@ class CALCUL_MISS(object):
             __mael = MACR_ELEM_DYNA(BASE_MODALE=self.param['BASE_MODALE'],
                                     **opts)
             mael = __mael
+        if self.param['_hasPC']:
+            grma = self.param['GROUP_MA_CONTROL']
+            self.param.set('_nbPC', get_number_PC(self.parent, mael, grma))
         IMPR_MACR_ELEM(MACR_ELEM_DYNA=mael,
                        FORMAT='MISS_3D',
                        GROUP_MA_INTERF=self.param['GROUP_MA_INTERF'],
+                       GROUP_MA_CONTROL=self.param.get('GROUP_MA_CONTROL'),
+                       FORMAT_R='1PE16.9',
                        SOUS_TITRE='PRODUIT PAR CALC_MISS',
                        UNITE=ulaster,)
         UL.EtatInit()
@@ -205,6 +225,16 @@ class CALCUL_MISS(object):
         open(self._fichier_tmp("mvol"), "w").write(content)
         self._dbg_trace("Stop")
 
+    def cree_fichier_pc(self):
+        """Produit les fichiers pour les points de contrôle"""
+        if not self.param['_hasPC']:
+            return
+        self._dbg_trace("Start")
+        content = fichier_ext(self.data)
+        open(self._fichier_tmp("ext"), "w").write(content)
+        content = fichier_sign(self.param)
+        open(self._fichier_tmp("01.sign"), "w").write(content)
+        self._dbg_trace("Stop")
 
     def cree_fichier_chp(self):
         """Produit le fichier chp (modes statiques, dynamiques...).
@@ -227,20 +257,15 @@ class CALCUL_MISS(object):
             open(self._fichier_tmp("sol"), 'w').write(sol_content)
         self._dbg_trace("Stop")
 
-
-    def cree_commande_miss(self):
-        """Produit le fichier de commandes Miss.
-        """
+    def cree_commande_miss(self, ext='in', lapl_temps=False):
+        """Produit le fichier de commandes Miss"""
         self._dbg_trace("Start")
-        lfich = ("mvol", "chp", "sol", "resu_impe", "resu_forc")
-        lfich = map(self._fichier_tmp, lfich)
-        # chemins relatifs au _WRKDIR sinon trop longs pour Miss
-        lfich = map(osp.basename, lfich)
-       
-        content = fichier_cmde(self.param, self.data, *lfich)
-        open(self._fichier_tmp("in"), "w").write(content)
+        # Execute méthode classique
+        generator = MissCmdeGen(self.param, self.data, self._fichier_tmp_local,
+                                lapl_temps=lapl_temps)
+        content = generator.build()
+        open(self._fichier_tmp(ext), "w").write(content)
         self._dbg_trace("Stop")
-
 
     def cree_fichier_option(self):
         """Ecrit le fichier OPTMIS."""
@@ -290,11 +315,6 @@ class CALCUL_MISS_ISSF(CALCUL_MISS):
     """Définition d'un calcul MISS3D de type MISS_IMPE avec ISSF."""
     option_calcul = 'MISS_IMPE'
 
-    def __init__(self, parent, parameters):
-        """Initialisations"""
-        CALCUL_MISS.__init__(self, parent, parameters)
-        self.resu_aster_reader = ResuAsterISSFReader()
-
     def cree_resultat_aster(self):
         """Produit le(s) fichier(s) issu(s) d'Aster."""
         self._dbg_trace("Start")
@@ -320,7 +340,7 @@ class CALCUL_MISS_ISSF(CALCUL_MISS):
                        UNITE=ulaster,)
         UL.EtatInit()
         copie_fichier(self.param.UL.Nom(ulaster), self._fichier_tmp("aster"))
-        self.data = self.resu_aster_reader.read(self._fichier_tmp("aster"))        
+        self.data = self.resu_aster_reader.read(self._fichier_tmp("aster"))
         self._dbg_trace("Stop")
 
 
@@ -412,18 +432,19 @@ class CALCUL_MISS_FICHIER_TEMPS(CALCUL_MISS):
         L_points = self.L_points
         dt = self.dt
         rho = self.rho
+        #TODO la règle UN_PARMI(FREQ_MIN, LIST_FREQ, FREQ_IMAG) ne convient pas!
+        # au moins mettre FREQ_MIN à None
+        self.param.set('FREQ_MIN', None)
 
         for k in range(0, self.nbr_freq):
             if (k == 0) or (k == self.nbr_freq - 1):
                 self.param.set('LIST_FREQ', (0.1E-4,) )
                 self.param.set('FREQ_IMAG',(1.5-2.0*rho*cos(2*pi*k/L_points)+0.5*rho*rho*cos(4*pi*k/L_points) )/dt )         
-                # 'sin','cos','pi' imported from MATH
             else:
                 self.param.set('LIST_FREQ', (-(-2.0*rho*sin(2*pi*k/L_points)+0.5*rho*rho*sin(4*pi*k/L_points))/dt/(2*pi),) )
-                # 'sin','cos','pi' imported from MATH
                 self.param.set('FREQ_IMAG',(1.5-2.0*rho*cos(2*pi*k/L_points)+0.5*rho*rho*cos(4*pi*k/L_points) )/dt )
-                # 'sin','cos','pi' imported from MATH
 
+            self.param.set('_calc_impe', True)
             CALCUL_MISS.cree_commande_miss(self)
             str00 = str(self.param['FREQ_IMAG'])+' + i . '+str(self.param['LIST_FREQ'][0])+' ('+str(k+1)+'/'+str(self.nbr_freq)+')'
             aster.affiche("MESSAGE",'FREQUENCE COMPLEXE COURANTE =  '+str00)
@@ -437,18 +458,8 @@ class CALCUL_MISS_FICHIER_TEMPS(CALCUL_MISS):
 
 
     def cree_commande_miss(self):
-        """Produit le fichier de commandes Miss du champ incident (.inci)
-        """
-        self._dbg_trace("Start")
-        lfich = ("mvol", "chp", "sol", "resu_impe", "resu_forc")
-        lfich = map(self._fichier_tmp, lfich)
-        # chemins relatifs au _WRKDIR sinon trop longs pour Miss
-        lfich = map(osp.basename, lfich)
-        # Execute méthode associée au champ incident
-        content = fichier_cmde_inci(self.param, self.data, *lfich)
-        open(self._fichier_tmp("inci"), "w").write(content)
-        self._dbg_trace("Stop")
-
+        """Produit le fichier de commandes Miss du champ incident (.inci)"""
+        CALCUL_MISS.cree_commande_miss(self, ext='inci', lapl_temps=True)
 
     def fichier_resultat(self):
         """Libérer la structure contenant les données numériques
@@ -456,7 +467,6 @@ class CALCUL_MISS_FICHIER_TEMPS(CALCUL_MISS):
         if self.param['UNITE_IMPR_ASTER'] and osp.exists(self._fichier_tmp("aster")):
             copie_fichier(self._fichier_tmp("aster"),
                           self._fichier_aster(self.param['UNITE_IMPR_ASTER']))
-
 
     def init_data(self):
         """Libérer la structure contenant les données numériques
@@ -477,6 +487,15 @@ def CalculMissFactory(parent, param):
     else:
         return CALCUL_MISS_IMPE(parent, param)
 
+def get_number_PC(parent, macr_elem, lgrpc):
+    """Retourne le nombre de points de contrôle"""
+    nomail = macr_elem.sdj.REFM.get()[1]
+    mail = parent.get_concept(nomail)
+    assert mail is not None, \
+        'impossible de récupérer le maillage du macro-élément'
+    lgrpma = mail.LIST_GROUP_MA()
+    result = sum([nbel for name, nbel, dim in lgrpma if name in lgrpc])
+    return result
 
 def copie_fichier(src, dst):
     """Copie d'un fichier.
@@ -486,7 +505,3 @@ def copie_fichier(src, dst):
             shutil.copyfile(src, dst)
         except:
             raise aster.error('MISS0_6', valk=(src, dst))
-
-
-
-

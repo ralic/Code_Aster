@@ -1,8 +1,8 @@
-#@ MODIF miss_utils Miss  DATE 23/10/2012   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF miss_utils Miss  DATE 22/04/2013   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -35,10 +35,15 @@ from math import log
 
 import numpy as NP
 
-import aster
+try:
+    import aster
+    from Utilitai.UniteAster import UniteAster
+except ImportError:
+    # to make pure python unittests
+    pass
+
 from Noyau.N_types import force_list
 from Utilitai.Utmess import UTMESS, ASSERT
-from Utilitai.UniteAster import UniteAster
 from Utilitai.transpose import transpose
 from Utilitai.utils import _printDBG
 
@@ -83,6 +88,11 @@ class MISS_PARAMETER(object):
             'INST_FIN' : None,
             'PAS_INST' : None,
             'FICHIER_SOL_INCI' : 'NON',
+            # tâches élémentaires à la demande
+            '_calc_impe' : False,
+            '_calc_forc' : False,
+            '_hasPC' : False,
+            '_nbPC' : 0,
         }
         self._keywords = {}
         # une seule occurence du mcfact
@@ -109,6 +119,19 @@ class MISS_PARAMETER(object):
 
     def check(self):
         """Vérification des règles impossible à écrire dans le .capy"""
+        # tâches à la demande
+        if self['TYPE_RESU'] in ('HARM_GENE', 'TRAN_GENE', 'TABLE'):
+            self.set('_calc_impe', True)
+            self.set('_calc_forc', True)
+        elif self['TYPE_RESU'] in ('FICHIER', 'TABLE_CONTROL'):
+            if self.get('UNITE_RESU_IMPE') is not None:
+                self.set('_calc_impe', True)
+            if self.get('UNITE_RESU_FORC') is not None:
+                self.set('_calc_forc', True)
+        else:
+            if self['EXCIT_SOL'] is not None:
+                self.set('_calc_forc', True)
+        self.set('_hasPC', self.get('GROUP_MA_CONTROL') is not None)
         # unités logiques
         if self.get('UNITE_RESU_IMPE') is None:
             self.set('_exec_Miss', True)
@@ -118,7 +141,8 @@ class MISS_PARAMETER(object):
             self['UNITE_RESU_FORC'] = self.UL.Libre(action='ASSOCIER')
 
         # fréquences
-        if self['LIST_FREQ'] is not None and self['TYPE_RESU'] not in ('FICHIER','HARM_GENE'):
+        if self['LIST_FREQ'] is not None \
+        and self['TYPE_RESU'] not in ('FICHIER', 'HARM_GENE', 'TABLE_CONTROL'):
             raise aster.error('MISS0_17')
 
         # si base modale, vérifier/compléter les amortissements réduits
@@ -141,9 +165,16 @@ class MISS_PARAMETER(object):
                     # on ajoute 0.
                     self._keywords['AMOR_REDUIT'].append(0.)
         # la règle ENSEMBLE garantit que les 3 GROUP_MA_xxx sont tous absents ou tous présents
-        if self['ISSF'] != 'NON' and self['GROUP_MA_FLU_STR'] is None:
-            UTMESS('F', 'MISS0_22')
+        if self['ISSF'] != 'NON':
+            if self['GROUP_MA_FLU_STR'] is None:
+                UTMESS('F', 'MISS0_22')
+            if self['_hasPC']:
+                UTMESS('F', 'MISS0_23')
 
+    def __iter__(self):
+        """Itérateur simple sur le dict des mots-clés"""
+        return iter(self._keywords)
+    
     def __getitem__(self, key):
         return self._keywords[key]
 
@@ -228,8 +259,7 @@ def en_ligne(valeurs, format, cols, separateur=" ", format_ligne="%(valeurs)s"):
     return res
 
 def convert_double(fich1, fich2):
-    """Convertit les 1.D+09 en 1.E+09.
-    """
+    """Convertit les 1.D+09 en 1.E+09"""
     txt = open(fich1, "r").read()
     # see python doc (module re)
     expr = re.compile("([\-\+]?\d+(\.\d*)?|\.\d+)([eEdD])([\-\+]?\d+)?")
@@ -237,12 +267,10 @@ def convert_double(fich1, fich2):
     open(fich2, "w").write(new)
 
 def double(string):
-    """Convertit la chaine en réelle (accepte le D comme exposant).
-    """
+    """Convertit la chaine en réelle (accepte le D comme exposant)"""
     string = re.sub('([0-9]+)([\-\+][0-9])', '\\1e\\2', string)
     return float(string.replace("D", "e"))
 
 def get_puis2(nval):
-    """Retourne N, la plus grande puissance de 2 telle que 2**N <= nval
-    """
+    """Retourne N, la plus grande puissance de 2 telle que 2**N <= nval"""
     return int(log(nval, 2.))

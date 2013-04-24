@@ -1,8 +1,8 @@
-#@ MODIF miss_fichier_sol Miss  DATE 13/11/2012   AUTEUR GREFFET N.GREFFET 
+#@ MODIF miss_fichier_sol Miss  DATE 22/04/2013   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
@@ -31,7 +31,8 @@ def fichier_sol(tab, param=None):
     la table des données de sol et éventuellement des paramètres du calcul.
     """
     # vérification de la table
-    for p in ("NUME_COUCHE", "NUME_MATE", "E", "NU", "RHO", "EPAIS", "AMOR_HYST", "RECEPTEUR", "SUBSTRATUM"):
+    for p in ("NUME_COUCHE", "NUME_MATE", "E", "NU", "RHO", "EPAIS",
+              "AMOR_HYST", "RECEPTEUR", "SUBSTRATUM"):
         if not p in tab.para:
             raise aster.error('TABLE0_2', valk=(p, 'de sol'))
     nb_couche = len(tab)

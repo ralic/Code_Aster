@@ -1,8 +1,8 @@
-#@ MODIF miss_resu_aster Miss  DATE 23/10/2012   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF miss_resu_aster Miss  DATE 22/04/2013   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -26,30 +26,39 @@ Cette structure est potentiellement volumineuse et sera donc détruite dès que po
 """
 
 import os
+import os.path as osp
 import traceback
+import unittest
 
-import aster
 from Miss.miss_utils import lire_nb_valeurs, double
 
+# to allow unittest without aster module
+try:
+    import aster
+    AsterError = aster.error
+except ImportError:
+    from Execution.E_Exception import error as AsterError
 
 class ResuAsterReader(object):
     """Lit le fichier issu de IMPR_MACR_ELEM/IMPR_MISS_3D."""
-    def __init__(self):
-        """Initialisation"""
+    def __init__(self, nbgrp):
+        """Initialisation
+        `nbgrp` est le nombre de groupes de mailles décrits
+        `nbgrp + 1` correspond à la partie volumique de la structure
+        """
         self.fobj = None
         self.struct = STRUCT_RESULTAT()
-        # dimension des éléments (fixe ?)
-        self.struct.maille_dime = 8
         self.ln = 0
-    
+        self.nbgrp = nbgrp
+
     def read(self, fich_aster):
         """Read the file line per line."""
         try:
             self.fobj = open(fich_aster, "r")
             self._read_all()
             self.fobj.close()
-        except IOError, err:
-            raise aster.error('MISS0_7', vali=ln, valk=str(err))
+        except (ValueError, IOError, AssertionError), err:
+            raise AsterError('MISS0_7', vali=self.ln, valk=str(err))
         self.check()
         self.post()
         return self.struct
@@ -60,7 +69,7 @@ class ResuAsterReader(object):
         try:
             struct.check()
         except AssertionError, err:
-            raise aster.error('MISS0_8', valk=traceback.format_exc(limit=2))
+            raise AsterError('MISS0_8', valk=traceback.format_exc(limit=2))
     
     def post(self):
         """arrangements"""
@@ -123,8 +132,9 @@ class ResuAsterReader(object):
 
     def _read_mailles_connect(self):
         """mailles : connectivité"""
-        self.struct.init_connect(1)
-        self._read_mailles_connect_idx(0)
+        self.struct.init_connect(self.nbgrp)
+        for i in range(self.nbgrp):
+            self._read_mailles_connect_idx(i)
         self.struct.maille_nb_tot = sum(self.struct.maille_nb)
 
     def _read_mailles_connect_idx(self, idx):
@@ -132,8 +142,14 @@ class ResuAsterReader(object):
         self.ln += 1
         lab, nb = self.fobj.readline().split()
         nb = int(nb)
+        if lab == 'POINT':
+            self.struct.maille_dime[idx] = 1
+        elif lab == 'ELEM':
+            self.struct.maille_dime[idx] = 8
+        else:
+            raise ValueError('unsupported element type: %s' % lab)
         self.ln += lire_nb_valeurs(self.fobj,
-                                   nb * self.struct.maille_dime,
+                                   nb * self.struct.maille_dime[idx],
                                    self.struct.maille_connec[idx], int)
         self.struct.maille_nb[idx] = nb
 
@@ -198,10 +214,9 @@ class ResuAsterReader(object):
 
     def _read_mode_stat_amor(self):
         """modes statiques : amortissements (facultatifs)"""
-        lbid = []
         unused = lire_nb_valeurs(self.fobj,
                                  self.struct.mode_stat_nb ** 2,
-                                 lbid,
+                                 self.struct.mode_stat_amor,
                                  double, 1, 1, regexp_label="STAT +AMOR")
 
     def _read_mode_coupl_para(self):
@@ -226,24 +241,10 @@ class ResuAsterReader(object):
 
     def _read_mode_coupl_amor(self):
         """modes couplés : amortissements (facultatifs)"""
-        lbid = []
         unused = lire_nb_valeurs(self.fobj,
                                  self.struct.mode_dyna_nb * self.struct.mode_stat_nb,
-                                 lbid,
+                                 self.struct.coupl_amor,
                                  double, 1, 1, regexp_label="COUPL +AMOR")
-
-
-class ResuAsterISSFReader(ResuAsterReader):
-    """Lit le fichier issu de IMPR_MACR_ELEM/IMPR_MISS_3D avec ISSF='OUI'."""
-
-    def _read_mailles_connect(self):
-        """mailles : connectivité"""
-        self.struct.init_connect(4)
-        self._read_mailles_connect_idx(0)
-        self._read_mailles_connect_idx(1)
-        self._read_mailles_connect_idx(2)
-        self._read_mailles_connect_idx(3)
-        self.struct.maille_nb_tot = sum(self.struct.maille_nb)
 
 class STRUCT_RESULTAT:
     """Simple conteneur."""
@@ -254,7 +255,7 @@ class STRUCT_RESULTAT:
         self.maille_nb = []
         self.maille_nb_tot = 0
         self.maille_connec = []
-        self.maille_dime = 0
+        self.maille_dime = []
         self.mode_dyna_nb = 0
         self.mode_dyna_type = ""
         self.mode_dyna_vale = []
@@ -265,23 +266,28 @@ class STRUCT_RESULTAT:
         self.mode_stat_nb = 0
         self.mode_stat_type = ""
         self.mode_stat_vale = []
+        self.mode_stat_amor = []
         self.mode_stat_mass = []
         self.mode_stat_rigi = []
         self.coupl_nb = [0, 0]
+        self.coupl_amor = []
         self.coupl_mass = []
         self.coupl_rigi = []
 
     def init_connect(self, nbgrp):
         """initialise le stockage pour les nbgrp groupes de mailles."""
         self.maille_nb = [0] * nbgrp
+        self.maille_dime = [0] * nbgrp
         self.maille_connec = [[] for i in range(nbgrp)]
 
     def check(self):
         """Vérifications."""
         assert len(self.noeud_coor) == self.noeud_nb * 3
         assert len(self.maille_nb) == len(self.maille_connec)
-        for nb, connec in zip(self.maille_nb, self.maille_connec):
-            assert len(connec) == nb * self.maille_dime
+        for nb, dime, connec in zip(self.maille_nb,
+                                    self.maille_dime,
+                                    self.maille_connec):
+            assert len(connec) == nb * dime
         assert len(self.mode_dyna_vale) == 0 \
             or len(self.mode_dyna_vale) == self.mode_dyna_nb * self.noeud_nb * 3
         assert len(self.mode_dyna_freq) == self.mode_dyna_nb
@@ -290,18 +296,22 @@ class STRUCT_RESULTAT:
         assert len(self.mode_dyna_rigi) == self.mode_dyna_nb
         assert len(self.mode_stat_vale) == 0 \
             or len(self.mode_stat_vale) == self.mode_stat_nb * self.noeud_nb * 3
+        assert len(self.mode_stat_amor) == 0 \
+            or len(self.mode_stat_amor) == self.mode_stat_nb ** 2
         assert len(self.mode_stat_mass) == self.mode_stat_nb ** 2
         assert len(self.mode_stat_rigi) == self.mode_stat_nb ** 2
         assert self.coupl_nb == (self.mode_dyna_nb, self.mode_stat_nb)
+        assert len(self.coupl_amor) == 0 \
+            or len(self.coupl_amor) == self.mode_dyna_nb * self.mode_stat_nb
         assert len(self.coupl_mass) == self.mode_dyna_nb * self.mode_stat_nb
         assert len(self.coupl_rigi) == self.mode_dyna_nb * self.mode_stat_nb
 
     def post(self):
         """arrangements : compléter la connectivité à 20"""
-        dime = self.maille_dime
-        add = [0,] * (20 - dime)
         nbgrp = len(self.maille_nb)
         for idx in range(nbgrp):
+            dime = self.maille_dime[idx]
+            add = [0,] * (20 - dime)
             new = []
             for i in range(self.maille_nb[idx]):
                 new.extend(self.maille_connec[idx][i * dime : (i+1) * dime] + add)
@@ -322,3 +332,24 @@ class STRUCT_RESULTAT:
             txt.append("%-14s : %s" % (attr, val))
         return os.linesep.join(txt)
 
+
+class TestMissInterface(unittest.TestCase):
+    """test interface functions to create miss datafiles"""
+    faster = 'ZZZZ108B.aster'
+    
+    #unittest.skipIf(not osp.isfile(faster),   # decorator requires python 2.7
+                     #"requires %s" % faster)
+    def test01_ext(self):
+        """test creation of the .ext file"""
+        if not osp.isfile(self.faster):
+            return
+        rdr = ResuAsterReader(nbgrp=2)
+        data = rdr.read(self.faster)
+        assert data.noeud_nb == 100, data.noeud_nb
+        assert data.maille_nb_tot == 99, data.maille_nb_tot
+        assert data.maille_nb == [96, 3], data.maille_nb
+        assert data.mode_dyna_nb == 0, data.mode_dyna_nb
+        assert data.mode_stat_nb == 291, data.mode_stat_nb
+        
+if __name__ == '__main__':
+    unittest.main()

@@ -1,4 +1,4 @@
-#@ MODIF miss_post Miss  DATE 25/03/2013   AUTEUR DEVESA G.DEVESA 
+#@ MODIF miss_post Miss  DATE 22/04/2013   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -53,7 +53,7 @@ from Cata.cata import (
 from Utilitai.Table import Table
 from Utilitai.Utmess import UTMESS
 from Utilitai.utils import set_debug, _print, _printDBG
-
+from Miss.miss_resu_miss import MissCsolReader
 
 # correspondance
 FKEY = {
@@ -62,15 +62,14 @@ FKEY = {
     'DZ' : 'FONC_Z',
 }
 
-
 class POST_MISS(object):
     """Définition d'un post-traitement MISS3D."""
 
-    def __init__(self, parent, parameters):
+    def __init__(self, parent, param):
         """Initialisations"""
         self.parent = parent
-        self.param = parameters
-        self.verbose = parameters['INFO'] >= 2
+        self.param = param
+        self.verbose = param['INFO'] >= 2
         self.debug = self.verbose
         # liste de concepts intermédiaires à supprimer à la fin
         self._to_delete = []
@@ -79,7 +78,17 @@ class POST_MISS(object):
             set_debug(True)
         self.list_freq_DLH = None
         self.methode_fft = None
+        self.fname = None
 
+    def set_filename_callback(self, callback):
+        """Enregistre la fonction qui fournit le nom du fichier associé à un type"""
+        self.fname = callback
+
+    def run(self):
+        """Enchaine les tâches élémentaires"""
+        self.argument()
+        self.execute()
+        self.sortie()
 
     def argument(self):
         """Vérification des arguments d'entrée."""
@@ -107,30 +116,27 @@ class POST_MISS(object):
                 _acz = CALC_FONCTION(COMB=_F(FONCTION=self.param['ACCE_Z'], COEF=1.0,),
                                      LIST_PARA=__linst)
                 self.acce_z = _acz
-            if self.param['GROUP_NO'] is None:
-              if self.param['DEPL_X']:
+            if self.param.get('GROUP_NO') is None:
+              if self.param.get('DEPL_X'):
                 _acx = CALC_FONCTION(COMB=_F(FONCTION=self.param['DEPL_X'], COEF=1.0,),
                                      LIST_PARA=__linst)
                 self.depl_x = _acx
-              if self.param['DEPL_Y']:
+              if self.param.get('DEPL_Y'):
                 _acy = CALC_FONCTION(COMB=_F(FONCTION=self.param['DEPL_Y'], COEF=1.0,),
                                      LIST_PARA=__linst)
                 self.depl_y = _acy
-              if self.param['DEPL_Z']:
+              if self.param.get('DEPL_Z'):
                 _acz = CALC_FONCTION(COMB=_F(FONCTION=self.param['DEPL_Z'], COEF=1.0,),
                                      LIST_PARA=__linst)
                 self.depl_z = _acz
-
 
     def execute(self):
         """Lance le post-traitement"""
         raise NotImplementedError('must be defined in a derivated class')
 
-
     def sortie(self):
         """Prépare et produit les concepts de sortie."""
         raise NotImplementedError('must be defined in a derivated class')
-
 
     def concepts_communs(self):
         """Construction des concepts partagés entre
@@ -154,7 +160,6 @@ class POST_MISS(object):
         self.set_fft_accelero()
         self.set_freq_dlh()
 
-
     def set_fft_accelero(self):
         """Calcul des FFT des accélérogrammes."""
         if self.acce_x:
@@ -176,7 +181,6 @@ class POST_MISS(object):
         if self.depl_z:
             _zff = CALC_FONCTION(FFT=_F(FONCTION=self.depl_z, METHODE=self.methode_fft,),)
             self.zff = _zff            
-
 
     def set_freq_dlh(self):
         """Déterminer les fréquences du calcul harmonique."""
@@ -201,7 +205,6 @@ class POST_MISS(object):
             UTMESS('I', 'MISS0_12', valr=(0., freq_max, df), vali=len(lfreq))
         self.list_freq_DLH = lfreq
 
-
     def suppr_acce_fft(self):
         """Marque pour suppression les accéléros interpolés et leur FFT."""
         for co in (self.acce_x, self.acce_y, self.acce_z,
@@ -209,7 +212,6 @@ class POST_MISS(object):
                    self.xff, self.yff, self.zff):
             if co:
                 self._to_delete.append(co)
-
 
     def initco(self):
         """Deux fonctions :
@@ -224,25 +226,51 @@ class POST_MISS(object):
         self.xff = self.yff = self.zff = None
         if len(self._to_delete) > 0:
             DETRUIRE(CONCEPT=_F(NOM=tuple(self._to_delete),),)
-
+        # variables autres que concepts
+        self._tkeys = self._torder = self._tline = None
+        self.tab = None
 
     def check_datafile_exist(self):
         """Vérifie l'existence des fichiers."""
         assert osp.exists('fort.%s' % self.param['UNITE_RESU_IMPE'])
         assert osp.exists('fort.%s' % self.param['UNITE_RESU_FORC'])
 
+    def init_table(self):
+        """Initialise la table"""
+        # pour la construction de la table
+        # mêmes paramètres pour TABLE / TABLE_CONTROL
+        self._tkeys = ('GROUP_NO', 'NOM_CHAM', 'NOM_PARA')
+        self._torder = list(self._tkeys) + ['FONC_X', 'FONC_Y', 'FONC_Z']
+        # pour stocker la correspondance clé_primaire : numéro_ligne
+        self._tline = {}
+        # table de stockage des fonctions résultats
+        self.tab = Table()
 
+    def add_line(self, gno, cham, para, **kwargs):
+        """Pour simplifier l'ajout d'une ligne dans la table.
+        Arguments optionnels supportés : fonc_x, fonc_y, fonc_z."""
+        primkey = (gno, cham, para)
+        index = self._tline.get(primkey, -1)
+        values = dict([(k, v) for k, v in kwargs.items() \
+                          if k in self._torder and v is not None])
+        if index > 0:
+            row = self.tab.rows[index]
+            row.update(values)
+        else:
+            row = dict(zip(self._tkeys, primkey))
+            row.update(values)
+            self._tline[primkey] = len(self.tab)
+            self.tab.append(row)
 
 class POST_MISS_TRAN(POST_MISS):
     """Post-traitement de type 1, sortie tran_gene"""
 
-    def __init__(self, *args, **kwargs):
+    def __init__(self, parent, param):
         """Initialisation."""
-        super(POST_MISS_TRAN, self).__init__(*args, **kwargs)
+        super(POST_MISS_TRAN, self).__init__(parent, param)
         self.methode_fft = 'PROL_ZERO'
         self._suppr_matr = True
         self.excit_harmo = []
-
 
     def argument(self):
         """Vérification des arguments d'entrée."""
@@ -252,7 +280,6 @@ class POST_MISS_TRAN(POST_MISS):
         DEFI_FICHIER(ACTION='LIBERER', UNITE=self.param['UNITE_RESU_IMPE'])
         DEFI_FICHIER(ACTION='LIBERER', UNITE=self.param['UNITE_RESU_FORC'])
         self.suppr_acce_fft()
-
 
     def execute(self):
         """Lance le post-traitement"""
@@ -399,19 +426,17 @@ class POST_MISS_TRAN(POST_MISS):
 class POST_MISS_HARM(POST_MISS_TRAN):
     """Post-traitement de type 1, sortie harm_gene"""
 
-    def __init__(self, *args, **kwargs):
+    def __init__(self, parent, param):
         """Initialisation."""
-        super(POST_MISS_HARM, self).__init__(*args, **kwargs)
+        super(POST_MISS_HARM, self).__init__(parent, param)
         self.methode_fft = 'COMPLET'
         self._suppr_matr = False
-
 
     def argument(self):
         """Vérification des arguments d'entrée."""
         super(POST_MISS_HARM, self).argument()
         self.parent.DeclareOut('trangene', self.parent.sd)
         self.suppr_acce_fft()
-
 
     def concepts_communs(self):
         """Construction des concepts spécifiques au cas HARMO."""
@@ -429,11 +454,9 @@ class POST_MISS_HARM(POST_MISS_TRAN):
                 del dExc['VECT_ASSE']
             self.excit_harmo.append(dExc)
 
-
     def sortie(self):
         """Prépare et produit les concepts de sortie."""
         self.initco()
-
 
     def dyna_line_harm(self, **kwargs):
         """Execution de DYNA_LINE_HARM. Produit le concept définitif."""
@@ -441,20 +464,14 @@ class POST_MISS_HARM(POST_MISS_TRAN):
         return trangene
 
 
-
 class POST_MISS_TAB(POST_MISS):
     """Post-traitement de type 2"""
 
-    def __init__(self, *args, **kwargs):
+    def __init__(self, parent, param):
         """Initialisation."""
-        super(POST_MISS_TAB, self).__init__(*args, **kwargs)
+        super(POST_MISS_TAB, self).__init__(parent, param)
         self.methode_fft = 'COMPLET'
-        # pour la construction de la table
-        self._tkeys = ('GROUP_NO', 'NOM_CHAM', 'NOM_PARA')
-        self._torder = list(self._tkeys) + ['FONC_X', 'FONC_Y', 'FONC_Z']
-        # pour stocker la correspondance clé_primaire : numéro_ligne
-        self._tline = {}
-
+        self.init_table()
 
     def argument(self):
         """Vérification des arguments d'entrée."""
@@ -463,9 +480,6 @@ class POST_MISS_TAB(POST_MISS):
         self.check_datafile_exist()
         DEFI_FICHIER(ACTION='LIBERER', UNITE=self.param['UNITE_RESU_IMPE'])
         DEFI_FICHIER(ACTION='LIBERER', UNITE=self.param['UNITE_RESU_FORC'])
-        # table de stockage des fonctions résultats
-        self.tab = Table()
-
 
     def execute(self):
         """Lance le post-traitement"""
@@ -473,10 +487,8 @@ class POST_MISS_TAB(POST_MISS):
         self.boucle_dlh()
         self.recombinaison()
 
-
     def sortie(self):
         """Prépare et produit les concepts de sortie."""
-        from pprint import pformat
         self.parent.DeclareOut('tabout', self.parent.sd)
         self.tab.OrdreColonne(self._torder)
         dprod = self.tab.dict_CREA_TABLE()
@@ -488,12 +500,10 @@ class POST_MISS_TAB(POST_MISS):
                             **dprod)
         self.initco()
 
-
     def initco(self):
         """Ajoute les concepts"""
         super(POST_MISS_TAB, self).initco()
         self.dyge_x = self.dyge_y = self.dyge_z = None
-
 
     def boucle_dlh(self):
         """Exécution des DYNA_LINE_HARM dans les 3 directions (chargement unitaire)"""
@@ -530,7 +540,6 @@ class POST_MISS_TAB(POST_MISS):
             self._to_delete.append(_rito)
             first = False
 
-
     def iteration_dlh(self, dir, rigtot, freq, opts):
         """Exécution d'un DYNA_LINE_HARM"""
         __fosx = LIRE_FORC_MISS(BASE=self.param['BASE_MODALE'],
@@ -550,7 +559,6 @@ class POST_MISS_TAB(POST_MISS):
                                 **opts)
         DETRUIRE(CONCEPT=_F(NOM=__fosx),)
         return __dyge
-
 
     def recombinaison(self):
         """Recombinaison des réponses unitaires."""
@@ -580,7 +588,6 @@ class POST_MISS_TAB(POST_MISS):
                     self.gen_funct(gno, cham, 'DY')
                 if self.acce_z:
                     self.gen_funct(gno, cham, 'DZ')
-
 
     def gen_funct(self, gno, cham, dir):
         """Calcul la réponse en un noeud particulier dans la direction 'dir'
@@ -636,25 +643,6 @@ class POST_MISS_TAB(POST_MISS):
         self.add_line(gno, cham, 'FREQ', **{ FKEY[dir] : _repfreq.nom })
         self.add_line(gno, cham, 'SPEC_OSCI', **{ FKEY[dir] : _spec.nom })
 
-
-    def add_line(self, gno, cham, para, **kwargs):
-        """Pour simplifier l'ajout d'une ligne dans la table.
-        Arguments optionnels supportés : fonc_x, fonc_y, fonc_z."""
-        primkey = (gno, cham, para)
-        index = self._tline.get(primkey, -1)
-        values = dict([(k, v) for k, v in kwargs.items() \
-                          if k in self._torder and v is not None])
-        if index > 0:
-            row = self.tab.rows[index]
-            row.update(values)
-        else:
-            row = dict(zip(self._tkeys, primkey))
-            row.update(values)
-            self._tline[primkey] = len(self.tab)
-            self.tab.append(row)
-
-
-
 class POST_MISS_FICHIER(POST_MISS):
     """Pas de post-traitement, car on ne sort que les fichiers."""
 
@@ -663,14 +651,110 @@ class POST_MISS_FICHIER(POST_MISS):
         # fréquences du calcul Miss
         info_freq(self.param)
 
-
     def execute(self):
         """Lance le post-traitement"""
-
 
     def sortie(self):
         """Prépare et produit les concepts de sortie."""
 
+class POST_MISS_CONTROL(POST_MISS):
+    """Produit la table des grandeurs aux points de contrôles"""
+
+    def __init__(self, parent, param):
+        """Initialisation."""
+        super(POST_MISS_CONTROL, self).__init__(parent, param)
+        self.init_table()
+        self.methode_fft = 'COMPLET'
+
+    def execute(self):
+        """Lecture du fichier produit par Miss"""
+        reader = MissCsolReader(self.param['_nbPC'], self.param['_nbfreq'])
+        lfreq, values = reader.read(self.fname("01.csol.a"))
+        self.tab = tab = Table()
+        # stockage des accéléro et leur fft
+        self.set_fft_accelero()
+        self.recombinaison()
+        for ipc, respc in enumerate(values):
+            nompc = 'PC%d' % (ipc + 1)
+            # stocke les fonctions de transfert telles quelles
+            fct = []
+            for iddl, comp in enumerate(('X', 'Y', 'Z')):
+                valpc = respc.comp[iddl]
+                fct.append(self._fonct_transfert('FREQ', lfreq, *valpc))
+            self.add_line(nompc, 'TRANSFERT', 'FREQ',
+                          FONC_X=fct[0].nom,
+                          FONC_Y=fct[1].nom,
+                          FONC_Z=fct[2].nom)
+            if self.acce_x:
+                self.gen_funct(nompc, 'ACCE', 'FONC_X', fct[0], self.tf_xff)
+            if self.acce_y:
+                self.gen_funct(nompc, 'ACCE', 'FONC_Y', fct[1], self.tf_yff)
+            if self.acce_z:
+                self.gen_funct(nompc, 'ACCE', 'FONC_Z', fct[2], self.tf_zff)
+ 
+    def sortie(self):
+        """Prépare et produit les concepts de sortie"""
+        self.parent.DeclareOut('tabout', self.parent.sd)
+        self.tab.OrdreColonne(self._torder)
+        dprod = self.tab.dict_CREA_TABLE()
+        if self.verbose:
+            aster.affiche('MESSAGE', repr(self.tab))
+        # type de la table de sortie
+        tabout = CREA_TABLE(TYPE_TABLE='TABLE',
+                            **dprod)
+        self.initco()
+
+    def recombinaison(self):
+        """Recombinaison des réponses unitaires."""
+        # ici il n'y a pas de recombinaison - par similitude avec TABLE
+        # stockage des accéléro et leur fft
+        self.add_line('', 'ACCE', 'INST',
+                      FONC_X=getattr(self.acce_x, 'nom', None),
+                      FONC_Y=getattr(self.acce_y, 'nom', None),
+                      FONC_Z=getattr(self.acce_z, 'nom', None))
+        self.add_line('', 'ACCE', 'FREQ',
+                      FONC_X=getattr(self.xff, 'nom', None),
+                      FONC_Y=getattr(self.yff, 'nom', None),
+                      FONC_Z=getattr(self.zff, 'nom', None))
+        # conversion faite une fois
+        if self.acce_x:
+            self.tf_xff = self.xff.convert('complex')
+        if self.acce_y:
+            self.tf_yff = self.yff.convert('complex')
+        if self.acce_z:
+            self.tf_zff = self.zff.convert('complex')
+
+    def _fonct_transfert(self, nom_para, absc, real, imag):
+        """Produit une fonction à stocker dans la table"""
+        tab = NP.array([absc, real, imag])
+        vale_c = tab.transpose().ravel().tolist()
+        _fct = DEFI_FONCTION(NOM_PARA=nom_para,
+                             NOM_RESU='ACCE',
+                             VALE_C=vale_c)
+        return _fct
+
+    def gen_funct(self, nompc, cham, fonct_i, ftri, tfa_i):
+        """Calcul le produit 'fonction de transfert' * fft(acce_i)"""
+        tfft = ftri.convert('complex')
+        tfc = tfft * tfa_i
+        tffr = tfc.evalfonc(tfft.vale_x)
+        tffr.para['NOM_PARA'] = 'FREQ'
+        fft = tffr.fft('COMPLET', 'NON')
+        # création des concepts
+        _repfreq = DEFI_FONCTION(VALE_C=tffr.tabul(),
+                                 **tffr.para)
+        _reptemp = DEFI_FONCTION(VALE=fft.tabul(),
+                                 **fft.para)
+        opts = {}
+        if self.param['LIST_FREQ_SPEC_OSCI']:
+            opts['LIST_FREQ'] = self.param['LIST_FREQ_SPEC_OSCI']
+        _spec = CALC_FONCTION(SPEC_OSCI=_F(FONCTION=_reptemp,
+                                           NORME=self.param['NORME'],
+                                           AMOR_REDUIT=self.param['AMOR_SPEC_OSCI'],
+                                           **opts),)
+        self.add_line(nompc, cham, 'INST', **{ fonct_i : _reptemp.nom })
+        self.add_line(nompc, cham, 'FREQ', **{ fonct_i : _repfreq.nom })
+        self.add_line(nompc, cham, 'SPEC_OSCI', **{ fonct_i : _spec.nom })
 
 class POST_MISS_FICHIER_TEMPS(POST_MISS_FICHIER):
     """Pas de post-traitement, car on ne sort que les fichiers."""
@@ -990,22 +1074,38 @@ class POST_MISS_FICHIER_TEMPS(POST_MISS_FICHIER):
         fich = '%s.%s' % (self.param['PROJET'], ext)
         return osp.join(self.param['_WRKDIR'], fich)
 
+class ListPost(list):
+    """Définit une liste de post-traitement à enchainer"""
+    
+    def set_filename_callback(self, callback):
+        """Enregistre le callback nommant les fichiers"""
+        for post in self:
+            post.set_filename_callback(callback)
 
-def PostMissFactory(type_post, *args, **kwargs):
-    """Crée l'objet POST_MISS pour le type de post-traitement demandé."""
+    def run(self):
+        """Lance les post-traitements"""
+        for post in self:
+            post.run()
+
+def PostMissFactory(type_post, parent, param):
+    """Crée l'objet ou les objets POST_MISS pour le type de post-traitement
+    demandé"""
+    post = ListPost()
     if type_post == 'HARM_GENE':
-        return POST_MISS_HARM(*args, **kwargs)
+        post.append(POST_MISS_HARM(parent, param))
     elif type_post == 'TRAN_GENE':
-        return POST_MISS_TRAN(*args, **kwargs)
+        post.append(POST_MISS_TRAN(parent, param))
     elif type_post == 'TABLE':
-        return POST_MISS_TAB(*args, **kwargs)
-    elif type_post == 'FICHIER':
-        return POST_MISS_FICHIER(*args, **kwargs)
+        post.append(POST_MISS_TAB(parent, param))
+    elif type_post in ('FICHIER', 'TABLE_CONTROL'):
+        post.append(POST_MISS_FICHIER(parent, param))
     elif type_post == 'FICHIER_TEMPS':
-        return POST_MISS_FICHIER_TEMPS(*args, **kwargs)
+        post.append(POST_MISS_FICHIER_TEMPS(parent, param))
     else:
         raise NotImplementedError, type_post
-
+    if type_post == 'TABLE_CONTROL':
+        post.append(POST_MISS_CONTROL(parent, param))
+    return post
 
 def info_freq(param):
     """Emet un message sur les fréquences utilisées"""
@@ -1016,5 +1116,3 @@ def info_freq(param):
         UTMESS('I', 'MISS0_13', valr=(param['FREQ_MIN'], param['FREQ_MAX'],
                                       param['FREQ_PAS']),
                                 vali=nbfmiss)
-
-

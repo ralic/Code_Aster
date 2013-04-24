@@ -1,8 +1,8 @@
-#@ MODIF miss0 Messages  DATE 23/10/2012   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF miss0 Messages  DATE 22/04/2013   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -98,7 +98,6 @@ qualifié de Code_Aster.
 
 Certaines fonctionnalités ne sont pas encore disponibles dans CALC_MISS.
 Pour celles-ci, il faut encore utiliser MACRO_MISS_3D. Il s'agit :
-    - des points de contrôle,
     - des ondes inclinées,
     - des sources ponctuelles,
     - de l'interaction sol, fluide, structure.
@@ -111,7 +110,7 @@ Nous vous conseillons d'utiliser dorénavant CALC_MISS.
 
 17 : _(u"""
 Fournir une plage de fréquence (mot-clé LIST_FREQ) n'est possible que si
-TYPE_RESU = 'FICHIER' ou 'HARM_GENE'.
+TYPE_RESU = 'FICHIER', 'HARM_GENE' ou 'TABLE_CONTROL'.
 Dans les autres cas, il est nécessaire d'avoir un pas de fréquences constant
 pour le calcul des FFT.
 """),
@@ -144,6 +143,11 @@ Il faut au moins une couche avec EPAIS.
 22 : _(u"""
 En interaction sol, structure, fluide (ISSF='OUI'), les mots-clés
 GROUP_MA_FLU_STR, GROUP_MA_FLU_SOL, GROUP_MA_SOL_SOL sont tous les trois obligatoires.
+"""),
+
+23 : _(u"""Le calcul d'interaction sol, structure, fluide (ISSF='OUI')
+n'est pas compatible avec le post-traitement aux points de contrôle
+(présence de GROUP_MA_CONTROL).
 """),
 
 }

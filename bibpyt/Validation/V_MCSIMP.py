@@ -1,9 +1,9 @@
-#@ MODIF V_MCSIMP Validation  DATE 11/04/2012   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF V_MCSIMP Validation  DATE 22/04/2013   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 # RESPONSABLE COURTOIS M.COURTOIS
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -125,18 +125,18 @@ class MCSIMP:
                        typeProto.adapt(val)
                except ValError,e:
                    valid=0
-                   self.cr.fatal(unicode(e))
+                   self.cr.fatal(*e)
                try:
                    for val in lval:
                        intoProto.adapt(val)
                except ValError,e:
                    valid=0
-                   self.cr.fatal(unicode(e))
+                   self.cr.fatal(*e)
                try:
                    cardProto.adapt(lval)
                except ValError,e:
                    valid=0
-                   self.cr.fatal(unicode(e))
+                   self.cr.fatal(*e)
                #
                # On verifie les validateurs s'il y en a et si necessaire (valid == 1)
                #

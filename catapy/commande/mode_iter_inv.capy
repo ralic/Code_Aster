@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 14/01/2013   AUTEUR BRIE N.BRIE 
+#& MODIF COMMANDE  DATE 22/04/2013   AUTEUR COURTOIS M.COURTOIS 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -46,7 +46,8 @@ MODE_ITER_INV=OPER(nom="MODE_ITER_INV",op=  44,sd_prod=mode_iter_inv_prod
 
              OPTION          =SIMP(statut='f',typ='TXM',defaut="AJUSTE",into=("SEPARE","AJUSTE","PROCHE"),
                                    fr="Choix de l option pour estimer les valeurs propres"  ),
-             FREQ            =SIMP(statut='o',typ='R',max='**',validators=[OrdList('croissant'),NoRepeat()],),
+             FREQ            =SIMP(statut='o',typ='R',max='**',
+                                   validators=AndVal((OrdList('croissant'), NoRepeat())),),
              AMOR_REDUIT     =SIMP(statut='f',typ='R',max='**'),
              NMAX_FREQ       =SIMP(statut='f',typ='I',defaut= 0,val_min=0 ),
              NMAX_ITER_SEPARE=SIMP(statut='f',typ='I' ,defaut= 30,val_min=1 ),
@@ -74,7 +75,8 @@ MODE_ITER_INV=OPER(nom="MODE_ITER_INV",op=  44,sd_prod=mode_iter_inv_prod
 
              OPTION          =SIMP(statut='f',typ='TXM',defaut="AJUSTE",into=("SEPARE","AJUSTE","PROCHE"),
                                  fr="Choix de l option pour estimer les valeurs propres"  ),
-             CHAR_CRIT       =SIMP(statut='o',typ='R',max='**',validators=[OrdList('croissant'),NoRepeat()] ),
+             CHAR_CRIT       =SIMP(statut='o',typ='R',max='**',
+                                   validators=AndVal((OrdList('croissant'), NoRepeat())),),
              NMAX_CHAR_CRIT  =SIMP(statut='f',typ='I',defaut= 0,val_min=0 ),
              NMAX_ITER_SEPARE=SIMP(statut='f',typ='I',defaut= 30,val_min=1 ),
              PREC_SEPARE     =SIMP(statut='f',typ='R',defaut= 1.E-4,val_min=1.E-70 ),

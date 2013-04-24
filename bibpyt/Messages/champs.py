@@ -1,4 +1,4 @@
-#@ MODIF champs Messages  DATE 04/03/2013   AUTEUR SELLENET N.SELLENET 
+#@ MODIF champs Messages  DATE 22/04/2013   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -89,6 +89,16 @@ cata_msg={
 
  Conseil:
    - Renseignez un des mots-clés MAILLE ou GROUP_MA et le mot-clé POINT.
+"""),
+
+14 : _(u"""
+Il n'est pas possible de créer le champ '%(k1)s' dans la structure
+de donnée '%(k2)s'.
+
+Conseil:
+    Vérifiez que le champ n'existe pas déjà.
+    Il est possible que cette structure de donnée n'accepte pas ce type de champ.
+
 """),
 
 }

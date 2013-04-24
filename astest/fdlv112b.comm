@@ -1,4 +1,4 @@
-# MODIF  DATE 25/03/2013   AUTEUR DEVESA G.DEVESA 
+# MODIF  DATE 22/04/2013   AUTEUR COURTOIS M.COURTOIS 
 # TITRE ANALYSE MODALE ET HARMONIQUE D UN BARRAGE EN INTERACTION
 # fdlv112b.para = tps_job 300 mem_job 512Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -199,65 +199,6 @@ bamo = DEFI_BASE_MODALE ( CLASSIQUE=_F(INTERF_DYNA= interdy,
 #
 
 mael = MACR_ELEM_DYNA (BASE_MODALE= bamo, );
-#
-
-#
-#
-# PRE-TRAITEMENT DE MISS3D:
-#--------------------------
-# MAILLAGE ET IMPEDANCES D INTERFACE
-#
-# IMPR_MACR_ELEM (MACR_ELEM_DYNA= mael,
-#                 FORMAT= 'MISS_3D',
-#                 GROUP_MA_INTERF = 'SURFBAS2',
-#                 GROUP_MA_FLU_SOL='IFLUSOL2',
-#                 GROUP_MA_SOL_SOL='SLIBREM2',
-#                 GROUP_MA_FLU_STR='IFLUSTR2',
-#                 IMPR_MODE_STAT= 'OUI',
-#                 #IMPR_MODE_MECA= 'NON',
-#                 IMPR_MODE_MECA= 'OUI',
-#                 AMOR_REDUIT= (0.05),
-#                 SOUS_TITRE= 'bar_ret',
-#                 );
-# 
-# FO1=DEFI_FONCTION(   NOM_PARA='FREQ',
-#           VALE=( 0., 1., 100., 1., ) );
-# 
-# IMPR_MISS_3D ( MACR_ELEM_DYNA= mael,
-#               FREQ_INIT=0.,  FREQ_FIN=3.,  PAS=0.1,
-#               EXCIT_SOL=_F( DIRECTION = (1., 0., 0.,), NOM_CHAM = 'ACCE',
-#                          FONC_SIGNAL = FO1),
-#           );
-
-#
-#
-# TRAITEMENT DE MISS3D PAR EXEC_LOGICIEL
-#---------------------------------------
-#
-# MACRO_MISS_3D( OPTION=_F(
-#                           MODULE = 'MISS_IMPE'
-#                            ),
-#                PROJET='FDLV112B',
-#                REPERTOIRE= './FDLV112B',
-#                UNITE_IMPR_ASTER= 26,
-#                UNITE_OPTI_MISS = 21,
-#                UNITE_MODELE_SOL= 22,
-#                UNITE_RESU_IMPE=25,
-#                UNITE_RESU_FORC=28,
-#                VERSION='V1_5',
-#                PARAMETRE=_F(
-#                             FREQ_MIN=0.1,
-#                             FREQ_MAX=3.,
-#                             FREQ_PAS=2.9,
-#                             Z0= 5.,
-#                             TYPE='BINAIRE',
-#                             SURF='NON',
-#                             ALGO = 'REGU',
-#                             OFFSET_MAX=1000,
-#                             OFFSET_NB=5000,
-#                             ISSF='OUI'
-#                             ),
-#               );
 
 TABSOL = DEFI_SOL_MISS(
    TITRE="SOL HOMOGENE",
@@ -285,9 +226,8 @@ TABSOL = DEFI_SOL_MISS(
       _F(EPAIS=10., NUME_MATE=1, RECEPTEUR="OUI", SOURCE="OUI"),
       _F(SUBSTRATUM="OUI", NUME_MATE=2,),
    ),
-   INFO=2,
 );
-#
+
 CALC_MISS(
     TYPE_RESU='FICHIER',
     TABLE_SOL=TABSOL,

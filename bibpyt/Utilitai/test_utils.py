@@ -1,4 +1,4 @@
-#@ MODIF calc_miss_ops Macro  DATE 22/04/2013   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF test_utils Utilitai  DATE 22/04/2013   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -17,38 +17,22 @@
 # ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
 # ======================================================================
-# RESPONSABLE COURTOIS M.COURTOIS
 
-import sys
-import os
-import traceback
+"""Utilities for unittests embedded inside Code_Aster python modules"""
 
+import difflib
+import base64
+import zlib
 
-def calc_miss_ops(self, **kwargs):
-    """Macro CALC_MISS :
-    Préparation des données et exécution d'un calcul MISS3D
-    """
-    import aster
-    from Utilitai.Utmess  import UTMESS
-    from Miss.miss_utils  import MISS_PARAMETER
-    from Miss.miss_calcul import CalculMissFactory
-    
-    ier = 0
-    # La macro compte pour 1 dans la numerotation des commandes
-    self.set_icmd(1)
+def uncompress64(compressed):
+    """uncompress"""
+    return zlib.decompress(base64.decodestring(compressed))
 
-    # conteneur des paramètres du calcul
-    param = MISS_PARAMETER(initial_dir=os.getcwd(), **kwargs)
-    
-    # création de l'objet CALCUL_MISS_xxx
-    calcul = CalculMissFactory(self, param)
+def compress64(uncompressed):
+    """compress"""
+    return base64.encodestring(zlib.compress(uncompressed))
 
-    try:
-        calcul.run()
-    except aster.error, err:
-        UTMESS('F', err.id_message, valk=err.valk, vali=err.vali, valr=err.valr)
-    except Exception, err:
-        trace = ''.join(traceback.format_tb(sys.exc_traceback))
-        UTMESS('F', 'SUPERVIS2_5', valk=('CALC_MISS', trace, str(err)))
-
-
+def difftxt(old, new, fromfile='old', tofile='new'):
+    """diff of string"""
+    return ''.join(difflib.unified_diff(old.splitlines(1), new.splitlines(1),
+                            fromfile=fromfile, tofile=tofile))

@@ -7,7 +7,7 @@
       INTEGER NBORDR
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 11/03/2013   AUTEUR CUVILLIE M.CUVILLIEZ 
+C MODIF UTILITAI  DATE 22/04/2013   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -36,7 +36,7 @@ C ----------------------------------------------------------------------
       INTEGER I,K,IBID,IRET,JORDR
       INTEGER NBCHAM,NBNOVA
       INTEGER NCMEC1,NCMEC2,NCMEC3,NCMUTI,NCMECA
-      INTEGER NCTHER,NCTHET,NCVARC,NCACOU
+      INTEGER NCTHE1,NCTHER,NCTHET,NCVARC,NCACOU
       CHARACTER*1 KBID,BAS1
       CHARACTER*16 TYPES2
       CHARACTER*19 NOMS2
@@ -56,7 +56,9 @@ C     ------------------------------------------------------------------
 C     ------------------------------------------------------------------
 C                      C H A M P _ T H E R M I Q U E
 C     ------------------------------------------------------------------
-      PARAMETER (NCTHER=17)
+      PARAMETER (NCTHE1=17)
+      PARAMETER (NCTHER=NCTHE1+NCMUTI)
+      CHARACTER*16 CHTHE1(NCTHE1)
       CHARACTER*16 CHTHER(NCTHER)
 C     ------------------------------------------------------------------
 C                      C H A M P _ V A R C
@@ -148,7 +150,7 @@ C     ------------------------------------------------------------------
 C                      C H A M P _ T H E R M I Q U E
 C     ------------------------------------------------------------------
 C      '1234567890123456','1234567890123456','1234567890123456',
-      DATA CHTHER/
+      DATA CHTHE1/
      & 'TEMP',
      & 'FLUX_ELGA',       'FLUX_ELNO',       'FLUX_NOEU',
      & 'META_ELNO',       'META_NOEU',
@@ -205,13 +207,17 @@ C     --- CREATION DE .DESC  ET  .ORDR ---
       DO 35 I=1,NCMUTI
         CHMECA(I+NCMEC1+NCMEC2+NCMEC3)=CHMUTI(I)
    35 CONTINUE
+C
+      DO 11 I=1,NCTHE1
+        CHTHER(I)=CHTHE1(I)
+   11 CONTINUE
+      DO 36 I=1,NCMUTI
+        CHTHER(I+NCTHE1)=CHMUTI(I)
+   36 CONTINUE
 
 C     -- DECLARATION ET INITIALISATION DES PARAMETRES ET VAR. D'ACCES :
 C     ------------------------------------------------------------------
       CALL UTPARA(BAS1,NOMSD,TYPES2,NBORDR)
-
-
-
 
 C     ------------------------------------------------------------------
       IF (TYPES2.EQ.'EVOL_ELAS') THEN
@@ -331,7 +337,6 @@ C     ------------------------------------------------------------------
         CALL JECROC(JEXNOM(NOMS2//'.DESC','VITE_VENT'))
         GOTO 320
 
-
 C     ------------------------------------------------------------------
       ELSEIF (TYPES2.EQ.'EVOL_THER') THEN
 
@@ -342,7 +347,6 @@ C     ------------------------------------------------------------------
           CALL JECROC(JEXNOM(NOMS2//'.DESC',CHTHER(I)))
   190   CONTINUE
         GOTO 320
-
 
 C     ------------------------------------------------------------------
       ELSEIF (TYPES2.EQ.'EVOL_VARC') THEN
@@ -359,7 +363,6 @@ C     ------------------------------------------------------------------
       ELSEIF (TYPES2.EQ.'MODE_MECA' .OR. TYPES2.EQ.'MODE_MECA_C' .OR.
      &        TYPES2.EQ.'MODE_GENE' .OR. TYPES2.EQ.'MODE_ACOU' .OR.
      &        TYPES2.EQ.'DYNAMIQUE' ) THEN
-
 
         IF (TYPES2.EQ.'MODE_MECA') THEN
           CALL JEECRA(NOMS2//'.DESC','DOCU',IBID,'MOME')
@@ -411,15 +414,14 @@ C     ------------------------------------------------------------------
 C     ------------------------------------------------------------------
       ELSEIF (TYPES2.EQ.'COMB_FOURIER') THEN
 
-        NBCHAM=NCMECA
-        NBCHAM=NBCHAM+NCTHER-3
+        NBCHAM=NCMECA+NCTHE1
         CALL JEECRA(NOMS2//'.DESC','NOMMAX',NBCHAM,' ')
         CALL JEECRA(NOMS2//'.DESC','DOCU',IBID,'COFO')
         DO 270 I=1,NCMECA
           CALL JECROC(JEXNOM(NOMS2//'.DESC',CHMECA(I)))
   270   CONTINUE
-        DO 280 I=1,NCTHER-3
-          CALL JECROC(JEXNOM(NOMS2//'.DESC',CHTHER(I)))
+        DO 280 I=1,NCTHE1
+          CALL JECROC(JEXNOM(NOMS2//'.DESC',CHTHE1(I)))
   280   CONTINUE
         GOTO 320
 
@@ -441,8 +443,6 @@ C     ------------------------------------------------------------------
 C     ------------------------------------------------------------------
   320 CONTINUE
 
-
-
 C     --- CREATION DE .TACH
 C     -------------------------
       CALL JECREC(NOMS2//'.TACH',BAS1//' V K24','NU','CONTIG',
@@ -459,6 +459,5 @@ C     ---------------------------------------------------------------
       DO 340,K=1,NBNOVA
         CALL JECROC(JEXNUM(NOMS2//'.TAVA',K))
   340 CONTINUE
-
 
       END
