@@ -1,8 +1,8 @@
-#@ MODIF jeveux1 Messages  DATE 27/08/2012   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF jeveux1 Messages  DATE 29/04/2013   AUTEUR LEFEBVRE J-P.LEFEBVRE 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -376,6 +376,12 @@ cata_msg = {
 
  Le volume des données temporaires (objets de la base Volatile) écrites sur disque (%(r3).2f Mo)
  est plus de %(r1).2f fois supérieur au volume de données lues (%(r2).2f Mo).
+
+Risques et conseils :
+ Ce déséquilibre n'a pas de conséquence sur les résultats de calcul, il indique simplement que
+ certaines structures de données temporaires ont été écrites sur disque et détruites sans avoir
+ été relues. C'est le cas lorsque vous utilisez le solveur MUMPS, car certaines structures de 
+ données sont volontairement déchargées pour maximiser la mémoire lors de la résolution.
 
 """),
 
