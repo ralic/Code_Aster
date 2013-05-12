@@ -1,7 +1,7 @@
-       SUBROUTINE HUJOPT (MOD,ANGMAS,IMAT,MATER,NVI,VINF,NR,DRDY,
+       SUBROUTINE HUJOPT (MOD,ANGMAS,IMAT,NMAT,MATER,NVI,VINF,NR,DRDY,
      &                    SIGF,DSDE,IRET)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 09/04/2013   AUTEUR PELLET J.PELLET 
+C MODIF ALGORITH  DATE 30/04/2013   AUTEUR FOUCAULT A.FOUCAULT 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -26,6 +26,7 @@ C     POUR LE MODELE HUJEUX
 C     IN  MOD    :  TYPE DE MODELISATIONS
 C         ANGMAS :  ANGLE NAUTIQUE (AFFE_CARA_ELEM)
 C         NVI    :  NOMBRE DE VARIABLES INTERNES
+C         NMAT   :  DIMENSION TABLEAU DES DONNEES MATERIAU
 C         MATER  :  COEFFICIENTS MATERIAU
 C         VINF   :  VARIABLES INTERNES A T+DT
 C         NR     :  DIMENSION MATRICE JACOBIENNE
@@ -34,25 +35,25 @@ C     OUT DSDE   :  MATRICE TANGENTE EN VITESSE
 C     ----------------------------------------------------------------
       IMPLICIT NONE
 C     ----------------------------------------------------------------
-      COMMON /TDIM/   NDT  , NDI
-C     ----------------------------------------------------------------
       INTEGER      NMAT,NR,NVI,IRET,IMAT
-      REAL*8       DRDY(NR,NR),DSDE(6,6),MATER(22,2),VINF(NVI),SIGF(6)
-      REAL*8       ANGMAS(3)
+      REAL*8       DRDY(NR,NR),DSDE(6,6),MATER(NMAT,2),VINF(NVI)
+      REAL*8       ANGMAS(3),SIGF(6)
       CHARACTER*8  MOD
 C
       INTEGER NBMECA, NORM,I,J,NDT,NDI,NZ
-      REAL*8  HOOK(6,6),UN,ZERO,DEUX,TROIS
+      REAL*8  HOOK(6,6),UN,ZERO,DEUX,TROIS,MATERT(22,2)
       REAL*8  E,NU,AL,DEMU,LA,E1,E2,E3,NU12,NU13,NU23,G1,G2,G3
       REAL*8  NU21,NU31,NU32,DENOM,I1F,HOOKNL(6,6),PREF,NE
       REAL*8  COEF0,PISO,TRACE
-      REAL*8  Y0(NDT,NDT),Y1(NDT,9),Y2(9,NDT),Y3(9,9)
-      REAL*8  Y4(NDT,NDT),Y5(NDT,NDT),DET,R8PREM,MAXI,MINI
-      REAL*8  DSDEB(NDT,NDT),R8VIDE,BID16(6),BID66(6,6)
+      REAL*8  Y0(6,6),Y1(6,9),Y2(9,6),Y3(9,9)
+      REAL*8  Y4(6,6),Y5(6,6),DET,R8PREM,MAXI,MINI
+      REAL*8  DSDEB(6,6),R8VIDE,BID16(6),BID66(6,6)
       REAL*8  CCOND
       CHARACTER*4 CARGAU
       LOGICAL REORIE
 C
+      PARAMETER (NDT   = 6   ) 
+      PARAMETER (NDI   = 3   )
       PARAMETER (ZERO  = 0.D0)
       PARAMETER (UN    = 1.D0)
       PARAMETER (DEUX  = 2.D0)
@@ -103,7 +104,7 @@ C === ==============================================================
 C --- DLEDR
       DO 20 I = 1, NBMECA
         DO 30 J = 1, NDT
-          DRDY(J,NDT+1+I) = DRDY(J,NDT+1+I)*PREF 
+          DRDY(J,NDT+1+I) = DRDY(J,NDT+1+I)*ABS(PREF) 
  30     CONTINUE        
  20   CONTINUE     
 
@@ -159,7 +160,9 @@ C ----------------------------------------------
  310  CONTINUE      
       
       DO 330 I = 1, 9
-        Y3(I,J) = ZERO
+        DO 340 J = 1, 9
+          Y3(I,J) = ZERO
+ 340    CONTINUE
  330  CONTINUE    
 
       DO 120 I = 1, NDT
@@ -274,7 +277,8 @@ C     Y2=INVERSE(Y3)*Y2
          CALL LCEQMA(HOOK,DSDE)
          GOTO 9999
       ENDIF
-C --- PRODUIT DU TERME (Y3)^-1 * Y2 = Y4
+
+C --- PRODUIT DU TERME Y1 * (Y3)^-1 * Y2 = Y4
       CALL PROMAT(Y1,NDT,NDT,9,Y2,9,9,NDT,Y4)
 
 C --- DIFFERENCE DE MATRICE (DR1DY1 - Y4) = Y5
@@ -287,7 +291,7 @@ C --- DIFFERENCE DE MATRICE (DR1DY1 - Y4) = Y5
 C --- INVERSION DU TERME Y5
       CALL R8INIR(NDT*NDT,0.D0,DSDEB,1)
       DO 250 I=1,NDT
-        DSDEB(I,I) = 1.D0
+        DSDEB(I,I) = UN
  250  CONTINUE
       CALL MGAUSS(CARGAU,Y5, DSDEB, NDT, NDT, NDT, DET, IRET)
       
@@ -309,7 +313,11 @@ C --- INVERSION DU TERME Y5
         CALL HUJORI('GLOBA',1, REORIE, ANGMAS, SIGF, BID66)
         IF(IRET.NE.0)THEN
           IRET = 0
-          CALL HUJTEL (MOD, MATER, SIGF, DSDE)
+          DO 260 I = 1, 22
+            MATERT(I,1) = MATER(I,1)
+            MATERT(I,2) = MATER(I,2)
+  260     CONTINUE
+          CALL HUJTEL (MOD, MATERT, SIGF, DSDE)
         ENDIF
       ENDIF
       CALL HUJORI ('GLOBA', 2, REORIE, ANGMAS, BID16, DSDE)

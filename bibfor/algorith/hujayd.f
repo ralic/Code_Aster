@@ -1,6 +1,6 @@
-        SUBROUTINE HUJAYD (MATER,NVI,VIND,VINF,NR,YD,BNEWS,MTRAC)
+        SUBROUTINE HUJAYD (NMAT,MATER,NVI,VIND,VINF,NR,YD,BNEWS,MTRAC)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 09/04/2013   AUTEUR PELLET J.PELLET 
+C MODIF ALGORITH  DATE 30/04/2013   AUTEUR FOUCAULT A.FOUCAULT 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -23,6 +23,7 @@ C     ----------------------------------------------------------------
 C     CHOIX DES VALEURS DE VIND A AFFECTER A YD
 C     ----------------------------------------------------------------
 C     IN   MATER  :  PROPRIETES MATERIAU
+C          NMAT   :  DIMENSION TABLEAU DONNEES MATERIAU
 C          NVI    :  NOMBRE DE VARIABLES INTERNES
 C          VIND   :  VARIABLES INTERNES A T
 C          VINF   :  VARIABLES INTERNES A T+DT (BASE SUR PRED_ELAS)
@@ -31,8 +32,8 @@ C     OUT  YD     :  VECTEUR INITIAL
 C          VIND   :  IMAGE DE VINF (COHERENCE AVEC ROUTINE HUJMID.F)
 C          NR     :  DIMENSION DU SYSTEME NL A RESOUDRE
 C     ----------------------------------------------------------------
-      INTEGER  NVI, NR
-      REAL*8   VIND(NVI), VINF(NVI), YD(NR),MATER(22,2)
+      INTEGER  NVI, NR, NMAT
+      REAL*8   VIND(NVI), VINF(NVI), YD(NR),MATER(NMAT,2)
       LOGICAL  BNEWS(3),MTRAC
 C
       INTEGER  I,II,NBMECA,NDT

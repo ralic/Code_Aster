@@ -1,7 +1,7 @@
-      SUBROUTINE HUJLNF(TOLER,MATER,NVI,VIND,VINF,VINS,
+      SUBROUTINE HUJLNF(TOLER,NMAT,MATER,NVI,VIND,VINF,VINS,
      &                  NR,YD,YF,SIGD,SIGF,INDI,IRET)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 09/04/2013   AUTEUR PELLET J.PELLET 
+C MODIF ALGORITH  DATE 30/04/2013   AUTEUR FOUCAULT A.FOUCAULT 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -25,6 +25,7 @@ C     ------------------------------------------------------------
 C     CONTROLE DES MECANISMES ACTIVES - POST-TRAITEMENT SPECIFIQUE
 C     ------------------------------------------------------------
 C     IN :TOLER : TOLERANCE ISSUE DE RESI_INTE_RELA
+C         NMAT  : DIMENSION TABLEAU PARAMETRES MATERIAU
 C         MATER : PARAMETRES MATERIAU
 C         NVI   : NOMBRE DE VARIABLES INTERNES 
 C         VIND  : VARIABLES INTERNES A T 
@@ -40,12 +41,13 @@ C         IRET  : CODE RETOUR
 C                 0 - OK / 1 - ECHEC
 C                 2 - RE-INTEGRATION / 3 - REDECOUPAGE
 C ----------------------------------------------------------------
-      INTEGER     NVI,NR,IRET,INDI(7)
-      REAL*8      TOLER,VIND(NVI),MATER(22,2),SIGF(6),SIGD(6)
+      INTEGER     NVI,NR,IRET,INDI(7),NMAT
+      REAL*8      TOLER,VIND(NVI),MATER(NMAT,2),SIGF(6),SIGD(6)
       REAL*8      VINS(NVI),VINF(NVI),YD(NR),YF(NR)
 C
       INTEGER     K,NBMECA,KK,NDT,I
       REAL*8      MAXI,UN,E0,PREF,YDT(NR),YFT(NR),RATIO,CUMULI
+      REAL*8      MATERT(22,2)
       LOGICAL     NEGMUL(8),CHGMEC
 C
       PARAMETER  (UN   = 1.D0)      
@@ -131,7 +133,12 @@ C ----------------------------------------------
 C --- APPEL A LA ROUTINE HUJACT
       CHGMEC = .FALSE.
 
-      CALL HUJACT(MATER,VIND,VINF,VINS,SIGD,SIGF,NEGMUL,
+      DO 80 I = 1, 22
+        MATERT(I,1) = MATER(I,1)
+        MATERT(I,2) = MATER(I,2)
+  80  CONTINUE
+
+      CALL HUJACT(MATERT,VIND,VINF,VINS,SIGD,SIGF,NEGMUL,
      &            CHGMEC,INDI)
       
       CUMULI = VINF(35)

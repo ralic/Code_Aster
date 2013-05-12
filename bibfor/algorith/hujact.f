@@ -2,7 +2,7 @@
      &                     NEGMUL, CHGMEC, INDI)
         IMPLICIT NONE
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 09/04/2013   AUTEUR PELLET J.PELLET 
+C MODIF ALGORITH  DATE 30/04/2013   AUTEUR FOUCAULT A.FOUCAULT 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -39,7 +39,7 @@ C   ------------------------------------------------------------------
         REAL*8        TOLE1, SIGD(6),SIGF(6)
         REAL*8        VIND(*), VINF(*), VINS(50), VINT(50)
         REAL*8        MATER(22,2), UN, ZERO
-        REAL*8          PSF
+        REAL*8        PSF,R8PREM
         REAL*8        SEUIL, RD, RF, PSM
         LOGICAL       DEBUG, CHGMEC, NEGMUL(8), MISO
         REAL*8        VINM(50), SEUILM, C1TD, C2TD, CMOD, DEUX
@@ -55,6 +55,7 @@ C --------------------------------------------------------------------
 C ====================================================================
 C --- CONSTRUCTION DES SURFACES CYCLIQUES PRECEDENTES -----------
 C ====================================================================
+
       CALL LCEQVN(50,VIND,VINM)
       DO 50 I = 1, 3
         IF ((VIND(5*I+31).NE.ZERO) .OR. (VIND(5*I+32).NE.ZERO)) THEN
@@ -84,6 +85,7 @@ C ====================================================================
 C ---------------- MECANISME MONOTONE SUPPOS  ACTIF ------------------
 C ====================================================================
           IF (VIND(23+I).EQ.UN) THEN
+
             IF (NEGMUL(I)) THEN
               CHGMEC     = .TRUE.
               NEGMUL(I)  = .FALSE.
@@ -117,7 +119,7 @@ C ====================================================================
                   ELSE
                     CALL HUJRMO(MATER, SIGD , VIND, RD)
                     CALL HUJRMO(MATER, SIGF , VINF, RF)
-                    IF (RD.GT.RF) THEN
+                    IF ((RD-RF).GE.R8PREM()) THEN
                       VIND(23+I) = -UN
                       CALL HUJMEI(VIND)
                       VIND(8) = MATER(19,2)
@@ -166,7 +168,7 @@ C ******************************
               IF (MONO.NE.1) THEN
                 CALL HUJRMO(MATER, SIGD , VIND, RD)
                 CALL HUJRMO(MATER, SIGF , VINF, RF)
-                IF (RD.GT.RF) THEN
+                IF ((RD-RF).GE.R8PREM()) THEN
                   VIND(23+I) = -UN
                   CALL HUJMEI(VIND)
                   VIND(8)   = MATER(19,2)
@@ -357,7 +359,7 @@ C ------------------------------
                 CALL HUJRMO(MATER, SIGD , VIND, RD)
                 CALL HUJRMO(MATER, SIGF , VINF, RF)
 
-                IF ((VIND(22).EQ.UN).AND.(RD.GE.RF)) THEN
+                IF ((VIND(22).EQ.UN).AND.((RD-RF).GE.R8PREM()))THEN
                   IF (SEUIL.GT.TOLE1) THEN
                     CHGMEC   = .TRUE.
                     VIND(31) = UN
@@ -368,7 +370,7 @@ C ------------------------------
 
                     IF (VINS(22).EQ.ZERO) VINF(27)=ZERO
                   ENDIF
-                ELSEIF ((VIND(22).EQ.-UN).AND.(RD.LT.RF)) THEN
+                ELSEIF((VIND(22).EQ.-UN).AND.((RD-RF).LT.R8PREM()))THEN
                   IF (SEUIL.GT.TOLE1) THEN
                     CHGMEC   = .TRUE.
                     VIND(31) = UN
@@ -377,7 +379,7 @@ C ------------------------------
                     VINF(22) = VINS(22)
                     VINF(8)  = VINS(8)
                   ENDIF
-                ELSEIF ((VIND(22).EQ.UN).AND.(RD.LT.RF)) THEN
+                ELSEIF((VIND(22).EQ.UN).AND.((RD-RF).LT.R8PREM()))THEN
 
                   IF (VINS(22).NE.VINF(22)) THEN
                     VINF(21) = VINS(21)
@@ -409,7 +411,8 @@ C ------------------------------
                       VIND(31)    = UN
                     ENDIF
                   ENDIF
-                ELSEIF ((VIND(22).EQ.-UN).AND.(RD.GT.RF)) THEN
+                ELSEIF ((VIND(22).EQ.-UN).AND.
+     &                  ((RD-RF).GT.R8PREM())) THEN
                   IF (VINS(22).NE.VINF(22)) THEN
                     VINF(21) = VINS(21)
                     VINF(22) = VINS(22)
@@ -442,4 +445,5 @@ C ------------------------------
           ENDIF
 
   40    CONTINUE
+
         END

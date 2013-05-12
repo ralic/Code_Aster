@@ -5,7 +5,7 @@
         IMPLICIT NONE
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 09/04/2013   AUTEUR PELLET J.PELLET 
+C MODIF ALGORITH  DATE 30/04/2013   AUTEUR FOUCAULT A.FOUCAULT 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -67,7 +67,7 @@ C       ----------------------------------------------------------------
             N2=NR-NDT
             CALL LCOPTG(NMAT,MATER,NR,N2,DRDY,0,DSDE,IRET)
          ELSEIF ( LOI(1:6) .EQ. 'HUJEUX') THEN
-            CALL HUJOPT(MOD,ANGMAS,IMAT,MATER,NVI,VINF,NR,DRDY,
+            CALL HUJOPT(MOD,ANGMAS,IMAT,NMAT,MATER,NVI,VINF,NR,DRDY,
      &                  SIGF,DSDE,IRET)
          ELSE  
             N2=NR-NDT

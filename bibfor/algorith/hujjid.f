@@ -2,7 +2,7 @@
      &                   YD, YF, VIND, R, DRDY, IRET )
       IMPLICIT NONE
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 09/04/2013   AUTEUR PELLET J.PELLET 
+C MODIF ALGORITH  DATE 30/04/2013   AUTEUR FOUCAULT A.FOUCAULT 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -198,7 +198,7 @@ C =====================================================================
           TH(2) = VIND(4*INDI(K)-8)
           PROD  = SIGDC(3*K-2)*TH(1) + SIGDC(3*K)*TH(2)/DEUX
 
-          IF ((-Q(K)/PREF.LT.TOLE1).OR.((UN+PROD/Q(K)).LT.1.D-2)) THEN
+          IF ((-Q(K)/PREF.LT.TOLE1).OR.((UN+PROD/Q(K)).LT.TOLE1)) THEN
              KK = KK - 4
              CALL HUJPXD(INDI(K),MATER,SIGF,VIND,PROX(KK),PROXC(KK))
           ELSE
@@ -956,7 +956,9 @@ C =====================================================================
           TH(1) = VIND(4*KK-9)
           TH(2) = VIND(4*KK-8)
           PROD  = SIGDC(3*K-2)*TH(1) + SIGDC(3*K)*TH(2)*D12
-          IF((-Q(K)/PREF).GT.TOLE1)THEN
+
+          IF(((-Q(K)/PREF).GT.TOLE1).AND.
+     &       (PROD/Q(K).NE.-UN))THEN
             DLFDR(K,K) = M*PK*( UN-B*LOG(PK/PC) )
      &                 *(UN+PROD/Q(K))
           ELSE

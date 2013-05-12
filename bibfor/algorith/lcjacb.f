@@ -7,7 +7,7 @@
         IMPLICIT   NONE
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 09/04/2013   AUTEUR PELLET J.PELLET 
+C MODIF ALGORITH  DATE 30/04/2013   AUTEUR FOUCAULT A.FOUCAULT 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -114,7 +114,7 @@ C
      &                YF,DEPS,NR,NVI,VIND,VINF,YD,DY,CRIT,DRDY,IRET)
       
       ELSEIF ( LOI(1:6)  .EQ. 'HUJEUX' ) THEN
-         CALL HUJJAC (MOD,MATERF,INDI,DEPS,NR,YD,YF,YE,NVI,VIND,
+         CALL HUJJAC (MOD,NMAT,MATERF,INDI,DEPS,NR,YD,YF,YE,NVI,VIND,
      &                VIND1,VINF,DRDY,BNEWS,MTRAC,IRET)
 
       ENDIF

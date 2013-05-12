@@ -1,6 +1,7 @@
-      SUBROUTINE HURESI(MOD,MATER,INDI,DEPS,NR,YD,YF,NVI,VIND,R,IRET)
+      SUBROUTINE HURESI(MOD,NMAT,MATER,INDI,DEPS,NR,YD,YF,
+     &                  NVI,VIND,R,IRET) 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 09/04/2013   AUTEUR PELLET J.PELLET 
+C MODIF ALGORITH  DATE 30/04/2013   AUTEUR FOUCAULT A.FOUCAULT 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -24,6 +25,7 @@ C     ----------------------------------------------------------------
 C     CALCUL DU VECTEUR RESIDU DU SYSTEME NL
 C     ----------------------------------------------------------------
 C     IN   MOD    :  TYPE DE MODELISATION
+C          NMAT   :  DIMENSION TABLEAU DONNEES MATERIAU
 C          MATER  :  DONNEES MATERIAU
 C          INDI   :  MECANISMES POTENTIELLEMENT ACTIFS 
 C          DEPS   :  INCREMENT DEFORMATION
@@ -36,8 +38,8 @@ C     OUT  R      :  VECTEUR RESIDU DU SYSTEME NL A RESOUDRE
 C          IRET   :  CODE RETOUR (>0 -> PB)
 C     ----------------------------------------------------------------
       CHARACTER*8   MOD
-      REAL*8        MATER(22,2),DEPS(6),YD(NR),YF(NR),VIND(NVI),R(*)
-      INTEGER       INDI(7),NR,NVI,IRET      
+      REAL*8        MATER(NMAT,2),DEPS(6),YD(NR),YF(NR),VIND(NVI),R(*)
+      INTEGER       INDI(7),NR,NVI,IRET,NMAT      
 C
       INTEGER       NDT,NDI,I,NBMECA,NBMECT,K,J,KK
       REAL*8        LE(6),CCOND,LEVP,LR(4),PREF,LF(7),HOOKNL(6,6)
@@ -49,7 +51,7 @@ C
       REAL*8        PSI(42),SIGF(6),SIGDC(9),AD(7),KSI(7),Q(7),P(7)
       REAL*8        RC(7),DPSIDS(6,6),SIGD(3),TH(2),PROD,TOLE1
       REAL*8        YFT(NR),YDT(NR),TRACE,MUL,PS,PK,RTRAC,DPSI
-      REAL*8        EPSVP,PC
+      REAL*8        EPSVP,PC,MATERT(22,2)
       LOGICAL       PROX(4),PROXC(4)
 C
       PARAMETER    (NDT   = 6                 )
@@ -65,6 +67,11 @@ C --- REDIMENSIONNEMENT DE YD ET YF POUR S'ADAPTER A HUJJID
 C --- COPIE A PARTIR DU TRAITEMENT DE HUJMID
       CALL LCEQVN(NR, YD, YDT)
       CALL LCEQVN(NR, YF, YFT)
+
+      DO 5 I = 1, 22
+        MATERT(I,1) = MATER(I,1)
+        MATERT(I,2) = MATER(I,2)        
+  5   CONTINUE      
 
       DO 10 I = 1, 6
         YDT(I) = YD(I)*MATER(1,1)
@@ -214,7 +221,7 @@ C        ENDIF
 
         IF (KK.LE.8) RC(K) = YFT(NDT+1+K)
 
-        CALL HUJDDD('PSI   ', INDI(K), MATER, INDI, YFT, VIND,
+        CALL HUJDDD('PSI   ', INDI(K), MATERT, INDI, YFT, VIND,
      &              PSI((K-1)*NDT+1), DPSIDS, IRET)
         IF (IRET.EQ.1) GOTO 998
 
@@ -222,7 +229,7 @@ C        ENDIF
 
           CALL HUJPRJ (INDI(K), SIGF, SIGD, P(K), Q(K))
           IF (P(K) .GE. PTRAC) GOTO 997
-          CALL HUJKSI('KSI   ', MATER, RC(K), KSI(K), IRET)
+          CALL HUJKSI('KSI   ', MATERT, RC(K), KSI(K), IRET)
           IF (IRET.EQ.1) GOTO 998
           AD(K)  = ACYC+KSI(K)*(AMON-ACYC)
 
@@ -233,10 +240,10 @@ C        ENDIF
 
         ELSEIF ((INDI(K) .LT. 8) .AND. (INDI(K) .GT. 4)) THEN
 
-          CALL HUJPRC (K, INDI(K)-4, SIGF, VIND, MATER, YFT,
+          CALL HUJPRC (K, INDI(K)-4, SIGF, VIND, MATERT, YFT,
      &                 P(K), Q(K), SIGDC(3*K-2))
           IF (P(K) .GE. PTRAC) GOTO 997
-          CALL HUJKSI('KSI   ', MATER, RC(K), KSI(K), IRET)
+          CALL HUJKSI('KSI   ', MATERT, RC(K), KSI(K), IRET)
           IF(IRET.EQ.1) GOTO 998
           AD(K) = DEUX*(ACYC+KSI(K)*(AMON-ACYC))
 
@@ -246,7 +253,7 @@ C        ENDIF
 
           IF ((-Q(K)/PREF.LT.TOLE1).OR.((UN+PROD/Q(K)).LT.TOLE1)) THEN
              KK = KK - 4
-             CALL HUJPXD(INDI(K),MATER,SIGF,VIND,PROX(KK),PROXC(KK))
+             CALL HUJPXD(INDI(K),MATERT,SIGF,VIND,PROX(KK),PROXC(KK))
           ELSE
             AD(K) = (ACYC+KSI(K)*(AMON-ACYC))*(UN+PROD/Q(K))
           ENDIF
@@ -254,7 +261,7 @@ C        ENDIF
         ELSEIF (INDI(K) .EQ. 8) THEN
 
           KSI(K) = UN
-          CALL HUJPIC(K, INDI(K),SIGF, VIND, MATER, YFT, P(K))
+          CALL HUJPIC(K, INDI(K),SIGF, VIND, MATERT, YFT, P(K))
 
         ELSEIF ((INDI(K).GT.8).AND.(INDI(K).LT.12)) THEN
           GOTO 100

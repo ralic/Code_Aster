@@ -1,4 +1,4 @@
-# MODIF  DATE 15/04/2013   AUTEUR FOUCAULT A.FOUCAULT 
+# MODIF  DATE 30/04/2013   AUTEUR FOUCAULT A.FOUCAULT 
 # TITRE SOLLICITATION SISMIQUE D UNE COLONNE DE SOL
 # wtnv132b.para = tps_job 800 mem_job 512Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -41,7 +41,7 @@ INV_K_EAU = 1./K_EAU ;
 
 # Parametres Hujeux
 
-P0        =  -20.E+3 ;   # pression de consolidation initiale
+P0        =  -1.E+3 ;   # pression de consolidation initiale
 PCO       = -250.E+3 ;   # pression critique
 PREF      = -1.E+6   ;
 R_ELA_DEV = 0.025    ;
@@ -203,16 +203,16 @@ CHPAR=AFFE_CHAR_CINE(MODELE=MOD[nbcouche-2],
                      MECA_IMPO=_F(GROUP_MA='BAS', DY=0.0));
 
 TEMPS=DEFI_LIST_REEL(DEBUT=0.0,
-                     INTERVALLE=(_F(JUSQU_A=2000000.0,NOMBRE=20),
-                                 _F(JUSQU_A=3000000.0,NOMBRE=20),
-                                 _F(JUSQU_A=4000000.0,NOMBRE=20),
-                                 _F(JUSQU_A=5000000.0,NOMBRE=20),
-                                 _F(JUSQU_A=6000000.0,NOMBRE=20),
-                                 _F(JUSQU_A=7000000.0,NOMBRE=20),
-                                 _F(JUSQU_A=8000000.0,NOMBRE=20),
-                                 _F(JUSQU_A=9000000.0,NOMBRE=20),
-                                 _F(JUSQU_A=10000000.0,NOMBRE=20),
-                                 _F(JUSQU_A=11000000.0,NOMBRE=20)));
+                     INTERVALLE=(_F(JUSQU_A=2000000.0,NOMBRE=1),
+                                 _F(JUSQU_A=3000000.0,NOMBRE=1),
+                                 _F(JUSQU_A=4000000.0,NOMBRE=1),
+                                 _F(JUSQU_A=5000000.0,NOMBRE=1),
+                                 _F(JUSQU_A=6000000.0,NOMBRE=1),
+                                 _F(JUSQU_A=7000000.0,NOMBRE=1),
+                                 _F(JUSQU_A=8000000.0,NOMBRE=1),
+                                 _F(JUSQU_A=9000000.0,NOMBRE=1),
+                                 _F(JUSQU_A=10000000.0,NOMBRE=1),
+                                 _F(JUSQU_A=11000000.0,NOMBRE=1)));
 
 F_EVOL=DEFI_FONCTION(NOM_PARA='INST',
                      PROL_DROITE='LINEAIRE',
@@ -273,7 +273,7 @@ U[0]=STAT_NON_LINE(MODELE=MOD[0],
                                ITER_INTE_PAS=-5,
                                RESI_INTE_RELA=1E-8,
                                RELATION='KIT_HM',
-                               ALGO_INTE='SPECIFIQUE',
+                               ALGO_INTE='NEWTON_RELI',
                                RELATION_KIT=('HUJEUX','LIQU_SATU','HYDR_UTIL'),
                                GROUP_MA=list_group_ma[1]),
                             _F(RELATION='ELAS',
@@ -285,7 +285,7 @@ U[0]=STAT_NON_LINE(MODELE=MOD[0],
                  ARCHIVAGE=_F(LIST_INST=TEMPS),
                  NEWTON=_F(MATRICE='TANGENTE',
                            REAC_ITER=1),
-                 CONVERGENCE=_F(ITER_GLOB_MAXI=10,RESI_GLOB_RELA=1E-12));
+                 CONVERGENCE=_F(ITER_GLOB_MAXI=50,RESI_GLOB_RELA=1E-12));
 
 DEP[0]=CREA_CHAMP(INFO=2,
                 TYPE_CHAM='NOEU_DEPL_R',
@@ -575,7 +575,7 @@ for n in range(1,nbcouche-1):
                                ITER_INTE_PAS=-5,
                                RESI_INTE_RELA=1.E-8,
                                RELATION='KIT_HM',
-                               ALGO_INTE='SPECIFIQUE',
+                               ALGO_INTE='NEWTON_RELI',
                                RELATION_KIT=('HUJEUX','LIQU_SATU','HYDR_UTIL'),
                                GROUP_MA=list_group_ma[1:n+2]),
                             _F(RELATION='ELAS',
@@ -593,7 +593,7 @@ for n in range(1,nbcouche-1):
                  NEWTON=_F(MATRICE='TANGENTE',
                            REAC_ITER=1),
                  CONVERGENCE=_F(ITER_GLOB_MAXI=50,
-                                RESI_GLOB_RELA=1.E-7));
+                                RESI_GLOB_RELA=1.E-12));
 
     DETRUIRE(INFO=1,CONCEPT=_F(NOM=(INIVAR,INIDEP,INISIG,DEPL_PJ,FX,FY,
                              CH_FONC,CH_EVAL,DEPL_IN,CH_GEOM,DXN,DYN,

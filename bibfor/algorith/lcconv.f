@@ -1,11 +1,11 @@
         SUBROUTINE LCCONV ( LOI,YD,DY, DDY, YE, NR, ITMAX, TOLER, 
      &        ITER,INTG, NMAT,MATER, R, RINI,EPSTR,TYPESS, ESSAI,
      &        ICOMP, NVI,VIND,VINF, VIND1, INDI,BNEWS,MTRAC,LRELI,
-     &        DEBUG,IRET)
+     &        IRET)
         IMPLICIT   NONE
 C       ================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 09/04/2013   AUTEUR PELLET J.PELLET 
+C MODIF ALGORITH  DATE 30/04/2013   AUTEUR FOUCAULT A.FOUCAULT 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -69,7 +69,7 @@ C     ----------------------------------------------------------------
       REAL*8          MATER(NMAT,2), EPSTR(6),VINF(NVI),VIND1(NVI)
       REAL*8          YE(NR),VIND(NVI)
       CHARACTER*16    LOI
-      LOGICAL         BNEWS(3),MTRAC,LRELI,DEBUG
+      LOGICAL         BNEWS(3),MTRAC,LRELI
 C     ----------------------------------------------------------------
 C
       IF ( LOI(1:9) .EQ. 'VISCOCHAB' ) THEN
@@ -97,9 +97,9 @@ C
      
       ELSEIF ( LOI(1:6) .EQ. 'HUJEUX' ) THEN
 
-         CALL HUJCVG (MATER,NVI,VIND,VINF,VIND1,NR,YD,DY,R,
+         CALL HUJCVG (NMAT,MATER,NVI,VIND,VINF,VIND1,NR,YD,DY,R,
      &                INDI,ITER,ITMAX,INTG,TOLER,BNEWS,MTRAC,
-     &                YE,LRELI,DEBUG,IRET)
+     &                YE,LRELI,IRET)
      
       ELSE
 

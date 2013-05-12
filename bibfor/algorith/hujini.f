@@ -1,7 +1,7 @@
-      SUBROUTINE HUJINI(MOD,MATER,INTG,DEPS,NR,YD,NVI,VIND,SIGD,SIGF,
-     &                  BNEWS,MTRAC,DY,INDI,IRET)
+      SUBROUTINE HUJINI(MOD,NMAT,MATER,INTG,DEPS,NR,YD,NVI,VIND,SIGD,
+     &                  SIGF,BNEWS,MTRAC,DY,INDI,IRET)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 15/04/2013   AUTEUR FOUCAULT A.FOUCAULT 
+C MODIF ALGORITH  DATE 30/04/2013   AUTEUR FOUCAULT A.FOUCAULT 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -23,8 +23,8 @@ C RESPONSABLE FOUCAULT A.FOUCAULT
 C     ----------------------------------------------------------------
 C     CALCUL DE LA SOLUTION INITIALE ESSAI DY = ( DSIG DVIN )
 C     ----------------------------------------------------------------
-C     IN
-C          MOD    :  TYPE DE MODELISATION
+C     IN   MOD    :  TYPE DE MODELISATION
+C          NMAT   :  DIMENSION TABLEAU MATERIAU 
 C          MATER  :  PROPRIETES MATERIAU
 C          INTG   :  NOMBRE DE TENTATIVES D'INTEGRATION
 C          DEPS   :  INCREMENT DEFORMATION TOTALE
@@ -43,12 +43,12 @@ C          NR     :  NR MIS A JOUR SI TRACTION PRESENTE
 C          IRET   :  IRET = 0 (OK) - 3 (NON CVG)
 C     ----------------------------------------------------------------
       CHARACTER*8    MOD
-      REAL*8         MATER(22,2),DEPS(6),YD(18),VIND(NVI),SIGF(6)
+      REAL*8         MATER(NMAT,2),DEPS(6),YD(18),VIND(NVI),SIGF(6)
       REAL*8         DY(18),SIGD(6)
-      INTEGER        NR,NVI,IRET,INDI(7),INTG
+      INTEGER        NR,NVI,IRET,INDI(7),INTG,NMAT
       LOGICAL        BNEWS(3),MTRAC
 C
-      REAL*8         I1F,DSIG(6),ZERO,UN,TROIS,PREF,E0
+      REAL*8         I1F,DSIG(6),ZERO,UN,TROIS,PREF,E0,MATERT(22,2)
       LOGICAL        LOOP,NODEF
       INTEGER        NBMECA,NBMECT,I,II,NDT,NDI,INDIS(7),DIFF
 C
@@ -72,9 +72,9 @@ C --- GESTION DES BOUCLES
   10    CONTINUE
       ELSE
         LOOP = .FALSE.  
-        DO 11 I = 1, 7
+        DO 20 I = 1, 7
           INDIS(I) = 0
-  11    CONTINUE
+  20    CONTINUE
       ENDIF
 C
       IRET = 0
@@ -125,19 +125,19 @@ C
 C --- PREPARATION DE L'INCREMENT DE CONTRAINTES
 C
       DIFF = 0
-      DO 15 I = 1, 7
+      DO 70 I = 1, 7
         DIFF = DIFF + INDI(I)-INDIS(I)
-  15  CONTINUE
+  70  CONTINUE
       IF((DIFF.EQ.0).AND.(NBMECA.EQ.1))LOOP=.FALSE.
 
       IF (LOOP) THEN
-        DO 20 I = 1, NDT
+        DO 80 I = 1, NDT
           DSIG(I) = SIGF(I) - SIGD(I)
-  20    CONTINUE
+  80    CONTINUE
       ELSE
-        DO 25 I = 1, NDT
+        DO 90 I = 1, NDT
           DSIG(I) = ZERO
-  25    CONTINUE
+  90    CONTINUE
       ENDIF
 
       I1F = (SIGF(1)+SIGF(2)+SIGF(3))/TROIS
@@ -145,35 +145,40 @@ C
 C
 C --- APPEL A HUJIID
 C
-      CALL HUJIID (MOD, MATER, INDI, DEPS, I1F, YD, VIND, DY,
+      DO 100 I = 1, 22 
+        MATERT(I,1) = MATER(I,1)
+        MATERT(I,2) = MATER(I,2)
+ 100  CONTINUE 
+
+      CALL HUJIID (MOD, MATERT, INDI, DEPS, I1F, YD, VIND, DY,
      &             LOOP, DSIG, BNEWS, MTRAC, IRET)
 
 C
 C --- CONTROLE SUR LA SOLUTION INITIALE PROPOSEE
 C
       NBMECT = NBMECA
-      DO 70 I = 1, 7
+      DO 110 I = 1, 7
         IF (INDI(I).GT.8) THEN
           NBMECT = NBMECT + 1
         ENDIF
- 70   CONTINUE
+ 110  CONTINUE
 
       NODEF = .FALSE.
       IF (NBMECA.NE.NBMECT) THEN
-        DO 80 I = 1, NDI
+        DO 120 I = 1, NDI
           IF (ABS(YD(I)+DSIG(I)).GT.PREF**2.D0) NODEF = .TRUE.
- 80     CONTINUE 
+ 120    CONTINUE 
         IF (NODEF) THEN
           IRET = 3
           IF(INTG.GT.5)THEN
             GOTO 999
           ELSE
-            DO 90 I = NBMECA+1, NBMECT
+            DO 130 I = NBMECA+1, NBMECT
               IF (DY(NDT+1+NBMECA+I).EQ.ZERO) THEN
                 BNEWS(INDI(I)-8) = .TRUE.
                 IRET = 2
               ENDIF
- 90         CONTINUE 
+ 130        CONTINUE 
             GOTO 1
           ENDIF
         ENDIF
@@ -181,21 +186,21 @@ C
 
 C --- REDIMENSIONNEMENT DE YD POUR S'ADAPTER A LCPLNL
 C --- COPIE A PARTIR DU TRAITEMENT DE HUJMID
-      DO 100 I = 1, 6
+      DO 140 I = 1, 6
         YD(I) = YD(I)/E0
         DY(I) = DY(I)/E0
- 100  CONTINUE            
+ 140  CONTINUE            
 
-      DO 110 I = 1, NBMECA
+      DO 150 I = 1, NBMECA
         YD(NDT+1+I) = YD(NDT+1+I)/E0*ABS(PREF)
         DY(NDT+1+I) = DY(NDT+1+I)/E0*ABS(PREF)
- 110  CONTINUE            
+ 150  CONTINUE            
 
       NR = NDT+1+NBMECA+NBMECT
       
-      DO 120 I = NR+1, 18
+      DO 160 I = NR+1, 18
         DY(I) = ZERO
- 120  CONTINUE     
+ 160  CONTINUE     
 
  999  CONTINUE 
 

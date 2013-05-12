@@ -1,4 +1,4 @@
-# MODIF  DATE 15/04/2013   AUTEUR FOUCAULT A.FOUCAULT 
+# MODIF  DATE 30/04/2013   AUTEUR FOUCAULT A.FOUCAULT 
 # TITRE SOLLICITATION SISMIQUE D UNE COLONNE DE SOL
 #  APRES CONSTRUCTION PAR COUCHES AVEC LOI DE HUJEUX
 # wdnp101a.para = tps_job 500 mem_job 512Mo ncpus 1 liste_test S
@@ -1010,25 +1010,25 @@ TAB_INF3 = INFO_FONCTION(RMS = _F(FONCTION = ACC_A47X,
 # une modelisation "d_plan_hm" avec un maillage raffine (5 mailles /couche)
 # en supposant que ce calcul est suffisamment precis.
 TEST_TABLE(REFERENCE='AUTRE_ASTER',
-           TOLE_MACHINE=3.E-3,
+           TOLE_MACHINE=1.E-6,
            PRECISION=2.E-2,
-           VALE_CALC=1.8755920206104,
+           VALE_CALC=1.8631615708181,
            VALE_REFE=1.8628625511053,
            NOM_PARA='RMS',
            TABLE=TAB_INF1,);
 
 TEST_TABLE(REFERENCE='AUTRE_ASTER',
-           TOLE_MACHINE=3.E-3,
+           TOLE_MACHINE=1.E-6,
            PRECISION=2.E-1,
-           VALE_CALC=1.2576448194898,
+           VALE_CALC=1.2464262285434,
            VALE_REFE=1.107501776192,
            NOM_PARA='RMS',
            TABLE=TAB_INF2,);
 
 TEST_TABLE(REFERENCE='AUTRE_ASTER',
-           TOLE_MACHINE=3.E-3,
+           TOLE_MACHINE=1.E-6,
            PRECISION=1.E-1,
-           VALE_CALC=2.2137216548828,
+           VALE_CALC=2.2014902616047,
            VALE_REFE=2.4097094098975,
            NOM_PARA='RMS',
            TABLE=TAB_INF3,);
@@ -1038,11 +1038,11 @@ SPOSCI = CALC_FONCTION(INFO=2,
 
 MAXSP = INFO_FONCTION(MAX=_F(FONCTION = SPOSCI,),);
 
-TEST_FONCTION(VALEUR=_F(VALE_CALC=0.88514247,
+TEST_FONCTION(VALEUR=_F(VALE_CALC=0.88097823,
                         VALE_REFE=8.798585602334655e-01,
                         VALE_PARA=(0.02, 2.5),
                         REFERENCE='AUTRE_ASTER',
-                        TOLE_MACHINE=3.E-3,
+                        #TOLE_MACHINE=3.E-3,
                         PRECISION=0.010000000000000003,
                         NOM_PARA=('AMOR', 'FREQ'),
                         FONCTION=SPOSCI,),
@@ -1154,8 +1154,8 @@ TAB_SIXY=CREA_TABLE(FONCTION=_F(FONCTION=ABSDSIXY),);
 TEST_TABLE(NOM_PARA='DX', TABLE=TAB_DEPX, TYPE_TEST='MAX',
            VALE_ABS='OUI',
            # Non-regression
-           TOLE_MACHINE=2.e-3,
-           VALE_CALC=0.17277300236976,
+           #TOLE_MACHINE=2.e-3,
+           VALE_CALC=0.17244378983988,
            # Reference: Mod. HM adimensionnee et raffinee
            REFERENCE='AUTRE_ASTER',
            CRITERE='ABSOLU',
@@ -1165,8 +1165,8 @@ TEST_TABLE(NOM_PARA='DX', TABLE=TAB_DEPX, TYPE_TEST='MAX',
 TEST_TABLE(NOM_PARA='DX', TABLE=TAB_VITX, TYPE_TEST='MAX',
            VALE_ABS='OUI',
            # Non-regression
-           TOLE_MACHINE=1e-3,
-           VALE_CALC=0.032427169754969,
+           #TOLE_MACHINE=1e-3,
+           VALE_CALC=0.033085669525587,
            # Reference: Mod. HM adimensionnee et raffinee
            REFERENCE='AUTRE_ASTER',
            CRITERE='ABSOLU',
@@ -1176,8 +1176,8 @@ TEST_TABLE(NOM_PARA='DX', TABLE=TAB_VITX, TYPE_TEST='MAX',
 TEST_TABLE(NOM_PARA='PRE1', TABLE=TAB_PRE1, TYPE_TEST='MAX',
            VALE_ABS='OUI',
            # Non-regression
-           TOLE_MACHINE=2.e-6,
-           VALE_CALC=0.93443561587374,
+           #TOLE_MACHINE=2.e-6,
+           VALE_CALC=0.93443835656833,
            # Reference: Mod. HM adimensionnee et raffinee
            REFERENCE='AUTRE_ASTER',
            CRITERE='ABSOLU',
@@ -1187,8 +1187,8 @@ TEST_TABLE(NOM_PARA='PRE1', TABLE=TAB_PRE1, TYPE_TEST='MAX',
 TEST_TABLE(NOM_PARA='SIXY', TABLE=TAB_SIXY, TYPE_TEST='MAX',
            VALE_ABS='OUI',
            # Non-regression
-           TOLE_MACHINE=1e-3,
-           VALE_CALC=0.21564886472988,
+           #TOLE_MACHINE=1e-3,
+           VALE_CALC=0.21468704413901,
            # Reference: Mod. HM adimensionnee et raffinee
            REFERENCE='AUTRE_ASTER',
            CRITERE='ABSOLU',

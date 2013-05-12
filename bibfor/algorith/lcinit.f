@@ -6,7 +6,7 @@
         IMPLICIT   NONE
 C       ================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 09/04/2013   AUTEUR PELLET J.PELLET 
+C MODIF ALGORITH  DATE 30/04/2013   AUTEUR FOUCAULT A.FOUCAULT 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -91,8 +91,8 @@ C
       ELSEIF     ( LOI(1:4) .EQ. 'LETK' ) THEN
          CALL LKLINI(SIGF,NR,YD,DY)
       ELSEIF     (LOI(1:6).EQ.'HUJEUX')THEN
-         CALL HUJINI(MOD,MATERF,INTG,DEPS,NR,YD,NVI,VIND,SIGD,SIGF,
-     &               BNEWS,MTRAC,DY,INDI,IRET)
+         CALL HUJINI(MOD,NMAT,MATERF,INTG,DEPS,NR,YD,NVI,VIND,SIGD,
+     &               SIGF,BNEWS,MTRAC,DY,INDI,IRET)
       ELSE
 C        SOLUTION INITIALE = ZERO
          CALL VECINI ( NR  , 0.D0 , DY )

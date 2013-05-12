@@ -1,7 +1,7 @@
-      SUBROUTINE HUJJAC(MOD,MATER,INDI,DEPS,NR,YD,YF,YE,NVI,VIND,
+      SUBROUTINE HUJJAC(MOD,NMAT,MATER,INDI,DEPS,NR,YD,YF,YE,NVI,VIND,
      &                  VINS,VINF,DRDY,BNEWS,MTRAC,IRET)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 09/04/2013   AUTEUR PELLET J.PELLET 
+C MODIF ALGORITH  DATE 30/04/2013   AUTEUR FOUCAULT A.FOUCAULT 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -26,6 +26,7 @@ C     CALCUL DU JACOBIEN DU SYSTEME NL POUR MODELE DE HUJEUX
 C     ----------------------------------------------------------------
 C     IN   MOD    :  TYPE DE MODELISATION
 C          MATER  :  DONNEES MATERIAU
+C          NMAT   :  DIMENSION TABLEAU DONNEES MATERIAU
 C          INDI   :  MECANISMES POTENTIELLEMENT ACTIFS 
 C          DEPS   :  INCREMENT DEFORMATION
 C          NR     :  DIMENSION DU VECTEUR INCONNU
@@ -42,14 +43,15 @@ C          MTRAC  :  INDICATEUR LIE A LA TRACTION
 C          IRET   :  CODE RETOUR (>0 -> PB)
 C     ----------------------------------------------------------------
       CHARACTER*8   MOD
-      REAL*8        MATER(22,2),DEPS(6),YD(NR),YF(NR),VIND(NVI)
+      REAL*8        MATER(NMAT,2),DEPS(6),YD(NR),YF(NR),VIND(NVI)
       REAL*8        DRDY(NR,NR),VINS(NR),YE(NR),VINF(NVI)
-      INTEGER       INDI(7),NR,NVI,IRET
+      INTEGER       INDI(7),NR,NVI,IRET,NMAT
       LOGICAL       BNEWS(3),MTRAC
 C
       LOGICAL       PROX(4),PROXC(4),TRACTI,PROBT,MODIF,NEGLAM(3)
       REAL*8        R(NR),YDT(NR),YFT(NR),DEV(3),PF,QF,R8PREM
       REAL*8        PREF,E0,PTRAC,RTRAC,UN,DEUX,ZERO,YET(NR),PROB(3)
+      REAL*8        MATERT(22,2)
       INTEGER       NBMECA,NBMECT,I,J,NDT,MSUP(2),K
 C
       PARAMETER     (NDT  = 6   )
@@ -57,6 +59,13 @@ C
       PARAMETER     (UN   = 1.D0)
       PARAMETER     (DEUX = 2.D0)
 C     ----------------------------------------------------------------
+C --- INITIALISATION DE LA JACOBIENNE A ZERO
+      DO 10 I = 1, NR
+        DO 20 J = 1, NR
+          DRDY(I,J) = ZERO
+  20    CONTINUE
+  10  CONTINUE
+
 C --- PROPRIETES MATERIAU
       PREF  = MATER(8,2)
       E0    = MATER(1,1)
@@ -69,33 +78,38 @@ C --- COPIE A PARTIR DU TRAITEMENT DE HUJMID
       CALL LCEQVN(NR, YF, YFT)
       CALL LCEQVN(NR, YE, YET)
 
-      DO 10 I = 1, 6
+      DO 30 I = 1, 6
         YDT(I) = YD(I)*E0
         YFT(I) = YF(I)*E0
         YET(I) = YE(I)*E0
-  10  CONTINUE      
+  30  CONTINUE      
 
       NBMECA = 0
-      DO 20 K = 1, 7
+      DO 40 K = 1, 7
         IF (INDI(K) .GT. 0) THEN
           IF (INDI(K).LE.8) NBMECA = NBMECA + 1
         ENDIF
-  20  CONTINUE
+  40  CONTINUE
 
       NBMECT = NBMECA
-      DO 30 I = 1, 7
+      DO 50 I = 1, 7
         IF (INDI(I).GT.8) THEN
           NBMECT = NBMECT + 1
         ENDIF
-  30  CONTINUE
+  50  CONTINUE
 
-      DO 40 I = 1, NBMECA
+      DO 60 I = 1, NBMECA
         YDT(NDT+1+I) = YD(NDT+1+I)*E0/ABS(PREF)
         YFT(NDT+1+I) = YF(NDT+1+I)*E0/ABS(PREF)
         YET(NDT+1+I) = YE(NDT+1+I)*E0/ABS(PREF)
-  40  CONTINUE
+  60  CONTINUE
 
-      CALL HUJJID(MOD,MATER,INDI,DEPS,PROX,PROXC,YDT,YFT,VIND,
+      DO 70 I = 1, 22
+        MATERT(I,1) = MATER(I,1)
+        MATERT(I,2) = MATER(I,2)
+  70  CONTINUE
+
+      CALL HUJJID(MOD,MATERT,INDI,DEPS,PROX,PROXC,YDT,YFT,VIND,
      &            R,DRDY,IRET)
       
 C ------------------------------------------------------------
@@ -108,7 +122,7 @@ C ------------------------------------------------------------
       PROBT = .FALSE.
       IF (IRET.EQ.1) THEN
         IRET = 3
-        DO 50 I = 1, 3
+        DO 80 I = 1, 3
           IF(PROX(I))THEN
             PROB(I) = UN
             PROBT   = .TRUE.
@@ -116,18 +130,18 @@ C ------------------------------------------------------------
             PROB(I) = DEUX
             PROBT   = .TRUE.
           ENDIF
-  50    CONTINUE
-        DO 60 I = 1, 3
+  80    CONTINUE
+        DO 90 I = 1, 3
           CALL HUJPRJ(I,YFT,DEV,PF,QF)
           IF (((RTRAC+PF-PTRAC)/ABS(PREF)).GE.-R8PREM())THEN
             TRACTI = .TRUE.
           ENDIF
-  60    CONTINUE
+  90    CONTINUE
       ENDIF
 
       IF(PROBT)THEN
         CALL LCEQVN(NVI,VINS,VIND)
-        DO 70 I = 1, 3
+        DO 100 I = 1, 3
           IF (PROB(I).EQ.UN) THEN
             VIND(I+4)    = MATER(18,2)
             VIND(23+I)   = UN
@@ -144,7 +158,7 @@ C ------------------------------------------------------------
           ELSEIF (PROB(I).EQ.DEUX) THEN
             VIND(27+I)   = ZERO
           ENDIF
-  70    CONTINUE
+ 100    CONTINUE
         IRET = 2
         PROBT = .FALSE.
 
@@ -153,19 +167,19 @@ C     DURANT CETTE TENTATIVE?
       MSUP(1) = 0
       MSUP(2) = 0
       J = 0
-      DO 80 I=5,8
+      DO 110 I=5,8
         IF((VIND(23+I).NE.VINS(23+I)).AND.
      &     (VIND(23+I).EQ.ZERO))THEN
             J = J+1
             MSUP(J) = I
         ENDIF
-  80  CONTINUE
+ 110  CONTINUE
 C --- MECANISME CYCLIQUE A DESACTIVE 
 C --- ET DEJA DESACTIVE ANTERIEUREMENT
         IF(J.NE.0)THEN
-         DO 90 I=1,J
+          DO 120 I=1,J
             VIND(23+MSUP(I)) = ZERO
-  90     CONTINUE
+ 120      CONTINUE
         ENDIF
 
         CALL LCEQVN(NVI,VIND,VINF)
@@ -175,7 +189,7 @@ C --- ET DEJA DESACTIVE ANTERIEUREMENT
       IF (TRACTI) THEN
         CALL LCEQVN(NVI,VINS,VIND)
         MODIF = .FALSE.
-        DO 100 I = 1, NBMECT
+        DO 130 I = 1, NBMECT
           IF (YET(NDT+1+NBMECA+I).EQ.ZERO) THEN
             MODIF = .TRUE.
             IF (INDI(I).LE.8) THEN
@@ -195,17 +209,17 @@ C --- ET DEJA DESACTIVE ANTERIEUREMENT
             ENDIF
             TRACTI = .FALSE.
           ENDIF
- 100    CONTINUE 
+ 130    CONTINUE 
        
-        DO 110 I = 1, NBMECT
+        DO 140 I = 1, NBMECT
           IF(INDI(I).EQ.8)THEN
             VIND(23+INDI(I)) = ZERO
             MODIF = .TRUE.
           ENDIF
- 110    CONTINUE
+ 140    CONTINUE
 
         MTRAC = .FALSE.
-        DO 120 I = 1, 3
+        DO 150 I = 1, 3
 C --- ON NE DOIT PAS REACTIVE UN MECANISME DE TRACTION QUI DONNE 
 C     COMME PREDICTEUR UN MULTIPLICATEUR PLASTIQUE NEGATIF
           IF(.NOT.NEGLAM(I))THEN
@@ -218,7 +232,7 @@ C ----------------------------------------------------
               IF(.NOT.MODIF)MTRAC = .TRUE.
             ENDIF
           ENDIF
- 120    CONTINUE
+ 150    CONTINUE
         CALL LCEQVN(NVI,VIND,VINF)
         IRET   = 2
       ENDIF
