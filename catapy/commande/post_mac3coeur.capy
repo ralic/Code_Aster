@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 04/02/2013   AUTEUR PERONY R.PERONY 
+#& MODIF COMMANDE  DATE 29/04/2013   AUTEUR GENIAUT S.GENIAUT 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -36,17 +36,24 @@ POST_MAC3COEUR = MACRO(nom="POST_MAC3COEUR",
 
            DEFORMATION = FACT(statut='f',max='**',
                               fr="Post-traitement des deformations, par grille ou valeurs min/max",
-                              regles=UN_PARMI('NUME_GRILLE','TYPE_RESU','POSITION','NOM_CMP'),
        
                  UNITE        = SIMP(statut='o',typ='I', max=1),   
                  FORMAT       = SIMP(statut='o',typ='TXM',into=("GRACE","TABLE")),
-                 NOM_CMP      = SIMP(statut='f',typ='TXM',into=("DY","DZ","NORME")),
                  
-                 TYPE_VISU = SIMP(statut='f',typ='TXM',into=("AMPLITUDE","MODULE","VECTEUR","DEFORME")),
-                 NUME_GRILLE  = SIMP(statut='f',typ='I', max=1), # NUMERO DE LA GRILLE A POST-TRAITER
-                 TYPE_RESU    = SIMP(statut='f',typ='TXM',into=("MINI","MAXI")),
-                 POSITION     = SIMP(statut='f',typ='TXM', max=1),  
-                 CONCEPTION   = SIMP(statut='f',typ='TXM', max=1),
+                 b_def_grace  = BLOC(condition = "FORMAT == 'GRACE' ",fr="Paramètres pour le format GRACE",
+                       regles=UN_PARMI('NUME_GRILLE','TYPE_RESU','POSITION'),
+                       TYPE_VISU    = SIMP(statut='o',typ='TXM',into=("AMPLITUDE","MODULE","VECTEUR","DEFORME")),
+                       TYPE_RESU    = SIMP(statut='f',typ='TXM',into=("MINI","MAXI")),
+                       NUME_GRILLE  = SIMP(statut='f',typ='I', max=1), # NUMERO DE LA GRILLE A POST-TRAITER
+                       POSITION     = SIMP(statut='f',typ='TXM', max=1),  
+                       CONCEPTION   = SIMP(statut='f',typ='TXM', max=1),
+                                   ),
+                 
+                 b_def_table  = BLOC(condition = "FORMAT == 'TABLE' ",fr="Paramètres pour le format TABLE",
+                       NOM_CMP      = SIMP(statut='o',typ='TXM',into=("DY","DZ","NORME")),
+                                   ),
+                 
+
            ),
 )
 

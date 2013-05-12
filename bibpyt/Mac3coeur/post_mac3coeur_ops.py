@@ -1,4 +1,4 @@
-#@ MODIF post_mac3coeur_ops Mac3coeur  DATE 04/02/2013   AUTEUR PERONY R.PERONY 
+#@ MODIF post_mac3coeur_ops Mac3coeur  DATE 29/04/2013   AUTEUR GENIAUT S.GENIAUT 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -436,21 +436,22 @@ def post_mac3coeur_ops(self, **args):
           k=k+1
 
        for attr in POST_DEF:
-          _num_grille = attr['NUME_GRILLE']
           _unit       = attr['UNITE']
-          _extremum   = attr['TYPE_RESU']
           _typ_post   = attr['FORMAT']
-          _autre      = attr['TYPE_VISU']
-          _NOM_CMP    = attr['NOM_CMP']
 
           DEFI_FICHIER(ACTION='LIBERER',UNITE=_unit)
 
-          if (_extremum == None):
-             post = _num_grille
-          else:
-             post = _extremum
-
           if (_typ_post=='GRACE'):
+
+             _num_grille = attr['NUME_GRILLE']
+             _extremum   = attr['TYPE_RESU']
+             _autre      = attr['TYPE_VISU']
+
+             if (_extremum == None):
+                post = _num_grille
+             else:
+                post = _extremum
+
              if (_autre=='AMPLITUDE'):
                 makeXMGRACEdef_amp(_unit,post,_coeur,valdefac)
              elif (_autre=='MODULE'):
@@ -461,7 +462,11 @@ def post_mac3coeur_ops(self, **args):
                 name   = attr['POSITION']
                 typeAC = attr['CONCEPTION']
                 makeXMGRACEdeforme(_unit,name,typeAC,_coeur,valdefac)
+
           elif (_typ_post=='TABLE'):
+
+             _NOM_CMP    = attr['NOM_CMP']
+
              if (_NOM_CMP=='NORME'):
                 IMPR_TABLE(UNITE=_unit,TABLE=_TABDEF)
              if (_NOM_CMP=='DY'):
