@@ -1,0 +1,187 @@
+# MODIF  DATE 29/04/2013   AUTEUR DELMAS J.DELMAS 
+# TITRE : PLAQUE FISSUREE A TEMPERTAURES IMPOSEES AVEC CONDITION D'ECHANGE...
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
+# (AT YOUR OPTION) ANY LATER VERSION.                                                    
+#                                                                       
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
+#                                                                       
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# ======================================================================
+
+DEBUT(CODE=_F(NOM='TTLP101A', NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
+
+#----------------------------------------------
+#            MAILLAGE
+#----------------------------------------------
+
+MA=LIRE_MAILLAGE(INFO=1,FORMAT='MED',);
+
+# longueur du cote de la plaque
+L = 1.
+
+MA=DEFI_GROUP(reuse =MA,
+              MAILLAGE=MA,
+              CREA_GROUP_NO=(
+#                            GROUPES SUR LESQUELS ON VA IMPOSER LES DIRICHLETS
+                             _F(NOM = 'LIGNSUP',
+                                OPTION = 'PLAN',
+                                POINT = (0.,L,),
+                                VECT_NORMALE = (0.,1.,),
+                                PRECISION = 1.e-6*L,),
+                             _F(NOM = 'LIGNINF',
+                                OPTION = 'PLAN',
+                                POINT = (0.,0,),
+                                VECT_NORMALE = (0.,1.,),
+                                PRECISION = 1.e-6*L,),
+#                           GROUPES SUR LESQUELS ON VA TESTER LES VALEURS DE T
+                             _F(NOM='GNOTMP',
+                                OPTION='ENV_SPHERE',
+                                POINT=(L,0.5*L,),
+                                RAYON=1.e-6*L,
+                                PRECISION=1.e-6*L),
+                             _F(GROUP_MA='LEVSUP',),
+                             _F(GROUP_MA='LEVINF',),
+                             _F(NOM='NTESTSUP',INTERSEC=('GNOTMP','LEVSUP')),
+                             _F(NOM='NTESTINF',INTERSEC=('GNOTMP','LEVINF')),
+                             ),
+              );
+
+#----------------------------------------------
+#            MODELE 
+#----------------------------------------------
+
+MODELTH=AFFE_MODELE(MAILLAGE=MA,
+                    AFFE=_F(GROUP_MA='MAILLE',
+                            PHENOMENE='THERMIQUE',
+                            MODELISATION='PLAN',),);
+
+#----------------------------------------------
+#            MATERIAU
+#----------------------------------------------
+
+MATE=DEFI_MATERIAU(THER=_F(LAMBDA=1.0,RHO_CP = 2.0))
+
+CHMAT=AFFE_MATERIAU(MAILLAGE=MA,
+                    MODELE=MODELTH,
+                    AFFE=_F(TOUT='OUI',MATER=MATE,),)
+
+
+#----------------------------------------------
+#            CHARGEMENT THERMIQUE
+#----------------------------------------------
+
+TIMPSUP=DEFI_FONCTION(NOM_PARA='INST',
+                      NOM_RESU='TEMP',  
+        VALE=(0.,    20. ,
+              1.,    40.,))
+
+TIMPINF=DEFI_FONCTION(NOM_PARA='INST',
+                      NOM_RESU='TEMP',  
+        VALE=(0.,    10. ,
+              1.,    20.,))
+
+CHTH=AFFE_CHAR_THER_F(MODELE=MODELTH,
+                      TEMP_IMPO=(
+                               _F(GROUP_NO = 'LIGNSUP',TEMP = TIMPSUP),
+                               _F(GROUP_NO = 'LIGNINF',TEMP = TIMPINF),
+                               ))
+
+CHTHEPR=AFFE_CHAR_THER(
+                       MODELE=MODELTH,
+                       ECHANGE_PAROI=_F(GROUP_MA_1 = 'LEVINF',
+                                        GROUP_MA_2 = 'LEVSUP',
+                                        COEF_H    =  2.,))
+
+#----------------------------------------------
+#            CALCUL THERMIQUE LINEAIRE TRANSITOIRE
+#----------------------------------------------
+
+LR8=DEFI_LIST_REEL(DEBUT=0.,
+                   INTERVALLE=(_F(JUSQU_A = 1., NOMBRE = 5)))
+
+TEMPE=THER_LINEAIRE(MODELE=MODELTH,
+                    CHAM_MATER=CHMAT,
+                    EXCIT=(
+                           _F(CHARGE=CHTH,),
+                           _F(CHARGE=CHTHEPR,),
+                           ),
+                    ETAT_INIT=_F( STATIONNAIRE = 'OUI'),
+                    INCREMENT=_F( LIST_INST = LR8),                    
+                    )
+
+#----------------------------------------------
+#            RELEVES
+#----------------------------------------------
+
+TEMPSUP=POST_RELEVE_T(ACTION=_F(INTITULE='TEMPE',
+                                GROUP_NO='NTESTSUP',
+                                RESULTAT=TEMPE,
+                                NOM_CHAM='TEMP',
+                                TOUT_CMP='OUI',
+                                NUME_ORDRE = 5,
+                                OPERATION='EXTRACTION',),)
+
+TEMPINF=POST_RELEVE_T(ACTION=_F(INTITULE='TEMPE',
+                                GROUP_NO='NTESTINF',
+                                RESULTAT=TEMPE,
+                                NOM_CHAM='TEMP',
+                                TOUT_CMP='OUI',
+                                NUME_ORDRE = 5,
+                                OPERATION='EXTRACTION',),)
+
+TEMPFON=POST_RELEVE_T(ACTION=_F(INTITULE='TEMPE',
+                                GROUP_NO='PFON',
+                                RESULTAT=TEMPE,
+                                NOM_CHAM='TEMP',
+                                TOUT_CMP='OUI',
+                                NUME_ORDRE = 5,
+                                OPERATION='EXTRACTION',),)
+
+#----------------------------------------------
+#            TESTS
+#----------------------------------------------
+
+# Rq : la soution de reference est obtenue avec le meme fichier de commande, 
+#      avec une discretisation 500x500 de la plaque 
+
+TEST_TABLE(REFERENCE='AUTRE_ASTER',
+           VALE_CALC=29.144358857446,
+           VALE_REFE=29.156091860463,
+           NOM_PARA='TEMP',
+           TABLE=TEMPSUP,)
+
+TEST_TABLE(REFERENCE='AUTRE_ASTER',
+           VALE_CALC=23.38500333439,
+           VALE_REFE=23.393394671258,
+           NOM_PARA='TEMP',
+           TABLE=TEMPINF,)
+
+TEST_TABLE(REFERENCE='AUTRE_ASTER',
+           VALE_CALC=26.178170782313,
+           VALE_REFE=26.25259365185,
+           PRECISION=5.E-3,
+           NOM_PARA='TEMP',
+           TABLE=TEMPFON,)
+
+#----------------------------------------------
+#            IMPRESSIONS
+#----------------------------------------------
+
+IMPR_TABLE(TABLE=TEMPSUP)
+IMPR_TABLE(TABLE=TEMPINF)
+IMPR_TABLE(TABLE=TEMPFON)
+
+IMPR_RESU(FORMAT='MED',UNITE=83,RESU=_F(MAILLAGE=MA))
+IMPR_RESU(FORMAT='MED',UNITE=80,RESU=_F(RESULTAT=TEMPE))
+
+FIN();

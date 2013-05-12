@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 26/03/2013   AUTEUR ABBAS M.ABBAS 
+#& MODIF COMMANDE  DATE 29/04/2013   AUTEUR DELMAS J.DELMAS 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -551,8 +551,8 @@ DEFI_CONTACT=OPER(nom       = "DEFI_CONTACT",
 
                                        b_cont_czm=BLOC(condition = "ALGO_CONT == 'CZM'",
                                                 fr="Parametres de la formulation cohesive",
-                                                RELATION       = SIMP(statut='f',typ='TXM',defaut="NON",
-                                                                 into=("CZM_EXP_REG","CZM_LIN_REG","CZM_TAC_MIX","CZM_OUV_MIX","NON"),)
+                                                RELATION       = SIMP(statut='o',typ='TXM',
+                                                                 into=("CZM_EXP_REG","CZM_LIN_REG","CZM_TAC_MIX","CZM_OUV_MIX"),)
                                                 ),
 
                                        b_frottement=BLOC(condition = "FROTTEMENT == 'COULOMB' and  ALGO_CONT != 'CZM' ",

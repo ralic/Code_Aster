@@ -1,0 +1,106 @@
+      SUBROUTINE XAJCIN(MODELE,OPTION,MXCHIN,LCHIN,LPAIN,NCHIN)
+
+C            CONFIGURATION MANAGEMENT OF EDF VERSION
+C MODIF ALGORITH  DATE 29/04/2013   AUTEUR DELMAS J.DELMAS 
+C ======================================================================
+C COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
+C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
+C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
+C (AT YOUR OPTION) ANY LATER VERSION.                                   
+C                                                                       
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
+C                                                                       
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
+C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.         
+C ======================================================================
+C
+      IMPLICIT NONE
+      INCLUDE 'jeveux.h'
+      INTEGER       MXCHIN,NCHIN
+      CHARACTER*(*) MODELE,OPTION,LPAIN(MXCHIN),LCHIN(MXCHIN)
+C
+C ----------------------------------------------------------------------
+C
+C ROUTINE UTILITAIRE XFEM
+C 
+C   COMPLETER, EN FONCTION DU NOM DE L'OPTION, LES LISTES DE CHAMPS ET 
+C   PARAMETRES IN AVEC LES CHAMPS SUPPLEMENTAIRES SPECIFIQUES X-FEM
+C
+C  -> OPTIONS : - CHAR_MECA_TEMP_R
+C               - CHAR_THER_PARO_F
+C               - CHAR_THER_PARO_R
+C
+C ----------------------------------------------------------------------
+C
+C IN     MODELE : NOM DU MODELE
+C IN     MXCHIN : TAILLE MAX DE LCHIN ET LPAIN
+C IN     OPTION : OPTION DE CALCUL
+C IN/OUT LCHIN  : LISTE DES PARAMETRES IN A COMPLETER
+C IN/OUT LPAIN  : LISTE DES CHAMPS IN A COMPLETER
+C IN/OUT NCHIN  : TAILLE UTILE DE LCHIN ET LPAIN APRES COMPLETION
+C
+C ----------------------------------------------------------------------
+C
+      INTEGER NBADD
+C
+C ----------------------------------------------------------------------
+C
+      IF(       OPTION(1:16).EQ.'CHAR_MECA_TEMP_R') THEN
+C
+        NBADD = 10
+        CALL ASSERT(NCHIN+NBADD .LE. MXCHIN)
+        LPAIN(NCHIN + 1 ) = 'PPINTTO'
+        LCHIN(NCHIN + 1 ) = MODELE(1:8)//'.TOPOSE.PIN'
+        LPAIN(NCHIN + 2 ) = 'PCNSETO'
+        LCHIN(NCHIN + 2 ) = MODELE(1:8)//'.TOPOSE.CNS'
+        LPAIN(NCHIN + 3 ) = 'PHEAVTO'
+        LCHIN(NCHIN + 3 ) = MODELE(1:8)//'.TOPOSE.HEA'
+        LPAIN(NCHIN + 4 ) = 'PLONCHA'
+        LCHIN(NCHIN + 4 ) = MODELE(1:8)//'.TOPOSE.LON'
+        LPAIN(NCHIN + 5 ) = 'PBASLOR'
+        LCHIN(NCHIN + 5 ) = MODELE(1:8)//'.BASLOC'
+        LPAIN(NCHIN + 6 ) = 'PLSN'
+        LCHIN(NCHIN + 6 ) = MODELE(1:8)//'.LNNO'
+        LPAIN(NCHIN + 7 ) = 'PLST'
+        LCHIN(NCHIN + 7 ) = MODELE(1:8)//'.LTNO'
+        LPAIN(NCHIN + 8 ) = 'PSTANO'
+        LCHIN(NCHIN + 8 ) = MODELE(1:8)//'.STNO'
+        LPAIN(NCHIN + 9 ) = 'PPMILTO'
+        LCHIN(NCHIN + 9 ) = MODELE(1:8)//'.TOPOSE.PMI'
+        LPAIN(NCHIN + 10) = 'PFISNO'
+        LCHIN(NCHIN + 10) = MODELE(1:8)//'.FISSNO'
+        NCHIN = NCHIN+NBADD
+C
+C
+      ELSEIF(   OPTION(1:16).EQ.'CHAR_THER_PARO_F'
+     &      .OR.OPTION(1:16).EQ.'CHAR_THER_PARO_R') THEN
+C
+        NBADD = 7
+        CALL ASSERT(NCHIN+NBADD .LE. MXCHIN)
+        LPAIN(NCHIN + 1 ) = 'PPINTER'
+        LCHIN(NCHIN + 1 ) = MODELE(1:8)//'.TOPOFAC.OE'
+        LPAIN(NCHIN + 2 ) = 'PAINTER'
+        LCHIN(NCHIN + 2 ) = MODELE(1:8)//'.TOPOFAC.AI'
+        LPAIN(NCHIN + 3 ) = 'PCFACE'
+        LCHIN(NCHIN + 3 ) = MODELE(1:8)//'.TOPOFAC.CF'
+        LPAIN(NCHIN + 4 ) = 'PLONGCO'
+        LCHIN(NCHIN + 4 ) = MODELE(1:8)//'.TOPOFAC.LO'
+        LPAIN(NCHIN + 5 ) = 'PLST'
+        LCHIN(NCHIN + 5 ) = MODELE(1:8)//'.LTNO'
+        LPAIN(NCHIN + 6 ) = 'PSTANO'
+        LCHIN(NCHIN + 6 ) = MODELE(1:8)//'.STNO'
+        LPAIN(NCHIN + 7 ) = 'PBASECO'
+        LCHIN(NCHIN + 7 ) = MODELE(1:8)//'.TOPOFAC.BA'
+        NCHIN = NCHIN+NBADD
+C
+C
+      ELSE
+        CALL ASSERT(.FALSE.)
+      ENDIF
+C
+      END

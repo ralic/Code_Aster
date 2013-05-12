@@ -1,4 +1,4 @@
-%& MODIF TYPELEM  DATE 21/01/2013   AUTEUR PELLET J.PELLET 
+%& MODIF TYPELEM  DATE 29/04/2013   AUTEUR DELMAS J.DELMAS 
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -188,6 +188,7 @@ OPTION__
     CFL_XFEM            118   IN__   NGEOMER  PGEOMER
                               OUT__  E1NEUTR  PLONCAR
     CHAR_LIMITE         -1    IN__    OUT__    XXXXXX   XXXXXX
+    CHAR_MECA_EPSA_R    -1    IN__    OUT__    XXXXXX   XXXXXX
     CHAR_MECA_FF3D3D    440   IN__   CFORCEF  PFF3D3D  NGEOMER  PGEOMER  CTEMPSR  PTEMPSR
 
 
@@ -196,10 +197,13 @@ OPTION__
                                      E33NEUTR PPINTTO  E128NEUI PCNSETO  E32NEUTI PHEAVTO  E10NEUTI  PLONCHA
                                      N1NEUT_R PLSN     N1NEUT_R PLST
                               OUT__  MVECTUR  PVECTUR
+    CHAR_MECA_HYDR_R    -1    IN__    OUT__    XXXXXX   XXXXXX
+    CHAR_MECA_META_Z    -1    IN__    OUT__    XXXXXX   XXXXXX
     CHAR_MECA_PESA_R    441   IN__   NGEOMER  PGEOMER  CMATERC  PMATERC  CPESANR  PPESANR  STANO_I  PSTANO
                                      N1NEUT_R PLSN     N1NEUT_R PLST     E33NEUTR PPINTTO  E128NEUI PCNSETO
                                      E32NEUTI PHEAVTO  E10NEUTI  PLONCHA
                               OUT__  MVECTUR  PVECTUR
+    CHAR_MECA_PTOT_R    -1    IN__    OUT__    XXXXXX   XXXXXX
     CHAR_MECA_ROTA_R    441   IN__   DDL_MECA PDEPLMR  DDL_MECA PDEPLPR  NGEOMER  PGEOMER  CMATERC  PMATERC
                                      CROTATR  PROTATR  STANO_I  PSTANO   N1NEUT_R PLSN     N1NEUT_R PLST
                                      E33NEUTR PPINTTO  E128NEUI PCNSETO  E32NEUTI PHEAVTO  E10NEUTI  PLONCHA
@@ -212,9 +216,12 @@ OPTION__
                                      E15NEUTI PCFACE   E3NEUTI  PLONGCO  N1NEUT_R PLST     STANO_I  PSTANO
                                      E63NEUTR PBASECO
                               OUT__  MVECTUR  PVECTUR
-    CHAR_MECA_TEMP_R    99    IN__   CCAMASS  PCAMASS  CCOMPOR  PCOMPOR  NGEOMER  PGEOMER  CMATERC  PMATERC
-                                     ZVARCPG  PVARCPR  CTEMPSR  PTEMPSR  ZVARCPG  PVARCRR
-                              OUT__  MVECTUR  PVECTUR
+    CHAR_MECA_SECH_R    -1    IN__    OUT__    XXXXXX   XXXXXX
+    CHAR_MECA_TEMP_R    541   IN__   CCAMASS  PCAMASS  CCOMPOR  PCOMPOR  NGEOMER  PGEOMER  CMATERC  PMATERC
+                                     ZVARCPG  PVARCPR  CTEMPSR  PTEMPSR  ZVARCPG  PVARCRR  E33NEUTR PPINTTO
+                                     E128NEUI PCNSETO  E32NEUTI PHEAVTO  E10NEUTI PLONCHA  N9NEUT_R PBASLOR
+                                     N1NEUT_R PLSN     N1NEUT_R PLST     STANO_I  PSTANO
+                              OUT__  MVECTUR  PVECTUR  ECONTPG  PCONTRT
     COOR_ELGA           488   IN__   NGEOMER  PGEOMER
                               OUT__  EGGEOP_R PCOORPG
     ECIN_ELEM           -1    IN__    OUT__    XXXXXX   XXXXXX

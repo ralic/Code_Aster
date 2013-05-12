@@ -1,4 +1,4 @@
-# MODIF  DATE 08/04/2013   AUTEUR CUVILLIE M.CUVILLIEZ 
+# MODIF  DATE 29/04/2013   AUTEUR DELMAS J.DELMAS 
 # TITRE : FISSURE X-FEM EN THERMO-ELASTICITE 3D 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -19,314 +19,165 @@
 # ======================================================================
 
 DEBUT(CODE=_F(NOM='HSNV132C', NIV_PUB_WEB='INTERNET'),
-      DEBUG=_F(SDVERI='OUI'), IGNORE_ALARM=('CALCULEL2_63'))
+      DEBUG=_F(SDVERI='OUI'),IGNORE_ALARM=('CALCULEL2_63'));
+              
+PRE_GIBI();
+n = 11
+MAILLAG1=LIRE_MAILLAGE(INFO=1,);
 
-#----------------------------------------------
-#            MAILLAGE
-#----------------------------------------------
+MAILLAG1=DEFI_GROUP(reuse =MAILLAG1,
+                    MAILLAGE=MAILLAG1,
+                    CREA_GROUP_NO=(_F(GROUP_MA='SURFINF',),
+                                   _F(NOM='PTEXTR',OPTION='ENV_SPHERE',POINT=(1.,1.,0.0),RAYON=1.e-6,PRECISION=1.e-6),
+                                   _F(NOM='NMIL',OPTION='PLAN',POINT=(0.,0.5,0.),VECT_NORMALE=(0.,1.,0.),PRECISION=0.5/(n-1.)),
+                                   _F(NOM='NTE1',OPTION='PLAN',POINT=(0.5,0.5,0.),VECT_NORMALE=(1.,0.,0.),PRECISION=0.5/(n-1.)),
+                                   _F(NOM='NTE2',OPTION='PLAN',POINT=(1.,0.,0.),VECT_NORMALE=(1.,0.,0.),PRECISION=0.5-1./n),
+                                   _F(NOM='NHEAVI',INTERSEC=('NMIL','NTE2')),
+                                   _F(NOM='NSINGU',INTERSEC=('NMIL','NTE1')),
+                                   _F(GROUP_MA='VOL',),
+                                   ),
+                    INFO=2);
 
-MA=LIRE_MAILLAGE(INFO=1,FORMAT='MED',);
+#--------------------------------------------------------------------
+#               DEBUT DU THERMIQUE                                  #
+#--------------------------------------------------------------------
 
-# longueur du cote de la plaque
-L = 1.
+MOTH=AFFE_MODELE(MAILLAGE=MAILLAG1,
+                 AFFE=_F(TOUT='OUI',
+                         PHENOMENE='THERMIQUE',
+                         MODELISATION='3D',),);
 
-# GROUPES SUR LESQUELS ON VA IMPOSER LES DIRICHLETS
-MA=DEFI_GROUP(reuse =MA,
-              MAILLAGE=MA,
-              CREA_GROUP_NO=(_F(GROUP_MA='SURFSUP',),
-                             _F(GROUP_MA='SURFINF',),),)
+MATH=DEFI_MATERIAU(THER=_F(LAMBDA=1.0,
+                           RHO_CP=0.0,),);
 
-#----------------------------------------------
-#            MODELE ET FISSURE
-#----------------------------------------------
+CMTH=AFFE_MATERIAU(MAILLAGE=MAILLAG1,
+                   AFFE=_F(TOUT='OUI',
+                           MATER=MATH,),);
 
-MODTHIN=AFFE_MODELE(MAILLAGE=MA,
-                    AFFE=_F(TOUT='OUI',
-                            PHENOMENE='THERMIQUE',
-                            MODELISATION='3D',),);
+CHTH=AFFE_CHAR_THER(MODELE=MOTH,
+                    TEMP_IMPO=(_F(GROUP_MA='SURFGAU',TEMP=20.0,),
+                               _F(GROUP_MA='SURFDRO',TEMP=220.0,),),);
 
-FISSTH=DEFI_FISS_XFEM(MODELE=MODTHIN,
-                      DEFI_FISS=_F(FORM_FISS='DEMI_PLAN',
-                                   PFON   =( 0.5*L, 0.5*L, 0.,),
-                                   NORMALE=(    0.,    1., 0.,),
-                                   DTAN   =(   -1.,    0., 0.,),),
-                      INFO=1,);
+THLI=THER_LINEAIRE(MODELE=MOTH,
+                   CHAM_MATER=CMTH,
+                   EXCIT=_F(CHARGE=CHTH,),);
 
-MODTHX=MODI_MODELE_XFEM(MODELE_IN=MODTHIN,
-                        FISSURE=FISSTH,
-                        INFO=2,);
+TEMP=CREA_CHAMP(TYPE_CHAM='NOEU_TEMP_R',
+                OPERATION='EXTR',
+                RESULTAT=THLI,
+                NOM_CHAM='TEMP',
+                INST=0.0,);
 
-#----------------------------------------------
-#            MATERIAU
-#----------------------------------------------
+#IMPR_RESU(FORMAT='GMSH',UNITE=37,RESU=_F(CHAM_GD = TEMP,))   
 
-MATE=DEFI_MATERIAU(THER=_F(LAMBDA=1.0,RHO_CP = 2.0))
-
-CHMAT=AFFE_MATERIAU(MAILLAGE=MA,
-                    MODELE=MODTHX,
-                    AFFE=_F(TOUT='OUI',MATER=MATE,),)
+#--------------------------------------------------------------------
+#               FIN DU THERMIQUE                                    #
+#--------------------------------------------------------------------
 
 
-#----------------------------------------------
-#            CHARGEMENT THERMIQUE
-#----------------------------------------------
 
-TIMPSUP=DEFI_FONCTION(NOM_PARA='INST',
-                      NOM_RESU='TEMP',  
-        VALE=(0.,    20. ,
-              1.,    40.,))
+MODELE=AFFE_MODELE(MAILLAGE=MAILLAG1,
+                   AFFE=(_F(GROUP_MA='VOL',
+                            PHENOMENE='MECANIQUE',
+                            MODELISATION='3D',),),);
 
-TIMPINF=DEFI_FONCTION(NOM_PARA='INST',
-                      NOM_RESU='TEMP',  
-        VALE=(0.,    10. ,
-              1.,    20.,))
+LN=FORMULE(NOM_PARA=('X','Y'),VALE='Y-0.5');
+LT=FORMULE(NOM_PARA=('X','Y'),VALE='-X+0.5');
 
-CHTH=AFFE_CHAR_THER_F(MODELE=MODTHX,
-                      TEMP_IMPO=(
-                               _F(GROUP_NO = 'SURFSUP',TEMP = TIMPSUP),
-                               _F(GROUP_NO = 'SURFINF',TEMP = TIMPINF),
-                               ))
 
-COECHP=DEFI_CONSTANTE(VALE=2.)
+FISS=DEFI_FISS_XFEM(MODELE=MODELE,  
+                    DEFI_FISS=_F(FONC_LT=LT,FONC_LN=LN,),
+                    INFO=1,
+                    );
 
-CHTHEPF=AFFE_CHAR_THER_F(MODELE=MODTHX,
-                         ECHANGE_PAROI=_F(FISSURE = FISSTH,
-                                          COEF_H  = COECHP,),)
+MODELEK=MODI_MODELE_XFEM(MODELE_IN=MODELE,FISSURE=FISS)
 
-#----------------------------------------------
-#            CALCUL THERMIQUE LINEAIRE TRANSITOIRE
-#----------------------------------------------
 
-LR8=DEFI_LIST_REEL(DEBUT=0.,
-                   INTERVALLE=(_F(JUSQU_A = 1., NOMBRE = 5)))
+ACIER=DEFI_MATERIAU(ELAS=_F(E=205000000000.0,
+                            NU=0.3,
+                            RHO=7800.0,
+                            ALPHA=1.282E-05,),);
 
-TEMPEX=THER_LINEAIRE(MODELE=MODTHX,
-                     CHAM_MATER=CHMAT,
-                    EXCIT=(
-                           _F(CHARGE=CHTH,),
-                           _F(CHARGE=CHTHEPF,),
-                           ),
-                     ETAT_INIT=_F( STATIONNAIRE = 'OUI'),
-                     INCREMENT=_F( LIST_INST = LR8),                    
-                     )
+CHAMPMAT=AFFE_MATERIAU(MAILLAGE=MAILLAG1,
+                       MODELE=MODELEK,
+                       AFFE=_F(GROUP_MA='VOL',MATER=ACIER,),
+                       AFFE_VARC=_F( GROUP_MA='VOL',
+                                     NOM_VARC='TEMP',
+                                     CHAM_GD=TEMP,
+                                     VALE_REF=20.0),
+                       );
 
-#----------------------------------------------
-#            POST-TRAITEMENTS
-#----------------------------------------------
 
-MA_VISU=POST_MAIL_XFEM(MODELE=MODTHX)
+#*********************************************************************
+#                          CONDITIONS AUX LIMITES                    *
+#*********************************************************************
 
-# GROUPES SUR LESQUELS ON VA TESTER LES VALEURS DE T
-LZ = 0.1
-hsain = L/11.
-hfiss = 0.5*hsain
-MA_VISU=DEFI_GROUP(reuse =MA_VISU,
-                   MAILLAGE=MA_VISU,
-                   CREA_GROUP_MA=(
-                                  _F(NOM='MSUPTMP1',OPTION='SPHERE',
-                                     POINT=(L,0.5*L+hfiss,0.),RAYON=1.e-6*hfiss),
-                                  _F(NOM='MSUPTMP2',OPTION='SPHERE',
-                                     POINT=(L,0.5*L+hfiss,LZ),RAYON=1.e-6*hfiss),
-                                  _F(NOM='MINFTMP1',OPTION='SPHERE',
-                                     POINT=(L,0.5*L-hfiss,0.),RAYON=1.e-6*hfiss),
-                                  _F(NOM='MINFTMP2',OPTION='SPHERE',
-                                     POINT=(L,0.5*L-hfiss,LZ),RAYON=1.e-6*hfiss),
-                                  _F(NOM='MASUPTMP',UNION=('MSUPTMP1','MSUPTMP2'),),
-                                  _F(NOM='MAINFTMP',UNION=('MINFTMP1','MINFTMP2'),),
+CHARBLO=AFFE_CHAR_MECA(MODELE=MODELEK,
+                       DDL_IMPO=(_F(GROUP_NO='SURFINF',DX=0.0,DY=0.0,),
+                                 _F(GROUP_NO='VOL',DZ=0.0),
+# il est necessaire de bloquer en z les ddls enrichis correspondants aux deplacements des points des levres
+# cela a une forte influence sur le deplacement resultat
+                                 _F(GROUP_NO='NHEAVI',H1Z=0.0),
+                                 _F(GROUP_NO='NSINGU',E1Z=0.0,E2Z=0.0,E3Z=0.0,E4Z=0.0),
                                   ),
-                   CREA_GROUP_NO=(
-                                  _F(GROUP_MA='MASUPTMP',),
-                                  _F(GROUP_MA='MAINFTMP',),
-                                  _F(NOM='GNFON1',OPTION='ENV_SPHERE',
-                                     POINT=(0.5*L,0.5*L,0.),RAYON=1.e-6*hfiss,
-                                     PRECISION=1.e-6*hfiss),
-                                  _F(NOM='GNFON2',OPTION='ENV_SPHERE',
-                                     POINT=(0.5*L,0.5*L,LZ),RAYON=1.e-6*hfiss,
-                                     PRECISION=1.e-6*hfiss),
-                                  _F(NOM='GNOTMP1',OPTION='ENV_SPHERE',
-                                     POINT=(L,0.5*L,0.    ),RAYON=1.e-6*hfiss,PRECISION=1.e-6*hfiss),
-                                  _F(NOM='GNOTMP2',OPTION='ENV_SPHERE',
-                                     POINT=(L,0.5*L,LZ    ),RAYON=1.e-6*hfiss,PRECISION=1.e-6*hfiss),
-#                                   _F(NOM='GNOTMP',UNION=('GNOTMP1','GNOTMP2','GNOTMP3'),),
-                                  _F(NOM='TESTSUP1',INTERSEC=('GNOTMP1','MASUPTMP')),
-                                  _F(NOM='TESTSUP2',INTERSEC=('GNOTMP2','MASUPTMP')),
-                                  _F(NOM='TESTINF1',INTERSEC=('GNOTMP1','MAINFTMP')),
-                                  _F(NOM='TESTINF2',INTERSEC=('GNOTMP2','MAINFTMP')),
-                                  ),)
+                       )
 
-MOD_VISU=AFFE_MODELE(MAILLAGE=MA_VISU,
+L_INST=DEFI_LIST_REEL(DEBUT=0.0,
+                      INTERVALLE=_F(JUSQU_A=1.,
+                                    NOMBRE=1))
+
+UTOT=MECA_STATIQUE(MODELE=MODELEK,
+                   CHAM_MATER=CHAMPMAT,
+                   EXCIT=_F(CHARGE=CHARBLO,),
+                   INST=1,)
+
+#---------------post--------------------------------------------
+
+MA_XFEM=POST_MAIL_XFEM(MODELE        = MODELEK,
+                       INFO          = 2)
+
+MOD_VISU=AFFE_MODELE(MAILLAGE=MA_XFEM,
                      AFFE=_F(TOUT='OUI',
-                             PHENOMENE='THERMIQUE',
-                             MODELISATION='3D',),)
+                              PHENOMENE='MECANIQUE',
+                              MODELISATION='3D',),) 
 
-RES_VISU=POST_CHAM_XFEM(MODELE_VISU = MOD_VISU,
-                        RESULTAT    = TEMPEX)
+RES_XFEM=POST_CHAM_XFEM(MODELE_VISU   = MOD_VISU,
+                        RESULTAT      = UTOT,
+                        INFO          = 2)
 
-#----------------------------------------------
-#            RELEVES
-#----------------------------------------------
 
-TEMPSUP1=POST_RELEVE_T(ACTION=_F(INTITULE='TEMPE',
-                                GROUP_NO='TESTSUP1',
-                                RESULTAT=RES_VISU,
-                                NOM_CHAM='TEMP',
-                                TOUT_CMP='OUI',
-                                NUME_ORDRE = 5,
-                                OPERATION='EXTRACTION',),)
+IMPR_RESU(FORMAT='GMSH',UNITE=37,RESU=_F(RESULTAT=RES_XFEM,NOM_CHAM='DEPL'))   
 
-TEMPSUP2=POST_RELEVE_T(ACTION=_F(INTITULE='TEMPE',
-                                GROUP_NO='TESTSUP2',
-                                RESULTAT=RES_VISU,
-                                NOM_CHAM='TEMP',
-                                TOUT_CMP='OUI',
-                                NUME_ORDRE = 5,
-                                OPERATION='EXTRACTION',),)
+TABDEP= POST_RELEVE_T ( ACTION =_F(INTITULE  = 'DEPLACEMENT',
+                                   GROUP_NO  = 'PTEXTR',
+                                   RESULTAT   = UTOT,
+                                   NOM_CHAM   = 'DEPL',
+                                   NOM_CMP   = ( 'DX','DY','DZ'),
+                                   OPERATION = 'EXTRACTION',),);
+                        
+IMPR_TABLE(TABLE=TABDEP)
 
-TEMPINF1=POST_RELEVE_T(ACTION=_F(INTITULE='TEMPE',
-                                GROUP_NO='TESTINF1',
-                                RESULTAT=RES_VISU,
-                                NOM_CHAM='TEMP',
-                                TOUT_CMP='OUI',
-                                NUME_ORDRE = 5,
-                                OPERATION='EXTRACTION',),)
+# REFERENCE : MODELISATION A (ELEMENTS CLASSIQUES)
+TEST_TABLE(CRITERE='RELATIF',
+           REFERENCE='AUTRE_ASTER',
+           PRECISION=0.02,
+           VALE_CALC=-8.87603830E-04,
+           VALE_REFE=-8.7404262899510004E-4,
+           NOM_PARA='DX',
+           TABLE=TABDEP,
+           FILTRE=_F(NOM_PARA='INST',
+                     VALE=1.0,),
+           )
 
-TEMPINF2=POST_RELEVE_T(ACTION=_F(INTITULE='TEMPE',
-                                GROUP_NO='TESTINF2',
-                                RESULTAT=RES_VISU,
-                                NOM_CHAM='TEMP',
-                                TOUT_CMP='OUI',
-                                NUME_ORDRE = 5,
-                                OPERATION='EXTRACTION',),)
-
-TEMPFON1=POST_RELEVE_T(ACTION=_F(INTITULE='TEMPE',
-                                GROUP_NO='GNFON1',
-                                RESULTAT=RES_VISU,
-                                NOM_CHAM='TEMP',
-                                TOUT_CMP='OUI',
-                                NUME_ORDRE = 5,
-                                OPERATION='EXTRACTION',),)
-
-TEMPFON2=POST_RELEVE_T(ACTION=_F(INTITULE='TEMPE',
-                                GROUP_NO='GNFON2',
-                                RESULTAT=RES_VISU,
-                                NOM_CHAM='TEMP',
-                                TOUT_CMP='OUI',
-                                NUME_ORDRE = 5,
-                                OPERATION='EXTRACTION',),)
-
-#----------------------------------------------
-#            TESTS
-#----------------------------------------------
-
-TEST_TABLE(REFERENCE='AUTRE_ASTER',
-           VALE_CALC=29.147198346097,
-           VALE_REFE=29.156091860463,
-           PRECISION=1.E-3,
-           NOM_PARA='TEMP',
-           TYPE_TEST='MIN',
-           TABLE=TEMPSUP1,)
-
-TEST_TABLE(REFERENCE='AUTRE_ASTER',
-           VALE_CALC=29.147198346097,
-           VALE_REFE=29.156091860463,
-           PRECISION=1.E-3,
-           NOM_PARA='TEMP',
-           TYPE_TEST='MAX',
-           TABLE=TEMPSUP1,)
-
-TEST_TABLE(REFERENCE='AUTRE_ASTER',
-           VALE_CALC=29.147196329322,
-           VALE_REFE=29.156091860463,
-           PRECISION=1.E-3,
-           NOM_PARA='TEMP',
-           TYPE_TEST='MIN',
-           TABLE=TEMPSUP2,)
-
-TEST_TABLE(REFERENCE='AUTRE_ASTER',
-           VALE_CALC=29.147196329322,
-           VALE_REFE=29.156091860463,
-           PRECISION=1.E-3,
-           NOM_PARA='TEMP',
-           TYPE_TEST='MAX',
-           TABLE=TEMPSUP2,)
-
-TEST_TABLE(REFERENCE='AUTRE_ASTER',
-           VALE_CALC=23.407327209161,
-           VALE_REFE=23.393394671258,
-           PRECISION=1.E-3,
-           NOM_PARA='TEMP',
-           TYPE_TEST='MIN',
-           TABLE=TEMPINF1,)
-
-TEST_TABLE(REFERENCE='AUTRE_ASTER',
-           VALE_CALC=23.407327209161,
-           VALE_REFE=23.393394671258,
-           PRECISION=1.E-3,
-           NOM_PARA='TEMP',
-           TYPE_TEST='MAX',
-           TABLE=TEMPINF1,)
-
-TEST_TABLE(REFERENCE='AUTRE_ASTER',
-           VALE_CALC=23.407330322254,
-           VALE_REFE=23.393394671258,
-           PRECISION=1.E-3,
-           NOM_PARA='TEMP',
-           TYPE_TEST='MIN',
-           TABLE=TEMPINF2,)
-
-TEST_TABLE(REFERENCE='AUTRE_ASTER',
-           VALE_CALC=23.407330322254,
-           VALE_REFE=23.393394671258,
-           PRECISION=1.E-3,
-           NOM_PARA='TEMP',
-           TYPE_TEST='MAX',
-           TABLE=TEMPINF2,)
-
-TEST_TABLE(REFERENCE='AUTRE_ASTER',
-           VALE_CALC=26.292041634221,
-           VALE_REFE=26.25259365185,
-           PRECISION=5.E-3,
-           NOM_PARA='TEMP',
-           TYPE_TEST='MIN',
-           TABLE=TEMPFON1,)
-
-TEST_TABLE(REFERENCE='AUTRE_ASTER',
-           VALE_CALC=26.292041634221,
-           VALE_REFE=26.25259365185,
-           PRECISION=5.E-3,
-           NOM_PARA='TEMP',
-           TYPE_TEST='MAX',
-           TABLE=TEMPFON1,)
-
-TEST_TABLE(REFERENCE='AUTRE_ASTER',
-           VALE_CALC=26.291992880553,
-           VALE_REFE=26.25259365185,
-           PRECISION=5.E-3,
-           NOM_PARA='TEMP',
-           TYPE_TEST='MIN',
-           TABLE=TEMPFON2,)
-
-TEST_TABLE(REFERENCE='AUTRE_ASTER',
-           VALE_CALC=26.291992880553,
-           VALE_REFE=26.25259365185,
-           PRECISION=5.E-3,
-           NOM_PARA='TEMP',
-           TYPE_TEST='MAX',
-           TABLE=TEMPFON2,)
-
-#----------------------------------------------
-#            IMPRESSIONS
-#----------------------------------------------
-
-IMPR_TABLE(TABLE=TEMPSUP1)
-IMPR_TABLE(TABLE=TEMPSUP2)
-IMPR_TABLE(TABLE=TEMPINF1)
-IMPR_TABLE(TABLE=TEMPINF2)
-IMPR_TABLE(TABLE=TEMPFON1)
-IMPR_TABLE(TABLE=TEMPFON2)
-
-IMPR_RESU(FORMAT='MED',UNITE=83,RESU=_F(MAILLAGE=MA))
-IMPR_RESU(FORMAT='MED',UNITE=81,RESU=_F(MAILLAGE=MA_VISU))
-IMPR_RESU(FORMAT='MED',UNITE=80,RESU=_F(RESULTAT=RES_VISU))
+TEST_TABLE(CRITERE='RELATIF',
+           REFERENCE='AUTRE_ASTER',
+           PRECISION=1.E-2,
+           VALE_CALC= 3.82801698E-03,
+           VALE_REFE=3.8260958514619E-3,
+           NOM_PARA='DY',
+           TABLE=TABDEP,
+           FILTRE=_F(NOM_PARA='INST',
+                     VALE=1.0,),
+           )
 
 FIN();

@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 26/03/2013   AUTEUR CHEIGNON E.CHEIGNON 
+#& MODIF COMMANDE  DATE 29/04/2013   AUTEUR DELMAS J.DELMAS 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -467,7 +467,7 @@ AFFE_CHAR_MECA=OPER(nom="AFFE_CHAR_MECA",op=   7,sd_prod=char_meca,
              TYPE_LIAISON    =SIMP(statut='f',typ='TXM',defaut="RIGIDE",into=("RIGIDE","SOUPLE") ),
            ),
 
-         LIAISON_XFEM      =SIMP(statut='f',typ='TXM',into=("OUI","NON"),defaut="NON" ),
+         LIAISON_XFEM      =SIMP(statut='f',typ='TXM',into=("OUI",),),
 
          CONTACT_XFEM      =SIMP(statut='f',typ=char_contact,min=1,max=1,),
 
