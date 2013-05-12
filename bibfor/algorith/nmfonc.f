@@ -4,7 +4,7 @@
      &                  FONACT)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 15/04/2013   AUTEUR ABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 29/04/2013   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -435,6 +435,14 @@ C
         FONACT(37) = 1
       ENDIF
 C
+C --- PRESENCE D'ELEMENTS UTILISANT STRX (PMF)
+C
+      CALL DISMOI('F','EXI_STRX',MODELE,'MODELE',IBID,
+     &            REPK,IRET)
+      IF (REPK.EQ.'OUI') THEN
+        FONACT(56) = 1
+      ENDIF
+C
 C --- CONCEPT REENTRANT ?
 C
       CALL GCUCON(RESULT, 'EVOL_NOLI', IRET)
@@ -639,6 +647,11 @@ C
         ENDIF
         IF (ISFONC(FONACT,'XFEM')) THEN
           WRITE (IFM,*) '<MECANONLINE> ...... ELEMENTS XFEM'
+          NBFONC = NBFONC + 1
+        ENDIF
+        IF (ISFONC(FONACT,'EXI_STRX')) THEN
+          WRITE (IFM,*) '<MECANONLINE> ...... ELEMENTS DE STRUCTURES'//
+     &                  ' DE TYPE PMF'
           NBFONC = NBFONC + 1
         ENDIF
 C

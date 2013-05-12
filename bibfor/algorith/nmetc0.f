@@ -2,7 +2,7 @@
      &                  ZIOCH,CARELE )
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 12/02/2013   AUTEUR PELLET J.PELLET 
+C MODIF ALGORITH  DATE 29/04/2013   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -23,7 +23,6 @@ C RESPONSABLE ABBAS M.ABBAS
 C
       IMPLICIT     NONE
       INCLUDE 'jeveux.h'
-
       INTEGER      NBCHAM,ZIOCH
       CHARACTER*24 SDIETO,COMPOR
       CHARACTER*24 MODELE,RESOCO,CARELE
@@ -44,8 +43,7 @@ C IN  RESOCO : SD DE RESOLUTION DU CONTACT
 C IN  SDIETO : SD GESTION IN ET OUT
 C IN  CARELE : SD CARA_ELEM
 C
-C
-C
+C ----------------------------------------------------------------------
 C
       CHARACTER*24 IOLCHA
       INTEGER      JIOLCH
@@ -54,13 +52,12 @@ C
       CHARACTER*24 AMOR0,LIAI0
       CHARACTER*19 XINDC0,XSEUC0,XCOHE0
       INTEGER      ICHAM
-      CHARACTER*3  KSTR
       CHARACTER*8  LPAIN(1),LPAOUT(2)
       CHARACTER*24 LCHIN(1),LCHOUT(2)
       INTEGER      IBID,IRET
       CHARACTER*19 LIGRMO
-      LOGICAL      LBID
       CHARACTER*24 CHGEOM
+      LOGICAL      LSIEF,LVARI,LSTRX
 C
 C ----------------------------------------------------------------------
 C
@@ -75,35 +72,50 @@ C
       LIAI0  = '&&CNPART.ZERO'
       SIGM0  = '&&NMETCR.SIGMO0'
       VARI0  = '&&NMETCR.VARMO0'
-      STRX0   = '&&NMETCR.STRMO0'
-
+      STRX0  = '&&NMETCR.STRMO0'
       XINDC0 = RESOCO(1:14)//'.XFI0'
       XSEUC0 = RESOCO(1:14)//'.XFS0'
       XCOHE0 = RESOCO(1:14)//'.XCO0'
 C
-C --- CREATION DES CHAMPS INITIAUX VIDES
+C --- ACCES SD CHAMPS
 C
-      CALL DISMOI('F','NOM_LIGREL',MODELE,'MODELE',IBID  ,LIGRMO,IRET)
-      CALL COPISD('CHAM_ELEM_S','V',COMPOR,SIGM0)
-      CALL COPISD('CHAM_ELEM_S','V',COMPOR,VARI0)
-      CALL MEGEOM(MODELE,CHGEOM)
-      LPAIN(1)  = 'PGEOMER'
-      LCHIN(1)  = CHGEOM
-      LPAOUT(1) = 'PVARI_R'
-      LCHOUT(1) = VARI0
-      LPAOUT(2) = 'PSIEF_R'
-      LCHOUT(2) = SIGM0
-      CALL CALCUL('S'   ,'TOU_INI_ELGA',LIGRMO,
-     &            1     ,LCHIN         ,LPAIN ,
-     &            2     ,LCHOUT        ,LPAOUT,
-     &            'V'   ,'OUI')
-
+      IOLCHA = SDIETO(1:19)//'.LCHA'
+      CALL JEVEUO(IOLCHA,'E',JIOLCH)
 C
-C --- CREATION DES CHAMPS INITIAUX NON VIDES
+C --- DOIT-ON CREER LES CHAMPS NULS ?
 C
-
-      CALL DISMOI('F','EXI_STRX',LIGRMO,'LIGREL',IBID,KSTR,IRET)
-      IF (KSTR.EQ.'OUI') THEN
+      LSIEF  = .FALSE.
+      LVARI  = .FALSE.
+      LSTRX  = .FALSE.
+      DO 10 ICHAM = 1,NBCHAM
+        NOMCHA = ZK24(JIOLCH+ZIOCH*(ICHAM-1)+1-1)
+        IF (NOMCHA.EQ.'SIEF_ELGA') LSIEF = .TRUE.
+        IF (NOMCHA.EQ.'VARI_ELGA') LVARI = .TRUE.
+        IF (NOMCHA.EQ.'STRX_ELGA') LSTRX = .TRUE.
+  10  CONTINUE
+C
+C --- CREATION DES CHAMPS INITIAUX NULS POUR CONTRAINTES ET VAR. INT.
+C
+      IF (LVARI.OR.LSIEF) THEN
+        CALL DISMOI('F','NOM_LIGREL',MODELE,'MODELE',IBID  ,LIGRMO,IRET)
+        CALL COPISD('CHAM_ELEM_S','V',COMPOR,SIGM0)
+        CALL COPISD('CHAM_ELEM_S','V',COMPOR,VARI0)
+        CALL MEGEOM(MODELE,CHGEOM)
+        LPAIN(1)  = 'PGEOMER'
+        LCHIN(1)  = CHGEOM
+        LPAOUT(1) = 'PVARI_R'
+        LCHOUT(1) = VARI0
+        LPAOUT(2) = 'PSIEF_R'
+        LCHOUT(2) = SIGM0
+        CALL CALCUL('S'   ,'TOU_INI_ELGA',LIGRMO,
+     &              1     ,LCHIN         ,LPAIN ,
+     &              2     ,LCHOUT        ,LPAOUT,
+     &              'V'   ,'OUI')
+      ENDIF
+C
+C --- CREATION DES CHAMPS INITIAUX POUR PMF
+C
+      IF (LSTRX) THEN
         LPAIN(1)  = 'PCAORIE'
         LCHIN(1)  =  CARELE(1:8)//'.CARORIEN'
         LPAOUT(1) = 'PSTRX_R'
@@ -114,16 +126,11 @@ C
      &            'V'   ,'OUI')
       ENDIF
 C
-C --- ACCES SD CHAMPS
-C
-      IOLCHA = SDIETO(1:19)//'.LCHA'
-      CALL JEVEUO(IOLCHA,'E',JIOLCH)
-C
 C --- NOM DU CHAMP NUL
 C
       DO 40 ICHAM = 1,NBCHAM
-
         NOMCHA = ZK24(JIOLCH+ZIOCH*(ICHAM-1)+1-1)
+        NOMCH0 = ' '
         IF (NOMCHA.EQ.'DEPL') THEN
           NOMCH0 = DEPL0
         ELSEIF (NOMCHA.EQ.'VITE') THEN
@@ -164,8 +171,6 @@ C
           NOMCH0 = DEPL0
         ELSEIF (NOMCHA.EQ.'MODE_STAB') THEN
           NOMCH0 = ' '
-        ELSE
-          CALL ASSERT(.FALSE.)
         ENDIF
         ZK24(JIOLCH+ZIOCH*(ICHAM-1)+2-1) = NOMCH0
    40 CONTINUE
