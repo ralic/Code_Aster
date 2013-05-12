@@ -1,6 +1,6 @@
       SUBROUTINE TE0595(OPTION,NOMTE)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 18/03/2013   AUTEUR SFAYOLLE S.FAYOLLE 
+C MODIF ELEMENTS  DATE 29/04/2013   AUTEUR SFAYOLLE S.FAYOLLE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -18,7 +18,7 @@ C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.         
 C ======================================================================
 C RESPONSABLE SFAYOLLE S.FAYOLLE
-      IMPLICIT  NONE
+      IMPLICIT NONE
       INCLUDE 'jeveux.h'
 
       CHARACTER*16 OPTION,NOMTE
@@ -44,6 +44,7 @@ C ----------------------------------------------------------------------
       INTEGER      IDBG,NDDL,IA,JA,IBID
       REAL*8       ANGMAS(7),BARY(3)
       CHARACTER*8  LIELRF(10),TYPMOD(2),ALIAS8
+      CHARACTER*24 VALK
 C ----------------------------------------------------------------------
 
       IDBG = 0
@@ -151,7 +152,8 @@ C - ACCES AUX COMPOSANTES DU VECTEUR DDL
      &                ZR(ICONTM),ZR(IVARIM),ZR(ICONTP),ZR(IVARIP),
      &                RESI,RIGI,ZR(IVECTU),ZR(IMATUU),CODRET)
         ELSE
-          CALL ASSERT(.FALSE.)
+          VALK = ZK16(ICOMPO+2)
+          CALL U2MESK('F','MODELISA10_17', 1 ,VALK)
         END IF
       ELSEIF (ZK16(ICOMPO+2) (1:8).EQ.'GDEF_LOG') THEN
 C - PARAMETRES EN SORTIE
@@ -175,7 +177,8 @@ C - ACCES AUX COMPOSANTES DU VECTEUR DDL
      &                RESI,RIGI,ZR(IVECTU),ZR(IMATUU),MATSYM,CODRET)
 
         ELSE
-          CALL ASSERT(.FALSE.)
+          VALK = ZK16(ICOMPO+2)
+          CALL U2MESK('F','MODELISA10_17', 1 ,VALK)
         END IF
       ELSE
         CALL U2MESK('F','ELEMENTS3_16',1,ZK16(ICOMPO+2))

@@ -1,8 +1,8 @@
-#@ MODIF modelisa10 Messages  DATE 06/08/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+#@ MODIF modelisa10 Messages  DATE 29/04/2013   AUTEUR SFAYOLLE S.FAYOLLE 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -96,6 +96,10 @@ Utilisez l'opérande SECTION = 'GENERALE'.
 
 16 : _(u"""
 Il est obligatoire de fournir au moins un comportement pour définir le matériau.
+"""),
+
+17 : _(u"""
+La valeur du mot clé DEFORMATION='%(k1)s' et incompatible avec la modélisation.
 """),
 
 }

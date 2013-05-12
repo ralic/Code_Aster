@@ -1,6 +1,6 @@
       SUBROUTINE TE0591(OPTION,NOMTE)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 18/03/2013   AUTEUR SFAYOLLE S.FAYOLLE 
+C MODIF ELEMENTS  DATE 29/04/2013   AUTEUR SFAYOLLE S.FAYOLLE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -38,6 +38,7 @@ C ----------------------------------------------------------------------
       INTEGER      VU(3,27),VG(27),VP(27),VPI(3,27)
       INTEGER      IGEOM,ICONTM,IDDLM,ICOMPO,IMATE,IVECTU
       CHARACTER*8  LIELRF(10),TYPMOD(2)
+      CHARACTER*24 VALK
 C ----------------------------------------------------------------------
 
 C - FONCTIONS DE FORME
@@ -71,7 +72,8 @@ C - CALCUL DES FORCES INTERIEURES
       IF (ZK16(ICOMPO+2) (1:6).EQ.'PETIT ') THEN
 
         IF (.NOT.LTEATT(' ','INCO','C3PD')) THEN
-          CALL ASSERT(.FALSE.)
+          VALK = ZK16(ICOMPO+2)
+          CALL U2MESK('F','MODELISA10_17', 1 ,VALK)
         END IF
 
         CALL NIFNPD(NDIM,NNO1,NNO2,NNO3,NPG,IW,ZR(IVF1),ZR(IVF2),
@@ -80,7 +82,8 @@ C - CALCUL DES FORCES INTERIEURES
       ELSEIF (ZK16(ICOMPO+2) (1:8).EQ.'GDEF_LOG') THEN
 
         IF (.NOT.LTEATT(' ','INCO','C3LG')) THEN
-          CALL ASSERT(.FALSE.)
+          VALK = ZK16(ICOMPO+2)
+          CALL U2MESK('F','MODELISA10_17', 1 ,VALK)
         END IF
 
         CALL JEVECH('PMATERC','L',IMATE)
@@ -90,7 +93,8 @@ C - CALCUL DES FORCES INTERIEURES
       ELSEIF (ZK16(ICOMPO+2) (1:10).EQ.'SIMO_MIEHE') THEN
 
         IF (.NOT.LTEATT(' ','INCO','C3SM')) THEN
-          CALL ASSERT(.FALSE.)
+          VALK = ZK16(ICOMPO+2)
+          CALL U2MESK('F','MODELISA10_17', 1 ,VALK)
         END IF
 
         CALL JEVECH('PMATERC','L',IMATE)

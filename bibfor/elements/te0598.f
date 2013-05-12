@@ -1,6 +1,6 @@
       SUBROUTINE TE0598(OPTION,NOMTE)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 18/03/2013   AUTEUR SFAYOLLE S.FAYOLLE 
+C MODIF ELEMENTS  DATE 29/04/2013   AUTEUR SFAYOLLE S.FAYOLLE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -39,6 +39,7 @@ C ----------------------------------------------------------------------
       INTEGER      IGEOM,IVECTU,ICOMPO
       REAL*8       SIGREF,EPSREF
       CHARACTER*8  LIELRF(10),TYPMOD(2)
+      CHARACTER*24 VALK
 C ----------------------------------------------------------------------
 
 
@@ -72,7 +73,8 @@ C - CALCUL DE REFE_FORC_NODA
       IF (ZK16(ICOMPO+2) (1:6).EQ.'PETIT ') THEN
 
         IF (.NOT.LTEATT(' ','INCO','C2PD')) THEN
-          CALL ASSERT(.FALSE.)
+          VALK = ZK16(ICOMPO+2)
+          CALL U2MESK('F','MODELISA10_17', 1 ,VALK)
         END IF
 
         CALL NURFPD(NDIM,NNO1,NNO2,NPG,IW,ZR(IVF1),ZR(IVF2),IDF1,
@@ -80,7 +82,8 @@ C - CALCUL DE REFE_FORC_NODA
       ELSEIF (ZK16(ICOMPO+2) (1:8).EQ.'GDEF_LOG') THEN
 
         IF (.NOT.LTEATT(' ','INCO','C2LG')) THEN
-          CALL ASSERT(.FALSE.)
+          VALK = ZK16(ICOMPO+2)
+          CALL U2MESK('F','MODELISA10_17', 1 ,VALK)
         END IF
 
         CALL NURFGD(NDIM,NNO1,NNO2,NPG,IW,ZR(IVF1),ZR(IVF2),IDF1,
