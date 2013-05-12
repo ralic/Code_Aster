@@ -1,4 +1,4 @@
-#@ MODIF calc_europlexus_ops Macro  DATE 09/04/2013   AUTEUR ASSIRE A.ASSIRE 
+#@ MODIF calc_europlexus_ops Macro  DATE 29/04/2013   AUTEUR GREFFET N.GREFFET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -890,7 +890,7 @@ class EUROPLEXUS:
                     if not f in dic_fonc_parasol.keys():
                         UTMESS('A','PLEXUS_15',valk=('A_TR_D_N', f) )
             if 'A_T_D_N' in list_cara_rigi_parasol:
-                for f in ['NFAT', 'NFAR']:
+                for f in ['NFAT',]:
                     if not f in dic_fonc_parasol.keys():
                         UTMESS('A','PLEXUS_15',valk=('A_T_D_N', f) )
 
@@ -899,7 +899,7 @@ class EUROPLEXUS:
                     UTMESS('F','PLEXUS_16',valk=('K_TR_D_N', f) )
             for f in ['NFAT', 'NFAR']:
                 if f in dic_fonc_parasol.keys() and ((not 'A_TR_D_N' in list_cara_rigi_parasol) and (not 'A_T_D_N' in list_cara_rigi_parasol)):
-                    UTMESS('F','PLEXUS_16',valk=('A_TR_D_N', f) )
+                    UTMESS('F','PLEXUS_16',valk=('A_TR_D_N ou A_T_D_N', f) )
 
 
 
@@ -927,6 +927,9 @@ class EUROPLEXUS:
                 vale = [ float2str(x) for x in self.discretParasolAmor[gma] ]
                 epx[MODULE].append(6*' '+'AX  %s AY  %s AZ  %s NFAT %s' % ( vale[0], vale[1], vale[2], dic_fonc_parasol['NFAT'] ) )
                 epx[MODULE].append(6*' '+'ARX %s ARY %s ARZ %s NFAR %s' % ( vale[3], vale[4], vale[5], dic_fonc_parasol['NFAR'] ) )
+            if 'NFAT' in dic_fonc_parasol.keys():
+                vale = [ float2str(x) for x in self.discretParasolAmor[gma] ]
+                epx[MODULE].append(6*' '+'AX  %s AY  %s AZ  %s NFAT %s' % ( vale[0], vale[1], vale[2], dic_fonc_parasol['NFAT'] ) )
 
             epx[MODULE].append(6*' '+'LECT %s TERM'% gma)
             group_union += '%s '% gma
@@ -1006,6 +1009,10 @@ class EUROPLEXUS:
                     vale = [ float2str(x) for x in amorts[noeud] ]
                     epx[MODULE].append(6*' '+'AX  %s AY %s  AZ  %s NFAT %s' % ( vale[0], vale[1], vale[2], dic_fonc_parasol['NFAT'] ) )
                     epx[MODULE].append(6*' '+'ARX %s ARY %s ARZ %s NFAR %s' % ( vale[3], vale[4], vale[5], dic_fonc_parasol['NFAR'] ) )
+
+                if 'NFAT' in dic_fonc_parasol.keys():
+                    vale = [ float2str(x) for x in amorts[noeud] ]
+                    epx[MODULE].append(6*' '+'AX  %s AY %s  AZ  %s NFAT %s' % ( vale[0], vale[1], vale[2], dic_fonc_parasol['NFAT'] ) )
 
                 # ecriture du group_ma associe
                 group_ma = dic_gma[noeud]

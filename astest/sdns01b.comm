@@ -1,9 +1,9 @@
-# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
+# MODIF  DATE 29/04/2013   AUTEUR GREFFET N.GREFFET 
 # TITRE MODELE PROBABILISTE NONPARAMETRIQUE D UNE PLAQUE AVEC BUTEE ELASTIQUE
 # sdns01b.para = tps_job 80 mem_job 512Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -334,25 +334,25 @@ N3201=  INFO_FONCTION(NORME=_F(FONCTION=M13201),)
 # PAS DE REFERENCE ANALYTIQUE => TESTS DE NON REGRESSION
 # LA VALIDATION A ETE EFFECTUEE PAR REFERENCE BIBLIO (CF. DOC.)
 
-TEST_FONCTION(VALEUR=(_F(VALE_CALC=133.68160014537,
+TEST_FONCTION(VALEUR=(_F(VALE_CALC=133.68135,
                          TOLE_MACHINE=9.9999999999999995E-08,
                          VALE_PARA=(1.E-3, 50.0),
                          NOM_PARA=('AMOR', 'FREQ'),
                          FONCTION=M13201,
                          ),
-                      _F(VALE_CALC=2.0500918738843E4,
+                      _F(VALE_CALC=20500.827,
                          TOLE_MACHINE=9.9999999999999995E-08,
                          VALE_PARA=(1.E-3, 50.0),
                          NOM_PARA=('AMOR', 'FREQ'),
                          FONCTION=M23201,
                          ),
-                      _F(VALE_CALC=75.058829169671995,
+                      _F(VALE_CALC=75.058764,
                          TOLE_MACHINE=9.9999999999999995E-08,
                          VALE_PARA=(1.E-3, 50.0),
                          NOM_PARA=('AMOR', 'FREQ'),
                          FONCTION=INF3201,
                          ),
-                      _F(VALE_CALC=215.81493211393999,
+                      _F(VALE_CALC=215.81480 ,
                          TOLE_MACHINE=9.9999999999999995E-08,
                          VALE_PARA=(1.E-3, 50.0),
                          NOM_PARA=('AMOR', 'FREQ'),
@@ -362,7 +362,7 @@ TEST_FONCTION(VALEUR=(_F(VALE_CALC=133.68160014537,
               )
 
 TEST_TABLE(
-           VALE_CALC=1043.3854966957001,
+           VALE_CALC=1043.3847164151,
            TOLE_MACHINE=9.9999999999999995E-08,
            NOM_PARA='NORME',
            TABLE=N3201,

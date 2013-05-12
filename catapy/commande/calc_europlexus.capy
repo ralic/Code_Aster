@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 09/04/2013   AUTEUR ASSIRE A.ASSIRE 
+#& MODIF COMMANDE  DATE 29/04/2013   AUTEUR GREFFET N.GREFFET 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -46,8 +46,7 @@ CALC_EUROPLEXUS = MACRO(nom="CALC_EUROPLEXUS",
         CARA_ELEM  = SIMP(statut='f',typ=cara_elem),
 
         FONC_PARASOL = FACT(statut='f',
-           regles=(PRESENT_PRESENT('NFKT','NFKR'),
-                   PRESENT_PRESENT( 'NFAT','NFAR'),),
+           regles=(PRESENT_PRESENT('NFKT','NFKR'),),
            NFKT       = SIMP(statut='f',typ=(fonction_sdaster,)),
            NFKR       = SIMP(statut='f',typ=(fonction_sdaster,)),
            NFAT       = SIMP(statut='f',typ=(fonction_sdaster,)),
