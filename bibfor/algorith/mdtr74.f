@@ -2,7 +2,7 @@
       IMPLICIT NONE
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 05/02/2013   AUTEUR ALARCON A.ALARCON 
+C MODIF ALGORITH  DATE 29/04/2013   AUTEUR ALARCON A.ALARCON 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -126,6 +126,7 @@ C-----------------------------------------------------------------------
       JNOMFO = 1
       JPSDEL = 1
       JPSID = 1
+      JINST = 1
       MONMOT = 'NON'
       LISINS = ' '
       PRDEFF = .TRUE.

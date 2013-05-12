@@ -1,4 +1,4 @@
-#@ MODIF outils_ihm Calc_essai  DATE 19/03/2013   AUTEUR BRIE N.BRIE 
+#@ MODIF outils_ihm Calc_essai  DATE 29/04/2013   AUTEUR ALARCON A.ALARCON 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -1801,7 +1801,7 @@ class DispObs(Toplevel):
 # du déplacement (DX, DY...DRZ) à partir de l'indice
 # du degré de liberté
 NOMCMP = aster.getcolljev('&CATA.GD.NOMCMP'.ljust(24))
-DEPL_R = NOMCMP['DEPL_R  ']
+DEPL_R = NOMCMP['DEPL_R'.ljust(24)]
 ORDERED_DDL_PATTERN = ['DX', 'DY', 'DZ', 'DRX', 'DRY', 'DRZ']
 
 def sort_compo_key(compo_key):
