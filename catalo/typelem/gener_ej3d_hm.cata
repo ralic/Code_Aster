@@ -1,4 +1,4 @@
-%& MODIF TYPELEM  DATE 15/04/2013   AUTEUR LAVERNE J.LAVERNE 
+%& MODIF TYPELEM  DATE 29/04/2013   AUTEUR KAZYMYRE K.KAZYMYRENKO 
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -36,13 +36,14 @@ ENTETE__ ELEMENT__ MEFI_HEXA20          MAILLE__ HEXA20
    ELREFE__  QU4       GAUSS__  RIGI=FPG4
    ENS_NOEUD__  EN1     =     1  2  3  4  5  6  7  8  9  10  11  12  17  18  19  20
    ENS_NOEUD__  EN2     =     13 14 15 16
+   OPTION__   REFE_FORC_NODA -1
 
 ENTETE__ ELEMENT__ MEFI_PENTA15         MAILLE__ PENTA15
    ELREFE__  TR6       GAUSS__  RIGI=FPG3   FPG_LISTE__  MATER = (RIGI)
    ELREFE__  TR3       GAUSS__  RIGI=FPG3
    ENS_NOEUD__  EN1     =     1  2  3  4  5  6  7  8  9  13  14  15
    ENS_NOEUD__  EN2     =     10 11 12
-
+   OPTION__   REFE_FORC_NODA -1
    
 MODE_LOCAL__
     ZVARCPG  = VARI_R   ELGA__ MATER   (VARI     )
