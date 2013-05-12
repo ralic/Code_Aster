@@ -1,4 +1,4 @@
-#@ MODIF modelisa7 Messages  DATE 09/04/2013   AUTEUR PELLET J.PELLET 
+#@ MODIF modelisa7 Messages  DATE 30/04/2013   AUTEUR CHEIGNON E.CHEIGNON 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -74,6 +74,18 @@ cata_msg={
  Vous avez demandé l'affectation d'un modèle sur un %(k1)s,
  or le maillage %(k2)s n'en contient aucun.
  L'affectation du modèle n'est donc pas possible.
+"""),
+
+13: _(u"""
+ L'interpolation par spline cubique du câble numéro %(i1)d renseigné dans
+ DEFI_CABLE_BP a échoué.
+ Le nombre de changements de signe de la dérivée seconde en X,Y ou Z de
+ la trajectoire du câble par rapport à l'abscisse curviligne est : %(i2)d.
+ Alors que le nombre de variations de la dérivée première est : %(i3)d.
+
+ Ceci est certainement dû à des irrégularités dans le maillage.
+
+ L'interpolation est donc faite par une méthode discrète.
 """),
 
 15: _(u"""
@@ -283,28 +295,28 @@ Erreur utilisateur :
 """),
 
 67: _(u"""
-  La table des fonctions de forme fournie pour le mode no. %(i1)d n'est pas valide. 
+  La table des fonctions de forme fournie pour le mode no. %(i1)d n'est pas valide.
 """),
 
 68: _(u"""
-  La table fournie pour le mode no. %(i1)d n'est pas une table_fonction. 
+  La table fournie pour le mode no. %(i1)d n'est pas une table_fonction.
 """),
 
 69: _(u"""
-  Les fonctions de forme pour le mode no. %(i1)d ne sont pas définies à partir de l'abscisse 0. 
+  Les fonctions de forme pour le mode no. %(i1)d ne sont pas définies à partir de l'abscisse 0.
 """),
 
 70: _(u"""
-  Les fonctions de forme pour le mode no. %(i1)d ne sont pas définies sur le même intervalle. 
+  Les fonctions de forme pour le mode no. %(i1)d ne sont pas définies sur le même intervalle.
 """),
 
 71: _(u"""
- Les discrétisations des fonctions de forme pour les différents modes ne sont pas cohérentes. 
+ Les discrétisations des fonctions de forme pour les différents modes ne sont pas cohérentes.
  Le domaine de définition 0,L doivent être communs à toutes les fonctions.
 """),
 
 72: _(u"""
- Les discrétisations des fonctions de forme pour les différents modes ne sont pas cohérentes. 
+ Les discrétisations des fonctions de forme pour les différents modes ne sont pas cohérentes.
  Le nombre de points de discrétisation doivent être communs à toutes les fonctions.
 """),
 

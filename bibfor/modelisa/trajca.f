@@ -3,9 +3,9 @@
       IMPLICIT NONE
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 09/11/2012   AUTEUR DELMAS J.DELMAS 
+C MODIF MODELISA  DATE 30/04/2013   AUTEUR CHEIGNON E.CHEIGNON 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -76,15 +76,17 @@ C VARIABLES LOCALES
 C -----------------
       INTEGER       IBID, IDECAL, INO, IPARA, IRET, ISUB, JABSC, JALPH,
      &              JCOOR, JCORD, JNOCA, JTBLP, JTBNP, JD2X, JD2Y, JD2Z,
-     &              JX, JY, JZ, NBLIGN, NBNO, NBPARA, NUMNOE,ICMIMA
-      REAL*8        ABSC, ALPHA, CORDE,
+     &              JX, JY, JZ, NBLIGN, NBNO, NBPARA, NUMNOE,ICMIMA,
+     &              JALPHD,NBVAR,NBVAR2,SVAR,VALI(3)
+      REAL*8        ABSC, ALPHA, CORDE,ALPHCU,D1M,D1P,EPS,DCP,
      &              D1X, D1X1, D1XN, D1Y, D1Y1, D1YN, D1Z, D1Z1, D1ZN,
      &              D2X, D2Y, D2Z, DC, DC1, DCN, DET1, DET2, DET3, DU,
-     &              DX, DY, DZ, NORMV2, VALPAR(2)
-      REAL*8        XMIN,XMAX,YMIN,YMAX,ZMIN,ZMAX,R8MAEM,RR
+     &              DX, DY, DZ, NORMV2, VALPAR(2),DX1, DY1, DZ1,PSC,DU1
+      REAL*8        XMIN,XMAX,YMIN,YMAX,ZMIN,ZMAX,R8MAEM,RR,TRIGOM
       COMPLEX*16    CBID
       CHARACTER*3   K3B
       CHARACTER*24  COORNO, NONOCA, NONOMA
+      LOGICAL       LSPLIN
 C
       INTEGER       NBSUB,JGMAI
       PARAMETER    (NBSUB=5)
@@ -108,6 +110,7 @@ C
       CALL WKVECT('&&TRAJCA.D2Z'       ,'V V R',NBNO,JD2Z )
       CALL WKVECT('&&TRAJCA.ABSC_CURV' ,'V V R',NBNO,JABSC)
       CALL WKVECT('&&TRAJCA.ALPHA'     ,'V V R',NBNO,JALPH)
+      CALL WKVECT('&&TRAJCA.ALPHA_DISC','V V R',NBNO,JALPHD)
 C
 C%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 C 2   RECUPERATION DES COORDONNEES DES NOEUDS DU CABLE
@@ -177,7 +180,9 @@ C%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 C 3   CALCUL DU PARAMETRE CORDE CUMULEE
 C%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 C
-      ZR(JCORD) = 0.0D0
+      ZR(JCORD)  = 0.0D0
+      ZR(JALPHD) = 0.0D0
+      ALPHCU     = 0.0D0
 C
 C.... N.B. LE PASSAGE PREALABLE DANS LA ROUTINE TOPOCA GARANTIT NBNO > 2
 C
@@ -191,6 +196,23 @@ C
             CALL U2MESK('F','MODELISA7_59',1,K3B)
          ENDIF
          ZR(JCORD+INO-1) = ZR(JCORD+INO-2) + DU
+
+C        CALCUL DISCRET DES DEVIATIONS ANGULAIRES CUMULEES
+C        UTILISE EN CAS D ECHEC DE L INTERPOLATION PAR SPLINE
+         IF (INO .LT.NBNO)THEN
+           DX1 = ZR(JX+IDECAL+INO) - ZR(JX+IDECAL+INO-1)
+           DY1 = ZR(JY+IDECAL+INO) - ZR(JY+IDECAL+INO-1)
+           DZ1 = ZR(JZ+IDECAL+INO) - ZR(JZ+IDECAL+INO-1)
+           DU1 = DBLE ( SQRT ( DX1 * DX1 + DY1 * DY1 + DZ1 * DZ1 ) )
+           PSC = DX * DX1 + DY *DY1 + DZ * DZ1
+           PSC = ABS(PSC /(DU * DU1))
+           ALPHA = TRIGOM('ACOS',PSC)
+           ZR(JALPHD+INO-1) = ALPHCU + ALPHA/2.D0
+           ALPHCU = ALPHCU + ALPHA
+         ELSE
+           ZR(JALPHD+INO-1) = ALPHCU
+         ENDIF
+
   40  CONTINUE
 C
 C%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -204,6 +226,7 @@ C 4.1 INTERPOLATION DE LA COORDONNEE X
 C ---
       D1X1 = ( ZR(JX+IDECAL+1) - ZR(JX+IDECAL) ) / DC1
       D1XN = ( ZR(JX+IDECAL+NBNO-1) - ZR(JX+IDECAL+NBNO-2) ) / DCN
+
       CALL SPLINE(ZR(JCORD),ZR(JX+IDECAL),NBNO,D1X1,D1XN,ZR(JD2X),IRET)
 C
 C 4.2 INTERPOLATION DE LA COORDONNEE Y
@@ -217,6 +240,114 @@ C ---
       D1Z1 = ( ZR(JZ+IDECAL+1) - ZR(JZ+IDECAL) ) / DC1
       D1ZN = ( ZR(JZ+IDECAL+NBNO-1) - ZR(JZ+IDECAL+NBNO-2) ) / DCN
       CALL SPLINE(ZR(JCORD),ZR(JZ+IDECAL),NBNO,D1Z1,D1ZN,ZR(JD2Z),IRET)
+
+C%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+C 4-BIS  CONTROLE DE L'INTERPOLATION SPLINE CUBIQUE
+C%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+C
+      LSPLIN = .TRUE.
+C
+C 4-BIS .1 INTERPOLATION DE LA COORDONNEE X
+C ---
+
+C     CALCUL DU NOMBRE DE VARIATION DE LA DERIVEE PREMIERE
+      NBVAR = 0
+      D1M = D1X1
+      SVAR = 0
+      DO 45 INO = 2,NBNO-1
+        DCP = ZR(JCORD+INO) - ZR(JCORD+INO-1)
+        D1P = ( ZR(JX+IDECAL+INO) - ZR(JX+IDECAL+INO-1) ) / DCP
+        IF (D1P .GT. D1M) THEN
+            IF (SVAR .EQ. -1) NBVAR = NBVAR + 1
+            SVAR = 1
+        ELSEIF (D1P .LT. D1M) THEN
+            IF (SVAR .EQ. 1) NBVAR = NBVAR + 1
+            SVAR = -1
+        ENDIF
+45    CONTINUE
+
+C     CONTROLE DE LA REGULARITE DE LA DERIVEE SECONDE
+      NBVAR2 = 0
+      DO 46 INO=2,NBNO
+        IF (ZR(JD2X-1+INO)*ZR(JD2X-1+INO-1).LT.0.D0) NBVAR2 = NBVAR2+1
+46    CONTINUE
+
+      IF (NBVAR2 .GE. NBVAR+10) THEN
+        VALI(1) = ICABL
+        VALI(2) = NBVAR2
+        VALI(3) = NBVAR
+        CALL U2MESI('I','MODELISA7_13',3,VALI)
+        LSPLIN = .FALSE.
+        GOTO 888
+      ENDIF
+C
+C 4-BIS .2 INTERPOLATION DE LA COORDONNEE Y
+C ---
+
+C     CALCUL DU NOMBRE DE VARIATION DE LA DERIVEE PREMIERE
+      NBVAR = 0
+      D1M = D1Y1
+      SVAR = 0
+      DO 55 INO = 2,NBNO-1
+        DCP = ZR(JCORD+INO) - ZR(JCORD+INO-1)
+        D1P = ( ZR(JY+IDECAL+INO) - ZR(JY+IDECAL+INO-1) ) / DCP
+        IF (D1P .GT. D1M) THEN
+            IF (SVAR .EQ. -1) NBVAR = NBVAR + 1
+            SVAR = 1
+        ELSEIF (D1P .LT. D1M) THEN
+            IF (SVAR .EQ. 1) NBVAR = NBVAR + 1
+            SVAR = -1
+        ENDIF
+55    CONTINUE
+
+C     CONTROLE DE LA REGULARITE DE LA DERIVEE SECONDE
+      NBVAR2 = 0
+      DO 56 INO=2,NBNO
+        IF (ZR(JD2Y-1+INO)*ZR(JD2Y-1+INO-1).LT.0.D0) NBVAR2 = NBVAR2+1
+56    CONTINUE
+
+      IF (NBVAR2 .GE. NBVAR+10) THEN
+        VALI(1) = ICABL
+        VALI(2) = NBVAR2
+        VALI(3) = NBVAR
+        CALL U2MESI('I','MODELISA7_13',3,VALI)
+        LSPLIN = .FALSE.
+        GOTO 888
+      ENDIF
+C
+C 4-BIS .3 INTERPOLATION DE LA COORDONNEE Z
+C ---
+
+C     CALCUL DU NOMBRE DE VARIATION DE LA DERIVEE PREMIERE
+      NBVAR = 0
+      D1M = D1Z1
+      SVAR = 0
+      DO 65 INO = 2,NBNO-1
+        DCP = ZR(JCORD+INO) - ZR(JCORD+INO-1)
+        D1P = ( ZR(JZ+IDECAL+INO) - ZR(JZ+IDECAL+INO-1) ) / DCP
+        IF (D1P .GT. D1M) THEN
+            IF (SVAR .EQ. -1) NBVAR = NBVAR + 1
+            SVAR = 1
+        ELSEIF (D1P .LT. D1M) THEN
+            IF (SVAR .EQ. 1) NBVAR = NBVAR + 1
+            SVAR = -1
+        ENDIF
+65    CONTINUE
+
+C     CONTROLE DE LA REGULARITE DE LA DERIVEE SECONDE
+      NBVAR2 = 0
+      DO 66 INO=2,NBNO
+        IF (ZR(JD2Z-1+INO)*ZR(JD2Z-1+INO-1).LT.0.D0) NBVAR2 = NBVAR2+1
+66    CONTINUE
+
+      IF (NBVAR2 .GE. NBVAR+10) THEN
+        VALI(1) = ICABL
+        VALI(2) = NBVAR2
+        VALI(3) = NBVAR
+        CALL U2MESI('I','MODELISA7_13',3,VALI)
+        LSPLIN = .FALSE.
+        GOTO 888
+      ENDIF
 C
 C%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 C 5   CALCULS DE L'ABSCISSE CURVILIGNE ET DE LA DEVIATION ANGULAIRE
@@ -317,11 +448,20 @@ C%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 C 6   MISE A JOUR DES OBJETS DE SORTIE
 C%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 C
-      DO 70 INO = 1, NBNO
-         VALPAR(1) = ZR(JABSC+INO-1)
-         VALPAR(2) = ZR(JALPH+INO-1)
-         CALL TBAJLI(TABLCA,2,PARAM,IBID,VALPAR,CBID,K3B,IDECAL+INO)
-  70  CONTINUE
+888   CONTINUE
+      IF(LSPLIN)THEN
+        DO 70 INO = 1, NBNO
+          VALPAR(1) = ZR(JABSC+INO-1)
+          VALPAR(2) = ZR(JALPH+INO-1)
+          CALL TBAJLI(TABLCA,2,PARAM,IBID,VALPAR,CBID,K3B,IDECAL+INO)
+70      CONTINUE
+      ELSE
+        DO 71 INO = 1, NBNO
+          VALPAR(1) = ZR(JCORD+INO-1)
+          VALPAR(2) = ZR(JALPHD+INO-1)
+          CALL TBAJLI(TABLCA,2,PARAM,IBID,VALPAR,CBID,K3B,IDECAL+INO)
+71      CONTINUE
+      ENDIF
 C
 C --- MENAGE
 C
@@ -331,6 +471,7 @@ C
       CALL JEDETR('&&TRAJCA.D2Z')
       CALL JEDETR('&&TRAJCA.ABSC_CURV')
       CALL JEDETR('&&TRAJCA.ALPHA')
+      CALL JEDETR('&&TRAJCA.ALPHA_DISC')
 C
       CALL JEDEMA()
 C
