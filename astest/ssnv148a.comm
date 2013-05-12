@@ -1,4 +1,4 @@
-# MODIF  DATE 06/02/2013   AUTEUR COURTOIS M.COURTOIS 
+# MODIF  DATE 29/04/2013   AUTEUR LAVERNE J.LAVERNE 
 # TITRE WEIBULL ET RICE-TRACEY EN 3D
 # ssnv148a.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -122,6 +122,11 @@ U=STAT_NON_LINE(CHAM_MATER=CM,
                 NEWTON=_F(MATRICE ='TANGENTE',
                           REAC_ITER=3,),);
 
+U=CALC_CHAMP(reuse =U,
+             RESULTAT=U,
+             DEFORMATION=('EPSG_ELGA',),);
+
+# WEIBULL AVEC OPTION SIGM_ELGA
 WEIB=POST_ELEM(CHARGE=CHARG,
                WEIBULL=_F(CORR_PLAST='NON',
                           TOUT='OUI',
@@ -130,6 +135,25 @@ WEIB=POST_ELEM(CHARGE=CHARG,
                RESULTAT=U,
                TOUT_ORDRE='OUI',);
 
+# WEIBULL AVEC OPTION SIGM_ELMOY ET CORR_PLAST=NON
+WEIB2=POST_ELEM(CHARGE=CHARG,
+                WEIBULL=_F(CORR_PLAST='NON',
+                           TOUT='OUI',
+                           COEF_MULT=2.0,
+                           OPTION='SIGM_ELMOY',),
+                RESULTAT=U,
+                TOUT_ORDRE='OUI',);
+
+# WEIBULL AVEC OPTION SIGM_ELMOY ET CORR_PLAST=OUI
+WEIB3=POST_ELEM(CHARGE=CHARG,
+                WEIBULL=_F(CORR_PLAST='OUI',
+                           TOUT='OUI',
+                           COEF_MULT=2.0,
+                           OPTION='SIGM_ELMOY',),
+                RESULTAT=U,
+                TOUT_ORDRE='OUI',);
+
+# RICE ET TRACEY
 RET=POST_ELEM(
               RICE_TRACEY=_F(LOCAL='OUI',
                              TOUT='OUI',
@@ -137,7 +161,8 @@ RET=POST_ELEM(
               NUME_ORDRE=(1,2,3,4),
               RESULTAT=U,);
 
-IMPR_TABLE(TABLE=RET)
+
+# TESTS WEIBULL
 
 TEST_TABLE(REFERENCE='ANALYTIQUE',
            VALE_CALC=0.014809636,
@@ -175,6 +200,81 @@ TEST_TABLE(REFERENCE='ANALYTIQUE',
                      VALE_I=4,),
            )
 
+
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           VALE_CALC=0.014809636,
+           VALE_REFE=0.014809636445635,
+           NOM_PARA='PROBA_WEIBULL',
+           TABLE=WEIB2,
+           FILTRE=_F(NOM_PARA='NUME_ORDRE',
+                     VALE_I=1,),
+           )
+
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           VALE_CALC=0.014809636,
+           VALE_REFE=0.014809636445635,
+           NOM_PARA='PROBA_WEIBULL',
+           TABLE=WEIB2,
+           FILTRE=_F(NOM_PARA='NUME_ORDRE',
+                     VALE_I=2,),
+           )
+
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           VALE_CALC=0.014809636,
+           VALE_REFE=0.014809636445635,
+           NOM_PARA='PROBA_WEIBULL',
+           TABLE=WEIB2,
+           FILTRE=_F(NOM_PARA='NUME_ORDRE',
+                     VALE_I=3,),
+           )
+
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           VALE_CALC=0.999999383,
+           VALE_REFE=0.99999938317435999,
+           NOM_PARA='PROBA_WEIBULL',
+           TABLE=WEIB2,
+           FILTRE=_F(NOM_PARA='NUME_ORDRE',
+                     VALE_I=4,),
+           )
+
+TEST_TABLE(
+           VALE_CALC=4.2096053489425E-03,
+           NOM_PARA='PROBA_WEIBULL',
+           TABLE=WEIB3,
+           FILTRE=_F(NOM_PARA='NUME_ORDRE',
+                     VALE_I=1,),
+           )
+
+TEST_TABLE(
+           VALE_CALC=4.2096053489425E-03,
+           NOM_PARA='PROBA_WEIBULL',
+           TABLE=WEIB3,
+           FILTRE=_F(NOM_PARA='NUME_ORDRE',
+                     VALE_I=2,),
+           )
+
+TEST_TABLE(
+           VALE_CALC=4.2096053489425E-03,
+           NOM_PARA='PROBA_WEIBULL',
+           TABLE=WEIB3,
+           FILTRE=_F(NOM_PARA='NUME_ORDRE',
+                     VALE_I=3,),
+           )
+
+TEST_TABLE(
+           VALE_CALC=0.8718524058861,
+           NOM_PARA='PROBA_WEIBULL',
+           TABLE=WEIB3,
+           FILTRE=_F(NOM_PARA='NUME_ORDRE',
+                     VALE_I=4,),
+           )
+
+IMPR_TABLE(TABLE=WEIB)
+IMPR_TABLE(TABLE=WEIB2)
+IMPR_TABLE(TABLE=WEIB3)
+
+# TESTS RICE ET TRACEY
+
 TEST_TABLE(REFERENCE='ANALYTIQUE',
            VALE_CALC=1.045823643,
            VALE_REFE=1.0458000000000001,
@@ -210,6 +310,8 @@ TEST_TABLE(REFERENCE='ANALYTIQUE',
            FILTRE=_F(NOM_PARA='NUME_ORDRE',
                      VALE_I=4,),
            )
+
+IMPR_TABLE(TABLE=RET)
 
 #--------------------------------------------------
 # POST_ELEM

@@ -1,4 +1,4 @@
-# MODIF  DATE 06/02/2013   AUTEUR COURTOIS M.COURTOIS 
+# MODIF  DATE 29/04/2013   AUTEUR LAVERNE J.LAVERNE 
 # TITRE DEPOUILLEMENT WEIBULL EPROUVETTE AE2 M=8 OPTION GAUSS
 # ssna108a.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -104,8 +104,11 @@ T=STAT_NON_LINE(
 
 U=EXTR_RESU(RESULTAT=T,ARCHIVAGE=_F(NUME_ORDRE=(1,2,3,4,5,6,7,8,9,10),))
 
-U=CALC_CHAMP(reuse=U,CONTRAINTE=('SIGM_ELNO'),VARI_INTERNE=('VARI_ELNO'),RESULTAT=U)
-
+U=CALC_CHAMP(reuse=U,
+             RESULTAT=U,
+             CONTRAINTE=('SIGM_ELNO'),
+             VARI_INTERNE=('VARI_ELNO'),
+             DEFORMATION=('EPSG_ELGA',))
 
 #
 
@@ -123,33 +126,50 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=10,
                 ),
           )
 
-AE2=POST_ELEM(
+
+# WEIBULL AVEC OPTION SIGM_ELGA
+WEIB=POST_ELEM(
                       RESULTAT=U,
                       NUME_ORDRE=(1,2,3,4,5,6,7,8,9,10),
                        WEIBULL=_F(  TOUT = 'OUI',
-                                 OPTION = 'SIGM_ELGA',
-                                 CORR_PLAST = 'NON')
+                                    OPTION = 'SIGM_ELGA',
+                                    CORR_PLAST = 'NON')
                    )
 
+# WEIBULL AVEC OPTION SIGM_ELMOY ET COOR_PLAST = NON
+WEIB2=POST_ELEM(
+                      RESULTAT=U,
+                      NUME_ORDRE=(1,2,3,4,5,6,7,8,9,10),
+                       WEIBULL=_F(  TOUT = 'OUI',
+                                    OPTION = 'SIGM_ELMOY',
+                                    CORR_PLAST = 'NON')
+                   )
+
+# WEIBULL AVEC OPTION SIGM_ELMOY ET COOR_PLAST = OUI
+WEIB3=POST_ELEM(
+                      RESULTAT=U,
+                      NUME_ORDRE=(1,2,3,4,5,6,7,8,9,10),
+                       WEIBULL=_F(  TOUT = 'OUI',
+                                    OPTION = 'SIGM_ELMOY',
+                                    CORR_PLAST = 'OUI')
+                   )
+
+# RICE ET TRACEY
 RET=POST_ELEM(
                       RESULTAT=U,
                       NUME_ORDRE=(1,2,3,4,5,6,7,8,9,10),
                        RICE_TRACEY=_F(  TOUT = 'OUI',
-                                     OPTION = 'SIGM_ELMOY',
-                                     LOCAL = 'OUI')
+                                        OPTION = 'SIGM_ELMOY',
+                                        LOCAL = 'OUI')
                    )
 
 
-
-
-
-
-
+# TESTS WEIBULL
 
 TEST_TABLE(VALE_CALC=1407.895313,
            TOLE_MACHINE=1.E-3,
            NOM_PARA='SIGMA_WEIBULL',
-           TABLE=AE2,
+           TABLE=WEIB,
            FILTRE=(_F(NOM_PARA='NUME_ORDRE',
                       VALE_I=2,),
                    _F(NOM_PARA='LIEU',
@@ -160,7 +180,7 @@ TEST_TABLE(VALE_CALC=1407.895313,
 TEST_TABLE(VALE_CALC=2497.2700690000001,
            TOLE_MACHINE=1.E-3,
            NOM_PARA='SIGMA_WEIBULL',
-           TABLE=AE2,
+           TABLE=WEIB,
            FILTRE=(_F(NOM_PARA='NUME_ORDRE',
                       VALE_I=4,),
                    _F(NOM_PARA='LIEU',
@@ -171,7 +191,7 @@ TEST_TABLE(VALE_CALC=2497.2700690000001,
 TEST_TABLE(VALE_CALC=3333.235482,
            TOLE_MACHINE=1.E-3,
            NOM_PARA='SIGMA_WEIBULL',
-           TABLE=AE2,
+           TABLE=WEIB,
            FILTRE=(_F(NOM_PARA='NUME_ORDRE',
                       VALE_I=6,),
                    _F(NOM_PARA='LIEU',
@@ -182,7 +202,7 @@ TEST_TABLE(VALE_CALC=3333.235482,
 TEST_TABLE(VALE_CALC=3753.6938460000001,
            TOLE_MACHINE=1.E-3,
            NOM_PARA='SIGMA_WEIBULL',
-           TABLE=AE2,
+           TABLE=WEIB,
            FILTRE=(_F(NOM_PARA='NUME_ORDRE',
                       VALE_I=8,),
                    _F(NOM_PARA='LIEU',
@@ -193,13 +213,128 @@ TEST_TABLE(VALE_CALC=3753.6938460000001,
 TEST_TABLE(VALE_CALC=4047.6550569999999,
            TOLE_MACHINE=1.E-3,
            NOM_PARA='SIGMA_WEIBULL',
-           TABLE=AE2,
+           TABLE=WEIB,
            FILTRE=(_F(NOM_PARA='NUME_ORDRE',
                       VALE_I=10,),
                    _F(NOM_PARA='LIEU',
                       VALE_K='M',),
                    ),
            )
+
+
+TEST_TABLE(VALE_CALC=1406.307054201,
+           TOLE_MACHINE=1.E-3,
+           NOM_PARA='SIGMA_WEIBULL',
+           TABLE=WEIB2,
+           FILTRE=(_F(NOM_PARA='NUME_ORDRE',
+                      VALE_I=2,),
+                   _F(NOM_PARA='LIEU',
+                      VALE_K='M',),
+                   ),
+           )
+
+TEST_TABLE(VALE_CALC=2488.7671171928,
+           TOLE_MACHINE=1.E-3,
+           NOM_PARA='SIGMA_WEIBULL',
+           TABLE=WEIB2,
+           FILTRE=(_F(NOM_PARA='NUME_ORDRE',
+                      VALE_I=4,),
+                   _F(NOM_PARA='LIEU',
+                      VALE_K='M',),
+                   ),
+           )
+
+TEST_TABLE(VALE_CALC=3325.5503711247,
+           TOLE_MACHINE=1.E-3,
+           NOM_PARA='SIGMA_WEIBULL',
+           TABLE=WEIB2,
+           FILTRE=(_F(NOM_PARA='NUME_ORDRE',
+                      VALE_I=6,),
+                   _F(NOM_PARA='LIEU',
+                      VALE_K='M',),
+                   ),
+           )
+
+TEST_TABLE(VALE_CALC=3744.3088132144,
+           TOLE_MACHINE=1.E-3,
+           NOM_PARA='SIGMA_WEIBULL',
+           TABLE=WEIB2,
+           FILTRE=(_F(NOM_PARA='NUME_ORDRE',
+                      VALE_I=8,),
+                   _F(NOM_PARA='LIEU',
+                      VALE_K='M',),
+                   ),
+           )
+
+TEST_TABLE(VALE_CALC=4035.8940259689,
+           TOLE_MACHINE=1.E-3,
+           NOM_PARA='SIGMA_WEIBULL',
+           TABLE=WEIB2,
+           FILTRE=(_F(NOM_PARA='NUME_ORDRE',
+                      VALE_I=10,),
+                   _F(NOM_PARA='LIEU',
+                      VALE_K='M',),
+                   ),
+           )
+
+
+TEST_TABLE(VALE_CALC=1404.061994738,
+           TOLE_MACHINE=1.E-3,
+           NOM_PARA='SIGMA_WEIBULL',
+           TABLE=WEIB3,
+           FILTRE=(_F(NOM_PARA='NUME_ORDRE',
+                      VALE_I=2,),
+                   _F(NOM_PARA='LIEU',
+                      VALE_K='M',),
+                   ),
+           )
+
+TEST_TABLE(VALE_CALC=2482.4246018405,
+           TOLE_MACHINE=1.E-3,
+           NOM_PARA='SIGMA_WEIBULL',
+           TABLE=WEIB3,
+           FILTRE=(_F(NOM_PARA='NUME_ORDRE',
+                      VALE_I=4,),
+                   _F(NOM_PARA='LIEU',
+                      VALE_K='M',),
+                   ),
+           )
+
+TEST_TABLE(VALE_CALC=3313.5233545773,
+           TOLE_MACHINE=1.E-3,
+           NOM_PARA='SIGMA_WEIBULL',
+           TABLE=WEIB3,
+           FILTRE=(_F(NOM_PARA='NUME_ORDRE',
+                      VALE_I=6,),
+                   _F(NOM_PARA='LIEU',
+                      VALE_K='M',),
+                   ),
+           )
+
+TEST_TABLE(VALE_CALC=3723.1508660462,
+           TOLE_MACHINE=1.E-3,
+           NOM_PARA='SIGMA_WEIBULL',
+           TABLE=WEIB3,
+           FILTRE=(_F(NOM_PARA='NUME_ORDRE',
+                      VALE_I=8,),
+                   _F(NOM_PARA='LIEU',
+                      VALE_K='M',),
+                   ),
+           )
+
+TEST_TABLE(VALE_CALC=4003.8339538114,
+           TOLE_MACHINE=1.E-3,
+           NOM_PARA='SIGMA_WEIBULL',
+           TABLE=WEIB3,
+           FILTRE=(_F(NOM_PARA='NUME_ORDRE',
+                      VALE_I=10,),
+                   _F(NOM_PARA='LIEU',
+                      VALE_K='M',),
+                   ),
+           )
+
+
+# TESTS RICE ET TRACEY
 
 TEST_TABLE(VALE_CALC=1.0,
            TOLE_MACHINE=1.E-3,

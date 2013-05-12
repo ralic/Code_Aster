@@ -5,7 +5,7 @@
       CHARACTER*(*) OPTION,NOMTE
 C     -----------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 21/01/2013   AUTEUR DELMAS J.DELMAS 
+C MODIF ELEMENTS  DATE 29/04/2013   AUTEUR LAVERNE J.LAVERNE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -147,8 +147,8 @@ C VOLUME PLASTIFIE
    20       CONTINUE
 C           --- TEMPERATURE MOYENNE
             CALL RCVARC(' ','TEMP','+','RIGI',KP,1,TG,IRET)
-            IF (IRET.EQ.1) CALL U2MESS('F','CALCULEL_31')
-            TMOY = TG * DVPG
+            IF (IRET.NE.0) TG = 0.D0
+            TMOY = TMOY + TG * DVPG
           END IF
 C VOLUME PLASTIQUE ACTIF
           IF ((ZK16(ICOMPO).EQ.'LEMAITRE').AND.(PP.GE.SEUIL)) THEN
@@ -158,7 +158,7 @@ C VOLUME PLASTIQUE ACTIF
           END IF
           IF (PPT.GE. (1.D0)) THEN
             DVPG = POIDS
-            VKPACT = VKP + DVPG
+            VKPACT = VKPACT + DVPG
           END IF
 
    40   CONTINUE
@@ -215,8 +215,8 @@ C VOLUME PLASTIFIE
    60       CONTINUE
 C           --- TEMPERATURE AU PG
             CALL RCVARC(' ','TEMP','+','RIGI',KP,1,TG,IRET)
-            IF (IRET.EQ.1) CALL U2MESS('F','CALCULEL_31')
-            TMOY = TG * DVPG
+            IF (IRET.NE.0) TG = 0.D0
+            TMOY = TMOY + TG * DVPG
           ENDIF
 C VOLUME PLASTIQUE ACTIF
           IF ((ZK16(ICOMPO).EQ.'LEMAITRE').AND.(PP.GE.SEUIL)) THEN
@@ -284,7 +284,6 @@ C     -------------------------------------------------------------
                 EPSG(I) = ZR(IDEFG+6*KP+I-7)
   100         CONTINUE
               CALL EPDCP(SIGM,EPSG,SIG1,EPS1)
-C           --- TEMPERATURE AU PG
               CALL RCVALB(FAMI,KP,1,'+',ZI(IMATE),' ',PHENOM,0,' ',0.D0,
      &                  1,NOMRES(4),VALRES(4),ICODRE(4),1)
               SREF = VALRES(4)
