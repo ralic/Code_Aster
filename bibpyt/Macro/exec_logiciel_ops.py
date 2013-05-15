@@ -1,4 +1,4 @@
-#@ MODIF exec_logiciel_ops Macro  DATE 28/01/2013   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF exec_logiciel_ops Macro  DATE 06/05/2013   AUTEUR ASSIRE A.ASSIRE 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -214,8 +214,13 @@ def exec_logiciel_ops(self, LOGICIEL, ARGUMENT, MACHINE_DISTANTE, MAILLAGE, SALO
       if dMCF.has_key('FICHIERS_SORTIE') and dMCF['FICHIERS_SORTIE'] != None: FICHIERS_SORTIE = dMCF['FICHIERS_SORTIE']
       else:                                                                   FICHIERS_SORTIE = []
 
-      if dMCF.has_key('SALOME_RUNAPPLI') and dMCF['SALOME_RUNAPPLI'] != None: RUNAPPLI = dMCF['SALOME_RUNAPPLI']
-      else:                                                                   RUNAPPLI = os.path.join( aster_core.get_option('repout'), 'runSalomeScript' )
+      if dMCF.has_key('SALOME_RUNAPPLI') and dMCF['SALOME_RUNAPPLI'] != None:
+          RUNAPPLI = dMCF['SALOME_RUNAPPLI']
+      else:
+          if os.environ['APPLI']:
+              RUNAPPLI = os.path.join(os.environ['HOME'], os.environ['APPLI'], 'runSalomeScript')
+          else:   # Si on est dans Aster-full, on compte sur un fichier outis/runSalomeScript bien configure pour pointer vers Salome
+              RUNAPPLI = os.path.join( aster_core.get_option('repout'), 'runSalomeScript' )
 
       if MACHINE_DISTANTE is None:
           if dMCF['SALOME_HOST']: RUNAPPLI += ' -m %s ' % dMCF['SALOME_HOST']

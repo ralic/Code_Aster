@@ -1,8 +1,8 @@
-#@ MODIF macr_ecrevisse_ops Macro  DATE 12/11/2012   AUTEUR ASSIRE A.ASSIRE 
+#@ MODIF macr_ecrevisse_ops Macro  DATE 06/05/2013   AUTEUR ASSIRE A.ASSIRE 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -100,11 +100,11 @@ def macr_ecrevisse_ops(self, reuse,
     if ETAT_INIT:
         dEtatInit=ETAT_INIT[0].cree_dict_toutes_valeurs()
         EVINIT = dEtatInit['EVOL_NOLI']
-        THINIT = dEtatInit['EVOL_THER']
+        _THINIT = dEtatInit['EVOL_THER']
         nume_ordre = dEtatInit['NUME_ORDRE']
         IsPoursuite= True
     else :
-        dEtatInit=None
+        dEtatInit = None
 
     ## Valeur par defaut du mot cle LOGICIEL
     #if not LOGICIEL: LOGICIEL = os.path.join(aster_core.get_option('repout'), 'ecrevisse')
@@ -117,24 +117,17 @@ def macr_ecrevisse_ops(self, reuse,
         l_dFISSURE.append(dFISSURE)
 
     dECOULEMENT = ECOULEMENT[0].cree_dict_toutes_valeurs()
-
     # on ne supprime pas les valeurs None
     dMODELE_ECRE = MODELE_ECRE[0].cree_dict_valeurs(MODELE_ECRE[0].mc_liste)
-
     dCONVERGENCE_ECREVISSE = CONVERGENCE_ECREVISSE[0].cree_dict_toutes_valeurs()
-
     dCOMP_INCR = COMP_INCR[0].cree_dict_toutes_valeurs()
-
     dNEWTON = NEWTON[0].cree_dict_toutes_valeurs()
-
     dCONVERGENCE = CONVERGENCE[0].cree_dict_toutes_valeurs()
 
     # Recuperation des infos pour la convergence de la macro
     dMacr_Conv = CONV_CRITERE[0].cree_dict_toutes_valeurs()
-
     motclefsCALC_ECREVISSE = {}
     motclefsCALC_ECREVISSE['COURBES'] = COURBES,
-
 
     # --------------------------------------------------------------------------
     # Debut de la macro
@@ -180,28 +173,53 @@ def macr_ecrevisse_ops(self, reuse,
         # On reconstruit une nouvelle liste d'instant composee de l'ancienne liste
         # jusqu'a l'instant recherche, puis de la nouvelle a partir de cet instant
         # ainsi le nume_ordre de la nouvelle liste correspond au nume_ordre de l'ancienne
-        __dico1 = THINIT.LIST_VARI_ACCES()
-        _list_precedente = __dico1['INST']
-        _inst_init  = _list_precedente[nume_ordre-1]
+        __dico1 = _THINIT.LIST_VARI_ACCES()
+        _list_precedente    = __dico1['INST']
+        _list_numordre_prec = __dico1['NUME_ORDRE']
+        try :
+          idx_last = _list_numordre_prec.index(nume_ordre)
+        except :
+          print 'numero d ordre pas calcule'
+
+        _inst_init = _list_precedente[idx_last]
+        new_list   = _list_precedente[0:idx_last+1]
+
+        print 'new_list',      new_list
+        print 'liste_inst',liste_inst
         try:
             # si l'instant est dans la liste, on recupere l'index
             _idx = liste_inst.index(_inst_init)
+            _idx += 1
+            print 'je suis la'
         except:
             # on cherche le plus proche
-            idx = 0
+            _idx = 0
             found = False
+            if _inst_init >= liste_inst[-1]:
+              print 'error'
+
             for t in liste_inst:
+                print 't', t
+                print 't > _inst_init:', t > _inst_init
                 if t > _inst_init:
+                    print 'Pluto' 
                     found = True
-                    idx += 1
                     break
-                idx += 1
+                _idx += 1
+                print '_idx', _idx
+                print 'found', found
+
+        print '_idx', _idx
+        print 'nume_ordre', nume_ordre
         # liste precedent jusqu'a l'instant a recalculer (inclus, ca permet de gerer
         # le cas ou l'instant a recalculer n'est pas dans la nouvelle liste : il sera ajoute)
-        new_list = _list_precedente[0:nume_ordre]
+
         # on lui ajoute la nouvelle liste a partir du l'instant a recalculer
-        new_list.extend( liste_inst[_idx+1:] )
+
+        new_list.extend( liste_inst[_idx:] )
         liste_inst = copy.copy(new_list)
+
+        print 'liste_inst',liste_inst 
 
     ########################################################################################
     # Debut boucle sur la liste d'instant
@@ -257,8 +275,9 @@ def macr_ecrevisse_ops(self, reuse,
                         print 'thermique initialise avec tref'
                 else:
                     if (IsInit) :
-                        motclefs['reuse']=THINIT
-                        motclefs['ETAT_INIT']=[_F(EVOL_THER=THINIT, NUME_ORDRE=nume_ordre)]
+                    #if (IsPoursuite) :
+                        motclefs['reuse']=_THINIT
+                        motclefs['ETAT_INIT']=[_F(EVOL_THER=_THINIT, NUME_ORDRE=nume_ordre)]
                         if (debug):
                             print 'thermique initialise avec etat_initial'
                     else :
@@ -273,7 +292,7 @@ def macr_ecrevisse_ops(self, reuse,
                     print EXCIT_THER
 
                 if IsPoursuite :
-                    THINIT = THER_LINEAIRE(
+                    _THINIT = THER_LINEAIRE(
                       MODELE     = MODELE_THER,
                       CHAM_MATER = CHAM_MATER,
                       EXCIT      = _dEXCIT_THER,
@@ -283,14 +302,14 @@ def macr_ecrevisse_ops(self, reuse,
                       INFO       = InfoAster,
                       **motclefs )
 
-                    _RTHMPJ=PROJ_CHAMP(RESULTAT=THINIT,
+                    _RTHMPJ=PROJ_CHAMP(RESULTAT=_THINIT,
                                         MODELE_1=MODELE_THER,
                                         MODELE_2=MODELE_MECA,
                                         METHODE='COLLOCATION',
                                         VIS_A_VIS=_F(TOUT_1='OUI',
                                                      TOUT_2='OUI',),
                                         INFO=2,)
-                    RTHERM=THINIT
+                    RTHERM=_THINIT
                 else :
                     RTHERM=THER_LINEAIRE(
                          MODELE     = MODELE_THER,
@@ -396,7 +415,7 @@ def macr_ecrevisse_ops(self, reuse,
             else :
                 #      CAS OU LA MACRO EST REENTRANTE : ON RELANCE ECREVISSE POUR CONNAITRE
                 #     LES CHARGEMENT A UTILISER POUR LES PROBLEMES THERMIQUES ET MECANIQUES
-                inst_p_un=inst
+                inst_p_un  = inst
                 IsInitEcre = True
 
             # -----------------------------------------------------------------------
@@ -475,7 +494,7 @@ def macr_ecrevisse_ops(self, reuse,
                    ENTETE           = ENTETE,
                    IMPRESSION       = IMPRESSION,
                    INFO             = INFO,
-                   RESULTAT=_F(THERMIQUE  = THINIT,
+                   RESULTAT=_F(THERMIQUE  = _THINIT,
                                MECANIQUE  = EVINIT,
                                INST       = inst_p_un, ),
                    # chemin d acces a Ecrevisse
@@ -580,7 +599,6 @@ def macr_ecrevisse_ops(self, reuse,
                     UTMESS('I', 'ECREVISSE0_36', valr=[inst_p_un])
             # --------------------
             #
-
 
             if ( MacrCritere == 'EXPLICITE' ):
                 Convergence = True
