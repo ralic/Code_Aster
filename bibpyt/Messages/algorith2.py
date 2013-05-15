@@ -1,4 +1,4 @@
-#@ MODIF algorith2 Messages  DATE 09/04/2013   AUTEUR PELLET J.PELLET 
+#@ MODIF algorith2 Messages  DATE 13/05/2013   AUTEUR MACOCCO K.MACOCCO 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -37,6 +37,11 @@ Erreur utilisateur dans la commande CREA_RESU / AFFE :
  REPERE='COQUE' ne traite que les champs aux éléments, pas les champs aux noeuds.
  On arrête le calcul.
 """),
+
+4 : _(u"""
+ Le repère utilisateur défini par VECT_X et VECT_Y ne peut être utilisé qu'en 3D.
+"""),
+
 
 6 : _(u"""
  il faut définir NOM_CMP

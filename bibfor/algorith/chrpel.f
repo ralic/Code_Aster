@@ -2,7 +2,7 @@
      &                  MODELE, CARELE, CHAMP0)
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 16/04/2013   AUTEUR DESROCHE X.DESROCHES 
+C MODIF ALGORITH  DATE 13/05/2013   AUTEUR MACOCCO K.MACOCCO 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -179,8 +179,11 @@ C
       IF (REPERE(1:11).EQ.'UTILISATEUR') THEN
 C        SI LE NOUVEAU REPERE EST DONNE VIA DES VECTEURS
          CALL GETVR8('AFFE','VECT_X',1,IARG,3,VECTX,IBID)
-         IF ((IBID.EQ.3).AND.(NDIM.EQ.3)) THEN
+         IF (IBID.NE.0) THEN
             CALL GETVR8('AFFE','VECT_Y',1,IARG,3,VECTY,IBID)
+            IF (NDIM.NE.3) THEN
+              CALL U2MESS('F','ALGORITH2_4')
+            ENDIF
             CALL ANGVXY(VECTX,VECTY,ANGNOT)
          ELSE
            IF (NDIM.EQ.3) THEN

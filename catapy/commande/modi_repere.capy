@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 11/03/2013   AUTEUR IDOUX L.IDOUX 
+#& MODIF COMMANDE  DATE 13/05/2013   AUTEUR MACOCCO K.MACOCCO 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -81,8 +81,7 @@ MODI_REPERE=OPER(nom="MODI_REPERE",op=191,sd_prod=modi_repere_prod,reentrant='f'
               AXE_Z           =SIMP(statut='f',typ='R',min=3,max=3),),
             b_uti      =BLOC(condition = "REPERE == 'UTILISATEUR'",             
                             regles=(UN_PARMI('ANGL_NAUT','VECT_X'),
-                                    UN_PARMI('ANGL_NAUT','VECT_Y'),
-                            ),
+                            ENSEMBLE('VECT_X','VECT_Y')),
               ANGL_NAUT       =SIMP(statut='f',typ='R',max=3),
               VECT_X          =SIMP(statut='f',typ='R',min=3,max=3 ),
               VECT_Y          =SIMP(statut='f',typ='R',min=3,max=3 ),),
