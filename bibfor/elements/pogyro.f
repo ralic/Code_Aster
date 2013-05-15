@@ -1,13 +1,13 @@
-      SUBROUTINE POGYRO(NOMTE,E,RHO,XNU,ICDMAT,KLV,NL)
+      SUBROUTINE POGYRO(NOMTE,RHO,XNU,ICDMAT,KLV,NL)
       IMPLICIT NONE
       INCLUDE 'jeveux.h'
 
       INTEGER ICDMAT
       CHARACTER*(*) NOMTE
-      REAL*8 E, RHO, XNU,KLV(*)
+      REAL*8 RHO, XNU,KLV(*)
 C ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 26/03/2013   AUTEUR CHEIGNON E.CHEIGNON 
+C MODIF ELEMENTS  DATE 14/05/2013   AUTEUR TORKHANI M.TORKHANI 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -38,8 +38,8 @@ C     ------------------------------------------------------------------
       INTEGER LSECT,LSECT2, LX, ISTRUC, ITYPE,IADZI,IAZK24
       REAL*8 ZERO, DEUX, RBID, CASECT(6)
       REAL*8 EY, EZ, XL
-      REAL*8 A, XIY, XIZ, XJX, ALFAY, ALFAZ, ALFINV
-      REAL*8 A2, XIY2, XIZ2, XJX2, ALFAY2, ALFAZ2
+      REAL*8 A, XIY, XIZ, ALFAY, ALFAZ, ALFINV
+      REAL*8 A2, XIY2, XIZ2, ALFAY2, ALFAZ2
 C     ------------------------------------------------------------------
 
       ZERO = 0.D0
@@ -51,14 +51,12 @@ C     --- RECUPERATION DES CARACTERISTIQUES GENERALES DES SECTIONS ---
       CALL JEVECH('PCAGNPO','L',LSECT)
       LSECT = LSECT - 1
       ITYPE = NINT(ZR(LSECT+23))
-
 C     --- SECTION INITIALE ---
       A = ZR(LSECT+1)
       XIY = ZR(LSECT+2)
       XIZ = ZR(LSECT+3)
       ALFAY = ZR(LSECT+4)
       ALFAZ = ZR(LSECT+5)
-      XJX = ZR(LSECT+8)
 
 C     --- SECTION FINALE ---
       LSECT2 = LSECT + 11
@@ -85,19 +83,16 @@ C        --- POUTRE DROITE D'EULER A 6 DDL ---
 C        --- POUTRE DROITE DE TIMOSKENKO A 6 DDL ---
         ISTRUC = 1
         ALFINV = DEUX/(ALFAY+ALFAZ)
-      ELSEIF (NOMTE.EQ.'MECA_POU_D_EM' .OR.
+      ELSE IF (NOMTE.EQ.'MECA_POU_D_EM' .OR.
      &        NOMTE.EQ.'MECA_POU_D_TGM'    ) THEN
 C        --- POUTRE DROITE MULTI-FIBRES---
-        ITYPE  = 0
         ISTRUC = 1
-        ALFINV = ZERO
-C   ON MET RHO=1, il est utilisé dans PMFITX
-        RHO = 1.D0
+        ITYPE  = 0
         CALL PMFITX(ICDMAT,2,CASECT,RBID)
-        A   = CASECT(1)
-        XIY = CASECT(5)
-        XIZ = CASECT(4)
-        XJX = 0.D0
+C   ON DIVISE PAR RHO
+        A   = CASECT(1)/RHO
+        XIY = CASECT(5)/RHO
+        XIZ = CASECT(4)/RHO
       ELSE
         CH16 = NOMTE
         CALL U2MESK('F','ELEMENTS2_42',1,CH16)
@@ -112,21 +107,25 @@ C     --- POUTRE DROITE A SECTION VARIABLE (TYPE 1 OU 2) ---
          XIZ2 = ZR(LSECT2+3)
          ALFAY2 = ZR(LSECT2+4)
          ALFAZ2 = ZR(LSECT2+5)
-         XJX2 = ZR(LSECT2+8)
 C     ---- MOYENNAGE -------------------------------------
          A=(A+A2)/DEUX
          XIY=(XIY+XIY2)/DEUX
          XIZ=(XIZ+XIZ2)/DEUX
          ALFAY=(ALFAY+ALFAY2)/DEUX
          ALFAZ=(ALFAZ+ALFAZ2)/DEUX
-         XJX=(XJX+XJX2)/DEUX
          IF (NOMTE(1:12).EQ.'MECA_POU_D_E') THEN
            ALFINV = ZERO
          ELSE
            ALFINV = DEUX/(ALFAY+ALFAZ)
          ENDIF
+      ELSE IF (ITYPE.EQ.0) THEN
+         IF (NOMTE(1:12).EQ.'MECA_POU_D_E') THEN
+           ALFINV = ZERO
+         ELSE IF (NOMTE(1:12).EQ.'MECA_POU_D_T') THEN
+           ALFINV = DEUX/(ALFAY+ALFAZ)
+         ENDIF
       END IF
-      CALL PTGY01(KLV,NL,XNU,RHO,A,XL,XIY,XIZ,XJX,ALFINV,
+      CALL PTGY01(KLV,NL,XNU,RHO,A,XL,XIY,XIZ,ALFINV,
      &                     EY,EZ,ISTRUC)
 
       END
