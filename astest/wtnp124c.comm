@@ -1,4 +1,4 @@
-# MODIF  DATE 09/04/2013   AUTEUR GRANET S.GRANET 
+# MODIF  DATE 06/05/2013   AUTEUR GRANET S.GRANET 
 # TITRE - TEST DE LIAKOPOULOS : DRAINAGE D UNE COLONNE D EAU
 # wtnp124c.para = tps_job 200 mem_job 1024Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -24,7 +24,7 @@
 #
 DEBUT(CODE=_F(NOM='WTNP124C', NIV_PUB_WEB='INTERNET'), DEBUG=_F(SDVERI='OUI'))
 
-MODELISA = 'D_PLAN_HH2SUDM'
+MODELISA = 'D_PLAN_HH2SUC'
 
 #=============================================================
 #                     DONNEES
@@ -37,20 +37,20 @@ PARM_ALPHA=1.
 #   OPERATIONS SUR LE MAILLAGE
 #
 ####################################
-M3=LIRE_MAILLAGE(FORMAT='MED');
 
+M3=LIRE_MAILLAGE(FORMAT='MED');
 MAIL=CREA_MAILLAGE( MAILLAGE=M3,
-                   MODI_MAILLE=(
-                   _F( TOUT = 'OUI',OPTION = 'QUAD8_9',PREF_NOEUD='NQ'),
-                   ))
+          MODI_MAILLE=(
+          _F( TOUT = 'OUI',OPTION = 'QUAD8_9',PREF_NOEUD='NQ'),
+          ))
 MAIL=DEFI_GROUP( reuse=MAIL,
-                MAILLAGE=MAIL,
-                CREA_GROUP_NO=(
-                  _F( GROUP_MA = 'DROIT',NOM='NSDROIT',CRIT_NOEUD='MILIEU'),
-                  _F( GROUP_MA = 'HAUT',NOM='NSHAUT',CRIT_NOEUD='MILIEU'),
-                _F( GROUP_MA = 'GAUCHE'),
-                _F( GROUP_MA = 'BAS')),
-                 )
+       MAILLAGE=MAIL,
+       CREA_GROUP_NO=(
+         _F( GROUP_MA = 'DROIT',NOM='NSDROIT',CRIT_NOEUD='MILIEU'),
+         _F( GROUP_MA = 'HAUT',NOM='NSHAUT',CRIT_NOEUD='MILIEU'),
+       _F( GROUP_MA = 'GAUCHE'),
+       _F( GROUP_MA = 'BAS')),
+        )
 
 #*********************************************************
 #  MODELE DE CALCUL
@@ -65,13 +65,15 @@ MODELE=AFFE_MODELE(   MAILLAGE=MAIL,
 ####################################
 #  LISTE DES INSTANTS DE CALCUL
 ####################################
+
 INST1=DEFI_LIST_REEL(   DEBUT=0.,INTERVALLE=(
-                       _F(  JUSQU_A = 10.,  NOMBRE = 10),
+                       _F(  JUSQU_A = 1.,  NOMBRE = 10),
+                       _F(  JUSQU_A = 10.,  NOMBRE = 9),
                        _F(  JUSQU_A = 200.,  NOMBRE = 20),
                        _F(  JUSQU_A = 300.,  NOMBRE = 10),
                        _F(  JUSQU_A = 1200.,  NOMBRE = 9),
-                       _F(  JUSQU_A = 3600.,  NOMBRE = 8),
-                       _F(  JUSQU_A = 36000.,  NOMBRE = 9),
+                       _F(  JUSQU_A = 3600.,  NOMBRE = 18),
+                       _F(  JUSQU_A = 36000.,  NOMBRE = 19),
                        _F(  JUSQU_A = 86400.,  NOMBRE = 23),
                        _F(  JUSQU_A = 864000.,  NOMBRE = 9),
                        _F(  JUSQU_A = 8640000.,  NOMBRE = 9),
@@ -81,10 +83,10 @@ INST1=DEFI_LIST_REEL(   DEBUT=0.,INTERVALLE=(
 
 LI =DEFI_LIST_INST(DEFI_LIST=_F(LIST_INST =INST1 ),
                                 ECHEC=_F(EVENEMENT     = 'ERREUR',
-                                         ACTION        = 'DECOUPE',
-                                         SUBD_METHODE  = 'MANUEL',
+                                 ACTION        = 'DECOUPE',
+                                 SUBD_METHODE  = 'MANUEL',
                                          SUBD_PAS=5,
-                                         SUBD_PAS_MINI=0.1))
+                                         SUBD_PAS_MINI=0.01))
 
 ############################################
 #
@@ -102,6 +104,7 @@ RHO_EAU = 1000.0;
 G = -9.81;
 ####
 UN=DEFI_CONSTANTE(    VALE=1.);
+
 ZERO=DEFI_CONSTANTE(    VALE=0.);
 
 
@@ -272,13 +275,10 @@ RESU0=STAT_NON_LINE(
                 NEWTON=_F(MATRICE='TANGENTE',
                            REAC_ITER=1),
 
-               RECH_LINEAIRE=_F(RESI_LINE_RELA=0.1,
-                                     ITER_LINE_MAXI=1),
 
               CONVERGENCE=_F(
-                             ITER_GLOB_MAXI=100,
-                             RESI_GLOB_MAXI = 1.E-6),
-
+                             ITER_GLOB_MAXI=10,
+                             RESI_COMP_RELA = 1.E-6),
              );
 
 
@@ -303,10 +303,8 @@ RESU0=STAT_NON_LINE( reuse=RESU0,
                 NEWTON=_F(MATRICE='TANGENTE',
                            REAC_ITER=1),
 
-                  RECH_LINEAIRE=_F(RESI_LINE_RELA=0.1,
-                                     ITER_LINE_MAXI=1),
 
-                CONVERGENCE=_F(
+              CONVERGENCE=_F(
                              ITER_GLOB_MAXI=10,
                              RESI_GLOB_MAXI = 1.E-7),
              );
@@ -315,129 +313,130 @@ RESU0=STAT_NON_LINE( reuse=RESU0,
 ##================================
 
 
-
 L_INST=DEFI_LIST_REEL(VALE=(0.,200.,300.,1200.,1800.,3600.,7200.,36000.,86400.));
 
 
 PR1=POST_RELEVE_T(ACTION=_F(INTITULE='DEPL',
-                        GROUP_NO=('GAUCHE'),
-                        RESULTAT=RESU0,
-                        NOM_CHAM='DEPL',
-                        LIST_INST=L_INST,
-                        NOM_CMP=('PRE1'),
-                        OPERATION='EXTRACTION'));
+           GROUP_NO=('GAUCHE'),
+           RESULTAT=RESU0,
+           NOM_CHAM='DEPL',
+           LIST_INST=L_INST,
+           NOM_CMP=('PRE1'),
+           OPERATION='EXTRACTION'));
 IMPR_TABLE(TABLE=PR1,
-         FORMAT   = 'TABLEAU_CROISE'    ,
-         NOM_PARA=('INST','COOR_Y','PRE1'),
-         TRI   = (_F( NOM_PARA = ('COOR_Y' ),
-                      ORDRE    = 'CROISSANT')));
+      FORMAT   = 'TABLEAU_CROISE'    ,
+      NOM_PARA=('INST','COOR_Y','PRE1'),
+      TRI   = (_F( NOM_PARA = ('COOR_Y' ),
+         ORDRE    = 'CROISSANT')));
 
 PR2=POST_RELEVE_T(ACTION=_F(INTITULE='DEPL',
-                        GROUP_NO=('GAUCHE'),
-                        RESULTAT=RESU0,
-                        NOM_CHAM='DEPL',
-                        LIST_INST=L_INST,
-                        NOM_CMP=('PRE2'),
-                        OPERATION='EXTRACTION'));
+           GROUP_NO=('GAUCHE'),
+           RESULTAT=RESU0,
+           NOM_CHAM='DEPL',
+           LIST_INST=L_INST,
+           NOM_CMP=('PRE2'),
+           OPERATION='EXTRACTION'));
 IMPR_TABLE(TABLE=PR2,
-         FORMAT   = 'TABLEAU_CROISE'    ,
-         NOM_PARA=('INST','COOR_Y','PRE2'),
-         TRI   = (_F( NOM_PARA = ('COOR_Y' ),
-                      ORDRE    = 'CROISSANT')));
+      FORMAT   = 'TABLEAU_CROISE'    ,
+      NOM_PARA=('INST','COOR_Y','PRE2'),
+      TRI   = (_F( NOM_PARA = ('COOR_Y' ),
+         ORDRE    = 'CROISSANT')));
 PR1MIL=POST_RELEVE_T(ACTION=_F(INTITULE='DEPL',
-                        GROUP_NO=('MILIEU'),
-                        RESULTAT=RESU0,
-                        NOM_CHAM='DEPL',
-                        LIST_INST=L_INST,
-                        NOM_CMP=('PRE1'),
-                        OPERATION='EXTRACTION'));
+           GROUP_NO=('MILIEU'),
+           RESULTAT=RESU0,
+           NOM_CHAM='DEPL',
+           LIST_INST=L_INST,
+           NOM_CMP=('PRE1'),
+           OPERATION='EXTRACTION'));
 IMPR_TABLE(TABLE=PR1MIL,
-         FORMAT   = 'TABLEAU_CROISE'    ,
-         NOM_PARA=('INST','COOR_Y','PRE1'),
-         TRI   = (_F( NOM_PARA = ('COOR_Y' ),
-                      ORDRE    = 'CROISSANT')));
+      FORMAT   = 'TABLEAU_CROISE'    ,
+      NOM_PARA=('INST','COOR_Y','PRE1'),
+      TRI   = (_F( NOM_PARA = ('COOR_Y' ),
+         ORDRE    = 'CROISSANT')));
 
 PR2MIL=POST_RELEVE_T(ACTION=_F(INTITULE='DEPL',
-                        GROUP_NO=('MILIEU'),
-                        RESULTAT=RESU0,
-                        NOM_CHAM='DEPL',
-                        LIST_INST=L_INST,
-                        NOM_CMP=('PRE2'),
-                        OPERATION='EXTRACTION'));
+           GROUP_NO=('MILIEU'),
+           RESULTAT=RESU0,
+           NOM_CHAM='DEPL',
+           LIST_INST=L_INST,
+           NOM_CMP=('PRE2'),
+           OPERATION='EXTRACTION'));
 IMPR_TABLE(TABLE=PR2MIL,
-         FORMAT   = 'TABLEAU_CROISE'    ,
-         NOM_PARA=('INST','COOR_Y','PRE2'),
-         TRI   = (_F( NOM_PARA = ('COOR_Y' ),
-                      ORDRE    = 'CROISSANT')));
+      FORMAT   = 'TABLEAU_CROISE'    ,
+      NOM_PARA=('INST','COOR_Y','PRE2'),
+      TRI   = (_F( NOM_PARA = ('COOR_Y' ),
+         ORDRE    = 'CROISSANT')));
 
 
 #=============== A 200S =========================
 
 
-#NOEUD DU HAUT
 TEST_RESU(RESU=_F(INST=200,
-                  REFERENCE='NON_DEFINI',
-                  RESULTAT=RESU0,
-                  NOM_CHAM='DEPL',
-                  NOEUD='N103',
-                  NOM_CMP='PRE1',
-                  VALE_CALC= 3.379689678E+03,
-                  VALE_REFE=3383.9,
-                  CRITERE='RELATIF',
-                  PRECISION=1.E-2,),
-          )
+                REFERENCE='NON_DEFINI',
+                RESULTAT=RESU0,
+                NOM_CHAM='DEPL',
+                NOEUD='N103',
+                NOM_CMP='PRE1',
+                VALE_CALC= 3.4707154E+03,
+                VALE_REFE=3470.0,
+                CRITERE='RELATIF',
+                PRECISION=1.E-2,),
+        )
+
 
 TEST_RESU(RESU=_F(INST=200,
-                  REFERENCE='NON_DEFINI',
-                  RESULTAT=RESU0,
-                  NOM_CHAM='DEPL',
-                  NOEUD='N103',
-                  NOM_CMP='PRE2',
-                  VALE_CALC= 1.00000000E+05,
-                  VALE_REFE=1.E5,
-                  CRITERE='RELATIF',
-                  PRECISION=1.E-2,),
-          )
+                REFERENCE='NON_DEFINI',
+                RESULTAT=RESU0,
+                NOM_CHAM='DEPL',
+                NOEUD='N103',
+                NOM_CMP='PRE2',
+                VALE_CALC= 1.00000000E+05,
+                VALE_REFE=1.E5,
+                CRITERE='RELATIF',
+                PRECISION=1.E-2,),
+        )
+
 
 
 #=============== A 864000S =========================
 
 
 TEST_RESU(RESU=_F(INST=864000,
-                  REFERENCE='NON_DEFINI',
-                  RESULTAT=RESU0,
-                  NOM_CHAM='DEPL',
-                  NOEUD='N103',
-                  NOM_CMP='PRE1',
-                  VALE_CALC= 9.8112648396E+03,
-                  VALE_REFE=9811.379,
-                  CRITERE='RELATIF',
-                  PRECISION=1.E-2,),
-          )
+                REFERENCE='NON_DEFINI',
+                RESULTAT=RESU0,
+                NOM_CHAM='DEPL',
+                NOEUD='N103',
+                NOM_CMP='PRE1',
+                VALE_CALC= 9.811009E+03,
+                VALE_REFE=9810.0,
+                CRITERE='RELATIF',
+                PRECISION=1.E-2,),
+        )
 
 TEST_RESU(RESU=_F(INST=864000,
-                  REFERENCE='NON_DEFINI',
-                  RESULTAT=RESU0,
-                  NOM_CHAM='DEPL',
-                  NOEUD='N103',
-                  NOM_CMP='PRE2',
-                  VALE_CALC= 1.00000000E+05,
-                  VALE_REFE=1.E5,
-                  CRITERE='RELATIF',
-                  PRECISION=1.E-2,),
-          )
-TEST_RESU(RESU=_F(INST=864000,
-                  REFERENCE='NON_DEFINI',
-                  RESULTAT=RESU0,
-                  NOM_CHAM='DEPL',
-                  NOEUD='N229',
-                  NOM_CMP='PRE1',
-                  VALE_CALC= 4.911837013E+03,
-                  VALE_REFE=4911.8457,
-                  CRITERE='RELATIF',
-                  PRECISION=1.E-2,),
-          )
+                REFERENCE='NON_DEFINI',
+                RESULTAT=RESU0,
+                NOM_CHAM='DEPL',
+                NOEUD='N103',
+                NOM_CMP='PRE2',
+                VALE_CALC= 1.00000000E+05,
+                VALE_REFE=1.E5,
+                CRITERE='RELATIF',
+                PRECISION=1.E-2,),
+        )
 
+TEST_RESU(RESU=_F(INST=864000,
+                REFERENCE='NON_DEFINI',
+                RESULTAT=RESU0,
+                NOM_CHAM='DEPL',
+                NOEUD='N229',
+                NOM_CMP='PRE1',
+                VALE_CALC= 4.9118276E+03,
+                VALE_REFE=4911.0,
+                CRITERE='RELATIF',
+                PRECISION=1.E-2,),
+        )
 
 
 FIN()
+#

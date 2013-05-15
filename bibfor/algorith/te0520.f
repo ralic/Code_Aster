@@ -4,9 +4,9 @@
       CHARACTER*16 OPTION,NOMTE
 C =====================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 18/09/2012   AUTEUR PELLET J.PELLET 
+C MODIF ALGORITH  DATE 06/05/2013   AUTEUR GRANET S.GRANET 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -44,7 +44,7 @@ C =====================================================================
       INTEGER DIMDEP,DIMDEF,DIMCON,NBVARI,NDDLS,NDDLM,NDDLFA,NDDLK
       INTEGER NMEC,NP1,NP2,NNOS
       INTEGER NNOM,NFACE
-C     REMARQUE : CES DIMENSIONS DOIVENT ETRE LES MEMES QUE DANS TE0492
+C     REMARQUE : CES DIMENSIONS DOIVENT ETRE LES MEMES QUE DANS TE0515
       REAL*8 DEFGEP(21),DEFGEM(21)
       INTEGER NCONMA,NDEFMA,ICON,IDEF
       PARAMETER (NCONMA=31,NDEFMA=21)
@@ -209,7 +209,6 @@ C  ASSVSU UTILISE DELTAP ET PM
 C            DO 30 LI = 1,DIMUEL
 C               ZR(IDEPLP+LI-1) = ZR(IDEPLM+LI-1) + ZR(IDEPLP+LI-1)
 C   30       CONTINUE
-C
             CALL ASSVSU(NNO,NNOS,NFACE,
      +                ZR(IGEOM),ZR(ICARCR),
      +                ZR(IDEPLM),ZR(IDEPLP),ZR(ICONTM),
@@ -244,13 +243,11 @@ C --- PARAMETRES EN SORTIE ---------------------------------------------
 C ======================================================================
         CALL JEVECH('PVECTUR','E',IVECTU)
 C
-        CALL FNOVSU(OPTION,NNO,NNOS,NNOM,NFACE,
+        CALL FNOVSU(OPTION,NFACE,
      +                ZR(ICONTM),ZR(IVECTU),
-     +                MECANI,PRESS1,PRESS2,TEMPE,
+     +                PRESS1,PRESS2,
      >                DIMCON,DIMUEL,
-     >                TYPVF,AXI,
-     >                IPOIDS,IVF,IDFDE,IPOID2,IVF2,IDFDE2,NPI2,JGANO,
-     +                RETLOI)
+     >                TYPVF)
       END IF
 C ======================================================================
       END
