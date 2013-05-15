@@ -1,4 +1,4 @@
-#@ MODIF med2 Messages  DATE 18/03/2013   AUTEUR SELLENET N.SELLENET 
+#@ MODIF med2 Messages  DATE 07/05/2013   AUTEUR SELLENET N.SELLENET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -87,6 +87,13 @@ format MED.
      - Utilisez EXTR_RESU pour restreindre vos résultats,
      - Faites votre deuxième IMPR_RESU RESTREINT sur un nouveau
        fichier.
+"""),
+
+9 : _(u"""
+  Vous demandez l'impression du champ %(k1)s issu de la commande
+  PROJ_CHAMP utilisant la méthode 'SOUS_POINT'.
+  
+  Cette impression n'est pas possible au format MED.
 """),
 
 }

@@ -1,6 +1,6 @@
       SUBROUTINE MFMSNB ( FID, NBMASU, CRET )
 !           CONFIGURATION MANAGEMENT OF EDF VERSION                  
-!& MODIF MFMSNB ECHANGE  DATE 02/04/2013   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+!& MODIF MFMSNB ECHANGE  DATE 07/05/2013   AUTEUR SELLENET N.SELLENET 
 ! ================================================================== 
 ! COPYRIGHT (C) 1991 - 2013  EDF R&D              WWW.CODE-ASTER.ORG 
 !                                                                    
@@ -30,8 +30,8 @@
       PRINT *,'=== MFMSNB ==='
 #endif
       FID4 = FID
-      NBMAS4 = NBMASU
-      CALL MSMNSM( FID, NBMASU, CRET )
+      CALL MSMNSM( FID, NBMAS4, CRET4 )
+      NBMASU = NBMAS4
       CRET = CRET4
 #else
       CALL MSMNSM( FID, NBMASU, CRET )
