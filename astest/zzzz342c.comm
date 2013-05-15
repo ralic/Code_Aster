@@ -1,0 +1,443 @@
+# MODIF  DATE 07/05/2013   AUTEUR DESOZA T.DESOZA 
+# TITRE VALIDATION DE ELAS_HYPER EN PETITES PERTURBATIONS
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
+# (AT YOUR OPTION) ANY LATER VERSION.                                                    
+#                                                                       
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
+#                                                                       
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# ======================================================================
+
+DEBUT(CODE=_F(NOM='ZZZZ342C',NIV_PUB_WEB='INTERNET',VISU_EFICAS='OUI',),);
+
+# MATERIAU NEO-HOOKEEN
+nh=300
+
+# COEFFICIENT DE POISSON
+nu=0.25
+
+# MODULE DE YOUNG EN PETITES PERTURBATIONS
+e=4*nh*(1+nu)
+
+# MODULE DE COMPRESSIBILITE
+k=e/(3*(1-2*nu))
+
+# CRITERE DE CONVERGENCE DE NEWTON
+resi=1.0E-9
+
+HOOKE=DEFI_MATERIAU(ELAS=_F(E=e,
+                            NU=nu,),);
+
+NEOHK_K=DEFI_MATERIAU(ELAS_HYPER=_F(C10=nh,
+                                     K=k,),);
+
+NEOHK_NU=DEFI_MATERIAU(ELAS_HYPER=_F(C10=nh,
+                                     NU=nu,),);
+
+MAIL=LIRE_MAILLAGE(FORMAT='ASTER',);
+
+MAIL=MODI_MAILLAGE(reuse =MAIL,
+                   MAILLAGE=MAIL,
+                   ORIE_PEAU_3D=_F(GROUP_MA='HAUT',),);
+
+MODE=AFFE_MODELE(MAILLAGE=MAIL,
+                 AFFE=_F(TOUT='OUI',
+                         PHENOMENE='MECANIQUE',
+                         MODELISATION='3D',),);
+
+CHHOOKE=AFFE_MATERIAU(MAILLAGE=MAIL,
+                      AFFE=_F(TOUT='OUI',
+                              MATER=HOOKE,),);
+
+CHNHK_K=AFFE_MATERIAU(MAILLAGE=MAIL,
+                      AFFE=_F(TOUT='OUI',
+                              MATER=NEOHK_K,),);
+
+CHNHK_NU=AFFE_MATERIAU(MAILLAGE=MAIL,
+                      AFFE=_F(TOUT='OUI',
+                              MATER=NEOHK_NU,),);
+
+CHAR=AFFE_CHAR_MECA(MODELE=MODE,
+                    DDL_IMPO=(_F(GROUP_NO='O',
+                                 DX=0.0,
+                                 DY=0.0,
+                                 DZ=0.0,),
+                              _F(GROUP_NO='X',
+                                 DX=0.0,
+                                 DY=0.0,
+                                 DZ=0.0,),
+                              _F(GROUP_NO='Y',
+                                 DX=0.0,
+                                 DY=0.0,
+                                 DZ=0.0,),
+                              _F(GROUP_NO='A',
+                                 DX=0.0,
+                                 DY=0.0,
+                                 DZ=0.0,),),
+                    PRES_REP=_F(GROUP_MA='HAUT',
+                                PRES=1.0,),);
+
+TPS=DEFI_LIST_REEL(VALE=(0,0.5,1,),);
+RAMPE=DEFI_FONCTION(NOM_PARA='INST',VALE=(0,0,1,1,),);
+
+# ELASTICITE DE HOOKE EN PETITES PERTURBATIONS
+
+RESU_HK=STAT_NON_LINE(MODELE=MODE,
+                      CHAM_MATER=CHHOOKE,
+                      EXCIT=_F(CHARGE=CHAR,FONC_MULT=RAMPE,),
+                      COMP_INCR=_F(RELATION='ELAS',),
+                      INCREMENT=_F(LIST_INST=TPS,),);
+
+RESU_HK=CALC_CHAMP(reuse =RESU_HK,
+                   RESULTAT=RESU_HK,
+                   DEFORMATION='EPSI_ELGA',);
+
+# HYPERELASTICITE, COMPORTEMENT NEO-HOOKEEN INCREMENTAL (A PARTIR DE K)
+
+IN_NH_K=STAT_NON_LINE(MODELE=MODE,
+                      CHAM_MATER=CHNHK_K,
+                      EXCIT=_F(CHARGE=CHAR,FONC_MULT=RAMPE,),
+                      COMP_INCR=_F(RELATION='ELAS_HYPER',
+                                   DEFORMATION='GROT_GDEP',),
+                      NEWTON=_F(REAC_ITER=1,),
+                      CONVERGENCE=_F(RESI_GLOB_RELA=resi,),
+                      INCREMENT=_F(LIST_INST=TPS,),);
+
+IN_NH_K=CALC_CHAMP(reuse =IN_NH_K,
+                   RESULTAT=IN_NH_K,
+                   DEFORMATION='EPSI_ELGA',);
+
+# HYPERELASTICITE, COMPORTEMENT NEO-HOOKEEN INCREMENTAL (A PARTIR DE NU)
+
+IN_NH_NU=STAT_NON_LINE(MODELE=MODE,
+                      CHAM_MATER=CHNHK_NU,
+                      EXCIT=_F(CHARGE=CHAR,FONC_MULT=RAMPE,),
+                      COMP_INCR=_F(RELATION='ELAS_HYPER',
+                                   DEFORMATION='GROT_GDEP',),
+                      NEWTON=_F(REAC_ITER=1,),
+                      CONVERGENCE=_F(RESI_GLOB_RELA=resi,),
+                      INCREMENT=_F(LIST_INST=TPS,),);
+
+IN_NH_NU=CALC_CHAMP(reuse =IN_NH_NU,
+                   RESULTAT=IN_NH_NU,
+                   DEFORMATION='EPSI_ELGA',);
+
+# HYPERELASTICITE, COMPORTEMENT NEO-HOOKEEN TOTAL (A PARTIR DE NU)
+
+EL_NH_NU=STAT_NON_LINE(MODELE=MODE,
+                      CHAM_MATER=CHNHK_NU,
+                      EXCIT=_F(CHARGE=CHAR,FONC_MULT=RAMPE,),
+                      COMP_ELAS=_F(RELATION='ELAS_HYPER',
+                                   DEFORMATION='GROT_GDEP',),
+                      NEWTON=_F(REAC_ITER=1,),
+                      CONVERGENCE=_F(RESI_GLOB_RELA=resi,),
+                      INCREMENT=_F(LIST_INST=TPS,),);
+
+EL_NH_NU=CALC_CHAMP(reuse =EL_NH_NU,
+                   RESULTAT=EL_NH_NU,
+                   DEFORMATION='EPSI_ELGA',);
+
+# ======================================================================
+# TESTS
+# ======================================================================
+# --- HOOKE / DEPLACEMENT --- #
+TEST_RESU(RESU=_F(RESULTAT=RESU_HK,
+                  NOM_CHAM='DEPL',
+                  INST=1.0,
+                  NOM_CMP='DX',
+                  GROUP_NO='B',
+                  VALE_CALC=1.11111111111111E-04,
+                 ),
+          )
+TEST_RESU(RESU=_F(RESULTAT=RESU_HK,
+                  NOM_CHAM='DEPL',
+                  INST=1.0,
+                  NOM_CMP='DY',
+                  GROUP_NO='B',
+                  VALE_CALC=1.11111111111111E-04,
+                 ),
+          )
+TEST_RESU(RESU=_F(RESULTAT=RESU_HK,
+                  NOM_CHAM='DEPL',
+                  INST=1.0,
+                  NOM_CMP='DZ',
+                  GROUP_NO='B',
+                  VALE_CALC=-6.29629629629630E-04,
+                 ),
+          )
+
+# --- NEO-HOOKEEN INCR. K / DEPLACEMENT --- #
+TEST_RESU(RESU=_F(RESULTAT=IN_NH_K,
+                  NOM_CHAM='DEPL',
+                  INST=1.0,
+                  NOM_CMP='DX',
+                  GROUP_NO='B',
+                  VALE_REFE=1.11111111111111E-04,
+                  REFERENCE='AUTRE_ASTER',
+                  VALE_CALC=1.1106211913803E-04,
+                 ),
+          )
+TEST_RESU(RESU=_F(RESULTAT=IN_NH_K,
+                  NOM_CHAM='DEPL',
+                  INST=1.0,
+                  NOM_CMP='DY',
+                  GROUP_NO='B',
+                  VALE_REFE=1.11111111111111E-04,
+                  REFERENCE='AUTRE_ASTER',
+                  VALE_CALC=1.1106211913803E-04,
+                 ),
+          )
+TEST_RESU(RESU=_F(RESULTAT=IN_NH_K,
+                  NOM_CHAM='DEPL',
+                  INST=1.0,
+                  NOM_CMP='DZ',
+                  GROUP_NO='B',
+                  VALE_REFE=-6.29629629629630E-04,
+                  REFERENCE='AUTRE_ASTER',
+                  VALE_CALC=-6.2927664224198E-04,
+                 ),
+          )
+
+# --- NEO-HOOKEEN INCR. NU / DEPLACEMENT --- #
+TEST_RESU(RESU=_F(RESULTAT=IN_NH_NU,
+                  NOM_CHAM='DEPL',
+                  INST=1.0,
+                  NOM_CMP='DX',
+                  GROUP_NO='B',
+                  VALE_REFE=1.11111111111111E-04,
+                  REFERENCE='AUTRE_ASTER',
+                  VALE_CALC=1.1106211913803E-04,
+                 ),
+          )
+TEST_RESU(RESU=_F(RESULTAT=IN_NH_NU,
+                  NOM_CHAM='DEPL',
+                  INST=1.0,
+                  NOM_CMP='DY',
+                  GROUP_NO='B',
+                  VALE_REFE=1.11111111111111E-04,
+                  REFERENCE='AUTRE_ASTER',
+                  VALE_CALC=1.1106211913803E-04,
+                 ),
+          )
+TEST_RESU(RESU=_F(RESULTAT=IN_NH_NU,
+                  NOM_CHAM='DEPL',
+                  INST=1.0,
+                  NOM_CMP='DZ',
+                  GROUP_NO='B',
+                  VALE_REFE=-6.29629629629630E-04,
+                  REFERENCE='AUTRE_ASTER',
+                  VALE_CALC=-6.2927664224198E-04,
+                 ),
+          )
+
+# --- NEO-HOOKEEN TOTAL NU / DEPLACEMENT --- #
+TEST_RESU(RESU=_F(RESULTAT=EL_NH_NU,
+                  NOM_CHAM='DEPL',
+                  INST=1.0,
+                  NOM_CMP='DX',
+                  GROUP_NO='B',
+                  VALE_REFE=1.11111111111111E-04,
+                  REFERENCE='AUTRE_ASTER',
+                  VALE_CALC=1.1106211913803E-04,
+                 ),
+          )
+TEST_RESU(RESU=_F(RESULTAT=EL_NH_NU,
+                  NOM_CHAM='DEPL',
+                  INST=1.0,
+                  NOM_CMP='DY',
+                  GROUP_NO='B',
+                  VALE_REFE=1.11111111111111E-04,
+                  REFERENCE='AUTRE_ASTER',
+                  VALE_CALC=1.1106211913803E-04,
+                 ),
+          )
+TEST_RESU(RESU=_F(RESULTAT=EL_NH_NU,
+                  NOM_CHAM='DEPL',
+                  INST=1.0,
+                  NOM_CMP='DZ',
+                  GROUP_NO='B',
+                  VALE_REFE=-6.29629629629630E-04,
+                  REFERENCE='AUTRE_ASTER',
+                  VALE_CALC=-6.2927664224198E-04,
+                 ),
+          )
+#
+# ======================================================================
+# --- HOOKE / CONTRAINTES DE CAUCHY --- #
+TEST_RESU(RESU=_F(RESULTAT=RESU_HK,
+                  NOM_CHAM='SIEF_ELGA',
+                  INST=1.0,
+                  NOM_CMP='SIXX',
+                  MAILLE='M19',
+                  POINT=8,
+                  VALE_CALC=-2.65071182895011E-01,
+                 ),
+          )
+TEST_RESU(RESU=_F(RESULTAT=RESU_HK,
+                  NOM_CHAM='SIEF_ELGA',
+                  INST=1.0,
+                  NOM_CMP='SIZZ',
+                  MAILLE='M19',
+                  POINT=8,
+                  VALE_CALC=-1.07698003589195E+00,
+                 ),
+          )
+TEST_RESU(RESU=_F(RESULTAT=RESU_HK,
+                  NOM_CHAM='SIEF_ELGA',
+                  INST=1.0,
+                  NOM_CMP='SIXZ',
+                  MAILLE='M19',
+                  POINT=8,
+                  VALE_CALC=3.84900179459751E-02,
+                 ),
+          )
+
+# --- NEO-HOOKEEN INCR. K / CONTRAINTES DE CAUCHY --- #
+TEST_RESU(RESU=_F(RESULTAT=IN_NH_K,
+                  NOM_CHAM='SIEF_ELGA',
+                  INST=1.0,
+                  NOM_CMP='SIXX',
+                  MAILLE='M19',
+                  POINT=8,
+                  VALE_REFE=-2.65071182895011E-01,
+                  REFERENCE='AUTRE_ASTER',
+                  PRECISION=0.005,
+                  VALE_CALC=-2.64802404667516E-01,
+                 ),
+          )
+TEST_RESU(RESU=_F(RESULTAT=IN_NH_K,
+                  NOM_CHAM='SIEF_ELGA',
+                  INST=1.0,
+                  NOM_CMP='SIZZ',
+                  MAILLE='M19',
+                  POINT=8,
+                  VALE_REFE=-1.07698003589195E+00,
+                  REFERENCE='AUTRE_ASTER',
+                  VALE_CALC=-1.07675349370073E+00,
+                 ),
+          )
+TEST_RESU(RESU=_F(RESULTAT=IN_NH_K,
+                  NOM_CHAM='SIEF_ELGA',
+                  INST=1.0,
+                  NOM_CMP='SIXZ',
+                  MAILLE='M19',
+                  POINT=8,
+                  VALE_REFE=3.84900179459751E-02,
+                  REFERENCE='AUTRE_ASTER',
+                  VALE_CALC=3.84831735119252E-02,
+                 ),
+          )
+
+# --- NEO-HOOKEEN INCR. NU / CONTRAINTES DE CAUCHY --- #
+TEST_RESU(RESU=_F(RESULTAT=IN_NH_NU,
+                  NOM_CHAM='SIEF_ELGA',
+                  INST=1.0,
+                  NOM_CMP='SIXX',
+                  MAILLE='M19',
+                  POINT=8,
+                  VALE_REFE=-2.65071182895011E-01,
+                  REFERENCE='AUTRE_ASTER',
+                  PRECISION=0.005,
+                  VALE_CALC=-2.64802404667516E-01,
+                 ),
+          )
+TEST_RESU(RESU=_F(RESULTAT=IN_NH_NU,
+                  NOM_CHAM='SIEF_ELGA',
+                  INST=1.0,
+                  NOM_CMP='SIZZ',
+                  MAILLE='M19',
+                  POINT=8,
+                  VALE_REFE=-1.07698003589195E+00,
+                  REFERENCE='AUTRE_ASTER',
+                  VALE_CALC=-1.07675349370073E+00,
+                 ),
+          )
+TEST_RESU(RESU=_F(RESULTAT=IN_NH_NU,
+                  NOM_CHAM='SIEF_ELGA',
+                  INST=1.0,
+                  NOM_CMP='SIXZ',
+                  MAILLE='M19',
+                  POINT=8,
+                  VALE_REFE=3.84900179459751E-02,
+                  REFERENCE='AUTRE_ASTER',
+                  VALE_CALC=3.84831735119252E-02,
+                 ),
+          )
+
+# --- NEO-HOOKEEN TOTAL NU / CONTRAINTES DE CAUCHY --- #
+TEST_RESU(RESU=_F(RESULTAT=EL_NH_NU,
+                  NOM_CHAM='SIEF_ELGA',
+                  INST=1.0,
+                  NOM_CMP='SIXX',
+                  MAILLE='M19',
+                  POINT=8,
+                  VALE_REFE=-2.65071182895011E-01,
+                  REFERENCE='AUTRE_ASTER',
+                  PRECISION=0.005,
+                  VALE_CALC=-2.64802404667516E-01,
+                 ),
+          )
+TEST_RESU(RESU=_F(RESULTAT=EL_NH_NU,
+                  NOM_CHAM='SIEF_ELGA',
+                  INST=1.0,
+                  NOM_CMP='SIZZ',
+                  MAILLE='M19',
+                  POINT=8,
+                  VALE_REFE=-1.07698003589195E+00,
+                  REFERENCE='AUTRE_ASTER',
+                  VALE_CALC=-1.07675349370073E+00,
+                 ),
+          )
+TEST_RESU(RESU=_F(RESULTAT=EL_NH_NU,
+                  NOM_CHAM='SIEF_ELGA',
+                  INST=1.0,
+                  NOM_CMP='SIXZ',
+                  MAILLE='M19',
+                  POINT=8,
+                  VALE_REFE=3.84900179459751E-02,
+                  REFERENCE='AUTRE_ASTER',
+                  VALE_CALC=3.84831735119252E-02,
+                 ),
+          )
+# ======================================================================
+# FIN DES TESTS
+# ======================================================================
+
+# RESULTATS
+
+IMPR_RESU(FORMAT='RESULTAT',
+          RESU=(_F(RESULTAT=RESU_HK ,INST=1.0,NOM_CHAM='DEPL',),
+                _F(RESULTAT=IN_NH_K ,INST=1.0,NOM_CHAM='DEPL',),
+                _F(RESULTAT=IN_NH_NU,INST=1.0,NOM_CHAM='DEPL',),
+                _F(RESULTAT=EL_NH_NU,INST=1.0,NOM_CHAM='DEPL',),),);
+
+IMPR_RESU(FORMAT='RESULTAT',
+          RESU=(_F(RESULTAT=RESU_HK ,INST=1.0,NOM_CHAM='SIEF_ELGA',),
+                _F(RESULTAT=IN_NH_K ,INST=1.0,NOM_CHAM='SIEF_ELGA',),
+                _F(RESULTAT=IN_NH_NU,INST=1.0,NOM_CHAM='SIEF_ELGA',),
+                _F(RESULTAT=EL_NH_NU,INST=1.0,NOM_CHAM='SIEF_ELGA',),),);
+
+IMPR_RESU(FORMAT='RESULTAT',
+          RESU=(_F(RESULTAT=RESU_HK ,INST=1.0,NOM_CHAM='EPSI_ELGA',),
+                _F(RESULTAT=IN_NH_K ,INST=1.0,NOM_CHAM='EPSI_ELGA',),
+                _F(RESULTAT=IN_NH_NU,INST=1.0,NOM_CHAM='EPSI_ELGA',),
+                _F(RESULTAT=EL_NH_NU,INST=1.0,NOM_CHAM='EPSI_ELGA',),),);
+
+IMPR_RESU(FORMAT='MED',
+          UNITE=80,
+          RESU=(_F(RESULTAT=RESU_HK,),
+                _F(RESULTAT=IN_NH_K,),
+                _F(RESULTAT=IN_NH_NU,),
+                _F(RESULTAT=EL_NH_NU,),),);
+
+FIN();

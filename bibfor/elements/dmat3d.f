@@ -1,7 +1,7 @@
       SUBROUTINE DMAT3D(FAMI,MATER,INSTAN,POUM,IGAU,ISGAU,REPERE,
      &                  XYZGAU,D)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 21/01/2013   AUTEUR DELMAS J.DELMAS 
+C MODIF ELEMENTS  DATE 07/05/2013   AUTEUR DESOZA T.DESOZA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -121,12 +121,10 @@ C ---- CAS ELAS_HYPER
 C      ------------
       ELSEIF (PHENOM.EQ.'ELAS_HYPER') THEN
 
+        CALL HYPMAT(FAMI,IGAU,ISGAU,POUM,MATER,C10,C01,C20,K)
 
-         CALL HYPMAT(FAMI,IGAU,ISGAU,POUM,MATER,C10,C01,C20,K)
-
-         E  = 6.D0*(C10+C01)
-         NU = 0.5D0-E/K/6.D0
-
+        NU =(3.D0*K-4.0D0*(C10+C01))/(6.D0*K+4.0D0*(C10+C01))
+        E  = 4.D0*(C10+C01)*(UN+NU)
 
         COEF = UN/ ((UN+NU)* (UN-DEUX*NU))
         COEF1 = E* (UN-NU)*COEF
@@ -148,8 +146,6 @@ C      ------------
         D(4,4) = 0.5D0*COEF3
         D(5,5) = 0.5D0*COEF3
         D(6,6) = 0.5D0*COEF3
-
-
 
 C      --------------
 C ---- CAS ORTHOTROPE

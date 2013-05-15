@@ -1,0 +1,314 @@
+# MODIF  DATE 07/05/2013   AUTEUR DESOZA T.DESOZA 
+# TITRE  : REPONSE TRANSITOIRE D'UNE DALLE EN BETON ARME (GLRC_DAMAGE)
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
+# (AT YOUR OPTION) ANY LATER VERSION.                                                    
+#                                                                       
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
+#                                                                       
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# ======================================================================
+# RESPONSABLE SFAYOLLE S.FAYOLLE
+DEBUT(CODE=_F(NOM='SDNS106B',NIV_PUB_WEB='INTERNET',),DEBUG=_F(SDVERI='OUI'))
+
+EP=0.1
+t1=2.5E-3
+tmax=5.0E-3
+dt=1.0E-4
+pres=1.5E3
+
+alpha=0.000159155
+beta=1.608
+
+MAIL=LIRE_MAILLAGE(FORMAT='MED',);
+
+MAIL=DEFI_GROUP(reuse=MAIL,
+                MAILLAGE=MAIL,
+                CREA_GROUP_NO=(_F(GROUP_MA='A1A2',),
+                               _F(GROUP_MA='A4A3',),
+                               _F(GROUP_MA='A2A4',),
+                               _F(GROUP_MA='A3A1',),
+                               _F(GROUP_MA='DALLE',),
+                               _F(NOM='P04',
+                                  OPTION='ENV_SPHERE',
+                                  POINT=(0.4,0.2,),
+                                  RAYON=0.001,
+                                  PRECISION=0.0011,),),);
+
+MAIL=MODI_MAILLAGE(reuse=MAIL,
+                   MAILLAGE=MAIL,
+                   ORIE_NORM_COQUE=_F(GROUP_MA='DALLE',
+                                      VECT_NORM=(0.,0.,1.),
+                                      GROUP_NO='A1',),);
+
+MOD=AFFE_MODELE(MAILLAGE=MAIL,
+                AFFE=_F(TOUT='OUI',
+                        PHENOMENE='MECANIQUE',
+                        MODELISATION='DKTG',),);
+
+IMPR_RESU(MODELE=MOD,
+          RESU=_F(MAILLAGE=MAIL),);
+
+MAT_B=DEFI_MATERIAU(ELAS=_F(E=30000.E6,
+                            NU=0.2,
+                            RHO=2500.0,),
+                    BETON_ECRO_LINE=_F(D_SIGM_EPSI=0.0,
+                                       SYT=5.E6,
+                                       SYC=-35.E6,),);
+
+MAT_A1=DEFI_MATERIAU(ELAS=_F(E=2.E11,
+                             NU=0.0,),
+                     ECRO_LINE=_F(D_SIGM_EPSI=0.0,
+                                  SY=3.E9,),);
+
+MAT_A2=DEFI_MATERIAU(ELAS=_F(E=2.E11,
+                             NU=0.3,),
+                     ECRO_LINE=_F(D_SIGM_EPSI=0.0,
+                                  SY=5.E8,),);
+
+MAT=DEFI_GLRC(RELATION='GLRC_DAMAGE',
+              BETON=_F(MATER=MAT_B,
+                       EPAIS=EP,
+                       GAMMA=0.0,
+                       QP1=0.15,
+                       QP2=0.15,
+
+                       C1N1=87.3E6,C1N2=87.3E6,C1N3=87.3E6,
+                       C2N1=87.3E6,C2N2=87.3E6,C2N3=87.3E6,
+                       C1M1=14.8E6,C1M2=14.8E6,C1M3=14.8E6,
+                       C2M1=14.8E6,C2M2=14.8E6,C2M3=14.8E6,),
+              NAPPE=(_F(MATER=MAT_A1,
+                        OMX=5.65E-4,
+                        OMY=5.65E-4,
+                        RX=0.95,
+                        RY=0.95,),
+                     _F(MATER=MAT_A1,
+                        OMX=5.65E-4,
+                        OMY=5.65E-4,
+                        RX=-0.95,
+                        RY=-0.95,),),
+              LINER=_F(MATER=MAT_A2,
+                       OML=6.E-3,
+                       RLR=-1.,),
+              CABLE_PREC=_F(MATER=MAT_A2,
+                            OMX=4.56E-3,
+                            OMY=1.35E-2,
+                            RX=0.0,
+                            RY=0.0,
+                            PREX=-3.0E6,
+                            PREY=-3.0E6,),
+              INFO=2,);
+
+CHMAT=AFFE_MATERIAU(MAILLAGE=MAIL,
+                    AFFE=(_F(TOUT='OUI',MATER=MAT,),),);
+
+CARA_ELE=AFFE_CARA_ELEM(MODELE=MOD,
+                        COQUE=_F(GROUP_MA='MESH',
+                                 EPAIS=EP,
+                                 INER_ROTA='OUI',
+                                 ANGL_REP=(0.0,0.0),),);
+
+IMPR_CO(CONCEPT=_F(NOM=MAT),);
+
+COND_L=AFFE_CHAR_MECA(MODELE=MOD,
+                      DDL_IMPO=(_F(GROUP_NO='A1',
+                                   DX=0.0,
+                                   DY=0.0,
+                                   DZ=0.0,
+                                   DRX=0.0,
+                                   DRY=0.0,
+                                   DRZ=0.0,),
+                                _F(GROUP_NO='A3A1',
+                                   DZ=0.0,
+                                   DX=0.0,),
+                                _F(GROUP_NO='A2A4',
+                                   DZ=0.0,
+                                   DX=0.0,),),);
+
+import math;
+
+def finst(tim,t1):
+ if tim>t1 :
+   res = 1.0
+ elif tim>2./3.*t1 :
+   res = -0.5 + 3.0*(tim/t1) - 1.5*(tim/t1)**2
+ elif tim>1./3.*t1 :
+   res = (tim/t1)**2
+ else :
+   res = 1.5 * (tim/t1)**2
+ return res
+
+f_char=FORMULE(NOM_PARA='INST',VALE='finst(INST,t1)');
+
+ASSEMBLAGE(MODELE=MOD,
+           CHAM_MATER=CHMAT,
+           CARA_ELEM=CARA_ELE,
+           CHARGE=COND_L,
+           NUME_DDL=CO('NUM_DYN'),
+           SOLVEUR=_F(METHODE='MULT_FRONT',
+                      RENUM='METIS',),
+           MATR_ASSE=(_F(MATRICE=CO('MATRRIGI'),
+                         OPTION='RIGI_MECA',),
+                      _F(MATRICE=CO('MATRMASS'),
+                         OPTION='MASS_MECA',),),);
+
+COND_P=AFFE_CHAR_MECA(MODELE=MOD,
+                      FORCE_NODALE=_F(GROUP_NO='DALLE',
+                                      FZ=-pres,),);
+
+inst1=DEFI_LIST_REEL(DEBUT=0.0,
+                     INTERVALLE=(_F(JUSQU_A = t1,PAS = dt),),);
+
+inst2=DEFI_LIST_REEL(DEBUT=t1,
+                     INTERVALLE=(_F(JUSQU_A = tmax,PAS = dt),),);
+
+chf1=CALC_FONC_INTERP(FONCTION=f_char,
+                      LIST_PARA=inst1,
+                      NOM_PARA='INST',
+                      PROL_DROITE='CONSTANT',
+                      PROL_GAUCHE='CONSTANT',
+                      INFO=2,);
+
+RESU1=DYNA_NON_LINE(MODELE=MOD,
+                    CHAM_MATER=CHMAT,
+                    CARA_ELEM=CARA_ELE,
+                    COMP_INCR=_F(RELATION='GLRC_DAMAGE',),
+                    INCREMENT=_F(LIST_INST=inst1,
+                                 PRECISION=1.E-1,
+                                 INST_FIN=t1,),
+                    EXCIT=(_F(CHARGE=COND_L,),
+                           _F(CHARGE=COND_P,
+                              FONC_MULT=chf1,),),
+                    NEWTON=_F(MATRICE='TANGENTE',
+                              REAC_ITER=1,
+                              REAC_INCR=1,),
+                    CONVERGENCE=_F(RESI_GLOB_RELA=1.E-6,
+                                   RESI_GLOB_MAXI=1.E0,
+                                   ITER_GLOB_MAXI=15,),
+                    AMOR_RAYL_RIGI = 'ELASTIQUE',
+                    SCHEMA_TEMPS=_F(SCHEMA='NEWMARK',
+                                    FORMULATION='DEPLACEMENT',),
+                    ARCHIVAGE=_F(LIST_INST=inst1,),);
+
+F_DEP=RECU_FONCTION(RESULTAT=RESU1,INTERPOL='LIN',NOM_CHAM='DEPL',
+                    NOM_CMP='DZ',GROUP_NO='P04',
+                    LIST_INST=inst1,PRECISION=1.0E-7);
+
+F_VIT=RECU_FONCTION(RESULTAT=RESU1,INTERPOL='LIN',NOM_CHAM='VITE',
+                    NOM_CMP='DZ',GROUP_NO='P04',
+                    LIST_INST=inst1,PRECISION=1.0E-7);
+
+F_ACC=RECU_FONCTION(RESULTAT=RESU1,INTERPOL='LIN',NOM_CHAM='ACCE',
+                    NOM_CMP='DZ',GROUP_NO='P04',
+                    LIST_INST=inst1,PRECISION=1.0E-7);
+
+RESU2=DYNA_NON_LINE(ETAT_INIT=_F(INST_ETAT_INIT=t1,
+                                 EVOL_NOLI=RESU1),
+                    MODELE=MOD,
+                    CHAM_MATER=CHMAT,
+                    CARA_ELEM=CARA_ELE,
+                    COMP_INCR=_F(RELATION='GLRC_DAMAGE',),
+                    INCREMENT=_F(LIST_INST=inst2,
+                                 PRECISION=1.E-1,
+                                 INST_INIT=t1,
+                                 INST_FIN=tmax,),
+                    EXCIT=(_F(CHARGE=COND_L,),
+                           _F(CHARGE=COND_P,
+                              FONC_MULT=chf1,),),
+                    NEWTON=_F(MATRICE='TANGENTE',
+                              REAC_ITER=1,
+                              REAC_INCR=1,),
+                    CONVERGENCE=_F(RESI_GLOB_RELA=1.E-6,
+                                   RESI_GLOB_MAXI=1.E0,
+                                   ITER_GLOB_MAXI=15,),
+                    AMOR_RAYL_RIGI='ELASTIQUE',
+                    SCHEMA_TEMPS=_F(SCHEMA='NEWMARK',
+                                    FORMULATION='DEPLACEMENT',),
+                    ARCHIVAGE=_F(LIST_INST=inst2,),);
+
+F_DEP2=RECU_FONCTION(RESULTAT=RESU2,INTERPOL='LIN',NOM_CHAM='DEPL',
+                     NOM_CMP='DZ',GROUP_NO='P04',
+                     LIST_INST=inst2,PRECISION=1.0E-7);
+
+F_VIT2=RECU_FONCTION(RESULTAT=RESU2,INTERPOL='LIN',NOM_CHAM='VITE',
+                     NOM_CMP='DZ',GROUP_NO='P04',
+                     LIST_INST=inst2,PRECISION=1.0E-7);
+
+F_ACC2=RECU_FONCTION(RESULTAT=RESU2,INTERPOL='LIN',NOM_CHAM='ACCE',
+                     NOM_CMP='DZ',GROUP_NO='P04',
+                     LIST_INST=inst2,PRECISION=1.0E-7);
+
+
+dep1 = -4.0923757711525E-04
+vit1 = -4.9849070537762E-01
+acc1 = -5.6181927143814E+01
+dep2 = -1.8986102890030E-04
+vit2 =  3.6524971389933E-01
+acc2 =  -7.9741553184037E+02
+
+TEST_FONCTION(VALEUR=(_F(VALE_CALC=-4.0923757711525002E-4,
+                         TOLE_MACHINE=1.0000000000000001E-05,
+                         VALE_PARA=2.5000000000000001E-3,
+                         NOM_PARA='INST',
+                         FONCTION=F_DEP,
+                         ),
+                      _F(VALE_CALC=-0.49849070537762002,
+                         TOLE_MACHINE=1.0000000000000001E-05,
+                         VALE_PARA=2.5000000000000001E-3,
+                         NOM_PARA='INST',
+                         FONCTION=F_VIT,
+                         ),
+                      _F(VALE_CALC=-56.181927143814001,
+                         TOLE_MACHINE=1.0000000000000001E-05,
+                         VALE_PARA=2.5000000000000001E-3,
+                         NOM_PARA='INST',
+                         FONCTION=F_ACC,
+                         ),
+                      _F(VALE_CALC=-4.0923757711525002E-4,
+                         TOLE_MACHINE=1.0000000000000001E-05,
+                         VALE_PARA=2.5000000000000001E-3,
+                         NOM_PARA='INST',
+                         FONCTION=F_DEP2,
+                         ),
+                      _F(VALE_CALC=-0.49849070537762002,
+                         TOLE_MACHINE=1.0000000000000001E-05,
+                         VALE_PARA=2.5000000000000001E-3,
+                         NOM_PARA='INST',
+                         FONCTION=F_VIT2,
+                         ),
+                      _F(VALE_CALC=-56.181927143814001,
+                         TOLE_MACHINE=1.0000000000000001E-05,
+                         VALE_PARA=2.5000000000000001E-3,
+                         NOM_PARA='INST',
+                         FONCTION=F_ACC2,
+                         ),
+                      _F(VALE_CALC=-1.898610289003E-4,
+                         TOLE_MACHINE=1.0000000000000001E-05,
+                         VALE_PARA=5.0000000000000001E-3,
+                         NOM_PARA='INST',
+                         FONCTION=F_DEP2,
+                         ),
+                      _F(VALE_CALC=0.36524971389932998,
+                         TOLE_MACHINE=1.0000000000000001E-05,
+                         VALE_PARA=5.0000000000000001E-3,
+                         NOM_PARA='INST',
+                         FONCTION=F_VIT2,
+                         ),
+                      _F(VALE_CALC=-797.41553184037002,
+                         TOLE_MACHINE=1.0000000000000001E-05,
+                         VALE_PARA=5.0000000000000001E-3,
+                         NOM_PARA='INST',
+                         FONCTION=F_ACC2,
+                         ),
+                      ),);
+
+FIN();

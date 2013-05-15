@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 29/04/2013   AUTEUR DELMAS J.DELMAS 
+#& MODIF COMMANDE  DATE 07/05/2013   AUTEUR DESOZA T.DESOZA 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -21,15 +21,16 @@ AFFE_CHAR_MECA=OPER(nom="AFFE_CHAR_MECA",op=   7,sd_prod=char_meca,
                     fr="Affectation de charges et conditions aux limites mécaniques constantes",
                      reentrant='n',
             UIinfo={"groupes":("Chargements","Mécanique",)},
-         regles=(AU_MOINS_UN('DDL_IMPO','FACE_IMPO','CHAMNO_IMPO','LIAISON_DDL','LIAISON_XFEM','FORCE_NODALE',
-                             'FORCE_FACE','FORCE_ARETE','FORCE_CONTOUR','FORCE_INTERNE',
-                             'PRES_REP','FORCE_POUTRE','FORCE_COQUE','LIAISON_OBLIQUE',
-                             'FORCE_ELEC','INTE_ELEC','PESANTEUR','ROTATION','IMPE_FACE',
-                             'VITE_FACE','RELA_CINE_BP','PRE_EPSI','ARETE_IMPO',
-                             'LIAISON_GROUP','LIAISON_UNIF','FLUX_THM_REP','LIAISON_SOLIDE',
-                             'LIAISON_ELEM','ONDE_FLUI','LIAISON_CHAMNO','VECT_ASSE','LIAISON_COQUE',
-                             'LIAISON_MAIL','LIAISON_CYCL','FORCE_TUYAU',
-                             'EFFE_FOND','EVOL_CHAR','DDL_POUTRE','FORCE_SOL','LIAISON_RBE3',),
+         regles=(AU_MOINS_UN('EVOL_CHAR','PESANTEUR','ROTATION','DDL_IMPO','DDL_POUTRE','FACE_IMPO',
+                             'CHAMNO_IMPO','ARETE_IMPO',
+                             'LIAISON_DDL','LIAISON_OBLIQUE','LIAISON_GROUP','LIAISON_MAIL',
+                             'LIAISON_CYCL','LIAISON_SOLIDE','LIAISON_ELEM','LIAISON_UNIF',
+                             'LIAISON_CHAMNO','LIAISON_RBE3','LIAISON_INTERF','LIAISON_XFEM',
+                             'VECT_ASSE',
+                             'FORCE_NODALE','FORCE_FACE','FORCE_ARETE','FORCE_CONTOUR','FORCE_INTERNE',
+                             'PRE_SIGM','PRES_REP','EFFE_FOND','PRE_EPSI','FORCE_POUTRE','FORCE_TUYAU',
+                             'FORCE_COQUE','LIAISON_COQUE','RELA_CINE_BP','FORCE_ELEC','INTE_ELEC',
+                             'IMPE_FACE','VITE_FACE','ONDE_FLUI','FLUX_THM_REP','FORCE_SOL',),
                          ),
          VERI_NORM       =SIMP(statut='f',typ='TXM',defaut="OUI",into=("OUI","NON") ),
          MODELE          =SIMP(statut='o',typ=(modele_sdaster) ),

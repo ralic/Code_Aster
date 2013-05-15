@@ -1,4 +1,4 @@
-#@ MODIF algeline4 Messages  DATE 14/01/2013   AUTEUR BRIE N.BRIE 
+#@ MODIF algeline4 Messages  DATE 07/05/2013   AUTEUR DESOZA T.DESOZA 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -30,18 +30,16 @@ cata_msg = {
 """),
 
 3 : _(u"""
- Erreur lors de la résolution d'un système linéaire (GCPC) :
- Non convergence  avec le nombre d'itérations autorisé :  %(i1)d
-   norme du résidu (absolu)  :  %(r1)f
-   norme du résidu (relatif) :  %(r2)f
+ Solveur GCPC :
+ La résolution du système linéaire a échoué car le critère de convergence n'a pu être satisfait avec le nombre d'itérations autorisées.
+   norme du résidu relatif après %(i1)d itérations :  %(r1)f
+   critère de convergence à satisfaire             :  %(r2)f
 
  Conseils :
-  * Vous pouvez augmenter le nombre d'itérations autorisées (SOLVEUR/NMAX_ITER).
-  * Vous pouvez aussi augmenter le niveau de remplissage pour la factorisation
-    incomplète (SOLVEUR/NIVE_REMPLISSAGE).
-  * Dans une commande non-linéaire (STAT_NON_LINE par exemple) vous pouvez aussi essayer de
-    diminuer la précision demandée pour la convergence (SOLVEUR/RESI_RELA), mais c'est plus
-    risqué car cela peut empêcher la convergence de l'algorithme non-linéaire.
+  * Augmentez le nombre d'itérations autorisées (SOLVEUR/NMAX_ITER).
+  * Vous pouvez aussi augmenter le niveau de remplissage pour la factorisation incomplète (SOLVEUR/NIVE_REMPLISSAGE).
+  * Si vous utilisez une commande non-linéaire (STAT_NON_LINE par exemple), diminuez la précision demandée pour la convergence (SOLVEUR/RESI_RELA).
+    Prenez garde cependant car cela peut empêcher la convergence de l'algorithme non-linéaire.
 """),
 
 4 : _(u"""
@@ -64,17 +62,16 @@ Risques & conseils :
 """),
 
 6 : _(u"""
- Erreur lors de la résolution d'un système linéaire (GCPC) :
- Non convergence  avec le nombre d'itérations autorisé :  %(i1)d
-   norme du résidu (absolu)  :  %(r1)f
-   norme du résidu (relatif) :  %(r2)f
+ Solveur GCPC :
+ La résolution du système linéaire a échoué car le critère de convergence n'a pu être satisfait avec le nombre d'itérations autorisées.
+   norme du résidu relatif après %(i1)d itérations :  %(r1)f
+   critère de convergence à satisfaire             :  %(r2)f
 
  Conseils :
-  * Vous pouvez augmenter le nombre d'itérations autorisées (SOLVEUR/NMAX_ITER).
+  * Augmentez le nombre d'itérations autorisées (SOLVEUR/NMAX_ITER).
   * Vous pouvez aussi réactualiser plus souvent le préconditionneur en diminuant la valeur du mot-clé SOLVEUR/REAC_PRECOND.
-  * Dans une commande non-linéaire (STAT_NON_LINE par exemple) vous pouvez aussi essayer de
-    diminuer la précision demandée pour la convergence (SOLVEUR/RESI_RELA), mais c'est plus
-    risqué car cela peut empêcher la convergence de l'algorithme non-linéaire.
+  * Si vous utilisez une commande non-linéaire (STAT_NON_LINE par exemple), diminuez la précision demandée pour la convergence (SOLVEUR/RESI_RELA).
+    Prenez garde cependant car cela peut empêcher la convergence de l'algorithme non-linéaire.
 """),
 
 7 : _(u"""
@@ -100,7 +97,7 @@ Risques & conseils :
  Votre problème modal n'est pas un problème généralisé à matrices réelles symétriques :
  il comporte des matrices non symétriques et/ou complexes, ou bien il s'agit d'un problème quadratique.
  Son spectre n'est donc pas uniquement restreint à l'axe réel, il représente une zone du plan complexe.
- 
+
  Conseil :
  Il faut donc relancer votre calcul avec le mot-clé TYPE_RESU='MODE_COMPLEXE' et les opérandes associées.
 """),
@@ -163,7 +160,7 @@ Risques & conseils :
 
 19 : _(u"""
  Matrice de masse non définie.
- 
+
  Conseil : essayer un autre algorithme de résolution.
 """),
 

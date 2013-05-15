@@ -1,9 +1,9 @@
       SUBROUTINE HYPELA(FAMI  ,KPG   ,KSP   ,POUM  ,NDIM  ,
      &                  TYPMOD,IMATE ,COMPOR,CRIT  ,EPS   ,
      &                  SIG   ,DSIDEP,CODRET)
-C     
+C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 09/03/2010   AUTEUR ABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 07/05/2013   AUTEUR DESOZA T.DESOZA 
 C ======================================================================
 C COPYRIGHT (C) 2005 UCBL LYON1 - T. BARANGER     WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -39,7 +39,7 @@ C     LOI DE COMPORTEMENT HYPERELASTIQUE DE SIGNORINI
 C
 C     C10 (I1-3) + C01 (I2-3)+ C20 (I1-3)^2 + K/2(J-1)²
 C
-C     POUR LES ELEMENTS ISOPARAMETRIQUES 3D, CP, et DP
+C     POUR LES ELEMENTS ISOPARAMETRIQUES 3D, CP, ET DP
 C
 C     CONTRAINTES ET MATRICE TANGENTE EN COMP_ELAS
 C
@@ -57,10 +57,6 @@ C                                   0 = EN VITESSE     >SYMETRIQUE
 C                                   1 = EN INCREMENTAL >NON-SYMETRIQUE
 C                             (3) = VALEUR TOLERANCE DE CONVERGENCE
 C                                    (RESI_INTE_RELA == RESCREL)
-C IN  OPTION : OPTION DEMANDEE : RIGI_MECA_TANG -> SIG    DSIDEP
-C                                FULL_MECA      -> SIG VI DSIDEP
-C                                RAPH_MECA      -> SIG VI
-C                                RUPTURE        -> SIG VI ENERGI
 C IN  IMATE  : ADRESSE DU MATERIAU CODE
 C IN  COMPOR  : COMPORTEMENT  (1) = TYPE DE RELATION COMPORTEMENT
 C                             (2) = NB VARIABLES INTERNES / PG
@@ -69,42 +65,22 @@ C                             (4) = COMP_ELAS (OU COMP_INCR)
 C IN  FAMI   : FAMILLE DE POINTS DE GAUSS
 C IN  KPG    : NUMERO DU POINT DE GAUSS
 C IN  KSP    : NUMERO DU SOUS-POINT DE GAUSS
-C IN  EPS     : DEFORMATION (SI C_PLAN EPS(3) EST EN FAIT CALCULE)
-C OUT SIG     : CONTRAINTES
-C OUT DSIDEP  : MATRICE TANGENTE
-C OUT CODRET  : CODE RETOUR CONVERGENCE COMPORTEMENT
-
-
-C IN  NDIM    : DIMENSION DE L'ESPACE
-C IN  TYPMOD  : TYPE DE MODELISATION
-C IN  IMATE   : NATURE DU MATERIAU
-C IN  COMPOR  : COMPORTEMENT  (1) = TYPE DE RELATION COMPORTEMENT
-C                             (2) = NB VARIABLES INTERNES / PG
-C                             (3) = HYPOTHESE SUR LES DEFORMATIONS
-C                             (4) = COMP_ELAS (OU COMP_INCR)
-C IN  CRIT    : CRITERES DE CONVERGENCE LOCAUX
-C                             (1) = NB ITERATIONS MAXI A CONVERGENCE
-C                                   (ITER_INTE_MAXI == ITECREL)
-C                             (2) = TYPE DE JACOBIEN A T+DT
-C                                   (TYPE_MATR_COMP == MACOMP)
-C                                   0 = EN VITESSE     >SYMETRIQUE
-C                                   1 = EN INCREMENTAL >NON-SYMETRIQUE
-C                             (3) = VALEUR TOLERANCE DE CONVERGENCE
-C                                    (RESI_INTE_RELA == RESCREL)
-C IN  EPS     : DEFORMATION (SI C_PLAN EPS(3) EST EN FAIT CALCULE)
-C OUT SIG     : CONTRAINTES
-C OUT DSIDEP  : MATRICE TANGENTE
+C IN  EPS    : DEFORMATION (SI C_PLAN EPS(3) EST EN FAIT CALCULE)
+C IN  POUM   : '-' POUR VARIABLES DE COMMANDE
+C OUT SIG    : CONTRAINTES
+C OUT DSIDEP : MATRICE TANGENTE
 C OUT CODRET : CODE RETOUR ERREUR INTEGRATION (1 SI PROBLEME, 0 SINON)
 C
 C ----------------------------------------------------------------------
 C
       INTEGER     I,J,L,M
       REAL*8      C11,C22,C12,C33,C13,C23
+      REAL*8      EPSTOT(6)
       REAL*8      CVOL(6,6),CISO(6,6)
-      REAL*8      SVOL(6),SISO(6)      
+      REAL*8      SVOL(6),SISO(6)
       REAL*8      C10,C01,C20,K
       INTEGER     NITMAX
-      REAL*8      EPSI      
+      REAL*8      EPSI
 C
 C ----------------------------------------------------------------------
 C
@@ -115,7 +91,7 @@ C
       EPSI   = CRIT(3)
       CALL ASSERT(COMPOR(4).EQ.'COMP_ELAS')
 C
-C --- LECTURE DES CARACTERISTIQUES ELASTIQUES
+C --- LECTURE DES CARACTERISTIQUES MATERIAU
 C
       IF ((COMPOR(1)(1:10).EQ. 'ELAS_HYPER')) THEN
         CALL HYPMAT(FAMI  ,KPG   ,KSP   ,POUM  ,IMATE ,
@@ -128,16 +104,25 @@ C --- A PRIORI ON A CONVERGE
 C
       CODRET = 0
 C
+C --- PRE-TRAITEMENT DES DEFORMATIONS (PAS DE NOTATION DE VOIGT)
+C
+      DO 10 I=1,3
+        EPSTOT(  I)=EPS(  I)
+        EPSTOT(3+I)=EPS(3+I)/SQRT(2.D0)
+ 10   CONTINUE
+C
 C --- CALCUL CONTRAINTES ET MATRICE TANGENTE
 C
-      IF (TYPMOD(1) .EQ. '3D'.OR.TYPMOD(1) .EQ. '3D_SI') THEN
+      IF (TYPMOD(1)     .EQ. '3D'     .OR.
+     &    TYPMOD(1)     .EQ. '3D_SI'  .OR.
+     &    TYPMOD(1)(1:6).EQ. 'D_PLAN'     ) THEN
 C --- CALCUL DES ELONGATIONS
-        C11 = 2.D0*EPS(1)+1.D0
-        C12 = 2.D0*EPS(4)
-        C22 = 2.D0*EPS(2)+1.D0
-        C33 = 2.D0*EPS(3)+1.D0
-        C13 = 2.D0*EPS(5)
-        C23 = 2.D0*EPS(6)
+        C11 = 2.D0*EPSTOT(1)+1.D0
+        C12 = 2.D0*EPSTOT(4)
+        C22 = 2.D0*EPSTOT(2)+1.D0
+        C33 = 2.D0*EPSTOT(3)+1.D0
+        C13 = 2.D0*EPSTOT(5)
+        C23 = 2.D0*EPSTOT(6)
 C --- CALCUL DES CONTRAINTES ISOTROPIQUES
         CALL HYP3CI(C11   ,C22   ,C33   ,C12   ,C13   ,
      &              C23   ,C10   ,C01   ,C20   ,SISO  ,
@@ -145,7 +130,7 @@ C --- CALCUL DES CONTRAINTES ISOTROPIQUES
         IF (CODRET.EQ.1) THEN
           GOTO 99
         END IF
-C --- CALCUL DES CONTRAINTES VOLUMIQUES   
+C --- CALCUL DES CONTRAINTES VOLUMIQUES
         CALL HYP3CV(C11   ,C22   ,C33   ,C12   ,C13   ,
      &              C23   ,K     ,SVOL  ,CODRET)
         IF (CODRET.EQ.1) THEN
@@ -158,24 +143,30 @@ C --- CALCUL DE LA MATRICE TANGENTE (PARTIE ISOTROPIQUE)
         IF (CODRET.EQ.1) THEN
           GOTO 99
         END IF
-C --- CALCUL DE LA MATRICE TANGENTE (PARTIE VOLUMIQUE)        
+C --- CALCUL DE LA MATRICE TANGENTE (PARTIE VOLUMIQUE)
         CALL HYP3DV(C11   ,C22   ,C33   ,C12   ,C13   ,
      &              C23   ,K     ,CVOL  ,CODRET)
         IF (CODRET.EQ.1) THEN
           GOTO 99
         END IF
 C --- ASSEMBLAGE VOLUMIQUE/ISOTROPIQUE
-        DO 40 I=1,6
-          SIG(I) = SISO(I)+SVOL(I)
-          DO 30 J=1,6
-            DSIDEP(I,J) = CISO(I,J)+CVOL(I,J)
- 30       CONTINUE
- 40     CONTINUE
+C --- ON CORRIGE A CE NIVEAU LES TERMES LIES AU CISAILLEMENT
+C --- A TERME IL FAUDRA RE-ECRIRE LES ROUTINES D'INTEGRATION
+        DO 30 I=1,3
+          SIG(  I) =  SISO(  I)+SVOL(  I)
+          SIG(3+I) = (SISO(3+I)+SVOL(3+I))/2.D0
+          DO 20 J=1,3
+            DSIDEP(  I,  J) =  CISO(  I,  J)+CVOL(  I,  J)
+            DSIDEP(3+I,  J) = (CISO(3+I,  J)+CVOL(3+I,  J))/SQRT(2.D0)
+            DSIDEP(  I,3+J) = (CISO(  I,3+J)+CVOL(  I,3+J))/SQRT(2.D0)
+            DSIDEP(3+I,3+J) = (CISO(3+I,3+J)+CVOL(3+I,3+J))/     2.D0
+ 20       CONTINUE
+ 30     CONTINUE
       ELSE IF (TYPMOD(1)(1:6) .EQ. 'C_PLAN') THEN
 C --- CALCUL DES ELONGATIONS
-        C11 = 2.D0*EPS(1)+1.D0
-        C12 = 2.D0*EPS(4)
-        C22 = 2*EPS(2)+1.D0
+        C11 = 2.D0*EPSTOT(1)+1.D0
+        C12 = 2.D0*EPSTOT(4)
+        C22 = 2.D0*EPSTOT(2)+1.D0
         C33 = 1.D0
 C --- CALCUL DES CONTRAINTES
         CALL HYPCPC(C11   ,C22   ,C33   ,C12   ,K     ,
@@ -189,35 +180,33 @@ C --- CALCUL DE LA MATRICE TANGENTE
      &              C10   ,C01   ,C20   ,DSIDEP,CODRET)
         IF (CODRET.EQ.1) THEN
           GOTO 99
-        END IF 
-        DO 130 M=1,2*NDIM
-          IF (M.EQ.3) GOTO 130
-          DO 140 L=1,2*NDIM
-            IF (L.EQ.3) GO TO 140
+        END IF
+C --- ON CORRIGE A CE NIVEAU LES TERMES LIES AU CISAILLEMENT
+C --- A TERME IL FAUDRA RE-ECRIRE LES ROUTINES D'INTEGRATION
+        DO 50 I=1,3
+          SIG(3+I) = SIG(3+I)/2.D0
+          DO 40 J=1,3
+            DSIDEP(3+I,  J) = DSIDEP(3+I,  J)/SQRT(2.D0)
+            DSIDEP(  I,3+J) = DSIDEP(  I,3+J)/SQRT(2.D0)
+            DSIDEP(3+I,3+J) = DSIDEP(3+I,3+J)/     2.D0
+ 40       CONTINUE
+ 50     CONTINUE
+C --- PRISE EN COMPTE DE L'HYPOTHESE DE CONTRAINTES PLANES DANS DSIDEP
+        DO 70 M=1,2*NDIM
+          IF (M.EQ.3) GOTO 70
+          DO 60 L=1,2*NDIM
+            IF (L.EQ.3) GOTO 60
               DSIDEP(M,L )= DSIDEP(M,L) -
      &                    1.D0/DSIDEP(3,3)*DSIDEP(M,3)*DSIDEP(3,L)
- 140      CONTINUE
- 130    CONTINUE
-      ELSE IF (TYPMOD(1)(1:6).EQ.'D_PLAN') THEN
-C --- CALCUL DES ELONGATIONS
-        C11 = 2.D0*EPS(1)+1.D0
-        C12 = 2.D0*EPS(4)
-        C22 = 2.D0*EPS(2)+1.D0
-C --- CALCUL DES CONTRAINTES
-        CALL HYPDPC(C11   ,C22   ,C12   ,K     ,C10   ,
-     &              C01   ,C20   ,SIG   ,CODRET) 
-        IF (CODRET.EQ.1) THEN
-          GOTO 99
-        END IF
-C --- CALCUL DE LA MATRICE TANGENTE
-        CALL HYPDPD(C11   ,C22   ,C12   ,K     ,C10   ,
-     &              C01   ,C20   ,DSIDEP,CODRET)
-        IF (CODRET.EQ.1) THEN
-          GOTO 99
-        END IF   
+ 60       CONTINUE
+ 70     CONTINUE
       ELSE
         CALL U2MESK('F','ELASHYPER_97',1,TYPMOD(1))
       ENDIF
-
+C
+C --- POST-TRAITEMENT DES CONTRAINTES (PAS DE NOTATION DE VOIGT)
+C
+      CALL DSCAL(3,SQRT(2.D0),SIG(4),1)
+C
  99   CONTINUE
       END

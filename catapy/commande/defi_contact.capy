@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 29/04/2013   AUTEUR DELMAS J.DELMAS 
+#& MODIF COMMANDE  DATE 07/05/2013   AUTEUR DESOZA T.DESOZA 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -100,7 +100,7 @@ DEFI_CONTACT=OPER(nom       = "DEFI_CONTACT",
                                   ALGO_RESO_GEOM = SIMP(statut='f',
                                                         typ='TXM',
                                                         into=("POINT_FIXE","NEWTON",),
-                                                        defaut="NEWTON"),
+                                                        defaut="POINT_FIXE"),
                                   b_algo_reso_geomNE = BLOC(condition = "ALGO_RESO_GEOM=='NEWTON'",
                                     RESI_GEOM      = SIMP(statut='f',typ='R',defaut=0.000001),),
 
@@ -157,7 +157,7 @@ DEFI_CONTACT=OPER(nom       = "DEFI_CONTACT",
                                    b_bouc_cont_maxi = BLOC(condition = "ITER_CONT_TYPE=='MAXI'",
                                      ITER_CONT_MAXI = SIMP(statut='f',typ='I',defaut = 30),
                                      ),
-                                   )    
+                                   )
                                  ),
 
            b_bouc_cont_xfem=BLOC(condition = "FORMULATION == 'XFEM' ",

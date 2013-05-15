@@ -1,4 +1,4 @@
-#@ MODIF petsc Messages  DATE 08/04/2013   AUTEUR DESOZA T.DESOZA 
+#@ MODIF petsc Messages  DATE 07/05/2013   AUTEUR DESOZA T.DESOZA 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -46,9 +46,13 @@ Solveur PETSc :
 
 5 : _(u"""
 Solveur PETSc :
-  Le nombre maximum d'itérations de l'algorithme (%(i1)d) a été atteint.
-  Vous pouvez soit augmenter ce chiffre à l'aide du mot-clé NMAX_ITER, soit augmenter RESI_RELA,
-  ou bien utiliser un préconditionneur plus précis, voire changer d'algorithme.
+ La résolution du système linéaire a échoué car le critère de convergence n'a pu être satisfait avec le nombre d'itérations autorisées (%(i1)d).
+
+ Conseils :
+  * Augmentez le nombre d'itérations autorisées (SOLVEUR/NMAX_ITER).
+  * Vérifiez la nature du problème résolu (symétrique ou non, mixte ou non, etc) et, le cas échéant, changez d'algorithme ou de préconditionneur (SOLVEUR/ALGORITHME ou SOLVEUR/PRE_COND).
+  * Si vous utilisez une commande non-linéaire (STAT_NON_LINE par exemple), diminuez la précision demandée pour la convergence (SOLVEUR/RESI_RELA).
+    Prenez garde cependant car cela peut empêcher la convergence de l'algorithme non-linéaire.
 """),
 
 6 : _(u"""

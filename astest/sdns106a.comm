@@ -1,10 +1,10 @@
-# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
+# MODIF  DATE 07/05/2013   AUTEUR DESOZA T.DESOZA 
 # RESPONSABLE SFAYOLLE S.FAYOLLE
 #  TITRE  : REPONSE TRANSITOIRE D'UNE DALLE EN BETON ARME (MODELE GLRC)
 # sdns106a.para = tps_job 180 mem_job 256Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -49,7 +49,7 @@ MAIL=DEFI_GROUP(reuse=MAIL,
                                   OPTION='ENV_SPHERE',
                                   POINT=(0.4,0.2,),
                                   RAYON=0.001,
-                                  PRECISION=0.0011),),);
+                                  PRECISION=0.0011,),),);
 
 MAIL=MODI_MAILLAGE(reuse=MAIL,
                    MAILLAGE=MAIL,
@@ -69,8 +69,9 @@ MAT_B=DEFI_MATERIAU(ELAS=_F(E=30000.E6,
                             NU=0.2,
                             RHO=2500.0,),
                     BETON_ECRO_LINE=_F(D_SIGM_EPSI=0.0,
-                                       SYT=5E6,
+                                       SYT=5.E6,
                                        SYC=-35.E6,),);
+
 MAT_A1=DEFI_MATERIAU(ELAS=_F(E=2.E11,
                              NU=0.0,),
                      ECRO_LINE=_F(D_SIGM_EPSI=0.0,
@@ -239,7 +240,7 @@ MP1Y=DEFI_FONCTION(NOM_PARA='X',
                           16140000.0000000,-150000.000000000,),
                    PROL_DROITE='LINEAIRE',
                    PROL_GAUCHE='LINEAIRE',);
-                   
+
 MP2Y=DEFI_FONCTION(NOM_PARA='X',
                    VALE=(-13640000.0000000,150000.000000000,
                          -7640000.00000000,-150000.000000000,
@@ -299,11 +300,6 @@ MAT=DEFI_GLRC(RELATION='GLRC_DAMAGE',
                        GAMMA=0.0,
                        QP1=0.15,
                        QP2=0.15,
-
-                       #MP1X_FO=MP1X,
-                       #MP2X_FO=MP2X,
-                       #MP1Y_FO=MP1Y,
-                       #MP2Y_FO=MP2Y,
 
                        C1N1=87.3E6,C1N2=87.3E6,C1N3=87.3E6,
                        C2N1=87.3E6,C2N2=87.3E6,C2N3=87.3E6,

@@ -6,5 +6,5 @@ P mpi_nbnoeud 1
 P testlist C
 
 F comm zzzz340a.comm D 1
-F datg hsnv132b.datg D 16
-F mmed hsnv132b.mmed D 20
+F datg ttlp101b.datg D 16
+F mmed ttlp101b.mmed D 20

@@ -1,9 +1,9 @@
-# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
+# MODIF  DATE 07/05/2013   AUTEUR DESOZA T.DESOZA 
 # TITRE VALIDATION DE LA LOI HYPER-ELASTIQUE SUR UN CUBE
 # ssnv187a.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -174,20 +174,10 @@ TEST_RESU(RESU=_F(NUME_ORDRE=20,
                   RESULTAT=RESU2,
                   NOM_CHAM='DEPL',
                   NOM_CMP='DY',
-                  VALE_CALC=-0.078330878,
+                  VALE_CALC=-0.078330978487501,
                   VALE_REFE=-0.078174999999999994,
                   CRITERE='RELATIF',
                   PRECISION=2.E-3,),
-          )
-
-TEST_RESU(RESU=_F(NUME_ORDRE=20,
-                  GROUP_NO='GM5',
-                  RESULTAT=RESU2,
-                  NOM_CHAM='DEPL',
-                  NOM_CMP='DY',
-                  VALE_CALC=-0.078330877899999998,
-                  CRITERE='RELATIF',
-                  ),
           )
 
 # MATERIAU HYPERELASTIQUE: SIGNORINI
