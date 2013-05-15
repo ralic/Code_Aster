@@ -6,4 +6,4 @@ P mpi_nbnoeud 1
 P testlist C
 
 F comm hpla100k.comm D 1
-F mmed hpla100k.mmed D 20
+F mmed hpla100e.mmed D 20

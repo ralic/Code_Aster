@@ -6,5 +6,4 @@ P mpi_nbnoeud 1
 P testlist C
 
 F comm tplp305d.comm D 1
-F datg tplp305d.datg D 16
-F mmed tplp305d.mmed D 20
+F mmed tplp305a.mmed D 20

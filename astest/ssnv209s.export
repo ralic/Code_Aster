@@ -6,4 +6,4 @@ P mpi_nbnoeud 1
 P testlist C
 
 F comm ssnv209s.comm D 1
-F mmed ssnv209s.mmed D 20
+F mmed ssnv209r.mmed D 20

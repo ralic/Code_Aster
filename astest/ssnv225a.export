@@ -6,6 +6,3 @@ P mpi_nbnoeud 1
 P testlist C
 
 F comm ssnv225a.comm D 1
-F libr ssnv225a.35 D 35
-F libr ssnv225a.36 D 36
-F libr ssnv225a.38 D 38

@@ -6,5 +6,4 @@ P mpi_nbnoeud 1
 P testlist C
 
 F comm ttlp101c.comm D 1
-F datg ttlp101c.datg D 16
 F mmed ttlp101c.mmed D 20

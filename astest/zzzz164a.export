@@ -6,7 +6,5 @@ P mpi_nbnoeud 1
 P testlist C
 
 F comm zzzz164a.comm D 1
-F mail zzzz164a.mail D 20
-F datg zzzz164a.datg D 16
 F libr zzzz164a.19 D 19
 F libr zzzz164a.21 D 21
