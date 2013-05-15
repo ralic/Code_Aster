@@ -1,0 +1,122 @@
+# MODIF  DATE 07/05/2013   AUTEUR NDEFFO M.NDEFFO 
+# TITRE BIFURCATION D UNE FISSURE DROITE XFEM
+# zzzz346a.para = tps_job 60 mem_job 256Mo ncpus 1 liste_test S
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
+# (AT YOUR OPTION) ANY LATER VERSION.                                                    
+#                                                                       
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
+#                                                                       
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# ======================================================================
+# zzzz346a.para=tps_job 60 mem_job 256Mo mem_aster 50 ncpus 1 liste_test S
+
+DEBUT(CODE=_F(NOM='ZZZZ346A',NIV_PUB_WEB='INTERNET'))
+
+PRE_GIBI();
+
+MAILLAGE=LIRE_MAILLAGE();
+
+cte=0.55
+
+def LN(x,y):
+  if y-cte+x<0 :
+    return -x
+  else :
+    return y-2*x-cte
+
+LSN=FORMULE(NOM_PARA=('X','Y'),VALE='LN(X,Y)');
+
+MAILLAGE=MODI_MAILLAGE(reuse =MAILLAGE,
+                       MAILLAGE=MAILLAGE,
+                       ORIE_PEAU_2D=_F(GROUP_MA=('LIG1','LIG2','LIG3','LIG4'
+                       ,),),
+                       );
+
+MODELE=AFFE_MODELE(MAILLAGE=MAILLAGE,
+                     AFFE=_F(TOUT='OUI',
+                              PHENOMENE='MECANIQUE',
+                              MODELISATION='D_PLAN'),
+                           );
+
+MAILLAGE=DEFI_GROUP(reuse =MAILLAGE,
+                    MAILLAGE=MAILLAGE,
+                    CREA_GROUP_NO=_F(NOM='NO_M',OPTION ='ENV_SPHERE',
+                                     POINT=(0.,0.5625),
+                                     RAYON=1.E-6,
+                                     PRECISION=1.E-6));
+
+FISS=DEFI_FISS_XFEM(MODELE=MODELE,
+                    TYPE_DISCONTINUITE='INTERFACE',
+                    DEFI_FISS=_F(FONC_LN=LSN));
+
+MODELEK=MODI_MODELE_XFEM(MODELE_IN=MODELE,
+                         FISSURE=FISS, #CONTACT='P2P1',
+                         INFO=1);
+
+MAT=DEFI_MATERIAU(ELAS=_F(E=210.E9,NU=0.,));
+
+CHAMPMA=AFFE_MATERIAU(MAILLAGE=MAILLAGE,MODELE=MODELEK,
+                 AFFE=_F(TOUT='OUI',MATER=MAT));
+
+CHAR=AFFE_CHAR_MECA(MODELE=MODELEK,
+                    DDL_IMPO=(_F(GROUP_MA='LIG2',DX=-1.,DY=0.),
+                              _F(GROUP_MA='LIG4',DX=1.,DY=0.),),
+                    );
+
+UTOT1=MECA_STATIQUE(MODELE=MODELEK,
+                    CHAM_MATER=CHAMPMA,
+                    EXCIT=(_F(CHARGE=CHAR)),
+                    SOLVEUR=_F(METHODE='MUMPS'),
+                    INFO=1);
+
+MA_XFEM=POST_MAIL_XFEM(MODELE = MODELEK,);
+
+MOD_VISU=AFFE_MODELE(MAILLAGE=MA_XFEM,
+                     AFFE=_F(GROUP_MA='SURF',
+                              PHENOMENE='MECANIQUE',
+                              MODELISATION='D_PLAN',),);
+
+RES_XFEM=POST_CHAM_XFEM(MODELE_VISU   = MOD_VISU,
+                        RESULTAT      = UTOT1,
+                        INFO=2);
+
+IMPR_RESU(FORMAT='GMSH',RESU=(_F(RESULTAT=RES_XFEM,)));
+
+TEST_RESU(RESU=(_F(CRITERE='ABSOLU',
+                   NUME_ORDRE=1,
+                   REFERENCE='ANALYTIQUE',
+                   #POINT=1,
+                   NOM_CMP='DX',
+                   PRECISION=1.E-12,
+                   VALE_CALC=-1.89E-15,
+                   VALE_REFE=0.0,
+                   GROUP_NO='NO_M',
+                   RESULTAT=UTOT1,
+                   NOM_CHAM='DEPL',
+                   VALE_ABS='NON'),
+                _F(CRITERE='ABSOLU',
+                   NUME_ORDRE=1,
+                   REFERENCE='ANALYTIQUE',
+                   #POINT=1,
+                   NOM_CMP='H1X',
+                   PRECISION=1.E-12,
+                   VALE_CALC=1.0,
+                   VALE_REFE=1.0,
+                   GROUP_NO='NO_M',
+                   RESULTAT=UTOT1,
+                   NOM_CHAM='DEPL',
+                   VALE_ABS='NON'),
+                ));
+
+
+FIN();
