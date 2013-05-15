@@ -1,4 +1,4 @@
-# MODIF  DATE 09/04/2013   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 06/05/2013   AUTEUR GREFFET N.GREFFET 
 # TITRE IMPACT D UNE BARRE DE TAYLOR ELASTOPLASTIQUE
 # sdnv103g.para = tps_job 300 mem_job 512Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -120,6 +120,16 @@ L_INST=DEFI_LIST_REEL(DEBUT=-1.E-5,
                                      NOMBRE=10,),
                                   _F(JUSQU_A=80.E-6,
                                      NOMBRE=316,),),);
+L_ARCH=DEFI_LIST_REEL(DEBUT=-1.E-5,
+                      INTERVALLE=(
+                                  _F(JUSQU_A=-2.5E-7,
+                                     NOMBRE=1,),
+                                  _F(JUSQU_A=0.,
+                                     NOMBRE=1,),
+                                  _F(JUSQU_A=2.5E-7,
+                                     NOMBRE=1,),
+                                  _F(JUSQU_A=80.E-6,
+                                     NOMBRE=1,),),);
 
 L_SAUV=DEFI_LIST_REEL(DEBUT=-1.E-5,
                       INTERVALLE=(_F(JUSQU_A=2.5E-7,
@@ -148,10 +158,49 @@ RESU=DYNA_NON_LINE(MODELE=MODE,
                                  GROUP_MA='VOL_RIG',),),
                    ETAT_INIT=_F(VITE=VIT_0,),
                    INCREMENT=_F(LIST_INST=DEFLIST,
+                                INST_FIN=0.,),
+                   SCHEMA_TEMPS=_F(SCHEMA='HHT',
+                                FORMULATION='DEPLACEMENT',
+                                MODI_EQUI='OUI',ALPHA=-0.6,),
+                   NEWTON=_F(
+                             REAC_INCR=1,
+                             MATRICE='TANGENTE',
+                             REAC_ITER=1,),
+                   SOLVEUR=_F(SYME='OUI',),
+
+                  SUIVI_DDL=(_F(NOM_CMP    ='V1',
+                                 NOM_CHAM   ='VARI_ELGA',
+                                 TOUT       = 'OUI',
+                                 EVAL_ELGA  ='MAX',
+                                 EVAL_CHAM ='MAX',),
+                              _F(NOM_CMP    ='V2',
+                                 NOM_CHAM   ='VARI_ELGA',
+                                 GROUP_MA = 'VOL',
+                                 EVAL_ELGA  ='MAX',
+                                 EVAL_CHAM ='MAX',),
+                                 ),
+
+                  ARCHIVAGE=_F(LIST_INST=L_ARCH),
+                   );
+RESU=DYNA_NON_LINE(reuse = RESU,
+                   MODELE=MODE,
+                   CHAM_MATER=CHMAT,
+                   EXCIT=_F(CHARGE=CH,),
+                   CONTACT = CHCONT,
+                   COMP_INCR=(_F(RELATION='VMIS_JOHN_COOK',
+                                 DEFORMATION='GDEF_LOG',
+                                 ALGO_INTE='BRENT',
+                                 ITER_INTE_MAXI=30,
+                                 TOUT='OUI',),
+                              _F(RELATION='ELAS',
+                                 DEFORMATION='PETIT',
+                                 GROUP_MA='VOL_RIG',),),
+                   ETAT_INIT=_F(EVOL_NOLI=RESU,),
+                   INCREMENT=_F(LIST_INST=DEFLIST,INST_INIT=0.,
                                 INST_FIN=2.5E-7,),
                    SCHEMA_TEMPS=_F(SCHEMA='HHT',
                                 FORMULATION='DEPLACEMENT',
-                                MODI_EQUI='NON',ALPHA=-0.6,),
+                                MODI_EQUI='OUI',ALPHA=-0.6,),
                    NEWTON=_F(
                              REAC_INCR=1,
                              MATRICE='TANGENTE',
