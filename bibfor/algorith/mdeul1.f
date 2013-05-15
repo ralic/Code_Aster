@@ -40,7 +40,7 @@ C
 C
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 05/02/2013   AUTEUR ALARCON A.ALARCON 
+C MODIF ALGORITH  DATE 14/05/2013   AUTEUR BERRO H.BERRO 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -112,7 +112,7 @@ C
       REAL*8       TPS1(4), RINT1, RINT2, CONV
       REAL*8       VALR(3)
       INTEGER      VALI(2), NBCONV, NBMXCV, N1
-      CHARACTER*8  TRAN, K8B
+      CHARACTER*8  TRAN, K8B, VVAR
       CHARACTER*19 MATPRE, MATASM
 C     ------------------------------------------------------------------
       INTEGER       ETAUSR
@@ -156,6 +156,7 @@ C
       ISTO4 = 0
       NBMOD1 = NEQGEN - 1
       NBSCHO = NBSAUV * 3 * NBCHOC
+      VVAR = 'NON'
 C  COUPLAGE EDYOS : CONVERGENCE EDYOS :
       CONV = 1.D0
       NBCONV = 0
@@ -169,8 +170,8 @@ C  PRECEDENTES EN CAS DE NON-CONVERGENCE EDYOS :
         CNPAL(IAPP)=' '
  111   CONTINUE
 C
-      CALL WKVECT('&&MDNEWM.AMOGYR','V V R8',NEQGEN*NEQGEN,JAMGY)
-      CALL WKVECT('&&MDNEWM.RIGGYR','V V R8',NEQGEN*NEQGEN,JRIGY)
+      CALL WKVECT('&&MDEUL1.AMOGYR','V V R8',NEQGEN*NEQGEN,JAMGY)
+      CALL WKVECT('&&MDEUL1.RIGGYR','V V R8',NEQGEN*NEQGEN,JRIGY)
       IF ( LAMOR ) THEN
         DO 100 IM = 1,NEQGEN
           AMOGEN(IM) = DEUX * AMOGEN(IM) * PULSAT(IM)
@@ -178,13 +179,11 @@ C
       ELSE
         CALL GETVTX(' ','VITESSE_VARIABLE',1,IARG,0,K8B,N1)
         IF(N1.NE.0)THEN
-           CALL GETVTX(' ','VITESSE_VARIABLE',1,IARG,1,K8B,N1)
-        ELSE
-           K8B=' '
+           CALL GETVTX(' ','VITESSE_VARIABLE',1,IARG,1,VVAR,N1)
         ENDIF
         VROTIN = 0.D0
         AROTIN = 0.D0
-        IF (K8B.EQ.'OUI') THEN
+        IF (VVAR.EQ.'OUI') THEN
           CALL FOINTE('F ',FONCV,1,'INST',TINIT,VROTIN,IER)
           CALL FOINTE('F ',FONCA,1,'INST',TINIT,AROTIN,IER)
           DO 113 IM = 1 , NEQGEN
@@ -401,27 +400,39 @@ C
 C
          IF (MOD(I,N100).EQ.0) CALL UTTCPU('CPU.MDEUL1','DEBUT',' ')
 C
-         VROT = 0.D0
-         AROT = 0.D0
-         IF (K8B.EQ.'OUI') THEN
-           CALL FOINTE('F ',FONCV,1,'INST',TEMPS,VROT,IER)
-           CALL FOINTE('F ',FONCA,1,'INST',TEMPS,AROT,IER)
-           DO 115 IM = 1 , NEQGEN
-             DO 116 JM = 1 , NEQGEN
+         IF (LAMOR) THEN
+           DO 110 IM = 1 , NEQGEN
+             DO 121 JM = 1 , NEQGEN
                IND = JM + NEQGEN*(IM-1)
-               ZR(JAMGY+IND-1) = AMOGEN(IND) + VROT * GYOGEN(IND)
-               ZR(JRIGY+IND-1) = RIGGEN(IND) + AROT * RGYGEN(IND)
- 116         CONTINUE
- 115       CONTINUE
-         ELSE
-           DO 119 IM = 1 , NEQGEN
-             DO 120 JM = 1 , NEQGEN
-               IND = JM + NEQGEN*(IM-1)
-               ZR(JAMGY+IND-1) = AMOGEN(IND)
-               ZR(JRIGY+IND-1) = RIGGEN(IND)
- 120         CONTINUE
- 119       CONTINUE
+C              --- LAMOR = .TRUE. ALORS COPIER LA LISTE DES AMORTISS. 
+C                  (TERMES DIAGONAUX) DANS LE VECTEUR DE TRAVAIL
+               ZR(JAMGY+IND-1) = AMOGEN(JM)
+ 121         CONTINUE
+ 110       CONTINUE
+         ELSE 
+           VROT = 0.D0
+           AROT = 0.D0
+           IF (VVAR.EQ.'OUI') THEN
+             CALL FOINTE('F ',FONCV,1,'INST',TEMPS,VROT,IER)
+             CALL FOINTE('F ',FONCA,1,'INST',TEMPS,AROT,IER)
+             DO 115 IM = 1 , NEQGEN
+               DO 116 JM = 1 , NEQGEN
+                 IND = JM + NEQGEN*(IM-1)
+                 ZR(JAMGY+IND-1) = AMOGEN(IND) + VROT * GYOGEN(IND)
+                 ZR(JRIGY+IND-1) = RIGGEN(IND) + AROT * RGYGEN(IND)
+ 116           CONTINUE
+ 115         CONTINUE
+           ELSE
+             DO 119 IM = 1 , NEQGEN
+               DO 120 JM = 1 , NEQGEN
+                 IND = JM + NEQGEN*(IM-1)
+                 ZR(JAMGY+IND-1) = AMOGEN(IND)
+                 ZR(JRIGY+IND-1) = RIGGEN(IND)
+ 120           CONTINUE
+ 119         CONTINUE
+           ENDIF
          ENDIF
+C
          DO 40 IM = 0,NBMOD1
 C           --- VITESSES GENERALISEES ---
             ZR(JVITE+IM) = ZR(JVITE+IM) + ( DT * ZR(JACCE+IM) )

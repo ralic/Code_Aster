@@ -16,9 +16,9 @@
       REAL*8       R8B,COEFM(*),PASSTO(*)
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 03/09/2012   AUTEUR TORKHANI M.TORKHANI 
+C MODIF ALGORITH  DATE 14/05/2013   AUTEUR BERRO H.BERRO 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -64,7 +64,7 @@ C
       REAL*8      VROT,VROTIN,AROT,AROTIN
       INTEGER     VALI(2),N1, IFM, NIV
       INTEGER     ETAUSR
-      CHARACTER*8 TRAN, K8B
+      CHARACTER*8 TRAN, K8B, VVAR
       CHARACTER*4 K4BID
       INTEGER      IARG
 C     ------------------------------------------------------------------
@@ -89,6 +89,7 @@ C
 C      
       ZERO   = 0.D0
       DEUX   = 2.D0
+      VVAR = 'NON'     
       DT2    = DT * DT
 C
       CALL GETVR8('SCHEMA_TEMPS','BETA',1,IARG,1,BETA,N1)
@@ -192,10 +193,13 @@ C           --- FACTORISATION DE LA MATRICE KTILDA ---
      &                           A5*AMOGEN(IM)*MASGEN(IND)
  120        CONTINUE
          ELSE
-           CALL GETVTX(' ','VITESSE_VARIABLE',1,IARG,1,K8B,N1)
+           CALL GETVTX(' ','VITESSE_VARIABLE',1,IARG,0,K8B,N1)
+           IF(N1.NE.0)THEN
+              CALL GETVTX(' ','VITESSE_VARIABLE',1,IARG,1,VVAR,N1)
+           ENDIF
            VROTIN = 0.D0
            AROTIN = 0.D0
-           IF (K8B.EQ.'OUI') THEN
+           IF (VVAR.EQ.'OUI') THEN
              CALL FOINTE('F ',FONCV,1,'INST',TINIT,VROTIN,IER)
              CALL FOINTE('F ',FONCA,1,'INST',TINIT,AROTIN,IER)
              DO 113 IM = 1 , NBMODE
@@ -323,7 +327,7 @@ C
             ELSE
               VROT = 0.D0
               AROT = 0.D0
-              IF (K8B.EQ.'OUI') THEN
+              IF (VVAR.EQ.'OUI') THEN
                  CALL FOINTE('F ',FONCV,1,'INST',TEMPS,VROT,IER)
                  CALL FOINTE('F ',FONCA,1,'INST',TEMPS,AROT,IER)
                  DO 115 IM = 1 , NBMODE
