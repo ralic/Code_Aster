@@ -1,4 +1,4 @@
-#@ MODIF rupture0 Messages  DATE 08/04/2013   AUTEUR LADIER A.LADIER 
+#@ MODIF rupture0 Messages  DATE 07/05/2013   AUTEUR LADIER A.LADIER 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -284,7 +284,6 @@ Il faut au moins trois noeuds dans le plan défini par les lèvres et perpendicula
 au fond de fissure. Le calcul est impossible. On extrapole les valeurs du point le plus proche.
 """),
 
-
 47: _(u"""
 Noeud %(k1)s
 """),
@@ -294,6 +293,14 @@ Le mot-clé 'FOND_FISS' est obligatoire avec l'option  %(k1)s.
 Veuillez le renseigner.
 """),
 
+49: _(u"""
+Le maillage ne permet pas de déterminer la taille des mailles en fond de fissure, et donc
+R_INF/R_SUP ou ABSC_CURV_MAXI seront obligatoires en post-traitement.
+-> Conseil :
+Pour ne plus avoir cette alarme, il faut revoir le maillage et faire en sorte que chaque noeud du fond
+de fissure soit connecté à au moins une arête faisant un angle inférieur à 60 degrés avec le vecteur de
+direction de propagation.
+"""),
 
 50: _(u"""
 Nombre de modes différent entre la base modale
@@ -323,7 +330,7 @@ Aucun instant ou numéro d'ordre trouvé.
 -> Attention: Le mot-clé EXCIT est facultatif, il n'est pas nécessaire dans tous les cas.
 Il n'est utile que si le résultat à post-traiter a été créé avec la commande CREA_RESU.
 -> Risque et Conseil :
-Si vous utilisez CALC_G en dehors des deux cas spécifiques précisés ci-dessus,
+Si vous utilisez CALC_G en dehors de ce cas spécifique,
 vérifiez la présence de tous les chargements ayant servi à créer le résultat.
 """),
 
