@@ -26,6 +26,7 @@ def configure(self):
         self.detect_math_lib()
     elif opts.maths_libs:
         self.check_opts_math_lib()
+    self.check_libm_after_files()
 
 ###############################################################################
 
@@ -39,6 +40,18 @@ def check_opts_math_lib(self):
 
     for lib in Utils.to_list(opts.maths_libs):
         check_lib(lib)
+
+@Configure.conf
+def check_libm_after_files(self):
+    """Avoid warning #10315: specifying -lm before files may supercede the
+    Intel(R) math library and affect performance"""
+    self.start_msg('Setting libm after files')
+    if '-lm' in self.env.LINKFLAGS_CLIB:
+        self.env.LINKFLAGS_CLIB.remove('-lm')
+        self.env.append_value('LIB_MATH', 'm')
+        self.end_msg('ok ("-lm" moved from LINKFLAGS_CLIB to LIB_MATH)')
+    else:
+        self.end_msg('nothing done')
 
 @Configure.conf
 def detect_math_lib(self):

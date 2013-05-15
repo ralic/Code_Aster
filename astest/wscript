@@ -1,0 +1,11 @@
+# encoding: utf-8
+
+import os.path as osp
+
+def build(self):
+    get_srcs = self.path.get_src().ant_glob
+    env = self.env_of_name('default')
+    self.install_files(
+        osp.join(*list(env.ASTERDATADIR + ['tests'])),
+        get_srcs('*', excl='wscript')
+    )

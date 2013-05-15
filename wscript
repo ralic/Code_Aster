@@ -57,6 +57,9 @@ def options(self):
     group.add_option('-E', '--embed-all', dest='embed_all',
                     action='store_true', default=False,
                     help='activate all embed-* options')
+    group.add_option('--install-tests', dest='install_tests',
+                    action='store_true', default=False,
+                    help='install the testcases files')
     self.recurse('bibfor')
     self.recurse('bibc')
     group.add_option('--ignore-fermetur', dest='add_fermetur',
@@ -122,6 +125,7 @@ def configure(self):
     self.recurse('bibc')
     self.load('legacy', tooldir='waftools')
     self.check_optimization_options()
+    self.env.install_tests = opts.install_tests
 
 def build(self):
     from Options import options as opts
@@ -137,7 +141,10 @@ def build(self):
     self.recurse('bibc')
 
     self.recurse('bibpyt')
-    for optional in ('materiau', 'datg', 'catapy', 'catalo'):
+    lsub = ['materiau', 'datg', 'catapy', 'catalo']
+    if opts.install_tests or self.env.install_tests:
+        lsub.extend(['astest', '../validation/astest'])
+    for optional in lsub:
         if osp.exists(osp.join(optional, 'wscript')):
             self.recurse(optional)
     self.load('scm_aster', tooldir='waftools')

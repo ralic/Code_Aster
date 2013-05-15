@@ -1,6 +1,7 @@
 # encoding: utf-8
 
 import os
+import os.path as osp
 from itertools import chain
 from waflib import Task, Utils, Errors
 
@@ -21,13 +22,14 @@ def configure(self):
 
 class create_asrun_files(Task.Task):
     def __init__(self, *k, **kw):
-        Task.Task.__init__(self, *k, **kw)
         self.src = kw['src']
         self._relevant_env_keys = ('PREFIX', 'DEFINES', 'PYTHON',
                                    'PYTHONARCHDIR', 'LIBPATH', 'LIBDIR',
-                                   'ASTERDATADIR', 'OPT_ENV')
+                                   'ASTERDATADIR', 'OPT_ENV', 'install_tests')
+        Task.Task.__init__(self, *k, **kw)
 
     def run(self):
+        from Options import options as opts
         cfg = self.outputs[0].abspath()
         prof = self.outputs[1].abspath()
         env = self.env.copy()
@@ -43,11 +45,18 @@ class create_asrun_files(Task.Task):
         dico['SRC'] = self.src
         dico['OPT_ENV'] = self.env['OPT_ENV'] and os.linesep.join(self.env['OPT_ENV']) or ''
         dico['ADDMEM'] = self.env['ADDMEM'] or 250
+        if self.env.install_tests or opts.install_tests:
+            dico['srctest'] = TMPL_TEST % '$ASTER_VERSION_DIR/tests'
+        else:
+            dico['srctest'] = os.linesep.join([
+                TMPL_TEST % '%(SRC)s/astest' % dico,
+                TMPL_TEST % '%(SRC)s/../validation/astest' % dico])
         open(cfg, 'w').write(TMPL_CONFIG_TXT % dico)
         open(prof, 'w').write(TMPL_PROFILE % dico)
         return 0
     
     def sig_explicit_deps(self):
+        #XXX seems not work
         m = Utils.md5()
         m.update(repr([self.env[k] for k in self._relevant_env_keys]))
         return m.digest()
@@ -56,6 +65,13 @@ def build(self):
     if not self.env.legacy:
         return
     tgt = ['config.txt', 'profile.sh']
+    # force rebuild
+    bldpath = self.path.get_bld().abspath()
+    for fname in tgt:
+        try:
+            os.remove(osp.join(bldpath, fname))
+        except (OSError, IOError):
+            pass
     cfg = create_asrun_files(src=self.path.abspath(), env=self.env)
     cfg.set_outputs(map(self.path.find_or_declare, tgt))
     self.add_to_group(cfg)
@@ -70,38 +86,38 @@ TMPL_CONFIG_TXT = r"""# Configuration file created by waftools/legacy
 #
 ENV_SH         | env     | -     | profile.sh
 ADDMEM         | memory  | -     | %(ADDMEM)s
-DEFS           | defined | ?     | %(DEFINES)s
+DEFS           | defined | -     | %(DEFINES)s
 #
-PYTHON         | python  | 2.7   | %(PYTHON)s
+PYTHON         | python  | -     | %(PYTHON)s
 #
-BIN_NODBG      | bin     | 11-04 | %(PREFIX)s/bin/aster
-BIN_DBG        | bin     | 11-04 | %(PREFIX)s/bin/asterd
-BINCMDE        | bin     | 11-04 | %(PYTHONARCHDIR)s/Cata
-BINELE         | bin     | 11-04 | $ASTER_VERSION_DIR/elements
-BINPICKLED     | bin     | 11-04 | %(SRC)s/build/release/catalo/cata_ele.pickled
+BIN_NODBG      | bin     | -     | %(PREFIX)s/bin/aster
+BIN_DBG        | bin     | -     | %(PREFIX)s/bin/asterd
+BINCMDE        | bin     | -     | %(PYTHONARCHDIR)s/Cata
+BINELE         | bin     | -     | $ASTER_VERSION_DIR/elements
+BINPICKLED     | bin     | -     | %(SRC)s/build/release/catalo/cata_ele.pickled
 #
-# pour as_run --messages, --get, --show...
-SRCFOR         | src     | 11-04 | %(SRC)s/bibfor
-SRCF90         | src     | 11-04 | %(SRC)s/bibf90
-SRCFERM        | src     | 11-04 | %(SRC)s/fermetur
-SRCC           | src     | 11-04 | %(SRC)s/bibc
-SRCPY          | src     | 11-04 | %(PYTHONARCHDIR)s
-SRCCATA        | src     | 11-04 | %(SRC)s/catalo
-SRCCAPY        | src     | 11-04 | %(SRC)s/catapy
-SRCTEST        | src     | 11-04 | %(SRC)s/astest
-SRCTEST        | src     | 11-04 | %(SRC)s/../validation/astest
-SRCTEST        | src     | 11-04 | %(SRC)s/../tests_data/astest
-SRCMAT         | src     | 11-04 | %(SRC)s/../data/materiau
-SRCHIST        | src     | 11-04 | %(SRC)s/histor
+# pour as_run --messages, --get, --show..., astout
+SRCFOR         | src     | -     | %(SRC)s/bibfor
+SRCF90         | src     | -     | %(SRC)s/bibf90
+SRCFERM        | src     | -     | %(SRC)s/fermetur
+SRCC           | src     | -     | %(SRC)s/bibc
+SRCPY          | src     | -     | %(PYTHONARCHDIR)s
+SRCCATA        | src     | -     | %(SRC)s/catalo
+SRCCAPY        | src     | -     | %(SRC)s/catapy
+%(srctest)s
+SRCMAT         | src     | -     | %(SRC)s/../data/materiau
+SRCHIST        | src     | -     | %(SRC)s/histor
 #
-REPPY          | exec    | 11-04 | Python
-ARGPYT         | exec    | 03-02 | Execution/E_SUPERV.py
-ARGEXE         | exec    | 03-02 | -eficas_path ./Python
+REPPY          | exec    | -     | Python
+ARGPYT         | exec    | -     | Execution/E_SUPERV.py
+ARGEXE         | exec    | -     | -eficas_path ./Python
 #
-REPOUT         | exec    | 11-04 | $ASTER_ROOT/outils
-REPMAT         | exec    | 02-05 | $ASTER_VERSION_DIR/materiau
-REPDEX         | exec    | 02-05 | $ASTER_VERSION_DIR/datg
+REPOUT         | exec    | -     | $ASTER_ROOT/outils
+REPMAT         | exec    | -     | $ASTER_VERSION_DIR/materiau
+REPDEX         | exec    | -     | $ASTER_VERSION_DIR/datg
 """
+
+TMPL_TEST = """SRCTEST        | src     | -     | %s"""
 
 TMPL_PROFILE = r"""# created by waftools/legacy
 
