@@ -1,7 +1,7 @@
       SUBROUTINE TE0581 ( OPTION , NOMTE )
       IMPLICIT NONE
 C-----------------------------------------------------------------------
-C MODIF ELEMENTS  DATE 15/01/2013   AUTEUR DELMAS J.DELMAS 
+C MODIF ELEMENTS  DATE 13/05/2013   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -81,6 +81,9 @@ C-------------------   DEBUT DU CODE EXECUTABLE    ---------------------
                  CALL ASSERT(NBSP2.EQ.1)
                  V2= ZR(JTAB2(1)+(J1-1)*NBCMP+J3-1)
                END IF
+C              -- LA PRECONTRAINTE != 0 N'EST AUTORISEE QUE POUR
+C              LES ELEMENTS DE BARRE (CABLES DE PRECONTRAINTE) :
+               IF (V2.NE.0.D0) CALL ASSERT(NOMTE.EQ.'MECA_BARRE')
                ZR(JTAB3(1)+(J1-1)*NBSP*NBCMP+(J2-1)*NBCMP+J3-1)=V1+V2
   22        CONTINUE
   21     CONTINUE
