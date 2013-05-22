@@ -42,15 +42,13 @@ PyObject* get_dll_register_dict();
 #define SYMB_Zini "zasini_"
 
 /* declaration of pointers to ZMAT functions */
-#define ZMAT_ARGUMENTS ( \
-    INTEGER* iel, INTEGER* modele, INTEGER* nvar, INTEGER* ndef, INTEGER* nunit, DOUBLE* instam, \
-        DOUBLE* instap, \
-    DOUBLE* nvarcm, DOUBLE* nomvar, DOUBLE* varplu, DOUBLE* varmoi, DOUBLE* varref, \
-    DOUBLE* epsm, DOUBLE* deps, DOUBLE* sigm, DOUBLE* vim, INTEGER* nopt, DOUBLE* angmas, \
-        DOUBLE* sigp, DOUBLE* vip, \
-    DOUBLE* dsidep, INTEGER* codret \
-)
+#define FUNC_ZMAT(NAME)  void (*NAME) ( \
+    INTEGER*, INTEGER*, INTEGER*, INTEGER*, INTEGER*, DOUBLE*, DOUBLE*, \
+    DOUBLE*, DOUBLE*, DOUBLE*, DOUBLE*, DOUBLE*, \
+    DOUBLE*, DOUBLE*, DOUBLE*, DOUBLE*, INTEGER*, DOUBLE*, DOUBLE*, DOUBLE*, \
+    DOUBLE*, INTEGER*)
 
+#define FUNC_ZINI(NAME)  void (*NAME)()
 
 void load_zmat_lib()
 {
@@ -59,7 +57,7 @@ void load_zmat_lib()
     char *error;
     void *zmat_handle;
     void *zmatbase_handle;
-    void (*f_zaster) ZMAT_ARGUMENTS = NULL;
+    FUNC_ZMAT(f_zaster) = NULL;
     void (*f_zasini) () = NULL;
     PyObject* DLL_DICT;
     DLL_DICT = get_dll_register_dict();
@@ -99,15 +97,15 @@ void load_zmat_lib()
     
     /* register ZMAT lib and symbols */
     if ( libsymb_register(DLL_DICT, LIB_Zmatbase, SYMB_Zmatbase,
-                            zmatbase_handle, (void*)NULL_FUNCTION) ) {
+                            zmatbase_handle, (FUNC_PTR)NULL_FUNCTION) ) {
         printf("Registering '%s' and '%s' failed!\n", LIB_Zmatbase, SYMB_Zmatbase);
     }
     if ( libsymb_register(DLL_DICT, LIB_Zmat, SYMB_Zmat,
-                            zmat_handle, (void*)f_zaster) ) {
+                            zmat_handle, (FUNC_PTR)f_zaster) ) {
         printf("Registering '%s' and '%s' failed!\n", LIB_Zmat, SYMB_Zmat);
     }
     if ( libsymb_register(DLL_DICT, LIB_Zmat, SYMB_Zini,
-                            zmat_handle, (void*)f_zasini) ) {
+                            zmat_handle, (FUNC_PTR)f_zasini) ) {
         printf("Registering '%s' and '%s' failed!\n", LIB_Zmat, SYMB_Zini);
     }
 }
@@ -124,7 +122,7 @@ void STDCALL(ZASWRP, zaswrp) (
     /* ZASter WRaPper : wrapper to Zaster C++ function through the function pointer
      * Load the library if necessary (at the first call).
     */
-    void (*f_zaster) ZMAT_ARGUMENTS = NULL;
+    FUNC_ZMAT(f_zaster) = NULL;
     PyObject* DLL_DICT;
     DLL_DICT = get_dll_register_dict();
     
@@ -132,7 +130,7 @@ void STDCALL(ZASWRP, zaswrp) (
         load_zmat_lib();
     }
     
-    f_zaster = libsymb_get_symbol(DLL_DICT, LIB_Zmat, SYMB_Zmat);
+    f_zaster = (FUNC_ZMAT())libsymb_get_symbol(DLL_DICT, LIB_Zmat, SYMB_Zmat);
 
     (*f_zaster)(iel, modele, nvar, ndef, nunit, instam, instap,
                 nvarcm, nomvar, varplu, varmoi, varref,
@@ -146,7 +144,7 @@ void DEF0(ZASWRI,zaswri)
 #ifdef _POSIX
     /* ZASter WRapper Init : wrapper to Zasini C++ function
     */
-    void (*f_zasini) () = NULL;
+    FUNC_ZINI(f_zasini) = NULL;
     PyObject* DLL_DICT;
     DLL_DICT = get_dll_register_dict();
     
@@ -154,7 +152,7 @@ void DEF0(ZASWRI,zaswri)
         load_zmat_lib();
     }
     
-    f_zasini = libsymb_get_symbol(DLL_DICT, LIB_Zmat, SYMB_Zini);
+    f_zasini = (FUNC_ZINI())libsymb_get_symbol(DLL_DICT, LIB_Zmat, SYMB_Zini);
 
     (*f_zasini)();
 #endif

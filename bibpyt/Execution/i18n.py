@@ -31,7 +31,6 @@ import locale
 from Noyau.N_utils import Singleton
 from Noyau.N_types import force_list
 from strfunc import get_encoding
-from E_Core import get_branch_orig
 
 def get_language():
     """Return default language (2 letters)"""
@@ -49,13 +48,19 @@ class Language(Singleton):
         """Initialization"""
         self.localedir = os.environ.get('ASTER_LOCALEDIR') or \
             osp.join(os.environ.get('ASTER_ROOT', ''), 'share', 'locale')
+        self.domain = None
+        self.current_lang = self.default_lang = get_language()
+
+    def set_domain(self):
+        """set the current domain"""
+        from E_Core import get_version_name
         try:
-            shortname = get_branch_orig()
-            shortname = shortname != '?' and shortname or 'unstable'
-        except ImportError:
+            shortname = get_version_name()
+            if shortname in ('?', 'default'):
+                shortname = 'unstable'
+        except (ImportError, AttributeError):
             shortname = 'stable'
         self.domain = 'aster_%s' % shortname
-        self.current_lang = self.default_lang = get_language()
 
     def get_current_settings(self):
         """Return the current language."""
@@ -63,6 +68,8 @@ class Language(Singleton):
 
     def install(self, lang=None):
         """Install the translation object for the given 'lang'."""
+        if not self.domain:
+            self.set_domain()
         self.current_lang = (lang or self.default_lang).lower()
         if lang:
             lang = force_list(lang.lower())

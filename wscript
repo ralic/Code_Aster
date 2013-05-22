@@ -29,6 +29,8 @@ def options(self):
         '  LIBPATH   : extra paths where to find libraries',
         '  LIB       : extra libraries to link with',
         '  STLIB     : extra static libraries to link with',
+        '  OPTLIB_FLAGS : extra linker flags inserted after static libs '
+        '(for example when -Wl,start-group options are necessary)',
         '  CFLAGS    : extra C compilation options',
         '  FCFLAGS   : extra Fortrant compilation optins',
         '  PREFIX    : default installation prefix to be used, '

@@ -265,11 +265,6 @@ def checksd(nomsd, typesd):
             aster.affiche('MESSAGE',repr(obj)+msg)
     return iret
 
-def get_branch_orig():
-    """Retourne la branche d'origine dont sont issus les sources"""
-    from Accas import properties
-    return properties.from_branch
-
 def _print_header():
     """Appelé par entete.F pour afficher des informations sur
     la machine."""
@@ -338,29 +333,36 @@ def print_header(part):
     else:
         raise ValueError("unknown value for 'part'")
 
+def get_version_name():
+    """Return the 'name' of the version.
+    If there is no current changes:
+        - testing or stable for a frozen version,
+        - stable-updates or unstable
+    else:
+        - the real branch name"""
+    import aster_core
+    sta = aster_core.get_option('version').split('.')[-1] == '0'
+    expl = aster_core.get_option('exploit')
+    changes = aster_core.get_option('changes')
+    name = aster_core.get_option('from_branch')
+    if not changes:
+        if expl:
+            name = sta and 'stable' or 'stable-updates'
+        else:
+            name = sta and 'testing' or 'unstable'
+    return name
+
 def get_version_desc():
     """Return the description of the version"""
-    import aster_core
     names = {
         'stable' : _(u"""EXPLOITATION (stable)"""),
         'stable-updates' : _(u"""CORRECTIVE AVANT STABILISATION (stable-updates)"""),
         'testing' : _(u"""DÉVELOPPEMENT STABILISÉE (testing)"""),
         'unstable' : _(u"""DÉVELOPPEMENT (unstable)"""),
     }
-    sta = aster_core.get_option('version').split('.')[-1] == '0'
-    expl = aster_core.get_option('exploit')
-    changes = aster_core.get_option('changes')
-    if not changes:
-        if expl:
-            tag = sta and 'stable' or 'stable-updates'
-        else:
-            tag = sta and 'testing' or 'unstable'
-        typvers = names[tag]
-    else:
-        from_branch = aster_core.get_option('from_branch')
-        typvers = _(u"""DÉVELOPPEMENT (%s)""") % from_branch
+    name = get_version_name()
+    typvers = names.get(name, _(u"""DÉVELOPPEMENT (%s)""") % name)
     return typvers
-
 
 def _bwc_arguments(argv):
     """Fonction de compatibilité de transition vers des options "GNU".

@@ -36,8 +36,16 @@ PyObject* get_dll_register_dict();
  * 
  * *********************************************************************/
 
-/* declarations of pointers on UMAT functions
- * can not be defined because of DEFUMAT */
+/* declarations of pointers on UMAT functions */
+#define FUNC_UMAT(NAME)  void DEFUMAT(*NAME, \
+        DOUBLE*, DOUBLE*, DOUBLE*, DOUBLE*, DOUBLE*, DOUBLE*, \
+        DOUBLE*, DOUBLE*, DOUBLE*, DOUBLE*, \
+        DOUBLE*, DOUBLE*, DOUBLE*, DOUBLE*, DOUBLE*, DOUBLE*, \
+            DOUBLE*, DOUBLE*, char*, STRING_SIZE,  \
+        INTEGER*, INTEGER*, INTEGER*, INTEGER*, DOUBLE*, INTEGER*, \
+            DOUBLE*, DOUBLE*, DOUBLE*,  \
+        DOUBLE*, DOUBLE* dfgrd0, DOUBLE* dfgrd1, INTEGER*, INTEGER*, INTEGER*, \
+            INTEGER*, INTEGER*, INTEGER* )
 
 void load_umat_lib(const char* libname, const char* symbol)
 {
@@ -48,16 +56,7 @@ void load_umat_lib(const char* libname, const char* symbol)
     char symbol_[18], *valk;
     INTEGER ibid=0, n0=0, nk=0;
     DOUBLE rbid=0.;
-    void DEFUMAT(*f_umat,
-        DOUBLE* stress, DOUBLE* statev, DOUBLE* ddsdde, DOUBLE* sse, DOUBLE* spd, DOUBLE* scd,
-        DOUBLE* rpl, DOUBLE* ddsddt, DOUBLE* drplde, DOUBLE* drpldt,
-        DOUBLE* stran, DOUBLE* dstran, DOUBLE* time, DOUBLE* dtime, DOUBLE* temp, DOUBLE* dtemp,
-            DOUBLE* predef, DOUBLE* dpred, char* cmname, STRING_SIZE lcmname, 
-        INTEGER* ndi, INTEGER* nshr, INTEGER* ntens, INTEGER* nstatv, DOUBLE* props, INTEGER* nprops,
-            DOUBLE* coords, DOUBLE* drot, DOUBLE* pnewdt, 
-        DOUBLE* celent, DOUBLE* dfgrd0, DOUBLE* dfgrd1, INTEGER* noel, INTEGER* npt, INTEGER* layer,
-            INTEGER* kspt, INTEGER* kstep, INTEGER* kinc
-     ) = NULL;
+    FUNC_UMAT(f_umat) = NULL;
     PyObject* DLL_DICT;
     DLL_DICT = get_dll_register_dict();
     
@@ -122,16 +121,7 @@ void DEFUMATWRAP(UMATWP, umatwp,
      * Load the library if necessary (at the first call).
     */
     char *libname, *symbol;
-    void DEFUMAT(*f_umat,
-        DOUBLE* stress, DOUBLE* statev, DOUBLE* ddsdde, DOUBLE* sse, DOUBLE* spd, DOUBLE* scd,
-        DOUBLE* rpl, DOUBLE* ddsddt, DOUBLE* drplde, DOUBLE* drpldt,
-        DOUBLE* stran, DOUBLE* dstran, DOUBLE* time, DOUBLE* dtime, DOUBLE* temp, DOUBLE* dtemp,
-            DOUBLE* predef, DOUBLE* dpred, char* cmname, STRING_SIZE lcmname, 
-        INTEGER* ndi, INTEGER* nshr, INTEGER* ntens, INTEGER* nstatv, DOUBLE* props, INTEGER* nprops,
-            DOUBLE* coords, DOUBLE* drot, DOUBLE* pnewdt, 
-        DOUBLE* celent, DOUBLE* dfgrd0, DOUBLE* dfgrd1, INTEGER* noel, INTEGER* npt, INTEGER* layer,
-            INTEGER* kspt, INTEGER* kstep, INTEGER* kinc
-     ) = NULL;
+    FUNC_UMAT(f_umat) = NULL;
     PyObject* DLL_DICT;
     DLL_DICT = get_dll_register_dict();
     
@@ -144,7 +134,7 @@ void DEFUMATWRAP(UMATWP, umatwp,
     if ( ! libsymb_is_known(DLL_DICT, libname, symbol) ) {
         load_umat_lib(libname, symbol);
     }
-    f_umat = libsymb_get_symbol(DLL_DICT, libname, symbol);
+    f_umat = (FUNC_UMAT())libsymb_get_symbol(DLL_DICT, libname, symbol);
 
     CALLUMAT(*f_umat,
         stress, statev, ddsdde, sse, spd, scd, rpl, ddsddt, drplde, drpldt,

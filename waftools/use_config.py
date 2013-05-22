@@ -1,9 +1,12 @@
 # encoding: utf-8
 
 import sys
+import os.path as osp
+
 from waflib import Configure, Errors, Context
 
 DEFAULT_DIR = 'wafcfg'
+sys.path.append(osp.abspath(DEFAULT_DIR))
 
 def options(self):
     group = self.add_option_group('Aster options')
