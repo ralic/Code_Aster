@@ -1,0 +1,26 @@
+
+
+titre 'essai triax'                                      ;
+option dime 2 elem qua8 sauv form 'ssnv160d.mgib'   ;
+dens 0.05;
+************************************************************
+* Donnees de base                                          *
+************************************************************
+a= 0.0 0.0 ;
+b= 1.0 0.0 ;
+c= 1.0 1.0 ;
+d= 0.0 1.0 ;  
+
+ab = droi 1 a b ;
+bc = droi 1 b c ;
+cd = droi 1 c d ;
+da = droi 1 d a ;
+
+s1 = daller ab bc cd da ;
+
+sauv form s1 ;
+
+tracer s1 ;
+
+fin ;
+

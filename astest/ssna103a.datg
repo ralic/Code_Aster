@@ -1,0 +1,17 @@
+opti dime 2 elem qua8;
+O = (0. 0.);
+A = (68. 0.);
+C = (68. 203.5);
+B = (0. 203.5);
+oa = O droit 4 A;
+ac = A droit 10 C;
+cb = C droit 4 B;
+bo = b droit 10 O;
+eprou = daller oa ac cb bo;
+trac eprou;
+sort eprou;
+opti sauv form 'mail.mgib' ;
+sauv form eprou;
+MESS 'nombre de mailles de la surface MESH :'(NBEL eprou);
+MESS 'nombre de noeuds de la surface MESH  :'(NBNO eprou);
+fin;

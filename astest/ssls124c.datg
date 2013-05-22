@@ -1,0 +1,255 @@
+*    ssls124c pour generer les 4 maillages                                                                
+********** maillage                                                     
+*			  
+*
+*
+*                P3 __  P7  <-------
+*                  /  /
+*                 /  /|           Chargement
+*          LONG  /  / |
+*               /P4/  |
+*           P2 /__/   / P8  <-------
+*             |  | P6/       |y
+*             |  |  /        | /x
+*       LARG  |  | /         |/_____z
+*             |__|/
+*             P1 P5    <- encastrement surf(p1,p2,p6,p5)
+*              EP
+*
+********************************************************
+************ poutre 1
+opti echo 1 opti dime 3 elem pri6 mode tridim ;                         
+OPTI NIVE 11 ;
+OPTI SAUV FORM 'ssls124c.21';
+EP      = 10.  ;
+LARG    = 10.  ;
+LONG    = 100. ;
+NBELLARG= 1   ;             
+NBELLONG= 10    ;
+titre 'poutre SHB8 regulier epaisseur ',EP;   
+********************************************************
+P1      = 0.   0.    0. ;
+P2      = 0.   LARG  0. ;
+P3      = LONG LARG  0. ; 
+P4      = LONG 0.    0. ;
+P5      = 0.   0.    EP ;
+P6      = 0.   LARG  EP ;
+P7      = LONG LARG  EP ; 
+P8      = LONG 0.    EP ;
+LI14    = droi NBELLONG P1 P4 ;
+LI43    = droi NBELLARG P4 P3 ;
+LI32    = DROI NBELLONG P3 P2 ;
+LI21    = DROI NBELLARG P2 P1 ;
+OPTION ELEM tri3;
+SUINF   = DALLER LI14 LI43 LI32 LI21 ;
+LI58    = droi NBELLONG P5 P8 ;
+LI87    = droi NBELLARG P8 P7 ;
+LI76    = DROI NBELLONG P7 P6 ;
+LI65    = DROI NBELLARG P6 P5 ;
+SUSUP   = DALLER LI58 LI87 LI76 LI65 ;
+OPTION ELEM PRI6;
+GEOSHB8 = VOLUME SUINF SUSUP 1;
+LI15    = droi 1        P1 P5 ;
+LI62    = droi 1        P6 P2 ;
+LI21    = droi NBELLARG P2 P1 ;
+*** LI56    = droi NBELLARG P5 P6 ;
+SUENCAS = DALLER LI15 (INVE LI65) LI62 LI21 ;
+LI48    = DROI 1        P4 P8 ;
+LI87    = DROI NBELLARG P8 P7 ;
+LI73    = DROI 1        P7 P3 ;
+*LI34    = droi NBELLARG P3 P4 ;
+SUDEPIM = DALLER (INVE LI43) LI48 LI87 LI73 ;
+GEOTOT  = GEOSHB8 et SUENCAS et SUDEPIM ;
+elim  0.001 GEOTOT;
+sort GEOTOT;
+SAUV FORM GEOTOT ;
+trac geotot;
+********************************************************
+oublier geotot;
+oublier geoshb8;
+oublier suencas;
+oublier sudepim ;
+oublier susup ;
+oublier suinf ;
+********************************************************
+
+********************************************************
+************ poutre 2
+********************************************************
+opti echo 1 opti dime 3 elem pri6 mode tridim ;                         
+titre 'poutre SHB8 regulier test 2';   
+OPTI NIVE 11 ;
+OPTI SAUV FORM 'ssls124c.22';
+EP      = 5.  ;
+LARG    = 10.  ;
+LONG    = 100. ;
+NBELLARG= 3   ;             
+NBELLONG= 30    ;
+titre 'poutre SHB8 regulier epaisseur ',EP;   
+********************************************************
+P1      = 0.   0.    0. ;
+P2      = 0.   LARG  0. ;
+P3      = LONG LARG  0. ; 
+P4      = LONG 0.    0. ;
+P5      = 0.   0.    EP ;
+P6      = 0.   LARG  EP ;
+P7      = LONG LARG  EP ; 
+P8      = LONG 0.    EP ;
+LI14    = droi NBELLONG P1 P4 ;
+LI43    = droi NBELLARG P4 P3 ;
+LI32    = DROI NBELLONG P3 P2 ;
+LI21    = DROI NBELLARG P2 P1 ;
+OPTION ELEM tri3;
+SUINF   = DALLER LI14 LI43 LI32 LI21 ;
+LI58    = droi NBELLONG P5 P8 ;
+LI87    = droi NBELLARG P8 P7 ;
+LI76    = DROI NBELLONG P7 P6 ;
+LI65    = DROI NBELLARG P6 P5 ;
+SUSUP   = DALLER LI58 LI87 LI76 LI65 ;
+OPTION ELEM PRI6;
+GEOSHB8 = VOLUME SUINF SUSUP 1;
+LI15    = droi 1        P1 P5 ;
+LI62    = droi 1        P6 P2 ;
+LI21    = droi NBELLARG P2 P1 ;
+** LI56    = droi NBELLARG P5 P6 ;
+SUENCAS = DALLER LI15 (INVE LI65) LI62 LI21 ;
+LI48    = DROI 1        P4 P8 ;
+LI87    = DROI NBELLARG P8 P7 ;
+LI73    = DROI 1        P7 P3 ;
+*LI34    = droi NBELLARG P3 P4 ;
+SUDEPIM = DALLER (INVE LI43) LI48 LI87 LI73 ;
+GEOTOT  = GEOSHB8 et SUENCAS et SUDEPIM ;
+elim  0.001 GEOTOT;
+sort GEOTOT;
+SAUV FORM GEOTOT ;
+trac geotot;
+********************************************************
+********************************************************
+oublier geotot;
+oublier geoshb8;
+oublier suencas;
+oublier sudepim ;
+oublier susup ;
+oublier suinf ;
+********************************************************
+
+
+************ poutre 3
+opti echo 1 opti dime 3 elem pri6 mode tridim ;                         
+titre 'poutre SHB8 regulier test 3';   
+OPTI NIVE 11 ;
+OPTI SAUV FORM
+'ssls124c.23';
+EP      = 2.  ;
+LARG    = 10.  ;
+LONG    = 100. ;
+NBELLARG= 10   ;             
+NBELLONG= 100    ;
+titre 'poutre SHB8 regulier epaisseur ',EP;   
+********************************************************
+P1      = 0.   0.    0. ;
+P2      = 0.   LARG  0. ;
+P3      = LONG LARG  0. ; 
+P4      = LONG 0.    0. ;
+P5      = 0.   0.    EP ;
+P6      = 0.   LARG  EP ;
+P7      = LONG LARG  EP ; 
+P8      = LONG 0.    EP ;
+LI14    = droi NBELLONG P1 P4 ;
+LI43    = droi NBELLARG P4 P3 ;
+LI32    = DROI NBELLONG P3 P2 ;
+LI21    = DROI NBELLARG P2 P1 ;
+OPTION ELEM tri3;
+SUINF   = DALLER LI14 LI43 LI32 LI21 ;
+LI58    = droi NBELLONG P5 P8 ;
+LI87    = droi NBELLARG P8 P7 ;
+LI76    = DROI NBELLONG P7 P6 ;
+LI65    = DROI NBELLARG P6 P5 ;
+SUSUP   = DALLER LI58 LI87 LI76 LI65 ;
+OPTION ELEM PRI6;
+GEOSHB8 = VOLUME SUINF SUSUP 1;
+LI15    = droi 1        P1 P5 ;
+LI62    = droi 1        P6 P2 ;
+LI21    = droi NBELLARG P2 P1 ;
+** LI56    = droi NBELLARG P5 P6 ;
+SUENCAS = DALLER LI15 (INVE LI65) LI62 LI21 ;
+LI48    = DROI 1        P4 P8 ;
+LI87    = DROI NBELLARG P8 P7 ;
+LI73    = DROI 1        P7 P3 ;
+*LI34    = droi NBELLARG P3 P4 ;
+SUDEPIM = DALLER (INVE LI43) LI48 LI87 LI73 ;
+GEOTOT  = GEOSHB8 et SUENCAS et SUDEPIM ;
+elim  0.001 GEOTOT;
+sort GEOTOT;
+SAUV FORM GEOTOT ;
+trac geotot;
+********************************************************
+oublier geotot;
+oublier geoshb8;
+oublier suencas;
+oublier sudepim ;
+oublier susup ;
+oublier suinf ;
+********************************************************
+
+************ poutre 4
+opti echo 1 opti dime 3 elem pri6 mode tridim ;                         
+titre 'poutre SHB8 regulier test 4';   
+OPTI NIVE 11 ;
+OPTI SAUV FORM
+'ssls124c.24';
+EP      = 1.  ;
+LARG    = 10.  ;
+LONG    = 100. ;
+NBELLARG= 10   ;             
+NBELLONG= 100    ;
+titre 'poutre SHB8 regulier epaisseur ',EP;   
+********************************************************
+P1      = 0.   0.    0. ;
+P2      = 0.   LARG  0. ;
+P3      = LONG LARG  0. ; 
+P4      = LONG 0.    0. ;
+P5      = 0.   0.    EP ;
+P6      = 0.   LARG  EP ;
+P7      = LONG LARG  EP ; 
+P8      = LONG 0.    EP ;
+LI14    = droi NBELLONG P1 P4 ;
+LI43    = droi NBELLARG P4 P3 ;
+LI32    = DROI NBELLONG P3 P2 ;
+LI21    = DROI NBELLARG P2 P1 ;
+OPTION ELEM tri3;
+SUINF   = DALLER LI14 LI43 LI32 LI21 ;
+LI58    = droi NBELLONG P5 P8 ;
+LI87    = droi NBELLARG P8 P7 ;
+LI76    = DROI NBELLONG P7 P6 ;
+LI65    = DROI NBELLARG P6 P5 ;
+SUSUP   = DALLER LI58 LI87 LI76 LI65 ;
+OPTION ELEM PRI6;
+GEOSHB8 = VOLUME SUINF SUSUP 1;
+LI15    = droi 1        P1 P5 ;
+LI62    = droi 1        P6 P2 ;
+LI21    = droi NBELLARG P2 P1 ;
+** LI56    = droi NBELLARG P5 P6 ;
+SUENCAS = DALLER LI15 (INVE LI65) LI62 LI21 ;
+LI48    = DROI 1        P4 P8 ;
+LI87    = DROI NBELLARG P8 P7 ;
+LI73    = DROI 1        P7 P3 ;
+*LI34    = droi NBELLARG P3 P4 ;
+SUDEPIM = DALLER (INVE LI43) LI48 LI87 LI73 ;
+GEOTOT  = GEOSHB8 et SUENCAS et SUDEPIM ;
+elim  0.001 GEOTOT;
+sort GEOTOT;
+SAUV FORM GEOTOT ;
+trac geotot;
+********************************************************
+oublier geotot;
+oublier geoshb8;
+oublier suencas;
+oublier sudepim ;
+oublier susup ;
+oublier suinf ;
+********************************************************
+
+
+
+fin;

@@ -1,0 +1,40 @@
+opti dime 2  elem tri3 ;
+
+dens 10 ;
+
+*----------------------------------------
+*DONNEES
+*----------------------------------------
+* dimensions des cotEs
+LX = 20;
+LY = 20;
+
+* nombre d elements
+NX = 20;
+NY = 20;
+
+
+*---------------------------------------------
+*construction du maillage
+*---------------------------------------------
+
+p1 = 0. 0.;
+p2 = LX 0.;
+p3 = LX LY;
+p4 = 0. LY;
+
+lig1 = droit p1 p2 NX;
+lig2 = droit p2 p3 NY;
+lig3 = droit p3 p4 NX;
+lig4 = droit p4 p1 NY;
+
+
+surf=DALL lig1 lig2 lig3 lig4 PLAN;
+
+trac surf;          
+
+MAILLE = surf;
+
+opti sauv format '/home/massin/TOURRET/testpaspret/ssnv186h.mgib' ;
+sauv format maille ;
+fin ;

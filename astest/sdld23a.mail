@@ -1,0 +1,37 @@
+TITRE
+% XXXX
+% CAS TEST PROPOSE PAR D.SELIGMANN        
+% ENSEMBLE DE MASSES-RESSORT  
+%
+FINSF
+%
+COOR_3D
+%   NOEUD       X         Y      Z
+     A         0.00       0.     0.
+     P1        1.        0.     0.
+     P2        2.        0.     0.
+     P3        3.        0.     0.
+     P4        4.        0.     0.
+     P5        5.        0.     0.
+     P6        6.        0.     0.
+     P7        7.        0.     0.
+     P8        8.        0.     0.
+     B         9.        0.     0.
+FINSF
+%
+SEG2
+%     SEG      ND-I.    ND-F.
+       M1      A        P1
+       M2      P1       P2
+       M3      P2       P3
+       M4      P3       P4
+       M5      P4       P5
+       M6      P5       P6
+       M7      P6       P7
+       M8      P7       P8
+       M9      P8       B 
+FINSF
+%
+%
+%
+FIN

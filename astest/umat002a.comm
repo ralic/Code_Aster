@@ -20,8 +20,6 @@
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 
-import os
-from asrun.toolbox import make_shared
 from Contrib.veri_matr_tang import VERI_MATR_TANG
 
 # Juste pour les besoins du cas-test.
@@ -29,21 +27,13 @@ from Contrib.veri_matr_tang import VERI_MATR_TANG
 #       as_run --make_shared -o libumat.so src.f
 # avant de lancer l'etude.
 # On teste ici l'utilisation conjointe de deux bibliotheques (seul le nom de la routine change)
+import os
+from asrun.toolbox import make_shared
 
-# Special sur la Bull
-from asrun.config import ASTER_CONFIG
-conf = ASTER_CONFIG('config.txt')
-if conf['ID_PERF'][0] == 'Bull':
-    os.rename("fort.44", "libumat1.so")
-    os.rename("fort.46", "libumat2.so")
-    os.chmod("libumat1.so", 0755)
-    os.chmod("libumat2.so", 0755)
-else:
-    os.rename("fort.22", "fort.22.f")
-    os.rename("fort.23", "fort.23.f")
-    # On force la ligne de commande pour ne pas etre gene par les licences des compilateurs
-    make_shared("libumat1.so", "fort.22.f")
-    make_shared("libumat2.so", "fort.23.f")
+os.rename("fort.22", "fort.22.f")
+os.rename("fort.23", "fort.23.f")
+make_shared("libumat1.so", "fort.22.f")
+make_shared("libumat2.so", "fort.23.f")
 
 
 DEBUT(CODE=_F(NOM='UMAT002A',NIV_PUB_WEB='INTERNET',VISU_EFICAS='NON'),PAR_LOT='OUI',IMPR_MACRO='NON');

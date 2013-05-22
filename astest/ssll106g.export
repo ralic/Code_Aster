@@ -1,0 +1,9 @@
+P time_limit 120
+P memory_limit 1000
+P ncpus 1
+P mpi_nbcpu 2
+P mpi_nbnoeud 1
+P testlist I
+
+F comm ssll106f.comm D 1
+F mail ssll106f.mail D 20

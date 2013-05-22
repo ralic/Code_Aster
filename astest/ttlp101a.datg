@@ -1,0 +1,80 @@
+opti dime 2  elem qua4 ;
+
+dens 1 ;
+
+*----------------------------------------
+*DONNEES
+* dimensions des cotés
+LX = 1.0;
+LY = 1.0;
+
+* nombre d'éléments
+NX = 100;
+NY = 100; 
+
+* ATTENTION : NY doit etre pais
+
+*---------------------------------------------
+*construction milieu
+*---------------------------------------------
+
+p1       =  LX     (LY/2.);
+p4       =  0.     (LY/2.);
+PFON = (LX/2.) (LY/2.);
+
+LEVSUP   = droit PFON p1       (NX/2);
+lig6 = droit p4       PFON (NX/2);
+
+p10 = LX  (LY/2.);
+
+LEVINF = droit PFON p10      (NX/2);
+
+*trac LEVSUP;
+*trac LEVINF;
+
+SURFMILP = lig6 et LEVSUP;
+SURFMILN = lig6 et LEVINF;
+elim SURFMILP 1e-6;
+elim SURFMILN 1e-6;
+
+NOTORS =  0. (LY/2.);
+NOBLOC =  0. (-1*LY/2.);
+
+*---------------------------------------------
+*extrusion
+*---------------------------------------------
+
+volsup = SURFMILP  TRAN NOTORS (NY/2);
+volinf = SURFMILN  TRAN NOBLOC (NY/2);
+elim 1E-6 volsup;
+elim 1E-6 volinf;
+
+SURF = volsup et volinf;
+trac SURF;
+
+*-----------------------------------------
+*si on veut un carre_sain
+*-----------------------------------------
+
+*elim 1E-6 vol;
+
+*---------------------------
+* visualisation de controle
+*---------------------------
+ 
+*trac fonfis;
+*trac LEVINF;
+*trac cach vol;
+
+trac ((SURF) 
+et 
+  (LEVSUP coul vert) et (LEVINF coul vert));
+
+MAILLE = SURF  et
+       LEVSUP et LEVINF
+        et PFON;
+
+opti sauv format 
+'/tmp/hsnv132a.mgib' ;
+sauv format maille ;
+fin ;

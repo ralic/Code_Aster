@@ -1,0 +1,48 @@
+opti sauv form 'sdnl111f.mgib';
+
+
+opti dime 3 elem CUB8;
+
+h = 1.;
+
+A = 0.01 0.01  0.00001;
+A1 = 0.01 -0.01 0.00001;
+A2 = -0.01 -0.01 0.00001;
+A3 = -0.01 0.01 0.00001;
+
+l1 = DROI 1 A A1;
+l2 = DROI 1 A1 A2;
+l3 = DROI 1 A2 A3;
+l4 = DROI 1 A3 A;
+
+CNT_POU1 = DALL l1 l2 l3 l4;
+POU1 = CNT_POU1 VOLU 51 TRAN (0. 0. h);
+POU1 = POU1 ET CNT_POU1;
+elim POU1 0.000001;
+
+B = 0.01 0.01  -0.00001;
+B3 = 0.01 -0.01 -0.00001;
+B2 = -0.01 -0.01 -0.00001;
+B1 = -0.01 0.01 -0.00001;
+
+k1 = DROI 1 B B1;
+k2 = DROI 1 B1 B2;
+k3 = DROI 1 B2 B3;
+k4 = DROI 1 B3 B;
+
+CNT_POU2 = DALL k1 k2 k3 k4;
+POU2 = CNT_POU2 VOLU 51 TRAN (0. 0. (-1*h));
+POU2 = POU2 ET CNT_POU2;
+elim POU2 0.000001;
+
+modele = POU1 ET POU2 ;
+sort modele;
+sauv 'FORMAT' modele;
+
+
+
+TRAC modele ;
+
+*opti donn 5;
+fin;
+*

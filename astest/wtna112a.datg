@@ -1,0 +1,58 @@
+* ------------------------------------
+*       PARAMETRES DE LA PIECE
+* ------------------------------------
+
+OPTION DIME 2 ELEM QUA8 ;
+
+*==============
+DEBPROC GRAVI ;
+*==============
+
+A  =  0.00     0.00     ;
+B  =  0.01     0.00     ;
+C  =  0.01     0.01     ;
+D  =  0.     0.01     ;
+
+NX = 20 ;
+NY = 20 ;
+*MAILLAGE
+*--------
+AB   = DROITE   NX   A   B ;
+DC   = DROITE   NX   D   C ;
+BC   = DROITE   NY   B   C ;
+AD   =  DROITE   NY   A   D ;
+
+BA= INVE(AB);
+CD= INVE(DC);
+CB= INVE(BC);
+DA= INVE(AD);
+
+TOT1   = DALL AB BC CD DA  'PLAN' ;
+
+HAUT = CD;
+BAS = AB;
+GAUCHE = DA;
+DROITE = CB;
+COX = TOT1 ;
+
+TRACER COX ;
+
+*elim 0.00001 ( ROCHE et BAS et CAVITE et GAUCHE);
+*elim 0.00001 ( ROCHE et HAUT et DERECHA);
+TRACER (BAS et DROITE et HAUT et GAUCHE et COX);
+*=============================================================
+FINPROC COX DROITE BAS  HAUT GAUCHE ;
+
+COX DROITE BAS  HAUT GAUCHE = GRAVI ;
+*=============================================================
+
+* ------------------
+*     SAUVEGARDE
+* ------------------
+OPTION SAUV FORMAT
+ '/home/granet/ANOMALIE/19590_PresT/wtnp30a.mgib';
+SAUV FORMAT ;
+
+FIN ;
+
+

@@ -1,0 +1,92 @@
+# -*- coding: utf-8 -*-
+
+# Dimension Dalle
+Portee    = 5.0
+Largeur   = 3.0
+# Nombre d'éléments
+nbPortee  = 40
+nbLargeur = 24
+
+
+import sys
+import salome
+
+salome.salome_init()
+theStudy = salome.myStudy
+
+### GEOM component
+import GEOM
+import geompy
+import math
+import SALOMEDS
+
+
+geompy.init_geom(theStudy)
+pt0 = geompy.MakeVertex(0.0, 0.0, 0.0 )
+pt1 = geompy.MakeVertex(Portee, 0.0, 0.0 )
+pt2 = geompy.MakeVertex(Portee, Largeur, 0.0 )
+pt3 = geompy.MakeVertex(0.0, Largeur, 0.0 )
+#
+B0Y=geompy.MakeEdge( pt0 , pt1 )
+B1X=geompy.MakeEdge( pt1 , pt2 )
+B1Y=geompy.MakeEdge( pt2 , pt3 )
+B0X=geompy.MakeEdge( pt3 , pt0 )
+DALLE = geompy.MakeFaceWires( [B0Y,B1X,B1Y,B0X],True)
+B0Y = geompy.GetEdgeNearPoint(DALLE, geompy.MakeVertex(Portee*0.5, 0.0, 0.0 ) )
+B1X = geompy.GetEdgeNearPoint(DALLE, geompy.MakeVertex(Portee, Largeur*0.5, 0.0 ) )
+B1Y = geompy.GetEdgeNearPoint(DALLE, geompy.MakeVertex(Portee*0.5, Largeur, 0.0 ) )
+B0X = geompy.GetEdgeNearPoint(DALLE, geompy.MakeVertex(0.0, Largeur*0.5, 0.0 ) )
+PT0 = geompy.GetVertexNearPoint(DALLE, geompy.MakeVertex(0.0, 0.0, 0.0 ) )
+PT1 = geompy.GetVertexNearPoint(DALLE, geompy.MakeVertex(Portee, 0.0, 0.0 ) )
+#
+geompy.addToStudy( DALLE, 'DALLE' )
+geompy.addToStudyInFather( DALLE, PT0, 'PT0' )
+geompy.addToStudyInFather( DALLE, PT1, 'PT1' )
+geompy.addToStudyInFather( DALLE, B0X, 'B0X' )
+geompy.addToStudyInFather( DALLE, B0Y, 'B0Y' )
+geompy.addToStudyInFather( DALLE, B1Y, 'B1Y' )
+geompy.addToStudyInFather( DALLE, B1X, 'B1X' )
+
+### SMESH component
+
+import smesh, SMESH, SALOMEDS
+smesh.SetCurrentStudy(theStudy)
+import BLSURFPlugin
+import NETGENPlugin
+import StdMeshers
+
+Mesh_1 = smesh.Mesh(DALLE)
+Quadrangle_2D = Mesh_1.Quadrangle(algo=smesh.QUADRANGLE)
+Quadrangle_Parameters_1 = Quadrangle_2D.QuadrangleParameters(StdMeshers.QUAD_STANDARD)
+Regular_1D = Mesh_1.Segment()
+Nb_Segments_1 = Regular_1D.NumberOfSegments(nbPortee)
+Nb_Segments_1.SetDistrType( 0 )
+Propagation_of_1D_Hyp = Regular_1D.Propagation()
+Regular_1D_1 = Mesh_1.Segment(geom=B0X)
+Nb_Segments_2 = Regular_1D_1.NumberOfSegments(nbLargeur)
+Nb_Segments_2.SetDistrType( 0 )
+Propagation_of_1D_Hyp_1 = Regular_1D_1.Propagation()
+isDone = Mesh_1.Compute()
+SubMesh_1 = Regular_1D_1.GetSubMesh()
+#
+PT0_1   = Mesh_1.GroupOnGeom(PT0,   'PT0',   SMESH.NODE)
+PT1_1   = Mesh_1.GroupOnGeom(PT1,   'PT1',   SMESH.NODE)
+B1X_1   = Mesh_1.GroupOnGeom(B1X,   'B1X',   SMESH.EDGE)
+B1Y_1   = Mesh_1.GroupOnGeom(B1Y,   'B1Y',   SMESH.EDGE)
+B0Y_1   = Mesh_1.GroupOnGeom(B0Y,   'B0Y',   SMESH.EDGE)
+B0X_1   = Mesh_1.GroupOnGeom(B0X,   'B0X',   SMESH.EDGE)
+DALLE_1 = Mesh_1.GroupOnGeom(DALLE, 'DALLE', SMESH.FACE)
+#
+smesh.SetName(Mesh_1.GetMesh(), 'DALLE')
+smesh.SetName(PT0_1,   'PT0')
+smesh.SetName(PT1_1,   'PT1')
+smesh.SetName(B1X_1,   'B1X')
+smesh.SetName(B1Y_1,   'B1Y')
+smesh.SetName(B0Y_1,   'B0Y')
+smesh.SetName(B0X_1,   'B0X')
+smesh.SetName(DALLE_1, 'DALLE')
+
+#Mesh_1.ExportMED( r'ssns111.med', 0, SMESH.MED_V2_2, 1 )
+
+if salome.sg.hasDesktop():
+  salome.sg.updateObjBrowser(1)

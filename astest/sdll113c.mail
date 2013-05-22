@@ -1,0 +1,41 @@
+%
+COOR_3D
+%   NOEUD  X    Y    Z
+    A      0.   0.   0.
+    N1     0.1  0.   0.
+    N2     0.2  0.   0.
+    N3     0.3  0.   0.
+    N4     0.4  0.   0.
+    N5     0.5  0.   0.
+    N6     0.6  0.   0.
+    N7     0.7  0.   0.
+    N8     0.8  0.   0.
+    N9     0.9  0.   0.
+    N10    1.0  0.   0.
+FINSF
+%
+SEG2
+%    SEG    ND-I.   ND-F.
+     S1     A       N1
+     S2     N1      N2
+     S3     N2      N3
+     S4     N3      N4
+     S5     N4      N5
+     S6     N5      N6
+     S7     N6      N7
+     S8     N7      N8
+     S9     N8      N9
+     S10    N9      N10
+FINSF
+%
+GROUP_MA
+ ELEM0 
+ S1 S2 S3 S4
+FINSF
+%
+GROUP_MA
+ ELEM1 
+ S5 S6 S7 S8 S9 S10
+FINSF
+%
+FIN

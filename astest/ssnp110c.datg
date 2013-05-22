@@ -1,0 +1,52 @@
+opti dime 2  elem qua4 ;
+
+*----------------------------------------
+*DONNEES
+*----------------------------------------
+
+* dimensions des cotEs
+LX = 16.;
+LY = 50.;
+
+* nombre d elements
+*NX = 18;
+*NY = 31;
+
+* fin
+*NX = 40;
+*NY = 61;
+
+* fin2
+*NX = 80;
+*NY = 121;
+
+* 1bis
+NX = 25;
+NY = 71;
+*---------------------------------------------
+*construction du maillage
+*---------------------------------------------
+
+p1 = 0. 0.;
+p2 = LX 0.;
+p3 = LX LY;
+p4 = 0. LY;
+
+lig1 = droit p1 p2 NX;
+lig2 = droit p2 p3 NY;
+lig3 = droit p3 p4 NX;
+lig4 = droit p4 p1 NY;
+
+
+surftot=DALL lig1 lig2 lig3 lig4 PLAN;
+
+vect  =  6. (LY/2.) ;
+
+DEPL surftot  MOIN vect ;
+
+trac surftot;          
+
+opti sauv format 
+'~/ASTER_DEV/RESTIT/TEST/ssnp110c_bis.mgib' ;
+sauv format surftot ;
+fin ;

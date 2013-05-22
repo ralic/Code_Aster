@@ -1,0 +1,341 @@
+*ESOPE=1000000,NTRK=6000,LTRK=100 
+OPTI DIME 2 ELEM SEG2;                 
+TITRE 'Maillage OSCILLATEUR FLUIDE-ELASTIQUE MERIDIEN';
+*OPTI TRAC PSC;
+*OPTI FTRA '/home/stifkens/APRP/Osc_meridien.ps';                  
+*REPETER SAISIE;
+*-----------------------------------------------------
+* 
+*	
+*-----------------------------------------------------
+*
+* definition des parametres              
+
+
+  
+* Dimensions piston d'entree       
+  Lpe = 0.05;
+  hpe = 0.5;
+  
+* Dimensions piston de sortie       
+  Lps = 0.05;
+  hps = 0.5;
+    
+* Dimensions piston de paroi       
+  Lpp = 5.0;
+  hpp = 0.05;
+
+* Dimensions colonne de fluide       
+  LflG = 8.0 + 3.5;
+  LflD = LflG;
+  LflC = Lpp;
+  Lfl = LflG + LflC + LflD;
+  hfl = 0.5;
+  
+
+* Position tube de fluide
+*  
+*** Partie gauche du tube de fluide
+
+  XflG1 = 0.;
+  XflG2 = XflG1 + LflG;
+  XflG3 = XflG2;
+  XflG4 = XflG1;
+  
+    
+  YflG1 = 0. ;
+  YflG2 = YflG1;
+  YFLG3 = YflG2 + hfl;
+  YflG4 = YflG1 + hfl;
+ 
+  
+  PflG1 = XflG1 YflG1;
+  PflG2 = XflG2 YflG2; 
+  PflG3 = XflG3 YflG3;
+  PflG4 = XflG4 YflG4;
+  
+  PflG = PflG1 ET PflG2 ET PflG3 ET PflG4 ;
+* TRAC PflG;
+  
+*  FIN;
+*** Partie droite du tube de fluide
+
+  XflD1 = XflG2+ LflC;
+  XflD2 = XflD1 + LflD;
+  XflD3 = XflD2;
+  XflD4 = XflD1;
+  
+    
+  YflD1 = YflG1;
+  YflD2 = YflG2;
+  YFLD3 = YflG3;
+  YflD4 = YflG4;
+ 
+  
+  PflD1 = XflD1 YflD1;
+  PflD2 = XflD2 YflD2; 
+  PflD3 = XflD3 YflD3;
+  PflD4 = XflD4 YflD4;
+  
+  PflD = PflD1 ET PflD2 ET PflD3 ET PflD4 ;
+* TRAC PflD;
+
+*** Partie centrale du tube de fluide
+
+  PflC = PflG2 ET PflD1 ET PflD4 ET PflG3 ;
+* TRAC PflC;
+  
+  Pfl = PflD ET PflG ;
+* TRAC Pfl;
+    
+* Position piston de paroi
+*  
+  Ppp1   = PflG3;
+  Ppp2   = PflD4; 
+  Ppp3 = Ppp2 PLUS (0. hpp);
+  Ppp4 = Ppp1 PLUS (0. hpp);
+    
+  Ppp = Ppp1 ET Ppp2 ET Ppp3 ET Ppp4 ;
+* TRAC Ppp;
+
+  Pflpp = Pfl ET Ppp3 ET Ppp4 ;
+* TRAC Pflpp;
+
+* Position piston d'entree
+*  
+  Ppe1 = PflG1 MOINS (Lpe 0.);
+  Ppe4 = PflG4 MOINS (Lpe 0.);
+  Ppe2   = PflG1;
+  Ppe3   = PflG4;
+
+  Ppe = Ppe1 ET Ppe2 ET Ppe3 ET Ppe4 ;
+* TRAC Ppe;
+
+  Pflppe = Pflpp ET Ppe1 ET Ppe4 ;
+* TRAC Pflppe;
+       
+* Position piston de sortie
+*  
+  Pps2 = PflD2 PLUS (Lps 0.);
+  Pps3 = PflD3 PLUS (Lps 0.);
+  Pps1   = PflD2;
+  Pps4   = PflD3;
+
+  Pps = Pps1 ET Pps2 ET Pps3 ET Pps4 ;
+* TRAC Pps;
+
+  Pflppes = Pflppe ET Pps2 ET Pps3 ;
+* TRAC Pflppes;
+
+*  FIN;
+  
+  
+* Discretisation:
+*    nombre d'elements pour le piston paroi  
+  Npp41 = 1;
+  Npp12 = 50;
+  Npp23 = Npp41;
+  Npp34 = Npp12;
+  
+*    nombre d'elements pour le tube de fluide
+  NflG41 = 10;
+  NflG12 = 115;
+  NflG23 = NflG41;
+  NflG34 = NflG12;
+  
+  NflC41 = NflG41;
+  NflC12 = Npp12;
+  NflC23 = NflG23;
+  NflC34 = Npp12;
+  
+  NflD41 = NflG41;
+  NflD12 = NflG12;
+  NflD23 = NflG23;
+  NflD34 = NflG34;
+  
+  Nfl12 = NflG12 + NflC12 + NflD12;
+  Nfl23 = NflG23 ;
+  Nfl34 = Nfl12;
+  Nfl41 = Nfl23;
+  
+*    nombre d'elements pour piston d'entree  
+  Npe12 = 1;
+  Npe23 = NflG41;
+  Npe34 = Npe12;
+  Npe41 = Npe23;
+  
+*    nombre d'elements pour piston de sortie 
+  Nps12 = 1;
+  Nps23 = NflD41;
+  Nps34 = Nps12;
+  Nps41 = Nps23;
+    
+
+* Lignes delimitant  le tube de fluide
+                                
+  Lfl12 = PflG1 DROI Nfl12 PflD2;
+  Lfl23 = PflD2 DROI Nfl23 PflD3;
+  Lfl34 = PflD3 DROI Nfl34 PflG4;
+  Lfl41 = PflG4 DROI Nfl41 PflG1;
+  
+  Lifl = Lfl12 ET Lfl23 ET  Lfl34 ET Lfl41;
+**
+* TRAC Lifl;
+
+* Lignes delimitant  le piston de paroi
+                                
+  Lpp12 = Ppp1 DROI Npp12 Ppp2;
+  Lpp23 = Ppp2 DROI Npp23 Ppp3;
+  Lpp34 = Ppp3 DROI Npp34 Ppp4;
+  Lpp41 = Ppp4 DROI Npp41 Ppp1;
+  
+  Lipp = Lpp12 ET Lpp23 ET  Lpp34 ET Lpp41;
+**
+* TRAC Lipp;
+      
+* Lignes delimitant  le piston d'entree
+                                
+  Lpe12 = Ppe1 DROI Npe12 Ppe2;
+  Lpe23 = Ppe2 DROI Npe23 Ppe3;
+  Lpe34 = Ppe3 DROI Npe34 Ppe4;
+  Lpe41 = Ppe4 DROI Npe41 Ppe1;
+  
+  Lipe = Lpe12 ET Lpe23 ET  Lpe34 ET Lpe41;
+**
+* TRAC Lipe;
+  
+* Lignes delimitant  le piston de sortie
+                                
+  Lps12 = Pps1 DROI Nps12 Pps2;
+  Lps23 = Pps2 DROI Nps23 Pps3;
+  Lps34 = Pps3 DROI Nps34 Pps4;
+  Lps41 = Pps4 DROI Nps41 Pps1;
+  
+  Lips = Lps12 ET Lps23 ET  Lps34 ET Lps41;
+**
+* TRAC Lips;
+  
+  Lptout = Lifl ET Lipp ET Lipe ET Lips;
+* TRAC Lptout;
+  
+  ELIM Lptout 0.001;
+* TRAC Lptout;
+    
+*FIN;  
+
+****
+* Construction du Maillage SURFACIQUE (QUA4)
+****    
+  OPTI ELEM QUA4;
+  
+* Surface delimitant le fluide
+  
+  EFLUIDE = Lfl12 Lfl23 Lfl34 Lfl41 DALL PLAN;
+  
+*  elim 0.0001 EFLUIDE;
+  
+* TRAC EFLUIDE;
+  
+* Surface delimitant le piston de paroi
+  
+  E_PISTON = Lpp12 Lpp23 Lpp34 Lpp41 DALL PLAN;
+  
+*  elim 0.0001 E_PISTON;
+  
+* TRAC E_PISTON;
+  
+  MAYA = EFLUIDE ET  E_PISTON;
+  
+*  elim 0.0001 MAYA;
+  
+* TRAC MAYA;
+*FIN;
+
+* Surface delimitant le piston d'entree
+  
+  E_P_IN = Lpe12 Lpe23 Lpe34 Lpe41 DALL PLAN;
+  
+*  elim 0.0001 E_P_IN;
+  
+* TRAC E_P_IN;
+  
+  MAYA = MAYA ET  E_P_IN;
+  
+*  elim 0.0001 MAYA;
+  
+* TRAC MAYA;
+  
+* Surface delimitant le piston de sortie
+  
+  E_P_OU = Lps12 Lps23 Lps34 Lps41 DALL PLAN;
+  
+*  elim 0.0001 E_P_OU;
+  
+* TRAC E_P_OU;
+  
+  MAYA = MAYA ET  E_P_OU;
+  
+*  elim 0.0001 MAYA;
+  
+* TRAC MAYA;
+*FIN;    
+****
+* Construction des mailles lineiques d'INTERFACE (SEG2)
+****    
+  OPTI ELEM SEG2;
+
+  ES_P_IN = Lpe41;
+* TRAC ES_P_IN;
+  
+  EFS_P_IN = Lfl41;
+* TRAC EFS_P_IN;
+  
+  EFS_P_OU = Lfl23;
+* TRAC EFS_P_OU;
+  
+  EFS_PIST = Ppp1 DROI Npp12 Ppp2; 
+* TRAC EFS_PIST;
+  
+  MAYA = MAYA ET  EFS_PIST ET EFS_P_IN ET EFS_P_OU ET ES_P_IN;
+  TRAC MAYA;
+  
+  elim 0.0001 MAYA;
+  TRAC MAYA;
+
+****
+* Construction du Maillage ponctuel (POI1)
+****    
+  OPTI ELEM POI1;
+
+* Translation
+  TranY = hpe*0.5; LIST TranY;
+  
+  AMORPe = Ppe1 PLUS  (0. TranY); 
+  
+  AMORPs = Pps2 PLUS  (0. TranY);
+  
+  AMORPONC = AMORPe ET AMORPs ;
+  
+* Translation
+  TranX = Lpp*0.5; LIST TranX; 
+  
+  MASSPONC = Ppp4 PLUS  (TranX  0.);
+  
+*  OPTI DIME 3;
+  
+  MAYA = MAYA ET AMORPONC ET  MASSPONC;
+    
+  elim 0.0001 MAYA;
+  TRAC MAYA;
+  
+  OPTION SAUV FORM 'Osc_meridien.mgib';
+  SAUVE 'FORMAT' MAYA;
+
+
+FIN;
+
+
+
+
+
+

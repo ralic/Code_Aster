@@ -1,0 +1,36 @@
+opti dime 2  elem tri6 ;
+
+dens 10 ;
+
+*----------------------------------------
+*DONNEES
+*----------------------------------------
+
+* nombre d elements
+N = 19;
+
+
+*---------------------------------------------
+*construction du maillage
+*---------------------------------------------
+
+p1 = -20 -20;
+p2 =  20 -20;
+p3 =  20  20;
+p4 = -20  20;
+
+LB = droit p1 p2 N;
+LD = droit p2 p3 N;
+LH = droit p3 p4 N;
+LG = droit p4 p1 N;
+
+
+SURF = DALL LB LD LH LG PLAN;
+
+trac surf;          
+
+MAILLE = surf;
+
+opti sauv format '/local01/XFEM/save_GG2/astout/tests/ssnv507f.mgib';
+sauv format maille ;
+fin ;

@@ -1,0 +1,33 @@
+TITRE    NOM=INDEFINI        NBOBJ=2         NBLIGE=5         NBLIGT=9     
+         AUTEUR=INTERFACE_IDEAS                 DATE=29/07/1999
+%     LES INFORMATIONS QUI SUIVENT CONCERNENT :
+%     1-LA DESCRIPTION DU FICHIER MODELE
+%     2-LA DATE D'ECRITURE DU FICHIER UNIVERSEL
+%FORMAT=(1*LIGNE_DE_TEXTE)                                                      
+  JE-29-JUIL-1999 16:57:05                                                
+                                                                          
+% ATTENTION: SI AUTEUR=INTERFACE_IDEAS TRAITEMENT SPECIAL DANS IMPR_RESU
+FINSF
+%
+COOR_3D    NOM=INDEFINI    NBOBJ=2        NBLIGE=5        NBLIGT=9     
+           NUMIN=1                        NUMAX=2     
+           AUTEUR=INTERF_ST/TF            DATE=29/07/1999
+%       XMAX= 0.10000000E+01 YMAX= 0.00000000E+00 ZMAX= 0.00000000E+00
+%       XMIN= 0.00000000E+00 YMIN= 0.00000000E+00 ZMIN= 0.00000000E+00
+%FORMAT=(1*NOM_DE_NOEUD,3*COORD)                                                
+  N1        0.00000000000000E+00  0.00000000000000E+00  0.00000000000000E+00
+  N2        1.00000000000000E+00  0.00000000000000E+00  0.00000000000000E+00
+FINSF
+%
+SEG2       NOM=INDEFINI   NBOBJ=1        NBLIGE=3        NBLIGT=6     
+           NUMIN=1                       NUMAX=1     
+           AUTEUR=INTERF_ST/TF           DATE=29/07/1999
+%FORMAT=(1*NOM_DE_MAILLE,2*NOM_DE_NOEUD)                                        
+M1      N1      N2     
+FINSF
+%
+GROUP_MA    NOM=COUL_7  
+  M1     
+FINSF
+%
+ FIN

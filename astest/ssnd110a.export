@@ -6,7 +6,3 @@ P mpi_nbnoeud 1
 P testlist C
 
 F comm ssnd110a.comm D 1
-F libr ssnd110a.28 D 28
-F libr ssnd110a.29 D 29
-F libr ssnd110a.30 D 30
-F libr ssnd110a.31 D 31

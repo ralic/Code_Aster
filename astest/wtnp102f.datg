@@ -1,0 +1,85 @@
+* ------------------------------------
+*       PARAMETRES DE LA PIECE
+* ------------------------------------
+
+*==============
+DEBPROC GRAVI ;
+*==============
+OPTION DIME 3 ELEM CUB8 ;
+
+
+DZ = 2.;
+
+
+NO1 = 100. 100. 0.;
+NO2 = 0. 100. 0.;
+NO3 = 100.  0.  0.;
+NO4 = 0. 0. 0.;
+NO5 = 100. 50. 0.;
+NO6 = 0. 50.  0.;
+
+
+NZ1 = 100. 100. DZ ;
+NZ2 = 0. 100. DZ ;
+NZ3 = 100. 0. DZ ;
+NZ4 = 0. 0. DZ ;
+NZ5 = 100. 50.  DZ;
+NZ6 = 0. 50.  DZ;
+
+*MAILLAGE
+
+LBAS  = DROI 2 NO4 NO3;
+LDRO1 = DROI 1 NO3 NO5;
+LMIL1 = DROI 2 NO5 NO6 ;
+LGAU1 = DROI 1 NO6 NO4 ;
+
+LHAUT = DROI 2 NO1 NO2;
+LGAU2 = DROI 1 NO2  NO6 ;
+LMIL2 = INVE LMIL1;
+LDRO2 = DROITE 1 NO5 NO1 ;
+
+SBO1 =  DALL LHAUT LGAU2 LMIL2 LDRO2;
+OPTION DIME 3 ELEM TET4 ;
+
+SBO2 = DALL LBAS  LDRO1 LMIL1 LGAU1 ;
+
+SBO = SBO1 et SBO2;
+
+*LGAU = LGAU2 ET LGAU1 ;
+*LDRO  = LDRO1 ET LDRO2 ;
+trac SBO;
+
+BO=SBO VOLU 1 TRAN (0. 0. DZ) ;
+
+**** Qualifier les surfaces ****
+
+HAUT=(ENVE BO) POIN PLAN NO1  NO2 NZ1 0.0001;
+HAUT=(ENVE BO) ELEM APPUYER STRICTEMENT HAUT;
+
+BAS=(ENVE BO) POIN PLAN NO4  NO3 NZ4 0.0001;
+BAS=(ENVE BO) ELEM APPUYER STRICTEMENT BAS;
+
+GAUCHE=(ENVE BO) POIN PLAN NO2  NO4 NZ2 0.0001;
+GAUCHE=(ENVE BO) ELEM APPUYER STRICTEMENT GAUCHE;
+
+DROIT=(ENVE BO) POIN PLAN NO3  NO1 NZ3 0.0001;
+DROIT=(ENVE BO) ELEM APPUYER STRICTEMENT DROIT;
+
+*=============================================================
+FINPROC BO GAUCHE BAS DROIT HAUT NO1 NO2 NO3 NO4 ;
+
+BO GAUCHE BAS DROIT HAUT NO1 NO2 NO3 NO4  = GRAVI ;
+*=============================================================
+
+TRACER (BO et (haut coul rouge) et (gauche coul jaune)) ;
+* ------------------
+*     SAUVEGARDE
+* ------------------
+
+OPTION SAUV FORMAT
+ 'wtnp102f.mgib';
+SAUV FORMAT ;
+
+FIN ;
+
+

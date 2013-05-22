@@ -1,0 +1,36 @@
+Point(1) = {0, 0, 0, 1.5};
+Point(2) = {7, 0, 0, 1.5};
+Point(3) = {7, 8, 0, 1.5};
+Point(4) = {7, 16, 0, 1.5};
+Point(5) = {0, 16, 0, 1.5};
+Point(6) = {0, 8, 0, 1.5};
+Point(7) = {3.5, 8, 0, 1};
+Point(8) = {0, 7.9999, 0, 1.5};
+Line (1) = {1, 2};
+Line (2) = {2, 3};
+Line (3) = {3, 4};
+Line (4) = {4, 5};
+Line (5) = {5, 6};
+Line (6) = {6, 7};
+Line (7) = {7, 8};
+Line (8) = {8, 1};
+Line (9) = {7, 3};
+Characteristic Length {7} = 0.3;
+Characteristic Length {6, 8} = 0.8;
+Line Loop (11) = {1, 2, -9, 7, 8};
+Plane Surface (12) = {11};
+Line Loop (13) = {6, 9, 3, 4, 5};
+Plane Surface (14) = {13};
+Extrude {0,0,3.5} {
+  Surface{14,12};
+}
+Physical Line("FONDFISS") = {23};
+Physical Line("BLOCAGE") = {27};
+Physical Surface("BAS") = {51};
+Physical Surface("HAUT") = {36};
+Physical Surface("LEVSUP") = {24};
+Physical Surface("LEVINF") = {63};
+Physical Volume("DOMAINE") = {1,2};
+Physical Point("BLOC1") = {3};
+Physical Point("BLOC2") = {7};
+Physical Point("BLOC3") = {10};

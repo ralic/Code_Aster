@@ -1,0 +1,129 @@
+opti dime 3  elem cub8 ;
+
+dens 1 ;
+
+
+*----------------------------------------
+*  DONNEES DU MAILLAGE
+*----------------------------------------
+
+* Dimensions de l'eprouvette
+*---------------------------
+LX = 1.;
+LY = 10.;
+LZ = 20.;
+* Nombre d elements exterieurs
+NX = 3;
+NY = 10;
+NZ = 10;
+
+* Dimensions de la zone raffinee
+*-------------------------------
+LYi = 3.;
+LZi = 2.;
+* Nombre d elements interieur
+NYi = 21;
+NZi = 15;
+
+
+*---------------------------------------------
+*construction du maillage de la zone raffinee
+*---------------------------------------------
+
+p1 = 0. 0. 0.;
+p2 = 0. LYi 0.;
+p3 = 0. LYi LZi;
+p4 = 0. 0. LZi;
+
+lig1i = droit p1 p2 NYi;
+lig2i = droit p2 p3 NZi;
+lig3i = droit p3 p4 NYi;
+lig4i = droit p4 p1 NZi;
+
+surf1=(DALL lig1i lig2i lig3i lig4i PLAN) coul rouge;
+
+vect  =  0. (LYi/2.)  (LZi/2.) ;
+
+DEPL surf1  MOIN vect ;
+
+
+
+*---------------------------------------------
+*construction du maillage ext
+*---------------------------------------------
+
+p10 = 0. 0. 0.;
+p20 = 0. LY 0.;
+p30 = 0. LY LZ;
+p40 = 0. 0. LZ;
+
+lig1 = droit p20 p10 NY;
+lig2 = droit p30 p20 NZ;
+lig3 = droit p40 p30 NY;
+lig4 = droit p10 p40 NZ;
+
+surf2=DALL lig1 lig2 lig3 lig4 PLAN;
+
+vect2  =  0. (LY/2.)  (LZ/2.) ;
+
+DEPL surf2  MOIN vect2 ;
+
+
+cont1= lig1i et lig2i et lig3i et lig4i;
+cont2= lig1 et lig4 et lig3 et lig2 ;
+cont = cont1 et cont2;
+
+
+mil = cont SURF PLAN;
+
+
+*---------------------------------------------
+*extrusion
+*---------------------------------------------
+
+p5 = LX. 0.  0.;
+surftot = mil et surf1;
+
+*trac surftot;
+
+*opti elem pri6 ;
+vol = surftot volu  'TRAN' p5 NX;
+
+SURFINF=(lig1 'TRAN' p5 NX) coul vert;
+elim 1.E-6 vol SURFINF;
+
+SURFDRO=(lig2 'TRAN' p5 NX) coul bleu;
+elim 1.E-6 vol SURFDRO;
+
+SURFSUP=(lig3 'TRAN' p5 NX) coul vert;
+elim 1.E-6 vol SURFSUP;
+
+SURFGAU=(lig4 'TRAN' p5 NX) coul bleu;
+elim 1.E-6 vol SURFGAU;
+
+oublier lig1i;
+oublier lig2i;
+oublier lig3i;
+oublier lig4i;
+
+oublier lig1;
+oublier lig2;
+oublier lig3;
+oublier lig4;
+
+oublier cont1;
+oublier cont2;
+oublier cont;
+oublier mil;
+oublier surf1;
+oublier surf2;
+oublier surftot;
+
+MAILLE=vol et SURFINF et SURFSUP et SURFDRO et SURFGAU;
+
+trac MAILLE;
+trac cach MAILLE;
+
+opti sauv format '/home/massin/TOURRET/castest/ssnv192a/ssnv192a.mgib' ;
+sauv format maille ;
+fin ;

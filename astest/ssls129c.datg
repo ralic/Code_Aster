@@ -1,0 +1,120 @@
+DEBPROC SHB8 L*'FLOTTANT' pl*'FLOTTANT' h*'FLOTTANT' ep*'FLOTTANT'
+nbma_L*'ENTIER' nbma_pl*'ENTIER' nbma_ep*'ENTIER' nbond_L*'ENTIER'
+nbond_pl*'ENTIER' ;
+
+****************************************************************************
+*         PROCEDURE DE MAILLAGE D UNE PLAQUE ONDULEE                       *
+*                                                                          *
+*                                                                          *
+*  ARGUMENT D ENTREE                                                       *
+*  =================                                                       *
+*                                                                          *
+* L : LONGUEUR DE LA PLAQUE                                                *
+* pl : LARGEUR DE LA PLAQUE                                                *
+* h : HAUTEUR MAXIMALE DE L'ONDULATION DE LA PLAQUE                        *
+* ep : EPAISSEUR DE LA PLAQUE                                              *
+* nbma_L : NOMBRE DE MAILLE SUR LA LONGUEUR                                *
+* nbma_pl : NOMBRE DE MAILLE SUR LA LARGEUR                                *
+* nbma_ep : NOMBRE DE MAILLE SUR L EPAISSEUR                               *
+* nbond_L : NOMBRE D ONDULATION SUR LA LONGUEUR                            *
+* nbond_pl : NOMBRE D ONDULATION SUR LA LARGEUR                            *
+*                                                                          *
+*                                                                          *
+*                                                                          *
+* ARGUMENT DE SORTIE                                                       *
+* ==================                                                       *
+*                                                                          *
+* VOL : MAILLAGE DE LA PLAQUE ONDULEE                                      *
+* GAUCHE : MAILLAGE DU COTE SITUE A X=0                                    *
+* DROITE : MAILLAGE DU COTE SITUE A X=L                                    *
+* A,B,C,D,F,I : POINT PARTICULIER DE POST TRAITEMENT                       *
+*                                                                          *
+****************************************************************************
+   
+OPTI DIME 3 ELEM CU20 ;
+
+crit = 1.E-7 ;
+
+A = TABL ;
+
+REPETER i ( ( 2 * nbma_L ) + 1 ) ;
+REPETER j ( ( 2 * nbma_pl ) + 1 ) ;
+     A . ( ( ( (2*nbma_pl) + 1) * (&i-1) )+(&j) ) = 
+     ( ( ( (&i-1) ) * L / (2*nbma_L) ) ) 
+     ( ( (&j-1) ) * pl / ( 2 * nbma_pl ) ) 
+     ( h * ( SIN ( ( nbond_L * (&i-1) * 180 ) / ( 2*nbma_L ) ) ) 
+     * ( SIN ( ( nbond_pl * (&j-1) * 180 ) / ( 2*nbma_pl ) ) ) ) ;
+
+FIN j ;
+FIN i ;
+
+plaque = MANU QUA8 a.1 a.( ( 2 * nbma_pl) + 2) a.( ( 4 * nbma_pl) + 3) 
+a.( ( 4 * nbma_pl) + 4) a.( ( 4 * nbma_pl) + 5) a.( ( 2 * nbma_pl) + 4)
+a.3 a.2 ;
+
+REPETER i ( nbma_pL - 1 ) ;
+
+plaque = plaque 'ET'
+( MANU QUA8 
+a . ( ( 2 * ( &i ) ) + 1 ) 
+a . ( ( 2 * ( &i ) ) + ( 2 * nbma_pl ) + 2 ) 
+a . ( ( 2 * ( &i ) ) + ( 4 * nbma_pl ) + 3 )
+a . ( ( 2 * ( &i ) ) + ( 4 * nbma_pl ) + 4 ) 
+a . ( ( 2 * ( &i ) ) + ( 4 * nbma_pl ) + 5 ) 
+a . ( ( 2 * ( &i ) ) + ( 2 * nbma_pl ) + 4 )
+a . ( ( 2 * ( &i ) ) + 3 ) 
+a . ( ( 2 * ( &i ) ) + 2 ) ) ;
+
+FIN i ;
+
+REPETER j ( nbma_L - 1 ) ;
+
+REPETER i ( nbma_pL ) ;
+
+poi1 = ( ( 2 * nbma_pl + 1 ) * ( 2 * &j ) + ( 2 * ( &i - 1 ) ) + 1 ) ;
+poi2 = ( ( 2 * nbma_pl + 1 ) * ( 2 * &j ) + ( 2 * ( &i - 1 ) ) 
++ ( 2 * nbma_pl ) + 2 ) ;
+poi3 = ( ( 2 * nbma_pl + 1 ) * ( 2 * &j ) + ( 2 * ( &i - 1 ) ) 
++ ( 4 * nbma_pl ) + 3 ) ;
+poi4 = ( ( 2 * nbma_pl + 1 ) * ( 2 * &j ) + ( 2 * ( &i - 1 ) ) 
++ ( 4 * nbma_pl ) + 4 ) ;
+poi5 = ( ( 2 * nbma_pl + 1 ) * ( 2 * &j ) + ( 2 * ( &i - 1 ) ) 
++ ( 4 * nbma_pl ) + 5 ) ;
+poi6 = ( ( 2 * nbma_pl + 1 ) * ( 2 * &j ) + ( 2 * ( &i - 1 ) ) 
++ ( 2 * nbma_pl ) + 4 ) ;
+poi7 = ( ( 2 * nbma_pl + 1 ) * ( 2 * &j ) + ( 2 * ( &i - 1 ) ) + 3 ) ;
+poi8 = ( ( 2 * nbma_pl + 1 ) * ( 2 * &j ) + ( 2 * ( &i - 1 ) ) + 2 ) ;
+
+PLAQUE = PLAQUE 'ET' ( MANU QUA8 
+a . poi1 a . poi2 a . poi3 a . poi4 
+a . poi5 a . poi6 a . poi7 a . poi8 ) ;
+
+FIN i ;
+FIN j ;
+
+VOL = PLAQUE VOLU nbma_ep TRAN ( 0. 0. ep ) ;
+
+A = 0. 0. 0. ;
+B = L 0. ( ep/2 ) ;
+C = L pl ( ep/2 ) ;
+D = 0. pl 0. ;
+F = 0. 0. ep ;
+G = L 0. ep ;
+H = L pl ep ;
+I = 0. pl ep ;
+
+ELIM crit ( VOL et A et B et C et D et F et G et H et I ) ;
+
+chpo = ( ENVE VOL ) POIN PLAN A D F crit ;
+GAUCHE = ( ENVE VOL ) ELEM APPUYE STRICTEMENT chpo ;
+
+
+chpo = ( ENVE VOL ) POIN PLAN B G H crit ;
+DROITE = ( ENVE VOL ) ELEM APPUYE STRICTEMENT chpo ;
+
+VOL = VOL CHAN LINE ;
+DROITE = DROITE CHAN LINE ;
+GAUCHE = GAUCHE CHAN LINE ;
+
+FINPROC VOL GAUCHE DROITE A B C D F I ;
+

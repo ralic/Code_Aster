@@ -1,0 +1,82 @@
+opti nive 10 ;
+opti dime 3 elem cu20 SAUV FORM 
+   '/usr/users/bserre/cas_test/sdnv103/ModelA/sdnv103a.mgib' ;                          
+
+*opti donn 5;
+* -- valeur du jeu init
+jeu = 2.27000;
+
+* -- Nombres d'elements
+n1 = 5;
+n2 = 20;
+n3 = 6;
+
+* -- Points du socle rigide
+a = 0. 0.  0.;
+b =  20.  0.  0.;
+
+opti elem cub8;
+
+ab = droit a b 1;
+rigid = tran ab 1 (0. 20. 0.);
+vol_rig = volu rigid 1 'TRAN' (0. 0. -2.);
+elim vol_rig 1.e-6;
+
+opti elem cu20;
+
+* -- Points du cylindre
+a1 = 0.   0.   (0.  + jeu);
+b1 = 3.2  0.   (0.  + jeu);
+a2 = 0.   0.   (32.4+ jeu);
+b2 = 3.2  0.   (32.4+ jeu);
+
+d1 = droit n1 a1 b1;
+d2 = droit n2 b1 b2;
+d3 = droit n1 b2 a2;
+d4 = droit n2 a2 a1;
+
+s1 = dall d1 d2 d3 d4 'PLAN';
+
+vol = volu n3 s1 'ROTA' 90. a1 a2;        
+
+elim 1.e-6 vol;
+
+syy = face 1 vol;
+sxx = face 2 vol;
+
+toto = point vol 'PLAN' a1 b1 (10. 10. jeu) 1.e-6;  
+szz = elem (face 3 vol) 'APPUYE' 'STRICTEMENT' toto;       
+
+elim vol 1.e-6;
+vol = rege vol;
+elim 1.e-6 sxx;
+sxx = rege sxx;
+elim 1.e-6 syy;
+syy = rege syy;
+elim 1.e-6 szz;
+szz = rege szz;
+
+ma = vol et syy et sxx et szz;
+elim ma 1.e-6;
+ma = rege ma;
+tass ma;
+
+ma = ma et vol_rig;
+sauv format ma;
+
+trac cach 
+(vol et (syy coul rouge) 
+     et (sxx coul vert)      
+     et (szz coul jaune) );
+
+rep = @repere (-3.2 -3.2 0.) (prog 10. 10. 10.) bleu;
+
+trac cach 
+(vol et vol_rig
+     et (syy coul rouge) 
+     et (sxx coul vert)      
+     et (szz coul jaune) 
+     et (rigid coul rose) et rep);
+
+list (nbno ma);
+list (nbel ma);

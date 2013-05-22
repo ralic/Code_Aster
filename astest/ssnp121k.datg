@@ -1,0 +1,67 @@
+*
+OPTI DIME 3 ELEM TET4;
+*  POINTS DE VUE:
+VUX = -1.E3 0. 0.   ; VUY =  0.  1.E3 0. ;
+VUZ =  0.   0. 1.E3 ; PER = -1. -1. 1. ;
+VECT2 = 0. 0. 1. ;
+VECT3 = 0. 0. 1. ;
+*----------------------------------------
+* Plaque1
+*----------------------------------------
+
+A1 =  0.0  0.0 0.0 ;
+A2 =  1.0  0.0 0.0  ;
+A3 =  1.0  1.0 0.0 ;
+A4 =  0.0  1.0 0.0 ;
+A21 =  0.0  0.0 1.0 ;
+A22 =  1.0  0.0 1.0  ;
+A23 =  1.0  1.0 1.0 ;
+A24 =  0.0  1.0 1.0 ;
+A1A2 = droit (4) A1 A2;
+A2A3 = droit (4) A2 A3;
+A3A4 = droit (4) A3 A4;
+A4A1 = droit (4) A4 A1;
+*
+encast = daller A1A2 A2A3 A3A4 A4A1 plan ;
+OPTI DIME 3 ELEM TE10;
+v1= encast 4  volu TRAN VECT2 ;
+*
+suresc= face 2  v1;
+trac suresc;
+v1  = v1 et suresc et encast et A21 et A22 et A23 et A24  ;
+elim v1 1.e-5;
+*----------------------------------------
+* Plaque2
+*----------------------------------------
+OPTI DIME 3 ELEM CU20;
+*OPTI DIME 3 ELEM PR15;
+A11 =  0.0  0.0 1.0 ;
+A12 =  1.0  0.0 1.0 ;
+A13 =  1.0  1.0 1.0 ;
+A14 =  0.0  1.0 1.0 ;
+A11A2 = droit (4) A11 A12;
+A12A3 = droit (4) A12 A13;
+A13A4 = droit (4) A13 A14;
+A14A1 = droit (4) A14 A11;
+*
+surmai = daller A11A2 A12A3 A13A4 A14A1 plan ;
+*OPTI DIME 3 ELEM PR15;
+OPTI DIME 3 ELEM CU20;
+v2= surmai 4  volu TRAN VECT3 ;
+surmai=inve(surmai);
+*
+trac  surmai;
+surcha= face 2  v2;
+v2 = v2 et surmai et surcha et A11 et A12 et A13 et A14 ;
+elim v2 1.e-5;
+
+
+trac cache  ((v1 coul jaune) et (v2 coul rouge));
+trac per ((suresc coul vert) et (surmai coul jaune));
+*
+Struct=  (v1 et v2);
+opti sauv form 'ssnp121f.mgib' ;
+sauv form Struct ;
+LIST (NBNO Struct) ;
+LIST (NBEL Struct) ;
+fin;

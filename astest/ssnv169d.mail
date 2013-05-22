@@ -1,0 +1,116 @@
+ TITRE
+ %  GIBI FECIT
+ FINSF
+ %
+ COOR_3D
+ N1        1.00000000000000D+00  1.00000000000000D+00  0.00000000000000D+00
+ N2        0.00000000000000D+00  1.00000000000000D+00  0.00000000000000D+00
+ N3        0.00000000000000D+00  0.00000000000000D+00  0.00000000000000D+00
+ N4        1.00000000000000D+00  0.00000000000000D+00  0.00000000000000D+00
+ N5        1.00000000000000D+00  1.00000000000000D+00  1.00000000000000D+00
+ N6        0.00000000000000D+00  1.00000000000000D+00  1.00000000000000D+00
+ N7        0.00000000000000D+00  0.00000000000000D+00  1.00000000000000D+00
+ N8        1.00000000000000D+00  0.00000000000000D+00  1.00000000000000D+00
+ FINSF
+ %
+ HEXA8   
+  M1       N1       N2       N3       N4       N5       N6       N7      
+           N8      
+ FINSF
+ %
+ QUAD4   
+  M2       N1       N2       N3       N4 
+  M3       N5       N6       N7       N8  
+ FINSF
+ %
+ SEG2    
+  M8       N3       N4      
+  M9       N4       N1      
+  M10      N1       N2      
+  M11      N2       N3      
+ FINSF
+ %
+ POI1    
+  M16      N5      
+  M17      N6      
+  M18      N7      
+  M19      N8      
+ FINSF
+ %
+ POI1    
+  M20      N2      
+  M21      N3      
+ FINSF
+ %
+ POI1    
+  M24      N1      
+ FINSF
+ %
+ POI1    
+  M29      N4      
+ FINSF
+ %
+ POI1    
+ FINSF
+ %
+ GROUP_NO
+ P1       N3      
+ FINSF
+ %
+ GROUP_NO
+ P2       N4      
+ FINSF
+ %
+ GROUP_NO
+ P3       N2      
+ FINSF
+ %
+ GROUP_NO
+ P4       N1      
+ FINSF
+ %
+ GROUP_NO
+ PC       N5      
+ FINSF
+ %
+ GROUP_MA
+   VOL1    
+ M1      
+ FINSF
+ %
+ GROUP_MA
+   S_INF   
+ M2      
+ FINSF
+ %
+ GROUP_MA
+   S_SUP
+ M3      
+ FINSF
+ %
+ GROUP_MA
+   C_INF   
+ M8       M9       M10      M11     
+ FINSF
+ %
+ GROUP_MA
+   S_GCH   
+ M20      M21      M17      M18     
+ FINSF
+ %
+ GROUP_MA
+   S_ARR   
+ M24      M20      M16      M17     
+ FINSF
+ %
+ GROUP_MA
+   S_DRT   
+ M24      M29      M16      M19     
+ FINSF
+ %
+ GROUP_MA
+   S_AVT   
+ M21      M29      M18      M19     
+ FINSF
+ %
+ FIN

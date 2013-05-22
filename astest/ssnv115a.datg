@@ -1,0 +1,41 @@
+opti dime 2 elem qua8 ;
+
+
+* r : rayon des cercles
+* h : epaisseur
+* hsr = h/r
+* alpha : angle au centre des 4 morceaux
+* --------------------------------------------------
+
+r = 1. ; h= 0.050;hsr = h/r ; hs2= h/2  ;
+
+cosalf = 1. - (0.25*hsr) ;sinalf = (1. - (cosalf*cosalf))**0.5 ;
+alpha = atg (sinalf/cosalf) ;
+
+o = 0. 0. ; o1 = 0. (0. - hs2) ; o2 = 0. hs2 ;
+
+a  = 0.              (0. - r) ;
+b  = 2.*r*sinalf     (r*(2*cosalf - 1.));
+px = 2.*r*sinalf     (2*r*(cosalf - 1.));
+c  = 4.*r*sinalf     (0. - r) ;
+
+bout1 = droi 4 o2 o1 ;
+po = point bout1  proc o ;
+
+c1 = bout1  rota  5   (-1.*alpha)    a ;
+c1 = c1     rota  5   ( 1.*alpha)    b ;
+milieu = cote 3 c1 ; x = point c1  proc px ;
+c1 = c1     rota  5   ( 1.*alpha)    b ;
+c1 = c1     rota  5   (-1.*alpha)    c ;
+
+bout2 = cote 3 c1 ;
+* trac c1 ;
+
+s1 = C1 ELEM APPUYE LARGEMENT O1;
+
+opti sauv form 'ssnv115a_q4.mgib' ;
+sort c1;
+sauv form c1 ;
+list (nbno c1) ;
+list (nbel c1) ;
+fin;

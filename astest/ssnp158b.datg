@@ -1,0 +1,103 @@
+# -*- coding: iso-8859-1 -*-
+
+# SALOME V6.3.0
+
+import geompy
+import smesh,SMESH
+import StdMeshers
+import NETGENPlugin
+
+#
+#===================================================
+#                  GEOMETRIE
+#===================================================
+#
+
+# Utilisation du Sketcher 2D (creation du contour - wire)
+Wire_1 = geompy.MakeSketcher("Sketcher:F 10.000000 0.000000:R 90:C 10.000000 90.000000:TT 0.000000 150.000000:TT 100.000000 150.000000:TT 100.000000 0.000000:TT 10.000000 0.000000:WW", [0, 0, 0, 0, 0, 1, 1, 0, -0])
+
+# Creation de la face
+plaque = geompy.MakeFaceWires([Wire_1], 1)
+
+# Creation des groupes
+
+[trou,gauche,bas,haut,droite] = geompy.SubShapeAllSorted(plaque, geompy.ShapeType["EDGE"])
+
+A=geompy.MakeVertex(0,10,0)
+GA=geompy.GetVertexNearPoint(plaque,A)
+
+B=geompy.MakeVertex(10,0,0)
+GB=geompy.GetVertexNearPoint(plaque,B)
+
+D=geompy.MakeVertex(100,0,0)
+GD=geompy.GetVertexNearPoint(plaque,D)
+
+F=geompy.MakeVertex(100,150,0)
+GF=geompy.GetVertexNearPoint(plaque,F)
+
+G=geompy.MakeVertex(0,150,0)
+GG=geompy.GetVertexNearPoint(plaque,G)
+
+id_Plaque=geompy.addToStudy(plaque,"Plaque")
+geompy.addToStudyInFather(plaque,trou  ,"trou"  )
+geompy.addToStudyInFather(plaque,gauche,"gauche")
+geompy.addToStudyInFather(plaque,droite,"droite")
+geompy.addToStudyInFather(plaque,bas   ,"bas"   )
+geompy.addToStudyInFather(plaque,haut  ,"haut"  )
+geompy.addToStudyInFather(plaque,GA    ,"A"     )
+geompy.addToStudyInFather(plaque,GB    ,"B"     )
+geompy.addToStudyInFather(plaque,GD    ,"D"     )
+geompy.addToStudyInFather(plaque,GF    ,"F"     )
+geompy.addToStudyInFather(plaque,GG    ,"G"     )
+
+#
+#===================================================
+#                  MAILLAGE
+#===================================================
+#
+
+
+Plaque_1 = smesh.Mesh(plaque)
+NETGEN_2D = Plaque_1.Triangle(algo=smesh.NETGEN)
+NETGEN_2D_Parameters = NETGEN_2D.Parameters()
+NETGEN_2D_Parameters.SetMaxSize( 4 )
+NETGEN_2D_Parameters.SetSecondOrder( 1 )
+NETGEN_2D_Parameters.SetOptimize( 182 )
+NETGEN_2D_Parameters.SetFineness( 4 )
+NETGEN_2D_Parameters.SetQuadAllowed( 0 )
+NETGEN_2D_Parameters.SetLocalSizeOnShape(trou, 18.)
+isDone = Plaque_1.Compute()
+
+# Transfert des groupes vers le maillage
+
+trou_1   = Plaque_1.GroupOnGeom(trou  ,'trou'  ,SMESH.EDGE)
+gauche_1 = Plaque_1.GroupOnGeom(gauche,'gauche',SMESH.EDGE)
+droite_1 = Plaque_1.GroupOnGeom(droite,'droite',SMESH.EDGE)
+bas_1    = Plaque_1.GroupOnGeom(bas   ,'bas'   ,SMESH.EDGE)
+haut_1   = Plaque_1.GroupOnGeom(haut  ,'haut'  ,SMESH.EDGE)
+A_1      = Plaque_1.GroupOnGeom(GA    ,'A'     ,SMESH.NODE)
+B_1      = Plaque_1.GroupOnGeom(GB    ,'B'     ,SMESH.NODE)
+D_1      = Plaque_1.GroupOnGeom(GD    ,'D'     ,SMESH.NODE)
+F_1      = Plaque_1.GroupOnGeom(GF    ,'F'     ,SMESH.NODE)
+G_1      = Plaque_1.GroupOnGeom(GG    ,'G'     ,SMESH.NODE)
+
+# Set object names
+smesh.SetName(Plaque_1.GetMesh(),'Plaque')
+smesh.SetName(trou_1            ,'trou'  )
+smesh.SetName(gauche_1          ,'gauche')
+smesh.SetName(droite_1          ,'droite')
+smesh.SetName(bas_1             ,'bas'   )
+smesh.SetName(haut_1            ,'haut'  )
+smesh.SetName(A_1               ,'A')
+smesh.SetName(B_1               ,'B')
+smesh.SetName(D_1               ,'D')
+smesh.SetName(F_1               ,'F')
+smesh.SetName(G_1               ,'G')
+
+
+# Mise à jour de l'arbre
+#---------------------------
+# Si on a une interface graphique...
+
+if salome.sg.hasDesktop():
+  salome.sg.updateObjBrowser(1)

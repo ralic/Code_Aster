@@ -1,0 +1,92 @@
+//Script SCILAB pour le calcul de la solution de reference
+clear;
+//calcul des termes de la matrice tri-diagonnale
+function [M1,M2,M3]=M123b(D,dt,dx,Tm,I)
+M1=zeros(1,I);
+M2=zeros(1,I);
+M3=zeros(1,I);
+M2(1)=1+dt*D/(dx*dx);
+M3(1)=-dt*D/(dx*dx);
+aa=dt*D/(2*dx*dx);
+for i=2:I-1
+  M1(i)=-aa;
+  M3(i)=-aa;
+  M2(i)=1+2*aa;
+end
+M2(I)=1;
+endfunction
+//calcul du second membre
+function [Sn]=calculSn2(D,dt,dx,I,Tm,T0,F0,j)
+Sn=zeros(I,1);
+Sn(1)=F0*dt*(1+D(j)/D(j+1))/dx+(1-D(j)*dt/(dx*dx))*Tm(1)+Tm(2)*D(j)*dt/(dx*dx);
+aa=dt*D(j)/(2*dx*dx);
+for i=2:I-1
+  Sn(i)=aa*Tm(i+1);
+  Sn(i)=Sn(i)+(1-2*aa)*Tm(i);
+  Sn(i)=Sn(i)+aa*Tm(i-1);
+end
+Sn(I)=T0;
+endfunction
+//résoud le système triadiagonnal [abc000]x=d
+function [f]=tridiag(a,b,c,d,n)
+//f,a,b,c vecteur de 1 à nombre de pas espace n
+if (b(1)==0) then
+//error(’b(1) nul’);
+end
+bet=b(1);
+f(1)=d(1)/bet;
+for j=2:n
+  gam(j)=c(j-1)/bet;
+  bet=b(j)-a(j)*gam(j);
+  if (bet==0) then
+//     error(’bet nul’);
+  end
+  f(j)=(d(j)-a(j)*f(j-1))/bet;
+end
+for j=n-1:-1:1
+  f(j)=f(j)-gam(j+1)*f(j+1);
+end
+endfunction
+long=2.0;
+T0 = 100.0;
+F0 = -1.0;
+DC1=0.005;DC0=0.001;
+t1=55;tmoy=50;tfin=201;
+d1=(DC1-DC0)/(t1-tmoy);
+d0=-d1*t1+DC1;
+//discretisation
+dx=0.05;
+x=[0:dx:long];
+t=[0:0.01:tfin];
+Nmax=length(t);
+Imax=length(x);
+T=zeros(Imax,Nmax);
+Dif=zeros(Nmax);
+for j=1:(Nmax)
+  if (t(j)<=tmoy) then
+    Dif(j)=DC0;
+  elseif ((t(j)>tmoy)&(t(j)<t1)) then
+   Dif(j)=d0+d1*t(j);
+  else
+   Dif(j)=DC1;
+  end
+end
+//etat initial stationaire
+for i=1:Imax
+ T(i,1)=T0;
+end
+//boucle en temps
+for j=2:Nmax-1
+  dt = t(j)-t(j-1);
+//Calcul des termes diagonaux de la matrice
+  [A,B,C]=M123b(Dif(j),dt,dx,T(:,j-1),Imax);
+//Calcul du second membre
+    Sn=calculSn2(Dif,dt,dx,Imax,T(:,j-1),T0,F0,j);
+//Résolution du système tri-diagonal
+  T(:,j)=tridiag(A,B,C,Sn,Imax);
+end
+[ii,in]=find(x==1);
+plot(t,T(1,:),'b-');
+plot(t,T(in,:),'g-');
+plot(t,T(Imax,:),'b-');
+

@@ -1,0 +1,57 @@
+*
+*Maillage Modelisation A (AXIS):
+*Emboutissage d'une tole par un poincon hemispherique
+*Elements plaque  (QUAD4)
+*
+*
+opti dime 2 ;
+*opti nive 10 ;
+opti elem QUA4 ;
+*
+*Construction du flan
+*
+A1 = 0.              0.       ;
+B  = 59.18           0.       ;
+C1 = 59.18           1.       ;
+D  = 0.              1.       ;
+*
+lA1B = droit 14 A1 B  ;
+lBC1 = droit  2 B  C1 ;
+lC1D = droit 14 C1 D  ;
+lDA1 = droit  2 D  A1 ;
+*
+FLAN = daller lA1B lBC1 lC1D lDA1 plan ;
+elim 0.001 FLAN ;
+*
+*Construction rayon entr‰e matrice
+*
+F  = 52.83        7.35     ;
+G  = 59.18        7.35     ;
+C2 = 59.18        1.       ; 
+*
+lC2G = droit 3 C2 G ;
+lGF = droit 3 G F ;
+lFC2 = cercl 6 F G C2 ;
+li1 = lC2G et lGF et lFC2;
+*
+MATRICE = surface li1 plane ;
+*
+*Construction poin‡on
+*
+E  = 50.8           (-50.8)   ;
+H  = 0.             (-50.8)   ;
+A2 = 0.              0.       ;
+*
+lA2H = droit 10 A2 H;
+lHE  = droit 10 H E;
+lEA2 = cercl 20 A2 H E ;
+li2  = lA2H et lHE et lEA2 ;
+*
+POINCON = surface li2 plane ;
+*
+elim 0.01 POINCON;
+trac (FLAN et MATRICE et POINCON);
+*
+opti sauv form 'ssnv501a.mgib' ;
+sauv form (FLAN et MATRICE et POINCON) ;
+fin;

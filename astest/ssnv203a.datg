@@ -1,0 +1,51 @@
+opti dime 2  elem qua4 ;
+
+*----------------------------------------
+*DONNEES
+*----------------------------------------
+* dimensions des cotes
+LX = 1;
+LY = 1;
+
+* nombre d'elements
+NX = 5;
+NY = 5; 
+
+
+EPSI = 0.000001;
+*---------------------------------------------
+*construction des surfaces dans le plan inférieur
+*---------------------------------------------
+
+p1 = LX   0.;
+p2 = LX  LY;
+p3 = 0.  LY;
+p4 = 0.  0.;
+
+
+
+ligd = droit p1 p2 NY;
+ligh = droit p2 p3 NX;
+ligg = droit p4 p3 NY;
+ligb = droit p1 p4 NX;
+
+
+surf = (ligd regl NX ligg) coul vert; 
+
+
+*--------------------------------
+MTOT =  surf et ligd et ligg et ligb et ligh;
+
+elim MTOT 1E-6;       
+trac MTOT;
+mess 'VERIFICATION DU MAILLAGE :';
+mess 'nbel MTOT   : ' (nbel MTOT);
+mess ' ';
+mess 'nbno MTOT   : ' (nbno MTOT);
+                 
+*
+opti sauv form 
+'/local00/geniaut/ast_dev/PRES_LEV/test/ssnv203a.mgib';
+sauv form MTOT;
+*
+fin ;

@@ -1,0 +1,31 @@
+opti dime 2 elem qua8 ;
+
+
+* pour  mailler un CARRE  coupé en 2 parties CARR1 et CARR2
+* ----------------------------------------------------------
+
+
+a  = 0.   0.;
+b  = 1.   0.;
+n1=3;
+
+bord1 = droi n1 a b ;
+
+carr1= bord1 tran n1 (0. 0.5);
+bord2 = carr1 cote 3;
+
+opti dime 2 elem tri6 ;
+carr2= bord2 tran n1 (0. 0.5);
+
+
+carre=carr1 et carr2;
+
+c=carre poin proc (1.  1.);
+d=carre poin proc (0.  1.);
+
+trac carre;
+elim carre 0.001;
+
+opti sauv form 'zzzz304a.19' ;
+sauv form carre ;
+fin;

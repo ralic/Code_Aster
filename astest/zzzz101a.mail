@@ -1,0 +1,109 @@
+COOR_3D
+       % NOEUD     X          Y         Z
+          P1      1.0        1.0       7.0
+          P2      2.0        1.0       7.0
+          P3      4.0        1.0       7.0
+          P4      4.0        3.0       7.0
+          P5      2.0        3.0       7.0
+          P6      1.0        3.0       7.0
+       % UNE TUYAUTERIE 3D
+          A       1.0        1.0       0.0
+          B       3.0        1.0       0.0
+          C       4.0        2.0       0.0
+          D       4.0        5.0       0.0
+          E       4.0        6.5       1.5
+          F       4.0        6.5       3.0
+          G       2.0        6.5       5.0
+          H       0.0        6.5       5.0
+       % NOEUD
+          N1      0.0         0.0          0.0
+          N2      2.0         3.4641016    3.0
+          N3      1.775       3.0743902    3.6
+          N4      1.7         2.9444864    3.8
+          N5     -0.3        -0.5196152    0.8
+          N6      0.65        1.125833     1.6
+          N7      1.05        1.8186533    2.2
+          N30     1.0         0.0          0.0
+          N31     5.330127    4.330127     3.5355339
+          N32     4.330127    5.330127     3.5355339
+          N33     0.0         1.0          0.0
+          N34     0.6464467  -0.3535533    0.8660254
+          N35     4.9765737   3.9765737    4.4015593
+          N36     3.9765737   4.9765737    4.4015593
+          N37    -0.3535533   0.6464467    0.8660254
+FINSF
+
+POI1
+      P1      P1
+      P2      P2
+FINSF
+
+SEG2
+      MA1     P1    P2
+      MA2     P2    P3
+      MA3     P3    P4
+      MA4     P4    P5
+      MA5     P5    P6
+      MA6     P1    P6
+      MA7     P2    P4
+      MA8     P2    P5
+      MT1     A    B
+      MT2     B    C
+      MT3     C    D
+      MT4     D    E
+      MT5     E    F
+      MT6     F    G
+      MT7     G    H
+FINSF
+
+TRIA3
+      MA9     P2    P3    P4
+      MA10    P2    P4    P5
+      TRI1    N1    N6    N5
+      TRI2    N2    N3    N7
+      TRI3    N3    N4    N7
+FINSF
+
+QUAD4
+      MA11    P1    P2    P5    P6
+      MA12    P2    P3    P4    P5
+      DKT1    N1    N2    N7    N6
+      DKT2    N6    N7    N4    N5
+      DKT3    N1    N2    N4    N5
+FINSF
+
+HEXA8
+ HEX   N30  N31  N32 N33 N34 N35 N36 N37
+FINSF
+
+GROUP_MA
+      MA_SEG2    MA7
+FINSF
+GROUP_MA
+      MA_TUYA    MT1  MT2  MT3  MT4  MT5  MT6  MT7
+FINSF
+GROUP_MA
+      MA_TRI3    MA9   MA10
+FINSF
+GROUP_MA
+      MA_QUA4    MA11  MA12
+FINSF
+GROUP_MA
+      MT4   MT4
+FINSF
+GROUP_MA
+      MT6   MT6
+FINSF
+
+GROUP_MA
+     PLAQ  TRI1 TRI2 TRI3 DKT1 DKT2
+FINSF
+GROUP_MA
+     DKT3  DKT3
+FINSF
+%
+GROUP_MA
+     HEX HEX
+FINSF
+
+FIN

@@ -1,0 +1,23 @@
+***material
+*integration theta_method_a 1. 1.e-9 150
+%%%% *rotation 30. 30. 30.
+***behavior gen_evp auto_step
+**elasticity
+young 145200.
+poisson 0.3
+**potential octahedral
+*flow norton
+K 40.
+n 10.
+*isotropic nonlinear
+R0 75.5
+b 19.34
+Q 9.77
+*kinematic nonlinear
+C  1.
+D 36.68
+***stepping_controls
+%%  *min_dtime 1.e-6
+%%%  *forceit 4
+%  *full_step_jacobian
+***return

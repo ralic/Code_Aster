@@ -1,0 +1,150 @@
+# -*- coding: utf-8 -*-
+
+# Script de génération d'un maillage béton armé
+# avec des mailles béton en HEXA20
+# avec mailles acier en SEG2 : 2 SEG2 par mailles HEXA20
+
+import sys
+import salome
+
+salome.salome_init()
+theStudy = salome.myStudy
+import GEOM
+import geompy
+import math
+import SALOMEDS
+import smesh, SMESH
+
+geompy.init_geom(theStudy)
+
+#FONCTIONS
+def addToStudyList(ObjectList, NameList) :
+    class LengthError(Exception):
+        pass
+    if len(ObjectList) != len(NameList) :
+        raise LengthError
+    for idxObj in range(len(ObjectList)) :
+        geompy.addToStudy(ObjectList[idxObj], NameList[idxObj])
+
+def addToStudyInFatherList(MainObject, ObjectList, NameList) :
+    class LengthError(Exception):
+        pass
+    if len(ObjectList) != len(NameList) :
+        raise LengthError
+    for idxObj in range(len(ObjectList)) :
+        geompy.addToStudyInFather(MainObject, ObjectList[idxObj], NameList[idxObj])
+
+def SetNameList(ObjectList, NameList) :
+    class LengthError(Exception):
+        pass
+    if len(ObjectList) != len(NameList) :
+        raise LengthError
+    for idxObj in range(len(ObjectList)) :
+        smesh.SetName(ObjectList[idxObj], NameList[idxObj])
+
+#Vecteurs élémentaires
+VX = geompy.MakeVectorDXDYDZ(1, 0, 0)
+VY = geompy.MakeVectorDXDYDZ(0, 1, 0)
+VZ = geompy.MakeVectorDXDYDZ(0, 0, 1)
+P0 = geompy.MakeVertex(0,0,0)
+#
+# PARAMETRES
+#dimentions
+l=5.0;w=1.0;h=1.0;
+#taille des mailles
+dl = 0.25;
+#
+P1=geompy.MakeVertex(0,0,0)
+P2=geompy.MakeVertex(l,0,0)
+P3=geompy.MakeVertex(0,w,0)
+P4=geompy.MakeVertex(l,w,0)
+PM=geompy.MakeVertex(l/2,0,0)
+PL=geompy.MakeVertex(0,w/2,h/2)
+P12=geompy.MakeVertex(0,w/2,0)
+#==============================
+# PARTIE BETON
+#==============================
+#------------------------------
+#Geometrie du béton
+#------------------------------
+BETON=geompy.MakeBoxDXDYDZ(l, w, h);
+#groupes
+SLEFT = geompy.CreateGroup(BETON, geompy.ShapeType["FACE"])
+CLSD=geompy.GetShapesOnPlaneWithLocation(BETON,geompy.ShapeType["FACE"],VX,P1 , geompy.GEOM.ST_ON)
+geompy.UnionList(SLEFT,CLSD)
+#
+SRIGHT = geompy.CreateGroup(BETON, geompy.ShapeType["FACE"])
+CLSD=geompy.GetShapesOnPlaneWithLocation(BETON,geompy.ShapeType["FACE"],VX,P2 , geompy.GEOM.ST_ON)
+geompy.UnionList(SRIGHT,CLSD)
+#
+#------------------------------
+##Add to study
+#------------------------------
+ObjectList = [BETON,P1,P2,P3,P4,PM,PL,P12]
+NameList   = ["BETON", "P1","P2","P3","P4","PM","PL","P12"]
+addToStudyList(ObjectList, NameList )
+
+ObjectList = [SLEFT,SRIGHT]
+NameList   = ["SLEFT","SRIGHT"]
+addToStudyInFatherList(BETON,ObjectList, NameList )
+#------------------------------
+#Maillage du béton
+#------------------------------
+MA_BET= smesh.Mesh(BETON)
+## Hypothèse 1D
+Regular_1D = MA_BET.Segment()
+Average_length_1 = Regular_1D.LocalLength(dl)
+Average_length_1.SetPrecision( 1e-07 )
+## Hypothèse 2D
+Quadrangle_2D = MA_BET.Quadrangle()
+## Hypothèse 3D
+Hexa_3D = smesh.CreateHypothesis('Hexa_3D')
+status = MA_BET.AddHypothesis(Hexa_3D)
+isDone = MA_BET.Compute()
+MA_BET.ConvertToQuadratic( 1 )
+#definition des groupes
+SLEFT = MA_BET.Group(SLEFT)
+SRIGHT = MA_BET.Group(SRIGHT)
+BETON = MA_BET.Group(BETON)
+#==============================
+# PARTIE ACIER
+#==============================
+bar1=geompy.MakeLineTwoPnt(P1, P2)
+bar2=geompy.MakeLineTwoPnt(P3, P4)
+ACIER=geompy.MakePartition([bar1, bar2], [], [], [], geompy.ShapeType["EDGE"], 0, [], 0)
+#------------------------------
+##Add to study
+#------------------------------
+ObjectList = [bar1,bar2,ACIER]
+NameList   = ["bar1","bar2","ACIER"]
+addToStudyList(ObjectList, NameList )
+
+#Maillage des aciers
+ARMA = smesh.Mesh(ACIER)
+Regular_1D_arma = ARMA.Segment()
+Average_length_2 = Regular_1D_arma.LocalLength(dl)
+Average_length_2.SetPrecision( 1e-07 )
+isDone = ARMA.Compute()
+#definition des groupes
+ACIER = ARMA.Group(ACIER)
+#==============================
+#Concatenate avec supression des noeuds communs
+#==============================
+POUTRE = smesh.Concatenate([MA_BET.GetMesh(), ARMA.GetMesh()], 1, 1, 1e-05)
+#Creation groupe de noeuds
+listPoiObs = [PM,PL,P12]
+nomsPoiObs = ["MID","PMID","P12"]
+for i in range(len(listPoiObs)) :
+    poi = listPoiObs[i]
+    coordsPoint = geompy.PointCoordinates(poi)
+    poiId       = POUTRE.FindNodeClosestTo(coordsPoint[0],coordsPoint[1],coordsPoint[2])
+    nGroup      = POUTRE.CreateEmptyGroup( smesh.NODE, nomsPoiObs[i] )
+    nGroup.Add([poiId])
+
+#------------------------------
+##Add to study
+#------------------------------
+ObjectList = [ACIER,BETON,SLEFT,SRIGHT,POUTRE]
+NameList   = ["ACIER","BETON","SLEFT","SRIGHT","POUTRE"]
+SetNameList(ObjectList, NameList )
+

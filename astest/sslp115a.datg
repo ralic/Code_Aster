@@ -1,0 +1,309 @@
+# -*- coding: iso-8859-1 -*-
+
+###
+### This file is generated automatically by SALOME v6.5.0 with dump python functionality
+###
+
+import sys
+import salome
+
+salome.salome_init()
+theStudy = salome.myStudy
+
+import salome_notebook
+notebook = salome_notebook.notebook
+sys.path.insert( 0, r'/media/sf_ABoulay/Cas_test_superposition_2')
+
+import iparameters
+ipar = iparameters.IParameters(salome.myStudy.GetCommonParameters("Interface Applicative", 1), True)
+
+#Set up visual properties:
+ipar.setProperty("AP_ACTIVE_VIEW", "VTKViewer_0_0")
+ipar.setProperty("AP_WORKSTACK_INFO", "000000010000000000000002010000000100000404000000040000000100000001000000080000001a00560054004b005600690065007700650072005f0030005f00300000000102")
+ipar.setProperty("AP_ACTIVE_MODULE", "Mesh")
+ipar.setProperty("AP_SAVEPOINT_NAME", "GUI state: 1")
+#Set up lists:
+# fill list AP_VIEWERS_LIST
+ipar.append("AP_VIEWERS_LIST", "VTKViewer_1")
+# fill list VTKViewer_1
+ipar.append("VTKViewer_1", "VTK scene:29 - viewer:1")
+ipar.append("VTKViewer_1", """<?xml version="1.0"?>
+<ViewState>
+    <Position X="5.19753" Y="-0.0925166" Z="2111.17"/>
+    <FocalPoint X="5.19753" Y="-0.0925166" Z="0"/>
+    <ViewUp X="0" Y="1" Z="0"/>
+    <ViewScale Parallel="1.48836" X="1" Y="1" Z="1"/>
+    <DisplayCubeAxis Show="0"/>
+    <GraduatedAxis Axis="X">
+        <Title isVisible="1" Text="X" Font="0" Bold="0" Italic="0" Shadow="0">
+            <Color R="1" G="0" B="0"/>
+        </Title>
+        <Labels isVisible="1" Number="3" Offset="2" Font="0" Bold="0" Italic="0" Shadow="0">
+            <Color R="1" G="0" B="0"/>
+        </Labels>
+        <TickMarks isVisible="1" Length="5"/>
+    </GraduatedAxis>
+    <GraduatedAxis Axis="Y">
+        <Title isVisible="1" Text="Y" Font="0" Bold="0" Italic="0" Shadow="0">
+            <Color R="0" G="1" B="0"/>
+        </Title>
+        <Labels isVisible="1" Number="3" Offset="2" Font="0" Bold="0" Italic="0" Shadow="0">
+            <Color R="0" G="1" B="0"/>
+        </Labels>
+        <TickMarks isVisible="1" Length="5"/>
+    </GraduatedAxis>
+    <GraduatedAxis Axis="Z">
+        <Title isVisible="1" Text="Z" Font="0" Bold="0" Italic="0" Shadow="0">
+            <Color R="0" G="0" B="1"/>
+        </Title>
+        <Labels isVisible="1" Number="3" Offset="2" Font="0" Bold="0" Italic="0" Shadow="0">
+            <Color R="0" G="0" B="1"/>
+        </Labels>
+        <TickMarks isVisible="1" Length="5"/>
+    </GraduatedAxis>
+    <Trihedron isShown="0" Size="105"/>
+    <Background Value="bt=1;fn=;tm=0;ts=false;c1=#000000;c2=#000000;gt=-1;gr="/>
+</ViewState>
+""")
+# fill list AP_MODULES_LIST
+ipar.append("AP_MODULES_LIST", "Geometry")
+ipar.append("AP_MODULES_LIST", "Mesh")
+ipar.append("AP_MODULES_LIST", "Eficas")
+
+
+###
+### GEOM component
+###
+
+import GEOM
+import geompy
+import math
+import SALOMEDS
+
+
+geompy.init_geom(theStudy)
+
+geomObj_1 = geompy.MakeCircle(None, None, 100)
+geomObj_2 = geompy.MakeFaceWires([geomObj_1], 1)
+geomObj_3 = geompy.CreateGroup(geomObj_2, geompy.ShapeType["EDGE"])
+geompy.UnionIDs(geomObj_3, [3])
+geomObj_4 = geompy.MakeVertex(-75, 50, 0)
+geomObj_5 = geompy.MakeVertex(-75, -50, 0)
+geomObj_6 = geompy.MakeVertex(-50, -50, 0)
+geomObj_7 = geompy.MakeVertex(-50, 50, 0)
+geomObj_8 = geompy.MakeVertex(-62.5, 50, 0)
+geomObj_9 = geompy.MakeVertex(-62.5, -50, 0)
+geomObj_10 = geompy.MakeLineTwoPnt(geomObj_4, geomObj_5)
+geomObj_11 = geompy.MakeLineTwoPnt(geomObj_5, geomObj_9)
+geomObj_12 = geompy.MakeLineTwoPnt(geomObj_9, geomObj_6)
+geomObj_13 = geompy.MakeLineTwoPnt(geomObj_6, geomObj_7)
+geomObj_14 = geompy.MakeLineTwoPnt(geomObj_7, geomObj_8)
+geomObj_15 = geompy.MakeLineTwoPnt(geomObj_8, geomObj_4)
+geomObj_16 = geompy.MakeVertex(-62.5, 5, 0)
+geomObj_17 = geompy.MakeVertex(-62.5, -5, 0)
+geomObj_18 = geompy.MakeLineTwoPnt(geomObj_8, geomObj_16)
+geomObj_19 = geompy.MakeLineTwoPnt(geomObj_16, geomObj_17)
+geomObj_20 = geompy.MakeLineTwoPnt(geomObj_4, geomObj_5)
+geomObj_21 = geompy.MakeLineTwoPnt(geomObj_17, geomObj_9)
+geomObj_22 = geompy.MakeFaceWires([geomObj_1], 1)
+geomObj_23 = geompy.MakeFaceWires([geomObj_12, geomObj_13, geomObj_14, geomObj_18, geomObj_19, geomObj_21], 1)
+geomObj_24 = geompy.MakeFaceWires([geomObj_10, geomObj_11, geomObj_15, geomObj_18, geomObj_19, geomObj_21], 1)
+geomObj_25 = geompy.MakeFuse(geomObj_22, geomObj_23)
+geomObj_26 = geompy.MakeFuse(geomObj_25, geomObj_24)
+geomObj_27 = geompy.CreateGroup(geomObj_26, geompy.ShapeType["EDGE"])
+geompy.UnionIDs(geomObj_27, [4])
+geomObj_28 = geompy.CreateGroup(geomObj_26, geompy.ShapeType["EDGE"])
+geompy.UnionIDs(geomObj_28, [14, 18, 7, 12, 16, 10])
+geomObj_29 = geompy.CreateGroup(geomObj_26, geompy.ShapeType["EDGE"])
+geompy.UnionIDs(geomObj_29, [23])
+geomObj_30 = geompy.CreateGroup(geomObj_26, geompy.ShapeType["FACE"])
+geompy.UnionIDs(geomObj_30, [26])
+geomObj_31 = geompy.CreateGroup(geomObj_26, geompy.ShapeType["FACE"])
+geompy.UnionIDs(geomObj_31, [19])
+geomObj_32 = geompy.GetSubShape(geomObj_26, [14])
+geomObj_33 = geompy.CreateGroup(geomObj_26, geompy.ShapeType["VERTEX"])
+geompy.UnionIDs(geomObj_33, [22])
+geomObj_34 = geompy.CreateGroup(geomObj_26, geompy.ShapeType["VERTEX"])
+geompy.UnionIDs(geomObj_34, [24])
+geomObj_35 = geompy.MakeVertex(20, 0, 0)
+geomObj_36 = geompy.MakeVertex(-20, 0, 0)
+geomObj_37 = geompy.MakeVertex(40, 0, 0)
+geomObj_38 = geompy.MakeVertex(40, 10, 0)
+geomObj_39 = geompy.MakeVertex(40, -10, 0)
+geomObj_40 = geompy.MakeVertex(-40, 0, 0)
+geomObj_41 = geompy.MakeVertex(-40, 10, 0)
+geomObj_42 = geompy.MakeVertex(-40, -10, 0)
+geomObj_43 = geompy.MakeLineTwoPnt(geomObj_40, geomObj_36)
+geomObj_44 = geompy.MakeLineTwoPnt(geomObj_36, geomObj_35)
+geomObj_45 = geompy.MakeLineTwoPnt(geomObj_35, geomObj_37)
+geomObj_46 = geompy.MakeLineTwoPnt(geomObj_42, geomObj_39)
+geomObj_47 = geompy.MakeLineTwoPnt(geomObj_41, geomObj_38)
+geomObj_48 = geompy.MakeLineTwoPnt(geomObj_41, geomObj_40)
+geomObj_49 = geompy.MakeLineTwoPnt(geomObj_40, geomObj_42)
+geomObj_50 = geompy.MakeLineTwoPnt(geomObj_38, geomObj_37)
+geomObj_51 = geompy.MakeLineTwoPnt(geomObj_37, geomObj_39)
+geomObj_52 = geompy.MakeFaceWires([geomObj_1], 1)
+geomObj_53 = geompy.MakeFaceWires([geomObj_43, geomObj_44, geomObj_45, geomObj_47, geomObj_48, geomObj_50], 1)
+geomObj_54 = geompy.MakeFaceWires([geomObj_43, geomObj_44, geomObj_45, geomObj_46, geomObj_49, geomObj_51], 1)
+geomObj_55 = geompy.MakeFuse(geomObj_52, geomObj_53)
+geomObj_56 = geompy.MakeFuse(geomObj_55, geomObj_54)
+geomObj_57 = geompy.CreateGroup(geomObj_56, geompy.ShapeType["VERTEX"])
+geompy.UnionIDs(geomObj_57, [22])
+geomObj_58 = geompy.CreateGroup(geomObj_56, geompy.ShapeType["VERTEX"])
+geompy.UnionIDs(geomObj_58, [24])
+geomObj_59 = geompy.CreateGroup(geomObj_56, geompy.ShapeType["EDGE"])
+geompy.UnionIDs(geomObj_59, [23])
+geomObj_60 = geompy.CreateGroup(geomObj_56, geompy.ShapeType["EDGE"])
+geompy.UnionIDs(geomObj_60, [7])
+geomObj_61 = geompy.CreateGroup(geomObj_56, geompy.ShapeType["EDGE"])
+geompy.UnionIDs(geomObj_61, [14])
+geomObj_62 = geompy.CreateGroup(geomObj_56, geompy.ShapeType["EDGE"])
+geompy.UnionIDs(geomObj_62, [21])
+geomObj_63 = geompy.CreateGroup(geomObj_56, geompy.ShapeType["EDGE"])
+geompy.UnionIDs(geomObj_63, [25])
+geomObj_64 = geompy.CreateGroup(geomObj_56, geompy.ShapeType["EDGE"])
+geompy.UnionIDs(geomObj_64, [18])
+geomObj_65 = geompy.CreateGroup(geomObj_56, geompy.ShapeType["EDGE"])
+geompy.UnionIDs(geomObj_65, [16])
+geomObj_66 = geompy.CreateGroup(geomObj_56, geompy.ShapeType["EDGE"])
+geompy.UnionIDs(geomObj_66, [10])
+geomObj_67 = geompy.CreateGroup(geomObj_56, geompy.ShapeType["EDGE"])
+geompy.UnionIDs(geomObj_67, [12])
+geomObj_68 = geompy.CreateGroup(geomObj_56, geompy.ShapeType["FACE"])
+geompy.UnionIDs(geomObj_68, [19])
+geomObj_69 = geompy.CreateGroup(geomObj_56, geompy.ShapeType["FACE"])
+geompy.UnionIDs(geomObj_69, [26])
+geomObj_70 = geompy.CreateGroup(geomObj_56, geompy.ShapeType["EDGE"])
+geompy.UnionList(geomObj_70, [geomObj_59, geomObj_62, geomObj_63])
+geomObj_71 = geompy.GetSubShape(geomObj_56, [2])
+A = geompy.MakeVertex(100, 0, 0)
+C = geompy.MakeVertex(-100, 0, 0)
+O = geompy.MakeVertex(0, 0, 0)
+B = geompy.MakeVertex(0, 100, 0)
+D = geompy.MakeVertex(0, -100, 0)
+Arc_1 = geompy.MakeArc(A, B, C)
+Arc_2 = geompy.MakeArc(A, D, C)
+geomObj_72 = geompy.MakeVertex(20, 0, 0)
+geomObj_73 = geompy.MakeVertex(-20, 0, 0)
+geomObj_74 = geompy.MakeLineTwoPnt(C, geomObj_73)
+geomObj_75 = geompy.MakeLineTwoPnt(geomObj_72, geomObj_73)
+geomObj_76 = geompy.MakeLineTwoPnt(geomObj_72, A)
+geomObj_77 = geompy.MakeFaceWires([Arc_1, geomObj_74, geomObj_75, geomObj_76], 1)
+geomObj_78 = geompy.MakeFaceWires([Arc_2, geomObj_74, geomObj_75, geomObj_76], 1)
+geomObj_79 = geompy.MakeFuse(geomObj_77, geomObj_78)
+CA = geompy.MakeLineTwoPnt(C, A)
+Face_1 = geompy.MakeFaceWires([Arc_1, CA], 1)
+Face_2 = geompy.MakeFaceWires([Arc_2, CA], 1)
+Fuse_1 = geompy.MakeFuse(Face_1, Face_2)
+ABC = geompy.CreateGroup(Fuse_1, geompy.ShapeType["FACE"])
+geompy.UnionIDs(ABC, [2])
+ADC = geompy.CreateGroup(Fuse_1, geompy.ShapeType["FACE"])
+geompy.UnionIDs(ADC, [8])
+Contour = geompy.CreateGroup(Fuse_1, geompy.ShapeType["EDGE"])
+geompy.UnionIDs(Contour, [4, 10])
+geomObj_80 = geompy.GetSubShape(Fuse_1, [4])
+geomObj_81 = geompy.GetSubShape(Fuse_1, [4])
+geompy.addToStudy( A, 'A' )
+geompy.addToStudy( C, 'C' )
+geompy.addToStudy( O, 'O' )
+geompy.addToStudy( B, 'B' )
+geompy.addToStudy( D, 'D' )
+geompy.addToStudy( Arc_1, 'Arc_1' )
+geompy.addToStudy( Arc_2, 'Arc_2' )
+geompy.addToStudy( CA, 'CA' )
+geompy.addToStudy( Face_1, 'Face_1' )
+geompy.addToStudy( Face_2, 'Face_2' )
+geompy.addToStudy( Fuse_1, 'Fuse_1' )
+geompy.addToStudyInFather( Fuse_1, ABC, 'ABC' )
+geompy.addToStudyInFather( Fuse_1, ADC, 'ADC' )
+geompy.addToStudyInFather( Fuse_1, Contour, 'Contour' )
+
+### Store presentation parameters of displayed objects
+import iparameters
+ipar = iparameters.IParameters(theStudy.GetModuleParameters("Interface Applicative", "GEOM", 1))
+
+
+###
+### SMESH component
+###
+
+import smesh, SMESH, SALOMEDS
+
+smesh.SetCurrentStudy(theStudy)
+import StdMeshers
+Distribution_of_Layers_1 = smesh.CreateHypothesis('LayerDistribution2D')
+StartEndLength_Distribution = smesh.CreateHypothesis('StartEndLength')
+StartEndLength_Distribution.SetStartLength( 0.5 )
+StartEndLength_Distribution.SetEndLength( 2 )
+StartEndLength_Distribution.SetReversedEdges( [  ] )
+StartEndLength_Distribution.SetObjectEntry( '' )
+Distribution_of_Layers_1.SetLayerDistribution( StartEndLength_Distribution )
+Mesh_1 = smesh.Mesh(Fuse_1)
+status = Mesh_1.AddHypothesis(Distribution_of_Layers_1)
+RadialQuadrangle_1D2D = Mesh_1.Quadrangle(algo=smesh.RADIAL_QUAD)
+isDone = Mesh_1.Compute()
+Regular_1D = Mesh_1.Segment(geom=Contour)
+Nb_Segments_1 = Regular_1D.NumberOfSegments(50)
+Nb_Segments_1.SetDistrType( 0 )
+isDone = Mesh_1.Compute()
+Mesh_1.ConvertToQuadratic( 1 )
+isDone = Mesh_1.Compute()
+SubMesh_1 = Regular_1D.GetSubMesh()
+ABC_1 = Mesh_1.GroupOnGeom(ABC,'ABC',SMESH.FACE)
+ADC_1 = Mesh_1.GroupOnGeom(ADC,'ADC',SMESH.FACE)
+Contour_1 = Mesh_1.GroupOnGeom(Contour,'Contour',SMESH.EDGE)
+Contour_2 = Mesh_1.GroupOnGeom(Contour,'Contour',SMESH.NODE)
+G = Mesh_1.CreateEmptyGroup( SMESH.NODE, 'G' )
+nbAdd = G.Add( [ 17 ] )
+G.SetColor( SALOMEDS.Color( 0, 0.666667, 1 ))
+H = Mesh_1.CreateEmptyGroup( SMESH.NODE, 'H' )
+nbAdd = H.Add( [ 86 ] )
+H.SetColor( SALOMEDS.Color( 0, 0.666667, 1 ))
+lev_sup = Mesh_1.CreateEmptyGroup( SMESH.EDGE, 'lev_sup' )
+nbAdd = lev_sup.Add( [ 108, 109, 110, 111, 112, 113, 114, 115, 116, 117, 118, 119, 120, 121, 122, 123, 124, 125, 126, 127, 128, 129, 130, 131, 132, 133, 134, 135, 136, 137, 138, 139, 140, 141, 142 ] )
+lev_sup.SetColor( SALOMEDS.Color( 0, 0.666667, 1 ))
+[ lev_inf, lev_inf_1 ] = Mesh_1.DoubleNodeElemGroups( [ lev_sup ], [ G, H ], [ ADC_1 ], 1, 1 )
+[ G, H, Contour_2, Contour_1, lev_sup, ADC_1, ABC_1, lev_inf, lev_inf_1 ] = Mesh_1.GetGroups()
+[ SubMesh_1 ] = Mesh_1.GetMesh().GetSubMeshes()
+lev_inf_1.SetName( 'lev_inf' )
+lev_inf.SetName( 'lev_inf' )
+isDone = Mesh_1.Compute()
+lev_sup_1 = Mesh_1.CreateEmptyGroup( SMESH.NODE, 'lev_sup' )
+nbAdd = lev_sup_1.Add( [ 18, 20, 22, 24, 26, 28, 30, 32, 34, 36, 38, 40, 42, 44, 46, 48, 50, 52, 54, 56, 58, 60, 62, 64, 66, 68, 70, 72, 74, 76, 78, 80, 82, 84, 86, 88, 90, 92, 94, 96, 98, 100, 9344, 9345, 9346, 9347, 9348, 9349, 9350, 9351, 9352, 9353, 9354, 9355, 9356, 9357, 9358, 9359, 9360, 9361, 9362, 9363, 9364, 9365, 9366, 9367, 9368, 9369, 9370, 9371, 9372, 9373, 9374, 9375, 9376, 9377, 9378, 9379, 9380, 9381, 9382, 9383, 9384, 9385, 27602, 27603, 27604, 27605, 27606, 27607, 27608, 27609, 27610, 27611, 27612, 27613, 27614, 27615, 27616, 27617, 27618, 27619, 27620, 27621, 27622, 27623, 27624, 27625, 27626, 27627, 27628, 27629, 27630, 27631, 27632, 27633, 27634, 27635, 27636, 27637, 27638, 27639, 27640, 27641, 27642, 27643, 27644, 27645, 27646, 27647, 27648, 27649, 27650, 27651, 27652, 27653, 27654, 27655, 27656, 27657, 27658, 27659, 27660, 27661, 27662, 27663, 27664, 27665, 27666, 27667, 27668, 27669, 27670 ] )
+lev_sup_1.SetColor( SALOMEDS.Color( 0, 0.666667, 1 ))
+isDone = Mesh_1.Compute()
+nbDel = lev_sup_1.Remove( [ 9379, 9380, 9381, 9382, 9383, 9384, 9385, 88, 90, 92, 94, 96, 98, 100 ] )
+nbDel = lev_sup_1.Remove( [ 86 ] )
+nbDel = lev_sup_1.Remove( [ 27602, 27603, 27604, 27605, 27606, 27607, 27608, 27609, 27610, 27611, 27612, 27613, 27614, 27615, 27616, 27617, 27618, 27619, 27620, 27621, 27622, 27623, 27624, 27625, 27626, 27627, 27628, 27629, 27630, 27631, 27632, 27633, 27634, 27635, 27636, 27637, 27638, 27639, 27640, 27641, 27642, 27643, 27644, 27645, 27646, 27647, 27648, 27649, 27650, 27651, 27652, 27653, 27654, 27655, 27656, 27657, 27658, 27659, 27660, 27661, 27662, 27663, 27664, 27665, 27666, 27667, 27668, 27669, 27670 ] )
+[ lev_sup_1, lev_inf_1, G, H, Contour_2, Contour_1, lev_sup, lev_inf, ADC_1, ABC_1 ] = Mesh_1.GetGroups()
+[ SubMesh_1 ] = Mesh_1.GetMesh().GetSubMeshes()
+isDone = Mesh_1.Compute()
+
+## set object names
+smesh.SetName(Distribution_of_Layers_1, 'Distribution of Layers_1')
+smesh.SetName(Mesh_1.GetMesh(), 'Mesh_1')
+smesh.SetName(RadialQuadrangle_1D2D.GetAlgorithm(), 'RadialQuadrangle_1D2D')
+smesh.SetName(Regular_1D.GetAlgorithm(), 'Regular_1D')
+smesh.SetName(Nb_Segments_1, 'Nb. Segments_1')
+smesh.SetName(SubMesh_1, 'SubMesh_1')
+
+### Store presentation parameters of displayed objects
+import iparameters
+ipar = iparameters.IParameters(theStudy.GetModuleParameters("Interface Applicative", "SMESH", 1))
+
+#Set up entries:
+# set up entry SMESH_3 (Mesh_1) parameters
+ipar.setParameter("SMESH_3", "VTKViewer_0_Visibility", "On")
+ipar.setParameter("SMESH_3", "VTKViewer_0_Representation", "2")
+ipar.setParameter("SMESH_3", "VTKViewer_0_IsShrunk", "0")
+ipar.setParameter("SMESH_3", "VTKViewer_0_Entities", "e:1:f:1:v:0")
+ipar.setParameter("SMESH_3", "VTKViewer_0_Colors", "surface:0:0.666667:1:backsurface:-100:edge:0:0.666667:1:node:1:0:0:outline:0:0.27451:0")
+ipar.setParameter("SMESH_3", "VTKViewer_0_Sizes", "line:1:shrink:0.75")
+ipar.setParameter("SMESH_3", "VTKViewer_0_PointMarker", "std:1:9")
+ipar.setParameter("SMESH_3", "VTKViewer_0_Opacity", "1")
+ipar.setParameter("SMESH_3", "VTKViewer_0_ClippingPlane", "Off")
+
+
+if salome.sg.hasDesktop():
+  salome.sg.updateObjBrowser(1)
+  iparameters.getSession().restoreVisualState(1)

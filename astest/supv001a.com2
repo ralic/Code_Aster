@@ -2,7 +2,7 @@
 # TITRE TEST DE INCLUDE
 # RESPONSABLE
 
-DEBUT(CODE=_F(NOM='SUPV001A', NIV_PUB_WEB='INTERNET'),
+DEBUT(CODE=_F(NOM='SUPV001A', NIV_PUB_WEB='INTRANET'),
       PAR_LOT='NON',)
 
 # form n'est utilisable que dans l'INCLUDE, la ou est defini 'para'

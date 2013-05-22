@@ -1,0 +1,50 @@
+* Maillage Modelisation E (vrai 3d ):
+* Contact de deux poutres en grands deplacements
+* Elements POUTRES (SEG2)
+
+opti dime 3 ;
+opti nive 10 ;
+opti elem seg2 ;
+
+* nombre d'éléments dans la longueur
+N = 40 ;
+
+* longueur de la poutre
+L = 2032.;
+
+* distance du point C
+dc = -1320.8 ;
+
+A  = 0. 0.  0. ;
+A1 = L  0.  0. ;
+
+* décalage
+dd  = 914.4 ;
+h   = 508. ;
+
+xb = (L  + dd) ;
+yb = (0. +  h) ;
+xc = (xb - 1320.8) ;
+
+B  = xb   yb   0. ;
+B1 = dd   yb   0. ;
+C  = xc   yb   0. ;
+
+*-------------------------------------------
+
+POU1 = droit N A A1   ;
+
+POU21 = droit 14 B1  C ;
+POU22 = droit 26 C   B ;
+POU2  = POU21 et POU22 ;
+
+elim .001 POU2 ;
+
+MODELE = (POU1 et POU2) ;
+
+opti sauv form '~/SAGRAPPE/DEFNORM/SSNV505/ssnv505f.mgib' ;
+sauver form (MODELE) ;
+
+trac MODELE ;
+
+fin;

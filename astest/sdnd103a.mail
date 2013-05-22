@@ -1,0 +1,16 @@
+TITRE
+ ------------------------------------------------------------------------------
+    Ressort avec une non-linearite soumis a une acceleration
+ ------------------------------------------------------------------------------
+FINSF
+COOR_3D
+%  NOEUD      X        Y         Z
+    N01       0.       0.        0.
+FINSF
+POI1
+    NN       N01
+FINSF
+GROUP_MA
+   DISCRET  NN
+FINSF
+FIN

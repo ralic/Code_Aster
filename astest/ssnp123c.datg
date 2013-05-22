@@ -1,0 +1,318 @@
+# -*- coding: iso-8859-1 -*-
+
+###
+### This file is generated automatically by SALOME v6.3.0 with dump python functionality
+###
+
+import sys
+import salome
+
+salome.salome_init()
+theStudy = salome.myStudy
+
+import salome_notebook
+notebook = salome_notebook.notebook
+sys.path.insert( 0, r'/local01/17529')
+
+import iparameters
+ipar = iparameters.IParameters(salome.myStudy.GetCommonParameters("Interface Applicative", 1))
+
+#Set up visual properties:
+ipar.setProperty("AP_ACTIVE_VIEW", "VTKViewer_0_0")
+ipar.setProperty("AP_WORKSTACK_INFO", "000000010000000000000002010000000100000588000000040000000200000001000000080000001a004f00430043005600690065007700650072005f0030005f00300000000002000000080000001a00560054004b005600690065007700650072005f0030005f00300000000102")
+ipar.setProperty("AP_ACTIVE_MODULE", "Mesh")
+ipar.setProperty("AP_SAVEPOINT_NAME", "GUI state: 2")
+#Set up lists:
+# fill list AP_VIEWERS_LIST
+ipar.append("AP_VIEWERS_LIST", "OCCViewer_1")
+ipar.append("AP_VIEWERS_LIST", "VTKViewer_2")
+# fill list OCCViewer_1
+ipar.append("OCCViewer_1", "OCC scene:1 - viewer:1")
+ipar.append("OCCViewer_1", "scale=1.266656711244e+02*centerX=2.499999458929e+00*centerY=2.499999931767e+00*projX=0.000000000000e+00*projY=0.000000000000e+00*projZ=1.000000000000e+00*twist=0.000000000000e+00*atX=0.000000000000e+00*atY=0.000000000000e+00*atZ=0.000000000000e+00*eyeX=0.000000000000e+00*eyeY=0.000000000000e+00*eyeZ=5.000000000000e+02*scaleX=1.000000000000e+00*scaleY=1.000000000000e+00*scaleZ=1.000000000000e+00*isVisible=1*size=100.00*gtIsVisible=0*gtDrawNameX=1*gtDrawNameY=1*gtDrawNameZ=1*gtNameX=X*gtNameY=Z*gtNameZ=Z*gtNameColorRX=255*gtNameColorGX=0*gtNameColorBX=0*gtNameColorRY=0*gtNameColorGY=255*gtNameColorBY=0*gtNameColorRZ=0*gtNameColorGZ=0*gtNameColorBZ=255*gtDrawValuesX=1*gtDrawValuesY=1*gtDrawValuesZ=1*gtNbValuesX=3*gtNbValuesY=3*gtNbValuesZ=3*gtOffsetX=2*gtOffsetY=2*gtOffsetZ=2*gtColorRX=255*gtColorGX=0*gtColorBX=0*gtColorRY=0*gtColorGY=255*gtColorBY=0*gtColorRZ=0*gtColorGZ=0*gtColorBZ=255*gtDrawTickmarksX=1*gtDrawTickmarksY=1*gtDrawTickmarksZ=1*gtTickmarkLengthX=5*gtTickmarkLengthY=5*gtTickmarkLengthZ=5")
+# fill list VTKViewer_2
+ipar.append("VTKViewer_2", "VTK scene:1 - viewer:1")
+ipar.append("VTKViewer_2", """<?xml version="1.0"?>
+<ViewState>
+    <Position X="-9.00949" Y="37.1992" Z="39.9405"/>
+    <FocalPoint X="1.46882" Y="3.44483" Z="0.735275"/>
+    <ViewUp X="0.373951" Y="-0.651076" Z="0.6605"/>
+    <ViewScale Parallel="2.84283" X="1" Y="1" Z="1"/>
+    <DisplayCubeAxis Show="0"/>
+    <GraduatedAxis Axis="X">
+        <Title isVisible="1" Text="X" Font="0" Bold="0" Italic="0" Shadow="0">
+            <Color R="1" G="0" B="0"/>
+        </Title>
+        <Labels isVisible="1" Number="3" Offset="2" Font="0" Bold="0" Italic="0" Shadow="0">
+            <Color R="1" G="0" B="0"/>
+        </Labels>
+        <TickMarks isVisible="1" Length="5"/>
+    </GraduatedAxis>
+    <GraduatedAxis Axis="Y">
+        <Title isVisible="1" Text="Y" Font="0" Bold="0" Italic="0" Shadow="0">
+            <Color R="0" G="1" B="0"/>
+        </Title>
+        <Labels isVisible="1" Number="3" Offset="2" Font="0" Bold="0" Italic="0" Shadow="0">
+            <Color R="0" G="1" B="0"/>
+        </Labels>
+        <TickMarks isVisible="1" Length="5"/>
+    </GraduatedAxis>
+    <GraduatedAxis Axis="Z">
+        <Title isVisible="1" Text="Z" Font="0" Bold="0" Italic="0" Shadow="0">
+            <Color R="0" G="0" B="1"/>
+        </Title>
+        <Labels isVisible="1" Number="3" Offset="2" Font="0" Bold="0" Italic="0" Shadow="0">
+            <Color R="0" G="0" B="1"/>
+        </Labels>
+        <TickMarks isVisible="1" Length="5"/>
+    </GraduatedAxis>
+    <Trihedron isShown="1" Size="105"/>
+</ViewState>
+""")
+# fill list AP_MODULES_LIST
+ipar.append("AP_MODULES_LIST", "Geometry")
+ipar.append("AP_MODULES_LIST", "Mesh")
+
+
+###
+### GEOM component
+###
+
+import GEOM
+import geompy
+import math
+import SALOMEDS
+
+
+geompy.init_geom(theStudy)
+
+geomObj_1 = geompy.MakeSketcher("Sketcher:F 0.000000 0.000000:TT 3.000000 0.000000:TT 4.000000 0.000000:TT 5.000000 0.000000:TT 5.000000 1.000000:TT 5.000000 2.000000:TT 5.000000 4.000000:TT 5.000000 5.000000:TT 0.000000 5.000000:TT 0.000000 4.000000:WW", [0, 0, 0, 0, 0, 1, 1, 0, 0])
+geomObj_2 = geompy.MakeFaceWires([geomObj_1], 1)
+geomObj_3 = geompy.GetSubShape(geomObj_2, [7])
+geomObj_4 = geompy.GetSubShape(geomObj_2, [15])
+geomObj_5 = geompy.MakeLineTwoPnt(geomObj_3, geomObj_4)
+geomObj_6 = geompy.GetSubShape(geomObj_2, [21])
+geomObj_7 = geompy.MakeLineTwoPnt(geomObj_3, geomObj_6)
+geomObj_8 = geompy.GetSubShape(geomObj_2, [13])
+geomObj_9 = geompy.GetSubShape(geomObj_2, [17])
+Wire_1 = geompy.MakeSketcher("Sketcher:F 0.000000 0.000000:TT 3.000000 0.000000:TT 4.000000 0.000000:TT 5.000000 0.000000:TT 5.000000 1.000000:TT 5.000000 2.000000:TT 5.000000 4.000000:TT 5.000000 5.000000:TT 0.000000 5.000000:TT 0.000000 4.000000:WW", [0, 0, 0, 0, 0, 1, 1, 0, 0])
+Wire_1_vertex_20 = geompy.GetSubShape(Wire_1, [20])
+Wire_1_vertex_8 = geompy.GetSubShape(Wire_1, [8])
+Line_1 = geompy.MakeLineTwoPnt(Wire_1_vertex_20, Wire_1_vertex_8)
+Wire_1_vertex_14 = geompy.GetSubShape(Wire_1, [14])
+Line_2 = geompy.MakeLineTwoPnt(Wire_1_vertex_20, Wire_1_vertex_14)
+Wire_1_vertex_6 = geompy.GetSubShape(Wire_1, [6])
+Wire_1_vertex_10 = geompy.GetSubShape(Wire_1, [10])
+Circle_1 = geompy.MakeCircleCenter2Pnt(Wire_1_vertex_8, Wire_1_vertex_6, Wire_1_vertex_10)
+Wire_1_vertex_4 = geompy.GetSubShape(Wire_1, [4])
+Wire_1_vertex_12 = geompy.GetSubShape(Wire_1, [12])
+Arc_1 = geompy.MakeArcCenter(Wire_1_vertex_8, Wire_1_vertex_4, Wire_1_vertex_12,False)
+Face_1 = geompy.MakeFaceWires([Wire_1], 1)
+Partition_1 = geompy.MakePartition([Face_1], [Line_1], [], [], geompy.ShapeType["FACE"], 0, [], 0)
+Partition_2 = geompy.MakePartition([Partition_1], [Line_2], [], [], geompy.ShapeType["FACE"], 0, [], 0)
+Partition_3 = geompy.MakePartition([Partition_2], [Arc_1], [], [], geompy.ShapeType["FACE"], 0, [], 0)
+Face_2 = geompy.MakeFaceWires([Circle_1], 1)
+Cut_1 = geompy.MakeCut(Partition_3, Face_2)
+[Edge_1,Edge_2,Edge_3,Edge_4,Edge_5,Edge_6,Edge_7,Edge_8,Edge_9,Edge_10,Edge_11,Edge_12,Edge_13,Edge_14,Edge_15] = geompy.ExtractShapes(Cut_1, geompy.ShapeType["EDGE"], True)
+geompy.addToStudy( Wire_1, 'Wire_1' )
+geompy.addToStudyInFather( Wire_1, Wire_1_vertex_20, 'Wire_1:vertex_20' )
+geompy.addToStudyInFather( Wire_1, Wire_1_vertex_8, 'Wire_1:vertex_8' )
+geompy.addToStudy( Line_1, 'Line_1' )
+geompy.addToStudyInFather( Wire_1, Wire_1_vertex_14, 'Wire_1:vertex_14' )
+geompy.addToStudy( Line_2, 'Line_2' )
+geompy.addToStudyInFather( Wire_1, Wire_1_vertex_6, 'Wire_1:vertex_6' )
+geompy.addToStudyInFather( Wire_1, Wire_1_vertex_10, 'Wire_1:vertex_10' )
+geompy.addToStudy( Circle_1, 'Circle_1' )
+geompy.addToStudyInFather( Wire_1, Wire_1_vertex_4, 'Wire_1:vertex_4' )
+geompy.addToStudyInFather( Wire_1, Wire_1_vertex_12, 'Wire_1:vertex_12' )
+geompy.addToStudy( Arc_1, 'Arc_1' )
+geompy.addToStudy( Face_1, 'Face_1' )
+geompy.addToStudy( Partition_1, 'Partition_1' )
+geompy.addToStudy( Partition_2, 'Partition_2' )
+geompy.addToStudy( Partition_3, 'Partition_3' )
+geompy.addToStudy( Face_2, 'Face_2' )
+geompy.addToStudy( Cut_1, 'Cut_1' )
+geompy.addToStudyInFather( Cut_1, Edge_1, 'Edge_1' )
+geompy.addToStudyInFather( Cut_1, Edge_2, 'Edge_2' )
+geompy.addToStudyInFather( Cut_1, Edge_3, 'Edge_3' )
+geompy.addToStudyInFather( Cut_1, Edge_4, 'Edge_4' )
+geompy.addToStudyInFather( Cut_1, Edge_5, 'Edge_5' )
+geompy.addToStudyInFather( Cut_1, Edge_6, 'Edge_6' )
+geompy.addToStudyInFather( Cut_1, Edge_7, 'Edge_7' )
+geompy.addToStudyInFather( Cut_1, Edge_8, 'Edge_8' )
+geompy.addToStudyInFather( Cut_1, Edge_9, 'Edge_9' )
+geompy.addToStudyInFather( Cut_1, Edge_10, 'Edge_10' )
+geompy.addToStudyInFather( Cut_1, Edge_11, 'Edge_11' )
+geompy.addToStudyInFather( Cut_1, Edge_12, 'Edge_12' )
+geompy.addToStudyInFather( Cut_1, Edge_13, 'Edge_13' )
+geompy.addToStudyInFather( Cut_1, Edge_14, 'Edge_14' )
+geompy.addToStudyInFather( Cut_1, Edge_15, 'Edge_15' )
+
+### Store presentation parameters of displayed objects
+import iparameters
+ipar = iparameters.IParameters(theStudy.GetModuleParameters("Interface Applicative", "GEOM", 1))
+
+#Set up entries:
+# set up entry GEOM_1 (Wire_1) parameters
+objId = geompy.getObjectID(Wire_1)
+ipar.setParameter(objId, "OCCViewer_0_Visibility", "On")
+ipar.setParameter(objId, "OCCViewer_0_Color", "1:1:0")
+# set up entry GEOM_10 (Face_2) parameters
+objId = geompy.getObjectID(Face_2)
+ipar.setParameter(objId, "OCCViewer_0_Visibility", "On")
+ipar.setParameter(objId, "OCCViewer_0_Color", "1:1:0")
+ipar.setParameter(objId, "VTKViewer_1_Color", "1:1:0")
+# set up entry GEOM_11 (Cut_1) parameters
+objId = geompy.getObjectID(Cut_1)
+ipar.setParameter(objId, "OCCViewer_0_Visibility", "On")
+ipar.setParameter(objId, "OCCViewer_0_Color", "1:1:0")
+ipar.setParameter(objId, "VTKViewer_1_Color", "1:1:0")
+# set up entry GEOM_2 (Line_1) parameters
+objId = geompy.getObjectID(Line_1)
+ipar.setParameter(objId, "OCCViewer_0_Visibility", "On")
+ipar.setParameter(objId, "OCCViewer_0_Color", "1:1:0")
+# set up entry GEOM_3 (Line_2) parameters
+objId = geompy.getObjectID(Line_2)
+ipar.setParameter(objId, "OCCViewer_0_Visibility", "On")
+ipar.setParameter(objId, "OCCViewer_0_Color", "1:1:0")
+ipar.setParameter(objId, "VTKViewer_1_Color", "1:1:0")
+# set up entry GEOM_4 (Circle_1) parameters
+objId = geompy.getObjectID(Circle_1)
+ipar.setParameter(objId, "OCCViewer_0_Visibility", "On")
+ipar.setParameter(objId, "OCCViewer_0_Color", "1:1:0")
+ipar.setParameter(objId, "VTKViewer_1_Color", "1:1:0")
+# set up entry GEOM_5 (Arc_1) parameters
+objId = geompy.getObjectID(Arc_1)
+ipar.setParameter(objId, "OCCViewer_0_Visibility", "On")
+ipar.setParameter(objId, "OCCViewer_0_Color", "1:1:0")
+ipar.setParameter(objId, "VTKViewer_1_Color", "1:1:0")
+# set up entry GEOM_6 (Face_1) parameters
+objId = geompy.getObjectID(Face_1)
+ipar.setParameter(objId, "OCCViewer_0_Visibility", "On")
+ipar.setParameter(objId, "OCCViewer_0_Color", "1:1:0")
+ipar.setParameter(objId, "VTKViewer_1_Color", "1:1:0")
+# set up entry GEOM_7 (Partition_1) parameters
+objId = geompy.getObjectID(Partition_1)
+ipar.setParameter(objId, "OCCViewer_0_Visibility", "On")
+ipar.setParameter(objId, "OCCViewer_0_Color", "1:1:0")
+ipar.setParameter(objId, "VTKViewer_1_Color", "1:1:0")
+# set up entry GEOM_8 (Partition_2) parameters
+objId = geompy.getObjectID(Partition_2)
+ipar.setParameter(objId, "OCCViewer_0_Visibility", "On")
+ipar.setParameter(objId, "OCCViewer_0_Color", "1:1:0")
+ipar.setParameter(objId, "VTKViewer_1_Color", "1:1:0")
+# set up entry GEOM_9 (Partition_3) parameters
+objId = geompy.getObjectID(Partition_3)
+ipar.setParameter(objId, "OCCViewer_0_Visibility", "On")
+ipar.setParameter(objId, "OCCViewer_0_Color", "1:1:0")
+ipar.setParameter(objId, "VTKViewer_1_Color", "1:1:0")
+
+###
+### SMESH component
+###
+
+import smesh, SMESH, SALOMEDS
+
+aMeasurements = smesh.CreateMeasurements()
+smesh.SetCurrentStudy(theStudy)
+import StdMeshers
+Mesh_1 = smesh.Mesh(Cut_1)
+Regular_1D = Mesh_1.Segment()
+Nb_Segments_1 = Regular_1D.NumberOfSegments(10)
+Nb_Segments_1.SetDistrType( 0 )
+Quadrangle_2D = Mesh_1.Quadrangle()
+isDone = Mesh_1.Compute()
+Regular_1D_1 = Mesh_1.Segment(geom=Edge_2)
+Nb_Segments_2 = Regular_1D_1.NumberOfSegments(4)
+Nb_Segments_2.SetDistrType( 0 )
+Regular_1D_2 = Mesh_1.Segment(geom=Edge_15)
+status = Mesh_1.AddHypothesis(Nb_Segments_2,Edge_15)
+Regular_1D_3 = Mesh_1.Segment(geom=Edge_8)
+Nb_Segments_3 = Regular_1D_3.NumberOfSegments(10,5.62,[  ])
+Regular_1D_4 = Mesh_1.Segment(geom=Edge_9)
+Nb_Segments_4 = Regular_1D_4.NumberOfSegments(12,5.62,[  ])
+Regular_1D_5 = Mesh_1.Segment(geom=Edge_13)
+Nb_Segments_5 = Regular_1D_5.NumberOfSegments(12,5.62,[  ])
+isDone = Mesh_1.Compute()
+Nb_Segments_3.SetNumberOfSegments( 12 )
+Nb_Segments_3.SetDistrType( 1 )
+Nb_Segments_3.SetScaleFactor( 5.62 )
+Nb_Segments_3.SetReversedEdges( [  ] )
+isDone = Mesh_1.Compute()
+Nb_Segments_5.SetNumberOfSegments( 12 )
+Nb_Segments_5.SetDistrType( 1 )
+Nb_Segments_5.SetScaleFactor( 5.62 )
+Nb_Segments_5.SetReversedEdges( [  ] )
+Nb_Segments_3.SetNumberOfSegments( 12 )
+Nb_Segments_3.SetDistrType( 1 )
+Nb_Segments_3.SetScaleFactor( 0.17794 )
+Nb_Segments_3.SetReversedEdges( [  ] )
+Nb_Segments_4.SetNumberOfSegments( 12 )
+Nb_Segments_4.SetDistrType( 1 )
+Nb_Segments_4.SetScaleFactor( 0.17794 )
+Nb_Segments_4.SetReversedEdges( [  ] )
+isDone = Mesh_1.Compute()
+Mesh_1.ExtrusionSweepObject2D( Mesh_1, SMESH.DirStruct( SMESH.PointStruct ( 0, 0, -0.1 )), 1 )
+LCD_FACE = Mesh_1.CreateEmptyGroup( SMESH.FACE, 'LCD_FACE' )
+nbAdd = LCD_FACE.Add( [ 1111, 1123, 1135, 1147, 1159, 1171, 1183, 1195, 1207, 1221 ] )
+LCD_FACE.SetColor( SALOMEDS.Color( 0, 0.666667, 1 ))
+LBC_FACE = Mesh_1.CreateEmptyGroup( SMESH.FACE, 'LBC_FACE' )
+nbAdd = LBC_FACE.Add( [ 1253, 1283, 1295, 1307, 1319, 1331, 1343, 1355, 1367, 1379, 1391, 1479 ] )
+LBC_FACE.SetColor( SALOMEDS.Color( 0, 0.666667, 1 ))
+LDE_FACE = Mesh_1.CreateEmptyGroup( SMESH.FACE, 'LDE_FACE' )
+nbAdd = LDE_FACE.Add( [ 1220, 1224, 1227, 1230, 1233, 1236, 1239, 1242, 1245, 1248 ] )
+LDE_FACE.SetColor( SALOMEDS.Color( 0, 0.666667, 1 ))
+LEF_FACE = Mesh_1.CreateEmptyGroup( SMESH.FACE, 'LEF_FACE' )
+nbAdd = LEF_FACE.Add( [ 1458, 1461, 1464, 1468 ] )
+LEF_FACE.SetColor( SALOMEDS.Color( 0, 0.666667, 1 ))
+LFG_FACE = Mesh_1.CreateEmptyGroup( SMESH.FACE, 'LFG_FACE' )
+nbAdd = LFG_FACE.Add( [ 1407, 1413, 1419, 1425, 1431, 1437, 1443, 1449, 1455, 1469 ] )
+LFG_FACE.SetColor( SALOMEDS.Color( 0, 0.666667, 1 ))
+[ LCD_FACE, LBC_FACE, LDE_FACE, LEF_FACE, LFG_FACE ] = Mesh_1.GetGroups()
+smesh.SetName(Mesh_1, 'Mesh_1')
+Mesh_1.ExportMED( r'/local01/17529/ssnp123c.mmed.med', 0, SMESH.MED_V2_2, 1 )
+SubMesh_1 = Regular_1D_1.GetSubMesh()
+SubMesh_2 = Regular_1D_2.GetSubMesh()
+SubMesh_3 = Regular_1D_3.GetSubMesh()
+SubMesh_4 = Regular_1D_4.GetSubMesh()
+SubMesh_5 = Regular_1D_5.GetSubMesh()
+
+## set object names
+smesh.SetName(Mesh_1.GetMesh(), 'Mesh_1')
+smesh.SetName(Regular_1D.GetAlgorithm(), 'Regular_1D')
+smesh.SetName(Nb_Segments_1, 'Nb. Segments_1')
+smesh.SetName(Quadrangle_2D.GetAlgorithm(), 'Quadrangle_2D')
+smesh.SetName(Nb_Segments_2, 'Nb. Segments_2')
+smesh.SetName(Nb_Segments_3, 'Nb. Segments_3')
+smesh.SetName(Nb_Segments_4, 'Nb. Segments_4')
+smesh.SetName(Nb_Segments_5, 'Nb. Segments_5')
+smesh.SetName(LCD_FACE, 'LCD_FACE')
+smesh.SetName(LBC_FACE, 'LBC_FACE')
+smesh.SetName(LDE_FACE, 'LDE_FACE')
+smesh.SetName(LEF_FACE, 'LEF_FACE')
+smesh.SetName(LFG_FACE, 'LFG_FACE')
+smesh.SetName(SubMesh_1, 'SubMesh_1')
+smesh.SetName(SubMesh_2, 'SubMesh_2')
+smesh.SetName(SubMesh_3, 'SubMesh_3')
+smesh.SetName(SubMesh_4, 'SubMesh_4')
+smesh.SetName(SubMesh_5, 'SubMesh_5')
+
+### Store presentation parameters of displayed objects
+import iparameters
+ipar = iparameters.IParameters(theStudy.GetModuleParameters("Interface Applicative", "SMESH", 1))
+
+#Set up entries:
+# set up entry SMESH_3 (Mesh_1) parameters
+ipar.setParameter("SMESH_3", "VTKViewer_0_Visibility", "On")
+ipar.setParameter("SMESH_3", "VTKViewer_0_Representation", "2")
+ipar.setParameter("SMESH_3", "VTKViewer_0_IsShrunk", "0")
+ipar.setParameter("SMESH_3", "VTKViewer_0_Entities", "e:1:f:1:v:0")
+ipar.setParameter("SMESH_3", "VTKViewer_0_Colors", "surface:0:0.666667:1:backsurface:0:0:1:edge:0:0.666667:1:node:1:0:0")
+ipar.setParameter("SMESH_3", "VTKViewer_0_Sizes", "line:1:shrink:0.75")
+ipar.setParameter("SMESH_3", "VTKViewer_0_PointMarker", "std:1:9")
+ipar.setParameter("SMESH_3", "VTKViewer_0_Opacity", "1")
+ipar.setParameter("SMESH_3", "VTKViewer_0_ClippingPlane", "Off")
+
+
+if salome.sg.hasDesktop():
+  salome.sg.updateObjBrowser(1)
+  iparameters.getSession().restoreVisualState(1)

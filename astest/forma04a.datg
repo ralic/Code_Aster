@@ -1,0 +1,118 @@
+# -*- coding: iso-8859-1 -*-
+
+###
+### This file is generated automatically by SALOME v6.3.0 with dump python functionality
+###
+
+import sys
+import salome
+
+salome.salome_init()
+theStudy = salome.myStudy
+
+###
+### GEOM component
+###
+
+import GEOM
+import geompy
+import math
+import SALOMEDS
+
+geompy.init_geom(theStudy)
+
+O = geompy.MakeVertex(0, 0, 0)
+OX = geompy.MakeVectorDXDYDZ(1, 0, 0)
+OY = geompy.MakeVectorDXDYDZ(0, 1, 0)
+OZ = geompy.MakeVectorDXDYDZ(0, 0, 1)
+Contour_1 = geompy.MakeSketcher("Sketcher:F 0.000000 0.000000:TT 0.000000 50.000000:TT 50.000000 50.000000:R 90:C 50.000000 -45.000000:C -50.000000 45.000000", [0, 0, 0, 0, 0, 1, 1, 0, -0])
+Face_1 = geompy.MakeFaceWires([Contour_1], 1)
+Miroir_1 = geompy.MakeMirrorByAxis(Face_1, OX)
+Assemblage_1 = geompy.MakeCompound([Face_1, Miroir_1])
+SPH_HAU = geompy.CreateGroup(Assemblage_1, geompy.ShapeType["FACE"])
+geompy.UnionIDs(SPH_HAU, [2])
+SPH_BAS = geompy.CreateGroup(Assemblage_1, geompy.ShapeType["FACE"])
+geompy.UnionIDs(SPH_BAS, [12])
+A1A2 = geompy.CreateGroup(Assemblage_1, geompy.ShapeType["EDGE"])
+geompy.UnionIDs(A1A2, [14, 4])
+A2B2 = geompy.CreateGroup(Assemblage_1, geompy.ShapeType["EDGE"])
+geompy.UnionIDs(A2B2, [7])
+A1B1 = geompy.CreateGroup(Assemblage_1, geompy.ShapeType["EDGE"])
+geompy.UnionIDs(A1B1, [17])
+CONT2 = geompy.CreateGroup(Assemblage_1, geompy.ShapeType["EDGE"])
+geompy.UnionIDs(CONT2, [11])
+CONT1 = geompy.CreateGroup(Assemblage_1, geompy.ShapeType["EDGE"])
+geompy.UnionIDs(CONT1, [21])
+geomObj_1 = geompy.GetInPlace(Assemblage_1, SPH_HAU)
+[geomObj_2,geomObj_3,geomObj_4,geomObj_5] = geompy.SubShapeAll(geomObj_1, geompy.ShapeType["VERTEX"])
+[geomObj_6,geomObj_7,geomObj_8,geomObj_9] = geompy.SubShapeAll(geomObj_1, geompy.ShapeType["VERTEX"])
+C2 = geompy.CreateGroup(Assemblage_1, geompy.ShapeType["VERTEX"])
+geompy.UnionIDs(C2, [5])
+geomObj_10 = geompy.GetInPlace(Assemblage_1, SPH_BAS)
+[geomObj_11,geomObj_12,geomObj_13,geomObj_14] = geompy.SubShapeAll(geomObj_10, geompy.ShapeType["VERTEX"])
+[geomObj_15,geomObj_16,geomObj_17,geomObj_18] = geompy.SubShapeAll(geomObj_10, geompy.ShapeType["VERTEX"])
+C1 = geompy.CreateGroup(Assemblage_1, geompy.ShapeType["VERTEX"])
+geompy.UnionIDs(C1, [15])
+geomObj_19 = geompy.GetSubShape(Assemblage_1, [19])
+geomObj_20 = geompy.GetSubShape(Assemblage_1, [19])
+geompy.addToStudy( O, 'O' )
+geompy.addToStudy( OX, 'OX' )
+geompy.addToStudy( OY, 'OY' )
+geompy.addToStudy( OZ, 'OZ' )
+geompy.addToStudy( Contour_1, 'Contour_1' )
+geompy.addToStudy( Face_1, 'Face_1' )
+geompy.addToStudy( Miroir_1, 'Miroir_1' )
+geompy.addToStudy( Assemblage_1, 'Assemblage_1' )
+geompy.addToStudyInFather( Assemblage_1, SPH_HAU, 'SPH_HAU' )
+geompy.addToStudyInFather( Assemblage_1, SPH_BAS, 'SPH_BAS' )
+geompy.addToStudyInFather( Assemblage_1, A1A2, 'A1A2' )
+geompy.addToStudyInFather( Assemblage_1, A2B2, 'A2B2' )
+geompy.addToStudyInFather( Assemblage_1, A1B1, 'A1B1' )
+geompy.addToStudyInFather( Assemblage_1, CONT2, 'CONT2' )
+geompy.addToStudyInFather( Assemblage_1, CONT1, 'CONT1' )
+geompy.addToStudyInFather( Assemblage_1, C2, 'C2' )
+geompy.addToStudyInFather( Assemblage_1, C1, 'C1' )
+
+###
+### SMESH component
+###
+
+import smesh, SMESH, SALOMEDS
+
+aMeasurements = smesh.CreateMeasurements()
+smesh.SetCurrentStudy(theStudy)
+import StdMeshers
+Maillage_1 = smesh.Mesh(Assemblage_1)
+Regular_1D = Maillage_1.Segment()
+MEFISTO_2D = Maillage_1.Triangle()
+Max_Size = Regular_1D.MaxSize(2)
+isDone = Maillage_1.Compute()
+SPH_HAU_1 = Maillage_1.GroupOnGeom(SPH_HAU,'SPH_HAU',SMESH.FACE)
+SPH_BAS_1 = Maillage_1.GroupOnGeom(SPH_BAS,'SPH_BAS',SMESH.FACE)
+A1A2_1 = Maillage_1.GroupOnGeom(A1A2,'A1A2',SMESH.EDGE)
+A2B2_1 = Maillage_1.GroupOnGeom(A2B2,'A2B2',SMESH.EDGE)
+A1B1_1 = Maillage_1.GroupOnGeom(A1B1,'A1B1',SMESH.EDGE)
+CONT2_1 = Maillage_1.GroupOnGeom(CONT2,'CONT2',SMESH.EDGE)
+CONT1_1 = Maillage_1.GroupOnGeom(CONT1,'CONT1',SMESH.EDGE)
+C2_1 = Maillage_1.GroupOnGeom(C2,'C2',SMESH.NODE)
+C1_1 = Maillage_1.GroupOnGeom(C1,'C1',SMESH.NODE)
+smesh.SetName(Maillage_1, 'Maillage_1')
+Maillage_1.ExportMED( r'/tmp/forma04a.mmed', 0, SMESH.MED_V2_2, 1 )
+
+## set object names
+smesh.SetName(Maillage_1.GetMesh(), 'Maillage_1')
+smesh.SetName(Regular_1D.GetAlgorithm(), 'Regular_1D')
+smesh.SetName(MEFISTO_2D.GetAlgorithm(), 'MEFISTO_2D')
+smesh.SetName(Max_Size, 'Max Size')
+smesh.SetName(SPH_HAU_1, 'SPH_HAU')
+smesh.SetName(SPH_BAS_1, 'SPH_BAS')
+smesh.SetName(A1A2_1, 'A1A2')
+smesh.SetName(A2B2_1, 'A2B2')
+smesh.SetName(A1B1_1, 'A1B1')
+smesh.SetName(CONT2_1, 'CONT2')
+smesh.SetName(CONT1_1, 'CONT1')
+smesh.SetName(C2_1, 'C2')
+smesh.SetName(C1_1, 'C1')
+
+if salome.sg.hasDesktop():
+  salome.sg.updateObjBrowser(1)

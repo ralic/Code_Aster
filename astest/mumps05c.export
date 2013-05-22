@@ -1,0 +1,10 @@
+P time_limit 800
+P memory_limit 7792
+P ncpus 2
+P mpi_nbcpu 8
+P mpi_nbnoeud 2
+P testlist I 
+
+F comm mumps05a.comm D 1
+F datg mumps05a.datg D 16
+F mmed mumps05a.mmed D 20

@@ -1,0 +1,196 @@
+OPTI DIME 3;
+OPTI ELEM CU20;
+
+N = 11 ;
+EP = 2 ;
+Z=0 ;
+ALTI=-2 ;
+REPETER BOUCLE1 N;
+
+  MESSAGE 'Z='Z ;
+
+  ALTI = ALTI + EP ;
+  A  =  0.      0.     ALTI ;     
+  B  =  1.      0.     ALTI ; 
+  C  =  1.      1.     ALTI ; 
+  D  =  0.      1.     ALTI ;
+
+  E= 1. 0.5 ALTI ;
+  F= 0.5 1. ALTI ;
+  G= 0. 0.5 ALTI ;
+  H= 0.5 0. ALTI ;
+
+  LAB=DROIT 1 A B ;
+  LBC=DROIT 1 B C ;
+  LCD=DROIT 1 C D ;
+  LDA=DROIT 1 D A ;
+
+  BA    = DALL LAB LBC LCD LDA 'PLAN';
+  ECHAN = BA VOLU 1 TRAN (0 0 2);
+
+  HA  = FACE 2 ECHAN ;
+
+  DR = ELEM (FACE 3 ECHAN) 'CONTENANT' E;
+  AR = ELEM (FACE 3 ECHAN) 'CONTENANT' F;
+  GA = ELEM (FACE 3 ECHAN) 'CONTENANT' G;
+  DE = ELEM (FACE 3 ECHAN) 'CONTENANT' H;
+
+*  SYM=(DEVANT et GAUCHE) coul rouge;
+*  COTE=(DROITE et ARRIERE) coul vert;
+*  APPUI=HAUT coul bleu;
+
+  SI (Z EGA 0) ;
+    ELEM0 = ECHAN ;
+    DR0   = DR ;
+    AR0   = AR ;
+    GA0   = GA ;
+    DE0   = DE ;
+    SYM0  = (DE et GA) coul rouge ;
+    COTE0 = (DR et AR) coul vert ;
+    HA0   = HA ;
+    BAS   = BA ;
+  FINSI ;
+  SI (Z EGA 1) ;
+    ELEM1 = ECHAN ;
+    DR1   = DR0 et DR ;
+    AR1   = AR0 et AR ;
+    GA1   = GA0 et GA ;
+    DE1   = DE0 et DE ;
+    SYM1  = (SYM0 et DE et GA) coul rouge ;
+    COTE1 = (COTE0 et DR et AR) coul vert ;
+    HA1   = HA ;
+  FINSI ;
+  SI (Z EGA 2) ;
+    ELEM2 = ECHAN ;
+    DR2   = DR1 et DR ;
+    AR2   = AR1 et AR ;
+    GA2   = GA1 et GA ;
+    DE2   = DE1 et DE ;
+    SYM2  = (SYM1 et DE et GA) coul rouge ;
+    COTE2 = (COTE1 et DR et AR) coul vert ;
+    HA2   = HA ;
+  FINSI ;
+  SI (Z EGA 3) ;
+    ELEM3 = ECHAN ;
+    DR3   = DR2 et DR ;
+    AR3   = AR2 et AR ;
+    GA3   = GA2 et GA ;
+    DE3   = DE2 et DE ;
+    SYM3  = (SYM2 et DE et GA) coul rouge ;
+    COTE3 = (COTE2 et DR et AR) coul vert ;
+    HA3   = HA ;
+  FINSI ;
+  SI (Z EGA 4) ;
+    ELEM4 = ECHAN ;
+    DR4   = DR3 et DR ;
+    AR4   = AR3 et AR ;
+    GA4   = GA3 et GA ;
+    DE4   = DE3 et DE ;
+    SYM4  = (SYM3 et DE et GA) coul rouge ;
+    COTE4 = (COTE3 et DR et AR) coul vert ;
+    HA4   = HA ;
+  FINSI ;
+  SI (Z EGA 5) ;
+    ELEM5 = ECHAN ;
+    DR5   = DR4 et DR ;
+    AR5   = AR4 et AR ;
+    GA5   = GA4 et GA ;
+    DE5   = DE4 et DE ;
+    SYM5  = (SYM4 et DE et GA) coul rouge ;
+    COTE5 = (COTE4 et DR et AR) coul vert ;
+    HA5   = HA ;
+  FINSI ;
+  SI (Z EGA 6) ;
+    ELEM6 = ECHAN ;
+    DR6   = DR5 et DR ;
+    AR6   = AR5 et AR ;
+    GA6   = GA5 et GA ;
+    DE6   = DE5 et DE ;
+    SYM6  = (SYM5 et DE et GA) coul rouge ;
+    COTE6 = (COTE5 et DR et AR) coul vert ;
+    HA6   = HA ;
+  FINSI ;
+  SI (Z EGA 7) ;
+    ELEM7 = ECHAN ;
+    DR7   = DR6 et DR ;
+    AR7   = AR6 et AR ;
+    GA7   = GA6 et GA ;
+    DE7   = DE6 et DE ;
+    SYM7  = (SYM6 et DE et GA) coul rouge ;
+    COTE7 = (COTE6 et DR et AR) coul vert ;
+    HA7   = HA ;
+  FINSI ;
+  SI (Z EGA 8) ;
+    ELEM8 = ECHAN ;
+    DR8   = DR7 et DR ;
+    AR8   = AR7 et AR ;
+    GA8   = GA7 et GA ;
+    DE8   = DE7 et DE ;
+    SYM8  = (SYM7 et DE et GA) coul rouge ;
+    COTE8 = (COTE7 et DR et AR) coul vert ;
+    HA8   = HA ;
+  FINSI ;
+  SI (Z EGA 9) ;
+    ELEM9 = ECHAN ;
+    DR9   = DR8 et DR ;
+    AR9   = AR8 et AR ;
+    GA9   = GA8 et GA ;
+    DE9   = DE8 et DE ;
+    SYM9  = (SYM8 et DE et GA) coul rouge ;
+    COTE9 = (COTE8 et DR et AR) coul vert ;
+    HA9   = HA ;
+  FINSI ;
+  SI (Z EGA 10) ;
+    ELEM10 = ECHAN ;
+    DR10   = DR9 et DR ;
+    AR10   = AR9 et AR ;
+    GA10   = GA9 et GA ;
+    DE10   = DE9 et DE ;
+    SYM10  = (SYM9 et DE et GA) coul rouge ;
+    COTE10 = (COTE9 et DR et AR) coul vert ;
+    HA10   = HA ;
+  FINSI ;
+
+  SI (Z EGA 0) ;
+    COLONNE = ECHAN ;
+  SINON ;
+    COLONNE = COLONNE et ECHAN ;
+  FINSI ;
+
+  Z = Z + 1 ;
+
+FIN BOUCLE1 ;
+
+OUBLIER A;
+OUBLIER B;
+OUBLIER C;
+OUBLIER D;
+OUBLIER E;
+OUBLIER F;
+OUBLIER G;
+OUBLIER H;
+OUBLIER LAB;
+OUBLIER LBC;
+OUBLIER LCD;
+OUBLIER LDA;
+OUBLIER ECHAN;
+OUBLIER BA;
+OUBLIER HA;
+OUBLIER DR;
+OUBLIER DE;
+OUBLIER AR;
+OUBLIER GA;
+
+ELIM 0.01 COLONNE ;
+
+
+TRAC COLONNE ;
+TRAC (SYM10 et COTE10) ;
+TRAC (GA2 et DR2 et DE2 et AR2) ;
+
+OPTI SAUV FORM '~/CODHYBAR/consolid1d/colonne_3d.mgib';
+SAUV FORM COLONNE ;
+
+FIN ;
+
+FIN;

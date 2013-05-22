@@ -1,0 +1,29 @@
+% FICHIER DE MAILLAGE : BARRE ENCASTREE-LIBRE
+%
+% SOUS-STRUCTURATION MODALE.
+% PARTITION 1 EN DEUX SOUS-STRUCTURES
+%
+COOR_3D
+%   NOEUD  X    Y    Z
+    A      0.   0.   0.
+    N1     0.1  0.   0.
+    N2     0.2  0.   0.
+    N3     0.3  0.   0.
+    N4     0.4  0.   0.
+    N5     0.5  0.   0.
+FINSF
+%
+SEG2
+%    SEG    ND-I.   ND-F.
+     S1     A       N1
+     S2     N1      N2
+     S3     N2      N3
+     S4     N3      N4
+     S5     N4      N5
+FINSF
+%
+GROUP_NO    NOM=NOEUDDL
+A N1 N2 N3 N4 N5
+FINSF
+%
+FIN

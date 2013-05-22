@@ -1,0 +1,65 @@
+******* OPTIONS *******
+OPTI DIME 3 ELEM SEG2;
+***********************
+
+******* CONSTANTES ****
+r = 100.0;
+nma = 8;
+r2s2 = (((2.0)**(0.5))*0.5);
+***********************
+
+******* POINTS ********
+PA = 0. 0. 0.;
+PB =(r*(1.0-r2s2)) (r*r2s2) 0.;
+CENT = r 0. 0.;
+***********************
+
+****** MAILLAGE *******
+AB = CERC nma PA CENT PB;
+***********************
+
+SORT AB;
+TRAC AB;
+
+****** ENREGISTRE *****
+OPTI SAUV 'FORMAT' 'ssnl136a.17';
+SAUV 'FORMAT' AB;
+***********************
+
+*************************************
+
+******* OPTIONS *******
+OPTI DIME 2 ELEM QUA4;
+***********************
+
+******* CONSTANTES ****
+a = 1.0;
+nf = 7;
+***********************
+
+****** SECTION ********
+S1 = (-0.5*a) (-0.5*a);
+S2 = (0.5*a) (-0.5*a);
+S3 = (0.5*a) (0.5*a);
+S4 = (-0.5*a) (0.5*a);
+
+S12 = DROI nf S1 S2;
+S23 = DROI nf S2 S3;
+S34 = DROI nf S3 S4;
+S41 = DROI nf S4 S1;
+
+CONT = S41 ET S12 ET S23 ET S34;
+*SECT = SURF CONT;
+SECT = DALL S41 S12 S23 S34;
+
+
+SORT SECT;
+TRAC SECT;
+***********************
+
+****** ENREGISTRE *****
+OPTI SAUV 'FORMAT' 'ssnl136a.18';
+SAUV 'FORMAT' SECT;
+***********************
+
+FIN;

@@ -1,0 +1,87 @@
+*************************************************************************************
+*  BO BG 0,5m + 0,5m                                                                *
+*************************************************************************************
+opti dime 2 elem qua8 ;
+
+*==============
+DEBPROC ZECOX  ; 
+*==============
+*
+***********************
+*       Points        *
+***********************
+b  =   -0.5   0.01  ;
+f  =   0.     0.01  ;
+c  =   0.5   0.01  ;
+
+a  =   -0.5   0.  ;
+e  =   0.     0.  ;
+d  =   0.5      0.  ;
+
+******************************************
+*      Droites                           *
+******************************************
+ae   = DROI    50  a  e  ;
+ed   = DROI    50 e  d    ;
+bf   = DROI    50  b  f  ;
+fc   = DROI    50 f  c     ;
+
+
+ba = DROI 1 b a ;
+dc = DROI 1 d c;
+ef = DROI 1 e f;
+
+fb = inve (bf);
+cf = inve (fc);
+fe = inve (ef);
+
+******************************
+*  Definition des surfaces   *
+******************************
+BO  = dall  ae ef fb ba;
+BG   = dall  ed dc cf fe;
+
+**********************************
+*  Assemblage des sous-maillages *
+**********************************
+BOBG    = BO et BG ;
+
+     
+********************************
+*   Definition des limites     *
+********************************
+droit  = dc ;
+gauche  = ba ;
+
+bas    = ae et ed  ;
+haut   = bf et fc  ;
+
+
+INTERF  =  ef ;
+
+
+*===========================================================
+FINPROC  BOBG gauche  droit  bas  haut
+ BO  BG   INTERF  ;
+
+BOBG gauche  droit  bas  haut 
+ BO  BG   INTERF = ZECOX ;
+*===========================================================
+*
+
+*  Definition d un titre    *
+*****************************
+titre 'Maillage tranche BOBG' ;
+
+*   Trace du maillage  *
+
+trac ((BOBG) et (BO coul rouge) );
+***************************
+* Sauvegarde du maillage  *
+***************************
+opti sauv format
+'/home/granet/THM/Anomalie/EL_10643/Test/Test_HH_LG/bobg.mgib' ;
+sauv form ;
+
+*fin ;
+

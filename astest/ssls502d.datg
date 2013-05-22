@@ -1,0 +1,43 @@
+*maillage paramétré d'un cylindre
+*orthotrope court soumis à une ligne de charge
+*----------------------------------------------
+opti dime 3 elem qua4 ;
+opti niveau 8 ;
+
+*topologie
+
+L = 2.465 * 0.5 ;
+
+O = 0.   0.    0.    ;
+O2 = 0.   L    0.    ;
+A = 0.   0.   -0.13595   ;
+B = 0.   0.    0.13595     ;
+E = 0.13595    0.    0.    ;
+C = 0.   L     0.13595     ;
+D = 0.   L    -0.13595  ;
+F = 0.13595    L    0.    ;
+
+CF = cercl 8 C O2 F ;
+FD = cercl 8 F O2 D ;
+CD = CF et FD ;
+
+BE = cercl 8 B O E ;
+EA = cercl 8 E O A ;
+BA = EA et BE ;
+
+BC = droit 12 B C ;
+AD = droit 12 A D ;
+
+surf1 = BA trans 12 (0. L 0.)  ;
+tout_elt = surf1 et CD et BA et AD et BC ;
+elim 0.0001 tout_elt ;
+trac cach tout_elt ;
+
+list (nbno tout_elt) ;
+list (nbel tout_elt) ;
+
+opti sauv form 'ssls502d.mgib' ;
+sort tout_elt ;
+sauv form tout_elt ;
+
+fin;

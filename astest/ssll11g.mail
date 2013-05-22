@@ -1,0 +1,24 @@
+TITRE
+% SSLL11/A                                                      23/10/90
+% TREILLIS DE BARRES ARTICULEES SOUS UNE CHARGE PONCTUELLE
+% F = -9810 N
+%                                                   REF: SFM.VPCS SSLL11
+FINSF
+%=======================================================================
+
+COOR_3D
+       % NOEUD     X          Y         Z
+          A       0.0        0.0       0.0
+          B       1.0        0.0       0.0
+          C       0.5        0.5       0.0
+          D       2.0        1.0       0.0
+FINSF
+
+SEG2
+      AC      A    C
+      BC      B    C
+      CD      C    D
+      BD      B    D
+FINSF
+%
+FIN

@@ -1,0 +1,150 @@
+def EXTR_MATR(matrrr,vall) :
+# fonction permettant de recuperer les matrices assemblees au format numpy
+# attention a l'espace memoire
+        import numpy as NP
+
+# construction des vecteurs jeveux
+        nommatr=matrrr.nom
+        lenm=len(nommatr)
+        nommatr=nommatr+' '*(8-lenm+1)
+        vectrav=nommatr+'          .REFA        '
+        nom=aster.getvectjev(vectrav)
+        nomnume=nom[1]
+        typm=nom[8]
+        lenm=len(nomnume)
+        nomnume=nomnume[0:9]
+
+        nvar=nommatr+'          .VALM'
+        nadia=nomnume+'     .SMOS.SMDI        '
+        nnuml=nomnume+'     .SMOS.SMHC        '
+        nrtt=nomnume+'     .NUME.DELG        '
+        nrtt2=nomnume+'     .NUME.DEEQ        '
+        nlili=nomnume+'     .NUME.LILI        '
+        nrefn=nomnume+'     .NUME.REFN        '
+
+        var=aster.getcolljev(nvar)
+        adia=aster.getvectjev(nadia)
+        numl=aster.getvectjev(nnuml)
+        rtt=aster.getvectjev(nrtt)
+        rtt2=aster.getvectjev(nrtt2)
+        lili=aster.getvectjev(nlili)
+        refn=aster.getvectjev(nrefn)
+
+        valr=var[1]
+        if(typm[0:2]=='MS'):
+            mult=1
+        if(typm[0:2]=='MR'):
+            mult=-1
+            valr2=var[2]
+
+        vc=len(rtt)
+        ddltot=0
+        nnddl=[0]
+        tryy=0
+# numerotation des ddl de la matrice extraite
+
+        nomail=refn[0]
+        nomodel=lili[1]
+
+        nomail=nomail[0:8]
+        nomodel=nomodel[0:8]
+
+        nnumerot=nomail+'.NOMNOE                 '
+        nnumerut=nomodel+'.NOEUD                  '
+        
+        numerot=aster.getvectjev(nnumerot)
+        numerut=aster.getvectjev(nnumerut)
+#        import pdb ; pdb.set_trace()
+
+        vectnum=['']*len(numerut)
+        kk=0
+        for ii in range(0,len(numerut)):
+                vectnum[kk]=numerot[ii]        
+                kk=kk+1
+
+
+# calc nbre de ddl au total et vect contenant le nbre de ddl pr chaque noeud (ex : barre =3, poutre=6...)
+        for jj in range(0,vc):
+                if (rtt2[2*jj+1]==1) and (tryy==1):
+                        if (tryy==1):
+                                nnddl=nnddl+[0]
+                                tryy=0
+                if (rtt2[2*jj+1]>0) :
+                        ddltot=ddltot+1
+                        nnddl[len(nnddl)-1]=nnddl[len(nnddl)-1]+1
+                        tryy=1
+        nnddl=nnddl+[0]
+        ddlag=(vc-ddltot)//2
+        ddlphy=ddltot-ddlag
+        indint=[None]*ddlphy
+
+# contruction du vect contenant les indices des ddls non lagr et non nuls
+        gg=0
+        tt=0
+        pp=0
+        tt=0
+        limm=nnddl[pp]
+        vecc=[1]*limm
+        ste=limm
+        vectddl=['']*ddlphy
+        refddl=['DX','DY','DZ','DRX','DRY','DRZ',]
+        for ii in range(0,vc):
+            if (rtt2[2*ii+1]<0):
+                if (rtt[ii]==-1):
+                    varr=-1*rtt2[2*ii+1]-1
+                    vecc[varr]=0
+                ste=limm
+            if (rtt2[2*ii+1]>0) and (ste==limm):
+                for hh in range(0,limm):
+                    if (vecc[hh]==1):
+                        indint[gg]=ii+hh
+                        vectddl[gg]=vectnum[pp]+refddl[hh]
+                        gg=gg+1
+                    vecc[hh]=1
+                ste=0                
+                pp=pp+1
+                limm=nnddl[pp-1]
+                vecc=[1]*limm
+            if (rtt2[2*ii+1]>0) and (ste<limm):
+                ste=ste+1
+
+# constrcution de la matrice complete ddl lag compris (cette etape peut etre fusionnee avec la suivante mais ca devient complique)
+        lon=len(adia)
+        if (vall==1):
+            valeu=NP.zeros([lon,lon])
+        if (vall==2):
+            valeu=NP.zeros([lon,lon],complex)
+        opi=0
+        indc=0
+        indl=0
+        for ii in range(0,lon):
+            if (ii==0):
+                opi=adia[ii]
+            else:
+                opi=adia[ii]-adia[ii-1]
+            for jj in range(0, opi):
+                if (ii==0):
+                    indc=jj
+                    indd=numl[indc]-1
+                else:
+                    indc=adia[ii-1]+jj
+                    indd=numl[indc]-1
+                valeu[indd][ii]=valr[indc]
+                if(typm[0:2]=='MS'):
+                   valeu[ii][indd]=valr[indc]
+                if(typm[0:2]=='MR'):
+                   valeu[ii][indd]=valr2[indc]
+        matrig=valeu
+
+# elimination des ddl de lagrange et des ddl nuls
+        if (vall==1):
+            rig11=NP.zeros([ddlphy,ddlphy])
+        if (vall==2):
+            rig11=NP.zeros([ddlphy,ddlphy],complex)
+        for ii in range(0,ddlphy):
+            for jj in range(0,ddlphy):
+                rig11[ii][jj]=matrig[indint[ii]][indint[jj]]
+
+        return [vectddl,rig11]
+
+

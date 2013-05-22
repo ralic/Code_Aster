@@ -1,0 +1,56 @@
+opti dime 3 elem cub8 ;
+
+*----------------------------------------------------------------------------
+* Ce fichier gibi sert a engendrer les fichiers zzzz285d.19 et zzzz285d.21
+* Pour cela, il faut le faire "tourner" 2 fois en modifiant les 1eres lignes
+
+* pour zzzz285d.21 :
+opti sauv form 'zzzz285d.21' ;
+n1=4;  e  = .5   .5   0.;
+
+* pour zzzz285d.19 :
+opti sauv form 'zzzz285d.19' ;
+n1=4;  e  = .5   .5   0.;
+*----------------------------------------------------------------------------
+
+a  = 0.   0.  0.;
+b  = 1.   0.  0.;
+c  = 1.   1.  0.;
+d  = 0.   1.  0.;
+f  = .5   0.  0.;
+g  = 0.   .7  0.;
+
+
+
+af1 = droi n1 a f ;
+fe1 = droi n1 f e ;
+eg1 = droi n1 e g ;
+ga1 = droi n1 g a ;
+afeg1= surf (af1 et fe1 et eg1 et ga1) PLANE;
+
+fb1 = droi n1 f b ;
+bc1 = droi n1 b c ;
+ce1 = droi n1 c e ;
+ef1 = droi n1 e f ;
+fbce1= surf (fb1 et bc1 et ce1 et ef1) PLANE;
+
+ec1 = droi n1 e c ;
+cd1 = droi n1 c d ;
+dg1 = droi n1 d g ;
+ge1 = droi n1 g e ;
+ecdg1= surf (ec1 et cd1 et dg1 et ge1) PLANE;
+
+
+carre= afeg1 et fbce1 et ecdg1;
+elim carre 0.001;
+
+oublier ef1; oublier ec1; oublier eg1;
+oublier fe1; oublier ce1; oublier ge1;
+
+trac carre;
+
+cube= carre VOLU 6 TRANS (0. 0. 1.);
+trac cube;
+
+sauv form cube ;
+fin;

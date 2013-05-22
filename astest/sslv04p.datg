@@ -1,0 +1,156 @@
+OPTI DIME 2 ELEM QUA8 ;
+OPTI SAUV FORM 'sslv04p.mgib' ;
+*
+O = .0 0. ;
+A = .1 0. ;
+B = .2 0. ;
+C = 9.2387974262238E-02  3.8268297910690E-02 ;
+D = 1.8477588891983E-01  7.6536655426025E-02 ;
+E = 7.0710659027100E-02  7.0710659027100E-02 ;
+F = 1.4142125844955E-01  1.4142125844955E-01 ;
+
+* initial
+* den1 = 0.01 ;
+* den2 = 0.02 ;
+* nel = 15 ;
+den1 = 0.05 ;
+den2 = 0.1 ;
+nel = 8 ;
+mnel = (-2)*nel ;
+
+*
+* maillage en quad8
+*
+*AB = DROIT mnel A B DINI den1 DFIN den2 ;
+AB = DROIT nel A B ;
+BD = CERCLE B O D nel;
+*DC = DROIT mnel D C DINI den2 DFIN den1 ;
+DC = DROIT nel D C ;
+CA = CERCLE C O A nel;
+S1 = DALLER AB BD DC CA ;
+TRAC S1;
+*
+* maillage en tria6
+*
+OPTI DIME 2 ELEM TRI6 ;
+* CD = DROIT mnel C D DINI den1 DFIN den2 ;
+CD = DROIT nel C D ;
+DF = CERCLE D O F nel;
+* FE = DROIT mnel F E DINI den2 DFIN den1 ;
+FE = DROIT nel F E  ;
+EC = CERCLE E O C nel;
+S2 = DALLER CD DF FE EC ;
+TRAC S2;
+S = S1 ET S2 ;
+AE = EC ET CA ;
+ELIM 0.0001 AE;
+ELIM 0.0001 S;
+NNOAE = NBNO AE;
+LIST NNOAE;
+NNO = NBNO S;
+LIST NNO;
+TRAC S;
+*
+* extrusion en 3D
+*
+OPTI DIME 3 ELEM CU20 ;
+volu = s volu 1 tran (0. 0. 0.01);
+oeil = 1. 1. 1. ;
+trac oeil volu;
+sb1 = s coul roug ;
+*volu = volu et s;
+
+* symetries
+pz = 0. 0. 0.1  ;
+vol2 = volu syme plan E F pz;
+vol3 = volu et vol2 ;
+elim vol3 0.0001;
+trac vol3 ;
+vol4 = vol3 syme plan A B pz;
+vol5 = vol4 et vol3 ;
+elim vol5 0.0001 ;
+trac cach vol5 ;
+py1 = 0. 0.1 0. ;
+py2 = 0. 0.2 0. ;
+vol6 = vol5 syme plan py1 py2 pz ;
+vol7 = vol6 et vol5 ;
+elim vol7 0.0001 ;
+trac cach vol7 ;
+
+PY12 = DROIT nel PY1 PY2 ;
+diry = PY12 TRAN 1 (0. 0. 0.01);
+diry = diry coul jaun ;
+diri = AB TRAN 1 (0. 0. 0.01);
+dnor = FE TRAN 1 (0. 0. 0.01);
+pres = AE TRAN 1 (0. 0. 0.01);
+trac diri;
+trac dnor;
+pres = pres coul vert ;
+trac pres;
+
+* symetries
+pre2 = pres syme plan E F pz;
+pre3 = pres et (inve pre2) ;
+elim pre3 0.0001;
+trac pre3 ;
+pre4 = pre3 syme plan A B pz;
+pre5 = pre4 et (inve pre3) ;
+elim pre5 0.0001 ;
+trac cach pre5 ;
+pre6 = pre5 syme plan py1 py2 pz ;
+pre7 = pre6 et (inve pre5) ;
+elim pre7 0.0001 ;
+trac cach pre7 ;
+* les mailles de pre7 sont bien orientees
+toto = versens pre7;
+
+
+* symetries faces
+
+*sb1 = inve sb1 ;
+
+sb2 = sb1 syme plan E F pz;
+*sb3 = sb1 et (inve sb2) ;
+sb3 = sb1 et sb2 ;
+elim sb3 0.0001;
+trac sb3 ;
+sb4 = sb3 syme plan A B pz;
+*sb5 = sb4 et (inve sb3) ;
+sb5 = sb4 et sb3 ;
+elim sb5 0.0001 ;
+trac cach sb5 ;
+sb6 = sb5 syme plan py1 py2 pz ;
+*sb = sb6 et (inve sb5) ;
+sb = sb6 et sb5 ;
+elim sb 0.0001 ;
+trac cach sb ;
+sh = sb plus (0. 0. 0.01);
+sh = sh coul bleu ;
+
+* symetries aretes
+
+ae2 = ae syme plan E F pz;
+ae3 = ae et ae2 ;
+elim ae3 0.0001;
+trac ae3 ;
+ae4 = ae3 syme plan A B pz;
+ae5 = ae4 et ae3 ;
+elim ae5 0.0001 ;
+trac cach ae5 ;
+ae6 = ae5 syme plan py1 py2 pz ;
+ae7= ae6 et ae5 ;
+elim ae7 0.0001 ;
+trac cach ae7 ;
+
+
+
+MA = vol7 et diri et dnor et pre7 et sb et sh et diry et ae7;
+ELIM 0.0001 MA;
+NNO = NBNO MA;
+LIST NNO;
+trac oeil MA;
+SAUV FORM MA;
+
+toto = versens sh ;
+
+

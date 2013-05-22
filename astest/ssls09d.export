@@ -1,0 +1,9 @@
+P time_limit 300
+P memory_limit 1000
+P ncpus 1
+P mpi_nbcpu 2
+P mpi_nbnoeud 1
+P testlist I 
+
+F comm ssls09c.comm D 1
+F mmed ssls09a.mmed D 20

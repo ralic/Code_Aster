@@ -1,0 +1,187 @@
+
+
+### script python pour le salome
+### developpeur EDF Kyrylo Kazymyrenko
+
+import sys
+import salome
+
+salome.salome_init()
+
+#sys.path.insert( 0, r'/home/kazymyrenko/droit')
+
+
+##############################################################
+################# GEOMETRY ###################################
+##############################################################
+
+import geompy
+import math
+
+geompy.init_geom(salome.myStudy)
+SD={} # Creation d'un dico aka Structure Donnees pour stocker tous les objets : ligne/points/partitions etc...
+
+# finesse du maillage
+Nseg=4
+
+
+alpha = math.pi/6. 
+#alpha = 0. 
+
+patin_l = 40.
+patin_h = 20.
+bati_l  = 60.
+bati_l1 = (bati_l-patin_l)/2
+bati_h=5.
+jeu=0.5
+
+
+#Creation des objects geometriques
+
+"""
+Parametres pour la geometrie
+
+alpha  angle de rotation du maillage
+
+schema :
+
+    D --C
+    |   |
+    A --B
+H1--H2--H3--H4
+|           |
+B1--B2--B3--B4
+
+"""
+
+
+
+# Points BATI de la BASE
+SD["B1"] = geompy.MakeVertex(0,                  0,    0)
+SD["B2"] = geompy.MakeVertex(bati_l1,            0,    0)
+SD["B3"] = geompy.MakeVertex(bati_l-bati_l1,     0,    0)
+SD["B4"] = geompy.MakeVertex(bati_l        ,     0,    0)
+# Points BATI de la HAUT
+SD["H1"] = geompy.MakeVertex(0,             bati_h,    0)
+SD["H2"] = geompy.MakeVertex(bati_l1,       bati_h,    0)
+SD["H3"] = geompy.MakeVertex(bati_l-bati_l1,bati_h,    0)
+SD["H4"] = geompy.MakeVertex(bati_l        ,bati_h,    0)
+
+# Point de patin, on commence par le bas-gauche et on tourne dans le sens direct
+SD["A"] = geompy.MakeVertex(bati_l1,                 bati_h + jeu,    0)
+SD["B"] = geompy.MakeVertex(bati_l-bati_l1,          bati_h + jeu,    0)
+SD["C"] = geompy.MakeVertex(bati_l-bati_l1,bati_h + jeu + patin_h,    0)
+SD["D"] = geompy.MakeVertex(bati_l1,       bati_h + jeu + patin_h,    0)
+
+#### CREATION de FACES ####
+
+# main objects
+SD["BATI"] = geompy.MakeFace( geompy.MakePolyline([SD["B1"],SD["B2"],SD["B3"],SD["B4"],SD["H4"],SD["H3"],SD["H2"],SD["H1"],SD["B1"]]) , 1)
+#SD["JOINT"] = geompy.MakeFace( geompy.MakePolyline([SD["H2"],SD["H3"],SD["B"],SD["A"],SD["H2"]]) , 1)
+SD["PATIN"] = geompy.MakeFace(geompy.MakePolyline([SD["A"],SD["B"],SD["C"],SD["D"],SD["A"]]) , 1)
+#### FIN de la CREATION de FACES ####
+
+
+#creation de l'objet principale + link des sous objets
+MainObject = geompy.MakeCompound([SD["BATI"], SD["PATIN"]])
+
+#### CREATION DES GROUPES ####
+
+### creation de lignes (1D) que l'on rattache a la geometrie
+
+# ligne superieur (maitre) du bati
+SD["LMAI"]=geompy.GetInPlace(SD["BATI"],  geompy.MakePolyline([SD["H1"],SD["H2"],SD["H3"],SD["H4"]])  )
+# ligne inferieur du bati
+SD["BASE"]=geompy.GetInPlace(SD["BATI"],  geompy.MakePolyline([SD["B1"],SD["B2"],SD["B3"],SD["B4"]])  )
+# ligne superieur du bati pour la creation du joint
+SD["LJOI"]=geompy.GetSame(SD["BATI"],  geompy.MakeLineTwoPnt(SD["H2"],SD["H3"])  )
+# ligne inferieur (esclave) du patin
+SD["LESC"]=geompy.GetSame(SD["PATIN"],    geompy.MakeLineTwoPnt(SD["A"],SD["B"])  )
+# ligne superieur du patin
+SD["FACESUP"]=geompy.GetSame(SD["PATIN"], geompy.MakeLineTwoPnt(SD["C"],SD["D"])  )
+# ligne lateral du patin
+SD["FACELAT"]=geompy.GetSame(SD["PATIN"], geompy.MakeLineTwoPnt(SD["D"],SD["A"])  )
+## lignes du BATI hors de fissures
+#H1H2=geompy.GetInPlace(SD["BATI"],  geompy.MakeLineTwoPnt(SD["H1"],SD["H2"])  )
+#H4H3=geompy.GetInPlace(SD["BATI"],  geompy.MakeLineTwoPnt(SD["H4"],SD["H3"])  )
+#B1B2=geompy.GetInPlace(SD["BATI"],  geompy.MakeLineTwoPnt(SD["B1"],SD["B2"])  )
+#B4B3=geompy.GetInPlace(SD["BATI"],  geompy.MakeLineTwoPnt(SD["B4"],SD["B3"])  )
+
+# ligne pour rafiner le maillage
+B2B3=geompy.GetInPlace(SD["BATI"],  geompy.MakeLineTwoPnt(SD["B2"],SD["B3"])  )
+
+SD["RAF_FISS"] = geompy.MakeCompound([B2B3, SD["LJOI"], SD["LESC"], SD ["FACESUP"]])
+
+geompy.addToStudy( MainObject, "PATIN_BATI" )
+
+keys=SD.keys()
+for name in sorted(keys):
+	geompy.addToStudyInFather(MainObject,SD[name],name)
+
+
+### CREATION DE RESSORTS ####
+SD1={} # dico d'objets pour les ressorts
+SD1["R1"] = geompy.MakeVertex(bati_l        ,          bati_h + jeu,    0)
+SD1["R2"] = geompy.MakeVertex(bati_l        ,bati_h + jeu + patin_h,    0)
+SD1["X"]  = geompy.MakeVertex(bati_l1,       bati_h + jeu + patin_h + bati_l1,    0)
+SD1["Y"]  = geompy.MakeVertex(bati_l-bati_l1,bati_h + jeu + patin_h + bati_l1,    0)
+
+SD1["RES_HAUT"] = geompy.MakeCompound([geompy.MakeLineTwoPnt(SD["D"],SD1["X"]) , geompy.MakeLineTwoPnt(SD["C"],SD1["Y"])])
+SD1["RES_LAT"]  = geompy.MakeCompound([geompy.MakeLineTwoPnt(SD["B"],SD1["R1"]) , geompy.MakeLineTwoPnt(SD["C"],SD1["R2"])])
+
+HelpObject =  geompy.MakeCompound([SD1["RES_HAUT"], SD1["RES_LAT"]])
+
+geompy.addToStudy( HelpObject, "RESSORTS" )
+
+keys1=SD1.keys()
+for name in sorted(keys1):
+	geompy.addToStudyInFather(HelpObject,SD1[name],name)
+
+
+##############################################################
+#################### SMESH ###################################
+##############################################################
+import smesh, SMESH
+
+
+# mesh patin + bati sans ressorts
+mPATIN_BATI = smesh.Mesh(MainObject)
+Regular_1D = mPATIN_BATI.Segment()
+algo_1D = Regular_1D.NumberOfSegments(Nseg)
+#algo_1D.SetDistrType( 0 )
+Quadrangle_2D = mPATIN_BATI.Quadrangle()
+
+# create a sub-mesh on regular part 1D inside FISSURE
+algo_local_hor = mPATIN_BATI.Segment(geom=SD["RAF_FISS"])
+hyp_reg1D_hor = algo_local_hor.NumberOfSegments(2*Nseg)
+
+for name,ref in SD.items():
+    #SMESH.NODE  SMESH.EDGE  SMESH.FACE
+    print "adding "+ name + " of type ",ref.GetMinShapeType()
+    mPATIN_BATI.GroupOnGeom(ref,name)
+    
+isDone = mPATIN_BATI.Compute()
+
+# mesh ressorts
+mRESSORTS = smesh.Mesh(HelpObject)
+Regular_1D_1 = mRESSORTS.Segment()
+seg1 = Regular_1D_1.NumberOfSegments(1)
+seg1.SetDistrType( 0 )
+
+for name,ref in SD1.items():
+    #SMESH.NODE  SMESH.EDGE  SMESH.FACE
+    print "adding "+ name + " of type ",ref.GetMinShapeType()
+    mRESSORTS.GroupOnGeom(ref,name)
+
+isDone = mRESSORTS.Compute()
+    
+Final_MESH = smesh.Concatenate([mPATIN_BATI.GetMesh(), mRESSORTS.GetMesh()], True, True, 1e-05)
+Final_MESH.RotateObject( Final_MESH, SMESH.AxisStruct( 0, 0, 0, 0, 0, 1 ), alpha, 0 )
+#smesh.SetName(Final_MESH.GetMesh(), 'Final_MESH')
+Final_MESH.SetName("Final_MESH")
+
+Final_MESH.ExportMED("/home/kazymyrenko/RabotaSave/Barrage/CAS_TEST/patin/maillage_py/PATIN_BATI_" + str(Final_MESH.NbNodes()) + ".mmed")
+
+if salome.sg.hasDesktop():
+  salome.sg.updateObjBrowser(1)
+

@@ -1,0 +1,20 @@
+***material
+*integration theta_method_a 1. 1.e-9 150
+***behavior gen_evp %auto_step
+**elasticity
+young 145200.
+poisson 0.3
+**potential gen_evp
+*flow plasticity
+*criterion mises
+*kinematic nonlinear
+C  63767.
+D 341.
+*kinematic nonlinear
+C  498336.0
+D 17184.
+*isotropic nonlinear
+R0 87.
+b 2.3
+Q 64.
+***return

@@ -1,0 +1,41 @@
+opti sauver format 'ssnl107d.mgib' ;
+*
+OPTI DIME 3 ELEM QUA4;
+*
+* création de la plaque
+*
+P1 = 0. 0. 0.;
+P2 = 0. 1. 0.;
+L1 = DROITE 1 P1 P2 ;
+S1 = L1 TRAN 20 (10. 0. 0.);
+LP2P3 = cote 2 S1;
+LP4P1 = cote 4 S1;
+P3 = LP2P3 poin 'FINAL';
+P4 = LP4P1 poin 'INITIAL';
+S1 = INVE S1 ;
+COQU1 = MANU 'POI1' P4;
+COQU2 = MANU 'POI1' P3;
+C1C2 = COQU1 et COQU2;
+*
+OPTI DIME 3 ELEM SEG2;
+*
+* création des 2 poutres
+*
+P5 = 10. 0. 1.;
+P6 = 10. 1. 1.2 ;
+VECTRAN = 0. 0. -1.;
+P7 = P5 PLUS VECTRAN;
+P8 = P6 PLUS VECTRAN;
+POUT1 = MANU 'POI1' P7 ;
+POUT2 = MANU 'POI1' P8 ;
+M1M2 = POUT1 ET POUT2 ;
+L2 = DROITE 1 P5 P7 ;
+L3 = DROITE 1 P6 P8 ;
+POUTRE = L2 ET L3;
+oublier vectran ;
+MA = S1 ET POUTRE ET M1M2 ET C1C2 ;
+TASS MA ;
+OEIL = 0 -100 100 ;
+TRACE OEIL MA;
+SAUVE FORMAT MA;
+fin ;

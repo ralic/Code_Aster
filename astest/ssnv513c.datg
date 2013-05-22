@@ -1,0 +1,40 @@
+opti dime 3 elem cub8 ;
+
+dens 10 ;
+
+*----------------------------------------
+*DONNEES
+*----------------------------------------
+
+* nombre d elements
+N = 5;
+
+
+*---------------------------------------------
+*construction du maillage
+*---------------------------------------------
+
+p1 = -5 -5  0;
+p2 =  5 -5  0;
+p3 =  5  5  0;
+p4 = -5  5  0;
+
+*LB = droit p1 p2 N;
+LD = droit p2 p3 N; 
+*LH = droit p4 p3 N;
+LG = droit p1 p4 N;
+
+*SB = LB tran (0  0  1);
+SD = LD tran (0  0  1);
+*SH = LH tran (0  0  1);
+SG = LG tran (0  0  1);
+
+VOLU = VOLU SD SG N;
+trac volu;         
+
+MAILLE = VOLU;
+
+opti sauv format
+'/work/irlin831_1/siavelim/CAS/Tests/ssnv513c.mgib';
+sauv format maille ;
+fin ;

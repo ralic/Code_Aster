@@ -1,0 +1,47 @@
+opti dime 3 elem qua4 ;
+
+
+* r : rayon des cercles
+* h : epaisseur
+* hsr = h/r
+* alpha : angle au centre des 4 morceaux
+* --------------------------------------------------
+
+r = 1. ; h= 0.050;hsr = h/r ; hs2= h/2  ;larg=0.10;
+
+cosalf = 1. - (0.25*hsr) ;sinalf = (1. - (cosalf*cosalf))**0.5 ;
+alpha = atg (sinalf/cosalf) ;
+
+o = 0.              0.                       0.;
+a = 0.              (0. - r)                 0.;
+e = r*sinalf        (r*(cosalf - 1.))        0.;
+b = 2.*r*sinalf     (r*(2*cosalf - 1.))      0.;
+g = 2.*r*sinalf     (2*r*(cosalf - 1.))      0.;
+f = 3*r*sinalf      (r*(cosalf - 1.))        0.;
+d = 4.*r*sinalf     0.                       0.;
+c = 4.*r*sinalf     (0. - r)                 0.;
+
+c1= cerc 10 e a o ;
+c2= cerc 10 e b g ;x= poin c2 final ;
+c3= cerc 10 g b f ;
+c4= cerc 10 d c f ;
+
+s1 = c1 tran 1 (0. 0. larg);bout1  = cote s1 2;
+s2 = c2 tran 1 (0. 0. larg);
+s3 = c3 tran 1 (0. 0. larg);
+s4 = c4 tran 1 (0. 0. larg);bout2  = cote s4 4;
+stot = s1 et s2 et s3 et s4 ;
+
+surf = stot et bout1 et bout2;
+
+elim 0.001 surf ;
+list (nbno surf) ;
+list (nbel surf) ;
+trac (0. 2. 8.) surf;
+
+opti sauv form 'ssnv115c.mgib' ;
+sort surf;
+sauv form surf ;
+
+liste bout1;
+fin;

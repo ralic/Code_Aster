@@ -1,0 +1,27 @@
+opti dime 3 elem tri3 ;
+
+a1 = 0. 0. 0. ;
+a2 = 10. 0. 0. ;
+a3 = 10. 5. 0. ;
+a4 = 0. 5. 0. ;
+
+l11 = d 10 a1 a2 ;
+l12 = d 5 a2 a3 ;
+l13 = d 10 a3 a4 ;
+l14 = d 5 a4 a1 ;
+
+l21 = d 10 a2 a1 ;
+l22 = d 5 a3 a2 ;
+l23 = d 10 a4 a3 ;
+l24 = d 5 a1 a4 ;
+
+ plaq1 = daller plan l11  l12  l13  l14 ;
+
+ plaq = plaq1  ;
+
+ oeil = 1. 1. 16. ;
+ elim 0.001 plaq ;
+ sort plaq ;
+opti sauv format 
+ '/home/bertrand/ssls116c.mgib' ;
+ sauv format plaq ;

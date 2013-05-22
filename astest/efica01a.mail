@@ -1,0 +1,25 @@
+% -----------------------------------------------------------------------------
+TITRE
+* SYSTEME MASSE-RESSORT A 1 DEGRE DE LIBERTE
+* ACCELERATION IMPOSEE
+FINSF
+%
+% COORDONNEES DES NOEUDS
+% ----------------------
+COOR_3D
+%               X                Y               Z
+NO1       0.000000000E+00  0.000000000E+00  0.000000000E+00
+NO2       0.100000000E+00  0.000000000E+00  0.000000000E+00
+FINSF
+%
+% DESCRIPTION DES ELEMENTS
+% ------------------------
+SEG2
+ELN1     NO1      NO2
+FINSF
+%
+GROUP_MA NOM =  RESSORT
+ELN1
+FINSF
+%
+FIN

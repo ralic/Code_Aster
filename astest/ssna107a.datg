@@ -1,0 +1,24 @@
+opti dime 2 elem qua4;
+f= '/export/exterieurs/cibhhpd/uaster/nunez/el/test_d.mgib' ;
+
+opti sauv form f;
+
+
+R0 = 1. ;
+R1 = 1.02 ;
+H = 1.;
+
+A = (R0) 0. ;
+B = (R1) 0. ;
+C = (R1) (H) ;
+D = (R0) (H)  ;
+
+dAB = droite A B 1;
+dBC = droite B C 5 ;
+dCD = droite C D 1;
+dDA = droite D A 5 ;
+
+mail = daller dAB dBC dCD dDA plan;
+trac mail;
+sauv form mail ;
+

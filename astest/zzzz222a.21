@@ -1,0 +1,247 @@
+TITRE
+  FICHIER GENERE PAR L'INTERFACE ALIBABA
+  LE  LU-12-FEVR-96 13:10:38 
+FINSF
+COOR_2D %    63 NOEUDS
+  N1       3.000E-01  0.00E+00
+  N2       3.000E-01  5.00E-02
+  N3       3.025E-01  0.00E+00
+  N4       3.025E-01  5.00E-02
+  N5       3.050E-01  0.00E+00
+  N6       3.050E-01  5.00E-02
+  N7       3.075E-01  0.00E+00
+  N8       3.075E-01  5.00E-02
+  N9       3.100E-01  0.00E+00
+  N10      3.100E-01  5.00E-02
+  N11      3.125E-01  0.00E+00
+  N12      3.125E-01  5.00E-02
+  N13      3.150E-01  0.00E+00
+  N14      3.150E-01  5.00E-02
+  N15      3.175E-01  0.00E+00
+  N16      3.175E-01  5.00E-02
+  N17      3.200E-01  0.00E+00
+  N18      3.200E-01  5.00E-02
+  N19      3.225E-01  0.00E+00
+  N20      3.225E-01  5.00E-02
+  N21      3.250E-01  0.00E+00
+  N22      3.250E-01  5.00E-02
+  N23      3.275E-01  0.00E+00
+  N24      3.275E-01  5.00E-02
+  N25      3.300E-01  0.00E+00
+  N26      3.300E-01  5.00E-02
+  N27      3.325E-01  0.00E+00
+  N28      3.325E-01  5.00E-02
+  N29      3.350E-01  0.00E+00
+  N30      3.350E-01  5.00E-02
+  N31      3.375E-01  0.00E+00
+  N32      3.375E-01  5.00E-02
+  N33      3.400E-01  0.00E+00
+  N34      3.400E-01  5.00E-02
+  N35      3.425E-01  0.00E+00
+  N36      3.425E-01  5.00E-02
+  N37      3.450E-01  0.00E+00
+  N38      3.450E-01  5.00E-02
+  N39      3.475E-01  0.00E+00
+  N40      3.475E-01  5.00E-02
+  N41      3.500E-01  0.00E+00
+  N42      3.500E-01  5.00E-02
+  N43      3.000E-01  1.00E-01
+  N44      3.025E-01  1.00E-01
+  N45      3.050E-01  1.00E-01
+  N46      3.075E-01  1.00E-01
+  N47      3.100E-01  1.00E-01
+  N48      3.125E-01  1.00E-01
+  N49      3.150E-01  1.00E-01
+  N50      3.175E-01  1.00E-01
+  N51      3.200E-01  1.00E-01
+  N52      3.225E-01  1.00E-01
+  N53      3.250E-01  1.00E-01
+  N54      3.275E-01  1.00E-01
+  N55      3.300E-01  1.00E-01
+  N56      3.325E-01  1.00E-01
+  N57      3.350E-01  1.00E-01
+  N58      3.375E-01  1.00E-01
+  N59      3.400E-01  1.00E-01
+  N60      3.425E-01  1.00E-01
+  N61      3.450E-01  1.00E-01
+  N62      3.475E-01  1.00E-01
+  N63      3.500E-01  1.00E-01
+FINSF
+QUAD4    %    20 MAILLES
+  M1       N1       N3       N4       N2     
+  M2       N3       N5       N6       N4     
+  M3       N5       N7       N8       N6     
+  M4       N7       N9       N10      N8     
+  M5       N9       N11      N12      N10    
+  M6       N11      N13      N14      N12    
+  M7       N13      N15      N16      N14    
+  M8       N15      N17      N18      N16    
+  M9       N17      N19      N20      N18    
+  M10      N19      N21      N22      N20    
+  M11      N21      N23      N24      N22    
+  M12      N23      N25      N26      N24    
+  M13      N25      N27      N28      N26    
+  M14      N27      N29      N30      N28    
+  M15      N29      N31      N32      N30    
+  M16      N31      N33      N34      N32    
+  M17      N33      N35      N36      N34    
+  M18      N35      N37      N38      N36    
+  M19      N37      N39      N40      N38    
+  M20      N39      N41      N42      N40    
+FINSF
+TRIA3    %    40 MAILLES
+  M21      N2       N4       N43    
+  M22      N4       N44      N43    
+  M23      N4       N6       N44    
+  M24      N6       N45      N44    
+  M25      N6       N8       N45    
+  M26      N8       N46      N45    
+  M27      N8       N10      N46    
+  M28      N10      N47      N46    
+  M29      N10      N12      N47    
+  M30      N12      N48      N47    
+  M31      N12      N14      N48    
+  M32      N14      N49      N48    
+  M33      N14      N16      N49    
+  M34      N16      N50      N49    
+  M35      N16      N18      N50    
+  M36      N18      N51      N50    
+  M37      N18      N20      N51    
+  M38      N20      N52      N51    
+  M39      N20      N22      N52    
+  M40      N22      N53      N52    
+  M41      N22      N24      N53    
+  M42      N24      N54      N53    
+  M43      N24      N26      N54    
+  M44      N26      N55      N54    
+  M45      N26      N28      N55    
+  M46      N28      N56      N55    
+  M47      N28      N30      N56    
+  M48      N30      N57      N56    
+  M49      N30      N32      N57    
+  M50      N32      N58      N57    
+  M51      N32      N34      N58    
+  M52      N34      N59      N58    
+  M53      N34      N36      N59    
+  M54      N36      N60      N59    
+  M55      N36      N38      N60    
+  M56      N38      N61      N60    
+  M57      N38      N40      N61    
+  M58      N40      N62      N61    
+  M59      N40      N42      N62    
+  M60      N42      N63      N62    
+FINSF
+% NOMBRE TOTAL DE SOUS-DOMAINES    1
+SEG2     %    44 MAILLES
+  M61      N1       N3     
+  M62      N2       N1     
+  M63      N3       N5     
+  M64      N5       N7     
+  M65      N7       N9     
+  M66      N9       N11    
+  M67      N11      N13    
+  M68      N13      N15    
+  M69      N15      N17    
+  M70      N17      N19    
+  M71      N19      N21    
+  M72      N21      N23    
+  M73      N23      N25    
+  M74      N25      N27    
+  M75      N27      N29    
+  M76      N29      N31    
+  M77      N31      N33    
+  M78      N33      N35    
+  M79      N35      N37    
+  M80      N37      N39    
+  M81      N39      N41    
+  M82      N41      N42    
+  M83      N43      N2     
+  M84      N44      N43    
+  M85      N45      N44    
+  M86      N46      N45    
+  M87      N47      N46    
+  M88      N48      N47    
+  M89      N49      N48    
+  M90      N50      N49    
+  M91      N51      N50    
+  M92      N52      N51    
+  M93      N53      N52    
+  M94      N54      N53    
+  M95      N55      N54    
+  M96      N56      N55    
+  M97      N57      N56    
+  M98      N58      N57    
+  M99      N59      N58    
+  M100     N60      N59    
+  M101     N61      N60    
+  M102     N62      N61    
+  M103     N42      N63    
+  M104     N63      N62    
+FINSF
+GROUP_MA %    20 MAILLES
+ GRMA11    M61      M63      M64      M65      M66      M67      M68    
+           M69      M70      M71      M72      M73      M74      M75    
+           M76      M77      M78      M79      M80      M81    
+FINSF
+GROUP_NO %    21 NOEUDS 
+ GRNM11    N1       N3       N5       N7       N9       N11      N13    
+           N15      N17      N19      N21      N23      N25      N27    
+           N29      N31      N33      N35      N37      N39      N41    
+FINSF
+GROUP_MA %     2 MAILLES
+ GRMA12    M82      M103   
+FINSF
+GROUP_NO %     3 NOEUDS 
+ GRNM12    N41      N42      N63    
+FINSF
+GROUP_MA %    20 MAILLES
+ GRMA13    M84      M85      M86      M87      M88      M89      M90    
+           M91      M92      M93      M94      M95      M96      M97    
+           M98      M99      M100     M101     M102     M104   
+FINSF
+GROUP_NO %    21 NOEUDS 
+ GRNM13    N43      N44      N45      N46      N47      N48      N49    
+           N50      N51      N52      N53      N54      N55      N56    
+           N57      N58      N59      N60      N61      N62      N63    
+FINSF
+GROUP_MA %     1 MAILLES
+ GRMA14    M83    
+FINSF
+GROUP_NO %     2 NOEUDS 
+ GRNM14    N2       N43    
+FINSF
+GROUP_MA %     1 MAILLES
+ GRMA15    M62    
+FINSF
+GROUP_NO %     2 NOEUDS 
+ GRNM15    N1       N2     
+FINSF
+GROUP_NO %     1 NOEUDS 
+ GRNO1     N1     
+FINSF
+GROUP_NO %     1 NOEUDS 
+ GRNO2     N41    
+FINSF
+GROUP_NO %     1 NOEUDS 
+ GRNO3     N63    
+FINSF
+GROUP_NO %     1 NOEUDS 
+ GRNO4     N43    
+FINSF
+GROUP_NO %    19 NOEUDS 
+ GRNO11    N3       N5       N7       N9       N11      N13      N15    
+           N17      N19      N21      N23      N25      N27      N29    
+           N31      N33      N35      N37      N39    
+FINSF
+GROUP_NO %     1 NOEUDS 
+ GRNO12    N42    
+FINSF
+GROUP_NO %    19 NOEUDS 
+ GRNO13    N44      N45      N46      N47      N48      N49      N50    
+           N51      N52      N53      N54      N55      N56      N57    
+           N58      N59      N60      N61      N62    
+FINSF
+GROUP_NO %     1 NOEUDS 
+ GRNO14    N2     
+FINSF
+FIN

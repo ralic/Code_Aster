@@ -1,0 +1,80 @@
+TITRE
+SSLL102D
+POUTRE DROITE ENCASTREE A UNE EXTREMITE
+ET SOUMISE A DES EFFORTS UNITAIRES A SON AUTRE EXTREMITE
+MAILLAGE EN 10 ELEMENTS AVEC RAFFINEMENT VERS L'ENCASTREMENT
+FINSF
+COOR_3D
+%
+  N1       0.0D0    0.0D0    0.0D0
+  N21      0.01D0   0.0D0    0.0D0
+  N22      0.03D0   0.0D0    0.0D0
+  N23      0.1D0    0.0D0    0.0D0
+  N24      0.3D0    0.0D0    0.0D0
+  N25      0.6D0    0.0D0    0.0D0
+  N26      1.2D0    0.0D0    0.0D0
+  N27      1.4D0    0.0D0    0.0D0
+  N28      1.6D0    0.0D0    0.0D0
+  N29      1.8D0    0.0D0    0.0D0
+  N3       2.0D0    0.0D0    0.0D0
+%
+  M1       0.0D0    0.0D0    0.0D0
+  M21      0.01D0   0.0D0    0.0D0
+  M22      0.03D0   0.0D0    0.0D0
+  M23      0.1D0    0.0D0    0.0D0
+  M24      0.3D0    0.0D0    0.0D0
+  M25      0.6D0    0.0D0    0.0D0
+  M26      1.2D0    0.0D0    0.0D0
+  M27      1.4D0    0.0D0    0.0D0
+  M28      1.6D0    0.0D0    0.0D0
+  M29      1.8D0    0.0D0    0.0D0
+  M3       2.0D0    0.0D0    0.0D0
+FINSF
+SEG2
+  S11      N1       N21
+  S12      N21      N22
+  S13      N22      N23
+  S14      N23      N24
+  S15      N24      N25
+  S16      N25      N26
+  S17      N26      N27
+  S18      N27      N28
+  S19      N28      N29
+  S1Z      N29      N3
+%
+  S21      M1       M21
+  S22      M21      M22
+  S23      M22      M23
+  S24      M23      M24
+  S25      M24      M25
+  S26      M25      M26
+  S27      M26      M27
+  S28      M27      M28
+  S29      M28      M29
+  S2Z      M29      M3
+FINSF
+GROUP_MA
+ G1  S11 S12 S13 S14 S15 S16 S17 S18 S19 S1Z
+FINSF
+GROUP_MA
+ G2  S21 S22 S23 S24 S25 S26 S27 S28 S29 S2Z
+FINSF
+GROUP_NO
+ A1        N1
+FINSF
+GROUP_NO
+ B1        N3
+FINSF
+GROUP_NO
+ A2        M1
+FINSF
+GROUP_NO
+ B2        M3
+FINSF
+GROUP_NO
+ A         N1     M1
+FINSF
+GROUP_NO
+ B         N3     M3
+FINSF
+FIN

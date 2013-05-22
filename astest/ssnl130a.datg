@@ -1,0 +1,39 @@
+* AJOUT
+*
+* Les ressorts sont modélisés par
+*   des segments K_T_D_L
+opti dime 3;
+opti elem CUB8;
+
+Long = 2.0; Larg = 1.0;
+
+
+NLong = 16; NLarg = 4;
+pt01 = ( 0.0 0.0 0.0);
+pt02 = ( Larg 0.0 0.0);
+D0102 = 'DROITE' pt01 pt02 NLarg;
+Dalle = D0102 'TRANS' NLong (0.0 Long 0.0);
+Pcdg = 'BARY' Dalle;
+D0403 = 'COTE' 3 Dalle;
+pt04 = 'POINT' D0403 'INITIAL';
+pt03 = 'POINT' D0403 'FINAL' ;
+
+Bidon = 'CHANGE' 'POI1' Dalle;
+nb = nbno Bidon;
+'REPETER' BOU1 nb;
+  pta = 'POINT' &BOU1 Bidon;
+  ptb = pta 'MOINS' ( 0.0 0.0 0.1);
+  ressi = 'DROITE' pta ptb 1;
+  'SI' ('EGA' &BOU1 1);
+    Ressort = ressi;
+    Ptress = ptb;
+  'SINON';
+    Ressort = Ressort et ressi;
+    Ptress = Ptress et ptb;
+  'FINSI';
+'FIN' BOU1;
+'OUBL' D0102;'OUBL' D0403;'OUBL' ptb;
+'OUBL' Bidon;'OUBL' ressi;'OUBL' pta;
+Tout = Dalle et Pcdg et Ressort;
+opti sauve format 'ssnl130a.mgib';
+sauve format Tout;

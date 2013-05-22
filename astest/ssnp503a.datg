@@ -1,0 +1,83 @@
+opti dime 2  elem qua4 ;
+
+*----------------------------------------
+*DONNEES
+*----------------------------------------
+* dimensions des cotes
+LX = 4;
+LY1 = 2.5;
+LY2 = 4;
+L=0.5;
+DX = LX 0. ;
+DY1 =  0. LY1 ;
+DY2 =  0. LY2 ;
+
+* nombre d'elements
+NX = 4;
+NY1 = 3;
+NY2 = 4;
+
+*---------------------------------------------
+*construction points
+*---------------------------------------------
+
+P1 = 0. 0.;
+P2 = P1 PLUS DX;
+P3 = P2 PLUS DY1;
+P4 = P3 MOIN DX;
+
+P5 = 0. 2.5;
+P6 = P5 PLUS DX;
+P7 = P6 PLUS DY2;
+P8 = P7 MOIN DX;
+
+P9 = 0. 6.5;
+P10= P9 PLUS DX;
+P11= P10 PLUS DY1;
+P12= P11 MOIN DX;
+
+*---------------------------------------------
+*construction des lignes
+*---------------------------------------------
+
+L11 = DROIT P1 P2 NX;
+L12 = elim ((DROI P2  (LX (LY1-L)) (NY1-1)) et
+(DROI (LX (LY1-L)) P3 1)) 0.01;
+L13 = DROIT P3 P4 NX;
+L14 = elim ((DROI P4  (0 (LY1-L)) 1) et
+(DROI (0 (LY1-L)) P1 (NY1-1))) 0.01;
+
+L21 = DROIT P5 P6 NX;
+L22 = elim ((DROI P6  (LX (2.5+L)) 1) et (DROI (LX (2.5+L))
+(LX (6.5-L)) (NY2-1)) et (DROI (LX (6.5-L)) P7 1)) 0.01;
+L23 = DROIT P7 P8 NX;
+L24 = elim ((DROI P8  (0 (6.5-L)) 1) et (DROI (0 (6.5-L))
+(0 (2.5+L)) (NY2-1)) et (DROI (0 (2.5+L)) P5 1)) 0.01;
+
+L31 = DROIT P9 P10 NX;
+L32 = elim ((DROI P10  (LX (6.5+L)) 1) et
+(DROI (LX (6.5+L)) P11 (NY1-1))) 0.01;
+L33 = DROIT P11 P12 NX;
+L34 = elim ((DROI P12  (0 (6.5+L)) (NY1-1)) et
+(DROI (0 (6.5+L)) P9 1)) 0.01;
+
+
+*---------------------------------------------
+*construction des surfaces
+*---------------------------------------------
+
+S1 = DALL L11 L12 L13 L14;
+S2 = DALL L21 L22 L23 L24;
+S3 = DALL L31 L32 L33 L34;
+
+MAILLE = S1 ET S2 ET S3;
+
+*trac (S1 ET S3);
+*trac S2;
+
+trac (MAILLE et ((L21 et L23) coul turq) et (L24 coul jaun));
+
+opti sauv format
+'/work/irlin831_1/siavelim/CAS/ssnp503/ssnp503a.mgib';
+sauv format maille ;
+fin ;

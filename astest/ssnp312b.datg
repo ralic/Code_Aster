@@ -1,0 +1,267 @@
+*********************************************************************
+* DATE 02/11/95   AUTEUR  B.KURTH
+* Fiche DMT94_132
+* Fissure parallele a l'interface dans une eprouvette CT bimetallique
+* MAILLAGE : GIBI du DMT degre 2
+*
+*********************************************************************
+*
+opti dime 2 elem qua8 ;
+*
+dens1 = 20E-3 ;
+p1 = (12.5 + 31.96) (30. - .2) ;
+p2 = (12.5 + 31.96 - (8*DENS1)) (30. - .2) ;
+L1 = D -5 P1 P2 DINI (.7*DENS1) DFIN (2.5*DENS1) ;
+s1 = tran 1 l1 (0. (0. - ((2* dens1)))) ;
+l2 = (cote 2 s1) et (cote 3 s1) ;
+n11 = 6 ; n2 = 1 ; n5 = -3 ; n4 = -2. ;
+*
+p3 = (12.5 + 25. + 5.) (30. - .2) ;
+p4 = (12.5 + 25. + 2.32) (30. - .2) ;
+l3 = d -4 p3 p4 dini (40 * dens1) dfin (50 * dens1) ;
+s2 = coul vert (l3 rota n11 90. p1) ;
+c1 = cote 4 s2 ; c2 = cote 2 s2 ;
+l4 = d -7 p2 p3 dini (3 * dens1) dfin (50 * dens1) ;
+l5 = d -7 (poin l2 fina) (poin c1 init)
+     dini (1 * dens1) dfin (40 * dens1) ;
+s3 = coul bleu (dall l2 l4 c1 l5) ;
+*
+p5 = (12.5 + 25) (30. - .2) ;
+p6 = (12.5 + 25) 28. ;
+p7 = (12.5 + 25) 20. ;
+p8 = (12.5 + 31.96) 20. ;
+l1 = d n2 p5 p6 ;
+l2 = d n5 p6 p7 dini (3. * dens1) dfin (60. * dens1) ;
+*l3 = d n4 p7 p8 dini (50. * dens1) dfin (15. * dens1) ;
+l3 = d 2 p7 p8 ;
+l4 = d -3 p4 p5 dini (50. * dens1) dfin (80. * dens1) ;
+l5 = d -3 (poin c2 final) p8 dini (5. * dens1) dfin (100. * dens1) ;
+s4 = coul turq (dall c2 l4 (l1 et l2 et l3) l5) ;
+s1 = (s1 et s2 et s3 et s4); elim 1.e-6 s1 ;
+s2 = syme s1 droi p1 p8 ;
+l200 = l2 ;
+*
+p9 = (12.5 + 31.96 + 6.96) 20. ;
+p10 = (12.5 + 31.96 + 6.96) (30. - .2) ;
+l3 = (cont s2) elem appu (poin s2 droi p9 p10 1.e-6) ;
+x1 = coor 1 p9 ;
+p11 = (x1 + 2.2 + .8) (30. - .2) ;
+p12 = (x1 + 2.2 + .8) 20. ;
+l4 = d -4 p11 p12 dini (15. * dens1) dfin (60. * dens1) ;
+s3 = regl 1 l3 l4 ;
+s3 = s3 coul turq ;
+x3 = coor 1 p11 ;
+p112 = (x3 + 3.5) (30. - .2) ;
+p122 = (x3 + 3.5) 20. ;
+l6 = d -3 p112 p122 dini (30 * dens1) dfin (60 * dens1) ;
+s4 = coul turq (cout l4 l6) ;
+s5 = coul turq (l6 tran -1 ((62.5 - (x3 + 3.5)) 0)
+     dini (10 * dens1) dfin (80 * dens1)) ;
+l10 = (cont s1) elem appu (poin s1 droi p7 p8 1e-6) ;
+l10 = inve l10 ;
+l20 = (cont s2) elem appu (poin s2 droi p7 p8 1.e-6) ;
+l30 = (cont s3) elem appu (poin s3 droi p7 p8 1.e-6) ;
+l30 = inve l30 ;
+l40 = (cont s4) elem appu (poin s4 droi p7 p8 1.e-6) ;
+l40 = inve l40 ;
+l50 = (cont s5) elem appu (poin s5 droi p7 p8 1.e-6) ;
+l50 = inve l50 ;
+s1 = (s1 et s2 et s3 et s4 et s5 ) ; elim 1e-6 s1 ;
+l10 = l50 et l40 et l30 et l20 et l10 ;
+*
+s2 = coul turq (l200 tran 1 (-4 0)) ;
+l1 = cote 3 s2 ; x1 = coor 1 (poin l1 init) ;
+p13 = (x1 - 4.2) 20. ;
+p14 = (x1 - 4.2) 28. ;
+l2 = d -2 p13 p14 dini (50. * dens1) dfin (30. * dens1) ;
+s3 = coul turq (cout l1 l2) ;
+s4 = l2 tran 1 (( 25. - (coor 1 p13)) 0 ) ;
+x1 = coor 1 (poin (cote 3 s4) init) ;
+p15 = x1 28. ;
+p16 = x1 20. ;
+s5 = (cote 3 s4) tran 3 (-12.5 0) 
+     dini (60. * dens1) dfin (80. * dens1) ;
+l20 = (cont s2) elem appu (poin s2 droi p7 p8 1.e-6) ;
+l30 = (cont s3) elem appu (poin s3 droi p7 p8 1.e-6) ;
+l30 = inve l30 ;
+l40 = (cont s4) elem appu (poin s4 droi p7 p8 1.e-6) ;
+l40 = inve l40 ;
+l10 = l10 et l20 et l30 et l40 ;
+s1 = (s1 et s2 et s3 et s4 et s5) ; elim 1.e-6 s1 ;
+*
+s2 = l10 tran -1 (0 -4.5) dini (30. * dens1) dfin (80 * dens1) ;
+s2 = s2 coul blanc ;
+l2 = cote 3 s2 ;
+y1 = coor 2 (poin l2 init) ;
+p17 = x1 (y1 - 5.) ;
+p18 = 62.5 (y1 - 5.) ;
+l3 = d 7 p17 p18 ;
+s3 = cout l2 l3 ;
+s4 = l3 tran 2 (0. (0. - (coor 2 p17)))
+     dini (10 * dens1) dfin (150 * dens1) ;
+l20 = cote 2 s2 ;
+l30 = inve (cote 4 s3) ;
+l40 = inve (cote 4 s4 ) ;
+s1 = (s1 et s2 et s3 et s4) ; elim s1 1.e-6 ;
+* 
+l1 = l20 et l30 et l40 ;
+l2 = inve (cote 2 s5) ;
+p21 = l2 poin proc (12.5 20.) ;
+p22 = 0 20 ;
+p23 = l1 poin proc (20. 0.) ;
+p24 = 0 0 ;
+l2 = (d 2 p22 p21) et l2 ;
+l3 = d 3 p23 p24 ;
+l4 = d 3 p24 p22 dini (80. * dens1) dfin (40. * dens1) ;
+l1 = l1 et l3 et l4 et l2 ;
+pc0 = 12.5 10 ;
+pc1 = 12.5 16.25 ;
+pc2 = 18.75 10 ;
+pc3 = 12.5 3.75 ;
+pc4 = 6.25 10 ;
+c1 = (c 2 pc1 pc0 pc4) et (c 2 pc4 pc0 pc3) et 
+     (c 2 pc3 pc0 pc2) et (c 2 pc2 pc0 pc1) ;
+c1 = tour c1 pc0 22.5 ;
+dens 10000 ; s2 = surf plan (l1 et c1) ;
+c225 = 6.25 * (cos 22.5) ;
+s225 = 6.25 * (sin 22.5) ;
+p25 = (12.5 - s225) (10. - c225) ;
+p26 = (12.5 + s225) (10. - c225) ;
+p25 = c1 poin proc p25 ;
+p26 = c1 poin proc p26 ;
+c3 = comp c1 p25 p26 ;
+l1 = d p25 -2 pc0 dini (80. * dens1) dfin (20. * dens1) ;
+l2 = d p26 -2 pc0 dini (80. * dens1) dfin (20. * dens1) ;
+sbra1 = coul jaune (surf plan (c3 et l1 et l2)) ;
+s_ferri = s1 et s2 ;
+*
+s_auste = s_ferri syme droi (0 30) (100 30) ;
+sbra2 = sbra1 syme droi (0 30) (100 30) ;
+s_bra = sbra1 et sbra2 ;
+elim 1.e-6 sbra2 s_auste ;
+*
+l1 = (cont s_ferri) elem appu (poin s_ferri droi p1 p4 1.E-6) ;
+l2 = l1 plus (0. .2) ;
+xx = (coor 1 p1) + ((coor 1 p1) - (coor 1 p2)) ;
+p27 = l1 poin proc (xx (coor 2 p1)) ;
+s1 = (l1 comp p27 p2) 6 tran (0 .2)
+     dini (2.6 * dens1) dfin (.9 * dens1) ;
+elim 1.e-6 l2 s1 ;
+*
+l3 = cote 2 s1 ;
+n2 = l2 poin proc ((coor 1 p2) ((coor 2 p2) + .2)) ;
+n5 = l2 poin proc ((coor 1 p5) ((coor 2 p5) + .2)) ;
+p28 = (l1 comp p2 p5) poin 2 ;
+n28 = (l2 comp n2 n5) poin 2 ;
+l4 = d 5 p28 n28 ;
+s2 = cout l3 l4 ;
+p28 = (l1 comp p2 p5) poin 3 ;
+n28 = (l2 comp n2 n5) poin 3 ;
+l5 = d 3 p28 n28 ;
+s2 = s2 et (cout l5 l4) ;
+p28 = (l1 comp p2 p5) poin 4 ;
+n28 = (l2 comp n2 n5) poin 4 ;
+l6 = d 2 p28 n28 ;
+s2 = s2 et (cout l6 l5) ;
+p28 = (l1 comp p2 p5) poin 5 ;
+n28 = (l2 comp n2 n5) poin 5 ;
+l7 = d 1 p28 n28 ;
+s2 = s2 et (cout l7 l6) ;
+l3 = l1 comp p28 p5 ;
+s2 = s2 et (l3 tran 1 (0 .2)) ;
+l3 = cote 4 s1 ;
+p29 = s_ferri poin proc (62.5 29.8) ;
+n27 = l2 poin proc ((coor 1 p27) ((coor 2 p27) + .2)) ;
+n29 = l2 poin proc ((coor 1 p29) ((coor 2 p28) + .2)) ;
+l4 = l1 comp p29 p27 ;
+l5 = l2 comp n29 n27 ;
+p28 = poin (elem l4 (nbel l4) ) init ;
+n28 = poin (elem l5 (nbel l5) ) init ;
+l6 = d 5 n28 p28 ;
+s2 = s2 et (cout l3 l6) ;
+p28 = poin (elem l4 ((nbel l4) - 1) ) init ;
+n28 = poin (elem l5 ((nbel l5) - 1) ) init ;
+l7 = d 3 n28 p28 ;
+s2 = s2 et (cout l6 l7) ;
+p28 = poin (elem l4 ((nbel l4) - 2) ) init ;
+n28 = poin (elem l5 ((nbel l5) - 2) ) init ;
+l8 = d 2 n28 p28 ;
+s2 = s2 et (cout l8 l7) ;
+p28 = poin (elem l4 ((nbel l4) - 3) ) init ;
+n28 = poin (elem l5 ((nbel l5) - 3) ) init ;
+l9 = d 1 n28 p28 ;
+s2 = s2 et (cout l8 l9) ;
+p30 = l1 poin proc (46.42 29.800) ;
+l3 = l1 comp p30 p28 ;
+s2 = s2 et (l3 tran  1 (0 .2)) ;
+s1 = coul vert (s1 et s2) ; elim 1e-6 s1 ;
+*
+s2 = s1 syme droi (0 30) (100 30) ;
+elim 1e-6 s2 s_auste ;
+p1 = s1 poin proc (44.46 30.) ;
+p2 = s1 poin proc (46.42 30.) ;
+l1 = (cont s1) comp p2 p1 ;
+elim 1e-6 l1 s2 ;
+*
+l1 = (cont s1 ) elem appu (poin s1 droi (37.5 30.) 
+     (62.5 30.) 1e-6) ;
+l2 = (cont s2) elem appu (poin s2 droi (37.5 30.2)
+     (62.5 30.2) 1e-6) ;
+n3 = l2 poin proc ((coor 1 p3) ((coor 2 p3) + .4)) ;
+n5 = l2 poin proc ((coor 1 p5) ((coor 2 p5) + .4)) ;
+l3 = l2 comp n5 n3 ;
+** CMODI
+**depl tour l3 n3 -7. ;
+depl moin n5 (((coor 1 n5) - (coor 1 p5)) 0. ) ;
+*
+p1 = (s1 et s2) poin proc (46.42 30.2) ;
+p2 = (s1 et s2) poin proc (46.42 29.8) ;
+l1 = (cont (s1 et s2)) COMP P2 P1 ;
+p1 = s_ferri poin proc (47. 29.8) ;
+p2 = s_auste poin proc (47. 30.2) ;
+l2 = d 1 p1 p2 ;
+s3 = cout l1 l2 ;
+l1 = (cont s_ferri) comp p29 p1 ;
+s4 = l1 tran 1 (0. .4) ;
+s3 = s3 et s4 ;
+elim s3 1.e-2 ;
+elim s3 s_auste 1.e-6 ;
+s_auste = s_auste et s1 et s2 et s3 ;
+l1 = cote 3 s4 ; p29 = l1 poin fina ;
+** CMODI
+**depl tour l1 p1 4. ;
+**depl p29 plus ((62.5 - (coor 1 p29)) .2) ;
+s_auste = coul turq s_auste ;
+s_ferri = coul roug s_ferri ;
+stotal = s_auste et s_ferri et s_bra ;
+pch1 = stotal poin proc (12.5 50.) ;
+pbl1 = stotal poin proc (12.5 10.) ;
+pfi1 = stotal poin proc (44.46 30.) ;
+*
+nb = nbno stotal ;
+titr 'Degre 1 , nb noeuds :' nb ;
+*
+pa = pch1 ;
+pb = pbl1 ;
+austeni = s_auste ;
+ferriti = s_ferri ;
+goup = s_bra ;
+*
+vsort = stotal ;
+*
+vq8 = vsort elem qua8 ;
+vtri6 = vsort elem tri6 ;
+*
+list (nbel vq8) ;
+list (nbel vtri6) ;
+*
+list (nbno vsort) ;
+*
+sort vsort ;
+*
+*vsort = vsort coul blanc ;
+trac vsort ;
+*
+opti sauv format 'ssnp312b.mgib' ;
+sauv format vsort ;
+fin;

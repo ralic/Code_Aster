@@ -1,0 +1,43 @@
+% -----------------------------------------------------------------------------
+TITRE
+* SYSTEME MASSE-RESSORT ENCASTRE-ENCASTRE
+* 3 RESSORTS  2 MASSES  
+* ACCELERATIONS IMPOSEES
+FINSF
+%
+% COORDONNEES DES NOEUDS
+% ----------------------
+COOR_3D
+%               X                Y               Z
+NO1       0.000000000E+00  0.000000000E+00  0.000000000E+00
+NO2       0.000000000E+00  0.000000000E+00  0.100000000E+00
+NO3       0.000000000E+00  0.000000000E+00  0.200000000E+00
+NO4       0.000000000E+00  0.000000000E+00  0.300000000E+00
+FINSF
+%
+% GROUPE DES NOEUDS ENCASTRES
+% ---------------------------
+GROUP_NO NOM = ENCASTRE
+NO1   NO4
+FINSF
+%
+% GROUPES DES MASSES PONCTUELLES
+% -----------------------------
+GROUP_NO NOM = MASSES
+NO2   NO3
+FINSF
+%
+% DESCRIPTION DES ELEMENTS
+% ------------------------
+SEG2
+ELN1     NO1      NO2
+ELN2     NO2      NO3
+ELN3     NO3      NO4
+FINSF
+%
+%
+GROUP_MA NOM =  RESSORT
+ELN1   ELN2   ELN3
+FINSF
+%
+FIN

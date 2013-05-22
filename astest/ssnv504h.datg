@@ -1,0 +1,95 @@
+*
+*Maillage Mod‰lisation A (AXI en 3D):
+*Extrusion d'un lopin
+*Elements solide (tria3)
+*Element pour le contact (seg2)
+*
+opti dime 2;
+opti nive 10;
+opti elem tri6;
+*
+*constantes
+*
+*
+* Parametrisation
+*
+l1 = 50. ;
+l2 = 65. ;
+l3 = 70. ;
+l4 = 15. ;
+l5 = 30. ;
+l6 = 20. ;
+l7 = 70. ;
+l8 = 15. ;
+l9 = 10. ;
+l10= 45. ;
+l11= 48. ;
+l12= 60. ;
+*
+* coordonn‰es des points
+*
+A = l1                0.                    ;
+B = l1                l3                    ; 
+C = l10               (l3+l4)               ;
+D = l10               (l3+l4+l5)            ;
+E = l11               (l3+l4+l5+l6)         ;
+F = l11               (l3+l4+l5+l6+l7)      ;
+G = 0.                (l3+l4+l5+l6+l7+l8)   ;
+H = 0.                (l3+l4+l5+l6+l7+l8+l9);
+I = l12               (l3+l4+l5+l6+l7+l8+l9);
+J = l12               0.                    ;
+K = 0.                l2                    ;
+L = l1                l2                    ;
+M = l1                 0.                   ;
+N = 0.                 0.                   ;
+
+LR= l1 53.;
+*
+*lKG = droit 1 K G ;
+*
+*Cr‰ation de la filiˆre
+*
+lAB = droit 14 A B ;
+lBC = droit 6 B C ;
+lCD = droit 8 C D ;
+lDE = droit 6 D E ;
+lEF = droit 10 E F ;
+lFG = droit 10 F G ;
+lGH = droit 2 G H ;
+lHI = droit 12 H I ;
+lIJ = droit 46 I J ;
+lJA = droit 2 J A ;
+*
+lcont = lAB et lBC et lCD et lDE 
+        et lEF et lFG et lGH et lHI 
+        et lIJ et lJA ;
+FILIERE = SURFACE lcont plane ;
+elim 0.0001 filiere ;
+SMAI1 = lAB et lBC et lCD et lDE 
+        et lEF ;
+SMAI2 = lFG ;
+
+*Cr‰ation du LOPIN
+
+*lLM = droit 10 L M ;
+lMN = droit 8 M N ; 
+lNK = droit 10 N K ;
+lKL = droit 8 K L ;
+
+lLLR= droit 2 L LR ;
+lLRM= droit 8 LR M;
+lLM = lLLR et lLRM;
+
+LOPIN = daller lLM lMN lNK lKL plan ;
+elim 0.0001 lopin ;
+SESC1 = lLM ;
+SESC1D = lLLR ;
+SESC1G = lLRM ;
+SESC2 = lKL ;
+*trac lMRM;
+trac SESC1G;
+trac SESC1D;
+trac (FILIERE ET LOPIN) ;
+OPTI SAUV FORM '/home/mkham/GLISSIERE/SSNV504/ssnv504k.mgib';
+*sauv form (LOPIN et FILIERE) ;
+fin;         

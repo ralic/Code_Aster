@@ -1,0 +1,31 @@
+//================================================
+//    Maillage du cube
+//
+//    Utilisation :
+//    gmsh -3 -format med -o Cube.med Cube.geo
+//================================================
+
+Point(1) = {-0.5, -0.5, 0, 0.5};
+Point(2) = {+0.5, -0.5, 0, 0.5};
+Line (1) = {1, 2};
+
+Nb_Elem=1;
+
+Transfinite Line{1} = Nb_Elem+1;
+
+
+// Extrude Line {Num. de la ligne , {Dx,Dy,Dz}} 
+//              {Layers{Nb de couche, Numero donné à la couche, épaisseur relative de la couche};};
+
+Extrude Line {1, {0,1,0}}
+	     {Layers{Nb_Elem}; Recombine;};
+
+Extrude Surface {5, {0,0,1}}
+	     {Layers{Nb_Elem}; Recombine;};
+
+
+Physical Surface("Escl") = {5};
+Physical Surface("Depl") = {27};
+Physical Volume("Cube") = {1};
+
+

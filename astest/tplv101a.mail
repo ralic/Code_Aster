@@ -1,0 +1,91 @@
+TITRE
+  MAILLAGE 2D POUR ECHANGE PAROI EN QUAD8
+FINSF
+COOR_2D %  36 NOEUDS
+% REGION 1
+  N1       0.       0.
+  N2       1.       0.
+  N3       1.       1.
+  N4       0.       1.
+  N5       0.5      0.
+  N6       1.       0.5
+  N7       0.5      1.
+  N8       0.       0.5
+  N9       1.       2.
+  N10      0.       2.
+  N11      1.       1.5
+  N12      0.5      2.
+  N13      0.       1.5
+  N14      1.       3.
+  N15      0.       3.
+  N16      1.       2.5
+  N17      0.5      3.
+  N18      0.       2.5
+% REGION 2
+  N19      2.       0.
+  N20      3.       0.
+  N21      3.       1.
+  N22      2.       1.
+  N23      2.5      0.
+  N24      3.       0.5
+  N25      2.5      1.
+  N26      2.       0.5
+  N27      3.       2.
+  N28      2.       2.
+  N29      3.       1.5
+  N30      2.5      2.
+  N31      2.       1.5
+  N32      3.       3.
+  N33      2.       3.
+  N34      3.       2.5
+  N35      2.5      3.
+  N36      2.       2.5
+FINSF
+QUAD8   % 6 MAILLES
+M1 N1  N2  N3  N4  N5  N6  N7  N8
+M2 N4  N3  N9  N10 N7  N11 N12 N13
+M3 N10 N9  N14 N15 N12 N16 N17 N18
+M4 N19 N20 N21 N22 N23 N24 N25 N26
+M5 N22 N21 N27 N28 N25 N29 N30 N31
+M6 N28 N27 N32 N33 N30 N34 N35 N36
+FINSF
+SEG3
+M7  N2  N3  N6
+% PAROI 1
+M8  N9  N3  N11
+M9  N9  N14 N16
+%
+M10 N19 N22 N26
+% PAROI 2
+M11 N28 N22 N31
+M12 N33 N28 N36
+% BORD X=3
+M13 N20 N21 N24
+M14 N21 N27 N29
+M15 N27 N32 N34
+% BORD Y=3
+M16 N14 N15 N17
+M17 N32 N33 N35
+FINSF
+GROUP_MA NOM=GROUP_MA_PAROI_1
+  M8  M9
+FINSF
+GROUP_MA NOM=GROUP_MA_PAROI_2
+  M11 M12
+FINSF
+GROUP_MA NOM=GROUP_MA_X3
+  M13 M14 M15
+FINSF
+GROUP_MA NOM=GROUP_MA_Y3
+  M16 M17
+FINSF
+GROUP_NO NOM=GROUP_NO_GNM10
+  N22  N26  N19
+FINSF
+GROUP_NO NOM=GROUP_NO_GNM11
+  N28  N22  N31
+FINSF
+GROUP_NO NOM=GROUP_NO_GNEX
+  N9   N11  N28  N31
+FINSF
+FIN

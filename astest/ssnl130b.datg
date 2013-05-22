@@ -1,0 +1,95 @@
+# -*- coding: iso-8859-1 -*-
+
+from geompy import *
+
+import smesh, salome
+
+# PARAMETRES
+# ==========
+
+longueur_plaque = 2
+largeur_plaque = 0.3
+longueur_ressorts = 0.1
+
+nb_seg_longueur = 16
+nb_seg_largeur = 1
+
+# GEOMETRIE
+# =========
+
+Vx = MakeVectorDXDYDZ(1, 0, 0)
+Vy = MakeVectorDXDYDZ(0, 1, 0)
+Vz = MakeVectorDXDYDZ(0, 0, 1)
+
+P1 = MakeVertex(0, 0, 0)
+edge_longueur = MakePrismVecH(P1, Vx, longueur_plaque)
+plaque = MakePrismVecH(edge_longueur, Vy, largeur_plaque)
+addToStudy(plaque, "plaque")
+
+# pour sous-maillage
+sub_edge_longueur = GetInPlace(plaque, edge_longueur)
+addToStudyInFather(plaque, sub_edge_longueur, "edge_longueur")
+
+# pour groupes
+edge_longueur_opp = MakeTranslation(edge_longueur, 0, largeur_plaque, 0)
+sub_edge_longueur_opp = GetInPlace(plaque, edge_longueur_opp)
+addToStudyInFather(plaque, sub_edge_longueur_opp, "D0403")
+
+
+
+# MAILLAGE
+# ========
+
+Maillage = smesh.Mesh(plaque, "Maillage")
+
+algo1D = Maillage.Segment()
+algo1D.NumberOfSegments(nb_seg_largeur)
+
+algo1D = Maillage.Segment(sub_edge_longueur)
+algo1D.NumberOfSegments(nb_seg_longueur)
+algo1D.Propagation()
+
+Maillage.Quadrangle()
+
+ok = Maillage.Compute()
+
+if not ok:
+    raise Exception("Erreur lors de la génération du maillage")
+
+gr_edge_longueur = Maillage.Group(sub_edge_longueur, "DALLE_2D")
+
+# Crée les ressorts sur tous les noeuds de gr_edge_longueur
+gno_edge_longueur = Maillage.CreateDimGroup([gr_edge_longueur], smesh.NODE, "PTDALLE")
+l_no_edge_longueur = gno_edge_longueur.GetIDs()
+l_edges_ressorts = []
+l_no_bas_ressorts = []
+for node in l_no_edge_longueur:
+    x, y, z = Maillage.GetNodeXYZ(node)
+    node_opp = Maillage.AddNode(x, y-longueur_ressorts, z)
+    l_no_bas_ressorts.append(node_opp)
+    edge = Maillage.AddEdge([node_opp, node])
+    l_edges_ressorts.append(edge)
+
+gr_ressorts = Maillage.MakeGroupByIds("RESSORTS", smesh.EDGE, l_edges_ressorts)
+gr_no_bas_ressorts = Maillage.MakeGroupByIds("PTRESS", smesh.NODE, l_no_bas_ressorts)
+
+
+# Groupes de noeuds
+node_PT01 = Maillage.FindNodeClosestTo(0, 0, 0)
+gr_ressorts = Maillage.MakeGroupByIds("PT01", smesh.NODE, [node_PT01])
+
+node_PT02 = Maillage.FindNodeClosestTo(longueur_plaque, 0, 0)
+gr_ressorts = Maillage.MakeGroupByIds("PT02", smesh.NODE, [node_PT02])
+
+node_PCDG = Maillage.FindNodeClosestTo(longueur_plaque/2., -longueur_ressorts, 0)
+gr_ressorts = Maillage.MakeGroupByIds("PCDG", smesh.NODE, [node_PCDG])
+
+# Groupes d'edges
+Maillage.Group(sub_edge_longueur_opp)
+
+# Groupes de faces
+Maillage.Group(plaque, "DALLE")
+
+# Mise a jour de l'arbre d'etude
+
+salome.sg.updateObjBrowser(0)

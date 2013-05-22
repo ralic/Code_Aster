@@ -1,0 +1,53 @@
+ TITRE
+CODE_ASTER - 11.00.27 - VERSION DE DEVELOPPEMENT          - FRONTAL1         - L
+ FINSF
+ %
+ COOR_2D
+ N1       -1.00000000000000E+00 -1.00000000000000E+00
+ N2        1.00000000000000E+00 -1.00000000000000E+00
+ N3        1.00000000000000E+00  1.00000000000000E+00
+ N4       -1.00000000000000E+00  1.00000000000000E+00
+ N5        0.00000000000000E+00 -1.00000000000000E+00
+ N6        1.00000000000000E+00  0.00000000000000E+00
+ N7        0.00000000000000E+00  1.00000000000000E+00
+ N8       -1.00000000000000E+00  0.00000000000000E+00
+ FINSF
+ %
+ SEG3    
+ M2       N1       N2       N5      
+ M3       N2       N3       N6      
+ M4       N3       N4       N7      
+ M5       N4       N1       N8      
+ FINSF
+ %
+ QUAD8   
+ M1       N1       N2       N3       N4       N5       N6       N7      
+          N8      
+ FINSF
+ %
+ GROUP_MA
+ AB      
+ M2      
+ FINSF
+ %
+ GROUP_MA
+ BC      
+ M3      
+ FINSF
+ %
+ GROUP_MA
+ CD      
+ M4      
+ FINSF
+ %
+ GROUP_MA
+ DA      
+ M5      
+ FINSF
+ %
+ GROUP_MA
+ ROCHE   
+ M1      
+ FINSF
+ %
+ FIN

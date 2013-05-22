@@ -1,0 +1,36 @@
+opti dime 3 elem tet4 ;
+
+dens 10 ;
+
+*----------------------------------------
+*DONNEES
+*----------------------------------------
+
+* nombre d elements
+N = 19;
+NZ = 1;
+
+*---------------------------------------------
+*construction du maillage
+*---------------------------------------------
+
+l1 = droi (-20 -20 -1) (-20 -20 1) NZ;
+l2 = droi ( 20 -20 -1) ( 20 -20 1) NZ;
+l3 = droi (-20  20 -1) (-20  20 1) NZ;
+l4 = droi ( 20  20 -1) ( 20  20 1) NZ;
+
+SB = regl l1 l2 N;
+SH = regl l3 l4 N;
+
+SD = regl l2 l4 N;
+SG = regl l3 l1 N;
+
+VOLU = (VOLU SB SH N) chan tet4;
+
+MAILLE = elim (VOLU ET ((SD et SG))) 0.0001;
+
+trac MAILLE;
+
+opti sauv format 'ssnv507d.mgib';
+sauv format maille ;
+fin ;

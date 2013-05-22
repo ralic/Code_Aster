@@ -1,0 +1,27 @@
+#DEBUT_TABLE
+#TITRE table de level set normale
+NOEUD      X1     
+K8          R     
+N1        -12.5   
+N2        -12.5   
+N3        -12.5   
+N4        -12.5   
+N5         12.5   
+N6         12.5   
+N7         12.5   
+N8         12.5   
+#FIN_TABLE
+
+#DEBUT_TABLE
+#TITRE table de level set tangente
+NOEUD      X1
+K8          R 
+N1        -10
+N2        -10
+N3         -5
+N4         -5
+N5        -10
+N6        -10
+N7         -5
+N8         -5
+#FIN_TABLE

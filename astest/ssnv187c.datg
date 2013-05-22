@@ -1,0 +1,78 @@
+haut = 1.0;
+larg = 1.0;
+epais = 1.0;
+h = 0.1;
+
+Point(1) = {0.0,0.0,0.0,h};
+Point(2) = {larg,0.0,0.0,h};
+Point(3) = {larg,haut,0.0,h};
+Point(4) = {0.0,haut,0.0,h};
+
+Point(11) = {0.0,0.0,epais,h};
+Point(12) = {larg,0.0,epais,h};
+Point(13) = {larg,haut,epais,h};
+Point(14) = {0.0,haut,epais,h};
+
+Line(1)   = {1,2};
+Line(2)   = {2,3};
+Line(3)   = {3,4};
+Line(4)   = {4,1};
+Line(11)  = {11,12};
+Line(12)  = {12,13};
+Line(13)  = {13,14};
+Line(14)  = {14,11};
+Line(21)  = {1,11};
+Line(22)  = {2,12};
+Line(23)  = {3,13};
+Line(24)  = {4,14};
+
+
+Line Loop(1) = {2,3,4,1};
+Line Loop(2) = {12,13,14,11};
+Line Loop(3) = {23,13,-24,-3};
+Line Loop(4) = {12,-23,-2,22};
+Line Loop(5) = {1,22,-11,-21};
+Line Loop(6) = {21,-14,-24,4};
+
+Plane Surface(1) = {1};
+Plane Surface(2) = {2};
+Plane Surface(3) = {3};
+Plane Surface(4) = {4};
+Plane Surface(5) = {5};
+Plane Surface(6) = {6};
+
+Surface Loop(1) = {3,4,-2,-6,-5,1};
+Volume(1) = {1};
+
+
+Physical Line(1) = {1};
+Physical Line(2) = {2};
+Physical Line(3) = {3};
+Physical Line(4) = {4};
+
+Physical Line(11) = {11};
+Physical Line(12) = {12};
+Physical Line(13) = {13};
+Physical Line(14) = {14};
+
+Physical Line(321) = {21};
+Physical Line(322) = {22};
+Physical Line(323) = {23};
+Physical Line(324) = {24};
+
+
+// Surface gauche (symetrie)
+Physical Surface(20) = {6};
+// Bas
+Physical Surface(21) = {5};
+//Haut
+Physical Surface(22) = {3};
+// Devant
+Physical Surface(23) = {2};
+// Derriere
+Physical Surface(24) = {1};
+
+Physical Volume(1000) = {1};
+
+Physical Point(100) = {3};
+//Recombine Surface {6,5,1,3,4,2};

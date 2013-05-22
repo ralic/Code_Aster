@@ -1,0 +1,36 @@
+ COOR_3D
+ N1        0.     0.    0.
+ N10       0.     0.5   1.
+ N7        0.5    0.    0.
+ N2        1.     0.    0.
+ N8        1.     0.5   1.
+ N11       1.5    0.5   1.
+ N12       1.5    0.    0.
+ N3        2.     0.    0.
+ N4        2.     1.    2.
+ N5        1.     1.    2.
+ N9        0.5    1.    2.
+ N6        0.     1.    2.
+ FINSF
+ %
+ SEG2
+   S1  N1 N3
+ FINSF
+ QUAD4
+   Q1  N1 N2 N5 N6
+   Q2  N1 N2 N5 N6
+   Q3  N1 N2 N5 N6
+ FINSF
+ TRIA3
+   T1  N2 N3 N5
+   T2  N3 N1 N5
+   T3  N3 N1 N5
+   T4  N3 N1 N5
+ FINSF
+ QUAD8
+   Q9  N1 N2 N5 N6 N7 N8 N9 N10
+ FINSF
+ TRIA6
+   T7  N2 N3 N5 N12 N11 N8
+ FINSF
+ FIN

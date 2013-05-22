@@ -1,0 +1,275 @@
+*
+* parametres de la procedure principale :
+* ---------------------------------------
+*
+* c         demi grand axe de l'ellipse
+* a         demi petit axe de l'ellipse
+* rc0       rayon du tore
+* rc1       coefficient multiplicateur du parametre rc0
+*           definissant l'epaisseur de la premiere couronne
+*           de deraffinement
+* rc2       coefficient multiplicateur du parametre rc0
+*           definissant l'epaisseur de la deuxieme couronne
+*           de deraffinement
+* rc3       coefficient multiplicateur du parametre rc0
+*           definissant l'epaisseur de la troisieme couronne
+*           de deraffinement (si ndt=2)
+* nc        nombre de couronnes
+* ns        nombre de secteurs sur 90 degres
+* nt        nombre de divisions sur un quart d'ellipse
+* eps       demi-angle d'ouverture de la fissure (degres)
+* lo        longueur du bloc
+* to        largeur du bloc
+* ho        hauteur du bloc
+* ndt       nombre de couronnes de deraffinement (1 ou 2)
+* nsdt      Nombre de secteurs sur 90 degres au niveau des
+*           couronnes de deraffinement des tranches (2 ou 4)
+* beta      impose le decoupage le long de la generatrice
+* alpha     impose l'angle des differentes tranches
+* xl        impose le nombre d'elements pour la prolongation
+*           du bloc initial suivant l'axe x (longueur)
+* xt        impose le nombre d'elements pour la prolongation
+*           du bloc initial suivant l'axe y (largeur)
+* xh        impose le nombre d'elements pour la prolongation
+*           du bloc initial suivant l'axe -z (hauteur)
+* d1        'oui' si deplacement des noeuds intermediares du
+*           boudin
+* d2        'oui' si maillage 'rayonnant' sur la face
+*           exterieure au boudin torique
+*           On doit avoir d2 = 'non' dans le cas de l'utilisation
+*           de la procedure plaque epaisse fissuree
+*
+*
+opti dime 3 elem cu20 ;
+c     = 2.  ;
+a     = 2.  ;
+rc0   = 0.24  ;
+rc1   = 1.2   ;
+rc2   = 1.4   ;
+rc3   = 1.6 ;
+nc    = 2     ;
+ns    = 4     ;
+nt    = 8     ;
+eps   = 0.1   ;
+l0    = 10.   ;
+t0    = 10.   ;
+h0    = 10.   ;
+ndt   = 1     ;
+nsdt  = 2     ;
+beta  = 1.    ;
+alpha = 0.    ;
+xl    = 3     ;
+xt    = 4     ;
+xh    = 2     ;
+*
+ma1 lff1 levinf1 sar_i slat_i sinf_1 sav_i ssup_1 sla2_i tore1 hh
+= @fis_3 c a l0 t0 h0 eps nt nc ns rc0 rc1 rc2 rc3 beta alpha
+  ndt nsdt xl xt xh 'oui' 'oui' ;
+trac ma1 ;
+*opti donn 5 ;
+o =  0.   0.   0. ;
+a =  0.   0. -10. ;
+b = 10.   0. -10. ;
+c =  0.  10. -10. ;
+d = 10.   0.   0. ;
+e =  0.  10.   0. ;
+*opti donn 5 ;
+
+list (nbno ssup_1);
+sym1 = ma1 syme plan o e d ;
+sinf_s = sinf_1 syme plan o e d ;
+sav_s = sav_i syme plan o e d ;
+sla2_s = sla2_i syme plan o e d ;
+sym1 =  sym1 et sinf_s et sav_s et sla2_s;
+elim (sym1) 1.d-4  ;
+
+levinfs = levinf1 syme plan o e d ;
+list (nbno levinfs) ;
+sym1 = sym1 et levinfs ;
+elim sym1 1.d-4 ;
+ma1 = ma1 et sym1 ;
+elim (  ma1) 1.d-6  ;
+
+trac cach ma1 ;
+list (nbno ma1);
+
+elim (ma1 et a et b et c et d et e) 1.d-6 ;
+nff1 = lff1 point initial ;
+nff2 = lff1 point final ;
+trac (0. 0. 1000.) lff1 ;
+trac levinf1 ;
+trac levinfs ;
+
+*opti sauv format 'quart_penny1.mgib' ;
+*sauv format ma1 ;
+
+*OPTI REST FORM 'quart_penny1.mgib' ;
+*REST FORM ;
+
+
+C2 = MA1 ELEM APPUYE LARGEMENT LFF1 ;
+TRAC CACH C2 ;
+
+LIST (C2 ELEM TYPE);
+
+C2_TRI6 = C2 ELEM TRI6 ;
+C2_QUA8 = C2 ELEM QUA8 ;
+C2_PR15 = C2 ELEM PR15 ;
+
+LIST (NBEL C2_TRI6);
+LIST (NBEL C2_QUA8);
+LIST (NBEL C2_PR15);
+
+NBE = NBEL C2_PR15;
+
+EPSI = 1.E-2 ;
+
+  II=0 ;
+REPETER BOUCLE  NBE ;
+   II = II+1 ;
+   EII = C2_PR15 ELEM II ;
+   NBEI = NBNO EII ;
+   'SI' ('NEG' NBEI 15)  ;
+      SAUT PAGE;
+      MESS '  ATTENTION ! 15 NOEUDS OBLIGATOIRE';
+   'FINSI';
+   NEI = CHAN POI1 EII ;
+   P1 = NEI POINT 1 ;
+   P2 = NEI POINT 2 ;
+   P3 = NEI POINT 3 ;
+   P6 = NEI POINT 6 ;
+   P5 = NEI POINT 5 ;
+   P10 = NEI POINT 10 ;
+   P11 = NEI POINT 11 ;
+   P12 = NEI POINT 12 ;
+   P15 = NEI POINT 15 ;
+   P14 = NEI POINT 14 ;
+
+   DD = NORM (P10 MOIN P1) ; EPS = DD * EPSI ;
+   CAS = 0 ;
+
+* CAS 1-7-10
+   PF1 = LFF1 POIN PROC P1; LIST PF1 ;
+   PF10 = LFF1 POIN PROC P10; LIST PF10 ;
+
+   PF3 = LFF1 POIN PROC P3; LIST PF3 ;
+   PF12 = LFF1 POIN PROC P12; LIST PF12 ;
+
+   PF5 = LFF1 POIN PROC P5; LIST PF5 ;
+   PF14 = LFF1 POIN PROC P14; LIST PF14 ;
+
+   SI (PF1 EGA P1) ;
+      SI (PF10 EGA P10);
+         CAS = 1710 ;
+      FINSI ;
+   FINSI ;
+
+   SI (PF3 EGA P3) ;
+      SI (PF12 EGA P12);
+         CAS = 3812 ;
+      FINSI ;
+   FINSI ;
+
+   SI (PF5 EGA P5) ;
+      SI (PF14 EGA P14);
+         CAS = 5914 ;
+      FINSI ;
+   FINSI ;
+
+   LIST CAS ;
+
+   SI (CAS EGA 1710 ) ;
+
+   P1P3 = P3 'MOIN' P1 ; P1P2 = P2 'MOIN' P1 ;
+   N1 = NORM P1P3  ;  N2 = NORM P1P2 ;
+   NSUR2=N1 / 2. ; EPS = NSUR2 * EPSI ; DIFF = ABS(N2-NSUR2);
+   'SI' ( DIFF < EPS ) ;  DEPL P2 MOIN (P1P3 / 4.) ;  'FINSI' ;
+
+   P1P5 = P5 'MOIN' P1 ; P1P6 = P6 MOIN P1 ;
+   N1 = NORM P1P5  ;  N2 = NORM P1P6 ;
+   NSUR2=N1 / 2. ; EPS = NSUR2 * EPSI ; DIFF = ABS(N2-NSUR2);
+   'SI' ( DIFF < EPS ) ;  DEPL P6 MOIN (P1P5 / 4.) ;  'FINSI' ;
+
+
+   P10P12 = P12 'MOIN' P10 ; P10P11 = P11 MOIN P10  ;
+   N1 = NORM P10P12  ;  N2 = NORM P10P11 ;
+   NSUR2=N1 / 2. ; EPS = NSUR2 * EPSI ; DIFF = ABS(N2-NSUR2);
+   'SI' ( DIFF < EPS ) ;  DEPL P11 MOIN (P10P12 / 4.) ;  'FINSI' ;
+
+
+   P10P14 = P14 'MOIN' P10 ; P10P15 = P15 MOIN P10 ;
+   N1 = NORM P10P14  ;  N2 = NORM P10P15 ;
+   NSUR2=N1 / 2. ; EPS = NSUR2 * EPSI ; DIFF = ABS(N2-NSUR2);
+   'SI' ( DIFF < EPS ) ;  DEPL P15 MOIN (P10P14 / 4.) ;  'FINSI' ;
+
+   FINSI ;
+
+   SI (CAS EGA 3812 ) ;
+
+   P3P1 = P1 'MOIN' P3 ; P3P2 = P2 'MOIN' P3 ;
+   N1 = NORM P3P1  ;  N2 = NORM P3P2 ;
+   NSUR2=N1 / 2. ; EPS = NSUR2 * EPSI ; DIFF = ABS(N2-NSUR2);
+   'SI' ( DIFF < EPS ) ;  DEPL P2 MOIN (P3P1 / 4.) ;  'FINSI' ;
+
+   P3P5 = P5 'MOIN' P3 ; P3P4 = P4 MOIN P3 ;
+   N1 = NORM P3P5  ;  N2 = NORM P3P4 ;
+   NSUR2=N1 / 2. ; EPS = NSUR2 * EPSI ; DIFF = ABS(N2-NSUR2);
+   'SI' ( DIFF < EPS ) ;  DEPL P4 MOIN (P3P5 / 4.) ;  'FINSI' ;
+
+
+   P12P10 = P10 'MOIN' P12 ; P12P11 = P11 MOIN P12  ;
+   N1 = NORM P12P10  ;  N2 = NORM P12P11 ;
+   NSUR2=N1 / 2. ; EPS = NSUR2 * EPSI ; DIFF = ABS(N2-NSUR2);
+   'SI' ( DIFF < EPS ) ;  DEPL P11 MOIN (P12P10 / 4.) ;  'FINSI' ;
+
+
+   P12P14 = P14 'MOIN' P12 ; P12P13 = P13 MOIN P12 ;
+   N1 = NORM P12P14  ;  N2 = NORM P12P13 ;
+   NSUR2=N1 / 2. ; EPS = NSUR2 * EPSI ; DIFF = ABS(N2-NSUR2);
+   'SI' ( DIFF < EPS ) ;  DEPL P13 MOIN (P12P14 / 4.) ;  'FINSI' ;
+
+   FINSI ;
+
+   SI (CAS EGA 5914 ) ;
+
+   P5P1 = P1 'MOIN' P5 ; P5P6 = P6 'MOIN' P5 ;
+   N1 = NORM P5P1  ;  N2 = NORM P5P6 ;
+   NSUR2=N1 / 2. ; EPS = NSUR2 * EPSI ; DIFF = ABS(N2-NSUR2);
+   'SI' ( DIFF < EPS ) ;  DEPL P6 MOIN (P5P1 / 4.) ;  'FINSI' ;
+
+   P5P3 = P3 'MOIN' P5 ; P5P4 = P4 MOIN P5 ;
+   N1 = NORM P5P3  ;  N2 = NORM P5P4 ;
+   NSUR2=N1 / 2. ; EPS = NSUR2 * EPSI ; DIFF = ABS(N2-NSUR2);
+   'SI' ( DIFF < EPS ) ;  DEPL P4 MOIN (P5P3 / 4.) ;  'FINSI' ;
+
+
+   P14P12 = P12 'MOIN' P14 ; P14P13 = P13 MOIN P14  ;
+   N1 = NORM P14P12  ;  N2 = NORM P14P13 ;
+   NSUR2=N1 / 2. ; EPS = NSUR2 * EPSI ; DIFF = ABS(N2-NSUR2);
+   'SI' ( DIFF < EPS ) ;  DEPL P13 MOIN (P14P12 / 4.) ;  'FINSI' ;
+
+
+   P14P10 = P10 'MOIN' P14 ; P14P15 = P15 MOIN P14 ;
+   N1 = NORM P14P10  ;  N2 = NORM P14P15 ;
+   NSUR2=N1 / 2. ; EPS = NSUR2 * EPSI ; DIFF = ABS(N2-NSUR2);
+   'SI' ( DIFF < EPS ) ;  DEPL P15 MOIN (P14P10 / 4.) ;  'FINSI' ;
+
+   FINSI ;
+
+
+  'FIN' BOUCLE ;
+
+TRAC CACH C2 ;
+
+TRAC CACH MA1 ;
+
+OUBLIER NEI ; OUBLIER EII ; OUBLIER C2 ; OUBLIER C2_SEG3 ;
+OUBLIER C2_PR15 ; OUBLIER C2_QUA8 ; OUBLIER C2_TRI6 ;
+
+opti sauv format 'sslv134b.mgib' ;
+SAUV FORM MA1 ;
+
+
+
+
+

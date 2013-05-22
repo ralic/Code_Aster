@@ -7,7 +7,6 @@ P testlist C
 
 F comm sdlv125a.comm D 1
 F libr sdlv125a.20 D 20
-F libr sdlv125a.30 D 30
 F libr sdlv125a.31 D 31
 F libr sdlv125a.32 D 32
 F libr sdlv125a.33 D 33

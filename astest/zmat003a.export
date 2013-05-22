@@ -8,5 +8,4 @@ P testlist C
 F comm zmat003a.comm D 1
 F comm zmat003a.com1 D 1
 F mail hsnv105a.mail D 20
-F libr zmat003a.32 D 32
 F libr zmat003a.33 D 33

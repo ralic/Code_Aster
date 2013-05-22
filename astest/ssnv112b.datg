@@ -1,0 +1,63 @@
+// barrage en 3D : méthode d'obtention identique à CASTEM
+ri=0.1;
+re=0.2 ;
+h=0.01 ;
+
+dens = 0.01;
+// Points de construction
+Point(1) = {0, 0, 0,  dens}; //PO
+Point(2) = {0, 0, h,  dens};  //POP
+// Points dans le plan de base z=0
+Point(5) = {ri, 0., 0,  dens};  //A
+Point(6) = {re, 0., 0,  dens}; //B
+Point(7) = {(ri/(2^0.5)) , (ri/(2^0.5)), 0.,  dens};  //E
+Point(8) = {re/(2^0.5) , re/(2^0.5) , 0.,  dens};  //F
+
+// Points dans le plan supérieur z=20
+Point(9) = {ri, 0., h,  dens};   //PC
+Point(10) = {re, 0., h,  dens};    //PD
+Point(11) = {ri*(2^0.5)/2 , ri*(2^0.5)/2 , h,  dens};   //PG 
+Point(12) = {re*(2^0.5)/2 , re*(2^0.5)/2 , h,  dens};    //PH
+
+
+Line(1) = {5,6};  //LAB
+Circle(2) = {6,1,8};  //LBF
+Line(3) = {8,7};  //LFE
+Circle(4) = {7,1,5};  //LEA
+
+Line(5) = {9,10};  //LCD
+Circle(6) = {10,2,12};
+Line(7) = {12,11};
+Circle(8) = {11,2,9}; //LGC
+
+Line(9) = {5,9};  //LAC
+Line(10) = {6,10}; //LBD
+Line(11) = {7,11}; //LEG
+Line(12) = {8,12};  //LFH
+
+Line Loop(13) = {1,2,3,4};
+Plane Surface(14) = {13}; //facinf
+Line Loop(15) = {5,6,7,8};
+Plane Surface(16) = {15};  // facsup
+Line Loop(17) = {-10,-1,9,5};
+Plane Surface(18) = {17};    //faceab
+Line Loop(19) = {8,-9,-4,11};
+Ruled Surface(20) = {19};         //faceae 
+Line Loop(21) = {-11,-3,12,7};
+Plane Surface(22) = {21};       //faceef
+Line Loop(23) = {-6,-10,2,12};
+Ruled Surface(24) = {23};     //extrados
+
+Surface Loop(25) = {16,18,24,14,22,20};
+Volume(26) = {25}; 
+
+Physical Point(1) = {5}; //A
+Physical Point(2) = {8} ; //F
+Physical Surface(3) = {14}; //facinf
+Physical Surface(4) = {16} ;//facsup
+Physical Surface(5) = {18} ; //faceab
+Physical Surface(6) = {20} ; //facae 
+Physical Surface(7) = {22} ;// faceef
+Physical Volume(8)  = {26} ; //volume
+
+

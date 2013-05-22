@@ -1,0 +1,318 @@
+opti echo 1; 
+opti sauv format 'ssnv506b.mgib';
+opti dime 2; 
+opti mode axis elem QUA4; 
+ 
+**************************** 
+** definition du maillage ** 
+**************************** 
+
+*********************************** 
+******CREATION DE LA PASTILLE****** 
+*********************************** 
+ 
+bord = table; 
+ 
+*** dim de la + petite maille *** 
+a0 = 20.; 
+b0 = -20. ; 
+ 
+*** nb de mailles sur le 1er domaine *** 
+n = 15; 
+
+*** nb de mailles sur le 2eme domaine *** 
+m = 3; 
+ 
+*** nb de mailles sur le 3eme domaine *** 
+p = 5; 
+ 
+*** def des variables *** 
+   a = n * a0 ; 
+   b = -1. * a; 
+   c = (n + 3) * a0; 
+   d = (n + 3) * b0; 
+   e = ((n + 3) * a0) + (3 * m * a0); 
+   f = ((n + 3) * b0) + (3 * m * b0); 
+   g = ((n + 3) * a0) + (3 * a0 * (m + 3)); 
+   h = ((n + 3) * b0) + (3 * b0 * (m + 3)); 
+   i = ((n + 3) * a0) + (3 * a0 * (m + 3)) + (9 * p * a0); 
+   j = ((n + 3) * b0) + (3 * b0 * (m + 3)) + (12 * p * b0); 
+*** parametres geometriques *** 
+a_ini = a0; 
+b_ini = b0; 
+X_ini = a; 
+Y_ini = b; 
+vec_X = (3 * a0) 0; 
+vec_Y = 0 (3 * b0); 
+X_fin =  (n * a0); 
+Y_fin =  (n * b0); 
+ 
+*** nb de schemas sur le 1er bord *** 
+nb = ((n / 3) - 1); 
+ 
+*********************************************** 
+******* boucle de creation des bordures ******* 
+*********************************************** 
+ 
+repeter bouc1 2; 
+ 
+ 
+ 
+*** maille elementaire 1 de deraffinement *** 
+ 
+el1 = 0    Y_ini ; 
+el2 = (a_ini ) Y_ini; 
+el3 = (2 * a_ini) Y_ini; 
+el4 = (3 * a_ini)   Y_ini; 
+el5 = (a_ini)  (Y_ini + b_ini ) ; 
+el6 = (2 * a_ini)  (Y_ini + b_ini) ; 
+el7 = 0   (Y_ini + (3 * b_ini)) ; 
+el8 =  (3 * a_ini)   (Y_ini + (3 * b_ini)) ; 
+ 
+dr1 = droi 1 el1 el2; 
+dr2 = droi 1 el2 el3; 
+dr3 = droi 1 el3 el4; 
+dr4 = droi 1 el2 el5; 
+dr5 = droi 1 el3 el6; 
+dr6 = droi 1 el1 el7; 
+dr7 = droi 1 el4 el8; 
+dr8 = droi 1 el7 el8; 
+dr9 = droi 1 el5 el6; 
+dr10 = droi 1 el7 el5; 
+dr11 = droi 1 el6 el8; 
+ 
+ 
+ 
+ell2 = dr2 et dr5 et dr9 et dr4; 
+ell3 = dr3 et dr5 et dr11 et dr7; 
+ell4 = dr8 et dr10 et dr9 et dr11; 
+elm1 = dall dr6 dr4 dr1 dr10 'PLAN' ; 
+elm2 = surf ell2 'PLAN' ; 
+elm3 = surf ell3 'PLAN' ; 
+elm4 = surf ell4 'PLAN' ; 
+elm = elm1 et elm2 et elm3 et elm4; 
+elmm = elm; 
+ 
+*** maille elementaire 2 de deraffinement *** 
+en1 = X_ini 0.; 
+en2 = (X_ini + (3 * a_ini)) 0.; 
+en3 = X_ini b_ini ; 
+en4 = (X_ini + a_ini)  b_ini; 
+en5 = X_ini (2 * b_ini); 
+en6 = (X_ini + a_ini) (2 * b_ini); 
+en7 = X_ini (3 * b_ini); 
+en8 = (X_ini + (3 * a_ini)) (3 * b_ini); 
+ 
+dn1 = droi 1 en1 en2; 
+dn2 = droi 1 en1 en3; 
+dn3 = droi 1 en2 en4; 
+dn4 = droi 1 en3 en4; 
+dn5 = droi 1 en3 en5; 
+dn6 = droi 1 en4 en6; 
+dn7 = droi 1 en5 en6; 
+dn8 = droi 1 en5 en7; 
+dn9 = droi 1 en6 en8; 
+dn10 = droi 1 en2 en8; 
+dn11 = droi 1 en7 en8; 
+ 
+eln1 = dall dn1 dn4 dn2 dn3 'PLAN'; 
+eln2 = dall dn5 dn6 dn4 dn7 'PLAN'; 
+eln3 = dall dn6 dn10 dn3 dn9 'PLAN'; 
+eln4 = dall dn8 dn9 dn7 dn11 'PLAN'; 
+ 
+eln = eln1 et eln2 et eln3 et eln4; 
+elnn = eln; 
+ 
+ 
+*** maille elementaire 3 de deraffinement *** 
+ep1 = X_fin Y_fin ; 
+ep2 = (X_fin + (3 * a_ini)) Y_fin; 
+ep3 = X_fin  (Y_fin + (3 * b_ini)); 
+ep4 = (X_fin + (3 * a_ini))  (Y_fin + (3 * b_ini)); 
+ 
+dp1 = droi 1 ep1 ep2; 
+dp2 = droi 1 ep3 ep2; 
+dp3 = droi 1 ep1 ep3; 
+dp4 = droi 1 ep2 ep4; 
+dp5 = droi 1 ep3 ep4; 
+ 
+*elp1 = surf (dp1 et dp2 et dp3) 'PLAN'; 
+*elp2 = surf (dp2 et dp4 et dp5) 'PLAN'; 
+*elp = elp1 et elp2; 
+ elp = surf (dp1 et dp3 et dp4 et dp5) 'PLAN';
+ 
+*** boucle creation bordures*** 
+repeter bouc2 nb; 
+ 
+vecn_X = vec_X * &bouc2 ; 
+elm_sup = elmm plus vecn_X; 
+elm = elm et elm_sup; 
+ 
+vecn_Y = vec_Y * &bouc2 ; 
+eln_sup = elnn plus vecn_Y; 
+eln = eln et eln_sup; 
+ 
+fin bouc2; 
+
+
+bord . &bouc1 = elm et eln et elp; 
+ 
+a_ini = 3 * a0; 
+b_ini = 3 * b0; 
+X_ini = ((n + 3) * a0) + (3 * a0 * m ); 
+Y_ini = ((n + 3) * b0) + (3 * b0 * m ); 
+vec_X = (9 * a0) 0; 
+vec_Y = 0 (9 * b0); 
+X_fin = X_ini; 
+Y_fin = Y_ini; 
+nb = (((((n + 3) / 3) + m) / 3) - 1); 
+fin bouc1; 
+ 
+ 
+oublier elmm;
+oublier elnn;
+oublier dr3;
+oublier dr6;
+oublier ell3;
+oublier vec_X;
+oublier vec_Y;
+oublier vecn_X;
+oublier vecn_Y; 
+*** def. des noeuds principaux *** 
+   S  = 0. 0.; 
+   a1 = a  0.; 
+   a2 = c  0.; 
+   a3 = e  0.; 
+   b1 = 0. b; 
+   b2 = 0. d; 
+   b3 = 0. f; 
+   c1 = a  b; 
+   c2 = c  d; 
+   c3 = e  f; 
+   d3 = e  d; 
+   e3 = c  f; 
+   a4 = g  0.; 
+   c4 = g  h; 
+   b4 = 0. h; 
+   a5 = i  0.; 
+   d5 = i  h; 
+   c5 = i  j; 
+   e5 = g  j; 
+   b5 = 0. j; 
+ 
+  noeu1 = (n + 3) / 3; 
+  noeu2 = ((n + 3) / 9) + ((m + 3) / 3); 
+ 
+   oa1  = droit n a1 S; 
+   a1c1 = droit n a1 c1; 
+   c1b1 = droit n c1 b1; 
+   b10  = droit n b1 S; 
+ 
+   a1a2 = droit 1 a1 a2; 
+   a2c2 = droit noeu1 a2 c2; 
+   c2b2 = droit noeu1 c2 b2; 
+   b2b1 = droit 1 b2 b1; 
+ 
+   a2a3 = droit m a2 a3; 
+   a3d3 = droit noeu1 a3 d3; 
+   d3c3 = droit m d3 c3; 
+   c3e3 = droit m c3 e3; 
+   e3b3 = droit noeu1 b3 e3; 
+   b3b2 = droit m b3 b2; 
+   c2d3 = droit m c2 d3; 
+   c2e3 = droit m c2 e3; 
+ 
+   a3a4 = droit 1 a3 a4; 
+   a4c4 = droit noeu2 a4 c4; 
+   c4b4 = droit noeu2 b4 c4; 
+   b4b3 = droit 1 b3 b4; 
+ 
+   a4a5 = droit p a4 a5; 
+   a5d5 = droit noeu2 a5 d5; 
+   d5c5 = droit p d5 c5; 
+   c5e5 = droit p c5 e5; 
+   e5b5 = droit noeu2 e5 b5; 
+   b5b4 = droit p b5 b4; 
+   c4d5 = droit p c4 d5; 
+   c4e5 = droit p c4 e5; 
+ 
+ 
+   lig1 = oa1 et a1c1 et c1b1 et b10; 
+   S1 = SURF lig1 plan; 
+ 
+   lig3 = a2a3 et a3d3 et c2d3 et a2c2; 
+   S3 = SURF lig3 plan; 
+ 
+   lig4 = c2b2 et c2e3 et e3b3 et b3b2; 
+   S4 = SURF lig4 plan; 
+ 
+   lig5 = c2d3 et d3c3 et c3e3 et c2e3; 
+   S5 = SURF lig5 plan; 
+ 
+   S7 = DALL a4a5 a5d5 c4d5 a4c4 plan; 
+ 
+   S8 = DALL c4d5 c5e5 d5c5 c4e5 plan; 
+ 
+   S9 = DALL e5b5 b5b4 c4b4 c4e5 plan; 
+ 
+ 
+   PAST = bord . 1 et S3 et S4 et S5 et 
+          bord . 2 et S7 et S8 et S9; 
+ 
+   oublier bord . 1;
+   oublier bord . 2;
+   oublier e3b3;
+   oublier c4b4;
+   
+   SESC = OA1 et A1A2 et A2A3;
+   elim 0.0001 SESC; 
+   PLANX  = e5b5 et c5e5; 
+   LB  = b10 et b2b1 et b3b2 et b4b3 et b5b4;
+   MAT2 = S1 et PAST; 
+   ELIM 1E-3 MAT2;  
+
+   oublier b4b3;
+   
+   MAT2 = rege MAT2;
+    
+***********************************
+******CREATION DE L'INDENTEUR******
+***********************************
+
+***
+***Construction de la sphère
+***
+R=500.;
+
+E  =    0.       0.      ;
+F  =  (R/2 )     66.9899  ;
+I  =  500.      500.  ;
+K  =    0.       500.      ;
+
+N1 = 8;
+
+lEF = cercl N1 E K F ;
+lFI = cercl N1 F K I ; 
+oublier K;
+
+SMAI = lEF et lFI;
+MAT1 = SMAI;
+ELIM 0.001 SMAI;
+elim 0.001 MAT1;
+
+OPTI SAUV FORM 'ssnv506b.mgib';
+
+sauv form (MAT1 et MAT2);
+
+Umax = -100.;
+
+
+
+trac (MAT2 et (LB coul vert)
+           et (SESC coul rouge)
+           et (PLANX coul jaune)
+           et (MAT1 coul turq));
+
+trac (MAT2 et (MAT1 plus (0. Umax)));
+
+fin;

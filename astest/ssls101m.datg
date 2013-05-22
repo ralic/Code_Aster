@@ -1,0 +1,74 @@
+opti dime 3 elem tri3 ;
+
+*  On maille un quart de disque de rayon R1=1 et d'epaisseur ep=0.1
+*  La partie intérieure ADET (rayon R2=0.3) est maillée en pentaèdres (3D)
+*  La partie extérieure DBCE est maillée en triangles (coque)
+*  Les 2 maillages sont disjoints et incompatibles
+* --------------------------------------------------------------------
+
+
+R1=1.;
+R2=0.3;
+ep=0.1;
+meps2= 0. - (ep/2.);
+v1= (0. 0. ep);
+
+
+* Couronne extérieure du disque DBCE :
+*------------------------------------
+a  = 0.   0.  0.;
+b  = R1   0.  0.;
+d  = R2   0.  0.;
+c  = 0.   R1  0.;
+e  = 0.   R2  0.;
+opti dime 3 elem qua4 ;
+n2=12; n4=13;
+db = droi n2 d b ;
+bc = cerc n4 b a c;
+ce = droi n2 c e  ;
+ed = cerc n4 e a d;
+tour02= db et bc et ce et ed; elim 0.001 tour02 ;
+
+dbce = surf tour02 'PLANE';
+* trac dbce;
+
+
+* Volume  ADET :
+*--------------------
+a1 = 0.   0.  meps2;
+d1 = R2   0.  meps2;
+e1 = 0.   R2  meps2;
+
+opti elem tri6 ;
+n1=6; n3=6;
+ad1 = droi n1 a1 d1 ;
+de1 = cerc n3 d1 a1 e1;
+ea1 = droi n1 e1 a1 ;
+tour1= ad1 et de1 et ea1; elim 0.001 tour1 ;
+ade1 = surf tour1 'PLANE';
+* trac ade1;
+opti elem pr15 ;
+n5=1;
+adet0= ade1 VOLU n5 'TRAN' v1;
+
+* on ajoute quelques surfaces sur les bords :
+ade2= face 2 adet0;
+adad= ad1 tran n5 v1;
+dede= de1 tran n5 v1;
+eaea= ea1 tran n5 v1;
+adet=adet0 et ade2 et adad et dede et eaea;
+elim 0.001 adet;
+a2 = adet poin proc (0. 0. (meps2 + ep));
+
+* trac adet;
+tou1= dbce et adet;
+* trac tou1;
+
+
+
+opti sauv form 'ssls101m.mgib' ;
+sauv form dbce et adet;
+
+
+
+fin;

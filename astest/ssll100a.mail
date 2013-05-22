@@ -1,0 +1,51 @@
+  TITRE
+  CAS TEST SSLL100A ISSU DE
+* MEMBRE MPACO B / A        PAILLE ==> EFPOU          *** OCTOBRE 87 ***
+* METHODE D'ORIENTATION EN REPERES OBLIQUES             STRUCTURE EN ARC
+*PLAN(Y,Z)-6 NOEUDS-F EN 3 ET 4- LIAIS_ELAST_NOEUDS KX,KZ AUX EXTREMITES
+*EN 2 ET 5(REP_OBLIQUE):(TRANSL/X,Z ROT/Y)LIBRES--EN 1 ET 6 DEP/X=RAC(2)
+  FINSF
+% -----------------------------------------------------------------------------
+% -----------------------------------------------------------------------------
+%  COORDONNEES DES EXTREMITES DE POUTRE
+      COOR_3D
+%
+%                 X                Y               Z
+  B         0.000000000E+00  0.000000000E+00  0.000000000E+00
+  C         0.000000000E+00  0.200000000E+01  0.200000000E+01
+  D         0.000000000E+00  0.400000000E+01  0.282840000E+01
+  E         0.000000000E+00  0.600000000E+01  0.200000000E+01
+  F         0.000000000E+00  0.800000000E+01  0.000000000E+00
+  G         0.000000000E+00  0.100000000E+02 -0.200000000E+01
+  A         0.000000000E+00 -0.200000000E+01 -0.200000000E+01
+      FINSF
+% -----DEFINITION DES ELEMENTS DE POUTRES                          -----
+      SEG2
+%  POUTRES DROITES A SECTION CONSTANTE
+  BC       B        C
+  EF       E        F
+%  POUTRES COURBES A SECTION DROITE
+  CD       C        D
+  DE       D        E
+%
+      FINSF  % FIN DEFINITION DES ELEMENTS DE POUTRES
+% -----------------------------------------------------------------------------
+  GROUP_MA NOM = POU_D_T
+        BC        EF
+  FINSF   % FIN DU GROUP_MA "POU_D_T"
+  GROUP_MA NOM = POU_C_T
+        CD        DE
+  FINSF   % FIN DU GROUP_MA "POU_C_T"
+  GROUP_MA NOM = POUTRE
+        BC    CD   DE  EF
+  FINSF
+% -------------------------LIAISONS NOEUD-NOEUD-------------------------
+      SEG2
+  AB       A        B
+  FG       F        G
+      FINSF    % DEFINITION DES ELEMENTS DE LIAISONS NOEUD-NOEUD
+  GROUP_MA NOM = LIAI_NOE
+        AB        FG
+  FINSF   % FIN DU GROUP_MA "LIAI_NOE"
+% -----------------------------------------------------------------------------
+FIN

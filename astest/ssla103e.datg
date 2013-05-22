@@ -1,0 +1,27 @@
+* maillage pour test
+
+opti dime 2;
+opti elem Cu20;
+
+N1 = 0. 0. ;
+N2 = 1. 0. ;
+N4 = 0. 1. ;
+N3 = 1. 1. ;
+D1 = droite 2 N1 N2 ;
+D2 = droite 2 N2 N3 ;
+D3 = droite 2 N3 N4 ;
+D4 = droite 2 N4 N1 ;
+surf1 = dall d1 d2 d3 d4;
+maillage=surf1;
+elim 0.1 maillage
+trac maillage ;
+
+opti sauv format 'ssla103e.mgib';
+sort maillage;
+sauv form maillage;
+fin;
+
+surf2 = surf1 plus (0. 0. 1);
+maillage = surf1 volu 1 surf2;
+
+maillage = surf1 volu 2 surf2;

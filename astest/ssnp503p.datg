@@ -1,0 +1,56 @@
+opti dime 3  elem cub8 ;
+
+*----------------------------------------
+*DONNEES
+*----------------------------------------
+* dimensions des cotes
+LX = 4.0;
+LY = 9.0; 
+LZ = 1.0;
+LY2= 3.0;
+DX = LX 0. 0.;
+DY =  0. LY 0.;
+DY2 =  0. LY2 0.;
+DZ = 0. 0. LZ;
+
+* nombre d'elements
+NX = 4;
+NY = 9;
+NY2 = 4;
+NZ = 1;
+
+*---------------------------------------------
+*construction des lignes
+*---------------------------------------------
+
+l1 = droi (0. 0. 0.) DZ NZ;
+l2 = l1 plus DX;
+l3 = l2 PLUS DY;
+l4 = l3 MOIN DX;
+
+*---------------------------------------------
+*construction des surfaces
+*---------------------------------------------
+
+SINF = regl l1 l2 NX;
+SSUP = regl l4 l3 NX;
+
+SCOTE = (regl (l1 plus DY2) (l4 moin DY2) (NY2-1))
+coul rouge;
+
+*---------------------------------------------
+*construction des volumes
+*---------------------------------------------
+
+VOLU = VOLU SINF SSUP NY;
+
+MAILLE = elim (VOLU ET SCOTE) 0.0001;
+
+trac VOLU;
+
+trac MAILLE;
+
+opti sauv format
+'/work/irlin831_1/siavelim/CAS/ssnp503/ssnp503p.mgib';
+sauv format maille ;
+fin ;

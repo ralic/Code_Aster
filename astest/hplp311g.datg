@@ -1,0 +1,527 @@
+* ******************************************************************
+* PROCEDURE DE MAILLAGE D'UNE FISSURE 2D
+* --------------------------------------
+*
+* CISI (Agence de SACLAY)
+*
+* B. KURTH
+*
+* Version du 10/05/95
+*
+* parametres:
+*
+* rt        rayon du maillage rayonnant
+* rt1       coefficient multiplicateur de rt permettant de definir
+*           l'epaisseur des couronnes de deraffinement des secteurs
+* rt2       coefficient multiplicateur de rt permettant de definir
+*           l'epaisseur de la couronne de transition du maillage
+*           rayonnant au maillage dalle
+* nc        nombre de couronnes
+* ns        nombre de secteurs sur 90 degres (multiple de 2)
+* eps       demi-angle d'ouverture de la fissure (degres)
+* nbcour    nombre de couronnes de deraffinement (0 ou 1 ou 2)
+* l_lev     longueur de la levre de la fissure
+* l_lig     longueur du ligament
+* l_la      largeur du domaine
+* nlev      nombre d'elements de prolongation le long de la levre
+* nlig      nombre d'elements de prolongation le long du ligament
+* nla       nombre d'elements de prolongation le long de la largeur
+* dx        position suivant x du centre du repere par rapport au fond
+*           de fissure (dx = 0 : centre du repere au fond de fissure)
+* levre     Pour les cas axisymetriques: fissure debouchante a
+*           l'exterieur (levre = 'ext' par defaut) ou fissure
+*           debouchante a l'interieur (levre = 'int')
+*
+* ******************************************************************
+*
+*$$$$ FISS_2D
+*
+debproc fiss_2d l_lev*flottant l_lig*flottant l_la*flottant 
+        eps*flottant nc*entier ns*entier rt*flottant rt1*flottant
+        nbcour*entier rt2*flottant nlev*entier nlig*entier 
+        nla*entier levre/mot dx*flottant ;
+*
+opti dime 2 elem qua8 echo 1 ;
+*
+* Creation du maillage rayonnant (mbase) 
+* --------------------------------------
+*
+* critere d'elimination et de recherche des noeuds
+crit = (rt / (50. * nc)) ;
+*
+o = 0. 0. ;
+coseps = cos eps ;
+sineps = sin eps ;
+p0 = (0.001 * rt * coseps) (0.001 * rt * sineps) ;
+p1 = (rt * coseps) (rt * sineps) ;
+p1_90 = 0 rt ;
+p1_180 = (-1 * rt) 0 ;
+l11_90 = p1 cerc ns o p1_90 ;
+l11_12 = p1_90 cerc ns o p1_180 ;
+lextbase = l11_90 et l11_12 ;
+lop1 = p0 d nc p1 ;
+lop1_180 = p0 d nc p1_180 ;
+*
+* demi boudin inferieur
+mbase = lop1 rota ns (90. - eps) o rota ns 90. o ;
+*
+* fusion des noeuds situes pres du centre du maillage en etoile
+elim mbase crit ;
+mbase = rege mbase ;
+mbase = mbase coul roug ;
+*
+elim (mbase et o) crit ;
+*
+si (((nbcour ega 2) et (ns < 8)) ou ((nbcour ega 1) et (ns < 4))) ;
+   saut ligne ;
+   mess '======================================================== ' ;
+   mess '  ATTENTION !!!  Le nombre de couronnes de deraffinement ' ;
+   mess '                 est trop eleve pour un nombre de        ' ;
+   mess '                 de secteurs de' ns                        ;
+   mess '                                                         ' ;
+   mess '======================================================== ' ;
+   saut ligne ;
+finsi ;
+*
+* Creation des couronnes de deraffinement (mtran)
+* -----------------------------------------------
+*
+si (nbcour neg 0) ;
+*
+rti = 1.4 ;
+*
+ i = 0 ;
+ repe bouc1 nbcour ;
+ i = i + 1 ;
+*
+   rt1 = rt1 * (i ** rti) ;
+   nsb = ns / (2 * i) ;
+*
+   p2 = (rt * (1 + rt1) * coseps) (rt * (1 + rt1) * sineps) ;
+   p2_90 = 0 (rt * (1 + rt1)) ;
+   p2_180 = (-1 * (rt * (1 + rt1))) 0 ;
+   l22_1 = p2 cerc nsb o p2_90 ;
+   l2_12_2 = p2_90 cerc nsb o p2_180 ;
+   lext_rt1 = l22_1 et l2_12_2 ;
+*
+   mtran1 = cout lextbase lext_rt1 ;
+*
+   si (i ega 1) ;
+       mtran = mtran1 ;
+       lp1p2 = p1 d 1 p2 ;
+       lp12p22 = p1_180 d 1 p2_180 ;
+   sinon ;
+       mtran = mtran et mtran1 ;
+       lp1p2 = lp1p2 d 1 p2 ;
+       lp12p22 = lp12p22 d 1 p2_180 ;
+   finsi ;
+       lextbase = lext_rt1 ;
+ fin bouc1 ;
+*
+   p3 = p2 plus ((rt * rt2) 0) ;
+   p4 = p3 plus (0 (coor 1 p3)) ;
+   p5 = 0 (coor 2 p4) ;
+   p6 = (-1 * (coor 1 p4)) (coor 2 p4) ;
+   p7 = (-1 * (coor 1 p4)) 0 ;
+   l2_905 = p2_90 d 1 p5 ;
+nsb_p = nsb / 2 ;
+nsb_g = nsb - nsb_p ;
+   l34 = p3 d nsb_p p4 ;
+   l45 = p4 d nsb_g p5 ;
+   l56 = p5 d nsb_g p6 ;
+   l67 = p6 d nsb_p p7 ;
+   l23 = p2 d 1 p3 ;
+   l2_27 = p2_180 d 1 p7 ;
+*
+sinon ;
+*
+   p3 = p1 plus ((rt * rt2) 0) ;
+   p4 = p3 plus (0 (coor 1 p3)) ;
+   p5 = 0 (coor 2 p4) ;
+   p6 = (-1 * (coor 1 p4)) (coor 2 p4) ;
+   p7 = (-1 * (coor 1 p4)) 0 ;
+   l22_1 = l11_90 ;
+   l2_12_2 = l11_12 ;
+   l2_905 = p1_90 d 1 p5 ;
+ns_p = ns / 2 ;
+ns_g = ns - ns_p ;
+   l34 = p3 d ns_p p4 ;
+   l45 = p4 d ns_g p5 ;
+   l56 = p5 d ns_g p6 ;
+   l67 = p6 d ns_p p7 ;
+   l23 = p1 d 1 p3 ;
+   l2_27 = p1_180 d 1 p7 ;
+finsi ;
+*
+* Passage du cercle au rectangle (mce1 et mce2)
+* ---------------------------------------------
+mce1 = dall (l34 et l45) l2_905 l22_1 l23 ;
+mce2 = dall (l56 et l67) l2_27 l2_12_2 l2_905 ;
+*
+* Prolongation le long de la levre
+* --------------------------------
+*
+si ((l_lev - (coor 1 p3)) <eg 0) ;
+   saut ligne ;
+   mess '========================================================= ' ;
+   mess '  ATTENTION !!!  Les parametres rt,rt1 et rt2 ne sont pas ' ;
+   mess '                 corrects.                                ' ;
+   mess '                 Reduisez ces parametres.                 ' ;
+   mess '                                                          ' ;
+   mess '  PROBLEME AU NIVEAU DE LA LEVRE !!!                      ' ;
+   mess '                                                          ' ;
+   mess '  ON TRACE LE MAILLAGE POUR VISUALISER LE PROBLEME        ' ;
+   mess '                                                          ' ;
+   mess '========================================================= ' ;
+   saut ligne ;
+finsi ;
+*
+mpro_le = l34 tran nlev ((l_lev - (coor 1 p3)) 0) ;
+mpro_le = mpro_le coul rose ;
+*
+* Prolongation le long du ligament	
+* --------------------------------
+*
+si ((-1 * ((coor 1 p7) + l_lig)) >eg 0) ;
+   saut ligne ;
+   mess '========================================================= ' ;
+   mess '  ATTENTION !!!  Les parametres rt,rt1 et rt2 ne sont pas ' ;
+   mess '                 corrects.                                ' ;
+   mess '                 Reduisez ces parametres.                 ' ;
+   mess '                                                          ' ;
+   mess '  PROBLEME AU NIVEAU DU LIGAMENT !!!                      ' ;
+   mess '                                                          ' ;
+   mess '  ON TRACE LE MAILLAGE POUR VISUALISER LE PROBLEME        ' ;
+   mess '                                                          ' ;
+   mess '========================================================= ' ;
+   saut ligne ;
+finsi ;
+*
+mpro_li = (inve l67) tran nlig ((-1 * ((coor 1 p7) + l_lig)) 0) ;
+mpro_li = mpro_li coul rose ;
+*
+* Creation de l'objet total intermediare
+* --------------------------------------
+si (nbcour neg 0) ;
+   vtot = mbase et mtran et mce1 et mce2 et mpro_le et mpro_li ;
+sinon ;
+   vtot = mbase et mce1 et mce2 et mpro_le et mpro_li ;
+finsi ;
+*
+* Prolongation dans la largeur
+* ----------------------------
+psup = vtot poin droi p4 p6 crit ;
+vtot_con = cont vtot ;
+lsup = vtot_con elem appuye strictement psup ;
+mpro_la = lsup tran nla (0 (l_la - (coor 2 p5))) ;
+mpro_la = mpro_la coul rose ;
+*
+* Creation de l'objet total
+* -------------------------
+  vtot = vtot et mpro_la ;
+*
+* Recuperation des lignes de chargement et de cond. aux limites
+* -------------------------------------------------------------
+vtot_con = cont vtot ;
+p8 = l_lev (coor 2 p3) ;
+p9 = l_lev l_la ;
+p10 = (-1 * l_lig) l_la ;
+p11 = (-1 * l_lig) 0 ;
+*
+plp8p9 = vtot poin droi p8 p9 crit ;
+lp8p9 = vtot_con elem appuye strictement plp8p9 ;
+*
+plp9p10 = vtot poin droi p9 p10 crit ;
+lp9p10 = vtot_con elem appuye strictement plp9p10 ;
+*
+plp10p11 = vtot poin droi p10 p11 crit ;
+lp10p11 = vtot_con elem appuye strictement plp10p11 ;
+*
+*
+* Ligne de la levre
+* -----------------
+v_cont1 = cont (mce1 et mpro_le) ;
+*
+ si (nbcour ega 0) ; 
+    plp2p8 = v_cont1 poin droi p1 p8 crit ;
+    lp2p8 = v_cont1 elem appuye strictement plp2p8 ;
+    lpop8 = lop1 et lp2p8 ;
+ sinon ;
+    plp2p8 = v_cont1 poin droi p2 p8 crit ;
+    lp2p8 = v_cont1 elem appuye strictement plp2p8 ;
+    lpop8 = lop1 et lp1p2 et lp2p8 ;
+ finsi ;
+*
+* Ligne du ligament
+* -----------------
+v_cont2 = cont (mce2 et mpro_li) ;
+*
+ si (nbcour ega 0) ;
+    plp22p11 = v_cont2 poin droi p1_180 p11 crit ;
+    lp22p11 = v_cont2 elem appuye strictement plp22p11 ;
+    lpop11 = lop1_180 et lp22p11 ;
+ sinon ;
+    plp22p11 = v_cont2 poin droi p2_180 p11 crit ;
+    lp22p11 = v_cont2 elem appuye strictement plp22p11 ;
+    lpop11 = lop1_180 et lp12p22 et lp22p11 ;
+ finsi ;
+*
+vsort = vtot et lpop11 et lpop8 et p8 et p9 et p10 et p11 ; 
+*
+elim vsort crit ;
+*
+* Symetrie pour les cas axisymetriques (fissure int. ou ext.)
+* -----------------------------------------------------------
+si (ega levre 'int') ;
+ vsort = depl vsort syme droi o p1_90 ;
+finsi ;
+*
+* Deplacement de l'origine du repere
+* ----------------------------------
+vsort = depl vsort plus (dx 0) ;
+* 
+finproc vtot lpop8 lpop11 lp9p10 lp8p9 lp10p11 o p8 ;
+*
+**********************************************************
+*  FIN DE LA PROCEDURE
+**********************************************************
+*
+opti dime 2 elem qua8 echo 1 ;
+*
+* CREATION DU MAILLAGE D'UNE FISSURE 2D
+* -------------------------------------
+*
+* parametres:
+*
+* rt        rayon du maillage rayonnant
+* rt1       coefficient multiplicateur de rt permettant de definir
+*           l'epaisseur des couronnes de deraffinement des secteurs
+* rt2       coefficient multiplicateur de rt permettant de definir
+*           l'epaisseur de la couronne de transition du maillage
+*           rayonnant au maillage dalle
+* nc        nombre de couronnes
+* ns        nombre de secteurs sur 90 degres (multiple de 2)
+* eps       demi-angle d'ouverture de la fissure (degres)
+* nbcour    nombre de couronnes de deraffinement (0 ou 1 ou 2)
+* l_lev     longueur de la levre de la fissure
+* l_lig     longueur du ligament
+* l_la      largeur du domaine
+* nlev      nombre d'elements de prolongation le long de la levre
+* nlig      nombre d'elements de prolongation le long du ligament
+* nla       nombre d'elements de prolongation le long de la largeur
+* dx        position suivant x du centre du repere par rapport au fond
+*           de fissure (dx = 0 : centre du repere au fond de fissure)
+* levre     Pour les cas axisymetriques: fissure debouchante a 
+*           l'exterieur (levre = 'ext' par defaut) ou fissure 
+*           debouchante a l'interieur (levre = 'int')
+*
+* ICI rt     = .001a, 
+*     rt     = .01a ou 
+*     rt     = .1a
+* 
+* changer ICI ns = 4 ou ns = 8
+* motsym = vrai si maillage complet
+*          faux si demi maillage
+motsym = vrai ;
+*motsym = faux ;
+ns = 8               ;
+a   = 0.15 ;
+*rt     = .001*a       ;
+rt   = .01*a          ;
+*rt   = .1*a          ;
+eps    = 0.          ;
+*
+**nbcour = 1           ;
+*
+levre = 'int'        ;
+dx = 0.15            ;
+*
+* rt  = 0.001
+*
+si (EGA rt (0.001*0.15))    ;
+ rt1 = .3            ;
+ rt2 = .3            ;
+ nlev = 30           ;
+ nlig = 30           ;
+ nla = 2             ;
+ si (EGA ns 4)       ;
+  nc = 3             ;
+  nbcour = 1         ;
+  opti sauv format 
+  '/mmn/cibhhmd/PEGGY/VALISTA4/CTGIBI98/mura_11_17_a2.mgib';
+ finsi               ;
+ si (EGA ns 8)       ;
+  nc = 4             ;
+  nbcour = 2         ;
+  opti sauv format 
+  '/mmn/cibhhmd/PEGGY/VALISTA4/CTGIBI98/mura_11_17_a1.mgib';
+ finsi               ;
+ l_lev = 0.15        ;
+ l_lig = 0.3 - l_lev ;
+ l_la = 0.01         ;
+finsi                ;
+*
+* rt  = 0.01
+*
+si (EGA rt (0.01*0.15))     ;
+ rt1  = .3           ;
+ rt2  = .3           ;
+ nlev = 6            ;
+ nlig = 6            ;
+ nla  = 6            ;
+ si (EGA ns 4)       ;
+  nc   = 3           ;
+  nbcour = 1         ;
+  opti sauv format 
+  '/mmn/cibhhmd/PEGGY/VALISTA4/CTGIBI98/mura_11_17_b2.mgib';
+ finsi               ;
+ si (EGA ns 8)       ;
+  nc   = 4           ;
+  nbcour = 2         ;
+  opti sauv format 
+  '/mmn/cibhhmd/PEGGY/VALISTA4/CTGIBI98/mura_11_17_b1.mgib';
+ finsi               ;
+ l_lev = 0.15        ;
+ l_lig = 0.3 - l_lev ;
+ l_la = 0.15         ;
+finsi                ;
+*
+* rt  =  0.05 
+*
+si (EGA rt (0.1*0.15))     ;
+ rt1  = .3           ;
+ rt2  = .3           ;
+ nlev = 2            ;
+ nlig = 2            ;
+ nla  = 2            ;
+ si (EGA ns 4)       ;
+  nc   = 3           ;
+  nbcour = 1         ;
+  opti sauv format 
+  '/mmn/cibhhmd/PEGGY/VALISTA4/CTGIBI98/mura_11_17_c2.mgib';
+ finsi               ;
+ si (EGA ns 8)       ;
+  nc   = 4           ;
+  nbcour = 2         ;
+  opti sauv format 
+  '/mmn/cibhhmd/PEGGY/VALISTA4/CTGIBI98/mura_11_17_c1.mgib';
+ finsi               ;
+ l_lev = 0.15        ;
+ l_lig = 0.3 - l_lev ;
+ l_la = 0.15         ;
+finsi                ;
+*
+vtot1 lpop8 lpop11 lp9p10 lp8p9 lp10p11 p0 p8
+= fiss_2d l_lev l_lig l_la eps nc ns rt rt1
+        nbcour rt2 nlev nlig nla levre dx ;
+*
+eps1 = rt / 100. ;
+ p9 = lp9p10 point initial   ;
+ p10 = lp9p10 point final    ;
+si (EGA rt (0.001*0.15))            ;
+ list (nbel lp9p10)          ;
+ p10a = p10 plus (0. 0.005)  ;
+ p9a  = p9  plus (0. 0.005)  ;
+ n1a  = (nbel lp9p10) - 10   ;
+ lp1a = p9a d n1a p10a       ;
+ s1a  = lp9p10 coutur lp1a   ;
+ p10b = p10a plus (0. 0.005) ;
+ p9b  = p9a  plus (0. 0.005) ;
+ n1b  = (nbel lp1a) - 10     ;
+ lp1b = p9b d n1b  p10b      ;
+ s1b  = lp1a coutur lp1b     ;
+ p10c = p10b plus (0. 0.005) ;
+ p9c  = p9b  plus (0. 0.005) ;
+ n1c  = (nbel lp1b) - 10     ;
+ lp1c = p9c d n1c p10c       ;
+ s1c  = lp1b coutur lp1c     ;
+ p10d = p10c plus (0. 0.005) ;
+ p9d  = p9c  plus (0. 0.005) ;
+ n1d  = (nbel lp1c) - 10     ;
+ lp1d = p9d d n1d p10d       ;
+ s1d  = lp1c coutur lp1d     ;
+ p10e = p10d plus (0. 0.01)  ;
+ p9e  = p9d  plus (0. 0.01)  ;
+ n1e  = (nbel lp1d) - 10     ;
+ lp1e = p9e d n1e p10e       ;
+ s1e  = lp1d coutur lp1e     ;
+ p10f = p10e plus (0. 0.01)  ;
+ p9f  = p9e  plus (0. 0.01)  ;
+ n1f  = (nbel lp1e) - 4      ;
+ lp1f = p9f d n1f p10f       ;
+ s1f  = lp1e coutur lp1f     ;
+ lp9p10 = lp1f plus (0. 0.1)   ;
+ s1g  = lp1f regler 10 lp9p10  ;
+ vtot1 = vtot1 et
+        s1a et s1b et s1c et s1d et s1e et s1f et s1g ;
+ ctvtot1 = contour vtot1 ;
+ ptvtot1 = ctvtot1 poin droit (0. 0.) (0. 0.15) eps1 ;
+ lp8p9   = ctvtot1 elem appuye strictement ptvtot1 ;
+finsi ;
+*
+* symetrie
+*
+*p11 = lpop11 point final ;
+p11 = vtot1 point proch (0.30 0.)  ;
+vtot2 = vtot1 syme droit p8 p11 ;
+lp9p10b = lp9p10 syme droit p8 p11 ;
+lp8p9b  = lp8p9  syme droit p8 p11 ;
+*
+elim (lpop11  et vtot2) eps1 ;
+elim (lp9p10b et vtot2) eps1 ;
+elim (lp8p9b  et vtot2) eps1 ;
+vtot = vtot1 et vtot2 ;
+*
+* Traces
+* ------
+nb = nbno vtot ;
+titr 'ns:' ns 'nc:' nc 'nb noeuds :' nb 'nb el : ' (nbel vtot) ;
+trac vtot ;
+si (motsym) ;
+*
+* translation de lp8p9 et lp8p9b, pour generer la symetrie
+*
+ lp8p91  = lp8p9   moins (0.15 0.) ;
+ lp8p92  = lp8p91  moins (0.15 0.) ;
+ lp8p9b1 = lp8p9b  moins (0.15 0.) ;
+ lp8p9b2 = lp8p9b1 moins (0.15 0.) ;
+*
+ stot1a = lp8p9  regler nlev lp8p91  ;
+ stot1b = lp8p9b regler nlev lp8p9b1 ;
+*
+ elim (lp8p91  et lp8p92)  eps1 ;
+ elim (lp8p9b1 et lp8p9b2) eps1 ;
+*
+ stot2 = (lp8p91 et lp8p9b1 ) regler nlig (lp8p92 et lp8p9b2) ;
+ elim stot2 eps1 ;
+ vtot3 = stot1a et stot1b et stot2 ;
+ vtot = vtot et vtot3 ;
+ ctvtot =  cont vtot ;
+*
+* po1 = 0.3   0.15 ;
+* po2 = -0.3  0.15 ;
+* po3 = 0.3  -0.15 ;
+* po4 = -0.3 -0.15 ;
+ po1 = vtot poin proch (0.3   0.15) ;
+ po2 = vtot poin proch (-0.3  0.15) ;
+ po3 = vtot poin proch (0.3  -0.15) ;
+ po4 = vtot poin proch (-0.3 -0.15) ;
+* ctvtot = ctvtot et po1 et po2 et po3 et po4 ;
+* vtot = vtot et po1 et po2 et po3 et po4 ;
+ clp9p10  = vtot poin droi  po1 po2 eps1 ;
+ clp9p10b = vtot poin droi  po3 po4 eps1 ;
+ trac (clp9p10 et clp9p10b) ;
+ lp9p10  = ctvtot elem appuye strictement clp9p10  ;
+ lp9p10b = ctvtot elem appuye strictement clp9p10b ;
+ trac (lp9p10 et lp9p10b) ;
+*
+ nb = nbno vtot ;
+ titr 'ns:' ns 'nc:' nc 'nb noeuds :' nb 'nb el : ' (nbel vtot) ;
+ trac vtot ;
+finsi ;
+opti donn 5 ;
+oublier ptvtot1 ;
+oublier clp9p10 ;
+oublier clp9p10b ;
+sort vtot ;
+sauv format vtot ;

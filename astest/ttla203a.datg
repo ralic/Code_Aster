@@ -1,0 +1,128 @@
+dbid = 1.;
+LX = 1.;
+LY = 2.;
+
+Point(1) = {    0.,     0., 0.};
+Point(2) = {    LX,     0., 0.};
+Point(3) = {    LX, 0.5*LY, 0.};
+Point(4) = {0.5*LX, 0.5*LY, 0.};
+Point(5) = {    LX,     LY, 0.};
+Point(6) = {    0.,     LY, 0.};
+Point(7) = {0.5*LX,     0., 0.};
+Point(8) = {0.5*LX,     LY, 0.};
+Point(9) = {    0., 0.5*LY, 0.};
+
+Line(1)  = {1, 7};
+Line(2)  = {7, 2};
+Line(3)  = {2, 3};
+Line(4)  = {3, 5};
+Line(5)  = {5, 8};
+Line(6)  = {8, 6};
+Line(7)  = {6, 9};
+Line(8)  = {9, 1};
+Line(9)  = {9, 4};
+Line(10) = {4, 3};
+Line(11) = {8, 4};
+Line(12) = {4, 7};
+
+Line Loop(13) = {1, -12, -9, 8};
+Plane Surface(14) = {13};
+Line Loop(15) = {12, 2, 3, -10};
+Plane Surface(16) = {15};
+Line Loop(17) = {10, 4, 5, 11};
+Plane Surface(18) = {17};
+Line Loop(19) = {11, -9, -7, -6};
+Plane Surface(20) = {19};
+
+
+//// pour la solution de reference (discretisation 1000x2000)
+//NSeg=500;
+
+// (discretisation 100x200)
+NSeg=50;
+
+
+Transfinite Line{1,2,5,6,9,10}  = NSeg+1;
+Transfinite Line{3,4,7,8,11,12} = 2*NSeg+1;
+
+Transfinite Surface{14,16,18,20};
+Recombine   Surface{14,16,18,20};
+
+// ligne haut G_1D_21
+Physical Line(21) = {6, 5};
+
+// ligne bas G_1D_22
+Physical Line(22) = {1, 2};
+
+// surface exterieure haut G_2D_23
+Physical Surface(23) = {18};
+
+// surface exterieure bas G_2D_24
+Physical Surface(24) = {16};
+
+// surface interieure haut et bas G_2D_25
+Physical Surface(25) = {20, 14};
+
+// toute la surface G_2D_26
+Physical Surface(26) = {20, 18, 16, 14};
+
+
+//// --------------------------------------------------------------------------------------
+//// En commentaire : script pyhton a lancer sous salome apres avoir genere le maillage
+//// sain ci-dessus au format MED pour doubler les noeuds au niveau de la fissure et ecrire 
+//// au format med le fichier contenant le maillage fissure
+//// --------------------------------------------------------------------------------------
+//
+//import smesh, SMESH, SALOMEDS
+//import salome
+//import math as M
+//
+//gg = salome.ImportComponentGUI("GEOM")
+//gm = salome.ImportComponentGUI("SMESH")
+//
+//NomGroupSurfSUP = "G_2D_23"
+//NomGroupSurfINF = "G_2D_24"
+//NomGroupSurfINT = "G_2D_25"
+//
+//#theFileName = "/tmp/ttla203a-sain_OVERKILL.med"
+//theFileName = "/tmp/ttla203a-sain.med"
+//LeMaillage=smesh.CreateMeshesFromMED(theFileName)	
+//LeMaillage = LeMaillage[0][0]
+//
+//GroupSup = None
+//GroupInf = None
+//GroupInt = None
+//GroupList = LeMaillage.GetGroups()
+//for group in GroupList:
+//  if group.GetName()[:len(NomGroupSurfSUP)] == NomGroupSurfSUP : GroupSup = group
+//  if group.GetName()[:len(NomGroupSurfINF)] == NomGroupSurfINF : GroupInf = group
+//  if group.GetName()[:len(NomGroupSurfINT)] == NomGroupSurfINT : GroupInt = group
+//assert GroupSup is not None
+//assert GroupInf is not None
+//assert GroupInt is not None
+//
+//gr_noeuds_Sup = LeMaillage.GetMesh().CreateDimGroup([GroupSup], SMESH.NODE, "GN_SUP")
+//gr_noeuds_Inf = LeMaillage.GetMesh().CreateDimGroup([GroupInf], SMESH.NODE, "GN_INF")
+//interGroups   = LeMaillage.GetMesh().IntersectListOfGroups([gr_noeuds_Sup,gr_noeuds_Inf], "GN_inter")
+//idInterGroups = interGroups.GetListOfID()
+//idInterGroups = list( set( interGroups.GetListOfID() ) )
+//
+//gr_noeuds_Int = LeMaillage.GetMesh().CreateDimGroup([GroupInt], SMESH.NODE, "GN_INT")
+//idNoeFondFiss = list( set(idInterGroups) & set(gr_noeuds_Int.GetIDs()) )
+//assert len(idNoeFondFiss) == 1
+//
+//GNFondFiss = LeMaillage.CreateEmptyGroup( SMESH.NODE, 'FondFiss' )
+//GNFondFiss.Add(idNoeFondFiss)
+//
+//idNoe2Dble = list( set(idInterGroups) - set(idNoeFondFiss) )
+//
+//GNLevrSUP = LeMaillage.CreateEmptyGroup( SMESH.NODE, 'LevrSUP' )
+//GNLevrSUP.Add(idNoe2Dble)
+//
+//GNLevrINF = LeMaillage.DoubleNodeGroups([GNLevrSUP],[GroupInf],True)
+//GNLevrINF.SetName('LevrINF')
+//print "code_retour", GNLevrINF
+//
+//#theFileName = "/tmp/ttla203a_OVERKILL.med"
+//theFileName = "/tmp/ttla203a.mmed"
+//LeMaillage.ExportMED(theFileName)

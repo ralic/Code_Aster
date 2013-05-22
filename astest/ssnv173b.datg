@@ -1,0 +1,46 @@
+opti dime 3  elem cub8 ;
+dens 5 ;
+
+*----------------------------------------
+*DONNEES
+*----------------------------------------
+*cotés
+LX = 5;
+LY = 5;
+LZ = 25;
+
+*---------------------------------------------
+*construction des surfaces dans le plan inférieur
+*---------------------------------------------
+
+p1 = LX   0.  0.;
+p2 = LX  LY   0.;
+p3 = 0.  LY   0.;
+p4 = 0.  0.  0.;
+
+lig1 = droit p1 p2;
+lig2 = droit p2 p3;
+lig3 = droit p3 p4;
+lig4 = droit p4 p1;
+
+cont  = lig1 et lig2 et lig3 et lig4;
+
+SURFINF= surface cont 'PLANE';
+
+p5 = 0.  0. LZ.;
+
+*---------------------------------------------
+*extrusion
+*---------------------------------------------
+
+vol = SURFINF volu  'TRAN' p5;
+elim vol 1E-6;
+trac vol;
+
+trac vol;
+
+MAILLE = vol et SURFINF;
+                 
+opti sauv format 'ssnv161b.mgib' ;
+sauv format maille ;
+fin ;

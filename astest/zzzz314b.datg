@@ -1,0 +1,111 @@
+# -*- coding: iso-8859-1 -*-
+
+###
+### This file is generated automatically by SALOME v6.3.1 with dump python functionality
+###
+
+import sys
+import salome
+
+salome.salome_init()
+theStudy = salome.myStudy
+
+import salome_notebook
+notebook = salome_notebook.notebook
+sys.path.insert( 0, r'/home/ladier/Documents/Fiches/F18605/TEST_NEW')
+
+import iparameters
+ipar = iparameters.IParameters(salome.myStudy.GetCommonParameters("Interface Applicative", 1))
+
+#Set up visual properties:
+ipar.setProperty("AP_WORKSTACK_INFO", "0000000100000000000000020100000000")
+ipar.setProperty("AP_SAVEPOINT_NAME", "GUI state: 1")
+
+
+###
+### GEOM component
+###
+
+import GEOM
+import geompy
+import math
+import SALOMEDS
+
+
+geompy.init_geom(theStudy)
+
+Vertex_1 = geompy.MakeVertex(0, 0, 0)
+Vertex_2 = geompy.MakeVertex(1, 0, 0)
+Vertex_3 = geompy.MakeVertex(1, 0.5, 0)
+Vertex_4 = geompy.MakeVertex(0.5, 0.5, 0)
+Vertex_5 = geompy.MakeVertex(0, 0.4997, 0)
+Line_1 = geompy.MakeLineTwoPnt(Vertex_1, Vertex_2)
+Line_2 = geompy.MakeLineTwoPnt(Vertex_2, Vertex_3)
+Line_3 = geompy.MakeLineTwoPnt(Vertex_3, Vertex_4)
+Line_4 = geompy.MakeLineTwoPnt(Vertex_4, Vertex_5)
+Line_5 = geompy.MakeLineTwoPnt(Vertex_5, Vertex_1)
+Face_1 = geompy.MakeFaceWires([Line_1, Line_2, Line_3, Line_4, Line_5], 1)
+[Vertex_6,Vertex_7,Vertex_8,Vertex_9,Vertex_10] = geompy.ExtractShapes(Face_1, geompy.ShapeType["VERTEX"], True)
+geompy.addToStudy( Vertex_1, 'Vertex_1' )
+geompy.addToStudy( Vertex_2, 'Vertex_2' )
+geompy.addToStudy( Vertex_3, 'Vertex_3' )
+geompy.addToStudy( Vertex_4, 'Vertex_4' )
+geompy.addToStudy( Vertex_5, 'Vertex_5' )
+geompy.addToStudy( Line_1, 'Line_1' )
+geompy.addToStudy( Line_2, 'Line_2' )
+geompy.addToStudy( Line_3, 'Line_3' )
+geompy.addToStudy( Line_4, 'Line_4' )
+geompy.addToStudy( Line_5, 'Line_5' )
+geompy.addToStudy( Face_1, 'Face_1' )
+geompy.addToStudyInFather( Face_1, Vertex_6, 'Vertex_6' )
+geompy.addToStudyInFather( Face_1, Vertex_7, 'Vertex_7' )
+geompy.addToStudyInFather( Face_1, Vertex_8, 'Vertex_8' )
+geompy.addToStudyInFather( Face_1, Vertex_9, 'Vertex_9' )
+geompy.addToStudyInFather( Face_1, Vertex_10, 'Vertex_10' )
+
+### Store presentation parameters of displayed objects
+import iparameters
+ipar = iparameters.IParameters(theStudy.GetModuleParameters("Interface Applicative", "GEOM", 1))
+
+
+###
+### SMESH component
+###
+
+import smesh, SMESH, SALOMEDS
+
+aMeasurements = smesh.CreateMeasurements()
+smesh.SetCurrentStudy(theStudy)
+import StdMeshers
+zzzz314b = smesh.Mesh(Face_1)
+Regular_1D = zzzz314b.Segment()
+Max_Size_1 = Regular_1D.MaxSize(0.07)
+MEFISTO_2D = zzzz314b.Triangle()
+isDone = zzzz314b.Compute()
+FOND = zzzz314b.GroupOnGeom(Vertex_8,'FOND',SMESH.NODE)
+FOND.SetColor( SALOMEDS.Color( 0, 0.666667, 1 ))
+LEVR_SUP = zzzz314b.CreateEmptyGroup( SMESH.EDGE, 'LEVR_SUP' )
+nbAdd = LEVR_SUP.Add( [ 16, 15, 14, 13, 12, 11, 10, 9 ] )
+LEVR_SUP.SetColor( SALOMEDS.Color( 0, 0.666667, 1 ))
+isDone = zzzz314b.Compute()
+[ FOND, LEVR_SUP ] = zzzz314b.GetGroups()
+smesh.SetName(zzzz314b, 'zzzz314b')
+zzzz314b.ExportMED( r'/home/ladier/Documents/Fiches/F18605/TEST/zzzz314b.med', 0, SMESH.MED_V2_2, 1 )
+
+## set object names
+smesh.SetName(zzzz314b.GetMesh(), 'zzzz314b')
+smesh.SetName(Regular_1D.GetAlgorithm(), 'Regular_1D')
+smesh.SetName(Max_Size_1, 'Max Size_1')
+smesh.SetName(MEFISTO_2D.GetAlgorithm(), 'MEFISTO_2D')
+smesh.SetName(FOND, 'FOND')
+smesh.SetName(LEVR_SUP, 'LEVR_SUP')
+
+### Store presentation parameters of displayed objects
+import iparameters
+ipar = iparameters.IParameters(theStudy.GetModuleParameters("Interface Applicative", "SMESH", 1))
+
+
+
+if salome.sg.hasDesktop():
+  salome.sg.updateObjBrowser(1)
+  iparameters.getSession().restoreVisualState(1)

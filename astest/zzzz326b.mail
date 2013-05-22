@@ -1,0 +1,18 @@
+COOR_3D
+ N1  0.    0.    0.
+ N2  0.5   0.    0.
+ N3  1.    0.    0.
+ N4  1.5   0.    0.
+ N5  2.    0.    0.
+FINSF
+SEG3
+M1    N1    N3    N2
+M2    N3    N5    N4
+FINSF
+GROUP_MA NOM=GR1
+  M1
+FINSF
+GROUP_MA NOM=GR2
+  M2
+FINSF
+FIN

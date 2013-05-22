@@ -1,0 +1,38 @@
+opti dime 2  elem qua4 ;
+
+dens 10 ;
+
+*----------------------------------------
+*DONNEES
+*----------------------------------------
+* dimensions des cotEs
+LX = 4;
+LY = 9;
+
+* nombre d elements
+NX = 16;
+NY = 36;
+
+
+*---------------------------------------------
+*construction du maillage
+*---------------------------------------------
+
+p1 = 0. 0.;
+p2 = LX 0.;
+p3 = LX LY;
+p4 = 0. LY;
+
+LIGINF = droit p1 p2 NX;
+LIGSUP = droit p4 p3 NX;
+
+surf=LIGINF REGL NY LIGSUP;
+
+trac surf;          
+
+MAILLE = surf;
+
+opti sauv format 
+'/work/irlin831_1/siavelim/CAS/Tests/ssnp504b.mgib';
+sauv format maille ;
+fin ;

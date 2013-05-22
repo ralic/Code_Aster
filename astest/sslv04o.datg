@@ -1,0 +1,100 @@
+OPTI DIME 2 ELEM QUA8;
+OPTI SAUV FORM 'sslv04o.mgib' ;
+*
+O = .0 0. ;
+A = .1 0. ;
+B = .2 0. ;
+C = 9.2387974262238E-02  3.8268297910690E-02 ;
+D = 1.8477588891983E-01  7.6536655426025E-02 ;
+E = 7.0710659027100E-02  7.0710659027100E-02 ;
+F = 1.4142125844955E-01  1.4142125844955E-01 ;
+
+nel = 8 ;
+
+AB = DROIT nel A B ;
+
+BD = CERCLE B O D nel ;
+
+DC = DROIT nel D C ;
+
+CA = CERCLE C O A nel ;
+
+S1 = DALLER AB BD DC CA ;
+TRAC S1;
+*
+OPTI DIME 2 ELEM TRI6 ;
+
+CD = DROIT nel C D ;
+
+DF = CERCLE D O F nel;
+
+FE = DROIT nel F E  ;
+
+EC = CERCLE E O C nel ;
+
+S2 = DALLER CD DF FE EC ;
+
+TRAC S2;
+
+S = S1 ET S2 ;
+
+AE = EC ET CA ;
+
+ELIM 0.0001 AE;
+
+ELIM 0.0001 S;
+
+sb1 = s ;
+
+py1 = 0. 0.1  ;
+py2 = 0. 0.2  ;
+
+sb2 = sb1 syme droi E F  ;
+*sb3 = sb1 et (inve sb2) ;
+sb3 = sb1 et sb2 ;
+elim sb3 0.0001;
+trac sb3 ;
+sb4 = sb3 syme droi A B  ;
+*sb5 = sb4 et (inve sb3) ;
+sb5 = sb4 et sb3 ;
+elim sb5 0.0001 ;
+trac cach sb5 ;
+sb6 = sb5 syme droi py1 py2   ;
+*sb = sb6 et (inve sb5) ;
+sb = sb6 et sb5 ;
+elim sb 0.0001 ;
+trac cach sb ;
+
+* symetries aretes
+
+ae2 = ae syme droi E F ;
+ae3 = ae et ae2 ;
+elim ae3 0.0001;
+trac ae3 ;
+ae4 = ae3 syme droi A B ;
+ae5 = ae4 et ae3 ;
+elim ae5 0.0001 ;
+trac cach ae5 ;
+ae6 = ae5 syme droi py1 py2  ;
+ae7= ae6 et ae5 ;
+elim ae7 0.0001 ;
+trac cach ae7 ;
+
+ae7 = ae7 coul roug ;
+
+MA = sb et ae7 et py1 et py2 ;
+
+elim 0.0001 ma ;
+
+NNOAE = NBNO AE7;
+
+LIST NNOAE;
+NNO = NBNO ma;
+
+LIST NNO;
+
+TRAC ma;
+SAUV FORM ma;
+
+
+

@@ -1,0 +1,50 @@
+opti dime 3 elem qua8 ;
+
+NB=20 ;
+
+A= 0.000 0. 0. ;
+
+B = 7.20E-01  9.6E-01  0.0000E+00 ;
+
+C = -3.2E-01  1.740E+00  0.0000E+00 ;
+
+D  = -1.04E+00  7.800E-01  0.000;
+
+MBC= 0.5*(B PLUS C);
+MDA= 0.5*(A PLUS D);
+
+ 
+AB = DROIT NB A B ;
+BC1 = DROIT (NB/2) B MBC ;
+BC2 = DROIT (NB/2) MBC C ;
+CD = DROIT NB C D;
+DA2 = DROIT (NB/2) D MDA;
+DA1 = DROIT (NB/2) MDA A;
+MBCDA = DROIT NB MBC MDA ;
+
+STOT1 = SURF PLAN (AB et  BC1 et MBCDA et DA1 );
+
+
+opti elem tri6 ;
+
+STOT2 = SURF PLAN (INVE(MBCDA) et  BC2 et CD et DA2 );
+STOT1 = STOT1 COUL ROUG ;
+STOT2 = STOT2 COUL BLEU ;
+
+STOT = STOT1 ET STOT2 ;
+BC = BC1 ET BC2 ;
+DA = DA1 Et DA2 ;
+
+ELIM 0.001 STOT ;
+
+TRAC (0. 0. 1000.) STOT ;
+
+
+opti sauv form 'hsls01b.mgib';
+sauv form stot;
+
+fin;
+
+
+
+  

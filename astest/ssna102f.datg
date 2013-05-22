@@ -1,0 +1,111 @@
+  OPTI DIME 2 ELEM QUA8 SAUV FORM 'ssna102f.mgib' ;;
+*
+  R1 = 10. ;
+  R2 = 5.  ;
+  R3 = 10. ;
+  R4 = 20. ;
+  H1 = 2.  ;
+  H4 = 4.  ;
+*
+  DMIN  = 0.1  ;
+  DMAX  = 1.   ;
+  NH1   = 5    ;
+  NR2   = 20   ;
+  NR3   = 20   ;
+  NH4   = 5    ;
+*
+* Plaque du haut : longueur R1, hauteur H1
+*
+  PA1   = 0. (H4+(2.*R3)+(2.*R2)) ;
+  VL1   = R1 0.               ;
+  VH1   = 0. H1               ;
+  PB1   = PA1 plus VL1        ;
+  LAB1  = droite PA1 PB1 'DINI' DMIN 'DFIN' DMAX ;
+  N = NBEL LAB1 ; 
+  LAB1S = LAB1 ELEM (LECT 2 PAS 1 N);
+  ELIM LAB1 LAB1S 0.00001;
+
+  PLAQ1 = LAB1 tran NH1 VH1   ;
+  LBC1  = cote 2 PLAQ1        ;
+  LCD1  = cote 3 PLAQ1        ;
+  LDA1  = cote 4 PLAQ1        ;
+  PC1   = LCD1 poin 'INITIAL' ;
+  PD1   = LCD1 poin 'FINAL'   ;
+  LAB1P = LAB1                ;
+*
+* Demi-sphere du haut
+*
+  PO2   = 0. (H4+(2.*R3)+R2)      ;
+  VR2   = 0. R2                   ;
+  VD2   = R2  0.                  ;
+  PM2   = PO2 moins VR2           ;
+  PP2   = PO2 plus  VR2           ;
+  PE2   = PO2 plus  VD2           ;
+  LPM2  = droite NR2 PP2 PM2      ;
+  CME2  = cercle PM2 PO2 PE2 'DINI' DMIN 'DFIN' DMAX ;
+  CEP2  = cercle PE2 PO2 PP2 'DINI' DMAX 'DFIN' DMIN ;
+  N = NBEL CEP2;
+  CEP2S = CEP2 ELEM (LECT 1 PAS 1 (N-1));
+  ELIM CEP2 CEP2S 0.00001;
+  N = NBEL CME2;
+  CME2S = CME2 ELEM (LECT 2 PAS 1 N);
+  ELIM CME2 CME2S 0.00001;
+  
+  CONT2 = (LPM2 et CME2 et CEP2)  ;
+  SPH2  = CONT2 surface PLANE     ;
+  CEP2P = inverse CEP2            ;
+  CME2P = CME2                    ;
+
+*
+* Demi-sphere du bas
+*
+  PO3   = 0. (H4+R3)              ;
+  VR3   = 0. R3                   ;
+  VD3   = R3  0.                  ;
+  PM3   = PO3 moins VR3           ;
+  PP3   = PO3 plus  VR3           ;
+  PE3   = PO3 plus  VD3           ;
+  LPM3  = droite NR3 PP3 PM3      ;
+  CME3  = cercle PM3 PO3 PE3 'DINI' DMIN 'DFIN' DMAX ;
+  CEP3  = cercle PE3 PO3 PP3 'DINI' DMAX 'DFIN' DMIN ;
+  N = NBEL CEP3;
+  CEP3S = CEP3 ELEM (LECT 1 PAS 1 (N-1));
+  ELIM CEP3 CEP3S 0.00001;
+  N = NBEL CME3;
+  CME3S = CME3 ELEM (LECT 2 PAS 1 N);
+  ELIM CME3 CME3S 0.00001;
+  
+  CONT3 = (LPM3 et CME3 et CEP3)  ;
+  SPH3  = CONT3 surface PLANE     ;
+  CEP3P = inverse CEP3            ;
+  CME3P = CME3                    ;
+*
+* Plaque du bas : longueur R4, hauteur H4
+*
+  PA4   = 0. 0.               ;
+  VL4   = R4 0.               ;
+  VH4   = 0. H4               ;
+  PB4   = PA4 plus VL4        ;
+  LAB4  = droite PA4 PB4 'DINI' DMIN 'DFIN' DMAX ;
+  PLAQ4 = LAB4 tran NH4 VH4   ;
+  LBC4  = cote 2 PLAQ4        ;
+  LCD4  = cote 3 PLAQ4        ;
+  N = NBEL LCD4;
+  LCD4S = LCD4 ELEM (LECT 2 PAS 1 (N-1));
+  
+  LDA4  = cote 4 PLAQ4        ;
+  PC4   = LCD4 poin 'INITIAL' ;
+  PD4   = LCD4 poin 'FINAL'   ;
+  LCD4I = inverse LCD4        ;
+*
+* Structure complete
+*
+  trac (PLAQ1 et SPH2 et SPH3 et PLAQ4) ;
+  STRUCT = (PLAQ1 et SPH2 et SPH3 et PLAQ4 et LAB1P et
+            CEP2P et CME2P et CEP3P et CME3P et LCD4I) ;
+  sauv 'FORMATTE' STRUCT;
+*trac (LAB1S et CEP2S et CME2S et CEP3S et CME3S et LCD4S 
+*et PP2 et PP3 et PM3);
+
+fin;
+

@@ -1,0 +1,20 @@
+
+opti dime 2 elem qua8  ;
+a = 0. 0. ;
+b = 1. 0. ;
+c = 1. .15;
+d = 0. .15;
+*
+ve= 0. .15;
+*droite
+squa4 = a droit 80 b tran 1 ve ;
+
+l1 = a droit 80 b ;
+l2 = b droit 1  c ;
+l3 = c droit 80 d ;
+l4 = d droit 1  a ;
+mail = squa4 et l1 et l2 et l3 et l4 ;
+elim mail 0.001;
+trac qual mail ;
+sauv format mail ;
+fin;

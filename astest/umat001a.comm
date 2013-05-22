@@ -20,24 +20,15 @@
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 
-import os
-from asrun.toolbox import make_shared
-
 # Juste pour les besoins du cas-test.
 # Il est preferable d'utiliser :
 #       as_run --make_shared -o libumat.so src.f
 # avant de lancer l'etude.
+import os
+from asrun.toolbox import make_shared
 
-# Special sur la Bull
-from asrun.config import ASTER_CONFIG
-conf = ASTER_CONFIG('config.txt')
-if conf['ID_PERF'][0] == 'Bull':
-    os.rename("fort.44", "libumat.so")
-    os.chmod("libumat.so", 0755)
-else:
-    os.rename("fort.22", "fort.22.f")
-    # On force la ligne de commande pour ne pas etre gene par les licences des compilateurs
-    make_shared("libumat.so", "fort.22.f")
+os.rename("fort.22", "fort.22.f")
+make_shared("libumat.so", "fort.22.f")
 
 
 DEBUT(CODE=_F(NOM='UMAT001A',NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))

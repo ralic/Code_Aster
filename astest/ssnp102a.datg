@@ -1,0 +1,60 @@
+opti dime 2 elem tri6;
+*
+rc=.25;
+***************************
+*        Points           *
+***************************
+a=0.0 30.0;
+b=0.0 0.0+rc;
+c=(4.0-rc) (0.0+rc);
+d= 4.0 0.0;
+f= 10.0 30.0;
+e= 10.0 0.0;
+o=(4.0-rc) 0.0;
+***************************
+*       Droites           *
+***************************
+ef=droi -8 e f dini 1. dfin 10.0;
+ab=droi -8 a b dini 10. dfin 1.;
+bc=droi -10 b c dini 1. dfin 0.1;
+de=droi -20 d e dini 0.1 dfin 1.0;
+fa=droi 2 f a;
+**************************
+*       Cercle           *
+**************************
+cd=cerc 8 c o d;
+**************************
+*  Fermeture du contour 1*
+**************************
+
+contour=ab et bc et cd et de et ef et fa;
+
+**************************
+*Definition de la surface*
+*      numero 1          *
+**************************
+
+s1=surface contour plane;
+
+**************************
+* Assemblage eprouvette  *
+**************************
+
+plaque1=s1;
+eprouvet=plaque1;
+
+**************************
+*    lancement maillage  *
+**************************
+* Optimisation de la largeur de bande
+*ort eprouvet;
+* definition d'un titre
+titre 'Essai de maillage';
+*trace du maillage
+trac eprouvet;
+*sauvegarde du maillage
+opti sauv form 'ssnp102a.mgib';
+sauv format eprouvet ;
+fin;
+
+

@@ -1,0 +1,83 @@
+*****************************************************************
+* MAILLAGE D'UN CARRE ET DE DEUX TRIANGLES QUADRATIQUES
+* ET D'UN CARRE ET DE DEUX TRIANGLES LINEAIRES
+*
+* Version 27/04/00
+* CS SI (SACLAY)
+*****************************************************************
+opti echo 0 ;
+opti dime 2 ; 
+*****************************************************************
+crit = 0.0001 ;
+lon1 = 1. ;
+lon2 = lon1 + 1. ;
+lon3 = lon2 + (2. ** 1.) ;
+lon4 = lon3 + (2. ** 1.) ;
+*
+opti elem qua4 ;
+*
+a1 = 0. 0. ;
+a2 = 0. 1. ;
+*
+la = a1 droi 1 a2 ;
+*
+b1 = lon1 0. ;
+b2 = lon1 1. ;
+*
+lb = b1 droi 1 b2 ;
+*
+c1 = lon2 0. ;
+c2 = lon2 1. ;
+*
+lc = c1 droi 1 c2 ;
+*
+la3 = a1 droi 1 b1 ;
+la4 = a2 droi 1 b2 ;
+la5 = b1 droi 1 c1 ;
+la6 = b2 droi 1 c2 ;
+sa1 = la3 regl 1 la4 ;
+sa2 = la5 cout la6 ;
+sa = sa1 et sa2 ;
+elim crit sa ;
+elim crit (sa et la et lb et lc) ;
+*
+opti elem qua8 ;
+*
+d1 = lon2 0. ;
+d2 = lon2 1. ;
+*
+ld = d1 droi 1 d2 ;
+*
+e1 = lon3 0. ;
+e2 = lon3 1. ;
+*
+le = e1 droi 1 e2 ;
+*
+f1 = lon4 0. ;
+f2 = lon4 1. ;
+*
+lf = f1 droi 1 f2 ;
+*
+ld3 = d1 droi 1 e1 ;
+ld4 = d2 droi 1 e2 ;
+ld5 = e1 droi 1 f1 ;
+ld6 = e2 droi 1 f2 ;
+sd1 = ld3 regl 1 ld4 ;
+sd2 = ld5 cout ld6 ;
+sd = sd1 et sd2 ;
+elim crit sd ;
+elim crit (sd et ld et le et lf) ; ;
+*
+s = sa et sd ;
+trac cach s ;
+trac s ;
+*
+lay = la3 et la4 ;
+ldy = ld3 et ld4 ;
+lay1 = la5 et la6 ;
+ldy1 = ld5 et ld6 ;
+*
+opti sauv form 'ssnp116b.mgib' ;
+sauv form ;
+
+fin ;

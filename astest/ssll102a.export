@@ -3,7 +3,7 @@ P memory_limit 256
 P ncpus 1
 P mpi_nbcpu 1
 P mpi_nbnoeud 1
-P testlist C 
+P testlist R 
 
 F comm ssll102a.comm D 1
 F comm ssll102a.com0 D 1

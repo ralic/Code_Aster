@@ -1,0 +1,21 @@
+opti dime 3 ;
+opti elem seg3 ;
+
+xb=4.;
+yb=3.;
+
+a=   0.  0.  0.;
+b=   xb   yb  0.;
+
+*ma= droite a b 4;
+ma= droite a b 8;
+
+opti sauv form 'ssll106e.mgib' ;
+sauv form MA  ;
+*trac (0. 0. -10000.) ma ;
+
+*opti sauv form 'fort.8' ;
+
+*sauv form ma ;
+
+fin;

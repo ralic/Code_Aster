@@ -1,0 +1,92 @@
+opti dime 2 elem qua4;
+
+r=3.;
+ep=1.;
+long=-3.;
+
+nb1 = 24;
+nb2 = 24;
+nb3 = 8;
+
+o = 0. 0.;
+a = (-1.*r)  0.;
+b =  0.  r;
+c =  r   0.;
+
+a2 = -1.  0.;
+b2 =  0.  1;
+c2 =  1   0.;
+
+********************************
+* LES DEUX CERCLES : LA POULIE *
+********************************
+
+poulie = CER3 (nb1) a b c;
+encas1 = CER3 (nb1)  c2 b2 a2;
+a2a = droit (nb3) a2 a;
+cc2 = droit (nb3) c c2;
+hemi1 = dalle  a2a poulie cc2 encas1;
+hemi2 = hemi1 syme 'POINT' o;
+hemi = hemi1 et hemi2;
+elim hemi 1.e-5;
+encas2 = cote 4 hemi2;
+castr = encas1 et encas2;
+elim castr  1.e-5;
+trac castr;
+
+poulie2= cote 2 hemi2;
+poulie1= poulie2 et poulie;
+elim poulie1  1.e-5;
+trac (castr et poulie1 et hemi);
+
+poulint = hemi;
+
+********************************
+*          LA CORDE            *
+********************************
+
+a1 = (-1.*r)  0.;
+b1 =  0.  r;
+c1 =  r   0.;
+
+cordinf = CER3 nb2 c1 b1 a1;
+
+f = (-1.*(r+ep))  0.;
+e =  0.  (r+ep);
+d =  (r+ep)   0.;
+
+cordsup = CER3 nb2 d e f;
+
+cot1 = droit nb3 a1  f;
+cot2 = droit nb3 d  c1;
+
+corde = dall cot1 cordsup cot2 cordinf ;
+
+bras1 = cot1 tran nb3 (0. long);
+bras2 = cot2 tran nb3 (0. long);
+
+corde = corde et bras1 et bras2;
+trac corde;
+
+tire1 = cote 3 bras1;
+tire2 = cote 3 bras2;
+
+surfmait=inve(inve(cote 4 bras1) et cordinf et (inve(cote 2 bras2)));
+trac surfmait;
+*surfmait=inve(surfmat1);
+surfescl = inve (poulie1);
+
+trac (surfescl et hemi);
+struct = corde et tire1 et tire2 et surfmait
+et surfescl et poulint;
+
+trac (poulint et (poulie coul vert) et corde et (tire1 coul rouge) et
+(tire2 coul rouge) et (surfmait coul jaune));
+
+trac (surfescl coul jaune);
+trac (surfmait coul rouge);
+trac (surfmait et surfescl);
+
+opti sauv form 'ssnv153.mgib' ;
+sauv form struct ;
+fin;

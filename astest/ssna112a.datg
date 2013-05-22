@@ -1,0 +1,138 @@
+*Application Cabot simplifié 45 mm (0.045 m)
+* par NDR, 23/mai/2004
+*
+*   'ssna112a.datg'
+*
+*        LOI DE COMPORTEMENT DE GLISSEMENT ET D'ENDOMMAGEMENT DU BETON
+*        DANS UN MODELE AVEC UN ELEMENT QUADRANGULAIRE DEGENERE
+*      -------------------------------------
+*
+*   example en axisym, avec elem joint, effets non line
+*
+*  
+*      -------------------------------------
+
+OPTI DIME 2 ELEM QUA4;
+
+*---------------------------
+*    DONNEES DU PROBLEME
+*---------------------------
+
+* Distances de point A1 a l'origine
+
+X0 = 0.0 ;
+Y0 = 0.0 ;
+
+* LT Longueur Total de la barre        (m)
+* LC Longueur Tangentiel de l'element  (m)
+* LN Longueur Normal     de l'element  (m)
+
+LN1 =  4.0 ;
+LN2 =  0.0 ;
+LN3 = 36.0 ;
+LC  = 45.0 ;
+LT  = 55.0 ;
+
+LB  = LT - LC;
+
+*--------------------------
+*   MAILLAGE DU PROBLEME
+*--------------------------
+
+* finesse du maillage/numero de boucles
+
+K1 = 1;
+K2 = 6;
+
+N = 9;
+
+* Definition des points de la geometrie
+
+
+PA1 =  X0               Y0 ;
+PA4 = (X0+LN1)          Y0 ;
+PB1 = (X0+LN1+LN2)      Y0 ;
+PB4 = (X0+LN1+LN2+LN3)  Y0 ;
+
+
+* Bords de surface
+sideA = DROI K1 PA1 PA4 ;
+sideA = sideA COUL (bleu);
+sideC = DROI K1 PA4 PB1 ;
+sideC = sideC COUL (rouge);
+sideB = DROI K2 PB1 PB4 ;
+sideB = sideB COUL (verte);
+
+lado1 = sideA et sideC et sideB;
+
+TITRE 'Geometrie du test de Pijaudier-Cabot';
+TRAC 'QUAL' (sideA ET sideB ET sideC) ;
+TRAC 'QUAL' lado1 ;
+
+
+* maillage
+
+barext = sideA plus    (0. LC);
+extr   = barext 2 TRAN (0. LB);
+
+corps  = lado1 N TRAN  (0. LC);
+cabot1  = corps et extr;
+
+
+BETON   = cabot1   ELEM VERT;
+ACIER   = cabot1   ELEM BLEU ;
+LIAISON = cabot1   ELEM ROUGE ;
+
+
+PA2  = acier POIN PROC (    X0            (Y0+LT) ) ;
+PA3  = acier POIN PROC ((X0+LN1)          (Y0+LT) ) ;
+PB2  = beton POIN PROC ((X0+LN1+LN2)      (Y0+LC) ) ;
+PB3  = beton POIN PROC ((X0+LN1+LN2+LN3)  (Y0+LC) ) ;
+
+
+ELIM 0.00001 acier;
+
+cabot = ACIER et BETON et LIAISON ;
+
+TRAC 'QUAL' cabot1 ;
+TRAC beton ;
+TRAC acier ;
+TRAC liaison ;
+TRAC 'QUAL' cabot ;
+
+
+encast1 = (CONT cabot) ELEM COMPRIS PB4 PB3;
+encast1 = encast1 COUL (jaune);
+eje1 = (CONT cabot) ELEM COMPRIS PA2 PA1;
+eje1 = eje1 COUL (rouge);
+
+TRAC (encast1 et eje1);
+
+* Nombre total de noeuds
+LIST (NBNO cabot1) ;
+
+* Nombre total d'elements
+LIST (NBEL cabot1) ;
+
+oubli sideA;
+oubli sideB;
+oubli sideC;
+oubli lado1;
+oubli barext;
+oubli corps;
+oubli cabot1;
+
+* Nombre total de noeuds
+LIST (NBNO cabot) ;
+
+* Nombre total d'elements
+LIST (NBEL cabot) ;
+
+* Sauvegarde du maillage
+OPTI sauv form 'ssna112a.mgib';
+SAUV format (cabot);
+
+fin ;
+
+
+

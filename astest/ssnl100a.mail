@@ -1,0 +1,75 @@
+TITRE
+     ESSAI DE POULIES SUR DEUX PORTEES DE CABLE.
+FINSF
+COOR_3D
+   N1    0.00  0.  0.
+   N2    9.70  0.  0.
+   N3   19.40  0.  0.
+   N4   29.10  0.  0.
+   N5   38.80  0.  0.
+   N6   48.50  0.  0.
+   N7   58.20  0.  0.
+   N8   67.90  0.  0.
+   N9   77.60  0.  0.
+  N10   87.30  0.  0.
+  N11   97.00  0.  0.
+  N12  100.00  0.  0.
+  N13  115.00  0.  0.
+  N14  100.00  0. 10.
+  N15  124.10  0.  0.
+  N16  133.20  0.  0.
+  N17  142.30  0.  0.
+  N18  151.40  0.  0.
+  N19  160.50  0.  0.
+  N20  169.60  0.  0.
+  N21  178.70  0.  0.
+  N22  187.80  0.  0.
+  N23  196.90  0.  0.
+  N24  200.00  0.  0.
+  N25  220.00  0.  0.
+  N26  200.00  0. -10.
+FINSF
+SEG2 NOM=CAB
+% cable de N1 a N11 %
+ S1  N1  N2
+ S2  N2  N3
+ S3  N3  N4
+ S4  N4  N5
+ S5  N5  N6
+ S6  N6  N7
+ S7  N7  N8
+ S8  N8  N9
+ S9  N9  N10
+ S10 N10 N11
+% chaine d'isolateur du pylone du milieu %
+ S11 N12 N14
+% cable de N13 a N23 %
+ S12 N13 N15
+ S13 N15 N16
+ S14 N16 N17
+ S15 N17 N18
+ S16 N18 N19
+ S17 N19 N20
+ S18 N20 N21
+ S19 N21 N22
+ S20 N22 N23
+% chaine d'isolateur de fin de portee verticale avant pose %
+ S23 N24 N26
+FINSF
+SEG3 NOM=MCABPOUL
+% mailles cable_poulie %
+ S21 N11 N13 N12
+ S22 N23 N25 N24
+FINSF
+GROUP_MA NOM=MCABLE
+ S1 S2 S3 S4 S5 S6 S7 S8 S9 S10 S11 S12 S13 S14 S15 S16 S17 S18 S19 S20
+ S23
+FINSF
+GROUP_MA NOM=MCABPOUL
+ S21 S22
+FINSF
+GROUP_NO NOM=PORTEE
+ N2 N3 N4 N5 N6 N7 N8 N9 N10 N11 N12 N13 N15 N16 N17 N18 N19 N20 N21
+ N22 N23 N1 N24
+FINSF
+FIN

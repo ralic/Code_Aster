@@ -1,0 +1,42 @@
+TITRE    NOM=INDEFINI        NBOBJ=2         NBLIGE=5         NBLIGT=9     
+         AUTEUR=INTERFACE_IDEAS                 DATE=25/02/2000
+%     LES INFORMATIONS QUI SUIVENT CONCERNENT :
+%     1-LA DESCRIPTION DU FICHIER MODELE
+%     2-LA DATE D'ECRITURE DU FICHIER UNIVERSEL
+%FORMAT=(1*LIGNE_DE_TEXTE)                                                      
+  VE-25-FEVR-2000 11:30:27                                                
+                                                                          
+% ATTENTION: SI AUTEUR=INTERFACE_IDEAS TRAITEMENT SPECIAL DANS IMPR_RESU
+FINSF
+%
+COOR_3D    NOM=INDEFINI    NBOBJ=4        NBLIGE=5        NBLIGT=11    
+           NUMIN=1                        NUMAX=4     
+           AUTEUR=INTERF_ST/TF            DATE=25/02/2000
+%       XMAX= 0.00000000E+00 YMAX= 0.10000000E+01 ZMAX= 0.10000000E+01
+%       XMIN= 0.00000000E+00 YMIN= 0.00000000E+00 ZMIN= 0.00000000E+00
+%FORMAT=(1*NOM_DE_NOEUD,3*COORD)                                                
+  NO1        0.00000000000000E+00  0.00000000000000E+00  0.00000000000000E+00
+  NO2        0.00000000000000E+00  1.00000000000000E+00  0.00000000000000E+00
+  NO3        0.00000000000000E+00  1.00000000000000E+00  1.00000000000000E+00
+  NO4        0.00000000000000E+00  0.00000000000000E+00  1.00000000000000E+00
+FINSF
+%
+QUAD4      NOM=INDEFINI   NBOBJ=1        NBLIGE=3        NBLIGT=6     
+           NUMIN=1                       NUMAX=1     
+           AUTEUR=INTERF_ST/TF           DATE=25/02/2000
+%FORMAT=(1*NOM_DE_MAILLE,4*NOM_DE_NOEUD)                                        
+MA1      NO1      NO2      NO3      NO4     
+FINSF
+%
+GROUP_MA    NOM=COUL_7  
+  MA1     
+FINSF
+%
+GROUP_NO    NOM=NPRESS    NBOBJ=4      NBLIGE=3      NBLIGT=5     
+            NUMIN=1                   NUMAX=4     
+            AUTEUR=INTERF_ST/TF       DATE=25/02/2000
+%FORMAT=(1*NOM_DE_NOEUD)                                                        
+  NO1       NO2       NO3       NO4     
+FINSF
+%
+ FIN

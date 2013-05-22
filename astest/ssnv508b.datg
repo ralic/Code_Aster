@@ -1,0 +1,56 @@
+opti dime 2  elem qua8 ;
+opti niveau 8;
+
+*----------------------------------------
+*DONNEES
+*----------------------------------------
+* dimensions des cotes
+LX = 2;
+LY = 3;
+LYM = 0.-1.2;
+LYP = 0.-1.2+LY;
+LXM = 0.-LX/2;
+LXP = 0.+LX/2;
+
+* nombre d'elements
+NX = 10;
+NY = 18; 
+
+
+EPSI = 0.000001;
+*---------------------------------------------
+*construction des surfaces dans le plan inférieur
+*---------------------------------------------
+
+p1 = LXP  LYM;
+p2 = LXP  LYP;
+p3 = LXM  LYP;
+p4 = LXM  LYM;
+
+LPRESD = droit p1 p2 NY;
+LPRESV = droit p2 p3 NX;
+LPRESG = droit p4 p3 NY;
+LENCAV = droit p1 p4 NX;
+
+SPLAQ=DALL LPRESD LENCAV LPRESG LPRESV PLAN;
+*SPLAQ = (LPRESD regl NX LPRESG) coul vert; 
+
+elim EPSI SPLAQ LENCAV;
+*elim EPSI SPLAQ LPRESV;
+*OUBLIER LPRESV;
+*OUBLIER LENCAV;
+*--------------------------------
+MTOT =  SPLAQ;
+
+elim MTOT 1E-6;       
+trac MTOT;
+mess 'VERIFICATION DU MAILLAGE :';
+mess 'nbel MTOT   : ' (nbel MTOT);
+mess ' ';
+mess 'nbno MTOT   : ' (nbno MTOT);
+                 
+*
+opti sauv form '/local01/X_FEM/TEST/ssnv508b.mgib';
+sauv form MTOT;
+*
+fin ;

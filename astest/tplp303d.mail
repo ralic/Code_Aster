@@ -1,0 +1,46 @@
+COOR_2D
+     N1   0.0  1.0
+     N2   0.5  1.5
+     N3   1.0  2.0
+     N4   0.0  0.5
+     N5   0.5  1.0
+     N6   1.0  1.5
+     N7   0.0  0.0
+     N8   0.5  0.5
+     N9   1.0  1.0
+     N10  0.5  0.0
+     N11  1.0  0.5
+     N12  1.0  0.0
+FINSF
+
+QUAD4
+     M1       N12   N11    N8   N10
+     M2       N10    N8    N4    N7
+     M3       N11    N9    N5    N8
+     M4        N8    N5    N1    N4
+     M5        N9    N6    N2    N5
+FINSF
+
+TRIA3
+     M6        N2    N1    N5
+     M7        N2    N6    N3
+FINSF
+
+SEG2
+     B1       N12   N11
+     B2       N11    N9
+     B3        N9    N6
+     B4        N1    N4
+     B5        N4    N7
+     B6        N6    N3
+FINSF
+
+GROUP_MA
+   CONV_EXT    B1    B2    B3    B6
+FINSF
+
+GROUP_MA
+  CONV_INT     B4    B5
+FINSF
+
+FIN

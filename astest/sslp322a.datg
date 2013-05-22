@@ -1,0 +1,75 @@
+// plaque 2D trouée
+
+// dimensions
+lx=0.1;
+ly=0.1;
+
+//densités
+dens  = 0.5;
+dens1 = 0.1;
+
+
+//petite plaque autour
+//duplication des points
+Point(1) = {  0., 0., 0, dens};
+Point(2) = { 1., 0., 0, dens};
+Point(23)= { 3., 0., 0, dens1};
+Point(3) = {19., 0., 0, dens};
+Point(4) = {20., 0., 0, dens};
+Point(5) = {20.,8., 0, dens};
+Point(6) = {10.,8., 0, dens};
+Point(7) = {  0.,8., 0, dens};
+
+Line (1) = {1, 2};
+Line (2) = {2, 23};
+Line (23)= {23, 3};
+Line (3) = {3, 4};
+Line (4) = {4, 5};
+Line (5) = {5, 6};
+Line (6) = {6, 7};
+Line (7) = {7, 1};
+Line Loop (1) = {1, 2, 23,3, 4, 5, 6, 7};
+
+
+rayon = 0.25;
+
+// cercle haut
+Point(8)  = {6.         , (8.-1.25) ,0., dens};
+Point(9)  = {(6.+rayon) , (8.-1.25) ,0., dens};
+Point(10) = {(6.-rayon) , (8.-1.25) ,0., dens};
+Circle(111) = {9,8,10};
+Circle(222) = {10,8,9};
+Line Loop(10) = {111,222};
+
+// cercle milieu
+Point(11) = { 6.        , (8.-1.25-2.) ,0., dens1};
+Point(12) = {(6.+rayon) , (8.-1.25-2.) ,0., dens1};
+Point(13) = {(6.-rayon) , (8.-1.25-2.) ,0., dens1};
+Circle(333) = {12,11,13};
+Circle(444) = {13,11,12};
+Line Loop(20) = {333,444};
+
+
+// cercle bas
+Point(14) = { 6.        , (8.-1.25-2.-2.) ,0., dens1};
+Point(15) = {(6.+rayon) , (8.-1.25-2.-2.) ,0., dens1};
+Point(16) = {(6.-rayon) , (8.-1.25-2.-2.) ,0., dens1};
+Circle(555) = {15,14,16};
+Circle(666) = {16,14,15};
+Line Loop(30) = {555,666};
+
+//Point(99) = { 150, 50, -1., dens};
+//Point(100) = { 150, 50, 1., dens};
+//Line (100) = {99, 100};
+//Attractor Point{99} =  {0.01, 0.01, 2};
+//Attractor Point{100} = {0.01, 0.01, 2};
+//Attractor Line{100} = {0.01, 0.01, 0.020};
+
+
+Plane Surface (1) = {1, 10, 20, 30};
+
+Physical Surface ( 1 ) = { 1 };     // MSURF
+Physical Point   ( 2 ) = { 2 };   // NAPPUI1
+Physical Point   ( 3 ) = { 3 };   // NAPPUI2
+Physical Point   ( 4 ) = { 6 };     // NFORCE
+

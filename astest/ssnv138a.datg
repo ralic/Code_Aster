@@ -1,0 +1,22 @@
+opti dime 3 elem seg3 ;
+
+P1 = 0. -0.5 0. ;
+P2 = 10. -0.5 0. ;
+P3 = 10. 0.5 0. ;
+P4 = 0. 0.5 0. ;
+
+ENCASTR = droit 1 P1 P4 ;
+LIBRE = droit 1 P2 P3 ;
+L1 = droit 10 P1 P2 ;
+L2 = droit 10 P3 P4 ;
+
+opti elem qua8 ;
+
+TOUT = daller ENCASTR L1 LIBRE L2 plan;
+TRAC TOUT ;
+
+opti sauv form 'ssnv138a.mgib' ;
+sort tout ;
+sauv form tout ;
+
+fin;

@@ -1,0 +1,28 @@
+opti dime 2;
+opti elem qua8;
+*
+*A =   -1.   1. ;
+*B =   -1.   -1. ;
+*C =   1.   -1. ;
+*D =   1.   1. ;
+*
+A =   1.   1. ;
+B =   1.   -1.;
+C =   3.   -1. ;
+D =   3.   1. ;
+*
+* lignes et surfaces:
+*
+lAB = droi 1 A B ;
+lBC = droi 1 B C ;
+lCD = droi 1 C D ;
+lDA = droi 1 D A ;
+l = lAB et lBC et lCD et lDA;
+*
+* Maillage
+*
+s=surface l plane;
+*
+opti sauv form 'ssnv124a.mgib';
+sauv form s;
+TRAC s;

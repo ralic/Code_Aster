@@ -1,0 +1,18 @@
+opti dime 2 elem qua4 ;
+
+
+a  = 0.   0.;
+b  = 1.   0.;
+
+
+ab = droi  4  a b  ;
+carre1= ab tran 2 (0. 0.5);
+carre2= carre1 tran 2 (0. 0.5);
+cd = carre2 cote 3;
+c = carre2 poin proc (1. 1.);
+*trac carre2;
+
+opti sauv form 'zzzz240a.mgib' ;
+sort carre2;
+sauv form carre2 ;
+fin;

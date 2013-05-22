@@ -1,0 +1,14 @@
+opti dime 3 ;
+opti elem seg2 ;
+
+xb=10.;
+yb=0.;
+
+a=   0.  0.  0.;
+b=   xb   yb  0.;
+
+ma= droite a b 18 ;
+
+opti sauv form 'shll101c.mgib' ;
+sauv form MA  ;
+trac (0. 0. -10000.) ma ;

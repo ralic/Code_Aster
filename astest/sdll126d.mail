@@ -1,0 +1,112 @@
+TITRE                   
+%  GIBI FECIT           
+FINSF                   
+%                       
+COOR_3D                 
+N1      0.0000D+00      0.0000D+00      0.000D+00
+N2      0.0000D+00      0.0000D+00      1.000D-01
+N3      0.0000D+00      0.0000D+00      2.000D-01
+N4      0.0000D+00      0.0000D+00      3.000D-01
+N5      0.0000D+00      0.0000D+00      4.000D-01
+N6      0.0000D+00      0.0000D+00      5.000D-01
+N7      0.0000D+00      0.0000D+00      6.000D-01
+N8      0.0000D+00      0.0000D+00      7.000D-01
+N9      0.0000D+00      0.0000D+00      8.000D-01
+N10     0.0000D+00      0.0000D+00      9.000D-01
+N11     0.0000D+00      0.0000D+00      1.000D-00
+N12     0.0000D+00      0.0000D+00      1.100D-00
+N13     0.0000D+00      0.0000D+00      1.200D-00
+N14     0.0000D+00      0.0000D+00      1.300D-00
+FINSF
+%                       
+SEG2                    
+M1      N1       N2             
+M2      N2       N3             
+M3      N3       N4             
+M4      N4       N5             
+M5      N5       N6             
+M6      N6       N7
+M7      N7       N8
+M8      N8       N9
+M9      N9       N10
+M10     N10      N11
+M11     N11      N12
+M12     N12      N13
+M13     N13      N14
+FINSF   
+%       
+POI1
+MPA N1
+MPE N14
+MPC N6
+DISQUE1 N3
+DISQUE2 N6
+DISQUE3 N11
+FINSF
+%       
+GROUP_MA 
+PALIER_A
+MPA
+FINSF
+%
+GROUP_MA 
+PALIER_E
+MPE
+FINSF
+%
+GROUP_MA 
+PALIER_C
+MPC
+FINSF
+%
+GROUP_MA 
+ROTOR
+M1      M2      M3      M4      M5      M6      M7
+M8      M9      M10     M11     M12     M13
+FINSF                                           
+%                                               
+GROUP_MA
+DISQUE1
+DISQUE1
+FINSF
+
+GROUP_MA 
+DISQUE2
+DISQUE2
+FINSF
+
+GROUP_MA 
+DISQUE3
+DISQUE3
+FINSF
+
+GROUP_NO 
+PALIER_A
+N1
+FINSF
+
+GROUP_NO 
+PALIER_E
+N14
+FINSF
+
+GROUP_NO 
+PALIER_C
+N6
+FINSF
+
+GROUP_NO 
+N_DIS1
+N3
+FINSF
+
+GROUP_NO 
+N_DIS2
+N6
+FINSF
+
+GROUP_NO 
+N_DIS3
+N11
+FINSF
+FIN                                             

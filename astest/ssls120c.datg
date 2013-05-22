@@ -1,0 +1,54 @@
+*
+OPTI DIME 3  ;
+
+Rm = 5.7 ;
+LG = 16.     ;
+
+A2 = (-1.*RM)  0. 0. ;
+PM = 0. RM 0.  ;
+A1 = RM   0.   0.;
+C1 = 0. 0. 0. ;
+
+VECT1 = 0. 0. LG  ;
+
+OPTI ELEM TRI6 ;
+
+NEL=10 ;
+
+ligneb1 = CERC NEL A1 C1 PM ;
+virol1 = ligneb1 NEL TRAN VECT1 ;
+
+OPTI ELEM TRI6 ;
+
+ligneb2 = CERC NEL PM C1 A2 ;
+virol2 = ligneb2 NEL TRAN VECT1 ;
+***virol2 = chan tri6 virol2 ;
+
+virole = virol1 et virol2 ;
+
+elim 0.001 virole ;
+
+symet = (cote 4 virol1) et (cote 2 virol2) ;
+lignehau = (cote 3 virol1) et (cote 3 virol2) ;
+lignehau = lignehau coul bleu ;
+A3 = lignehau point initial ;
+A4 = lignehau point final ;
+
+symet = symet coul roug ;
+
+lignebas = (ligneb1 et ligneb2) coul vert ;
+
+elim 0.001 (virole et lignebas et symet et lignehau);
+
+trac (virole et lignebas et symet et lignehau);
+
+
+opti sauv form 'ssls120b.mgib' ;
+
+sauv form virole ;
+
+opti elem seg2 ;
+laxe = prog 3. 3. 3. ;
+rep1 = @repere laxe ;
+trac (1000. -1000. 1000.) (virole et lignebas et symet et rep1);
+

@@ -1,0 +1,28 @@
+OPTI DIME 3 ELEM CUB8 ;
+
+DEBPROC TEST ;
+
+crit = 1.E-7 ;
+
+A = 0. 0. 0. ;
+B = 1. 0. 0. ;
+C = 1. 1. 0. ;
+D = 0. 1. 0. ;
+E = 0. 0. -1. ;
+F = 1. 0. -1. ;
+H = 0. 1. -1. ;
+AB = DROI 1 A B ;
+surf = AB TRAN 1 (0. 1. 0.) ;
+vol = surf VOLU 1 'TRAN' ( 0. 0. -1.) ;
+
+ELIM crit ( VOL et C et D et E et F et H) ;
+
+chpo = ('ENVE' VOL ) POINT PLAN B C F crit ;
+FORCE = ('ENVE' VOL) ELEM  APPUYE STRICTEMENT chpo ;
+
+chpo = ('ENVE' VOL ) POINT PLAN A D E crit ;
+ENCAS = ('ENVE' VOL) ELEM  APPUYE STRICTEMENT chpo ;
+
+FINPROC vol ENCAS FORCE A B C D E H ;
+
+VOL ENCAS FORCE A B C D E H = TEST ;

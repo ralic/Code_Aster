@@ -1,0 +1,52 @@
+*--------1---------2---------3--------4---------5---------6---------7--
+* Ktest - UMLV_FP
+*
+* ylp. octobre 2002
+*
+* on se contente de mailler un cube de cote unitaire
+*
+opti dime 3 elem seg2 ;
+dens 1. ;
+n1 = 1 ;
+*
+p1 = (0.0 0.0 0.0) ;
+p2 = (1.0 0.0 0.0) ;
+p3 = (0.0 1.0 0.0) ;
+p4 = (1.0 1.0 0.0) ;
+*
+pc = (1.0 1.0 1.0) ;
+*
+c_inf = p1 d n1 p2 d n1 p4 d n1 p3 d n1 p1 ;
+*
+opti elem qua4 ;
+s_inf = surf c_inf 'PLANE' ;
+*
+opti elem cub8 ;
+vol1 = s_inf volu 'TRAN' (0.0 0.0 1.0) ;
+*
+* denommination des faces externes ;
+s_sup = vol1 poin 'PLAN' (0.0 0.0 1.0)
+                         (1.0 0.0 1.0)
+                         (1.0 1.0 1.0) ;
+s_gch = vol1 poin 'PLAN' (0.0 0.0 1.0)
+                         (0.0 0.0 0.0)
+                         (0.0 1.0 1.0) ;
+s_arr = vol1 poin 'PLAN' (0.0 1.0 1.0)
+                         (1.0 1.0 0.0)
+                         (1.0 1.0 1.0) ;
+s_drt = vol1 poin 'PLAN' (1.0 0.0 1.0)
+                         (1.0 0.0 0.0)
+                         (1.0 1.0 0.0) ;
+s_avt = vol1 poin 'PLAN' (0.0 0.0 1.0)
+                         (1.0 0.0 0.0)
+                         (1.0 0.0 1.0) ;
+elim (vol1 et s_inf et s_sup
+           et s_avt et s_drt
+          et s_arr et s_gch et pc ) 1.0d-4 ;
+*
+opti sauv form 'ssnv163a.mgib' ;
+sauv form vol1 ;
+*
+trac vol1 qual ;
+
+fin ;

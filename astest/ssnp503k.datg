@@ -1,0 +1,149 @@
+opti dime 3  elem tet4 ;
+
+*----------------------------------------
+*DONNEES
+*----------------------------------------
+dens = 0.2;
+* dimensions des cotes
+LX = 4;
+LY1 = 2.5;
+LY2 = 4;
+Lz = 0.25;
+L = 0.125;
+DX = LX 0. 0.;
+DY1 =  0. LY1 0.;
+DY2 =  0. LY2 0.;
+DZ =  0. 0. lz;
+
+* nombre d'elements
+NX = 16;
+NY1 = 10;
+NY2 = 16;
+Nz = 1;
+
+L2=(LY1-L) / (NY1-1);
+L3=(LY2-(2*L)) / (NY2);
+*---------------------------------------------
+*construction points
+*---------------------------------------------
+
+P1 = 0. 0. 0.;
+P2 = P1 PLUS DX;
+P3 = P2 PLUS DY1;
+P4 = P3 MOIN DX;
+
+P5 = 0. 2.5 0.;
+P6 = P5 PLUS DX;
+P7 = P6 PLUS DY2;
+P8 = P7 MOIN DX;
+
+P9 = 0. 6.5 0.;
+P10= P9 PLUS DX;
+P11= P10 PLUS DY1;
+P12= P11 MOIN DX;
+
+*---------------------------------------------
+*construction des surfaces pour CL deplacement
+*---------------------------------------------
+
+L11 = DROIT P1 P2 NX;
+L24 = (DROI P5 (0 (2.5+L) 0) 1) et (DROI (0 (2.5+L) 0)
+(0 (6.5-L) 0) NY2) et (DROI (0 (6.5-L) 0) P8 1);
+L33 = DROIT P11 P12 NX;
+
+S11 = L11 TRAN Dz Nz;
+S24 = L24 TRAN Dz Nz;
+S33 = L33 TRAN Dz Nz;
+
+*---------------------------------------------
+*construction des surfaces de contact
+*---------------------------------------------
+
+S13 = (MANU tri3 (0 2.5 0)(L 2.5 0)(0 2.5 L))
+et(MANU tri3 (0 2.5 L)(0 2.5 Lz)(L 2.5 0))
+et(MANU tri3 (L 2.5 L)(0 2.5 Lz)(L 2.5 0))
+et(MANU tri3 (L 2.5 L)(Lz 2.5 0)(L 2.5 0))
+et(MANU tri3 (L 2.5 L)(Lz 2.5 0)(Lz 2.5 L))
+et(MANU tri3 (L 2.5 L)(Lz 2.5 Lz)(Lz 2.5 L))
+et(MANU tri3 (L 2.5 L)(Lz 2.5 Lz)(L 2.5 Lz))
+et(MANU tri3 (0 2.5 Lz)(L 2.5 L)(L 2.5 Lz));
+
+S13 = S13 et (S13 PLUS (0.25 0 0));
+S13 = S13 et (S13 PLUS (0.5 0 0));
+S13 = S13 et (S13 PLUS (1 0 0));
+
+S13 = elim (S13 et (S13 PLUS (2 0 0))) 0.0001;
+*S21 = S13 plus (0. 0. 0.);
+S21 = S13 syme droi (2 2.5 0) (2 2.5 1);
+
+S23 = S21 SYME PLAN (0 4.5 0) (1 4.5 0) (0 4.5 1);
+S31 = S13 SYME PLAN (0 4.5 0) (1 4.5 0) (0 4.5 1);
+
+*---------------------------------------------
+*construction du premier et troisieme volume
+*---------------------------------------------
+
+vol1=(MANU tet4 (0 2.5 0)(L 2.5 0)(0 2.5 L)(0 2.375 0))
+et(MANU tet4 (L 2.5 0)(0 2.5 L)(0 2.375 0)(Lz 2.375 0))
+et(MANU tet4 (0 2.5 L)(0 2.375 0)(Lz 2.375 0)(0 2.375 Lz))
+et(MANU tet4 (0 2.5 L)(0 2.5 Lz)(Lz 2.375 0)(0 2.375 Lz))
+et(MANU tet4 (0 2.5 L)(0 2.5 Lz)(Lz 2.375 0)(L 2.5 0))
+et(MANU tet4 (L 2.5 L)(0 2.5 Lz)(Lz 2.375 0)(L 2.5 0))
+et(MANU tet4 (L 2.5 L)(Lz 2.5 0)(Lz 2.375 0)(L 2.5 0))
+et(MANU tet4 (L 2.5 L)(Lz 2.5 0)(Lz 2.375 0)(Lz 2.5 L));
+
+vol1=vol1
+et(MANU tet4 (L 2.5 L)(Lz 2.5 Lz)(Lz 2.375 0)(Lz 2.5 L))
+et(MANU tet4 (L 2.5 L)(Lz 2.5 Lz)(Lz 2.375 0)(L 2.5 Lz))
+et(MANU tet4 (Lz 2.375 Lz)(Lz 2.5 Lz)(Lz 2.375 0)(L 2.5 Lz))
+et(MANU tet4 (Lz 2.375 Lz)(0 2.5 Lz)(L 2.5 L)(L 2.5 Lz))
+et(MANU tet4 (Lz 2.375 Lz)(0 2.5 Lz)(L 2.5 L)(0 2.375 Lz))
+et(MANU tet4 (Lz 2.375 Lz)(Lz 2.375 0)(L 2.5 L)(0 2.375 Lz));
+
+sur1 = (MANU TRI3 (0 0 0) (0 L2 0) (0.25 0 0)) et
+(MANU TRI3 (0.25 L2 0) (0 L2 0) (0.25 0 0));
+
+sur1 = sur1 et (sur1 PLUS (0 L2 0)) et (sur1 PLUS (0 (2*L2) 0));
+sur1 = sur1 et (sur1 PLUS (0 (3*L2) 0)) et (sur1 PLUS (0 (6*L2) 0));
+
+volu1 = vol1 et ((VOLU TRAN sur1 Dz Nz)chan tet4);
+
+volu1 = volu1 et (volu1 PLUS (0.25 0 0));
+volu1 = volu1 et (volu1 PLUS (0.5 0 0));
+volu1 = volu1 et (volu1 PLUS (1 0 0));
+volu1 = volu1 et (volu1 PLUS (2 0 0));
+volu3 = volu1 SYME PLAN (0 4.5 0) (1 4.5 0) (0 4.5 1);
+
+volu1 = elim (S11 et S13 et volu1) 0.0001;
+volu3 = elim (S31 et s33 et volu3) 0.0001;
+
+*---------------------------------------------
+*construction du deuxieme volume
+*---------------------------------------------
+
+sur2 = (MANU TRI3 (0 (2.5+L) 0) (0 (2.5+L3+L) 0) (0.25 (2.5+L) 0))
+et (MANU TRI3 (0.25 (2.5+L3+L) 0) (0 (2.5+L3+L) 0) (0.25 (2.5+L) 0));
+
+sur2 = sur2 et (sur2 plus (0 L3 0));
+sur2 = sur2 et (sur2 plus (0 (2*L3) 0));
+sur2 = sur2 et (sur2 plus (0 (4*L3) 0));
+
+volu2 = (vol1 SYME DROI (0.125 2.5 0) (0.125 2.5 1)) et
+((VOLU TRAN sur2 Dz Nz)chan tet4);
+volu2 = volu2 et (volu2 PLUS (0.25 0 0));
+volu2 = volu2 et (volu2 PLUS (0.5 0 0));
+volu2 = volu2 et (volu2 PLUS (1 0 0));
+volu2 = volu2 et (volu2 PLUS (2 0 0));
+volu2 = elim (S21 et S23 et S24 et volu2 et
+(volu2 SYME PLAN (0 4.5 0) (1 4.5 0) (0 4.5 1))) 0.0001;
+
+*---------------------------------------------
+
+MAILLE = volu1 et volu2 et volu3;
+
+trac MAILLE cach;
+
+opti sauv format
+'/work/irlin831_1/siavelim/CAS/Tests2/ssnp503k.mgib';
+sauv format maille ;
+fin ;

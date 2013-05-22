@@ -1,0 +1,168 @@
+*Patin glissant sur un plan rigide inclinée
+*
+***Construction du plan rigide
+
+opti dime 3 ;
+opti nive 10 ;
+opti elem cub8 ;
+
+*Jeu
+J = 2. ;
+*Rotation
+alpha = 30. ;
+
+N = 12 ;
+
+*Création du plan rigide
+S1 = 0.  0.   0. ;
+S2 = 0.  0. -60. ;
+lS1S2= droit 1 S1 S2 ;
+BASE = lS1S2 TRANS 1 (60. 0. 0.) ;
+
+BATI = BASE VOLU 1 TRANS (0. 5. 0. ) ;
+ELIM 0.001 BATI; 
+BATI = REGENERER BATI ;
+
+Z1 = 0. 0. -80. ;
+Z2 = 0. 0.  80. ;
+
+BATI = BATI TOUR alpha Z1 Z2 ;
+SMAI = BATI FACE 2 ;
+BASE = BATI FACE 1 ;
+ELIM 0.001 (BATI et BASE et SMAI) ;
+BATI = REGENERER BATI ;
+OUBLIER LS1S2 ;
+
+*trac cach(BATI );
+
+*Création du patin
+N2 = entier N/3 ;
+N3 = 2*N2 ;
+A = 10. (5.+J) (-20.) ;
+B = 50. (5.+J) (-20.) ;
+C = 50. (5.+J) (-40.) ;
+D = 10. (5.+J) (-40.) ;
+
+A1 = 10. (25.+J) (-20.) ;
+B1 = 50. (25.+J) (-20.) ;
+C1 = 50. (25.+J) (-40.) ;
+D1 = 10. (25.+J) (-40.) ;
+
+lAD = droit N2 A D ;
+Surf2   = lAD TRANS N3 (40. 0. 0.) ;
+LBC = Surf2 cote 3;
+ELIM 0.001 (LBC et Surf2);
+FACELAT = lAD TRANS N2 (0. 20. 0.) ;
+
+PATIN = Surf2 volu N2 trans (0. 20. 0.);
+ELIM 0.001 PATIN ;
+PATIN = REGENERER PATIN; 
+OUBLIER Surf2 ;
+
+*Création des ressorts
+R1 = 60. ( 5.+J)  -20. ;
+R2 = 60. ( 5.+J)  -40. ;
+R3 = 60. (25.+J)  -40. ;
+R4 = 60. (25.+J)  -20. ;
+
+F1 = 50. ( 5.+J)  -60. ;
+F2 = 10. ( 5.+J)  -60. ;
+F3 = 10. (25.+J)  -60. ;
+F4 = 50. (25.+J)  -60. ;
+
+P1 = 10. (30.+J)  -20. ;
+P2 = 50. (30.+J)  -20. ;
+P3 = 50. (30.+J)  -40. ;
+P4 = 10. (30.+J)  -40. ;
+
+opti elem seg2;
+lR1 = droit 1 B  R1;
+lR2 = droit 1 C  R2;
+lR3 = droit 1 C1 R3;
+lR4 = droit 1 B1 R4;
+lR1 = lR1 tour alpha Z1 Z2;
+lR2 = lR2 tour alpha Z1 Z2;
+lR3 = lR3 tour alpha Z1 Z2;
+lR4 = lR4 tour alpha Z1 Z2;
+R1 = lR1 point final;
+R2 = lR2 point final;
+R3 = lR3 point final;
+R4 = lR4 point final;
+
+lF1 = droit 1 C  F1;
+lF2 = droit 1 D  F2;
+lF3 = droit 1 D1 F3;
+lF4 = droit 1 C1 F4;
+lF1 = lF1 tour alpha Z1 Z2;
+lF2 = lF2 tour alpha Z1 Z2;
+lF3 = lF3 tour alpha Z1 Z2;
+lF4 = lF4 tour alpha Z1 Z2;
+F1 = lF1 point final;
+F2 = lF2 point final;
+F3 = lF3 point final;
+F4 = lF4 point final;
+
+lP1 = droit 1 A1  P1;
+lP2 = droit 1 B1  P2;
+lP3 = droit 1 C1  P3;
+lP4 = droit 1 D1  P4;
+lP1 = lP1 tour alpha Z1 Z2;
+lP2 = lP2 tour alpha Z1 Z2;
+lP3 = lP3 tour alpha Z1 Z2;
+lP4 = lP4 tour alpha Z1 Z2;
+P1 = lP1 point final;
+P2 = lP2 point final;
+P3 = lP3 point final;
+P4 = lP4 point final;
+
+lR= lR1 et lR2 et lR3 et lR4;
+elim 0.001 (lR1 et lR2 et lR3 et lR4 et lR);
+lF= lF1 et lF2 et lF3 et lF4;
+elim 0.001 (lF1 et lF2 et lF3 et lF4 et lF);
+lP= lP1 et lP2 et lP3 et lP4;
+elim 0.001 (lP1 et lP2 et lP3 et lP4 et lP);
+
+OUBLIER lR1 ; 
+OUBLIER lR2 ;
+OUBLIER lR3 ;
+OUBLIER lR4 ;
+OUBLIER lP1 ; 
+OUBLIER lP2 ;
+OUBLIER lP3 ;
+OUBLIER lP4 ;
+OUBLIER lF1 ; 
+OUBLIER lF2 ;
+OUBLIER lF3 ;
+OUBLIER lF4 ;
+OUBLIER LBC ;
+* fin des ressorts
+* rotation
+opti elem cub8;
+A = A TOUR alpha Z1 Z2;
+B = B TOUR alpha Z1 Z2;
+C = C TOUR alpha Z1 Z2;
+D = D TOUR alpha Z1 Z2;
+
+FACELAT = FACELAT TOUR alpha Z1 Z2;
+PATIN = PATIN TOUR alpha Z1 Z2 ;
+OUBLIER (Z1 et Z2);
+
+SESC    = PATIN FACE 1;
+FACESUP = PATIN FACE 2;
+ELIM 0.01 (PATIN et FACELAT et A et B et C et D);
+ELIM 0.01 (PATIN et LP et LR et LF);
+PATIN = REGENERER PATIN ;
+SESC = REGENERERE SESC ;
+FACESUP = REGENERER FACESUP ;
+FACELAT = REGENERER FACELAT ;
+
+trac cach((lP coul jaune) et (lF coul rouge) et (lR coul vert) 
+      et PATIN et (FACELAT coul vert) et bati); 
+
+
+OPTI SAUV FORM 
+   'ssnv503e.mgib';
+sauv form (PATIN et BATI et LF et LP et LR et
+           FACELAT et A et B et C et D);
+
+fin;     

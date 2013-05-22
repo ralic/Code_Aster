@@ -1,0 +1,46 @@
+* AUTEUR : Aurore Parrot             le 23 juillet 2002                           
+* FICHIER : VER
+* Maillage d'un élément QUA4
+*
+* VERSION : GIBI99
+*
+* Unites en mm
+*
+**************************************************                                                                     
+
+
+debut;                                                                  
+OPTI DIME 2 ELEM  QUA4 NIVE 10 SAUV FORM 'ssnl129e.mgib';                                                                       
+
+*************************************************                                                                    
+* definition des points                                                 
+*************************************************
+
+p1=0. 0.;
+p2=0. 1.;
+p3=1. 1.;
+p4=1. 0.;
+
+*************************************************                                                                      
+* Definition des lignes                                                 
+*************************************************
+                                                                       
+l12 = DROI 1 p1 p2;
+l23 = DROI 1 p2 p3;
+l34 = DROI 1 p3 p4;
+l41 = DROI 1 p4 p1;                                 
+                                                                        
+*************************************************                                                                       
+* Creation des surfaces                                                 
+*************************************************                                                                       
+
+s1 = l12 l23 l34 l41 DALL PLAN;
+
+maillage = s1 et l12 et l23 et l34 et l41;
+                                                          
+ELIM 0.001 maillage;
+TITRE 'Elément quadratique';
+TRAC maillage;
+SAUV format maillage; 
+
+fin;

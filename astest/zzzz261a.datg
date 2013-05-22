@@ -1,0 +1,34 @@
+opti dime 2 elem qua4 ;
+
+
+* Maillage de ABCD :
+* ------------------
+a  = 0.   0.;
+b  = 1.   0.;
+n1=9;
+
+ab = droi n1 a b ;
+
+abcd= ab tran n1 (0. 1.);
+
+
+* trac abcd;
+opti sauv form 'zzzz261a.19' ;
+sauv form abcd ;
+
+
+* Maillage de EFGH :
+* ------------------
+e  = 0.   0.;
+f  = 1.   0.;
+n1=12;
+
+ef = droi n1 e f ;
+
+efgh= ef tran n1 (0. 1.);
+o1=efgh poin proc (0.50   0.50);
+
+* trac efgh;
+opti sauv form 'zzzz261a.18' ;
+sauv form efgh ;
+fin;

@@ -21,16 +21,14 @@
 # CYLINDRE CREUX THERMOELASTICITE LINEAIRE
 # test identique a UMAT001A
 
-import os
-from asrun.toolbox import make_shared
-
 # Juste pour les besoins du cas-test.
 # Il est preferable d'utiliser :
 #       as_run --make_shared -o libumat.so src.f
 # avant de lancer l'etude.
+import os
+from asrun.toolbox import make_shared
 
 os.rename("fort.22", "fort.22.f")
-# On force la ligne de commande pour ne pas etre gene par les licences des compilateurs
 make_shared("libumat.so", "fort.22.f")
 
 

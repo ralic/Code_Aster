@@ -1,0 +1,76 @@
+TITRE
+% SDLL02/B                                                       17/1/95
+% POUTRE ENCASTREE-LIBRE REPLIEE SUR ELLE-MEME
+% SECTION RECT 5*50MM --- L=2*0.5M --- 2D
+%                                                   REF: SFM.VPCS SDLL02
+% MODELISATION POU_D_E: 21 NOEUDS --  20 MAILLES SEG2
+% POINTS  A     B    C
+FINSF
+%  -----------------------------------------------------------------------------
+%
+COOR_3D         % 21 NOEUDS
+
+%   NOEUD       X         Y       Z
+     A         0.00       0.      0.     % A
+     N2        0.05       0.      0.
+     N3        0.10       0.      0.
+     N4        0.15       0.      0.
+     N5        0.20       0.      0.
+     N6        0.25       0.      0.
+     N7        0.30       0.      0.
+     N8        0.35       0.      0.
+     N9        0.40       0.      0.
+     N10       0.45       0.      0.
+     B         0.50       0.      0.     % B
+     N12       0.45       0.      0.
+     N13       0.40       0.      0.
+     N14       0.35       0.      0.
+     N15       0.30       0.      0.
+     N16       0.25       0.      0.
+     N17       0.20       0.      0.
+     N18       0.15       0.      0.
+     N19       0.10       0.      0.
+     N20       0.05       0.      0.
+     C         0.00       0.      0.     % C
+%
+FINSF
+%
+%                               20 MAILLES
+SEG2
+%     SEG      ND-I.    ND-F.
+%
+       S1      A        N2
+       S2      N2       N3
+       S3      N3       N4
+       S4      N4       N5
+       S5      N5       N6
+       S6      N6       N7
+       S7      N7       N8
+       S8      N8       N9
+       S9      N9       N10
+       S10     N10      B
+       S11     N12      B
+       S12     N13      N12
+       S13     N14      N13
+       S14     N15      N14
+       S15     N16      N15
+       S16     N17      N16
+       S17     N18      N17
+       S18     N19      N18
+       S19     N20      N19
+       S20     C        N20
+FINSF
+%
+FIN
+
+
+       S11     B        N12
+       S12     N12      N13
+       S13     N13      N14
+       S14     N14      N15
+       S15     N15      N16
+       S16     N16      N17
+       S17     N17      N18
+       S18     N18      N19
+       S19     N19      N20
+       S20     N20      C

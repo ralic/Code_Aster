@@ -6,8 +6,4 @@ P mpi_nbnoeud 1
 P testlist C 
 
 F comm zzzz176a.comm D 1
-F mail zzzz176a.mail D 20
 F msup zzzz176a.msup D 19
-F libr zzzz176a.22 D 22
-F libr zzzz176a.23 D 23
-F libr zzzz176a.24 D 24

@@ -1,0 +1,42 @@
+* ------------------------------------
+*       PARAMETRES DE LA PIECE
+* ------------------------------------
+
+OPTION DIME 2 NIVE 11 ELEM QUA8 ;
+
+*==============
+DEBPROC GRAVI ;
+*==============
+
+A =  -1.00   -1.00 ;
+B =   1.00   -1.00 ;
+C =   1.00    1.00 ;
+D =  -1.00    1.00 ;
+
+AB = DROITE 1 A B ;
+BC = DROITE 1 B C ;
+CD = DROITE 1 C D ;
+DA = DROITE 1 D A ;
+
+ROCHE   = DALL AB BC CD DA 'PLAN' ;
+
+*=============================================================
+FINPROC ROCHE AB BC CD DA;
+
+ROCHE AB BC CD DA = GRAVI ;
+*=============================================================
+
+TRACER ROCHE ;
+
+* ------------------
+*     SAUVEGARDE
+* ------------------
+
+OPTION SAUV FORMAT
+
+'/home/user/ssll117a.mgib';
+SAUV FORMAT ROCHE ;
+
+FIN ;
+
+

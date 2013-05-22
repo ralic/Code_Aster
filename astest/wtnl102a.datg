@@ -1,0 +1,42 @@
+* ------------------------------------
+*       PARAMETRES DE LA PIECE
+* ------------------------------------
+
+OPTION DIME 2 ELEM QUA8 ;
+
+*==============
+DEBPROC GRAVI ;
+*==============
+
+NO1 =   0.00     0.00     ;
+NO2 =   1.00     0.00     ;
+NO3 =   1.00     0.05     ;
+NO4 =   0.00     0.05     ;
+
+*MAILLAGE
+
+BAS    = DROITE  500  NO1  NO2 ;
+DROIT  = DROITE    1  NO2  NO3 ;
+HAUT   = DROITE  500  NO3  NO4 ;
+GAUCHE = DROITE    1  NO4  NO1 ;
+
+BO  = DALL BAS DROIT HAUT GAUCHE 'PLAN' ;
+
+*=============================================================
+FINPROC BO GAUCHE BAS DROIT HAUT NO1 NO2 NO3 NO4;
+
+BO GAUCHE BAS DROIT HAUT NO1 NO2 NO3 NO4 = GRAVI ;
+*=============================================================
+
+TRACER BO ;
+* ------------------
+*     SAUVEGARDE
+* ------------------
+
+OPTION SAUV FORMAT
+ 'wtnl102a.mgib';
+SAUV FORMAT ;
+
+FIN ;
+
+

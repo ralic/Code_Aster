@@ -1,0 +1,37 @@
+opti dime 2  elem tri3 ;
+
+dens 1 ;
+
+*----------------------------------------
+*DONNEES
+*----------------------------------------
+
+* dimensions des cotés
+LX = 1;
+LY = 1;
+
+* nombre d'éléments (forcement pairs)
+NX = 20;
+NY = 20;
+
+
+p1 = 0. 0.;
+p2 = LX 0.;
+p3 = LX LY;
+p4 = 0. LY;
+
+lig1 = droit p1 p2 NX;
+lig2 = droit p2 p3 NY;
+lig3 = droit p3 p4 NX;
+lig4 = droit p4 p1 NY;
+
+SURF = DALL lig1 lig2 lig3 lig4 PLAN;
+vect  =  (LX/2.)  (LY/2.) ;
+
+DEPL SURF  MOIN vect ;
+trac SURF;
+
+opti sauv format 
+'/home/D24752/data/ast_dev/18686_HOMARD/test/sslp317c.mgib' ;
+sauv format SURF ;
+fin ;

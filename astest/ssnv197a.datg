@@ -1,0 +1,61 @@
+OPTI DIME 3;
+OPTI ELEM CUB8;
+
+A  =  0.      0.     1. ;     
+B  =  1.      0.     1. ; 
+C  =  1.      1.     1. ; 
+D  =  0.      1.     1. ;
+E= 1. 0.5 1.;
+F= 0.5 1. 1.;
+G= 0. 0.5 1.;
+H= 0.5 0. 1.;
+
+LAB=DROIT 1 A B;
+LBC=DROIT 1 B C;
+LCD=DROIT 1 C D;
+LDA=DROIT 1 D A;
+
+HAUT=DALL LAB LBC LCD LDA 'PLAN';
+ECHAN=HAUT VOLU 1 TRAN (0 0 -1);
+
+BAS=FACE 2 ECHAN;
+
+DROIT=ELEM (FACE 3 ECHAN) 'CONTENANT' E;
+ARRIERE=ELEM (FACE 3 ECHAN) 'CONTENANT' F;
+GAUCHE=ELEM (FACE 3 ECHAN) 'CONTENANT' G;
+DEVANT=ELEM (FACE 3 ECHAN) 'CONTENANT' H;
+
+SYM=(BAS et DEVANT et GAUCHE) coul rouge;
+COTE=(DROIT et ARRIERE) coul vert;
+APPUI=HAUT coul bleu;
+
+*OUBLIER A;
+*OUBLIER B;
+*OUBLIER C;
+*OUBLIER D;
+OUBLIER E;
+OUBLIER F;
+OUBLIER G;
+OUBLIER H;
+OUBLIER LAB;
+OUBLIER LBC;
+OUBLIER LCD;
+OUBLIER LDA;
+
+ELIM 0.01 (DROIT et GAUCHE et HAUT et BAS et DEVANT
+ et ARRIERE et ECHAN et SYM et COTE et APPUI);
+
+*trac droit;
+*trac (droit et arriere);
+*trac (droit et arriere et gauche);
+*trac (droit et arriere et gauche et devant);
+*trac sym;
+*trac cote;
+*trac appui;
+*trac ECHAN;
+
+OPTI SAUV FORM './triaxial.mgib';
+SAUV FORM (DROIT et GAUCHE et HAUT et BAS et DEVANT
+ et ARRIERE et ECHAN et SYM et COTE et APPUI);
+
+FIN;

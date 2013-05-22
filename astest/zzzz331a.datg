@@ -1,0 +1,71 @@
+# -*- coding: iso-8859-1 -*-
+
+###
+### This file is generated automatically by SALOME v6.6.0 with dump python functionality
+###
+
+import sys
+import salome
+
+salome.salome_init()
+theStudy = salome.myStudy
+
+import salome_notebook
+notebook = salome_notebook.notebook
+
+###
+### GEOM component
+###
+
+import GEOM
+import geompy
+import math
+import SALOMEDS
+
+
+geompy.init_geom(theStudy)
+
+O = geompy.MakeVertex(0, 0, 0)
+OX = geompy.MakeVectorDXDYDZ(1, 0, 0)
+OY = geompy.MakeVectorDXDYDZ(0, 1, 0)
+OZ = geompy.MakeVectorDXDYDZ(0, 0, 1)
+
+Circle_1 = geompy.MakeCircle(O, None, 50.0)
+Circle_2 = geompy.MakeCircle(O, None, 55.0)
+
+Extrusion_1 = geompy.MakePrismVecH(Circle_1, OZ, 120.0)
+Extrusion_2 = geompy.MakePrismVecH(Circle_2, OZ, 120.0)
+Compound_1 = geompy.MakeCompound([Extrusion_1, Extrusion_2])
+geompy.addToStudy( Compound_1, 'Compound_1' )
+
+geompy.addToStudy( Circle_1, 'Circle_1' )
+geompy.addToStudy( Circle_2, 'Circle_2' )
+geompy.addToStudy( Extrusion_1, 'Extrusion_1' )
+geompy.addToStudy( Extrusion_2, 'Extrusion_2' )
+
+###
+### SMESH component
+###
+
+import smesh, SMESH, SALOMEDS
+
+smesh.SetCurrentStudy(theStudy)
+import BLSURFPlugin
+Mesh_1 = smesh.Mesh(Compound_1)
+BLSURF = Mesh_1.Triangle(algo=smesh.BLSURF)
+BLSURF_Parameters_1 = BLSURF.Parameters()
+isDone = Mesh_1.Compute()
+smesh.SetName(Mesh_1, 'Maillage')
+
+surfco = Mesh_1.GroupOnGeom(Extrusion_1,'surfco',SMESH.FACE)
+surfgr = Mesh_1.GroupOnGeom(Extrusion_2,'surfgr',SMESH.FACE)
+surfco.SetColor( SALOMEDS.Color( 0.33, 0.66, 0.0 ) )
+surfco.SetColor( SALOMEDS.Color( 0.66, 0.33, 0.0 ) )
+
+smesh.SetName(Maillage.GetMesh(), 'Maillage')
+smesh.SetName(BLSURF_1.GetAlgorithm(), 'BLSURF_1')
+smesh.SetName(BLSURF_Parameters, 'BLSURF_Parameters')
+
+
+if salome.sg.hasDesktop():
+  salome.sg.updateObjBrowser(1)

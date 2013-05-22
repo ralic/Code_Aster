@@ -1,0 +1,12 @@
+
+--------------------------------------------------------------------------------
+#DEBUT_TABLE
+#TITRE  table 2                                                                        
+#TITRE  ... suite du titre 2                                                           
+#TITRE titre 1                                                                         
+  NOEUD      VALEUR   
+  K8         R        
+ N1            -      
+ N2        2.10000E+01
+ N3            -      
+#FIN_TABLE

@@ -1,0 +1,22 @@
+TITRE
+%
+FINSF
+COOR_3D
+% NOEUD    X     Y     Z
+N1         0.    0.    0.
+N2         0.    1.    0.
+N3         1.    1.    0.
+N4         1.    0.    0.
+FINSF
+QUAD4
+M1  N1 N4 N3 N2
+FINSF
+SEG2
+M2  N1 N2
+M3  N3 N4
+FINSF
+POI1
+M4 N3
+M5 N4
+FINSF
+FIN

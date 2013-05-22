@@ -1,0 +1,72 @@
+TITRE    NOM=SSNL111A
+         AUTEUR= F.VOLDOIRE                  DATE=21/08/96
+FINSF
+%
+%  Ri ---------  Qi
+%     !       !
+%     !       !
+%     !       !             ^ y
+%     !       !             !
+%     !       !             !
+%     !       !             !
+%     !       !             !
+%     !       !             !
+%     !       !             !
+%  Si ---------  Pi  -------!---->  x
+%
+COOR_2D    NOM=
+  P1       -1.90000000E+00  0.00000000E+00
+  P2        0.10000000E+00  0.00000000E+00
+  P3        2.10000000E+00  0.00000000E+00
+  Q1       -1.90000000E+00  1.00000000E+00
+  Q2        0.10000000E+00  1.00000000E+00
+  Q3        2.10000000E+00  1.00000000E+00
+  R1       -2.10000000E+00  1.00000000E+00
+  R2       -0.10000000E+00  1.00000000E+00
+  R3        1.90000000E+00  1.00000000E+00
+  S1       -2.10000000E+00  0.00000000E+00
+  S2       -0.10000000E+00  0.00000000E+00
+  S3        1.90000000E+00  0.00000000E+00 
+FINSF
+%
+QUAD4 
+ BARR1      P1      Q1      R1      S1
+ BARR2      P2      Q2      R2      S2
+ BARR3      P3      Q3      R3      S3
+FINSF
+%
+SEG2
+ BAS1    P1     S1
+ BAS2    P2     S2
+ BAS3    P3     S3
+ HAUT1   Q1     R1
+ HAUT2   Q2     R2
+ HAUT3   Q3     R3
+FINSF
+%
+GROUP_NO
+ BAR1      P1      Q1      R1      S1
+FINSF
+%
+GROUP_NO
+ BAR2      P2      Q2      R2      S2
+FINSF
+%%
+GROUP_NO
+ BAR3      P3      Q3      R3      S3 
+FINSF
+%
+%
+GROUP_NO
+ HAU1              Q1      R1       
+FINSF
+%
+GROUP_NO
+ HAU2              Q2      R2       
+FINSF
+%%
+GROUP_NO
+ HAU3              Q3      R3        
+FINSF
+%
+FIN

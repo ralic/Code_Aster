@@ -1,0 +1,59 @@
+% FICHIER DE MAILLAGE : 2 BARRES ENCASTREE
+%                       CHOQUANT EN LEUR MILIEU
+%
+% SOUS-STRUCTURATION MODALE.
+%
+COOR_3D
+%   NOEUD  X    Y    Z
+    N1     0.  -0.1  0.
+    N2     0.   0.1  0.
+    N3     0.   0.   0.
+    N4     0.1  0.   0.
+    N5     0.2  0.   0.
+    N6     0.3  0.   0.
+    N7     0.4  0.   0.
+    N8     0.5  0.   0.
+    N9     0.6  0.   0.
+    N10    0.7  0.   0.
+    N11    0.8  0.   0.
+    N12    0.9  0.   0.
+    N13    1.0  0.   0.
+    N14    1.0 -0.1  0.
+    N15    1.0  0.1  0.
+FINSF
+%
+SEG2
+%    SEG    ND-I.   ND-F.
+     S1     N1      N3
+     S2     N3      N2
+     S3     N3      N4
+     S4     N4      N5
+     S5     N5      N6
+     S6     N6      N7
+     S7     N7      N8
+     S8     N8      N9
+     S9     N9      N10
+     S10    N10     N11
+     S11    N11     N12
+     S12    N12     N13
+     S13    N14     N13
+     S14    N13     N15
+FINSF
+%
+GROUP_NO    NOM=L1
+N1  N14
+FINSF
+%
+GROUP_NO    NOM=L2
+N2  N15
+FINSF
+%
+GROUP_NO    NOM=GROUP1
+N8
+FINSF
+%
+GROUP_MA    NOM=RIGIDE
+S1  S2  S13  S14
+FINSF
+%
+FIN

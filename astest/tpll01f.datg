@@ -1,0 +1,65 @@
+TITRE 'TPLL01 : mur plan infini en thermique linéaire' ;
+*
+opti dime 3 elem CU20 ;
+*
+C1 = 0.03   0.     0.  ;
+D1 = 0.07   0.03   0.  ;
+E1 = 0.04   0.07   0.  ;
+F1 = 0.     0.04   0.  ;
+A  = 0.015  0.02   0.  ;
+B  = 0.055  0.05   0.  ;
+G  = 0.035  0.035  0.  ;
+*
+C2 = 0.03   0.     0.05  ;
+D2 = 0.07   0.03   0.05  ;
+E2 = 0.04   0.07   0.05  ;
+F2 = 0.     0.04   0.05  ;
+A2 = 0.015  0.02   0.05  ;
+B2 = 0.055  0.05   0.05  ;
+*
+CD = DALLER (DROIT 2 C1 D1) (DROIT 1 D1 D2)
+            (DROIT 2 D2 C2) (DROIT 1 C2 C1) ;
+AB = DALLER (DROIT 2 A  B ) (DROIT 1 B  B2)
+            (DROIT 2 B2 A2) (DROIT 1 A2 A ) ;
+F1INF = DALLER (DROIT 1 A  C1) (DROIT 1 C1 C2)
+               (DROIT 1 C2 A2) (DROIT 1 A2 A ) ;
+BD = DALLER (DROIT 1 B  D1) (DROIT 1 D1 D2)
+            (DROIT 1 D2 B2) (DROIT 1 B2 B ) ;
+*
+FE = DALLER (DROIT 2 F1 E1) (DROIT 1 E1 E2)
+            (DROIT 2 E2 F2) (DROIT 1 F2 F1) ;
+EB = DALLER (DROIT 1 E1 B ) (DROIT 1 B  B2)
+            (DROIT 1 B2 E2) (DROIT 1 E2 E1) ;
+F1SUP = DALLER (DROIT 1 F1 A ) (DROIT 1 A  A2)
+               (DROIT 1 A2 F2) (DROIT 1 F2 F1) ;
+*
+FCD1 = DALLER (DROIT 2 C1 D1) (DROIT 1 D1 B )
+              (DROIT 2 B  A ) (DROIT 1 A  C1) ;
+FFE1 = DALLER (DROIT 2 A  B ) (DROIT 1 B  E1)
+              (DROIT 2 E1 F1) (DROIT 1 F1 A ) ;
+FCD2 = DALLER (DROIT 2 C2 D2) (DROIT 1 D2 B2)
+              (DROIT 2 B2 A2) (DROIT 1 A2 C2) ;
+FFE2 = DALLER (DROIT 2 A2 B2) (DROIT 1 B2 E2)
+              (DROIT 2 E2 F2) (DROIT 1 F2 A2) ;
+*
+G2 = EB et BD ;
+*
+V1 = FCD1 et FCD2 et CD et AB et F1INF et BD et G ;
+elim 0.001 V1 ;
+V2 = FFE1 et FFE2 et AB et FE et F1SUP et EB et G ;
+elim 0.001 V2 ;
+*
+VOL1 = PAVE  FCD1  FCD2  CD  AB  F1INF  BD  ;
+VOL2 = PAVE  FFE1  FFE2  AB  FE  F1SUP  EB  ;
+*
+VOLU = VOL1 et VOL2 ;
+elim 0.001 VOLU ;
+*
+list ( nbno VOLU ) ;
+list ( nbel VOLU ) ;
+*
+sort VOLU ;
+opti sauv format '.../tpll01f.mgib' ;
+sauv format VOLU ;
+* 
+fin ;

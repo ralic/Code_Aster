@@ -1,0 +1,54 @@
+* maillage de SSNP502C
+* pour modélisation utilisant le mot clé 'CONTACT' 
+* avec frottement, méthode continue
+
+opti dime 2;
+opti elem qua4;
+
+*
+* Constantes
+*
+N  = 40 ;
+N1 = enti N/6 ;
+*N2 = enti N*6/10 ;
+N2 = 1;
+
+*
+* Anneau
+*
+
+O =  0.     0.   ;
+A =  0.     6.35 ;
+B =  0.     4.15 ;
+*D =  6.35   0.   ;
+
+LAB = droit N1 A B ;
+ANNEAU = LAB ROTA N -90. O ;
+oublier O;
+LESC = ANNEAU cote 4 ;
+LCD  = ANNEAU cote 3 ;
+D = lCD point final ;
+
+ANNEAU = (ANNEAU et LAB et LESC et LCD) ;
+elim 0.0001 ANNEAU  ;
+
+*
+* Plaque
+*
+
+P1 =  0.     6.35 ;
+P2 =  6.095  6.35 ;
+
+LMAI = droit N2 P1 P2 ;
+PLAQUE = LMAI trans 1 (0. 2.54) ;
+PLAQUE = PLAQUE et LMAI;
+elim 0.0001 (PLAQUE et LMAI) ;
+
+
+opti sauv form 'ssnp502c.mgib' ;
+sauv form (PLAQUE et ANNEAU) ;
+
+trac (PLAQUE et ANNEAU);
+
+fin;
+

@@ -1,0 +1,17 @@
+
+TITRE
+%
+          ESSAI DSP SUR UN OSCILLATEUR SIMPLE
+%
+FINSF
+%
+COOR_3D
+%          NOEUD X      Y          Z
+P1  0.0    0.     0.
+P2  1.0    0.     0.
+FINSF
+%
+SEG2
+M1  P1  P2
+FINSF
+FIN

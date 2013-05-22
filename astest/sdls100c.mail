@@ -1,0 +1,90 @@
+TITRE
+% SDLS100/C                                                   30/10/90
+% ETUDES DE MAILLAGES SUR UNE PLAQUE CARREE MINCE
+% DIM: 10*10*0.05  -- POSEE SUR UN COTE (OY) + ROTY EMPECHEE
+% MAILLAGE TEST 2                                   REF: NAFEMS TEST 16
+% MODELISATION DKT_DKQ: 25 NOEUDS --- 32 MAILLES TRIA3
+FINSF
+%
+% ---------------------------------------------------------------------
+%
+COOR_3D           % 25 NOEUDS
+%
+% NOEUD      X          Y          Z
+%
+  N1        4.         4.         0.
+  N2        2.25       2.25       0.
+  N3        4.75       2.5        0.
+  N4        7.25       2.75       0.
+  N5        7.5        4.75       0.
+  N6        7.75       7.25       0.
+  N7        5.25       7.25       0.
+  N8        2.25       7.25       0.
+  N9        2.5        4.75       0.
+  N10       0.         0.0        0.
+  N11       2.5        0.0        0.
+  N12       5.0        0.0        0.
+  N13       7.5        0.0        0.
+  N14      10.0        0.0        0.
+  N15      10.0        2.5        0.
+  N16      10.         5.0        0.
+  N17      10.         7.5        0.
+  N18      10.        10.0        0.
+  N19       7.5       10.0        0.
+  N20       5.0       10.0        0.
+  N21       2.5       10.0        0.
+  N22       0.        10.0        0.
+  N23       0.         7.5        0.
+  N24       0.         5.0        0.
+  N25       0.         2.5        0.
+%
+FINSF
+%     ------------------------------------------------------------------
+%
+TRIA3             % 32 MAILLES
+%
+  TR1A     N22   N23   N8
+  TR1B     N22         N8     N21
+  TR2A     N21   N8    N7
+  TR2B     N21         N7     N20
+  TR3A     N20   N7    N6
+  TR3B     N20         N6     N19
+  TR4A     N19   N6    N17
+  TR4B     N19         N17    N18
+%
+  TR5A     N23   N24   N9
+  TR5B     N23         N9     N8
+  TR6A     N8    N9    N1
+  TR6B     N8          N1     N7
+  TR7A     N7    N1    N5
+  TR7B     N7          N5     N6
+  TR8A     N6    N5    N16
+  TR8B     N6          N16    N17
+%
+  TR9A     N24   N25   N2
+  TR9B     N24         N2     N9
+  TR10A    N9    N2    N1
+  TR10B    N1          N2     N3
+  TR11A    N1    N3    N4
+  TR11B    N1          N4     N5
+  TR12A    N5    N4    N15
+  TR12B    N5          N15    N16
+%
+  TR13A    N25   N10   N11
+  TR13B    N25         N11    N2
+  TR14A    N2    N11   N12
+  TR14B    N2          N12    N3
+  TR15A    N3    N12   N13
+  TR15B    N3          N13    N4
+  TR16A    N4    N13   N14
+  TR16B    N4          N14    N15
+%
+FINSF
+% ----------------------------------------------------------------------
+%
+% ---- PLAQUE POSEE SUR UN COTE
+GROUP_NO
+   COTE  N22  N23  N24  N25  N10
+FINSF
+%
+FIN

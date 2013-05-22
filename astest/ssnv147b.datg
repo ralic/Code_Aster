@@ -1,0 +1,46 @@
+* ------------------------------------
+*       PARAMETRES DE LA PIECE
+* ------------------------------------
+
+OPTION DIME 2 NIVE 3 ELEM QUA8 ;
+
+
+LA = 0.1 ;
+HA = 1.0 ;
+
+PO = 0.   0. ;
+PA = LA   0. ;
+PB = LA   HA ;
+PC = 0.   HA ;
+
+
+* DISCRETISATION
+
+NL = 1 ;
+NH = 10;
+
+
+*MAILLAGE
+
+FIXE = DROITE NL PO PA ;
+LATD = DROITE NH PA PB ;
+TRAC = DROITE NL PB PC ;
+LATG = DROITE NH PC PO ;
+BLOC = DALL FIXE LATD TRAC LATG 'PLAN' ;
+
+
+*TRACER
+
+TRACER BLOC ;
+
+
+* ------------------
+*     SAUVEGARDE
+* ------------------
+
+OPTION  SAUV FORMAT '/home/gjbhhel/ANIKA/TEST/ssnv147b.mgib';
+SAUV FORMAT  BLOC ;
+
+FIN ;
+
+

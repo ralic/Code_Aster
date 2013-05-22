@@ -1,0 +1,87 @@
+********************************************************
+*                  --- SSNV128B ---
+* MAILLAGE 2D D'UNE PLAQUE EN CONTACT AVEC UN BATI 1D
+* ELEM QUA8 (QUADRATIQUE)
+********************************************************
+*
+opti dime 2 elem qua4 echo 0 ;
+*opti niveau 8 ;
+*
+* dimensions du bati et de la plaque
+* -----------------------------------
+COTE = 0.04;
+COTE1 = -0.04*5/21.;
+COTE2 = 0.08;
+EPSI = 0.000001;
+*
+XA = 0.;
+XB = 0.00125;
+XC = 0.005;
+XD = 0.0075;
+XE = 0.01125;
+*
+* discretisation
+* ---------------
+*N1 = 120;
+N1 = 64;
+N2 = 10;
+N3 = 32;
+*
+* points, lignes et surface de construction du bati
+* --------------------------------------------------
+PBA = XA   0.;
+PBS = COTE2 0.;
+PCA = XA COTE1;
+PCS = COTE2 COTE1;
+*
+LBATI = PBS d N1 PBA;
+LENCAV = PCS d (N1) PCA;
+SBATI = (LBATI regl 3 LENCAV) coul vert;
+*
+* points, lignes et surface de construction de la plaque
+* -------------------------------------------------------
+PPA = XA   0.;
+PPB = XB   0.;
+PPC = XC   0.;
+PPD = XD   0.;
+PPE = XE   0.;
+PPS = COTE2 0.;
+PHA = XA   COTE;
+PHS = COTE2 COTE;
+PPI = COTE 0.;
+*
+LCONTA = PPA d 1 PPB d 3 PPC d 2 PPD d 3 PPE d (N3-9) PPI d N3 PPS;
+PPR = LCONTA poin N3;
+LCONTAR = LCONTA comp PPA PPR;
+LBLOCX = PPS d N2 PHS;
+LPRESV = PHA d N1 PHS;
+LPRESH = PPA d N2 PHA;
+*
+SPLAQ = (LCONTA regl N2 LPRESV) coul vert;
+elim EPSI SPLAQ LBLOCX;
+elim EPSI SPLAQ LPRESH;
+*
+* assemblage, trace de verification et sauvegarde du maillage
+* ------------------------------------------------------------
+MTOT = SBATI et SPLAQ;
+*
+mess 'VERIFICATION DU MAILLAGE :';
+mess 'nbel MTOT   : ' (nbel MTOT);
+mess 'nbel SPLAQ  : ' (nbel SPLAQ);
+mess 'nbel LBATI  : ' (nbel LBATI);
+mess 'nbel LCONTA : ' (nbel LCONTA);
+mess 'nbel LCONTAR: ' (nbel LCONTAR);
+mess ' ';
+mess 'nbno MTOT   : ' (nbno MTOT);
+mess 'nbno SPLAQ  : ' (nbno SPLAQ);
+mess 'nbno LBATI  : ' (nbno LBATI);
+mess 'nbno LCONTA : ' (nbno LCONTA);
+mess 'nbno LCONTAR: ' (nbno LCONTAR);
+mess ' ';
+*
+trac MTOT;
+opti sauv format 'ssnv209a.mgib' ;
+
+sauv form MTOT ;
+*
+fin;

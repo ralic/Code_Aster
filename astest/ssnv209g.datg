@@ -1,0 +1,50 @@
+opti dime 3  elem cub8 ;
+
+
+dens 2 ;
+
+*----------------------------------------
+*DONNEES
+*----------------------------------------
+EPS = 0.00001;
+
+* dimensions des cotés
+LX     = 0.08;
+LYbati = 0.01;
+LYplaq = 0.04;
+LZ     = 0.001;
+
+* nombre d'éléments
+NX = 64;
+NY = 25; 
+
+*---------------------------------------------
+*construction surface laterale
+*---------------------------------------------
+
+p1 =  0.  (-1.*LYbati) 0. ;
+p2 =  LX  (-1.*LYbati) 0. ;
+p3 =  LX.      LYplaq  0. ;
+p4 =  0.       LYplaq  0. ;
+
+lig1 = droit p1 p2 NX;
+lig2 = droit p2 p3 NY;
+lig3 = droit p3 p4 NX;
+lig4 = droit p4 p1 NY;
+sur1 = lig1 TRAN 1 (0. 0. LZ);
+sur2 = lig2 TRAN 1 (0. 0. LZ);
+sur3 = lig3 TRAN 1 (0. 0. LZ);
+sur4 = lig4 TRAN 1 (0. 0. LZ);
+
+
+SURF= DALL lig1 lig2 lig3 lig4 PLAN;
+VOLU= SURF VOLU TRAN 1 (0. 0. LZ.);
+elim EPS (VOLU et sur1 et sur2 et sur3 et sur4);
+
+trac VOLU;
+
+MAILLE = VOLU;
+
+opti sauv format 'ssnv209g.mgib';
+sauv format maille ;
+fin ;

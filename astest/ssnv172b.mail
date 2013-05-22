@@ -1,0 +1,34 @@
+%test traction cisaillement 2d loi monocristal
+
+COOR_2D
+  NO1        0.00000000E+00  0.10000000E+01  
+  NO2        0.10000000E+01  0.10000000E+01  
+  NO3        0.00000000E+00  0.00000000E+00  
+  NO4        0.10000000E+01  0.00000000E+00  
+FINSF
+
+QUAD4
+MA1      NO3      NO4      NO2      NO1
+FINSF
+
+GROUP_MA
+TOUT  MA1
+FINSF
+
+GROUP_NO
+HAUT  NO1       NO2
+FINSF
+
+GROUP_NO
+DROIT  NO2       NO4
+FINSF
+
+GROUP_NO
+BAS  NO3       NO4
+FINSF
+
+GROUP_NO
+GAUCHE  NO1       NO3
+FINSF
+
+FIN

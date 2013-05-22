@@ -1,0 +1,115 @@
+********************************************************
+*                  --- SSNV128W ---
+* MAILLAGE 3D D'UNE PLAQUE EN CONTACT AVEC UN BATI 2D
+* ELEM CUB8 = HEXA8 POUR ASTER (LINEAIRE)
+********************************************************
+*
+opti dime 3 elem cub8 echo 0 ;
+opti niveau 8 ;
+*
+* dimensions du bati et de la plaque
+* -----------------------------------
+COTE = 0.04;
+EPAI = 0.001;
+EPSI = 0.000001;
+*
+XA = 0.;
+XB = 0.00125;
+XC = 0.005;
+XD = 0.0075;
+XE = 0.01125;
+*
+* discretisation
+* ---------------
+N1 = 32;
+N2 = 10;
+*
+* points, lignes et surface de construction du bati
+* --------------------------------------------------
+PBA = XA   0. 0.;
+PBS = COTE 0. 0.;
+*
+* cas d'un bati modelise par un volume
+* - - - - - - - - - - - - - - - - - - - -
+LBATI = PBA d N1 PBS;
+PBR = LBATI poin N1;
+LBATIR = LBATI comp PBA PBR;
+SBATI = LBATI TRAN 1 (0. 0. EPAI);
+SBATI = orie SBATI (0. 1. 0.);
+SBATIR = LBATIR TRAN 1 (0. 0. EPAI);
+SBATIR = orie SBATIR (0. 1. 0.);
+elim EPSI SBATI SBATIR;
+SENCA = SBATI moins (0. EPAI 0.);
+PBZ = COTE 0. EPAI;
+LBS = PBS d 1 PBZ;
+SBLBAX = LBS tran 1 (0. -0.001 0.);
+VBATI = SBATI volu 1 SENCA;
+elim EPSI VBATI SBLBAX;
+*
+* points, lignes, surfaces et volumes de construction de la plaque
+* -----------------------------------------------------------------
+PPA = XA   0. 0.;
+PPB = XB   0. 0.;
+PPC = XC   0. 0.;
+PPD = XD   0. 0.;
+PPE = XE   0. 0.;
+PPS = COTE 0. 0.;
+PPSZ= COTE 0. EPAI;
+PHA = XA   COTE 0.;
+PHS = COTE COTE 0.;
+*
+LCONTA = PPA d 1 PPB d 3 PPC d 2 PPD d 3 PPE d 23 PPS;
+PPR = LCONTA poin N1;
+LCONTAR = LCONTA comp PPA PPR;
+LBLOCX = PPS d N2 PHS;
+LBLOCY = PPS d 1 PPSZ;
+LPRESV = PHA d N1 PHS;
+LPRESH = PPA d N2 PHA;
+*
+SPLAQ = (LCONTA regl N2 LPRESV) coul vert;
+elim EPSI SPLAQ LBLOCX;
+elim EPSI SPLAQ LPRESH;
+*
+VPLAQ = SPLAQ VOLU TRAN 1 (0. 0. EPAI);
+SCONTA = LCONTA TRAN 1 (0. 0. EPAI);
+SCONTA = orie SCONTA (0. -1. 0.);
+SCONTAR = LCONTAR TRAN 1 (0. 0. EPAI);
+SCONTAR = orie SCONTAR (0. -1. 0.);
+elim EPSI SCONTA SCONTAR;
+SBLOCX = LBLOCX TRAN 1 (0. 0. EPAI);
+SPRESV = LPRESV TRAN 1 (0. 0. EPAI);
+SPRESH = LPRESH TRAN 1 (0. 0. EPAI);
+elim EPSI (VPLAQ et SCONTA et SBLOCX et SPRESV et SPRESH et LBLOCY);
+*
+* assemblage, trace de verification et sauvegarde du maillage
+* ------------------------------------------------------------
+MTOT = VBATI et VPLAQ;
+*
+mess 'VERIFICATION DU MAILLAGE :';
+mess 'nbel MTOT   : ' (nbel MTOT);
+mess 'nbel VPLAQ  : ' (nbel VPLAQ);
+mess 'nbel VBATI  : ' (nbel VBATI);
+mess 'nbel SBATI  : ' (nbel SBATI);
+mess 'nbel SCONTA : ' (nbel SCONTA);
+mess 'nbel SBATIR : ' (nbel SBATIR);
+mess 'nbel SCONTAR: ' (nbel SCONTAR);
+mess ' ';
+mess 'nbno MTOT   : ' (nbno MTOT);
+mess 'nbno VPLAQ  : ' (nbno VPLAQ);
+mess 'nbno VBATI  : ' (nbno VBATI);
+mess 'nbno SBATI  : ' (nbno SBATI);
+mess 'nbno SCONTA : ' (nbno SCONTA);
+mess 'nbno SBATIR : ' (nbno SBATIR);
+mess 'nbno SCONTAR: ' (nbno SCONTAR);
+mess ' ';
+*
+trac MTOT;
+trac ((SCONTA coul vert) et (SCONTAR coul rouge)) ;
+trac ((SBATI coul vert) et (SBATIR coul rouge)) ;
+*
+*opti sauv form 'ssnv128w.mgib';
+*sauv form MTOT;
+*
+fin;
+
+

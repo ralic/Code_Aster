@@ -1,0 +1,71 @@
+opti dime 2 elem qua4 ;
+* rectangle;
+n1 = 10 ;
+n2 = 15 ;
+n3 = 25 ;
+
+p1 = 0. 0. ;
+p2 = 20. 0. ;
+p3 = 40. 0. ;
+p4 = 100. 0. ;
+p5 = 200. 0. ;
+p11 = 0. 20.  ;
+p21 = 20. 20.  ;
+p31 = 40. 40.  ;
+p41 = 100. 100.  ;
+p51 = 200. 100.  ;
+p111 = 0. 100.  ;
+
+
+lp1p2 = d n1 p1 p2 ;
+lp2p3 = d n1 p2 p3 ;
+lp3p4 = d n2 p3 p4 ;
+
+lp11p21 = d n1 p11 p21 ;
+lp21p31 = d n1 p21 p31 ;
+lp31p41 = d n2 p31 p41 ;
+lp111p41 = d n1 p111 p41 ;
+
+lp1p11 = d n1 p1 p11 ;
+lp11p111 = d n3 p11 p111;
+lp2p21 = d n1 p2 p21 ;
+lp3p31 = d n1 p3 p31 ;
+lp4p41 = d n1 p4 p41 ;
+
+
+
+lp21p11 = inve lp11p21 ;
+lp11p1  = inve lp1p11 ;
+st1 = daller plan lp1p2 lp2p21 lp21p11 lp11p1 ;
+
+
+lp31p21 = inve lp21p31 ;
+lp21p2 = inve lp2p21 ;
+st2 = daller plan lp2p3 lp3p31 lp31p21 lp21p2 ;
+
+lp41p31 = inve lp31p41 ;
+lp31p3 = inve lp3p31 ;
+st3 = daller plan lp3p4 lp4p41 lp41p31 lp31p3 ;
+
+*lp51p41 = inve lp41p51 ;
+*lp41p4 = inve lp4p41 ;
+*st4 = daller plan lp4p5 lp5p51 lp51p41 lp41p4 ;
+
+lp111p11 = inve lp11p111 ;
+lp21p41 = lp21p31 et lp31p41 ;
+lp41p111 = inve lp111p41 ;
+st5 = daller plan lp11p21 lp21p41 lp41p111 lp111p11 ;
+
+
+ lp1p111 = lp1p11 et lp11p111;
+ lp2p4 = lp2p3 et lp3p4  ;
+
+sut = st1 et st2 et st3  et st5 ;
+sut = sut et lp1p2 et lp1p111 et lp111p41 et lp4p41 et lp2p4  ;
+ elim 0.001 sut ;
+
+ sort sut ;
+opti sauv format 
+ '/home/cibhhgb/g_theta/2d/sut.mgib' ;
+ sauv format sut ;
+

@@ -1,0 +1,70 @@
+
+opti dime 2 elem qua8 ;
+opti sauv form 'ssnp123b.mgib' ;
+
+* maillage d'une plaque trouee de forme rectangulaire
+* plus haute que large (un quart de plaque)
+
+* r1 : rayon du trou
+* r2 : rayon du cercle maille
+* l  : largeur totale
+* h1 : hauteur de la partie trouee (souvent h1=l)
+* h2 : hauteur totale
+* nc : nb d'elements sur un secteur circulaire de 45 degres
+* nbc : nb d'elements sur bc
+* ncd : nb d'elements sur cd
+* nef : nb d'elements sur ef
+
+r1 = 1. ; r2 = 2. ; h1= 4. ; h2 = 5. ; l=5. ;
+nc = 10 ; nbc = 12 ; ncd = 10 ; nef = 4 ;
+
+o = l 0. ;
+a = l r1 ;
+b = (l-r1) 0. ;
+c = (l-r2) 0. ;
+d = 0 0. ;
+e = 0 h1 ;
+f = 0 h2 ;
+g = l h2 ;
+h = l h1 ;
+i = l r2 ;
+den1 = r1*3.1416/2./nc ;
+list den1 ;
+den2 = r2*3.1416/2./nc ;
+list den2 ;
+
+
+cab= cerc (2*nc) a o b ;
+cci= cerc (2*nc) i o c ;
+oublier o ;
+lbc = droit ((-1)*nbc) b c DINI den1 DFIN den2  ;
+lcd = droit ncd c d ;
+lde = droit nc d e ;
+leh = droit nc e h ;
+lhi = droit ncd h i ;
+lia = droit ((-1)*nbc) i a DINI den2 DFIN den1 ;
+
+lef = droit nef e f ;
+lfg = droit nc f g ;
+lgh = droit nef g h ;
+
+sd1 = daller cab lbc cci lia ;
+sc1 = daller lcd (lde et leh) lhi  cci ;
+lr1 = leh et lef et lfg et lgh ;
+sr1 = surf lr1 ;
+
+surf = sd1 et sc1 et sr1 ;
+
+elim 0.001 surf ;
+list (nbno surf) ;
+list (nbel surf) ;
+trac  surf;
+
+tass surf;
+
+oublier cci ;
+
+
+sauv form surf ;
+
+fin;

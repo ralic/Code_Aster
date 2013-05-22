@@ -1,0 +1,639 @@
+# -*- coding: iso-8859-1 -*-
+
+###
+### This file is generated automatically by SALOME v6.4.0 with dump python functionality
+###
+
+import sys
+import salome
+
+salome.salome_init()
+theStudy = salome.myStudy
+
+import salome_notebook
+notebook = salome_notebook.notebook
+sys.path.insert( 0, r'/home/C29256/DATA/source/restitution/cas-tests/rep_test')
+
+import iparameters
+ipar = iparameters.IParameters(salome.myStudy.GetCommonParameters("Interface Applicative", 1))
+
+from smesh import *
+import time
+
+
+def creation_elements_interface_3D(maillage, groupMa_1, groupMa_2, nom_interface):
+   """Cette fonction modifie un maillage 3D en y ajoutant des éléments
+   d'interface PENTA6 et HEXA8 d'épaisseur nulle entre les deux groupes de mailles
+   spécifiés. Ces éléments sont rassemblés dans le groupe de mailles nom_interface.
+   
+   En l'état, cette fonction est prévue pour fonctionner sur des maillages
+   linéaires. D'autre part, l'interface traitée doit être régulière, c'est à dire
+   sans angles (le cas où plusieurs faces d'un élément sont sur l'interface n'est
+   pas traité).
+   
+   Le premier groupe de maille doit être un groupe de mailles volumiques. Le second
+   peut être un groupe de mailles volumiques, ou surfaciques. Dans ce dernier cas,
+   les éléments cohésifs sont créés au bord du maillage volumique.
+   
+   L'ordre des groupes de mailles est important : il détermine
+   l'orientation des éléments d'interface. On prendra donc garde à choisir
+   une normale orientée de groupMa_1 vers groupMa_2."""
+   
+   
+   # -- informations préliminaires
+   print "Nombre de noeuds du maillage initial :",maillage.NbNodes()
+   print "Traitement du maillage ..."
+   
+   
+   # -- récupération des groupes de mailles
+   t1 = time.time()
+   print "Étape de recensement des groupes de mailles"
+   listAllGroup = maillage.GetGroups()
+   nbAllGroups=len(listAllGroup)
+
+   listAllGroupVolume = []
+   listAllGroupFace = []
+   for i in xrange(nbAllGroups):
+      if str(listAllGroup[i].GetType())=="VOLUME" :
+         listAllGroupVolume.append(listAllGroup[i])
+      if str(listAllGroup[i].GetType())=="FACE" :
+         listAllGroupFace.append(listAllGroup[i])
+   nbAllGroupVolume = len(listAllGroupVolume)
+   nbAllGroupFace   = len(listAllGroupFace)
+
+   verif_1 = False
+   verif_2 = False
+   create_group = True
+   is_face = 0
+   for j in xrange(nbAllGroupVolume):
+      if (groupMa_1==listAllGroupVolume[j].GetName()) :
+         verif_1 = True
+         volume_1 = listAllGroupVolume[j]
+      if (groupMa_2==listAllGroupVolume[j].GetName()) :
+         verif_2 = True
+         volume_2 = listAllGroupVolume[j]
+      if (nom_interface==listAllGroupVolume[j].GetName()) :
+         create_group = False
+         interface = listAllGroupVolume[j]
+   if not verif_1 :
+      print "Erreur : Le premier groupe de mailles doit être un groupe de mailles volumiques"
+      assert False
+   if not verif_2 :
+      for j in xrange(nbAllGroupFace):
+         if (groupMa_2==listAllGroupFace[j].GetName()) :
+            verif_2 = True
+            is_face = 2
+            volume_2 = listAllGroupFace[j]
+   if not (verif_1 and verif_2):
+      print "Erreur : On n'a pas trouvé les groupes de mailles spécifiés"
+      assert False
+
+
+   # -- détection des noeuds appartenant à l'intersection
+   t2 = time.time()
+   print "Durée écoulée :", t2-t1, "s"
+   print "Étape de calcul des intersections"
+   gr_noeuds_volume_1 = maillage.GetMesh().CreateDimGroup([volume_1], SMESH.NODE, "GN_1")
+   id_noeuds_volume_1 = gr_noeuds_volume_1.GetListOfID()
+   
+   gr_noeuds_volume_2 = maillage.GetMesh().CreateDimGroup([volume_2], SMESH.NODE, "GN_2")
+   id_noeuds_volume_2 = gr_noeuds_volume_2.GetListOfID()
+
+   gr_noeuds_inter = maillage.GetMesh().IntersectListOfGroups([gr_noeuds_volume_1,gr_noeuds_volume_2], "GN_inter")
+   id_noeuds_inter = gr_noeuds_inter.GetListOfID()
+
+
+   # -- traitement des groupes de mailles de dimension inférieure
+   t3 = time.time()
+   print "Durée écoulée :", t3-t2, "s"
+   print "Étape de traitement des mailles de dimension inférieure"
+   list_edge = maillage.GetMesh().GetElementsByType(EDGE)
+   edge_2 = []
+   seg_to_remove = []
+   #  on vérifie que le maillage est linéaire
+   if len(maillage.GetElemNodes(list_edge[0])) != 2 :
+      print "Erreur : Ce script ne peut traiter que des maillages linéaires"
+      assert False
+   for seg2 in list_edge:
+      idNoeuds = maillage.GetElemNodes(seg2)
+      noeuds_communs_inter = set(idNoeuds) & set(id_noeuds_inter)
+      if len(noeuds_communs_inter) == 2 :
+         if (is_face == 0) :
+            seg_to_remove.append(seg2)
+         elif is_face == 2 :
+            edge_2.append(seg2)
+      elif len(noeuds_communs_inter) == 1 :
+         noeuds_communs_2 = set(idNoeuds) & set(id_noeuds_volume_2)
+         if len(noeuds_communs_2) == 2 :
+            edge_2.append(seg2)
+   maillage.RemoveElements(seg_to_remove)
+   edge_2 = maillage.MakeGroupByIds("edge_2", EDGE, edge_2)
+   
+   list_face = maillage.GetMesh().GetElementsByType(FACE)
+   face_2 = []
+   face_to_remove = []
+   for face in list_face:
+      idNoeuds = maillage.GetElemNodes(face)
+      nbNoeuds = len(idNoeuds)
+      noeuds_communs_inter = set(idNoeuds) & set(id_noeuds_inter)
+      if len(noeuds_communs_inter) == nbNoeuds :
+         if (is_face == 0) :
+            face_to_remove.append(face)
+         elif is_face == 2 :
+            face_2.append(face)
+      elif len(noeuds_communs_inter) >= 1 :
+         noeuds_communs_2 = set(idNoeuds) & set(id_noeuds_volume_2)
+         if len(noeuds_communs_2) == nbNoeuds :
+            face_2.append(face)
+   maillage.RemoveElements(face_to_remove)
+   face_2 = maillage.MakeGroupByIds("face_2", FACE, face_2)
+
+
+   # -- doublage des noeuds appartenant à l'interface
+   t4 = time.time()
+   print "Durée écoulée :", t4-t3, "s"
+   print "Étape de doublage des noeuds"
+   noeuds_avant = set(maillage.GetNodesId())
+   code_retour = maillage.DoubleNodeGroups([gr_noeuds_inter],[volume_2, face_2, edge_2])
+   #print code_retour
+   noeuds_apres = set(maillage.GetNodesId())
+   nouveauxNoeuds = noeuds_apres - noeuds_avant
+   listNouveauxNoeuds = list(nouveauxNoeuds)
+   listNouveauxNoeuds.sort()
+   
+   tableauCorrespondance = {}
+   for k in xrange(len(id_noeuds_inter)):
+      tab1 = maillage.GetNodeXYZ(listNouveauxNoeuds[k])
+      tab2 = maillage.GetNodeXYZ(id_noeuds_inter[k])
+      assert (tab1 == tab2)
+      assert not tableauCorrespondance.has_key(id_noeuds_inter[k])
+      tableauCorrespondance[id_noeuds_inter[k]] = listNouveauxNoeuds[k]
+
+
+   # -- création des mailles d'interface
+   t5 = time.time()
+   print "Durée écoulée :", t5-t4, "s"
+   print "Étape de création des mailles d'interface"
+   if create_group :
+      interface = maillage.CreateEmptyGroup(SMESH.VOLUME, nom_interface)
+   #bad_elements = maillage.CreateEmptyGroup(SMESH.VOLUME, "BAD_ELEMENTS")
+   group1 = volume_1.GetListOfID()
+   nPenta = 0
+   nHexa  = 0
+   nBad   = 0
+   for element_volume in group1:
+      idNoeuds = maillage.GetElemNodes(element_volume)
+      interMailleVolume = set(idNoeuds) & set(id_noeuds_inter)
+      if len(interMailleVolume) == 3:            # on ajoute un PENTA6
+         listInter = list(interMailleVolume)
+         coor_1    = maillage.GetNodeXYZ(listInter[0])
+         coor_2    = maillage.GetNodeXYZ(listInter[1])
+         coor_3    = maillage.GetNodeXYZ(listInter[2])
+         bary_volu = maillage.BaryCenter(element_volume)
+         bary_face = [(coor_1[0]+coor_2[0]+coor_3[0])/3., (coor_1[1]+coor_2[1]+coor_3[1])/3., (coor_1[2]+coor_2[2]+coor_3[2])/3.]
+         prod_vect = []
+         prod_vect.append((coor_3[1]-coor_2[1])*(coor_1[2]-coor_2[2]) - (coor_3[2]-coor_2[2])*(coor_1[1]-coor_2[1]))
+         prod_vect.append((coor_3[2]-coor_2[2])*(coor_1[0]-coor_2[0]) - (coor_3[0]-coor_2[0])*(coor_1[2]-coor_2[2]))
+         prod_vect.append((coor_3[0]-coor_2[0])*(coor_1[1]-coor_2[1]) - (coor_3[1]-coor_2[1])*(coor_1[0]-coor_2[0]))
+         orientation = prod_vect[0]*(bary_face[0]-bary_volu[0]) + prod_vect[1]*(bary_face[1]-bary_volu[1]) + prod_vect[2]*(bary_face[2]-bary_volu[2])
+         if (orientation > 0.):
+            n1 = listInter[2]
+            n2 = listInter[1]
+            n3 = listInter[0]
+            n4 = tableauCorrespondance[n1]
+            n5 = tableauCorrespondance[n2]
+            n6 = tableauCorrespondance[n3]
+         else :
+            n1 = listInter[0]
+            n2 = listInter[1]
+            n3 = listInter[2]
+            n4 = tableauCorrespondance[n1]
+            n5 = tableauCorrespondance[n2]
+            n6 = tableauCorrespondance[n3]
+         id1= maillage.AddVolume([n1,n2,n3,n4,n5,n6])
+         nbAdd = interface.Add([id1])
+         nPenta += 1
+      elif len(interMailleVolume) == 4:        # on ajoute un HEXA8
+         #print "Ajout HEXA8 pour la maille:", element_volume
+         #print "Noeuds concernés :", idNoeuds
+         if len(idNoeuds) == 5:                # c'est une pyramide, et l'interface est la base carrée
+            listInter = list(interMailleVolume)
+            n1 = idNoeuds[3]
+            n2 = idNoeuds[2]
+            n3 = idNoeuds[1]
+            n4 = idNoeuds[0]
+            n5 = tableauCorrespondance[n1]
+            n6 = tableauCorrespondance[n2]
+            n7 = tableauCorrespondance[n3]
+            n8 = tableauCorrespondance[n4]
+            id1= maillage.AddVolume([n1,n2,n3,n4,n5,n6,n7,n8])
+            nbAdd = interface.Add([id1])
+            nHexa += 1
+         elif len(idNoeuds) == 8:              # c'est un HEXA8, et il faut orienter proprement l'interface
+            listInter = list(interMailleVolume)
+            num_locale = [idNoeuds.index(listInter[0]), idNoeuds.index(listInter[1]), idNoeuds.index(listInter[2]), idNoeuds.index(listInter[3])]
+            num_locale.sort()
+            if num_locale == [0,1,2,3] :
+               n1 = idNoeuds[3]
+               n2 = idNoeuds[2]
+               n3 = idNoeuds[1]
+               n4 = idNoeuds[0]
+            elif num_locale == [0,1,4,5] :
+               n1 = idNoeuds[0]
+               n2 = idNoeuds[1]
+               n3 = idNoeuds[5]
+               n4 = idNoeuds[4]
+            elif num_locale == [1,2,5,6] :
+               n1 = idNoeuds[1]
+               n2 = idNoeuds[2]
+               n3 = idNoeuds[6]
+               n4 = idNoeuds[5]
+            elif num_locale == [2,3,6,7] :
+               n1 = idNoeuds[2]
+               n2 = idNoeuds[3]
+               n3 = idNoeuds[7]
+               n4 = idNoeuds[6]
+            elif num_locale == [0,3,4,7] :
+               n1 = idNoeuds[3]
+               n2 = idNoeuds[0]
+               n3 = idNoeuds[4]
+               n4 = idNoeuds[7]
+            elif num_locale == [4,5,6,7] :
+               n1 = idNoeuds[4]
+               n2 = idNoeuds[5]
+               n3 = idNoeuds[6]
+               n4 = idNoeuds[7]
+            else : assert False
+            n5 = tableauCorrespondance[n1]
+            n6 = tableauCorrespondance[n2]
+            n7 = tableauCorrespondance[n3]
+            n8 = tableauCorrespondance[n4]
+            id1= maillage.AddVolume([n1,n2,n3,n4,n5,n6,n7,n8])
+            nbAdd = interface.Add([id1])
+            nHexa += 1
+         elif len(idNoeuds) == 6:              # c'est un PENTA6, et il faut orienter proprement l'interface
+            listInter = list(interMailleVolume)
+            num_locale = [idNoeuds.index(listInter[0]), idNoeuds.index(listInter[1]), idNoeuds.index(listInter[2]), idNoeuds.index(listInter[3])]
+            num_locale.sort()
+            if num_locale == [0,1,3,4] :
+               n1 = idNoeuds[0]
+               n2 = idNoeuds[1]
+               n3 = idNoeuds[4]
+               n4 = idNoeuds[3]
+            elif num_locale == [1,2,4,5] :
+               n1 = idNoeuds[1]
+               n2 = idNoeuds[2]
+               n3 = idNoeuds[5]
+               n4 = idNoeuds[4]
+            elif num_locale == [0,2,3,5] :
+               n1 = idNoeuds[0]
+               n2 = idNoeuds[3]
+               n3 = idNoeuds[5]
+               n4 = idNoeuds[2]
+            else : raise AssertionError
+            n5 = tableauCorrespondance[n1]
+            n6 = tableauCorrespondance[n2]
+            n7 = tableauCorrespondance[n3]
+            n8 = tableauCorrespondance[n4]
+            id1= maillage.AddVolume([n1,n2,n3,n4,n5,n6,n7,n8])
+            nbAdd = interface.Add([id1])
+            nHexa += 1
+         else :
+            #nbBad = bad_elements.Add([element_volume])
+            nBad += 1
+      elif len(interMailleVolume) >= 5 :
+         #nbBad = bad_elements.Add([element_volume])
+         nBad += 1
+
+   
+   # -- dernières opérations
+   t6 = time.time()
+   print "Durée écoulée :", t6-t5, "s"
+
+   maillage.RemoveGroup(gr_noeuds_inter)
+   maillage.RemoveGroup(gr_noeuds_volume_1)
+   maillage.RemoveGroup(gr_noeuds_volume_2)
+   maillage.RemoveGroup(edge_2)
+   maillage.RemoveGroup(face_2)
+   salome.sg.updateObjBrowser(0)
+   
+   
+   # -- retour
+   print "##################################"
+   print "Opération terminée"
+   if (nPenta + nHexa) >= 1 :
+      print "On a créé", nPenta, "PENTA6 et", nHexa, "HEXA8 dans le groupe", interface.GetName()
+      if nBad >= 1:
+         print "Attention : Certaines mailles semblent avoir plusieurs côtés sur l'interface"
+         print "Ce cas de figure n'est pas proprement traité par le script"
+         print "Nombre de mailles problématiques :", nBad
+      print "Nombre de noeuds au final :",maillage.NbNodes()
+   else :
+      print "Attention : Aucune maille d'interface n'a été créée"
+   
+   return
+
+#Set up visual properties:
+ipar.setProperty("AP_ACTIVE_VIEW", "VTKViewer_0_0")
+ipar.setProperty("AP_WORKSTACK_INFO", "000000010000000000000002010000000100000588000000040000000200000002000000080000001a004f00430043005600690065007700650072005f0030005f00300000000102000000080000001a00560054004b005600690065007700650072005f0030005f00300000000202")
+ipar.setProperty("AP_ACTIVE_MODULE", "Mesh")
+ipar.setProperty("AP_SAVEPOINT_NAME", "GUI state: 1")
+#Set up lists:
+# fill list AP_VIEWERS_LIST
+ipar.append("AP_VIEWERS_LIST", "OCCViewer_1")
+ipar.append("AP_VIEWERS_LIST", "VTKViewer_2")
+# fill list OCCViewer_1
+ipar.append("OCCViewer_1", "OCC scene:1 - viewer:1")
+ipar.append("OCCViewer_1", "scale=6.819561059823e+02*centerX=2.977608140815e-01*centerY=2.182219664844e-01*projX=2.181876897812e-01*projY=-9.185544848442e-01*projZ=3.296222090721e-01*twist=6.228792602997e+00*atX=-2.254771143198e-01*atY=2.505377531052e-01*atZ=-9.662878513336e-02*eyeX=-2.238538430536e-01*eyeY=2.437038977983e-01*eyeZ=-9.417646410081e-02*scaleX=1.000000000000e+00*scaleY=1.000000000000e+00*scaleZ=1.000000000000e+00*isVisible=1*size=1.00*gtIsVisible=0*gtDrawNameX=1*gtDrawNameY=1*gtDrawNameZ=1*gtNameX=X*gtNameY=Y*gtNameZ=Z*gtNameColorRX=255*gtNameColorGX=0*gtNameColorBX=0*gtNameColorRY=0*gtNameColorGY=255*gtNameColorBY=0*gtNameColorRZ=0*gtNameColorGZ=0*gtNameColorBZ=255*gtDrawValuesX=1*gtDrawValuesY=1*gtDrawValuesZ=1*gtNbValuesX=3*gtNbValuesY=3*gtNbValuesZ=3*gtOffsetX=2*gtOffsetY=2*gtOffsetZ=2*gtColorRX=255*gtColorGX=0*gtColorBX=0*gtColorRY=0*gtColorGY=255*gtColorBY=0*gtColorRZ=0*gtColorGZ=0*gtColorBZ=255*gtDrawTickmarksX=1*gtDrawTickmarksY=1*gtDrawTickmarksZ=1*gtTickmarkLengthX=5*gtTickmarkLengthY=5*gtTickmarkLengthZ=5")
+# fill list VTKViewer_2
+ipar.append("VTKViewer_2", "VTK scene:1 - viewer:1")
+ipar.append("VTKViewer_2", """<?xml version="1.0"?>
+<ViewState>
+    <Position X="4.20626" Y="-5.64396" Z="2.45792"/>
+    <FocalPoint X="0.0999887" Y="0.500022" Z="0.0999987"/>
+    <ViewUp X="-0.175189" Y="0.248521" Z="0.952652"/>
+    <ViewScale Parallel="0.519615" X="1" Y="1" Z="1"/>
+    <DisplayCubeAxis Show="0"/>
+    <GraduatedAxis Axis="X">
+        <Title isVisible="1" Text="X" Font="0" Bold="0" Italic="0" Shadow="0">
+            <Color R="1" G="0" B="0"/>
+        </Title>
+        <Labels isVisible="1" Number="3" Offset="2" Font="0" Bold="0" Italic="0" Shadow="0">
+            <Color R="1" G="0" B="0"/>
+        </Labels>
+        <TickMarks isVisible="1" Length="5"/>
+    </GraduatedAxis>
+    <GraduatedAxis Axis="Y">
+        <Title isVisible="1" Text="Y" Font="0" Bold="0" Italic="0" Shadow="0">
+            <Color R="0" G="1" B="0"/>
+        </Title>
+        <Labels isVisible="1" Number="3" Offset="2" Font="0" Bold="0" Italic="0" Shadow="0">
+            <Color R="0" G="1" B="0"/>
+        </Labels>
+        <TickMarks isVisible="1" Length="5"/>
+    </GraduatedAxis>
+    <GraduatedAxis Axis="Z">
+        <Title isVisible="1" Text="Z" Font="0" Bold="0" Italic="0" Shadow="0">
+            <Color R="0" G="0" B="1"/>
+        </Title>
+        <Labels isVisible="1" Number="3" Offset="2" Font="0" Bold="0" Italic="0" Shadow="0">
+            <Color R="0" G="0" B="1"/>
+        </Labels>
+        <TickMarks isVisible="1" Length="5"/>
+    </GraduatedAxis>
+    <Trihedron isShown="1" Size="105"/>
+</ViewState>
+""")
+# fill list AP_MODULES_LIST
+ipar.append("AP_MODULES_LIST", "Geometry")
+ipar.append("AP_MODULES_LIST", "Mesh")
+
+
+###
+### GEOM component
+###
+
+import GEOM
+import geompy
+import math
+import SALOMEDS
+
+
+geompy.init_geom(theStudy)
+
+BETON = geompy.MakeBoxDXDYDZ(0.2, 1, 0.2)
+O = geompy.MakeVertex(0, 0, 0)
+OX = geompy.MakeVectorDXDYDZ(1, 0, 0)
+OY = geompy.MakeVectorDXDYDZ(0, 1, 0)
+OZ = geompy.MakeVectorDXDYDZ(0, 0, 1)
+Plan_armatures = geompy.MakePlane(O, OZ, 3)
+geompy.TranslateDXDYDZ(Plan_armatures, 0, 0, 0.1)
+SYSTEME = geompy.MakePartition([BETON], [Plan_armatures], [], [], geompy.ShapeType["SOLID"], 0, [], 0)
+listSubShapeIDs = geompy.SubShapeAllIDs(SYSTEME, geompy.ShapeType["SOLID"])
+BETON_1 = geompy.CreateGroup(SYSTEME, geompy.ShapeType["SOLID"])
+geompy.UnionIDs(BETON_1, [2, 36])
+B_BAS = geompy.CreateGroup(SYSTEME, geompy.ShapeType["SOLID"])
+geompy.UnionIDs(B_BAS, [2])
+B_DROI = geompy.CreateGroup(SYSTEME, geompy.ShapeType["FACE"])
+geompy.UnionIDs(B_DROI, [34, 58])
+B_GAUC = geompy.CreateGroup(SYSTEME, geompy.ShapeType["FACE"])
+geompy.UnionIDs(B_GAUC, [38, 4])
+B_FOND = geompy.CreateGroup(SYSTEME, geompy.ShapeType["FACE"])
+geompy.UnionIDs(B_FOND, [55, 26])
+ARMATU = geompy.CreateGroup(SYSTEME, geompy.ShapeType["FACE"])
+geompy.UnionIDs(ARMATU, [21])
+BOUT = geompy.CreateGroup(SYSTEME, geompy.ShapeType["EDGE"])
+geompy.UnionIDs(BOUT, [19])
+A_DROI = geompy.CreateGroup(SYSTEME, geompy.ShapeType["EDGE"])
+geompy.UnionIDs(A_DROI, [25])
+A_GAUC = geompy.CreateGroup(SYSTEME, geompy.ShapeType["EDGE"])
+geompy.UnionIDs(A_GAUC, [9])
+A_FOND = geompy.CreateGroup(SYSTEME, geompy.ShapeType["EDGE"])
+geompy.UnionIDs(A_FOND, [23])
+LIGN_L = geompy.CreateGroup(SYSTEME, geompy.ShapeType["EDGE"])
+geompy.UnionIDs(LIGN_L, [54, 13, 33, 42])
+geompy.DifferenceIDs(LIGN_L, [54, 13, 33, 42])
+geompy.UnionIDs(LIGN_L, [54, 13, 33, 42, 9, 25])
+LIGN_V = geompy.CreateGroup(SYSTEME, geompy.ShapeType["EDGE"])
+geompy.UnionIDs(LIGN_V, [47, 44, 11, 40, 57, 6, 28, 16])
+B_BOUT = geompy.CreateGroup(SYSTEME, geompy.ShapeType["FACE"])
+geompy.UnionIDs(B_BOUT, [14, 45])
+geomObj_1 = geompy.GetSubShape(SYSTEME, [36])
+geomObj_2 = geompy.GetSubShape(SYSTEME, [2])
+geomObj_3 = geompy.GetSubShape(SYSTEME, [34])
+geomObj_4 = geompy.GetSubShape(SYSTEME, [38])
+geomObj_5 = geompy.GetSubShape(SYSTEME, [55])
+geomObj_6 = geompy.GetSubShape(SYSTEME, [54])
+geomObj_7 = geompy.GetSubShape(SYSTEME, [47])
+geomObj_8 = geompy.GetSubShape(SYSTEME, [14])
+geompy.addToStudy( BETON, 'BETON' )
+geompy.addToStudy( O, 'O' )
+geompy.addToStudy( OX, 'OX' )
+geompy.addToStudy( OY, 'OY' )
+geompy.addToStudy( OZ, 'OZ' )
+geompy.addToStudy( Plan_armatures, 'Plan_armatures' )
+geompy.addToStudy( SYSTEME, 'SYSTEME' )
+geompy.addToStudyInFather( SYSTEME, BETON_1, 'BETON' )
+geompy.addToStudyInFather( SYSTEME, B_BAS, 'B_BAS' )
+geompy.addToStudyInFather( SYSTEME, B_DROI, 'B_DROI' )
+geompy.addToStudyInFather( SYSTEME, B_GAUC, 'B_GAUC' )
+geompy.addToStudyInFather( SYSTEME, B_FOND, 'B_FOND' )
+geompy.addToStudyInFather( SYSTEME, ARMATU, 'ARMATU' )
+geompy.addToStudyInFather( SYSTEME, BOUT, 'BOUT' )
+geompy.addToStudyInFather( SYSTEME, A_DROI, 'A_DROI' )
+geompy.addToStudyInFather( SYSTEME, A_GAUC, 'A_GAUC' )
+geompy.addToStudyInFather( SYSTEME, A_FOND, 'A_FOND' )
+geompy.addToStudyInFather( SYSTEME, LIGN_L, 'LIGN_L' )
+geompy.addToStudyInFather( SYSTEME, LIGN_V, 'LIGN_V' )
+geompy.addToStudyInFather( SYSTEME, B_BOUT, 'B_BOUT' )
+
+### Store presentation parameters of displayed objects
+import iparameters
+ipar = iparameters.IParameters(theStudy.GetModuleParameters("Interface Applicative", "GEOM", 1))
+
+#Set up entries:
+# set up entry GEOM_1 (BETON) parameters
+objId = geompy.getObjectID(BETON)
+ipar.setParameter(objId, "OCCViewer_0_Visibility", "On")
+ipar.setParameter(objId, "OCCViewer_0_Color", "1:1:0")
+# set up entry GEOM_6 (Plan_armatures) parameters
+objId = geompy.getObjectID(Plan_armatures)
+ipar.setParameter(objId, "OCCViewer_0_Visibility", "On")
+ipar.setParameter(objId, "OCCViewer_0_Color", "1:1:0")
+# set up entry GEOM_7 (SYSTEME) parameters
+objId = geompy.getObjectID(SYSTEME)
+ipar.setParameter(objId, "OCCViewer_0_Visibility", "On")
+ipar.setParameter(objId, "OCCViewer_0_Color", "1:1:0")
+# set up entry GEOM_7:10 (A_DROI) parameters
+objId = geompy.getObjectID(A_DROI)
+ipar.setParameter(objId, "OCCViewer_0_Visibility", "On")
+ipar.setParameter(objId, "OCCViewer_0_Color", "1:1:0")
+# set up entry GEOM_7:11 (A_GAUC) parameters
+objId = geompy.getObjectID(A_GAUC)
+ipar.setParameter(objId, "OCCViewer_0_Visibility", "On")
+ipar.setParameter(objId, "OCCViewer_0_Color", "1:1:0")
+# set up entry GEOM_7:12 (A_FOND) parameters
+objId = geompy.getObjectID(A_FOND)
+ipar.setParameter(objId, "OCCViewer_0_Visibility", "On")
+ipar.setParameter(objId, "OCCViewer_0_Color", "1:1:0")
+# set up entry GEOM_7:13 (LIGN_L) parameters
+objId = geompy.getObjectID(LIGN_L)
+ipar.setParameter(objId, "OCCViewer_0_Visibility", "On")
+ipar.setParameter(objId, "OCCViewer_0_Color", "1:1:0")
+ipar.setParameter(objId, "VTKViewer_1_Color", "1:1:0")
+# set up entry GEOM_7:14 (LIGN_V) parameters
+objId = geompy.getObjectID(LIGN_V)
+ipar.setParameter(objId, "OCCViewer_0_Visibility", "On")
+ipar.setParameter(objId, "OCCViewer_0_Color", "1:1:0")
+# set up entry GEOM_7:15 (B_BOUT) parameters
+objId = geompy.getObjectID(B_BOUT)
+ipar.setParameter(objId, "OCCViewer_0_Visibility", "On")
+ipar.setParameter(objId, "OCCViewer_0_Color", "1:1:0")
+# set up entry GEOM_7:3 (BETON) parameters
+objId = geompy.getObjectID(BETON_1)
+ipar.setParameter(objId, "OCCViewer_0_Visibility", "On")
+ipar.setParameter(objId, "OCCViewer_0_Color", "1:1:0")
+# set up entry GEOM_7:4 (B_BAS) parameters
+objId = geompy.getObjectID(B_BAS)
+ipar.setParameter(objId, "OCCViewer_0_Visibility", "On")
+ipar.setParameter(objId, "OCCViewer_0_Color", "1:1:0")
+# set up entry GEOM_7:5 (B_DROI) parameters
+objId = geompy.getObjectID(B_DROI)
+ipar.setParameter(objId, "OCCViewer_0_Visibility", "On")
+ipar.setParameter(objId, "OCCViewer_0_Color", "1:1:0")
+# set up entry GEOM_7:6 (B_GAUC) parameters
+objId = geompy.getObjectID(B_GAUC)
+ipar.setParameter(objId, "OCCViewer_0_Visibility", "On")
+ipar.setParameter(objId, "OCCViewer_0_Color", "1:1:0")
+# set up entry GEOM_7:7 (B_FOND) parameters
+objId = geompy.getObjectID(B_FOND)
+ipar.setParameter(objId, "OCCViewer_0_Visibility", "On")
+ipar.setParameter(objId, "OCCViewer_0_Color", "1:1:0")
+# set up entry GEOM_7:8 (ARMATU) parameters
+objId = geompy.getObjectID(ARMATU)
+ipar.setParameter(objId, "OCCViewer_0_Visibility", "On")
+ipar.setParameter(objId, "OCCViewer_0_Color", "1:1:0")
+# set up entry GEOM_7:9 (BOUT) parameters
+objId = geompy.getObjectID(BOUT)
+ipar.setParameter(objId, "OCCViewer_0_Visibility", "On")
+ipar.setParameter(objId, "OCCViewer_0_Color", "1:1:0")
+
+###
+### SMESH component
+###
+
+import smesh, SMESH, SALOMEDS
+
+smesh.SetCurrentStudy(theStudy)
+import StdMeshers
+Maillage_regle = smesh.Mesh(SYSTEME)
+Regular_1D = Maillage_regle.Segment()
+Local_Length_1 = Regular_1D.LocalLength(0.1)
+Local_Length_1.SetPrecision( 1e-07 )
+Quadrangle_2D = Maillage_regle.Quadrangle()
+Hexa_3D = smesh.CreateHypothesis('Hexa_3D')
+status = Maillage_regle.AddHypothesis(Hexa_3D)
+Regular_1D_1 = Maillage_regle.Segment(geom=LIGN_L)
+Start_and_End_Length = Regular_1D_1.StartEndLength(0.005,0.1,[  ])
+smeshObj_1 = smesh.CreateHypothesis('FixedPoints1D')
+Regular_1D_2 = Maillage_regle.Segment(geom=LIGN_V)
+Start_and_End_Length_1 = Regular_1D_2.StartEndLength(0.005,0.03,[  ])
+isDone = Maillage_regle.Compute()
+isDone = Maillage_regle.Compute()
+Start_and_End_Length.SetStartLength( 0.005 )
+Start_and_End_Length.SetEndLength( 0.1 )
+Start_and_End_Length.SetReversedEdges( [ 9, 25 ] )
+Start_and_End_Length_1.SetStartLength( 0.005 )
+Start_and_End_Length_1.SetEndLength( 0.03 )
+Start_and_End_Length_1.SetReversedEdges( [ 6, 28, 16, 11 ] )
+isDone = Maillage_regle.Compute()
+BETON_2 = Maillage_regle.GroupOnGeom(BETON_1,'BETON',SMESH.VOLUME)
+B_BAS_1 = Maillage_regle.GroupOnGeom(B_BAS,'B_BAS',SMESH.VOLUME)
+B_DROI_1 = Maillage_regle.GroupOnGeom(B_DROI,'B_DROI',SMESH.FACE)
+B_GAUC_1 = Maillage_regle.GroupOnGeom(B_GAUC,'B_GAUC',SMESH.FACE)
+B_FOND_1 = Maillage_regle.GroupOnGeom(B_FOND,'B_FOND',SMESH.FACE)
+ARMATU_1 = Maillage_regle.GroupOnGeom(ARMATU,'ARMATU',SMESH.FACE)
+BOUT_1 = Maillage_regle.GroupOnGeom(BOUT,'BOUT',SMESH.EDGE)
+A_DROI_1 = Maillage_regle.GroupOnGeom(A_DROI,'A_DROI',SMESH.EDGE)
+A_GAUC_1 = Maillage_regle.GroupOnGeom(A_GAUC,'A_GAUC',SMESH.EDGE)
+A_FOND_1 = Maillage_regle.GroupOnGeom(A_FOND,'A_FOND',SMESH.EDGE)
+LIGN_L_1 = Maillage_regle.GroupOnGeom(LIGN_L,'LIGN_L',SMESH.EDGE)
+LIGN_V_1 = Maillage_regle.GroupOnGeom(LIGN_V,'LIGN_V',SMESH.EDGE)
+B_BOUT_1 = Maillage_regle.GroupOnGeom(B_BOUT,'B_BOUT',SMESH.FACE)
+SubMesh_1 = Regular_1D_1.GetSubMesh()
+SubMesh_2 = Regular_1D_2.GetSubMesh()
+
+## some objects were removed
+aStudyBuilder = theStudy.NewBuilder()
+SO = theStudy.FindObjectIOR(theStudy.ConvertObjectToIOR(smeshObj_1))
+if SO is not None: aStudyBuilder.RemoveObjectWithChildren(SO)
+## set object names
+smesh.SetName(Maillage_regle.GetMesh(), 'Maillage_regle')
+smesh.SetName(Regular_1D.GetAlgorithm(), 'Regular_1D')
+smesh.SetName(Local_Length_1, 'Local Length_1')
+smesh.SetName(Quadrangle_2D.GetAlgorithm(), 'Quadrangle_2D')
+smesh.SetName(Hexa_3D, 'Hexa_3D')
+smesh.SetName(Start_and_End_Length, 'Start and End Length_1')
+smesh.SetName(Start_and_End_Length_1, 'Start and End Length_2')
+smesh.SetName(BETON_2, 'BETON')
+smesh.SetName(B_BAS_1, 'B_BAS')
+smesh.SetName(B_DROI_1, 'B_DROI')
+smesh.SetName(B_GAUC_1, 'B_GAUC')
+smesh.SetName(B_FOND_1, 'B_FOND')
+smesh.SetName(ARMATU_1, 'ARMATU')
+smesh.SetName(BOUT_1, 'BOUT')
+smesh.SetName(A_DROI_1, 'A_DROI')
+smesh.SetName(A_GAUC_1, 'A_GAUC')
+smesh.SetName(A_FOND_1, 'A_FOND')
+smesh.SetName(LIGN_L_1, 'LIGN_L')
+smesh.SetName(LIGN_V_1, 'LIGN_V')
+smesh.SetName(B_BOUT_1, 'B_BOUT')
+smesh.SetName(SubMesh_1, 'SubMesh_1')
+smesh.SetName(SubMesh_2, 'SubMesh_2')
+
+### Store presentation parameters of displayed objects
+import iparameters
+ipar = iparameters.IParameters(theStudy.GetModuleParameters("Interface Applicative", "SMESH", 1))
+
+#Set up entries:
+# set up entry SMESH_3 (Maillage_regle) parameters
+ipar.setParameter("SMESH_3", "VTKViewer_0_Visibility", "On")
+ipar.setParameter("SMESH_3", "VTKViewer_0_Representation", "2")
+ipar.setParameter("SMESH_3", "VTKViewer_0_IsShrunk", "0")
+ipar.setParameter("SMESH_3", "VTKViewer_0_Entities", "e:1:f:1:v:1")
+ipar.setParameter("SMESH_3", "VTKViewer_0_Colors", "surface:0:0.666667:1:backsurface:-100:edge:0:0.666667:1:node:1:0:0:outline:0:0.27451:0")
+ipar.setParameter("SMESH_3", "VTKViewer_0_Sizes", "line:1:shrink:0.75")
+ipar.setParameter("SMESH_3", "VTKViewer_0_PointMarker", "std:1:9")
+ipar.setParameter("SMESH_3", "VTKViewer_0_Opacity", "1")
+ipar.setParameter("SMESH_3", "VTKViewer_0_ClippingPlane", "Off")
+
+# Création des éléments d'interface
+
+creation_elements_interface_3D(Maillage_regle, "B_BAS", "ARMATU", "CZM_BA")
+
+Maillage_regle.ConvertToQuadratic( 1 )
+
+
+if salome.sg.hasDesktop():
+  salome.sg.updateObjBrowser(1)
+  iparameters.getSession().restoreVisualState(1)

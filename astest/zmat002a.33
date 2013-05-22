@@ -1,0 +1,21 @@
+% fichier zmat exemple
+%***debug
+%*local_debug 1 2
+%*nb_ip 4
+***material
+*integration theta_method_a 1. 1.e-9 50
+***behavior gen_evp 
+**elasticity
+young 200000.
+poisson 0.3
+**thermal_strain
+alpha 1.e-5
+**potential gen_evp
+*flow plasticity
+*criterion mises
+*kinematic linear
+% C = E*Et/(E-Et) = 200000*50000/(200000-50000)
+C 66666.666666
+*isotropic constant
+R0 function 400.*(1.-1.e-2*temperature);
+***return

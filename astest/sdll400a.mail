@@ -1,0 +1,44 @@
+TITRE
+TEST sdll400a
+POUTRE DROITE AVEC EXCENTRICITE DU CENTRE DE TORSION 
+APPUYEE AUX DEUX EXTREMITES
+FINSF
+%
+COOR_3D
+  N1       0.0D0    0.0D0    0.0D0
+  N3       0.5D0    0.0D0    0.0D0
+  N4       1.0D0    0.0D0    0.0D0  
+  N5       1.5D0    0.0D0    0.0D0  
+  N6       2.0D0    0.0D0    0.0D0  
+  N7       2.5D0    0.0D0    0.0D0  
+  N8       3.0D0    0.0D0    0.0D0    
+  N9       3.5D0    0.0D0    0.0D0
+  N10      4.0D0    0.0D0    0.0D0  
+  N11      4.5D0    0.0D0    0.0D0
+  N12      5.0D0    0.0D0    0.0D0
+  N13      5.5D0    0.0D0    0.0D0
+  N14      6.0D0    0.0D0    0.0D0
+  N15      6.5D0    0.0D0    0.0D0
+  N16      7.0D0    0.0D0    0.0D0
+  N2       7.5D0    0.0D0    0.0D0
+FINSF
+%
+SEG2
+  S13      N1       N3
+  S34      N3       N4  
+  S45      N4       N5 
+  S56      N5       N6  
+  S67      N6       N7  
+  S78      N7       N8  
+  S89      N8       N9  
+  S910     N9       N10  
+  S1011    N10      N11  
+  S1112    N11      N12
+  S1213    N12      N13
+  S1314    N13      N14
+  S1415    N14      N15  
+  S1516    N15      N16
+  s162     N16      N2 
+FINSF
+%
+FIN

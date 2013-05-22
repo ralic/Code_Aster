@@ -1,0 +1,57 @@
+TITRE                   
+%  GIBI FECIT           
+FINSF                   
+%                       
+COOR_3D                 
+N1   0.0000D+00      0.000D+00   0.000   
+N2   0.0000D+00      0.000D+00   0.133   
+N3   0.0000D+00      0.000D+00   0.266   
+N4   0.0000D+00      0.000D+00   0.400   
+FINSF
+%                       
+SEG2                    
+M1      N1       N2             
+M2      N2       N3             
+M3      N3       N4             
+FINSF   
+%       
+POI1
+DISQUE1 N2
+MPE N3
+FINSF
+%       
+%
+%
+GROUP_MA 
+ROTOR
+M1      M2      M3
+FINSF                                           
+%                                               
+
+GROUP_NO 
+PALIER_A
+N1
+FINSF
+
+
+GROUP_NO 
+PALIER_B
+N4
+FINSF
+
+GROUP_NO 
+N_DIS2
+N2
+FINSF
+
+GROUP_MA 
+PALIER_E
+MPE
+FINSF
+
+GROUP_MA 
+DISQUES
+DISQUE1
+FINSF
+
+FIN                                             

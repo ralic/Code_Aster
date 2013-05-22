@@ -1,0 +1,22 @@
+ COOR_2D
+ A1        1.0    0.0
+ A2        2.0    0.0
+ A3        3.0    0.0
+ A4        4.0    0.0
+ B1        1.0    1.0
+ B2        2.0    1.0
+ B3        3.0    1.0
+ B4        4.0    1.0
+ FINSF
+ QUAD4
+  M1      A1  A2  B2  B1
+  M2      A2  A3  B3  B2
+ FINSF
+ TRIA3
+  M3      A3  A4  B4
+  M4      A3  B4  B3
+ FINSF
+ SEG2
+  S1      A4 B4
+ FINSF
+ FIN

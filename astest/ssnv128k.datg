@@ -1,0 +1,102 @@
+********************************************************
+*                  --- SSNV128K ---
+* MAILLAGE 3D D'UNE PLAQUE EN CONTACT AVEC UN BATI 2D
+* ELEM TE10 = TETRA10 POUR ASTER (QUADRATIQUE)
+********************************************************
+*
+opti dime 3 elem te10 echo 0 ;
+opti niveau 8 ;
+*
+* dimensions du bati et de la plaque
+* -----------------------------------
+COTE = 0.04;
+EPAI = 0.001;
+EPSI = 0.000001;
+*
+XA = 0.;
+*XB = 0.00125;
+XC = 0.005;
+*XD = 0.0075;
+*XE = 0.01125;
+*
+* discretisation
+* ---------------
+N1 = 16;
+N2 = 5;
+*
+* points, lignes et surface de construction du bati
+* --------------------------------------------------
+PBA = XA   0. 0.;
+PBS = COTE 0. 0.;
+*
+* cas d'un bati modelise par une surface
+* - - - - - - - - - - - - - - - - - - - -
+LBATI = PBA d N1 PBS;
+LBATIZ = LBATI PLUS (0. 0. EPAI);
+SBATI = COUT LBATI LBATIZ;
+SBATI = orie SBATI (0. 1. 0.);
+*
+* points, lignes, surfaces et volumes de construction de la plaque
+* -----------------------------------------------------------------
+PPA = XA   0. 0.;
+*PPB = XB   0. 0.;
+PPC = XC   0. 0.;
+*PPD = XD   0. 0.;
+*PPE = XE   0. 0.;
+PPS = COTE 0. 0.;
+PPSZ= COTE 0. EPAI;
+PHA = XA   COTE 0.;
+PHS = COTE COTE 0.;
+*
+*LCONTA = PPA d 1 PPB d 3 PPC d 2 PPD d 3 PPE d 23 PPS;
+LCONTA = PPA d 2 PPC d 14 PPS;
+LBLOCX = PPS d N2 PHS;
+LBLOCY = PPS d 1 PPSZ;
+LPRESV = PHA d N2 PHS;
+LPRESH = PPA d N2 PHA;
+*
+LCONTAZ = LCONTA plus (0. 0. EPAI);
+LBLOCXZ = LBLOCX plus (0. 0. EPAI);
+LPRESVZ = LPRESV plus (0. 0. EPAI);
+LPRESHZ = LPRESH plus (0. 0. EPAI);
+*
+CPLAQ = LCONTA et LBLOCX et (inve LPRESV) et (inve LPRESH);
+SPLAQ = (surf CPLAQ 'PLANE') coul vert;
+*
+SCONTA = COUT LCONTA LCONTAZ;
+SCONTA = orie SCONTA (0. -1. 0.);
+SBLOCX = COUT LBLOCX LBLOCXZ;
+SPRESV = COUT (inve LPRESV) (inve LPRESVZ);
+SPRESH = COUT (inve LPRESH) (inve LPRESHZ);
+SPLAQZ = SPLAQ plus (0. 0. EPAI);
+SPLAQZ = orie SPLAQZ (0. 0. -1.);
+SENVE = (SPLAQ et SPLAQZ et SCONTA et SBLOCX et SPRESV et SPRESH);
+elim EPSI SENVE;
+trac SENVE;
+VPLAQ = volu SENVE;
+elim EPSI VPLAQ LBLOCY;
+*
+* assemblage, trace de verification et sauvegarde du maillage
+* ------------------------------------------------------------
+MTOT = SBATI et VPLAQ;
+*
+mess 'VERIFICATION DU MAILLAGE :';
+mess 'nbel MTOT   : ' (nbel MTOT);
+mess 'nbel VPLAQ  : ' (nbel VPLAQ);
+mess 'nbel SBATI  : ' (nbel SBATI);
+mess 'nbel SCONTA : ' (nbel SCONTA);
+mess ' ';
+mess 'nbno MTOT   : ' (nbno MTOT);
+mess 'nbno VPLAQ  : ' (nbno VPLAQ);
+mess 'nbno SBATI  : ' (nbno SBATI);
+mess 'nbno SCONTA : ' (nbno SCONTA);
+mess ' ';
+*
+trac MTOT;
+*
+opti sauv form 'ssnv128k.mgib';
+sauv form MTOT;
+*
+fin;
+
+

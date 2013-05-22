@@ -1,0 +1,9 @@
+P time_limit 120
+P memory_limit 764
+P ncpus 1
+P mpi_nbcpu 2
+P mpi_nbnoeud 1
+P testlist I 
+
+F comm feti008b.comm D 1
+F mmed feti008b.mmed D 20

@@ -1,0 +1,132 @@
+OPTI DIME 3 ELEM CU27 ECHO 0;
+OPTI SAUV FORM 'zzzz166f.mgib' ;
+*
+* discretisation cote
+NEL = 20;
+DZ = 0.1;
+*
+* points de construction
+A1 = 0.5 0.5 1.0;
+B1 = 2.5 0.5 1.0;
+C1 = 0.5 2.5 1.0;
+D1 = 2.5 2.5 1.0;
+
+A2 = 3.0 0.5 1.0;
+B2 = 5.0 0.5 1.0;
+C2 = 3.0 2.5 1.0;
+D2 = 5.0 2.5 1.0;
+
+A3 = 0.5 3.0 1.0;
+B3 = 2.5 3.0 1.0;
+C3 = 0.5 5.0 1.0;
+D3 = 2.5 5.0 1.0;
+
+A4 = 3.0 3.0 1.0;
+B4 = 5.0 3.0 1.0;
+C4 = 3.0 5.0 1.0;
+D4 = 5.0 5.0 1.0;
+*
+* maillage en hexa8
+*--------------------
+OPTI DIME 3 ELEM CUB8;
+AB1 = DROI NEL A1 B1;
+CD1 = DROI NEL C1 D1;
+SHE8 = AB1 REGL NEL CD1;
+VHE8 = SHE8 VOLU 1 TRAN (0. 0. DZ);
+*
+* maillage en penta6
+*--------------------
+AB2 = DROI NEL A2 B2;
+CD2 = DROI NEL C2 D2;
+OPTI ELEM TRI3;
+SPE6 = AB2 REGL NEL CD2;
+OPTI ELEM PRI6;
+VPE6 = SPE6 VOLU 1 TRAN (0. 0. DZ);
+*
+* maillage en pyram5
+* -------------------
+A31 = 0.5 3.0 1.0;
+B31 = 0.7 3.0 1.0;
+C31 = 0.5 3.2 1.0;
+D31 = 0.7 3.2 1.0;
+A32 = 0.5 3.0 1.1;
+B32 = 0.7 3.0 1.1;
+C32 = 0.5 3.2 1.1;
+D32 = 0.7 3.2 1.1;
+E30 = 0.6 3.1 1.05;
+VPY51 = MANU PYR5 A31 B31 D31 C31 E30;
+VPY52 = MANU PYR5 B31 B32 D32 D31 E30;
+VPY53 = MANU PYR5 B32 A32 C32 D32 E30;
+VPY54 = MANU PYR5 A32 A31 C31 C32 E30;
+VPY55 = MANU PYR5 C31 D31 D32 C32 E30;
+VPY56 = MANU PYR5 A32 A31 B31 B32 E30;
+VPY50 = VPY51 et VPY52 et VPY53 et VPY54 et VPY55 et VPY56;
+IB=0;
+DX=0.0;
+VPY5 = VPY50 PLUS (0. 0. 0.);
+REPE BLPY5X 10;
+  DY=0.0;
+  REPE BLPY5Y 10;
+    SI (IB NEG 0);
+      VPY5 = VPY5 ET (VPY50 PLUS (DX DY 0.));
+    FINSI;
+    IB=1;
+    DY=DY+0.2;
+  FIN BLPY5Y;
+  DX=DX+0.2;
+FIN BLPY5X;
+ELIM 0.001 VPY5;
+ELIM 0.001 VPY5 (A3 ET B3 ET C3 ET D3);
+mess (nbel (VPY5 elem PYR5));
+trac VPY5;
+*
+* maillage en tetra4
+*--------------------
+A4Z = 3.0 3.0 1.1;
+B4Z = 5.0 3.0 1.1;
+C4Z = 3.0 5.0 1.1;
+D4Z = 5.0 5.0 1.1;
+AB4  = DROI 10 A4  B4 ;
+CD4  = DROI 10 C4  D4 ;
+AB4Z = DROI 10 A4Z B4Z;
+CD4Z = DROI 10 C4Z D4Z;
+BD4  = DROI 10 B4  D4 ;
+AC4  = DROI 10 A4  C4 ;
+BD4Z = DROI 10 B4Z D4Z;
+AC4Z = DROI 10 A4Z C4Z;
+OPTI ELEM TRI3;
+STE41 = AB4  REGL 10 CD4 ;
+STE42 = AB4Z REGL 10 CD4Z;
+STE43 = CD4  REGL 1 CD4Z;
+STE44 = AB4  REGL 1 AB4Z;
+STE45 = BD4  REGL 1 BD4Z;
+STE46 = AC4  REGL 1 AC4Z;
+ETE4 = STE41 ET STE42 ET STE43 ET STE44
+   ET STE45 ET STE46;
+ELIM 0.001 ETE4;
+OPTI ELEM TET4;
+VTE4 = VOLU ETE4;
+mess (nbel (VTE4 elem TET4));
+trac cach VTE4;
+trac VTE4;
+*
+* elimination des noeuds doubles
+*--------------------
+VTOT = VHE8 et VPE6 et VPY5 et VTE4; 
+elim 0.001 VTOT;
+*
+* sauvegarde du maillage
+*--------------------
+SAUV FORM VTOT;
+*
+* trace de verification
+*--------------------
+mess 'nbno VTOT : ' (nbno VTOT);
+mess 'nbel VTOT : ' (nbel VTOT);
+mess 'nbel VHE8 : ' (nbel VHE8) (nbel (VHE8 elem CUB8));
+mess 'nbel VPE6 : ' (nbel VPE6) (nbel (VPE6 elem PRI6));
+mess 'nbel VPY5 : ' (nbel VPY5) (nbel (VPY5 elem PYR5));
+mess 'nbel VTE4 : ' (nbel VTE4) (nbel (VTE4 elem TET4));
+trac cach VTOT;
+*
+*fin;

@@ -1,0 +1,40 @@
+Point(1) = {22.5, 0, 0, 0.5};
+Point(2) = {23.4, 0, 0, 0.5};
+Point(3) = {22.15817444, 3.907083998, 0, 0.5};
+Point(4) = {23.04450142, 4.063367357, 0, 0.5};
+Point(5) = {0, 0, 0, 0.5};
+Point(6) = {22.95, 0, 0, 0.5};
+Point(7) = {22.60133793, 3.985225678, 0, 0.5};
+Line (1) = {1, 6};
+Circle (2) = {1, 5, 3} Plane{0, 0, 1};
+Circle (3) = {6, 5, 7} Plane{0, 0, 1};
+Line (4) = {3, 7};
+Line Loop (16) = {3, -4, -2, 1};
+Plane Surface (20) = {16};
+Line (7) = {6, 2};
+Circle (8) = {2, 5, 4} Plane{0, 0, 1};
+Line (9) = {7, 4};
+Line Loop (17) = {8, -9, -3, 7};
+Plane Surface (21) = {17};
+LG=2;
+
+v1[]=Extrude {0,0,LG}{
+              Surface {20};Layers{10,1};
+              };                
+
+v2[]=Extrude {0,0,LG}{
+              Surface {21};Layers{10,1};
+              };  
+
+
+Physical Point(66) = {6};
+Physical Point(68) = {7};
+Physical Surface(69) = {v1[0]-5};
+Physical Surface(70) = {v2[0]-13};
+Physical Surface(71) = {20,21};
+Physical Surface(72) = {v1[0]-1,v2[0]-1};
+Physical Surface(73) = {v1[0]-9,v2[0]-9};
+Physical Line(74) = {3};
+Physical Volume(75) = {v1[1]};
+Physical Volume(76) = {v2[1]};
+

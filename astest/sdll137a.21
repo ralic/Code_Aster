@@ -1,0 +1,424 @@
+    -1
+   151   %TITRE 
+ ASTER V10. 1. 2 DU 16/12/2009  RESULTAT DU ME-30-DECE-2009 10:51:05            
+ME-30-DECE-2009 10:51:04                                                        
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+    -1
+    -1
+  2411
+         3         1         1        11
+  0.20000000000000001E+00  0.00000000000000000E+00  0.00000000000000000E+00
+         5         1         1        11
+  0.40000000000000002E+00  0.00000000000000000E+00  0.00000000000000000E+00
+         7         1         1        11
+  0.59999999999999998E+00  0.00000000000000000E+00  0.00000000000000000E+00
+         9         1         1        11
+  0.80000000000000004E+00  0.00000000000000000E+00  0.00000000000000000E+00
+    -1
+    -1
+  2412
+         3        21         1         1         7         2
+         0         1         1
+         3         5
+         5        21         1         1         7         2
+         0         1         1
+         5         7
+         7        21         1         1         7         2
+         0         1         1
+         7         9
+    -1
+    -1
+  2477
+         1         0         0         0         0         0         0         4
+CAPTEUR 
+         7         3         0         0         7         5         0         0
+         7         7         0         0         7         9         0         0
+         2         0         0         0         0         0         0         3
+POUTRE  
+         8         3         0         0         8         5         0         0
+         8         7         0         0
+    -1
+    -1                                                                          
+    55   %VALEURS AUX NOEUDS                                                    
+ASTER  8.03.15 CONCEPT MODES CALCULE - CHAMP AUX NOEUDS DE NOM SYMBOLIQUE       
+CHAMP AUX NOEUDS DE NOM SYMBOLIQUE  DEPL - DX DY DZ DRX DRY DRZ                 
+ASTER  8.03.15 CONCEPT MODES CALCULE LE 03/10/2006 A 11:02:50 DE TYPE MODE_MECA 
+CHAMP AUX NOEUDS DE NOM SYMBOLIQUE  DEPL                                        
+NUMERO D'ORDRE: 1 NUME_MODE: 1 FREQ:  9.31250E+00                               
+         1         2         3         8         2         6                    
+         2         4         1         1                                        
+  0.93125D+01  0.25665D+00  0.00000D+00  0.00000D+00
+         3     % NOEUD NO3     
+-8.67361E-027 3.12866E-018-5.09971E-002-4.54747E-021 4.80940E-001 2.96859E-017
+         5     % NOEUD NO5     
+ 1.73472E-026 1.10594E-017-1.81060E-001-1.81899E-020 7.92081E-001 4.90399E-017
+         7     % NOEUD NO7     
+ 0.00000E+000 2.20461E-017-3.57654E-001 1.81899E-020 9.50909E-001 5.82076E-017
+         9     % NOEUD NO9     
+-6.93889E-026 3.39059E-017-5.53936E-001 1.81899E-020 9.98025E-001 6.11180E-017
+    -1
+    -1                                                                          
+    55   %VALEURS AUX NOEUDS                                                    
+ASTER  8.03.15 CONCEPT MODES CALCULE - CHAMP AUX NOEUDS DE NOM SYMBOLIQUE       
+CHAMP AUX NOEUDS DE NOM SYMBOLIQUE  DEPL - DX DY DZ DRX DRY DRZ                 
+ASTER  8.03.15 CONCEPT MODES CALCULE LE 03/10/2006 A 11:02:50 DE TYPE MODE_MECA 
+CHAMP AUX NOEUDS DE NOM SYMBOLIQUE  DEPL                                        
+NUMERO D'ORDRE: 2 NUME_MODE: 2 FREQ:  3.92669E+01                               
+         1         2         3         8         2         6                    
+         2         4         2         2                                        
+  0.39267D+02  0.25783D+00  0.00000D+00  0.00000D+00
+         3     % NOEUD NO3     
+ 5.77472E-023 5.12973E-002-1.45224E-016 3.26051E-017 8.58211E-016 4.80887E-001
+         5     % NOEUD NO5     
+ 9.77261E-023 1.81639E-001-1.54092E-016 6.52102E-017 3.87700E-016 7.92015E-001
+         7     % NOEUD NO7     
+ 1.24379E-022 3.58463E-001-1.04163E-017 8.38417E-017 1.14937E-016 9.50864E-001
+         9     % NOEUD NO9     
+ 1.06610E-022 5.54885E-001-1.07472E-016 9.31575E-017-1.30459E-015 9.98016E-001
+    -1
+    -1                                                                          
+    55   %VALEURS AUX NOEUDS                                                    
+ASTER  8.03.15 CONCEPT MODES CALCULE - CHAMP AUX NOEUDS DE NOM SYMBOLIQUE       
+CHAMP AUX NOEUDS DE NOM SYMBOLIQUE  DEPL - DX DY DZ DRX DRY DRZ                 
+ASTER  8.03.15 CONCEPT MODES CALCULE LE 03/10/2006 A 11:02:50 DE TYPE MODE_MECA 
+CHAMP AUX NOEUDS DE NOM SYMBOLIQUE  DEPL                                        
+NUMERO D'ORDRE: 3 NUME_MODE: 3 FREQ:  5.83358E+01                               
+         1         2         3         8         2         6                    
+         2         4         3         3                                        
+  0.58336D+02  0.21293D-01  0.00000D+00  0.00000D+00
+         3     % NOEUD NO3     
+ 1.03834E-022-1.71206E-017 6.65070E-002 8.71031E-017-4.88138E-001-1.17284E-016
+         5     % NOEUD NO5     
+ 2.90752E-022-1.30623E-017 1.34670E-001 1.74202E-016-8.23416E-002 1.51341E-017
+         7     % NOEUD NO7     
+ 3.32280E-022-3.23398E-017 7.95981E-002 2.39547E-016 6.19363E-001 1.67341E-016
+         9     % NOEUD NO9     
+ 4.98390E-022 8.19421E-017-8.88066E-002 2.39547E-016 9.79855E-001 1.07525E-016
+    -1
+    -1                                                                          
+    55   %VALEURS AUX NOEUDS                                                    
+ASTER  8.03.15 CONCEPT MODES CALCULE - CHAMP AUX NOEUDS DE NOM SYMBOLIQUE       
+CHAMP AUX NOEUDS DE NOM SYMBOLIQUE  DEPL - DX DY DZ DRX DRY DRZ                 
+ASTER  8.03.15 CONCEPT MODES CALCULE LE 03/10/2006 A 11:02:50 DE TYPE MODE_MECA 
+CHAMP AUX NOEUDS DE NOM SYMBOLIQUE  DEPL                                        
+NUMERO D'ORDRE: 4 NUME_MODE: 4 FREQ:  1.63278E+02                               
+         1         2         3         8         2         6                    
+         2         4         4         4                                        
+  0.16328D+03  0.79035D-02  0.00000D+00  0.00000D+00
+         3     % NOEUD NO3     
+ 7.14866E-022-1.07122E-016-7.66565E-002-3.62799E-017 3.18742E-001-5.97205E-016
+         5     % NOEUD NO5     
+ 1.47263E-021-1.56717E-016-3.67431E-002 3.27614E-018-6.49824E-001-4.41571E-016
+         7     % NOEUD NO7     
+ 1.49407E-021-3.11403E-016 7.38932E-002-2.79890E-017-1.48731E-001 6.01742E-016
+         9     % NOEUD NO9     
+ 2.24110E-021 3.06308E-016-1.69864E-002-6.32110E-018 9.13171E-001 1.13496E-015
+    -1
+    -1                                                                          
+    55   %VALEURS AUX NOEUDS                                                    
+ASTER  8.03.15 CONCEPT MODES CALCULE - CHAMP AUX NOEUDS DE NOM SYMBOLIQUE       
+CHAMP AUX NOEUDS DE NOM SYMBOLIQUE  DEPL - DX DY DZ DRX DRY DRZ                 
+ASTER  8.03.15 CONCEPT MODES CALCULE LE 03/10/2006 A 11:02:50 DE TYPE MODE_MECA 
+CHAMP AUX NOEUDS DE NOM SYMBOLIQUE  DEPL                                        
+NUMERO D'ORDRE: 5 NUME_MODE: 5 FREQ:  2.44062E+02                               
+         1         2         3         8         2         6                    
+         2         4         5         5                                        
+  0.24406D+03  0.21723D-01  0.00000D+00  0.00000D+00
+         3     % NOEUD NO3     
+-6.36770E-022-6.76815E-002-3.19844E-015 3.17605E-016 2.55017E-015-4.82510E-001
+         5     % NOEUD NO5     
+-3.43164E-021-1.35829E-001 8.78274E-016 6.35210E-016-1.21192E-014-7.72338E-002
+         7     % NOEUD NO7     
+-1.10429E-021-7.99602E-002-7.74296E-016 4.69791E-016 4.40895E-014 6.20833E-001
+         9     % NOEUD NO9     
+-6.23992E-021 8.93740E-002-4.67509E-015 7.33989E-016-4.74105E-014 9.79723E-001
+    -1
+    -1                                                                          
+    55   %VALEURS AUX NOEUDS                                                    
+ASTER  8.03.15 CONCEPT MODES CALCULE - CHAMP AUX NOEUDS DE NOM SYMBOLIQUE       
+CHAMP AUX NOEUDS DE NOM SYMBOLIQUE  DEPL - DX DY DZ DRX DRY DRZ                 
+ASTER  8.03.15 CONCEPT MODES CALCULE LE 03/10/2006 A 11:02:50 DE TYPE MODE_MECA 
+CHAMP AUX NOEUDS DE NOM SYMBOLIQUE  DEPL                                        
+NUMERO D'ORDRE: 6 NUME_MODE: 6 FREQ:  3.19976E+02                               
+         1         2         3         8         2         6                    
+         2         4         6         6                                        
+  0.31998D+03  0.40180D-02  0.00000D+00  0.00000D+00
+         3     % NOEUD NO3     
+-7.60590E-021-8.19484E-016 6.13422E-002-5.85730E-016 1.06458E-001-5.61357E-015
+         5     % NOEUD NO5     
+-1.25714E-020-1.42126E-015-4.73269E-002-1.01340E-015 4.09453E-001-1.37058E-015
+         7     % NOEUD NO7     
+-1.51898E-020-1.34835E-015 1.40089E-002-1.30636E-015-6.68842E-001 6.40907E-015
+         9     % NOEUD NO9     
+-2.01590E-020 2.13062E-015 1.24218E-002-1.90035E-015 7.87997E-001 1.11684E-014
+    -1
+    -1                                                                          
+    55   %VALEURS AUX NOEUDS                                                    
+ASTER  8.03.15 CONCEPT MODES CALCULE - CHAMP AUX NOEUDS DE NOM SYMBOLIQUE       
+CHAMP AUX NOEUDS DE NOM SYMBOLIQUE  DEPL - DX DY DZ DRX DRY DRZ                 
+ASTER  8.03.15 CONCEPT MODES CALCULE LE 03/10/2006 A 11:02:50 DE TYPE MODE_MECA 
+CHAMP AUX NOEUDS DE NOM SYMBOLIQUE  DEPL                                        
+NUMERO D'ORDRE: 7 NUME_MODE: 7 FREQ:  3.80525E+02                               
+         1         2         3         8         2         6                    
+         2         4         7         7                                        
+  0.38052D+03  0.15178D-03  0.00000D+00  0.00000D+00
+         3     % NOEUD NO3     
+-7.81040E-034-1.01780E-016 1.53608E-014 3.42020E-001 1.74067E-013-1.16104E-015
+         5     % NOEUD NO5     
+-1.29451E-033-3.56768E-016-2.45165E-014 6.42788E-001-8.47741E-015-9.28275E-017
+         7     % NOEUD NO7     
+ 7.57609E-021 3.20826E-016 6.67240E-015 8.66025E-001 1.88296E-014 1.64250E-015
+         9     % NOEUD NO9     
+ 3.03044E-020-5.03962E-017-1.42074E-014 9.84808E-001 2.06960E-014 2.87210E-016
+    -1
+    -1                                                                          
+    55   %VALEURS AUX NOEUDS                                                    
+ASTER  8.03.15 CONCEPT MODES CALCULE - CHAMP AUX NOEUDS DE NOM SYMBOLIQUE       
+CHAMP AUX NOEUDS DE NOM SYMBOLIQUE  DEPL - DX DY DZ DRX DRY DRZ                 
+ASTER  8.03.15 CONCEPT MODES CALCULE LE 03/10/2006 A 11:02:50 DE TYPE MODE_MECA 
+CHAMP AUX NOEUDS DE NOM SYMBOLIQUE  DEPL                                        
+NUMERO D'ORDRE: 8 NUME_MODE: 8 FREQ:  5.29544E+02                               
+         1         2         3         8         2         6                    
+         2         4         8         8                                        
+  0.52954D+03  0.24124D-02  0.00000D+00  0.00000D+00
+         3     % NOEUD NO3     
+-1.53004E-020 1.23572E-015-3.32578E-002 2.34720E-012-5.21793E-001 4.67362E-015
+         5     % NOEUD NO5     
+-3.88510E-021 1.75275E-015 3.18254E-002 4.41139E-012 4.98591E-001-1.09054E-014
+         7     % NOEUD NO7     
+-4.69699E-021-3.45116E-015-3.22285E-002 5.94339E-012-4.94261E-001-8.72589E-015
+         9     % NOEUD NO9     
+ 4.12513E-021 4.02303E-015 2.53101E-002 6.75751E-012 6.02954E-001 9.42596E-015
+    -1
+    -1                                                                          
+    55   %VALEURS AUX NOEUDS                                                    
+ASTER  8.03.15 CONCEPT MODES CALCULE - CHAMP AUX NOEUDS DE NOM SYMBOLIQUE       
+CHAMP AUX NOEUDS DE NOM SYMBOLIQUE  DEPL - DX DY DZ DRX DRY DRZ                 
+ASTER  8.03.15 CONCEPT MODES CALCULE LE 03/10/2006 A 11:02:50 DE TYPE MODE_MECA 
+CHAMP AUX NOEUDS DE NOM SYMBOLIQUE  DEPL                                        
+NUMERO D'ORDRE: 9 NUME_MODE: 9 FREQ:  6.75130E+02                               
+         1         2         3         8         2         6                    
+         2         4         9         9                                        
+  0.67513D+03  1.00000D+01  0.00000D+00  0.00000D+00                            
+         3     % NOEUD NO3     
+-1.07996E-020 7.90053E-002-1.53942E-015 7.95395E-014-2.89344E-013 3.03666E-001
+         5     % NOEUD NO5     
+-4.36600E-020 3.68762E-002-1.13987E-014 1.49665E-013 4.40956E-013-6.47737E-001
+         7     % NOEUD NO7     
+-3.19718E-020-7.53204E-002 2.88067E-014 2.01219E-013-1.14607E-013-1.41130E-001
+         9     % NOEUD NO9     
+-4.51416E-020 1.74927E-002-3.21969E-014 2.30322E-013-2.51243E-013 9.12602E-001
+    -1
+    -1                                                                          
+    55   %VALEURS AUX NOEUDS                                                    
+ASTER  8.03.15 CONCEPT MODES CALCULE - CHAMP AUX NOEUDS DE NOM SYMBOLIQUE       
+CHAMP AUX NOEUDS DE NOM SYMBOLIQUE  DEPL - DX DY DZ DRX DRY DRZ                 
+ASTER  8.03.15 CONCEPT MODES CALCULE LE 03/10/2006 A 11:02:50 DE TYPE MODE_MECA 
+CHAMP AUX NOEUDS DE NOM SYMBOLIQUE  DEPL                                        
+NUMERO D'ORDRE: 10 NUME_MODE: 10 FREQ:  7.93295E+02                             
+         1         2         3         8         2         6                    
+         2         4        10        10                                        
+  0.79329D+03  1.00000D+01  0.00000D+00  0.00000D+00                            
+         3     % NOEUD NO3     
+ 8.24421E-020 8.53694E-015 3.69693E-003 5.17872E-014 7.11893E-001 3.53490E-014
+         5     % NOEUD NO5     
+ 1.57107E-019 5.13631E-015 2.12459E-002 9.76438E-014-5.75724E-001-6.97229E-014
+         7     % NOEUD NO7     
+ 2.12871E-019-9.08546E-015-3.58063E-002 1.33110E-013 1.85023E-001-2.27254E-014
+         9     % NOEUD NO9     
+ 2.35927E-019 4.18984E-015 2.97352E-002 1.53391E-013 3.68752E-001 8.35822E-014
+    -1
+    -1                                                                          
+    55   %VALEURS AUX NOEUDS                                                    
+ASTER  8.03.15 CONCEPT MODES CALCULE - CHAMP AUX NOEUDS DE NOM SYMBOLIQUE       
+CHAMP AUX NOEUDS DE NOM SYMBOLIQUE  DEPL - DX DY DZ DRX DRY DRZ                 
+ASTER  8.03.15 CONCEPT MODES CALCULE LE 03/10/2006 A 11:02:50 DE TYPE MODE_MECA 
+CHAMP AUX NOEUDS DE NOM SYMBOLIQUE  DEPL                                        
+NUMERO D'ORDRE: 11 NUME_MODE: 11 FREQ:  1.11337E+03                             
+         1         2         3         8         2         6                    
+         2         4        11        11                                        
+  0.11134D+04  1.00000D+01  0.00000D+00  0.00000D+00                            
+         3     % NOEUD NO3     
+ 6.03272E-020-2.27908E-016 1.78467E-002-3.17324E-013-5.76468E-001 7.35016E-015
+         5     % NOEUD NO5     
+ 1.18269E-019 2.60304E-015-2.84923E-002-5.86093E-013-2.93791E-001-5.26559E-015
+         7     % NOEUD NO7     
+ 2.11473E-019-1.92937E-015-7.91451E-003-7.76936E-013 6.76685E-001-1.09469E-014
+         9     % NOEUD NO9     
+-1.99158E-020 5.88963E-015 2.89810E-002-8.73664E-013 1.04372E-001-2.22157E-014
+    -1
+    -1                                                                          
+    55   %VALEURS AUX NOEUDS                                                    
+ASTER  8.03.15 CONCEPT MODES CALCULE - CHAMP AUX NOEUDS DE NOM SYMBOLIQUE       
+CHAMP AUX NOEUDS DE NOM SYMBOLIQUE  DEPL - DX DY DZ DRX DRY DRZ                 
+ASTER  8.03.15 CONCEPT MODES CALCULE LE 03/10/2006 A 11:02:50 DE TYPE MODE_MECA 
+CHAMP AUX NOEUDS DE NOM SYMBOLIQUE  DEPL                                        
+NUMERO D'ORDRE: 12 NUME_MODE: 12 FREQ:  1.15319E+03                             
+         1         2         3         8         2         6                    
+         2         4        12        12                                        
+  0.11532D+04  1.00000D+01  0.00000D+00  0.00000D+00                            
+         3     % NOEUD NO3     
+-3.39215E-020 4.35211E-015 1.57743E-016-8.66025E-001-1.28712E-013 2.62416E-015
+         5     % NOEUD NO5     
+-3.76906E-021-8.59237E-015-1.41049E-014-8.66025E-001-7.21640E-013-3.27314E-014
+         7     % NOEUD NO7     
+-2.93949E-020 9.43127E-015-1.78778E-014-8.45893E-016 3.58239E-014 1.99944E-014
+         9     % NOEUD NO9     
+-4.50768E-021-2.80677E-014-1.81783E-014 8.66025E-001 1.56030E-013 1.74124E-013
+    -1
+    -1                                                                          
+    55   %VALEURS AUX NOEUDS                                                    
+ASTER  8.03.15 CONCEPT MODES CALCULE - CHAMP AUX NOEUDS DE NOM SYMBOLIQUE       
+CHAMP AUX NOEUDS DE NOM SYMBOLIQUE  DEPL - DX DY DZ DRX DRY DRZ                 
+ASTER  8.03.15 CONCEPT MODES CALCULE LE 03/10/2006 A 11:02:50 DE TYPE MODE_MECA 
+CHAMP AUX NOEUDS DE NOM SYMBOLIQUE  DEPL                                        
+NUMERO D'ORDRE: 13 NUME_MODE: 13 FREQ:  1.30274E+03                             
+         1         2         3         8         2         6                    
+         2         4        13        13                                        
+  0.13027D+04  1.00000D+01  0.00000D+00  0.00000D+00                            
+         3     % NOEUD NO3     
+-7.03881E-019-6.36384E-002-3.87141E-014 7.13350E-013 1.32176E-012 1.28335E-001
+         5     % NOEUD NO5     
+-1.56055E-018 4.96778E-002 8.77798E-014 7.25518E-013 9.00352E-013 3.92948E-001
+         7     % NOEUD NO7     
+-1.63826E-018-1.50696E-002 2.68654E-013 4.22357E-014 2.32547E-012-6.53023E-001
+         9     % NOEUD NO9     
+-2.01371E-018-1.25539E-002 1.78000E-013-6.48065E-013-2.68628E-012 7.87446E-001
+    -1
+    -1                                                                          
+    55   %VALEURS AUX NOEUDS                                                    
+ASTER  8.03.15 CONCEPT MODES CALCULE - CHAMP AUX NOEUDS DE NOM SYMBOLIQUE       
+CHAMP AUX NOEUDS DE NOM SYMBOLIQUE  DEPL - DX DY DZ DRX DRY DRZ                 
+ASTER  8.03.15 CONCEPT MODES CALCULE LE 03/10/2006 A 11:02:50 DE TYPE MODE_MECA 
+CHAMP AUX NOEUDS DE NOM SYMBOLIQUE  DEPL                                        
+NUMERO D'ORDRE: 14 NUME_MODE: 14 FREQ:  1.44315E+03                             
+         1         2         3         8         2         6                    
+         2         4        14        14                                        
+  0.14431D+04  0.11943D+01  0.00000D+00  0.00000D+00                            
+         3     % NOEUD NO3     
+ 3.42020E-001 8.60972E-016-3.65729E-012-3.90600E-015 2.78543E-011-6.49072E-015
+         5     % NOEUD NO5     
+ 6.42788E-001-1.15376E-015-9.42953E-013-4.77219E-015 1.02262E-010-1.33864E-014
+         7     % NOEUD NO7     
+ 8.66025E-001-3.61604E-015 2.83127E-012 9.29538E-015 5.69056E-011 2.73114E-014
+         9     % NOEUD NO9     
+ 9.84808E-001 1.12443E-014 4.03405E-012-1.80945E-014-1.60078E-011-6.35526E-014
+    -1
+    -1                                                                          
+    55   %VALEURS AUX NOEUDS                                                    
+ASTER  8.03.15 CONCEPT MODES CALCULE - CHAMP AUX NOEUDS DE NOM SYMBOLIQUE       
+CHAMP AUX NOEUDS DE NOM SYMBOLIQUE  DEPL - DX DY DZ DRX DRY DRZ                 
+ASTER  8.03.15 CONCEPT MODES CALCULE LE 03/10/2006 A 11:02:50 DE TYPE MODE_MECA 
+CHAMP AUX NOEUDS DE NOM SYMBOLIQUE  DEPL                                        
+NUMERO D'ORDRE: 15 NUME_MODE: 15 FREQ:  1.49069E+03                             
+         1         2         3         8         2         6                    
+         2         4        15        15                                        
+  0.14907D+04  0.81740D-03  0.00000D+00  0.00000D+00                            
+         3     % NOEUD NO3     
+-3.37461E-014 4.95344E-014-2.66180E-002-1.99369E-012 1.75127E-001-7.09208E-014
+         5     % NOEUD NO5     
+-6.34221E-014-3.38676E-014-6.94519E-003-1.87978E-012 6.62772E-001-3.52799E-013
+         7     % NOEUD NO7     
+-8.54484E-014 5.29069E-015 1.99588E-002 3.21355E-013 4.73299E-001 5.72883E-013
+         9     % NOEUD NO9     
+-9.71692E-014 3.06004E-014 2.49264E-002 2.47940E-012-1.64240E-001-8.42755E-013
+    -1
+    -1                                                                          
+    55   %VALEURS AUX NOEUDS                                                    
+ASTER  8.03.15 CONCEPT MODES CALCULE - CHAMP AUX NOEUDS DE NOM SYMBOLIQUE       
+CHAMP AUX NOEUDS DE NOM SYMBOLIQUE  DEPL - DX DY DZ DRX DRY DRZ                 
+ASTER  8.03.15 CONCEPT MODES CALCULE LE 03/10/2006 A 11:02:50 DE TYPE MODE_MECA 
+CHAMP AUX NOEUDS DE NOM SYMBOLIQUE  DEPL                                        
+NUMERO D'ORDRE: 16 NUME_MODE: 16 FREQ:  1.90306E+03                             
+         1         2         3         8         2         6                    
+         2         4        16        16                                        
+  0.19031D+04  0.77024D-03  0.00000D+00  0.00000D+00                            
+         3     % NOEUD NO3     
+-1.39383E-015 3.23620E-014 2.41690E-002-1.60662E-012 2.94920E-001 5.93352E-014
+         5     % NOEUD NO5     
+-2.63787E-015-1.90483E-014 2.73420E-002-1.29380E-012 4.98931E-002-4.00848E-013
+         7     % NOEUD NO7     
+-3.56701E-015-5.10831E-015 2.59437E-002 8.14056E-013-2.04891E-001 5.99827E-013
+         9     % NOEUD NO9     
+-4.04801E-015 3.64063E-014 1.93010E-002 2.75551E-012-3.98058E-001-9.83537E-013
+    -1
+    -1                                                                          
+    55   %VALEURS AUX NOEUDS                                                    
+ASTER  8.03.15 CONCEPT MODES CALCULE - CHAMP AUX NOEUDS DE NOM SYMBOLIQUE       
+CHAMP AUX NOEUDS DE NOM SYMBOLIQUE  DEPL - DX DY DZ DRX DRY DRZ                 
+ASTER  8.03.15 CONCEPT MODES CALCULE LE 03/10/2006 A 11:02:50 DE TYPE MODE_MECA 
+CHAMP AUX NOEUDS DE NOM SYMBOLIQUE  DEPL                                        
+NUMERO D'ORDRE: 17 NUME_MODE: 17 FREQ:  1.96093E+03                             
+         1         2         3         8         2         6                    
+         2         4        17        17                                        
+  0.19609D+04  0.13439D-03  0.00000D+00  0.00000D+00                            
+         3     % NOEUD NO3     
+ 6.83228E-017 3.13429E-014-1.52301E-014 9.84808E-001-3.04035E-013-3.53751E-013
+         5     % NOEUD NO5     
+-6.13863E-017-3.55209E-014-1.33324E-014-3.42020E-001-1.52432E-012 2.78037E-013
+         7     % NOEUD NO7     
+-2.07156E-016 3.65868E-014 1.96668E-014-8.66025E-001 4.99703E-013-3.23726E-013
+         9     % NOEUD NO9     
+-4.03672E-017-4.99056E-014 1.02097E-014 6.42788E-001-3.93295E-012 6.66254E-013
+    -1
+    -1                                                                          
+    55   %VALEURS AUX NOEUDS                                                    
+ASTER  8.03.15 CONCEPT MODES CALCULE - CHAMP AUX NOEUDS DE NOM SYMBOLIQUE       
+CHAMP AUX NOEUDS DE NOM SYMBOLIQUE  DEPL - DX DY DZ DRX DRY DRZ                 
+ASTER  8.03.15 CONCEPT MODES CALCULE LE 03/10/2006 A 11:02:50 DE TYPE MODE_MECA 
+CHAMP AUX NOEUDS DE NOM SYMBOLIQUE  DEPL                                        
+NUMERO D'ORDRE: 18 NUME_MODE: 18 FREQ:  2.11864E+03                             
+         1         2         3         8         2         6                    
+         2         4        18        18                                        
+  0.21186D+04  0.27096D-02  0.00000D+00  0.00000D+00                            
+         3     % NOEUD NO3     
+-4.05207E-017 3.39271E-002 9.45581E-014-1.55106E-011 9.47774E-012-5.32476E-001
+         5     % NOEUD NO5     
+ 2.00483E-017-3.26321E-002 2.93801E-013 9.92922E-012 2.49853E-012 4.98335E-001
+         7     % NOEUD NO7     
+ 7.62755E-018 3.35930E-002-1.11756E-013 1.65575E-011 2.65981E-011-4.86939E-001
+         9     % NOEUD NO9     
+ 1.00410E-016-2.63780E-002-2.75922E-013-1.57171E-011-2.38451E-011 6.03950E-001
+    -1
+    -1                                                                          
+    55   %VALEURS AUX NOEUDS                                                    
+ASTER  8.03.15 CONCEPT MODES CALCULE - CHAMP AUX NOEUDS DE NOM SYMBOLIQUE       
+CHAMP AUX NOEUDS DE NOM SYMBOLIQUE  DEPL - DX DY DZ DRX DRY DRZ                 
+ASTER  8.03.15 CONCEPT MODES CALCULE LE 03/10/2006 A 11:02:50 DE TYPE MODE_MECA 
+CHAMP AUX NOEUDS DE NOM SYMBOLIQUE  DEPL                                        
+NUMERO D'ORDRE: 19 NUME_MODE: 19 FREQ:  2.60761E+03                             
+         1         2         3         8         2         6                    
+         2         4        19        19                                        
+  0.26076D+04  0.48987D-03  0.00000D+00  0.00000D+00                            
+         3     % NOEUD NO3     
+-3.21903E-016 7.49563E-014-9.03870E-003-3.51058E-012-7.45305E-001-9.94236E-013
+         5     % NOEUD NO5     
+-6.83721E-016-8.10457E-014-2.54842E-003 1.98189E-012-8.95415E-001 9.50697E-013
+         7     % NOEUD NO7     
+-8.89146E-016 1.14136E-013 4.45734E-003 3.74390E-012-8.70806E-001-1.06400E-012
+         9     % NOEUD NO9     
+-9.91740E-016-7.00354E-014 1.00323E-002-3.01701E-012-6.58514E-001 1.41565E-012
+    -1
+    -1                                                                          
+    55   %VALEURS AUX NOEUDS                                                    
+ASTER  8.03.15 CONCEPT MODES CALCULE - CHAMP AUX NOEUDS DE NOM SYMBOLIQUE       
+CHAMP AUX NOEUDS DE NOM SYMBOLIQUE  DEPL - DX DY DZ DRX DRY DRZ                 
+ASTER  8.03.15 CONCEPT MODES CALCULE LE 03/10/2006 A 11:02:50 DE TYPE MODE_MECA 
+CHAMP AUX NOEUDS DE NOM SYMBOLIQUE  DEPL                                        
+NUMERO D'ORDRE: 20 NUME_MODE: 20 FREQ:  2.82710E+03                             
+         1         2         3         8         2         6                    
+         2         4        20        20                                        
+  0.28271D+04  0.11909D-03  0.00000D+00  0.00000D+00                            
+         3     % NOEUD NO3     
+-1.24884E-017 5.05372E-015 3.51438E-014-6.42788E-001 1.21381E-011 4.99125E-013
+         5     % NOEUD NO5     
+-3.67109E-017-2.27227E-014-3.29243E-013 9.84808E-001 1.44846E-011-4.41552E-013
+         7     % NOEUD NO7     
+-7.44601E-017 2.56786E-014-3.35744E-013-8.66025E-001-3.26353E-011 1.65598E-013
+         9     % NOEUD NO9     
+ 1.41121E-017 3.76390E-014 2.93213E-013 3.42020E-001 2.78741E-011-5.40338E-013
+    -1

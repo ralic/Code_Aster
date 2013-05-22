@@ -1,0 +1,73 @@
+********************************************************************
+SAUT PAGE;
+
+TITRE 'MAILLAGE POUTRE EN PENTA6' ;
+opti echo 1 opti dime 3 elem pri6 mode tridim ;
+
+OPTI NIVE 11 ;
+
+OPTI SAUV FORM '/home02/trinh/xavier/testnonli/shb6/pconsol/shb6.mgib';
+
+*paramètres géometriques
+L = 10.;
+B = 1.;
+h = 0.1;
+*paramètres de maillage
+Nlong=100;
+Nlarg=10;
+Nepai=1;
+
+P1=(0. 0. h) ;
+P2=(L  0. h) ;
+P3=(L  B h) ;
+P4=(0. B h) ;
+
+P5=(0. 0. 0.) ;
+P6=(L  0. 0.) ;
+P7=(L  B 0.) ;
+P8=(0. B 0.) ;
+
+P12=D Nlong P1 P2;
+P23=D Nlarg P2 P3;
+P34=D Nlong P3 P4;
+P41=D Nlarg P4 P1;
+
+P56=D Nlong P5 P6;
+P67=D Nlarg P6 P7;
+P78=D Nlong P7 P8;
+P85=D Nlarg P8 P5;
+
+opti elem tri3;
+SS1 = daller P12 P23 P34 P41;
+*TRAC SS1;
+
+SS2 = daller P56 P67 P78 P85;
+*TRAC SS2;
+opti elem pri6;
+
+VOL1 = VOLUME Nepai SS1 SS2;
+
+elim 0.00005 VOL1;
+
+P15=D Nepai P1 P5;
+P84=D Nepai P8 P4;
+
+opti elem qua4;
+SS3 = daller P15 P85 P84 P41;
+VOL2 = VOL1 et SS3;
+
+
+
+elim 0.00005 VOL2 ;
+
+
+list (nbno VOL1);
+list (nbel VOL1);
+
+
+TRACER VOL2 CACHER (100 100 100) ;
+
+sort VOL2;
+SAUV FORM VOL2;
+
+fin;

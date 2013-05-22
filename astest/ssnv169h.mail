@@ -1,0 +1,66 @@
+ TITRE
+ %  GIBI FECIT                                                                  
+ FINSF
+ %
+ COOR_2D
+ N1        0.00000000000000D+00  0.00000000000000D+00
+ N2        5.00000000000000D+01  0.00000000000000D+00
+ N3        1.00000000000000D+02  0.00000000000000D+00
+ N4        1.00000000000000D+02  5.00000000000000D+01
+ N5        1.00000000000000D+02  1.00000000000000D+02
+ N6        5.00000000000000D+01  1.00000000000000D+02
+ N7        0.00000000000000D+00  1.00000000000000D+02
+ N8        0.00000000000000D+00  5.00000000000000D+01
+ FINSF
+ %
+ QUAD8   
+ M1       N1       N3       N5       N7       N2       N4       N6      
+          N8      
+ FINSF
+ %
+ SEG3    
+ M2       N7       N1       N8      
+ M3       N3       N5       N4      
+ FINSF
+ %
+ POI1    
+ M4       N3      
+ M5       N1      
+ FINSF
+ %
+ GROUP_NO
+ PA      
+ N1      
+ FINSF
+ %
+ GROUP_NO
+ PB      
+ N3      
+ FINSF
+ %
+ GROUP_NO
+ P1      
+ N1      
+ FINSF
+ %
+ GROUP_NO
+ P2      
+ N3      
+ FINSF
+ %
+ GROUP_MA
+ Q       
+ M1      
+ FINSF
+ %
+ GROUP_MA
+ A1      
+ M3      
+ FINSF
+ %
+ GROUP_MA
+ A3      
+ M2      
+ FINSF
+ %
+ FIN

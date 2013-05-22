@@ -1,0 +1,44 @@
+* CAS-TEST sslv139a
+*
+* Description du maillage
+*
+*    ^ Y
+*    |
+*   D|                       C
+*    .-----------------------.
+*    |         PLAQ          |
+*    .-----------------------.----> X 
+*   A                        B
+*
+opti dime 2 ;
+opti elem QUA8 ;
+*
+* Caracteristiques de la geometrie
+*
+EP = 0.0005;
+R  = 0.115;
+*
+* Discretisation
+* N1 dans le sens longitudinal (AB)
+* N2 dans le sens transversal  (AD)
+
+N1   =  460;
+N2   =    4;
+
+* Definition de la plaque
+A =  0.      0.       ;
+B =  R       0.       ;
+C =  R       EP       ;
+D =  0.      EP       ;
+* PLAQUE
+AB = droit  N1 A B ;
+BC = droit  N2 B C ;
+CD = droit  N1 C D ;
+DA = droit  N2 D A ;
+PLAQUE  = daller AB BC CD DA plan ;
+
+trace plaque;
+
+OPTI SAUV FORM 'sslv139a.mgib';
+sauv form (PLAQUE) ; 
+fin;

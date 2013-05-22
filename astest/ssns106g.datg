@@ -1,0 +1,46 @@
+*           Test ssns104a.dgibi: Jeux de donnees      *
+*           ------------------------------------      *
+*                                                     *
+* CAS TEST DU 23/10/03
+*OPTION ECHO 1;
+*GRAPH='N';
+*SAUT PAGE ;
+*-----------------------------------------------------*
+*             Maillage d'une dalle                    *   
+*-----------------------------------------------------*
+* Definition des options
+*
+           OPTI DIME 3 ELEM TRI3 ;
+*           OPTI DIME 3 ELEM QUA4 ;
+
+*-----------------------------------------------------*
+*  Parametres
+Lx = 1.0 ;
+Ly = 1.0 ;
+Nx = 10;
+Ny = 10;
+*
+*-----------------------------------------------------*
+A1 = 0.   0.   0.;
+A2 = Lx   0.   0.;
+A3 = 0.   Ly   0.;
+A4 = Lx   Ly   0.;
+*-----------------------------------------------------*
+A1A2 = DROI Nx A1 A2 ;
+A2A4 = DROI Ny A2 A4 ;
+A4A3 = DROI Nx A4 A3 ;
+A3A1 = DROI Ny A3 A1 ;
+*-----------------------------------------------------*
+dalle = DALL A2A4 A4A3 A3A1 A1A2 PLAN;
+
+TRAC dalle;
+mesh = dalle et A1A2 et A3A1 et A4A3 et A2A4 ;
+oeil = 0. 0. 1000.;
+TRAC oeil mesh;
+*
+* Save mesh
+*
+opti sauv form 'pr_f2x2T.mgib';
+sauv form mesh;
+fin;
+ 

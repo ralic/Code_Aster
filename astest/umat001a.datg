@@ -1,0 +1,417 @@
+# -*- coding: iso-8859-1 -*-
+
+###
+### This file is generated automatically by SALOME v6.3.0 with dump python functionality
+###
+
+import sys
+import salome
+
+salome.salome_init()
+theStudy = salome.myStudy
+
+import salome_notebook
+notebook = salome_notebook.notebook
+sys.path.insert( 0, r'/home/proix')
+
+import iparameters
+ipar = iparameters.IParameters(salome.myStudy.GetCommonParameters("Interface Applicative", 1))
+
+#Set up visual properties:
+ipar.setProperty("AP_ACTIVE_VIEW", "VTKViewer_0_0")
+ipar.setProperty("AP_WORKSTACK_INFO", "000000010000000000000002010000000100000588000000040000000200000001000000080000001a004f00430043005600690065007700650072005f0030005f00300000000002000000080000001a00560054004b005600690065007700650072005f0030005f00300000000102")
+ipar.setProperty("AP_ACTIVE_MODULE", "Mesh")
+ipar.setProperty("AP_SAVEPOINT_NAME", "GUI state: 2")
+#Set up lists:
+# fill list AP_VIEWERS_LIST
+ipar.append("AP_VIEWERS_LIST", "OCCViewer_1")
+ipar.append("AP_VIEWERS_LIST", "VTKViewer_2")
+# fill list OCCViewer_1
+ipar.append("OCCViewer_1", "OCC scene:1 - viewer:1")
+ipar.append("OCCViewer_1", "scale=2.841193273895e+02*centerX=9.999999757922e-01*centerY=9.999999773302e-01*projX=0.000000000000e+00*projY=0.000000000000e+00*projZ=1.000000000000e+00*twist=0.000000000000e+00*atX=0.000000000000e+00*atY=0.000000000000e+00*atZ=0.000000000000e+00*eyeX=0.000000000000e+00*eyeY=0.000000000000e+00*eyeZ=5.000000000000e+02*scaleX=1.000000000000e+00*scaleY=1.000000000000e+00*scaleZ=1.000000000000e+00*isVisible=1*size=1.00*gtIsVisible=0*gtDrawNameX=1*gtDrawNameY=1*gtDrawNameZ=1*gtNameX=X*gtNameY=Z*gtNameZ=Z*gtNameColorRX=255*gtNameColorGX=0*gtNameColorBX=0*gtNameColorRY=0*gtNameColorGY=255*gtNameColorBY=0*gtNameColorRZ=0*gtNameColorGZ=0*gtNameColorBZ=255*gtDrawValuesX=1*gtDrawValuesY=1*gtDrawValuesZ=1*gtNbValuesX=3*gtNbValuesY=3*gtNbValuesZ=3*gtOffsetX=2*gtOffsetY=2*gtOffsetZ=2*gtColorRX=255*gtColorGX=0*gtColorBX=0*gtColorRY=0*gtColorGY=255*gtColorBY=0*gtColorRZ=0*gtColorGZ=0*gtColorBZ=255*gtDrawTickmarksX=1*gtDrawTickmarksY=1*gtDrawTickmarksZ=1*gtTickmarkLengthX=5*gtTickmarkLengthY=5*gtTickmarkLengthZ=5")
+# fill list VTKViewer_2
+ipar.append("VTKViewer_2", "VTK scene:1 - viewer:1")
+ipar.append("VTKViewer_2", """<?xml version="1.0"?>
+<ViewState>
+    <Position X="1.52613" Y="0.919319" Z="16.6902"/>
+    <FocalPoint X="1.52613" Y="0.919319" Z="0"/>
+    <ViewUp X="0" Y="1" Z="0"/>
+    <ViewScale Parallel="1.18559" X="1" Y="1" Z="1"/>
+    <DisplayCubeAxis Show="0"/>
+    <GraduatedAxis Axis="X">
+        <Title isVisible="1" Text="X" Font="0" Bold="0" Italic="0" Shadow="0">
+            <Color R="1" G="0" B="0"/>
+        </Title>
+        <Labels isVisible="1" Number="3" Offset="2" Font="0" Bold="0" Italic="0" Shadow="0">
+            <Color R="1" G="0" B="0"/>
+        </Labels>
+        <TickMarks isVisible="1" Length="5"/>
+    </GraduatedAxis>
+    <GraduatedAxis Axis="Y">
+        <Title isVisible="1" Text="Y" Font="0" Bold="0" Italic="0" Shadow="0">
+            <Color R="0" G="1" B="0"/>
+        </Title>
+        <Labels isVisible="1" Number="3" Offset="2" Font="0" Bold="0" Italic="0" Shadow="0">
+            <Color R="0" G="1" B="0"/>
+        </Labels>
+        <TickMarks isVisible="1" Length="5"/>
+    </GraduatedAxis>
+    <GraduatedAxis Axis="Z">
+        <Title isVisible="1" Text="Z" Font="0" Bold="0" Italic="0" Shadow="0">
+            <Color R="0" G="0" B="1"/>
+        </Title>
+        <Labels isVisible="1" Number="3" Offset="2" Font="0" Bold="0" Italic="0" Shadow="0">
+            <Color R="0" G="0" B="1"/>
+        </Labels>
+        <TickMarks isVisible="1" Length="5"/>
+    </GraduatedAxis>
+    <Trihedron isShown="1" Size="105"/>
+</ViewState>
+""")
+# fill list AP_MODULES_LIST
+ipar.append("AP_MODULES_LIST", "Geometry")
+ipar.append("AP_MODULES_LIST", "Mesh")
+
+
+###
+### GEOM component
+###
+
+import GEOM
+import geompy
+import math
+import SALOMEDS
+
+
+geompy.init_geom(theStudy)
+
+haut=0.2
+A = geompy.MakeVertex(1, 0, 0)
+B = geompy.MakeVertex(2, 0, 0)
+C = geompy.MakeVertex(2, haut, 0)
+D = geompy.MakeVertex(1, haut, 0)
+DAB = geompy.MakeLineTwoPnt(A, B)
+DBC = geompy.MakeLineTwoPnt(B, C)
+DCD = geompy.MakeLineTwoPnt(C, D)
+DDA = geompy.MakeLineTwoPnt(D, A)
+Wire_1 = geompy.MakeWire([DAB, DBC, DCD, DDA], 1e-07)
+Face_1 = geompy.MakeFaceWires([Wire_1], 1)
+A_1 = geompy.CreateGroup(Face_1, geompy.ShapeType["VERTEX"])
+geompy.UnionIDs(A_1, [7])
+B_1 = geompy.CreateGroup(Face_1, geompy.ShapeType["VERTEX"])
+geompy.UnionIDs(B_1, [9])
+C_1 = geompy.CreateGroup(Face_1, geompy.ShapeType["VERTEX"])
+geompy.UnionIDs(C_1, [4])
+D_1 = geompy.CreateGroup(Face_1, geompy.ShapeType["VERTEX"])
+geompy.UnionIDs(D_1, [5])
+DAB_1 = geompy.CreateGroup(Face_1, geompy.ShapeType["EDGE"])
+geompy.UnionIDs(DAB_1, [8])
+DBC_1 = geompy.CreateGroup(Face_1, geompy.ShapeType["EDGE"])
+geompy.UnionIDs(DBC_1, [10])
+DCD_1 = geompy.CreateGroup(Face_1, geompy.ShapeType["EDGE"])
+geompy.UnionIDs(DCD_1, [3])
+DDA_1 = geompy.CreateGroup(Face_1, geompy.ShapeType["EDGE"])
+geompy.UnionIDs(DDA_1, [6])
+geompy.addToStudy( A, 'A' )
+geompy.addToStudy( B, 'B' )
+geompy.addToStudy( C, 'C' )
+geompy.addToStudy( D, 'D' )
+geompy.addToStudy( DAB, 'DAB' )
+geompy.addToStudy( DBC, 'DBC' )
+geompy.addToStudy( DCD, 'DCD' )
+geompy.addToStudy( DDA, 'DDA' )
+geompy.addToStudy( Wire_1, 'Wire_1' )
+geompy.addToStudy( Face_1, 'Face_1' )
+geompy.addToStudyInFather( Face_1, A_1, 'A' )
+geompy.addToStudyInFather( Face_1, B_1, 'B' )
+geompy.addToStudyInFather( Face_1, C_1, 'C' )
+geompy.addToStudyInFather( Face_1, D_1, 'D' )
+geompy.addToStudyInFather( Face_1, DAB_1, 'DAB' )
+geompy.addToStudyInFather( Face_1, DBC_1, 'DBC' )
+geompy.addToStudyInFather( Face_1, DCD_1, 'DCD' )
+geompy.addToStudyInFather( Face_1, DDA_1, 'DDA' )
+
+### Store presentation parameters of displayed objects
+import iparameters
+ipar = iparameters.IParameters(theStudy.GetModuleParameters("Interface Applicative", "GEOM", 1))
+
+#Set up entries:
+# set up entry GEOM_1 (A) parameters
+objId = geompy.getObjectID(A)
+ipar.setParameter(objId, "OCCViewer_0_Visibility", "On")
+ipar.setParameter(objId, "OCCViewer_0_Color", "1:1:0")
+# set up entry GEOM_10 (Face_1) parameters
+objId = geompy.getObjectID(Face_1)
+ipar.setParameter(objId, "OCCViewer_0_Visibility", "On")
+ipar.setParameter(objId, "OCCViewer_0_Color", "1:1:0")
+# set up entry GEOM_10:2 (A) parameters
+objId = geompy.getObjectID(A_1)
+ipar.setParameter(objId, "OCCViewer_0_Visibility", "On")
+ipar.setParameter(objId, "OCCViewer_0_Color", "1:1:0")
+# set up entry GEOM_10:3 (B) parameters
+objId = geompy.getObjectID(B_1)
+ipar.setParameter(objId, "OCCViewer_0_Visibility", "On")
+ipar.setParameter(objId, "OCCViewer_0_Color", "1:1:0")
+# set up entry GEOM_10:4 (C) parameters
+objId = geompy.getObjectID(C_1)
+ipar.setParameter(objId, "OCCViewer_0_Visibility", "On")
+ipar.setParameter(objId, "OCCViewer_0_Color", "1:1:0")
+# set up entry GEOM_10:5 (D) parameters
+objId = geompy.getObjectID(D_1)
+ipar.setParameter(objId, "OCCViewer_0_Visibility", "On")
+ipar.setParameter(objId, "OCCViewer_0_Color", "1:1:0")
+# set up entry GEOM_10:6 (DAB) parameters
+objId = geompy.getObjectID(DAB_1)
+ipar.setParameter(objId, "OCCViewer_0_Visibility", "On")
+ipar.setParameter(objId, "OCCViewer_0_Color", "1:1:0")
+# set up entry GEOM_10:7 (DBC) parameters
+objId = geompy.getObjectID(DBC_1)
+ipar.setParameter(objId, "OCCViewer_0_Visibility", "On")
+ipar.setParameter(objId, "OCCViewer_0_Color", "1:1:0")
+# set up entry GEOM_10:8 (DCD) parameters
+objId = geompy.getObjectID(DCD_1)
+ipar.setParameter(objId, "OCCViewer_0_Visibility", "On")
+ipar.setParameter(objId, "OCCViewer_0_Color", "1:1:0")
+# set up entry GEOM_10:9 (DDA) parameters
+objId = geompy.getObjectID(DDA_1)
+ipar.setParameter(objId, "OCCViewer_0_Visibility", "On")
+ipar.setParameter(objId, "OCCViewer_0_Color", "1:1:0")
+# set up entry GEOM_2 (B) parameters
+objId = geompy.getObjectID(B)
+ipar.setParameter(objId, "OCCViewer_0_Visibility", "On")
+ipar.setParameter(objId, "OCCViewer_0_Color", "1:1:0")
+# set up entry GEOM_3 (C) parameters
+objId = geompy.getObjectID(C)
+ipar.setParameter(objId, "OCCViewer_0_Visibility", "On")
+ipar.setParameter(objId, "OCCViewer_0_Color", "1:1:0")
+# set up entry GEOM_4 (D) parameters
+objId = geompy.getObjectID(D)
+ipar.setParameter(objId, "OCCViewer_0_Visibility", "On")
+ipar.setParameter(objId, "OCCViewer_0_Color", "1:1:0")
+# set up entry GEOM_5 (DAB) parameters
+objId = geompy.getObjectID(DAB)
+ipar.setParameter(objId, "OCCViewer_0_Visibility", "On")
+ipar.setParameter(objId, "OCCViewer_0_Color", "1:1:0")
+# set up entry GEOM_6 (DBC) parameters
+objId = geompy.getObjectID(DBC)
+ipar.setParameter(objId, "OCCViewer_0_Visibility", "On")
+ipar.setParameter(objId, "OCCViewer_0_Color", "1:1:0")
+# set up entry GEOM_7 (DCD) parameters
+objId = geompy.getObjectID(DCD)
+ipar.setParameter(objId, "OCCViewer_0_Visibility", "On")
+ipar.setParameter(objId, "OCCViewer_0_Color", "1:1:0")
+# set up entry GEOM_8 (DDA) parameters
+objId = geompy.getObjectID(DDA)
+ipar.setParameter(objId, "OCCViewer_0_Visibility", "On")
+ipar.setParameter(objId, "OCCViewer_0_Color", "1:1:0")
+# set up entry GEOM_9 (Wire_1) parameters
+objId = geompy.getObjectID(Wire_1)
+ipar.setParameter(objId, "OCCViewer_0_Visibility", "On")
+ipar.setParameter(objId, "OCCViewer_0_Color", "1:1:0")
+
+###
+### SMESH component
+###
+
+import smesh, SMESH, SALOMEDS
+
+aMeasurements = smesh.CreateMeasurements()
+smesh.SetCurrentStudy(theStudy)
+import BLSURFPlugin
+import StdMeshers
+import NETGENPlugin
+smeshObj_1 = smesh.CreateHypothesis('BLSURF_Parameters', 'BLSURFEngine')
+smeshObj_2 = smesh.CreateHypothesis('NETGEN_Parameters_2D', 'NETGENEngine')
+smeshObj_3 = smesh.CreateHypothesis('NETGEN_Parameters_2D', 'NETGENEngine')
+Mesh_1 = smesh.Mesh(Face_1)
+Regular_1D = Mesh_1.Segment()
+Nb_Segments_1 = Regular_1D.NumberOfSegments(50)
+Nb_Segments_1.SetDistrType( 0 )
+NETGEN_2D_ONLY = Mesh_1.Triangle(algo=smesh.NETGEN_2D)
+Length_From_Edges_2D_Hyp_for_Triangulator__1 = NETGEN_2D_ONLY.LengthFromEdges()
+isDone = Mesh_1.Compute()
+NETGEN_2D_Parameters = smesh.CreateHypothesis('NETGEN_Parameters_2D_ONLY', 'NETGENEngine')
+NETGEN_2D_Parameters.SetMaxSize( 0.223607 )
+NETGEN_2D_Parameters.SetSecondOrder( 215 )
+NETGEN_2D_Parameters.SetOptimize( 0 )
+NETGEN_2D_Parameters.SetFineness( 2 )
+NETGEN_2D_Parameters.SetQuadAllowed( 1 )
+NETGEN_2D_Parameters.SetMaxSize( 0.223607 )
+NETGEN_2D_Parameters.SetSecondOrder( 0 )
+NETGEN_2D_Parameters.SetOptimize( 1 )
+NETGEN_2D_Parameters.SetFineness( 2 )
+NETGEN_2D_Parameters.SetQuadAllowed( 0 )
+NETGEN_2D_Parameters.SetMaxSize( 0.223607 )
+NETGEN_2D_Parameters.SetSecondOrder( 0 )
+NETGEN_2D_Parameters.SetOptimize( 0 )
+NETGEN_2D_Parameters.SetFineness( 2 )
+NETGEN_2D_Parameters.SetQuadAllowed( 1 )
+status = Mesh_1.RemoveHypothesis(Length_From_Edges_2D_Hyp_for_Triangulator__1)
+status = Mesh_1.AddHypothesis(NETGEN_2D_Parameters)
+isDone = Mesh_1.Compute()
+Regular_1D_1 = Mesh_1.Segment(geom=DBC_1)
+Nb_Segments_2 = Regular_1D_1.NumberOfSegments(4)
+Nb_Segments_2.SetDistrType( 0 )
+isDone = Mesh_1.Compute()
+Quadrangle_Parameters_1 = smesh.CreateHypothesis('QuadrangleParams')
+Quadrangle_Parameters_1.SetQuadType( StdMeshers.QUAD_STANDARD )
+status = Mesh_1.RemoveHypothesis(NETGEN_2D_ONLY)
+Quadrangle_2D = Mesh_1.Quadrangle()
+status = Mesh_1.RemoveHypothesis(NETGEN_2D_Parameters)
+status = Mesh_1.AddHypothesis(Quadrangle_Parameters_1)
+isDone = Mesh_1.Compute()
+Quadrangle_Parameters_1.SetQuadType( StdMeshers.QUAD_QUADRANGLE_PREF )
+Quadrangle_Preference_1 = NETGEN_2D_ONLY.SetQuadAllowed()
+isDone = Mesh_1.Compute()
+Propagation_of_1D_Hyp_on_opposite_edges_1 = Regular_1D_1.Propagation()
+isDone = Mesh_1.Compute()
+A_2 = Mesh_1.GroupOnGeom(A_1,'A',SMESH.NODE)
+B_2 = Mesh_1.GroupOnGeom(B_1,'B',SMESH.NODE)
+C_2 = Mesh_1.GroupOnGeom(C_1,'C',SMESH.NODE)
+D_2 = Mesh_1.GroupOnGeom(D_1,'D',SMESH.NODE)
+DAB_2 = Mesh_1.GroupOnGeom(DAB_1,'DAB',SMESH.EDGE)
+DBC_2 = Mesh_1.GroupOnGeom(DBC_1,'DBC',SMESH.EDGE)
+DCD_2 = Mesh_1.GroupOnGeom(DCD_1,'DCD',SMESH.EDGE)
+DDA_2 = Mesh_1.GroupOnGeom(DDA_1,'DDA',SMESH.EDGE)
+A_2.SetColor( SALOMEDS.Color( 0, 0.666667, 1 ))
+B_2.SetColor( SALOMEDS.Color( 0, 0.666667, 1 ))
+C_2.SetColor( SALOMEDS.Color( 0, 0.666667, 1 ))
+D_2.SetColor( SALOMEDS.Color( 0, 0.666667, 1 ))
+DAB_2.SetColor( SALOMEDS.Color( 0, 0.666667, 1 ))
+DBC_2.SetColor( SALOMEDS.Color( 0, 0.666667, 1 ))
+DCD_2.SetColor( SALOMEDS.Color( 0, 0.666667, 1 ))
+DDA_2.SetColor( SALOMEDS.Color( 0, 0.666667, 1 ))
+smesh.SetName(Mesh_1, 'Mesh_1')
+Mesh_1.ExportMED( r'/home/proix/Mesh_1.med', 0, SMESH.MED_V2_2, 1 )
+SubMesh_1 = Regular_1D_1.GetSubMesh()
+
+## some objects were removed
+aStudyBuilder = theStudy.NewBuilder()
+SO = theStudy.FindObjectIOR(theStudy.ConvertObjectToIOR(smeshObj_1))
+if SO is not None: aStudyBuilder.RemoveObjectWithChildren(SO)
+SO = theStudy.FindObjectIOR(theStudy.ConvertObjectToIOR(smeshObj_2))
+if SO is not None: aStudyBuilder.RemoveObjectWithChildren(SO)
+SO = theStudy.FindObjectIOR(theStudy.ConvertObjectToIOR(smeshObj_3))
+if SO is not None: aStudyBuilder.RemoveObjectWithChildren(SO)
+## set object names
+smesh.SetName(Mesh_1.GetMesh(), 'Mesh_1')
+smesh.SetName(Regular_1D.GetAlgorithm(), 'Regular_1D')
+smesh.SetName(Nb_Segments_1, 'Nb. Segments_1')
+smesh.SetName(NETGEN_2D_ONLY.GetAlgorithm(), 'NETGEN_2D_ONLY')
+smesh.SetName(Length_From_Edges_2D_Hyp_for_Triangulator__1, 'Length From Edges (2D Hyp. for Triangulator)_1')
+smesh.SetName(NETGEN_2D_Parameters, 'NETGEN 2D Parameters')
+smesh.SetName(Nb_Segments_2, 'Nb. Segments_2')
+smesh.SetName(Quadrangle_Parameters_1, 'Quadrangle Parameters_1')
+smesh.SetName(Quadrangle_2D.GetAlgorithm(), 'Quadrangle_2D')
+smesh.SetName(Quadrangle_Preference_1, 'Quadrangle Preference_1')
+smesh.SetName(Propagation_of_1D_Hyp_on_opposite_edges_1, 'Propagation of 1D Hyp. on opposite edges_1')
+smesh.SetName(A_2, 'A')
+smesh.SetName(B_2, 'B')
+smesh.SetName(C_2, 'C')
+smesh.SetName(D_2, 'D')
+smesh.SetName(DAB_2, 'DAB')
+smesh.SetName(DBC_2, 'DBC')
+smesh.SetName(DCD_2, 'DCD')
+smesh.SetName(DDA_2, 'DDA')
+smesh.SetName(SubMesh_1, 'SubMesh_1')
+
+### Store presentation parameters of displayed objects
+import iparameters
+ipar = iparameters.IParameters(theStudy.GetModuleParameters("Interface Applicative", "SMESH", 1))
+
+#Set up entries:
+# set up entry SMESH_3 (Mesh_1) parameters
+ipar.setParameter("SMESH_3", "VTKViewer_0_Visibility", "On")
+ipar.setParameter("SMESH_3", "VTKViewer_0_Representation", "2")
+ipar.setParameter("SMESH_3", "VTKViewer_0_IsShrunk", "0")
+ipar.setParameter("SMESH_3", "VTKViewer_0_Entities", "e:1:f:1:v:0")
+ipar.setParameter("SMESH_3", "VTKViewer_0_Colors", "surface:0:0.666667:1:backsurface:0:0:1:edge:0:0.666667:1:node:1:0:0")
+ipar.setParameter("SMESH_3", "VTKViewer_0_Sizes", "line:1:shrink:0.75")
+ipar.setParameter("SMESH_3", "VTKViewer_0_PointMarker", "std:1:9")
+ipar.setParameter("SMESH_3", "VTKViewer_0_Opacity", "1")
+ipar.setParameter("SMESH_3", "VTKViewer_0_ClippingPlane", "Off")
+# set up entry SMESH_3:11:1 (A) parameters
+ipar.setParameter("SMESH_3:11:1", "VTKViewer_0_Visibility", "On")
+ipar.setParameter("SMESH_3:11:1", "VTKViewer_0_Representation", "0")
+ipar.setParameter("SMESH_3:11:1", "VTKViewer_0_IsShrunk", "0")
+ipar.setParameter("SMESH_3:11:1", "VTKViewer_0_Entities", "e:0:f:0:v:0")
+ipar.setParameter("SMESH_3:11:1", "VTKViewer_0_Colors", "surface:0:0.666667:1:backsurface:0:0:1:edge:0:0.666667:1:node:0:0.666667:1")
+ipar.setParameter("SMESH_3:11:1", "VTKViewer_0_Sizes", "line:1:shrink:0.75")
+ipar.setParameter("SMESH_3:11:1", "VTKViewer_0_PointMarker", "std:1:9")
+ipar.setParameter("SMESH_3:11:1", "VTKViewer_0_Opacity", "1")
+ipar.setParameter("SMESH_3:11:1", "VTKViewer_0_ClippingPlane", "Off")
+# set up entry SMESH_3:11:2 (B) parameters
+ipar.setParameter("SMESH_3:11:2", "VTKViewer_0_Visibility", "On")
+ipar.setParameter("SMESH_3:11:2", "VTKViewer_0_Representation", "0")
+ipar.setParameter("SMESH_3:11:2", "VTKViewer_0_IsShrunk", "0")
+ipar.setParameter("SMESH_3:11:2", "VTKViewer_0_Entities", "e:0:f:0:v:0")
+ipar.setParameter("SMESH_3:11:2", "VTKViewer_0_Colors", "surface:0:0.666667:1:backsurface:0:0:1:edge:0:0.666667:1:node:0:0.666667:1")
+ipar.setParameter("SMESH_3:11:2", "VTKViewer_0_Sizes", "line:1:shrink:0.75")
+ipar.setParameter("SMESH_3:11:2", "VTKViewer_0_PointMarker", "std:1:9")
+ipar.setParameter("SMESH_3:11:2", "VTKViewer_0_Opacity", "1")
+ipar.setParameter("SMESH_3:11:2", "VTKViewer_0_ClippingPlane", "Off")
+# set up entry SMESH_3:11:3 (C) parameters
+ipar.setParameter("SMESH_3:11:3", "VTKViewer_0_Visibility", "On")
+ipar.setParameter("SMESH_3:11:3", "VTKViewer_0_Representation", "0")
+ipar.setParameter("SMESH_3:11:3", "VTKViewer_0_IsShrunk", "0")
+ipar.setParameter("SMESH_3:11:3", "VTKViewer_0_Entities", "e:0:f:0:v:0")
+ipar.setParameter("SMESH_3:11:3", "VTKViewer_0_Colors", "surface:0:0.666667:1:backsurface:0:0:1:edge:0:0.666667:1:node:0:0.666667:1")
+ipar.setParameter("SMESH_3:11:3", "VTKViewer_0_Sizes", "line:1:shrink:0.75")
+ipar.setParameter("SMESH_3:11:3", "VTKViewer_0_PointMarker", "std:1:9")
+ipar.setParameter("SMESH_3:11:3", "VTKViewer_0_Opacity", "1")
+ipar.setParameter("SMESH_3:11:3", "VTKViewer_0_ClippingPlane", "Off")
+# set up entry SMESH_3:11:4 (D) parameters
+ipar.setParameter("SMESH_3:11:4", "VTKViewer_0_Visibility", "On")
+ipar.setParameter("SMESH_3:11:4", "VTKViewer_0_Representation", "0")
+ipar.setParameter("SMESH_3:11:4", "VTKViewer_0_IsShrunk", "0")
+ipar.setParameter("SMESH_3:11:4", "VTKViewer_0_Entities", "e:0:f:0:v:0")
+ipar.setParameter("SMESH_3:11:4", "VTKViewer_0_Colors", "surface:0:0.666667:1:backsurface:0:0:1:edge:0:0.666667:1:node:0:0.666667:1")
+ipar.setParameter("SMESH_3:11:4", "VTKViewer_0_Sizes", "line:1:shrink:0.75")
+ipar.setParameter("SMESH_3:11:4", "VTKViewer_0_PointMarker", "std:1:9")
+ipar.setParameter("SMESH_3:11:4", "VTKViewer_0_Opacity", "1")
+ipar.setParameter("SMESH_3:11:4", "VTKViewer_0_ClippingPlane", "Off")
+# set up entry SMESH_3:12:1 (DAB) parameters
+ipar.setParameter("SMESH_3:12:1", "VTKViewer_0_Visibility", "On")
+ipar.setParameter("SMESH_3:12:1", "VTKViewer_0_Representation", "1")
+ipar.setParameter("SMESH_3:12:1", "VTKViewer_0_IsShrunk", "0")
+ipar.setParameter("SMESH_3:12:1", "VTKViewer_0_Entities", "e:1:f:0:v:0")
+ipar.setParameter("SMESH_3:12:1", "VTKViewer_0_Colors", "surface:0:0.666667:1:backsurface:0:0:1:edge:0:0.666667:1:node:1:0:0")
+ipar.setParameter("SMESH_3:12:1", "VTKViewer_0_Sizes", "line:1:shrink:0.75")
+ipar.setParameter("SMESH_3:12:1", "VTKViewer_0_PointMarker", "std:1:9")
+ipar.setParameter("SMESH_3:12:1", "VTKViewer_0_Opacity", "1")
+ipar.setParameter("SMESH_3:12:1", "VTKViewer_0_ClippingPlane", "Off")
+# set up entry SMESH_3:12:2 (DBC) parameters
+ipar.setParameter("SMESH_3:12:2", "VTKViewer_0_Visibility", "On")
+ipar.setParameter("SMESH_3:12:2", "VTKViewer_0_Representation", "1")
+ipar.setParameter("SMESH_3:12:2", "VTKViewer_0_IsShrunk", "0")
+ipar.setParameter("SMESH_3:12:2", "VTKViewer_0_Entities", "e:1:f:0:v:0")
+ipar.setParameter("SMESH_3:12:2", "VTKViewer_0_Colors", "surface:0:0.666667:1:backsurface:0:0:1:edge:0:0.666667:1:node:1:0:0")
+ipar.setParameter("SMESH_3:12:2", "VTKViewer_0_Sizes", "line:1:shrink:0.75")
+ipar.setParameter("SMESH_3:12:2", "VTKViewer_0_PointMarker", "std:1:9")
+ipar.setParameter("SMESH_3:12:2", "VTKViewer_0_Opacity", "1")
+ipar.setParameter("SMESH_3:12:2", "VTKViewer_0_ClippingPlane", "Off")
+# set up entry SMESH_3:12:3 (DCD) parameters
+ipar.setParameter("SMESH_3:12:3", "VTKViewer_0_Visibility", "On")
+ipar.setParameter("SMESH_3:12:3", "VTKViewer_0_Representation", "1")
+ipar.setParameter("SMESH_3:12:3", "VTKViewer_0_IsShrunk", "0")
+ipar.setParameter("SMESH_3:12:3", "VTKViewer_0_Entities", "e:1:f:0:v:0")
+ipar.setParameter("SMESH_3:12:3", "VTKViewer_0_Colors", "surface:0:0.666667:1:backsurface:0:0:1:edge:0:0.666667:1:node:1:0:0")
+ipar.setParameter("SMESH_3:12:3", "VTKViewer_0_Sizes", "line:1:shrink:0.75")
+ipar.setParameter("SMESH_3:12:3", "VTKViewer_0_PointMarker", "std:1:9")
+ipar.setParameter("SMESH_3:12:3", "VTKViewer_0_Opacity", "1")
+ipar.setParameter("SMESH_3:12:3", "VTKViewer_0_ClippingPlane", "Off")
+# set up entry SMESH_3:12:4 (DDA) parameters
+ipar.setParameter("SMESH_3:12:4", "VTKViewer_0_Visibility", "On")
+ipar.setParameter("SMESH_3:12:4", "VTKViewer_0_Representation", "1")
+ipar.setParameter("SMESH_3:12:4", "VTKViewer_0_IsShrunk", "0")
+ipar.setParameter("SMESH_3:12:4", "VTKViewer_0_Entities", "e:1:f:0:v:0")
+ipar.setParameter("SMESH_3:12:4", "VTKViewer_0_Colors", "surface:0:0.666667:1:backsurface:0:0:1:edge:0:0.666667:1:node:1:0:0")
+ipar.setParameter("SMESH_3:12:4", "VTKViewer_0_Sizes", "line:1:shrink:0.75")
+ipar.setParameter("SMESH_3:12:4", "VTKViewer_0_PointMarker", "std:1:9")
+ipar.setParameter("SMESH_3:12:4", "VTKViewer_0_Opacity", "1")
+ipar.setParameter("SMESH_3:12:4", "VTKViewer_0_ClippingPlane", "Off")
+
+
+if salome.sg.hasDesktop():
+  salome.sg.updateObjBrowser(1)
+  iparameters.getSession().restoreVisualState(1)

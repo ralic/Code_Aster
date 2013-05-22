@@ -1,0 +1,63 @@
+*
+* --- maillage 1D -----------------
+*
+opti dime 2 elem seg3 ;
+opti sauv form 'zzzz131b.mgib' ; 
+A =  0.0  0.0 ;
+B =  5.0  0.0 ;
+C = 10.0  0.0 ;
+D = 15.0  0.0 ;
+E = 20.5  0.0 ;
+*
+AB = droite 5 A B ;
+BC = droite 5 B C ;
+CD = droite 5 C D ;
+DE = droite 5 D E ;
+*
+maill = AB ET BC ET CD ET DE ;
+elim 0.01 maill ; 
+trac maill ;
+*
+sauv form maill ;
+*
+* --- maillage 3D -----------------
+*
+opti dime 3 elem cub8 ;
+*
+O = 0. 0. 0.;
+*
+angle = 30. ;
+S1 = sin angle ;
+C1 = cos angle ;
+* 
+A_int =   0.  (  5.  * C1 )   (  5.  * S1 )  ;
+A_ext =   0.  ( 25.5 * C1 )   ( 25.5 * S1 )  ;
+B_int =  -5.    0.   0.;
+B_ext = -25.5   0.   0.;
+*
+c1_int = cerc   4 A_int O B_int;
+d1     = droite 2 A_int A_ext  ;
+*
+c1_ext = cerc   4 A_ext O B_ext;
+d2     = droite 2 B_ext B_int  ;
+*
+oubli O;
+*
+c_gasup = daller d1  c1_ext  d2  c1_int;
+c_gainf = syme c_gasup droit B_int B_ext;
+*
+dem_gau  = c_gasup et c_gainf;
+dem_droi = syme dem_gau droit A_ext A_int;
+disq = dem_gau et dem_droi ;
+* 
+vec_t =   0.  ( -50. * S1 )   ( 50. * C1 )  ;
+cylin = disq volu tran 3 vec_t;
+elim 1.E-9 cylin ;
+*
+trac disq ;
+trac  cylin ;
+*
+opti sauv form 'zzzz131b.mgib' ;
+sauv form cylin ;
+*
+fin;

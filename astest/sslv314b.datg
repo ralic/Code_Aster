@@ -1,0 +1,78 @@
+opti dime 3  elem cub8 ;
+
+dens 10 ;
+
+*----------------------------------------
+*DONNEES
+*----------------------------------------
+* dimensions des cotés
+LX = 1;
+LY = 8;
+LZ = 18;
+* Taille de la zone centrale raffinee
+LZ2 = 2;
+
+* nombre d'éléments
+*NX = 10;
+*NY1 = 25;
+*NY2 = 10;
+*NZ1 = 10; 
+*Z2 = 15; 
+NX = 6;
+NY1 = 12;
+NY2 = 5;
+NZ1 = 5; 
+NZ2 = 10; 
+
+*---------------------------------------------
+*construction des surfaces dans le plan inférieur
+*---------------------------------------------
+
+p1 = LX   0.  0.;
+p2 = LX  (LY/2.)   0.;
+p3 = 0.  (LY/2.)   0.;
+p4 = 0.  0.  0.;
+
+lig1 = droit p1 p2 NY1;
+lig2 = droit p2 p3 NX;
+lig3 = droit p3 p4 NY1;
+lig4 = droit p4 p1 NX;
+
+*cont  = lig1 et lig2 et lig3 et lig4;
+si1 = DALL lig1 lig2 lig3 lig4 PLAN;
+
+p5 = LX  LY   0.;
+p6 = 0.  LY   0.;
+lig5 = droit p2 p5 NY2;
+lig6 = droit p5 p6 NX;
+lig7 = droit p6 p3 NY2;
+si2 = DALL lig5 lig6 lig7 lig2 PLAN;
+
+SURFINF= si1 et si2 ;
+trac SURFINF;
+
+
+*---------------------------------------------
+*extrusion
+*---------------------------------------------
+Vz1 = 0.  0. ((LZ -LZ2)/2.);
+Vz2 = 0.  0. (LZ2);
+
+vol1 = SURFINF volu  'TRAN' Vz1 NZ1;
+Surf1 = FACE 2  vol1 ;
+vol2 = Surf1 volu  'TRAN' Vz2 NZ2;
+Surf2 = FACE 2  vol2 ;
+vol3 = Surf2 volu  'TRAN' Vz1 NZ1;
+SURFSUP = FACE 2  vol3 ;
+vol = vol1 et vol2 et vol3 ;
+elim vol 1E-6;
+
+trac cach vol;
+
+MAILLE = vol et SURFINF et SURFSUP;
+                 
+fic = 
+'/home/galenne/ASTER_DEV/PROPA/PROPA_XFEM/RESTIT/TEST/sslv314g.mgib' ;
+opti sauv format fic ;
+sauv format maille ;
+fin ;

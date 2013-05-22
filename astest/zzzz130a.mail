@@ -1,0 +1,22 @@
+COOR_3D
+  N1  -1  -1  -1
+  N2   1  -1  -1
+  N3   1   1  -1
+  N4  -1   1  -1
+  N5  -1  -1   1
+  N6   1  -1   1
+  N7   1   1   1
+  N8  -1   1   1
+FINSF
+
+HEXA8
+  CUBE     N1 N2 N3 N4 N5 N6 N7 N8
+  MASSIF   N1 N2 N3 N4 N5 N6 N7 N8
+FINSF
+GROUP_MA
+ BETON CUBE
+FINSF
+GROUP_MA
+ MASSIF MASSIF
+FINSF
+FIN

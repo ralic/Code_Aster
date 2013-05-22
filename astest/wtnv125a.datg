@@ -1,0 +1,36 @@
+opti dime 3 elem cu20;
+*
+*************************
+*        Points         *
+*************************
+z = 5.181 ;
+PA = 0.425 -10. 0. ;
+PB = 0.425 -10. z  ;
+PC = 0.425   0. z  ;
+PD = 0.425   0. 0. ;
+
+***************************
+*       Droites           *
+***************************
+AB = droi 1 PA PB ;
+BC = droi 1 PB PC ;
+CD = droi 1 PC PD ;
+DA = droi 1 PD PA ;
+
+**************************
+*        Surface         *
+**************************
+SURF1 =DALL AB BC CD DA ;
+
+**************************
+*         Volume1        *
+**************************
+BLOCBO = SURF1 VOLU 15 'TRAN' (0.8 0. 0.);
+int_bobg= face 2 BLOCBO;
+BLOCBG = int_bobg VOLU  dini 0.06 dfin 0.3 'TRAN' (8.775 0. 0.);
+trac (BLOCBO et (BLOCBG coul rouge));
+tout = BLOCBO et BLOCBG;
+OPTI sauv form 'para2.mgib' ;
+sauv 'FORMATTE' tout ;
+
+fin;

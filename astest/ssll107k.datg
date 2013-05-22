@@ -1,0 +1,148 @@
+
+import sys
+import salome
+
+salome.salome_init()
+theStudy = salome.myStudy
+
+import iparameters
+ipar = iparameters.IParameters(salome.myStudy.GetCommonParameters("Interface Applicative", 1))
+
+# fill list AP_MODULES_LIST
+ipar.append("AP_MODULES_LIST", "Geometry")
+ipar.append("AP_MODULES_LIST", "Mesh")
+
+
+######################################################
+###################PARAMETRES#########################
+######################################################
+
+#ADRESSE DE SORTIE DES MED
+chemin = "/home/chansard/Bureau/018305/ssll107k/"
+
+#LISTE DES VALEURS DE ALPHA=BETA
+A = (0.0,0.5,0.9,)
+
+#NOMBRE DE SEG2 SUR LE CONTOUR EXTERIEUR DE LA SECTION
+NB1 = 20
+
+######################################################
+######################################################
+######################################################
+
+comp = 0
+
+for ALPHA in A:
+  BETA=ALPHA*1.05
+  HY = 4.
+  HZ = HY
+  EPY = (HY*(1-ALPHA))/2
+  EPZ = (HZ*(1-BETA))/2
+  y_min = EPY
+  y_max = HY-EPY
+  z_min = EPZ
+  z_max = HZ-EPZ
+
+  ###
+  ### GEOM component
+  ###
+
+  import GEOM
+  import geompy
+  import math
+  import SALOMEDS
+
+  geompy.init_geom(theStudy)
+
+  Vertex_1 = geompy.MakeVertex(0, 0, 0)
+  Vertex_2 = geompy.MakeVertex(HY, 0, 0)
+  Vertex_3 = geompy.MakeVertex(HY, HZ, 0)
+  Vertex_4 = geompy.MakeVertex(0, HZ, 0)
+  Line_1 = geompy.MakeLineTwoPnt(Vertex_1, Vertex_4)
+  Line_2 = geompy.MakeLineTwoPnt(Vertex_1, Vertex_2)
+  Line_3 = geompy.MakeLineTwoPnt(Vertex_2, Vertex_3)
+  Line_4 = geompy.MakeLineTwoPnt(Vertex_3, Vertex_4)  
+  
+  if ALPHA != 0.0:  
+    Vertex_5 = geompy.MakeVertex(y_min, z_min, 0)
+    Vertex_6 = geompy.MakeVertex(y_min, z_max, 0)
+    Vertex_7 = geompy.MakeVertex(y_max, z_max, 0)
+    Vertex_8 = geompy.MakeVertex(y_max, z_min, 0)
+    Line_5 = geompy.MakeLineTwoPnt(Vertex_6, Vertex_5)
+    Line_6 = geompy.MakeLineTwoPnt(Vertex_5, Vertex_8)
+    Line_7 = geompy.MakeLineTwoPnt(Vertex_8, Vertex_7)
+    Line_8 = geompy.MakeLineTwoPnt(Vertex_7, Vertex_6)
+    Face_1 = geompy.MakeFaceWires([Line_1, Line_2, Line_3, Line_4, Line_5, Line_6, Line_7, Line_8], 1)
+    int_ez = geompy.CreateGroup(Face_1, geompy.ShapeType["EDGE"])
+    geompy.UnionIDs(int_ez, [17, 12])
+    int_ey = geompy.CreateGroup(Face_1, geompy.ShapeType["EDGE"])
+    geompy.UnionIDs(int_ey, [19, 15])
+    intt = geompy.CreateGroup(Face_1, geompy.ShapeType["EDGE"])
+    geompy.UnionIDs(intt, [17, 12, 19, 15]) 
+    geompy.addToStudy( Vertex_5, 'Vertex_5' )
+    geompy.addToStudy( Vertex_6, 'Vertex_6' )
+    geompy.addToStudy( Vertex_7, 'Vertex_7' )
+    geompy.addToStudy( Vertex_8, 'Vertex_8' )    
+    geompy.addToStudy( Line_5, 'Line_5' )
+    geompy.addToStudy( Line_6, 'Line_6' )
+    geompy.addToStudy( Line_7, 'Line_7' )
+    geompy.addToStudy( Line_8, 'Line_8' )    
+    geompy.addToStudyInFather( Face_1, int_ez, 'int_ez' )
+    geompy.addToStudyInFather( Face_1, int_ey, 'int_ey' )
+    geompy.addToStudyInFather( Face_1, intt, 'intt' )    
+  else:
+    Face_1 = geompy.MakeFaceWires([Line_1, Line_2, Line_3, Line_4], 1)  
+  
+  ext = geompy.CreateGroup(Face_1, geompy.ShapeType["EDGE"])
+  geompy.UnionIDs(ext, [8, 6, 3, 10])
+  geompy.addToStudy( Vertex_1, 'Vertex_1' )
+  geompy.addToStudy( Vertex_2, 'Vertex_2' )
+  geompy.addToStudy( Vertex_3, 'Vertex_3' )
+  geompy.addToStudy( Vertex_4, 'Vertex_4' )
+  geompy.addToStudy( Line_1, 'Line_1' )
+  geompy.addToStudy( Line_2, 'Line_2' )
+  geompy.addToStudy( Line_3, 'Line_3' )
+  geompy.addToStudy( Line_4, 'Line_4' )
+  geompy.addToStudy( Face_1, 'Face_1' )
+  geompy.addToStudyInFather( Face_1, ext, 'ext' )
+
+
+  TAILLE = HY/NB1
+  NB2 = int((HY-2*EPY)/TAILLE)
+  NB3 = int((HZ-2*EPZ)/TAILLE)
+  S = TAILLE*TAILLE
+
+  ###
+  ### SMESH component
+  ###
+
+  import smesh, SMESH, SALOMEDS
+  smesh.SetCurrentStudy(theStudy)
+  aMeasurements = smesh.CreateMeasurements()
+
+  import StdMeshers
+  Mesh_1 = smesh.Mesh(Face_1)
+  Regular_1D = Mesh_1.Segment()
+  Nb_Segments_1 = Regular_1D.NumberOfSegments(NB1)
+  Nb_Segments_1.SetDistrType( 0 )
+  MEFISTO_2D = Mesh_1.Triangle()
+  Max_Element_Area_1 = MEFISTO_2D.MaxElementArea(S)
+  isDone = Mesh_1.Compute()
+  if ALPHA != 0.0:    
+    Regular_1D_1 = Mesh_1.Segment(geom=int_ez)
+    Nb_Segments_2 = Regular_1D_1.NumberOfSegments(NB2)
+    Nb_Segments_2.SetDistrType( 0 )
+    Regular_1D_2 = Mesh_1.Segment(geom=int_ey)
+    Nb_Segments_3 = Regular_1D_2.NumberOfSegments(NB3)
+    Nb_Segments_3.SetDistrType( 0 )
+    isDone = Mesh_1.Compute()
+  Mesh_1.ConvertToQuadratic( 1 )
+  if ALPHA != 0.0:
+    int_1 = Mesh_1.GroupOnGeom(intt,'int',SMESH.EDGE)
+    int_1.SetColor( SALOMEDS.Color( 0, 0.666667, 1 ))
+  ext_1 = Mesh_1.GroupOnGeom(ext,'ext',SMESH.EDGE)
+  ext_1.SetColor( SALOMEDS.Color( 0, 0.666667, 1 ))
+  smesh.SetName(Mesh_1, 'Mesh_1')
+  Mesh_1.ExportMED( r''+chemin+'ssll107k.2'+str(comp)+'', 0, SMESH.MED_V2_2, 1 )
+
+  comp = comp+1

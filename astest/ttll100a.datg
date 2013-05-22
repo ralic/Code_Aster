@@ -1,0 +1,33 @@
+Nep =  5 ;
+ntran = 1 ; 
+L = 0.1 ;
+
+opti dime 2 elem qua4 ;
+
+p1 = 0. 0. ;
+p2 = L  0. ;
+bas = droit Nep p1 p2 ;
+squad = bas tran ntran (0. 0.05) ;
+
+echQ = cote 2 squad ;
+echQ = echQ coul vert ;
+
+opti dime 2 elem tri3 ;
+
+p3 = 0. 0.05  ;
+p4 = L  0.05  ;
+basT = droit Nep p3 p4 ;
+stria = basT tran ntran (0. 0.05) ;
+
+echT = cote 2 stria ;
+echT = echT coul vert ;
+
+stran   = (squad ET stria ) ;
+echange = (echQ  ET  echT ) ;
+elim stran 0.001;
+elim echange 0.001;
+tasser stran;
+trac (stran et echange) ;
+OPTI SAUV FORM 'ttll100a.mgib';
+
+sauver format ( stran et echange ) ;

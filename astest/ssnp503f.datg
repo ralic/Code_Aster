@@ -1,0 +1,80 @@
+opti dime 2  elem tri3 ;
+
+dens 10 ;
+
+*----------------------------------------
+*DONNEES
+*----------------------------------------
+dens = 0.2;
+* dimensions des cotes
+LX = 4;
+LY = 9;
+LY1 = 2.5;
+LY2 = 4;
+L = 0.125;
+DX = LX 0. ;
+DY1 =  0. LY1 ;
+DY2 =  0. LY2 ;
+
+* nombre d'elements
+NX = 16;
+*NY = 36;
+NY1 = 10;
+NY2 = 16;
+
+L2=(LY1-L) / (NY1-1);
+L3=(LY2-(2*L)) / (NY2);
+*---------------------------------------------
+*construction points
+*---------------------------------------------
+
+p1 = 0. 0.;
+p2 = LX 0.;
+p3 = LX LY;
+p4 = 0. LY;
+
+*---------------------------------------------
+*construction des lignes
+*---------------------------------------------
+
+LIGINF = droit p1 p2 NX;
+LIGSUP = droit p3 p4 NX;
+LICOTE = (droit (0 (2.5+L)) (0 (6.5-L)) NY2) coul jaun;
+
+*---------------------------------------------
+*construction des surfaces
+*---------------------------------------------
+
+S1 = (MANU TRI3 (0 0) (0 L2) (0.25 0)) et
+(MANU TRI3 (0.25 L2) (0 L2) (0.25 0));
+S1 = elim (S1 et (S1 plus ( 0 L2)) et
+(S1 plus ( 0 (2*L2)))) 0.0001;
+S1 = elim (S1 et (S1 plus ( 0 (3*L2))) et
+(S1 plus ( 0 (6*L2)))) 0.0001;
+
+S2 = (MANU TRI3 (0 (2.5-L)) (0 (2.5+L)) (0.25 (2.5-L))) et
+(MANU TRI3 (0 (2.5+L)) (0.25 (2.5+L)) (0.25 (2.5-L)));
+
+S3 = MANU TRI3 (0 (2.5+L)) (0 (2.5+L3+L)) (0.25 (2.5+L))
+et (MANU TRI3 (0.25 (2.5+L3+L)) (0 (2.5+L3+L)) (0.25 (2.5+L)));
+S3 = elim (S3 et (S3 plus ( 0 L3))) 0.0001;
+S3 = elim (S3 et (S3 plus ( 0 (2*L3)))) 0.0001;
+S3 = elim (S3 et (S3 plus ( 0 (4*L3)))) 0.0001;
+
+surf = S1 et S2 et S3;
+
+surf = elim (surf et (surf plus (0.25 0))) 0.0001;
+surf = elim (surf et (surf plus (0.5 0))) 0.0001;
+surf = elim (surf et (surf plus (1 0))) 0.0001;
+surf = elim (surf et (surf plus (2 0))) 0.0001;
+
+surf = elim (surf et (surf SYME DROI (0 4.5) (10 4.5))) 0.0001;          
+
+MAILLE = elim (LIGINF et LIGSUP et LICOTE et surf) 0.0001;
+trac surf;
+trac maille;
+
+opti sauv format
+'/work/irlin831_1/siavelim/CAS/ssnp503/ssnp503f.mgib';
+sauv format maille ;
+fin ;

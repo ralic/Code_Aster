@@ -1,0 +1,59 @@
+*
+OPTI DIME 3 ELEM PR15;
+VECT2 = 0. 0. 1. ;
+VECT3 = 0. 0. 1. ;
+*----------------------------------------
+* Plaque1
+*----------------------------------------
+A1 =  0.0  0.0 0.0 ;
+A2 =  1.0  0.0 0.0  ;
+A3 =  1.0  1.0 0.0 ;
+A4 =  0.0  1.0 0.0 ;
+A21 =  0.0  0.0 1.0 ;
+A22 =  1.0  0.0 1.0  ;
+A23 =  1.0  1.0 1.0 ;
+A24 =  0.0  1.0 1.0 ;
+A1A2 = droit (4) A1 A2;
+A4A3 = droit (4) A4 A3;
+*
+OPTI ELEM TRI6;
+encast = A1A2 regl 4 A4A3;
+
+OPTI ELEM PR15;
+v1= encast 4  volu TRAN VECT2 ;
+*
+suresc= face 2  v1;
+*trac suresc;
+v1  = v1 et suresc et encast et A21 et A22 et A23 et A24  ;
+elim v1 1.e-5;
+*----------------------------------------
+* Plaque2
+*----------------------------------------
+A11 =  0.0  0.0 1.0 ;
+A12 =  1.0  0.0 1.0 ;
+A13 =  1.0  1.0 1.0 ;
+A14 =  0.0  1.0 1.0 ;
+A11A2 = droit (4) A11 A12;
+A14A3 = droit (4) A14 A13;
+*
+OPTI ELEM TRI6;
+surmai =  A11A2 regl 4 A14A3;
+
+OPTI ELEM PR15;
+v2= surmai 4  volu TRAN VECT3 ;
+surmai=inve(surmai);
+*
+*trac  surmai;
+surcha= face 2  v2;
+v2 = v2 et surmai et surcha et A11 et A12 et A13 et A14 ;
+elim v2 1.e-5;
+
+
+*trac cache  ((v1 coul jaune) et (v2 coul rouge));
+*
+Struct=  (v1 et v2);
+opti sauv form 'ssnp121r.mgib' ;
+sauv form Struct ;
+LIST (NBNO Struct) ;
+LIST (NBEL Struct) ;
+fin;

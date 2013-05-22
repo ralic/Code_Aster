@@ -1,0 +1,69 @@
+* maillage pour test ;
+opti nive 4 ;
+opti dime 2 ;
+opti elem tri6 ;
+*******************
+*definition des noeuds
+********************
+NO1 = 0.e-3  0.e-3 ;
+NO2 = 40.e-3 0.e-3 ;
+NO3 = 50.e-3 0.e-3 ;
+NO4 = 50.e-3 75.e-3 ;
+NO5 = 40.e-3  75.e-3 ;
+NO6 = 0.e-3  75.e-3 ;
+NO7 = 40.e-3  10.e-3 ;
+NO8 = 0.e-3  10.e-3 ;
+
+
+D1_2 = DROI 40 NO1 NO2 ;
+D2_3 = DROI 10 NO2 NO3 ;
+D3_4 = DROI 30 NO3 NO4 ;
+D2_5 = DROI 30 NO2 NO5 ;
+D5_4 = DROI 10 NO5 NO4 ;
+D2_7 = DROI 4 NO2 NO7 ;
+D1_8 = DROI 4 NO1 NO8 ;
+D8_7 = DROI 40 NO8 NO7 ;
+
+S1 = DALL D1_2 D2_7 D8_7 D1_8 ;
+S2 = DALL D2_3 D3_4 D5_4 D2_5 ;
+
+D6_5 = DROI 'DINI' 10.e-3 'DFIN' 1.e-3 NO6 NO5 ;
+D8_6 = DROI 'DINI' 2.e-3 'DFIN' 10.e-3 NO8 NO6 ;
+D7_5 = DROI 26 NO7 NO5 ;
+
+opti elem tri6 ;
+cont = D8_7 et D7_5 et D6_5 et D8_6 ;
+S3 = SURF cont PLAN ;
+
+trac (S1 et S2 et s3) ;
+
+BARRE = S1 et S2 et S3 ;
+
+*****************************
+*définition des CL
+*****************************
+ECHANGES = D1_2 et D2_3 et D3_4 ;
+
+*******************************************
+* définition des noeuds de post-traitement
+*******************************************
+TC9 = 43.e-3 50.e-3 ;
+TC0 = 50.e-3 50.e-3 ;
+TC10 = NO5 ;
+TC = TC9 et TC0 et TC10 ;
+
+*********************************
+*Assemblage
+*******************************
+ma = BARRE et TC ;
+
+elim 1.e-7 ma ;
+
+trac (ma et (TC coul rouge) et (ECHANGES coul bleu)) ;
+
+opti sauv form 'barreau1.mgib' ;
+sauv form ma ;
+
+fin ;
+
+

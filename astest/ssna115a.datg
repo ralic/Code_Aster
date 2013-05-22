@@ -1,0 +1,72 @@
+h=10;
+r=5;
+rf=0.5;
+//eps=0.3
+eps=0.17857142857143;
+
+nr=28;
+nh=39;
+
+Point(1) = {rf+r, h, 0, 1};
+Point(2) = {rf+eps  , h, 0, 1};
+Point(3) = {rf+eps  , 0, 0, 1};
+Point(4) = {rf+r, 0, 0, 1};
+Point(5) = {rf    , h, 0, 1};
+Point(6) = {rf    , 0, 0, 1};
+Point(7) = {rf+eps  , h/2, 0, 1};
+Point(8) = {rf+r, h/2, 0, 1};
+Point(9) = {rf, h/2, 0, 1};
+
+
+Line(1) = {5,2};
+Line(2) = {2,1};
+Line(3) = {1,8};
+Line(4) = {8,4};
+Line(5) = {4,3};
+Line(6) = {3,6};
+Line(7) = {6,9};
+Line(8) = {9,7};
+Line(9) = {7,8};
+Line(10) = {7,3};
+Line(11) = {5,9};
+Line(12) = {2,7};
+
+Transfinite Line {3,4,7,11,10,12} = nh;
+Transfinite Line {5,9,2} = nr;
+
+Line Loop(13) = {10,6,7,8};
+Plane Surface(14) = {13};
+
+Line Loop(15) = {-8,-11,1,12};
+Plane Surface(16) = {15};
+
+Line Loop(17) = {4,5,-10,9};
+Plane Surface(18) = {17};
+
+Line Loop(19) = {9,-3,-2,12};
+Plane Surface(20) = {19};
+
+Transfinite Surface {14} = {9,6,3};
+Transfinite Surface {16} = {5,9,7};
+Transfinite Surface {18} = {3,7,8,4};
+Transfinite Surface {20} = {2,7,8,1};
+
+Recombine Surface {14,16,20,18};
+
+Physical Point (10) = {2};
+Physical Point (11) = {3};
+Physical Point (12) = {7};
+Physical Point (13) = {5};
+Physical Point (14) = {6};
+
+Physical Line (1) = {2};
+Physical Line (2) = {12,10};
+Physical Line (3) = {5};
+Physical Line (4) = {3,4};
+Physical Line (5) = {11,7};
+Physical Line (6) = {6};
+Physical Line (7) = {1};
+
+Physical Surface (8) = {18,20};
+Physical Surface (9) = {14,16};
+

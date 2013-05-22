@@ -1,0 +1,68 @@
+
+pi=3.14159265358979;
+L=1;
+nx=L/20+1;
+ny=2*pi/100+1;
+
+epj=0.05;
+
+Point(1) = {0,   -pi, 0, 1};
+Point(2) = {L,     -pi, 0, 1};
+Point(3) = {L,      pi, 0, 1};
+Point(4) = {0,    pi, 0, 1};
+Point(5) = {epj,    -pi, 0, 1};
+Point(6) = {epj,     pi, 0, 1};
+
+Line(1) = {1,5};
+Line(2) = {5,2};
+Line(3) = {2,3};
+Line(4) = {3,6};
+Line(5) = {6,4};
+Line(6) = {4,1};
+Line(7) = {5,6};
+
+Transfinite Line {2,4} = 20;
+Transfinite Line {3,6,7} = 50;
+Transfinite Line {1,5} = 2;
+
+// MATRICE
+Line Loop(13) = {2,3,4,-7};
+Plane Surface(14) = {13};
+
+// JOINT
+Line Loop(15) = {1,7,5,6};
+Plane Surface(16) = {15};
+
+Transfinite Surface {14} = {5,2,3,6};
+Transfinite Surface {16} = {1,5,6,4};
+Recombine Surface {14};
+Recombine Surface {16};
+
+Physical Point (11) = {1};
+Physical Point (12) = {2};
+Physical Point (13) = {3};
+Physical Point (14) = {4};
+Physical Point (15) = {5};
+Physical Point (16) = {6};
+
+// HAUT
+Physical Line (1) = {5,4};
+
+// BAS
+Physical Line (2) = {1,2};
+
+//DROITE
+Physical Line (3) = {3};
+
+//JOINT_GAUCHE
+Physical Line (4) = {6};
+
+//JOINT_DROITE
+Physical Line (5) = {7};
+
+// MATRICE
+Physical Surface (8) = {14};
+
+// JOINT
+Physical Surface (9) = {16};
+

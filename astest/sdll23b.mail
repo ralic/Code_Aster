@@ -1,0 +1,66 @@
+TITRE
+  TEST SFM/VPCS SDLL23/A
+  POUTRE ENCASTREE-LIBRE SOUMISE A UN SEISME ( 3 NEUDS )
+FINSF
+COOR_3D
+  A        0.     0.   0.
+  N1      0.25   0.   0.
+  B        0.5    0.   0.
+  N2     1.      0.   0.
+  N3     1.5     0.   0.
+  N4     2.      0.   0.
+  N5     2.5     0.   0.
+  N6     3.      0.   0.
+  N7     3.5     0.   0.
+  N8     4.      0.   0.
+  N9     4.5     0.   0.
+  N10    5.      0.   0.
+  N11    5.5     0.   0.
+  N12    6.      0.   0.
+  N13    6.5     0.   0.
+  N14    7.      0.   0.
+  N15    7.5     0.   0.
+  N16    8.      0.   0.
+  N17    8.5     0.   0.
+  N18    9.      0.   0.
+  N19    9.5     0.   0.
+  C      10.      0.   0.
+FINSF
+SEG2
+  E01       A        N1
+  E02       N1      B
+  E03       B        N2
+  E04       N2      N3
+  E05       N3      N4
+  E06       N4      N5
+  E07       N5      N6
+  E08       N6      N7
+  E09       N7      N8
+  E10       N8      N9
+  E11       N9      N10
+  E12       N10     N11
+  E13       N11     N12
+  E14       N12     N13
+  E15       N13     N14
+  E16       N14     N15
+  E17       N15     N16
+  E18       N16     N17
+  E19       N17     N18
+  E20       N18     N19
+  E21       N19     C
+     
+FINSF
+GROUP_MA  NOM = M_POUT
+  E01  E02  E03  E04  E05  E06  E07  E08  
+  E09  E10  E11  E12  E13  E14  E15  E16  
+  E17  E18  E19  E20  E21
+FINSF
+GROUP_NO  NOM = N_POUT
+  A  N1  B  N2  N3  N4  N5  N6  N7  N8  N9  
+  N10  N11  N12  N13  N14  N15  N16  N17  N18  
+  N19  C
+FINSF
+GROUP_NO  NOM = MASSE
+    B    C
+FINSF
+FIN

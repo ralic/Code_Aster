@@ -1,0 +1,42 @@
+* ------------------------------------
+*       PARAMETRES DE LA PIECE
+* ------------------------------------
+
+OPTION DIME 2 NIVE 3 ELEM QUA8 ;
+
+
+LA = 1.0 ;
+
+A = 0.   0. ;
+B = LA   0. ;
+C = LA   LA ;
+D = 0.   LA ;
+
+
+* DISCRETISATION
+
+NL = 1 ;
+
+*MAILLAGE
+
+AB = DROITE NL A B ;
+BC = DROITE NL B C ;
+CD = DROITE NL C D ;
+DA = DROITE NL D A ;
+BLOC = DALL AB BC CD DA 'PLAN' ;
+
+*TRACER
+
+TRACER BLOC ;
+
+* ------------------
+*     SAUVEGARDE
+* ------------------
+
+OPTION SAUV FORMAT
+ 'ssnp124c.mgib';
+SAUV FORMAT  BLOC ;
+
+FIN ;
+
+

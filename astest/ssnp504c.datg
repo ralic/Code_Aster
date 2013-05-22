@@ -1,0 +1,86 @@
+opti dime 2  elem qua4 ;
+
+*----------------------------------------
+*DONNEES
+*----------------------------------------
+
+* dimensions des cotes
+LX = 4;
+
+LY1 = 2.02;
+LY2 = 2.98;
+
+LY1 = 2.125;
+LY2 = 3.085;
+LY3 = 4;
+LY4 = 2.825;
+LY5 = 1.915;
+DX = LX 0. ;
+DY1 =  0. LY1 ;
+DY2 =  0. LY2 ;
+DY3 =  0. LY3 ;
+DY4 =  0. LY4 ;
+DY5 =  0. LY5 ;
+
+* nombre d'elements
+
+N = 16;
+
+*---------------------------------------------
+*construction points
+*---------------------------------------------
+
+P1 = 0. 0.;
+P2 = P1 PLUS DX;
+P3 = P2 PLUS DY2;
+P4 = P1 PLUS DY1;
+
+P5 = P1 PLUS DY1;
+P6 = P2 PLUS DY2;
+P7 = P6 PLUS DY3;
+P8 = P5 PLUS DY3;
+
+P9 = P5 PLUS DY3;
+P10= P6 PLUS DY3;
+P11= P10 PLUS DY5;
+P12= P9 PLUS DY4;
+
+*---------------------------------------------
+*construction des lignes
+*---------------------------------------------
+
+L11 = DROIT P1 P2 N;
+trac L11;
+L12 = DROIT P2 P3 N;
+L13 = DROIT P3 P4 N;
+L14 = DROIT P4 P1 N;
+
+L21 = DROIT P5 P6 N;
+L22 = DROIT P6 P7 N;
+L23 = DROIT P7 P8 N;
+L24 = DROIT P8 P5 N;
+
+L31 = DROIT P9 P10 N;
+L32 = DROIT P10 P11 N;
+L33 = DROIT P11 P12 N;
+L34 = DROIT P12 P9 N;
+
+*---------------------------------------------
+*construction des surfaces
+*---------------------------------------------
+
+S1 = DALL L11 L12 L13 L14;
+S2 = DALL L21 L22 L23 L24;
+S3 = DALL L31 L32 L33 L34;
+
+MAILLE = S1 ET S2 ET S3;
+
+trac (S1 ET S3);
+trac S2;
+
+trac MAILLE;
+
+opti sauv format
+'/home/siavelis/SSNP504/ssnp504c.mgib';
+sauv format maille ;
+fin ;

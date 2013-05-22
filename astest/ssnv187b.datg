@@ -1,0 +1,34 @@
+// Maillage d'un plan XY pour cas-test hyperelastique
+// Maillage mixte quadratique triangle/quadrangle
+
+haut = 1.0;
+larg = 1.0;
+h    = 0.1;
+
+Point(1) = {0.0,0.0,0.0,h};
+Point(2) = {larg,0.0,0.0,h};
+Point(3) = {larg,haut,0.0,h};
+Point(4) = {0.0,haut,0.0,h};
+
+Line(1)  = {1,2};
+Line(2)  = {2,3};
+Line(3)  = {3,4};
+Line(4)  = {4,1};
+
+
+// GM1: ligne inferieure (pour encastrement)
+// GM3: ligne superieure (pour pression)
+// GM4: ligne gauche (pour symetrie)
+Physical Line(1) = {1};
+Physical Line(3) = {3};
+Physical Line(4) = {4};
+
+// GM5: point pour mesure (haut-droite)
+Physical Point(5) = {3};
+
+Line Loop(5) = {2,3,4,1};
+Plane Surface(6) = {5};
+
+Recombine Surface {6};
+Physical Surface(6) = {6};
+

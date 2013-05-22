@@ -1,0 +1,126 @@
+TITRE ' ' ;
+
+Option dime 3 elem pri6;
+
+OPTI NIVE 11 ;
+OPTI SAUV FORM
+'/home/desroches/trinh/RESTIT/test/ssls108/ssls108e.mgib';
+L = 12.;
+D1 = 1.1;
+e = 0.32;
+
+Nseg     = 24;
+Nseglarg = 4;
+**Nseg     = 24;
+**Nseglarg = 4;
+
+YP1 = -0.5*D1;
+ZP1 = -0.5*e ;
+YP4 =  0.5*D1;
+ZP4 = -0.5*e ;
+YP9 =  0.5*D1;
+ZP9 =  0.5*e ;
+YP6 = -0.5*D1;
+ZP6 =  0.5*e ;
+
+P1=(0 YP1 ZP1) ;  P4=(0 YP4 ZP4);
+P6=(0 YP6 ZP6) ;  P9=(0 YP9 ZP9);
+
+P4_P1=D Nseglarg P4 P1;
+P9_P6=D Nseglarg P9 P6; 
+
+DD0 = P4_P1;
+DR0 = P9_P6; 
+
+DD1 = DD0;
+PP1=P1; PP4=P4;
+DR1 = DR0;       
+PP6=P6; PP9=P9;  
+
+dteta = (3.1415926)/(2.*Nseg);
+
+teta = 0.;
+itour = 0;
+
+Repeter Bouc1 Nseg;
+
+teta = teta + dteta;
+itour = itour + 1;
+Xteta = (2.*L*teta)/(3.1415926);
+
+tedegr = teta*180/(3.1415926);
+cn1 = cos tedegr;
+sn1 = sin tedegr;
+
+YQ1 = (YP1*cn1) + (-1.*ZP1*sn1);
+ZQ1 = (YP1*sn1) - (-1.*ZP1*cn1);
+YQ4 = (YP4*cn1) + (-1.*ZP4*sn1);
+ZQ4 = (YP4*sn1) - (-1.*ZP4*cn1);
+YQ9 = (YP9*cn1) + (-1.*ZP9*sn1);
+ZQ9 = (YP9*sn1) - (-1.*ZP9*cn1);
+YQ6 = (YP6*cn1) + (-1.*ZP6*sn1);
+ZQ6 = (YP6*sn1) - (-1.*ZP6*cn1);
+
+Q1=(Xteta YQ1 ZQ1) ;  Q4=(Xteta YQ4 ZQ4);
+Q6=(Xteta YQ6 ZQ6) ;  Q9=(Xteta YQ9 ZQ9);
+
+DD2 = D Nseglarg Q1 Q4;
+DD21 = D 1 PP1 Q1;
+DD22 = D 1 Q4 PP4;
+DR2 = D Nseglarg Q6 Q9;
+DR21 = D 1 PP6 Q6;
+DR22 = D 1 Q9 PP9;
+
+OPTI ELEM TRI3;
+dSS1 = daller DD21 DD2 DD22 DD1;
+dSS2 = daller DR21 DR2 DR22 DR1;
+
+Si (itour > 1);
+SS1 = SS1 et dSS1;
+SS2 = SS2 et dSS2;
+Sinon;
+SS1 = dSS1;
+SS2 = dSS2;
+Finsi;
+
+DD1 = D Nseglarg Q4 Q1;
+PP1=Q1; PP4=Q4;
+DR1 = D Nseglarg Q9 Q6;
+PP6=Q6; PP9=Q9;
+
+fin Bouc1;
+OPTI ELEM PRI6;
+
+VOL1 = VOLUME 1 SS1 SS2 ;
+elim 0.001 vol1;
+
+list (nbno VOL1);
+list (nbel VOL1);
+
+ORIENTER VOL1 DIRECTION (0. -1. 1.) ;
+
+ENCAS  = P4_P1 et P9_P6;
+BOUT   = DD2 et DR2;
+VOLTOT = VOL1 et ENCAS et BOUT;
+
+
+* MILIEUX DE DD2 ET DR2 POUR APPLIQUER LES FORCES PONCTUELLES
+
+A1 = (Q1 PLUS Q4)/2 ;                                                   
+A2 = (Q9 PLUS Q6)/2 ;                                                   
+ELIM 0.001  (DD2 ET A1);                                                
+ELIM 0.001  (DR2 ET A2);                                                
+
+
+
+TASS VOLTOT;
+
+sort VOLTOT;
+SAUV FORM VOLTOT ;
+
+**TRACER VOL1 CACHER (4e6 -2e6 1e6) ;
+trac (vol1 et (bout coul jaun)) CACHER (4e6 4e6 4e6) ;
+
+*opti donn 5;
+fin;
+

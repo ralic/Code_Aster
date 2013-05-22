@@ -1,0 +1,1069 @@
+# -*- coding: iso-8859-1 -*-
+
+######################################################
+# DELTA : la structure est de taille (4.0*DELTA, 6.0*DELTA, 20.0*DELTA)
+DELTA = 0.01
+# LG_ARETE = longueur typique d'une arete du maillage
+LG_ARETE = 10.*DELTA
+# affichage ou non d'informations
+verbose = 0
+# repertoire d'accueil du maillage med cree
+import os
+Rep_mail = os.environ['HOME']
+######################################################
+
+import sys
+import salome
+import GEOM
+import geompy
+import math
+import SALOMEDS
+import SMESH
+import smesh
+
+salome.salome_init()
+
+import salome_notebook
+notebook = salome_notebook.notebook
+
+import iparameters
+ipar = iparameters.IParameters(salome.myStudy.GetCommonParameters("Interface Applicative", 1))
+
+#Set up visual properties:
+ipar.setProperty("AP_ACTIVE_VIEW", "VTKViewer_0_0")
+ipar.setProperty("AP_WORKSTACK_INFO", "0000000100000000000000020100000001000003a4000000040000000200000002000000080000001a004f00430043005600690065007700650072005f0030005f00300000000102000000080000001a00560054004b005600690065007700650072005f0030005f00300000000202")
+ipar.setProperty("AP_ACTIVE_MODULE", "Mesh")
+ipar.setProperty("AP_SAVEPOINT_NAME", "Etat d'IHM: 1")
+#Set up lists:
+# fill list AP_VIEWERS_LIST
+ipar.append("AP_VIEWERS_LIST", "OCCViewer_1")
+ipar.append("AP_VIEWERS_LIST", "VTKViewer_2")
+# fill list OCCViewer_1
+ipar.append("OCCViewer_1", "Scène OCC :1 - visualiseur:1")
+ipar.append("OCCViewer_1", "scale=3.612253405211e+03*centerX=6.656933192045e-02*centerY=5.861180478001e-02*projX=7.749564051628e-01*projY=-4.650405943394e-01*projZ=4.279940724373e-01*twist=7.152872697314e-01*atX=2.719070389867e-02*atY=6.013112515211e-02*atZ=-1.687744515948e-03*eyeX=2.855682188648e-02*eyeY=5.931133668819e-02*eyeZ=-9.332628481535e-04*scaleX=1.000000000000e+00*scaleY=1.000000000000e+00*scaleZ=1.000000000000e+00*isVisible=1*size=0.20*gtIsVisible=0*gtDrawNameX=1*gtDrawNameY=1*gtDrawNameZ=1*gtNameX=X*gtNameY=Y*gtNameZ=Z*gtNameColorRX=255*gtNameColorGX=0*gtNameColorBX=0*gtNameColorRY=0*gtNameColorGY=255*gtNameColorBY=0*gtNameColorRZ=0*gtNameColorGZ=0*gtNameColorBZ=255*gtDrawValuesX=1*gtDrawValuesY=1*gtDrawValuesZ=1*gtNbValuesX=3*gtNbValuesY=3*gtNbValuesZ=3*gtOffsetX=2*gtOffsetY=2*gtOffsetZ=2*gtColorRX=255*gtColorGX=0*gtColorBX=0*gtColorRY=0*gtColorGY=255*gtColorBY=0*gtColorRZ=0*gtColorGZ=0*gtColorBZ=255*gtDrawTickmarksX=1*gtDrawTickmarksY=1*gtDrawTickmarksZ=1*gtTickmarkLengthX=5*gtTickmarkLengthY=5*gtTickmarkLengthZ=5")
+# fill list VTKViewer_2
+ipar.append("VTKViewer_2", "Scène VTK:1 - visualiseur:1")
+ipar.append("VTKViewer_2", """<?xml version="1.0"?>
+<ViewState>
+    <Position X="1.55149" Y="-0.253356" Z="-0.204094"/>
+    <FocalPoint X="0.02" Y="0.03" Z="0.1"/>
+    <ViewUp X="0.0209173" Y="-0.676734" Z="0.73593"/>
+    <ViewScale Parallel="0.106301" X="1" Y="1" Z="1"/>
+    <DisplayCubeAxis Show="0"/>
+    <GraduatedAxis Axis="X">
+        <Title isVisible="1" Text="X" Font="0" Bold="0" Italic="0" Shadow="0">
+            <Color R="1" G="0" B="0"/>
+        </Title>
+        <Labels isVisible="1" Number="3" Offset="2" Font="0" Bold="0" Italic="0" Shadow="0">
+            <Color R="1" G="0" B="0"/>
+        </Labels>
+        <TickMarks isVisible="1" Length="5"/>
+    </GraduatedAxis>
+    <GraduatedAxis Axis="Y">
+        <Title isVisible="1" Text="Y" Font="0" Bold="0" Italic="0" Shadow="0">
+            <Color R="0" G="1" B="0"/>
+        </Title>
+        <Labels isVisible="1" Number="3" Offset="2" Font="0" Bold="0" Italic="0" Shadow="0">
+            <Color R="0" G="1" B="0"/>
+        </Labels>
+        <TickMarks isVisible="1" Length="5"/>
+    </GraduatedAxis>
+    <GraduatedAxis Axis="Z">
+        <Title isVisible="1" Text="Z" Font="0" Bold="0" Italic="0" Shadow="0">
+            <Color R="0" G="0" B="1"/>
+        </Title>
+        <Labels isVisible="1" Number="3" Offset="2" Font="0" Bold="0" Italic="0" Shadow="0">
+            <Color R="0" G="0" B="1"/>
+        </Labels>
+        <TickMarks isVisible="1" Length="5"/>
+    </GraduatedAxis>
+    <Trihedron isShown="1" Size="105"/>
+</ViewState>
+""")
+# fill list AP_MODULES_LIST
+ipar.append("AP_MODULES_LIST", "Geometry")
+ipar.append("AP_MODULES_LIST", "Mesh")
+
+erreur = 0
+#
+while not erreur :
+###
+### GEOM component
+###
+#
+  geompy.init_geom(salome.myStudy)
+#
+  if verbose :
+    print "DELTA =", DELTA
+#
+# 1. Bases
+#
+  DXG =  4.0 * DELTA
+  DYG =  6.0 * DELTA
+  DZG = 20.0 * DELTA
+#
+  du = 0.0
+  dv = 0.0
+  dw = 0.0
+  ORIGINE = geompy.MakeVertex (du, dv, dw)
+#
+  Axe_x = geompy.MakeVectorDXDYDZ( DELTA,     0,     0 )
+  Axe_y = geompy.MakeVectorDXDYDZ(     0, DELTA,     0 )
+  Axe_z = geompy.MakeVectorDXDYDZ(     0,     0, DELTA )
+#
+  decala = 0.1 * DELTA
+#
+# 2. Boite principale
+#
+  du = DXG
+  dv = DYG
+  dw = DZG
+#
+  BOX_1 = geompy.MakeBoxDXDYDZ(du, dv, dw)
+#
+# 3. Partitions volumiques
+# 3.1. Plan parallele a xOy
+#
+  du = 2.5*max(DXG,DYG)
+  Plan_xOy = geompy.MakePlane(ORIGINE, Axe_z, du)
+  TR_X = 0.0
+  TR_Y = 0.0
+  TR_Z = 0.9*DZG
+  geompy.TranslateDXDYDZ(Plan_xOy, TR_X, TR_Y, TR_Z )
+#
+# 3.2. Plan parallele a xOz
+#
+  du = 2.5*DZG
+  Plan_xOz = geompy.MakePlane(ORIGINE, Axe_y, du)
+  TR_X = 0.0
+  TR_Y = 0.5*DXG
+  TR_Z = 0.0
+  geompy.TranslateDXDYDZ(Plan_xOz, TR_X, TR_Y, TR_Z )
+#
+# 3.3. Plan parallele a yOz
+#
+  du = 2.5*DZG
+  Plan_yOz = geompy.MakePlane(ORIGINE, Axe_x, du)
+  TR_X = 0.5*DXG
+  TR_Y = 0.0
+  TR_Z = 0.0
+  geompy.TranslateDXDYDZ(Plan_yOz, TR_X, TR_Y, TR_Z )
+#
+# 3.4. Partition
+#
+  BOX_G = geompy.MakePartition([BOX_1], [Plan_xOy, Plan_xOz, Plan_yOz], [], [], geompy.ShapeType["SOLID"], 0, [], 0)
+#
+# 4. Les points cardinaux dans les plans parallèles à xOy
+#    Convention de designation :
+#    y      N
+#    |      |
+#    |      |
+#   O|______C______E
+#    |      |
+#    |      |
+#    |______|______ x
+#           S
+#     z=min   : 0
+#     z=inter : 1
+#     z=max   : 2
+#
+  Epsilon =  0.0001 * DELTA
+  dico_point = {}
+#
+  for indice in range(3) :
+#
+    if ( indice == 0 ) :
+      dw = 0.0
+    elif ( indice == 1 ) :
+      dw = 0.9*DZG
+    else :
+      dw = DZG
+#
+    du = 0.0
+    dv = 0.5*DXG
+    point = geompy.GetPoint(BOX_G, du, dv, dw, Epsilon)
+    dico_point [ "O%d"%indice ] = point
+#
+    du = DXG
+    dv = 0.5*DXG
+    point = geompy.GetPoint(BOX_G, du, dv, dw, Epsilon)
+    dico_point [ "E%d"%indice ] = point
+#
+    du = 0.5*DXG
+    dv = 0.0
+    point = geompy.GetPoint(BOX_G, du, dv, dw, Epsilon)
+    dico_point [ "S%d"%indice ] = point
+#
+    du = 0.5*DXG
+    dv = DYG
+    point = geompy.GetPoint(BOX_G, du, dv, dw, Epsilon)
+    dico_point [ "N%d"%indice ] = point
+#
+    du = 0.5*DXG
+    dv = 0.5*DXG
+    point = geompy.GetPoint(BOX_G, du, dv, dw, Epsilon)
+    dico_point [ "C%d"%indice ] = point
+#
+# 5. Groupes : on cherche les entites par leur inclusion dans des boites parallelepipediques bien choisies
+#
+  dico_volu = {}
+  dico_face = {}
+#
+# 5.1. Le volume
+#
+#    Convention de designation :
+#    y
+#    |      |
+#    |  C   |  D
+#    |______|______
+#    |      |
+#    |  A   |  B
+#   O|______|______ x
+#
+#     z=min   : 0
+#     z=max   : 2
+#
+  dw = 0.9*DZG
+#
+  for indice in range(2) :
+#
+# 5.1.1. Decalages
+#
+    if ( indice > 0 ) :
+      TR_X = 0.0
+      TR_Y = 0.0
+#
+    if ( indice == 0 ) :
+      TR_Z = -decala
+    else :
+      TR_Z = 0.9*DZG
+#
+# 5.1.2. Les volumes de type A : X < 0.5*DXG, Y < 2*DELTA
+#
+    if indice == 0 :
+      du = 0.5*DXG
+      dv = 2.00 * DELTA
+      b412 = geompy.MakeBoxDXDYDZ(du+2.0*decala,dv+2.0*decala,dw+2.0*decala)
+      TR_X = - decala
+      TR_Y = - decala
+#
+    geompy.TrsfOp.TranslateDXDYDZ (b412, TR_X, TR_Y, TR_Z )
+    l_aux_1  = geompy.GetShapesOnBoxIDs (b412, BOX_G, geompy.ShapeType["SOLID"], geompy.GEOM.ST_IN )
+    l_aux_2  = geompy.GetShapesOnBox (b412, BOX_G, geompy.ShapeType["SOLID"], geompy.GEOM.ST_IN )
+    if ( verbose ) :
+      print "5.1.2. l_aux_1 =", l_aux_1, ", l_aux_2 =", l_aux_2
+    aux = "A%d" %indice
+    dico_volu[aux] = (l_aux_1, l_aux_2)
+#
+# 5.1.3. Les volumes de type B : X > 0.5*DXG, Y < 2*DELTA
+#
+    if indice == 0 :
+      du = DXG
+      dv = 2.00 * DELTA
+      b413 = geompy.MakeBoxDXDYDZ(du+2.0*decala,dv+2.0*decala,dw+2.0*decala)
+      TR_X = 0.5*DXG - decala
+      TR_Y = - decala
+#
+    geompy.TrsfOp.TranslateDXDYDZ (b413, TR_X, TR_Y, TR_Z )
+    l_aux_1  = geompy.GetShapesOnBoxIDs (b413, BOX_G, geompy.ShapeType["SOLID"], geompy.GEOM.ST_IN )
+    l_aux_2  = geompy.GetShapesOnBox    (b413, BOX_G, geompy.ShapeType["SOLID"], geompy.GEOM.ST_IN )
+    if ( verbose ) :
+      print "5.1.3. l_aux_1 =", l_aux_1, ", l_aux_2 =", l_aux_2
+    aux = "B%d" %indice
+    dico_volu[aux] = (l_aux_1, l_aux_2)
+#
+# 5.1.4. Les volumes de type C : X < 0.5*DXG, Y > 2*DELTA
+#
+    if indice == 0 :
+      du = 0.5*DXG
+      dv = DYG
+      b414 = geompy.MakeBoxDXDYDZ(du+2.0*decala,dv+2.0*decala,dw+2.0*decala)
+      TR_X = - decala
+      TR_Y = 2*DELTA - decala
+#
+    geompy.TrsfOp.TranslateDXDYDZ (b414, TR_X, TR_Y, TR_Z )
+    l_aux_1  = geompy.GetShapesOnBoxIDs (b414, BOX_G, geompy.ShapeType["SOLID"], geompy.GEOM.ST_IN )
+    l_aux_2  = geompy.GetShapesOnBox    (b414, BOX_G, geompy.ShapeType["SOLID"], geompy.GEOM.ST_IN )
+    if ( verbose ) :
+      print "5.1.4. l_aux_1 =", l_aux_1, ", l_aux_2 =", l_aux_2
+    aux = "C%d" %indice
+    dico_volu[aux] = (l_aux_1, l_aux_2)
+#
+# 5.1.5. Les volumes de type D : X > 0.5*DXG, Y > 2*DELTA
+#
+    if indice == 0 :
+      du = DXG
+      dv = DYG
+      b415 = geompy.MakeBoxDXDYDZ(du+2.0*decala,dv+2.0*decala,dw+2.0*decala)
+      TR_X = 0.5*DXG - decala
+      TR_Y = 2*DELTA - decala
+#
+    geompy.TrsfOp.TranslateDXDYDZ (b415, TR_X, TR_Y, TR_Z )
+    l_aux_1  = geompy.GetShapesOnBoxIDs (b415, BOX_G, geompy.ShapeType["SOLID"], geompy.GEOM.ST_IN )
+    l_aux_2  = geompy.GetShapesOnBox    (b415, BOX_G, geompy.ShapeType["SOLID"], geompy.GEOM.ST_IN )
+    if ( verbose ) :
+      print "5.1.5. l_aux_1 =", l_aux_1, ", l_aux_2 =", l_aux_2
+    aux = "D%d" %indice
+    dico_volu[aux] = (l_aux_1, l_aux_2)
+#
+  if ( verbose ) :
+    print "4. dico_volu"
+    l_aux = dico_volu.keys()
+    l_aux.sort()
+    for aux in l_aux :
+      print aux, dico_volu[aux], geompy.getObjectID(dico_volu[aux][1][0])
+#
+# 5.2. Les faces paralleles a xOy
+#
+#    Convention de designation :
+#    y
+#    |      |
+#    |  C   |  D
+#    |______|______
+#    |      |
+#    |  A   |  B
+#   O|______|______ x
+#
+#     z=min   : 0
+#     z=inter : 1
+#     z=max   : 2
+#
+  dw = 0.0
+#
+  for indice in range(3) :
+#
+# 5.2.1. Decalages
+#
+    if ( indice > 0 ) :
+      TR_X = 0.0
+      TR_Y = 0.0
+#
+    if ( indice == 0 ) :
+      TR_Z = -decala
+    elif ( indice == 1 ) :
+      TR_Z = 0.9*DZG
+    else :
+      TR_Z = 0.1*DZG
+#
+# 5.2.2. Les faces de type A : X < 0.5*DXG, Y < 2*DELTA
+#
+    if indice == 0 :
+      du = 0.5*DXG
+      dv = 2.00 * DELTA
+      b422 = geompy.MakeBoxDXDYDZ(du+2.0*decala,dv+2.0*decala,dw+2.0*decala)
+      TR_X = - decala
+      TR_Y = - decala
+#
+    geompy.TrsfOp.TranslateDXDYDZ (b422, TR_X, TR_Y, TR_Z )
+    l_aux_1  = geompy.GetShapesOnBoxIDs (b422, BOX_G, geompy.ShapeType["FACE"], geompy.GEOM.ST_IN )
+    l_aux_2  = geompy.GetShapesOnBox (b422, BOX_G, geompy.ShapeType["FACE"], geompy.GEOM.ST_IN )
+    if ( verbose ) :
+      print "5.2.2. l_aux_1 =", l_aux_1, ", l_aux_2 =", l_aux_2
+    aux = "A%d" %indice
+    dico_face[aux] = (l_aux_1, l_aux_2)
+#
+# 5.2.3. Les faces de type B : X > 0.5*DXG, Y < 2*DELTA
+#
+    if indice == 0 :
+      du = DXG
+      dv = 2.00 * DELTA
+      b423 = geompy.MakeBoxDXDYDZ(du+2.0*decala,dv+2.0*decala,dw+2.0*decala)
+      TR_X = 0.5*DXG - decala
+      TR_Y = - decala
+#
+    geompy.TrsfOp.TranslateDXDYDZ (b423, TR_X, TR_Y, TR_Z )
+    l_aux_1  = geompy.GetShapesOnBoxIDs (b423, BOX_G, geompy.ShapeType["FACE"], geompy.GEOM.ST_IN )
+    l_aux_2  = geompy.GetShapesOnBox    (b423, BOX_G, geompy.ShapeType["FACE"], geompy.GEOM.ST_IN )
+    if ( verbose ) :
+      print "5.2.3. l_aux_1 =", l_aux_1, ", l_aux_2 =", l_aux_2
+    aux = "B%d" %indice
+    dico_face[aux] = (l_aux_1, l_aux_2)
+#
+# 5.2.4. Les faces de type C : X < 0.5*DXG, Y > 2*DELTA
+#
+    if indice == 0 :
+      du = 0.5*DXG
+      dv = DYG
+      b424 = geompy.MakeBoxDXDYDZ(du+2.0*decala,dv+2.0*decala,dw+2.0*decala)
+      TR_X = - decala
+      TR_Y = 2*DELTA - decala
+#
+    geompy.TrsfOp.TranslateDXDYDZ (b424, TR_X, TR_Y, TR_Z )
+    l_aux_1  = geompy.GetShapesOnBoxIDs (b424, BOX_G, geompy.ShapeType["FACE"], geompy.GEOM.ST_IN )
+    l_aux_2  = geompy.GetShapesOnBox    (b424, BOX_G, geompy.ShapeType["FACE"], geompy.GEOM.ST_IN )
+    if ( verbose ) :
+      print "5.2.4. l_aux_1 =", l_aux_1, ", l_aux_2 =", l_aux_2
+    aux = "C%d" %indice
+    dico_face[aux] = (l_aux_1, l_aux_2)
+#
+# 5.2.5. Les faces de type D : X > 0.5*DXG, Y > 2*DELTA
+#
+    if indice == 0 :
+      du = DXG
+      dv = DYG
+      b425 = geompy.MakeBoxDXDYDZ(du+2.0*decala,dv+2.0*decala,dw+2.0*decala)
+      TR_X = 0.5*DXG - decala
+      TR_Y = 2*DELTA - decala
+#
+    geompy.TrsfOp.TranslateDXDYDZ (b425, TR_X, TR_Y, TR_Z )
+    l_aux_1  = geompy.GetShapesOnBoxIDs (b425, BOX_G, geompy.ShapeType["FACE"], geompy.GEOM.ST_IN )
+    l_aux_2  = geompy.GetShapesOnBox    (b425, BOX_G, geompy.ShapeType["FACE"], geompy.GEOM.ST_IN )
+    if ( verbose ) :
+      print "5.2.5. l_aux_1 =", l_aux_1, ", l_aux_2 =", l_aux_2
+    aux = "D%d" %indice
+    dico_face[aux] = (l_aux_1, l_aux_2)
+#
+# 5.3. Les faces paralleles a xOz
+#
+#    Convention de designation :
+#    z
+#    |      |
+#    |  G   |  H
+#    |______|______
+#    |      |
+#    |  E   |  F
+#   O|______|______ x
+#
+#     y=min   : 0
+#     y=max   : 1
+#
+  dv = 0.0
+#
+  for indice in range(2) :
+#
+# 5.3.1. Decalages
+#
+    if ( indice > 0 ) :
+      TR_X = 0.0
+      TR_Z = 0.0
+#
+    if ( indice == 0 ) :
+      TR_Y = -decala
+    else :
+      TR_Y = DYG
+#
+# 5.3.2. Les faces de type E : X < 0.5*DXG, Z < 0.9*DZG
+#
+    if indice == 0 :
+      du = 0.5*DXG
+      dw = 0.9*DZG
+      b432 = geompy.MakeBoxDXDYDZ(du+2.0*decala,dv+2.0*decala,dw+2.0*decala)
+      TR_X = - decala
+      TR_Z = - decala
+#
+    geompy.TrsfOp.TranslateDXDYDZ (b432, TR_X, TR_Y, TR_Z )
+    l_aux_1  = geompy.GetShapesOnBoxIDs (b432, BOX_G, geompy.ShapeType["FACE"], geompy.GEOM.ST_IN )
+    l_aux_2  = geompy.GetShapesOnBox    (b432, BOX_G, geompy.ShapeType["FACE"], geompy.GEOM.ST_IN )
+    if ( verbose ) :
+      print "5.3.2. l_aux_1 =", l_aux_1, ", l_aux_2 =", l_aux_2
+    aux = "E%d" %indice
+    dico_face[aux] = (l_aux_1, l_aux_2)
+#
+# 5.3.3. Les faces de type F : X > 0.5*DXG, Z < 0.9*DZG
+#
+    if indice == 0 :
+      du = DXG
+      dw = 0.9*DZG
+      b433 = geompy.MakeBoxDXDYDZ(du+2.0*decala,dv+2.0*decala,dw+2.0*decala)
+      TR_X = 0.5*DXG - decala
+      TR_Z = - decala
+#
+    geompy.TrsfOp.TranslateDXDYDZ (b433, TR_X, TR_Y, TR_Z )
+    l_aux_1  = geompy.GetShapesOnBoxIDs (b433, BOX_G, geompy.ShapeType["FACE"], geompy.GEOM.ST_IN )
+    l_aux_2  = geompy.GetShapesOnBox    (b433, BOX_G, geompy.ShapeType["FACE"], geompy.GEOM.ST_IN )
+    if ( verbose ) :
+      print "5.3.3. l_aux_1 =", l_aux_1, ", l_aux_2 =", l_aux_2
+    aux = "F%d" %indice
+    dico_face[aux] = (l_aux_1, l_aux_2)
+#
+# 5.3.4. Les faces de type G : X < 0.5*DXG, Z > 0.9*DZG
+#
+    if indice == 0 :
+      du = 0.5*DXG
+      dw = DZG
+      b434 = geompy.MakeBoxDXDYDZ(du+2.0*decala,dv+2.0*decala,dw+2.0*decala)
+      TR_X = - decala
+      TR_Z = 0.9*DZG - decala
+#
+    geompy.TrsfOp.TranslateDXDYDZ (b434, TR_X, TR_Y, TR_Z )
+    l_aux_1  = geompy.GetShapesOnBoxIDs (b434, BOX_G, geompy.ShapeType["FACE"], geompy.GEOM.ST_IN )
+    l_aux_2  = geompy.GetShapesOnBox    (b434, BOX_G, geompy.ShapeType["FACE"], geompy.GEOM.ST_IN )
+    if ( verbose ) :
+      print "5.3.4. l_aux_1 =", l_aux_1, ", l_aux_2 =", l_aux_2
+    aux = "G%d" %indice
+    dico_face[aux] = (l_aux_1, l_aux_2)
+#
+# 5.3.5. Les faces de type H : X > 0.5*DXG, Z > 0.9*DZG
+#
+    if indice == 0 :
+      du = DXG
+      dw = DZG
+      b435 = geompy.MakeBoxDXDYDZ(du+2.0*decala,dv+2.0*decala,dw+2.0*decala)
+      TR_X = 0.5*DXG - decala
+      TR_Z = 0.9*DZG - decala
+#
+    geompy.TrsfOp.TranslateDXDYDZ (b435, TR_X, TR_Y, TR_Z )
+    l_aux_1  = geompy.GetShapesOnBoxIDs (b435, BOX_G, geompy.ShapeType["FACE"], geompy.GEOM.ST_IN )
+    l_aux_2  = geompy.GetShapesOnBox    (b435, BOX_G, geompy.ShapeType["FACE"], geompy.GEOM.ST_IN )
+    if ( verbose ) :
+      print "5.3.5. l_aux_1 =", l_aux_1, ", l_aux_2 =", l_aux_2
+    aux = "H%d" %indice
+    dico_face[aux] = (l_aux_1, l_aux_2)
+#
+# 5.4. Les faces paralleles a yOz
+#
+#    Convention de designation :
+#    z
+#    |      |
+#    |  K   |  L
+#    |______|______
+#    |      |
+#    |  I   |  J
+#   O|______|______ y
+#
+#     x=min   : 0
+#     x=max   : 1
+#
+  du = 0.0
+#
+  for indice in range(2) :
+#
+# 5.4.1. Decalages
+#
+    if ( indice > 0 ) :
+      TR_Y = 0.0
+      TR_Z = 0.0
+#
+    if ( indice == 0 ) :
+      TR_X = -decala
+    else :
+      TR_X = DXG
+#
+# 5.4.2. Les faces de type I : Y < 0.5*DXG, Z < 0.9*DZG
+#
+    if indice == 0 :
+      dv = 0.5*DXG
+      dw = 0.9*DZG
+      b432 = geompy.MakeBoxDXDYDZ(du+2.0*decala,dv+2.0*decala,dw+2.0*decala)
+      TR_Y = - decala
+      TR_Z = - decala
+#
+    geompy.TrsfOp.TranslateDXDYDZ (b432, TR_X, TR_Y, TR_Z )
+    l_aux_1  = geompy.GetShapesOnBoxIDs (b432, BOX_G, geompy.ShapeType["FACE"], geompy.GEOM.ST_IN )
+    l_aux_2  = geompy.GetShapesOnBox    (b432, BOX_G, geompy.ShapeType["FACE"], geompy.GEOM.ST_IN )
+    if ( verbose ) :
+      print "5.4.2. l_aux_1 =", l_aux_1, ", l_aux_2 =", l_aux_2
+    aux = "I%d" %indice
+    dico_face[aux] = (l_aux_1, l_aux_2)
+#
+# 5.4.3. Les faces de type J : Y > 0.5*DXG, Z < 0.9*DZG
+#
+    if indice == 0 :
+      dv = DYG
+      dw = 0.9*DZG
+      b433 = geompy.MakeBoxDXDYDZ(du+2.0*decala,dv+2.0*decala,dw+2.0*decala)
+      TR_Y = 0.5*DXG - decala
+      TR_Z = - decala
+#
+    geompy.TrsfOp.TranslateDXDYDZ (b433, TR_X, TR_Y, TR_Z )
+    l_aux_1  = geompy.GetShapesOnBoxIDs (b433, BOX_G, geompy.ShapeType["FACE"], geompy.GEOM.ST_IN )
+    l_aux_2  = geompy.GetShapesOnBox    (b433, BOX_G, geompy.ShapeType["FACE"], geompy.GEOM.ST_IN )
+    if ( verbose ) :
+      print "5.4.3. l_aux_1 =", l_aux_1, ", l_aux_2 =", l_aux_2
+    aux = "J%d" %indice
+    dico_face[aux] = (l_aux_1, l_aux_2)
+#
+# 5.4.4. Les faces de type K : Y < 0.5*DXG, Z > 0.9*DZG
+#
+    if indice == 0 :
+      dv = 0.5*DXG
+      dw = DZG
+      b434 = geompy.MakeBoxDXDYDZ(du+2.0*decala,dv+2.0*decala,dw+2.0*decala)
+      TR_Y = - decala
+      TR_Z = 0.9*DZG - decala
+#
+    geompy.TrsfOp.TranslateDXDYDZ (b434, TR_X, TR_Y, TR_Z )
+    l_aux_1  = geompy.GetShapesOnBoxIDs (b434, BOX_G, geompy.ShapeType["FACE"], geompy.GEOM.ST_IN )
+    l_aux_2  = geompy.GetShapesOnBox    (b434, BOX_G, geompy.ShapeType["FACE"], geompy.GEOM.ST_IN )
+    if ( verbose ) :
+      print "5.4.4. l_aux_1 =", l_aux_1, ", l_aux_2 =", l_aux_2
+    aux = "K%d" %indice
+    dico_face[aux] = (l_aux_1, l_aux_2)
+#
+# 5.4.5. Les faces de type L : Y > 0.5*DXG, Z > 0.9*DZG
+#
+    if indice == 0 :
+      dv = DYG
+      dw = DZG
+      b435 = geompy.MakeBoxDXDYDZ(du+2.0*decala,dv+2.0*decala,dw+2.0*decala)
+      TR_Y = 0.5*DXG - decala
+      TR_Z = 0.9*DZG - decala
+#
+    geompy.TrsfOp.TranslateDXDYDZ (b435, TR_X, TR_Y, TR_Z )
+    l_aux_1  = geompy.GetShapesOnBoxIDs (b435, BOX_G, geompy.ShapeType["FACE"], geompy.GEOM.ST_IN )
+    l_aux_2  = geompy.GetShapesOnBox    (b435, BOX_G, geompy.ShapeType["FACE"], geompy.GEOM.ST_IN )
+    if ( verbose ) :
+      print "5.4.5. l_aux_1 =", l_aux_1, ", l_aux_2 =", l_aux_2
+    aux = "L%d" %indice
+    dico_face[aux] = (l_aux_1, l_aux_2)
+#
+  if ( verbose ) :
+    print "5. dico_face"
+    l_aux = dico_face.keys()
+    l_aux.sort()
+    for aux in l_aux :
+      print aux, dico_face[aux], geompy.getObjectID(dico_face[aux][1][0])
+#
+# 6. Les groupes associes
+#
+  A0_G = geompy.CreateGroup(BOX_G, geompy.ShapeType["SOLID"])
+  geompy.UnionIDs ( A0_G, dico_volu["A0"][0] )
+#
+  B0_G = geompy.CreateGroup(BOX_G, geompy.ShapeType["SOLID"])
+  geompy.UnionIDs ( B0_G, dico_volu["B0"][0] )
+#
+  C0_G = geompy.CreateGroup(BOX_G, geompy.ShapeType["SOLID"])
+  geompy.UnionIDs ( C0_G, dico_volu["C0"][0] )
+#
+  D0_G = geompy.CreateGroup(BOX_G, geompy.ShapeType["SOLID"])
+  geompy.UnionIDs ( D0_G, dico_volu["D0"][0] )
+#
+  A1_G = geompy.CreateGroup(BOX_G, geompy.ShapeType["SOLID"])
+  geompy.UnionIDs ( A1_G, dico_volu["A1"][0] )
+#
+  B1_G = geompy.CreateGroup(BOX_G, geompy.ShapeType["SOLID"])
+  geompy.UnionIDs ( B1_G, dico_volu["B1"][0] )
+#
+  C1_G = geompy.CreateGroup(BOX_G, geompy.ShapeType["SOLID"])
+  geompy.UnionIDs ( C1_G, dico_volu["C1"][0] )
+#
+  D1_G = geompy.CreateGroup(BOX_G, geompy.ShapeType["SOLID"])
+  geompy.UnionIDs ( D1_G, dico_volu["D1"][0] )
+#
+  CL_2_G = geompy.CreateGroup ( BOX_G, geompy.ShapeType["FACE"] )
+  geompy.UnionIDs ( CL_2_G, dico_face["L0"][0] )
+#
+  XMIN_G = geompy.CreateGroup ( BOX_G, geompy.ShapeType["FACE"] )
+  geompy.UnionIDs ( XMIN_G, dico_face["I0"][0]+dico_face["J0"][0]+dico_face["K0"][0] )
+#
+  XMAX_G = geompy.CreateGroup ( BOX_G, geompy.ShapeType["FACE"] )
+  geompy.UnionIDs ( XMAX_G, dico_face["I1"][0]+dico_face["J1"][0]+dico_face["K1"][0]+dico_face["L1"][0] )
+#
+  YMIN_G = geompy.CreateGroup ( BOX_G, geompy.ShapeType["FACE"] )
+  geompy.UnionIDs ( YMIN_G, dico_face["E0"][0]+dico_face["F0"][0]+dico_face["G0"][0]+dico_face["H0"][0] )
+#
+  YMAX_G = geompy.CreateGroup ( BOX_G, geompy.ShapeType["FACE"] )
+  geompy.UnionIDs ( YMAX_G, dico_face["E1"][0]+dico_face["F1"][0]+dico_face["G1"][0]+dico_face["H1"][0] )
+#
+  CL_1_G = geompy.CreateGroup ( BOX_G, geompy.ShapeType["FACE"] )
+  geompy.UnionIDs ( CL_1_G, dico_face["B0"][0] )
+#
+  ZMIN_G = geompy.CreateGroup ( BOX_G, geompy.ShapeType["FACE"] )
+  geompy.UnionIDs ( ZMIN_G, dico_face["A0"][0]+dico_face["C0"][0]+dico_face["D0"][0] )
+#
+  ZMAX_G = geompy.CreateGroup ( BOX_G, geompy.ShapeType["FACE"] )
+  geompy.UnionIDs ( ZMAX_G, dico_face["A2"][0]+dico_face["B2"][0]+dico_face["C2"][0]+dico_face["D2"][0] )
+#
+# 7. Sommet pour le test
+#
+  l_aux = [dico_point [ "E1" ]]
+  P_G = geompy.CreateGroup(BOX_G, geompy.ShapeType["VERTEX"])
+  geompy.UnionList ( P_G, l_aux )
+#
+# 8. Affichage
+#
+  geompy.addToStudy( ORIGINE, "Origine" )
+  geompy.addToStudy( Axe_x, "Axe_x" )
+  geompy.addToStudy( Axe_y, "Axe_y" )
+  geompy.addToStudy( Axe_z, "Axe_z" )
+  geompy.addToStudy( Plan_xOy, "Plan_xOy" )
+  geompy.addToStudy( Plan_xOz, "Plan_xOz" )
+  geompy.addToStudy( Plan_yOz, "Plan_yOz" )
+  geompy.addToStudy( BOX_1, "BOX_1" )
+  geompy.addToStudy( b412, "b412" )
+  geompy.addToStudy( b413, "b413" )
+  geompy.addToStudy( b414, "b414" )
+  geompy.addToStudy( b415, "b415" )
+  geompy.addToStudy( b422, "b422" )
+  geompy.addToStudy( b423, "b423" )
+  geompy.addToStudy( b424, "b424" )
+  geompy.addToStudy( b425, "b425" )
+  geompy.addToStudy( b432, "b432" )
+  geompy.addToStudy( b433, "b433" )
+  geompy.addToStudy( b434, "b434" )
+  geompy.addToStudy( b435, "b435" )
+  geompy.addToStudy( BOX_G, "BOX" )
+  l_aux = dico_point.keys()
+  l_aux.sort()
+  for aux in l_aux :
+    geompy.addToStudyInFather( BOX_G, dico_point[aux], aux )
+  geompy.addToStudyInFather( BOX_G, A0_G, "gr A0" )
+  geompy.addToStudyInFather( BOX_G, B0_G, "gr B0" )
+  geompy.addToStudyInFather( BOX_G, C0_G, "gr C0" )
+  geompy.addToStudyInFather( BOX_G, D0_G, "gr D0" )
+  geompy.addToStudyInFather( BOX_G, A1_G, "gr A1" )
+  geompy.addToStudyInFather( BOX_G, B1_G, "gr B1" )
+  geompy.addToStudyInFather( BOX_G, C1_G, "gr C1" )
+  geompy.addToStudyInFather( BOX_G, D1_G, "gr D1" )
+  geompy.addToStudyInFather( BOX_G, CL_2_G, "gr CL_2" )
+  geompy.addToStudyInFather( BOX_G, XMIN_G, "gr XMIN" )
+  geompy.addToStudyInFather( BOX_G, XMAX_G, "gr XMAX" )
+  geompy.addToStudyInFather( BOX_G, YMIN_G, "gr YMIN" )
+  geompy.addToStudyInFather( BOX_G, YMAX_G, "gr YMAX" )
+  geompy.addToStudyInFather( BOX_G, CL_1_G, "gr CL_1" )
+  geompy.addToStudyInFather( BOX_G, ZMIN_G, "gr ZMIN" )
+  geompy.addToStudyInFather( BOX_G, ZMAX_G, "gr ZMAX" )
+  geompy.addToStudyInFather( BOX_G, P_G, "gr P" )
+
+  ### Store presentation parameters of displayed objects
+  import iparameters
+  ipar = iparameters.IParameters(salome.myStudy.GetModuleParameters("Interface Applicative", "GEOM", 1))
+  # set up entry GEOM_1 (Boite_1) parameters
+  objId = geompy.getObjectID(BOX_G)
+  ipar.setParameter(objId, "OCCViewer_0_Visibility", "On")
+  ipar.setParameter(objId, "OCCViewer_0_Color", "1:1:0")
+###
+### SMESH component
+###
+#
+  smesh.SetCurrentStudy(salome.myStudy)
+#
+  import StdMeshers
+  import NETGENPlugin
+#
+# 1.
+#  dico_face a pour cle une chaine de caracteres reperant les faces
+#  dico_face[cle] = ( l1, l2 ) avec :
+#     l1 : la liste des IDs des faces
+#     l2 : la liste des objets des faces
+#  Remarque : c'est bon car les listes sont de longueur 1
+#  Idem pour dico_volu
+#
+  size_max = 0.8*DELTA
+  size_min = 0.007*DELTA
+  nbr_de_segments_1 = 14
+  nbr_de_segments_2 =  2
+  if ( verbose ) :
+    print "size_min", size_min
+    print "size_max", size_max
+    print "nbr_de_segments_1", nbr_de_segments_1
+    print "nbr_de_segments_2", nbr_de_segments_2
+#
+  for indice in range(3) :
+    for aux in ("A", "B", "C", "D" ) :
+      nom = aux+"%d"%indice
+      face = dico_face[nom][1][0]
+      nom = "Face_"+nom
+      geompy.addToStudyInFather( BOX_G, face, nom )
+#
+  for indice in range(2) :
+    for aux in ("E", "F", "G", "H", "I", "J", "K", "L" ) :
+      nom = aux+"%d"%indice
+      face = dico_face[nom][1][0]
+      nom = "Face_"+nom
+      geompy.addToStudyInFather( BOX_G, face, nom )
+#
+  for indice in range(2) :
+    for aux in ("A", "B", "C", "D" ) :
+      nom = aux+"%d"%indice
+      volu = dico_volu[nom][1][0]
+      nom = "Volu_"+nom
+      geompy.addToStudyInFather( BOX_G, volu, nom )
+#
+# 2. Le volume
+#
+  BOX_M = smesh.Mesh(BOX_G)
+#
+  Quadrangle_2D = BOX_M.Quadrangle(algo=smesh.QUADRANGLE)
+  Prism_3D = BOX_M.Prism()
+#
+# 5. Les volumes
+#
+  nom = "A0"
+  volu = dico_volu[nom][1][0]
+  SMesh_vA0 = BOX_M.Segment(geom=volu)
+  NumberOfSegments_1 = SMesh_vA0.NumberOfSegments(nbr_de_segments_1)
+  NumberOfSegments_1.SetDistrType( 0 )
+#
+  nom = "A1"
+  volu = dico_volu[nom][1][0]
+  SMesh_vA1 = BOX_M.Segment(geom=volu)
+  NumberOfSegments_2 = SMesh_vA1.NumberOfSegments(nbr_de_segments_2)
+  NumberOfSegments_2.SetDistrType( 0 )
+#
+  nom = "B0"
+  volu = dico_volu[nom][1][0]
+  SMesh_vB0 = BOX_M.Segment(geom=volu)
+  isDone = BOX_M.AddHypothesis(NumberOfSegments_1, volu)
+#
+  nom = "B1"
+  volu = dico_volu[nom][1][0]
+  SMesh_vB1 = BOX_M.Segment(geom=volu)
+  isDone = BOX_M.AddHypothesis(NumberOfSegments_2, volu)
+#
+  nom = "C0"
+  volu = dico_volu[nom][1][0]
+  SMesh_vC0 = BOX_M.Segment(geom=volu)
+  isDone = BOX_M.AddHypothesis(NumberOfSegments_1, volu)
+#
+  nom = "C1"
+  volu = dico_volu[nom][1][0]
+  SMesh_vC1 = BOX_M.Segment(geom=volu)
+  isDone = BOX_M.AddHypothesis(NumberOfSegments_2, volu)
+#
+  nom = "D0"
+  volu = dico_volu[nom][1][0]
+  SMesh_vD0 = BOX_M.Segment(geom=volu)
+  isDone = BOX_M.AddHypothesis(NumberOfSegments_1, volu)
+#
+  nom = "D1"
+  volu = dico_volu[nom][1][0]
+  SMesh_vD1 = BOX_M.Segment(geom=volu)
+  isDone = BOX_M.AddHypothesis(NumberOfSegments_2, volu)
+#
+# 3. Les bases
+#
+  nom = "A0"
+  Face_A0 = dico_face[nom][1][0]
+  SMesh_fA0 = BOX_M.Triangle(algo=smesh.NETGEN, geom=Face_A0)
+#
+  NETGEN_Parameters = SMesh_fA0.Parameters()
+  NETGEN_Parameters.SetMaxSize( size_max )
+  NETGEN_Parameters.SetMinSize( size_min )
+  NETGEN_Parameters.SetOptimize( 1 )
+  NETGEN_Parameters.SetFineness( 2 )
+  NETGEN_Parameters.SetQuadAllowed( 0 )
+  NETGEN_Parameters.SetSecondOrder( 0 )
+#
+  nom = "B0"
+  Face_B0 = dico_face[nom][1][0]
+  SMesh_fB0 = BOX_M.Triangle(algo=smesh.NETGEN, geom=Face_B0)
+  status = BOX_M.AddHypothesis(NETGEN_Parameters, Face_B0)
+#
+  nom = "C0"
+  Face_C0 = dico_face[nom][1][0]
+  SMesh_fC0 = BOX_M.Triangle(algo=smesh.NETGEN, geom=Face_C0)
+  status = BOX_M.AddHypothesis(NETGEN_Parameters, Face_C0)
+#
+  nom = "D0"
+  Face_D0 = dico_face[nom][1][0]
+  SMesh_fD0 = BOX_M.Triangle(algo=smesh.NETGEN, geom=Face_D0)
+  status = BOX_M.AddHypothesis(NETGEN_Parameters, Face_D0)
+#
+# 5. Projections des bases le long de la boite
+#
+  nom = "A1"
+  face = dico_face[nom][1][0]
+  SMesh_fA1 = BOX_M.Projection1D2D(geom=face)
+  Source_Face_A0 = SMesh_fA1.SourceFace(Face_A0, None, None, None, None, None)
+#
+  nom = "A2"
+  face = dico_face[nom][1][0]
+  SMesh_fA2 = BOX_M.Projection1D2D(geom=face)
+  status = BOX_M.AddHypothesis(Source_Face_A0, face)
+#
+  nom = "B1"
+  face = dico_face[nom][1][0]
+  SMesh_fB1 = BOX_M.Projection1D2D(geom=face)
+  Source_Face_B0 = SMesh_fB1.SourceFace(Face_B0, None, None, None, None, None)
+#
+  nom = "B2"
+  face = dico_face[nom][1][0]
+  SMesh_fB2 = BOX_M.Projection1D2D(geom=face)
+  status = BOX_M.AddHypothesis(Source_Face_B0, face)
+#
+  nom = "C1"
+  face = dico_face[nom][1][0]
+  SMesh_fC1 = BOX_M.Projection1D2D(geom=face)
+  Source_Face_C0 = SMesh_fC1.SourceFace(Face_C0, None, None, None, None, None)
+#
+  nom = "C2"
+  face = dico_face[nom][1][0]
+  SMesh_fC2 = BOX_M.Projection1D2D(geom=face)
+  status = BOX_M.AddHypothesis(Source_Face_C0, face)
+#
+  nom = "D1"
+  face = dico_face[nom][1][0]
+  SMesh_fD1 = BOX_M.Projection1D2D(geom=face)
+  Source_Face_D0 = SMesh_fD1.SourceFace(Face_D0, None, None, None, None, None)
+#
+  nom = "D2"
+  face = dico_face[nom][1][0]
+  SMesh_fD2 = BOX_M.Projection1D2D(geom=face)
+  status = BOX_M.AddHypothesis(Source_Face_D0, face)
+#
+# 6. Calcul général
+#
+  isDone = BOX_M.Compute()
+  smesh.SetName(BOX_M.GetMesh(), 'BOX')
+#
+# 7. Suppression des faces internes pour pouvoir calculer l'indicateur d'erreur par residu
+#
+  l_face = BOX_M.GetElementsByType( SMESH.FACE )
+  if ( verbose ) :
+    print "7.1. l_face =", l_face
+  DX = 0.5*DXG
+  DY = 0.5*DXG
+  DZ = 0.9*DZG
+  l_face_int = []
+  for n_id in l_face :
+    l_aux = BOX_M.BaryCenter(n_id)
+    xpoint = l_aux[0]
+    ypoint = l_aux[1]
+    zpoint = l_aux[2]
+    #print xpoint, zpoint
+    ok = 0
+#     plan x=2.0*DELTA
+    if ( abs(xpoint-DX)<Epsilon ) :
+      ok = 1
+#     plan y=2.0*DELTA
+    elif ( abs(ypoint-DY)<Epsilon ) :
+      ok = 1
+#     plan z=18.0*DELTA
+    elif ( abs(zpoint-DZ)<Epsilon ) :
+      ok = 1
+    if ok :
+      #print "ok pour", n_id
+      l_face_int.append(n_id)
+  if ( verbose ) :
+    print "7.1. ==> l_face_int =", l_face_int
+#
+  isDone = BOX_M.RemoveElements( l_face_int )
+#
+  BOX_M.RenumberElements()
+#
+# 8. Passage en quadratique
+#
+####  BOX_M.ConvertToQuadratic( 1 )
+#
+# 9. Les groupes issus de la géométrie
+#
+  A0 = BOX_M.Group(A0_G)
+  A1 = BOX_M.Group(A1_G)
+  B0 = BOX_M.Group(B0_G)
+  B1 = BOX_M.Group(B1_G)
+  C0 = BOX_M.Group(C0_G)
+  C1 = BOX_M.Group(C1_G)
+  D0 = BOX_M.Group(D0_G)
+  D1 = BOX_M.Group(D1_G)
+#
+  XMIN = BOX_M.Group(XMIN_G)
+  XMAX = BOX_M.Group(XMAX_G)
+  CL_2 = BOX_M.Group(CL_2_G)
+  YMIN = BOX_M.Group(YMIN_G)
+  YMAX = BOX_M.Group(YMAX_G)
+  CL_1 = BOX_M.Group(CL_1_G)
+  ZMIN = BOX_M.Group(ZMIN_G)
+  ZMAX = BOX_M.Group(ZMAX_G)
+#
+  P = BOX_M.Group(P_G)
+#
+  l_group = [ A0, A1, B0, B1, C0, C1, D0, D1 ]
+  for groupe in l_group :
+    iaux = groupe.Size()
+    print "Longueur du groupe :", iaux
+    for jaux in range (iaux) :
+      id_elem = groupe.GetId(jaux)
+      print ".. element :", id_elem
+#
+# 10. Nommage
+#
+  smesh.SetName(NumberOfSegments_1, 'nbr_de_segments = %d'%nbr_de_segments_1)
+  smesh.SetName(NumberOfSegments_2, 'nbr_de_segments = %d'%nbr_de_segments_2)
+  smesh.SetName(NETGEN_Parameters, 'NETGEN_Parameters')
+  smesh.SetName(Source_Face_A0, 'Projection Face A0')
+  smesh.SetName(Source_Face_B0, 'Projection Face B0')
+  smesh.SetName(Source_Face_C0, 'Projection Face C0')
+  smesh.SetName(Source_Face_D0, 'Projection Face D0')
+#
+  smesh.SetName(SMesh_vA0.GetAlgorithm(), 'Regular_1D')
+  smesh.SetName(Quadrangle_2D.GetAlgorithm(), 'Quadrangle_2D')
+  smesh.SetName(SMesh_fA0.GetAlgorithm(), 'NETGEN_2D')
+  smesh.SetName(SMesh_fA1.GetAlgorithm(), 'Projection_1D2D')
+  smesh.SetName(Prism_3D.GetAlgorithm(), 'Prism_3D')
+#
+  aux = SMesh_fA0.GetSubMesh()
+  smesh.SetName(aux, 'fA0')
+  aux = SMesh_fA1.GetSubMesh()
+  smesh.SetName(aux, 'fA1')
+  aux = SMesh_fA2.GetSubMesh()
+  smesh.SetName(aux, 'fA2')
+  aux = SMesh_fB0.GetSubMesh()
+  smesh.SetName(aux, 'fB0')
+  aux = SMesh_fB1.GetSubMesh()
+  smesh.SetName(aux, 'fB1')
+  aux = SMesh_fB2.GetSubMesh()
+  smesh.SetName(aux, 'fB2')
+  aux = SMesh_fC0.GetSubMesh()
+  smesh.SetName(aux, 'fC0')
+  aux = SMesh_fC1.GetSubMesh()
+  smesh.SetName(aux, 'fC1')
+  aux = SMesh_fC2.GetSubMesh()
+  smesh.SetName(aux, 'fC2')
+  aux = SMesh_fD0.GetSubMesh()
+  smesh.SetName(aux, 'fD0')
+  aux = SMesh_fD1.GetSubMesh()
+  smesh.SetName(aux, 'fD1')
+  aux = SMesh_fD2.GetSubMesh()
+  smesh.SetName(aux, 'fD2')
+#
+  aux = SMesh_vA0.GetSubMesh()
+  smesh.SetName(aux, 'vA0')
+  aux = SMesh_vA1.GetSubMesh()
+  smesh.SetName(aux, 'vA1')
+  aux = SMesh_vB0.GetSubMesh()
+  smesh.SetName(aux, 'vB0')
+  aux = SMesh_vB1.GetSubMesh()
+  smesh.SetName(aux, 'vB1')
+  aux = SMesh_vC0.GetSubMesh()
+  smesh.SetName(aux, 'vC0')
+  aux = SMesh_vC1.GetSubMesh()
+  smesh.SetName(aux, 'vC1')
+  aux = SMesh_vD0.GetSubMesh()
+  smesh.SetName(aux, 'vD0')
+  aux = SMesh_vD1.GetSubMesh()
+  smesh.SetName(aux, 'vD1')
+#
+  smesh.SetName(A0, 'A0')
+  smesh.SetName(A1, 'A1')
+  smesh.SetName(B0, 'B0')
+  smesh.SetName(B1, 'B1')
+  smesh.SetName(C0, 'C0')
+  smesh.SetName(C1, 'C1')
+  smesh.SetName(D0, 'D0')
+  smesh.SetName(D1, 'D1')
+  smesh.SetName(XMIN, 'XMIN')
+  smesh.SetName(XMAX, 'XMAX')
+  smesh.SetName(CL_2, 'CL_2')
+  smesh.SetName(YMIN, 'YMIN')
+  smesh.SetName(YMAX, 'YMAX')
+  smesh.SetName(CL_1, 'CL_1')
+  smesh.SetName(ZMIN, 'ZMIN')
+  smesh.SetName(ZMAX, 'ZMAX')
+  smesh.SetName(P, 'P')
+#
+# 11. Export MED
+#
+  BOX_M.ExportMED( os.path.join(Rep_mail,'maill.00.med'), 0, SMESH.MED_V2_2, 1 )
+
+### Store presentation parameters of displayed objects
+  import iparameters
+  ipar = iparameters.IParameters(salome.myStudy.GetModuleParameters("Interface Applicative", "SMESH", 1))
+
+#Set up entries:
+# set up entry SMESH_3 (Maillage_1) parameters
+  ipar.setParameter("SMESH_3", "VTKViewer_0_Visibility", "On")
+  ipar.setParameter("SMESH_3", "VTKViewer_0_Representation", "2")
+  ipar.setParameter("SMESH_3", "VTKViewer_0_IsShrunk", "0")
+  ipar.setParameter("SMESH_3", "VTKViewer_0_Entities", "e:1:f:1:v:1")
+  ipar.setParameter("SMESH_3", "VTKViewer_0_Colors", "surface:0:0.666667:1:backsurface:100:edge:0:0.666667:1:node:1:0:0:outline:0:0.27451:0")
+  ipar.setParameter("SMESH_3", "VTKViewer_0_Sizes", "line:1:shrink:0.75")
+  ipar.setParameter("SMESH_3", "VTKViewer_0_PointMarker", "std:1:9")
+  ipar.setParameter("SMESH_3", "VTKViewer_0_Opacity", "1")
+  ipar.setParameter("SMESH_3", "VTKViewer_0_ClippingPlane", "Off")
+
+  break
+
+if salome.sg.hasDesktop():
+  salome.sg.updateObjBrowser(1)
+  iparameters.getSession().restoreVisualState(1)

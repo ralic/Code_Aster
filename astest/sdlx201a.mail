@@ -1,0 +1,64 @@
+TITRE
+VALIDATION ASTER : MELANGE 3D COQUE POUTRE EN FLEXION
+% coordonnes legerement modifiees pour eviter les modes multiples
+FINSF
+COOR_3D
+    N1       0.007    -0.504     1.501
+    N2       5.002    -0.507     1.504
+    N3      10.005    -0.502     1.507
+    N4      10.004     0.005     1.502
+    N5      10.009     0.504     1.505
+    N6       5.008     0.509     1.504
+    N7       0.001     0.508     1.509
+    N8       0.003     0.001     1.508
+    N9       0.007    -0.503     0.001
+    N10     10.007    -0.507     0.003
+    N11     10.002     0.507     0.007
+    N12      0.005     0.502     0.007
+    N13      0.004    -0.505    -1.502
+    N14      5.009    -0.504    -1.505
+    N15     10.008    -0.509    -1.504
+    N16     10.001     0.008    -1.509
+    N17     10.003     0.501    -1.508
+    N18      5.007     0.503    -1.501
+    N19      0.007     0.507    -1.503
+    N20      0.002     0.007    -1.507
+    N21     10.005     0.002     1.507
+    N22     20.004     0.005     1.502
+    N23     20.009     0.004     0.005
+    N24     20.008     0.009    -1.504
+    N25     10.001     0.008    -1.509
+    N26     10.003     0.001     0.008
+    N28     25.001     0.007     0.003
+    N29     30.004     0.001     0.007
+FINSF
+HEXA20
+HE1 N1 N3 N15 N13 N7 N5 N17 N19 N2 N10 N14 N9 N8 N4 N16 N20 N6 N11
+    N18 N12
+FINSF
+TRIA3
+T1  N21 N22 N26
+T2  N22 N23 N26
+T3  N23 N24 N26
+T4  N24 N25 N26
+FINSF
+SEG2
+S1  N23 N28
+S2  N28 N29
+FINSF
+GROUP_MA
+  GRMA1 T1 T2 T3 T4
+FINSF
+GROUP_MA
+  GRMA2 S1 S2
+FINSF
+GROUP_NO
+  GRNO1 N1 N7 N8 N9 N12 N13 N19 N20
+FINSF
+GROUP_NO
+  GRNO2 N22 N23 N24
+FINSF
+GROUP_NO
+  GRNO3 N21 N26 N25
+FINSF
+FIN

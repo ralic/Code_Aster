@@ -1,0 +1,51 @@
+opti dime 3;
+opti elem qua8;
+
+l = 1.;
+l2 = 2. ;
+n = 5;
+nt = 10 ;
+np = 5 ;
+rmoy = 0.1;
+a=0.  0.   0. ;
+b=l   0.   0. ;
+c=l2  0.  0.  ;
+d=(-1*l) 0. 0. ;
+a1 = 0.    rmoy    0.;
+a2 = 0.    0.      rmoy ;
+a3 = 0. (-1*rmoy)  0.;
+
+arc = cer3 n a3 a2 a1;
+ars = arc syme plan a1 a3 b;
+cercle1 = arc et (inve ars);
+elim cercle1 0.01;
+tube1 =  cercle1 trans nt (l 0. 0.)  ;
+cercle2 = cote 3 tube1 ;
+
+opti elem seg2;
+bc = droit np b c ;
+da = droit 2 d a ;
+
+mailast = tube1  et  bc et da ;
+toto = versens mailast ;
+oublier toto ;
+elim 0.01 mailast ;
+
+trac (0. 0. 1000.) cach mailast ;
+opti sauv form 'zzzz112b.mgib';
+sauv 'FORMAT' mailast ;
+
+opti elem seg2;
+npl = 2;
+ab2 = droit npl a b;
+bc2 = droit npl b c;
+mailplex = ab2 et bc2 ;
+elim mailplex 0.01 ;
+trac mailplex ;
+opti sauv form 'zzzz112b.mgibplex';
+sauv 'FORMAT' mailplex ;
+mailplex=mailplex coul roug ;
+trac (0. 0. 1000.) cach (MAILAST ET MAILPLEX);
+
+
+

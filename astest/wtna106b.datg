@@ -1,0 +1,58 @@
+* ------------------------------------
+*       PARAMETRES DE LA PIECE
+* ------------------------------------
+
+*==============
+DEBPROC GRAVI ;
+*==============
+
+OPTION DIME 2 ELEM QUA8 ;
+
+NO1 = 101.00   100.00     ;
+NO2 =   1.00   100.00     ;
+NO3 = 101.00     0.00     ;
+NO4 =   1.00     0.00     ;
+NO5 = 101.00    50.00     ;
+NO6 =   1.00    50.00     ;
+
+*MAILLAGE
+
+BAS    = DROITE   2  NO4  NO3 ;
+DRO1   = DROITE   1  NO3  NO5 ;
+MIL1   = DROITE   2  NO5  NO6 ;
+GAU1   = DROITE   1  NO6  NO4 ;
+
+HAUT   = DROITE   2  NO1  NO2 ;
+GAU2   = DROITE   1  NO2  NO6 ;
+MIL2   = INVE     MIL1 ;
+DRO2   = DROITE   1  NO5  NO1 ;
+
+DROIT  = DRO1 ET DRO2 ;
+GAUCHE = GAU2 ET GAU1 ;
+
+BO1 = DALL HAUT GAU2 MIL2 DRO2 'PLAN' ;
+
+OPTION DIME 2 ELEM TRI6 ;
+
+BO2 = DALL BAS  DRO1 MIL1 GAU1 'PLAN' ;
+
+BO  = BO1 ET BO2 ;
+
+*=============================================================
+FINPROC BO BO1 GAUCHE BAS DROIT HAUT NO1 NO2 NO3 NO4;
+
+BO BO1 GAUCHE BAS DROIT HAUT NO1 NO2 NO3 NO4 = GRAVI ;
+*=============================================================
+
+TRACER BO ;
+* ------------------
+*     SAUVEGARDE
+* ------------------
+
+OPTION SAUV FORMAT
+ 'wtna106b.mgib';
+SAUV FORMAT ;
+
+FIN ;
+
+

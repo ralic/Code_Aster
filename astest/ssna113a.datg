@@ -1,0 +1,56 @@
+* Maillage simplifie d'un 1/4  eprouvette AE10-6
+***********************************************
+* Elements particuliers :             
+* LIG : ligament ou DY=0
+* SYME : axe de symetrie ou DX=0
+* EFFO : ligne sur laquelle on impose la force FY
+* NO_ENT : point au diametre minimum
+***********************************************
+                                                                     
+DEBUT;                                                                  
+OPTI DIME 2 ELEM  QUA8 NIVE 10 SAUV FORM 'ssna113a.mgib';                                                                       
+                                                                     
+* definition des points                                                 
+p0=0. 0.;    
+p1=3. 0.; 
+p2=5.4 4.8;       
+p3=5.4 7.;                                                              
+p8=5.4 30.; 
+p9=0. 30.;
+p1a=5.4 2.4;                                                              
+p14=0. 4.2;                                                            
+c=9. 0.;
+c2=9. 0.;
+p4=5.4 9.;
+p13=0. 9.;                                                             
+                                                                      
+* Definition des lignes                                                 
+                                                                        
+lig=p0 DROI 15 p1;                                                   
+l11a= CERC 26 p1 c p2;                                                  
+l32=p3 DROI 15 p2;                                                      
+l84=p8 DROI -7 p4 dini 5. dfin 1.;                                     
+l139=p13 DROI -7 p9 dini 1. dfin 5.;
+l34=p3 DROI 4 p4;
+l1413=p13 DROI 4 p14;
+effo=p9 DROI 5 p8;
+mid=p4 DROI 5 p13;                                                      
+l143= CERC 5 p14 c2 p3;                                                   
+l014=p0 DROI 21 p14;                                                       
+syme = (l014 et l1413 et l139);
+notch = l11a; 
+                                   
+*                                                                       
+* Creation des surfaces                                                 
+*                                                                       
+s1= inve(lig) (l143 et l014) l32 inve(notch) dall plan;        
+s2= mid l139 effo l84 dall plan;
+s3= l143 l34 mid inve(l1413) dall plan;                                     
+s= s1 et s2 et s3; 
+no_ent=p1;                                                          
+stot = s et no_ent;                                                             
+elim 0.001 stot;
+titre 'Eprouvette AE10-6'(nbno stot)'noeuds';
+sauv format stot; 
+trac stot;                                                               
+*fin;                                                        

@@ -1,0 +1,12 @@
+#DEBUT_TABLE
+#TITRE K POUR UN SEUL FOND A PLUSIEURS INSTANTS
+ NUME_FOND    NUME_ORDRE   INST         NUM_PT       ABSC_CURV    K1            K2          K3       G
+    I             I          R            I             R         R              R           R       R
+    1             1      1.00000E+00      1          0.0E+00     -1.e6          2.e6        3.e6     79.27
+    1             1      1.00000E+00      2          2.7E-05      1.e6          2.e6        3.e6     79.27
+    2             1      1.00000E+00      1          0.0E+00     -1.e7          2.e7        3.e7     7927.
+    2             1      1.00000E+00      2          2.7E-04      1.e7          2.e7        3.e7     7927.
+#FIN_TABLE
+
+                                                                
+

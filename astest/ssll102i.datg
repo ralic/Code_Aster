@@ -1,0 +1,22 @@
+opti dime 3 ;
+opti elem seg3 ;
+
+P1 = 0.d0          0.d0           0.d0;
+P7 = 3.115977734D0  0.0D0    0.0D0;
+P8 = 3.464101615D0  0.0D0    0.0D0 ;
+P11 = 6.0D0          0.0D0    0.0D0 ;
+
+G1= droite P1 P7 10 ;
+G2= droite P7 P8 1 ;
+G3= droite P8 P11 10 ;
+
+TT= G1 et G2 et G3 ;
+
+opti sauv form 'ssll102f.mgib' ;
+sauv form TT  ;
+trac (0. 110. 1000.) TT ;
+
+opti elem seg2;
+dimax = prog   1. 1. 1.  ;
+rep1 = @repere dimax bleu ;                                                        
+trac (rep1 et TT);                                                      

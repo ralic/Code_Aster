@@ -1,0 +1,40 @@
+opti dime 2 elem tri3;
+*
+* POINTS
+*
+Pt1 = 0. 0.;
+Pt2 = 10. 0.;
+Pt3 = 100. 0.;
+Pt4 = 100. 100.;
+Pt5 = 0. 100.;
+Pt2bis= 10. -0.1 ;
+Pt3bis = 100. -0.1;
+*
+* SEGMENTS ET ARC
+*
+fissinit = droi -12 Pt1 Pt2 dini 3. dfin 0.4;
+Lig= droi -50  Pt2 Pt3 dini 0.4 dfin 10.;
+cotbas = fissinit et Lig;
+cotd = droi 10 Pt3 Pt4 ;
+cotsup = droi 10 Pt4 Pt5   ;
+cotg= droi -12 Pt5 Pt1 dini 10. dfin 3.;
+joininf= droi -50 Pt3bis Pt2bis dini 10. dfin 0.4;
+joind= droi 1 Pt3 Pt3bis ;
+joinc= droi 1 Pt2bis Pt2 ;
+
+
+* DEFINITION DU CONTOUR ET MAILLAGE DE LA PIECE
+*
+*plaque =  DALL cotbas  cotd  cotsup  cotg;
+plaque =   cotbas et cotd et cotsup et cotg;
+surface1 = surface plaque plane;
+opti dime 2 elem qua4;
+joint  = DALL Lig  joind  joininf  joinc;
+*surface2 = surface joint plane;
+Maillage = surface1 et joint ;
+*Maillage = surface1;
+trac Maillage;
+*opti sauv form '/home/kbbhhdb/joint_develop/ssnp118a/fissdeb2.mgib';
+sauv format Maillage;
+fin;
+

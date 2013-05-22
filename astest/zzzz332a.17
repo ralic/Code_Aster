@@ -1,0 +1,25 @@
+TITRE
+  maillage fait à la main
+FINSF
+%
+COOR_3D
+N1  0.00  0.00  0.00
+N2  0.50  0.10  0.05
+N3  0.30  0.45  0.10
+N4  0.10  0.50  0.15
+N5  0.10  0.05  0.80
+N6  0.45  0.15  0.75
+N7  0.55  0.60  0.70
+N8  0.15  0.65  0.85
+FINSF
+%
+HEXA8
+M1    N1 N2 N3 N4 N5 N6 N7 N8
+FINSF
+%
+GROUP_MA
+CUBE
+M1
+FINSF
+%
+FIN

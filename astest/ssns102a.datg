@@ -1,0 +1,159 @@
+opti echo 1 opti dime 3 elem cub8 mode tridim ;                         
+titre 'Anneau raidi SHB8';                                              
+
+*                                                                       
+********** maillage                                                     
+*                                                                       
+*                                                                       
+*                                                                       
+*			    P3__ P2                                                         
+*			     |  |        Z3                                                 
+*			     |  |                                                           
+*			     |  |                                                           
+*                P7__P6      |  |        Z4                             
+*                 |  |	     |  |                                        
+*                 |  |P5   P4|  |                                       
+*                 |  |_______|  |                                       
+*                 |   EPAI_AME  |                                       
+*                 |   _______   |        Z2                             
+*                 |  |P10  11|  |                                       
+*                 |__|	     |  |                                        
+*               P8   P9      |  |        Z5                             
+*			     |  |                                                           
+*		EPAI_INT     |  |                                                    
+*			     |__|                                                           
+*			   P12  P1       Z1                                                 
+*                                                                       
+*                           EPAI_EXT                                    
+*                                                                       
+*                                                                       
+*                  R2         R1                                        
+*                                                                       
+nelem1 = 4;                                                             
+nelem2 = 6;                                                             
+nelem3 = 3;                                                             
+nelcir = 20;                                                            
+nelem4 =(nelem1 * 2) + 1;                                                
+nelem5 =(nelem3 * 2) + 1;                                                
+                                                                        
+R1 = 2.488 ;                                                               
+R2 = 2.308 ;                                                                
+Z1 = 0.    ;                                                            
+Z2 = 0.3   ;                                                             
+Z3 = 0.6   ;                                                             
+Z4 = 0.36  ;                                                              
+Z5 = 0.24  ;                                                              
+                                                                        
+EPAI_EXT = 0.024;                                                           
+EPAI_AME = 0.01;                                                           
+EPAI_INT = 0.024;                                                           
+                                                                        
+R1_PLUS  = R1+(EPAI_EXT/2) ;                                            
+R1_MOINS = R1-(EPAI_EXT/2) ;                                            
+                                                                        
+R2_PLUS  = R2+(EPAI_INT/2) ;                                            
+R2_MOINS  = R2-(EPAI_INT/2) ;                                           
+                                                                        
+Z2_PLUS  = Z2+(EPAI_AME/2) ;                                            
+Z2_MOINS  = Z2-(EPAI_AME/2) ;                                                                       
+
+R1_PLUS  = R1+(EPAI_EXT/2) ;                                            
+R1_MOINS = R1-(EPAI_EXT/2) ;                                            
+                                                                        
+R2_PLUS  = R2+(EPAI_INT/2) ;                                            
+R2_MOINS  = R2-(EPAI_INT/2) ;                                           
+                                                                        
+Z2_PLUS  = Z2+(EPAI_AME/2) ;                                            
+Z2_MOINS  = Z2-(EPAI_AME/2);
+                                           
+P1    = R1_PLUS 0.              Z1              ;                       
+P190  = 0.              R1_PLUS Z1              ;                       
+P2    = R1_PLUS 0.              Z3              ;                       
+P290  = 0.              R1_PLUS Z3              ;                       
+P3    = R1_MOINS 0.              Z3              ;                      
+P390  = 0.              R1_MOINS Z3              ;                      
+P4    = R1_MOINS 0.              Z2_PLUS ;                              
+P490  = 0.              R1_MOINS Z2_PLUS ;                              
+P5    = R2_PLUS 0.              Z2_PLUS ;                               
+P590  = 0.              R2_PLUS Z2_PLUS ;                               
+P6    = R2_PLUS 0.              Z4              ;                       
+p690  = 0.              R2_PLUS Z4              ;                       
+P7    = R2_MOINS 0.              Z4              ;                      
+p790  = 0.              R2_MOINS Z4              ;                      
+P8    = R2_MOINS 0.              Z5              ;                      
+p890  = 0.              R2_MOINS Z5              ;                      
+P9    = R2_PLUS 0.              Z5              ;                       
+p990  = 0.              R2_PLUS Z5              ;                       
+P10   = R2_PLUS 0.              Z2_MOINS ;                              
+P1090 = 0.              R2_PLUS Z2_MOINS ;                              
+P11   = R1_MOINS 0.              Z2_MOINS ;                             
+P1190 = 0.              R1_MOINS Z2_MOINS ;                             
+P12   = R1_MOINS 0.              Z1              ;                      
+P1290 = 0.              R1_MOINS Z1              ;                      
+                                                                        
+c1 = 0. 0. 0.;                                                          
+c2 = 0. 0. 1.;
+
+l1_2   = droi nelem4 p1  p2;                                            
+l2_3   = droi 1      p2  p3;                                            
+l3_4   = droi nelem1 p3  p4;                                            
+l4_5   = droi nelem2 p4  p5;                                            
+l5_6   = droi nelem3 p5  p6;                                            
+l6_7   = droi 1      p6  p7;                                            
+l7_8   = droi nelem5 p7  p8;                                            
+l8_9   = droi 1      p8  p9;                                            
+l9_10  = droi nelem3 p9  p10;                                           
+l10_11 = droi nelem2 p10 p11;                                           
+l11_12 = droi nelem1 p11 p12;                                           
+l12_1  = droi 1      p12 p1;
+
+l3_12 = p3 d nelem1 p4 d 1 p11 d nelem1 p12;
+l2_1  = l3_12 plus (EPAI_EXT 0. 0.);
+suextext  = l2_1  rota nelcir 90 c1 c2;
+suextint  = l3_12 rota nelcir 90 c1 c2;
+geoext     = VOLUME suextint suextext;
+rect1  = regl 1 l2_1 l3_12; 
+
+l5_4   = droi nelem2 p5  p4;                                            
+suameext = l5_4 rota nelcir 90 c1 c2;
+suameint = l10_11 rota nelcir 90 c1 c2;
+geoame = VOLUME  suameint suameext;
+
+l4_11  = droi 1 p4 p11;
+LONG_AME = R1-R2-(EPAI_EXT/2)-(EPAI_INT/2);
+l5_10  = l4_11 plus ((-1.)*LONG_AME 0. 0.);
+rect2  = regl nelem2 l4_11 l5_10;
+
+l6_9 = p6 d nelem3 p5 d 1 p10 d nelem3 p9;
+l7_8_bis = l6_9 plus ((-1)*EPAI_INT 0. 0.);
+suintext = l6_9 rota nelcir 90 c1 c2;
+suintint = l7_8_bis rota nelcir 90 c1 c2;
+geoint = VOLUME suintint suintext;
+rect3    = regl 1 l6_9 l7_8_bis;
+
+
+                                            
+
+su0   = rect1 et rect2 et rect3;
+su90  = su0 tourne 90 c1 c2;
+susup = l2_3 rota nelcir 90 c1 c2;
+suinf = l12_1 rota nelcir 90 c1 c2;
+
+
+geoshb8 = geoame et geoext et geoint;
+geotot = su0 et su90 et susup et suinf et geoshb8 et suextext;
+
+elim 0.001 geotot;
+
+
+OPTI SAUV FORM 'ssns102a.mgib' ;
+SAUV FORM geotot   ;
+
+trac cache geotot;
+
+list (nbno geotot);
+list (nbel geotot);
+
+opti donn 5 ;
+
+fin;

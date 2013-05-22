@@ -1,0 +1,127 @@
+*****************************************************
+* CASTEM-GIBI commands of a 
+* rectangular block rocking Aster test SDNV105
+*****************************************************
+*
+****DEBPROC mesh ;
+OPTI dime 3 elem qua4;
+* geometrical parameters
+bb = 0.18 ;
+l  = 0.80 ;
+lb =-0.08 ;
+d  = 0.00 ;
+e  = 0.02 ;
+* points
+O   = 0.       d  0.;
+O10 = (bb-e)   0. 0.;
+O1  = bb       0. 0.;
+O11 = (bb+e)   0. 0.;
+A   = (2*bb)   d  0.;
+C   = 0.       l  0.;
+C10 = (bb-e)   l  0.;
+C1  = bb       l  0.;
+C11 = (bb+e)   l  0.;
+B   = (2*bb)   l  0.;
+* * * * * * * * * * *
+S00 = (-1.)*bb 0.           0.;
+S0  = 0.       0.           0.;
+S1  = bb       0.           0.;
+S2  = (2*bb)   0.           0.;
+S3  = (3*bb)   0.           0.;
+P00 = (-1.)*bb lb           0.;
+P0  = 0.       lb           0.;
+P1  = bb       lb           0.;
+P2  = (2*bb)   lb           0.;
+P3  = (3*bb)   lb           0.;
+* segments * * * * * * *
+OO10  = DROI 1 O   O10 ;
+O10C10= DROI 2 O10 C10 ;
+O10O1 = DROI 1 O10 O1  ;
+O1O11 = DROI 1 O1  O11 ;
+O11A  = DROI 1 O11 A   ;
+AB    = DROI 2 A   B   ;
+BC11  = DROI 1 B   C11 ;
+C11C1 = DROI 1 C11 C1  ;
+C1C10 = DROI 1 C1  C10 ;
+C10C  = DROI 1 C10 C   ;
+CO    = DROI 2 C   O   ;
+C1O1  = DROI 2 C1  O1  ;
+O1C1  = DROI 2 O1  C1  ;
+C10O10= DROI 2 C10 O10 ;
+O11C11= DROI 2 O11 C11 ;
+C11O11= DROI 2 C11 O11 ;
+* * * * * * * * * * * * 
+S0S00 = DROI 1 S0  S00 ;
+S00P00= DROI 1 S00 P00 ;
+P00P0 = DROI 1 P00 P0  ;
+P0P1  = DROI 1 P0  P1  ;
+P1P2  = DROI 1 P1  P2  ;
+P2P3  = DROI 1 P2  P3  ;
+P3S3  = DROI 1 P3  S3  ;
+S3S2  = DROI 1 S3  S2  ;
+S2S1  = DROI 1 S2  S1  ;
+S1S0  = DROI 1 S1  S0  ;
+* edges * * * * * * *
+CONHAUT  = OO10 ET O10O1 ET O1O11 ET O11A  ;
+CTBLO    = AB ET BC11 ET C11C1 ET C1C10 ET C10C ET CO ET CONHAUT ;
+CTBLO    = CTBLO COUL vert ;
+CONBAS   = S3S2  ET S2S1  ET S1S0 ET S0S00 ;
+CONBAS   = CONBAS COUL bleu  ;
+C1O1     = C1O1   COUL rouge ; 
+CTGROUND = P00P0 ET P0P1   ET P1P2  ET P2P3 ;
+*CTTAB    = S0S00 ET S00P00 ET P3S3   ET S3S2  ET S2S1  ET S1S0 
+*                 ET CTGROUND;
+CTTAB    = CONBAS ET S00P00 ET P3S3 ET CTGROUND;
+
+CTGROUND = CTGROUND COUL jaune ;
+* surfaces * * * * * * * * * * * * * * * * * 
+BLOGG  = DALL OO10   O10C10  C10C   CO     PLAN ;
+BLOG0  = DALL O10O1  O1C1    C1C10  C10O10 PLAN ;
+BLOD0  = DALL O1O11  O11C11  C11C1  C1O1   PLAN ;
+BLODD  = DALL O11A   AB      BC11   C11O11 PLAN ;
+* BLOCK  = CTBLO ET C1O1 ET BLOGG ET BLOG0 ET BLOD0 ET BLODD ET CONHAUT ;
+BLOCK  = CTBLO ET C1O1 ET BLOGG ET BLOG0 ET BLOD0 ET BLODD ;
+TAVIB  = SURF CTTAB PLAN ;
+*GROUN  = TAVIB ET CTTAB ET CONBAS  ;
+GROUN  = TAVIB ET CTTAB ;
+* * * * * * * * * * 
+ELIM 1.E-04 BLOCK ;
+ELIM 1.E-04 GROUN ;
+OUBL TAVIB ;
+OUBL CTTAB ;
+OUBL OO10 ;
+OUBL O10O1 ;
+OUBL O1O11 ;
+OUBL O11A ;
+OUBL O1C1 ;
+OUBL O11C11 ;
+OUBL C10O10 ;
+OUBL C11O11 ;
+OUBL S3S2  ;
+OUBL S2S1  ;
+OUBL S1S0 ;
+OUBL S0S00 ;
+*OUBL P00P0 ;
+*OUBL P0P1   ;
+*OUBL P1P2  ;
+*OUBL P2P3 ;
+DETR P00P0;
+DETR P0P1   ;
+DETR P1P2  ;
+DETR P2P3 ;
+*
+MGIB =  BLOCK ET GROUN ;
+****FINPROC BLOCK GROUN ;
+*
+***toto1 toto2 = mesh ;
+TRAC BLOCK;
+TRAC GROUN;
+TRAC MGIB ;
+LIST;
+
+* * * * * * * * * * * * 
+OPTI SAUV form '~/sdnv105anew.mgib' ;
+SORT MGIB ;
+SAUV form MGIB ;
+FIN;
+*

@@ -1,0 +1,233 @@
+# -*- coding: iso-8859-1 -*-
+
+import os
+import sys
+import salome
+Rep_mail = os.environ['HOME']
+
+verbose = 0
+
+###
+### This file is generated automatically by SALOME v6.3.0 with dump python functionality
+###
+
+import sys
+import salome
+
+salome.salome_init()
+theStudy = salome.myStudy
+
+import salome_notebook
+notebook = salome_notebook.notebook
+
+import iparameters
+ipar = iparameters.IParameters(salome.myStudy.GetCommonParameters("Interface Applicative", 1))
+
+
+###
+### GEOM component
+###
+
+import GEOM
+import geompy
+import math
+import SALOMEDS
+
+geompy.init_geom(theStudy)
+#
+# 1. Le repere
+#
+O = geompy.MakeVertex(0, 0, 0)
+OX = geompy.MakeVectorDXDYDZ(1, 0, 0)
+OY = geompy.MakeVectorDXDYDZ(0, 1, 0)
+OZ = geompy.MakeVectorDXDYDZ(0, 0, 1)
+#
+# 2. Les valeurs numeriques : rayon et hauteur des cylindres
+#
+ro = 4.
+ra = 5.
+rb = ro*math.sqrt(2.) + ra*(math.sqrt(2.)-1.)
+hauteur = 15.
+#
+# 3. Les centres des cylindres
+#
+Sommet_1 = geompy.MakeVertex(0, ro+ra, 0)
+Sommet_2 = geompy.MakeVertex(0, -(ro+ra), 0)
+Sommet_3 = geompy.MakeVertex(ro+ra, 0, 0)
+#
+# 4. Les cylindres
+#
+Cylindre_o = geompy.MakeCylinder(O, OZ, ro, hauteur)
+Cylindre_1 = geompy.MakeCylinder(Sommet_1, OZ, ra, hauteur)
+Cylindre_2 = geompy.MakeCylinder(Sommet_2, OZ, ra, hauteur)
+Cylindre_3 = geompy.MakeCylinder(Sommet_3, OZ, rb, hauteur)
+#
+# 5. La partie concave : une boite dans laquelle on decoupe par les 2 cylindres
+#
+Boite_1 = geompy.MakeBoxDXDYDZ(ra*math.sqrt(2.)/2., 2.*(ro+ra), hauteur)
+geompy.TranslateVectorDistance(Boite_1, OY, -(ro+ra), False)
+#
+Decoupe_1 = geompy.MakeCut(Boite_1, Cylindre_1)
+Decoupe_2 = geompy.MakeCut(Decoupe_1, Cylindre_2)
+#
+# 6. Le bloc final : la partie concave et les 2 cylindres externes
+#
+Union_1 = geompy.MakeFuse(Decoupe_2, Cylindre_o)
+#
+BLOC_GEO = geompy.MakeFuse(Union_1, Cylindre_3)
+#
+# 7. Les groupes
+# 7.1. Volume
+#
+listSubShapeIDs = geompy.SubShapeAllIDs(BLOC_GEO, geompy.ShapeType["SOLID"])
+BLOC_G = geompy.CreateGroup(BLOC_GEO, geompy.ShapeType["SOLID"])
+geompy.UnionIDs(BLOC_G, [1])
+#
+# 7.2. Surfaces
+# 7.2.1. La face superieure : Z maxi, Axe_y en Y
+#
+point_a = geompy.MakeVertex ( 0., 0., hauteur )
+l_id_Z_MAX = geompy.GetShapesOnPlaneWithLocationIDs ( BLOC_GEO, geompy.ShapeType["FACE"], OZ, point_a, geompy.GEOM.ST_ON )
+if ( verbose ) :
+  print "3.2.2. l_id_Z_MAX =", l_id_Z_MAX
+Z_MAX_G = geompy.CreateGroup ( BLOC_GEO, geompy.ShapeType["FACE"] )
+geompy.UnionIDs ( Z_MAX_G, l_id_Z_MAX )
+#
+# 7.2.2. La face inferieure : Z mini, Axe_y en Y
+#
+l_id_Z_MIN = geompy.GetShapesOnPlaneWithLocationIDs ( BLOC_GEO, geompy.ShapeType["FACE"], OZ, O, geompy.GEOM.ST_ON )
+if ( verbose ) :
+  print "3.2.2. l_id_Z_MIN =", l_id_Z_MIN
+Z_MIN_G = geompy.CreateGroup ( BLOC_GEO, geompy.ShapeType["FACE"] )
+geompy.UnionIDs ( Z_MIN_G, l_id_Z_MIN )
+#
+# 7.2.3. Le bord lateral
+#
+l_aux = geompy.GetShapesOnCylinderWithLocationIDs ( BLOC_GEO, geompy.ShapeType["FACE"], OZ, O, ro, geompy.GEOM.ST_ON )
+if ( verbose ) :
+  print "==> l_aux =", l_aux
+COTE_0_G = geompy.CreateGroup ( BLOC_GEO, geompy.ShapeType["FACE"] )
+geompy.UnionIDs ( COTE_0_G, l_aux )
+#
+l_aux = geompy.GetShapesOnCylinderWithLocationIDs ( BLOC_GEO, geompy.ShapeType["FACE"], OZ, Sommet_1, ra, geompy.GEOM.ST_ON )
+if ( verbose ) :
+  print "==> l_aux =", l_aux
+COTE_1_G = geompy.CreateGroup ( BLOC_GEO, geompy.ShapeType["FACE"] )
+geompy.UnionIDs ( COTE_1_G, l_aux )
+#
+l_aux = geompy.GetShapesOnCylinderWithLocationIDs ( BLOC_GEO, geompy.ShapeType["FACE"], OZ, Sommet_2, ra, geompy.GEOM.ST_ON )
+if ( verbose ) :
+  print "==> l_aux =", l_aux
+COTE_2_G = geompy.CreateGroup ( BLOC_GEO, geompy.ShapeType["FACE"] )
+geompy.UnionIDs ( COTE_2_G, l_aux )
+#
+l_aux = geompy.GetShapesOnCylinderWithLocationIDs ( BLOC_GEO, geompy.ShapeType["FACE"], OZ, Sommet_3, rb, geompy.GEOM.ST_ON )
+if ( verbose ) :
+  print "==> l_aux =", l_aux
+COTE_3_G = geompy.CreateGroup ( BLOC_GEO, geompy.ShapeType["FACE"] )
+geompy.UnionIDs ( COTE_3_G, l_aux )
+#
+# 7.3. Point pour le futur test du deplacement
+#
+DX = 0.
+DY = ro
+DZ = hauteur
+Epsilon =  0.01*hauteur
+A = geompy.GetPoint(BLOC_GEO, DX, DY, DZ, Epsilon)
+l_aux = [A]
+if ( verbose ) :
+  print "==> l_aux =", l_aux
+A_G = geompy.CreateGroup(BLOC_GEO, geompy.ShapeType["VERTEX"])
+geompy.UnionList ( A_G, l_aux )
+#
+# 8. Affichage
+#
+geompy.addToStudy( O, 'O' )
+geompy.addToStudy( OX, 'OX' )
+geompy.addToStudy( OY, 'OY' )
+geompy.addToStudy( OZ, 'OZ' )
+geompy.addToStudy( Sommet_1, 'Sommet_1' )
+geompy.addToStudy( Sommet_2, 'Sommet_2' )
+geompy.addToStudy( Sommet_3, 'Sommet_3' )
+geompy.addToStudy( A, 'Sommet_A' )
+geompy.addToStudy( Cylindre_o, 'Cylindre_o' )
+geompy.addToStudy( Cylindre_1, 'Cylindre_1' )
+geompy.addToStudy( Cylindre_2, 'Cylindre_2' )
+geompy.addToStudy( Cylindre_3, 'Cylindre_3' )
+geompy.addToStudy( Boite_1, 'Boite_1' )
+geompy.addToStudy( Decoupe_1, 'Decoupe_1' )
+geompy.addToStudy( Decoupe_2, 'Decoupe_2' )
+geompy.addToStudy( Union_1, 'Union_1' )
+geompy.addToStudy( BLOC_GEO, 'BLOC' )
+geompy.addToStudyInFather( BLOC_GEO, BLOC_G, 'BLOC' )
+geompy.addToStudyInFather( BLOC_GEO, Z_MAX_G, 'Z_MAX' )
+geompy.addToStudyInFather( BLOC_GEO, Z_MIN_G, 'Z_MIN' )
+geompy.addToStudyInFather( BLOC_GEO, COTE_0_G, 'COTE_0' )
+geompy.addToStudyInFather( BLOC_GEO, COTE_1_G, 'COTE_1' )
+geompy.addToStudyInFather( BLOC_GEO, COTE_2_G, 'COTE_2' )
+geompy.addToStudyInFather( BLOC_GEO, COTE_3_G, 'COTE_3' )
+geompy.addToStudyInFather( BLOC_GEO, A_G, 'A' )
+
+###
+### SMESH component
+###
+
+import smesh, SMESH, SALOMEDS
+
+aMeasurements = smesh.CreateMeasurements()
+smesh.SetCurrentStudy(theStudy)
+import BLSURFPlugin
+import GHS3DPlugin
+#
+BLOC = smesh.Mesh(BLOC_GEO)
+#
+# 1. Parametrage du maillage des surfaces
+#
+BLSURF = BLOC.Triangle(algo=smesh.BLSURF)
+BLSURF_Parameters_1 = BLSURF.Parameters()
+BLSURF_Parameters_1.SetDecimesh( 1 )
+BLSURF_Parameters_1.SetPhySize( (ro+ra)/2. )
+#
+# 2. Parametrage du maillage du volume
+#
+GHS3D_3D = BLOC.Tetrahedron(algo=smesh.GHS3D)
+GHS3D_Parameters_1 = GHS3D_3D.Parameters()
+GHS3D_Parameters_1.SetOptimizationLevel( 3 )
+#
+# 3. Maillage avec passage au quadratique
+#
+isDone = BLOC.Compute()
+#
+BLOC.ConvertToQuadratic( 1 )
+#
+# 4. Les groupes
+#
+BLOC_1 = BLOC.GroupOnGeom(BLOC_G,'BLOC',SMESH.VOLUME)
+Z_MAX_1 = BLOC.GroupOnGeom(Z_MAX_G,'Z_MAX',SMESH.FACE)
+Z_MIN_1 = BLOC.GroupOnGeom(Z_MIN_G,'Z_MIN',SMESH.FACE)
+COTE_0_1 = BLOC.GroupOnGeom(COTE_0_G,'COTE_0',SMESH.FACE)
+COTE_1_1 = BLOC.GroupOnGeom(COTE_1_G,'COTE_1',SMESH.FACE)
+COTE_2_1 = BLOC.GroupOnGeom(COTE_2_G,'COTE_2',SMESH.FACE)
+COTE_3_1 = BLOC.GroupOnGeom(COTE_3_G,'COTE_3',SMESH.FACE)
+A_1 = BLOC.GroupOnGeom(A_G,'A',SMESH.NODE)
+#
+# 5. Ecriture
+#
+smesh.SetName(BLOC, 'BLOC')
+BLOC.ExportMED( os.path.join(Rep_mail,'maill.00.med'), 0, SMESH.MED_V2_2, 1 )
+
+
+# set object names
+smesh.SetName(BLOC.GetMesh(), 'BLOC')
+smesh.SetName(BLSURF.GetAlgorithm(), 'BLSURF')
+smesh.SetName(BLSURF_Parameters_1, 'BLSURF Parameters_1')
+smesh.SetName(GHS3D_3D.GetAlgorithm(), 'GHS3D_3D')
+smesh.SetName(GHS3D_Parameters_1, 'GHS3D Parameters_1')
+smesh.SetName(BLOC_1, 'BLOC')
+smesh.SetName(Z_MAX_1, 'Z_MAX')
+smesh.SetName(Z_MIN_1, 'Z_MIN')
+smesh.SetName(COTE_0_1, 'COTE_0')
+smesh.SetName(COTE_1_1, 'COTE_1')
+smesh.SetName(COTE_2_1, 'COTE_2')
+smesh.SetName(COTE_3_1, 'COTE_3')
+smesh.SetName(A_1, 'A')

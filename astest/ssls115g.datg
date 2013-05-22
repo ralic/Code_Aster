@@ -1,0 +1,79 @@
+OPTI SAUV FORM 'ssls115g.mgib' ;
+OPTI NIVEAU 8 ;
+OPTI DIME 3 ELEM TRI3 ;
+
+A= 0. 0. 0.;
+B0= 0.5 0. 0.;
+C0= 0.5 0.5 0.;
+D0= 0. 0.5 0.;
+E = 0. 0. 0.5;
+*
+PAS = 0.5/6 ;
+BP0 = PAS 0. 0.;
+CP0 = PAS PAS 0.;
+DP0 = 0. PAS 0.;
+*
+BB = B0 TOUR 20. A E;
+CC = C0 TOUR 20. A E;
+DD = D0 TOUR 20. A E;
+*
+B = BB TOUR 30. A DD;
+C = CC TOUR 30. A DD;
+D = DD TOUR 30. A DD;
+*
+BP1 = BP0 TOUR 20. A E;
+CP1 = CP0 TOUR 20. A E;
+DP1 = DP0 TOUR 20. A E; 
+*
+BP = BP1 TOUR 30. A DD;
+CP = CP1 TOUR 30. A DD;
+DP = DP1 TOUR 30. A DD;
+*
+TRI1 = MANU TRI3 A BP DP ;
+TRI2 = MANU TRI3 BP CP DP;
+*
+alpha=20.;
+beta =30.;
+x=pas*(cos(alpha))*(cos(beta));
+y=pas*(cos(beta))*(sin(alpha));
+z=(-1)*pas*(sin(beta));
+*
+CELL = TRI1 et TRI2;
+CELL1 = CELL PLUS (x y z);
+CELL2 = CELL1 PLUS (x y z);
+CELL3 = CELL2 PLUS (x y z);
+CELL4 = CELL3 PLUS (x y z);
+CELL5 = CELL4 PLUS (x y z);
+
+TOT0 = CELL et CELL1 et CELL2 et CELL3 
+et CELL4 et cell5;
+*
+elim 0.0001 tot0;
+*
+x1=(-1)*pas*(sin(alpha));
+y1=pas*(cos(alpha));
+z1=0.;
+*
+TOT1 = TOT0 PLUS (x1 y1 z1);
+TOT2 = TOT1 PLUS (x1 y1 z1);
+TOT3 = TOT2 PLUS (x1 y1 z1);
+TOT4 = TOT3 PLUS (x1 y1 z1);
+TOT5 = TOT4 PLUS (x1 y1 z1);
+MAIL1 = TOT0 et TOT1 et TOT2 et TOT3 et TOT4 et TOT5;
+*
+elim 0.0001 MAIL1;
+*
+AB = DROI 6 A B ;
+BC = DROI 6 B C ;
+CD = DROI 6 C D ;
+DC = INVE CD;
+DA = DROI 6 D A ;
+AD = INVE DA ;
+
+MAIL = MAIL1 et AB et BC et CD et DA ;
+
+elim 0.0001 MAIL;
+
+TRAC (1000. 1000. 1000.) MAIL;
+SAUV 'FORMATTE' MAIL;
+FIN;

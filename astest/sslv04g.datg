@@ -1,0 +1,31 @@
+titre 'cylindre creux en contraintes planes' ;
+opti dime 2 elem QUA8 ;
+* ==>  a completer ...
+* opti sauv format  '...' ;
+*
+r_int = 0.1 ;
+r_ext = 0.2 ;
+A = r_int 0 ;
+B = r_ext 0 ;
+C = ( r_int * ( cos 22.5 ) ) ( r_int * ( sin 22.5 ) ) ;
+E = ( r_int * ( cos 45   ) ) ( r_int * ( sin 45   ) ) ;
+D = ( r_ext * ( cos 22.5 ) ) ( r_ext * ( sin 22.5 ) ) ;
+F = ( r_ext * ( cos 45   ) ) ( r_ext * ( sin 45   ) ) ;
+O = 0 0 ;
+*
+GRNM11 = droit 10 A B ;
+GRMA12 = droit 10 F E ;
+GRMA13 = cerc 5 E O C cerc 5 O A ;
+GRMA14 = cerc 5 B O D cerc 5 O F ;
+*
+trac ( GRNM11 et GRMA12 et GRMA13 et GRMA14 ) ; 
+*
+surf1 = daller  GRNM11 GRMA12 GRMA13 GRMA14 ;
+*
+trac surf1 ;
+*
+sauver format surf1 ;
+*
+opti donn 5 ;
+*
+fin ;

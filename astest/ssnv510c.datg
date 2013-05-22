@@ -1,0 +1,43 @@
+opti dime 3  elem cub8 ;
+
+*dens 10 ;
+
+*----------------------------------------
+*DONNEES
+*----------------------------------------
+* dimensions des cotEs
+LX = 2;
+LY = 4;
+LZ = 1;
+DZ = (0  0  LZ);
+
+* nombre d elements
+NX = 2;
+NY = 2;
+NZ = 1;
+
+
+*---------------------------------------------
+*construction du maillage
+*---------------------------------------------
+
+P1 = (0  0  0);
+P2 = (LX 0  0);
+P3 = (LX LY 0);
+P4 = (0. LY 0);
+
+SD = TRAN (DROI P3 P2 NY) NZ DZ;
+SG = TRAN (DROI P4 P1 NY) NZ DZ;
+
+VOLU=VOLU SD SG NX;
+
+ENV = ENVE VOLU;
+
+TRAC VOLU;
+
+MAILLE = VOLU;
+
+opti sauv format
+'/work/irlin831_1/siavelim/CAS/ssnv510/ssnv510c.mgib';
+sauv format maille ;
+fin ;

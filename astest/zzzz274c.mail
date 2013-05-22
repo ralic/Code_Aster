@@ -1,0 +1,30 @@
+COOR_3D
+%  NOEUD      X         Y          Z
+    P1       0.        0.        0.
+    P2       1.        0.        0.
+%
+FINSF
+%
+POI1
+   P1    P1
+   P2    P2
+FINSF
+SEG2
+   S12    P1  P2
+FINSF
+%
+GROUP_NO
+    P1       P1
+FINSF
+GROUP_NO
+    P2       P2
+FINSF
+%
+GROUP_MA
+    P1       P1
+FINSF
+GROUP_MA
+    S12       S12
+FINSF
+%
+FIN

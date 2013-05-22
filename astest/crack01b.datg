@@ -1,0 +1,52 @@
+# -*- coding: iso-8859-1 -*-
+
+import geompy
+import smesh
+
+#-----------------------------------------------------
+# geometrie
+#-----------------------------------------------------
+
+Wire_1 = geompy.MakeSketcher("Sketcher:F 0.000000 10.000000:TT 10.000000 10.000000:TT 10.000000 -10.000000:TT 0.000000 -10.000000:WW", [0, 0, 0, 0, 0, 1, 1, 0, -0])
+Face_1 = geompy.MakeFaceWires([Wire_1], 1)
+geompy.addToStudy(Face_1, 'CrackAnalysis2d')
+
+tmp = geompy.MakeVertex(   5,  10,   0);
+haut = geompy.GetEdgeNearPoint(Face_1,tmp)
+geompy.addToStudyInFather(Face_1,haut,'haut')
+
+tmp = geompy.MakeVertex(   5,  -10,   0);
+bas = geompy.GetEdgeNearPoint(Face_1,tmp)
+geompy.addToStudyInFather(Face_1,bas,'bas')
+
+tmp = geompy.MakeVertex(   0,  -10,   0);
+C = geompy.GetInPlace(Face_1,tmp)
+geompy.addToStudyInFather(Face_1,C,'C')
+
+FACE = geompy.GetInPlace(Face_1,Face_1)
+geompy.addToStudyInFather(Face_1,FACE,'FACE')
+
+#-----------------------------------------------------
+# maillage
+#-----------------------------------------------------
+
+Face_1 = smesh.Mesh(Face_1,'CrackAnalysis2d')
+
+import BLSURFPlugin
+
+BLSURF = Face_1.Triangle(algo=smesh.BLSURF)
+BLSURF_Parameters_1 = BLSURF.Parameters()
+BLSURF_Parameters_1.SetPhySize( 1 )
+
+# groupes
+haut = Face_1.GroupOnGeom(haut,'haut',SMESH.EDGE)
+bas  = Face_1.GroupOnGeom(bas,'bas',SMESH.EDGE)
+FACE = Face_1.GroupOnGeom(FACE,'FACE',SMESH.FACE)
+C    = Face_1.GroupOnGeom(C,'C',SMESH.NODE)
+
+#Mise à jour de l'arbre d'étude
+#==============================
+
+from salome import sg
+
+sg.updateObjBrowser(1)

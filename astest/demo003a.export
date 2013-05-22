@@ -6,6 +6,5 @@ P mpi_nbnoeud 1
 P testlist C
 
 F comm demo003a.comm D 1
-F mail demo003a.mail D 20
 F datg demo003a.datg D 16
 F msh demo003a.msh D 19

@@ -1,0 +1,37 @@
+opti dime 2  elem qua4 ;
+
+dens 10 ;
+
+*----------------------------------------
+*DONNEES
+*----------------------------------------
+
+* nombre d elements
+N = 5;
+
+
+*---------------------------------------------
+*construction du maillage
+*---------------------------------------------
+
+p1 = -5 -5;
+p2 =  5 -5;
+p3 =  5  5;
+p4 = -5  5;
+
+LB = droit p1 p2 N;
+LD = droit p2 p3 N;
+LH = droit p3 p4 N;
+LG = droit p4 p1 N;
+
+
+SURF = DALL LB LD LH LG PLAN;
+
+trac surf;          
+
+MAILLE = surf;
+
+opti sauv format
+'/work/irlin831_1/siavelim/CAS/Tests/ssnv511a.mgib';
+sauv format maille ;
+fin ;

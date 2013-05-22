@@ -1,0 +1,19 @@
+ COOR_3D
+ N1 0.0 0.0 0.0
+ FINSF
+ %
+ POI1
+ M1 N1
+ FINSF
+ %
+ GROUP_NO
+ N_PATIN
+ N1
+ FINSF
+ %
+ GROUP_MA
+ M_PATIN
+ M1
+ FINSF
+ %
+ FIN

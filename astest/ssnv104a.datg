@@ -1,0 +1,103 @@
+*
+*Maillage Modelisation I ('3D'):
+*Contact de deux spheres
+*Elements solide (penta6)
+*
+*
+opti dime 3;
+opti nive 10;
+opti elem TRI3;
+*
+*constantes
+*
+*
+* coordonn‰es des points
+*
+C  =  0.        0.        0.             ;
+D  = 50.        0.        0.             ; 
+E  =  0.       25.        0.             ;
+F  = 25.       25.        0.             ;
+G1 =  0.       50.        0.             ;
+H1 =  4.0329   49.83709   0.             ;
+I1 =  7.91013  49.37034   0.             ;
+J  = 35.35534  35.35534   0.             ;
+K  = 50.       50.     -100.             ;
+L  = 50.       50.      100.             ; 
+*
+* creation de la  sphere inferieure
+*
+lCD = droit 8 C D  ;
+lDJ = cercl 7 D C J;
+lJF = droit 7 J F  ;
+lFE = droit 12 F E ;
+lEC = E droit  'DINI' 3. 'DFIN' 8. C ;
+lEF = droit 12 E F ;
+lFJ = droit 7 F J ;
+lJI1 = cercl  'DINI' 8. 'DFIN' 3. J C I1 ;
+lI1H1= cercl 2 I1 C H1 ;
+lH1G1= cercl 4 H1 C G1 ;
+lG1E = G1 droit  'DINI' 1. 'DFIN' 8. E ;
+
+*
+lcont = lCD et lDJ et lJF et lFE 
+        et lEC ;
+S1 = SURFACE lcont plane ;
+*
+trace s1;
+lJG1 = lJI1 et lI1H1 et lH1G1;
+S2 = daller lEF lFJ lJG1 lG1E plan;
+*
+trace s2;
+S3 = S1 ET S2;
+ELIM 0.001 S3 ;
+*
+trace s3;
+
+opti elem QUA4;
+LIG1 = lDJ ET lJI1 ET lI1H1 ET lH1G1;
+SESC =  liG1 ROTA 8  -90 C E ;
+ELIM 0.01 SESC ;
+SESC = REGENERER SESC ;
+*
+opti elem PRI6;
+sphinf = volu s3 8 rota -90 C G1 ;
+*
+elim 0.01 sphinf;
+sphinf = REGENERER SPHINF;
+ELIM 0.01 SPHINF SESC ;
+trac CACH sesc;
+TRAC CACH SPHINF ;
+*
+* creation de la sphere superieure
+*
+sphsup = sphinf SYMETRIE 'PLAN' G1 K L ;
+SMAI = SESC SYMETRIE 'PLAN' G1 K L ;
+TRAC (smai);
+elim 0.01 sphsup smai;
+*
+oublier S1 ;
+oublier S2 ;
+oublier S3 ;
+oublier K ;
+oublier L ;
+oublier C ;
+oublier sphinf1 ;
+oublier lCD  ;
+oublier lDJ   ;
+oublier lJF   ;
+oublier lFE  ;
+oublier lEC ;
+oublier lEF  ;
+oublier lFJ   ;
+oublier lJI1  ;
+oublier lI1H1 ;
+oublier lH1G1 ;
+oublier lG1E ;
+oublier lcont ;
+oublier lJG1  ;
+oublier LIG1 ;
+trac (smai);
+trac (sphsup);
+OPTI SAUV FORM 'ssnv104k.mgib';
+sauv form (sphsup) ;
+          

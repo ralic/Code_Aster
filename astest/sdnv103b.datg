@@ -1,0 +1,51 @@
+opti dime 2 elem QUA8 SAUV FORM 'sdnv103b.mgib' ;                          
+
+*opti donn 5;
+* -- valeur du jeu init
+jeu = 2.27000;
+
+* -- Nombres d'elements
+n1 = 5;
+n2 = 20;
+
+* -- Points du socle rigide
+opti elem QUA8;
+
+a = 0. 0. ;
+b = 20.  0. ;
+
+rigid = droit a b 1;
+vol_rig = tran rigid 1 (0. -1. );
+elim vol_rig 1.e-6;
+
+
+* -- Points du cylindre
+opti elem QUA8;
+
+a1 = 0.   (0.  + jeu);
+b1 = 3.2  (0.  + jeu);
+a2 = 0.   (32.4+ jeu);
+b2 = 3.2  (32.4+ jeu);
+
+d1 = droit n1 a1 b1;
+d2 = droit n2 b1 b2;
+d3 = droit n1 b2 a2;
+d4 = droit n2 a2 a1;
+
+vol = dall d1 d2 d3 d4 'PLAN';
+elim 1.e-6 vol;
+
+szz = cote 1 vol;
+axe = cote 4 vol;
+
+trac (vol et vol_rig 
+          et (rigid coul rose) 
+          et (szz coul vert)
+          et (axe coul jaune));
+
+ma = vol et vol_rig et szz;
+
+sauv format ma;
+
+list (nbno ma);
+list (nbel ma);

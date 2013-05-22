@@ -1,0 +1,32 @@
+opti dime 3 elem cub8 ;
+*opti dime 3 elem tet4 ;
+
+*  Pour  mailler un cube (bloc)  en 2 sous-domaines (bloc_b et bloc_h)
+*  et avec ses 2 faces  : cote_b et cote_h
+*  3 points sont nommés : A (0,0,0), B(0,0,1) et D(0,0,1)
+*  1 point (PAPPUI) est placé au milieu de la face cote_h
+* ------------------------------------------------------------
+
+
+a  = 0.   0.  0.;
+b  = 1.   0.  0.;
+pappui= 0.5  0.5  1.;
+n1 = 30;
+n2 = 2*n1;
+
+ab = droi n2 a b ;
+cote_b= ab tran n2 (0. 1. 0.);
+bloc_b= cote_b VOLU n1 TRAN (0. 0. 0.5);
+xx= face 2 bloc_b;
+bloc_h= xx     VOLU n1 TRAN (0. 0. 0.5) ;
+
+bloc=bloc_b et bloc_h et pappui;
+cote_h= face 2 bloc_h;
+d=bloc POIN PROC (0. 0. 1.);
+
+*trac bloc;
+
+opti sauv form 'cube.mgib' ;
+sort bloc;
+sauv form bloc ;
+fin;

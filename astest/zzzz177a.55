@@ -1,0 +1,10 @@
+Tableau produit dans OpenOffice;;
+enregistre au format csv avec le point-virgule comme separateur;;
+et sans separateur de texte;;
+;;
+Colonne A;Colonne B;Colonne C
+label1;111;0,09
+nom 2;222;10,09
+valeur3;444;2240,18
+exemple4;888;994640,73
+ligne5;1776;883240965,82

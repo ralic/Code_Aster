@@ -1,0 +1,52 @@
+* ------------------------------------
+*       PARAMETRES DE LA PIECE
+* ------------------------------------
+
+OPTION DIME 2 ELEM QUA4 ;
+
+*==============
+DEBPROC GRAVI ;
+*==============
+
+A1 =  -1.00    -1.0     ;
+A2 =   1.00    -1.0     ;
+A3 =   1.00     1.0     ;
+A4 =  -1.00     1.0     ;
+A5 =   0.      -1.0     ;
+A6 =   0.       1.0     ; 
+*MAILLAGE
+
+BAS    = DROITE   1  A1  A5 ;
+EXTREM = DROITE   1  A5  A6 ;
+HAUT   = DROITE   1  A6  A4 ;
+CAVITE = DROITE   1  A4  A1 ;
+
+ROCHE  = DALL BAS EXTREM HAUT CAVITE 'PLAN' ;
+
+ROCHE = ROCHE ET (MANU TRI3 A5 A2 A6 ) et ( MANU TRI3 A6 A2 A3 );
+
+chpo = (CONT ROCHE ) POINT DROI A4 A6 1.e-7 ;
+HAUT = (CONT ROCHE ) ELEM APPUYE STRICT chpo ;
+
+chpo = (CONT ROCHE ) POINT DROI A1 A5 1.e-7 ;
+BAS = (CONT ROCHE ) ELEM APPUYE STRICT chpo ;
+
+chpo = (CONT ROCHE ) POINT DROI A2 A3 1.e-7 ;
+EXTREM = (CONT ROCHE ) ELEM APPUYE STRICT chpo ;
+*=============================================================
+FINPROC ROCHE CAVITE BAS EXTREM HAUT A1 A2 A3 A4 A5 A6;
+
+ROCHE CAVITE BAS EXTREM HAUT A1 A2 A3 A4 A5 A6 = GRAVI ;
+*=============================================================
+
+* ------------------
+*     SAUVEGARDE
+* ------------------
+
+OPTION SAUV FORMAT
+ '/home04/cibhhpd/EL2004_102/test/carre/carre.mgib';
+SAUV FORMAT ;
+
+FIN ;
+
+

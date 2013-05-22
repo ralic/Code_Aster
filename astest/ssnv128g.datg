@@ -1,0 +1,93 @@
+********************************************************
+*                  --- SSNV128G ---
+* MAILLAGE 3D D'UNE PLAQUE EN CONTACT AVEC UN BATI 2D
+* ELEM CU20 + CHAN QUAF = HEXA27 POUR ASTER (QUADRATIQUE)
+********************************************************
+*
+opti dime 3 elem cu20 echo 0 ;
+opti niveau 8 ;
+*
+* dimensions du bati et de la plaque
+* -----------------------------------
+COTE = 0.04;
+EPAI = 0.001;
+EPSI = 0.000001;
+*
+XA = 0.;
+XC = 0.005;
+*
+* discretisation
+* ---------------
+N1 = 8;
+N2 = 3;
+*
+* points, lignes et surface de construction du bati
+* --------------------------------------------------
+PBA = XA   0. 0.;
+PBS = COTE 0. 0.;
+*
+* cas d'un bati modelise par une surface
+* - - - - - - - - - - - - - - - - - - - -
+LBATI = PBA d N1 PBS;
+SBATI = LBATI TRAN 1 (0. 0. EPAI);
+SBATI = orie SBATI (0. 1. 0.);
+*
+* points, lignes, surfaces et volumes de construction de la plaque
+* -----------------------------------------------------------------
+PPA = XA   0. 0.;
+PPC = XC   0. 0.;
+PPS = COTE 0. 0.;
+PPSZ= COTE 0. EPAI;
+PHA = XA   COTE 0.;
+PHS = COTE COTE 0.;
+*
+LCONTA = PPA d 1 PPC d 7 PPS;
+LBLOCX = PPS d N2 PHS;
+LBLOCY = PPS d 1 PPSZ;
+LPRESV = PHA d N1 PHS;
+LPRESH = PPA d N2 PHA;
+*
+SPLAQ = (LCONTA regl N2 LPRESV) coul vert;
+elim EPSI SPLAQ LBLOCX;
+elim EPSI SPLAQ LPRESH;
+*
+VPLAQ = SPLAQ VOLU TRAN 1 (0. 0. EPAI);
+SCONTA = LCONTA TRAN 1 (0. 0. EPAI);
+SCONTA = orie SCONTA (0. -1. 0.);
+SBLOCX = LBLOCX TRAN 1 (0. 0. EPAI);
+SPRESV = LPRESV TRAN 1 (0. 0. EPAI);
+SPRESH = LPRESH TRAN 1 (0. 0. EPAI);
+elim EPSI (VPLAQ et SCONTA et SBLOCX et SPRESV et SPRESH et LBLOCY);
+*
+* assemblage, trace de verification et sauvegarde du maillage
+* ------------------------------------------------------------
+SBATI = CHAN QUAF SBATI;
+VPLAQ = CHAN QUAF VPLAQ;
+SCONTA = CHAN QUAF SCONTA;
+SBLOCX = CHAN QUAF SBLOCX;
+SPRESV = CHAN QUAF SPRESV;
+SPRESH = CHAN QUAF SPRESH;
+elim EPSI (VPLAQ et SCONTA et SBLOCX et SPRESV et SPRESH);
+*
+MTOT = SBATI et VPLAQ;
+*
+mess 'VERIFICATION DU MAILLAGE :';
+mess 'nbel MTOT   : ' (nbel MTOT);
+mess 'nbel VPLAQ  : ' (nbel VPLAQ);
+mess 'nbel SBATI  : ' (nbel SBATI);
+mess 'nbel SCONTA : ' (nbel SCONTA);
+mess ' ';
+mess 'nbno MTOT   : ' (nbno MTOT);
+mess 'nbno VPLAQ  : ' (nbno VPLAQ);
+mess 'nbno SBATI  : ' (nbno SBATI);
+mess 'nbno SCONTA : ' (nbno SCONTA);
+mess ' ';
+*
+trac MTOT;
+*
+opti sauv form 'ssnv128g.mgib';
+sauv form MTOT;
+*
+fin;
+
+

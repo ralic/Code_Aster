@@ -1,0 +1,47 @@
+TITRE
+SSLL102C
+POUTRE DROITE ENCASTREE A UNE EXTREMITE
+ET SOUMISE A DES EFFORTS UNITAIRES A SON AUTRE EXTREMITE
+FINSF
+COOR_3D
+%
+  N1       0.0D0    0.0D0    0.0D0
+  N2       1.0D0    0.0D0    0.0D0
+  N3       2.0D0    0.0D0    0.0D0
+%
+  M1       0.0D0    0.0D0    0.0D0
+  M2       1.0D0    0.0D0    0.0D0
+  M3       2.0D0    0.0D0    0.0D0
+FINSF
+SEG2
+  S11      N1       N2
+  S12      N2       N3
+%
+  S21      M1       M2
+  S22      M2       M3
+FINSF
+GROUP_MA
+ G1        S11   S12
+FINSF
+GROUP_MA
+ G2        S21   S22
+FINSF
+GROUP_NO
+ A1        N1
+FINSF
+GROUP_NO
+ B1        N3
+FINSF
+GROUP_NO
+ A2        M1
+FINSF
+GROUP_NO
+ B2        M3
+FINSF
+GROUP_NO
+ A         N1     M1
+FINSF
+GROUP_NO
+ B         N3     M3
+FINSF
+FIN

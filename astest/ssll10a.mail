@@ -1,0 +1,39 @@
+  TITRE
+* CAS TEST VPCS: SSLL10/A
+* MEMBRE STA 05 A *EULER*  POUTRE==>EFPOU                *** AOUT 88 ***
+* PORTIQUE A LIAISON LATERALE
+* PORTIQUE: DAB,CAE -- TYPE 3 -- SECTIONS CARREES
+* CHARGE PONDERALE AU MILIEU DE DA + CHARGE REPARTIE SUR AB
+  FINSF
+% -----------------------------------------------------------------------------
+COOR_3D
+%                 X                Y               Z
+  A         0.000000000E+00  0.000000000E+00  0.000000000E+00
+  B         4.000000000E+00  0.000000000E+00  0.000000000E+00
+  G        -0.500000000E+00  0.000000000E+00  0.000000000E+00
+  C         0.000000000E+00  0.100000000E+01  0.000000000E+00
+  D        -0.100000000E+01  0.000000000E+00  0.000000000E+00
+  E         0.000000000E+00 -0.200000000E+01  0.000000000E+00
+FINSF
+%
+SEG2
+%          ND-I.    ND-F.
+  GD       G        D
+  AG       A        G
+  AB       A        B
+  AC       A        C
+  AE       A        E
+FINSF
+GROUP_MA NOM=GROUP_MA_AB
+        AB
+FINSF
+GROUP_MA NOM=GROUP_MA_AC
+        AC
+FINSF
+GROUP_MA NOM=GROUP_MA_AD
+        AG GD
+FINSF
+GROUP_MA NOM=GROUP_MA_AE
+        AE
+FINSF
+FIN

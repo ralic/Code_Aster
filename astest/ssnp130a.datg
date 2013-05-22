@@ -1,0 +1,57 @@
+opti nive 4 ;
+OPTION DIME 2 ELEM TRI3 ;
+
+****************************
+* construction points
+****************************
+
+GNP1 = 0.   0.  ;
+GNP2 = 10.  0.  ;
+GNP3 = 10.  5.  ;
+GNP4 = 0.   5.  ;
+GNP5 = 5.   0.  ;
+GNP6 = 4.   0.  ;
+GNP7 = 6.   0.  ;
+GNP8 = 6.   1.  ;
+GNP9 = 4.   1.  ;
+
+****************************
+* construction lignes
+****************************
+
+GMP16   = droit 4   GNP1  GNP6;
+GMP65   = droit 5  GNP6  GNP5;
+GMP57   = droit 5  GNP5  GNP7;
+GMP72   = droit 4   GNP7  GNP2;
+GMP23   = droit 2   GNP2  GNP3;
+GMP34   = droit 4   GNP3  GNP4;
+GMP41   = droit 2   GNP4  GNP1;
+GMP78   = droit 5  GNP7  GNP8;
+GMP89   = droit 10  GNP8  GNP9;
+GMP96   = droit 5  GNP9  GNP6;
+LIGA    = GMP57 et GMP72;
+
+*****************************
+* construction des surfaces
+*****************************
+
+L1 = GMP16 et GMP96 et GMP89 et GMP78 et GMP72 et GMP23 
+     et GMP34 et GMP41 ;
+SURF1 = surf L1 plane;
+trac surf1;
+
+L2 = GMP65 et GMP57 et GMP78 et GMP89 et GMP96; 
+     
+SURF2 = surf L2 plane;
+trac surf2;
+
+mail = SURF1 et SURF2 et LIGA;
+trac mail;
+
+elim 0.05e-3 mail ;
+trac mail ;
+
+opti sauv format 'ssnp130a.mgib';
+sort mail;
+sauv form mail;
+fin;

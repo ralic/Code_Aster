@@ -1,0 +1,159 @@
+*****************************************************************
+* MAILLAGE D'UN CUBE ET DE DEUX PRISMES QUADRATIQUES
+* ET D'UN CUBE ET DE DEUX PRISMES LINEAIRES
+*
+* Version 27/04/00
+* CS SI (SACLAY)
+*****************************************************************
+opti echo 0 ;
+opti dime 3 ; 
+oeil = 0. 1000. 0.;
+*****************************************************************
+*****************************************************************
+*UTILITAIRE POUR LA RECUPERATION DES FACES
+*****************************************************************
+debp recux v*maillage l*flottant crit*flottant ;
+p1 = (l 0. 0.) ;
+p2 = (l 1. 0.) ;
+p3 = (l 0. 1.) ;
+env = enve v ;
+penv = env chan POI1 ;
+ps = penv poin plan p1 p2 p3 crit ;
+s = env elem appuye strictement ps ;
+finp s ;
+
+debp recuz v*maillage l*flottant crit*flottant ;
+p1 = (0. 0. l) ;
+p2 = (1. 0. l) ;
+p3 = (0. 1. l) ;
+env = enve v ;
+penv = env chan POI1 ;
+ps = penv poin plan p1 p2 p3 crit ;
+s = env elem appuye strictement ps ;
+finp s ;
+
+debp recuy v*maillage l*flottant crit*flottant ;
+p1 = (0. l 0.) ;
+p2 = (1. l 0.) ;
+p3 = (0. l 1.) ;
+env = enve v ;
+penv = env chan POI1 ;
+ps = penv poin plan p1 p2 p3 crit ;
+s = env elem appuye strictement ps ;
+finp s ;
+*****************************************************************
+* Distance entre deux points
+*****************************************************************
+debproc DIST pi*point pf*point ;
+   xi = coor 1 pi ; yi = coor 2 pi ; zi = coor 3 pi ;
+   xf = coor 1 pf ; yf = coor 2 pf ; zf = coor 3 pf ;
+   xm = (xf - xi) ;
+   ym = (yf - yi) ;
+   zm = (zf - zi) ;
+   d = ((xm ** 2) + (ym ** 2) + (zm ** 2)) ** .5 ;
+finproc d ;
+*****************************************************************
+*****************************************************************
+crit = 0.0001 ;
+lon1 = 1. ;
+lon2 = lon1 + 1. ;
+lon3 = lon2 + (2. ** 1.5) ;
+lon4 = lon3 + (2. ** 1.5) ;
+*
+opti elem cub8 ;
+*
+a1 = 0. 0. 0. ;
+a2 = 0. 1. 0. ;
+a3 = 0. 1. 1. ;
+a4 = 0. 0. 1. ;
+*
+la1 = a1 droi 1 a2 ;
+la2 = a4 droi 1 a3 ;
+sa = la1 regl 1 la2 ;
+*
+b1 = lon1 0. 0. ;
+b2 = lon1 1. 0. ;
+b3 = lon1 1. 1. ;
+b4 = lon1 0. 1. ;
+*
+lb1 = b1 droi 1 b2 ;
+lb2 = b4 droi 1 b3 ;
+sb = lb1 regl 1 lb2 ;
+*
+c1 = lon2 0. 0. ;
+c2 = lon2 1. 0. ;
+c3 = lon2 1. 1. ;
+c4 = lon2 0. 1. ;
+*
+lc1 = c1 droi 1 c2 ;
+lc2 = c4 droi 1 c3 ;
+sc = lc1 regl 1 lc2 ;
+*
+la3 = a1 droi 1 b1 ;
+la4 = a2 droi 1 b2 ;
+la5 = b1 droi 1 c1 ;
+la6 = b2 droi 1 c2 ;
+sa1 = la3 regl 1 la4 ;
+sa2 = la5 cout la6 ;
+sa3 = sa1 et sa2 ;
+elim crit sa3 ;
+va = sa3 volu 1 TRAN (moins a3 a2) ;
+elim crit (va et sa et sb et sc) ;
+*
+opti elem cu20 ;
+*
+d1 = lon2 0. 0. ;
+d2 = lon2 1. 0. ;
+d3 = lon2 1. 1. ;
+d4 = lon2 0. 1. ;
+*
+ld1 = d1 droi 1 d2 ;
+ld2 = d4 droi 1 d3 ;
+sd = ld1 regl 1 ld2 ;
+*
+e1 = lon3 0. 0. ;
+e2 = lon3 1. 0. ;
+e3 = lon3 1. 1. ;
+e4 = lon3 0. 1. ;
+*
+le1 = e1 droi 1 e2 ;
+le2 = e4 droi 1 e3 ;
+se = le1 regl 1 le2 ;
+*
+f1 = lon4 0. 0. ;
+f2 = lon4 1. 0. ;
+f3 = lon4 1. 1. ;
+f4 = lon4 0. 1. ;
+*
+lf1 = f1 droi 1 f2 ;
+lf2 = f4 droi 1 f3 ;
+sf = lf1 regl 1 lf2 ;
+*
+ld3 = d1 droi 1 e1 ;
+ld4 = d2 droi 1 e2 ;
+ld5 = e1 droi 1 f1 ;
+ld6 = e2 droi 1 f2 ;
+sd1 = ld3 regl 1 ld4 ;
+sd2 = ld5 cout ld6 ;
+sd3 = sd1 et sd2 ;
+elim crit sd3 ;
+vd = sd3 volu 1 TRAN (moins a3 a2) ;
+elim crit (vd et sd et se et sf) ; ;
+*
+v = va et vd ;
+trac cach v ;
+trac v ;
+*
+fay = recuy va 0. crit ;
+fay1 = recuy va 1. crit ;
+faz = recuz va 0. crit ;
+faz1 = recuz va 1. crit ;
+fdy = recuy vd 0. crit ;
+fdy1 = recuy vd 1. crit ;
+fdz = recuz vd 0. crit ;
+fdz1 = recuz vd 1. crit ;
+*
+opti sauv form  'ssnp116a.mgib' ;
+sauv form ;
+
+fin ;

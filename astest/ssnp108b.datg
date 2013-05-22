@@ -1,0 +1,28 @@
+opti dime 3 elem qua4 ;
+*
+B1 = 0. 0. 0. ;
+B2 = 2. 0. 0. ;
+B3 = 0. 2. 0. ;
+B4 = 2. 2. 0. ;
+C1 = 0. 1. 0. ;
+C2 = 2. 1. 0. ;
+*
+NX1 = 5 ;
+NY1 = 1 ;
+CABLE = D NX1 C1 C2 ;
+CB1   = D NX1 B1 B2 ;
+CB2   = D NY1 B2 C2 ;
+CB3   = D NY1 B1 C1 ;
+CB4   = D NX1 B3 B4 ;
+CB5   = D NY1 C1 B3 ;
+CB6   = D NY1 C2 B4 ;
+*
+BETON = (DALL CB1 CB2 CABLE CB3 'PLAN') et
+        (DALL CABLE CB6 CB4 CB5 'PLAN') ;
+*
+TRAC BETON ;
+*
+opti sauv form 'ssnp108b.mgib';
+sauv form BETON ;
+*
+FIN ;

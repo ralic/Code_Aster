@@ -1,0 +1,30 @@
+OPTI SAUV FORM 'ssls118k.mgib' ;
+OPTI NIVEAU 8 ;
+OPTI DIME 3 ELEM TRI3 ;
+
+A = 0. 0. 0.;
+B = 1. 0. 0.;
+B1=0.5 0. 0.; 
+C = 1. 1. 0.;
+D = 0. 1. 0.;
+D1 = 0. 0.5 0.;
+O = 0.5 0.5 0. ;
+
+AB = DROI 12 A B ;
+BC = DROI 12 B C ;
+CD = DROI 12 C D ;
+DA = DROI 12 A D ;
+
+x = 1.;
+y = 0.;
+z = 0.;
+MAIL1 = DA tran 12 (x y z);
+
+MAIL = (MAIL1 et AB et BC et CD et DA et O et D1 et B1) ;
+
+elim 0.0001 MAIL ; 
+elim 0.0001 MAIL1 ;
+
+TRAC (0. 0. 1000.) MAIL;
+SAUV 'FORMATTE' MAIL;
+FIN;

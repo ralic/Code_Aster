@@ -1,0 +1,276 @@
+# -*- coding: iso-8859-1 -*-
+
+###
+### This file is generated automatically by SALOME v6.4.0 with dump python functionality
+###
+
+import sys
+import salome
+
+salome.salome_init()
+theStudy = salome.myStudy
+
+import salome_notebook
+notebook = salome_notebook.notebook
+sys.path.insert( 0, r'/home/C29256/DATA/source/restitution/cas-tests/rep_test')
+
+import iparameters
+ipar = iparameters.IParameters(salome.myStudy.GetCommonParameters("Interface Applicative", 1))
+
+#Set up visual properties:
+ipar.setProperty("AP_ACTIVE_VIEW", "VTKViewer_0_0")
+ipar.setProperty("AP_WORKSTACK_INFO", "000000010000000000000002010000000100000586000000040000000100000001000000080000001a00560054004b005600690065007700650072005f0030005f00300000000102")
+ipar.setProperty("AP_ACTIVE_MODULE", "Mesh")
+ipar.setProperty("AP_SAVEPOINT_NAME", "GUI state: 1")
+#Set up lists:
+# fill list AP_VIEWERS_LIST
+ipar.append("AP_VIEWERS_LIST", "VTKViewer_1")
+# fill list VTKViewer_1
+ipar.append("VTKViewer_1", "VTK scene:3 - viewer:1")
+ipar.append("VTKViewer_1", """<?xml version="1.0"?>
+<ViewState>
+    <Position X="738.946" Y="-738.946" Z="738.946"/>
+    <FocalPoint X="0" Y="0" Z="0"/>
+    <ViewUp X="0" Y="0" Z="1"/>
+    <ViewScale Parallel="348.498" X="1" Y="1" Z="1"/>
+    <DisplayCubeAxis Show="0"/>
+    <GraduatedAxis Axis="X">
+        <Title isVisible="1" Text="X" Font="0" Bold="0" Italic="0" Shadow="0">
+            <Color R="1" G="0" B="0"/>
+        </Title>
+        <Labels isVisible="1" Number="3" Offset="2" Font="0" Bold="0" Italic="0" Shadow="0">
+            <Color R="1" G="0" B="0"/>
+        </Labels>
+        <TickMarks isVisible="1" Length="5"/>
+    </GraduatedAxis>
+    <GraduatedAxis Axis="Y">
+        <Title isVisible="1" Text="Y" Font="0" Bold="0" Italic="0" Shadow="0">
+            <Color R="0" G="1" B="0"/>
+        </Title>
+        <Labels isVisible="1" Number="3" Offset="2" Font="0" Bold="0" Italic="0" Shadow="0">
+            <Color R="0" G="1" B="0"/>
+        </Labels>
+        <TickMarks isVisible="1" Length="5"/>
+    </GraduatedAxis>
+    <GraduatedAxis Axis="Z">
+        <Title isVisible="1" Text="Z" Font="0" Bold="0" Italic="0" Shadow="0">
+            <Color R="0" G="0" B="1"/>
+        </Title>
+        <Labels isVisible="1" Number="3" Offset="2" Font="0" Bold="0" Italic="0" Shadow="0">
+            <Color R="0" G="0" B="1"/>
+        </Labels>
+        <TickMarks isVisible="1" Length="5"/>
+    </GraduatedAxis>
+    <Trihedron isShown="1" Size="105"/>
+</ViewState>
+""")
+# fill list AP_MODULES_LIST
+ipar.append("AP_MODULES_LIST", "Mesh")
+
+
+###
+### GEOM component
+###
+
+import GEOM
+import geompy
+import math
+import SALOMEDS
+
+
+geompy.init_geom(theStudy)
+
+BETON = geompy.MakeBoxDXDYDZ(0.8, 0.1, 0.16)
+O = geompy.MakeVertex(0, 0, 0)
+OX = geompy.MakeVectorDXDYDZ(1, 0, 0)
+OY = geompy.MakeVectorDXDYDZ(0, 1, 0)
+OZ = geompy.MakeVectorDXDYDZ(0, 0, 1)
+Plan_armatures = geompy.MakePlane(O, OZ, 3)
+geompy.TranslateDXDYDZ(Plan_armatures, 0, 0, 0.02)
+Plan_armatures_1 = geompy.MakeMultiTranslation1D(Plan_armatures, OZ, 0.12, 2)
+MODELE = geompy.MakePartition([BETON], [Plan_armatures_1], [], [], geompy.ShapeType["SOLID"], 0, [], 0)
+listSubShapeIDs = geompy.SubShapeAllIDs(MODELE, geompy.ShapeType["SOLID"])
+POINT_1 = geompy.CreateGroup(MODELE, geompy.ShapeType["VERTEX"])
+geompy.UnionIDs(POINT_1, [17])
+BOUT = geompy.CreateGroup(MODELE, geompy.ShapeType["FACE"])
+geompy.UnionIDs(BOUT, [82, 58, 34])
+ENCAST = geompy.CreateGroup(MODELE, geompy.ShapeType["FACE"])
+geompy.UnionIDs(ENCAST, [38, 4, 62])
+BORDS = geompy.CreateGroup(MODELE, geompy.ShapeType["FACE"])
+geompy.UnionIDs(BORDS, [55, 79, 69, 26, 45, 14])
+BETON_1 = geompy.CreateGroup(MODELE, geompy.ShapeType["SOLID"])
+geompy.UnionIDs(BETON_1, [2, 36, 60])
+MEMBRA = geompy.CreateGroup(MODELE, geompy.ShapeType["FACE"])
+geompy.UnionIDs(MEMBRA, [21, 50])
+geomObj_1 = geompy.GetSubShape(MODELE, [82])
+geomObj_2 = geompy.GetSubShape(MODELE, [38])
+geomObj_3 = geompy.GetSubShape(MODELE, [55])
+geomObj_4 = geompy.GetSubShape(MODELE, [2])
+geomObj_5 = geompy.GetSubShape(MODELE, [21])
+geomObj_6 = geompy.GetSubShape(MODELE, [82])
+geomObj_7 = geompy.GetSubShape(MODELE, [38])
+geomObj_8 = geompy.GetSubShape(MODELE, [55])
+geomObj_9 = geompy.GetSubShape(MODELE, [2])
+geomObj_10 = geompy.GetSubShape(MODELE, [21])
+POINT_2 = geompy.CreateGroup(MODELE, geompy.ShapeType["VERTEX"])
+geompy.UnionIDs(POINT_2, [48])
+geompy.addToStudy( BETON, 'BETON' )
+geompy.addToStudy( O, 'O' )
+geompy.addToStudy( OX, 'OX' )
+geompy.addToStudy( OY, 'OY' )
+geompy.addToStudy( OZ, 'OZ' )
+geompy.addToStudy( Plan_armatures, 'Plan_armatures' )
+geompy.addToStudy( Plan_armatures_1, 'Plan_armatures' )
+geompy.addToStudy( MODELE, 'MODELE' )
+geompy.addToStudyInFather( MODELE, POINT_1, 'POINT_1' )
+geompy.addToStudyInFather( MODELE, BOUT, 'BOUT' )
+geompy.addToStudyInFather( MODELE, ENCAST, 'ENCAST' )
+geompy.addToStudyInFather( MODELE, BORDS, 'BORDS' )
+geompy.addToStudyInFather( MODELE, BETON_1, 'BETON' )
+geompy.addToStudyInFather( MODELE, MEMBRA, 'MEMBRA' )
+geompy.addToStudyInFather( MODELE, POINT_2, 'POINT_2' )
+
+### Store presentation parameters of displayed objects
+import iparameters
+ipar = iparameters.IParameters(theStudy.GetModuleParameters("Interface Applicative", "GEOM", 1))
+
+
+###
+### SMESH component
+###
+
+import smesh, SMESH, SALOMEDS
+
+smesh.SetCurrentStudy(theStudy)
+import BLSURFPlugin
+import GHS3DPlugin
+import StdMeshers
+smeshObj_1 = smesh.Mesh(MODELE)
+Regular_1D = smeshObj_1.Segment()
+Local_Length_1 = Regular_1D.LocalLength(0.02)
+Local_Length_1.SetPrecision( 1e-07 )
+Quadrangle_2D = smeshObj_1.Quadrangle()
+Hexa_3D = smesh.CreateHypothesis('Hexa_3D')
+status = smeshObj_1.AddHypothesis(Hexa_3D)
+isDone = smeshObj_1.Compute()
+smeshObj_2 = smeshObj_1.GroupOnGeom(BOUT,'BOUT',SMESH.FACE)
+smeshObj_3 = smeshObj_1.GroupOnGeom(ENCAST,'ENCAST',SMESH.FACE)
+smeshObj_4 = smeshObj_1.GroupOnGeom(BORDS,'BORDS',SMESH.FACE)
+smeshObj_5 = smeshObj_1.GroupOnGeom(BETON_1,'BETON',SMESH.VOLUME)
+smeshObj_6 = smeshObj_1.GroupOnGeom(MEMBRA,'MEMBRA',SMESH.FACE)
+smeshObj_7 = smeshObj_1.GroupOnGeom(POINT_1,'POINT',SMESH.NODE)
+smesh.SetName(smeshObj_1, 'Mesh_1')
+smeshObj_1.ExportMED( r'/home/C29256/DATA/source/restitution/cas-tests/rep_test/ssls139b.med', 0, SMESH.MED_V2_2, 1 )
+smeshObj_1.ConvertToQuadratic( 1 )
+smesh.SetName(smeshObj_1, 'Mesh_1')
+smeshObj_1.ExportMED( r'/home/C29256/DATA/source/restitution/cas-tests/rep_test/ssls139d.med', 0, SMESH.MED_V2_2, 1 )
+Maillage_libre = smesh.Mesh(MODELE)
+BLSURF = Maillage_libre.Triangle(algo=smesh.BLSURF)
+BLSURF_Parameters_1 = BLSURF.Parameters()
+BLSURF_Parameters_1.SetPhySize( 0.02 )
+GHS3D_3D = Maillage_libre.Tetrahedron(algo=smesh.GHS3D)
+isDone = Maillage_libre.Compute()
+BOUT_1 = Maillage_libre.GroupOnGeom(BOUT,'BOUT',SMESH.FACE)
+ENCAST_1 = Maillage_libre.GroupOnGeom(ENCAST,'ENCAST',SMESH.FACE)
+BORDS_1 = Maillage_libre.GroupOnGeom(BORDS,'BORDS',SMESH.FACE)
+BETON_2 = Maillage_libre.GroupOnGeom(BETON_1,'BETON',SMESH.VOLUME)
+MEMBRA_1 = Maillage_libre.GroupOnGeom(MEMBRA,'MEMBRA',SMESH.FACE)
+POINT_1_1 = Maillage_libre.GroupOnGeom(POINT_1,'POINT',SMESH.NODE)
+smesh.SetName(Maillage_libre, 'Maillage_libre')
+Maillage_libre.ExportMED( r'/home/C29256/DATA/source/restitution/cas-tests/rep_test/ssls139a.med', 0, SMESH.MED_V2_2, 1 )
+Maillage_libre.ConvertToQuadratic( 1 )
+smesh.SetName(Maillage_libre, 'Maillage_libre')
+Maillage_libre.ExportMED( r'/home/C29256/DATA/source/restitution/cas-tests/rep_test/ssls139c.med', 0, SMESH.MED_V2_2, 1 )
+[ BOUT_1, ENCAST_1, BORDS_1, BETON_2, MEMBRA_1, POINT_1_1 ] = Maillage_libre.GetGroups()
+[ BOUT_1, ENCAST_1, BORDS_1, BETON_2, MEMBRA_1, POINT_1_1 ] = Maillage_libre.GetGroups()
+BLSURF_Parameters_1.SetSizeMap(BOUT, '0.01' )
+BLSURF_Parameters_1.SetSizeMap(ENCAST, '0.01' )
+BLSURF_Parameters_1.SetPhySize( 0.04 )
+BLSURF_Parameters_1.SetSizeMap(BOUT, 'def f(u,v): return 0.01' )
+BLSURF_Parameters_1.SetSizeMap(ENCAST, 'def f(u,v): return 0.01' )
+isDone = Maillage_libre.Compute()
+Maillage_libre.ConvertToQuadratic( 1 )
+[ BOUT_1, ENCAST_1, BORDS_1, BETON_2, MEMBRA_1, POINT_1_1 ] = Maillage_libre.GetGroups()
+[ BOUT_1, ENCAST_1, BORDS_1, BETON_2, MEMBRA_1, POINT_1_1 ] = Maillage_libre.GetGroups()
+[ BOUT_1, ENCAST_1, BORDS_1, BETON_2, MEMBRA_1, POINT_1_1 ] = Maillage_libre.GetGroups()
+[ BOUT_1, ENCAST_1, BORDS_1, BETON_2, MEMBRA_1, POINT_1_1 ] = Maillage_libre.GetGroups()
+BLSURF_Parameters_1.SetSizeMap(BOUT, '0.02' )
+BLSURF_Parameters_1.SetSizeMap(ENCAST, '0.02' )
+BLSURF_Parameters_1.SetGradation( 1.2 )
+BLSURF_Parameters_1.SetSizeMap(BOUT, 'def f(u,v): return 0.02' )
+BLSURF_Parameters_1.SetSizeMap(ENCAST, 'def f(u,v): return 0.02' )
+BLSURF_Parameters_1.SetSizeMap(BOUT, '0.01' )
+BLSURF_Parameters_1.SetSizeMap(ENCAST, '0.02' )
+BLSURF_Parameters_1.SetSizeMap(BOUT, 'def f(u,v): return 0.01' )
+BLSURF_Parameters_1.SetSizeMap(ENCAST, 'def f(u,v): return 0.02' )
+isDone = Maillage_libre.Compute()
+MEMBRA_1.SetColor( SALOMEDS.Color( 0, 0.666667, 1 ))
+BLSURF_Parameters_1.SetSizeMap(BOUT, '0.01' )
+BLSURF_Parameters_1.SetSizeMap(ENCAST, '0.01' )
+BLSURF_Parameters_1.SetSizeMap(BOUT, 'def f(u,v): return 0.01' )
+BLSURF_Parameters_1.SetSizeMap(ENCAST, 'def f(u,v): return 0.01' )
+isDone = Maillage_libre.Compute()
+Maillage_libre.ConvertToQuadratic( 1 )
+[ BOUT_1, ENCAST_1, BORDS_1, BETON_2, MEMBRA_1, POINT_1_1 ] = Maillage_libre.GetGroups()
+[ BOUT_1, ENCAST_1, BORDS_1, BETON_2, MEMBRA_1, POINT_1_1 ] = Maillage_libre.GetGroups()
+smesh.SetName(Maillage_libre, 'Maillage_libre')
+Maillage_libre.ExportMED( r'/home/C29256/DATA/source/restitution/cas-tests/rep_test/ssls139a.med', 0, SMESH.MED_V2_2, 1 )
+POINT_1_1.SetName( 'POINT_1' )
+POINT_2_1 = Maillage_libre.GroupOnGeom(POINT_2,'POINT_2',SMESH.NODE)
+smesh.SetName(Maillage_libre, 'Maillage_libre')
+Maillage_libre.ExportMED( r'/home/C29256/DATA/source/restitution/cas-tests/rep_test/ssls139a.med', 0, SMESH.MED_V2_2, 1 )
+smeshObj_1.RemoveGroup( smeshObj_5 )
+smeshObj_1.RemoveGroup( smeshObj_6 )
+smeshObj_1.RemoveGroup( smeshObj_4 )
+smeshObj_1.RemoveGroup( smeshObj_3 )
+smeshObj_1.RemoveGroup( smeshObj_2 )
+smeshObj_1.RemoveGroup( smeshObj_7 )
+status = smeshObj_1.RemoveHypothesis(Hexa_3D)
+status = smeshObj_1.RemoveHypothesis(Quadrangle_2D)
+status = smeshObj_1.RemoveHypothesis(Regular_1D)
+status = smeshObj_1.RemoveHypothesis(Local_Length_1)
+[ POINT_1_1, POINT_2_1, BOUT_1, ENCAST_1, BORDS_1, MEMBRA_1, BETON_2 ] = Maillage_libre.GetGroups()
+[ POINT_1_1, POINT_2_1, BOUT_1, ENCAST_1, BORDS_1, MEMBRA_1, BETON_2 ] = Maillage_libre.GetGroups()
+
+## some objects were removed
+aStudyBuilder = theStudy.NewBuilder()
+SO = theStudy.FindObjectIOR(theStudy.ConvertObjectToIOR(smeshObj_1.GetMesh()))
+if SO is not None: aStudyBuilder.RemoveObjectWithChildren(SO)
+SO = theStudy.FindObjectIOR(theStudy.ConvertObjectToIOR(smeshObj_2))
+if SO is not None: aStudyBuilder.RemoveObjectWithChildren(SO)
+SO = theStudy.FindObjectIOR(theStudy.ConvertObjectToIOR(smeshObj_3))
+if SO is not None: aStudyBuilder.RemoveObjectWithChildren(SO)
+SO = theStudy.FindObjectIOR(theStudy.ConvertObjectToIOR(smeshObj_4))
+if SO is not None: aStudyBuilder.RemoveObjectWithChildren(SO)
+SO = theStudy.FindObjectIOR(theStudy.ConvertObjectToIOR(smeshObj_5))
+if SO is not None: aStudyBuilder.RemoveObjectWithChildren(SO)
+SO = theStudy.FindObjectIOR(theStudy.ConvertObjectToIOR(smeshObj_6))
+if SO is not None: aStudyBuilder.RemoveObjectWithChildren(SO)
+SO = theStudy.FindObjectIOR(theStudy.ConvertObjectToIOR(smeshObj_7))
+if SO is not None: aStudyBuilder.RemoveObjectWithChildren(SO)
+## set object names
+smesh.SetName(Regular_1D.GetAlgorithm(), 'Regular_1D')
+smesh.SetName(Local_Length_1, 'Local Length_1')
+smesh.SetName(Quadrangle_2D.GetAlgorithm(), 'Quadrangle_2D')
+smesh.SetName(Hexa_3D, 'Hexa_3D')
+smesh.SetName(Maillage_libre.GetMesh(), 'Maillage_libre')
+smesh.SetName(BLSURF.GetAlgorithm(), 'BLSURF')
+smesh.SetName(BLSURF_Parameters_1, 'BLSURF Parameters_1')
+smesh.SetName(GHS3D_3D.GetAlgorithm(), 'GHS3D_3D')
+smesh.SetName(BOUT_1, 'BOUT')
+smesh.SetName(ENCAST_1, 'ENCAST')
+smesh.SetName(BORDS_1, 'BORDS')
+smesh.SetName(BETON_2, 'BETON')
+smesh.SetName(MEMBRA_1, 'MEMBRA')
+smesh.SetName(POINT_1_1, 'POINT_1')
+smesh.SetName(POINT_2_1, 'POINT_2')
+
+### Store presentation parameters of displayed objects
+import iparameters
+ipar = iparameters.IParameters(theStudy.GetModuleParameters("Interface Applicative", "SMESH", 1))
+
+
+
+if salome.sg.hasDesktop():
+  salome.sg.updateObjBrowser(1)
+  iparameters.getSession().restoreVisualState(1)

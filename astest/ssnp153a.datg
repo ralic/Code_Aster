@@ -1,0 +1,53 @@
+h=0.2;
+
+d1 = 0.2; 
+d2 = 1.2; 
+d3 = 10.6;
+r  = 0.75; 
+h1 = 0.95; 
+h2 = 4;
+h3 = 1.4;
+a1 = 0.3; 
+a2 = 0.2;
+
+
+Point(1) = {d1   ,    a1+a2, 0, h};   //A
+Point(2) = {d1+d2,    a1+a2, 0, h};   //B
+Point(3) = {d1+d2,    h3,    0, h};   //C
+Point(4) = {d1,       h3,    0, h};   //D
+Point(5) = {0.0,      0.0,   0, h};   //E
+Point(6) = {d1+d2+d3, 0.0,   0, h};   //F
+Point(7) = {d1+d2+d3, -h2,   0, h};   //G
+Point(8) = {0.0,      -h2,   0, h};   //H
+Point(9) = {d1+d2/2,   h1,   0, h};   //O
+
+Line(1) = {8, 7};
+Line(2) = {7, 6};
+Line(3) = {6, 5};
+Line(4) = {5, 8};
+Line(5) = {2, 3};
+Line(6) = {3, 4};
+Line(7) = {4, 1};
+Circle(8) = {1, 9, 2};
+
+Line Loop(9) = {8, 5, 6, 7};
+Plane Surface(10) = {9};
+Line Loop(11) = {3, 4, 1, 2};
+Plane Surface(12) = {11};
+Transfinite Surface {10} = {1, 2, 3, 4};
+Transfinite Surface {12} = {8, 7, 6, 5};
+Recombine Surface {10};
+Recombine Surface {12};
+
+Transfinite Line {7, 5} = 7   Using Progression 1;
+Transfinite Line {6, 8} = 13  Using Progression 1;
+Transfinite Line {4, 2} = 31  Using Progression 1;
+Transfinite Line {3, 1} = 121 Using Progression 1;
+
+Physical Line("Master") = {7, 8, 5};
+Physical Line("Depl") = {6};
+Physical Line("Slave") = {3};
+Physical Line("Bloq") = {1};
+
+Physical Surface("Hard") = {10};
+Physical Surface("Soft") = {12};

@@ -1,0 +1,119 @@
+*maillage paramétré d'une coque 20x136
+*----------------------------------------------
+opti dime 3 elem seg3 ;
+opti niveau 8 ;
+
+*topologie
+s = 0. 0. 10. ;
+s2 = 1.319822 -0.4064 10. ;
+
+O = 0. 0. 0. ;
+O3 = 0. 0. 0.508 ;
+O2 = 1.319822 -0.4064 0. ;
+A = 0. 0.3356 0. ;
+B = TOUR -60. A O s  ;
+C = TOUR -150. B O2 s2  ;
+D = C PLUS (0. 0. 0.508) ;
+
+L1 = CERCL 16 O A B ;
+L2 = CERCL 120 B O2 C ;
+Li = L1 et L2 ;
+
+opti dime 3 elem qua8 ;
+
+surf = Li TRANS 20 ( 0. 0. 0.508 ) ;
+ENCASTR = DROIT 20 O O3;
+LIBRE = DROIT 20 C D ;
+TOUT_ELT = surf et ENCASTR et LIBRE ;
+
+elim 0.0001 tout_elt ;
+trac TOUT_ELT ;
+
+list (nbno tout_elt) ;
+list (nbel tout_elt) ;
+
+opti sauv form 'ssls119c.mgib' ;
+sort tout_elt ;
+sauv form tout_elt ;
+
+fin;
+
+*maillage paramétré d'une coque 10x68
+*----------------------------------------------
+opti dime 3 elem seg3 ;
+opti niveau 8 ;
+
+*topologie
+s = 0. 0. 10. ;
+s2 = 1.319822 -0.4064 10. ;
+
+O = 0. 0. 0. ;
+O3 = 0. 0. 0.508 ;
+O2 = 1.319822 -0.4064 0. ;
+A = 0. 0.3356 0. ;
+B = TOUR -60. A O s  ;
+C = TOUR -150. B O2 s2  ;
+D = C PLUS (0. 0. 0.508) ;
+
+L1 = CERCL 8 O A B ;
+L2 = CERCL 60 B O2 C ;
+Li = L1 et L2 ;
+
+opti dime 3 elem qua8 ;
+
+surf = Li TRANS 10 ( 0. 0. 0.508 ) ;
+ENCASTR = DROIT 10 O O3;
+LIBRE = DROIT 10 C D ;
+TOUT_ELT = surf et ENCASTR et LIBRE ;
+
+elim 0.0001 tout_elt ;
+trac TOUT_ELT ;
+
+list (nbno tout_elt) ;
+list (nbel tout_elt) ;
+
+opti sauv form 'ssls119c.mgib' ;
+sort tout_elt ;
+sauv form tout_elt ;
+
+fin;
+
+*maillage paramétré d'une coque 5x34
+*----------------------------------------------
+opti dime 3 elem seg3 ;
+opti niveau 8 ;
+
+*topologie
+s = 0. 0. 10. ;
+s2 = 1.319822 -0.4064 10. ;
+
+O = 0. 0. 0. ;
+O3 = 0. 0. 0.508 ;
+O2 = 1.319822 -0.4064 0. ;
+A = 0. 0.3356 0. ;
+B = TOUR -60. A O s  ;
+C = TOUR -150. B O2 s2  ;
+D = C PLUS (0. 0. 0.508) ;
+
+L1 = CERCL 4 O A B ;
+L2 = CERCL 30 B O2 C ;
+Li = L1 et L2 ;
+
+opti dime 3 elem qua8 ;
+
+surf = Li TRANS 5 ( 0. 0. 0.508 ) ;
+ENCASTR = DROIT 5 O O3;
+LIBRE = DROIT 5 C D ;
+TOUT_ELT = surf et ENCASTR et LIBRE ;
+
+elim 0.0001 tout_elt ;
+trac TOUT_ELT ;
+
+list (nbno tout_elt) ;
+list (nbel tout_elt) ;
+
+opti sauv form 'ssls119c.mgib' ;
+sort tout_elt ;
+sauv form tout_elt ;
+
+fin;

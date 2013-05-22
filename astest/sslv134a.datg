@@ -1,0 +1,110 @@
+*
+* parametres de la procedure principale :
+* ---------------------------------------
+*
+* c         demi grand axe de l'ellipse
+* a         demi petit axe de l'ellipse
+* rc0       rayon du tore
+* rc1       coefficient multiplicateur du parametre rc0
+*           definissant l'epaisseur de la premiere couronne
+*           de deraffinement
+* rc2       coefficient multiplicateur du parametre rc0
+*           definissant l'epaisseur de la deuxieme couronne
+*           de deraffinement
+* rc3       coefficient multiplicateur du parametre rc0
+*           definissant l'epaisseur de la troisieme couronne
+*           de deraffinement (si ndt=2)
+* nc        nombre de couronnes
+* ns        nombre de secteurs sur 90 degres
+* nt        nombre de divisions sur un quart d'ellipse
+* eps       demi-angle d'ouverture de la fissure (degres)
+* lo        longueur du bloc
+* to        largeur du bloc
+* ho        hauteur du bloc
+* ndt       nombre de couronnes de deraffinement (1 ou 2)
+* nsdt      Nombre de secteurs sur 90 degres au niveau des
+*           couronnes de deraffinement des tranches (2 ou 4)
+* beta      impose le decoupage le long de la generatrice
+* alpha     impose l'angle des differentes tranches
+* xl        impose le nombre d'elements pour la prolongation
+*           du bloc initial suivant l'axe x (longueur)
+* xt        impose le nombre d'elements pour la prolongation
+*           du bloc initial suivant l'axe y (largeur)
+* xh        impose le nombre d'elements pour la prolongation
+*           du bloc initial suivant l'axe -z (hauteur)
+* d1        'oui' si deplacement des noeuds intermediares du
+*           boudin
+* d2        'oui' si maillage 'rayonnant' sur la face
+*           exterieure au boudin torique
+*           On doit avoir d2 = 'non' dans le cas de l'utilisation
+*           de la procedure plaque epaisse fissuree
+*
+*
+opti dime 3 elem cu20 ;
+c     = 2.  ;
+a     = 2.  ;
+rc0   = 0.24  ;
+rc1   = 1.2   ;
+rc2   = 1.4   ;
+rc3   = 1.6 ;
+nc    = 2     ;
+ns    = 4     ;
+nt    = 8     ;
+eps   = 0.1   ;
+l0    = 10.   ;
+t0    = 10.   ;
+h0    = 10.   ;
+ndt   = 1     ;
+nsdt  = 2     ;
+beta  = 1.    ;
+alpha = 0.    ;
+xl    = 3     ;
+xt    = 4     ;
+xh    = 2     ;
+*
+ma1 lff1 levinf1 sar_i slat_1 sinf_1 sav_i ssup_1 sla2_i tore1 hh
+= @fis_3 c a l0 t0 h0 eps nt nc ns rc0 rc1 rc2 rc3 beta alpha
+  ndt nsdt xl xt xh 'oui' 'oui' ;
+trac ma1 ;
+*opti donn 5 ;
+o =  0.   0.   0. ;
+a =  0.   0. -10. ;
+b = 10.   0. -10. ;
+c =  0.  10. -10. ;
+d = 10.   0.   0. ;
+e =  0.  10.   0. ;
+f = 10.  10.   0. ;
+*opti donn 5 ;
+su   = droite 5 a b ;
+ma2 = ma1 syme plan o a b ;
+ma3 = (ma1 et ma2) ;
+ma4 = ma3 syme plan o a c ;
+ma5 = ma3 et ma4 ;
+levinf2 = levinf1 syme droit o d ;
+levinf3 = levinf2 et levinf1 ;
+levinf4 = levinf3 syme droit o e ;
+levinf  = levinf3 et levinf4 ;
+lff2    = lff1 syme droit o d ;
+lff3    = lff2 et lff1 ;
+lff4    = lff3 syme droit o e ;
+lff     = lff3 et lff4 ;
+ssup_2  = ssup_1 syme droit o d ;
+ssup_3  = ssup_2 et ssup_1 ;
+ssup_4  = ssup_3 syme droit o e ;
+ssup_f  = ssup_3 et ssup_4 ;
+sinf_2  = sinf_1 syme droit a b ;
+sinf_3  = sinf_2 syme droit a c ;
+sinf_4  = sinf_3 syme droit a b ;
+sinf_f  = sinf_1 et sinf_2 et sinf_3 et sinf_4 ;
+slat_2  = slat_1 syme droit d b ;
+slat_f  = slat_1 et slat_2 ;
+mail  = ma5 et sinf_f et lff et levinf et ssup_f et slat_f ;
+elim 0.01 mail ;
+trac cache mail ;
+lig = droite 2 a b ;
+ma = mail et lig ;
+*opti donn 5 ;
+opti sauv format 'essai.mgib' ;
+sauv format ma ;
+*opti donn 5;
+fin ;

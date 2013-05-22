@@ -1,0 +1,19 @@
+Nep =  3 ;
+ntran = 2 ; 
+L = 0.1 ;
+opti dime 2 elem tri3 ;
+VY = 0. 1. ;
+
+p1 = 19.5  0. ;
+p2 = 20.5  0. ;
+bas = droit Nep p1 p2 ;
+stran = bas tran ntran VY;
+haut = cote 3 stran ;
+echange = cote 4 stran ;
+OUBLIER VY ;
+TASS STRAN ;
+
+OPTI SAUV FORM 'forma09a.mgib';
+
+sauver format ( stran et echange et haut) ;
+trac (stran et echange et haut) ;

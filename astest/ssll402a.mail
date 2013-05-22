@@ -1,0 +1,21 @@
+TITRE
+   TEST ssll402a 
+   ANNEAU DYNAMOMETRIQUE
+FINSF
+COOR_3D
+%
+  N1       0.0D0    2.0D0    0.0D0
+  N2       2.0D0    0.0D0    0.0D0
+  N3       0.0D0   -2.0D0    0.0D0
+  N4      -2.0D0    0.0D0    0.0D0
+FINSF
+SEG2
+  S11      N1       N2
+  S12      N2       N3
+  S13      N3       N4
+  S14      N4       N1
+FINSF
+GROUP_MA
+ G1        S11 S12 S13 S14
+FINSF
+FIN

@@ -1,0 +1,63 @@
+OPTI dime 3 elem CU20;
+OPTI SAUV FORM 'test1q.mgib';
+L=25.;
+D1=4.;
+e=1.;
+P1= 0. 0. 0. ;
+P2= L 0. 0. ;
+P3= L D1 0. ;
+P4= 0. D1 0 .;
+P6= 0. 0. e;
+P7= L 0. e;
+P8= L D1 e;
+P9= 0. D1 e;
+
+P1P2= D 24 P1 P2;
+P2P3= D 4 P2 P3;
+P3P4= D 24 P3 P4;
+P4P1= D 4 P4 P1;
+P6P7= D 24 P6 P7;
+P7P8= D 4 P7 P8;
+P8P9= D 24 P8 P9;
+P9P6= D 4 P9 P6;
+
+SS1=DALLER P1P2 P2P3 P3P4 P4P1;
+SS2=DALLER P6P7 P7P8 P8P9 P9P6;
+
+VOL = VOLUME 1 SS1 SS2;
+
+P1P6= D 1 P1 P6;
+P6P9= D 4 P6 P9;
+P9P4= D 1 P9 P4;
+P4P1= D 4 P4 P1;
+CLIM=DALLER P1P6 P6P9 P9P4 P4P1;
+list (nbno CLIM);
+
+P2P7= D 1 P2 P7;
+P7P8= D 4 P7 P8;
+P8P3= D 1 P8 P3;
+P3P2= D 4 P3 P2;
+CHAR=DALLER P2P7 P7P8 P8P3 P3P2;
+list (nbno CHAR);
+
+list (nbno VOL);
+list (nbel VOL);
+VOL1 = VOL ET CLIM ET CHAR;
+ELIM 0.1 VOL1;
+
+list (nbno VOL1);
+list (nbel VOL1);
+SAUV FORM VOL1;
+oe = 400 -200 100;
+trac oe cach VOL1;
+trac oe cach CLIM;
+trac oe cach CHAR;
+oe = -400 -200 100;
+trac oe cach VOL1;
+fin;
+
+
+
+
+
+

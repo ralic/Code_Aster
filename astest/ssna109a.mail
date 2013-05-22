@@ -1,0 +1,37 @@
+COOR_2D   
+  N1        0. 0. 
+  N2        1.00000000000000E-02 0.
+  N3        1.00000000000000E-02 1.00000000000000E-02  
+  N4        0. 1.00000000000000E-02 
+FINSF
+%
+QUAD4                                   
+M5    N1      N2      N3      N4     
+FINSF
+SEG2                                   
+M1    N1      N2 
+M2    N2      N3     
+M3    N3      N4     
+M4    N4      N1     
+FINSF
+GROUP_MA    
+BLOC_X                                                          
+  M4    
+FINSF
+%
+GROUP_MA    
+BLOC_Y    
+  M1   
+FINSF
+%
+GROUP_MA   
+LOAD                                                      
+  M3    
+FINSF
+%
+GROUP_NO 
+POST_NO                                                          
+  N1    
+FINSF
+%
+ FIN

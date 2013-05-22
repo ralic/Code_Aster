@@ -1,0 +1,15 @@
+ TITRE
+ HSNV124E
+ FINSF
+
+COOR_3D
+  N3  0 0 0
+  N7  0 0 1
+FINSF
+
+SEG2
+  M1    N3 N7
+FINSF
+
+
+FIN

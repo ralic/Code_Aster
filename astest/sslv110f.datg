@@ -1,0 +1,90 @@
+import geompy
+
+# objets utiles
+O = geompy.MakeVertex(0,0,0)
+OX = geompy.MakeVectorDXDYDZ(1,0,0)
+OY = geompy.MakeVectorDXDYDZ(0,1,0)
+OZ = geompy.MakeVectorDXDYDZ(0,0,1)
+OXZ = geompy.MakePlane(O,OY,2000)
+OYZ = geompy.MakePlane(O,OX,2000)
+
+LX = 120.
+LY = 72.5
+LZ = 2500.
+
+# creation boite
+V1 = geompy.MakeBoxDXDYDZ(LX,LY,LZ/2.)
+V2 = geompy.MakeTranslation(V1,0,0,-LZ/2.)
+V = geompy.MakePartition([V1,V2],[])
+geompy.addToStudy(V,'V')
+
+# creation des aretes pour imposer les discretisations
+P1 = geompy.MakeVertex(0,0,-LZ/2.)
+P2 = geompy.MakeVertex(0,0,LZ/2.)
+P3 = geompy.MakeVertex(LX,0,0)
+P4 = geompy.MakeVertex(0,LY,0)
+LH1 = geompy.MakeVector(O,P1)
+LH2 = geompy.MakeVector(O,P2)
+LH3 = geompy.MakeVector(O,P3)
+LH4 = geompy.MakeVector(O,P4)
+H1 = geompy.GetSame(V,LH1)
+H2 = geompy.GetSame(V,LH2)
+H3 = geompy.GetSame(V,LH3)
+H4 = geompy.GetSame(V,LH4)
+geompy.addToStudyInFather(V,H1,'H1')
+geompy.addToStudyInFather(V,H2,'H2')
+geompy.addToStudyInFather(V,H3,'H3')
+geompy.addToStudyInFather(V,H4,'H4')
+
+
+# creation des groupes utiles sur la geometrie
+P1 = geompy.GetSame(V,P1)
+geompy.addToStudyInFather(V,P4,'P4')
+VOL = geompy.CreateGroup(V,geompy.ShapeType["SOLID"])
+Lvol = geompy.SubShapeAll(V, geompy.ShapeType["SOLID"])
+geompy.UnionList(VOL,Lvol)
+geompy.addToStudyInFather(V,VOL,'VOL')
+SYM_X = geompy.GetInPlace(V,OYZ)
+SYM_Y = geompy.GetInPlace(V,OXZ)
+geompy.addToStudyInFather(V,SYM_X,'SYM_X')
+geompy.addToStudyInFather(V,SYM_Y,'SYM_Y')
+P_HAUT = geompy.MakeVertex(LX/2.,LY/2.,LZ/2.)
+M_HAUT = geompy.GetFaceNearPoint(V,P_HAUT)
+geompy.addToStudyInFather(V,M_HAUT,'M_HAUT')
+P_BAS = geompy.MakeVertex(LX/2.,LY/2.,-LZ/2.)
+M_BAS = geompy.GetFaceNearPoint(V,P_BAS)
+geompy.addToStudyInFather(V,M_BAS,'M_BAS')
+
+
+import smesh
+
+MA = smesh.Mesh(V,"MA")
+
+NX = 12
+NY =  7
+NZ = 10
+
+# algorihtmes de maillages
+A_1D = MA.Segment()
+A_2D = MA.Quadrangle()
+A_3D = MA.Hexahedron()
+Propagation = A_1D.Propagation()
+
+# hypotheses sur les discretisations des segments
+hyp1_1D = MA.Segment(H1)
+hyp1_1D = hyp1_1D.NumberOfSegments(NZ,50,[H1])
+hyp2_1D = MA.Segment(H2)
+hyp2_1D = hyp2_1D.NumberOfSegments(NZ,50,[])
+hyp3_1D = MA.Segment(H3)
+hyp3_1D = hyp3_1D.NumberOfSegments(NX,[])
+hyp4_1D = MA.Segment(H4)
+hyp4_1D = hyp4_1D.NumberOfSegments(NY,[])
+
+# groupes sur le maillage
+MA.Group(P1,'P1')
+MA.Group(SYM_X,'SYM_X')
+MA.Group(SYM_Y,'SYM_Y')
+MA.Group(M_HAUT,'M_HAUT')
+MA.Group(M_BAS,'M_BAS')
+MA.Group(VOL,'VOL')
+

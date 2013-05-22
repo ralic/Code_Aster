@@ -1,0 +1,25 @@
+opti dime 2 elem qua4 ;
+
+*                            D   C
+* pour  mailler un carre     A   B
+* --------------------------------------------------
+
+
+a  = 0.   0.;
+b  = 1.   0.;
+n1=3;
+
+bord1 = droi n1 a b ;
+
+carre= bord1 tran n1 (0. 1.);
+
+bord2= cote 3 carre;
+
+c=carre poin proc (1.  1.);
+d=carre poin proc (0.  1.);
+
+* trac carre;
+
+opti sauv form 'erreu07a.mgib' ;
+sauv form carre ;
+fin;

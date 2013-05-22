@@ -1,0 +1,98 @@
+OPTI DIME 2 ELEM QUA4;
+OPTI SAUV FORM 'sslv04a.mgib' ;
+*
+O = .0 0. ;
+A = .1 0. ;
+B = .2 0. ;
+C = 9.2387974262238E-02  3.8268297910690E-02 ;
+D = 1.8477588891983E-01  7.6536655426025E-02 ;
+E = 7.0710659027100E-02  7.0710659027100E-02 ;
+F = 1.4142125844955E-01  1.4142125844955E-01 ;
+*
+* maillage en quad4
+*
+AB = DROIT -30 A B DINI 0.010 DFIN 0.020 ;
+*AB = DROIT 30 A B ;
+BD = CERCLE B O D 15;
+DC = DROIT -30 D C DINI 0.020 DFIN 0.010 ;
+*DC = DROIT 30 D C ;
+CA = CERCLE C O A 15;
+S1 = DALLER AB BD DC CA ;
+TRAC S1;
+*
+* maillage en tria3
+*
+OPTI DIME 2 ELEM TRI3 ;
+CD = DROIT -30 C D DINI 0.010 DFIN 0.020 ;
+*CD = DROIT 30 C D ;
+DF = CERCLE D O F 15;
+FE = DROIT -30 F E DINI 0.020 DFIN 0.010 ;
+*FE = DROIT 30 F E  ;
+EC = CERCLE E O C 15;
+S2 = DALLER CD DF FE EC ;
+TRAC S2;
+S = S1 ET S2 ;
+AE = EC ET CA ;
+ELIM 0.0001 AE;
+ELIM 0.0001 S;
+NNOAE = NBNO AE;
+LIST NNOAE;
+NNO = NBNO S;
+LIST NNO;
+TRAC S;
+*
+* extrusion en 3D
+*
+OPTI DIME 3 ELEM CUB8;
+volu = s volu 1 tran (0. 0. 0.01);
+oeil = 1. 1. 1. ;
+trac oeil volu;
+diri = AB TRAN 1 (0. 0. 0.01);
+dnor = FE TRAN 1 (0. 0. 0.01);
+pres = AE TRAN 1 (0. 0. 0.01);
+trac diri;
+trac dnor;
+trac pres;
+MA = volu et diri et dnor et pres;
+ELIM 0.0001 MA;
+NNO = NBNO MA;
+LIST NNO;
+trac oeil MA;
+SAUV FORM MA;
+FIN;
+
+
+* depouillement
+
+
+opti rest form 'sslv04a.cast';
+rest form ;
+
+trac cach m;
+
+dep1 = resu2 . 1 . depl ;
+
+sig1 =  resu2 . 1 . sigm ;
+
+mv = (m elem cub8) et (m elem pri6);
+modv = mv modele mecanique elastique ;
+
+dx = redu (dep1 exco ux) mv ;
+dy = redu (dep1 exco uy) mv ;
+dz = redu (dep1 exco uz) mv ;
+
+sxx = redu (exco sig1 smxx) mv ;
+syy = redu (exco sig1 smyy) mv ;
+szz = redu (exco sig1 smzz) mv ;
+
+
+trac dx mv ;
+trac dy mv;
+trac dz mv;
+
+trac sxx modv;
+trac syy modv;
+trac szz modv;
+
+
+

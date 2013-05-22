@@ -1,0 +1,42 @@
+
+OPTI DIME 2 ELEM QUA8;
+opti SAUV FORM 'zzzz253a.mgib';
+
+* maillage 2D d'un barreau de longueur 10 formé de 2 morceaux de longueur 5 :
+
+A=  0.  0.;
+B=  0.  0.1;
+AB=DROI 1 A B ;
+
+n1=7;
+barr1a=ab tran n1 ( 5. 0.);
+CD1= cote barr1a 3  ;
+C1= CD1 poin PROC (5. 0.);
+barr1b=CD1 tran n1 ( 5. 0.);
+barr1=barr1a et barr1b;
+
+bas1a = cote barr1a 4  ;
+bas1b = cote barr1b 2  ;
+haut1a= cote barr1a 2  ;
+haut1b= cote barr1b 4  ;
+bas1 =bas1a  et bas1b;
+haut1=haut1a et haut1b;
+trac barr1;
+
+n2=13;
+barr2a=ab tran n2 ( 5. 0.);
+CD2= cote barr2a 3  ;
+C2= CD2 poin PROC (5. 0.);
+barr2b=CD2 tran n2 ( 5. 0.);
+barr2=barr2a et barr2b;
+
+bas2a = cote barr2a 4  ;
+bas2b = cote barr2b 2  ;
+haut2a= cote barr2a 2  ;
+haut2b= cote barr2b 4  ;
+bas2 =bas2a  et bas2b;
+haut2=haut2a et haut2b;
+trac barr2;
+
+SAUV FORMAT (barr1 et barr2);
+FIN;

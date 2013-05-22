@@ -1,0 +1,47 @@
+//================================================
+//    Maillage du cube
+//================================================
+
+Point(1) = {0, 0, 0, 0.5};
+Point(2) = {0, 1, 0, 0.5};
+Line (1) = {1, 2};
+
+NbElem = 12;
+
+// Transfinite permet d'imposer un nb de noeuds
+Transfinite Line{1} = NbElem+1;
+
+
+// Extrude Line {Num. de la ligne , {Dx,Dy,Dz}} 
+//              {Layers{Nb de couche, épaisseur relative de la couche};};
+Vec=0.495;
+Extrude Line {1, {Vec,0,0}}
+             {Layers{NbElem,1}; Recombine; };
+
+
+
+//================================================
+//    Maillage de la base
+//================================================
+
+Point(15) = {Vec+0.01,0,0,0.1};
+Point(16) = {Vec+0.01,1,0,0.1};
+Line(28) = {15,16};
+Transfinite Line{28} = 2;
+
+// Transfinite permet d'imposer un nb de noeuds
+Transfinite Line{28} = NbElem+1;
+
+Extrude Line {28, {Vec,0,0}}
+             {Layers{NbElem,1}; //Recombine;
+              };
+
+Physical Line(33) = {28};
+Physical Line(34) = {2};
+
+Physical Surface(35) = {32};
+Physical Surface(36) = {5};
+
+Physical Line(37) = {29};
+Physical Line(38) = {1};
+

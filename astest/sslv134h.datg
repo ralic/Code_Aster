@@ -1,0 +1,3026 @@
+*
+* PROCEDURE DE MAILLAGE D UNE PLAQUE AVEC UNE ZONE CENTRALE RAFFINEE
+*
+
+*--------------------------------------------------------
+*           Definition des parametres de la procedure
+*--------------------------------------------------------
+fic = '/home/galenne/ASTER_DEV/MXFEM_AUSY/sslv134s3.mgib' ;
+opti sauv form fic;
+itrac = 0;
+*
+* PARAMETRES GENERAUX DU TUBE
+*
+ rm = 3.18;
+ ltub_c =  4.;
+ ltub_i =  8. ;
+ ltub_s =  8. ;
+ eptub  =  10. ;
+*
+* nombre d'elements dans le tube en partie mediane
+* apres deraffinement de la zone d'interet 
+* suivant la profondeur epzint
+* 
+ nxep   =  2 ;
+* 
+* nombre d'elements dans le tube dans l'epaisseur 
+* complementaire de epzint a eptub (si 0 alors estimation)
+* 
+ nxco   =  2;
+*
+* maillage lineaire ou quadratique 
+*
+ zquad = 'non' ;
+*
+* Caracteristiques de la zone d'interet XFEM
+*
+* tailles circonf et longi
+*
+ tyzin =  5.4 ;
+ tzzin =  1.2 ;
+* 
+* profondeur de la zone 
+*
+ epzint  =  2.5  ;
+*
+* position angulaire du centre / axe X (centre plaque)  
+*
+ theta =  0.E+0 ;
+*
+* position longitudinale du centre dans le troncon central
+*
+ zczin =  ltub_c/2. ;
+* 
+* nombre d'elements du parallelepipede definissant la zone d'interet
+*
+* nbyzi   =  62 ;
+* nbzzi   =  24 ;
+* nbxzi   =  32 ;
+ nbyzi   =  32 ;
+ nbzzi   =  16 ;
+ nbxzi   =  16 ;
+* 
+* position de la zone d'interet (peau interne ou externe)
+*
+ peauzi  = 'externe';
+* 
+* zone axisymetrique ? (si oui, mettre tysep = 2pirm)
+* 
+ zaxis = 'non';
+*
+* Transformation en tube
+* 
+trans = 'non';
+* 
+* FIN PARAMETRES UTILISATEUR
+*
+opti donn '~/ASTER_DEV/MXFEM_AUSY/maillage_xfem.datg'; 
+
+*--------------------------------------------------------
+*           Definition des parametres de la procedure
+*--------------------------------------------------------
+opti echo 1;
+*
+* CREATION DU MAILLAGE DE TUBE SAIN AVEC ZONE XFEM
+* -------------------------------------------------------------
+*
+*************************************************
+*            Version 1.0 du 01/03/2007          *
+*************************************************
+*
+*****************************************************************
+*****              PROCEDURES  AUXILIAIRES                *******
+*****************************************************************
+* _________________________________________________________________
+* 
+DEBPROC TRI tab1*table tab2*table ;
+   i = 0 ;
+   nbnol = dime tab1 ;
+   nbcon = dime tab2 ;
+   si (ega nbnol nbcon) ;
+    repe bouc1 nbnol ;
+     i = i + 1 ;
+     m = i ;
+     j = 0 ;
+     repe bouc2 nbnol ;
+      j = j + 1 ;
+      si ((tab1 . j) > (tab1 . m)) ;
+       m = j ;
+       tempoa = tab1 . m ;
+       tab1 . m = tab1 . i ;
+       tab1 . i = tempoa ;
+       tempod = tab2 . m ;
+       tab2 . m = tab2 . i ;
+       tab2 . i = tempod ;
+      finsi ;
+     fin bouc2 ;
+    fin bouc1 ;
+   sinon ;
+    mess ' ATTENTION !!!  ERREUR DANS LES TABLES ' ;
+   finsi ;
+FINPROC TAB2 ;
+*____________________________________________________________________
+*
+DEBPROC PARTENTI x*flottant ;
+* on fixe a deux le nombre minimum d'elements determine
+      rest = x - (entier x) ;
+       si ( (rest < .5) et ( abs(rest-0.5) > 1.e-4 ) );
+          ent = entier x ;
+       sinon ;
+          ent = (entier x) + 1 ;
+       finsi ;
+       si (ent <eg 1);
+         ent = 1;
+       finsi;
+FINPROC ENT ;
+* _________________________________________________________________
+* 
+DEBP ORDNDS ligne*maillage ;
+*************************************************
+* Procedure de recherche des noeuds d'une ligne
+* tries par ordre de distance au noeud initial
+*************************************************
+ligne2 = ligne;
+pi = ligne point initial ;
+pligne = ligne chan poi1 ;
+xord = table ;
+numord = table ;
+nmax = nbno pligne ;
+xi yi zi = coord pi ;
+*
+* Calcul des distances au point initial et initialisation de numord
+i = 1 ;
+repe bouc1 nmax ;
+   p = pligne point i ;
+   x y z = coord p ;
+   lg = ((x-xi)**2) + ((y-yi)**2) + ((z-zi)**2) ;
+   xord . i = lg ;
+   numord . i = i ;
+   i = i + 1 ;
+fin bouc1 ;
+*
+* Boucle de tri et coonstruction de numord, tableau des nds ordonnes
+j = 1 ;
+repe bloc3 ( nmax - 1 );
+*
+imin = j ;
+i = j ;
+xmin = xord . i ;
+numin = numord . i ;
+repe bouc5 (nmax - j ) ;
+   i = i + 1 ;
+   xx = xord . i ;
+   si ( xx < xmin ) ;
+      xmin = xx ;
+      imin = i ;
+      numin = numord . i ;
+   finsi ;
+fin bouc5 ;
+*
+i = nmax + 1 ;
+k = nmax + 1 ;
+repe bloc6 (nmax - j + 1 ) ;
+   i = i - 1 ;
+   si ( neg i imin ) ;
+      k = k - 1 ;
+      xord . k = xord . i ;
+      numord . k = numord . i ;
+   finsi ;
+fin bloc6 ;
+xord . j = xmin ;
+numord . j = numin ;
+j = j + 1 ;
+fin bloc3 ;
+*
+* Construction de la liste des nds non quadratiques ordonnee
+i = 1 ;
+repe bouc7 nmax ;
+   si (i ega 1);
+      li_nds = ligne2 poin numord . 1;
+   sinon;
+      li_nds = li_nds et (ligne2 poin (numord . i) );
+   finsi;
+   i = i + 1 ;
+fin bouc7 ;
+*
+FINP LI_NDS ;
+* _________________________________________________________________
+* 
+DEBP ORDNDSF ligne*maillage ;
+************************************************
+* Procedure de recherche des noeuds d'une ligne
+* tries par ordre de distance au noeud final
+*************************************************
+ligne2 = ligne;
+pi = ligne point final ;
+pligne = ligne chan poi1 ;
+xord = table ;
+numord = table ;
+nmax = nbno pligne ;
+xi yi zi = coord pi ;
+*
+* Calcul des distances au point final et initialisation de numord
+i = 1 ;
+repe bouc1 nmax ;
+   p = pligne point i ;
+   x y z = coord p ;
+   lg = ((x-xi)**2) + ((y-yi)**2) + ((z-zi)**2) ;
+   xord . i = lg ;
+   numord . i = i ;
+   i = i + 1 ;
+fin bouc1 ;
+*
+* Boucle de tri et coonstruction de numord, tableau des nds ordonnes
+j = 1 ;
+repe bloc3 ( nmax - 1 );
+*
+imin = j ;
+i = j ;
+xmin = xord . i ;
+numin = numord . i ;
+repe bouc5 (nmax - j ) ;
+   i = i + 1 ;
+   xx = xord . i ;
+   si ( xx < xmin ) ;
+      xmin = xx ;
+      imin = i ;
+      numin = numord . i ;
+   finsi ;
+fin bouc5 ;
+*
+
+i = nmax + 1 ;
+k = nmax + 1 ;
+repe bloc6 (nmax - j + 1 ) ;
+   i = i - 1 ;
+   si ( neg i imin ) ;
+      k = k - 1 ;
+      xord . k = xord . i ;
+      numord . k = numord . i ;
+   finsi ;
+fin bloc6 ;
+xord . j = xmin ;
+numord . j = numin ;
+j = j + 1 ;
+fin bloc3 ;
+*
+* Construction de la liste des nds non quadratiques ordonnee
+i = 1 ;
+repe bouc7 nmax ;
+   si (i ega 1);
+      li_nds = ligne2 poin numord . 1;
+   sinon;
+      li_nds = li_nds et (ligne2 poin (numord . i) );
+   finsi;
+   i = i + 1 ;
+fin bouc7 ;
+*
+FINP LI_NDS ;
+* _________________________________________________________________
+* 
+DEBPROC PLAQDERA rm*flottant pi*flottant ltub_c*flottant  
+                ltub_i*flottant ltub_s*flottant eptub *flottant
+                epc*flottant 
+                zsyme*mot nbxzi*entier nbyzi*entier nbzzi*entier
+                yczin*flottant zczin*flottant tyzin*flottant 
+                tzzin*flottant nxep*entier zaxis*mot itrac*entier ;
+*********************************************************************
+* PROCEDURE POUR CONSTRUIRE LA PLAQUE DERAFFINEE AVEC ZONE D'INTERET
+*********************************************************************
+*
+* EN ENTREE :
+* -----------
+* RM        : rayon moyen du tube
+* PI        : pi
+* LTUB_C    : longueur partie centrale du tube
+* LTUB_I    : longueur de l'embout inf
+* LTUB_S    : longueur de l'embout sup
+* EPTUB     : epaisseur du tube
+* EPC       : epaisseur zone d'interet
+* ZSYME     : symetrie (demi-structure)
+* NBXZI     : nombre d'elements dans la zone d"interet
+* NBYZI     : nb elements circonferentiel  zone d"interet
+* NBZZI     : nb elements longitudinal     zone d"interet
+* YCZIN     : abcisse circonferentielle centre zone d"interet
+* ZCZIN     : abcisse longitudinale centre zone d"interet
+* TYZIN     : taille circonferentielle  zone d"interet
+* TZZIN     : taille longitudinale zone d"interet
+* NXEP      : nbre d'elements dans l'epaisseur du tube sur epzint
+* ZAXIS     : zone d"interet axisymetrique ?
+* ITRAC     : parametre de trace 
+*
+* EN SORTIE :
+* -----------
+*
+* PLAQUE    : plaque totale reglee et deraffinee
+* BLOC      : structure volumique de la zone d'interet
+*
+* Taille de la plaque
+*
+mess '/////////////////////////////////////////////////////';
+mess '****  PLAQDERA : PROCEDURE MAILLAGE DE PLAQUE   ****' ;
+mess '/////////////////////////////////////////////////////';
+*
+epsi = 1.e-3;
+*
+*si (ega zsyme 'quart');
+*  nbyzi = nbyzi *2;
+*  nbzzi = nbzzi *2;
+*finsi;
+*si (ega zsyme 'demi');
+*  nbzzi = nbzzi *2;
+*finsi;
+* 
+ymin = -1.*pi*rm;
+ymax = +1.*pi*rm;
+zmin = -1.*ltub_i;
+zmax = ltub_c+ltub_s;
+zcoud = ltub_c;
+rext = rm + (epc/2.);
+rint = rm - (epc/2.);
+*
+* Criteres de pas en y et z du maillage regle
+*
+oeil = 10000. 10000. 10000.;
+hyn  = 2.*pi*rm/20.  ;
+nbyzi0 = 20;
+*
+* critere etabli a partir de l'epaisseur 
+* d'une maille de la plaque dans la partie 
+* centrale (e/3 = 3mm)
+*
+  dens_c = 5.*eptub;
+  nbzzi0 = ltub_c / dens_c ;
+  mess 'nbzzi0'nbzzi0;
+*
+  inbzzi = entier ( nbzzi0 ) ;
+  si ( (nbzzi0 - inbzzi) < 1.E-10) ;
+    inbzzi = inbzzi ;
+  sinon ;
+    inbzzi = inbzzi + 1 ;
+  finsi ;  
+  deltaz = ltub_c/(inbzzi+1) ;
+  hzn  = deltaz;
+* 
+mess 'Critere taille de mailles dans le tube : ';
+mess ' - circonferentiel : hy = 'hyn;
+mess ' - longitudinal    : hz = 'hzn;
+*
+mess '*********************************';
+mess 'INFORMATIONS BLOC ZONE D"INTERET';
+mess '*********************************';
+etir = tyzin/tzzin ;
+si (etir < 1.);
+  etir = 1./etir;
+finsi;
+mess 'Taille zone d"interet : ';
+mess ' - circonferentiel : ty = 'tyzin;
+mess ' - longitudinal    : tz = 'tzzin;
+*
+mess 'Etirement zone d"interet (ty/tz) : 'etir;
+*
+mess 'Nombre de mailles zone d"interet (pair) : ';
+mess ' - circonferentiel : nbyzi = 'nbyzi;
+mess ' - longitudinal    : nbzzi = 'nbzzi;
+*
+* pas en y et z pour la zone d"interet
+*
+hsy0 = tyzin/nbyzi;
+hsz0 = tzzin/nbzzi;
+mess 'Pas de mailles bloc zone d"interet : ';
+mess ' - circonferentiel :  hsy = 'hsy0;
+mess ' - longitudinal    :  hsz = 'hsz0;
+si (hsz0 > (hzn + 1.0e-5));
+  mess '!!!!!!!!!!!!!!! ALARME !!!!!!!!!!!!!!!!!!!!';
+  mess 'ATTENTION : LE PAS DE MAILLE EN Z DU BLOC : 'hsz0;
+  mess 'EST PLUS GRAND QUE LE CRITERE DU PAS MAXIMAL : 'hzn;
+  mess 'CONSEIL --> RAFFINEZ PLUS VOTRE ZONE D"INTERET';
+  mess 'ON CONTINUE QUAND MEME';
+finsi;
+si (hsy0 > (hyn + 1.0e-5));
+  mess '!!!!!!!!!!!!!!! ALARME !!!!!!!!!!!!!!!!!!!!';
+  mess 'ATTENTION : LE PAS DE MAILLE EN Y DU BLOC : 'hsy0;
+  mess 'EST PLUS GRAND QUE LE CRITERE DU PAS MAXIMAL : 'hyn;
+  mess 'CONSEIL --> RAFFINEZ PLUS VOTRE ZONE D"INTERET';
+  mess 'ON CONTINUE QUAND MEME';
+finsi;
+etiryz = hsy0 / hsz0;
+si (etiryz < 1.);
+  etiryz = 1./etiryz;
+finsi;
+etirxy = hsy0/(epc/nbxzi);
+si (etirxy < 1.);
+  etirxy = 1./etirxy;
+finsi;
+etirxz = hsz0/(epc/nbxzi);
+si (etirxz < 1.);
+  etirxz = 1./etirxz;
+finsi;
+mess 'Etirement des mailles zone d"interet en (y,z) : 'etiryz;
+mess 'Etirement des mailles zone d"interet en (x,y) : 'etirxy;
+mess 'Etirement des mailles zone d"interet en (x,z) : 'etirxz;
+*
+mess 'Rapport de tailles maille ideale tube / zone d"interet : ';
+rty = hyn/hsy0 ;
+rtz = hzn/hsz0 ;
+mess ' - circonferentiel :  rty = 'rty;
+mess ' - longitudinal    :  rtz = 'rtz;
+*
+nbdy = 0;
+repe bloc1;
+  rty = rty/2;
+  si (rty < 1.) ;
+    quit bloc1;
+  finsi;
+  nbdy = nbdy + 1;
+fin bloc1;
+mess 'Nombre de deraffinement en y = 'nbdy;
+nbdz = 0;
+repe bloc1;
+  rtz = rtz/2;
+  si (rtz < 1.) ;
+    quit bloc1;
+  finsi;
+  nbdz = nbdz + 1;
+fin bloc1;
+mess 'Nombre de deraffinement en z = 'nbdz;
+*
+hy = hyn;
+hz = hzn;
+xp = rint;
+*
+* bloc zone d"interet
+*
+yqb = yczin+(tyzin/2.) ;
+zqb = zczin+(tzzin/2.) ;
+mess '*************************************';
+mess 'CREATION DU QUART BLOC ZONE D"INTERET';
+mess '*************************************';
+mess 'ymin-ymax : ('yczin' - 'yqb')';
+mess 'zmin-zmax : ('zczin' - 'zqb')';
+*
+qb1 = xp 0.  zczin ;
+qb2 = xp yqb zczin ;
+qb3 = xp yqb zqb ;
+qb4 = xp 0.  zqb ;
+*
+lqb1 = qb1 droit (nbyzi/2) qb2;
+lqb2 = qb2 droit (nbzzi/2) qb3;
+lqb3 = qb3 droit (nbyzi/2) qb4;
+lqb4 = qb4 droit (nbzzi/2) qb1;
+*
+bloc = daller lqb1 lqb2 lqb3 lqb4;
+bloc = bloc coul rouge;
+*
+bloc = bloc volu nbxzi tran (epc 0. 0.);
+*
+si (itrac ega 1);
+ titr 'PLAQDERA / quart bloc zone d"interet';
+ trac cach oeil bloc;
+finsi;
+*
+exqb1 = qb1 plus (epc 0. 0.);
+exqb2 = qb2 plus (epc 0. 0.);
+exqb3 = qb3 plus (epc 0. 0.);
+exqb4 = qb4 plus (epc 0. 0.);
+*
+* lignes dans l'epaisseur
+*
+lxqb1 = qb1 droit nbxzi exqb1;
+lxqb2 = qb2 droit nbxzi exqb2;
+lxqb3 = qb3 droit nbxzi exqb3;
+lxqb4 = qb4 droit nbxzi exqb4;
+*
+*****************************************************
+*  DERAFFINEMENT DE MAILLE EN X (EPAISSEUR)
+*  A FAIRE SI PLUS DE TROIS ELEMENTS DANS L'EPAISSEUR
+si (nbxzi > 3);
+*****************************************************
+*
+* DERAFFINEMENT DE MAILLE EN X (EPAISSEUR)
+* DANS LA DIRECTION Z (LONGITUDINAL)
+*
+* coeff. diminution du nombre de mailles en x
+*
+cfmx = 2;
+pxold = nbxzi;
+px = partenti(nbxzi/cfmx);
+si (px < nxep); px = nxep; finsi;
+*
+* coefficient de deraffinement
+*
+coefy = 1.4;
+coefz = 1.4;
+*
+ysup = yqb;
+zsup = zqb;
+*
+ibd = 0;
+deltay = tyzin/2.;
+deltaz = tzzin/2.;
+hsz = table;
+hsy = table;
+qb4n = table;
+qb2n = table;
+*
+repe bouc1 ;
+*
+  unqb1 = qb1 plus ( (epc/px) 0. 0.);
+  unqb3 = qb3 plus ( (epc/px) 0. 0.);
+*
+  lunqb1 = qb1 droit cfmx unqb1;
+  lunqb3 = qb3 droit cfmx unqb3;
+*
+  mess '**********************************************************';
+  mess '** DERAFFINEMENT EN X (EPAISSEUR) SUIVANT Z (LONGITUD.) **';
+  mess '**********************************************************';
+*
+  ibd = ibd+1;
+  si (ibd ega 1);
+    hsz . ibd = hsz0 * coefz;
+  sinon;
+    hsz . ibd = (hsz . (ibd-1) ) *coefz;
+  finsi;
+  zsup = zsup+(1.*(hsz. ibd));
+  mess 'Bande de deraffinement numero 'ibd;
+  mess '  * Taille de bande hsz.('ibd') = 'hsz . ibd;
+  mess '  * Nouvelle ordonnee Z = 'zsup;
+  mess '  * Nouveau nombre de mailles px = 'px;
+*
+    dens 2.;
+    qb4n . ibd  = xp 0. zsup;
+    exqb4n = (qb4n . ibd)  plus ( epc 0. 0.);
+*
+    lxqb4n   = (qb4n . ibd)   droit px   exqb4n ;
+*    
+*   s4 = coutur lxqb4 lxqb4n;
+*    list lxqb4;list lxqb4n;
+*
+    nbel1 = nbel lxqb4;
+    nbel2 = px;
+*
+    si (ega zquad 'oui');
+      opti elem qua8;
+      elqu = texte 'QUA4';
+      eltr = texte 'TRI3';
+    sinon;
+      opti elem qua4;
+      elqu = texte 'QUA4';
+      eltr = texte 'TRI3';
+    finsi;
+    pas = (coor 1 (lxqb4n point final)) 
+          - (coor 1 (lxqb4 point initial));
+    mess' pas l4 ='; list pas;
+    ch1 = manu CHPO (lxqb4n) 1 'TAIL' (pas);  
+*
+    i = 0;
+    repe bouc2 (px);
+      i=i+1;
+      l4  = (lxqb4 elem (2*i-1));
+      l4s = (lxqb4 elem (2*i));  
+      l4n = (lxqb4n elem i);
+      si (ega i 1);  
+         s4 = manu elqu  (l4 point initial)
+             (l4 point final) (l4n point final)
+             (l4n point initial);             
+         s4 = s4 et (manu eltr (l4s point initial)        
+         (l4s point final) (l4n point final));
+         si (ega zquad 'oui');s4 = chan 'QUAD' s4;finsi;
+         s = s4;
+         ps4 = (l4 point final);
+      sinon;        
+         s4 = s4 et (manu elqu  (l4 point initial)
+              (l4 point final) (l4n point final)
+              (l4n point initial));      
+         s4 = s4 et (manu eltr (l4s point initial)
+         (l4s point final) (l4n point final));
+         si (ega zquad 'oui');s4 = chan 'QUAD' s4;finsi;
+*         
+      finsi;            
+    fin bouc2;
+*     titr 's4';
+*     trac s4;
+    
+*    s4 = daller lxqb4 
+*        ((lxqb4 point final) droit 1  (lxqb4n point final))
+*        (inve lxqb4n) 
+*       ((lxqb4n point initial) droit 1  (lxqb4 point initial))
+*        'PLAN';
+*    trac s4;
+
+*    s4 = surf (lxqb4 et
+*        ((lxqb4 point final) droit 1  (lxqb4n point final))
+*        et (inve lxqb4n) et
+*        ((lxqb4n point initial) droit 1  (lxqb4 point initial)))
+*        'PLAN';
+*    titr 's4';
+*    trac s4;
+    si (ega zquad 'oui');
+      opti elem CU20;
+    sinon;
+      opti elem CUB8;
+    finsi;
+
+    s4 = s4 volu (nbyzi/2) tran (0. (tyzin/2.) 0.);
+    si (ibd > 1);
+      i = 0 ;
+      repe bouc2 (ibd-1);
+          i = (i + 1);
+          s4 = s4 volu 1 tran (0. (hsy.i) 0.);
+      fin bouc2;
+    finsi;
+    s4 = s4 coul bleu;
+*
+   si ( ( (px/2.) ega (flottant(entier(px/2)) ) epsi)
+     et ( (pxold/2.) ega (flottant(entier(pxold/2)) ) epsi )  );
+*
+    si (ibd > 1);
+      unqb4m = (qb4n . (ibd-1)) plus ( (cfmx*epc/pxold) 0. 0.);
+      vois = s4 poin proc unqb4m ;
+      lunqb4 = (qb4n . (ibd-1)) droit cfmx vois ;
+    sinon;
+      unqb4 = qb4 plus ( (cfmx*epc/pxold) 0. 0.);
+      vois = s4 poin proc unqb4 ;
+      lunqb4 = qb4 droit cfmx vois;
+    finsi;
+    unqb4n = (qb4n . ibd)  plus ( (epc/px) 0. 0.);
+    vois = s4 poin proc unqb4n ;
+    lxunqb4n = (qb4n . ibd) droit 1 vois ;
+*
+  sinon;
+*
+    si (ibd > 1);
+      unqb4m = (qb4n . (ibd-1)) plus ( epc 0. 0.);
+      vois = s4 poin proc unqb4m ;
+      lunqb4 = (qb4n . (ibd-1)) droit pxold vois ;
+    sinon;
+      unqb4 = qb4 plus ( epc 0. 0.);
+      vois = s4 poin proc unqb4 ;
+      lunqb4 = qb4 droit pxold vois;
+    finsi;
+    unqb4n = (qb4n . ibd)  plus (epc 0. 0.);
+    vois = s4 poin proc unqb4n ;
+    lxunqb4n = (qb4n . ibd) droit px vois ;
+*
+  finsi;
+*
+*    list lunqb4;list lxunqb4n;
+*    trac (lunqb4 et lxunqb4n);
+*    s = coutur lunqb4 lxunqb4n ;
+
+*    si (ega zquad 'oui');
+*      opti elem qua8;
+*    sinon;
+*      opti elem qua4;
+*    finsi;
+    pas = (coor 3 (lxunqb4n point final)) 
+          - (coor 3 (lunqb4 point final));
+    mess' pas l4 ='; list pas;
+    ch1 = manu CHPO (lunqb4 et lxunqb4n) 1 'TAIL' (pas);  
+    
+*    s = surf ch1 (lunqb4 et
+*        ((lunqb4 point final) droit 1  (lxunqb4n point final))
+*        et (inve lxunqb4n) et
+*        ((lxunqb4n point initial) droit 1  (lunqb4 point initial)))
+*        'PLAN';
+*   titr 'slatg';trac s;
+
+    si (ega zquad 'oui');
+      opti elem CU20;
+    sinon;
+      opti elem CUB8;
+    finsi;
+    
+*     s = daller lunqb4 
+*         ((lunqb4 point final) droit 1  (lxunqb4n point final))
+*         (inve lxunqb4n) 
+*         ((lxunqb4n point initial) droit 2  (lunqb4 point initial))
+*         'PLAN';
+        
+    slatg = s plus (0. deltay 0.) ;
+    ps4p = ps4 plus (0. deltay 0.) ;
+*
+    slatg = slatg coul jaune;
+    si (ibd ega 1);
+      derx = s4 et ps4p;
+    sinon;
+      derx = derx et s4 et ps4p;
+    finsi;
+    elim derx epsi;
+    si (itrac ega 1);
+     titr 'PLAQDERA2 / bande deraffinement en X suivant Z numero 'ibd;
+     trac cach oeil (elim(bloc et derx et slatg) epsi);
+    finsi;
+    lxqb4 = lxqb4n;
+*
+si (ega zaxis 'non');
+*
+* DERAFFINEMENT DE MAILLE EN X (EPAISSEUR)
+* DANS LA DIRECTION Y (CIRCONFERENTIEL)
+*
+  mess '*********************************************************';
+  mess '** DERAFFINEMENT EN X (EPAISSEUR) SUIVANT Y (CIRCONF.) **';
+  mess '*********************************************************';
+*
+  si (ibd ega 1);
+    hsy . ibd = hsy0 * coefy;
+  sinon;
+    hsy . ibd = (hsy . (ibd-1) ) *coefy;
+  finsi;
+  ysup = ysup+(1.*(hsy . ibd));
+  mess 'Bande de deraffinement numero 'ibd;
+  mess ' * Taille de bande =  hsy.('ibd') = 'hsy. ibd;
+  mess ' * Nouvelle abscisse Y = 'ysup;
+  mess ' * Nouveau nombre de mailles px = 'px;
+*
+    dens 2.;
+    qb2n . ibd  = xp ysup zczin ;
+    exqb2n = (qb2n . ibd) plus (epc 0. 0.);
+*
+    lxqb2n   = (qb2n . ibd) droit px exqb2n;
+*    s2 = coutur lxqb2 lxqb2n;
+*    list lxqb2;list lxqb2n;
+    
+    si (ega zquad 'oui');
+      opti elem qua8;
+      elqu = texte 'QUA4';
+      eltr = texte 'TRI3';
+    sinon;
+      opti elem qua4;
+      elqu = texte 'QUA4';
+      eltr = texte 'TRI3';
+    finsi;
+* 
+    pas = (coor 2 (lxqb2n point final)) 
+          - (coor 2 (lxqb2 point final));
+    mess' pas l2='; list pas;
+    pas2 = (coor 1 (lxqb2n point 2)) 
+          - (coor 1 (lxqb2n point 1));
+    mess' pas2 l2='; list pas2;
+*   ch1 = manu CHPO (lxqb2n et lxqb2) 1 'TAIL' (pas);  
+    ch1 = manu CHPO (lxqb2n) 1 'TAIL' (pas);  
+*    
+*    s2 = surf ch1 (lxqb2 et
+*        ((lxqb2 point final) droit 1  (lxqb2n point final))
+*        et (inve lxqb2n) et
+*        ((lxqb2n point initial) droit 1  (lxqb2 point initial)))
+*        'PLAN';
+*
+    i = 0;
+    repe bouc2 (px);
+      i=i+1;
+      l2  = (lxqb2 elem (2*i-1));
+      l2s = (lxqb2 elem (2*i));  
+      l2n = (lxqb2n elem i);
+      si (ega i 1); 
+         s2 = manu elqu  (l2 point initial)
+             (l2 point final) (l2n point final)
+             (l2n point initial);
+*
+         s2 = s2 et (manu eltr (l2s point initial)
+         (l2s point final) (l2n point final));
+         si (ega zquad 'oui');s2 = chan 'QUAD' s2;finsi;
+         s = s2;
+         ps2 = (l2 point final);
+      sinon;        
+         s2 = s2 et (manu elqu  (l2 point initial)
+              (l2 point final) (l2n point final)
+              (l2n point initial));
+*      
+         s2 = s2 et (manu eltr (l2s point initial)
+         (l2s point final) (l2n point final));
+         si (ega zquad 'oui');s2 = chan 'QUAD' s2;finsi;
+      finsi;            
+    fin bouc2;
+
+*    titr 'S2';
+*    trac s2;
+*
+    si (ega zquad 'oui');
+      opti elem CU20;
+    sinon;
+      opti elem CUB8;
+    finsi;    
+*    
+    s2 = s2 volu (nbzzi/2) tran (0.  0. (tzzin/2.));
+    si (ibd > 1);
+      i = 0;
+      repe bouc2 (ibd-1);
+         i = i+1;
+         s2 = s2 volu 1 tran (0.  0. (hsz.i));
+      fin bouc2;
+    finsi;
+    s2 = s2 coul bleu;
+*
+   si ( ( (px/2.) ega (flottant(entier(px/2)) ) epsi)
+     et ( (pxold/2.) ega (flottant(entier(pxold/2)) ) epsi ) );
+*
+    si (ibd > 1);
+      unqb2m = (qb2n . (ibd-1)) plus ( (cfmx*epc/pxold) 0. 0.);
+      vois = s2 poin proc unqb2m ;
+      lunqb2 = (qb2n . (ibd-1)) droit cfmx vois ;
+    sinon;
+      unqb2 = qb2 plus ( (cfmx*epc/pxold) 0. 0.);
+      vois = s2 poin proc unqb2 ;
+      lunqb2 = qb2 droit cfmx vois;
+    finsi;
+    unqb2n = (qb2n . ibd) plus ( (epc/px) 0. 0.);
+    vois = s2 poin proc unqb2n ;
+    lxunqb2n = (qb2n . ibd) droit 1 vois ;
+*
+   sinon;
+   
+*
+    si (ibd > 1);
+      unqb2m = (qb2n . (ibd-1)) plus ( epc 0. 0.);
+      vois = s2 poin proc unqb2m ;
+      lunqb2 = (qb2n . (ibd-1)) droit pxold vois ;
+    sinon;
+      unqb2 = qb2 plus ( epc 0. 0.);
+      vois = s2 poin proc unqb2 ;
+      lunqb2 = qb2 droit pxold vois;
+    finsi;
+    unqb2n = (qb2n . ibd) plus (epc 0. 0.);
+    vois = s2 poin proc unqb2n ;
+    lxunqb2n = (qb2n . ibd) droit px vois ;
+*
+   finsi;
+*        
+*    s = coutur lunqb2 lxunqb2n ;
+*    trac (lunqb2 et lxunqb2n);
+*   list lunqb2;list lxunqb2n;
+    
+    si (ega zquad 'oui');
+      opti elem qua8;
+    sinon;
+      opti elem qua4;
+    finsi;
+    pas = (coor 2 (lxunqb2n point final)) 
+          - (coor 2 (lunqb2 point final));
+    mess 'pas l2 ='; list pas;
+    ch1 = manu CHPO (lunqb2 et lxunqb2n) 1 'TAIL' (pas); 
+     
+*    s = surf ch1 (lunqb2 et
+*        ((lunqb2 point final) droit 1  (lxunqb2n point final))
+*        et (inve lxunqb2n) et
+*        ((lxunqb2n point initial) droit 1  (lunqb2 point initial)))
+*        'PLAN';
+*    titr 'slati';trac s;
+
+    si (ega zquad 'oui');
+      opti elem CU20;
+    sinon;
+      opti elem CUB8;
+    finsi;    
+       
+    slati = s plus (0. 0. deltaz) ;
+    slati = slati coul jaune;
+    derx = derx et s2 et slati;
+    elim derx epsi;
+    si (itrac ega 1);
+     titr 'PLAQDERA / bande deraffinement en X suivant Y numero 'ibd;
+     trac cach oeil (elim(bloc et derx et slati) epsi);
+    finsi;
+    lxqb2 = lxqb2n;
+*
+* DERAFFINEMENT DE MAILLE EN X (EPAISSEUR)
+* DANS LES ANGLES (Y,Z)
+*
+  mess '**********************************************************';
+  mess '** DERAFFINEMENT EN X (EPAISSEUR) SUIVANT (Y,Z) (ANGLE) **';
+  mess '**********************************************************';
+*
+ si ( ( (px/2.) ega ( flottant(entier(px/2)) )epsi )
+   et ( (pxold/2.) ega ( flottant(entier(pxold/2)) )epsi ) );
+*
+* la couture se fait entre deux rangees d'elements en nombre pair
+*
+    dens 20.;
+    si (ibd > 1);
+      pld   = qb4n . (ibd-1)  plus (0. (deltay+(hsy.ibd)) 0. ) ;
+      plg   = qb4n . (ibd-1)  plus (0. deltay 0. ) ;
+    sinon;
+      pld   = qb4  plus (0. (deltay+(hsy.ibd)) 0. ) ;
+      plg   = qb4  plus (0. deltay 0. ) ;
+    finsi;
+    plds  = pld  plus (0. 0.  (hsz.ibd) ) ;
+    pls   = plg  plus (0. 0.  (hsz.ibd) ) ;
+*
+    unpld  = pld  plus (epc/px 0. 0.) ;
+    unplds = plds plus (epc/px 0. 0.) ;
+    unpls  = pls  plus (epc/px 0. 0.) ;
+    unqb3 =  plg  plus (cfmx*epc/pxold 0. 0.) ;
+*
+    l1 = plg  droit 1 pls;
+    l2 = pls  droit 1 pld;
+    l2b = plds  droit 1 pls;
+    l3 = plds droit 1 pld;
+    l4 = pld  droit 1 plg;
+*   slatav = daller l1 l2 l3 l4;
+
+    si (ega zquad 'oui');
+      opti elem tri6;
+    sinon;
+      opti elem tri3;
+    finsi;    
+*    slatav3 = surf (l1 et (inve l2b) et l3 et l4) 'PLAN';
+    slatav3 = coutur (inve l2b)  (inve l4) ;
+    si (ega zquad 'oui');
+      opti elem CU20;
+    sinon;
+      opti elem CUB8;
+    finsi;    
+    slatav = surf (l1 et l2 et l4) 'PLAN';
+    slatav2 = surf (l2 et (inve l3) et l2b) 'PLAN';
+*   trac cach (slatav et derx et bloc);
+*
+    l5b = plds droit 1 pls;
+    l5 = pld droit 1 pls;
+    l6 = pls droit 1 unpls;
+    l7 = unpls droit 1 unpld;
+    l7b = unpls droit 1 unplds;
+    l8 = unpld droit 1 pld ;
+    l8b = unplds droit 1 plds ;
+    si (ega zquad 'oui');
+      opti elem qua8;
+    sinon;
+      opti elem qua4;
+    finsi;    
+*    slats2 = surf  (l5b et l6 et l7b et l8b) 'PLAN';
+    slats2 = manu elqu plds pls unpls unplds;
+    slats = surf (l5 et l6 et l7 et l8) 'PLAN';
+    si (ega zquad 'oui');
+      opti elem CU20;
+    sinon;
+      opti elem CUB8;
+    finsi;    
+*
+*    slatd2 = l8b tran 1 (0. 0. (-1.*(hsz.ibd)));
+    slatd2 = manu elqu unplds plds pld unpld;
+    si (ega zquad 'oui');
+      opti elem CU20;
+    sinon;
+      opti elem CUB8;
+    finsi;    
+*
+    slatd = l8 tran 1 (0. 0. (-1.*(hsz.ibd)));
+*
+    l9 = unqb3 droit 1 unpld;
+    l10 = unpld droit 1 unpls;
+    l10b = unplds droit 1 unpld;
+    l11 = unpls droit 1 unqb3;
+
+    si (ega zquad 'oui');
+      opti elem tri6;
+    sinon;
+      opti elem tri3;
+    finsi;    
+*   slatar3 = surf ch1 (l9 et (inve l10b) et (inve l7b) et l11) 'PLAN';
+    slatar3 = coutur l7b l9 ;
+    slatar = surf (l9 et l10 et l11) 'PLAN';
+    slatar2 = surf (l10b et l10 et l7b) 'PLAN';
+    si (ega zquad 'oui');
+      opti elem CU20;
+    sinon;
+      opti elem CUB8;
+    finsi;    
+*
+*   env1 = slatav et slatar et slats et slatg et slati ;
+    env1 = slatav3 et slatar3 et slats2 et slatd2 et slatg et slati ;
+*    env2 = slatav2 et slatar2 et slats2 et slatd2 et slats ;
+*
+*    trac env1;
+*    elim env2 epsi;
+    elim env1 epsi;
+    si (itrac ega 1);
+     titr 
+     'PLAQDERA / enveloppe du volume (Y,Z) qui couture la bande 'ibd;
+     trac env1;
+    finsi;
+    mess 'INFOS PYRAMIDES'; 
+*
+*    v = volu env1;
+    si (ega zquad 'oui');
+      v = manu 'TET4' unpls unqb3 unpld ps4p;
+      v = v et (manu 'PRI6' unpls unpld unplds pls pld plds);
+      v = v et (manu 'PRI6' unpls ps4p unpld pls plg pld);
+      v = chan 'QUAD' v;
+    sinon;
+      v = manu 'TET4' unpls unqb3 unpld ps4p;
+      v = v et (manu 'PRI6' unpls unpld unplds pls pld plds);
+      v = v et (manu 'PRI6' unpls ps4p unpld pls plg pld);
+    finsi;    
+    list v;   
+*    
+    si (ega zquad 'oui');
+      b = 'MOTS' 'PY13';
+    sinon;
+      b = 'MOTS' 'PYR5';
+    finsi;
+    a = (nbel v (b)) ;
+    mess 'nbre pyramides dans volume v :';    
+    list a;
+    mess 'apres pyr';    
+    v = v coul vert;
+    si (itrac ega 1);
+     titr 'PLAQDERA / volume (Y,Z) qui couture la bande 'ibd;
+     trac v;
+    finsi;
+    repe bouc2 px;
+     derx = derx et v ;
+     v2 =  v plus (epc/px 0. 0.);
+     v2 = v2 coul vert;
+     v = v2;
+    fin bouc2;
+ sinon ;
+    si (ibd > 1);
+      pld   = qb4n . (ibd-1)  plus (0. (deltay+(hsy.ibd)) 0. ) ;
+      plg   = qb4n . (ibd-1)  plus (0. deltay 0. ) ;
+    sinon;
+      pld   = qb4  plus (0. (deltay+(hsy.ibd)) 0. ) ;
+      plg   = qb4  plus (0. deltay 0. ) ;
+    finsi;
+    plds  = pld  plus (0. 0.  (hsz.ibd) ) ;
+    pls   = plg  plus (0. 0.  (hsz.ibd) ) ;
+*
+    unpld  = pld  plus (epc 0. 0.) ;
+    unplds = plds plus (epc 0. 0.) ;
+    unpls  = pls  plus (epc 0. 0.) ;
+    unqb3 =  plg  plus (epc 0. 0.) ;
+*
+    l1 = plg  droit 1 pls;
+    l2 = pls  droit 1 pld;
+    l2b = plds  droit 1 pls;
+    l3 = plds droit 1 pld;
+    l4 = pld  droit 1 plg;
+    si (ega zquad 'oui');
+      opti elem tri6;
+    sinon;
+      opti elem tri3;
+    finsi;
+    slatav3 = surf (l1 et (inve l2b) et l3 et l4) 'PLAN';
+    slatav = surf (l1 et l2 et l4) 'PLAN';
+    slatav2 = surf (l2 et (inve l3) et l2b) 'PLAN';
+    si (ega zquad 'oui');
+      opti elem cu20;
+    sinon;
+      opti elem cub8;
+    finsi;
+*
+    l5b = plds droit 1 pls;
+    l5 = pld droit 1 pls;
+    l6 = pls droit px unpls;
+    l7 = unpls droit 1 unpld;
+    l7b = unpls droit 1 unplds;
+    l8 = unpld droit px pld ;
+    l8b = unplds droit px plds ;
+    slats2 = surf  (l5b et l6 et l7b et l8b) 'PLAN';
+    slats = surf (l5 et l6 et l7 et l8) 'PLAN';
+    si (ega zquad 'oui');
+      opti elem cu20;
+    sinon;
+      opti elem cub8;
+    finsi; 
+*
+    slatd2 = l8b tran 1 (0. 0. (-1.*(hsz.ibd)));
+*
+    l9 = unqb3 droit 1 unpld;
+    l10 = unpld droit 1 unpls;
+    l10b = unplds droit 1 unpld;
+    l11 = unpls droit 1 unqb3;
+*
+    si (ega zquad 'oui');
+      opti elem tri6;
+    sinon;
+      opti elem tri3;
+    finsi;
+    slatar3 = surf (l9 et (inve l10b) et (inve l7b) et l11) 'PLAN';
+    slatar = surf (l9 et l10 et l11) 'PLAN';
+    slatar2 = surf (l10b et l10 et l7b) 'PLAN';
+    si (ega zquad 'oui');
+      opti elem cu20;
+    sinon;
+      opti elem cub8;
+    finsi;
+*
+*    env1 = slatav et slatar et slats et slatg et slati ;
+     env1 = slatav3 et slatar3 et slats2 et slatd2 et slatg et slati ;
+*    trac slatav3;trac slatar3;trac slats2;trac slatd2;trac slatg;
+*    trac slati;
+    env2 = slatav2 et slatar2 et slats2 et slatd2 et slats ;
+*
+    elim env2 epsi;
+    elim env1 epsi;
+    si (itrac ega 1);
+     titr 
+     'PLAQDERA2 / enveloppe du volume (Y,Z) qui couture la bande 'ibd;
+     trac env1;
+    finsi;
+    mess 'avant pyr2';
+*    v = volu env1;
+    si (ega zquad 'oui');
+      v = manu 'TET4' unpls unqb3 unpld ps4p;
+      v = v et (manu 'PRI6' unpls unpld unplds pls pld plds);
+      v = v et (manu 'PRI6' unpls ps4p unpld pls plg pld);
+      v = chan 'QUAD' v;
+    sinon;
+      v = manu 'TET4' unpls unqb3 unpld ps4p;
+      v = v et (manu 'PRI6' unpls unpld unplds pls pld plds);
+      v = v et (manu 'PRI6' unpls ps4p unpld pls plg pld);
+    finsi;    
+    list v;
+    mess 'INFOS PYRAMIDES 2'; 
+    si (ega zquad 'oui');
+      b = 'MOTS' 'PY13';
+    sinon;
+      b = 'MOTS' 'PYR5';
+    finsi;
+    a = (nbel v (b)) ;
+    mess 'nbre pyramides dans volume v :';
+    list a;
+    v = v coul vert;
+    si (itrac ega 1);
+     titr 'PLAQDERA / volume (Y,Z) qui couture la bande 'ibd;
+     trac (v );
+    finsi;
+    derx = derx et v ;
+ finsi;
+ elim derx epsi;
+ si (itrac ega 1);
+  titr 'PLAQDERA / bloc + bandes de deraffinement en X 1/'ibd;
+  trac cach oeil (elim(bloc et derx) epsi);
+ finsi;
+*
+* test sur l'axisymetrie
+*
+sinon;
+  hsy . ibd = 0.;
+  qb2n . ibd  = xp ymax zczin ;
+finsi;
+*
+*   test de sortie
+*
+    si (px <eg nxep);
+       quit bouc1;
+    sinon;
+       pxold = px;
+       px = partenti(px/cfmx);
+       si (px < nxep);
+         px = nxep;
+       finsi;
+    finsi;
+*
+    si (ega zaxis 'non');
+      deltay = deltay + hsy . ibd;
+    finsi;
+    deltaz = deltaz + hsz . ibd;
+*
+ fin  bouc1;
+*
+* nombre de bandes de deraffinement traitees
+*
+ nbd = ibd;
+*
+* recuperation des points delimitant le bloc et des lignes d'appuis du
+* contour
+*
+i = 0;
+ldro = lqb2 plus (0. 0. 0.);
+repe bouc1 nbd;
+  i = i+1;
+  depl ldro plus (0. (hsy.i) 0. );
+fin bouc1;
+*
+lsup = (qb4n . nbd) droit (nbyzi/2) ((qb4n .nbd) 
+       plus (0. (tyzin/2.) 0.));
+ldro = (qb2n . nbd) droit (nbzzi/2) ((qb2n .nbd)
+       plus (0. 0. (tzzin/2.)));
+*
+i = 0;
+repe bouc1 nbd;
+  i = i+1;
+  pd  = (lsup point final ) plus (0. (hsy.i) 0.);
+  si (ega zaxis 'non');
+    lg1 = (lsup point final ) droit 1  pd;
+    lsup = lsup et lg1;
+  finsi;
+  ph  = (ldro point final ) plus (0. 0. (hsz.i));
+  lg1 = (ldro point final ) droit 1  ph;
+  ldro = ldro et lg1;
+fin bouc1;
+*
+*****************************************************
+* FIN DERAFFINEMENT EN X
+*****************************************************
+sinon;
+*****************************************************
+* PAS DE DERAFFINEMENT EN X : NXEP ELEMENTS DANS LE BLOC
+*****************************************************
+  lsup = inve lqb3;
+  ldro = lqb2;
+  derx = bloc;
+  nbd = 0;
+finsi;
+****************************************************
+*
+****************************************************
+* DERAFFINEMENT EN Y ET Z
+****************************************************
+*
+ mess '****************************************';
+ mess '** DERAFFINEMENT EN Y ET Z (SURFACE)  **';
+ mess '****************************************';
+*
+* nombre de mailles du tube contenant la zone d"interet.
+*
+tyblo = (coor 2 (lsup point final)) - (coor 2 (lsup point initial));
+tzblo = (coor 3 (ldro point final)) - (coor 3 (ldro point initial));
+mess 'Taille bloc a deraffiner en (Y,Z) : ';
+mess ' - circonferentiel : ty = 'tyblo;
+mess ' - longitudinal    : tz = 'tzblo;
+*
+si (ega zaxis 'oui');
+  nbyzi = nbyzi/2;
+sinon;
+  nbyzi = nbyzi/2 + nbd;
+finsi;
+nbzzi = nbzzi/2 + nbd;
+*
+facty = partenti(tyblo / hyn) ;
+factz = partenti(tzblo / hzn) ;
+mess 'Nombre de mailles ideales tube pour contenir ce bloc : ';
+mess ' - circonferentiel :  nbmay = 'facty;
+mess ' - longitudinal    :  nbmaz = 'factz;
+*
+hsyp = table;
+hszp = table;
+*
+i = 0;
+*
+* coeff. diminution du nombre de mailles en Y et Z
+*
+cfmy = 2;
+cfmz = 2;
+*
+py = partenti((flottant(nbyzi))/cfmy);
+pz = partenti((flottant(nbzzi))/cfmz);
+pyold = nbyzi;
+pzold = nbzzi;
+pyb = nbyzi;
+pzb = nbzzi;
+*pyold = py;
+*pzold = pz;
+*
+* coefficient des tailles de deraffinement
+*
+si ( (ymax/yqb) < 2.);
+* cas ou la zone d'interet fait plus de la moitie du tube : 
+* on risque de manquer de place pour deraffiner sur y..
+* ceci reste a perfectionner..
+  coefy = 1.;
+sinon;
+  coefy = 1.4;
+finsi;
+*si (ega zaxis 'oui');
+*  si (nbxzi > nxep);
+*    coefz = ((hsy . nbd)/(hsz . nbd));
+*  sinon;
+*    coefz = (hsy0/hsz0);
+*  finsi;
+*sinon;
+  coefz = 1.4;
+*  coefz = 0.6;
+*finsi;
+*
+  zinf = zczin;
+  zsup = (coor 3 (lsup point final));
+  zsups = zsup;
+  yinf = 0.;
+  ysup = (coor 2 (ldro point final));
+  ysupd = ysup;
+  si (nbxzi > nxep);
+    hsyp0 = hsy . nbd;
+    hszp0 = hsz . nbd;
+  sinon;
+    hsyp0 = hsy0;
+    hszp0 = hsz0;
+  finsi;
+*
+  mess 'BLOC DE DEPART : ';
+*
+  mess ' * zinf ='zinf;
+  mess ' * zsup ='zsup;
+  mess ' * yinf ='yinf;
+  mess ' * ysup ='ysup;
+  mess '  Nombre de mailles du bloc : ';
+  mess ' - circonferentiel : nbyzi = 'nbyzi;
+  mess ' - longitudinal    : nbzzi = 'nbzzi;
+  mess '  Densite de la bande externe du bloc : ';
+  mess ' - circonferentiel : hsyp0 = 'hsyp0;
+  mess ' - longitudinal    : hszp0 = 'hszp0;
+  ldrog = ldro;
+  lsupi = inve lsup;
+*
+ibdy = 0;
+ibdz = 0;
+exiy = 0;
+exiz = 0;
+nbpy = 0;
+nbpz = 0;
+*
+repe bouc1 ;
+*
+* on regarde si il faut encore reduire le nombre d'elements pour
+* arriver a la taille de maille ideale.
+*
+hyp = (ysupd-yinf)/py;
+mess 'pyold = 'pyold;
+mess 'py = 'py;
+*
+  si ( (hyp < hyn) et (pyold > 1) et (exiy ega 0));
+*
+     ibdy = ibdy+1;
+     mess '*****************************************************';
+     mess '--> BANDE DE DERAFFINEMENT EN Y SUIVANT Z NUMERO 'ibdy;
+     mess '*****************************************************';
+*
+    mess ' Taille de maille Y du bloc a venir hyp = 'hyp;
+*
+*   calcul de l'increment en z pour deraffiner
+*
+    si (ibdy ega 1);
+      hszp . ibdy = hszp0 * coefz;
+      si ( (hszp . ibdy) > hzn );
+        hszp . ibdy = hzn;
+      finsi; 
+    sinon;
+      hszp . ibdy = (hszp . (ibdy-1) ) *coefz;
+      si ( (hszp . ibdy) > hzn );
+        hszp . ibdy = hzn;
+      finsi;
+    finsi;
+    mess ' Longueur en Z de la bande de deraffinement hszp.'
+           ibdy' = '(hszp . ibdy);
+    zsupi = zsup;
+    zsup = (zsup+(1.*(hszp. ibdy)));
+*
+    zsups = zsup;
+*
+*   correction de la position du dernier deraffinnement si
+*   on arrive a une maille
+*
+    si (py ega 1);
+       nma = partenti((zsups-zinf)/hzn);
+       zsup = zinf+(nma*hzn);
+       si (zsup > zsupi);
+         zsups = zsup;
+       sinon;
+         zsup = zsups;
+       finsi;
+    finsi;
+*
+    epsiz = 1.0e-5 ;
+    list zsup ;
+    list zmax ;
+    si (zsup > zmax);
+     mess ' ';
+     mess '!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!';
+     mess 'ERREUR : l"extremite de l"embout superieur est depasse !';
+     mess
+     'ON ARRETE : rallonger la longueur d"embout ou revoir les donnees';
+      quit PLAQDERA;
+    finsi;
+    si ( zsup > (zcoud + epsiz) );
+     mess '* INFORMATION * :';
+     mess 'le deraffinement (Y,Z) a franchi la frontiere tube-embout';
+     mess 'le depassement est de '(zsup-zcoud)' mm.';
+    finsi;
+*
+    mess ' Tailles du nouveau bloc d"incrustation : ';
+    mess '  * zinf ='zinf;
+    mess '  * zsup ='zsup;
+    mess '  * yinf ='yinf;
+    mess '  * ysup ='ysup;
+*
+    p3 = xp (ysupd) (zsup);
+    p4 = xp (yinf) (zsup);
+*
+    mess ' Nombre de mailles suivant Y du nouveau bloc : py = 'py;
+    pyb = py;
+*
+    lsups = p3 droit py p4;
+    s3 = coutur lsupi lsups;
+    si (ibdy ega 1);
+     deryz = s3;
+    sinon;
+     deryz = deryz et s3;
+    finsi;
+    elim deryz epsi;
+    si (itrac ega 1);
+      titr 'PLAQDERA / bande deraffinement en Y suivant Z numero 'ibdy;
+      si (nbxzi > nxep);
+        trac cach oeil (elim(deryz et derx et bloc) epsi);
+      sinon;
+        trac cach oeil (elim(deryz et bloc) epsi);
+      finsi;
+    finsi;
+    lsupi = lsups;
+*
+    p2 = xp ysupd zsupi;
+    p3 = xp ysupd zsups;
+    l2 = p2 droit 1 p3;
+    ldrog = ldrog et l2;
+    elim ldrog epsi;
+    pz = pz+1;
+*
+    pzb = pzb+1;
+    mess ' Nombre de mailles suivant Z du nouveau bloc : pz = 'pzb;
+*
+  sinon;
+    si (nbpy ega 0);
+     nbpy = 1;
+     py = pyold;
+    finsi;
+    exiy = 1;
+    si (pyold ega 1);
+     mess '--> DERAFFINEMENT COMPLET REALISE POUR Y SUIVANT Z';
+    sinon;
+     mess
+     '--> LA TAILLE DE MAILLE IDEALE EST ATTEINTE POUR Y SUIVANT Z';
+    finsi;
+* CORREC 
+*    si (ibdy ega 0);
+*     pz = nbzzi;
+*    finsi;
+* FIN CORREC
+    zsupi = zsups;
+  finsi;
+*
+* deraffinement en Z suivant Y partie droite
+*
+si (ega zaxis 'non');
+*
+   hzp = (zsups-zinf)/pz;
+
+  si ( (hzp < hzn) et (pzold > 1) et (exiz ega 0));
+*
+    ibdz = ibdz+1;
+    mess '*****************************************************';
+    mess '--> BANDE DE DERAFFINEMENT EN Z SUIVANT Y NUMERO 'ibdz;
+    mess '*****************************************************';
+*
+*   calcul de l'increment en y pour deraffiner
+*
+    si (ibdz ega 1);
+      hsyp . ibdz = hsyp0 * coefy;
+      si ( (hsyp . ibdz) > hyn );
+        hsyp . ibdz = hyn;
+      finsi;
+    sinon;
+      hsyp . ibdz = (hsyp . (ibdz-1) ) *coefy;
+      si ( (hsyp . ibdz) > hyn );
+        hsyp . ibdz = hyn;
+      finsi;
+    finsi;
+    mess ' Longueur en Z de la bande de deraffinement hsyp.'
+           ibdz' = '(hsyp . ibdz);
+    ysupg = ysup;
+    ysup = (ysup+(1.*(hsyp. ibdz)));
+    ysupd = ysup;
+*
+*   correction de la position du dernier deraffinement si
+*   on arrive a une maille
+*
+    si (pz ega 1);
+       nma = partenti(ysupd/hyn);
+       ysup = yinf+(nma*hyn);
+       si (ysup > ysupg);
+         ysupd = ysup;
+       sinon;
+         ysup = ysupd;
+       finsi;
+    finsi;
+*
+*   si ( ((ymax-ysup) < 1.e-3) et (ibdz < nbdz));
+*     ysup = ymax;list ibdz;list nbdz;
+*   finsi;
+*
+    si (ysup > ymax);
+     mess ' ';
+     mess '!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!';
+     mess 'ERREUR : L"EXTREMITE Y DE LA PLAQUE EST DEPASSEE !';
+     mess 'ON ARRETE : REVOIR LES DONNEES';
+     mess '!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!';
+     quit PLAQDERA;
+    finsi;
+*
+    mess ' Tailles du nouveau bloc d"incrustation : ';
+    mess '  * zinf ='zinf;
+    mess '  * zsup ='zsup;
+    mess '  * yinf ='yinf;
+    mess '  * ysup ='ysup;
+*
+    p2 = xp (ysup) (zinf);
+    p3 = xp (ysup) (zsups);
+*
+    mess ' Nombre de mailles suivant Z du nouveau bloc : pz = 'pz;
+    pzb = pz;
+*
+    ldrod = p2 droit pz p3;
+    s4 = coutur ldrog ldrod;
+    si ((ibdy ega 0) et (ibdz ega 1));
+       deryz = s4;
+    sinon;
+      deryz = deryz et s4;
+    finsi;
+    elim deryz epsi;
+    si (itrac ega 1);
+      titr 'PLAQDERA / bande deraffinement en Z suivant Y numero 'ibdz;
+      si (nbxzi > nxep);
+        trac cach oeil (elim(deryz et derx et bloc) epsi);
+      sinon;
+        trac cach oeil (elim(deryz et bloc) epsi);
+      finsi;
+    finsi;
+    ldrog = ldrod;
+*
+    p3 = xp ysupd zsups;
+    p4 = xp ysupg zsups;
+    l3 = p3 droit 1 p4;
+    lsupi = l3 et lsupi ;
+    elim lsupi epsi;
+    py = py+1;
+*
+    pyb = pyb+1;
+    mess ' Nombre de mailles suivant Y du nouveau bloc : py = 'pyb;
+*
+  sinon;
+*
+    si (nbpz ega 0);
+     nbpz = 1;
+     pz = pzold;
+    finsi;
+    exiz = 1;
+    si (pzold ega 1);
+     mess '--> DERAFFINEMENT COMPLET REALISE POUR Z SUIVANT Y';
+     bloy = ysup;
+    sinon;
+     mess
+     '--> LA TAILLE DE MAILLE IDEALE EST ATTEINTE POUR Z SUIVANT Y';
+    finsi;
+    si (ibdz ega 0);
+     py = nbyzi;
+    finsi;
+    ysupg = ysupd;
+*
+  finsi;
+*
+sinon;
+*
+* la zone d"interet. est axisymetrique
+*
+  mess '************************************************************';
+  mess '--> PAS DE DERAFFINEMENT EN Y : LA Z.INT EST AXISYMETRIQUE';
+  mess '************************************************************';
+  exiz = 1;
+  si (ibdy ega 0);
+    py = nbyzi;
+  finsi;
+  ysupg = ysup;
+  ysupd = ysupg;
+  ldrod = ldro;
+  bloy = ymax;
+*
+finsi;
+*
+  hyp = (ysupd-yinf)/pyb;
+  hzp = (zsups-zinf)/pzb;
+  mess ' Pas de maille y exterieur moyen du bloc courant hyp = 'hyp;
+  mess ' Pas de maille z exterieur moyen du bloc courant hzp = 'hzp;
+  mess ' Nombre de mailles exterieures py = 'pyb;
+  mess ' Nombre de mailles exterieures pz = 'pzb;
+*
+*
+  si ( (exiy ega 1) et (exiz ega 1) );
+*******************************************
+*  COUTURE VERS LES PAS DE MAILLES DU TUBE
+*******************************************
+   si (((pzold ega 1) et (pyold > 1)) ou (ega zaxis 'oui') );
+*
+*   DERAFFINEMENT OK EN Y ,ET  HZ << HZN AVEC PZ=1 OU AXISYMETRIE
+*
+   mess '*************************************************************';
+   mess 'DERAFFINEMENT OK EN Y ,ET  HZ << HZN AVEC PZ=1 OU AXISYMETRIE';
+   mess '*************************************************************';
+     coefz = 2.;
+     delta = hzn -(zsups-zinf);
+     mess 'ecart en Z avec la taille de maille ideale (mm.) = 'delta;
+     rapp = hzp/hzn*100;
+     mess 'ratio en Z pas maille bloc/pas maille tube(%) = 'rapp;
+     si (ibdy ega 0);
+      deltaz = hszp0;
+     sinon;
+      deltaz = hszp . ibdy;
+     finsi;
+     nband = entier ( (log((hzn/deltaz)))/(log(coefz)) );
+     si (nband ega 0);
+        nband = 1;
+     finsi;
+     coefz = exp( (log((hzn/deltaz)))/nband);
+     mess 'coeff. deraffinement recalcule coefz = 'coefz;
+     mess '*** ON COMPLETE EN Z JUSQU"A LA TAILLE DELTAZ';
+     mess 'nombre de bandes avant d"atteindre le pas en z ='nband;
+     zp = zsups;
+     yp = ysupd;
+     i = 0;
+     repe bouc3 nband;
+        deltazm = deltaz;
+        deltaz = deltaz*coefz;
+        i = i+1;
+        pz = pz+1;
+        mess 'bande z numero 'i;
+        mess 'taille bande en z = 'deltaz;
+*
+*   on ajuste la longueur en Z a un nombre entier de maillles hz
+*
+        zpold = zp;
+        si (i ega nband);
+          j = 0;
+          repe bouc4;
+            j = j+1;
+            si ( ((j*hzn) > (zp-zinf)) et
+                 (((j*hzn)-(zp-zinf)) > deltazm) );
+              zp = zinf+(j*hzn);
+              quit bouc4;
+            finsi;
+          fin bouc4;
+          si (ega zaxis 'oui');
+            py = nbyzi0/2;
+          finsi;
+        sinon;
+          zp = zp + deltaz;
+        finsi;
+*
+        mess 'Nouvelle ordonnee zp = 'zp;
+*
+    epsiz = 1.0e-5 ;
+    si (zp > zmax);
+     mess '!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!';
+     mess 'ERREUR : l"extremite de l"embout superieur est depasse !';
+     mess
+     'ON ARRETE : rallonger la longueur d"embout ou revoir les donnees';
+     quit PLAQDERA;
+    finsi;
+    si ( zp > (zcoud + epsiz) );
+     mess '* INFORMATION * :';
+     mess 'le deraffinement (Y,Z) a franchi la frontiere tube-embout';
+     mess 'le depassement est de '(zp-zcoud)' mm.';
+    finsi;
+*
+        ly = droit (xp yinf zp) (xp ysupd zp) dini (hyn) dfin (hyn);
+        si ((i ega 1) et ((ega zaxis 'non')
+                           ou (non(py ega (nbyzi0/2)))) );
+          s = coutur (inve ly) lsupi;
+          c2 =  droit 1 (lsupi point initial ) (ly point final);
+          ldrod = ldrod et c2;
+          elim ldrod epsi;
+        sinon;
+          si ((zp > (zcoud + epsiz)) et ((ega zaxis 'oui') et (i > 1)));
+            mess 'Frontiere avec embout depassee :';
+            mess 'On annule la derniere bande,';
+            mess ' car le maillage est uniforme';
+            zp = zpold;
+            mess 'retour a zp = 'zp;
+            pz = pz-1;
+            quit bouc3;
+          finsi;
+          c1 =  droit 1 (lsupi point final )   (ly point initial );
+          c2 =  droit 1 (lsupi point initial ) (ly point final);
+          s  = daller c1 ly c2 lsupi;
+          ldrod = ldrod et c2;
+          elim ldrod epsi;
+        finsi;
+        lsupi = (inve ly);
+        si ((ibdz ega 0) et (ibdy ega 0) et (i ega 1));
+          deryz = s;
+        sinon;
+          deryz = deryz et s;
+        finsi;
+        elim deryz epsi;
+        si (itrac ega 1);
+          titr 'PLAQDERA / Bande extension en Z numero 'i;
+          si (nbxzi > nxep);
+            trac cach oeil (elim(deryz et derx et bloc) epsi);
+          sinon;
+            trac cach oeil (elim(deryz et bloc) epsi);
+          finsi;
+        finsi;
+     fin bouc3;
+*
+  si (ega zaxis 'non');
+*
+     nband = partenti( (ymax - ysupd)/hyn );
+     mess '*** ON COMPLETE EN Y EN DERAFFINANT JUSQU"A DELTAZ ****';
+     mess 'nombre de bandes avant d"atteindre le bord ymax ='nband;
+     i = 0;
+     yp = ysupd;
+     hz = (zp-zinf) / pz;
+     si (pz ega 3);
+      pz = 2;
+     sinon;
+*      pz = partenti(pz/cfmz);
+      pz = pz-1;
+     finsi;
+*
+     repe bouc4 nband;
+       i = i+1;
+       mess 'bande y numero 'i;
+       mess 'taille bande en y = 'hyn;
+       yp = yp+hyn;
+       mess 'yp = 'yp;
+       si (hz < hzn);
+         mess 'pas de maille en z = 'hz;
+         mess 'passage a pz = 'pz;
+         nb = -1*pz;
+         si (pz > 2);
+          lz1 = droit 1 (xp yp zinf) (xp yp zsups ) dini(hzp) dfin(hzp);
+          lz2 = droit (nb+1) (xp yp zsups ) (xp yp zp)
+                             dini((hszp . ibdy)) dfin(hzn);
+          lz = lz1 et lz2;
+         sinon;
+          lz = droit pz (xp yp zinf ) (xp yp zp)
+                             dini(hzn) dfin(hzn);
+         finsi;
+         elim lz epsi;
+         s = coutur ldrod lz;
+         pzold = pz;
+*         pz = partenti(pz/cfmz);
+         si (pz > 1);
+          pz = pz-1;
+         finsi;
+         hz = (zp-zinf) / pz;
+       sinon;
+         pz = pzold;
+         hz = hzn;
+         mess 'pas de maille en z final atteint = 'hz;
+         mess 'nombre de mailles final pz = 'pz;
+         lz =  droit pz (xp yp zinf) (xp yp zp)  dini (hzn) dfin (hzn);
+         c1 =  droit 1 (ldrod point initial ) (lz point initial );
+         c2 =  droit 1 (lz point final)       (ldrod point final )   ;
+         s  =  daller c1 lz c2 (inve ldrod);
+       finsi;
+       ldrod = lz;
+       deryz = deryz et s;
+       elim deryz epsi;
+       si (itrac ega 1);
+         titr 'PLAQDERA / Bande extension en Y numero 'i;
+         si (nbxzi > nxep);
+           trac cach oeil (elim(deryz et derx et bloc) epsi);
+         sinon;
+           trac cach oeil (elim(deryz et bloc) epsi);
+         finsi;
+       finsi;
+     fin bouc4;
+     py = partenti(((yp-yinf)/hyn));
+*
+   finsi;
+*
+     quit bouc1;
+*
+   finsi;
+*
+   si ((pzold > 1) et (pyold ega 1));
+*
+*   DERAFFINEMENT OK EN Z ,ET  HY << HYN AVEC PY=1
+*
+     py=pyb;
+     mess '**********************************************';
+     mess 'DERAFFINEMENT OK EN Z ,ET  HY << HYN AVEC PY=1';
+     mess '**********************************************';
+     coefy = 2.;
+     delta = hyn -(ysupd-yinf);
+     mess 'ecart en Y avec la taille de maille ideale (mm.) = 'delta;
+     rapp = hyp/hyn*100;
+     mess 'ratio en Y pas maille bloc/pas maille tube (%) = 'rapp;
+     si (ibdz ega 0);
+       deltay = hsyp0;
+     sinon;
+       deltay = hsyp . ibdz;
+     finsi;
+     nband = entier ( (log((hyn/deltay)))/(log(coefy)) );
+     si (nband ega 0);
+       nband = 1;
+     finsi;   
+     coefy = exp( (log((hyn/deltay)))/nband);
+     mess 'coeff. deraffinement recalcule coefy = 'coefy;
+     mess '*** ON COMPLETE EN Y JUSQU"A LA TAILLE DELTAY';
+     mess 'nombre de bandes avant d"atteindre le pas en y ='nband;
+     yp = ysupd;
+     zp = zsups;
+     i = 0;
+     repe bouc3 nband;
+        deltaym = deltay;
+        deltay = deltay*coefy;
+        i = i+1;
+        py = py+1;
+        mess 'bande y numero 'i;
+        mess 'taille bande en y = 'deltay;
+*
+*   on ajuste la longueur en y a un nombre entier de maillles hy
+*
+        si (i ega nband);
+          j = 0;
+          repe bouc4;
+            j = j+1;
+            si ( ((j*hyn) > (yp-yinf)) et
+                 (((j*hyn)-(yp-yinf)) > deltaym) );
+              yp = yinf+(j*hyn);
+              quit bouc4;
+            finsi;
+          fin bouc4;
+        sinon;
+          yp = yp + deltay;
+        finsi;
+*
+        mess 'Nouvelle abcisse yp = 'yp;
+*
+    si (yp > ymax);
+     mess '!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!';
+     mess 'ERREUR : le bord droit de la plaque est depasse !';
+     mess
+     'ON ARRETE : revoir les donnees';
+     quit PLAQDERA;
+    finsi;
+*
+        lz = droit (xp yp zinf) (xp yp zsups) dini (hzn) dfin (hzn);
+        si (i ega 1);
+          s = coutur lz ldrog;
+          c2 =  droit 1 (ldrog point final ) (lz point final);
+          lsups = (inve c2) et lsups ;
+          elim lsups epsi;
+        sinon;
+          c1 =  droit 1 (ldrog point initial )   (lz point initial );
+          c2 =  droit 1 (ldrog point final )     (lz point final);
+          s  = daller c1 lz c2 (inve ldrog);
+          lsups = (inve c2) et lsups ;
+          elim lsups epsi;
+        finsi;
+        ldrog = lz;
+        deryz = deryz et s;
+        elim deryz epsi;
+        si (itrac ega 1);
+          titr 'PLAQDERA / Bande extension en Y numero 'i;
+          si (nbxzi > nxep);
+            trac cach oeil (elim(deryz et derx et bloc) epsi);
+          sinon;
+            trac cach oeil (elim(deryz et bloc) epsi);
+          finsi;
+        finsi;
+     fin bouc3;
+      si (zsups > zcoud);
+        nband = (py - (partenti( (yp-yinf)/hyn ) )) ;
+      sinon;
+        nband = partenti( (zcoud - zsups)/hzn );
+      finsi;
+     mess 'py = 'py;
+     mess '*** ON COMPLETE EN Z EN DERAFFINANT JUSQU"A DELTAY ****';
+     mess 'nombre de bandes avant d"atteindre le bord zcoud ='nband;
+     i = 0;
+     zp = zsups;
+     hy = (yp-yinf) / py;
+     si (py ega 3);
+      py = 2;
+     sinon;
+*      py = partenti(py/cfmy);
+       py = py-1;
+     finsi;
+     lsups = inve lsups;
+*
+     repe bouc4 nband;
+       i = i+1;
+       mess 'bande z numero 'i;
+       mess 'taille bande en z = 'hzn;
+       zp = zp+hzn;
+       mess 'Nouvelle ordonnee zp = 'zp;
+       si (hy < hyn);
+         mess 'pas de maille en y = 'hy;
+         mess 'passage a py = 'py;
+         nb = -1*py;
+         si ( (py > 2)et (ibdz neg 0) );   
+          ly1 = droit 1 (xp yinf zp) (xp ysupd zp ) dini(hyp) dfin(hyp);
+          ly2 = droit (nb+1) (xp ysupd zp ) (xp yp zp)
+                             dini((hsyp . ibdz)) dfin(hyn);
+          ly = ly1 et ly2;
+         sinon;
+          ly = droit py (xp yinf zp ) (xp yp zp)
+                             dini(hyn) dfin(hyn);
+         finsi;
+         elim ly epsi;
+         s = coutur lsups ly;
+         pyold = py;
+*         py = partenti(py/cfmy);
+*** MODIF CAR BUG
+          si (i < nband);py = py-1;finsi;
+*** FIN MODIF  
+         hy = (yp-yinf) / py;
+       sinon;
+*         py = pyold;
+         hy = hyn;
+         mess 'pas de maille en y final atteint = 'hy;
+         mess 'nombre de mailles final py = 'py;
+         ly =  droit py (xp yinf zp) (xp yp zp)  dini (hyn) dfin (hyn);
+         c1 =  droit 1 (lsups point initial ) (ly point initial );
+         c2 =  droit 1 (ly point final)       (lsups point final )   ;
+*         s  =  daller c1 ly c2 (inve lsups);
+          s = coutur ly lsups; 
+       finsi;
+       lsups = ly;
+       deryz = deryz et s;
+       elim deryz epsi;
+       si (itrac ega 1);
+         titr 'PLAQDERA / Bande extension en Z numero 'i;
+         si (nbxzi > nxep);
+           trac cach oeil (elim(deryz et derx et bloc) epsi);
+         sinon;
+           trac cach oeil (elim(deryz et bloc) epsi);
+         finsi;
+       finsi;
+     fin bouc4;
+*
+     pz = partenti(((zp-zinf)/hzn));
+*
+     quit bouc1;
+*
+   finsi;
+*
+   si ((pzold > 1) et (pyold > 1));
+*
+*   DERAFFINEMENT OK EN Y ET DERAFFINEMENT OK EN Z
+*
+   mess '**********************************************';
+   mess 'DERAFFINEMENT OK EN Y ET Z : COUTURE EN Y ET Z';
+   mess '**********************************************';
+*
+*   Calcul du nombre de mailles enveloppes en y et z
+*
+     i = 0;
+     repe bouc3;
+       i = i+1;
+       si (ibdy ega 0);
+         si ( (i*hzn) > ((zsups-zinf)+(hzp/2.)) );
+           pzc = i;
+           quit bouc3;
+         finsi;
+       sinon;
+         si ( (i*hzn) > ((zsups-zinf)+((hszp . ibdy)/2.)) );
+           pzc = i;
+           quit bouc3;
+         finsi;
+       finsi;
+     fin bouc3;
+     mess 'nombre de mailles enveloppes en Z : pzc = 'pzc;
+     i = 0;
+     repe bouc3;
+       i = i+1;
+       si ( (i*hyn) > ((ysupd-yinf)+(hyp/2.)) );
+          pyc = i;
+         quit bouc3;
+       finsi;
+     fin bouc3;
+     mess 'nombre de mailles enveloppes en Y : pyc = 'pyc;
+*
+     zp = zczin + ((pzc)*hzn);
+     yp = yinf  + ((pyc)*hyn);
+     mess 'nouvelle abcisse  yp ='yp;
+     mess 'nouvelle ordonnee zp = 'zp;
+*
+    epsiz = 1.0e-5 ;
+    si (zp > zmax);
+     mess ' ';
+     mess '!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!';
+     mess 'ERREUR : l"extremite de l"embout superieur est depasse !';
+     mess
+     'ON ARRETE : rallonger la longueur d"embout ou revoir les donnees';
+     quit PLAQDERA;
+    finsi;
+    si ( zp > (zcoud + epsiz) );
+     mess '* INFORMATION * :';
+     mess 'le deraffinement (Y,Z) a franchi la frontiere tube-embout';
+     mess 'le depassement est de '(zp-zcoud)' mm.';
+    finsi;
+*
+    si (yp > ymax);
+     mess ' ';
+     mess '!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!';
+     mess 'ERREUR : le bord droit de la plaque est depasse !';
+     mess 'ON ARRETE : revoir les donnees';
+     quit PLAQDERA;
+    finsi;
+*
+     ly =  droit (pyc) (xp yinf zp) (xp yp zp)  dini (hyn) dfin (hyn);
+     zs1 = zp - hzn;
+     c2 =  droit 1 (xp yp zs1) (xp ysupd zsups);
+     lsupi = c2 et lsupi;
+     c1 =  droit 1 (ly point final) (lsupi point initial);
+     elim lsupi epsi;
+     c3 =  droit 1 (lsupi point final ) (ly point initial)    ;
+*
+     si (itrac ega 1);
+       titr 'PLAQDERA / contour maillage  pour combler la zone en Z';
+       trac (c1 et lsupi et c3 et ly);
+     finsi;
+*
+     diff = pyc - (py+1);
+     si ( ( (diff/2.) ega ( flottant(entier(diff/2)) )epsi ) );
+*     s  =  daller c1 lsupi c3 ly ;
+      s = coutur lsupi (inve ly);
+     sinon;
+*     s = surf (c1 et lsupi et c3 et ly) plane;
+      s = coutur lsupi (inve ly);
+     finsi;
+     mess 'couture en y : py = 'pyc;
+     py = pyc;
+     si (ega zaxis 'oui');
+       deryz = s;
+     sinon;
+       deryz = deryz et s;
+     finsi;
+     elim deryz epsi;
+     si (itrac ega 1);
+       titr 'PLAQDERA / Quart bloc et deraffinement (Y,Z) zone en Z';
+       si (nbxzi > nxep);
+         trac cach oeil (elim(deryz et derx et bloc) epsi);
+       sinon;
+         trac cach oeil (elim(deryz et bloc) epsi);
+       finsi;
+     finsi;
+     lz = droit (pzc-1) (xp yp zinf) (xp yp zs1)  dini (hzn) dfin (hzn);
+     c1 = droit 1 (ldrog point initial) (lz point initial);
+     c2 = droit 1 (lz point final) (ldrog point final) ;
+*
+     si (itrac ega 1);
+       titr 'PLAQDERA / contour maillage pour combler la zone en Y';
+       trac (c1 et ldrog et c2 et lz);
+     finsi;
+*
+     diff = pzc - (pz+1);
+     si ( ( (diff/2.) ega ( flottant(entier(diff/2)) )epsi ) );
+*     s  =  daller c1 lz c2 (inve ldrog);
+      s = coutur ldrog lz ;
+     sinon;
+*     s = surf (c1 et ldrog et c2 et lz) plane;
+      s = coutur ldrog lz ;
+     finsi;
+     mess 'couture en z : pz = 'pzc;
+     pz = pzc;
+     deryz = deryz et s;
+     elim deryz epsi;
+     si (itrac ega 1);
+       titr 'PLAQDERA / Quart bloc et deraffinement (Y,Z) zone Y';
+       si (nbxzi > nxep);
+         trac cach oeil (elim(deryz et derx et bloc) epsi);
+       sinon;
+         trac cach oeil (elim(deryz et bloc) epsi);
+       finsi;
+     finsi;
+*
+     quit bouc1;
+*
+   finsi;
+*
+  finsi;
+*
+* Nouveau nombre de mailles pour le prochain bloc
+*
+   si (exiy ega 0);
+    py = pyb;
+    pyold = py;
+    mess 'py = 'py;
+    mess 'pyold = 'pyold;
+    si (py ega 3);
+       py = 2;
+    sinon;
+       py = partenti(py/cfmy);
+    finsi;
+   finsi;
+   si (exiz ega 0);
+    pzold = pz;
+    si (pz ega 3);
+     pz = 2;
+    sinon;
+     pz = partenti(pz/cfmz);
+    finsi;
+   finsi;
+*
+  nbmy = partenti((ysupd-yinf)/hyn);
+  mess 'nombre de mailles enveloppes en Y du bloc courant = 'nbmy;
+  nbmz = partenti((zsups-zczin)/hzn);
+  mess 'nombre de mailles enveloppes en Z du bloc courant = 'nbmz;
+*
+ fin  bouc1;
+*
+*  on complete jusqu'a (PI*RM) en Y
+*
+si ((yp+1.) < ymax);
+   mess 'ON COMPLETE EN Y JUSQU"AU BORD DE LA PLAQUE (PI*RM)';
+*   nbely = entier((ymax-yp)/hyn);
+   nbely = partenti((ymax-yp)/hyn);
+   si (nbely ega 0);
+     nbely = 1;
+   finsi;
+   ldrod = droit pz (xp yp zinf) (xp yp zp);
+   s = ldrod tran nbely (0. (ymax-yp) 0.);
+   deryz = deryz et s;
+   elim deryz epsi;
+   si (itrac ega 1);
+     titr 
+  'PLAQDERA / Quart bloc et deraffinement (Y,Z) completee jusq"a Pi*Rm';
+     si (nbxzi > nxep);
+       trac cach oeil (elim(deryz et derx et bloc) epsi);
+     sinon;
+       trac cach oeil (elim(deryz et bloc) epsi);
+     finsi;
+   finsi;
+   yp = ymax;
+   mess 'toto1 py'py;
+   mess 'toto2 nbely'nbely;
+   py = py+nbely;
+   mess 'toto py'py;
+finsi;
+*
+* symetrie par rapport au plan (x0y) en Zczin
+*
+mess '*********** SYMETRIE / (x0y) *************';
+*
+*si (ega zsyme 'entier');
+*
+blocs = bloc syme plan  (0. 0. zczin) (1. 0. zczin) (0. 1. zczin) ;
+derxs = derx syme plan  (0. 0. zczin) (1. 0. zczin) (0. 1. zczin) ;
+deryzs = deryz syme plan  (0. 0. zczin) (1. 0. zczin) (0. 1. zczin) ;
+bloc = bloc et blocs;
+elim bloc epsi;
+derx = derx et derxs;
+elim derx epsi;
+deryz = deryz et deryzs;
+elim deryz epsi;
+si (itrac ega 1);
+  titr 'PLAQDERA / Symetrie par rapport a xOy';
+  si (nbxzi > nxep);
+    trac cach oeil (elim(deryz et derx et bloc) epsi);
+  sinon;
+    trac cach oeil (elim(deryz et bloc) epsi);
+  finsi;
+finsi;
+*
+zpi = zczin-(zp-zczin);
+*
+*sinon;
+*
+* symetrie pour quart ou demi structure : on ne garde que la partie 
+* symetrisee
+*
+*blocs = bloc syme plan  (0. 0. zczin) (1. 0. zczin) (0. 1. zczin) ;
+*derxs = derx syme plan  (0. 0. zczin) (1. 0. zczin) (0. 1. zczin) ;
+*deryzs = deryz syme plan  (0. 0. zczin) (1. 0. zczin) (0. 1. zczin) ;
+*bloc = blocs;
+*elim bloc epsi;
+*derx = derxs;
+*elim derx epsi;
+*deryz = deryzs;
+*elim deryz epsi;
+*si (itrac ega 1);
+*  titr 'PLAQDERA / Symetrie par rapport a xOy';
+*  si (nbxzi > nxep);
+*    trac cach oeil (elim(deryz et derx et bloc) epsi);
+*  sinon;
+*    trac cach oeil (elim(deryz et bloc) epsi);
+*  finsi;
+*finsi;
+*
+zpi = zczin-(zp-zczin);
+*
+finsi;
+*
+*  on complete jusqu'a (ltub_c) en Z (interface embout sup)
+*
+*si (ega zsyme 'entier');
+*
+si ((zp+epsi) < zcoud);
+   mess 'ON COMPLETE EN Z JUSQU"A LA FRONTIERE TUBE-EMBOUT SUP';
+   nbelz = partenti((zcoud-zp)/hzn) + 1 ;
+   si (nbelz ega 0);
+     nbelz = 1;
+   finsi;
+   lsups = droit py (xp yinf zp) (xp yp zp);
+   nbelz = -1*nbelz;
+   s = lsups tran nbelz (0.  0. (zcoud-zp)) dini(hzn) dfin (hzn);
+   deryz = deryz et s;
+   elim deryz epsi;
+   si (itrac ega 1);
+     titr 'PLAQDERA / complement frontiere tube-embout sup';
+     si (nbxzi > nxep);
+       trac cach oeil (elim(deryz et derx et bloc) epsi);
+     sinon;
+       trac cach oeil (elim(deryz et bloc) epsi);
+     finsi;
+   finsi;
+   zp = zcoud;
+finsi;
+*
+*finsi;
+*
+*  on complete jusqu'a 0. en Z (interface avec embout inf)
+*
+si (zpi > 1.0e-5);
+   mess 'ON COMPLETE EN Z JUSQU"A LA FRONTIERE TUBE-EMBOUT INF';
+   nbelz = partenti(zpi/hzn) + 1 ;
+   mess 'py ='py;
+   si (nbelz ega 0);
+     nbelz = 1;
+   finsi;
+   linf = droit py (xp yinf zpi ) (xp yp zpi );
+   nbelz = -1*nbelz;
+   s = linf tran nbelz (0.  0. (-1.*zpi)) dini(hzn) dfin (hzn);
+   deryz = deryz et s;
+   elim deryz epsi;
+   si (itrac ega 1);
+     titr 'PLAQDERA / complement frontiere tube-embout inf';
+     si (nbxzi > nxep);
+       trac cach oeil (elim(deryz et derx et bloc) epsi);
+     sinon;
+       trac cach oeil (elim(deryz et bloc) epsi);
+     finsi;
+   finsi;
+   zpi = 0.;
+finsi;
+*
+*finsi;
+mess '*********** FIN DERAFFINEMENT EN (Y,Z) *************';
+*
+* extrusion volumique a trois elements dans l'epaisseur
+*
+mess '*********** EXTRUSION SUIVANT X DU DERAFFINEMENT **';
+vderyz = deryz volu nxep tran (epc 0. 0.);
+si (itrac ega 1);
+  titr 'PLAQDERA / Extrusion volumique de la surface (Y,Z)';
+  trac cach oeil vderyz;
+finsi;
+plaque = vderyz;
+elim plaque epsi;
+*
+* couture de nxep elements a 1 dans l'epaisseur
+* pour l'embout du cote sup (z>0)
+*
+*si (ega zsyme 'entier');
+*
+mess '*********** COUTURE VERS L"EMBOUT SUP *************';
+*
+si (zmax-(zp+(2.*epc)) < 0);
+*
+  mess 'ALARME : il n"y a plus de place pour effectuer une couture ';
+  mess 'sur l"embout sup : on prolonge la plaque et on reste a nxep ';
+  mess 'elements dans l"epaisseur';
+  mess ' distante restante : '(zmax -zp)' mm.';
+*
+p1 = (xp yp zp);
+p2 = p1 plus (epc 0. 0.) ;
+grafi1 = p1 d nxep p2 ;
+grafi4 = grafi1 plus (0. 0. (zmax-zp) );
+ndelta = (entier(ltub_s/hyn))/4.;
+si (ndelta < 1.);
+  ndelta = hzn/hyn;
+finsi;
+xdelta = ndelta *hyn;
+sgrafi1 = grafi1 regler grafi4 dini hzn dfini xdelta ;
+elim epsi sgrafi1 ;
+sgrafi2 = sgrafi1 moin (0. (ymax-yinf) 0.) ;
+vgrafs = sgrafi1 volu sgrafi2 dini hyn dfin hyn ;
+elim epsi vgrafs ;
+vgrafs = vgrafs coul vert;
+si (itrac ega 1);
+  titr 
+  'PLAQDERA / Prolongement a trois elements vers extremite embout sup';
+  si (nbxzi > nxep);
+    trac cach oeil (elim (vgrafs et bloc et derx et vderyz) epsi);
+  sinon;
+    trac cach oeil (elim(vgrafs et bloc et vderyz) epsi);
+  finsi;
+finsi;
+*
+sinon;
+*
+  mess 'longueur a combler dans l"embout : '(zmax -zp)' mm.';
+  mess 'longueur zone de transition : '(2*epc)' mm.';
+  mess 'longueur zone a un seul element : '(zmax-(zp+(2.*epc)))' mm.';
+*
+p1 = (xp yp zp);
+p2 = p1 plus (epc 0. 0.) ;
+p3 = p1 plus (0. 0. epc) ;
+p4 = p2 plus (0. 0. epc) ;
+p5 = p3 plus (0. 0. epc) ;
+p6 = p4 plus (0. 0. epc) ;
+*
+* attention on ne fait une couture que si nxep > 1
+*
+grafi1 = p1 d nxep p2 ;
+
+ndelta = (entier(ltub_s/hyn))/4.;
+si (ndelta < 1.);
+  ndelta = hzn/hyn;
+finsi;
+xdelta = ndelta *hyn;
+
+si (nxep > 1);
+
+ si (nxep > 2);
+   grafi2 = p3 d 2 p4 ;
+   grafi3 = p5 d 1 p6 ;
+   sgrafi1a = grafi1 coutur grafi2 ;
+   sgrafi1b = grafi2 coutur grafi3 ;
+   grafi4 = grafi3 plus (0. 0. (zmax-(zp+(2.*epc))) );
+   sgrafi1c = grafi3 regler grafi4 dini hzn dfini xdelta ;
+   sgrafi1 = sgrafi1a et sgrafi1b et sgrafi1c ;
+ sinon;
+   grafi2 = p3 d 1 p4 ;
+   sgrafi1a = grafi1 coutur grafi2 ;
+   grafi4 = grafi2 plus (0. 0. (zmax-(zp+epc)) );
+   sgrafi1c = grafi2 regler grafi4 dini hzn dfini xdelta ;
+   sgrafi1 = sgrafi1a et sgrafi1c ;
+ finsi;
+sinon;
+
+grafi4 = grafi1 plus (0. 0. (zmax-zp) );
+sgrafi1 = grafi1 regler grafi4 dini hzn dfini xdelta ;
+
+finsi;
+
+elim epsi sgrafi1 ;
+sgrafi2 = sgrafi1 moin (0. (ymax-yinf) 0.) ;
+vgrafs = sgrafi1 volu sgrafi2 dini hyn dfin hyn ;
+elim epsi vgrafs ;
+vgrafs = vgrafs coul vert;
+si (itrac ega 1);
+  titr 'PLAQDERA / Couture de nxep a 1 element vers embout sup';
+  si (nbxzi > nxep);
+    trac cach oeil (elim (vgrafs et bloc et derx et vderyz) epsi);
+  sinon;
+    trac cach oeil (elim(vgrafs et bloc et vderyz) epsi);
+  finsi;
+finsi;
+*
+finsi;
+*
+plaque = plaque et vgrafs;
+elim plaque epsi;
+*
+*finsi;
+*
+* couture de nxep elements a 1 dans l'epaisseur
+* pour l'embout du cote inf (z<0)
+*
+mess '*********** COUTURE VERS L"EMBOUT INF *************';
+*
+si (zmin-(zpi-(2.*epc)) > 0);
+*
+  mess 'ALARME : il n"y a plus de place pour effectuer une couture ';
+  mess 'sur l"embout inf : on prolonge la plaque et on reste a trois ';
+  mess 'elements dans l"epaisseur';
+  mess ' distante restante : '(zpi-zmin)' mm.';
+*
+p1 = (xp yp zpi);
+p2 = p1 plus (epc 0. 0.) ;
+*
+p1tu = p1 plus (0. 0. (zmin-zpi) );
+p2tu = p1tu moin (0. (ymax-yinf) 0.) ;
+bordtu = p1tu droit p2tu dini hyn dfin hyn ;
+*
+grafi1 = p1 d nxep p2 ;
+grafi4 = grafi1 plus (0. 0. (zmin-zpi) );
+ndelta = (entier(ltub_i/hyn))/4.;
+si (ndelta < 1.);
+  ndelta = hzn/hyn;
+finsi;
+xdelta = ndelta*hyn;
+sgrafi1 = grafi1 regler grafi4 dini hzn dfini xdelta ;
+elim epsi sgrafi1 ;
+sgrafi2 = sgrafi1 moin (0. (ymax-yinf) 0.) ;
+vgrafi = sgrafi1 volu sgrafi2 dini hyn dfin hyn ;
+elim epsi vgrafi ;
+vgrafi = vgrafi coul vert;
+si (itrac ega 1);
+  titr 
+  'PLAQDERA / Prolongement a trois elements vers extremite embout inf';
+  si (nbxzi > nxep);
+    si (ega zsyme 'entier');
+     trac cach oeil (elim(vgrafi et vgrafs et bloc et derx
+                     et bordtu) epsi);
+    sinon;
+     trac cach oeil (elim(vgrafi et bloc et derx
+                     et bordtu) epsi);
+    finsi;
+  sinon;
+    si (ega zsyme 'entier');
+      trac cach oeil (elim(vgrafi et vgrafs et bloc et vderyz
+                           et bordtu) epsi);
+    sinon;
+     trac cach oeil (elim(vgrafi et bloc et vderyz
+                     et bordtu) epsi);
+    finsi;
+  finsi;
+finsi;
+*
+sinon;
+*
+  mess 'longueur a combler dans l"embout : '(zpi-zmin)' mm.';
+  mess 'longueur zone de transition : '(2*epc)' mm.';
+  mess 'longueur zone a un seul element : '((zpi-(2.*epc))-zmin)' mm.';
+*
+p1 = (xp yp zpi);
+p2 = p1 plus (epc 0. 0.) ;
+p3 = p1 moins (0. 0. epc) ;
+p4 = p2 moins (0. 0. epc) ;
+p5 = p3 moins (0. 0. epc) ;
+p6 = p4 moins (0. 0. epc) ;
+*
+* attention on ne fait une couture que si nxep > 1
+*
+grafi1 = p1 d nxep p2 ;
+
+ndelta = (entier(ltub_i/hyn))/4.;
+si (ndelta < 1.);
+  ndelta = hzn/hyn;
+finsi;
+xdelta = ndelta *hyn;
+
+si (nxep > 1);
+
+ si (nxep > 2);
+   grafi2 = p3 d 2 p4 ;
+   grafi3 = p5 d 1 p6 ;
+   sgrafi1a = grafi1 coutur grafi2 ;
+   sgrafi1b = grafi2 coutur grafi3 ;
+   grafi4 = grafi3 plus (0. 0. (zmin-(zpi-(2.*epc))) );
+   sgrafi1c = grafi3 regler grafi4 dini hzn dfini xdelta ;
+   sgrafi1 = sgrafi1a et sgrafi1b et sgrafi1c ;
+ sinon;
+   grafi2 = p3 d 1 p4 ;
+   sgrafi1a = grafi1 coutur grafi2 ;
+   grafi4 = grafi2 plus (0. 0. (zmin-(zpi-epc)) );
+   sgrafi1c = grafi2 regler grafi4 dini hzn dfini xdelta ;
+   sgrafi1 = sgrafi1a et sgrafi1c ;
+ finsi;
+
+sinon;
+
+grafi4 = grafi1 plus (0. 0. (zmin-zpi) );
+sgrafi1 = grafi1 regler grafi4 dini hzn dfini xdelta ;
+
+finsi;
+
+elim epsi sgrafi1 ;
+sgrafi2 = sgrafi1 moin (0. (ymax-yinf) 0.) ;
+vgrafi = sgrafi1 volu sgrafi2 dini hyn dfin hyn ;
+elim epsi vgrafi ;
+vgrafi = vgrafi coul vert;
+*
+p1tu = p5 plus (0. 0. (zmin-(zpi-(2.*epc))) );
+p2tu = p1tu moin (0. (ymax-yinf) 0.) ;
+bordtu = p1tu droit p2tu dini hyn dfin hyn ;
+*
+si (itrac ega 1);
+  titr 'PLAQDERA / Couture de nxep a 1 element vers embout inf';
+  si (nbxzi > nxep);
+    si (ega zsyme 'entier'); 
+      trac cach oeil (elim(vgrafi et vgrafs et bloc et derx et
+                      vderyz et bordtu) epsi);
+    sinon;
+      trac cach oeil (elim(vgrafi et bloc et derx et
+                      vderyz et bordtu) epsi);
+    finsi;
+  sinon;
+    si (ega zsyme 'entier'); 
+       trac cach oeil (elim(vgrafi et vgrafs et bloc et vderyz
+                       et bordtu) epsi);
+    sinon;
+      trac cach oeil (elim(vgrafi et bloc et vderyz
+                       et bordtu) epsi);
+    finsi;
+  finsi;
+finsi;
+*
+finsi;
+*
+plaque = plaque et vgrafi;
+elim plaque epsi;
+*
+*finsi;
+*
+*
+* SYMETRIE DU QUART BLOC ZONE D"INTERET DERAFFINNE
+*
+* symetrie par rapport au plan (x0z)
+*
+mess '*********** SYMETRIE / (x0z) *************';
+*
+si ( (ega zsyme 'entier') );
+*
+plaques = plaque syme plan  (0. 0. 0.) (1. 0. 0.) (0. 0. 1.) ;
+plaque = plaque et plaques;
+elim plaque epsi;
+blocs = bloc syme plan  (0. 0. 0.) (1. 0. 0.) (0. 0. 1.) ;
+bloc = bloc et blocs;
+elim bloc epsi;
+derxs = derx syme plan  (0. 0. 0.) (1. 0. 0.) (0. 0. 1.) ;
+derx = derx et derxs;
+elim derx epsi;
+*bordtus = bordtu syme plan  (0. 0. 0.) (1. 0. 0.) (0. 0. 1.) ;
+*bordtu = bordtu et (inve bordtus);
+*elim bordtu epsi;
+*plaque = plaque et bordtu;
+*elim plaque epsi;
+*
+finsi;
+*
+plaque = plaque et bloc ;
+si (nbxzi > nxep);
+ plaque = plaque et derx;
+finsi;
+elim plaque epsi;
+si (itrac ega 1);
+  titr 'PLAQDERA / maillage enveloppe de la plaque';
+  trac (enve plaque);
+  titr 'PLAQDERA / maillage volumique de la plaque';
+  trac cach oeil plaque;
+finsi;
+*
+*
+mess '________________________________________________________';
+mess '****** STATISTIQUES MAILLAGE  **********';
+mess 'Nombre total de noeuds  plaque : '(nbno (plaque));
+mess 'Nombre total de mailles plaque : '(nbel (plaque));
+mess 'Nombre total de noeuds  zone d"interet : '(nbno (bloc));
+mess 'Nombre total de mailles bloc d"interet : '(nbel (bloc));
+si (nbxzi > nxep);
+ mess 'Nombre total de noeuds  deraffinement X : '(nbno (derx));
+ mess 'Nombre total de mailles deraffinement X : '(nbel (derx));
+finsi;
+mess 'Nombre total de noeuds  deraffinement (Y,Z) : '(nbno (vderyz));
+mess 'Nombre total de mailles deraffinement (Y,Z) : '(nbel (vderyz));
+mess '________________________________________________________';
+*
+FINPROC PLAQUE BLOC;
+* _________________________________________________________________
+* 
+DEBPROC TUBXFEM rm*flottant pirad*flottant ltub_c*flottant 
+    ltub_i*flottant ltub_s*flottant eptub*flottant epzint*flottant  
+    zsyme*mot posit*mot nbxzi*entier nbyzi*entier nbzzi*entier           
+    yczin*flottant zczin*flottant tyzin*flottant tzzin*flottant 
+    theta*flottant zaxis*mot zquad*mot trans*mot nxep*entier nxco*entier
+    itrac*entier;
+************************************************************************
+* PROCEDURE GENERALE DE CONSTITUTION DE LA PLAQUE 
+************************************************************************
+*
+* EN ENTREE :
+* -----------
+* RM        : rayon moyen du tube
+* PIRAD     : pi
+* LTUB_C    : longueur partie centrale
+* LTUB_I    : longueur de l'embout inf
+* LTUB_S    : longueur de l'embout sup
+* EPTUB     : epaisseur du tube
+* EPZINT    : epaisseur zone d'interet
+* ZSYME     : quart,demi ou structure entiere
+* POSIT     : position zone d"interet (peau externe ou interne)
+* NBXZI     : nbre d'elements zone interet dans l'epaisseur
+* NBYZI     : nbre d'elements zone interet en circonference
+* NBZZI     : nbre d'elements zone interet longitudinalement
+* YCZIN     : abcisse circonferentielle centre zone d"interet
+* ZCZIN     : abcisse longitudinale centre zone d"interet
+* TYZIN     : taille circonferentielle  zone d"interet
+* TZZIN     : taille longitudinale zone d"interet
+* THETA     : azimut de la zone d"interet / axe X
+* ZAXIS     : zone d'interet axisymetrique ?
+* ZQUAD     : maillage quadratique ?
+* TRANS     : transformation plaque/tube ?
+* NXEP      : nbre d'elements dans l'epaisseur du tube sur epzint
+* NXCO      : nbre d'elements dans l'epaisseur du tube sur eptube-epzint
+* ITRAC     : parametre de trace 
+*
+* EN SORTIE :
+* -----------
+*
+* TUBE      : structure volumique du tube
+* BLOC      : structure volumique de la zone d'interet
+* EXTUBE_I  : elements surfaciques a l'extremite de l'embout inf
+* EXTUBE_S  : elements surfaciques a l'extremite de l'embout sup
+* PEAUEXT   : elements surfaciques en peau externe du tube
+* PEAUINT   : elements surfaciques en peau interne du tube
+* PT_I      : point au centre de la section extube_i
+* PT_S      : point au centre de la section extube_s
+*
+mess '/////////////////////////////////////////////////////' ;
+mess '****  TUBXFEM : PROCEDURE GENERALE TUBE XFEM     ****' ;
+mess '/////////////////////////////////////////////////////' ;
+*
+plaque bloc = PLAQDERA
+    rm  pirad ltub_c ltub_i ltub_s eptub epzint zsyme 
+    nbxzi nbyzi nbzzi yczin zczin tyzin tzzin nxep 
+    zaxis itrac ;
+*
+* extrusion complementaire dans l'epaisseur de epzint € eptub 
+*
+**  ATTENTION A CE QUE EPTUB - EPZINT NE SOIT TROP PETIT !!
+**
+haut = ltub_c + ltub_s;
+bas = -1.*ltub_i;
+*
+xvt1 = rm - (epzint/2.);
+yvt1 = pirad*rm   ;
+zvt1 = haut ;
+*
+xvt2 = xvt1     ;
+yvt2 = yvt1     ;
+zvt2 = bas     ;
+*
+xvt3 = xvt1     ;
+yvt3 = -1.*(pirad*rm)    ;
+zvt3 = zvt1     ;
+*
+vt1 = xvt1 yvt1 zvt1 ;
+vt2 = xvt2 yvt2 zvt2 ;
+vt3 = xvt3 yvt3 zvt3 ;
+*
+si (neg eptub epzint);
+  mess '________________________________________________________';
+  mess 'epaississement de la plaque de epzint vers eptub :';
+  mess 'epaisseur zone d"interet (epzint) :'epzint;
+  mess 'epaisseur tube (eptub) :'eptub; 
+  mess '________________________________________________________';
+  env_pl  = enve plaque;
+  pt1_env = env_pl point plan vt1 vt2 vt3 1.e-3 ;
+  rfep    = env_pl elem appui stric pt1_env ;
+  c = lect 0;
+  si (ega zquad 'oui');
+    b = 'MOTS' 'TRI6';
+    a = (nbel(rfep) b) ;
+*    list a;
+    si (a ega c);
+      rfep   = (rfep elem qua8) ;
+    sinon;
+      rfep   = (rfep elem qua8) et (rfep elem tri6);
+    finsi;
+  sinon;
+    b = 'MOTS' 'TRI3';
+    a = (nbel(rfep) b) ;
+    si (a ega c);
+     rfep   = (rfep elem qua4) ;
+    sinon;
+     rfep   = (rfep elem qua4) et (rfep elem tri3);
+    finsi;
+  finsi;
+  si (ega nxco 0);
+    nxco = partenti(nxep*(eptub-epzint)/(2*epzint)); 
+   mess 'nbe elements estime complement d"epaisseur :'nxco;
+  finsi;
+  vcomp   = rfep volu 'TRAN' nxco ( (-1*(eptub-epzint)) 0. 0.);
+  plaque = plaque et vcomp;
+  depl plaque plus ( ((eptub-epzint)/2.) 0. 0.);
+finsi;
+*
+si ( ega itrac 1 ) ;
+  titr 'TUBXFEM / Maillage de la plaque (extrusion epzint-eptube)';
+  trac cach plaque ;
+finsi ;
+*
+*
+* recuperation des faces constituant le volume plaque
+*
+dep_ext = rm+(eptub/2.);
+*
+si (ega zsyme 'entier');
+  haut = ltub_c + ltub_s;
+  bas = -1.*ltub_i;
+  yb1 = -1.*(pirad*rm) ;
+  yb2 = pirad*rm ;
+finsi;
+si (ega zsyme 'demi');
+  haut = ltub_c + ltub_s;
+  bas = -1.*ltub_i;
+  yb1 = 0.;
+  yb2 = pirad*rm ;
+finsi;
+*
+xpp1 = dep_ext  ;
+ypp1 = yb1 ;
+zpp1 = bas ;
+*
+xpp2 = dep_ext ;
+ypp2 = yb2 ;
+zpp2 = bas ;
+*
+xpp3 = dep_ext ;
+ypp3 = ypp2 ;
+zpp3 = haut ;
+*
+xpp4 = dep_ext ;
+ypp4 = ypp1 ;
+zpp4 = zpp3 ;
+*
+xpp5 = dep_ext - eptub ;
+ypp5 = ypp1 ;
+zpp5 = zpp1 ;
+*
+xpp6 = xpp5 ;
+ypp6 = ypp3 ;
+zpp6 = zpp3 ;
+*
+xpp7 = xpp5;
+ypp7 = ypp4 ;
+zpp7 = zpp4 ;
+*
+xpp8 = xpp1;
+ypp8 = 0.;
+zpp8 = zpp3;
+*
+xpp9 = xpp8;
+ypp9 = ypp2;
+zpp9 = zpp8;
+*
+pp1 = xpp1 ypp1 zpp1 ;
+pp2 = xpp2 ypp2 zpp2 ;
+pp3 = xpp3 ypp3 zpp3 ;
+pp4 = xpp4 ypp4 zpp4 ;
+pp5 = xpp5 ypp5 zpp5 ;
+pp6 = xpp6 ypp6 zpp6 ;
+pp7 = xpp7 ypp7 zpp7 ;
+pp8 = xpp8 ypp8 zpp8 ;
+pp9 = xpp9 ypp9 zpp9 ;
+*
+* retournement de la plaque si pos = 'interne'
+*
+si (ega posit 'interne');
+ plaque = plaque tour 180. (rm 0. haut) (rm 0. bas);
+finsi;
+*
+envevolu = enve plaque;
+epsitt = 1.e-3 ;
+*
+ptff1 = envevolu point plan pp1 pp2 pp5 epsitt ;
+ptff2 = envevolu point plan pp2 pp3 pp6 epsitt ;
+ptff3 = envevolu point plan pp3 pp4 pp6 epsitt ;
+ptff4 = envevolu point plan pp4 pp1 pp5 epsitt ;
+ptff5 = envevolu point plan pp1 pp2 pp3 epsitt ;
+ptff6 = envevolu point plan pp5 pp6 pp7 epsitt ;
+*
+extube_i = envevolu elem appuye strictement ptff1 ;
+extube_s = envevolu elem appuye strictement ptff3 ;
+bord1  = envevolu elem appuye strictement ptff4 ;
+bord2  = envevolu elem appuye strictement ptff2 ;
+fac5   = envevolu elem appuye strictement ptff5 ;
+fac6   = envevolu elem appuye strictement ptff6 ;
+*
+c = lect 0;
+si (ega zquad 'oui');
+  b = 'MOTS' 'TRI6';
+  a = (nbel(fac6) b) ;
+  si (a ega c);
+    fac6   = (fac6 elem qua8) ;
+  sinon;
+    fac6   = (fac6 elem qua8) et (fac6 elem tri6);
+  finsi;
+  extube_i   = (extube_i elem qua8) ;
+sinon;
+  b = 'MOTS' 'TRI3';
+  a = (nbel(fac6) b) ;
+  si (a ega c);
+   fac6   = (fac6 elem qua4) ;
+  sinon;
+   fac6   = (fac6 elem qua4) et (fac6 elem tri3);
+  finsi;
+  extube_i   = (extube_i elem qua4) ;
+finsi;
+*
+si (ega zquad 'oui');
+  b = 'MOTS' 'TRI6';
+  a = (nbel(bord1) b) ;
+  si (a ega c);
+    bord1   = (bord1 elem qua8) ;
+  sinon;
+    bord1   = (bord1 elem qua8) et (bord1 elem tri6);
+  finsi;
+sinon;
+  b = 'MOTS' 'TRI3';
+  a = (nbel(bord1) b) ;
+  si (a ega c);
+   bord1   = (bord1 elem qua4) ;
+  sinon;
+   bord1   = (bord1 elem qua4) et (bord1 elem tri3);
+  finsi;
+finsi;
+*
+si (ega zquad 'oui');
+  b = 'MOTS' 'TRI6';
+  a = (nbel(bord2) b) ;
+  si (a ega c);
+    bord2   = (bord2 elem qua8) ;
+  sinon;
+    bord2   = (bord2 elem qua8) et (bord2 elem tri6);
+  finsi;
+sinon;
+  b = 'MOTS' 'TRI3';
+  a = (nbel(bord2) b) ;
+  si (a ega c);
+   bord2   = (bord2 elem qua4) ;
+  sinon;
+   bord2   = (bord2 elem qua4) et (bord2 elem tri3);
+  finsi;
+finsi;
+*
+si (ega zquad 'oui');
+  b = 'MOTS' 'TE10';
+  a = (nbel(plaque) b) ;
+  si (a ega c);
+    plaque   = (plaque elem CU20) ;
+  sinon;
+    plaque   = (plaque elem CU20) 
+               et (plaque elem PR15) et (plaque elem TE10);
+  finsi;
+sinon;
+  b = 'MOTS' 'TET4';
+  a = (nbel(plaque) b) ;
+  si (a ega c);
+    plaque   = (plaque elem CUB8) ;
+  sinon;
+    plaque   = (plaque elem PRI6) et (plaque elem TET4) 
+                et (plaque elem CUB8); 
+  finsi;
+finsi;
+
+*
+si (ega trans 'oui');
+mess '________________________________________________________';
+mess '*********** INFOS TRANSFORMATION EN TUBE *************';
+mess 'Nombre total de noeuds de couture a eliminer (BORD1) : '
+      (nbno(bord1));
+mess 'Nombre de noeuds du futur tube : '
+      ((nbno(plaque))-(nbno(bord1)));
+mess '________________________________________________________';
+finsi;
+*
+* DEFINITION DES NOMS D'OBJETS
+*
+* Renumerotation des faces avant orientation pour eviter les numeros
+* de noeuds trop importants
+*
+sort fac5 ;
+sort fac6 ;
+*
+extube_i  = extube_i orienter direction (0. 0. -1.) ;
+si (ega zaxis 'non');
+  peauext   = fac5   orienter direction (1. 0. 0.)  ;
+  peauint   = fac6   orienter direction (-1. 0. 0.) ;
+finsi;
+extube_s  = extube_s orienter direction (0. 0. 1.) ;
+*
+pt_i = 0. 0. (bas) ;
+pt_s = 0. 0. (haut) ;
+*
+*********************************************************
+* transformation geometrique de la plaque en tube
+*********************************************************
+  si (ega trans 'oui');
+*
+  mess 'transformation de la plaque en tube.....';
+  pt_plaq=chan poi1 plaque;
+  nbpt=nbno pt_plaq;
+*
+  ipt=0;
+  list nbpt;
+*
+    repe boucle1 nbpt;
+       ipt = ipt + 1;
+       pcour=pt_plaq poin ipt;
+       x_pcour y_pcour z_pcour=coor pcour;
+       theta1 = (((y_pcour / rm) )*180./pi) + 90.+ theta;
+       si (theta < 0.);
+         theta = theta + 360.;
+       finsi;
+       xn_pcour = x_pcour * (sin( theta1 ) );
+       yn_pcour = -1.* x_pcour * (cos( theta1 ) ); 
+       dx_pcour =  xn_pcour - x_pcour;
+       dy_pcour =  yn_pcour - y_pcour;
+       depl pcour plus ( dx_pcour dy_pcour 0);
+    fin boucle1;    
+*
+    oubli pcour;
+    oubli pt_plaq;
+    elim 1.e-6 (bord1 et bord2);
+    si (ega zsyme 'entier'); oubli bord1;oubli bord2; finsi;
+  finsi;
+*
+* 
+  si (ega itrac 1);
+    titr 'TUBXFEM / transformation en tube';
+    O = (0. 0. 0.);
+    x = O droit 1 (1000. 0. 0.);
+    y = O droit 1 (0. 1000. 0.);
+    z = O droit 1 (0. 0. 1000.);
+    trac cach (x et y et z et plaque);
+    trac cach (bloc et x et y et z);
+  finsi;
+*
+FINPROC PLAQUE BLOC EXTUBE_I EXTUBE_S PEAUEXT PEAUINT PT_I PT_S 
+BORD1 BORD2;
+*____________________________________________________________________
+*
+* PROGRAMME PRINCIPAL
+*____________________________________________________________________
+*
+saut ligne ;
+mess '/////////////////////////////////////////////////////' ;
+mess '**************  PROGRAMME PRINCIPAL *****************' ;
+mess '/////////////////////////////////////////////////////' ;
+*
+si (ega zquad 'oui');
+  option dime 3 elem CU20;
+sinon;
+  option dime 3 elem CUB8;
+finsi;
+*
+******************************************************
+*
+* constantes
+*
+epsi  = 1.e-3;
+pirad =  3.1415926535897931;
+*zsyme = 'entier';
+* la position de la zone est au centre de la plaque
+* on fait ensuite tourner le tube de theta
+yczin = 0.;
+*
+si (nxep >eg nbxzi);
+  mess '!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!';
+  mess 'ERREUR : le nombre d"elements [nxep] apres deraffinement';
+  mess 'suivant x pour la zone d"interet doit etre inferieur';
+  mess 'a [nbxzi] !';
+  fin;
+finsi;
+*
+si ( ( (nxep/2.) neg ( flottant(nxep/2) ) ) et (nxep > 1));
+  mess '!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!';
+  mess 'ERREUR : le nombre d"elements [nxep] apres deraffinement';
+  mess 'suivant x pour la zone d"interet doit etre pair';
+  mess 'ou egal a 1 !';
+  fin;
+finsi;
+si ((nbzzi/2.) neg ( flottant(nbzzi/2) ));
+  mess '!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!';
+  mess 'ERREUR : le nombre d"elements longi [nbzzi] ';
+  mess 'de la zone d"interet doit etre pair !!';
+  fin;
+finsi;
+si ((nbyzi/2.) neg ( flottant(nbyzi/2) ));
+  mess '!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!';
+  mess 'ERREUR : le nombre d"elements axi [nbyzi] ';
+  mess 'de la zone d"interet doit etre pair !!';
+  fin;
+finsi;
+*
+i = 1 ;
+puis = 0 ;
+repe bouc1 8 ;
+ i = i + 1 ;
+ if = flottant i ;
+ ndivf = flottant nbxzi ;
+ deux = ndivf ** (1 / if) ;
+    si (deux ega 2 .001) ;
+       puis = 1 ;
+       quit bouc1 ;
+    finsi ;
+fin bouc1 ;
+si (puis ega 0) ;
+*si ((nbxzi/2.) neg ( flottant(nbxzi/2) ));
+  mess '!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!';
+  mess 'ERREUR : le nombre d"elements radial [nbxzi] ';
+  mess 'de la zone d"interet doit etre une puissance de 2 !!';
+  fin;
+finsi;
+si (ega zaxis 'oui');
+ mess '________________________________________________________';
+ mess 'INFO : zone axisymetrique, on impose tyzin = 2PiRm';
+ mess '________________________________________________________';
+ tyzin = 2*pirad*rm;
+finsi;
+*
+tube bloc extube_i extube_s peauext peauint pt_i pt_s bord1 bord2
+= TUBXFEM rm pirad ltub_c ltub_i ltub_s eptub epzint zsyme 
+  peauzi nbxzi nbyzi nbzzi yczin zczin tyzin tzzin theta zaxis 
+  zquad trans nxep  nxco itrac;
+*
+ma = tube et pt_i et pt_s;
+tass ma;
+*trac cach ma;
+sauv form ma;
+fin;
+*

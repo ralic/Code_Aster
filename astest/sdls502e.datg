@@ -1,0 +1,44 @@
+*maillage paramétré d'une plaque
+*simplement supportée
+*----------------------------------------------
+opti dime 3 elem seg2 ;
+opti niveau 8 ;
+
+*topologie
+
+l = 5.0 ;
+a = cos(60.5);
+b = sin(60.5);
+z = 2.3;
+
+X1 = l * 1.414213 * a ;
+Y1 = l * 1.414213 * b ;
+X2 = -1. * X1;
+Y2 = -1. * Y1;
+
+A = X2 Y2 z ;
+B = Y2 X1 z ;
+C = X1 Y1 z ;
+D = Y1 X2 z ;
+
+AB = droit 10 A B ;
+BC = droit 10 B C ;
+CD = droit 10 C D ;
+DA = droit 10 D A ;
+
+opti dime 3 elem tri6 ;
+
+surf1 = daller AB BC CD DA plan ;
+bords= AB et BC et CD et DA;
+tout_elt = surf1 et bords  ;
+
+elim 0.0001 tout_elt ;
+trac cach  tout_elt ;
+list (nbno tout_elt) ;
+list (nbel tout_elt) ;
+
+opti sauv form 'sdls502e.mgib' ;
+sort tout_elt ;
+sauv form tout_elt ;
+
+fin;

@@ -1,0 +1,51 @@
+opti dime 2 elem qua8 ;
+opti sauv form 'mumps02a.mgib' ;
+
+* Maillage d'un rectangle en quad8
+*
+
+* L : Longueur du rectangle
+* h : Hauteur du rectangle
+* nab : nb d'elements sur ab
+* nbc : nb d'elements sur bc
+
+
+h = 50.;
+l = 100.;
+
+nab = 10;
+nbc = 10;
+ncd = nab;
+nda = nbc;
+
+
+a = 0. 0.;
+b = l 0. ;
+c = l h;
+d = 0. h;
+
+
+lab = droit nab a b ;
+lbc = droit nbc b c ;
+lcd = droit nab c d ;
+lda = droit nbc d a ;
+
+lr1 = lab et lbc et lcd et lda;
+
+
+sc1 = tran lab (0. h) nbc;
+
+surf = sc1 et lr1;
+
+elim 0.001 surf ;
+
+list (nbno surf) ;
+list (nbel surf) ;
+
+tass surf;
+
+sauv form surf ;
+
+trac  (surf et ((lab et lda) coul rouge));
+
+fin;

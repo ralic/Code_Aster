@@ -1,0 +1,32 @@
+ TITRE
+ %  SSLS114I : COQUE_AXIS
+ FINSF
+ %
+ COOR_2D
+   A       1.0     0.5
+   N1      1.0     0.375
+   N2      1.0     0.25
+   N3      1.0     0.125
+   B       1.0     0.
+ FINSF
+ %
+ SEG3
+   M1      B        N2       N3
+   M2      N2       A        N1
+ FINSF
+ %
+ GROUP_NO
+ PA       A
+ FINSF
+ %
+ GROUP_NO
+ PB       B
+ FINSF
+ %
+ GROUP_MA
+   CYLINDRE   M1   M2
+ FINSF
+ %
+ FIN
+ 
+

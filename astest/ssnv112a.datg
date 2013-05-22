@@ -1,0 +1,48 @@
+OPTI DIME 3 ELEM CU20 ;
+oeil = 0. 0. 10000.;
+RI=0.1;
+RE= 0.2;
+NR = 12 ;
+NT = 10 ;
+NZ = 2 ;
+H = 0.01 ;
+PO = 0.  0.  0. ;
+POP = 0.  0.  H ;
+A = 0.  RI  0. ;
+B = 0.  RE  0.;
+E = (RI*(2.**0.5)/(-2.))   (RI*(2.**0.5)/2.)  0. ;
+F = (RE*(2.**0.5)/(-2.))   (RE*(2.**0.5)/2.)  0. ;
+
+LAB = DROITE NR  A B ;
+LBF = CERCLE NT  B PO F ;
+LFE = DROITE NR  F E ;
+LEA = CERCLE NT  E PO A ;
+FACINF = DALLAGE LAB LBF LFE LEA 'PLAN' ; 
+VOLUME = FACINF VOLU NZ TRAN (0. 0. H) ;
+
+* recuperation des surfaces interessantes
+AP = VOLUME POIN PROC (0. RI H) ;
+tampon1 = VOLUME POIN PLAN A B AP 1.e-6 ;
+FACEAB = ENVE(VOLUME) ELEM APPUI STRI tampon1 ; 
+
+tampon2 = VOLUME POIN CYLI PO POP A 1.e-6 ;
+FACEAE = ENVE(VOLUME) ELEM APPUI STRI tampon2;
+
+EP = VOLUME POIN PROC ((RI*(2.**0.5)/(-2.))   (RI*(2.**0.5)/2.) H) ;
+tampon3 = VOLUME POIN PLAN POP AP EP 1.e-6;
+FACSUP = ENVEL(VOLUME) ELEM APPUI STRI tampon3 ;
+
+tampon4 = VOLUME POIN PLAN  E F EP 1.e-6;
+FACEEF = ENVEL(VOLUME) ELEM APPUI STRI tampon4 ;
+
+noeumi = VOLUME POIN PROC (0. RI (H/NZ/2.))  ;
+oubli tampon1 ;
+oubli tampon2 ;
+oubli tampon3 ;
+oubli tampon4 ;
+
+OPTI SAUV FORMAT 'sslv130a.mgib' ;
+SAUV FORMAT (VOLUME et FACINF et FACSUP et FACEEF et FACEAE et FACEAB);
+
+fin ;
+

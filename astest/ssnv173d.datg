@@ -1,0 +1,82 @@
+opti dime 3;
+dens 25 ;
+
+*-------
+*donnees
+*-------
+*cotés
+LX = 5;
+LY = 5;
+LZ = 25;
+
+*points
+p1 = 0.   0.  0.;
+p2 = 0.  LY   0.;
+p3 = 0.   0.  LZ;
+p4 = 0.  LY   LZ;
+p11 = LX    0.  0.;
+p12 = LX   LY   0.;
+p13 = LX    0.  LZ;
+p14 = LX  LY   LZ;
+
+*----------------------------------------
+*construction des droites et des surfaces 
+*----------------------------------------
+
+OPTI ELEM SEG2;
+lig1 = droit 1 p1 p2;
+lig2 = droit 1 p4 p2;
+lig3 = droit 1 p3 p4;
+lig4 = droit 1 p3 p1;
+lig11 = droit 1 p11 p12;
+lig12 = droit 1 p14 p12;
+lig13 = droit 1 p13 p14;
+lig14 = droit 1 p13 p11;
+
+OPTI ELEM TRI3;
+S1=lig1 REGL 1 lig3;
+S2=lig13 REGL 1 lig11;
+S3=lig2 REGL 1 lig12;
+S4=lig14 REGL 1 lig4;
+S5=lig1 REGL 1 lig11;
+S6=lig13 REGL 1 lig3;
+S  = S1 et S2 et S3 et S4 et S5 et S6;
+ELIM 0.001 S;
+
+*----------------------
+*construction du volume
+*----------------------
+
+OPTI ELEM TET4;
+vol = VOLU S;
+
+trac vol;
+
+oublier p1;
+oublier p2;
+oublier p3;
+oublier p4;
+oublier p11;
+oublier p12;
+oublier p13;
+oublier p14;
+oublier lig1;
+oublier lig2;
+oublier lig3;
+oublier lig4;
+oublier lig11;
+oublier lig12;
+oublier lig13;
+oublier lig14;
+oublier S1;
+oublier S2;
+oublier S3;
+oublier S4;
+oublier S5;
+oublier S6;
+oublier S;
+oublier p1;
+
+opti sauv format 'ssnv173d.mgib' ;
+sauv format vol ;
+fin ;

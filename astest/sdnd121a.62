@@ -1,0 +1,128 @@
+#############################################
+# Solution quasi-analytique de l'equation diff à coefficients variables
+# x''[t] + Cr[t] * x'[t] + Om0[t]**2 * x[t] == Fr * Sin[Om*(t+t0)] + F0
+# avec conditions initiales x[0] == D0 , x'[0] == V0
+#############################################
+
+Fr = Fa / m        # Amplitude réduite de la force
+Om = pi * 2 * f   #  pulsation de l'excitation
+
+Duree = t[len(t)-1]     # durée de calucl en sec.
+n  = len(t)             # nb de points de calcul
+DT = Duree / ( n-1 )    # pas de temps nominal
+nn = int(1E4)           # nb de points calcul pour recherche du point d'entree et sortie de contact
+TT = array(range(0,nn))*DT/(nn-1)
+M3 = array(range(2,-1,-1))
+AA = matrix(zeros( (3 , 3) ))
+X = array([0.]*3)
+
+T = array([0.]*(n))   # vecteur temps
+D = array([0.]*(n))   # vecteur déplacement
+V = array([0.]*(n))   # vecteur vitesse
+A = array([0.]*(n))   # vecteur accélération
+
+D0 = 0.0 ; V0 = 0.0     # Conditions initiales
+
+t0 = 0  # décalage temporel
+J = 0   # indicateur de contact (0=vol libre, 1=contact)
+
+K = k_rappel        # raideur du système
+Cr = c_rappel / m   # amortissement réduit
+Om0 = sqrt( K / m ) # pulsation propre
+F0 = 0              # force constante
+
+
+for i in range(1,n):
+
+    T[i] = T[i-1] + DT
+    t = T[i] - t0
+    DD = DEP( t , t0 , Om0 , Om , Cr , Fr , F0 , D0 , V0 )  
+    D[i] = DD[0]  ;  V[i] = DD[1]  ;  A[i] = DD[2] # archivage des valeurs
+    DA = DD[0]
+
+    if (DA > jeu_choc and J == 0):
+        ####### entrée de contact
+        t = T[i-1] - t0
+        TT0 = t + TT   # on utilise un pas de temps beaucoup plus fin
+        Dc = [0.]*len(TT0)
+        j=0
+        for tt in TT0:
+            DD0 = DEP( tt , t0 , Om0 , Om , Cr , Fr , F0 , D0 , V0 )
+            Dc[j] = DD0[0]
+            j=j+1
+        liste_tmp = list( abs(array(Dc)-jeu_choc) ) # "astuce": conversion en liste, pour pouvoir repérer l'indice d'une valeur donnée
+        Dm = min( liste_tmp )    # valeur la plus proche de l'obstacle
+        Im = liste_tmp.index(Dm) # instant correspondant
+        del liste_tmp
+        
+        if (Im == 1):
+            t = T[i-1] - t0 - DT / nn / 2
+            TT0 = t + TT
+            Dc = [0.]*len(TT0) ;
+            j=0
+            for tt in TT0:
+                DD0 = DEP( tt , t0 , Om0 , Om , Cr , Fr , F0 , D0 , V0 ) ;
+                Dc[j] = DD0[0]
+                j=j+1
+            liste_tmp = list( abs(array(Dc)-jeu_choc) )
+            Dm = min( liste_tmp )
+            Im = liste_tmp.index(Dm)
+            del liste_tmp
+        AA = matrix([ TT0[Im-1] **M3 , TT0[Im] **M3 , TT0[Im+1] **M3 ])
+        X = linalg.pinv( AA ) * ( matrix(Dc[Im-1:Im+1+1]).transpose() - jeu_choc )
+        Q = sqrt( X[1]**2 - 4 * X[0] * X[2] )
+        t1 = ( - X[1] + Q ) / 2 / X[0]
+        t2 = ( - X[1] - Q ) / 2 / X[0]
+        if ( abs(t1 - TT0[Im]) < abs(t2 - TT0[Im]) ):
+            t = float(t1.real)
+        else:
+            t = float(t2.real)
+        DD = DEP( t , t0 , Om0 , Om , Cr , Fr , F0 , D0 , V0 )
+        # mise à jour des conditions initiales:
+        D0 = DD[0] ; V0 = DD[1]
+        # mise à jour des paramètres du système (raideur, ...):
+        K = k_rappel + kn_choc ;  Cr = (c_rappel + cn_choc)/m ; Om0 = sqrt( K / m ) ; F0 = kn_choc * jeu_choc / m  ;
+        t0 = t + t0
+        J = 1
+
+    elif (DA <= jeu_choc and J == 1):
+        ######## sortie de contact
+        t = T[i-1] - t0
+        TT0 = t + TT
+        Dc = [0.]*len(TT0)
+        j=0
+        for tt in TT0:
+            DD0 = DEP( tt , t0 , Om0 , Om , Cr , Fr , F0 , D0 , V0 ) ;
+            Dc[j] = DD0[0]
+            j=j+1
+        liste_tmp = list( abs(array(Dc)-jeu_choc) )
+        Dm = min( liste_tmp )
+        Im = liste_tmp.index(Dm)
+        del liste_tmp
+        if (Im == 1):
+            t = T[i-1] - t0 - DT / nn / 2
+            TT0 = t + TT
+            Dc = [0.]*len(TT0)
+            j=0
+            for tt in TT0:
+                DD0 = DEP( tt , t0 , Om0 , Om , Cr , Fr , F0 , D0 , V0 ) ;
+                Dc[j] = DD0[0]
+                j=j+1
+            liste_tmp = list( abs(array(Dc)-jeu_choc) )
+            Dm = min( liste_tmp )
+            Im = liste_tmp.index(Dm)
+            del liste_tmp
+        AA[:,:] = [ TT0[Im-1] **M3 , TT0[Im] **M3 , TT0[Im+1] **M3 ]
+        X = linalg.pinv( AA ) * ( matrix(Dc[Im-1:Im+1+1]).transpose() - jeu_choc )
+        Q = sqrt( X[1]**2 - 4 * X[0] * X[2] )
+        t1 = ( - X[1] + Q ) / 2 / X[0]
+        t2 = ( - X[1] - Q ) / 2 / X[0]
+        if ( abs(t1 - TT0[Im]) < abs(t2 - TT0[Im]) ):
+            t = float(t1.real)
+        else :
+            t = float(t2.real)
+        DD = DEP( t , t0 , Om0 , Om , Cr , Fr , F0 , D0 , V0 )
+        D0 = DD[0] ; V0 = DD[1]
+        K = k_rappel ; Cr = c_rappel/m ; Om0 = sqrt( K/m ) ; F0 = 0
+        t0 = t + t0
+        J = 0

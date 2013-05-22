@@ -1,0 +1,45 @@
+TITRE  TROIS BARRES CONSTITUEES DE 1 ELEMENT CHACUNE
+       NOM=SSNL111B 
+FINSF
+%
+%  Ri -
+%     !       
+%     !       
+%     !                    ^ y
+%     !                    !
+%     !                    !
+%     !                    !
+%     !                    !
+%     !                    !
+%     !                    !
+%  Si -             -------!---->  x
+%
+COOR_3D    NOM=
+   N1  -1.90000000E+00   1.1000000E+00   0.0000000E+00
+   N2  -1.90000000E+00   0.1000000E+00   0.0000000E+00
+   N3   0.10000000E+00   1.1000000E+00   0.0000000E+00
+   N4   0.10000000E+00   0.1000000E+00   0.0000000E+00
+   N5   2.10000000E+00   1.1000000E+00   0.0000000E+00
+   N6   2.10000000E+00   0.1000000E+00   0.0000000E+00
+FINSF
+%
+SEG2 
+ BARR1      N1      N2
+ BARR2      N3      N4
+ BARR3      N5      N6
+FINSF
+%
+
+GROUP_NO
+ BAR1      N1      N2
+FINSF
+%
+GROUP_NO
+ BAR2      N3      N4
+FINSF
+%%
+GROUP_NO
+ BAR3      N5      N6 
+FINSF
+%
+FIN

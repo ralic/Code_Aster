@@ -1,0 +1,35 @@
+Nep =  3 ;
+ntran = 1 ; 
+ri = 417 ;
+re = 496 ;
+
+opti dime 2 elem qua4 ;
+
+p1 = ri  0. ;
+p2 = re  0. ;
+basQ = droit Nep p1 p2 ;
+squad = basQ tran ntran (0. 20.) ;
+
+echQ = cote 4 squad ;
+echQ = echQ coul vert ;
+
+opti dime 2 elem tri3 ;
+
+p3 = ri  20. ;
+p4 = re  20. ;
+basT = droit Nep p3 p4 ;
+stria = basT tran ntran (0. 20.) ;
+
+echT = cote 4 stria ;
+echT = echT coul vert ;
+
+stran = (squad et stria) ;
+echange = (echQ et echT);
+
+elim stran 0.001;
+elim echange 0.001;
+
+trac (stran et echange) ;
+OPTI SAUV FORM 'ttlv100a.mgib';
+
+sauver format (stran et echange ) ;

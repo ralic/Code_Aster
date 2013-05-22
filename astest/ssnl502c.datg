@@ -1,0 +1,29 @@
+*maillage paramétré d'une poutre
+*----------------------------------------------
+opti dime 3 elem seg2 ;
+opti niveau 8 ;
+
+*topologie
+
+L = 0.5 ;
+t = 0.0 ;
+
+A = 0. t 0. ;
+B = 0. t L ;
+
+
+COTEAB = droit (-10) A B DINI 0.01 DFIN 0.15 ;
+
+
+tout_elt = COTEAB  ;
+elim 0.0001 tout_elt ;
+trac tout_elt ;
+
+list (nbno tout_elt) ;
+list (nbel tout_elt) ;
+
+opti sauv form 'ssnl502c.mgib' ;
+sort tout_elt ;
+sauv form tout_elt ;
+
+fin;

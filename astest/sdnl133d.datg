@@ -1,0 +1,147 @@
+*23456789112345678921234567893123456789412345678951234567896123456789712
+************************************************************************
+*       PROCEDURE DE MAILLAGE AUTOMATIQUE D'UN ARBRE 3D FISSURE
+*              FISSURE A FOND DROIT OU QUASI-ELLIPTIQUE
+*                            OCTOBRE 2000
+*     PAR : P. HERMAN                              POUR : Ph. VOINIS
+*-----------------------------------------------------------------------
+* PARAMETRES D'ENTREE :
+* DIAM : Diametre de l'arbre
+* LONG : Demi-longueur de l'arbre
+* PROF : Profondeur de la fissure
+* ZON1 : Demi-largeur de la Zone raffinée autour du fond de fissure (coté fissure)
+* ZON2 : Demi-largeur de la Zone raffinée autour du fond de fissure (coté sain)
+* NDFF : Nombre de noeuds le long du demi-fond de fissure
+* NZO1 : Nombre de noeuds dans la 'demi-zone' autour du front de fissure
+* NTOT : Nombre de noeuds sur le diametre
+*
+* PARAMETRES DE SORTIE :
+* SCOUPE1  : Surface a l'extremite Z=LONG
+* SCOUPE2  : Surface a l'extremite Z=-LONG
+* PCOUPE1  : Point au centre de SCOUPE1
+* PCOUPE2  : Point au centre de SCOUPE2
+* SFISS1   : Surface de la levre de la fissure cote SCOUPE1
+* SFISS2   : Surface de la levre de la fissure cote SCOUPE2
+* NOFONFIS : Noeuds du fond de fissure
+************************************************************************
+* BIBLI65FD : CAS FOND DROIT 65% FISSURE
+************************************************************************
+*
+opti dime 3 elem cub8 nive 11;
+crit = 0.001 ;
+*
+* Initialisation des parametres d'entree
+*---------------------------------------
+DIAM = 1.0  ;
+LONG = 2.  ;
+PROF = 0.65;
+ZON1 = 0.1 ;
+ZON2 = 0.1 ;
+NZO1 = 3   ;
+NZO2 = 3   ;
+NTOT = 10  ;
+
+NDFF = PROF*NTOT ;
+INTR1 = FLOT ( ENTI NDFF ) ;
+INTR2 = INTR1 + 0.5 ;
+si ( NDFF < INTR2 );
+  NDFF = ENTI NDFF ;
+sinon ;
+  NDFF = ENTI NDFF + 1 ;
+finsi;
+
+NFZ  = ((DIAM-PROF)/ZON2) - 1. ;
+NFZ  = ENTI (NFZ*NZO2) ;
+*
+* Points de construction
+*-----------------------
+PC = 0. 0. 0. ;
+PH = (DIAM / 2.) 0. 0. ;
+PB = (-1. * DIAM / 2.) 0. 0. ;
+PM1 = PH moins (PROF 0. 0.) ;
+PM2 = PH moins ((PROF-ZON1) 0. 0.) ;
+PM3 = PH moins ((PROF+ZON2) 0. 0.) ;
+xx1 = (coor 1 PM1) ;
+xx2 = (coor 1 PM2) ;
+xx3 = (coor 1 PM3) ;
+yy1 = ((DIAM * DIAM / 4) - (xx1 * xx1)) ** 0.5 ;
+yy2 = ((DIAM * DIAM / 4) - (xx2 * xx2)) ** 0.5 ;
+yy3 = ((DIAM * DIAM / 4) - (xx3 * xx3)) ** 0.5 ;
+PE1 = xx1 (-1.*yy1) 0. ;
+PE2 = xx2 (-1.*yy2) 0. ;
+PE3 = xx3 (-1.*yy3) 0. ;
+*
+* Lignes de construction
+*-----------------------
+
+LFF1 = PM1 d NDFF PE1 ;
+LFF2 = PM2 d (NDFF+NZO1) PE2 ;
+LFF3 = PM3 d (NDFF) PE3 ;
+*
+LEH1 = cerc  (NZO1)        PE1 PC PE2 dini 0.025 dfin 0.030 ;
+LEH2 = cerc  ((NDFF+NZO1)) PE2 PC PH  dini 0.030 dfin 0.1  ;
+LHM2 = PH  d ((NDFF+NZO1)) PM2 dini 0.1   dfin 0.030 ;
+LHM1 = PM2 d (NZO1)        PM1 dini 0.030 dfin 0.025 ;
+*
+LEB1 = cerc  (NZO2)        PE1 PC PE3 dini 0.025 dfin 0.030 ;
+LEB2 = cerc  (NDFF) PE3 PC PB dini 0.030 dfin 0.032 ;
+LBM2 = PB  D (NFZ) PM3 dini 0.04 dfin 0.030 ;
+LBM1 = PM3 D (NZO2) PM1 dini 0.030 dfin 0.025 ;
+*
+* Surfaces de construction
+*-------------------------
+SFIS1 = (surf plan (LFF1 et LEH1 et LFF2 et LHM1)) ;
+SFIS2 = (surf plan (LFF2 et LEH2 et LHM2)) ;
+SFIS  = (SFIS1 et SFIS2) coul roug ;
+*
+SLIG1 = (surf plan (LFF1 et LEB1 et LFF3 et LBM1)) ;
+SLIG2 = (surf plan (LFF3 et LEB2 et LBM2)) ;
+SLIG  = (SLIG1 et SLIG2) coul vert ;
+*
+SFISS1 = SFIS et (SFIS syme droi PB PH) ;
+elim crit SFISS1 ;
+SFISS2 = SFISS1 plus (0. 0. 0.) ;
+*
+SLIG = SLIG et (SLIG syme droi PB PH) ;
+elim crit SLIG ;
+elim crit SFISS1 SLIG ;
+elim crit SFISS2 SLIG ;
+*
+* Construction des volumes
+*-------------------------
+VROT1 = (SFISS1 et SLIG) volu tran (0. 0. LONG) -10 dini 0.8 dfin 1.3;
+VROT2 = (SFISS2 et SLIG) volu tran (0. 0. (-1.*LONG)) -10 
+  dini 0.8 dfin 1.3;
+VROTOR = VROT1 et VROT2 ;
+*
+* Construction des objets de sortie
+*----------------------------------
+SCOUPE1 = (VROT1 face 2) coul bleu ;
+SCOUPE2 = (VROT2 face 2) coul bleu ;
+*
+PCOUPE1 = (0. 0. LONG) ;
+PCOUPE2 = (0. 0. (-1.*LONG)) ;
+*
+FONDFISS = (cont SFISS1) inte (cont SFISS2) ;
+NOFONFIS = (FONDFISS chan poi1) coul bleu ;
+*
+* Sauvegarde du modele
+*---------------------
+opti sauv form '/home/torkhani/ROTOR_FISS/bibli65fd.mgib' ;
+*opti sauv form './bibli65fd.mgib' ;
+sauv form (VROTOR et PCOUPE1 et PCOUPE2);
+*
+* Trace de verification
+*----------------------
+oeil = 100. 100. 100. ;
+oeilz = 0. 0. 100. ;
+titre 'BIBLI65FD : Section fissuree';
+trac oeilz (SFISS1 et SLIG et NOFONFIS) ;
+titre 'BIBLI65FD : Rotor complet : ' (nbno vrotor) 'no    et ' 
+  (nbel vrotor) 'el';
+trac oeil ((enve VROTOR) et SCOUPE1 et SCOUPE2 et PCOUPE1 et PCOUPE2);
+trac cach oeil (VROTOR et SCOUPE1 et SCOUPE2 et PCOUPE1 et PCOUPE2);
+*
+* Fin de la procedure
+*--------------------
+fin;

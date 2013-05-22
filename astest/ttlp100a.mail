@@ -1,0 +1,132 @@
+ TITRE
+        Deux plaques rectangulaires separees par un jeu
+ FINSF
+ %
+ COOR_2D
+% Plaque de gauche
+     N1         0.0000000      0.0000000
+     N12        0.0000000      0.5000000
+     N2         0.0000000      1.0000000
+     N13        0.1250000      0.0000000
+     N24        0.1250000      1.0000000
+     N3         0.2500000      0.0000000
+     N34        0.2500000      0.5000000
+     N4         0.2500000      1.0000000
+     N35        0.3750000      0.0000000
+     N46        0.3750000      1.0000000
+     N5         0.4950000      0.0000000
+     N56        0.4950000      0.5000000
+     N6         0.4950000      1.0000000
+% Plaque de droite
+     N101       0.5050000      0.0000000
+     N112       0.5050000      0.5000000
+     N102       0.5050000      1.0000000
+     N113       0.6250000      0.0000000
+     N124       0.6250000      1.0000000
+     N103       0.7500000      0.0000000
+     N134       0.7500000      0.5000000
+     N104       0.7500000      1.0000000
+     N135       0.8750000      0.0000000
+     N146       0.8750000      1.0000000
+     N105       1.0000000      0.0000000
+     N156       1.0000000      0.5000000
+     N106       1.0000000      1.0000000
+ FINSF
+%
+% ==================
+% Mailles volumiques
+% ==================
+%
+ QUAD8
+% Plaque de gauche
+     M1    N1    N3    N4    N2    N13   N34   N24   N12
+     M2    N3    N5    N6    N4    N35   N56   N46   N34
+% Plaque de droite
+     M101  N101  N103  N104  N102  N113  N134  N124  N112
+     M102  N103  N105  N106  N104  N135  N156  N146  N134
+ FINSF
+%
+% ===============
+% Mailles de bord
+% ===============
+%
+% Bord gauche de la plaque de gauche
+%
+ SEG3
+     BO1G  N2    N1    N12
+ FINSF
+%
+% Bord droit de la plaque de droite
+%
+ SEG3
+     BO1D  N105  N106  N156
+ FINSF
+%
+% Mailles de bord pour le traitement de l'echange entre parois
+%
+ SEG3
+% Bord droit de la plaque de gauche
+     IN1G  N5    N6    N56
+% Bord gauche de la plaque de droite
+     IN1D  N102  N101  N112
+ FINSF
+%
+% ==================
+% Groupes de mailles
+% ==================
+%
+% Bord gauche de la plaque de gauche
+%
+ GROUP_MA
+    BORDG   BO1G
+ FINSF
+%
+% Interface de contact pour la plaque de gauche
+%
+ GROUP_MA
+    INTERG  IN1G
+ FINSF
+%
+% Bord droit de la plaque de droite
+%
+ GROUP_MA
+    BORDD   BO1D
+ FINSF
+%
+% Interface de contact pour la plaque de droite
+%
+ GROUP_MA
+    INTERD  IN1D
+ FINSF
+%
+% =================
+% Groupes de noeuds
+% =================
+%
+ GROUP_NO
+    BINF    N1 N13 N3 N35 N5 N101 N113 N103 N135 N105
+ FINSF
+%
+ GROUP_NO
+    BSUP    N2 N24 N4 N46 N6 N102 N124 N104 N146 N106
+ FINSF
+%
+ GROUP_NO
+    RECTG   N1 N12 N2 N13 N24 N3 N34 N4 N35 N46 N5 N56 N6
+ FINSF
+%
+ GROUP_NO
+    RECTD   N101 N112 N102 N113 N124 N103 N134 N104
+            N135 N146 N105 N156 N106
+ FINSF
+%
+FIN
+
+
+
+
+
+
+
+
+

@@ -1,0 +1,26 @@
+TITRE                                                                           
+     POUTRE EN G.D. ENCASTREE A UNE EXTREMITE ET SOUMISE A UN MOMENT            
+FINSF                                                                           
+COOR_3D                                                                         
+   N1    0.00  0.  0.                                                           
+   N2    0.20  0.  0.                                                           
+   N3    0.40  0.  0.                                                           
+   N4    0.60  0.  0.                                                           
+   N5    0.80  0.  0.                                                           
+   N6    1.00  0.  0.                                                           
+FINSF                                                                           
+SEG2 NOM=POUTREGD                                                               
+% poutre de N1 a N6 %                                                           
+ S1  N1  N2                                                                     
+ S2  N2  N3                                                                     
+ S3  N3  N4                                                                     
+ S4  N4  N5                                                                     
+ S5  N5  N6                                                                     
+FINSF                                                                           
+GROUP_MA NOM=POUTRE                                                             
+ S1 S2 S3 S4 S5                                                                 
+FINSF                                                                           
+GROUP_NO  NOM=POUTRE                                                            
+ N1 N2 N3 N4 N5 N6                                                              
+FINSF                                                                           
+FIN                                                                             

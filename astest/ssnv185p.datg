@@ -1,0 +1,57 @@
+opti dime 3  elem cub8 ;
+
+dens 10 ;
+
+*----------------------------------------
+*DONNEES
+*----------------------------------------
+* dimensions des cotés
+LX = 1;
+LY = 10;
+LZ = 30;
+
+* nombre d'éléments
+NX = 5;
+NY = 30;
+NZ = 50; 
+
+*---------------------------------------------
+*construction des surfaces dans le plan inférieur
+*---------------------------------------------
+
+p1 = LX   0.  0.;
+p2 = LX  LY   0.;
+p3 = 0.  LY   0.;
+p4 = 0.  0.  0.;
+
+lig1 = droit p1 p2 NY;
+lig2 = droit p2 p3 NX;
+lig3 = droit p3 p4 NY;
+lig4 = droit p4 p1 NX;
+
+cont  = lig1 et lig2 et lig3 et lig4;
+
+trac cont
+
+*SURFINF= surface cont 'PLANE';
+SURFINF= DALL lig1 lig2 lig3 lig4 PLAN;
+trac SURFINF;
+
+p5 = 0.  0. LZ.;
+
+*---------------------------------------------
+*extrusion
+*---------------------------------------------
+
+vol = SURFINF volu  'TRAN' p5 NZ;
+SURFSUP = FACE 2  vol ;
+elim vol 1E-6;
+
+trac cach vol;
+
+MAILLE = vol et SURFINF et SURFSUP;
+                 
+
+opti sauv format '/home/geniaut/etudes/CT/HEXA/hexa_5_30_50.mgib' ;
+sauv format maille ;
+fin ;

@@ -1,0 +1,62 @@
+opti dime 3;
+opti elem seg3;
+opti elem qua8;
+
+l = 1.2;
+lc = 1.1 ;
+rmoy = 0.1055;
+rc = 0.305;
+* n = 3;
+n = 3;
+ m = 5 ;
+*m = 3 ;
+k = 10 ;
+*k = 4 ;
+den1 = 0.055 ;
+den2 = 0.155 ;
+
+a=0. (l + rc) 0. ;
+b=0. (rc+lc) 0. ;
+c=(rc+lc) 0. 0. ;
+d =(l + rc) 0.   0. ;
+
+b1 = (-1. * rmoy) rc 0.;
+b2 = rmoy  rc  0.;
+b3 = 0.  rc rmoy;
+
+arc = cer3 k b1 b3 b2;
+ars = arc syme plan b1 b2 a;
+cer1 = arc et (inve ars);
+elim cer1 0.01 ;
+
+coude1 = cer1 rota m 45. (rc rc 0.) (rc rc 1.);
+cercle = cote 3 coude1 ;
+cercle = inve cercle ;
+coude2 = cercle rota m 45. (rc rc 0.) (rc rc 1.);
+cer2 = cote 3 coude2 ;
+cer1 = inve cer1 ;
+tube1 =  cer1 trans   (0. (lc) 0.) dini den1 dfin den2 ;
+cercle1 = cote 3 tube1 ;
+
+cer2 = inve cer2 ;
+tube2 =  cer2 trans   ((lc) 0. 0.) dini den1 dfin den2 ;
+cercle2 = cote 3 tube2 ;
+
+coude = coude1 et coude2 et tube1 et tube2 ;
+
+opti elem seg2;
+ab = droit 1 a b;
+cd = droit 1 c d;
+
+mail = coude et ab et cd;
+toto = versens mail ;
+oublier toto ;
+
+elim 0.001 mail ;
+list (nbel mail) ;
+list (nbno mail) ;
+tass mail ;
+opti sauv form 'sslx102d.mgib';
+sauv 'FORMAT' mail;
+trac cach mail ;
+

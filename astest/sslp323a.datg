@@ -1,0 +1,21 @@
+opti dime 2 elem qua4 ;
+crit = 0.0001;
+
+R = 5. ;
+P1 = 0. 0. ; 
+P2 = 2*R 0. ;
+bas = droit (enti(10*R)) P1 P2 ;
+plaque =  bas TRAN (enti(10*R)) (0. (2*R)) ;
+axe = R R;
+p_inf = R 0. ;
+p_sup = R (2*R) ;
+P_i_d = (2*R) 0. ;
+P_s_g = 0. (2*R) ;
+plaque = plaque et axe et p_inf et p_sup et P_i_d et P_s_g ;
+elim plaque crit ;
+
+trac cach plaque ;
+
+opti sauv format './new_test.mgib' ;
+sauv format plaque ;
+fin ;

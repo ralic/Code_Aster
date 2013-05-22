@@ -1,0 +1,135 @@
+*
+*Indentation élasto-plastique d'un demi-plan par un indenteur
+* Modelisation D
+*Solide : Modelisation 3D (axisymétrique)
+*Contact: Methode CONTACT (contrainte)
+*
+*
+***
+***Construction du massif
+***
+*
+opti dime  3 ;
+opti nive 10 ;
+OPTI ELEM cub8;
+*
+* constantes
+*
+*
+*
+R=500.;                           
+
+A  =     0.      0.     0. ;     
+B  =  (3*R)      0.     0. ;   
+D  =     0.      0. (-3*R);
+S  =     0.   (3*R)     0. ;   
+S1 =   (3*R)  (3*R)     0. ;
+K  =     0.   2000.     0. ;
+Km =     0.   -200.     0. ;
+
+*N0 = -14 ;
+N0 = -20 ;
+N3 =  9 ;
+*N3 =  18 ;
+
+*LAB  = droit N0 'DINI' 20. 'DFIN' 200. A B ;
+*SBXY = LAB TRANS N0 'DINI' 200. 'DFIN' 20.  (0. 1500. 0.);
+LSS1 = droit N0 'DINI' 20. 'DFIN' 200. S S1 ;
+SBXY = LSS1 TRANS N0 'DINI' 20. 'DFIN' 200.  (0. -1500. 0.);
+BATI = volu SBXY N3 'ROTA' 90. A S;
+
+SBYZ = face 2 bati;
+
+toto = point bati 'PLAN' a b d 1.e-2;  
+base = elem (face 3 bati) 'APPUYE' 'STRICTEMENT' toto;  
+oublier toto;
+oublier a;
+oublier b;
+oublier D;
+
+titi = point bati 'PLAN' s (R (3*R) 0.) (0. (3*R) R) 1.e-2;  
+SESC = elem (face 3 bati) 'APPUYE' 'STRICTEMENT' titi;  
+oublier titi;
+
+*BATI = BATI et S;
+
+elim BATI 0.01;
+BATI = rege BATI;
+elim BASE 0.01;
+BASE = rege BASE;
+elim SBYZ 0.01;
+elim SBXY 0.01;
+elim SESC 0.01;
+SESC = rege SESC;
+
+elim 0.001 (BATI et SBXY et SBYZ et BASE et SESC);
+
+***Construction de la sphère
+E  =   0.         1500.         0. ;
+F  =   250.      1566.9899      0. ;
+G  =   200.       1650.         0. ;
+H  =   0.         1600.         0. ;
+I  =   500.       2000.         0. ;
+J  =   433.333    2000.         0. ;
+M  =   1000.      2000.      1000. ;
+N  =   1000.      2000.     -1000. ;
+P  =    100.      2000.       100. ;
+
+N1 = 6 ;
+N2 = 1 ;
+
+lEF = cercl N1 E K F ;
+lFG = droit N2 F G ;
+lGH = DROIT N1 G H ;
+lHE = DROIT N2 H E ;
+lFI = cercl N1 F K I ; 
+lIJ = DROIT N2 I J ;
+lJG = DROIT N1 J G ;
+*lGF = INVE lFG ;
+*lHG = INVE lGH ;
+*lGJ = INVE lJG ;
+lJK = DROIT N1 J K ;
+lKH = DROIT N1 K H ;
+
+S2 = DALLER lEF lFG lGH lHE;
+S3 = DALLER lFI lIJ lJG lFG;
+S4 = DALLER lGH lJG lJK lKH;
+S5 = S2 et S3 et S4 ;
+ELIM 0.001 S5 ;
+
+S6 = SYMETRIE S5 'PLAN' M N P ;
+L1 = SYMETRIE (inve lEF) 'PLAN' M N P ;
+oublier M;
+oublier N;
+oublier P;
+
+SSXY = S5 ET S6 ;
+ELIM 0.001 SSXY ;
+
+L2 = lEF ET lFI ;
+ELIM 0.001 L2 ;
+
+SPHSUP = VOLU SSXY N3 ROTA 90. H K ;
+CHIMPO = L1 N3 ROTA 90. E H ;
+SMAI   = L2 N3 ROTA 90. H K ;
+
+oublier K;
+oublier Km;
+
+SSYZ = SPHSUP FACE 2;
+SPHSUP = SPHSUP et SMAI et CHIMPO ;
+
+ELIM 0.01 (SPHSUP);
+SPHSUP = regenerer SPHSUP ;
+
+ELIM 0.01 (SMAI);
+SMAI = regenerer SMAI ;
+
+ELIM 0.01 (CHIMPO);
+CHIMPO = regenerer CHIMPO ;
+
+OPTI SAUV FORM 'ssnv506d.mgib';
+sauv form (BATI et SPHSUP);
+
+trac cach (BATI et SPHSUP et (SESC coul vert) et (SMAI coul rouge));
+fin;

@@ -1,0 +1,32 @@
+OPTI SAUV FORM 'ssls118j.mgib' ;
+OPTI NIVEAU 8 ;
+OPTI DIME 3 ELEM QUA4 ;
+
+A= 0. 0. 0.;
+B1=0.5 0. 0.; 
+B= 1. 0. 0.;
+C= 1. 1. 0.;
+D1=0. 0.5 0.;
+D= 0. 1. 0.;
+O = 0.5 0.5 0. ;
+
+AB1 = DROI 24 A B1 ;
+B1B = DROI 24 B1 B ;
+AB = AB1 et B1B ;
+BC = DROI 48 B C ;
+CD = DROI 48 C D ;
+DC = INVE CD;
+DD1 = DROI 24 D D1 ;
+D1A = DROI 24 D1 A ;
+DA = DD1 et D1A ;
+AD = INVE DA ;
+
+MAIL1 = AB BC DC AD DALL PLAN ;
+
+MAIL = MAIL1 et AB et BC et CD et DA et O ;
+
+elim 0.0001 MAIL
+
+TRAC (0. 0. 1000.) MAIL;
+SAUV 'FORMATTE' MAIL;
+FIN;

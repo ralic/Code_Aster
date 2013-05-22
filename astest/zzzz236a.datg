@@ -1,0 +1,36 @@
+*
+* opti donn 'barreau.dgib';
+*
+*
+
+opti dime 3;
+opti elem CUB8;
+
+nbb = 5;
+pt01 = (0.0 0.0 0.0);
+pt02 = (0.0 1.0 0.0);
+
+DRTO1O2 = 'DROITE' nbb pt01 pt02;
+S001 = DRTO1O2 'TRANS' nbb (0.0 0.0 1.0);
+'OUBL' DRTO1O2;'OUBL' pt01;'OUBL' pt02;
+*
+V001 = S001 'VOLU' nbb 'TRAN' (1.0 0.0 0.0);
+S002 = V001 'FACE' 2;
+*
+V002 = S002 'VOLU' nbb 'TRAN' (1.0 0.0 0.0);
+S003 = V002 'FACE' 2;
+*
+V003 = S003 'VOLU' nbb 'TRAN' (1.0 0.0 0.0);
+S004 = V003 'FACE' 2;
+*
+V004 = S004 'VOLU' nbb 'TRAN' (1.0 0.0 0.0);
+S005 = V004 'FACE' 2;
+*
+V005 = S005 'VOLU' nbb 'TRAN' (1.0 0.0 0.0);
+S006 = V005 'FACE' 2;
+
+VOLTOT = V001 et V002 et V003 et V004 et V005;
+VOLAA = V001 et V003;
+VOLBB = V002 et V003 et V005;
+opti sauve format 'barreau.mgib';
+sauve format VOLTOT VOLAA VOLBB;

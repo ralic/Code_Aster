@@ -1,0 +1,51 @@
+OPTION DIME 3 ELEM CU20 ;
+
+O = 0. 0. 0. ;
+A = 0. 0. 0.01 ;
+B = 0. 0.01 0. ;
+C = 0. 0. -0.01 ;
+D = 0. -0.01 0. ;
+
+nel = 3 ;
+nlon = 10 ;
+AB = CERC nel A O B ;
+BC = CERC nel B O C ;
+CD = CERC nel C O D ;
+DA = CERC nel D O A ;
+
+sur = DALL AB BC CD DA ;
+
+vol = VOLU sur nlon TRAN (1. 0. 0.) ;
+
+encast = FACE 1 vol ;
+effort = FACE 2 vol ;
+
+OUBL O ;
+OUBL A ;
+OUBL B ;
+OUBL C ;
+OUBL D ;
+
+OUBL AB ;
+OUBL BC ;
+OUBL CD ;
+OUBL DA ;
+
+OUBL OA ;
+OUBL BO ;
+OUBL OC ;
+OUBL OD ;
+
+OUBL sur ;
+
+ELIM vol 0.001 ;
+
+OPTION SAUV FORM 'ssnl125b.mgib' ;
+SAUV FORM vol ;
+
+
+*trac vol ;
+
+FIN;
+
+

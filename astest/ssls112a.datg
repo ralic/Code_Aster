@@ -1,0 +1,42 @@
+opti dime 3 elem qua4 ;
+
+a1 = 0. 0. 0. ;
+a2 = 10. 0. 0. ;
+a3 = 10. 5. 0. ;
+a4 = 0. 5. 0. ;
+
+
+m = 0. 0. 0. ;
+n = 0. 10. 0. ;
+angl = 20. ;
+
+* a1 = a1 tour angl m n ;
+* a2 = a2 tour angl m n ;
+* a3 = a3 tour angl m n ;
+* a4 = a4 tour angl m n ;
+
+l11 = d 10 a1 a2 ;
+l12 = d 5 a2 a3 ;
+l13 = d 10 a3 a4 ;
+l14 = d 5 a4 a1 ;
+
+l21 = d 10 a2 a1 ;
+l22 = d 5 a3 a2 ;
+l23 = d 10 a4 a3 ;
+l24 = d 5 a1 a4 ;
+
+ plaq1 = daller plan l11  l12  l13  l14 ;
+* plaq2 =  daller plan l24  l23  l22  l21 ;
+* plaq2 = orien plaq2 (0. 0. 1.) ;
+
+* plaq1 = surf cont1 plan ;
+* plaq2 = surf cont2 plan ;
+
+ plaq = plaq1  ;
+
+ oeil = 1. 1. 16. ;
+ elim 0.001 plaq ;
+ sort plaq ;
+opti sauv format 
+ '/home/cibhhgb/exce/plaque/plaque.mgib' ;
+ sauv format plaq ;

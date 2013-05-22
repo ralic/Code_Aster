@@ -1,0 +1,97 @@
+opti echo 1 opti dime 3 elem pr15 mode tridim ;
+
+*paramètres géometriques
+R = 1.;
+e = 0.1;
+*e = 0.01;
+*e = 0.001;
+
+*option de maillage
+n=14;
+nepai=1;
+
+*************on donne les points du maillage elementaire************
+sinF=sin 45;
+cosF=cos 45;
+beta=45;
+r1 = R/2.;
+r2 = R*sinF;
+r3 = R*cosF;
+
+*PP=(0. 0. e);
+PO=(0. 0. 0.) ;
+PD=(r1 0. 0.) ;
+PA=(R 0. 0.) ;
+PB=(r3 r2 0.);
+PC=(0. R 0.) ;
+PE=(0. r1 0.);
+PF=(0.4 0.4 0);
+
+
+*droite de s1
+POD=D n PO PD;
+PDF=D n PD PF;
+PFE=D n PF PE;
+PEO=D n PE PO;
+
+*droites de s2
+PDA=D n PD PA;
+PAB=CERCLE n PA PO PB;
+PBF=D n PB PF;
+PFD=D n PF PD;
+
+*droites de s3
+PFB=D n PF PB;
+PBC=CERCLE n PB PO PC;
+PCE=D n PC PE;
+PEF=D n PE PF;
+
+
+OPTION ELEM tri6;
+S1 = daller POD PDF PFE PEO;
+S2 = daller PDA PAB PBF PFD;
+S3 = daller PFB PBC PCE PEF;
+
+SS1 = S1 et S2 et S3;
+elim 0.0001 SS1 ;
+SS2 = SS1 PLUS (0. 0. e) ;
+
+*trac SS2;
+oublier PFD;
+oublier PFB;
+oublier PEF;
+*définition du contour
+CONT = PAB et PBC;
+CONT2 = CONT PLUS (0. 0. e) ;
+OPTION ELEM QUA8;
+SS3 = CONT regler nepai CONT2;
+
+*définition de surface de symétries
+
+dd1= POD et PDA;
+dd2= dd1 PLUS (0. 0. e);
+SURF1= dd1 regler nepai dd2 ;
+SURF2 = SURF1 Tourner 90 (0. 0. 0.) (0. 0. 1.);
+*Trac (SURF1 et SURF2 et cont) ;
+
+
+OPTION ELEM pr15;
+VOL1 = VOLUME nepai SS1 SS2;
+VOL2 = VOL1 et SS3 et SURF1 et
+       SURF2;
+
+elim 0.0001 VOL1 ;
+elim 0.0001 VOL2 ;
+
+list (nbno VOL1);
+list (nbel VOL1);
+
+list (nbno VOL2);
+list (nbel VOL2);
+
+TRACER VOL2 CACHER;
+OPTI SAUV FORM
+'/home/desroches/trinh/RESTIT/test/ssls101/shb15/ssls101l.mgib' ;
+SAUV FORM VOL2;
+*opti donn 5 ;
+fin;

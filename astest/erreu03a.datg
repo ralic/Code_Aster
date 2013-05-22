@@ -1,0 +1,25 @@
+OPTI DIME 3 ELEM CUB8 ;
+
+* maillage d'un cube régulier :
+
+l0=10.;
+n0=4;
+
+l1=l0; n1=n0;
+l2=l0; n2=n0;
+l3=l0; n3=n0;
+
+A= 0. 0. 0. ;
+B= l1 0. 0. ;
+AB = DROI A B n1 ;
+BASE1= AB TRAN n2 (0. l2 0.);
+* trac BASE1;
+CUBE1= BASE1 VOLU n3 TRAN (0. 0. l3);
+C = CUBE1 POIN  PROC (l1 l2 l3);
+LISTE C;
+trac CUBE1;
+OPTI SAUV FORM 'mumps01a.mgib' ;
+sauv FORM CUBE1;
+
+FIN;
+

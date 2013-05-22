@@ -1,0 +1,26 @@
+COOR_3D
+NO1       0.  0.  0.
+NO2         7.83000E-02  0.  0.
+NO3        0.156600  0.  0.
+NO4        0.234900  0.  0.
+NO5        0.313200  0.  0.
+NO6        0.391500  0.  0.
+NO7        0.462000  0.  0.
+NO8        0.548100  0.  0.
+NO9        0.626400  0.  0.
+NO10       0.704700  0.  0.
+NO11       0.783000  0.  0.
+FINSF
+SEG2
+EL1     NO1     NO2
+EL2     NO2     NO3
+EL3     NO3     NO4
+EL4     NO4     NO5
+EL5     NO5     NO6
+EL6     NO6     NO7
+EL7     NO7     NO8
+EL8     NO8     NO9
+EL9     NO9     NO10
+EL10    NO10    NO11
+FINSF
+FIN

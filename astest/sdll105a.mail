@@ -1,0 +1,94 @@
+TITRE
+% XXXX
+%
+FINSF
+%
+COOR_3D
+%   NOEUD       X         Y      Z
+     NBAM1     0.00       0.00   0.00
+     NBAM2     0.10       0.     0.
+     NBAM3     0.30       0.     0.
+     NBAM4     0.50       0.     0.
+     NBAM5     1.00       0.     0.
+     NBAM6     2.00       0.     0.
+     NBAM7     3.00       0.     0.
+     NBAM8     4.00       0.     0.
+     NBAM9     5.00       0.     0.
+     NBAM10    6.00       0.     0.
+     NBA1     -4.00       0.     0.
+     NBA2     -3.00       0.     0.
+     NBA3     -2.00       0.     0.
+     NBA4     -1.00       0.     0.
+     NBA5     -0.50       0.     0.
+     NBA6     -0.30       0.     0.
+     NBA7     -0.10       0.     0.
+FINSF
+%
+SEG2
+%     SEG      ND-I.    ND-F.
+       EBAM1   NBAM1    NBAM2
+       EBAM2   NBAM2    NBAM3
+       EBAM3   NBAM3    NBAM4
+       EBAM4   NBAM4    NBAM5
+       EBAM5   NBAM5    NBAM6
+       EBAM6   NBAM6    NBAM7
+       EBAM7   NBAM7    NBAM8
+       EBAM8   NBAM8    NBAM9
+       EBAM9   NBAM9    NBAM10
+       EBA1    NBA1     NBA2
+       EBA2    NBA2     NBA3
+       EBA3    NBA3     NBA4
+       EBA4    NBA4     NBA5
+       EBA5    NBA5     NBA6
+       EBA6    NBA6     NBA7
+       EBA7    NBA7     NBAM1
+FINSF
+POI1
+MASSE NBAM10
+FINSF
+%
+GROUP_NO NOM=GRNOAM
+NBAM2
+NBAM3
+NBAM4
+NBAM5
+NBAM6
+NBAM7
+NBAM8
+NBAM9
+NBAM10
+FINSF
+%
+GROUP_NO NOM=GRNOA
+NBA1
+NBA2
+NBA3
+NBA4
+NBA5
+NBA6
+NBA7
+NBAM1
+FINSF
+GROUP_MA  NOM=GRMAA
+EBA1
+EBA2
+EBA3
+EBA4
+EBA5
+EBA6
+EBA7
+FINSF
+GROUP_MA  NOM=GRMAAM
+EBAM1
+EBAM2
+EBAM3
+EBAM4
+EBAM5
+EBAM6
+EBAM7
+EBAM8
+EBAM9
+FINSF
+%
+%
+FIN

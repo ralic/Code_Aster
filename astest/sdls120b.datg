@@ -1,0 +1,44 @@
+opti dime 2  elem qua4 ;
+
+dens 1 ;
+
+*----------------------------------------
+*DONNEES
+*----------------------------------------
+* dimensions des cotés
+
+LX = 10;
+LY = 30;
+
+* nombre d'éléments
+
+NX = 30;
+NY = 50; 
+
+*---------------------------------------------
+*construction des surfaces dans le plan inférieur
+*---------------------------------------------
+
+p1 = 0.   0.;
+p2 = LX   0.;
+p3 = LX  LY ;
+p4 = 0.  LY ;
+
+BAS = droit p1 p2 NX;
+DROITE = droit p2 p3 NY;
+HAUT = droit p3 p4 NX;
+GAUCHE = droit p4 p1 NY;
+
+
+*SURF= surface cont 'PLANE';
+SURF= DALL BAS DROITE HAUT GAUCHE PLAN;
+
+elim SURF 1E-6;
+
+trac SURF;
+
+
+
+opti sauv format '/home/nistor/slds120b.mgib' ;
+sauv format SURF ;
+fin ;

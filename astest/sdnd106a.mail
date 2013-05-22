@@ -1,0 +1,30 @@
+ COOR_3D
+ N1 0.0 0.0 0.0
+ N2 1.0 0.0 0.0
+ FINSF
+ %
+ SEG2
+ E1     N1  N2
+ FINSF
+ %
+ GROUP_NO
+ N_ALL
+ N1   N2
+ FINSF
+ %
+ GROUP_NO
+ N_FRICT
+ N1
+ FINSF
+ %
+ GROUP_NO
+ N_IMPOF
+ N2
+ FINSF
+ %
+ GROUP_MA
+ E_SPRING
+ E1
+ FINSF
+ %
+ FIN

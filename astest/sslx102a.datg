@@ -1,0 +1,50 @@
+opti dime 3;
+
+l = 1.2;
+rmoy = 0.1055;
+rc = 0.305;
+n = 20;
+
+a=0. (l + rc) 0. ;
+b=0. rc 0. ;
+c=rc 0. 0. ;
+d =(l + rc) 0. 0. ;
+
+opti elem seg3;
+*ab = droite a b 10;
+ab = droite b a  40;
+*cd = droite c d 10;
+cd = droite d c 40 ;
+
+b1 = (-1. * rmoy) rc 0.;
+b2 = rmoy  rc  0.;
+b3 = 0.  rc rmoy;
+
+
+opti elem qua4 ;
+
+arc = cer3 n b1 b3 b2;
+arc2 = arc syme plan b1 b2 a ;
+arc2 = inve arc2 ;
+cercle1 = arc et arc2 ;
+cercle1 = versens cercle1 ;
+
+coude1 = cercle1 rota (n/2) 45. (rc rc 0.) (rc rc 1.);
+cercle3 = cote 3 coude1 ;
+cercle4 = inve cercle3 ;
+coude2 = cercle4 rota (n/2) 45. (rc rc 0.) (rc rc 1.);
+cercle2 = cote 3 coude2 ;
+*essai
+*cercle2 = inve cercle2 ;
+
+coude = coude1 et coude2  ;
+
+mail =  coude  et ab et cd;
+mail = versens mail ;
+
+
+elim 0.001 mail ;
+opti sauv form 'sslx102a.mgib';
+sauv 'FORMAT' mail;
+trac mail;
+

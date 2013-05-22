@@ -1,0 +1,51 @@
+opti dime 3 ;
+opti elem seg3 ;
+
+
+r=0.305;
+l=1.505;
+*C'est l+r
+
+nd = 4 ;
+nd1 = -4 ;
+nc = 10 ;
+
+a=0. l 0.;
+b=0. r 0. ;
+c=r 0. 0. ;
+d=l 0. 0. ;
+
+I=r r 0 ;
+
+*ab= droite nd b a   ;
+*cd= droite nd d c  ;
+
+ab= droite  (nd1) b a dini 0.01 dfin 0.8 ;
+cd= droite  (nd1) d c dini 0.8  dfin 0.01 ;
+
+
+bc= cerc (nc) c I b;
+
+ad=ab et bc et cd;
+
+elim 0.001 ad ;
+
+tass ad ;
+
+opti sauv form 'sslx102e.mgib' ;
+* opti sauv form 'fort.8'  ;
+
+sauv form ad ;
+ 
+*trac (0. 0. 1000.) ad;
+
+list (nbel ad);  
+
+fin;
+    
+
+
+
+
+
+

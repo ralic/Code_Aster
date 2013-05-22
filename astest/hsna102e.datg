@@ -1,0 +1,32 @@
+* fichier de commande GIBI
+* création d'un maillage axisymétrique pour réaliser un calcul de séchage
+*
+* une seule ligne d'éléments est modélisée.
+*
+*          8 cm
+*   <------------------->
+*
+*          dsup
+*   +-------------------+
+* FI|                   | FE
+*   +-------------------+
+*   p0     dinf         p8
+*
+*
+opti dime 2 elem QUA8 ;
+* géométrie (unité [m])
+p0 = 0. 0. ;
+p8= 0.08 0. ; 
+* densités aux points p0 et p1
+dp0 = 0.001 ; 
+dp8 = 0.001 ;
+dinf = droi p0 DINI dp0 p8 DFIN dp8 ;
+surf = tran dinf 1 (0.0 0.01) ;
+dsup = COTE 3 surf ;
+FE =  COTE 2 surf ;
+FI = COTE 4 surf ;
+p4 = surf POIN PROC (0.04 0.) ;
+p6 = surf POIN PROC (0.06 0.) ;
+opti sauv form 'hsna102e.mgib' ;
+sauv form (surf et p0 et p4 et p6 et dinf et FE et FI) ;
+*fin ;

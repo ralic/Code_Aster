@@ -1,0 +1,58 @@
+opti dime 2 elem qua8;
+*
+***************************
+*        Points           *
+***************************
+a=0. 0.;
+b=1. 0.;
+c=1. 0.5;
+d=0. 0.5;
+
+***************************
+*       Droites           *
+***************************
+
+ab=droi 20 a b ;
+bc=droi 1 b c ;
+cd=droi 20 c d ;
+da=droi 1 d a;
+**************************
+*  Fermeture du contour 1*
+**************************
+
+contour=ab et bc et cd et da;
+
+
+**************************
+*Definition de la surface*
+**************************
+
+ BO=DALL  ab bc cd da;
+**************************
+* DEFINITION DES LIMITES  *
+**************************
+HAUT=cd ;
+
+BAS=ab ;
+
+GAUCHE=da ;
+
+DROIT=bc;
+
+
+
+
+**************************
+*    lancement maillage  *
+**************************
+* Optimisation de la largeur de bande
+*ort eprouvet;
+* definition d'un titre
+titre ' maillage  1D';
+*trace du maillage
+trac BO ;
+*auvegarde du maillage
+sauv format BO             ;
+fin;
+
+

@@ -1,0 +1,105 @@
+*
+* parametres de la procedure principale :
+* ---------------------------------------
+*
+* c         demi grand axe de l'ellipse
+* a         demi petit axe de l'ellipse
+* rc0       rayon du tore
+* rc1       coefficient multiplicateur du parametre rc0
+*           definissant l'epaisseur de la premiere couronne
+*           de deraffinement
+* rc2       coefficient multiplicateur du parametre rc0
+*           definissant l'epaisseur de la deuxieme couronne
+*           de deraffinement
+* rc3       coefficient multiplicateur du parametre rc0
+*           definissant l'epaisseur de la troisieme couronne
+*           de deraffinement (si ndt=2)
+* nc        nombre de couronnes
+* ns        nombre de secteurs sur 90 degres
+* nt        nombre de divisions sur un quart d'ellipse
+* eps       demi-angle d'ouverture de la fissure (degres)
+* lo        longueur du bloc
+* to        largeur du bloc
+* ho        hauteur du bloc
+* ndt       nombre de couronnes de deraffinement (1 ou 2)
+* nsdt      Nombre de secteurs sur 90 degres au niveau des
+*           couronnes de deraffinement des tranches (2 ou 4)
+* beta      impose le decoupage le long de la generatrice
+* alpha     impose l'angle des differentes tranches
+* xl        impose le nombre d'elements pour la prolongation
+*           du bloc initial suivant l'axe x (longueur)
+* xt        impose le nombre d'elements pour la prolongation
+*           du bloc initial suivant l'axe y (largeur)
+* xh        impose le nombre d'elements pour la prolongation
+*           du bloc initial suivant l'axe -z (hauteur)
+* d1        'oui' si deplacement des noeuds intermediares du
+*           boudin
+* d2        'oui' si maillage 'rayonnant' sur la face
+*           exterieure au boudin torique
+*           On doit avoir d2 = 'non' dans le cas de l'utilisation
+*           de la procedure plaque epaisse fissuree
+*
+*
+opti dime 3 elem cu20 ;
+c     = 2.  ;
+a     = 2.  ;
+rc0   = 0.24  ;
+rc1   = 1.2   ;
+rc2   = 1.4   ;
+rc3   = 1.6 ;
+nc    = 2     ;
+ns    = 4     ;
+nt    = 8     ;
+eps   = 0.1   ;
+l0    = 10.   ;
+t0    = 10.   ;
+h0    = 10.   ;
+ndt   = 1     ;
+nsdt  = 2     ;
+beta  = 1.    ;
+alpha = 0.    ;
+xl    = 3     ;
+xt    = 4     ;
+xh    = 2     ;
+*
+ma1 lff1 levinf1 sar_i slat_i sinf_1 sav_i ssup_1 sla2_i tore1 hh
+= @fis_3 c a l0 t0 h0 eps nt nc ns rc0 rc1 rc2 rc3 beta alpha
+  ndt nsdt xl xt xh 'oui' 'oui' ;
+*trac ma1 ;
+*
+o =  0.   0.   0. ;
+a =  0.   0. -10. ;
+b = 10.   0. -10. ;
+c =  0.  10. -10. ;
+d = 10.   0.   0. ;
+e =  0.  10.   0. ;
+*
+list (nbno ssup_1);
+sym1 = ma1 syme plan o e d ;
+sinf_s = sinf_1 syme plan o e d ;
+sav_s = sav_i syme plan o e d ;
+sla2_s = sla2_i syme plan o e d ;
+sym1 =  sym1 et sinf_s et sav_s et sla2_s;
+elim (sym1) 1.d-4  ;
+*
+levinfs = levinf1 syme plan o e d ;
+list (nbno levinfs) ;
+sym1 = sym1 et levinfs ;
+elim sym1 1.d-4 ;
+ma1 = ma1 et sym1 ;
+elim (  ma1) 1.d-6  ;
+*
+*trac cach ma1 ;
+list (nbno ma1);
+*
+elim (ma1 et a et b et c et d et e) 1.d-6 ;
+nff1 = lff1 point initial ;
+nff2 = lff1 point final ;
+*trac (0. 0. 1000.) lff1 ;
+*trac levinf1 ;
+*trac levinfs ;
+*
+opti sauv format 'sslv134f.mgib' ;
+SAUV FORM ma1 ;
+*
+fin ;

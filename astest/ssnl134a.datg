@@ -1,0 +1,67 @@
+******* OPTIONS *******
+OPTI DIME 3 ELEM SEG2;
+***********************
+
+******* CONSTANTES ****
+l = 120.0;
+nf = 10;
+***********************
+
+******* POINTS ********
+PA = 0. 0. 0.;
+PB = 0. l 0.;
+PX = 24.0 l 0.;
+PC = l l 0.;
+***********************
+
+****** MAILLAGE *******	
+AB = DROI nf PA PB ;
+BX = DROI 2 PB PX;
+XC = DROI 8 PX PC;
+***********************
+
+OMEGA = AB ET BX ET XC;
+
+SORT OMEGA;
+TRAC OMEGA;
+
+****** ENREGISTRE *****
+OPTI SAUV 'FORMAT' 'ssnl134a.17';
+SAUV 'FORMAT' OMEGA;
+***********************
+
+***************************************
+
+******* OPTIONS *******
+OPTI DIME 2 ELEM QUA4;
+***********************
+
+******* CONSTANTES ****
+b = 3.0;
+h = 2.0;
+nf = 10;
+***********************
+
+****** SECTION ********
+S1 = (-0.5*h) (-0.5*b);
+S2 = (0.5*h) (-0.5*b);
+S3 = (0.5*h) (0.5*b);
+S4 = (-0.5*h) (0.5*b);
+
+S12 = DROI nf S1 S2;
+S23 = DROI nf S2 S3;
+S34 = DROI nf S3 S4;
+S41 = DROI nf S4 S1;
+
+SECT = DALL S41 S12 S23 S34;
+
+SORT SECT;
+TRAC SECT;
+***********************
+
+****** ENREGISTRE *****
+OPTI SAUV 'FORMAT' 'ssnl134a.18';
+SAUV 'FORMAT' SECT;
+***********************
+
+FIN;

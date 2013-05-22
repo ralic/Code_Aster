@@ -1,0 +1,13 @@
+COOR_3D
+  A         4.9        2.4        0.
+  B         7.6        2.4        0.
+  C         7.6        5.1        0.
+  D         4.9        5.1        0.
+FINSF
+QUAD4
+  ABCD        A      B     C     D
+FINSF
+GROUP_MA NOM=GXXXXXX_ABCD
+ABCD
+FINSF
+FIN

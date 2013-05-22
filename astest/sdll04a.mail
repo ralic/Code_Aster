@@ -1,0 +1,99 @@
+TITRE
+% SDLL04/A               MAILLAGE                                8/11/90
+% POUTRE ELANCEE SUR 2 APPUIS COUPLEE A UN SYSTEME DISCRET MASSE-RESSORT
+% LONGUEUR DE LA POUTRE: 10M
+%                                                   REF: SFM.VPCS SDLL04
+% MODELISATION POU_D_T ET DIS_T:  (5+15)+1 MAILLES SEG2 + 1 POI1
+% POINTS  A=N1  B=N21  C=N22  D=N6
+FINSF
+% ======================================================================
+
+% ------------ COORDONNEES DES NOEUDS
+
+COOR_3D        % 22 NOEUDS
+%  NOEUD       X        Y       Z        POINT
+
+    N1        0.0      0.0      0.       % A
+    N2        0.5      0.0      0.
+    N3        1.0      0.0      0.
+    N4        1.5      0.0      0.
+    N5        2.0      0.0      0.
+    N6        2.5      0.0      0.       % D
+    N7        3.0      0.0      0.
+    N8        3.5      0.0      0.
+    N9        4.0      0.0      0.
+    N10       4.5      0.0      0.
+    N11       5.0      0.0      0.
+    N12       5.5      0.0      0.
+    N13       6.0      0.0      0.
+    N14       6.5      0.0      0.
+    N15       7.0      0.0      0.
+    N16       7.5      0.0      0.
+    N17       8.0      0.0      0.
+    N18       8.5      0.0      0.
+    N19       9.0      0.0      0.
+    N20       9.5      0.0      0.
+    N21      10.0      0.0      0.       % B
+    N22       2.5      0.1      0.       % C
+FINSF
+
+% -------------------------------------------------------------------
+% ------------ DEFINITION DES MAILLES
+
+SEG2
+%   SEG     ND-I.    ND-F.
+                      %---- 20 MAILLES POUR LA POUTRE AB
+    E1       N1       N2
+    E2       N2       N3
+    E3       N3       N4
+    E4       N4       N5
+    E5       N5       N6
+    E6       N6       N7
+    E7       N7       N8
+    E8       N8       N9
+    E9       N9       N10
+    E10      N10      N11
+    E11      N11      N12
+    E12      N12      N13
+    E13      N13      N14
+    E14      N14      N15
+    E15      N15      N16
+    E16      N16      N17
+    E17      N17      N18
+    E18      N18      N19
+    E19      N19      N20
+    E20      N20      N21
+                      %---- 1 MAILLE POUR LE SEGMENT CD
+    CD       N22      N6
+
+FINSF
+
+POI1                  %---- 1 MAILLE POINT C
+    MC       N22
+FINSF
+
+% ----------------------------------------------------------------
+                      %---- POUTRE AB
+GROUP_MA
+   MPOUTRE   E1  E2  E3  E4  E5  E6  E7  E8  E9  E10
+             E11 E12 E13 E14 E15 E16 E17 E18 E19 E20
+FINSF
+% ----------------------------------------------------------------
+                     % ---- DEFINITION DE GROUPES DE NOEUDS
+GROUP_NO
+    A        N1
+FINSF
+GROUP_NO
+    B        N21
+FINSF
+GROUP_NO
+    C        N22
+FINSF
+%
+GROUP_NO
+   NPOUTRE   N1  N2  N3  N4  N5  N6  N7  N8  N9  N10
+             N11 N12 N13 N14 N15 N16 N17 N18 N19 N20 N21
+FINSF
+% ----------------------------------------------------------------
+
+FIN

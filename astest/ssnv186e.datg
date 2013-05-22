@@ -1,0 +1,54 @@
+// plaque 3D
+
+// dimensions
+lx=1;
+ly=20.;
+lz=20.;
+
+//densité
+dens=1.0;
+
+// points de construction
+Point(1) = {0, 0, 0, dens};
+Point(2) = {lx, 0, 0, dens};
+Point(3) = {lx, ly, 0, dens};
+Point(4) = {0, ly, 0, dens};
+
+Point(5) = {lx, 0, lz, dens};
+Point(6) = {lx, ly, lz, dens};
+Point(7) = {0, ly, lz, dens};
+Point(8) = {0, 0, lz, dens};
+
+Line (1) = {1, 2};
+Line (2) = {2, 3};
+Line (3) = {3, 4};
+Line (4) = {4, 1};
+Line (6) = {5, 6};
+Line (7) = {6, 7};
+Line (8) = {7, 8};
+Line (9) = {8, 5};
+Line (11) = {2, 5};
+Line (12) = {3, 6};
+Line (16) = {4, 7};
+Line (20) = {1, 8};
+
+Line Loop (1) = {2, 3, 4, 1};
+Plane Surface (1) = {1};
+Line Loop (1000013) = {2, 12, -6, -11};
+Ruled Surface (13) = {1000013};
+Line Loop (1000017) = {3, 16, -7, -12};
+Ruled Surface (17) = {1000017};
+Line Loop (1000021) = {4, 20, -8, -16};
+Ruled Surface (21) = {1000021};
+Line Loop (1000025) = {1, 11, -9, -20};
+Ruled Surface (25) = {1000025};
+Line Loop (1000026) = {6, 7, 8, 9};
+Plane Surface (26) = {1000026};
+Surface Loop (1000001) = {1, 26, 13, 17, 21, 25};
+Volume (1) = {1000001};
+
+Physical Surface ( 1 ) = { 1 };  //surfinf
+Physical Surface ( 2 ) = { 26 }; //surfsup
+Physical Volume ( 3 ) = { 1 }; //vol
+
+

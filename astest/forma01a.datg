@@ -1,0 +1,92 @@
+# -*- coding: iso-8859-1 -*-
+
+import geompy
+import smesh
+from geompy import *
+from smesh import *
+
+import math
+
+#===================================================
+#                  GEOMETRIE
+#                  ---------
+#===================================================
+
+# utilisation du Sketcher 2D
+
+Wire_1 = geompy.MakeSketcher("Sketcher:F 0 10:TT 0 150:TT 100 150:TT 100 0:TT 10 0:R -90:C 10 90", [0, 0, 0, 0, 0, 1, 1, 0, -0])
+
+Plaque = geompy.MakeFaceWires([Wire_1], 1)
+
+[trou,gauche,bas,haut,droite] = geompy.SubShapeAllSorted(Plaque, geompy.ShapeType["EDGE"])
+
+# groupes de noeuds
+
+A=geompy.MakeVertex(0,10,0)
+GA=geompy.GetVertexNearPoint(Plaque,A)
+
+B=geompy.MakeVertex(10,0,0)
+GB=geompy.GetVertexNearPoint(Plaque,B)
+
+D=geompy.MakeVertex(100,0,0)
+GD=geompy.GetVertexNearPoint(Plaque,D)
+
+F=geompy.MakeVertex(100,150,0)
+GF=geompy.GetVertexNearPoint(Plaque,F)
+
+G=geompy.MakeVertex(0,150,0)
+GG=geompy.GetVertexNearPoint(Plaque,G)
+
+id_Plaque=geompy.addToStudy(Plaque,"Plaque")
+geompy.addToStudyInFather(Plaque,trou,"trou")
+geompy.addToStudyInFather(Plaque,gauche,"gauche")
+geompy.addToStudyInFather(Plaque,droite,"droite")
+geompy.addToStudyInFather(Plaque,bas,"bas")
+geompy.addToStudyInFather(Plaque,haut,"haut")
+geompy.addToStudyInFather(Plaque,GA,"A")
+geompy.addToStudyInFather(Plaque,GB,"B")
+geompy.addToStudyInFather(Plaque,GD,"D")
+geompy.addToStudyInFather(Plaque,GF,"F")
+geompy.addToStudyInFather(Plaque,GG,"G")
+
+
+#===================================================
+#                  MAILLAGE
+#                  --------
+#===================================================
+#
+M_Plaque = Mesh(Plaque,"Plaque")
+
+import NETGENPlugin
+NETGEN_2D = M_Plaque.Triangle(algo=NETGEN)
+NETGEN_2D_Parameters=NETGEN_2D.Parameters()
+NETGEN_2D_Parameters.SetMaxSize( 1000 )
+NETGEN_2D_Parameters.SetSecondOrder( 1 )
+NETGEN_2D_Parameters.SetOptimize( 1 )
+NETGEN_2D_Parameters.SetFineness( 3 )
+#NETGEN_2D_Parameters.SetGrowthRate( 0.1 )
+#NETGEN_2D_Parameters.SetNbSegPerEdge( 3 )
+#NETGEN_2D_Parameters.SetNbSegPerRadius( 5 )
+NETGEN_2D_Parameters.SetQuadAllowed( 0 )
+
+isDone = M_Plaque.Compute()
+if not isDone: print 'Mesh', M_Plaque.GetMesh(), ': computation failed'
+
+M_Plaque.Group(trou,'trou')
+M_Plaque.Group(gauche,'gauche')
+M_Plaque.Group(droite,'droite')
+M_Plaque.Group(bas,'bas')
+M_Plaque.Group(haut,'haut')
+M_Plaque.Group(GA,'A')
+M_Plaque.Group(GB,'B')
+M_Plaque.Group(GD,'D')
+M_Plaque.Group(GF,'F')
+M_Plaque.Group(GG,'G')
+
+# Mise à jour de l'arbre
+#---------------------------
+# Si on a une interface graphique...
+if salome.sg.hasDesktop():
+   gg = salome.ImportComponentGUI("GEOM")
+   gg.createAndDisplayFitAllGO(id_Plaque)
+   salome.sg.updateObjBrowser(1)

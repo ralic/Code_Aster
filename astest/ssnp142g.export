@@ -6,5 +6,4 @@ P mpi_nbnoeud 1
 P testlist C
 
 F comm ssnp142g.comm D 1
-F datg ssnp142f.geo D 16
 F mmed ssnp142g.mmed D 20

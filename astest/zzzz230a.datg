@@ -1,0 +1,83 @@
+opti dime 2 elem qua8 ;
+
+*------------------------------------------------------------
+* géométrie :
+* ------------
+*
+*   D-------------------------C
+*   !                         !
+*   !                         !
+*   !                         !
+*   !                         !
+*   !                         !
+*  G!-----------+ F           !
+*   !           !             !
+*   !     H     !             !
+*   !     +     !             !
+*   !           !             !
+*   !           !             !
+*   +-----------+-------------B
+*  A            E
+*
+* Géométrie des points :
+*   A: 0,0       B: 1,0    C: 1,1     D: 0,1
+*   G: 0,0.5     F: 0.5,0.5
+*   H: 0.25,0.25
+*
+*  Le carré ABCD est maillé grossièrement
+*  Le carré AEFG est maillé plus finement : c'est le zoom
+*
+*  On s'intéresse au déplacement du point H
+*    Dans le carré grossier (ABCD) H se nomme HG
+*    Dans le carré zoom     (AEFG) H se nomme HZ
+*
+* -------------------------------------------------------------
+
+
+* Maillage de ABCD :
+* ------------------
+a  = 0.   0.;
+b  = 1.   0.;
+n1=4;
+
+ab = droi n1 a b ;
+
+abcd= ab tran n1 (0. 1.);
+
+bc= cote 2 abcd;
+cd= cote 3 abcd;
+da= cote 4 abcd;
+
+c=abcd poin proc (1.  1.);
+d=abcd poin proc (0.  1.);
+hg=abcd poin proc (0.25   0.25);
+
+trac abcd;
+
+
+
+* Maillage de AEFG :
+* ------------------
+e  = 0.5   0.;
+n2=6;
+
+ae = droi n2 a e ;
+
+aefg= ae tran n2 (0. 0.5);
+
+ef= cote 2 aefg;
+fg= cote 3 aefg;
+ga= cote 4 aefg;
+bord = ae et ef et fg et ga;
+
+hz=aefg poin proc (0.25  0.25);
+
+trac aefg;
+
+tout=abcd et aefg et bord;
+trac tout;
+
+opti sauv form 'zzzz230a.19' ;
+sort tout ;
+sauv form tout ;
+fin;

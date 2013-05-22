@@ -1,0 +1,41 @@
+TITRE
+  TEST SFM/VPCS SDLD21
+  SYSTEME MASSE-RESSORT A 8 DEGRES DE LIBERTE
+  MODELISATION B
+FINSF
+COOR_3D
+  A        0.   0.  0.
+  P1       1.   0.  0.
+  P2       2.   0.  0.
+  P3       3.   0.  0.
+  P4       4.   0.  0.
+  P5       5.   0.  0.
+  P6       6.   0.  0.
+  P7       7.   0.  0.
+  P8       8.   0.  0.
+  B        9.   0.  0.
+FINSF
+SEG2
+  E1       A        P1
+  E2       P1       P2
+  E3       P2       P3
+  E4       P3       P4
+  E5       P4       P5
+  E6       P5       P6
+  E7       P6       P7
+  E8       P7       P8
+  E9       P8       B
+FINSF
+GROUP_MA  NOM=RESSORT
+    E1   E2   E3   E4   E5   E6    E7    E8     E9
+FINSF
+GROUP_NO  NOM=A_ET_B
+    A    B
+FINSF
+GROUP_NO  NOM=MASSE
+    P1   P2   P3   P4   P5   P6    P7    P8
+FINSF
+GROUP_MA  NOM=AMORTIS
+    E1   E2   E3   E4   E5   E6    E7    E8     E9
+FINSF
+FIN

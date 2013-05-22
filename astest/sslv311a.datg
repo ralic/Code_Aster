@@ -1,0 +1,3012 @@
+***************************************************************
+*
+* CREATION DU MAILLAGE D'UN BLOC FISSURE 3D
+* -----------------------------------------
+*
+* VERSION 2
+*
+* Topologie de type grille sur la face inferieure du bloc.
+* (necessite les operateurs de calcul de CASTEM2000)
+*
+* CISI (Agence de SACLAY)
+*
+* I.Cormeau  B.Kurth
+*
+* Version du 30/05/95
+*
+* Ce fichier contient :
+*
+* . La liste complete des parametres de la procedure principale
+* . Les procedures auxiliaires - TRI
+*                              - MODULO
+*                              - PARTENTI
+*                              - MILIEU
+*                              - ANGLE
+*                              - DISTANCE
+*                              - MAIL1
+*
+* . La procedure principale FISS_3DP
+* . La procedure "sur-couche" FISS_3DS
+* . Un exemple d'appel a la procedure FISS_3DS
+* . Un exemple d'appel a la procedure FISS_3DP
+*
+* -------------------------------------------------------------
+*
+* parametres de la procedure principale :
+* ---------------------------------------
+*
+* c         demi grand axe de l'ellipse
+* a         demi petit axe de l'ellipse
+* rc0       rayon du tore
+* rc1       coefficient multiplicateur du parametre rc0
+*           definissant l'epaisseur de la premiere couronne
+*           de deraffinement
+* rc2       coefficient multiplicateur du parametre rc0
+*           definissant l'epaisseur de la deuxieme couronne
+*           de deraffinement
+* rc3       coefficient multiplicateur du parametre rc0
+*           definissant l'epaisseur de la troisieme couronne
+*           de deraffinement (si ndt=2)
+* nc        nombre de couronnes
+* ns        nombre de secteurs sur 90 degres
+* nt        nombre de divisions sur un quart d'ellipse
+* eps       demi-angle d'ouverture de la fissure (degres)
+* lo        longueur du bloc
+* to        largeur du bloc
+* ho        hauteur du bloc
+* ndt       nombre de couronnes de deraffinement (1 ou 2)
+* beta      impose le decoupage le long de la generatrice
+* alpha     impose l'angle des differentes tranches
+* xl        impose le nombre d'elements pour la prolongation
+*           du bloc initial suivant l'axe x (longueur)
+* xt        impose le nombre d'elements pour la prolongation
+*           du bloc initial suivant l'axe y (largeur)
+* xh        impose le nombre d'elements pour la prolongation
+*           du bloc initial suivant l'axe -z (hauteur)
+* d3        'oui' si deplacement des noeuds intermediares du
+*           boudin
+* nsdt      Nombre de secteurs sur 90 degres des couronnes
+*           de deraffinement des tranches (2 ou 4)
+*
+*
+opti dime 3 elem cu20 echo 0 ;
+*
+oeilx = -1000. 0. 0. ;
+oeily = 0. -1000. 0. ;
+oeilz = 0. 0. 1000. ;
+oeil = -100 -310 200 ;
+oeil = -100 -100 100 ;
+*
+* ----- GEOMETRIE ------
+*                       ^
+*                       |
+*                     a -_______________
+*                       |               \
+*                       |                \
+*                       |                 \
+*                       |                  |
+*                       |------------------|----->
+*                                          c
+*
+*****************************************************************
+*****              PROCEDURES  AUXILIAIRES                *******
+*****************************************************************
+*
+*$$$$ TRI
+   debproc tri tab1*table tab2*table ;
+   i = 0 ;
+   nbnol = dime tab1 ;
+   nbcon = dime tab2 ;
+   si (ega nbnol nbcon) ;
+    repe bouc1 nbnol ;
+     i = i + 1 ;
+     m = i ;
+     j = 0 ;
+     repe bouc2 nbnol ;
+      j = j + 1 ;
+      si ((tab1 . j) > (tab1 . m)) ;
+       m = j ;
+       tempoa = tab1 . m ;
+       tab1 . m = tab1 . i ;
+       tab1 . i = tempoa ;
+       tempod = tab2 . m ;
+       tab2 . m = tab2 . i ;
+       tab2 . i = tempod ;
+      finsi ;
+     fin bouc2 ;
+    fin bouc1 ;
+   sinon ;
+    mess ' ATTENTION !!!  ERREUR DANS LES TABLES ' ;
+   finsi ;
+   finproc tab2 ;
+*
+* ------------------------------------------------------
+*$$$$ MODULO
+   debproc modulo x*entier y*entier;
+      a = x / y;
+      a = entier a ;
+      r = x - (a * y) ;
+*    pour y=2 , r=0 si x pair , r=1 si x impair
+   finproc r;
+*
+* ------------------------------------------------------
+*$$$$ PARTENTI
+   debproc partenti x*flottant ;
+      rest = x - (entier x) ;
+       si (rest <EG .5) ;
+          ent = entier x ;
+       sinon ;
+          ent = (entier x) + 1 ;
+       finsi ;
+   finproc ent ;
+*
+* -----------------------------------------------------
+*$$$$ MILIEU
+   debproc milieu pi*point pf*point ;
+      xi = coor 1 pi ; yi = coor 2 pi ; zi = coor 3 pi ;
+      xf = coor 1 pf ; yf = coor 2 pf ; zf = coor 3 pf ;
+      xm = (xf + xi) / 2;
+      ym = (yf + yi) / 2;
+      zm = (zf + zi) / 2;
+      pm = xm ym zm;
+   finproc pm ;
+*
+* ------------------------------------------------------
+*$$$$ ANGLE
+   debproc angle pi*point pf1*point pf2*point ;
+      xi = coor 1 pi ; yi = coor 2 pi ; zi = coor 3 pi ;
+      xf1 = coor 1 pf1 ; yf1 = coor 2 pf1 ; zf1 = coor 3 pf1 ;
+      xf2 = coor 1 pf2 ; yf2 = coor 2 pf2 ; zf2 = coor 3 pf2 ;
+      v1 = (xf1 - xi) (yf1 - yi) (zf1 - zi) ;
+      norm_v1 = norm v1 ;
+      v2 = (xf2 - xi) (yf2 - yi) (zf2 - zi) ;
+      norm_v2 = norm v2 ;
+      ps = v1 pscal v2 ;
+      cosalpha = ps / (norm_v1 * norm_v2) ;
+      ang_cou = atg ((1 - (cosalpha ** 2)) ** .5) cosalpha ;
+   finproc ang_cou ;
+*
+* ------------------------------------------------------
+*$$$$ DISTANCE
+   debproc distance pi*point pf*point ;
+      xi = coor 1 pi ; yi = coor 2 pi ; zi = coor 3 pi ;
+      xf = coor 1 pf ; yf = coor 2 pf ; zf = coor 3 pf ;
+      xm = (xf - xi) ;
+      ym = (yf - yi) ;
+      zm = (zf - zi) ;
+      d = ((xm ** 2) + (ym ** 2) + (zm ** 2)) ** .5 ;
+   finproc d ;
+*
+* ---------------------------------------------------------------
+*$$$$ MAIL1
+   debproc mail1 p01*point p03*point p05*point p07*point oc*point
+              c*FLOTTANT a*FLOTTANT alpha*FLOTTANT beta*FLOTTANT
+              nt*entier ndt*entier;
+*
+o = 0 0 0 ;
+ox = c 0. 0. ;
+*
+si (ega ndt 1) ;
+   na = -1 ;
+   nb = 4 ;
+   nc = 2 ;
+   nd = 1 ;
+finsi ;
+*
+si (ega ndt 2) ;
+   na = -2 ;
+   nb = 8 ;
+   nc = 4 ;
+   nd = 2 ;
+finsi ;
+*
+ si ((coor 1 oc) ega 0 ) ;
+    p04 = milieu p03 p05 ;
+ sinon ;
+    lcercle = p03 cerc 1 oc p05 ;
+    pcercle = chan poi1 lcercle ;
+    p04 = pcercle poin 2 ;
+ finsi ;
+*
+p02 = milieu p01 p03 ;
+p06 = milieu p05 p07 ;
+p08 = milieu p07 p01 ;
+*
+idiv1 = na ;
+idiv2 = 0 ;
+ndiv4 = nt / nb ;
+* Cas du quart d'ellipse
+repeter bouc1 ndiv4 ;
+   idiv1 = idiv1 + nc ;
+   idiv2 = idiv2 + nc ;
+   psi1 = (idiv1 * 180.) / nt ;
+   psi2 = (idiv2 * 180.) / nt ;
+      cospsi1 = cos psi1 ;
+      sinpsi1 = sin psi1 ;
+      tanpsi1 = sinpsi1 / cospsi1 ;
+      tanphi1 = a * tanpsi1 / c ;
+      phik1  = atg tanphi1 ;
+      phik2  = psi1 ;
+      phi1 = (beta * phik2) + ((1 - beta) * phik1) ;
+*      phi1    = atg tanphi1 ;
+      si (phi1 < 0.) ;
+         phi1 = 180. + phi1 ;
+      finsi ;
+      cosphi1 = cos phi1 ;
+      sinphi1 = sin phi1 ;
+      tanphi1 = sinphi1 / cosphi1 ;
+      talpha = (alpha * (1 - (c / a))) + (c / a) ;
+      tanpsi1 = talpha * tanphi1 ;
+      psi1 = atg tanpsi1 ;
+*
+   si (ega idiv2 (nt /2)) ;
+      phi2 = 90. ;
+      cosphi2 = 0. ;
+      sinphi2 = 1. ;
+   sinon ;
+      cospsi2 = cos psi2 ;
+      sinpsi2 = sin psi2 ;
+      tanpsi2 = sinpsi2 / cospsi2 ;
+      tanphi2 = a * tanpsi2 / c ;
+      phik1  = atg tanphi2 ;
+      phik2  = psi2 ;
+      phi2 = (beta * phik2) + ((1 - beta) * phik1) ;
+*      phi2    = atg tanphi2 ;
+      si (phi2 < 0.) ;
+         phi2 = 180. + phi2 ;
+      finsi ;
+      cosphi2 = cos phi2 ;
+      sinphi2 = sin phi2 ;
+      tanphi2 = sinphi2 / cosphi2 ;
+      talpha = (alpha * (1 - (c / a))) + (c / a) ;
+      tanpsi2 = talpha * tanphi2 ;
+      psi2 = atg tanpsi2 ;
+*
+   finsi ;
+   si (ega idiv2 nt) ;
+      phi2 = 180. ;
+      cosphi2 = -1. ;
+      sinphi2 = 0. ;
+   finsi ;
+   xcour1 = c * cosphi1 ;
+   ycour1 = a * sinphi1 ;
+   zcour1 = 0. ;
+   pcour1 = xcour1 ycour1 zcour1 ;
+*
+   xcour2 = c * cosphi2 ;
+   ycour2 = a * sinphi2 ;
+   zcour2 = 0. ;
+   pcour2 = xcour2 ycour2 zcour2 ;
+*
+   p21 = p02 moins ox ;
+   depl p21 tour psi1 o (0. 0. 1.) ;
+   depl p21 plus pcour1 ;
+*
+   p31 = p03 moins ox ;
+   depl p31 tour psi1 o (0. 0. 1.) ;
+   depl p31 plus pcour1 ;
+*
+   p41 = p04 moins ox ;
+   depl p41 tour psi1 o (0. 0. 1.) ;
+   depl p41 plus pcour1 ;
+*
+   p51 = p05 moins ox ;
+   depl p51 tour psi1 o (0. 0. 1.) ;
+   depl p51 plus pcour1 ;
+*
+   p61 = p06 moins ox ;
+   depl p61 tour psi1 o (0. 0. 1.) ;
+   depl p61 plus pcour1 ;
+*
+   p81 = p08 moins ox ;
+   depl p81 tour psi1 o (0. 0. 1.) ;
+   depl p81 plus pcour1 ;
+*
+*
+   p12 = p01 moins ox ;
+   depl p12 tour psi2 o (0. 0. 1.) ;
+   depl p12 plus pcour2 ;
+*
+   p22 = p02 moins ox ;
+   depl p22 tour psi2 o (0. 0. 1.) ;
+   depl p22 plus pcour2 ;
+*
+   p32 = p03 moins ox ;
+   depl p32 tour psi2 o (0. 0. 1.) ;
+   depl p32 plus pcour2 ;
+*
+   p42 = p04 moins ox ;
+   depl p42 tour psi2 o (0. 0. 1.) ;
+   depl p42 plus pcour2 ;
+*
+   p52 = p05 moins ox ;
+   depl p52 tour psi2 o (0. 0. 1.) ;
+   depl p52 plus pcour2 ;
+*
+   p62 = p06 moins ox ;
+   depl p62 tour psi2 o (0. 0. 1.) ;
+   depl p62 plus pcour2 ;
+*
+   p72 = p07 moins ox ;
+   depl p72 tour psi2 o (0. 0. 1.) ;
+   depl p72 plus pcour2 ;
+*
+   p82 = p08 moins ox ;
+   depl p82 tour psi2 o (0. 0. 1.) ;
+   depl p82 plus pcour2 ;
+*
+*
+  si (idiv1 ega nd) ;
+   p1 = p01 ;
+   p2 = p02 ;
+   p3 = p03 ;
+   p4 = p04 ;
+   p5 = p05 ;
+   p6 = p06 ;
+   p7 = p07 ;
+   p8 = p08 ;
+  finsi ;
+*
+p51m7 = milieu p51 p7;
+p31m1 = milieu p31 p1;
+p72m51 = milieu p72 p51 ;
+p12m31 = milieu p12 p31 ;
+*
+p71 = milieu p7 p72 ;
+p11 = milieu p1 p12 ;
+*
+opti elem seg2 ;
+*
+l1 = p1 d 1 p11 d 1 p12 ;
+l3 = p3 d 1 p31 d 1 p32 ;
+l5 = p5 d 1 p51 d 1 p52 ;
+l7 = p7 d 1 p71 d 1 p72 ;
+*
+opti elem cu20 ;
+*
+pr1 = manu pr15
+      p5 (milieu p5 p51) p51 p51m7 p7 p6
+      p4 p41 p8
+      p3 (milieu p3 p31) p31 p31m1 p1 p2 ;
+*
+pr2 = manu pr15
+      p51 (milieu p51 p52) p52 p62 p72 p72m51
+      p41 p42 p82
+      p31 (milieu p31 p32) p32 p22 p12 p12m31 ;
+*
+pr3 = manu pr15
+      p7 p51m7 p51 p72m51 p72 p71
+      p8 p41 p82
+      p1 p31m1 p31 p12m31 p12 p11 ;
+*
+vp = pr1 et pr2 et pr3 ;
+*
+ si (idiv1 ega nd) ;
+    vtot = vp ;
+    lsommet1 = l1 ;
+    lsommet3 = l3 ;
+    lsommet5 = l5 ;
+    lsommet7 = l7 ;
+ sinon ;
+    vtot = vtot et vp ;
+    lsommet1 = lsommet1 et l1 ;
+    lsommet3 = lsommet3 et l3 ;
+    lsommet5 = lsommet5 et l5 ;
+    lsommet7 = lsommet7 et l7 ;
+ finsi ;
+*
+*
+p1 = p12 ;
+p2 = p22 ;
+p3 = p32 ;
+p4 = p42 ;
+p5 = p52 ;
+p6 = p62 ;
+p7 = p72 ;
+p8 = p82 ;
+*
+* Calcul des angles aux sommets des triangles
+* -------------------------------------------
+*
+alpha1 = angle p72 p51 p71 ;
+alpha2 = angle p12 p11 p31 ;
+al1 = prog alpha1 alpha2 ;
+alpha_mi = mini al1 ;
+*
+alpha3 = angle p51 p51m7 p72m51 ;
+alpha4 = angle p31 p31m1 p12m31 ;
+al2 = prog alpha3 alpha4 ;
+alpha_ma = maxi al2 ;
+*
+* -------------------------------------------
+*
+fin bouc1 ;
+*
+finproc vtot alpha_mi alpha_ma lsommet1 lsommet3 lsommet5
+        lsommet7 ;
+*
+********************************************************
+*****       PROCEDURE PRINCIPALE  FISS_3DP      ********
+********************************************************
+*$$$$ FISS_3DP
+*
+debproc FISS_3DP c*flottant a*flottant lo*flottant
+                 to*flottant ho*flottant eps*flottant
+                 nt*entier nc*entier ns*entier
+                 rc0*flottant rc1*flottant rc2*flottant rc3*flottant
+                 beta*flottant alpha*flottant
+                 ndt*entier xl*entier xt*entier xh*entier
+                 d3*mot nsdt*entier ;
+*
+saut ligne ;
+mess '*****************************************************' ;
+mess '****  PROCEDURE DE MAILLAGE D"UN BLOC FISSURE 3D ****' ;
+mess '*****************************************************' ;
+saut ligne ;
+*
+oeil = -100 -310 200 ;
+*
+* Tests sur les parametres d'entree de la procedure
+* ------------------------------------------------
+*
+si ((a < 0) ou (c < 0) ou (lo < 0) ou (to < 0) ou (ho < 0)
+    ou (rc0 < 0) ou (rc1 < 0) ou (rc2 < 0) ou (rc3 < 0)
+    ou (xl < 0) ou (xt < 0) ou (xh < 0) ou (nt < 0)) ;
+   saut ligne ;
+   mess '================================================== ' ;
+   mess '                 ATTENTION !!!                     ' ;
+   saut ligne ;
+   mess '  Un parametre au moins est negatif ...            ' ;
+   mess '  Tous les parametres doivent etre positifs.       ' ;
+   mess '      -----  VERIFIEZ VOS DONNEES  ----            ' ;
+   saut ligne ;
+   mess '      ------ ON SORT DE LA PROCEDURE -----         ' ;
+   mess '================================================== ' ;
+quit FISS_3DP ;
+finsi ;
+*
+si (c < a) ;
+   saut ligne ;
+   mess '================================================== ' ;
+   mess '                 ATTENTION !!!                     ' ;
+   saut ligne ;
+   mess '  Le premier parametre (demi grand axe) doit etre  ' ;
+   mess '  superieur aux deuxieme parametre (demi petit axe)' ;
+   mess '  Demi grand axe : c =' c ;
+   mess '  Demi petit axe : a =' a ;
+   saut ligne ;
+   mess '      ------ ON SORT DE LA PROCEDURE -----         ' ;
+   mess '================================================== ' ;
+quit FISS_3DP ;
+finsi ;
+*
+asurc = a / c ;
+si ((asurc < .09) ou (asurc > 1.01)) ;
+   saut ligne ;
+   mess '================================================== ' ;
+   mess '                 ATTENTION !!!                     ' ;
+   saut ligne ;
+   mess '  L"allongement de l"ellipse :                     ' ;
+   mess '  (demi petit axe)/(demi grand axe) doit etre      ' ;
+   mess '  compris entre 0,1 et 1                           ' ;
+   mess '  (a / c) =' asurc ;
+   saut ligne ;
+   mess '      ------ ON SORT DE LA PROCEDURE -----         ' ;
+   mess '================================================== ' ;
+quit FISS_3DP ;
+finsi ;
+*
+si ((ndt neg 1) et (ndt neg 2)) ;
+   saut ligne ;
+   mess '================================================== ' ;
+   mess '                 ATTENTION !!!                     ' ;
+   saut ligne ;
+   mess '     Le nombre de couronnes de deraffinement       ' ;
+   mess '     des tranches doit etre egal a 1 ou 2          ' ;
+   mess '  ndt =' ndt ;
+   saut ligne ;
+   mess '      ------ ON SORT DE LA PROCEDURE -----         ' ;
+   mess '================================================== ' ;
+quit FISS_3DP ;
+finsi ;
+*
+si ((alpha > 1.) ou (alpha < 0.)) ;
+   saut ligne ;
+   mess '================================================== ' ;
+   mess '                 ATTENTION !!!                     ' ;
+   saut ligne ;
+   mess '     Le parametre imposant l"inclinaison           ' ;
+   mess '     des tranches doit etre compris entre 0 et 1   ' ;
+   mess '     alpha =' alpha ;
+   saut ligne ;
+   mess '      ------ ON SORT DE LA PROCEDURE -----         ' ;
+   mess '================================================== ' ;
+quit FISS_3DP ;
+finsi ;
+*
+si ((beta > 1.) ou (beta < 0.)) ;
+   saut ligne ;
+   mess '================================================== ' ;
+   mess '                 ATTENTION !!!                     ' ;
+   saut ligne ;
+   mess '     Le parametre imposant le decoupage            ' ;
+   mess '     des tranches doit etre compris entre 0 et 1   ' ;
+   mess '     beta =' beta ;
+   saut ligne ;
+   mess '      ------ ON SORT DE LA PROCEDURE -----         ' ;
+   mess '================================================== ' ;
+quit FISS_3DP ;
+finsi ;
+*
+si ((eps > 1.) ou (eps < 0)) ;
+   saut ligne ;
+   mess '================================================== ' ;
+   mess '                 ATTENTION !!!                     ' ;
+   saut ligne ;
+   mess '     Le demi angle d"ouverture de la fissure       ' ;
+   mess '     doit etre compris entre 0 et 1 degre          ' ;
+   mess '     eps =' eps ;
+   saut ligne ;
+   mess '      ------ ON SORT DE LA PROCEDURE -----         ' ;
+   mess '================================================== ' ;
+quit FISS_3DP ;
+finsi ;
+*
+si (lo < c) ;
+   saut ligne ;
+   mess '================================================== ' ;
+   mess '                 ATTENTION !!!                     ' ;
+   saut ligne ;
+   mess '     La longueur du bloc doit etre superieure      ' ;
+   mess '     au demi grand axe                             ' ;
+   mess '     lo =' lo ;
+   mess '     c =' c ;
+   saut ligne ;
+   mess '      ------ ON SORT DE LA PROCEDURE -----         ' ;
+   mess '================================================== ' ;
+quit FISS_3DP ;
+finsi ;
+*
+*asurto = a / to ;
+*si ((asurto < .1999) ou (asurto > .8001)) ;
+*   saut ligne ;
+*   mess '================================================== ' ;
+*   mess '                 ATTENTION !!!                     ' ;
+*   saut ligne ;
+*   mess ' Le rapport a/to (demi-petit axe / largeur du bloc)' ;
+*   mess ' doit etre compris entre 0,2 et 0,8                ' ;
+*   mess ' (a/to) =' a/to ;
+*   saut ligne ;
+*   mess '      ------ ON SORT DE LA PROCEDURE -----         ' ;
+*   mess '================================================== ' ;
+*quit FISS_3DP ;
+*finsi ;
+*
+si ((neg d3 'non') et (neg d3 'oui')) ;
+   saut ligne ;
+   mess '================================================== ' ;
+   mess '                 ATTENTION !!!                     ' ;
+   saut ligne ;
+   mess '  Le mot cle imposant le deplacement des noeuds    ' ;
+   mess '  intermediares du "boudin torique" doit etre egal ' ;
+   mess '  a : oui ou non, en minuscules et entre cotes.    ' ;
+     saut ligne ;
+   mess '      ------ ON SORT DE LA PROCEDURE -----         ' ;
+   mess '================================================== ' ;
+quit FISS_3DP ;
+finsi ;
+*
+si (nt > 64) ;
+   saut ligne ;
+   mess '================================================== ' ;
+   mess '                 ATTENTION !!!                     ' ;
+   saut ligne ;
+   mess '  Le nombre de tranches doit etre inferieur ou     ' ;
+   mess '  egal a 64                                        ' ;
+   saut ligne ;
+   mess '  VOUS AVEZ UN NOMBRE DE TRANCHES DE' nt           ;
+   saut ligne ;
+   mess '      ------ ON SORT DE LA PROCEDURE -----         ' ;
+   mess '================================================== ' ;
+quit FISS_3DP ;
+finsi ;
+*
+i = 1 ;
+puis = 0 ;
+repe bouc1 6 ;
+ i = i + 1 ;
+ if = flottant i ;
+ ndivf = flottant nt ;
+ deux = ndivf ** (1 / if) ;
+    si (deux ega 2 .001) ;
+       puis = 1 ;
+       quit bouc1 ;
+    finsi ;
+fin bouc1 ;
+*
+si (puis ega 0) ;
+   saut ligne ;
+   mess '================================================== ' ;
+   mess '    ATTENTION !!!  Le nombre de tranches doit etre ' ;
+   mess '                   une puissance de 2              ' ;
+   mess '                                                   ' ;
+   mess '  VOUS AVEZ UN NOMBRE DE TRANCHES DE' nt           ;
+   saut ligne ;
+   mess '      ------ ON SORT DE LA PROCEDURE -----         ' ;
+   mess '================================================== ' ;
+   saut ligne ;
+   quit FISS_3DP ;
+finsi ;
+*
+si ((nsdt neg 2) et (nsdt neg 4)) ;
+   saut ligne ;
+   mess '================================================== ' ;
+   mess '                 ATTENTION !!!                     ' ;
+   saut ligne ;
+   mess '  Le nombre de secteurs des couronnes de           ' ;
+   mess '  deraffinement des tranches doit etre             ' ;
+   mess '  egal a 2 ou 4                                    ' ;
+   saut ligne ;
+   mess '  VOUS AVEZ UN NOMBRE DE SECTEUR (nsdt) DE' nsdt     ;
+   saut ligne ;
+   mess '      ------ ON SORT DE LA PROCEDURE -----         ' ;
+   mess '================================================== ' ;
+quit FISS_3DP ;
+finsi ;
+*
+*----------------------------------------
+* Calcul de la profondeur du bloc initial
+* ---------------------------------------
+bsura = a / c ;
+*
+si (bsura < .15) ;
+* CMODI BK 10/3/95
+*   t = a / .7 ;
+   t = a / .6 ;
+finsi ;
+si (bsura > .15) ;
+* CMODI BK 10/3/95
+*    t = a / .6 ;
+*    t = a / .5 ;
+*    t = a / .7 ;
+    t = a / .4 ;
+finsi ;
+*
+bsurt = a / t ;
+bsurto = a / to ;
+mess ' bsurt = ' bsurt ' bsurto = ' bsurto ;
+mess ' bsura = ' bsura ;
+*
+rallon = 1 ;
+si (bsurto >EG bsurt) ;
+   mess 'bsurto >EG bsurt' ;
+   mess ' pas de rallonge' ;
+   t = a / bsurto ;
+   rallon = 0 ;
+finsi ;
+*
+* --------------------------------------
+ns = ns * 4 ;
+nt = nt * 2 ;
+*
+*
+ si ((nt <EG 8) et (ndt ega 2)) ;
+  mess '=========================================================' ;
+  mess '    ATTENTION !!! Vous ne pouvez pas utiliser 2 couronnes' ;
+  mess '                  de deraffinement avec 4 tranches       ' ;
+  mess '=========================================================' ;
+  quit FISS_3DP ;
+ finsi ;
+*
+*
+* maillage 2D de la section du tore dans le plan xoz
+* --------------------------------------------------
+*
+flag_eps = 1 ;
+ si (eps ega 0) ;
+    eps = .1 ;
+    flag_eps = 0 ;
+ finsi ;
+*
+o = 0. 0. 0. ;
+ox = c 0. 0. ;
+coseps = cos eps ;
+sineps = sin eps ;
+crit_cer = rc0 / 1.E4 ;
+p0 = (c - (crit_cer * coseps)) 0.
+     (-1. * crit_cer * sineps) ;
+p1 = (c - (rc0 * coseps)) 0. ( -1. * rc0 * sineps) ;
+angrot = 180. - eps ;
+loxp1 = p0 d nc p1 ;
+nsdemi = ns / 2 ;
+nsquart = ns / 4;
+* demi boudin inferieur
+mbase = loxp1 rota nsdemi angrot ox (c -1. 0.) ;
+* fusion des noeuds situes pres du centre du maillage 2D en etoile
+mbapoi = changer poi1 mbase ;
+confon = mbapoi poin sphe ox p0 (rc0 / 1.E4) ;
+elim confon (rc0 / 1.E4) ;
+mbase = rege mbase ;
+mbase = mbase coul roug ;
+*
+* premiere couronne de transition
+* -------------------------------
+*
+p2 = (c - ((1 + rc1) * rc0 * coseps)) 0.
+     ( -1. * (1 + rc1) * rc0 * sineps) ;
+p3 = (c - ((1 + rc1 + rc2) * rc0 * coseps)) 0.
+     (-1 * (1 + rc1 + rc2) * rc0 * sineps) ;
+lp1p2 = p1 d 1 p2 ;
+q1 = (c + rc0) 0. 0. ;
+q2 = (c + ((1 + rc1) * rc0)) 0. 0. ;
+q3 = (c + ((1 + rc1 + rc2) * rc0)) 0. 0. ;
+undemi = 1./2. ;
+*
+si (nsdt ega 4) ;
+   nbp1bq1b = 8 ;
+sinon ;
+   nbp1bq1b = (4 + nsdemi) / 2 ;
+finsi ;
+*
+xp1b = undemi*( ( 2. * c ) - ( coseps * rc0 * (2. + rc1) )) ;
+yp1b = 0. ;
+zp1b = undemi*( -1. * (2 + rc1) *  rc0 * sineps ) ;
+xq1b = undemi*( ( 2. * c ) + ( (2 + rc1) * rc0 ) ) ;
+yq1b = 0. ;
+zq1b = 0. ;
+p1b  = xp1b yp1b zp1b ;
+q1b  = xq1b yq1b zq1b ;
+opti elem seg3 ;
+lp1p1b  = p1 d 1 p1b ;
+lp1bq1b = p1b cerc nbp1bq1b ox q1b ;
+lp2q2   = p2  cerc 4        ox q2  ;
+lp1q1   = p1  cerc nsdemi   ox q1  ;
+si ( EGA nsdemi 12) ;
+ chp1bq1b = chan lp1bq1b poi1 ;
+ chp1q1   = chan lp1q1   poi1 ;
+*
+* tri de la ligne lp1bq1b
+*
+i = 0 ;
+tab1 = table ;
+tab2 = table ;
+nbval = nbno chp1bq1b ;
+repeter bouc5 nbval ;
+ i = i + 1 ;
+ pcour_c = chp1bq1b poin i ;
+ xp = coor 1 pcour_c ;
+ yp = coor 2 pcour_c ;
+ zp = coor 3 pcour_c ;
+ tab1 . i = xp ;
+ tab2 . i = pcour_c ;
+fin bouc5 ;
+tab2 = tri tab1 tab2 ;
+*
+* tri de la ligne lp1q1
+*
+i = 0 ;
+tab3 = table ;
+tab4 = table ;
+nbval = nbno chp1q1 ;
+repeter bouc5 nbval ;
+ i = i + 1 ;
+ pcour_c = chp1q1 poin i ;
+ xp = coor 1 pcour_c ;
+ yp = coor 2 pcour_c ;
+ zp = coor 3 pcour_c ;
+ tab3 . i = xp ;
+ tab4 . i = pcour_c ;
+fin bouc5 ;
+tab4 = tri tab3 tab4 ;
+*
+* construction des points milieu interieur couronne
+*
+ lpoin_m = table ;
+ poin_m  = table ;
+ i = 0 ;
+ j = 1 ;
+ opti elem seg3 ;
+ lpoin_m . 1  = chan ( (tab4 . 1  ) d 1 (tab2 . 1  ) ) poi1 ;
+ lpoin_m . 2  = chan ( (tab4 . 3  ) d 1 (tab2 . 3  ) ) poi1 ;
+ lpoin_m . 3  = chan ( (tab4 . 5  ) d 1 (tab2 . 3  ) ) poi1 ;
+ lpoin_m . 4  = chan ( (tab4 . 7  ) d 1 (tab2 . 5  ) ) poi1 ;
+ lpoin_m . 5  = chan ( (tab4 . 9  ) d 1 (tab2 . 7  ) ) poi1 ;
+ lpoin_m . 6  = chan ( (tab4 . 11 ) d 1 (tab2 . 7  ) ) poi1 ;
+ lpoin_m . 7  = chan ( (tab4 . 13 ) d 1 (tab2 . 9  ) ) poi1 ;
+ lpoin_m . 8  = chan ( (tab4 . 15 ) d 1 (tab2 . 11 ) ) poi1 ;
+ lpoin_m . 9  = chan ( (tab4 . 17 ) d 1 (tab2 . 11 ) ) poi1 ;
+ lpoin_m . 10 = chan ( (tab4 . 19 ) d 1 (tab2 . 13 ) ) poi1 ;
+ lpoin_m . 11 = chan ( (tab4 . 21 ) d 1 (tab2 . 15 ) ) poi1 ;
+ lpoin_m . 12 = chan ( (tab4 . 23 ) d 1 (tab2 . 15 ) ) poi1 ;
+ lpoin_m . 13 = chan ( (tab4 . 25 ) d 1 (tab2 . 17 ) ) poi1 ;
+*
+* construction des elements de la couronne
+*
+ opti elem qua8 ;
+ elem1  = manu qua8 (tab4 . 1)  (poin 2 (lpoin_m . 1) )
+                    (tab2 . 1)  (tab2 . 2)
+                    (tab2 . 3)  (poin 2 (lpoin_m . 2) )
+                    (tab4 . 3)  (tab4 . 2) ;
+ elem2  = manu tri6 (tab4 . 3)  (poin 2 (lpoin_m . 2) )
+                    (tab2 . 3)  (poin 2 (lpoin_m . 3) )
+                    (tab4 . 5)  (tab4 . 4) ;
+ elem3  = manu qua8 (tab4 . 5)  (poin 2 (lpoin_m . 3) )
+                    (tab2 . 3)  (tab2 . 4)
+                    (tab2 . 5)  (poin 2 (lpoin_m . 4) )
+                    (tab4 . 7)  (tab4 . 6) ;
+*
+ elem4  = manu qua8 (tab4 . 7)  (poin 2 (lpoin_m . 4) )
+                    (tab2 . 5)  (tab2 . 6)
+                    (tab2 . 7)  (poin 2 (lpoin_m . 5) )
+                    (tab4 . 9)  (tab4 . 8) ;
+ elem5  = manu tri6 (tab4 . 9)  (poin 2 (lpoin_m . 5) )
+                    (tab2 . 7)  (poin 2 (lpoin_m . 6) )
+                    (tab4 . 11) (tab4 . 10) ;
+ elem6  = manu qua8 (tab4 . 11) (poin 2 (lpoin_m . 6) )
+                    (tab2 . 7)  (tab2 . 8)
+                    (tab2 . 9)  (poin 2 (lpoin_m . 7) )
+                    (tab4 . 13) (tab4 . 12) ;
+*
+ elem7  = manu qua8 (tab4 . 13) (poin 2 (lpoin_m . 7) )
+                    (tab2 . 9 ) (tab2 . 10)
+                    (tab2 . 11) (poin 2 (lpoin_m . 8) )
+                    (tab4 . 15) (tab4 . 14) ;
+ elem8  = manu tri6 (tab4 . 15) (poin 2 (lpoin_m . 8) )
+                    (tab2 . 11) (poin 2 (lpoin_m . 9) )
+                    (tab4 . 17) (tab4 . 16) ;
+ elem9  = manu qua8 (tab4 . 17) (poin 2 (lpoin_m . 9) )
+                    (tab2 . 11) (tab2 . 12)
+                    (tab2 . 13) (poin 2 (lpoin_m . 10) )
+                    (tab4 . 19) (tab4 . 18) ;
+*
+ elem10 = manu qua8 (tab4 . 19) (poin 2 (lpoin_m . 10) )
+                    (tab2 . 13) (tab2 . 14 )
+                    (tab2 . 15) (poin 2 (lpoin_m . 11) )
+                    (tab4 . 21) (tab4 . 20) ;
+ elem11 = manu tri6 (tab4 . 21) (poin 2 (lpoin_m . 11) )
+                    (tab2 . 15) (poin 2 (lpoin_m . 12) )
+                    (tab4 . 23) (tab4 . 22 ) ;
+ elem12 = manu qua8 (tab4 . 23) (poin 2 (lpoin_m . 12) )
+                    (tab2 . 15) (tab2 . 16)
+                    (tab2 . 17) (poin 2 (lpoin_m . 13) )
+                    (tab4 . 25) (tab4 . 24) ;
+*
+ mtran11 = elem1  et elem2  et elem3  et
+           elem4  et elem5  et elem6  et
+           elem7  et elem8  et elem9  et
+           elem10 et elem11 et elem12 ;
+elim mtran11 (c / 1.E4) ;
+sinon ;
+ opti elem seg3 ;
+ coutou1 = lp1p1b et lp1bq1b et
+           (q1b d 1 q1) et (inve lp1q1) ;
+ opti elem qua8 ;
+*
+*CMODI BK le 10/5/95
+*
+si ((EGA ns 8) et (EGA nsdt 2)) ;
+ mtran11 =  lp1q1 regler 1 lp1bq1b ;
+sinon ;
+ mtran11 = surf coutou1 plan ;
+finsi ;
+finsi ;
+*
+si (nsdt ega 2) ;
+*
+ opti elem seg3 ;
+ coutou2 = (p1b d 1 p2)  et lp2q2 et
+           (q2  d 1 q1b) et (inve lp1bq1b);
+ opti elem qua8 ;
+si (EGA ns 8) ;
+ mtran12 =  lp2q2 regler 1 lp1bq1b ;
+sinon ;
+ mtran12 = surf coutou2 plan ;
+finsi ;
+*
+ mtran1  = mtran11 et mtran12 ;
+*
+sinon ;
+*
+ mtran1 = mtran11 ;
+*
+finsi ;
+*
+ mtran1 = mtran1 coul bleu ;
+ elim (c / 1.E4) mtran1 mbase ;
+ mgen = mbase et mtran1 ;
+*
+* deuxieme couronne de transition
+*
+*
+p6 = q3 moins (0. 0. ((1 + rc1 + rc2) * rc0)) ;
+p4 = (c - ((1 + rc1 + rc2) * rc0 * coseps)) 0.
+     (-1 * (1 + rc1 + rc2) * rc0 ) ;
+p5 = milieu p4 p6 ;
+*
+si (nsdt ega 2) ;
+*
+  pasang = (180 - eps) / 4 ;
+*
+  p4b = q2 tour ox (c 1 0) (3 * pasang) ;
+  p5b = q2 tour ox (c 1 0) (2 * pasang) ;
+  p6b = q2 tour ox (c 1 0) (1 * pasang) ;
+*
+  mtran21 alpha_m1 al_max1 sommet11 sommet31 sommet51
+  sommet71
+                           = mail1 p3 p2 p4b p4 ox c a
+                             alpha beta nt 1;
+*
+  mtran22 alpha_m2 al_max2 sommet12 sommet32 sommet52
+  sommet72
+                           = mail1 p4 p4b p5b p5 ox c a
+                             alpha beta nt 1;
+*
+  mtran23 alpha_m3 al_max3 sommet13 sommet33 sommet53
+  sommet73
+                           = mail1 p5 p5b p6b p6 ox c a
+                             alpha beta nt 1;
+*
+  mtran24 alpha_m4 al_max4 sommet14 sommet34 sommet54
+  sommet74
+                           = mail1 p6 p6b q2 q3 ox c a
+                             alpha beta nt 1;
+*
+  al_m_c1 = prog alpha_m1 alpha_m2 alpha_m3 alpha_m4 ;
+  alpha_c1 = mini al_m_c1 ;
+*
+  al_max = prog al_max1 al_max2 al_max3 al_max4 ;
+  almax = maxi al_max ;
+*
+  lref = sommet74 ;
+*
+sinon ;
+*
+  pasang = (180 - eps) / 8 ;
+*
+  p24b  = q1b tour ox (c 1 0) (7 * pasang) ;
+  p4b   = q1b tour ox (c 1 0) (6 * pasang) ;
+  p4b5b = q1b tour ox (c 1 0) (5 * pasang) ;
+  p5b   = q1b tour ox (c 1 0) (4 * pasang) ;
+  p5b6b = q1b tour ox (c 1 0) (3 * pasang) ;
+  p6b   = q1b tour ox (c 1 0) (2 * pasang) ;
+  p6b2  = q1b tour ox (c 1 0) (1 * pasang) ;
+*
+p63 = milieu q3 p6 ;
+p56 = milieu p6 p5 ;
+p45 = milieu p4 p5 ;
+p34 = milieu p3 p4 ;
+*
+  mtran21 alpha_m1 al_max1 sommet11 sommet31 sommet51
+  sommet71
+                           = mail1 p3 p1b p24b p34 ox c a
+                             alpha beta nt 1;
+*
+  mtran22 alpha_m2 al_max2 sommet12 sommet32 sommet52
+  sommet72
+                           = mail1 p34 p24b p4b p4 ox c a
+                             alpha beta nt 1;
+*
+  mtran23 alpha_m3 al_max3 sommet13 sommet33 sommet53
+  sommet73
+                           = mail1 p4 p4b p4b5b p45 ox c a
+                             alpha beta nt 1;
+*
+  mtran24 alpha_m4 al_max4 sommet14 sommet34 sommet54
+  sommet74
+                           = mail1 p45 p4b5b p5b p5 ox c a
+                             alpha beta nt 1;
+*
+  mtran25 alpha_m5 al_max5 sommet15 sommet35 sommet55
+  sommet75
+                           = mail1 p5 p5b p5b6b p56 ox c a
+                             alpha beta nt 1;
+*
+  mtran26 alpha_m6 al_max6 sommet16 sommet36 sommet56
+  sommet76
+                           = mail1 p56 p5b6b p6b p6 ox c a
+                             alpha beta nt 1;
+*
+  mtran27 alpha_m7 al_max7 sommet17 sommet37 sommet57
+  sommet77
+                           = mail1 p6 p6b p6b2 p63 ox c a
+                             alpha beta nt 1;
+*
+  mtran28 alpha_m8 al_max8 sommet18 sommet38 sommet58
+  sommet78
+                           = mail1 p63 p6b2 q1b q3 ox c a
+                             alpha beta nt 1;
+*
+  al_m_c1 = prog alpha_m1 alpha_m2 alpha_m3 alpha_m4
+                 alpha_m5 alpha_m6 alpha_m7 alpha_m8 ;
+  alpha_c1 = mini al_m_c1 ;
+*
+  al_max = prog al_max1 al_max2 al_max3 al_max4
+                al_max5 al_max6 al_max7 al_max8 ;
+  almax = maxi al_max ;
+*
+  lref = sommet78 ;
+*
+finsi ;
+*
+  saut ligne ;
+  mess '--------------------------------------------------' ;
+  mess 'ANGLE MINI SUR LES PRISMES DE LA PREMIERE COURONNE' ;
+  mess 'DE DERAFFINEMENT DES TRANCHES =' alpha_c1 'DEGRES'  ;
+  saut ligne ;
+  mess '    POUR AUGMENTER CET ANGLE : AUGMENTER "rc2" ' ;
+  mess '                               DIMINUER  "rc0" ' ;
+  saut ligne ;
+  mess '--------------------------------------------------' ;
+  saut ligne ;
+*
+si (almax > 175.) ;
+  mess '----------------------------------------------------' ;
+  mess 'L"ANGLE MAXI SUR LES PRISMES DE LA PREMIERE COURONNE' ;
+  mess 'DE DERAFFINEMENT DES TRANCHES EST TROP GRAND :' almax ;
+  mess 'DEGRES !!!   ERREUR SUR LA GENERATION DU MAILLAGE    ' ;
+  saut ligne ;
+  mess '    POUR DIMINUER CET ANGLE : AUGMENTER "rc2" ' ;
+  mess '                              DIMINUER  "rc0" ' ;
+  saut ligne ;
+  mess '   ATTENTION !!! ---- ON SORT DE LA PROCEDURE ----- ' ;
+  saut ligne ;
+  mess '----------------------------------------------------' ;
+  saut ligne ;
+quit FISS_3DP ;
+finsi ;
+*
+si (nsdt ega 2) ;
+   mtran2 = mtran21 et mtran22 et mtran23 et mtran24 ;
+sinon ;
+   mtran2 = mtran21 et mtran22 et mtran23 et mtran24 et
+            mtran25 et mtran26 et mtran27 et mtran28 ;
+finsi ;
+*
+elim mtran2 (c / 1.E4);
+*
+*
+ si (flag_eps ega 0) ;
+saut ligne ;
+mess '===========================================================' ;
+mess '    ATTENTION !!! Vous ne pouvez pas utiliser un demi-angle' ;
+mess '                  d"ouverture de la fissure egal a 0 degre ' ;
+mess '                                                           ' ;
+mess '    LA PROCEDURE FIXE CET ANGLE A 0.1 DEGRE PAR DEFAUT     ' ;
+mess '    ET PROJETTE LA LEVRE SUR LE PLAN Z=0                   ' ;
+mess '===========================================================' ;
+saut ligne ;
+ finsi ;
+*
+* troisieme couronne de transition
+* --------------------------------
+*
+si (ndt ega 2) ;
+*
+p7 = (c - ((1 + rc1 + rc2 + rc3) * rc0 * coseps)) 0.
+     (-1 * (1 + rc1 + rc2 + rc3) * rc0 * sineps) ;
+p8 = (c - ((1 + rc1 + rc2 + rc3) * rc0 * coseps)) 0.
+     (-1 * (1 + rc1 + rc2 + rc3) * rc0 ) ;
+p10 = (c + ((1 + rc1 + rc2 + rc3) * rc0 * coseps)) 0.
+      (-1 * (1 + rc1 + rc2 + rc3) * rc0 ) ;
+p9 = milieu p8 p10 ;
+p11 = (c + ((1 + rc1 + rc2 + rc3) * rc0)) 0. 0. ;
+*
+si (nsdt ega 2) ;
+*
+  mtran31 alpha_m1 al_max1 sommet11 sommet31 sommet51
+  sommet71
+                           = mail1 p7 p3 p4 p8 o c a
+                             alpha beta nt 2;
+*
+  mtran32 alpha_m2 al_max2 sommet12 sommet32 sommet52
+  sommet72
+                           = mail1 p8 p4 p5 p9 o c a
+                             alpha beta nt 2;
+*
+  mtran33 alpha_m3 al_max3 sommet13 sommet33 sommet53
+  sommet73
+                           = mail1 p9 p5 p6 p10 o c a
+                             alpha beta nt 2;
+*
+  mtran34 alpha_m4 al_max4 sommet14 sommet34 sommet54
+  sommet74
+                           = mail1 p10 p6 q3 p11 o c a
+                             alpha beta nt 2;
+*
+  al_m_c2 = prog alpha_m1 alpha_m2 alpha_m3 alpha_m4 ;
+  alpha_c2 = mini al_m_c2 ;
+*
+  al_max = prog al_max1 al_max2 al_max3 al_max4 ;
+  almax2 = maxi al_max ;
+*
+  lref = sommet74 ;
+*
+sinon ;
+*
+  p78 = milieu p7 p8 ;
+  p89 = milieu p8 p9 ;
+  p910 = milieu p9 p10 ;
+  p1011 = milieu p10 p11 ;
+*
+  mtran31 alpha_m1 al_max1 sommet11 sommet31 sommet51
+  sommet71
+                           = mail1 p7 p3 p34 p78 o c a
+                             alpha beta nt 2;
+*
+  mtran32 alpha_m2 al_max2 sommet12 sommet32 sommet52
+  sommet72
+                           = mail1 p78 p34 p4 p8 o c a
+                             alpha beta nt 2;
+*
+  mtran33 alpha_m3 al_max3 sommet13 sommet33 sommet53
+  sommet73
+                           = mail1 p8 p4 p45 p89 o c a
+                             alpha beta nt 2;
+  mtran34 alpha_m4 al_max4 sommet14 sommet34 sommet54
+  sommet74
+                           = mail1 p89 p45 p5 p9 o c a
+                             alpha beta nt 2;
+*
+  mtran35 alpha_m5 al_max5 sommet15 sommet35 sommet55
+  sommet75
+                           = mail1 p9 p5 p56 p910 o c a
+                             alpha beta nt 2;
+*
+  mtran36 alpha_m6 al_max6 sommet16 sommet36 sommet56
+  sommet76
+                           = mail1 p910 p56 p6 p10 o c a
+                             alpha beta nt 2;
+*
+  mtran37 alpha_m7 al_max7 sommet17 sommet37 sommet57
+  sommet77
+                           = mail1 p10 p6 p63 p1011 o c a
+                             alpha beta nt 2;
+*
+  mtran38 alpha_m8 al_max8 sommet18 sommet38 sommet58
+  sommet78
+                           = mail1 p1011 p63 q3 p11 o c a
+                             alpha beta nt 2;
+*
+  al_m_c2 = prog alpha_m1 alpha_m2 alpha_m3 alpha_m4
+                 alpha_m5 alpha_m6 alpha_m7 alpha_m8 ;
+  alpha_c2 = mini al_m_c2 ;
+*
+  al_max = prog al_max1 al_max2 al_max3 al_max4
+                al_max5 al_max6 al_max7 al_max8 ;
+  almax2 = maxi al_max ;
+*
+  lref = sommet78 ;
+*
+finsi ;
+*
+  saut ligne ;
+  mess '--------------------------------------------------' ;
+  mess 'ANGLE MINI SUR LES PRISMES DE LA DEUXIEME COURONNE' ;
+  mess 'DE DERAFFINEMENT DES TRANCHES =' alpha_c2 'DEGRES'  ;
+  saut ligne ;
+  mess '    POUR AUGMENTER CET ANGLE : AUGMENTER "rc3" ' ;
+  mess '                               DIMINUER  "rc0" ' ;
+  saut ligne ;
+  mess '--------------------------------------------------' ;
+  saut ligne ;
+*
+si (almax2 > 175.) ;
+  mess '----------------------------------------------------' ;
+  mess 'L"ANGLE MAXI SUR LES PRISMES DE LA DEUXIEME COURONNE' ;
+  mess 'DE DERAFFINEMENT DES TRANCHES EST TROP GRAND :' almax2 ;
+  mess 'DEGRES !!!   ERREUR SUR LA GENERATION DU MAILLAGE    ' ;
+  saut ligne ;
+  mess '    POUR DIMINUER CET ANGLE : AUGMENTER "rc3" ' ;
+  mess '                              DIMINUER  "rc0" ' ;
+  saut ligne ;
+  mess '   ATTENTION !!! ---- ON SORT DE LA PROCEDURE ----- ' ;
+  saut ligne ;
+  mess '----------------------------------------------------' ;
+  saut ligne ;
+quit FISS_3DP ;
+finsi ;
+*
+si (nsdt ega 2) ;
+   mtran3 = mtran31 et mtran32 et mtran33 et mtran34;
+sinon ;
+   mtran3 = mtran31 et mtran32 et mtran33 et mtran34 et
+            mtran35 et mtran36 et mtran37 et mtran38 ;
+finsi ;
+*
+mtran3 = mtran3 coul vert ;
+elim mtran3 (c / 1.E4) ;
+*
+finsi ;
+*
+* parcours de la generatrice elliptique
+* -------------------------------------
+*
+  si (ega ndt 1) ;
+     p7 = p3 ;
+     p8 = p4 ;
+     p9 = p5 ;
+     p10 = p6 ;
+     p11 = q3 ;
+     na = 2 ;
+     nb = (nt / 8) ;
+     nd = 1 + rc1 + rc2 ;
+  sinon ;
+     na = 4 ;
+     nb = (nt / 16) ;
+     nd = 1 + rc1 + rc2 + rc3 ;
+  finsi ;
+*
+l810 = p8 droi 1 p9 droi 1 p10 ;
+*
+opti elem cu20 ;
+ermax = 0 ;
+idiv = 0 ;
+ndiv2 = nt / 2 ;
+lff = ox ;
+pcour_m1 = ox ;
+dis_max = 0 ;
+*
+si (nsdt ega 2) ;
+   lboulev = ox d nc p1 d 1 p1b d 1 p2 ;
+   lbouext = q2 d 1 q1b d 1 q1 d nc ox ;
+sinon ;
+   lboulev = ox d nc p1 d 1 p1b ;
+   lbouext = q1b d 1 q1 d nc ox ;
+finsi ;
+*
+* Cas de la demi ellipse
+repeter bloc1 ndiv2 ;
+   idiv = idiv + 1 ;
+   psi = (idiv * 180.) / nt ;
+   si (ega idiv ndiv2) ;
+      phi = 90. ;
+      cosphi = 0. ;
+      sinphi = 1. ;
+   sinon ;
+      cospsi = cos psi ;
+      sinpsi = sin psi ;
+      tanpsi = sinpsi / cospsi ;
+      tanphi = a * tanpsi / c ;
+      phik1  = atg tanphi ;
+      phik2  = psi ;
+      phi = (beta * phik2) + ((1 - beta) * phik1) ;
+      si (phi < 0.) ;
+         phi = 180. + phi ;
+      finsi ;
+      cosphi = cos phi ;
+      sinphi = sin phi ;
+*
+      tanphi = sinphi / cosphi ;
+      psiref = atg (c * tanphi / a) ;
+      talpha = (alpha * (1 - (c / a))) + (c / a) ;
+      tanpsi = talpha * tanphi ;
+      psi = atg tanpsi ;
+    erreupsi = abs (psiref - psi) ;
+    si (erreupsi > ermax) ;
+       ermax = erreupsi ;
+    finsi ;
+   finsi ;
+   si (ega idiv nt) ;
+      phi = 180. ;
+      cosphi = -1. ;
+      sinphi = 0. ;
+   finsi ;
+   xcour = c * cosphi ;
+   ycour = a * sinphi ;
+   zcour = 0. ;
+   pcour = xcour ycour zcour ;
+   s_lff = pcour_m1 d 1 pcour ;
+   pcour_m1 = pcour ;
+   lff = lff d 1 pcour ;
+*
+* Mesure de la longueur maxi d'un segment de lff
+* ----------------------------------------------
+   pi_s_lff = s_lff poin initial ;
+   pf_s_lff = s_lff poin final ;
+   dis_pipf = distance pi_s_lff pf_s_lff ;
+    si (dis_pipf > dis_max) ;
+       dis_max = dis_pipf ;
+    finsi ;
+*
+   mcour = mgen moins ox ;
+   depl mcour tour psi o (0. 0. 1.) ;
+   depl mcour plus pcour ;
+*
+   lboulcou = lboulev moins ox ;
+   depl lboulcou tour psi o (0. 0. 1.) ;
+   depl lboulcou plus pcour ;
+   lbouecou = lbouext moins ox ;
+   depl lbouecou tour psi o (0. 0. 1.) ;
+   depl lbouecou plus pcour ;
+*
+* ---------------------------------------------------------------
+* -----  Test sur les parametres rc0 rc1 rc2 rc3            ------
+* ---------------------------------------------------------------
+*
+     si (ega ndt 1) ;
+        dx1 = rc0 * (1 + rc1 + rc2) ;
+*CMODI BK 08/03/95
+*        dx2 = dx1 + (rc0 * rc2) ;
+        dx2 = dx1 + (2. * rc0 * rc2) ;
+     sinon ;
+        dx1 = rc0 * (1 + rc1 + rc2 + rc3) ;
+*CMODI BK 08/03/95
+*        dx2 = dx1 + (rc0 * rc3) ;
+        dx2 = dx1 + (2. * rc0 * rc3) ;
+     finsi ;
+*
+* l = longueur du bloc initial
+* ----------------------------
+*l = c + dx2 ;
+* ICI
+l = c + (3. * dx2) ;
+*
+si (ega idiv 1) ;
+*
+  si (dx1 > (ycour / tanpsi)) ;
+   saut ligne ;
+   mess '-----------------------------------------------------------';
+   mess 'ATTENTION !!  LES VALEURS DES PARAMETRES rc0,rc1,rc2 et rc3';
+   mess 'SONT TROP ELEVEES POUR UNE GENERATION CORRECTE DU MAILLAGE' ;
+   saut ligne ;
+   mess '*** PROBLEME AU NIVEAU DU PLUS PETIT RAYON DE COURBURE **' ;
+   mess '-----------------------------------------------------------';
+   saut ligne ;
+     si (ega ndt 1) ;
+       mess 'LA VALEUR MAXI DU TERME rc0 * (1 + rc1 + rc2)' ;
+       mess 'DOIT ETRE INFERIEURE A :' (ycour / tanpsi) ;
+       saut ligne ;
+       mess 'SI VOUS CONSERVEZ rc1,rc2,rc3 ALORS rc0 DOIT ETRE ';
+       mess 'INFERIEUR A :' ((ycour / tanpsi) / (1 + rc1 + rc2)) ;
+     sinon ;
+       mess 'LA VALEUR MAXI DU TERME rc0 * (1 + rc1 + rc2 + rc3)' ;
+       mess 'DOIT ETRE INFERIEURE A :' (ycour / tanpsi) ;
+       saut ligne ;
+       mess 'SI VOUS CONSERVEZ rc1,rc2,rc3 ALORS rc0 DOIT ETRE ';
+       mess 'INFERIEUR A :' ;
+       mess ((ycour / tanpsi) / (1 + rc1 + rc2 + rc3)) ;
+     finsi ;
+  finsi ;
+      si (dx2 > (t - a )) ;
+   saut ligne ;
+   mess '-----------------------------------------------------------';
+   mess 'ATTENTION !!  LES VALEURS DES PARAMETRES rc0,rc1,rc2 et rc3';
+   mess 'SONT TROP ELEVEES POUR UNE GENERATION CORRECTE DU MAILLAGE' ;
+   saut ligne ;
+   mess '*** PROBLEME AU NIVEAU DU PLUS GRAND RAYON DE COURBURE **' ;
+   mess '-----------------------------------------------------------';
+   saut ligne ;
+     si (ega ndt 1) ;
+       mess 'LA VALEUR MAXI DU TERME rc0 * (1 + rc1 + rc2)' ;
+       mess 'DOIT ETRE INFERIEURE A :' ((t - a) - (rc0 * rc2)) ;
+       saut ligne ;
+       mess 'SI VOUS CONSERVEZ rc1,rc2,rc3 ALORS rc0 DOIT ETRE ';
+       mess 'INFERIEUR A :' ;
+*       mess (((t - a) - (rc0 * rc2)) / (1 + rc1 + rc2)) ;
+       mess ((t - a) / (1 + rc1 + (2 * rc2))) ;
+     sinon ;
+       mess 'LA VALEUR MAXI DU TERME rc0 * (1 + rc1 + rc2 + rc3)' ;
+       mess 'DOIT ETRE INFERIEURE A :' ((t - a) - (rc0 * rc3)) ;
+       saut ligne ;
+       mess 'SI VOUS CONSERVEZ rc1,rc2,rc3 ALORS rc0 DOIT ETRE ';
+       mess 'INFERIEUR A :' ;
+*       mess (((t - a) - (rc0 * rc3)) / (1 + rc1 + rc2 + rc3)) ;
+       mess ((t - a) / (1 + rc1 + rc2 + (2 * rc3))) ;
+     finsi ;
+      finsi ;
+finsi ;
+*
+*
+   p8cour = p8 moins ox ;
+   depl p8cour tour psi o (0. 0. 1.) ;
+   depl p8cour plus pcour ;
+*
+   p9cour = p9 moins ox ;
+   depl p9cour tour psi o (0. 0. 1.) ;
+   depl p9cour plus pcour ;
+*
+   p10cour = p10 moins ox ;
+   depl p10cour tour psi o (0. 0. 1.) ;
+   depl p10cour plus pcour ;
+*
+l810cour = p8cour droi 1 p9cour droi 1 p10cour ;
+*
+   p7cour = p7 moins ox ;
+   depl p7cour tour psi o (0. 0. 1.) ;
+   depl p7cour plus pcour ;
+   xp7cour = coord 1 p7cour ;
+*
+   p11cour = p11 moins ox ;
+   depl p11cour tour psi o (0. 0. 1.) ;
+   depl p11cour plus pcour ;
+   xp11cour = coord 1 p11cour ;
+*
+   xcourp7 = (c - (4 * rc0 * coseps)) * cosphi ;
+   zp7 = coor 3 p7 ;
+*
+   si (ega idiv 1) ;
+      boudin = mgen volu 1 mcour ;
+      linf_b = lboulev regler 1 lboulcou ;
+      linf_bex = lbouext regler 1 lbouecou ;
+   sinon ;
+      boudin = boudin volu 1 mcour ;
+      linf_b = linf_b regler 1 lboulcou ;
+      linf_bex = linf_bex regler 1 lbouecou ;
+     finsi ;
+   finsi ;
+*
+tab_fron = table ;
+tab_ang = table ;
+tab_int = table ;
+*
+*   si (ega idiv na) ;
+   si (idiv <EG (2 * na)) ;
+      si (ega idiv na) ;
+         lfronti1 = p7 droi 1 p7cour ;
+         lfronte1 = p11 droi 1 p11cour ;
+      finsi ;
+      si (ega idiv (2 * na)) ;
+         p7n1 = p7cour ;
+         p11n1 = p11cour ;
+         lfronti1 = lfronti1 droi 1 p7cour ;
+         lfronte1 = lfronte1 droi 1 p11cour ;
+      finsi ;
+*
+*
+* On ecrit dans la table tab_fron les points de la ligne
+* lfrontex et dans la table tab_ang l'angle de la tranche
+* -------------------------------------------------------
+*
+tab_fron . 1 = p11cour ;
+tab_ang . 1 = tanpsi ;
+it = 1 ;
+   sinon ;
+       ind = modulo idiv na ;
+          si (ind ega 0) ;
+*             si (idiv ega (2 * na)) ;
+             si (idiv ega (3 * na)) ;
+                lfrontin = p7n1 droi 1 p7cour ;
+                lfrontex = p11n1 droi 1 p11cour ;
+* CMODI BK 30/05/95
+*                lxi = p7n3 droi 1 (xp7cour 0 zp7) ;
+                lxi = p7 droi 1 (xp7cour 0 zp7) ;
+             sinon ;
+               lfrontin = lfrontin droi 1 p7cour ;
+               lfrontin = lfrontin coul rouge;
+               lfrontex = lfrontex droi 1 p11cour ;
+               lfrontex = lfrontex coul rouge;
+               lxi = lxi droi 1 (xp7cour 0 zp7) ;
+             finsi ;
+it = it + 1 ;
+tab_fron . it  = p11cour ;
+tab_ang . it = tanpsi ;
+*
+         finsi ;
+   finsi ;
+*
+fin bloc1 ;
+*
+r1 = l 0 0 ;
+r2 = l t 0 ;
+r3 = 0 t 0 ;
+*
+*CMODI BK 30/05/95
+*n_el_fro = nbel lfrontex ;
+*  si (n_el_fro <eg 4) ;
+*     d4 = 'non' ;
+*  finsi ;
+*
+ si (ermax > 1.) ;
+     saut ligne ;
+  mess '-----------------------------------------------------------' ;
+  mess 'INCLINAISON MAXIMALE DES TRANCHES PAR RAPPORT A LA NORMALE'  ;
+  mess 'DE LA GENERATRICE DU FOND DE FISSURE :' ermax 'DEGRES'       ;
+     saut ligne ;
+  mess 'POUR DIMINUER L"INCLINAISON : DIMINUER LE PARAMETRE "alpha"' ;
+  mess '-----------------------------------------------------------' ;
+     saut ligne ;
+ sinon ;
+     saut ligne ;
+  mess '--------------------------------------------------' ;
+  mess 'TOUTES LES TRANCHES SONT NORMALES A LA GENERATRICE' ;
+  mess '--------------------------------------------------' ;
+     saut ligne ;
+ finsi ;
+*
+la_cour = rc0 / nc ;
+fac_etir = dis_max / la_cour ;
+*
+  mess '-----------------------------------------------------------' ;
+  mess 'FACTEUR D"ETIREMENT MAXI LE LONG DE LA FISSURE =' fac_etir   ;
+  saut ligne ;
+  mess '   POUR REDUIRE LE FACTEUR D"ETIREMENT : AUGMENTER "nt"    ' ;
+  mess '                                         DIMINUER  "nc"    ' ;
+  mess '-----------------------------------------------------------' ;
+  saut ligne ;
+*
+* Epaisseur absolue de la couronne de deraffinement des tranches la
+* plus eloignee de la ligne de fond de fissure
+* -----------------------------------------------------------------
+ si (ndt ega 1) ;
+   ep_cd = (rc0 * rc2) ;
+ sinon ;
+   ep_cd = (rc0 * rc3) ;
+ finsi ;
+*
+* surface superieure interieure a l ellipse
+* -----------------------------------------
+*
+* CMODI BK 30/05/95
+*
+yp7cour = coor 2 p7cour ;
+*
+* Repartition 1/3 2/3 dans le plan x=0
+*
+lyie = p7cour droi 1 (xp7cour (2. * yp7cour / 3.) zp7)
+              droi 1 (xp7cour 0 zp7) ;
+*
+cont = lfrontin et lfronti1 et lyie et (inve lxi) ;
+elim cont (c / 1.E4) ;
+*
+sintsup = lfrontin lyie (inve lxi) lfronti1 dall plan ;
+*
+*
+* surface superieure exterieure a l ellipse
+* -----------------------------------------
+*
+* tri de la ligne lref
+*
+lref = chan lref poi1 ;
+*
+i = 0 ;
+tab1 = table ;
+tab2 = table ;
+nbval = nbno lref ;
+repeter bouc1 nbval ;
+ i = i + 1 ;
+ pcour_c = lref poin i ;
+ xp = coor 1 pcour_c ;
+ tab1 . i = xp ;
+ tab2 . i = pcour_c ;
+fin bouc1 ;
+tab2 = tri tab1 tab2 ;
+*
+p11n3 = milieu r1 r2 ;
+lyee1 = p11n3 d 2 r1 ;
+lyee2 = p11n3 d 2 r2;
+*
+   nbel_lxi = nbel lxi ;
+*
+   long_el = l / (nbel_lxi + 2) ;
+*
+   p11n2 = ((nbel_lxi * long_el) t 0) ;
+*
+   lxee1 = r2 d 2 p11n2 ;
+*
+   lxee2 = r3 d nbel_lxi p11n2 ;
+*
+lxee_ar = (r3 d nbel_lxi ((nbel_lxi * long_el) t 0)
+           d 2 r2) ;
+lxee_ar = lxee_ar plus (0 (to - t) 0) ;
+lxee_ar = inve lxee_ar ;
+*
+lp11n2n1 = p11n2 d 2 p11n1 ;
+lp11n1n3 = p11n1 d 2 p11n3 ;
+*
+lxee = (inve lxee1) et lxee2 ;
+*
+d_r1p11 = distance r1 p11 ;
+d_r3p11c = distance r3 p11cour ;
+*
+lxei = r1 d 1 (r1 moin ((2. * d_r1p11 / 3.) 0 0)) d 1 p11 ;
+lyei = p11cour d 1 (p11cour plus (0 (d_r3p11c / 3.) 0)) d 1 r3 ;
+*
+*
+sextsup1 = lxei lfronte1 lp11n1n3 lyee1 dall plan ;
+sextsup2 = lp11n2n1 lp11n1n3 lyee2 lxee1 dall plan ;
+sextsup3 = lfrontex lyei lxee2 lp11n2n1 dall plan ;
+*
+sextsup = sextsup1 et sextsup2 et sextsup3 ;
+*
+* volume interieur a l ellipse
+* ----------------------------
+*
+opti elem cu20 ;
+*
+si (nsdt ega 2) ;
+   vint = sintsup volu tran 1 (0 0 ((nd * rc0) * (sineps - 1))) ;
+sinon ;
+   vint = sintsup volu tran 2 (0 0 ((nd * rc0) * (sineps - 1))) ;
+finsi ;
+*
+* volume exterieur a l ellipse
+* ----------------------------
+*
+si (nsdt ega 2) ;
+   vext = sextsup volu tran 1 (0 0 (-1 * nd * rc0)) ;
+sinon ;
+   vext = sextsup volu tran 2 (0 0 (-1 * nd * rc0)) ;
+finsi ;
+*
+* volume sous le boudin
+* ---------------------
+*
+   si (ega ndt 1) ;
+     vtotcomp = (boudin et mtran2 et vint et vext et linf_b
+                 et linf_bex et lff) ;
+       elim vtotcomp (c / 1.E4) ;
+     vtot = boudin et mtran2 et vint et vext ;
+      sinon ;
+     vtotcomp = (boudin et mtran2 et mtran3 et vint et vext
+                 et linf_b et linf_bex et lff) ;
+       elim vtotcomp (c / 1.E4) ;
+     vtot = boudin et mtran2 et mtran3 et vint et vext ;
+   finsi ;
+*
+* -----------------------------------------------
+* Deplacement des noeuds intermediares du boudin
+* -----------------------------------------------
+*
+si (ega d3 'oui') ;
+*
+idiv1 = -1 ;
+idiv2 = 0 ;
+idiv3 = -.5 ;
+nc = 1 ;
+ndiv4 = nt / 2 ;
+* Cas du quart d'ellipse
+repeter bouc1 ndiv4 ;
+   idiv1 = idiv1 + nc ;
+   idiv2 = idiv2 + nc ;
+   idiv3 = idiv3 + nc ;
+   psi1 = (idiv1 * 180.) / nt ;
+   psi2 = (idiv2 * 180.) / nt ;
+   psi3 = (idiv3 * 180.) / nt ;
+      cospsi1 = cos psi1 ;
+      sinpsi1 = sin psi1 ;
+      tanpsi1 = sinpsi1 / cospsi1 ;
+      tanphi1 = a * tanpsi1 / c ;
+      phik1  = atg tanphi1 ;
+      phik2  = psi1 ;
+      phi1 = (beta * phik2) + ((1 - beta) * phik1) ;
+*      phi1    = atg tanphi1 ;
+      si (phi1 < 0.) ;
+         phi1 = 180. + phi1 ;
+      finsi ;
+      cosphi1 = cos phi1 ;
+      sinphi1 = sin phi1 ;
+      tanphi1 = sinphi1 / cosphi1 ;
+      talpha = (alpha * (1 - (c / a))) + (c / a) ;
+      tanpsi1 = talpha * tanphi1 ;
+      psi1 = atg tanpsi1 ;
+      cospsi1 = cos psi1 ;
+      sinpsi1 = sin psi1 ;
+*
+   si (ega idiv2 (nt /2)) ;
+      phi2 = 90. ;
+      cosphi2 = 0. ;
+      sinphi2 = 1. ;
+   sinon ;
+      cospsi2 = cos psi2 ;
+      sinpsi2 = sin psi2 ;
+      tanpsi2 = sinpsi2 / cospsi2 ;
+      tanphi2 = a * tanpsi2 / c ;
+      phik1  = atg tanphi2 ;
+      phik2  = psi2 ;
+      phi2 = (beta * phik2) + ((1 - beta) * phik1) ;
+*      phi2    = atg tanphi2 ;
+      si (phi2 < 0.) ;
+         phi2 = 180. + phi2 ;
+      finsi ;
+      cosphi2 = cos phi2 ;
+      sinphi2 = sin phi2 ;
+      tanphi2 = sinphi2 / cosphi2 ;
+      talpha = (alpha * (1 - (c / a))) + (c / a) ;
+      tanpsi2 = talpha * tanphi2 ;
+      psi2 = atg tanpsi2 ;
+      cospsi2 = cos psi2 ;
+      sinpsi2 = sin psi2 ;
+   finsi ;
+*
+      cospsi3 = cos psi3 ;
+      sinpsi3 = sin psi3 ;
+      tanpsi3 = sinpsi3 / cospsi3 ;
+      tanphi3 = a * tanpsi3 / c ;
+      phik1  = atg tanphi3 ;
+      phik2  = psi3 ;
+      phi3 = (beta * phik2) + ((1 - beta) * phik1) ;
+*      phi3    = atg tanphi3 ;
+      si (phi3 < 0.) ;
+         phi3 = 180. + phi3 ;
+      finsi ;
+      cosphi3 = cos phi3 ;
+      sinphi3 = sin phi3 ;
+      tanphi3 = sinphi3 / cosphi3 ;
+      talpha = (alpha * (1 - (c / a))) + (c / a) ;
+      tanpsi3 = talpha * tanphi3 ;
+      psi3 = atg tanpsi3 ;
+      cospsi3 = cos psi3 ;
+      sinpsi3 = sin psi3 ;
+*
+*
+   xcour1 = c * cosphi1 ;
+   ycour1 = a * sinphi1 ;
+   zcour1 = 0. ;
+   pcour1 = xcour1 ycour1 zcour1 ;
+*
+   xcour2 = c * cosphi2 ;
+   ycour2 = a * sinphi2 ;
+   zcour2 = 0. ;
+   pcour2 = xcour2 ycour2 zcour2 ;
+*
+   xcour3 = c * cosphi3 ;
+   ycour3 = a * sinphi3 ;
+   zcour3 = 0. ;
+   pcour3 = xcour3 ycour3 zcour3 ;
+*
+   pcourmi = milieu pcour1 pcour2 ;
+   pcourmiz = pcourmi plus (0 0 1) ;
+*
+*
+   pcourq11 = q1 moins ox ;
+   depl pcourq11 tour psi1 o (0. 0. 1.) ;
+   depl pcourq11 plus pcour1 ;
+*
+   pcourq12 = q1 moins ox ;
+   depl pcourq12 tour psi2 o (0. 0. 1.) ;
+   depl pcourq12 plus pcour2 ;
+*
+   pcourq1 = milieu pcourq11 pcourq12 ;
+*
+   hyp = distance pcourmi pcourq1 ;
+   dx = (coor 1 pcourq1) - (coor 1 pcourmi) ;
+   dy = (coor 2 pcourq1) - (coor 2 pcourmi) ;
+   sina = (dy / hyp) ;
+   cosa = (dx / hyp) ;
+*
+   vproj = (-1 * sina) cosa 0 ;
+   depl pcour3 proj vproj plan pcourmi pcourmiz pcourq1 ;
+*
+   padep = boudin poin plan pcourmi pcourmiz pcourq1 (c / 1.E4) ;
+*
+    dvect = distance pcour3 pcourmi ;
+    vect = ((dvect * cosa) (dvect * sina) 0) ;
+*
+   depl padep plus vect ;
+*
+fin bouc1 ;
+*
+finsi ;
+*
+* ===========================================================
+*          RECUPERATION DE LA LEVRE DE LA FISSURE
+* -----------------------------------------------------------
+*
+*  Surface interieure dans le plan z=constante
+*  --------------------------------------------
+*
+z_p2 = coor 3 p2 ;
+z_p4b = coor 3 p4b ;
+dz_p2p4b = z_p2 - z_p4b ;
+crit = dz_p2p4b / 10. ;
+sineps = (sin eps) ;
+*
+ si (ega ndt 1) ;
+    p7 = p3 ;
+    plinf_c = (vint et mtran21) poin plan p7cour p7 (xp7cour 0 zp7)
+              crit ;
+ sinon ;
+    p7 = (c - ((1 + rc1 + rc2 + rc3) * rc0 * coseps)) 0.
+         (-1 * (1 + rc1 + rc2 + rc3) * rc0 * sineps) ;
+    plinf_c = (vint et mtran21 et mtran31) poin plan p7cour p7
+              (xp7cour 0 zp7) crit ;
+ finsi ;
+*
+*
+vtot_env = enve vtot ;
+*
+*TRAC vtot_env cach ;
+*
+levreinf = vtot_env elem appuye strictement plinf_c ;
+*
+levreinf = levreinf et linf_b ;
+*
+levreinf = levreinf orienter direction (0 0 1) ;
+*
+si (flag_eps ega 0) ;
+   depl levreinf proj (0 0 1) plan (0 0 0) (1 0 0) (0 1 0) ;
+finsi ;
+*
+* =============================================================
+*
+*  Creation du volume complementaire MI1 pour l obtention de la
+*  hauteur ho
+*  ------------------------------------------------------------
+*
+hh = -1 * (nd * rc0) ;
+*
+si ((hh + ho) < 0) ;
+  mess '=============================================================' ;
+  mess 'ATTENTION !!!  La hauteur du bloc est trop faible par rapport' ;
+  mess '               aux parametres rc0,rc1,rc2,rc3                ' ;
+  mess '               --- REDUISEZ CES PARAMETRES ---               ' ;
+  mess '=============================================================' ;
+finsi ;
+*
+   psi1 = vint poin plan (0 0 hh) (0 1 hh) (1 0 hh) (c / 1.E4) ;
+   si1 = (enve vint) elem appuye strictement psi1 ;
+*
+************ ATTENTION ***************
+*   hh < 0
+*   ep2 < 0
+*   ep3 < 0
+**************************************
+*
+* hh : Altitude du niveau 1
+* ---------------------------
+*
+* ep2 : Altitude du niveau 0
+* ---------------------------
+*
+* ep3 : Altitude du niveau -1
+* ---------------------------
+*
+ral_bloc = 0 ;
+*
+si ((l / (-1. * hh)) < 5.) ;
+   ep2 = (((-1. * l) - hh) / 2.) + hh ;
+   ep3 = -1. * l ;
+sinon ;
+   ral_bloc = 1 ;
+   ep2 = 3. * hh ;
+   ep3 = 5. * hh ;
+finsi ;
+*
+si ((-1. * ep3) > ho) ;
+   ep23 = (ho + hh) / 2. ;
+   ep3 = -1. * ho ;
+   ep2 = ep3 + ep23 ;
+finsi ;
+*
+   mi1 = si1 volu tran 1 (0 0 (ep2 - hh)) ;
+*
+*  Projection de la surface SE1 sur le niveau 0
+*  --------------------------------------------
+se1 = sextsup plus (0 0 hh) ;
+*
+*  Creation de la surface SE0 par deformation elastique
+*  ----------------------------------------------------
+*
+si (nsdt ega 2) ;
+   i1 = sommet71 ;
+   e1 = sommet14 ;
+   p_i1 = changer i1 poi1 ;
+   p_e1 = changer e1 poi1 ;
+sinon ;
+   i1 = sommet72 ;
+   e1 = sommet17 ;
+   p_i1 = changer i1 poi1 ;
+   p_e1 = changer e1 poi1 ;
+finsi ;
+*
+numnod = nbno p_i1 ;
+*
+inod = 0 ;
+*
+repe bouc1 numnod ;
+     inod = inod + 1 ;
+     dep = (p_i1 poin inod) moins (p_e1 poin inod) ;
+     dx = coor 1 dep ;
+     dy = coor 2 dep ;
+     si (inod ega 1) ;
+        ldx = prog dx ;
+        ldy = prog dy ;
+     sinon ;
+        ldx = ldx et (prog dx) ;
+        ldy = ldy et (prog dy) ;
+     finsi ;
+fin bouc1 ;
+*
+se01 = sextsup1 plus (0 0 ep2) ;
+se02 = sextsup2 plus (0 0 ep2) ;
+se03 = sextsup3 plus (0 0 ep2) ;
+se0 = se01 et se02 et se03 ;
+elim se0 crit ;
+*
+e0 = e1 plus (0 0 (ep2 - hh)) ;
+elim se0 e0 crit ;
+*
+lx0 = se0 poin plan (0 0 0) (0 1 0) (0 0 1) crit ;
+*
+lx = se0 poin plan (l 0 0) (l 1 0) (l 0 1) crit ;
+*
+ly0 = se0 poin plan (0 0 0) (1 0 0) (0 0 1) crit ;
+*
+ly = se0 poin plan (0 t 0) (1 t 0) (0 t 1) crit ;
+*
+chdep = manu chpo e0 2 ux ldx uy ldy ;
+*
+mo = modl se0 mecanique elastique coq8 ;
+ma = matr mo youn 1000. nu 0. epai (100. * c) ;
+*
+cl1 = bloq ux uy e0 ;
+*cl2 = bloq ux uz rx ry rz lx ;
+cl2 = bloq depl rota lx ;
+cl3 = bloq ux uz rx ry rz lx0 ;
+cl4 = bloq depl rota ly ;
+cl5 = bloq uy uz rx ry rz ly0 ;
+*
+cl = cl1 et cl2 et cl3 et cl4 et cl5 ;
+*
+ri = (rigi mo ma) et cl;
+*
+secmen = depi cl1 chdep ;
+*
+res = resou ri secmen ;
+*
+forme res ;
+*
+* rectification des cotes courbes de la surface se0
+* -------------------------------------------------
+numel = nbel se0 ;
+iel = 0 ;
+repeter bloc1 numel ;
+   iel = iel + 1 ;
+   elcour = se0 elem iel ;
+   pcour = changer elcour poi1 ;
+   pt1 = pcour poin 1 ;
+   x1 = pt1 coor 1 ;
+   y1 = pt1 coor 2 ;
+   pt2 = pcour poin 2 ;
+   x2 = pt2 coor 1 ;
+   y2 = pt2 coor 2 ;
+   pt3 = pcour poin 3 ;
+   x3 = pt3 coor 1 ;
+   y3 = pt3 coor 2 ;
+   pt4 = pcour poin 4 ;
+   x4 = pt4 coor 1 ;
+   y4 = pt4 coor 2 ;
+   pt5 = pcour poin 5 ;
+   x5 = pt5 coor 1 ;
+   y5 = pt5 coor 2 ;
+   pt6 = pcour poin 6 ;
+   x6 = pt6 coor 1 ;
+   y6 = pt6 coor 2 ;
+   pt7 = pcour poin 7 ;
+   x7 = pt7 coor 1 ;
+   y7 = pt7 coor 2 ;
+   pt8 = pcour poin 8 ;
+   x8 = pt8 coor 1 ;
+   y8 = pt8 coor 2 ;
+   dx2 = (0.5 * (x1 + x3) ) - x2 ;
+   dy2 = (0.5 * (y1 + y3) ) - y2 ;
+   depl pt2 plus (dx2 dy2 0) ;
+   dx4 = (0.5 * (x3 + x5) ) - x4 ;
+   dy4 = (0.5 * (y3 + y5) ) - y4 ;
+   depl pt4 plus (dx4 dy4 0) ;
+   dx6 = (0.5 * (x5 + x7) ) - x6 ;
+   dy6 = (0.5 * (y5 + y7) ) - y6 ;
+   depl pt6 plus (dx6 dy6 0) ;
+   dx8 = (0.5 * (x7 + x1) ) - x8 ;
+   dy8 = (0.5 * (y7 + y1) ) - y8 ;
+   depl pt8 plus (dx8 dy8 0) ;
+fin bloc1 ;
+*
+se0 = se0 coul blan ;
+se1 = se1 coul vert ;
+*
+*  Creation du volume ME1
+*  ----------------------
+*
+me1 = volu 1 se1 se0 ;
+*
+*trac se1 (0 0 1000) ;
+*trac se0 (0 0 1000) ;
+*trac me1 cach oeil ;
+*
+* Creation de la surface elliptique du volume ME1
+* -----------------------------------------------
+*
+lextsup = lfrontex et lfronte1 ;
+lextsup = lextsup plus (0 0 hh) ;
+*
+* tri de la ligne e0 pour sa creation en seg3
+*
+e0 = chan e0 poi1 ;
+*
+i = 0 ;
+tab1 = table ;
+tab2 = table ;
+nbval = nbno e0 ;
+repeter bouc5 nbval ;
+ i = i + 1 ;
+ pcour_c = e0 poin i ;
+ xp = coor 1 pcour_c ;
+ tab1 . i = xp ;
+ tab2 . i = pcour_c ;
+fin bouc5 ;
+tab2 = tri tab1 tab2 ;
+*
+nel = (nbval / 2 ) ;
+*
+i = -1 ;
+repe bouc1 nel ;
+i = i + 2 ;
+si (i ega 1) ;
+le0 = manu seg3 (tab2 . i) (tab2 . (i + 1))
+                (tab2 . (i + 2)) ;
+sinon ;
+l2 = manu seg3 (tab2 . i) (tab2 . (i + 1))
+               (tab2 . (i + 2)) ;
+le0 = le0 et l2 ;
+finsi ;
+*
+fin bouc1 ;
+*
+le0 = inve le0 ;
+spe = lextsup regler 1 le0 ;
+*
+* Creation de la surface elliptique du volume MI1
+* -----------------------------------------------
+*
+lsup = (lfrontin et lfronti1) plus (0 0 hh) ;
+linf = (lfrontin et lfronti1) plus (0 0 ep2) ;
+*
+spi = lsup regler 1 linf ;
+*
+* Creation du volume de la zone prismatique
+* -----------------------------------------
+*
+si (nsdt ega 2) ;
+   volpri = volu 2 spe spi ;
+sinon ;
+   volpri = volu 4 spe spi ;
+finsi ;
+*
+elim volpri (c / 1.E3) ;
+volpri = rege volpri ;
+*
+si (ndt ega 1) ;
+   elim mtran2 volpri (c / 1.E3) ;
+sinon ;
+   elim mtran3 volpri (c / 1.E3) ;
+finsi ;
+*
+elim volpri mi1 (c / 1.E3) ;
+*
+vtot = vtot et me1 et mi1 et volpri ;
+elim vtot (c / 1.E4) ;
+*
+* ======================================================
+* Creation des maillages grilles reguliers
+* ----------------------------------------
+*
+si0 = sintsup plus (0 0 ep2) ;
+*
+* Nombre d'elements sur la droite y=0
+nbel_fro = nbel lfrontin ;
+nbel_lxe = nbel lxei ;
+nbely0 = nbel_fro + nbel_lxe ;
+*
+l_elem = l / nbely0 ;
+*
+p1_n2 = 0 0 0 ;
+p2_n2 = (l_elem * nbel_fro) 0 0 ;
+p3_n2 = (coor 1 p2_n2) (coor 2 p11n3) 0 ;
+p4_n2 = 0 (coor 2 p11n3) 0 ;
+p5_n2 = (coor 1 p2_n2) t 0 ;
+*
+*
+* Pour obtenir un maillage non regulier sur la face arriere
+* faire p5_n2 = p11n2
+*
+p5_n2 = p11n2 ;
+*
+l1_n2 = p3_n2 d nbel_fro p4_n2 ;
+l2_n2 = p4_n2 d 2 p1_n2 ;
+l3_n2 = p1_n2 d nbel_fro p2_n2 ;
+l4_n2 = p2_n2 d 2 p3_n2 ;
+*
+l5_n2 = r1 d 2 p2_n2 ;
+l6_n2 = p11n3 d 2 r1 ;
+l7_n2 = p3_n2 d 2 p11n3 ;
+l8_n2 = p11n3 d 2 r2 ;
+l9_n2 = r2 d 2 p5_n2 ;
+l10_n2 = p5_n2 d 2 p3_n2 ;
+l11_n2 = r3 d nbel_fro p5_n2 ;
+l12_n2 = p4_n2 d 2 r3 ;
+*
+si2_r = l1_n2 l2_n2 l3_n2 l4_n2 dall plan ;
+*
+se21_r = l5_n2 l4_n2 l7_n2 l6_n2 dall plan ;
+se22_r = l10_n2 l7_n2 l8_n2 l9_n2 dall plan ;
+se23_r = l1_n2 l12_n2 l11_n2 l10_n2 dall plan ;
+*
+si0_inf = si2_r plus (0 0 ep3) ;
+*
+se01_inf = se21_r plus (0 0 ep3) ;
+se02_inf = se22_r plus (0 0 ep3) ;
+se03_inf = se23_r plus (0 0 ep3) ;
+*
+vi_inf = volu 1 si0_inf si0 ;
+ve1_inf = volu 1 se01_inf se01 ;
+ve2_inf = volu 1 se02_inf se02 ;
+ve3_inf = volu 1 se03_inf se03 ;
+*
+v_inf = vi_inf et ve1_inf et ve2_inf et ve3_inf ;
+*
+vbas = v_inf et mi1 et me1 et volpri ;
+elim vbas (c / 1.E3) ;
+*
+vtot = vtot et v_inf ;
+*
+*  Creation du volume complementaire pour l obtention de la
+*  largeur to
+*  --------------------------------------------------------
+*
+si (ndt ega 1) ;
+  nd = 1 + rc1 + rc2 ;
+sinon ;
+  nd = 1 + rc1 + rc2 + rc3 ;
+finsi ;
+*
+hh = -1 * (nd * rc0) ;
+*
+si ((rallon ega 1) et (xt neg 0)) ;
+*
+vtot_env = enve vtot ;
+*
+psar_i = vtot poin plan (0 t 0) (1 t 0) (0 t 1) (c / 1.E4) ;
+sar_i = vtot_env elem appuye strictement psar_i ;
+sar_i = sar_i orienter direction (0 1 0) ;
+*
+*s_r3r2b = lxee_ar tran 1 (0 0 hh) tran 1 (0 0 (ep2 - hh))
+*                  tran 1 (0 0 (ep3 - hh)) ;
+*
+r4 = r2 plus (0 (to - t) 0) ;
+r5 = r3 plus (0 (to - t) 0) ;
+*
+lyr2 = r2 d xt r4 ;
+lyr3 = r5 d xt r3 ;
+*
+cont_sup = lxee et lyr2 et lxee_ar et lyr3 ;
+elim cont_sup (c / 1.E4) ;
+*
+s_supar = dall plan lxee lyr2 lxee_ar lyr3 ;
+*
+*
+var_com = s_supar volu tran 1 (0 0 hh)
+                  volu tran 1 (0 0 (ep2 - hh))
+                  volu tran 1 (0 0 (ep3 - ep2)) ;
+*
+*var_com = sar_i volu tran xt (0 (to - t) 0) ;
+*
+    vtot = vtot et var_com ; elim vtot (c / 1.E6) ;
+*
+finsi ;
+*
+nb = nbno vtot ;
+titr 'ns' ns 'nc' nc 'nt' nt 'noeuds' nb
+     'a/c' (a/c) 'a/to' (a/to) ;
+*trac vtot cach oeil ;
+*
+si (xt ega 0) ;
+   rallon = 0 ;
+   to = t ;
+   mess '---------------------------------------------- ' ;
+   mess 'Pas de prolongation du bloc initial en largeur ' ;
+   mess 'Largeur =' t                                     ;
+   mess '---------------------------------------------- ' ;
+finsi ;
+*
+vtot_env = enve vtot ;
+*
+*  Creation du volume complementaire inferieur du bloc initial
+*  pour obtenir h = l quand abs(l/hh) est grand
+*  -----------------------------------------------------------
+si (ral_bloc ega 1) ;
+*
+p_se_inf = vtot poin plan (0 0 ep3) (0 1 ep3)
+                       (1 0 ep3) (c / 1.E4) ;
+*
+se_inf = vtot_env elem appuye strictement p_se_inf ;
+se_inf = se_inf orienter direction (0 0 -1) ;
+*
+* nelh = nombre d'elements dans la hauteur du volume
+nelh = 2 ;
+*
+vral_blo = se_inf volu tran nelh (0 0 (-1. * (l + ep3))) ;
+*
+vtot = vtot et vral_blo ;
+elim vtot (c / 1.E6) ;
+*
+finsi ;
+*
+*
+* =============================================================
+*
+*  Creation du volume complementaire pour l obtention de la
+*  longueur lo
+*  ------------------------------------------------------------
+*
+pslat_i = vtot poin plan r1 r2 (r2 plus (0 0 1)) (c / 1.E4) ;
+slat_i = vtot_env elem appuye strictement pslat_i ;
+*
+si ((lo - l) < 0) ;
+  mess '=============================================================' ;
+  mess 'ATTENTION !!! La longueur du bloc est trop faible par rapport' ;
+  mess '              au grand axe de l"ellipse et/ou aux parametres ' ;
+  mess '              rc0,rc1,rc2,rc3                                ' ;
+  mess '               --- REDUISEZ CES PARAMETRES ---               ' ;
+  mess '=============================================================' ;
+finsi ;
+*
+si (((abs (lo - l)) < (l / 1.E10)) ou (xl ega 0)) ;
+   mess '----------------------------------------------- ' ;
+   mess 'Pas de prolongation du bloc initial en longueur ' ;
+   mess 'Longueur =' l                                     ;
+   mess '----------------------------------------------- ' ;
+   ind_vlat = 0 ;
+        si (ndt ega 1) ;
+           lo = c + (rc0 * (1 + rc1 + (3. * rc2))) ;
+        sinon ;
+           lo = c + (rc0 * (1 + rc1 + rc2 + (3. * rc3))) ;
+        finsi ;
+sinon ;
+*
+   ind_vlat = 1 ;
+*
+* Creation de vlat_com sans derafinement
+* --------------------------------------
+*   vlat_com = slat_i volu tran xl ((lo - l) 0 0) ;
+*
+* Creation de vlat_com avec deraffinement
+* ---------------------------------------
+*
+*
+lytot = (inve lyee1) et lyee2 et lyr2 ;
+nbe_l = nbel lytot ;
+*
+   lytot_t = table ;
+*
+   j = 0 ;
+   lytot_t . j = lytot ;
+*
+   repe bouc1 xl ;
+   j = j + 1 ;
+          nbeli = (entier (nbe_l / (2 * j))) + 1 ;
+*
+     si (nbeli < 3) ;
+         nbeli = 3 ;
+     finsi ;
+*
+     pas = j * (lo - l) / xl ;
+     lytot_t . j = (r1 d nbeli r4) plus (pas 0 0) ;
+*
+        si (nbeli ega (nbel (lytot_t . (j - 1)))) ;
+           scout_j = regler 1 (lytot_t . (j - 1)) (lytot_t . j) ;
+        sinon ;
+           scout_j = cout (lytot_t . (j - 1)) (lytot_t . j) ;
+        finsi ;
+*
+        si (j ega 1) ;
+           scout = lytot cout (lytot_t . j) ;
+        sinon ;
+           scout = scout et scout_j ;
+        finsi ;
+*
+   fin bouc1 ;
+*
+*
+* Generation du volume lateral de deraffinement
+* ---------------------------------------------
+si (ral_bloc ega 0) ;
+*
+*epel = hauteur d'un element exterieur
+epel = (lo - l - ep3) / 3. ;
+*
+sinf_1 = scout proj (0 0 -1) plan
+         (l 0 hh) (l 1. hh) (lo 0 (-1. * epel)) ;
+sinf_2 = scout proj (0 0 -1) plan
+         (l 0 ep2) (l 1. ep2) (lo 0 (-2. * epel)) ;
+sinf_3 = scout proj (0 0 -1) plan
+         (l 0 ep3) (l 1. ep3) (lo 0 (-3. * epel)) ;
+*
+v_proj1 = scout volu 1 sinf_1 ;
+v_proj2 = sinf_1 volu 1 sinf_2 ;
+v_proj3 = sinf_2 volu 1 sinf_3 ;
+*
+v_proj = v_proj1 et v_proj2 et v_proj3 ;
+elim v_proj (c / 1.E4) ;
+v_proj = rege v_proj ;
+*
+sinon ;
+*
+*epel = hauteur d'un element exterieur
+epel = lo / (3. + (flottant nelh)) ;
+*
+sinf_1 = scout proj (0 0 -1) plan
+         (l 0 hh) (l 1. hh) (lo 0 (-1. * epel)) ;
+sinf_2 = scout proj (0 0 -1) plan
+         (l 0 ep2) (l 1. ep2) (lo 0 (-2. * epel)) ;
+sinf_3 = scout proj (0 0 -1) plan
+         (l 0 ep3) (l 1. ep3) (lo 0 (-3. * epel)) ;
+*
+v_proj1 = scout volu 1 sinf_1 ;
+v_proj2 = sinf_1 volu 1 sinf_2 ;
+v_proj3 = sinf_2 volu 1 sinf_3 ;
+*
+v_proj = v_proj1 et v_proj2 et v_proj3 ;
+*
+i = 0 ;
+sinf_la = sinf_3 ;
+repe bouc1 nelh ;
+i = i + 1 ;
+*
+z_pcourg = ep3 - (((l + ep3) / (flottant nelh))
+           * (flottant i)) ;
+z_pcourd = -1. * (epel * (3. + (flottant i))) ;
+*
+sinf_lai = scout proj (0 0 -1) plan
+           (l 0 z_pcourg) (l 1 z_pcourg)
+           (lo 0 z_pcourd) ;
+*
+v_projil = sinf_la volu 1 sinf_lai ;
+*
+v_proj = v_proj et v_projil ;
+*
+sinf_la = sinf_lai ;
+*
+fin bouc1 ;
+*
+elim v_proj (c / 1.E4) ;
+v_proj = rege v_proj ;
+*
+finsi ;
+*
+* Generation du volume inferieure de deraffinement
+* ------------------------------------------------
+nelinf = nbel lxee_ar ;
+*
+* Longeur d'un element inferieur
+  loel = lo / (flottant nelinf) ;
+*
+i = 0 ;
+*
+si (ral_bloc ega 0) ;
+   sinf_ip = sinf_3 ;
+sinon ;
+   sinf_ip = sinf_la ;
+finsi ;
+*
+repe bouc1 (nelinf - 1) ;
+i = i + 1 ;
+*
+x_pcours = (l / (flottant nelinf))
+           * ((flottant nelinf) - (flottant i)) ;
+x_pcouri = (lo / (flottant nelinf))
+           * ((flottant nelinf) - (flottant i)) ;
+*
+si (ral_bloc ega 0) ;
+   sinf_i = sinf_ip proj (-1 0 0) plan
+            (x_pcours 0 ep3) (x_pcours 1 ep3)
+            (x_pcouri 0 (-3. * epel)) ;
+sinon ;
+   sinf_i = sinf_ip proj (-1 0 0) plan
+            (x_pcours 0 (-1. * l)) (x_pcours 1 (-1. * l))
+            (x_pcouri 0 (-1. * (3. + (flottant nelh)) * epel)) ;
+finsi ;
+*
+v_proji = sinf_ip volu 1 sinf_i ;
+*
+si (i ega 1) ;
+   v_projin = v_proji ;
+sinon ;
+   v_projin = v_projin et v_proji ;
+finsi ;
+*
+sinf_ip = sinf_i ;
+fin bouc1 ;
+*
+sinfv = sinf_ip proj (-1 0 0) plan
+        (0 0 0) (0 1 0) (0 0 1) ;
+v_proin = sinf_ip volu 1 sinfv ;
+*
+v_projin = v_projin et v_proin ;
+*
+elim v_projin (c / 1.E4) ;
+v_projin = rege v_projin ;
+*
+* ----------------------------------------------------------------
+*
+vtot = vtot et v_proj et v_projin ;
+*
+elim vtot (c / 1.E6) ;
+*
+finsi ;
+*
+*trac (v_projin et v_proj) cach oeil ;
+nb = nbno vtot ;
+titr 'ns' ns 'nc' nc 'nt' nt 'noeuds' nb
+     'a/c' (a/c) 'a/to' (a/to) ;
+*trac vtot cach oeil ;
+*
+vtot_env = enve vtot ;
+*
+* ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+* recuperation des surfaces (sinf , slat)
+* ---------------------------------------------
+*
+pslat = vtot poin plan (lo 0 0) (lo 1 0) (lo 0 1) (c / 1.E4) ;
+slat = vtot_env elem appuye strictement pslat ;
+slat = slat orienter direction (1 0 0) ;
+*
+l_ral = 4. ;
+* ICI
+nel = 2 ;
+*
+vrallat = slat volu tran nel (((l_ral * c) - lo) 0 0) ;
+vtot = vtot et vrallat ;
+vrallate = enve vrallat ;
+vtot_env = enve vtot ;
+*
+plevsup = vrallat poin plan (0 0 0) (0 1 0) (1 0 0) (c / 1.E4) ;
+levsup = vrallate elem appuye strictement plevsup ;
+levsup = levsup orienter direction (0 0 1) ;
+*
+psinf = vtot poin plan (0 0 (-1 * lo)) (0 1 (-1 * lo))
+                       (1 0 (-1 * lo)) (c / 1.E4) ;
+sinf = vtot_env elem appuye strictement psinf ;
+sinf = sinf orienter direction (0 0 -1) ;
+*
+vralhau = sinf volu tran nel (0 0 (-1. * ((l_ral * c) - lo))) ;
+*
+vmat1 = vtot et vralhau ;
+*
+* ICI CMODI EL 30/10/95
+vmat2 = vmat1 syme plan (0 0 0) (0 1 0) (0 0 1) ;
+*trac oeil cach vmat2 ;
+*
+*CMODI EL 10/01/96
+*vtot = vmat2 ;
+*vtot = vmat1 et vmat2 ;
+vtot = vmat1 ;
+elim vtot (c / 1.E4) ;
+nb = nbno vtot ;
+*
+* recuperation des surfaces (sinf , slat )
+* ---------------------------------------------
+*
+*
+*
+vtot_env = enve vtot ;
+*TRAC oeil cach vtot_env ;
+*CMODI EL 30/10/95*****************************
+*
+* definition de slat_e, sar_e, sinf_e,
+*
+*
+vmat2env = enve vmat2 ;
+*
+* slat_e
+*
+long   =  -1. * ( (l_ral*c) );
+pslat_e = vmat2env poin plan (long 0. 0.)
+                             (long 1. 0.)
+                             (long 0. 1.)  (c / 1.E4) ;
+slat_e  = vmat2env elem appuye strictement pslat_e ;
+slat_e  = slat_e orienter direction (1 0 0) ;
+*titre ' slat_e ' ;
+*trac oeil slat_e ;
+*
+* sar_e
+*
+psar_e = vmat2 poin plan (0 to 0)
+                         (1 to 0)
+                         (0 to 1) (c / 1.E4) ;
+sar_e  = vmat2env elem appuye strictement psar_e ;
+sar_e  = sar_e orienter direction (0 1 0) ;
+*titre 'sar_e' ;
+*trac oeil cach sar_e ;
+*
+* sinf_e
+*
+psinf = vtot poin plan (0 0 (-1 * (l_ral * c)))
+                       (0 1 (-1 * (l_ral * c)))
+                       (1 0 (-1 * (l_ral * c))) (c / 1.E4) ;
+*
+psinf_e = vmat2 poin plan (0 0 (-1 * (l_ral * c)))
+                          (0 1 (-1 * (l_ral * c)))
+                          (1 0 (-1 * (l_ral * c))) (c / 1.E4) ;
+*
+sinf = vtot_env elem appuye strictement psinf ;
+sinf = sinf orienter direction (0 0 -1) ;
+sinf_e = vmat2env elem appuye strictement psinf_e ;
+sinf_e = sinf_e orienter direction (0 0 -1) ;
+*titre ' sinf_e ' ;
+*trac oeil sinf_e ;
+*CMODI EL FIN ********************************************
+*
+*
+vlat_com = v_proj1 ;
+*
+si ((rallon ega 1) et (ind_vlat ega 1)) ;
+ si (ega ndt 1) ;
+    si (ega nsdt 2) ;
+    pssup_s = (vext et mtran24 et var_com et vlat_com) poin plan
+              (0 0 0) (1 0 0) (0 1 0) (c / 1.E4) ;
+    sinon ;
+    pssup_s = (vext et mtran28 et var_com et vlat_com) poin plan
+              (0 0 0) (1 0 0) (0 1 0) (c / 1.E4) ;
+    finsi ;
+ sinon ;
+*
+    si (ega nsdt 2) ;
+    pssup_s = (vext et mtran24 et mtran34 et var_com et vlat_com)
+              poin plan (0 0 0) (1 0 0) (0 1 0) (c / 1.E4) ;
+    sinon ;
+    pssup_s = (vext et mtran28 et mtran38 et var_com et vlat_com)
+              poin plan (0 0 0) (1 0 0) (0 1 0) (c / 1.E4) ;
+    finsi ;
+ finsi ;
+finsi ;
+*
+si ((rallon ega 0) et (ind_vlat ega 0)) ;
+ si (ega ndt 1) ;
+    si (ega nsdt 2) ;
+    pssup_s = (vext et mtran24) poin plan
+              (0 0 0) (1 0 0) (0 1 0) (c / 1.E4) ;
+    sinon ;
+    pssup_s = (vext et mtran28) poin plan
+              (0 0 0) (1 0 0) (0 1 0) (c / 1.E4) ;
+    finsi ;
+ sinon ;
+    si (ega nsdt 2) ;
+    pssup_s = (vext et mtran24 et mtran34 )
+              poin plan (0 0 0) (1 0 0) (0 1 0) (c / 1.E4) ;
+    sinon ;
+    pssup_s = (vext et mtran28 et mtran38 )
+              poin plan (0 0 0) (1 0 0) (0 1 0) (c / 1.E4) ;
+    finsi ;
+ finsi ;
+finsi ;
+*
+si ((rallon ega 1) et (ind_vlat ega 0)) ;
+ si (ega ndt 1) ;
+    si (ega nsdt 2) ;
+    pssup_s = (vext et mtran24 et var_com ) poin plan
+              (0 0 0) (1 0 0) (0 1 0) (c / 1.E4) ;
+    sinon ;
+    pssup_s = (vext et mtran28 et var_com ) poin plan
+              (0 0 0) (1 0 0) (0 1 0) (c / 1.E4) ;
+    finsi ;
+ sinon ;
+    si (ega nsdt 2) ;
+    pssup_s = (vext et mtran24 et mtran34 et var_com )
+              poin plan (0 0 0) (1 0 0) (0 1 0) (c / 1.E4) ;
+    sinon ;
+    pssup_s = (vext et mtran28 et mtran38 et var_com )
+              poin plan (0 0 0) (1 0 0) (0 1 0) (c / 1.E4) ;
+    finsi ;
+ finsi ;
+finsi ;
+*
+si ((rallon ega 0) et (ind_vlat ega 1)) ;
+ si (ega ndt 1) ;
+    si (ega nsdt 2) ;
+    pssup_s = (vext et mtran24 et vlat_com ) poin plan
+              (0 0 0) (1 0 0) (0 1 0) (c / 1.E4) ;
+    sinon ;
+    pssup_s = (vext et mtran28 et vlat_com ) poin plan
+              (0 0 0) (1 0 0) (0 1 0) (c / 1.E4) ;
+    finsi ;
+ sinon ;
+    si (ega nsdt 2) ;
+    pssup_s = (vext et mtran24 et mtran34 et vlat_com )
+              poin plan (0 0 0) (1 0 0) (0 1 0) (c / 1.E4) ;
+    sinon ;
+    pssup_s = (vext et mtran28 et mtran38 et vlat_com )
+              poin plan (0 0 0) (1 0 0) (0 1 0) (c / 1.E4) ;
+    finsi ;
+ finsi ;
+finsi ;
+*
+*
+ssup_s  = vtot_env elem appuye strictement pssup_s ;
+*CMODI EL 30/10/95*****************************
+*
+* definition de ssup_e, sav_e
+*
+*
+*
+* ssup_e
+*
+pssup_e = vmat2env poin plan (0 0 0) (1 0 0) (0 1 0) (c / 1.E4) ;
+ssup_e = vmat2env elem appuye strictement pssup_e ;
+*titre ' ssup_e ' ;
+*trac oeil cach ssup_e ;
+*
+ssup_s = ssup_s et linf_bex ;
+*
+ssup_s = ssup_s et levsup ;
+*CMODI EL 10/01/96******************************
+*ssup_s = ssup_s et (ssup_s syme plan (0 0 0) (0 1 0) (0 0 1)) ;
+*
+ssup_s = ssup_s orienter direction (0 0 1) ;
+*
+*
+psav_s = vtot poin plan (0 0 0) (1 0 0) (0 0 1)
+                        (c / 1.E4) ;
+sav_s = vtot_env elem appuye strictement psav_s ;
+sav_s = sav_s orienter direction (0 -1 0) ;
+*titre ' sav_s ';
+*trac oeil cach  sav_s ;
+*
+* sav_e
+*
+psav_e = vmat2 poin plan (0 0 0) (1 0 0) (0 0 1) (c / 1.E4) ;
+*
+sav_e = vmat2env elem appuye strictement psav_e ;
+sav_e = sav_e orienter direction (0 -1 0) ;
+*titre ' sav_e ' ;
+*trac oeil cach sav_e ;
+*CMODI EL **********************************************
+*
+levreins = levreinf syme plan (0 0 0) (0 1 0) (0 0 1) ;
+*titre ' levreins ';
+*trac oeil cach levreins ;
+*CMODI EL 10/01/96
+*levreinf = levreinf et levreins ;
+levreinf = levreinf orienter direction (0 0 1) ;
+*titre '  levreinf ';
+*trac oeil cach levreinf ;
+*
+lffs = lff syme plan (0 0 0) (0 1 0) (0 0 1) ;
+lffs = inve lffs ;
+*titre ' lffs ' ;
+*trac oeil cach lffs ;
+*CMODI EL 10/01/96
+*lff = lff et lffs ;
+*
+boudins = boudin syme plan (0 0 0) (0 1 0) (0 0 1) ;
+*trac oeil cach boudins ;
+*CMODI EL 10/01/96
+*boudin = boudins et boudin ;
+*
+porig = vtot poin proche (0. 0. 0.) ;
+*
+elim vtot levreinf (c / 1.E4) ;
+elim vtot lff (c / 1.E4) ;
+elim vtot boudin (c / 1.E4) ;
+elim vtot ssup_s (c / 1.E4) ;
+*
+*
+* CMODI EL 30/10/95 rajout de :
+*
+* lffs levreins sav_e boudins ssup_e sinf_e sar_e slat_e
+*
+finproc vtot vmat1 vmat2 lff levreinf sav_s boudin ssup_s porig sinf
+        lffs levreins sav_e boudins ssup_e sinf_e sar_e slat_e ;
+*
+********************************************************
+*          FIN DE LA PROCEDURE PRINCIPALE FISS_3DP
+********************************************************
+*
+* -------------------------------
+* PROCEDURE "SUR-COUCHE" FISS_3DS
+* -------------------------------
+*
+*$$$$ FISS_3DS
+debproc FISS_3DS a*flottant b*flottant
+                 lo*flottant to*flottant ho*flottant
+                 ndiv*entier nc*entier ns*entier
+                 rt*flottant rt2*flottant rt3*flottant
+                 rt4*flottant alpha*flottant nbcour*entier
+                 nlo*entier nla*entier nh*entier ;
+*
+eps = 0.1 ;
+beta = 1. ;
+d3 = 'oui' ;
+*
+si ((nc < 1) ou (nc > 6)) ;
+   saut ligne ;
+   mess '================================================== ' ;
+   mess '                 ATTENTION !!!                     ' ;
+   saut ligne ;
+   mess '  Le nombre de couronnes du "boudin torique"       ' ;
+   mess '  doit etre compris entre 1 et 6                   ' ;
+   mess '  nc =' nc ;
+   saut ligne ;
+   mess '      ------ ON SORT DE LA PROCEDURE -----         ' ;
+   mess '================================================== ' ;
+quit FISS_3DS ;
+finsi ;
+*
+si ((ns < 2) ou (ns > 9)) ;
+   saut ligne ;
+   mess '================================================== ' ;
+   mess '                 ATTENTION !!!                     ' ;
+   saut ligne ;
+   mess '  Le nombre de secteurs du "boudin torique"        ' ;
+   mess '  doit etre compris entre 2 et 9 (sur 90 degres)   ' ;
+   mess '  ns =' ns ;
+   saut ligne ;
+   mess '      ------ ON SORT DE LA PROCEDURE -----         ' ;
+   mess '================================================== ' ;
+quit FISS_3DS ;
+finsi ;
+*
+si ((rc1 < .5) ou (rc1 > 3.)) ;
+   saut ligne ;
+   mess '================================================== ' ;
+   mess '                 ATTENTION !!!                     ' ;
+   saut ligne ;
+   mess ' Le parametre rc1 doit etre compris entre 0,5 et 3 ' ;
+   mess ' rc1 =' rc1 ;
+   saut ligne ;
+   mess '      ------ ON SORT DE LA PROCEDURE -----         ' ;
+   mess '================================================== ' ;
+quit FISS_3DS ;
+finsi ;
+*
+si ((rc2 < .5) ou (rc2 > 5.)) ;
+   saut ligne ;
+   mess '================================================== ' ;
+   mess '                 ATTENTION !!!                     ' ;
+   saut ligne ;
+   mess ' Le parametre rc2 doit etre compris entre 0,5 et 5 ' ;
+   mess ' rc2 =' rc2 ;
+   saut ligne ;
+   mess '      ------ ON SORT DE LA PROCEDURE -----         ' ;
+   mess '================================================== ' ;
+quit FISS_3DS ;
+finsi ;
+*
+si ((rc3 < .5) ou (rc3 > 5.)) ;
+   saut ligne ;
+   mess '================================================== ' ;
+   mess '                 ATTENTION !!!                     ' ;
+   saut ligne ;
+   mess ' Le parametre rc3 doit etre compris entre 0,5 et 5 ' ;
+   mess ' rc3 =' rc3 ;
+   saut ligne ;
+   mess '      ------ ON SORT DE LA PROCEDURE -----         ' ;
+   mess '================================================== ' ;
+quit FISS_3DS ;
+finsi ;
+*
+vtot lff levreinf sar slat sinf sav_s ssup_s slat_s boudin hh
+= FISS_3DP a b lo to ho eps ndiv nc ns rt rt2 rt3 rt4
+           beta alpha nbcour nlo nla nh d3 nsdt ;
+*
+finproc vtot lff levreinf sar slat sinf sav_s ssup_s
+        slat_s boudin hh ;
+opti echo 1;
+*
+* -----------------------------------------
+* FIN DE LA PROCEDURE "SUR-COUCHE" FISS_3DS
+* -----------------------------------------
+*
+******************************************************
+*
+* ----- GEOMETRIE ------
+*
+* Maillage M1
+* -----------
+*
+c = .05 ;
+a = .0125 ;
+lo = 0.15 ;
+to = 0.5 ;
+ho = 0.5 ;
+*lo = 4. * c ;
+*to = a / 0.025 ;
+*lo = 3.5 * c ;
+*lo = 8. * c ;
+*lo = 2. * c ;
+*ho = 5. * a ;
+*ICI CMODI EL 31/10/95 .3 --> 0.6
+*to = a / .6 ;
+*to = a / .1 ;
+*
+*rc0 = 0.001 ;
+*rc0 = 0.00020 ;
+rc0 = 0.0015 ;
+mess 'rc0=' rc0 ;
+*
+rc1 = 1.2 ;
+rc2 = 1.6 ;
+rc3 = 1.2 ;
+*
+* ----- RAFFINEMENT -----
+nc = 2 ;
+ns = 4 ;
+nt = 16 ;
+eps = .1 ;
+*
+alpha = 0.7  ;
+beta = 1. ;
+*
+ndt = 1 ;
+nsdt = 2 ;
+*
+xl = 2 ;
+*xl = 3 ;
+xt = 12 ;
+*xt = 8 ;
+xh = 4 ;
+*
+d3 = 'oui' ;
+*
+*********************************************
+* ON UTILISE LA PROCEDURE PRINCIPALE COMPLETE
+*********************************************
+*
+vtot vmat1 vmat2 lff levreinf sav_s boudin ssup_s porig sinf
+                 lffs levreins sav_e boudins ssup_e sinf_e sar_e
+                 slat_e
+= FISS_3DP c a lo to ho eps nt nc ns rc0 rc1 rc2 rc3
+           beta alpha ndt xl xt xh d3 nsdt ;
+*
+*sort vtot ;
+*
+oeil = -100 -310 200 ;
+oeil1  = -100. 100. 100. ;
+oeilx = -1000. 0. 0. ;
+oeily = 0. -1000. 0. ;
+oeilz = 0. 0. 1000. ;
+oeil = -100 100 -100 ;
+oeil = (100 -100 100) ;
+*
+nb = nbno vmat1 ;
+titr 'ns' ns 'nc' nc 'nt' nt 'noeuds' nb
+     'a/c' (a/c) 'a/to' (a/to) ;
+trac oeil cach  vmat1   ;
+porig0 = 0.  0.  0.  ;
+porig1 = porig0 plus (1. 0. 0.) ;
+porig2 = porig0 plus (0. 1. 0.) ;
+porig3 = porig0 plus (0. 0. 1.) ;
+repr1  = (porig0 d 1 porig1) et
+         (porig0 d 1 porig2) et
+         (porig0 d 1 porig3) ;
+*trac oeil cach  (vmat1 et repr1)  ;
+*trac oeil cach  lff   ;
+*trac oeil cach  levreinf   ;
+*trac oeil cach  sav_s   ;
+*trac oeil cach  boudin   ;
+*trac oeil cach  ssup_s   ;
+*trac oeil cach  sinf   ;
+**trac oeil cach  sar_e ;
+*trac oeil cach  slat_e ;
+*opti donn 5;
+*
+* depl 1 translation de trans suivant y
+*
+r2    = 0.6 ;
+r1    = 0.1 ;
+epscal = 1.E-5 ;
+trans  = 0.1 ;
+oeil2 = -100 100 -100 ;
+depl vmat1 tour -90. porig porig3 ;
+depl vmat1 tour -90. porig porig1 ;
+depl vmat1 plus (trans 0. 0.) ;
+
+*pa = vmat1 poin proch (0.1 0. 0.2);
+*trac oeil cach  (vmat1 et repr1)   ;
+*trac oeil1  cach  (vmat1 et repr1)   ;
+*trac oeil2  cach  (vmat1 et repr1)   ;
+*mess ' il y a ' (nbno vmat1) ' points ' ;
+*opti donn 5;
+*sort vmat1 ;
+*opti sauv format
+*'/home1/eric/edf/aster/mura_9_39/transfo.mgib' ;
+*sauv format vmat1 ;
+*fin ;
+*
+*
+*
+*
+*
+*opti rest format
+*'/home1/eric/edf/aster/mura_9_39/transfo.mgib' ;
+*rest format ;
+*
+*
+*
+r2    = 0.6 ;
+r1    = 0.1 ;
+epscal = 1.E-5 ;
+pirad = 3.141592654 ;
+*
+* definition des constante
+*
+opti elem cu20 ;
+zlong  = 0.2 - (pirad*r1) ;
+mess ' translation = ' zlong ;
+vmat4  = sinf volu 5 tran (0. zlong 0.) ;
+face2  = face 2 vmat4 ;
+*opti donn 5 ;
+vmat = vmat1 et vmat4 ;
+regenerer vmat ;
+*trac oeil cach  (vmat et repr1)   ;
+*trac oeil1  cach  (vmat et repr1)   ;
+*trac oeil2  cach  (vmat et repr1)   ;
+*opti donn 5 ;
+*
+* transformation geometrique
+*
+ch_pt1 = chan poi1 vmat ;
+nbno1  = nbno ch_pt1 ;
+nbno1  = nbno1 + 1 ;
+i      = 0 ;
+k      = 0 ;
+mess ' il y a ' nbno1 ' points ' ;
+repeter bouc1 nbno1 ;
+i  =  i  + 1  ;
+j  = noeud i ;
+x y z = coord j ;
+*mess ' point ' i ' x = ' x ' y = ' y ' z = ' z ;
+*trac oeil cach (ch_pt1 et j ) ;
+si ((abs y) <EG epscal) ;
+k  =  k  +  1 ;
+sinon ;
+tet  = (y*180.)/(pirad*r1) ;
+sintet = sin tet ;
+costet = cos tet ;
+x1   = x - (x*costet)   ;
+y1   = y - (x*sintet)   ;
+z1   = 0. ;
+vec1 = x1 y1 z1 ;
+depla j moins vec1 ;
+finsi ;
+fin bouc1 ;
+mess 'Vous avez ' k ' points dans le plan Y=0' ;
+mess 'Vous avez traite ' i ' points ' ;
+vmat = vmat coul blan ;
+pa = vmat point proch (0.1 0. 0.2) ;
+pb = vmat point proch (-0.1 0. 0.2) ;
+opti donn 5 ;
+oeil = -100 100 -100 ;
+oeil1 = -100 100 100 ;
+oeil2 = 100 100 -100 ;
+porig0 = 0.  0.  0.  ;
+porig1 = porig0 plus (0.2 0. 0.) ;
+porig2 = porig0 plus (0. 0.2 0.) ;
+porig3 = porig0 plus (0. 0. 0.2) ;
+opti elem seg3 ;
+repr1  = (porig0 d 1 porig1) et
+         (porig0 d 1 porig2) et
+         (porig0 d 1 porig3) ;
+trac oeil1 cach ( SSUP_S et SINF) ;
+trac oeil1 cach (vmat et repr1);
+trac oeil2 cach (vmat et repr1);
+trac lff ;
+opti donn 5 ;
+oublier J ;
+oublier PO1 ;
+oublier PI1 ;
+oublier PTSLAT ;
+oublier CH_PT1 ;
+oublier PTSYME3 ;
+oublier PTSYME2;
+oublier PTSYME1 ;
+oublier PTPRES ;
+oublier ENVEVMAT ;
+oublier VMAT4 ;
+oublier PSINF ;
+oublier PTSINF ;
+oublier ENVE23 ;
+oublier VMAT23 ;
+oublier VMAT3 ;
+oublier  PSLAT_E ;
+oublier VMAT2 ;
+oublier SAV_E ;
+oublier SSUP_E;
+oublier SINF_E ;
+oublier SAR_E ;
+oublier SLAT_E ;
+sort vmat ;
+opti sauv format
+'/home/D24752/data/ast_dev/17365/sslv311a/sslv311a.mgib' ;
+sauv format vmat ;
+fin ;

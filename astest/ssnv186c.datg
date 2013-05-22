@@ -1,0 +1,70 @@
+opti dime 3  elem pri6 ;
+dens 2 ;
+
+*----------------------------------------
+*DONNEES
+*----------------------------------------
+* dimensions des cotés
+LX = 5;
+LY = 20;
+LZ = 20;
+
+* nombre d'éléments
+NX = 1;
+NY = LY;
+NZ = LZ; 
+
+*---------------------------------------------
+*construction surface laterale
+*---------------------------------------------
+
+p1 = 0.  LY  0.;
+p2 = 0.  LY  LZ;
+p3 = 0.  0.  LZ;
+p4 = 0.  0.  0.;
+
+lig1 = droit p1 p2 NZ;
+lig2 = droit p2 p3 NY;
+lig3 = droit p3 p4 NZ;
+lig4 = droit p4 p1 NY;
+
+opti elem tri3;
+
+SURFLAT = DALL  lig1 lig2 lig3 lig4 'PLAN' ;
+TITR surface laterale;
+trac SURFLAT;
+
+
+p5 = LX  0. 0.;
+
+*---------------------------------------------
+*extrusion
+*---------------------------------------------
+opti elem PRI6 ; 
+vol = SURFLAT volu  'TRAN' p5 NX;
+
+trac cach vol;
+
+SURFINF = (lig4 TRAN p5 NX) coul turq;
+SURFSUP = (lig2 TRAN p5 NX) coul vert;
+
+OUBLIER p1;
+OUBLIER p2;
+OUBLIER p3;
+OUBLIER p4;
+OUBLIER p5;
+OUBLIER lig1;
+OUBLIER lig2;
+OUBLIER lig3;
+OUBLIER lig4;
+OUBLIER SURFLAT;
+
+MAILLE = vol et SURFINF et SURFSUP;
+elim MAILLE 1E-6;
+TITR maillage  complet;
+trac cach MAILLE;
+                 
+opti sauv format  
+'/home/geniaut/ast_dev/RESTIT/test/ssnv186d.mgib' ;
+sauv format maille ;
+fin ;

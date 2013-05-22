@@ -1,0 +1,53 @@
+
+  OPTI DIME 3 ELEM CUB8 ;
+
+  a  =  0.01   ;
+  ma = -0.01   ;
+  da =  0.02   ;
+  mda= -0.02   ;
+  L  =  0.20   ;
+  Uo =  0.002 ;
+  critere = 1e-4 ;
+  
+  p11 = mda mda 0 ;
+  p12 = da  mda 0 ;
+  p13 = da  da  0 ;
+  p14 = mda da  0 ;
+  
+  p21 = ma ma Uo ;
+  p22 = a ma Uo ;
+  p23 = a a Uo ;
+  p24 = ma a Uo ;
+  
+  p31 = ma ma ( Uo + L ) ;
+  p32 = a ma ( Uo + L ) ;
+  p33 = a a ( Uo + L ) ;
+  p34 = ma a ( Uo + L ) ;
+  
+  L1112 = DROIT p11 p12 2 ;
+  L1413 = DROIT p14 p13 2 ;
+
+  L2122 = DROIT p21 p22 1 ;
+  L2423 = DROIT p24 p23 1 ;
+   
+  Ssol = REGL L1112 2 L1413 ;
+  
+  faceinf = REGL L2122 1 L2423 ;
+  facesup = faceinf PLUS (0. 0. L ) ;
+  
+  Poutre = VOLU faceinf facesup DINI a DFIN a ;
+  Vsol   = VOLU Ssol (Ssol MOINS (0. 0. a.)) 
+  DINI a DFIN a ;
+  trac (Poutre et Vsol) ;
+    
+
+  ELIM ( Poutre et  faceinf et 
+         facesup et Ssol et Vsol et p21
+          et p22 et p23 et P24 et p31 et p32 et p33 et p34) critere ;
+         
+
+  OPTI SAUV FORM 'sdnv100i.mgib' ;
+  SAUV FORM ;
+  
+  FIN ;
+  

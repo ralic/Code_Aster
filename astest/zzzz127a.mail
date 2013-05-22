@@ -1,0 +1,16 @@
+COOR_2D
+A    0.0    0.0
+D    0.0   10.0
+B   10.0    0.0
+C   10.0   10.0
+E   20.0    0.0
+F   20.0   10.0
+FINSF
+SEG2
+S1 B E
+FINSF
+QUAD4
+Q1 A B C D
+Q2 B E F C
+FINSF
+FIN

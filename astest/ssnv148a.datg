@@ -1,0 +1,51 @@
+* Cylindre (L = 30 mm, R = 5 mm) 3D
+*--------------------------------------------------------------------                                        *
+OPTION DIME 3 ELEM CU20;                           
+oeil = 100. -100. 100. ;
+* Dimensions Totales
+L = 407 ;
+R = 68 ;
+L = L / 2 ;
+* Nombre d'éléments suivant ux
+Nx = 4 ;
+* Nombre d'éléments suivant uy dans la hauteur
+Ny1 = 8 ;
+* Nombre de section pour le cylindre
+Nr =8 ;
+*
+P1 = 0. 0. 0.;
+P2 = R 0. 0.;
+P5 = 0. L 0.;
+P6 = R L 0.;
+PLo = P5;
+Lx = P1 Nx DROITE P2 ;
+Lx = Lx coul bleu ;
+Ly = P1 Ny1 DROITE P5 ;
+Ly = Ly coul Rouge ;
+Lcharge = P5 Nx DROITE P6 ;
+Lcharge = Lcharge coul vert ;
+L26 = P2 Ny1 DROITE P6 ;
+MESH = Ly REGLE Nx L26 ;
+MESH = MESH coul blanc ;
+CYLINDRE= mesh VOLU ROTA Nr 360. P1 P5;
+*
+ELIM 0.001 CYLINDRE;
+CYL = rege CYLINDRE;
+CYLINDRE = CYL;
+ELIM 0.001 CYLINDRE;
+MESS 'nombre de mailles de la surface MESH :'(NBEL CYLINDRE);
+MESS 'nombre de noeuds de la surface MESH  :'(NBNO CYLINDRE);
+*
+TITRE 'Cylindre' ;
+TRAC oeil cach  CYLINDRE;
+
+envol = ENVE CYLINDRE;
+nuage = CYLINDRE POIN PLAN P5 P6 (0 L R) 0.001;
+ssup = envol ELEM APPU STRICT nuage;
+nuage = CYLINDRE POIN PLAN P1 P2 (0 0 R) 0.001;
+sinf = envol ELEM APPU STRICT nuage;
+trac ( sinf et ssup ) ;
+OUBLIER nuage;
+opti sauv form 'ssnv148.mgib';
+sauv form Cylindre sinf ssup P5;
+FIN ; 

@@ -6,5 +6,4 @@ P mpi_nbnoeud 1
 P testlist C
 
 F comm ssnv199a.comm D 1
-F mail ssnv199a.mail D 20
 F msh ssnv199a.msh D 19

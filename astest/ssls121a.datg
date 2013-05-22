@@ -1,0 +1,49 @@
+OPTI DIME 3 ELEM QUA4 ;
+
+
+L=10.;
+
+ALPHA=-48.5;
+
+CL = COS(ALPHA) ;
+SL=SIN(ALPHA) ;
+
+XA=0.4 ;
+YA=0.5 ;
+ZA=0.25 ;
+
+A = XA YA ZA ;
+B = (XA+L) YA ZA ;
+C = (XA+L) YA (ZA+L) ;
+D = XA YA (ZA+L) ;
+
+NEL = 6;
+*NEL = 12;
+
+COTE_AB = DROIT NEL A B ;
+COTE_BC = DROIT NEL B C ;
+COTE_CD = DROIT NEL C D ;
+COTE_DA = DROIT NEL D A ;
+
+ TOUT_ELT = DALLER PLAN COTE_AB  COTE_BC  COTE_CD  COTE_DA ;
+
+APRIM = XA (YA+L) ZA;
+TOUT_ELT COTE_AB  COTE_BC  COTE_CD  COTE_DA  = 
+TOUT_ELT COTE_AB  COTE_BC  COTE_CD  COTE_DA  
+TOUR ALPHA  A APRIM ;
+
+ELIM 0.001 (TOUT_ELT et COTE_AB et COTE_BC et COTE_CD et COTE_DA ); 
+
+
+ opti sauv format 'ssls121a.mgib' ;
+ 
+ SAUV FORMAT TOUT_ELT ;
+ 
+ TRAC (0. -100. 0.) TOUT_ELT ;
+ 
+ list (noeud 1);
+ list (noeud 37);
+ list (noeud 48);
+ list (noeud 49);
+ 
+ 

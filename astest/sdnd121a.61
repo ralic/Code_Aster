@@ -1,0 +1,54 @@
+def DEP ( t , t0 , Om0 , Om , Cr , Fr , F0 , D0 , V0 ):
+
+# Solution analytique de l'equation differentielle
+# x''[t] + Cr * x'[t] + Om0**2 * x[t] == Fr * Sin[Om*(t+t0)] + F0
+# avec conditions initiales x[0] == D0 , x'[0] == V0
+
+# Dp est le deplacement (<=> x)
+# Vp est la vitesse (<=> x')
+# Ap est l'acceleration (<=> x'')
+
+
+	DDa = [0.]*3
+
+	Ci = cmath.sqrt(Cr**2 - 4*Om0**2)
+	expCit = cmath.exp(Ci*t)
+	expCrCit = cmath.exp((1./2)*(Cr + Ci)*t)
+
+	Dp = ((Cr**2*Om**2 + (Om**2 - Om0**2)**2)* ((-(1 + expCit - \
+2*expCrCit))*F0*Ci - Cr*(-1 + expCit)*(F0 - D0*Om0**2) +Om0**2* \
+(D0*(1 + expCit)*Ci + 2*(-1 + expCit)*V0)) + Fr*Om*Om0**2*(Cr**2* \
+(-1 + expCit) + 2*(-1 + expCit)*(Om - Om0)*(Om + Om0) + Cr*(1 + expCit) \
+*Ci)*cos(Om*t0) - 2*Cr*expCrCit*Fr*Om*Om0**2* Ci*cos(Om*(t + t0)) + \
+Fr*Om0**2*(((-(1 + expCit))*Ci*(-Om**2 + Om0**2) - Cr*(-1 + expCit)* \
+(Om**2 + Om0**2))*sin(Om*t0) + 2*expCrCit* Ci*(-Om**2 + Om0**2)* \
+sin(Om*(t + t0))))/expCrCit/(2*Om0**2* Ci*(Cr**2*Om**2 + \
+(Om**2 - Om0**2)**2))
+  
+	Vp = ((-(Cr**2*Om**2 + (Om**2 - Om0**2)**2))*(2*F0 - 2*D0*Om0**2 - \
+Cr*V0 - Ci*V0 - expCit*Ci*V0 + expCit*(-2*F0 + 2*D0*Om0**2 + Cr*V0)) + \
+Fr*Om*((-(1 + expCit))*Ci* (-Om**2 + Om0**2) - Cr*(-1 + expCit)* \
+(Om**2 + Om0**2))*cos(Om*t0) + 2*expCrCit*Fr*Om*Ci*(-Om**2 + Om0**2)* \
+cos(Om*(t + t0)) + Fr*(((-Cr)*Om**2*Ci - Cr*expCit*Om**2*Ci + \
+(-1 + expCit)*(Cr**2*Om**2 - 2*Om**2*Om0**2 + 2*Om0**4))*sin(Om*t0) + \
+2*Cr*expCrCit*Om**2*Ci*sin(Om*(t + t0))))/ expCrCit/ \
+(2*Ci*(Cr**2*Om**2 + (Om**2 - Om0**2)**2))
+
+   
+	Ap = ((-(1 + expCit))*Ci*(Cr**2*Om**2 + (Om**2 - Om0**2)**2)* \
+(-F0 + D0*Om0**2 + Cr*V0) + (-1 + expCit)*(Cr**2*Om**2 + (Om**2 -  \
+Om0**2)**2)* ((-Cr)*F0 + Cr*D0*Om0**2 + Cr**2*V0 - 2*Om0**2*V0) + \
+Fr*Om*(((-Cr)*Om**2*Ci - Cr*expCit*Om**2*Ci + (-1 + expCit)* \
+(Cr**2*Om**2 - 2*Om**2*Om0**2 + 2*Om0**4))*cos(Om*t0) + \
+2*Cr*expCrCit*Om**2* Ci*cos(Om*(t + t0))) + Fr*((-Cr**3)*(-1 + expCit) \
+*Om**2 + Cr**2*(1 + expCit)*Om**2*Ci - Cr*(-1 + expCit)*Om0**2* \
+(-3*Om**2 + Om0**2) + (1 + expCit)*Om0**2*Ci*(-Om**2 + Om0**2))* \
+sin(Om*t0) - 2*expCrCit*Fr*Om**2*Ci*(-Om**2 + Om0**2)* \
+sin(Om*(t + t0)))/ expCrCit/(2*Ci*(Cr**2*Om**2 + (Om**2 - Om0**2)**2))
+
+
+	DDa[0] = Dp.real
+	DDa[1] = Vp.real
+	DDa[2] = Ap.real
+
+	return DDa

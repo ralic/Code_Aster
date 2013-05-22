@@ -1,0 +1,33 @@
+TITRE
+%  MAILLAGE 2D
+FINSF
+%
+COOR_2D
+N1        1.00  0.00
+N2        2.00  2.00
+N3        3.00  2.85
+N4        4.00  5.71
+N5        1.0   3.0
+N6        2.0   3.5
+FINSF
+%
+POI1
+M1  N1
+M2  N2
+M3  N3
+M4  N4
+FINSF
+SEG2
+M5  N5 N6
+FINSF
+%
+GROUP_MA
+   DPOI1
+M1 M2 M3 M4
+FINSF
+GROUP_MA
+   DSEG
+M5
+FINSF
+FIN
+

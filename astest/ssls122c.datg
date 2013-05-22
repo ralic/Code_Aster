@@ -1,0 +1,78 @@
+* CAS-TEST excentrement deslaques
+* Calcul d'une plaque en flexion 3 points
+*
+* Description du maillage
+*  La plaque est composée de deux parties (P1,P2)
+*
+*         F       H         E                  D
+*        /-----------------/------------------/
+*       /                 /                  /   
+*      /       P2        /        P1        /
+*     /                 /                  /
+*    /-----------------/------------------/
+*   A        G        B                  C
+*
+opti dime 2 ;
+opti elem TRI3 ;
+*
+* Caracteristiques de la geometrie
+LONG = 10.;
+LARG =  1.;
+*
+* Discretisation
+* N1 dans le sens longitudinal (AB)
+* N2 dans le sens transversal  (AF)
+N1   =  12;
+N2   =   1;
+N3   =   0;
+
+* Definition de la plaque
+A =       0.      0.     ;
+B =  (LONG/2)     0.     ;
+C =  (LONG)       0.     ;
+D =  (LONG)       LARG   ;
+E =  (LONG/2)     LARG   ;
+F =       0.      LARG   ;
+G =  (LONG/4)     0.     ;
+H =  (LONG/4)     LARG   ;
+
+AG = droit (N1/4) A G ;
+GB = droit (N1/4) G B ;
+BC = droit (N1/2) B C ;
+CD = droit  N2    C D ;
+DE = droit (N1/2) D E ;
+EH = droit (N1/4) E H ;
+HF = droit (N1/4) H F;
+FA = droit  N2    F A ;
+BE = droit  N2    B E ;
+GH = droit  N2    G H ;
+
+PLAQ_P2a    = daller AG GH HF FA plan ;
+PLAQ_P2a    = coul vert PLAQ_P2a;
+PLAQ_P2b    = daller BE EH GH GB plan ;
+PLAQ_P2b    = coul vert PLAQ_P2b;
+
+PLAQ_P2 = ELIM 0.01 (PLAQ_P2a et PLAQ_P2b);
+
+PLAQ_P1  = daller BC CD DE BE plan ;
+PLAQ_P1  = coul rouge PLAQ_P1;
+
+OUBLIER AB;
+OUBLIER BC;
+OUBLIER DE;
+OUBLIER EF;
+OUBLIER AG; 
+OUBLIER HF;
+OUBLIER GB;
+OUBLIER EH;
+OUBLIER GH;
+OUBLIER PLAQ_P2a;
+OUBLIER PLAQ_P2b;
+
+PLAQUE = ELIM 0.01 (PLAQ_P1 et PLAQ_P2 et FA et CD et BE);
+
+trace PLAQUE;
+
+OPTI SAUV FORM 'plaq_DST_T3.mgib';
+sauv form (plaque ) ; 
+fin;

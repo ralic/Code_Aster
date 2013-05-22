@@ -1,0 +1,49 @@
+*
+* --- maillage 3D -----------------
+*
+opti dime 3 elem seg2 ;
+opti sauv form 'ssnv129a.mgib' ; 
+
+nb_no = 2*5;
+
+A1 =   0.0  -2.5  0.0 ;
+B1 =  10.0  -2.5  0.0 ;
+C1 =  10.0   2.5  0.0 ;
+D1 =   0.0   2.5  0.0 ;
+
+DR1  = droite nb_no A1 B1;
+DR2  = droite nb_no B1 C1;
+DR3  = droite nb_no C1 D1;
+DR4  = droite nb_no D1 A1;
+
+opti elem qua4 ;
+
+Q1 = daller DR1 DR2 DR3 DR4 plan;
+cente1 = Q1 point proc (5.  0.  0.);
+
+opti elem seg2 ;
+
+A3 =   0.0  -2.5  0.0 ;
+B3 =  10.0  -2.5  0.0 ;
+C3 =  10.0   2.5  0.0 ;
+D3 =   0.0   2.5  0.0 ;
+cente2 = 5.  0.  0.;
+
+DR21  = droite nb_no B3 A3;
+DR22  = droite nb_no C3 B3;
+DR23  = droite nb_no D3 C3;
+DR24  = droite nb_no A3 D3;
+
+opti elem qua4 ;
+
+Q21 = daller DR21 DR24 DR23 DR22 plan;
+cente2 = Q21 point proc (5.  0.  0.);
+
+mail = (Q1 et Q21);
+
+sauv form mail ;
+
+trac (Q1 et Q21);
+
+fin;
+

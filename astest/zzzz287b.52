@@ -1,0 +1,11 @@
+#DEBUT_TABLE
+#TITRE DELTA_A POUR LE 1ER FOND DE LA 2EME FISSURE
+  FISSURE     NUME_FOND   NUM_PT   ABSC_CURV    DELTA_A   
+     K8        I           I         R         R
+     FISS2        1           1       0.0         10. 
+     FISS2        1           2       0.5          5.
+     FISS2        1           3       1.0          3. 
+     FISS2        2           1       0.0        100. 
+     FISS2        2           2       5.0         50.
+     FISS2        2           3       10.         30.
+#FIN_TABLE

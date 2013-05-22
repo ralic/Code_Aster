@@ -1,0 +1,121 @@
+# -*- coding: iso-8859-1 -*-
+
+from geompy import *
+from smesh import *
+
+import math
+
+
+#===================================================
+#                  PARAMETRES
+#                  ----------
+#===================================================
+# RC rayon de courbure du coude (m)
+# L  longueur des tuyaux droits (m)
+
+Rc = 0.6;
+L = 3;
+Rac2sur2 = math.sqrt(2)/2
+
+
+#===================================================
+#                  GEOMETRIE
+#                  ---------
+#===================================================
+
+P1 = MakeVertex(0,0,0);
+P2 = MakeVertex(0,L,0);
+P3 = MakeVertex(Rc,L+Rc,0);
+P4 = MakeVertex(Rc+L,L+Rc,0);
+P5 = MakeVertex(Rc*(1-Rac2sur2),L+Rc*Rac2sur2,0);
+
+edge1 = MakeLineTwoPnt(P1,P2);
+edge2 = MakeLineTwoPnt(P3,P4);
+arc1 = MakeArc(P2, P5, P3);
+
+
+# Création de la géométrie générale
+#------------------------------------
+GeoCoude = MakeWire([edge1,arc1,edge2])
+
+# Publication dans l'étude
+#---------------------------
+id_GeoCoude=addToStudy( GeoCoude, "GeoCoude" )
+
+
+# Création des groupes
+#---------------------------
+# On crée des groupes à partir des entitées de construction
+
+
+BASE = GetSame(GeoCoude,P1)  
+addToStudyInFather(GeoCoude,BASE,"BASE")
+
+EFOND = GetSame(GeoCoude,P4)  
+addToStudyInFather(GeoCoude,EFOND,"EFOND")
+
+TUY1 = GetSame(GeoCoude,edge1)  
+addToStudyInFather(GeoCoude,TUY1,"TUY1")
+
+TUY2 = GetSame(GeoCoude,edge2)  
+addToStudyInFather(GeoCoude,TUY2,"TUY2")
+
+COUDE = GetSame(GeoCoude,arc1)  
+addToStudyInFather(GeoCoude,COUDE,"COUDE")
+
+TUYAU = CreateGroup(GeoCoude, ShapeType["EDGE"])
+AddObject(TUYAU, GetSubShapeID(GeoCoude,TUY1))
+AddObject(TUYAU, GetSubShapeID(GeoCoude,TUY2))
+AddObject(TUYAU, GetSubShapeID(GeoCoude,COUDE))
+addToStudyInFather( GeoCoude, TUYAU, "TUYAU" )
+
+
+#===================================================
+#                  MAILLAGE
+#                  --------
+#===================================================
+
+maillageCoude = Mesh(GeoCoude, "MeshCoude")
+
+# Algorithmes et hypotheses globales
+# ----------------------------------
+
+# 1D global
+nbSegments = 5
+algo = maillageCoude.Segment()
+algo.NumberOfSegments(nbSegments)
+
+# Calcul
+# ------
+maillageCoude.Compute()
+
+
+# Création des groupes du maillage
+#---------------------------------
+maillageCoude.Group(BASE, "BASE" )
+maillageCoude.Group(EFOND, "EFOND" )
+maillageCoude.Group(TUY1, "TUY1" )
+maillageCoude.Group(TUY2, "TUY2" )
+maillageCoude.Group(COUDE, "COUDE" )
+maillageCoude.Group(TUYAU, "TUYAU" )
+
+
+# Export dans un fichier au format MED
+#--------------------------------------
+## On peut sauver dans le dossier courant :
+#import os
+#Repertoire=os.getcwd()
+##ou bien en spécifier un
+#Repertoire='MonRepertoire'
+#maillageCoude.ExportToMED(Repertoire+"forma01d.mmed",SMESH.MED_V2_2)
+
+
+# Mise à jour de l'arbre
+#---------------------------
+# Si on a une interface graphique...
+if salome.sg.hasDesktop():
+   gg = salome.ImportComponentGUI("GEOM")
+   gg.createAndDisplayFitAllGO(id_GeoCoude)
+   salome.sg.updateObjBrowser(1)
+
+

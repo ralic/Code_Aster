@@ -1,0 +1,61 @@
+opti dime 3  elem cub8 ;
+
+dens 10 ;
+
+*----------------------------------------
+*DONNEES
+*----------------------------------------
+* dimensions des cotés
+LX = 1;
+LY = 1;
+LZ = 1;
+
+* nombre d'éléments
+NX = 40;
+NY = 5;
+NZ = 40; 
+
+*---------------------------------------------
+*construction des surfaces dans le plan inférieur
+*---------------------------------------------
+
+p1 = LX   0.  0.;
+p2 = LX  LY   0.;
+p3 = 0.  LY   0.;
+p4 = 0.  0.  0.;
+
+lig1 = droit p1 p2 NY;
+lig2 = droit p2 p3 NX;
+lig3 = droit p3 p4 NY;
+lig4 = droit p4 p1 NX;
+
+
+M_BAS= DALL  lig1 lig2 lig3 lig4 'PLAN';
+
+p5 = 0.  0. LZ.;
+
+*---------------------------------------------
+*extrusion
+*---------------------------------------------
+
+M_VOL = M_BAS volu 'TRAN' p5 NZ;
+M_HAUT = FACE 2  M_VOL ;
+M_GAU = lig4 TRAN p5 NZ;
+M_DRO = lig2 TRAN p5 NZ;
+
+MAILLE = M_VOL ET M_GAU ET M_DRO et p5;
+
+elim MAILLE 1E-6;
+
+OUBL  P1    ;     
+OUBL  P2    ;     
+OUBL  P3    ; 
+OUBL  LIG1  ; 
+OUBL  LIG2  ; 
+OUBL  LIG3  ; 
+OUBL  LIG4  ; 
+
+opti sauv format 
+'/local00/geniaut/test.mgib';
+sauv format MAILLE;
+fin ;

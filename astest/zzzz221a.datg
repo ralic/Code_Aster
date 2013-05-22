@@ -1,0 +1,102 @@
+********************************************************************************
+* Etude RETRAIT/SECHAGE BETON	/ SEPTEN/DS - B. MASSON Aout 2006		
+* 	
+* cas simple en 2D: 2 levees epaisseur differente
+* modele axisymetrique
+********************************************************************************
+********************************************************************************
+*
+OPTI DIME 2 ELEM QUA4 ;
+
+R = 21.9 ;
+H_L1 = 2. ;
+H_L2 = 2. ;
+EP_G = 0.6 ;
+EP_E = 1.3 ;
+
+di = 0.04 ;
+df = 0.2 ;
+
+P00 = (R-EP_G) 0. ;
+P01 = R 0. ;
+P02 = (R+EP_E) 0. ;
+P0_01 = (R-(EP_G/2)) 0. ;
+P0_12 = (R+(EP_E/2)) 0. ;
+
+P10 = (R-EP_G) H_L1 ;
+P11 = R H_L1 ;
+P12 = (R+EP_E) H_L1 ;
+
+P21 = R (H_L1+H_L2) ;
+P22 = (R+EP_E) (H_L1+H_L2) ;
+
+P1_SYM1 = (R-EP_G) (H_L1/2) ;
+P2_SYM1 = (R+EP_E) (H_L1/2) ;
+VEC_L1 = 0. (H_L1/2) ;
+
+D01 = DROIT P00 P0_01 DINI di DFIN df ;
+D02 = DROIT P0_01 P01 DINI df DFIN di ;
+D03 = DROIT P01 P0_12 DINI di DFIN df ;
+D04 = DROIT P0_12 P02 DINI df DFIN di ;
+
+L1_INF = (D01 et D02 et D03 et D04) ;
+LEV = L1_INF TRAN VEC_L1 DINI di DFIN df ;
+LEVE = LEV SYME DROIT P1_SYM1 P2_SYM1 ;
+LEVEE_1 = LEV et LEVE ;
+
+****** identification des bords levee 1 *******
+L1_INF = L1_INF coul rouge ;
+
+D1 = DROIT P00 P1_SYM1 DINI di DFIN df ;
+D2 = DROIT P1_SYM1 P10 DINI df DFIN di ;
+L1_INT = (D1 et D2) coul vert ;
+elim (L1_INT et LEVEE_1) 1.e-2 ;
+
+D1 = DROIT P11 (P0_12 plus (0 H_L1)) DINI di DFIN df ;
+D2 = DROIT (P0_12 plus (0 H_L1)) P12 DINI df DFIN di ;
+INTER = (D1 et D2) ;
+elim (INTER et LEVEE_1) 1.e-2 ;
+
+L1_SUP = (D01 et D02) PLUS (0 H_L1) coul vert ;
+elim (L1_SUP et LEVEE_1) 1.e-2 ;
+
+L1_EXT = L1_INT plus ((EP_G + EP_E) 0.) coul rose ;
+elim (L1_EXT et LEVEE_1) 1.e-2 ;
+* trace (LEVEE_1 et L1_SUP et L1_INF et L1_INT et INTER et L1_EXT) ;
+
+****** construction levee 2 **********************
+
+P1_SYM2 = R (H_L1+(H_L2/2)) ;
+P2_SYM2 = (R+EP_E) (H_L1+(H_L2/2)) ;
+VEC_L2 = 0. (H_L2/2) ;
+
+LEV = INTER TRAN VEC_L2 DINI di DFIN df ;
+LEVE = LEV SYME DROIT P1_SYM2 P2_SYM2 ;
+LEVEE_2 = LEV et LEVE ;
+
+****** identification des bords levee 2 *******
+
+D1 = DROIT P11 P1_SYM2 DINI di DFIN df ;
+D2 = DROIT P1_SYM2 P21 DINI df DFIN di ;
+L2_INT = (D1 et D2) coul vert ;
+elim (L2_INT et LEVEE_2) 1.e-2 ;
+
+L2_EXT = L2_INT plus (EP_E 0.) coul rose ;
+elim (L2_EXT et LEVEE_2) 1.e-2 ;
+
+L2_SUP = INTER plus (0. H_L2) coul turq ;
+
+INTER = INTER coul bleu ;
+
+mail = LEVEE_1 et LEVEE_2 et L1_SUP et L1_INF et L1_INT et INTER
+et L1_EXT et L2_EXT et L2_SUP et L2_INT ;
+elim mail 1.e-2 ;
+* trace mail ;
+
+
+*****************************************************************
+OPTION SAUVER FORMAT 'zzzz221a.mgib';
+SAUVER FORMAT mail ;
+*****************************************************************
+
+FIN ;

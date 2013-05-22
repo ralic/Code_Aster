@@ -1,0 +1,320 @@
+*                                                                       
+********** maillage                                                     
+*			  
+*
+*
+*                P3 __  P7  <-------
+*                  /  /
+*                 /  /|           Chargement
+*          LONG  /  / |
+*               /P4/  |
+*           P2 /__/   / P8  <-------
+*             |  | P6/       |y
+*             |  |  /        | /x
+*       LARG  |  | /         |/_____z
+*             |__|/
+*             P1 P5    <- encastrement surf(p1,p2,p6,p5)
+*              EP
+*
+********************************************************
+************ poutre avec maillage non regulier
+************ poutre 2
+opti echo 1 opti dime 3 elem cu20 mode tridim ;                         
+titre 'poutre SHB8 maillage non regulier test 2';   
+OPTI NIVE 11 ;
+OPTI SAUV FORM 'ssls124e.22';
+EP      = 1.  ;
+LARG    = 10.  ;
+LONG    = 100. ;
+NBELLARG= 1    ;             
+NBELLONG= 5    ;
+facteur = 0.3   ;
+
+********************************************************
+P1      = 0.   0.    0. ;
+P2      = 0.   LARG  0. ;
+P3      = LONG LARG  0. ; 
+P4      = LONG 0.    0. ;
+P5      = 0.   0.    EP ;
+P6      = 0.   LARG  EP ;
+P7      = LONG LARG  EP ; 
+P8      = LONG 0.    EP ;
+* point entre P1 et P4
+PM1     = (facteur*LONG) 0.    0.;
+* point entre P2 et P3
+PM2     = ((1-facteur)*LONG) LARG  0.;
+LI14    = droi NBELLONG P1 P4 ;
+LI43    = droi NBELLARG P4 P3 ;
+*LI34    = droi NBELLARG P3 P4 ;
+LI32    = DROI NBELLONG P3 P2 ;
+LI21    = DROI NBELLARG P2 P1 ;
+LI14_1  = DROI NBELLONG P1 PM1;
+LI14_2  = DROI NBELLONG P4 PM1;
+LIM     = DROI NBELLARG PM1 PM2;
+LI32_1  = DROI NBELLONG PM2 P2;
+LI32_2  = DROI NBELLONG PM2 P3;
+SUINF1  = DALLER LI14_1 LIM LI32_1 LI21 ;
+SUINF2  = DALLER LIM LI32_2 (INVE LI43)  LI14_2 ;
+SUINF   = SUINF1 et SUINF2 ;
+LI58    = droi NBELLONG P5 P8 ;
+SUSUP   = SUINF PLUS (0.   0.    EP) ;
+GEOSHB8 = VOLUME SUINF SUSUP 1;
+LI15    = droi 1        P1 P5 ;
+LI62    = droi 1        P6 P2 ;
+**LI21    = droi NBELLARG P2 P1 ;
+LI56    = droi NBELLARG P5 P6 ;
+SUENCAS = DALLER LI15 LI56 LI62 LI21 ;
+LI48    = DROI 1        P4 P8 ;
+LI87    = DROI NBELLARG P8 P7 ;
+LI73    = DROI 1        P7 P3 ;
+SUDEPIM = DALLER (INVE LI43) LI48 LI87 LI73 ;
+GEOTOT  = GEOSHB8 et SUENCAS et SUDEPIM ;
+elim  0.0001 GEOTOT;
+sort GEOTOT;
+SAUV FORM GEOTOT ;
+trac cach geotot;
+
+********************************************************
+
+********************************************************
+************ poutre avec maillage non regulier
+************ poutre 3
+opti echo 1 opti dime 3 elem cu20 mode tridim ;                         
+titre 'poutre SHB8 maillage non regulier test 3';   
+OPTI NIVE 11 ;
+OPTI SAUV FORM 'ssls124e.23';
+EP      = 0.1  ;
+LARG    = 10.  ;
+LONG    = 100. ;
+NBELLARG= 1    ;             
+NBELLONG= 5    ;
+facteur = 0.3   ;
+
+********************************************************
+P1      = 0.   0.    0. ;
+P2      = 0.   LARG  0. ;
+P3      = LONG LARG  0. ; 
+P4      = LONG 0.    0. ;
+P5      = 0.   0.    EP ;
+P6      = 0.   LARG  EP ;
+P7      = LONG LARG  EP ; 
+P8      = LONG 0.    EP ;
+* point entre P1 et P4
+PM1     = (facteur*LONG) 0.    0.;
+* point entre P2 et P3
+PM2     = ((1-facteur)*LONG) LARG  0.;
+LI14    = droi NBELLONG P1 P4 ;
+LI43    = droi NBELLARG P4 P3 ;
+*LI34    = droi NBELLARG P3 P4 ;
+LI32    = DROI NBELLONG P3 P2 ;
+LI21    = DROI NBELLARG P2 P1 ;
+LI14_1  = DROI NBELLONG P1 PM1;
+LI14_2  = DROI NBELLONG P4 PM1;
+LIM     = DROI NBELLARG PM1 PM2;
+LI32_1  = DROI NBELLONG PM2 P2;
+LI32_2  = DROI NBELLONG PM2 P3;
+SUINF1  = DALLER LI14_1 LIM LI32_1 LI21 ;
+SUINF2  = DALLER LIM LI32_2 (INVE LI43)  LI14_2 ;
+SUINF   = SUINF1 et SUINF2 ;
+LI58    = droi NBELLONG P5 P8 ;
+SUSUP   = SUINF PLUS (0.   0.    EP) ;
+GEOSHB8 = VOLUME SUINF SUSUP 1;
+LI15    = droi 1        P1 P5 ;
+LI62    = droi 1        P6 P2 ;
+**LI21    = droi NBELLARG P2 P1 ;
+LI56    = droi NBELLARG P5 P6 ;
+SUENCAS = DALLER LI15 LI56 LI62 LI21 ;
+LI48    = DROI 1        P4 P8 ;
+LI87    = DROI NBELLARG P8 P7 ;
+LI73    = DROI 1        P7 P3 ;
+SUDEPIM = DALLER (INVE LI43) LI48 LI87 LI73 ;
+GEOTOT  = GEOSHB8 et SUENCAS et SUDEPIM ;
+elim  0.0001 GEOTOT;
+sort GEOTOT;
+SAUV FORM GEOTOT ;
+trac cach geotot;
+
+********************************************************
+
+********************************************************
+************ poutre avec maillage non regulier
+************ poutre 1
+opti echo 1 opti dime 3 elem cu20 mode tridim ;                         
+titre 'poutre SHB8 maillage non regulier test 1';   
+OPTI NIVE 11 ;
+OPTI SAUV FORM 'ssls124e.21';
+EP      = 10.  ;
+LARG    = 10.  ;
+LONG    = 100. ;
+NBELLARG= 1    ;             
+NBELLONG= 5    ;
+facteur = 0.3   ;
+
+********************************************************
+P1      = 0.   0.    0. ;
+P2      = 0.   LARG  0. ;
+P3      = LONG LARG  0. ; 
+P4      = LONG 0.    0. ;
+P5      = 0.   0.    EP ;
+P6      = 0.   LARG  EP ;
+P7      = LONG LARG  EP ; 
+P8      = LONG 0.    EP ;
+* point entre P1 et P4
+PM1     = (facteur*LONG) 0.    0.;
+* point entre P2 et P3
+PM2     = ((1-facteur)*LONG) LARG  0.;
+LI14    = droi NBELLONG P1 P4 ;
+LI43    = droi NBELLARG P4 P3 ;
+*LI34    = droi NBELLARG P3 P4 ;
+LI32    = DROI NBELLONG P3 P2 ;
+LI21    = DROI NBELLARG P2 P1 ;
+LI14_1  = DROI NBELLONG P1 PM1;
+LI14_2  = DROI NBELLONG P4 PM1;
+LIM     = DROI NBELLARG PM1 PM2;
+LI32_1  = DROI NBELLONG PM2 P2;
+LI32_2  = DROI NBELLONG PM2 P3;
+SUINF1  = DALLER LI14_1 LIM LI32_1 LI21 ;
+SUINF2  = DALLER LIM LI32_2 (INVE LI43)  LI14_2 ;
+SUINF   = SUINF1 et SUINF2 ;
+LI58    = droi NBELLONG P5 P8 ;
+SUSUP   = SUINF PLUS (0.   0.    EP) ;
+GEOSHB8 = VOLUME SUINF SUSUP 1;
+LI15    = droi 1        P1 P5 ;
+LI62    = droi 1        P6 P2 ;
+**LI21    = droi NBELLARG P2 P1 ;
+LI56    = droi NBELLARG P5 P6 ;
+SUENCAS = DALLER LI15 LI56 LI62 LI21 ;
+LI48    = DROI 1        P4 P8 ;
+LI87    = DROI NBELLARG P8 P7 ;
+LI73    = DROI 1        P7 P3 ;
+SUDEPIM = DALLER (INVE LI43) LI48 LI87 LI73 ;
+GEOTOT  = GEOSHB8 et SUENCAS et SUDEPIM ;
+elim  0.0001 GEOTOT;
+sort GEOTOT;
+SAUV FORM GEOTOT ;
+trac cach geotot;
+
+********************************************************
+
+********************************************************
+************ poutre avec maillage non regulier
+************ poutre 4
+opti echo 1 opti dime 3 elem cu20 mode tridim ;                         
+titre 'poutre SHB8 maillage non regulier test 4';   
+OPTI NIVE 11 ;
+OPTI SAUV FORM 'ssls124e.24';
+EP      = 0.05  ;
+LARG    = 10.  ;
+LONG    = 100. ;
+NBELLARG= 1    ;             
+NBELLONG= 5    ;
+facteur = 0.3   ;
+
+********************************************************
+P1      = 0.   0.    0. ;
+P2      = 0.   LARG  0. ;
+P3      = LONG LARG  0. ; 
+P4      = LONG 0.    0. ;
+P5      = 0.   0.    EP ;
+P6      = 0.   LARG  EP ;
+P7      = LONG LARG  EP ; 
+P8      = LONG 0.    EP ;
+* point entre P1 et P4
+PM1     = (facteur*LONG) 0.    0.;
+* point entre P2 et P3
+PM2     = ((1-facteur)*LONG) LARG  0.;
+LI14    = droi NBELLONG P1 P4 ;
+LI43    = droi NBELLARG P4 P3 ;
+*LI34    = droi NBELLARG P3 P4 ;
+LI32    = DROI NBELLONG P3 P2 ;
+LI21    = DROI NBELLARG P2 P1 ;
+LI14_1  = DROI NBELLONG P1 PM1;
+LI14_2  = DROI NBELLONG P4 PM1;
+LIM     = DROI NBELLARG PM1 PM2;
+LI32_1  = DROI NBELLONG PM2 P2;
+LI32_2  = DROI NBELLONG PM2 P3;
+SUINF1  = DALLER LI14_1 LIM LI32_1 LI21 ;
+SUINF2  = DALLER LIM LI32_2 (INVE LI43)  LI14_2 ;
+SUINF   = SUINF1 et SUINF2 ;
+LI58    = droi NBELLONG P5 P8 ;
+SUSUP   = SUINF PLUS (0.   0.    EP) ;
+GEOSHB8 = VOLUME SUINF SUSUP 1;
+LI15    = droi 1        P1 P5 ;
+LI62    = droi 1        P6 P2 ;
+**LI21    = droi NBELLARG P2 P1 ;
+LI56    = droi NBELLARG P5 P6 ;
+SUENCAS = DALLER LI15 LI56 LI62 LI21 ;
+LI48    = DROI 1        P4 P8 ;
+LI87    = DROI NBELLARG P8 P7 ;
+LI73    = DROI 1        P7 P3 ;
+SUDEPIM = DALLER (INVE LI43) LI48 LI87 LI73 ;
+GEOTOT  = GEOSHB8 et SUENCAS et SUDEPIM ;
+elim  0.00001 GEOTOT;
+sort GEOTOT;
+SAUV FORM GEOTOT ;
+trac cach geotot;
+
+********************************************************
+
+********************************************************
+************ poutre avec maillage non regulier
+************ poutre 5
+opti echo 1 opti dime 3 elem cu20 mode tridim ;                         
+titre 'poutre SHB8 maillage non regulier test 5';   
+OPTI NIVE 11 ;
+OPTI SAUV FORM 'ssls124e.25';
+EP      = 0.02  ;
+LARG    = 10.  ;
+LONG    = 100. ;
+NBELLARG= 1    ;             
+NBELLONG= 5    ;
+facteur = 0.3   ;
+
+********************************************************
+P1      = 0.   0.    0. ;
+P2      = 0.   LARG  0. ;
+P3      = LONG LARG  0. ; 
+P4      = LONG 0.    0. ;
+P5      = 0.   0.    EP ;
+P6      = 0.   LARG  EP ;
+P7      = LONG LARG  EP ; 
+P8      = LONG 0.    EP ;
+* point entre P1 et P4
+PM1     = (facteur*LONG) 0.    0.;
+* point entre P2 et P3
+PM2     = ((1-facteur)*LONG) LARG  0.;
+LI14    = droi NBELLONG P1 P4 ;
+LI43    = droi NBELLARG P4 P3 ;
+*LI34    = droi NBELLARG P3 P4 ;
+LI32    = DROI NBELLONG P3 P2 ;
+LI21    = DROI NBELLARG P2 P1 ;
+LI14_1  = DROI NBELLONG P1 PM1;
+LI14_2  = DROI NBELLONG P4 PM1;
+LIM     = DROI NBELLARG PM1 PM2;
+LI32_1  = DROI NBELLONG PM2 P2;
+LI32_2  = DROI NBELLONG PM2 P3;
+SUINF1  = DALLER LI14_1 LIM LI32_1 LI21 ;
+SUINF2  = DALLER LIM LI32_2 (INVE LI43)  LI14_2 ;
+SUINF   = SUINF1 et SUINF2 ;
+LI58    = droi NBELLONG P5 P8 ;
+SUSUP   = SUINF PLUS (0.   0.    EP) ;
+GEOSHB8 = VOLUME SUINF SUSUP 1;
+LI15    = droi 1        P1 P5 ;
+LI62    = droi 1        P6 P2 ;
+**LI21    = droi NBELLARG P2 P1 ;
+LI56    = droi NBELLARG P5 P6 ;
+SUENCAS = DALLER LI15 LI56 LI62 LI21 ;
+LI48    = DROI 1        P4 P8 ;
+LI87    = DROI NBELLARG P8 P7 ;
+LI73    = DROI 1        P7 P3 ;
+SUDEPIM = DALLER (INVE LI43) LI48 LI87 LI73 ;
+GEOTOT  = GEOSHB8 et SUENCAS et SUDEPIM ;
+elim  0.0001 GEOTOT;
+sort GEOTOT;
+SAUV FORM GEOTOT ;
+trac cach geotot;
+
+********************************************************
+
+
+fin;

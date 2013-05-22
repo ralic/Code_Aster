@@ -1,0 +1,72 @@
+# -*- coding: iso-8859-1 -*-
+
+import geompy
+
+#-----------------------------------------------------
+# geometrie
+#-----------------------------------------------------
+
+LX = 10.
+LY = 10.
+LZ = 20.
+
+Cx = -1.82
+Cy = 0
+Cz = -8
+
+V = geompy.MakeBoxDXDYDZ(LX, LY, LZ)
+geompy.TranslateDXDYDZ(V, Cx, Cy, Cz)
+geompy.addToStudy(V, 'CrackAnalysis3d')
+
+tmp = geompy.MakeVertex( (LX+Cx)/2 , (LY+Cy)/2 , LZ+Cz)
+EXTUBE_S = geompy.GetFaceNearPoint(V,tmp)
+geompy.addToStudyInFather(V,EXTUBE_S,'EXTUBE_S')
+
+tmp = geompy.MakeVertex( (LX+Cx)/2 , (LY+Cy)/2 , Cz)
+EXTUBE_I = geompy.GetFaceNearPoint(V,tmp)
+geompy.addToStudyInFather(V,EXTUBE_I,'EXTUBE_I')
+
+tmp = geompy.MakeVertex( LX+Cx , (LY+Cy)/2 , (LZ+Cz)/2 )
+PEAUEXT = geompy.GetFaceNearPoint(V,tmp)
+geompy.addToStudyInFather(V,PEAUEXT,'PEAUEXT')
+
+tmp = geompy.MakeVertex( (LX+Cx)/2 , Cy , (LZ+Cz)/2 )
+BORD1 = geompy.GetFaceNearPoint(V,tmp)
+geompy.addToStudyInFather(V,BORD1,'BORD1')
+
+VOL = geompy.GetInPlace(V,V)
+geompy.addToStudyInFather(V,VOL,'VOL')
+
+#-----------------------------------------------------
+# maillage
+#-----------------------------------------------------
+
+import smesh
+
+import BLSURFPlugin
+
+Mesh_1 = smesh.Mesh(V)
+BLSURF = Mesh_1.Triangle(algo=smesh.BLSURF)
+GHS3D_3D = Mesh_1.Tetrahedron(algo=smesh.GHS3D)
+BLSURF_Parameters_1 = BLSURF.Parameters()
+BLSURF_Parameters_1.SetPhySize( 1 )
+Mesh_1.Compute()
+
+# purge des elements 1d indesirables (apres le compute !)
+filter_seg = smesh.GetFilter(smesh.EDGE, smesh.FT_ElemGeomType, smesh.Geom_EDGE)
+ids_seg = Mesh_1.GetIdsFromFilter(filter_seg)
+Mesh_1.RemoveElements(ids_seg)
+
+# groupes
+EXTUBE_S = Mesh_1.GroupOnGeom(EXTUBE_S,'EXTUBE_S',SMESH.FACE)
+EXTUBE_I = Mesh_1.GroupOnGeom(EXTUBE_I,'EXTUBE_I',SMESH.FACE)
+PEAUEXT  = Mesh_1.GroupOnGeom(PEAUEXT,'PEAUEXT',SMESH.FACE)
+BORD1    = Mesh_1.GroupOnGeom(BORD1,'BORD1',SMESH.FACE)
+VOL      = Mesh_1.GroupOnGeom(VOL,'VOL',SMESH.VOLUME)
+
+#Mise à jour de l'arbre d'étude
+#==============================
+
+from salome import sg
+
+sg.updateObjBrowser(1)

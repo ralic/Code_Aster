@@ -1,0 +1,61 @@
+*           Test sslv126a.dgibi: Jeux de donnees      *
+*           ------------------------------------      *
+*                                                     *
+* CAS TEST DU 07/10/03
+*OPTION ECHO 1;
+*GRAPH='N';
+*SAUT PAGE ;
+*-----------------------------------------------------*
+*             Maillage d'une dalle                    *   
+*-----------------------------------------------------*
+* Definition des options
+*
+           OPTI DIME 3 ELEM TRI3 ;
+
+*-----------------------------------------------------*
+*  Parametres
+Lx = 0.9D0 ;
+Ly = 0.9D0 ;
+Nx = 12;
+Ny = 12;
+*
+*-----------------------------------------------------*
+A1 = 0.   0.   0.;
+A2 = Lx   0.   0.;
+A3 = 0.   Ly   0.;
+A4 = Lx   Ly   0.;
+*-----------------------------------------------------*
+A1A2 = DROI Nx A1 A2 ;
+A2A4 = DROI Ny A2 A4 ;
+A4A3 = DROI Nx A4 A3 ;
+A3A1 = DROI Ny A3 A1 ;
+*-----------------------------------------------------*
+dalle = DALL A2A4 A4A3 A3A1 A1A2 PLAN;
+
+*p0 = A1;
+*p5 = A2;
+*p3 = A3;
+*p4 = A4;
+pp1 = 0. 0.45 0.;
+pp1 = dalle POIN PROC pp1;
+lsymx = A1A2;
+lsymy = A3A1;
+lcontx = A4A3;
+lconty = A2A4; 
+OUBLIER A1A2;
+OUBLIER A2A4;
+OUBLIER A4A3;
+OUBLIER A3A1;
+OUBLIER PP1;
+TRAC dalle;
+mesh = dalle et lsymx et lsymy et lcontx et lconty ;
+tass mesh;
+oeil = 0. 0. 1000.;
+TRAC oeil mesh;
+*
+* Save mesh
+*
+opti sauv form 'ssls126a.mgib';
+sauv form mesh;
+fin;
+ 

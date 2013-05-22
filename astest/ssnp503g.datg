@@ -1,0 +1,81 @@
+opti dime 3  elem cub8 ;
+
+*----------------------------------------
+*DONNEES
+*----------------------------------------
+* dimensions des cotes
+LX = 4;
+LY1 = 2.5;
+LY2 = 4;
+ly = 0.5 ; 
+LZ = 1.0;
+DX = LX 0. 0.;
+DY =  0. LY 0.;
+DY1 =  0. LY1 0.;
+DY2 =  0. LY2 0.;
+
+* nombre d'elements
+NX = 4;
+NY1 = 3;
+NY2 = 4;
+NZ = 1;
+
+*---------------------------------------------
+*construction des lignes
+*---------------------------------------------
+
+l1 = droi (0. 0. 0.) (0. 0. LZ) NZ;
+l2 = l1 plus DX;
+l3 = l2 PLUS DY1;
+l4 = l3 MOIN DX;
+
+l5 = droi (0. 2.5 0.) (0. 2.5 LZ) NZ;
+l6 = l5 PLUS DX;
+l7 = l6 PLUS DY2;
+l8 = l7 MOIN DX;
+
+l9 = droi (0. 6.5 0.) (0. 6.5 LZ) NZ;
+l10= l9 PLUS DX;
+l11= l10 PLUS DY1;
+l12= l11 MOIN DX;
+
+*---------------------------------------------
+*construction des surfaces
+*---------------------------------------------
+
+S11 = regl l1 l2 NX;
+S13 = regl l4 l3 NX;
+
+S21 = regl l5 l6 NX;
+S23 = regl l7 l8 NX;
+S24 = (regl l5 (l5 plus dy) 1) et
+(regl (l5 plus dy) (l8 moin dy) (NX-1)) et (regl (l8 moin dy) l8 1);
+
+S31 = regl l9 l10 NX;
+S33 = regl l11 l12 NX;
+
+trac (s11 et S13 et s21 et S23 et s24 et S13 et S33);
+
+*---------------------------------------------
+*construction des volumes
+*---------------------------------------------
+
+V1 = elim((VOLU TRAN s11 (dy1 moin dy) (ny1-1)) et
+(VOLU TRAN s13 ((0 0 0) moin dy) 1)) 0.0001;
+
+V2 = elim((VOLU TRAN s24  dx nx) et S21 et S23) 0.0001;
+
+V3 = elim((VOLU TRAN s33 (dy moin dy1) (ny1-1)) et
+(VOLU TRAN s31 dy 1)) 0.0001;
+
+MAILLE = V1 ET V2 ET V3;
+
+trac (V1 ET V3);
+trac V2;
+
+trac (MAILLE et ((S21 et S23) coul turq) et (S24 coul jaun));
+
+opti sauv format
+'/work/irlin831_1/siavelim/CAS/ssnp503/ssnp503g.mgib';
+sauv format maille ;
+fin ;

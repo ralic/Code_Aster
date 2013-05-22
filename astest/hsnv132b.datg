@@ -1,0 +1,37 @@
+opti dime 2  elem qua4 ;
+
+*----------------------------------------
+*DONNEES
+*----------------------------------------
+* dimensions des cotes
+LX = 1;
+LY = 1;
+
+* nombre d'elements
+NX = 101;
+NY = 101; 
+
+*---------------------------------------------
+*construction des surfaces dans le plan inférieur
+*---------------------------------------------
+
+p1 = 0.   0.;
+p2 = LX  0.;
+p5 = LX  LY;
+p6 = 0.  LY;
+
+liginf = droit p1 p2 NX;
+lig23  = droit p2 p5 NY;
+ligsup = droit p5 p6 NX;
+lig4   = droit p6 p1 NY;
+
+SURF = liginf lig23 ligsup lig4 dall PLAN ;
+
+MAILLE = surf et liginf et lig23 et ligsup et lig4;
+         
+trac cach (surf et liginf et ligsup);        
+                 
+opti sauv format 
+'/home/galenne/ASTER_DEV/hsnv132b.mgib' ;
+sauv format maille ;
+fin ;

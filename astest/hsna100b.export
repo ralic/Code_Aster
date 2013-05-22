@@ -6,6 +6,5 @@ P mpi_nbnoeud 1
 P testlist C
 
 F comm hsna100b.comm D 1
-F mail hsna100b.mail D 20
 F datg hsna100b.datg D 16
 F msh hsna100b.msh D 19

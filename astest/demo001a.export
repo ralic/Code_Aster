@@ -8,9 +8,4 @@ P testlist C
 F comm demo001a.comm D 1
 F datg demo001a.datg D 16
 F msh demo001a.msh D 19
-F libr demo001a.17 D 17
 F libr demo001a.18 D 18
-F libr demo001a.52 D 52
-F libr demo001a.53 D 53
-F libr demo001a.54 D 54
-F libr demo001a.55 D 55

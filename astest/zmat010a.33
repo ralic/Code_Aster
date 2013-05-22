@@ -1,0 +1,26 @@
+***material
+*integration theta_method_a 1. 1.e-9 50
+***behavior gen_evp
+ **elasticity cubic
+   y1111 160000.0
+   y1122  78000.0
+   y1212 110000.0
+ **potential octahedral
+  *flow norton
+   K         11.0
+   n          7.0
+  *isotropic nonlinear
+   R0        400000.0
+   Q         10.0
+   b          3.0
+  *kinematic nonlinear
+   C       40000.0
+   D        1500.0
+  *interaction slip
+   h1          1.0
+   h2          1.0
+   h3          0.6
+   h4         12.3
+   h5          1.6
+   h6          1.8
+***return

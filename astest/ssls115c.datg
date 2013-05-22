@@ -1,0 +1,43 @@
+OPTI SAUV FORM 'ssls115c.mgib' ;
+OPTI NIVEAU 8 ;
+OPTI DIME 3 ELEM TRI3 ;
+
+A = 0. 0. 0.;
+B0 = 0.5 0. 0.;
+C0 = 0.5 0.5 0.;
+D0 = 0. 0.5 0.;
+E = 0. 0. 0.5;
+
+BB = B0 TOUR 20. A E;
+CC = C0 TOUR 20. A E;
+D  = D0 TOUR 20. A E;
+
+B = BB TOUR 30. A D;
+C = CC TOUR 30. A D;
+
+AB = DROI 6 A B ;
+BC = DROI 6 B C ;
+CD = DROI 6 C D ;
+DA = DROI 6 A D ;
+
+alpha=20.;
+beta =30.;
+x=0.5*(cos(alpha))*(cos(beta));
+y=0.5*(cos(beta))*(sin(alpha));
+z=-0.5*(sin(beta));
+
+
+MAIL1 = DA tran 6 (x y z);
+
+MAIL = (MAIL1 et AB et BC et CD et DA) ;
+
+elim 0.0001 MAIL ; 
+elim 0.0001 MAIL1 ;
+
+OUBLIER AD ;
+OUBLIER DC ; 
+
+TRAC (1000. 1000. 1000.) MAIL;
+SAUV 'FORMATTE' MAIL;
+
+FIN;

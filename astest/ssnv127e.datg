@@ -1,0 +1,125 @@
+opti dime 2 elem QUA8 ;
+opti niveau 8 ;
+
+* Probleme de Hertz d'un cylindre dans un alesage
+* r1 : rayon de l'alesage
+* r2 : rayon du cylindre
+* h2 : epaisseur poutre externe
+* --------------------------------------------------
+
+r1 = 6.E-02 ; r2 =5.999E-02 ;
+theta1 = sin(3.) ;
+theta2 = cos(3.) ;
+data1 = sin(2.5) ;
+data2 = cos(2.5) ;
+co1 = theta2*r1 ;
+si1 = theta1*r1 ;
+co2 = theta2*r2 ;
+si2 = theta1*r2 ;
+dco1 = data2*r1 ;
+dsi1 = data1*r1 ;
+dco2 = data2*r2 ;
+dsi2 = data1*r2 ;
+
+
+o1 = 0.              0.  ;
+o2= 0.            (-0.001E-02) ;
+a1 = 0.      ( 0.-r1 );
+b1 = r1       0. ;
+c1 = 0.       r1 ;
+d1= (0.-r1)       0. ;
+b2 = r2       ( -0.001E-02) ;
+c2 = 0.     (r2-0.001E-02);
+d2 = (0.-r2)   (-0.001E-02);
+e2 = 0.    (r2/2.-0.001E-02) ;
+p1 = si1 (0.-co1)  ;
+p2 = si2 (0.-co2-0.001E-02) ;
+i1 = dsi1 (0.-dco1)   ;
+i2 = dsi2 (0.-dco2-0.001E-02) ;
+
+N1 = 15;
+N2 = 10;
+
+e1 = 0.   (-1.) ;
+f1 = 1.   0. ;
+g1 = 0.     1. ;
+
+a3 = 0. (-0.2) ;
+b3 = 0.2  0. ;
+c3 = 0. 0.2 ;
+
+ad1 = o2 droi 5 a1 ;
+
+bcc2 = cerc N1 a1 o2 b2 ;
+ccc2 = cerc N1 b2 o2 c2 ;
+ncc2 = bcc2 et ccc2 ;
+ad2 = c2 droi 5 o2 ;
+cont1 = ad1 et ncc2 et ad2 ;
+surf1 = surface cont1 ;
+
+ad3 = a1 droi 9 a3 ;
+bcc1 = cerc N1 a1 o1 b1 ;
+ccc1 = cerc N1 b1 o1 c1 ;
+ncc1 = bcc1 et ccc1 ;
+incc1 = inve ncc1 ;
+acc3 = cerc N2 a3 o1 b3 ;
+bcc3 = cerc N2 b3 o1 c3 ;
+cc3 = acc3 et bcc3 ;
+icc3 = inve cc3 ;
+bd3 = c3 droi 9 c1 ;
+cont3 =ad3 et incc1 et bd3 et cc3 ;
+surf3 = surface cont3 ;
+
+ad4 = a3 droi 5 e1 ;
+acc4 = cerc N2 e1 o1 f1 ;
+bcc4 = cerc N2 f1 o1 g1 ;
+cc4 = acc4 et bcc4 ;
+bd4 = g1 droi 5 c3 ;
+surf4 = DALL ad4 cc4 bd4 icc3 ;
+surff = surf1 et surf3 et surf4 ; 
+
+oublier o1;
+oublier b1;
+oublier c1;
+oublier d1;
+oublier c2;
+oublier d2;
+oublier e2;
+oublier p1;
+oublier p2;
+oublier i1;
+oublier i2;
+
+oublier surf1
+oublier surf3;
+oublier surf4;
+oublier ccc2 ;
+oublier ncc2 ;
+oublier cont1;
+oublier ccc1 ;
+oublier ncc1 ;
+oublier bcc3 ;
+oublier cc3 ;
+oublier acc3 ;
+oublier icc3 ;
+oublier incc1 ;
+oublier cont3;
+oublier cont3;
+oublier acc4 ;
+oublier bcc4 ;
+
+tass surff;
+
+*opti donn 5;
+
+OPTI SAUV FORM 'ssnv127d.mgib';
+sauv form (surff) ;
+
+*trac surf3 ;
+*trac surf4 ;
+*trac surff ;
+
+fin;
+
+
+

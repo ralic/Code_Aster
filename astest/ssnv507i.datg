@@ -1,0 +1,37 @@
+opti dime 2  elem tri6 ;
+
+*dens 1 ;
+
+*----------------------------------------
+*DONNEES
+*----------------------------------------
+
+* nombre d elements
+N = 51;
+D1= 20;
+D2= 0-20;
+
+*---------------------------------------------
+*construction du maillage
+*---------------------------------------------
+
+p1 = D2 D2;
+p2 = D1 D2;
+p3 = D1 D1;
+p4 = D2 D1;
+
+LB = droit p1 p2 N;
+LD = droit p2 p3 N;
+LH = droit p3 p4 N;
+LG = droit p4 p1 N;
+
+SURF = DALL LB LD LH LG PLAN;
+
+elim surf 0.00001;
+trac surf;          
+
+MAILLE = surf;
+
+opti sauv format '/local01/XFEM/test/tests/ssnv507i.mgib';
+sauv format maille ;
+fin ;

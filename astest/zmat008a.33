@@ -1,0 +1,22 @@
+%***debug
+%*local_debug 1 2
+%*nb_ip 27
+***material
+*integration theta_method_a 1. 1.e-10 50
+***behavior gen_evp lagrange_rotate
+**elasticity
+young 
+200000. 
+poisson 0.3
+**potential gen_evp ep
+*flow plasticity
+*criterion mises
+%*isotropic by_point
+%  sigeq epcum
+%  200.   0.
+%  22200.20202020 10.
+*isotropic linear
+R0 200.
+H 2020.20202020202
+***return
+

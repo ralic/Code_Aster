@@ -1,0 +1,69 @@
+TITRE 'SSNL106D TUYAU EN PLASTICITE, TRACTION OU MOMENT';
+opti dime 3 elem seg3;
+
+l = 1. ;
+a=0.  0.   0. ;
+b=l  0.   0. ;
+
+n=2 ;
+
+tuyau = droit n a b ;
+
+opti sauv form 'ssnl106d.mgib';
+sauv format tuyau ;
+
+trac (1000. 0. 0.) tuyau ;
+
+
+fin();
+
+
+* maillage d'un demi tuyau en DKT
+opti dime 3;
+
+l = 1. ;
+a=0.  0.   0. ;
+b=l  0.   0. ;
+
+n=20 ;
+np = 2 ;
+rext = 0.1 ;
+ep=0.001 ;
+rmoy = rext - (ep/2.) ;
+
+a1 = 0.    rmoy       0.      ;
+a2 = 0.     0.        rmoy    ;
+a3 = 0.     (-1*rmoy)   0.     ;
+
+opti elem qua4;
+cercle1 = cer3 n a1 a2 a3;
+
+tube1 =  cercle1 trans 15 ((l/2.) 0. 0.)  ;
+bord2 = cote 2 tube1 ;
+bord4 = cote 4 tube1 ;
+bord = bord2 et bord4;
+cerclem = cote 3 tube1 ;
+cerclem = inve cerclem ;
+tube2 =  cerclem trans 15 ((l/2.) 0. 0.)  ;
+bordb2 = cote 2 tube2 ;
+bordb4 = cote 4 tube2 ;
+bord = bord et bordb2 et bordb4;
+cercle2 = cote 3 tube2 ;
+toto = versens (tube1 et tube2) ;
+oublier toto ;
+
+mailast = tube1 et tube2 ;
+
+elim 0.001 mailast ;
+tass mailast ;
+toto = versens mailast ;
+oublier toto ;
+trac (0. 0. 1000.) cach mailast ;
+
+opti sauv form 'demidkt.mgib';
+sauv format mailast ;
+
+
+
+
+

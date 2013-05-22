@@ -1,0 +1,81 @@
+// Dimensions
+LX = 1.;
+LY = 1.;
+LZ = 5.;
+
+dbid = 1.;
+
+Point(1) =  {  0.5*LX, -0.5*LY, -0.5*LZ, dbid};
+Point(2) =  {  0.5*LX,  0.5*LY, -0.5*LZ, dbid};
+Point(3) =  { -0.5*LX,  0.5*LY, -0.5*LZ, dbid};
+Point(4) =  { -0.5*LX, -0.5*LY, -0.5*LZ, dbid};
+
+Point(5) =  {  0.5*LX, -0.5*LY,  0.5*LZ, dbid};
+Point(6) =  {  0.5*LX,  0.5*LY,  0.5*LZ, dbid};
+Point(7) =  { -0.5*LX,  0.5*LY,  0.5*LZ, dbid};
+Point(8) =  { -0.5*LX, -0.5*LY,  0.5*LZ, dbid};
+
+Line(1) = {1, 2};
+Line(2) = {2, 3};
+Line(3) = {3, 4};
+Line(4) = {4, 1};
+
+Line(5) = {5, 6};
+Line(6) = {6, 7};
+Line(7) = {7, 8};
+Line(8) = {8, 5};
+
+Line(9 ) = {1, 5};
+Line(10) = {2, 6};
+Line(11) = {3, 7};
+Line(12) = {4, 8};
+
+// surface plan z=-0.5*LZ
+Line Loop(13) = {1, 2, 3, 4};
+Plane Surface(14) = {13};
+// surface plan z=+0.5*LZ
+Line Loop(15) = {5, 6, 7, 8};
+Plane Surface(16) = {15};
+
+// surface plan x=-0.5*LX
+Line Loop(17) = {3, 12, -7, -11};
+Plane Surface(18) = {17};
+// surface plan x=+0.5*LX
+Line Loop(19) = {1, 10, -5, -9};
+Plane Surface(20) = {19};
+
+// surface plan y=-0.5*LY
+Line Loop(21) = {4, 9, -8, -12};
+Plane Surface(22) = {21};
+// surface plan y=+0.5*LY
+Line Loop(23) = {2, 11, -6, -10};
+Plane Surface(24) = {23};
+
+// volume
+Surface Loop(25) = {24, 14, 20, 16, 18, 22};
+Volume(26) = {25};
+
+////////////////////////////
+// maillage cartesien en penta6
+////////////////////////////
+
+NX = 1;
+NY = 1;
+NZ = 5;
+
+Transfinite Line{2,4,6,8}    = NX +1;
+Transfinite Line{1,3,5,7}    = NY +1;
+Transfinite Line{9,10,11,12} = NZ +1; 
+
+Transfinite Surface{14,16,18,20,22,24};
+Recombine Surface{18,20,22,24};
+
+Transfinite Volume{26};
+
+////////////////////////////
+// groupes geometriques
+////////////////////////////
+
+// volume : G3D_29
+Physical Volume(29) = {26};
+

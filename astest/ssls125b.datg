@@ -1,0 +1,97 @@
+opti echo 1 opti dime 3 elem pri6 mode tridim ;                         
+titre 'Anneau raidi SHB8';                                              
+*                                                                       
+********** maillage                                                     
+*                                                                       
+*                                                                       
+nelem1 = 20;                                                             
+**nelcir = 20;                                                            
+nelcir = 70;                                                            
+                                                                        
+R1 = 2. ;                                                               
+Z1 = 0.    ;                                                            
+Z3 = 2.   ;                                                             
+                                                                        
+EPAI_EXT = 0.02;                                                           
+                                                                        
+R1_PLUS  = R1+(EPAI_EXT/2) ;                                            
+R1_MOINS = R1-(EPAI_EXT/2) ;                                            
+                                                                        
+                                          
+P1    = R1_PLUS 0.              Z1              ;                       
+P190  = 0.              R1_PLUS Z1              ;                       
+P2    = R1_PLUS 0.              Z3              ;                       
+P290  = 0.              R1_PLUS Z3              ;                       
+P3    = R1_MOINS 0.              Z3              ;                      
+P390  = 0.              R1_MOINS Z3              ;                      
+P12   = R1_MOINS 0.              Z1              ;                      
+P1290 = 0.              R1_MOINS Z1              ;                      
+                                                                        
+c1 = 0. 0. 0.;                                                          
+c2 = 0. 0. 1.;
+
+l12   = droi nelem1 p1  p2;                                            
+l1290   = droi nelem1 p190  p290;                                            
+l2_3   = droi 1      p2  p3;                                            
+l3_12  = droi nelem1 p3  p12;                                            
+l12_1  = droi 1      p12 p1;
+l2_1   = droi nelem1 p2  p1;                                            
+
+opti elem tri3;
+suextext  = l2_1  rota nelcir 90 c1 c2;
+suextint  = l3_12 rota nelcir 90 c1 c2;
+trac suextext;
+trac suextint;
+**suextext  = l2_1  rota nelcir 360 c1 c2;
+**suextint  = l3_12 rota nelcir 360 c1 c2;
+opti elem pri6;
+geoext     = VOLUME suextint suextext;
+trac geoext;
+rect1  = regl 1 l2_1 l3_12; 
+
+
+su0   = rect1;
+su90  = su0 tourne 90 c1 c2;
+opti elem qua4;
+susup = l2_3 rota nelcir 90 c1 c2;
+suinf = l12_1 rota nelcir 90 c1 c2;
+**su90  = su0 tourne 360 c1 c2;
+**susup = l2_3 rota nelcir 360 c1 c2;
+**suinf = l12_1 rota nelcir 360 c1 c2;
+
+
+geoshb8 = geoext;
+geotot = su0 et su90 et susup et suinf et geoshb8 et suextext;
+
+elim 0.001 geotot;
+sort geotot;
+OPTI NIVE 11 ;
+OPTI SAUV FORM 
+'/home/desroches/trinh/RESTIT/test/ssls125/ssls125b.mgib' ;
+SAUV FORM geotot   ;
+
+titre ' ';                                              
+oeil = 50. 100. 10. ;
+trac cache  geotot;
+
+opti elem seg2 ;
+rep1 = @repere;
+opti elem pri6;
+
+**trac cache geotot;
+trac cache (rep1 et geotot et (suextext coul rouge));
+
+
+list (nbno geotot);
+list (nbel geotot);
+
+
+
+
+
+
+
+fin;
+
+
+

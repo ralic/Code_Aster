@@ -1,0 +1,18 @@
+OPTION DIME 2 ELEM SEG2 ;
+
+A = 0. 0. ;
+B = 240 0. ;
+C = 240 -240 ;
+
+AB = DROIT 10 A B ;
+BC = DROIT 10 B C ;
+
+pout = AB ET BC ;
+
+OUBL AB ;
+OUBL BC ;
+
+OPTION SAUV FORM 'ssll105d.mgib' ;
+SAUV FORM pout ;
+
+FIN ;

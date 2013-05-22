@@ -1,0 +1,51 @@
+opti dime 2 elem qua4 ;
+
+*----------------------------------------------------------------------------
+* Ce fichier gibi sert a engendrer les fichiers zzzz285b.19 et zzzz285b.21
+* Pour la modelisation b, les fichiers .19 et .21 sont les memes
+* car l'objectif est de tester la projection d'un maillage sur lui meme.
+* le .21 est donc une copie du .19
+
+* pour zzzz285b.19 :
+opti sauv form 'zzzz285b.19' ;
+n1=4;  e  = .5   .5;
+*----------------------------------------------------------------------------
+
+a  = 0.   0.;
+b  = 1.   0.;
+c  = 1.   1.;
+d  = 0.   1.;
+f  = .5   0.;
+g  = 0.   .7;
+
+
+
+af1 = droi n1 a f ;
+fe1 = droi n1 f e ;
+eg1 = droi n1 e g ;
+ga1 = droi n1 g a ;
+afeg1= surf (af1 et fe1 et eg1 et ga1);
+
+fb1 = droi n1 f b ;
+bc1 = droi n1 b c ;
+ce1 = droi n1 c e ;
+ef1 = droi n1 e f ;
+fbce1= surf (fb1 et bc1 et ce1 et ef1);
+
+ec1 = droi n1 e c ;
+cd1 = droi n1 c d ;
+dg1 = droi n1 d g ;
+ge1 = droi n1 g e ;
+ecdg1= surf (ec1 et cd1 et dg1 et ge1);
+
+
+carre= afeg1 et fbce1 et ecdg1;
+elim carre 0.001;
+
+oublier ef1; oublier ec1; oublier eg1;
+oublier fe1; oublier ce1; oublier ge1;
+
+trac carre;
+
+sauv form carre ;
+fin;

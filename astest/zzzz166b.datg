@@ -1,0 +1,61 @@
+OPTI DIME 2 ELEM QUA8 ECHO 0;
+OPTI SAUV FORM 'zzzz166b.mgib' ;
+*
+* discretisation cote
+NEL = 20;
+*
+* points de construction
+A = 1.0 0.5;
+B = 3.0 0.5;
+C = 5.0 0.5;
+D = 1.0 2.5;
+E = 3.0 2.5;
+F = 5.0 2.5;
+G = 1.0 3.0;
+H = 3.0 3.0;
+I = 5.0 3.0;
+J = 1.0 5.0;
+K = 3.0 5.0;
+L = 5.0 5.0;
+*
+* maillage en tria6
+OPTI DIME 2 ELEM TRI6;
+AB = DROI NEL A B;
+DE = DROI NEL D E;
+STR6 = AB REGL NEL DE;
+*
+* maillage en quad9
+OPTI DIME 2 ELEM QUA8;
+BC = DROI NEL B C;
+EF = DROI NEL E F;
+SQU9 = BC REGL NEL EF;
+*
+* maillage en quad4
+OPTI DIME 2 ELEM QUA4;
+GH = DROI NEL G H;
+JK = DROI NEL J K;
+SQU4 = GH regl nel JK;
+*
+* maillage en tria3
+OPTI DIME 2 ELEM TRI3;
+HI = DROI NEL H I;
+KL = DROI NEL K L;
+STR3 = HI regl nel KL;
+*
+* elimination des noeuds doubles
+STOT = STR6 et SQU9 et SQU4 et STR3;
+elim 0.001 STOT;
+*
+* sauvegarde du maillage
+SAUV FORM STOT;
+*
+* trace de verification
+mess 'nbno STOT : ' (nbno STOT);
+mess 'nbel STOT : ' (nbel STOT);
+mess 'nbel STR6 : ' (nbel STR6);
+mess 'nbel SQU9 : ' (nbel SQU9);
+mess 'nbel SQU4 : ' (nbel SQU4);
+mess 'nbel STR3 : ' (nbel STR3);
+trac STOT;
+*
+*fin;

@@ -1,0 +1,83 @@
+*
+*Maillage Modelisation A (COQUE_3D):
+*Contact de deux poutres en grands deplacements
+*Elements coque epaisses (QUAD9)
+*
+*
+opti dime 3 ;
+opti nive 10 ;
+opti elem QUA8 ;
+*
+*Constantes
+*
+* nombre d'éléments dans la longueur
+N = 26;
+* demi largeur de la poutre
+l = 10.16/2. ;
+* longueur de la poutre
+lo = 2032. ;  
+* distance du point C
+dc = -1320.8 ;
+
+A   = 0.  0.   (   l);
+A3  = 0.  0.  (-1.*l) ;
+
+* décalage
+dd = 914.4 ;
+
+xb = (lo + dd) ;
+B  = xb   508.     (l) ;
+B1 = xb   508.  (-1*l) ;
+
+*-------------------------------------------
+* Creation de la poutre 1 (Poutre Inferieure)
+*-------------------------------------------
+
+lAA3  = droit 1 A A3  ;
+vect1 = (lo 0. 0.) ;
+POUTRE1 = (lAA3 trans N vect1) ;
+ORI = (cote 2 poutre1) point 'FINAL';
+oublier vect1;
+elim 0.001 POUTRE1 ;
+ma1 = elem poutre1 'CONTENANT' A;
+*trac poutre1 ;
+
+*-------------------------------------------
+* Creation poutre 2 (poutre superieure)
+*-------------------------------------------
+
+N1 = enti ( 13*N/20 ) ;
+N2 = enti (  7*N/20 ) ;
+
+vect3 = (dc 0. 0.);
+lBB1  = droit 1  B  B1 ;
+surf1 = lBB1 trans N1 vect3 ;
+oublier vect3;
+
+lCC1  = surf1 cote 3 ;
+C  = lCC1 point initial;
+C1 = lCC1 point final ;
+*C2 = bary lCC1 ; 
+
+xe = -1*(dc+lo) ;
+vect4 = (xe 0. 0.);
+surf2 = lCC1 trans N2 vect4 ;
+oublier vect4;
+
+POUTRE2 = (surf1 et surf2 );
+ma2 = elem poutre2 'CONTENANT' B;
+elim 0.001 (POUTRE2);
+*trac poutre2 ;
+
+STRUCT = (poutre1 et poutre2);
+elim 0.001 STRUCT;
+
+
+opti sauv form 'ssnv505a.mgib';
+sauver form STRUCT ;
+
+opti elem seg2;
+rep = (@repere (prog 500. 500. 500) (0. 1. 0.) bleu);
+trac (poutre1 et (poutre2 coul vert) et rep);
+
+fin;

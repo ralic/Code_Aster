@@ -1,0 +1,80 @@
+opti dime 3 elem CU20;
+*
+***************************
+*        Points           *
+***************************
+a=0.01 0. 0.;
+b=1. 0. 0.;
+c=1. 0.5 0.;
+d=0.01 0.5 0.;
+
+***************************
+*       Droites           *
+***************************
+
+ab=droi 20 a b ;
+bc=droi 1 b c ;
+cd=droi 20 c d ;
+da=droi 1 d a;
+**************************
+*  Fermeture du contour 1*
+**************************
+
+contour=ab et bc et cd et da;
+
+
+**************************
+*Definition de la surface*
+**************************
+
+ BO=DALL  ab bc cd da;
+**************************
+* DEFINITION DES LIMITES  *
+**************************
+HAUT=cd ;
+
+BAS=ab ;
+
+GAUCHE=da ;
+
+DROIT=bc;
+
+
+
+
+**************************
+*    lancement maillage  *
+**************************
+* Optimisation de la largeur de bande
+*ort eprouvet;
+* definition d'un titre
+titre ' maillage  1D';
+*trace du maillage
+*trac BO ;
+P1 = 0. 0. 0. ;
+P2 = 0. 1. 0. ;
+DISQUE = BO VOLU ROTA 10 90 P1 P2;
+
+
+*FACE1 = FACE 1 DISQ ;
+*FACE2 = FACE 2 DISQ ;
+*FACE3 = FACE 3 DISQ ;
+
+
+OUBLIER HAUT;
+OUBLIER BAS;
+OUBLIER GAUCHE;
+OUBLIER DROIT;
+OUBLIER CONTOUR;
+
+TRACE CACH DISQUE ;
+
+*Sauvegarde du maillage
+
+
+OPTION SAUV FORMAT  'wtna102d.mgib';
+SAUV FORMAT DISQUE;
+
+*fin;
+
+

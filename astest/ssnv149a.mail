@@ -1,0 +1,46 @@
+% Cas testb Benchmark
+TITRE
+test loi BETON_ENDO_LOCAL
+element cube a 8 noeuds
+FINSF
+
+COOR_3D
+n1       0.     0.    0.
+n2       0.01   0.    0.
+n3       0.01   0.01  0.
+n4       0.     0.01  0.
+n5       0.     0.    0.01
+n6       0.01   0.    0.01
+n7       0.01   0.01  0.01
+n8       0.     0.01  0.01
+FINSF
+
+HEXA8
+ma1   n1 n2 n3 n4 n5 n6 n7 n8
+FINSF
+
+GROUP_NO
+facexyp  n5  n6  n7  n8
+FINSF
+
+GROUP_NO
+facexyn  n1  n2  n3  n4
+FINSF
+
+GROUP_NO
+faceyzp  n2  n3  n7  n6
+FINSF
+
+GROUP_NO
+faceyzn  n1  n4  n8  n5
+FINSF
+
+GROUP_NO
+facexzp  n3  n7  n8  n4
+FINSF
+
+GROUP_NO
+facexzn  n1  n2  n6  n5
+FINSF
+
+FIN

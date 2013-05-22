@@ -1,0 +1,93 @@
+OPTI DIME 3 ELEM TE10;
+*
+oeil = 1. 1. 1. ;
+* Nombre d'elements suivant r
+NBEL=100;
+* Nombre d'éléments dans le sens circonferentiel
+NBEL_T=1;
+* Nombre d'element dans suivant l'axe de révolution
+NBEL_Z=1;
+
+R1 = 10.;
+R2 = 20.;
+*ANGL = 0.05729578;
+ANGL=45.;
+*ANGLR = ANGL*3.141592654/180.;
+ANGLR = .1;
+HAUT = .02;
+cc =cos(ANGLR) ;
+ss =sin(ANGLR);
+
+O =  .0 0. 0. ;
+A = R1 0. 0.;
+B = R2 0. 0.;
+C = (R1*cc)  (R1*ss) 0.;
+D = (R2*cc)  (R2*ss) 0.;
+
+O1 =  .0 0. HAUT ;
+A1 = R1 0. HAUT;
+B1 = R2 0. HAUT;
+C1 = (R1*cc) (R1*ss) HAUT;
+D1 = (R2*cc) (R2*ss) HAUT;
+
+AB = DROIT NBEL A B  ;
+BD = CERCLE B O D NBEL_T;
+DC = DROIT NBEL D C ;
+CA = CERCLE C O A NBEL_T;
+SURF_INF = DALLER AB BD DC CA ;
+*TRAC OEIL SURF_INF;
+*
+A1B1 = DROIT NBEL A1 B1  ;
+B1D1 = CERCLE B1 O D1 NBEL_T;
+D1C1 = DROIT NBEL D1 C1 ;
+C1A1 = CERCLE C1 O A1 NBEL_T;
+SURF_SUP = DALLER A1B1 B1D1 D1C1 C1A1 ;
+*TRAC OEIL SURF_SUP;
+*
+AA1 = DROIT NBEL_Z A A1 ;
+BB1 = DROIT NBEL_Z B B1 ;
+SURF_DRO = DALLER AB BB1 A1B1 AA1 PLAN ;
+TRAC SURF_DRO;
+*
+CC1 = DROIT NBEL_Z C C1 ;
+DD1 = DROIT NBEL_Z D D1 ;
+SURF_GAU = DALLER DC DD1 D1C1 CC1 PLAN ;
+*TRAC SURF_GAU;
+
+SURF_INT = DALLER AA1 C1A1 CC1 CA PLAN ;
+*TRAC SURF_INT;
+
+SURF_EXT = DALLER BB1 B1D1 DD1 BD PLAN ;
+*TRAC SURF_EXT;
+
+SURF1 = SURF_INF ET SURF_SUP ET SURF_DRO ET SURF_GAU ;
+SURF = SURF1 ET SURF_INT ET SURF_EXT;
+ELIM 0.0001 SURF;
+*TRAC OEIL SURF;
+
+BETON = SURF VOLU;
+CYL_1 = BETON et SURF_EXT et SURF_INT et SURF_INF et SURF_SUP;
+CYLINDRE = CYL_1 et SURF_DRO et SURF_GAU;
+ELIM 0.005 CYLINDRE;
+trac oeil CYLINDRE;
+oublier AB;
+oublier BD;
+oublier DC;
+oublier CA;
+oublier A1B1;
+oublier B1D1;
+oublier D1C1;
+oublier C1A1;
+oublier AA1;
+oublier BB1;
+oublier CC1;
+oublier DD1;
+oublier SURF1;
+oublier CYL_1;
+
+opti sauv form 'ssnv178b.mgib';
+sauv 'FORMAT' CYLINDRE ;
+*fin;
+
+
+

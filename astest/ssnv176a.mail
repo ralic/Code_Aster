@@ -1,0 +1,21 @@
+COOR_3D
+N0  0.0   0.0   0.0
+N1  1.0   0.0   0.0
+N2  0.0   1.0   0.0
+N3  0.0   0.0   1.0
+FINSF
+
+
+TRIA3
+F1   N0 N3 N2
+F2   N0 N1 N3
+F3   N0 N2 N1
+F4   N1 N2 N3
+FINSF
+
+TETRA4
+VOLUME = N0 N1 N2 N3
+FINSF
+
+
+FIN

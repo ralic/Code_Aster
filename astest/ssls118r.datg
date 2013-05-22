@@ -1,0 +1,39 @@
+OPTI SAUV FORM 'ssls118r.mgib' ;
+OPTI NIVEAU 8 ;
+OPTI DIME 3 ELEM QUA4 ;
+
+A = 0. 0. 0.;
+B0 = 1. 0. 0.;
+C0 = 1. 1. 0.;
+D0 = 0. 1. 0.;
+O0  = 0.5 0.5 0. ;
+E = 0. 0. 1.;
+B10 = 0.5 0. 0.;
+D10 = 0. 0.5 0.;
+
+B1B = B10 TOUR 20. A E;
+BB  = B0 TOUR 20. A E;
+CC  = C0 TOUR 20. A E;
+D1 = D10 TOUR 20. A E;
+D   = D0 TOUR 20. A E;
+OO  = O0 TOUR 20. A E;
+*
+B1 = B1B TOUR 30. A D;
+B  = BB TOUR 30. A D;
+C  = CC TOUR 30. A D;
+O  = OO TOUR 30. A D;
+*
+AB = DROI 12 A B ;
+BC = DROI 12 B C ;
+CD = DROI 12 C D ;
+DA = DROI 12 A D ;
+
+MAIL1 = AB BC CD DA DALL PLAN ;
+
+MAIL = ( MAIL1 et AB et BC et CD et DA et O et D1 et B1) ;
+
+elim 0.0001 MAIL
+
+TRAC (0. 0. 1000.) MAIL;
+SAUV 'FORMATTE' MAIL;
+FIN;

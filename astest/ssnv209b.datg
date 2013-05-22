@@ -1,0 +1,49 @@
+opti dime 2 elem qua4 ;
+dens 2 ;
+
+*----------------------------------------
+*DONNEES
+*----------------------------------------
+EPS = 0.000001;
+
+* dimensions des cotés
+LX     = 0.08;
+LYbati = 0.010;
+LYplaq = 0.04;
+
+* nombre d'éléments
+NX = 64;
+NY = 25; 
+
+*---------------------------------------------
+*construction surface laterale
+*---------------------------------------------
+
+p1 =  0.  (-1.*LYbati) ;
+p2 =  LX.  (-1.*LYbati) ;
+p3 =  LX.      LYplaq.  ;
+p4 =  0.       LYplaq.  ;
+ptop = (LX./2.) LYplaq.;
+
+*PPA = 0. 0. ;
+*PPB = 0.00125 0.;
+*PPC = 0.005 0.;
+*PPD = 0.0075 0.;
+*PPE = 0.01125 0.;
+*PPS = 0.08 0.;
+
+lig1 = droit p1 p2 NX;
+lig2 = droit p2 p3 NY;
+lig3 = p3 droit (NX/2) ptop droit (NX/2) p4;
+lig4 = droit p4 p1 NY;
+
+SURF= DALL lig1 lig2 lig3 lig4 PLAN;
+elim EPS SURF lig1;
+
+trac SURF;
+
+MAILLE = SURF;
+
+opti sauv format '/home/mazet/ssnv209b.mgib' ;
+sauv format maille ;
+fin ;

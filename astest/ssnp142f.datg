@@ -1,0 +1,90 @@
+
+Point(1) = {0, 0, 0, 1};
+Point(2) = {5, 0, 0, 1};
+Point(3) = {1.5, 10, 0, 1};
+Point(4) = {0, 10, 0, 1};
+
+Line(1) = {1, 2};
+Line(6) = {4, 1};
+Line(7) = {4, 3};
+Line(8) = {3, 2};
+
+//Transfinite Line {1} = 101 Using Progression 1;
+
+epj=0.001;
+hfond=5;
+ep_bar=0.1;
+
+Line Loop(9) = {8, -1, -6, 7};
+Plane Surface(10) = {9};
+
+Extrude {0, 0, ep_bar} {
+  Surface{10};
+}
+Extrude {0, -epj, 0} {
+  Surface{23};Layers{1};Recombine;
+}
+Extrude {0, -hfond+epj, 0} {
+  Surface{54};
+}
+Extrude {-5, 0, 0} {
+  Surface{67};
+}
+Extrude {5, 0, 0} {
+  Surface{75};
+}
+// JOINT
+Physical Volume(121) = {2};
+
+// JOINT HAUT (PLAN Z=1)
+Physical Line(133) = {13};
+
+// JOINT BAS (PLAN Z=1)
+Physical Line(134) = {36};
+
+
+//BARRAGE
+Physical Volume(122) = {1};
+
+// TERRE
+Physical Volume(124) = {5, 3, 4};
+
+// BARRAGE AMONT
+Physical Surface(127) = {27};
+
+// BARRAGE AVAL
+Physical Surface(128) = {19};
+
+// FOND DE L'EAU (EN AMONT)
+Physical Surface(129) = {85};
+
+// TERRE BAS
+Physical Surface(130) = {93, 76, 115};
+
+// TERRE GAUCHE
+Physical Surface(131) = {98};
+
+// TERRE DROITE
+Physical Surface(132) = {120};
+
+// FACE JOINT HAUT
+Physical Surface(135) = {23};
+
+// FACE JOINT BAS
+Physical Surface(136) = {54};
+
+Characteristic Length {1,2,15,16,10,20,24,6} = 0.1;
+Characteristic Length {3,4,14,5} = 0.7;
+Characteristic Length {40,44,26,30,25,34,50,54} = 0.8;
+
+//Characteristic Length {1,2,15,16,10,20,24,6} = 0.3;
+//Characteristic Length {3,4,14,5} = 0.8;
+//Characteristic Length {40,44,26,30,25,34,50,54} = 1.2;
+//Characteristic Length {35, 36, 44, 40, 30, 26, 34, 25, 54, 50, 45, 46} = 1.4;
+
+Transfinite Line {36} = 51 Using Progression 1;
+Transfinite Line {13} = 51 Using Progression 1;
+Transfinite Line {34} = 51 Using Progression 1;
+Transfinite Line {1}  = 51 Using Progression 1;
+
+

@@ -1,0 +1,175 @@
+*--------------------------------------------------------------
+* fichier de maillage du modele TUYAU à 4 noeuds
+* identique au fichier de maillage du modele à 3 noeuds
+* mis à part le nombre d'éléments
+* crée par EC le 09/99 
+* modifié par EC le 22/03/00 		        
+*--------------------------------------------------------------
+
+*opti trac ps;
+opti dime 3;
+opti elem seg2;
+opti elem seg3;
+
+rmoy = 0.0811775 ;
+*** rayon de courbure
+rc = 0.2286 ;
+ep = 0.007345 ;
+
+*** nombre d'éléments par coude (hors long. d'amortissement)
+n_elt_cd = 5;
+
+***** les points definissant les axes des coudes *****
+
+*** longueurs des tubes et position des axes *** 
+
+l1 = 1.247;
+l2 = 1.543;
+l3 = 2.143;
+l4 = 1.543;
+l5 = 4.771;
+
+** points de l'axe **
+
+** extremite des coudes
+a=(-1. * (rc)) 0. 0. ; 
+b=(-1. * (rc + l1)) 0. 0. ;
+c=0. 0. (rc) ;
+d =0. 0. (rc + l2) ;
+e = 0. (-1.*rc) ((2.*rc) + l2);
+f = 0. ((-1.*rc) - l3) ((2.*rc) + l2);
+g = 0. ((-2.*rc) - l3) (rc + l2);
+h = 0. ((-2.*rc) - l3) (rc + l2 - l4);
+i = rc ((-2.*rc) - l3) (l2 - l4);
+j = (rc + l5) ((-2.*rc) - l3) (l2 - l4);
+
+** extremites des encastrements
+k = (rc + 4.048 + 0.563) ((-2.*rc) - l3) (l2 - l4);
+kprime = (rc + 4.048 + 0.2815) ((-2.*rc) - l3) (l2 - l4);
+l = (rc + 4.048) ((-2.*rc) - l3) (l2 - l4);
+m = (-1. * (rc + 0.412)) 0. 0.;
+mprime = ((-1. * (rc + 0.412)) - 0.278) 0. 0.;
+n = ((-1. * (rc + 0.412)) - 0.556) 0. 0.;
+
+** extremites du support de vanne
+o = 0. ((-1.*rc) - 0.615) ((2.*rc) + l2);
+p = 0. ((-1.*rc) - 0.615 - 0.408) ((2.*rc) + l2);
+
+
+
+** points de rotation des coudes pour creer un axe de rotation **
+p1 = (-1*rc) 0. rc;
+p3 = 0. (-1. * rc) (rc + l2);
+p5 = 0. ((-1.*rc) - l3) (rc+l2);
+p7 = rc ((-2.*rc) - l3) (rc + l2 - l4);
+
+patbiel1 = 0. ((-1.*rc) - l3 + 0.615) ((2.*rc) + l2 );
+DXBUT = 0. ((-1.*rc) - l3 + .615) ((2.*rc) + l2 - 0.099);
+zzpatb2 = (2.*rc) + l2 - rmoy - (0.5*ep) - 0.07 ;
+patbiel2 = 0. ((-1.*rc) - l3 + 0.615) (zzpatb2);
+DYBUT = 0. ((-1.*rc) - l3 + .615) ((2.*rc) + l2 - 0.181);
+
+
+** si on modelise la bielle entiere
+lbiel = 1.915 ;
+patbiel3 = 0. ((-1.*rc)- l3+ 0.615) (zzpatb2- 0.01);
+patbiel5 = 0. ((-1.*rc)- l3+ 0.615) (zzpatb2- 0.01- 0.056);
+patbiel6 = 0. ((-1.*rc)- l3+ 0.615) (zzpatb2- 0.01- lbiel+ 0.047);
+patbiel4 = 0. ((-1.*rc)- l3+ 0.615) (zzpatb2- 0.01- lbiel);
+
+patvan1 = 0. ((-1.*rc) - 0.615 - 0.204) ((2.*rc) + l2);
+patvan2 = 0. ((-1.*rc) - 0.615 - 0.204) ((2.*rc) + l2 + 0.160);
+patvan3 = 0. ((-1.*rc) - 0.615 - 0.204) ((2.*rc) + l2 + 0.277);
+patvan4 = 0.1715 ((-1.*rc) - 0.615 - 0.204) ((2.*rc) + l2 + 0.277);
+
+
+
+***************************
+*** creation des coudes ***
+*************************** 
+opti elem seg3;
+coude1 = cerc n_elt_cd a p1 c ;
+coude2 = cerc n_elt_cd d p3 e ;
+coude3 = cerc n_elt_cd f p5 g ;
+coude4 = cerc n_elt_cd h p7 i ;
+
+**************************************
+**** creation des elements poutre ****
+**************************************
+opti elem seg3;
+
+bn = droit 2 b n;
+am = droit 2 m a;
+cd = droit 9 c d;
+eo = droit 4 e o;
+gh = droit 9 g h;
+il = droit -15 i l dini 0.7 dfin 1.;
+kj = droit 1 k j;
+
+** encastrements
+enc2 = droit 1 l kprime;
+encbis2 = droit 1 kprime k;
+enc1 = droit 1 mprime m;
+encbis1 = droit 1 n mprime;
+
+** au niv de la bielle
+pf1 = droit 3 p patbiel1;
+pf2 = droit 4 patbiel1 f;
+pf = pf1 et pf2;
+
+** au niv de la vanne
+vanne1 = droit 1 o patvan1;
+vanne2 = droit 1 patvan1 p;
+vanne = vanne1 et vanne2;
+
+** elem bielle et vanne
+* fixation de bielle
+* divisee en trois parties
+
+patbielB = manu POI1 DXBUT;
+
+opti elem seg2;
+patbielA = droit 1 patbiel1 DXBUT;
+patbielC = droit 1 DXBUT patbiel2;
+patbielC = patbielC et (droit 1 patbiel2 DYBUT);
+
+bielA = droit 1 patbiel3 patbiel5;
+bielB = droit 1 patbiel5 patbiel6;
+bielC = droit 1 patbiel6 patbiel4;
+
+patvan = droit 1 patvan1 patvan2;
+patvan = patvan et (droit 1 patvan2 patvan3) ;
+patvan = patvan et (droit 1 patvan3 patvan4) ;
+
+
+** maille a charger
+cdgvan = manu POI1 patvan2;
+
+poutres = bn et enc1 et encbis1 et am et cd et eo et vanne ;
+poutres = poutres et pf et gh et il et enc2 et encbis2 et kj;
+coudes = coude1 et coude2 et coude3 et coude4;
+
+mail = coudes et poutres et patbielA et patbielB et patbielC;
+mail = mail et cdgvan et patvan et bielA et bielB et bielC;
+
+elim 0.001 mail ;
+
+*tass mail;
+sauv FORMAT mail;
+
+list (nbel mail) ;
+list (nbno mail) ;
+
+list (patvan4);
+list (DXBUT);
+list (DYBUT);
+
+oeil = (10. 10. 10.);
+trac oeil  mail;
+oeil2 = (10. 0. 0.);
+trac oeil2  mail;
+oeil3 = (0. 10. 0.);
+trac oeil3  mail;
+oeil4 = (0. 0. 10.);
+trac oeil4  mail;
+

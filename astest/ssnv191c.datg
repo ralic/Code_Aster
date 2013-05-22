@@ -1,0 +1,55 @@
+opti dime 2  elem qua4 ;
+opti niveau 8;
+
+*----------------------------------------
+*DONNEES
+*----------------------------------------
+* dimensions des cotes
+LX = 2;
+LY = 3;
+
+* nombre d'elements
+NX = 2;
+NY = 5; 
+
+
+EPSI = 0.000001;
+*---------------------------------------------
+*construction des surfaces dans le plan inférieur
+*---------------------------------------------
+
+p1 = LX   0.;
+p2 = LX  LY;
+p3 = 0.  LY;
+p4 = 0.  0.;
+
+
+
+LPRESD = droit p1 p2 NY;
+LPRESV = droit p2 p3 NX;
+LPRESG = droit p4 p3 NY;
+LENCAV = droit p1 p4 NX;
+
+
+
+SPLAQ = (LPRESD regl NX LPRESG) coul vert; 
+
+elim EPSI SPLAQ LENCAV;
+elim EPSI SPLAQ LPRESV;
+OUBLIER LPRESV;
+OUBLIER LENCAV;
+*--------------------------------
+MTOT =  SPLAQ;
+
+elim MTOT 1E-6;       
+trac MTOT;
+mess 'VERIFICATION DU MAILLAGE :';
+mess 'nbel MTOT   : ' (nbel MTOT);
+mess ' ';
+mess 'nbno MTOT   : ' (nbno MTOT);
+                 
+*
+opti sauv form '/home/massin/PERNET/modifs/ssnv191/ssnv191c.mgib';
+sauv form MTOT;
+*
+fin ;

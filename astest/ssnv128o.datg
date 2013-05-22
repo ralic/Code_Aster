@@ -1,0 +1,81 @@
+********************************************************
+*                  --- SSNV128A ---
+* MAILLAGE 2D D'UNE PLAQUE EN CONTACT AVEC UN BATI 1D
+* ELEM QUA4 (LINEAIRE)
+********************************************************
+*
+opti dime 2 elem qua4 echo 0 ;
+opti niveau 8 ;
+*
+* dimensions du bati et de la plaque
+* -----------------------------------
+COTE = 0.04;
+EPSI = 0.000001;
+*
+XA = 0.;
+XB = 0.00125;
+XC = 0.005;
+XD = 0.0075;
+XE = 0.01125;
+*
+* discretisation
+* ---------------
+N1 = 32;
+N2 = 10;
+*
+* points, lignes et surface de construction du bati
+* --------------------------------------------------
+PBA = XA   0.;
+PBS = COTE 0.;
+*
+LBATI = PBS d N1 PBA;
+PBR = LBATI POIN 2;
+*
+* points, lignes et surface de construction de la plaque
+* -------------------------------------------------------
+PPA = XA   0.;
+PPB = XB   0.;
+PPC = XC   0.;
+PPD = XD   0.;
+PPE = XE   0.;
+PPS = COTE 0.;
+PHA = XA   COTE;
+PHS = COTE COTE;
+*
+LCONTA = PPA d 1 PPB d 3 PPC d 2 PPD d 3 PPE d 23 PPS;
+PPR = LCONTA poin N1;
+LCONTAR = LCONTA comp PPA PPR;
+LBLOCX = PPS d N2 PHS;
+LPRESV = PHA d N1 PHS;
+LPRESH = PPA d N2 PHA;
+*
+SPLAQ = (LCONTA regl N2 LPRESV) coul vert;
+elim EPSI SPLAQ LBLOCX;
+elim EPSI SPLAQ LPRESH;
+*
+* assemblage, trace de verification et sauvegarde du maillage
+* ------------------------------------------------------------
+MTOT = LBATI et SPLAQ;
+*
+mess 'VERIFICATION DU MAILLAGE :';
+mess 'nbel MTOT   : ' (nbel MTOT);
+mess 'nbel SPLAQ  : ' (nbel SPLAQ);
+mess 'nbel LBATI  : ' (nbel LBATI);
+mess 'nbel LCONTA : ' (nbel LCONTA);
+mess 'nbel LCONTAR: ' (nbel LCONTAR);
+mess ' ';
+mess 'nbno MTOT   : ' (nbno MTOT);
+mess 'nbno SPLAQ  : ' (nbno SPLAQ);
+mess 'nbno LBATI  : ' (nbno LBATI);
+mess 'nbno LCONTA : ' (nbno LCONTA);
+mess 'nbno LCONTAR: ' (nbno LCONTAR);
+mess ' ';
+*
+trac MTOT;
+*
+opti sauv form 'ssnv128a.mgib';
+sauv form MTOT;
+*
+fin;
+
+

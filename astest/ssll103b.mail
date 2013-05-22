@@ -1,0 +1,29 @@
+TITRE
+SSLL103B
+FLAMBEMENT D'UNE CORNIERE ELASTIQUE (POU_D_T)
+FINSF
+COOR_3D
+  A1       0.0D0    0.0D0    0.0D0
+  N2     150.0D0    0.0D0    0.0D0
+  N3     300.0D0    0.0D0    0.0D0
+  N4     450.0D0    0.0D0    0.0D0
+  N5     600.0D0    0.0D0    0.0D0
+  N6     750.0D0    0.0D0    0.0D0
+  N7     900.0D0    0.0D0    0.0D0
+  N8    1050.0D0    0.0D0    0.0D0
+  A2    1200.0D0    0.0D0    0.0D0
+FINSF
+SEG2
+  S1       A1       N2
+  S2       N2       N3
+  S3       N3       N4
+  S4       N4       N5
+  S5       N5       N6
+  S6       N6       N7
+  S7       N7       N8
+  S8       N8       A2
+FINSF
+FIN
+GROUP_NO
+ B         N3     M3
+FINSF

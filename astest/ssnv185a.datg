@@ -1,0 +1,101 @@
+opti dime 3  elem cub8 ;
+
+dens 1 ;
+
+*----------------------------------------
+*DONNEES
+* dimensions des cotés
+LX = 1;
+LY = 10;
+LZ = 30;
+
+* nombre d'éléments
+NX = 5;
+NY = 30;
+NZ = 50; 
+
+* ATTENTION : NY ET NZ DOIVENT ETRE MULTIPLES DE 2
+
+*---------------------------------------------
+*construction des surfaces dans le plan milieu
+*---------------------------------------------
+
+p1       = LX  LY     (LZ/2.);
+p2       = 0.  LY     (LZ/2.);
+PFON_INI = 0. (LY/2.) (LZ/2.);
+p3       = 0.  0.     (LZ/2.);
+p4       = LX  0.     (LZ/2.);
+PFON_FIN = LX (LY/2.) (LZ/2.);
+
+lig1   = droit p1       p2       NX;
+lig2   = droit p2       PFON_INI (NY/2);
+FONFIS = droit PFON_INI PFON_FIN  NX;
+lig3   = droit PFON_FIN p1       (NY/2);
+
+lig4 = droit PFON_INI p3       (NY/2);
+lig5 = droit p3       p4        NX;
+lig6 = droit p4       PFON_FIN (NY/2);
+lig7 = droit PFON_FIN PFON_INI  NX;
+
+LEVSUP = DALL lig1 lig2 FONFIS lig3 PLAN;
+
+p10 = LX  LY     (LZ/2.);
+p20 = 0.  LY     (LZ/2.);
+
+lig10 = droit p10      p20       NX ;
+lig20 = droit p20      PFON_INI (NY/2);
+lig30 = droit PFON_FIN p10      (NY/2);
+
+LEVINF= DALL lig10 lig20 FONFIS lig30 PLAN;
+
+trac LEVSUP;
+trac LEVINF;
+
+SURFT = DALL lig4 lig5 lig6 lig7 PLAN;
+SURFMILP = SURFT et LEVSUP;
+SURFMILN = SURFT et LEVINF;
+elim SURFMILP 1e-6;
+elim SURFMILN 1e-6;
+
+NOTORS = 0. 0. (LZ/2.);
+NOBLOC = 0. 0. (-1*LZ/2.);
+
+*---------------------------------------------
+*extrusion
+*---------------------------------------------
+
+volsup = SURFMILP volu  'TRAN' NOTORS (NZ/2);
+volinf = SURFMILN volu  'TRAN' NOBLOC (NZ/2);
+elim 1E-6 volsup;
+elim 1E-6 volinf;
+
+vol = volsup et volinf;
+
+SURFSUP = FACE 2  volsup ;
+SURFINF = FACE 2  volinf ;
+
+*-----------------------------------------
+*si on veut un carre_sain
+*-----------------------------------------
+
+*elim 1E-6 vol;
+
+*---------------------------
+* visualisation de controle
+*---------------------------
+ 
+*trac fonfis;
+*trac LEVINF;
+trac cach vol;
+
+trac ((enve vol) et (SURFSUP coul roug) 
+  et (SURFINF coul bleu) et 
+  (LEVSUP coul vert) et (LEVINF coul vert));
+
+MAILLE = vol et FONFIS et SURFSUP et SURFINF et
+       LEVSUP et LEVINF
+       et PFON_INI et PFON_FIN;
+
+opti sauv format '/home/geniaut/etudes/CT/HEXA_CLA/hexa_fiss.mgib' ;
+sauv format maille ;
+fin ;

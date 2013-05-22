@@ -1,0 +1,32 @@
+TITRE
+Test4_2_1
+POUTRE DROITE APPUYEE EN SES DEUX EXTREMITES
+SOUMISE A UN CHARGEMENT REPARTI LINEAIRE
+FINSF
+COOR_3D
+%
+  N1       0.0D0          0.0D0    0.0D0
+  N2       1.0D0          0.0D0    0.0D0
+  N3       2.0D0          0.0D0    0.0D0
+  N4       2.535898385D0  0.0D0    0.0D0
+  N5       2.884022266D0  0.0D0    0.0D0
+  N6       3.0D0          0.0D0    0.0D0
+  N7       3.115977734D0  0.0D0    0.0D0
+  N8       3.464101615D0  0.0D0    0.0D0
+  N9       4.0D0          0.0D0    0.0D0
+  N10      5.0D0          0.0D0    0.0D0
+  N11      6.0D0          0.0D0    0.0D0
+FINSF
+SEG2
+  S11      N1       N2
+  S12      N2       N3
+  S13      N3       N4
+  S14      N4       N5
+  S15      N5       N6
+  S16      N6       N7
+  S17      N7       N8
+  S18      N8       N9
+  S19      N9       N10
+  S110     N10      N11
+FINSF
+FIN

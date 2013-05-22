@@ -1,0 +1,85 @@
+opti echo 1 opti dime 3 elem cu20 mode tridim ;                         
+titre 'SSNS101E SHB20';                                              
+*                                                                       
+nelem1 = 20;                                                             
+**nelcir = 20;                                                            
+nelcir = 20;                                                            
+                                                                        
+R1 = 2540. ;                                                               
+Z1 = 0.    ;                                                            
+Z3 = 254.   ;                                                             
+ANGLE = 5.72957795130823 ;
+                                                                        
+EPAI_EXT = 12.7 ;                                                           
+                                                                        
+R1_PLUS  = R1+(EPAI_EXT/2) ;                                            
+R1_MOINS = R1-(EPAI_EXT/2) ;                                            
+                                                                        
+                                          
+P1    = R1_PLUS 0.              Z1              ;                       
+P2    = R1_PLUS 0.              Z3              ;                       
+P3    = R1_MOINS 0.              Z3              ;                      
+P12   = R1_MOINS 0.              Z1              ;                      
+                                                                        
+c1 = 0. 0. 0.;                                                          
+c2 = 0. 0. 1.;
+
+l12   = droi nelem1 p1  p2;                                            
+l1290  = l12  tourne  ANGLE c1 c2;                                      
+l23   = droi 1      p2  p3;                                            
+l312  = droi nelem1 p3  p12;                                            
+l31290  = l312  tourne  ANGLE c1 c2;                                      
+l121  = droi 1      p12 p1;
+l21   = droi nelem1 p2  p1;                                            
+
+
+suextext  = l21  rota nelcir ANGLE c1 c2;
+suextint  = l312 rota nelcir ANGLE c1 c2;
+geoext     = VOLUME suextint suextext;
+trac cach geoext;
+rect1  = regl 1 l21 l312; 
+trac rect1;
+
+
+su0   = rect1;
+su90  = su0 tourne ANGLE c1 c2;
+susup = l23 rota nelcir ANGLE c1 c2;
+suinf = l121 rota nelcir ANGLE c1 c2;
+trac susup;
+trac suinf;
+
+
+geoshb8 = geoext;
+geotot = su0 et su90 et susup et suinf et geoshb8 et suextext et l31290;
+
+elim 0.001 geotot;
+
+OPTI NIVE 11 ;
+OPTI SAUV FORM 
+'/home/desroches/trinh/RESTIT/test/ssns101/ssns101e.mgib' ;
+SAUV FORM geotot   ;
+
+
+trac cache geotot;
+
+opti elem seg2 ;
+rep1 = @repere;
+opti elem cu20;
+
+**trac cache geotot;
+trac cache (rep1 et geotot et (suextext coul rouge));
+
+
+list (nbno geotot);
+list (nbel geotot);
+
+
+
+
+
+
+
+fin;
+
+
+

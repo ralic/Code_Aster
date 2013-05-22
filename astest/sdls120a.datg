@@ -1,0 +1,63 @@
+opti dime 2  elem qua4 ;
+
+dens 1 ;
+
+*----------------------------------------
+*DONNEES
+*----------------------------------------
+* dimensions des cotés
+
+LX = 10;
+LY = 30;
+
+* nombre d'éléments
+
+NX = 30;
+NY = 50; 
+
+*---------------------------------------------
+*construction des surfaces dans le plan inférieur
+*---------------------------------------------
+
+p1 = 0.   0.;
+p2 = LX   0.;
+p12= (LX/2.) 0.;
+p3 = LX  LY ;
+p4 = 0.  LY ;
+p34= (LX/2.) LY;
+p5 = 0.  (LY/2. + 0.001);
+p6 = (LX/2.)  (LY/2.) ;
+p7 = 0.  (LY/2. - 0.001);
+
+BAS_G = droit p1 p12 (NX/2);
+BAS_D = droit p12 p2 (NX/2);
+DROITE = droit p2 p3 NY;
+HAUT_D = droit p3 p34 (NX/2);
+HAUT_G = droit p34 p4 (NX/2);
+GAU_H = droit p4 p5 (NY/2);
+LEV_S = droit p5 p6 (NX/2);
+LEV_I = droit p6 p7 (NX/2);
+GAU_B = droit p7 p1 (NY/2);
+MIL_B = droit p12 p6 (NY/2);
+MIL_H = droit p6 p34 (NY/2);
+MIL   = droit p12 p34 NY;
+
+SURF_G_B= DALL BAS_G MIL_B LEV_I GAU_B PLAN;
+SURF_G_H= DALL LEV_S MIL_H HAUT_G GAU_H PLAN;
+SURF_D = DALL BAS_D DROITE HAUT_D MIL PLAN;
+
+trac SURF_G_B;
+trac SURF_G_H;
+trac SURF_D;
+
+SURF = SURF_G_B et SURF_G_H et SURF_D;
+
+elim SURF 1E-6;
+
+trac SURF;
+
+
+
+opti sauv format '/home/nistor/sdls120a.mgib' ;
+sauv format SURF ;
+fin ;

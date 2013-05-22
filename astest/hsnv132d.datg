@@ -1,0 +1,54 @@
+opti dime 3  elem cub8 ;
+
+*----------------------------------------
+*DONNEES
+*----------------------------------------
+* dimensions des cotes
+LX = 1;
+LY = 1;
+LZ = 0.1;
+
+* nombre d'elements
+NX = 51;
+NY = 51; 
+NZ = 2;
+
+*---------------------------------------------
+*construction des surfaces dans le plan inférieur
+*---------------------------------------------
+
+p1 = 0.  0.  0.  ;
+p2 = LX  0.  0.  ;
+p5 = LX  LY  0.  ;
+p6 = 0.  LY  0.  ;
+
+liginf = droit p1 p2 NX;
+lig23  = droit p2 p5 NY;
+ligsup = droit p5 p6 NX;
+lig4   = droit p6 p1 NY;
+
+SURF = liginf lig23 ligsup lig4 dall PLAN ;
+
+*---------------------------------------------
+*extrusion suivant Z
+*---------------------------------------------
+p0 = 0.  0. LZ.;
+
+vol = SURF volu  'TRAN' p0 NZ;
+
+SURFSUP = ligsup  TRAN  p0 NZ;
+SURFINF = liginf  TRAN  p0 NZ;
+SURFGAU = lig4    TRAN  p0 NZ;
+SURFDRO = lig23   TRAN  p0 NZ;
+
+MAILLE = vol et SURFGAU et SURFDRO et SURFINF et SURFSUP;
+
+elim MAILLE 1E-6;
+trac cach (vol et (SURFGAU coul roug)
+               et (SURFDRO coul bleu)
+               et (SURFSUP coul vert));        
+                          
+opti sauv format 
+'/local00/geniaut/ast_dev/THERMO/test/hsnv132d.mgib' ;
+sauv format maille ;
+fin ;

@@ -1,0 +1,23 @@
+opti dime 3 elem tri3 ;
+
+a1 = 0. 0. 0. ;
+a2 = 10. 0. 0. ;
+a3 = 10. 5. 0. ;
+a4 = 0. 5. 0. ;
+
+l11 = d 10 a1 a2 ;
+l12 = d 5 a2 a3 ;
+l13 = d 10 a3 a4 ;
+l14 = d 5 a4 a1 ;
+
+ plaq1 = daller plan l11  l12  l13  l14 ;
+
+ plaq = plaq1  ;
+
+ elim 0.001 plaq ;
+ sort plaq ;
+opti sauv format 'ssls111c.mgib' ;
+ sauv format plaq ;
+
+oeil = 1. 1. 16. ;
+trac oeil plaq ;

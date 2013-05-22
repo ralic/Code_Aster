@@ -1,0 +1,672 @@
+# -*- coding: iso-8859-1 -*-
+import os
+verbose = 0
+Rayon = 0.02
+LG_ARETE = Rayon / 1.0
+Rep_mail = os.environ['HOME']
+
+
+###
+### This file is generated automatically by SALOME v6.3.0 with dump python functionality
+###
+
+import sys
+import salome
+
+salome.salome_init()
+theStudy = salome.myStudy
+
+import salome_notebook
+notebook = salome_notebook.notebook
+
+import iparameters
+ipar = iparameters.IParameters(salome.myStudy.GetCommonParameters("Interface Applicative", 1))
+
+
+###
+### GEOM component
+###
+
+import GEOM
+import geompy
+import math
+import SALOMEDS
+
+
+geompy.init_geom(theStudy)
+
+#
+if verbose :
+  print "Rayon =", Rayon
+#
+# A. Bases
+#
+DX = 12.0*Rayon
+DY =  4.0*Rayon
+DZ =  1.0*Rayon
+#
+Axe_x = geompy.MakeVectorDXDYDZ( Rayon,     0,     0 )
+Axe_y = geompy.MakeVectorDXDYDZ(     0, Rayon,     0 )
+Axe_z = geompy.MakeVectorDXDYDZ(     0,     0, Rayon )
+#
+# B. La geometrie
+# B.1. Boite principale
+#      Selon x : taille maxi : 12R, xmini = 0
+#      Selon y : taille maxi : 4R, symetrique par rapport au plan y=0
+#      Selon z : taille maxi : R, zmini = 0
+#
+BOX_1 = geompy.MakeBoxDXDYDZ(DX, DY, DZ)
+geompy.TranslateDXDYDZ(BOX_1, 0., -0.5*DY, 0.)
+#
+# B.2. Decoupe interne
+# B.2.1. Creation de la boite de decoupe interne
+#      Selon x : taille maxi : R + R + R, xmini = 0
+#      Selon y : taille maxi : 2R, symetrique par rapport au plan y=0
+#      Selon z : taille maxi : 3DZ, symetrique par rapport au plan z=0
+#      C'est une brique a laquelle on ajoute 2 demi-cylindres
+#      Astuce : un cylindre est connu par ses 2 cercles et une generatrice. Cette generatrice
+#      est du cote Ymax. Si on ne fait rien, quand va coller le cylindre sur la boite,
+#      on aura une arete residuelle a droite. Et ce n'est pas beau. Alors on retourne
+#      le cylindre et ainsi l'arete est immergee dans la masse donc invisible !
+#
+du = 1.0*Rayon
+dv = 2.0*Rayon
+dw = 3.0*DZ
+box_int = geompy.MakeBoxDXDYDZ(du, dv, dw)
+geompy.TranslateDXDYDZ(box_int, 0., -Rayon, 0.)
+#
+Cyl_R = geompy.MakeCylinderRH(Rayon, dw)
+Union_1 = geompy.MakeFuse(box_int, Cyl_R)
+#
+geompy.Rotate(Cyl_R, Axe_z, math.pi)
+geompy.TranslateDXDYDZ(Cyl_R, Rayon, 0., 0.)
+bloc = geompy.MakeFuse(Union_1, Cyl_R)
+#
+geompy.TranslateDXDYDZ(bloc, Rayon, 0., -DZ)
+#
+# B.2.2. Decoupe 1
+#
+geompy.TranslateDXDYDZ(bloc, 3.0*Rayon, 0., 0.)
+BOX_2 = geompy.MakeCut(BOX_1, bloc)
+#
+# B.2.3. Decoupe 2
+#
+geompy.TranslateDXDYDZ(bloc, 5.0*Rayon, 0., 0.)
+BOX_3 = geompy.MakeCut(BOX_2, bloc)
+#
+# B.3. Decoupe externe droite
+# B.3.1. Creation de la boite de decoupe
+#      Selon x : taille maxi : 3R, xmini = 0
+#      Selon y : taille maxi : 5R, symetrique par rapport au plan y=0
+#      Selon z : taille maxi : 3DZ, symetrique par rapport au plan z=0
+#      C'est une brique a laquelle on ajoute 1 demi-cylindre
+#      La meme astuce que precedemment pour diminuer les aretes vives inutiles
+#      ne marche pas ...
+#
+du = 3.0*Rayon
+dv = 5.0*Rayon
+dw = 3.0*DZ
+box_ext_d_1 = geompy.MakeBoxDXDYDZ(du, dv, dw)
+geompy.TranslateDXDYDZ(box_ext_d_1, 0., -0.5*dv, 0.)
+#
+Cyl_2R = geompy.MakeCylinderRH(2.0*Rayon, dw)
+#
+box_ext_d = geompy.MakeCut(box_ext_d_1, Cyl_2R)
+#
+geompy.TranslateDXDYDZ(box_ext_d, 0., 0., -DZ)
+#
+# B.3.2. Decoupe
+#
+geompy.TranslateDXDYDZ(box_ext_d, 10.0*Rayon, 0., 0.)
+BOX_4 = geompy.MakeCut(BOX_3, box_ext_d)
+#
+# B.4. Decoupe externe grands cotes
+# B.4.1. Creation de la boite de decoupe
+#      Selon x : taille maxi : 9R, xmini = 0
+#      Selon y : taille maxi : 5R, ymini = 2R(sqrt(3)-1)
+#      Selon z : taille maxi : 3DZ, symetrique par rapport au plan z=0
+#
+du = 9.0*Rayon
+dv = 5.0*Rayon
+dw = 3.0*DZ
+box_ext_1 = geompy.MakeBoxDXDYDZ(du, dv, dw)
+geompy.TranslateDXDYDZ(box_ext_1, 0., math.sqrt(3.0)*Rayon, 0.)
+#
+geompy.TranslateDXDYDZ(Cyl_2R, 4.0*Rayon, 0., 0.)
+box_ext_2 = geompy.MakeCut(box_ext_1, Cyl_2R)
+#
+geompy.TranslateDXDYDZ(Cyl_2R, 1.0*Rayon, 0., 0.)
+box_ext_3 = geompy.MakeCut(box_ext_2, Cyl_2R)
+#
+geompy.TranslateDXDYDZ(Cyl_2R, 4.0*Rayon, 0., 0.)
+box_ext_4 = geompy.MakeCut(box_ext_3, Cyl_2R)
+#
+geompy.TranslateDXDYDZ(Cyl_2R, -2.0*Rayon, 2.*math.sqrt(3.0)*Rayon, 0.)
+box_ext_5 = geompy.MakeFuse(box_ext_4, Cyl_2R)
+#
+geompy.TranslateDXDYDZ(Cyl_2R, -5.0*Rayon, 0., 0.)
+box_ext_6 = geompy.MakeFuse(box_ext_5, Cyl_2R)
+#
+du = 1.0*Rayon
+dv = 2.0*Rayon
+dw = 3.0*DZ
+box_ext_a = geompy.MakeBoxDXDYDZ(du, dv, dw)
+geompy.TranslateDXDYDZ(box_ext_a, 4.0*Rayon, 0., 0.)
+box_ext_7 = geompy.MakeCut(box_ext_6, box_ext_a)
+#
+du = 2.0*Rayon
+dv = 2.0*Rayon
+dw = 3.0*DZ
+box_ext_b = geompy.MakeBoxDXDYDZ(du, dv, dw)
+geompy.TranslateDXDYDZ(box_ext_b, 0., 2.*(math.sqrt(3.0)-1.0)*Rayon, 0.)
+box_ext = geompy.MakeFuse(box_ext_7, box_ext_b)
+#
+geompy.TranslateDXDYDZ(box_ext, 0., 0., -DZ)
+#
+# B.4.2. Decoupe 1
+#
+BOX_5 = geompy.MakeCut(BOX_4, box_ext)
+#
+# B.5.3. Decoupe 2
+#
+geompy.TrsfOp.MirrorAxis(box_ext, Axe_x)
+BOX_G = geompy.MakeCut(BOX_5, box_ext)
+#
+# C. Extraction de la face dans le plan Z=0
+#      Selon x : taille maxi : DX = 12R, xmini = 0
+#      Selon y : taille maxi : DY = 4R, symetrique par rapport a l'axe y=0
+#
+du = Rayon
+dv = Rayon
+dw = 0.0
+p_B5 = geompy.MakeVertex (du, dv, dw)
+L_faces = geompy.GetShapesOnPlaneWithLocation ( BOX_G, geompy.ShapeType["FACE"], Axe_z, p_B5, geompy.GEOM.ST_ON )
+if ( verbose ) :
+  print "C.", L_faces
+FACE_G = L_faces[0]
+#
+# D. Groupes : on cherche les entites par leur inclusion dans des boites bien choisies
+#
+decala = 0.1*Rayon
+#
+# D.1. La face
+#
+if ( verbose ) :
+  print "D.1. DX =", DX
+  print "D.1. DY =", DY
+du = 2.0*decala + DX
+dv = 2.0*decala + DY
+dw = 2.0*decala
+boite_1 = geompy.MakeBoxDXDYDZ(du, dv, dw)
+TR_X = -decala
+TR_Y = -decala -0.5*DY
+TR_Z = -decala
+geompy.TrsfOp.TranslateDXDYDZ (boite_1, TR_X, TR_Y, TR_Z )
+l_aux  = geompy.GetShapesOnBoxIDs (boite_1, FACE_G, geompy.ShapeType["FACE"], geompy.GEOM.ST_IN )
+if ( verbose ) :
+  print "D.1. l_aux =", l_aux
+SOLIDE_G = geompy.CreateGroup(FACE_G, geompy.ShapeType["FACE"])
+geompy.UnionIDs ( SOLIDE_G, l_aux )
+#
+# D.2. Les aretes
+#
+l_edges = []
+#
+# D.2.1. Le bord d'encastrement
+#
+du = 2.0*decala
+dv = 2.0*decala + DY
+boite_1 = geompy.MakeBoxDXDYDZ(du, dv, dw)
+TR_X = -decala
+TR_Y = -decala -0.5*DY
+TR_Z = -decala
+geompy.TrsfOp.TranslateDXDYDZ (boite_1, TR_X, TR_Y, TR_Z )
+l_aux  = geompy.GetShapesOnBoxIDs (boite_1, FACE_G, geompy.ShapeType["EDGE"], geompy.GEOM.ST_IN )
+if ( verbose ) :
+  print "D.2.1. l_aux =", l_aux
+ENCASTR_G = geompy.CreateGroup(FACE_G, geompy.ShapeType["EDGE"])
+geompy.UnionIDs ( ENCASTR_G, l_aux )
+for edge in l_aux :
+  l_edges.append(edge)
+#
+# D.2.2. Les bords interieurs courbes
+#
+du = 2.0*decala + 1.0*Rayon
+dv = 2.0*decala + 2.0*Rayon
+boite_1 = geompy.MakeBoxDXDYDZ(du, dv, dw)
+for iaux in range (4) :
+  if iaux == 0 :
+    TR_X = -decala + 3.0*Rayon
+    TR_Y = -decala - 1.0*Rayon
+    TR_Z = -decala
+  else :
+    TR_Y = 0.0
+    TR_Z = 0.0
+    if iaux in (1, 3) :
+      TR_X = 2.0*Rayon
+    elif iaux == 2 :
+      TR_X = 3.0*Rayon
+  geompy.TrsfOp.TranslateDXDYDZ (boite_1, TR_X, TR_Y, TR_Z )
+  l_aux  = geompy.GetShapesOnBoxIDs (boite_1, FACE_G, geompy.ShapeType["EDGE"], geompy.GEOM.ST_IN )
+  if ( verbose ) :
+    print "D.2.2.", iaux, " l_aux =", l_aux
+  if iaux == 0 :
+    T1_G = geompy.CreateGroup(FACE_G, geompy.ShapeType["EDGE"])
+    geompy.UnionIDs ( T1_G, l_aux )
+  elif iaux == 1 :
+    T3_G = geompy.CreateGroup(FACE_G, geompy.ShapeType["EDGE"])
+    geompy.UnionIDs ( T3_G, l_aux )
+  elif iaux == 2 :
+    U1_G = geompy.CreateGroup(FACE_G, geompy.ShapeType["EDGE"])
+    geompy.UnionIDs ( U1_G, l_aux )
+  elif iaux == 3 :
+    U2_G = geompy.CreateGroup(FACE_G, geompy.ShapeType["EDGE"])
+    geompy.UnionIDs ( U2_G, l_aux )
+  for edge in l_aux :
+    l_edges.append(edge)
+#
+# D.2.3. Les bords interieurs droits
+#
+du = 2.0*decala + 1.0*Rayon
+dv = 2.0*decala
+boite_1 = geompy.MakeBoxDXDYDZ(du, dv, dw)
+for iaux in range (4) :
+  if iaux == 0 :
+    TR_X = -decala + 4.0*Rayon
+    TR_Y = -decala - 1.0*Rayon
+    TR_Z = -decala
+  else :
+    TR_Z = 0.0
+    if iaux == 1 :
+      TR_X = 0.0
+      TR_Y = 2.0*Rayon
+    elif iaux == 2 :
+      TR_X = 5.0*Rayon
+      TR_Y = 0.0
+    elif iaux == 3 :
+      TR_X = 0.0
+      TR_Y = -2.0*Rayon
+  geompy.TrsfOp.TranslateDXDYDZ (boite_1, TR_X, TR_Y, TR_Z )
+  l_aux  = geompy.GetShapesOnBoxIDs (boite_1, FACE_G, geompy.ShapeType["EDGE"], geompy.GEOM.ST_IN )
+  if ( verbose ) :
+    print "D.2.3.", iaux, " l_aux =", l_aux
+  if iaux == 0 :
+    T2_G = geompy.CreateGroup(FACE_G, geompy.ShapeType["EDGE"])
+    geompy.UnionIDs ( T2_G, l_aux )
+  elif iaux == 1 :
+    T4_G = geompy.CreateGroup(FACE_G, geompy.ShapeType["EDGE"])
+    geompy.UnionIDs ( T4_G, l_aux )
+  elif iaux == 2 :
+    PRES2_G = geompy.CreateGroup(FACE_G, geompy.ShapeType["EDGE"])
+    geompy.UnionIDs ( PRES2_G, l_aux )
+  elif iaux == 3 :
+    PRES1_G = geompy.CreateGroup(FACE_G, geompy.ShapeType["EDGE"])
+    geompy.UnionIDs ( PRES1_G, l_aux )
+  for edge in l_aux :
+    l_edges.append(edge)
+if ( verbose ) :
+  print "A la fin de D.2.3., l_edges =", l_edges
+#
+# D.2.4. Les grands cotes
+#
+for numcote in range(8) :
+#
+  if numcote == 0 :
+    du = 2.0*decala + 2.0*Rayon
+    dv = 2.0*decala + 1.0*Rayon
+    boite_1 = geompy.MakeBoxDXDYDZ(du, dv, dw)
+    TR_X = -decala
+    TR_Y = -decala + 2.0*(math.sqrt(3.0)-1.0)*Rayon
+    TR_Z = -decala
+  elif numcote == 1 :
+    geompy.TrsfOp.MirrorAxis(boite_1, Axe_x)
+    TR_X = 6.0*Rayon
+    TR_Y = 0.0
+    TR_Z = 0.0
+  elif numcote == 2 :
+    du = 2.0*decala + 1.0*Rayon
+    dv = 2.0*decala + 1.0*Rayon
+    boite_1 = geompy.MakeBoxDXDYDZ(du, dv, dw)
+    TR_X = -decala + 2.0*Rayon
+    TR_Y = -decala + 2.0*(math.sqrt(3.0)-1.0)*Rayon
+    TR_Z = -decala
+  elif numcote == 6 :
+    geompy.TrsfOp.MirrorAxis(boite_1, Axe_x)
+    TR_X = 3.0*Rayon
+    TR_Y = 0.0
+    TR_Z = 0.0
+  else :
+    geompy.TrsfOp.MirrorAxis(boite_1, Axe_x)
+    TR_X = 1.0*Rayon
+    TR_Y = 0.0
+    TR_Z = 0.0
+  for iaux in range (2) :
+    if iaux == 0 :
+      geompy.TrsfOp.TranslateDXDYDZ (boite_1, TR_X, TR_Y, TR_Z )
+    else :
+      geompy.TrsfOp.MirrorAxis(boite_1, Axe_x)
+    l_aux  = geompy.GetShapesOnBoxIDs (boite_1, FACE_G, geompy.ShapeType["EDGE"], geompy.GEOM.ST_IN )
+    if ( verbose ) :
+      print "D.2.4.", numcote, " l_aux =", l_aux
+    if numcote == 0 :
+      if iaux == 0 :
+        SUP_1_G = geompy.CreateGroup(FACE_G, geompy.ShapeType["EDGE"])
+        geompy.UnionIDs ( SUP_1_G, l_aux )
+      elif iaux == 1 :
+        INF_1_G = geompy.CreateGroup(FACE_G, geompy.ShapeType["EDGE"])
+        geompy.UnionIDs ( INF_1_G, l_aux )
+    elif numcote == 1 :
+      if iaux == 0 :
+        SUP_6_G = geompy.CreateGroup(FACE_G, geompy.ShapeType["EDGE"])
+        geompy.UnionIDs ( SUP_6_G, l_aux )
+      elif iaux == 1 :
+        INF_6_G = geompy.CreateGroup(FACE_G, geompy.ShapeType["EDGE"])
+        geompy.UnionIDs ( INF_6_G, l_aux )
+    elif numcote == 2 :
+      if iaux == 0 :
+        SUP_2_G = geompy.CreateGroup(FACE_G, geompy.ShapeType["EDGE"])
+        geompy.UnionIDs ( SUP_2_G, l_aux )
+      elif iaux == 1 :
+        INF_2_G = geompy.CreateGroup(FACE_G, geompy.ShapeType["EDGE"])
+        geompy.UnionIDs ( INF_2_G, l_aux )
+    elif numcote == 3 :
+      if iaux == 0 :
+        SUP_3_G = geompy.CreateGroup(FACE_G, geompy.ShapeType["EDGE"])
+        geompy.UnionIDs ( SUP_3_G, l_aux )
+      elif iaux == 1 :
+        INF_3_G = geompy.CreateGroup(FACE_G, geompy.ShapeType["EDGE"])
+        geompy.UnionIDs ( INF_3_G, l_aux )
+    elif numcote == 4 :
+      if iaux == 0 :
+        SUP_4_G = geompy.CreateGroup(FACE_G, geompy.ShapeType["EDGE"])
+        geompy.UnionIDs ( SUP_4_G, l_aux )
+      elif iaux == 1 :
+        INF_4_G = geompy.CreateGroup(FACE_G, geompy.ShapeType["EDGE"])
+        geompy.UnionIDs ( INF_4_G, l_aux )
+    elif numcote == 5 :
+      if iaux == 0 :
+        SUP_5_G = geompy.CreateGroup(FACE_G, geompy.ShapeType["EDGE"])
+        geompy.UnionIDs ( SUP_5_G, l_aux )
+      elif iaux == 1 :
+        INF_5_G = geompy.CreateGroup(FACE_G, geompy.ShapeType["EDGE"])
+        geompy.UnionIDs ( INF_5_G, l_aux )
+    elif numcote == 6 :
+      if iaux == 0 :
+        SUP_7_G = geompy.CreateGroup(FACE_G, geompy.ShapeType["EDGE"])
+        geompy.UnionIDs ( SUP_7_G, l_aux )
+      elif iaux == 1 :
+        INF_7_G = geompy.CreateGroup(FACE_G, geompy.ShapeType["EDGE"])
+        geompy.UnionIDs ( INF_7_G, l_aux )
+    elif numcote == 7 :
+      if iaux == 0 :
+        SUP_8_G = geompy.CreateGroup(FACE_G, geompy.ShapeType["EDGE"])
+        geompy.UnionIDs ( SUP_8_G, l_aux )
+      elif iaux == 1 :
+        INF_8_G = geompy.CreateGroup(FACE_G, geompy.ShapeType["EDGE"])
+        geompy.UnionIDs ( INF_8_G, l_aux )
+    for edge in l_aux :
+      l_edges.append(edge)
+if ( verbose ) :
+  print "A la fin de D.2.4., l_edges =", l_edges
+#
+# D.2.5. Les bords exterieurs courbes (2)
+#
+du = 2.0*decala + 2.0*Rayon
+dv = 2.0*decala + 4.0*Rayon
+boite_1 = geompy.MakeBoxDXDYDZ(du, dv, dw)
+TR_X = -decala + 10.0*Rayon
+TR_Y = -decala -  2.0*Rayon
+TR_Z = -decala
+geompy.TrsfOp.TranslateDXDYDZ (boite_1, TR_X, TR_Y, TR_Z )
+l_aux  = geompy.GetShapesOnBoxIDs (boite_1, FACE_G, geompy.ShapeType["EDGE"], geompy.GEOM.ST_IN )
+if ( verbose ) :
+  print "D.2.5. l_aux =", l_aux
+l_aux_1 = []
+for edge in l_aux :
+  if edge not in l_edges :
+    l_aux_1.append(edge)
+if ( verbose ) :
+  print "D.2.5. l_aux_1 =", l_aux_1
+EXT_G = geompy.CreateGroup(FACE_G, geompy.ShapeType["EDGE"])
+geompy.UnionIDs ( EXT_G, l_aux_1 )
+#
+# D.3. Coins pour le test
+#
+Epsilon =  0.0001 * Rayon
+du = 9.0*Rayon
+dw = 0.0
+for iaux in range (2) :
+  if iaux == 0 :
+    dv = -2.0*Rayon
+  else :
+    dv = +2.0*Rayon
+  p_d3 = geompy.GetPoint(BOX_G, du, dv, dw, Epsilon)
+  l_aux = [p_d3]
+  if ( verbose ) :
+    print "D.3.", iaux, " l_aux =", l_aux
+  if iaux == 0 :
+    A1_G = geompy.CreateGroup(BOX_G, geompy.ShapeType["VERTEX"])
+    geompy.UnionList ( A1_G, l_aux )
+  else :
+    A2_G = geompy.CreateGroup(BOX_G, geompy.ShapeType["VERTEX"])
+    geompy.UnionList ( A2_G, l_aux )
+#
+#
+#
+geompy.addToStudy( Axe_x, 'Axe_x' )
+geompy.addToStudy( Axe_y, 'Axe_y' )
+geompy.addToStudy( Axe_z, 'Axe_z' )
+geompy.addToStudy( BOX_1, 'BOX_1' )
+geompy.addToStudy( Cyl_R, 'Cyl_R' )
+geompy.addToStudy( Cyl_2R, 'Cyl_2R' )
+geompy.addToStudy( box_int, 'box_int' )
+geompy.addToStudy( Union_1, 'Union_1' )
+geompy.addToStudy( bloc, 'bloc' )
+geompy.addToStudy( BOX_2, 'BOX_2' )
+geompy.addToStudy( BOX_3, 'BOX_3' )
+geompy.addToStudy( box_ext_d_1, 'box_ext_d_1' )
+geompy.addToStudy( box_ext_d, 'box_ext_d' )
+geompy.addToStudy( BOX_4, 'BOX_4' )
+geompy.addToStudy( box_ext_a, 'box_ext_a' )
+geompy.addToStudy( box_ext_b, 'box_ext_b' )
+geompy.addToStudy( box_ext_1, 'box_ext_1' )
+geompy.addToStudy( box_ext_2, 'box_ext_2' )
+geompy.addToStudy( box_ext_3, 'box_ext_3' )
+geompy.addToStudy( box_ext_4, 'box_ext_4' )
+geompy.addToStudy( box_ext_5, 'box_ext_5' )
+geompy.addToStudy( box_ext_6, 'box_ext_6' )
+geompy.addToStudy( box_ext_7, 'box_ext_7' )
+geompy.addToStudy( box_ext, 'box_ext' )
+geompy.addToStudy( BOX_5, 'BOX_5' )
+geompy.addToStudy( BOX_G, 'BOX' )
+geompy.addToStudy( boite_1, 'boite_1' )
+geompy.addToStudy( FACE_G, 'FACE' )
+geompy.addToStudyInFather( FACE_G, SOLIDE_G, "SOLIDE" )
+geompy.addToStudyInFather( FACE_G, PRES1_G, "PRES1" )
+geompy.addToStudyInFather( FACE_G, PRES2_G, "PRES2" )
+geompy.addToStudyInFather( FACE_G, ENCASTR_G, "ENCASTR" )
+geompy.addToStudyInFather( FACE_G, SUP_1_G, "SUP_1" )
+geompy.addToStudyInFather( FACE_G, SUP_2_G, "SUP_2" )
+geompy.addToStudyInFather( FACE_G, SUP_3_G, "SUP_3" )
+geompy.addToStudyInFather( FACE_G, SUP_4_G, "SUP_4" )
+geompy.addToStudyInFather( FACE_G, SUP_5_G, "SUP_5" )
+geompy.addToStudyInFather( FACE_G, SUP_6_G, "SUP_6" )
+geompy.addToStudyInFather( FACE_G, SUP_7_G, "SUP_7" )
+geompy.addToStudyInFather( FACE_G, SUP_8_G, "SUP_8" )
+geompy.addToStudyInFather( FACE_G, INF_1_G, "INF_1" )
+geompy.addToStudyInFather( FACE_G, INF_2_G, "INF_2" )
+geompy.addToStudyInFather( FACE_G, INF_3_G, "INF_3" )
+geompy.addToStudyInFather( FACE_G, INF_4_G, "INF_4" )
+geompy.addToStudyInFather( FACE_G, INF_5_G, "INF_5" )
+geompy.addToStudyInFather( FACE_G, INF_6_G, "INF_6" )
+geompy.addToStudyInFather( FACE_G, INF_7_G, "INF_7" )
+geompy.addToStudyInFather( FACE_G, INF_8_G, "INF_8" )
+geompy.addToStudyInFather( FACE_G, T1_G, "T1" )
+geompy.addToStudyInFather( FACE_G, T2_G, "T2" )
+geompy.addToStudyInFather( FACE_G, T3_G, "T3" )
+geompy.addToStudyInFather( FACE_G, T4_G, "T4" )
+geompy.addToStudyInFather( FACE_G, U1_G, "U1" )
+geompy.addToStudyInFather( FACE_G, U2_G, "U2" )
+geompy.addToStudyInFather( FACE_G, EXT_G, "EXT" )
+geompy.addToStudyInFather( FACE_G, A1_G, "A1" )
+geompy.addToStudyInFather( FACE_G, A2_G, "A2" )
+
+###
+### SMESH component
+###
+
+import smesh, SMESH, SALOMEDS
+
+smesh.SetCurrentStudy(theStudy)
+import BLSURFPlugin
+#
+# A. Maillage de la surface
+# A.1. Maillage avec BLSURF
+#
+maill_00 = smesh.Mesh(FACE_G)
+smesh.SetName(maill_00.GetMesh(), 'maill_00')
+BLSURF = maill_00.Triangle(algo=smesh.BLSURF)
+BLSURF_Parameters_1 = BLSURF.Parameters()
+BLSURF_Parameters_1.SetPhySize( LG_ARETE )
+isDone = maill_00.Compute()
+#
+# A.2. Les groupes issus de la geometrie
+#
+SOLIDE = maill_00.Group(SOLIDE_G)
+PRES1 = maill_00.Group(PRES1_G)
+PRES2 = maill_00.Group(PRES2_G)
+ENCASTR = maill_00.Group(ENCASTR_G)
+SUP_1 = maill_00.Group(SUP_1_G)
+SUP_2 = maill_00.Group(SUP_2_G)
+SUP_3 = maill_00.Group(SUP_3_G)
+SUP_4 = maill_00.Group(SUP_4_G)
+SUP_5 = maill_00.Group(SUP_5_G)
+SUP_6 = maill_00.Group(SUP_6_G)
+SUP_7 = maill_00.Group(SUP_7_G)
+SUP_8 = maill_00.Group(SUP_8_G)
+INF_1 = maill_00.Group(INF_1_G)
+INF_2 = maill_00.Group(INF_2_G)
+INF_3 = maill_00.Group(INF_3_G)
+INF_4 = maill_00.Group(INF_4_G)
+INF_5 = maill_00.Group(INF_5_G)
+INF_6 = maill_00.Group(INF_6_G)
+INF_7 = maill_00.Group(INF_7_G)
+INF_8 = maill_00.Group(INF_8_G)
+T1 = maill_00.Group(T1_G)
+T2 = maill_00.Group(T2_G)
+T3 = maill_00.Group(T3_G)
+T4 = maill_00.Group(T4_G)
+U1 = maill_00.Group(U1_G)
+U2 = maill_00.Group(U2_G)
+EXT = maill_00.Group(EXT_G)
+A1 = maill_00.Group(A1_G)
+A2 = maill_00.Group(A2_G)
+#
+# A.3. Export MED
+#
+maill_00.ExportMED( os.path.join(Rep_mail,'maill.00.med'), 0, SMESH.MED_V2_2, 1 )
+#
+# B. Maillage des lignes frontieres
+# B.1. Maillage regulier
+#
+maill_fr = smesh.Mesh(FACE_G)
+smesh.SetName(maill_fr.GetMesh(), 'maill_fr')
+Regular_1D = maill_fr.Segment()
+Local_Length_1 = Regular_1D.LocalLength(LG_ARETE/100.0)
+Local_Length_1.SetPrecision( 1e-07 )
+isDone = maill_fr.Compute()
+#
+# A.2. Les groupes issus de la geometrie
+#
+PRES1_fr = maill_fr.Group(PRES1_G)
+PRES2_fr = maill_fr.Group(PRES2_G)
+ENCASTR_fr = maill_fr.Group(ENCASTR_G)
+SUP_1_fr = maill_fr.Group(SUP_1_G)
+SUP_2_fr = maill_fr.Group(SUP_2_G)
+SUP_3_fr = maill_fr.Group(SUP_3_G)
+SUP_4_fr = maill_fr.Group(SUP_4_G)
+SUP_5_fr = maill_fr.Group(SUP_5_G)
+SUP_6_fr = maill_fr.Group(SUP_6_G)
+SUP_7_fr = maill_fr.Group(SUP_7_G)
+SUP_8_fr = maill_fr.Group(SUP_8_G)
+INF_1_fr = maill_fr.Group(INF_1_G)
+INF_2_fr = maill_fr.Group(INF_2_G)
+INF_3_fr = maill_fr.Group(INF_3_G)
+INF_4_fr = maill_fr.Group(INF_4_G)
+INF_5_fr = maill_fr.Group(INF_5_G)
+INF_6_fr = maill_fr.Group(INF_6_G)
+INF_7_fr = maill_fr.Group(INF_7_G)
+INF_8_fr = maill_fr.Group(INF_8_G)
+T1_fr = maill_fr.Group(T1_G)
+T2_fr = maill_fr.Group(T2_G)
+T3_fr = maill_fr.Group(T3_G)
+T4_fr = maill_fr.Group(T4_G)
+U1_fr = maill_fr.Group(U1_G)
+U2_fr = maill_fr.Group(U2_G)
+EXT_fr = maill_fr.Group(EXT_G)
+#
+# A.3. Export MED
+#
+maill_fr.ExportMED( os.path.join(Rep_mail,'maill_fr.med'), 0, SMESH.MED_V2_2, 1 )
+
+## set object names
+smesh.SetName(BLSURF.GetAlgorithm(), 'BLSURF')
+smesh.SetName(BLSURF_Parameters_1, 'BLSURF Parameters_1')
+smesh.SetName(Regular_1D.GetAlgorithm(), 'Regular_1D')
+smesh.SetName(Local_Length_1, 'Local Length_1')
+
+smesh.SetName(SOLIDE, 'SOLIDE')
+smesh.SetName(PRES1, 'PRES1')
+smesh.SetName(PRES2, 'PRES2')
+smesh.SetName(ENCASTR, 'ENCASTR')
+smesh.SetName(SUP_1, 'SUP_1')
+smesh.SetName(SUP_2, 'SUP_2')
+smesh.SetName(SUP_3, 'SUP_3')
+smesh.SetName(SUP_4, 'SUP_4')
+smesh.SetName(SUP_5, 'SUP_5')
+smesh.SetName(SUP_6, 'SUP_6')
+smesh.SetName(SUP_7, 'SUP_7')
+smesh.SetName(SUP_8, 'SUP_8')
+smesh.SetName(INF_1, 'INF_1')
+smesh.SetName(INF_2, 'INF_2')
+smesh.SetName(INF_3, 'INF_3')
+smesh.SetName(INF_4, 'INF_4')
+smesh.SetName(INF_5, 'INF_5')
+smesh.SetName(INF_6, 'INF_6')
+smesh.SetName(INF_7, 'INF_7')
+smesh.SetName(INF_8, 'INF_8')
+smesh.SetName(T1, 'T1')
+smesh.SetName(T2, 'T2')
+smesh.SetName(T3, 'T3')
+smesh.SetName(T4, 'T4')
+smesh.SetName(U1, 'U1')
+smesh.SetName(U2, 'U2')
+smesh.SetName(EXT, 'EXT')
+smesh.SetName(A1, 'A1')
+smesh.SetName(A2, 'A2')
+
+smesh.SetName(PRES1_fr, 'PRES1')
+smesh.SetName(PRES2_fr, 'PRES2')
+smesh.SetName(ENCASTR_fr, 'ENCASTR')
+smesh.SetName(SUP_1_fr, 'SUP_1')
+smesh.SetName(SUP_2_fr, 'SUP_2')
+smesh.SetName(SUP_3_fr, 'SUP_3')
+smesh.SetName(SUP_4_fr, 'SUP_4')
+smesh.SetName(SUP_5_fr, 'SUP_5')
+smesh.SetName(SUP_6_fr, 'SUP_6')
+smesh.SetName(SUP_7_fr, 'SUP_7')
+smesh.SetName(SUP_8_fr, 'SUP_8')
+smesh.SetName(INF_1_fr, 'INF_1')
+smesh.SetName(INF_2_fr, 'INF_2')
+smesh.SetName(INF_3_fr, 'INF_3')
+smesh.SetName(INF_4_fr, 'INF_4')
+smesh.SetName(INF_5_fr, 'INF_5')
+smesh.SetName(INF_6_fr, 'INF_6')
+smesh.SetName(INF_7_fr, 'INF_7')
+smesh.SetName(INF_8_fr, 'INF_8')
+smesh.SetName(T1_fr, 'T1')
+smesh.SetName(T2_fr, 'T2')
+smesh.SetName(T3_fr, 'T3')
+smesh.SetName(T4_fr, 'T4')
+smesh.SetName(U1_fr, 'U1')
+smesh.SetName(U2_fr, 'U2')

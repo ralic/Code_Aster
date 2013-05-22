@@ -1,0 +1,116 @@
+*
+* opti donn 'zzzz185a.datg';
+*
+
+opti dime 3;
+
+* Portion de la structure : 1/8, 1/4, 1/2, 1
+Type = '1/4';
+****
+Ray1 = 5.00;  Ray2 = 5.05;  Ray3 = 5.30;  Ray4 = 5.40;
+Hau1 = 0.05;  Hau2 = 0.20;
+Nr12 = 2; Nr23 = 5; Nr34 = 3;
+Nh01 = 2; Nh12 = 3;
+
+
+** Par defaut '1/8'
+nn=1; Type0 = '1/8';
+'SI' ('EGA' Type '1/8');
+  nn = 1;
+  Type0 = Type;
+'FINSI';
+'SI' ('EGA' Type '1/4');
+  nn = 2;
+  Type0 = Type;
+'FINSI';
+
+
+angle0  = -45.0;
+angle   = angle0*nn;
+nangle0 = 10;
+nangle  = nangle0*nn;
+precis  = (Ray2 - Ray1)/(Nr12*100.0);
+
+pt01  = ( 0.0 Ray1 0.0 );
+pt01a = ( 0.0 Ray2 0.0 );
+pt01b = ( 0.0 Ray3 0.0 );
+pt02  = ( 0.0 Ray4 0.0 );
+pt02a = ( 0.0 Ray4 Hau1 );
+pt03  = ( 0.0 Ray4 Hau2 );
+pt04  = ( 0.0 Ray3 Hau2 );
+pt05  = ( 0.0 Ray3 Hau1 );
+pt06  = ( 0.0 Ray2 Hau1 );
+pt07  = ( 0.0 Ray2 Hau2 );
+pt08  = ( 0.0 Ray1 Hau2 );
+pt08a = ( 0.0 Ray1 Hau1 );
+
+opti elem 'QUA4';
+d0101a  = 'DROITE' pt01  pt01a Nr12;
+d01a06  = 'DROITE' pt01a pt06  Nh01;
+d0608a  = 'DROITE' pt06  pt08a Nr12;
+d08a01  = 'DROITE' pt08a pt01  Nh01;
+Surf01  = 'DALLE'  d0101a d01a06 d0608a d08a01 'PLAN';
+
+d01a01b = 'DROITE' pt01a pt01b Nr23;
+d01b05  = 'DROITE' pt01b pt05  Nh01;
+d0506   = 'DROITE' pt05  pt06  Nr23;
+Surf02  = 'DALLE'  d01a01b d01b05 d0506 ('INVE' d01a06) 'PLAN';
+
+d01b02  = 'DROITE' pt01b pt02  Nr34;
+d0202a  = 'DROITE' pt02  pt02a Nh01;
+d02a05  = 'DROITE' pt02a pt05  Nr34;
+Surf03  = 'DALLE'  d01b02 d0202a d02a05 ('INVE' d01b05) 'PLAN';
+
+d02a03  = 'DROITE' pt02a pt03  Nh12;
+d0304   = 'DROITE' pt03  pt04  Nr34;
+d0405   = 'DROITE' pt04  pt05  Nh12;
+Surf04  = 'DALLE'  d02a03 d0304 d0405 ('INVE' d02a05) 'PLAN';
+
+d0607   = 'DROITE' pt06  pt07  Nh12;
+d0708   = 'DROITE' pt07  pt08  Nr12;
+d0808a  = 'DROITE' pt08  pt08a Nh12;
+Surf05  = 'DALLE'  d0607 d0708 d0808a ('INVE' d0608a) 'PLAN';
+
+SurfDeb = Surf01 et Surf02 et Surf03 et Surf04 et Surf05;
+elim precis SurfDeb;
+
+* Condition aux limites
+opti elem 'CUB8';
+zero = (0.0 0.0 0.0);
+axez = (0.0 0.0 1.0);
+SRay1 = (d0808a et d08a01) 'ROTA' nangle angle zero axez;
+SRay4 = (d0202a et d02a03) 'ROTA' nangle angle zero axez;
+SRay2 = d0607 'ROTA' nangle angle zero axez;
+SRay3 = d0405 'ROTA' nangle angle zero axez;
+SFond = (d0101a et d01a01b et d01b02) 'ROTA' nangle angle zero axez;
+Ssup1 = d0708 'ROTA' nangle angle zero axez;
+Ssup2 = d0506 'ROTA' nangle angle zero axez;
+Ssup3 = d0304 'ROTA' nangle angle zero axez;
+'SI' ('EGA' Type0 '1/8');
+  Volu00 = 'VOLU' SurfDeb nangle 'ROTA' angle zero axez;
+  SurfFin = FACE 2 Volu00;
+  Volume = Volu00 et SRay1 et SRay2 et SRay3 et
+         SRay4 et SFond et Ssup1 et Ssup2 et Ssup3;
+'FINSI';
+'SI' ('EGA' Type0 '1/4');
+  Volu00 = 'VOLU' SurfDeb nangle0 'ROTA' angle0 zero axez;
+  SurfI01 = FACE 2 Volu00;
+  Volu01 = 'VOLU' SurfI01 nangle0 'ROTA' angle0 zero axez;
+  SurfFin = FACE 2 Volu01;
+  Volume = Volu00 et Volu01 et 
+         SRay1 et SRay2 et SRay3 et
+         SRay4 et SFond et Ssup1 et Ssup2 et Ssup3;
+'FINSI';
+
+elim precis volume;
+trace 'CACH' volume;
+
+*fin;
+*opti donn 5;
+'SI' ('EGA' Type0 '1/8');
+  opti sauve format 'zzzz185a.19';
+'FINSI';
+'SI' ('EGA' Type0 '1/4');
+  opti sauve format 'zzzz185a.21';
+'FINSI';
+sauve format Volume;

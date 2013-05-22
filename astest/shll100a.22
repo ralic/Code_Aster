@@ -1,0 +1,60 @@
+TITRE    NOM=INDEFINI        NBOBJ=2         NBLIGE=5         NBLIGT=9     
+         AUTEUR=INTERFACE_IDEAS                 DATE=29/07/1999
+%     LES INFORMATIONS QUI SUIVENT CONCERNENT :
+%     1-LA DESCRIPTION DU FICHIER MODELE
+%     2-LA DATE D'ECRITURE DU FICHIER UNIVERSEL
+%FORMAT=(1*LIGNE_DE_TEXTE)                                                      
+  JE-29-JUIL-1999 17:08:52                                                
+                                                                          
+% ATTENTION: SI AUTEUR=INTERFACE_IDEAS TRAITEMENT SPECIAL DANS IMPR_RESU
+FINSF
+%
+COOR_3D    NOM=INDEFINI    NBOBJ=11       NBLIGE=5        NBLIGT=18    
+           NUMIN=1                        NUMAX=11    
+           AUTEUR=INTERF_ST/TF            DATE=29/07/1999
+%       XMAX= 0.10000000E+01 YMAX= 0.00000000E+00 ZMAX= 0.00000000E+00
+%       XMIN= 0.00000000E+00 YMIN= 0.00000000E+00 ZMIN= 0.00000000E+00
+%FORMAT=(1*NOM_DE_NOEUD,3*COORD)                                                
+  N1        0.00000000000000E+00  0.00000000000000E+00  0.00000000000000E+00
+  N2        1.00000000000000E-01  0.00000000000000E+00  0.00000000000000E+00
+  N3        2.00000000000000E-01  0.00000000000000E+00  0.00000000000000E+00
+  N4        3.00000000000000E-01  0.00000000000000E+00  0.00000000000000E+00
+  N5        4.00000000000000E-01  0.00000000000000E+00  0.00000000000000E+00
+  N6        5.00000000000000E-01  0.00000000000000E+00  0.00000000000000E+00
+  N7        6.00000000000000E-01  0.00000000000000E+00  0.00000000000000E+00
+  N8        7.00000000000000E-01  0.00000000000000E+00  0.00000000000000E+00
+  N9        8.00000000000000E-01  0.00000000000000E+00  0.00000000000000E+00
+  N10       9.00000000000000E-01  0.00000000000000E+00  0.00000000000000E+00
+  N11       1.00000000000000E+00  0.00000000000000E+00  0.00000000000000E+00
+FINSF
+%
+SEG2       NOM=INDEFINI   NBOBJ=10       NBLIGE=3        NBLIGT=15    
+           NUMIN=1                       NUMAX=10    
+           AUTEUR=INTERF_ST/TF           DATE=29/07/1999
+%FORMAT=(1*NOM_DE_MAILLE,2*NOM_DE_NOEUD)                                        
+M1      N1      N2     
+M2      N2      N3     
+M3      N3      N4     
+M4      N4      N5     
+M5      N5      N6     
+M6      N6      N7     
+M7      N7      N8     
+M8      N8      N9     
+M9      N9      N10    
+M10     N10     N11    
+FINSF
+%
+GROUP_MA    NOM=COUL_7  
+  M1       M2       M3       M4       M5       M6       M7       M8     
+  M9       M10    
+FINSF
+%
+GROUP_NO    NOM=NOEUDDL   NBOBJ=11     NBLIGE=3      NBLIGT=7     
+            NUMIN=1                   NUMAX=11    
+            AUTEUR=INTERF_ST/TF       DATE=29/07/1999
+%FORMAT=(1*NOM_DE_NOEUD)                                                        
+  N1       N2       N3       N4       N5       N6       N7       N8     
+  N9       N10      N11    
+FINSF
+%
+ FIN

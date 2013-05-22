@@ -1,0 +1,40 @@
+ TITRE
+ %  GIBI FECIT
+ FINSF
+ %
+ COOR_3D
+ N1        0.00000000000000E+00  0.00000000000000E+00  -0.1E+00
+ N2        0.00000000000000E+00  0.00000000000000E+00  0.00000000000000E+00
+ FINSF
+ %
+ POI1   
+  M1       N2      
+ FINSF
+ %
+ SEG2   
+  M2       N1  N2    
+ FINSF
+ %
+ GROUP_NO
+ A        N1      
+ FINSF
+ %
+ GROUP_NO
+ B        N2      
+ FINSF
+ %
+ GROUP_NO
+ TRAC        N2      
+ FINSF
+ %
+ GROUP_MA
+   RESSORT   
+ M2      
+ FINSF
+ %
+ GROUP_MA
+   MASS   
+ M1      
+ FINSF
+ %
+ FIN

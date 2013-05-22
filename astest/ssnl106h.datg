@@ -1,0 +1,75 @@
+
+TITRE 'SSNL106G TUYAU EN PLASTICITE, TRACTION OU MOMENT PMF';
+opti dime 3 elem seg2;
+
+l = 1. ;
+a=0.  0.   0. ;
+b=l  0.   0. ;
+n=2 ;
+tuyau = droit n a b ;
+
+opti sauv form 'ssnl106h.mgib';
+sauv format tuyau ;
+
+*trac  tuyau ;
+
+oublier tuyau ;
+
+OPTI DIME 3 ELEM QUA4 ;
+
+
+
+EP=0.001;
+
+REXT=0.1;
+
+RMOY = (REXT-(EP*0.5));
+
+EP2 = EP / 2. ;
+REXT = RMOY + EP2 ;
+RINT = RMOY - EP2 ;
+LIST RINT ; LIST REXT;
+
+NELEP = 1 ;
+NEL90 = 90 ;
+
+A=0.  0. 10.  ;
+B=0.  0. 5. ;
+
+B1I= (-1. * RINT) 0. 0.;
+B1E= (-1. * REXT) 0. 0.;
+
+DR1 = DROI NELEP B1I B1E ;
+
+S1 = DR1 ROTA NEL90 90. A B ;
+DR2 =(COTE 3 S1) ;
+S2 = DR2 ROTA NEL90 90. A B ;
+DR3 =  (COTE 3 S2) ;
+S3 = DR3 ROTA NEL90 90. A B ;
+DR4 =  (COTE 3 S3) ;
+S4 = DR4 ROTA NEL90 90. A B ;
+OUBLIER A ;
+OUBLIER B;
+
+SURF1 = S1 ET S2 ET S3 ET S4 ;
+ELIM SURF1 0.00001 ;
+*TOTO = VERSENS SURF1 ;
+*OUBLIER TOTO ;
+
+*OUBLIER (NOEUD 721);
+
+
+
+OPTI SAUV FORM 'ssnl106h.18';
+SAUV 'FORMAT' SURF1;
+
+
+*TRAC SURF1  ;
+*list (noeud 721);
+
+
+OPTI ELEM SEG2 ;
+REP1 = @repere ;
+trac (rep1 et surf1);
+
+

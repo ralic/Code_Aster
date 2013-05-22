@@ -1,0 +1,51 @@
+# AJOUT
+# TITRE ENONCE FORMATION PLAQUE TROUEE EN TRACTION EN PLASTICITE - RECALAGE PARAMETRES
+# RESPONSABLE
+
+DEBUT(CODE=_F(NOM='FORMA03D',NIV_PUB_WEB='INTERNET',),);
+
+R_INF__ = 270.0;
+
+b__ = 50.0;
+
+SY = 200.0;
+
+GAMMA = 100.0;
+
+C = 27100.0;
+
+
+MATER=DEFI_MATERIAU(ELAS=_F(E=200000.0,
+                            NU=0.3,),
+                    CIN1_CHAB=_F(R_0=SY,
+                                 R_I=R_INF__,
+                                 B=b__,
+                                 C_I=0.,
+                                 G_0=GAMMA,),);
+
+EPSIMP=DEFI_FONCTION(NOM_PARA='INST',VALE=(0.0,0.0,
+                           1.,1.,
+                           ),);
+
+LI1=DEFI_LIST_REEL(DEBUT=0,
+                   INTERVALLE=(
+                   _F(JUSQU_A=1.E-3,NOMBRE=1),
+                   _F(JUSQU_A=0.2,NOMBRE=20,),
+                                 ))
+                                 
+
+RESU1=SIMU_POINT_MAT(COMP_INCR=_F(RELATION='VMIS_CIN1_CHAB',
+                                  ITER_INTE_MAXI=100,),
+                     MATER=MATER,
+                     INCREMENT=_F(LIST_INST=LI1,),
+                     NEWTON=_F(MATRICE='TANGENTE',
+                               REAC_ITER=1,),
+                     EPSI_IMPOSE=_F(EPYY=EPSIMP,),);
+
+# IMPR_TABLE(TABLE=RESU1,
+#            FORMAT='XMGRACE',
+#        #    PILOTE='INTERACTIF',
+#            UNITE=35,
+#            NOM_PARA=('EPYY','SIYY',),);
+
+FIN();

@@ -1,0 +1,52 @@
+opti dime 2 elem qua4 ;
+opti sauv form 'sslp106a.mgib' ;
+
+* Maillage d'une poutre
+* 
+
+* L : Longueur de la poutre
+* h : Hauteur de la poutre
+* nab : nb d'elements sur ab
+* nbc : nb d'elements sur bc
+
+
+h = 50.;
+l = 100.;
+
+nab = 4;
+div = 1;
+nbc = nab / div;
+ncd = nab;
+nda = nab / div;
+
+
+a = 0. 0.;
+b = l 0. ;
+c = l h;
+d = 0. h;
+
+
+lab = droit nab a b ;
+lbc = droit nbc b c ;
+lcd = droit nab c d ;
+lda = droit nbc d a ;
+
+lr1 = lab et lbc et lcd et lda;
+
+
+sc1 = tran lab (0. h) nbc;
+
+surf = sc1 et lr1;
+
+elim 0.001 surf ;
+
+list (nbno surf) ;
+list (nbel surf) ;
+
+tass surf;
+
+sauv form surf ;
+
+trac  (surf et ((lab et lda) coul rouge));
+
+fin;

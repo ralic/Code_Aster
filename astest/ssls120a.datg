@@ -1,0 +1,34 @@
+*
+OPTI DIME 2 ELEM QUA8 ;
+
+Rm = 5.7 ;
+LG = 16.     ;
+EP=0.04 ;
+EP2 = EP *0.5 ;
+
+A1 = (RM-EP2)   0.  ;
+PM =  RM        0.  ;
+A2 = (RM+EP2)   0.   ;
+* 
+lignebas = (DROIT 1 A1 PM) ET (DROIT 1 PM A2) ;
+
+VECT1 = 0.  LG  ;
+
+virole = lignebas 400 TRAN VECT1 ;
+
+lignebas = lignebas coul vert ;
+lignehau = cote 3 virole ;
+lignehau = lignehau coul bleu ;
+a3 = lignehau point initial ;
+a4 = lignehau point final ;
+lignegau = (cote 4 virole) coul roug ;
+
+elim 0.001 (virole et lignebas et lignehau et lignegau);
+trac (virole et lignebas et lignehau  et lignegau);
+
+
+opti sauv form 'ssls120a.mgib' ;
+sauv form virole ;
+
+trac (virole et lignebas et lignehau  et lignegau);
+

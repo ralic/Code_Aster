@@ -1,0 +1,166 @@
+% FICHIER DE MAILLAGE : 3 BARRES ENCASTREE
+%                       CHOQUANT EN LEUR MILIEU
+%
+COOR_3D
+%   NOEUD  X    Y    Z
+%
+    N1     0.  -0.1  0.
+    N2     0.   0.1  0.
+    N3     0.   0.   0.
+    N4     0.1  0.   0.
+    N5     0.2  0.   0.
+    N6     0.3  0.   0.
+    N7     0.4  0.   0.
+    N8     0.5  0.   0.
+    N9     0.6  0.   0.
+    N10    0.7  0.   0.
+    N11    0.8  0.   0.
+    N12    0.9  0.   0.
+    N13    1.0  0.   0.
+    N14    1.0 -0.1  0.
+    N15    1.0  0.1  0.
+%
+    M2     0.   0.3  0.
+    M3     0.   0.2  0.
+    M4     0.1  0.2  0.
+    M5     0.2  0.2  0.
+    M6     0.3  0.2  0.
+    M7     0.4  0.2  0.
+    M8     0.5  0.2  0.
+    M9     0.6  0.2  0.
+    M10    0.7  0.2  0.
+    M11    0.8  0.2  0.
+    M12    0.9  0.2  0.
+    M13    1.0  0.2  0.
+    M15    1.0  0.3  0.
+%
+    O2     0.   0.5  0.
+    O3     0.   0.4  0.
+    O4     0.1  0.4  0.
+    O5     0.2  0.4  0.
+    O6     0.3  0.4  0.
+    O7     0.4  0.4  0.
+    O8     0.5  0.4  0.
+    O9     0.6  0.4  0.
+    O10    0.7  0.4  0.
+    O11    0.8  0.4  0.
+    O12    0.9  0.4  0.
+    O13    1.0  0.4  0.
+    O15    1.0  0.5  0.
+%
+FINSF
+%
+SEG2
+%    SEG    ND-I.   ND-F.
+%
+     S1     N1      N3
+     S2     N3      N2
+     S3     N3      N4
+     S4     N4      N5
+     S5     N5      N6
+     S6     N6      N7
+     S7     N7      N8
+     S8     N8      N9
+     S9     N9      N10
+     S10    N10     N11
+     S11    N11     N12
+     S12    N12     N13
+     S13    N14     N13
+     S14    N13     N15
+%
+     T1     N2      M3
+     T2     M3      M2
+     T3     M3      M4
+     T4     M4      M5
+     T5     M5      M6
+     T6     M6      M7
+     T7     M7      M8
+     T8     M8      M9
+     T9     M9      M10
+     T10    M10     M11
+     T11    M11     M12
+     T12    M12     M13
+     T13    N15     M13
+     T14    M13     M15
+%
+     U1     M2      O3
+     U2     O3      O2
+     U3     O3      O4
+     U4     O4      O5
+     U5     O5      O6
+     U6     O6      O7
+     U7     O7      O8
+     U8     O8      O9
+     U9     O9      O10
+     U10    O10     O11
+     U11    O11     O12
+     U12    O12     O13
+     U13    M15     O13
+     U14    O13     O15
+%
+FINSF
+%
+GROUP_NO    NOM=L1
+N1  N14  N2  N15
+FINSF
+%
+GROUP_NO    NOM=LL1
+N1  N14  O2  O15
+FINSF
+%
+GROUP_NO    NOM=LL2
+M3
+FINSF
+%
+GROUP_NO    NOM=L12
+N2  N15
+FINSF
+%
+GROUP_NO    NOM=L2
+M2  M15  N2  N15
+FINSF
+%
+GROUP_NO    NOM=L23
+M2  M15
+FINSF
+%
+GROUP_NO    NOM=L3
+O2  O15  M2  M15
+FINSF
+%
+GROUP_NO    NOM=GROUP1
+N8
+FINSF
+%
+GROUP_NO    NOM=GROUP2
+M8
+FINSF
+%
+GROUP_MA    NOM=RIGIDE
+S1  S2  S13  S14
+T1  T2  T13  T14
+U1  U2  U13  U14
+FINSF
+%
+GROUP_MA    NOM=SS1
+S1  S2  S3  S4
+S5  S6  S7  S8
+S9  S10  S11  S12
+S13  S14
+FINSF
+%
+GROUP_MA    NOM=SS2
+T1  T2  T3  T4
+T5  T6  T7  T8
+T9  T10  T11  T12
+T13  T14
+FINSF
+%
+GROUP_MA    NOM=SS3
+U1  U2  U3  U4
+U5  U6  U7  U8
+U9  U10  U11  U12
+U13  U14
+FINSF
+%
+FIN

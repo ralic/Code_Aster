@@ -1,0 +1,126 @@
+*************************************************************************************
+* Tranche de 1 m d'epaisseur et 200 m de longueur - Colis C - Diametre de 0,615 m   *
+*              (zones de jeu, de ZE et Cox)                                         *
+*       Pour l'etude la corrosion et du chauffage par les colis                     *
+*************************************************************************************
+opti dime 2 elem qua8 ;
+
+*==============
+DEBPROC ZECOX  ; 
+*==============
+*
+***********************
+*       Points        *
+***********************
+a  =   0.3075   0.  ;
+b  =   0.3375   0.  ;
+c  =   0.5375   0.  ;
+i  =   80.      0.  ;
+d  =   200.     0.  ;
+
+e  =   200.     1.  ;
+j  =   80.      1.  ;
+f  =   0.5375   1.  ;
+g  =   0.3375   1.  ;
+h  =   0.3075   1.  ;
+
+******************************************
+*      Droites                           *
+******************************************
+ab   = DROI    10  a  b  ;
+gh   = DROI    10  g  h  ;
+
+bc   = DROI  -60   b  c   dini 0.001   dfin 0.001  ;
+fg   = DROI  -60   f  g   dini 0.001   dfin 0.001  ;
+
+ci   = DROI  -100  c  i   dini 0.001   dfin 5.     ;
+jf   = DROI  -100  j  f   dini 5.      dfin 0.001  ;
+
+id   = DROI    i  d   dini 5.    dfin 10.  ;
+ej   = DROI    e  j   dini 10.   dfin  5.  ;
+
+ha   = DROI  1  h  a ;
+
+bg   = DROI  1  b  g ;
+gb   = DROI  1  g  b ;
+
+cf   = DROI  1  c  f ;
+fc   = DROI  1  f  c ;
+ij   = DROI  1  i  j ;
+ji   = DROI  1  j  i ;
+de   = DROI  1  d  e ;
+
+******************************
+*  Definition des surfaces   *
+******************************
+JEU  = dall  ab  bg  gh  ha  ;
+ZE   = dall  bc  cf  fg  gb  ;
+Cox1 = dall  ci  ij  jf  fc  ;
+Cox2 = dall  id  de  ej  ji  ;
+
+**********************************
+*  Assemblage des sous-maillages *
+**********************************
+COX    = COX1 et COX2 ;
+CorDec =  JEU et ZE  et  COX ;
+
+Menage ; 
+     
+********************************
+*   Definition des limites     *
+********************************
+droite  = de ;
+gauche  = ha ;
+
+bas1    = ab  ;
+haut1   = gh  ;
+
+bas2    =  bc  et  ci et id ;
+haut2   =  ej  et  jf et fg ;
+
+haut = haut1 et haut2;
+bas = bas1 et bas2;
+
+INTERF  =  gb ;
+
+elim 1.E-5 CorDeC ;
+
+*===========================================================
+FINPROC CorDeC  gauche  droite  bas  haut  
+  JEU  ZE  COX INTERF  ;
+
+CorDeC  gauche  droite  bas  haut 
+ JEU  ZE  Cox INTERF = ZECOX ;
+*===========================================================
+*
+*
+* Les noeuds milieux de la premiere maille du ZE a l'interface du Jeu et de la ZE
+*********************************************************************************
+SS      = ZE elem appui large INTERF  ;
+SS2     = DIFF SS ZE ;
+LL2     = INTER (cont SS) (cont SS2) ;
+PLL2    = LL2 chan poi1 ; 
+PINTERF = INTERF chan poi1 ;
+PSS     = SS chan poi1 ;
+
+NJZEM = DIFF PSS  (PINTERF et PLL2);
+
+
+
+*  Definition d un titre    *
+*****************************
+titre 'Maillage tranche de JEU-ZE-COX' ;
+
+*   Trace du maillage  *
+
+trac (CorDeC et (jeu coul rouge) et (ze coul vert)) ;
+
+***************************
+* Sauvegarde du maillage  *
+***************************
+opti sauv format
+'/home/granet/THM/Etude_Gas_TS/Maillage/tranche_DeC.mgib' ;
+sauv form ;
+
+fin ;
+

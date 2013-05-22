@@ -1,0 +1,39 @@
+opti dime 2  elem tri3 ;
+dens 2 ;
+
+*----------------------------------------
+*DONNEES
+*----------------------------------------
+* dimensions des cotés
+LX     = 0.08;
+LYbati = 0.01;
+LYplaq = 0.04;
+
+* nombre d'éléments
+NX = 64;
+NY = 25; 
+
+*---------------------------------------------
+*construction surface laterale
+*---------------------------------------------
+
+p1 =  0.  (-1.*LYbati) ;
+p2 =  LX  (-1.*LYbati) ;
+p3 =  LX.      LYplaq  ;
+p4 =  0.       LYplaq  ;
+ptop = LX./2. LYplaq ;
+
+lig1 = droit p1 p2 NX;
+lig2 = droit p2 p3 NY;
+lig3 = p3 droit (NX/2) ptop droit (NX/2) p4;
+lig4 = droit p4 p1 NY;
+
+SURF= DALL lig1 lig2 lig3 lig4 PLAN;
+
+trac SURF;
+
+MAILLE = SURF;
+
+opti sauv format 'ssnv209d.mgib';
+sauv format maille ;
+fin ;

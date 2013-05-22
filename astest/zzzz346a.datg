@@ -1,0 +1,35 @@
+opti dime 2  elem qua8;
+
+dens 1 ;
+
+*----------------------------------------
+*DONNEES
+*----------------------------------------
+
+* dimensions des cotés
+LX = 1;
+LY = 1;
+
+* nombre d'éléments 
+NX = 8;
+NY = NX;
+
+
+p1 = 0. 0.;
+p2 = LX 0.;
+p3 = LX LY;
+p4 = 0. LY;
+
+lig1 = droit p1 p2 NX;
+lig2 = droit p2 p3 NY;
+lig3 = droit p3 p4 NX;
+lig4 = droit p4 p1 NY;
+
+SURF = DALL lig1 lig2 lig3 lig4 PLAN;
+vect  =  (LX/2.)  0. ;
+
+DEPL SURF  MOIN vect ;
+*trac SURF;
+opti sauv format '/home/G31256/XFEM/fiche-20753/carre.mgib';
+sauv format SURF;
+fin;

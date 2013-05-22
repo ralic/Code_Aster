@@ -1,0 +1,70 @@
+TITRE
+SSNL106A
+POUTRE DROITE ENCASTREE A UNE EXTREMITE
+ET SOUMISE A UNE TRACTION OU UN MOMENT EN PLASTICITE
+FINSF
+COOR_3D
+  R1       0.0D0    0.0D0    0.0D0
+  R3       0.01D0    0.0D0    0.0D0
+  R4       0.02D0    0.0D0    0.0D0
+  R5       0.03D0    0.0D0    0.0D0
+  R6       0.04D0    0.0D0    0.0D0
+  R7       0.05D0    0.0D0    0.0D0
+  R8       0.06D0    0.0D0    0.0D0
+  R9       0.07D0    0.0D0    0.0D0
+  R10      0.08D0    0.0D0    0.0D0
+  R11      0.09D0    0.0D0    0.0D0
+  R2       0.1D0     0.0D0    0.0D0
+%
+FINSF
+SEG2
+  SR1       R1       R3 
+  SR2       R3       R4
+  SR3       R4       R5
+  SR4       R5       R6
+  SR5       R6       R7 
+  SR6       R7       R8
+  SR7       R8       R9
+  SR8       R9       R10
+  SR9       R10      R11
+  SR10      R11      R2  
+FINSF
+GROUP_MA
+ TOUT       SR1     SR2      SR3     SR4     
+            SR5     SR6      SR7     SR8
+            SR9     SR10   
+FINSF
+GROUP_NO
+   A  R1
+FINSF
+GROUP_NO
+   A1  R3
+FINSF
+GROUP_NO
+   A2  R4
+FINSF
+GROUP_NO
+   A3  R5
+FINSF
+GROUP_NO
+   A4  R6
+FINSF
+GROUP_NO
+   A5  R7
+FINSF
+GROUP_NO
+   A6  R8
+FINSF
+GROUP_NO
+   A7  R9
+FINSF
+GROUP_NO
+   A8  R10
+FINSF
+GROUP_NO
+   A9  R11
+FINSF
+GROUP_NO
+   B  R2
+FINSF
+FIN

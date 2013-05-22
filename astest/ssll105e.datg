@@ -1,0 +1,53 @@
+OPTION DIME 2 ELEM SEG2 ;
+
+A = 0. 0. ;
+B = 240 0. ;
+C = 240 -240 ;
+
+AB = DROIT 10 A B ;
+BC = DROIT 10 B C ;
+
+pout = AB ET BC ;
+
+OUBL AB ;
+OUBL BC ;
+
+OPTION SAUV FORM 'ssll105e.mgib' ;
+SAUV FORM pout ;
+
+**********************************
+
+******* OPTIONS *******
+OPTI DIME 2 ELEM QUA4;
+***********************
+
+******* CONSTANTES ****
+t = 0.6;
+b = 30.0;
+
+nf = 10;
+***********************
+
+****** SECTION ********
+S1 = (-0.5*b) (-0.5*t);
+S2 = (0.5*b) (-0.5*t);
+S3 = (0.5*b) (0.5*t);
+S4 = (-0.5*b) (0.5*t);
+
+S12 = DROI nf S1 S2;
+S23 = DROI nf S2 S3;
+S34 = DROI nf S3 S4;
+S41 = DROI nf S4 S1;
+
+SECT = DALL S41 S12 S23 S34;
+
+SORT SECT;
+TRAC SECT;
+***********************
+
+****** ENREGISTRE *****
+OPTI SAUV 'FORMAT' 'ssll105e.18';
+SAUV 'FORMAT' SECT;
+***********************
+
+FIN;

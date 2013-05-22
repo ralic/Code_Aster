@@ -1,0 +1,37 @@
+opti dime 2  elem qua4 ;
+
+dens 1 ;
+
+*----------------------------------------
+*DONNEES
+*----------------------------------------
+
+* dimensions des cotés
+LX = 0.2;
+LY = 0.5;
+
+* nombre d'éléments (forcement pairs)
+NX = 100;
+NY = 100;
+
+
+p1 = 0. 0.;
+p2 = LX 0.;
+p3 = LX LY;
+p4 = 0. LY;
+
+lig1 = droit p1 p2 NX;
+lig2 = droit p2 p3 NY;
+lig3 = droit p3 p4 NX;
+lig4 = droit p4 p1 NY;
+
+SURF = DALL lig1 lig2 lig3 lig4 PLAN;
+vect  =  (LX/2.)  (LY/2.) ;
+
+DEPL SURF  MOIN vect ;
+trac SURF;
+
+opti sauv format 
+'/local00/geniaut/ast_dev/CALC_G_2D/test/ssnp138a.mgib' ;
+sauv format SURF ;
+fin ;

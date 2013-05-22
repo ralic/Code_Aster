@@ -1,0 +1,69 @@
+opti dime 2  elem tri3 ;
+
+dens 10 ;
+
+*----------------------------------------
+*DONNEES
+*----------------------------------------
+dens = 0.2;
+* dimensions des cotes
+LX = 4.;
+LY = 9;
+LY1 = 2.5;
+LY2 = 4;
+DX = LX 0. ;
+DY1 =  0. LY1 ;
+DY2 =  0. LY2 ;
+
+* nombre d'elements
+NX = 32;
+NY = 72;
+NY1 = 20;
+NY2 = 32;
+
+L = LX / NX;
+
+*---------------------------------------------
+*construction points
+*---------------------------------------------
+
+p1 = 0. 0.;
+p2 = LX 0.;
+p3 = LX LY;
+p4 = 0. LY;
+
+*---------------------------------------------
+*construction des lignes
+*---------------------------------------------
+
+LIGINF = (droit p1 p2 NX) coul vert;
+LIGSUP = (droit p3 p4 NX) coul vert;
+LICOTE = (droit (0 2.125) (0 6) (NY2-1)) coul roug;
+
+*---------------------------------------------
+*construction des surfaces
+*---------------------------------------------
+
+S = (MANU TRI3 (0 0) (0 L) (L 0)) et
+(MANU TRI3 (L L) (0 L) (L 0));
+S = S et (S plus ( 0 L)) et (S plus ( 0 (2*L)));
+S = S et (S plus ( 0 (3*L))) et (S plus ( 0 (6*L)));
+S = S et (S plus ( 0 (9*L)));
+S = S et (S plus ( 0 (18*L)));
+
+S = S et (S plus (L 0));
+S = S et (S plus ((2*L) 0));
+S = S et (S plus ((4*L) 0));
+S = S et (S plus ((8*L) 0));
+S = S et (S plus ((16*L) 0));
+
+surf = elim (S et (S SYME DROI (0 4.5) (10 4.5))) 0.0001;          
+
+MAILLE = elim (LIGINF et LIGSUP et LICOTE et surf) 0.0001;
+trac surf;
+trac maille;
+
+opti sauv format
+'/work/irlin831_1/siavelim/CAS/ssnp504/ssnp504f.mgib';
+sauv format maille ;
+fin ;

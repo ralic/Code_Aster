@@ -1,0 +1,30 @@
+TITRE                                                                           
+     VERSION POUTRE DU CAS TEST DE PLAQUE EN GRANDES ROTATIONS
+FINSF                                                                           
+COOR_3D                                                                         
+   NO01    0. 0. 0.
+   NO02    1. 0. 0.
+   NO03    2. 0. 0.
+   NO04    3. 0. 0.
+   NO05    4. 0. 0.
+   NO06    5. 0. 0.
+   NO07    6. 0. 0.
+   NO08    7. 0. 0.
+   NO09    8. 0. 0.
+   NO10    9. 0. 0.
+   NO11   10. 0. 0.
+FINSF                                                                           
+SEG2
+ E01  NO01  NO02
+ E02  NO02  NO03
+ E03  NO03  NO04
+ E04  NO04  NO05
+ E05  NO05  NO06
+ E06  NO06  NO07
+ E07  NO07  NO08
+ E08  NO08  NO09
+ E09  NO09  NO10
+ E10  NO10  NO11
+FINSF                                                                           
+FIN                                                                             
+

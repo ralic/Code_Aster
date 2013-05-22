@@ -1,0 +1,94 @@
+TITRE
+  FICHIER GENERE PAR L'INTERFACE ALIBABA
+  LE  LU-12-FEVR-96 13:15:58 
+FINSF
+COOR_2D %     9 NOEUDS
+  N1       5.4999999701977E-02  4.9999997019768E-02
+  N2       6.9999992847443E-02  2.9999997466803E-02
+  N3       3.4999996423721E-02  3.4999996423721E-02
+  N4       4.9999993294477E-02  1.4999996870756E-02
+  N5       1.4999996870756E-02  1.9999999552965E-02
+  N6       2.9999997466803E-02  0.0000000000000E+00
+  N7       0.0000000000000E+00  3.9999999105930E-02
+  N8       1.9999999552965E-02  5.4999995976686E-02
+  N9       3.9999999105930E-02  6.9999992847443E-02
+FINSF
+QUAD4    %     2 MAILLES
+  M1       N1       N3       N4       N2     
+  M2       N3       N5       N6       N4     
+FINSF
+TRIA3    %     4 MAILLES
+  M3       N5       N3       N7     
+  M4       N3       N8       N7     
+  M5       N3       N1       N8     
+  M6       N1       N9       N8     
+FINSF
+% NOMBRE TOTAL DE SOUS-DOMAINES    1
+SEG2     %     8 MAILLES
+  M7       N4       N2     
+  M8       N2       N1     
+  M9       N5       N6     
+  M10      N6       N4     
+  M11      N7       N5     
+  M12      N8       N7     
+  M13      N1       N9     
+  M14      N9       N8     
+FINSF
+GROUP_MA %     2 MAILLES
+ GRMA11    M7       M10    
+FINSF
+GROUP_NO %     3 NOEUDS 
+ GRNM11    N2       N4       N6     
+FINSF
+GROUP_MA %     2 MAILLES
+ GRMA12    M8       M13    
+FINSF
+GROUP_NO %     3 NOEUDS 
+ GRNM12    N1       N2       N9     
+FINSF
+GROUP_MA %     2 MAILLES
+ GRMA13    M12      M14    
+FINSF
+GROUP_NO %     3 NOEUDS 
+ GRNM13    N7       N8       N9     
+FINSF
+GROUP_MA %     1 MAILLES
+ GRMA14    M11    
+FINSF
+GROUP_NO %     2 NOEUDS 
+ GRNM14    N5       N7     
+FINSF
+GROUP_MA %     1 MAILLES
+ GRMA15    M9     
+FINSF
+GROUP_NO %     2 NOEUDS 
+ GRNM15    N5       N6     
+FINSF
+GROUP_NO %     1 NOEUDS 
+ GRNO1     N5     
+FINSF
+GROUP_NO %     1 NOEUDS 
+ GRNO2     N3     
+FINSF
+GROUP_NO %     1 NOEUDS 
+ GRNO3     N1     
+FINSF
+GROUP_NO %     1 NOEUDS 
+ GRNO4     N6     
+FINSF
+GROUP_NO %     1 NOEUDS 
+ GRNO5     N2     
+FINSF
+GROUP_NO %     1 NOEUDS 
+ GRNO6     N9     
+FINSF
+GROUP_NO %     1 NOEUDS 
+ GRNO7     N7     
+FINSF
+GROUP_NO %     1 NOEUDS 
+ GRNO11    N4     
+FINSF
+GROUP_NO %     1 NOEUDS 
+ GRNO13    N8     
+FINSF
+FIN

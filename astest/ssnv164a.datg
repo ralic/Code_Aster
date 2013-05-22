@@ -1,0 +1,290 @@
+opti dime 3 elem cub8 mode trid;                                                  
+am=-1;bm = -0.5; cm = -0.275; cp=0.275;bp=0.5 ; ap=1.;                  
+* nca2=10; nca= nca2 *  2;                                                                      
+nca2=10; nca= nca2 *  2;                                                                      
+pa = am am 20; pb = bm am  20; pc= cm am 20; pd = cp am 20;                 
+pe = bp am 20.;pf = ap am 20.;                                            
+liba = pa droi 2 pb droi 2 pc droi 4 pd  droi 2 pe droi 2 pf;           
+su = liba tran 2 ( 0 bp 0) trans 2 ( 0 0.225 0.) trans 4 (0 0.55 0 )    
+ tran 2 (0 0.225 0) trans 2 (0 bp 0);                                   
+*trac su;                                                                
+                                                                        
+vol1 = su volu trans nca2 ( 0 0 -10.);                                      
+                                                                        
+su2 = vol1 face 2;                                                      
+                                                                        
+pceny = point su2 droite ( 0 0 10) ( 1 0 10) 0.51;
+                                                                        
+pcenxy = point pceny  droite ( 0 0 10) ( 0 1 10) 0.51;
+su21= elem su2 appu stric pcenxy coul rouge;                            
+                                                                        
+*trac ( su2 et su21);                                                    
+* su21 = su2;
+                                                                        
+vol2 = su21 volu trans nca2 (0 0 -10.);                                     
+
+su3 = vol2 face 2;                                                                        
+                                                                        
+voltot = vol1 et vol2;                                                  
+
+*opti dime 3 elem cub8;
+*t = (1./16.);
+t = 0.;
+nca3 = 20;
+pc1d= (cm+t) (cp+t) 0.; pc1f = (cm+t) (cp+t) 20.;
+ cab1= pc1d droi nca3 pc1f;           
+pc2d = (cp+t) (cm+t) 0; pc2f = (cp+t) (cm+t) 20.;
+ cab2= pc2d droi nca3 pc2f ;           
+pc3d = (cp+t) (cp+t) 0; pc3f = (cp+t) (cp+t) 20.;
+ cab3= pc3d droi nca3 pc3f ;           
+pc4d = (cm+t) (cm+t) 0; pc4f = (cm+t) (cm+t) 20.;
+ cab4= pc4d droi nca3 pc4f ;           
+pc5d = (0+t) (0+t) 0  ; pc5f = (0+t) (0+t) 20.  ;
+ cab5= pc5d droi nca3 pc5f ;           
+*opti dime 3 elem cu20 mode trid;                                                  
+
+*t = (1./16.);
+*nca3 = 15;
+*pc1d= (cm+t) (cp+t) 0.; pc1f = (cm+t) (cp+t) 20.;
+* cab1= pc1d droi nca3 pc1f chang seg2;           
+*pc2d = (cp+t) (cm+t) 0; pc2f = (cp+t) (cm+t) 20.;
+* cab2= pc2d droi nca3 pc2f chang seg2;           
+*pc3d = (cp+t) (cp+t) 0; pc3f = (cp+t) (cp+t) 20.;
+* cab3= pc3d droi nca3 pc3f chang seg2;           
+*pc4d = (cm+t) (cm+t) 0; pc4f = (cm+t) (cm+t) 20.;
+* cab4= pc4d droi nca3 pc4f chang seg2;           
+*pc5d = (0+t) (0+t) 0  ; pc5f = (0+t) (0+t) 20.  ;
+* cab5= pc5d droi nca3 pc5f chang seg2;           
+
+
+
+cable = cab1 et cab2 et cab3 et cab4 et cab5   coul bleu;                    
+                                                                        
+list ( nbno cable);                                                     
+                                                                        
+*elim  voltot cable 0.01;                                                
+elim  voltot 0.01;                                                
+elim  cable 0.01;                                                
+                                                                    
+*trac voltot;                                                            
+                                                                        
+*trac ( vol2 et cable);                                                  
+su3 = vol2 face 2;                                                      
+*trac su3 qual;                                                          
+
+*
+*  conditions aux limites de deplacement;
+*
+
+pp = point voltot droite ( 0 0 0 ) ( 0 0 20) 0.01;
+blxy = bloque 'UX' 'UY' pp;
+px = point su3 proche ( 0.5 0 0 );
+bly = bloqu 'UY' px;
+blz = bloque 'UZ' su3; 
+cltot = blxy et bly et blz;
+py = point su3 proche ( -0.5 0 0 );
+
+
+*
+*  sauvegarde maillage;
+*
+opti sauv format 'msh.mgib';
+sauver format voltot;
+
+opti donn 5 ;
+
+trac (voltot et cable);
+
+
+*
+*  descriptioion des modeles
+* 
+                          
+mobet1= model vol1 mecanique elastique;
+mobet2= model vol2 mecanique elastique; mobeton=mobet1 et mobet2;
+
+mocab1= model cab1 mecanique elastique  barre;
+mocab2= model cab2 mecanique elastique  barre;
+mocab3 =model cab3 mecanique elastique  barre;
+mocab4 =model cab4 mecanique elastique  barre;
+mocab5 =model cab5 mecanique elastique  barre;
+                                    
+*
+*  descriptions des materiaux et des sections
+*
+
+mabeton = mate mobeton young 40000.e6  nu 0.2  rho 2500;
+
+
+macab1  = mate mocab1  young 193000.e+6  nu 0.3  rho 7850 sect 0.0025; 
+macab2  = mate mocab2  young 193000.e+6  nu 0.3  rho 7850 sect 0.0025; 
+macab3  = mate mocab3  young 193000.e+6  nu 0.3  rho 7850 sect 0.0025;
+macab4  = mate mocab4  young 193000.e+6  nu 0.3  rho 7850 sect 0.0025;
+macab5  = mate mocab5  young 193000.e+6  nu 0.3  rho 7850 sect 0.0025;
+
+*
+*  conditions aux limites de deplacement;
+*
+
+pp = point voltot droite ( 0 0 0 ) ( 0 0 20) 0.01;
+blxy = bloque 'UX' 'UY' pp;
+px = point su3 proche ( 0.5 0 0 );
+bly = bloqu 'UY' px;
+blz = bloque 'UZ' su3; 
+cltot = blxy et bly et blz;
+
+*
+*chargement du au poids 
+*
+
+gamma = -9.81;
+mmass = masse mobeton mabeton;
+vz = manu chpo voltot 1 'UZ' gamma;
+fpoi= mmass * vz;
+evpoi = evol manu ' temps' ( prog 0. 10000.) 'COEF' ( prog 1. 1.);
+charpoid = chargement fpoi evpoi;
+
+
+*
+* descripton des caracteristiques generales pour les pertes quasi instantannées 
+*
+
+coefprec = TABLE     ;
+coefprec . 'FF' = 0.16   ;
+coefprec . 'PHIF' = 0.0015    ;
+coefprec . 'GANC' = 0.012   ;
+coefprec . 'RMU0' = 0.45      ;
+coefprec . 'FPRG' = 1940.E6    ;
+coefprec . 'RH10' = 2.3  ;   
+*
+* creations de la table des etapes pour le cas 2 Il n'y a qu'une etape
+*
+cas3etap= table;
+CAS2=table; 
+CAS3etap . 1 =  CAS2     ;
+CAS2 . 'TPS' = 300.      ;
+****************************** premier groupe ************************
+group1_1=table; 
+CAS2  . 1 =  group1_1 ;
+
+group1_1 . 'GEOMETRIE1' =  manu poi1 pc1d ;  
+group1_1  . 'MODELE'  = mocab1 ;
+group1_1  . 'MATERIAU' = macab1;
+group1_1  . 'FORCE'  = 3.75e6;
+group1_1  . 'COEF_PREC' = coefprec;
+group1_1  . 'TYPE_CAB'  = '1EXT';
+
+group1_2=table; 
+CAS2  . 2 =  group1_2 ;
+
+group1_2 . 'GEOMETRIE1' =  manu poi1 pc2d ;  
+*group1_2 . 'GEOMETRIE2' = manu poi1 pc2f ;   
+group1_2  . 'MODELE'  = mocab2 ;
+group1_2  . 'MATERIAU' = macab2;
+group1_2  . 'FORCE'  = 3.75e6;
+group1_2  . 'TYPE_CAB'  = '1EXT';
+group1_2  . 'COEF_PREC' = coefprec;
+************************** deuxieme groupe ******************************
+cas3 = table;
+CAS3etap . 2 = cas3;
+cas3. 'TPS' = 450.;
+gr31 = table;
+cas3 . 1 = gr31;
+gr31 . 'GEOMETRIE1' =  manu poi1 pc3d ;   
+
+gr31  . 'MODELE'  = mocab3 ;
+gr31  . 'MATERIAU' = macab3;
+gr31  . 'FORCE'  = 3.75e6;
+gr31  . 'COEF_PREC' = coefprec;
+gr31  . 'TYPE_CAB'  = '1EXT';
+
+gr32 = table;
+cas3 . 2 = gr32;
+gr32 . 'GEOMETRIE1' =  manu poi1 pc4d ;    
+gr32  . 'MODELE'  = mocab4 ;
+gr32  . 'MATERIAU' = macab4;
+gr32  . 'FORCE'  = 3.75e6;
+gr32  . 'COEF_PREC' = coefprec;
+gr32  . 'TYPE_CAB'  = '1EXT';
+
+********************************troisieme groupe **********************
+cas4 = table;
+CAS3etap . 3 = cas4;
+cas4. 'TPS' = 600.;
+gr41 = table;
+cas4 . 1 = gr41;
+gr41 . 'GEOMETRIE1' =  manu poi1 pc5d ;  
+gr41 . 'GEOMETRIE2' = manu poi1  pc5f ;   
+gr41  . 'MODELE'  = mocab5 ;
+gr41  . 'MATERIAU' = macab5;
+gr41  . 'FORCE'  = 3.75e6;
+gr41  . 'COEF_PREC' = coefprec;
+gr41  . 'TYPE_CAB'  = '2EXT';
+
+*
+*  appele à la procédure TENSION pour calcule les efoorts de précontrainte
+*
+
+CAS3etap = tension CAS3etap;
+list ( cas3etap . 1 . 1 . modele extr maillage);
+list ( cas3etap . 1 . 1 . prec);
+*
+* données relatives au  fluage du béton
+*
+
+TFLUA= table ;
+*--------- AGES DU BETON AU DECOFFRAGE ET AU CHARGEMENT ----------
+AGEPR    = 150.    ;
+tflua. 'AGE_COFFR'= manu chml mobeton 'SCAL' 150. 'STRESSES'; 
+
+*    ------> age de precontrainte
+tflua. 'AGE_PREC'= manu chml mobeton  'SCAL'  150. 'STRESSES';
+
+* definition du rayon de séchage 
+raysec1=manu chml mobet1  'EPAI' 50.   'STRESSES';
+raysec2=manu chml mobet2  'EPAI' 100.   'STRESSES';
+raysec= raysec1 et raysec2;
+tflua. 'SECHAGE'= raysec;
+
+* taux d'armature
+tflua. 'COEF2' = manu chml mobeton  'SCAL'  9.e-3 'STRESSES';
+
+* coef de la loi de fluge              ;
+tflua . 'COEF1' = 70. ;
+
+tflua. 'CALCUL' = vrai;
+tflua.'REGLEMENT' = BPEL;
+tflua.'MOD_BETON'= mobeton;
+tflua.'MAT_BETON'= mabeton;
+
+*
+* données générales et relatives au reste de la structure (hormis cables) 
+*
+
+tbet = table;
+
+tbet . 'GEOMETRIE'  = voltot;
+tbet . 'MODELE' = mobeton;
+tbet . 'MATERIAU'= mabeton;
+tbet . 'BLOCAGES'  = cltot;
+tbet . 'CHARGEMENT' = charpoid;
+
+*
+* appel a phasage
+*
+
+tphas = table;
+
+tphas.'FLUAGE'= tflua;
+tphas.'ETAPE' = cas3etap;
+tphas.'BETON' = tbet;
+tphas . 'NB_PHAS' = 3 ;
+tphas . 'DUREE_INI' = 150.;
+tphas . 'DUREE_TOT' = 3000.;
+tphas . 'DEPOU' = vrai;
+
+tphas =  phasage tphas; 
+
+
+opti sauv 'cas3.res';
+sauv tphas;

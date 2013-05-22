@@ -1,0 +1,54 @@
+opti dime 3 elem qua8 ; 
+
+  PNO1 =     0.  1000.  0. ;
+  PNO2 =    0.     0.  0.  ;
+  PNO3 = 1000.     0.  0.  ;
+  PNO4 = 1000.  1000.  0.  ;
+  PNO5 =    0.   500.  0.  ;
+  PNO6 =  500.     0.  0.  ;
+  PNO7 = 1000.   500.  0.  ;
+  PNO8 =  500.  1000.  0.  ;
+  PNO9 =  500.   500.  0.  ;
+  PN10 =  250.     0.  0.  ;
+  PN11 =  250.   500.  0.  ;
+  PN12 =  250.  1000.  0.  ;
+  PN13 =  750.     0.  0.  ;
+  PN14 =  750.  1000.  0.  ;
+  PN15 =  750.   500.  0.  ;
+  PN16 =  250.   250.  0.  ;
+  PN17 =  250.   750.  0.  ;
+
+ E = 0. 0. 1. ;
+
+ NO2 = PNO2 ;
+ NO1 = PNO1 TOUR 30. NO2 E ;
+ NO3 = PNO3 TOUR 30. NO2 E ;
+ NO4 = PNO4 TOUR 30. NO2 E ;
+ NO5 = PNO5 TOUR 30. NO2 E ;
+ NO6 = PNO6 TOUR 30. NO2 E ;
+ NO7 = PNO7 TOUR 30. NO2 E ;
+ NO8 = PNO8 TOUR 30. NO2 E ;
+ NO9 = PNO9 TOUR 30. NO2 E ;
+ N10 = PN10 TOUR 30. NO2 E ;
+ N11 = PN11 TOUR 30. NO2 E ;
+ N12 = PN12 TOUR 30. NO2 E ;
+ N13 = PN13 TOUR 30. NO2 E ;
+ N14 = PN14 TOUR 30. NO2 E ;
+ N15 = PN15 TOUR 30. NO2 E ;
+ N17 = PN17 TOUR 30. NO2 E ;
+
+
+MA1 = MANU QUA8 NO8 NO6 NO3 NO4 NO9 N13 NO7 N14 ;
+MA3 = MANU TRI6 NO1 NO2 NO6 NO5 N10 N11  ;
+MA4 = MANU TRI6 NO1 NO6 NO8 N11 NO9 N12  ;
+MA2 = MANU SEG3 NO3 NO4 NO7   ;
+
+SURF = MA1 ET MA2 ET MA3 ET MA4 ;
+
+
+elim 0.001 SURF;
+
+ sort SURF ;
+opti sauv format
+ '/export/exterieurs/cibhhgb/uaster/hsnv121e.mgib' ;
+ sauv format SURF ;

@@ -1,0 +1,68 @@
+%=======================================================================  
+%= TEST HPLA100B EN COQUE AXISYMETRIQUE 1D
+%= CYLINDRE CREUX THERMOELASTIQUE PESANT EN ROTATION UNIFORME 
+%======================================================================= 
+TITRE           
+FINSF           
+%======================================================================= 
+COOR_2D         
+          % NOEUD     X          Y
+             F       20.        0.0
+             F0      20.        0.5
+             F1      20.        1.0
+             F10     20.        1.5
+             F2      20.        2.0
+             F20     20.        2.5
+             F3      20.        3.0
+             F30     20.        3.5
+             F4      20.        4.0
+             F40     20.        4.5
+             H       20.        5.0
+             H0      20.        5.5
+             H1      20.        6.0
+             H10     20.        6.5
+             H2      20.        7.0
+             H20     20.        7.5
+             H3      20.        8.0
+             H30     20.        8.5
+             H4      20.        9.0
+             H40     20.        9.5
+             J       20.       10.0
+FINSF  
+   %         
+SEG3      
+         M1     F    F1   F0    
+         M2     F1   F2   F10   
+         M3     F2   F3   F20   
+         M4     F3   F4   F30   
+         M5     F4   H    F40   
+         M6     H    H1   H0    
+         M7     H1   H2   H10   
+         M8     H2   H3   H20   
+         M9     H3   H4   H30   
+         M10    H4   J    H40    
+FINSF     
+   %         
+GROUP_MA NOM=COQUE
+    M1 M2 M3 M4 M5 M6 M7 M8 M9 M10
+FINSF     
+   %         
+GROUP_NO NOM=GRNO6  %   1  NOEUD
+               F     
+FINSF     
+   %
+GROUP_NO NOM=GRNO13 %   1  NOEUD
+               J
+FINSF 
+   %     
+GROUP_NO NOM=GRNO14 %   1  NOEUD
+               H
+FINSF 
+   %     
+GROUP_NO NOM=GRNO15 %   21 NOEUDS
+       F     F0       F1       F10      F2       F20      F3       F30
+             F4       F40  H   H0       H1       H10      H2       H20
+             H3       H30      H4       H40      J
+FINSF     
+%
+FIN     

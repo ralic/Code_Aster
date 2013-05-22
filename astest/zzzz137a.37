@@ -1,0 +1,94 @@
+    -1
+    57   %VALEURS AUX NOEUDS DES ELEMENTS  (PRESSION)
+         fichier constitue a la main pour affecter sur les
+         mailles MA15 et MA16 p=0.  (t=0.)
+
+
+NUMERO D'ORDRE: 1 INST:  0.00000E+00
+         1         4         1        15         2         1
+         2         1         1         1
+  0.00000D+00
+        15         1         2         1     % MAILLE MA15
+  0.00000E+00
+  0.00000E+00
+        16         1         2         1     % MAILLE MA16
+  0.00000E+00
+  0.00000E+00
+         9         1         2         1     % MAILLE MA9
+  0.00000E+00
+  0.00000E+00
+        10         1         2         1     % MAILLE MA10
+  0.00000E+00
+  0.00000E+00
+        11         1         2         1     % MAILLE MA11
+  0.00000E+00
+  0.00000E+00
+        12         1         2         1     % MAILLE MA12
+  0.00000E+00
+  0.00000E+00
+        13         1         2         1     % MAILLE MA13
+  0.00000E+00
+  0.00000E+00
+        14         1         2         1     % MAILLE MA14
+  0.00000E+00
+  0.00000E+00
+        17         1         2         1     % MAILLE MA17
+  0.00000E+00
+  0.00000E+00
+        18         1         2         1     % MAILLE MA18
+  0.00000E+00
+  0.00000E+00
+        19         1         2         1     % MAILLE MA19
+  0.00000E+00
+  0.00000E+00
+        20         1         2         1     % MAILLE MA20
+  0.00000E+00
+  0.00000E+00
+    -1
+    -1
+    57   %VALEURS AUX NOEUDS DES ELEMENTS  (PRESSION)
+         fichier constitue a la main pour affecter sur les
+         mailles MA15 et MA16 p=4.  (t=1.)
+
+
+NUMERO D'ORDRE: 2 INST:  1.00000E+00
+         1         4         1        15         2         1
+         2         1         1         2
+  0.10000D+01
+        15         1         2         1     % MAILLE MA15
+  4.00000E+00
+  4.00000E+00
+        16         1         2         1     % MAILLE MA16
+  4.00000E+00
+  4.00000E+00
+         9         1         2         1     % MAILLE MA9
+  0.00000E+00
+  0.00000E+00
+        10         1         2         1     % MAILLE MA10
+  0.00000E+00
+  0.00000E+00
+        11         1         2         1     % MAILLE MA11
+  0.00000E+00
+  0.00000E+00
+        12         1         2         1     % MAILLE MA12
+  0.00000E+00
+  0.00000E+00
+        13         1         2         1     % MAILLE MA13
+  0.00000E+00
+  0.00000E+00
+        14         1         2         1     % MAILLE MA14
+  0.00000E+00
+  0.00000E+00
+        17         1         2         1     % MAILLE MA17
+  0.00000E+00
+  0.00000E+00
+        18         1         2         1     % MAILLE MA18
+  0.00000E+00
+  0.00000E+00
+        19         1         2         1     % MAILLE MA19
+  0.00000E+00
+  0.00000E+00
+        20         1         2         1     % MAILLE MA20
+  0.00000E+00
+  0.00000E+00
+    -1

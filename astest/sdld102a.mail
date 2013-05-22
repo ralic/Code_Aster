@@ -1,0 +1,25 @@
+COOR_3D
+    NO1     0.   0.   0.
+    NO2     0.1  0.   0.       
+    NO3     0.2  0.   0.
+    NO4     0.3  0.   0.
+    NO5     0.4  0.   0.
+FINSF
+%
+SEG2
+    S1     NO1      NO2
+    S2     NO2      NO3
+    S3     NO3      NO4
+    S4     NO4      NO5
+FINSF
+%
+
+GROUP_MA NOM=RESSORT
+  S1 S2 S3 S4
+FINSF
+%
+GROUP_NO NOM=MASSE
+  NO2 NO3 NO4
+FINSF
+%
+FIN

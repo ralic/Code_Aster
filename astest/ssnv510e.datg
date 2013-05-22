@@ -1,0 +1,41 @@
+opti dime 2  elem qua4 ;
+
+dens 10 ;
+
+*----------------------------------------
+*DONNEES
+*----------------------------------------
+* dimensions des cotEs
+LX = 2;
+LY = 4;
+
+* nombre d elements
+NX = 2;
+NY = 2;
+
+
+*---------------------------------------------
+*construction du maillage
+*---------------------------------------------
+
+p1 = 0. 0;
+p2 = LX 0;
+p3 = LX LY;
+p4 = 0. LY;
+
+LB = droit p1 p2 NX;
+LD   = droit p2 p3 NY;
+LH = droit p3 p4 NX;
+LG   = droit p4 p1 NY;
+
+
+SURF=DALL LB LD LH LG PLAN;
+
+trac surf;          
+
+MAILLE = surf;
+
+opti sauv format
+'/work/irlin831_1/siavelim/CAS/ssnv510/ssnv510e.mgib';
+sauv format maille ;
+fin ;

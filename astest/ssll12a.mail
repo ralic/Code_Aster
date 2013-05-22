@@ -1,0 +1,61 @@
+TITRE
+% SSLL12A                                                       11/03/92
+% TREILLIS DE BARRES ARTICULEES SOUS TROIS SOLLICITATIONS
+% DEPLACEMENTS IMPOSES, FORCES PONCTUELLES, DILATATION THERMIQUE
+%                                                   REF: SFM.VPCS SSLL12
+FINSF
+%=======================================================================
+
+COOR_3D
+       % NOEUD     X          Y         Z
+          A       0.0        0.0       0.0
+          N01     0.0        4.0       0.0
+          N02     5.0        0.0       0.0
+          E      10.0        4.0       0.0
+          N03    15.0        0.0       0.0
+          B      20.0       -4.0       0.0
+          N04    20.0        4.0       0.0
+          F      30.0        4.0       0.0
+          C      35.0        0.0       0.0
+          D      25.0        0.0       0.0
+FINSF
+
+SEG2
+      M01     A    N01
+      M02     A    N02
+      M03     N01  N02
+      M04     N01  E
+      M05     N02  E
+      M06     N02  N03
+      M07     E    N03
+      M08     E    N04
+      M09     N03  N04
+      M10     N03  B
+      M11     B    N04
+      M12     B    D
+      M13     N04  D
+      M14     N04  F
+      M15     D    F
+      M16     D    C
+      M17     F    C
+FINSF
+
+GROUP_MA  NOM = M_BART
+   M01  M03  M05  M07  M09  M13  M15  M17
+   M02  M04  M06  M08  M10  M11  M12  M14  M16
+FINSF
+GROUP_MA  NOM = M_BAR1
+   M01  M03  M05  M07  M09  M13  M15  M17
+FINSF
+GROUP_MA  NOM = M_BAR2
+   M02  M04  M06  M08  M10  M11  M12  M14  M16
+FINSF
+
+GROUP_NO  NOM = N_BAR1
+   C
+FINSF
+GROUP_NO  NOM = N_BAR2
+   A    B    C
+FINSF
+
+FIN

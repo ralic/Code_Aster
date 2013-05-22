@@ -1,0 +1,49 @@
+opti dime 2 elem qua8 ; 
+* l1 est la longueur du rectangle
+* l2 est la largeur du rectangle
+n1 = 20 ;
+n2 = 5 ;
+
+l3=10 ;
+l2=20 ;
+l1 = 2*l2 ;
+l4 = 3*l3 ;
+
+a1 = 0. 0.  ;
+b1 = 0. l3 ;
+b2 = l1 l3 ;
+c1 = 0. l2 ;
+c2 = l1 l2 ;
+a2 = l1 0.  ;
+a3 = l1 l4 ;
+a4 = 0. l4 ;
+a5 = 0. l2 ;
+
+a1a2 = droi n1 a1 a2 ;
+a2b2 = d n2 a2 b2 ;
+b2c2 = d n2 b2 c2 ;
+c2a3 = d n2 c2 a3 ;
+a3a4 = d n1 a3 a4 ;
+a4c1 = d n2 a4 c1 ;
+c1b1 = d n2 c1 b1 ;
+b1a1 = d n2 b1 a1 ;
+b1b2 = d n1 b1 b2 ;
+c1c2 = d n1 c1 c2 ;
+b2b1 = inve b1b2 ;
+c2c1 = inve c1c2 ;
+a2a3 = a2b2 et b2c2 et c2a3 ;
+a4a1 = a4c1 et c1b1 et b1a1 ;
+ 
+ s1 = daller plan a1a2 a2b2 b2b1 b1a1 ;
+ s2 = daller plan b1b2 b2c2  c2c1 c1b1 ;
+
+opti elem tri6;
+ s3 = daller plan c1c2 c2a3  a3a4 a4c1 ;
+
+ surf = s1 et s2 et s3 ;
+elim 0.001 surf;
+
+ sort surf ;
+opti sauv format
+ '/home/cibhhgb/surf.mgib' ;
+ sauv format surf ;

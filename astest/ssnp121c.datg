@@ -1,0 +1,48 @@
+opti dime 2 elem qua4;
+*
+*     Points
+a=-1.0   0.0;
+b= 1.0   0.0;
+c= 1.0   1.;
+d=-1.0   1.;
+*
+e=-1.0  0.0;
+f= 1.   0.0;
+g= 1.   -1.;
+h=-1.0  -1.;
+*
+*     Parametres
+nblon1=20;
+nblar1=20;
+nblon2=20;
+nblar2=20;
+nblon3=31;
+nblar3=1;
+*
+*    Droites
+ab=droi 12 a b;
+bc=droi 12 b c;
+cd=droi 12 c d;
+da=droi 12 d a;
+*
+ef=droi 11 e f;
+fg=droi 11 f g;
+gh=droi 11 g h;
+he=droi 11 h e;
+ef=inve(ef);
+
+*     Plaque
+*
+plaque1 = daller ab bc cd da;
+plaque2 = daller ef fg gh he;
+
+*elim plaque1 0.000001;
+*elim plaque2  0.000001;
+*
+*     Maillage
+**************************
+titre 'Maillage de deux plaques';
+trac (plaque1 et plaque2 );
+opti SAUV format 'ssnp121c.mgib';
+sauv format (plaque1 et plaque2);
+fin;

@@ -1,0 +1,32 @@
+COOR_3D
+NO7    0.6         0.0       0.0
+NO8    0.7         0.0       0.0
+NO9    0.8         0.0       0.0
+FINSF
+
+GROUP_NO NOM = FIXE
+NO8
+FINSF
+
+GROUP_NO NOM = EXTERNE
+NO7
+NO8
+NO9
+FINSF
+
+SEG2
+EL7    NO7    NO8
+EL8    NO8    NO9
+FINSF
+
+GROUP_MA NOM = POUTRE
+EL7
+EL8
+FINSF
+
+GROUP_MA NOM = VISUAL
+EL7
+EL8
+FINSF
+
+FIN

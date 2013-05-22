@@ -1,0 +1,212 @@
+# -*- coding: iso-8859-1 -*-
+# RESPONSABLE
+
+import os
+import os.path as osp
+import re
+import gettext
+import tempfile
+from subprocess import Popen, PIPE
+from functools import partial
+
+from Noyau.N_types import is_int
+from Utilitai.Utmess import MessageLog
+from Execution.i18n import localization as LO
+from Execution.strfunc import ufmt, convert
+
+MSG_ENCODING = 'iso-8859-1'
+
+VALUES = MessageLog.default_args.copy()
+VALUES['ktout'] = 'xxxxxx'
+
+REI = re.compile('%\(i[0-9]+\)[\.0-9\-\+ ]*([a-zA-Z])', re.M)
+RER = re.compile('%\(r[0-9]+\)[\.0-9\-\+ ]*([a-zA-Z])', re.M)
+REK = re.compile('%\(k[0-9]+\)[\.0-9\-\+]*([a-zA-Z])', re.M)
+RE1 = re.compile('%\((.[^0-9].*?)\)[\.0-9\-\+ ]*[a-zA-Z]', re.M)
+RE2 = re.compile('%\(([^irk].*?)\)[\.0-9\-\+ ]*[a-zA-Z]', re.M)
+
+RE_UNAUTH = [
+    re.compile('([*#=\+\-!/\?<>&@]{4})', re.M),
+]
+
+loginfo = partial(aster.affiche, 'MESSAGE')
+
+class Checker:
+    """A simple checker object."""
+    def __init__(self):
+        self.err = []
+        self.wrn = []
+        self.lang = None
+        self.mod = None
+        self.words = set()
+
+    def set_current_lang(self, lang):
+        self.lang = lang
+
+    def set_current_mod(self, mod):
+        self.mod = mod
+
+    def info(self, msg):
+        loginfo("<%s> %s: %s" % (self.lang, self.mod, msg))
+
+    def error(self, error):
+        self.err.append((self.lang, self.mod, error))
+
+    def warning(self, error):
+        self.wrn.append((self.lang, self.mod, error))
+
+    def warning_spell(self, idmess, words):
+        self.warning("%s: unknown words %s" % (idmess, tuple(words)))
+        self.words.update(words)
+
+    def count_errors(self):
+        return len(self.err)
+
+    def count_unknown_words(self):
+        return len(self.get_unknown_words())
+
+    def get_errors(self):
+        txt = ["<%s> %s: %s" % err for err in self.err]
+        return os.linesep.join(txt)
+
+    def get_warnings(self):
+        txt = ["<%s> %s: %s" % wrn for wrn in self.wrn]
+        return os.linesep.join(txt)
+
+    def get_unknown_words(self):
+        lw = list(self.words)
+        lw.sort()
+        return lw
+
+    def get_modules(self):
+        smod = set([mod for lang, mod, err in self.err])
+        lmod = list(smod)
+        lmod.sort()
+        return lmod
+
+def get_cata_msg(catamess):
+    d = {}
+    mod = __import__('Messages.%s' % catamess, d, d, [catamess])
+    reload(mod)
+    cata_msg = getattr(mod, 'cata_msg', {})
+    return cata_msg
+
+def check_format(checker, catamess, idmess, msg, typ):
+    """Check the format used for the given type 'typ'."""
+    dre = {
+        'integer' : (REI, ['d', 'i']),
+        'real'    : (RER, ['f', 'g', 'e', 'F', 'G', 'E']),
+        'string'  : (REK, ['s', ]),
+        'other1'   : (RE1, ['ktout', ]),
+        'other2'   : (RE2, []),
+    }
+    expr, l_auth = dre[typ]
+    arg = expr.findall(msg)
+    unauth = set(arg).difference(l_auth)
+    if len(unauth) > 0:
+        checker.error("%s : invalid format for type '%s' : %s" % (idmess, typ, tuple(unauth)))
+
+def check_msg(checker, catamess, msg, key, lang):
+    """Check a message."""
+    idmess = "%s_%s" % (catamess, key)
+    # check type : unicode expected
+    if type(msg) is str:
+        if catamess != "vide":
+            checker.error("%s is str" % idmess)
+    elif type(msg) is not unicode:
+        checker.error(lang, "%s has a wrong type" % idmess)
+    if msg.strip() == '' and catamess != "vide":
+        checker.error("%s is empty : use VIDE_1 for that!" % idmess)
+    assert is_int(key), 'unexpected key : %s' % key
+    # check unauthorized formatting
+    for re_unauth in RE_UNAUTH:
+        mat = re_unauth.search(msg)
+        if mat:
+            checker.info("unrecommanded formatting in %s : %s" % (idmess, mat.groups()))
+    # check formatting
+    txt = None
+    try:
+        txt = ufmt(msg, VALUES)
+    except Exception, exc:
+        trace = repr(exc)
+        checker.error("%s can not be formatted :\nmessage: %r\n%s" % (idmess, msg, trace))
+    # check arguments
+    for typ in ('integer', 'real', 'string', 'other1', 'other2'):
+        check_format(checker, catamess, idmess, msg, typ)
+    if txt and lang == 'fr':
+        pwl = get_personal_dict()
+        if pwl:
+            check_spelling(checker, catamess, txt, key, lang)
+
+_pws = None
+def get_personal_dict(name='dict'):
+    """Build the dictionnary for Code_Aster : keywords + personal dict."""
+    global _pws
+    if _pws:
+        return _pws
+    fd, fname = tempfile.mkstemp(dir=os.getcwd())
+    fobj = os.fdopen(fd, 'w')
+    cnt = ['personal_ws-1.1 fr 0 utf-8', ]
+    templ = osp.join(os.environ['ASTER_ROOT'], 'share', 'codeaster', 'code_aster_%s.aspell.per')
+    cata = templ % 'cata'
+    if osp.exists(cata):
+        # ignore the first line
+        cnt.extend(open(cata, 'r').read().splitlines()[1:])
+        _pws = fname
+    cawl = templ % 'dict'
+    if osp.exists(cawl):
+        # ignore the first line
+        cnt.extend(open(cawl, 'r').read().splitlines()[1:])
+        _pws = fname
+    fobj.write(os.linesep.join(cnt))
+    fobj.close()
+    return _pws
+
+def check_spelling(checker, catamess, msg, key, lang, encoding=None):
+    """Check the spelling of the message."""
+    if catamess == 'debug':
+        return
+    idmess = "%s_%s" % (catamess, key)
+    pwl = get_personal_dict()
+    cmd = [
+        'aspell', 'list',
+        '--lang=%s' % lang,
+        #'--master=%s' % lang,
+    ]
+    if encoding:
+        cmd.append('--encoding=%s' % encoding)
+    if osp.exists(pwl):
+        cmd.append('--personal=%s' % pwl)
+    if type(msg) not in (str, unicode):
+        checker.error("error (%s): invalid message type: %s" % (key, type(msg)))
+        return
+    echo = Popen(['echo', convert(msg)], stdout=PIPE, close_fds=True)
+    ps = Popen(cmd, stdin=echo.stdout, stdout=PIPE, stderr=PIPE)
+    echo.stdout.close()
+    out, err = ps.communicate()
+    if ps.returncode != 0:
+        checker.error("error (%s): spelling failed with error message: %s" % (key, err))
+    unknown = out.split()
+    if unknown:
+        unknown = [convert(word) for word in unknown]
+        checker.warning_spell(idmess, unknown)
+
+def check_catamess(checker, lang, l_cata):
+    checker.set_current_lang(lang)
+    checker.set_current_mod('-')
+    loginfo("<i18n> lang=%s, domain=%s, localedir=%s" % (LO.current_lang, LO.domain, LO.localedir))
+    tr = LO.install(lang)
+    if lang != 'fr' and not isinstance(tr, gettext.GNUTranslations):
+        checker.warning("no translation object for language '%s'" % lang)
+        return
+    pwl = get_personal_dict()
+    if not pwl and lang == 'fr':
+        checker.warning("Code_Aster personal dict not found: %s" % pwl)
+    for catamess in l_cata:
+        checker.set_current_mod(catamess)
+        loginfo("<%s> checking %s..." % (lang, catamess))
+        cata_msg = get_cata_msg(catamess)
+        for key, msg in cata_msg.items():
+            if type(msg) == dict:
+                msg  = msg['message']
+            check_msg(checker, catamess, msg, key, lang)

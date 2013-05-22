@@ -1,0 +1,181 @@
+# -*- coding: iso-8859-1 -*-
+
+###
+### This file is generated automatically by SALOME v6.5.0 with dump python functionality
+###
+
+import sys
+import salome
+
+salome.salome_init()
+theStudy = salome.myStudy
+
+import salome_notebook
+notebook = salome_notebook.notebook
+sys.path.insert( 0, r'/home/aster/DKT_TEMP/Pour_restit')
+
+###
+### GEOM component
+###
+
+import GEOM
+import geompy
+import math
+import SALOMEDS
+
+
+geompy.init_geom(theStudy)
+
+D = geompy.MakeVertex(0, 10, 0)
+C = geompy.MakeVertex(10, 10, 0)
+A = geompy.MakeVertex(0, 0, 0)
+B = geompy.MakeVertex(10, 0, 0)
+CD = geompy.MakeLineTwoPnt(D, C)
+AB = geompy.MakeLineTwoPnt(A, B)
+DA = geompy.MakeLineTwoPnt(D, A)
+BC = geompy.MakeLineTwoPnt(C, B)
+ABDC = geompy.MakeWire([CD, AB, DA, BC], 1e-07)
+Plaque = geompy.MakeFaceWires([ABDC], 1)
+[DA_1,AB_1,CD_1,BC_1] = geompy.ExtractShapes(Plaque, geompy.ShapeType["EDGE"], True)
+[A_1,D_1,B_1,C_1] = geompy.ExtractShapes(Plaque, geompy.ShapeType["VERTEX"], True)
+geompy.addToStudy( D, 'D' )
+geompy.addToStudy( C, 'C' )
+geompy.addToStudy( A, 'A' )
+geompy.addToStudy( B, 'B' )
+geompy.addToStudy( CD, 'CD' )
+geompy.addToStudy( AB, 'AB' )
+geompy.addToStudy( DA, 'DA' )
+geompy.addToStudy( BC, 'BC' )
+geompy.addToStudy( ABDC, 'ABDC' )
+geompy.addToStudy( Plaque, 'Plaque' )
+geompy.addToStudyInFather( Plaque, DA_1, 'DA' )
+geompy.addToStudyInFather( Plaque, AB_1, 'AB' )
+geompy.addToStudyInFather( Plaque, CD_1, 'CD' )
+geompy.addToStudyInFather( Plaque, BC_1, 'BC' )
+geompy.addToStudyInFather( Plaque, A_1, 'A' )
+geompy.addToStudyInFather( Plaque, D_1, 'D' )
+geompy.addToStudyInFather( Plaque, B_1, 'B' )
+geompy.addToStudyInFather( Plaque, C_1, 'C' )
+
+###
+### SMESH component
+###
+
+import smesh, SMESH, SALOMEDS
+
+smesh.SetCurrentStudy(theStudy)
+import StdMeshers
+Plaque_Q4_Nb50 = smesh.Mesh(Plaque)
+Regular_1D = Plaque_Q4_Nb50.Segment()
+Nb_Segments_1 = Regular_1D.NumberOfSegments(5,[],[  ])
+Quadrangle_2D = Plaque_Q4_Nb50.Quadrangle(algo=smesh.QUADRANGLE)
+Plaque_1 = Plaque_Q4_Nb50.GroupOnGeom(Plaque,'Plaque',SMESH.FACE)
+Regular_1D_1 = smesh.CreateHypothesis( "Regular_1D" )
+Quadrangle_2D_1 = smesh.CreateHypothesis( "Quadrangle_2D" )
+#Plaque_Q4_Nb50.RemoveGroup( smeshObj_1 ) ### smeshObj_1 has not been yet created
+#Plaque_Q4_Nb50.RemoveGroup( smeshObj_2 ) ### smeshObj_2 has not been yet created
+#Plaque_Q4_Nb50.RemoveGroup( smeshObj_3 ) ### smeshObj_3 has not been yet created
+#Plaque_Q4_Nb50.RemoveGroup( smeshObj_4 ) ### smeshObj_4 has not been yet created
+#Plaque_Q4_Nb50.RemoveGroup( smeshObj_5 ) ### smeshObj_5 has not been yet created
+#Plaque_Q4_Nb50.RemoveGroup( smeshObj_6 ) ### smeshObj_6 has not been yet created
+#Plaque_Q4_Nb50.RemoveGroup( smeshObj_7 ) ### smeshObj_7 has not been yet created
+#Plaque_Q4_Nb50.RemoveGroup( smeshObj_8 ) ### smeshObj_8 has not been yet created
+#Plaque_Q4_Nb50.RemoveGroup( smeshObj_9 ) ### smeshObj_9 has not been yet created
+#Plaque_Q4_Nb50.RemoveGroup( smeshObj_10 ) ### smeshObj_10 has not been yet created
+#Plaque_Q4_Nb50.RemoveGroup( smeshObj_11 ) ### smeshObj_11 has not been yet created
+#Plaque_Q4_Nb50.RemoveGroup( smeshObj_12 ) ### smeshObj_12 has not been yet created
+DA_2 = Plaque_Q4_Nb50.GroupOnGeom(DA_1,'DA',SMESH.EDGE)
+AB_2 = Plaque_Q4_Nb50.GroupOnGeom(AB_1,'AB',SMESH.EDGE)
+CD_2 = Plaque_Q4_Nb50.GroupOnGeom(CD_1,'CD',SMESH.EDGE)
+BC_2 = Plaque_Q4_Nb50.GroupOnGeom(BC_1,'BC',SMESH.EDGE)
+DA_3 = Plaque_Q4_Nb50.GroupOnGeom(DA_1,'DA',SMESH.NODE)
+AB_3 = Plaque_Q4_Nb50.GroupOnGeom(AB_1,'AB',SMESH.NODE)
+CD_3 = Plaque_Q4_Nb50.GroupOnGeom(CD_1,'CD',SMESH.NODE)
+BC_3 = Plaque_Q4_Nb50.GroupOnGeom(BC_1,'BC',SMESH.NODE)
+A_2 = Plaque_Q4_Nb50.GroupOnGeom(A_1,'A',SMESH.NODE)
+D_2 = Plaque_Q4_Nb50.GroupOnGeom(D_1,'D',SMESH.NODE)
+B_2 = Plaque_Q4_Nb50.GroupOnGeom(B_1,'B',SMESH.NODE)
+C_2 = Plaque_Q4_Nb50.GroupOnGeom(C_1,'C',SMESH.NODE)
+DA_3.SetColor( SALOMEDS.Color( 0, 0.666667, 1 ))
+DA_2.SetColor( SALOMEDS.Color( 0, 0.666667, 1 ))
+smesh.SetName(Plaque_Q4_Nb50, 'Plaque_Q4_Nb5')
+Plaque_Q4_Nb50.ExportMED( r'/home/aster/DKT_TEMP/Plaque_Q4_Nb5.med', 0, SMESH.MED_V2_2, 1 )
+smesh.SetName(Plaque_Q4_Nb50, 'Plaque_Q4_Nb5')
+Plaque_Q4_Nb50.ExportMED( r'/home/aster/DKT_TEMP/Plaque_Q4_Nb5.med', 0, SMESH.MED_V2_2, 1 )
+Nb_Segments_2 = smesh.CreateHypothesis('NumberOfSegments')
+Nb_Segments_2.SetNumberOfSegments( 10 )
+Nb_Segments_2.SetDistrType( 0 )
+Regular_1D_2 = smesh.CreateHypothesis( "Regular_1D" )
+Quadrangle_2D_2 = smesh.CreateHypothesis( "Quadrangle_2D" )
+Nb_Segments_1.SetNumberOfSegments( 50 )
+Nb_Segments_1.SetDistrType( 0 )
+isDone = Plaque_Q4_Nb50.Compute()
+smesh.SetName(Plaque_Q4_Nb50, 'Plaque_Q4_Nb50')
+Plaque_Q4_Nb50.ExportMED( r'/home/aster/DKT_TEMP/Plaque_Q4_Nb50.med', 0, SMESH.MED_V2_2, 1 )
+Nb_Segments_2.SetNumberOfSegments( 10 )
+Nb_Segments_2.SetDistrType( 0 )
+Regular_1D_3 = smesh.CreateHypothesis( "Regular_1D" )
+Quadrangle_2D_3 = smesh.CreateHypothesis( "Quadrangle_2D" )
+Nb_Seg_20 = smesh.CreateHypothesis('NumberOfSegments')
+Nb_Seg_20.SetNumberOfSegments( 20 )
+Nb_Seg_20.SetDistrType( 0 )
+Regular_1D_4 = smesh.CreateHypothesis( "Regular_1D" )
+Quadrangle_2D_4 = smesh.CreateHypothesis( "Quadrangle_2D" )
+Nb_Seg_5 = smesh.CreateHypothesis('NumberOfSegments')
+Nb_Seg_5.SetNumberOfSegments( 5 )
+Nb_Seg_5.SetDistrType( 0 )
+Regular_1D_5 = smesh.CreateHypothesis( "Regular_1D" )
+Quadrangle_2D_5 = smesh.CreateHypothesis( "Quadrangle_2D" )
+Regular_1D_6 = smesh.CreateHypothesis( "Regular_1D" )
+Quadrangle_2D_6 = smesh.CreateHypothesis( "Quadrangle_2D" )
+
+## some objects were removed
+aStudyBuilder = theStudy.NewBuilder()
+SO = theStudy.FindObjectIOR(theStudy.ConvertObjectToIOR(smeshObj_1))
+if SO is not None: aStudyBuilder.RemoveObjectWithChildren(SO)
+SO = theStudy.FindObjectIOR(theStudy.ConvertObjectToIOR(smeshObj_2))
+if SO is not None: aStudyBuilder.RemoveObjectWithChildren(SO)
+SO = theStudy.FindObjectIOR(theStudy.ConvertObjectToIOR(smeshObj_3))
+if SO is not None: aStudyBuilder.RemoveObjectWithChildren(SO)
+SO = theStudy.FindObjectIOR(theStudy.ConvertObjectToIOR(smeshObj_4))
+if SO is not None: aStudyBuilder.RemoveObjectWithChildren(SO)
+SO = theStudy.FindObjectIOR(theStudy.ConvertObjectToIOR(smeshObj_5))
+if SO is not None: aStudyBuilder.RemoveObjectWithChildren(SO)
+SO = theStudy.FindObjectIOR(theStudy.ConvertObjectToIOR(smeshObj_6))
+if SO is not None: aStudyBuilder.RemoveObjectWithChildren(SO)
+SO = theStudy.FindObjectIOR(theStudy.ConvertObjectToIOR(smeshObj_7))
+if SO is not None: aStudyBuilder.RemoveObjectWithChildren(SO)
+SO = theStudy.FindObjectIOR(theStudy.ConvertObjectToIOR(smeshObj_8))
+if SO is not None: aStudyBuilder.RemoveObjectWithChildren(SO)
+SO = theStudy.FindObjectIOR(theStudy.ConvertObjectToIOR(smeshObj_9))
+if SO is not None: aStudyBuilder.RemoveObjectWithChildren(SO)
+SO = theStudy.FindObjectIOR(theStudy.ConvertObjectToIOR(smeshObj_10))
+if SO is not None: aStudyBuilder.RemoveObjectWithChildren(SO)
+SO = theStudy.FindObjectIOR(theStudy.ConvertObjectToIOR(smeshObj_11))
+if SO is not None: aStudyBuilder.RemoveObjectWithChildren(SO)
+SO = theStudy.FindObjectIOR(theStudy.ConvertObjectToIOR(smeshObj_12))
+if SO is not None: aStudyBuilder.RemoveObjectWithChildren(SO)
+## set object names
+smesh.SetName(Plaque_Q4_Nb50.GetMesh(), 'Plaque_Q4_Nb50')
+smesh.SetName(Regular_1D.GetAlgorithm(), 'Regular_1D')
+smesh.SetName(Nb_Segments_1, 'Nb. Segments_1')
+smesh.SetName(Quadrangle_2D.GetAlgorithm(), 'Quadrangle_2D')
+smesh.SetName(Plaque_1, 'Plaque')
+smesh.SetName(DA_2, 'DA')
+smesh.SetName(AB_2, 'AB')
+smesh.SetName(CD_2, 'CD')
+smesh.SetName(BC_2, 'BC')
+smesh.SetName(DA_3, 'DA')
+smesh.SetName(AB_3, 'AB')
+smesh.SetName(CD_3, 'CD')
+smesh.SetName(BC_3, 'BC')
+smesh.SetName(A_2, 'A')
+smesh.SetName(D_2, 'D')
+smesh.SetName(B_2, 'B')
+smesh.SetName(C_2, 'C')
+smesh.SetName(Nb_Segments_2, 'Nb. Segments_2')
+smesh.SetName(Nb_Seg_20, 'Nb. Seg=20')
+smesh.SetName(Nb_Seg_5, 'Nb. Seg=5')
+
+if salome.sg.hasDesktop():
+  salome.sg.updateObjBrowser(1)

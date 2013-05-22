@@ -6,6 +6,5 @@ P mpi_nbnoeud 1
 P testlist C
 
 F comm ttlp100b.comm D 1
-F mail ttlp100a.mail D 20
 F datg ttlp100b.datg D 16
 F msh ttlp100b.msh D 19

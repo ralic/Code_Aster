@@ -1,0 +1,50 @@
+opti dime 3  elem cub8 ;
+dens 1 ;
+
+*----------------------------------------
+*DONNEES
+*----------------------------------------
+*cotés
+LX = 5;
+LY = 20;
+LZ = 20;
+
+* nombre d'éléments
+NX = 1;
+NY = LY;
+NZ = LZ; 
+
+*---------------------------------------------
+*construction des surfaces dans le plan inférieur
+*---------------------------------------------
+
+p1 = LX   0.  0.;
+p2 = LX  LY   0.;
+p3 = 0.  LY   0.;
+p4 = 0.  0.  0.;
+
+lig1 = droit p1 p2 NY;
+lig2 = droit p2 p3 NX;
+lig3 = droit p3 p4 NY;
+lig4 = droit p4 p1 NX;
+
+SURFINF= lig1 lig2 lig3 lig4 dall PLAN ;
+
+p5 = 0.  0. LZ. ;
+
+*---------------------------------------------
+*extrusion
+*---------------------------------------------
+
+vol = SURFINF volu  'TRAN' p5 NZ;
+SURFSUP = FACE 2  vol ;
+elim vol 1E-6;
+
+trac cach vol;
+
+MAILLE = vol et SURFINF et SURFSUP;
+                 
+
+opti sauv format  '/home/geniaut/ast_dev/RESTIT/test/ssnv186a.mgib' ;
+sauv format maille ;
+fin ;

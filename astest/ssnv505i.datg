@@ -1,0 +1,150 @@
+# -*- coding: iso-8859-1 -*-
+
+# Initialisation
+import sys
+import salome
+
+salome.salome_init()
+
+# GEOM
+import GEOM
+import geompy
+import math
+import SALOMEDS
+
+def RebuildDataGeom(theStudy):
+	geompy.init_geom(theStudy)
+
+	global Plane_1, B, Partition_1, Vector_y, TOUT, COTE_A, COTE_B, POUTRE_B, Translation_1, POUTRE_H, COTE_C, BORD_CTC, A, Face_2, Compound_1
+	geomObj_1 = geompy.MakeFaceHW(2032, 10.16, 1)
+	Face_2 = geompy.MakeFaceHW(2032, 10.16, 3)
+	Vector_y = geompy.MakeVectorDXDYDZ(0, 1, 0)
+	geompy.Rotate(Face_2, Vector_y, 90*math.pi/180.0)
+	geompy.TranslateDXDYDZ(Face_2, 1016, 0, 0)
+	Translation_1 = geompy.MakeTranslation(Face_2, 914.4, 508, 0)
+	Plane_1 = geompy.MakePlaneLCS(None, 2000, 2)
+	geompy.TranslateDXDYDZ(Plane_1, 1625.6, 0, 0)
+	Partition_1 = geompy.MakePartition([Translation_1], [Plane_1], [], [], geompy.ShapeType["FACE"], 0, [], 0)
+	Compound_1 = geompy.MakeCompound([Face_2, Partition_1])
+	TOUT = geompy.CreateGroup(Compound_1, geompy.ShapeType["FACE"])
+	geompy.UnionIDs(TOUT, [2, 13, 23])
+	[geomObj_2,geomObj_3,geomObj_4,geomObj_5,geomObj_6,geomObj_7,geomObj_8,geomObj_9,geomObj_10,geomObj_11] = geompy.SubShapeAll(TOUT, geompy.ShapeType["VERTEX"])
+	POUTRE_B = geompy.CreateGroup(Compound_1, geompy.ShapeType["FACE"])
+	geompy.UnionIDs(POUTRE_B, [2])
+	POUTRE_H = geompy.CreateGroup(Compound_1, geompy.ShapeType["FACE"])
+	geompy.UnionIDs(POUTRE_H, [13, 23])
+	COTE_A = geompy.CreateGroup(Compound_1, geompy.ShapeType["EDGE"])
+	geompy.UnionIDs(COTE_A, [4])
+	COTE_B = geompy.CreateGroup(Compound_1, geompy.ShapeType["EDGE"])
+	geompy.UnionIDs(COTE_B, [27])
+	COTE_C = geompy.CreateGroup(Compound_1, geompy.ShapeType["EDGE"])
+	geompy.UnionIDs(COTE_C, [20])
+	BORD_CTC = geompy.CreateGroup(Compound_1, geompy.ShapeType["EDGE"])
+	geompy.UnionIDs(BORD_CTC, [15])
+	geomObj_12 = geompy.GetSubShape(Compound_1, [2])
+	geomObj_13 = geompy.GetSubShape(Compound_1, [13])
+	B = geompy.CreateGroup(Compound_1, geompy.ShapeType["VERTEX"])
+	geompy.UnionIDs(B, [28])
+	A = geompy.CreateGroup(Compound_1, geompy.ShapeType["VERTEX"])
+	geompy.UnionIDs(A, [5])
+	geompy.addToStudy( Face_2, "Face_2" )
+	geompy.addToStudy( Vector_y, "Vector_y" )
+	geompy.addToStudy( Translation_1, "Translation_1" )
+	geompy.addToStudy( Plane_1, "Plane_1" )
+	geompy.addToStudy( Partition_1, "Partition_1" )
+	geompy.addToStudy( Compound_1, "Compound_1" )
+	geompy.addToStudyInFather( Compound_1, TOUT, "TOUT" )
+	geompy.addToStudyInFather( Compound_1, POUTRE_B, "POUTRE_B" )
+	geompy.addToStudyInFather( Compound_1, POUTRE_H, "POUTRE_H" )
+	geompy.addToStudyInFather( Compound_1, COTE_A, "COTE_A" )
+	geompy.addToStudyInFather( Compound_1, COTE_B, "COTE_B" )
+	geompy.addToStudyInFather( Compound_1, COTE_C, "COTE_C" )
+	geompy.addToStudyInFather( Compound_1, BORD_CTC, "BORD_CTC" )
+	geompy.addToStudyInFather( Compound_1, B, "B" )
+	geompy.addToStudyInFather( Compound_1, A, "A" )
+
+RebuildDataGeom(salome.myStudy)
+
+# SMESH
+import salome, SMESH, SALOMEDS
+import smesh
+
+def RebuildDataMesh(theStudy):
+	smesh.SetCurrentStudy(theStudy)
+	import StdMeshers
+	smeshObj_1 = smesh.CreateHypothesis('QuadrangleParams')
+	Mesh_1 = smesh.Mesh(Compound_1)
+	Regular_1D = Mesh_1.Segment()
+	Nb_Segments_1 = Regular_1D.NumberOfSegments(15)
+	Nb_Segments_1.SetDistrType( 0 )
+	Quadrangle_2D = Mesh_1.Quadrangle()
+	Quadrangle_Preference_1 = Quadrangle_2D.QuadranglePreference()
+	Regular_1D_1 = Mesh_1.Segment(geom=COTE_A)
+	Nb_Segments_2 = Regular_1D_1.NumberOfSegments(1)
+	Nb_Segments_2.SetDistrType( 0 )
+	Propagation_of_1D_Hyp_on_opposite_edges_1 = Regular_1D_1.Propagation()
+	Regular_1D_2 = Mesh_1.Segment(geom=COTE_B)
+	status = Mesh_1.AddHypothesis(Nb_Segments_2,COTE_B)
+	status = Mesh_1.AddHypothesis(Propagation_of_1D_Hyp_on_opposite_edges_1,COTE_B)
+	isDone = Mesh_1.Compute()
+	CompositeSegment_1D = Mesh_1.Segment(algo=smesh.COMPOSITE,geom=POUTRE_H)
+	status = Mesh_1.AddHypothesis(Nb_Segments_1,POUTRE_H)
+	Quadrangle_2D_1 = Mesh_1.Quadrangle(geom=POUTRE_H)
+	status = Mesh_1.AddHypothesis(Quadrangle_Preference_1,POUTRE_H)
+	isDone = Mesh_1.Compute()
+	Mesh_1.ConvertToQuadratic( 0 )
+	TOUT_1 = Mesh_1.Group(TOUT)
+	POUTRE_B_1 = Mesh_1.Group(POUTRE_B)
+	POUTRE_H_1 = Mesh_1.Group(POUTRE_H)
+	COTE_A_1 = Mesh_1.Group(COTE_A)
+	COTE_B_1 = Mesh_1.Group(COTE_B)
+	COTE_C_1 = Mesh_1.Group(COTE_C)
+	BORD_CTC_1 = Mesh_1.Group(BORD_CTC)
+	B_1 = Mesh_1.Group(B)
+	A_1 = Mesh_1.Group(A)
+	smesh.SetName(Mesh_1, 'Mesh_1')
+	SubMesh_3 = CompositeSegment_1D.GetSubMesh()
+	SubMesh_1 = Regular_1D_1.GetSubMesh()
+	SubMesh_2 = Regular_1D_2.GetSubMesh()
+
+	B_1.SetColor(SALOMEDS.Color(0, 0, 0 ))
+	A_1.SetColor(SALOMEDS.Color(0, 0, 0 ))
+	COTE_A_1.SetColor(SALOMEDS.Color(0, 0, 0 ))
+	COTE_B_1.SetColor(SALOMEDS.Color(0, 0, 0 ))
+	COTE_C_1.SetColor(SALOMEDS.Color(0, 0, 0 ))
+	BORD_CTC_1.SetColor(SALOMEDS.Color(0, 0, 0 ))
+	TOUT_1.SetColor(SALOMEDS.Color(0, 0, 0 ))
+	POUTRE_B_1.SetColor(SALOMEDS.Color(0, 0, 0 ))
+	POUTRE_H_1.SetColor(SALOMEDS.Color(0, 0, 0 ))
+	## some objects were removed
+	aStudyBuilder = theStudy.NewBuilder()
+	SO = theStudy.FindObjectIOR(theStudy.ConvertObjectToIOR(smeshObj_1))
+	if SO is not None: aStudyBuilder.RemoveObjectWithChildren(SO)
+	## set object names
+	smesh.SetName(Mesh_1.GetMesh(), 'Mesh_1')
+	smesh.SetName(Regular_1D.GetAlgorithm(), 'Regular_1D')
+	smesh.SetName(Nb_Segments_1, 'Nb. Segments_1')
+	smesh.SetName(Quadrangle_2D.GetAlgorithm(), 'Quadrangle_2D')
+	smesh.SetName(Quadrangle_Preference_1, 'Quadrangle Preference_1')
+	smesh.SetName(Nb_Segments_2, 'Nb. Segments_2')
+	smesh.SetName(Propagation_of_1D_Hyp_on_opposite_edges_1, 'Propagation of 1D Hyp. on opposite edges_1')
+	smesh.SetName(CompositeSegment_1D.GetAlgorithm(), 'CompositeSegment_1D')
+	smesh.SetName(TOUT_1, 'TOUT')
+	smesh.SetName(POUTRE_B_1, 'POUTRE_B')
+	smesh.SetName(POUTRE_H_1, 'POUTRE_H')
+	smesh.SetName(COTE_A_1, 'COTE_A')
+	smesh.SetName(COTE_B_1, 'COTE_B')
+	smesh.SetName(COTE_C_1, 'COTE_C')
+	smesh.SetName(BORD_CTC_1, 'BORD_CTC')
+	smesh.SetName(B_1, 'B')
+	smesh.SetName(A_1, 'A')
+	smesh.SetName(SubMesh_3, 'SubMesh_3')
+	smesh.SetName(SubMesh_1, 'SubMesh_1')
+	smesh.SetName(SubMesh_2, 'SubMesh_2')
+   
+	Mesh_1.ExportMED( '/home/desoza/ssnv505i.mmed', 0, SMESH.MED_V2_2 )
+
+RebuildDataMesh(salome.myStudy)
+
+if salome.sg.hasDesktop():
+	salome.sg.updateObjBrowser(1)

@@ -1,0 +1,36 @@
+opti dime 2 elem qua4;
+opti sauv form 
+'/export/exterieurs/cibhhpd/uaster/ssna105a.mgib' ;
+
+R1 = 0.82;
+R2 = 0.98;
+R3 = 1. ;
+R4 = 2. ;
+H = 2.;
+
+AP = (R1) 0. ;
+BP = (R2) 0. ;
+CP = (R2) (H) ;
+DP = (R1) (H)  ;
+
+AG = (R3) 0. ;
+BG = (R4) 0. ;
+CG = (R4) (H) ;
+DG = (R3) (H)  ;
+
+dABP = droite AP BP 10;
+dBCP = droite BP CP 10 ;
+dCDP = droite CP DP 10;
+dDAP = droite DP AP 10 ;
+
+dABG = droite AG BG 50;
+dBCG = droite BG CG 10 ;
+dCDG = droite CG DG 50;
+dDAG = droite DG AG 10 ;
+
+mailP = daller dABP dBCP dCDP dDAP plan;
+mailG = daller dABG dBCG dCDG dDAG plan;
+mail = mailP et mailG;
+trac mail;
+sauv form mail ;
+

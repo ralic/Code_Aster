@@ -1,0 +1,25 @@
+TITRE
+    UNE BARRE CONSTITUEE DE 1 ELEMENT
+FINSF
+%
+% COORDONNEES
+%
+COOR_3D
+   N1  0.   1.   0.
+   N2  0.   0.   0.
+%
+FINSF
+%
+% CONNECTIVITES
+%
+SEG2
+   M1    N1   N2
+%
+FINSF
+%
+GROUP_NO
+   BARRE N1   N2
+FINSF
+
+%
+FIN

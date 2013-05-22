@@ -1,0 +1,12 @@
+opti dime 3 elem seg2;
+
+l=5.;
+a=0. 0. 0.;
+c=(l/2.) 0. 0.;
+b=l 0. 0.;
+
+poutre=a droi 10 c droi 10 b;
+
+opti sauv format 'zzzz703b.mgib';
+sauv format poutre;
+fin;

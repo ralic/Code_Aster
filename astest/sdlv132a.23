@@ -1,0 +1,75 @@
+% fichier de maillage du cas test dlra03
+    TITRE : MAILLAGE
+    FINSF
+%
+% Coordonnees des points du maillage suivant x et y
+    COOR_3D
+%
+    N31  0.00  0.00001 1.00
+    N32  2.00  0.00001 1.00
+%
+    N33  0.00  0.00  1.00
+    N34  0.25  0.00  1.00
+    N35  0.50  0.00  1.00
+    N36  0.75  0.00  1.00
+    N37  1.00  0.00  1.00
+    N38  1.25  0.00  1.00
+    N39  1.50  0.00  1.00
+    N40  1.75  0.00  1.00
+    N41  2.00  0.00  1.00
+%
+    FINSF
+%
+% Definition des mailles
+%
+    SEG2
+%
+% paliers
+    MA41 N33 N31
+    MA42 N41 N32
+%
+% rotor
+    MA33 N33 N34
+    MA34 N34 N35
+    MA35 N35 N36
+    MA36 N36 N37
+    MA37 N37 N38
+    MA38 N38 N39
+    MA39 N39 N40
+    MA40 N40 N41
+    FINSF
+%
+%
+% Definition des groupes de mailles
+%
+%
+% groupe de tous les elements du rotor
+    GROUP_MA NOM = ROTOR
+    MA33 MA34 MA35 MA36 MA37 MA38 MA39 
+    MA40 
+    FINSF
+%
+% Definition des groupes de noeuds
+%
+% groupe des mailles paliers
+    GROUP_MA NOM = PALIER1
+    MA41
+    FINSF
+%
+% groupe des mailles paliers
+    GROUP_MA NOM = PALIER2
+    MA42
+    FINSF
+%
+% groupe des noeuds a encaster
+    GROUP_NO NOM = NOPAL1
+    N31
+    FINSF
+%
+% groupe des noeuds a encaster
+    GROUP_NO NOM = NOPAL2
+    N32
+    FINSF
+%
+%
+FIN

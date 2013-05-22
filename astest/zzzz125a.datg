@@ -1,0 +1,103 @@
+*----------------------------------------------
+*
+*              Validation de INTE_MAIL_2D
+*
+*----------------------------------------------
+opti dime 2 elem TRI3 ;
+*
+b11  =  0.  0.  ;
+b12  =  2.  0.  ;
+b13  =  2.  1.  ;
+b14  =  2.  2.  ;
+b15  =  0.  2.  ;
+b16  =  0.  1.  ;
+*
+nbb1 = 3 ;
+*
+b1b2 = droit nbb1 b11 b12 ;
+b2b3 = droit nbb1 b12 b13 ;
+b3b6 = droit nbb1 b13 b16 ;
+b6b1 = droit nbb1 b16 b11 ;
+*
+sB11 = daller plan b1b2 b2b3 b3b6 b6b1 ;
+*
+opti elem QUA4 ;
+*
+b6b5 = droit nbb1 b16 b15 ;
+b5b4 = droit nbb1 b15 b14 ;
+b4b3 = droit nbb1 b14 b13 ;
+*
+sB12 = daller plan b3b6 b6b5 b5b4 b4b3 ;
+*
+sb1 = sB11 et sB12 ;
+*
+trac sb1 ;
+*
+opti elem TRI6 ;
+*
+b21  =  3.  0.  ;
+b22  =  4.  0.  ;
+b23  =  5.  0.  ;
+b24  =  5.  3.  ;
+b25  =  4.  3.  ;
+O    =  3.  3.  ;
+cen  =  4.875 0.3 ;
+cen2  =  4.875 3.3 ;
+bb   =  4.75  0.  ;
+bb4  =  4.75  3.  ;
+*
+nbb2 = 4 ;
+nbb = 3 ;
+*
+b1b2 = droit nbb2 b21 b22 ;
+b2b5 = droit nbb2 b22 b25 ;
+b5b6 = droit nbb2 b25 O   ;
+b6b1 = droit nbb2 O   b21 ;
+*
+sB21 = daller plan b1b2 b2b5 b5b6 b6b1 ;
+*
+opti elem QUA8 ;
+*
+b5bb = droit nbb b25 bb4 ;
+b4bb = cerc 1 bb4 cen2 b24 ;
+b5b4 = b5bb et b4bb ;
+b4b3 = droit nbb2 b24 b23 ;
+b3bb = cerc 1 b23 cen bb ;
+bbb2 = droit nbb  bb b22 ;
+b3b2 = b3bb et bbb2 ;
+elim 0.001 b3b2 ; 
+cont = b2b5 et b5b4 et b4b3 et b3b2 ;
+trac cont;
+*opti donn 5;
+*
+sB22 = daller plan b2b5  b5b4  b4b3  b3b2 ;
+*
+sb2 = sB21 et sB22 ;
+*
+trac sb2 ;
+*
+sb0 = sb1 et sb2 ;
+*
+trac sb0 ;
+*
+A  =  0.894235  -1      ;
+C  =  3          3.5    ;
+P1 =  0.894235   1.4324 ;
+P2 =  4.8854     1.1144 ;
+*
+sort sb0 ;
+opti sauv format 
+ '/home/F94730/zzzz125a.mgib' ;
+ sauv format ( sb0 et A et C et P1 et P2 )  ;
+*
+d1 = DROIT 1 C  P2 ;
+c1 = CERC 20 P2 O P1 ;
+d2 = DROIT 1 P1 A  ;
+lign = d1 et c1 et d2 ;
+lign = lign COUL rouge ;
+*
+trac ( lign et sb0 ) ;
+*
+*opti donn 5 ;
+*
+fin ;

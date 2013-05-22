@@ -1,0 +1,158 @@
+*maillage quadratique paramétré d'une coque 20x136x2
+*----------------------------------------------
+opti dime 3 elem seg2 ;
+opti niveau 8 ;
+
+*topologie
+s = 0. 0. 10. ;
+s2 = 1.319822 -0.4064 10. ;
+
+O = 0. 0. 0. ;
+O2 = 1.319822 -0.4064 0. ;
+A = 0. 0.3356 0. ;
+A2 = A PLUS (0. 0. 10. ) ;
+AA = 0. 0.0508 0. ;
+
+B = TOUR -60. A O s  ;
+C = TOUR -150. B O2 s2  ;
+D = C PLUS (0. 0. 0.508) ;
+
+BB = B MOINS (0.0439 -0.0254 0.) ;
+CC = C PLUS (0.0508 0. 0. );
+
+K1 = DROIT 2 AA O  ;
+K2 = DROIT 2 B BB ;
+K3 = DROIT 2 CC C;
+
+opti elem qua4 ;
+
+surf1 = K1 ROTA 16  60.  A A2;
+surf2 = K2 ROTA 120  -150. O2  s2 ;
+
+surf = surf1 et surf2 ;
+
+opti elem cub8 ;
+
+volu = surf volu 20 TRANS  ( 0. 0. 0.508 ) coul bleu ;
+ENCASTR = K1 TRANS 20 ( 0. 0. 0.508 ) coul vert  ;
+LIBRE = K3 TRANS 20 ( 0. 0. 0.508 ) coul vert  ;
+
+TOUT_ELT = ENCASTR et LIBRE et volu ;
+
+elim 0.0001 tout_elt ;
+trac cach tout_elt  ;
+
+list (nbno tout_elt) ;
+list (nbel tout_elt) ;
+
+opti sauv form 'ssls119d.mgib' ;
+sort tout_elt ;
+sauv form tout_elt ;
+
+fin;
+
+*maillage quadratique paramétré d'une coque 10x68x1
+*----------------------------------------------
+opti dime 3 elem seg2 ;
+opti niveau 8 ;
+
+*topologie
+s = 0. 0. 10. ;
+s2 = 1.319822 -0.4064 10. ;
+
+O = 0. 0. 0. ;
+O2 = 1.319822 -0.4064 0. ;
+A = 0. 0.3356 0. ;
+A2 = A PLUS (0. 0. 10. ) ;
+AA = 0. 0.0508 0. ;
+
+B = TOUR -60. A O s  ;
+C = TOUR -150. B O2 s2  ;
+D = C PLUS (0. 0. 0.508) ;
+
+BB = B MOINS (0.0439 -0.0254 0.) ;
+CC = C PLUS (0.0508 0. 0. );
+
+K1 = DROIT 1 AA O  ;
+K2 = DROIT 1 B BB ;
+K3 = DROIT 1 CC C;
+
+opti elem qua4 ;
+
+surf1 = K1 ROTA 8  60.  A A2;
+surf2 = K2 ROTA 60  -150. O2  s2 ;
+
+surf = surf1 et surf2 ;
+
+opti elem cub8 ;
+
+volu = surf volu 10 TRANS  ( 0. 0. 0.508 ) coul bleu ;
+ENCASTR = K1 TRANS 10 ( 0. 0. 0.508 ) coul vert  ;
+LIBRE = K3 TRANS 10 ( 0. 0. 0.508 ) coul vert  ;
+
+TOUT_ELT = ENCASTR et LIBRE et volu ;
+
+elim 0.0001 tout_elt ;
+trac cach tout_elt  ;
+
+list (nbno tout_elt) ;
+list (nbel tout_elt) ;
+
+opti sauv form 'ssls119d.mgib' ;
+sort tout_elt ;
+sauv form tout_elt ;
+
+fin;
+
+*maillage quadratique paramétré d'une coque 5x34x1
+*----------------------------------------------
+opti dime 3 elem seg2 ;
+opti niveau 8 ;
+
+*topologie
+s = 0. 0. 10. ;
+s2 = 1.319822 -0.4064 10. ;
+
+O = 0. 0. 0. ;
+O2 = 1.319822 -0.4064 0. ;
+A = 0. 0.3356 0. ;
+A2 = A PLUS (0. 0. 10. ) ;
+AA = 0. 0.0508 0. ;
+
+B = TOUR -60. A O s  ;
+C = TOUR -150. B O2 s2  ;
+D = C PLUS (0. 0. 0.508) ;
+
+BB = B MOINS (0.0439 -0.0254 0.) ;
+CC = C PLUS (0.0508 0. 0. );
+
+K1 = DROIT 1 AA O  ;
+K2 = DROIT 1 B BB ;
+K3 = DROIT 1 CC C;
+
+opti elem qua4 ;
+
+surf1 = K1 ROTA 4  60.  A A2;
+surf2 = K2 ROTA 30  -150. O2  s2 ;
+
+surf = surf1 et surf2 ;
+
+opti elem cub8 ;
+
+volu = surf volu 5 TRANS  ( 0. 0. 0.508 ) coul bleu ;
+ENCASTR = K1 TRANS 5 ( 0. 0. 0.508 ) coul vert  ;
+LIBRE = K3 TRANS 5 ( 0. 0. 0.508 ) coul vert  ;
+
+TOUT_ELT = ENCASTR et LIBRE et volu ;
+
+elim 0.0001 tout_elt ;
+trac cach tout_elt  ;
+
+list (nbno tout_elt) ;
+list (nbel tout_elt) ;
+
+opti sauv form 'ssls119d.mgib' ;
+sort tout_elt ;
+sauv form tout_elt ;
+
+fin;

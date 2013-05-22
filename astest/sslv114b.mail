@@ -1,0 +1,40 @@
+COOR_3D
+    F   0.  0.  0.
+    G   1.  0.  0.
+    H   1.  1.  0.
+    I   0.  1.  0.
+    J   0.  0.  1.
+    K   1.  0.  1.
+    L   1.  1.  1.
+    M   0.  1.  1.
+    N   0.  2.  0.
+    O   0.  2.  1.
+    P   0.  2. -1.
+    Q1  0.  3.  0.
+    Q2  0.  3.  0.
+    Q3  0.  3.  0.
+FINSF
+%
+HEXA8
+    FGHIJKLM    F  G  H  I  J  K  L  M
+FINSF
+%
+SEG2
+    IQ1     I   Q1
+    IQ2     I   Q2
+    IQ3     I   Q3
+    ON      O   N
+    NP      N   P
+    IN      I   N
+    NQ1     N   Q1
+FINSF
+%
+GROUP_NO NOM=GROUP_NO_Q1Q2Q3
+Q1 Q2 Q3
+FINSF
+%
+GROUP_MA NOM=GROUP_MA_ONP
+ON NP
+FINSF
+%
+FIN

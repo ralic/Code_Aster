@@ -1,0 +1,76 @@
+opti dime 3 elem te10;
+*
+rc=.25;
+ep = 0.25 ;
+***************************
+*        Points           *
+***************************
+a=0.0 30.0 0.0 ;
+b=0.0 (0.0+rc) 0.0 ;
+c=(4.0-rc) (0.0+rc) 0.0 ;
+d= 4.0 0.0 0.0 ;
+f= 10.0 30.0 0.0 ;
+e= 10.0 0.0 0.0 ;
+o=(4.0-rc) 0.0 0.0 ;
+g = 4.0 0.0  ep ;
+***************************
+*       Droites           *
+***************************
+ef=droi -8 e f dini 1. dfin 10.0;
+ab=droi -8 a b dini 10. dfin 1.;
+bc=droi -10 b c dini 1. dfin 0.1;
+de=droi -20 d e dini 0.1 dfin 1.0;
+fa=droi 2 f a;
+**************************
+*       Cercle           *
+**************************
+cd=cerc 8 c o d;
+**************************
+*  Fermeture du contour 1*
+**************************
+
+contour=ab et bc et cd et de et ef et fa;
+
+**************************
+*Definition de la surface*
+*      numero 1          *
+**************************
+
+s1=surface contour plane;
+
+**************************
+* Extrusion *
+**************************
+
+v1 = volu s1 'TRAN' (0. 0. ep) 3 ;
+
+opti elem qua8 ;
+sab = ab TRAN  (0. 0. ep) 1 ;
+sde = de TRAN  (0. 0. ep) 1 ;
+sfa = fa TRAN  (0. 0. ep) 1 ;
+dg=droi 1 d g;
+
+scontour = sab et sde et sfa ;
+
+**************************
+* Assemblage eprouvette  *
+**************************
+
+eprouvet = s1 et v1 et scontour et dg ;
+elim eprouvet 0.001 ;
+
+**************************
+*    lancement maillage  *
+**************************
+* Optimisation de la largeur de bande
+*ort eprouvet;
+* definition d'un titre
+titre 'Essai de maillage';
+*trace du maillage
+trac cach  (eprouvet et (coul rouge dg));
+*sauvegarde du maillage
+opti sauv form '/home/galenne/ASTER_DEV/RESTIT/TEST/ssnp102b.mgib';
+*sauv format eprouvet ;
+*fin;
+
+

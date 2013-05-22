@@ -1,0 +1,90 @@
+*======================================================================================
+*      Prototype d'étude simplifiée aéroréfrigérant
+*
+*      Juillet 2008
+*
+*      modèle sans armatures
+*
+*      Cylindre en modélisation 2D_AXIS
+*      Eléments QUA8 pour calcul meca
+*
+*     
+*
+*======================================================================================
+
+********************************************************    
+*    donnees geometriques modifiables par l'utilisateur  
+********************************************************
+
+* Hauteur du cylindre
+H = 10. ;
+* Rayon interne du cylindre
+Rint = 20. ; 
+* Rayon externe du cylindre
+Rext = 21. ;
+* Ouverture angulaire prise en compte
+Teta = 90.;
+
+***************************************************************    
+*  parametres de discretisation modifiables par l'utilisateur    
+*************************************************************** 
+
+* Critère de noeud double
+crit1 = 5.e-5 ;
+* nombre de mailles en axial 
+nmailleR = 5 ;  
+* nombre de mailles en teta 
+nmailleT = 10 ;  
+* nombre de mailles en hauteur 
+nmailleH = 10 ;
+
+
+**************************************************    
+*  realisation du maillage    
+**************************************************    
+OPTI DIME 2 ELEM QUA8 ;    
+
+ 
+PO = 0. 0. ;
+PA = Rint 0. ;    
+PB = Rext 0. ;    
+PC = Rext H.;    
+PD = Rint H; 
+
+AB = DROITE nmailleR PA PB; 
+BC = DROITE nmailleH PB PC;
+CD = DROITE nmailleR PC PD ;    
+DA = DROITE NmailleH PD PA;
+
+VBETON  = TRAN nmailleH AB (0. H)  ; 
+
+*************************************************************    
+* creation de groupes de mailles pour faciliter les calculs    
+*************************************************************   
+
+*gauche et droite définies par la normale sortante vers 
+*l'extérieur
+
+* surface gauche
+SHAUTE = CD;
+* surface droite
+SBASSE = AB;
+* surface interne
+SINTERI = DA;
+* surface basse
+SEXTERI = BC;
+
+ELIM crit1 SHAUTE VBETON;
+ELIM crit1 SBASSE VBETON; 
+ELIM crit1 SINTERI VBETON; 
+ELIM crit1 SEXTERI VBETON; 
+
+
+*************************************************************    
+* génération du fichier mgib    
+*************************************************************
+
+opti sauv format 'cylindre_2D_AXI_me.mgib';    
+sauver format (VBETON ET SHAUTE ET SBASSE ET SINTERI ET SEXTERI);  
+ 
+fin;

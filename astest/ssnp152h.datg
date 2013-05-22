@@ -1,0 +1,126 @@
+// dimension
+
+R1 = 1.0;
+R2 = 0.6;
+R3 = 0.2;
+
+n_ext = 11;
+n_ext_cont = 11;
+n_int_cont = 11;
+n_int = 11;
+
+radial = 4;
+
+//  points
+
+Point(1)  = { 0.0, 0.0, 0.0, 1.0};
+
+Point(2)  = { R1, 0.0, 0.0, 1.0};
+Point(3)  = { 0.0, R1, 0.0, 1.0};
+Point(4)  = { -R1, 0.0, 0.0, 1.0};
+Point(5)  = { 0.0, -R1, 0.0, 1.0};
+
+Point(6)  = { R2, 0.0, 0.0, 1.0};
+Point(7)  = { 0, R2, 0.0, 1.0};
+Point(8)  = { -R2, 0.0, 0.0, 1.0};
+Point(9)  = { 0, -R2, 0.0, 1.0};
+
+Point(10) = { R2, 0.0, 0.0, 1.0};
+Point(11) = { 0, R2, 0.0, 1.0};
+Point(12) = { -R2, 0.0, 0.0, 1.0};
+Point(13) = { 0, -R2, 0.0, 1.0};
+
+Point(14) = { R3, 0.0, 0.0, 1.0};
+Point(15) = { 0.0, R3, 0.0, 1.0};
+Point(16) = { -R3, 0.0, 0.0, 1.0};
+Point(17) = { 0.0, -R3, 0.0, 1.0};
+
+//  lignes - couronne extérieure
+
+Circle(1)    = {2,1,3};
+Line(2)      = {3,7};
+Circle(3)    = {7,1,6};
+
+Circle(5)    = {3,1,4};
+Line(6)      = {4,8};
+Circle(7)    = {8,1,7};
+
+Circle(9)    = {4,1,5};
+Line(10)     = {5,9};
+Circle(11)   = {9,1,8};
+
+Circle(13)   = {5,1,2};
+Line(14)     = {2,6};
+Circle(15)   = {6,1,9};
+
+Line Loop(1) = {1,2,3,-14};
+Line Loop(2) = {5,6,7,-2};
+Line Loop(3) = {9,10,11,-6};
+Line Loop(4) = {13,14,15,-10};
+
+//  lignes - couronne intérieure
+
+Circle(17)   = {10,1,11};
+Line(18)     = {11,15};
+Circle(19)   = {15,1,14};
+
+Circle(21)   = {11,1,12};
+Line(22)     = {12,16};
+Circle(23)   = {16,1,15};
+
+Circle(25)   = {12,1,13};
+Line(26)     = {13,17};
+Circle(27)   = {17,1,16};
+
+Circle(29)   = {13,1,10};
+Line(30)     = {10,14};
+Circle(31)   = {14,1,17};
+
+Line Loop(5) = {17,18,19,-30};
+Line Loop(6) = {21,22,23,-18};
+Line Loop(7) = {25,26,27,-22};
+Line Loop(8) = {29,30,31,-26};
+
+// surface
+
+Plane Surface(1) = {1};
+Plane Surface(2) = {2};
+Plane Surface(3) = {3};
+Plane Surface(4) = {4};
+
+Plane Surface(5) = {5};
+Plane Surface(6) = {6};
+Plane Surface(7) = {7};
+Plane Surface(8) = {8};
+
+// maillage joli
+
+Transfinite Line{ 1, 5, 9,13} = n_ext;
+Transfinite Line{ 3, 7,11,15} = n_ext_cont;
+Transfinite Line{17,21,25,29} = n_int_cont;
+Transfinite Line{19,23,27,31} = n_int;
+Transfinite Line{ 2, 6,10,14,18,22,26,30} = radial;
+
+Transfinite Surface{1} = { 2, 3, 7, 6};
+Transfinite Surface{2} = { 3, 4, 8, 7};
+Transfinite Surface{3} = { 4, 5, 9, 8};
+Transfinite Surface{4} = { 5, 2, 6, 9};
+Transfinite Surface{5} = {10,11,15,14};
+Transfinite Surface{6} = {11,12,16,15};
+Transfinite Surface{7} = {12,13,17,16};
+Transfinite Surface{8} = {13,10,14,17};
+
+Recombine Surface{1,2,3,4,5,6,7,8};
+
+// physical
+
+Mesh.ElementOrder = 2;
+
+Physical Surface("C1") = {1,2,3,4};
+Physical Surface("C2") = {5,6,7,8};
+
+Physical Line("S1R1") = { 1, 5, 9,13};
+Physical Line("S1R2") = { 3, 7,11,15};
+Physical Line("S2R2") = {17,21,25,29};
+Physical Line("S2R3") = {19,23,27,31};
+

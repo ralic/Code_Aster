@@ -1,0 +1,26 @@
+TITRE
+CAS TEST DE TREILLIS SSLL11 CLUB UTILISATEUR ASTER
+FINSF
+COOR_3D
+ A1  0.    0.    0.
+ B2  1.    0.    0.
+ B4  1.    0.    0.
+ C1  0.5   0.5   0.
+ C2  0.5   0.5   0.
+ C3  0.5   0.5   0.
+ D3  2.    1.    0.
+ D4  2.    1.    0.
+FINSF
+SEG2
+ AC    A1    C1
+ BC    B2    C2
+ BD    B4    D4
+ CD    C3    D3
+FINSF
+GROUP_MA NOM=ACBC
+  AC BC
+FINSF
+GROUP_MA NOM=CDBD
+  CD BD
+FINSF
+FIN

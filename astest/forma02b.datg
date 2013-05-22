@@ -1,0 +1,209 @@
+# -*- coding: iso-8859-1 -*-
+# SALOME 4.1.4
+
+from geompy import *
+from smesh import *
+
+import math
+
+gg = salome.ImportComponentGUI("GEOM")
+
+#===================================================
+#                  PARAMETRES
+#                  ----------
+#===================================================
+
+tol3d = 1.e-6;
+
+#  dimensions
+#----------------
+Rext    = 0.2  ;
+Ep      = 0.02 ;
+Rint    = Rext - Ep;
+Rm      = Rext - (Ep/2.) ;
+RC      = 0.6  ;
+LG      = 3.0  ;
+
+#  Vecteurs utiles
+#------------------
+vx = MakeVectorDXDYDZ(100., 0., 0.)
+vy = MakeVectorDXDYDZ(0., 100., 0.)
+vz = MakeVectorDXDYDZ(0., 0., 100.)
+
+# axe de rotation pour generer le coude
+p1_tmp = MakeVertex(RC,LG,0.)
+p2_tmp = MakeVertex(RC,LG,10.)
+v_rot = MakeVector(p1_tmp, p2_tmp)
+# axe du cylindre haut
+m4 = MakeVertex(0,LG+RC,0);
+m5 = MakeVertex(LG,LG+RC,0);
+axe = MakeLineTwoPnt(m4, m5)
+
+#===================================================
+#                  GEOMETRIE
+#                  ---------
+#===================================================
+
+#  Face de base du 3D
+#---------------------------
+P1 = MakeVertex(   Rext,   0,    0);
+P2 = MakeVertex(      0,   0, Rext);
+P3 = MakeVertex(-1*Rext,   0,    0);
+P4 = MakeVertex(      0,   0,    0);
+
+P5 = MakeVertex(   Rint,   0,    0);
+P6 = MakeVertex(      0,   0, Rint);
+P7 = MakeVertex(-1*Rint,   0,    0);
+
+m1 = MakeVertex(   0,  LG,   Rm);
+
+arc1 = MakeArc(P1, P2, P3)
+arc2 = MakeArc(P5, P6, P7)
+
+edge1 = MakeLineTwoPnt(P1, P5)
+edge2 = MakeLineTwoPnt(P7, P3)
+
+
+wirebase = MakeWire([arc1, edge1, arc2, edge2])
+facebase = MakeFace(wirebase, 1)
+
+#  Extrusion du 3D
+#---------------------------
+V1 = MakePrismVecH(facebase, vy, LG)
+
+#  Revolution du 3D
+#---------------------------
+face_tmp = GetFaceNearPoint(V1, m1)
+revolution = MakeRevolution(face_tmp, v_rot, -math.pi/2)
+
+
+
+#  Extrusion du 3D
+#---------------------------
+m2 = MakeRotation(m1, v_rot, -math.pi/2)
+face_tmp = GetFaceNearPoint(revolution, m2)
+V2 = MakePrismVecH(face_tmp, vx, LG)
+
+
+#  Collage des faces du 3D
+#---------------------------
+compbloc1 = MakeCompound([V1,revolution,V2])
+OXY = MakePlaneLCS(None, 2000, 1)
+compbloc2 = MakeMirrorByPlane(compbloc1,OXY)
+compbloc = MakeCompound([compbloc1,compbloc2])
+
+GeoCoude = MakeGlueFaces(compbloc,tol3d)
+
+
+# Affichage dans l'arbre
+#---------------------------
+id_GeoCoude = addToStudy(GeoCoude,"GeoCoude")
+
+
+#---------------------------
+# Création des groupes
+#---------------------------
+
+EFOND = CreateGroup(GeoCoude, ShapeType["FACE"])
+m3 = MakeVertex(   LG+RC,  LG+RC ,   Rm);
+f1_efond = GetFaceNearPoint(GeoCoude, m3)
+m3b = MakeMirrorByPlane(m3,OXY)
+f2_efond = GetFaceNearPoint(GeoCoude, m3b)
+UnionList(EFOND,[f1_efond,f2_efond])
+addToStudyInFather(GeoCoude,EFOND,"EFOND")
+
+m3c = MakeVertex (LG+RC,  LG+RC , 0);
+P_EFOND = GetVertexNearPoint(GeoCoude, m3c)
+addToStudyInFather(GeoCoude,P_EFOND,"P_EFOND")
+
+#-----------------------------------------------------------------
+BASE = CreateGroup(GeoCoude, ShapeType["FACE"])
+f1_base = GetSame(GeoCoude,facebase)  
+facebaseb= MakeMirrorByPlane(facebase,OXY)
+f2_base = GetSame(GeoCoude,facebaseb)
+UnionList(BASE,[f1_base,f2_base])
+addToStudyInFather(GeoCoude,BASE,"BASE")
+
+TUYAU = CreateGroup(GeoCoude, ShapeType["SOLID"])
+vol = SubShapeAll(GeoCoude, ShapeType["SOLID"])
+UnionList(TUYAU,vol)
+addToStudyInFather( GeoCoude, TUYAU, "TUYAU" )
+
+HypEpaisseur = GetSame(GeoCoude,edge1)  
+addToStudyInFather(GeoCoude,HypEpaisseur,"HypEpaisseur")
+
+HypCirconference = GetSame(GeoCoude,arc1)  
+addToStudyInFather(GeoCoude,HypCirconference,"HypCirconference")
+
+
+#===================================================
+#                  MAILLAGE
+#                  --------
+#===================================================
+# 
+
+maillageCoude = Mesh(GeoCoude, "MeshCoude")
+
+# Algorithmes et hypotheses globales
+# ----------------------------------
+
+# 1D
+numberOfSegments = 15
+algo = maillageCoude.Segment()
+algo.NumberOfSegments(numberOfSegments)
+algo.QuadraticMesh()
+
+# 2D
+maillageCoude.Quadrangle()
+
+# 3D
+maillageCoude.Hexahedron()
+
+# Algorithmes et hypotheses locales
+# ----------------------------------
+
+# 1D
+nbSegEp = 2
+
+algo1 = maillageCoude.Segment(HypEpaisseur)
+algo1.NumberOfSegments(nbSegEp)
+algo1.Propagation()
+
+# 1D
+nbSegCirconf = 10
+
+algo2 = maillageCoude.Segment(HypCirconference)
+algo2.NumberOfSegments(nbSegCirconf)
+algo2.Propagation()
+
+# Calcul
+# ------
+maillageCoude.Compute()
+
+
+# Création des groupes du maillage
+#---------------------------------
+maillageCoude.Group(EFOND, "EFOND" )
+maillageCoude.Group(BASE, "BASE" )
+maillageCoude.Group(TUYAU, "TUYAU" )
+maillageCoude.Group(P_EFOND, "P_EFOND")
+
+
+# Export dans un fichier au format MED
+#--------------------------------------
+## On peut sauver dans le dossier courant :
+#import os
+#Repertoire=os.getcwd()
+##ou bien en spécifier un
+#Repertoire='MonRepertoire'
+#maillageCoude.ExportToMED(Repertoire+"forma01c.mail.med",SMESH.MED_V2_2)
+
+# Mise à jour de l'arbre
+#---------------------------
+# Si on a une interface graphique...
+if salome.sg.hasDesktop():
+   gg = salome.ImportComponentGUI("GEOM")
+   gg.createAndDisplayFitAllGO(id_GeoCoude)
+   salome.sg.updateObjBrowser(1)
+
+

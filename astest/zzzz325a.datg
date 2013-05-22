@@ -1,0 +1,31 @@
+opti dime 3 elem cub8 ;
+
+*
+* pour  mailler un cube formé de 2 "tranches" CUB1 et CUB2
+* --------------------------------------------------------
+
+
+a  = 0.   0.  0.;
+b  = 1.   0.  0.;
+n1=3;
+
+ab = droi n1 a b ;
+
+fac1= ab tran n1 (0. 1. 0.);
+
+cub1= fac1 VOLU n1 TRAN (0. 0. 0.5);
+fac2= cub1 FACE 2;
+tour1= cub1 FACE 3;
+* trac cub1 et fac2;
+
+cub2= fac2 VOLU n1 TRAN (0. 0. 0.5);
+fac3= cub2 FACE 2;
+tour2= cub2 FACE 3;
+
+cube= cub1 et cub2 et tour1 et tour2;
+*trac tour1 ;
+trac cube ;
+
+opti sauv form 'zzzz325a.mgib' ;
+sauv form cube ;
+fin;

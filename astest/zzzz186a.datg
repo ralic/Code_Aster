@@ -1,0 +1,54 @@
+Rext = 0.2 ;
+Ep   = 0.02 ;
+Rint = Rext - Ep;
+RC   = 0.6     ;
+LG   = 3.0    ;
+
+h = 0.05;
+
+Point(1) = {Rext, 0, 0, h};
+Point(2) = {0, 0, Rext, h};
+Point(3) = {-1*Rext, 0, 0, h};
+Point(4) = {0, 0, 0, h};
+
+Point(5) = {Rint, 0, 0, h};
+Point(6) = {0, 0, Rint, h};
+Point(7) = {-1*Rint, 0, 0, h};
+ 
+
+Circle(1) = {1,4,2};
+Circle(2) = {2,4,3};
+Circle(3) = {5,4,6};
+Circle(4) = {6,4,7};
+Line(5) = {1,5};
+Line(6) = {7,3};
+
+
+Line Loop(7) = {-2,-1,5,3,4,6};
+Plane Surface(8) = {7};
+
+
+
+Recombine Surface {8};
+
+Extrude Surface {8,{0,LG,0}}
+		{Recombine; Layers{20,90,1};  };
+
+Extrude Surface {40,{0,0,1}, {RC,LG,0}, -(Pi/2)}
+		{Recombine ; Layers {7,900,1}; };
+
+Extrude Surface {72,{LG,0,0}}
+		{Recombine; Layers{20,9000,1}; };
+
+Physical Volume (10000) ={90,900,9000};
+
+
+Physical Surface(10001) = {8};
+Physical Surface(10002) = {27,39,59,71,103,91};
+Physical Surface(10003) = {23,19,51,55,87,83};
+Physical Surface(10004) = {99,95,67,63,31,35};
+Physical Surface(10005) = {104};
+
+
+
+

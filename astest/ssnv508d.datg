@@ -1,0 +1,64 @@
+opti dime 3  elem te10 ;
+dens .1 ;
+
+*----------------------------------------
+*DONNEES
+*----------------------------------------
+*cotés
+LX1  =  1;
+LX2  =  -1;
+LY1 = 1.8;
+LY2 = -1.2;
+LZ  = -.01;
+U = (0 0 (-1*0.01));
+*---------------------------------------------
+*construction des surfaces
+*---------------------------------------------
+
+PP1 = LX1 LY2 0.;
+PP2 = LX1 LY1 0.;
+PP3 = LX2 LY1 0.;
+PP4 = LX2 LY2 0.;
+
+LL1 = droit PP1 PP2 ;
+LL2 = droit PP2 PP3 ;
+LL3 = droit PP3 PP4 ;
+LL4 = droit PP4 PP1 ;
+
+S6  = DALL LL1  LL2  LL3  LL4 ;
+
+
+
+*---------------------------------------------
+* volume
+*---------------------------------------------
+
+MTOT = VOLU TRAN S6 U;
+
+S5 = FACE MTOT 2;
+
+ENV = FACE MTOT 3;
+
+
+*---------------------------------------------
+* maillage
+*---------------------------------------------
+
+trac MTOT ;
+
+
+
+MAILLE = MTOT;
+
+mess 'VERIFICATION DU MAILLAGE :';
+mess 'nbel MTOT   : ' (nbel MTOT);
+mess ' ';
+mess 'nbno MTOT   : ' (nbno MTOT);
+    
+                 
+opti sauv form '/local01/X_FEM/TEST/ssnv508d.mgib' ;
+sauv form MTOT ;
+
+
+
+fin ;

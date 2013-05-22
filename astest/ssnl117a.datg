@@ -1,0 +1,32 @@
+OPTI DIME 3 ;
+OPTI ELEM SEG3 ;
+
+
+*EP = 0.077 ;
+*RMOY = 0.3955 ;
+ R = 1.25;
+L=2.25 ;
+*C'EST L+R
+N=10;
+ND = 5 ;
+
+A=0. L 0.;
+B=0. R 0. ;
+C=R 0. 0. ;
+D=L 0. 0. ;
+
+I=R R 0 ;
+
+AB= DROITE ND A B  ;
+
+CD= DROITE ND D C  ;
+BC= CERC (N) B I C;
+
+AD=AB ET BC ET CD;
+ELIM 0.001 AD ;
+
+TASS AD ;
+
+opti sauv form 'ssnl117a.mgib' ;
+sauv form ad ;
+trac (0. 0. 1000.) ad;

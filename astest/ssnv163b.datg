@@ -1,0 +1,30 @@
+*--------1---------2---------3--------4---------5---------6---------7--
+* Ktest - UMLV_FP
+*
+* ylp. octobre 2002
+*
+* MAILLAGE AXYSYMETRIQUE - 1 MAILLE CARREE
+*
+opti dime 2 elem seg2 ;
+dens 1. ;
+n1 = 1 ;
+*
+p1 = (0.0 0.0) ;
+p2 = (1.0 0.0) ;
+p3 = (0.0 1.0) ;
+p4 = (1.0 1.0) ;
+*
+l_inf = p1 d n1 p2 ;
+l_drt = p2 d n1 p4 ;
+l_sup = p4 d n1 p3 ;
+l_gch = p3 d n1 p1 ;
+*
+opti elem qua4 ;
+s_ = dall l_inf l_drt l_sup l_gch ;
+*
+opti sauv form 'ssnv163b.mgib' ;
+sauv form s_ ;
+*
+trac s_ ;
+
+fin ;

@@ -1,0 +1,107 @@
+DEBPROC COQUE3D L*'FLOTTANT' pl*'FLOTTANT' h*'FLOTTANT' 
+nbma_L*'ENTIER' nbma_pl*'ENTIER' nbond_L*'ENTIER' 
+nbond_pl*'ENTIER' ;
+
+***************************************************************
+*         PROCEDURE DE MAILLAGE D UNE PLAQUE ONDULEE          *
+*                                                             *
+*                                                             *
+*  ARGUMENT D ENTREE                                          *
+*  =================                                          *
+*                                                             *
+* L : LONGUEUR DE LA PLAQUE                                   *
+* pl : LARGEUR DE LA PLAQUE                                   *
+* h : HAUTEUR MAXIMALE DE L'ONDULATION DE LA PLAQUE           *
+* nbma_L : NOMBRE DE MAILLE SUR LA LONGUEUR                   *
+* nbma_pl : NOMBRE DE MAILLE SUR LA LARGEUR                   *
+* nbond_L : NOMBRE D ONDULATION SUR LA LONGUEUR               *
+* nbond_pl : NOMBRE D ONDULATION SUR LA LARGEUR               *
+*                                                             *
+*                                                             *
+*                                                             *
+* ARGUMENT DE SORTIE                                          *
+* ==================                                          *
+*                                                             *
+* PLAQUE   : MAILLAGE DE LA PLAQUE ONDULEE                    *
+* GAUCHE   : MAILLAGE DU COTE SITUE A X=0                     *
+* DROITE   : MAILLAGE DU COTE SITUE A X=L                     *
+* A,B,C,D  : POINT PARTICULIER DE POST TRAITEMENT             *
+***************************************************************
+   
+
+
+OPTI DIME 3 ELEM QUA8 ;
+
+crit = 1.E-7 ;
+
+A = TABL ;
+
+REPETER i ( ( 2 * nbma_L ) + 1 ) ;
+REPETER j ( ( 2 * nbma_pl ) + 1 ) ;
+     A . ( ( ( (2*nbma_pl) + 1) * (&i-1) )+(&j) ) = 
+     ( ( ( (&i-1) ) * L / (2*nbma_L) ) ) 
+     ( ( (&j-1) ) * pl / ( 2 * nbma_pl ) ) 
+     ( h * ( SIN ( ( nbond_L * (&i-1) * 180 ) / ( 2*nbma_L ) ) ) 
+     * ( SIN ( ( nbond_pl * (&j-1) * 180 ) / ( 2*nbma_pl ) ) ) ) ;
+
+FIN j ;
+FIN i ;
+
+PLAQUE = MANU QUA8 a.1 a.( ( 2 * nbma_pl) + 2) a.( ( 4 * nbma_pl) + 3) 
+a.( ( 4 * nbma_pl) + 4) a.( ( 4 * nbma_pl) + 5) a.( ( 2 * nbma_pl) + 4)
+a.3 a.2 ;
+
+REPETER i ( nbma_pL - 1 ) ;
+
+PLAQUE = PLAQUE 'ET'
+( MANU QUA8 
+a . ( ( 2 * ( &i ) ) + 1 ) 
+a . ( ( 2 * ( &i ) ) + ( 2 * nbma_pl ) + 2 ) 
+a . ( ( 2 * ( &i ) ) + ( 4 * nbma_pl ) + 3 )
+a . ( ( 2 * ( &i ) ) + ( 4 * nbma_pl ) + 4 ) 
+a . ( ( 2 * ( &i ) ) + ( 4 * nbma_pl ) + 5 ) 
+a . ( ( 2 * ( &i ) ) + ( 2 * nbma_pl ) + 4 )
+a . ( ( 2 * ( &i ) ) + 3 ) 
+a . ( ( 2 * ( &i ) ) + 2 ) ) ;
+
+FIN i ;
+
+REPETER j ( nbma_L - 1 ) ;
+
+REPETER i ( nbma_pL ) ;
+
+poi1 = ( ( 2 * nbma_pl + 1 ) * ( 2 * &j ) + ( 2 * ( &i - 1 ) ) + 1 ) ;
+poi2 = ( ( 2 * nbma_pl + 1 ) * ( 2 * &j ) + ( 2 * ( &i - 1 ) ) 
++ ( 2 * nbma_pl ) + 2 ) ;
+poi3 = ( ( 2 * nbma_pl + 1 ) * ( 2 * &j ) + ( 2 * ( &i - 1 ) ) 
++ ( 4 * nbma_pl ) + 3 ) ;
+poi4 = ( ( 2 * nbma_pl + 1 ) * ( 2 * &j ) + ( 2 * ( &i - 1 ) ) 
++ ( 4 * nbma_pl ) + 4 ) ;
+poi5 = ( ( 2 * nbma_pl + 1 ) * ( 2 * &j ) + ( 2 * ( &i - 1 ) ) 
++ ( 4 * nbma_pl ) + 5 ) ;
+poi6 = ( ( 2 * nbma_pl + 1 ) * ( 2 * &j ) + ( 2 * ( &i - 1 ) ) 
++ ( 2 * nbma_pl ) + 4 ) ;
+poi7 = ( ( 2 * nbma_pl + 1 ) * ( 2 * &j ) + ( 2 * ( &i - 1 ) ) + 3 ) ;
+poi8 = ( ( 2 * nbma_pl + 1 ) * ( 2 * &j ) + ( 2 * ( &i - 1 ) ) + 2 ) ;
+
+PLAQUE = PLAQUE 'ET' ( MANU QUA8 
+a . poi1 a . poi2 a . poi3 a . poi4 
+a . poi5 a . poi6 a . poi7 a . poi8 ) ;
+
+FIN i ;
+FIN j ;
+
+A = 0. 0. 0. ;
+B = L 0. 0. ;
+C = L pl 0. ;
+D = 0. pl 0. ;
+
+ELIM crit ( PLAQUE et A et B et C et D ) ;
+
+chpo = ( CONT PLAQUE ) POIN DROI A D crit ;
+GAUCHE = ( CONT PLAQUE ) ELEM APPUYE STRICTEMENT chpo ;
+
+chpo = ( CONT PLAQUE ) POIN DROI B C crit ;
+DROITE = ( CONT PLAQUE ) ELEM APPUYE STRICT chpo ;
+
+FINPROC PLAQUE GAUCHE DROITE A B C D ;

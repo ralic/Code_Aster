@@ -1,0 +1,33 @@
+TITRE
+SSLL110A
+3 barres en U soumises a la pesanteur
+FINSF
+COOR_3D
+%
+ N1        0.  10.  0.
+ N2        0.   0.  0.
+ N3        10.  0.  0.
+ N4        10. 10.  0.
+%%
+FINSF
+%
+%
+SEG2
+  M1       N1       N2
+  M2       N2       N3
+  M3       N3       N4
+%
+FINSF
+GROUP_MA
+ PESA      M2
+FINSF
+GROUP_MA
+ VERT      M1 M3
+FINSF
+GROUP_NO
+ A         N1    
+FINSF
+GROUP_NO
+ B         N4
+FINSF
+FIN

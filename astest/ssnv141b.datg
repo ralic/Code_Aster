@@ -1,0 +1,47 @@
+* calotte sphérique pincée
+*==========================
+*
+OPTI DIME 3 ELEM SEG3 ;
+OPTI NIVEAU 8 ;
+
+*TOPOLOGIE
+
+R =10. ;
+a = cos(18) ;
+b = sin(18) ;
+
+pa = a*R ;
+pb = b*R ;
+
+O = 0. 0. 0. ;
+P1 = R 0. 0. ;
+P2 = 0. R 0. ;
+P3 = 0. pb pa ;
+P4 = pb 0. pa ;
+P5 = 7.07106781 7.07106781 0. ;
+Z = 0. 0. pa ;
+
+
+OPTI DIME 3 ELEM TRI6 ;
+
+P1P5 = CERCL 10 P1 O P5 ;
+P5P2 = CERCL 10 P5 O P2 ;
+P1P2 = P1P5 et P5P2 ;
+
+P2P3 = CERCL 20 P2 O P3 ;
+P3P4 = CERCL 10 P3 Z P4 ;
+P4P1 = CERCL 20 P4 O P1 ;
+
+bords = P1P2 et P2P3 et P3P4 et P4P1 ;
+surf = surface bords spherique O ;
+tout_elt = surf et bords ;
+trac CACH tout_elt ;
+
+list (nbno tout_elt) ;
+list (nbel tout_elt) ;
+
+Opti sauv form 'ssnv141b.mgib' ;
+sort tout_elt ;
+sauv form tout_elt ;
+
+fin;

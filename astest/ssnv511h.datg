@@ -1,0 +1,39 @@
+opti dime 3 elem tet4 ;
+
+dens 10 ;
+
+*----------------------------------------
+*DONNEES
+*----------------------------------------
+
+* nombre d elements
+N = 5;
+
+
+*---------------------------------------------
+*construction du maillage
+*---------------------------------------------
+
+p1 = -5 -5  0;
+p2 =  5 -5  0;
+p3 =  5  5  0;
+p4 = -5  5  0;
+
+LB = droit p1 p2 N;
+LD = droit p2 p3 N;
+LH = droit p4 p3 N;
+LG = droit p4 p1 N;
+
+VOLU = elim ((VOLU TRAN (SURF (LB et LD et LH et LG) PLAN)
+(0 0 1)) CHAN TET4) 0.001;
+
+ENV = ENVE VOLU;
+
+MAILLE = VOLU;
+
+TRAC MAILLE;
+
+opti sauv format
+'/work/irlin831_1/siavelim/CAS/ssnv511/ssnv511h.mgib';
+sauv format maille ;
+fin ;

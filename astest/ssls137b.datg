@@ -1,0 +1,146 @@
+# -*- coding: iso-8859-1 -*-
+
+
+import salome
+from geompy import *
+import smesh
+import SMESH
+import math
+
+#--------------------------------------------------------------------------------
+#                              --CABLE--
+#--------------------------------------------------------------------------------
+#                              PARAMETRES
+#--------------------------------------------------------------------------------
+
+L = 4
+excen = 0.075
+Finesse = 0.1
+
+#--------------------------------------------------------------------------------
+#                              GEOMETRIE
+#--------------------------------------------------------------------------------
+
+Vector_DX = MakeVectorDXDYDZ(1, 0, 0)
+Vector_DY = MakeVectorDXDYDZ(0, 1, 0)
+Vector_DZ = MakeVectorDXDYDZ(0, 0, 1)
+Vertex_1 = MakeVertex(0, 0, 0)
+
+Vertex_2 = MakeVertex(-L/2, 0, excen)
+Vertex_3 = MakeVertex(-L/2+Finesse/2, 0, excen)
+Vertex_4 = MakeVertex(L/2-Finesse/2, 0, excen)
+Vertex_5 = MakeVertex(L/2, 0, excen)
+
+Line_1 = MakeLineTwoPnt(Vertex_2, Vertex_3)
+Line_2 = MakeLineTwoPnt(Vertex_3, Vertex_4)
+Line_3 = MakeLineTwoPnt(Vertex_4, Vertex_5)
+
+Partition_1 = MakePartition([Line_1, Line_2, Line_3], [], [], [], ShapeType["EDGE"], 0, [], 0)
+Cable_1 = GetEdgeNearPoint(Partition_1,Vertex_2)
+Cable_2 = GetEdgeNearPoint(Partition_1,Vertex_1)
+Cable_3 = GetEdgeNearPoint(Partition_1,Vertex_5)
+
+CABLE1 = CreateGroup(Partition_1, ShapeType["EDGE"])
+UnionList(CABLE1, [Cable_1, Cable_2, Cable_3])
+
+addToStudy( Partition_1, "Partition_1" )
+addToStudyInFather( Partition_1, CABLE1, "CABLE1" )
+
+#--------------------------------------------------------------------------------
+#                              MAILLAGE
+#--------------------------------------------------------------------------------
+
+Mesh_Cable = smesh.Mesh(Partition_1,"Mesh_Cable")
+Regular_1D = Mesh_Cable.Segment()
+Max_Size_1 = Regular_1D.MaxSize(Finesse)
+isDone = Mesh_Cable.Compute()
+
+Tout_Group = [CABLE1]
+for group in Tout_Group :
+        Mesh_Cable.Group(group)
+
+NOEUD1_A = Mesh_Cable.FindNodeClosestTo(-L/2, 0, excen)
+NOEUD1_B = Mesh_Cable.FindNodeClosestTo(L/2, 0, excen)
+CABLE1_A = Mesh_Cable.CreateEmptyGroup( SMESH.NODE, 'CABLE1_A' )
+CABLE1_B = Mesh_Cable.CreateEmptyGroup( SMESH.NODE, 'CABLE1_B' )
+nbAdd = CABLE1_A.Add( [ NOEUD1_A ] )
+nbAdd = CABLE1_B.Add( [ NOEUD1_B ] )
+
+smesh.SetName(Mesh_Cable.GetMesh(), 'Mesh_Cable')
+smesh.SetName(Regular_1D.GetAlgorithm(), 'Regular_1D')
+smesh.SetName(Max_Size_1, 'Max Size_1')
+smesh.SetName(CABLE1, 'CABLE1')
+smesh.SetName(CABLE1_A, 'CABLE1_A')
+smesh.SetName(CABLE1_B, 'CABLE1_B')
+
+
+#--------------------------------------------------------------------------------
+#                              --PLAQUE--
+#--------------------------------------------------------------------------------
+#                              PARAMETRES
+#--------------------------------------------------------------------------------
+
+L = 4
+l = 0.5
+Finesse = 0.1
+
+#--------------------------------------------------------------------------------
+#                              GEOMETRIE
+#--------------------------------------------------------------------------------
+
+Vector_DX = MakeVectorDXDYDZ(1, 0, 0)
+Vector_DY = MakeVectorDXDYDZ(0, 1, 0)
+Vector_DZ = MakeVectorDXDYDZ(0, 0, 1)
+Vertex_1 = MakeVertex(0, 0, 0)
+
+Face_1 = MakeFaceHW(L, l, 1)
+Vertex_2 = MakeVertex(-L/2, 0, 0)
+
+VOILE = GetFaceNearPoint(Face_1,Vertex_1)
+ENCAST = GetEdgeNearPoint(Face_1,Vertex_2)
+
+addToStudy( Face_1, "Face_1" )
+addToStudyInFather( Face_1, VOILE, "VOILE" )
+addToStudyInFather( Face_1, ENCAST, "ENCAST" )
+
+#--------------------------------------------------------------------------------
+#                              MAILLAGE
+#--------------------------------------------------------------------------------
+
+Mesh_Voile = smesh.Mesh(Face_1)
+Regular_1D = Mesh_Voile.Segment()
+Max_Size_1 = Regular_1D.MaxSize(Finesse)
+Quadrangle_2D = Mesh_Voile.Quadrangle()
+isDone = Mesh_Voile.Compute()
+
+Tout_Group = [VOILE]
+for group in Tout_Group :
+        Mesh_Voile.Group(group)
+
+ENCAST_1 = Mesh_Voile.GroupOnGeom(ENCAST,'ENCAST',SMESH.NODE)
+NOEUD = Mesh_Voile.FindNodeClosestTo(L/2, l/2, 0)
+NODE_REF = Mesh_Voile.CreateEmptyGroup( SMESH.NODE, 'NODE_REF' )
+nbAdd = NODE_REF.Add( [ NOEUD ] )
+
+smesh.SetName(Mesh_Voile.GetMesh(), 'Mesh_Voile')
+smesh.SetName(Regular_1D.GetAlgorithm(), 'Regular_1D')
+smesh.SetName(Max_Size_1, 'Max Size_1')
+smesh.SetName(Quadrangle_2D.GetAlgorithm(), 'Quadrangle_2D')
+smesh.SetName(VOILE, 'VOILE')
+smesh.SetName(ENCAST, 'ENCAST')
+smesh.SetName(NODE_REF, 'NODE_REF')
+
+#--------------------------------------------------------------------------------
+#                          -- PLAQUE ET CABLE --
+#--------------------------------------------------------------------------------
+# Maillage final
+Mesh_tous = [Mesh_Voile, Mesh_Cable]
+Mesh_tot = smesh.Concatenate(Mesh_tous, uniteIdenticalGroups=True, mergeNodesAndElements = False, mergeTolerance = 1e-5, allGroups = False )
+Mesh_tot.SetName("Mesh_tot")
+
+#--------------------------------------------------------------------------------
+#                              MISE A JOUR DE L'AFFICHAGE
+#--------------------------------------------------------------------------------
+
+if salome.sg.hasDesktop():
+  salome.sg.updateObjBrowser(1)

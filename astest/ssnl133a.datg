@@ -1,0 +1,66 @@
+******* OPTIONS *******
+OPTI DIME 3 ELEM SEG2;
+***********************
+
+******* CONSTANTES ****
+l = 240.0;
+nma = 10;
+***********************
+
+******* POINTS ********
+PA = 0. 0. 0.;
+PB = l 0. 0.;
+PC = l (-1.0*l) 0.;
+***********************
+
+****** MAILLAGE *******
+AB = DROI nma PA PB ;
+BC = DROI nma PB PC ;
+***********************
+
+LAME = AB ET BC;
+
+SORT LAME;
+TRAC LAME;
+
+****** ENREGISTRE *****
+OPTI SAUV 'FORMAT' 'ssnl133a.17';
+SAUV 'FORMAT' LAME;
+***********************
+
+***********************************
+
+******* OPTIONS *******
+OPTI DIME 2 ELEM QUA4;
+***********************
+
+******* CONSTANTES ****
+t = 0.6;
+b = 30.0;
+
+nf = 10;
+***********************
+
+****** SECTION ********
+S1 = (-0.5*b) (-0.5*t);
+S2 = (0.5*b) (-0.5*t);
+S3 = (0.5*b) (0.5*t);
+S4 = (-0.5*b) (0.5*t);
+
+S12 = DROI nf S1 S2;
+S23 = DROI nf S2 S3;
+S34 = DROI nf S3 S4;
+S41 = DROI nf S4 S1;
+
+SECT = DALL S41 S12 S23 S34;
+
+SORT SECT;
+TRAC SECT;
+***********************
+
+****** ENREGISTRE *****
+OPTI SAUV 'FORMAT' 'ssnl133a.18';
+SAUV 'FORMAT' SECT;
+***********************
+
+FIN;

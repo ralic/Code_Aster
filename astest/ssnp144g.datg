@@ -1,0 +1,107 @@
+opti dime 3 elem TET4 ;
+
+
+*-------
+*donnees
+*-------
+*cotés
+LX = 5;
+LY = 5;
+LZ = 25;
+
+*nombre de noeuds
+NX = 1;
+NZ = 5;
+
+*points
+A = 0.   0.  0.;
+B = 0.   LY  0.;
+C = 0.   LY  LZ;
+D = 0.   0.  LZ;
+A1 = LX  0.  0.;
+B1 = LX  LY  0.;
+C1 = LX  LY  LZ;
+D1 = LX  0.  LZ;
+
+
+*----------------------------------------
+*construction des droites et des surfaces 
+*----------------------------------------
+
+AB = DROIT NX A B;
+BA = inverse(AB);
+BC = DROIT NZ B C;
+CD = DROIT NX C D;
+DA = DROIT NZ D A;
+
+S1= DALL AB BC CD DA;
+V1 = LX  0. 0.;
+
+S2 = S1 PLUS V1;
+
+A1B1 = DROIT NX A1 B1;
+B1C1 = DROIT NZ B1 C1;
+C1D1 = DROIT NX C1 D1;
+D1A1 = DROIT NZ D1 A1;
+AA1  = DROIT NX A  A1;
+B1B  = DROIT NX B1 B;
+A1D1 = inverse(D1A1);
+
+V2 = 0. 0. LZ;
+
+SURFINF = DALL A1B1 B1B BA AA1;
+SURFSUP = SURFINF PLUS V2;
+
+D1D = DROIT NX D1 D;
+S5 = DALL AA1 A1D1 D1D DA;
+
+V3 = 0. LY 0.;
+S6=S5 PLUS V3;
+
+
+S  = S1 et S2 et SURFINF et SURFSUP et S5 et S6;
+ELIM 0.00001 S;
+
+*----------------------
+*construction du volume
+*----------------------
+
+
+vol= VOLU S;
+
+trac vol;
+
+oublier S1;
+oublier S2;
+oublier S5;
+oublier S6;
+oublier S;
+oublier V1;
+oublier V2;
+oublier V3;
+oublier AB;
+oublier BA;
+oublier BC;
+oublier CD;
+oublier DA;
+oublier A1B1;
+oublier B1C1;
+oublier C1D1;
+oublier D1A1;
+oublier AA1;
+oublier B1B;
+oublier A1D1;
+oublier D1D;
+oublier A;
+oublier B;
+oublier C;
+oublier D;
+oublier A1;
+oublier B1;
+oublier D1;
+
+opti sauv format  '/home/mathieut/Desktop/ssnp144g.mgib' ;
+
+sauv format vol ;
+
+fin ;

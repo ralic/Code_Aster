@@ -1,0 +1,49 @@
+*-----------------------------------------------------*
+*             Maillage d'une dalle                    *   
+*-----------------------------------------------------*
+* Definition des options
+*
+           OPTI DIME 3 ELEM QUA4 ;
+
+*-----------------------------------------------------*
+*  Parametres
+Lx = 1.0 ;
+Ly = 1.0 ;
+Nx = 3;
+Ny = 3;
+*
+*-----------------------------------------------------*
+A1 = 0.   0.   0.;
+A2 = Lx   0.   0.;
+A3 = 0.   Ly   0.;
+A4 = Lx   Ly   0.;
+*-----------------------------------------------------*
+A1A2 = DROI Nx A1 A2 ;
+A2A4 = DROI Ny A2 A4 ;
+A4A3 = DROI Nx A4 A3 ;
+A3A1 = DROI Ny A3 A1 ;
+*-----------------------------------------------------*
+dalle = DALL A2A4 A4A3 A3A1 A1A2 PLAN;
+
+VAL1 = Lx/Nx;
+VAL2 = 2*VAL1;
+P01 = VAL1   0.     0.;
+Py1 = VAL1   Ly     0.;
+P02 = VAL2   0.     0.;
+Py2 = VAL2   Ly     0.;
+
+M1 = dalle POIN DROIT P01 Py1 0.01;
+M2 = dalle POIN DROIT P02 Py2 0.01;
+
+
+TRAC dalle;
+mesh = dalle et A1A2 et A3A1 et A4A3 et A2A4 et M1 et M2;
+oeil = 0. 0. 1000.;
+TRAC oeil mesh;
+*
+* Save mesh
+*
+opti sauv form 'sdls115a.mgib';
+sauv form mesh;
+fin;
+ 

@@ -1,0 +1,223 @@
+opti dime 3 elem cub8;
+opti niveau 2;
+r=10.;
+h=0.04;
+nseg=10;
+**nseg=20;
+**nseg=30;
+***h=0.12;
+rint=r + (h/2.);
+rext=r - (h/2.);
+nseg2=2 * nseg;
+nep=1;
+c=0. 0. 0.;
+x=90.;
+co5=cos  x;
+so5=sin  x;
+coi5=rint * co5;
+coe5=rext * co5;
+sii5=rint * so5;
+sie5=rext * so5;
+pai= rint 0. 0. ;
+pae= rext 0. 0. ;
+pdi= coi5 0. sii5;
+pde=coe5 0. sie5;
+pbi=0. rint 0.;
+pbe= 0. rext 0.;
+pci = 0.  coi5 sii5;
+pce= 0. coe5 sie5;
+
+li1=droit pai nep pae;
+li2=droit pde nep pdi;
+ci1=cercle  nseg2  pae c pde;
+ce1=cercle  nseg2 pdi c pai;
+
+sud1=dalle plan li2 ce1 li1 ci1;
+
+lj1=droit pbi nep pbe;
+lj2=droit pce nep pci;
+cj1=cercle  nseg2 pbe c pce;
+cj2=cercle  nseg2 pci c pbi;
+
+sug1=dalle plan lj1 cj1 lj2 cj2;
+
+* jmp
+oublier cj2 ;
+
+lk1=droit pai nep pae;
+** lk2=droit pbe nep pbi;
+
+ck1=cercle  nseg2 pae c pbe;
+ck2=cercle  nseg2 pbi c pai;
+
+** sub1=dalle plan lk1 ck1 lk2 ck2;
+sub1=dalle plan lk1 ck1 (inve lj1)  ck2;
+
+sutot=sud1 et sug1 et sub1;
+elim .001 sutot;
+
+*** maillage des surfaces
+
+x=45.;
+co5=cos  x;
+so5=sin  x;
+coi5=rint * co5;
+coe5=rext * co5;
+sii5=rint * so5;
+sie5=rext * so5;
+oeil=1000 1000 1000;
+
+pi45= coi5 coi5 0.;
+pe45=coe5 coe5 0.;
+
+coi25=coi5 *co5;
+coe25=coe5 *co5;
+qi45= coi25 coi25 coi5; 
+qe45 = coe25 coe25 coe5;
+
+qi0=  coi5 0. coi5; 
+qe0 = coe5 0. coe5;
+
+*** surf exterieure 1
+ci1=cercle nseg pai c pi45;
+ci2=cercle nseg pi45 c qi45;
+ci3=cercle nseg qi45 c qi0;
+ci4=cercle nseg qi0 c pai;
+***si1=daller sphere c ci1 ci2 ci3 ci4;
+si1=daller sphere c ci1 ci4 ci3 ci2;
+***tracer oeil (si1 et (ci1 coul rouge) et (ci2 coul bleu));
+
+*** surf interieure 1
+ce1=cercle nseg pae c pe45;
+ce2=cercle nseg pe45 c qe45;
+ce3=cercle nseg qe45 c qe0;
+ce4=cercle nseg qe0 c pae;
+***se1=daller sphere c ce1 ce2 ce3 ce4;
+se1=daller sphere c ce1 ce4 ce3 ce2;
+
+ss1=elem si1 qua4 1;
+ss2=elem se1 qua4 1;
+ss1=change poi1 ss1;
+ss2=change poi1 ss2;
+pi1=ss1 point 1;
+pi2=ss1 point 2;
+pi3=ss1 point 3;
+pi4=ss1 point 4;
+
+pe1=ss2 point 1;
+pe2=ss2 point 2;
+pe3=ss2 point 3;
+pe4=ss2 point 4;
+
+v1=manu cub8 pi1 pi2 pi3 pi4 pe1 pe2 pe3 pe4;
+
+*** volume 1, on construit cub8 par cub8
+nl11=nbel si1;
+nl11=nl11-1;
+vol1=v1;
+iel1=2;
+repeter  bouc1 nl11;
+
+ss1=elem si1 qua4 iel1;
+ss2=elem se1 qua4 iel1;
+ss1=change poi1 ss1;
+ss2=change poi1 ss2;
+
+pi1=ss1 point 1;
+pi2=ss1 point 2;
+pi3=ss1 point 3;
+pi4=ss1 point 4;
+
+pe1=ss2 point 1;
+pe2=ss2 point 2;
+pe3=ss2 point 3;
+pe4=ss2 point 4;
+
+v1=manu cub8 pi1 pi2 pi3 pi4 pe1 pe2 pe3 pe4;
+vol1=vol1 et v1;
+
+iel1=iel1+1;
+
+fin bouc1 ;
+
+*** volume 2, par rotation du volume 1
+vol2=tourner vol1 45. (0. 0. 0.) (0. 0. 1.);
+opti elem seg2 ;
+rep1 = @repere;
+opti elem cub8;
+sint=se1 ;
+sext=si1 ;
+*** trac oeil (rep1 et (sext coul rouge));
+*** surf interieure 2, par rotation
+se2=tourner sint 45. (0. 0. 0.) (0. 0. 1.);
+sint = sint et se2 ;
+*** surf exterieure 2, par rotation
+si2=tourner sext 45. (0. 0. 0.) (0. 0. 1.);
+sext = sext et si2 ;
+*** trac oeil (rep1 et (sext coul rouge));
+volto1=vol1 et vol2;
+elim .001 volto1;
+
+*** surf exterieure 3
+ri45= 0. coi5 coi5;
+re45= 0. coe5 coe5;
+ci1=cercle nseg qi0 c qi45;
+ci2=cercle nseg qi45 c ri45;
+ci3=cercle nseg ri45 c pci;
+ci4=cercle nseg pci c qi0;
+***si1=daller sphere c ci1 ci2 ci3 ci4;
+si1=daller sphere c ci1 ci4 ci3 ci2;
+sext =sext et si1 ;
+***tracer oeil (se1 et (ce1 coul rouge) et (ce2 coul bleu));
+*** trac oeil (rep1 et (sext coul rouge));
+
+*** surf interieure 3
+ce1=cercle nseg qe0 c qe45;
+ce2=cercle nseg qe45 c re45;
+ce3=cercle nseg re45 c pce;
+ce4=cercle nseg pce c qe0;
+***se1=daller sphere c ce1 ce2 ce3 ce4;
+se1=daller sphere c ce1 ce4 ce3 ce2;
+nl11=nbel si1;
+sint =sint et se1 ;
+elim .001 sint;
+**trac oeil (rep1 et (sint coul rouge));
+
+iel1=1;
+repeter  bouc1 nl11;
+
+ss1=elem si1 qua4 iel1;
+ss2=elem se1 qua4 iel1;
+ss1=change poi1 ss1;
+ss2=change poi1 ss2;
+
+pi1=ss1 point 1;
+pi2=ss1 point 2;
+pi3=ss1 point 3;
+pi4=ss1 point 4;
+
+pe1=ss2 point 1;
+pe2=ss2 point 2;
+pe3=ss2 point 3;
+pe4=ss2 point 4;
+
+v1=manu cub8 pi1 pi2 pi3 pi4 pe1 pe2 pe3 pe4;
+volto1=volto1 et v1;
+
+iel1=iel1+1;
+
+fin bouc1 ;
+
+voltot=volto1 et sutot et sext;
+elim .001 voltot;
+
+
+OPTI NIVE 11 ;
+OPTI SAUV FORM 'ssls105c.21';
+SAUV FORM  voltot  ;
+
+trac oeil (rep1 et voltot et (sext coul rouge) et (sud1 coul bleu) 
+et (sug1 coul jaune) et (sub1 coul turq));
+
+list (nbno voltot);
+list (nbel voltot);

@@ -1,0 +1,112 @@
+import sys
+import salome
+
+salome.salome_init()
+theStudy = salome.myStudy
+
+import iparameters
+ipar = iparameters.IParameters(salome.myStudy.GetCommonParameters("Interface Applicative", 1))
+
+# fill list AP_MODULES_LIST
+ipar.append("AP_MODULES_LIST", "Geometry")
+ipar.append("AP_MODULES_LIST", "Mesh")
+
+import math 
+from math import pi
+import os 
+
+
+##################################################
+###################PARAMETRES#####################
+##################################################
+
+#ADRESSE DE SORTIE DES MED
+chemin = "/home/chansard/Bureau/018305/ssll107j/"
+
+#LISTE DES VALEURS DE ALPHA (RAPPORT DES RAYONS)
+A = (0.0,0.5,0.9,)
+
+#NOMBRE DE SEG2 SUR LE CONTOUR EXTERIEUR DU DISQUE
+disc_ext = 30
+
+##################################################
+##################################################
+##################################################
+
+comp = 0
+
+for alpha in A:
+  R = 2
+  EP = R*(1-alpha)
+  peri_int = 2*pi*(R-EP)
+  peri_ext = 2*pi*R
+  taille = peri_ext/disc_ext
+  disc_int = int(peri_int/taille)
+  max_area = (taille*taille)/2
+
+  ###
+  ### GEOM component
+  ###
+
+  import GEOM
+  import geompy
+  import math
+  import SALOMEDS
+
+
+  geompy.init_geom(theStudy)
+
+  D_EXT = geompy.MakeCircle(None, None, R)
+  
+  if alpha != 0.0: 
+    D_INT = geompy.MakeCircle(None, None, R-EP)
+    Face_1 = geompy.MakeFaceWires([D_EXT, D_INT], 1)
+  else:
+    Face_1 = geompy.MakeFaceWires([D_EXT], 1)
+  
+  p_ext = geompy.CreateGroup(Face_1, geompy.ShapeType["EDGE"])
+  geompy.UnionIDs(p_ext, [3])
+  
+  if alpha != 0.0:
+    p_int = geompy.CreateGroup(Face_1, geompy.ShapeType["EDGE"])
+    geompy.UnionIDs(p_int, [6])
+    geompy.addToStudy( D_INT, 'D_INT' )  
+    geompy.addToStudyInFather( Face_1, p_int, 'p_int' )
+  
+  geompy.addToStudy( D_EXT, 'D_EXT' )
+  geompy.addToStudy( Face_1, 'Face_1' )
+  geompy.addToStudyInFather( Face_1, p_ext, 'p_ext' )
+
+  ###
+  ### SMESH component
+  ###
+
+  import smesh, SMESH, SALOMEDS
+
+  aMeasurements = smesh.CreateMeasurements()
+  smesh.SetCurrentStudy(theStudy)
+  import StdMeshers
+  Mesh_1 = smesh.Mesh(Face_1)
+  Regular_1D = Mesh_1.Segment()
+  Nb_Segments_1 = Regular_1D.NumberOfSegments(disc_ext)
+  Nb_Segments_1.SetDistrType( 0 )
+  MEFISTO_2D = Mesh_1.Triangle()
+  Max_Element_Area_1 = MEFISTO_2D.MaxElementArea(max_area)
+  
+  if alpha != 0.0:  
+    Regular_1D_1 = Mesh_1.Segment(geom=p_int)
+    Nb_Segments_2 = Regular_1D_1.NumberOfSegments(disc_int)
+    Nb_Segments_2.SetDistrType( 0 )
+  
+  isDone = Mesh_1.Compute()
+  Mesh_1.ConvertToQuadratic( 1 )
+  g_ext = Mesh_1.GroupOnGeom(p_ext,'ext',SMESH.EDGE)
+  g_ext.SetColor( SALOMEDS.Color( 0, 0.666667, 1 ))
+  
+  if alpha != 0.0:    
+    g_int = Mesh_1.GroupOnGeom(p_int,'int',SMESH.EDGE)
+    g_int.SetColor( SALOMEDS.Color( 0, 0.666667, 1 ))
+  smesh.SetName(Mesh_1, 'Mesh_1')
+  Mesh_1.ExportMED( r''+chemin+'ssll107j.2'+str(comp)+'', 0, SMESH.MED_V2_2, 1 )
+  
+  comp = comp+1

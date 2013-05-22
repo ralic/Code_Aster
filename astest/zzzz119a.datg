@@ -1,0 +1,33 @@
+* ma1,mb1 : maillage d'un quart de cylindre en quad4:
+* ma2,mb2 : maillage d'un quart de cylindre plus fin en tria6:
+
+opti sauv form 'zzzz119a.mgib' ;
+opti dime 3;
+
+rayon=10.;
+
+o = 0. 0. 0. ;
+a = rayon 0. 0.;
+b = 0. rayon. 0.;
+
+n1=7;
+n2=8;
+
+opti elem qua4;
+ab1= cerc n1 a  o  b;
+ma1 = tran ab1 n1 (0. 0. 20.);
+mb1 = tran ab1 n1 (0. 0. -20.); 
+
+trac (ma1 et mb1);
+
+opti elem tri6;
+ab2= cerc n2 a  o  b;
+ma2 = tran ab2 n2 (0. 0. 20.);
+mb2 = tran ab2 n2 (0. 0. -20.); trac (ma2 et mb2);
+
+tout=ma1 et ma2 et mb1 et mb2 ;
+trac tout;
+
+
+sauv form tout;
+fin;

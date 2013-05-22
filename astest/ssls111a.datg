@@ -1,0 +1,94 @@
+*opti dime 3 elem tri3 ;
+opti dime 3 elem qua4 ;
+
+a1 = 0. 0. 0. ;
+a2 = 10. 0. 0. ;
+a3 = 10. 5. 0. ;
+a4 = 0. 5. 0. ;
+
+l11 = d 10 a1 a2 ;
+l12 = d 5 a2 a3 ;
+l13 = d 10 a3 a4 ;
+l14 = d 5 a4 a1 ;
+
+plaq1 = daller plan l13  l14 l11  l12;
+
+elim 0.001 plaq1 ;
+
+opti nive 10;
+opti sauv format 'ssls111a.mgib' ;
+sauv format plaq1 ;
+
+trac plaq1;
+
+fin;
+
+* modif JMP pour creer  2 maillages superposés
+b1 = 0. 0. 0. ;
+b2 = 10. 0. 0. ;
+b3 = 10. 5. 0. ;
+b4 = 0. 5. 0. ;
+
+l21 = d 10 b1 b2 ;
+l22 = d 5 b2 b3 ;
+l23 = d 10 b3 b4 ;
+l24 = d 5 b4 b1 ;
+
+* plaq2 = daller plan l21  l22  l23  l24 ;
+* plaq2 = daller plan l23  l24 l21  l22 ;
+
+* elim 0.001 plaq2 ;
+
+opti sauv format 
+ 'ssls111_q4.mgib';
+*opti sauv format 'ssls111c.mgib' ;
+* sauv format (plaq1 et plaq2) ;
+ sauv format (plaq1) ;
+
+trac plaq1;
+*trac plaq2 ;
+*trac (plaq2 et plaq1) ;
+ 
+fin;
+
+oublier plaq1 ;
+oublier plaq2 ;
+
+* modif JMP pour creer vraiment 2 maillages disjoints
+h=0.8;
+hs2=h/2 ;
+hs4 = h/4 ;
+hs4m = (-1.)*hs4 ;
+
+ah1 = 0. 0. hs4 ;
+ah2 = 10. 0. hs4 ;
+ah3 = 10. 5. hs4 ;
+ah4 = 0. 5. hs4;
+
+lh11 = d 10 ah1 ah2 ;
+lh12 = d 5 ah2 ah3 ;
+lh13 = d 10 ah3 ah4 ;
+lh14 = d 5 ah4 ah1 ;
+
+ plaqh1 = daller plan lh11  lh12  lh13  lh14 ;
+bh1 = 0. 0. hs4m ;
+bh2 = 10. 0. hs4m ;
+bh3 = 10. 5. hs4m ;
+bh4 = 0. 5. hs4m ;
+
+lh21 = d 10 bh1 bh2 ;
+lh22 = d 5 bh2 bh3 ;
+lh23 = d 10 bh3 bh4 ;
+lh24 = d 5 bh4 bh1 ;
+
+plaqh2 = daller plan lh21  lh22  lh23  lh24 ;
+
+elim 0.001 plaqh2 ;
+
+opti sauv format 'ssls111b_plaq12_disjoint.mgib' ;
+sauv format (plaqh1 et plaqh2) ;
+
+trac (plaqh2 et plaqh1) ;
+ 
+FIN;
+

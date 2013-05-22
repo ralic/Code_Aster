@@ -1,0 +1,96 @@
+TITRE
+        Modele avec 2 disques, 2 paliers
+FINSF
+%
+COOR_3D NOBJ=13
+N1      0.000000E+00   0.      0.
+N2      1.750000E-02   0.      0.
+N3      3.500000E-02   0.      0.
+N4      4.500000E-02   0.      0.
+N5      7.000000E-02   0.      0.
+N6      1.025000E-01   0.      0.
+N7      1.350000E-01   0.      0.
+N8      1.675000E-01   0.      0.
+N9      2.000000E-01   0.      0.
+N10     2.250000E-01   0.      0.
+N11     2.500000E-01   0.      0.
+N12     2.750000E-01   0.      0.
+N13     3.000000E-01   0.      0.
+FINSF
+%
+SEG2    NOBJ=12
+M1      N1      N2
+M2      N2      N3
+M3      N3      N4
+M4      N4      N5
+M5      N5      N6
+M6      N6      N7
+M7      N7      N8  
+M8      N8      N9
+M9      N9      N10
+M10     N10     N11
+M11     N11     N12
+M12     N12     N13
+FINSF
+%
+POI1
+DISQUE1 N1
+DISQUE2 N13
+MP1     N5    
+MP2     N9     
+FINSF
+%       
+GROUP_MA 
+ROTOR
+M1      M2      M3      M4      M5      M6      
+M7    M8        M9      M10     M11     M12     
+FINSF                                           
+%                                               
+GROUP_MA
+DISQ1
+DISQUE1
+FINSF
+%
+GROUP_MA
+DISQ2
+DISQUE2
+FINSF
+%
+GROUP_MA 
+PALIER1
+MP1
+FINSF
+%
+GROUP_MA 
+PALIER2
+MP2
+FINSF
+%
+GROUP_MA 
+SA1
+M1      M2              
+FINSF           
+%
+GROUP_MA 
+SA2
+M3  M11  M12            
+FINSF           
+%
+GROUP_MA 
+SA3
+M4  M5  M6  M7  M8  M9  M10
+FINSF
+%
+GROUP_NO 
+PALIER1
+N5
+FINSF
+%
+GROUP_NO
+ROTOR
+N1 N2 N3 N4 N5 N6 N7 N8
+N9  N10 N11 N12 N13
+FINSF
+%
+FIN
+        

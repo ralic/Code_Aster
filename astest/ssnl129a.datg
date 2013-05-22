@@ -1,0 +1,60 @@
+                                                                                                                                  
+OPTION SAUV FORM 'ssnl129a.mgib';
+OPTION DIME 3 ELEM  CU20;                                                                        
+
+*************************************************                                                                    
+* definition des points                                                 
+*************************************************
+
+p1=0. 0. 0.;
+p2=0. 1. 0.;
+p3=1. 1. 0.;
+p4=1. 0. 0.;
+p5=0. 0. -1.;
+p6=0. 1. -1.;
+p7=1. 1. -1.;
+p8=1. 0. -1.;
+  
+
+*************************************************                                                                      
+* Definition des lignes                                                 
+*************************************************
+                                                                       
+l12 = DROI 1 p1 p2;
+l23 = DROI 1 p2 p3;
+l34 = DROI 1 p3 p4;
+l41 = DROI 1 p4 p1;                                 
+l26 = DROI 1 p2 p6;
+l37 = DROI 1 p3 p7;
+l15 = DROI 1 p1 p5;
+l48 = DROI 1 p4 p8;
+l56 = DROI 1 p5 p6;
+l67 = DROI 1 p6 p7;
+l78 = DROI 1 p7 p8;
+l85 = DROI 1 p8 p5;
+                                                                        
+*************************************************                                                                       
+* Creation des surfaces                                                 
+*************************************************                                                                       
+
+s1 = l12 l23 l34 l41 DALL PLAN;
+s2 = l15 l56 (inve l26) (inve l12) DALL PLAN;
+s3 = l56 l67 l78 l85 DALL PLAN;
+s4 = l37 l78 (inve l48) (inve l34) DALL PLAN;
+s5 = l23 l37 (inve l67) (inve l26) DALL PLAN;
+s6 = l15 (inve l85) (inve l48) l41 DALL PLAN;
+VEC1 = 0. 0. -1.;
+VOL1 = s1 VOLU 1 'TRAN' VEC1;
+
+trac VOL1;
+
+maillage = VOL1 et s1 et s2 et s3 et s4 et s5 et s6
+ et l12 et l23 et l34 et l41 et l26 et l37 et l15 
+ et l48 et l56 et l67 et l78 et l85;
+                                                          
+ELIM 0.001 maillage;
+TITRE 'Elément cubique';
+TRAC maillage;
+SAUV format maillage; 
+
+fin;

@@ -1,0 +1,34 @@
+OPTI DIME 2 ELEM QUA8 MODE PLAN CONT;
+
+* PREMIER MAILLAGE
+* Dx = 2.45 ; 
+* Dy = 1.   ;
+* sizeX = 49 ;
+* sizeY = 36 ;
+
+* PREMIER MAILLAGE
+Dx = 2.45 ; 
+Dy = 1.   ;
+sizeX = 49 ;
+sizeY = 36 ;
+
+LX = sizeX * Dx;
+LY = sizeY * Dy;
+
+P1 = 0.  -5.;
+P2 = LX  -5.;
+P3 = LX  LY ;
+P4 = 0.  LY ;
+
+COINF = DROI sizeX P1 P2 ;
+CODRT = DROI sizeY P2 P3 ;
+COSUP = DROI sizeX P3 P4 ;
+COGCH = DROI sizeY P4 P1 ;
+
+SURF1 = DALL COINF CODRT COSUP COGCH 'PLAN' ;
+TRAC SURF1 ;
+
+OPTI 'SAUV' FORMAT 'zzzz264a.mgib' ;
+SAUV SURF1 P1 P2 P3 P4 ;
+
+FIN;

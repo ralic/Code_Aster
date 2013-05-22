@@ -1,0 +1,43 @@
+TITRE
+% SDLD27/E                                                      15/03/91
+% SYSTEME MASSE-RESSORT A 8 DEGRES DE LIBERTE
+% SANS NOEUD  EXTREMITES:  7+2 RESSORTS  8 MASSES ( KX=1.E+5  M=10 )
+%                                                  REF: SFM.VPCS SDLD27
+% MODELISATION : 8 NOEUDS - 7 MAILLES SEG2  // AXE(3,4)
+FINSF
+%  ---------------------------------------------------------------------
+%
+COOR_3D                 % 8 NOEUDS
+%  NOEUD      X         Y          Z
+    P1       0.3        0.4        0.
+    P2       0.6        0.8        0.
+    P3       0.9        1.2        0.
+    P4       1.2        1.6        0.
+    P5       1.5        2.0        0.
+    P6       1.8        2.4        0.
+    P7       2.1        2.8        0.
+    P8       2.4        3.2        0.
+%
+FINSF
+%
+%                7 MAILLES
+SEG2
+   S1    P1   P2
+   S2    P2   P3
+   S3    P3   P4
+   S4    P4   P5
+   S5    P5   P6
+   S6    P6   P7
+   S7    P7   P8
+FINSF
+%
+%       NOEUDS AVEC UNE MASSE  ( NOEUDS PI )
+GROUP_NO
+    P       P1  P2  P3  P4  P5  P6  P7  P8
+FINSF
+%
+GROUP_MA
+    GRMA    S1  S2  S3  S4  S5  S6  S7
+FINSF
+%
+FIN

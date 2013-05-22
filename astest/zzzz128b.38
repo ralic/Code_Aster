@@ -1,0 +1,18 @@
+#DEBUT_TABLE
+#TITRE table 1
+#TITRE ... suite du titre 1
+ NOEUD VALEUR
+ K8    R
+ N1    -
+ N2    20.
+#FIN_TABLE
+
+#DEBUT_TABLE
+#TITRE table 2
+#TITRE ... suite du titre 2
+%%%NOEUD%VALEUR%
+%%K8%R%
+%N1      %-%
+%N2      %%%21.%
+%N3      %-%
+#FIN_TABLE

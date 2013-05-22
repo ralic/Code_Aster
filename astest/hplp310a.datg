@@ -1,0 +1,504 @@
+* ******************************************************************
+* PROCEDURE DE MAILLAGE D'UNE FISSURE 2D
+* --------------------------------------
+*
+* CISI (Agence de SACLAY)
+*
+* B. KURTH
+*
+* Version du 10/05/95
+*
+* parametres:
+*
+* rt        rayon du maillage rayonnant
+* rt1       coefficient multiplicateur de rt permettant de definir
+*           l'epaisseur des couronnes de deraffinement des secteurs
+* rt2       coefficient multiplicateur de rt permettant de definir
+*           l'epaisseur de la couronne de transition du maillage
+*           rayonnant au maillage dalle
+* nc        nombre de couronnes
+* ns        nombre de secteurs sur 90 degres (multiple de 2)
+* eps       demi-angle d'ouverture de la fissure (degres)
+* nbcour    nombre de couronnes de deraffinement (0 ou 1 ou 2)
+* l_lev     longueur de la levre de la fissure
+* l_lig     longueur du ligament
+* l_la      largeur du domaine
+* nlev      nombre d'elements de prolongation le long de la levre
+* nlig      nombre d'elements de prolongation le long du ligament
+* nla       nombre d'elements de prolongation le long de la largeur
+* dx        position suivant x du centre du repere par rapport au fond
+*           de fissure (dx = 0 : centre du repere au fond de fissure)
+* levre     Pour les cas axisymetriques: fissure debouchante a
+*           l'exterieur (levre = 'ext' par defaut) ou fissure
+*           debouchante a l'interieur (levre = 'int')
+*
+* ******************************************************************
+*
+*$$$$ FISS_2D
+*
+debproc fiss_2d l_lev*flottant l_lig*flottant l_la*flottant 
+        eps*flottant nc*entier ns*entier rt*flottant rt1*flottant
+        nbcour*entier rt2*flottant nlev*entier nlig*entier 
+        nla*entier levre/mot dx*flottant ;
+*
+opti dime 2 elem qua8 echo 1 ;
+*
+* Creation du maillage rayonnant (mbase) 
+* --------------------------------------
+*
+* critere d'elimination et de recherche des noeuds
+crit = (rt / (50. * nc)) ;
+*
+o = 0. 0. ;
+coseps = cos eps ;
+sineps = sin eps ;
+p0 = (0.001 * rt * coseps) (0.001 * rt * sineps) ;
+p1 = (rt * coseps) (rt * sineps) ;
+p1_90 = 0 rt ;
+p1_180 = (-1 * rt) 0 ;
+l11_90 = p1 cerc ns o p1_90 ;
+l11_12 = p1_90 cerc ns o p1_180 ;
+lextbase = l11_90 et l11_12 ;
+lop1 = p0 d nc p1 ;
+lop1_180 = p0 d nc p1_180 ;
+*
+* demi boudin inferieur
+mbase = lop1 rota ns (90. - eps) o rota ns 90. o ;
+*
+* fusion des noeuds situes pres du centre du maillage en etoile
+elim mbase crit ;
+mbase = rege mbase ;
+mbase = mbase coul roug ;
+*
+elim (mbase et o) crit ;
+*
+si (((nbcour ega 2) et (ns < 8)) ou ((nbcour ega 1) et (ns < 4))) ;
+   saut ligne ;
+   mess '======================================================== ' ;
+   mess '  ATTENTION !!!  Le nombre de couronnes de deraffinement ' ;
+   mess '                 est trop eleve pour un nombre de        ' ;
+   mess '                 de secteurs de' ns                        ;
+   mess '                                                         ' ;
+   mess '======================================================== ' ;
+   saut ligne ;
+finsi ;
+*
+* Creation des couronnes de deraffinement (mtran)
+* -----------------------------------------------
+*
+si (nbcour neg 0) ;
+*
+rti = 1.4 ;
+*
+ i = 0 ;
+ repe bouc1 nbcour ;
+ i = i + 1 ;
+*
+   rt1 = rt1 * (i ** rti) ;
+   nsb = ns / (2 * i) ;
+*
+   p2 = (rt * (1 + rt1) * coseps) (rt * (1 + rt1) * sineps) ;
+   p2_90 = 0 (rt * (1 + rt1)) ;
+   p2_180 = (-1 * (rt * (1 + rt1))) 0 ;
+   l22_1 = p2 cerc nsb o p2_90 ;
+   l2_12_2 = p2_90 cerc nsb o p2_180 ;
+   lext_rt1 = l22_1 et l2_12_2 ;
+*
+   mtran1 = cout lextbase lext_rt1 ;
+*
+   si (i ega 1) ;
+       mtran = mtran1 ;
+       lp1p2 = p1 d 1 p2 ;
+       lp12p22 = p1_180 d 1 p2_180 ;
+   sinon ;
+       mtran = mtran et mtran1 ;
+       lp1p2 = lp1p2 d 1 p2 ;
+       lp12p22 = lp12p22 d 1 p2_180 ;
+   finsi ;
+       lextbase = lext_rt1 ;
+ fin bouc1 ;
+*
+   p3 = p2 plus ((rt * rt2) 0) ;
+   p4 = p3 plus (0 (coor 1 p3)) ;
+   p5 = 0 (coor 2 p4) ;
+   p6 = (-1 * (coor 1 p4)) (coor 2 p4) ;
+   p7 = (-1 * (coor 1 p4)) 0 ;
+   l2_905 = p2_90 d 1 p5 ;
+nsb_p = nsb / 2 ;
+nsb_g = nsb - nsb_p ;
+   l34 = p3 d nsb_p p4 ;
+   l45 = p4 d nsb_g p5 ;
+   l56 = p5 d nsb_g p6 ;
+   l67 = p6 d nsb_p p7 ;
+   l23 = p2 d 1 p3 ;
+   l2_27 = p2_180 d 1 p7 ;
+*
+sinon ;
+*
+   p3 = p1 plus ((rt * rt2) 0) ;
+   p4 = p3 plus (0 (coor 1 p3)) ;
+   p5 = 0 (coor 2 p4) ;
+   p6 = (-1 * (coor 1 p4)) (coor 2 p4) ;
+   p7 = (-1 * (coor 1 p4)) 0 ;
+   l22_1 = l11_90 ;
+   l2_12_2 = l11_12 ;
+   l2_905 = p1_90 d 1 p5 ;
+ns_p = ns / 2 ;
+ns_g = ns - ns_p ;
+   l34 = p3 d ns_p p4 ;
+   l45 = p4 d ns_g p5 ;
+   l56 = p5 d ns_g p6 ;
+   l67 = p6 d ns_p p7 ;
+   l23 = p1 d 1 p3 ;
+   l2_27 = p1_180 d 1 p7 ;
+finsi ;
+*
+* Passage du cercle au rectangle (mce1 et mce2)
+* ---------------------------------------------
+mce1 = dall (l34 et l45) l2_905 l22_1 l23 ;
+mce2 = dall (l56 et l67) l2_27 l2_12_2 l2_905 ;
+*
+* Prolongation le long de la levre
+* --------------------------------
+*
+si ((l_lev - (coor 1 p3)) <eg 0) ;
+   saut ligne ;
+   mess '========================================================= ' ;
+   mess '  ATTENTION !!!  Les parametres rt,rt1 et rt2 ne sont pas ' ;
+   mess '                 corrects.                                ' ;
+   mess '                 Reduisez ces parametres.                 ' ;
+   mess '                                                          ' ;
+   mess '  PROBLEME AU NIVEAU DE LA LEVRE !!!                      ' ;
+   mess '                                                          ' ;
+   mess '  ON TRACE LE MAILLAGE POUR VISUALISER LE PROBLEME        ' ;
+   mess '                                                          ' ;
+   mess '========================================================= ' ;
+   saut ligne ;
+finsi ;
+*
+mpro_le = l34 tran nlev ((l_lev - (coor 1 p3)) 0) ;
+mpro_le = mpro_le coul rose ;
+*
+* Prolongation le long du ligament	
+* --------------------------------
+*
+si ((-1 * ((coor 1 p7) + l_lig)) >eg 0) ;
+   saut ligne ;
+   mess '========================================================= ' ;
+   mess '  ATTENTION !!!  Les parametres rt,rt1 et rt2 ne sont pas ' ;
+   mess '                 corrects.                                ' ;
+   mess '                 Reduisez ces parametres.                 ' ;
+   mess '                                                          ' ;
+   mess '  PROBLEME AU NIVEAU DU LIGAMENT !!!                      ' ;
+   mess '                                                          ' ;
+   mess '  ON TRACE LE MAILLAGE POUR VISUALISER LE PROBLEME        ' ;
+   mess '                                                          ' ;
+   mess '========================================================= ' ;
+   saut ligne ;
+finsi ;
+*
+mpro_li = (inve l67) tran nlig ((-1 * ((coor 1 p7) + l_lig)) 0) ;
+mpro_li = mpro_li coul rose ;
+*
+* Creation de l'objet total intermediare
+* --------------------------------------
+si (nbcour neg 0) ;
+   vtot = mbase et mtran et mce1 et mce2 et mpro_le et mpro_li ;
+sinon ;
+   vtot = mbase et mce1 et mce2 et mpro_le et mpro_li ;
+finsi ;
+*
+* Prolongation dans la largeur
+* ----------------------------
+psup = vtot poin droi p4 p6 crit ;
+vtot_con = cont vtot ;
+lsup = vtot_con elem appuye strictement psup ;
+mpro_la = lsup tran nla (0 (l_la - (coor 2 p5))) ;
+mpro_la = mpro_la coul rose ;
+*
+* Creation de l'objet total
+* -------------------------
+  vtot = vtot et mpro_la ;
+*
+* Recuperation des lignes de chargement et de cond. aux limites
+* -------------------------------------------------------------
+vtot_con = cont vtot ;
+p8 = l_lev (coor 2 p3) ;
+p9 = l_lev l_la ;
+p10 = (-1 * l_lig) l_la ;
+p11 = (-1 * l_lig) 0 ;
+*
+plp8p9 = vtot poin droi p8 p9 crit ;
+lp8p9 = vtot_con elem appuye strictement plp8p9 ;
+*
+plp9p10 = vtot poin droi p9 p10 crit ;
+lp9p10 = vtot_con elem appuye strictement plp9p10 ;
+*
+plp10p11 = vtot poin droi p10 p11 crit ;
+lp10p11 = vtot_con elem appuye strictement plp10p11 ;
+*
+*
+* Ligne de la levre
+* -----------------
+v_cont1 = cont (mce1 et mpro_le) ;
+*
+ si (nbcour ega 0) ; 
+    plp2p8 = v_cont1 poin droi p1 p8 crit ;
+    lp2p8 = v_cont1 elem appuye strictement plp2p8 ;
+    lpop8 = lop1 et lp2p8 ;
+ sinon ;
+    plp2p8 = v_cont1 poin droi p2 p8 crit ;
+    lp2p8 = v_cont1 elem appuye strictement plp2p8 ;
+    lpop8 = lop1 et lp1p2 et lp2p8 ;
+ finsi ;
+*
+* Ligne du ligament
+* -----------------
+v_cont2 = cont (mce2 et mpro_li) ;
+*
+ si (nbcour ega 0) ;
+    plp22p11 = v_cont2 poin droi p1_180 p11 crit ;
+    lp22p11 = v_cont2 elem appuye strictement plp22p11 ;
+    lpop11 = lop1_180 et lp22p11 ;
+ sinon ;
+    plp22p11 = v_cont2 poin droi p2_180 p11 crit ;
+    lp22p11 = v_cont2 elem appuye strictement plp22p11 ;
+    lpop11 = lop1_180 et lp12p22 et lp22p11 ;
+ finsi ;
+*
+vsort = vtot et lpop11 et lpop8 et p8 et p9 et p10 et p11 ; 
+*
+elim vsort crit ;
+*
+* Symetrie pour les cas axisymetriques (fissure int. ou ext.)
+* -----------------------------------------------------------
+si (ega levre 'int') ;
+* vsort = depl vsort syme droi o p1_90 ;
+  depl vsort syme droi o p1_90 ;
+finsi ;
+*
+* Deplacement de l'origine du repere
+* ----------------------------------
+*vsort = depl vsort plus (dx 0) ;
+ depl vsort plus (dx 0) ;
+* 
+finproc vtot lpop8 lpop11 lp9p10 lp8p9 lp10p11 o p8 ;
+*
+**********************************************************
+*  FIN DE LA PROCEDURE
+**********************************************************
+*
+opti dime 2 elem qua8 echo 0 ;
+*
+* CREATION DU MAILLAGE D'UNE FISSURE 2D
+* -------------------------------------
+*
+* Parametres de la fiche BIBLIO_35
+* --------------------------------
+*
+r2 = 2. ;
+r1 = 1. ;
+*
+a = (r2 - r1) * .05 ;
+*
+* parametres:
+*
+* rt        rayon du maillage rayonnant
+* rt1       coefficient multiplicateur de rt permettant de definir
+*           l'epaisseur des couronnes de deraffinement des secteurs
+* rt2       coefficient multiplicateur de rt permettant de definir
+*           l'epaisseur de la couronne de transition du maillage
+*           rayonnant au maillage dalle
+* nc        nombre de couronnes
+* ns        nombre de secteurs sur 90 degres (multiple de 2)
+* eps       demi-angle d'ouverture de la fissure (degres)
+* nbcour    nombre de couronnes de deraffinement (0 ou 1 ou 2)
+* l_lev     longueur de la levre de la fissure
+* l_lig     longueur du ligament
+* l_la      largeur du domaine
+* nlev      nombre d'elements de prolongation le long de la levre
+* nlig      nombre d'elements de prolongation le long du ligament
+* nla       nombre d'elements de prolongation le long de la largeur
+* dx        position suivant x du centre du repere par rapport au fond
+*           de fissure (dx = 0 : centre du repere au fond de fissure)
+* levre     Pour les cas axisymetriques: fissure debouchante a 
+*           l'exterieur (levre = 'ext' par defaut) ou fissure 
+*           debouchante a l'interieur (levre = 'int')
+*
+rt = a / 5. ;
+rt1 = .25 ;
+rt2 = .25 ;
+eps = 0. ;
+nc = 4 ;
+ns = 8 ;
+l_lev = a ;
+l_lig = l_lev ;
+l_la = a ;
+*
+nlev = 5 ;
+*nlig = 60 ;
+nlig = nlev ;
+nla = 3 ;
+*
+nbcour = 1 ;
+*
+levre = 'int' ;
+dx = r1 + a ;
+*
+vtot lpop8 lpop11 lp9p10 lp8p9 lp10p11 p0 p8
+= fiss_2d l_lev l_lig l_la eps nc ns rt rt1
+        nbcour rt2 nlev nlig nla levre dx ;
+*
+crit = (rt / (50. * nc)) ;
+*
+* Creation du bloc symetrise de contact
+* -------------------------------------
+dep = rt / 1000. ;
+*
+vblocon = vtot syme droi (0 0) (1 0) ;
+vblocon = vblocon coul blanc ;
+*vblocon = vblocon moin (0 dep) ;
+*
+*
+lpop8 = inve lpop8 ;
+*
+lpop8s = lpop8 syme droi (0 0) (1 0) ;
+lpop8s = inve lpop8s ;
+*lpop8s = lpop8s moin (0 dep) ;
+*
+*lp9p10s = lp9p10 syme droi (0 0) (1 0) ;
+*lp9p10s = lp9p10s moin (0 dep) ;
+*
+lp9p10s = lpop8s plus (0 -.01) ;
+vblocon = lpop8s regler 1 lp9p10s ; 
+*
+*vblocon = vblocon et lpop8s et lp9p10s ;
+*elim vblocon crit ;
+*
+* --------------------------------------
+*
+n = 1.5 ;
+n2 = 2 * n ;
+*
+* deraffinement suivant x
+* -----------------------
+*
+lderaf1 = (r1 (l_la + (n * rt))) d (nlev + nlig) 
+          ((r1 + l_lev + l_lig) (l_la + (n * rt))) ;
+lderaf1 = inve lderaf1 ;
+*
+lderaf2 = (r1 (l_la + (n2 * rt))) d ((nlev + nlig) / 2)
+          ((r1 + l_lev + l_lig) (l_la + (n2 * rt))) ;
+lderaf2 = inve lderaf2 ;
+*
+vcomp1 = cout lp9p10 lderaf1 ;
+vcomp2 = cout lderaf2 lderaf1 ;
+*
+vtot = vtot et vcomp1 et vcomp2 ;
+*
+p_ang = vtot poin proc (r1 (l_la + (n2 * rt))) ;
+*
+p_lat_g = vtot poin droi (r1 0) (r1 1) .001 ;
+p_lat_d = vtot poin droi ((r1 + l_lev + l_lig) 0)
+                         ((r1 + l_lev + l_lig) 1) .001 ;
+*
+vtotenve = cont vtot ;
+*
+l_lat_g = vtotenve elem appuye strictement p_lat_g ;
+l_lat_d = vtotenve elem appuye strictement p_lat_d ;
+*
+* deraffinement suivant y
+* -----------------------
+*
+lderaf3 = ((r1 + l_lev + l_lig + (1.7 * rt)) 0) d (nla + 3)
+          ((r1 + l_lev + l_lig + (1.7 * rt)) (l_la + (n2 * rt))) ;
+*
+vlat_der = cout l_lat_d lderaf3 ;
+*
+lderaf4 = ((r1 + l_lev + l_lig + (3.5 * rt)) 0) d ((nla + 3) / 2)
+          ((r1 + l_lev + l_lig + (3.5 * rt)) (l_la + (n2 * rt))) ;
+*
+vlat_der = vlat_der et (cout lderaf3 lderaf4) ;
+*
+c2_vlat = cote 2 vlat_der ;
+c4_vlat = cote 4 vlat_der ;
+*
+vlat_d = lderaf4 tran dini ((1.7 * l_lig) / nlig) dfin (2. * a)
+                 ((r2 - (r1 + l_lev + l_lig + (3.5 * rt))) 0) ;
+*
+c2 = cote 2 vlat_d ;
+c3 = cote 3 vlat_d ;
+c4 = cote 4 vlat_d ;
+*
+pe = vlat_d poin proc (r2 0) ;
+*
+depl l_lat_g proj (-1 0) cerc (0 0) (r1 0) ;
+depl c3 proj (-1 0) cerc (0 0) (r2 0) ;
+*
+tg_ang = (coor 2 p_ang) / (coor 1 p_ang) ;
+ang_base = atg tg_ang ;
+*
+ang = 90. - ang_base ;
+*
+vcomp = ((inve lderaf2) et c2_vlat et c2) rota ang 
+         dini (a / 2) dfin (2 * a) (0 0) ;
+*
+vcomp = vcomp coul vert ;
+*
+c2_vcomp = cote 2 vcomp ;
+c3_vcomp = cote 3 vcomp ;
+c4_vcomp = cote 4 vcomp ;
+*
+vtot = vtot coul blan ;
+vlat_der = vlat_der coul blan ;
+vblocon = vblocon coul blan ;
+*
+TRAC (vtot et vlat_der et vblocon) ;
+*
+vtot = vtot et vcomp et vlat_d et vlat_der ;
+*
+p_proj_c = vtot poin proc (0 r1) ;
+*
+depl c3_vcomp tour ang_base p_proj_c ;
+*
+* Creation de la surface suivant x<0
+* ----------------------------------
+*
+vcomp_g = c3_vcomp rota 90. 16 (0 0) ;
+*
+c2_vcomg = cote 2 vcomp_g ;
+c4_vcomg = cote 4 vcomp_g ;
+*
+pa = vcomp_g poin proc ((-1. * r2) 0) ;
+*
+l_ea = (inve c3) et c2_vcomp et (inve c4_vcomg) ;
+l_ea = l_ea coul blanc ;
+l_cb = l_lat_g et c4_vcomp et c2_vcomg ;
+l_cb= l_cb coul blanc ;
+*
+l_ab = cote 3 vcomp_g ;
+l_ab = l_ab coul blanc ;
+*
+l_de = lpop11 et c4_vlat et c4 ;
+l_de = l_de coul vert ;
+*
+vtot = vtot et vcomp_g ;
+*
+*sort vtot ;
+*
+* Traces
+* ------
+nb = nbno vtot ;
+titr 'ns:' ns 'nc:' nc 'nb noeuds :' nb ;
+*
+*repx = (0 0) d 1 (2.2 0) ;
+*repy = (0 0) d 1 (0 2.2) ;
+*rep = repx et repy ;
+*
+*trac (l_ea et l_cb et l_ab et l_de) ;
+*trac (vtot et rep et vblocon)  ;
+trac vtot ;
+trac (vtot et vblocon)  ;
+*
+opti sauv format 'hplp310a.mgib' ;
+sauv format vtot ;
