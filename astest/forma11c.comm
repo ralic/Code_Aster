@@ -1,6 +1,4 @@
-# MODIF  DATE 25/02/2013   AUTEUR CHANSARD F.CHANSARD 
 # TITRE TP ANALYSE MODALE TPAM3
-# forma11c.para = tps_job 600 mem_job 512Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -18,7 +16,7 @@
 # ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
 # ======================================================================
-# RESPONSABLE BOYERE E.BOYERE
+# person_in_charge: emmanuel.boyere at edf.fr
 #-------------------------------------------------------------------
 #                 CORRIGE TP ANALYSE MODAL N3 
 #                            MACRO_MODE_MECA
@@ -199,9 +197,4 @@ MODEL4=MACRO_MODE_MECA(MATR_RIGI=K_ASSE,
 
 
 FIN();
-
-
-
-
-
 

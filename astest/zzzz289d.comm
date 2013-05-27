@@ -1,6 +1,4 @@
-# MODIF  DATE 16/04/2013   AUTEUR SFAYOLLE S.FAYOLLE 
 # TITRE TEST DES OPTIONS RIGI_MECA ET MASS_MECA DES ELEMENTS INCO_GD ET INCO_LOG EN 3D
-# zzzz289d.para = tps_job 60 mem_job 256Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -18,7 +16,7 @@
 # ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
 # ======================================================================
-# RESPONSABLE SFAYOLLE S.FAYOLLE
+# person_in_charge: sebastien.fayolle at edf.fr
 
 DEBUT(CODE=_F(NOM='ZZZZ289D',
 NIV_PUB_WEB='INTERNET',),DEBUG=_F(SDVERI='OUI'))

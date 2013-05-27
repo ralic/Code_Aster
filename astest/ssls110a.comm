@@ -1,6 +1,4 @@
-# MODIF  DATE 05/02/2013   AUTEUR LEBOUVIER F.LEBOUVIER 
 # TITRE PLAQUE RECTANGULAIRE SIMPLEMENT APPUIEE COMPRIMEE
-# ssls110a.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -251,10 +249,5 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=1,
 
 FIN()
 #
-
-
-
-
-
 
 

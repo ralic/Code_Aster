@@ -1,4 +1,3 @@
-#@ MODIF V_MEME_NOMBRE Validation  DATE 11/04/2012   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -17,7 +16,7 @@
 # ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
 # ======================================================================
-# RESPONSABLE COURTOIS M.COURTOIS
+# person_in_charge: mathieu.courtois at edf.fr
 
 class MEME_NOMBRE:
    """
@@ -59,4 +58,3 @@ class MEME_NOMBRE:
           text = u"Pas la même longeur"
           return text,0
       return text,1
-

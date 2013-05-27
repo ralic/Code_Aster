@@ -1,4 +1,3 @@
-#& MODIF COMMANDE  DATE 17/12/2012   AUTEUR BRIE N.BRIE 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -16,7 +15,7 @@
 # ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
-# RESPONSABLE NISTOR I.NISTOR
+# person_in_charge: ionel.nistor at edf.fr
 
 
 def calc_modal_prod(self,AMORTISSEMENT,**args):

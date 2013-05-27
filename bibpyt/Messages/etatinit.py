@@ -1,4 +1,3 @@
-#@ MODIF etatinit Messages  DATE 17/12/2012   AUTEUR IDOUX L.IDOUX 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================

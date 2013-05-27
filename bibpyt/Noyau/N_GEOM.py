@@ -1,6 +1,5 @@
-#@ MODIF N_GEOM Noyau  DATE 18/12/2012   AUTEUR SELLENET N.SELLENET 
 # -*- coding: iso-8859-1 -*-
-# RESPONSABLE COURTOIS M.COURTOIS
+# person_in_charge: mathieu.courtois at edf.fr
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -63,4 +62,3 @@ class GEOM(ASSD):
    __convert__=classmethod(__convert__)
 
 class geom(GEOM):pass
-

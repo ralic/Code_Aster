@@ -1,6 +1,4 @@
-# MODIF  DATE 25/02/2013   AUTEUR SELLENET N.SELLENET 
 # TITRE DSR3 SANS RENUM/AFFE_CHAR_MECA/MECA_STAT(GCPC)
-# gcpc002c.para = tps_job 250 mem_job 1024Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG

@@ -1,7 +1,5 @@
-# MODIF  DATE 09/04/2013   AUTEUR PELLET J.PELLET 
-# RESPONSABLE A.FOUCAULT FOUCAULT
+#
 # TITRE VERIFICATION DE LA BONNE PRISE EN COMPTE DU CISAILLEMENT DANS LE MODELE BETON_BURGER_FP
-# ssnv181b.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG

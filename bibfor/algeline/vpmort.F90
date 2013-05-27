@@ -1,0 +1,40 @@
+subroutine vpmort(neq, x, y, my, imode)
+    implicit none
+    integer :: neq, imode
+    real(kind=8) :: x(neq), y(neq, *), my(neq, *)
+!     ------------------------------------------------------------------
+!            CONFIGURATION MANAGEMENT OF EDF VERSION
+! ======================================================================
+! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+! (AT YOUR OPTION) ANY LATER VERSION.
+!
+! THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+! WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+! MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+! GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+!
+! YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+!    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
+! ======================================================================
+!     M-ORTHOGONALISATION DU VECTEUR X AVEC LES PRECEDENTS
+!     ------------------------------------------------------------------
+    real(kind=8) :: r8val, r8norm
+    integer :: ieq, iprec
+!     ------------------------------------------------------------------
+    do 10 iprec = 1, imode - 1
+        r8val = 0.d0
+        r8norm = 0.d0
+        do 20 ieq = 1, neq
+            r8val = r8val + x(ieq) * my(ieq,iprec)
+            r8norm = r8norm + y(ieq,iprec) * my(ieq,iprec)
+20      continue
+        r8val = -r8val/r8norm
+        do 30 ieq = 1, neq
+            x(ieq) = x(ieq) + r8val * y(ieq,iprec)
+30      continue
+10  end do
+end subroutine

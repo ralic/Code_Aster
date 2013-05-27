@@ -1,4 +1,3 @@
-#@ MODIF letk Comportement  DATE 17/09/2012   AUTEUR FOUCAULT A.FOUCAULT 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -17,7 +16,7 @@
 # ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
 # ======================================================================
-# RESPONSABLE FOUCAULT A.FOUCAULT
+# person_in_charge: alexandre.foucault at edf.fr
 
 from cata_comportement import LoiComportement
 
@@ -36,4 +35,3 @@ loi = LoiComportement(
    type_matr_tang = ('PERTURBATION', 'VERIFICATION'),
    proprietes     = ' ',
 )
-

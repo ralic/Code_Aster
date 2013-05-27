@@ -1,4 +1,3 @@
-#@ MODIF sd_cham_mater SD  DATE 09/04/2013   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -172,10 +171,3 @@ class sd_cham_mater(AsBase):
 
             for x1 in v1[7:] :
                 assert x1=='' , v1
-
-
-
-
-
-
-

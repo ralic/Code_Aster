@@ -1,4 +1,3 @@
-#@ MODIF macr_ecla_pg_ops Macro  DATE 02/02/2010   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -67,4 +66,3 @@ def macr_ecla_pg_ops(self,RESULTAT,MAILLAGE,RESU_INIT,MODELE_INIT,
                                 MAILLAGE= ma2, **motscles ));
     return ier
 ############################################################################################
-

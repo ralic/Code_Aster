@@ -1,4 +1,3 @@
-#@ MODIF graphiqueTk Stanley  DATE 17/10/2011   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -570,4 +569,3 @@ class BARRE :
 
 
 # ==============================================================================
-

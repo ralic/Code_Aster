@@ -1,5 +1,5 @@
-%& MODIF OPTIONS  DATE 13/12/2011   AUTEUR PELLET J.PELLET 
-% RESPONSABLE DESROCHES
+%& LIBRARY OPTIONS
+% person_in_charge: xavier.desroches at edf.fr
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -30,4 +30,3 @@ OPTION__
         PCACOQU  CACOQU   << Champ de caractéristiques pour les coques. Concept CARA_ELEM >>
    OUT__
 PVECTUR VDEP_R RESL__
-

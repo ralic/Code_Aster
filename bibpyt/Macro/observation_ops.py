@@ -1,4 +1,3 @@
-#@ MODIF observation_ops Macro  DATE 09/04/2013   AUTEUR PELLET J.PELLET 
 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -19,7 +18,7 @@
 # ======================================================================
 
 
-# RESPONSABLE BODEL C.BODEL
+# person_in_charge: charles.bodel at edf.fr
 
 def observation_ops(self,
                     PROJECTION   = None,
@@ -1151,6 +1150,3 @@ def anglnaut(P):
 ##                                 -sin(B) = reploc[2][0]
 ##                            cos(B)sin(G) = reploc[2][1]
 ##                            cos(B)cos(G) = reploc[2][2]
-
-
-

@@ -1,4 +1,3 @@
-#@ MODIF sd_modele SD  DATE 18/09/2012   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -61,4 +60,3 @@ class sd_modele(AsBase):
            if partit[0] != '' :
               sd2 = sd_partition(partit[0])
               sd2.check(checker)
-

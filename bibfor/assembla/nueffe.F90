@@ -1,0 +1,1018 @@
+subroutine nueffe(lligr, base, nuz, renum, moloc,&
+                  solveu, nequa)
+    implicit none
+    include 'jeveux.h'
+!
+    include 'asterc/indik8.h'
+    include 'asterfort/assert.h'
+    include 'asterfort/creprn.h'
+    include 'asterfort/detrsd.h'
+    include 'asterfort/dismoi.h'
+    include 'asterfort/infbav.h'
+    include 'asterfort/infmue.h'
+    include 'asterfort/infniv.h'
+    include 'asterfort/jecrec.h'
+    include 'asterfort/jecreo.h'
+    include 'asterfort/jedetr.h'
+    include 'asterfort/jeecra.h'
+    include 'asterfort/jeexin.h'
+    include 'asterfort/jelira.h'
+    include 'asterfort/jenuno.h'
+    include 'asterfort/jeveuo.h'
+    include 'asterfort/jexatr.h'
+    include 'asterfort/jexnom.h'
+    include 'asterfort/jexnum.h'
+    include 'asterfort/nddl.h'
+    include 'asterfort/nudeeq.h'
+    include 'asterfort/nulili.h'
+    include 'asterfort/nuno1.h'
+    include 'asterfort/renuno.h'
+    include 'asterfort/u2mesg.h'
+    include 'asterfort/u2mesi.h'
+    include 'asterfort/u2mess.h'
+    include 'asterfort/wkvect.h'
+    character(len=19) :: solveu
+    integer :: nequa
+    character(len=*) :: lligr, nuz, renum
+    character(len=2) :: base
+!
+!            CONFIGURATION MANAGEMENT OF EDF VERSION
+! ======================================================================
+! COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
+! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+! (AT YOUR OPTION) ANY LATER VERSION.
+!
+! THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+! WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+! MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+! GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+!
+! YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+!    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
+! ======================================================================
+! person_in_charge: jacques.pellet at edf.fr
+! TOLE CRP_20
+!
+! ----------------------------------------------------------------------
+! BUT : CONSTRUCTION DU NUME_EQUA D'UN NUME_DDL
+! ----------------------------------------------------------------------
+! IN/JXOUT K*14 NU  : LE CHAMP .NUME (SD NUME_EQUA) DE LA S.D. NUME_DDL
+!                   EST CREE ET REMPLI.
+!                   SI NU EXISTE DEJA ON LE DETRUIT COMPLETEMENT
+! IN  K2   BASE    : BASE(1:1) : BASE POUR CREER LE NUME_DDL
+!                    (SAUF LE PROF_CHNO)
+!                  : BASE(2:2) : BASE POUR CREER LE PROF_CHNO
+! IN  K24 LLIGR  : NOM D'UN OBJET JEVEUX REPRESENTANT UN VECTEUR
+!                   DE K24 DONT LES ELEMENTS SONT LES NOMS(TOUS DIFF)
+!                   DES S.D. DE TYPE LIGREL.
+! IN  K*4  RENUM : METHODE DE RENUMEROTATION DES NOEUDS:
+!                   SANS/RCMK/MD/MDA/METIS
+! IN  K*   MOLOC : NOM D'UNE GRANDEUR 1ERE (OU ' ')
+!                   SINON LA NUMEROTATION EST BASEE SUR CETTE GRANDEUR
+! IN K*    SOLVEU : NOM DE LA SD SOLVEUR
+! OUT  I   NEQUA  : NBRE EQUATIONS DU SOUS-DOMAINE (EXPLOITE QU'EN DD)
+!-----------------------------------------------------------------------
+! ATTENTION : NE PAS FAIRE JEMARQ/JEDEMA CAR NULILI
+!             RECOPIE DES ADRESSES JEVEUX DANS .ADNE ET .ADLI
+!-----------------------------------------------------------------------
+!
+!-----------------------------------------------------------------------
+    character(len=*) :: moloc
+    character(len=8) :: nomgds, kbid
+!-----------------------------------------------------------------------
+    integer :: n, igds, nec, nlili
+!----------------------------------------------------------------------
+!     VARIABLES LOCALES
+!----------------------------------------------------------------------
+    character(len=8) :: cbid, nomcmp
+    character(len=8) :: mailla
+    character(len=14) :: nu
+    character(len=16) :: nomte
+    character(len=24) :: lili, nnli, psuiv, lsuiv, vsuiv, num21, nuno, nomli
+    character(len=24) :: derli, num2, dsclag, exi1, newn, oldn
+    integer :: nbno, ilim, itypel
+    integer :: i, iad, iadlie, iadnem, ianueq, ibid, icddlb
+    integer :: icer1, icer2, iconx1, iconx2, iddlag, iderli, idlgns
+    integer :: idnbno, idnequ, idnocm, idprn1, idprn2, idref
+    integer :: iec, iel, ier, iexi1, ifm, igr, igrel, ilag, ilag2, ilag3
+    integer :: ili, ilsuiv, inewn, ino, inulag, inum2, inum21
+    integer :: inuno1, inuno2, ioldn, iprnm, iprns, ipsuiv, ire, iret
+    integer :: ivsuiv, j, j1, jnulag, jprno, k, l, l1, l2, long, n0
+    integer :: n0re, n1, n1m1re, n1re, n2, n21, n3, nbcmp, nbn, nbnl
+    integer :: nbnom, nbnonu, nbnore, ncmp, nddl1, nddlb
+    integer :: nel, niv, nlag, nma, nn
+    integer :: ns, numa, nunoel
+    integer :: islvk, vali(4)
+    logical :: lfeti
+!
+!     NBNOM  : NOMBRE DE NOEUDS DU MAILLAGE
+!     DERLI  : NOM DE L'OBJET NU.DERLI CREE SUR 'V'
+!              DERLI(N3)= MAX DES N1 TELS QUE IL EXISTE UNE MAILLE SUP
+!              DE TYPE SEG3 MS TELLE QUE N1 1ER, N3 3EME NOEUD DE MS
+!     DSCLAG : NOM DE L'OBJET NU.DSCLAG CREE SUR 'V'
+!              DIM=3*NBRE LE LAGR.
+!              SI ILAG LAGRANGE DE BLOCAGE
+!              DSCLAG(3*(ILAG-1)+1)= +NUM DU NOEUD PH. BLOQUE
+!              DSCLAG(3*(ILAG-1)+2)= -NUM DU DDL DU NOEUD PH. BLOQUE
+!              DSCLAG(3*(ILAG-1)+3)= +1 SI 1ER LAGR.
+!                                    +2 SI 2EME LAGR.
+!              SI ILAG LAGRANGE DE LIAISON
+!              DSCLAG(3*(ILAG-1)+1)= 0
+!              DSCLAG(3*(ILAG-1)+2)= 0
+!              DSCLAG(3*(ILAG-1)+3)= +1 SI 1ER LAGR.
+!                                    +2 SI 2EME LAGR.
+!-----------------------------------------------------------------------
+!     FONCTIONS LOCALES D'ACCES AUX DIFFERENTS CHAMPS DES
+!     S.D. MANIPULEES DANS LE SOUS PROGRAMME
+!-----------------------------------------------------------------------
+    integer :: zzliel, zzngel, zznsup, zznelg, zznels
+    integer :: zznema, zzprno, izzprn, suiv, suivdi, idsuiv
+!
+!---- FONCTION D ACCES AUX ELEMENTS DES CHAMPS LIEL DES S.D. LIGREL
+!     REPERTORIEES DANS LE CHAMP LILI DE NUME_DDL
+!     ZZLIEL(ILI,IGREL,J) =
+!      SI LA JIEME MAILLE DU LIEL IGREL DU LIGREL ILI EST:
+!          -UNE MAILLE DU MAILLAGE : SON NUMERO DANS LE MAILLAGE
+!          -UNE MAILLE TARDIVE : -POINTEUR DANS LE CHAMP .NEMA
+!
+    zzliel(ili,igrel,j) = zi(zi( iadlie+3* (ili-1)+1)-1+ zi(zi(iadlie+3* (ili-1)+2)+igrel-1 )+j-1&
+                          )
+!
+!---- NBRE DE GROUPES D'ELEMENTS (DE LIEL) DU LIGREL ILI
+!
+    zzngel(ili) = zi(iadlie+3* (ili-1))
+!
+!---- NBRE DE NOEUDS DE LA MAILLE TARDIVE IEL ( .NEMA(IEL))
+!     DU LIGREL ILI REPERTOIRE .LILI
+!     (DIM DU VECTEUR D'ENTIERS .LILI(ILI).NEMA(IEL) )
+!
+    zznsup(ili,iel) = zi( zi(iadnem+3* (ili-1)+2)+iel) - zi(zi(iadnem+3* (ili-1)+2 )+iel-1 ) - 1
+!
+!---- NBRE D ELEMENTS DU LIEL IGREL DU LIGREL ILI DU REPERTOIRE .LILI
+!     (DIM DU VECTEUR D'ENTIERS .LILI(ILI).LIEL(IGREL) )
+!
+    zznelg(ili,igrel) = zi(zi( iadlie+3* (ili-1)+2)+igrel) - zi(zi(iadlie+3* (ili-1)+2 )+igrel-1&
+                        ) - 1
+!
+!---- NBRE D ELEMENTS SUPPLEMENTAIRE (.NEMA) DU LIGREL ILI DE .LILI
+!
+    zznels(ili) = zi(iadnem+3* (ili-1))
+!
+!---- FONCTION D ACCES AUX ELEMENTS DES CHAMPS NEMA DES S.D. LIGREL
+!     REPERTORIEES DANS LE CHAMP LILI DE NUME_DDL
+!     ZZNEMA(ILI,IEL,J) =  1.LE. J .GE. ZZNELS(ILI)
+!      SI LE J IEME NOEUD DE LA MAILE TARDIVE IEL DU LIGREL ILI EST:
+!          -UN NOEUD DU MAILLAGE : SON NUMERO DANS LE MAILLAGE
+!          -UN NOEUD TARDIF : -SON NUMERO DANS LA NUMEROTATION LOCALE
+!                              AU LIGREL ILI
+!     ZZNEMA(ILI,IEL,ZZNELS(ILI)+1)=NUMERO DU TYPE_MAILLE DE LA MAILLE
+!                                   IEL DU LIGREL ILI
+!
+    zznema(ili,iel,j) = zi( zi( iadnem+3* (ili-1)+1)-1+ zi(zi(iadnem+3* (ili-1)+2)+iel-1 )+j-1 )
+!
+!---- FONCTION D ACCES AUX ELEMENTS DES CHAMPS PRNO DES S.D. LIGREL
+!     REPERTORIEES DANS LE CHAMP LILI DE NUME_DDL ET A LEURS ADRESSES
+!     ZZPRNO(ILI,NUNOEL,1) = NUMERO DE L'EQUATION ASSOCIEES AU 1ER DDL
+!                            DU NOEUD NUNOEL DANS LA NUMEROTATION LOCALE
+!                            AU LIGREL ILI DE .LILI
+!     ZZPRNO(ILI,NUNOEL,2) = NOMBRE DE DDL PORTES PAR LE NOEUD NUNOEL
+!     ZZPRNO(ILI,NUNOEL,2+1) = 1ER CODE
+!     ZZPRNO(ILI,NUNOEL,2+NEC) = NEC IEME CODE
+!
+    izzprn(ili,nunoel,l) = (idprn1-1+zi(idprn2+ili-1)+ (nunoel-1)* (nec+2)+l-1)
+    zzprno(ili,nunoel,l) = zi( idprn1-1+zi(idprn2+ili-1)+ (nunoel-1)* (nec+2)+l-1)
+!
+!---- FONCTION D ACCES AUX ELEMENTS DES OBJETS VSUIV ET PSUIV DE LA
+!     BASE VOLATILE
+!     LES NOEUDS SUP SONT DES LAGRANGE. ON GENERE 2 LAGRANGE
+!     "LAGR1" ET "LAGR2" PAR CONDITION DE BLOCAGE ET AUTANT DE MAILLE
+!     SUP MSI QU'IL Y A DE NOEUDS NI CONCERNES PAR LE BLOCAGE,ON NOTE
+!     NIINF LE NOEUD DE NI NUMERO INF ET NIMAX CELUI DE NUMERO MAX
+!     CES MAILLES SUP MSI SONT CARACTERISEES PAR :
+!     - TYPE_ELEM = SEG3 -1ER NOEUD NI -2EME NOEUD "LAGR1"-3EME "LAGR2"
+!     PAR CONVENTION LE "LAGR1" EST NUMEROTE A LA SUITE DE NIINF-1
+!     ET LE "LAGR2" EST NUMEROTE A LA SUITE DE NIMAX
+!     SUIVDI(I) = PSUIV(I+1)-PSUIV(I) : NBRE DE NOEUDS SUP "LAGR1" EN
+!     RELATION AVEC NI+1 + NBRE DE "LAGR2" EN RELATION AVEC NI
+!     SUIVDI(I,J)= NUMERO DU JEME NOEUD SUP SI IL EST A NUMEROTE APRES
+!     LE NOEUD NI, -1 "SINON" (NI/= NIMAX DU BLOCAGE RELATIF A J)
+    suivdi(i) = zi(ipsuiv+i) - zi(ipsuiv+i-1)
+    idsuiv(i,j) = ivsuiv + (zi(ipsuiv+i-1)+j-1) - 1
+    suiv(i,j) = zi(ivsuiv+ (zi(ipsuiv+i-1)+j-1)-1)
+!----------------------------------------------------------------------
+!
+    call infniv(ifm, niv)
+    nu = nuz
+!
+! --- FETI OR NOT FETI ?
+    call jeexin('&FETI.MAILLE.NUMSD', iret)
+    if (iret .gt. 0) then
+        call infmue()
+        call infniv(ifm, niv)
+        lfeti=.true.
+    else
+        lfeti=.false.
+    endif
+!
+! --- SI LE CONCEPT : NU EXISTE DEJA, ON LE DETRUIT COMPLETEMENT :
+!     ----------------------------------------------------------
+    call detrsd('NUME_DDL', nu)
+!
+! --- NOMS DES PRINCIPAUX OBJETS JEVEUX :
+!     ---------------------------------
+    lili = nu//'.NUME.LILI'
+    exi1 = nu//'.EXI1'
+    newn = nu//'.NEWN'
+    oldn = nu//'.OLDN'
+    derli = nu//'.DERLI'
+    psuiv = nu//'.PSUIVE'
+    lsuiv = nu//'.LSUIVE'
+    vsuiv = nu//'.VSUIVE'
+    nuno = nu//'.NUNO'
+    nnli = nu//'.NNLI'
+    num21 = nu//'.NUM21'
+    num2 = nu//'.NUM2'
+    dsclag = nu//'.DESCLAG'
+!
+! --- CREATION DE LA COLLECTION NU.NUME.LILI
+! --- ET DE NU//'     .ADNE' ET NU//'     .ADLI' SUR 'V' :
+!     --------------------------------------------------
+    call nulili(lligr, lili, base(2:2), moloc, nomgds,&
+                igds, mailla, nec, ncmp, nlili)
+!
+    call jeveuo(nu//'     .ADLI', 'E', iadlie)
+    call jeveuo(nu//'     .ADNE', 'E', iadnem)
+    call jeexin(mailla(1:8)//'.CONNEX', iret)
+    if (iret .gt. 0) then
+        call jeveuo(mailla(1:8)//'.CONNEX', 'L', iconx1)
+        call jeveuo(jexatr(mailla(1:8)//'.CONNEX', 'LONCUM'), 'L', iconx2)
+    endif
+!
+!
+!
+! --- LILI(1)='&MAILLA'
+!     -----------------
+    ilim = 1
+!
+! --- ALLOCATION DE L'OBJET NU.NNLI NOMBRE DE NOEUDS DECLARES DANS
+! --- LE LIGREL ILI DE LILI :
+!     ---------------------
+    call jecreo(nnli, 'V V I')
+    call jeecra(nnli, 'LONMAX', nlili, ' ')
+    call jeveuo(nnli, 'E', idnbno)
+    call jecrec(nuno, 'V V I ', 'NU', 'CONTIG', 'VARIABLE',&
+                nlili)
+!
+!
+! --- ALLOCATION DE PRNO :
+!     -------------------------------------------------
+    call jecrec(nu//'.NUME.PRNO', base(2:2)//' V I ', 'NU', 'CONTIG', 'VARIABLE',&
+                nlili)
+!
+!
+! --- CALCUL DE N, CALCUL DES NNLI ET DU POINTEUR DE LONGUEUR DE
+! --- PRNO :
+! --- NBNOM NOMBRE DE NOEUDS TOTAL DU MAILLAGE :
+!     ------------------------------------------
+    call dismoi('F', 'NB_NO_MAILLA', mailla, 'MAILLAGE', nbno,&
+                cbid, ier)
+    call dismoi('F', 'NB_NL_MAILLA', mailla, 'MAILLAGE', nbnl,&
+                cbid, ier)
+    nbnom = nbno + nbnl
+    zi(idnbno) = nbnom
+    call jeecra(jexnum(nuno, 1), 'LONMAX', nbnom, kbid)
+    call jeecra(jexnum(nu//'.NUME.PRNO', 1), 'LONMAX', nbnom* (nec+2), kbid)
+!
+!
+! --- N CONTIENDRA LE NOMBRE TOTAL (MAX) DE NOEUDS DE NUME_DDL
+! --- TOUS LES NOEUDS DU MAILLAGE + TOUS LES NOEUDS SUPL. DES LIGRELS :
+!     ---------------------------------------------------------------
+    n = nbnom
+    do 10 ili = 2, nlili
+        call jenuno(jexnum(lili, ili), nomli)
+        call jeexin(nomli(1:19)//'.NBNO', iret)
+        if (iret .ne. 0) then
+!
+! ---    ACCES AU NOMBRE DE NOEUDS SUP DU LIGREL DE NOM NOMLI :
+!        ----------------------------------------------------
+            call jeveuo(nomli(1:19)//'.NBNO', 'L', iad)
+            nbn = zi(iad)
+        else
+            nbn = 0
+        endif
+!
+! ---    AFFECTATION DU CHAMP .NNLI DE NU :
+!        --------------------------------
+        zi(idnbno+ili-1) = nbn
+        call jeecra(jexnum(nuno, ili), 'LONMAX', nbn, kbid)
+!
+        call jeecra(jexnum(nu//'.NUME.PRNO', ili), 'LONMAX', nbn* (nec+2), kbid)
+        n = n + nbn
+10  end do
+!
+    call jeveuo(nu//'.NUME.PRNO', 'E', idprn1)
+    call jeveuo(jexatr(nu//'.NUME.PRNO', 'LONCUM'), 'L', idprn2)
+!
+!
+! --- ALLOCATION DE LA COLLECTION NUNO NUMEROTEE DE VECTEUR DE LONGUEUR
+! --- NNLI ET DE NBRE D'ELMT NLILI SUR LA BASE VOLATILE (.NUNO ET .NNLI
+! --- SONT SUPPRIMES DE LA S.D. NUME_EQUA) :
+!     ------------------------------------
+    call jeveuo(nuno, 'E', inuno1)
+    call jeveuo(jexatr(nuno, 'LONCUM'), 'L', inuno2)
+    nlag = zi(inuno2+nlili) - zi(inuno2+1)
+!
+!
+! --- RENUMEROTATION , CREATION DES OBJETS NU.EXI1, NU.NEWN ET NU.OLDN :
+!     ----------------------------------------------------------------
+!
+    call renuno(nu, renum)
+    call jeveuo(exi1, 'L', iexi1)
+    call jeveuo(newn, 'L', inewn)
+    call jeveuo(oldn, 'L', ioldn)
+!
+! --- ALLOCATION DE PSUIV LSUIV OBJETS DE LA BASE VOLATILE :
+!     ----------------------------------------------------
+    call wkvect(psuiv, ' V V I', n+2, ipsuiv)
+    call wkvect(lsuiv, ' V V I', n+1, ilsuiv)
+!
+! --- CALCUL DE  PSUIV
+! --- 1ERE ETAPE :
+! --- PSUIV(K)= NOMBRE DE NOEUDS SUP A ECRIRE DERRIERE K :
+!     ==================================================
+    do 30 ili = 2, nlili
+!
+! ---  INULAG EST UN INDICATEUR PERMETTANT DE SAVOIR SI LE
+! ---  LIGREL CONTIENT DES MAILLES DE LAGRANGE (INFORMATION
+! ---  EQUIVALENTE A L'EXISTENCE DE L'OBJET LIGREL.LGNS) :
+!      -------------------------------------------------
+        inulag = 0
+        call jenuno(jexnum(lili, ili), nomli)
+        call jeexin(nomli(1:19)//'.LGNS', iret)
+        if (iret .ne. 0) then
+!
+! ---  SIGNIFICATION DE LIRGEL.LGNS :
+! ---  C'EST L'INDICATEUR DE POSITION DU PREMIER LAGRANGE
+! ---  SI = +1 ON LE PLACE AVANT LE PREMIER DDL PHYSIQUE
+! ---          CONCERNE PAR LA RELATION OU LE BLOCAGE
+! ---  SI = -1 ON LE PLACE APRES LE DERNIER DDL PHYSIQUE
+! ---          CONCERNE PAR LA RELATION OU LE BLOCAGE :
+!              --------------------------------------
+            call jeveuo(nomli(1:19)//'.LGNS', 'L', idlgns)
+            inulag = 1
+        endif
+!
+        do 20 iel = 1, zznels(ili)
+            nn = zznsup(ili,iel)
+!
+! ---   DOUBLE LAGRANGE :
+! ---   N2 DERRIERE LE NOEUD DU MAILLAGE DE NUMERO NEWN(N1)-1
+! ---   SI L'INDICATEUR DE POSITION DU PREMIER LAGRANGE = +1
+! ---   N2 DERRIERE LE NOEUD DU MAILLAGE DE NUMERO NEWN(N1)
+! ---   SI L'INDICATEUR DE POSITION DU PREMIER LAGRANGE = -1
+! ---   N3 DERRIERE LE NOEUD DU MAILLAGE NEW(N1) :
+! ---   SI L'INDICATEUR DE POSITION DU PREMIER LAGRANGE = +1
+! ---   N3 DERRIERE N2
+! ---   SI L'INDICATEUR DE POSITION DU PREMIER LAGRANGE = -1 :
+!       ----------------------------------------------------
+            if (nn .eq. 3) then
+                n1 = zznema(ili,iel,1)
+                n2 = zznema(ili,iel,2)
+                n3 = zznema(ili,iel,3)
+                if (((n1.gt.0).and. (n2.lt.0)) .and. (n3.lt.0)) then
+                    n21 = -n2
+                    n1re = zi(inewn-1+n1)
+                    n1m1re = n1re - 1
+!
+! ---  RECUPERATION DE L'INDICATEUR DE POSITION DU PREMIER LAGRANGE :
+!      ------------------------------------------------------------
+                    if (inulag .eq. 1) then
+!
+! ---    LE PREMIER LAGRANGE EST PLACE AVANT LE PREMIER DDL PHYSIQUE
+! ---    CONCERNE PAR LE BLOCAGE OU LA RELATION :
+!        --------------------------------------
+                        if (zi(idlgns+n21-1) .eq. 1) then
+                            n1m1re = n1re - 1
+!
+! ---    LE PREMIER LAGRANGE EST PLACE ALORS  APRES LE DERNIER DDL
+! ---    PHYSIQUE CONCERNE PAR LE BLOCAGE OU LA RELATION :
+!        ----------------------------------------------
+                        else if (zi(idlgns+n21-1).eq.-1) then
+                            n1m1re = n1re
+                        else
+                            call u2mess('F', 'ASSEMBLA_27')
+                        endif
+                    endif
+!
+                    zi(ipsuiv+n1m1re) = zi(ipsuiv+n1m1re) + 1
+                    zi(ipsuiv+n1re) = zi(ipsuiv+n1re) + 1
+                endif
+            endif
+20      continue
+30  end do
+!
+! --- 2EME ETAPE :
+! --- PSUIV = PROFIL DE PSUIV :
+!     =======================
+    l1 = zi(ipsuiv)
+    zi(ipsuiv) = 1
+    do 40 i = 1, n + 1
+        l2 = zi(ipsuiv+i)
+        zi(ipsuiv+i) = zi(ipsuiv+i-1) + l1
+        l1 = l2
+40  end do
+!
+! --- ALLOCATION DE VSUIV :
+!     -------------------
+    long = zi(ipsuiv+n+1) - 1
+    if (long .gt. 0) then
+        call wkvect(vsuiv, ' V V I', long, ivsuiv)
+        call wkvect(derli, ' V V I', n+1, iderli)
+!
+! --- ALLOCATION DE DSCLAG LE DESCRIPTEUR DES "LAGRANGE"
+! --- DIM(DSCLAG) = 3*NLAG NLAG:NOMBRE TOTAL DE "LAGRANGE"
+! --- LES "LAGRANGE" SONT NUMEROTES SUR LA NUMEROTATION GLOBALE DE
+! --- 1ER NIVEAU EN OUBLIANT LES NOEUDS DU MAILLAGE :
+!     ---------------------------------------------
+        call wkvect(dsclag, ' V V I', 3*nlag, iddlag)
+    endif
+!
+! --- CALCUL DE VSUIV ET LSUIV :
+!     ========================
+    do 80 ili = 2, nlili
+!
+! ---  INULAG EST UN INDICATEUR PERMETTANT DE SAVOIR SI LE
+! ---  LIGREL CONTIENT DES MAILLES DE LAGRANGE (INFORMATION
+! ---  EQUIVALENTE A L'EXISTENCE DE L'OBJET LIGREL.LGNS) :
+!      -------------------------------------------------
+        inulag = 0
+        call jenuno(jexnum(lili, ili), nomli)
+        call jeexin(nomli(1:19)//'.LGNS', iret)
+        if (iret .ne. 0) then
+!
+! ---  SIGNIFICATION DE LIRGEL.LGNS :
+! ---  C'EST L'INDICATEUR DE POSITION DU PREMIER LAGRANGE
+! ---  SI = +1 ON LE PLACE AVANT LE PREMIER DDL PHYSIQUE
+! ---          CONCERNE PAR LA RELATION OU LE BLOCAGE
+! ---  SI = -1 ON LE PLACE APRES LE DERNIER DDL PHYSIQUE
+! ---          CONCERNE PAR LA RELATION OU LE BLOCAGE :
+!              --------------------------------------
+            call jeveuo(nomli(1:19)//'.LGNS', 'L', idlgns)
+            inulag = 1
+        endif
+!
+        do 70 iel = 1, zznels(ili)
+            nn = zznsup(ili,iel)
+            if (nn .eq. 3) then
+                n1 = zznema(ili,iel,1)
+                n2 = zznema(ili,iel,2)
+                n3 = zznema(ili,iel,3)
+                if (((n1.gt.0).and. (n2.lt.0)) .and. (n3.lt.0)) then
+!
+! ---    TRANSFORMATION DE N2 , NUMERO DU PREMIER LAGRANGE DANS LA
+! ---    NUMEROTATION LOCALE AU LIGREL EN SON NUMERO DANS LA
+! ---    NUMEROTATION GLOBALE :
+!        --------------------
+                    n21 = -n2
+                    n2 = -n2
+                    n2 = zi(inuno2+ili-1) + n2 - 1
+                    ilag2 = n2 - nbnom
+                    n1re = zi(inewn-1+n1)
+                    n1m1re = n1re - 1
+!
+! ---  JNULAG EST UN INDICATEUR PERMETTANT DE SAVOIR OU L'ON
+! ---  DOIT PLACER LE PREMIER LAGRANGE :
+! ---  SI = 0 C'EST LA NUMEROTATION TRADITIONNELLE, ON PLACE LE
+! ---         LE PREMIER LAGRANGE AVANT LE PREMIER DDL PHYSIQUE
+! ---         CONCERNE PAR LA RELATION OU LE BLOCAGE
+! ---  SI = 1 ON PLACE LE LE PREMIER LAGRANGE APRES LE DERNIER DDL
+! ---          PHYSIQUE CONCERNE PAR LA RELATION OU LE BLOCAGE :
+!              -----------------------------------------------
+                    jnulag = 0
+!
+!
+! ---  RECUPERATION DE L'INDICATEUR DE POSITION DU PREMIER LAGRANGE :
+!      ------------------------------------------------------------
+                    if (inulag .eq. 1) then
+!
+! ---    LE PREMIER LAGRANGE EST PLACE AVANT LE PREMIER DDL PHYSIQUE
+! ---    CONCERNE PAR LE BLOCAGE OU LA RELATION :
+!        --------------------------------------
+                        if (zi(idlgns+n21-1) .eq. 1) then
+                            jnulag = 0
+!
+! ---    LE PREMIER LAGRANGE EST PLACE APRES LE DERNIER DDL PHYSIQUE
+! ---    CONCERNE PAR LE BLOCAGE OU LA RELATION :
+!        --------------------------------------
+                        else if (zi(idlgns+n21-1).eq.-1) then
+                            jnulag = 1
+                        else
+                            call u2mess('F', 'ASSEMBLA_27')
+                        endif
+                    endif
+!
+! ---    CAS JNULAG = 0 : ON PLACE LE PREMIER LAGRANGE AVANT LE
+! ---    PREMIER DDL PHYSIQUE :
+! ---    ZI(ILSUIV+N1M1RE) EST LE COMPTEUR DU NOMBRE DE LAGRANGE
+! ---    A PLACER AVANT N1
+! ---    ZI(IDSUIV(N1M1RE+1,ZI(ILSUIV+N1M1RE)))  EST LE NUMERO
+! ---    DU LAGRANGE (DANS LA NUMEROTATION GLOBALE) PRECEDANT N1 ET
+! ---    D'INDICE ZI(ILSUIV+N1M1RE) (DANS LA LISTE DES LAGRANGE
+! ---    PRECEDANT N1) :
+!        -------------
+                    if (jnulag .eq. 0) then
+                        zi(ilsuiv+n1m1re) = zi(ilsuiv+n1m1re) + 1
+                        zi(idsuiv(n1m1re+1,zi(ilsuiv+n1m1re))) = n2
+                    endif
+!
+! ---    TRANSFORMATION DE N3 , NUMERO DU SECOND LAGRANGE DANS LA
+! ---    NUMEROTATION LOCALE AU LIGREL EN SON NUMERO DANS LA
+! ---    NUMEROTATION GLOBALE :
+!        --------------------
+                    n3 = -n3
+                    n3 = zi(inuno2+ili-1) + n3 - 1
+                    ilag3 = n3 - nbnom
+!
+! ---    RECUPERATION DU NOEUD PHYSIQUE DE NUMERO LE PLUS GRAND
+! ---    LIE AU SECOND LAGRANGE PAR LE TABLEAU DERLI, CETTE
+! ---    VALEUR N'EST DIFFERENTE DE 0 QUE S'IL S'AGIT D'UNE
+! ---    RELATION LINEAIRE :
+!        -----------------
+                    n0 = zi(iderli+n3)
+!
+                    zi(iddlag+3* (ilag2-1)+1) = -1
+                    zi(iddlag+3* (ilag3-1)+1) = -1
+                    zi(iddlag+3* (ilag2-1)+2) = 1
+                    zi(iddlag+3* (ilag3-1)+2) = 2
+!
+! ---    CAS DES RELATIONS LINEAIRES ENTRE DDLS
+!        ======================================
+! ---    TRAITEMENT DU PREMIER LAGRANGE
+!        -----------------------------
+! ---    DANS LE CAS JNULAG = 0 :
+! ---    LE TRAITEMENT DU PREMIER LAGRANGE A DEJA ETE FAIT :
+! ---    ON LE MET SYSTEMATIQUEMENT AVANT LE NOEUD PHYSIQUE
+! ---    DE L'ELEMENT DE LAGRANGE COURANT
+! ---    C'EST AU MOMENT DE LA RENUMEROTATION OU L'ON COMMENCE
+! ---    PAR LES NOEUDS DE PLUS PETIT INDICE QUE L'ON DECIDERA,
+! ---    SI UN NUMERO LUI A DEJA ETE ATTRIBUE , DE NE PLUS LE
+! ---    NUMEROTER.
+!
+! ---    DANS LE CAS JNULAG = 1 :
+! ---    ON TRAITE LE PREMIER  LAGRANGE COMME LE SECOND :
+! ---    ON PLACE LE PREMIER LAGRANGE APRES LE NOEUD PHYSIQUE
+! ---    DE L'ELEMENT DE LAGRANGE COURANT
+! ---    SI LE NUMERO DU NOEUD PHYSIQUE DE L'ELEMENT DE LAGRANGE
+! ---    EST PLUS PETIT QUE LE PLUS GRAND NUMERO DE NOEUD PHYSIQUE
+! ---    LIE AU SECOND LAGRANGE (PAR LE TABLEAU DERLI)
+! ---    ON DESACTIVE LE POSITIONNEMENT DU LAGRANGE APRES CE NUMERO
+! ---    EN LUI AFFECTANT UNE VALEUR -1 DANS LE TABLEAU SUIV
+!
+! ---    TRAITEMENT DU SECOND LAGRANGE
+!        -----------------------------
+! ---    DANS LES CAS JNULAG = 0 ET JNULAG = 1, ON TRAITE
+! ---    LE SECOND LAGRANGE COMME CE QUI EST ENONCE CI-DESSUS
+! ---    POUR LE PREMIER LAGRANGE DANS LE CAS JNULAG = 1,
+! ---    A CECI PRES QUE DANS CE DERNIER CAS, ON PLACE
+! ---    LE SECOND LAGRANGE APRES LE PREMIER :
+!        -----------------------------------
+                    if (n0 .gt. 0) then
+                        zi(iddlag+3* (ilag2-1)) = 0
+                        zi(iddlag+3* (ilag3-1)) = 0
+                        zi(iddlag+3* (ilag2-1)+1) = 0
+                        zi(iddlag+3* (ilag3-1)+1) = 0
+                        n0re = zi(inewn-1+n0)
+!
+! ---    TRAITEMENT D 'UN ELEMENT DE LAGRANGE DONT LE NUMERO DU
+! ---    NOEUD PHYSIQUE EST PLUS GRAND QUE LE PLUS GRAND NUMERO
+! ---    DE NOEUD PHYSIQUE LIE PAR LA MEME RELATION LINEAIRE
+! ---    ET DEJA TRAITE :
+!        --------------
+                        if (n0re .lt. n1re) then
+                            icer1 = 0
+                            icer2 = 0
+                            if (jnulag .eq. 1) then
+                                do 50 j = 1, suivdi(n0re+1)
+                                    ns = suiv(n0re+1,j)
+                                    if (ns .eq. n2) then
+                                        if (icer1 .ne. 0) then
+                                            vali (1) = n2
+                                            vali (2) = n1
+                                            call u2mesg('F', 'ASSEMBLA_63', 0, ' ', 2,&
+                                                        vali, 0, 0.d0)
+                                        endif
+                                        icer1 = icer1 + 1
+                                        zi(idsuiv(n0re+1,j)) = -1
+                                    endif
+50                              continue
+                            endif
+                            do 60 j = 1, suivdi(n0re+1)
+                                ns = suiv(n0re+1,j)
+                                if (ns .eq. n3) then
+                                    if (icer2 .ne. 0) then
+                                        vali (1) = n3
+                                        vali (2) = n1
+                                        call u2mesg('F', 'ASSEMBLA_64', 0, ' ', 2,&
+                                                    vali, 0, 0.d0)
+                                    endif
+                                    icer2 = icer2 + 1
+                                    zi(idsuiv(n0re+1,j)) = -1
+                                endif
+60                          continue
+!
+! ---    CAS JNULAG = 1 : ON PLACE LE PREMIER LAGRANGE APRES LE
+! ---    NOEUD PHYSIQUE COURANT:
+! ---    ZI(ILSUIV+N1RE) EST LE COMPTEUR DU NOMBRE DE LAGRANGE
+! ---    A PLACER APRES N1
+! ---    ZI(IDSUIV(N1RE+1,ZI(ILSUIV+N1RE)))  EST LE NUMERO
+! ---    DU LAGRANGE (DANS LA NUMEROTATION GLOBALE) SUIVANT N1 ET
+! ---    D'INDICE ZI(ILSUIV+N1RE) (DANS LA LISTE DES LAGRANGE
+! ---    SUIVANT N1) :
+!        -----------
+                            if (jnulag .eq. 1) then
+                                zi(ilsuiv+n1re) = zi(ilsuiv+n1re) + 1
+                                zi(idsuiv(n1re+1,zi(ilsuiv+n1re))) =&
+                                n2
+                            endif
+!
+! ---    ON PLACE LE SECOND LAGRANGE APRES LE NOEUD PHYSIQUE
+! ---    COURANT:
+! ---    ZI(ILSUIV+N1RE) EST LE COMPTEUR DU NOMBRE DE LAGRANGE
+! ---    A PLACER APRES N1
+! ---    ZI(IDSUIV(N1RE+1,ZI(ILSUIV+N1RE)))  EST LE NUMERO
+! ---    DU LAGRANGE (DANS LA NUMEROTATION GLOBALE) SUIVANT N1 ET
+! ---    D'INDICE ZI(ILSUIV+N1RE) (DANS LA LISTE DES LAGRANGE
+! ---    SUIVANT N1) :
+!        -----------
+                            zi(ilsuiv+n1re) = zi(ilsuiv+n1re) + 1
+                            zi(idsuiv(n1re+1,zi(ilsuiv+n1re))) = n3
+                            zi(iderli+n3) = n1
+                        else
+!
+! ---    TRAITEMENT D 'UN ELEMENT DE LAGRANGE DONT LE NUMERO DU
+! ---    NOEUD PHYSIQUE EST PLUS PETIT QUE LE PLUS GRAND NUMERO
+! ---    DE NOEUD PHYSIQUE LIE PAR LA MEME RELATION LINEAIRE
+! ---    ET DEJA TRAITE :
+!        --------------
+                            if (jnulag .eq. 1) then
+!
+! ---    CAS JNULAG = 1 : ON PLACE LE PREMIER LAGRANGE APRES LE
+! ---    NOEUD PHYSIQUE COURANT:
+! ---    ZI(ILSUIV+N1RE) EST LE COMPTEUR DU NOMBRE DE LAGRANGE
+! ---    A PLACER APRES N1
+! ---    ZI(IDSUIV(N1RE+1,ZI(ILSUIV+N1RE)))  EST LE NUMERO
+! ---    DU LAGRANGE (DANS LA NUMEROTATION GLOBALE) SUIVANT N1 ET
+! ---    D'INDICE ZI(ILSUIV+N1RE) (DANS LA LISTE DES LAGRANGE
+! ---    SUIVANT N1), ON DESACTIVE CE POSITIONNEMENT EN METTANT CE
+! ---    NUMERO A -1 :
+!        -----------
+                                zi(ilsuiv+n1re) = zi(ilsuiv+n1re) + 1
+                                zi(idsuiv(n1re+1,zi(ilsuiv+n1re))) = - 1
+                            endif
+!
+! ---    ON PLACE LE SECOND LAGRANGE APRES LE NOEUD PHYSIQUE
+! ---    COURANT:
+! ---    ZI(ILSUIV+N1RE) EST LE COMPTEUR DU NOMBRE DE LAGRANGE
+! ---    A PLACER APRES N1
+! ---    ZI(IDSUIV(N1RE+1,ZI(ILSUIV+N1RE)))  EST LE NUMERO
+! ---    DU LAGRANGE (DANS LA NUMEROTATION GLOBALE) SUIVANT N1 ET
+! ---    D'INDICE ZI(ILSUIV+N1RE) (DANS LA LISTE DES LAGRANGE
+! ---    SUIVANT N1), ON DESACTIVE CE POSITIONNEMENT EN METTANT CE
+! ---    NUMERO A -1 :
+!        -----------
+                            zi(ilsuiv+n1re) = zi(ilsuiv+n1re) + 1
+                            zi(idsuiv(n1re+1,zi(ilsuiv+n1re))) = -1
+                        endif
+                    else
+!
+! ---    CAS DES BLOCAGES
+!        ================
+! ---    TRAITEMENT DU PREMIER LAGRANGE
+!        -----------------------------
+! ---    DANS LE CAS JNULAG = 0 :
+! ---    LE TRAITEMENT DU PREMIER LAGRANGE A DEJA ETE FAIT :
+! ---    ON LE MET SYSTEMATIQUEMENT AVANT LE NOEUD PHYSIQUE
+! ---    DE L'ELEMENT DE LAGRANGE COURANT
+!
+! ---    DANS LE CAS JNULAG = 1 :
+! ---    ON TRAITE LE PREMIER  LAGRANGE COMME LE SECOND :
+! ---    ON PLACE LE PREMIER LAGRANGE APRES LE NOEUD PHYSIQUE
+! ---    BLOQUE
+!
+! ---    TRAITEMENT DU SECOND LAGRANGE
+!        -----------------------------
+! ---    DANS LES CAS JNULAG = 0 ET JNULAG = 1, ON TRAITE
+! ---    LE SECOND LAGRANGE COMME CE QUI EST ENONCE CI-DESSUS
+! ---    POUR LE PREMIER LAGRANGE DANS LE CAS JNULAG = 1,
+! ---    A CECI PRES QUE DANS CE DERNIER CAS, ON PLACE
+! ---    LE SECOND LAGRANGE APRES LE PREMIER :
+!        -----------------------------------
+                        zi(iddlag+3* (ilag2-1)) = n1
+                        zi(iddlag+3* (ilag3-1)) = n1
+!
+! ---    CAS JNULAG = 1 : ON PLACE LE PREMIER LAGRANGE APRES LE
+! ---    NOEUD PHYSIQUE :
+! ---    ZI(ILSUIV+N1RE) EST LE COMPTEUR DU NOMBRE DE LAGRANGE
+! ---    A PLACER APRES N1
+! ---    ZI(IDSUIV(N1RE+1,ZI(ILSUIV+N1RE)))  EST LE NUMERO
+! ---    DU LAGRANGE (DANS LA NUMEROTATION GLOBALE) SUIVANT N1 ET
+! ---    D'INDICE ZI(ILSUIV+N1RE) (DANS LA LISTE DES LAGRANGE
+! ---    SUIVANT N1) :
+!        -----------
+                        if (jnulag .eq. 1) then
+                            zi(ilsuiv+n1re) = zi(ilsuiv+n1re) + 1
+                            zi(idsuiv(n1re+1,zi(ilsuiv+n1re))) = n2
+                        endif
+!
+! ---    ON PLACE LE SECOND LAGRANGE APRES LE NOEUD PHYSIQUE :
+! ---    ZI(ILSUIV+N1RE) EST LE COMPTEUR DU NOMBRE DE LAGRANGE
+! ---    A PLACER APRES N1
+! ---    ZI(IDSUIV(N1RE+1,ZI(ILSUIV+N1RE)))  EST LE NUMERO
+! ---    DU LAGRANGE (DANS LA NUMEROTATION GLOBALE) SUIVANT N1 ET
+! ---    D'INDICE ZI(ILSUIV+N1RE) (DANS LA LISTE DES LAGRANGE
+! ---    SUIVANT N1) :
+!        -----------
+                        zi(ilsuiv+n1re) = zi(ilsuiv+n1re) + 1
+                        zi(idsuiv(n1re+1,zi(ilsuiv+n1re))) = n3
+                        zi(iderli+n3) = n1
+                    endif
+                endif
+            endif
+70      continue
+80  end do
+!
+!
+! --- RENUMEROTATION :
+!     ==============
+!
+! ---  ALLOCATION DE NUM21 ET NUM2
+! ---  NUM2(I) = NUMERO DANS LA NOUVELLE NUMEROTATION NUNO DU NOEUD I
+! ---  DANS LA NUMEROTATION GLOBALE DE 1ER NIVEAU
+! ---  SI NUM2(I)=J ALORS NUM21(J)=I :
+!      -----------------------------
+    call wkvect(num21, ' V V I', n+1, inum21)
+    call wkvect(num2, ' V V I', n+1, inum2)
+!
+! ---  CALCUL DE NUM2 ET NUM21 QUI REPRESENTE "L'INVERSE" DE NUM2
+! ---  NBNONU : NOMBRE DE NOEUDS NUMEROTES DANS NUNO :
+!      ---------------------------------------------
+    nbnonu = 0
+!
+! ---  BOUCLE SUR LES LAGRANGE PRECEDANT LE PREMIER NOEUD PHYSIQUE :
+!      -----------------------------------------------------------
+    do 90 j = 1, suivdi(1)
+        j1 = suiv(1,j)
+!
+! ---  SI LE LAGRANGE N'A PAS ETE RENUMEROTE, ON LE RENUMEROTE :
+!      -------------------------------------------------------
+        if (zi(inum2+j1) .eq. 0) then
+            nbnonu = nbnonu + 1
+            zi(inum2+j1) = nbnonu
+            zi(inum21+nbnonu) = j1
+        endif
+90  end do
+!
+! ---  NBNORE EST LE NOMBRE DE NOEUDS DU MAILLAGE PARTICIPANTS A LA
+! ---  NUMEROTATION:
+!      ------------
+    call jelira(oldn, 'LONUTI', nbnore, cbid)
+!
+! ---  BOUCLE SUR LES NOEUDS PHYSIQUES :
+!      -------------------------------
+    do 110 ire = 1, nbnore
+        i = zi(ioldn-1+ire)
+!
+! ---  SI LE NOEUD PHYSIQUE N'A PAS ETE RENUMEROTE, ON LE RENUMEROTE :
+!      -------------------------------------------------------------
+        if (zi(inum2+i) .eq. 0) then
+            nbnonu = nbnonu + 1
+            zi(inum2+i) = nbnonu
+            zi(inum21+nbnonu) = i
+!
+! ---  BOUCLE SUR LES LAGRANGE SUIVANT LE NOEUD PHYSIQUE COURANT :
+!      ---------------------------------------------------------
+            do 100 j = 1, suivdi(ire+1)
+                j1 = suiv(ire+1,j)
+!
+! ---  ON NE PREND EN COMPTE QUE LES LAGRANGE AYANT UN INDICE 'ACTIF':
+!      -------------------------------------------------------------
+                if (j1 .gt. 0) then
+!
+! ---    SI LE LAGRANGE N'A PAS ETE RENUMEROTE, ON LE RENUMEROTE :
+!        -------------------------------------------------------
+                    if (zi(inum2+j1) .eq. 0) then
+                        nbnonu = nbnonu + 1
+                        zi(inum2+j1) = nbnonu
+                        zi(inum21+nbnonu) = j1
+                    endif
+                endif
+100          continue
+        endif
+110  end do
+!
+    if (nbnonu .ne. (nbnore+nlag)) call u2mess('F', 'ASSEMBLA_28')
+!
+!
+!
+! --- CALCUL DES DESCRIPTEURS DES PRNO
+!     ================================
+!
+!
+! --- DETERMINATION DES .PRNM ET DES .PRNS POUR CHAQUE LIGREL :
+!     -------------------------------------------------------
+    do 120 ili = 2, nlili
+        call jenuno(jexnum(lili, ili), nomli)
+        call creprn(nomli, moloc, 'V', nomli(1:19)//'.QRNM', nomli(1:19) //'.QRNS')
+120  end do
+!
+!
+! --- 1ERE ETAPE : NOEUDS DU MAILLAGE (PHYSIQUES ET LAGRANGES)
+! --- SI NUNOEL NOEUD DU MAILLAGE
+! --- PRNO(1,NUNOEL,L+2)= "SIGMA"(.QRNM(MA(NUNOEL))(L))
+!     -------------------------------------------------
+    do 150 ili = 2, nlili
+        call jenuno(jexnum(lili, ili), nomli)
+        call jeexin(nomli(1:19)//'.QRNM', iret)
+        if (iret .eq. 0) goto 150
+        call jeveuo(nomli(1:19)//'.QRNM', 'L', iprnm)
+!
+        do 140 i = 1, nbnore
+            nunoel = zi(ioldn-1+i)
+            do 130 l = 1, nec
+                iec = zi(iprnm-1+nec* (nunoel-1)+l)
+                zi(izzprn(1,nunoel,l+2)) = ior(zzprno(1,nunoel,l+2), iec)
+130          continue
+140      continue
+150  end do
+!
+!
+! --- 2EME ETAPE : NOEUDS SUPPLEMENTAIRES DES LIGRELS:
+! --- SI NUNOEL NOEUD TARDIF DU LIGREL ILI NOMLI = LILI(ILI)
+! --- PRNO(ILI,NUNOEL,L+2)= NOMLI.QRNS(NUNOEL)(L) :
+!     -------------------------------------------
+    do 210 ili = 2, nlili
+        call jenuno(jexnum(lili, ili), nomli)
+        call jeveuo(nomli(1:19)//'.QRNM', 'L', iprnm)
+        call jeveuo(nomli(1:19)//'.NBNO', 'L', ibid)
+        if (zi(ibid) .gt. 0) call jeveuo(nomli(1:19)//'.QRNS', 'L', iprns)
+!
+        do 200 igr = 1, zzngel(ili)
+            nel = zznelg(ili,igr)
+!
+            if (nel .ge. 0) then
+                itypel = zzliel(ili,igr,nel+1)
+                call jenuno(jexnum('&CATA.TE.NOMTE', itypel), nomte)
+                icddlb = 0
+                nddlb = 0
+            endif
+!
+            do 190 j = 1, nel
+                numa = zzliel(ili,igr,j)
+                if (numa .lt. 0) then
+                    numa = -numa
+                    do 180 k = 1, zznsup(ili, numa)
+                        nunoel = zznema(ili,numa,k)
+!
+                        if (nunoel .gt. 0) then
+                            do 160 l = 1, nec
+                                iec = zi(iprnm+nec* (nunoel-1)+l-1)
+                                zi(izzprn(ilim,nunoel,l+2)) = ior(&
+                                                              zzprno( ilim, nunoel, l+2 ), iec)
+160                          continue
+!
+                        else
+                            nunoel = -nunoel
+!
+!                 -- CALCUL DU NUMERO DE LA CMP ASSO
+                            if (icddlb .eq. 0) then
+                                call assert(nomgds.eq.nomte(3:8))
+                                nomcmp = nomte(10:16)
+!
+!                   "GLUTE" POUR TEMP_MIL, TEMP_INF, TEMP_SUP :
+                                if (nomcmp .eq. 'TEMP_MI') then
+                                    nomcmp = 'TEMP_MIL'
+                                else if (nomcmp.eq.'TEMP_IN') then
+                                    nomcmp = 'TEMP_INF'
+                                else if (nomcmp.eq.'TEMP_SU') then
+                                    nomcmp = 'TEMP_SUP'
+                                endif
+!
+                                call jeveuo(jexnom('&CATA.GD.NOMCMP', nomgds), 'L', idnocm)
+                                call jelira(jexnom('&CATA.GD.NOMCMP', nomgds), 'LONMAX', nbcmp,&
+                                            kbid)
+                                nddlb = indik8(zk8(idnocm),nomcmp,1, nbcmp)
+                                call assert(nddlb.ne.0)
+                                icddlb = 1
+                            endif
+!
+                            do 170 l = 1, nec
+                                iec = zi(iprns+nec* (nunoel-1)+l-1)
+                                zi(izzprn(ili,nunoel,l+2)) = ior(zzprno( ili, nunoel, l+2), iec)
+170                          continue
+!
+                            ilag = zi(inuno2+ili-1) + nunoel - 1
+                            ilag = ilag - nbnom
+                            zi(iddlag+3* (ilag-1)+1) = zi(iddlag+3* ( ilag-1)+1 )* nddlb
+!
+                        endif
+180                  continue
+!
+                endif
+!
+190          continue
+200      continue
+210  end do
+!
+!
+! --- CALCUL DES ADRESSES DANS LES PRNO
+!     =================================
+    iad = 1
+!
+    do 220 i = 1, n
+        call nuno1(i, ili, nunoel, n, inum21,&
+                   inuno2, nlili)
+        if (ili .gt. 0) then
+            nddl1 = zzprno(ili,nunoel,2)
+            if (nddl1 .eq. 0) then
+                nddl1 = nddl(ili,nunoel,nec,idprn1,idprn2)
+!
+                zi(izzprn(ili,nunoel,2)) = nddl1
+            endif
+            zi(izzprn(ili,nunoel,1)) = iad
+            iad = iad + nddl1
+        endif
+220  end do
+!
+    nequa = iad - 1
+    call wkvect(nu//'.NUME.NEQU', base(1:1)//' V I', 2, idnequ)
+    zi(idnequ) = nequa
+!
+    if (niv .ge. 1) then
+!
+! ---   CALCUL DE NMA : NOMBRE DE NOEUDS DU MAILLAGE PORTEURS DE DDLS :
+!       ----------------------------------------------------------------
+        nma = 0
+        call jeveuo(jexnum(nu//'.NUME.PRNO', 1), 'L', jprno)
+        do 230,ino = 1,nbnom
+        if (zi(jprno-1+ (ino-1)* (2+nec)+2) .gt. 0) nma = nma + 1
+230      continue
+        vali(1) = nma + nlag
+        vali(2) = nma
+        vali(3) = nlag
+        vali(4) = nequa
+!
+        call u2mesi('I', 'FACTOR_1', 4, vali)
+!        WRITE (IFM,*) '--- NOMBRE TOTAL DE NOEUDS : ',NMA + NLAG,
+!     &    ' DONT : ',NLAG,' NOEUDS "LAGRANGE"'
+!        WRITE (IFM,*) '--- NOMBRE TOTAL D''EQUATIONS : ',NEQUA
+    endif
+!
+!
+! AUGMENTATION DE LA TAILLE DU .REFN (DE 2 A 4) POUR FETI
+    call wkvect(nu//'.NUME.REFN', base(1:1)//' V K24', 4, idref)
+    zk24(idref) = mailla
+    zk24(idref+1) = nomgds
+    call jeexin(solveu(1:19)//'.SLVK', iret)
+    if (iret .gt. 0) then
+        call jeveuo(solveu(1:19)//'.SLVK', 'L', islvk)
+        zk24(idref+2) = zk24(islvk)
+        zk24(idref+3) = zk24(islvk+5)
+    endif
+!
+!
+! --- ON COMPLETE LE CONCEPT PROF_CHNO :
+!        OBJET '.DEEQ' :
+!        OBJET '.NUEQ' :
+!     ---------------------------------------------------
+    call wkvect(nu//'.NUME.NUEQ', base(2:2)//' V I', nequa, ianueq)
+    do 310,i = 1,nequa
+    zi(ianueq-1+i) = i
+    310 end do
+!
+    call nudeeq(base, nu, nequa, igds, iddlag)
+!
+!
+! --- DESTRUCTION DES .PRNM ET DES .PRNS DE CHAQUE LIGREL :
+!     ---------------------------------------------------
+    do 320 ili = 1, nlili
+        call jenuno(jexnum(lili, ili), nomli)
+        call jedetr(nomli(1:19)//'.QRNM')
+        call jedetr(nomli(1:19)//'.QRNS')
+320  end do
+!
+    call jedetr(lsuiv)
+    call jedetr(psuiv)
+    call jedetr(exi1)
+    call jedetr(num2)
+    call jedetr(num21)
+    call jedetr(nuno)
+    call jedetr(nnli)
+    call jedetr(derli)
+    call jedetr(vsuiv)
+    call jedetr(dsclag)
+    if (lfeti) call infbav()
+!
+end subroutine

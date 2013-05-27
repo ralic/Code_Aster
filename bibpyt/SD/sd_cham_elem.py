@@ -1,4 +1,3 @@
-#@ MODIF sd_cham_elem SD  DATE 28/06/2011   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -86,4 +85,3 @@ class sd_cham_elem(sd_titre):
                    assert ncdyn == 0 , (ncdyn,kgrel,iel)
                    assert lgchel == lgcata*nbsp , (lgchel,lgcata,nbsp,kgrel,iel)
                 assert adiel > 0 , (adiel,kgrel,iel)
-

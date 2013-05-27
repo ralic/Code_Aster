@@ -1,0 +1,348 @@
+subroutine op0077()
+    implicit none
+!
+!            CONFIGURATION MANAGEMENT OF EDF VERSION
+! ======================================================================
+! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+! (AT YOUR OPTION) ANY LATER VERSION.
+!
+! THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+! WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+! MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+! GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+!
+! YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+!   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
+! ======================================================================
+!
+!     OPERATEUR REST_SOUS_STRUC
+!
+! ----------------------------------------------------------------------
+!
+!
+    include 'jeveux.h'
+!
+    include 'asterc/getfac.h'
+    include 'asterc/getres.h'
+    include 'asterc/gettco.h'
+    include 'asterc/getvid.h'
+    include 'asterc/getvis.h'
+    include 'asterc/getvtx.h'
+    include 'asterfort/ajrefd.h'
+    include 'asterfort/excygl.h'
+    include 'asterfort/harm75.h'
+    include 'asterfort/infmaj.h'
+    include 'asterfort/jedema.h'
+    include 'asterfort/jelira.h'
+    include 'asterfort/jemarq.h'
+    include 'asterfort/jenonu.h'
+    include 'asterfort/jeveuo.h'
+    include 'asterfort/jexnom.h'
+    include 'asterfort/jexnum.h'
+    include 'asterfort/recyec.h'
+    include 'asterfort/recygl.h'
+    include 'asterfort/regeec.h'
+    include 'asterfort/regegl.h'
+    include 'asterfort/regene.h'
+    include 'asterfort/regres.h'
+    include 'asterfort/rehaec.h'
+    include 'asterfort/rehagl.h'
+    include 'asterfort/retrec.h'
+    include 'asterfort/retrgl.h'
+    include 'asterfort/rsadpa.h'
+    include 'asterfort/tran77.h'
+    include 'asterfort/u2mess.h'
+    include 'asterfort/wkvect.h'
+!
+!
+    character(len=8) :: k8b, nomres, resin, nomsst, mailsk, mode
+    character(len=8) :: k8bid, result, blanc, param(3)
+    character(len=16) :: concep, nomcmd, typres, typrep, champ(4)
+    character(len=19) :: profno
+    character(len=24) :: matgen, numgen
+    integer :: ioc1, jord, nbord, i, iord, lpaout(3)
+    integer :: iarg
+!
+!     -----------------------------------------------------------------
+!-----------------------------------------------------------------------
+    integer :: ibid, ir, ir1, iret, isk, j, j1refe
+    integer :: j2refe, j3refe, jrefn, jrefnb, lmacr, lmodge, lnume
+    integer :: lraid, lrefm, n1, n2, nbcham, numsec
+!-----------------------------------------------------------------------
+    data k8b/'        '/
+    data param/'MODELE','CHAMPMAT','CARAELEM'/
+!
+    call jemarq()
+    call infmaj()
+    k8bid='        '
+    blanc='        '
+!
+!     -----------------------------------------------------------------
+!
+!
+    call getres(nomres, typres, nomcmd)
+!
+! --- PHASE DE TEST SUR LES CHAMPS A RESTITUER
+    call getvtx(' ', 'NOM_CHAM', 1, iarg, 4,&
+                champ, nbcham)
+    if (nbcham .lt. 0) then
+        call u2mess('E', 'ALGORITH9_44')
+    else
+        do 20 i = 1, nbcham
+            do 10 j = i+1, nbcham
+                if (champ(i) .eq. champ(j)) then
+                    call u2mess('E', 'ALGORITH9_30')
+                endif
+10          continue
+20      continue
+    endif
+!
+!
+! --- CREATION DU PROFIL :
+!     ---------------------------
+    call getvid(' ', 'SQUELETTE', 1, iarg, 1,&
+                k8b, ir)
+!     --- SI RESTITUTION SUR UNE SQUELETTE, ALORS ATTACHER UN PROF_CHNO
+!         AU RESULTAT
+    if (ir .eq. 0) then
+        profno = '&&OP0077'//'.PROFC.NUME'
+    else
+        profno = nomres//'.PROFC.NUME'
+    endif
+! --- CREATION D'UN OBJET REFN DU PROFIL SUR BASE VOLATILE
+    call wkvect(profno//'.REFN', 'V V K24', 4, jrefn)
+    zk24(jrefn+1)='DEPL_R'
+!
+!
+! --- LE RESULTAT EST-IL GENERALISE OU PAS :
+!     ---------------------------
+    call getvid(' ', 'RESULTAT', 1, iarg, 0,&
+                k8bid, ir)
+    if (ir .eq. 0) then
+        call getvid(' ', 'RESU_GENE', 1, iarg, 1,&
+                    resin, ir1)
+        call gettco(resin, concep)
+    else
+!      --- PROJECTION RESULTAT SUR UN SQUELETTE ENRICHI ---
+        call getvid(' ', 'SQUELETTE', 1, iarg, 1,&
+                    mailsk, ibid)
+        call getvid(' ', 'RESULTAT', 1, iarg, 1,&
+                    result, ibid)
+        zk24(jrefn)=mailsk
+        call getfac('CYCLIQUE', ioc1)
+        if (ioc1 .gt. 0) then
+            call excygl(nomres, typres, result, mailsk, profno)
+            call jeveuo(profno//'.REFN', 'E', jrefnb)
+            zk24(jrefnb)=mailsk
+            zk24(jrefnb+1)='DEPL_R'
+            concep(1:9)='         '
+            resin=result
+            goto 30
+!
+        else
+            if (typres .eq. 'MODE_MECA') then
+                call regres(nomres, mailsk, result, profno)
+                call jeveuo(profno//'.REFN', 'E', jrefnb)
+                zk24(jrefnb)=mailsk
+                zk24(jrefnb+1)='DEPL_R'
+                concep(1:9)='         '
+                resin=result
+                goto 30
+!
+            else
+                call u2mess('E', 'ALGORITH9_46')
+            endif
+        endif
+    endif
+!
+! INDICATEUR CALCUL SANS MATRICE GENERALISEE (PROJ_MESU_MODAL)
+!      PROMES=.FALSE.
+    if ((concep(1:9).eq.'TRAN_GENE') .or. (concep(1:9).eq.'MODE_GENE') .or.&
+        (concep(1:9).eq.'HARM_GENE')) then
+        call jeveuo(resin//'           .REFD', 'L', j1refe)
+        matgen=zk24(j1refe)
+        numgen=zk24(j1refe+3)
+! LE RESU_GENE VIENT DE PROJ_MESU_MODAL
+        if ((matgen(1:8).eq.blanc) .and. (numgen(1:8).eq.blanc)) then
+!          PROMES=.TRUE.
+            typrep=blanc
+        else
+            if (numgen(1:8) .eq. blanc) then
+                call jeveuo(matgen(1:8)//'           .REFA', 'L', j2refe)
+                numgen=zk24(j2refe+1)(1:14)
+            endif
+            call jeveuo(numgen(1:14)//'.NUME.REFN', 'L', j3refe)
+            call gettco(zk24(j3refe), typrep)
+        endif
+    endif
+!
+!     --- DYNAMIQUE TRANSITOIRE ---
+!
+    if (concep(1:9) .eq. 'TRAN_GENE') then
+!
+        if (typrep(1:11) .eq. 'MODELE_GENE') then
+            call getvid(' ', 'SQUELETTE', 1, iarg, 0,&
+                        k8b, isk)
+            if (isk .eq. 0) then
+                call getvtx(' ', 'SOUS_STRUC', 1, iarg, 1,&
+                            nomsst, ibid)
+                call retrec(nomres, resin, nomsst)
+            else
+                call getvid(' ', 'SQUELETTE', 1, iarg, 1,&
+                            mailsk, ibid)
+                call retrgl(nomres, resin, mailsk, profno)
+                call jeveuo(profno//'.REFN', 'E', jrefnb)
+                zk24(jrefnb)=mailsk
+                zk24(jrefnb+1)='DEPL_R'
+            endif
+!
+!
+!
+        else if (typrep(1:9).eq.'MODE_GENE') then
+            call getvtx(' ', 'SOUS_STRUC', 1, iarg, 1,&
+                        nomsst, n1)
+            call getvid(' ', 'SQUELETTE', 1, iarg, 1,&
+                        mailsk, n2)
+            if ((n1.ne.0.and.n2.ne.0)) then
+                call u2mess('F', 'ALGORITH9_47')
+            endif
+            call getvid(' ', 'MODE_MECA', 1, iarg, 1,&
+                        mode, ibid)
+            if (ibid .eq. 0) then
+                call u2mess('F', 'ALGORITH9_48')
+            endif
+            call tran77(nomres, typres, resin, mode)
+        endif
+!
+!
+!     --- CALCUL MODAL PAR SOUS-STRUCTURATION CLASSIQUE ---
+!                  OU SANS SOUS-STRUCTURATION
+!
+    else if (concep(1:9).eq.'MODE_GENE') then
+!
+! --- CAS DE LA SOUS-STRUCTURATION MODALE
+        if (typrep(1:11) .eq. 'MODELE_GENE') then
+!
+            call getvid(' ', 'SQUELETTE', 1, iarg, 0,&
+                        k8b, isk)
+            if (isk .eq. 0) then
+                call getvtx(' ', 'SOUS_STRUC', 1, iarg, 1,&
+                            nomsst, ibid)
+                call regeec(nomres, resin, nomsst)
+            else
+                call getvid(' ', 'SQUELETTE', 1, iarg, 1,&
+                            mailsk, ibid)
+                call regegl(nomres, resin, mailsk, profno)
+                call jeveuo(profno//'.REFN', 'E', jrefnb)
+                zk24(jrefnb)=mailsk
+                zk24(jrefnb+1)='DEPL_R'
+            endif
+        else
+!
+!     --- CALCUL MODAL SANS SOUS-STRUCTURATION ---
+            call regene(nomres, resin, profno)
+        endif
+!
+!     --- CALCUL MODAL PAR SOUS-STYRUCTURATION CYCLIQUE ---
+!
+    else if (concep(1:9).eq.'MODE_CYCL') then
+        call getvid(' ', 'SQUELETTE', 1, iarg, 0,&
+                    k8b, isk)
+        if (isk .eq. 0) then
+            call getvis(' ', 'SECTEUR', 1, iarg, 1,&
+                        numsec, ibid)
+            call recyec(nomres, resin, numsec, 'MODE_MECA')
+        else
+            call getvid(' ', 'SQUELETTE', 1, iarg, 1,&
+                        mailsk, ibid)
+            call recygl(nomres, 'MODE_MECA', resin, mailsk, profno)
+            call jeveuo(profno//'.REFN', 'E', jrefnb)
+            zk24(jrefnb)=mailsk
+            zk24(jrefnb+1)='DEPL_R'
+        endif
+!
+!     --- CALCUL HARMONIQUE PAR SOUS-STRUCTURATION CLASSIQUE ---
+!
+    else if (concep(1:9).eq.'HARM_GENE') then
+!
+! --- CAS DE LA SOUS-STRUCTURATION HARMONIQUE
+        if (typrep(1:11) .eq. 'MODELE_GENE') then
+            call getvid(' ', 'SQUELETTE', 1, iarg, 0,&
+                        k8b, isk)
+            if (isk .eq. 0) then
+                call getvtx(' ', 'SOUS_STRUC', 1, iarg, 1,&
+                            nomsst, ibid)
+                call rehaec(nomres, resin, nomsst)
+            else
+                call getvid(' ', 'SQUELETTE', 1, iarg, 1,&
+                            mailsk, ibid)
+                call rehagl(nomres, resin, mailsk, profno)
+                call jeveuo(profno//'.REFN', 'E', jrefnb)
+                zk24(jrefnb)=mailsk
+                zk24(jrefnb+1)='DEPL_R'
+            endif
+!
+        else if (typrep(1:9).eq.'MODE_GENE') then
+            call getvtx(' ', 'SOUS_STRUC', 1, iarg, 1,&
+                        nomsst, n1)
+            call getvid(' ', 'SQUELETTE', 1, iarg, 1,&
+                        mailsk, n2)
+            if ((n1.ne.0.and.n2.ne.0)) then
+                call u2mess('F', 'ALGORITH9_47')
+            endif
+            call getvid(' ', 'MODE_MECA', 1, iarg, 1,&
+                        mode, ibid)
+            if (ibid .eq. 0) then
+                call u2mess('F', 'ALGORITH9_48')
+            endif
+            call harm75(nomres, typres, resin, nomcmd, mode)
+        endif
+!
+    endif
+!
+30  continue
+!
+! --- STOCKAGE
+    call gettco(resin, concep)
+    if ((concep(1:9).ne.'TRAN_GENE') .and. (concep(1:9).ne.'MODE_CYCL') .and.&
+        (concep(1:9).ne.'HARM_GENE')) then
+        call jeveuo(nomres//'           .ORDR', 'L', jord)
+        call jelira(nomres//'           .ORDR', 'LONUTI', nbord, k8b)
+        call jelira(nomres//'           .ORDR', 'LONUTI', nbord, k8b)
+!
+        call getvid(' ', 'SQUELETTE', 1, iarg, 0,&
+                    k8b, isk)
+        if (isk .eq. 0) then
+            call getvtx(' ', 'SOUS_STRUC', 1, iarg, 1,&
+                        nomsst, ibid)
+!
+!-- RECUPERATION DU MACRO ELEMENT ASSOCIE A LA SOUS STRUCTURE
+            call jeveuo(resin//'           .REFD', 'L', lraid)
+            call jeveuo(zk24(lraid)(1:19)//'.REFA', 'L', lnume)
+            call jeveuo(zk24(lnume+1)(1:14)//'.NUME.REFN', 'L', lmodge)
+            call jenonu(jexnom(zk24(lmodge)(1:8)//'      .MODG.SSNO', nomsst), iret)
+            call jeveuo(jexnum(zk24(lmodge)(1:8)//'      .MODG.SSME', iret), 'L', lmacr)
+!-- RECUPERATION DES INFOS CARA_ELEM / MATER / MODELE POUR LES SST
+!-- DANS LE .REFM DANS LE MACRO ELEMENT CORRESPONDANT
+            call jeveuo(zk8(lmacr)//'.REFM', 'L', lrefm)
+            do 50 iord = 1, nbord
+                call rsadpa(nomres, 'E', 3, param, zi(jord+iord-1),&
+                            0, lpaout, k8b)
+                zk8(lpaout(1))=zk8(lrefm)
+                zk8(lpaout(2))=zk8(lrefm+2)
+                zk8(lpaout(3))=zk8(lrefm+3)
+50          continue
+        endif
+!
+    endif
+!
+!     -- CREATION DE L'OBJET .REFD SI NECESSAIRE:
+!     -------------------------------------------
+    call ajrefd(' ', nomres, 'FORCE')
+!
+    call jedema()
+end subroutine

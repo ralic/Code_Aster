@@ -1,4 +1,3 @@
-#@ MODIF sd_interspectre SD  DATE 24/07/2012   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -59,4 +58,3 @@ class sd_interspectre(sd_titre):
             assert len(cmpj) == len(cmpi)
             assert len(noei) == len(cmpj)
             assert self.VALE.nmaxoc == len(noei)
-

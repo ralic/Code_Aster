@@ -1,6 +1,4 @@
-# MODIF  DATE 18/03/2013   AUTEUR BERRO H.BERRO 
 # TITRE POUTRE SOUMISE A UNE EXCITATION FLUIDELASTIQUE AXIALE
-# sdll118a.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -27,7 +25,7 @@
 # VIBRANT AU CENTRE D'UNE ENCEINTE CIRCULAIRE D=50MM
 # SOUS ECOULEMENT AXIAL
 #=====================================================
-# RESPONSABLE QUANTIN C.QUANTIN
+# person_in_charge: hassan.berro at edf.fr
 #
 
 DEBUT(   CODE=_F(  NOM = 'SDLL118A',NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='NON'))
@@ -404,9 +402,4 @@ TEST_FONCTION(VALEUR=_F(VALE_CALC=0.169730036,
 
 FIN()
 #
-
-
-
-
-
 

@@ -1,4 +1,3 @@
-#& MODIF ENTETE  DATE 27/08/2012   AUTEUR ALARCON A.ALARCON 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -16,7 +15,7 @@
 # ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
 # ======================================================================
-# RESPONSABLE ALARCON A.ALARCON
+# person_in_charge: albert.alarcon at edf.fr
 class dyna_gene(ASSD):
    cata_sdj = "SD.sd_dyna_gene.sd_dyna_gene"
 

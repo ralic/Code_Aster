@@ -1,4 +1,3 @@
-#@ MODIF sd_spectre SD  DATE 13/03/2012   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================

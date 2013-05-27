@@ -1,6 +1,4 @@
-# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE  Validation du solveur PETSc en elasticite lineaire 3D
-# petsc01a.para = tps_job 60 mem_job 1000Mo nproc_mpi 2 liste_test I
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -174,4 +172,3 @@ TEST_RESU(RESU=(_F(RESULTAT=VECAS2,
                    REFERENCE='AUTRE_ASTER',),),);
 
 FIN();
-

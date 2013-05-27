@@ -1,4 +1,4 @@
-%& MODIF COMPELEM  DATE 08/04/2013   AUTEUR CUVILLIE M.CUVILLIEZ 
+%& LIBRARY COMPELEM
 % ======================================================================
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
@@ -1961,4 +1961,3 @@ PHENOMENE_MODELISATION__
               MAILLE__ SEG3      ELEMENT__ PR_SEG3
               MAILLE__ SEG2      ELEMENT__ PR_SEG2
               MAILLE__ POI1      ELEMENT__ PR_POI1
-

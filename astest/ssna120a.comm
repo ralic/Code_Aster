@@ -1,6 +1,4 @@
-# MODIF  DATE 15/01/2013   AUTEUR DELMAS J.DELMAS 
 # TITRE EPROUVETTE AE 2D AXIS AVEC ELEMENTS D'INTERFACE (QUAD8) ET LOI DE RUPTURE DUCTILE CZM_TRA_MIX
-# ssna120a.para = tps_job 60 mem_job 768Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG

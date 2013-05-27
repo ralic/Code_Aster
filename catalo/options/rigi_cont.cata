@@ -1,5 +1,5 @@
-%& MODIF OPTIONS  DATE 26/03/2013   AUTEUR ABBAS M.ABBAS 
-% RESPONSABLE ABBAS
+%& LIBRARY OPTIONS
+% person_in_charge: mickael.abbas at edf.fr
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -53,4 +53,3 @@ OPTION__
         PMATUUR MDEP_R RESL__ << MATRICE RIGIDITE TANGENTE SYMETRIQUE >>
         PMATUNS MDNS_R RESL__ << MATRICE RIGIDITE TANGENTE NON-SYMETRIQUE >>
         PCOHESO NEUT_R ELEM__
-

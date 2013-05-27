@@ -1,4 +1,3 @@
-#@ MODIF sd_resultat SD  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -184,5 +183,3 @@ class sd_resultat(sd_titre):
                 for nom in S1 :
                     if nom.strip() != '' :
                        sd2 = sd_l_charges(nomj=nom); sd2.check(checker)
-
-

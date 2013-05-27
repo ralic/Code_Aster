@@ -1,6 +1,4 @@
-# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE THERMO-PLASTICITE EN TRACTION SIMPLE (MODELISATION : POINT MATERIEL) 
-# hsnv100j.para = tps_job 60 mem_job 256Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -19,7 +17,7 @@
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
 # ======================================================================
 # IDENTIQUE A HSNV100G MAIS AVEC TEST DE AFFE_VARC DANS SIMU_POIN_MAT 
-## RESPONSABLE JMBHH01 J.M.PROIX
+## person_in_charge: jean-michel.proix at edf.fr
 
 DEBUT(CODE=_F(NOM='HSNV100J', NIV_PUB_WEB='INTERNET'), DEBUG=_F(SDVERI='NON'),IMPR_MACRO='OUI')
 

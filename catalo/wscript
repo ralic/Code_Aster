@@ -163,11 +163,10 @@ def get_ld_paths(self):
     ld_path = list(chain(*[Utils.to_list(env[name])
                            for name in ('LIBPATH', 'LIBDIR') if env[name]]))
     # add path where built libs are installed
-    for task_name in ('asterlib', 'asterfermetur'):
-        try:
-            ld_path.insert(0, self.get_tgen_by_name('asterlib').install_task.dest)
-        except Errors.WafError:# depends on --enbed-* options
-            pass
+    try:
+        ld_path.insert(0, self.get_tgen_by_name('asterlib').install_task.dest)
+    except Errors.WafError:# depends on --enbed-* options
+        pass
     return ld_path
 
 def add_to_env_paths(environ, name, path):

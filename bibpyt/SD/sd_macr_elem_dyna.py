@@ -1,4 +1,3 @@
-#@ MODIF sd_macr_elem_dyna SD  DATE 07/05/2012   AUTEUR BODEL C.BODEL 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -71,4 +70,3 @@ class sd_macr_elem_dyna(AsBase):
     def check_macr_elem_dyna_1(self,checker):
         nbdef=self.MAEL_MASS.DESC.get()[1]
         sdu_compare(self.MAEL_INER_VALE, checker, len(self.MAEL_INER_VALE.get()), '==', 3*nbdef, 'LONMAX(MAEL_INER_VALE)')
-

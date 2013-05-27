@@ -1,4 +1,3 @@
-#@ MODIF ce_calcul_expansion Calc_essai  DATE 04/12/2012   AUTEUR COURTOIS M.COURTOIS 
 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -18,7 +17,7 @@
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
 # ======================================================================
 
-# RESPONSABLE BODEL C.BODEL
+# person_in_charge: charles.bodel at edf.fr
 
 import numpy
 import aster
@@ -333,5 +332,3 @@ def make_mesh_mac(nb_l,nb_c):
     f.writelines( ' FIN\n')
     f.close()
     return unite
-
-

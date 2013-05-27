@@ -1,8 +1,6 @@
-# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
-# RESPONSABLE FERNANDES R.FERNANDES
+# person_in_charge: romeo.fernandes at edf.fr
 # ======================================================================
 # TITRE ETUDE : ESSAI BIAXIAL DRAINE NON LOCAL
-# ssnp124c.para = tps_job 60 mem_job 256Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG

@@ -1,7 +1,5 @@
-# MODIF  DATE 22/04/2013   AUTEUR FLEJOU J-L.FLEJOU 
-# RESPONSABLE SFAYOLLE S.FAYOLLE
+# person_in_charge: sebastien.fayolle at edf.fr
 # TITRE  ENDOMMAGEMENT D UNE PLAQUE PLANE SOUS SOLLICITATIONS VARIEES
-# ssns106i.para = tps_job 500 mem_job 512Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -19,7 +17,6 @@
 # ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
-# ssns106b.para = tps_job 600 mem_job 64Mo ncpus 1 liste_test S
 #  DETAILS : MODELISATION : MULTI-COUCHES
 #                          (DKT- ENDO_ISOT_BETON+2*GRILLE ACIER)
 #                                           VS.

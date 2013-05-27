@@ -1,4 +1,3 @@
-#@ MODIF post_dyna_alea_ops Macro  DATE 03/09/2012   AUTEUR ANDRIAM H.ANDRIAMBOLOLONA 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -457,4 +456,3 @@ def post_dyna_alea_ops(self,INTE_SPEC, FRAGILITE,TITRE,INFO,**args):
       tabout = CREA_TABLE(**dprod)
 
    return ier
-

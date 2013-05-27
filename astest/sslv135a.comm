@@ -1,10 +1,8 @@
-# MODIF  DATE 15/01/2013   AUTEUR LADIER A.LADIER 
-# RESPONSABLE ANGLES J.ANGLES
+# person_in_charge: jean.angles at edf.fr
 #
 # TITRE FATIGUE, AMPLITUDE CONSTANTE, CHARGEMENT BI-AXIAL
 #                TEST DES CRITERES AMORCAGE
 #
-# sslv135a.para = tps_job 60 mem_job 768Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG

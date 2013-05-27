@@ -1,5 +1,5 @@
 # -*- coding: iso-8859-1 -*-
-# RESPONSABLE
+# person_in_charge: mathieu.courtois at edf.fr
 
 import os
 import os.path as osp

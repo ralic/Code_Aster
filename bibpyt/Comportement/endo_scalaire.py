@@ -1,4 +1,3 @@
-#@ MODIF endo_scalaire Comportement  DATE 16/04/2012   AUTEUR PROIX J-M.PROIX 
 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -35,4 +34,3 @@ loi = LoiComportement(
    type_matr_tang = ('PERTURBATION', 'VERIFICATION'),
    proprietes     = None,
 )
-

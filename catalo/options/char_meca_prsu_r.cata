@@ -1,5 +1,5 @@
-%& MODIF OPTIONS  DATE 05/10/2010   AUTEUR SELLENET N.SELLENET 
-% RESPONSABLE ABBAS
+%& LIBRARY OPTIONS
+% person_in_charge: mickael.abbas at edf.fr
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -29,4 +29,3 @@ OPTION__
         PDEPLPR  DEPL_R
    OUT__
 PVECTUR VDEP_R RESL__
-

@@ -1,4 +1,4 @@
-%& MODIF OPTIONS  DATE 10/04/2012   AUTEUR DELMAS J.DELMAS 
+%& LIBRARY OPTIONS
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -16,7 +16,7 @@
 % ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 %    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 % ======================================================================
-% RESPONSABLE DELMAS J.DELMAS
+% person_in_charge: josselin.delmas at edf.fr
 SECM_ZZ1
        <<  SECM_ZZ1 : CALCUL DES SECOND MEMBRES ELEMENTAIRES
                       POUR LE LISSAGE GLOBAL >>
@@ -39,4 +39,3 @@ OPTION__
        <<  PVECTR5 : VECTEUR SECOND MEMBRE ELEMENTAIRE POUR LA COMPOSANTE 5  >>
         PVECTR6 VSIZ_R RESL__
        <<  PVECTR6 : VECTEUR SECOND MEMBRE ELEMENTAIRE POUR LA COMPOSANTE 6  >>
-

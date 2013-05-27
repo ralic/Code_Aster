@@ -1,0 +1,102 @@
+subroutine apcpoi(sdappa, ndimg, izone, nommai, typzon,&
+                  tau1, tau2)
+!
+!            CONFIGURATION MANAGEMENT OF EDF VERSION
+! ======================================================================
+! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+! (AT YOUR OPTION) ANY LATER VERSION.
+!
+! THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+! WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+! MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+! GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+!
+! YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+!   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
+! ======================================================================
+! person_in_charge: mickael.abbas at edf.fr
+!
+    implicit none
+    include 'jeveux.h'
+    include 'asterc/r8prem.h'
+    include 'asterfort/apzoni.h'
+    include 'asterfort/apzonv.h'
+    include 'asterfort/assert.h'
+    include 'asterfort/jedema.h'
+    include 'asterfort/jemarq.h'
+    include 'asterfort/mmmron.h'
+    include 'asterfort/normev.h'
+    include 'asterfort/u2mesk.h'
+    include 'asterfort/u2mess.h'
+    character(len=19) :: sdappa
+    character(len=8) :: nommai
+    character(len=4) :: typzon
+    integer :: izone, ndimg
+    real(kind=8) :: tau1(3), tau2(3)
+!
+! ----------------------------------------------------------------------
+!
+! ROUTINE APPARIEMENT (UTILITAIRE)
+!
+! ORIENTATION DES TANGENTES DANS LE CAS DES MAILLES POINT
+!
+! ----------------------------------------------------------------------
+!
+!
+! IN  SDAPPA : NOM DE LA SD APPARIEMENT
+! IN  NDIMG  : DIMENSION DE L'ESPACE
+! IN  IZONE  : NUMERO DE LA ZONE
+! IN  NOMMAI : NOM DE LA MAILLE
+! IN  TYPZON : TYPE DE LA MAILLE 'MAIT' OU 'ESCL'
+! OUT TAU1   : PREMIERE TANGENTE (NON NORMALISEE)
+! OUT TAU2   : SECONDE TANGENTE (NON NORMALISEE)
+!
+!
+!
+!
+    integer :: itype
+    real(kind=8) :: normal(3), norme
+!
+! ----------------------------------------------------------------------
+!
+    call jemarq()
+!
+! --- MAILLE POI1 SEULEMENT ESCLAVE
+!
+    if (typzon .eq. 'MAIT') then
+        call u2mess('F', 'APPARIEMENT_75')
+    endif
+!
+! --- CHOIX DE LA NORMALE SUIVANT UTILISATEUR
+!
+    call apzoni(sdappa, izone, 'TYPE_NORM_ESCL', itype)
+    if (itype .ne. 0) then
+        call apzonv(sdappa, izone, 'VECT_ESCL', normal)
+        call normev(normal, norme)
+    endif
+!
+! --- CONSTRUCTION BASE TANGENTE NULLE
+!
+    if (itype .eq. 0) then
+        call u2mesk('F', 'APPARIEMENT_62', 1, nommai)
+    else if (itype.eq.1) then
+        if (norme .le. r8prem()) then
+            call u2mesk('F', 'APPARIEMENT_63', 1, nommai)
+        else
+            normal(1) = -normal(1)
+            normal(2) = -normal(2)
+            normal(3) = -normal(3)
+            call mmmron(ndimg, normal, tau1, tau2)
+        endif
+    else if (itype.eq.2) then
+        call u2mesk('F', 'APPARIEMENT_62', 1, nommai)
+    else
+        call assert(.false.)
+    endif
+!
+    call jedema()
+end subroutine

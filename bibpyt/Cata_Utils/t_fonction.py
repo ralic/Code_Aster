@@ -1,4 +1,3 @@
-#@ MODIF t_fonction Cata_Utils  DATE 28/01/2013   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -776,5 +775,3 @@ def get_len_puis2(tab_in):
     """Retourne N, la plus grande puissance de 2 telle que 2**N <= len(tab_in)
     """
     return int( log(len(tab_in)) / log(2.) )
-
-

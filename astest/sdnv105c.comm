@@ -1,6 +1,4 @@
-# MODIF  DATE 18/02/2013   AUTEUR SELLENET N.SELLENET 
 # TITRE ROCKING OF A 2D BLOCK RESTING ON A GROUND TABLE
-# sdnv105c.para = tps_job 2020 mem_job 512Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -18,7 +16,7 @@
 # ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
-# RESPONSABLE ABBAS M.ABBAS
+# person_in_charge: mickael.abbas at edf.fr
 # ASTER version 8.3 CALCULATION
 # MODELLING WITH CONTINUOUS CONTACT METHOD
 # THE GROUND TABLE IS EXPLICITLY MODELLED

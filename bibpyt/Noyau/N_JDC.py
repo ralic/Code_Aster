@@ -1,6 +1,5 @@
-#@ MODIF N_JDC Noyau  DATE 28/01/2013   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
-# RESPONSABLE COURTOIS M.COURTOIS
+# person_in_charge: mathieu.courtois at edf.fr
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -622,4 +621,3 @@ Causes possibles :
            self._reserved_kw.update([kw for kw in dir(cat) if len(kw) <= 8 and kw == kw.upper()])
        self._reserved_kw.difference_update(['OPER', 'MACRO', 'BLOC', 'SIMP', 'FACT', 'FORM',
                                             'GEOM', 'MCSIMP', 'MCFACT'])
-

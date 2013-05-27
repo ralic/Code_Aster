@@ -1,6 +1,4 @@
-# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE CYLINDRE EN D.P. (TRIA6 QUAD8)
-# sslv100b.para = tps_job 60 mem_job 256Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================

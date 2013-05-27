@@ -1,4 +1,3 @@
-# MODIF  DATE 03/12/2012   AUTEUR TARDIEU N.TARDIEU 
 # TITRE PLAQUE SUR APPUI SOUMISE A UNE ACCELERATION DE RICKER (METHODE TEMPS-FREQUENCE)
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -17,7 +16,6 @@
 # ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
-# sdls119b.para = tps_job 300 mem_job 512Mo ncpus 1 liste_test R
 
 # Pour des raisons de performances, on force SDVERI='NON'. 
 DEBUT(CODE=_F(NOM='SDLS119B', NIV_PUB_WEB='INTERNET',),

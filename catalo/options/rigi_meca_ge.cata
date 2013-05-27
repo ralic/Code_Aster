@@ -1,5 +1,5 @@
-%& MODIF OPTIONS  DATE 26/03/2013   AUTEUR CHEIGNON E.CHEIGNON 
-% RESPONSABLE PELLET
+%& LIBRARY OPTIONS
+% person_in_charge: jacques.pellet at edf.fr
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -42,4 +42,3 @@ OPTION__
         PSTRXRR  STRX_R  <<  PSTRXRR : CHAMPS SPECIAL ELEMENTS DE STRUCTURE >>
    OUT__
 PMATUUR MDEP_R RESL__
-

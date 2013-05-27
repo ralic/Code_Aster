@@ -1,4 +1,3 @@
-#@ MODIF code_file Execution  DATE 21/01/2013   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -17,7 +16,7 @@
 # ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
-# RESPONSABLE COURTOIS M.COURTOIS
+# person_in_charge: mathieu.courtois at edf.fr
 
 """
 This module defines the visitor used to print the keywords in the CODE file.

@@ -1,4 +1,3 @@
-#@ MODIF sd_interf_dyna_clas SD  DATE 28/06/2011   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -110,4 +109,3 @@ class sd_interf_dyna_clas(AsBase):
             assert defo[k] > 0 , defo
 
         assert sdu_monotone(defo[nbnot:2*nbnot]) in (1,0) , (nbnot,nbec,defo)
-

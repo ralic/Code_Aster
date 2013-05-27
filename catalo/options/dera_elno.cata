@@ -1,4 +1,4 @@
-%& MODIF OPTIONS  DATE 19/05/2011   AUTEUR DELMAS J.DELMAS 
+%& LIBRARY OPTIONS
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -16,7 +16,7 @@
 % ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 %    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 % ======================================================================
-% RESPONSABLE DELMAS
+% person_in_charge: josselin.delmas at edf.fr
 DERA_ELNO
        <<  DERA_ELNO :
            INDICATEUR LOCAL DE DECHARGE ET
@@ -32,4 +32,3 @@ OPTION__
         PDERANO DERA_R ELNO__
        <<  PDERANO : INDICATEUR LOCAL DE DECHARGE  ET
            DE PERTE DE RADIALITE  >>
-

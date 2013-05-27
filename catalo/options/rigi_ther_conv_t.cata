@@ -1,5 +1,5 @@
-%& MODIF OPTIONS  DATE 21/01/2013   AUTEUR DELMAS J.DELMAS 
-% RESPONSABLE DURAND
+%& LIBRARY OPTIONS
+% person_in_charge: Christophe-mmn.durand at edf.fr
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -28,4 +28,3 @@ OPTION__
         PTEMPEI  TEMP_R
    OUT__
 PMATTTR MTNS_R RESL__
-

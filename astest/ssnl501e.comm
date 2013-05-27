@@ -1,9 +1,7 @@
-# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
-# RESPONSABLE ADBHHPM P.MASSIN
+# person_in_charge: patrick.massin at edf.fr
 # DATE   : 13/04/2000
 # AUTEUR : F. LEBOUVIER (DELTACAD)
 # TITRE  : POUTRE ENCASTREE SOUMISE A UNE PRESSION UNIFORME
-# ssnl501e.para = tps_job 70 mem_job 256Mo ncpus 1 liste_test V
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG

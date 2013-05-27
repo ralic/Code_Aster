@@ -1,4 +1,3 @@
-#@ MODIF sd_nume_equa SD  DATE 04/09/2012   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -60,5 +59,3 @@ class sd_nume_equa(sd_prof_chno):
         assert len(delg)==neq
         for x in delg :
            assert x in (-2,-1,0)
-
-

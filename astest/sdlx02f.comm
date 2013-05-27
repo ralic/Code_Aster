@@ -1,9 +1,7 @@
-# MODIF  DATE 16/10/2012   AUTEUR ALARCON A.ALARCON 
-# RESPONSABLE ADBHHPM P.MASSIN
+# person_in_charge: patrick.massin at edf.fr
 # DATE   : 26/09/2000
 # AUTEUR : F. LEBOUVIER (DELTACAD)
 # TITRE  : TUYAUTERIE: PROBLEME DE HOVGAARD.
-# sdlx02f.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG

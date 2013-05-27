@@ -1,4 +1,3 @@
-#@ MODIF macro_mode_meca_ops Macro  DATE 26/02/2013   AUTEUR BOITEAU O.BOITEAU 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================

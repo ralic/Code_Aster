@@ -1,0 +1,225 @@
+subroutine matide(matz, nbcmp, licmp, modlag, tdiag,&
+                  vdiag)
+!            CONFIGURATION MANAGEMENT OF EDF VERSION
+! ======================================================================
+! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+! (AT YOUR OPTION) ANY LATER VERSION.
+!
+! THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+! WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+! MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+! GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+!
+! YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+!   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
+! ======================================================================
+! person_in_charge: jacques.pellet at edf.fr
+    implicit none
+    include 'jeveux.h'
+!
+    include 'asterfort/assert.h'
+    include 'asterfort/jedema.h'
+    include 'asterfort/jedetr.h'
+    include 'asterfort/jelira.h'
+    include 'asterfort/jemarq.h'
+    include 'asterfort/jeveuo.h'
+    include 'asterfort/jexnom.h'
+    include 'asterfort/jexnum.h'
+    include 'asterfort/wkvect.h'
+    character(len=*) :: matz
+    integer :: nbcmp
+    real(kind=8) :: vdiag
+    character(len=8) :: licmp(nbcmp), tdiag
+    character(len=16) :: modlag
+! ---------------------------------------------------------------------
+! BUT: METTRE "A L'IDENTITE"  UNE MATR_ASSE SUR CERTAINS DDLS
+! ---------------------------------------------------------------------
+!     ARGUMENTS:
+! MATZ   IN/JXVAR K19  : MATR_ASSE A MODIFIER
+! NBCMP  IN       I    : NOMBRE DE COMPOSANTES DE LICMP
+! LICMP  IN       K8   : LISTE DES NOMS DES COMPOSANTES
+! MODLAG IN       K16  : MODIFICATION OU PAS DES TERMES DE LAGRANGE
+!                        VALEURS : MODI_LAGR_OUI OU MODI_LAGR_NON
+! TDIAG  IN       K8   : NORMALISATION DES TERMES MODIFIEES
+!                        DE LA DIAGONALE
+!                        VALEURS : MAX_ABS, MIN_ABS ou IMPOSE
+! VDIAG  IN       R8   : SI TDIAG VAUT IMPOSE ALORS VDIAG PERMET
+!                        DE DONNER LA vALEUR A IMPOSER
+! ---------------------------------------------------------------------
+!
+!
+!     ------------------------------------------------------------------
+    integer :: ilig, jcol, kterm, n, nz, jrefa, jsmdi, nsmdi, jsmhc, nsmhc
+    integer :: jdelg, n1, nvale, jvale, nlong, jval2, ibid, nucmp, k, jcmp
+    integer :: jdeeq, jrefn, kcmp, jlddl, jllag
+    character(len=1) :: kbid
+    character(len=8) :: nomgd, nocmp
+    character(len=14) :: nonu
+    character(len=1) :: ktyp
+    character(len=19) :: mat19
+    logical :: ltypr, lsym, eliml, elimc
+    real(kind=8) :: kmax
+    complex(kind=8) :: ckmax
+!
+!     ------------------------------------------------------------------
+    call jemarq()
+!
+    mat19=matz
+!
+    call jeveuo(mat19//'.REFA', 'L', jrefa)
+    nonu=zk24(jrefa-1+2)
+!
+    call jeveuo(nonu//'.SMOS.SMDI', 'L', jsmdi)
+    call jelira(nonu//'.SMOS.SMDI', 'LONMAX', nsmdi, kbid)
+    call jeveuo(nonu//'.SMOS.SMHC', 'L', jsmhc)
+    call jelira(nonu//'.SMOS.SMHC', 'LONMAX', nsmhc, kbid)
+    call jeveuo(nonu//'.NUME.DELG', 'L', jdelg)
+    call jelira(nonu//'.NUME.DELG', 'LONMAX', n1, kbid)
+    call assert(n1.eq.nsmdi)
+!     --- CALCUL DE N
+    n=nsmdi
+!     --- CALCUL DE NZ
+    nz=zi(jsmdi-1+n)
+!
+    call assert(nz.le.nsmhc)
+    call jelira(mat19//'.VALM', 'NMAXOC', nvale, kbid)
+    if (nvale .eq. 1) then
+        lsym=.true.
+    else if (nvale.eq.2) then
+        lsym=.false.
+    else
+        call assert(.false.)
+    endif
+!
+    call jeveuo(jexnum(mat19//'.VALM', 1), 'E', jvale)
+    call jelira(jexnum(mat19//'.VALM', 1), 'LONMAX', nlong, kbid)
+    call assert(nlong.eq.nz)
+    if (.not.lsym) then
+        call jeveuo(jexnum(mat19//'.VALM', 2), 'E', jval2)
+        call jelira(jexnum(mat19//'.VALM', 2), 'LONMAX', nlong, kbid)
+        call assert(nlong.eq.nz)
+    endif
+!
+    call jelira(jexnum(mat19//'.VALM', 1), 'TYPE', ibid, ktyp)
+    ltypr=(ktyp.eq.'R')
+!
+!     -- CALCUL DE LA LISTE DES DDLS A ELIMINER :
+!     -------------------------------------------
+    call wkvect('&&MATIDE.LDDLELIM', 'V V I', n, jlddl)
+    call wkvect('&&MATIDE.LLAG', 'V V I', n, jllag)
+!
+    call jeveuo(nonu//'.NUME.DEEQ', 'L', jdeeq)
+    call jeveuo(nonu//'.NUME.REFN', 'L', jrefn)
+    call jelira(nonu//'.NUME.DEEQ', 'LONMAX', n1, kbid)
+    nomgd=zk24(jrefn-1+2)
+    call jeveuo(jexnom('&CATA.GD.NOMCMP', nomgd), 'L', jcmp)
+    call assert(n1.eq.2*n)
+    do 20,k=1,n
+    nucmp=zi(jdeeq-1+2*(k-1)+2)
+    if (nucmp .gt. 0) then
+        nocmp=zk8(jcmp-1+nucmp)
+        do 10,kcmp=1,nbcmp
+        if (nocmp .eq. licmp(kcmp)) then
+            zi(jlddl-1+k)=1
+        endif
+10      continue
+    else if (modlag(1:13) .eq. 'MODI_LAGR_OUI') then
+        zi(jllag-1+k)=1
+    endif
+    20 end do
+!
+!
+!
+!     ------------------------------------------------
+!     PARCOURS DES TERMES DE LA MATRICE
+!     ------------------------------------------------
+    jcol=1
+    kmax = 0.d0
+    ckmax = dcmplx(0.d0,0.d0)
+    if (tdiag(1:7) .eq. 'MAX_ABS') then
+        if (ltypr) then
+            do 25,kterm=1,nz
+            kmax = max(abs(zr(jvale-1+kterm)),abs(kmax))
+25          continue
+            kmax = kmax*vdiag
+        else
+            do 26,kterm=1,nz
+            ckmax = max(abs(zc(jvale-1+kterm)),abs(ckmax))
+26          continue
+            ckmax = ckmax*vdiag
+        endif
+    else if (tdiag(1:7) .eq. 'MIN_ABS') then
+        if (ltypr) then
+            kmax = abs(zr(jvale))
+            do 27,kterm=1,nz
+            kmax = max(abs(zr(jvale-1+kterm)),abs(kmax))
+27          continue
+            kmax = kmax*vdiag
+        else
+            ckmax = abs(zc(jvale))
+            do 28,kterm=1,nz
+            ckmax = max(abs(zc(jvale-1+kterm)),abs(ckmax))
+28          continue
+            ckmax = ckmax*vdiag
+        endif
+    else if (tdiag(1:6) .eq. 'IMPOSE') then
+        kmax = vdiag
+    else
+        call assert(.false.)
+    endif
+!
+    do 30,kterm=1,nz
+    if (zi(jsmdi-1+jcol) .lt. kterm) jcol=jcol+1
+    ilig=zi4(jsmhc-1+kterm)
+    elimc=.false.
+    eliml=.false.
+    if ((zi(jlddl-1+jcol).eq.1) .and. (zi(jllag-1+jcol).eq.0) .and. (zi(jllag-1+ilig).eq.0)) &
+    elimc=.true.
+    if ((zi(jlddl-1+ilig).eq.1) .and. (zi(jllag-1+ilig).eq.0) .and. (zi(jllag-1+jcol).eq.0)) &
+    eliml=.true.
+!
+    if (elimc .or. eliml) then
+!
+!         -- PARTIE TRIANGULAIRE SUPERIEURE :
+        if (jcol .eq. ilig) then
+            if (ltypr) then
+                zr(jvale-1+kterm)=kmax
+            else
+                zc(jvale-1+kterm)=ckmax
+            endif
+        else
+            if (ltypr) then
+                zr(jvale-1+kterm)=0.d0
+            else
+                zc(jvale-1+kterm)=dcmplx(0.d0,0.d0)
+            endif
+        endif
+!
+!         -- PARTIE TRIANGULAIRE INFERIEURE (SI NON-SYMETRIQUE):
+        if (.not.lsym) then
+            if (jcol .eq. ilig) then
+                if (ltypr) then
+                    zr(jval2-1+kterm)=kmax
+                else
+                    zc(jvale-1+kterm)=ckmax
+                endif
+            else
+                if (ltypr) then
+                    zr(jval2-1+kterm)=0.d0
+                else
+                    zc(jval2-1+kterm)=dcmplx(0.d0,0.d0)
+                endif
+            endif
+        endif
+    endif
+!
+    30 end do
+!
+    call jedetr('&&MATIDE.LDDLELIM')
+    call jedetr('&&MATIDE.LLAG')
+    call jedema()
+end subroutine

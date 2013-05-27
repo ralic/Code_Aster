@@ -1,4 +1,3 @@
-#@ MODIF sd_prof_vgen SD  DATE 21/02/2008   AUTEUR ANDRIAM H.ANDRIAMBOLOLONA 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -27,5 +26,3 @@ class sd_prof_vgen(AsBase):
     NUEQ = AsVI(SDNom(debut=19), )
     DEEQ = AsVI(SDNom(debut=19), )
     DELG = AsVI(SDNom(debut=19), )
-
-

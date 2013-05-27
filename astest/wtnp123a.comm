@@ -1,6 +1,4 @@
-# MODIF  DATE 09/04/2013   AUTEUR GRANET S.GRANET 
 # TITRE - APPARITION DISPARITION DE PHASE DANS UN ECOULEMENT
-# wtnp123a.para = tps_job 400 mem_job 512Mo liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -734,5 +732,3 @@ TEST_RESU(CHAM_ELEM=_F(CRITERE='ABSOLU',
         )
 
 FIN();
-
-

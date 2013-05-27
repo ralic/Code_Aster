@@ -1,4 +1,3 @@
-#@ MODIF mac3coeur_assemblage Mac3coeur  DATE 02/04/2013   AUTEUR PERONY R.PERONY 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -17,7 +16,7 @@
 # ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
 # ======================================================================
-# RESPONSABLE FERNANDES R.FERNANDES
+# person_in_charge: romeo.fernandes at edf.fr
 
 """
 Module dédié à la macro MAC3COEUR.
@@ -465,4 +464,3 @@ class ACFactory(Mac3Factory):
             if type(val) is type and issubclass(val, Assemblage):
                 ctxt[obj] = val
         return ctxt
-

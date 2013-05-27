@@ -1,4 +1,3 @@
-#@ MODIF HookeTensor Utilitai  DATE 22/01/2013   AUTEUR LADIER A.LADIER 
 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -158,4 +157,3 @@ if __name__ == '__main__':
    unittest.main()
    
    
-

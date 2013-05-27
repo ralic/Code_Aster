@@ -1,4 +1,3 @@
-#@ MODIF cata_vari Comportement  DATE 08/04/2013   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -17,7 +16,7 @@
 # ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
-# RESPONSABLE PROIX J.M.PROIX
+# person_in_charge: jean-michel.proix at edf.fr
 
 """Ce module définit les noms de variables internes valides.
 Un comportement ne doit/peut pas utiliser une variable internes dont le
@@ -519,4 +518,3 @@ DICT_NOM_VARI = {
     "ZIRC3" : _(u"phase métallurgique zirconium variable interne 3"),
     "MEMOECRO" : _(u"CIN2_MEMO : variable relative à la mémoire d'écrouissage q"),
 }
-

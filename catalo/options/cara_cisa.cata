@@ -1,5 +1,5 @@
-%& MODIF OPTIONS  DATE 05/10/2010   AUTEUR SELLENET N.SELLENET 
-% RESPONSABLE FLEJOU
+%& LIBRARY OPTIONS
+% person_in_charge: jean-luc.flejou at edf.fr
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -25,4 +25,3 @@ OPTION__
         PTEMPE2  TEMP_R
    OUT__
 PCASECT NEUT_R ELEM__
-

@@ -1,4 +1,3 @@
-#@ MODIF sd_titre SD  DATE 13/02/2007   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -24,4 +23,3 @@ from SD import *
 # Description de la structure de données
 class sd_titre(AsBase):
     TITR = AsVK80(SDNom(debut=19), optional=True)
-

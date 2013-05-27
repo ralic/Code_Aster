@@ -1,4 +1,4 @@
-%& MODIF OPTIONS  DATE 18/12/2012   AUTEUR SELLENET N.SELLENET 
+%& LIBRARY OPTIONS
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -16,7 +16,7 @@
 % ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 %    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 % ======================================================================
-% RESPONSABLE FLEJOU J-L.FLEJOU
+% person_in_charge: jean-luc.flejou at edf.fr
 SIPM_ELNO
        <<  SIPM_ELNO : CALCUL DES CONTRAINTES MAXI ET MINI AUX NOEUDS DANS LA SECTION
            DE POUTRE A PARTIR DES EFFORTS GENERALISES.
@@ -67,4 +67,3 @@ OPTION__
    OUT__
 PCONTRR SIEF_R ELNO__
 PCONTRC SIEF_C ELNO__
-

@@ -1,4 +1,3 @@
-#@ MODIF post_bordet_ops Macro  DATE 18/06/2012   AUTEUR DELMAS J.DELMAS 
 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================

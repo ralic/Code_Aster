@@ -1,0 +1,40 @@
+subroutine ap9999()
+    implicit none
+!           CONFIGURATION MANAGEMENT OF EDF VERSION
+! ==================================================================
+! COPYRIGHT (C) 1991 - 2012  EDF R&D              WWW.CODE-ASTER.ORG
+!
+! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR
+! MODIFY IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS
+! PUBLISHED BY THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE
+! LICENSE, OR (AT YOUR OPTION) ANY LATER VERSION.
+! THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL,
+! BUT WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+! MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+! GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+!
+! YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO : EDF R&D CODE_ASTER,
+!    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
+! ==================================================================
+! person_in_charge: thomas.desoza at edf.fr
+!-----------------------------------------------------------------------
+! BUT : ROUTINE D'INTERFACE ENTRE CODE_ASTER ET LA BIBLIOTHEQUE PETSC
+!       DE RESOLUTION DE SYSTEMES LINEAIRES.
+!
+!       FERME DEFINITIVEMENT PETSC
+!       NECESSAIRE POUR DECLENCHER L'AFFICHAGE DU PROFILING
+!-----------------------------------------------------------------------
+!
+    include 'asterfort/apetsc.h'
+#ifdef _HAVE_PETSC
+!
+    integer :: iret
+    real(kind=8) :: r8b
+!
+    call apetsc('FIN', ' ', ' ', r8b, ' ',&
+                0, 0, iret)
+!
+#endif
+!
+end subroutine

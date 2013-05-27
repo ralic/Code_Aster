@@ -1,6 +1,4 @@
-# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE DETECTION DE SINGULARITE SIMPLE AVEC LES SOLVEURS LINEAIRES
-# erreu03a.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -20,7 +18,7 @@
 # ======================================================================
 #       DIRECTS ET UNE COMMANDE INTEGREE
 #
-# RESPONSABLE COURTOIS M.COURTOIS
+# person_in_charge: mathieu.courtois at edf.fr
 #########################################################################
 # VALIDATION DE LA DETECTION DE SINGULARITE SIMPLE (BLOCAGE ABSENT OU
 # SURABONDANT) AVEC LES SOLVEURS LINEAIRES DIRECTS: MUMPS, LDLT ET MF.

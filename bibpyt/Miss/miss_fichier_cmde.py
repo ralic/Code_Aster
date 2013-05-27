@@ -1,4 +1,3 @@
-#@ MODIF miss_fichier_cmde Miss  DATE 22/04/2013   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -593,4 +592,3 @@ ljH9zqLjBAojPXUn+JVMm5RZi7BEq26P/wXiY//w
 
 if __name__ == '__main__':
     unittest.main()
-

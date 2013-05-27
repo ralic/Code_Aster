@@ -1,6 +1,4 @@
-# MODIF  DATE 05/02/2013   AUTEUR DELMAS J.DELMAS 
 # TITRE VALIDATION DE CALC_CHAMP / SIRO_ELEM
-# zzzz325a.para = tps_job 80 mem_job 256Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -18,7 +16,7 @@
 # ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
 # ======================================================================
-# RESPONSABLE PELLET J.PELLET
+# person_in_charge: jacques.pellet at edf.fr
 
 #########################################################################
 # VALIDATION DE CALC_CHAMP / SIRO_ELEM
@@ -452,4 +450,3 @@ TEST_RESU(RESU=(_F(CRITERE='ABSOLU',
           )
 
 FIN();
-

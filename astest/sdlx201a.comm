@@ -1,7 +1,5 @@
-# MODIF  DATE 02/04/2013   AUTEUR BOITEAU O.BOITEAU 
 # TITRE TEST DE NON-REGRESSION D'ASTER :  MODES PROPRES
-# RESPONSABLE VABHHTS J.PELLET
-# sdlx201a.para = tps_job 300 mem_job 768Mo ncpus 1 liste_test RI
+# person_in_charge: jacques.pellet at edf.fr
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -1288,9 +1286,4 @@ TEST_RESU(RESU=(
           )
 
 FIN()
-
-
-
-
-
 

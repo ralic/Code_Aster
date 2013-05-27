@@ -1,4 +1,3 @@
-#@ MODIF impr_diag_campbell_ops Macro  DATE 27/08/2012   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -17,7 +16,7 @@
 # ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
-# RESPONSABLE Mohamed TORKHANI
+#
 
 
 
@@ -1144,4 +1143,3 @@ def impr_diag_campbell_ops(self, MAILLAGE, MODES, NFREQ_CAMP, TYP_PREC, TYP_TRI,
             il =nbl-ii-1;
             del L_S1[il];
         FINT1.close()
-

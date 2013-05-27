@@ -1,8 +1,6 @@
-# MODIF  DATE 20/11/2012   AUTEUR TRAN V-X.TRAN 
-# RESPONSABLE ANGLES J.ANGLES
+# person_in_charge: jean.angles at edf.fr
 #
 # TITRE FATIGUE, AMPLITUDE VARIABLE, TEST DU CRITERE DANG_VAN_MODI_AV
-# sslv135d.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG

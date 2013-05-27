@@ -1,4 +1,3 @@
-#@ MODIF calcessai0 Messages  DATE 19/03/2013   AUTEUR BRIE N.BRIE 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -18,7 +17,7 @@
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 
-# RESPONSABLE BODEL C.BODEL
+# person_in_charge: charles.bodel at edf.fr
 
 cata_msg={
 

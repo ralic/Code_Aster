@@ -1,5 +1,4 @@
-# MODIF  DATE 14/05/2013   AUTEUR COURTOIS M.COURTOIS 
-# RESPONSABLE SFAYOLLE S.FAYOLLE
+# person_in_charge: sebastien.fayolle at edf.fr
 # TITRE  : ENDOMMAGEMENT D UNE PLAQUE PLANE SOUS SOLLICITATIONS VARIEES
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -18,7 +17,6 @@
 # ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
-# ssns106l.para = tps_job 600 mem_job 512Mo ncpus 1 liste_test S
 # ======================================================================
 #  DETAILS : MODELISATION :
 #                           DKTG (GLRC_DM)
@@ -660,4 +658,3 @@ DETRUIRE(CONCEPT=_F(NOM=(TDY_G2,),),);
 IMPR_TABLE(TABLE=TD_G2,);
 
 FIN()
-

@@ -1,6 +1,4 @@
-# MODIF  DATE 09/04/2013   AUTEUR PELLET J.PELLET 
 # TITRE METHODE DES SOLUTIONS MANUFACTUREES : THERMIQUE 2D
-# tplp107b.para = tps_job 600 mem_job 512Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -330,7 +328,3 @@ TEST_FONCTION(VALEUR=_F(VALE_CALC=2.98481026669,
               )
 
 FIN();
-
-
-
-

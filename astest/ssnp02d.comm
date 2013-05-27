@@ -1,6 +1,4 @@
-# MODIF  DATE 26/03/2013   AUTEUR PROIX J-M.PROIX 
 # TITRE PLAQUE CARREE EN TRACTION BIAXIALE NORTON 
-# ssnp02d.para = tps_job 60 mem_job 256Mo ncpus 1 liste_test V
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG

@@ -1,6 +1,4 @@
-# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE CYLINDRE MINCE SOUS CHARGE AXIALE UNIFORME (AXIS) -ancien SSLP07a
-# ssls07a.para = tps_job 60 mem_job 256Mo ncpus 1 liste_test V
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -19,7 +17,7 @@
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 #
-# RESPONSABLE  g8bhhxd X.DESROCHES
+# person_in_charge: xavier.desroches at edf.fr
 
 DEBUT( CODE=_F(  NOM = 'SSLS07A',NIV_PUB_WEB='INTERNET') )
 

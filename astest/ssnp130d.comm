@@ -1,6 +1,4 @@
-# MODIF  DATE 20/11/2012   AUTEUR DELMAS J.DELMAS 
 # TITRE DETECTION DES SINGULARITES DANS UNE PLAQUE FISSUREE (QUAD8)
-# ssnp130d.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -18,7 +16,7 @@
 # ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
-# RESPONSABLE DELMAS J.DELMAS
+# person_in_charge: josselin.delmas at edf.fr
 # TEST V6.03.130
 # CHARGEMENT EN PRESSION
 # MAILLAGE : QUAD8

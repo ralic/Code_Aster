@@ -1,4 +1,3 @@
-# MODIF  DATE 18/02/2013   AUTEUR SELLENET N.SELLENET 
 # TITRE  MODELISATION D UN GRADIENT D'EAU SUR UN BARREAU SATURE EN LIQUIDE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -18,7 +17,6 @@
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 # INCOMPRESSIBLE
-# wtnp127a.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test R
 #    LINEAIRE SOUMIS A UN CHOC DE PRESSION EN 3D
 #    MODELISATION VF DECENTRE MAILLE (VFDM)
 

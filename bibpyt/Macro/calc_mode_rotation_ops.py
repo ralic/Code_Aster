@@ -1,4 +1,3 @@
-#@ MODIF calc_mode_rotation_ops Macro  DATE 19/03/2013   AUTEUR BRIE N.BRIE 
 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -17,7 +16,7 @@
 # ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
 # ======================================================================
-# RESPONSABLE Mohamed TORKHANI
+#
 
 from Accas import _F
 from types import ListType, TupleType

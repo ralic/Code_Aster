@@ -1,4 +1,3 @@
-#@ MODIF ce_visu Calc_essai  DATE 14/12/2010   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -18,7 +17,7 @@
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
 # ======================================================================
 
-# RESPONSABLE BODEL C.BODEL
+# person_in_charge: charles.bodel at edf.fr
 
 # Ce module est une surcharge de pylotage 2.0.2
 # Il faudra reporter les methodes modifiees dans la prochaine version
@@ -114,5 +113,3 @@ class Visu(Visu):
         except:
            pass
         return ok
-
-

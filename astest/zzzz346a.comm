@@ -1,6 +1,4 @@
-# MODIF  DATE 07/05/2013   AUTEUR NDEFFO M.NDEFFO 
 # TITRE BIFURCATION D UNE FISSURE DROITE XFEM
-# zzzz346a.para = tps_job 60 mem_job 256Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG

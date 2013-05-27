@@ -1,4 +1,3 @@
-#@ MODIF ce_calcul_modifstruct Calc_essai  DATE 06/11/2012   AUTEUR BODEL C.BODEL 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -18,7 +17,7 @@
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 
-# RESPONSABLE BODEL C.BODEL
+# person_in_charge: charles.bodel at edf.fr
 
 # La classe CalcEssaiModifStruct permet de gerer les calculs de modification structurale
 #
@@ -1177,5 +1176,3 @@ def obj_get_name( obj ):
     elif hasattr(obj,'nom'):
         return obj.nom.strip()
     return None
-
-

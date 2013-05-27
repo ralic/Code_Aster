@@ -1,0 +1,105 @@
+subroutine pcfact(matas, nequ, in, ip, ac,&
+                  prc, vect, epsi)
+!            CONFIGURATION MANAGEMENT OF EDF VERSION
+! ======================================================================
+! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+! (AT YOUR OPTION) ANY LATER VERSION.
+!
+! THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+! WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+! MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+! GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+!
+! YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+!    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
+! ======================================================================
+! TOLE CRP_4
+    implicit none
+!-----------------------------------------------------------------------
+!  FONCTION  :  CREATION D'UNE MATRICE DE PRECONDITIONNEMENT PRC
+!     PAR LDLT INCOMPLET SUR LA MATRICE MAT STOCKEE SOUS FORME MORSE
+!     EN NE STOCKANT SOUS FORME MORSE DANS LA MATRICE PRC QUE LES
+!     TERMES OCCUPANT LA MEME POSITION QUE DANS LA MATRICE DE DEPART
+!
+!     ON STOCKE L ' INVERSE DE LA DIAGONALE   ( VOIR S-P GCLDM1 )
+!
+!  REMARQUE: A L'APPEL AC ET PRC PEUVENT ETRE CONFONDUS
+!-----------------------------------------------------------------------
+    include 'asterfort/u2mesg.h'
+    real(kind=8) :: ac(*), prc(*), vect(nequ)
+    character(len=19) :: matas
+    integer :: in(nequ)
+    integer(kind=4) :: ip(*)
+    integer :: vali
+!
+!
+!     TDEB = SECOND()
+!          ---- MISE A 0  DU VECTEUR AUXILIAIRE POUR PROD-SCAL CREUX
+!-----------------------------------------------------------------------
+    integer :: i, j, jdeb, jfin, jj, kdeb, kfin
+    integer :: ki, kk, nequ
+    real(kind=8) :: cumul, epsi
+!-----------------------------------------------------------------------
+    do 10 j = 1, nequ
+        vect(j) = 0.d0
+10  end do
+!
+!       ---- PREMIER TERME DIAGONAL...ON STOCKE LES INVERSES
+    prc(1) = 1.d0/ac(1)
+!
+!---- BOUCLE SUR LES LIGNES DE LA MATRICE
+    do 50 i = 2, nequ
+!CCC  DO 100 I = 2 , 100
+        jfin = in(i)
+        jdeb = in(i-1) + 1
+!      ---- TEST SI LIGNE VIDE
+        if (jdeb .le. jfin) then
+!        ---- TEST SI LIGNE(I)=SEUL TERME DIAG
+            if (jdeb .eq. jfin) then
+                cumul = ac(jfin)
+            else
+!        ---- PREMIER TERME DE LA LIGNE
+                prc(jdeb) = ac(jdeb)
+!                ALTERATION DU VECTEUR AUXILIAIRE POUR PROD-SCAL CREUX
+                vect(ip(jdeb)) = ac(jdeb)
+!          ---- TERMES COURANTS DE LA LIGNE
+                do 30 jj = jdeb + 1, jfin - 1
+                    cumul = ac(jj)
+                    j = ip(jj)
+                    kfin = in(j)
+                    kdeb = in(j-1) + 1
+                    do 20 kk = kdeb, kfin - 1
+                        cumul = cumul - prc(kk)*vect(ip(kk))
+20                  continue
+                    prc(jj) = cumul
+!                ALTERATION DU VECTEUR AUXILIAIRE POUR PROD-SCAL CREUX
+                    vect(ip(jj)) = cumul
+30              continue
+!          ---- TERME DIAGONAL
+                cumul = ac(jfin)
+!DIR$ IVDEP
+                do 40 ki = jdeb, jfin - 1
+                    prc(ki) = prc(ki)*prc(in(ip(ki)))
+                    cumul = cumul - prc(ki)*vect(ip(ki))
+!                   REMISE A 0 PARTIELLE DU VECTEUR AUXILIAIRE
+                    vect(ip(ki)) = 0.d0
+40              continue
+            endif
+!        ---- TEST DE SINGULARITE
+            if (abs(cumul) .lt. epsi) then
+                vali = i
+                call u2mesg('F', 'ALGELINE4_58', 0, ' ', 1,&
+                            vali, 0, 0.d0)
+            endif
+            prc(jfin) = 1.d0/cumul
+        endif
+50  end do
+!     TFIN = SECOND() - TDEB
+!     NCOEF = IN(NEQU)
+!     WRITE (6,*) ' S-P PCFACT NCOEF= ',NCOEF
+!     WRITE (6,*) '       DUREE ',TFIN
+end subroutine

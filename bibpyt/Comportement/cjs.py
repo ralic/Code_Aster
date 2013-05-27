@@ -1,4 +1,3 @@
-#@ MODIF cjs Comportement  DATE 13/11/2012   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -17,7 +16,7 @@
 # ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
 # ======================================================================
-# RESPONSABLE GRANET S.GRANET
+# person_in_charge: sylvie.granet at edf.fr
 
 from cata_comportement import LoiComportement
 
@@ -35,4 +34,3 @@ loi = LoiComportement(
    type_matr_tang = ('PERTURBATION', 'VERIFICATION'),
    proprietes     = ' ',
 )
-

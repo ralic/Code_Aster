@@ -1,4 +1,3 @@
-#@ MODIF mecanonline7 Messages  DATE 17/12/2012   AUTEUR DESOZA T.DESOZA 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================

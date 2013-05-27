@@ -1,4 +1,3 @@
-#@ MODIF mecanonline8 Messages  DATE 17/12/2012   AUTEUR DESOZA T.DESOZA 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -83,5 +82,3 @@ cata_msg = {
 70 : _(u"""     dont temps "perdu" dans les découpes   : %(k1)s -> la liste d'instant est efficace à %(r1).1f %%"""),
 
 }
-
-

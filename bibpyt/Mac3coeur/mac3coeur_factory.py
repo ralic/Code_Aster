@@ -1,4 +1,3 @@
-#@ MODIF mac3coeur_factory Mac3coeur  DATE 05/07/2011   AUTEUR FERNANDES R.FERNANDES 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -17,7 +16,7 @@
 # ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
 # ======================================================================
-# RESPONSABLE FERNANDES R.FERNANDES
+# person_in_charge: romeo.fernandes at edf.fr
 
 """
 Module dédié à la macro MAC3COEUR.
@@ -68,4 +67,3 @@ class Mac3Factory(object):
         if self.cata.get(objname) is None:
             self._import_obj(objname)
         return self.cata[objname]
-

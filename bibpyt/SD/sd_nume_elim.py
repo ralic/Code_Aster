@@ -1,4 +1,3 @@
-#@ MODIF sd_nume_elim SD  DATE 21/06/2010   AUTEUR CORUS M.CORUS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -26,5 +25,3 @@ class sd_nume_elim(sd_prof_vgen):
     BASE = AsVR(SDNom(debut=19),)
     TAIL = AsVI(SDNom(debut=19),)
     NOMS = AsVK8(SDNom(debut=19),)
-
-

@@ -1,4 +1,3 @@
-#@ MODIF sd_resultat_dyn SD  DATE 27/08/2012   AUTEUR ALARCON A.ALARCON 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -46,4 +45,3 @@ class sd_resultat_dyn(sd_resultat):
             sd2 = sd_nume_ddl(refd[3]); sd2.check(checker)
         if refd[4] :
             sd2 = sd_interf_dyna_clas(refd[4]); sd2.check(checker)
-

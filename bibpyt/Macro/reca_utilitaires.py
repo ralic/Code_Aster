@@ -1,6 +1,5 @@
-#@ MODIF reca_utilitaires Macro  DATE 27/08/2012   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
-# RESPONSABLE ASSIRE A.ASSIRE
+# person_in_charge: aimery.assire at edf.fr
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -242,4 +241,3 @@ def graphique(FORMAT, L_F, res_exp, reponses, iter, UL_out, pilote, fichier=None
 
   except Exception, err:
      UTMESS('A','RECAL0_42',valk=str(err) )
-

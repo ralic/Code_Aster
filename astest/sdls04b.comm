@@ -1,6 +1,4 @@
-# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE PLAQUE ANNULAIRE ENCASTREE SUR UN MOYEU (MAC NEAL)
-# sdls04b.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -281,9 +279,4 @@ TEST_RESU(RESU=(_F(NUME_MODE=1,
 
 #
 FIN()
-
-
-
-
-
 

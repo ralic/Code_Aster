@@ -1,6 +1,4 @@
-# MODIF  DATE 15/10/2012   AUTEUR GRANET S.GRANET 
 # TITRE - APPARITION DISPARITION DE PHASE 
-# wtnp123b.para = tps_job 150 mem_job 512Mo liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -572,5 +570,3 @@ TEST_RESU(RESU=_F(INST=2.628000E6,
         )
    
 FIN();
-
-

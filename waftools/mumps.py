@@ -12,7 +12,7 @@ def options(self):
                     dest='enable_mumps', help='Force MUMPS support')
     group.add_option('--mumps-version', type='string',
                     dest='mumps_version', default=None,
-                    help='mumps headers version to use inside bibf90')
+                    help='mumps headers version to use inside bibfor')
     group.add_option('--mumps-libs', type='string', dest='mumps_libs',
                     default=None,
                     help='mumps librairies to use when linking')
@@ -70,9 +70,9 @@ def get_mumps_version(self):
             ret = self.check_cc(fragment=frag, execute=True, define_ret=True,
                                 mandatory=True)
 
-        to_search = 'bibf90/include_mumps-%s*/' % ret
+        to_search = 'bibfor/include_mumps-%s*/' % ret
         if not self.srcnode.ant_glob(to_search, src=True, dir=True):
-            raise Errors.ConfigurationError('"%s" not compatible (see bibf90/include_mumps*)' % ret)
+            raise Errors.ConfigurationError('"%s" not compatible (see bibfor/include_mumps*)' % ret)
         self.env.MUMPS_version = ret
     except:
         self.end_msg('no', 'YELLOW')

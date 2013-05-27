@@ -1,6 +1,4 @@
-# MODIF  DATE 18/02/2013   AUTEUR SELLENET N.SELLENET 
 # TITRE REPONSE A DES CHEMINS MIXTES DE SATURATION - CONSOLIDATION EN 3D
-# wtnv126a.para = tps_job 160 mem_job 256Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG

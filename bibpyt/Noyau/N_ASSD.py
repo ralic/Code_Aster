@@ -1,6 +1,5 @@
-#@ MODIF N_ASSD Noyau  DATE 06/08/2012   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
-# RESPONSABLE COURTOIS M.COURTOIS
+# person_in_charge: mathieu.courtois at edf.fr
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -232,4 +231,3 @@ class not_checked(ASSD):
     def __convert__(cls, valeur):
         return valeur
     __convert__ = classmethod(__convert__)
-

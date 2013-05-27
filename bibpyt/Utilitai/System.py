@@ -1,4 +1,3 @@
-#@ MODIF System Utilitai  DATE 17/10/2011   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -18,7 +17,7 @@
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 
-# RESPONSABLE COURTOIS M.COURTOIS
+# person_in_charge: mathieu.courtois at edf.fr
 
 """Ce module définit la classe `SYSTEM` et la fonction `ExecCommand`
 qui est présente uniquement pour commodité pour les Macros.
@@ -211,4 +210,3 @@ ExecCommand = system.Shell
 
 if __name__ == '__main__':
    iret, output = ExecCommand('ls', alt_comment='Lancement de la commande...')
-

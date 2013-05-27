@@ -1,0 +1,372 @@
+subroutine op0183()
+!
+!            CONFIGURATION MANAGEMENT OF EDF VERSION
+! ======================================================================
+! COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
+! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+! (AT YOUR OPTION) ANY LATER VERSION.
+!
+! THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+! WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+! MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+! GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+!
+! YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+!   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
+! ======================================================================
+!
+    implicit   none
+!
+!-----------------------------------------------------------------------
+!     COMMANDE :  CALC_FORC_NONL
+!-----------------------------------------------------------------------
+!
+    include 'jeveux.h'
+    include 'asterc/getres.h'
+    include 'asterc/getvid.h'
+    include 'asterc/getvr8.h'
+    include 'asterc/getvtx.h'
+    include 'asterfort/asasve.h'
+    include 'asterfort/assert.h'
+    include 'asterfort/codent.h'
+    include 'asterfort/copisd.h'
+    include 'asterfort/detrsd.h'
+    include 'asterfort/dismoi.h'
+    include 'asterfort/infbav.h'
+    include 'asterfort/infmaj.h'
+    include 'asterfort/infmue.h'
+    include 'asterfort/jedema.h'
+    include 'asterfort/jedetr.h'
+    include 'asterfort/jeexin.h'
+    include 'asterfort/jelira.h'
+    include 'asterfort/jemarq.h'
+    include 'asterfort/jerazo.h'
+    include 'asterfort/jeveuo.h'
+    include 'asterfort/nmdome.h'
+    include 'asterfort/nmdorc.h'
+    include 'asterfort/onerrf.h'
+    include 'asterfort/rcmfmc.h'
+    include 'asterfort/rsadpa.h'
+    include 'asterfort/rscrsd.h'
+    include 'asterfort/rsexch.h'
+    include 'asterfort/rsnoch.h'
+    include 'asterfort/rsutnu.h'
+    include 'asterfort/u2mesk.h'
+    include 'asterfort/u2mess.h'
+    include 'asterfort/vefnme.h'
+    include 'asterfort/vrcins.h'
+    include 'asterfort/vtcreb.h'
+    include 'asterfort/wkvect.h'
+    integer :: ibid
+    integer :: i, iachar, iad, ichar
+    integer :: iordr, iret, iret2, j
+    integer :: jfo, jfono, jinfc
+    integer :: jnoch, jordr
+    integer :: lonch, lref, lvafon, n0, n2, nbchar
+    integer :: nbddl, nbordr, nc, neq, nh, np
+    integer :: ii, ltps, ltps2
+    integer :: jref
+    real(kind=8) :: time, prec, partps(3)
+!
+    character(len=2) :: codret
+    character(len=6) :: nompro
+    character(len=8) :: k8bid, ctyp, crit, materi
+    character(len=8) :: kiord
+    character(len=16) :: option, type, oper, k16bid
+    character(len=16) :: compex
+    character(len=19) :: resuco, knum, infcha, ligrel, resuc1, chdep2
+    character(len=24) :: modele, mater, carac, charge, infoch, chamno
+    character(len=24) :: nume, vfono, vafono, sigma, chdepl, k24bid
+    character(len=24) :: vreno, compor, chvive, chacve
+    character(len=24) :: bidon, chvarc
+    character(len=24) :: numref, valk(3)
+!     ------------------------------------------------------------------
+    parameter(nompro='OP0183')
+!     ------------------------------------------------------------------
+!
+    logical :: exitim, fnoevo
+    integer :: iarg
+!
+!     ------------------------------------------------------------------
+    data infcha/'&&INFCHA.INFCHA'/
+    data k24bid/' '/
+    data chvarc/'&&OP0183.CHVARC'/
+!     ------------------------------------------------------------------
+!
+    call jemarq()
+    call infmaj()
+!
+! --- ON STOCKE LE COMPORTEMENT EN CAS D'ERREUR AVANT MNL : COMPEX
+! --- PUIS ON PASSE DANS LE MODE "VALIDATION DU CONCEPT EN CAS D'ERREUR"
+    call onerrf(' ', compex, ibid)
+    call onerrf('EXCEPTION+VALID', k16bid, ibid)
+!
+    call infmue()
+!
+! --- OPTIONS A CALCULER
+!
+    call getres(resuc1, type, oper)
+    call assert(type.eq.'DYNA_TRANS')
+    call getvid(' ', 'RESULTAT', 1, iarg, 1,&
+                resuco, n0)
+    call assert(resuco.ne.resuc1)
+!
+!
+    call getvtx(' ', 'OPTION', 1, iarg, 1,&
+                option, n2)
+    call assert(n2.eq.1 .and. option.eq.'FONL_NOEU')
+!
+!
+    knum='&&'//nompro//'.NUME_ORDRE'
+!
+!=======================================================================
+    k8bid='&&'//nompro
+    ibid=1
+!=======================================================================
+!
+    call getvr8(' ', 'PRECISION', 1, iarg, 1,&
+                prec, np)
+    call getvtx(' ', 'CRITERE', 1, iarg, 1,&
+                crit, nc)
+!
+    call rsutnu(resuco, ' ', 0, knum, nbordr,&
+                prec, crit, iret)
+    if (iret .eq. 10) then
+        call u2mesk('S', 'CALCULEL4_8', 1, resuco)
+        goto 60
+!
+    endif
+    if (iret .ne. 0) then
+        call u2mess('S', 'ALGORITH3_41')
+        goto 60
+!
+    endif
+    call jeveuo(knum, 'L', jordr)
+    bidon='&&'//nompro//'.BIDON'
+!
+!
+    exitim=.true.
+    carac=' '
+    charge=' '
+    mater=' '
+    call rscrsd('G', resuc1, type, nbordr)
+    call getvid(' ', 'MODELE', 1, iarg, 1,&
+                modele, n0)
+    ligrel=modele(1:8)//'.MODELE'
+    call assert(n0.eq.1)
+    call getvid(' ', 'CHAM_MATER', 1, iarg, 1,&
+                materi, n0)
+    if (n0 .gt. 0) then
+        call rcmfmc(materi, mater)
+    else
+        mater=' '
+    endif
+    carac=' '
+    call getvid(' ', 'CARA_ELEM', 1, iarg, 1,&
+                carac, n0)
+!
+! INFO. RELATIVE AUX CHARGES
+    charge=infcha//'.LCHA'
+    infoch=infcha//'.INFC'
+    call jeexin(infoch, iret)
+    call assert(iret.eq.0)
+    nbchar=0
+    ichar=1
+!
+!
+!
+    time=0.d0
+    partps(1)=0.d0
+    partps(2)=0.d0
+    partps(3)=0.d0
+!
+!
+    numref=' '
+    call wkvect(resuc1//'.REFD', 'G V K24', 7, jref)
+    call jeveuo(resuco//'.REFD', 'L', lref)
+    zk24(jref)=zk24(lref)
+    zk24(jref+1)=zk24(lref+1)
+    zk24(jref+2)=zk24(lref+2)
+    zk24(jref+3)=zk24(lref+3)
+    zk24(jref+4)=zk24(lref+4)
+    zk24(jref+5)=zk24(lref+5)
+    zk24(jref+6)=zk24(lref+6)
+    if (zk24(jref) .ne. ' ') then
+        call dismoi('F', 'NOM_NUME_DDL', zk24(jref), 'MATR_ASSE', ibid,&
+                    numref, iret)
+    endif
+!
+!
+    numref=' '
+    call jeveuo(resuco//'.REFD', 'L', jref)
+    if (zk24(jref) .ne. ' ') then
+        call dismoi('F', 'NOM_NUME_DDL', zk24(jref), 'MATR_ASSE', ibid,&
+                    numref, iret)
+    endif
+!
+!
+    do 50 i = 1, nbordr
+        call jemarq()
+        iordr=zi(jordr+i-1)
+        charge=infcha//'.LCHA'
+        infoch=infcha//'.INFC'
+        call jeexin(infoch, iret)
+        if (iret .ne. 0) then
+            call jeveuo(infoch, 'L', jinfc)
+            nbchar=zi(jinfc)
+            if (nbchar .ne. 0) then
+                call jeveuo(charge, 'L', iachar)
+                call jedetr('&&'//nompro//'.L_CHARGE')
+                call wkvect('&&'//nompro//'.L_CHARGE', 'V V K8', nbchar, ichar)
+                do 20 ii = 1, nbchar
+                    zk8(ichar-1+ii)=zk24(iachar-1+ii)(1:8)
+20              continue
+            else
+                ichar=1
+            endif
+        else
+            nbchar=0
+            ichar=1
+        endif
+!
+!
+!
+        vfono=' '
+        vafono=' '
+        vreno='&&'//nompro//'           .RELR'
+        nh=0
+!
+        call rsexch(' ', resuco, 'SIEF_ELGA', iordr, sigma,&
+                    iret)
+        if (iret .ne. 0) then
+            call rsexch(' ', resuco, 'SIEF_ELGA', iordr, sigma,&
+                        iret2)
+            if (iret2 .ne. 0 .and. option .ne. 'FONL_NOEU') then
+                call codent(iordr, 'G', kiord)
+                valk(1)=kiord
+                valk(2)=option
+                call u2mesk('A', 'PREPOST5_2', 2, valk)
+                goto 40
+!
+            endif
+            if (iret2 .ne. 0 .and. option .eq. 'FONL_NOEU') then
+                sigma=' '
+            endif
+        endif
+!
+        call rsexch(' ', resuco, 'DEPL', iordr, chdepl,&
+                    iret)
+        if (iret .ne. 0) then
+            call codent(iordr, 'G', kiord)
+            valk(1)=kiord
+            valk(2)=option
+            call u2mesk('A', 'PREPOST5_3', 2, valk)
+            goto 40
+        else
+!         CREATION D'UN VECTEUR ACCROISSEMENT DE DEPLACEMENT NUL
+!         POUR LE CALCUL DE FORC_NODA DANS LES POU_D_T_GD
+!
+            chdep2='&&'//nompro//'.CHDEP_NUL'
+            call copisd('CHAMP_GD', 'V', chdepl, chdep2)
+            call jelira(chdep2//'.VALE', 'LONMAX', nbddl, k8bid)
+            call jerazo(chdep2//'.VALE', nbddl, 1)
+        endif
+!
+!       -- CALCUL D'UN NUME_DDL "MINIMUM" POUR ASASVE :
+        nume=numref(1:14)//'.NUME'
+!
+        call rsexch(' ', resuco, 'VITE', iordr, chvive,&
+                    iret)
+        if (iret .eq. 0) then
+            chvive='&&'//nompro//'.CHVIT_NUL'
+            call copisd('CHAMP_GD', 'V', chdepl, chvive)
+            call jelira(chvive(1:19)//'.VALE', 'LONMAX', nbddl, k8bid)
+            call jerazo(chvive(1:19)//'.VALE', nbddl, 1)
+        endif
+        call rsexch(' ', resuco, 'ACCE', iordr, chacve,&
+                    iret)
+        if (iret .eq. 0) then
+            chacve='&&'//nompro//'.CHACC_NUL'
+            call copisd('CHAMP_GD', 'V', chdepl, chacve)
+            call jelira(chacve(1:19)//'.VALE', 'LONMAX', nbddl, k8bid)
+            call jerazo(chacve(1:19)//'.VALE', nbddl, 1)
+        endif
+!
+        if (exitim) then
+            call rsadpa(resuco, 'L', 1, 'INST', iordr,&
+                        0, iad, ctyp)
+            time=zr(iad)
+        endif
+!
+        call vrcins(modele, mater, carac, time, chvarc(1:19),&
+                    codret)
+!
+!       --- CALCUL DES VECTEURS ELEMENTAIRES ---
+        if (i .eq. 1) then
+            compor='&&OP0183.COMPOR'
+            call nmdorc(modele, compor, k24bid)
+        endif
+!
+        fnoevo=.false.
+        call vefnme(modele, sigma, carac, chdepl, chdep2,&
+                    vfono, mater, compor, nh, fnoevo,&
+                    partps, k24bid, chvarc, ligrel, option,&
+                    ' ')
+!
+!       --- ASSEMBLAGE DES VECTEURS ELEMENTAIRES ---
+        call asasve(vfono, nume, 'R', vafono)
+!
+        call rsexch(' ', resuc1, 'DEPL', iordr, chamno,&
+                    iret)
+        call rsadpa(resuc1, 'E', 1, 'INST', iordr,&
+                    0, ltps2, k8bid)
+        call rsadpa(resuco, 'L', 1, 'INST', iordr,&
+                    0, ltps, k8bid)
+        zr(ltps2)=zr(ltps)
+!
+!
+        call jeexin(chamno(1:19)//'.REFE', iret)
+        if (iret .ne. 0) then
+            call codent(iordr, 'G', kiord)
+            valk(1)=option
+            valk(2)=kiord
+            call u2mesk('A', 'PREPOST5_1', 2, valk)
+            call detrsd('CHAM_NO', chamno(1:19))
+        endif
+        call vtcreb(chamno, nume, 'G', 'R', neq)
+        call jeveuo(chamno(1:19)//'.VALE', 'E', jnoch)
+!
+        call jeveuo(vafono, 'L', jfo)
+        call jeveuo(zk24(jfo)(1:19)//'.VALE', 'L', jfono)
+        call jelira(zk24(jfo)(1:19)//'.VALE', 'LONMAX', lvafon, k8bid)
+        call jelira(chamno(1:19)//'.VALE', 'LONMAX', lonch, k8bid)
+!
+        do 30 j = 0, lonch-1
+            zr(jnoch+j)=zr(jfono+j)
+30      continue
+!
+        call rsnoch(resuc1, 'DEPL', iordr)
+        call nmdome(modele, mater, carac, infcha, resuc1(1:8),&
+                    iordr)
+!
+        call detrsd('CHAMP_GD', '&&'//nompro//'.SIEF')
+        call detrsd('VECT_ELEM', vfono(1:8))
+        call detrsd('VECT_ELEM', vreno(1:8))
+40      continue
+        call jedema()
+50  end do
+!
+    call jedetr(knum)
+    call detrsd('CHAMP_GD', bidon)
+!
+! --- ON REMET LE MECANISME D'EXCEPTION A SA VALEUR INITIALE
+    call onerrf(compex, k16bid, ibid)
+!
+60  continue
+    call infbav()
+    call jedema()
+!
+end subroutine

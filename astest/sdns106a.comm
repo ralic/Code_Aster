@@ -1,7 +1,5 @@
-# MODIF  DATE 07/05/2013   AUTEUR DESOZA T.DESOZA 
-# RESPONSABLE SFAYOLLE S.FAYOLLE
+# person_in_charge: sebastien.fayolle at edf.fr
 #  TITRE  : REPONSE TRANSITOIRE D'UNE DALLE EN BETON ARME (MODELE GLRC)
-# sdns106a.para = tps_job 180 mem_job 256Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG

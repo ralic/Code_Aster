@@ -1,4 +1,3 @@
-#@ MODIF gene_acce_seisme_ops Macro  DATE 06/08/2012   AUTEUR ZENTNER I.ZENTNER 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -271,4 +270,3 @@ def gene_acce_seisme_ops(self,PAS_INST,DSP,MODULATION, NB_POIN,PESANTEUR,  TITRE
 
 
    return ier
-

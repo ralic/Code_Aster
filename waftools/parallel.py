@@ -72,12 +72,5 @@ def check_openmp(self):
     except (Errors.ConfigurationError, Errors.BuildError):
         self.env.append_value('FCFLAGS_OPENMP', ['-fopenmp'])
         self.env.append_value('FCLINKFLAGS_OPENMP', ['-fopenmp'])
-    self.check_cc(
-        header_name = "omp.h",
-             cflags = self.env.FCFLAGS_OPENMP,
-          linkflags = self.env.FCLINKFLAGS_OPENMP,
-       uselib_store = "OPENMP",
-        define_name = '_USE_OPENMP',
-                use = 'MPI',
-          mandatory = False,
-    )
+    if self.env.FCFLAGS_OPENMP:
+        self.env.append_unique('DEFINES', ['_USE_OPENMP'])

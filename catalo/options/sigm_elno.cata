@@ -1,4 +1,4 @@
-%& MODIF OPTIONS  DATE 12/12/2011   AUTEUR DELMAS J.DELMAS 
+%& LIBRARY OPTIONS
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -16,7 +16,7 @@
 % ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 %    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 % ======================================================================
-% RESPONSABLE PELLET J.PELLET 
+% person_in_charge: jacques.pellet at edf.fr
 SIGM_ELNO
        <<  SIGM_ELNO : CALCUL DES CONTRAINTES PAR ELEMENT AUX NOEUDS  >>
 OPTION__
@@ -49,4 +49,3 @@ OPTION__
        <<  PSIEFNOR : CONTRAINTES REELLES PAR ELEMENT AUX NOEUDS  >>
         PSIEFNOC SIEF_C ELNO__
        <<  PSIEFNOC : CONTRAINTES COMPLEXES PAR ELEMENT AUX NOEUDS  >>
-

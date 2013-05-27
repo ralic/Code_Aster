@@ -1,4 +1,3 @@
-#@ MODIF post_coque_ops Macro  DATE 18/06/2012   AUTEUR DELMAS J.DELMAS 
 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -213,4 +212,3 @@ NOM_PARA=('INTITULE','NOM_CHAM','NUME_ORDRE','INST','ABSC_CURV',
                        **dprod)
     RetablirAlarme('MODELISA4_9')
     return ier
-

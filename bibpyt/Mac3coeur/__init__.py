@@ -1,4 +1,3 @@
-#@ MODIF __init__ Mac3coeur  DATE 05/07/2011   AUTEUR FERNANDES R.FERNANDES 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -17,6 +16,6 @@
 # ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
 # ======================================================================
-# RESPONSABLE FERNANDES R.FERNANDES
+# person_in_charge: romeo.fernandes at edf.fr
 
 """Package Mac3coeur"""

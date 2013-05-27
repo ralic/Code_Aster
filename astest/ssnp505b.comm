@@ -1,6 +1,4 @@
-# MODIF  DATE 03/04/2013   AUTEUR NICOLAS G.NICOLAS 
 # TITRE PLAQUE MULTI-FISSUREE EN BITACTION-CISAILLEMENT AVEC XFEM
-# ssnp505b.para = tps_job 180 mem_job 768Mo liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG

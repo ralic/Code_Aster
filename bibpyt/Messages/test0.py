@@ -1,4 +1,3 @@
-#@ MODIF test0 Messages  DATE 07/11/2011   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -17,7 +16,7 @@
 # ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
-# RESPONSABLE DELMAS J.DELMAS
+# person_in_charge: josselin.delmas at edf.fr
 
 cata_msg={
 1 : _(u"""
@@ -73,6 +72,3 @@ Les listes fournies aux mots-clés MACHINE et VALE doivent avoir le même cardinal
 """),
 
 }
-
-
-

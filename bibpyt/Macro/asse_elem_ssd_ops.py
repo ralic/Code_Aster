@@ -1,4 +1,3 @@
-#@ MODIF asse_elem_ssd_ops Macro  DATE 03/01/2011   AUTEUR ANDRIAM H.ANDRIAMBOLOLONA 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -116,4 +115,3 @@ def asse_elem_ssd_ops(self, RESU_ASSE_SSD, SOUS_STRUC, LIAISON, VERIF, **args):
                                 OPTION = 'MASS_GENE')
 
     return
-

@@ -1,4 +1,3 @@
-#@ MODIF stanley_engine Stanley  DATE 16/04/2013   AUTEUR ASSIRE A.ASSIRE 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -3281,5 +3280,3 @@ class PRE_STANLEY :
    # Boutons
     BOUTON(frame_boutons,'PaleGreen1','STANLEY',self.Lancer,fonte=fonte)
     BOUTON(frame_boutons,'IndianRed1','SORTIR',self.Sortir,fonte=fonte)
-
-

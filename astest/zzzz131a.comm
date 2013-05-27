@@ -1,4 +1,3 @@
-# MODIF  DATE 26/03/2013   AUTEUR CHEIGNON E.CHEIGNON 
 # TITRE VALIDATION DE LA COMMANDE CREA_RESU MOT CLE FACTEUR PERM_CHAM
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -18,7 +17,6 @@
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 #
-# zzzz131a.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test S
 
 DEBUT(CODE=_F(NOM='ZZZZ131A', NIV_PUB_WEB='INTERNET'),
 IGNORE_ALARM=('MECANONLINE5_37','MECANONLINE2_37'),

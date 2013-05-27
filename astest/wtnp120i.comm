@@ -1,4 +1,3 @@
-# MODIF  DATE 09/04/2013   AUTEUR PELLET J.PELLET 
 # TITRE APPARITION/DISPARITION DE PHASE DANS UN ECOULEMENT DIPHASIQUE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -17,7 +16,6 @@
 # ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
-# wtnp120i.para = tps_job 300 mem_job 512Mo liste_test S
 #            INJECTION DE GAZ DANS UN BARREAU SATURE EN EAU PURE
 #
 #

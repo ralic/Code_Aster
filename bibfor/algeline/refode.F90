@@ -1,0 +1,444 @@
+subroutine refode(nbcmb, angle, nomch, nuharm, tyharm,&
+                  coef, basz, chpres)
+    implicit none
+    include 'jeveux.h'
+    include 'asterfort/celver.h'
+    include 'asterfort/digdel.h'
+    include 'asterfort/dismoi.h'
+    include 'asterfort/jedema.h'
+    include 'asterfort/jedetr.h'
+    include 'asterfort/jeecra.h'
+    include 'asterfort/jeexin.h'
+    include 'asterfort/jelibe.h'
+    include 'asterfort/jelira.h'
+    include 'asterfort/jemarq.h'
+    include 'asterfort/jeveuo.h'
+    include 'asterfort/nbelem.h'
+    include 'asterfort/u2mess.h'
+    include 'asterfort/wkvect.h'
+    integer :: nbcmb, nuharm(*)
+    character(len=*) :: nomch(*), basz, tyharm(*), chpres
+    real(kind=8) :: angle, coef(*)
+!     ------------------------------------------------------------------
+!            CONFIGURATION MANAGEMENT OF EDF VERSION
+! ======================================================================
+! COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
+! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+! (AT YOUR OPTION) ANY LATER VERSION.
+!
+! THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+! WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+! MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+! GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+!
+! YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+!    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
+! ======================================================================
+!     RECOMBINAISON DE FOURIER
+!     -----------------------------------------------------------------
+!     IN  NBCMB  : I   : NOMBRE DE CHAMPS A RECOMBINER
+!     IN  ANGLE  : R8  : SECTION OU A LIEU LA RECOMBINAISON ( EN RD )
+!     IN  NOMCH  : K8  : NOM DES CHAMPS A RECOMBINER
+!     IN  NUHARM : I   : NUMERO DE L'HARMONIQUE
+!     IN  TYHARM : K4  : TYPE DE L'HARMONIQUE (SYME OU ANTI)
+!     IN  COEF   : R8  : COEF MULTIPLICATEUR ASSOCIE A L'HARMONIQUE
+!     IN  CHPRES : K19 : NOM DU CHAMP RESULTAT
+!     -----------------------------------------------------------------
+    integer :: ibid, mode
+    character(len=1) :: base
+    character(len=4) :: docu
+    character(len=5) :: refe, desc, vale
+    character(len=8) :: k8b, noma, nomgd
+    character(len=19) :: ch19, ligrel
+    logical :: lmeca, lther
+!     ------------------------------------------------------------------
+!-----------------------------------------------------------------------
+    integer :: i, i1, ic, icoef, idecgr, ie, ier
+    integer :: igrel, im, ino, ip, iret, ival, jceld
+    integer :: jcelk, jcelv, jdesc, jprno, jrefe, jvale, k
+    integer :: kdesc, krefe, kvale, lvale, nbdesc, nbec, nbelgr
+    integer :: nbgr, nbnoeu, nbpt, nbrefe, nbscal, nbvale
+    real(kind=8) :: ang
+!-----------------------------------------------------------------------
+    call jemarq()
+    base = basz
+    ch19 = nomch(1)
+!
+    call jeexin(ch19//'.DESC', ibid)
+    if (ibid .gt. 0) then
+        call jelira(ch19//'.DESC', 'DOCU', ibid, docu)
+    else
+        call jelira(ch19//'.CELD', 'DOCU', ibid, docu)
+    endif
+!
+    if (docu .eq. 'CHNO') then
+        desc = '.DESC'
+        refe = '.REFE'
+        vale = '.VALE'
+    else if (docu.eq.'CHML') then
+        desc = '.CELD'
+        refe = '.CELK'
+        vale = '.CELV'
+    else
+        call u2mess('F', 'UTILITAI_21')
+    endif
+!
+    lmeca = .false.
+    lther = .false.
+    call dismoi('F', 'NOM_GD', ch19, 'CHAMP', ibid,&
+                nomgd, ie)
+    if (nomgd .eq. 'DEPL_R' .or. nomgd .eq. 'SIEF_R' .or. nomgd .eq. 'EPSI_R') then
+        lmeca = .true.
+    else if (nomgd.eq.'TEMP_R' .or. nomgd.eq.'FLUX_R') then
+        lther = .true.
+    endif
+    call dismoi('F', 'NB_EC', nomgd, 'GRANDEUR', nbec,&
+                k8b, ier)
+!
+!     --- CONSTRUCTION D'UN CHAMP RESULTAT SUR LE MODELE DE NOMCH(1)
+!
+    call jelira(ch19//desc, 'LONMAX', nbdesc, k8b)
+    call jelira(ch19//vale, 'LONMAX', nbvale, k8b)
+    call jelira(ch19//refe, 'LONMAX', nbrefe, k8b)
+    call jeveuo(ch19//desc, 'L', jdesc)
+    call jeveuo(ch19//refe, 'L', jrefe)
+!
+    ch19 = chpres
+    call jeexin(ch19//vale, iret)
+    if (iret .eq. 0) then
+        call wkvect(ch19//desc, base//' V I', nbdesc, kdesc)
+        call wkvect(ch19//vale, base//' V R', nbvale, kvale)
+        call wkvect(ch19//refe, base//' V K24', nbrefe, krefe)
+    else
+        call jeveuo(ch19//desc, 'E', kdesc)
+        call jeveuo(ch19//vale, 'E', kvale)
+        call jeveuo(ch19//refe, 'E', krefe)
+    endif
+!
+    call jeecra(ch19//desc, 'DOCU', ibid, docu)
+    do 10 i = 0, nbdesc-1
+        zi(kdesc+i) = zi(jdesc+i)
+10  end do
+    call jelibe(ch19//desc)
+!
+!
+    call wkvect('&&REFODE.VALE', 'V V R', nbvale, lvale)
+!
+    if (docu .eq. 'CHNO') then
+        call jeveuo(zk24(jrefe+1)(1:19)//'.PRNO', 'L', jprno)
+        do 20 i = 0, nbrefe-1
+            zk24(krefe+i) = zk24(jrefe+i)
+20      continue
+        call jelibe(ch19//'.REFE')
+        call dismoi('F', 'NOM_MAILLA', nomch(1), 'CHAMP', ibid,&
+                    noma, ie)
+        call jelira(noma//'.NOMNOE', 'NOMMAX', nbnoeu, k8b)
+!
+!        --- BOUCLE SUR LES CHAMPS A RECOMBINER ---
+!
+        do 100 im = 1, nbcmb
+            ang = angle * dble(nuharm(im))
+            ch19 = nomch(im)
+            call jeveuo(ch19//vale, 'L', jvale)
+!
+            if (lmeca) then
+!
+                if (tyharm(im)(1:4) .eq. 'SYME') then
+!
+                    do 110 ino = 1, nbnoeu
+                        i = zi(jprno+(ino-1)*(nbec+2))-2
+                        if (i .ne. -2) then
+                            zr(lvale+i+1) = zr(lvale+i+1) + coef(im)* cos(ang)* zr(jvale+i+1)
+                            zr(lvale+i+2) = zr(lvale+i+2) + coef(im)* cos(ang)* zr(jvale+i+2)
+                            zr(lvale+i+3) = zr(lvale+i+3) - coef(im)* sin(ang)* zr(jvale+i+3)
+                        endif
+110                  continue
+!
+                else if (tyharm(im)(1:4).eq.'ANTI') then
+!
+                    do 112 ino = 1, nbnoeu
+                        i = zi(jprno+(ino-1)*(nbec+2))-2
+                        if (i .ne. -2) then
+                            zr(lvale+i+1) = zr(lvale+i+1) + coef(im)* sin(ang)* zr(jvale+i+1)
+                            zr(lvale+i+2) = zr(lvale+i+2) + coef(im)* sin(ang)* zr(jvale+i+2)
+                            zr(lvale+i+3) = zr(lvale+i+3) + coef(im)* cos(ang)* zr(jvale+i+3)
+                        endif
+112                  continue
+!
+                else if (tyharm(im)(1:4).eq.'TOUS') then
+!
+                    do 114 ino = 1, nbnoeu
+                        i = zi(jprno+(ino-1)*(nbec+2))-2
+                        if (i .ne. -2) then
+                            zr(lvale+i+1) = zr(lvale+i+1) + coef(im)* sin(ang)*zr(jvale+i+1) + co&
+                                            &ef(im)*cos(ang) *zr(jvale+i+1)
+                            zr(lvale+i+2) = zr(lvale+i+2) + coef(im)* sin(ang)*zr(jvale+i+2) + co&
+                                            &ef(im)*cos(ang) *zr(jvale+i+2)
+                            zr(lvale+i+3) = zr(lvale+i+3) + coef(im)* cos(ang)*zr(jvale+i+3) - co&
+                                            &ef(im)*sin(ang) *zr(jvale+i+3)
+                        endif
+114                  continue
+!
+                endif
+!
+            else if (lther) then
+!
+                if (tyharm(im)(1:4) .eq. 'SYME') then
+!
+                    do 120 ino = 1, nbnoeu
+                        i = zi(jprno+(ino-1)*(nbec+2))-2
+                        if (i .ne. -2) then
+                            zr(lvale+i+1) = zr(lvale+i+1) + coef(im)* cos(ang)* zr(jvale+i+1)
+                        endif
+120                  continue
+!
+                else if (tyharm(im)(1:4).eq.'ANTI') then
+!
+                    do 122 ino = 1, nbnoeu
+                        i = zi(jprno+(ino-1)*(nbec+2))-2
+                        if (i .ne. -2) then
+                            zr(lvale+i+1) = zr(lvale+i+1) + coef(im)* sin(ang)* zr(jvale+i+1)
+                        endif
+122                  continue
+!
+                else if (tyharm(im)(1:4).eq.'TOUS') then
+!
+                    do 124 ino = 1, nbnoeu
+                        i = zi(jprno+(ino-1)*(nbec+2))-2
+                        if (i .ne. -2) then
+                            zr(lvale+i+1) = zr(lvale+i+1) + coef(im)* sin(ang)*zr(jvale+i+1) + co&
+                                            &ef(im)*cos(ang) *zr(jvale+i+1)
+                        endif
+124                  continue
+!
+                endif
+            endif
+100      continue
+!
+    else if (docu.eq.'CHML') then
+        do 22 i = 0, nbrefe-1
+            zk24(krefe+i) = zk24(jrefe+i)
+22      continue
+        call jelibe(ch19//'.CELK')
+!
+        do 200 im = 1, nbcmb
+            i1 = -1
+            ang = angle * dble(nuharm(im))
+            ch19 = nomch(im)
+!
+!           -- ON VERIFIE QUE LE CHAM_ELEM N'EST PAS TROP DYNAMIQUE :
+            call celver(ch19, 'NBVARI_CST', 'STOP', ibid)
+            call celver(ch19, 'NBSPT_1', 'STOP', ibid)
+!
+            call jeveuo(ch19//'.CELD', 'L', jceld)
+            call jeveuo(ch19//'.CELK', 'L', jcelk)
+            call jeveuo(ch19//'.CELV', 'L', jcelv)
+            nbgr = zi(jceld-1+2)
+            ligrel = zk24(jcelk)(1:19)
+!
+            do 210 igrel = 1, nbgr
+                mode=zi(jceld-1+zi(jceld-1+4+igrel) +2)
+                if (mode .eq. 0) goto 210
+                nbscal = digdel(mode)
+                icoef=max(1,zi(jceld-1+4))
+                if (icoef .ne. 1) then
+                    call u2mess('F', 'ALGELINE3_33')
+                endif
+                nbelgr = nbelem(ligrel,igrel)
+                idecgr=zi(jceld-1+zi(jceld-1+4+igrel)+8)
+!
+                if (lmeca) then
+!              --- ON EST EN AXIS, IL Y A 6 COMPOSANTES PAR POINT ---
+                    nbpt = nbscal / 6
+!
+                    if (tyharm(im)(1:4) .eq. 'SYME') then
+!
+                        do 220 k = 1, nbelgr
+                            ic = -1
+                            do 222 ip = 1, nbpt
+                                i1 = i1 + 1
+                                ic = ic + 1
+                                zr(lvale+i1) = zr(lvale+i1) + coef(im) *cos(ang)* zr(jcelv-1+idec&
+                                               &gr+(k-1)* nbscal+ic)
+                                i1 = i1 + 1
+                                ic = ic + 1
+                                zr(lvale+i1) = zr(lvale+i1) + coef(im) *cos(ang)* zr(jcelv-1+idec&
+                                               &gr+(k-1)* nbscal+ic)
+                                i1 = i1 + 1
+                                ic = ic + 1
+                                zr(lvale+i1) = zr(lvale+i1) + coef(im) *cos(ang)* zr(jcelv-1+idec&
+                                               &gr+(k-1)* nbscal+ic)
+                                i1 = i1 + 1
+                                ic = ic + 1
+                                zr(lvale+i1) = zr(lvale+i1) + coef(im) *cos(ang)* zr(jcelv-1+idec&
+                                               &gr+(k-1)* nbscal+ic)
+                                i1 = i1 + 1
+                                ic = ic + 1
+                                zr(lvale+i1) = zr(lvale+i1) - coef(im) *sin(ang)* zr(jcelv-1+idec&
+                                               &gr+(k-1)* nbscal+ic)
+                                i1 = i1 + 1
+                                ic = ic + 1
+                                zr(lvale+i1) = zr(lvale+i1) - coef(im) *sin(ang)* zr(jcelv-1+idec&
+                                               &gr+(k-1)* nbscal+ic)
+222                          continue
+220                      continue
+!
+                    else if (tyharm(im)(1:4).eq.'ANTI') then
+!
+                        do 230 k = 1, nbelgr
+                            ic = -1
+                            do 232 ip = 1, nbpt
+                                i1 = i1 + 1
+                                ic = ic + 1
+                                zr(lvale+i1) = zr(lvale+i1) + coef(im) *sin(ang)* zr(jcelv-1+idec&
+                                               &gr+(k-1)* nbscal+ic)
+                                i1 = i1 + 1
+                                ic = ic + 1
+                                zr(lvale+i1) = zr(lvale+i1) + coef(im) *sin(ang)* zr(jcelv-1+idec&
+                                               &gr+(k-1)* nbscal+ic)
+                                i1 = i1 + 1
+                                ic = ic + 1
+                                zr(lvale+i1) = zr(lvale+i1) + coef(im) *sin(ang)* zr(jcelv-1+idec&
+                                               &gr+(k-1)* nbscal+ic)
+                                i1 = i1 + 1
+                                ic = ic + 1
+                                zr(lvale+i1) = zr(lvale+i1) + coef(im) *sin(ang)* zr(jcelv-1+idec&
+                                               &gr+(k-1)* nbscal+ic)
+                                i1 = i1 + 1
+                                ic = ic + 1
+                                zr(lvale+i1) = zr(lvale+i1) + coef(im) *cos(ang)* zr(jcelv-1+idec&
+                                               &gr+(k-1)* nbscal+ic)
+                                i1 = i1 + 1
+                                ic = ic + 1
+                                zr(lvale+i1) = zr(lvale+i1) + coef(im) *cos(ang)* zr(jcelv-1+idec&
+                                               &gr+(k-1)* nbscal+ic)
+232                          continue
+230                      continue
+!
+                    else if (tyharm(im)(1:4).eq.'TOUS') then
+!
+                        do 260 k = 1, nbelgr
+                            ic = -1
+                            do 262 ip = 1, nbpt
+                                i1 = i1 + 1
+                                ic = ic + 1
+                                zr(lvale+i1) = zr(lvale+i1) + coef(im) *sin(ang)*zr(jcelv-1+idecg&
+                                               &r+(k-1)* nbscal+ic) + coef(im)*cos(ang)*zr( jcelv&
+                                               &-1+idecgr+(k-1)*nbscal+ic)
+                                i1 = i1 + 1
+                                ic = ic + 1
+                                zr(lvale+i1) = zr(lvale+i1) + coef(im) *sin(ang)*zr(jcelv-1+idecg&
+                                               &r+(k-1)* nbscal+ic) + coef(im)*cos(ang)*zr( jcelv&
+                                               &-1+idecgr+(k-1)*nbscal+ic)
+                                i1 = i1 + 1
+                                ic = ic + 1
+                                zr(lvale+i1) = zr(lvale+i1) + coef(im) *sin(ang)*zr(jcelv-1+idecg&
+                                               &r+(k-1)* nbscal+ic) + coef(im)*cos(ang)*zr( jcelv&
+                                               &-1+idecgr+(k-1)*nbscal+ic)
+                                i1 = i1 + 1
+                                ic = ic + 1
+                                zr(lvale+i1) = zr(lvale+i1) + coef(im) *sin(ang)*zr(jcelv-1+idecg&
+                                               &r+(k-1)* nbscal+ic) + coef(im)*cos(ang)*zr( jcelv&
+                                               &-1+idecgr+(k-1)*nbscal+ic)
+                                i1 = i1 + 1
+                                ic = ic + 1
+                                zr(lvale+i1) = zr(lvale+i1) + coef(im) *cos(ang)*zr(jcelv-1+idecg&
+                                               &r+(k-1)* nbscal+ic) - coef(im)*sin(ang)*zr( jcelv&
+                                               &-1+idecgr+(k-1)*nbscal+ic)
+                                i1 = i1 + 1
+                                ic = ic + 1
+                                zr(lvale+i1) = zr(lvale+i1) + coef(im) *cos(ang)*zr(jcelv-1+idecg&
+                                               &r+(k-1)* nbscal+ic) - coef(im)*sin(ang)*zr( jcelv&
+                                               &-1+idecgr+(k-1)*nbscal+ic)
+262                          continue
+260                      continue
+                    endif
+!
+                else if (lther) then
+!              --- ON EST EN AXIS, IL Y A 3 COMPOSANTES PAR POINT ---
+                    nbpt = nbscal / 3
+!
+                    if (tyharm(im)(1:4) .eq. 'SYME') then
+!
+                        do 240 k = 1, nbelgr
+                            ic = -1
+                            do 242 ip = 1, nbpt
+                                i1 = i1 + 1
+                                ic = ic + 1
+                                zr(lvale+i1) = zr(lvale+i1) + coef(im) *cos(ang)* zr(jcelv-1+idec&
+                                               &gr+(k-1)* nbscal+ic)
+                                i1 = i1 + 1
+                                ic = ic + 1
+                                zr(lvale+i1) = zr(lvale+i1) + coef(im) *cos(ang)* zr(jcelv-1+idec&
+                                               &gr+(k-1)* nbscal+ic)
+                                i1 = i1 + 1
+                                ic = ic + 1
+                                zr(lvale+i1) = zr(lvale+i1) - coef(im) *sin(ang)* zr(jcelv-1+idec&
+                                               &gr+(k-1)* nbscal+ic)
+242                          continue
+240                      continue
+!
+                    else if (tyharm(im)(1:4).eq.'ANTI') then
+!
+                        do 250 k = 1, nbelgr
+                            ic = -1
+                            do 252 ip = 1, nbpt
+                                i1 = i1 + 1
+                                ic = ic + 1
+                                zr(lvale+i1) = zr(lvale+i1) + coef(im) *sin(ang)* zr(jcelv-1+idec&
+                                               &gr+(k-1)* nbscal+ic)
+                                i1 = i1 + 1
+                                ic = ic + 1
+                                zr(lvale+i1) = zr(lvale+i1) + coef(im) *sin(ang)* zr(jcelv-1+idec&
+                                               &gr+(k-1)* nbscal+ic)
+                                i1 = i1 + 1
+                                ic = ic + 1
+                                zr(lvale+i1) = zr(lvale+i1) + coef(im) *cos(ang)* zr(jcelv-1+idec&
+                                               &gr+(k-1)* nbscal+ic)
+252                          continue
+250                      continue
+!
+                    else if (tyharm(im)(1:4).eq.'TOUS') then
+!
+                        do 270 k = 1, nbelgr
+                            ic = -1
+                            do 272 ip = 1, nbpt
+                                i1 = i1 + 1
+                                ic = ic + 1
+                                zr(lvale+i1) = zr(lvale+i1) + coef(im) *sin(ang)*zr(jcelv-1+idecg&
+                                               &r+(k-1)* nbscal+ic) + coef(im)*cos(ang)*zr( jcelv&
+                                               &-1+idecgr+(k-1)*nbscal+ic)
+                                i1 = i1 + 1
+                                ic = ic + 1
+                                zr(lvale+i1) = zr(lvale+i1) + coef(im) *sin(ang)*zr(jcelv-1+idecg&
+                                               &r+(k-1)* nbscal+ic) + coef(im)*cos(ang)*zr( jcelv&
+                                               &-1+idecgr+(k-1)*nbscal+ic)
+                                i1 = i1 + 1
+                                ic = ic + 1
+                                zr(lvale+i1) = zr(lvale+i1) + coef(im) *cos(ang)*zr(jcelv-1+idecg&
+                                               &r+(k-1)* nbscal+ic) - coef(im)*sin(ang)*zr( jcelv&
+                                               &-1+idecgr+(k-1)*nbscal+ic)
+272                          continue
+270                      continue
+                    endif
+                endif
+210          continue
+            call jelibe(ch19//desc)
+            call jelibe(ch19//'.CELK')
+            call jelibe(ch19//vale)
+!
+200      continue
+    endif
+!
+    do 500 ival = 0, nbvale-1
+        zr(kvale+ival) = zr(lvale+ival)
+500  end do
+    ch19 = chpres
+    call jelibe(ch19//vale)
+    call jedetr('&&REFODE.VALE')
+!
+    call jedema()
+end subroutine

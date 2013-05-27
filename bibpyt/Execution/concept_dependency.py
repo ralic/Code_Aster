@@ -1,4 +1,3 @@
-#@ MODIF concept_dependency Execution  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -17,7 +16,7 @@
 # ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
 # ======================================================================
-# RESPONSABLE COURTOIS M.COURTOIS
+# person_in_charge: mathieu.courtois at edf.fr
 
 """
 This module defines the visitor ConceptDependencies to build
@@ -417,5 +416,3 @@ if __name__ == '__main__':
     cnt = tree.build_graph()
     open('/tmp/graph.dot', 'w').write(cnt)
     #dot -Tpng -o /tmp/graph.png /tmp/graph.dot ; eog /tmp/graph.png
-
-

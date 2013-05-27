@@ -331,8 +331,3 @@ for i in range(0,len(t_inout_adapt)):
 
 FIN();
 
-
-
-
-
-

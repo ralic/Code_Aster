@@ -1,6 +1,4 @@
-# MODIF  DATE 28/01/2013   AUTEUR SELLENET N.SELLENET 
 # TITRE COQUES COAXIALES SOUS ECOULEMENT ANNULAIRE
-# sdls104a.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -21,7 +19,7 @@
 # CONFIGURATION COQUE INTERNE SOUPLE
 #               COQUE EXTERNE RIGIDE
 #-------------------------------------------------
-# RESPONSABLE KXBADNG A.ADOBES
+# person_in_charge: andre.adobes at edf.fr
 #
 
 DEBUT(CODE=_F(NOM='SDLS104A', NIV_PUB_WEB='INTERNET'), DEBUG=_F(SDVERI='OUI'))
@@ -394,9 +392,4 @@ TEST_FONCTION(VALEUR=_F(VALE_CALC=0.096429815354,
 
 FIN()
 #
-
-
-
-
-
 

@@ -1,7 +1,5 @@
-# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
-# RESPONSABLE PROIX J.M.PROIX
+# person_in_charge: jean-michel.proix at edf.fr
 # TITRE TUBE DROIT SOUMIS A PLUSIEURS CHARGEMENTS (ELEMENT TUYAU_6M STAT_ NON_LINE)
-# ssll106d.para = tps_job 140 mem_job 512Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG

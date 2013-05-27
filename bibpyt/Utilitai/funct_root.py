@@ -1,11 +1,10 @@
-#@ MODIF funct_root Utilitai  DATE 14/09/2004   AUTEUR MCOURTOI M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 ################################################################################
 #       Mathematical utility routines
 #       Copyright (C) 1999, Wesley Phoa
+#  Copyright (c) 2008-2013 EDF R&D      www.code-aster.org
 #
 #       Reference: Numerical Recipes in C
-#       [[[[extraits]]]]
 
 class BracketingException(Exception):
         pass
@@ -92,4 +91,3 @@ find a root of f using bracket_root and ridder_root.
         """
         bracket, fnvals = bracket_root(f, interval, max_iterations)
         return ridder_root(f, bracket, fnvals, accuracy, max_iterations)
-

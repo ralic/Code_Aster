@@ -1,4 +1,3 @@
-#@ MODIF sd_surface SD  DATE 28/06/2011   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -34,5 +33,3 @@ class sd_surface(AsBase):
         lnom = self.NSDS.get()
         #if not lnom:  return
         sd2=sd_surface_1d(lnom[0]); sd2.check(checker)
-
-

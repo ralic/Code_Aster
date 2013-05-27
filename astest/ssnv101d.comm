@@ -1,7 +1,5 @@
-# MODIF  DATE 28/01/2013   AUTEUR SELLENET N.SELLENET 
-# RESPONSABLE PROIX J.M.PROIX
+# person_in_charge: jean-michel.proix at edf.fr
 # TITRE ESSAI DE TRACTION-CISAILLEMENT EN DEFORMATIONS PLANES (CHABOCHE)
-# ssnv101d.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG

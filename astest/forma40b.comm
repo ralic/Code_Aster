@@ -1,6 +1,4 @@
-# MODIF  DATE 12/02/2013   AUTEUR PELLET J.PELLET 
 # TITRE FORMATION GC : PLAQUE CONSOLE EN FLEXION
-# forma40b.para = tps_job 60 mem_job 250Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG

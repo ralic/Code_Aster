@@ -1,4 +1,3 @@
-#& MODIF COMMANDE  DATE 29/03/2011   AUTEUR DELMAS J.DELMAS 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -17,7 +16,7 @@
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
 # ======================================================================
  
-# RESPONSABLE DEVESA G.DEVESA
+# person_in_charge: Georges-cc.devesa at edf.fr
 def rest_cond_tran_prod(RESULTAT,TYPE_RESU,**args ):
  
   if AsType(RESULTAT) == dyna_trans  : return dyna_trans

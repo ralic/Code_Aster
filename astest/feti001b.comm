@@ -1,6 +1,4 @@
-# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE FETI+STAT_NON_LINE SANS MODE RIGIDE ET SANS LAGRANGE
-# feti001b.para = tps_job 60 mem_job 256Mo ncpus 1 liste_test RI
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -26,7 +24,7 @@
 # VIA DEUX MAILLES POINTS PAR SOUS-DOMAINES.
 # PARALLELE: VALEUR CONSEILLEE 2 PROCS.
 # ======================================================================
-# RESPONSABLE BOITEAU O.BOITEAU
+# person_in_charge: olivier.boiteau at edf.fr
 DEBUT(CODE=_F(NOM='FETI001B', NIV_PUB_WEB='INTERNET'), DEBUG=_F(SDVERI='NON'))
 
 CTRAC=DEFI_FONCTION(NOM_PARA='EPSI',

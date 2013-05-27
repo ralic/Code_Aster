@@ -1,4 +1,3 @@
-#@ MODIF sd_matr_asse_gene SD  DATE 28/06/2011   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -39,4 +38,3 @@ class sd_matr_asse_gene(sd_matr_asse_com):
         if not self.exists : return
         nom=self.REFA.get()[1]
         sd2=sd_nume_ddl_gene(nom) ; sd2.check(checker)
-

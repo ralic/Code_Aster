@@ -1,5 +1,5 @@
-%& MODIF OPTIONS  DATE 05/10/2010   AUTEUR SELLENET N.SELLENET 
-% RESPONSABLE DURAND
+%& LIBRARY OPTIONS
+% person_in_charge: Christophe-mmn.durand at edf.fr
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -25,4 +25,3 @@ OPTION__
         PSOURCF  SOUR_F
    OUT__
 PVECTTR VTEM_R RESL__
-

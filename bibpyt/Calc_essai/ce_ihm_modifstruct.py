@@ -1,4 +1,3 @@
-#@ MODIF ce_ihm_modifstruct Calc_essai  DATE 06/11/2012   AUTEUR BODEL C.BODEL 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -18,7 +17,7 @@
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 
-# RESPONSABLE BODEL C.BODEL
+# person_in_charge: charles.bodel at edf.fr
 
 # La classe InterfaceModifStruct dirige les objets graphiques
 #
@@ -874,5 +873,3 @@ class InterfaceVisu(Frame):
         modes_couple = self.modif_struct.modes_couple
 
         DispFRFDialogue(self.root.mess, mdo, self.param_visu, resu1, resu2, sumail,modes_couple)
-
-

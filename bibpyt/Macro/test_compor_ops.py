@@ -1,4 +1,3 @@
-#@ MODIF test_compor_ops Macro  DATE 23/04/2013   AUTEUR PROIX J-M.PROIX 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -813,4 +812,3 @@ def test_compor_ops(self,OPTION,NEWTON,CONVERGENCE,COMP_INCR,COMP_ELAS,LIST_MATE
           if INFO==2 : IMPR_TABLE(TABLE=__DIFFMAT)
 
   return ier
-

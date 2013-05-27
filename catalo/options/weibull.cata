@@ -1,5 +1,5 @@
-%& MODIF OPTIONS  DATE 21/01/2013   AUTEUR DELMAS J.DELMAS 
-% RESPONSABLE PARROT
+%& LIBRARY OPTIONS
+% person_in_charge: aurore.parrot at edf.fr
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -32,4 +32,3 @@ OPTION__
    OUT__
         PWEIBUL WEIBULL ELEM__
         PSIGISG DOMA_R  ELGA__
-

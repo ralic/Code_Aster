@@ -1,4 +1,3 @@
-#& MODIF COMMANDE  DATE 29/04/2013   AUTEUR GENIAUT S.GENIAUT 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -16,7 +15,7 @@
 # ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
-# RESPONSABLE FERNANDES R.FERNANDES
+# person_in_charge: romeo.fernandes at edf.fr
 
 POST_MAC3COEUR = MACRO(nom="POST_MAC3COEUR",
                        op=OPS("Mac3coeur.post_mac3coeur_ops.post_mac3coeur_ops"),
@@ -56,4 +55,3 @@ POST_MAC3COEUR = MACRO(nom="POST_MAC3COEUR",
 
            ),
 )
-

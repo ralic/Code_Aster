@@ -1,6 +1,5 @@
-# AJOUT
 # TITRE TEST DE INCLUDE
-# RESPONSABLE
+# person_in_charge: mathieu.courtois at edf.fr
 
 DEBUT(CODE=_F(NOM='SUPV001A', NIV_PUB_WEB='INTRANET'),
       IMPR_MACRO='OUI',

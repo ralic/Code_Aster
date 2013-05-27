@@ -1,6 +1,4 @@
-# MODIF  DATE 16/10/2012   AUTEUR ALARCON A.ALARCON 
 # TITRE CALCUL D'UNE LIGNE D'ARBRE SANS DISQUE
-# sdll141d.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -18,7 +16,6 @@
 # ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
 # ======================================================================
-# sdll141a.para = tps_job 60 mem_job 128Mo ncpus 1 liste_test S
 # REFERENCE : R.-J. VIBRATIONS DES STRUCTURES pp 235-237
 # VALIDATION INFORMATIQUES DES POUTRES A SECTION VARIABLE
 # PAR COMPARAISON AVEC UNE POUTRE DROITE

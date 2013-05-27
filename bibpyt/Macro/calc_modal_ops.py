@@ -1,4 +1,3 @@
-#@ MODIF calc_modal_ops Macro  DATE 17/12/2012   AUTEUR BRIE N.BRIE 
 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================

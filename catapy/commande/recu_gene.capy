@@ -1,4 +1,3 @@
-#& MODIF COMMANDE  DATE 11/09/2012   AUTEUR BERRO H.BERRO 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -16,7 +15,7 @@
 # ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
 # ======================================================================
-# RESPONSABLE BOYERE E.BOYERE
+# person_in_charge: emmanuel.boyere at edf.fr
 RECU_GENE=OPER(nom="RECU_GENE",op=  76,sd_prod=vect_asse_gene,reentrant='n',
                UIinfo={"groupes":("Résultats et champs",)},
                fr="Extraire d'un champ de grandeur (déplacements, vitesses ou accélérations) à partir de résultats"

@@ -1,4 +1,3 @@
-#@ MODIF sd_listis SD  DATE 28/06/2011   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -63,5 +62,3 @@ class sd_listis(sd_titre):
             assert  vale[0] == bint[0]
             assert  nbpa[0] == 0, nbpa
             assert  lpas[0] == 0, lpas
-
-

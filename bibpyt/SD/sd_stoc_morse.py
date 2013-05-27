@@ -1,4 +1,3 @@
-#@ MODIF sd_stoc_morse SD  DATE 29/03/2010   AUTEUR BOITEAU O.BOITEAU 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -25,5 +24,3 @@ class sd_stoc_morse(AsBase):
     SMDE = AsVI(lonmax=6)
     SMHC = AsVS()
     SMDI = AsVI()
-
-

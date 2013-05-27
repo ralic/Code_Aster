@@ -1,4 +1,3 @@
-#@ MODIF sd_contact SD  DATE 26/03/2013   AUTEUR ABBAS M.ABBAS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================

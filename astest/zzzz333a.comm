@@ -1,9 +1,7 @@
-# MODIF  DATE 18/03/2013   AUTEUR IDOUX L.IDOUX 
 #-----------------------------------------
 #  DATE   : 03/01/13
 #  AUTEUR : F. LEBOUVIER (DeltaCAD)
 #  TITRE  : Validation de la commande MODI_REPERE 
-# zzzz333a.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG

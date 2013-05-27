@@ -1,4 +1,3 @@
-#@ MODIF raff_xfem_ops Macro  DATE 02/07/2012   AUTEUR GENIAUT S.GENIAUT 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -249,4 +248,3 @@ def raff_xfem_ops(self,FISSURE,TYPE,**args):
 
 
    return
-

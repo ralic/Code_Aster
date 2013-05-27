@@ -1,4 +1,3 @@
-#@ MODIF sd_reperage_omega SD  DATE 13/02/2007   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -31,5 +30,3 @@ class sd_reperage_omega(AsBase):
     CREFM_ORIG = AsVR(SDNom(nomj='.CREFM.ORIG', debut=13), )
     CREFM_EXTR = AsVR(SDNom(nomj='.CREFM.EXTR', debut=13), )
     ARETE_ORIG = AsVI(SDNom(nomj='.ARETE.ORIG', debut=13), )
-
-

@@ -1,7 +1,5 @@
-# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
-# RESPONSABLE PROIX J-M.PROIX
+# person_in_charge: jean-michel.proix at edf.fr
 # TITRE  TEST LOI DE COMPORTEMENT 3D VMIS_ECMI_LINE
-# comp001d.para = tps_job 300 mem_job 256Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -77,4 +75,3 @@ tabresu=TEST_COMPOR(OPTION='MECA',
 IMPR_TABLE(TABLE=tabresu)
 
 FIN()
-

@@ -1,4 +1,3 @@
-#@ MODIF sd_feti SD  DATE 23/10/2007   AUTEUR BOITEAU O.BOITEAU 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -46,4 +45,3 @@ class sd_feti1(AsBase):
 class sd_feti(AsBase):
     nomj = SDNom(fin=19)
     sd1 = Facultatif(sd_feti1(SDNom('')))
-

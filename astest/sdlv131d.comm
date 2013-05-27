@@ -1,6 +1,4 @@
-# MODIF  DATE 19/03/2013   AUTEUR BRIE N.BRIE 
 # TITRE  : POUTRE EN TRACTION (ELEMENTS VOLUMIQUES)
-# sdlv131d.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -307,9 +305,4 @@ if modes:
             )
 
 FIN();
-
-
-
-
-
 

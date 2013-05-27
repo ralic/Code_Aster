@@ -1,4 +1,3 @@
-#@ MODIF N_info Noyau  DATE 17/09/2012   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -17,7 +16,7 @@
 # ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
-# RESPONSABLE COURTOIS M.COURTOIS
+# person_in_charge: mathieu.courtois at edf.fr
 
 """Module to manage information printing : debug, info, error.
 Should replace 'print' and 'UTMESS' calls at least in the supervisor
@@ -269,5 +268,3 @@ if __name__ == "__main__":
     message.warn(SUPERV, "warning supervisor message")
     message.error(SUPERV, "error supervisor message")
     message.critical(MISS, "test the critical alias")
-
-

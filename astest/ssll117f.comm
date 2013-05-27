@@ -1,7 +1,5 @@
-# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE  - VALIDATION DE LA MODELISATION A MICRO-DILATATION
-# ssll117f.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test RI
-# RESPONSABLE FERNANDES R.FERNANDES
+# person_in_charge: romeo.fernandes at edf.fr
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG

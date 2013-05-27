@@ -1,4 +1,3 @@
-#& MODIF COMMANDE  DATE 05/03/2013   AUTEUR GENIAUT S.GENIAUT 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -16,7 +15,7 @@
 # ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
 # ======================================================================
-# RESPONSABLE FERNANDES
+# person_in_charge: romeo.fernandes at edf.fr
 
 PERM_MAC3COEUR = MACRO(nom="PERM_MAC3COEUR",
                        op=OPS("Mac3coeur.perm_mac3coeur_ops.perm_mac3coeur_ops"),
@@ -27,4 +26,3 @@ PERM_MAC3COEUR = MACRO(nom="PERM_MAC3COEUR",
          RESU_N       = SIMP(statut='o',typ=evol_noli),             # RESULTAT A L INSTANT N A PERMUTER
          TABLE_NP1    = SIMP(statut='o',typ=table_sdaster),         # TABLE INITIALE DES DAMAC A L INSTANT N+1
          MAILLAGE_NP1 = SIMP(statut='o',typ=maillage_sdaster),);    # MAILLAGE A L INSTANT N+1
-

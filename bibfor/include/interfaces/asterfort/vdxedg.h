@@ -1,0 +1,11 @@
+        interface
+          subroutine vdxedg(nomte,option,xi,nb1,npgsr,edgpg,effgt)
+            character(len=16) :: nomte
+            character(*) :: option
+            real(kind=8) :: xi(3,9)
+            integer :: nb1
+            integer :: npgsr
+            real(kind=8) :: edgpg(*)
+            real(kind=8) :: effgt(8,9)
+          end subroutine vdxedg
+        end interface

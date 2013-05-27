@@ -1,4 +1,4 @@
-%& MODIF OPTIONS  DATE 13/01/2011   AUTEUR PELLET J.PELLET 
+%& LIBRARY OPTIONS
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -16,7 +16,7 @@
 % ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
 %    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
 % ======================================================================
-% RESPONSABLE BARGELLINI
+% person_in_charge: renaud.bargellini at edf.fr
 DURT_ELNO
        <<  DURT_ELNO : CALCUL DE DURETE AUX NOEUDS
            A PARTIR DES PHASES METALLURGIQUES >>
@@ -28,4 +28,3 @@ OPTION__
        <<  PPHASIN : PHASES METALLURGIQUES >>
    OUT__
 PDURT_R DURT_R ELNO__
-

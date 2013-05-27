@@ -1,4 +1,3 @@
-#@ MODIF cata_champs Stanley  DATE 11/06/2012   AUTEUR DELMAS J.DELMAS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -178,6 +177,3 @@ class CATA_CHAMPS :
     if typech:
       print 'Ajout de :', champ
       self(champ     , typech,[], "")
-
-
-

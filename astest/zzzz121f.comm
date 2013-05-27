@@ -1,4 +1,3 @@
-# MODIF  DATE 27/11/2012   AUTEUR NICOLAS G.NICOLAS 
 # TITRE COUPLAGE ASTER_HOMARD - PENTAEDRE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -17,8 +16,7 @@
 # ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
-# zzzz121f.para = tps_job 300 mem_job 512Mo ncpus 1 liste_test R
-# RESPONSABLE NICOLAS G.NICOLAS
+# person_in_charge: gerald.nicolas at edf.fr
 # Attention :ceci est un test de non regression et non pas d'evaluation
 # de l'adaptation de maillage.
 # . Information

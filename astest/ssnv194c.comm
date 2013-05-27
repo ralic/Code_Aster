@@ -1,6 +1,4 @@
-# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE : TRACTION SUR UN POLYCRISTAL A 10 GRAINS, AVEC SIMU_POINT_MAT
-# ssnv194c.para = tps_job 150 mem_job 256Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -18,7 +16,7 @@
 # ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
-# RESPONSABLE PROIX J-M.PROIX
+# person_in_charge: jean-michel.proix at edf.fr
 
 DEBUT(CODE=_F(NOM='SSNV194C',
 NIV_PUB_WEB='INTERNET',),DEBUG=_F(SDVERI='OUI'))
@@ -279,5 +277,3 @@ IMPR_FONCTION(
             );
 
 FIN()
-
-

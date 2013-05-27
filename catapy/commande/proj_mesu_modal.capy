@@ -1,4 +1,3 @@
-#& MODIF COMMANDE  DATE 29/03/2011   AUTEUR DELMAS J.DELMAS 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -16,7 +15,7 @@
 # ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
 # ======================================================================
-# RESPONSABLE ANDRIAM H.ANDRIAMBOLOLONA
+# person_in_charge: harinaivo.andriambololona at edf.fr
 def proj_mesu_modal_prod(MODELE_MESURE,**args):
      vale=MODELE_MESURE['MESURE']
      if  AsType(vale) == dyna_trans   : return tran_gene

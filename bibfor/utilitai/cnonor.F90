@@ -1,0 +1,196 @@
+subroutine cnonor(nomo, gran, base, cno)
+    implicit none
+    include 'jeveux.h'
+!
+    include 'asterfort/afchno.h'
+    include 'asterfort/affeno.h'
+    include 'asterfort/canort.h'
+    include 'asterfort/dismoi.h'
+    include 'asterfort/jedema.h'
+    include 'asterfort/jelira.h'
+    include 'asterfort/jemarq.h'
+    include 'asterfort/jenonu.h'
+    include 'asterfort/jenuno.h'
+    include 'asterfort/jeveuo.h'
+    include 'asterfort/jexatr.h'
+    include 'asterfort/jexnom.h'
+    include 'asterfort/jexnum.h'
+    include 'asterfort/nbnlma.h'
+    include 'asterfort/reliem.h'
+    include 'asterfort/u2mesg.h'
+    include 'asterfort/vericp.h'
+    include 'asterfort/wkvect.h'
+    character(len=1) :: base
+    character(len=8) :: nomo, gran, cno
+! ----------------------------------------------------------------------
+!            CONFIGURATION MANAGEMENT OF EDF VERSION
+! ======================================================================
+! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+! (AT YOUR OPTION) ANY LATER VERSION.
+!
+! THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+! WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+! MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+! GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+!
+! YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+!   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
+! ======================================================================
+! BUT :     COMMANDE : CREA_CHAMP/OPERATION:'NORMALE'
+! ----------------------------------------------------------------------
+    integer :: ibid, ier, nec, iacmp, iav, i, iret, ii, ino, jj, ncmpmx, numgd
+    integer :: ndim, nbno, nbnoeu, idim, nn, nbma, nbcomp, nbtyp, lonval, icomp
+    integer :: ic, iec, iand, jlma, jnunoe, jnorm, jnno, jval, jnbca, jdesc
+    real(kind=8) :: valr(3)
+    character(len=2) :: typval
+    character(len=8) :: k8b, resu, noma, typmcl(4), nocmp(3), listyp(10)
+    character(len=16) :: motclf, motcle(2)
+    character(len=24) :: nomnoe, mesmai
+    character(len=24) :: valk(2)
+! ----------------------------------------------------------------------
+    call jemarq()
+!
+    resu = cno
+!
+    call jenonu(jexnom('&CATA.GD.NOMGD', gran), numgd)
+    if (numgd .eq. 0) then
+        valk (1) = gran
+        call u2mesg('F', 'UTILITAI6_1', 1, valk, 0,&
+                    0, 0, 0.d0)
+    endif
+    call dismoi('F', 'NB_EC', gran, 'GRANDEUR', nec,&
+                k8b, ier)
+    call jeveuo(jexnom('&CATA.GD.NOMCMP', gran), 'L', iacmp)
+    call jeveuo(jexatr('&CATA.GD.NOMCMP', 'LONCUM'), 'L', iav)
+    ncmpmx = zi(iav+numgd) - zi(iav+numgd-1)
+!
+    call dismoi('F', 'NOM_MAILLA', nomo, 'MODELE', ibid,&
+                noma, ier)
+!
+! --- DIMENSION DU PROBLEME
+!
+    call dismoi('F', 'DIM_GEOM', noma, 'MAILLAGE', ndim,&
+                k8b, ier)
+!
+! --- DEFINITION DES COMPOSANTES ET DES TYPES DE MAILLE A TRAITER
+!
+    if (ndim .eq. 2) then
+        nbcomp = 2
+        nocmp(1) = 'X'
+        nocmp(2) = 'Y'
+        nbtyp = 3
+        listyp(1) = 'SEG2'
+        listyp(2) = 'SEG3'
+        listyp(3) = 'SEG4'
+    else
+        nbcomp = 3
+        nocmp(1) = 'X'
+        nocmp(2) = 'Y'
+        nocmp(3) = 'Z'
+        nbtyp = 10
+        listyp(1) = 'TRIA3'
+        listyp(2) = 'TRIA6'
+        listyp(3) = 'TRIA9'
+        listyp(4) = 'QUAD4'
+        listyp(5) = 'QUAD8'
+        listyp(6) = 'QUAD9'
+        listyp(7) = 'QUAD12'
+        listyp(8) = 'SEG2'
+        listyp(9) = 'SEG3'
+        listyp(10) = 'SEG4'
+    endif
+!
+! --- VERIFICATION QUE LES COMPOSANTES APPARTIENNENT A LA GRANDEUR
+!
+    do 10 i = 1, nbcomp
+        call vericp(zk8(iacmp), nocmp(i), ncmpmx, iret)
+        if (iret .ne. 0) then
+            valk (1) = gran
+            valk (2) = nocmp(i)
+            call u2mesg('F', 'UTILITAI6_11', 2, valk, 0,&
+                        0, 0, 0.d0)
+        endif
+10  end do
+!
+! --- LISTE DES MAILLES A TRAITER
+!
+    mesmai = '&&CNONOR.MES_MAILLES'
+    motclf = ' '
+    motcle(1) = 'MAILLE'
+    motcle(2) = 'GROUP_MA'
+    typmcl(1) = 'MAILLE'
+    typmcl(2) = 'GROUP_MA'
+!
+    call reliem(' ', noma, 'NU_MAILLE', motclf, 1,&
+                2, motcle, typmcl, mesmai, nbma)
+    call jeveuo(mesmai, 'L', jlma)
+!
+    call nbnlma(noma, nbma, zi(jlma), nbtyp, listyp,&
+                nbno)
+    call jeveuo('&&NBNLMA.LN', 'L', jnunoe)
+!
+! --- DETERMINATION DES NORMALES
+!
+    call canort(noma, nbma, zi(jlma), k8b, ndim,&
+                nbno, zi(jnunoe), 1)
+!
+    call jeveuo('&&CANORT.NORMALE', 'L', jnorm)
+!
+!-----------------------------------------------------------------------
+!
+    nomnoe = noma//'.NOMNOE'
+    call jelira(nomnoe, 'NOMMAX', nbnoeu, k8b)
+    typval = 'R'
+!
+!     AFFE DU CHAMP AUX NOEUDS
+!     ------------------------
+! --- ALLOCATION DE 4 OBJETS INTERMEDIAIRES SERVANT AUX CALCULS
+!     DE .PRNO ET .VALE
+!
+    call wkvect('&&CNONOR.NOMS_NOEUDS', 'V V K8', nbnoeu, jnno)
+    call wkvect('&&CNONOR.VALCOMPNO', 'V V R', nbnoeu*ncmpmx, jval)
+    call wkvect('&&CNONOR.NCMPMX_AFFE', 'V V I ', nbnoeu, jnbca)
+    call wkvect('&&CNONOR.DESC_NOEUD', 'V V I', nec*nbnoeu, jdesc)
+!
+    do 110 ii = 1, nbno
+        ino = zi(jnunoe-1+ii)
+        call jenuno(jexnum(nomnoe, ino ), zk8(jnno+ino-1))
+!
+        do 112 idim = 1, ndim
+            valr(idim) = zr(jnorm-1+ndim*(ii-1)+idim)
+112      continue
+!
+        call affeno(1, ino, nocmp, nbcomp, zk8(iacmp),&
+                    ncmpmx, valr, k8b, zi(jdesc), zr(jval),&
+                    k8b, typval, nec)
+!
+110  end do
+!
+! --- CALCUL DU NOMBRE TOTAL DE CMP AFFECTEES (SOMMEES SUR LES NOEUDS)
+!
+    lonval = 0
+    do 140 ino = 1, nbnoeu
+        icomp = 0
+        do 130 ic = 1, ncmpmx
+            iec = (ic-1)/30 + 1
+            jj = ic - 30* (iec-1)
+            ii = 2**jj
+            nn = iand(zi(jdesc+ (ino-1)*nec+iec-1),ii)
+            if (nn .gt. 0) then
+                icomp = icomp + 1
+            endif
+130      continue
+        zi(jnbca-1+ino) = icomp
+        lonval = lonval + icomp
+140  end do
+!
+    call afchno(resu, base, gran, noma, nbnoeu,&
+                zi(jnbca), zi(jdesc), lonval, typval, zr(jval),&
+                zc(jval), k8b)
+!
+    call jedema()
+end subroutine

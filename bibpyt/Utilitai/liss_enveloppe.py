@@ -1,4 +1,3 @@
-#@ MODIF liss_enveloppe Utilitai  DATE 29/08/2005   AUTEUR THOMASSO D.THOMASSON 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================

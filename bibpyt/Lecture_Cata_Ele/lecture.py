@@ -1,6 +1,5 @@
-#@ MODIF lecture Lecture_Cata_Ele  DATE 16/04/2012   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
-# RESPONSABLE VABHHTS J.PELLET
+# person_in_charge: jacques.pellet at edf.fr
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -181,7 +180,7 @@ class Mon2Scanner(MonScanner):
         self.lineno = self.lineno +1
 
     def t_cmodif(self, s):
-        r'%&[ \t]+(MODIF|AJOUT)[ \t].*'
+        r'%&[ \t]+(MODIF|AJOUT|LIBRARY)[ \t].*'
         t = Token(type='cmodif', lineno=self.lineno, attr=s)
         self.rv.append(t)
 

@@ -1,6 +1,4 @@
-# MODIF  DATE 19/03/2013   AUTEUR BRIE N.BRIE 
 # TITRE CREATION D'UNE SD RESULTAT A PARTIR DE MESURES AVEC OBSERVATION
-# sdlv125a.para = tps_job 520 mem_job 512Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -491,5 +489,3 @@ for ind in range(len(test_no)):
 
 
 FIN();
-
-

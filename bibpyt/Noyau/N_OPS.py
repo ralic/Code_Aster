@@ -1,4 +1,3 @@
-#@ MODIF N_OPS Noyau  DATE 17/08/2011   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================

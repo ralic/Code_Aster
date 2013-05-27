@@ -1,4 +1,4 @@
-%& MODIF OPTIONS  DATE 11/06/2012   AUTEUR DELMAS J.DELMAS 
+%& LIBRARY OPTIONS
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -16,7 +16,7 @@
 % ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 %    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 % ======================================================================
-% RESPONSABLE PELLET J.PELLET
+% person_in_charge: jacques.pellet at edf.fr
 EPSG_ELNO
        <<  EPSG_ELNO : DEFORMATIONS DE GREEN LAGRANGE PAR ELEMENTS
                        AUX NOEUDS >>

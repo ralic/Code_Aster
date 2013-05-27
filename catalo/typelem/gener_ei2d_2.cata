@@ -1,4 +1,4 @@
-%& MODIF TYPELEM  DATE 29/04/2013   AUTEUR KAZYMYRE K.KAZYMYRENKO 
+%& LIBRARY TYPELEM
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -16,7 +16,7 @@
 % ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 %    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 % ======================================================================
-% RESPONSABLE LAVERNE J.LAVERNE
+% person_in_charge: jerome.laverne at edf.fr
 GENER_EI2D_2
 TYPE_GENE__
 

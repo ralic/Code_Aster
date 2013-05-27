@@ -1,4 +1,3 @@
-#@ MODIF sd_ligrel SD  DATE 18/09/2012   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -105,5 +104,3 @@ class sd_ligrel(AsBase):
             nbec= self.PRNS.lonmax / nb_no_tard
             assert self.PRNS.lonmax == nb_no_tard * nbec , (nbec, nb_no_tard)
             assert nbec >= 1 and nbec < 10 , nbec
-
-

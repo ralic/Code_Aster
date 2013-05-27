@@ -1,6 +1,4 @@
-# MODIF  DATE 15/10/2012   AUTEUR GRANET S.GRANET 
 # TITRE -    APPARITION/DISPARITION DE PHASE DANS UN ECOULEMENT DIPHASIQUE
-# wtnp120a.para = tps_job 400 mem_job 1024Mo liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG

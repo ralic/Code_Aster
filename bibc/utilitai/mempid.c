@@ -16,7 +16,7 @@
 /* ALONG WITH THIS PROGRAM; IF NOT, WRITE TO : EDF R&D CODE_ASTER,    */
 /*    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.     */
 /* ================================================================== */
-/* RESPONSABLE LEFEBVRE J-P.LEFEBVRE */
+/* person_in_charge: j-pierre.lefebvre at edf.fr */
 #include "aster.h"
 
 #ifdef _POSIX

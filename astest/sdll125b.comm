@@ -1,5 +1,4 @@
-# MODIF  DATE 16/10/2012   AUTEUR ALARCON A.ALARCON 
-# RESPONSABLE TORKHANI M.TORKHANI
+# person_in_charge: mohamed.torkhani at edf.fr
 # TITRE DIAGRAMME DE CAMPBELL D'UNE LIGNE D'ARBRE SIMPLIFIEE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -18,7 +17,6 @@
 # ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
 # ======================================================================
-# sdll125b.para = tps_job 300 mem_job 512Mo ncpus 1 liste_test S
 # CAS_TEST__:SDLL125B
 #
 import numpy as NP

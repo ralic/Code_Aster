@@ -1,6 +1,5 @@
-#@ MODIF A_FORM_ETAPE Accas  DATE 07/09/2009   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
-# RESPONSABLE COURTOIS M.COURTOIS
+# person_in_charge: mathieu.courtois at edf.fr
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -32,4 +31,3 @@ class FORM_ETAPE(E_MACRO_ETAPE.MACRO_ETAPE,B_MACRO_ETAPE.MACRO_ETAPE,V_MACRO_ETA
       # Pas de constructeur pour B_MACRO_ETAPE.MACRO_ETAPE
       N_FORM_ETAPE.FORM_ETAPE.__init__(self,oper,reuse,args)
       V_MACRO_ETAPE.MACRO_ETAPE.__init__(self)
-

@@ -1,4 +1,3 @@
-#@ MODIF courbes Utilitai  DATE 14/09/2004   AUTEUR MCOURTOI M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -131,5 +130,3 @@ def COURBES(listcourb,titre=' ',soustitre=' ',legx=' ',legy=' ',bornex=None,born
   k=0
 
 #===========================================
-
-

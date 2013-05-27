@@ -1,6 +1,4 @@
-# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE MODELE PROBABILISTE NONPARAMETRIQUE D UNE PLAQUE AVEC BUTEE ELASTIQUE
-# sdns01a.para = tps_job 120 mem_job 512Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -18,7 +16,7 @@
 # ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
-# RESPONSABLE I.ZENTNER
+#
 ##############################################################################
 #                                                                            #
 # PLAQUE RECTANGULAIRE EN APPPUI  SIMPLE SUR TROIS BORD ET LIBRE SUR         #
@@ -687,9 +685,4 @@ TEST_TABLE(
            )
 
 FIN()
-
-
-
-
-
 

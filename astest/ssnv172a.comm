@@ -1,8 +1,6 @@
 
-# MODIF  DATE 09/04/2013   AUTEUR PELLET J.PELLET 
 # TITRE COMPORTEMENTS ELASTOVISCOPLASTIQUES MONOCRISTALLINS
-# RESPONSABLE JMBHH01 J.M.PROIX
-# ssnv172a.para = tps_job 300 mem_job 512Mo ncpus 1 liste_test R
+# person_in_charge: jean-michel.proix at edf.fr
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -1421,4 +1419,3 @@ TEST_RESU(RESU=(_F(INST=2.0,
           )
 
 FIN();
-

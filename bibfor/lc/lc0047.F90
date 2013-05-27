@@ -1,0 +1,80 @@
+subroutine lc0047(fami, kpg, ksp, ndim, imate,&
+                  compor, crit, instam, instap, epsm,&
+                  deps, sigm, vim, option, angmas,&
+                  sigp, vip, wkin, wkout, typmod,&
+                  icomp, nvi, dsidep, codret)
+!
+!
+! ======================================================================
+!            CONFIGURATION MANAGEMENT OF EDF VERSION
+! ======================================================================
+! COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+! (AT YOUR OPTION) ANY LATER VERSION.
+!
+! THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+! WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+! MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+! GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+!
+! YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+!   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
+! ======================================================================
+! ======================================================================
+! TOLE CRP_21
+! ======================================================================
+!
+!    LOI D'ENDOMMAGEMENT D'UN MATERIAU ELASTIQUE HETEROGENE
+!
+!          RELATION : 'ENDO_HETEROGENE'
+!
+!       IN      NDIM    DIMENSION DE L ESPACE (3D=3,2D=2,1D=1)
+!               TYPMOD  TYPE DE MODELISATION
+!               OPTION     OPTION DE CALCUL A FAIRE
+!                             'RIGI_MECA_TANG'> DSIDEP(T)
+!                             'FULL_MECA'     > DSIDEP(T+DT) , SIG(T+DT)
+!                             'RAPH_MECA'     > SIG(T+DT)
+!               IMATE    ADRESSE DU MATERIAU CODE
+!               EPSM   DEFORMATION TOTALE A T
+!               DEPS   INCREMENT DE DEFORMATION TOTALE
+!               VIM    VARIABLES INTERNES A T    + INDICATEUR ETAT T
+!    ATTENTION  VIM    VARIABLES INTERNES A T MODIFIEES SI REDECOUPAGE
+!       OUT     SIGP    CONTRAINTE A T+DT
+!               VIP    VARIABLES INTERNES A T+DT + INDICATEUR ETAT T+DT
+!               DSIDEP    MATRICE DE COMPORTEMENT TANGENT A T+DT OU T
+!
+! ----------------------------------------------------------------------
+    implicit none
+    include 'asterfort/lcbrgm.h'
+    include 'asterfort/u2mess.h'
+    integer :: imate, ndim, ksp, kpg
+    integer :: icomp, nvi
+    integer :: codret
+    real(kind=8) :: angmas(*)
+    real(kind=8) :: wkout(6, 6), wkin(6, 6)
+    character(len=16) :: compor(*), option
+    character(len=8) :: typmod(*)
+    character(len=*) :: fami
+    real(kind=8) :: epsm(6), deps(6), crit(*)
+    real(kind=8) :: sigp(6), sigm(*), instam, instap
+    real(kind=8) :: vim(*), vip(*)
+    real(kind=8) :: dsidep(6, 6)
+! ----------------------------------------------------------------------
+!
+!     FORMULATION NON-LOCALE AVEC REGULARISATION DES CONTRAINTES
+    if (typmod(2) .eq. 'GRADSIGM') then
+        wkout(1,1)=wkin(1,1)
+        call lcbrgm(ndim, typmod, imate, epsm, deps,&
+                    vim, option, sigp, vip, dsidep,&
+                    wkout, codret)
+!
+        else if ((typmod(2).eq.'GRADVARI').or. (typmod(2).eq.'GRADEPSI'))&
+    then
+        call u2mess('F', 'COMPOR2_12')
+!
+    endif
+!
+end subroutine

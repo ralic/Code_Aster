@@ -1,6 +1,4 @@
-# MODIF  DATE 14/05/2013   AUTEUR BERRO H.BERRO 
 # TITRE FAISCEAU DE POUTRES SOUS EXCITATION FLUIDELASTIQUE AXIALE
-# sdll119a.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -32,7 +30,7 @@
 # OPTION DE MODELISATION DANS DEFI_FLUI_STRU :
 # FAISCEAU COMPLET
 #====================================================
-# RESPONSABLE QUANTIN C.QUANTIN
+# person_in_charge: hassan.berro at edf.fr
 #
 
 DEBUT(   CODE=_F(  NOM = 'SDLL119A',NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
@@ -486,9 +484,4 @@ TEST_FONCTION(VALEUR=_F(VALE_CALC=0.21415300000000001,
 
 FIN()
 #
-
-
-
-
-
 

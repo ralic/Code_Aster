@@ -1,4 +1,3 @@
-#@ MODIF macr_cara_poutre_ops Macro  DATE 09/04/2013   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -17,7 +16,7 @@
 # ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
-# RESPONSABLE JMBHH01 J.M.PROIX
+# person_in_charge: jean-michel.proix at edf.fr
 
 def macr_cara_poutre_ops(self,MAILLAGE,SYME_Y,SYME_Z,GROUP_MA_BORD,
                               GROUP_MA,ORIG_INER,TABLE_CARA,**args):

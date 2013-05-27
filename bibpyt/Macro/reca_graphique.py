@@ -1,4 +1,3 @@
-#@ MODIF reca_graphique Macro  DATE 05/11/2012   AUTEUR ASSIRE A.ASSIRE 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================

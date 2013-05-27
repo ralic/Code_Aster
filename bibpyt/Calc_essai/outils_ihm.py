@@ -1,4 +1,3 @@
-#@ MODIF outils_ihm Calc_essai  DATE 29/04/2013   AUTEUR ALARCON A.ALARCON 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -18,7 +17,7 @@
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 
-# RESPONSABLE BODEL C.BODEL
+# person_in_charge: charles.bodel at edf.fr
 
 from Tkinter import *
 
@@ -2350,5 +2349,3 @@ def get_chgt_repere(grp_no, grp_ma):
                 chgt_reps.append(_F(GROUP_MA=grp["NOM"],
                                     **grp["CHGT_REP"]))
         return chgt_reps
-
-

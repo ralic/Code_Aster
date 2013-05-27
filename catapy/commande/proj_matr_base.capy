@@ -1,4 +1,3 @@
-#& MODIF COMMANDE  DATE 09/11/2010   AUTEUR DELMAS J.DELMAS 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -16,7 +15,7 @@
 # ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
 # ======================================================================
-# RESPONSABLE BOYERE E.BOYERE
+# person_in_charge: emmanuel.boyere at edf.fr
 def matr_asse_gene_prod(MATR_ASSE,MATR_ASSE_GENE,**args):
   if AsType(MATR_ASSE) == matr_asse_depl_r  : return matr_asse_gene_r
   if AsType(MATR_ASSE_GENE) == matr_asse_gene_r  : return matr_asse_gene_r
@@ -34,4 +33,3 @@ PROJ_MATR_BASE=OPER(nom="PROJ_MATR_BASE",op=  71,sd_prod=matr_asse_gene_prod,
          MATR_ASSE       =SIMP(statut='f',typ=(matr_asse_depl_r,matr_asse_depl_c) ),
          MATR_ASSE_GENE  =SIMP(statut='f',typ=(matr_asse_gene_r,matr_asse_gene_c) ),
 )  ;
-

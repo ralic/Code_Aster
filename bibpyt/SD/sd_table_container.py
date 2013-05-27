@@ -1,4 +1,3 @@
-#@ MODIF sd_table_container SD  DATE 28/06/2011   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -82,4 +81,3 @@ class sd_table_container(sd_table):
              sd5.check(checker)
           else:
              assert 0,lnom1[k]
-

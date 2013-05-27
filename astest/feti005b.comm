@@ -1,6 +1,4 @@
-# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE FETI+STAT_NON_LINE ET DIRICHLETS A L'INTERFACE
-# feti005b.para = tps_job 60 mem_job 256Mo ncpus 1 liste_test SI
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -26,7 +24,7 @@
 # ET UN AUTRE LA TOUCHANT (FACE_IMPO/CH2)
 # PARALLELE: VALEUR CONSEILLEE 2 PROCS.
 # ======================================================================
-# RESPONSABLE BOITEAU O.BOITEAU
+# person_in_charge: olivier.boiteau at edf.fr
 
 DEBUT(CODE=_F(NOM='FETI005B',NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='NON'))
 

@@ -1,6 +1,4 @@
-# MODIF  DATE 26/02/2013   AUTEUR PELLET J.PELLET 
 # TITRE CHOC DE 3 POUTRES ENTRE ELLES : CALCUL DE REFERENCE
-# sdnl105a.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -581,9 +579,4 @@ TABLE=POST_DYNA_MODA_T(RESU_GENE=TRAN_GE1,
 FIN();
 
 #
-
-
-
-
-
 

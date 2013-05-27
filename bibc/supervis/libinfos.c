@@ -16,7 +16,7 @@
 /* ALONG WITH THIS PROGRAM; IF NOT, WRITE TO : EDF R&D CODE_ASTER,    */
 /*    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.     */
 /* ================================================================== */
-/* RESPONSABLE COURTOIS M.COURTOIS */
+/* person_in_charge: mathieu.courtois at edf.fr */
 
 #include "aster.h"
 #include "aster_utils.h"
@@ -75,4 +75,3 @@ void DEFPPP(LISCOV,liscov, _OUT INTEGER *major, _OUT INTEGER *minor, _OUT INTEGE
 #endif
     return;
 }
-

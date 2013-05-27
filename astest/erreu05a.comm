@@ -1,7 +1,5 @@
-# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
-# RESPONSABLE COURTOIS M.COURTOIS
+# person_in_charge: mathieu.courtois at edf.fr
 # TITRE VERIFICATION DE LA RECUPERATION DES ERREURS FATALES DANS STAT_NON_LINE
-# erreu05a.para = tps_job 60 mem_job 256Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -102,4 +100,3 @@ except aster.error:
 resu = EXTR_RESU(RESULTAT=resu,ARCHIVAGE=_F(NUME_ORDRE=1))
 
 FIN()
-

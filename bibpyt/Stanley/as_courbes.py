@@ -1,4 +1,3 @@
-#@ MODIF as_courbes Stanley  DATE 23/05/2011   AUTEUR ASSIRE A.ASSIRE 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -297,5 +296,3 @@ class Courbe :
     raise 'Propriete inconnue'
       
     
-
-

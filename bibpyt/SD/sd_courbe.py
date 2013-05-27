@@ -1,4 +1,3 @@
-#@ MODIF sd_courbe SD  DATE 13/02/2007   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -31,5 +30,3 @@ class sd_courbe(AsBase):
     TYPCOURBE = AsVK8(lonmax=1, )
     lm= Facultatif(sd_courbe_lm(SDNom(nomj='')))
     sa= Facultatif(sd_courbe_sa(SDNom(nomj='')))
-
-

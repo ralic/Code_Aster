@@ -1,4 +1,3 @@
-# MODIF  DATE 04/02/2013   AUTEUR LEFEBVRE J-P.LEFEBVRE 
 # TITRE TP THERMOPLASTICITE : TUBE SOUMIS A UN CHOC FROID
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -17,7 +16,6 @@
 # ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
 # ======================================================================
-# forma30b.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test S
 #
 #
 DEBUT(CODE=_F(NOM='FORMA30B',NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))

@@ -1,4 +1,3 @@
-#@ MODIF Utmess Utilitai  DATE 26/11/2012   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -17,7 +16,7 @@
 # ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
-# RESPONSABLE COURTOIS M.COURTOIS
+# person_in_charge: mathieu.courtois at edf.fr
 
 import os
 import sys
@@ -784,5 +783,3 @@ def __fake__():
     UTMESS('I', 'TABLE0_13')
     UTMESS('I', 'TABLE0_15')
     UTMESS('I', 'TABLE0_43')
-
-

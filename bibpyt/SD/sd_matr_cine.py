@@ -1,4 +1,3 @@
-#@ MODIF sd_matr_cine SD  DATE 22/09/2008   AUTEUR DESOZA T.DESOZA 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -29,5 +28,3 @@ class sd_matr_cine(AsBase):
     CCII = Facultatif(AsVI())
     CCLL = Facultatif(AsVI())
     CCVA = Facultatif(AsObject(genr='V', xous='S', type=Parmi('R','C')))
-
-

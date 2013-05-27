@@ -1,4 +1,3 @@
-#@ MODIF sd_char_acou SD  DATE 16/09/2008   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -35,5 +34,3 @@ class sd_char_acou(AsBase):
     chac_ligre = Facultatif(sd_ligrel(SDNom(nomj='.CHAC.LIGRE', fin=19)))
     ELIM = Facultatif(sd_char_cine())
     TYPE = AsVK8(lonmax=1, )
-
-

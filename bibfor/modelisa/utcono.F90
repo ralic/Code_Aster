@@ -1,0 +1,141 @@
+subroutine utcono(mcfac, mocle, iocc, nomail, ndim,&
+                  coor, iret)
+    implicit  none
+    include 'jeveux.h'
+!
+    include 'asterc/getres.h'
+    include 'asterc/getvr8.h'
+    include 'asterc/getvtx.h'
+    include 'asterfort/jedema.h'
+    include 'asterfort/jemarq.h'
+    include 'asterfort/jenonu.h'
+    include 'asterfort/jeveuo.h'
+    include 'asterfort/jexnom.h'
+    include 'asterfort/u2mesg.h'
+    include 'asterfort/utnono.h'
+    integer :: iocc, ndim, iret
+    real(kind=8) :: coor(*)
+    character(len=8) :: nomail
+    character(len=*) :: mcfac, mocle(3)
+! ----------------------------------------------------------------------
+!            CONFIGURATION MANAGEMENT OF EDF VERSION
+! ======================================================================
+! COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
+! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+! (AT YOUR OPTION) ANY LATER VERSION.
+!
+! THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+! WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+! MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+! GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+!
+! YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+!    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
+! ======================================================================
+!
+!
+! ----------------------------------------------------------------------
+!     ------------------------------------------------------------------
+    integer :: n1, n2, n3, numno, i, ier, jcoor
+    integer :: vali(2)
+    real(kind=8) :: r8b
+    character(len=8) :: k8b, noeud
+    character(len=16) :: concep, cmd
+    character(len=24) :: coord, nomnoe, nomgrn
+    character(len=24) :: valk(3)
+    integer :: iarg
+!     ------------------------------------------------------------------
+    call jemarq()
+    iret = 0
+!
+    call getvr8(mcfac, mocle(1), iocc, iarg, 0,&
+                r8b, n1)
+    if (n1 .ne. 0) then
+        call getvr8(mcfac, mocle(1), iocc, iarg, ndim,&
+                    coor, n1)
+        if (n1 .lt. ndim) then
+            call getres(k8b, concep, cmd)
+            valk (1) = mcfac
+            vali (1) = iocc
+            call u2mesg('F+', 'MODELISA9_23', 1, valk, 1,&
+                        vali, 0, 0.d0)
+            if (ndim .eq. 2) then
+                call u2mesg('F+', 'MODELISA9_24', 0, ' ', 0,&
+                            0, 0, 0.d0)
+            else
+                call u2mesg('F+', 'MODELISA9_25', 0, ' ', 0,&
+                            0, 0, 0.d0)
+            endif
+            vali (1) = abs(n1)
+            vali (2) = ndim
+            valk (1) = mocle(1)
+            call u2mesg('F', 'MODELISA9_26', 1, valk, 2,&
+                        vali, 0, 0.d0)
+        endif
+        iret = 1
+        goto 9999
+    endif
+!
+    coord = nomail//'.COORDO    .VALE'
+    nomnoe = nomail//'.NOMNOE         '
+    call jeveuo(coord, 'L', jcoor)
+!
+    call getvtx(mcfac, mocle(2), iocc, iarg, 0,&
+                k8b, n2)
+    if (n2 .ne. 0) then
+        call getvtx(mcfac, mocle(2), iocc, iarg, 1,&
+                    noeud, n2)
+        call jenonu(jexnom(nomnoe, noeud), numno)
+        if (numno .eq. 0) then
+            call getres(k8b, concep, cmd)
+            valk (1) = mcfac
+            valk (2) = mocle(2)
+            valk (3) = noeud
+            vali (1) = iocc
+            call u2mesg('F', 'MODELISA9_27', 3, valk, 1,&
+                        vali, 0, 0.d0)
+        endif
+        do 10 i = 1, ndim
+            coor(i) = zr(jcoor+3*(numno-1)+i-1)
+10      continue
+        iret = 1
+        goto 9999
+    endif
+!
+    call getvtx(mcfac, mocle(3), iocc, iarg, 1,&
+                k8b, n3)
+    if (n3 .ne. 0) then
+        call getvtx(mcfac, mocle(3), iocc, iarg, 1,&
+                    nomgrn, n3)
+        call utnono(' ', nomail, 'NOEUD', nomgrn, k8b,&
+                    ier)
+        if (ier .eq. 10) then
+            call getres(k8b, concep, cmd)
+            valk (1) = mcfac
+            valk (2) = mocle(3)
+            valk (3) = nomgrn
+            vali (1) = iocc
+            call u2mesg('F', 'MODELISA9_28', 3, valk, 1,&
+                        vali, 0, 0.d0)
+        else if (ier .eq. 1) then
+            call getres(k8b, concep, cmd)
+            valk (1) = mcfac
+            valk (2) = k8b
+            vali (1) = iocc
+            call u2mesg('A', 'MODELISA9_29', 2, valk, 1,&
+                        vali, 0, 0.d0)
+        endif
+        call jenonu(jexnom(nomnoe, k8b), numno)
+        do 20 i = 1, ndim
+            coor(i) = zr(jcoor+3*(numno-1)+i-1)
+20      continue
+        iret = 1
+        goto 9999
+    endif
+!
+9999  continue
+    call jedema()
+end subroutine

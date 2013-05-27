@@ -1,4 +1,3 @@
-#@ MODIF macr_aspic_mail_ops Macro  DATE 15/04/2013   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -904,5 +903,3 @@ def macr_aspic_mail_ops(self,EXEC_MAILLAGE,TYPE_ELEM,RAFF_MAIL,TUBULURE,
       aster.affiche('MESSAGE',texte)
 #
   return ier
-
-

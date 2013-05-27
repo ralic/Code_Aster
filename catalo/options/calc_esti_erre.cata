@@ -1,4 +1,4 @@
-%& MODIF OPTIONS  DATE 21/01/2013   AUTEUR DELMAS J.DELMAS 
+%& LIBRARY OPTIONS
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -16,7 +16,7 @@
 % ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
 %    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
 % ======================================================================
-% RESPONSABLE DELMAS
+% person_in_charge: josselin.delmas at edf.fr
 CALC_ESTI_ERRE
        <<  CALC_ESTI_ERRE : 
            ESTIMATEUR D ERREUR PAR LISSAGE DE CHAMP
@@ -36,4 +36,3 @@ OPTION__
    OUT__
         PERREUR ERRE_R ELEM__
        <<  PERREUR : ESTIMATEUR D ERREUR  >>
-

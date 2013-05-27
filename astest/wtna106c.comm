@@ -1,7 +1,5 @@
-# MODIF  DATE 18/02/2013   AUTEUR SELLENET N.SELLENET 
 # ======================================================================
 # TITRE MODELISATION D_PLAN_THHS EN QUAD8
-# wtna106c.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG

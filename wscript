@@ -29,6 +29,8 @@ def options(self):
         '  LIBPATH   : extra paths where to find libraries',
         '  LIB       : extra libraries to link with',
         '  STLIB     : extra static libraries to link with',
+        '  OPTLIB_FLAGS : extra linker flags inserted after static libs '
+        '(for example when -Wl,start-group options are necessary)',
         '  CFLAGS    : extra C compilation options',
         '  FCFLAGS   : extra Fortrant compilation optins',
         '  PREFIX    : default installation prefix to be used, '
@@ -62,10 +64,6 @@ def options(self):
                     help='install the testcases files')
     self.recurse('bibfor')
     self.recurse('bibc')
-    group.add_option('--ignore-fermetur', dest='add_fermetur',
-                   action='store_false', default=True,
-                   help='ignore fermetur code (you must provide symbols)')
-    self.recurse('fermetur')
 
 def configure(self):
     from Options import options as opts
@@ -78,7 +76,6 @@ def configure(self):
     self.env['BIBPYTPATH'] = self.path.find_dir('bibpyt').abspath()
 
     self.env.ASTER_EMBEDS = []
-    self.env.ADD_FERMETUR = opts.add_fermetur
 
     self.add_os_flags('FLAGS')
     self.add_os_flags('CFLAGS')
@@ -119,9 +116,6 @@ def configure(self):
     self.env.append_value('INCLUDES', paths)
 
     self.recurse('bibfor')
-    self.recurse('bibf90')
-    if opts.add_fermetur:
-        self.recurse('fermetur')
     self.recurse('bibc')
     self.load('legacy', tooldir='waftools')
     self.check_optimization_options()
@@ -135,9 +129,6 @@ def build(self):
                    'the comments in the wscript file!')
 
     self.recurse('bibfor')
-    self.recurse('bibf90')
-    if self.all_envs['default'].ADD_FERMETUR:
-        self.recurse('fermetur')
     self.recurse('bibc')
 
     self.recurse('bibpyt')

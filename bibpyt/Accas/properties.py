@@ -1,6 +1,5 @@
-#@ MODIF properties Accas  DATE 15/05/2013   AUTEUR COURTOIS M.COURTOIS 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
-# RESPONSABLE D6BHHHH J-P.LEFEBVRE
+# person_in_charge: J-pierre.lefebvre at edf.fr
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -47,4 +46,3 @@ try:
     uncommitted = pkginfo.pop(0)
 except (ImportError, IndexError, TypeError):
     pass
-

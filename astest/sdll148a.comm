@@ -1,6 +1,4 @@
-# MODIF  DATE 26/11/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE DEFINITION D'UN INTER-SPECTRE D'EXCITATION ANALYTIQUE
-# sdll148a.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -18,7 +16,7 @@
 # ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
 # ======================================================================
-# RESPONSABLE ZENTNER
+# person_in_charge: irmela.zentner at edf.fr
 
 
 DEBUT( CODE=_F( NOM = 'SDLL148A',NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))

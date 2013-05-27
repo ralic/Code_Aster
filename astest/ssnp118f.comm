@@ -1,6 +1,4 @@
-# MODIF  DATE 18/02/2013   AUTEUR LEFEBVRE J-P.LEFEBVRE 
 # TITRE FISSURATION JOINT 3D : PENTA6 LOI CZM_LIN_REG
-# ssnp118f.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -555,4 +553,3 @@ IMPR_RESU(FORMAT='GMSH',RESU=(_F(RESULTAT=U_2,NOM_CHAM='DEPL',TYPE_CHAM='VECT_3D
 IMPR_RESU(FORMAT='GMSH',RESU=(_F(RESULTAT=U_3,NOM_CHAM='DEPL',TYPE_CHAM='VECT_3D',NOM_CMP=('DX','DY','DZ')))),  
 
 FIN()
-

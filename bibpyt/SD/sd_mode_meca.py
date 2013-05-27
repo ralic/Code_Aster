@@ -1,4 +1,3 @@
-#@ MODIF sd_mode_meca SD  DATE 11/05/2009   AUTEUR NISTOR I.NISTOR 
 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -27,5 +26,3 @@ class sd_mode_meca(sd_resultat_dyn):
 #--------------------------------------------------
     nomj = SDNom(fin=8)
 #    UTIL = Facultatif(AsVI(SDNom(debut=19)))  # AJACOT_PB : .UTIL n'existe pas pour sdlx201a
-
-

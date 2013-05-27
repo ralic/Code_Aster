@@ -1,4 +1,3 @@
-#& MODIF COMMANDE  DATE 09/11/2010   AUTEUR DELMAS J.DELMAS 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -16,7 +15,7 @@
 # ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
-# RESPONSABLE PELLET J.PELLET
+# person_in_charge: jacques.pellet at edf.fr
 def asse_matrice_prod(MATR_ELEM,**args):
   if AsType(MATR_ELEM) == matr_elem_depl_r : return matr_asse_depl_r
   if AsType(MATR_ELEM) == matr_elem_depl_c : return matr_asse_depl_c

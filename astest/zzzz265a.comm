@@ -1,6 +1,4 @@
-# MODIF  DATE 15/04/2013   AUTEUR ABBAS M.ABBAS 
 # TITRE VALIDATION DE DNL EN PARALLELE
-# zzzz265a.para = tps_job 150 mem_job 800Mo ncpus 1 liste_test RI
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG

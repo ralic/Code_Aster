@@ -1,4 +1,3 @@
-#@ MODIF macr_ascouf_calc_ops Macro  DATE 15/04/2013   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================

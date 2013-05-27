@@ -1,4 +1,3 @@
-#@ MODIF calc_europlexus_ops Macro  DATE 29/04/2013   AUTEUR GREFFET N.GREFFET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -17,7 +16,7 @@
 # ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
-# RESPONSABLE ASSIRE A.ASSIRE
+# person_in_charge: aimery.assire at edf.fr
 
 #-----------------------------------------------------------------------
 #----------------------------- Importation des modules  ----------------
@@ -2714,5 +2713,3 @@ class POUTRE:
 #------------------------------------------------------------------------
 #----------------------------- FIN class POUTRE -------------------------
 #------------------------------------------------------------------------
-
-

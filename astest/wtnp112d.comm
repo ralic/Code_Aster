@@ -1,9 +1,7 @@
-# MODIF  DATE 18/02/2013   AUTEUR SELLENET N.SELLENET 
 # ======================================================================
 # TITRE RESATURATION D UNE COLONNE TEST HMD, 2D , MODELISATION THMC=LIQU_GAZ_ATM
 #       TEST31 ALLIANCES
 # ======================================================================
-# wtnp112d.para = tps_job 70 mem_job 512Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG

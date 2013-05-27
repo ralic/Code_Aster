@@ -1,9 +1,7 @@
-# MODIF  DATE 06/02/2013   AUTEUR COURTOIS M.COURTOIS 
-# RESPONSABLE ADBHHPM P.MASSIN
+# person_in_charge: patrick.massin at edf.fr
 # DATE   : 19/04/2000
 # AUTEUR : F. LEBOUVIER (DELTACAD)
 # TITRE  : VIBRATIONS LIBRES D'UNE TOLE ONDULEE
-# sdls501b.para = tps_job 60 mem_job 256Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -136,9 +134,4 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=1,
 #
 FIN()
 #
-
-
-
-
-
 

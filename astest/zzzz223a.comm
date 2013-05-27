@@ -1,7 +1,5 @@
-# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
-# RESPONSABLE PELLET J.PELLET
+# person_in_charge: jacques.pellet at edf.fr
 # TITRE Validation de CREA_RESU/ASSE et AFFE_MATERIAU/AFFE_VARC/FONC_INST
-# zzzz223a.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -213,4 +211,3 @@ TEST_FICHIER(
    FICHIER='./fort.18', VALE_CALC_K='f66c92058617175afe95c38af443e743',
    NB_VALE=87, VALE_CALC=4.1000000900000e+02,  TOLE_MACHINE=1.E-9 )
 FIN()
-

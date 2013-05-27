@@ -1,0 +1,143 @@
+subroutine barych(ch1z, ch2z, r1, r2, chz,&
+                  base)
+!            CONFIGURATION MANAGEMENT OF EDF VERSION
+! ======================================================================
+! COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
+! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+! (AT YOUR OPTION) ANY LATER VERSION.
+!
+! THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+! WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+! MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+! GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+!
+! YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+!    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
+! ======================================================================
+    implicit none
+    include 'jeveux.h'
+    include 'asterfort/assert.h'
+    include 'asterfort/copisd.h'
+    include 'asterfort/jedema.h'
+    include 'asterfort/jeexin.h'
+    include 'asterfort/jelira.h'
+    include 'asterfort/jemarq.h'
+    include 'asterfort/jeveuo.h'
+    include 'asterfort/u2mess.h'
+    include 'asterfort/vrrefe.h'
+    include 'asterfort/vtcopy.h'
+    character(len=*) :: ch1z, ch2z, chz
+    character(len=19) :: ch1, ch2, ch
+    character(len=1) :: base
+    real(kind=8) :: r1, r2
+! ----------------------------------------------------------------------
+!     BUT :   FAIRE LA COMBINAISON LINERAIRE DE 2 CHAMP :
+!             CH = R1*CH1+ R2*CH2 (CHAMP = CHAM_NO OU CHAM_ELEM)
+!
+! IN:  CH1    : NOM DU 1ER CHAMP
+!      CH2    : NOM DU 2EM CHAMP
+!      R1,R2  : COEFFICIENTS MULTIPLICATEURS.
+!      BASE   : 'G' OU 'V' (GLOBALE OU VOLATILE)
+!      CH     : NOM DU CHAMP RESULTAT.
+!
+! OUT: CH EST REMPLI.
+! ----------------------------------------------------------------------
+!
+!
+!
+    character(len=5) :: vale
+    character(len=4) :: docu, scal
+    character(len=1) :: k1bid
+!-----------------------------------------------------------------------
+    integer :: i, iach, iach1, iach2, ibid, ier, jrefe
+    integer :: lon1, lon2, long
+!-----------------------------------------------------------------------
+    call jemarq()
+    ch1=ch1z
+    ch2=ch2z
+    ch=chz
+!
+    call copisd('CHAMP_GD', base, ch1, ch)
+!
+    call jeexin(ch//'.DESC', ibid)
+    if (ibid .gt. 0) then
+        call jelira(ch//'.DESC', 'DOCU', ibid, docu)
+    else
+        call jelira(ch//'.CELD', 'DOCU', ibid, docu)
+    endif
+!
+!
+    if ((docu(1:4).ne.'CHNO') .and. (docu(1:4).ne.'CHML')) then
+        call assert(.false.)
+    else if (docu(1:4).eq.'CHNO') then
+!     -----------------------------------
+        vale='.VALE'
+        call jelira(ch1//vale, 'LONMAX', lon1, k1bid)
+        call jelira(ch1//vale, 'TYPE', ibid, scal)
+        call vrrefe(ch1, ch2, ier)
+        if (ier .eq. 0) then
+!
+! ----- RECOPIE BRUTALE DES .VALE
+            call jeveuo(ch//vale, 'E', iach)
+            call jeveuo(ch1//vale, 'L', iach1)
+            call jeveuo(ch2//vale, 'L', iach2)
+            if (scal(1:1) .eq. 'R') then
+                do 1,i = 1,lon1
+                zr(iach-1+i) = r1*zr(iach1-1+i) + r2*zr(iach2-1+i)
+ 1              continue
+            else if (scal(1:1).eq.'C') then
+                do 2,i = 1,lon1
+                zc(iach-1+i) = r1*zc(iach1-1+i) + r2*zc(iach2-1+i)
+ 2              continue
+            endif
+        else
+            call vtcopy(ch2, ch, 'F', ier)
+            call jeveuo(ch//vale, 'E', iach)
+            call jeveuo(ch1//vale, 'L', iach1)
+            if (scal(1:1) .eq. 'R') then
+                do 3,i = 1,lon1
+                zr(iach-1+i) = r1*zr(iach1-1+i) + r2*zr(iach-1+i)
+ 3              continue
+            else if (scal(1:1).eq.'C') then
+                do 4,i = 1,lon1
+                zc(iach-1+i) = r1*zc(iach1-1+i) + r2*zc(iach-1+i)
+ 4              continue
+            endif
+            call jeveuo(ch2//'.REFE', 'L', jrefe)
+        endif
+!
+!
+    else if (docu(1:4).eq.'CHML') then
+!     -----------------------------------
+        call vrrefe(ch1, ch2, ier)
+        if (ier .eq. 0) then
+            vale='.CELV'
+            call jelira(ch1//vale, 'TYPE', ibid, scal)
+            call jelira(ch1//vale, 'LONMAX', lon1, k1bid)
+            call jelira(ch2//vale, 'LONMAX', lon2, k1bid)
+            call jelira(ch//vale, 'LONMAX', long, k1bid)
+            call assert((lon1.eq.lon2).and.(lon1.eq.long))
+!
+            call jeveuo(ch//vale, 'E', iach)
+            call jeveuo(ch1//vale, 'L', iach1)
+            call jeveuo(ch2//vale, 'L', iach2)
+            if (scal(1:1) .eq. 'R') then
+                do 5,i = 1,lon1
+                zr(iach-1+i) = r1*zr(iach1-1+i) + r2*zr(iach2-1+i)
+ 5              continue
+            else if (scal(1:1).eq.'C') then
+                do 6,i = 1,lon1
+                zc(iach-1+i) = r1*zc(iach1-1+i) + r2*zc(iach2-1+i)
+ 6              continue
+            endif
+        else
+            call u2mess('F', 'CALCULEL_27')
+        endif
+    endif
+!
+!
+    call jedema()
+end subroutine

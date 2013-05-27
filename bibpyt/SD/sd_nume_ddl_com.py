@@ -1,4 +1,3 @@
-#@ MODIF sd_nume_ddl_com SD  DATE 28/06/2011   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -34,5 +33,3 @@ class sd_nume_ddl_com(sd_stockage):
         lnom = self.NSLV.get()
         if not lnom:  return
         sd2=sd_solveur(lnom[0]); sd2.check(checker)
-
-

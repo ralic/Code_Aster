@@ -1,6 +1,4 @@
-# MODIF  DATE 16/10/2012   AUTEUR ALARCON A.ALARCON 
 # TITRE AEROREFRIGERANT SOUMIS A UNE EXCITATION SOL
-# sdls300a.para = tps_job 240 mem_job 512Mo ncpus 1 liste_test V
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -145,9 +143,4 @@ TEST_RESU(RESU=(_F(PARA='FREQ',
 
 FIN()
 #
-
-
-
-
-
 

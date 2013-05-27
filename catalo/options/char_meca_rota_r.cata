@@ -1,5 +1,5 @@
-%& MODIF OPTIONS  DATE 26/03/2013   AUTEUR CHEIGNON E.CHEIGNON 
-% RESPONSABLE DESROCHES
+%& LIBRARY OPTIONS
+% person_in_charge: xavier.desroches at edf.fr
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -44,4 +44,3 @@ OPTION__
         PCOMPOR  COMPOR <<  PCOMPOR : COMPORTEMENT >>
         OUT__
         PVECTUR VDEP_R RESL__
-

@@ -1,4 +1,3 @@
-#@ MODIF calc_spec_ops Macro  DATE 10/09/2012   AUTEUR COURTOIS M.COURTOIS 
 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================

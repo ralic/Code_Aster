@@ -1,4 +1,4 @@
-%& MODIF TYPELEM  DATE 21/01/2013   AUTEUR PELLET J.PELLET 
+%& LIBRARY TYPELEM
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -454,4 +454,3 @@ OPTION__
                               OUT__  E1NEUTR  PMEAST   E3NEUT_R PNIELNO
     XFEM_SMPLX_CALC     118   IN__   N1NEUT_R PLSNO    E3NEUT_R PGRLS    E1NEUTR  PGRANDF  E3NEUT_R PNIELNO
                               OUT__  E1NEUTR  PDPHI    N1NEUT_R PALPHA
-

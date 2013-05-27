@@ -1,4 +1,3 @@
-#& MODIF COMMANDE  DATE 07/12/2010   AUTEUR GENIAUT S.GENIAUT 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -16,7 +15,7 @@
 # ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
-# RESPONSABLE ABBAS M.ABBAS
+# person_in_charge: mickael.abbas at edf.fr
 
 CALCUL=OPER(nom="CALCUL",op=26,sd_prod=table_container,reentrant='f',
             UIinfo={"groupes":("Résolution",)},
@@ -45,4 +44,3 @@ CALCUL=OPER(nom="CALCUL",op=26,sd_prod=table_container,reentrant='f',
      COMP_ELAS       =C_COMP_ELAS('CALCUL'),
      INFO            =SIMP(statut='f',typ='I',defaut= 1,into=( 1 , 2) ),
 ) ;
-

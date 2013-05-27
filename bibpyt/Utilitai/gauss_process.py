@@ -1,4 +1,3 @@
-#@ MODIF gauss_process Utilitai  DATE 06/08/2012   AUTEUR ZENTNER I.ZENTNER 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -17,7 +16,7 @@
 # ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
 # ======================================================================
-# RESPONSABLE ZENTNER I.ZENTNER
+# person_in_charge: irmela.zentner at edf.fr
 
 # Routines for random signal generation 
 """gauss_process.py

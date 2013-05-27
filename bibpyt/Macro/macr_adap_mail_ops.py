@@ -1,4 +1,3 @@
-#@ MODIF macr_adap_mail_ops Macro  DATE 03/04/2013   AUTEUR NICOLAS G.NICOLAS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -17,7 +16,7 @@
 # ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
-# RESPONSABLE GNICOLAS G.NICOLAS
+# person_in_charge: gerald.nicolas at edf.fr
 #
 """
 Traitement des macros MACR_ADAP_MAIL/MACR_INFO_MAIL
@@ -1702,6 +1701,3 @@ def macr_adap_mail_ops ( self,
 #    time.sleep(3600)
 #
   return
-
-
-

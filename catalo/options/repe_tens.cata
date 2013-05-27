@@ -1,4 +1,4 @@
-%& MODIF OPTIONS  DATE 21/01/2013   AUTEUR DELMAS J.DELMAS 
+%& LIBRARY OPTIONS
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -16,7 +16,7 @@
 % ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
 %    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
 % ======================================================================
-% RESPONSABLE DESROCHES
+% person_in_charge: xavier.desroches at edf.fr
 REPE_TENS
 OPTION__
    IN__   PGEOMER  GEOM_R
@@ -40,4 +40,3 @@ OPTION__
        <<  PDEGAOUT : CHAMP DE DEFORMATIONS ELGA NOUVEAU REPERE >>
           PDENOOUT EPSI_R ELNO__   
        <<  PDENOOUT : CHAMP DE DEFORMATIONS ELNO NOUVEAU REPERE >>
-

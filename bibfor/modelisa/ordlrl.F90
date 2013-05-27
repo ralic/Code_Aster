@@ -1,0 +1,383 @@
+subroutine ordlrl(charge, lisrel, nomgd)
+    implicit none
+!            CONFIGURATION MANAGEMENT OF EDF VERSION
+! person_in_charge: jacques.pellet at edf.fr
+! ======================================================================
+! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+! (AT YOUR OPTION) ANY LATER VERSION.
+!
+! THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+! WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+! MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+! GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+!
+! YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+!    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
+! ======================================================================
+    include 'jeveux.h'
+!
+    include 'asterc/indik8.h'
+    include 'asterc/r8gaem.h'
+    include 'asterc/r8prem.h'
+    include 'asterfort/dismoi.h'
+    include 'asterfort/exisdg.h'
+    include 'asterfort/jecreo.h'
+    include 'asterfort/jecroc.h'
+    include 'asterfort/jedema.h'
+    include 'asterfort/jedetr.h'
+    include 'asterfort/jeecra.h'
+    include 'asterfort/jelira.h'
+    include 'asterfort/jemarq.h'
+    include 'asterfort/jenonu.h'
+    include 'asterfort/jeveuo.h'
+    include 'asterfort/jexnom.h'
+    include 'asterfort/ordrel.h'
+    include 'asterfort/u2mesg.h'
+    include 'asterfort/u2mess.h'
+    include 'asterfort/wkvect.h'
+    character(len=19) :: lisrel
+    character(len=8) :: charge, nomgd
+! -----------------------------------------------------------------
+!     MISE A JOUR DE L'OBJET DE TYPE  LISTE_RELA ET DE NOM
+!     LISREL  :
+!               LES RELATIONS SONT REORDONNEES  PAR ORDRE DE NOEUD
+!               CROISSANT ET POUR UN NOEUD DONNE PAR DDL CROISSANT
+!
+!               LES RELATIONS STRICTEMENT EGALES SONT ELIMINEES
+!               (I.E. ON NE GARDE QUE LA RELATION DE PLUS GRAND
+!                     INDICE DANS LISREL)
+! -----------------------------------------------------------------
+!     L'OBJET LISREL DOIT OBLIGATOIREMENT EXISTER
+! -----------------------------------------------------------------
+!  CHARGE        - IN/JXIN    - K8  - : NOM DE LA SD_CHARGE
+!  LISREL        - IN/JXVAR   - K19  - : NOM DE LA LISTE_RELA
+! -------------------------------------------------------
+!
+!
+! --------- VARIABLES LOCALES ---------------------------
+    character(len=24) :: valk(2)
+    integer :: nmocl
+    parameter(nmocl=300)
+    complex(kind=8) :: coproc, rapcoc
+    character(len=4) :: typcoe
+    character(len=8) :: nomnoe, kbid
+    character(len=8) :: noma, mod, cmp, nomcmp(nmocl)
+    character(len=16) :: kidrel
+    character(len=19) :: ligrmo
+    integer :: vali(2)
+! --------- FIN  DECLARATIONS  VARIABLES LOCALES --------
+    real(kind=8) :: copror, difrel, eps1, eps2, epsrel, rapcoe, coemax
+    integer :: i, ibid, icmp, icomp, idcoma, iddl, iddl1, iddl2, ideca1, ideca2
+    integer :: idecal, ier, ierd, in, indmax, ino
+    integer :: inocc, inom, inorel, ipntr1, ipntr2, ipntrl, irela, irela1
+    integer :: irela2
+    integer :: jnoma, jprnm, jrlco, jrlco1, jrlco2, jrlcoc, jrlcof, jrlcor
+    integer :: jrldd
+    integer :: jrlno, idnoe1, idnoe2, idnoeu, jrlnr, jrlnt, jrlpo, jrlsu, jrltc
+    integer :: nbcmp, nbec, nbrela, nbtema, nbter1, nbter2, nbterm
+    integer :: nddla, nidrel
+!
+    call jemarq()
+!
+    eps1=1.d2*r8prem()
+    eps2=1.d0/r8gaem()
+!
+!
+    call dismoi('F', 'NOM_MODELE', charge, 'CHARGE', ibid,&
+                mod, ier)
+    ligrmo=mod(1:8)//'.MODELE'
+    call jeveuo(ligrmo//'.LGRF', 'L', jnoma)
+    noma=zk8(jnoma)
+!
+    call jeveuo(jexnom('&CATA.GD.NOMCMP', nomgd), 'L', inom)
+    call jelira(jexnom('&CATA.GD.NOMCMP', nomgd), 'LONMAX', nbcmp, kbid)
+    nddla=nbcmp-1
+    if (nddla .gt. nmocl) then
+        vali(1)=nmocl
+        vali(2)=nddla
+        call u2mesg('F', 'MODELISA8_29', 0, ' ', 2,&
+                    vali, 0, 0.d0)
+    endif
+!
+    do 10 i = 1, nbcmp
+        nomcmp(i)=zk8(inom-1+i)
+10  end do
+    call dismoi('F', 'NB_EC', nomgd, 'GRANDEUR', nbec,&
+                kbid, ierd)
+!
+! --- ACCES A L'OBJET .PRNM ---
+!
+    if (nbec .gt. 10) then
+        call u2mess('F', 'MODELISA_94')
+    else
+        call jeveuo(ligrmo//'.PRNM', 'L', jprnm)
+    endif
+!
+! --- ACCES AUX COMPOSANTES DE LA LISTE_RELA
+!
+    call jeveuo(lisrel//'.RLCO', 'E', jrlco)
+    call jeveuo(lisrel//'.RLDD', 'E', jrldd)
+    call jeveuo(lisrel//'.RLNO', 'E', jrlno)
+    call jeveuo(lisrel//'.RLNT', 'E', jrlnt)
+    call jeveuo(lisrel//'.RLPO', 'E', jrlpo)
+    call jeveuo(lisrel//'.RLSU', 'E', jrlsu)
+    call jeveuo(lisrel//'.RLTC', 'E', jrltc)
+!
+! --- TYPE DE VALEUR DES COEFFICIENTS DES RELATIONS ---
+!
+    typcoe=zk8(jrltc)(1:4)
+!
+! --- NOMBRE DE RELATIONS DE LA LISTE_RELA
+!
+    call jeveuo(lisrel//'.RLNR', 'L', jrlnr)
+    nbrela=zi(jrlnr)
+!
+! --- NOMBRE DE TERMES  MAX IMPLIQUES DANS UNE RELATION
+!
+    nbtema=0
+    do 20 irela = 1, nbrela
+! ---          NOMBRE DE TERMES DE LA RELATION       ---
+        if (nbtema .lt. zi(jrlnt+irela-1)) nbtema=zi(jrlnt+irela-1)
+20  end do
+!
+! --- CREATION D'UN VECTEUR DE TRAVAIL DESTINE A CONTENIR
+! --- L'INDICE DU PLUS GRAND COEFFICIENT EN VALEUR ABSOLUE
+! --- (MODULE) D'UNE RELATION
+!
+    call wkvect('&&ORDLRL.COEFMAX', 'V V I', nbrela, idcoma)
+!
+! --- CREATION D'UN VECTEUR DE TRAVAIL DESTINE A CONTENIR
+! --- LES NUMEROS DES NOEUDS D'UNE RELATION
+!
+    call wkvect('&&ORDLRL.NOEUD_RELA', 'V V I', nbtema, inorel)
+!
+! --- CREATION D'UN VECTEUR DE TRAVAIL DESTINE A CONTENIR
+! --- LE NOMBRE D'OCCURENCES DE CHAQUE NOEUD APPRAISSANT
+! --- DANS UNE RELATION
+!
+    call wkvect('&&ORDLRL.NOEUD_OCC', 'V V I', nbtema, inocc)
+!
+! --- CREATION D'UN VECTEUR DE TRAVAIL DESTINE A CONTENIR
+! --- LES COEFFICIENTS REELS D'UNE RELATION
+!
+    call wkvect('&&ORDLRL.COEF_R', 'V V R', nbtema, jrlcor)
+!
+! --- CREATION D'UN VECTEUR DE TRAVAIL DESTINE A CONTENIR
+! --- LES COEFFICIENTS COMPLEXES D'UNE RELATION
+!
+    call wkvect('&&ORDLRL.COEF_C', 'V V C', nbtema, jrlcoc)
+!
+!
+!
+!     1. ON ORDONNE LES TERMES DE CHAQUE RELATION POUR POUVOIR
+!        LES COMPRARER PLUS FACILEMENT ET DETECTER LES DOUBLONS
+!     ----------------------------------------------------------
+    do 100 irela = 1, nbrela
+        ipntrl=zi(jrlpo+irela-1)
+        nbterm=zi(jrlnt+irela-1)
+        idecal=ipntrl-nbterm
+        jrlcof=jrlco+idecal
+        idnoeu=jrlno+idecal
+        iddl=jrldd+idecal
+!
+        if (typcoe .eq. 'COMP') then
+            do 30 ino = 1, nbterm
+                zc(jrlcoc+ino-1)=zc(jrlcof+ino-1)
+30          continue
+        else
+            do 40 ino = 1, nbterm
+                zr(jrlcor+ino-1)=zr(jrlcof+ino-1)
+40          continue
+        endif
+!
+        do 50 ino = 1, nbterm
+            nomnoe=zk8(idnoeu+ino-1)
+            call jenonu(jexnom(noma//'.NOMNOE', nomnoe), in)
+            zi(inorel+ino-1)=in
+            cmp=zk8(iddl+ino-1)
+            icmp=indik8(nomcmp,cmp,1,nbcmp)
+            if (.not.exisdg(zi(jprnm-1+(in-1)*nbec+1),icmp)) then
+                valk(1)=cmp
+                valk(2)=nomnoe
+                call u2mesg('F', 'MODELISA8_30', 2, valk, 0,&
+                            0, 0, 0.d0)
+            endif
+50      continue
+!
+!
+!       -- REARRANGEMENT DES TABLEAUX DE LA RELATION SELON
+!       L'ORDRE CROISSANT DES NOEUDS ET L'ORDRE
+!       CROISSANT DES DDLS POUR UN NOEUD DONNE
+        call ordrel(zi(inorel), zk8(idnoeu), zk8(iddl), zr(jrlcor), zc(jrlcoc),&
+                    zi(inocc), nbterm, zk8(inom), nddla)
+!
+!       -- REAFFECTATION DU TABLEAU DES COEFFICIENTS
+        if (typcoe .eq. 'COMP') then
+            do 60 ino = 1, nbterm
+                zc(jrlcof+ino-1)=zc(jrlcoc+ino-1)
+60          continue
+        else
+            do 70 ino = 1, nbterm
+                zr(jrlcof+ino-1)=zr(jrlcor+ino-1)
+70          continue
+        endif
+!
+        coemax=0.0d0
+        if (typcoe .eq. 'COMP') then
+            do 80 ino = 1, nbterm
+                if (abs(zc(jrlcoc+ino-1)) .gt. coemax) then
+                    coemax=abs(zc(jrlcoc+ino-1))
+                    indmax=ino
+                endif
+80          continue
+        else
+            do 90 ino = 1, nbterm
+                if (abs(zr(jrlcor+ino-1)) .gt. coemax) then
+                    coemax=abs(zr(jrlcor+ino-1))
+                    indmax=ino
+                endif
+90          continue
+        endif
+        zi(idcoma+irela-1)=indmax
+100  end do
+!
+!
+!
+!     2. IDENTIFICATION DES RELATIONS REDONDANTES A 1 TERME
+!     ----------------------------------------------------------------
+    call jecreo('&&ORDLRL.KIDREL', 'V N K16')
+    call jeecra('&&ORDLRL.KIDREL', 'NOMMAX', nbrela, kbid)
+    do 171 irela1 = nbrela, 1, -1
+        nbter1=zi(jrlnt+irela1-1)
+        if (nbter1 .gt. 1) goto 171
+        ipntr1=zi(jrlpo+irela1-1)
+        ideca1=ipntr1-nbter1
+        idnoe1=jrlno+ideca1
+        iddl1=jrldd+ideca1
+        kidrel=zk8(idnoe1)//zk8(iddl1)
+        call jenonu(jexnom('&&ORDLRL.KIDREL', kidrel), nidrel)
+        if (nidrel .eq. 0) then
+            call jecroc(jexnom('&&ORDLRL.KIDREL', kidrel))
+        else
+            zi(jrlsu+irela1-1)=1
+        endif
+171  end do
+    call jedetr('&&ORDLRL.KIDREL')
+!
+!
+!
+!     3. IDENTIFICATION DES RELATIONS REDONDANTES A PLUSIEURS TERMES
+!     ----------------------------------------------------------------
+    do 170 irela1 = nbrela, 2, -1
+        nbter1=zi(jrlnt+irela1-1)
+        if (nbter1 .eq. 1) goto 170
+        ipntr1=zi(jrlpo+irela1-1)
+        ideca1=ipntr1-nbter1
+        jrlco1=jrlco+ideca1
+        idnoe1=jrlno+ideca1
+        iddl1=jrldd+ideca1
+!
+        indmax=zi(idcoma+irela1-1)
+!
+        if (typcoe .eq. 'COMP') then
+            if (abs(zc(jrlco1+indmax-1)) .lt. eps2) then
+                call u2mess('F', 'MODELISA5_92')
+            endif
+        else
+            if (abs(zr(jrlco1+indmax-1)) .lt. eps2) then
+                call u2mess('F', 'MODELISA5_92')
+            endif
+        endif
+!
+!
+!       --  CAS DES COEF. COMPLEXES
+!       -----------------------------------
+        if (typcoe .eq. 'COMP') then
+            do 130 irela2 = 1, irela1-1
+                nbter2=zi(jrlnt+irela2-1)
+                ipntr2=zi(jrlpo+irela2-1)
+                ideca2=ipntr2-nbter2
+                jrlco2=jrlco+ideca2
+                idnoe2=jrlno+ideca2
+                iddl2=jrldd+ideca2
+                coproc=zc(jrlco2+indmax-1)/zc(jrlco1+indmax-1)
+!
+                if (nbter1 .eq. nbter2) then
+                    icomp=0
+                    do 110 ino = 1, nbter1
+                        if (zk8(idnoe1+ino-1) .eq. zk8(idnoe2+ino-1)) then
+                            if (zk8(iddl1+ino-1) .eq. zk8(iddl2+ino-1)) then
+                                rapcoc=coproc*zc(jrlco1+ino-1)
+                                epsrel=eps1*abs(zc(jrlco1+ino-1))
+                                difrel=abs(zc(jrlco2+ino-1)-rapcoc)
+                                if (difrel .le. epsrel) goto 110
+                                icomp=1
+                                goto 120
+                            else
+                                icomp=1
+                                goto 120
+                            endif
+                        else
+                            icomp=1
+                            goto 120
+                        endif
+110                  continue
+120                  continue
+                    if (icomp .eq. 0) zi(jrlsu+irela2-1)=1
+                endif
+130          continue
+!
+!
+!       --  CAS DES COEF. REEL
+!       -----------------------------------
+        else
+            do 160 irela2 = 1, irela1-1
+                nbter2=zi(jrlnt+irela2-1)
+                ipntr2=zi(jrlpo+irela2-1)
+                ideca2=ipntr2-nbter2
+                jrlco2=jrlco+ideca2
+                idnoe2=jrlno+ideca2
+                iddl2=jrldd+ideca2
+                copror=zr(jrlco2+indmax-1)/zr(jrlco1+indmax-1)
+!
+                if (nbter1 .eq. nbter2) then
+                    icomp=0
+                    do 140 ino = 1, nbter1
+                        if (zk8(idnoe1+ino-1) .eq. zk8(idnoe2+ino-1)) then
+                            if (zk8(iddl1+ino-1) .eq. zk8(iddl2+ino-1)) then
+                                rapcoe=copror*zr(jrlco1+ino-1)
+                                epsrel=eps1*abs(zr(jrlco1+ino-1))
+                                difrel=abs(zr(jrlco2+ino-1)-rapcoe)
+                                if (difrel .le. epsrel) goto 140
+                                icomp=1
+                                goto 150
+                            else
+                                icomp=1
+                                goto 150
+                            endif
+                        else
+                            icomp=1
+                            goto 150
+                        endif
+140                  continue
+150                  continue
+                    if (icomp .eq. 0) zi(jrlsu+irela2-1)=1
+                endif
+160          continue
+        endif
+170  end do
+!
+!
+! ---  MENAGE  ---
+    call jedetr('&&ORDLRL.NOEUD_RELA')
+    call jedetr('&&ORDLRL.NOEUD_OCC')
+    call jedetr('&&ORDLRL.COEFMAX')
+    call jedetr('&&ORDLRL.COEF_R')
+    call jedetr('&&ORDLRL.COEF_C')
+!
+    call jedema()
+end subroutine

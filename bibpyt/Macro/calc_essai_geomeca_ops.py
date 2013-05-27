@@ -1,4 +1,3 @@
-#@ MODIF calc_essai_geomeca_ops Macro  DATE 06/08/2012   AUTEUR CUVILLIE M.CUVILLIEZ 
 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -84,4 +83,3 @@ def calc_essai_geomeca_ops(self,MATER,COMP_INCR,CONVERGENCE,INFO,
   #if ESSAI_XXX != None : ...
 
   return ier
-

@@ -1,4 +1,3 @@
-#@ MODIF sd_char_cine SD  DATE 28/06/2011   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -100,4 +99,3 @@ class sd_char_cine(AsBase):
                 afcv  = self.AFCV.get()
                 for fonc in afcv[:nbloc] :
                     sd2=sd_fonction(fonc); sd2.check(checker)
-

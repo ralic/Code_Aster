@@ -1,0 +1,85 @@
+subroutine remp81(nomres, lpar, basmod, nbmod)
+    implicit none
+!            CONFIGURATION MANAGEMENT OF EDF VERSION
+! ======================================================================
+! COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
+! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+! (AT YOUR OPTION) ANY LATER VERSION.
+!
+! THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+! WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+! MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+! GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+!
+! YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+!   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
+! ======================================================================
+!-----------------------------------------------------------------------
+!
+!  BUT : < REMPLISSAGE DES MACRO-ELEMENTS AVEC LES VALEURS GENERALISEES
+!          RENSEIGNEES A LA MAIN >
+!
+!        LA MATRICE RESULTAT EST SYMETRIQUE ET STOCKEE TRIANGLE SUP
+!
+!-----------------------------------------------------------------------
+!
+! NOMRES /I/  : NOM K19 DE LA MATRICE CARREE RESULTAT
+! LPAR   /I/  : ADRESSE POUR LE STOCKAGE DU PARAMETRE (MASSE, RAID...)
+! BASMOD /K8/ : NOM UT DE LA BASE MODALE DE PROJECTION
+! NBMOD  /I/  : NOMBRE DE MODES DANS LA BASE
+!
+!
+!
+    include 'jeveux.h'
+    include 'asterfort/jedema.h'
+    include 'asterfort/jemarq.h'
+    include 'asterfort/wkvect.h'
+    character(len=1) :: classe, typ1
+    character(len=8) :: basmod, k8bid, blanc
+    character(len=19) :: nommat
+    character(len=14) :: num
+    character(len=18) :: nomres
+!
+!-----------------------------------------------------------------------
+!-----------------------------------------------------------------------
+    integer :: ldres, ldref, lddes, nbmod, imod
+    integer :: neq, ntail, lpar, i, iad
+    real(kind=8) :: xprod, ddot
+!-----------------------------------------------------------------------
+    data blanc/'        '/
+!-----------------------------------------------------------------------
+!
+! --- CREATION ET REMPLISSAGE DU _REFE
+!
+    call jemarq()
+    call wkvect(nomres//'_REFE', 'G V K24', 2, ldref)
+    zk24(ldref) = basmod
+    zk24(ldref+1) = blanc
+!
+! --- CREATION ET REMPLISSAGE DU _VALE
+!
+    ntail=nbmod*(nbmod+1)/2
+    call wkvect(nomres//'_VALE', 'G V R', ntail, ldres)
+!
+    do 10 i = 1, ntail
+        zr(ldres+i-1)=0.0d0
+10  end do
+    do 20 imod = 1, nbmod
+        iad=imod*(imod+1)/2
+!
+        zr(ldres+iad-1)=zr(lpar+imod-1)
+20  end do
+!
+!
+! --- CREATION ET REMPLISSAGE DU .DESC
+!
+    call wkvect(nomres(1:18)//'_DESC', 'G V I', 3, lddes)
+    zi(lddes) = 2
+    zi(lddes+1) = nbmod
+    zi(lddes+2) = 2
+!
+    call jedema()
+end subroutine

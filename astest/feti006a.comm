@@ -1,6 +1,4 @@
-# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE VALIDATION CALCUL FETI AVEC FORCE_NODALE ET ACCELERATION_SM
-# feti006a.para = tps_job 60 mem_job 256Mo ncpus 1 liste_test SI
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -26,7 +24,7 @@
 # DE PROBLEMES AVEC MULTIPLES SECONDS MEMBRES.
 # PARALLELE: VALEUR CONSEILLEE 2 PROCS.
 # ======================================================================
-# RESPONSABLE BOITEAU O.BOITEAU
+# person_in_charge: olivier.boiteau at edf.fr
 
 DEBUT(CODE=_F(NOM='FETI006A',NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='NON'))
 

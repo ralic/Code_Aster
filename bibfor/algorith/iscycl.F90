@@ -1,0 +1,58 @@
+function iscycl(ccycle, longcy)
+!
+!            CONFIGURATION MANAGEMENT OF EDF VERSION
+! ======================================================================
+! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+! (AT YOUR OPTION) ANY LATER VERSION.
+!
+! THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+! WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+! MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+! GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+!
+! YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+!   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
+! ======================================================================
+! person_in_charge: mickael.abbas at edf.fr
+!
+    implicit none
+    logical :: iscycl
+    include 'asterfort/assert.h'
+    integer :: ccycle, longcy
+!
+! ----------------------------------------------------------------------
+!
+! ROUTINE CONTACT (METHODE CONTINUE)
+!
+! DETECTION D'UN CYCLE
+!
+! ----------------------------------------------------------------------
+!
+!
+! CETTE ROUTINE DETECTE UN CYCLE DE TYPE 0/1 SUR UNE LONGUEUR DONNEE
+!
+! CYCLE LONGUEUR 3: 0 1 0 -> 4
+!                   1 0 1 -> 10
+!
+! IN  CCYCLE : ENTIER CODE REPRESENTANT LE CYCLE
+! IN  LONGCY : LONGUEUR DU CYCLE
+!
+! ----------------------------------------------------------------------
+!
+    iscycl = .false.
+    if (longcy .eq. 3) then
+        if ((ccycle.eq.4) .or. (ccycle.eq.10)) iscycl = .true.
+    else if (longcy.eq.4) then
+        if ((ccycle.eq.20) .or. (ccycle.eq.10)) iscycl = .true.
+    else if (longcy.eq.15) then
+        if ((ccycle.eq.21844) .or. (ccycle.eq.43690)) iscycl = .true.
+    else if (longcy.eq.20) then
+        if ((ccycle.eq.1398100) .or. (ccycle.eq.699050)) iscycl = .true.
+    else
+        call assert(.false.)
+    endif
+end function

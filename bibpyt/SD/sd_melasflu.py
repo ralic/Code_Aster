@@ -1,4 +1,3 @@
-#@ MODIF sd_melasflu SD  DATE 28/06/2011   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -191,5 +190,3 @@ class sd_melasflu(AsBase):
                     if not mask[k] : continue
                     matgen=sd_matr_asse_gene(data[k])
                     matgen.check(checker)
-
-

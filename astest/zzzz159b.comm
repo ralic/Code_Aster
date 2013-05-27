@@ -1,8 +1,6 @@
-# MODIF  DATE 22/04/2013   AUTEUR ASSIRE A.ASSIRE 
 # TITRE TEST DE LA MACRO COMMANDE DE RECALAGE
 # 4 calculs esclaves distribues : ncpus = 4 + 1 (maitre),
 # on met 4 car c'est une limite courante en interactif (interactif_nbpmax)
-# zzzz159b.para = tps_job 600 mem_job 512Mo ncpus 4 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -20,7 +18,7 @@
 # ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
-# RESPONSABLE ASSIRE A.ASSIRE
+# person_in_charge: aimery.assire at edf.fr
 import numpy as NP
 
 DEBUT(CODE=_F(NOM='ZZZZ159B',NIV_PUB_WEB='INTERNET',VISU_EFICAS='NON'),DEBUG=_F(SDVERI='OUI'))

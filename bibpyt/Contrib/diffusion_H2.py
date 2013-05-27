@@ -1,4 +1,3 @@
-#@ MODIF diffusion_H2 Contrib  DATE 09/04/2013   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -497,4 +496,3 @@ CHAMP_DETOILE =MACRO(nom       = "CHAMP_DETOILE",
          a3               =SIMP(statut='f',typ='R',defaut=-5.5),
          INFO             =SIMP(statut='f',typ='I',into=(1,2)),
          )
-

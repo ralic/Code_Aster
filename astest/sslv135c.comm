@@ -1,9 +1,7 @@
-# MODIF  DATE 21/01/2013   AUTEUR DELMAS J.DELMAS 
-# RESPONSABLE ANGLES J.ANGLES
+# person_in_charge: jean.angles at edf.fr
 #
 # TITRE FATIGUE, CHARGEMENT CYCLIQUE : TRACTION-COMPRESSION + CISAILLEMENT
 #          AMPLITUDE CONSTANTE ET VARIABLE
-# sslv135c.para = tps_job 90 mem_job 512Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG

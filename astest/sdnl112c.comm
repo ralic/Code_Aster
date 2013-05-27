@@ -1,6 +1,4 @@
-# MODIF  DATE 28/01/2013   AUTEUR SELLENET N.SELLENET 
 # TITRE CALCUL TEMPOREL AVEC L'ALGORITHME ITMI DE LA PARTIE
-# sdnl112c.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -22,7 +20,7 @@
 # PRISE EN COMPTE DES FORCES FLUIDELASTIQUES ET POST TRAITEMENT 
 # D'USURE PAR DES CHOCS
 # FICHIER MODELE GEVIBUS
-# RESPONSABLE ADOBES A.ADOBES
+# person_in_charge: andre.adobes at edf.fr
 #-------------------------------------------------------------------
 #
 DEBUT( CODE=_F( NOM = 'SDNL112C',NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
@@ -716,9 +714,4 @@ TEST_TABLE(  TABLE=USURE,
                   VALE = 1.62075E-09     )
 
 #
-
-
-
-
-
 

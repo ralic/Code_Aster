@@ -1,0 +1,135 @@
+subroutine nmcoun(noma, fonact, solveu, numedz, matass,&
+                  defico, resoco, deficu, resocu, iterat,&
+                  valinc, solalg, veasse, instan, resigr,&
+                  sdtime, sdstat, ctccvg)
+!
+!            CONFIGURATION MANAGEMENT OF EDF VERSION
+! ======================================================================
+! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+! (AT YOUR OPTION) ANY LATER VERSION.
+!
+! THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+! WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+! MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+! GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+!
+! YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+!   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
+! ======================================================================
+! person_in_charge: mickael.abbas at edf.fr
+!
+    implicit      none
+    include 'jeveux.h'
+    include 'asterfort/assert.h'
+    include 'asterfort/cfdisl.h'
+    include 'asterfort/isfonc.h'
+    include 'asterfort/jedema.h'
+    include 'asterfort/jemarq.h'
+    include 'asterfort/nmchex.h'
+    include 'asterfort/nmcofr.h'
+    include 'asterfort/nmunil.h'
+    character(len=8) :: noma
+    character(len=24) :: defico, resoco
+    character(len=24) :: deficu, resocu, sdtime, sdstat
+    character(len=19) :: valinc(*)
+    character(len=19) :: solalg(*), veasse(*)
+    character(len=19) :: solveu, matass
+    character(len=*) :: numedz
+    integer :: iterat
+    real(kind=8) :: instan
+    real(kind=8) :: resigr
+    integer :: ctccvg
+    integer :: fonact(*)
+!
+! ----------------------------------------------------------------------
+!
+! ROUTINE MECA_NON_LINE (ALGORITHME)
+!
+! MISE A JOUR DE L'INCREMENT DE DEPLACEMENT SI CONTACT OU
+! LIAISON_UNILATER
+!
+!
+! ----------------------------------------------------------------------
+!
+!
+! IN  MAILLA : NOM DU MAILLAGE
+! IN  FONACT : FONCTIONNALITES ACTIVEES (VOIR NMFONC)
+! IN  SOLVEU : SD SOLVEUR
+! IN  NUMEDD : NUME_DDL
+! IN  MATASS : NOM DE LA MATRICE DU PREMIER MEMBRE ASSEMBLEE
+! IN  DEFICO : SD DE DEFINITION DU CONTACT
+! IN  RESOCO : SD DE RESOLUTION DU CONTACT
+! IN  DEFICU : SD DE DEFINITION DE LIAISON_UNILATER
+! IN  RESOCU : SD DE RESOLUTION DE LIAISON_UNILATER
+! IN  VALINC : VARIABLE CHAPEAU POUR INCREMENTS VARIABLES
+! IN  SOLALG : VARIABLE CHAPEAU POUR INCREMENTS SOLUTIONS
+!               OUT: DDEPLA
+! IN  SDTIME : SD TIMER
+! IN  SDSTAT : SD STATISTIQUES
+! IN  VEASSE : VARIABLE CHAPEAU POUR NOM DES VECT_ASSE
+! IN  RESIGR : RESI_GLOB_RELA
+! IN  ITERAT : ITERATION DE NEWTON
+! IN  INSTAN : VALEUR DE L'INSTANT DE CALCUL
+! OUT CTCCVG : CODE RETOUR CONTACT DISCRET
+!                -1 : PAS DE CALCUL DU CONTACT DISCRET
+!                 0 : CAS DU FONCTIONNEMENT NORMAL
+!                 1 : NOMBRE MAXI D'ITERATIONS
+!                 2 : MATRICE SINGULIERE
+!
+!
+!
+!
+    logical :: lunil, lctcd
+    logical :: lallv
+    character(len=19) :: depdel, ddepla, cncine
+    character(len=19) :: depplu
+    character(len=14) :: numedd
+!
+! ----------------------------------------------------------------------
+!
+    call jemarq()
+!
+! --- FONCTIONNALITES ACTIVEES
+!
+    lunil = isfonc(fonact,'LIAISON_UNILATER')
+    lctcd = isfonc(fonact,'CONT_DISCRET')
+    ctccvg = -1
+    numedd = numedz(1:14)
+!
+! --- DECOMPACTION VARIABLES CHAPEAUX
+!
+    call nmchex(valinc, 'VALINC', 'DEPPLU', depplu)
+    call nmchex(solalg, 'SOLALG', 'DDEPLA', ddepla)
+    call nmchex(solalg, 'SOLALG', 'DEPDEL', depdel)
+    call nmchex(veasse, 'VEASSE', 'CNCINE', cncine)
+!
+! --- TRAITEMENT DU CONTACT ET/OU DU FROTTEMENT DISCRET
+!
+    if (lctcd) then
+        lallv = cfdisl(defico,'ALL_VERIF')
+        if (.not.lallv) then
+            call nmcofr(noma, depplu, depdel, ddepla, solveu,&
+                        numedd, matass, defico, resoco, iterat,&
+                        resigr, sdstat, sdtime, ctccvg)
+        endif
+        ctccvg = 0
+    endif
+!
+! --- TRAITEMENT DE LIAISON_UNILATER
+!
+    if (lunil) then
+        call nmunil(noma, depplu, ddepla, solveu, matass,&
+                    deficu, resocu, cncine, iterat, instan,&
+                    ctccvg)
+    endif
+!
+! --- LE CALCUL DE CONTACT A FORCEMENT ETE REALISE
+!
+    call assert(ctccvg.ge.0)
+!
+    call jedema()
+end subroutine

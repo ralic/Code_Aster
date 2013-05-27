@@ -1,4 +1,4 @@
-%& MODIF OPTIONS  DATE 02/10/2012   AUTEUR DELMAS J.DELMAS 
+%& LIBRARY OPTIONS
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -16,7 +16,7 @@
 % ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
 %    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
 % ======================================================================
-% RESPONSABLE DESROCHE X.DESROCHES
+% person_in_charge: xavier.desroches at edf.fr
 DISS_ELEM
        <<  DISS_ELEM : ENERGIE DE DISSIPATION PAR ELEMENT >>
 OPTION__
@@ -34,4 +34,3 @@ OPTION__
    OUT__
         PDISSD1 DISS_R ELEM__
        <<  PDISSD1 : ENERGIE DE DISSIPATION PAR ELEMENT >>
-

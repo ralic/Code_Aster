@@ -1,4 +1,3 @@
-#@ MODIF sd_stockage SD  DATE 13/02/2007   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -29,5 +28,3 @@ class sd_stockage(AsBase):
     slcs = Facultatif(sd_stoc_lciel(SDNom(nomj='.SLCS')))
     mltf = Facultatif(sd_stoc_mltf(SDNom(nomj='.MLTF')))
     smos = sd_stoc_morse(SDNom(nomj='.SMOS'))
-
-

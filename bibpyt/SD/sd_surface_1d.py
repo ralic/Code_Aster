@@ -1,4 +1,3 @@
-#@ MODIF sd_surface_1d SD  DATE 22/10/2007   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -32,5 +31,3 @@ class sd_surface_1d(AsBase):
     CONEX_ORIG = AsVI(SDNom(nomj='.CONEX.ORIG'))
     CONEX_EXTR = AsVI(SDNom(nomj='.CONEX.EXTR'))
     DESC       = AsVR(SDNom(debut=13), lonmax=6, )
-
-

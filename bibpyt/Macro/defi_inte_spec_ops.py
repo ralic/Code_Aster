@@ -1,4 +1,3 @@
-#@ MODIF defi_inte_spec_ops Macro  DATE 24/07/2012   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -23,4 +22,3 @@ import math
 def tocomplex(arg):
     if arg[0]=='RI' : return complex(arg[1], arg[2])
     if arg[0]=='MP' : return complex(arg[1]*math.cos(arg[2]), arg[1]*math.sin(arg[2]))
-

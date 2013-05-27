@@ -1,7 +1,5 @@
 
-# MODIF  DATE 05/11/2012   AUTEUR BRIE N.BRIE 
 # TITRE CALCUL DES MODES PROPRES PRECONTRAINTS D'UNE ROUE AUBAGEE
-# sdll133a.para = tps_job 120 mem_job 512Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -228,9 +226,4 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=1,
           )
 
 FIN();
-
-
-
-
-
 

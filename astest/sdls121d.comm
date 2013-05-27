@@ -1,4 +1,3 @@
-# MODIF  DATE 22/04/2013   AUTEUR ASSIRE A.ASSIRE 
 # TITRE RECALAGE MODAL PAR DIAGONALISATION DES MATRICES GENERALISEES
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -17,7 +16,6 @@
 # ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
 # ======================================================================
-# sdls121d.para = tps_job 600 mem_job 512Mo ncpus 4 liste_test S
 import numpy as NP
 
 # Pour des raisons de performances, on force SDVERI='NON'. 
@@ -348,9 +346,4 @@ TEST_FONCTION(VALEUR=(_F(VALE_CALC=0.503058789631,
               )
 
 FIN();
-
-
-
-
-
 

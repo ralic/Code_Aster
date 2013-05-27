@@ -1,0 +1,277 @@
+subroutine mdchge(numddl, typnum, imode, iamor, pulsat,&
+                  masgen, amogen, lflu, nbnli, noecho,&
+                  logcho, parcho, intitu, ddlcho, ier)
+    implicit  none
+    include 'jeveux.h'
+!
+    include 'asterc/getfac.h'
+    include 'asterc/getvid.h'
+    include 'asterc/getvr8.h'
+    include 'asterc/getvtx.h'
+    include 'asterfort/assert.h'
+    include 'asterfort/jenonu.h'
+    include 'asterfort/jeveuo.h'
+    include 'asterfort/jexnom.h'
+    include 'asterfort/mdchan.h'
+    include 'asterfort/mdchdl.h'
+    include 'asterfort/mdchre.h'
+    include 'asterfort/mgutdm.h'
+    include 'asterfort/orient.h'
+    include 'asterfort/tbliva.h'
+    include 'asterfort/u2mesk.h'
+    include 'asterfort/u2mess.h'
+    include 'asterfort/utnono.h'
+    include 'asterfort/vechbn.h'
+    integer :: nbnli, iamor, imode, ier, logcho(nbnli, *), ddlcho(*)
+    real(kind=8) :: parcho(nbnli, *), pulsat(*), masgen(*), amogen(*)
+    logical :: lflu
+    character(len=8) :: noecho(nbnli, *), intitu(*)
+    character(len=14) :: numddl
+    character(len=16) :: typnum
+! ----------------------------------------------------------------------
+!            CONFIGURATION MANAGEMENT OF EDF VERSION
+! ======================================================================
+! COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
+! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+! (AT YOUR OPTION) ANY LATER VERSION.
+!
+! THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+! WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+! MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+! GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+!
+! YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+!   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
+! ======================================================================
+!
+!     ROUTINE APPELEE PAR MDCHOC
+!     TRAITEMENT DU CAS OU NUME_DDL = 'NUME_DDL_GENE'
+!
+! IN  : NUMDDL : NOM DE LA NUMEROTATION
+! IN  : TYPNUM : TYPE DE LA NUMEROTATION
+! IN  : IMODE  : NUMERO DU MODE DE MASSE LA PLUS ELEVEE
+! IN  : IAMOR  : NUMERO DE L'AMORTISSEMENT ASSOCIE
+! IN  : PULSAT : PULSATIONS DES MODES
+! IN  : MASGEN : MASSES GENERALISEES DES MODES
+! IN  : AMOGEN : MATRICE DES AMORTISSEMENTS GENERALISES
+! IN  : LFLU   : LOGIQUE INDIQUANT LA PRESENCE DE LAME FLUIDE
+! IN  : NBNLI  : DIMENSION DES TABLEAUX (NBCHOC+NBSISM+NBFLAM)
+! OUT : NOECHO : NOEUD DE CHOC (VOIR MDCHOC)
+! OUT : LOGCHO : LOGIQUE CHOC (VOIR MDCHOC)
+! OUT : PARCHO : PARAMETRE DE CHOC (VOIR MDCHOC)
+! OUT : INTITU : INTITULE DE CHOC
+! OUT : DDLCHO : TABLEAU DES NUMEROTATIONS DES NOEUDS DE CHOC
+! OUT : IER    : NIVEAU D'ERREUR
+!     ------------------------------------------------------------------
+!
+    integer :: nbchoc, i, j, ibid, jcoor1, jcoor2, irett, nn1, nn2, ino1, ino2
+    integer :: n1, n2, iret, llrefe
+    real(kind=8) :: ktang, ctang, k, coor1(3), coor2(3), xjeu, r8bid
+    complex(kind=8) :: cbid
+    logical :: lnoue2
+    character(len=8) :: kbid, nomno1, nomno2, sst1, sst2, maya1, maya2, repere
+    character(len=8) :: k8typ
+    character(len=10) :: motfac
+    character(len=14) :: nume1, nume2
+    character(len=24) :: mdgene, mdssno, refo, nomgr1, nomgr2
+    character(len=24) :: valk(2)
+    integer :: iarg
+!     ------------------------------------------------------------------
+!
+    call getfac('CHOC', nbchoc)
+!
+    call jeveuo(numddl//'.NUME.REFN', 'L', llrefe)
+    mdgene = zk24(llrefe)
+    mdssno = mdgene(1:14)//'.MODG.SSNO'
+!
+    motfac = 'CHOC'
+    do 100 i = 1, nbchoc
+!
+        lnoue2 = .false.
+!
+        call getvtx(motfac, 'SOUS_STRUC_1', i, iarg, 1,&
+                    sst1, n1)
+        if (n1 .eq. 0) then
+            call u2mess('F', 'ALGORITH5_31')
+        endif
+        call jenonu(jexnom(mdssno, sst1), iret)
+        if (iret .eq. 0) then
+            call u2mess('F', 'ALGORITH5_32')
+        endif
+        call mgutdm(mdgene, sst1, ibid, 'NOM_NUME_DDL', ibid,&
+                    nume1)
+        call mgutdm(mdgene, sst1, ibid, 'NOM_MAILLAGE', ibid,&
+                    maya1)
+!
+        call getvtx(motfac, 'NOEUD_1', i, iarg, 1,&
+                    nomno1, ibid)
+        if (ibid .ne. 0) then
+            noecho(i,1) = nomno1
+        else
+            call getvtx(motfac, 'GROUP_NO_1', i, iarg, 1,&
+                        nomgr1, ibid)
+            call utnono(' ', maya1, 'NOEUD', nomgr1, nomno1,&
+                        iret)
+            if (iret .eq. 10) then
+                call u2mesk('F', 'ELEMENTS_67', 1, nomgr1)
+            else if (iret.eq.1) then
+                valk(1) = nomgr1
+                valk(2) = nomno1
+                call u2mesk('A', 'SOUSTRUC_87', 2, valk)
+            endif
+            noecho(i,1) = nomno1
+        endif
+        noecho(i,2) = sst1
+        noecho(i,3) = nume1(1:8)
+        noecho(i,4) = maya1
+!
+        call getvtx(motfac, 'NOEUD_2', i, iarg, 1,&
+                    nomno2, nn1)
+        call getvtx(motfac, 'GROUP_NO_2', i, iarg, 1,&
+                    nomgr2, nn2)
+        if (nn1 .ne. 0 .or. nn2 .ne. 0) then
+            lnoue2 = .true.
+            call getvtx(motfac, 'SOUS_STRUC_2', i, iarg, 1,&
+                        sst2, n2)
+            if (n2 .eq. 0) then
+                call u2mess('F', 'ALGORITH5_33')
+            endif
+            call jenonu(jexnom(mdssno, sst2), iret)
+            if (iret .eq. 0) then
+                call u2mess('F', 'ALGORITH5_34')
+            endif
+            call mgutdm(mdgene, sst2, ibid, 'NOM_NUME_DDL', ibid,&
+                        nume2)
+            call mgutdm(mdgene, sst2, ibid, 'NOM_MAILLAGE', ibid,&
+                        maya2)
+            if (nn1 .ne. 0) then
+                call getvtx(motfac, 'NOEUD_2', i, iarg, 1,&
+                            nomno2, nn1)
+                noecho(i,5) = nomno2
+            else
+                call utnono(' ', maya2, 'NOEUD', nomgr2, nomno2,&
+                            iret)
+                if (iret .eq. 10) then
+                    call u2mesk('F', 'ELEMENTS_67', 1, nomgr2)
+                else if (iret.eq.1) then
+                    valk(1) = nomgr2
+                    valk(2) = nomno2
+                    call u2mesk('A', 'SOUSTRUC_87', 2, valk)
+                endif
+                noecho(i,5) = nomno2
+            endif
+            call vechbn(mdgene, nomno1, sst1, nomno2, sst2)
+            noecho(i,6) = sst2
+            noecho(i,7) = nume2(1:8)
+            noecho(i,8) = maya2
+        else
+            noecho(i,5) = nomno1
+            noecho(i,6) = sst1
+            noecho(i,7) = nume1(1:8)
+            noecho(i,8) = maya1
+        endif
+!
+        call mdchdl(nbnli, noecho, lnoue2, i, ddlcho,&
+                    ier)
+!
+        call jenonu(jexnom(noecho(i, 4)//'.NOMNOE', noecho(i, 1)), ino1)
+        call jenonu(jexnom(noecho(i, 8)//'.NOMNOE', noecho(i, 5)), ino2)
+        call jeveuo(noecho(i, 4)//'.COORDO    .VALE', 'L', jcoor1)
+        call jeveuo(noecho(i, 8)//'.COORDO    .VALE', 'L', jcoor2)
+        call orient(mdgene, noecho(i, 2), jcoor1, ino1, coor1,&
+                    1)
+        call orient(mdgene, noecho(i, 6), jcoor2, ino2, coor2,&
+                    1)
+        do 110 j = 1, 3
+            parcho(i,7+j) = coor1(j)
+            parcho(i,10+j) = coor2(j)
+110      continue
+!
+        ktang = 0.d0
+        ctang = 0.d0
+        call getvtx(motfac, 'INTITULE', i, iarg, 1,&
+                    intitu(i), n1)
+        call getvr8(motfac, 'JEU', i, iarg, 1,&
+                    parcho(i, 1), n1)
+        call getvr8(motfac, 'DIST_1', i, iarg, 1,&
+                    parcho(i, 30), n1)
+        call getvr8(motfac, 'DIST_2', i, iarg, 1,&
+                    parcho(i, 31), n1)
+        call getvr8(motfac, 'RIGI_NOR', i, iarg, 1,&
+                    parcho(i, 2), n1)
+        call getvr8(motfac, 'AMOR_NOR', i, iarg, 1,&
+                    parcho(i, 3), n1)
+        call getvr8(motfac, 'RIGI_TAN', i, iarg, 1,&
+                    ktang, n1)
+        call getvr8(motfac, 'COULOMB', i, iarg, 1,&
+                    parcho(i, 6), n1)
+        parcho(i,7) = parcho(i,6)
+        call getvr8(motfac, 'COULOMB_DYNA', i, iarg, 1,&
+                    parcho(i, 6), n1)
+        call getvr8(motfac, 'COULOMB_STAT', i, iarg, 1,&
+                    parcho(i, 7), n1)
+        call getvr8(motfac, 'AMOR_TAN', i, iarg, 1,&
+                    ctang, n1)
+        call getvtx(motfac, 'LAME_FLUIDE', i, iarg, 1,&
+                    kbid, n1)
+        if (kbid(1:3) .eq. 'OUI') then
+            lflu = .true.
+            logcho(i,2) = 1
+            call getvr8(motfac, 'ALPHA   ', i, iarg, 1,&
+                        parcho(i, 32), n1)
+            call getvr8(motfac, 'BETA    ', i, iarg, 1,&
+                        parcho(i, 33), n1)
+            call getvr8(motfac, 'CHI     ', i, iarg, 1,&
+                        parcho(i, 34), n1)
+            call getvr8(motfac, 'DELTA   ', i, iarg, 1,&
+                        parcho(i, 35), n1)
+        endif
+!
+        call getvid(motfac, 'OBSTACLE', i, iarg, 1,&
+                    noecho(i, 9), n1)
+!
+        call tbliva(noecho(i, 9), 1, 'LIEU', ibid, r8bid,&
+                    cbid, 'DEFIOBST', kbid, r8bid, 'TYPE',&
+                    k8typ, ibid, r8bid, cbid, refo,&
+                    irett)
+        call assert(irett.eq.0)
+        if (refo(1:9) .eq. 'BI_PLAN_Y') then
+            noecho(i,9) = 'BI_PLANY'
+        else if (refo(1:9).eq.'BI_PLAN_Z') then
+            noecho(i,9) = 'BI_PLANZ'
+        else if (refo(1:11).eq.'BI_CERC_INT') then
+            noecho(i,9) = 'BI_CERCI'
+        else if (refo(1:7).ne.'DISCRET') then
+            noecho(i,9) = refo(1:8)
+        endif
+        if (noecho(i,9) .eq. 'BI_CERCI' .and. parcho(i,31) .lt. parcho(i, 30)) then
+            call u2mess('F', 'ALGORITH5_35')
+        endif
+! ------ SI CTANG NON PRECISE ON CALCULE UN AMORTISSEMENT CRITIQUE
+        if (ctang .eq. 0.d0 .and. ktang .ne. 0.d0) then
+            k = sqrt( pulsat(imode) ) * masgen(imode)
+            ctang = 2.d0*sqrt(&
+                    masgen(imode)*(k+ktang) ) - 2.d0* amogen(iamor)*sqrt( k*masgen(imode))
+        endif
+        parcho(i,4) = ktang
+        parcho(i,5) = ctang
+!
+        if (noecho(i,9)(1:2) .eq. 'BI') then
+            xjeu = (&
+                   parcho(i,11)-parcho(i,8))**2 + (parcho(i,12)- parcho(i,9))**2 + (parcho(i,13)-&
+                   &parcho(i,10)&
+                   )**2
+        endif
+!
+        call mdchre(motfac, i, i, mdgene, typnum,&
+                    repere, nbnli, parcho, lnoue2)
+!
+        call mdchan(motfac, i, i, mdgene, typnum,&
+                    repere, xjeu, nbnli, noecho, parcho)
+!
+100  end do
+!
+end subroutine

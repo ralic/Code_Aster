@@ -1,6 +1,4 @@
-# MODIF  DATE 17/12/2012   AUTEUR DELMAS J.DELMAS 
 # TITRE CALCUL DES FACTEURS D INTENSITE DES CONTRAINTES PAR RECOMBINAISON MODALE SUR UNE PLAQUE FISSUREE
-# sdls114a.para = tps_job 240 mem_job 512Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -302,9 +300,4 @@ TEST_TABLE(
            )
 
 FIN();
-
-
-
-
-
 

@@ -1,6 +1,4 @@
-# MODIF  DATE 03/04/2013   AUTEUR NICOLAS G.NICOLAS 
 # TITRE  FISSURE SEMI-ELLIPTIQUE AVEC MILIEU INFINI
-# sslv110f.para = tps_job 450 mem_job 1024Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -260,4 +258,3 @@ TEST_TABLE(REFERENCE='ANALYTIQUE',
            )
 
 FIN()
-

@@ -1,6 +1,4 @@
-# MODIF  DATE 11/02/2013   AUTEUR DESOZA T.DESOZA 
 # TITRE  Validation du solveur PETSc en elasticite lineaire 3D
-# petsc01g.para = tps_job 60 mem_job 1000Mo liste_test I
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -328,4 +326,3 @@ TEST_RESU(RESU=(_F(RESULTAT=VECAS5,
                    REFERENCE='AUTRE_ASTER',),),);
 
 FIN();
-

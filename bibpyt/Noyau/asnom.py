@@ -1,6 +1,5 @@
-#@ MODIF asnom Noyau  DATE 07/09/2009   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
-# RESPONSABLE COURTOIS M.COURTOIS
+# person_in_charge: mathieu.courtois at edf.fr
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -130,5 +129,3 @@ class SDNom(Type):
             obj.reparent( self, nam )
         if self.nomj is None and self._parent._name is not None:
             self.nomj = "." + self._parent._name
-
-

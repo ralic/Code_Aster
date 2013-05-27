@@ -1,6 +1,4 @@
-# MODIF  DATE 29/04/2013   AUTEUR KAZYMYRE K.KAZYMYRENKO 
 # TITRE TEST DE LA LOI JOINT_MECA_FROT SUR LES ELEMENTS DE JOINT PENTA6
-# ssnp162f.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG

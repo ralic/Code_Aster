@@ -1,4 +1,3 @@
-#@ MODIF fiabilite_fichier Macro  DATE 14/09/2004   AUTEUR MCOURTOI M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -17,7 +16,7 @@
 # ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
 # ======================================================================
-# RESPONSABLE GNICOLAS G.NICOLAS
+# person_in_charge: gerald.nicolas at edf.fr
 #
 class fiabilite_fichier :
 #

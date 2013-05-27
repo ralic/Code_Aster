@@ -1,6 +1,4 @@
-# MODIF  DATE 09/04/2013   AUTEUR PELLET J.PELLET 
 # TITRE CALCUL DE G THERMO-ELASTIQUE 3D EN MILIEU INFINI
-# hplv103a.para = tps_job 330 mem_job 1024Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -1420,5 +1418,3 @@ TEST_TABLE(REFERENCE='ANALYTIQUE',
 
 FIN()
 #
-
-

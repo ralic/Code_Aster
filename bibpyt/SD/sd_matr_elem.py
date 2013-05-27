@@ -1,4 +1,3 @@
-#@ MODIF sd_matr_elem SD  DATE 28/06/2011   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -65,6 +64,3 @@ class sd_matr_elem(AsBase):
 
         if refe[4] != '' :
             sd2=sd_cara_elem(refe[4]) ; sd2.check(checker)
-
-
-

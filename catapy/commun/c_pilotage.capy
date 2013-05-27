@@ -1,4 +1,3 @@
-#& MODIF COMMUN  DATE 26/03/2012   AUTEUR PROIX J-M.PROIX 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -16,7 +15,7 @@
 # ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
 # ======================================================================
-# RESPONSABLE KAZYMYRE K.KAZYMYRENKO
+# person_in_charge: kyrylo.kazymyrenko at edf.fr
 def C_PILOTAGE() : return FACT(statut='f',
            regles=(EXCLUS('NOEUD','GROUP_NO'),PRESENT_ABSENT('TOUT','GROUP_MA','MAILLE'),),
            TYPE    =SIMP(statut='o',typ='TXM',into=("DDL_IMPO","LONG_ARC","PRED_ELAS","DEFORMATION",
@@ -39,4 +38,3 @@ def C_PILOTAGE() : return FACT(statut='f',
            NOM_CMP       =SIMP(statut='f',typ='TXM',max='**'),
            DIRE_PILO     =SIMP(statut='f',typ='TXM',max='**'),
          );
-

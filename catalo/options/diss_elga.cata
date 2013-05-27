@@ -1,4 +1,4 @@
-%& MODIF OPTIONS  DATE 18/09/2012   AUTEUR PELLET J.PELLET 
+%& LIBRARY OPTIONS
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -16,7 +16,7 @@
 % ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 %    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 % ======================================================================
-% RESPONSABLE DESROCHE X.DESROCHES
+% person_in_charge: xavier.desroches at edf.fr
 DISS_ELGA
        <<  DISS_ELGA : DENSITE DE DISSIPATION PAR ELEMENT AUX POINTS DE GAUSS >>
 OPTION__
@@ -34,5 +34,3 @@ OPTION__
    OUT__
         PDISSPG DISS_R ELGA__
        <<  PDISSPG : DENSITE DE DISSIPATION AUX POINTS DE GAUSS >>
-
-

@@ -37,4 +37,3 @@ assert t.rows[1][p] == 3
 assert t.rows[2][p] == 5
 
 FIN()
-

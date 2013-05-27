@@ -1,5 +1,5 @@
-%& MODIF OPTIONS  DATE 05/10/2010   AUTEUR SELLENET N.SELLENET 
-% RESPONSABLE PARROT
+%& LIBRARY OPTIONS
+% person_in_charge: aurore.parrot at edf.fr
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -30,4 +30,3 @@ OPTION__
    OUT__
 PRICTRA RICE_TRA ELEM__
 PSDRPR NEUT_R ELGA__
-

@@ -1,7 +1,5 @@
-# MODIF  DATE 18/02/2013   AUTEUR SELLENET N.SELLENET 
 # ======================================================================
 # TITRE RESATURATION D UNE ALVEOLE TEST THHD, 2D ,
-# wtnp113c.para = tps_job 3200 mem_job 512Mo ncpus 1 liste_test L
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG

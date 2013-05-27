@@ -1,7 +1,5 @@
-# MODIF  DATE 18/02/2013   AUTEUR SELLENET N.SELLENET 
-# RESPONSABLE JOUMANA J.EL-GHARIB
+# person_in_charge: samuel.geniaut at edf.fr
 # TITRE MOUILLAGE D'UNE COLONNE EN BETON AVEC LOI D'ENDOMMMAGEMENT
-# wtnv121b.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG

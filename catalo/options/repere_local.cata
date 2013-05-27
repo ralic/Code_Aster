@@ -1,4 +1,4 @@
-%& MODIF OPTIONS  DATE 21/01/2013   AUTEUR DELMAS J.DELMAS 
+%& LIBRARY OPTIONS
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -16,7 +16,7 @@
 % ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
 %    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
 % ======================================================================
-% RESPONSABLE PELLET J.PELLET
+% person_in_charge: jacques.pellet at edf.fr
 REPERE_LOCAL
        << CALCUL DU REPERE LOCAL >>
 OPTION__
@@ -29,8 +29,6 @@ OPTION__
         PREPLO1 GEOM_R ELEM__
         PREPLO2 GEOM_R ELEM__
         PREPLO3 GEOM_R ELEM__
-
-
 
 
 

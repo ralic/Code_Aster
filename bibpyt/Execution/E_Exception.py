@@ -1,4 +1,3 @@
-#@ MODIF E_Exception Execution  DATE 22/10/2012   AUTEUR ABBAS M.ABBAS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -17,7 +16,7 @@
 # ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
-# RESPONSABLE COURTOIS M.COURTOIS
+# person_in_charge: mathieu.courtois at edf.fr
 
 """Définition des exceptions utilisées par le module 'aster'.
 Elles sont enregistrées avec un numéro qui permet de les lever
@@ -189,4 +188,3 @@ def add_to_dict_module(dictmodule):
 def get_exception(code):
     """Wrapper to ExceptionsStore method to simplify call from astermodule."""
     return ST.get_exception(code)
-

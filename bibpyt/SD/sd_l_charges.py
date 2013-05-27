@@ -1,4 +1,3 @@
-#@ MODIF sd_l_charges SD  DATE 17/07/2007   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -26,5 +25,3 @@ class sd_l_charges(AsBase):
     LCHA = AsVK24()
     FCHA = AsVK24()
     FCSS = Facultatif(AsVK24())
-
-

@@ -1,6 +1,4 @@
-# MODIF  DATE 15/10/2012   AUTEUR GRANET S.GRANET 
 # TITRE - TEST DE LIAKOPOULOS : DRAINAGE D UNE COLONNE D EAU
-# wtnp124b.para = tps_job 200 mem_job 1024Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -20,7 +18,6 @@
 # ======================================================================
 #                               PAR LA SEULE FORCE DE GRAVITE
 #                       MODELISATION VF DECENTRE ARETE (VFDA)
-# wtnp124b.para = tps_job 200 mem_job 1024Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 #
 DEBUT(CODE=_F(NOM='WTNP124B', NIV_PUB_WEB='INTERNET'), DEBUG=_F(SDVERI='OUI'))

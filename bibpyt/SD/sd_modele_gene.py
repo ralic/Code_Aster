@@ -1,4 +1,3 @@
-#@ MODIF sd_modele_gene SD  DATE 28/06/2011   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -113,4 +112,3 @@ class sd_modele_gene(AsBase):
             mat3_ncol=lipr[9*k+7] ; assert mat3_ncol > 0
             mat3_nume=lipr[9*k+8] ; assert mat3_nume == 3*k +3  , (mat3_nume, k)
             assert len(lima[3*k+3]) == mat3_nlig*mat3_ncol
-

@@ -1,6 +1,4 @@
-# MODIF  DATE 03/12/2012   AUTEUR TARDIEU N.TARDIEU 
 # TITRE ANALYSE AUX VALEURS PROPRES DANS DYNA_NON_LINE
-# sdnv106a.para = tps_job 900 mem_job 768Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG

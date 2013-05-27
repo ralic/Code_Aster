@@ -1,0 +1,473 @@
+subroutine rscrsd(base, nomsd, typesd, nbordr)
+    implicit none
+    include 'jeveux.h'
+!
+    include 'asterfort/assert.h'
+    include 'asterfort/jecrec.h'
+    include 'asterfort/jecreo.h'
+    include 'asterfort/jecroc.h'
+    include 'asterfort/jeecra.h'
+    include 'asterfort/jeexin.h'
+    include 'asterfort/jelira.h'
+    include 'asterfort/jexnom.h'
+    include 'asterfort/jexnum.h'
+    include 'asterfort/u2mesk.h'
+    include 'asterfort/utpara.h'
+    include 'asterfort/wkvect.h'
+    character(len=*) :: base, nomsd, typesd
+    integer :: nbordr
+! ----------------------------------------------------------------------
+!            CONFIGURATION MANAGEMENT OF EDF VERSION
+! ======================================================================
+! COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
+! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+! (AT YOUR OPTION) ANY LATER VERSION.
+!
+! THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+! WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+! MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+! GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+!
+! YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+!    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
+! ======================================================================
+! person_in_charge: jacques.pellet at edf.fr
+! ----------------------------------------------------------------------
+!      CREATION D'UNE STRUCTURE DE DONNEES "RESULTAT-COMPOSE".
+!      (SI CETTE STRUCTURE EXISTE DEJA, ON LA DETRUIT).
+!     ------------------------------------------------------------------
+! IN  NOMSD  : NOM DE LA STRUCTURE "RESULTAT" A CREER.
+! IN  TYPESD : TYPE DE LA STRUCTURE "RESULTAT" A CREER.
+! IN  NBORDR : NOMBRE MAX DE NUM. D'ORDRE.
+! ----------------------------------------------------------------------
+    integer :: i, k, ibid, iret, jordr
+    integer :: nbcham, nbnova
+    integer :: ncmec1, ncmec2, ncmec3, ncmuti, ncmeca
+    integer :: ncthe1, ncther, ncthet, ncvarc, ncacou
+    character(len=1) :: kbid, bas1
+    character(len=16) :: types2
+    character(len=19) :: noms2
+!     ------------------------------------------------------------------
+!                      C H A M P _ M E C A N I Q U E
+!     ------------------------------------------------------------------
+    parameter (ncmec1=35)
+    parameter (ncmec2=49)
+    parameter (ncmec3=34)
+    parameter (ncmuti=30)
+    parameter (ncmeca=ncmec1+ncmec2+ncmec3+ncmuti)
+    character(len=16) :: chmec1(ncmec1)
+    character(len=16) :: chmec2(ncmec2)
+    character(len=16) :: chmec3(ncmec3)
+    character(len=16) :: chmuti(ncmuti)
+    character(len=16) :: chmeca(ncmeca)
+!     ------------------------------------------------------------------
+!                      C H A M P _ T H E R M I Q U E
+!     ------------------------------------------------------------------
+    parameter (ncthe1=17)
+    parameter (ncther=ncthe1+ncmuti)
+    character(len=16) :: chthe1(ncthe1)
+    character(len=16) :: chther(ncther)
+!     ------------------------------------------------------------------
+!                      C H A M P _ V A R C
+!     ------------------------------------------------------------------
+    parameter (ncvarc=9)
+    character(len=16) :: chvarc(ncvarc)
+!     ------------------------------------------------------------------
+!                      C H A M P _ A C O U S T I Q U E
+!     ------------------------------------------------------------------
+    parameter (ncacou=5)
+    character(len=16) :: chacou(ncacou)
+!     ------------------------------------------------------------------
+!                      C H A M P _ T H E T A
+!     ------------------------------------------------------------------
+    parameter (ncthet=1)
+    character(len=16) :: chthet(ncthet)
+!     ------------------------------------------------------------------
+!     ------------------------------------------------------------------
+!                      C H A M P _ M E C A N I Q U E
+!     ------------------------------------------------------------------
+!      '1234567890123456','1234567890123456','1234567890123456',
+    data chmec1/&
+     & 'DEPL',            'VITE',            'ACCE',&
+     & 'DEPL_ABSOLU',     'VITE_ABSOLU',     'ACCE_ABSOLU',&
+     & 'EFGE_ELNO',       'EFGE_NOEU',&
+     & 'EPSI_ELGA',       'EPSI_ELNO',&
+     & 'EPSI_NOEU',       'SIEF_ELGA',&
+     & 'SIGM_ELGA',       'EFGE_ELGA',&
+     & 'SIEF_ELNO',       'SIEF_NOEU',       'SIGM_ELNO',&
+     & 'SIGM_NOEU',       'SIZ1_NOEU',       'SIZ2_NOEU',&
+     & 'SIPO_ELNO',       'SIPO_NOEU',&
+     & 'SIEQ_ELGA',       'SIEQ_ELNO',       'SIEQ_NOEU',&
+     & 'EPEQ_ELGA',       'EPEQ_ELNO',       'EPEQ_NOEU',&
+     & 'SIRO_ELEM',       'FLHN_ELGA',&
+     & 'SIPM_ELNO',       'STRX_ELGA',       'FORC_EXTE',&
+     & 'FORC_AMOR',       'FORC_LIAI'/
+!
+!      '1234567890123456','1234567890123456','1234567890123456',
+    data chmec2/&
+     & 'DEGE_ELNO',       'DEGE_NOEU',       'DEGE_ELGA',&
+     & 'EPOT_ELEM',&
+     & 'ECIN_ELEM',       'FORC_NODA',       'REAC_NODA',&
+     & 'ERME_ELEM',       'ERME_ELNO',       'ERME_NOEU',&
+     & 'ERZ1_ELEM',       'ERZ2_ELEM',       'QIRE_ELEM',&
+     & 'QIRE_ELNO',       'QIRE_NOEU',       'QIZ1_ELEM',&
+     & 'QIZ2_ELEM',       'EPSG_ELGA',       'EPSG_ELNO',&
+     & 'EPSG_NOEU',       'EPSP_ELGA',       'EPSP_ELNO',&
+     & 'EPSP_NOEU',       'VARI_ELGA',&
+     & 'VARI_NOEU',       'VARI_ELNO',&
+     & 'EPSA_ELNO',       'EPSA_NOEU',&
+     & 'COMPORTEMENT',    'DERA_ELGA',       'DERA_ELNO',&
+     & 'DERA_NOEU',       'PRME_ELNO',       'EPME_NOEU',&
+     & 'EPME_ELNO',       'EPME_ELGA',       'EPMG_ELNO',&
+     & 'EPMG_ELGA',       'ENEL_ELGA',       'ENEL_ELNO',&
+     & 'ENEL_NOEU',       'ENEL_ELEM',&
+     & 'EPMG_NOEU',       'SING_ELEM',       'SING_ELNO',&
+     & 'DISS_ELGA',       'DISS_ELNO',       'DISS_NOEU',&
+     & 'DISS_ELEM'/
+!
+!      '1234567890123456','1234567890123456','1234567890123456',
+    data chmec3/&
+     & 'EPMQ_ELGA',       'EPMQ_ELNO',       'EPMQ_NOEU',&
+     & 'EPFP_ELNO',       'EPFP_ELGA',&
+     & 'EPFD_ELNO',       'EPFD_ELGA',&
+     & 'EPVC_ELNO',       'EPVC_ELGA',       'VALE_CONT',&
+     & 'ETOT_ELGA',       'ETOT_ELNO',       'ETOT_ELEM',&
+     & 'MODE_FLAMB',      'ETOT_NOEU',&
+     & 'ENDO_ELGA',       'ENDO_ELNO',       'ENDO_NOEU',&
+     & 'INDL_ELGA',       'VAEX_ELGA',       'VAEX_ELNO',&
+     & 'VAEX_NOEU',       'DEPL_VIBR',       'SISE_ELNO',&
+     & 'COHE_ELEM',       'INDC_ELEM',       'SECO_ELEM',&
+     & 'VARC_ELGA',       'FERRAILLAGE',     'EPVC_NOEU',&
+     & 'EPFD_NOEU',       'EPFP_NOEU',       'PDIL_ELGA',&
+     & 'MODE_STAB'/
+!
+!      '1234567890123456','1234567890123456','1234567890123456',
+    data chmuti/&
+     & 'UT01_ELGA',       'UT01_ELNO',       'UT01_NOEU',&
+     & 'UT02_ELGA',       'UT02_ELNO',       'UT02_NOEU',&
+     & 'UT03_ELGA',       'UT03_ELNO',       'UT03_NOEU',&
+     & 'UT04_ELGA',       'UT04_ELNO',       'UT04_NOEU',&
+     & 'UT05_ELGA',       'UT05_ELNO',       'UT05_NOEU',&
+     & 'UT06_ELGA',       'UT06_ELNO',       'UT06_NOEU',&
+     & 'UT07_ELGA',       'UT07_ELNO',       'UT07_NOEU',&
+     & 'UT08_ELGA',       'UT08_ELNO',       'UT08_NOEU',&
+     & 'UT09_ELGA',       'UT09_ELNO',       'UT09_NOEU',&
+     & 'UT10_ELGA',       'UT10_ELNO',       'UT10_NOEU'/
+!     ------------------------------------------------------------------
+!                      C H A M P _ T H E R M I Q U E
+!     ------------------------------------------------------------------
+!      '1234567890123456','1234567890123456','1234567890123456',
+    data chthe1/&
+     & 'TEMP',&
+     & 'FLUX_ELGA',       'FLUX_ELNO',       'FLUX_NOEU',&
+     & 'META_ELNO',       'META_NOEU',&
+     & 'DURT_ELNO',       'DURT_NOEU',       'ETHE_ELEM',&
+     & 'HYDR_ELNO',       'HYDR_NOEU',&
+     & 'SOUR_ELGA',       'COMPORTHER',&
+     & 'ERTH_ELEM',       'ERTH_ELNO',       'ERTH_NOEU',&
+     & 'TEMP_ELGA'/
+!     ------------------------------------------------------------------
+!                      C H A M P _ V A R C
+!     ------------------------------------------------------------------
+!      '1234567890123456','1234567890123456','1234567890123456',
+    data chvarc/&
+     & 'IRRA',            'TEMP',            'HYDR_ELNO',&
+     & 'HYDR_NOEU',       'EPSA_ELNO',       'META_ELNO',&
+     & 'PTOT',            'DIVU',            'NEUT'         /
+!     ------------------------------------------------------------------
+!                      C H A M P _ A C O U S T I Q U E
+!     ------------------------------------------------------------------
+!      '1234567890123456','1234567890123456','1234567890123456',
+    data chacou/&
+     & 'PRES',            'PRAC_ELNO',       'PRAC_NOEU',&
+     & 'INTE_ELNO',       'INTE_NOEU'/
+!     ------------------------------------------------------------------
+!                      C H A M P _ T H E T A _ R U P T
+!     ------------------------------------------------------------------
+!      '1234567890123456','1234567890123456','1234567890123456',
+    data chthet/&
+     & 'THETA'/
+!     ------------------------------------------------------------------
+!
+    noms2=nomsd
+    types2=typesd
+    bas1=base
+!
+!     --- SI LA SD EXISTE DEJA, ON S'ARRETE EN ERREUR F :
+    call jeexin(noms2//'.DESC', iret)
+    call assert(iret.eq.0)
+!
+!     --- CREATION DE .DESC  ET  .ORDR ---
+    call jecreo(noms2//'.DESC', bas1//' N K16')
+    call wkvect(noms2//'.ORDR', bas1//' V I', nbordr, jordr)
+    call jeecra(noms2//'.ORDR', 'LONUTI', 0, ' ')
+!
+    do 10 i = 1, ncmec1
+        chmeca(i)=chmec1(i)
+10  end do
+    do 20 i = 1, ncmec2
+        chmeca(i+ncmec1)=chmec2(i)
+20  end do
+    do 30 i = 1, ncmec3
+        chmeca(i+ncmec1+ncmec2)=chmec3(i)
+30  end do
+    do 35 i = 1, ncmuti
+        chmeca(i+ncmec1+ncmec2+ncmec3)=chmuti(i)
+35  end do
+!
+    do 11 i = 1, ncthe1
+        chther(i)=chthe1(i)
+11  end do
+    do 36 i = 1, ncmuti
+        chther(i+ncthe1)=chmuti(i)
+36  end do
+!
+!     -- DECLARATION ET INITIALISATION DES PARAMETRES ET VAR. D'ACCES :
+!     ------------------------------------------------------------------
+    call utpara(bas1, nomsd, types2, nbordr)
+!
+!     ------------------------------------------------------------------
+    if (types2 .eq. 'EVOL_ELAS') then
+!
+        nbcham=ncmeca
+        call jeecra(noms2//'.DESC', 'NOMMAX', nbcham, ' ')
+        call jeecra(noms2//'.DESC', 'DOCU', ibid, 'EVEL')
+        do 40 i = 1, nbcham
+            call jecroc(jexnom(noms2//'.DESC', chmeca(i)))
+40      continue
+!
+        goto 320
+!
+!     ------------------------------------------------------------------
+    else if (types2.eq.'MULT_ELAS') then
+!
+        nbcham=ncmeca
+        call jeecra(noms2//'.DESC', 'NOMMAX', nbcham, ' ')
+        call jeecra(noms2//'.DESC', 'DOCU', ibid, 'MUEL')
+        do 60 i = 1, nbcham
+            call jecroc(jexnom(noms2//'.DESC', chmeca(i)))
+60      continue
+        goto 320
+!
+!     ------------------------------------------------------------------
+    else if (types2.eq.'FOURIER_ELAS') then
+!
+        nbcham=ncmeca
+        call jeecra(noms2//'.DESC', 'NOMMAX', nbcham, ' ')
+        call jeecra(noms2//'.DESC', 'DOCU', ibid, 'FOEL')
+        do 80 i = 1, nbcham
+            call jecroc(jexnom(noms2//'.DESC', chmeca(i)))
+80      continue
+!
+        goto 320
+!
+!     ------------------------------------------------------------------
+    else if (types2.eq.'FOURIER_THER') then
+!
+        nbcham=ncther
+        call jeecra(noms2//'.DESC', 'NOMMAX', nbcham, ' ')
+        call jeecra(noms2//'.DESC', 'DOCU', ibid, 'FOTH')
+        do 90 i = 1, nbcham
+            call jecroc(jexnom(noms2//'.DESC', chther(i)))
+90      continue
+!
+        goto 320
+!
+!     ------------------------------------------------------------------
+    else if (types2.eq.'EVOL_NOLI') then
+!
+        nbcham=ncmeca
+        call jeecra(noms2//'.DESC', 'NOMMAX', nbcham, ' ')
+        call jeecra(noms2//'.DESC', 'DOCU', ibid, 'EVNO')
+        do 100 i = 1, nbcham
+            call jecroc(jexnom(noms2//'.DESC', chmeca(i)))
+100      continue
+!
+        goto 320
+!
+!     ------------------------------------------------------------------
+    else if (types2.eq.'DYNA_TRANS') then
+!
+        nbcham=ncmeca
+        call jeecra(noms2//'.DESC', 'NOMMAX', nbcham, ' ')
+        call jeecra(noms2//'.DESC', 'DOCU', ibid, 'DYTR')
+        do 120 i = 1, nbcham
+            call jecroc(jexnom(noms2//'.DESC', chmeca(i)))
+120      continue
+        goto 320
+!
+!     ------------------------------------------------------------------
+    else if (types2.eq.'DYNA_HARMO') then
+!
+        nbcham=ncmeca
+        call jeecra(noms2//'.DESC', 'NOMMAX', nbcham, ' ')
+        call jeecra(noms2//'.DESC', 'DOCU', ibid, 'DYHA')
+        do 140 i = 1, nbcham
+            call jecroc(jexnom(noms2//'.DESC', chmeca(i)))
+140      continue
+        goto 320
+!
+!     ------------------------------------------------------------------
+    else if (types2.eq.'HARM_GENE') then
+!
+        nbcham=ncmeca
+        call jeecra(noms2//'.DESC', 'NOMMAX', nbcham, ' ')
+        call jeecra(noms2//'.DESC', 'DOCU', ibid, 'HAGE')
+        do 160 i = 1, nbcham
+            call jecroc(jexnom(noms2//'.DESC', chmeca(i)))
+160      continue
+        goto 320
+!
+!     ------------------------------------------------------------------
+    else if (types2.eq.'ACOU_HARMO') then
+!
+        nbcham=ncacou
+        call jeecra(noms2//'.DESC', 'NOMMAX', nbcham, ' ')
+        call jeecra(noms2//'.DESC', 'DOCU', ibid, 'ACHA')
+        do 170 i = 1, nbcham
+            call jecroc(jexnom(noms2//'.DESC', chacou(i)))
+170      continue
+!
+        goto 320
+!
+!     ------------------------------------------------------------------
+    else if (types2.eq.'EVOL_CHAR') then
+!
+        nbcham=6
+        call jeecra(noms2//'.DESC', 'NOMMAX', nbcham, ' ')
+        call jeecra(noms2//'.DESC', 'DOCU', ibid, 'EVCH')
+        call jecroc(jexnom(noms2//'.DESC', 'PRES'))
+        call jecroc(jexnom(noms2//'.DESC', 'FVOL_3D'))
+        call jecroc(jexnom(noms2//'.DESC', 'FVOL_2D'))
+        call jecroc(jexnom(noms2//'.DESC', 'FSUR_3D'))
+        call jecroc(jexnom(noms2//'.DESC', 'FSUR_2D'))
+        call jecroc(jexnom(noms2//'.DESC', 'VITE_VENT'))
+        goto 320
+!
+!     ------------------------------------------------------------------
+    else if (types2.eq.'EVOL_THER') then
+!
+        nbcham=ncther
+        call jeecra(noms2//'.DESC', 'NOMMAX', nbcham, ' ')
+        call jeecra(noms2//'.DESC', 'DOCU', ibid, 'EVTH')
+        do 190 i = 1, nbcham
+            call jecroc(jexnom(noms2//'.DESC', chther(i)))
+190      continue
+        goto 320
+!
+!     ------------------------------------------------------------------
+    else if (types2.eq.'EVOL_VARC') then
+!
+        nbcham=ncvarc
+        call jeecra(noms2//'.DESC', 'NOMMAX', nbcham, ' ')
+        call jeecra(noms2//'.DESC', 'DOCU', ibid, 'EVVA')
+        do 210 i = 1, nbcham
+            call jecroc(jexnom(noms2//'.DESC', chvarc(i)))
+210      continue
+        goto 320
+!
+!     ------------------------------------------------------------------
+        elseif (types2.eq.'MODE_MECA' .or. types2.eq.'MODE_MECA_C' .or.&
+     &        types2.eq.'MODE_GENE' .or. types2.eq.'MODE_ACOU' .or.&
+     &        types2.eq.'DYNAMIQUE' ) then
+!
+        if (types2 .eq. 'MODE_MECA') then
+            call jeecra(noms2//'.DESC', 'DOCU', ibid, 'MOME')
+        else if (types2.eq.'MODE_MECA_C') then
+            call jeecra(noms2//'.DESC', 'DOCU', ibid, 'MOME')
+        else if (types2.eq.'MODE_GENE') then
+            call jeecra(noms2//'.DESC', 'DOCU', ibid, 'MOGE')
+        else if (types2.eq.'DYNAMIQUE') then
+            call jeecra(noms2//'.DESC', 'DOCU', ibid, 'BAMO')
+        else if (types2.eq.'MODE_ACOU') then
+            call jeecra(noms2//'.DESC', 'DOCU', ibid, 'MOAC')
+        endif
+!
+        if (types2 .eq. 'MODE_ACOU') then
+            nbcham=1
+            call jeecra(noms2//'.DESC', 'NOMMAX', nbcham, ' ')
+            call jecroc(jexnom(noms2//'.DESC', 'PRES'))
+        else
+            nbcham=ncmeca
+            call jeecra(noms2//'.DESC', 'NOMMAX', nbcham, ' ')
+            do 230 i = 1, nbcham
+                call jecroc(jexnom(noms2//'.DESC', chmeca(i)))
+230          continue
+        endif
+        goto 320
+!
+!     ------------------------------------------------------------------
+    else if (types2.eq.'MODE_FLAMB') then
+!
+        nbcham=ncmeca
+        call jeecra(noms2//'.DESC', 'NOMMAX', nbcham, ' ')
+        call jeecra(noms2//'.DESC', 'DOCU', ibid, 'MOFL')
+        do 250 i = 1, nbcham
+            call jecroc(jexnom(noms2//'.DESC', chmeca(i)))
+250      continue
+        goto 320
+!
+!     ------------------------------------------------------------------
+    else if (types2.eq.'MODE_STAB') then
+!
+        nbcham=ncmeca
+        call jeecra(noms2//'.DESC', 'NOMMAX', nbcham, ' ')
+        call jeecra(noms2//'.DESC', 'DOCU', ibid, 'MOSB')
+        do 260 i = 1, nbcham
+            call jecroc(jexnom(noms2//'.DESC', chmeca(i)))
+260      continue
+        goto 320
+!
+!     ------------------------------------------------------------------
+    else if (types2.eq.'COMB_FOURIER') then
+!
+        nbcham=ncmeca+ncthe1
+        call jeecra(noms2//'.DESC', 'NOMMAX', nbcham, ' ')
+        call jeecra(noms2//'.DESC', 'DOCU', ibid, 'COFO')
+        do 270 i = 1, ncmeca
+            call jecroc(jexnom(noms2//'.DESC', chmeca(i)))
+270      continue
+        do 280 i = 1, ncthe1
+            call jecroc(jexnom(noms2//'.DESC', chthe1(i)))
+280      continue
+        goto 320
+!
+!     ------------------------------------------------------------------
+    else if (types2.eq.'THETA_GEOM') then
+!
+        nbcham=ncthet
+        call jeecra(noms2//'.DESC', 'NOMMAX', nbcham, ' ')
+        call jeecra(noms2//'.DESC', 'DOCU', ibid, 'THET')
+        do 290 i = 1, nbcham
+            call jecroc(jexnom(noms2//'.DESC', chthet(i)))
+290      continue
+        goto 320
+!
+    else
+        call u2mesk('F', 'UTILITAI4_31', 1, types2)
+    endif
+!
+!     ------------------------------------------------------------------
+320  continue
+!
+!     --- CREATION DE .TACH
+!     -------------------------
+    call jecrec(noms2//'.TACH', bas1//' V K24', 'NU', 'CONTIG', 'CONSTANT',&
+                nbcham)
+    call jeecra(noms2//'.TACH', 'LONMAX', nbordr, ' ')
+!
+!
+!     -- POUR QUE LES COLLECTIONS .TACH ET .TAVA SOIENT BIEN CREEES :
+!     ---------------------------------------------------------------
+    do 330,k=1,nbcham
+    call jecroc(jexnum(noms2//'.TACH', k))
+    330 end do
+    call jelira(noms2//'.NOVA', 'NOMMAX', nbnova, kbid)
+    do 340,k=1,nbnova
+    call jecroc(jexnum(noms2//'.TAVA', k))
+    340 end do
+!
+end subroutine

@@ -1,4 +1,3 @@
-#@ MODIF sd_base_modale SD  DATE 13/02/2007   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -27,5 +26,3 @@ class sd_base_modale(sd_resultat_dyn):
 #--------------------------------------------------
     nomj = SDNom(fin=8)
     UTIL = Facultatif(AsVI(SDNom(debut=19)))  # AJACOT_PB : .UTIL n'existe pas pour sdlx201a
-
-

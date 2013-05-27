@@ -1,4 +1,3 @@
-#@ MODIF GDEF_HYPO_ELAS Comportement  DATE 16/04/2012   AUTEUR PROIX J-M.PROIX 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -31,4 +30,3 @@ loi = LoiComportement(
    nom_varc       = None,
    proprietes     = (),
 )
-

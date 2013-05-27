@@ -1,4 +1,3 @@
-# MODIF  DATE 16/10/2012   AUTEUR ALARCON A.ALARCON 
 # TITRE HARMONIQUE D'UN ARBRE MUNI DE TROIS DISQUES : DYNA_VIBRA
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -17,7 +16,6 @@
 # ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
-# sdll126d.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test R
 # CAS_TEST__:SDLL126D
 #
 

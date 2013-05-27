@@ -1,7 +1,5 @@
-# MODIF  DATE 02/04/2013   AUTEUR PROIX J-M.PROIX 
-# RESPONSABLE PROIX J-M.PROIX
+# person_in_charge: jean-michel.proix at edf.fr
 # TITRE CYLINDRE THERMOELASTICITE LINEAIRE - TEST UMAT AXIS GDEF_LOG
-# umat001b.para = tps_job 120 mem_job 512Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG

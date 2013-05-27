@@ -1,4 +1,4 @@
-%& MODIF OPTIONS  DATE 18/12/2012   AUTEUR SELLENET N.SELLENET 
+%& LIBRARY OPTIONS
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -16,7 +16,7 @@
 % ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 %    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 % ======================================================================
-% RESPONSABLE DURAND
+% person_in_charge: Christophe-mmn.durand at edf.fr
 SOUR_ELGA
        <<  SOUR_ELGA : CALCUL D'UNE SOURCE DE CHALEUR A PARTIR D'UN
            POTENTIEL ELECTRIQUE VIA LA LOI D'OHM >>
@@ -34,5 +34,3 @@ OPTION__
         PVARCPR  VARI_R  <<  PVARCPR : VARIABLES DE COMMANDE  >>
    OUT__
 PSOUR_R SOUR_R ELGA__
-
-

@@ -1,4 +1,3 @@
-#& MODIF COMMUN  DATE 23/04/2013   AUTEUR ABBAS M.ABBAS 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -16,7 +15,7 @@
 # ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
 # ======================================================================
-# RESPONSABLE ABBAS M.ABBAS
+# person_in_charge: mickael.abbas at edf.fr
 def C_CONVERGENCE() : return FACT(statut='d',
            regles=(PRESENT_ABSENT('RESI_REFE_RELA','RESI_GLOB_MAXI','RESI_GLOB_RELA','RESI_COMP_RELA'),),
            b_refe_rela    =BLOC(condition = "RESI_REFE_RELA != None",

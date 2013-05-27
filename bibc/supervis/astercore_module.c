@@ -16,7 +16,7 @@
 /* ALONG WITH THIS PROGRAM; IF NOT, WRITE TO : EDF R&D CODE_ASTER,    */
 /*    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.     */
 /* ================================================================== */
-/* RESPONSABLE COURTOIS */
+/* person_in_charge: mathieu.courtois at edf.fr */
 
 /*
  * Module for the core functions of Code_Aster :
@@ -715,4 +715,3 @@ PyMODINIT_FUNC initaster_core(void)
     PyModule_AddObject(aster_core, "__version__", Py_None);
 }
 #endif
-

@@ -1,4 +1,4 @@
-%& MODIF OPTIONS  DATE 12/12/2011   AUTEUR DELMAS J.DELMAS 
+%& LIBRARY OPTIONS
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -16,7 +16,7 @@
 % ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
 %    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
 % ======================================================================
-% RESPONSABLE PELLET J.PELLET
+% person_in_charge: jacques.pellet at edf.fr
 VARI_ELNO
        <<  VARI_ELNO : CALCUL DES VARIABLES INTERNES PAR ELEMENTS AUX NOEUDS >>
 OPTION__
@@ -30,4 +30,3 @@ OPTION__
    OUT__
         PVARINR VARI_R ELNO__
        <<  PVARIGR : VARIABLES INTERNES PAR ELEMENTS AUX NOEUDS >>
-

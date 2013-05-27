@@ -1,4 +1,3 @@
-#@ MODIF dyna_vibra_ops Macro  DATE 05/02/2013   AUTEUR ALARCON A.ALARCON 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================

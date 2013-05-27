@@ -1,4 +1,3 @@
-#@ MODIF salomeVisuPylo Stanley  DATE 13/03/2012   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -497,4 +496,3 @@ class MEDInfo:
         tailSize            = 32 - len( self.fieldName )
         if tailSize > 0:
             self.fieldName += tailSize * '_'
-

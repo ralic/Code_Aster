@@ -1,4 +1,3 @@
-#@ MODIF sd_fonction SD  DATE 14/02/2012   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -17,7 +16,7 @@
 # ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
-# RESPONSABLE COURTOIS M.COURTOIS
+# person_in_charge: mathieu.courtois at edf.fr
 
 from SD import *
 from SD.sd_titre import sd_titre
@@ -164,4 +163,3 @@ class sd_fonction(sd_titre):
             sd2=sd_formule(nom) ; sd2.check()
         else :
             sd2=sd_fonction_aster(nom) ; sd2.check()
-

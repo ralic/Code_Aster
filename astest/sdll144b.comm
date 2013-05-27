@@ -1,4 +1,3 @@
-# MODIF  DATE 16/10/2012   AUTEUR ALARCON A.ALARCON 
 # TITRE ROTOR TOURNANT SUIVANT UNE LOI DE VITESSE DE ROTATION EXPONENTIELLE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -17,8 +16,7 @@
 # ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
 # ======================================================================
-# sdll144b.para = tps_job 120 mem_job 512Mo ncpus 1 liste_test R
-# RESPONSABLE TORKHANI M.TORKHANI
+# person_in_charge: mohamed.torkhani at edf.fr
 #
 
 DEBUT( CODE=_F(NOM='SDLL144B', NIV_PUB_WEB='INTERNET'),

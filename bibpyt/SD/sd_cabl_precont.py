@@ -1,4 +1,3 @@
-#@ MODIF sd_cabl_precont SD  DATE 13/02/2007   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -32,5 +31,3 @@ class sd_cabl_precont(sd_titre):
     chme_sigin = sd_carte(SDNom(nomj='.CHME.SIGIN', fin=19))
     lirela     = sd_liste_rela(SDNom(nomj='.LIRELA', fin=19))
     lt         = sd_l_table(SDNom(nomj=''))
-
-

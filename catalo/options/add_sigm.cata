@@ -1,5 +1,5 @@
-%& MODIF OPTIONS  DATE 13/05/2013   AUTEUR PELLET J.PELLET 
-% RESPONSABLE ABBAS
+%& LIBRARY OPTIONS
+% person_in_charge: mickael.abbas at edf.fr
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -26,4 +26,3 @@ OPTION__
         PEPCON2  SIEF_R  << DEFI_CABL_BP / TENSION_INIT >>
    OUT__
 PEPCON3 SIEF_R ELGA__
-

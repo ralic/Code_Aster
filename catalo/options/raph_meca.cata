@@ -1,4 +1,4 @@
-%& MODIF OPTIONS  DATE 21/01/2013   AUTEUR DELMAS J.DELMAS 
+%& LIBRARY OPTIONS
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -16,7 +16,7 @@
 % ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 %    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 % ======================================================================
-% RESPONSABLE ABBAS M.ABBAS
+% person_in_charge: mickael.abbas at edf.fr
 RAPH_MECA
 OPTION__
    IN__
@@ -77,8 +77,6 @@ PCONTPR SIEF_R ELGA__
 PVARIPR VARI_R ELGA__
 PCODRET CODE_I ELEM__
 PSTRXPR STRX_R ELGA__  <<  PSTRXPR : CHAMPS SPECIAL ELEMENTS DE STRUCTURE >>
-
-
 
 
 

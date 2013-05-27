@@ -1,4 +1,4 @@
-%& MODIF TYPELEM  DATE 24/07/2012   AUTEUR PELLET J.PELLET 
+%& LIBRARY TYPELEM
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -50,4 +50,3 @@ OPTION__
                               OUT__  MVECTUR  PVECTUR
     CHAR_MECA_FR1D3D    418   IN__   MFORCER  PFR1D3D  MGEOMER  PGEOMER
                               OUT__  MVECTUR  PVECTUR
-

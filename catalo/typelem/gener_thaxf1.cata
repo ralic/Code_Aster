@@ -1,4 +1,4 @@
-%& MODIF TYPELEM  DATE 16/01/2012   AUTEUR PELLET J.PELLET 
+%& LIBRARY TYPELEM
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -69,4 +69,3 @@ OPTION__
                               OUT__  MMATTTR  PMATTTR
     RIGI_THER_COEH_R    267   IN__   CCOEFHR  PCOEFHR  NGEOMER  PGEOMER  CTEMPSR  PTEMPSR
                               OUT__  MMATTTR  PMATTTR
-

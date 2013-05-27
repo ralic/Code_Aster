@@ -1,6 +1,4 @@
-# MODIF  DATE 29/04/2013   AUTEUR LAVERNE J.LAVERNE 
 # TITRE TEST DE LA LOI JOINT_MECA_FROT SUR LES ELEMENTS DE JOINT HYME QUAD8
-# ssnp162j.para = tps_job 60 mem_job 256Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -572,4 +570,3 @@ TEST_RESU (
 #IMPR_RESU(FORMAT='RESULTAT',RESU=(_F(RESULTAT=U_2,NOM_CHAM='SIEF_ELGA',NOM_CMP=('SIGN','SITX',),MAILLE=('CUBEDEG'))))
 
 FIN()
-

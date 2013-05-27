@@ -1,6 +1,4 @@
-# MODIF  DATE 11/02/2013   AUTEUR DESOZA T.DESOZA 
 # TITRE VALIDATION DE LA DISTRIBUTION DE LA MATRICE AVEC PETSC
-# petsc02c.para = tps_job 60 mem_job 512Mo mpi_nbcpu 2 liste_test I
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG

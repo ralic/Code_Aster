@@ -1,4 +1,3 @@
-#@ MODIF post_k1_k2_k3_ops Macro  DATE 09/04/2013   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -2040,4 +2039,3 @@ def post_k1_k2_k3_ops(self,MODELISATION,FOND_FISS,FISSURE,MATER,RESULTAT,
                                   ORDRE='CROISSANT'))
 
    return ier
-

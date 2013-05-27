@@ -1,0 +1,11 @@
+        interface
+          subroutine mffaml(fid,maa,fam,n,typent,typgeo,cret)
+            integer :: fid
+            character(*) :: maa
+            integer :: fam(*)
+            integer :: n
+            integer :: typent
+            integer :: typgeo
+            integer :: cret
+          end subroutine mffaml
+        end interface

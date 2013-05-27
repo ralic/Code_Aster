@@ -1,0 +1,100 @@
+subroutine corddl(admodl, lcmodl, idprn1, idprn2, ili,&
+                  mode, nec, ncmp, n, k,&
+                  nddloc, pos)
+    implicit none
+!
+!            CONFIGURATION MANAGEMENT OF EDF VERSION
+! ======================================================================
+! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+! (AT YOUR OPTION) ANY LATER VERSION.
+!
+! THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+! WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+! MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+! GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+!
+! YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+!    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
+! ======================================================================
+! TOLE CRP_6
+!
+!     IN
+!     --
+!     IDPRN1 IDPRN2 : ADRESSES DE PRNO ( OBJET ET POINTEUR DE LONGUEUR)
+!     ILI : NUMERO DE LIGREL
+!     MODE : MODE
+!     NEC  : NBEC(GD)
+!
+!     N    : NUMERO GLOBAL DU NOEUD
+!     K    : NUMERO LOCAL DU NOEUD ( DANS ELEMENT )
+!     OUT
+!     ---
+!
+!     NDDLOC : NBRE DE DDL SUPPORTES PAR CE NOEUD SUR L ELEMENT
+!     POS    : TABLEAU DE CORRESPONDANCE AVEC LES DDL SUR LE NOEUD
+!          EN TANT QUE NOEUD GLOBAL
+! ----------------------------------------------------------------------
+    include 'jeveux.h'
+!-----------------------------------------------------------------------
+    include 'asterfort/entcod.h'
+    integer :: i, idprn1, idprn2, iec, iecdg, iecdl, ili
+    integer :: in, k, l, mode, n, nbecmx, ncmp
+    integer :: nddloc, nec, nunoel
+!-----------------------------------------------------------------------
+    parameter (nbecmx = 10)
+    integer :: ifin(nbecmx)
+    integer :: prno
+    integer :: admodl, lcmodl, pos(1)
+    integer :: ecodg, ecodl
+!
+!     ECODG : ENTIER CODE DE N
+!     ECODL : ENTIER CODE DE K
+!
+!
+!
+!
+!
+!     FONCTION D ACCES A PRNO
+!
+    prno(ili,nunoel,l) = zi(idprn1-1+zi(idprn2+ili-1)+ (nunoel-1)* (nec+2)+l-1)
+! - DEB ----------------------------------------------------------------
+!
+! --- IFIN DONNE POUR CHAQUE ENTIER CODE LE NOMBRE MAX DE DDLS
+! --- QUE L'ON PEUT TROUVER SUR CET ENTIER :
+!     ------------------------------------
+    do 10 iec = 1, nec-1
+        ifin(iec) = 30
+10  end do
+    ifin(nec) = ncmp - 30*(nec-1)
+!
+    in = 0
+    nddloc = 0
+!
+!
+    do 20 iec = 1, nec
+        ecodg = prno(ili,n,2+iec)
+        if (ecodg .eq. 0) goto 20
+!
+        ecodl = entcod(admodl,lcmodl,nec,mode,k,iec)
+!
+        do 110 i = 1, ifin(iec)
+            ecodg = ecodg/2
+            if (ecodg .eq. 0) goto 20
+            ecodl = ecodl/2
+            iecdg = iand(1,ecodg)
+            if (iecdg .gt. 0) then
+                in = in + 1
+                iecdl = iand(1,ecodl)
+                if (iecdl .gt. 0) then
+                    nddloc = nddloc + 1
+                    pos(nddloc) = in
+                endif
+            endif
+110      continue
+20  end do
+!
+end subroutine

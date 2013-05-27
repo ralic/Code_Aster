@@ -1,4 +1,3 @@
-#@ MODIF geomec_utils Macro  DATE 17/09/2012   AUTEUR COURTOIS M.COURTOIS 
 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================

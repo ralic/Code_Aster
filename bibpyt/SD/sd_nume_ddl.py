@@ -1,4 +1,3 @@
-#@ MODIF sd_nume_ddl SD  DATE 17/07/2007   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -43,4 +42,3 @@ class sd_nume_ddl(AsBase):
         else :
            sd2=sd_nume_ddl_gd(self.nomj)
         sd2.check(checker)
-

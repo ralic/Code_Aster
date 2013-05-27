@@ -1,7 +1,5 @@
-# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
-# RESPONSABLE DURAND C.DURAND
+# person_in_charge: Christophe-mmn.durand at edf.fr
 # TITRE VALIDATION DE NON REGRESSION DE LA LECTURE DE DONNEES MED
-# zzzz132a.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG

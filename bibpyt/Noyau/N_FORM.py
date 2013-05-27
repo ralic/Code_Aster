@@ -1,6 +1,5 @@
-#@ MODIF N_FORM Noyau  DATE 07/09/2009   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
-# RESPONSABLE COURTOIS M.COURTOIS
+# person_in_charge: mathieu.courtois at edf.fr
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -32,4 +31,3 @@ class FORM(N_MACRO.MACRO):
        Elle surcharge la classe MACRO
     """
     class_instance=N_FORM_ETAPE.FORM_ETAPE
-

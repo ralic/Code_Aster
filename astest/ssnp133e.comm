@@ -1,4 +1,3 @@
-# MODIF  DATE 09/04/2013   AUTEUR PELLET J.PELLET 
 # TITRE PLAQUE TROUEE ASYMETRIQUE, INTERFACE XFEM CONFORME
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -17,7 +16,6 @@
 # ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
-# ssnp133e.para = tps_job 600 mem_job 512Mo ncpus 1 liste_test S
 DEBUT(CODE=_F( NOM = 'SSNP133E',NIV_PUB_WEB='INTERNET'))
 
 tfin=159

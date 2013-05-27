@@ -1,4 +1,3 @@
-#@ MODIF sd_mater SD  DATE 22/05/2012   AUTEUR SFAYOLLE S.FAYOLLE 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -95,4 +94,3 @@ class sd_mater(AsBase):
 
             # parfois, comp1 est vide : ssls115g/DEFI_COQU_MULT
             if comp1.VALK.get() : comp1.check(checker)
-

@@ -1,6 +1,4 @@
-# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE TUYAUTERIE SOUMISE A UNE EXCITATION EN DEPLACEMENT,
-# sdlx300a.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -1587,9 +1585,4 @@ TEST_RESU(RESU=(_F(GROUP_NO='P2',
 #
 FIN()
 #
-
-
-
-
-
 

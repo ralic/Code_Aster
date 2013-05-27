@@ -1,4 +1,3 @@
-#@ MODIF macro_expans_ops Macro  DATE 27/08/2012   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================

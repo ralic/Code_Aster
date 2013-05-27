@@ -1,6 +1,4 @@
-# MODIF  DATE 28/01/2013   AUTEUR FLEJOU J-L.FLEJOU 
 # TITRE COMPORTEMENT NON LINEAIRE D'UNE NAPPE D'ARMATURES SELON X SOUS CHARGEMENT THERMIQUE. GRILLE_ISOT_LINE
-# ssns100f.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG

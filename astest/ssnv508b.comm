@@ -1,6 +1,4 @@
-# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE BLOC AVEC INTERFACE EN TRACTION ET PRESSION LATERALE SANS CONTACT
-# ssnv508b.para = tps_job 60 mem_job 768Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -19,7 +17,6 @@
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
 # ======================================================================
 # FROTTEMENT AVEC DES ELEMENTS X-FEM QUADRATIQUES
-# ssnv508a.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test S
 
 
 DEBUT(CODE=_F(NOM='SSNV508B', NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))

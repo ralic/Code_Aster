@@ -72,4 +72,3 @@ void DEFPPPPPPPPPP(FETSCO,fetsco, INTEGER *nbmato, INTEGER *nblien,
   *ier = (INTEGER)err;
 #endif
 }
-

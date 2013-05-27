@@ -1,4 +1,3 @@
-#& MODIF COMMANDE  DATE 18/02/2013   AUTEUR SELLENET N.SELLENET 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -16,7 +15,7 @@
 # ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
-# RESPONSABLE PELLET J.PELLET
+# person_in_charge: jacques.pellet at edf.fr
 def defi_group_prod(MAILLAGE,GRILLE,**args):
   if ( MAILLAGE != None ) :
      if AsType(MAILLAGE) == maillage_sdaster : return maillage_sdaster

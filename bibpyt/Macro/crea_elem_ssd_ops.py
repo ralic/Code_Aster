@@ -1,4 +1,3 @@
-#@ MODIF crea_elem_ssd_ops Macro  DATE 26/09/2012   AUTEUR LEBOUVIER F.LEBOUVIER 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -273,4 +272,3 @@ def crea_elem_ssd_ops(self,  NUME_DDL, INTERFACE, BASE_MODALE,
                                **elem)
 
     return
-

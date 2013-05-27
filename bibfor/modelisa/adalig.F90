@@ -1,0 +1,226 @@
+subroutine adalig(ligrz)
+!            CONFIGURATION MANAGEMENT OF EDF VERSION
+! ======================================================================
+! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+! (AT YOUR OPTION) ANY LATER VERSION.
+!
+! THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+! WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+! MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+! GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+!
+! YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+!    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
+! ======================================================================
+    implicit none
+    include 'jeveux.h'
+!
+    include 'asterfort/assert.h'
+    include 'asterfort/jecrec.h'
+    include 'asterfort/jecroc.h'
+    include 'asterfort/jedema.h'
+    include 'asterfort/jedetr.h'
+    include 'asterfort/jedupo.h'
+    include 'asterfort/jeecra.h'
+    include 'asterfort/jeexin.h'
+    include 'asterfort/jelira.h'
+    include 'asterfort/jemarq.h'
+    include 'asterfort/jeveuo.h'
+    include 'asterfort/jevtbl.h'
+    include 'asterfort/jexatr.h'
+    include 'asterfort/jexnum.h'
+    include 'asterfort/mpicm0.h'
+    include 'asterfort/wkvect.h'
+    character(len=24) :: ligr
+    character(len=*) :: ligrz
+!
+! BUT: REORGANISER LA COLLECTION .LIEL DE LIGR AFIN DE REGROUPER
+!      LES ELEMENTS DE MEME TYPE_ELEM DANS UN MEME GREL.
+! DE PLUS, ON VEUT :
+!   * LIMITER LA TAILLE DES GRELS (PAS PLUS DE N ELEMENTS)
+!   * FAIRE EN SORTE QUE L'EQUILIBRAGE SOIT BON SI
+!     PARALLELISME='GROUP_ELEM' :
+!     POUR CHAQUE TYPE_ELEMENT :
+!       ON DECOUPE LE PAQUET EN 1 NOMBRE DE GRELS MULTIPLE DE NBPROC
+!       LES GRELS ONT TOUS LE MEME NOMBRE D'ELEMENTS (A 1 PRES)
+!       LES SOUS-PAQUETS SONT CONSECUTIFS DANS LE LIGREL
+!     AU TOTAL, LE NOMBRE TOTAL DE GRELS EST UN MULTIPLE DE NBPROC
+!
+! ARGUMENTS D'ENTREE:
+!     LIGRZ : NOM DU LIGREL
+!
+!
+!
+!
+    character(len=1) :: clas
+    character(len=24) :: liel, tliel
+    character(len=8) :: kbid
+    integer :: i, iret, nbtg, iad, iadp, iadt, iadtp, jliel, jtlie2, jnteut
+    integer :: jteut, jtliel, igrel, itype, j, jtype
+    integer :: nbel, nbelem, nbg, nbgrel, nbtype, nel, nelem, ntot
+    integer :: nbelmx, rang, nbproc, np1, nspaq, nbelgr, igre2
+    integer :: ktype, jgteut, k, nbelgv, lont, ibid
+!
+    call jemarq()
+!
+    call mpicm0(rang, nbproc)
+    ligr = ligrz
+    liel=ligr(1:19)//'.LIEL'
+    call jeexin(liel, iret)
+    if (iret .eq. 0) goto 9999
+    call jelira(liel, 'NUTIOC', nbgrel, kbid)
+    if (nbgrel .eq. 0) goto 9999
+!
+!
+    tliel = '&&ADALIG.LIEL'
+!
+!
+! --- RECOPIE DE LIEL DANS TLIEL ET DESTRUCTION DE LIEL
+    call jelira(liel, 'CLAS', ibid, clas)
+    call jedupo(liel, 'V', tliel, .true.)
+    call jedetr(liel)
+!
+!
+    call jelira(tliel, 'NMAXOC', nbtg, kbid)
+!
+!     -- 3 OBJETS DE TRAVAIL (SUR-DIMENSIONNES) :
+!     .TEUT  : LISTE DES TYPE_ELEM UTILISES DANS LE LIGREL
+!     .NTEUT : NOMBRE TOTAL D'ELEMENTS DU LIGREL (PAR TYPE_ELEM)
+!     .GTEUT : NOMBRE DE GRELS DU LIGREL (PAR TYPE_ELEM)
+    call wkvect('&&ADALIG.TEUT', 'V V I', nbtg, jteut)
+    call wkvect('&&ADALIG.NTEUT', 'V V I', nbtg, jnteut)
+    call wkvect('&&ADALIG.GTEUT', 'V V I', nbtg, jgteut)
+!
+    call jeveuo(tliel, 'L', jtliel)
+    call jeveuo(jexatr(tliel, 'LONCUM'), 'L', jtlie2)
+    iad = zi(jtlie2)
+    nbtype = 0
+    do 1 i = 1, nbtg
+        iadp = zi(jtlie2+i)
+        nbelem = iadp-iad-1
+        iad = iadp
+        if (nbelem .gt. 0) then
+            itype = zi(jtliel-1+iadp-1)
+            do 2 j = 1, nbtype
+                if (itype .eq. zi(jteut-1+j)) then
+                    zi(jnteut-1+j) = zi(jnteut-1+j)+ nbelem
+                    goto 1
+                endif
+ 2          continue
+            nbtype = nbtype+1
+            zi(jteut-1+nbtype) = itype
+            zi(jnteut-1+nbtype) = nbelem
+        endif
+ 1  end do
+!
+!
+! --- CALCUL DU NOMBRE DE GRELS DU NOUVEAU .LIEL
+!     ET DE LA DIM TOTALE DE LA COLLECTION
+    lont = 0
+    nbgrel = 0
+    nbelmx = int(jevtbl('TAILLE_GROUP_ELEM'))
+    do 3 ktype = 1, nbtype
+        nbel = zi(jnteut-1+ktype)
+!
+        nspaq=(nbel/nbproc)/nbelmx
+        call assert((nspaq*nbproc*nbelmx.le.nbel))
+        if (nspaq*nbproc*nbelmx .lt. nbel) nspaq=nspaq+1
+        nbg = nspaq*nbproc
+        zi(jgteut-1+ktype) = nbg
+        nbgrel = nbgrel + nbg
+        lont = lont + nbel + nbg
+ 3  end do
+    call assert((nbgrel/nbproc)*nbproc.eq.nbgrel)
+!
+!
+!     -- ALLOCATION DU NOUVEAU .LIEL
+!     ------------------------------------
+    call jecrec(liel, clas//' V I', 'NU', 'CONTIG', 'VARIABLE',&
+                nbgrel)
+    call jeecra(liel, 'LONT', lont, ' ')
+    igrel=0
+    do 41 ktype = 1, nbtype
+        itype = zi(jteut-1+ktype)
+        ntot = zi(jnteut-1+ktype)
+        nbg = zi(jgteut-1+ktype)
+        nbelgr=ntot/nbg
+!       -- ATTENTION : POUR LES PETITS GRELS, IL PEUT ARRIVER QUE
+!          NBELGR=0 (SI NBPROC > NTOT)
+!          IL Y AURA ALORS DES GRELS VIDES
+!
+!       -- LE NOMBRE D'ELEMENTS PAR GREL SERA NBELGR OU NBELGR+1
+!       -- LES NP1 1ERS GREL DE KTYPE AURONT NBELGR+1 ELEMENTS
+!          LES AUTRES AURONT NBELGR ELEMENTS
+        np1=ntot-nbg*nbelgr
+        call assert(np1.lt.nbg)
+        do 42 k = 1, nbg
+            nbelgv=nbelgr
+            if (k .le. np1) nbelgv=nbelgv+1
+            call jecroc(jexnum(liel, igrel+k))
+            call jeecra(jexnum(liel, igrel+k), 'LONMAX', nbelgv+1, kbid)
+            call jeveuo(jexnum(liel, igrel+k), 'E', jliel)
+            zi(jliel+nbelgv) = itype
+42      continue
+        igrel=igrel+nbg
+41  end do
+    call assert(nbgrel.eq.igrel)
+!
+!
+!     -- REMPLISSAGE DES NOUVEAUX GRELS
+!     ------------------------------------
+    igrel = 0
+    do 4 ktype = 1, nbtype
+        itype = zi(jteut-1+ktype)
+        ntot = zi(jnteut-1+ktype)
+        nbg = zi(jgteut-1+ktype)
+        nbelgr=ntot/nbg
+        np1=ntot-nbg*nbelgr
+        call assert(np1.lt.nbg)
+!
+        igre2=1
+        nbelgv=nbelgr
+        if (igre2 .le. np1) nbelgv=nbelgv+1
+        call jeveuo(jexnum(liel, igrel+igre2), 'E', jliel)
+        nelem = 0
+!
+!       -- ON REMPLIT LES NOUVEAUX GRELS AVEC LES ELEMENTS DU BON TYPE
+        iadt = zi(jtlie2)
+        do 5 j = 1, nbtg
+            iadtp = zi(jtlie2+j)
+            jtype = zi(jtliel-2+iadtp)
+            if (jtype .eq. itype) then
+                nel = iadtp -iadt -1
+                do 6 k = 1, nel
+!             -- IL FAUT CHANGER DE GREL :
+                    if (nelem .ge. nbelgv) then
+                        igre2 = igre2 + 1
+                        nbelgv=nbelgr
+                        if (igre2 .le. np1) nbelgv=nbelgv+1
+                        call jeveuo(jexnum(liel, igrel+igre2), 'E', jliel)
+                        nelem = 0
+                    endif
+                    nelem = nelem + 1
+                    zi(jliel-1+nelem) = zi(jtliel-1+iadt+k-1)
+ 6              continue
+            endif
+            iadt = iadtp
+ 5      continue
+        call assert(igre2.le.nbg)
+        call assert(nelem.eq.nbelgv)
+        igrel=igrel+nbg
+ 4  end do
+    call assert(igrel.eq.nbgrel)
+!
+!
+! --- DESTRUCTION DES OBJETS DE TRAVAIL
+    call jedetr(tliel)
+    call jedetr('&&ADALIG.TEUT')
+    call jedetr('&&ADALIG.NTEUT')
+    call jedetr('&&ADALIG.GTEUT')
+9999  continue
+    call jedema()
+end subroutine

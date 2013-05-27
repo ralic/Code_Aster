@@ -1,6 +1,4 @@
-# MODIF  DATE 04/03/2013   AUTEUR ALARCON A.ALARCON 
 # TITRE SYSTEME MAS RES A 8 DDL (AMORTISSEMENT VISQ. PROPORTION.)
-# sdld22b.para = tps_job 90 mem_job 256Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -985,9 +983,4 @@ TEST_FONCTION(VALEUR=(_F(VALE_CALC=4.02227150991e-05,
 
 FIN( )
 #
-
-
-
-
-
 

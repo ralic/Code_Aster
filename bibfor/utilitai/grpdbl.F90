@@ -1,0 +1,170 @@
+subroutine grpdbl(maz, typgz)
+    implicit none
+    include 'jeveux.h'
+!
+    include 'asterfort/assert.h'
+    include 'asterfort/cpclma.h'
+    include 'asterfort/jecrec.h'
+    include 'asterfort/jecreo.h'
+    include 'asterfort/jecroc.h'
+    include 'asterfort/jedema.h'
+    include 'asterfort/jedetr.h'
+    include 'asterfort/jeecra.h'
+    include 'asterfort/jelira.h'
+    include 'asterfort/jemarq.h'
+    include 'asterfort/jenuno.h'
+    include 'asterfort/jeveuo.h'
+    include 'asterfort/jexnom.h'
+    include 'asterfort/jexnum.h'
+    include 'asterfort/wkvect.h'
+    character(len=*) :: maz, typgz
+!            CONFIGURATION MANAGEMENT OF EDF VERSION
+! ======================================================================
+! COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
+! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+! (AT YOUR OPTION) ANY LATER VERSION.
+!
+! THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+! WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+! MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+! GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+!
+! YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+!   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
+! ======================================================================
+! person_in_charge: jacques.pellet at edf.fr
+! ----------------------------------------------------------------------
+!  BUT : SUPPRIMER LES DOUBLONS DANS MA.GROUPENO ET MA.GROUPEMA
+! ----------------------------------------------------------------------
+!       MAZ   : NOM DE LA STRUCTURE DE DONNEES A TESTER
+!       TYPGZ : /GROUPEMA / GROUPENO
+! ----------------------------------------------------------------------
+!
+    integer :: igr, nbgr, ie, nbe, jgroup, nue, nbno, nbma
+    integer :: jlent, k, jdime, nbent, jgrou2, ibid
+    integer :: imax, nelim, lnew, jnew, je, kk
+    character(len=4) :: kbid, clas
+    character(len=8) :: ma, typgr
+    character(len=9) :: ptrn
+    character(len=24) :: nomgr, nvnogr, nvptno
+! -DEB------------------------------------------------------------------
+!
+    call jemarq()
+!
+!
+    ma = maz
+    typgr=typgz
+    call assert(typgr.eq.'GROUPENO'.or.typgr.eq.'GROUPEMA')
+    if (typgr .eq. 'GROUPENO') then
+        ptrn='PTRNOMNOE'
+        nvnogr='&&GRPDBL.GROUPENO'
+        nvptno='&&GRPDBL.PTRNOMNOE'
+    else
+        ptrn='PTRNOMMAI'
+        nvnogr='&&GRPDBL.GROUPEMA'
+        nvptno='&&GRPDBL.PTRNOMMAI'
+    endif
+!
+    call jeveuo(ma//'.DIME', 'L', jdime)
+    nbno=zi(jdime-1+1)
+    nbma=zi(jdime-1+3)
+    if (typgr .eq. 'GROUPENO') then
+        nbent=nbno
+    else
+        nbent=nbma
+    endif
+!
+!
+    call wkvect('&&GRPDBL.LENT', 'V V I', nbent, jlent)
+    call jelira(ma//'.'//typgr, 'NOMUTI', nbgr, kbid)
+!
+    call jecreo(nvptno, 'V N K24')
+    call jeecra(nvptno, 'NOMMAX', nbgr, ' ')
+    call jecrec(nvnogr, 'V V I', 'NO '//nvptno, 'DISPERSE', 'VARIABLE',&
+                nbgr)
+!
+    do 21,igr = 1,nbgr
+    call jelira(jexnum(ma//'.'//typgr, igr), 'LONMAX', nbe, kbid)
+    call jeveuo(jexnum(ma//'.'//typgr, igr), 'L', jgroup)
+    call jenuno(jexnum(ma//'.'//typgr, igr), nomgr)
+    call jecroc(jexnom(nvnogr, nomgr))
+    imax=0
+    do 11,ie = 1,nbe
+    nue = zi(jgroup-1+ie)
+    zi(jlent-1+nue)=zi(jlent-1+nue)+1
+    imax=max(imax,zi(jlent-1+nue))
+11  continue
+!
+    lnew=nbe
+    if (imax .gt. 1) then
+!         -- IL Y A DES DOUBLONS A ELIMINER :
+        nelim=0
+        do 31,k=1,nbent
+        if (zi(jlent-1+k) .gt. 1) nelim=nelim+1
+31      continue
+        call assert(nelim.gt.0)
+        lnew=nbe-nelim
+        call assert(lnew.gt.0)
+        call wkvect('&&GRPDBL.LNEW', 'V V I', lnew, jnew)
+        je=0
+        do 34,ie=1,nbe
+        nue = zi(jgroup-1+ie)
+        kk=zi(jlent-1+nue)
+        call assert(kk.ne.0)
+        if (kk .eq. 1) then
+!             -- ENTITE NON DOUBLONNEE :
+            je=je+1
+            call assert(je.ge.1.and.je.le.lnew)
+            zi(jnew-1+je)=nue
+        else if (kk.gt.1) then
+!             -- ENTITE DOUBLONNEE VUE LA 1ERE FOIS:
+            je=je+1
+            call assert(je.ge.1.and.je.le.lnew)
+            zi(jnew-1+je)=nue
+            zi(jlent-1+nue)=-1
+        else if (kk.eq.-1) then
+!             -- ENTITE DOUBLONNEE DEJA VUE :
+        else
+            call assert(.false.)
+        endif
+34      continue
+    endif
+!
+    call jeecra(jexnom(nvnogr, nomgr), 'LONMAX', max(1, lnew), kbid)
+    call jeecra(jexnom(nvnogr, nomgr), 'LONUTI', lnew, kbid)
+    call jeveuo(jexnom(nvnogr, nomgr), 'E', jgrou2)
+!
+    if (imax .gt. 1) then
+        do 35,k=1,lnew
+        zi(jgrou2-1+k)=zi(jnew-1+k)
+35      continue
+        call jedetr('&&GRPDBL.LNEW')
+    else
+        do 36,k=1,lnew
+        zi(jgrou2-1+k)=zi(jgroup-1+k)
+36      continue
+    endif
+!
+!
+!       -- REMISE A ZERO DE .LENT :
+    do 32,k=1,nbent
+    zi(jlent-1+k)=0
+32  continue
+!
+    21 end do
+!
+    call jedetr('&&GRPDBL.LENT')
+!
+    call jelira(ma//'.'//typgr, 'CLAS', ibid, clas)
+    call jedetr(ma//'.'//typgr)
+    call jedetr(ma//'.'//ptrn)
+    call cpclma('&&GRPDBL', ma, typgr, clas(1:1))
+    call jedetr(nvnogr)
+    call jedetr(nvptno)
+!
+!
+    call jedema()
+end subroutine

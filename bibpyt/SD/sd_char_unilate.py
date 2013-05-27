@@ -1,4 +1,3 @@
-#@ MODIF sd_char_unilate SD  DATE 22/10/2007   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -30,5 +29,3 @@ class sd_char_unilate(AsBase):
     CMPGCU = AsVK8()
     COEFD = AsVect(ltyp=8, type=Parmi('K','R'))
     COEFG = AsVect(ltyp=8, type=Parmi('K','R'))
-
-

@@ -1,4 +1,3 @@
-#& MODIF COMMANDE  DATE 24/07/2012   AUTEUR PELLET J.PELLET 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -17,7 +16,7 @@
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 
-# RESPONSABLE NISTOR I.NISTOR
+# person_in_charge: ionel.nistor at edf.fr
 
 
 def calc_essai_prod(self,RESU_IDENTIFICATION,
@@ -124,4 +123,3 @@ CALC_ESSAI = MACRO(nom       = 'CALC_ESSAI',
                                                ),
                                           ),
                         );
-

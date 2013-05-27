@@ -1,4 +1,3 @@
-#@ MODIF macro_matr_ajou_ops Macro  DATE 16/10/2007   AUTEUR REZETTE C.REZETTE 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================

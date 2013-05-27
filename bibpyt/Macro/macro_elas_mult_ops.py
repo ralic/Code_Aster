@@ -1,4 +1,3 @@
-#@ MODIF macro_elas_mult_ops Macro  DATE 18/06/2012   AUTEUR DELMAS J.DELMAS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -221,4 +220,3 @@ def macro_elas_mult_ops(self,MODELE,CHAM_MATER,CARA_ELEM,NUME_DDL,
 # fin de la boucle sur les items de CAS_CHARGE
 #####################################################################
   return ier
-

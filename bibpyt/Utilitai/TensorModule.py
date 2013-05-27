@@ -1,4 +1,3 @@
-#@ MODIF TensorModule Utilitai  DATE 22/01/2013   AUTEUR LADIER A.LADIER 
 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -393,4 +392,3 @@ class TensorUnitTest(unittest.TestCase):
 if __name__ == '__main__':
    unittest.main()
    
-

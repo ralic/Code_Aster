@@ -1,4 +1,3 @@
-#@ MODIF sd_liste_rela SD  DATE 13/02/2007   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -33,5 +32,3 @@ class sd_liste_rela(AsBase):
     RLNR = AsVI(SDNom(debut=19), lonmax=1, )
     RLTV = AsVK8(SDNom(debut=19), lonmax=1, )
     RLDD = AsVK8(SDNom(debut=19), )
-
-

@@ -1,5 +1,5 @@
-%& MODIF OPTIONS  DATE 21/01/2013   AUTEUR DELMAS J.DELMAS 
-% RESPONSABLE ABBAS
+%& LIBRARY OPTIONS
+% person_in_charge: mickael.abbas at edf.fr
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -78,7 +78,5 @@ OPTION__
    SYMETRIQUE PARFOIS UNE MATRICE NON-SYMETRIQUE>>
 
         PCACO3D CACO3D ELEM__  << NE SERT QUE POUR COQUE_3D >>
-
-
 
 

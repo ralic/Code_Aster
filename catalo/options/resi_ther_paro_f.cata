@@ -1,5 +1,5 @@
-%& MODIF OPTIONS  DATE 10/05/2011   AUTEUR PELLET J.PELLET 
-% RESPONSABLE DURAND
+%& LIBRARY OPTIONS
+% person_in_charge: Christophe-mmn.durand at edf.fr
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -26,4 +26,3 @@ OPTION__
         PTEMPEI  TEMP_R
    OUT__
 PRESIDU VTEM_R RESL__
-

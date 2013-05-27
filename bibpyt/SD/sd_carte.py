@@ -1,4 +1,3 @@
-#@ MODIF sd_carte SD  DATE 09/07/2012   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -70,4 +69,3 @@ class sd_carte(sd_titre):
         numgd    =desc[0]
         ncmp_max=len(sdu_licmp_gd(numgd))
         assert n1==ncmp_max*n_gd_max , (n1, ncmp_max, n_gd_max)
-

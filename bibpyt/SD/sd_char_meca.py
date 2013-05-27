@@ -1,4 +1,3 @@
-#@ MODIF sd_char_meca SD  DATE 07/05/2012   AUTEUR SELLENET N.SELLENET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -105,6 +104,3 @@ class sd_char_meca(AsBase):
     LISMA01 = Facultatif(AsVI(lonmax=12, ))
     LISMA02 = Facultatif(AsVI(lonmax=12, ))
     POIDS_MAILLE = Facultatif(AsVR())
-
-
-

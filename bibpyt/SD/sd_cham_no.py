@@ -1,4 +1,3 @@
-#@ MODIF sd_cham_no SD  DATE 11/06/2012   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -79,4 +78,3 @@ class sd_cham_no(sd_titre):
            assert self.DESC.lonmax == 2 + nb_ec
         else:
            assert self.DESC.lonmax == 2
-

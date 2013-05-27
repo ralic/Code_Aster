@@ -1,6 +1,4 @@
-# MODIF  DATE 20/11/2012   AUTEUR DELMAS J.DELMAS 
 # TITRE TP RUPTURE : POUTRE DCB 3D ELASTIQUE
-# forma08a.para = tps_job 600 mem_job 768Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -255,4 +253,3 @@ TEST_TABLE(CRITERE='RELATIF',
            )
 
 FIN(FORMAT_HDF='OUI')
-

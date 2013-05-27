@@ -1,0 +1,450 @@
+subroutine ex0000(nuoper)
+    implicit none
+    include 'asterc/gtopti.h'
+    include 'asterfort/op0000.h'
+    include 'asterfort/op0001.h'
+    include 'asterfort/op0002.h'
+    include 'asterfort/op0003.h'
+    include 'asterfort/op0004.h'
+    include 'asterfort/op0005.h'
+    include 'asterfort/op0006.h'
+    include 'asterfort/op0007.h'
+    include 'asterfort/op0008.h'
+    include 'asterfort/op0009.h'
+    include 'asterfort/op0010.h'
+    include 'asterfort/op0011.h'
+    include 'asterfort/op0012.h'
+    include 'asterfort/op0013.h'
+    include 'asterfort/op0014.h'
+    include 'asterfort/op0015.h'
+    include 'asterfort/op0016.h'
+    include 'asterfort/op0017.h'
+    include 'asterfort/op0018.h'
+    include 'asterfort/op0019.h'
+    include 'asterfort/op0020.h'
+    include 'asterfort/op0021.h'
+    include 'asterfort/op0022.h'
+    include 'asterfort/op0023.h'
+    include 'asterfort/op0024.h'
+    include 'asterfort/op0025.h'
+    include 'asterfort/op0026.h'
+    include 'asterfort/op0027.h'
+    include 'asterfort/op0028.h'
+    include 'asterfort/op0029.h'
+    include 'asterfort/op0030.h'
+    include 'asterfort/op0031.h'
+    include 'asterfort/op0032.h'
+    include 'asterfort/op0033.h'
+    include 'asterfort/op0034.h'
+    include 'asterfort/op0035.h'
+    include 'asterfort/op0036.h'
+    include 'asterfort/op0037.h'
+    include 'asterfort/op0038.h'
+    include 'asterfort/op0039.h'
+    include 'asterfort/op0040.h'
+    include 'asterfort/op0041.h'
+    include 'asterfort/op0042.h'
+    include 'asterfort/op0043.h'
+    include 'asterfort/op0044.h'
+    include 'asterfort/op0045.h'
+    include 'asterfort/op0046.h'
+    include 'asterfort/op0047.h'
+    include 'asterfort/op0048.h'
+    include 'asterfort/op0049.h'
+    include 'asterfort/op0050.h'
+    include 'asterfort/op0051.h'
+    include 'asterfort/op0052.h'
+    include 'asterfort/op0053.h'
+    include 'asterfort/op0054.h'
+    include 'asterfort/op0055.h'
+    include 'asterfort/op0056.h'
+    include 'asterfort/op0057.h'
+    include 'asterfort/op0058.h'
+    include 'asterfort/op0059.h'
+    include 'asterfort/op0060.h'
+    include 'asterfort/op0061.h'
+    include 'asterfort/op0062.h'
+    include 'asterfort/op0063.h'
+    include 'asterfort/op0064.h'
+    include 'asterfort/op0065.h'
+    include 'asterfort/op0066.h'
+    include 'asterfort/op0067.h'
+    include 'asterfort/op0068.h'
+    include 'asterfort/op0069.h'
+    include 'asterfort/op0070.h'
+    include 'asterfort/op0071.h'
+    include 'asterfort/op0072.h'
+    include 'asterfort/op0073.h'
+    include 'asterfort/op0074.h'
+    include 'asterfort/op0075.h'
+    include 'asterfort/op0076.h'
+    include 'asterfort/op0077.h'
+    include 'asterfort/op0078.h'
+    include 'asterfort/op0079.h'
+    include 'asterfort/op0080.h'
+    include 'asterfort/op0081.h'
+    include 'asterfort/op0082.h'
+    include 'asterfort/op0083.h'
+    include 'asterfort/op0084.h'
+    include 'asterfort/op0085.h'
+    include 'asterfort/op0086.h'
+    include 'asterfort/op0087.h'
+    include 'asterfort/op0088.h'
+    include 'asterfort/op0089.h'
+    include 'asterfort/op0090.h'
+    include 'asterfort/op0091.h'
+    include 'asterfort/op0092.h'
+    include 'asterfort/op0093.h'
+    include 'asterfort/op0094.h'
+    include 'asterfort/op0095.h'
+    include 'asterfort/op0096.h'
+    include 'asterfort/op0097.h'
+    include 'asterfort/op0098.h'
+    include 'asterfort/op0099.h'
+    include 'asterfort/u2mesg.h'
+    integer :: nuoper
+!     ------------------------------------------------------------------
+!            CONFIGURATION MANAGEMENT OF EDF VERSION
+! ======================================================================
+! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+! (AT YOUR OPTION) ANY LATER VERSION.
+!
+! THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+! WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+! MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+! GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+!
+! YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+!    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
+! ======================================================================
+!     EXECUTION DES OPERATEURS NUMEROTES DE 0 A 99
+!     ------------------------------------------------------------------
+!     EXECUTION OU VERIFICATION DE SYNTAXE
+    integer :: iveri, iret
+    integer :: vali
+!-----------------------------------------------------------------------
+!-----------------------------------------------------------------------
+    call gtopti('verif', iveri, iret)
+    if (iveri .ne. 0) goto 9999
+!
+    goto ( 01, 02, 03, 04, 05, 06, 07, 08, 09 , 10,&
+     &       11, 12, 13, 14, 15, 16, 17, 18, 19 , 20,&
+     &       21, 22, 23, 24, 25, 26, 27, 28, 29 , 30,&
+     &       31, 32, 33, 34, 35, 36, 37, 38, 39 , 40,&
+     &       41, 42, 43, 44, 45, 46, 47, 48, 49 , 50,&
+     &       51, 52, 53, 54, 55, 56, 57, 58, 59 , 60,&
+     &       61, 62, 63, 64, 65, 66, 67, 68, 69 , 70,&
+     &       71, 72, 73, 74, 75, 76, 77, 78, 79 , 80,&
+     &       81, 82, 83, 84, 85, 86, 87, 88, 89 , 90,&
+     &       91, 92, 93, 94, 95, 96, 97, 98, 99 ,100 ) nuoper - 0000 + 1
+!     ------------------------------------------------------------------
+    vali = nuoper
+    call u2mesg('E', 'SUPERVIS_50', 0, ' ', 1,&
+                vali, 0, 0.d0)
+    goto 9999
+!     ------------------------------------------------------------------
+ 1  continue
+    call op0000()
+    goto 9999
+ 2  continue
+    call op0001()
+    goto 9999
+ 3  continue
+    call op0002()
+    goto 9999
+ 4  continue
+    call op0003()
+    goto 9999
+ 5  continue
+    call op0004()
+    goto 9999
+ 6  continue
+    call op0005()
+    goto 9999
+ 7  continue
+    call op0006()
+    goto 9999
+ 8  continue
+    call op0007()
+    goto 9999
+ 9  continue
+    call op0008()
+    goto 9999
+10  continue
+    call op0009()
+    goto 9999
+11  continue
+    call op0010()
+    goto 9999
+12  continue
+    call op0011()
+    goto 9999
+13  continue
+    call op0012()
+    goto 9999
+14  continue
+    call op0013()
+    goto 9999
+15  continue
+    call op0014()
+    goto 9999
+16  continue
+    call op0015()
+    goto 9999
+17  continue
+    call op0016()
+    goto 9999
+18  continue
+    call op0017()
+    goto 9999
+19  continue
+    call op0018()
+    goto 9999
+20  continue
+    call op0019()
+    goto 9999
+21  continue
+    call op0020()
+    goto 9999
+22  continue
+    call op0021()
+    goto 9999
+23  continue
+    call op0022()
+    goto 9999
+24  continue
+    call op0023()
+    goto 9999
+25  continue
+    call op0024()
+    goto 9999
+26  continue
+    call op0025()
+    goto 9999
+27  continue
+    call op0026()
+    goto 9999
+28  continue
+    call op0027()
+    goto 9999
+29  continue
+    call op0028()
+    goto 9999
+30  continue
+    call op0029()
+    goto 9999
+31  continue
+    call op0030()
+    goto 9999
+32  continue
+    call op0031()
+    goto 9999
+33  continue
+    call op0032()
+    goto 9999
+34  continue
+    call op0033()
+    goto 9999
+35  continue
+    call op0034()
+    goto 9999
+36  continue
+    call op0035()
+    goto 9999
+37  continue
+    call op0036()
+    goto 9999
+38  continue
+    call op0037()
+    goto 9999
+39  continue
+    call op0038()
+    goto 9999
+40  continue
+    call op0039()
+    goto 9999
+41  continue
+    call op0040()
+    goto 9999
+42  continue
+    call op0041()
+    goto 9999
+43  continue
+    call op0042()
+    goto 9999
+44  continue
+    call op0043()
+    goto 9999
+45  continue
+    call op0044()
+    goto 9999
+46  continue
+    call op0045()
+    goto 9999
+47  continue
+    call op0046()
+    goto 9999
+48  continue
+    call op0047()
+    goto 9999
+49  continue
+    call op0048()
+    goto 9999
+50  continue
+    call op0049()
+    goto 9999
+51  continue
+    call op0050()
+    goto 9999
+52  continue
+    call op0051()
+    goto 9999
+53  continue
+    call op0052()
+    goto 9999
+54  continue
+    call op0053()
+    goto 9999
+55  continue
+    call op0054()
+    goto 9999
+56  continue
+    call op0055()
+    goto 9999
+57  continue
+    call op0056()
+    goto 9999
+58  continue
+    call op0057()
+    goto 9999
+59  continue
+    call op0058()
+    goto 9999
+60  continue
+    call op0059()
+    goto 9999
+61  continue
+    call op0060()
+    goto 9999
+62  continue
+    call op0061()
+    goto 9999
+63  continue
+    call op0062()
+    goto 9999
+64  continue
+    call op0063()
+    goto 9999
+65  continue
+    call op0064()
+    goto 9999
+66  continue
+    call op0065()
+    goto 9999
+67  continue
+    call op0066()
+    goto 9999
+68  continue
+    call op0067()
+    goto 9999
+69  continue
+    call op0068()
+    goto 9999
+70  continue
+    call op0069()
+    goto 9999
+71  continue
+    call op0070()
+    goto 9999
+72  continue
+    call op0071()
+    goto 9999
+73  continue
+    call op0072()
+    goto 9999
+74  continue
+    call op0073()
+    goto 9999
+75  continue
+    call op0074()
+    goto 9999
+76  continue
+    call op0075()
+    goto 9999
+77  continue
+    call op0076()
+    goto 9999
+78  continue
+    call op0077()
+    goto 9999
+79  continue
+    call op0078()
+    goto 9999
+80  continue
+    call op0079()
+    goto 9999
+81  continue
+    call op0080()
+    goto 9999
+82  continue
+    call op0081()
+    goto 9999
+83  continue
+    call op0082()
+    goto 9999
+84  continue
+    call op0083()
+    goto 9999
+85  continue
+    call op0084()
+    goto 9999
+86  continue
+    call op0085()
+    goto 9999
+87  continue
+    call op0086()
+    goto 9999
+88  continue
+    call op0087()
+    goto 9999
+89  continue
+    call op0088()
+    goto 9999
+90  continue
+    call op0089()
+    goto 9999
+91  continue
+    call op0090()
+    goto 9999
+92  continue
+    call op0091()
+    goto 9999
+93  continue
+    call op0092()
+    goto 9999
+94  continue
+    call op0093()
+    goto 9999
+95  continue
+    call op0094()
+    goto 9999
+96  continue
+    call op0095()
+    goto 9999
+97  continue
+    call op0096()
+    goto 9999
+98  continue
+    call op0097()
+    goto 9999
+99  continue
+    call op0098()
+    goto 9999
+100  continue
+    call op0099()
+9999  continue
+end subroutine

@@ -1,6 +1,4 @@
-# MODIF  DATE 17/12/2012   AUTEUR DELMAS J.DELMAS 
 # TITRE DISQUE FISSURE EN PRESENCE DE CONTRAINTES INITIALES
-# sslp115a.para = tps_job 300 mem_job 640Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -296,4 +294,3 @@ TEST_TABLE(VALE_CALC=55.365086381667,
            )
 
 FIN();
-

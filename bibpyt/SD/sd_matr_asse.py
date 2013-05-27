@@ -1,4 +1,3 @@
-#@ MODIF sd_matr_asse SD  DATE 28/06/2011   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -44,5 +43,3 @@ class sd_matr_asse(sd_matr_asse_com):
         else :
            sd2=sd_matr_asse_gd(self.nomj)
         sd2.check(checker)
-
-

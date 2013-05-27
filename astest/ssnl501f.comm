@@ -1,4 +1,3 @@
-# MODIF  DATE 26/03/2013   AUTEUR CHEIGNON E.CHEIGNON 
 # TITRE  : POUTRE ENCASTREE SOUMISE A UNE PRESSION UNIFORME
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -18,7 +17,6 @@
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 #
-# ssnl501f.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test V
 #---------------------------------------------------------------------
 #  - CALCUL QUASI-STATIQUE D'UNE POUTRE CONSTITUEE D'UN MATERIAU
 #    ELASTIQUE PARFAITEMENT PLASTIQUE

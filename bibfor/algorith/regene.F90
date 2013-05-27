@@ -1,0 +1,356 @@
+subroutine regene(nomres, resgen, profno)
+    implicit none
+    include 'jeveux.h'
+!
+    include 'asterc/gettco.h'
+    include 'asterc/getvid.h'
+    include 'asterc/getvis.h'
+    include 'asterfort/copmod.h'
+    include 'asterfort/dcapno.h'
+    include 'asterfort/dismoi.h'
+    include 'asterfort/genugl.h'
+    include 'asterfort/jedema.h'
+    include 'asterfort/jedetr.h'
+    include 'asterfort/jeexin.h'
+    include 'asterfort/jelibe.h'
+    include 'asterfort/jelira.h'
+    include 'asterfort/jemarq.h'
+    include 'asterfort/jeveuo.h'
+    include 'asterfort/jexnum.h'
+    include 'asterfort/mdgepc.h'
+    include 'asterfort/mdgeph.h'
+    include 'asterfort/rsadpa.h'
+    include 'asterfort/rscrsd.h'
+    include 'asterfort/rsexch.h'
+    include 'asterfort/rsnoch.h'
+    include 'asterfort/rsorac.h'
+    include 'asterfort/titre.h'
+    include 'asterfort/u2mesg.h'
+    include 'asterfort/vtcrea.h'
+    include 'asterfort/vtcreb.h'
+    include 'asterfort/wkvect.h'
+    character(len=8) :: nomres, resgen
+!-----------------------------------------------------------------------
+!            CONFIGURATION MANAGEMENT OF EDF VERSION
+! ======================================================================
+! COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
+! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+! (AT YOUR OPTION) ANY LATER VERSION.
+!
+! THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+! WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+! MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+! GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+!
+! YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+!    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
+! ======================================================================
+!
+!  BUT : < RESTITUTION GENERALISEE >
+!
+!  RESTITUER EN BASE PHYSIQUE LES RESULTATS "MODE_GENE"
+!  SANS SOUS-STRUCTURATION
+!  LE CONCEPT RESULTAT EST UN RESULTAT COMPOSE "MODE_MECA"
+!               OU "MODE_MECA_C"
+!-----------------------------------------------------------------------
+!
+! NOMRES /I/ : NOM K8 DU CONCEPT MODE MECA RESULTAT
+! RESGEN /I/ : NOM K8 DU MODE_GENE AMONT
+!
+!
+!
+!
+!
+    integer :: i, iadref, iadrif, iarefe, ibid, idbase, ier, iord, iret, itresu
+    integer :: jbid, ldnew, llchol, llinsk, llnueq, lrefe, nbmod, nbnot, neq
+    integer :: nno, numo, iadpar(7), nbmo2, llref1, llref2, llref3, llref4
+    integer :: llref5, llref6
+    real(kind=8) :: freq, genek, genem, omeg2, rbid, xsi
+    complex(kind=8) :: cbid
+    character(len=1) :: k1bid, typsca
+    character(len=8) :: basmod, respro, kbid, k8b, modmec, mailsk, modgen
+    character(len=14) :: numddl
+    character(len=16) :: depl, nompar(7), typrep
+    character(len=19) :: chamno, kint, krefe, chamne, raid, numgen, profno
+    character(len=24) :: chamol, indirf, crefe(2), numedd, basmo2
+    character(len=24) :: valk
+    logical :: zcmplx
+    integer :: iarg
+!
+!-----------------------------------------------------------------------
+    data depl   /'DEPL            '/
+    data nompar /'FREQ','RIGI_GENE','MASS_GENE','OMEGA2','NUME_MODE',&
+     &             'AMOR_REDUIT','TYPE_MODE'/
+!-----------------------------------------------------------------------
+    call jemarq()
+!
+!-----RECUPERATION NOMBRE DE MODES PROPRES CALCULES---------------------
+!
+    zcmplx = .false.
+!
+    call dcapno(resgen, depl, 1, chamol)
+    call jelira(chamol, 'TYPE', ibid, typsca)
+    if (typsca .eq. 'C') zcmplx = .true.
+!
+    call rsorac(resgen, 'LONUTI', ibid, rbid, kbid,&
+                cbid, rbid, kbid, nbmod, 1,&
+                ibid)
+!
+! --- ON RESTITUE SUR TOUS LES MODES OU SUR QUELQUES MODES:
+!
+    call getvis(' ', 'NUME_ORDRE', 1, iarg, 0,&
+                ibid, nno)
+    if (nno .ne. 0) then
+        nbmod = -nno
+        call wkvect('&&REGENE.NUME', 'V V I', nbmod, jbid)
+        call getvis(' ', 'NUME_ORDRE', 1, iarg, nbmod,&
+                    zi(jbid), nno)
+    else
+        call wkvect('&&REGENE.NUME', 'V V I', nbmod, jbid)
+        do 2 i = 1, nbmod
+            zi(jbid+i-1) = i
+ 2      continue
+    endif
+!
+! --- ALLOCATION STRUCTURE DE DONNEES RESULTAT
+!
+    if (zcmplx) then
+        call rscrsd('G', nomres, 'MODE_MECA_C', nbmod)
+    else
+        call rscrsd('G', nomres, 'MODE_MECA', nbmod)
+    endif
+!
+! --- RECUPERATION DE LA BASE MODALE
+!
+    call jeveuo(jexnum(resgen//'           .TACH', 1), 'L', iarefe)
+    kint = zk24(iarefe)(1:19)
+    call jeveuo(kint//'.VALE', 'L', itresu)
+    call jeveuo(kint//'.REFE', 'L', iadref)
+    basmod = zk24(iadref)(1:8)
+!
+    basmo2 = basmod
+    call gettco(basmo2, typrep)
+!
+    if (typrep(1:9) .eq. 'MODE_GENE') then
+        call getvid(' ', 'SQUELETTE', 1, iarg, 1,&
+                    mailsk, ibid)
+        indirf = '&&REGEGL'//'.INDIR.SST'
+!
+! ------ VERIF SQUELETTE
+!
+        call jeexin(mailsk//'.INV.SKELETON', iret)
+        if (iret .eq. 0) then
+            valk = mailsk
+            call u2mesg('F', 'ALGORITH14_27', 1, valk, 0,&
+                        0, 0, 0.d0)
+        endif
+        call jeveuo(mailsk//'.INV.SKELETON', 'L', llinsk)
+!
+! ------ RECUPERATION DU MODELE GENERALISE
+!
+        call jeveuo(resgen//'           .REFD', 'L', llref1)
+        raid=zk24(llref1)
+        call jelibe(resgen//'           .REFD')
+!
+        call jeveuo(raid//'.REFA', 'L', llref2)
+        numgen(1:14)=zk24(llref2+1)
+        numgen(15:19)='.NUME'
+        call jelibe(raid//'.REFA')
+!
+        call jeveuo(numgen//'.REFN', 'L', llref3)
+        respro=zk24(llref3)
+        call jelibe(numgen//'.REFN')
+!
+        call jeveuo(respro//'           .REFD', 'L', llref4)
+        raid=zk24(llref4)
+        call jelibe(respro//'           .REFD')
+!
+        call jeveuo(raid//'.REFA', 'L', llref5)
+        numgen(1:14)=zk24(llref5+1)
+        numgen(15:19)='.NUME'
+        call jelibe(raid//'.REFA')
+!
+        call jeveuo(numgen//'.REFN', 'L', llref6)
+        modgen=zk24(llref6)
+        call jelibe(numgen//'.REFN')
+!
+! ------ CREATION DU PROF-CHAMNO
+!
+        call genugl(profno, indirf, modgen, mailsk)
+        call jelira(profno//'.NUEQ', 'LONMAX', neq, k1bid)
+!
+! ------ RECUPERATION DU NOMBRE DE NOEUDS
+!
+        call dismoi('F', 'NB_NO_MAILLA', mailsk, 'MAILLAGE', nbnot,&
+                    kbid, iret)
+!
+! ------ RECUPERATION DE LA BASE MODALE
+!
+        crefe(1)=mailsk
+        crefe(2)=profno
+!
+!C
+!CC ---- RESTITUTION PROPREMENT DITE
+!C
+!
+        call jeveuo(numgen//'.NUEQ', 'L', llnueq)
+        call getvid(' ', 'MODE_MECA', 1, iarg, 1,&
+                    modmec, ibid)
+        if (ibid .ne. 0) basmod=modmec
+        call rsorac(basmod, 'LONUTI', ibid, rbid, kbid,&
+                    cbid, rbid, kbid, nbmo2, 1,&
+                    ibid)
+        call wkvect('&&REGENE.BASEMODE', 'V V R', nbmo2*neq, idbase)
+        call copmod(basmod, 'DEPL', neq, profno(1:14), nbmo2,&
+                    'R', zr( idbase), cbid)
+!
+! ------ BOUCLE SUR LES MODES A RESTITUER
+!
+        do 10 i = 1, nbmod
+            iord = zi(jbid+i-1)
+!
+! --------- REQUETE NOM ET ADRESSE CHAMNO GENERALISE
+!
+            call dcapno(resgen, depl, iord, chamol)
+            call jeveuo(chamol, 'L', llchol)
+!
+! --------- REQUETE NOM ET ADRESSE NOUVEAU CHAMNO
+!
+            call rsexch(' ', nomres, depl, i, chamne,&
+                        ier)
+            if (zcmplx) then
+                call vtcrea(chamne, crefe, 'G', 'C', neq)
+            else
+                call vtcrea(chamne, crefe, 'G', 'R', neq)
+            endif
+            call jeveuo(chamne//'.VALE', 'E', ldnew)
+!
+            call rsadpa(resgen, 'L', 6, nompar, iord,&
+                        0, iadpar, kbid)
+            freq = zr(iadpar(1))
+            genek = zr(iadpar(2))
+            genem = zr(iadpar(3))
+            omeg2 = zr(iadpar(4))
+            numo = zi(iadpar(5))
+            xsi = zr(iadpar(6))
+!
+            if (zcmplx) then
+                call mdgepc(neq, nbmo2, zr(idbase), zc(llchol), zc( ldnew))
+            else
+                call mdgeph(neq, nbmo2, zr(idbase), zr(llchol), zr( ldnew))
+            endif
+!
+            call rsnoch(nomres, depl, i)
+            call rsadpa(nomres, 'E', 7, nompar, i,&
+                        0, iadpar, kbid)
+            zr(iadpar(1)) = freq
+            zr(iadpar(2)) = genek
+            zr(iadpar(3)) = genem
+            zr(iadpar(4)) = omeg2
+            zi(iadpar(5)) = numo
+            zr(iadpar(6)) = xsi
+            zk16(iadpar(7)) = 'MODE_DYN'
+!
+            call jelibe(chamol)
+10      continue
+!-----------------------------------------------------------------------
+    else
+!-----------------------------------------------------------------------
+        call jeveuo(basmod//'           .REFD', 'L', iadrif)
+!
+        call rsorac(basmod, 'LONUTI', ibid, rbid, kbid,&
+                    cbid, rbid, kbid, nbmo2, 1,&
+                    ibid)
+!
+!         IF (TYPREP(1:9) .EQ. 'BASE_MODA') THEN
+        numedd = zk24(iadrif+3)
+!           WRITE(6,*) 'NUMEDD ',NUMEDD
+        call getvid(' ', 'NUME_DDL', 1, iarg, 1,&
+                    k8b, ibid)
+        if (ibid .ne. 0) then
+            call getvid(' ', 'NUME_DDL', 1, iarg, 1,&
+                        numedd, ibid)
+            numedd = numedd(1:14)//'.NUME'
+        endif
+        numddl = numedd(1:14)
+        call dismoi('F', 'NB_EQUA', numddl, 'NUME_DDL', neq,&
+                    k8b, iret)
+        call wkvect('&&REGENE.BASEMODE', 'V V R', nbmo2*neq, idbase)
+        call copmod(basmod, 'DEPL', neq, numddl, nbmo2,&
+                    'R', zr(idbase), cbid)
+!
+!CC ---- RESTITUTION PROPREMENT DITE
+!C
+!
+        do 20 i = 1, nbmod
+            iord = zi(jbid+i-1)
+!
+! --------- REQUETE NOM ET ADRESSE CHAMOL GENERALISE
+!
+            call dcapno(resgen, depl, iord, chamol)
+            call jeveuo(chamol, 'L', llchol)
+!
+! --------- REQUETE NOM ET ADRESSE NOUVEAU CHAMNO
+!
+            call rsexch(' ', nomres, depl, i, chamno,&
+                        ier)
+            if (zcmplx) then
+                call vtcreb(chamno, numedd, 'G', 'C', neq)
+            else
+                call vtcreb(chamno, numedd, 'G', 'R', neq)
+            endif
+            call jeveuo(chamno//'.VALE', 'E', ldnew)
+!
+            call rsadpa(resgen, 'L', 6, nompar, iord,&
+                        0, iadpar, kbid)
+            freq = zr(iadpar(1))
+            genek = zr(iadpar(2))
+            genem = zr(iadpar(3))
+            omeg2 = zr(iadpar(4))
+            numo = zi(iadpar(5))
+            xsi = zr(iadpar(6))
+!
+            if (zcmplx) then
+                call mdgepc(neq, nbmo2, zr(idbase), zc(llchol), zc( ldnew))
+            else
+                call mdgeph(neq, nbmo2, zr(idbase), zr(llchol), zr( ldnew))
+            endif
+!
+            call rsnoch(nomres, depl, i)
+!
+            call rsadpa(nomres, 'E', 7, nompar, i,&
+                        0, iadpar, kbid)
+            zr(iadpar(1)) = freq
+            zr(iadpar(2)) = genek
+            zr(iadpar(3)) = genem
+            zr(iadpar(4)) = omeg2
+            zi(iadpar(5)) = numo
+            zr(iadpar(6)) = xsi
+            zk16(iadpar(7)) = 'MODE_DYN'
+!
+            call jelibe(chamol)
+20      continue
+!
+        krefe = nomres
+        call wkvect(krefe//'.REFD', 'G V K24', 7, lrefe)
+        zk24(lrefe ) = zk24(iadrif)
+        zk24(lrefe+1) = zk24(iadrif+1)
+        zk24(lrefe+2) = zk24(iadrif+2)
+        zk24(lrefe+3) = numedd
+        zk24(lrefe+4) = zk24(iadrif+4)
+        zk24(lrefe+5) = zk24(iadrif+5)
+        zk24(lrefe+6) = zk24(iadrif+6)
+        call jelibe(krefe//'.REFD')
+    endif
+!
+! --- MENAGE
+    call jedetr('&&REGENE.NUME')
+    call jedetr('&&REGENE.BASEMODE')
+    call jedetr('&&REGEGL'//'.INDIR.SST')
+!
+    call titre()
+    call jedema()
+end subroutine

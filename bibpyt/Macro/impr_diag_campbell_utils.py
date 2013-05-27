@@ -1,4 +1,3 @@
-#@ MODIF impr_diag_campbell_utils Macro  DATE 27/08/2012   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -18,7 +17,7 @@
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 
-# RESPONSABLE TORKHANI M.TORKHANI
+# person_in_charge: mohamed.torkhani at edf.fr
 
 from math import sqrt
 import numpy

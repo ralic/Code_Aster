@@ -1,6 +1,4 @@
-# MODIF  DATE 04/03/2013   AUTEUR ALARCON A.ALARCON 
 # TITRE SOUS-STRUCTURATION TRANSITOIRE : SYSTEME MASSES-RESSORTS
-# sdld102a.para = tps_job 90 mem_job 512Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -1130,5 +1128,3 @@ TEST_RESU(RESU=_F(INST=80.0,
 FIN();
 
 #
-
-

@@ -1,6 +1,4 @@
-# MODIF  DATE 09/04/2013   AUTEUR PELLET J.PELLET 
 # TITRE PROPAGATION PLANE D'UNE FISSURE SEMI-ELLIPTIQUE
-# sslv319a.para = tps_job 180 mem_job 1024Mo liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -527,4 +525,3 @@ TEST_TABLE(CRITERE='RELATIF',
            TABLE=TB_FOND,)
 
 FIN();
-

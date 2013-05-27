@@ -1,4 +1,3 @@
-#@ MODIF sd_dyna_gene SD  DATE 24/09/2012   AUTEUR ALARCON A.ALARCON 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -215,4 +214,3 @@ class sd_dyna_gene(sd_titre) :
         assert self.REVC.lonmax == nbsauv*nbrevi
         assert self.REVD.lonmax == nbsauv*nbrevi
         assert self.REVN.lonmax == nbrevi
-

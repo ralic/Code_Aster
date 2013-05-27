@@ -1,6 +1,4 @@
-# MODIF  DATE 09/04/2013   AUTEUR PELLET J.PELLET 
 # TITRE LACHER D'UN PATIN FROTTANT
-# sdnd101a.para = tps_job 60 mem_job 256Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -348,9 +346,4 @@ TEST_TABLE(VALE_CALC=-1.0,
 
 FIN( )
 #
-
-
-
-
-
 

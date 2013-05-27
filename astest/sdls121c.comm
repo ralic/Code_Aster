@@ -1,7 +1,5 @@
-# MODIF  DATE 16/04/2013   AUTEUR BRIE N.BRIE 
 # TITRE RECALAGE DES PARAMETRES D'UN MODELE DYNAMIQUE PAR ANALYSE MODALE
 # 1 calcul esclave : ncpus = 1 + 1 (maitre)
-# sdls121c.para = tps_job 1000 mem_job 512Mo ncpus 2 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG

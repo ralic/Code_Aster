@@ -1,6 +1,5 @@
-#@ MODIF reca_message Macro  DATE 11/05/2010   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
-# RESPONSABLE ASSIRE A.ASSIRE
+# person_in_charge: aimery.assire at edf.fr
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -146,4 +145,3 @@ class Message :
 
       if (len(sensible)!=0 or len(insensible)!=0):
          UTMESS('I','RECAL0_62', cc=self.get_filename())
-

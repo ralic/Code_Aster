@@ -1,6 +1,4 @@
-# MODIF  DATE 26/02/2013   AUTEUR PELLET J.PELLET 
 # TITRE  SYSTEME 2 MASSES - 4 RESSORTS ENCASTRE EN NO1 ET NO5
-# sdld33a.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -475,9 +473,4 @@ TEST_RESU(RESU=(_F(GROUP_NO='GROUP_NO_PO1',
 #
 
 FIN();
-
-
-
-
-
 

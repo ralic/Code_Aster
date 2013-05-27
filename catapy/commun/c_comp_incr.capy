@@ -1,4 +1,3 @@
-#& MODIF COMMUN  DATE 09/04/2013   AUTEUR ASSIRE A.ASSIRE 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -16,7 +15,7 @@
 # ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
-# RESPONSABLE PROIX J.M.PROIX
+# person_in_charge: jean-michel.proix at edf.fr
 def C_COMP_INCR(COMMAND=None) :  #COMMUN#
 
     if COMMAND !='CALC_EUROPLEXUS':

@@ -1,4 +1,4 @@
-%& MODIF TYPELEM  DATE 08/04/2013   AUTEUR DESOZA T.DESOZA 
+%& LIBRARY TYPELEM
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -149,4 +149,3 @@ OPTION__
                               OUT__  ENNEUT_F PNEUT_F  ENNEUT_R PNEUT_R
     TOU_INI_ELGA        99    IN__
                               OUT__  GGEOMER  PGEOM_R  EGNEUT_F PNEUT_F  EGNEUT_R PNEUT_R
-

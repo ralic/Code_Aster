@@ -1,6 +1,4 @@
-# MODIF  DATE 08/04/2013   AUTEUR LADIER A.LADIER 
 # TITRE CALCUL DU PARAMETRE GP EN 2D AVEC MAILLAGE QUELCONQUE
-# ssnp131b.para = tps_job 500 mem_job 512Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG

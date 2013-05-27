@@ -1,4 +1,3 @@
-#@ MODIF stats Utilitai  DATE 11/05/2010   AUTEUR COURTOIS M.COURTOIS 
 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================

@@ -1,4 +1,3 @@
-#@ MODIF hayhurst Comportement  DATE 18/03/2013   AUTEUR PROIX J-M.PROIX 
 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -34,4 +33,3 @@ loi = LoiComportement(
    type_matr_tang = ('PERTURBATION', 'VERIFICATION'),
    proprietes     = None,
 )
-

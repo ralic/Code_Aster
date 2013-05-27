@@ -1,6 +1,4 @@
-# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE GENERATION DE SIGNAUX SISMIQUES
-# zzzz317c.para = tps_job 400 mem_job 512Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -18,7 +16,7 @@
 # ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
 # ======================================================================
-# RESPONSABLE ZENTNER I.ZENTNER  
+# person_in_charge: irmela.zentner at edf.fr
 DEBUT(CODE=_F(NOM='zzzz317c',NIV_PUB_WEB='INTERNET',VISU_EFICAS='NON'), PAR_LOT='NON')
 #
 from math import pi,sqrt,log,exp, ceil

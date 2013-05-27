@@ -1,4 +1,4 @@
-%& MODIF TYPELEM  DATE 29/04/2013   AUTEUR DELMAS J.DELMAS 
+%& LIBRARY TYPELEM
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -340,4 +340,3 @@ OPTION__
     XREACL              548   IN__   DDL_MECA PDEPL_P  E35NEUTR PAINTER  E15NEUTI PCFACE   E3NEUTI  PLONCHA
                                      CONTX_R  PDONCO   E21NEUTR PPINTER  NGEOMER  PGEOMER  E63NEUTR PBASECO
                               OUT__  E1NEUTR  PSEUIL
-

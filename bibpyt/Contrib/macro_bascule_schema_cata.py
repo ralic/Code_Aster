@@ -1,4 +1,3 @@
-#@ MODIF macro_bascule_schema_cata Contrib  DATE 02/04/2013   AUTEUR GREFFET N.GREFFET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================

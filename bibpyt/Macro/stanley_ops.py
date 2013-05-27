@@ -1,4 +1,3 @@
-#@ MODIF stanley_ops Macro  DATE 24/08/2010   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================

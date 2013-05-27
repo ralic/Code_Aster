@@ -1,4 +1,3 @@
-#@ MODIF ce_calcul_identification Calc_essai  DATE 06/11/2012   AUTEUR BODEL C.BODEL 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -19,7 +18,7 @@
 # ======================================================================
 
 
-# RESPONSABLE BODEL C.BODEL
+# person_in_charge: charles.bodel at edf.fr
 
 from Utilitai.Utmess import UTMESS
 from numpy import array, zeros, conjugate, identity
@@ -430,5 +429,3 @@ class CalculInverse:
             self.mess.disp_mess("La matrice "+arg[0]+ " a pour taille "+arg[1])
         self.mess.disp_mess(" ")
         UTMESS('A','CALCESSAI0_4')
-
-

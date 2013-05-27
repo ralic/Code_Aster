@@ -31,4 +31,3 @@ void hancpu(int sig)
    CALL0(SIGCPU, sigcpu);
    exit(sig);
 }
-

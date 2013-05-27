@@ -1,0 +1,302 @@
+subroutine aceinc(noma, nomo, nbmcf, mclf, ntyele,&
+                  nbocc, ivr, nbepo, nbedi, nbeco,&
+                  nbeca, nbeba, nbema, nbegb, nbemb,&
+                  nbtel, locaco, locagb, locamb, jdlm,&
+                  jdln, lmax, ier)
+    implicit none
+    include 'jeveux.h'
+!
+    include 'asterc/getres.h'
+    include 'asterc/getvr8.h'
+    include 'asterc/getvtx.h'
+    include 'asterfort/codent.h'
+    include 'asterfort/dismoi.h'
+    include 'asterfort/getvem.h'
+    include 'asterfort/jedema.h'
+    include 'asterfort/jedetr.h'
+    include 'asterfort/jeexin.h'
+    include 'asterfort/jelira.h'
+    include 'asterfort/jemarq.h'
+    include 'asterfort/jenonu.h'
+    include 'asterfort/jenuno.h'
+    include 'asterfort/jeveuo.h'
+    include 'asterfort/jexnom.h'
+    include 'asterfort/jexnum.h'
+    include 'asterfort/u2mesk.h'
+    include 'asterfort/u2mess.h'
+    include 'asterfort/vafcar.h'
+    include 'asterfort/wkvect.h'
+    integer :: nbmcf, ntyele(*), nbocc(*), ivr(*)
+    integer :: nbepo, nbedi, nbeco, nbeca, nbeba, nbegb, nbemb, nbtel
+    integer :: jdlm, jdln, lmax, ier
+    logical :: locaco, locagb, locamb
+    character(len=8) :: noma, nomo
+    character(len=16) :: mclf(*)
+! ----------------------------------------------------------------------
+!            CONFIGURATION MANAGEMENT OF EDF VERSION
+! ======================================================================
+! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+! (AT YOUR OPTION) ANY LATER VERSION.
+!
+! THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+! WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+! MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+! GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+!
+! YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+!    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
+! ======================================================================
+! TOLE CRP_21
+! ----------------------------------------------------------------------
+!     AFFE_CARA_ELEM
+!     INCREMENTATION DES COMPTEURS D'APPELS A NOCART
+!        POUR LES DISCRETS, COQUES, DEFI_ARCS, CABLES
+!     VERIFICATION QUE TOUS LES ELEMENTS DU MODELE ONT ETE AFFECTES
+!        PAR DES CARACTERISTIQUES.
+! ----------------------------------------------------------------------
+!     ------------------------------------------------------------------
+!-----------------------------------------------------------------------
+    integer :: i, ibid, ioc, ixma, ixno, ixnw, j
+    integer :: jdgm, jdgn, jdls, jdme, jdne, jdnw, k
+    integer :: mcl, nbcar, nbema, nbmagr, nbmail, nbmtrd, nbnogr
+    integer :: ncar, ncara, ng, nj, nm, nn, nnoe
+    integer :: naxe, nummai, numnoe, nutyel
+    real(kind=8) :: r8b
+!-----------------------------------------------------------------------
+    parameter    ( nbcar = 100 )
+    character(len=4) :: exituy
+    character(len=6) :: kioc
+    character(len=8) :: nomu, car(nbcar)
+    character(len=16) :: concep, cmd
+    character(len=24) :: mlgnma, mlgnno, mlggno, mlggma
+    character(len=24) :: modmai, modnem, modnoe, nommai, nomnoe
+    character(len=1) :: k1bid
+    integer :: iarg
+!     ------------------------------------------------------------------
+!
+    call jemarq()
+    call getres(nomu, concep, cmd)
+!
+    locaco = .false.
+    locagb = .false.
+    locamb = .false.
+    nnoe = 0
+!
+! --- RECONSTRUCTION DES NOMS JEVEUX DU CONCEPT MAILLAGE ET MODELE
+    modnem = nomo//'.MODELE    .NEMA'
+    modmai = nomo//'.MAILLE'
+    modnoe = nomo//'.NOEUD'
+    mlgnma = noma//'.NOMMAI'
+    mlgnno = noma//'.NOMNOE'
+    mlggno = noma//'.GROUPENO'
+    mlggma = noma//'.GROUPEMA'
+    call jelira(mlgnma, 'NOMMAX', nbmail, k1bid)
+    call jeexin(modnem, ixnw)
+    call jeexin(modmai, ixma)
+    call jeexin(modnoe, ixno)
+    nbmtrd = 0
+    if (ixma .ne. 0) call jeveuo(modmai, 'L', jdme)
+    if (ixno .ne. 0) call jeveuo(modnoe, 'L', jdne)
+    if (ixnw .ne. 0) then
+        call jelira(modnem, 'NMAXOC', nbmtrd, k1bid)
+        call jeveuo(modnem, 'L', jdnw)
+    endif
+!
+    call wkvect('&&TMPINC', 'V V K24', lmax, jdls)
+!
+    do 10 mcl = 1, nbmcf
+        if (mcl .eq. 12) goto 10
+        do 20 ioc = 1, nbocc(mcl)
+            call codent(ioc, 'G', kioc)
+            ng = 0
+            nm = 0
+            nj = 0
+            nn = 0
+            if (mcl .eq. 10 .or. mcl .eq. 15) then
+                call getvem(noma, 'GROUP_MA_POI1', mclf(mcl), 'GROUP_MA_POI1', ioc,&
+                            iarg, lmax, zk24(jdls), ng)
+                if (ng .eq. 0) then
+                    call getvem(noma, 'GROUP_MA_SEG2', mclf(mcl), 'GROUP_MA_SEG2', ioc,&
+                                iarg, lmax, zk24(jdls), ng)
+                endif
+            else
+                call getvem(noma, 'GROUP_MA', mclf(mcl), 'GROUP_MA', ioc,&
+                            iarg, lmax, zk24(jdls), ng)
+                call getvem(noma, 'MAILLE', mclf(mcl), 'MAILLE', ioc,&
+                            iarg, lmax, zk24(jdls), nm)
+            endif
+            if (mcl .eq. 3 .or. mcl .eq. 4 .or. mcl .eq. 13) then
+                call getvem(noma, 'GROUP_NO', mclf(mcl), 'GROUP_NO', ioc,&
+                            iarg, lmax, zk24(jdls), nj)
+                call getvem(noma, 'NOEUD', mclf(mcl), 'NOEUD', ioc,&
+                            iarg, lmax, zk24(jdls), nn)
+            else if ((mcl.eq.11).or.(mcl.eq.14)) then
+                call getvr8(mclf(mcl), 'AXE', ioc, iarg, 0,&
+                            r8b, naxe)
+            endif
+            if (mcl .eq. 1 .or. mcl .eq. 3 .or. mcl .eq. 4 .or. mcl .eq. 13 .or. mcl .eq.&
+                10) then
+                call getvtx(mclf(mcl), 'CARA', ioc, iarg, nbcar,&
+                            car, ncar)
+                if (ncar .gt. 0) ncara = ncar
+            endif
+!
+! ---     DES NOEUDS SONT AFFECTES :
+            if (nj .gt. 0 .or. nn .gt. 0) nnoe = 1
+!
+! ---     "GROUP_MA" = MAILLES DANS LA LISTE DES GROUPES DE MAILLES
+            if (ng .gt. 0) then
+                if (mcl .eq. 2) locaco = .true.
+                if (mcl .eq. 11) locagb = .true.
+                if (mcl .eq. 14) locamb = .true.
+                do 34 i = 1, ng
+                    call jeveuo(jexnom(mlggma, zk24(jdls+i-1)), 'L', jdgm)
+                    call jelira(jexnom(mlggma, zk24(jdls+i-1)), 'LONUTI', nbmagr, k1bid)
+                    do 36 j = 1, nbmagr
+                        nummai = zi(jdgm+j-1)
+                        call jenuno(jexnum(mlgnma, nummai), nommai)
+                        nutyel = zi(jdme+nummai-1)
+                        if (mcl .ne. 4) zi(jdlm+nummai-1) = -mcl
+                        call vafcar('MAILLE', mclf(mcl), nommai, nbepo, nbedi,&
+                                    nbeco, nbeca, nbeba, nbema, nbegb,&
+                                    nbemb, nutyel, ntyele, car, ncara,&
+                                    ivr, kioc, ier)
+36                  continue
+34              continue
+            endif
+!
+! ---     "MAILLE" = MAILLES DE LA LISTE DE MAILLES
+            if (nm .gt. 0) then
+                if (mcl .eq. 2) locaco = .true.
+                if (mcl .eq. 11) locagb = .true.
+                if (mcl .eq. 14) locamb = .true.
+                do 46 i = 1, nm
+                    nommai = zk24(jdls+i-1)
+                    call jenonu(jexnom(mlgnma, nommai), nummai)
+                    nutyel = zi(jdme+nummai-1)
+                    if (mcl .ne. 4) zi(jdlm+nummai-1) = -mcl
+                    call vafcar('MAILLE', mclf(mcl), nommai, nbepo, nbedi,&
+                                nbeco, nbeca, nbeba, nbema, nbegb,&
+                                nbemb, nutyel, ntyele, car, ncara,&
+                                ivr, kioc, ier)
+46              continue
+            endif
+!
+! ---     MAILLES TARDIVES EXISTENT POUR CE MODELE :
+            if (ixnw .ne. 0 .and. (mcl.eq.3.or.mcl.eq.4.or.mcl.eq.13)) then
+!
+! ---   "GROUP_NO" = MAILLES TARDIVES DANS LA LISTE DE GROUPES DE NOEUDS
+                if (nj .gt. 0) then
+                    do 48 i = 1, nj
+                        call jeveuo(jexnom(mlggno, zk24(jdls+i-1)), 'L', jdgn)
+                        call jelira(jexnom(mlggno, zk24(jdls+i-1)), 'LONUTI', nbnogr, k1bid)
+                        do 50 j = 1, nbnogr
+                            numnoe = zi(jdgn+j-1)
+                            if (mcl .ne. 4) then
+                                do 52 k = 1, nbmtrd
+                                    if (zi(jdnw+k*2-2) .eq. numnoe) zi(jdln+k-1 )=-mcl
+52                              continue
+                            endif
+                            call jenuno(jexnum(mlgnno, numnoe), nomnoe)
+                            nutyel = zi(jdne+numnoe-1)
+                            call vafcar('NOEUD', mclf(mcl), nomnoe, nbepo, nbedi,&
+                                        nbeco, nbeca, nbeba, nbema, nbegb,&
+                                        nbemb, nutyel, ntyele, car, ncara,&
+                                        ivr, kioc, ier)
+50                      continue
+48                  continue
+                endif
+!
+! ---       "NOEUD" = MAILLES TARDIVES  DE LA LISTE DE NOEUDS
+                if (nn .gt. 0) then
+                    do 58 i = 1, nn
+                        nomnoe = zk24(jdls+i-1)
+                        call jenonu(jexnom(mlgnno, nomnoe), numnoe)
+                        if (mcl .ne. 4) then
+                            do 60 k = 1, nbmtrd
+                                if (zi(jdnw+k*2-2) .eq. numnoe) zi(jdln+ k-1 )=-mcl
+60                          continue
+                        endif
+                        nutyel = zi(jdne+numnoe-1)
+                        call vafcar('NOEUD', mclf(mcl), nomnoe, nbepo, nbedi,&
+                                    nbeco, nbeca, nbeba, nbema, nbegb,&
+                                    nbemb, nutyel, ntyele, car, ncara,&
+                                    ivr, kioc, ier)
+58                  continue
+                endif
+            endif
+20      continue
+10  end do
+!
+! --- AUCUNE MAILLE TARDIVE N'EXISTE SUR CE MODELE :
+    call dismoi('F', 'EXI_TUYAU', nomo, 'MODELE', ibid,&
+                exituy, ibid)
+    if (exituy .ne. 'OUI') then
+        if (ixnw .eq. 0 .and. nnoe .ne. 0) then
+            call u2mess('E', 'MODELISA_37')
+            ier = ier + 1
+        endif
+!      ELSE
+!         IER=0
+    endif
+!
+! --- VERIFICATION QUE TOUS LES ELEMENTS SONT AFFECTES :
+!     --------------------------------------------------
+    do 80 nummai = 1, nbmail
+        call jenuno(jexnum(mlgnma, nummai), nommai)
+        if (nbocc(1) .ne. 0) then
+            do 81 i = 1, nbepo
+                if (zi(jdlm+nummai-1) .eq. ntyele(i)) then
+                    call u2mesk('A', 'MODELISA_38', 1, nommai)
+                endif
+81          continue
+        endif
+        if (nbocc(3) .ne. 0 .or. nbocc(10) .ne. 0 .or. nbocc(15) .ne. 0) then
+            do 82 i = nbepo+1, nbepo+nbedi
+                if (zi(jdlm+nummai-1) .eq. ntyele(i)) then
+                    call u2mesk('A', 'MODELISA_39', 1, nommai)
+                endif
+82          continue
+        endif
+        if (nbocc(6) .ne. 0) then
+            do 84 i = nbepo+nbedi+nbeco+1, nbepo+nbedi+nbeco+nbeca
+                if (zi(jdlm+nummai-1) .eq. ntyele(i)) then
+                    call u2mesk('A', 'MODELISA_40', 1, nommai)
+                endif
+84          continue
+        endif
+        if (nbocc(7) .ne. 0) then
+            do 85 i = nbepo+nbedi+nbeco+nbeca+1, nbepo+nbedi+nbeco+ nbeca+nbeba
+                if (zi(jdlm+nummai-1) .eq. ntyele(i)) then
+                    call u2mesk('A', 'MODELISA_41', 1, nommai)
+                endif
+85          continue
+        endif
+        if (nbocc(12) .ne. 0) then
+            do 88 i = nbepo+nbedi+nbeco+nbeca+nbeba+nbema+1, nbtel
+                if (zi(jdlm+nummai-1) .eq. ntyele(i)) then
+                    call u2mesk('A', 'MODELISA_42', 1, nommai)
+                endif
+88          continue
+        endif
+80  end do
+    if (ixnw .ne. 0) then
+        do 100 k = 1, nbmtrd
+            numnoe = zi(jdnw+k*2-2)
+            call jenuno(jexnum(mlgnno, numnoe), nomnoe)
+            do 102 i = nbepo+1, nbepo+nbedi
+                if (zi(jdln+k-1) .eq. ntyele(i)) then
+                    call u2mesk('A', 'MODELISA_43', 1, nomnoe)
+                endif
+102          continue
+100      continue
+    endif
+!
+    call jedetr('&&TMPINC')
+!
+    call jedema()
+end subroutine

@@ -1,6 +1,4 @@
-# MODIF  DATE 30/04/2013   AUTEUR FOUCAULT A.FOUCAULT 
 # TITRE CONSTRUCTION PAR COUCHES D'UNE COLONNE DE SOL AVEC MODELE DE HUJEUX
-# wtnv132d.para = tps_job 450 mem_job 512Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG

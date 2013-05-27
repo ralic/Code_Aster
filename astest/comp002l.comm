@@ -1,6 +1,4 @@
-# MODIF  DATE 18/03/2013   AUTEUR PROIX J-M.PROIX 
 # TITRE  TEST LOI DE COMPORTEMENT HAYHURST
-# comp002l.para = tps_job 120 mem_job 512Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -133,4 +131,3 @@ tabres2=TEST_COMPOR(OPTION='MECA',INFO=1,
               )
 
 FIN()
-

@@ -1,0 +1,208 @@
+subroutine irgene(iocc, resu, form, ifi, nbnosy,&
+                  nosy, nbcmpg, cmpg, nbpara, para,&
+                  nbordr, ordr, nbdisc, disc, nume,&
+                  lhist)
+    implicit none
+    include 'jeveux.h'
+    include 'asterc/gettco.h'
+    include 'asterfort/irpara.h'
+    include 'asterfort/irparb.h'
+    include 'asterfort/irvgen.h'
+    include 'asterfort/jedema.h'
+    include 'asterfort/jedetr.h'
+    include 'asterfort/jeexin.h'
+    include 'asterfort/jelira.h'
+    include 'asterfort/jemarq.h'
+    include 'asterfort/jeveuo.h'
+    include 'asterfort/rsexch.h'
+    include 'asterfort/titre2.h'
+    include 'asterfort/u2mesk.h'
+    include 'asterfort/wkvect.h'
+    integer :: cmpg(*), ordr(*), nume(*)
+    real(kind=8) :: disc(*)
+    character(len=*) :: resu, nosy(*), para(*), form
+    logical :: lhist
+!     ------------------------------------------------------------------
+!            CONFIGURATION MANAGEMENT OF EDF VERSION
+! ======================================================================
+! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+! (AT YOUR OPTION) ANY LATER VERSION.
+!
+! THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+! WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+! MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+! GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+!
+! YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+!    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
+! ======================================================================
+!
+!     IMPRESSION D'UN CONCEPT GENERALISE
+!     ------------------------------------------------------------------
+    character(len=1) :: cecr, k1bid
+    character(len=16) :: typcon, typrem
+    character(len=19) :: gene, noch19
+    character(len=24) :: nomst
+    logical :: lordr
+    integer :: iocc, ifi, nbnosy, nbcmpg, nbpara, nbordr, i, im, iord
+    integer :: iret, isy, itresu, jdesc, jordr, jpara, jrefe, jtitr, kdesc
+    integer :: krefe, kvale, nbmode, nbtitr, npara, itcal, nbdisc
+!     ------------------------------------------------------------------
+    call jemarq()
+    nomst = '&&IRGENE.SOUS_TITRE.TITR'
+!
+!     --- QUEL TYPE DE CONCEPT  ---
+!
+    call gettco(resu, typcon)
+!
+!=======================================================================
+!
+!               --- IMPRESSION D'UNE SD VECT_ASSE_GENE ---
+!
+!=======================================================================
+    if (typcon .eq. 'VECT_ASSE_GENE') then
+!
+        call irvgen(resu, ifi, nbcmpg, cmpg, lhist)
+!
+!=======================================================================
+!
+!         --- IMPRESSION D'UNE SD MODE_GENE ---
+!
+!=======================================================================
+    else if (typcon .eq. 'MODE_GENE') then
+        call irparb(resu, nbpara, para, '&&IRGENE.PARAMETRE', npara)
+        call jeexin('&&IRGENE.PARAMETRE', iret)
+        if (iret .gt. 0) then
+            call jeveuo('&&IRGENE.PARAMETRE', 'E', jpara)
+        else
+            jpara=1
+        endif
+!
+        cecr = 'L'
+        do 100 iord = 1, nbordr
+            write(ifi,2000)
+            call irpara(resu, form, ifi, 1, ordr(iord),&
+                        npara, zk16( jpara), cecr)
+            do 110 isy = 1, nbnosy
+                call rsexch(' ', resu, nosy(isy), ordr(iord), noch19,&
+                            iret)
+                if (iret .eq. 0) then
+                    call titre2(resu, noch19, nomst, 'GENE', iocc,&
+                                '(1PE12.5)')
+                    write(ifi,2010)
+                    call jeveuo(nomst, 'L', jtitr)
+                    call jelira(nomst, 'LONMAX', nbtitr, k1bid)
+                    write(ifi,'(1X,A)') (zk80(jtitr+i-1),i=1,nbtitr)
+                    call irvgen(noch19, ifi, nbcmpg, cmpg, lhist)
+                endif
+110          continue
+100      continue
+        call jedetr('&&IRGENE.PARAMETRE')
+        call jeexin(nomst, iret)
+        if (iret .ne. 0) call jedetr(nomst)
+!
+!=======================================================================
+!
+!             --- IMPRESSION D'UNE SD DYNA_GENE ---
+!
+!=======================================================================
+        elseif ( ( typcon .eq. 'TRAN_GENE' ) .or. (typcon .eq.&
+    'HARM_GENE') ) then
+        gene = resu
+        lordr = .false.
+        call jeexin(gene//'.ORDR', iret)
+        if (iret .ne. 0) then
+            call jeveuo(gene//'.ORDR', 'L', jordr)
+            lordr = .true.
+        endif
+        call jeveuo(gene//'.DESC', 'L', jdesc)
+        nbmode = zi(jdesc+1)
+        call jeveuo(gene//'.REFD', 'L', jrefe)
+        noch19 = '&&IRGENE_VECTEUR'
+        call wkvect(noch19//'.DESC', 'V V I', 2, kdesc)
+        call wkvect(noch19//'.REFE', 'V V K24', 2, krefe)
+!
+        if (zi(jdesc) .eq. 4) then
+            itcal = 1
+        else
+            itcal = 0
+        endif
+!
+        if (itcal .eq. 1) then
+!        --- CAS D'UNE SD HARM_GENE => VALEURS COMPLEXES
+            call wkvect(noch19//'.VALE', 'V V C', nbmode, kvale)
+        else
+            call wkvect(noch19//'.VALE', 'V V R', nbmode, kvale)
+        endif
+!
+        zi(kdesc+1) = nbmode
+!
+!        --- TYPE DE CONCEPT AU 5EME ENTREE DE .REFD DU TRAN_GENE  --
+        call gettco(zk24(jrefe+4), typrem)
+!
+!        --- TEST POUR LE CAS DE LA SOUS-STRUCTURATION             --
+        if (typrem(1:8) .eq. 'NUME_DDL') then
+!        --- MANQUE D'UNE BASE MODALE GLOBALE, DU COUP NOUS        --
+!        --- SAUVEGARDONS LE NUME_DDL_GENE AU 2EME ENTREE DU REFE  --
+            zk24(krefe) = ' '
+            zk24(krefe+1) = zk24(jrefe+4)
+        else
+!        --- POUR LES AUTRES CAS, UNE BASE MODALE EST DEFINIE      --
+!        --- ELLE EST SAUVEGARDEE DANS LA 1ERE ENTREE DU REFE      --
+            zk24(krefe) = zk24(jrefe+4)
+            zk24(krefe+1) = ' '
+        endif
+!
+        do 200 i = 1, nbdisc
+            iord = nume(i)
+            write(ifi,2000)
+            do 210 isy = 1, nbnosy
+                call jeexin(gene//'.'//nosy(isy)(1:4), iret)
+                if (iret .eq. 0) goto 210
+                write(ifi,2010)
+                write(ifi,3010) nosy(isy)
+                if (lordr) then
+                    if (itcal .eq. 1) then
+                        write(ifi,3021) zi(jordr+iord-1), disc(i)
+                    else
+                        write(ifi,3020) zi(jordr+iord-1), disc(i)
+                    endif
+                else
+                    if (itcal .eq. 1) then
+                        write(ifi,3021) iord, disc(i)
+                    else
+                        write(ifi,3020) iord, disc(i)
+                    endif
+                endif
+                call jeveuo(gene//'.'//nosy(isy)(1:4), 'L', itresu)
+                do 220 im = 0, nbmode-1
+                    if (itcal .eq. 1) then
+                        zc(kvale+im) = zc(itresu+(iord-1)*nbmode+im)
+                    else
+                        zr(kvale+im) = zr(itresu+(iord-1)*nbmode+im)
+                    endif
+220              continue
+                call irvgen(noch19, ifi, nbcmpg, cmpg, lhist)
+210          continue
+200      continue
+        call jedetr(noch19//'.DESC')
+        call jedetr(noch19//'.REFE')
+        call jedetr(noch19//'.VALE')
+!
+    else
+        call u2mesk('F', 'PREPOST2_51', 1, typcon)
+    endif
+!
+!
+    2000 format(/,1x,'======>')
+    2010 format(/,1x,'------>')
+    3010 format(' VECTEUR GENERALISE DE NOM SYMBOLIQUE  ',a)
+    3020 format(1p,' NUMERO D''ORDRE: ',i8,' INSTANT: ',d12.5)
+    3021 format(1p,' NUMERO D''ORDRE: ',i8,' FREQUENCE: ',d12.5)
+!
+    call jedema()
+end subroutine

@@ -1,4 +1,4 @@
-%& MODIF OPTIONS  DATE 21/01/2013   AUTEUR DELMAS J.DELMAS 
+%& LIBRARY OPTIONS
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -16,7 +16,7 @@
 % ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
 %    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
 % ======================================================================
-% RESPONSABLE DEVESA
+% person_in_charge: Georges-cc.devesa at edf.fr
 FONL_NOEU
        <<  FONL_NOEU : CALCUL DES FORCES NODALES NONLIN >>
 OPTION__
@@ -31,5 +31,3 @@ OPTION__
         PCINFDI  CINFDI  <<  PCINFDI : INFORMATIONS SUR LES DISCRETS, PAR AFFE_CARA_ELEM  >>
    OUT__
 PVECTUR VDEP_R RESL__
-
-

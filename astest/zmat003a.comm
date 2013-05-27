@@ -1,7 +1,5 @@
-# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE TEST COUPLAGE ZMAT-ASTER, SIMILAIRE A HSNV127B, APPEL A ZMAT
-# RESPONSABLE JMBHH01 J.M.PROIX
-# zmat003a.para = tps_job 60 mem_job 768Mo ncpus 1 liste_test Z
+# person_in_charge: jean-michel.proix at edf.fr
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -148,4 +146,3 @@ CALCNL=STAT_NON_LINE(
 
 
 FIN()
-

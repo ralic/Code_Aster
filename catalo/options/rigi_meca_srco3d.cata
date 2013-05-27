@@ -1,5 +1,5 @@
-%& MODIF OPTIONS  DATE 10/05/2011   AUTEUR PELLET J.PELLET 
-% RESPONSABLE ABBAS
+%& LIBRARY OPTIONS
+% person_in_charge: mickael.abbas at edf.fr
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -26,4 +26,3 @@ OPTION__
         PDEPLPR  DEPL_R
    OUT__
 PMATUNS MDNS_R RESL__
-

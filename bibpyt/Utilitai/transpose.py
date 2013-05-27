@@ -1,4 +1,3 @@
-#@ MODIF transpose Utilitai  DATE 11/05/2010   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -37,5 +36,3 @@ def transpose(liste):
         for j in m :
             liste_t[i].append(liste[j][i])
     return liste_t
-
-

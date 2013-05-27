@@ -1,6 +1,4 @@
-# MODIF  DATE 26/02/2013   AUTEUR LADIER A.LADIER 
 # TITRE VALIDATION DE POST_ELEM NORME EN 3D
-# zzzz291a.para = tps_job 60 mem_job 256Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -551,7 +549,3 @@ TEST_TABLE(REFERENCE='AUTRE_ASTER',
            TABLE=NSIGMIX,)
 
 FIN();
-
-
-
-

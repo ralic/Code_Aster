@@ -1,4 +1,4 @@
-%& MODIF OPTIONS  DATE 11/03/2013   AUTEUR CUVILLIE M.CUVILLIEZ 
+%& LIBRARY OPTIONS
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -16,7 +16,7 @@
 % ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
 %    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
 % ======================================================================
-% RESPONSABLE CUVILILEZ
+% person_in_charge: sam.cuvilliez at edf.fr
 TEMP_ELGA
 << CALCUL DE LA TEMPERATURE AUX POINTS DE GAUSS>>
 OPTION__
@@ -33,6 +33,4 @@ OPTION__
         PLST     NEUT_R
    OUT__
         PTEMPPG  TEMP_R  ELGA__
-
-
 

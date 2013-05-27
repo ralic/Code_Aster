@@ -1,4 +1,3 @@
-# MODIF  DATE 14/05/2013   AUTEUR COURTOIS M.COURTOIS 
 # TITRE INTERFACE EN CONTACT FROTTANT AVEC X-FEM
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -17,7 +16,6 @@
 # ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
-# ssnv209s.para = tps_job 580 mem_job 800Mo liste_test S
 #
 #       CAS_TEST SSNV209S: 3D, ELEMENTS QUAD8, METHODE XFEM
 

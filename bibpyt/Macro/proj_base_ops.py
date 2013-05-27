@@ -1,4 +1,3 @@
-#@ MODIF proj_base_ops Macro  DATE 07/05/2012   AUTEUR BODEL C.BODEL 
 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================

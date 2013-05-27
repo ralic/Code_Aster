@@ -1,0 +1,281 @@
+subroutine mesomm(champ, long, vi, vr, vc,&
+                  nbmail, numail)
+    implicit none
+    include 'jeveux.h'
+!
+    include 'asterfort/assert.h'
+    include 'asterfort/celver.h'
+    include 'asterfort/digdel.h'
+    include 'asterfort/dismoi.h'
+    include 'asterfort/jaexin.h'
+    include 'asterfort/jedema.h'
+    include 'asterfort/jeexin.h'
+    include 'asterfort/jelibe.h'
+    include 'asterfort/jemarq.h'
+    include 'asterfort/jeveuo.h'
+    include 'asterfort/jexnum.h'
+    include 'asterfort/mpicm1.h'
+    include 'asterfort/nbelem.h'
+    include 'asterfort/nbgrel.h'
+    include 'asterfort/scalai.h'
+    include 'asterfort/u2mesk.h'
+    include 'asterfort/u2mess.h'
+    character(len=*) :: champ
+    integer :: long, vi(*), nbmail, numail(*)
+    real(kind=8) :: vr(*)
+    complex(kind=8) :: vc(*)
+! ----------------------------------------------------------------------
+!            CONFIGURATION MANAGEMENT OF EDF VERSION
+! ======================================================================
+! COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
+! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+! (AT YOUR OPTION) ANY LATER VERSION.
+!
+! THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+! WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+! MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+! GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+!
+! YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+!    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
+! ======================================================================
+! ----------------------------------------------------------------------
+!     BUT :  FAIRE LA "SOMME" D'UN CHAM_ELEM (OU D'UN RESUELEM)
+!                  OU D'UNE PARTIE D'UN CHAM_ELEM
+!            (NOTION D'INTEGRALE DU CHAMP SUR LE MODELE)
+!            LA SEULE CONTRAINTE EST QUE TOUS LES TYPE_ELEMENT DU LIGREL
+!            CONNAISSENT LA GRANDEUR AVEC LA MEME LONGUEUR CUMULEE :
+!
+!            L'EXEMPLE SUIVANT SERA TRAITE PAR LA ROUTINE, ALORS QUE
+!            SA SIGNIFICATION EST PROBABLEMENT DOUTEUSE ...
+!              TRI3 :  E 2 IDEN 3 ....
+!              SEG2 :  E 3 IDEN 2 ....
+!              POI1 :  E 6 IDEN 1 ....
+!
+! IN  : CHAMP  :  NOM DU CHAMP A SOMMER
+! IN  : LONG   :  LONGUEUR DES VECTEURS VI VR OU VC
+! IN  : NBMAIL :  = 0   , CALCUL SUR TOUT LE CHAM_ELEM
+!                 SINON , CALCUL SUR UNE PARTIE DU CHAM_ELEM
+! IN  : NUMAIL :  NUMERO DES MAILLES
+! OUT : VI     :  VECTEUR CONTENANT LA "SOMME" DU CHAMP SI LA GRANDEUR
+!                 EST ENTIERE.
+! OUT : VR     :  VECTEUR CONTENANT LA "SOMME" DU CHAMP SI LA GRANDEUR
+!                 EST REELLE.
+! OUT : VC     :  VECTEUR CONTENANT LA "SOMME" DU CHAMP SI LA GRANDEUR
+!                 EST COMPLEXE.
+! ----------------------------------------------------------------------
+!     ------------------------------------------------------------------
+    integer :: longt, ncmpel, mode, j, igd
+    real(kind=8) :: rzero, rbid
+    complex(kind=8) :: cbid
+    character(len=4) :: typch, kmpic
+    character(len=8) :: scal
+    character(len=19) :: champ2, ligrel
+    logical :: first
+    integer :: i, iacelk, iavale, ibid, icoef, idecgr, iel, ier1, ier2
+    integer :: im, inum, jceld, jligr, k, nbgr, nel, numel1, iexi
+!
+    call jemarq()
+!
+    champ2 = champ
+    rzero = 0.0d0
+!
+!
+!     1- ON CALCULE : TYPCH,LIGREL,IGD ET SCAL :
+!     -----------------------------------------
+!
+    call jeexin(champ2//'.CELD', ier1)
+    call jeexin(champ2//'.RESL', ier2)
+    if (ier1+ier2 .eq. 0) call u2mesk('F', 'CALCULEL3_73', 1, champ2)
+!
+!
+    if (ier1 .gt. 0) then
+        typch='CHML'
+!       -- ON VERIFIE QUE LE CHAM_ELEM N'EST PAS TROP DYNAMIQUE :
+        call celver(champ2, 'NBVARI_CST', 'STOP', ibid)
+        call celver(champ2, 'NBSPT_1', 'STOP', ibid)
+        call jeveuo(champ2//'.CELD', 'L', jceld)
+    else
+        typch='RESL'
+        call jeveuo(champ2//'.DESC', 'L', jceld)
+    endif
+!
+    call jeveuo(champ2//'.CELK', 'L', iacelk)
+    ligrel = zk24(iacelk-1+1) (1:19)
+!
+    igd = zi(jceld-1+1)
+    scal = scalai(igd)
+!
+!
+!     2- ON VERIFIE LES LONGUEURS:
+!     ----------------------------
+    first = .true.
+    nbgr = nbgrel(ligrel)
+    do 10,j = 1,nbgr
+    mode = zi(jceld-1+zi(jceld-1+4+j)+2)
+    if (mode .eq. 0) goto 10
+    ncmpel = digdel(mode)
+    icoef = max(1,zi(jceld-1+4))
+    ncmpel = ncmpel*icoef
+    if (first) then
+        longt = ncmpel
+    else
+        if (longt .ne. ncmpel) then
+            call u2mess('F', 'CALCULEL3_54')
+        endif
+    endif
+    first = .false.
+    10 end do
+!
+!     -- ON MET A ZERO LE VECTEUR "VSCAL":
+!     ------------------------------------
+    call assert(longt.le.long)
+!
+    do 20,i = 1,long
+    if (scal(1:1) .eq. 'I') then
+        vi(i) = 0
+    else if (scal(1:1).eq.'R') then
+        vr(i) = rzero
+    else if (scal(1:1).eq.'C') then
+        vc(i) = dcmplx(rzero,rzero)
+    else
+        call u2mesk('F', 'CALCULEL3_74', 1, scal)
+    endif
+    20 end do
+!
+!        -- ON CUMULE :
+!        --------------
+    if (typch .eq. 'CHML') then
+!        -- (CAS DES CHAM_ELEM):
+        call jeveuo(champ2//'.CELV', 'L', iavale)
+        if (nbmail .le. 0) then
+            do 50,j = 1,nbgr
+            mode = zi(jceld-1+zi(jceld-1+4+j)+2)
+            if (mode .eq. 0) goto 50
+            nel = nbelem(ligrel,j)
+            idecgr = zi(jceld-1+zi(jceld-1+4+j)+8)
+            do 40,k = 1,nel
+            do 30,i = 1,longt
+            if (scal(1:1) .eq. 'I') then
+                vi(i) = vi(i) + zi(iavale-1+idecgr+ (k-1)* longt+i-1)
+            else if (scal(1:1).eq.'R') then
+                vr(i) = vr(i) + zr(iavale-1+idecgr+ (k-1)* longt+i-1)
+            else if (scal(1:1).eq.'C') then
+                vc(i) = vc(i) + zc(iavale-1+idecgr+ (k-1)* longt+i-1)
+            endif
+30          continue
+40          continue
+50          continue
+        else
+            call jeveuo(ligrel//'.LIEL', 'L', jligr)
+            do 90 im = 1, nbmail
+                inum = 0
+                do 80 j = 1, nbgr
+                    mode = zi(jceld-1+zi(jceld-1+4+j)+2)
+                    if (mode .eq. 0) goto 79
+                    nel = nbelem(ligrel,j)
+                    idecgr = zi(jceld-1+zi(jceld-1+4+j)+8)
+                    do 70 k = 1, nel
+                        iel = zi(jligr+inum+k-1)
+                        if (iel .ne. numail(im)) goto 70
+                        do 60 i = 1, longt
+                            if (scal(1:1) .eq. 'I') then
+                                vi(i) = vi(i) + zi(iavale-1+idecgr+ ( k-1)*longt+i-1)
+                            else if (scal(1:1).eq.'R') then
+                                vr(i) = vr(i) + zr(iavale-1+idecgr+ ( k-1)*longt+i-1)
+                            else if (scal(1:1).eq.'C') then
+                                vc(i) = vc(i) + zc(iavale-1+idecgr+ ( k-1)*longt+i-1)
+                            endif
+60                      continue
+                        goto 90
+70                  continue
+79                  continue
+                    inum = inum + nel + 1
+80              continue
+90          continue
+        endif
+!
+    else if (typch.eq.'RESL') then
+!        -- (CAS DES RESUELEM):
+        if (nbmail .le. 0) then
+            numel1 = 0
+            do 120,j = 1,nbgr
+            mode = zi(jceld-1+zi(jceld-1+4+j)+2)
+            if (mode .eq. 0) goto 120
+            call jaexin(jexnum(champ2//'.RESL', j), iexi)
+            if (iexi .eq. 0) goto 120
+            call jeveuo(jexnum(champ2//'.RESL', j), 'L', iavale)
+            ncmpel = digdel(mode)
+            nel = nbelem(ligrel,j)
+            numel1 = numel1 + nel
+            do 110,k = 1,nel
+            do 100,i = 1,longt
+            if (scal(1:1) .eq. 'I') then
+                vi(i) = vi(i) + zi(iavale+ (k-1)*ncmpel-1+ i)
+            else if (scal(1:1).eq.'R') then
+                vr(i) = vr(i) + zr(iavale+ (k-1)*ncmpel-1+ i)
+            else if (scal(1:1).eq.'C') then
+                vc(i) = vc(i) + zc(iavale+ (k-1)*ncmpel-1+ i)
+            endif
+100          continue
+110          continue
+            call jelibe(jexnum(champ2//'.RESL', j))
+120          continue
+        else
+            call jeveuo(ligrel//'.LIEL', 'L', jligr)
+            do 160 im = 1, nbmail
+                inum = 0
+                numel1 = 0
+                do 150 j = 1, nbgr
+                    mode = zi(jceld-1+zi(jceld-1+4+j)+2)
+                    if (mode .eq. 0) goto 149
+                    call jaexin(jexnum(champ2//'.RESL', j), iexi)
+                    if (iexi .eq. 0) goto 150
+                    call jeveuo(jexnum(champ2//'.RESL', j), 'L', iavale)
+                    ncmpel = digdel(mode)
+                    nel = nbelem(ligrel,j)
+                    numel1 = numel1 + nel
+                    do 140 k = 1, nel
+                        iel = zi(jligr+inum+k-1)
+                        if (iel .ne. numail(im)) goto 140
+                        do 130 i = 1, longt
+                            if (scal(1:1) .eq. 'I') then
+                                vi(i) = vi(i) + zi(iavale+ (k-1)* ncmpel-1+i)
+                            else if (scal(1:1).eq.'R') then
+                                vr(i) = vr(i) + zr(iavale+ (k-1)* ncmpel-1+i)
+                            else if (scal(1:1).eq.'C') then
+                                vc(i) = vc(i) + zc(iavale+ (k-1)* ncmpel-1+i)
+                            endif
+130                      continue
+                        call jelibe(jexnum(champ2//'.RESL', j))
+                        goto 160
+140                  continue
+149                  continue
+                    inum = inum + nel + 1
+150              continue
+160          continue
+        endif
+!
+    endif
+!
+!
+!     -- IL FAUT COMMUNIQUER LE RESULTAT ENTRE LES PROCS :
+    call dismoi('F', 'MPI_COMPLET', champ, 'CHAMP', ibid,&
+                kmpic, ibid)
+    if (kmpic .eq. 'NON') then
+        if (scal(1:1) .eq. 'I') then
+            call mpicm1('MPI_SUM', 'I', longt, ibid, vi,&
+                        rbid, cbid)
+        else if (scal(1:1).eq.'R') then
+            call mpicm1('MPI_SUM', 'R', longt, ibid, ibid,&
+                        vr, cbid)
+        else if (scal(1:1).eq.'C') then
+            call assert(.false.)
+        endif
+    endif
+!
+    call jedema()
+end subroutine

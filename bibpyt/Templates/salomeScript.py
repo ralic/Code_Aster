@@ -1,4 +1,3 @@
-#@ MODIF salomeScript Templates  DATE 06/11/2012   AUTEUR BODEL C.BODEL 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -278,4 +277,3 @@ else :
         myView1.FitAll()
 
 #%==================FIN ================================%
-

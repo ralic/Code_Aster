@@ -1,6 +1,4 @@
-# MODIF  DATE 26/02/2013   AUTEUR PELLET J.PELLET 
 # TITRE TREILLIS DE BARRES ARTICULEES SOUS CHARGE PONCTUELLE
-# ssll11a.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -18,7 +16,7 @@
 # ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
-# RESPONSABLE FLEJOU J-L.FLEJOU
+# person_in_charge: jean-luc.flejou at edf.fr
 #CAS_TEST__: SSLL11A
 # SSLL11/A                    COMMANDES                          7/03/91
 # TREILLIS DE BARRES ARTICULEES SOUS CHARGE PONCTUELLE

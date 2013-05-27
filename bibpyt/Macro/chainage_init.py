@@ -1,4 +1,3 @@
-#@ MODIF chainage_init Macro  DATE 11/10/2011   AUTEUR MEUNIER S.MEUNIER 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================

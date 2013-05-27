@@ -1,4 +1,3 @@
-#@ MODIF sd_l_table SD  DATE 28/06/2011   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -53,4 +52,3 @@ class sd_l_table(AsBase):
             sdu_compare(self.LTNS, checker, nomtabl, '!=', '', "LTNS[k]!=''")
             sd2 = sd_table(nomtabl)
             sd2.check(checker)
-

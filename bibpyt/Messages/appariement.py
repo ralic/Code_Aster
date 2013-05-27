@@ -1,4 +1,3 @@
-#@ MODIF appariement Messages  DATE 25/06/2012   AUTEUR ABBAS M.ABBAS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================

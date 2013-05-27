@@ -1,4 +1,3 @@
-#@ MODIF sd_maillage SD  DATE 18/12/2012   AUTEUR SELLENET N.SELLENET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -116,4 +115,3 @@ class sd_maillage(sd_titre):
         typl=self.TYPL.get()
         for k in typl :
             assert  k in (-1, -2) , typl
-

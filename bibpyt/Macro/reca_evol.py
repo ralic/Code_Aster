@@ -1,4 +1,3 @@
-#@ MODIF reca_evol Macro  DATE 11/05/2010   AUTEUR COURTOIS M.COURTOIS 
 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -162,4 +161,3 @@ def genere_fils(parent,sigma,borne_inf, borne_sup):
             parametre+=1            
 #        print 'fils genere:',F            
     return F
-

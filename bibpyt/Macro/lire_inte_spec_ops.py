@@ -1,4 +1,3 @@
-#@ MODIF lire_inte_spec_ops Macro  DATE 24/07/2012   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -254,4 +253,3 @@ def comp(ddlno):
         print "Probleme pour l'attribution des composantes"
     
     
-

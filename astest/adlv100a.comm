@@ -1,6 +1,4 @@
-# MODIF  DATE 21/01/2013   AUTEUR PELLET J.PELLET 
 # TITRE PISTON COUPLE A UNE COLONNE DE FLUIDE
-# adlv100a.para = tps_job 90 mem_job 256Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -123,9 +121,4 @@ TEST_RESU(RESU=_F(NUME_ORDRE=1,
 
 FIN()
 #
-
-
-
-
-
 

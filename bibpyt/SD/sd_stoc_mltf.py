@@ -1,4 +1,3 @@
-#@ MODIF sd_stoc_mltf SD  DATE 08/06/2009   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================

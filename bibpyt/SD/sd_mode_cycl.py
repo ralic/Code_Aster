@@ -1,4 +1,3 @@
-#@ MODIF sd_mode_cycl SD  DATE 28/06/2011   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -91,5 +90,3 @@ class sd_mode_cycl(AsBase):
         freq=self.CYCL_FREQ.get()
         assert len(freq) == nb_diam*nb_freq ,(self.CYCL_DESC.get(),len(freq))
         for x in freq : assert x >= 0 , freq
-
-

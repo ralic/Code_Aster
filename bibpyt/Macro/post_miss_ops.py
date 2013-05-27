@@ -1,4 +1,3 @@
-#@ MODIF post_miss_ops Macro  DATE 01/03/2011   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -17,7 +16,7 @@
 # ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
 # ======================================================================
-# RESPONSABLE COURTOIS M.COURTOIS
+# person_in_charge: mathieu.courtois at edf.fr
 
 import sys
 import os
@@ -48,5 +47,3 @@ def post_miss_ops(self, **kwargs):
     except Exception, err:
         trace = ''.join(traceback.format_tb(sys.exc_traceback))
         UTMESS('F', 'SUPERVIS2_5', valk=('POST_MISS', trace, str(err)))
-
-

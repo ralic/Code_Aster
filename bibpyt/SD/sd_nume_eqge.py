@@ -1,4 +1,3 @@
-#@ MODIF sd_nume_eqge SD  DATE 11/02/2008   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -27,5 +26,3 @@ class sd_nume_eqge(sd_prof_vgen):
     DESC = AsVI(SDNom(debut=19), lonmax=1, )
     NEQU = AsVI(SDNom(debut=19), lonmax=1, )
     ORIG = AsColl(SDNom(debut=19), acces='NU', stockage='DISPERSE', modelong='VARIABLE', type='I', )
-
-

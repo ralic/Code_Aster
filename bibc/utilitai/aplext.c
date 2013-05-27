@@ -191,4 +191,3 @@ void DEFPPSP(APLEXT, aplext, INTEGER *niv, INTEGER *nbd ,char *nom ,STRING_SIZE 
 #endif
 
 }
-

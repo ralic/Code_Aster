@@ -1,4 +1,4 @@
-%& MODIF OPTIONS  DATE 21/01/2013   AUTEUR DELMAS J.DELMAS 
+%& LIBRARY OPTIONS
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -16,7 +16,7 @@
 % ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 %    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 % ======================================================================
-% RESPONSABLE GREFFET N.GREFFET
+% person_in_charge: nicolas.greffet at edf.fr
 CHAR_MECA_ONDE
         << CHAR_MECA_ONDE (MOT-CLE: ONDE_FLUI) : CALCUL DU SECOND MEMBRE
            CORRESPONDANT A UNE PRESSION D'ONDE INCIDENTE SINUSOIDALE ARRIVANT
@@ -28,4 +28,3 @@ OPTION__
         PONDECR  ONDE_R
    OUT__
 PVECTUR VDEP_R RESL__
-

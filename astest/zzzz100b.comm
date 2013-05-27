@@ -1,8 +1,6 @@
-# MODIF  DATE 15/01/2013   AUTEUR LADIER A.LADIER 
-# RESPONSABLE MCOURTOI M.COURTOIS
+# person_in_charge: mathieu.courtois at edf.fr
 # TITRE VALIDATION DE DIVERSES OPTIONS DE CALC_FONCTION
 #       ASSE, FFT, REGR_POLYNOMIALE
-# zzzz100b.para = tps_job 60 mem_job 256Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG

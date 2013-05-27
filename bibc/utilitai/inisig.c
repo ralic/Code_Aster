@@ -164,4 +164,3 @@ void DEF0(CLRUSR, clrusr)
      */
    status_usr1 = (INTEGER)0;
 }
-

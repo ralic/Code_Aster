@@ -24,6 +24,7 @@ class create_asrun_files(Task.Task):
     def __init__(self, *k, **kw):
         self.src = kw['src']
         self._relevant_env_keys = ('PREFIX', 'DEFINES', 'PYTHON',
+                                   'FC', 'FCFLAGS',
                                    'PYTHONARCHDIR', 'LIBPATH', 'LIBDIR',
                                    'ASTERDATADIR', 'OPT_ENV', 'install_tests')
         Task.Task.__init__(self, *k, **kw)
@@ -43,6 +44,9 @@ class create_asrun_files(Task.Task):
         dico['DEFINES'] = ' '.join([d.split('=')[0] for d in env['DEFINES']])
         dico['LD_LIBRARY_PATH'] = sep.join(ld_path)
         dico['SRC'] = self.src
+        dico['FC'] = env['FC']
+        flags = [' '.join(env[i]) for i in env.keys() if i.startswith('FCFLAGS')]
+        dico['FCFLAGS'] = ' '.join(flags)
         dico['OPT_ENV'] = self.env['OPT_ENV'] and os.linesep.join(self.env['OPT_ENV']) or ''
         dico['ADDMEM'] = self.env['ADDMEM'] or 250
         if self.env.install_tests or opts.install_tests:
@@ -96,10 +100,12 @@ BINCMDE        | bin     | -     | %(PYTHONARCHDIR)s/Cata
 BINELE         | bin     | -     | $ASTER_VERSION_DIR/elements
 BINPICKLED     | bin     | -     | %(SRC)s/build/release/catalo/cata_ele.pickled
 #
-# pour as_run --messages, --get, --show..., astout
+# for as_run --make_shared...
+F90            | compil  | -     | %(FC)s
+OPTF90_O       | compil  | -     | %(FCFLAGS)s
+#
+# for as_run --messages, --get, --show..., and astout
 SRCFOR         | src     | -     | %(SRC)s/bibfor
-SRCF90         | src     | -     | %(SRC)s/bibf90
-SRCFERM        | src     | -     | %(SRC)s/fermetur
 SRCC           | src     | -     | %(SRC)s/bibc
 SRCPY          | src     | -     | %(PYTHONARCHDIR)s
 SRCCATA        | src     | -     | %(SRC)s/catalo

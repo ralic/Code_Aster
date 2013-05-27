@@ -1,7 +1,5 @@
-# MODIF  DATE 21/01/2013   AUTEUR FLEJOU J-L.FLEJOU 
-# RESPONSABLE SFAYOLLE S.FAYOLLE
+# person_in_charge: sebastien.fayolle at edf.fr
 # TITRE  : ENDOMMAGEMENT D UNE PLAQUE PLANE SOUS SOLLICITATIONS VARIEES
-# ssns106a.para = tps_job 140 mem_job 256Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG

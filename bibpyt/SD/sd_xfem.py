@@ -1,4 +1,3 @@
-#@ MODIF sd_xfem SD  DATE 09/04/2013   AUTEUR JAUBERT A.JAUBERT 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================

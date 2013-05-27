@@ -1,4 +1,3 @@
-#& MODIF COMMANDE  DATE 09/04/2013   AUTEUR PELLET J.PELLET 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -16,7 +15,7 @@
 # ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
-# RESPONSABLE LEFEBVRE J.P.LEFEBVRE
+# person_in_charge: j-pierre.lefebvre at edf.fr
 def crea_resu_prod(TYPE_RESU,**args):
   if TYPE_RESU == "EVOL_ELAS"    : return evol_elas
   if TYPE_RESU == "EVOL_NOLI"    : return evol_noli

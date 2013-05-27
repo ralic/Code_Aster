@@ -1,4 +1,3 @@
-#@ MODIF vmis_isot_line Comportement  DATE 23/10/2012   AUTEUR DEBONNIERES P.DE-BONNIERES 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -17,7 +16,7 @@
 # ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
 # ======================================================================
-# RESPONSABLE PROIX J.M.PROIX
+# person_in_charge: jean-michel.proix at edf.fr
 
 from cata_comportement import LoiComportement
 
@@ -35,5 +34,3 @@ loi = LoiComportement(
    type_matr_tang = ('PERTURBATION', 'VERIFICATION','IMPLEX'),
    proprietes     = None,
 )
-
-

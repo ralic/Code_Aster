@@ -1,5 +1,4 @@
-# MODIF  DATE 09/04/2013   AUTEUR PELLET J.PELLET 
-# RESPONSABLE GNICOLAS G.NICOLAS
+# person_in_charge: gerald.nicolas at edf.fr
 # TITRE COUPLAGE ASTER_HOMARD - CAS THM
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -18,7 +17,6 @@
 # ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
-# zzzz175b.para = tps_job 100 mem_job 512Mo ncpus 1 liste_test S
 
 DEBUT(CODE=_F(NOM='zzzz175b',NIV_PUB_WEB='INTERNET',VISU_EFICAS='NON'),IMPR_MACRO='NON',DEBUG=_F(SDVERI='OUI'))
 

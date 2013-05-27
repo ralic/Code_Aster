@@ -1,9 +1,7 @@
-# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 
 DEBUT(CODE=_F(NOM='SDLV123A',
 NIV_PUB_WEB='INTERNET',),DEBUG=_F(SDVERI='OUI'))
 # TITRE DYNAMIQUE D'UNE FISSURE FINIE STATIONNAIRE DANS UN MILIEU
-# sdlv123a.para = tps_job 280 mem_job 512Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG

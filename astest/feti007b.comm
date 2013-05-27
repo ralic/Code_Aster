@@ -1,7 +1,5 @@
-# MODIF  DATE 18/02/2013   AUTEUR SELLENET N.SELLENET 
 # ======================================================================
 # TITRE VALIDATION ARCHITECTURE PARTITIONNEMENT METIS ET CALCUL FETI
-# feti007b.para = tps_job 180 mem_job 512Mo ncpus 1 liste_test SI
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -23,7 +21,7 @@
 # CUBE 3D
 # PARALLELE: VALEUR CONSEILLEE 16 PROCS.
 # ======================================================================
-# RESPONSABLE BOITEAU O.BOITEAU
+# person_in_charge: olivier.boiteau at edf.fr
 
 DEBUT(CODE=_F(NOM='FETI007B',
 NIV_PUB_WEB='INTERNET',),DEBUG=_F(SDVERI='OUI'))

@@ -1,4 +1,3 @@
-#@ MODIF beton_burger_fp Comportement  DATE 23/04/2012   AUTEUR HAELEWYN J.HAELEWYN 
 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -34,4 +33,3 @@ loi = LoiComportement(
    type_matr_tang = ('PERTURBATION', 'VERIFICATION'),
    proprietes     = None,
 )
-

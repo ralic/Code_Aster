@@ -1,4 +1,3 @@
-#@ MODIF utilit Lecture_Cata_Ele  DATE 16/04/2012   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -526,7 +525,7 @@ def cata_split(nomfic,prefix,nblig):
     for i in range(len(t)):
         t1=string.split(t[i])
         if len(t1) > 1 :
-            if t1[0]=="%&" and (t1[1]=="MODIF" or t1[1]=="AJOUT") :
+            if t1[0]=="%&" and t1[1] in ("MODIF", "AJOUT", "LIBRARY"):
                 ico=ico+(i-num_lig[len(num_lig)-1])
                 if ico > nblig :
                     ico=0

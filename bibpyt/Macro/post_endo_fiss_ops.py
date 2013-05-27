@@ -1,4 +1,3 @@
-#@ MODIF post_endo_fiss_ops Macro  DATE 21/05/2012   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -17,7 +16,7 @@
 # ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
-# RESPONSABLE BOTTONI M.BOTTONI
+# person_in_charge: marina.bottoni at edf.fr
 # ---------------------------------------------------------------------------
 #                  POST_ENDO_FISS
 # PROCEDURE PYTHON DU RECHERCHE DU TRAJET DE FISSURATION 
@@ -1000,5 +999,3 @@ def post_endo_fiss_ops(self,
     RetablirAlarme('CALCULEL5_7')
 
     return ier
-
-

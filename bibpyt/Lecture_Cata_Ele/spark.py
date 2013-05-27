@@ -1,7 +1,7 @@
-#@ MODIF spark Lecture_Cata_Ele  DATE 16/04/2012   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 #  Copyright (c) 1998-2000 John Aycock
+#  Copyright (c) 2008-2013 EDF R&D      www.code-aster.org
 #
 #  Permission is hereby granted, free of charge, to any person obtaining
 #  a copy of this software and associated documentation files (the

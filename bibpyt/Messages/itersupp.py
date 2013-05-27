@@ -1,4 +1,3 @@
-#@ MODIF itersupp Messages  DATE 22/10/2012   AUTEUR ABBAS M.ABBAS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -17,7 +16,7 @@
 # ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
 # ======================================================================
-# RESPONSABLE DELMAS J.DELMAS
+# person_in_charge: josselin.delmas at edf.fr
 
 # Pour la méthode ITER_SUPPL de DEFI_LIST_INST
 
@@ -42,4 +41,3 @@ cata_msg={
 7: _(u""" <Action> On autorise des itérations de Newton supplémentaires."""),
 
 }
-

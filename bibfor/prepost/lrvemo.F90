@@ -1,0 +1,79 @@
+subroutine lrvemo(modele)
+    implicit none
+    include 'jeveux.h'
+    include 'asterc/getres.h'
+    include 'asterc/getvtx.h'
+    include 'asterfort/dismoi.h'
+    include 'asterfort/jedema.h'
+    include 'asterfort/jemarq.h'
+    include 'asterfort/u2mesk.h'
+    include 'asterfort/u2mess.h'
+    character(len=8) :: modele
+!
+!            CONFIGURATION MANAGEMENT OF EDF VERSION
+! ======================================================================
+! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+! (AT YOUR OPTION) ANY LATER VERSION.
+!
+! THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+! WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+! MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+! GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+!
+! YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+!   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
+! ======================================================================
+!-----------------------------------------------------------------------
+!   BUT:ROUTINE DE LIRE RESU / LIRE_CHAMP QUI VERIFIE LA COHERENCE ENTRE
+!       LE MODELE FOURNI ET LES DONNEES DU FICHIER MED
+!
+!   ENTREE: MODELE(K8)  = NOM DU MODELE
+!-----------------------------------------------------------------------
+! person_in_charge: nicolas.sellenet at edf.fr
+!
+    integer :: ibid, n1, iarg
+!
+    character(len=8) :: chanom, typech
+    character(len=16) :: typres, pheno, valk(2), nomcmd, tych
+!
+!-----------------------------------------------------------------------
+!
+    call jemarq()
+!
+    call getres(chanom, typech, nomcmd)
+!
+!     ON VERIFIE QUE LE PHENOMENE DU MODELE FOURNI EST COHERENT AVEC
+!     LA SD RESULTAT A PRODUIRE
+!     =========================
+    if (nomcmd(1:9) .eq. 'LIRE_RESU') then
+        call getvtx(' ', 'TYPE_RESU', 0, iarg, 1,&
+                    typres, n1)
+        call dismoi('F', 'PHENOMENE', modele, 'MODELE', ibid,&
+                    pheno, n1)
+        valk(1)=pheno
+        valk(2)=typres
+        if (typres(1:9) .eq. 'EVOL_THER') then
+            if (pheno(1:9) .eq. 'MECANIQUE') then
+                call u2mess('F+', 'MED_54')
+                call u2mesk('F', 'MED_56', 2, valk)
+            endif
+        else
+            if (pheno(1:9) .eq. 'THERMIQUE') then
+                call u2mess('F+', 'MED_54')
+                call u2mesk('F', 'MED_56', 2, valk)
+            endif
+        endif
+    else if (nomcmd(1:10).eq.'LIRE_CHAMP') then
+        call dismoi('F', 'PHENOMENE', modele, 'MODELE', ibid,&
+                    pheno, n1)
+        call getvtx(' ', 'TYPE_CHAM', 0, iarg, 1,&
+                    tych, n1)
+    endif
+!
+    call jedema()
+!
+end subroutine

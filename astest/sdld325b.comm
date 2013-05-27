@@ -1,6 +1,4 @@
-# MODIF  DATE 04/03/2013   AUTEUR ALARCON A.ALARCON 
 # TITRE SYSTEME 2 MASSES 2 RESSORTS  A 6 DDL (+ 2 AMORTISSEURS DISCRETS)
-# sdld325b.para = tps_job 90 mem_job 256Mo ncpus 1 liste_test V
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -1586,9 +1584,4 @@ TEST_RESU(RESU=_F(INST=2.4199999999999999,
 FIN( )
 #
 #
-
-
-
-
-
 

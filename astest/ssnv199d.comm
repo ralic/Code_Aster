@@ -1,6 +1,4 @@
-# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE DCB EN 3D AVEC DES ELEMENTS DE JOINT PENTA6 CZM_LIN_REG
-# ssnv199d.para = tps_job 300 mem_job 512Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -328,4 +326,3 @@ IMPR_TABLE(TABLE = UPILO)
 IMPR_TABLE(TABLE = FRES)
 
 FIN(FORMAT_HDF='OUI')
-

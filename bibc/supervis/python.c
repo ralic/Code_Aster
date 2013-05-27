@@ -1,7 +1,7 @@
 /* ------------------------------------------------------------------ */
 /*           CONFIGURATION MANAGEMENT OF EDF VERSION                  */
 /* MODIF python supervis  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS */
-/* RESPONSABLE LEFEBVRE J-P.LEFEBVRE */
+/* person_in_charge: j-pierre.lefebvre at edf.fr */
 /* ================================================================== */
 /* COPYRIGHT (C) 1991 - 2012  EDF R&D              WWW.CODE-ASTER.ORG */
 /*                                                                    */

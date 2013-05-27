@@ -1,0 +1,23 @@
+        interface
+          subroutine pbflkc(umoy,rhof,hmoy,rmoy,long,cf0,mcf0,icoq,&
+     &imod,nbm,rkip,tcoef,s1,s2,ki,lambda,kcalcu,passag)
+            integer :: nbm
+            real(kind=8) :: umoy
+            real(kind=8) :: rhof
+            real(kind=8) :: hmoy
+            real(kind=8) :: rmoy
+            real(kind=8) :: long
+            real(kind=8) :: cf0
+            real(kind=8) :: mcf0
+            integer :: icoq
+            integer :: imod
+            real(kind=8) :: rkip
+            real(kind=8) :: tcoef(10,nbm)
+            real(kind=8) :: s1
+            real(kind=8) :: s2
+            complex(kind=8) :: ki(4,3)
+            complex(kind=8) :: lambda(3)
+            complex(kind=8) :: kcalcu(3,4)
+            complex(kind=8) :: passag(3,3)
+          end subroutine pbflkc
+        end interface

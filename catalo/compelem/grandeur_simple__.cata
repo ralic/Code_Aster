@@ -1,5 +1,5 @@
-%& MODIF COMPELEM  DATE 09/04/2013   AUTEUR PELLET J.PELLET 
-% RESPONSABLE PROIX
+%& LIBRARY COMPELEM
+% person_in_charge: jean-michel.proix at edf.fr
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -2163,4 +2163,3 @@ GRANDEUR_ELEMENTAIRE__
    VTEM_R 1 TEMP_R
    VVAR_R 1 VANL_R
    MZNS_R 2 NEUT_R   NEUT_R   MR
-

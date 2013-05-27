@@ -1,6 +1,4 @@
-# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE VALIDATION ARCHITECTURE DE BASE D'UN CALCUL FETI AVEC MODES
-# feti002a.para = tps_job 60 mem_job 256Mo ncpus 1 liste_test SI
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -27,7 +25,7 @@
 # PAS DE DIRICHLET IMPOSE, C'EST A DIRE PAS D'AFFE_CHAR_CINE/MECA. ON
 #  BLOQUE VIA DEUX MAILLES POINTS PAR SOUS-DOMAINES.
 # ======================================================================
-# RESPONSABLE BOITEAU O.BOITEAU
+# person_in_charge: olivier.boiteau at edf.fr
 DEBUT(CODE=_F(NOM='FETI002A',NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='NON'))
 
 MATER=DEFI_MATERIAU(

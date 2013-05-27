@@ -1,8 +1,6 @@
 
-# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE MONOCRISTAL OCTAEDRIQUE MERIC-CAILLETAUD EXPLICITE ET IMPLICITE AVEC SIMU_POINT_MAT
-# RESPONSABLE JMBHH01 J.M.PROIX
-# ssnv171b.para = tps_job 600 mem_job 256Mo ncpus 1 liste_test R
+# person_in_charge: jean-michel.proix at edf.fr
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -286,5 +284,3 @@ TEST_TABLE(REFERENCE='NON_DEFINI',
            )
 
 FIN()
-
-

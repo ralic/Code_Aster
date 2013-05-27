@@ -1,6 +1,4 @@
-# MODIF  DATE 09/04/2013   AUTEUR PELLET J.PELLET 
 # TITRE RESSORT AVEC UNE NON-LINEARITE SOUMIS A UNE ACCELERATION
-# sdnd103a.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -548,9 +546,4 @@ TEST_FONCTION(VALEUR=(_F(VALE_REFE=1.E-2,
 
 FIN( )
 #
-
-
-
-
-
 

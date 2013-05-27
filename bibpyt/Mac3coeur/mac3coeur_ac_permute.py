@@ -1,4 +1,3 @@
-#@ MODIF mac3coeur_ac_permute Mac3coeur  DATE 09/04/2013   AUTEUR PERONY R.PERONY 
 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -17,7 +16,7 @@
 # ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
 # ======================================================================
-# RESPONSABLE FERNANDES R.FERNANDES
+# person_in_charge: romeo.fernandes at edf.fr
 
 import os
 import aster
@@ -245,4 +244,3 @@ MACRO_AC_PERMUTE=MACRO(nom="MACRO_AC_PERMUTE",
                 MODELE_FINAL   = SIMP(statut='o',typ=modele_sdaster),
                 TRAN           = SIMP(statut='o',typ='R',min=3,max=3),
                 );
-

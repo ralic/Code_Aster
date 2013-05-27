@@ -1,6 +1,5 @@
-#@ MODIF reca_interp Macro  DATE 11/05/2010   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
-# RESPONSABLE ASSIRE A.ASSIRE
+# person_in_charge: aimery.assire at edf.fr
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -183,4 +182,3 @@ class Sim_exp :
       J = NP.sum(L_J)
       J = J/len(L_J)
       return J
-

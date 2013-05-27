@@ -1,4 +1,4 @@
-%& MODIF OPTIONS  DATE 21/01/2013   AUTEUR DELMAS J.DELMAS 
+%& LIBRARY OPTIONS
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -16,7 +16,7 @@
 % ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 %    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 % ======================================================================
-% RESPONSABLE DESROCHE X.DESROCHES
+% person_in_charge: xavier.desroches at edf.fr
 CHAR_MECA_EPSA_R
         << CHAR_MECA_EPSA_R (MOT-CLE: EPSA_CALCULEE): CALCUL DU SECOND
            MEMBRE ELEMENTAIRE CORRESPONDANT A DES DEFORMATIONS ANELASTIQUES>>
@@ -31,4 +31,3 @@ OPTION__
        <<  PVARCRR : VARIABLES DE COMMANDE  DE REFERENCE >>
    OUT__
 PVECTUR VDEP_R RESL__
-

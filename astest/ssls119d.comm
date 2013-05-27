@@ -1,6 +1,4 @@
-# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE  : TEST DU RAASCH HOOK
-# ssls119d.para = tps_job 60 mem_job 256Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -22,7 +20,7 @@
 #- CROCHET SOUS CISAILLEMENT
 #- MODELISATION AVEC DES ELEMENTS '3D' (CU8)
 #---------------------------------------------------------------------
-# RESPONSABLE MASSIN P.MASSIN
+# person_in_charge: patrick.massin at edf.fr
 #
 
 DEBUT(CODE=_F(NOM='SSLS119D',NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))

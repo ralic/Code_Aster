@@ -1,4 +1,3 @@
-#@ MODIF dyna_iss_vari_ops Macro  DATE 15/04/2013   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -18,7 +17,7 @@
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 
-# RESPONSABLE ZENTNER I.ZENTNER
+# person_in_charge: irmela.zentner at edf.fr
 import os
 
 

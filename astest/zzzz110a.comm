@@ -1,9 +1,7 @@
-# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE VALIDATION DE LA COMMANDE PROJ_CHAMP/ELEM (EN 2D ET EN FILAIRE)
 #                   + CAS_FIGURE='2D'
 #                   + CAS_FIGURE='1.5D'
 #                   + TRANSF_GEOM_2
-# zzzz110a.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 #======================================================================
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                 WWW.CODE-ASTER.ORG
@@ -21,7 +19,7 @@
 # ALONG WITH THIS PROGRAM; IF NOT,WRITE TO EDF R&D CODE_ASTER,
 #    1 AVENUE DU GENERAL DE GAULLE,92141 CLAMART CEDEX,FRANCE.
 #======================================================================
-# RESPONSABLE PELLET J.PELLET
+# person_in_charge: jacques.pellet at edf.fr
 
 DEBUT(CODE=_F(NOM='ZZZZ110A', NIV_PUB_WEB='INTERNET',VISU_EFICAS='NON'), DEBUG=_F(SDVERI='OUI'))
 

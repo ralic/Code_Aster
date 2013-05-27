@@ -1,0 +1,90 @@
+subroutine lcloca(coeft, e, nu, nmat, nbcomm,&
+                  nphas, sigi, vini, iphas, granb,&
+                  loca, sigg)
+!
+    implicit none
+    include 'asterc/r8miem.h'
+    include 'asterfort/lcdevi.h'
+    include 'asterfort/lcnrts.h'
+    include 'asterfort/u2mesk.h'
+    integer :: nphas, nmat, nbcomm(nmat, 3), iphas
+    real(kind=8) :: vini(*), coeft(nmat), e, nu
+    real(kind=8) :: sigi(6), alpha, sigg(6)
+    character(len=16) :: loca
+    real(kind=8) :: mu, dev(6), norme, evpcum, granb(6)
+    integer :: ievpg, i
+!            CONFIGURATION MANAGEMENT OF EDF VERSION
+! ======================================================================
+! COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+! (AT YOUR OPTION) ANY LATER VERSION.
+!
+! THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+! WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+! MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+! GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+!
+! YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+!   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
+! ======================================================================
+! person_in_charge: jean-michel.proix at edf.fr
+! ======================================================================
+!       IN
+!          COEFT    : COEF MATERIAU
+!          COEFL    : COEF ELASTIQUES
+!           NMAT    : NOMBRE  MAXI DE COEF MATERIAU
+!         NBCOMM :  NOMBRE DE COEF MATERIAU PAR FAMILLE
+!         CPMONO :  NOMS DES LOIS MATERIAU PAR FAMILLE
+!           PGL   : MATRICE DE PASSAGE GLOBAL LOCAL
+!           NVI     :  NOMBRE DE VARIABLES INTERNES
+!           VINI    :  VARIABLES INTERNES A T
+!           SIGI    :  CONTRAINTES A L'INSTANT COURANT
+!     OUT:
+!           SIGG    : TENSEUR DES CONTRAINTES POUR LA PHASE IPHAS
+! INTEGRATION DES LOIS POLYCRISTALLINES PAR UNE METHODE DE RUNGE KUTTA
+!
+!     CETTE ROUTINE PERMET D'APPLIQUER LA METHODE DE LOCALISATION
+!
+!     7 variables : tenseur EVP + Norme(EVP)
+!    description des variables internes :
+!    pour chaque phase
+!        6 variables : beta ou epsilonp par phase
+!    pour chaque phase
+!        pour chaque systeme de glissement
+!              3 variables Alpha, Gamma, P
+!    1 variable : indic
+! ======================================================================
+!
+    mu=e/2.d0/(1.d0+nu)
+!
+! --  METHODE LOCALISATION
+    if (loca .eq. 'BZ') then
+        call lcdevi(sigi, dev)
+        norme = lcnrts( dev )
+        evpcum=vini(7)
+        if (norme .gt. r8miem()) then
+            alpha=norme/(norme+1.5d0*mu*evpcum)
+        else
+            alpha=0.d0
+        endif
+!        EVP - EVPG(IPHAS)
+        ievpg=7+6*(iphas-1)
+        do 1 i = 1, 6
+            sigg(i)=sigi(i)+alpha*mu*(vini(i)-vini(ievpg+i))
+ 1      continue
+!
+    else if (loca.eq.'BETA') then
+!        EVP - EVPG(IPHAS)
+        ievpg=7+6*(iphas-1)
+        do 2 i = 1, 6
+            sigg(i)=sigi(i)+mu*(granb(i)-vini(ievpg+i))
+ 2      continue
+!
+!
+    else
+        call u2mesk('F', 'ALGORITH4_63', 1, loca)
+    endif
+end subroutine

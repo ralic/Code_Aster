@@ -67,4 +67,3 @@ void DEF0(DLLCLS, dllcls)
     DLL_DICT = NULL;
 #endif
 }
-

@@ -1,6 +1,4 @@
-# MODIF  DATE 14/05/2013   AUTEUR COURTOIS M.COURTOIS 
 # TITRE VALIDATION ROTATION, TRANSLATION, MODI_BASE ET ECHELLE DANS MODI_MAILLAGE
-# zzzz164a.para = tps_job 60 mem_job 256Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG

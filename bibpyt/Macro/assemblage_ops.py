@@ -1,4 +1,3 @@
-#@ MODIF assemblage_ops Macro  DATE 05/11/2012   AUTEUR BRIE N.BRIE 
 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -17,7 +16,7 @@
 # ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
 # ======================================================================
-# RESPONSABLE ALARCON A.ALARCON
+# person_in_charge: albert.alarcon at edf.fr
 
 def assemblage_ops(self,MODELE,CHAM_MATER,CARA_ELEM,CHARGE,MATR_ASSE,VECT_ASSE,
                         SOLVEUR,NUME_DDL,CHAR_CINE,INST,INFO,**args):

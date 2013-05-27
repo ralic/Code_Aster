@@ -33,4 +33,3 @@ void DEFP(UTTRST, uttrst, DOUBLE *t_rst)
   t_lim = get_tpmax();
   *t_rst = t_lim - t_csm[0] - t_csm[1];
 }
-

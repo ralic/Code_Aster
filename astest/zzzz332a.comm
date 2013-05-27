@@ -1,7 +1,5 @@
-# MODIF  DATE 28/01/2013   AUTEUR SELLENET N.SELLENET 
 #
 # TITRE VALIDATION DE CREA_RESU / EVOL_VARC / NEUT A PARTIR DE NEUT_F
-# zzzz332a.para = tps_job 60 mem_job 256Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -69,4 +67,3 @@ for ne in Noeuds.keys():
 
 TEST_RESU(**mclf)
 FIN()
-

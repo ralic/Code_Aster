@@ -1,4 +1,3 @@
-#@ MODIF sup_gmsh Utilitai  DATE 04/12/2012   AUTEUR ASSIRE A.ASSIRE 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================

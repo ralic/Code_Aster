@@ -1,4 +1,3 @@
-#@ MODIF sd_amor_modal SD  DATE 04/04/2007   AUTEUR ABBAS M.ABBAS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -25,4 +24,3 @@ class sd_amor_modal(AsBase):
     
     VALM=AsVR()
     BASM=AsVR()
-

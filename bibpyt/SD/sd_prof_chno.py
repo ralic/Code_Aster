@@ -1,4 +1,3 @@
-#@ MODIF sd_prof_chno SD  DATE 04/09/2012   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -51,4 +50,3 @@ class sd_prof_chno(AsBase):
                assert nucmp==0
            else :
                assert nucmp!=0
-

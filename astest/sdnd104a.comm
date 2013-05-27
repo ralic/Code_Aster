@@ -1,6 +1,4 @@
-# MODIF  DATE 04/03/2013   AUTEUR ALARCON A.ALARCON 
 # TITRE CALCUL DE LA PUISSANCE D'USURE D'UN PATIN FROTTANT
-# sdnd104a.para = tps_job 90 mem_job 1024Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -1006,9 +1004,4 @@ TEST_TABLE(CRITERE='ABSOLU',
 #
 FIN( )
 #
-
-
-
-
-
 

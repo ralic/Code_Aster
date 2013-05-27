@@ -1,7 +1,5 @@
-# MODIF  DATE 04/03/2013   AUTEUR SELLENET N.SELLENET 
 # ======================================================================
 # TITRE VALIDATION ARCHITECTURE PARTITIONNEMENT SCOTCH ET CALCUL FETI
-# feti007a.para = tps_job 190 mem_job 1024Mo ncpus 4 liste_test SI
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -23,7 +21,7 @@
 # CUBE 3D
 # PARALLELE: VALEUR CONSEILLEE 4 PROCS.
 # ======================================================================
-# RESPONSABLE BOITEAU O.BOITEAU
+# person_in_charge: olivier.boiteau at edf.fr
 
 DEBUT(CODE=_F(NOM='FETI007A',
 NIV_PUB_WEB='INTERNET',),DEBUG=_F(SDVERI='OUI'))

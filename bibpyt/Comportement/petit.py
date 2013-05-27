@@ -1,4 +1,3 @@
-#@ MODIF petit Comportement  DATE 10/09/2012   AUTEUR PROIX J-M.PROIX 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -32,4 +31,3 @@ loi = LoiComportement(
    nom_varc       = None,
    proprietes     = (),
 )
-

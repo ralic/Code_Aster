@@ -1,4 +1,3 @@
-# MODIF  DATE 15/04/2013   AUTEUR PELLET J.PELLET 
 # TITRE ORIENTATION DE MAILLES PAR UNE BOUCLE PYTHON
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -17,7 +16,6 @@
 # ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
-# zzzz189c.para = tps_job 100 mem_job 512Mo ncpus 1 liste_test S
 # ==================================================================================================
 #
 #

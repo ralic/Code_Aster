@@ -1,7 +1,5 @@
-# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
-# RESPONSABLE JOUMANA J. EL GHARIB
+# person_in_charge: samuel.geniaut at edf.fr
 # TITRE TEST HYDROSTATIQUE  CAM_CLAY en AXISYMETRIQUE
-# ssnv160d.para = tps_job 60 mem_job 256Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG

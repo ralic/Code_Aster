@@ -1,4 +1,3 @@
-#@ MODIF calc_ifs_dnl_ops Macro  DATE 20/06/2012   AUTEUR ABBAS M.ABBAS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -17,7 +16,7 @@
 # ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
 # ======================================================================
-# RESPONSABLE GREFFET N.GREFFET
+# person_in_charge: nicolas.greffet at edf.fr
 #
 # MACRO DE COUPLAGE IFS AVEC SATURNE VIA YACS
 #
@@ -576,4 +575,3 @@ def calc_ifs_dnl_ops(self,GROUP_MA_IFS,NOM_CMP_IFS,UNITE_NOEUD,UNITE_ELEM,MODELE
                       LIST_ORDRE=_listImp,),);
 
   return ier
-

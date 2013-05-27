@@ -1,4 +1,3 @@
-#@ MODIF reca_mac Macro  DATE 16/10/2012   AUTEUR ALARCON A.ALARCON 
 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -125,6 +124,3 @@ class fenetre_mac:
         exec('l1='+self.l1)
         exec('l2='+self.l2)
         return l1,l2
-
-
-

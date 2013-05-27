@@ -1,4 +1,3 @@
-#@ MODIF sd_listr8 SD  DATE 28/06/2011   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -72,5 +71,3 @@ class sd_listr8(sd_titre):
             assert len(nbpa) == 1
             assert len(lpas) == 1
             assert  vale[0] == bint[0]
-
-

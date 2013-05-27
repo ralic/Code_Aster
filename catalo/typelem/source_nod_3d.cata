@@ -1,4 +1,4 @@
-%& MODIF TYPELEM  DATE 05/10/2005   AUTEUR VABHHTS J.PELLET 
+%& LIBRARY TYPELEM
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -40,4 +40,3 @@ OPTION__
                               OUT__  MVECTTR  PVECTTR
     CHAR_THER_SOUR_R    1     IN__   MGEOMER  PGEOMER  MSOURCR  PSOURCR
                               OUT__  MVECTTR  PVECTTR
-

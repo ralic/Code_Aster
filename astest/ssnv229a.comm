@@ -1,4 +1,3 @@
-# MODIF  DATE 09/04/2013   AUTEUR PELLET J.PELLET 
 # TITRE  VALIDATION DES FORMULES ETCC DANS DEFI_CABLE_BP
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -239,5 +238,3 @@ TEST_TABLE(CRITERE='RELATIF',
 
 
 FIN();
-
-

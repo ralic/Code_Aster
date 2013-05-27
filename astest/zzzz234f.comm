@@ -1,4 +1,3 @@
-# MODIF  DATE 22/04/2013   AUTEUR FLEJOU J-L.FLEJOU 
 # TITRE VALEUR DE REFERENCE POUR LES ELEMENTS POUTRES
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -18,7 +17,6 @@
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 # COMME ZZZZ234A SAUF QUE C'EST EN DYNAMIQUE
-# zzzz234f.para = tps_job 100 mem_job 512Mo ncpus 1 liste_test S
 DEBUT(CODE=_F(NOM='ZZZZ234F',NIV_PUB_WEB='INTERNET'),
       DEBUG=_F(SDVERI='OUI'))
 

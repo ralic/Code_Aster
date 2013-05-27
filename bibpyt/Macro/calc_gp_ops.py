@@ -1,4 +1,3 @@
-#@ MODIF calc_gp_ops Macro  DATE 15/04/2013   AUTEUR COURTOIS M.COURTOIS 
 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -555,4 +554,3 @@ def calc_gp_ops(self,**args):
                            ),)        
     RetablirAlarme('CALCCHAMP_1')
     return ier
-

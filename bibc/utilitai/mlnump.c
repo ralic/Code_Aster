@@ -31,4 +31,3 @@ INTEGER DEF0(MLNUMP, mlnump)
     return(nump);
 #endif
 }
-

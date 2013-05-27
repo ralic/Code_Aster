@@ -1,4 +1,3 @@
-#& MODIF COMMANDE  DATE 25/01/2011   AUTEUR PELLET J.PELLET 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -16,7 +15,7 @@
 # ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
 # ======================================================================
-# RESPONSABLE PELLET J.PELLET
+# person_in_charge: jacques.pellet at edf.fr
 
 APPL_CINE_SCMB=OPER(nom="APPL_CINE_SCMB",op=159,sd_prod=cham_no_sdaster,reentrant='f',
                fr="Application des C.L. cinématiques au second membre",

@@ -1,4 +1,3 @@
-#@ MODIF joint_meca_frot Comportement  DATE 17/12/2012   AUTEUR LAVERNE J.LAVERNE 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -18,7 +17,7 @@
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
 # ======================================================================
 
-# RESPONSABLE GENIAUT S.GENIAUT
+# person_in_charge: samuel.geniaut at edf.fr
 
 from cata_comportement import LoiComportement
 
@@ -38,4 +37,3 @@ loi = LoiComportement(
    type_matr_tang = ('PERTURBATION', 'VERIFICATION'),
    proprietes     = ('PRED_ELAS'),
 )
-

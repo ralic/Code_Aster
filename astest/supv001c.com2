@@ -1,6 +1,5 @@
-# AJOUT 
 # TITRE TEST DE LA CREATION DES CONCEPTS PAR LES MACRO-COMMANDES
-# RESPONSABLE
+# person_in_charge: mathieu.courtois at edf.fr
 # .comm : en PAR_LOT='OUI'
 # .com1 : en PAR_LOT='NON'
 # .com2 : THER_LINEAIRE en PAR_LOT='NON'
@@ -68,4 +67,3 @@ MA_MACRO(MOTH=MOTH,
          TEMPER=CO('RTEMP'),)
 
 FIN()
-

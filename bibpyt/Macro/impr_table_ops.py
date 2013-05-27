@@ -1,4 +1,3 @@
-#@ MODIF impr_table_ops Macro  DATE 28/01/2013   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -18,7 +17,7 @@
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 
-# RESPONSABLE MCOURTOI M.COURTOIS
+# person_in_charge: mathieu.courtois at edf.fr
 
 import os.path
 import re

@@ -1,4 +1,3 @@
-#@ MODIF salomeParaviz Templates  DATE 16/04/2013   AUTEUR ASSIRE A.ASSIRE 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================

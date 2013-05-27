@@ -1,4 +1,3 @@
-#@ MODIF xmgrace Stanley  DATE 07/02/2012   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -265,4 +264,3 @@ class Xmgr :
         self.Legende(set, legende)
 
     return set
-

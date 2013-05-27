@@ -1,4 +1,3 @@
-#@ MODIF sd_char_ther SD  DATE 18/09/2012   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -69,5 +68,3 @@ class sd_char_ther(AsBase):
     TYPE = AsVK8(lonmax=1)
     CHTH = sd_char_chth()
     ELIM = Facultatif(sd_char_cine())
-
-

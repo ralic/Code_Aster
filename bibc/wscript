@@ -27,7 +27,7 @@ def configure(self):
 
     # -Wl,--allow-multiple-definition is used to prevent compilers to
     # complain about symbols that are defined multiple times
-    # (fermeture and _WITHOUT_PYMOD)
+    #XXX fermetur removed but may occur with _WITHOUT_PYMOD
     self.load('python_cfg', tooldir='waftools')
 
     self.env.append_unique('INCLUDES', ['include/'])
@@ -41,8 +41,6 @@ def build(self):
     # We split Code_Aster byte code:
     #
     # - libaster.so: a shared library that store symbols
-    # - libasterfermetur.so: symbols that are required but not yet
-    #   implemented
     # - *aster*.so: python C-extension that contains python bindings
     #
     # Some functions are called from C, Fortran or Python
@@ -84,8 +82,7 @@ def build_as_shared(self, uses, shenv):
           source = get_srcs('**/*.c', excl=['supervis/python.c']),
          defines = '_WITHOUT_PYMOD_',
              env = shenv.copy(),
-             use = ['PYEMBED', 'NUMPY', 'asterbibfor', 'asterbibf90',
-                    'asterfermetur'] + uses,
+             use = ['PYEMBED', 'NUMPY', 'asterbibfor'] + uses,
     )
 
     self.add_group()
@@ -143,7 +140,7 @@ def build_as_embeded(self, uses, stenv):
           source = get_srcs(['**/*.c'], excl=excl),
          defines = ['_MAIN_=%s' % main],
              env = stenv.copy(),
-             use = ['NUMPY', 'asterbibfor', 'asterbibf90', 'asterfermetur']
+             use = ['NUMPY', 'asterbibfor']
                    + uses,
         )
 

@@ -1,6 +1,4 @@
-# MODIF  DATE 07/05/2013   AUTEUR DESOZA T.DESOZA 
 # TITRE  POUTRE EULER_BERNOULLI MULTIFIBRES (STATIQUE NON-LINEAIRE)
-# ssnl119a.para = tps_job 480 mem_job 256Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -369,4 +367,3 @@ DEFI_FICHIER(UNITE = unit, ACTION='LIBERER',)
 DETRUIRE(INFO=1,ALARME='NON',CONCEPT=(_F(NOM=unit,),),)
 """
 FIN()
-

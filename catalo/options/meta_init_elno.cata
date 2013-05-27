@@ -1,5 +1,5 @@
-%& MODIF OPTIONS  DATE 21/01/2013   AUTEUR DELMAS J.DELMAS 
-% RESPONSABLE BARGELLINI
+%& LIBRARY OPTIONS
+% person_in_charge: renaud.bargellini at edf.fr
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -26,4 +26,3 @@ OPTION__
         PPHASIN  VAR2_R
    OUT__
 PPHASNOU VARI_R ELNO__
-

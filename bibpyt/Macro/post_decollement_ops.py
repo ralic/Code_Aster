@@ -1,4 +1,3 @@
-#@ MODIF post_decollement_ops Macro  DATE 14/03/2011   AUTEUR TARDIEU N.TARDIEU 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================

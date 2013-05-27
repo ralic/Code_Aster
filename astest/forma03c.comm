@@ -1,7 +1,5 @@
-# MODIF  DATE 06/02/2013   AUTEUR COURTOIS M.COURTOIS 
-# RESPONSABLE ABBAS M.ABBAS
+# person_in_charge: mickael.abbas at edf.fr
 # TITRE ENONCE FORMATION PLAQUE TROUEE EN TRACTION EN PLASTICITE - CHARGE LIMITE
-# forma03c.para = tps_job 120 mem_job 512Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG

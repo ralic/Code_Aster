@@ -1,6 +1,4 @@
-# MODIF  DATE 22/04/2013   AUTEUR COURTOIS M.COURTOIS 
 # TITRE VALIDATION DES OPTIONS PREP_VERC1 ET PREP_VRC2
-# zzzz228a.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG

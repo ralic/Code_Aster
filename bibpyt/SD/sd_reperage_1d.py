@@ -1,4 +1,3 @@
-#@ MODIF sd_reperage_1d SD  DATE 28/06/2011   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -33,5 +32,3 @@ class sd_reperage_1d(AsBase):
       assert len(extr) == len(type)
       for k in range(len(type)):
          assert  (type[k] <= 3) and (type[k] >= 1)
-
-

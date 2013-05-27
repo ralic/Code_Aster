@@ -1,4 +1,3 @@
-#@ MODIF sd_stoc_lciel SD  DATE 13/02/2007   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -27,5 +26,3 @@ class sd_stoc_lciel(AsBase):
     SCHC = AsVI()
     SCIB = AsVI()
     SCDE = AsVI(lonmax=6)
-
-

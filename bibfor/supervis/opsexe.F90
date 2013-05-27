@@ -1,0 +1,41 @@
+subroutine opsexe(nuoper)
+    implicit none
+    include 'asterfort/ops005.h'
+    include 'asterfort/ops007.h'
+    include 'asterfort/ops026.h'
+    include 'asterfort/u2mesg.h'
+    integer :: nuoper
+    integer :: vali
+!     ------------------------------------------------------------------
+!            CONFIGURATION MANAGEMENT OF EDF VERSION
+! ======================================================================
+! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+! (AT YOUR OPTION) ANY LATER VERSION.
+!
+! THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+! WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+! MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+! GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+!
+! YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+!    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
+! ======================================================================
+!     EXECUTION DES PROCEDURES SUPERVISEUR
+!     ------------------------------------------------------------------
+    if (nuoper .eq. 5) then
+        call ops005()
+    else if (nuoper .eq. 7) then
+        call ops007()
+    else if (nuoper .eq. 26) then
+        call ops026()
+    else
+        vali = -nuoper
+        call u2mesg('E', 'SUPERVIS_60', 0, ' ', 1,&
+                    vali, 0, 0.d0)
+    endif
+!
+end subroutine

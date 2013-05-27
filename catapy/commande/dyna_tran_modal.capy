@@ -1,4 +1,3 @@
-#& MODIF COMMANDE  DATE 05/02/2013   AUTEUR ALARCON A.ALARCON 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -16,7 +15,7 @@
 # ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
-# RESPONSABLE BOYERE E.BOYERE
+# person_in_charge: emmanuel.boyere at edf.fr
 DYNA_TRAN_MODAL=OPER(nom="DYNA_TRAN_MODAL",op=  74,sd_prod=tran_gene,
                      fr="Calcul de la reponse dynamique transitoire d'un systeme amorti ou non en coordonees generalisees"
                         +" par superposition modale ou par sous structuration",

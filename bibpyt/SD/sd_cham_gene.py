@@ -1,4 +1,3 @@
-#@ MODIF sd_cham_gene SD  DATE 11/09/2012   AUTEUR BERRO H.BERRO 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -41,5 +40,3 @@ class sd_cham_gene(AsBase):
         #if refe[1] in  ('$TRAN_GENE','$HARM_GENE') : return
         if refe[1] :
             sd2 = sd_nume_ddl_gene(refe[1]) ; sd2.check(checker)
-
-

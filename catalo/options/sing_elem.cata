@@ -1,4 +1,4 @@
-%& MODIF OPTIONS  DATE 23/01/2012   AUTEUR PELLET J.PELLET 
+%& LIBRARY OPTIONS
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -16,7 +16,7 @@
 % ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
 %    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
 % ======================================================================
-% RESPONSABLE DELMAS
+% person_in_charge: josselin.delmas at edf.fr
 SING_ELEM
        <<  SING_ELEM :
            DEGRE DE SINGULARITE ET CARTE DE TAILLE
@@ -28,4 +28,3 @@ OPTION__
    OUT__
         PSING_R SING_R ELEM__
        <<  PSING_R : SINGULARITE ET CARTE DE TAILLE  >>
-

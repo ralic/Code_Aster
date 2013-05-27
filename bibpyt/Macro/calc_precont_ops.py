@@ -1,4 +1,3 @@
-#@ MODIF calc_precont_ops Macro  DATE 28/01/2013   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -19,7 +18,7 @@
 # ======================================================================
 
 
-# RESPONSABLE ASSIRE A.ASSIRE
+# person_in_charge: aimery.assire at edf.fr
 
 def calc_precont_ops(self,reuse,MODELE,CHAM_MATER,CARA_ELEM,EXCIT,
                                 CABLE_BP,CABLE_BP_INACTIF,
@@ -425,4 +424,3 @@ def calc_precont_ops(self,reuse,MODELE,CHAM_MATER,CARA_ELEM,EXCIT,
 
   RetablirAlarme('COMPOR1_70')
   return ier
-

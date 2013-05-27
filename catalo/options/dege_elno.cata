@@ -1,4 +1,4 @@
-%& MODIF OPTIONS  DATE 18/12/2012   AUTEUR SELLENET N.SELLENET 
+%& LIBRARY OPTIONS
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -16,7 +16,7 @@
 % ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
 %    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
 % ======================================================================
-% RESPONSABLE FLEJOU
+% person_in_charge: jean-luc.flejou at edf.fr
 DEGE_ELNO
 << DEFORMATIONS GENERALISEES DANS LES ELEMENTS DE STRUCTURE : COQUES OU POUTRES
    CALCULEES AUX NOEUDS DE CHAQUE ELEMENT A PARTIR DES DEPLACEMENTS.>>
@@ -50,6 +50,3 @@ OPTION__
         
    OUT__
 PDEFOGR EPSI_R ELNO__
-
-
-

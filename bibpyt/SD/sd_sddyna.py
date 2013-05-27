@@ -1,4 +1,3 @@
-#@ MODIF sd_sddyna SD  DATE 04/04/2007   AUTEUR ABBAS M.ABBAS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -30,4 +29,3 @@ class sd_sddyna(AsBase):
     TYPE_FOR=Facultatif(AsVI(  SDNom(nomj='.TYPE_FOR'),lonmax=2))
     COEF_SCH=Facultatif(AsVR(  SDNom(nomj='.COEF_SCH'),lonmax=4))
     INFO_SD =Facultatif(AsVL(  SDNom(nomj='.INFO_SD' ),lonmax=5))
-

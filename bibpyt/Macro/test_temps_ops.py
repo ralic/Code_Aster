@@ -1,4 +1,3 @@
-#@ MODIF test_temps_ops Macro  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -17,7 +16,7 @@
 # ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
 # ======================================================================
-# RESPONSABLE COURTOIS M.COURTOIS
+# person_in_charge: mathieu.courtois at edf.fr
 
 """
 for m in clpaster clp50a8 claut626 clau5aaa aster
@@ -250,4 +249,3 @@ def get_cmde_timers(jdc):
    tab.Renomme('tot_dt', 'ELAPSED')
    tab = tab['NUME_ORDRE', 'COMMANDE', 'USER', 'SYSTEM', 'USER+SYS', 'ELAPSED']
    return tab
-

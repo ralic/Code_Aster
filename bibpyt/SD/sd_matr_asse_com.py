@@ -1,4 +1,3 @@
-#@ MODIF sd_matr_asse_com SD  DATE 28/06/2011   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -65,5 +64,3 @@ class sd_matr_asse_com(sd_titre):
         elif refa[8]=='MR' :
             assert self.VALM.nmaxoc == 2 , (refa,self.VALM.nmaxoc)
         assert refa[10] in ('MPI_COMPLET','MPI_INCOMPLET') , refa
-
-

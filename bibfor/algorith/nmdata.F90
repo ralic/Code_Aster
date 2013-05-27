@@ -1,0 +1,151 @@
+subroutine nmdata(result, modele, mate, carele, compor,&
+                  lischa, solveu, method, parmet, parcri,&
+                  parcon, carcri, sddyna, sdpost, sderro,&
+                  sdener, sdcriq, sdimpr)
+!
+!            CONFIGURATION MANAGEMENT OF EDF VERSION
+! ======================================================================
+! COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
+! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+! (AT YOUR OPTION) ANY LATER VERSION.
+!
+! THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+! WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+! MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+! GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+!
+! YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+!   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
+! ======================================================================
+! person_in_charge: mickael.abbas at edf.fr
+!
+    implicit none
+    include 'asterc/getres.h'
+    include 'asterfort/eninit.h'
+    include 'asterfort/infdbg.h'
+    include 'asterfort/jedema.h'
+    include 'asterfort/jemarq.h'
+    include 'asterfort/ndcrdy.h'
+    include 'asterfort/ndlect.h'
+    include 'asterfort/nmcrer.h'
+    include 'asterfort/nmcrga.h'
+    include 'asterfort/nmdocn.h'
+    include 'asterfort/nmdoim.h'
+    include 'asterfort/nmdomt.h'
+    include 'asterfort/nmdopo.h'
+    include 'asterfort/nmdorc.h'
+    include 'asterfort/nmetdo.h'
+    include 'asterfort/nmlect.h'
+    character(len=8) :: result
+    character(len=19) :: lischa, solveu, sddyna, sdpost, sdener
+    character(len=24) :: modele, mate, carele, compor
+    character(len=24) :: carcri, sderro, sdcriq, sdimpr
+    character(len=16) :: method(*)
+    real(kind=8) :: parmet(*), parcri(*), parcon(*)
+!
+! ----------------------------------------------------------------------
+!
+! ROUTINE MECA_NON_LINE (ALGORITHME)
+!
+! LECTURE DES OPERANDES
+!
+! ----------------------------------------------------------------------
+!
+!
+! OUT RESULT : NOM UTILISATEUR DU RESULTAT DE MECA_NON_LINE
+! OUT MODELE : NOM DU MODELE
+! OUT MATE   : NOM DU CHAMP DE MATERIAU
+! OUT CARELE : CARACTERISTIQUES DES ELEMENTS DE STRUCTURE
+! OUT COMPOR : CARTE DECRIVANT LE TYPE DE COMPORTEMENT
+! OUT LISCHA : LISTE DES CHARGES
+! OUT METHOD : DESCRIPTION DE LA METHODE DE RESOLUTION
+! OUT SOLVEU : NOM DU SOLVEUR
+! OUT PARMET : PARAMETRES DE LA METHODE DE RESOLUTION
+! OUT PARCRI : PARAMETRES DES CRITERES DE CONVERGENCE
+! OUT CARCRI : CARTE DES CRITERES DE CONVERGENCE LOCAUX
+! OUT PARCON : PARAMETRES DU CRITERE DE CONVERGENCE EN CONTRAINTE
+! IN  SDDYNA : SD DYNAMIQUE
+! OUT SDPOST : SD POUR POST-TRAITEMENTS (CRIT_STAB ET MODE_VIBR)
+! OUT SDERRO : SD ERREUR
+! OUT SDCRIQ : SD CRITERE QUALITE
+! OUT SDENER : SD ENERGIES
+! OUT SDIMPR : SD AFFICHAGE
+!
+! ----------------------------------------------------------------------
+!
+    integer :: ifm, niv
+    character(len=8) :: k8bid
+    character(len=16) :: k16bid, nomcmd
+!
+! ----------------------------------------------------------------------
+!
+    call jemarq()
+    call infdbg('MECA_NON_LINE', ifm, niv)
+!
+! --- AFFICHAGE
+!
+    if (niv .ge. 2) then
+        write (ifm,*) '<MECANONLINE> LECTURE DES DONNEES'
+    endif
+!
+! --- COMMANDE APPELANTE
+!
+    call getres(k8bid, k16bid, nomcmd)
+!
+! --- LECTURE DONNEES GENERALES
+!
+    call nmlect(result, modele, mate, carele, compor,&
+                lischa, solveu)
+!
+! --- RELATION DE COMPORTEMENT ET CRITERES DE CONVERGENCE LOCAL
+!
+    if (niv .ge. 2) then
+        write (ifm,*) '<MECANONLINE> ... LECTURE DONNEES COMPORTEMENT'
+    endif
+    call nmdorc(modele, compor, carcri)
+!
+! --- CRITERES DE CONVERGENCE GLOBAL
+!
+    call nmdocn(parcri, parcon)
+!
+! --- NOM ET PARAMETRES DE LA METHODE DE RESOLUTION
+!
+    call nmdomt(method, parmet)
+!
+! --- CREATION SD DYNAMIQUE
+!
+    call ndcrdy(result, sddyna)
+!
+! --- LECTURE DES OPERANDES DYNAMIQUES
+!
+    call ndlect(modele, mate, carele, lischa, sddyna)
+!
+! --- LECTURE INFOS POST-TRAITEMENT (CRIT_STAB ET MODE_VIBR)
+!
+    call nmdopo(sddyna, method, sdpost)
+!
+! --- LECTURE INFOS ENERGIE
+!
+    call eninit(sdener)
+!
+! --- LECTURE DES DONNEES GESTION ALGORITHME
+!
+    call nmcrga(sderro)
+!
+! --- LECTURE DES DONNEES CRITERE QUALITE
+!
+    if (nomcmd .eq. 'STAT_NON_LINE') then
+        call nmcrer(carcri, sdcriq)
+        call nmetdo(sdcriq)
+    endif
+!
+! --- LECTURE DES PARAMETRES UTILISATEURS AFFICHAGE
+!
+    call nmdoim(sdimpr)
+!
+    call jedema()
+!
+end subroutine

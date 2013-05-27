@@ -1,4 +1,3 @@
-#@ MODIF rupture0 Messages  DATE 07/05/2013   AUTEUR LADIER A.LADIER 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================

@@ -1,5 +1,5 @@
-%& MODIF OPTIONS  DATE 21/01/2013   AUTEUR DELMAS J.DELMAS 
-% RESPONSABLE PELLET
+%& LIBRARY OPTIONS
+% person_in_charge: jacques.pellet at edf.fr
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -30,4 +30,3 @@ OPTION__
         PNBSP_I  NBSP_I 'CARA!.CANBSP' <<  PNBSP_I :  NOMBRE DE SOUS_POINTS  >>
    OUT__
         PTEMPCR  TEMP_R   ELEM__
-

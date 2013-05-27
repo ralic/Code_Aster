@@ -1,0 +1,436 @@
+subroutine eclpgm(ma2, mo, cham1, ligrel, shrink,&
+                  lonmin, nch, lisch)
+    implicit   none
+!            CONFIGURATION MANAGEMENT OF EDF VERSION
+! ======================================================================
+! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+! (AT YOUR OPTION) ANY LATER VERSION.
+!
+! THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+! WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+! MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+! GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+!
+! YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+!    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
+! ======================================================================
+!   - TRAITEMENT DU MOT CLE CREA_MAILLAGE/ECLA_PG
+!-----------------------------------------------------------------------
+! BUT : CREER LE MAILLAGE (MA2) CORRESPONDANT AUX POINTS DE GAUSS
+!       DES ELEMENTS DU LIGREL (LIGREL).
+!
+! ARGUMENTS :
+!  IN/JXIN  MO : MODELE DONT ON VEUT "ECLATER" LES POINTS DE GAUSS
+!  IN/JXIN  LIGREL : NOM DU LIGREL (D'ELEMENTS DU MODELE) CORRESPONDANT
+!           AUX MAILLES QUI INTERESSENT L'UTILISATEUR.
+!           SI LIGREL=' ', ON PREND LE LIGREL DU MODELE (TOUT='OUI')
+!  IN/JXIN  CHAM1 : NOM DU CHAM_ELEM/ELGA QUE L'ON VEUT ECLATER
+!           (OU ' ' SI ON UTILISE NCH ET LISCH)
+!  IN       LISCH(*) : LISTE DES NOMS SYMBOLIQUES DES CHAMPS AUXQUELS
+!           ON S'INTERESSE. EX: (SIEF_ELGA, VARI_ELGA_DEPL, ...)
+!  IN NCH : DIMENSION DE LISCH  (0 SI CHAM1/=' ')
+!  IN/JXOUT MA2 : NOM DU MAILLAGE A CREER (1 MAILLE PAR POINT DE GAUSS)
+!           LES MAILLES DE MA2 SONT TOUTES DECONNECTEES LES UNES DES
+!           DES AUTRES.
+!  IN  SHRINK : COEFFICENT DE "CONTRACTION" DES MAILLES POUR QUE
+!       CELLES-CI NE SE CHEVAUCHENT PAS.
+!       SHRINK=0.9 DONNE UN BEAU VITRAIL AVEC 10% DE NOIR.
+!  IN  LONMIN : LONGUEUR MINIMALE POUR LES ARETES DES MAILLES CREEES.
+!      (IGNORE SI LONMIN <=0)
+!      CETTE FONCTIONNALITE PERMET D'"EPAISSIR" DES ELEMENTS DE JOINT
+!      POUR QU'ON PUISSE LES VOIR.
+!
+!
+    include 'jeveux.h'
+!
+    include 'asterfort/alchml.h'
+    include 'asterfort/assert.h'
+    include 'asterfort/celfpg.h'
+    include 'asterfort/codent.h'
+    include 'asterfort/copisd.h'
+    include 'asterfort/detrsd.h'
+    include 'asterfort/dismoi.h'
+    include 'asterfort/eclapp.h'
+    include 'asterfort/eclaty.h'
+    include 'asterfort/eclau1.h'
+    include 'asterfort/jecrec.h'
+    include 'asterfort/jecreo.h'
+    include 'asterfort/jecroc.h'
+    include 'asterfort/jedema.h'
+    include 'asterfort/jedetr.h'
+    include 'asterfort/jeecra.h'
+    include 'asterfort/jemarq.h'
+    include 'asterfort/jenonu.h'
+    include 'asterfort/jenuno.h'
+    include 'asterfort/jeveuo.h'
+    include 'asterfort/jexatr.h'
+    include 'asterfort/jexnom.h'
+    include 'asterfort/jexnum.h'
+    include 'asterfort/nbelem.h'
+    include 'asterfort/nbgrel.h'
+    include 'asterfort/typele.h'
+    include 'asterfort/u2mesk.h'
+    include 'asterfort/u2mess.h'
+    include 'asterfort/wkvect.h'
+!
+!
+    integer :: k, te, tabno(27), iret1, jobj, numa, nch
+    integer :: igr, iel, iacoor, iamaco, ilmaco, ialiel, illiel
+    integer :: dimgeo, iacose, ibid, ino, ino1, ino2
+    integer :: numglm, nbmail, nbnoeu, nbcoor, iadime, kse
+    integer :: nbno2t, ianno2, iatypm, nuno2, nupoi2, cas
+    integer :: npg1, nbpi, iagepi, iagese, nno2, nbnoma, nuse, nse1
+    integer :: ima, nbelgr, numail, nupoin, npoini, iterm, ipoini
+    integer :: iret, ich, jrefe, nch2
+    character(len=8) :: mo, ma1, ma2, nom, kbid, elrefa, fapg, famil, nompar
+    character(len=8) :: tych
+    character(len=16) :: nomte, lisch(nch)
+    character(len=19) :: ligrel, ligrmo, cel, cham1, ligre1
+    character(len=24) :: nomobj
+    character(len=24) :: valk(2)
+    real(kind=8) :: x, xc, xm, shrink, lonmin
+!
+! ----------------------------------------------------------------------
+!     VARIABLES NECESSAIRES A L'APPEL DE ECLATY :
+!     ON COMPREND LE SENS DE CES VARIABLES EN REGARDANT ECLATY
+    integer :: mxnbn2, mxnbpi, mxnbte, mxnbse
+!     MXNBN2 : MAX DU NOMBRE DE NOEUDS D'UN SOUS-ELEMENT (HEXA8)
+    parameter (mxnbn2=8)
+!     MXNBPI : MAX DU NOMBRE DE POINT_I (HEXA A 27 POINTS DE GAUSS)
+!     MXNBPI = 4X4X4
+    parameter (mxnbpi=64)
+!     MXNBTE : MAX DU NOMBRE DE TERMES DE LA C.L. DEFINISSANT 1 POINT_I
+!              AU PLUS LES 8 SOMMETS D'UN HEXA8
+    parameter (mxnbte=8)
+!     MXNBSE : MAX DU NOMBRE DE SOUS-ELEMENTS
+    parameter (mxnbse=27)
+!
+    integer :: nbse, corsel(mxnbse)
+    integer :: connx(mxnbn2, mxnbse), nsomm1(mxnbpi, mxnbte)
+    integer :: nterm1(mxnbpi), nbno2(mxnbse), tyma(mxnbse)
+    real(kind=8) :: csomm1(mxnbpi, mxnbte)
+    integer :: ico
+    integer :: opt, iadesc, iaoppa, nbin
+! ----------------------------------------------------------------------
+!
+!     FONCTIONS FORMULES :
+!     NUMAIL(IGR,IEL)=NUMERO DE LA MAILLE ASSOCIEE A L'ELEMENT IEL
+    numail(igr,iel)=zi(ialiel-1+zi(illiel+igr-1)+iel-1)
+!     NBNOMA(IMA)=NOMBRE DE NOEUDS DE LA MAILLE IMA
+    nbnoma(ima)=zi(ilmaco-1+ima+1)-zi(ilmaco-1+ima)
+!     NUMGLM(IMA,INO)=NUMERO GLOBAL DU NOEUD INO DE LA MAILLE IMA
+!                     IMA ETANT UNE MAILLE DU MAILLAGE.
+    numglm(ima,ino)=zi(iamaco-1+zi(ilmaco+ima-1)+ino-1)
+!
+! DEB ------------------------------------------------------------------
+    call jemarq()
+    dimgeo = 3
+!
+!
+    call dismoi('F', 'NOM_MAILLA', mo, 'MODELE', ibid,&
+                ma1, ibid)
+    call jeveuo(ma1//'.COORDO    .VALE', 'L', iacoor)
+    call jeveuo(ma1//'.CONNEX', 'L', iamaco)
+    call jeveuo(jexatr(ma1//'.CONNEX', 'LONCUM'), 'L', ilmaco)
+!
+!
+!     -- ON ACCEPTE 2 CAS DE FIGURE :
+    if (cham1 .ne. ' ') then
+!       -- CAS "PROJ_CHAMP" :
+        call dismoi('F', 'TYPE_CHAMP', cham1, 'CHAMP', ibid,&
+                    tych, ibid)
+        call assert(tych.eq.'ELGA')
+        call assert(nch.eq.0)
+        call assert(ligrel.ne.' ')
+        call dismoi('F', 'NOM_LIGREL', cham1, 'CHAM_ELEM', ibid,&
+                    ligre1, ibid)
+        call assert(ligre1.eq.ligrel)
+        cas=1
+    else
+!       -- CAS "CREA_MAILLAGE/ECLA_PG" :
+        cas=2
+    endif
+!
+!
+!
+!    0.1 : ON CHERCHE LE NOM DES FAMILLES DE POINTS DE GAUSS A ECLATER
+!          SI ON N'A PAS ASSEZ DE "BILLES", ON PRENDRA 'RIGI'
+!          SORTIES : NCH2 [+ JOBJ SI NCH2>0]
+!    -----------------------------------------------------------------
+    nomobj = '&&ECLPGM.NOMOBJ'
+!
+    if (cas .eq. 1) then
+        nch2=1
+        call celfpg(cham1, nomobj, iret)
+        call assert(iret.eq.0)
+        call jeveuo(nomobj, 'L', jobj)
+!
+    else if (cas.eq.2) then
+        cel = '&&ECLPGM.CHAM_ELEM'
+        ico=0
+        nch2=nch
+        call dismoi('F', 'NOM_LIGREL', mo, 'MODELE', ibid,&
+                    ligrmo, ibid)
+        do 30, ich=1,nch2
+        if (lisch(ich)(6:9) .ne. 'ELGA') call u2mess('F', 'CALCULEL2_41')
+        call jenonu(jexnom('&CATA.OP.NOMOPT', lisch(ich)), opt)
+        if (opt .eq. 0) goto 30
+!
+        call jeveuo(jexnum('&CATA.OP.DESCOPT', opt), 'L', iadesc)
+        call jeveuo(jexnum('&CATA.OP.OPTPARA', opt), 'L', iaoppa)
+        nbin = zi(iadesc-1+2)
+        nompar = zk8(iaoppa-1+nbin+1)
+!
+        call alchml(ligrmo, lisch(ich), nompar, 'V', cel,&
+                    iret1, ' ')
+        if (iret1 .ne. 0) goto 30
+!
+        ico=ico+1
+        call celfpg(cel, nomobj, iret)
+        call detrsd('CHAMP', cel)
+        if (iret .eq. 1) then
+            valk(1) = mo
+            valk(2) = lisch(ich)
+            call u2mesk('F', 'CALCULEL2_33', 2, valk)
+        endif
+        call jeveuo(nomobj, 'L', jobj)
+30      continue
+!        -- ON N'A PAS TROUVE DE CHAMP ELGA CORRECT :
+        if (ico .eq. 0) nch2=0
+    endif
+!
+!
+!
+!     0.2 : ON SE RESTREINT AUX MAILLES EVENTUELLEMENT SPECIFIEES PAR
+!           L'UTILISATEUR :
+!     ----------------------------------------------------------------
+    if (ligrel .eq. ' ') ligrel=ligrmo
+    call jeveuo(ligrel//'.LIEL', 'L', ialiel)
+    call jeveuo(jexatr(ligrel//'.LIEL', 'LONCUM'), 'L', illiel)
+!
+!
+!
+!     1. ON COMPTE LES FUTURS SOUS-ELEMENTS
+!        ET LES POINT_I ET LES NOEUDS DU FUTUR MAILLAGE
+!     ---------------------------------------------------------------
+    nbse = 0
+    nbpi = 0
+    nbno2t = 0
+    do 1,igr = 1 , nbgrel(ligrel)
+    te = typele(ligrel,igr)
+    nbelgr = nbelem(ligrel,igr)
+    call jenuno(jexnum('&CATA.TE.NOMTE', te), nomte)
+!
+    if (nch2 .gt. 0) then
+        numa = numail(igr,1)
+        elrefa = zk16(jobj-1+numa)(1:8)
+        fapg = zk16(jobj-1+numa)(9:16)
+    else
+        famil = 'RIGI'
+        call eclau1(nomte, famil, elrefa, fapg)
+    endif
+    if (fapg .eq. ' ') goto 1
+!
+    call eclaty(nomte, elrefa, fapg, npg1, npoini,&
+                nterm1, nsomm1, csomm1, tyma, nbno2,&
+                connx, mxnbn2, mxnbpi, mxnbte, mxnbse,&
+                nse1, corsel)
+    nbse = nbse+nbelgr*nse1
+    nbpi = nbpi+nbelgr*npoini
+    do 500,kse = 1,nse1
+    nbno2t = nbno2t+nbelgr*nbno2(kse)
+500  continue
+    1 end do
+!
+!
+!     2. ON ALLOUE 4 OBJETS DE TRAVAIL (+ MAILLAGE//'.TYPMAIL') :
+!        .GEOPOINI : GEOMETRIE DES POINT_I
+!        .CONNEXSE : NUMEROS DES POINT_I DES SOUS-ELEMENTS
+!        .GEOSE    : GEOMETRIE DES SOUS-ELEMENTS
+!        .NBNO2    : NOMBRE DE NOEUDS DES SOUS-ELEMENTS
+!        .TYPMAIL  : TYPE_MAILLE DES SOUS-ELEMENTS
+!     ---------------------------------------------------------------
+    if (nbpi .eq. 0) call u2mess('F', 'CALCULEL2_35')
+    call wkvect('&&ECLPGM.GEOPOINI', 'V V R', nbpi*dimgeo, iagepi)
+    call wkvect('&&ECLPGM.CONNEXSE', 'V V I', nbno2t, iacose)
+    call wkvect('&&ECLPGM.GEOSE', 'V V R', nbno2t*dimgeo, iagese)
+    call wkvect('&&ECLPGM.NBNO2', 'V V I', nbse, ianno2)
+!
+    if (nbse .eq. 0) call u2mess('F', 'CALCULEL2_36')
+    call wkvect(ma2//'.TYPMAIL', 'G V I', nbse, iatypm)
+!
+!
+!
+!     3. ON CALCULE DES COORDONNEES DES SOUS-ELEMENTS
+!        ET LEUR CONNECTIVITE
+!     ---------------------------------------------------------------
+!
+    nuse = 0
+    nupoin = 0
+    nuno2 = 0
+    do 2,igr = 1,nbgrel(ligrel)
+    te = typele(ligrel,igr)
+    nbelgr = nbelem(ligrel,igr)
+    call jenuno(jexnum('&CATA.TE.NOMTE', te), nomte)
+!
+    if (nch2 .gt. 0) then
+        numa = numail(igr,1)
+        elrefa = zk16(jobj-1+numa)(1:8)
+        fapg = zk16(jobj-1+numa)(9:16)
+    else
+        famil = 'RIGI'
+        call eclau1(nomte, famil, elrefa, fapg)
+    endif
+    if (fapg .eq. ' ') goto 2
+!
+    call eclaty(nomte, elrefa, fapg, npg1, npoini,&
+                nterm1, nsomm1, csomm1, tyma, nbno2,&
+                connx, mxnbn2, mxnbpi, mxnbte, mxnbse,&
+                nse1, corsel)
+    if (nse1 .eq. 0) goto 2
+!
+    do 3,iel = 1,nbelgr
+!          ON RECUPERE LE NUMERO DE LA MAILLE ET LE NUMERO
+!          DE SES SOMMETS :
+    ima = numail(igr,iel)
+    do 31,ino1=1,nbnoma(ima)
+    tabno(ino1)=numglm(ima,ino1)
+31  continue
+!
+!          -- CALCUL DES COORDONNEES DES POINT_I :
+    do 32,ipoini=1,npoini
+    nupoin=nupoin+1
+    do 33,k=1,dimgeo
+    x=0.d0
+    do 34,iterm=1,nterm1(ipoini)
+    x=x+csomm1(ipoini,iterm)* zr(iacoor-1+3*(&
+                        tabno(nsomm1(ipoini,iterm))-1)+k)
+34  continue
+    zr(iagepi-1+(nupoin-1)*dimgeo+k)=x
+33  continue
+32  continue
+!
+!          -- STOCKAGE DES NUMEROS DES POINT_I DES SOUS-ELEMENTS
+!             ET DE LEURS COORDONNEES :
+    do 40,kse=1,nse1
+    nuse=nuse+1
+    zi(iatypm-1+nuse)=tyma(kse)
+    zi(ianno2-1+nuse)=nbno2(kse)
+    nno2=nbno2(kse)
+    do 41, ino2=1,nno2
+    nuno2=nuno2+1
+    zi(iacose-1+nuno2)=connx(ino2,kse)+ nupoin-npoini
+    nupoi2=zi(iacose-1+nuno2)
+    do 779,k=1,dimgeo
+    zr(iagese-1+(nuno2-1)*dimgeo+k)= zr(iagepi-1+(&
+                        nupoi2-1)*dimgeo+k)
+779  continue
+41  continue
+!           DANS LE CAS DU QUADRILATERE ON CONTROLE L'APPLATISSEMENT
+    if (nno2 .eq. 4) then
+        call eclapp(dimgeo, nno2, lonmin, zr(iagese+(nuno2- 4)*dimgeo))
+    endif
+40  continue
+!
+ 3  continue
+    2 end do
+!
+    call jedetr(nomobj)
+!
+!     3. CONSTRUCTION DES OBJETS DU MAILLAGE RESULTAT :
+!     -------------------------------------------------
+    nbmail=nbse
+    nbnoeu=nbno2t
+    nbcoor=dimgeo
+!
+!     3.1 CREATION DE L'OBJET .DIME  :
+!     ------------------------------------
+    call wkvect(ma2//'.DIME', 'G V I', 6, iadime)
+    zi(iadime-1+1)= nbnoeu
+    zi(iadime-1+3)= nbmail
+    zi(iadime-1+6)= nbcoor
+!
+!
+!     3.2 CREATION DES OBJETS .NOMNOE ET .NOMMAI :
+!     --------------------------------------------
+    call jecreo(ma2//'.NOMNOE', 'G N K8')
+    call jeecra(ma2//'.NOMNOE', 'NOMMAX', nbnoeu, ' ')
+    call jecreo(ma2//'.NOMMAI', 'G N K8')
+    call jeecra(ma2//'.NOMMAI', 'NOMMAX', nbmail, ' ')
+!
+    nom(1:1)='N'
+    do 51,k=1,nbnoeu
+    call codent(k, 'G', nom(2:8))
+    call jecroc(jexnom(ma2//'.NOMNOE', nom))
+    51 end do
+    nom(1:1)='M'
+    do 52,k=1,nbmail
+    call codent(k, 'G', nom(2:8))
+    call jecroc(jexnom(ma2//'.NOMMAI', nom))
+    52 end do
+!
+!
+!     3.3 CREATION DES OBJETS  .CONNEX ET .TYPMAIL
+!     ---------------------------------------------
+    call jecrec(ma2//'.CONNEX', 'G V I', 'NU', 'CONTIG', 'VARIABLE',&
+                nbmail)
+    call jeecra(ma2//'.CONNEX', 'LONT', nbnoeu, ' ')
+    call jeveuo(ma2//'.CONNEX', 'E', ibid)
+!
+    nuno2=0
+    do 53,ima=1,nbmail
+    nno2=zi(ianno2-1+ima)
+    call jecroc(jexnum(ma2//'.CONNEX', ima))
+    call jeecra(jexnum(ma2//'.CONNEX', ima), 'LONMAX', nno2, kbid)
+    do 54,ino2=1,nno2
+    nuno2=nuno2+1
+    zi(ibid-1+nuno2)=nuno2
+54  continue
+    53 end do
+!
+!
+!
+!     3.4 CREATION DU CHAMP DE GEOMETRIE (.COORDO)
+!     ---------------------------------------------
+    call copisd('CHAMP_GD', 'G', ma1//'.COORDO', ma2//'.COORDO')
+    call jedetr(ma2//'.COORDO    .VALE')
+    call wkvect(ma2//'.COORDO    .VALE', 'G V R', 3*nbnoeu, ibid)
+    call jeveuo(ma2//'.COORDO    .REFE', 'E', jrefe)
+    zk24(jrefe-1+1)=ma2
+!
+    do 56,k=1,dimgeo
+    nuno2=0
+    do 57,ima=1,nbmail
+    nno2=zi(ianno2-1+ima)
+!         -- ON FAIT UN PETIT "SHRINK" SUR LES MAILLES :
+    xc=0.d0
+    do 58,ino=1,nno2
+    nuno2=nuno2+1
+    xc= xc+zr(iagese-1+(nuno2-1)*dimgeo+k)/dble(nno2)
+58  continue
+    nuno2=nuno2-nno2
+!
+    do 59,ino=1,nno2
+    nuno2=nuno2+1
+    xm= zr(iagese-1+(nuno2-1)*dimgeo+k)
+    xm=xc+shrink*(xm-xc)
+    zr(ibid-1+(nuno2-1)*3+k)=xm
+59  continue
+57  continue
+    56 end do
+!
+!
+!
+    call jedetr('&&ECLPGM.NOMOBJ')
+    call jedetr('&&ECLPGM.GEOPOINI')
+    call jedetr('&&ECLPGM.CONNEXSE')
+    call jedetr('&&ECLPGM.GEOSE')
+    call jedetr('&&ECLPGM.NBBO2')
+    call jedema()
+!
+! FIN ------------------------------------------------------------------
+end subroutine

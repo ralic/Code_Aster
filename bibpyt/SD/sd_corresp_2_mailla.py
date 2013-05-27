@@ -1,4 +1,3 @@
-#@ MODIF sd_corresp_2_mailla SD  DATE 13/12/2011   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -42,6 +41,3 @@ class sd_corresp_2_mailla(sd_titre):
 
     PJNG_I1 = Facultatif(AsVI())   # si NUAG_DEG
     PJNG_I2 = Facultatif(AsVI())   # si NUAG_DEG
-
-
-

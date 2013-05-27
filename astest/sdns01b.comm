@@ -1,6 +1,4 @@
-# MODIF  DATE 29/04/2013   AUTEUR GREFFET N.GREFFET 
 # TITRE MODELE PROBABILISTE NONPARAMETRIQUE D UNE PLAQUE AVEC BUTEE ELASTIQUE
-# sdns01b.para = tps_job 80 mem_job 512Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -18,7 +16,6 @@
 # ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
-# sdns01b.para = tps_job 80 mem_job 512Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 ##############################################################################
 #                                                                            #
@@ -369,9 +366,4 @@ TEST_TABLE(
            )
 
 FIN()
-
-
-
-
-
 

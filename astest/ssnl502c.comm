@@ -1,6 +1,4 @@
-# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE  : POUTRE EN FLAMBEMENT
-# ssnl502c.para = tps_job 160 mem_job 512Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -26,7 +24,7 @@
 #  D'INSTABILITE (FLAMBEMENT D'EULER)
 #- MODELISATION AVEC DES ELEMENTS 'POU_D_T_GD' (SEG2)
 #---------------------------------------------------------------------
-# RESPONSABLE MASSIN P.MASSIN
+# person_in_charge: patrick.massin at edf.fr
 #
 DEBUT(CODE=_F(NOM='SSNL502C',NIV_PUB_WEB='INTERNET',VISU_EFICAS='OUI'),DEBUG=_F(SDVERI='NON'))
 # SDVERI='NON' car la verification est trop couteuse en CPU

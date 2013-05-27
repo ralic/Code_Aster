@@ -1,6 +1,5 @@
-#@ MODIF V_MCLIST Validation  DATE 11/04/2012   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
-# RESPONSABLE COURTOIS M.COURTOIS
+# person_in_charge: mathieu.courtois at edf.fr
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -114,4 +113,3 @@ class MCList:
         if CONTEXT.debug : traceback.print_exc()
         self.cr.fatal(_(u"Mot-clé facteur multiple : %s, %s"), self.nom, e)
       return self.cr
-

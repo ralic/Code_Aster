@@ -1,7 +1,5 @@
-# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # AUTEUR : F. LEBOUVIER (DeltaCAD)
 #  TITRE  : POUTRE DROITE AVEC AMORTISSEMENT DE RAYLEIGH
-# sdls123b.para = tps_job 600 mem_job 512Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG

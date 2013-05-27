@@ -1,4 +1,3 @@
-#@ MODIF coeur0 Messages  DATE 25/02/2013   AUTEUR GENIAUT S.GENIAUT 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -44,4 +43,3 @@ Récupération des jeux entre les assemblages de bord et le cloisonnement
 Post-traitement des déformations des assemblages combustibles
 """),
 }
-

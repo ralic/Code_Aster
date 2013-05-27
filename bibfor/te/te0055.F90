@@ -1,0 +1,72 @@
+subroutine te0055(option, nomte)
+!            CONFIGURATION MANAGEMENT OF EDF VERSION
+! ======================================================================
+! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+! (AT YOUR OPTION) ANY LATER VERSION.
+!
+! THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+! WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+! MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+! GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+!
+! YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+!    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
+! ======================================================================
+!.......................................................................
+    implicit none
+!
+!     BUT: CALCUL DU SECOND MEMBRE ELEMENTAIRE EN THERMIQUE CORRESPON-
+!          DANT A UNE SOURCE VOLUMIQUE
+!          ELEMENTS ISOPARAMETRIQUES 3D
+!
+!          OPTION : 'CHAR_THER_SOUR_R '
+!
+!     ENTREES  ---> OPTION : OPTION DE CALCUL
+!          ---> NOMTE  : NOM DU TYPE ELEMENT
+!.......................................................................
+!
+    include 'jeveux.h'
+!
+    include 'asterfort/dfdm3d.h'
+    include 'asterfort/elref4.h'
+    include 'asterfort/jevech.h'
+    character(len=16) :: nomte, option
+    real(kind=8) :: dfdx(27), dfdy(27), dfdz(27), poids
+    integer :: ipoids, ivf, idfde, igeom
+    integer :: jgano, nno, kp, npg1, i, ivectt, isour
+!
+!
+!
+!-----------------------------------------------------------------------
+    integer :: l, ndim, nnos
+!-----------------------------------------------------------------------
+    call elref4(' ', 'RIGI', ndim, nno, nnos,&
+                npg1, ipoids, ivf, idfde, jgano)
+!
+    call jevech('PGEOMER', 'L', igeom)
+    call jevech('PSOURCR', 'L', isour)
+    call jevech('PVECTTR', 'E', ivectt)
+!
+    do 20 i = 1, nno
+        zr(ivectt-1+i) = 0.0d0
+20  end do
+!
+!    BOUCLE SUR LES POINTS DE GAUSS
+!
+    do 40 kp = 1, npg1
+!
+        l = (kp-1)*nno
+        call dfdm3d(nno, kp, ipoids, idfde, zr(igeom),&
+                    dfdx, dfdy, dfdz, poids)
+!CDIR$ IVDEP
+        do 30 i = 1, nno
+            zr(ivectt+i-1) = zr(ivectt+i-1) + poids*zr(isour-1+kp)*zr( ivf+l+i-1)
+30      continue
+!
+40  end do
+!
+end subroutine

@@ -1,4 +1,3 @@
-#@ MODIF sd_macr_elem_stat SD  DATE 28/06/2011   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -117,4 +116,3 @@ class sd_macr_elem_stat(AsBase):
             lich=self.LICH.get()
             for k in lich.keys():
                 assert len(lich[k]) >= nbchar + 1
-

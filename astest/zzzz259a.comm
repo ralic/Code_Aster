@@ -1,5 +1,4 @@
-# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
-# RESPONSABLE GNICOLAS G.NICOLAS
+# person_in_charge: gerald.nicolas at edf.fr
 # TITRE ADAPTATION DE MAILLAGE ET SUIVI DE FRONTIERE 2D
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -18,7 +17,6 @@
 # ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
-# zzzz259a.para = tps_job 300 mem_job 512Mo ncpus 1 liste_test S
 # On fait une suite d'adaptations pilotees par les groupes.
 
 DEBUT(CODE=_F(NOM='ZZZZ259A',

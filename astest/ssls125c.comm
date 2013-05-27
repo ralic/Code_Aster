@@ -1,6 +1,4 @@
-# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE FLAMBAGE D UN CYLINDRE SOUS PRESSION EXTERNE
-# ssls125c.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -159,9 +157,4 @@ TEST_RESU(RESU=(_F(PARA='CHAR_CRIT',
           )
 
 FIN()
-
-
-
-
-
 

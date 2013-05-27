@@ -1,6 +1,4 @@
-# MODIF  DATE 15/04/2013   AUTEUR FOUCAULT A.FOUCAULT 
 # TITRE ETUDE: DRAINED CYCLIC STRESS-CONTROLLED SHEAR TEST WITH HUJEUX MODEL (MECA PUR)
-# ssnv207a.para = tps_job 100 mem_job 512Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -276,4 +274,3 @@ TEST_TABLE(CRITERE='RELATIF',
            )
 
 FIN();
-

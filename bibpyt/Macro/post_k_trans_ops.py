@@ -1,4 +1,3 @@
-#@ MODIF post_k_trans_ops Macro  DATE 27/08/2012   AUTEUR ALARCON A.ALARCON 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================

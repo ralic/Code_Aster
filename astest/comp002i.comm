@@ -1,7 +1,5 @@
-# MODIF  DATE 15/10/2012   AUTEUR COURTOIS M.COURTOIS 
-# RESPONSABLE GENIAUT S.GENIAUT
+# person_in_charge: samuel.geniaut at edf.fr
 # TITRE  TEST LOI DE COMPORTEMENT 3D  VISCOCHAB
-# comp002i.para = tps_job 250 mem_job 512Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -357,4 +355,3 @@ TEST_TABLE(
            )
 
 FIN()
-

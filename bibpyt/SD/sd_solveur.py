@@ -1,4 +1,3 @@
-#@ MODIF sd_solveur SD  DATE 02/10/2012   AUTEUR DESOZA T.DESOZA 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -102,5 +101,3 @@ class sd_solveur(AsBase):
             assert slvk[11] in ('XXXX')
         else :
             pass
-
-

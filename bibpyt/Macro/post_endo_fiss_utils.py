@@ -1,4 +1,3 @@
-#@ MODIF post_endo_fiss_utils Macro  DATE 30/01/2012   AUTEUR BOTTONI M.BOTTONI 
 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -17,7 +16,7 @@
 # ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
 # ======================================================================
-# RESPONSABLE BOTTONI M.BOTTONI
+# person_in_charge: marina.bottoni at edf.fr
 #
 # ---------------------------------------------------------------------------
 #   UTILITAIRES MACRO POST_ENDO_FISS

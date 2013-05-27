@@ -1,5 +1,5 @@
-%& MODIF OPTIONS  DATE 26/07/2011   AUTEUR LABBE M.LABBE 
-% RESPONSABLE DESROCHES
+%& LIBRARY OPTIONS
+% person_in_charge: xavier.desroches at edf.fr
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -28,4 +28,3 @@ OPTION__
         PCAGEPO  CAGEPO   << RAYON ET EPAISSAUR POUR LES TUYAUX >>
    OUT__
 PCOORPG GEOM_R ELGA__
-

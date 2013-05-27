@@ -1,0 +1,48 @@
+subroutine mltaff(n, ncol, adper, matper, matfi,&
+                  local, p)
+!            CONFIGURATION MANAGEMENT OF EDF VERSION
+! person_in_charge: olivier.boiteau at edf.fr
+!     TOLE CRP_4
+! ======================================================================
+! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+! (AT YOUR OPTION) ANY LATER VERSION.
+!
+! THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+! WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+! MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+! GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+!
+! YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+!    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
+! ======================================================================
+! ASSEMBLAGE DES MATRICES FRONTALES VERSION SIMPLIFIEE
+!  LA VERSION PRECEDENTE ASSEMBLAIT PAR 2 COLONES
+! POUR UNE MEILLEURE UTILISATION DES REGISTRES SUR CRAY
+    implicit none
+    integer(kind=4) :: local(*)
+    integer :: n, ncol, adper(*), p
+    real(kind=8) :: matper(*), matfi(*)
+!     VARIABLES LOCALES
+    integer :: decp1, decf1, j, i, ni, id1
+    integer :: decp0
+!-----------------------------------------------------------------------
+!-----------------------------------------------------------------------
+    decf1 = 1 + (n+ (n-ncol+1))*ncol/2
+    decp0 = adper(p+1) - 1
+    do 120 i = ncol + 1, n, 1
+        decp1 = adper(local(i)) - decp0
+        matper(decp1) = matper(decp1) + matfi(decf1)
+        decf1= decf1+1
+        decp1 = decp1 - local(i)
+        ni = n - i
+        do 110 j = 1, ni
+            id1 = decp1 + local(j+i)
+            matper(id1) = matper(id1) + matfi(decf1)
+            decf1 = decf1 + 1
+110      continue
+120  continue
+end subroutine

@@ -1,4 +1,3 @@
-#@ MODIF chainage_thm_ops Macro  DATE 18/06/2012   AUTEUR DELMAS J.DELMAS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -132,7 +131,3 @@ def chainage_thm_ops(self,TYPE_CHAINAGE,**args):
     UTMESS('F', 'DVP_1')
 
   return ier
-
-
-
-

@@ -1,6 +1,5 @@
-#@ MODIF V_MCCOMPO Validation  DATE 06/08/2012   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
-# RESPONSABLE COURTOIS M.COURTOIS
+# person_in_charge: mathieu.courtois at edf.fr
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -122,6 +121,3 @@ class MCCOMPO:
       #on ajoute l'objet detenteur de regles pour des validations plus sophistiquees (a manipuler avec precaution)
       dico["self"]=self
       return dico
-
-
-

@@ -1,4 +1,3 @@
-#@ MODIF test_fichier_ops Macro  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -310,5 +309,3 @@ if __name__ == '__main__':
    fileobj = regexp_filter(fileobj, exp)
    nbv2, sumv2, chksum2 = test_iter(fileobj, function=dict_func_test[opts.type_test], verbose=opts.verbose)
    print '%6d valeurs, resultat = %f, texte : %s' % (nbv2, sumv2, chksum2)
-
-

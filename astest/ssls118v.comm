@@ -1,4 +1,3 @@
-# MODIF  DATE 25/03/2013   AUTEUR LEBOUVIER F.LEBOUVIER 
 # TITRE  PLAQUE CARREE EN APPUI SIMPLE SOUS PRESSION SINUSOIDALE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -19,7 +18,6 @@
 # ======================================================================
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# ssls118v.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test S
 #---------------------------------------------------------------------
 #         - MODELISATION AVEC DES ELEMENTS 'DKTG'(QUAD4+TRIA3)
 #---------------------------------------------------------------------

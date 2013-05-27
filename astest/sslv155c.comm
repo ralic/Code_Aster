@@ -1,6 +1,4 @@
-# MODIF  DATE 03/04/2013   AUTEUR NICOLAS G.NICOLAS 
 # TITRE  FISSURE LENTILLE EN TRACTION
-# sslv155c.para = tps_job 300 mem_job 1536Mo liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -259,4 +257,3 @@ TEST_TABLE(REFERENCE='ANALYTIQUE',
            TABLE=PK,)
 
 FIN()
-

@@ -1,4 +1,3 @@
-#@ MODIF sd_cara_elem SD  DATE 19/10/2011   AUTEUR ASSIRE A.ASSIRE 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -50,5 +49,3 @@ class sd_cara_elem(AsBase):
     CARDNSCM = Facultatif(sd_carte())
     CARDNSCA = Facultatif(sd_carte())
     CARDINFO = Facultatif(sd_carte())
-
-

@@ -1,4 +1,3 @@
-#@ MODIF defi_sol_miss_ops Macro  DATE 16/10/2012   AUTEUR DEVESA G.DEVESA 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -17,7 +16,7 @@
 # ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
 # ======================================================================
-# RESPONSABLE COURTOIS M.COURTOIS
+# person_in_charge: mathieu.courtois at edf.fr
 
 import os
 
@@ -94,5 +93,3 @@ def defi_sol_miss_ops(self, MATERIAU, COUCHE, TITRE, INFO, **args):
    # 5. création de la table
    dprod = tab.dict_CREA_TABLE()
    tabout = CREA_TABLE(**dprod)
-
-

@@ -1,4 +1,3 @@
-#@ MODIF ce_ihm_identification Calc_essai  DATE 06/11/2012   AUTEUR BODEL C.BODEL 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -18,7 +17,7 @@
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
 # ======================================================================
 
-# RESPONSABLE BODEL C.BODEL
+# person_in_charge: charles.bodel at edf.fr
 
 from numpy import array, zeros, conjugate, identity
 from numpy import transpose, ones, arctan, pi, log
@@ -587,6 +586,3 @@ def get_chgt_repere(grp_no, grp_ma):
             chgt_reps.append(_F(GROUP_MA=grp["NOM"],
                                 **grp["CHGT_REP"]))
     return chgt_reps
-
-
-

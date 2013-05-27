@@ -1,6 +1,4 @@
-# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE PLAQUE SOUMISE A UNE TURBULENCE HOMOGENE
-# sdls105b.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -308,9 +306,4 @@ TEST_FONCTION(VALEUR=(_F(VALE_CALC=0.00118018019165,
 
 FIN( )
 #
-
-
-
-
-
 

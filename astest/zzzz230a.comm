@@ -1,6 +1,4 @@
-# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE MISE EN OEUVRE DU "ZOOM STRUCTURAL" SUR UN PROBLEME 2D
-# zzzz230a.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -20,7 +18,7 @@
 # ======================================================================
 #       VALIDATION DE AFFE_CHAR_CINE/EVOL_IMPO
 
-# RESPONSABLE PELLET J.PELLET
+# person_in_charge: jacques.pellet at edf.fr
 DEBUT(  CODE=_F(NOM='ZZZZ230A',NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
 
 #-------------------------------------------------------------------------------------

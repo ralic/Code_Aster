@@ -1,4 +1,3 @@
-# MODIF  DATE 20/11/2012   AUTEUR CHEIGNON E.CHEIGNON 
 # TITRE ORIENTATION CIRCONFERENTIELLE DE GRILLES D'ARMATURES PAR AFFE_CARA_ELEM
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -17,7 +16,6 @@
 # ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
 # ======================================================================
-# zzzz189d.para = tps_job 100 mem_job 512Mo ncpus 1 liste_test S
 
 
 DEBUT(CODE=_F(NOM='ZZZZ189D',NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))

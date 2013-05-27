@@ -1,6 +1,5 @@
-#@ MODIF V_JDC Validation  DATE 11/04/2012   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
-# RESPONSABLE COURTOIS M.COURTOIS
+# person_in_charge: mathieu.courtois at edf.fr
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -91,4 +90,3 @@ class JDC(V_MCCOMPO.MCCOMPO):
         texte_global = texte_global + texte
         test_global = test_global*test
       return texte_global, test_global
-

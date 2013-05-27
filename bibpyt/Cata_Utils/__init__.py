@@ -1,4 +1,3 @@
-#@ MODIF __init__ Cata_Utils  DATE 16/11/2009   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -23,4 +22,3 @@
 # qui ne peuvent pas être dans Macro ou SD.
 # Exemple : t_fonction permettant d'évaluer les fonctions dans le catalogue materiau.
 #
-

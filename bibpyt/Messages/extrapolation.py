@@ -1,4 +1,3 @@
-#@ MODIF extrapolation Messages  DATE 02/04/2012   AUTEUR ABBAS M.ABBAS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -17,7 +16,7 @@
 # ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
 # ======================================================================
-# RESPONSABLE DELMAS J.DELMAS
+# person_in_charge: josselin.delmas at edf.fr
 
 # Pour la méthode EXTRAPOLATION de DEFI_LIST_INST
 
@@ -46,4 +45,3 @@ cata_msg={
 """),
 
 }
-

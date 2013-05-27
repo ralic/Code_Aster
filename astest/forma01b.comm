@@ -1,5 +1,4 @@
-# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
-# RESPONSABLE DELMAS J.DELMAS
+# person_in_charge: josselin.delmas at edf.fr
 # TITRE PLAQUE TROUEE EN TRACTION EN ELASTICITE - ADAPTATION DE MAILLAGE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -18,7 +17,6 @@
 # ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
-# forma01b.para = tps_job 120 mem_job 256Mo ncpus 1 liste_test R
 
 DEBUT(CODE=_F(NOM='FORMA01B',
               NIV_PUB_WEB='INTERNET',

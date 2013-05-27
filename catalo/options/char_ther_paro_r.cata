@@ -1,5 +1,5 @@
-%& MODIF OPTIONS  DATE 26/03/2013   AUTEUR CUVILLIE M.CUVILLIEZ 
-% RESPONSABLE DURAND
+%& LIBRARY OPTIONS
+% person_in_charge: Christophe-mmn.durand at edf.fr
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -34,5 +34,3 @@ OPTION__
         PBASECO  NEUT_R
    OUT__
 PVECTTR VTEM_R RESL__
-
-

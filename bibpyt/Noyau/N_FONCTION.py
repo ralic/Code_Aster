@@ -1,6 +1,5 @@
-#@ MODIF N_FONCTION Noyau  DATE 21/05/2012   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
-# RESPONSABLE COURTOIS M.COURTOIS
+# person_in_charge: mathieu.courtois at edf.fr
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -133,5 +132,3 @@ class formule(ASSD):
 
 class formule_c(formule):
     pass
-
-

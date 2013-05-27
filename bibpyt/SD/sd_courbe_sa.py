@@ -1,4 +1,3 @@
-#@ MODIF sd_courbe_sa SD  DATE 28/06/2011   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -55,4 +54,3 @@ class sd_courbe_sa(AsBase):
         assert  valeth[0] == 0.
         assert  valeth[1] == 0.
         assert  valer[0] == 0.
-

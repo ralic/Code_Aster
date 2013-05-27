@@ -1,7 +1,5 @@
-# MODIF  DATE 19/11/2012   AUTEUR DESOZA T.DESOZA 
 
 #  TITRE : CONTACT DE DEUX SPHERES
-# ssnv104j.para = tps_job 120 mem_job 512Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -376,4 +374,3 @@ TEST_RESU(CHAM_ELEM=(_F(CRITERE='RELATIF',
           )
 
 FIN();
-

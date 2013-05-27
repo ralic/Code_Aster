@@ -1,4 +1,3 @@
-#@ MODIF mazars_gc Comportement  DATE 02/04/2013   AUTEUR PROIX J-M.PROIX 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -17,7 +16,7 @@
 # ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
 # ======================================================================
-# RESPONSABLE FLEJOU J-L.FLEJOU
+# person_in_charge: jean-luc.flejou at edf.fr
 
 from cata_comportement import LoiComportement
 

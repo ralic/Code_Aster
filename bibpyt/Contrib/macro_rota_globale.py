@@ -1,4 +1,3 @@
-#@ MODIF macro_rota_globale Contrib  DATE 11/04/2012   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -101,6 +100,3 @@ MACR_ROTA_GLOBALE=MACRO(nom="MACR_ROTA_GLOBALE", op=macr_rota_globale_ops,
          GROUP_NO_ORIG = SIMP(statut='o', typ=grno, max=1),
          GROUP_NO_EXTR = SIMP(statut='o', typ=grno, max=1),
 )
-
-
-

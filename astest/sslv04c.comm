@@ -1,6 +1,4 @@
-# MODIF  DATE 05/02/2013   AUTEUR DELMAS J.DELMAS 
 # TITRE CYLINDRE EN 3D (TETRA4)
-# sslv04c.para = tps_job 60 mem_job 256Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG

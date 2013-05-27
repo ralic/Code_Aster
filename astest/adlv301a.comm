@@ -1,6 +1,4 @@
-# MODIF  DATE 06/02/2013   AUTEUR COURTOIS M.COURTOIS 
 # TITRE PROBLEME DE COUPLAGE CAVITE-PLAQUE
-# adlv301a.para = tps_job 160 mem_job 1024Mo ncpus 1 liste_test V
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG

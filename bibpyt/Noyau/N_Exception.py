@@ -1,6 +1,5 @@
-#@ MODIF N_Exception Noyau  DATE 07/09/2009   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
-# RESPONSABLE COURTOIS M.COURTOIS
+# person_in_charge: mathieu.courtois at edf.fr
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -41,4 +40,3 @@ class AsException(Exception):
         if type(e) == types.StringType: s=s+ ' ' + e
         else:s=s+ ' ' + str(e)
       return s
-

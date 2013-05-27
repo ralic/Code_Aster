@@ -1,9 +1,7 @@
-# MODIF  DATE 06/02/2013   AUTEUR COURTOIS M.COURTOIS 
 # TITRE VALIDATION DE AFFE_CHAR_MECA/EVOL_CHAR (DE TYPE PRESSION)
 #                   + AFFE_CHAR_MECA/PRES_REP
 #                   + AFFE_CHAR_MECA/FORCE_CONTOUR
 
-# zzzz137a.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG

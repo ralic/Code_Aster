@@ -1,4 +1,4 @@
-%& MODIF OPTIONS  DATE 23/01/2012   AUTEUR PELLET J.PELLET 
+%& LIBRARY OPTIONS
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -16,7 +16,7 @@
 % ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
 %    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
 % ======================================================================
-% RESPONSABLE PELLET
+% person_in_charge: jacques.pellet at edf.fr
 MINMAX_SP % RQUE : CETTE OPTION N'EST PAS REALISEE PAR DES ROUTINES TE00IJ MAIS
           % PAR LA COMMANDE POST_CHAMP / MIN_MAX_SP
 OPTION__
@@ -25,4 +25,3 @@ OPTION__
    OUT__
 PGAMIMA  SPMX_R ELGA__
 PNOMIMA  SPMX_R ELNO__
-

@@ -1,0 +1,76 @@
+subroutine cfzone(defico, izone, typsur, isurf)
+!
+!            CONFIGURATION MANAGEMENT OF EDF VERSION
+! ======================================================================
+! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+! (AT YOUR OPTION) ANY LATER VERSION.
+!
+! THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+! WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+! MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+! GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+!
+! YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+!   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
+! ======================================================================
+! person_in_charge: mickael.abbas at edf.fr
+!
+    implicit     none
+    include 'jeveux.h'
+    include 'asterfort/assert.h'
+    include 'asterfort/jedema.h'
+    include 'asterfort/jemarq.h'
+    include 'asterfort/jeveuo.h'
+    character(len=24) :: defico
+    character(len=4) :: typsur
+    integer :: izone, isurf
+!
+! ----------------------------------------------------------------------
+!
+! ROUTINE CONTACT (TOUTES METHODES - UTILITAIRE)
+!
+! NUMERO DE LA ZONE
+!
+! ----------------------------------------------------------------------
+!
+!
+! IN  DEFICO : SD DE DEFINITION DU CONTACT (ISSUE D'AFFE_CHAR_MECA)
+! IN  IZONE  : NUMERO DE LA ZONE DE CONTACT
+! IN  TYPSUR : TYPE DE SURFACE
+!               'MAIT'
+!               'ESCL'
+! OUT ISURF  : NUMERO DANS LA SURFACE
+!                 POUR ACCES PSUNOCO/PSUMACO/PNOEUQU
+!
+!
+!
+!
+    character(len=24) :: pzone
+    integer :: jzone
+!
+! ----------------------------------------------------------------------
+!
+    call jemarq()
+!
+! --- RECUPERATION DE QUELQUES DONNEES
+!
+    pzone = defico(1:16)//'.PZONECO'
+    call jeveuo(pzone, 'L', jzone)
+!
+! --- INITIALISATIONS
+!
+    if (typsur .eq. 'ESCL') then
+        isurf = zi(jzone+izone)
+    else if (typsur.eq.'MAIT') then
+        isurf = zi(jzone+izone-1) + 1
+    else
+        call assert(.false.)
+    endif
+!
+    call jedema()
+!
+end subroutine

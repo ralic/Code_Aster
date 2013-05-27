@@ -1,4 +1,4 @@
-%& MODIF TYPELEM  DATE 26/03/2013   AUTEUR CUVILLIE M.CUVILLIEZ 
+%& LIBRARY TYPELEM
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -16,7 +16,7 @@
 % ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
 %    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
 % ======================================================================
-% RESPONSABLE CUVILLIEZ
+% person_in_charge: sam.cuvilliez at edf.fr
 GENER_THPL_XHT_2
 TYPE_GENE__
 
@@ -111,8 +111,6 @@ OPTION__
     TOPOSE              514   IN__   NGEOMER  PGEOMER  N1NEUT_R PLEVSET  N2NEUT_R PGRADLN
                               OUT__  E6NEUTR  PPINTTO  E36NEUI  PCNSETO  E6NEUTI  PHEAVTO  E9NEUTI  PLONCHA
                                      E15NEUTR PAINTER  E22NEUTR PPMILTO
-
-
 
 
 

@@ -1,6 +1,4 @@
-# MODIF  DATE 09/04/2013   AUTEUR PELLET J.PELLET 
 # TITRE SYSTEME MASSE RESSORT AVEC EXCITATION HARMONIQUE ET
-# sdnd111a.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -385,9 +383,4 @@ TEST_RESU(RESU=_F(NUME_ORDRE=4,
 FIN()
 #
 #
-
-
-
-
-
 
