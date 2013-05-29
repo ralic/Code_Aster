@@ -1,4 +1,4 @@
-# -*- coding: iso-8859-1 -*-
+# coding=utf-8
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -36,14 +36,14 @@ def post_dyna_alea_ops(self,INTE_SPEC, FRAGILITE,TITRE,INFO,**args):
    commande='POST_DYNA_ALEA'
 
    ier = 0
-   # La macro compte pour 1 dans la numérotation des commandes
+   # La macro compte pour 1 dans la numÃ©rotation des commandes
    self.set_icmd(1)
 
-   # Le concept sortant (de type table_sdaster ou dérivé) est tab
+   # Le concept sortant (de type table_sdaster ou dÃ©rivÃ©) est tab
    self.DeclareOut('tabout', self.sd)
 
-   # On importe les définitions des commandes a utiliser dans la macro
-   # Le nom de la variable doit être obligatoirement le nom de la commande
+   # On importe les dÃ©finitions des commandes a utiliser dans la macro
+   # Le nom de la variable doit Ãªtre obligatoirement le nom de la commande
    CREA_TABLE    = self.get_cmd('CREA_TABLE')
    CALC_TABLE    = self.get_cmd('CALC_TABLE')
    IMPR_TABLE    = self.get_cmd('IMPR_TABLE')
@@ -122,14 +122,14 @@ def post_dyna_alea_ops(self,INTE_SPEC, FRAGILITE,TITRE,INFO,**args):
       if test1.any() or test2.any():
          UTMESS('F', 'TABLE0_14', valk=('DEFA', 'PARA_NOCI'))
 
-      # estimation paramètres
+      # estimation paramÃ¨tres
       x0 = [FRAGILITE['AM_INI'],FRAGILITE['BETA_INI']]
       xopt = fmin(vrais,x0)
 
       texte='PARAMETRES Am, beta ESTIMES : '+str(xopt)+'\n'
       aster.affiche('MESSAGE',texte)      #print 'parametres Am, beta estimes: ', xopt
 
-      #courbe de fragilité
+      #courbe de fragilitÃ©
       vec_a=NP.array(liste_a)
       vecval=(NP.log(vec_a/xopt[0]))/xopt[1]
       for m in range(Nba):
@@ -224,20 +224,20 @@ def post_dyna_alea_ops(self,INTE_SPEC, FRAGILITE,TITRE,INFO,**args):
       DUREE=args['DUREE']
 
 
-      # table résultat
+      # table rÃ©sultat
       tabres = Table(titr='POST_DYNA_ALEA concept : %s' % self.sd.nom)
 
 #     ------------------------------------------------------------------
 #     Liste des moments spectraux
-#     repérer le type de l'interspectre et son nom
+#     repÃ©rer le type de l'interspectre et son nom
 #                   1- concept interspectre
 #                   2- table de table d interspectre
 
       intespec = INTE_SPEC.nom.ljust(8)
 
 #     ------------------------------------------------------------------
-#     Repérer les couples d'indices selectionnés
-#     vérification de l'égalité du nombre d indices en i et j
+#     RepÃ©rer les couples d'indices selectionnÃ©s
+#     vÃ©rification de l'Ã©galitÃ© du nombre d indices en i et j
 
       if NUME_ORDRE_I!=None :
         l_ind_i=NUME_ORDRE_I
@@ -251,7 +251,7 @@ def post_dyna_alea_ops(self,INTE_SPEC, FRAGILITE,TITRE,INFO,**args):
           l_ind_j=NUME_ORDRE_I
           if type(l_ind_j) not in EnumTypes : l_ind_j=[l_ind_j]
           
-        # paramètres fixes de la table
+        # paramÃ¨tres fixes de la table
         tabres.add_para(['NUME_ORDRE_I','NUME_ORDRE_J'], 'I')
       elif NOEUD_I!=None :
         l_ind_i=NOEUD_I
@@ -274,7 +274,7 @@ def post_dyna_alea_ops(self,INTE_SPEC, FRAGILITE,TITRE,INFO,**args):
           l_cmp_j=args['NOM_CMP_I']
           if type(l_ind_j) not in EnumTypes : l_ind_j=[l_ind_j]
           if type(l_cmp_j) not in EnumTypes : l_cmp_j=[l_cmp_j]
-        # paramètres fixes de la table
+        # paramÃ¨tres fixes de la table
         tabres.add_para(['NOEUD_I','NOEUD_J','NOM_CMP_I','NOM_CMP_J'], 'K8')
 
 #     ------------------------------------------------------------------
@@ -285,7 +285,7 @@ def post_dyna_alea_ops(self,INTE_SPEC, FRAGILITE,TITRE,INFO,**args):
          if NUME_ORDRE_I :
             l_ind_i = aster.getvectjev(intespec+'.NUMI')
             l_ind_j = aster.getvectjev(intespec+'.NUMJ')
-            # paramètres fixes de la table
+            # paramÃ¨tres fixes de la table
             tabres.add_para(['NUME_ORDRE_I','NUME_ORDRE_J'], 'I')
          elif NOEUD_I :
             l_ind_i = aster.getvectjev(intespec+'.NOEI')
@@ -307,7 +307,7 @@ def post_dyna_alea_ops(self,INTE_SPEC, FRAGILITE,TITRE,INFO,**args):
                    l_ind_j.append(aj[0])
                    l_cmp_i.append(ai[1])
                    l_cmp_j.append(aj[1])
-            # paramètres fixes de la table
+            # paramÃ¨tres fixes de la table
             tabres.add_para(['NOEUD_I','NOEUD_J','NOM_CMP_I','NOM_CMP_J'], 'K8')
          else: #TOUT_ORDRE
            if aster.getvectjev(intespec+'.NUMI'):
@@ -338,7 +338,7 @@ def post_dyna_alea_ops(self,INTE_SPEC, FRAGILITE,TITRE,INFO,**args):
          l_ind=zip(l_ind_i, l_ind_j )
 
 
-      # pour la présentation de la table finale, on stocke le nbre de paramètres "initiaux"
+      # pour la prÃ©sentation de la table finale, on stocke le nbre de paramÃ¨tres "initiaux"
       nbpara0 = len(tabres.para)
 
       if INFO==2 :
@@ -406,8 +406,8 @@ def post_dyna_alea_ops(self,INTE_SPEC, FRAGILITE,TITRE,INFO,**args):
                trapz[1:n] = (valy[1:n]+valy[:-1])/2.*(fvalx[1:n]-fvalx[:-1])
                prim_y    = NP.cumsum(trapz)
                val_mom[i_mom] = prim_y[-1]
-                  # -- cas si, seule la partie positive du spectre est utilisée
-                  # -- Il faut donc doubler lambda  pour calculer le bon écart type
+                  # -- cas si, seule la partie positive du spectre est utilisÃ©e
+                  # -- Il faut donc doubler lambda  pour calculer le bon Ã©cart type
                if frez >= 0. :
                  val_mom[i_mom]=val_mom[i_mom]*2.
            for i_mom in l_moments :
@@ -416,7 +416,7 @@ def post_dyna_alea_ops(self,INTE_SPEC, FRAGILITE,TITRE,INFO,**args):
 
         #--- si auto-spectre:
            if i_foncstat:
-              # test si le spectre est bien à valeurs positives
+              # test si le spectre est bien Ã  valeurs positives
               if min(fvaly) < 0.0 :
                  aster.affiche('MESSAGE', str(ind)+'\n')
                  UTMESS('F','MODELISA9_95')
@@ -442,12 +442,12 @@ def post_dyna_alea_ops(self,INTE_SPEC, FRAGILITE,TITRE,INFO,**args):
                  if abs(val_mom[4])>=1e-20 :
                     dlign['FACT_IRRE'] = sqrt( val_mom[2]*val_mom[2]/val_mom[0]/val_mom[4])
 
-           # ajoute la ligne à la Table
+           # ajoute la ligne Ã  la Table
            tabres.append(dlign)
 
 #--- construction de la table produite
 
-      # tri des paramètres
+      # tri des paramÃ¨tres
       ord_para = tabres.para[nbpara0:]
       ord_para.sort()
       ord_para = tabres.para[:nbpara0] + ord_para

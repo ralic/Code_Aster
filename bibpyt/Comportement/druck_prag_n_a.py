@@ -1,4 +1,4 @@
-# -*- coding: iso-8859-1 -*-
+# coding=utf-8
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -22,8 +22,8 @@ from cata_comportement import LoiComportement
 
 loi = LoiComportement(
    nom            = 'DRUCK_PRAG_N_A',
-   doc = """Loi de Drucker_Prager, non associée, pour la mécanique des sols (cf. [R7.01.16] pour plus de détails).
-   On suppose toutefois que le coefficient de dilatation thermique est constant. L'écrouissage peut être linéaire ou parabolique.""",
+   doc = """Loi de Drucker_Prager, non associÃ©e, pour la mÃ©canique des sols (cf. [R7.01.16] pour plus de dÃ©tails).
+   On suppose toutefois que le coefficient de dilatation thermique est constant. L'Ã©crouissage peut Ãªtre linÃ©aire ou parabolique.""",
    num_lc         = 16,
    nb_vari        = 3,
    nom_vari       = ('EPSPEQ','EPSPVOL','INDIPLAS'),

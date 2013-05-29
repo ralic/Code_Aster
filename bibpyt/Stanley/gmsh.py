@@ -1,4 +1,4 @@
-# -*- coding: iso-8859-1 -*-
+# coding=utf-8
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -86,7 +86,7 @@ class GMSH_DISTANT :
       copie     = param['protocole'].split('/')[0]                                    # rcp ou scp
       execution = param['protocole'].split('/')[1]                                    # rsh ou ssh
 
-      # Accès à la machine distante (sans login ou avec login)
+      # AccÃ¨s Ã  la machine distante (sans login ou avec login)
       mdis        = param['machine_gmsh']                                             # cli75ca
       rep_distant = mdis + ':' + param['tmp'] + '/'                                   # cli75ca:/tmp/
 

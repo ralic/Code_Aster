@@ -1,4 +1,4 @@
-# -*- coding: iso-8859-1 -*-
+# coding=utf-8
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -129,7 +129,7 @@ def raff_xfem_ops(self,FISSURE,TYPE,**args):
 
             DETRUIRE(CONCEPT=_F(NOM=__CHLTB),INFO=1)
 
-         # On affecte à chaque noeud du maillage MA la formule __MDISTF ou __MDISTI
+         # On affecte Ã  chaque noeud du maillage MA la formule __MDISTF ou __MDISTI
          if typ_ds == 'FISSURE' :
             __CHFOR=CREA_CHAMP(TYPE_CHAM='NOEU_NEUT_F',
                               OPERATION='AFFE',
@@ -191,7 +191,7 @@ def raff_xfem_ops(self,FISSURE,TYPE,**args):
       else :
          __Erreur=FORMULE(NOM_PARA=(list_nom_cmp),VALE= for_max);
 
-      # Définition de l'erreur en chaque noeud du maillage
+      # DÃ©finition de l'erreur en chaque noeud du maillage
       __CHFORM=CREA_CHAMP(TYPE_CHAM='NOEU_NEUT_F',
                         OPERATION='AFFE',
                         MAILLAGE=MA,

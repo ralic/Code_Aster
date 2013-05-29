@@ -31,4 +31,3 @@ Plane Surface(6) = {5};
 
 Recombine Surface {6};
 Physical Surface(6) = {6};
-

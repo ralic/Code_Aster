@@ -1,4 +1,4 @@
-# -*- coding: iso-8859-1 -*-
+# coding=utf-8
 # person_in_charge: mathieu.courtois at edf.fr
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -32,7 +32,7 @@ from Noyau.N_types import is_sequence
 
 def RETLIST(v, mxval):
     """Cette fonction retourne un tuple dont le premier element est sa longueur reelle
-       eventuellement negative si supérieure a mxval
+       eventuellement negative si supÃ©rieure a mxval
        et le deuxieme la liste complete qui sera tronquee a mxval dans le fortran
     """
     if type(v) is tuple and len(v) == 3 and v[0] in ("RI","MP"):
@@ -171,7 +171,7 @@ def ReorganisationDe( texte , LongueurSousChaine=80 ) :
                 if ( len(uneChaine) > LongueurSousChaine ) :
                         sys.stderr.write("ERREUR detectee dans Decoupe\n" )
                         print ">",uneChaine,"<"
-                        raise Exception("Decoupe : chaine depassant la limite de %s caractères"
+                        raise Exception("Decoupe : chaine depassant la limite de %s caractÃ¨res"
                                         % LongueurSousChaine)
                 apres = apres + uneChaine.ljust(LongueurSousChaine)
 
@@ -180,7 +180,7 @@ def ReorganisationDe( texte , LongueurSousChaine=80 ) :
 def Typast(ty):
    """
       Cette fonction retourne une chaine de caracteres indiquant le type
-      du concept ou de la liste de concepts passé en argument (ty)
+      du concept ou de la liste de concepts passÃ© en argument (ty)
    """
    if type(ty) in (list, tuple):
 #      t=ty[0]
@@ -200,7 +200,7 @@ def Typast(ty):
       return t.__name__
    return ""
 
-# utilisés pour l'évaluation des formules
+# utilisÃ©s pour l'Ã©valuation des formules
 def miss_dble(list1, list2):
     """Retourne 3 objets set :
     - miss = elements de list1 absents de list2,

@@ -1,4 +1,4 @@
-# -*- coding: iso-8859-1 -*-
+# coding=utf-8
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -20,10 +20,10 @@
 # person_in_charge: mathieu.courtois at edf.fr
 
 """Module rassemblant des fonctions utilitaires de manipulations
-de chaines de caractères
+de chaines de caractÃ¨res
 """
-# le même module existe dans Noyau pour être disponible dans Eficas.
-# celui-ci est nécessaire dès E_SUPERV.py (avant l'ajout à sys.path)
+# le mÃªme module existe dans Noyau pour Ãªtre disponible dans Eficas.
+# celui-ci est nÃ©cessaire dÃ¨s E_SUPERV.py (avant l'ajout Ã  sys.path)
 
 import locale
 

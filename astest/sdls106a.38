@@ -17,12 +17,12 @@ diag3_nonreg=[            \
 -5.5335991451636e-21,     \
 ]
 
-#   -- grand axe médian
+#   -- grand axe mÃ©dian
 
 x3_nonreg=                \
 7.0757685177431e-11 
 
-#   -- petit axe médian
+#   -- petit axe mÃ©dian
 
 y3_nonreg=[               \
 -1.5842649487714e-03,     \
@@ -56,7 +56,7 @@ diag4_nonreg=[            \
 5.3666093270312e-21 ,     \
 ]
 
-#   -- grand axe médian
+#   -- grand axe mÃ©dian
 
 x4_nonreg=[               \
 -8.8754022660805e-20,     \
@@ -71,7 +71,7 @@ x4_nonreg=[               \
 -5.4458361157522e-20,     \
 ]
 
-#   -- petit axe médian
+#   -- petit axe mÃ©dian
 
 y4_nonreg=[               \
 -1.513272661747e-03 ,     \

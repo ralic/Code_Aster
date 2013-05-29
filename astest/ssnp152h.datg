@@ -35,7 +35,7 @@ Point(15) = { 0.0, R3, 0.0, 1.0};
 Point(16) = { -R3, 0.0, 0.0, 1.0};
 Point(17) = { 0.0, -R3, 0.0, 1.0};
 
-//  lignes - couronne extérieure
+//  lignes - couronne extÃ©rieure
 
 Circle(1)    = {2,1,3};
 Line(2)      = {3,7};
@@ -58,7 +58,7 @@ Line Loop(2) = {5,6,7,-2};
 Line Loop(3) = {9,10,11,-6};
 Line Loop(4) = {13,14,15,-10};
 
-//  lignes - couronne intérieure
+//  lignes - couronne intÃ©rieure
 
 Circle(17)   = {10,1,11};
 Line(18)     = {11,15};
@@ -123,4 +123,3 @@ Physical Line("S1R1") = { 1, 5, 9,13};
 Physical Line("S1R2") = { 3, 7,11,15};
 Physical Line("S2R2") = {17,21,25,29};
 Physical Line("S2R3") = {19,23,27,31};
-

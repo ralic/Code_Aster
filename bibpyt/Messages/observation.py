@@ -1,4 +1,4 @@
-# -*- coding: iso-8859-1 -*-
+# coding=utf-8
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -22,33 +22,33 @@
 cata_msg = {
 
 3 : _(u"""
- Observations: il y aura, au maximum, %(i1)d observations à chaque instant sélectionné pour cela.
+ Observations: il y aura, au maximum, %(i1)d observations Ã  chaque instant sÃ©lectionnÃ© pour cela.
 """),
 
 6 : _(u"""
- Erreur dans les données d'observation
+ Erreur dans les donnÃ©es d'observation
  pour "NOM_CHAM"  %(k1)s , il faut renseigner  %(k2)s ou  %(k3)s 
 """),
 
 
 8 : _(u"""
- Variation de la déformation supérieure au seuil fixé :
+ Variation de la dÃ©formation supÃ©rieure au seuil fixÃ© :
     seuil en valeur relative : %(r1)f
-    entité : %(k1)s
+    entitÃ© : %(k1)s
     composante : %(k2)s
-    numéro ordre : %(i1)d
+    numÃ©ro ordre : %(i1)d
 """),
 
 37 : _(u"""
-  Observations: %(i1)d réalisations pour ce pas de temps
+  Observations: %(i1)d rÃ©alisations pour ce pas de temps
 """),
 
 38 : _(u"""
-  Observations: une réalisation pour ce pas de temps
+  Observations: une rÃ©alisation pour ce pas de temps
 """),
 
 39 : _(u"""
-  Observations: pas de réalisation pour ce pas de temps
+  Observations: pas de rÃ©alisation pour ce pas de temps
 """),
 
 

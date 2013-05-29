@@ -1,4 +1,4 @@
-# -*- coding: iso-8859-1 -*-
+# coding=utf-8
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -39,12 +39,12 @@ class sd_carte(sd_titre):
         if not self.exists() : return
         noma=self.NOMA.get_stripped()
 
-        # faut-il vÈrifier le sd_maillage de chaque sd_carte ?   AJACOT_PB  (meme question que pour sd_cham_no)
+        # faut-il v√©rifier le sd_maillage de chaque sd_carte ?   AJACOT_PB  (meme question que pour sd_cham_no)
         #  - cela risque de couter cher
-        #  - cela pose un problËme "import circulaire" avec sd_maillage -> sd_carte => import ici
+        #  - cela pose un probl√®me "import circulaire" avec sd_maillage -> sd_carte => import ici
         # from SD.sd_maillage import sd_maillage
         # sd2=sd_maillage(noma[0]); sd2.check(checker)
-        # Rem : si on vÈrifie le sd_maillage, il me semble que sdll503a se plante (RuntimeError: maximum recursion depth exceeded)
+        # Rem : si on v√©rifie le sd_maillage, il me semble que sdll503a se plante (RuntimeError: maximum recursion depth exceeded)
 
     def check_DESC(self,checker):
         if not self.exists() : return
@@ -54,8 +54,8 @@ class sd_carte(sd_titre):
         n_gd_edit=desc[2]
         assert numgd      > 0 , desc
         assert n_gd_max   > 0 , desc
-        assert n_gd_edit  >=0 , desc  # AJACOT_PB : j'aurais prÈfÈrÈ  n_gd_edit > 0
-                                      # mais acearp.f crÈe parfois des cartes "vides" (zzzz200a)
+        assert n_gd_edit  >=0 , desc  # AJACOT_PB : j'aurais pr√©f√©r√©  n_gd_edit > 0
+                                      # mais acearp.f cr√©e parfois des cartes "vides" (zzzz200a)
         assert n_gd_edit  <= n_gd_max , desc
         for kedit in range(n_gd_edit) :
             code=desc[3+2*kedit]

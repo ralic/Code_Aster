@@ -1,4 +1,4 @@
-# -*- coding: iso-8859-1 -*-
+# coding=utf-8
 # person_in_charge: mathieu.courtois at edf.fr
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -22,18 +22,18 @@
 
 
 """
-    Ce module contient la classe OBJECT classe mère de tous les objets
-    servant à controler les valeurs par rapport aux définitions
+    Ce module contient la classe OBJECT classe mÃ¨re de tous les objets
+    servant Ã  controler les valeurs par rapport aux dÃ©finitions
 """
 from N_CR import CR
 from strfunc import ufmt
 
 class OBJECT:
    """
-      Classe OBJECT : cette classe est virtuelle et sert de classe mère
+      Classe OBJECT : cette classe est virtuelle et sert de classe mÃ¨re
       aux classes de type ETAPE et MOCLES.
-      Elle ne peut etre instanciée.
-      Une sous classe doit obligatoirement implémenter les méthodes :
+      Elle ne peut etre instanciÃ©e.
+      Une sous classe doit obligatoirement implÃ©menter les mÃ©thodes :
 
       - __init__
 
@@ -41,9 +41,9 @@ class OBJECT:
 
    def get_etape(self):
       """
-         Retourne l'étape à laquelle appartient self
-         Un objet de la catégorie etape doit retourner self pour indiquer que
-         l'étape a été trouvée
+         Retourne l'Ã©tape Ã  laquelle appartient self
+         Un objet de la catÃ©gorie etape doit retourner self pour indiquer que
+         l'Ã©tape a Ã©tÃ© trouvÃ©e
          XXX double emploi avec self.etape ???
       """
       if self.parent == None: return None
@@ -51,8 +51,8 @@ class OBJECT:
 
    def supprime(self):
       """
-         Méthode qui supprime les références arrières suffisantes pour
-         que l'objet puisse etre correctement détruit par le
+         MÃ©thode qui supprime les rÃ©fÃ©rences arriÃ¨res suffisantes pour
+         que l'objet puisse etre correctement dÃ©truit par le
          garbage collector
       """
       self.parent = None
@@ -62,8 +62,8 @@ class OBJECT:
 
    def get_val(self):
       """
-          Retourne la valeur de l'objet. Cette méthode fournit
-          une valeur par defaut. Elle doit etre dérivée pour chaque
+          Retourne la valeur de l'objet. Cette mÃ©thode fournit
+          une valeur par defaut. Elle doit etre dÃ©rivÃ©e pour chaque
           type d'objet
       """
       return self
@@ -76,7 +76,7 @@ class OBJECT:
 
    def get_jdc_root(self):
       """
-          Cette méthode doit retourner l'objet racine c'est à dire celui qui
+          Cette mÃ©thode doit retourner l'objet racine c'est Ã  dire celui qui
           n'a pas de parent
       """
       if self.parent:
@@ -86,8 +86,8 @@ class OBJECT:
 
    def GETVAL(self,val):
       """
-          Retourne la valeur effective du mot-clé en fonction
-          de la valeur donnée. Defaut si val == None
+          Retourne la valeur effective du mot-clÃ© en fonction
+          de la valeur donnÃ©e. Defaut si val == None
       """
       if (val is None and hasattr(self.definition,'defaut')) :
         return self.definition.defaut
@@ -123,10 +123,10 @@ class ErrorObj(OBJECT):
         return 0
 
     def report(self):
-      """ génère le rapport de validation de self """
+      """ gÃ©nÃ¨re le rapport de validation de self """
       self.cr=CR()
-      self.cr.debut = u"Mot-clé invalide : "+self.nom
-      self.cr.fin = u"Fin Mot-clé invalide : "+self.nom
-      self.cr.fatal(_(u"Type non autorisé pour le mot-clé %s : '%s'"),
+      self.cr.debut = u"Mot-clÃ© invalide : "+self.nom
+      self.cr.fin = u"Fin Mot-clÃ© invalide : "+self.nom
+      self.cr.fatal(_(u"Type non autorisÃ© pour le mot-clÃ© %s : '%s'"),
                         self.nom, self.valeur)
       return self.cr

@@ -1,4 +1,4 @@
-# -*- coding: iso-8859-1 -*-
+# coding=utf-8
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -22,8 +22,8 @@ from cata_comportement import LoiComportement
 
 loi = LoiComportement(
    nom            = 'BETON_UMLV_FP',
-   doc = """Comportement de fluage propre du béton 
-   avec distinction fluage volumique et fluage déviatorique (R7.01.16)""",
+   doc = """Comportement de fluage propre du bÃ©ton 
+   avec distinction fluage volumique et fluage dÃ©viatorique (R7.01.16)""",
    num_lc         = 21,
    nb_vari        = 21,
    nom_vari       = ('ERSP','EISP','ERD11','EID11','ERD22','EID22','ERD33','EID33','EFD11','EFD22','EFD33','ERD12','EID12','ERD23','EID23','ERD31','EID31','EFD12','EFD23','EFD31','ISPH'),

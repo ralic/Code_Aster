@@ -32,7 +32,7 @@ FLUH_IMP=AFFE_CHAR_MECA_F(MODELE=MODEHY,
                                           FLUN_HYDR1=ZERO,),);
 
 ############
-# Résolution
+# RÃ©solution
 ############
 
 METHODE='MUMPS';

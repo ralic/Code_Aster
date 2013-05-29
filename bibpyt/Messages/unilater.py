@@ -1,4 +1,4 @@
-# -*- coding: iso-8859-1 -*-
+# coding=utf-8
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -21,43 +21,43 @@
 cata_msg = {
 
 1 : _(u"""
-Définition d'une liaison unilatérale.
- -> Cette fonctionnalité suppose la symétrie de la matrice obtenue après assemblage.
-    Si votre modélisation produit une matrice non-symétrique, on force donc sa symétrie pour résoudre
+DÃ©finition d'une liaison unilatÃ©rale.
+ -> Cette fonctionnalitÃ© suppose la symÃ©trie de la matrice obtenue aprÃ¨s assemblage.
+    Si votre modÃ©lisation produit une matrice non-symÃ©trique, on force donc sa symÃ©trie pour rÃ©soudre
     le contact.
  -> Risque & Conseil :
-    Ce changement peut conduire à des difficultés de convergence dans le processus de Newton mais en
-    aucun cas il ne produit des résultats faux.
+    Ce changement peut conduire Ã  des difficultÃ©s de convergence dans le processus de Newton mais en
+    aucun cas il ne produit des rÃ©sultats faux.
 
-    Si la matrice de rigidité de votre structure est symétrique, vous pouvez ignorer ce qui précède.
+    Si la matrice de rigiditÃ© de votre structure est symÃ©trique, vous pouvez ignorer ce qui prÃ©cÃ¨de.
     Enfin, il est possible de supprimer l'affichage de cette alarme en renseignant SYME='OUI'
-    sous le mot-clé facteur SOLVEUR.
+    sous le mot-clÃ© facteur SOLVEUR.
 """),
 
 42: _(u"""
-Définition d'une liaison unilatérale.
-Le nombre de COEF_MULT n'est pas égal au nombre de grandeurs contenus dans
+DÃ©finition d'une liaison unilatÃ©rale.
+Le nombre de COEF_MULT n'est pas Ã©gal au nombre de grandeurs contenus dans
 le vecteur NOM_CMP
 """),
 
 43: _(u"""
-Définition d'une liaison unilatérale.
-Il y a trop de grandeurs dans le vecteur NOM_CMP (limité à 30)
+DÃ©finition d'une liaison unilatÃ©rale.
+Il y a trop de grandeurs dans le vecteur NOM_CMP (limitÃ© Ã  30)
 """),
 
 48 : _(u"""
-Définition d'une liaison unilatérale.
-Aucun noeud n'est affecté par une liaison unilatérale.
+DÃ©finition d'une liaison unilatÃ©rale.
+Aucun noeud n'est affectÃ© par une liaison unilatÃ©rale.
 """),
 
 58: _(u"""
-Définition d'une liaison unilatérale.
+DÃ©finition d'une liaison unilatÃ©rale.
 La composante %(k2)s existe sur le noeud %(k1)s
 """),
 
 
 75: _(u"""
-Définition d'une liaison unilatérale.
+DÃ©finition d'une liaison unilatÃ©rale.
 La composante %(k2)s est inexistante sur le noeud %(k1)s
 """),
 

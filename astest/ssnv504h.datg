@@ -1,5 +1,5 @@
 *
-*Maillage Mod‰lisation A (AXI en 3D):
+*Maillage ModÂ‰lisation A (AXI en 3D):
 *Extrusion d'un lopin
 *Elements solide (tria3)
 *Element pour le contact (seg2)
@@ -26,7 +26,7 @@ l10= 45. ;
 l11= 48. ;
 l12= 60. ;
 *
-* coordonn‰es des points
+* coordonnÂ‰es des points
 *
 A = l1                0.                    ;
 B = l1                l3                    ; 
@@ -47,7 +47,7 @@ LR= l1 53.;
 *
 *lKG = droit 1 K G ;
 *
-*Cr‰ation de la filiˆre
+*CrÂ‰ation de la filiÂˆre
 *
 lAB = droit 14 A B ;
 lBC = droit 6 B C ;
@@ -69,7 +69,7 @@ SMAI1 = lAB et lBC et lCD et lDE
         et lEF ;
 SMAI2 = lFG ;
 
-*Cr‰ation du LOPIN
+*CrÂ‰ation du LOPIN
 
 *lLM = droit 10 L M ;
 lMN = droit 8 M N ; 

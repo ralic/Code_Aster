@@ -1,4 +1,4 @@
-# -*- coding: iso-8859-1 -*-
+# coding=utf-8
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -33,7 +33,7 @@ class OPS:
         return func(*args, **kwargs)
 
 
-# utilisé par exemple par des macros où tout est fait dans l'init.
+# utilisÃ© par exemple par des macros oÃ¹ tout est fait dans l'init.
 class NOTHING(OPS):
     """OPS which does nothing."""
 

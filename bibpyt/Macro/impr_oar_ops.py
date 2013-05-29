@@ -1,4 +1,4 @@
-# -*- coding: iso-8859-1 -*-
+# coding=utf-8
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -39,7 +39,7 @@ def buildTabString(tabLevel):
 def getBornes(listIn, valTest) :
    """
       Retourne un doublet de valeurs qui correspond aux valeurs de la liste qui encadrent la valeur (valTest)
-      Si val n'est pas encadrée par des valeurs de la liste, une des valeurs du doublet est None
+      Si val n'est pas encadrÃ©e par des valeurs de la liste, une des valeurs du doublet est None
    """
    v1 = None
    v2 = None   
@@ -55,7 +55,7 @@ def getBornes(listIn, valTest) :
 
 def interpoleLin(listDoublet, X) :
    """
-      Interpole linéairement entre deux bornes définies par listDoublets[(X0, Y0), (X1, Y1)] la valeur Y en X
+      Interpole linÃ©airement entre deux bornes dÃ©finies par listDoublets[(X0, Y0), (X1, Y1)] la valeur Y en X
    """
    X0 = listDoublet[0][0]
    Y0 = listDoublet[0][1]
@@ -71,27 +71,27 @@ class interpolationError(Exception) :
         
    def getMess(self) :
       """ 
-         retourne le message associé à l'erreur
+         retourne le message associÃ© Ã  l'erreur
       """
-      # Analyse les différents cas d'erreurs
+      # Analyse les diffÃ©rents cas d'erreurs
       if self.otherExcept == IOError :
-         self.mess += "\nProblème à l'ouverture du fichier\n"
+         self.mess += "\nProblÃ¨me Ã  l'ouverture du fichier\n"
 
       return self.mess
  
 class XMLNode :
     """
-        Classe gérant un noeud de l'arborescence XML
-        Un noeud possède :
+        Classe gÃ©rant un noeud de l'arborescence XML
+        Un noeud possÃ¨de :
             - un nom de balise
             - un commentaire (optionnel)
-            - un ensemble de "paramètres" (optionnels)
-            - une liste d'élément ou d'autres noeuds (optionnels/possibilité de balises vides) :
+            - un ensemble de "paramÃ¨tres" (optionnels)
+            - une liste d'Ã©lÃ©ment ou d'autres noeuds (optionnels/possibilitÃ© de balises vides) :
 
         La classe propose : 
-            - une méthode "buildTree" qui parcoure le liste de manière récursive pour
+            - une mÃ©thode "buildTree" qui parcoure le liste de maniÃ¨re rÃ©cursive pour
               produire l'arborescence XML en vu de son enregistrement ou son impression
-            - (TO DO) une methode statique "loadTree" qui produit un arbre XML à partir d'un fichier
+            - (TO DO) une methode statique "loadTree" qui produit un arbre XML Ã  partir d'un fichier
     """
     def __init__(self, nomBalise, valeur = None, commentaire = None, **listOpt) :
         self.nomBalise = nomBalise
@@ -110,8 +110,8 @@ class XMLNode :
 
     def append(self, nodeName, valeur=None, commentaire = None, **listOpt) :
         """
-            Ajoute un noeud à l'arborescence et retourne une référence sur ce noeud
-            On peut ajouter directement la valeur, si simple, associée à la balise
+            Ajoute un noeud Ã  l'arborescence et retourne une rÃ©fÃ©rence sur ce noeud
+            On peut ajouter directement la valeur, si simple, associÃ©e Ã  la balise
         """
         node = XMLNode(nodeName, valeur, commentaire)
 
@@ -121,24 +121,24 @@ class XMLNode :
 
     def addValue(self, valeur):
         """
-            Ajoute un élément "simple" (nombre, texte) à l'arborescence
+            Ajoute un Ã©lÃ©ment "simple" (nombre, texte) Ã  l'arborescence
         """
         self.arbre.append(valeur)
             
     def buildTree(self, tabLevel=0) :
         """
-            Construit l'arborescence XML en parcourant récursivement la structure de donnée
-            et la retourne sous la forme d'une chaine de caractères
+            Construit l'arborescence XML en parcourant rÃ©cursivement la structure de donnÃ©e
+            et la retourne sous la forme d'une chaine de caractÃ¨res
 
-            tabLevel permet de gérer l'indentation
+            tabLevel permet de gÃ©rer l'indentation
         """
-        # Construction de la chaine de tabulations nécessaire à une bonne lecture du fichier XML
+        # Construction de la chaine de tabulations nÃ©cessaire Ã  une bonne lecture du fichier XML
         tabString = buildTabString(tabLevel) 
 
         XMLString = ''
         
         try :
-            # listOpt contient les paramètres optionnels de la balise
+            # listOpt contient les paramÃ¨tres optionnels de la balise
             chaine = ''
             for v in self.param.keys() :
                 chaine = chaine + ' ' +  v  + '=' + self.param[v] 
@@ -153,7 +153,7 @@ class XMLNode :
         for elem in self.arbre :
             try :
                 XMLString += elem.buildTree(tabLevel+1)
-            except : # l'élément n'est pas un noeud
+            except : # l'Ã©lÃ©ment n'est pas un noeud
                 XMLString = XMLString + tabString + '\t' + str(elem) + '\n'
 
         XMLString = XMLString + tabString + "</"+self.nomBalise+">\n"
@@ -162,8 +162,8 @@ class XMLNode :
 
     def save(self, fileObj) :
         """ 
-         Construit le l'arborescence XML et l'écrit dans un fichier 
-         pointé par le handler passé en paramètres
+         Construit le l'arborescence XML et l'Ã©crit dans un fichier 
+         pointÃ© par le handler passÃ© en paramÃ¨tres
         """ 
         try :
             fileObj.write(self.buildTree())
@@ -171,7 +171,7 @@ class XMLNode :
 
 class OAR_element :
    """
-      Classe de base des éléments manipulés par IMPR_OAR
+      Classe de base des Ã©lÃ©ments manipulÃ©s par IMPR_OAR
    """
    def __init__(self) :
       self.nodeComp = None
@@ -191,7 +191,7 @@ class composant(OAR_element) :
       
       NB :
       1. L utilisateur est suppose faire la meme coupe pour le calcul mecanique et le calcul thermo-mecanique 
-      2. Dans le cas d'un revetement, l'utilisateur est supposé définir son plan de coupe de telle sorte 
+      2. Dans le cas d'un revetement, l'utilisateur est supposÃ© dÃ©finir son plan de coupe de telle sorte 
          que la coupe de la structure et la coupe du revetement se raccordent
    """
    def __init__(self, **args) :
@@ -209,14 +209,14 @@ class composant(OAR_element) :
       self.tabAbscisses = list()
       self.tabAbscisses_S = None
       self.dictMeca = dict()
-      self.dictMeca_S = None # Pas créé car optionnel
+      self.dictMeca_S = None # Pas crÃ©Ã© car optionnel
       self.epaisseur = 0.0
       self.epaisseur_R = 0.0
 
-      # dictionnaire gérant le résultat contraintes en fonction des instants et des abscisses
+      # dictionnaire gÃ©rant le rÃ©sultat contraintes en fonction des instants et des abscisses
       self.dictInstAbscSig = dict()
-      self.dictInstAbscSig_S = None # Création si nécessaire
-      # dictionnaire gérant le résultat température en fonction des instants et des abscisses
+      self.dictInstAbscSig_S = None # CrÃ©ation si nÃ©cessaire
+      # dictionnaire gÃ©rant le rÃ©sultat tempÃ©rature en fonction des instants et des abscisses
       self.dictInstAbscTemp = dict()
       self.dictInstAbscTemp_S = None # facultatif 
       self.list_inst = None
@@ -245,13 +245,13 @@ class composant(OAR_element) :
          if self.revet == 'OUI' :
             self.mergeDictMeca() # merge les tableaux resultats du revetement et de la structure
 
-         # Calcul de l'épaisseur de la coupe.
+         # Calcul de l'Ã©paisseur de la coupe.
          self.epaisseur = abs(self.tabAbscisses[len(self.tabAbscisses)-1] - self.tabAbscisses[0])
  
       except : 
          self.noResuMeca = True
       
-      # 2. Résultat thermique
+      # 2. RÃ©sultat thermique
       try :
          para_resu_ther = RESU_THER
          self.num_tran = para_resu_ther['NUM_TRAN']
@@ -270,11 +270,11 @@ class composant(OAR_element) :
             self.tabAbscisses_S = list()
             self.buildTablesTher('TABLE_S', para_resu_ther, self.tabAbscisses_S, self.dictInstAbscSig_S)
                
-            # 3. calcul de l'épaisseur
+            # 3. calcul de l'Ã©paisseur
             self.epaisseur_R = abs(self.tabAbscisses_S[len(self.tabAbscisses_S)-1] - self.tabAbscisses_S[0])
          
          # Pour la structure
-         # 1. Construction champ température
+         # 1. Construction champ tempÃ©rature
          self.buildTemp('TABLE_TEMP', para_resu_ther, self.dictInstAbscTemp, self.epaisseur_R)
 
          # 2. Construction de la table des contraintes
@@ -287,11 +287,11 @@ class composant(OAR_element) :
             UTMESS('F','OAR0_1')
             
          try :
-            self.interpoleInstants() # Interpolation des instants de la table des température sur celle de la table mécanique
+            self.interpoleInstants() # Interpolation des instants de la table des tempÃ©rature sur celle de la table mÃ©canique
          except interpolationError, err:
             UTMESS('F','OAR0_2',valk=err.getMess())
 
-         # 3. Calcul de l'épaisseur de la coupe.
+         # 3. Calcul de l'Ã©paisseur de la coupe.
          self.epaisseur = abs(self.tabAbscisses[len(self.tabAbscisses)-1] - self.tabAbscisses[0])
 
       except :
@@ -303,9 +303,9 @@ class composant(OAR_element) :
                 
    def getAbscisses(self, dicoTable, tableAbsc, offset=0.0) :
       """
-         Récupère la liste des abscisses
+         RÃ©cupÃ¨re la liste des abscisses
       """
-      # récupération des abscisses
+      # rÃ©cupÃ©ration des abscisses
       ABSCISSES = dicoTable['ABSC_CURV']
      
       valeurAbsc = 0.0
@@ -315,19 +315,19 @@ class composant(OAR_element) :
          
    def buildTablesMeca(self, label, para_resu, tableAbsc, dictMeca, offset=0.0) :
       """
-         Construction des tableaux mécanique 
+         Construction des tableaux mÃ©canique 
       """ 
       sigma_xml   = ( 'S_RR', 'S_TT', 'S_ZZ', 'S_RT', 'S_TZ', 'S_ZR' )
       
       table_meca = para_resu[label].EXTR_TABLE() 
       
-      # Utilisation des méthodes de la classe table
+      # Utilisation des mÃ©thodes de la classe table
       dictTable = table_meca.values()
 
-      # récupération des abscisses
+      # rÃ©cupÃ©ration des abscisses
       self.getAbscisses(dictTable, tableAbsc, offset)
       
-      # Construction de la table mécanique principale
+      # Construction de la table mÃ©canique principale
       for val in sigma_xml :
          dictMeca[val] = list()
 
@@ -347,7 +347,7 @@ class composant(OAR_element) :
     
    def mergeDictMeca(self) :
       """
-      Merge des résultats mécaniques issus de la structure et du revetement
+      Merge des rÃ©sultats mÃ©caniques issus de la structure et du revetement
       """
       # Merge des listes d'abscisses
       # Le revetement est interieur la derniere abscisse du revetement doit etre egal a la premiere de la structure
@@ -367,10 +367,10 @@ class composant(OAR_element) :
          
       self.tabAbscisses = tableAbscTemp
       
-      # On construit des listes de travail intermédiaires que l'on commence par remplir avec les tables "supplémentaires"
+      # On construit des listes de travail intermÃ©diaires que l'on commence par remplir avec les tables "supplÃ©mentaires"
       dictMecaBis = self.dictMeca_S
       
-      # On recopie les éléments de la structure dans le tableau
+      # On recopie les Ã©lÃ©ments de la structure dans le tableau
       debut = True
       for v1, v2, v3, v4, v5, v6 in zip(self.dictMeca['S_RR'], self.dictMeca['S_TT'], self.dictMeca['S_ZZ'], self.dictMeca['S_RT'], self.dictMeca['S_TZ'], self.dictMeca['S_ZR']) :
          if debut :
@@ -389,30 +389,30 @@ class composant(OAR_element) :
   
    def buildTemp(self, label, para_resu, dictInstAbscTemp, offset=0.0):
       """
-         Récupération du champ température aux noeuds avec interpolation sur les "instants" du calcul mécanique
+         RÃ©cupÃ©ration du champ tempÃ©rature aux noeuds avec interpolation sur les "instants" du calcul mÃ©canique
       """
       table_temp = para_resu[label].EXTR_TABLE()
 
-      # Utilisation des méthodes de la classe table
+      # Utilisation des mÃ©thodes de la classe table
       dictTable = table_temp.values()
       
-      # On construit un dictionnaire associant un "instant" avec un couple ("abscisse", "température")
+      # On construit un dictionnaire associant un "instant" avec un couple ("abscisse", "tempÃ©rature")
 
-      # 1. Récupération de la liste des instants
+      # 1. RÃ©cupÃ©ration de la liste des instants
       INSTANTS = dictTable['INST']
       for val in INSTANTS :
-         dictInstAbscTemp[val] = 0 # On crée juste les clés du dictionnaire
+         dictInstAbscTemp[val] = 0 # On crÃ©e juste les clÃ©s du dictionnaire
          
       listTables = list() # liste de tables contenant une table pas instant
       for inst in dictInstAbscTemp.keys():
          listTables.append(table_temp.INST == inst)
          
-      # 2. Récupération des abscisses
+      # 2. RÃ©cupÃ©ration des abscisses
       tableAbsc = list()
       self.getAbscisses(listTables[0].values(), tableAbsc, offset)
       
-      # 3. Récupération des températures
-      tableTemp = list() # liste de liste de température (1 par instant)
+      # 3. RÃ©cupÃ©ration des tempÃ©ratures
+      tableTemp = list() # liste de liste de tempÃ©rature (1 par instant)
       for tb in listTables :
          TEMPERATURE = tb.values()['TEMP']
          tableTemp.append(TEMPERATURE)
@@ -428,36 +428,36 @@ class composant(OAR_element) :
          
    def buildTablesTher(self, label, para_resu, tabAbscisses, dictInstAbscSig, offset=0.0) :
       """
-         Construction des tableaux thermo-mécanique
-         listDictTher contient un dictionnaire par numéro d'ordre 
+         Construction des tableaux thermo-mÃ©canique
+         listDictTher contient un dictionnaire par numÃ©ro d'ordre 
       """
       table_temp = para_resu[label].EXTR_TABLE()   
 
       # On construit un dictionnaire associant un "instant" avec une liste de couples ("abscisse", liste de "sigma")
 
-      # Utilisation des méthodes de la classe table
+      # Utilisation des mÃ©thodes de la classe table
       dictTable = table_temp.values()
       
-      # On construit un dictionnaire associant un "instant" avec un couple ("abscisse", "température")
+      # On construit un dictionnaire associant un "instant" avec un couple ("abscisse", "tempÃ©rature")
 
-      # 1. Récupération de la liste des instants
+      # 1. RÃ©cupÃ©ration de la liste des instants
       INSTANTS = dictTable['INST']
       for val in INSTANTS :
-         dictInstAbscSig[val] = 0 # On crée juste les clés du dictionnaire
+         dictInstAbscSig[val] = 0 # On crÃ©e juste les clÃ©s du dictionnaire
          
       listTables = list() # liste de tables contenant une table pas instant
       for inst in dictInstAbscSig.keys():
          listTables.append(table_temp.INST == inst)
          
-      # 2. Récupération des abscisses
+      # 2. RÃ©cupÃ©ration des abscisses
       self.getAbscisses(listTables[0].values(), tabAbscisses, offset)
          
-      # 3. Récupération des listes de sigma
+      # 3. RÃ©cupÃ©ration des listes de sigma
       listListListSigAbscInst = list() # liste des sigma par abscisse par instant
       for tbl in listTables:
          listListSigAbscInst = list()
          
-         # On crée une table pour chaque instant
+         # On crÃ©e une table pour chaque instant
          S_XX = tbl.values()['SIXX']
          S_YY = tbl.values()['SIYY']
          S_ZZ = tbl.values()['SIZZ']
@@ -507,11 +507,11 @@ class composant(OAR_element) :
          
       self.tabAbscisses = tableAbscTemp
        
-      # On construit des listes de travail intermédiaires que l'on commence par remplir avec les tables "supplémentaires"
+      # On construit des listes de travail intermÃ©diaires que l'on commence par remplir avec les tables "supplÃ©mentaires"
       dictInstAbscSigBis = self.dictInstAbscSig_S
       dictInstAbscTempBis = self.dictInstAbscTemp_S
       
-      # On recopie les élément thermiques de la structure principale en sautant la première abscisse de la structure
+      # On recopie les Ã©lÃ©ment thermiques de la structure principale en sautant la premiÃ¨re abscisse de la structure
       for key in dictInstAbscTempBis.keys() : # Les dictionnaires partagent les memes instants
          debut = True
          for valTher in self.dictInstAbscTemp[key] :
@@ -520,7 +520,7 @@ class composant(OAR_element) :
                continue
             dictInstAbscTempBis[key].append(valTher)
             
-      # On recopie les élément mécaniques de la structure principale en sautant la première abscisse de la structure
+      # On recopie les Ã©lÃ©ment mÃ©caniques de la structure principale en sautant la premiÃ¨re abscisse de la structure
       for key in dictInstAbscSigBis.keys() : # Les dictionnaires partagent les memes instants
          debut = True
          for valSig in self.dictInstAbscSig[key] :
@@ -535,9 +535,9 @@ class composant(OAR_element) :
 
    def compareListAbscTher(self) :
       """
-         Vérifie que la coupe du champ thermique et la coupe mécanique partagent les memes abscisses
+         VÃ©rifie que la coupe du champ thermique et la coupe mÃ©canique partagent les memes abscisses
       """
-      # 1. Récupération des abscisses associées aux températures
+      # 1. RÃ©cupÃ©ration des abscisses associÃ©es aux tempÃ©ratures
       listAbsc = list()
       lstDoublet = self.dictInstAbscTemp[self.dictInstAbscTemp.keys()[0]]
       for val in lstDoublet :
@@ -551,25 +551,25 @@ class composant(OAR_element) :
       
    def interpoleInstants(self) :
       """
-         Interpole les résultats thermique sur les instants des résultats mécaniques
+         Interpole les rÃ©sultats thermique sur les instants des rÃ©sultats mÃ©caniques
       """
-      # 1. récupération des instants des deux tables
+      # 1. rÃ©cupÃ©ration des instants des deux tables
       listInstTher = self.dictInstAbscTemp.keys()
       listInstMeca = self.dictInstAbscSig.keys()
       
-      # 2. calcul de la liste des bornes de la table thermique qui encadrent les résultats mécaniques
+      # 2. calcul de la liste des bornes de la table thermique qui encadrent les rÃ©sultats mÃ©caniques
       dictInstAbscTemp = dict()
       listAbscTemp = list()
       listBornes = list()
       for inst in listInstMeca :
          bornes = getBornes(listInstTher, inst)
-         # Si une des bornes n'est pas définie, on lance une exception
+         # Si une des bornes n'est pas dÃ©finie, on lance une exception
          if not(bornes[0]) or not(bornes[1]) : raise interpolationError
           
-         abscTempInf = self.dictInstAbscTemp[bornes[0]] # Liste de doublet (abscisse, temperature) pour la borne inférieure
-         abscTempSup = self.dictInstAbscTemp[bornes[1]] # Liste de doublet (abscisse, temperature) pour la borne supérieure
+         abscTempInf = self.dictInstAbscTemp[bornes[0]] # Liste de doublet (abscisse, temperature) pour la borne infÃ©rieure
+         abscTempSup = self.dictInstAbscTemp[bornes[1]] # Liste de doublet (abscisse, temperature) pour la borne supÃ©rieure
          
-         listAbscTemp = list() # liste de couples abscisses/Température
+         listAbscTemp = list() # liste de couples abscisses/TempÃ©rature
          for A1, A2 in zip(abscTempInf, abscTempSup) : # A1 et A2 sont des doublets abscisse/Temperature
             temperature = interpoleLin( ((bornes[0], A1[1]), (bornes[1], A2[1])), inst)   
             listAbscTemp.append((A1[0], temperature)) # on aurait pu tout aussi bien prendre A2[0] (c est pareil ...)
@@ -581,11 +581,11 @@ class composant(OAR_element) :
 
    def buildTree(self) :
       """
-         Construction (en mémoire) de l'arborescence du document XML
+         Construction (en mÃ©moire) de l'arborescence du document XML
       """
       sigma_xml   = ( 'S_RR', 'S_TT', 'S_ZZ', 'S_RT', 'S_TZ', 'S_ZR' )
 
-      # Création de l'arborescence "géométrie"
+      # CrÃ©ation de l'arborescence "gÃ©omÃ©trie"
       nodeGeomComp = self.nodeComp.append("GEOM_COMPO")
       nodeGeomComp.append("REVETEMENT", valeur=self.revet)
       if self.revet == 'OUI' :
@@ -596,13 +596,13 @@ class composant(OAR_element) :
       nodeLigneCoupe.append("ORI_ABSC", valeur=self.origine)
       
       if self.noResuMeca == False :
-         # Création des abscisses
+         # CrÃ©ation des abscisses
          for val in self.tabAbscisses :
             nodeLigneCoupe.append("ABSCISSE", val)
       
          nodeLigneCoupe.append('PSI', self.angle_c)
       
-         # Création des résultats mécaniques
+         # CrÃ©ation des rÃ©sultats mÃ©caniques
          nodeSigma_u = self.nodeComp.append("SIGMA_UNITE")
          nodeSigma_u.append("NUM_MECA", valeur=self.num_char)
          nodeSigma_u.append("NOM_MECA", valeur=self.type_char)
@@ -612,16 +612,16 @@ class composant(OAR_element) :
             for val in self.dictMeca.keys() :
                nodeSigma_meca.append(val, valeur = self.dictMeca[val][i])
      
-      # Création de l'arborescence "résultat thermo_mécanique"
+      # CrÃ©ation de l'arborescence "rÃ©sultat thermo_mÃ©canique"
       if self.noResuTher == False :
-         # Création des abscisses
+         # CrÃ©ation des abscisses
          listDoublet = self.dictInstAbscTemp[self.dictInstAbscTemp.keys()[0]]
          for val in listDoublet :
             nodeLigneCoupe.append("ABSCISSE", val[0])
             
          nodeLigneCoupe.append('PSI', self.angle_c)
             
-         # Création des résultats mécaniques
+         # CrÃ©ation des rÃ©sultats mÃ©caniques
          nodeSigma_ther_c = self.nodeComp.append("SIGMA_THER_C")
          nodeSigma_ther_c.append("NUM_TRANSI_THER", valeur=self.num_tran)
          
@@ -675,17 +675,17 @@ class tuyauterie(OAR_element) :
 
    def buildTableTorseur(self) :
       """
-         Construit un dictionnaire associant un noeud à un torseur exprimé sous la forme d'une liste de valeurs
+         Construit un dictionnaire associant un noeud Ã  un torseur exprimÃ© sous la forme d'une liste de valeurs
       """
       table_temp = self.para_resu_meca['TABLE'].EXTR_TABLE()   
 
-      # Utilisation des méthodes de la classe table
+      # Utilisation des mÃ©thodes de la classe table
       dictTable = table_temp.values()
       
-      # 1. Récupération de la liste des noeuds
+      # 1. RÃ©cupÃ©ration de la liste des noeuds
       NOEUDS = dictTable['NOEUD']
       for val in NOEUDS :
-         self.dictNoeudValTorseur[val.rstrip()] = list() # On crée juste les clés du dictionnaire
+         self.dictNoeudValTorseur[val.rstrip()] = list() # On crÃ©e juste les clÃ©s du dictionnaire
          
       N   = dictTable['N']
       VY  = dictTable['VY']
@@ -706,11 +706,11 @@ class tuyauterie(OAR_element) :
          
    def buildTree(self) :
       """
-         Construction (en mémoire) de l'arborescence du document XML
+         Construction (en mÃ©moire) de l'arborescence du document XML
       """
       torseur_XML   = ( 'FX', 'FY', 'FZ', 'MX', 'MY', 'MZ' )
 
-      # Création de l'arborescence "torseur"
+      # CrÃ©ation de l'arborescence "torseur"
       nodeTMG = self.nodeComp.append("TORSEUR_MECA-GRP")
       nodeTM = nodeTMG.append("TORSEUR_MECA")
       nodeTM.append("oar:CHAR-REF", self.num_char)
@@ -733,7 +733,7 @@ def impr_oar_ops(self, TYPE_CALC, **args) :
    IMPR_OAR va etre utilise en deux fois d abord calcul mecanique, 
    ensuite calcul thermique ce qui implique qu il ne peut y avoir qu'une seule des deux options a la fois
    """
-   # La macro compte pour 1 dans la numérotation des commandes
+   # La macro compte pour 1 dans la numÃ©rotation des commandes
    self.set_icmd(1)
    
    obj = None
@@ -748,7 +748,7 @@ def impr_oar_ops(self, TYPE_CALC, **args) :
       UTMESS('F','OAR0_6')
 
    # Ecriture dans le fichier
-   # Récupération de la LU du fichier de sortie
+   # RÃ©cupÃ©ration de la LU du fichier de sortie
    try :
       unite = args['UNITE']
    except :

@@ -1,4 +1,4 @@
-# -*- coding: iso-8859-1 -*-
+# coding=utf-8
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -21,107 +21,107 @@
 cata_msg = {
 
 1 : _(u"""
- GAMMA_T et GAMMA_C ne doivent pas être égal à 1 en même temps.
+ GAMMA_T et GAMMA_C ne doivent pas Ãªtre Ã©gal Ã  1 en mÃªme temps.
 """),
 
 2 : _(u"""
  -> La valeur de SYC %(r1)f ne permet pas de respecter GAMMA_C < 1.
- -> Conseil : Choisissez une valeur de SYC inférieure à %(r2)f
+ -> Conseil : Choisissez une valeur de SYC infÃ©rieure Ã  %(r2)f
 """),
 
 3 : _(u"""
- -> Les valeurs des paramètres de la loi GLRC_DM entraîne un seuil d'endommagement nul.
- -> Conseil : Modifier les valeurs des paramètres matériaux
+ -> Les valeurs des paramÃ¨tres de la loi GLRC_DM entraÃ®ne un seuil d'endommagement nul.
+ -> Conseil : Modifier les valeurs des paramÃ¨tres matÃ©riaux
 """),
 
 4 : _(u"""
-  La valeur de %(k1)s est négative. Les résultats obtenus risquent d'être inattendus
+  La valeur de %(k1)s est nÃ©gative. Les rÃ©sultats obtenus risquent d'Ãªtre inattendus
 """),
 
 5 : _(u"""
- -> La valeur de déformation maximale %(r1)f est inférieur au seuil d'endommagement %(r2)f.
- -> Le modèle GLRC_DM risque de donner des résultats inattendus.
- -> Conseil : Utilisez une loi élastique ou vérifiez les paramètres d'homogénéisation.
+ -> La valeur de dÃ©formation maximale %(r1)f est infÃ©rieur au seuil d'endommagement %(r2)f.
+ -> Le modÃ¨le GLRC_DM risque de donner des rÃ©sultats inattendus.
+ -> Conseil : Utilisez une loi Ã©lastique ou vÃ©rifiez les paramÃ¨tres d'homogÃ©nÃ©isation.
 """),
 
 6 : _(u"""
- -> Le pourcentage des aciers ou l'espace des armatures n'est pas identique dans les deux directions et ne respecte donc pas l'isotropie du modèle.
- -> Le modèle GLRC_DM peut donner des résultats inattendus.
- -> Conseil: Choisissez une autre loi de comportement ou couplez le modèle avec un modèle de grille d'acier.
+ -> Le pourcentage des aciers ou l'espace des armatures n'est pas identique dans les deux directions et ne respecte donc pas l'isotropie du modÃ¨le.
+ -> Le modÃ¨le GLRC_DM peut donner des rÃ©sultats inattendus.
+ -> Conseil: Choisissez une autre loi de comportement ou couplez le modÃ¨le avec un modÃ¨le de grille d'acier.
 """),
 
 7 : _(u"""
- -> Il faut définir au moins et seulement une armature d'acier.
+ -> Il faut dÃ©finir au moins et seulement une armature d'acier.
 """),
 
 8 : _(u"""
- -> L'objet sd_mater transmit au mot clé MATER de BETON ne contient pas de propriétés élastique.
- -> Risque & Conseil : Ajouter les propriétés élastique dans le DEFI_MATERIAU du béton.
+ -> L'objet sd_mater transmit au mot clÃ© MATER de BETON ne contient pas de propriÃ©tÃ©s Ã©lastique.
+ -> Risque & Conseil : Ajouter les propriÃ©tÃ©s Ã©lastique dans le DEFI_MATERIAU du bÃ©ton.
 """),
 
 9 : _(u"""
- -> L'objet sd_mater transmit au mot clé MATER de BETON ne contient pas de propriétés post élastiques.
- -> Risque & Conseil : Ajouter les propriétés post élastiques dans le DEFI_MATERIAU du béton.
+ -> L'objet sd_mater transmit au mot clÃ© MATER de BETON ne contient pas de propriÃ©tÃ©s post Ã©lastiques.
+ -> Risque & Conseil : Ajouter les propriÃ©tÃ©s post Ã©lastiques dans le DEFI_MATERIAU du bÃ©ton.
 """),
 
 10 : _(u"""
- -> L'objet sd_mater transmit au mot clé MATER d'ACIER ne contient pas de propriétés élastique.
- -> Risque & Conseil : Ajouter les propriétés élastique dans le DEFI_MATERIAU de l'acier.
+ -> L'objet sd_mater transmit au mot clÃ© MATER d'ACIER ne contient pas de propriÃ©tÃ©s Ã©lastique.
+ -> Risque & Conseil : Ajouter les propriÃ©tÃ©s Ã©lastique dans le DEFI_MATERIAU de l'acier.
 """),
 
 11 : _(u"""
- -> Il est impossible d'utiliser PENTE = ACIER_PLAS si la limite élastique de l'acier SY n'est pas défini.
- -> Risque & Conseil : Ajouter le paramètre SY dans le DEFI_MATERIAU de l'acier
+ -> Il est impossible d'utiliser PENTE = ACIER_PLAS si la limite Ã©lastique de l'acier SY n'est pas dÃ©fini.
+ -> Risque & Conseil : Ajouter le paramÃ¨tre SY dans le DEFI_MATERIAU de l'acier
                        ou n'utilisez pas PENTE = ACIER_PLAS
 """),
 
 13 : _(u"""
- dimension du problème inconnue
+ dimension du problÃ¨me inconnue
 """),
 
 16 : _(u"""
- le fond de fissure d'un maillage 2d ne peut être défini par des mailles
+ le fond de fissure d'un maillage 2d ne peut Ãªtre dÃ©fini par des mailles
 """),
 
 17 : _(u"""
- les mailles à modifier doivent être de type "SEG3" ou "POI1"
+ les mailles Ã  modifier doivent Ãªtre de type "SEG3" ou "POI1"
 """),
 
 18 : _(u"""
- le fond de fissure d'un maillage 2d est défini par un noeud unique
+ le fond de fissure d'un maillage 2d est dÃ©fini par un noeud unique
 """),
 
 19 : _(u"""
-  -> Code Aster a détecté des mailles de type différent lors de la
-     correspondance entre les maillages des deux modèles (mesuré/numérique).
-     Ce cas n'est pas prévu, Code Aster initialise la correspondance au noeud
+  -> Code Aster a dÃ©tectÃ© des mailles de type diffÃ©rent lors de la
+     correspondance entre les maillages des deux modÃ¨les (mesurÃ©/numÃ©rique).
+     Ce cas n'est pas prÃ©vu, Code Aster initialise la correspondance au noeud
      le plus proche.
   -> Conseil :
-     Vérifier la correspondance des noeuds et raffiner le maillage si besoin.
+     VÃ©rifier la correspondance des noeuds et raffiner le maillage si besoin.
 """),
 
 20 : _(u"""
- nombre noeuds mesuré supérieur au nombre de noeuds calculé
+ nombre noeuds mesurÃ© supÃ©rieur au nombre de noeuds calculÃ©
 """),
 
 21 : _(u"""
- NOEU_CALCUL non trouvé
+ NOEU_CALCUL non trouvÃ©
 """),
 
 22 : _(u"""
- NOEU_MESURE non trouvé
+ NOEU_MESURE non trouvÃ©
 """),
 
 23 : _(u"""
- nombre de noeuds différent
+ nombre de noeuds diffÃ©rent
 """),
 
 24 : _(u"""
- traitement manuel correspondance : un couple à la fois
+ traitement manuel correspondance : un couple Ã  la fois
 """),
 
 25 : _(u"""
- échec projection
+ Ã©chec projection
 """),
 
 26 : _(u"""
@@ -129,55 +129,55 @@ cata_msg = {
 """),
 
 27 : _(u"""
- le nombre des coefficients de pondération est supérieur
+ le nombre des coefficients de pondÃ©ration est supÃ©rieur
  au nombre de vecteurs de base
 """),
 
 28 : _(u"""
- le nombre des coefficients de pondération est inférieur
+ le nombre des coefficients de pondÃ©ration est infÃ©rieur
  au nombre de vecteurs de base
- le dernier coefficient est affecté aux autres
+ le dernier coefficient est affectÃ© aux autres
 """),
 
 29 : _(u"""
- le nombre des fonctions de pondération est supérieur
+ le nombre des fonctions de pondÃ©ration est supÃ©rieur
  au nombre de vecteurs de base
 """),
 
 30 : _(u"""
- le nombre des fonctions de pondération est inférieur
+ le nombre des fonctions de pondÃ©ration est infÃ©rieur
  au nombre de vecteurs de base
- la dernière fonction est affectée aux autres
+ la derniÃ¨re fonction est affectÃ©e aux autres
 """),
 
 31 : _(u"""
  le nombre d'abscisses d'une des fonctions d'interpolation
  n'est pas identique au nombre d'abscisses du premier point
- de mesure expérimental
+ de mesure expÃ©rimental
 """),
 
 32 : _(u"""
-  le critère d'égalité de la liste d'abscisses du premier DATASET 58
-  et de la liste d'abscisses d une des fonctions de pondération
-  n'est pas vérifié
+  le critÃ¨re d'Ã©galitÃ© de la liste d'abscisses du premier DATASET 58
+  et de la liste d'abscisses d une des fonctions de pondÃ©ration
+  n'est pas vÃ©rifiÃ©
 """),
 
 33 : _(u"""
- incompatibilité NOM_PARA et données mesurées
+ incompatibilitÃ© NOM_PARA et donnÃ©es mesurÃ©es
 """),
 
 52 : _(u"""
- itérations cycliques :
+ itÃ©rations cycliques :
  changement de configuration ou variation trop importante
- du déplacement physique à l'issue de la dernière itération
+ du dÃ©placement physique Ã  l'issue de la derniÃ¨re itÃ©ration
  Conseil: diminuez le pas de temps
 """),
 
 53 : _(u"""
  pas de convergence de l'algorithme de NEWTON :
- - en  %(k1)s  itérations
- - à l'instant  %(k2)s
- il faut réduire la rigidité normale, ou le jeu.
+ - en  %(k1)s  itÃ©rations
+ - Ã  l'instant  %(k2)s
+ il faut rÃ©duire la rigiditÃ© normale, ou le jeu.
 """),
 
 55 : _(u"""
@@ -185,15 +185,15 @@ cata_msg = {
 """),
 
 56 : _(u"""
- fluence commandée et FLUX_PHI différent de 1
+ fluence commandÃ©e et FLUX_PHI diffÃ©rent de 1
 """),
 
 57 : _(u"""
- fluence décroissante (PHI<0)
+ fluence dÃ©croissante (PHI<0)
 """),
 
 58 : _(u"""
- relation ASSE_COMBU 1d sans loi de fluence appropriée
+ relation ASSE_COMBU 1d sans loi de fluence appropriÃ©e
 """),
 
 59 : _(u"""
@@ -202,13 +202,13 @@ cata_msg = {
 
 60 : _(u"""
  CAM_CLAY :
- la porosité donnée dans CAM_CLAY doit être la même que dans THM_INIT
+ la porositÃ© donnÃ©e dans CAM_CLAY doit Ãªtre la mÃªme que dans THM_INIT
 """),
 
 61 : _(u"""
  BARCELONE :
- il faut que la contrainte hydrostatique soit supérieure
- à la  pression de cohésion -KC*PC
+ il faut que la contrainte hydrostatique soit supÃ©rieure
+ Ã  la  pression de cohÃ©sion -KC*PC
 """),
 
 62 : _(u"""
@@ -217,26 +217,26 @@ cata_msg = {
 
 63 : _(u"""
  CAM_CLAY :
- le cas des contraintes planes n'est pas traité pour ce modèle.
+ le cas des contraintes planes n'est pas traitÃ© pour ce modÃ¨le.
 """),
 
 64 : _(u"""
  CAM_CLAY :
- il faut que la contrainte hydrostatique soit supérieure
+ il faut que la contrainte hydrostatique soit supÃ©rieure
  a la pression initiale PA
 """),
 
 67 : _(u"""
- N doit être strictement positif.
+ N doit Ãªtre strictement positif.
 """),
 
 68 : _(u"""
- paramètre UN_SUR_K égal à zéro cas incompatible avec VISC_CINX_CHAB
+ paramÃ¨tre UN_SUR_K Ã©gal Ã  zÃ©ro cas incompatible avec VISC_CINX_CHAB
 """),
 
 69 : _(u"""
  loi VISC_CINX_CHAB
- on doit obligatoirement avoir UN_SUR_M = zéro
+ on doit obligatoirement avoir UN_SUR_M = zÃ©ro
 """),
 
 79 : _(u"""
@@ -244,7 +244,7 @@ cata_msg = {
 """),
 
 80 : _(u"""
- Problème interprétation vari entière ??
+ ProblÃ¨me interprÃ©tation vari entiÃ¨re ??
 """),
 
 81 : _(u"""
@@ -268,7 +268,7 @@ cata_msg = {
 """),
 
 96 : _(u"""
- Grandes déformations GROT_GDEP requises pour le matériau ELAS_HYPER.
+ Grandes dÃ©formations GROT_GDEP requises pour le matÃ©riau ELAS_HYPER.
 """),
 
 }

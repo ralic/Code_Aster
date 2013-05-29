@@ -1,4 +1,4 @@
-# -*- coding: iso-8859-1 -*-
+# coding=utf-8
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -40,7 +40,7 @@ class sd_matr_asse_com(sd_titre):
     cine = Facultatif(sd_matr_cine(SDNom(nomj='')))
 
     def exists(self):
-        # retourne "vrai" si la SD semble exister (et donc qu'elle peut etre vérifiée)
+        # retourne "vrai" si la SD semble exister (et donc qu'elle peut etre vÃ©rifiÃ©e)
         return self.REFA.exists
 
     def check_REFA(self, checker):
@@ -48,7 +48,7 @@ class sd_matr_asse_com(sd_titre):
         refa=self.REFA.get_stripped()
         assert refa[9] in ('NOEU','GENE') , refa
         lgene = refa[9] == 'GENE'
-        # pour les matrices generalisees, on ne sait pas ce qui est stocké dans refa[0]='' :
+        # pour les matrices generalisees, on ne sait pas ce qui est stockÃ© dans refa[0]='' :
         if not lgene :
             sd2=sd_maillage(refa[0]) ; sd2.check(checker)
             sd2=sd_nume_ddl(refa[1]) ; sd2.check(checker)
@@ -56,7 +56,7 @@ class sd_matr_asse_com(sd_titre):
         assert refa[4] in ('FETI','') , refa
         # pour les matrices generalisees, refa[7] n'est pas toujours rempli :
         if not lgene :
-            # glute à résorber : j'ajoute '' à la liste permise pour le test yyyy108e :
+            # glute Ã  rÃ©sorber : j'ajoute '' Ã  la liste permise pour le test yyyy108e :
             assert refa[7] in ('ASSE','DECT','DECP','') , refa
         assert refa[8] in ('MS','MR') , refa
         if refa[8]=='MS' :

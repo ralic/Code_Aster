@@ -1,9 +1,9 @@
 *--------------------------------------------------------------
-* fichier de maillage du modele TUYAU à 4 noeuds
-* identique au fichier de maillage du modele à 3 noeuds
-* mis à part le nombre d'éléments
-* crée par EC le 09/99 
-* modifié par EC le 22/03/00 		        
+* fichier de maillage du modele TUYAU Ã  4 noeuds
+* identique au fichier de maillage du modele Ã  3 noeuds
+* mis Ã  part le nombre d'Ã©lÃ©ments
+* crÃ©e par EC le 09/99 
+* modifiÃ© par EC le 22/03/00 		        
 *--------------------------------------------------------------
 
 *opti trac ps;
@@ -16,7 +16,7 @@ rmoy = 0.0811775 ;
 rc = 0.2286 ;
 ep = 0.007345 ;
 
-*** nombre d'éléments par coude (hors long. d'amortissement)
+*** nombre d'Ã©lÃ©ments par coude (hors long. d'amortissement)
 n_elt_cd = 5;
 
 ***** les points definissant les axes des coudes *****
@@ -172,4 +172,3 @@ oeil3 = (0. 10. 0.);
 trac oeil3  mail;
 oeil4 = (0. 0. 10.);
 trac oeil4  mail;
-

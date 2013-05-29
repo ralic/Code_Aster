@@ -1,4 +1,4 @@
-# -*- coding: iso-8859-1 -*-
+# coding=utf-8
 # person_in_charge: mathieu.courtois at edf.fr
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -45,7 +45,7 @@ for mod in MODULES_RAISING_FPE:
 
 # Pas d'import des autres packages d'aster car l'import de ce module est
 # fait avant l'ajout des paths. Les autres imports seront possibles une fois
-# les arguments de la ligne de commande parsés.
+# les arguments de la ligne de commande parsÃ©s.
 import E_Core
 from strfunc import convert, ufmt
 
@@ -56,7 +56,7 @@ class SUPERV:
                 [-rep_mat repertoire_materiau] [-rep_dex repertoire_datg]
                 [-interact] [-verif]
 
-    L'ancienne syntaxe reste possible pour des raisons de compatibilité :
+    L'ancienne syntaxe reste possible pour des raisons de compatibilitÃ© :
        asteru JDC.py -eficas_path "rep" -commandes "fic_commandes" [-memjeveux taille_en_Mw]
                   [-rep_mat repertoire_materiau] [-rep_dex repertoire_datg]
                   [-interact] [-verif]
@@ -87,13 +87,13 @@ class SUPERV:
                       u">> JDC.py : FIN RAPPORT"), str(cr))
 
     def error(self, *args):
-        """Cet enrobage permet de s'assurer que le sys.path a été enrichi
+        """Cet enrobage permet de s'assurer que le sys.path a Ã©tÃ© enrichi
         pour permettre d'importer Noyau."""
         from Noyau.N_info import message, SUPERV as SUPCAT
         message.error(SUPCAT, *args)
 
     def register(self):
-        """Enregistre le JDC et les objets nécessaires à aster_core."""
+        """Enregistre le JDC et les objets nÃ©cessaires Ã  aster_core."""
         import aster_core
         from Utilitai.Utmess import MessageLog
         aster_core.register(self.jdc, self.coreopts, MessageLog, E_Core)
@@ -154,7 +154,7 @@ class SUPERV:
         text = f.read()
         dash = "# " + "-" * 90
         print dash
-        print convert(_(u"""# Impression du contenu du fichier de commandes à exécuter :"""))
+        print convert(_(u"""# Impression du contenu du fichier de commandes Ã  exÃ©cuter :"""))
         print dash
         print convert(text)
         print dash
@@ -162,7 +162,7 @@ class SUPERV:
         args = {}
         self.jdc = self.JdC(procedure=text, cata=self.cata, nom=fort1,
                             context_ini=params, **args)
-        # on enregistre les objets dans aster_core dès que le jdc est créé
+        # on enregistre les objets dans aster_core dÃ¨s que le jdc est crÃ©Ã©
         self.register()
 
     def CompileJDC(self):
@@ -199,7 +199,7 @@ class SUPERV:
             self.error(self.format_CR(j.cr))
             ier=1
         if self.coreopts.get_option('interact'):
-            # Si l'option -interact est positionnée on ouvre un interpreteur interactif
+            # Si l'option -interact est positionnÃ©e on ouvre un interpreteur interactif
             j.interact()
         return ier
 
@@ -331,7 +331,7 @@ class SUPERV:
         if ier:
            return ier
         if self.jdc.par_lot == 'NON':
-            print convert(_(u"""--- Fin de l'exécution"""))
+            print convert(_(u"""--- Fin de l'exÃ©cution"""))
             return ier
         ier = self.CheckCata()
         if ier:

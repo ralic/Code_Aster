@@ -1,4 +1,4 @@
-# -*- coding: iso-8859-1 -*-
+# coding=utf-8
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -20,64 +20,64 @@
 
 cata_msg = {
 1 : _(u"""
- On ne peut pas affecter des moments répartis sur des éléments de type %(k1)s.
+ On ne peut pas affecter des moments rÃ©partis sur des Ã©lÃ©ments de type %(k1)s.
 """),
 
 10 : _(u"""
- on ne peut pas affecter la modélisation "AXIS_DIAG" aux éléments de l'axe
+ on ne peut pas affecter la modÃ©lisation "AXIS_DIAG" aux Ã©lÃ©ments de l'axe
 """),
 
 11 : _(u"""
-  -> Attention vous avez une loi de comportement inélastique et vous êtes
-     en contraintes planes, la composante du tenseur de déformations EPZZ que
+  -> Attention vous avez une loi de comportement inÃ©lastique et vous Ãªtes
+     en contraintes planes, la composante du tenseur de dÃ©formations EPZZ que
      vous allez calculer n'est valable que tant que vous restez dans le
-     domaine élastique. Les autres composantes EPXX, EPYY, EPXY sont correctes.
+     domaine Ã©lastique. Les autres composantes EPXX, EPYY, EPXY sont correctes.
   -> Risque & Conseil :
-     Si le comportement est effectivement non linéaire, il ne faut pas utiliser
-     la valeur de EPZZ calculée par cette option.
+     Si le comportement est effectivement non linÃ©aire, il ne faut pas utiliser
+     la valeur de EPZZ calculÃ©e par cette option.
 """),
 
 12 : _(u"""
- Calcul de G bilinéaire
- E, NU, ALPHA dépendent de la température
- Les champs de température (TGU et TGV) sont différents
+ Calcul de G bilinÃ©aire
+ E, NU, ALPHA dÃ©pendent de la tempÃ©rature
+ Les champs de tempÃ©rature (TGU et TGV) sont diffÃ©rents
 """),
 
 16 : _(u"""
- Comportement: %(k1)s non implanté
+ Comportement: %(k1)s non implantÃ©
 """),
 
 17 : _(u"""
- Le matériau  %(k1)s  n'est pas connu
- Seuls sont admis les matériaux  'THER' et 'THER_COQUE' pour les coques thermiques
+ Le matÃ©riau  %(k1)s  n'est pas connu
+ Seuls sont admis les matÃ©riaux  'THER' et 'THER_COQUE' pour les coques thermiques
 """),
 
 18 : _(u"""
- Le matériau  %(k1)s  n'est pas connu
- Seuls sont admis les matériaux  'THER' et 'THER_COQUE' pour le calcul des flux pour les coques thermiques
+ Le matÃ©riau  %(k1)s  n'est pas connu
+ Seuls sont admis les matÃ©riaux  'THER' et 'THER_COQUE' pour le calcul des flux pour les coques thermiques
 """),
 
 19 : _(u"""
- L'option  %(k1)s  n'est disponible qu'avec des éléments TETRA ou HEXA en 3D et
- des éléments TRIA ou QUAD en 2D.
+ L'option  %(k1)s  n'est disponible qu'avec des Ã©lÃ©ments TETRA ou HEXA en 3D et
+ des Ã©lÃ©ments TRIA ou QUAD en 2D.
  Or, la maille  %(k2)s  est de type  %(k3)s .
 """),
 
 20 : _(u"""
- La maille  %(k1)s  ne répond pas au critère géométrique sur les mailles HEXA :
- Les cotés opposés doivent être parallèles
+ La maille  %(k1)s  ne rÃ©pond pas au critÃ¨re gÃ©omÃ©trique sur les mailles HEXA :
+ Les cotÃ©s opposÃ©s doivent Ãªtre parallÃ¨les
 """),
 
 26 : _(u"""
- Mauvaise définition des caractéristiques de la section
+ Mauvaise dÃ©finition des caractÃ©ristiques de la section
 """),
 
 28 : _(u"""
- Rigidité géométrique non définie pour les éléments courbes
+ RigiditÃ© gÃ©omÃ©trique non dÃ©finie pour les Ã©lÃ©ments courbes
 """),
 
 29 : _(u"""
- Force élémentaire électrique non définie pour les éléments courbes
+ Force Ã©lÃ©mentaire Ã©lectrique non dÃ©finie pour les Ã©lÃ©ments courbes
 """),
 
 30 : _(u"""
@@ -89,11 +89,11 @@ cata_msg = {
 """),
 
 34 : _(u"""
- Seules les forces suiveuses de type vent définies par un EVOL_CHAR sont autorisées
+ Seules les forces suiveuses de type vent dÃ©finies par un EVOL_CHAR sont autorisÃ©es
 """),
 
 35 : _(u"""
- Un champ de vitesse de vent est imposé sans donner un Cx dépendant de la vitesse sur une des barres
+ Un champ de vitesse de vent est imposÃ© sans donner un Cx dÃ©pendant de la vitesse sur une des barres
 """),
 
 36 : _(u"""
@@ -101,37 +101,37 @@ cata_msg = {
 """),
 
 37 : _(u"""
-  Relation :  %(k1)s  non implantée sur les câbles
+  Relation :  %(k1)s  non implantÃ©e sur les cÃ¢bles
 """),
 
 38 : _(u"""
-  Déformation :  %(k1)s  non implantée sur les câbles
+  DÃ©formation :  %(k1)s  non implantÃ©e sur les cÃ¢bles
 """),
 
 39 : _(u"""
- un champ de vitesse de vent est impose sans donner un Cx dépendant de la vitesse sur un des câbles.
+ un champ de vitesse de vent est impose sans donner un Cx dÃ©pendant de la vitesse sur un des cÃ¢bles.
 """),
 
 40 : _(u"""
- DEFORMATION = %(k1)s non programmé.
- Seules les déformations PETIT et GROT_GDEP sont autorisées avec les
- éléments de type %(k2)s.
+ DEFORMATION = %(k1)s non programmÃ©.
+ Seules les dÃ©formations PETIT et GROT_GDEP sont autorisÃ©es avec les
+ Ã©lÃ©ments de type %(k2)s.
 """),
 
 46 : _(u"""
- le paramètre "pnosym" n'existe pas dans le catalogue de l'élément  %(k1)s  .
+ le paramÃ¨tre "pnosym" n'existe pas dans le catalogue de l'Ã©lÃ©ment  %(k1)s  .
 """),
 
 47 : _(u"""
- la taille de la matrice non-symétrique en entrée est fausse.
+ la taille de la matrice non-symÃ©trique en entrÃ©e est fausse.
 """),
 
 48 : _(u"""
- la taille de la matrice symétrique en sortie est fausse.
+ la taille de la matrice symÃ©trique en sortie est fausse.
 """),
 
 49 : _(u"""
- anisotropie non prévue pour coque1d
+ anisotropie non prÃ©vue pour coque1d
 """),
 
 50 : _(u"""
@@ -139,19 +139,19 @@ cata_msg = {
 """),
 
 51 : _(u"""
- Le nombre de couches défini dans DEFI_COQU_MULT et dans AFFE_CARA_ELEM dans n'est pas cohérent.
+ Le nombre de couches dÃ©fini dans DEFI_COQU_MULT et dans AFFE_CARA_ELEM dans n'est pas cohÃ©rent.
  Nombre de couches dans DEFI_COQU_MULT: %(i1)d
  Nombre de couches dans AFFE_CARA_ELEM: %(i2)d
 """),
 
 52 : _(u"""
- L'épaisseur totale des couches définie dans DEFI_COQU_MULT et celle définie dans AFFE_CARA_ELEM ne sont pas cohérentes.
- Épaisseur totale des couches dans DEFI_COQU_MULT: %(r1)f
- Épaisseur dans AFFE_CARA_ELEM: %(r2)f
+ L'Ã©paisseur totale des couches dÃ©finie dans DEFI_COQU_MULT et celle dÃ©finie dans AFFE_CARA_ELEM ne sont pas cohÃ©rentes.
+ Ã‰paisseur totale des couches dans DEFI_COQU_MULT: %(r1)f
+ Ã‰paisseur dans AFFE_CARA_ELEM: %(r2)f
 """),
 
 54 : _(u"""
-  la réactualisation de la géométrie (déformation : PETIT_REAC sous le mot clé COMP_INCR) est déconseillée pour les éléments de coque_1d.
+  la rÃ©actualisation de la gÃ©omÃ©trie (dÃ©formation : PETIT_REAC sous le mot clÃ© COMP_INCR) est dÃ©conseillÃ©e pour les Ã©lÃ©ments de coque_1d.
 """),
 
 55 : _(u"""
@@ -167,7 +167,7 @@ cata_msg = {
 """),
 
 60 : _(u"""
- Noeuds confondus pour un élément de poutre
+ Noeuds confondus pour un Ã©lÃ©ment de poutre
 """),
 
 61 : _(u"""
@@ -175,15 +175,15 @@ cata_msg = {
 """),
 
 62 : _(u"""
- Noeuds confondus pour un élément de barre
+ Noeuds confondus pour un Ã©lÃ©ment de barre
 """),
 
 63 : _(u"""
- ne pas utiliser THER_LINEAIRE avec des éléments de Fourier mais les commandes développées
+ ne pas utiliser THER_LINEAIRE avec des Ã©lÃ©ments de Fourier mais les commandes dÃ©veloppÃ©es
 """),
 
 67 : _(u"""
- Élément dégénéré :
+ Ã‰lÃ©ment dÃ©gÃ©nÃ©rÃ© :
  revoir le maillage
 """),
 
@@ -192,22 +192,22 @@ cata_msg = {
 """),
 
 75 : _(u"""
- le matériau %(k1)s  n'est pas autorisé pour calculer les déformations plastiques :
- seuls les matériaux isotropes sont traités en plasticité
+ le matÃ©riau %(k1)s  n'est pas autorisÃ© pour calculer les dÃ©formations plastiques :
+ seuls les matÃ©riaux isotropes sont traitÃ©s en plasticitÃ©
 """),
 
 76 : _(u"""
  couplage fluage/fissuration :
- la loi BETON_DOUBLE_DP ne peut être couplée qu'avec une loi de fluage de GRANGER
+ la loi BETON_DOUBLE_DP ne peut Ãªtre couplÃ©e qu'avec une loi de fluage de GRANGER
 """),
 
 77 : _(u"""
-  -> Attention vous êtes en contraintes planes, et vous utilisez la loi
-     de comportement %(k1)s. La composante du tenseur des déformations
-     plastiques EPZZ est calculée en supposant l'incompréhensibilité des
-     déformations plastiques : EPZZ = -(EPXX + EPYY).
+  -> Attention vous Ãªtes en contraintes planes, et vous utilisez la loi
+     de comportement %(k1)s. La composante du tenseur des dÃ©formations
+     plastiques EPZZ est calculÃ©e en supposant l'incomprÃ©hensibilitÃ© des
+     dÃ©formations plastiques : EPZZ = -(EPXX + EPYY).
   -> Risque & Conseil :
-     Vérifiez que cette expression est valide avec votre loi de comportement.
+     VÃ©rifiez que cette expression est valide avec votre loi de comportement.
 
 """),
 
@@ -216,48 +216,48 @@ cata_msg = {
 """),
 
 85 : _(u"""
-  relation :  %(k1)s  non implantée sur les éléments "POU_D_T_GD"
+  relation :  %(k1)s  non implantÃ©e sur les Ã©lÃ©ments "POU_D_T_GD"
 """),
 
 86 : _(u"""
-  déformation :  %(k1)s  non implantée sur les éléments "POU_D_T_GD"
+  dÃ©formation :  %(k1)s  non implantÃ©e sur les Ã©lÃ©ments "POU_D_T_GD"
 """),
 
 87 : _(u"""
- RCVALA ne trouve pas RHO, qui est nécessaire en dynamique
+ RCVALA ne trouve pas RHO, qui est nÃ©cessaire en dynamique
 """),
 
 91 : _(u"""
-  calcul de la masse non implanté pour les éléments COQUE_3D en grandes rotations, déformation : GROT_GDEP
+  calcul de la masse non implantÃ© pour les Ã©lÃ©ments COQUE_3D en grandes rotations, dÃ©formation : GROT_GDEP
 """),
 
 92 : _(u"""
- les comportements élastiques de type COMP_ELAS ne sont pas disponibles pour la modélisation DKTG.
+ les comportements Ã©lastiques de type COMP_ELAS ne sont pas disponibles pour la modÃ©lisation DKTG.
 """),
 
 93 : _(u"""
-  déformation :  %(k1)s  non implantée sur les éléments COQUE_3D en grandes rotations
-  déformation : GROT_GDEP obligatoirement
+  dÃ©formation :  %(k1)s  non implantÃ©e sur les Ã©lÃ©ments COQUE_3D en grandes rotations
+  dÃ©formation : GROT_GDEP obligatoirement
 """),
 
 94 : _(u"""
-  -> La réactualisation de la géométrie (DEFORMATION='PETIT_REAC' sous
-     le mot clé COMP_INCR) est déconseillée pour les éléments COQUE_3D.
+  -> La rÃ©actualisation de la gÃ©omÃ©trie (DEFORMATION='PETIT_REAC' sous
+     le mot clÃ© COMP_INCR) est dÃ©conseillÃ©e pour les Ã©lÃ©ments COQUE_3D.
   -> Risque & Conseil :
-     Le calcul des déformations à l'aide de PETIT_REAC n'est qu'une
-     approximation des hypothèses des grands déplacements. Elle nécessite
-     d'effectuer de très petits incréments de chargement. Pour prendre en
-     compte correctement les grands déplacements et surtout les grandes
-     rotations, il est recommandé d'utiliser DEFORMATION='GROT_GDEP'.
+     Le calcul des dÃ©formations Ã  l'aide de PETIT_REAC n'est qu'une
+     approximation des hypothÃ¨ses des grands dÃ©placements. Elle nÃ©cessite
+     d'effectuer de trÃ¨s petits incrÃ©ments de chargement. Pour prendre en
+     compte correctement les grands dÃ©placements et surtout les grandes
+     rotations, il est recommandÃ© d'utiliser DEFORMATION='GROT_GDEP'.
 
 """),
 
 98 : _(u"""
- comportement coeur homogénéise inexistant
+ comportement coeur homogÃ©nÃ©ise inexistant
 """),
 
 99 : _(u"""
-  : seule les poutres à sections constantes sont admises !
+  : seule les poutres Ã  sections constantes sont admises !
 """),
 
 }

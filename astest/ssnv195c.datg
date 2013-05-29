@@ -4,7 +4,7 @@ dens 2.5 ;
 *----------------------------------------
 *DONNEES
 *----------------------------------------
-*cotés
+*cotÃ©s
 LX = 5;
 LY = 5;
 LZ = 50;
@@ -14,7 +14,7 @@ NY = 2;
 NZ = 20;
 
 *---------------------------------------------
-*construction des surfaces dans le plan inférieur
+*construction des surfaces dans le plan infÃ©rieur
 *---------------------------------------------
 
 p1 = LX   0.  0.;

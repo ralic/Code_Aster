@@ -49,7 +49,6 @@ CHAR_ROTA =MACRO(nom="CHAR_ROTA", op=char_rota_ops,sd_prod=char_meca,
          ANGLE_DEGRES     =SIMP(statut='o',typ='R'),
          TINI            =SIMP(statut='o',typ='R'),
          TFIN            =SIMP(statut='o',typ='R'),
-         RESU            =SIMP(statut='o',typ=resultat_sdaster,fr="Résultat de STAT_NON_LINE"),
+         RESU            =SIMP(statut='o',typ=resultat_sdaster,fr="RÃ©sultat de STAT_NON_LINE"),
          MAIL            =SIMP(statut='o',typ=maillage_sdaster,),
          )
-

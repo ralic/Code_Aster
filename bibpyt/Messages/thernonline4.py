@@ -1,4 +1,4 @@
-# -*- coding: iso-8859-1 -*-
+# coding=utf-8
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -21,8 +21,8 @@
 cata_msg = {
 
 85 : _(u"""
-   Arrêt : absence de convergence au numéro d'instant : %(i1)d
-                                  lors de l'itération : %(i2)d
+   ArrÃªt : absence de convergence au numÃ©ro d'instant : %(i1)d
+                                  lors de l'itÃ©ration : %(i2)d
 """),
 
 }

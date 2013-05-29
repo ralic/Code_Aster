@@ -1,4 +1,4 @@
-# -*- coding: iso-8859-1 -*-
+# coding=utf-8
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -22,59 +22,59 @@
 cata_msg = {
 
 1 : _(u"""
-Vous cherchez à faire du chaînage HM avec une modélisation Thermo-hydro-mécanique comportant de la mécanique.
-Le chaînage est donc inutile !
+Vous cherchez Ã  faire du chaÃ®nage HM avec une modÃ©lisation Thermo-hydro-mÃ©canique comportant de la mÃ©canique.
+Le chaÃ®nage est donc inutile !
 """),
 
 2 : _(u"""
-Le champ d'entrée div(u) est mal construit. Il manque soit l'instant actuel soit l'instant précédent de div(u).
+Le champ d'entrÃ©e div(u) est mal construit. Il manque soit l'instant actuel soit l'instant prÃ©cÃ©dent de div(u).
 """),
 
 3 : _(u"""
-Vous n'êtes pas sur une modélisation autorisée pour faire du chaînage.
-Le chaînage ne fonctionne pas sur la modélisation %(k1)s.
+Vous n'Ãªtes pas sur une modÃ©lisation autorisÃ©e pour faire du chaÃ®nage.
+Le chaÃ®nage ne fonctionne pas sur la modÃ©lisation %(k1)s.
 
-Conseil : Vérifiez que votre modélisation %(k2)s est sans mécanique
+Conseil : VÃ©rifiez que votre modÃ©lisation %(k2)s est sans mÃ©canique
 """),
 
 4 : _(u"""
-Vous n'êtes pas sur une modélisation autorisée pour faire du chaînage.
-Le chaînage ne fonctionne pas sur la modélisation %(k1)s.
+Vous n'Ãªtes pas sur une modÃ©lisation autorisÃ©e pour faire du chaÃ®nage.
+Le chaÃ®nage ne fonctionne pas sur la modÃ©lisation %(k1)s.
 
-Conseil : Vérifiez que votre modélisation %(k2)s est 'D_PLAN' ou '3D'
-ou une modélisation THM
+Conseil : VÃ©rifiez que votre modÃ©lisation %(k2)s est 'D_PLAN' ou '3D'
+ou une modÃ©lisation THM
 """),
 
 5 : _(u"""
-Il n'est pas possible de faire du chaînage avec un coefficient d'emmagasinement
+Il n'est pas possible de faire du chaÃ®nage avec un coefficient d'emmagasinement
 non nul.
 """),
 
 6 : _(u"""
-L'instant %(r1)e spécifié en entrée doit être supérieur au dernier
-instant trouvé dans la SD résultat %(k1)s.
+L'instant %(r1)e spÃ©cifiÃ© en entrÃ©e doit Ãªtre supÃ©rieur au dernier
+instant trouvÃ© dans la SD rÃ©sultat %(k1)s.
 """),
 
 7 : _(u"""
-  Impression du champ %(k1)s à l'instant %(r1)e sur le modèle %(k2)s
+  Impression du champ %(k1)s Ã  l'instant %(r1)e sur le modÃ¨le %(k2)s
 """),
 
 8 : _(u"""
-  Les modélisations THM n'ont de sens qu'en petites déformations.
+  Les modÃ©lisations THM n'ont de sens qu'en petites dÃ©formations.
   Choisissez COMP_INCR/DEFORMATION='PETIT'.
 """),
 
 9 : _(u"""
-  Vous n'avez pas choisi une loi de comportement mécanique autorisée pour les
-  modélisations THM : %(k1)s
+  Vous n'avez pas choisi une loi de comportement mÃ©canique autorisÃ©e pour les
+  modÃ©lisations THM : %(k1)s
 """),
 
 10 : _(u"""
-  Si vous faites du chaînage, il ne faut qu'un seul et unique modèle dans le résultat. Si vous en voulez plusieurs, faites une demande d'évolution.
+  Si vous faites du chaÃ®nage, il ne faut qu'un seul et unique modÃ¨le dans le rÃ©sultat. Si vous en voulez plusieurs, faites une demande d'Ã©volution.
 """),
 
 11 : _(u"""
-  On a trouvé une évolution de variable de commandes PTOT incomplète. Il manque un instant.
+  On a trouvÃ© une Ã©volution de variable de commandes PTOT incomplÃ¨te. Il manque un instant.
 """),
 
 }

@@ -1,4 +1,4 @@
-# -*- coding: iso-8859-1 -*-
+# coding=utf-8
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -22,8 +22,8 @@ from cata_comportement import LoiComportement
 
 loi = LoiComportement(
    nom            = 'VMIS_CINE_GC',
-   doc            = """Loi de Von Mises en 1D - Écrouissage cinématique linéaire.
-   Application aux études en génie civil : armatures, trellis soudés""",
+   doc            = """Loi de Von Mises en 1D - Ã‰crouissage cinÃ©matique linÃ©aire.
+   Application aux Ã©tudes en gÃ©nie civil : armatures, trellis soudÃ©s""",
    num_lc         = 9999,
    nb_vari        = 6,
    nom_vari       = ('CRITSIG','CRITEPS','XCINXX','INDIPLAS','DISSIP','DISSTHER'),

@@ -1,4 +1,4 @@
-# -*- coding: iso-8859-1 -*-
+# coding=utf-8
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -24,7 +24,7 @@ INST_FIN plus petit que INST_INIT.
 """),
 
 2: _(u"""
-Le mot-clé MAILLE est interdit, utilisez GROUP_MA.
+Le mot-clÃ© MAILLE est interdit, utilisez GROUP_MA.
 """),
 
 }

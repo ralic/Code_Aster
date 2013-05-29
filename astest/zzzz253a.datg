@@ -2,7 +2,7 @@
 OPTI DIME 2 ELEM QUA8;
 opti SAUV FORM 'zzzz253a.mgib';
 
-* maillage 2D d'un barreau de longueur 10 formé de 2 morceaux de longueur 5 :
+* maillage 2D d'un barreau de longueur 10 formÃ© de 2 morceaux de longueur 5 :
 
 A=  0.  0.;
 B=  0.  0.1;

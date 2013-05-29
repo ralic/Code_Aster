@@ -1,4 +1,4 @@
-# -*- coding: iso-8859-1 -*-
+# coding=utf-8
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -36,10 +36,10 @@ class sd_modele(AsBase):
     MAILLE = Facultatif(AsVI())
     PARTIT = Facultatif(AsVK8(lonmax=1))
 
-    # une sd_modele peut avoir une "sd_l_table" contenant des grandeurs caractéristiques de l'étude :
+    # une sd_modele peut avoir une "sd_l_table" contenant des grandeurs caractÃ©ristiques de l'Ã©tude :
     lt = Facultatif(sd_l_table(SDNom(nomj='')))
 
-    # Si le modèle vient de MODI_MODELE_XFEM :
+    # Si le modÃ¨le vient de MODI_MODELE_XFEM :
     xfem = Facultatif(sd_modele_xfem(SDNom(nomj='')))
 
 

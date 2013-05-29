@@ -1,4 +1,4 @@
-# -*- coding: iso-8859-1 -*-
+# coding=utf-8
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -21,39 +21,39 @@
 cata_msg = {
 
 3 : _(u"""
- Calcul des valeurs propres en grandes déformations
+ Calcul des valeurs propres en grandes dÃ©formations
 """),
 
 14 : _(u"""
- Vous utilisez la méthode CONTINUE pour le traitement du contact et faites une reprise de calcul (mot-clé reuse). De plus, vous n'avez pas activé
- l'initialisation automatique des statuts de contact. L'état initial de contact sera donc non contactant.
- Cela peut entraîner des difficultés de convergence en présence de fortes non-linéarités. En présence de frottement, la solution peut bifurquer
- différemment.
+ Vous utilisez la mÃ©thode CONTINUE pour le traitement du contact et faites une reprise de calcul (mot-clÃ© reuse). De plus, vous n'avez pas activÃ©
+ l'initialisation automatique des statuts de contact. L'Ã©tat initial de contact sera donc non contactant.
+ Cela peut entraÃ®ner des difficultÃ©s de convergence en prÃ©sence de fortes non-linÃ©aritÃ©s. En prÃ©sence de frottement, la solution peut bifurquer
+ diffÃ©remment.
  
  Conseils :
    - si vous le pouvez, faites votre calcul en une seule fois.
-   - activez la détection automatique du contact initial sur toutes les zones (CONTACT_INIT='INTERPENETRE' dans DEFI_CONTACT).
+   - activez la dÃ©tection automatique du contact initial sur toutes les zones (CONTACT_INIT='INTERPENETRE' dans DEFI_CONTACT).
 """),
 
 15 : _(u"""
- Vous utilisez la méthode CONTINUE pour le traitement du contact et définissez un état initial via le mot-clé ETAT_INIT.  De plus, vous n'avez pas activé
- l'initialisation automatique des statuts de contact. L'état initial de contact sera donc non contactant.
+ Vous utilisez la mÃ©thode CONTINUE pour le traitement du contact et dÃ©finissez un Ã©tat initial via le mot-clÃ© ETAT_INIT.  De plus, vous n'avez pas activÃ©
+ l'initialisation automatique des statuts de contact. L'Ã©tat initial de contact sera donc non contactant.
  
- Il est conseillé d'activer la détection automatique du contact initial sur toutes les zones (CONTACT_INIT='INTERPENETRE' dans DEFI_CONTACT).
+ Il est conseillÃ© d'activer la dÃ©tection automatique du contact initial sur toutes les zones (CONTACT_INIT='INTERPENETRE' dans DEFI_CONTACT).
 """),
 
 22 : _(u"""
- On suppose qu'on part d'un état a vitesses nulles
+ On suppose qu'on part d'un Ã©tat a vitesses nulles
 """),
 
 23 : _(u"""
- On estime une accélération initiale.
+ On estime une accÃ©lÃ©ration initiale.
 """),
 
 47 : _(u"""
  Vous faites une reprise de calcul avec PILOTAGE en longueur d'arc et avec l'option ANGL_INCR_DEPL mais il n'y pas assez d'informations dans
- la structure de données résultat. Il vous faut en effet au moins les deux derniers champs déplacements solutions.
- Changer l'option de PILOTAGE (utilisez NORM_INCR_DEPL) ou refaites le premier calcul pour enrichir la structure de données résultat (modifiez vos options du mot-clé ARCHIVAGE).
+ la structure de donnÃ©es rÃ©sultat. Il vous faut en effet au moins les deux derniers champs dÃ©placements solutions.
+ Changer l'option de PILOTAGE (utilisez NORM_INCR_DEPL) ou refaites le premier calcul pour enrichir la structure de donnÃ©es rÃ©sultat (modifiez vos options du mot-clÃ© ARCHIVAGE).
 """),
 
 }

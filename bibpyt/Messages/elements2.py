@@ -1,4 +1,4 @@
-# -*- coding: iso-8859-1 -*-
+# coding=utf-8
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -21,20 +21,20 @@
 cata_msg = {
 
 1  : _(u"""
-   Aucun champ de déplacement ni de vitesse n'est fourni
+   Aucun champ de dÃ©placement ni de vitesse n'est fourni
    pour le calcul de l'option %(k1)s.
 """),
 
 27 : _(u"""
- pas d'intersection trouvé
+ pas d'intersection trouvÃ©
 """),
 
 29 : _(u"""
- élément faisceau homogénéisé non prévu
+ Ã©lÃ©ment faisceau homogÃ©nÃ©isÃ© non prÃ©vu
 """),
 
 31 : _(u"""
-  ELREFE non prévu
+  ELREFE non prÃ©vu
 """),
 
 32 : _(u"""
@@ -50,25 +50,25 @@ cata_msg = {
 """),
 
 37 : _(u"""
- pas de zéro, convergence impossible
+ pas de zÃ©ro, convergence impossible
 """),
 
 38 : _(u"""
   ->  L'option ANGL_AXE n'est pas prise en compte en 2D mais seulement
       en 3D.
   -> Risque & Conseil :
-     Ce mot clé utilisé dans l'opérateur AFFE_CARA_ELEM (MASSIF), permet
-     de définir des axes locaux pour lesquels on utilise une propriété de
-     symétrie de révolution, ou d'isotropie transverse. En 2D, on peut définir
-     un repère d'orthotropie via ANGL_REP.
+     Ce mot clÃ© utilisÃ© dans l'opÃ©rateur AFFE_CARA_ELEM (MASSIF), permet
+     de dÃ©finir des axes locaux pour lesquels on utilise une propriÃ©tÃ© de
+     symÃ©trie de rÃ©volution, ou d'isotropie transverse. En 2D, on peut dÃ©finir
+     un repÃ¨re d'orthotropie via ANGL_REP.
 """),
 
 39 : _(u"""
- loi LEMA_SEUIL non implémentée avec les poutres multifibres
+ loi LEMA_SEUIL non implÃ©mentÃ©e avec les poutres multifibres
 """),
 
 40 : _(u"""
- on ne sait pas intégrer avec  %(k1)s  caractéristiques par fibre
+ on ne sait pas intÃ©grer avec  %(k1)s  caractÃ©ristiques par fibre
 """),
 
 41 : _(u"""
@@ -76,7 +76,7 @@ cata_msg = {
 """),
 
 42 : _(u"""
- " %(k1)s "    nom d'élément inconnu.
+ " %(k1)s "    nom d'Ã©lÃ©ment inconnu.
 """),
 
 43 : _(u"""
@@ -88,7 +88,7 @@ cata_msg = {
 """),
 
 45 : _(u"""
- on n'a pas trouvé de variable interne correspondante a la déformation plastique équivalente cumulée
+ on n'a pas trouvÃ© de variable interne correspondante a la dÃ©formation plastique Ã©quivalente cumulÃ©e
 """),
 
 46 : _(u"""
@@ -104,23 +104,23 @@ cata_msg = {
 """),
 
 49 : _(u"""
- charge répartie variable non admise sur un élément courbe.
+ charge rÃ©partie variable non admise sur un Ã©lÃ©ment courbe.
 """),
 
 50 : _(u"""
- charge répartie variable non admise sur un élément variable.
+ charge rÃ©partie variable non admise sur un Ã©lÃ©ment variable.
 """),
 
 51 : _(u"""
- on ne peut pas imposer de charges réparties suiveuses de type vitesse de vent sur les poutres courbes.
+ on ne peut pas imposer de charges rÃ©parties suiveuses de type vitesse de vent sur les poutres courbes.
 """),
 
 52 : _(u"""
- on ne peut pas imposer de charges réparties suiveuses sur les poutres courbes.
+ on ne peut pas imposer de charges rÃ©parties suiveuses sur les poutres courbes.
 """),
 
 53 : _(u"""
- un champ de vitesse de vent est imposé sans donner un Cx dépendant de la vitesse sur une des poutres.
+ un champ de vitesse de vent est imposÃ© sans donner un Cx dÃ©pendant de la vitesse sur une des poutres.
 """),
 
 54 : _(u"""
@@ -132,19 +132,19 @@ cata_msg = {
 """),
 
 56 : _(u"""
- pour l'instant on ne fait pas le calcul de la  matrice de masse d'un élément de plaque q4g excentre.
+ pour l'instant on ne fait pas le calcul de la  matrice de masse d'un Ã©lÃ©ment de plaque q4g excentre.
 """),
 
 57 : _(u"""
- pour l'instant on ne peut pas excentrer les éléments q4g .
+ pour l'instant on ne peut pas excentrer les Ã©lÃ©ments q4g .
 """),
 
 58 : _(u"""
- Échec de convergence dans l'inversion du système par Newton-Raphson.
+ Ã‰chec de convergence dans l'inversion du systÃ¨me par Newton-Raphson.
 """),
 
 59 : _(u"""
- Les moments répartis ne sont autorisés que sur les poutres droites à section constante.
+ Les moments rÃ©partis ne sont autorisÃ©s que sur les poutres droites Ã  section constante.
 """),
 
 61 : _(u"""
@@ -152,7 +152,7 @@ cata_msg = {
 """),
 
 62 : _(u"""
- ! Problème RCVALA rhocp !
+ ! ProblÃ¨me RCVALA rhocp !
 """),
 
 63 : _(u"""
@@ -160,20 +160,20 @@ cata_msg = {
 """),
 
 71 : _(u"""
- Pour les modélisations DKT, seules les lois de comportement sous COMP_INCR sont autorisées.
+ Pour les modÃ©lisations DKT, seules les lois de comportement sous COMP_INCR sont autorisÃ©es.
 """),
 
 72 : _(u"""
-  -> La réactualisation de la géométrie (DEFORMATION='PETIT_REAC' sous
-     le mot clé COMP_INCR) est déconseillée pour les éléments de type plaque. Les
-     grandes rotations ne sont pas modélisées correctement.
+  -> La rÃ©actualisation de la gÃ©omÃ©trie (DEFORMATION='PETIT_REAC' sous
+     le mot clÃ© COMP_INCR) est dÃ©conseillÃ©e pour les Ã©lÃ©ments de type plaque. Les
+     grandes rotations ne sont pas modÃ©lisÃ©es correctement.
   -> Risque & Conseil :
-     En présence de grands déplacements et grandes rotations, il est préférable
-     d'utiliser la modélisation COQUE_3D, avec DEFORMATION='GROT_GDEP'
+     En prÃ©sence de grands dÃ©placements et grandes rotations, il est prÃ©fÃ©rable
+     d'utiliser la modÃ©lisation COQUE_3D, avec DEFORMATION='GROT_GDEP'
 """),
 
 73 : _(u"""
- Seule la loi de comportement ELAS est autorisée avec la déformation GROT_GDEP en modélisation DKT.
+ Seule la loi de comportement ELAS est autorisÃ©e avec la dÃ©formation GROT_GDEP en modÃ©lisation DKT.
 """),
 
 74 : _(u"""
@@ -181,7 +181,7 @@ cata_msg = {
 """),
 
 75 : _(u"""
-  Les matériaux de coque homogénéisées (ELAS_COQUE ou DEFI_COQU_MULT) sont interdits en non-linéaire.
+  Les matÃ©riaux de coque homogÃ©nÃ©isÃ©es (ELAS_COQUE ou DEFI_COQU_MULT) sont interdits en non-linÃ©aire.
 """),
 
 77 : _(u"""
@@ -189,19 +189,19 @@ cata_msg = {
 """),
 
 80 : _(u"""
- éléments de poutre noeuds confondus pour un élément:  %(k1)s
+ Ã©lÃ©ments de poutre noeuds confondus pour un Ã©lÃ©ment:  %(k1)s
 """),
 
 81 : _(u"""
- éléments de poutre section variable affine :seul une section rectangle plein est disponible.
+ Ã©lÃ©ments de poutre section variable affine :seul une section rectangle plein est disponible.
 """),
 
 82 : _(u"""
- éléments de poutre section variable homothétique : l'aire initiale est nulle.
+ Ã©lÃ©ments de poutre section variable homothÃ©tique : l'aire initiale est nulle.
 """),
 
 84 : _(u"""
- éléments de poutre l'option " %(k1)s " est inconnue
+ Ã©lÃ©ments de poutre l'option " %(k1)s " est inconnue
 """),
 
 90 : _(u"""

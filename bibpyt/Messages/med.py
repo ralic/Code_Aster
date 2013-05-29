@@ -1,4 +1,4 @@
-# -*- coding: iso-8859-1 -*-
+# coding=utf-8
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -22,32 +22,32 @@ cata_msg = {
 
 1 : _(u"""
   -> Absence de localisation de points de Gauss dans le fichier MED
-     pour l'élément de référence %(k1)s.
+     pour l'Ã©lÃ©ment de rÃ©fÃ©rence %(k1)s.
      On suppose que l'ordre des points de Gauss est celui de Code_Aster.
   -> Risque & Conseil :
-     Risque de résultats faux.
+     Risque de rÃ©sultats faux.
 """),
 
 2 : _(u"""
-  -> Le nombre de points de Gauss est différent entre le fichier MED et Aster:
+  -> Le nombre de points de Gauss est diffÃ©rent entre le fichier MED et Aster:
       - nombre de points de Gauss contenu dans le fichier MED : %(i2)d
-      - nombre de points de Gauss défini dans Aster           : %(i1)d
+      - nombre de points de Gauss dÃ©fini dans Aster           : %(i1)d
 
-     Visiblement les éléments finis décrits dans le fichier MED ne sont pas les
-     mêmes que dans Code_Aster.
-     Si vous avez choisi PROL_ZERO='OUI', le champ sera initialisé à zéro sur
-     ces éléments.
-     Sinon, le champ ne sera pas initialisé (NaN, not a number). C'est le
-     comportement par défaut.
+     Visiblement les Ã©lÃ©ments finis dÃ©crits dans le fichier MED ne sont pas les
+     mÃªmes que dans Code_Aster.
+     Si vous avez choisi PROL_ZERO='OUI', le champ sera initialisÃ© Ã  zÃ©ro sur
+     ces Ã©lÃ©ments.
+     Sinon, le champ ne sera pas initialisÃ© (NaN, not a number). C'est le
+     comportement par dÃ©faut.
 
   -> Risque & Conseil :
-      - Choisissez des éléments finis compatibles entre Aster et le code tiers
+      - Choisissez des Ã©lÃ©ments finis compatibles entre Aster et le code tiers
 """),
 
 3 : _(u"""
-  -> Les point de Gauss MED/Aster ne correspondent pas géométriquement.
+  -> Les point de Gauss MED/Aster ne correspondent pas gÃ©omÃ©triquement.
   -> Risque & Conseil:
-     Risque de résultats faux à cause cette incompatibilité.
+     Risque de rÃ©sultats faux Ã  cause cette incompatibilitÃ©.
 """),
 
 4 : _(u"""
@@ -60,50 +60,50 @@ cata_msg = {
 """),
 
 6 : _(u"""
-  -> Une ou plusieurs permutations ont été effectuées sur l'ordre des points
-     de Gauss pour que la localisation MED corresponde à celle de Code_Aster.
+  -> Une ou plusieurs permutations ont Ã©tÃ© effectuÃ©es sur l'ordre des points
+     de Gauss pour que la localisation MED corresponde Ã  celle de Code_Aster.
 """),
 
 7 : _(u"""
-  -> Le nom de groupe numéro %(i1)d de la famille %(k1)s
-     est trop long. Il sera tronqué à 24 caractères.
-     Le groupe "%(k2)s" est renommé en "%(k3)s".
+  -> Le nom de groupe numÃ©ro %(i1)d de la famille %(k1)s
+     est trop long. Il sera tronquÃ© Ã  24 caractÃ¨res.
+     Le groupe "%(k2)s" est renommÃ© en "%(k3)s".
 """),
 
 8 : _(u"""
   -> Famille %(k1)s :
-       Incohérence sur les nombres de %(k2)s, il y en a %(i1)d alors
+       IncohÃ©rence sur les nombres de %(k2)s, il y en a %(i1)d alors
        que la fonction MED en annonce %(i2)d.
   -> Risque & Conseil:
        Impossible de lire ce fichier.
-       On peut utiliser mdump (utilitaire MED) pour voir si le problème
+       On peut utiliser mdump (utilitaire MED) pour voir si le problÃ¨me
        vient du fichier MED ou de la lecture dans Code_Aster.
 """),
 
 9 : _(u"""
   -> Vous ne pouvez pas renommer le groupe "%(k1)s" en "%(k2)s"
-     car "%(k2)s" existe déjà dans le fichier MED.
+     car "%(k2)s" existe dÃ©jÃ  dans le fichier MED.
 """),
 
 10 : _(u"""
-  -> Le nom de groupe numéro %(i1)d de la famille %(k1)s
-     est contient des caractères interdits.
-     Le groupe "%(k2)s" est renommé en "%(k3)s".
+  -> Le nom de groupe numÃ©ro %(i1)d de la famille %(k1)s
+     est contient des caractÃ¨res interdits.
+     Le groupe "%(k2)s" est renommÃ© en "%(k3)s".
 """),
 
 11 : _(u"""
-  -> Le nom de groupe numéro %(i1)d de la famille %(k1)s
+  -> Le nom de groupe numÃ©ro %(i1)d de la famille %(k1)s
      est vide.
 """),
 
 12 : _(u"""
-  -> Erreur lors de l'appel à EFNEMA, code retour = %(k1)s
+  -> Erreur lors de l'appel Ã  EFNEMA, code retour = %(k1)s
   -> Risque & Conseil :
-     Vérifier l'intégrité du fichier MED avec medconforme/mdump.
-     Si le maillage a été produit par un code externe, vérifier que les
+     VÃ©rifier l'intÃ©gritÃ© du fichier MED avec medconforme/mdump.
+     Si le maillage a Ã©tÃ© produit par un code externe, vÃ©rifier que les
      noms de maillage, de groupes, de familles ne contiennent pas de
-     blancs à la fin.
-     Dans Salomé, on peut renommer ces entités et supprimer les espaces
+     blancs Ã  la fin.
+     Dans SalomÃ©, on peut renommer ces entitÃ©s et supprimer les espaces
      invalides.
 """),
 
@@ -112,42 +112,42 @@ cata_msg = {
 """),
 
 14 : _(u"""
-  -> Lecture de la famille numéro %(i1)4d de nom %(k1)s.
+  -> Lecture de la famille numÃ©ro %(i1)4d de nom %(k1)s.
 """),
 
 15 : _(u"""
-      Groupe numéro %(i1)6d : %(k1)s
+      Groupe numÃ©ro %(i1)6d : %(k1)s
 """),
 
 16 : _(u"""
-      Groupe numéro %(i1)6d : %(k1)s
-                renommé en : %(k2)s
+      Groupe numÃ©ro %(i1)6d : %(k1)s
+                renommÃ© en : %(k2)s
 """),
 
 17 : _(u"""
-  -> Aucune famille n'est présente dans ce fichier MED.
+  -> Aucune famille n'est prÃ©sente dans ce fichier MED.
   -> Risque & Conseil :
-     Vérifier l'intégrité du fichier MED avec medconforme/mdump.
+     VÃ©rifier l'intÃ©gritÃ© du fichier MED avec medconforme/mdump.
 """),
 
 18 : _(u"""
-  -> Arrêt en raison des conflits sur les noms de groupe.
+  -> ArrÃªt en raison des conflits sur les noms de groupe.
 """),
 
 19 : _(u"""
-  -> Les mailles  %(k1)s ne sont pas nommées dans le fichier MED.
+  -> Les mailles  %(k1)s ne sont pas nommÃ©es dans le fichier MED.
 """),
 
 20 : _(u"""
-  -> Impossible de retrouver l'adresse associée au groupe  %(k1)s
+  -> Impossible de retrouver l'adresse associÃ©e au groupe  %(k1)s
 """),
 
 21 : _(u"""
-  -> Il manque les coordonnées !
+  -> Il manque les coordonnÃ©es !
 """),
 
 22 : _(u"""
-  Le nom de groupe numéro  %(i1)d  est en double. %(k1)s
+  Le nom de groupe numÃ©ro  %(i1)d  est en double. %(k1)s
   - premier nom MED  :  %(k2)s
   - second nom MED   :  %(k3)s
   - nom aster retenu :  %(k4)s
@@ -158,27 +158,27 @@ cata_msg = {
 """),
 
 24 : _(u"""
-  -> Le fichier n'a pas été construit avec la même version de MED.
+  -> Le fichier n'a pas Ã©tÃ© construit avec la mÃªme version de MED.
   -> Risque & Conseil :
-     La lecture du fichier peut échouer !
+     La lecture du fichier peut Ã©chouer !
 
 """),
 
 25 : _(u"""
-   Version de la bibliothèque MED utilisée par Code_Aster:  %(i1)d %(i2)d %(i3)d
+   Version de la bibliothÃ¨que MED utilisÃ©e par Code_Aster:  %(i1)d %(i2)d %(i3)d
 """),
 
 26 : _(u"""
-   Version de la bibliothèque MED qui a créé le fichier  : < 2.1.5
+   Version de la bibliothÃ¨que MED qui a crÃ©Ã© le fichier  : < 2.1.5
 """),
 
 27 : _(u"""
-   Version de la bibliothèque MED pour créer le fichier  :  %(i1)d %(i2)d %(i3)d
+   Version de la bibliothÃ¨que MED pour crÃ©er le fichier  :  %(i1)d %(i2)d %(i3)d
 """),
 
 28 : _(u"""
 
-   Un utilitaire vous permet peut-être de convertir votre fichier (medimport)
+   Un utilitaire vous permet peut-Ãªtre de convertir votre fichier (medimport)
 """),
 
 29 : _(u"""
@@ -186,32 +186,32 @@ cata_msg = {
 """),
 
 30: _(u"""
-  -> Votre modèle semble être composé de plusieurs modélisations, les composantes
-      de %(k1)s qui n'existent pas pour une partie du modèle ont été
-      mises à zéro.
+  -> Votre modÃ¨le semble Ãªtre composÃ© de plusieurs modÃ©lisations, les composantes
+      de %(k1)s qui n'existent pas pour une partie du modÃ¨le ont Ã©tÃ©
+      mises Ã  zÃ©ro.
 
      Dans certains cas, le fichier MED produit peut devenir volumineux. Dans ce
-     cas, l'utilisation du mot-clé NOM_CMP est conseillée.
+     cas, l'utilisation du mot-clÃ© NOM_CMP est conseillÃ©e.
 """),
 
 31 : _(u"""
-  -> Ce champ existe déjà dans le fichier MED avec un nombre de composantes
-     différent à un instant précédent. On ne peut pas le créer de nouveau.
+  -> Ce champ existe dÃ©jÃ  dans le fichier MED avec un nombre de composantes
+     diffÃ©rent Ã  un instant prÃ©cÃ©dent. On ne peut pas le crÃ©er de nouveau.
 
      Nom MED du champ : "%(k1)s"
 
   -> Risque & Conseil :
      On ne peut pas imprimer un champ dont le nombre de composantes varie en
-     fonction du temps. Plusieurs possibilités s'offrent à vous:
-     - si vous souhaitez disposer d'un champ disposant des mêmes composantes
-     à chaque instant, il faut renseigner derrière le mot-clé NOM_CMP le nom
-     des composantes commun aux différents instants.
+     fonction du temps. Plusieurs possibilitÃ©s s'offrent Ã  vous:
+     - si vous souhaitez disposer d'un champ disposant des mÃªmes composantes
+     Ã  chaque instant, il faut renseigner derriÃ¨re le mot-clÃ© NOM_CMP le nom
+     des composantes commun aux diffÃ©rents instants.
      - si vous souhaitez imprimer un champ avec l'ensemble des composantes
      Aster qu'il contient, il suffit de faire plusieurs IMPR_RESU et de
      renseigner pour chaque impression une liste d'instants ad hoc.
 
-     Pour la visualisation dans Salomé (Scalar Map par exemple),
-     sélectionner la composante dans Scalar Range/Scalar Mode.
+     Pour la visualisation dans SalomÃ© (Scalar Map par exemple),
+     sÃ©lectionner la composante dans Scalar Range/Scalar Mode.
 """),
 
 32 : _(u"""
@@ -223,11 +223,11 @@ cata_msg = {
 """),
 
 34 : _(u"""
-     Aucune valeur n'est présente à cet instant.
+     Aucune valeur n'est prÃ©sente Ã  cet instant.
 """),
 
 35 : _(u"""
-     Aucune valeur n'est présente à ce numéro d'ordre.
+     Aucune valeur n'est prÃ©sente Ã  ce numÃ©ro d'ordre.
 """),
 
 36 : _(u"""
@@ -237,15 +237,15 @@ cata_msg = {
 37 : _(u"""
   -> La lecture est donc impossible.
   -> Risque & Conseil :
-     Veuillez vérifier l'intégrité du fichier MED avec medconforme/mdump.
+     Veuillez vÃ©rifier l'intÃ©gritÃ© du fichier MED avec medconforme/mdump.
 """),
 
 38 : _(u"""
-  -> Incohérence catalogue - fortran (nbtyp fortran différent de nbtyp catalogue)
+  -> IncohÃ©rence catalogue - fortran (nbtyp fortran diffÃ©rent de nbtyp catalogue)
 """),
 
 39 : _(u"""
-  -> Incohérence catalogue - fortran (nomtyp fortran différent de nomtyp catalogue)
+  -> IncohÃ©rence catalogue - fortran (nomtyp fortran diffÃ©rent de nomtyp catalogue)
 """),
 
 40 : _(u"""
@@ -253,11 +253,11 @@ cata_msg = {
 """),
 
 41 : _(u"""
-  -> Incohérence de version détectée.
+  -> IncohÃ©rence de version dÃ©tectÃ©e.
 """),
 
 42 : _(u"""
-  -> Le type d'entité  %(k1)s  est inconnu.
+  -> Le type d'entitÃ©  %(k1)s  est inconnu.
 """),
 
 43 : _(u"""
@@ -265,7 +265,7 @@ cata_msg = {
 """),
 
 44 : _(u"""
-  -> Pas d'écriture pour  %(k1)s
+  -> Pas d'Ã©criture pour  %(k1)s
 """),
 
 45 : _(u"""
@@ -277,15 +277,15 @@ cata_msg = {
 """),
 
 47 : _(u"""
-  -> Création des tableaux de valeurs à écrire avec :
+  -> CrÃ©ation des tableaux de valeurs Ã  Ã©crire avec :
 """),
 
 48 : _(u"""
-  -> Renumérotation impossible avec plus d'un sous-point.
+  -> RenumÃ©rotation impossible avec plus d'un sous-point.
 """),
 
 49 : _(u"""
-  -> Véritable écriture des tableaux de valeurs
+  -> VÃ©ritable Ã©criture des tableaux de valeurs
 """),
 
 50 : _(u"""
@@ -301,18 +301,18 @@ cata_msg = {
 """),
 
 53 : _(u"""
-  ->  La version de la lib MED utilisée par Code_Aster est plus récente que
+  ->  La version de la lib MED utilisÃ©e par Code_Aster est plus rÃ©cente que
       celle qui a produit votre fichier MED.
-  ->  Conséquence:  On considère les champs aux noeuds par élément
+  ->  ConsÃ©quence:  On considÃ¨re les champs aux noeuds par Ã©lÃ©ment
       comme des pseudo champs aux points de Gauss.
       (On utilise pour la lecture du champ %(k1)s
-       contenu dans votre fichier MED, le type d'entité MED_MAILLE au lieu
+       contenu dans votre fichier MED, le type d'entitÃ© MED_MAILLE au lieu
        de MED_NOEUD_MAILLE).
 """),
 
 54 : _(u"""
-  -> Le modèle fourni à LIRE_RESU n'est pas cohérent avec le type de structure
-     de données résultat que vous souhaitez produire.
+  -> Le modÃ¨le fourni Ã  LIRE_RESU n'est pas cohÃ©rent avec le type de structure
+     de donnÃ©es rÃ©sultat que vous souhaitez produire.
 """),
 
 
@@ -321,36 +321,36 @@ cata_msg = {
 """),
 
 56 : _(u"""
-     En effet, le phénomène %(k1)s de votre modèle n'est pas compatible avec une
-     SD Résultat de type %(k2)s.
+     En effet, le phÃ©nomÃ¨ne %(k1)s de votre modÃ¨le n'est pas compatible avec une
+     SD RÃ©sultat de type %(k2)s.
   -> Risque & Conseil :
-     Veuillez fournir à LIRE_RESU un autre modèle ou changer de TYPE_RESU.
+     Veuillez fournir Ã  LIRE_RESU un autre modÃ¨le ou changer de TYPE_RESU.
 """),
 
 57 : _(u"""
   -> Le champ  %(k1)s n'existe pas dans le fichier MED.
   -> Conseils :
-     Vérifier la présence du champ demandé dans le fichier.
-     Vérifier l'intégrité du fichier MED avec medconforme/mdump.
+     VÃ©rifier la prÃ©sence du champ demandÃ© dans le fichier.
+     VÃ©rifier l'intÃ©gritÃ© du fichier MED avec medconforme/mdump.
 
-  Remarque : Les champs disponibles dans ce fichier sont listés ci-dessous :
+  Remarque : Les champs disponibles dans ce fichier sont listÃ©s ci-dessous :
 """),
 
 58 : _(u"""
-  -> Le nombre de type de maille présent dans le fichier MED est
-      différent du nombre de type de maille présent dans le maillage fourni.
+  -> Le nombre de type de maille prÃ©sent dans le fichier MED est
+      diffÃ©rent du nombre de type de maille prÃ©sent dans le maillage fourni.
   -> Risque & Conseil :
-     Le modèle sur lequel le résultat a été créé n'est pas le même
-      que le modèle fourni.
-     Vérifiez le maillage de votre modèle !
+     Le modÃ¨le sur lequel le rÃ©sultat a Ã©tÃ© crÃ©Ã© n'est pas le mÃªme
+      que le modÃ¨le fourni.
+     VÃ©rifiez le maillage de votre modÃ¨le !
 """),
 59 : _(u"""
-     Les éléments du modèle fourni ont pour support géométrique des
+     Les Ã©lÃ©ments du modÃ¨le fourni ont pour support gÃ©omÃ©trique des
      mailles ne figurant pas dans le fichier MED.
      Par exemple, il y %(i1)d mailles de types %(k1)s dans le fichier MED,
-     alors que le modèle en contient %(i2)d.
+     alors que le modÃ¨le en contient %(i2)d.
   -> Risque & Conseil :
-     Veuillez fournir un modèle dont le maillage correspond à celui présent
+     Veuillez fournir un modÃ¨le dont le maillage correspond Ã  celui prÃ©sent
      dans le fichier MED.
 """),
 
@@ -360,25 +360,25 @@ cata_msg = {
 
 61 : _(u"""
      Le maillage contenu dans le fichier MED contient plus de mailles
-     que celui associé au maillage fourni par le modèle.
-     Par exemple, on dénombre %(i1)d mailles de types %(k1)s dans le maillage
-     MED, alors que le modèle n'en contient que %(i2)d !
+     que celui associÃ© au maillage fourni par le modÃ¨le.
+     Par exemple, on dÃ©nombre %(i1)d mailles de types %(k1)s dans le maillage
+     MED, alors que le modÃ¨le n'en contient que %(i2)d !
   -> Risque & Conseil :
-     Veuillez vérifier que le modèle fourni ne résulte pas d'une restriction,
-     ou que l'un des maillages est quadratique et l'autre linéaire.
+     Veuillez vÃ©rifier que le modÃ¨le fourni ne rÃ©sulte pas d'une restriction,
+     ou que l'un des maillages est quadratique et l'autre linÃ©aire.
 """),
 
 62 : _(u"""
-  -> Impossible de déterminer un nom de maillage MED.
+  -> Impossible de dÃ©terminer un nom de maillage MED.
 """),
 
 63 : _(u"""
-  -> Le mot clé "INFO_MAILLAGE" est réservé au format MED.
+  -> Le mot clÃ© "INFO_MAILLAGE" est rÃ©servÃ© au format MED.
 """),
 
 64 : _(u"""
-  -> Le CARA_ELEM fournit à IMPR_RESU (%(k1)s) est différent de celui lu
-     dans le résultat a imprimer (%(k2)s). Cela n'est pas autorisé.
+  -> Le CARA_ELEM fournit Ã  IMPR_RESU (%(k1)s) est diffÃ©rent de celui lu
+     dans le rÃ©sultat a imprimer (%(k2)s). Cela n'est pas autorisÃ©.
 """),
 
 65 : _(u"""
@@ -390,7 +390,7 @@ cata_msg = {
 """),
 
 67 : _(u"""
-  -> Le maillage %(k2)s est déjà présent dans le fichier MED %(k1)s.
+  -> Le maillage %(k2)s est dÃ©jÃ  prÃ©sent dans le fichier MED %(k1)s.
 """),
 
 68 : _(u"""
@@ -398,7 +398,7 @@ cata_msg = {
 """),
 
 69 : _(u"""
-  -> Numéro d'ordre :  %(i1)d numéro de pas de temps :  %(i2)d
+  -> NumÃ©ro d'ordre :  %(i1)d numÃ©ro de pas de temps :  %(i2)d
 
 """),
 
@@ -407,45 +407,45 @@ cata_msg = {
 """),
 
 71 : _(u"""
-  -> le mot-clé MODELE est obligatoire pour lire un CHAM_ELEM
+  -> le mot-clÃ© MODELE est obligatoire pour lire un CHAM_ELEM
 """),
 
 72 : _(u"""
-  -> Nom de composante tronqué à 8 caractères ( %(k1)s  >>>  %(k2)s )
+  -> Nom de composante tronquÃ© Ã  8 caractÃ¨res ( %(k1)s  >>>  %(k2)s )
 """),
 
 73 : _(u"""
-  -> Impossible de trouver la composante ASTER associée a  %(k1)s
+  -> Impossible de trouver la composante ASTER associÃ©e a  %(k1)s
 """),
 
 74 : _(u"""
-  -> Écriture des localisations des points de gauss.
+  -> Ã‰criture des localisations des points de gauss.
 """),
 
 75 : _(u"""
-  -> Problème dans la lecture du nom du champ et de ses composantes.
+  -> ProblÃ¨me dans la lecture du nom du champ et de ses composantes.
 """),
 
 76 : _(u"""
-  -> Problème dans le diagnostic.
+  -> ProblÃ¨me dans le diagnostic.
 """),
 
 77: _(u"""
-  -> On ne peut lire aucune valeur du champ %(k1)s dans le fichier d'unité %(i1)d.
+  -> On ne peut lire aucune valeur du champ %(k1)s dans le fichier d'unitÃ© %(i1)d.
   -> Risques et conseils:
-     Ce problème est peut-être lié à une incohérence entre le champ à lire dans
-     le fichier MED (NOEU/ELGA/ELNO/...) et le type du champ que vous avez demandé
-     (mot clé TYPE_CHAM).
+     Ce problÃ¨me est peut-Ãªtre liÃ© Ã  une incohÃ©rence entre le champ Ã  lire dans
+     le fichier MED (NOEU/ELGA/ELNO/...) et le type du champ que vous avez demandÃ©
+     (mot clÃ© TYPE_CHAM).
 """),
 
 78: _(u"""
-  Problème à l'ouverture du fichier MED sur l'unité %(k1)s
+  ProblÃ¨me Ã  l'ouverture du fichier MED sur l'unitÃ© %(k1)s
   -> Conseil :
-     Vérifier la présence de ce fichier dans le répertoire de lancement de l'étude.
+     VÃ©rifier la prÃ©sence de ce fichier dans le rÃ©pertoire de lancement de l'Ã©tude.
 """),
 
 79 : _(u"""
-  -> Attention le maillage n'est pas de type non structuré
+  -> Attention le maillage n'est pas de type non structurÃ©
 """),
 
 80 : _(u"""
@@ -453,29 +453,29 @@ cata_msg = {
 """),
 
 81 : _(u"""
-  -> Attention, il s'agit d'un maillage structuré
+  -> Attention, il s'agit d'un maillage structurÃ©
 """),
 
 82 : _(u"""
-  -> Le champ %(k1)s n'est associé à aucun modèle.
+  -> Le champ %(k1)s n'est associÃ© Ã  aucun modÃ¨le.
   -> Conseil :
-     Veuillez renseigner le modèle.
+     Veuillez renseigner le modÃ¨le.
 """),
 
 83 : _(u"""
-Le nombre de valeurs lues dans le fichier MED est différent du nombre de valeurs réellement
- affectées dans le champ :
+Le nombre de valeurs lues dans le fichier MED est diffÃ©rent du nombre de valeurs rÃ©ellement
+ affectÃ©es dans le champ :
   - valeurs lues dans le fichier        : %(i1)d
-  - valeurs non affectées dans le champ : %(i2)d
+  - valeurs non affectÃ©es dans le champ : %(i2)d
 
 Risques :
-  Soit le modèle n'est pas adapté au champ que vous souhaitez lire, auquel cas vous risquez
-   d'obtenir des résultats faux. Soit le modèle est constitué d'un mélange de modélisations
-   qui ne portent pas les mêmes composantes sur les différents éléments du maillage auquel
-   cas, cette alarme n'est pas légitime.
+  Soit le modÃ¨le n'est pas adaptÃ© au champ que vous souhaitez lire, auquel cas vous risquez
+   d'obtenir des rÃ©sultats faux. Soit le modÃ¨le est constituÃ© d'un mÃ©lange de modÃ©lisations
+   qui ne portent pas les mÃªmes composantes sur les diffÃ©rents Ã©lÃ©ments du maillage auquel
+   cas, cette alarme n'est pas lÃ©gitime.
 
 Conseil :
-  Vérifiez la cohérence du modèle et du fichier MED.
+  VÃ©rifiez la cohÃ©rence du modÃ¨le et du fichier MED.
 """),
 
 84 : _(u"""
@@ -483,73 +483,73 @@ Conseil :
 """),
 
 85 : _(u"""
-  -> Maillage présent :  %(k1)s
+  -> Maillage prÃ©sent :  %(k1)s
 """),
 
 86 : _(u"""
-  -> champ à lire :  %(k1)s typent :  %(i1)d typgeo :  %(i2)d
+  -> champ Ã  lire :  %(k1)s typent :  %(i1)d typgeo :  %(i2)d
      instant voulu :  %(r1)f
-     --> numéro d'ordre :  %(i3)d
-     --> numéro de pas de temps :  %(i4)d
+     --> numÃ©ro d'ordre :  %(i3)d
+     --> numÃ©ro de pas de temps :  %(i4)d
 
 """),
 
 87 : _(u"""
-  Le numéro d'ordre %(i1)d que vous avez renseigné ne figure pas
-  dans la liste des numéros d'ordre du résultat MED.
-  Conséquence: le champ correspondant ne figurera pas dans la
-  SD Résultat %(k1)s
+  Le numÃ©ro d'ordre %(i1)d que vous avez renseignÃ© ne figure pas
+  dans la liste des numÃ©ros d'ordre du rÃ©sultat MED.
+  ConsÃ©quence: le champ correspondant ne figurera pas dans la
+  SD RÃ©sultat %(k1)s
 """),
 
 
 88 : _(u"""
-  -> Fichier MED :  %(k1)s, nombre de maillages présents : %(i1)d
+  -> Fichier MED :  %(k1)s, nombre de maillages prÃ©sents : %(i1)d
 """),
 
 89 : _(u"""
-  -> Écriture impossible pour  %(k1)s  au format MED.
+  -> Ã‰criture impossible pour  %(k1)s  au format MED.
 """),
 
 90 : _(u"""
-     Début de l'écriture MED de  %(k1)s
+     DÃ©but de l'Ã©criture MED de  %(k1)s
 """),
 
 91 : _(u"""
-  -> Impossible de déterminer un nom de champ MED.
+  -> Impossible de dÃ©terminer un nom de champ MED.
   -> Risque & Conseil:
 """),
 
 92 : _(u"""
   -> Le type de champ  %(k1)s  est inconnu pour MED.
   -> Risque & Conseil:
-     Veuillez vérifier la mise en données du mot-clé NOM_CHAM_MED
+     Veuillez vÃ©rifier la mise en donnÃ©es du mot-clÃ© NOM_CHAM_MED
      (LIRE_RESU) ou NOM_MED (LIRE_CHAMP).
 """),
 
 93 : _(u"""
-     Fin de l'écriture MED de  %(k1)s
+     Fin de l'Ã©criture MED de  %(k1)s
 """),
 
 94 : _(u"""
   Vous imprimez un champ dont le maillage change au cours du temps.
-  Ce type de champ n'est pas autorisé.
+  Ce type de champ n'est pas autorisÃ©.
   -> Conseil :
-     Si la structure de données résultat a été produite par
-     CREA_RESU, vérifiez que les champs fournis à cette commande
-     reposent sur un seul et même maillage.
+     Si la structure de donnÃ©es rÃ©sultat a Ã©tÃ© produite par
+     CREA_RESU, vÃ©rifiez que les champs fournis Ã  cette commande
+     reposent sur un seul et mÃªme maillage.
 """),
 
 95 : _(u"""
   -> Le champ MED %(k1)s est introuvable.
   -> Risque & Conseil:
-     Veuillez vérifier la mise en données du mot-clé NOM_CHAM_MED
-     ainsi que le fichier MED fourni à l'opérateur.
+     Veuillez vÃ©rifier la mise en donnÃ©es du mot-clÃ© NOM_CHAM_MED
+     ainsi que le fichier MED fourni Ã  l'opÃ©rateur.
 """),
 
 96 : _(u"""
   -> NOM_MED absent !
   -> Risque & Conseil:
-     Veuillez renseigner le mot-clé NOM_MED de l'opérateur LIRE_CHAMP.
+     Veuillez renseigner le mot-clÃ© NOM_MED de l'opÃ©rateur LIRE_CHAMP.
 """),
 
 97 : _(u"""
@@ -564,10 +564,10 @@ Conseil :
 """),
 
 99 : _(u"""
-  Le nombre de composantes à imprimer est trop grand pour le champ %(k1)s.
+  Le nombre de composantes Ã  imprimer est trop grand pour le champ %(k1)s.
   Le format MED accepte au maximum 80 composantes dans un champ.
   
-  Le champ ne sera donc pas imprimé au format MED.
+  Le champ ne sera donc pas imprimÃ© au format MED.
 """),
 
 }

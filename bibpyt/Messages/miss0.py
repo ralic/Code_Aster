@@ -1,4 +1,4 @@
-# -*- coding: iso-8859-1 -*-
+# coding=utf-8
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -32,12 +32,12 @@ Il faut une et une seule couche avec SUBSTRATUM="OUI".
 """),
 
 4 : _(u"""
-La définition de la couche numéro %(i1)d est incorrecte :
-Il y a %(i2)d matériaux, or NUME_MATE=%(i3)d.
+La dÃ©finition de la couche numÃ©ro %(i1)d est incorrecte :
+Il y a %(i2)d matÃ©riaux, or NUME_MATE=%(i3)d.
 """),
 
 5 : _(u"""
-La numérotation des couches est incorrectes.
+La numÃ©rotation des couches est incorrectes.
 """),
 
 6 : _(u"""
@@ -47,91 +47,91 @@ Erreur lors de la copie de fichier pour MISS :
 """),
 
 7 : _(u"""
-Erreur lors de la lecture du fichier de résultat Aster
-à la ligne numéro %(i1)d.
+Erreur lors de la lecture du fichier de rÃ©sultat Aster
+Ã  la ligne numÃ©ro %(i1)d.
 
 Message d'erreur :
 %(k1)s
 """),
 
 8 : _(u"""
-Les données lues dans le fichier de résultat Aster ne sont pas cohérentes.
-La trace ci-dessous doit montrer l'incohérence relevée.
+Les donnÃ©es lues dans le fichier de rÃ©sultat Aster ne sont pas cohÃ©rentes.
+La trace ci-dessous doit montrer l'incohÃ©rence relevÃ©e.
 
 Message d'erreur :
 %(k1)s
 """),
 
 9 : _(u"""
-Les abscisses de l'accélérogramme '%(k1)s' doivent être à pas constant.
+Les abscisses de l'accÃ©lÃ©rogramme '%(k1)s' doivent Ãªtre Ã  pas constant.
 """),
 
 10 : (u"""
-Interpolation des accélérogrammes sur l'intervalle : [%(r1).4f, %(r2).4f]
+Interpolation des accÃ©lÃ©rogrammes sur l'intervalle : [%(r1).4f, %(r2).4f]
 par pas de %(r3).4f, soit %(i1)d instants.
 """),
 
 11 : _(u"""
-Les %(i1)d fréquences du calcul harmonique sont :
+Les %(i1)d frÃ©quences du calcul harmonique sont :
     %(k1)s
 """),
 
 12 : _(u"""
-Plage de fréquence du calcul harmonique : [%(r1).4f, %(r2).4f]
-par pas de %(r3).4f Hz, soit %(i1)d fréquences.
+Plage de frÃ©quence du calcul harmonique : [%(r1).4f, %(r2).4f]
+par pas de %(r3).4f Hz, soit %(i1)d frÃ©quences.
 """),
 
 13 : _(u"""
-Plage de fréquence du calcul Miss : [%(r1).4f, %(r2).4f]
-par pas de %(r3).4f Hz, soit %(i1)d fréquences.
+Plage de frÃ©quence du calcul Miss : [%(r1).4f, %(r2).4f]
+par pas de %(r3).4f Hz, soit %(i1)d frÃ©quences.
 """),
 
 14 : _(u"""
-Les %(i1)d fréquences du calcul Miss sont :
+Les %(i1)d frÃ©quences du calcul Miss sont :
     %(k1)s
 """),
 
 15 : _(u"""
-L'utilisation de MACRO_MISS_3D est déconseillée et maintenant exclue du périmètre
-qualifié de Code_Aster.
+L'utilisation de MACRO_MISS_3D est dÃ©conseillÃ©e et maintenant exclue du pÃ©rimÃ¨tre
+qualifiÃ© de Code_Aster.
 
-Certaines fonctionnalités ne sont pas encore disponibles dans CALC_MISS.
+Certaines fonctionnalitÃ©s ne sont pas encore disponibles dans CALC_MISS.
 Pour celles-ci, il faut encore utiliser MACRO_MISS_3D. Il s'agit :
-    - des ondes inclinées,
+    - des ondes inclinÃ©es,
     - des sources ponctuelles,
     - de l'interaction sol, fluide, structure.
 """),
 
 16 : _(u"""
-Dans le cas présent (MODULE='MISS_IMPE' et ISSF='NON'), CALC_MISS répond à votre besoin.
-Nous vous conseillons d'utiliser dorénavant CALC_MISS.
+Dans le cas prÃ©sent (MODULE='MISS_IMPE' et ISSF='NON'), CALC_MISS rÃ©pond Ã  votre besoin.
+Nous vous conseillons d'utiliser dorÃ©navant CALC_MISS.
 """),
 
 17 : _(u"""
-Fournir une plage de fréquence (mot-clé LIST_FREQ) n'est possible que si
+Fournir une plage de frÃ©quence (mot-clÃ© LIST_FREQ) n'est possible que si
 TYPE_RESU = 'FICHIER', 'HARM_GENE' ou 'TABLE_CONTROL'.
-Dans les autres cas, il est nécessaire d'avoir un pas de fréquences constant
+Dans les autres cas, il est nÃ©cessaire d'avoir un pas de frÃ©quences constant
 pour le calcul des FFT.
 """),
 
 18 : _(u"""
-Le nombre de pas de temps (calculé avec INST_FIN et INST_PAS) n'est pas pair.
+Le nombre de pas de temps (calculÃ© avec INST_FIN et INST_PAS) n'est pas pair.
 Il faut donc corriger ces valeurs pour respecter cette condition.
 """),
 
 19 : _(u"""
-Dans le cas présent (DECOMP_IMPE='SANS_PRODUIT'), 
-les valeurs lues par les mots-clés MATR_MASS et AMOR_HYST (tous les deux sous MATR_GENE) 
-ne sont pas utilisées.
-De plus, le fichier UNITE_RESU_MASS ne sera pas crée.
+Dans le cas prÃ©sent (DECOMP_IMPE='SANS_PRODUIT'), 
+les valeurs lues par les mots-clÃ©s MATR_MASS et AMOR_HYST (tous les deux sous MATR_GENE) 
+ne sont pas utilisÃ©es.
+De plus, le fichier UNITE_RESU_MASS ne sera pas crÃ©e.
 """),
 
 20 : _(u"""
-La matrice d'impédance correspondant à l'instant t = 0 n'est pas définie positive.
-La liste de DDL problématique(s) est : %(k1)s
+La matrice d'impÃ©dance correspondant Ã  l'instant t = 0 n'est pas dÃ©finie positive.
+La liste de DDL problÃ©matique(s) est : %(k1)s
 Il faut donc, soit :
-- augmenter la valeur du mot-clé INST_PAS,
-- diminuer la taille des éléments du maillage de l'interface ISS,
+- augmenter la valeur du mot-clÃ© INST_PAS,
+- diminuer la taille des Ã©lÃ©ments du maillage de l'interface ISS,
 - bloquer ce ou ces DDL.
 """),
 
@@ -140,13 +140,13 @@ Il faut au moins une couche avec EPAIS.
 """),
 
 22 : _(u"""
-En interaction sol, structure, fluide (ISSF='OUI'), les mots-clés
+En interaction sol, structure, fluide (ISSF='OUI'), les mots-clÃ©s
 GROUP_MA_FLU_STR, GROUP_MA_FLU_SOL, GROUP_MA_SOL_SOL sont tous les trois obligatoires.
 """),
 
 23 : _(u"""Le calcul d'interaction sol, structure, fluide (ISSF='OUI')
-n'est pas compatible avec le post-traitement aux points de contrôle
-(présence de GROUP_MA_CONTROL).
+n'est pas compatible avec le post-traitement aux points de contrÃ´le
+(prÃ©sence de GROUP_MA_CONTROL).
 """),
 
 }

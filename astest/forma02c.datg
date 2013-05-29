@@ -1,4 +1,4 @@
-# -*- coding: iso-8859-1 -*-
+# coding=utf-8
 
 from geompy import *
 from smesh import *
@@ -68,7 +68,7 @@ edge_tmp=GetEdgeNearPoint(coude,m2)
 S2 = MakePrismVecH(edge_tmp, vx, LG)
 
 
-# Création de la géométrie générale
+# CrÃ©ation de la gÃ©omÃ©trie gÃ©nÃ©rale
 #------------------------------------
 GeoCoude = MakeCompound([S1,coude,S2])
 
@@ -76,7 +76,7 @@ GeoCoude = MakeCompound([S1,coude,S2])
 #---------------------------
 id_GeoCoude = addToStudy(GeoCoude,"GeoCoude")
 
-# Création des groupes
+# CrÃ©ation des groupes
 #---------------------------
 
 AI1= GetSame(GeoCoude,P1)  
@@ -138,7 +138,7 @@ algo2.Propagation()
 maillageCoude.Compute()
 
 
-# Création des groupes du maillage
+# CrÃ©ation des groupes du maillage
 #---------------------------------
 maillageCoude.Group(AI1, "AI1" )
 maillageCoude.Group(BASE, "BASE" )
@@ -156,18 +156,17 @@ N_TEST = maillageCoude.MakeGroupByCriterion("N_TEST",filter)
 ## On peut sauver dans le dossier courant :
 #import os
 #Repertoire=os.getcwd()
-##ou bien en spécifier un
+##ou bien en spÃ©cifier un
 #Repertoire='MonRepertoire'
 #maillageCoude.ExportToMED(Repertoire+"forma01f.mail.med",SMESH.MED_V2_2)
 
 
 
-# Mise à jour de l'arbre
+# Mise Ã  jour de l'arbre
 #---------------------------
 # Si on a une interface graphique...
 if salome.sg.hasDesktop():
    gg = salome.ImportComponentGUI("GEOM")
    gg.createAndDisplayFitAllGO(id_GeoCoude)
    salome.sg.updateObjBrowser(1)
-
 

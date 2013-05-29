@@ -1,4 +1,4 @@
-# -*- coding: iso-8859-1 -*-
+# coding=utf-8
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -22,9 +22,9 @@ from cata_comportement import LoiComportement
 
 loi = LoiComportement(
    nom            = 'LMARC_IRRA',
-   doc = """Relation de comportement de viscoplasticité du LMARC avec prise en compte de l'irradiation pour les assemblages combustibles.
-   Le champ de fluence est défini par le mot-clé AFFE_VARC de la commande AFFE_MATERIAU. 
-   Pour les poutres, le fluage n'a lieu que dans le sens axial de la poutre : dans les autres directions, le comportement est élastique.""",
+   doc = """Relation de comportement de viscoplasticitÃ© du LMARC avec prise en compte de l'irradiation pour les assemblages combustibles.
+   Le champ de fluence est dÃ©fini par le mot-clÃ© AFFE_VARC de la commande AFFE_MATERIAU. 
+   Pour les poutres, le fluage n'a lieu que dans le sens axial de la poutre : dans les autres directions, le comportement est Ã©lastique.""",
    num_lc         = 30,
    nb_vari        = 21,
    nom_vari       = ('XCINXX','XCINYY','XCINZZ','XCINXY','XCINXZ','XCINYZ', 'XCIN1XX','XCIN1YY','XCIN1ZZ','XCIN1XY','XCIN1XZ','XCIN1YZ',  'XCIN2XX','XCIN2YY','XCIN2ZZ','XCIN2XY','XCIN2XZ','XCIN2YZ','EPSPEQ','IRVECU','EPSGRD'),

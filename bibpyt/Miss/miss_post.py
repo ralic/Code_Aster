@@ -1,4 +1,4 @@
-# -*- coding: iso-8859-1 -*-
+# coding=utf-8
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -21,9 +21,9 @@
 """
 Module permettant le post-traitement d'un calcul MISS3D
 
-Les concepts temporaires de calcul sont nommÈs "__xxxx" (soit .9000001)
-automatiquement supprimÈs en sortie de la macro.
-Les concepts dont on garde une rÈfÈrence dans les rÈsultats sont nommÈs
+Les concepts temporaires de calcul sont nomm√©s "__xxxx" (soit .9000001)
+automatiquement supprim√©s en sortie de la macro.
+Les concepts dont on garde une r√©f√©rence dans les r√©sultats sont nomm√©s
 avec "_xxxx" (soit _9000002).
 """
 
@@ -62,7 +62,7 @@ FKEY = {
 }
 
 class POST_MISS(object):
-    """DÈfinition d'un post-traitement MISS3D."""
+    """D√©finition d'un post-traitement MISS3D."""
 
     def __init__(self, parent, param):
         """Initialisations"""
@@ -70,7 +70,7 @@ class POST_MISS(object):
         self.param = param
         self.verbose = param['INFO'] >= 2
         self.debug = self.verbose
-        # liste de concepts intermÈdiaires ‡ supprimer ‡ la fin
+        # liste de concepts interm√©diaires √† supprimer √† la fin
         self._to_delete = []
         self.initco()
         if self.debug:
@@ -80,20 +80,20 @@ class POST_MISS(object):
         self.fname = None
 
     def set_filename_callback(self, callback):
-        """Enregistre la fonction qui fournit le nom du fichier associÈ ‡ un type"""
+        """Enregistre la fonction qui fournit le nom du fichier associ√© √† un type"""
         self.fname = callback
 
     def run(self):
-        """Enchaine les t‚ches ÈlÈmentaires"""
+        """Enchaine les t√¢ches √©l√©mentaires"""
         self.argument()
         self.execute()
         self.sortie()
 
     def argument(self):
-        """VÈrification des arguments d'entrÈe."""
-        # frÈquences du calcul Miss
+        """V√©rification des arguments d'entr√©e."""
+        # fr√©quences du calcul Miss
         info_freq(self.param)
-        # interpolation des accÈlÈros si prÈsents (‡ supprimer sauf si TABLE)
+        # interpolation des acc√©l√©ros si pr√©sents (√† supprimer sauf si TABLE)
         self.excit_kw = self.param['EXCIT_HARMO']
         if self.excit_kw is None:
             tmax = self.param['INST_FIN']
@@ -134,12 +134,12 @@ class POST_MISS(object):
         raise NotImplementedError('must be defined in a derivated class')
 
     def sortie(self):
-        """PrÈpare et produit les concepts de sortie."""
+        """Pr√©pare et produit les concepts de sortie."""
         raise NotImplementedError('must be defined in a derivated class')
 
     def concepts_communs(self):
-        """Construction des concepts partagÈs entre
-        les diffÈrentes Ètapes du post-traitement"""
+        """Construction des concepts partag√©s entre
+        les diff√©rentes √©tapes du post-traitement"""
         __nddlg = NUME_DDL_GENE(BASE=self.param['BASE_MODALE'],
                                 STOCKAGE= 'PLEIN')
         self.nddlgen = __nddlg
@@ -160,7 +160,7 @@ class POST_MISS(object):
         self.set_freq_dlh()
 
     def set_fft_accelero(self):
-        """Calcul des FFT des accÈlÈrogrammes."""
+        """Calcul des FFT des acc√©l√©rogrammes."""
         if self.acce_x:
             _xff = CALC_FONCTION(FFT=_F(FONCTION=self.acce_x, METHODE=self.methode_fft,),)
             self.xff = _xff
@@ -182,7 +182,7 @@ class POST_MISS(object):
             self.zff = _zff            
 
     def set_freq_dlh(self):
-        """DÈterminer les frÈquences du calcul harmonique."""
+        """D√©terminer les fr√©quences du calcul harmonique."""
         if self.excit_kw is not None:
             if self.param['FREQ_MIN'] is not None:
                 freq_min = self.param['FREQ_MIN']
@@ -205,7 +205,7 @@ class POST_MISS(object):
         self.list_freq_DLH = lfreq
 
     def suppr_acce_fft(self):
-        """Marque pour suppression les accÈlÈros interpolÈs et leur FFT."""
+        """Marque pour suppression les acc√©l√©ros interpol√©s et leur FFT."""
         for co in (self.acce_x, self.acce_y, self.acce_z,
                    self.depl_x, self.depl_y, self.depl_z,
                    self.xff, self.yff, self.zff):
@@ -215,7 +215,7 @@ class POST_MISS(object):
     def initco(self):
         """Deux fonctions :
         - initialiser les attributs de stockage des concepts communs,
-        - libËrer les rÈfÈrences avant la sortie de la macro pour destruction
+        - lib√®rer les r√©f√©rences avant la sortie de la macro pour destruction
           propre.
         """
         self.nddlgen = self.rigigen = self.massgen = None
@@ -230,24 +230,24 @@ class POST_MISS(object):
         self.tab = None
 
     def check_datafile_exist(self):
-        """VÈrifie l'existence des fichiers."""
+        """V√©rifie l'existence des fichiers."""
         assert osp.exists('fort.%s' % self.param['UNITE_RESU_IMPE'])
         assert osp.exists('fort.%s' % self.param['UNITE_RESU_FORC'])
 
     def init_table(self):
         """Initialise la table"""
         # pour la construction de la table
-        # mÍmes paramËtres pour TABLE / TABLE_CONTROL
+        # m√™mes param√®tres pour TABLE / TABLE_CONTROL
         self._tkeys = ('GROUP_NO', 'NOM_CHAM', 'NOM_PARA')
         self._torder = list(self._tkeys) + ['FONC_X', 'FONC_Y', 'FONC_Z']
-        # pour stocker la correspondance clÈ_primaire : numÈro_ligne
+        # pour stocker la correspondance cl√©_primaire : num√©ro_ligne
         self._tline = {}
-        # table de stockage des fonctions rÈsultats
+        # table de stockage des fonctions r√©sultats
         self.tab = Table()
 
     def add_line(self, gno, cham, para, **kwargs):
         """Pour simplifier l'ajout d'une ligne dans la table.
-        Arguments optionnels supportÈs : fonc_x, fonc_y, fonc_z."""
+        Arguments optionnels support√©s : fonc_x, fonc_y, fonc_z."""
         primkey = (gno, cham, para)
         index = self._tline.get(primkey, -1)
         values = dict([(k, v) for k, v in kwargs.items() \
@@ -272,9 +272,9 @@ class POST_MISS_TRAN(POST_MISS):
         self.excit_harmo = []
 
     def argument(self):
-        """VÈrification des arguments d'entrÈe."""
+        """V√©rification des arguments d'entr√©e."""
         super(POST_MISS_TRAN, self).argument()
-        # s'assurer que les unitÈs logiques sont libÈrÈes (rewind)
+        # s'assurer que les unit√©s logiques sont lib√©r√©es (rewind)
         self.check_datafile_exist()
         DEFI_FICHIER(ACTION='LIBERER', UNITE=self.param['UNITE_RESU_IMPE'])
         DEFI_FICHIER(ACTION='LIBERER', UNITE=self.param['UNITE_RESU_FORC'])
@@ -287,11 +287,11 @@ class POST_MISS_TRAN(POST_MISS):
 
 
     def sortie(self):
-        """PrÈpare et produit les concepts de sortie."""
+        """Pr√©pare et produit les concepts de sortie."""
         self.parent.DeclareOut('resugene', self.parent.sd)
         self._to_delete.append(self.dyge)
         #XXX on pensait qu'il fallait utiliser PROL_ZERO mais miss01a
-        #    devient alors NOOK. A clarifier/vÈrifier en passant
+        #    devient alors NOOK. A clarifier/v√©rifier en passant
         #    d'autres tests avec ce post-traitement.
         resugene = REST_SPEC_TEMP(RESU_GENE = self.dyge,
                                   METHODE = 'TRONCATURE',
@@ -307,11 +307,11 @@ class POST_MISS_TRAN(POST_MISS):
 
 
     def boucle_dlh(self):
-        """ExÈcution des DYNA_LINE_HARM"""
+        """Ex√©cution des DYNA_LINE_HARM"""
         first = True
         for freq in self.list_freq_DLH:
             opts = {}
-            _printDBG("Calcul pour la frÈquence %.2f Hz" % freq)
+            _printDBG("Calcul pour la fr√©quence %.2f Hz" % freq)
             __impe = LIRE_IMPE_MISS(BASE=self.param['BASE_MODALE'],
                                     NUME_DDL_GENE=self.nddlgen,
                                     ISSF=self.param['ISSF'],
@@ -333,7 +333,7 @@ class POST_MISS_TRAN(POST_MISS):
 
 
     def iteration_dlh(self, rigtot, freq, opts):
-        """Calculs ‡ une frÈquence donnÈe."""
+        """Calculs √† une fr√©quence donn√©e."""
         excit = []
         if self.acce_x:
             __fosx = LIRE_FORC_MISS(BASE=self.param['BASE_MODALE'],
@@ -432,13 +432,13 @@ class POST_MISS_HARM(POST_MISS_TRAN):
         self._suppr_matr = False
 
     def argument(self):
-        """VÈrification des arguments d'entrÈe."""
+        """V√©rification des arguments d'entr√©e."""
         super(POST_MISS_HARM, self).argument()
         self.parent.DeclareOut('trangene', self.parent.sd)
         self.suppr_acce_fft()
 
     def concepts_communs(self):
-        """Construction des concepts spÈcifiques au cas HARMO."""
+        """Construction des concepts sp√©cifiques au cas HARMO."""
         super(POST_MISS_HARM, self).concepts_communs()
         for excit_i in self.excit_kw:
             dExc = excit_i.cree_dict_valeurs(excit_i.mc_liste)
@@ -454,11 +454,11 @@ class POST_MISS_HARM(POST_MISS_TRAN):
             self.excit_harmo.append(dExc)
 
     def sortie(self):
-        """PrÈpare et produit les concepts de sortie."""
+        """Pr√©pare et produit les concepts de sortie."""
         self.initco()
 
     def dyna_line_harm(self, **kwargs):
-        """Execution de DYNA_LINE_HARM. Produit le concept dÈfinitif."""
+        """Execution de DYNA_LINE_HARM. Produit le concept d√©finitif."""
         trangene = DYNA_LINE_HARM(**kwargs)
         return trangene
 
@@ -473,9 +473,9 @@ class POST_MISS_TAB(POST_MISS):
         self.init_table()
 
     def argument(self):
-        """VÈrification des arguments d'entrÈe."""
+        """V√©rification des arguments d'entr√©e."""
         super(POST_MISS_TAB, self).argument()
-        # s'assurer que les unitÈs logiques sont libÈrÈes (rewind)
+        # s'assurer que les unit√©s logiques sont lib√©r√©es (rewind)
         self.check_datafile_exist()
         DEFI_FICHIER(ACTION='LIBERER', UNITE=self.param['UNITE_RESU_IMPE'])
         DEFI_FICHIER(ACTION='LIBERER', UNITE=self.param['UNITE_RESU_FORC'])
@@ -487,7 +487,7 @@ class POST_MISS_TAB(POST_MISS):
         self.recombinaison()
 
     def sortie(self):
-        """PrÈpare et produit les concepts de sortie."""
+        """Pr√©pare et produit les concepts de sortie."""
         self.parent.DeclareOut('tabout', self.parent.sd)
         self.tab.OrdreColonne(self._torder)
         dprod = self.tab.dict_CREA_TABLE()
@@ -505,11 +505,11 @@ class POST_MISS_TAB(POST_MISS):
         self.dyge_x = self.dyge_y = self.dyge_z = None
 
     def boucle_dlh(self):
-        """ExÈcution des DYNA_LINE_HARM dans les 3 directions (chargement unitaire)"""
+        """Ex√©cution des DYNA_LINE_HARM dans les 3 directions (chargement unitaire)"""
         first = True
         for freq in self.list_freq_DLH:
             opts = {}
-            _printDBG("Calcul pour la frÈquence %.2f Hz" % freq)
+            _printDBG("Calcul pour la fr√©quence %.2f Hz" % freq)
             __impe = LIRE_IMPE_MISS(BASE=self.param['BASE_MODALE'],
                                     NUME_DDL_GENE=self.nddlgen,
                                     ISSF=self.param['ISSF'],
@@ -540,7 +540,7 @@ class POST_MISS_TAB(POST_MISS):
             first = False
 
     def iteration_dlh(self, dir, rigtot, freq, opts):
-        """ExÈcution d'un DYNA_LINE_HARM"""
+        """Ex√©cution d'un DYNA_LINE_HARM"""
         __fosx = LIRE_FORC_MISS(BASE=self.param['BASE_MODALE'],
                                 NUME_DDL_GENE=self.nddlgen,
                                 ISSF=self.param['ISSF'],
@@ -560,8 +560,8 @@ class POST_MISS_TAB(POST_MISS):
         return __dyge
 
     def recombinaison(self):
-        """Recombinaison des rÈponses unitaires."""
-        # stockage des accÈlÈro et leur fft
+        """Recombinaison des r√©ponses unitaires."""
+        # stockage des acc√©l√©ro et leur fft
         self.add_line('', 'ACCE', 'INST',
                       FONC_X=getattr(self.acce_x, 'nom', None),
                       FONC_Y=getattr(self.acce_y, 'nom', None),
@@ -589,9 +589,9 @@ class POST_MISS_TAB(POST_MISS):
                     self.gen_funct(gno, cham, 'DZ')
 
     def gen_funct(self, gno, cham, dir):
-        """Calcul la rÈponse en un noeud particulier dans la direction 'dir'
-        sur les frÈquences 'lfreq'."""
-        _printDBG("Calcul de la rÈponse en %s, direction %s" % (gno, dir))
+        """Calcul la r√©ponse en un noeud particulier dans la direction 'dir'
+        sur les fr√©quences 'lfreq'."""
+        _printDBG("Calcul de la r√©ponse en %s, direction %s" % (gno, dir))
         tfc = 0.
         to_del = []
         if self.acce_x:
@@ -625,7 +625,7 @@ class POST_MISS_TAB(POST_MISS):
         tffr = tfc.evalfonc(self.list_freq_DLH)
         tffr.para['NOM_PARA'] = 'FREQ'
         fft = tffr.fft('COMPLET', 'NON')
-        # crÈation des concepts
+        # cr√©ation des concepts
         _repfreq = DEFI_FONCTION(VALE_C=tffr.tabul(),
                                  **tffr.para)
         _reptemp = DEFI_FONCTION(VALE=fft.tabul(),
@@ -646,18 +646,18 @@ class POST_MISS_FICHIER(POST_MISS):
     """Pas de post-traitement, car on ne sort que les fichiers."""
 
     def argument(self):
-        """VÈrification des arguments d'entrÈe."""
-        # frÈquences du calcul Miss
+        """V√©rification des arguments d'entr√©e."""
+        # fr√©quences du calcul Miss
         info_freq(self.param)
 
     def execute(self):
         """Lance le post-traitement"""
 
     def sortie(self):
-        """PrÈpare et produit les concepts de sortie."""
+        """Pr√©pare et produit les concepts de sortie."""
 
 class POST_MISS_CONTROL(POST_MISS):
-    """Produit la table des grandeurs aux points de contrÙles"""
+    """Produit la table des grandeurs aux points de contr√¥les"""
 
     def __init__(self, parent, param):
         """Initialisation."""
@@ -670,7 +670,7 @@ class POST_MISS_CONTROL(POST_MISS):
         reader = MissCsolReader(self.param['_nbPC'], self.param['_nbfreq'])
         lfreq, values = reader.read(self.fname("01.csol.a"))
         self.tab = tab = Table()
-        # stockage des accÈlÈro et leur fft
+        # stockage des acc√©l√©ro et leur fft
         self.set_fft_accelero()
         self.recombinaison()
         for ipc, respc in enumerate(values):
@@ -692,7 +692,7 @@ class POST_MISS_CONTROL(POST_MISS):
                 self.gen_funct(nompc, 'ACCE', 'FONC_Z', fct[2], self.tf_zff)
  
     def sortie(self):
-        """PrÈpare et produit les concepts de sortie"""
+        """Pr√©pare et produit les concepts de sortie"""
         self.parent.DeclareOut('tabout', self.parent.sd)
         self.tab.OrdreColonne(self._torder)
         dprod = self.tab.dict_CREA_TABLE()
@@ -704,9 +704,9 @@ class POST_MISS_CONTROL(POST_MISS):
         self.initco()
 
     def recombinaison(self):
-        """Recombinaison des rÈponses unitaires."""
+        """Recombinaison des r√©ponses unitaires."""
         # ici il n'y a pas de recombinaison - par similitude avec TABLE
-        # stockage des accÈlÈro et leur fft
+        # stockage des acc√©l√©ro et leur fft
         self.add_line('', 'ACCE', 'INST',
                       FONC_X=getattr(self.acce_x, 'nom', None),
                       FONC_Y=getattr(self.acce_y, 'nom', None),
@@ -724,7 +724,7 @@ class POST_MISS_CONTROL(POST_MISS):
             self.tf_zff = self.zff.convert('complex')
 
     def _fonct_transfert(self, nom_para, absc, real, imag):
-        """Produit une fonction ‡ stocker dans la table"""
+        """Produit une fonction √† stocker dans la table"""
         tab = NP.array([absc, real, imag])
         vale_c = tab.transpose().ravel().tolist()
         _fct = DEFI_FONCTION(NOM_PARA=nom_para,
@@ -739,7 +739,7 @@ class POST_MISS_CONTROL(POST_MISS):
         tffr = tfc.evalfonc(tfft.vale_x)
         tffr.para['NOM_PARA'] = 'FREQ'
         fft = tffr.fft('COMPLET', 'NON')
-        # crÈation des concepts
+        # cr√©ation des concepts
         _repfreq = DEFI_FONCTION(VALE_C=tffr.tabul(),
                                  **tffr.para)
         _reptemp = DEFI_FONCTION(VALE=fft.tabul(),
@@ -776,7 +776,7 @@ class POST_MISS_FICHIER_TEMPS(POST_MISS_FICHIER):
         self.Z_temps = NP.zeros((self.nrows, self.ncols, self.L_points), float)
         self.Fs_temps = NP.zeros((self.ncols, self.L_points), float)
 
-        # Noms des fichiers ‡ utiliser
+        # Noms des fichiers √† utiliser
         lfich = ( "impe_Laplace", "forc_Laplace")
         lfich = map(self._fichier_tmp, lfich)
         # chemins relatifs au _WRKDIR sinon trop longs pour Miss
@@ -797,7 +797,7 @@ class POST_MISS_FICHIER_TEMPS(POST_MISS_FICHIER):
 
 
     def calc_impe_temps(self):
-        """Calcul de l'impÈdance dans le domaine temporel"""
+        """Calcul de l'imp√©dance dans le domaine temporel"""
         fid = open(self._fich_impe, 'r')
 
         impe_Laplace = NP.zeros((self.nrows, self.ncols, self.nbr_freq), complex)
@@ -879,7 +879,7 @@ class POST_MISS_FICHIER_TEMPS(POST_MISS_FICHIER):
 
         __linst = DEFI_LIST_REEL(DEBUT=0.,
                     INTERVALLE=_F(JUSQU_A= self.param['INST_FIN'] - self.dt,PAS=self.dt),)
-        # Rq. MÍme UL que le fichier effort sismique de MISS
+        # Rq. M√™me UL que le fichier effort sismique de MISS
         unit = self.param['EXCIT_SOL']['UNITE_RESU_FORC']
         nbmod = self.param['NB_MODE']
 
@@ -958,7 +958,7 @@ class POST_MISS_FICHIER_TEMPS(POST_MISS_FICHIER):
 
 
     def ecri_impe(self, Z_temps):
-        """Ecriture des 3 types d'impÈdance dans les 3 fichiers de sortie"""
+        """Ecriture des 3 types d'imp√©dance dans les 3 fichiers de sortie"""
         for n in range(0,self.L_points):
            # Symmetric impedance
            Z_temps[:,:,n] = (Z_temps[:,:,n] + Z_temps[:,:,n].transpose())/2.
@@ -986,7 +986,7 @@ class POST_MISS_FICHIER_TEMPS(POST_MISS_FICHIER):
 
 
     def impr_impe(self, Zdt, unite_type_impe):
-        """Ecriture d'une impÈdance quelconque dans le fichier de sortie en argument"""
+        """Ecriture d'une imp√©dance quelconque dans le fichier de sortie en argument"""
         fname = osp.join( self.param['_WRKDIR'], self.param['PROJET'] + '.' + str(unite_type_impe) )
         fid = open(fname, 'w')
 
@@ -1038,7 +1038,7 @@ class POST_MISS_FICHIER_TEMPS(POST_MISS_FICHIER):
 
 
     def cumtrapz(self, a):
-        """Integration en temps (accÈlÈration -> vitesse -> dÈplacement)"""
+        """Integration en temps (acc√©l√©ration -> vitesse -> d√©placement)"""
         length = len(a)
         b = NP.zeros(length, float)
         for k in range(0, length - 1):
@@ -1048,7 +1048,7 @@ class POST_MISS_FICHIER_TEMPS(POST_MISS_FICHIER):
 
 
     def calc_depl(self, champ_dir, __linst):
-        """Lecture du fichier dÈplacement/vitesse/accÈlÈration pour le calcul de l'effort sismique"""
+        """Lecture du fichier d√©placement/vitesse/acc√©l√©ration pour le calcul de l'effort sismique"""
         __champ = CALC_FONCTION(COMB=_F(FONCTION=self.param['EXCIT_SOL'][champ_dir],
                                         COEF=1.0,),
                                 LIST_PARA=__linst)
@@ -1074,7 +1074,7 @@ class POST_MISS_FICHIER_TEMPS(POST_MISS_FICHIER):
         return osp.join(self.param['_WRKDIR'], fich)
 
 class ListPost(list):
-    """DÈfinit une liste de post-traitement ‡ enchainer"""
+    """D√©finit une liste de post-traitement √† enchainer"""
     
     def set_filename_callback(self, callback):
         """Enregistre le callback nommant les fichiers"""
@@ -1087,8 +1087,8 @@ class ListPost(list):
             post.run()
 
 def PostMissFactory(type_post, parent, param):
-    """CrÈe l'objet ou les objets POST_MISS pour le type de post-traitement
-    demandÈ"""
+    """Cr√©e l'objet ou les objets POST_MISS pour le type de post-traitement
+    demand√©"""
     post = ListPost()
     if type_post == 'HARM_GENE':
         post.append(POST_MISS_HARM(parent, param))
@@ -1107,7 +1107,7 @@ def PostMissFactory(type_post, parent, param):
     return post
 
 def info_freq(param):
-    """Emet un message sur les frÈquences utilisÈes"""
+    """Emet un message sur les fr√©quences utilis√©es"""
     if param['LIST_FREQ']:
         UTMESS('I', 'MISS0_14', valk=repr(param['LIST_FREQ']), vali=len(param['LIST_FREQ']))
     else:

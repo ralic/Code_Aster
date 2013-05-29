@@ -2,7 +2,7 @@
 *                  --- SSNV128L ---
 * MAILLAGE 3D D'UNE PLAQUE EN CONTACT AVEC UN BATI 2D
 * ELEM CUB8 = HEXA8 POUR ASTER (LINEAIRE)
-* PLAQUE SUR UN PLAN INCLINE A 45—
+* PLAQUE SUR UN PLAN INCLINE A 45Â—
 ********************************************************
 *
 opti dime 3 elem cub8 echo 0 ;
@@ -89,5 +89,4 @@ opti sauv form 'ssnv128l.mgib';
 sauv form MTOT;
 *
 fin;
-
 

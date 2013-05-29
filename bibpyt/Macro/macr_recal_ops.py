@@ -1,4 +1,4 @@
-# -*- coding: iso-8859-1 -*-
+# coding=utf-8
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -444,7 +444,7 @@ def macr_recal(self, UNITE_ESCL, RESU_EXP, POIDS, LIST_PARA, RESU_CALC,
    if METHODE in ['HYBRIDE','LEVENBERG','GENETIQUE']: ## AAC --> j'ai modifie et donne la possibilite d'afficher la fenetre mac pour levenb et gene
       if (DYNAMIQUE!=None and DYNAMIQUE['APPARIEMENT_MANUEL']=='OUI'): CALCUL_ASTER.graph_mac=True
 
-   # Instance de la classe gérant l'affichage des resultats du calcul de l'optimisation
+   # Instance de la classe gÃ©rant l'affichage des resultats du calcul de l'optimisation
    Mess = reca_message.Message(para,RESU_EXP,copy.copy(val_init),UNITE_RESU)
    Mess.initialise()
 

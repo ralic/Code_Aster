@@ -1,4 +1,4 @@
-# -*- coding: iso-8859-1 -*-
+# coding=utf-8
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -22,7 +22,7 @@
 cata_msg={
 
 1: _(u"""
- Un instant demandé dans POST_ELEM, option CHAR_LIMITE n'est pas présent dans le résultat <%(k1)s>.
+ Un instant demandÃ© dans POST_ELEM, option CHAR_LIMITE n'est pas prÃ©sent dans le rÃ©sultat <%(k1)s>.
 """),
 
 2: _(u"""
@@ -31,16 +31,16 @@ cata_msg={
 """),
 
 3: _(u"""
- Le résultat <%(k1)s> utilisé dans POST_ELEM, option CHAR_LIMITE n'a pas été produit par un STAT_NON_LINE avec pilotage.
- Vérifiez que vous utilisez le bon résultat.
+ Le rÃ©sultat <%(k1)s> utilisÃ© dans POST_ELEM, option CHAR_LIMITE n'a pas Ã©tÃ© produit par un STAT_NON_LINE avec pilotage.
+ VÃ©rifiez que vous utilisez le bon rÃ©sultat.
 """),
 
 4: _(u"""
- Avec le mot-clé RESULTAT, il faut renseigner NOM_CHAM pour identifier le champ sur lequel réaliser le post-traitement.
+ Avec le mot-clÃ© RESULTAT, il faut renseigner NOM_CHAM pour identifier le champ sur lequel rÃ©aliser le post-traitement.
 """),
 
 11: _(u"""
- Un instant demandé dans POST_ELEM, option TRAV_EXT n'est pas présent dans le résultat <%(k1)s>.
+ Un instant demandÃ© dans POST_ELEM, option TRAV_EXT n'est pas prÃ©sent dans le rÃ©sultat <%(k1)s>.
 """),
 
 

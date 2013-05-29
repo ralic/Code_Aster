@@ -1,4 +1,4 @@
-# -*- coding: iso-8859-1 -*-
+# coding=utf-8
 
 ######################################################
 # DELTA : la structure est de taille (4.0*DELTA, 6.0*DELTA, 20.0*DELTA)
@@ -39,10 +39,10 @@ ipar.setProperty("AP_SAVEPOINT_NAME", "Etat d'IHM: 1")
 ipar.append("AP_VIEWERS_LIST", "OCCViewer_1")
 ipar.append("AP_VIEWERS_LIST", "VTKViewer_2")
 # fill list OCCViewer_1
-ipar.append("OCCViewer_1", "Scène OCC :1 - visualiseur:1")
+ipar.append("OCCViewer_1", "ScÃ¨ne OCC :1 - visualiseur:1")
 ipar.append("OCCViewer_1", "scale=3.612253405211e+03*centerX=6.656933192045e-02*centerY=5.861180478001e-02*projX=7.749564051628e-01*projY=-4.650405943394e-01*projZ=4.279940724373e-01*twist=7.152872697314e-01*atX=2.719070389867e-02*atY=6.013112515211e-02*atZ=-1.687744515948e-03*eyeX=2.855682188648e-02*eyeY=5.931133668819e-02*eyeZ=-9.332628481535e-04*scaleX=1.000000000000e+00*scaleY=1.000000000000e+00*scaleZ=1.000000000000e+00*isVisible=1*size=0.20*gtIsVisible=0*gtDrawNameX=1*gtDrawNameY=1*gtDrawNameZ=1*gtNameX=X*gtNameY=Y*gtNameZ=Z*gtNameColorRX=255*gtNameColorGX=0*gtNameColorBX=0*gtNameColorRY=0*gtNameColorGY=255*gtNameColorBY=0*gtNameColorRZ=0*gtNameColorGZ=0*gtNameColorBZ=255*gtDrawValuesX=1*gtDrawValuesY=1*gtDrawValuesZ=1*gtNbValuesX=3*gtNbValuesY=3*gtNbValuesZ=3*gtOffsetX=2*gtOffsetY=2*gtOffsetZ=2*gtColorRX=255*gtColorGX=0*gtColorBX=0*gtColorRY=0*gtColorGY=255*gtColorBY=0*gtColorRZ=0*gtColorGZ=0*gtColorBZ=255*gtDrawTickmarksX=1*gtDrawTickmarksY=1*gtDrawTickmarksZ=1*gtTickmarkLengthX=5*gtTickmarkLengthY=5*gtTickmarkLengthZ=5")
 # fill list VTKViewer_2
-ipar.append("VTKViewer_2", "Scène VTK:1 - visualiseur:1")
+ipar.append("VTKViewer_2", "ScÃ¨ne VTK:1 - visualiseur:1")
 ipar.append("VTKViewer_2", """<?xml version="1.0"?>
 <ViewState>
     <Position X="1.55149" Y="-0.253356" Z="-0.204094"/>
@@ -153,7 +153,7 @@ while not erreur :
 #
   BOX_G = geompy.MakePartition([BOX_1], [Plan_xOy, Plan_xOz, Plan_yOz], [], [], geompy.ShapeType["SOLID"], 0, [], 0)
 #
-# 4. Les points cardinaux dans les plans parallèles à xOy
+# 4. Les points cardinaux dans les plans parallÃ¨les Ã  xOy
 #    Convention de designation :
 #    y      N
 #    |      |
@@ -892,7 +892,7 @@ while not erreur :
   SMesh_fD2 = BOX_M.Projection1D2D(geom=face)
   status = BOX_M.AddHypothesis(Source_Face_D0, face)
 #
-# 6. Calcul général
+# 6. Calcul gÃ©nÃ©ral
 #
   isDone = BOX_M.Compute()
   smesh.SetName(BOX_M.GetMesh(), 'BOX')
@@ -936,7 +936,7 @@ while not erreur :
 #
 ####  BOX_M.ConvertToQuadratic( 1 )
 #
-# 9. Les groupes issus de la géométrie
+# 9. Les groupes issus de la gÃ©omÃ©trie
 #
   A0 = BOX_M.Group(A0_G)
   A1 = BOX_M.Group(A1_G)

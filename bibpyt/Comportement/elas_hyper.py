@@ -1,4 +1,4 @@
-# -*- coding: iso-8859-1 -*-
+# coding=utf-8
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -22,10 +22,10 @@ from cata_comportement import LoiComportement
 
 loi = LoiComportement(
    nom            = 'ELAS_HYPER',
-   doc = """Relation de comportement hyper-élastique généralisant le modèle de Mooney-Rivlin généralisé
-            Sous sa version incrémentale (COMP_INCR) : elle permet de prendre en compte des déplacements 
-            et contraintes initiaux donnés sous le mot clé ETAT_INIT. 
-            Cette relation n'est supportée qu'en grandes déformations (DEFORMATION='GREEN') cf.[R5.03.23]. """,
+   doc = """Relation de comportement hyper-Ã©lastique gÃ©nÃ©ralisant le modÃ¨le de Mooney-Rivlin gÃ©nÃ©ralisÃ©
+            Sous sa version incrÃ©mentale (COMP_INCR) : elle permet de prendre en compte des dÃ©placements 
+            et contraintes initiaux donnÃ©s sous le mot clÃ© ETAT_INIT. 
+            Cette relation n'est supportÃ©e qu'en grandes dÃ©formations (DEFORMATION='GREEN') cf.[R5.03.23]. """,
    num_lc         = 19,
    nb_vari        = 1,
    nom_vari       = ('VIDE'),

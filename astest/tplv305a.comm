@@ -154,7 +154,7 @@ FOUR180=COMB_FOURIER(   RESULTAT=RTEMP,
                          NOM_CHAM=( 'TEMP',),
                          ANGLE=( 180., ),)
 
-# pour tester le mot clé : IMPR_RESU / ANGLE :
+# pour tester le mot clÃ© : IMPR_RESU / ANGLE :
 IMPR_RESU(RESU=_F(RESULTAT=FOUR180, ANGLE=180.))
 
 

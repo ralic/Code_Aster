@@ -5,18 +5,18 @@ dens 10 ;
 *----------------------------------------
 *DONNEES
 *----------------------------------------
-* dimensions des cotés
+* dimensions des cotÃ©s
 LX = 1;
 LY = 10;
 LZ = 60;
 
-* nombre d'éléments
+* nombre d'Ã©lÃ©ments
 NX = 5;
 NY = 21;
 NZ = 50; 
 
 *---------------------------------------------
-*construction des surfaces dans le plan inférieur
+*construction des surfaces dans le plan infÃ©rieur
 *---------------------------------------------
 
 p1 = LX   0.  -30.;

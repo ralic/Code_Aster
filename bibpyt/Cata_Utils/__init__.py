@@ -1,4 +1,4 @@
-# -*- coding: iso-8859-1 -*-
+# coding=utf-8
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2009  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -18,7 +18,7 @@
 # ======================================================================
 
 #
-# Ce package ne doit contenir que les modules nécessaires au catalogue
-# qui ne peuvent pas être dans Macro ou SD.
-# Exemple : t_fonction permettant d'évaluer les fonctions dans le catalogue materiau.
+# Ce package ne doit contenir que les modules nÃ©cessaires au catalogue
+# qui ne peuvent pas Ãªtre dans Macro ou SD.
+# Exemple : t_fonction permettant d'Ã©valuer les fonctions dans le catalogue materiau.
 #

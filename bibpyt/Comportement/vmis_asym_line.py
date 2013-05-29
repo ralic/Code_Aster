@@ -1,4 +1,4 @@
-# -*- coding: iso-8859-1 -*-
+# coding=utf-8
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -22,7 +22,7 @@ from cata_comportement import LoiComportement
 
 loi = LoiComportement(
    nom            = 'VMIS_ASYM_LINE',
-   doc = """Relation de comportement des barres, à écrouissage isotrope, et seuils non symétrique en traction et compression""",
+   doc = """Relation de comportement des barres, Ã  Ã©crouissage isotrope, et seuils non symÃ©trique en traction et compression""",
    num_lc         = 9999,
    nb_vari        = 4,
    nom_vari       = ('EPSPEQT','INDIPLAT','EPSPEQC','INDIPLAC'),

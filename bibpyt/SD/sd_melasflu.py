@@ -1,4 +1,4 @@
-# -*- coding: iso-8859-1 -*-
+# coding=utf-8
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -57,7 +57,7 @@ class sd_melasflu(AsBase):
         sd2 = sd_resultat_dyn(remf[1]) ; sd2.check(checker)
 
 
-    # Vérifications supplémentaires :
+    # VÃ©rifications supplÃ©mentaires :
     #----------------------------------
     def check_veri1(self, checker):
         remf=self.REMF.get()
@@ -78,42 +78,42 @@ class sd_melasflu(AsBase):
         nbvite=self.VITE.lonmax
         assert nbvite > 0
 
-        # vérification de l'objet .DESC :
+        # vÃ©rification de l'objet .DESC :
         #--------------------------------
         assert len(desc)==1 , desc
         assert desc[0] == 'DEPL' , desc
 
-        # vérification de l'objet .NUMO :
+        # vÃ©rification de l'objet .NUMO :
         #--------------------------------
         for x in self.NUMO.get() :
             assert x >= 1 , numo
 
-        # vérification de l'objet .FACT :
+        # vÃ©rification de l'objet .FACT :
         #--------------------------------
         if itypfl==3 :  # faisceau axial
             assert self.FACT.lonmax == 3*nbmode*nbvite
         else :
             assert self.FACT.lonmax == 3*nbmode
 
-        # vérification de l'objet .MASG :
+        # vÃ©rification de l'objet .MASG :
         #--------------------------------
         if itypfl==3 :  # faisceau axial
             assert self.MASG.lonmax == nbmode*nbvite
         else :
             assert self.MASG.lonmax == nbmode
 
-        # vérification de l'objet .FREQ :
+        # vÃ©rification de l'objet .FREQ :
         #--------------------------------
         assert self.FREQ.lonmax == 2*nbmode*nbvite
 
-        # vérification existence .VCN et .VEN:
+        # vÃ©rification existence .VCN et .VEN:
         #-------------------------------------
         if self.VCN.exists : assert self.VEN.exists
         if self.VEN.exists : assert self.VCN.exists
         if self.VEN.exists : assert itypfl == 1 and couplage == 1
         if self.RAP.exists : assert (self.VEN.exists and self.VCN.exists)
 
-        # vérification de l'objet .VCN :
+        # vÃ©rification de l'objet .VCN :
         #--------------------------------
         if self.VCN.exists :
             fsvi=typfl.FSVI.get()
@@ -123,12 +123,12 @@ class sd_melasflu(AsBase):
                 nbval=nbval+fsvi[2+nbzone+i]
             assert self.VCN.lonmax == nbmode*nbval*2
 
-        # vérification de l'objet .VEN :
+        # vÃ©rification de l'objet .VEN :
         #--------------------------------
         if self.VEN.exists :
             assert self.VEN.lonmax == nbmode*2
 
-        # vérification de l'objet .RAP :
+        # vÃ©rification de l'objet .RAP :
         #--------------------------------
         if self.RAP.exists :
             fsvi=typfl.FSVI.get()
@@ -138,7 +138,7 @@ class sd_melasflu(AsBase):
                 nbval=nbval+fsvi[2+nbzone+i]
             assert self.RAP.lonmax == nbmode*nbval*2
 
-        # vérification de la SD table contenant les cham_no :
+        # vÃ©rification de la SD table contenant les cham_no :
         #----------------------------------------------------
         tcham=self.sd_table
         assert tcham.nb_column() == 1  , tcham
@@ -161,7 +161,7 @@ class sd_melasflu(AsBase):
                 assert profchn1 == profchno  ,(profchn1, profchno)
 
 
-        # vérification de la SD l_table :
+        # vÃ©rification de la SD l_table :
         #--------------------------------
         if self.sd_l_table.LTNT.exists : assert itypfl == 3   # FAISCEAU_AXIAL
         if itypfl == 3  : assert self.sd_l_table.LTNT.exists
@@ -170,11 +170,11 @@ class sd_melasflu(AsBase):
             l_table = self.sd_l_table
             l_table.check(checker)
 
-            # la l_table ne contient qu'une seule table nommée 'MATR_GENE'
+            # la l_table ne contient qu'une seule table nommÃ©e 'MATR_GENE'
             sdu_compare(l_table.LTNT,checker,l_table.LTNT.lonuti,'==',1,"LONUTI(LTNT)==1")
             sdu_compare(l_table.LTNT,checker,l_table.LTNT.get()[0].strip(),'==','MATR_GENE',"LTNT[0]==MATR_GENE")
 
-            # vérification de la table 'MATR_GENE' :
+            # vÃ©rification de la table 'MATR_GENE' :
             tmatgen=sd_table(l_table.LTNS.get()[0])
             col1=tmatgen.get_column_name('NUME_VITE')
             sdu_assert(None, checker, col1, "Manque colonne NUME_VITE")

@@ -5,7 +5,7 @@ lx=1;
 ly=20.;
 lz=20.;
 
-//densité
+//densitÃ©
 dens=1.0;
 
 // points de construction
@@ -50,5 +50,4 @@ Volume (1) = {1000001};
 Physical Surface ( 1 ) = { 1 };  //surfinf
 Physical Surface ( 2 ) = { 26 }; //surfsup
 Physical Volume ( 3 ) = { 1 }; //vol
-
 

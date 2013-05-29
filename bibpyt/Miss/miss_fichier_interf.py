@@ -1,4 +1,4 @@
-# -*- coding: iso-8859-1 -*-
+# coding=utf-8
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -19,7 +19,7 @@
 # person_in_charge: mathieu.courtois at edf.fr
 
 """Module permettant de produire les fichiers :
-    - de données de Miss (.in),
+    - de donnÃ©es de Miss (.in),
     - de maillage de l'interface (.mvol),
     - des modes d'interface (.chp).
 """

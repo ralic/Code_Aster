@@ -1,4 +1,4 @@
-# -*- coding: iso-8859-1 -*-
+# coding=utf-8
 
 from Cata.cata import *
 from Cata.cata import _F
@@ -31,4 +31,3 @@ MA_MACRO = MACRO(nom="MA_MACRO",
                  CHMAT=SIMP(statut='o',typ=cham_mater),
                  CHTH=SIMP(statut='o',typ=(char_ther,char_cine_ther)),
                  TEMPER=SIMP(statut='f', typ=CO))
-

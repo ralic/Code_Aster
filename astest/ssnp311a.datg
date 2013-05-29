@@ -781,4 +781,3 @@ defo0 = deforme vtot ch_dep 0 vert ;
 trac (defo et defo0) ;
 defo = anime 5 vtot ch_dep 5. ;
 trac defo oscil ;
-

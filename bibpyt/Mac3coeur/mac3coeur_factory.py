@@ -1,4 +1,4 @@
-# -*- coding: iso-8859-1 -*-
+# coding=utf-8
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -19,9 +19,9 @@
 # person_in_charge: romeo.fernandes at edf.fr
 
 """
-Module dédié à la macro MAC3COEUR.
+Module dÃ©diÃ© Ã  la macro MAC3COEUR.
 
-On définit ici les factories qui permettent de lire les fichiers datg,
+On dÃ©finit ici les factories qui permettent de lire les fichiers datg,
 et produisent les objets Assemblages ou Coeurs correspondants.
 """
 
@@ -37,13 +37,13 @@ class Mac3Factory(object):
         self.cata = {}
 
     def _get_obj_fname(self, fname):
-        """Retourne le nom du fichier définissant l'objet à importer."""
+        """Retourne le nom du fichier dÃ©finissant l'objet Ã  importer."""
         fname = osp.join(self.rep_datg, fname + ".datg")
         assert osp.exists(fname), 'file not found %s' % fname
         return fname
 
     def build_supported_types(self):
-        """Construit la liste des types autorisés."""
+        """Construit la liste des types autorisÃ©s."""
         raise NotImplementedError
 
     def _context_init(self):
@@ -62,7 +62,7 @@ class Mac3Factory(object):
         self.cata[objname] = ctxt[objname]
 
     def get(self, objname):
-        """Retourne l'objet nommé."""
+        """Retourne l'objet nommÃ©."""
         objname = self.prefix + objname
         if self.cata.get(objname) is None:
             self._import_obj(objname)

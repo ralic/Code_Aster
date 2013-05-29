@@ -6,9 +6,9 @@ oeil = 100. -100. 100. ;
 L = 407 ;
 R = 68 ;
 L = L / 2 ;
-* Nombre d'éléments suivant ux
+* Nombre d'Ã©lÃ©ments suivant ux
 Nx = 4 ;
-* Nombre d'éléments suivant uy dans la hauteur
+* Nombre d'Ã©lÃ©ments suivant uy dans la hauteur
 Ny1 = 8 ;
 * Nombre de section pour le cylindre
 Nr =8 ;

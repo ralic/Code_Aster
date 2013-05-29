@@ -1,4 +1,4 @@
-# -*- coding: iso-8859-1 -*-
+# coding=utf-8
 # person_in_charge: mathieu.courtois at edf.fr
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -39,10 +39,10 @@ class Parmi(object):
         return "".join( l )
 
 class CheckLog(object):
-    """Un validateur qui enregistre toutes les erreurs trouvées.
-    checkedXXX répond True si la "marq" courante est inférieure ou égale
-    à la celle de la dernière vérification.
-    Si on incrémentait "marq" à chaque étape, on revérifie à chaque fois.
+    """Un validateur qui enregistre toutes les erreurs trouvÃ©es.
+    checkedXXX rÃ©pond True si la "marq" courante est infÃ©rieure ou Ã©gale
+    Ã  la celle de la derniÃ¨re vÃ©rification.
+    Si on incrÃ©mentait "marq" Ã  chaque Ã©tape, on revÃ©rifie Ã  chaque fois.
     """
 
     def __init__(self):
@@ -53,7 +53,7 @@ class CheckLog(object):
         self._marq     = 1
         self._lastmarq = self._marq
         self._debug    = False
-        self._profond  = False # True pour forcer des vérifications plus profondes
+        self._profond  = False # True pour forcer des vÃ©rifications plus profondes
 
     def log(self, level, obj, msg ):
         if obj :
@@ -72,9 +72,9 @@ class CheckLog(object):
         self.names[key] = self._marq
 
     def checkSumOJB(self, obj, sd, maj='non'):
-        # vérifie que le checksum de obj n'a pas changé
+        # vÃ©rifie que le checksum de obj n'a pas changÃ©
         # sd : concept qui contient obj
-        # maj='maj', l'opérateur a le droit de modifier ojb
+        # maj='maj', l'opÃ©rateur a le droit de modifier ojb
         if obj.exists :
             import md5
             m=md5.new()
@@ -87,12 +87,12 @@ class CheckLog(object):
                 if self.cksums[nom] != cksum :
                     self.cksums[nom] = cksum
                     #if maj.strip()=='maj' and nom[0:8].strip()==sd.nomj.nomj[0:8].strip() :
-                    # Remarque : ne pas tester 'maj' premet de résoudre (un peu) le problème
-                    #            posé par la commande DETRUIRE
+                    # Remarque : ne pas tester 'maj' premet de rÃ©soudre (un peu) le problÃ¨me
+                    #            posÃ© par la commande DETRUIRE
                     if nom[0:8].strip()==sd.nomj.nomj[0:8].strip() :
                         pass
                     else :
-                        self.err(obj,'Le checksum a changé')
+                        self.err(obj,'Le checksum a changÃ©')
 
     def visitAsBase(self, obj):
         key = (obj.nomj(), obj.__class__.__name__)
@@ -131,7 +131,7 @@ class CheckLog(object):
                             for l,n,m in self.msg ])
 
 class CheckFail(CheckLog):
-    """Un validateur qui lève une exception
-    dès la première erreur"""
+    """Un validateur qui lÃ¨ve une exception
+    dÃ¨s la premiÃ¨re erreur"""
     def err(self, obj, msg ):
         raise AssertionError("%s: %s" % (obj.nomj(), msg) )

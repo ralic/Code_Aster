@@ -1,5 +1,4 @@
 /*           CONFIGURATION MANAGEMENT OF EDF VERSION                  */
-/* MODIF matfpe utilitai  DATE 19/05/2011   AUTEUR SELLENET N.SELLENET */
 /* ================================================================== */
 /* COPYRIGHT (C) 1991 - 2011  EDF R&D              WWW.CODE-ASTER.ORG */
 /*                                                                    */
@@ -13,17 +12,17 @@
 /* GENERAL PUBLIC LICENSE FOR MORE DETAILS.                           */
 /*                                                                    */
 /* YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE  */
-/* ALONG WITH THIS PROGRAM; IF NOT, WRITE TO : EDF R&D CODE_ASTER,    */
+/* ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,      */
 /*    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.     */
 /* ================================================================== */
 /*
-   Cette fonction permet de désactiver temporairement la levée d'exceptions
-   autour des appels des fonctions des librairies mathématiques blas et
+   Cette fonction permet de dÃ©sactiver temporairement la levÃ©e d'exceptions
+   autour des appels des fonctions des librairies mathÃ©matiques blas et
    lapack.
-      CALL MATFPE(-1) : on désactive la levée d'exceptions
-      CALL MATFPE(1) : on active la levée d'exceptions
+      CALL MATFPE(-1) : on dÃ©sactive la levÃ©e d'exceptions
+      CALL MATFPE(1) : on active la levÃ©e d'exceptions
    
-   Problème rencontré sur Linux ia64 avec MKL 8.0.
+   ProblÃ¨me rencontrÃ© sur Linux ia64 avec MKL 8.0.
 */
 #include "aster.h"
 #include <stdio.h>
@@ -41,7 +40,7 @@ void DEFP(MATFPE, matfpe, INTEGER *enable)
 {
 #if defined _DISABLE_MATHLIB_FPE
    
-   /* permet juste de vérifier où on en est si besoin ! */
+   /* permet juste de vÃ©rifier oÃ¹ on en est si besoin ! */
    if (*enable == 0) {
       printf("#MATFPE var = %ld (compteur %d)\n", *enable, compteur_fpe);
       return;
@@ -51,12 +50,12 @@ void DEFP(MATFPE, matfpe, INTEGER *enable)
    
    if (compteur_fpe < 1) {
       fedisableexcept(FE_DIVBYZERO|FE_OVERFLOW|FE_INVALID);
-      /* définition du handler : hanfpe appelle UTMFPE qui fait UTMESS('F') */
+      /* dÃ©finition du handler : hanfpe appelle UTMFPE qui fait UTMESS('F') */
       signal(SIGFPE, hanfpe);
    }
    else if (compteur_fpe >= 1) {
       feenableexcept(FE_DIVBYZERO|FE_OVERFLOW|FE_INVALID);
-      /* définition du handler : hanfpe appelle UTMFPE qui fait UTMESS('F') */
+      /* dÃ©finition du handler : hanfpe appelle UTMFPE qui fait UTMESS('F') */
       signal(SIGFPE, hanfpe);
    }
       

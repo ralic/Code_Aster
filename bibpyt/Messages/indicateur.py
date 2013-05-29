@@ -1,4 +1,4 @@
-# -*- coding: iso-8859-1 -*-
+# coding=utf-8
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -21,23 +21,23 @@
 cata_msg = {
 
 2 : _(u"""
-Le champ de contraintes n'a pas été calculé sur tout le modèle.
-On ne peut pas calculer l'option %(k1)s pour le numéro d'ordre %(k2)s.
+Le champ de contraintes n'a pas Ã©tÃ© calculÃ© sur tout le modÃ¨le.
+On ne peut pas calculer l'option %(k1)s pour le numÃ©ro d'ordre %(k2)s.
 """),
 
 3: _(u"""
-On ne peut pas calculer un indicateur d'erreur spatial à l'instant initial.
-L'indicateur d'erreur spatial ne sera pas calculé à cet instant.
+On ne peut pas calculer un indicateur d'erreur spatial Ã  l'instant initial.
+L'indicateur d'erreur spatial ne sera pas calculÃ© Ã  cet instant.
 """),
 
 4: _(u"""
-Attention : on n'a pas pu récupérer le paramètre thêta dans le résultat %(k1)s.
-La valeur prise par défaut pour thêta est 0.57
+Attention : on n'a pas pu rÃ©cupÃ©rer le paramÃ¨tre thÃªta dans le rÃ©sultat %(k1)s.
+La valeur prise par dÃ©faut pour thÃªta est 0.57
 """),
 
 5: _(u"""
-Attention : récupération d'une valeur de thêta illicite dans le résultat %(k1)s.
-thêta doit être compris entre 0 et 1.
+Attention : rÃ©cupÃ©ration d'une valeur de thÃªta illicite dans le rÃ©sultat %(k1)s.
+thÃªta doit Ãªtre compris entre 0 et 1.
 """),
 
 6 : _(u"""
@@ -45,61 +45,61 @@ Le calcul de l'indicateur d erreur ne sait pas traiter les charges du type de %(
 """),
 
 7 : _(u"""
-Le choix %(k1)s apparaît au moins dans 2 charges.
+Le choix %(k1)s apparaÃ®t au moins dans 2 charges.
 """),
 
 8 : _(u"""
-Problème sur les charges. Consulter la documentation
+ProblÃ¨me sur les charges. Consulter la documentation
 """),
 
 9 : _(u"""
- La maille %(k1)s semble être est trop distordue.
+ La maille %(k1)s semble Ãªtre est trop distordue.
  On ne calcule pas l'option %(k2)s sur cette maille.
 
  Risques & conseils :
-   Il faut vérifier votre maillage !
-   Vérifiez les messages émis par la commande AFFE_MODELE.
+   Il faut vÃ©rifier votre maillage !
+   VÃ©rifiez les messages Ã©mis par la commande AFFE_MODELE.
 """),
 
 10 : _(u"""
  Erreur de programmation :
- Le type de maille %(k1)s n'est pas prévu ou est inconnu.
+ Le type de maille %(k1)s n'est pas prÃ©vu ou est inconnu.
 """),
 
 11 : _(u"""
-Impossible de récupérer les paramètres temporels.
+Impossible de rÃ©cupÃ©rer les paramÃ¨tres temporels.
 """),
 
 12 : _(u"""
- La face numéro %(i1)d de la maille %(k1)s possède %(i2)d voisins.
- Or, ceci n'est pas prévu : un seul voisin par face est autorisé.
+ La face numÃ©ro %(i1)d de la maille %(k1)s possÃ¨de %(i2)d voisins.
+ Or, ceci n'est pas prÃ©vu : un seul voisin par face est autorisÃ©.
  Cela signifie que la maillage comporte des mailles doubles ou qu'une maille
- de bord est intercalée entre deux mailles volumiques.
+ de bord est intercalÃ©e entre deux mailles volumiques.
  
  Conseils :
-   Vérifiez votre maillage.
-   Ces mailles doubles ou intercalées ne sont peut-être pas nécessaire au calcul.
-   Dans ce cas ne les affectez pas avec le modèle !
+   VÃ©rifiez votre maillage.
+   Ces mailles doubles ou intercalÃ©es ne sont peut-Ãªtre pas nÃ©cessaire au calcul.
+   Dans ce cas ne les affectez pas avec le modÃ¨le !
 """),
 
 20 : _(u"""
-PERM_IN: division par zéro
+PERM_IN: division par zÃ©ro
 """),
 
 21 : _(u"""
-La %(k1)s caractéristique est nulle. On risque la division par zéro.
+La %(k1)s caractÃ©ristique est nulle. On risque la division par zÃ©ro.
 """),
 
 22: _(u"""
-RHO liquide: div par zéro
+RHO liquide: div par zÃ©ro
 """),
 
 23: _(u"""
-Vous n'utilisez pas une modélisation HM saturée élastique.
+Vous n'utilisez pas une modÃ©lisation HM saturÃ©e Ã©lastique.
 """),
 
 24 : _(u"""
- le résultat  %(k1)s  doit comporter un champ d'indicateurs d'erreur au numéro
+ le rÃ©sultat  %(k1)s  doit comporter un champ d'indicateurs d'erreur au numÃ©ro
  d'ordre %(k2)s  .
 """),
 
@@ -110,24 +110,24 @@ Il faut renseigner le mot-clef COMP_INCR avec ELAS et LIQU_SATU pour calculer l'
 
 28 : _(u"""
 Pour le calcul de l'indicateur d'erreur en HM, il faut fournir
-les longueur et pression caractéristiques.
-Ces valeurs doivent être strictement positives.
+les longueur et pression caractÃ©ristiques.
+Ces valeurs doivent Ãªtre strictement positives.
 
 -> Conseil :
      N'oubliez pas de renseigner les valeurs sous le mot-clef GRANDEUR_CARA dans AFFE_MODELE.
 """),
 
 31: _(u"""
-deltat: division par zéro
+deltat: division par zÃ©ro
 """),
 
 32 : _(u"""
- Dans le programme %(k1)s, impossible de trouver le diamètre
- pour un élément de type %(k2)s
+ Dans le programme %(k1)s, impossible de trouver le diamÃ¨tre
+ pour un Ã©lÃ©ment de type %(k2)s
 """),
 
 33 : _(u"""
- Le diamètre de l'élément de type %(k1)s vaut : %(r1)f
+ Le diamÃ¨tre de l'Ã©lÃ©ment de type %(k1)s vaut : %(r1)f
 """),
 
 90 : _(u"""
@@ -148,7 +148,7 @@ L'option %(k1)s est invalide.
 
 99 : _(u"""
 Erreur de programmation dans %(k1)s
-L'option %(k2)s ne correspond pas à une option de calcul d'indicateur d'erreur.
+L'option %(k2)s ne correspond pas Ã  une option de calcul d'indicateur d'erreur.
 """),
 
 }

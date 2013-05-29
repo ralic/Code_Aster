@@ -1,4 +1,4 @@
-# -*- coding: iso-8859-1 -*-
+# coding=utf-8
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -20,20 +20,20 @@
 
 class MEME_NOMBRE:
    """
-      La règle MEME_NOMBRE vérifie que l'on trouve au moins un des mots-clés
-      de la règle parmi les arguments d'un OBJECT.
+      La rÃ¨gle MEME_NOMBRE vÃ©rifie que l'on trouve au moins un des mots-clÃ©s
+      de la rÃ¨gle parmi les arguments d'un OBJECT.
 
-      Ces arguments sont transmis à la règle pour validation sous la forme
-      d'une liste de noms de mots-clés ou d'un dictionnaire dont
-      les clés sont des noms de mots-clés.
+      Ces arguments sont transmis Ã  la rÃ¨gle pour validation sous la forme
+      d'une liste de noms de mots-clÃ©s ou d'un dictionnaire dont
+      les clÃ©s sont des noms de mots-clÃ©s.
    """
    def verif(self,args):
       """
-          La méthode verif vérifie que l'on trouve au moins un des mos-clés
-          de la liste self.mcs parmi les éléments de args
+          La mÃ©thode verif vÃ©rifie que l'on trouve au moins un des mos-clÃ©s
+          de la liste self.mcs parmi les Ã©lÃ©ments de args
 
-          args peut etre un dictionnaire ou une liste. Les éléments de args
-          sont soit les éléments de la liste soit les clés du dictionnaire.
+          args peut etre un dictionnaire ou une liste. Les Ã©lÃ©ments de args
+          sont soit les Ã©lÃ©ments de la liste soit les clÃ©s du dictionnaire.
       """
       #  on compte le nombre de mots cles presents
       text =''
@@ -42,7 +42,7 @@ class MEME_NOMBRE:
 
       for mc in self.mcs:
         if mc not in args.keys():
-          text = u"Une clé dans la règle n'existe pas %s" % mc
+          text = u"Une clÃ© dans la rÃ¨gle n'existe pas %s" % mc
           return text,0
 
         val = args[mc].valeur
@@ -55,6 +55,6 @@ class MEME_NOMBRE:
         if size == -1:
           size = len_val
         elif size != len_val:
-          text = u"Pas la même longeur"
+          text = u"Pas la mÃªme longeur"
           return text,0
       return text,1

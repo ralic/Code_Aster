@@ -1,4 +1,4 @@
-# -*- coding: iso-8859-1 -*-
+# coding=utf-8
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -50,7 +50,7 @@ class sd_listr8(sd_titre):
         lpas=self.LPAS.get()
         vale=self.VALE.get()
 
-        # cas général :
+        # cas gÃ©nÃ©ral :
         if len(vale) > 1 :
             assert len(bint) == len(nbpa)+1
             assert len(nbpa) == len(lpas)

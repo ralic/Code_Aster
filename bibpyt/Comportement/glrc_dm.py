@@ -1,4 +1,4 @@
-# -*- coding: iso-8859-1 -*-
+# coding=utf-8
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -22,13 +22,13 @@ from cata_comportement import LoiComportement
 
 loi = LoiComportement(
    nom            = 'GLRC_DM',
-   doc = """Ce modèle global permet de représenter l'endommagement d'une plaque en béton armé pour des sollicitations modérées. 
-   Contrairement aux modélisations locales où chaque constituant du matériau est modélisé à part, dans les modèles globaux, 
-   la loi de comportement s'écrit directement en terme de contraintes et de déformations généralisées. 
-   La modélisation jusqu'à la rupture n'est pas recommandée, puisque les phénomènes de plastification ne sont pas 
-   pris en compte, mais le sont dans GLRC_DAMAGE. En revanche, la modélisation du couplage de l'endommagement entre les effets 
+   doc = """Ce modÃ¨le global permet de reprÃ©senter l'endommagement d'une plaque en bÃ©ton armÃ© pour des sollicitations modÃ©rÃ©es. 
+   Contrairement aux modÃ©lisations locales oÃ¹ chaque constituant du matÃ©riau est modÃ©lisÃ© Ã  part, dans les modÃ¨les globaux, 
+   la loi de comportement s'Ã©crit directement en terme de contraintes et de dÃ©formations gÃ©nÃ©ralisÃ©es. 
+   La modÃ©lisation jusqu'Ã  la rupture n'est pas recommandÃ©e, puisque les phÃ©nomÃ¨nes de plastification ne sont pas 
+   pris en compte, mais le sont dans GLRC_DAMAGE. En revanche, la modÃ©lisation du couplage de l'endommagement entre les effets 
    de membrane et de flexion dans GLRC_DM est pris en compte, ce qui n'est pas le cas dans GLRC_DAMAGE. 
-   Pour les précisions sur la formulation du modèle voir [R7.01.32]""",
+   Pour les prÃ©cisions sur la formulation du modÃ¨le voir [R7.01.32]""",
    num_lc         = 9999,
    nb_vari        = 7,
    nom_vari       = ('ENDOFL+','ENDOFL-','INDIEND1','INDIEND2','ADOUTRAC','ADOUCOMP','ADOUFLEX'),

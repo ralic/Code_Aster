@@ -1,4 +1,4 @@
-# -*- coding: iso-8859-1 -*-
+# coding=utf-8
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -75,7 +75,7 @@ def macro_expans_ops( self,
         if RESU_EX: UTMESS('A','CALCESSAI0_6',valk=['MODELE_CALCUL','RESU_NX'])
 
 
-    # Extraction des modes numériques
+    # Extraction des modes numÃ©riques
     # -------------------------------
     if not is_nume_num:
         __resunx = RESU_NUM
@@ -91,7 +91,7 @@ def macro_expans_ops( self,
         __resunx = EXTR_MODE( FILTRE_MODE = mfact )
 
 
-    # Extraction des modes expérimentaux
+    # Extraction des modes expÃ©rimentaux
     # ----------------------------------
     if not is_nume_exp:
         __resuex = RESU_EXP
@@ -109,10 +109,10 @@ def macro_expans_ops( self,
 
 
     # Projection des modes experimentaux - on passe le mot-cle
-    # RESOLUTION directement à PROJ_MESU_MODAL
+    # RESOLUTION directement Ã  PROJ_MESU_MODAL
     # --------------------------------------------------------
 
-    # Mot-clé facteur de résolution
+    # Mot-clÃ© facteur de rÃ©solution
     for m in RESOLUTION:
         if m['METHODE'] == 'SVD':
             mfact={'METHODE':'SVD','EPS':m['EPS']}
@@ -125,9 +125,9 @@ def macro_expans_ops( self,
         elif m['METHODE'] == 'LU':
             mfact = {'METHODE':'LU'}
 
-    # Paramètres à garder : si on étend des mode_meca, on conserve les
-    # freq propres, amortissements réduits, et masses généralisées. Pour
-    # les dyna_harmo, on conserve les fréquences uniquement
+    # ParamÃ¨tres Ã  garder : si on Ã©tend des mode_meca, on conserve les
+    # freq propres, amortissements rÃ©duits, et masses gÃ©nÃ©ralisÃ©es. Pour
+    # les dyna_harmo, on conserve les frÃ©quences uniquement
     if isinstance(RESU_EXP, mode_meca):
         paras = ('FREQ','AMOR_REDUIT','MASS_GENE',)
     elif isinstance(RESU_EXP, dyna_harmo):

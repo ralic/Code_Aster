@@ -166,7 +166,7 @@ L_COP=DEFI_LIST_REEL(DEBUT=0.02,
                     INTERVALLE=(_F(JUSQU_A=nbcop*0.02,
                                    PAS=0.02,),
                      ),);
-#avec copeaux définis
+#avec copeaux dÃ©finis
 TESTCOP= CALC_GP(RESULTAT=RESU,
                LIST_INST=L_INSTGP,
                TRANCHE_2D=_F(ZONE_MAIL='OUI',

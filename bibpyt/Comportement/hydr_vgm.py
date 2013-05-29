@@ -1,4 +1,4 @@
-# -*- coding: iso-8859-1 -*-
+# coding=utf-8
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -22,10 +22,10 @@ from cata_comportement import LoiComportement
 
 loi = LoiComportement(
    nom            = 'HYDR_VGM',
-   doc = """Loi de comportement hydraulique, si le comportement mécanique est sans endommagement : 
+   doc = """Loi de comportement hydraulique, si le comportement mÃ©canique est sans endommagement : 
    Ici et uniquement pour les lois de couplage liquide/gaz 'LIQU_GAZ', 'LIQU_AD_VAPE_GAZ' et 'LIQVAP_GAZ', 
-   les courbes de saturation, de perméabilités relatives à l'eau et au gaz et leur dérivées sont définies par 
-   le modèle de Mualem Van-Genuchten. """,
+   les courbes de saturation, de permÃ©abilitÃ©s relatives Ã  l'eau et au gaz et leur dÃ©rivÃ©es sont dÃ©finies par 
+   le modÃ¨le de Mualem Van-Genuchten. """,
    num_lc         = 9999,
    nb_vari        = 1,
    nom_vari       = ('HYDRUTI1'),

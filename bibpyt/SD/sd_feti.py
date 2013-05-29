@@ -1,4 +1,4 @@
-# -*- coding: iso-8859-1 -*-
+# coding=utf-8
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -20,7 +20,7 @@
 from SD import *
 
 # AJACOT_PB en attendant la correction de la fiche 10475 :
-# on dédouble la SD pour la rendre facultative.
+# on dÃ©double la SD pour la rendre facultative.
 
 
 class sd_feti1(AsBase):

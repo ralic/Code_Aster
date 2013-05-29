@@ -1,4 +1,4 @@
-# -*- coding: iso-8859-1 -*-
+# coding=utf-8
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -21,22 +21,22 @@
 cata_msg = {
 
 1 : _(u"""
- Le champ à tester comporte %(i1)d sous-points.
- Or vous n'avez pas donné de numéro de sous-point à tester.
+ Le champ Ã  tester comporte %(i1)d sous-points.
+ Or vous n'avez pas donnÃ© de numÃ©ro de sous-point Ã  tester.
  Il faut renseigner POINT et SOUS_POINT.
 """),
 
 2 : _(u"""
 Erreur Utilisateur :
  Quand on utilise AFFE_CHAR_CINE/EVOL_IMPO, c'est le champ de l'EVOL_XXX correspondant
- au 1er instant qui impose sa "loi" : tous les ddls de ce champ seront imposés pour tous
+ au 1er instant qui impose sa "loi" : tous les ddls de ce champ seront imposÃ©s pour tous
  les instants du calcul.
 
  Malheureusement, on ne trouve pas un ddl dans l'EVOL_XXX %(k1)s :
    instant : %(r1)f  noeud : %(i1)d  composante : %(k2)s
 
 Risques & conseils :
- Assurez-vous que l'évolution imposée %(k1)s concerne les mêmes ddls pour tous les instants.
+ Assurez-vous que l'Ã©volution imposÃ©e %(k1)s concerne les mÃªmes ddls pour tous les instants.
 """),
 
 3 : _(u"""
@@ -44,86 +44,86 @@ Risques & conseils :
 """),
 
 4 : _(u"""
- incohérence des maillages : %(k1)s  et  %(k2)s
+ incohÃ©rence des maillages : %(k1)s  et  %(k2)s
 """),
 
 5 : _(u"""
  Erreur de programmation (ou d'utilisation ?) :
-   Le changement de discrétisation : %(k1)s n'est pas encore programmé.
+   Le changement de discrÃ©tisation : %(k1)s n'est pas encore programmÃ©.
  Risques et conseils :
-   Il y a peut-être une demande d'évolution à émettre ...
+   Il y a peut-Ãªtre une demande d'Ã©volution Ã  Ã©mettre ...
 """),
 
 6 : _(u"""
  Erreur d'utilisation :
-   On n'arrive pas à construire correctement le champ contenant le nombre de sous-points
-   des éléments finis (coques multicouches, tuyaux, poutres multifibres, ...) du modèle %(k1)s.
+   On n'arrive pas Ã  construire correctement le champ contenant le nombre de sous-points
+   des Ã©lÃ©ments finis (coques multicouches, tuyaux, poutres multifibres, ...) du modÃ¨le %(k1)s.
 
  Risques & conseils :
-   Cette erreur intervient lorsque l'on ne définit pas TOUTES les caractéristiques élémentaires
-   dans le même AFFE_CARA_ELEM.
+   Cette erreur intervient lorsque l'on ne dÃ©finit pas TOUTES les caractÃ©ristiques Ã©lÃ©mentaires
+   dans le mÃªme AFFE_CARA_ELEM.
    Pour les commandes de calcul, il ne faut qu'un seul MODELE et qu'un seul CARA_ELEM.
 """),
 
 7 : _(u"""
  Erreur de maillage :
    La maille %(k1)s de type %(k2)s est trop distordue.
-   Le jacobien de la transformation géométrique n'a pas le même signe sur tous les
+   Le jacobien de la transformation gÃ©omÃ©trique n'a pas le mÃªme signe sur tous les
    points de Gauss.
 
  Risques & conseils :
-   Le maillage a-t-il été produit par un mailleur ?
-   La connectivité respecte-t-elle bien la convention Aster ?
+   Le maillage a-t-il Ã©tÃ© produit par un mailleur ?
+   La connectivitÃ© respecte-t-elle bien la convention Aster ?
 """),
 
 8 : _(u"""
- sur la maille %(k1)s le calcul est thermo mécanique. Or il manque la température de référence.
- On ne peut donc pas calculer de déformation thermique.
+ sur la maille %(k1)s le calcul est thermo mÃ©canique. Or il manque la tempÃ©rature de rÃ©fÃ©rence.
+ On ne peut donc pas calculer de dÃ©formation thermique.
 """),
 
 9 : _(u"""
  Erreur d'utilisation dans AFFE_CHAR_CINE :
-   Aucun des ddls que l'on souhaite bloquer n'appartient au modèle.
-   La charge cinématique produite est donc vide.
+   Aucun des ddls que l'on souhaite bloquer n'appartient au modÃ¨le.
+   La charge cinÃ©matique produite est donc vide.
 
  Risques & Conseils :
-   Vérifier le nom des ddls portés par les noeuds des éléments de votre modèle.
+   VÃ©rifier le nom des ddls portÃ©s par les noeuds des Ã©lÃ©ments de votre modÃ¨le.
 """),
 
 10 : _(u"""
 Erreur de programmation lors de l'assemblage :
-   Les quantités que l'on cherche à assembler (MATR_ELEM ou VECT_ELEM) ont été calculées avec au
-   moins 2 partitions différentes :  %(k1)s et %(k2)s
+   Les quantitÃ©s que l'on cherche Ã  assembler (MATR_ELEM ou VECT_ELEM) ont Ã©tÃ© calculÃ©es avec au
+   moins 2 partitions diffÃ©rentes :  %(k1)s et %(k2)s
 """),
 
 11 : _(u"""
- le mode_local:  %(k1)s  ne doit pas être vecteur ou matrice.
+ le mode_local:  %(k1)s  ne doit pas Ãªtre vecteur ou matrice.
 """),
 
 12 : _(u"""
- le mode_local:  %(k1)s  ne doit pas être "DIFF__".
+ le mode_local:  %(k1)s  ne doit pas Ãªtre "DIFF__".
 """),
 
 13 : _(u"""
-Erreur utilisateur concernant le parallélisme des calculs élémentaires :
-  La partition des éléments du modèle a été faite sur %(i1)d processeurs.
+Erreur utilisateur concernant le parallÃ©lisme des calculs Ã©lÃ©mentaires :
+  La partition des Ã©lÃ©ments du modÃ¨le a Ã©tÃ© faite sur %(i1)d processeurs.
   Mais maintenant, le nombre de processeurs disponibles est de %(i2)d.
 
 Conseil :
-  Il faut utiliser la commande MODI_MODELE pour modifier la partition du modèle
-  afin qu'elle soit cohérente avec le nombre de processeurs disponibles pour les calculs.
+  Il faut utiliser la commande MODI_MODELE pour modifier la partition du modÃ¨le
+  afin qu'elle soit cohÃ©rente avec le nombre de processeurs disponibles pour les calculs.
 """),
 
 14 : _(u"""
-  incompatibilité des type_champ ("ELGA"/"ELNO")  pour l option :  %(k1)s  entre les 2 TYPE_ELEM :  %(k2)s  et  %(k3)s
+  incompatibilitÃ© des type_champ ("ELGA"/"ELNO")  pour l option :  %(k1)s  entre les 2 TYPE_ELEM :  %(k2)s  et  %(k3)s
 """),
 
 15 : _(u"""
  Erreur Utilisateur :
- On cherche à calculer une déformation thermique mais on ne trouve pas toutes les
- quantités nécessaires :
-    - température
-    - température de référence
+ On cherche Ã  calculer une dÃ©formation thermique mais on ne trouve pas toutes les
+ quantitÃ©s nÃ©cessaires :
+    - tempÃ©rature
+    - tempÃ©rature de rÃ©fÃ©rence
     - coefficient de dilatation
 """),
 
@@ -132,20 +132,20 @@ Conseil :
 """),
 
 18 : _(u"""
- Vous utilisez CALC_CHAMP en reuse mais la structure de données en entrée est
- différente de celle en sortie. Ce n'est pas autorisé.
+ Vous utilisez CALC_CHAMP en reuse mais la structure de donnÃ©es en entrÃ©e est
+ diffÃ©rente de celle en sortie. Ce n'est pas autorisÃ©.
 """),
 
 19 : _(u"""
 Erreur :
- Le CHAM_ELEM %(k1)s est incohérent :
-   Il possède %(i1)d GREL.
-   Il a été calculé avec le LIGREL %(k2)s qui possède %(i2)d GREL.
+ Le CHAM_ELEM %(k1)s est incohÃ©rent :
+   Il possÃ¨de %(i1)d GREL.
+   Il a Ã©tÃ© calculÃ© avec le LIGREL %(k2)s qui possÃ¨de %(i2)d GREL.
 
 Risques & Conseils :
  Il peut s'agir d'une erreur de programmation.
- Mais ce problème peut aussi se produire si le LIGREL (ou le MODELE)
- a été entre temps détruit et recréé sous le même nom.
+ Mais ce problÃ¨me peut aussi se produire si le LIGREL (ou le MODELE)
+ a Ã©tÃ© entre temps dÃ©truit et recrÃ©Ã© sous le mÃªme nom.
 """),
 
 20 : _(u"""
@@ -153,52 +153,52 @@ Risques & Conseils :
 """),
 
 21 : _(u"""
- les champs réel et imaginaire à assembler ne contiennent pas la même grandeur
+ les champs rÃ©el et imaginaire Ã  assembler ne contiennent pas la mÃªme grandeur
 """),
 
 22 : _(u"""
- problème dans le catalogue des grandeurs simples
- la grandeur %(k1)s  ne possède pas le même nombre de champs que son homologue complexe %(k2)s
+ problÃ¨me dans le catalogue des grandeurs simples
+ la grandeur %(k1)s  ne possÃ¨de pas le mÃªme nombre de champs que son homologue complexe %(k2)s
 """),
 
 23 : _(u"""
- problème dans le catalogue des grandeurs simples
- la grandeur  %(k1)s  ne possède pas les mêmes champs que son homologue complexe  %(k2)s
+ problÃ¨me dans le catalogue des grandeurs simples
+ la grandeur  %(k1)s  ne possÃ¨de pas les mÃªmes champs que son homologue complexe  %(k2)s
 """),
 
 24 : _(u"""
- Le modèle donné dans le mot-clé MODELE n'est pas le même que celui présent dans la
- structure de données résultat. Ce n'est pas autorisé.
- En effet, le mot-clé MODELE de CALC_CHAMP n'est utilisable que dans le cas où le
- modèle est manquant dans la structure de données résultat.
+ Le modÃ¨le donnÃ© dans le mot-clÃ© MODELE n'est pas le mÃªme que celui prÃ©sent dans la
+ structure de donnÃ©es rÃ©sultat. Ce n'est pas autorisÃ©.
+ En effet, le mot-clÃ© MODELE de CALC_CHAMP n'est utilisable que dans le cas oÃ¹ le
+ modÃ¨le est manquant dans la structure de donnÃ©es rÃ©sultat.
 """),
 
 25 : _(u"""
 Erreur utilisateur dans PROJ_SPEC_BASE :
- La commande n'accepte que le parallélisme de type PARTITION='CENTRALISE'.
- Modèle impliqué : %(k1)s
+ La commande n'accepte que le parallÃ©lisme de type PARTITION='CENTRALISE'.
+ ModÃ¨le impliquÃ© : %(k1)s
 
 Conseil :
  Dans la commande AFFE_MODELE (ou MODI_MODELE), il faut utiliser PARTITION='CENTRALISE'
 """),
 
 26 : _(u"""
- Le modèle est peut-être trop grossier :
+ Le modÃ¨le est peut-Ãªtre trop grossier :
    Sur la maille %(k1)s et pour la composante %(k2)s de la grandeur %(k3)s,
    il y a une variation entre les points de la maille de %(r1)f
-   alors que, globalement, les valeurs du champ ne dépassent pas %(r2)f (en valeur absolue).
-   Cela fait une variation sur la maille supérieure à %(r3)f%%.
+   alors que, globalement, les valeurs du champ ne dÃ©passent pas %(r2)f (en valeur absolue).
+   Cela fait une variation sur la maille supÃ©rieure Ã  %(r3)f%%.
 """),
 
 27 : _(u"""
- CHAM_ELEM à combiner incompatible
+ CHAM_ELEM Ã  combiner incompatible
 """),
 
 28 : _(u"""
- Problème lors de l'utilisation de la structure de données %(k1)s.
- Cette structure de données est de type "évolution temporelle" et l'on n'a pas le droit
+ ProblÃ¨me lors de l'utilisation de la structure de donnÃ©es %(k1)s.
+ Cette structure de donnÃ©es est de type "Ã©volution temporelle" et l'on n'a pas le droit
  de l'utiliser en dehors de l'intervalle [tmin, tmax].
- Mais ici, il n'y a qu'un seul instant dans la structure de donnée (tmin=tmax).
+ Mais ici, il n'y a qu'un seul instant dans la structure de donnÃ©e (tmin=tmax).
  Dans ce cas, on suppose alors que ce transitoire est "permanent" et que l'on peut l'utiliser
  pour toute valeur du temps.
 """),
@@ -206,13 +206,13 @@ Conseil :
 
 29 : _(u"""
  Erreur utilisateur :
-   Le programme a besoin d'accéder au champ %(k2)s de la structure sd_resultat %(k1)s
+   Le programme a besoin d'accÃ©der au champ %(k2)s de la structure sd_resultat %(k1)s
    pour le NUME_ORDRE: %(i1)d
-   Mais ce champ n'existe pas dans la structure de données fournie.
+   Mais ce champ n'existe pas dans la structure de donnÃ©es fournie.
    On ne peut pas continuer.
 
  Risques & conseils :
- Vérifiez que la structure de données %(k1)s est bien celle qu'il faut utiliser.
+ VÃ©rifiez que la structure de donnÃ©es %(k1)s est bien celle qu'il faut utiliser.
 """),
 
 30 : _(u"""
@@ -221,55 +221,55 @@ Erreur utilisateur :
 
   -> Risques & Conseils :
    * Si vous utilisez une commande de "calcul" (THER_LINEAIRE, STAT_NON_LINE, ...), il n'y a pas
-     moyen de contourner ce problème. Il faut changer de modélisation ou  émettre une demande d'évolution.
+     moyen de contourner ce problÃ¨me. Il faut changer de modÃ©lisation ou  Ã©mettre une demande d'Ã©volution.
 
-   * Si c'est un calcul de post-traitement, vous pouvez sans doute "éviter" le problème
+   * Si c'est un calcul de post-traitement, vous pouvez sans doute "Ã©viter" le problÃ¨me
      en ne faisant le post-traitement que sur les mailles qui savent le faire.
-     Pour cela, il faut sans doute utiliser un mot clé de type "GROUP_MA".
-     S'il n'y en a pas, il faut faire une demande d'évolution.
+     Pour cela, il faut sans doute utiliser un mot clÃ© de type "GROUP_MA".
+     S'il n'y en a pas, il faut faire une demande d'Ã©volution.
 """),
 
 31 : _(u"""
-  La température n'est pas correctement renseignée
+  La tempÃ©rature n'est pas correctement renseignÃ©e
 """),
 
 32 : _(u"""
 Erreur utilisateur :
-  Sur la maille %(k1)s le calcul est thermo mécanique. Mais il manque le paramètre matériau
-  %(k2)s . On ne peut donc pas calculer la déformation thermique.
+  Sur la maille %(k1)s le calcul est thermo mÃ©canique. Mais il manque le paramÃ¨tre matÃ©riau
+  %(k2)s . On ne peut donc pas calculer la dÃ©formation thermique.
 
 Conseils :
-  Si le problème concerne TEMP_REF, vérifiez que vous avez bien affecté une température
-  de référence (AFFE_MATERIAU/AFFE_VARC/NOM_VARC='TEMP', VALE_REF=...)
+  Si le problÃ¨me concerne TEMP_REF, vÃ©rifiez que vous avez bien affectÃ© une tempÃ©rature
+  de rÃ©fÃ©rence (AFFE_MATERIAU/AFFE_VARC/NOM_VARC='TEMP', VALE_REF=...)
 """),
 
 33 : _(u"""
-Vous utilisez CALC_CHAMP en reuse en surchargeant le mot-clé
-%(k1)s. Or ce paramètre déjà présent dans structure de données résultat sur laquelle
-vous travaillez est différent de celui donné (%(k2)s et %(k3)s).
+Vous utilisez CALC_CHAMP en reuse en surchargeant le mot-clÃ©
+%(k1)s. Or ce paramÃ¨tre dÃ©jÃ  prÃ©sent dans structure de donnÃ©es rÃ©sultat sur laquelle
+vous travaillez est diffÃ©rent de celui donnÃ© (%(k2)s et %(k3)s).
 
 Dans ce cas, le reuse est interdit.
 
 Conseil :
-  Relancez le calcul en créant une nouvelle structure de données résultat.
+  Relancez le calcul en crÃ©ant une nouvelle structure de donnÃ©es rÃ©sultat.
 """),
 
 34 : _(u"""
  le calcul de l'option :  %(k1)s
- n'est possible pour aucun des types d'éléments du LIGREL.
+ n'est possible pour aucun des types d'Ã©lÃ©ments du LIGREL.
 """),
 
 35 : _(u"""
  Erreur utilisateur :
-  On essaye de fusionner 2 CHAM_ELEM mais ils n'ont pas le même nombre
-  "points" (noeuds ou points de Gauss) pour la maille numéro : %(i1)d.
+  On essaye de fusionner 2 CHAM_ELEM mais ils n'ont pas le mÃªme nombre
+  "points" (noeuds ou points de Gauss) pour la maille numÃ©ro : %(i1)d.
   Nombres de points :  %(i2)d et %(i3)d
 """),
 
 36 : _(u"""
  Erreur utilisateur :
-  On essaye de fusionner 2 CHAM_ELEM mais ils n'ont pas le même nombre
-  de "sous-points" (fibres, couches, ...) pour la maille numéro : %(i1)d.
+  On essaye de fusionner 2 CHAM_ELEM mais ils n'ont pas le mÃªme nombre
+  de "sous-points" (fibres, couches, ...) pour la maille numÃ©ro : %(i1)d.
   Nombres de sous-points :  %(i2)d et %(i3)d
 """),
 
@@ -278,15 +278,15 @@ Conseil :
 """),
 
 38 : _(u"""
- la carte concerne aussi des mailles tardives qui sont oubliées
+ la carte concerne aussi des mailles tardives qui sont oubliÃ©es
 """),
 
 39 : _(u"""
-Le chargement (mot clé: EXCIT) fourni par l'utilisateur est différent de celui présent
-dans la structure de sonnées Résultat. Dans ce cas, le reuse est interdit.
+Le chargement (mot clÃ©: EXCIT) fourni par l'utilisateur est diffÃ©rent de celui prÃ©sent
+dans la structure de sonnÃ©es RÃ©sultat. Dans ce cas, le reuse est interdit.
 
 Conseil :
-  Relancez le calcul en créant une nouvelle structure de données résultat.
+  Relancez le calcul en crÃ©ant une nouvelle structure de donnÃ©es rÃ©sultat.
 """),
 
 
@@ -295,11 +295,11 @@ Conseil :
 
 42 : _(u"""
  Erreur Programmeur:
- Incohérence fortran/catalogue
+ IncohÃ©rence fortran/catalogue
  TYPE_ELEMENT :  %(k1)s
  OPTION       :  %(k2)s
- La routine texxxx.f correspondant au calcul élémentaire ci-dessus est erronée
- Elle écrit en dehors de la zone allouée au paramètre (OUT) %(k3)s.
+ La routine texxxx.f correspondant au calcul Ã©lÃ©mentaire ci-dessus est erronÃ©e
+ Elle Ã©crit en dehors de la zone allouÃ©e au paramÃ¨tre (OUT) %(k3)s.
 
 """),
 
@@ -308,7 +308,7 @@ Conseil :
 """),
 
 48 : _(u"""
- le CHAM_ELEM: %(k1)s  n'a pas le même nombre de composantes dynamiques sur tous ses éléments.
+ le CHAM_ELEM: %(k1)s  n'a pas le mÃªme nombre de composantes dynamiques sur tous ses Ã©lÃ©ments.
 """),
 
 49 : _(u"""
@@ -317,16 +317,16 @@ Conseil :
 
 
 50 : _(u"""
- Vous cherchez à projeter un champ inhabituel sur le modèle final.
- Vérifiez que les modélisations que vous utilisez sont compatibles.
+ Vous cherchez Ã  projeter un champ inhabituel sur le modÃ¨le final.
+ VÃ©rifiez que les modÃ©lisations que vous utilisez sont compatibles.
 
- Message destiné aux développeurs :
- Le paramètre:  %(k1)s  de l'option:  %(k2)s  n'est pas connu des TYPE_ELEM du LIGREL:  %(k3)s
+ Message destinÃ© aux dÃ©veloppeurs :
+ Le paramÃ¨tre:  %(k1)s  de l'option:  %(k2)s  n'est pas connu des TYPE_ELEM du LIGREL:  %(k3)s
  Champ : %(k4)s
 """),
 
 52 : _(u"""
- La composante: %(k1)s  n'appartient pas à la grandeur: %(k2)s
+ La composante: %(k1)s  n'appartient pas Ã  la grandeur: %(k2)s
  Champ : %(k4)s
 """),
 
@@ -336,16 +336,16 @@ Conseil :
 """),
 
 54 : _(u"""
- Le paramètre:  %(k1)s  de l'option:  %(k2)s  n'est pas connu des TYPE_ELEM du LIGREL:  %(k3)s
+ Le paramÃ¨tre:  %(k1)s  de l'option:  %(k2)s  n'est pas connu des TYPE_ELEM du LIGREL:  %(k3)s
  Champ : %(k4)s
 """),
 
 55 : _(u"""
  Erreur utilisateur :
-   On cherche à créer un CHAM_ELEM mais sur certains points, on ne trouve pas la composante : %(k1)s
+   On cherche Ã  crÃ©er un CHAM_ELEM mais sur certains points, on ne trouve pas la composante : %(k1)s
    Champ : %(k4)s
  Risques & conseils :
-   Si la commande que vous exécutez comporte le mot clé PROL_ZERO='OUI', vous devriez peut-être l'utiliser.
+   Si la commande que vous exÃ©cutez comporte le mot clÃ© PROL_ZERO='OUI', vous devriez peut-Ãªtre l'utiliser.
 """),
 
 56 : _(u"""
@@ -355,9 +355,9 @@ Conseil :
 
 57 : _(u"""
  Erreur Utilisateur :
-   On cherche à transformer un champ simple en CHAM_ELEM.
+   On cherche Ã  transformer un champ simple en CHAM_ELEM.
    Le nombre de "points" (points de Gauss ou noeuds) du champ simple (%(i2)d) est
-   différent du nombre de points attendu pour le CHAM_ELEM (%(i1)d) :
+   diffÃ©rent du nombre de points attendu pour le CHAM_ELEM (%(i1)d) :
      - maille              :  %(k1)s
      - nom du CHAM_ELEM    :  %(k4)s
      - nom du champ simple :  %(k5)s
@@ -365,12 +365,12 @@ Conseil :
 """),
 
 58 : _(u"""
-Erreur lors de la fabrication d'un champ par éléments :
+Erreur lors de la fabrication d'un champ par Ã©lÃ©ments :
  Il manque la composante : %(k1)s  sur la maille : %(k2)s
  Champ : %(k4)s
 
 Risques et conseils :
- Si cette erreur se produit lors de l'exécution de la commande PROJ_CHAMP,
+ Si cette erreur se produit lors de l'exÃ©cution de la commande PROJ_CHAMP,
  il est possible de poursuivre le calcul en choisissant PROL_ZERO='OUI'
 """),
 
@@ -379,22 +379,22 @@ Risques et conseils :
 """),
 
 68 : _(u"""
- numéro de maille invalide     :  %(k1)s  (<1 ou > nombre de mailles)
+ numÃ©ro de maille invalide     :  %(k1)s  (<1 ou > nombre de mailles)
 """),
 
 69 : _(u"""
- numéro de point invalide      :  %(k1)s  (<1 ou > nombre de points)
+ numÃ©ro de point invalide      :  %(k1)s  (<1 ou > nombre de points)
  pour la maille                :  %(k2)s
 """),
 
 70 : _(u"""
- numéro de sous-point invalide :  %(k1)s  (<1 ou > nombre de sous-points)
+ numÃ©ro de sous-point invalide :  %(k1)s  (<1 ou > nombre de sous-points)
  pour la maille                :  %(k2)s
  pour le point                 :  %(k3)s
 """),
 
 71 : _(u"""
- numéro de composante invalide :  %(k1)s  (<1 ou > nombre de composantes)
+ numÃ©ro de composante invalide :  %(k1)s  (<1 ou > nombre de composantes)
  pour la maille                :  %(k2)s
  pour le point                 :  %(k3)s
  pour le sous-point            :  %(k4)s
@@ -402,19 +402,19 @@ Risques et conseils :
 
 72 : _(u"""
  Erreur commande CALC_FERRAILLAGE :
-   On n'a pas réussi à calculer la carte de ferraillage sur un élément.
+   On n'a pas rÃ©ussi Ã  calculer la carte de ferraillage sur un Ã©lÃ©ment.
    Code_retour de la routine clcplq.f : %(i1)d
 
  Signification du code d'erreur :
-   1000 : Levier négatif ou nul (l'utilisateur a fourni des valeurs d'enrobage incompatibles avec l'épaisseur de l'élément)
-   1010 : Dépassement déformation béton
+   1000 : Levier nÃ©gatif ou nul (l'utilisateur a fourni des valeurs d'enrobage incompatibles avec l'Ã©paisseur de l'Ã©lÃ©ment)
+   1010 : DÃ©passement dÃ©formation bÃ©ton
    1020 : Erreur calcul ELU
-   1050 : Dépassement contrainte béton;
+   1050 : DÃ©passement contrainte bÃ©ton;
 """),
 
 73 : _(u"""
  Erreur utilisateur commande CALC_FERRAILLAGE :
-   Certains mots clés de CALC_FERRAILLAGE / AFFE sont obligatoires :
+   Certains mots clÃ©s de CALC_FERRAILLAGE / AFFE sont obligatoires :
      pour TYPE_COMB='ELU' :
         PIVA et PIVB
      pour TYPE_COMB='ELS' :
@@ -422,35 +422,35 @@ Risques et conseils :
 """),
 
 75 : _(u"""
- Votre modèle ne contient que des éléments 1D. Le lissage global n'est
- possible que pour les éléments 2D ou 3D.
+ Votre modÃ¨le ne contient que des Ã©lÃ©ments 1D. Le lissage global n'est
+ possible que pour les Ã©lÃ©ments 2D ou 3D.
 """),
 
 76 : _(u"""
- Votre modèle contient un mélange d'éléments 1D,2D ou 3D.
- Le lissage global n'est possible que pour les éléments 2D soit 3D.
+ Votre modÃ¨le contient un mÃ©lange d'Ã©lÃ©ments 1D,2D ou 3D.
+ Le lissage global n'est possible que pour les Ã©lÃ©ments 2D soit 3D.
 """),
 
 90 : _(u"""
- Le champ %(k2)s ne peut pas être créé à partir de %(k1)s car il est décrit sur des
+ Le champ %(k2)s ne peut pas Ãªtre crÃ©Ã© Ã  partir de %(k1)s car il est dÃ©crit sur des
  mailles n'existant pas dans %(k1)s et il est de type VARI_ELGA.
 """),
 
 91 : _(u"""
- incohérence des familles de points de Gauss pour la maille  %(k1)s
+ incohÃ©rence des familles de points de Gauss pour la maille  %(k1)s
  ( %(k2)s / %(k3)s )
 """),
 
 92 : _(u"""
- type scalaire du CHAM_NO :  %(k1)s  non réel.
+ type scalaire du CHAM_NO :  %(k1)s  non rÃ©el.
 """),
 
 93 : _(u"""
- type scalaire du NUME_DDL :  %(k1)s  non réel.
+ type scalaire du NUME_DDL :  %(k1)s  non rÃ©el.
 """),
 
 99 : _(u"""
- mélange de CHAM_ELEM_S et CHAM_NO_S
+ mÃ©lange de CHAM_ELEM_S et CHAM_NO_S
 """),
 
 }

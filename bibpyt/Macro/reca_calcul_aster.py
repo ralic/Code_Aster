@@ -1,4 +1,4 @@
-# -*- coding: iso-8859-1 -*-
+# coding=utf-8
 # person_in_charge: aimery.assire at edf.fr
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -478,14 +478,14 @@ class CALCUL_ASTER:
      if prof.param.has_key('xterm'):
         del prof.param['xterm']
 
-     # fichier/répertoire
+     # fichier/rÃ©pertoire
      for lab in ('data', 'resu'):
        l_fr = getattr(prof, lab)
        l_tmp = l_fr[:]
 
        for dico in l_tmp:
 
-         # répertoires
+         # rÃ©pertoires
          if dico['isrep']:
 
            # base non prise en compte

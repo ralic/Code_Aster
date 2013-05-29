@@ -1,4 +1,4 @@
-# -*- coding: iso-8859-1 -*-
+# coding=utf-8
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -28,7 +28,7 @@ def fiabilite_mefisto ( self, Rep_Calc_LOGICIEL_global,
                         valeurs_lois,
                         **args ) :
 #
-#    valeurs_lois est un dictionnaire indexÈ sur les variables.
+#    valeurs_lois est un dictionnaire index√© sur les variables.
 #    Chaque case, valeurs_lois[m], est un dictionnaire contenant :
 #    d["v_moy_physique"] = valeur moyenne physique
 #    d["v_moy_loi"] = valeur moyenne de la loi
@@ -37,12 +37,12 @@ def fiabilite_mefisto ( self, Rep_Calc_LOGICIEL_global,
 #    d["sigma_loi"] = ecart type de la loi
 #
 #    args est le dictionnaire des arguments optionnels
-#    args.keys() est la liste des mots-clÈs
+#    args.keys() est la liste des mots-cl√©s
 #    args.keys()[0] est la premiere valeur de cette liste
 #    args.keys()[1:] est la liste des valeurs suivantes dans cette liste
-#    args.keys(mot_cle) reprÈsente le contenu de la variable mot_cle dans la macro appelante.
+#    args.keys(mot_cle) repr√©sente le contenu de la variable mot_cle dans la macro appelante.
 #
-  """ Ecriture des donnÈes spÈcifiques ‡ MEFISTO. """
+  """ Ecriture des donn√©es sp√©cifiques √† MEFISTO. """
 #
   import numpy
   from Macro import fiabilite_fichier
@@ -50,17 +50,17 @@ def fiabilite_mefisto ( self, Rep_Calc_LOGICIEL_global,
 #
 #____________________________________________________________________
 #
-# 1. PrÈalables
+# 1. Pr√©alables
 #____________________________________________________________________
 #
 #
   messages_erreur = { 0 : "Tout va bien",
                       1 : "Fichier inconnu.",
-                      2 : "ProblËme d'ouverture de fichier.",
-                     10 : "ProblËme d'ouverture de fichier.",
-                     11 : "ProblËme de fermeture de fichier.",
-                     20 : "ProblËme d'impression de fichier.",
-                     50 : "DonnÈe inacceptable.",
+                      2 : "Probl√®me d'ouverture de fichier.",
+                     10 : "Probl√®me d'ouverture de fichier.",
+                     11 : "Probl√®me de fermeture de fichier.",
+                     20 : "Probl√®me d'impression de fichier.",
+                     50 : "Donn√©e inacceptable.",
                     100 : "Erreur." }
 #
   trad_oui_non = { "OUI" : 1,
@@ -72,8 +72,8 @@ def fiabilite_mefisto ( self, Rep_Calc_LOGICIEL_global,
 #
 #____________________________________________________________________
 #
-# 2. Les fichiers pour le logiciel de fiabilitÈ
-#    Ils sont crÈÈs dans le rÈpertoire d'exÈcution du logiciel de fiabilitÈ, avec leurs noms officiels
+# 2. Les fichiers pour le logiciel de fiabilit√©
+#    Ils sont cr√©√©s dans le r√©pertoire d'ex√©cution du logiciel de fiabilit√©, avec leurs noms officiels
 #____________________________________________________________________
 #
 #
@@ -94,7 +94,7 @@ def fiabilite_mefisto ( self, Rep_Calc_LOGICIEL_global,
     if erreur :
       break
 #
-# 3.2 ==> Ecriture des donnÈes nÈcessaires
+# 3.2 ==> Ecriture des donn√©es n√©cessaires
 #
     f_menu.Ecrit_Titre ("MENU DU PROGRAMME MEFISTO")
     f_menu.Ecrit_Titre ("1 <=> OUI et 0 <=> NON (entiers)")
@@ -162,7 +162,7 @@ def fiabilite_mefisto ( self, Rep_Calc_LOGICIEL_global,
 #
     nb_occu_variable = len(VARIABLE)
 #
-# 4.3 ==> Ecriture des donnÈes nÈcessaires
+# 4.3 ==> Ecriture des donn√©es n√©cessaires
 #
     f_stoch.Ecrit_Titre ("Code name")
     aux=VERSION.replace("_",".")
@@ -279,7 +279,7 @@ def fiabilite_mefisto ( self, Rep_Calc_LOGICIEL_global,
     if erreur :
       break
 #
-# 5.2 ==> Ecriture des donnÈes nÈcessaires
+# 5.2 ==> Ecriture des donn√©es n√©cessaires
 #
     f_num.Ecrit_Titre ("Parameters : EpsU, EpsG, Tau, Omega, iterMax")
     if args["RECH_PT_CONCEPT"] == "OUI" :
@@ -372,14 +372,14 @@ def fiabilite_mefisto ( self, Rep_Calc_LOGICIEL_global,
 # 6. Construction du fichier 'dataGrad'
 #____________________________________________________________________
 #
-# 6.1 ==> CrÈation du fichier
+# 6.1 ==> Cr√©ation du fichier
 #
     f_grad = fiabilite_fichier.fiabilite_fichier ( self, Rep_Calc_LOGICIEL_global, fic_dataGrad, INFO )
     erreur = f_grad.Ouvre_Fichier ( "w" )
     if erreur :
       break
 #
-# 6.2 ==> Ecriture des donnÈes nÈcessaires
+# 6.2 ==> Ecriture des donn√©es n√©cessaires
 #
     f_grad.Ecrit_Titre ("Commentaires")
 #

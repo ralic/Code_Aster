@@ -1,4 +1,4 @@
-# -*- coding: iso-8859-1 -*-
+# coding=utf-8
 # person_in_charge: mathieu.courtois at edf.fr
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -22,8 +22,8 @@
 
 
 """ 
-    Ce module contient la classe MCFACT qui sert à controler la valeur
-    d'un mot-clé facteur par rapport à sa définition portée par un objet
+    Ce module contient la classe MCFACT qui sert Ã  controler la valeur
+    d'un mot-clÃ© facteur par rapport Ã  sa dÃ©finition portÃ©e par un objet
     de type ENTITE
 """
 
@@ -36,7 +36,7 @@ class MCFACT(N_MCCOMPO.MCCOMPO):
    def __init__(self,val,definition,nom,parent):
       """
          Attributs :
-          - val : valeur du mot clé simple
+          - val : valeur du mot clÃ© simple
           - definition
           - nom
           - parent
@@ -51,7 +51,7 @@ class MCFACT(N_MCCOMPO.MCCOMPO):
          self.niveau = self.parent.niveau
          self.etape = self.parent.etape
       else:
-         # Le mot cle a été créé sans parent
+         # Le mot cle a Ã©tÃ© crÃ©Ã© sans parent
          self.jdc = None
          self.niveau = None
          self.etape = None
@@ -59,8 +59,8 @@ class MCFACT(N_MCCOMPO.MCCOMPO):
          
    def GETVAL(self,val):
       """ 
-          Retourne la valeur effective du mot-clé en fonction
-          de la valeur donnée. Defaut si val == None
+          Retourne la valeur effective du mot-clÃ© en fonction
+          de la valeur donnÃ©e. Defaut si val == None
       """
       if (val is None and hasattr(self.definition,'defaut')) :
         return self.definition.defaut
@@ -69,16 +69,16 @@ class MCFACT(N_MCCOMPO.MCCOMPO):
 
    def get_valeur(self):
       """
-          Retourne la "valeur" d'un mot-clé facteur qui est l'objet lui-meme.
-          Cette valeur est utilisée lors de la création d'un contexte 
-          d'évaluation d'expressions à l'aide d'un interpréteur Python
+          Retourne la "valeur" d'un mot-clÃ© facteur qui est l'objet lui-meme.
+          Cette valeur est utilisÃ©e lors de la crÃ©ation d'un contexte 
+          d'Ã©valuation d'expressions Ã  l'aide d'un interprÃ©teur Python
       """
       return self
 
    def get_val(self):
       """
-          Une autre méthode qui retourne une "autre" valeur du mot clé facteur.
-          Elle est utilisée par la méthode get_mocle
+          Une autre mÃ©thode qui retourne une "autre" valeur du mot clÃ© facteur.
+          Elle est utilisÃ©e par la mÃ©thode get_mocle
       """
       return [self]
 

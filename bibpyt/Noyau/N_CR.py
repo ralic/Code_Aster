@@ -1,4 +1,4 @@
-# -*- coding: iso-8859-1 -*-
+# coding=utf-8
 # person_in_charge: mathieu.courtois at edf.fr
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -29,7 +29,7 @@ from strfunc import convert, ufmt
 
 class CR :
    """
-        Classe servant à la construction et à l'affichage des objets Comptes-rendus
+        Classe servant Ã  la construction et Ã  l'affichage des objets Comptes-rendus
    """
    def __init__(self,verbeux = 'non',debut='',fin='',dec='   '):
       """
@@ -50,23 +50,23 @@ class CR :
       self.subcr=[]
 
    def ok(self,comment):
-      """ Ajoute un commentaire OK à la liste crok"""
+      """ Ajoute un commentaire OK Ã  la liste crok"""
       self.crok.append(comment)
 
    def warn(self,comment):
-      """ Ajoute un commentaire Warning à la liste crwarn"""
+      """ Ajoute un commentaire Warning Ã  la liste crwarn"""
       self.crwarn.append(comment)
 
    def fatal(self, comment, *args):
-      """Ajoute un commentaire Erreur Fatale à la liste crfatal à formater"""
+      """Ajoute un commentaire Erreur Fatale Ã  la liste crfatal Ã  formater"""
       self.crfatal.append(ufmt(comment, *args))
 
    def exception(self,comment):
-      """ Ajoute un commentaire Exception à la liste crexception"""
+      """ Ajoute un commentaire Exception Ã  la liste crexception"""
       self.crexception.append(comment)
 
    def add(self,cr):
-      """ Ajoute un objet CR à la liste subcr :il s'agit de l'objet CR d'un fils de self """
+      """ Ajoute un objet CR Ã  la liste subcr :il s'agit de l'objet CR d'un fils de self """
       self.subcr.append(cr)
 
    def estvide(self):
@@ -82,7 +82,7 @@ class CR :
 
    def purge(self):
       """
-           Purge complètement le CR sauf les exceptions
+           Purge complÃ¨tement le CR sauf les exceptions
       """
       self.debut=''
       self.fin=''
@@ -94,7 +94,7 @@ class CR :
 
    def beautifie_messages(self):
       """
-        Beautifie les messages stockés dans crok,crfatal,crexception et crwarn
+        Beautifie les messages stockÃ©s dans crok,crfatal,crexception et crwarn
       """
       l=[]
       for mess in self.crok:
@@ -115,14 +115,14 @@ class CR :
 
    def indent(self,s):
       """
-        Insère en tete de chaque ligne du texte s la chaine self.dec
+        InsÃ¨re en tete de chaque ligne du texte s la chaine self.dec
       """
       l = string.split(s,'\n')
       return self.dec+string.join(l,'\n'+self.dec)[:-3]
 
    def __unicode__(self):
       """
-        Retourne une chaine de caractères décorée et représentative de self
+        Retourne une chaine de caractÃ¨res dÃ©corÃ©e et reprÃ©sentative de self
       """
       s=''
       self.beautifie_messages()
@@ -150,7 +150,7 @@ class CR :
 
    def report(self,decalage = 2):
       """
-        Retourne une chaine de caractères non encadrée mais représentative de self
+        Retourne une chaine de caractÃ¨res non encadrÃ©e mais reprÃ©sentative de self
       """
       s=''
       # on stocke dans s les messages de premier niveau
@@ -162,11 +162,11 @@ class CR :
         s=s + decalage*self.dec + mess + self.dec + '\n'
       for mess in self.crexception:
         s=s + decalage*self.dec + mess + self.dec + '\n'
-      # on récupère les messages des sous comptes-rendus ...
+      # on rÃ©cupÃ¨re les messages des sous comptes-rendus ...
       for subcr in self.subcr:
         if not subcr.estvide():
             s=s+subcr.report(decalage = decalage + 1)
-      # on rajoute les flags de début et de fin ... (si self n'est pas vide)
+      # on rajoute les flags de dÃ©but et de fin ... (si self n'est pas vide)
       if not self.estvide() :
         s = (decalage-1)*self.dec+self.debut+'\n'+s+ \
             (decalage-1)*self.dec+self.fin+'\n'
@@ -174,7 +174,7 @@ class CR :
 
    def get_mess_fatal(self):
       """
-          Retourne une chaine de caractères contenant les messages de
+          Retourne une chaine de caractÃ¨res contenant les messages de
           la liste crfatal (du dernier au premier)
       """
       self.crfatal.reverse()
@@ -186,7 +186,7 @@ class CR :
 
    def get_mess_exception(self):
       """
-          Retourne une chaine de caractères contenant les messages
+          Retourne une chaine de caractÃ¨res contenant les messages
           de la liste crexception (du dernier au premier)
       """
       self.crexception.reverse()
@@ -225,8 +225,8 @@ def justify_text(texte='',cesure=50):
 
 def encadre_message(texte,motif):
   """
-     Retourne la chaine de caractères texte entourée d'un cadre formés
-     d'éléments 'motif'
+     Retourne la chaine de caractÃ¨res texte entourÃ©e d'un cadre formÃ©s
+     d'Ã©lÃ©ments 'motif'
   """
   texte = justify_text(texte,cesure=80)
   lignes = string.split(texte,'\n')

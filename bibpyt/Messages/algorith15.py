@@ -1,4 +1,4 @@
-# -*- coding: iso-8859-1 -*-
+# coding=utf-8
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -21,19 +21,19 @@
 cata_msg = {
 
 1 : _(u"""
- arrêt sur nombres de DDL interface non identiques
+ arrÃªt sur nombres de DDL interface non identiques
  nombre de ddl interface droite:  %(i1)d
  nombre de ddl interface gauche:  %(i2)d
 """),
 
 2 : _(u"""
- arrêt sur dimension matrice TETA incorrecte
+ arrÃªt sur dimension matrice TETA incorrecte
  dimension effective :  %(i1)d
  dimension en argument:  %(i2)d
 """),
 
 3 : _(u"""
-  erreur de répétitivité cyclique
+  erreur de rÃ©pÃ©titivitÃ© cyclique
 """),
 
 4 : _(u"""
@@ -51,46 +51,46 @@ cata_msg = {
 """),
 
 7 : _(u"""
- arrêt sur problème de répétitivité cyclique
+ arrÃªt sur problÃ¨me de rÃ©pÃ©titivitÃ© cyclique
 """),
 
 8 : _(u"""
- la composante : %(k1)s  est une composante indéfinie
+ la composante : %(k1)s  est une composante indÃ©finie
 """),
 
 
 
 
 10 : _(u"""
- arrêt sur type de DDL non défini
+ arrÃªt sur type de DDL non dÃ©fini
 """),
 
 11 : _(u"""
- "NB_POIN" est inférieur au nombre de points de l'interspectre.
- le spectre est tronqué à la fréquence :  %(r1)f
+ "NB_POIN" est infÃ©rieur au nombre de points de l'interspectre.
+ le spectre est tronquÃ© Ã  la frÃ©quence :  %(r1)f
 """),
 
 12 : _(u"""
- le "NB_POIN" donné est modifié
+ le "NB_POIN" donnÃ© est modifiÃ©
  (en une puissance de 2 compatible avec l'interspectre)
  le "NB_POIN" retenu est :   %(i1)d
 """),
 
 13 : _(u"""
- la durée est trop grande ou NB_POIN et trop petit par rapport
- à la fréquence max (théorème de Shannon).
+ la durÃ©e est trop grande ou NB_POIN et trop petit par rapport
+ Ã  la frÃ©quence max (thÃ©orÃ¨me de Shannon).
  on choisit NBPOIN =  %(i1)d
 """),
 
 14 : _(u"""
- la durée est petite par rapport au pas de discrétisation de l'interspectre.
- choisir plutôt : durée >  %(r1)f
+ la durÃ©e est petite par rapport au pas de discrÃ©tisation de l'interspectre.
+ choisir plutÃ´t : durÃ©e >  %(r1)f
 """),
 
 15 : _(u"""
- "NB_POIN" est petit par rapport au pas de discrétisation de l'interspectre.
+ "NB_POIN" est petit par rapport au pas de discrÃ©tisation de l'interspectre.
  NB_POIN =  %(i1)d
- il faudrait un nombre supérieur à :  %(r1)f
+ il faudrait un nombre supÃ©rieur Ã  :  %(r1)f
 """),
 
 16 : _(u"""
@@ -106,11 +106,11 @@ cata_msg = {
 """),
 
 19 : _(u"""
-  il manque le seuil  pour la fonction interprétée  %(k1)s
+  il manque le seuil  pour la fonction interprÃ©tÃ©e  %(k1)s
 """),
 
 20 : _(u"""
- l'abscisse linéaire est nulle pour la courbe :  %(k1)s
+ l'abscisse linÃ©aire est nulle pour la courbe :  %(k1)s
  abscisse :  %(r1)f
 """),
 
@@ -121,12 +121,12 @@ cata_msg = {
 
 
 24 : _(u"""
- au moins un terme de ALPHA est négatif à l'abscisse :  %(i1)d
+ au moins un terme de ALPHA est nÃ©gatif Ã  l'abscisse :  %(i1)d
 """),
 
 25 : _(u"""
- ALPHA est nul et le nombre de mesures est strictement inférieur au nombre de modes
- risque de matrice singulière
+ ALPHA est nul et le nombre de mesures est strictement infÃ©rieur au nombre de modes
+ risque de matrice singuliÃ¨re
 """),
 
 26 : _(u"""
@@ -134,7 +134,7 @@ cata_msg = {
 """),
 
 27 : _(u"""
-  problème calcul valeurs singulières
+  problÃ¨me calcul valeurs singuliÃ¨res
   pas      =   %(i1)d
   abscisse =    %(r1)f
 """),
@@ -171,7 +171,7 @@ cata_msg = {
 """),
 
 46 : _(u"""
-  nombre d'itérations insuffisant
+  nombre d'itÃ©rations insuffisant
 """),
 
 47 : _(u"""
@@ -180,7 +180,7 @@ cata_msg = {
 
 48 : _(u"""
   maille :  %(k1)s
-  nombre d itérations =  %(i1)d
+  nombre d itÃ©rations =  %(i1)d
   ITER_INTE_MAXI =  %(i2)d
 """),
 
@@ -213,7 +213,7 @@ cata_msg = {
 
 
 55 : _(u"""
-  incohérence détectée
+  incohÃ©rence dÃ©tectÃ©e
 """),
 
 56 : _(u"""
@@ -227,11 +227,11 @@ cata_msg = {
 
 58 : _(u"""
   le noeud :  %(k1)s  de l interface dynamique :  %(k2)s
-  n'est pas correctement référencé dans le squelette :  %(k3)s
+  n'est pas correctement rÃ©fÃ©rencÃ© dans le squelette :  %(k3)s
 """),
 
 59: _(u"""
-  Le nombre de secteur doit être supérieur ou égal à 2 (mot clé NB_SECTEUR)
+  Le nombre de secteur doit Ãªtre supÃ©rieur ou Ã©gal Ã  2 (mot clÃ© NB_SECTEUR)
 """),
 
 60 : _(u"""
@@ -244,20 +244,20 @@ cata_msg = {
 
 62 : _(u"""
   le noeud :  %(k1)s  de l'interface dynamique :  %(k2)s
-  n'est pas correctement référencé dans le squelette :  %(k3)s
+  n'est pas correctement rÃ©fÃ©rencÃ© dans le squelette :  %(k3)s
 """),
 
 63 : _(u"""
-  conflit mot clés TOUT et GROUP_NO dans RECO_GLOBAL
+  conflit mot clÃ©s TOUT et GROUP_NO dans RECO_GLOBAL
 """),
 
 64 : _(u"""
   erreur de nom
-  la sous-structure :  %(k1)s  n a pas été trouvée
+  la sous-structure :  %(k1)s  n a pas Ã©tÃ© trouvÃ©e
 """),
 
 65 : _(u"""
-  incohérence de nom
+  incohÃ©rence de nom
   l interface dynamique  :  %(k1)s
   de la sous-structure   :  %(k2)s
   a pour groupe de noeud :  %(k3)s
@@ -266,11 +266,11 @@ cata_msg = {
 
 66 : _(u"""
   erreur de nom
-  la sous-structure :  %(k1)s  n'a pas été trouvée
+  la sous-structure :  %(k1)s  n'a pas Ã©tÃ© trouvÃ©e
 """),
 
 67 : _(u"""
-  incohérence de nom
+  incohÃ©rence de nom
   l interface dynamique  :  %(k1)s
   de la sous-structure   :  %(k2)s
   a pour groupe de noeud :  %(k3)s
@@ -278,12 +278,12 @@ cata_msg = {
 """),
 
 68 : _(u"""
- nombre de points pas période             :  %(i1)d
- coefficient de remontée du pas de temps  :  %(r1)f
+ nombre de points pas pÃ©riode             :  %(i1)d
+ coefficient de remontÃ©e du pas de temps  :  %(r1)f
  coefficient de division du pas de temps  :  %(r2)f
  pas de temps minimal                     :  %(r3)f
  pas de temps maximal                     :  %(r4)f
- nombre maximal de réductions du pas      :  %(i2)d
+ nombre maximal de rÃ©ductions du pas      :  %(i2)d
  vitesse minimale variable                :  %(k1)s
 """),
 
@@ -295,25 +295,25 @@ cata_msg = {
 
 70 : _(u"""
  nombre incorrect de sous-structures
- pour le chargement numéro : %(i1)d
+ pour le chargement numÃ©ro : %(i1)d
  il en faut exactement :  %(i2)d
  vous en avez          :  %(i3)d
 """),
 
 71 : _(u"""
  nombre incorrect de vecteurs chargements
- pour le chargement numéro : %(i1)d
+ pour le chargement numÃ©ro : %(i1)d
  il en faut exactement :  %(i2)d
  vous en avez          :  %(i3)d
 """),
 
 72 : _(u"""
- un PROF_CHNO n'est pas défini
+ un PROF_CHNO n'est pas dÃ©fini
  il manque pour le chargement : %(k1)s
 """),
 
 73 : _(u"""
- on doit avoir le même type de forces pour un même chargement global
+ on doit avoir le mÃªme type de forces pour un mÃªme chargement global
  or, la grandeur vaut   :  %(i1)d
  pour la sous-structure    %(k1)s
  et elle vaut           :  %(i2)d
@@ -322,55 +322,55 @@ cata_msg = {
 
 74 : _(u"""
  une des bases modales a un type incorrect
- elle est associée à la sous-structure  %(k1)s
+ elle est associÃ©e Ã  la sous-structure  %(k1)s
 """),
 
 75 : _(u"""
- les numérotations ne coïncident pas pour la sous-structure : %(k1)s
+ les numÃ©rotations ne coÃ¯ncident pas pour la sous-structure : %(k1)s
  le PROF_CHNO pour la base modale est :  %(k2)s
  et celui pour le second membre       :  %(k3)s
 """),
 
 85 : _(u"""
   L'interface de droite %(k1)s n'existe pas
-  Conseil: vérifiez si vous avez défini cette interface dans le modèle
+  Conseil: vÃ©rifiez si vous avez dÃ©fini cette interface dans le modÃ¨le
 """),
 
 86 : _(u"""
   l'interface de gauche %(k1)s n'existe pas
-  Conseil: vérifiez si vous avez défini cette interface dans le modèle
+  Conseil: vÃ©rifiez si vous avez dÃ©fini cette interface dans le modÃ¨le
 """),
 
 87 : _(u"""
   l'interface axe %(k1)s n'existe pas
-  Conseil: vérifiez si vous avez défini cette interface dans le modèle
+  Conseil: vÃ©rifiez si vous avez dÃ©fini cette interface dans le modÃ¨le
 """),
 
 88 : _(u"""
- arrêt sur problème interfaces de type différents
+ arrÃªt sur problÃ¨me interfaces de type diffÃ©rents
 """),
 
 89 : _(u"""
- arrêt sur problème de type interface non supporté
+ arrÃªt sur problÃ¨me de type interface non supportÃ©
  type interface -->  %(k1)s
 """),
 
 90 : _(u"""
- le nombre d'amortissements réduits est trop grand
+ le nombre d'amortissements rÃ©duits est trop grand
  le nombre de modes propres vaut  %(i1)d
  et le nombre de coefficients  :  %(i2)d
  on ne garde donc que les  %(i3)d premiers coefficients
 """),
 
 91 : _(u"""
- le nombre d'amortissements réduits est insuffisant
+ le nombre d'amortissements rÃ©duits est insuffisant
  il en manque :  %(i1)d
  car le nombre de modes vaut :  %(i2)d
  on rajoute %(i3)d coefficients avec la valeur du dernier coefficient.
 """),
 
 92 : _(u"""
- Nombre de modes propres calculés insuffisant.
+ Nombre de modes propres calculÃ©s insuffisant.
 """),
 
 93 : _(u"""
@@ -378,17 +378,17 @@ cata_msg = {
 """),
 
 94 : _(u"""
- Nombre de modes propres limités à : %(i1)d
+ Nombre de modes propres limitÃ©s Ã  : %(i1)d
 """),
 
 95 : _(u"""
- l'entrée d'amortissements réduits est incompatible
+ l'entrÃ©e d'amortissements rÃ©duits est incompatible
  avec des matrices de type  %(k1)s
  Il faut des matrices de type MATR_ASSE_GENE_*
 """),
 
 96 : _(u"""
- le nombre d'amortissements réduits est trop grand
+ le nombre d'amortissements rÃ©duits est trop grand
  le nombre de modes propres vaut  %(i1)d
  et le nombre de coefficients :  %(i2)d
  on ne garde donc que les  %(i3)d premiers coefficients
@@ -396,22 +396,22 @@ cata_msg = {
 """),
 
 97 : _(u"""
- le nombre d'amortissements réduits est insuffisant
+ le nombre d'amortissements rÃ©duits est insuffisant
  il en manque :  %(i1)d
  car le nombre de modes vaut :  %(i2)d
- on rajoute  %(i3)d amortissement réduits avec la valeur du dernier mode propre.
+ on rajoute  %(i3)d amortissement rÃ©duits avec la valeur du dernier mode propre.
 """),
 
 98 : _(u"""
- incohérence dans le DATASET 58
+ incohÃ©rence dans le DATASET 58
  le nombre de valeurs fournies ne correspond pas au nombre de valeurs attendues
- mesure concernée :  %(i1)d
+ mesure concernÃ©e :  %(i1)d
 
 """),
 
 99 : _(u"""
- le nombre maximum d'itérations  %(i1)d  est atteint sans converger
- le résidu relatif final est  : %(r1)f
+ le nombre maximum d'itÃ©rations  %(i1)d  est atteint sans converger
+ le rÃ©sidu relatif final est  : %(r1)f
  l instant de calcul vaut     : %(r2)f
 
 """),

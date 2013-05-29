@@ -1,4 +1,4 @@
-# -*- coding: iso-8859-1 -*-
+# coding=utf-8
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -18,7 +18,7 @@
 # ======================================================================
 # person_in_charge: josselin.delmas at edf.fr
 # Catalogue de messages utiles en debug pour le developpeur
-# Dans ce catalogue les messages peuvent ne pas être formules
+# Dans ce catalogue les messages peuvent ne pas Ãªtre formules
 # en francais
 
 cata_msg = {

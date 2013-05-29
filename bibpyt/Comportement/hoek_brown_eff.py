@@ -1,4 +1,4 @@
-# -*- coding: iso-8859-1 -*-
+# coding=utf-8
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -22,9 +22,9 @@ from cata_comportement import LoiComportement
 
 loi = LoiComportement(
    nom            = 'HOEK_BROWN_EFF',
-   doc = """Relation de comportement de Hoek et Brown modifiée pour la modélisation du comportement
-   des roches [R7.01.18] pour la mécanique pure. Le couplage est formulé en contraintes effectives.
-   Pour faciliter l'intégration de ce modèle, on peut utiliser le re-découpage local du pas de temps 
+   doc = """Relation de comportement de Hoek et Brown modifiÃ©e pour la modÃ©lisation du comportement
+   des roches [R7.01.18] pour la mÃ©canique pure. Le couplage est formulÃ© en contraintes effectives.
+   Pour faciliter l'intÃ©gration de ce modÃ¨le, on peut utiliser le re-dÃ©coupage local du pas de temps 
    (ITER_INTE_PAS).""",
    num_lc         = 9999,
    nb_vari        = 3,

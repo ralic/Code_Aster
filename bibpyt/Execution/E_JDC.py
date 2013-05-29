@@ -1,4 +1,4 @@
-# -*- coding: iso-8859-1 -*-
+# coding=utf-8
 # person_in_charge: mathieu.courtois at edf.fr
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -48,11 +48,11 @@ import aster
 class JDC:
    """
    """
-   # attributs accessibles depuis le fortran par les méthodes génériques
+   # attributs accessibles depuis le fortran par les mÃ©thodes gÃ©nÃ©riques
    # get_jdc_attr et set_jdc_attr
    l_jdc_attr = ('jxveri', 'sdveri', 'impr_macro', 'jeveux', 'jeveux_sysaddr')
 
-   # attributs du jdc "picklés" (ceux qui contiennent des infos de l'exécution).
+   # attributs du jdc "picklÃ©s" (ceux qui contiennent des infos de l'exÃ©cution).
    # nsd : nombre de sd produites
    l_pick_attr = ('catalc', 'nsd', 'jeveux_sysaddr')
 
@@ -62,7 +62,7 @@ class JDC:
       self.ctree = None
       for attr in self.l_jdc_attr:
           setattr(self, attr, 0)
-      # à part car pas de type entier
+      # Ã  part car pas de type entier
       self._sign = None
 
    def Exec(self):
@@ -137,7 +137,7 @@ class JDC:
       return ier
 
    def get_derniere_etape(self):
-       """ Cette méthode sert à récupérer la dernière étape exécutée
+       """ Cette mÃ©thode sert Ã  rÃ©cupÃ©rer la derniÃ¨re Ã©tape exÃ©cutÃ©e
            Elle sert essentiellement en cas de plantage
        """
        numMax = -1
@@ -170,7 +170,7 @@ class JDC:
               e.AfficheFinCommande()
               break
 
-       # affiche le récapitulatif du timer
+       # affiche le rÃ©capitulatif du timer
        cpu_total_user, cpu_total_syst, elapsed_total = self.timer.StopAndGetTotal()
 
        aster.affiche('RESULTAT', convert(repr(self.timer)))
@@ -184,7 +184,7 @@ class JDC:
 
        texte_final = _(u"""
 
-  <I> Informations sur les temps d'exécution
+  <I> Informations sur les temps d'exÃ©cution
       Temps cpu total                   %10.2f s
       Temps cpu user total              %10.2f s
       Temps cpu systeme total           %10.2f s
@@ -213,12 +213,12 @@ class JDC:
 
    def traiter_fin_exec(self,mode,etape=None):
        """ Cette methode realise un traitement final lorsque la derniere commande
-           a été exécutée. L'argument etape indique la derniere etape executee en traitement
+           a Ã©tÃ© exÃ©cutÃ©e. L'argument etape indique la derniere etape executee en traitement
            par lot (si mode == 'par_lot').
 
-           Le traitement réalisé est la sauvegarde du contexte courant : concepts produits
+           Le traitement rÃ©alisÃ© est la sauvegarde du contexte courant : concepts produits
            plus autres variables python.
-           Cette sauvegarde est réalisée par un pickle du dictionnaire python contenant
+           Cette sauvegarde est rÃ©alisÃ©e par un pickle du dictionnaire python contenant
            ce contexte.
        """
        if self.info_level > 1:
@@ -232,22 +232,22 @@ class JDC:
 
        if mode == 'commande':
           # En mode commande par commande
-          # Le contexte courant est donné par l'attribut g_context
+          # Le contexte courant est donnÃ© par l'attribut g_context
           context=self.g_context
        else:
           # En mode par lot
-          # Le contexte courant est obtenu à partir du contexte des constantes
+          # Le contexte courant est obtenu Ã  partir du contexte des constantes
           # et du contexte des concepts
 
           # On retire du contexte des constantes les concepts produits
-          # par les commandes (exécutées et non exécutées)
+          # par les commandes (exÃ©cutÃ©es et non exÃ©cutÃ©es)
           context=self.const_context
           for key,value in context.items():
               if isinstance(value,ASSD) :
                  del context[key]
 
           # On ajoute a ce contexte les concepts produits par les commandes
-          # qui ont été réellement exécutées (du début jusqu'à etape)
+          # qui ont Ã©tÃ© rÃ©ellement exÃ©cutÃ©es (du dÃ©but jusqu'Ã  etape)
           context.update(self.get_contexte_avant(etape))
 
        if CONTEXT.debug:
@@ -257,7 +257,7 @@ class JDC:
                 print key,
           print
 
-       # On élimine du contexte courant les objets qui ne supportent pas
+       # On Ã©limine du contexte courant les objets qui ne supportent pas
        # le pickle (version 2.2)
        if self.info_level > 1:
           self.timer_fin.Start(" . filter")
@@ -274,10 +274,10 @@ class JDC:
    def filter_context(self, context):
        """
           Cette methode construit un dictionnaire a partir du dictionnaire context
-          passé en argument en supprimant tous les objets python que l'on ne veut pas
-          ou ne peut pas sauvegarder pour une poursuite ultérieure
+          passÃ© en argument en supprimant tous les objets python que l'on ne veut pas
+          ou ne peut pas sauvegarder pour une poursuite ultÃ©rieure
           + en ajoutant un dictionnaire pour pickler certains attributs du jdc.
-          Le dictionnaire résultat est retourné par la méthode.
+          Le dictionnaire rÃ©sultat est retournÃ© par la mÃ©thode.
        """
        d={}
        for key,value in context.items():
@@ -293,15 +293,15 @@ class JDC:
               continue
            # Enfin on conserve seulement les objets que l'on peut pickler individuellement.
            try:
-              # supprimer le maximum de références arrières (notamment pour les formules)
-              # pour accélérer, on supprime le catalogue de SD devenu inutile.
+              # supprimer le maximum de rÃ©fÃ©rences arriÃ¨res (notamment pour les formules)
+              # pour accÃ©lÃ©rer, on supprime le catalogue de SD devenu inutile.
               if isinstance(value, ASSD):
                   value.supprime(force=True)
                   value.supprime_sd()
               pickle.dumps(value, protocol=PICKLE_PROTOCOL)
               d[key]=value
            except:
-              # Si on ne peut pas pickler value on ne le met pas dans le contexte filtré
+              # Si on ne peut pas pickler value on ne le met pas dans le contexte filtrÃ©
               pass
        self.save_pickled_attrs(d)
        if self.info_level > 1:
@@ -352,7 +352,7 @@ class JDC:
             fin_etape = e
             break
       if fin_etape is None:
-         # au moins en PAR_LOT='NON', FIN n'est pas dans la liste des étapes
+         # au moins en PAR_LOT='NON', FIN n'est pas dans la liste des Ã©tapes
          self.set_par_lot("NON")
          fin_cmd = self.get_cmd("FIN")
          try:
@@ -360,11 +360,11 @@ class JDC:
          except:
             pass
       else:
-         # insertion de l'étape FIN du jdc juste après l'étape courante
+         # insertion de l'Ã©tape FIN du jdc juste aprÃ¨s l'Ã©tape courante
          self.etapes.insert(self.index_etape_courante + 1, fin_etape)
-         # si ArretCPUError, on supprime tout ce qui peut coûter
+         # si ArretCPUError, on supprime tout ce qui peut coÃ»ter
          if isinstance(exc_val, self.codex.ArretCPUError):
-            # faire évoluer avec fin.capy
+            # faire Ã©voluer avec fin.capy
             fin_etape.valeur.update({
                'FORMAT_HDF'  : 'NON',
                'RETASSAGE'   : 'NON',
@@ -378,7 +378,7 @@ class JDC:
             pass
 
    def init_ctree(self):
-      """Initialise l'arbre de dépendances."""
+      """Initialise l'arbre de dÃ©pendances."""
       self.ctree = ConceptDependenciesVisitor()
 
    def get_liste_etapes(self):
@@ -392,7 +392,7 @@ class JDC:
       """
       if attr not in self.l_jdc_attr:
          raise aster.error(ufmt(_(u"Erreur de programmation :\n"
-                                  u"attribut '%s' non autorisé"), attr))
+                                  u"attribut '%s' non autorisÃ©"), attr))
       return getattr(self, attr)
 
    def set_jdc_attr(self, attr, value):
@@ -401,14 +401,14 @@ class JDC:
       """
       if attr not in self.l_jdc_attr:
          raise aster.error(ufmt(_(u"Erreur de programmation :\n"
-                                  u"attribut '%s' non autorisé"), attr))
+                                  u"attribut '%s' non autorisÃ©"), attr))
       if type(value) not in (int, long):
          raise aster.error(ufmt(_(u"Erreur de programmation :\n"
-                                  u"valeur non entière : %s"), value))
+                                  u"valeur non entiÃ¨re : %s"), value))
       setattr(self, attr, value)
 
    def save_pickled_attrs(self, context):
-      """Ajoute le dictionnaire des attributs du jdc à "pickler" dans le contexte.
+      """Ajoute le dictionnaire des attributs du jdc Ã  "pickler" dans le contexte.
       """
       d = {}
       for attr in self.l_pick_attr:
@@ -417,7 +417,7 @@ class JDC:
       context['jdc_pickled_attributes'] = d
 
    def restore_pickled_attrs(self, context):
-      """Restaure les attributs du jdc qui ont été "picklés" via le contexte.
+      """Restaure les attributs du jdc qui ont Ã©tÃ© "picklÃ©s" via le contexte.
       """
       d = context.pop('jdc_pickled_attributes', {})
       for attr, value in d.items():
@@ -426,8 +426,8 @@ class JDC:
       self._sign = getattr(self, '_sign') or '?'
 
    def signature(self, base):
-       """Retourne une signature de l'exécution.
-       La base ne doit pas être ouverte."""
+       """Retourne une signature de l'exÃ©cution.
+       La base ne doit pas Ãªtre ouverte."""
        from hashlib import sha1
        bufsize = 100000*8*10    # 10 enregistrements de taille standard
        if base.endswith('bhdf.1'):

@@ -1,4 +1,4 @@
-# -*- coding: iso-8859-1 -*-
+# coding=utf-8
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -25,19 +25,19 @@ Pas de couplage possible avec UMLV et le comportement %(k1)s.
 """),
 
 35 : _(u"""
- rang supérieur a dimension vecteur
+ rang supÃ©rieur a dimension vecteur
 """),
 
 36 : _(u"""
- <LCDPPA> il faut redécouper
+ <LCDPPA> il faut redÃ©couper
 """),
 
 45 : _(u"""
- la modélisation 1d n'est pas autorisée
+ la modÃ©lisation 1d n'est pas autorisÃ©e
 """),
 
 48 : _(u"""
- élément à discontinuité avec une loi CZM_EXP : la matrice H est non inversible
+ Ã©lÃ©ment Ã  discontinuitÃ© avec une loi CZM_EXP : la matrice H est non inversible
 """),
 
 
@@ -46,25 +46,25 @@ Pas de couplage possible avec UMLV et le comportement %(k1)s.
 """),
 
 51 : _(u"""
-  SYT et D_SIGM_EPSI doivent être spécifiés sous l'opérande BETON_ECRO_LINE dans DEFI_MATERIAU pour utiliser la loi ENDO_ISOT_BETON
+  SYT et D_SIGM_EPSI doivent Ãªtre spÃ©cifiÃ©s sous l'opÃ©rande BETON_ECRO_LINE dans DEFI_MATERIAU pour utiliser la loi ENDO_ISOT_BETON
 """),
 
 52 : _(u"""
-  SYC ne doit pas être valorisé pour NU nul dans DEFI_MATERIAU
+  SYC ne doit pas Ãªtre valorisÃ© pour NU nul dans DEFI_MATERIAU
 """),
 
 53 : _(u"""
-  SYC doit être supérieur à SQRT((1+NU-2*NU*NU)/(2.D0*NU*NU))*SYT
+  SYC doit Ãªtre supÃ©rieur Ã  SQRT((1+NU-2*NU*NU)/(2.D0*NU*NU))*SYT
   dans DEFI_MATERIAU pour prendre en compte le confinement
 """),
 
 54 : _(u"""
- loi ENDO_ORTH_BETON : le paramètre KSI n'est pas inversible
+ loi ENDO_ORTH_BETON : le paramÃ¨tre KSI n'est pas inversible
 """),
 
 57 : _(u"""
- Problème de convergence (l'accroissement de déformation plastique est négatif).
- On active le redécoupage du pas de temps.
+ ProblÃ¨me de convergence (l'accroissement de dÃ©formation plastique est nÃ©gatif).
+ On active le redÃ©coupage du pas de temps.
 """),
 
 58 : _(u"""
@@ -72,24 +72,24 @@ Pas de couplage possible avec UMLV et le comportement %(k1)s.
 """),
 
 59 : _(u"""
- erreur: Problème de convergence. Le nombre d'itération maximal est atteint. On active le redécoupage du pas de temps.
+ erreur: ProblÃ¨me de convergence. Le nombre d'itÃ©ration maximal est atteint. On active le redÃ©coupage du pas de temps.
 """),
 
 60 : _(u"""
- Problème de convergence (l'accroissement de déformation plastique est négatif).
- Pensez à activer le redécoupage du pas de temps.
+ ProblÃ¨me de convergence (l'accroissement de dÃ©formation plastique est nÃ©gatif).
+ Pensez Ã  activer le redÃ©coupage du pas de temps.
 """),
 
 61 : _(u"""
- erreur: Problème de convergence. Le nombre d'itération maximal est atteint. Pensez à activer le redécoupage du pas de temps.
+ erreur: ProblÃ¨me de convergence. Le nombre d'itÃ©ration maximal est atteint. Pensez Ã  activer le redÃ©coupage du pas de temps.
 """),
 
 62 : _(u"""
- loi BETON_REGLE_PR utilisable uniquement en modélisation C_PLAN ou D_PLAN
+ loi BETON_REGLE_PR utilisable uniquement en modÃ©lisation C_PLAN ou D_PLAN
 """),
 
 63 : _(u"""
- la méthode de localisation  %(k1)s  est indisponible actuellement
+ la mÃ©thode de localisation  %(k1)s  est indisponible actuellement
 """),
 
 65 : _(u"""
@@ -98,74 +98,74 @@ Pas de couplage possible avec UMLV et le comportement %(k1)s.
 
 
 72 : _(u"""
-  jacobien du système non linéaire à résoudre nul
-  lors de la projection au sommet du cône de traction
-  les paramètres matériaux sont sans doute mal définis
+  jacobien du systÃ¨me non linÃ©aire Ã  rÃ©soudre nul
+  lors de la projection au sommet du cÃ´ne de traction
+  les paramÃ¨tres matÃ©riaux sont sans doute mal dÃ©finis
 """),
 
 73 : _(u"""
-  non convergence à itération max  %(k1)s
-  - erreur calculée  %(k2)s  >  %(k3)s
-  mais très faibles incréments de Newton pour la loi BETON_DOUBLE_DP
+  non convergence Ã  itÃ©ration max  %(k1)s
+  - erreur calculÃ©e  %(k2)s  >  %(k3)s
+  mais trÃ¨s faibles incrÃ©ments de Newton pour la loi BETON_DOUBLE_DP
   - on accepte la convergence.
 """),
 
 74 : _(u"""
-  non convergence à itération max  %(k1)s
-  - erreur calculée  %(k2)s  >  %(k3)s
+  non convergence Ã  itÃ©ration max  %(k1)s
+  - erreur calculÃ©e  %(k2)s  >  %(k3)s
   - pour la loi BETON_DOUBLE_DP
-  - redécoupage du pas de temps
+  - redÃ©coupage du pas de temps
 """),
 
 75 : _(u"""
- état converge non conforme
- lors de la projection au sommet du cône de traction
+ Ã©tat converge non conforme
+ lors de la projection au sommet du cÃ´ne de traction
 """),
 
 76 : _(u"""
- état converge non conforme en compression
- lors de la projection au sommet du cône de traction
+ Ã©tat converge non conforme en compression
+ lors de la projection au sommet du cÃ´ne de traction
 """),
 
 77 : _(u"""
- jacobien du système non linéaire à résoudre nul
- lors de la projection au sommet des cônes de compression et traction
- - les paramètres matériaux sont sans doute mal définis.
+ jacobien du systÃ¨me non linÃ©aire Ã  rÃ©soudre nul
+ lors de la projection au sommet des cÃ´nes de compression et traction
+ - les paramÃ¨tres matÃ©riaux sont sans doute mal dÃ©finis.
 """),
 
 78 : _(u"""
- état convergé non conforme en traction
- lors de la projection au sommet des deux cônes
+ Ã©tat convergÃ© non conforme en traction
+ lors de la projection au sommet des deux cÃ´nes
 """),
 
 79 : _(u"""
- état convergé non conforme en compression
- lors de la projection au sommet des deux cônes
+ Ã©tat convergÃ© non conforme en compression
+ lors de la projection au sommet des deux cÃ´nes
 """),
 
 80 : _(u"""
-  jacobien du système non linéaire à résoudre nul
-  lors de la projection au sommet du cône de compression
-  - les paramètres matériaux sont sans doute mal définis.
+  jacobien du systÃ¨me non linÃ©aire Ã  rÃ©soudre nul
+  lors de la projection au sommet du cÃ´ne de compression
+  - les paramÃ¨tres matÃ©riaux sont sans doute mal dÃ©finis.
 """),
 
 81 : _(u"""
- état convergé non conforme
- lors de la projection au sommet du cône de compression
+ Ã©tat convergÃ© non conforme
+ lors de la projection au sommet du cÃ´ne de compression
 """),
 
 82 : _(u"""
- état convergé non conforme en traction
- lors de la projection au sommet du cône de compression
+ Ã©tat convergÃ© non conforme en traction
+ lors de la projection au sommet du cÃ´ne de compression
 """),
 
 83 : _(u"""
-  jacobien du système non linéaire a résoudre nul
-  - les paramètres matériaux sont sans doute mal définis.
+  jacobien du systÃ¨me non linÃ©aire a rÃ©soudre nul
+  - les paramÃ¨tres matÃ©riaux sont sans doute mal dÃ©finis.
 """),
 
 84 : _(u"""
- intégration élastoplastique de loi multicritère : erreur de programmation
+ intÃ©gration Ã©lastoplastique de loi multicritÃ¨re : erreur de programmation
 """),
 
 85 : _(u"""
@@ -173,36 +173,36 @@ Pas de couplage possible avec UMLV et le comportement %(k1)s.
 """),
 
 86 : _(u"""
-  état convergé non conforme en traction et en compression
+  Ã©tat convergÃ© non conforme en traction et en compression
   pour la loi de comportement BETON_DOUBLE_DP
-  pour les deux critères en même temps.
-  il faut un saut élastique plus petit, ou redécouper le pas de temps
+  pour les deux critÃ¨res en mÃªme temps.
+  il faut un saut Ã©lastique plus petit, ou redÃ©couper le pas de temps
 """),
 
 87 : _(u"""
-  état converge non conforme en compression
+  Ã©tat converge non conforme en compression
   pour la loi de comportement BETON_DOUBLE_DP
-  pour les deux critères en même temps.
-  il faut un saut élastique plus petit, ou redécouper le pas de temps
+  pour les deux critÃ¨res en mÃªme temps.
+  il faut un saut Ã©lastique plus petit, ou redÃ©couper le pas de temps
 """),
 
 88 : _(u"""
-  état convergé non conforme en traction
+  Ã©tat convergÃ© non conforme en traction
   pour la loi de comportement BETON_DOUBLE_DP
-  pour les deux critères en même temps.
-  il faut un saut élastique plus petit, ou redécouper le pas de temps
+  pour les deux critÃ¨res en mÃªme temps.
+  il faut un saut Ã©lastique plus petit, ou redÃ©couper le pas de temps
 """),
 
 89 : _(u"""
- état convergé non conforme en traction
+ Ã©tat convergÃ© non conforme en traction
 """),
 
 90 : _(u"""
- état convergé non conforme en compression
+ Ã©tat convergÃ© non conforme en compression
 """),
 
 94 : _(u"""
- il faut déclarer FONC_DESORP sous ELAS_FO pour le fluage propre                                avec SECH comme paramètre
+ il faut dÃ©clarer FONC_DESORP sous ELAS_FO pour le fluage propre                                avec SECH comme paramÃ¨tre
 """),
 
 98 : _(u"""

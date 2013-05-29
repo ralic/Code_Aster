@@ -1,4 +1,4 @@
-# -*- coding: iso-8859-1 -*-
+# coding=utf-8
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -22,8 +22,8 @@ from cata_comportement import LoiComportement
 
 loi = LoiComportement(
    nom            = 'LETK',
-   doc = """Relation de comportement pour la modélisation élasto visco plastique des roches suivant le modèle de Laigle et Kleine, cf. [R7.01.24].
-   L'opérateur relatif à la prédiction élastique est celui de l'élasticité non linéaire spécifique à la loi.""",
+   doc = """Relation de comportement pour la modÃ©lisation Ã©lasto visco plastique des roches suivant le modÃ¨le de Laigle et Kleine, cf. [R7.01.24].
+   L'opÃ©rateur relatif Ã  la prÃ©diction Ã©lastique est celui de l'Ã©lasticitÃ© non linÃ©aire spÃ©cifique Ã  la loi.""",
    num_lc         = 35,
    nb_vari        = 9,
    nom_vari       = ('XIP','GAMMAP','XIVP','GAMMAVP','INDICDIL','INDIVISC','INDIPLAS','DOMAINE','INDIC'),

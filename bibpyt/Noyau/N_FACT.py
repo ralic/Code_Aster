@@ -1,4 +1,4 @@
-# -*- coding: iso-8859-1 -*-
+# coding=utf-8
 # person_in_charge: mathieu.courtois at edf.fr
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -22,7 +22,7 @@
 
 
 """ Ce module contient la classe de definition FACT
-    qui permet de spécifier les caractéristiques des mots clés facteurs
+    qui permet de spÃ©cifier les caractÃ©ristiques des mots clÃ©s facteurs
 """
 
 import types
@@ -42,13 +42,13 @@ class FACT(N_ENTITE.ENTITE):
 
     Cette classe a trois attributs de classe
 
-      - class_instance qui indique la classe qui devra etre utilisée
-        pour créer l'objet qui servira à controler la conformité d'un
-        mot-clé facteur avec sa définition
+      - class_instance qui indique la classe qui devra etre utilisÃ©e
+        pour crÃ©er l'objet qui servira Ã  controler la conformitÃ© d'un
+        mot-clÃ© facteur avec sa dÃ©finition
 
       - list_instance
 
-      - label qui indique la nature de l'objet de définition (ici, FACT)
+      - label qui indique la nature de l'objet de dÃ©finition (ici, FACT)
    """
    class_instance = N_MCFACT.MCFACT
    list_instance = N_MCLIST.MCList
@@ -58,7 +58,7 @@ class FACT(N_ENTITE.ENTITE):
                      min=0,max=1,validators=None,**args):
 
       """
-          Un mot-clé facteur est caractérisé par les attributs suivants :
+          Un mot-clÃ© facteur est caractÃ©risÃ© par les attributs suivants :
 
             - fr   :
             - ang :
@@ -111,7 +111,7 @@ class FACT(N_ENTITE.ENTITE):
           val={}
         elif type(self.defaut) == types.TupleType:
           val=self.defaut
-              # Est ce utile ? Le défaut pourrait etre uniquement un dict
+              # Est ce utile ? Le dÃ©faut pourrait etre uniquement un dict
         elif type(self.defaut) == types.DictType or isinstance(self.defaut,_F):
           val=self.defaut
         else:
@@ -119,9 +119,9 @@ class FACT(N_ENTITE.ENTITE):
           print "On ne devrait jamais passer par la"
           return None
       elif is_sequence(val) and len(val) == 0 and self.statut == 'o':
-          # On est dans le cas où le mcfact est présent mais est une liste/tuple
-          # vide. Il est obligatoire donc on l'initialise. Les règles, mots-clés
-          # obligatoires diront si un mcfact vide est accepté.
+          # On est dans le cas oÃ¹ le mcfact est prÃ©sent mais est une liste/tuple
+          # vide. Il est obligatoire donc on l'initialise. Les rÃ¨gles, mots-clÃ©s
+          # obligatoires diront si un mcfact vide est acceptÃ©.
           val = {}
 
       # On cree toujours une liste de mcfact

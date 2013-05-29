@@ -1,4 +1,4 @@
-# -*- coding: iso-8859-1 -*-
+# coding=utf-8
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -25,7 +25,7 @@ from SD.sd_matr_elem import sd_matr_elem
 from SD.sd_cham_elem import sd_cham_elem
 from SD.sd_mode_meca import sd_mode_meca
 # --------------------------------------------------------------------
-# sd_table contenant les colonnes nommÈe "NOM_OBJET","TYPE_OBJET",
+# sd_table contenant les colonnes nomm√©e "NOM_OBJET","TYPE_OBJET",
 # et "NOM_SD"
 # --------------------------------------------------------------------
 
@@ -37,22 +37,22 @@ class sd_table_container(sd_table):
 
     def check_table_container(self, checker):
 
-        # vÈrification de l'existence de la table
+        # v√©rification de l'existence de la table
         if not self.exists() :
            checker.err(self,"La sd_table_container %s ne semble"
                              +"pas exister" %(nomj))
 
-        # on vÈrifie la prÈsence des paramËtres
+        # on v√©rifie la pr√©sence des param√®tres
         # 'NOM_OBJET','TYPE_OBJET','NOM_SD'
         param=['NOM_OBJET','TYPE_OBJET','NOM_SD']
         shape = self.TBNP.get()
-        assert shape[0]>2 # la table ‡ au moins 3 paramËtres
+        assert shape[0]>2 # la table √† au moins 3 param√®tres
         for n in param:
           col=self.get_column_name(n)
           if col == None:
-             checker.err(self,"ParamËtre %s manquant!" %(n))
+             checker.err(self,"Param√®tre %s manquant!" %(n))
 
-          # on vÈrifie que les colonnes ne sont pas vides
+          # on v√©rifie que les colonnes ne sont pas vides
           data = col.data.get()
           if data is not None:
              if col.data.lonuti != shape[1]:
@@ -60,7 +60,7 @@ class sd_table_container(sd_table):
                                 (col.data.lonuti,shape[1]))
 
 
-        # on vÈrifie le contenu de la colonne NOM_SD
+        # on v√©rifie le contenu de la colonne NOM_SD
         col1=self.get_column_name('TYPE_OBJET')
         col2=self.get_column_name('NOM_SD')
         nbli=col1.data.lonuti

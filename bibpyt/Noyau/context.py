@@ -1,4 +1,4 @@
-# -*- coding: iso-8859-1 -*-
+# coding=utf-8
 # person_in_charge: mathieu.courtois at edf.fr
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -25,15 +25,15 @@ _cata=None
 debug=0
 from Noyau.N_info import message, SUPERV
 
-# Le "current step" est l'étape courante.
-# Une macro se déclare étape courante dans sa méthode Build avant de construire
-# ses étapes filles ou dans BuildExec avant de les exécuter.
-# Les étapes simples le font aussi : dans Execute et BuildExec.
-# (Build ne fait rien pour une étape)
+# Le "current step" est l'Ã©tape courante.
+# Une macro se dÃ©clare Ã©tape courante dans sa mÃ©thode Build avant de construire
+# ses Ã©tapes filles ou dans BuildExec avant de les exÃ©cuter.
+# Les Ã©tapes simples le font aussi : dans Execute et BuildExec.
+# (Build ne fait rien pour une Ã©tape)
 
 def set_current_step(step):
    """
-      Fonction qui permet de changer la valeur de l'étape courante
+      Fonction qui permet de changer la valeur de l'Ã©tape courante
    """
    global _root
    if _root : raise Exception("Impossible d'affecter _root. Il devrait valoir None")
@@ -42,13 +42,13 @@ def set_current_step(step):
 
 def get_current_step():
    """
-      Fonction qui permet d'obtenir la valeur de l'étape courante
+      Fonction qui permet d'obtenir la valeur de l'Ã©tape courante
    """
    return _root
 
 def unset_current_step():
    """
-      Fonction qui permet de remettre à None l'étape courante
+      Fonction qui permet de remettre Ã  None l'Ã©tape courante
    """
    global _root
    _root=None
@@ -69,7 +69,7 @@ def get_current_cata():
 
 def unset_current_cata():
    """
-      Fonction qui permet de remettre à None le catalogue courant
+      Fonction qui permet de remettre Ã  None le catalogue courant
    """
    global _cata
    _cata=None

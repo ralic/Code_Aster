@@ -1,4 +1,4 @@
-# -*- coding: iso-8859-1 -*-
+# coding=utf-8
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -30,7 +30,7 @@ class sd_table(sd_titre):
 
 
     def exists(self):
-        # retourne "vrai" si la SD semble exister (et donc qu'elle peut etre vérifiée)
+        # retourne "vrai" si la SD semble exister (et donc qu'elle peut etre vÃ©rifiÃ©e)
         return self.TBNP.exists
 
     def nb_column(self):
@@ -39,7 +39,7 @@ class sd_table(sd_titre):
         return shape[0]
 
     def get_column(self, i):
-        # retourne la colonne de numéro i
+        # retourne la colonne de numÃ©ro i
         nom = self.nomj()[:19]+".%04d"%i
         return Colonne( nom )
 

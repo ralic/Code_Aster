@@ -1,4 +1,4 @@
-# -*- coding: iso-8859-1 -*-
+# coding=utf-8
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -21,8 +21,8 @@
 cata_msg = {
 
 25 : _(u"""
- Le chargement contient plus d'une charge répartie.
- Le calcul n'est pas possible pour les modèles de poutre.
+ Le chargement contient plus d'une charge rÃ©partie.
+ Le calcul n'est pas possible pour les modÃ¨les de poutre.
 """),
 
 }

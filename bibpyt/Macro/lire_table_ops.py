@@ -1,4 +1,4 @@
-# -*- coding: iso-8859-1 -*-
+# coding=utf-8
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -23,7 +23,7 @@ import os.path as osp
 
 def lire_table_ops(self, UNITE, FORMAT, SEPARATEUR, NUME_TABLE, RENOMME_PARA,
                    INFO, TITRE, **args):
-    """Méthode corps de la macro LIRE_TABLE
+    """MÃ©thode corps de la macro LIRE_TABLE
     """
     import aster
     from Utilitai.Utmess     import UTMESS, raise_UTMESS
@@ -37,14 +37,14 @@ def lire_table_ops(self, UNITE, FORMAT, SEPARATEUR, NUME_TABLE, RENOMME_PARA,
     # La macro compte pour 1 dans la numerotation des commandes
     self.set_icmd(1)
 
-    # Lecture de la table dans un fichier d unité logique UNITE
+    # Lecture de la table dans un fichier d unitÃ© logique UNITE
     UL = UniteAster()
     nomfich = UL.Nom(UNITE)
     if not osp.isfile(nomfich):
         UTMESS('F', 'FONCT0_41', valk=nomfich)
 
     texte = open(nomfich,'r').read()
-    # remet UNITE dans son état initial
+    # remet UNITE dans son Ã©tat initial
     UL.EtatInit()
 
     check_para = None
@@ -62,7 +62,7 @@ def lire_table_ops(self, UNITE, FORMAT, SEPARATEUR, NUME_TABLE, RENOMME_PARA,
     UTMESS('I', 'TABLE0_44', valk=(self.sd.nom, tab.titr),
                              vali=(len(tab.rows), len(tab.para)))
 
-    # création de la table ASTER :
+    # crÃ©ation de la table ASTER :
     self.DeclareOut('ut_tab', self.sd)
     motscles = tab.dict_CREA_TABLE()
     if TITRE:

@@ -1,3 +1,4 @@
+# coding=utf-8
 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================

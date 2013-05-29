@@ -1,4 +1,4 @@
-# -*- coding: iso-8859-1 -*-
+# coding=utf-8
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -17,6 +17,6 @@
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
 # ======================================================================
 
-u"""Ce package n'est pas importé depuis Code_Aster.
-Il est utilisé de manière autonome à l'extérieur de Code_Aster.
+u"""Ce package n'est pas importÃ© depuis Code_Aster.
+Il est utilisÃ© de maniÃ¨re autonome Ã  l'extÃ©rieur de Code_Aster.
 """

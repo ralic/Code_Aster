@@ -1,4 +1,4 @@
-# -*- coding: iso-8859-1 -*-
+# coding=utf-8
 # person_in_charge: mathieu.courtois at edf.fr
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -21,8 +21,8 @@
 # ======================================================================
 
 # Attention : cet import permet d'avoir, en Python, le comportement
-# de la division réelle pour les entiers, et non la division entière
-# 1/2=0.5 (et non 0). Comportement par défaut dans Python 3.0.
+# de la division rÃ©elle pour les entiers, et non la division entiÃ¨re
+# 1/2=0.5 (et non 0). Comportement par dÃ©faut dans Python 3.0.
 from __future__ import division
 from math import sin, cos, tan, asin, acos, atan2, atan, sinh, cosh, tanh
 from math import pi, exp, log, log10, sqrt
@@ -54,15 +54,15 @@ class formule(ASSD):
             # globals() pour math.*
             res = eval(self.code, context, globals())
         except Exception, exc:
-            message.error(SUPERV, "ERREUR LORS DE L'ÉVALUATION DE LA FORMULE '%s' " \
+            message.error(SUPERV, "ERREUR LORS DE L'Ã‰VALUATION DE LA FORMULE '%s' " \
                           ":\n>> %s",self.nom, str(exc))
             raise
         return res
 
     def setFormule(self, nom_para, texte):
         """Cette methode sert a initialiser les attributs
-        nompar, expression et code qui sont utilisés
-        dans l'évaluation de la formule."""
+        nompar, expression et code qui sont utilisÃ©s
+        dans l'Ã©valuation de la formule."""
         self.nompar = nom_para
         self.expression = texte
         try :
@@ -86,18 +86,18 @@ class formule(ASSD):
 
     def supprime(self, force=False):
         """
-        Cassage des boucles de références pour destruction du JDC.
-        'force' est utilisée pour faire des suppressions complémentaires.
+        Cassage des boucles de rÃ©fÃ©rences pour destruction du JDC.
+        'force' est utilisÃ©e pour faire des suppressions complÃ©mentaires.
         
-        Pour être évaluées, les formules ont besoin du contexte des "constantes"
+        Pour Ãªtre Ã©valuÃ©es, les formules ont besoin du contexte des "constantes"
         (objets autres que les concepts) qui sont soit dans (jdc).const_context,
         soit dans (macro).macro_const_context.
         On le stocke dans 'parent_context'.
-        Deux précautions valent mieux qu'une : on retire tous les concepts.
+        Deux prÃ©cautions valent mieux qu'une : on retire tous les concepts.
         
-        Lors de la suppression du concept, 'supprime' est appelée par
+        Lors de la suppression du concept, 'supprime' est appelÃ©e par
         'build_detruire' avec force=True afin de supprimer le "const_context"
-        conservé.
+        conservÃ©.
         """
         if force:
             for ctxt in ('parent_context', 'g_context'):
@@ -107,7 +107,7 @@ class formule(ASSD):
 
     def Parametres(self):
         """Equivalent de fonction.Parametres pour pouvoir utiliser des formules
-        à la place de fonctions dans certaines macro-commandes.
+        Ã  la place de fonctions dans certaines macro-commandes.
         """
         from SD.sd_fonction import sd_formule
         from Utilitai.Utmess import UTMESS

@@ -1,4 +1,4 @@
-# encoding: utf-8
+# coding=utf-8
 
 """
 Example of configuration using sequential MKL librairies
@@ -14,4 +14,3 @@ def configure(self):
         '-lmkl_intel_lp64', '-lmkl_sequential', '-lmkl_core',
         '-Wl,--end-group']
     opts.maths_libs = ''
-

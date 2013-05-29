@@ -99,4 +99,3 @@ vtot = vtot et sp1p2  et lp2p7 et sut2 et sp4p41 et lp4p8;
 opti sauv format 
  '/home/cibhhgb/g_theta/3d/vtot.mgib' ;
  sauv format vtot ;
-

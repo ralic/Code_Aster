@@ -1,4 +1,4 @@
-# -*- coding: iso-8859-1 -*-
+# coding=utf-8
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -87,28 +87,28 @@ FIND
     return tmpl
 
 # sous-templates
-# plage des fréquences
+# plage des frÃ©quences
 def def_freq_min_max():
-    """Définition de la plage de fréquences avec min, max et pas"""
+    """DÃ©finition de la plage de frÃ©quences avec min, max et pas"""
     tmpl = "FREQUENCE DE %%(freq_min)%(R)s A %%(freq_max)%(R)s " \
            "PAS %%(freq_pas)%(R)s\n" % dict_format
     return tmpl
 
 def def_freq_range(list_freq):
-    """Définition de la plage des fréquences avec une liste"""
+    """DÃ©finition de la plage des frÃ©quences avec une liste"""
     nb = len(list_freq)
     tmpl = "FREQUENCE %%(nb)%(I)s\n" % dict_format + \
              (dict_format['sR'] * nb) % tuple(list_freq) + "\n"
     return tmpl % locals()
 
 def def_freq_imag():
-    """Définition de la fréquence complexe"""
+    """DÃ©finition de la frÃ©quence complexe"""
     tmpl = "IMGO %%(freq_imag)%(R)s\n" % dict_format
     return tmpl
 
 # sous-domaines
 def def_sous_domaine(num_domain, groups, value):
-    """Définition d'un sous-domaine"""
+    """DÃ©finition d'un sous-domaine"""
     list_groups = ("%4d" * len(groups)) % groups
     tmpl = """
 *
@@ -123,7 +123,7 @@ FINS
     return tmpl
 
 def use_domaine(num):
-    """Déclaration pour un domaine"""
+    """DÃ©claration pour un domaine"""
     if num is None:
         return ""
     tmpl = """
@@ -132,7 +132,7 @@ DOMAINE    %(num)d
     return tmpl
 
 def def_chargement_decl(num):
-    """Définition d'un chargement"""
+    """DÃ©finition d'un chargement"""
     sdomain = use_domaine(num)
     tmpl = """
 *
@@ -145,7 +145,7 @@ def def_chargement_decl(num):
 
 # fonctions de Green
 def def_chargement_green():
-    """Définition du chargement des fonctions de Green"""
+    """DÃ©finition du chargement des fonctions de Green"""
     tmpl = """
 *
 * Chargement des fonctions de Green
@@ -156,7 +156,7 @@ LIRE %%(fich_sol)s
 """ % dict_format
     return tmpl
 
-# ondes non inclinées
+# ondes non inclinÃ©es
 def def_ondes_non_inclinees():
     tmpl = """
 *
@@ -177,7 +177,7 @@ EXEC INCI
 """ % dict_format
     return tmpl
 
-# ondes inclinées
+# ondes inclinÃ©es
 def def_ondes_inclinees():
     tmpl = """
 *
@@ -200,9 +200,9 @@ EXEC INCI
 """ % dict_format
     return tmpl
 
-# points de contrôle
+# points de contrÃ´le
 def def_chargement_pc(num):
-    """Définition du chargement pour les pc"""
+    """DÃ©finition du chargement pour les pc"""
     tmpl = def_chargement_decl(num) + """*
 * Chargement du domaine structure 
 * --------------------------------
@@ -217,7 +217,7 @@ FINE
     return tmpl
 
 def def_exec_pc():
-    """Exécution pour les pc"""
+    """ExÃ©cution pour les pc"""
     tmpl = """
 *
 EXEC CONTROLE UI
@@ -226,7 +226,7 @@ EXEC CONTROLE UI
     return tmpl
 
 def def_exec_manuel(what):
-    """Exécution particulière"""
+    """ExÃ©cution particuliÃ¨re"""
     tmpl = """
 EXEC %(what)s
 *""" % locals()
@@ -247,7 +247,7 @@ EXEC SPFR
     return tmpl
 
 def def_calcul_impedances():
-    """Calcul des impédances"""
+    """Calcul des impÃ©dances"""
     tmpl = """
 *
 * Calcul des impedances
@@ -268,7 +268,7 @@ EXEC GLOBAL
 
 # exec
 def def_exec(what, mini=False):
-    """Calcul des impédances et forces en ISSF"""
+    """Calcul des impÃ©dances et forces en ISSF"""
     if mini:
         tmpl = """
 *
@@ -285,7 +285,7 @@ EXEC UGTG %%(champPC)s %(what)s %%(rfic1)s %%(rfic2)s %%(rfic2)s
 
 # post-traitements
 def init_post():
-    """Début post-traitement"""
+    """DÃ©but post-traitement"""
     tmpl = """
 *
 * Post-traitement 
@@ -295,7 +295,7 @@ POST
     return tmpl
 
 def fin_post():
-    """Début post-traitement"""
+    """DÃ©but post-traitement"""
     tmpl = """
 FINP
 *
@@ -303,7 +303,7 @@ FINP
     return tmpl
 
 def post_impe(num):
-    """Post du fichier des impédances"""
+    """Post du fichier des impÃ©dances"""
     sdomain = use_domaine(num)
     tmpl = """
 %(sdomain)s
@@ -329,7 +329,7 @@ UI TOUS
     return tmpl
 
 def lire_signal(filename):
-    """Lecture du signal de réponse"""
+    """Lecture du signal de rÃ©ponse"""
     tmpl = """
 SIGNAL LIRE %(filename)s
 *
@@ -337,7 +337,7 @@ SIGNAL LIRE %(filename)s
     return tmpl
 
 def init_boucle():
-    """Début de boucle"""
+    """DÃ©but de boucle"""
     tmpl = """
 *
 * Boucle sur les frequences 
@@ -358,7 +358,7 @@ ENDF
     return tmpl % dict_format
 
 def init_spec():
-    """Début du bloc SPEC"""
+    """DÃ©but du bloc SPEC"""
     tmpl = """
 SPEC NF=%%(_nbfreq)%(I)s FMAX=%%(freq_max)%(R)s
 """ % dict_format

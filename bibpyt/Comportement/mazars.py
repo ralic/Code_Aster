@@ -1,4 +1,4 @@
-# -*- coding: iso-8859-1 -*-
+# coding=utf-8
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -22,11 +22,11 @@ from cata_comportement import LoiComportement
 
 loi = LoiComportement(
    nom            = 'MAZARS',
-   doc = """Loi d'endommagement isotrope élastique-fragile du béton, suivant le modèle de Mazars. 
+   doc = """Loi d'endommagement isotrope Ã©lastique-fragile du bÃ©ton, suivant le modÃ¨le de Mazars. 
    Elle permet de prendre en comtpe l'adoucissement et distingue l'endommagemetn en traction et en compression. 
-   Une seule variable d'endommagement scalaire est utilisée (cf [R7.01.08]). 
-   En cas de chargement thermique, les coefficients matériau dépendent de la température maximale atteinte au point de Gauss considéré, 
-   et la dilatation thermique, supposée linéaire, ne contribue pas à l'évolution de l'endommagement.""",
+   Une seule variable d'endommagement scalaire est utilisÃ©e (cf [R7.01.08]). 
+   En cas de chargement thermique, les coefficients matÃ©riau dÃ©pendent de la tempÃ©rature maximale atteinte au point de Gauss considÃ©rÃ©, 
+   et la dilatation thermique, supposÃ©e linÃ©aire, ne contribue pas Ã  l'Ã©volution de l'endommagement.""",
    num_lc         = 8,
    nb_vari        = 4,
    nom_vari       = ('ENDO', 'INDIENDO','TEMP_MAX','EPSEQ'),

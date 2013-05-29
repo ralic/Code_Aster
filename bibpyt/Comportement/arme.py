@@ -1,4 +1,4 @@
-# -*- coding: iso-8859-1 -*-
+# coding=utf-8
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -22,7 +22,7 @@ from cata_comportement import LoiComportement
 
 loi = LoiComportement(
    nom            = 'ARME',
-   doc = """Relation de comportement élasto-plastique isotherme pour les armements de lignes [R5.03.31]""",
+   doc = """Relation de comportement Ã©lasto-plastique isotherme pour les armements de lignes [R5.03.31]""",
    num_lc         = 9999,
    nb_vari        = 1,
    nom_vari       = ('DUY'),

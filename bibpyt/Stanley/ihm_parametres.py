@@ -1,4 +1,4 @@
-# -*- coding: iso-8859-1 -*-
+# coding=utf-8
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -272,7 +272,7 @@ class AFFICHAGE_PARAMETRES :
 
   def Quitter(self):
 
-    reponse = tkMessageBox.askokcancel(_(u"Quitter"), _(u"Voulez-vous quitter ? Les paramètres modifiés seront perdus.") )
+    reponse = tkMessageBox.askokcancel(_(u"Quitter"), _(u"Voulez-vous quitter ? Les paramÃ¨tres modifiÃ©s seront perdus.") )
     if   reponse == 1: reponse = True
     elif reponse == 0: reponse = False
     if not reponse: return
@@ -289,7 +289,7 @@ class AFFICHAGE_PARAMETRES :
     mode_graphique = self.dvar['MODE_GRAPHIQUE']['mode_graphique'].get()
     mode           = self.dvar['CONFIG']['mode'].get()
 
-    # Si les 2 choix mode_graphique et mode n'ont pas changés on n'a pas besoin de raffraichir
+    # Si les 2 choix mode_graphique et mode n'ont pas changÃ©s on n'a pas besoin de raffraichir
     if (self.old_mode_graphique == mode_graphique) and (self.old_mode == mode): return
 
     # Raffrachir l'aide

@@ -1,4 +1,4 @@
-# -*- coding: iso-8859-1 -*-
+# coding=utf-8
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -19,50 +19,50 @@
 # person_in_charge: josselin.delmas at edf.fr
 
 cata_msg = {
- 1 : _(u"""'%(k1)s' doit être une liste de 2 ou 3 listes de réels de même longueur.
+ 1 : _(u"""'%(k1)s' doit Ãªtre une liste de 2 ou 3 listes de rÃ©els de mÃªme longueur.
 """),
 
- 2 : _(u"""'%(k1)s' doit être une liste de 2 ou 3 chaînes de caractères.
+ 2 : _(u"""'%(k1)s' doit Ãªtre une liste de 2 ou 3 chaÃ®nes de caractÃ¨res.
 """),
 
  3 : _(u"""Le format est inconnu : %(k1)s.
 """),
 
- 4 : _(u"""On limite la fenêtre aux abscisses positives.
+ 4 : _(u"""On limite la fenÃªtre aux abscisses positives.
 """),
 
- 5 : _(u"""On limite la fenêtre aux ordonnées positives.
+ 5 : _(u"""On limite la fenÃªtre aux ordonnÃ©es positives.
 """),
 
  6 : _(u"""Des erreurs se sont produites :
    %(k1)s
 """),
 
- 7 : _(u"""La variable DISPLAY n'est pas définie.
+ 7 : _(u"""La variable DISPLAY n'est pas dÃ©finie.
 """),
 
- 8 : _(u"""On fixe la variable DISPLAY à %(k1)s.
+ 8 : _(u"""On fixe la variable DISPLAY Ã  %(k1)s.
 """),
 
  9 : _(u"""Erreur lors de l'utilisation du filtre '%(k1)s'.
-Le fichier retourné est le fichier au format texte de xmgrace.
+Le fichier retournÃ© est le fichier au format texte de xmgrace.
 """),
 
 10 : _(u"""
    <I> Informations sur le fichier '%(k1)s' :
       Nombre de courbes    : %(i1)3d
       Bornes des abscisses : [ %(r1)13.6G , %(r2)13.6G ]
-      Bornes des ordonnées : [ %(r3)13.6G , %(r4)13.6G ]
+      Bornes des ordonnÃ©es : [ %(r3)13.6G , %(r4)13.6G ]
 """),
 
 11 : _(u"""
-   Le fichier '%(k1)s' ne semble pas être au format texte de xmgrace.
-   On ne peut donc pas recalculer les valeurs extrêmes.
+   Le fichier '%(k1)s' ne semble pas Ãªtre au format texte de xmgrace.
+   On ne peut donc pas recalculer les valeurs extrÃªmes.
    Le pilote ne permet probablement pas d'imprimer plusieurs
-   graphiques dans le même fichier.
+   graphiques dans le mÃªme fichier.
 
 Conseil :
-   N'utilisez pas le mot-clé PILOTE et produisez l'image en
+   N'utilisez pas le mot-clÃ© PILOTE et produisez l'image en
    utilisant xmgrace.
 """),
 

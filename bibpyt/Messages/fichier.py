@@ -1,4 +1,4 @@
-# -*- coding: iso-8859-1 -*-
+# coding=utf-8
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -25,7 +25,7 @@ Fichier inexistant : '%(k1)s'
 """),
 
 2 : _(u"""
-La lecture du fichier a échoué.
+La lecture du fichier a Ã©chouÃ©.
 Soit le fichier n'existe pas, soit son contenu est invalide.
 """),
 

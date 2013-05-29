@@ -1,4 +1,4 @@
-# -*- coding: iso-8859-1 -*-
+# coding=utf-8
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -26,11 +26,11 @@ cata_msg = {
 """),
 
 2 : _(u"""
- Il y a trop de colonnes à afficher dans le tableau de convergence.
- La largeur maximale affichable est de 256 caractères, donc 14 colonnes au maximum.
- Or vous avez <%(i1)d> caractères !
+ Il y a trop de colonnes Ã  afficher dans le tableau de convergence.
+ La largeur maximale affichable est de 256 caractÃ¨res, donc 14 colonnes au maximum.
+ Or vous avez <%(i1)d> caractÃ¨res !
  Si vous avez des colonnes SUIVI_DDL, supprimez en.
- Vous pouvez éventuellement désactiver INFO_RESIDU ou INFO_TEMPS.
+ Vous pouvez Ã©ventuellement dÃ©sactiver INFO_RESIDU ou INFO_TEMPS.
 """),
 
 3 : _(u"""

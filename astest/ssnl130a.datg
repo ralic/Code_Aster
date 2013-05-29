@@ -1,6 +1,6 @@
 * AJOUT
 *
-* Les ressorts sont modélisés par
+* Les ressorts sont modÃ©lisÃ©s par
 *   des segments K_T_D_L
 opti dime 3;
 opti elem CUB8;

@@ -1,4 +1,4 @@
-*Application Cabot simplifié 45 mm (0.045 m)
+*Application Cabot simplifiÃ© 45 mm (0.045 m)
 * par NDR, 23/mai/2004
 *
 *   'ssna112a.datg'
@@ -133,6 +133,5 @@ OPTI sauv form 'ssna112a.mgib';
 SAUV format (cabot);
 
 fin ;
-
 
 

@@ -1,4 +1,4 @@
-# -*- coding: iso-8859-1 -*-
+# coding=utf-8
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -21,53 +21,53 @@
 cata_msg = {
 
 1 : _(u"""
-Contact méthodes discrètes.
- -> Les méthodes de contact discrètes supposent la symétrie de la matrice obtenue après assemblage.
-    Si votre modélisation produit une matrice non-symétrique, on force donc sa symétrie pour résoudre
+Contact mÃ©thodes discrÃ¨tes.
+ -> Les mÃ©thodes de contact discrÃ¨tes supposent la symÃ©trie de la matrice obtenue aprÃ¨s assemblage.
+    Si votre modÃ©lisation produit une matrice non-symÃ©trique, on force donc sa symÃ©trie pour rÃ©soudre
     le contact.
  -> Risque & Conseil :
-    Ce changement peut conduire à des difficultés de convergence dans le processus de Newton mais en
-    aucun cas il ne produit des résultats faux.
+    Ce changement peut conduire Ã  des difficultÃ©s de convergence dans le processus de Newton mais en
+    aucun cas il ne produit des rÃ©sultats faux.
 
-    Si la matrice de rigidité de votre structure est symétrique, vous pouvez ignorer ce qui précède.
+    Si la matrice de rigiditÃ© de votre structure est symÃ©trique, vous pouvez ignorer ce qui prÃ©cÃ¨de.
     Enfin, il est possible de supprimer l'affichage de cette alarme en renseignant SYME='OUI'
-    sous le mot-clé facteur SOLVEUR.
+    sous le mot-clÃ© facteur SOLVEUR.
 """),
 
 3 : _(u"""
-Contact méthode GCP. Nombre d'itérations maximal (%(i1)d) dépassé pour le préconditionneur.
+Contact mÃ©thode GCP. Nombre d'itÃ©rations maximal (%(i1)d) dÃ©passÃ© pour le prÃ©conditionneur.
 Vous pouvez essayer d'augmenter ITER_PRE_MAXI
 """),
 
 4 : _(u"""
-Contact méthode GCP. Le paramètre RESI_ABSO doit être obligatoirement renseigné.
+Contact mÃ©thode GCP. Le paramÃ¨tre RESI_ABSO doit Ãªtre obligatoirement renseignÃ©.
 """),
 
 7 : _(u"""
-Contact méthode GCP. Le pas d'avancement est négatif ; risque de comportement hasardeux de l'algorithme
+Contact mÃ©thode GCP. Le pas d'avancement est nÃ©gatif ; risque de comportement hasardeux de l'algorithme
 """),
 
 8 : _(u"""
-Contact méthodes discrètes.
- -> Il y a des éléments de type QUAD8 sur la surface esclave de contact. Ces éléments produisent des forces nodales négatives aux noeuds sommets.
-    Afin de limiter les oscillations des forces et d'empêcher une pénétration intempestive de la surface maître dans la surface esclave, on
-    a procédé à des liaisons cinématiques (LIAISON_DDL) entre les noeuds milieux et les noeuds sommets, sur les deux surfaces (maître et esclave).
+Contact mÃ©thodes discrÃ¨tes.
+ -> Il y a des Ã©lÃ©ments de type QUAD8 sur la surface esclave de contact. Ces Ã©lÃ©ments produisent des forces nodales nÃ©gatives aux noeuds sommets.
+    Afin de limiter les oscillations des forces et d'empÃªcher une pÃ©nÃ©tration intempestive de la surface maÃ®tre dans la surface esclave, on
+    a procÃ©dÃ© Ã  des liaisons cinÃ©matiques (LIAISON_DDL) entre les noeuds milieux et les noeuds sommets, sur les deux surfaces (maÃ®tre et esclave).
  -> Risque & Conseil :
-    Il est préférable d'utiliser des éléments de type QUAD9. Changer votre maillage ou utiliser la commande MODI_MAILLAGE.
-    Ces liaisons supplémentaires peuvent provoquer des incompatibilités avec les conditions limites, ce qui se traduira par un pivot nul dans
+    Il est prÃ©fÃ©rable d'utiliser des Ã©lÃ©ments de type QUAD9. Changer votre maillage ou utiliser la commande MODI_MAILLAGE.
+    Ces liaisons supplÃ©mentaires peuvent provoquer des incompatibilitÃ©s avec les conditions limites, ce qui se traduira par un pivot nul dans
     la matrice.
 """),
 
 9 : _(u"""
-Contact liaison glissière. Des noeuds se décollent plus que la valeur de ALARME_JEU:
+Contact liaison glissiÃ¨re. Des noeuds se dÃ©collent plus que la valeur de ALARME_JEU:
 """),
 
 13 : _(u"""
-La normale que vous avez prédéfinie (VECT_* = 'FIXE') sur le noeud %(k1)s est colinéaire à la tangente à la maille.
+La normale que vous avez prÃ©dÃ©finie (VECT_* = 'FIXE') sur le noeud %(k1)s est colinÃ©aire Ã  la tangente Ã  la maille.
 """),
 
 14 : _(u"""
-La normale que vous avez prédéfinie (VECT_* = 'FIXE') sur la maille %(k1)s est colinéaire à la tangente à la maille.
+La normale que vous avez prÃ©dÃ©finie (VECT_* = 'FIXE') sur la maille %(k1)s est colinÃ©aire Ã  la tangente Ã  la maille.
 """),
 
 15 : _(u"""
@@ -79,39 +79,39 @@ Le vecteur MAIT_VECT_Y ou ESCL_VECT_Y est nul !
 """),
 
 20 : _(u"""
-Contact méthode continue.
-  La méthode de Newton généralisée pour la boucle de géométrie exige que le contact soit aussi résolu par le Newton généralisé.
+Contact mÃ©thode continue.
+  La mÃ©thode de Newton gÃ©nÃ©ralisÃ©e pour la boucle de gÃ©omÃ©trie exige que le contact soit aussi rÃ©solu par le Newton gÃ©nÃ©ralisÃ©.
 """),
 
 21 : _(u"""
-Contact méthode continue.
-  La méthode de Newton généralisée pour la boucle de géométrie n'est pas utilisable avec la pénalisation.
+Contact mÃ©thode continue.
+  La mÃ©thode de Newton gÃ©nÃ©ralisÃ©e pour la boucle de gÃ©omÃ©trie n'est pas utilisable avec la pÃ©nalisation.
 """),
 
 60 : _(u"""
-La maille %(k1)s est de type 'SEG' (poutres) en 3D. Pour ces mailles la normale ne peut pas être déterminée automatiquement.
+La maille %(k1)s est de type 'SEG' (poutres) en 3D. Pour ces mailles la normale ne peut pas Ãªtre dÃ©terminÃ©e automatiquement.
 Vous devez utilisez l'option NORMALE :
-- FIXE : qui décrit une normale constante pour la poutre
-- ou VECT_Y : qui décrit une normale par construction d'un repère basé sur la tangente (voir documentation)
+- FIXE : qui dÃ©crit une normale constante pour la poutre
+- ou VECT_Y : qui dÃ©crit une normale par construction d'un repÃ¨re basÃ© sur la tangente (voir documentation)
 """),
 
 61 : _(u"""
-Le noeud %(k1)s fait partie d'une maille de type 'SEG' (poutres) en 3D. Pour ces mailles la normale ne peut pas être déterminée automatiquement.
+Le noeud %(k1)s fait partie d'une maille de type 'SEG' (poutres) en 3D. Pour ces mailles la normale ne peut pas Ãªtre dÃ©terminÃ©e automatiquement.
 Vous devez utilisez l'option NORMALE :
-- FIXE : qui décrit une normale constante pour la poutre
-- ou VECT_Y: qui décrit une normale par construction d'un repère basé sur la tangente (voir documentation)
+- FIXE : qui dÃ©crit une normale constante pour la poutre
+- ou VECT_Y: qui dÃ©crit une normale par construction d'un repÃ¨re basÃ© sur la tangente (voir documentation)
 """),
 
 
 84 : _(u"""
-Le modèle mélange des mailles avec des modélisations de dimensions différentes (2D avec 3D ou macro-éléments).
-À ce moment du fichier de commandes, on ne peut dire si ce mélange sera compatible avec le contact.
+Le modÃ¨le mÃ©lange des mailles avec des modÃ©lisations de dimensions diffÃ©rentes (2D avec 3D ou macro-Ã©lÃ©ments).
+Ã€ ce moment du fichier de commandes, on ne peut dire si ce mÃ©lange sera compatible avec le contact.
 """),
 
 85 : _(u"""
-Le modèle mélange des mailles avec des modélisations de dimensions différentes (2D avec 3D ou macro-éléments).
-Il ne faut pas que les surfaces de contact mélangent des mailles affectées d'une modélisation plane (D_PLAN, C_PLAN ou AXIS)
-avec des mailles affectées d'une modélisation 3D.
+Le modÃ¨le mÃ©lange des mailles avec des modÃ©lisations de dimensions diffÃ©rentes (2D avec 3D ou macro-Ã©lÃ©ments).
+Il ne faut pas que les surfaces de contact mÃ©langent des mailles affectÃ©es d'une modÃ©lisation plane (D_PLAN, C_PLAN ou AXIS)
+avec des mailles affectÃ©es d'une modÃ©lisation 3D.
 """),
 
 88 : _(u"""
@@ -119,44 +119,44 @@ N'utilisez pas REAC_INCR=0 avec le frottement.
 """),
 
 89 : _(u"""
-Contact méthode continue.
-On ne peut avoir des modélisations différentes entre contact et frottement (pénalisation ou lagrangien augmenté) différents sur la même zone.
-Il faut avoir la même option pour ALGO_CONT et ALGO_FROT.
+Contact mÃ©thode continue.
+On ne peut avoir des modÃ©lisations diffÃ©rentes entre contact et frottement (pÃ©nalisation ou lagrangien augmentÃ©) diffÃ©rents sur la mÃªme zone.
+Il faut avoir la mÃªme option pour ALGO_CONT et ALGO_FROT.
 """),
 
 93 : _(u"""
-Contact méthode sans résolution.
- -> Interpénétrations des surfaces.
+Contact mÃ©thode sans rÃ©solution.
+ -> InterpÃ©nÃ©trations des surfaces.
 
  -> Risque & Conseil :
-    Vérifier si le niveau d'interpénétration des surfaces est acceptable dans
-    votre problème.
+    VÃ©rifier si le niveau d'interpÃ©nÃ©tration des surfaces est acceptable dans
+    votre problÃ¨me.
 """),
 
 94 : _(u"""
-La modélisation COQUE_3D n'est pas encore compatible avec la formulation CONTINUE.
+La modÃ©lisation COQUE_3D n'est pas encore compatible avec la formulation CONTINUE.
 """),
 
 96 : _(u"""
-La prise en compte d'un contact entre une maille '%(k1)s' et une maille '%(k2)s' n'est pas prévue avec la formulation CONTINUE.
+La prise en compte d'un contact entre une maille '%(k1)s' et une maille '%(k2)s' n'est pas prÃ©vue avec la formulation CONTINUE.
 
 Conseils :
 - utilisez une formulation 'DISCRETE'
 """),
 
 97 : _(u"""
-Contact méthode continue. Pour l'option SANS_GROUP_NO et SANS_GROUP_NO_FR, l'intégration de type 'AUTO' est obligatoire.
+Contact mÃ©thode continue. Pour l'option SANS_GROUP_NO et SANS_GROUP_NO_FR, l'intÃ©gration de type 'AUTO' est obligatoire.
 """),
 
 98 : _(u"""
-Contact méthode continue. Pour l'option NORMALE = 'MAIT_ESCL' ou NORMALE = 'ESCL', l'intégration de type 'AUTO' est obligatoire.
+Contact mÃ©thode continue. Pour l'option NORMALE = 'MAIT_ESCL' ou NORMALE = 'ESCL', l'intÃ©gration de type 'AUTO' est obligatoire.
 """),
 
 99 : _(u"""
-Contact méthode continue. Vos surfaces de contact esclaves comportent des QUAD8 et vous avez demandé l'option NORMALE = 'MAIT_ESCL' ou NORMALE = 'ESCL'
-L'intégration de type 'AUTO' est incompatible avec cette option.
+Contact mÃ©thode continue. Vos surfaces de contact esclaves comportent des QUAD8 et vous avez demandÃ© l'option NORMALE = 'MAIT_ESCL' ou NORMALE = 'ESCL'
+L'intÃ©gration de type 'AUTO' est incompatible avec cette option.
 
-Conseil : utilisez un autre schéma d'intégration ou bien des QUAD9.
+Conseil : utilisez un autre schÃ©ma d'intÃ©gration ou bien des QUAD9.
 
 """),
 

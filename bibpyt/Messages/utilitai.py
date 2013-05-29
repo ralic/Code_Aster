@@ -1,4 +1,4 @@
-# -*- coding: iso-8859-1 -*-
+# coding=utf-8
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -20,38 +20,38 @@
 
 cata_msg = {
 
-# a traduire en français par JP
+# a traduire en franÃ§ais par JP
 1 : _(u"""
- le nombre de grels du LIGREL du modèle est nul.
+ le nombre de grels du LIGREL du modÃ¨le est nul.
 """),
 
 2 : _(u"""
- il ne faut pas demander 'TR' derrière CARA si le type d'élément discret ne prend pas en compte la rotation
+ il ne faut pas demander 'TR' derriÃ¨re CARA si le type d'Ã©lÃ©ment discret ne prend pas en compte la rotation
 """),
 
 3 : _(u"""
- La conversion d'un champ par éléments aux noeuds en un champ
- aux noeuds a été demandé.
- Or le champ par éléments aux noeuds contient des
+ La conversion d'un champ par Ã©lÃ©ments aux noeuds en un champ
+ aux noeuds a Ã©tÃ© demandÃ©.
+ Or le champ par Ã©lÃ©ments aux noeuds contient des
  sous-points alors qu'un champ aux noeuds ne peut pas en contenir.
- Les mailles contenant des sous-points vont être exclues.
+ Les mailles contenant des sous-points vont Ãªtre exclues.
 
  Conseil :
    Si vous souhaitez convertir le champ sur les mailles ayant des
-   sous-points, vous devez d'abord extraire le champ par éléments
+   sous-points, vous devez d'abord extraire le champ par Ã©lÃ©ments
    aux noeuds sur un sous-point avec la commande POST_CHAMP.
 """),
 
 4 : _(u"""
- Vous avez demandé le calcul d'un champ aux noeuds sur des éléments
- de structure. Mais les repères locaux de certaines mailles entourant
- des noeuds sur lesquels vous avez demandés le calcul ne sont pas
- compatibles (Au maximum, on a %(r1)g degrés d'écart entre les angles
- nautiques définissant ces repères).
+ Vous avez demandÃ© le calcul d'un champ aux noeuds sur des Ã©lÃ©ments
+ de structure. Mais les repÃ¨res locaux de certaines mailles entourant
+ des noeuds sur lesquels vous avez demandÃ©s le calcul ne sont pas
+ compatibles (Au maximum, on a %(r1)g degrÃ©s d'Ã©cart entre les angles
+ nautiques dÃ©finissant ces repÃ¨res).
 
  Risque & Conseil :
-   Il se peut que vous obteniez des résultats incohérents.
-   Il est donc recommandé de passer en repère global les champs
+   Il se peut que vous obteniez des rÃ©sultats incohÃ©rents.
+   Il est donc recommandÃ© de passer en repÃ¨re global les champs
    utiles au calcul du champ aux noeuds.
 """),
 
@@ -60,11 +60,11 @@ cata_msg = {
 """),
 
 6 : _(u"""
- axe non colinéaire à v1v2
+ axe non colinÃ©aire Ã  v1v2
 """),
 
 7 : _(u"""
- Problème norme de axe
+ ProblÃ¨me norme de axe
 """),
 
 8 : _(u"""
@@ -80,24 +80,24 @@ Cette grandeur ne peut pas accepter plus de %(i2)d composantes (%(i1)d fournies)
 """),
 
 11 : _(u"""
- on ne peut pas créer un champ de VARI_R avec le mot clé facteur AFFE
+ on ne peut pas crÃ©er un champ de VARI_R avec le mot clÃ© facteur AFFE
  (voir u2.01.09)
 """),
 
 12 : _(u"""
- mot clé AFFE/NOEUD interdit ici.
+ mot clÃ© AFFE/NOEUD interdit ici.
 """),
 
 13 : _(u"""
- mot clé AFFE/GROUP_NO interdit ici.
+ mot clÃ© AFFE/GROUP_NO interdit ici.
 """),
 
 14 : _(u"""
- type scalaire non traité :  %(k1)s
+ type scalaire non traitÃ© :  %(k1)s
 """),
 
 15 : _(u"""
- incohérence entre nombre de composantes et nombre de valeurs
+ incohÃ©rence entre nombre de composantes et nombre de valeurs
 """),
 
 16 : _(u"""
@@ -105,15 +105,15 @@ Cette grandeur ne peut pas accepter plus de %(i2)d composantes (%(i1)d fournies)
 """),
 
 17 : _(u"""
- les paramètres doivent être réels
+ les paramÃ¨tres doivent Ãªtre rÃ©els
 """),
 
 18 : _(u"""
- maillages différents
+ maillages diffÃ©rents
 """),
 
 20 : _(u"""
- le champ  %(k1)s n'est pas de type réel
+ le champ  %(k1)s n'est pas de type rÃ©el
 """),
 
 21 : _(u"""
@@ -121,7 +121,7 @@ Cette grandeur ne peut pas accepter plus de %(i2)d composantes (%(i1)d fournies)
 """),
 
 22: _(u"""
- la programmation prévoit que les entiers sont codés sur plus de 32 bits
+ la programmation prÃ©voit que les entiers sont codÃ©s sur plus de 32 bits
  ce qui n'est pas le cas sur votre machine
 """),
 
@@ -131,14 +131,14 @@ Cette grandeur ne peut pas accepter plus de %(i2)d composantes (%(i1)d fournies)
 
 24 : _(u"""
  Lors de la recopie du champ "%(k1)s" vers le champ "%(k2)s" utilisant
- le NUME_DDL "%(k3)s" certaines composantes de "%(k2)s" ont du être
- mises à zéro.
+ le NUME_DDL "%(k3)s" certaines composantes de "%(k2)s" ont du Ãªtre
+ mises Ã  zÃ©ro.
  
- En effet, certaines parties attendues dans le champ "%(k2)s" n'étaient
- pas présentes dans "%(k1)s", elles ont donc été mises à zéros.
+ En effet, certaines parties attendues dans le champ "%(k2)s" n'Ã©taient
+ pas prÃ©sentes dans "%(k1)s", elles ont donc Ã©tÃ© mises Ã  zÃ©ros.
  
- Ce problème peut survenir lorsque la numérotation du champ "%(k1)s"
- n'est pas intégralement incluse dans celle de "%(k2)s".
+ Ce problÃ¨me peut survenir lorsque la numÃ©rotation du champ "%(k1)s"
+ n'est pas intÃ©gralement incluse dans celle de "%(k2)s".
 """),
 
 
@@ -148,7 +148,7 @@ Cette grandeur ne peut pas accepter plus de %(i2)d composantes (%(i1)d fournies)
 
 
 26 : _(u"""
- pas la même numérotation sur les CHAM_NO.
+ pas la mÃªme numÃ©rotation sur les CHAM_NO.
 """),
 
 27 : _(u"""
@@ -156,14 +156,14 @@ Cette grandeur ne peut pas accepter plus de %(i2)d composantes (%(i1)d fournies)
 """),
 
 28 : _(u"""
- Le champ : %(k1)s ne peut pas être assemblé en :  %(k2)s
+ Le champ : %(k1)s ne peut pas Ãªtre assemblÃ© en :  %(k2)s
 """),
 
 29 : _(u"""
 Erreur utilisateur :
- La structure de donnée résultat %(k1)s est associée au maillage %(k2)s
- Mais la structure de donnée nume_ddl %(k3)s est associée au maillage %(k4)s
- Il n'y a pas de cohérence.
+ La structure de donnÃ©e rÃ©sultat %(k1)s est associÃ©e au maillage %(k2)s
+ Mais la structure de donnÃ©e nume_ddl %(k3)s est associÃ©e au maillage %(k4)s
+ Il n'y a pas de cohÃ©rence.
 """),
 
 
@@ -171,21 +171,21 @@ Erreur utilisateur :
 
 
 31 : _(u"""
- NOM_CMP2 et NOM_CMP de longueur différentes.
+ NOM_CMP2 et NOM_CMP de longueur diffÃ©rentes.
 """),
 
 32: _(u"""
  Grandeur incorrecte pour le champ : %(k1)s
- grandeur proposée :  %(k2)s
+ grandeur proposÃ©e :  %(k2)s
  grandeur attendue :  %(k3)s
 """),
 
 33 : _(u"""
- le mot-clé 'COEF_C' n'est applicable que pour un champ de type complexe
+ le mot-clÃ© 'COEF_C' n'est applicable que pour un champ de type complexe
 """),
 
 34 : _(u"""
- développement non réalisé pour les champs aux éléments. vraiment désolé !
+ dÃ©veloppement non rÃ©alisÃ© pour les champs aux Ã©lÃ©ments. vraiment dÃ©solÃ© !
 """),
 
 35 : _(u"""
@@ -193,11 +193,11 @@ Erreur utilisateur :
 """),
 
 36 : _(u"""
- on ne traite que des CHAM_NO réels ou complexes. vraiment désolé !
+ on ne traite que des CHAM_NO rÃ©els ou complexes. vraiment dÃ©solÃ© !
 """),
 
 40 : _(u"""
- structure de données inexistante : %(k1)s
+ structure de donnÃ©es inexistante : %(k1)s
 """),
 
 41 : _(u"""
@@ -209,11 +209,11 @@ Erreur utilisateur :
 """),
 
 43 : _(u"""
- numérotation absente  problème dans la matrice  %(k1)s
+ numÃ©rotation absente  problÃ¨me dans la matrice  %(k1)s
 """),
 
 44 : _(u"""
-  erreur dans la récupération du nombre de noeuds !
+  erreur dans la rÃ©cupÃ©ration du nombre de noeuds !
 """),
 
 45 : _(u"""
@@ -221,11 +221,11 @@ Erreur utilisateur :
 """),
 
 46 : _(u"""
- la fonction doit s appuyer sur un maillage pour lequel une abscisse curviligne a été définie.
+ la fonction doit s appuyer sur un maillage pour lequel une abscisse curviligne a Ã©tÃ© dÃ©finie.
 """),
 
 47 : _(u"""
-  le mot clé : %(k1)s n est pas autorise.
+  le mot clÃ© : %(k1)s n est pas autorise.
 """),
 
 49 : _(u"""
@@ -256,21 +256,21 @@ Erreur utilisateur :
 
 
 56 : _(u"""
- Le partitionneur SCOTCH a fait remonter l'erreur %(i1)d. Veuillez contacter l'équipe de
- développement.
- Pour contourner ce problème, vous pouvez néanmoins:
+ Le partitionneur SCOTCH a fait remonter l'erreur %(i1)d. Veuillez contacter l'Ã©quipe de
+ dÃ©veloppement.
+ Pour contourner ce problÃ¨me, vous pouvez nÃ©anmoins:
    - changer de partitionneur (METHODE=KMETIS ou PMETIS),
-   - modifier les paramètres numériques du partitionnement (mots-clés TRAITER_BORDS,
+   - modifier les paramÃ¨tres numÃ©riques du partitionnement (mots-clÃ©s TRAITER_BORDS,
      POIDS_MAILLES, GROUPAGE...),
-   - générer votre partitionnement manuellement (autant de groupes de mailles et de
-     groupes de mailles bords que de sous-domaines) et les donner à l'opérateur
-     dédié: DEFI_PART_FETI_OPS.
+   - gÃ©nÃ©rer votre partitionnement manuellement (autant de groupes de mailles et de
+     groupes de mailles bords que de sous-domaines) et les donner Ã  l'opÃ©rateur
+     dÃ©diÃ©: DEFI_PART_FETI_OPS.
 """),
 
 
 57 : _(u"""
   DISMOI :
-  la question n'a pas de réponse sur une grandeur de type matrice GD_1 x GD_2
+  la question n'a pas de rÃ©ponse sur une grandeur de type matrice GD_1 x GD_2
 """),
 
 59 : _(u"""
@@ -280,11 +280,11 @@ Erreur utilisateur :
 
 60 : _(u"""
   DISMOI :
-  la question n'a pas de sens sur une grandeur de type composée
+  la question n'a pas de sens sur une grandeur de type composÃ©e
 """),
 
 63 : _(u"""
- phénomène inconnu :  %(k1)s
+ phÃ©nomÃ¨ne inconnu :  %(k1)s
 """),
 
 65 : _(u"""
@@ -292,15 +292,15 @@ Erreur utilisateur :
 """),
 
 66 : _(u"""
- le phénomène :  %(k1)s  est inconnu.
+ le phÃ©nomÃ¨ne :  %(k1)s  est inconnu.
 """),
 
 68 : _(u"""
- type de résultat inconnu :  %(k1)s  pour l'objet :  %(k2)s
+ type de rÃ©sultat inconnu :  %(k1)s  pour l'objet :  %(k2)s
 """),
 
 69 : _(u"""
- le résultat composé ne contient aucun champ
+ le rÃ©sultat composÃ© ne contient aucun champ
 """),
 
 70 : _(u"""
@@ -308,7 +308,7 @@ Erreur utilisateur :
 """),
 
 71 : _(u"""
- mauvaise récupération de NEMA
+ mauvaise rÃ©cupÃ©ration de NEMA
 """),
 
 72 : _(u"""
@@ -324,7 +324,7 @@ Erreur utilisateur :
 """),
 
 75 : _(u"""
- problème avec la réponse  %(k1)s
+ problÃ¨me avec la rÃ©ponse  %(k1)s
 """),
 
 76 : _(u"""
@@ -332,36 +332,36 @@ Erreur utilisateur :
 """),
 
 77 : _(u"""
- unité logique  %(k1)s , problème lors du close
+ unitÃ© logique  %(k1)s , problÃ¨me lors du close
 """),
 
 78 : _(u"""
-  erreur dans la récupération du maillage
+  erreur dans la rÃ©cupÃ©ration du maillage
 """),
 
 79 : _(u"""
-  erreur dans la récupération du nombre de mailles
+  erreur dans la rÃ©cupÃ©ration du nombre de mailles
 """),
 
 80 : _(u"""
-  groupe_ma non présent
+  groupe_ma non prÃ©sent
 """),
 
 81 : _(u"""
-  erreur à l'appel de METIS
-  plus aucune unité logique libre
+  erreur Ã  l'appel de METIS
+  plus aucune unitÃ© logique libre
 """),
 
 82 : _(u"""
- méthode d'intégration inexistante.
+ mÃ©thode d'intÃ©gration inexistante.
 """),
 
 83 : _(u"""
- interpolation par défaut "linéaire"
+ interpolation par dÃ©faut "linÃ©aire"
 """),
 
 84 : _(u"""
- interpolation  %(k1)s  non implantée
+ interpolation  %(k1)s  non implantÃ©e
 """),
 
 85 : _(u"""
@@ -377,7 +377,7 @@ Erreur utilisateur :
 """),
 
 88 : _(u"""
- nom de sous-structure et d'intitulé incompatible
+ nom de sous-structure et d'intitulÃ© incompatible
 """),
 
 89 : _(u"""
@@ -389,7 +389,7 @@ Erreur utilisateur :
 """),
 
 91 : _(u"""
- le paramètre " %(k1)s " n'est pas un paramètre de choc.
+ le paramÃ¨tre " %(k1)s " n'est pas un paramÃ¨tre de choc.
 """),
 
 92 : _(u"""

@@ -1,4 +1,4 @@
-# -*- coding: iso-8859-1 -*-
+# coding=utf-8
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -22,12 +22,12 @@ from cata_comportement import LoiComportement
 
 loi = LoiComportement(
    nom            = 'CZM_LIN_REG',
-   doc = """Relation de comportement cohésive (Cohesive Zone Model LINéaire REGularisée) (Cf. [R7.02.11]) modélisant l'ouverture 
-   et la propagation d'une fissure. L'intérêt d'une telle loi, comparée à CZM_EXP_REG, est de pouvoir représenter un vrai front de rupture. 
-   Ce dernier est visible grâce à la variable interne V3 (V3=2 correspond à un élément totalement cassé). 
-   Cette loi est utilisable avec l'élément fini de type joint (Cf. [R3.06.09]) et permet d'introduire une force de cohésion entre les 
-   lèvres de la fissure. 
-   Par ailleurs l'utilisation de ce modèle requiert souvent la présence du pilotage par PRED_ELAS (cf. [U4.51.03]).""",
+   doc = """Relation de comportement cohÃ©sive (Cohesive Zone Model LINÃ©aire REGularisÃ©e) (Cf. [R7.02.11]) modÃ©lisant l'ouverture 
+   et la propagation d'une fissure. L'intÃ©rÃªt d'une telle loi, comparÃ©e Ã  CZM_EXP_REG, est de pouvoir reprÃ©senter un vrai front de rupture. 
+   Ce dernier est visible grÃ¢ce Ã  la variable interne V3 (V3=2 correspond Ã  un Ã©lÃ©ment totalement cassÃ©). 
+   Cette loi est utilisable avec l'Ã©lÃ©ment fini de type joint (Cf. [R3.06.09]) et permet d'introduire une force de cohÃ©sion entre les 
+   lÃ¨vres de la fissure. 
+   Par ailleurs l'utilisation de ce modÃ¨le requiert souvent la prÃ©sence du pilotage par PRED_ELAS (cf. [U4.51.03]).""",
    num_lc         = 11,
    nb_vari        = 9,
    nom_vari       = ('SEUILDEP','INDIDISS','INDIENDO','PCENERDI','DISSIP','ENEL_RES','SAUT_N','SAUT_T1','SAUT_T2'),

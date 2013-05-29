@@ -1,4 +1,4 @@
-# -*- coding: iso-8859-1 -*-
+# coding=utf-8
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -23,9 +23,9 @@ from cata_comportement import LoiComportement
 loi = LoiComportement(
    nom            = 'JOINT_MECA_RUPT',
    doc = """Relation de comportement de contact, elastique avec resistance a la traction et rupture 
-             pour modéliser les joints dans les barrages. Cette loi permet également de modéliser le clavage de plots.
-             Enfin elle permet de modéliser, avec les éléments de joint HM, un couplage entre 
-             la mécanique et l'écoulement de fluide dans la fissure""",
+             pour modÃ©liser les joints dans les barrages. Cette loi permet Ã©galement de modÃ©liser le clavage de plots.
+             Enfin elle permet de modÃ©liser, avec les Ã©lÃ©ments de joint HM, un couplage entre 
+             la mÃ©canique et l'Ã©coulement de fluide dans la fissure""",
    num_lc         = 45,
    nb_vari        = 18,
    nom_vari       = ('SEUILDEP','INDIDISS','INDIENDN','PCENERDI','INDIENDT','PCENDOT','SAUT_N','SAUT_T1','SAUT_T2', 'EPAISSJO','SIGN_GLO','GRADP_X','GRADP_Y','GRADP_Z','FH_X','FH_Y','FH_Z','PRESF'),

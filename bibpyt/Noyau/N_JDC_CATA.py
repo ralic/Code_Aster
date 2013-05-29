@@ -1,4 +1,4 @@
-# -*- coding: iso-8859-1 -*-
+# coding=utf-8
 # person_in_charge: mathieu.courtois at edf.fr
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -23,7 +23,7 @@
 
 """
     Ce module contient la classe de definition JDC_CATA
-    qui permet de spécifier les caractéristiques d'un JDC
+    qui permet de spÃ©cifier les caractÃ©ristiques d'un JDC
 """
 
 import types,string,traceback
@@ -38,11 +38,11 @@ class JDC_CATA(N_ENTITE.ENTITE):
 
     Attributs de classe :
 
-    - class_instance qui indique la classe qui devra etre utilisée
-            pour créer l'objet qui servira à controler la conformité
-            du jeu de commandes avec sa définition
+    - class_instance qui indique la classe qui devra etre utilisÃ©e
+            pour crÃ©er l'objet qui servira Ã  controler la conformitÃ©
+            du jeu de commandes avec sa dÃ©finition
 
-    - label qui indique la nature de l'objet de définition (ici, JDC)
+    - label qui indique la nature de l'objet de dÃ©finition (ici, JDC)
 
    """
    class_instance = N_JDC.JDC
@@ -57,8 +57,8 @@ class JDC_CATA(N_ENTITE.ENTITE):
         self.regles = regles
       else:
         self.regles=(regles,)
-      # Tous les arguments supplémentaires sont stockés dans l'attribut args
-      # et seront passés au JDC pour initialiser ses paramètres propres
+      # Tous les arguments supplÃ©mentaires sont stockÃ©s dans l'attribut args
+      # et seront passÃ©s au JDC pour initialiser ses paramÃ¨tres propres
       self.args=args
       self.d_niveaux={}
       self.l_niveaux=niveaux
@@ -66,7 +66,7 @@ class JDC_CATA(N_ENTITE.ENTITE):
       for niveau in niveaux:
          self.d_niveaux[niveau.nom]=niveau
       # On change d'objet catalogue. Il faut d'abord mettre le catalogue
-      # courant à None
+      # courant Ã  None
       CONTEXT.unset_current_cata()
       CONTEXT.set_current_cata(self)
 
@@ -91,15 +91,15 @@ class JDC_CATA(N_ENTITE.ENTITE):
 
    def verif_cata(self):
       """
-          Méthode de vérification des attributs de définition
+          MÃ©thode de vÃ©rification des attributs de dÃ©finition
       """
       self.check_regles()
       self.verif_cata_regles()
 
    def verif_cata_regles(self):
       """
-         Cette méthode vérifie pour tous les objets stockés dans la liste entités
-         respectent les REGLES associés  à self
+         Cette mÃ©thode vÃ©rifie pour tous les objets stockÃ©s dans la liste entitÃ©s
+         respectent les REGLES associÃ©s  Ã  self
       """
       # A FAIRE
 
@@ -112,15 +112,15 @@ class JDC_CATA(N_ENTITE.ENTITE):
       self.verif_cata()
       for commande in self.commandes:
         cr = commande.report()
-        cr.debut = u"Début Commande :"+commande.nom
+        cr.debut = u"DÃ©but Commande :"+commande.nom
         cr.fin = u"Fin commande :"+commande.nom
         self.cr.add(cr)
       return self.cr
 
    def supprime(self):
       """
-          Méthode pour supprimer les références arrières susceptibles de provoquer
-          des cycles de références
+          MÃ©thode pour supprimer les rÃ©fÃ©rences arriÃ¨res susceptibles de provoquer
+          des cycles de rÃ©fÃ©rences
       """
       for commande in self.commandes:
          commande.supprime()

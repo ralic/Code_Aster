@@ -1,4 +1,4 @@
-# -*- coding: iso-8859-1 -*-
+# coding=utf-8
 # person_in_charge: mathieu.courtois at edf.fr
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -56,12 +56,12 @@ class AsBase(Type):
         if checker is None:
             checker = CheckLog()
 
-        # vÈrif dÈj‡ faite ? (en tenant compte du type)
+        # v√©rif d√©j√† faite ? (en tenant compte du type)
         if checker.checkedAsBase(self):
             return checker
         checker.visitAsBase( self )
 
-        # vÈrifie les enfants :
+        # v√©rifie les enfants :
         optional = checker.optional
         checker.optional = checker.optional or self.optional
         for name in self._subtypes:
@@ -76,7 +76,7 @@ class AsBase(Type):
                         v( checker )
                     except :
                         mess=60*'-'+'\n'
-                        mess=mess+'Erreur SDVERI (Attention : vÈrification incomplËte)'+'\n'
+                        mess=mess+'Erreur SDVERI (Attention : v√©rification incompl√®te)'+'\n'
                         mess=mess.join(traceback.format_tb(sys.exc_traceback))
                         checker.err(self,mess)
 
@@ -127,7 +127,7 @@ class AsBase(Type):
            return ''
 
     def __repr__(self):
-        # par dÈfaut, on fait court !
+        # par d√©faut, on fait court !
         return self.short_repr()
 
 
@@ -230,7 +230,7 @@ class OJB(AsBase):
             return None
 
     def get_stripped(self):
-        """Fonction utilitaire, renvoie une liste de chaines 'strippÈes'"""
+        """Fonction utilitaire, renvoie une liste de chaines 'stripp√©es'"""
         data = self.get()
         if data is not None:
             return [ x.strip() for x in data ]
@@ -247,7 +247,7 @@ class OJB(AsBase):
     def check(self, checker=None):
         if checker is None:
             checker = CheckLog()
-        # l'objet a dÈj‡ ÈtÈ vÈrifiÈ, on ne fait rien
+        # l'objet a d√©j√† √©t√© v√©rifi√©, on ne fait rien
         if checker.checkedOJB(self):
            return checker
         checker.visitOJB( self )

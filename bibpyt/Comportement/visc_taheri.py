@@ -1,4 +1,4 @@
-# -*- coding: iso-8859-1 -*-
+# coding=utf-8
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -22,12 +22,12 @@ from cata_comportement import LoiComportement
 
 loi = LoiComportement(
    nom            = 'VISC_TAHERI',
-   doc = """Relation de comportement (visco)-plastique de S.Taheri modélisant la réponse de matériaux sous chargement plastique cyclique, 
-   et en particulier permettant de représenter les effets de rochet. 
-   Les données nécessaires sont fournies dans l'opérateur DEFI_MATERIAU [U4.43.01], 
-   sous les mots clés TAHERI(_FO) pour la description de l'écrouissage, LEMAITRE(_FO) pour la viscosité 
-   et ELAS(_FO) (Cf. [R5.03.05] pour plus de détails). 
-   En l'absence de LEMAITRE, la loi est purement élasto-plastique.""",
+   doc = """Relation de comportement (visco)-plastique de S.Taheri modÃ©lisant la rÃ©ponse de matÃ©riaux sous chargement plastique cyclique, 
+   et en particulier permettant de reprÃ©senter les effets de rochet. 
+   Les donnÃ©es nÃ©cessaires sont fournies dans l'opÃ©rateur DEFI_MATERIAU [U4.43.01], 
+   sous les mots clÃ©s TAHERI(_FO) pour la description de l'Ã©crouissage, LEMAITRE(_FO) pour la viscositÃ© 
+   et ELAS(_FO) (Cf. [R5.03.05] pour plus de dÃ©tails). 
+   En l'absence de LEMAITRE, la loi est purement Ã©lasto-plastique.""",
    num_lc         = 18,
    nb_vari        = 9,
    nom_vari       = ('EPSPEQ', 'SIGMAPIC','EPSPXX','EPSPYY','EPSPZZ','EPSPXY','EPSPXZ','EPSPYZ','INDIPLAS'),

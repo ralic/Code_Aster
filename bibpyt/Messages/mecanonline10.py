@@ -1,4 +1,4 @@
-# -*- coding: iso-8859-1 -*-
+# coding=utf-8
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -16,24 +16,24 @@
 # ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
-# Attention a ne pas faire de retour à la ligne !
+# Attention a ne pas faire de retour Ã  la ligne !
 
 cata_msg = {
 
 1  : _(u"""
- <Erreur> Échec dans l'intégration de la loi de comportement
+ <Erreur> Ã‰chec dans l'intÃ©gration de la loi de comportement
 """),
 
 2 : _(u"""
- <Erreur> Échec dans le pilotage
+ <Erreur> Ã‰chec dans le pilotage
 """),
 
 3 : _(u"""
- <Erreur> Le nombre maximum d'itérations de Newton est atteint
+ <Erreur> Le nombre maximum d'itÃ©rations de Newton est atteint
 """),
 
 4 : _(u"""
- <Erreur> Échec dans le traitement du contact discret
+ <Erreur> Ã‰chec dans le traitement du contact discret
 """),
 
 5 : _(u"""
@@ -41,94 +41,94 @@ cata_msg = {
 """),
 
 6 : _(u"""
- <Erreur> La matrice du système est singulière
+ <Erreur> La matrice du systÃ¨me est singuliÃ¨re
 """),
 
 7 : _(u"""
- <Erreur> Il n'y a pas assez de temps CPU pour continuer les itérations de Newton
+ <Erreur> Il n'y a pas assez de temps CPU pour continuer les itÃ©rations de Newton
 """),
 
 8 : _(u"""
- <Erreur> Arrêt demandé par l'utilisateur.
+ <Erreur> ArrÃªt demandÃ© par l'utilisateur.
 """),
 
 9 : _(u"""
- <Erreur> On dépasse le nombre de boucles de point fixe de géométrie.
+ <Erreur> On dÃ©passe le nombre de boucles de point fixe de gÃ©omÃ©trie.
  """),
 
 10 : _(u"""
- <Erreur> On dépasse le nombre de boucles de point fixe de frottement.
+ <Erreur> On dÃ©passe le nombre de boucles de point fixe de frottement.
  """),
 
 11 : _(u"""
- <Erreur> On dépasse le nombre de boucles de point fixe de contact.
+ <Erreur> On dÃ©passe le nombre de boucles de point fixe de contact.
  """),
 
 12 : _(u"""
- <Erreur> Nombre maximum d'itérations atteint dans le solveur linéaire itératif.
+ <Erreur> Nombre maximum d'itÃ©rations atteint dans le solveur linÃ©aire itÃ©ratif.
  """),
 
 20 : _(u"""
- <Évènement> Instabilité détectée.
+ <Ã‰vÃ¨nement> InstabilitÃ© dÃ©tectÃ©e.
  """),
 
 21 : _(u"""
- <Évènement> Collision détectée.
+ <Ã‰vÃ¨nement> Collision dÃ©tectÃ©e.
  """),
 
 22 : _(u"""
- <Évènement> Interpénétration détectée.
+ <Ã‰vÃ¨nement> InterpÃ©nÃ©tration dÃ©tectÃ©e.
  """),
 
 23 : _(u"""
- <Évènement> Divergence du résidu (DIVE_RESI).
+ <Ã‰vÃ¨nement> Divergence du rÃ©sidu (DIVE_RESI).
  """),
 
 24 : _(u"""
- <Évènement> Valeur atteinte (DELTA_GRANDEUR).
+ <Ã‰vÃ¨nement> Valeur atteinte (DELTA_GRANDEUR).
  """),
 
 25 : _(u"""
- <Évènement> La loi de comportement est utilisée en dehors de son domaine de validité (VERI_BORNE).
+ <Ã‰vÃ¨nement> La loi de comportement est utilisÃ©e en dehors de son domaine de validitÃ© (VERI_BORNE).
  """),
 
 30 : _(u"""
- <Action> On arrête le calcul.
+ <Action> On arrÃªte le calcul.
  """),
 
 31 : _(u"""
- <Action> On essaie de réactualiser le préconditionneur.
+ <Action> On essaie de rÃ©actualiser le prÃ©conditionneur.
  """),
 
 32: _(u"""
- <Action> On essaie d'autoriser des itérations de Newton supplémentaires.
+ <Action> On essaie d'autoriser des itÃ©rations de Newton supplÃ©mentaires.
 """),
 
 33: _(u"""
- <Action> On essaie de découper le pas de temps.
+ <Action> On essaie de dÃ©couper le pas de temps.
 """),
 
 34 : _(u"""
- <Action> On essaie d'utiliser la solution de pilotage rejetée initialement.
+ <Action> On essaie d'utiliser la solution de pilotage rejetÃ©e initialement.
  """),
 
 35 : _(u"""
- <Action> On essaie d'adapter le coefficient de pénalisation.
+ <Action> On essaie d'adapter le coefficient de pÃ©nalisation.
  """),
 
-40 : _(u""" <Action><Échec> On a déjà réactualisé le préconditionneur LDLT_SP."""),
+40 : _(u""" <Action><Ã‰chec> On a dÃ©jÃ  rÃ©actualisÃ© le prÃ©conditionneur LDLT_SP."""),
 
-41 : _(u""" <Action> On réactualise le préconditionneur LDLT_SP."""),
+41 : _(u""" <Action> On rÃ©actualise le prÃ©conditionneur LDLT_SP."""),
 
-42 : _(u""" <Action><Échec> On a déjà choisi l'autre solution de pilotage."""),
+42 : _(u""" <Action><Ã‰chec> On a dÃ©jÃ  choisi l'autre solution de pilotage."""),
 
 43 : _(u""" <Action> On choisit l'autre solution de pilotage."""),
 
-44 : _(u""" <Action><Échec> On ne peut plus adapter le coefficient de pénalisation (on atteint COEF_MAXI)."""),
+44 : _(u""" <Action><Ã‰chec> On ne peut plus adapter le coefficient de pÃ©nalisation (on atteint COEF_MAXI)."""),
 
-45 : _(u""" <Action> On a adapté le coefficient de pénalisation."""),
+45 : _(u""" <Action> On a adaptÃ© le coefficient de pÃ©nalisation."""),
 
-46 : _(u"""          Sur la zone <%(i1)d>, le coefficient de pénalisation adapté vaut <%(r1)13.6G>.
+46 : _(u"""          Sur la zone <%(i1)d>, le coefficient de pÃ©nalisation adaptÃ© vaut <%(r1)13.6G>.
  """),
 
 }

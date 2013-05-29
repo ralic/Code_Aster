@@ -1,5 +1,4 @@
 /*           CONFIGURATION MANAGEMENT OF EDF VERSION                  */
-/* MODIF aster_fort include  DATE 24/09/2012   AUTEUR COURTOIS M.COURTOIS */
 /* ================================================================== */
 /* COPYRIGHT (C) 1991 - 2012  EDF R&D              WWW.CODE-ASTER.ORG */
 /*                                                                    */
@@ -13,7 +12,7 @@
 /* GENERAL PUBLIC LICENSE FOR MORE DETAILS.                           */
 /*                                                                    */
 /* YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE  */
-/* ALONG WITH THIS PROGRAM; IF NOT, WRITE TO : EDF R&D CODE_ASTER,    */
+/* ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,      */
 /*    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.     */
 /* ================================================================== */
 
@@ -39,13 +38,16 @@ extern DOUBLE DEF0(R8PI,r8pi);
 extern INTEGER DEF0(ISNNEM,isnnem);
 
 #define CALL_ULOPEN(a,b,c,d,e) CALLPSSSS(ULOPEN,ulopen,a,b,c,d,e)
-extern void DEFPSSSS(ULOPEN,ulopen,INTEGER *,char *,STRING_SIZE,char *,STRING_SIZE, char *,STRING_SIZE,char *,STRING_SIZE);
+extern void DEFPSSSS(ULOPEN,ulopen,INTEGER *,char *,STRING_SIZE,char *,STRING_SIZE,
+                     char *,STRING_SIZE,char *,STRING_SIZE);
 
 #define CALL_FCLOSE(a) CALLP(FCLOSE,fclose,a)
 extern void DEFP(FCLOSE,fclose,INTEGER *);
 
 #define CALL_DISMOI(a,b,c,d,e,f,g) CALLSSSSPSP(DISMOI,dismoi,a,b,c,d,e,f,g)
-extern void DEFSSSSPSP(DISMOI, dismoi, char *,STRING_SIZE, char *,STRING_SIZE, char *,STRING_SIZE, char *,STRING_SIZE, INTEGER *, char *,STRING_SIZE, INTEGER *);
+extern void DEFSSSSPSP(DISMOI, dismoi, char *,STRING_SIZE, char *,STRING_SIZE,
+                       char *,STRING_SIZE, char *,STRING_SIZE, INTEGER *,
+                       char *,STRING_SIZE, INTEGER *);
 
 #define CALL_MATFPE(a) CALLP(MATFPE,matfpe,a)
 extern void DEFP(MATFPE, matfpe, INTEGER *);
@@ -97,24 +99,31 @@ extern void DEFSSP(JEDETC, jedetc, char *, STRING_SIZE, char *, STRING_SIZE, INT
 extern void DEFSSPP(JELST3,jelst3, char*, STRING_SIZE, char*, STRING_SIZE, INTEGER*, INTEGER*);
 
 #define CALL_JELIRA(a,b,c,d)  CALLSSPS(JELIRA,jelira,a,b,c,d)
-extern void DEFSSPS(JELIRA,jelira, char*, STRING_SIZE, char*, STRING_SIZE, INTEGER*, char*, STRING_SIZE );
+extern void DEFSSPS(JELIRA,jelira, char*, STRING_SIZE, char*, STRING_SIZE, INTEGER*,
+                    char*, STRING_SIZE );
 
 #define CALL_JEEXIN(a,b)  CALLSP(JEEXIN,jeexin,a,b)
 extern void DEFSP(JEEXIN,jeexin, char*, STRING_SIZE, INTEGER* );
 
 
 /* routines d'accès aux OBJETS JEVEUX (vecteurs, collections, champs) */
-#define CALL_GETCON(nomsd,iob,ishf,ilng,ctype,lcon,iaddr,nomob) CALLSPPPPPPS(GETCON,getcon,nomsd,iob,ishf,ilng,ctype,lcon,iaddr,nomob)
-extern void DEFSPPPPPPS(GETCON,getcon,char *,STRING_SIZE,INTEGER *,INTEGER *,INTEGER *,INTEGER *,INTEGER *,char **,char *,STRING_SIZE);
+#define CALL_GETCON(nomsd,iob,ishf,ilng,ctype,lcon,iaddr,nomob) \
+    CALLSPPPPPPS(GETCON,getcon,nomsd,iob,ishf,ilng,ctype,lcon,iaddr,nomob)
+extern void DEFSPPPPPPS(GETCON,getcon,char *,STRING_SIZE,INTEGER *,INTEGER *,INTEGER *,
+                        INTEGER *,INTEGER *,char **,char *,STRING_SIZE);
 
-#define CALL_PUTCON(nomsd,nbind,ind,valr,valc,num,iret) CALLSPPPPPP(PUTCON,putcon,nomsd,nbind,ind,valr,valc,num,iret)
-extern void DEFSPPPPPP(PUTCON,putcon,char *,STRING_SIZE,INTEGER *,INTEGER *,DOUBLE *,DOUBLE *,INTEGER *,INTEGER *);
+#define CALL_PUTCON(nomsd,nbind,ind,valr,valc,num,iret) \
+    CALLSPPPPPP(PUTCON,putcon,nomsd,nbind,ind,valr,valc,num,iret)
+extern void DEFSPPPPPP(PUTCON,putcon,char *,STRING_SIZE,INTEGER *,INTEGER *,DOUBLE *,
+                       DOUBLE *,INTEGER *,INTEGER *);
 
 #define CALL_TAILSD(nom, nomsd, val, nbval) CALLSSPP(TAILSD,tailsd,nom, nomsd, val, nbval)
 extern void DEFSSPP(TAILSD,tailsd,char *,STRING_SIZE,char *,STRING_SIZE,INTEGER *, INTEGER *);
 
-#define CALL_PRCOCH(nomce,nomcs,nomcmp,ktype,itopo,nval,groups) CALLSSSSPPS(PRCOCH,prcoch,nomce,nomcs,nomcmp,ktype,itopo,nval,groups)
-extern void DEFSSSSPPS(PRCOCH,prcoch,char *,STRING_SIZE,char *,STRING_SIZE,char *,STRING_SIZE,char *,STRING_SIZE,INTEGER *,INTEGER *,char *,STRING_SIZE);
+#define CALL_PRCOCH(nomce,nomcs,nomcmp,ktype,itopo,nval,groups) \
+    CALLSSSSPPS(PRCOCH,prcoch,nomce,nomcs,nomcmp,ktype,itopo,nval,groups)
+extern void DEFSSSSPPS(PRCOCH,prcoch,char *,STRING_SIZE,char *,STRING_SIZE,char *,STRING_SIZE,
+                       char *,STRING_SIZE,INTEGER *,INTEGER *,char *,STRING_SIZE);
 
 /* routine d'acces aux parametres memoire */
 #define CALL_UTGTME(a,b,c,d) CALLPSPP(UTGTME,utgtme,a,b,c,d)
@@ -124,18 +133,20 @@ extern void DEFPSPP(UTGTME, utgtme, INTEGER *, char *,  STRING_SIZE,  DOUBLE *, 
 extern void DEFPSPP(UTpTME, utptme, INTEGER *, char *,  STRING_SIZE,  DOUBLE *, INTEGER *);
 
 /* routines de manipulation de la SD RESULTAT */
-extern void DEFSPPSPPPSP(RSACPA,rsacpa,char *, STRING_SIZE, INTEGER *, INTEGER *, char *, STRING_SIZE, INTEGER *, INTEGER *, DOUBLE *, char *, STRING_SIZE, INTEGER *);
+extern void DEFSPPSPPPSP(RSACPA,rsacpa,char *, STRING_SIZE, INTEGER *, INTEGER *,
+          char *, STRING_SIZE, INTEGER *, INTEGER *, DOUBLE *, char *, STRING_SIZE, INTEGER *);
 #define CALL_RSACPA(nomsd, numva, icode, nomva, ctype, ival, rval, kval, ier) \
-                  CALLSPPSPPPSP(RSACPA,rsacpa, nomsd, numva, icode, nomva, ctype, ival, rval, kval, ier)
+    CALLSPPSPPPSP(RSACPA,rsacpa, nomsd, numva, icode, nomva, ctype, ival, rval, kval, ier)
 
 /* particulier car on passe les longueurs des chaines en dur */
-extern void DEFSPSPPPS(RSACCH,rsacch,char *, STRING_SIZE, INTEGER *, char *,STRING_SIZE,INTEGER *, INTEGER *, INTEGER *, char *,STRING_SIZE);
+extern void DEFSPSPPPS(RSACCH,rsacch,char *, STRING_SIZE, INTEGER *, char *,STRING_SIZE,
+    INTEGER *, INTEGER *, INTEGER *, char *,STRING_SIZE);
 #ifdef _STRLEN_AT_END
 #define CALL_RSACCH(nomsd, numch, nomch, nbord, liord, nbcmp, liscmp) \
-                  F_FUNC(RSACCH,rsacch)(nomsd,numch,nomch,nbord,liord,nbcmp,liscmp, strlen(nomsd),16,8)
+          F_FUNC(RSACCH,rsacch)(nomsd,numch,nomch,nbord,liord,nbcmp,liscmp, strlen(nomsd),16,8)
 #else
 #define CALL_RSACCH(nomsd, numch, nomch, nbord, liord, nbcmp, liscmp) \
-                  F_FUNC(RSACCH,rsacch)(nomsd,strlen(nomsd),numch, nomch,16,nbord, liord, nbcmp, liscmp,8)
+          F_FUNC(RSACCH,rsacch)(nomsd,strlen(nomsd),numch, nomch,16,nbord, liord, nbcmp, liscmp,8)
 #endif
 
 /* routines interface MPI */
@@ -154,7 +165,8 @@ extern void DEF0(ABORTF,abortf);
 
 /* routines de manipulation de la SD MATERIAU */
 #define CALL_RCVALE(a,b,c,d,e,f,g,h,i,j) CALLSSPSPPSPPP(RCVALE,rcvale,a,b,c,d,e,f,g,h,i,j)
-extern void DEFSSPSPPSPPP(RCVALE, rcvale, char *,STRING_SIZE, char *,STRING_SIZE, INTEGER *, char *,STRING_SIZE, DOUBLE *, INTEGER *, char *,STRING_SIZE, DOUBLE *, INTEGER *, INTEGER *);
+extern void DEFSSPSPPSPPP(RCVALE, rcvale, char *,STRING_SIZE, char *,STRING_SIZE, INTEGER *,
+    char *,STRING_SIZE, DOUBLE *, INTEGER *, char *,STRING_SIZE, DOUBLE *, INTEGER *, INTEGER *);
 
 
 /* routines d'impression des MESSAGES */
@@ -166,13 +178,16 @@ extern void DEFSS(U2MESS, u2mess, char *, STRING_SIZE, char *, STRING_SIZE);
 
 /* particulier car on fixe les longueurs des chaines valk */
 #define VALK_SIZE 128
-extern void DEFSSPSPPPP(U2MESG, u2mesg, char *, STRING_SIZE, char *, STRING_SIZE, INTEGER *, char *, STRING_SIZE, INTEGER *, INTEGER *, INTEGER *, DOUBLE *);
+extern void DEFSSPSPPPP(U2MESG, u2mesg, char *, STRING_SIZE, char *, STRING_SIZE, INTEGER *,
+    char *, STRING_SIZE, INTEGER *, INTEGER *, INTEGER *, DOUBLE *);
 #ifdef _STRLEN_AT_END
 #define CALL_U2MESG(cod, idmess, nk, valk, ni, vali, nr, valr) \
-                F_FUNC(U2MESG, u2mesg)(cod, idmess, nk, valk, ni, vali, nr, valr, strlen(cod), strlen(idmess), VALK_SIZE)
+    F_FUNC(U2MESG, u2mesg)(cod, idmess, nk, valk, ni, vali, nr, valr, strlen(cod),
+                           strlen(idmess), VALK_SIZE)
 #else
 #define CALL_U2MESG(cod, idmess, nk, valk, ni, vali, nr, valr) \
-                F_FUNC(U2MESG, u2mesg)(cod, strlen(cod), idmess, strlen(idmess), nk, valk, VALK_SIZE, ni, vali, nr, valr)
+    F_FUNC(U2MESG, u2mesg)(cod, strlen(cod), idmess, strlen(idmess), nk, valk, VALK_SIZE,
+                           ni, vali, nr, valr)
 #endif
 
 
@@ -181,7 +196,8 @@ extern void DEFSSPSPPPP(U2MESG, u2mesg, char *, STRING_SIZE, char *, STRING_SIZE
 extern void DEFSPSP(MDNOMA,mdnoma,char *,STRING_SIZE,INTEGER *,char *,STRING_SIZE,INTEGER *);
 
 #define CALL_MDNOCH(a,b,c,d,e,f,g) CALLSPPSSSP(MDNOCH,mdnoch,a,b,c,d,e,f,g)
-extern void DEFSPPSSSP(MDNOCH,mdnoch,char *,STRING_SIZE,INTEGER *,INTEGER *,char *,STRING_SIZE,char *,STRING_SIZE,char *,STRING_SIZE,INTEGER *);
+extern void DEFSPPSSSP(MDNOCH,mdnoch,char *,STRING_SIZE,INTEGER *,INTEGER *,char *,STRING_SIZE,
+                       char *,STRING_SIZE,char *,STRING_SIZE,INTEGER *);
 
 
 /* FIN ASTER_FORT_H */

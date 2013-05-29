@@ -1,4 +1,4 @@
-# -*- coding: iso-8859-1 -*-
+# coding=utf-8
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -24,7 +24,7 @@ from SD.sd_matr_asse_gene import sd_matr_asse_gene
 from SD.sd_matr_asse_com import sd_matr_asse_com
 
 #---------------------------------------------------------------------------------
-# classe "chapeau" à sd_matr_asse_gene et sd_matr_asse_gd ne servant que pour "check"
+# classe "chapeau" Ã  sd_matr_asse_gene et sd_matr_asse_gd ne servant que pour "check"
 #---------------------------------------------------------------------------------
 
 
@@ -35,7 +35,7 @@ class sd_matr_asse(sd_matr_asse_com):
 
     # pour orienter vers sd_matr_asse_gene ou sd_matr_asse_gd :
     def check_matr_asse_1(self, checker):
-        # on est obligé de se protéger dans le cas des Facultatif(sd_matr_asse) :
+        # on est obligÃ© de se protÃ©ger dans le cas des Facultatif(sd_matr_asse) :
         if not self.REFA.get() : return
         gene=self.REFA.get()[9].strip()=='GENE'
         if  gene  :

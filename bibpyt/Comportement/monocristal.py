@@ -1,4 +1,4 @@
-# -*- coding: iso-8859-1 -*-
+# coding=utf-8
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -22,10 +22,10 @@ from cata_comportement import LoiComportement
 
 loi = LoiComportement(
    nom            = 'MONOCRISTAL',
-   doc = """Ce modèle permet de décrire le comportement d'un monocristal dont les relations de comportement 
+   doc = """Ce modÃ¨le permet de dÃ©crire le comportement d'un monocristal dont les relations de comportement 
             sont fournies via le concept compor, issu de DEFI_COMPOR.
-            Le nombre de variables internes est fonction des choix effectués dans DEFI_COMPOR ; 
-            pour plus de précisions consulter [R5.03.11].""",
+            Le nombre de variables internes est fonction des choix effectuÃ©s dans DEFI_COMPOR ; 
+            pour plus de prÃ©cisions consulter [R5.03.11].""",
    num_lc         = 32,
    nb_vari        = 0,
    nom_vari       = None,

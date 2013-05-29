@@ -1,4 +1,4 @@
-# -*- coding: iso-8859-1 -*-
+# coding=utf-8
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -75,9 +75,9 @@ def StateDesactivate(l_widget):
 class InterfaceParametres(Frame):
 
     """!Interface principale de l'outil de projection des modes
-    expérimentaux sur les modes numériques
+    expÃ©rimentaux sur les modes numÃ©riques
     
-    permet la sélection et de calcul des modes en air et écoulement"""
+    permet la sÃ©lection et de calcul des modes en air et Ã©coulement"""
 
     def __init__(self,
                  root,
@@ -89,7 +89,7 @@ class InterfaceParametres(Frame):
         """
 
 
-        Frame.__init__(self, root, relief='sunken', borderwidth=1) # Première frame
+        Frame.__init__(self, root, relief='sunken', borderwidth=1) # PremiÃ¨re frame
         
         self.mess = mess
         self.root = root
@@ -125,7 +125,7 @@ class InterfaceParametres(Frame):
 
 
     def setup(self):
-        """!Appelée par le gestionnaire de tab lors de l'affichage"""
+        """!AppelÃ©e par le gestionnaire de tab lors de l'affichage"""
 
         mdo = self.objects
         mdo.recup_objects()
@@ -135,8 +135,8 @@ class InterfaceParametres(Frame):
         pass
         
     def teardown(self):
-        """!Appelée par le gestionnaire de tab lors
-           du masquage (passage à un autre tab)"""
+        """!AppelÃ©e par le gestionnaire de tab lors
+           du masquage (passage Ã  un autre tab)"""
         return
 
     def _observabilite_changed(self):
@@ -152,11 +152,11 @@ class InterfaceParametres(Frame):
 
 
     def interface_param(self):
-        """!Fonction principale de création de l'interface"""
+        """!Fonction principale de crÃ©ation de l'interface"""
         
         self.columnconfigure(0, weight=1)
         self.rowconfigure(2, weight=1)
-        l = Label(self,text=u" CALC_ESSAI : Paramètres de visualisation",
+        l = Label(self,text=u" CALC_ESSAI : ParamÃ¨tres de visualisation",
                   padx = 270, pady=5, font=("Helvetica", "16") )
         l.grid(row=0, sticky='nsew')
 
@@ -185,10 +185,10 @@ class InterfaceParametres(Frame):
         
 
     def interface_visu(self,root):
-        """!Création de l'interface de visualisation
+        """!CrÃ©ation de l'interface de visualisation
 
         permet de choisir d'afficher les matrices MAC ou les modes avec gmsh
-        gère la compatibilité des choix de l'utilisateur (les calculs de MAC
+        gÃ¨re la compatibilitÃ© des choix de l'utilisateur (les calculs de MAC
         ne sont pas tous possibles)
         """
 
@@ -211,13 +211,13 @@ class InterfaceParametres(Frame):
         bir2 = Checkbutton(f1,variable=self.is_resu2,command=self.cb_changed)
         bir2.grid(row=1, column = 0,sticky='e',padx=20)
 
-        Label(f1,text=u"Résultat 1").grid(row=0,column=1,sticky='w')
+        Label(f1,text=u"RÃ©sultat 1").grid(row=0,column=1,sticky='w')
         self.var_resu1 = StringVar()
         self.menu_resu1 = MyMenu( f1, options = mdo.get_resultats_name(),
                                   var = self.var_resu1, cmd = self.visu1_changed )
         self.menu_resu1.grid(row=0, column=2, sticky='ew',padx=20)
 
-        Label(f1,text=u"Résultat 2").grid(row=1,column=1,sticky='w')
+        Label(f1,text=u"RÃ©sultat 2").grid(row=1,column=1,sticky='w')
         self.var_resu2 = StringVar()
         self.menu_resu2 = MyMenu( f1, options = mdo.get_resultats_name(),
                                   var = self.var_resu2, cmd = self.visu2_changed )
@@ -229,7 +229,7 @@ class InterfaceParametres(Frame):
 
         self.mac_button = Button(f2,text="    MAC    ",command=self.view_macs,state='disabled')
         self.mac_button.grid(row=1,column=2, sticky='ew' )
-        self.phi_button = Button(f2,text=u"Déformées",command=self.view_modes,state='disabled')
+        self.phi_button = Button(f2,text=u"DÃ©formÃ©es",command=self.view_modes,state='disabled')
         self.phi_button.grid(row=2,column=2, sticky='ew')
         self.frf_button = Button(f2,text="    FRF    ",command=self.view_frf)
         self.frf_button.grid(row=3,column=2, sticky='ew' )
@@ -293,7 +293,7 @@ class InterfaceParametres(Frame):
         if self.is_resu1.get():
             self.view_obs(self.var_resu1)
         else : 
-            self.mess.disp_mess(u"Choisir un résultat")
+            self.mess.disp_mess(u"Choisir un rÃ©sultat")
             return
         self.setup()
 
@@ -302,7 +302,7 @@ class InterfaceParametres(Frame):
         if self.is_resu2.get():
             self.view_obs(self.var_resu2)
         else : 
-            self.mess.disp_mess(u"Choisir un résultat")
+            self.mess.disp_mess(u"Choisir un rÃ©sultat")
             return
         self.setup()
 
@@ -361,8 +361,8 @@ class InterfaceParametres(Frame):
         StateDesactivate(self.salome_widgets)
     
     def interface_parametres(self, root):
-        """!Création de l'interface de choix des logiciels de visualisation
-        On permet à l'utilisateur de choisir Gmsh/Xmgrace ou Salome
+        """!CrÃ©ation de l'interface de choix des logiciels de visualisation
+        On permet Ã  l'utilisateur de choisir Gmsh/Xmgrace ou Salome
         """
         
         main_param = Frame(root)
@@ -373,7 +373,7 @@ class InterfaceParametres(Frame):
         # les parametres vont dans 'f'
         logiciels_frame = Frame(f, borderwidth=4)
         
-        label_parametres_salome = Label(logiciels_frame, text=u"Paramètres Salome")
+        label_parametres_salome = Label(logiciels_frame, text=u"ParamÃ¨tres Salome")
         label_parametres_salome.grid(row=2, column=1, columnspan=2)
         self.salome_widgets.append(label_parametres_salome)
         
@@ -387,7 +387,7 @@ class InterfaceParametres(Frame):
         self.salome_port.set(self.get_runnig_salome_port())
         self.ce_salome = None
 
-        liste_etudes = StudyList(logiciels_frame, self, u"choix de l'étude Salomé")
+        liste_etudes = StudyList(logiciels_frame, self, u"choix de l'Ã©tude SalomÃ©")
         liste_etudes.grid(row=4, column=2, sticky='w')
         self.salome_widgets.append(liste_etudes.liste)
         self.salome_widgets.append(liste_etudes.titre)
@@ -400,7 +400,7 @@ class InterfaceParametres(Frame):
                                   command = self.desactivate_salome_widgets  )
         button_gmsh.grid(row=1, column=0, sticky='w')
         
-        button_salome = Radiobutton(logiciels_frame, text=u"Salomé", value="Salome", variable=self.logiciel,
+        button_salome = Radiobutton(logiciels_frame, text=u"SalomÃ©", value="Salome", variable=self.logiciel,
                                     command = self.activate_salome_widgets )
         button_salome.grid(row=2, column=0, rowspan=3, sticky='w')
 
@@ -450,8 +450,8 @@ class InterfaceParametres(Frame):
                 idx = omniNames_params.index("-start") + 1 
                 salome_port = int(omniNames_params[idx])
             except:
-                msg =  u"Problème lors de la détermination du port Salome.\n"
-                msg += u"Veuillez déterminer manuellement le port de Salome, en tapant ceci dans l'interpréteur python embarqué de Salome:\n"
+                msg =  u"ProblÃ¨me lors de la dÃ©termination du port Salome.\n"
+                msg += u"Veuillez dÃ©terminer manuellement le port de Salome, en tapant ceci dans l'interprÃ©teur python embarquÃ© de Salome:\n"
                 msg += u"import NSparam\n"
                 msg += u"NSparam.getNSparams()"
                 self.mess.disp_mess(msg)
@@ -498,7 +498,7 @@ class InterfaceParametres(Frame):
     def set_study(self, study):
         self.ce_salome.study_name = study
         self.ce_salome_courbes.study_name = study
-        self.mess.disp_mess(u"Les courbes et vues seront affichées dans l'étude Salomé "+study)
+        self.mess.disp_mess(u"Les courbes et vues seront affichÃ©es dans l'Ã©tude SalomÃ© "+study)
     
     # fonction proxy vers le bon logiciel
     def visu_resu(self,resultat, nume_mode=None):
@@ -513,7 +513,7 @@ class InterfaceParametres(Frame):
         return term
     
     def visu_courbe(self, l_x, ll_y, couleur=None, titre='Courbe', l_legende=None,
-                    legende_x="Abscisses",legende_y="Ordonnées",
+                    legende_x="Abscisses",legende_y="OrdonnÃ©es",
                     unite_x="ua",unite_y="ua"):
         self.logiciel_courbes = self.get_logiciel_courbes()
         self.logiciel_courbes.affiche(l_x, ll_y,
@@ -730,7 +730,7 @@ class CalcEssaiSalome(CalcEssaiLogiciel):
 
     def studylist(self):
         """
-        Retourne la liste des études
+        Retourne la liste des Ã©tudes
         """
         result = []
 
@@ -785,7 +785,7 @@ class CalcEssaiSalome(CalcEssaiLogiciel):
         else:
             print "Le type de deformee a visualiser n'a pas ete defini"
         if not self.study_name:
-            self.mess.disp_mess(u"Choisir l'étude Salomé dans laquelle afficher les résultats")
+            self.mess.disp_mess(u"Choisir l'Ã©tude SalomÃ© dans laquelle afficher les rÃ©sultats")
             return
 
         dSALOME = { 'CHEMIN_SCRIPT'    : script,
@@ -817,7 +817,7 @@ class CalcEssaiSalomeCourbes(CalcEssaiSalome):
     # ll_y: liste de liste des ordonnees (une liste par courbe)
     # l_legende: liste de legendes (une legende par courbe)
     def affiche(self, l_x, ll_y, couleur=None, titre="Courbes", l_legende=None,
-                legende_x="Abscisses",legende_y="Ordonnées",
+                legende_x="Abscisses",legende_y="OrdonnÃ©es",
                 unite_x="ua",unite_y="ua"):
 
         if l_legende == None:
@@ -866,7 +866,7 @@ class CalcEssaiSalomeCourbes(CalcEssaiSalome):
 
         # recuperation des noms des etudes Salome ouvertes
         if not self.study_name:
-            self.mess.disp_mess(u"Sélectonner l'étude Salomé dans laquelle afficher les courbes")
+            self.mess.disp_mess(u"SÃ©lectonner l'Ã©tude SalomÃ© dans laquelle afficher les courbes")
             return
 
         self.Show( './fort.%s'%self.unite_logique)
@@ -918,9 +918,9 @@ class CalcEssaiXmgrace():
                 legende_x=' ', legende_y=' ',
                 unite_x=' ',unite_y=' '):
         if couleur is None:
-            # XXX color n'est plus uilisé mais est-ce important? 
+            # XXX color n'est plus uilisÃ© mais est-ce important? 
             # Xmgrace applique automatiquement une nouvelle couleur
-            # à chaque courbe.
+            # Ã  chaque courbe.
             couleur = range(1, 15)
             if len(couleur) > len(l_x):
                 couleur = couleur[0 : len(l_x)]

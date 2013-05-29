@@ -1,4 +1,4 @@
-# -*- coding: iso-8859-1 -*-
+# coding=utf-8
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -33,20 +33,20 @@ cata_msg = {
 """),
 
 14 : _(u"""
-  Vous utilisez un élément de type multifibre <%(k1)s>.
+  Vous utilisez un Ã©lÃ©ment de type multifibre <%(k1)s>.
   Il faut que sous COMP_INCR le mot clef RELATION='MULTIFIBRE'.
 """),
 
 31 : _(u"""
- dfdi mal dimensionnée
+ dfdi mal dimensionnÃ©e
 """),
 
 32 : _(u"""
- vous utilisez le mot clé LIAISON_ELEM avec l'option COQ_POU: l'épaisseur des éléments de bord de coque n'a pas été affectée.
+ vous utilisez le mot clÃ© LIAISON_ELEM avec l'option COQ_POU: l'Ã©paisseur des Ã©lÃ©ments de bord de coque n'a pas Ã©tÃ© affectÃ©e.
 """),
 
 33 : _(u"""
- l'épaisseur des éléments de bord de coque est négative ou nulle.
+ l'Ã©paisseur des Ã©lÃ©ments de bord de coque est nÃ©gative ou nulle.
 """),
 
 34 : _(u"""
@@ -54,11 +54,11 @@ cata_msg = {
 """),
 
 38 : _(u"""
- option  %(k1)s  non active pour un élément de type  %(k2)s
+ option  %(k1)s  non active pour un Ã©lÃ©ment de type  %(k2)s
 """),
 
 39 : _(u"""
- option  %(k1)s  : incompatibilité des deux champs d entrée
+ option  %(k1)s  : incompatibilitÃ© des deux champs d entrÃ©e
 """),
 
 40 : _(u"""
@@ -70,11 +70,11 @@ cata_msg = {
 """),
 
 42 : _(u"""
- nom de type élément inattendu
+ nom de type Ã©lÃ©ment inattendu
 """),
 
 43 : _(u"""
- comportement. élastique inexistant
+ comportement. Ã©lastique inexistant
 """),
 
 44 : _(u"""
@@ -82,19 +82,19 @@ cata_msg = {
 """),
 
 45 : _(u"""
- l'option " %(k1)s " en repère local est interdite pour les tuyaux : utiliser le repère global
+ l'option " %(k1)s " en repÃ¨re local est interdite pour les tuyaux : utiliser le repÃ¨re global
 """),
 
 46 : _(u"""
- le nombre de couches et de secteurs doivent être supérieurs a 0
+ le nombre de couches et de secteurs doivent Ãªtre supÃ©rieurs a 0
 """),
 
 48 : _(u"""
- champ  %(k1)s  non traité, on abandonne
+ champ  %(k1)s  non traitÃ©, on abandonne
 """),
 
 49 : _(u"""
- l'option " %(k1)s " est non prévue
+ l'option " %(k1)s " est non prÃ©vue
 """),
 
 51 : _(u"""
@@ -102,11 +102,11 @@ cata_msg = {
 """),
 
 53 : _(u"""
- ep/r > 0.2 MODI_METRIQUE pas adapté
+ ep/r > 0.2 MODI_METRIQUE pas adaptÃ©
 """),
 
 54 : _(u"""
- ep/r > 0.2 MODI_METRIQUE=non pas adapté
+ ep/r > 0.2 MODI_METRIQUE=non pas adaptÃ©
 """),
 
 56 : _(u"""
@@ -114,26 +114,26 @@ cata_msg = {
 """),
 
 57 : _(u"""
- indn = 1 (intégration normale) ou indn = 0 (intégration réduite) obligatoirement.
+ indn = 1 (intÃ©gration normale) ou indn = 0 (intÃ©gration rÃ©duite) obligatoirement.
 """),
 
 58 : _(u"""
-  le code " %(k1)s " est non prévu. code doit être = "gl" ou "lg"
+  le code " %(k1)s " est non prÃ©vu. code doit Ãªtre = "gl" ou "lg"
 """),
 
 59 : _(u"""
-Pour l'option %(k1)s, vous ne pouvez affecter qu'un seul matériau qui ne doit avoir
+Pour l'option %(k1)s, vous ne pouvez affecter qu'un seul matÃ©riau qui ne doit avoir
 qu'un seul comportement : ELAS. Commande DEFI_MATERIAU / ELAS.
 Conseil :
-   Définir un seul matériau avec un seul comportement : ELAS.
+   DÃ©finir un seul matÃ©riau avec un seul comportement : ELAS.
 """),
 
 61 : _(u"""
- préconditions non remplies
+ prÃ©conditions non remplies
 """),
 
 62 : _(u"""
-  erreur: élément non 2d
+  erreur: Ã©lÃ©ment non 2d
 """),
 
 63 : _(u"""
@@ -141,11 +141,11 @@ Conseil :
 """),
 
 64 : _(u"""
-Pour l'option %(k1)s votre matériau doit avoir un seul comportement : ELAS.
+Pour l'option %(k1)s votre matÃ©riau doit avoir un seul comportement : ELAS.
 Commande DEFI_MATERIAU / ELAS.
-Votre matériau a %(k2)s comme comportement possible.
+Votre matÃ©riau a %(k2)s comme comportement possible.
 Conseil :
-   Définir un matériau avec un seul comportement : ELAS.
+   DÃ©finir un matÃ©riau avec un seul comportement : ELAS.
 """),
 
 65 : _(u"""
@@ -157,49 +157,49 @@ Le module de Young est nul.
 """),
 
 69 : _(u"""
- Problème récupération donnée matériau dans THM_LIQU %(k1)s
+ ProblÃ¨me rÃ©cupÃ©ration donnÃ©e matÃ©riau dans THM_LIQU %(k1)s
 """),
 
 70 : _(u"""
- Problème récupération donnée matériau dans THM_INIT %(k1)s
+ ProblÃ¨me rÃ©cupÃ©ration donnÃ©e matÃ©riau dans THM_INIT %(k1)s
 """),
 
 71 : _(u"""
- Problème récupération données matériau dans ELAS %(k1)s
+ ProblÃ¨me rÃ©cupÃ©ration donnÃ©es matÃ©riau dans ELAS %(k1)s
 """),
 
 72 : _(u"""
-   RCVALA ne trouve pas nu, qui est nécessaire pour l'élément MECA_HEXS8
+   RCVALA ne trouve pas nu, qui est nÃ©cessaire pour l'Ã©lÃ©ment MECA_HEXS8
 """),
 
 73 : _(u"""
-   élément MECA_HEXS8:COMP_ELAS non implanté, utiliser COMP_INCR RELATION='ELAS'
+   Ã©lÃ©ment MECA_HEXS8:COMP_ELAS non implantÃ©, utiliser COMP_INCR RELATION='ELAS'
 """),
 
 74 : _(u"""
-  Attention l'élément MECA_HEXS8 ne fonctionne correctement que sur les parallélépipèdes.
-  Sur les éléments quelconques on peut obtenir des résultats faux.
+  Attention l'Ã©lÃ©ment MECA_HEXS8 ne fonctionne correctement que sur les parallÃ©lÃ©pipÃ¨des.
+  Sur les Ã©lÃ©ments quelconques on peut obtenir des rÃ©sultats faux.
 """),
 
 76 : _(u"""
- la maille du modèle de numéro:  %(i1)d n appartient à aucun sous-domaine !
+ la maille du modÃ¨le de numÃ©ro:  %(i1)d n appartient Ã  aucun sous-domaine !
 """),
 
 78 : _(u"""
- Problème récupération donnée matériau dans THM_DIFFU %(k1)s
+ ProblÃ¨me rÃ©cupÃ©ration donnÃ©e matÃ©riau dans THM_DIFFU %(k1)s
 """),
 
 79 : _(u"""
- la loi de comportement n'existe pas pour la modélisation DKTG :  %(k1)s
+ la loi de comportement n'existe pas pour la modÃ©lisation DKTG :  %(k1)s
 """),
 
 80 : _(u"""
-  L'élément de plaque QUAD4 défini sur la maille : %(k1)s
-  n'est pas plan et peut conduire a des résultats faux
+  L'Ã©lÃ©ment de plaque QUAD4 dÃ©fini sur la maille : %(k1)s
+  n'est pas plan et peut conduire a des rÃ©sultats faux
 """),
 
 81 : _(u"""
- Il manque le paramètre  %(k1)s pour la maille  %(k2)s
+ Il manque le paramÃ¨tre  %(k1)s pour la maille  %(k2)s
 """),
 
 82 : _(u"""
@@ -207,12 +207,12 @@ Le module de Young est nul.
 """),
 
 84 : _(u"""
- famille non disponible élément de référence  %(k1)s
+ famille non disponible Ã©lÃ©ment de rÃ©fÃ©rence  %(k1)s
  famille  %(k2)s
 """),
 
 88 : _(u"""
- ELREFE non disponible élément de référence  %(k1)s
+ ELREFE non disponible Ã©lÃ©ment de rÃ©fÃ©rence  %(k1)s
 """),
 
 90 : _(u"""
@@ -221,13 +221,13 @@ Le module de Young est nul.
 """),
 
 91 : _(u"""
- Le calcul de cet estimateur ne tient pas compte d'éventuelles
- conditions limites non linéaires
+ Le calcul de cet estimateur ne tient pas compte d'Ã©ventuelles
+ conditions limites non linÃ©aires
 """),
 
 92 : _(u"""
 Erreur utilisateur :
- Vous essayez d'appliquer une pression (comme fonction) non nulle sur un élément de coque.
+ Vous essayez d'appliquer une pression (comme fonction) non nulle sur un Ã©lÃ©ment de coque.
  (AFFE_CHAR_MECA_F/PRES_REP/PRES) pour la maille  %(k1)s
  La programmation ne le permet pas.
 

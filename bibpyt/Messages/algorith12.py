@@ -1,4 +1,4 @@
-# -*- coding: iso-8859-1 -*-
+# coding=utf-8
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -22,47 +22,47 @@ cata_msg = {
 
 2 : _(u"""
  interface inexistante
- numéro liaison            : %(i1)d
+ numÃ©ro liaison            : %(i1)d
  nom sous-structure        : %(k1)s
  nom MACR_ELEM             : %(k2)s
  nom interface inexistante : %(k3)s
 """),
 
 3 : _(u"""
- On ne trouve pas le nom de l'interface associée à la sous-structure
- %(k1)s. La base modale utilisée pour définir le macro-élément associé
- à la sous-structure doit avoir été définie avec DEFI_BASE_MODALE, en
- mentionnant obligatoirement l'interface sous le mot-clé INTERF_DYNA.
+ On ne trouve pas le nom de l'interface associÃ©e Ã  la sous-structure
+ %(k1)s. La base modale utilisÃ©e pour dÃ©finir le macro-Ã©lÃ©ment associÃ©
+ Ã  la sous-structure doit avoir Ã©tÃ© dÃ©finie avec DEFI_BASE_MODALE, en
+ mentionnant obligatoirement l'interface sous le mot-clÃ© INTERF_DYNA.
 """),
 
 
 7 : _(u"""
- données incompatibles :
- pour les modes mécaniques :  %(k1)s
+ donnÃ©es incompatibles :
+ pour les modes mÃ©caniques :  %(k1)s
  il manque l'option        :  %(k2)s
 """),
 
 12 : _(u"""
- données incompatibles :
+ donnÃ©es incompatibles :
  pour les MODE_CORR :  %(k1)s
  il manque le champ :  %(k2)s
 """),
 
 13 : _(u"""
- données incompatibles :
+ donnÃ©es incompatibles :
  pour les MODE_CORR :  %(k1)s
  pour le champ      :  %(k2)s
  le type n'est pas  %(k3)s
 """),
 
 14 : _(u"""
- données incompatibles :
+ donnÃ©es incompatibles :
  pour les statiques :  %(k1)s
  il manque le champ :  %(k2)s
 """),
 
 15 : _(u"""
- données incompatibles :
+ donnÃ©es incompatibles :
  pour les statiques :  %(k1)s
  pour le champ      :  %(k2)s
  le type n'est pas  %(k3)s
@@ -71,83 +71,83 @@ cata_msg = {
 16 : _(u"""
  La base modale %(k1)s contient des modes complexes.
  On ne peut pas projeter de matrice sur cette base.
- Conseil : calculez si possible une base modale avec vecteurs propres réels.
+ Conseil : calculez si possible une base modale avec vecteurs propres rÃ©els.
 """),
 
 18 : _(u"""
- on ne sait pas bien traiter l'option de calcul demandée :  %(k1)s
+ on ne sait pas bien traiter l'option de calcul demandÃ©e :  %(k1)s
 """),
 
 20 : _(u"""
- données incompatibles :
- pour les modes mécaniques :  %(k1)s
+ donnÃ©es incompatibles :
+ pour les modes mÃ©caniques :  %(k1)s
  pour l'option             :  %(k2)s
  il manque le champ d'ordre  %(i1)d
 """),
 
 21 : _(u"""
- données incompatibles :
+ donnÃ©es incompatibles :
  pour les MODE_CORR :  %(k1)s
  il manque l'option :  %(k2)s
 """),
 
 22 : _(u"""
- données incompatibles :
+ donnÃ©es incompatibles :
  pour les modes statiques :  %(k1)s
  il manque l'option       :  %(k2)s
 """),
 
 
 26 : _(u"""
- arrêt sur manque argument
- base modale donnée -->  %(k1)s
- INTERF_DYNA donnée -->  %(k2)s
+ arrÃªt sur manque argument
+ base modale donnÃ©e -->  %(k1)s
+ INTERF_DYNA donnÃ©e -->  %(k2)s
 """),
 
 27 : _(u"""
- arrêt sur type de base incorrecte
- base modale donnée -->  %(k1)s
+ arrÃªt sur type de base incorrecte
+ base modale donnÃ©e -->  %(k1)s
  type  base modale  -->  %(k2)s
  type attendu       -->  %(k3)s
 """),
 
 28 : _(u"""
- arrêt sur incohérence données
- base modale donnée         -->  %(k1)s
+ arrÃªt sur incohÃ©rence donnÃ©es
+ base modale donnÃ©e         -->  %(k1)s
  INTERF_DYNA correspondante -->  %(k2)s
- INTERF_DYNA donnée         -->  %(k3)s
+ INTERF_DYNA donnÃ©e         -->  %(k3)s
 """),
 
 29 : _(u"""
- problème arguments de définition interface
- nom interface donné    %(k1)s
- numéro interface donné %(i1)d
+ problÃ¨me arguments de dÃ©finition interface
+ nom interface donnÃ©    %(k1)s
+ numÃ©ro interface donnÃ© %(i1)d
 """),
 
 30 : _(u"""
- arrêt sur base modale sans INTERF_DYNA
- base modale donnée -->  %(k1)s
+ arrÃªt sur base modale sans INTERF_DYNA
+ base modale donnÃ©e -->  %(k1)s
 """),
 
 31 : _(u"""
- arrêt sur manque arguments
- base modale donnée -->  %(k1)s
- INTERF_DYNA donnée -->  %(k2)s
+ arrÃªt sur manque arguments
+ base modale donnÃ©e -->  %(k1)s
+ INTERF_DYNA donnÃ©e -->  %(k2)s
 """),
 
 38 : _(u"""
- arrêt sur problème cohérence interface
+ arrÃªt sur problÃ¨me cohÃ©rence interface
 """),
 
 39 : _(u"""
- arrêt sur matrice inexistante
+ arrÃªt sur matrice inexistante
  matrice %(k1)s
 """),
 
 40 : _(u"""
-  arrêt problème de factorisation:
-  présence probable de modes de corps rigide
-  la méthode de Mac-Neal ne fonctionne pas en présence de modes de corps rigide
+  arrÃªt problÃ¨me de factorisation:
+  prÃ©sence probable de modes de corps rigide
+  la mÃ©thode de Mac-Neal ne fonctionne pas en prÃ©sence de modes de corps rigide
 """),
 
 41 : _(u"""
@@ -157,14 +157,14 @@ cata_msg = {
 """),
 
 42 : _(u"""
- le mot-clé  %(k1)s est incompatible avec le champ %(k2)s
- utilisez 'GROUP_MA' ou 'MAILLE'  pour restreindre le changement de repère
- à certaines mailles. %(k3)s
+ le mot-clÃ©  %(k1)s est incompatible avec le champ %(k2)s
+ utilisez 'GROUP_MA' ou 'MAILLE'  pour restreindre le changement de repÃ¨re
+ Ã  certaines mailles. %(k3)s
 """),
 
 43 : _(u"""
- La modélisation est de dimension 2 (2D)
- Seule la première valeur de l'angle nautique est retenue :  %(r1)f
+ La modÃ©lisation est de dimension 2 (2D)
+ Seule la premiÃ¨re valeur de l'angle nautique est retenue :  %(r1)f
 """),
 
 44 : _(u"""
@@ -172,7 +172,7 @@ cata_msg = {
 """),
 
 49 : _(u"""
- problème: sous-structure inconnue
+ problÃ¨me: sous-structure inconnue
  sous-structure -->  %(k1)s
 """),
 
@@ -181,12 +181,12 @@ cata_msg = {
 """),
 
 51 : _(u"""
- nom de sous-structure non trouvé
+ nom de sous-structure non trouvÃ©
  la sous-structure :  %(k1)s n existe pas  %(k2)s
 """),
 
 53 : _(u"""
- arrêt sur pivot nul
+ arrÃªt sur pivot nul
  ligne -->  %(i1)d
 """),
 
@@ -211,21 +211,21 @@ cata_msg = {
 """),
 
 62 : _(u"""
- les deux numérotations n'ont pas même maillage d'origine
-  numérotation 1: %(k1)s
+ les deux numÃ©rotations n'ont pas mÃªme maillage d'origine
+  numÃ©rotation 1: %(k1)s
   maillage     1: %(k2)s
-  numérotation 2: %(k3)s
+  numÃ©rotation 2: %(k3)s
   maillage     2: %(k4)s
 """),
 
 63 : _(u"""
- perte d'information sur DDL physique à la conversion de numérotation
- noeud numéro    :  %(i1)d
- type DDL numéro :  %(i2)d
+ perte d'information sur DDL physique Ã  la conversion de numÃ©rotation
+ noeud numÃ©ro    :  %(i1)d
+ type DDL numÃ©ro :  %(i2)d
 """),
 
 64 : _(u"""
- arrêt sur perte d'information DDL physique
+ arrÃªt sur perte d'information DDL physique
 """),
 
 
@@ -236,7 +236,7 @@ cata_msg = {
 
 
 67 : _(u"""
- arrêt sur problème de conditions d'interface
+ arrÃªt sur problÃ¨me de conditions d'interface
 """),
 
 68 : _(u"""
@@ -254,24 +254,24 @@ cata_msg = {
 
 71 : _(u"""
 
- le noeud se trouve en dehors du domaine de définition avec un profil gauche de type EXCLU
+ le noeud se trouve en dehors du domaine de dÃ©finition avec un profil gauche de type EXCLU
  noeud :  %(k1)s
 """),
 
 72 : _(u"""
 
- le noeud se trouve en dehors du domaine de définition avec un profil droit de type EXCLU
+ le noeud se trouve en dehors du domaine de dÃ©finition avec un profil droit de type EXCLU
  noeud :  %(k1)s
 """),
 
 73 : _(u"""
- problème pour stocker le champ dans le résultat :  %(k1)s
+ problÃ¨me pour stocker le champ dans le rÃ©sultat :  %(k1)s
  pour le NUME_ORDRE :  %(i1)d
 """),
 
 74 : _(u"""
- Le champ est déjà existant
- il sera remplacé par le champ %(k1)s
+ Le champ est dÃ©jÃ  existant
+ il sera remplacÃ© par le champ %(k1)s
  pour le NUME_ORDRE  %(i1)d
 """),
 
@@ -282,60 +282,60 @@ cata_msg = {
 
 
 77 : _(u"""
- pas d'interface définie
+ pas d'interface dÃ©finie
 """),
 
 78 : _(u"""
- arrêt sur interface déjà définie
- mot-clé interface numéro  -->  %(i1)d
+ arrÃªt sur interface dÃ©jÃ  dÃ©finie
+ mot-clÃ© interface numÃ©ro  -->  %(i1)d
  interface                 -->  %(k1)s
 """),
 
 79 : _(u"""
- les deux interfaces n'ont pas le même nombre de noeuds
+ les deux interfaces n'ont pas le mÃªme nombre de noeuds
  nombre noeuds interface droite -->  %(i1)d
  nombre noeuds interface gauche -->  %(i2)d
 """),
 
 80 : _(u"""
- les deux interfaces n'ont pas le même nombre de degrés de liberté
+ les deux interfaces n'ont pas le mÃªme nombre de degrÃ©s de libertÃ©
  nombre ddl interface droite -->  %(i1)d
  nombre ddl interface gauche -->  %(i2)d
 """),
 
 81 : _(u"""
- arrêt sur base modale ne comportant pas de modes propres
+ arrÃªt sur base modale ne comportant pas de modes propres
 """),
 
 82 : _(u"""
 
- le nombre de modes propres demandé est supérieur au nombre de modes dynamiques de la base
- nombre de modes demandés       --> %(i1)d
+ le nombre de modes propres demandÃ© est supÃ©rieur au nombre de modes dynamiques de la base
+ nombre de modes demandÃ©s       --> %(i1)d
  nombre de modes de la base     --> %(i2)d
- nombre de fréquences douteuses --> %(i3)d
+ nombre de frÃ©quences douteuses --> %(i3)d
 """),
 
 83 : _(u"""
- plusieurs champs correspondant à l'accès demandé
- résultat     : %(k1)s
- accès "INST" : %(r1)f
+ plusieurs champs correspondant Ã  l'accÃ¨s demandÃ©
+ rÃ©sultat     : %(k1)s
+ accÃ¨s "INST" : %(r1)f
  nombre       : %(i1)d
 """),
 
 84 : _(u"""
- pas de champ correspondant à un accès demandé
- résultat     :  %(k1)s
- accès "INST" :  %(r1)f
+ pas de champ correspondant Ã  un accÃ¨s demandÃ©
+ rÃ©sultat     :  %(k1)s
+ accÃ¨s "INST" :  %(r1)f
 """),
 
 89 : _(u"""
- instant de reprise supérieur à la liste des instants
+ instant de reprise supÃ©rieur Ã  la liste des instants
  instant de reprise :  %(r1)f
  instant max        :  %(r2)f
 """),
 
 90 : _(u"""
- on n'a pas trouvé l'instant
+ on n'a pas trouvÃ© l'instant
  instant de reprise:  %(r1)f
  pas de temps      :  %(r2)f
  borne min         :  %(r3)f
@@ -343,13 +343,13 @@ cata_msg = {
 """),
 
 91 : _(u"""
- instant final inférieur à la liste des instants
+ instant final infÃ©rieur Ã  la liste des instants
  instant final:  %(r1)f
  instant min  :  %(r2)f
 """),
 
 92 : _(u"""
- on n'a pas trouvé l'instant
+ on n'a pas trouvÃ© l'instant
  instant final:  %(r1)f
  pas de temps :  %(r2)f
  borne min    :  %(r3)f
@@ -357,12 +357,12 @@ cata_msg = {
 """),
 
 97 : _(u"""
- Les données sont erronées.
+ Les donnÃ©es sont erronÃ©es.
  Pas d'instant de calcul pour l'instant d'archivage :  %(r1)f
 """),
 
 98 : _(u"""
- Les données sont erronées.
+ Les donnÃ©es sont erronÃ©es.
  Plusieurs instants de calcul pour l'instant d'archivage:  %(r1)f
 """),
 

@@ -1,4 +1,4 @@
-# -*- coding: iso-8859-1 -*-
+# coding=utf-8
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -19,14 +19,14 @@
 # person_in_charge: romeo.fernandes at edf.fr
 
 """
-Module dédié à la macro MAC3COEUR.
+Module dÃ©diÃ© Ã  la macro MAC3COEUR.
 
-Par simplicité (pour la diffusion), les modules définissant les propriétés
-des assemblages sont placés dans datg (avec un suffixe '.datg').
+Par simplicitÃ© (pour la diffusion), les modules dÃ©finissant les propriÃ©tÃ©s
+des assemblages sont placÃ©s dans datg (avec un suffixe '.datg').
 C'est pour cette raison qu'on utilise un objet ACFactory qui importe
-les modules "catalogues d'assemblages" et retourne les objets associés.
+les modules "catalogues d'assemblages" et retourne les objets associÃ©s.
 
-On définit ici la classe principale Assemblage et ses dérivées pour
+On dÃ©finit ici la classe principale Assemblage et ses dÃ©rivÃ©es pour
 certains types d'assemblages.
 """
 
@@ -35,17 +35,17 @@ from math import pi
 from mac3coeur_factory import Mac3Factory
 
 class Assemblage(object):
-    """Classe définissant un assemblage combustible."""
+    """Classe dÃ©finissant un assemblage combustible."""
     typeAC = None
     required_parameters = [
-        # Caractéristiques matériau
-        # Rigidité  en rotation des liaisons grille-tube guide
+        # CaractÃ©ristiques matÃ©riau
+        # RigiditÃ©  en rotation des liaisons grille-tube guide
         'KR_GM', 'KR_GE',
-        # Rigidité caractéristique des grilles de mélanges
+        # RigiditÃ© caractÃ©ristique des grilles de mÃ©langes
         'KNAXM', 'KY_CM', 'KM1', 'KM2',
-        # Rigidité caractéristique des grilles extremites
+        # RigiditÃ© caractÃ©ristique des grilles extremites
         'KNAXE', 'KY_CE', 'KE1', 'KE2',
-        # Caractéristiques géométriques
+        # CaractÃ©ristiques gÃ©omÃ©triques
         # des grilles
         'altitude','epaisseur','longueur',
         # des tubes-guides
@@ -64,7 +64,7 @@ class Assemblage(object):
         'S_CR', 'I_CR',
         # Perte de charges
         'K_EBSU','K_GRE','K_GRM','K_TUB','K_EBIN',
-        # Poussee d Archimede de chaque élément
+        # Poussee d Archimede de chaque Ã©lÃ©ment
         'AFEBSU_1','AFGRE_1','AFGRM_1','AFTG_1','AFCRA_1','AFEBIN_1',
     ]
     optionnal_parameters = []
@@ -116,13 +116,13 @@ class Assemblage(object):
     idDAM = property(__get_posdam, __set_posdam)
 
     def _init_from_attrs(self):
-        """Initialisation à partir des attributs de classe."""
+        """Initialisation Ã  partir des attributs de classe."""
         for attr in dir(self):
             if self._keys.get(attr):
                 self._para[attr] = getattr(self, attr)
 
     def __getattr__(self, para):
-        """Retourne la valeur d'un paramètre."""
+        """Retourne la valeur d'un paramÃ¨tre."""
         if self._para.get(para) is None:
             raise KeyError("parameter not defined : '%s'" % para)
         return self._para.get(para)
@@ -133,30 +133,30 @@ class Assemblage(object):
         self._position_todamac = func_todamac
 
     def place(self, position, cycle):
-        """Place l'assemblage, définit ses propriétés."""
+        """Place l'assemblage, dÃ©finit ses propriÃ©tÃ©s."""
         self.idDAM = position
         self._cycle = cycle
 
     def definition(self, **params):
-        """Définition des paramètres.
-        On peut appeler plusieurs fois, notamment quand certains paramètres
-        dépendent de la valeur d'autres."""
+        """DÃ©finition des paramÃ¨tres.
+        On peut appeler plusieurs fois, notamment quand certains paramÃ¨tres
+        dÃ©pendent de la valeur d'autres."""
         for para, value in params.items():
             if not self._keys.get(para):
                 raise KeyError("unknown parameter : '%s'" % para)
             self._para[para] = value
 
     def post_definition(self):
-        """Méthode appelée après toutes les définitions."""
+        """MÃ©thode appelÃ©e aprÃ¨s toutes les dÃ©finitions."""
 
     def _check_00_parameters(self):
-        """Vérification des caractéristiques obligatoires."""
+        """VÃ©rification des caractÃ©ristiques obligatoires."""
         req = [key for key in self.required_parameters \
                    if self._para.get(key) is None]
         assert len(req) == 0, "Missing parameters: %s" % repr(req)
 
     def check(self):
-        """Vérification des données."""
+        """VÃ©rification des donnÃ©es."""
         if self._checked:
             return
         self.post_definition()
@@ -173,15 +173,15 @@ class Assemblage(object):
         self._checked = True
 
     def set_materiau(self, mate):
-        """Défini le matériau de l'assemblage."""
+        """DÃ©fini le matÃ©riau de l'assemblage."""
         self.mate = mate
 
     def set_deforDAM(self, deforme):
-        """Défini le matériau de l'assemblage."""
+        """DÃ©fini le matÃ©riau de l'assemblage."""
         self.deforme = deforme
 
     def mcf_geom_fibre(self):
-        """Retourne les mots-clés facteurs pour DEFI_GEOM_FIBRE."""
+        """Retourne les mots-clÃ©s facteurs pour DEFI_GEOM_FIBRE."""
         from Cata.cata import _F
         def vale_4fibres(surf, iner):
             """Retourne les triplets (y, z, val) pour les 4 fibres."""
@@ -216,7 +216,7 @@ class Assemblage(object):
         return mcf
 
     def mcf_cara_multifibre(self):
-        """Retourne les mots-clés facteurs pour AFFE_CARA_ELEM/MULTIFIBRE."""
+        """Retourne les mots-clÃ©s facteurs pour AFFE_CARA_ELEM/MULTIFIBRE."""
         from Cata.cata import _F
         mcf = (
             _F(GROUP_MA='CR_' + self.idAST,
@@ -231,7 +231,7 @@ class Assemblage(object):
         return mcf
 
     def mcf_cara_barre(self):
-        """Retourne les mots-clés facteurs pour AFFE_CARA_ELEM/BARRE."""
+        """Retourne les mots-clÃ©s facteurs pour AFFE_CARA_ELEM/BARRE."""
         from Cata.cata import _F        
         #On donne une section unitaire       
         mcf = (
@@ -243,7 +243,7 @@ class Assemblage(object):
 
 
     def mcf_AC_mater(self):
-        """Retourne les mots-clés facteurs pour AFFE_MATERIAU/AFFE."""
+        """Retourne les mots-clÃ©s facteurs pour AFFE_MATERIAU/AFFE."""
         from Cata.cata import _F
         mcf = (
             _F(GROUP_MA = 'CR_' + self.idAST, MATER = self.mate.mate['CR'],),
@@ -259,7 +259,7 @@ class Assemblage(object):
         return mcf
 
     def mcf_cara_poutre(self):
-        """Retourne les mots-clés facteurs pour AFFE_CARA_ELEM/POUTRE."""
+        """Retourne les mots-clÃ©s facteurs pour AFFE_CARA_ELEM/POUTRE."""
         from Cata.cata import _F
         mcf = (
             # crayons
@@ -282,12 +282,12 @@ class Assemblage(object):
                SECTION='GENERALE',
                CARA=('A', 'IZ', 'IY', 'JX', 'AY', 'AZ'),
                VALE=(self.S_TG_R, self.I_TG_R, self.I_TG_R, self.I_TG_R * 2., 1., 1.),),
-            # embouts inférieurs
+            # embouts infÃ©rieurs
             _F(GROUP_MA='EI_' + self.idAST,
                SECTION='RECTANGLE',
                CARA=('H',),
                VALE=(self.Heinf,),),
-            # embouts supérieurs
+            # embouts supÃ©rieurs
             _F(GROUP_MA='ES_' + self.idAST,
                SECTION='RECTANGLE',
                CARA=('H',),
@@ -296,7 +296,7 @@ class Assemblage(object):
         return mcf
 
     def mcf_cara_discret(self):
-        """Retourne les mots-clés facteurs pour AFFE_CARA_ELEM/DISCRET."""
+        """Retourne les mots-clÃ©s facteurs pour AFFE_CARA_ELEM/DISCRET."""
         from Cata.cata import _F
         def vale_K_TR_D_L(nb, kr):
             """Retourne les valeurs pour un K_TR_D_L."""
@@ -344,7 +344,7 @@ class Assemblage(object):
                VALE=(0.,0.,0.,0.,),),
 
         # discrets des liaisons grilles / tubes-guide
-            # grilles de mélanges
+            # grilles de mÃ©langes
             _F(GROUP_MA='GT_' + self.idAST+ '_M',
                REPERE='LOCAL',
                CARA='K_TR_D_L',
@@ -353,7 +353,7 @@ class Assemblage(object):
                REPERE='LOCAL',
                CARA='M_TR_D_L',
                VALE=(0.,0.,0.,0.,),),
-            # grilles extrémités
+            # grilles extrÃ©mitÃ©s
             _F(GROUP_MA='GT_' + self.idAST + '_E',
                REPERE='LOCAL',
                CARA='K_TR_D_L',
@@ -384,8 +384,8 @@ class Assemblage(object):
 
 
     def chargement_archimede1(self):
-        """Retourne les mots-clés facteurs pour AFFE_CHAR_MECA/FORCE_NODALE
-            dans la prise en compte de la poussée d Archimede."""
+        """Retourne les mots-clÃ©s facteurs pour AFFE_CHAR_MECA/FORCE_NODALE
+            dans la prise en compte de la poussÃ©e d Archimede."""
         from Cata.cata import _F
         mcf=[]
         mcf.append(_F(GROUP_NO='PS_' + self.idAST,FX=self.AFEBSU_1,),)
@@ -399,8 +399,8 @@ class Assemblage(object):
         return mcf
 
     def chargement_archimede2(self,FXTG,FXCR):
-        """Retourne les mots-clés facteurs pour AFFE_CHAR_MECA_F/FORCE_POUTRE
-            dans la prise en compte de la poussée d Archimede."""
+        """Retourne les mots-clÃ©s facteurs pour AFFE_CHAR_MECA_F/FORCE_POUTRE
+            dans la prise en compte de la poussÃ©e d Archimede."""
         from Cata.cata import _F
         
         mcf = (
@@ -410,7 +410,7 @@ class Assemblage(object):
         return mcf
 
     def chargement_transverse_crayons(self,FYCR,FZCR):
-        """Retourne les mots-clés facteurs pour AFFE_CHAR_MECA_F/FORCE_POUTRE
+        """Retourne les mots-clÃ©s facteurs pour AFFE_CHAR_MECA_F/FORCE_POUTRE
            dans la prise en compte des efforts transverses."""
         from Cata.cata import _F
         
@@ -419,7 +419,7 @@ class Assemblage(object):
         return mcf
 
     def chargement_fct_hydro_axiale(self,FXCR,FXTG):
-        """Retourne les mots-clés facteurs pour AFFE_CHAR_MECA_F/FORCE_POUTRE
+        """Retourne les mots-clÃ©s facteurs pour AFFE_CHAR_MECA_F/FORCE_POUTRE
            dans la prise en compte des efforts hydrodynamiques axiaux."""
         from Cata.cata import _F
         
@@ -430,11 +430,11 @@ class Assemblage(object):
 
 
 class AssemblageAFAXL(Assemblage):
-    """Particularités du type AFAXL."""
+    """ParticularitÃ©s du type AFAXL."""
 
     def post_definition(self):
-        """Méthode appelée après toutes les définitions.
-        Définition des caractéristiques déterminées à partir des
+        """MÃ©thode appelÃ©e aprÃ¨s toutes les dÃ©finitions.
+        DÃ©finition des caractÃ©ristiques dÃ©terminÃ©es Ã  partir des
         autres"""
         self.definition(
             EPMOY = (self.EP1GU + self.EP2GU) / 2,
@@ -458,7 +458,7 @@ class ACFactory(Mac3Factory):
     """Classe pour construire les objets Assemblage."""
 
     def build_supported_types(self):
-        """Construit la liste des types autorisés."""
+        """Construit la liste des types autorisÃ©s."""
         ctxt = {}
         for obj, val in globals().items():
             if type(val) is type and issubclass(val, Assemblage):

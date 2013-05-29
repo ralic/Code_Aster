@@ -4,12 +4,12 @@ dens 2 ;
 *----------------------------------------
 *DONNEES
 *----------------------------------------
-* dimensions des cotés
+* dimensions des cotÃ©s
 LX = 5;
 LY = 5;
 LZ = 25;
 
-* nombre d'éléments
+* nombre d'Ã©lÃ©ments
 NX = 5;
 NY = 1;
 NZ = 13; 

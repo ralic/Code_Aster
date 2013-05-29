@@ -38,4 +38,3 @@ elim 0.01 mailast ;
 trac (0. 0. 1000.) cach mailast ;
 opti sauv form 'zzzz112c.mgib';
 sauv 'FORMAT' mailast ;
-

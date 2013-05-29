@@ -1,4 +1,4 @@
-# -*- coding: iso-8859-1 -*-
+# coding=utf-8
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -56,10 +56,10 @@ class TabbedWindow(Frame):
 
         attributs
         - `main`: La `Frame` qui contient le contenu d'un tab :see: root
-        - `tabnum`: Une `StringVar` Tk qui contient le numéro du tab sélectionné
-        - `labels: Un dictionnaire nom -> [ button, frame ] où le nom est le label du tab
+        - `tabnum`: Une `StringVar` Tk qui contient le numÃ©ro du tab sÃ©lectionnÃ©
+        - `labels: Un dictionnaire nom -> [ button, frame ] oÃ¹ le nom est le label du tab
           `b` est le RadioButton qui controle l'affichage du tab et
-          `frame` est la Frame Tk à afficher
+          `frame` est la Frame Tk Ã  afficher
         """
         Frame.__init__(self,root,**args)
         self.labels = {}
@@ -100,7 +100,7 @@ class TabbedWindow(Frame):
         return self.main
 
     def set_tab(self, name, w):
-        """Associe un objet Frame (onglet) à son nom"""
+        """Associe un objet Frame (onglet) Ã  son nom"""
         self.labels[name][1] = w
 
 
@@ -160,15 +160,15 @@ class MessageBoxInteractif(Frame):
 class MyMenu(Menubutton):
     """!Combobox
 
-    Simplifie la création de bouton `Menu` du style *Combobox*
+    Simplifie la crÃ©ation de bouton `Menu` du style *Combobox*
     """
     def __init__(self, root, options, var, cmd=None, default_var=None):
         """!Constructeur
 
         \param root Le widget parent
         \param options une liste des choix du menu
-        \param var La variable de selection associée
-        \param cmd Le callback associé (si différent de ``None``)
+        \param var La variable de selection associÃ©e
+        \param cmd Le callback associÃ© (si diffÃ©rent de ``None``)
         """
         Menubutton.__init__( self, root, textvariable=var, relief='raised' )
         var.set(default_var or "   Choisir   ")
@@ -178,7 +178,7 @@ class MyMenu(Menubutton):
             self.menu.add_radiobutton( label=opt, variable=var, command=cmd )
 
     def update(self, options, var, cmd=None ):
-        """!Mise à jour des options du menu
+        """!Mise Ã  jour des options du menu
 
         \see __init__
         """
@@ -191,13 +191,13 @@ class MyMenu(Menubutton):
 # ------------------------------------------------ #
 
 class ScrollList(Frame):
-    """Interface liste à choix multiples + scroll bar.
+    """Interface liste Ã  choix multiples + scroll bar.
        Plusieurs options selon utilisation (annuler/valider, tout/rien)
     """
     def __init__(self, root, title,**args):
         Frame.__init__(self, root)
         self.title = title
-        self.resu = None # la sd resultat sélectionnée
+        self.resu = None # la sd resultat sÃ©lectionnÃ©e
         self.modes = []  # la liste de modes
         self.rowconfigure(1,weight=1)
         self.titre = Label(self, text=title, bg="#f0f0f0")
@@ -265,7 +265,7 @@ class ModeList(ScrollList):
     
 
 class ModeFreqList(ModeList):
-    """!Permet de créer une liste de modes contenues dans un sd_resultat.
+    """!Permet de crÃ©er une liste de modes contenues dans un sd_resultat.
         indexes par leur frequence (modes dynamiques ou leur noeud_cmp
         (modes statiques)"""
     def __init__(self, root, title=None):
@@ -289,8 +289,8 @@ class ModeFreqList(ModeList):
 
 
 class StudyList(ScrollList):
-    """!Liste permettant de choisir l'étude Salomé pour l'affichage des
-        données.
+    """!Liste permettant de choisir l'Ã©tude SalomÃ© pour l'affichage des
+        donnÃ©es.
     """
     def __init__(self, parent,param_visu, title):
         self.param_visu = param_visu
@@ -319,8 +319,8 @@ class StudyList(ScrollList):
 
 
 class VisuSpectre(Frame):
-    """!Crée une frame de nb_col colonnes pour afficher les numéros d'ordre
-        d'un inter-spectre, les sélectionner et les afficher"""
+    """!CrÃ©e une frame de nb_col colonnes pour afficher les numÃ©ros d'ordre
+        d'un inter-spectre, les sÃ©lectionner et les afficher"""
 
     def __init__(self,parent,nb_col=1,
                  choix=None,export=None,
@@ -337,7 +337,7 @@ class VisuSpectre(Frame):
         Frame.__init__(self,parent,args)
         r1 = 0
         
-        Label(self, text=u"Visualisation des résultats",
+        Label(self, text=u"Visualisation des rÃ©sultats",
               font=self.font2).grid(row=r1, padx=50, pady=3)
         r1+=1
 
@@ -391,7 +391,7 @@ class VisuSpectre(Frame):
 
         if type_data=='C' : #donnees complexes a visualiser
             donnees=["Reel ","Abs.","Imag.","Pha."]
-            Label(box_2,text=u"Données :",pady=5).grid(row=r2,column=0)
+            Label(box_2,text=u"DonnÃ©es :",pady=5).grid(row=r2,column=0)
             for lon in range(len(donnees)) :
                Radiobutton(box_2, text=donnees[lon],
                            variable=self.parent.radio_donnees,
@@ -400,7 +400,7 @@ class VisuSpectre(Frame):
             r2+=2
         else :
             donnees=["Reel ","Abs."]
-            Label(box_2,text=u"Données :",pady=5).grid(row=r2,column=0)
+            Label(box_2,text=u"DonnÃ©es :",pady=5).grid(row=r2,column=0)
             for lon in range(2) :
                Radiobutton(box_2, text=donnees[lon],
                            variable=self.parent.radio_donnees,
@@ -408,7 +408,7 @@ class VisuSpectre(Frame):
             r2+=1
 
         Label(box_2,text="Echelle X :",pady=5).grid(row=r2,column=0)
-        ech=[u"Linéaire","Logarithmique"]
+        ech=[u"LinÃ©aire","Logarithmique"]
         for lon in range(len(ech)) :
            Radiobutton(box_2, text=ech[lon],
                        variable=self.parent.xlinlog, value=lon
@@ -436,8 +436,8 @@ class ModeHarmoList(ModeList):
 
 
 class MultiList(Frame):
-    """!Widget permettant de gérer plusieurs listes (colonnes) synchronisée
-    sur la meme barre de défilement
+    """!Widget permettant de gÃ©rer plusieurs listes (colonnes) synchronisÃ©e
+    sur la meme barre de dÃ©filement
     """
     def __init__(self, root, labels, format = None,**args ):
         """!Constructeur
@@ -445,7 +445,7 @@ class MultiList(Frame):
         \param root Fenetre parente
         \param labels Les titres des colonnes
         \param format Chaines de formattage
-               pour les valeurs des listes (%s par défaut)
+               pour les valeurs des listes (%s par dÃ©faut)
         """
         Frame.__init__(self, root)
         self.labels = labels
@@ -467,7 +467,7 @@ class MultiList(Frame):
             self.format = ["%s"] * len(labels)
 
     def yview(self, *args):
-        """!Callback du Scrollbar pour le défilement des listes"""
+        """!Callback du Scrollbar pour le dÃ©filement des listes"""
         for lb in self.lists:
             lb.yview(*args)
 
@@ -491,7 +491,7 @@ class MultiList(Frame):
 
 
 class GroupNoList(ModeList):
-    """!Crée une liste de groupe de noeuds à partir d'un maillage"""
+    """!CrÃ©e une liste de groupe de noeuds Ã  partir d'un maillage"""
     def __init__(self, root):
         if title is None:
             title="Choisissez les groupes de noeuds"
@@ -504,7 +504,7 @@ class GroupNoList(ModeList):
 
 
 class GroupMaList(ModeList):
-    """!Crée une liste de groupe de noeuds à partir d'un maillage"""
+    """!CrÃ©e une liste de groupe de noeuds Ã  partir d'un maillage"""
     def __init__(self, root):
         ModeList.__init__(self, root, "Choisissez les groupes de mailles")
 
@@ -533,14 +533,14 @@ class OptionFrame(Frame):
 
 
 class ParamModeIterSimult(Frame):
-    """Un panneau pour spécifier les paramètres de résolution
+    """Un panneau pour spÃ©cifier les paramÃ¨tres de rÃ©solution
     de MODE_ITER_SIMULT
     """
-    # Note: réutiliser la partie générique d'Eficas est plutot
-    # compliqué et donne des interfaces peu 'intuitives'...
+    # Note: rÃ©utiliser la partie gÃ©nÃ©rique d'Eficas est plutot
+    # compliquÃ© et donne des interfaces peu 'intuitives'...
 
     # On ne traite que SORENSEN pour l'instant
-    # (JACOBI et TRI_DIAG ont peu d'avantages d'après U4.52.03-H
+    # (JACOBI et TRI_DIAG ont peu d'avantages d'aprÃ¨s U4.52.03-H
     def __init__(self, root, title, **kwargs):
         Frame.__init__(self, root, **kwargs)
         Label(self, text=title).grid(row=0, column=0, columnspan=1)
@@ -592,13 +592,13 @@ class ParamModeIterSimult(Frame):
             self.opt_panel.destroy()
         if opt == "CENTRE":
             panel = OptionFrame(self, None, [
-                (u"Fréquence",Entry,{'textvariable':self.opt_freq1}),
+                (u"FrÃ©quence",Entry,{'textvariable':self.opt_freq1}),
                 ("NMax (-1 pour tout)",Entry,{'textvariable':self.opt_nmax_freq}),
                 ])
         elif opt == "BANDE":
             panel = OptionFrame(self, None, [
-                (u"Fréquence min",Entry,{'textvariable':self.opt_freq1}),
-                (u"Fréquence max",Entry,{'textvariable':self.opt_freq2}),
+                (u"FrÃ©quence min",Entry,{'textvariable':self.opt_freq1}),
+                (u"FrÃ©quence max",Entry,{'textvariable':self.opt_freq2}),
                 ])
         elif opt == "PLUS_PETITE":
             panel = OptionFrame(self, None, [
@@ -628,7 +628,7 @@ class ParamModeIterSimult(Frame):
 
 
 class ParamModeIterInv(Frame):
-    """Un panneau pour spécifier les paramètres de résolution
+    """Un panneau pour spÃ©cifier les paramÃ¨tres de rÃ©solution
     de MODE_ITER_INV (type_resu='dynamique')
     """
     def __init__(self, root, title, **kwargs):
@@ -669,19 +669,19 @@ class ParamModeIterInv(Frame):
         if self.opt_panel:
             self.opt_panel.destroy()
         if opt == "PROCHE":
-            panel = ModeList(self, u"Fréquences proches")
+            panel = ModeList(self, u"FrÃ©quences proches")
             panel.set_values( [ (f, "% 6.2f Hz"%f) for f in self.frequences ] )
         elif opt == "SEPARE":
             panel = OptionFrame(self, None, [
-                (u"Fréquence min",Entry,{'textvariable':self.opt_freq1}),
-                (u"Fréquence max",Entry,{'textvariable':self.opt_freq2}),
+                (u"FrÃ©quence min",Entry,{'textvariable':self.opt_freq1}),
+                (u"FrÃ©quence max",Entry,{'textvariable':self.opt_freq2}),
                 ("NMAX iter separe",Entry,{'textvariable':self.nmax_iter_separe}),
                 ("Precision separe",Entry,{'textvariable':self.prec_separe}),
                 ])
         elif opt == "AJUSTE":
             panel = OptionFrame(self, None, [
-                (u"Fréquence min",Entry,{'textvariable':self.opt_freq1}),
-                (u"Fréquence max",Entry,{'textvariable':self.opt_freq2}),
+                (u"FrÃ©quence min",Entry,{'textvariable':self.opt_freq1}),
+                (u"FrÃ©quence max",Entry,{'textvariable':self.opt_freq2}),
                 ("NMAX iter separe",Entry,{'textvariable':self.nmax_iter_separe}),
                 ("Precision separe",Entry,{'textvariable':self.prec_separe}),
                 ("NMAX iter ajuste",Entry,{'textvariable':self.nmax_iter_ajuste}),
@@ -713,7 +713,7 @@ class ParamModeIterInv(Frame):
 
 
 class ParamProjMesuModal(Frame):
-    """Un panneau pour spécifier les paramètres de résolution
+    """Un panneau pour spÃ©cifier les paramÃ¨tres de rÃ©solution
     de PROJ_MESU_MODAL
     """
 
@@ -751,7 +751,7 @@ class ParamProjMesuModal(Frame):
                 ])
             self.regul_meth.set('NON')
         elif opt == "LU":
-            panel = Label(self,text=u"Pas de paramétrage")
+            panel = Label(self,text=u"Pas de paramÃ©trage")
         else:
             raise RuntimeError("Unknown option '%s'" % opt)
         self.opt_panel = panel
@@ -786,7 +786,7 @@ class ParamProjMesuModal(Frame):
 
 
 class RowDict(dict):
-    """Un dictionaire utilisé pour décrire
+    """Un dictionaire utilisÃ© pour dÃ©crire
     chaque group de DDL.
     """
 
@@ -796,16 +796,16 @@ class RowDict(dict):
         self.chgt_repere_choix.set("AUCUN")
 
     def set_chgt_rep(self, chgt_rep):
-        """Garde en référence une instance de `ChgtRepereDialogue'."""
+        """Garde en rÃ©fÃ©rence une instance de `ChgtRepereDialogue'."""
         self.chgt_rep = chgt_rep
 
     def affiche_chgt_rep(self):
-        """Affiche l'interface de changement de repère."""
+        """Affiche l'interface de changement de repÃ¨re."""
         self.chgt_rep.affiche(self)
 
 
 class ChgtRepereDialogue(Toplevel):
-    """L'interface offrant un changement de repère.
+    """L'interface offrant un changement de repÃ¨re.
     """
 
     def __init__(self, mess, type_sel=None):
@@ -824,7 +824,7 @@ class ChgtRepereDialogue(Toplevel):
         self._param_key = {
             "UTILISATEUR" :  ["ANGL_NAUT"],
             "CYLINDRIQUE" : ["ORIGINE", "AXE_Z"],
-            # Seulement VECT_X ou VECT_Y est utilisé pour NORMALE
+            # Seulement VECT_X ou VECT_Y est utilisÃ© pour NORMALE
             "NORMALE" : ["VECT_X", "VECT_Y"]
             }
         self.normale_vector_choix = None
@@ -837,7 +837,7 @@ class ChgtRepereDialogue(Toplevel):
             }
 
     def set_type_sel(self, type_sel):
-        """Place le titre décrivant le changement de repère."""
+        """Place le titre dÃ©crivant le changement de repÃ¨re."""
         self.type_sel = type_sel
 
     def _build_interface(self):
@@ -857,7 +857,7 @@ class ChgtRepereDialogue(Toplevel):
         self.bind("&lt;Escape>", self.hide)
 
     def _build_selection(self, root):
-        """Construit la séléction du type de changement de repère."""
+        """Construit la sÃ©lÃ©ction du type de changement de repÃ¨re."""
         fra = Frame(root, relief="flat", borderwidth=4)
         fra.grid(row=0, column=0, columnspan=2, padx=4, pady=5)
         self.fra = fra
@@ -866,7 +866,7 @@ class ChgtRepereDialogue(Toplevel):
               font=("Arial", "16")).grid(row=0, padx=4,
                                          pady=2, sticky='w' + 'e')
 
-        lab = Label(fra, text="Type de changement de repère: ")
+        lab = Label(fra, text="Type de changement de repÃ¨re: ")
         lab.grid(row=1, column=0, padx=4, pady=2)
 
         self.chgt_repere_choix = StringVar()
@@ -877,8 +877,8 @@ class ChgtRepereDialogue(Toplevel):
         menu.grid(row=1, column=1, padx=4, pady=2)
 
     def _set_interface(self):
-        """Construit le dialogue à son ouverture. Les choix courants
-        de l'utilsateur sont affichés."""
+        """Construit le dialogue Ã  son ouverture. Les choix courants
+        de l'utilsateur sont affichÃ©s."""
         self.dialog_titre.set(self.type_sel % self.row_dict["NOM"])
 
         ancien_row_choix = self.row_dict.chgt_repere_choix.get()
@@ -886,8 +886,8 @@ class ChgtRepereDialogue(Toplevel):
         self.chgt_repere_changed()
 
     def chgt_repere_changed(self):
-        """Construit l'interface pour le type de changement de repère
-        selectionné."""
+        """Construit l'interface pour le type de changement de repÃ¨re
+        selectionnÃ©."""
         for wid in self.tmp_widgets["labels"] + self.tmp_widgets["values"]:
             wid.destroy()
         self.tmp_widgets = {"labels" : [], "values" : []}
@@ -906,7 +906,7 @@ class ChgtRepereDialogue(Toplevel):
 
     def _update_utilisateur(self):
         """Reconstruit l'interface pour le changement
-        de repère UTILISATEUR"""
+        de repÃ¨re UTILISATEUR"""
         lab = Label(self.fra, text="Angle nautique :")
         lab.grid(row=2, column=0,
                  padx=4, pady=2, sticky='w'+'e')
@@ -916,7 +916,7 @@ class ChgtRepereDialogue(Toplevel):
 
     def _update_cylindrique(self):
         """Reconstruit l'interface pour le changement
-        de repère CYLINDRIQUE"""
+        de repÃ¨re CYLINDRIQUE"""
         data = zip(self._param_key["CYLINDRIQUE"],
                    ["Origine", "Axe z"])
         for row_offset, (param_key, text) in enumerate(data):
@@ -928,13 +928,13 @@ class ChgtRepereDialogue(Toplevel):
             self._insert_vector(param_key, row_offset)
 
     def _update_aucun(self):
-        """Aucune interface n'est à constuire si AUCUN changement
-        de repère n'est appliqué."""
+        """Aucune interface n'est Ã  constuire si AUCUN changement
+        de repÃ¨re n'est appliquÃ©."""
         pass
 
     def _update_normale(self):
         """Reconstruit l'interface pour le changement
-        de repère NORMALE"""
+        de repÃ¨re NORMALE"""
         self.normale_vector_choix = StringVar()
         menu = MyMenu(self.fra,
                       self.normale_vector_choix_lst,
@@ -957,8 +957,8 @@ class ChgtRepereDialogue(Toplevel):
             self._insert_vector("VECT_X")
 
     def validate_data(self):
-        """Valide les données entrées et les place sur le dictionaire
-        de résultat."""
+        """Valide les donnÃ©es entrÃ©es et les place sur le dictionaire
+        de rÃ©sultat."""
         choix = self.chgt_repere_choix.get()
 
         if  choix == "AUCUN":
@@ -990,7 +990,7 @@ class ChgtRepereDialogue(Toplevel):
 
     def affiche(self, row_dict):
         """Lance l'interface de dialogue pour entrer un changement
-        de repère."""
+        de repÃ¨re."""
         if not self.is_active:
             self.row_dict = row_dict
             self.is_active = True
@@ -1000,18 +1000,18 @@ class ChgtRepereDialogue(Toplevel):
         else:
             self.mess.disp_mess(
                 u"Un dialogue pour le groupe '%s' " \
-                u"est déjà ouvert. " % self.row_dict["NOM"])
+                u"est dÃ©jÃ  ouvert. " % self.row_dict["NOM"])
             self.mess.disp_mess(
-                u"Il doit d'abord être fermé pour pouvoir lancer " \
-                u"un autre changement de repère."
+                u"Il doit d'abord Ãªtre fermÃ© pour pouvoir lancer " \
+                u"un autre changement de repÃ¨re."
                 )
         
 
 
 class GroupNoWidget(Frame):
-    """La grille permettant la séléction des DDL.
+    """La grille permettant la sÃ©lÃ©ction des DDL.
     Un label identifiant le groupe de DDL et un boutton
-    pour ajouter un changement de repère peuvent y être
+    pour ajouter un changement de repÃ¨re peuvent y Ãªtre
     ajoutes.
     """
 
@@ -1049,11 +1049,11 @@ class GroupNoWidget(Frame):
 
 
     def set_data(self, user_data):
-        """Place les DDL à séléctioner dans la grille.
-        Chaque ligne est representée par un dictionaire
+        """Place les DDL Ã  sÃ©lÃ©ctioner dans la grille.
+        Chaque ligne est representÃ©e par un dictionaire
         ayant la structure::
             {"NOM" : le nom du groupe DDL (optionel),
-             "NOM_CMP" : la liste des DDL à afficher}
+             "NOM_CMP" : la liste des DDL Ã  afficher}
 
         :param user_data: la structure de la grille.
         :type user_data: une liste de dictionaires.
@@ -1116,7 +1116,7 @@ class GroupNoWidget(Frame):
 
     def get_selected(self):
         """Retourne la liste des groupes de DDL
-        selectionés.
+        selectionÃ©s.
 
         Exemple de resultat retourne [{'NOM_CMP': ['DZ'], 'NOM': 'GRNO1   ','CHGT_REP': {'VECT_Y': (0.0, 1.0, 0.0), 'REPERE': 'NORMALE'}},
                                       {'NOM_CMP': ['DX', 'DY', 'DZ'], 'NOM': 'SUP_NO  ', 'CHGT_REP': {}}]"""
@@ -1140,9 +1140,9 @@ class GroupNoWidget(Frame):
         """Si le concept a ete cree ac OBSERVATION, remplit le self.data
            et met a jour l'interface.
         """
-        message = u"La macro OBSERVATION a été utilisée avec le \
-                    mot-clé NOEUD ou MAILLE. On ne peut pas traiter \
-                    ce cas dans la fenêtre d'Observation"
+        message = u"La macro OBSERVATION a Ã©tÃ© utilisÃ©e avec le \
+                    mot-clÃ© NOEUD ou MAILLE. On ne peut pas traiter \
+                    ce cas dans la fenÃªtre d'Observation"
 
 ##        print "  "
 ##        print "self.data = "
@@ -1547,7 +1547,7 @@ class DispFRFDialogue(Toplevel):
                 pass
             else:
                 if not self.verif_param(param[ind]):
-                    self.mess.disp_mess(u"Il manque des données pour afficher les FRF, colonne " +str(ind+1))
+                    self.mess.disp_mess(u"Il manque des donnÃ©es pour afficher les FRF, colonne " +str(ind+1))
                     pass
                 else:
                     champ = param[ind]['champ'].get()
@@ -1585,7 +1585,7 @@ class DispFRFDialogue(Toplevel):
 class ObservationWindow(Frame):
 
     def __init__(self,parent,root,mess,ce_objects,resu=None,
-                 type_co=u"'observabilité",close_widget=1,**args):
+                 type_co=u"'observabilitÃ©",close_widget=1,**args):
         Frame.__init__(self,parent,args)
         self.parent = parent
         self.root = root
@@ -1614,12 +1614,12 @@ class ObservationWindow(Frame):
         
 
     def create_obsframe(self):
-        Label(self,text=u"Définition du concept d"+(self.type_co),
+        Label(self,text=u"DÃ©finition du concept d"+(self.type_co),
               font=self.font2).grid(row=0, column=0, columnspan=4)   
 
 
         # Menu choix des deformees a projeter
-        Label(self, text=u"Base de déformées").grid(row=1,column=0, sticky='ew')
+        Label(self, text=u"Base de dÃ©formÃ©es").grid(row=1,column=0, sticky='ew')
         self.nom_obs_resu = StringVar()
         self.menu_obs_resu = MyMenu(self,self.objects.get_mode_meca_name(),
                                     self.nom_obs_resu,
@@ -1627,7 +1627,7 @@ class ObservationWindow(Frame):
         self.menu_obs_resu.grid(row=2, column=0, sticky='we',pady=2, padx=20)
 
         # Menu choix du modele experimental associe
-        Label(self, text=u"Modèle expérimental").grid(row=1,column=1, sticky='ew')
+        Label(self, text=u"ModÃ¨le expÃ©rimental").grid(row=1,column=1, sticky='ew')
         self.nom_obs_modele = StringVar()
         self.menu_obs_modele = MyMenu(self,self.objects.get_model_name(),
                                       self.nom_obs_modele,
@@ -1725,12 +1725,12 @@ class ObservationWindow(Frame):
                                );
         except:
             self.mess.disp_mess(u"Le concept d"+self.type_co+ \
-                                u"n'a pas pu être calculé.\n"\
-                                u"L'erreur est affichée en console.")
+                                u"n'a pas pu Ãªtre calculÃ©.\n"\
+                                u"L'erreur est affichÃ©e en console.")
             raise
 
         self.mess.disp_mess(u"Le concept d"+self.type_co+ \
-                            u" a été calculé et il porte le nom " + __OBS.nom)
+                            u" a Ã©tÃ© calculÃ© et il porte le nom " + __OBS.nom)
 
 
         self.obs_co = ModeMeca(self.objects,__OBS.nom,__OBS,self.mess)
@@ -1796,20 +1796,20 @@ class DispObs(Toplevel):
 
 
 
-# Récupération du concept donnant la composante
-# du déplacement (DX, DY...DRZ) à partir de l'indice
-# du degré de liberté
+# RÃ©cupÃ©ration du concept donnant la composante
+# du dÃ©placement (DX, DY...DRZ) Ã  partir de l'indice
+# du degrÃ© de libertÃ©
 NOMCMP = aster.getcolljev('&CATA.GD.NOMCMP'.ljust(24))
 DEPL_R = NOMCMP['DEPL_R'.ljust(24)]
 ORDERED_DDL_PATTERN = ['DX', 'DY', 'DZ', 'DRX', 'DRY', 'DRZ']
 
 def sort_compo_key(compo_key):
-    """Retourne l'indice du DDL par rapport au modèle."""
+    """Retourne l'indice du DDL par rapport au modÃ¨le."""
     return ORDERED_DDL_PATTERN.index(compo_key.strip())
 
 def find_composantes(grp_noeuds, noeuds_def, nb_no, mess = None):
-    """Retourne les composantes du déplacement (DX, DY...DRZ)
-    pour chaque groupe de noeuds. Les noeuds sont définis par
+    """Retourne les composantes du dÃ©placement (DX, DY...DRZ)
+    pour chaque groupe de noeuds. Les noeuds sont dÃ©finis par
     leur indice provenant du maillage."""
     composantes = {}
 
@@ -1876,10 +1876,10 @@ class _SelectionBase(Frame):
 
     def set_resultat(self, modele):
         """Place un concept de type `Resultat' pour
-        la représentation des groupe de noeuds ou de mailles
-        dans l'interface Tk. Cette méthode exploite le travail
+        la reprÃ©sentation des groupe de noeuds ou de mailles
+        dans l'interface Tk. Cette mÃ©thode exploite le travail
         accomplit par `Resultat' qui recherche automatiquement
-        le modèle et le maillage lors de sa création."""
+        le modÃ¨le et le maillage lors de sa crÃ©ation."""
         self.set_modele_maillage(modele.obj, modele.maya)
 
     def display_comp(self, composantes,type_gr):
@@ -1973,7 +1973,7 @@ class VecteurEntry:
         self.mess = mess
 
     def grid(self, init_col, **kargs):
-        """Place les 3 entrées dans l'interface Tk"""
+        """Place les 3 entrÃ©es dans l'interface Tk"""
         for idx, wid in enumerate(self.widgets):
             wid.grid(column=init_col + idx, **kargs)
 
@@ -1986,15 +1986,15 @@ class VecteurEntry:
                 res_values.append(val)
             except ValueError:
                 self.mess.disp_mess(
-                    u"Mauvaise entrée: " \
-                    u"un des champs semble ne pas être un réel."
+                    u"Mauvaise entrÃ©e: " \
+                    u"un des champs semble ne pas Ãªtre un rÃ©el."
                     )
                 return None
 
         return tuple(res_values)
 
     def destroy(self):
-        """Détruit l'object vecteur"""
+        """DÃ©truit l'object vecteur"""
         for wid in self.widgets:
             wid.destroy()
 
@@ -2004,8 +2004,8 @@ class VecteurEntry:
 
 
 class CalcEssaiXmgr(Xmgr):
-    """Une interface à Xmgrace pouvant être lancée
-    plusieurs fois en même temps (l'unique différence
+    """Une interface Ã  Xmgrace pouvant Ãªtre lancÃ©e
+    plusieurs fois en mÃªme temps (l'unique diffÃ©rence
     avec la version Stanley)."""
 
     def __init__(self, xmgr_idx, gr_max = 10, options=None,
@@ -2054,20 +2054,20 @@ class CalcEssaiXmgr(Xmgr):
           UTMESS('A','STANLEY_3',valk=['XMGRACE'])
 
     def Ech_x(self, ech_x) :
-        """Place l'échelle sur x à NORMAL, LOGARITHMIC ou RECIPROCAL"""
+        """Place l'Ã©chelle sur x Ã  NORMAL, LOGARITHMIC ou RECIPROCAL"""
         if self.Terminal_ouvert() :
             self.Send('WITH G' + repr(self.gr_act))
-            # XXX un probleme Xmgrace (à revoir)
+            # XXX un probleme Xmgrace (Ã  revoir)
             if ech_x == "LOGARITHMIC":
                 self.Send('WORLD XMIN 0.1')
             self.Send('XAXES SCALE ' + ech_x)
             self.Send('REDRAW')
 
     def Ech_y(self, ech_y) :
-        """Place l'échelle sur y à NORMAL, LOGARITHMIC ou RECIPROCAL"""
+        """Place l'Ã©chelle sur y Ã  NORMAL, LOGARITHMIC ou RECIPROCAL"""
         if self.Terminal_ouvert() :
             self.Send('WITH G' + repr(self.gr_act))
-            # XXX un probleme Xmgrace (à revoir)
+            # XXX un probleme Xmgrace (Ã  revoir)
             if ech_y == "LOGARITHMIC":
                 self.Send('WORLD YMIN 0.1')
             self.Send('YAXES SCALE ' + ech_y)
@@ -2075,7 +2075,7 @@ class CalcEssaiXmgr(Xmgr):
 
 
 class XmgrManager:
-    """Garde en référence les instances de `CalcEssaiXmgr'.
+    """Garde en rÃ©fÃ©rence les instances de `CalcEssaiXmgr'.
     """
 
     def __init__(self):
@@ -2086,7 +2086,7 @@ class XmgrManager:
 
     def affiche(self, abscisses, ordonnees, couleur, legende,
                 ech_x, ech_y):
-        """!Sortie des données sur une courbe XMGrace
+        """!Sortie des donnÃ©es sur une courbe XMGrace
 
         \param abscisse abscisses du graphe
         \param ordonnees tableau de valeurs
@@ -2107,7 +2107,7 @@ class XmgrManager:
         #xmgr.Ech_y(self.echelle_dict[ech_y])
 
     def fermer(self):
-        """Enlève les fichiers temporaires utlisés
+        """EnlÃ¨ve les fichiers temporaires utlisÃ©s
         pour les graphiques et les pipe avec Xmgrace."""
         for xmgr in self.xmgr_list:
             xmgr.Fermer()
@@ -2120,8 +2120,8 @@ class Compteur:
     cpt=-1  # attribut de classe
 
     def __init__(self):
-        Compteur.cpt = Compteur.cpt +1 # incrémentation du compteur de classe
-        self.cpt = Compteur.cpt  # affectation à l'attribut d'instance
+        Compteur.cpt = Compteur.cpt +1 # incrÃ©mentation du compteur de classe
+        self.cpt = Compteur.cpt  # affectation Ã  l'attribut d'instance
 
     def __str__(self):
         return "Compteur n %d" %(self.cpt)
@@ -2129,9 +2129,9 @@ class Compteur:
 #------------------------------------------------------------------------------
 
 class MacMode(Canvas):
-    """!Tracé d'une matrice de MAC
+    """!TracÃ© d'une matrice de MAC
 
-    Cet objet accepte un canvas produit par Tk. sa méthode
+    Cet objet accepte un canvas produit par Tk. sa mÃ©thode
     display permet de redessiner une matrice sur ce canvas
 
     """
@@ -2141,16 +2141,16 @@ class MacMode(Canvas):
         \param canvas l'objet canvas Tkinter
 
          - items la liste des labels
-         - mat la matrice des valeurs à représenter
+         - mat la matrice des valeurs Ã  reprÃ©senter
         """
         Canvas.__init__(self, root, **kwargs)
         # la liste des labels
         self.items = {}
-        # la matrice des valeurs à représenter
+        # la matrice des valeurs Ã  reprÃ©senter
         self.mat = None
 
     def show_mat(self, mat):
-        """!Change la matrice à afficher"""
+        """!Change la matrice Ã  afficher"""
         self.mat = mat
         self.refresh_display()
 
@@ -2181,20 +2181,20 @@ class MacMode(Canvas):
                 self.items[rid] = (i,j)
 
     def clear(self):
-        """!Efface les éléments du canvas (les cases)"""
+        """!Efface les Ã©lÃ©ments du canvas (les cases)"""
         for i in self.items:
             self.delete(i)
         self.items = {}
 
     def resize_ok(self):
-        """!Attache l'événement "<Configure>" qui permet d'etre prévenu d'un redimensionnement
+        """!Attache l'Ã©vÃ©nement "<Configure>" qui permet d'etre prÃ©venu d'un redimensionnement
         de la fenetre"""
         self.bind("<Configure>", self.configure )
 
     def configure(self, event):
-        """!Callback appelé lors du redimensionnement
+        """!Callback appelÃ© lors du redimensionnement
 
-        dans ce cas on recrée le canvas en prenant en compte les nouvelles
+        dans ce cas on recrÃ©e le canvas en prenant en compte les nouvelles
         dimensions
         """
         if self.mat is not None:
@@ -2212,7 +2212,7 @@ class MacWindowFrame(Frame):
      - la matrice de MAC
      - la liste des modes
      - les labels des lignes et colonnes de la matrice
-     - un bouton (log) permettant de commuter l'affichage linéaire et logarithmique
+     - un bouton (log) permettant de commuter l'affichage linÃ©aire et logarithmique
 
     """
     def __init__(self, root, label,  name1=None, name2=None, size=None ):
@@ -2220,13 +2220,13 @@ class MacWindowFrame(Frame):
 
         :IVariables:
          - `root`: la fenetre parente
-         - `mat`: la matrice des valeurs à afficher
+         - `mat`: la matrice des valeurs Ã  afficher
          - `modes1`: liste des modes en Y
          - `modes2`: liste des modes en X
-         - `logvar`: variable Tk liée au bouton radio indiquant la méthode (log ou pas) d'affichage
+         - `logvar`: variable Tk liÃ©e au bouton radio indiquant la mÃ©thode (log ou pas) d'affichage
          - `mac`: l'objet MacMode
-         - `diplayvar1`: variable liée à un label pour permettre l'affichage des coordonnées de la valeur sous le curseur
-         - `diplayvar2`: variable liée à un label pour permettre l'affichage de la valeur sous le curseur
+         - `diplayvar1`: variable liÃ©e Ã  un label pour permettre l'affichage des coordonnÃ©es de la valeur sous le curseur
+         - `diplayvar2`: variable liÃ©e Ã  un label pour permettre l'affichage de la valeur sous le curseur
         """
         Frame.__init__(self, root)
 
@@ -2242,7 +2242,7 @@ class MacWindowFrame(Frame):
         self.modes1 = None
         self.modes2 = None
 
-        # Label abcisse/ordonnée
+        # Label abcisse/ordonnÃ©e
 
         # Tableau de modes
         tab = Frame( self )
@@ -2274,7 +2274,7 @@ class MacWindowFrame(Frame):
 
 
     def mode_info(self, event):
-        """!Récupère la valeur MAC de la case sous le curseur"""
+        """!RÃ©cupÃ¨re la valeur MAC de la case sous le curseur"""
         oid = self.mac.find_closest( event.x, event.y )
         if oid:
             i,j = self.mac.items.get(oid[0], (None,None) )

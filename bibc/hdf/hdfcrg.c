@@ -1,5 +1,4 @@
 /*           CONFIGURATION MANAGEMENT OF EDF VERSION                  */
-/* MODIF hdfcrg hdf  DATE 10/04/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE */
 /* ================================================================== */
 /* COPYRIGHT (C) 1991 - 2012  EDF R&D              WWW.CODE-ASTER.ORG */
 /*                                                                    */
@@ -13,25 +12,26 @@
 /* GENERAL PUBLIC LICENSE FOR MORE DETAILS.                           */
 /*                                                                    */
 /* YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE  */
-/* ALONG WITH THIS PROGRAM; IF NOT, WRITE TO : EDF R&D CODE_ASTER,    */
+/* ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,      */
 /*    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.     */
 /* ================================================================== */
 #include "aster.h"
 #include "aster_fort.h"
 /*-----------------------------------------------------------------------------/
-/ Création d'un groupe HDF, renvoie une erreur si le groupe ne peut être créé 
-/  Paramètres :
+/ CrÃ©ation d'un groupe HDF, renvoie une erreur si le groupe ne peut Ãªtre crÃ©Ã© 
+/  ParamÃ¨tres :
 /   - in idfile : identificateur du fichier (hid_t)
-/   - in  nomgp : nom du groupe père (contient toute l'arborescence depuis "/")
-/   - in  nomgr : nom du groupe (char *) à créer 
-/  Résultats :
+/   - in  nomgp : nom du groupe pÃ¨re (contient toute l'arborescence depuis "/")
+/   - in  nomgr : nom du groupe (char *) Ã  crÃ©er 
+/  RÃ©sultats :
 /     identificateur du groupe, -1 sinon (hid_t = int)
 /-----------------------------------------------------------------------------*/
 #ifndef _DISABLE_HDF5
 #include <hdf5.h>
 #endif
 
-INTEGER DEFPSS(HDFCRG, hdfcrg, INTEGER *idf, char *nomgp, STRING_SIZE lp, char *nomgr, STRING_SIZE ln)
+INTEGER DEFPSS(HDFCRG, hdfcrg, INTEGER *idf, char *nomgp, STRING_SIZE lp,
+               char *nomgr, STRING_SIZE ln)
 {
   INTEGER iret=-1;
 #ifndef _DISABLE_HDF5

@@ -1,4 +1,4 @@
-# -*- coding: iso-8859-1 -*-
+# coding=utf-8
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -21,16 +21,16 @@
 cata_msg={
 
 1: _(u"""
- La récupération des chargements concernant le résultat %(k1)s n'est actuellement pas possible.
- Code_Aster ne peut donc pas vérifier la cohérence des chargements.
+ La rÃ©cupÃ©ration des chargements concernant le rÃ©sultat %(k1)s n'est actuellement pas possible.
+ Code_Aster ne peut donc pas vÃ©rifier la cohÃ©rence des chargements.
 
- Conseil : Si vous utilisez une commande avec une option qui nécessite la redéfinition des chargements,
- il faut vérifier la cohérence des chargements.
+ Conseil : Si vous utilisez une commande avec une option qui nÃ©cessite la redÃ©finition des chargements,
+ il faut vÃ©rifier la cohÃ©rence des chargements.
 """),
 
 2: _(u"""
- Le mot clef EXCIT de la commande n'est pas renseigné et la récupération des chargements concernant
- le résultat %(k1)s n'est actuellement pas possible.
+ Le mot clef EXCIT de la commande n'est pas renseignÃ© et la rÃ©cupÃ©ration des chargements concernant
+ le rÃ©sultat %(k1)s n'est actuellement pas possible.
 
  Conseil : Il faut renseigner le mot clef EXCIT de la commande,
 """),
@@ -41,24 +41,24 @@ cata_msg={
 """),
 
 9: _(u"""
- les numéros d'ordre des vitesses donnes sous le mot-clé "NUME_ORDRE" ne sont pas valides.
+ les numÃ©ros d'ordre des vitesses donnes sous le mot-clÃ© "NUME_ORDRE" ne sont pas valides.
 """),
 
 10: _(u"""
- Le mode demandé n'est pas un mode couplé.
+ Le mode demandÃ© n'est pas un mode couplÃ©.
 """),
 
 11: _(u"""
- problème(s) rencontre(s) lors de l'accès au RESU_GENE
+ problÃ¨me(s) rencontre(s) lors de l'accÃ¨s au RESU_GENE
 """),
 
 14: _(u"""
- composante généralisée NUME_CMP_GENE non trouvée
- Conseil : vérifiez que la composante généralisée demandée est bien présente dans la base modale.
+ composante gÃ©nÃ©ralisÃ©e NUME_CMP_GENE non trouvÃ©e
+ Conseil : vÃ©rifiez que la composante gÃ©nÃ©ralisÃ©e demandÃ©e est bien prÃ©sente dans la base modale.
 """),
 
 15: _(u"""
- problème(s) rencontre(s) lors de la lecture des fréquences.
+ problÃ¨me(s) rencontre(s) lors de la lecture des frÃ©quences.
 """),
 
 16: _(u"""
@@ -66,11 +66,11 @@ cata_msg={
 """),
 
 17: _(u"""
- Seul le type réel est traité.
+ Seul le type rÃ©el est traitÃ©.
 """),
 
 19: _(u"""
- on ne traite que les champs par éléments de type réel.
+ on ne traite que les champs par Ã©lÃ©ments de type rÃ©el.
 """),
 
 20: _(u"""
@@ -78,11 +78,11 @@ cata_msg={
 """),
 
 21: _(u"""
- "INTERP_NUME" interdit pour récupérer un paramètre en fonction d'une variable d'accès
+ "INTERP_NUME" interdit pour rÃ©cupÃ©rer un paramÃ¨tre en fonction d'une variable d'accÃ¨s
 """),
 
 22: _(u"""
- aucun champ trouve pour l'accès  %(k1)s
+ aucun champ trouve pour l'accÃ¨s  %(k1)s
 """),
 
 23: _(u"""
@@ -90,7 +90,7 @@ cata_msg={
 """),
 
 24: _(u"""
- problème(s) rencontre(s) lors de la lecture de la discrétisation ( instants ou fréquences )
+ problÃ¨me(s) rencontre(s) lors de la lecture de la discrÃ©tisation ( instants ou frÃ©quences )
 """),
 
 26: _(u"""
@@ -98,7 +98,7 @@ cata_msg={
 """),
 
 27: _(u"""
- manque la définition d'un mot clé
+ manque la dÃ©finition d'un mot clÃ©
 """),
 
 29: _(u"""
@@ -106,7 +106,7 @@ cata_msg={
 """),
 
 30: _(u"""
- problème dans le décodage de ( %(k1)s , %(k2)s )
+ problÃ¨me dans le dÃ©codage de ( %(k1)s , %(k2)s )
 """),
 
 31: _(u"""
@@ -126,101 +126,101 @@ cata_msg={
 """),
 
 37: _(u"""
-  -> Le MODELE fourni par l'utilisateur est différent
-     de celui présent dans la Structure de Données Résultat. On poursuit les calculs
+  -> Le MODELE fourni par l'utilisateur est diffÃ©rent
+     de celui prÃ©sent dans la Structure de DonnÃ©es RÃ©sultat. On poursuit les calculs
      avec le MODELE fourni par l'utilisateur.
-  -> Risque & Conseil : Vérifiez si le MODELE fourni dans la commande est
+  -> Risque & Conseil : VÃ©rifiez si le MODELE fourni dans la commande est
      bien celui que vous souhaitez. Si oui vous allez poursuivre les calculs
-     de post-traitement avec un MODELE différent de
-     celui utilisé pour calculer les déplacements, températures,...
+     de post-traitement avec un MODELE diffÃ©rent de
+     celui utilisÃ© pour calculer les dÃ©placements, tempÃ©ratures,...
 """),
 
 38: _(u"""
-  -> Le concept de caractéristiques CARA_ELEM fourni par l'utilisateur est différent
-     de celui présent dans la Structure de Données Résultat. On poursuit les calculs
+  -> Le concept de caractÃ©ristiques CARA_ELEM fourni par l'utilisateur est diffÃ©rent
+     de celui prÃ©sent dans la Structure de DonnÃ©es RÃ©sultat. On poursuit les calculs
      avec le CARA_ELEM fourni par l'utilisateur.
-  -> Risque & Conseil : Vérifiez si le CARA_ELEM fourni dans la commande est
+  -> Risque & Conseil : VÃ©rifiez si le CARA_ELEM fourni dans la commande est
      bien celui que vous souhaitez. Si oui vous allez poursuivre les calculs
-     de post-traitement avec un CARA_ELEM différent de
-     celui utilisé pour calculer les déplacements, températures,...
+     de post-traitement avec un CARA_ELEM diffÃ©rent de
+     celui utilisÃ© pour calculer les dÃ©placements, tempÃ©ratures,...
 """),
 
 39: _(u"""
-  -> Le matériau MATER fourni par l'utilisateur est différent de celui présent dans
-     la Structure de Données Résultat. On poursuit les calculs avec le matériau
+  -> Le matÃ©riau MATER fourni par l'utilisateur est diffÃ©rent de celui prÃ©sent dans
+     la Structure de DonnÃ©es RÃ©sultat. On poursuit les calculs avec le matÃ©riau
      fourni par l'utilisateur.
-  -> Risque & Conseil : Vérifiez si le matériau fourni dans la commande est
+  -> Risque & Conseil : VÃ©rifiez si le matÃ©riau fourni dans la commande est
      bien celui que vous souhaitez. Si oui vous allez poursuivre les calculs
-     de post-traitement avec un matériau différent de
-     celui utilisé pour calculer les déplacements, températures,...
+     de post-traitement avec un matÃ©riau diffÃ©rent de
+     celui utilisÃ© pour calculer les dÃ©placements, tempÃ©ratures,...
 """),
 
 40: _(u"""
-  -> Le chargement (mot clé: CHARGE) fourni par l'utilisateur est différent de celui présent dans
-     la Structure de Données Résultat. On poursuit les calculs avec le chargement
+  -> Le chargement (mot clÃ©: CHARGE) fourni par l'utilisateur est diffÃ©rent de celui prÃ©sent dans
+     la Structure de DonnÃ©es RÃ©sultat. On poursuit les calculs avec le chargement
      fourni par l'utilisateur.
-  -> Risque & Conseil : Vérifiez si le chargement fourni dans la commande est
+  -> Risque & Conseil : VÃ©rifiez si le chargement fourni dans la commande est
      bien celui que vous souhaitez. Si oui vous allez poursuivre les calculs
-     post-traitement avec un chargement différent de
-     celui utilisé pour calculer les déplacements, températures,...
+     post-traitement avec un chargement diffÃ©rent de
+     celui utilisÃ© pour calculer les dÃ©placements, tempÃ©ratures,...
 """),
 
 41: _(u"""
-  -> les fonctions multiplicatrices du chargement (mot clé: FONC_MULT) fournies par
-     l'utilisateur sont différentes de celles présentes dans la Structure de Données Résultat.
+  -> les fonctions multiplicatrices du chargement (mot clÃ©: FONC_MULT) fournies par
+     l'utilisateur sont diffÃ©rentes de celles prÃ©sentes dans la Structure de DonnÃ©es RÃ©sultat.
      On poursuit les calculs avec les fonctions multiplicatrices fournies par l'utilisateur.
-  -> Risque & Conseil : Vérifiez si les fonctions fournies dans la commande sont
+  -> Risque & Conseil : VÃ©rifiez si les fonctions fournies dans la commande sont
      bien celles que vous souhaitez. Si oui vous allez poursuivre les calculs
-     de post-traitement avec des fonctions différentes de
-     celles utilisées pour calculer les déplacements, températures,...
+     de post-traitement avec des fonctions diffÃ©rentes de
+     celles utilisÃ©es pour calculer les dÃ©placements, tempÃ©ratures,...
 """),
 
 42: _(u"""
- numéro d'ordre trop grand.
+ numÃ©ro d'ordre trop grand.
 """),
 
 43: _(u"""
- nom de champ interdit :  %(k1)s  pour le résultat :  %(k2)s
+ nom de champ interdit :  %(k1)s  pour le rÃ©sultat :  %(k2)s
 """),
 
 44: _(u"""
-  pas de variables d'accès
+  pas de variables d'accÃ¨s
 """),
 
 45: _(u"""
-  pas de paramètres
+  pas de paramÃ¨tres
 """),
 
 46: _(u"""
- Cet accès est interdit pour un résultat de type champ.
+ Cet accÃ¨s est interdit pour un rÃ©sultat de type champ.
 """),
 
 47: _(u"""
- Cet accès est interdit :  %(k1)s
+ Cet accÃ¨s est interdit :  %(k1)s
 """),
 
 49: _(u"""
- problème pour récupérer les numéros d'ordre dans la structure "résultat"  %(k1)s
+ problÃ¨me pour rÃ©cupÃ©rer les numÃ©ros d'ordre dans la structure "rÃ©sultat"  %(k1)s
 """),
 
 50: _(u"""
- problème pour récupérer les paramètres
+ problÃ¨me pour rÃ©cupÃ©rer les paramÃ¨tres
 """),
 
 51: _(u"""
- aucun numéro d'ordre ne correspond au paramètre demande  %(k1)s
+ aucun numÃ©ro d'ordre ne correspond au paramÃ¨tre demande  %(k1)s
 """),
 
 52: _(u"""
- aucun numéro d'ordre ne correspond au champ demande  %(k1)s
+ aucun numÃ©ro d'ordre ne correspond au champ demande  %(k1)s
 """),
 
 53: _(u"""
- aucun numéro d'ordre trouve. stop.
+ aucun numÃ©ro d'ordre trouve. stop.
 """),
 
 63: _(u"""
- accès inconnu  %(k1)s
+ accÃ¨s inconnu  %(k1)s
 """),
 
 64: _(u"""
@@ -228,15 +228,15 @@ cata_msg={
 """),
 
 65: _(u"""
- pas de paramètres définis
+ pas de paramÃ¨tres dÃ©finis
 """),
 
 66: _(u"""
- pas de lignes définis
+ pas de lignes dÃ©finis
 """),
 
 67: _(u"""
- mauvais numéro de ligne
+ mauvais numÃ©ro de ligne
 """),
 
 68: _(u"""
@@ -244,43 +244,43 @@ cata_msg={
 """),
 
 69: _(u"""
- nombre de valeur a ajoute supérieur au nombre de ligne de la table
+ nombre de valeur a ajoute supÃ©rieur au nombre de ligne de la table
 """),
 
 70: _(u"""
- numéro de ligne négatif
+ numÃ©ro de ligne nÃ©gatif
 """),
 
 71: _(u"""
- numéro de ligne supérieur au nombre de ligne de la table
+ numÃ©ro de ligne supÃ©rieur au nombre de ligne de la table
 """),
 
 72: _(u"""
- le paramètre n existe pas
+ le paramÃ¨tre n existe pas
 """),
 
 73: _(u"""
- les types du paramètre ne correspondent pas entre eux.
+ les types du paramÃ¨tre ne correspondent pas entre eux.
 """),
 
 74: _(u"""
- numéro de ligne trop grand
+ numÃ©ro de ligne trop grand
 """),
 
 75: _(u"""
- erreur programmation le nom d'une table ne doit pas dépasser 17 caractères.
+ erreur programmation le nom d'une table ne doit pas dÃ©passer 17 caractÃ¨res.
 """),
 
 76: _(u"""
- pas de lignes définies
+ pas de lignes dÃ©finies
 """),
 
 77: _(u"""
- types de paramètres différents
+ types de paramÃ¨tres diffÃ©rents
 """),
 
 78: _(u"""
- on n a pas trouve de ligne contenant les deux paramètres.
+ on n a pas trouve de ligne contenant les deux paramÃ¨tres.
 """),
 
 79: _(u"""
@@ -288,15 +288,15 @@ cata_msg={
 """),
 
 80: _(u"""
- table  %(k1)s  : aucun paramètre n'est défini
+ table  %(k1)s  : aucun paramÃ¨tre n'est dÃ©fini
 """),
 
 81: _(u"""
- pas de paramètres de type i et r
+ pas de paramÃ¨tres de type i et r
 """),
 
 82: _(u"""
- pas de lignes sélectionnées
+ pas de lignes sÃ©lectionnÃ©es
 """),
 
 83: _(u"""
@@ -304,23 +304,23 @@ cata_msg={
 """),
 
 84: _(u"""
- impression de la table supérieure a 2000 colonnes, sélectionnez vos paramètres.
+ impression de la table supÃ©rieure a 2000 colonnes, sÃ©lectionnez vos paramÃ¨tres.
 """),
 
 85: _(u"""
- pagination supprimée, utiliser IMPR_TABLE
+ pagination supprimÃ©e, utiliser IMPR_TABLE
 """),
 
 86: _(u"""
- il faut 3 paramètres pour une impression au format "tableau"
+ il faut 3 paramÃ¨tres pour une impression au format "tableau"
 """),
 
 87: _(u"""
- on ne trie que 1 ou 2 paramètres
+ on ne trie que 1 ou 2 paramÃ¨tres
 """),
 
 89: _(u"""
- seules les %(i1)d premières lignes du titre sont conservées (%(i2)d au total).
+ seules les %(i1)d premiÃ¨res lignes du titre sont conservÃ©es (%(i2)d au total).
 """),
 
 99: _(u"""

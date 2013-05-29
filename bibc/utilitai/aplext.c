@@ -1,5 +1,4 @@
 /*           CONFIGURATION MANAGEMENT OF EDF VERSION                  */
-/* MODIF APLEXT UTILITAI  DATE 19/05/2011   AUTEUR SELLENET N.SELLENET */
 /* ================================================================== */
 /* COPYRIGHT (C) 1991 - 2011  EDF R&D              WWW.CODE-ASTER.ORG */
 /*                                                                    */
@@ -13,7 +12,7 @@
 /* GENERAL PUBLIC LICENSE FOR MORE DETAILS.                           */
 /*                                                                    */
 /* YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE  */
-/* ALONG WITH THIS PROGRAM; IF NOT, WRITE TO : EDF R&D CODE_ASTER,    */
+/* ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,      */
 /*    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.     */
 /* ================================================================== */
 /* Creation d'un process fils, appel d'un programme externe
@@ -66,7 +65,7 @@ void DEFPPSP(APLEXT, aplext, INTEGER *niv, INTEGER *nbd ,char *nom ,STRING_SIZE 
       args[k] = NULL;
    }
    /*
-      Construction du nom de la commande ou du programme externe à appeler
+      Construction du nom de la commande ou du programme externe Ã  appeler
    */
    l    = (long) lnom;
    ncmd = nom;
@@ -134,14 +133,17 @@ void DEFPPSP(APLEXT, aplext, INTEGER *niv, INTEGER *nbd ,char *nom ,STRING_SIZE 
         }
        else {
 /*
-   Examen du code retour avec détection des signaux
+   Examen du code retour avec dÃ©tection des signaux
 */
          if (WIFEXITED(errnoSTAT)) {
             *ier=WEXITSTATUS(errnoSTAT);
-            if (*niv > 0){fprintf(stderr,"Fin du processus avec code retour: %d\n",WEXITSTATUS(errnoSTAT));}
-            if (*niv > 0){fprintf(stdout,"Fin du processus avec code retour: %d\n",WEXITSTATUS(errnoSTAT));}
+            if (*niv > 0) {
+                fprintf(stderr,"Fin du processus avec code retour: %d\n", WEXITSTATUS(errnoSTAT));
             }
-         else if (WIFSIGNALED(errnoSTAT)) {
+            if (*niv > 0){
+                fprintf(stdout,"Fin du processus avec code retour: %d\n",WEXITSTATUS(errnoSTAT));
+            }
+         } else if (WIFSIGNALED(errnoSTAT)) {
             *ier=1;
             fprintf(stderr,"Fin du processus par signal : %d :",WTERMSIG(errnoSTAT));
             fprintf(stdout,"Fin du processus par signal : %d :",WTERMSIG(errnoSTAT));

@@ -1,4 +1,4 @@
-# -*- coding: iso-8859-1 -*-
+# coding=utf-8
 # person_in_charge: mathieu.courtois at edf.fr
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -27,6 +27,6 @@ from Validation import V_PRESENT_ABSENT
 class PRESENT_ABSENT(V_PRESENT_ABSENT.PRESENT_ABSENT,N_REGLE.REGLE):
    """
        La classe utilise l'initialiseur de REGLE. Il n'est pas 
-       nécessaire d'expliciter son initialiseur car 
+       nÃ©cessaire d'expliciter son initialiseur car 
        V_PRESENT_ABSENT.PRESENT_ABSENT n'en a pas 
    """

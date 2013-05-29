@@ -1,4 +1,4 @@
-# -*- coding: iso-8859-1 -*-
+# coding=utf-8
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -22,7 +22,7 @@ from Cata.cata import *
 
 MACRO_BASCULE_SCHEMA = MACRO(nom="MACRO_BASCULE_SCHEMA", op=macro_bascule_schema_ops, sd_prod=evol_noli,reentrant='f',
             fr="Macro permettant la bascule de schema en temps dans DYNA_NON_LINE",
-            UIinfo={"groupes":("Résolution","Dynamique",)},
+            UIinfo={"groupes":("RÃ©solution","Dynamique",)},
          MODELE          =SIMP(statut='o',typ=modele_sdaster),
          CHAM_MATER      =SIMP(statut='o',typ=cham_mater),
          MODE_STAT       =SIMP(statut='f',typ=mode_meca),
@@ -153,7 +153,7 @@ MACRO_BASCULE_SCHEMA = MACRO(nom="MACRO_BASCULE_SCHEMA", op=macro_bascule_schema
            NB_FREQ         =SIMP(statut='f',typ='I',max=1,val_min=1,defaut=3),
            COEF_DIM_ESPACE =SIMP(statut='f',typ='I',max=1,val_min=2,defaut=5),
            CHAR_CRIT       =SIMP(statut='f',typ='R',min=2,max=2,defaut=(-10.0,10.),
-                            fr="Valeur des deux charges critiques délimitant la bande de recherche en HPP"),
+                            fr="Valeur des deux charges critiques dÃ©limitant la bande de recherche en HPP"),
            RIGI_GEOM     =SIMP(statut='f',typ='TXM',defaut="OUI",into=("OUI","NON")),
            MODI_RIGI     =SIMP(statut='f',typ='TXM',defaut="NON",into=("OUI","NON")),
            TYPE          =SIMP(statut='f',typ='TXM',defaut="FLAMBEMENT",into=("FLAMBEMENT","STABILITE")),
@@ -195,10 +195,10 @@ MACRO_BASCULE_SCHEMA = MACRO(nom="MACRO_BASCULE_SCHEMA", op=macro_bascule_schema
          MODE_VIBR     =FACT(statut='f',min=1,max=1,
            MATR_RIGI        =SIMP(statut='f',typ='TXM',defaut="ELASTIQUE",into=("ELASTIQUE","TANGENTE","SECANTE",) ),
            NB_FREQ          =SIMP(statut='f',typ='I',max=1,val_min=1,defaut=3,
-                            fr="Nombre de fréquences propres à calculer"),
+                            fr="Nombre de frÃ©quences propres Ã  calculer"),
            COEF_DIM_ESPACE  =SIMP(statut='f',typ='I',max=1,val_min=2,defaut=5),
            BANDE            =SIMP(statut='f',typ='R',min=2,max=2,
-                            fr="Valeur des deux fréquences délimitant la bande de recherche",),
+                            fr="Valeur des deux frÃ©quences dÃ©limitant la bande de recherche",),
            regles         = (EXCLUS('PAS_CALC','LIST_INST','INST'),),
            LIST_INST      = SIMP(statut='f',typ=(listr8_sdaster) ),
            INST           = SIMP(statut='f',typ='R',validators=NoRepeat(),max='**' ),

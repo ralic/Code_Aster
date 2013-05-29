@@ -1,4 +1,4 @@
-# -*- coding: iso-8859-1 -*-
+# coding=utf-8
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2010  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -45,14 +45,14 @@ def FcontinuGR2(T,I1,I2,TR,PHI1,PHI2,TAU1,TAU2,D) :
     fxt= 4.E-7 * I1 * I2 * ft1 / D
     return fxt
 
-## fonction post réenclenchement, valable entre l'instant de réenclenchement et l'instant de fin de réenclenchement. Sinon 0.
+## fonction post rÃ©enclenchement, valable entre l'instant de rÃ©enclenchement et l'instant de fin de rÃ©enclenchement. Sinon 0.
 def FcompletGR2R(T,I1R,I2R,FR,TRR,PHIR1,PHI2R,TAU1R,TAU2R,D) :
     fxt= 4.E-7 * I1R * I2R / D
     fxt= fxt * (cos(2*pi*FR*(T-TRR)+PHI1R*pi/180.)-exp(-(T-TRR)/TAU1R)*cos(PHI1R*pi/180.))
     fxt= fxt * (cos(2*pi*FR*(T-TRR)+PHI2R*pi/180.)-exp(-(T-TRR)/TAU2R)*cos(PHI2R*pi/180.))
     return fxt
 
-## fonction post réenclenchement, valable entre l'instant de réenclenchement et l'instant de fin de réenclenchement. Sinon 0.
+## fonction post rÃ©enclenchement, valable entre l'instant de rÃ©enclenchement et l'instant de fin de rÃ©enclenchement. Sinon 0.
 def FcontinuGR2R(T,I1R,I2R,TRR,PHI1R,PHI2R,TAU1R,TAU2R,D) :
     ft1= exp(-(T-TRR)*(1./TAU1R+1./TAU2R))
     ft1= ft1*cos(PHI1R*pi/180.)*cos(PHI2R*pi/180.)
@@ -73,7 +73,7 @@ def defi_fonc_elec_ops(self,FREQ,SIGNAL,COUR,COUR_PRIN,COUR_SECO,**args):
         FORMULE           =self.get_cmd('FORMULE')
         CALC_FONC_INTERP  =self.get_cmd('CALC_FONC_INTERP')
 
-        ### Comptage commandes + déclaration concept sortant
+        ### Comptage commandes + dÃ©claration concept sortant
         self.set_icmd(1)
         self.DeclareOut('C_out',self.sd)
 #

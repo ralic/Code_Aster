@@ -1,4 +1,4 @@
-# -*- coding: iso-8859-1 -*-
+# coding=utf-8
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -35,21 +35,21 @@ def FaitMessage(Dico):
 
 def Mazars_Unil(DMATER,args):
    """
-   MAZARS_UNIL = Paramètres de la loi de comportement
-      UNITE_LONGUEUR = unité du problème [M|MM]
+   MAZARS_UNIL = ParamÃ¨tres de la loi de comportement
+      UNITE_LONGUEUR = unitÃ© du problÃ¨me [M|MM]
       FCJ    [Unite] = Contrainte au pic en compression
       EIJ    [Unite] = Module d'young
-      EPSI_C         = Déformation au pic en compression
+      EPSI_C         = DÃ©formation au pic en compression
       FTJ    [Unite] = Contrainte au pic en traction
       NU             = Coefficient de poisson
-      EPSD0          = Déformation, seuil d'endommagement
-      K              = Paramètre de décroissance post-pic en cisaillement
-      AC             = Paramètre de décroissance post-pic en compression
-      BC             = 1/(Déformation au pic en compression)
-      AT             = Paramètre de décroissance post-pic en traction
-      BT             = 1/(Déformation au pic en traction)
+      EPSD0          = DÃ©formation, seuil d'endommagement
+      K              = ParamÃ¨tre de dÃ©croissance post-pic en cisaillement
+      AC             = ParamÃ¨tre de dÃ©croissance post-pic en compression
+      BC             = 1/(DÃ©formation au pic en compression)
+      AT             = ParamÃ¨tre de dÃ©croissance post-pic en traction
+      BT             = 1/(DÃ©formation au pic en traction)
       SIGM_LIM       = Contrainte limite pour post-traitement
-      EPSI_LIM       = Déformation limite pour post-traitement
+      EPSI_LIM       = DÃ©formation limite pour post-traitement
 
    Masse volumique, dilatation, amortissements
       RHO            = Masse volumique
@@ -62,7 +62,7 @@ def Mazars_Unil(DMATER,args):
    MATER = DMATER.cree_dict_valeurs(DMATER.mc_liste)
    # Obligatoire FCJ
    FCJ = MATER['FCJ']
-   # Obligatoire Unité du problème. Choix possibles M, MM
+   # Obligatoire UnitÃ© du problÃ¨me. Choix possibles M, MM
    #     si MM  ==> c'est des MPa ==> Coeff=1
    #     si M   ==> c'est des Pa  ==> Coeff=1.0E+06
    if   ( MATER['UNITE_LONGUEUR'] == "MM" ):
@@ -132,12 +132,12 @@ def Mazars_Unil(DMATER,args):
 
 def Acier_Cine_Line(DMATER,args):
    """
-   ACIER = Paramètes matériaux de l'acier
+   ACIER = ParamÃ¨tes matÃ©riaux de l'acier
       E              = Module d'Young
       D_SIGM_EPSI    = Module plastique
-      SY             = Limite élastique
+      SY             = Limite Ã©lastique
       SIGM_LIM       = Contrainte limite pour post-traitement
-      EPSI_LIM       = Déformation limite pour post-traitement
+      EPSI_LIM       = DÃ©formation limite pour post-traitement
 
    Masse volumique, dilatation, amortissements
       RHO            = Masse volumique
@@ -198,15 +198,15 @@ def defi_mater_gc_ops(self,MAZARS,ACIER,REGLE,**args):
    C'est : soit ACIER soit MAZARS
    """
    ier=0
-   # La macro compte pour 1 dans la numérotation des commandes
+   # La macro compte pour 1 dans la numÃ©rotation des commandes
    self.set_icmd(1)
    DEFI_MATERIAU=self.get_cmd('DEFI_MATERIAU')
    #
-   # Le concept sortant (de type mater_sdaster) est nommé 'Materiau' dans le contexte de la macro
+   # Le concept sortant (de type mater_sdaster) est nommÃ© 'Materiau' dans le contexte de la macro
    self.DeclareOut('Materiau',self.sd)
    #
    if ( REGLE == 'EC2'):
       if ( MAZARS != None ): mclef = Mazars_Unil(MAZARS[0],args)
       if ( ACIER  != None ): mclef = Acier_Cine_Line(ACIER[0],args)
-   # Définition du matériau
+   # DÃ©finition du matÃ©riau
    Materiau = DEFI_MATERIAU(**mclef)

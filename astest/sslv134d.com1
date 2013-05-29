@@ -103,7 +103,7 @@ TEST_TABLE(REFERENCE='ANALYTIQUE',
 #
 # --------------------------------------------------------------------
 # K1, K2, K3 sur tous les noeuds du fond de fissure 
-#            (noeuds extremités + noeuds milieux)
+#            (noeuds extremitÃ©s + noeuds milieux)
 # --------------------------------------------------------------------
 
 K_TOUT=POST_K1_K2_K3(  MODELISATION='3D',

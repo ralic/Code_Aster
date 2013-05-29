@@ -1,4 +1,4 @@
-# -*- coding: iso-8859-1 -*-
+# coding=utf-8
 # person_in_charge: jacques.pellet at edf.fr
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -50,7 +50,7 @@ def lire_cata(nomfic,format='cata'):
             fcata = open(nomfic,"r")
             print 80*'/'
             print "Erreur de lecture d'un morceau contenant des catalogues"
-            print "Impression du morceau (avec ses numÈros de lignes):"
+            print "Impression du morceau (avec ses num√©ros de lignes):"
             ilig=0
             for line in fcata :
                 ilig=ilig+1; print "%i %s" % (ilig,line[:-1])
@@ -75,7 +75,7 @@ debug_parse=0
 debug_constr=0
 
 # --------------------------------------------------------------------------------
-# dÈfinition des classes Token et AST :
+# d√©finition des classes Token et AST :
 # --------------------------------------
 
 class Token:
@@ -122,7 +122,7 @@ class AST:
         try :
             return ' type_AST: "' + self.type + '" ligne: ' + str(self.lineno)
         except :
-            return ' type_AST: effacÈ.'
+            return ' type_AST: effac√©.'
     def __setslice__(self, low, high, seq):
         self._kids[low:high] = seq
     def __cmp__(self, o):
@@ -198,7 +198,7 @@ class Mon2Scanner(MonScanner):
         self.rv.append(t)
 
 def scan(f):
-    ERR.mess('I',"DÈbut de l'analyse lexicale")
+    ERR.mess('I',"D√©but de l'analyse lexicale")
     input = f.read()
     scanner = Mon2Scanner()
     l= scanner.tokenize(input)
@@ -216,7 +216,7 @@ class MonParser(GenericASTBuilder):
         GenericASTBuilder.__init__(self, AST, start)
 
 
-#   dÈfinition de la structure gÈnÈrale :
+#   d√©finition de la structure g√©n√©rale :
 #   --------------------------------------
     def p_cata(self, args):
         '''
@@ -241,7 +241,7 @@ class MonParser(GenericASTBuilder):
         '''
 
 
-#   dÈfinition des utilitaires : listes, ... :
+#   d√©finition des utilitaires : listes, ... :
 #   ----------------------------------------------
     def p_utili(self, args):
         '''
@@ -251,7 +251,7 @@ class MonParser(GenericASTBuilder):
         l_entier    ::=  entier
         '''
 
-#   dÈfinition supplÈmentaires pour les cata_tm :
+#   d√©finition suppl√©mentaires pour les cata_tm :
 #   ----------------------------------------------
     def p_cata0(self, args):
         '''
@@ -266,7 +266,7 @@ class MonParser(GenericASTBuilder):
         tyma        ::=  MAILLE__ ident entier  DIM__ entier  CODE__ chaine  l_elrefe
         '''
 
-#   dÈfinitions supplÈmentaires pour les cata_gd  :
+#   d√©finitions suppl√©mentaires pour les cata_gd  :
 #   ----------------------------------------------------------
     def p_cata1(self, args):
         '''
@@ -283,7 +283,7 @@ class MonParser(GenericASTBuilder):
         '''
 
 
-#   dÈfinitions supplÈmentaires pour les cata_op  :
+#   d√©finitions suppl√©mentaires pour les cata_op  :
 #   ----------------------------------------------------------
     def p_cata2(self, args):
         '''
@@ -305,7 +305,7 @@ class MonParser(GenericASTBuilder):
         '''
 
 
-#   dÈfinitions supplÈmentaires pour les cata_te et cata_tg :
+#   d√©finitions suppl√©mentaires pour les cata_te et cata_tg :
 #   ---------------------------------------------------------
     def p_cata3(self, args):
         '''
@@ -381,7 +381,7 @@ class MonParser(GenericASTBuilder):
         opt      ::= ident entier IN__  OUT__
         '''
 
-#   dÈfinitions supplÈmentaires pour le cata_ph  :
+#   d√©finitions suppl√©mentaires pour le cata_ph  :
 #   ----------------------------------------------------------
     def p_cata4(self, args):
         '''
@@ -421,7 +421,7 @@ class MonParser(GenericASTBuilder):
         return nt
 
 def parse(tokens):
-    ERR.mess('I',"DÈbut de l'analyse syntaxique")
+    ERR.mess('I',"D√©but de l'analyse syntaxique")
     parser = MonParser(AST)
     t= parser.parse(tokens)
     ERR.mess('I',"Fin de l'analyse syntaxique")
@@ -440,7 +440,7 @@ class creer_capy(GenericASTTraversal):
         self.ast.tm=None
         self.ast.mp=None
         self.ast.ph=None
-        ERR.mess('I',"DÈbut de la construction du catalogue 'Python'")
+        ERR.mess('I',"D√©but de la construction du catalogue 'Python'")
         self.postorder()
         ERR.mess('I',"Fin de la construction du catalogue 'Python'")
 
@@ -497,7 +497,7 @@ class creer_capy(GenericASTTraversal):
                     nb_tg=nb_tg+1
 
 
-        # on met les options ,les type_elem et les type_gene dans l'ordre alphabÈtique:
+        # on met les options ,les type_elem et les type_gene dans l'ordre alphab√©tique:
         # -----------------------------------------------------------------------------
         likeys= node.dicop.keys(); likeys.sort(); liste2=[]; dico2={};k=0
         for ke in likeys:
@@ -591,7 +591,7 @@ class creer_capy(GenericASTTraversal):
         #  tyma      ::=  MAILLE__  ident entier  DIM__ entier  CODE__ chaine  l_elrefe
         node.tyma=(node[1].attr,node[2].attr,node[4].attr,node[6].attr,node[7].l_elrefe)
         if len(node[6].attr) != 5 :
-            ERR.mess('E',"le code d'un type de maille doit avoir 3 caractËres exactement."+node.code)
+            ERR.mess('E',"le code d'un type de maille doit avoir 3 caract√®res exactement."+node.code)
 
 
     def n_fampg(self, node):
@@ -626,19 +626,19 @@ class creer_capy(GenericASTTraversal):
 
     def n_cata_tm(self, node):
         #   cata_tm     ::=  cmodif  TYPE_MAILLE__ l_tyma
-        ERR.contexte("DÈfinition des types de maille.")
+        ERR.contexte("D√©finition des types de maille.")
         node.cmodif=node[0].attr
         node.ltm=node[2].l_tyma
 
-        # vÈrification de l'unicitÈ des noms des types de maille et de leurs codes :
+        # v√©rification de l'unicit√© des noms des types de maille et de leurs codes :
         dico={} ; dico_code={}
         for k in  range(len(node.ltm)) :
-            if dico.has_key(node.ltm[k][0]) : ERR.mess('E',"erreur : le type de maille: "+node.ltm[k][0]+" est dÈj‡ dÈfini.")
-            if dico_code.has_key(node.ltm[k][3]) : ERR.mess('E',"erreur : le type de maille: "+node.ltm[k][0]+" a un CODE__ dÈj‡ utilisÈ:"+node.ltm[k][3])
+            if dico.has_key(node.ltm[k][0]) : ERR.mess('E',"erreur : le type de maille: "+node.ltm[k][0]+" est d√©j√† d√©fini.")
+            if dico_code.has_key(node.ltm[k][3]) : ERR.mess('E',"erreur : le type de maille: "+node.ltm[k][0]+" a un CODE__ d√©j√† utilis√©:"+node.ltm[k][3])
             dico[node.ltm[k][0]]=1
             dico_code[node.ltm[k][3]]=1
 
-        # vÈrification de l'unicitÈ des noms des ELREFE :
+        # v√©rification de l'unicit√© des noms des ELREFE :
         dico={}
         for tm in node.ltm :
             nom_tm=tm[0]
@@ -649,7 +649,7 @@ class creer_capy(GenericASTTraversal):
                 else :
                     if dico[nom_elrefe]!=nom_tm :
                         ERR.mess('E',"erreur : le nom d'ELREFE__ "+nom_elrefe+\
-                        " est dÈfini dans plusieurs MAILLE__ : "+nom_tm+" "+dico[nom_elrefe])
+                        " est d√©fini dans plusieurs MAILLE__ : "+nom_tm+" "+dico[nom_elrefe])
         ERR.contexte("","RAZ")
 
 
@@ -672,16 +672,16 @@ class creer_capy(GenericASTTraversal):
 #                             0           1     2      3      4     5       6       7           8          9
 #       modeli      ::=  MODELISATION__ chaine DIM__ entier entier CODE__ chaine l_affe_te
 #       modeli      ::=  MODELISATION__ chaine DIM__ entier entier CODE__ chaine  ATTRIBUT__ l_attr_val l_affe_te
-        ERR.contexte('DÈfinition de la modÈlisation: '+node[1].attr)
+        ERR.contexte('D√©finition de la mod√©lisation: '+node[1].attr)
         if len(node)== 8 :
             node.modeli=(node[1].attr,node[7].l_affe_te,node[6].attr,(node[3].attr,node[4].attr),None)
         else :
             node.modeli=(node[1].attr,node[9].l_affe_te,node[6].attr,(node[3].attr,node[4].attr),node[8].l_attr_val)
 
         if len(node[6].attr) != 5 :
-            ERR.mess('E',"le code d'une modÈlisation doit avoir 3 caractËres exactement: "+node[6].attr)
+            ERR.mess('E',"le code d'une mod√©lisation doit avoir 3 caract√®res exactement: "+node[6].attr)
         if not node[3].attr in ("-1","0","1","2","3")  :
-            ERR.mess('E',"la 1eme dimension doit etre celle des Èlements 'principaux' (-1,0,1,2, ou 3) : "+node[3].attr)
+            ERR.mess('E',"la 1eme dimension doit etre celle des √©lements 'principaux' (-1,0,1,2, ou 3) : "+node[3].attr)
         if not node[4].attr in ("2","3")  :
             ERR.mess('E',"la 2eme dimension doit etre celle de l'espace (2 ou 3) : "+node[4].attr)
         ERR.contexte("","RAZ")
@@ -698,16 +698,16 @@ class creer_capy(GenericASTTraversal):
     def n_pheno(self, node):
 #                             0      1       2      3        4
 #       pheno       ::=  PHENOMENE__ ident CODE__ chaine  l_modeli
-        ERR.contexte('DÈfinition du phÈnomËne: '+node[1].attr)
+        ERR.contexte('D√©finition du ph√©nom√®ne: '+node[1].attr)
         node.pheno=(node[1].attr,node[4].l_modeli,node[3].attr)
         if len(node[3].attr) != 4 :
-            ERR.mess('E',"le code d'un phÈnomËne doit avoir 2 exactement: "+node[3].attr)
+            ERR.mess('E',"le code d'un ph√©nom√®ne doit avoir 2 exactement: "+node[3].attr)
 
-        # vÈrification de l'unicitÈ des noms des modÈlisations (et de leurs codes) d'un phÈnomËne:
+        # v√©rification de l'unicit√© des noms des mod√©lisations (et de leurs codes) d'un ph√©nom√®ne:
         dico={}; dico_code={}
         for modeli in node[4].l_modeli :
-            if dico.has_key(modeli[0]): ERR.mess('E',"La modÈlisation: "+modeli[0]+" est dÈfinie plusieurs fois.")
-            if dico_code.has_key(modeli[2]): ERR.mess('E',"La modÈlisation: "+modeli[0]+" a un CODE__ dÈj‡ utilisÈ:"+modeli[2])
+            if dico.has_key(modeli[0]): ERR.mess('E',"La mod√©lisation: "+modeli[0]+" est d√©finie plusieurs fois.")
+            if dico_code.has_key(modeli[2]): ERR.mess('E',"La mod√©lisation: "+modeli[0]+" a un CODE__ d√©j√† utilis√©:"+modeli[2])
             dico[modeli[0]]=1
             dico_code[modeli[2]]=1
         ERR.contexte("","RAZ")
@@ -1092,7 +1092,7 @@ class creer_capy(GenericASTTraversal):
 #       cata_te     ::=  cmodif ident TYPE_ELEM__  entete   modes_locaux options
 #       cata_te     ::=  cmodif ident TYPE_ELEM__  entete   modes_locaux options
         node.cmodif=node[0].attr
-        if node[1].attr!= node[3].entete[0] : ERR.mess("E","le nom du TYPE_ELEM n'est pas cohÈrent: "+node[1].attr+" != "+node[3].entete[0])
+        if node[1].attr!= node[3].entete[0] : ERR.mess("E","le nom du TYPE_ELEM n'est pas coh√©rent: "+node[1].attr+" != "+node[3].entete[0])
         if len(node)== 6 : node.cata_te=(node[3].entete,node[4].modes_locaux,node[5].options)
 
     def n_options(self, node):
@@ -1115,7 +1115,7 @@ class creer_capy(GenericASTTraversal):
 #       opt      ::= ident entier IN__  l_ident  OUT__     l_ident
 #       opt      ::= ident entier IN__  OUT__    l_ident
 #       opt      ::= ident entier IN__  OUT__
-        ERR.contexte("DÈfinition de l'option:"+node[0].attr + " vers la ligne: "+str(node[0].lineno))
+        ERR.contexte("D√©finition de l'option:"+node[0].attr + " vers la ligne: "+str(node[0].lineno))
         if len(node)==6 :
             node.opt =(node[0].attr,node[1].attr,trie_en_2(node[3].l_ident),trie_en_2(node[5].l_ident))
         if len(node)==5 :
@@ -1130,7 +1130,7 @@ class creer_capy(GenericASTTraversal):
 # -------------------------------------------------------------------
 
 def detruire_kids(ast):
-    # but : dÈtruire dans l'arbre produit tout l'arbre syntaxique (.kids, .lineno, .type).
+    # but : d√©truire dans l'arbre produit tout l'arbre syntaxique (.kids, .lineno, .type).
     for k in ast.__dict__.keys():
         if k=='_kids' :
             del ast._kids
@@ -1150,7 +1150,7 @@ def detruire_kids(ast):
 
 
 def trie_en_2(liste):
-    # ordonne la liste de paires (a1,b1,a2,b2,...) en classant par ordre alphabÈtique des bi :
+    # ordonne la liste de paires (a1,b1,a2,b2,...) en classant par ordre alphab√©tique des bi :
     if len(liste)%2 != 0 : ERR.mess('E',"Erreur la liste d'identificateurs doit etre une liste de paires:\n\t "+str(liste))
     l1=[];l2=[];lr=[]
     for k in range(len(liste)/2) :

@@ -12,7 +12,7 @@ Transfinite Line{1} = NbElem+1;
 
 
 // Extrude Line {Num. de la ligne , {Dx,Dy,Dz}} 
-//              {Layers{Nb de couche, épaisseur relative de la couche};};
+//              {Layers{Nb de couche, Ã©paisseur relative de la couche};};
 Extrude Line {1, {0,1,0}}
              {
                Layers{NbElem,1}; Recombine; 
@@ -26,4 +26,3 @@ Extrude Surface {5, {0,0,1}}
 Physical Volume(1)=1;
 Physical Surface(2)=27;
 Physical Surface(3)=5;
-

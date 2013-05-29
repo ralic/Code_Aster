@@ -1,4 +1,4 @@
-# -*- coding: iso-8859-1 -*-
+# coding=utf-8
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -26,7 +26,7 @@ from numpy import linalg as LA
 
 
 class TANGENT :
-    """Vérification sur les matrices tangentes
+    """VÃ©rification sur les matrices tangentes
 
     Attributs publics :
         mat       : matrice tangente
@@ -149,7 +149,7 @@ class TANGENT :
         return liste_i, liste_j, liste_matt, liste_matp, liste_diff, nor_diff, max_diff
 
     def Symetrie(self, prec_diff = 1.E-4) :
-        """Vérification que la matrice tangente est symétrique
+        """VÃ©rification que la matrice tangente est symÃ©trique
         On retourne la norme relative de l'ecart a la symetrie : || (A-At)/2|| / ||A||
         On affiche les termes qui s'ecartent de la symetrie
         prec_diff : ecart au-dessus duquel on considere que ce n'est pas OK

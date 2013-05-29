@@ -1,4 +1,4 @@
-# -*- coding: iso-8859-1 -*-
+# coding=utf-8
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -22,7 +22,7 @@ from cata_comportement import LoiComportement
 
 loi = LoiComportement(
    nom            = 'DIS_ECRO_CINE',
-   doc = """Relation de comportement à écrouissage cinématique des elements discrets""",
+   doc = """Relation de comportement Ã  Ã©crouissage cinÃ©matique des elements discrets""",
    num_lc         = 9999,
    nb_vari        = 18,
    nom_vari       = ('DIS1','DIS2','DIS3','DIS4','DIS5','DIS6','DIS7','DIS8','DIS9','DIS10','DIS11','DIS12','DIS13','DIS14','DIS15','DIS16','DIS17','DIS18'),

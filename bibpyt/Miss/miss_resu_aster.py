@@ -1,4 +1,4 @@
-# -*- coding: iso-8859-1 -*-
+# coding=utf-8
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -19,9 +19,9 @@
 # person_in_charge: mathieu.courtois at edf.fr
 
 """Module permettant de lire le fichier produit par IMPR_MACR_ELEM/IMPR_MISS_3D
-et de produire une structure pour écrire les fichiers en entrées de Miss.
+et de produire une structure pour Ã©crire les fichiers en entrÃ©es de Miss.
 
-Cette structure est potentiellement volumineuse et sera donc détruite dès que possible.
+Cette structure est potentiellement volumineuse et sera donc dÃ©truite dÃ¨s que possible.
 """
 
 import os
@@ -42,8 +42,8 @@ class ResuAsterReader(object):
     """Lit le fichier issu de IMPR_MACR_ELEM/IMPR_MISS_3D."""
     def __init__(self, nbgrp):
         """Initialisation
-        `nbgrp` est le nombre de groupes de mailles décrits
-        `nbgrp + 1` correspond à la partie volumique de la structure
+        `nbgrp` est le nombre de groupes de mailles dÃ©crits
+        `nbgrp + 1` correspond Ã  la partie volumique de la structure
         """
         self.fobj = None
         self.struct = STRUCT_RESULTAT()
@@ -63,7 +63,7 @@ class ResuAsterReader(object):
         return self.struct
 
     def check(self):
-        """vérifications"""
+        """vÃ©rifications"""
         struct = self.struct
         try:
             struct.check()
@@ -124,20 +124,20 @@ class ResuAsterReader(object):
         self.struct.noeud_nb = int(nb)
 
     def _read_noeuds_coord(self):
-        """noeuds : coordonnées"""
+        """noeuds : coordonnÃ©es"""
         self.ln += lire_nb_valeurs(self.fobj,
                                    self.struct.noeud_nb * 3, 
                                    self.struct.noeud_coor, double)
 
     def _read_mailles_connect(self):
-        """mailles : connectivité"""
+        """mailles : connectivitÃ©"""
         self.struct.init_connect(self.nbgrp)
         for i in range(self.nbgrp):
             self._read_mailles_connect_idx(i)
         self.struct.maille_nb_tot = sum(self.struct.maille_nb)
 
     def _read_mailles_connect_idx(self, idx):
-        """mailles : nb et connectivité pour un groupe"""
+        """mailles : nb et connectivitÃ© pour un groupe"""
         self.ln += 1
         lab, nb = self.fobj.readline().split()
         nb = int(nb)
@@ -162,7 +162,7 @@ class ResuAsterReader(object):
                                    1, max_per_line=3, regexp_label="MODE +DYNA")
 
     def _read_mode_dyna_freq(self):
-        """modes dynamiques : fréquence"""
+        """modes dynamiques : frÃ©quence"""
         self.ln += lire_nb_valeurs(self.fobj,
                                    self.struct.mode_dyna_nb,
                                    self.struct.mode_dyna_freq,
@@ -182,7 +182,7 @@ class ResuAsterReader(object):
                                    double, 1, 1)
 
     def _read_mode_dyna_rigi(self):
-        """modes dynamiques : rigidité"""
+        """modes dynamiques : rigiditÃ©"""
         self.ln += lire_nb_valeurs(self.fobj,
                                    self.struct.mode_dyna_nb,
                                    self.struct.mode_dyna_rigi,
@@ -205,7 +205,7 @@ class ResuAsterReader(object):
                                    double, 1, 1)
 
     def _read_mode_stat_rigi(self):
-        """modes statiques : rigidité"""
+        """modes statiques : rigiditÃ©"""
         self.ln += lire_nb_valeurs(self.fobj,
                                    self.struct.mode_stat_nb ** 2,
                                    self.struct.mode_stat_rigi,
@@ -219,27 +219,27 @@ class ResuAsterReader(object):
                                  double, 1, 1, regexp_label="STAT +AMOR")
 
     def _read_mode_coupl_para(self):
-        """modes couplés"""
+        """modes couplÃ©s"""
         self.ln += 1
         lab, nbd, nbs = self.fobj.readline().split()
         self.struct.coupl_nb = (int(nbd), int(nbs))
 
     def _read_mode_coupl_mass(self):
-        """modes couplés : masse"""
+        """modes couplÃ©s : masse"""
         self.ln += lire_nb_valeurs(self.fobj,
                                    self.struct.mode_dyna_nb * self.struct.mode_stat_nb,
                                    self.struct.coupl_mass,
                                    double, 1, 1)
 
     def _read_mode_coupl_rigi(self):
-        """modes couplés : rigidité"""
+        """modes couplÃ©s : rigiditÃ©"""
         self.ln += lire_nb_valeurs(self.fobj,
                                    self.struct.mode_dyna_nb * self.struct.mode_stat_nb,
                                    self.struct.coupl_rigi,
                                    double, 1, 1)
 
     def _read_mode_coupl_amor(self):
-        """modes couplés : amortissements (facultatifs)"""
+        """modes couplÃ©s : amortissements (facultatifs)"""
         unused = lire_nb_valeurs(self.fobj,
                                  self.struct.mode_dyna_nb * self.struct.mode_stat_nb,
                                  self.struct.coupl_amor,
@@ -280,7 +280,7 @@ class STRUCT_RESULTAT:
         self.maille_connec = [[] for i in range(nbgrp)]
 
     def check(self):
-        """Vérifications."""
+        """VÃ©rifications."""
         assert len(self.noeud_coor) == self.noeud_nb * 3
         assert len(self.maille_nb) == len(self.maille_connec)
         for nb, dime, connec in zip(self.maille_nb,
@@ -306,7 +306,7 @@ class STRUCT_RESULTAT:
         assert len(self.coupl_rigi) == self.mode_dyna_nb * self.mode_stat_nb
 
     def post(self):
-        """arrangements : compléter la connectivité à 20"""
+        """arrangements : complÃ©ter la connectivitÃ© Ã  20"""
         nbgrp = len(self.maille_nb)
         for idx in range(nbgrp):
             dime = self.maille_dime[idx]

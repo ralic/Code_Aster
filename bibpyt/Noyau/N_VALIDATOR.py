@@ -1,4 +1,4 @@
-# -*- coding: iso-8859-1 -*-
+# coding=utf-8
 # person_in_charge: mathieu.courtois at edf.fr
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -51,10 +51,10 @@ class Protocol:
         # (a) verifier si l'objet peut s'adapter au protocole
         adapt = getattr(obj, '__adapt__', None)
         if adapt is not None:
-            # on demande à l'objet obj de réaliser lui-meme l'adaptation
+            # on demande Ã  l'objet obj de rÃ©aliser lui-meme l'adaptation
             return adapt(self)
 
-        # (b) verifier si un adapteur est enregistré (si oui l'utiliser)
+        # (b) verifier si un adapteur est enregistrÃ© (si oui l'utiliser)
         if self.registry:
             for T in cls_mro(obj.__class__):
                 if T in self.registry:
@@ -68,8 +68,8 @@ class Protocol:
                         (obj.__class__.__name__, self.name))
 
 class PProtocol(Protocol):
-    """Verificateur de protocole paramétré (classe de base)"""
-    #Protocole paramétré. Le registre est unique pour toutes les instances. La methode register est une methode de classe
+    """Verificateur de protocole paramÃ©trÃ© (classe de base)"""
+    #Protocole paramÃ©trÃ©. Le registre est unique pour toutes les instances. La methode register est une methode de classe
     registry={}
     def __init__(self,name,**args):
         self.name = name
@@ -79,7 +79,7 @@ class PProtocol(Protocol):
     register=classmethod(register)
 
 class ListProtocol(Protocol):
-    """Verificateur de protocole liste : convertit un objet quelconque en liste pour validation ultérieure"""
+    """Verificateur de protocole liste : convertit un objet quelconque en liste pour validation ultÃ©rieure"""
     def default(self,obj):
         if type(obj) is tuple:
             if len(obj) > 0 and obj[0] in ('RI','MP'):
@@ -144,7 +144,7 @@ class TypeProtocol(PProtocol):
                 if os.path.isdir(obj):
                     return obj
                 else:
-                    raise ValError(ufmt(_(u"%s n'est pas un répertoire valide"), repr(obj)))
+                    raise ValError(ufmt(_(u"%s n'est pas un rÃ©pertoire valide"), repr(obj)))
             elif type(type_permis) == types.ClassType or isinstance(type_permis,type):
                 try:
                     if self.is_object_from(obj,type_permis): return obj
@@ -156,14 +156,14 @@ class TypeProtocol(PProtocol):
                 except Exception, err:
                     pass
             else:
-                print convert(ufmt(_(u"Type non encore géré %s"), `type_permis`))
-        raise ValError(ufmt(_(u"%s (de type %s) n'est pas d'un type autorisé: %s %s"),
+                print convert(ufmt(_(u"Type non encore gÃ©rÃ© %s"), `type_permis`))
+        raise ValError(ufmt(_(u"%s (de type %s) n'est pas d'un type autorisÃ©: %s %s"),
                             repr(obj), type(obj), typ, unicode(err)))
 
     def is_complexe(self,valeur):
         """ Retourne 1 si valeur est un complexe, 0 sinon """
         if is_number(valeur):
-            # Pour permettre l'utilisation de complexes Python (accepte les entiers et réels)
+            # Pour permettre l'utilisation de complexes Python (accepte les entiers et rÃ©els)
             return 1
         elif type(valeur) != tuple :
             # On n'autorise pas les listes pour les complexes
@@ -202,7 +202,7 @@ class TypeProtocol(PProtocol):
 reelProto=TypeProtocol("reel",typ=('R',))
 
 class CardProtocol(PProtocol):
-    """Verificateur de cardinalité """
+    """Verificateur de cardinalitÃ© """
     #pas de registre par instance. Registre unique pour toutes les instances
     registry={}
     def __init__(self,name,min=1,max=1):
@@ -216,7 +216,7 @@ class CardProtocol(PProtocol):
         return obj
 
 class IntoProtocol(PProtocol):
-    """Verificateur de choix possibles : liste discrète ou intervalle"""
+    """Verificateur de choix possibles : liste discrÃ¨te ou intervalle"""
     #pas de registre par instance. Registre unique pour toutes les instances
     registry={}
     def __init__(self,name,into=None,val_min='**',val_max='**'):
@@ -235,7 +235,7 @@ class IntoProtocol(PProtocol):
                 if val_min == '**': val_min = obj -1
                 if val_max == '**': val_max = obj +1
                 if obj < val_min or obj > val_max :
-                    raise ValError(ufmt(_(u"La valeur : %s est en dehors du domaine de validité [ %s , %s ]"),
+                    raise ValError(ufmt(_(u"La valeur : %s est en dehors du domaine de validitÃ© [ %s , %s ]"),
                                    repr(obj), self.val_min, self.val_max))
         return obj
 
@@ -259,7 +259,7 @@ class Valid(PProtocol):
         Cette classe est la classe mere des validateurs Accas
         Elle doit etre derivee
         Elle presente la signature des methodes indispensables pour son bon
-        fonctionnement et dans certains cas leur comportement par défaut.
+        fonctionnement et dans certains cas leur comportement par dÃ©faut.
 
         @ivar cata_info: raison de la validite ou de l'invalidite du validateur meme
         @type cata_info: C{string}
@@ -270,37 +270,37 @@ class Valid(PProtocol):
 
    def info(self):
        """
-          Cette methode retourne une chaine de caractères informative sur
-          la validation demandée par le validateur. Elle est utilisée
-          pour produire le compte-rendu de validité du mot clé associé.
+          Cette methode retourne une chaine de caractÃ¨res informative sur
+          la validation demandÃ©e par le validateur. Elle est utilisÃ©e
+          pour produire le compte-rendu de validitÃ© du mot clÃ© associÃ©.
        """
        return _(u"valeur valide")
 
    def aide(self):
        """
-          Cette methode retourne une chaine de caractère qui permet
+          Cette methode retourne une chaine de caractÃ¨re qui permet
           de construire un message d'aide en ligne.
-          En général, le message retourné est le meme que celui retourné par la
-          méthode info.
+          En gÃ©nÃ©ral, le message retournÃ© est le meme que celui retournÃ© par la
+          mÃ©thode info.
        """
        return self.info()
 
    def info_erreur_item(self):
        """
-          Cette méthode permet d'avoir un message d'erreur pour un item
-          dans une liste dans le cas ou le validateur fait des vérifications
+          Cette mÃ©thode permet d'avoir un message d'erreur pour un item
+          dans une liste dans le cas ou le validateur fait des vÃ©rifications
           sur les items d'une liste. Si le validateur fait seulement des
-          vérifications sur la liste elle meme et non sur ses items, la méthode
+          vÃ©rifications sur la liste elle meme et non sur ses items, la mÃ©thode
           doit retourner une chaine vide.
        """
        return " "
 
    def info_erreur_liste(self):
        """
-          Cette méthode a un comportement complémentaire de celui de
-          info_erreur_item. Elle retourne un message d'erreur lié uniquement
-          aux vérifications sur la liste elle meme et pas sur ses items.
-          Dans le cas où le validateur ne fait pas de vérification sur des
+          Cette mÃ©thode a un comportement complÃ©mentaire de celui de
+          info_erreur_item. Elle retourne un message d'erreur liÃ© uniquement
+          aux vÃ©rifications sur la liste elle meme et pas sur ses items.
+          Dans le cas oÃ¹ le validateur ne fait pas de vÃ©rification sur des
           listes, elle retourne une chaine vide
        """
        return " "
@@ -334,10 +334,10 @@ class Valid(PProtocol):
        """
           Cette methode retourne un entier qui indique si liste_courante est partiellement valide (valeur 1)
           ou invalide (valeur 0). La validation partielle concerne les listes en cours de construction : on
-          veut savoir si la liste en construction peut etre complétée ou si elle peut déjà etre considérée
+          veut savoir si la liste en construction peut etre complÃ©tÃ©e ou si elle peut dÃ©jÃ  etre considÃ©rÃ©e
           comme invalide.
-          En général un validateur effectue la meme validation pour les listes partielles et les
-          listes complètes.
+          En gÃ©nÃ©ral un validateur effectue la meme validation pour les listes partielles et les
+          listes complÃ¨tes.
        """
        return self.verif(liste_courante)
 
@@ -356,50 +356,50 @@ class Valid(PProtocol):
 
    def is_list(self):
        """
-          Cette méthode retourne un entier qui indique si le validateur
+          Cette mÃ©thode retourne un entier qui indique si le validateur
           permet les listes (valeur 1) ou ne les permet pas (valeur 0).
-          Par défaut, un validateur n'autorise que des scalaires.
+          Par dÃ©faut, un validateur n'autorise que des scalaires.
        """
        return 0
 
    def has_into(self):
        """
-          Cette méthode retourne un entier qui indique si le validateur
+          Cette mÃ©thode retourne un entier qui indique si le validateur
           propose une liste de choix (valeur 1) ou n'en propose pas.
-          Par défaut, un validateur n'en propose pas.
+          Par dÃ©faut, un validateur n'en propose pas.
        """
        return 0
 
    def get_into(self,liste_courante=None,into_courant=None):
        """
-          Cette méthode retourne la liste de choix proposée par le validateur.
-          Si le validateur ne propose pas de liste de choix, la méthode
+          Cette mÃ©thode retourne la liste de choix proposÃ©e par le validateur.
+          Si le validateur ne propose pas de liste de choix, la mÃ©thode
           retourne None.
-          L'argument d'entrée liste_courante, s'il est différent de None, donne
-          la liste des choix déjà effectués par l'utilisateur. Dans ce cas, la
-          méthode get_into doit calculer la liste des choix en en tenant
-          compte. Par exemple, si le validateur n'autorise pas les répétitions,
-          la liste des choix retournée ne doit pas contenir les choix déjà
+          L'argument d'entrÃ©e liste_courante, s'il est diffÃ©rent de None, donne
+          la liste des choix dÃ©jÃ  effectuÃ©s par l'utilisateur. Dans ce cas, la
+          mÃ©thode get_into doit calculer la liste des choix en en tenant
+          compte. Par exemple, si le validateur n'autorise pas les rÃ©pÃ©titions,
+          la liste des choix retournÃ©e ne doit pas contenir les choix dÃ©jÃ 
           contenus dans liste_courante.
-          L'argument d'entrée into_courant, s'il est différent de None, donne
-          la liste des choix proposés par d'autres validateurs. Dans ce cas,
-          la méthode get_into doit calculer la liste des choix à retourner
-          en se limitant à cette liste initiale. Par exemple, si into_courant
+          L'argument d'entrÃ©e into_courant, s'il est diffÃ©rent de None, donne
+          la liste des choix proposÃ©s par d'autres validateurs. Dans ce cas,
+          la mÃ©thode get_into doit calculer la liste des choix Ã  retourner
+          en se limitant Ã  cette liste initiale. Par exemple, si into_courant
           vaut (1,2,3) et que le validateur propose la liste de choix (3,4,5),
-          la méthode ne doit retourner que (3,).
+          la mÃ©thode ne doit retourner que (3,).
 
-          La méthode get_into peut retourner une liste vide [], ce qui veut
+          La mÃ©thode get_into peut retourner une liste vide [], ce qui veut
           dire qu'il n'y a pas (ou plus) de choix possible. Cette situation
-          peut etre normale : l''utilisateur a utilisé tous les choix, ou
-          résulter d'une incohérence des validateurs :
+          peut etre normale : l''utilisateur a utilisÃ© tous les choix, ou
+          rÃ©sulter d'une incohÃ©rence des validateurs :
           choix parmi (1,2,3) ET choix parmi (4,5,6). Il est impossible de
-          faire la différence entre ces deux situations.
+          faire la diffÃ©rence entre ces deux situations.
        """
        return into_courant
 
 class ListVal(Valid):
    """
-       Cette classe sert de classe mère pour tous les validateurs qui acceptent
+       Cette classe sert de classe mÃ¨re pour tous les validateurs qui acceptent
        des listes.
    """
    def is_list(self):
@@ -407,9 +407,9 @@ class ListVal(Valid):
 
    def get_into(self,liste_courante=None,into_courant=None):
        """
-          Cette méthode get_into effectue un traitement général qui consiste
+          Cette mÃ©thode get_into effectue un traitement gÃ©nÃ©ral qui consiste
           a filtrer la liste de choix into_courant, si elle existe, en ne
-          conservant que les valeurs valides (appel de la méthode valid).
+          conservant que les valeurs valides (appel de la mÃ©thode valid).
        """
        if into_courant is None:
           return None
@@ -422,8 +422,8 @@ class ListVal(Valid):
 
    def convert(self,valeur):
        """
-          Méthode convert pour les validateurs de listes. Cette méthode
-          fait appel à la méthode convert_item sur chaque élément de la
+          MÃ©thode convert pour les validateurs de listes. Cette mÃ©thode
+          fait appel Ã  la mÃ©thode convert_item sur chaque Ã©lÃ©ment de la
           liste.
        """
        if is_sequence(valeur):
@@ -435,9 +435,9 @@ class ListVal(Valid):
 
    def verif(self,valeur):
        """
-          Méthode verif pour les validateurs de listes. Cette méthode
-          fait appel à la méthode verif_item sur chaque élément de la
-          liste. Si valeur est un paramètre, on utilise sa valeur effective
+          MÃ©thode verif pour les validateurs de listes. Cette mÃ©thode
+          fait appel Ã  la mÃ©thode verif_item sur chaque Ã©lÃ©ment de la
+          liste. Si valeur est un paramÃ¨tre, on utilise sa valeur effective
           valeur.valeur.
        """
        if is_sequence(valeur):
@@ -451,7 +451,7 @@ class ListVal(Valid):
 class Compulsory(ListVal):
       """
           Validateur operationnel
-          Verification de la présence obligatoire d'un élément dans une liste
+          Verification de la prÃ©sence obligatoire d'un Ã©lÃ©ment dans une liste
       """
       registry={}
       def __init__(self,elem=()):
@@ -504,7 +504,7 @@ class NoRepeat(ListVal):
           self.cata_info=""
 
       def info(self):
-          return _(u": pas de présence de doublon dans la liste")
+          return _(u": pas de prÃ©sence de doublon dans la liste")
 
       def info_erreur_liste(self):
           return _(u"Les doublons ne sont pas permis")
@@ -535,9 +535,9 @@ class NoRepeat(ListVal):
 
       def get_into(self,liste_courante=None,into_courant=None):
           """
-          Methode get_into spécifique pour validateur NoRepeat, on retourne
+          Methode get_into spÃ©cifique pour validateur NoRepeat, on retourne
           une liste de choix qui ne contient aucune valeur de into_courant
-          déjà contenue dans liste_courante
+          dÃ©jÃ  contenue dans liste_courante
           """
           if into_courant is None:
              liste_choix=None
@@ -658,10 +658,10 @@ class OrdList(ListVal):
 
       def get_into(self,liste_courante=None,into_courant=None):
           """
-          Methode get_into spécifique pour validateur OrdList, on retourne
+          Methode get_into spÃ©cifique pour validateur OrdList, on retourne
           une liste de choix qui ne contient aucune valeur de into_courant
-          dont la valeur est inférieure à la dernière valeur de
-          liste_courante, si elle est différente de None.
+          dont la valeur est infÃ©rieure Ã  la derniÃ¨re valeur de
+          liste_courante, si elle est diffÃ©rente de None.
           """
           if into_courant is None:
              return None
@@ -722,9 +722,9 @@ class OrVal(Valid):
 
       def is_list(self):
           """
-             Si plusieurs validateurs sont reliés par un OU
+             Si plusieurs validateurs sont reliÃ©s par un OU
              il suffit qu'un seul des validateurs attende une liste
-             pour qu'on considère que leur union attend une liste.
+             pour qu'on considÃ¨re que leur union attend une liste.
           """
           for validator in self.validators:
               v=validator.is_list()
@@ -759,9 +759,9 @@ class OrVal(Valid):
 
       def has_into(self):
           """
-          Dans le cas ou plusieurs validateurs sont reliés par un OU
+          Dans le cas ou plusieurs validateurs sont reliÃ©s par un OU
           il faut que tous les validateurs proposent un choix pour
-          qu'on considère que leur union propose un choix.
+          qu'on considÃ¨re que leur union propose un choix.
           Exemple : Enum(1,2,3) OU entier pair, ne propose pas de choix
           En revanche, Enum(1,2,3) OU Enum(4,5,6) propose un choix (1,2,3,4,5,6)
           """
@@ -773,10 +773,10 @@ class OrVal(Valid):
 
       def get_into(self,liste_courante=None,into_courant=None):
           """
-          Dans le cas ou plusieurs validateurs sont reliés par un OU
+          Dans le cas ou plusieurs validateurs sont reliÃ©s par un OU
           tous les validateurs doivent proposer un choix pour
-          qu'on considère que leur union propose un choix. Tous les choix
-          proposés par les validateurs sont réunis (opérateur d'union).
+          qu'on considÃ¨re que leur union propose un choix. Tous les choix
+          proposÃ©s par les validateurs sont rÃ©unis (opÃ©rateur d'union).
           Exemple : Enum(1,2,3) OU entier pair, ne propose pas de choix
           En revanche, Enum(1,2,3) OU Enum(4,5,6) propose un
           choix (1,2,3,4,5,6)
@@ -791,9 +791,9 @@ class OrVal(Valid):
 
       def valide_liste_partielle(self,liste_courante=None):
           """
-           Méthode de validation de liste partielle pour le validateur Or.
-           Si un des validateurs gérés par le validateur Or considère la
-           liste comme valide, le validateur Or la considère comme valide.
+           MÃ©thode de validation de liste partielle pour le validateur Or.
+           Si un des validateurs gÃ©rÃ©s par le validateur Or considÃ¨re la
+           liste comme valide, le validateur Or la considÃ¨re comme valide.
           """
           for validator in self.validators:
               v=validator.valide_liste_partielle(liste_courante)
@@ -883,9 +883,9 @@ class AndVal(Valid):
 
       def valide_liste_partielle(self,liste_courante=None):
           """
-           Méthode de validation de liste partielle pour le validateur And.
-           Tous les validateurs gérés par le validateur And doivent considérer
-           la liste comme valide, pour que le validateur And la considère
+           MÃ©thode de validation de liste partielle pour le validateur And.
+           Tous les validateurs gÃ©rÃ©s par le validateur And doivent considÃ©rer
+           la liste comme valide, pour que le validateur And la considÃ¨re
            comme valide.
           """
           for validator in self.validators:
@@ -896,9 +896,9 @@ class AndVal(Valid):
 
       def is_list(self):
           """
-          Si plusieurs validateurs sont reliés par un ET
+          Si plusieurs validateurs sont reliÃ©s par un ET
           il faut que tous les validateurs attendent une liste
-          pour qu'on considère que leur intersection attende une liste.
+          pour qu'on considÃ¨re que leur intersection attende une liste.
           Exemple Range(2,5) ET Card(1) n'attend pas une liste
           Range(2,5) ET Pair attend une liste
           """
@@ -910,11 +910,11 @@ class AndVal(Valid):
 
       def has_into(self):
           """
-          Dans le cas ou plusieurs validateurs sont reliés par un ET
+          Dans le cas ou plusieurs validateurs sont reliÃ©s par un ET
           il suffit qu'un seul validateur propose un choix pour
-          qu'on considère que leur intersection propose un choix.
+          qu'on considÃ¨re que leur intersection propose un choix.
           Exemple : Enum(1,2,3) ET entier pair, propose un choix
-          En revanche, entier pair ET superieur à 10 ne propose pas de choix
+          En revanche, entier pair ET superieur Ã  10 ne propose pas de choix
           """
           for validator in self.validators:
               v=validator.has_into()
@@ -924,10 +924,10 @@ class AndVal(Valid):
 
       def get_into(self,liste_courante=None,into_courant=None):
           """
-          Dans le cas ou plusieurs validateurs sont reliés par un ET
+          Dans le cas ou plusieurs validateurs sont reliÃ©s par un ET
           il suffit qu'un seul validateur propose un choix pour
-          qu'on considère que leur intersection propose un choix. Tous les
-          choix proposés par les validateurs sont croisés (opérateur
+          qu'on considÃ¨re que leur intersection propose un choix. Tous les
+          choix proposÃ©s par les validateurs sont croisÃ©s (opÃ©rateur
           d'intersection)
           Exemple : Enum(1,2,3) ET entier pair, propose un choix (2,)
           En revanche, Enum(1,2,3) ET Enum(4,5,6) ne propose pas de choix.
@@ -964,7 +964,7 @@ def validatorFactory(validator):
     else:
        return validator
 
-# Ci-dessous : exemples de validateur (peu testés)
+# Ci-dessous : exemples de validateur (peu testÃ©s)
 
 class RangeVal(ListVal):
       """
@@ -978,14 +978,14 @@ class RangeVal(ListVal):
       def __init__(self,low,high):
           self.low=low
           self.high=high
-          self.cata_info=ufmt(_(u"%s doit être inférieur a %s"), low,high)
+          self.cata_info=ufmt(_(u"%s doit Ãªtre infÃ©rieur a %s"), low,high)
 
       def info(self):
           return ufmt(_(u"valeur dans l'intervalle %s , %s"), self.low, self.high)
 
       def convert_item(self,valeur):
           if valeur > self.low and valeur < self.high:return valeur
-          raise ValError(ufmt(_(u"%s devrait être comprise entre %s et %s"),
+          raise ValError(ufmt(_(u"%s devrait Ãªtre comprise entre %s et %s"),
                               valeur, self.low, self.high))
 
       def verif_item(self,valeur):
@@ -1276,7 +1276,7 @@ class InstanceVal(ListVal):
              #instance nouvelle mode
              aClass=type(aClass)
           else:
-             raise ValError(_(u"type non supporté"))
+             raise ValError(_(u"type non supportÃ©"))
 
           self.aClass=aClass
 
@@ -1294,10 +1294,10 @@ class VerifTypeTuple(Valid,ListVal) :
           self.cata_info=""
 
       def info(self):
-          return _(u": vérifie les types dans un tuple")
+          return _(u": vÃ©rifie les types dans un tuple")
 
       def info_erreur_liste(self):
-          return _(u"Les types entrés ne sont pas permis")
+          return _(u"Les types entrÃ©s ne sont pas permis")
 
       def default(self,valeur):
           #if valeur in self.liste : raise ValError("%s est un doublon" % valeur)
@@ -1348,7 +1348,7 @@ class VerifTypeTuple(Valid,ListVal) :
 class VerifExiste(ListVal) :
       """
          fonctionne avec into
-         Met une liste à jour selon les mot clefs existant
+         Met une liste Ã  jour selon les mot clefs existant
          exemple si into = ("A","B","C")
          si au niveau N du JDC les objets "A" et "C" existe
          alors la liste des into deviendra ( "A","C")
@@ -1387,7 +1387,7 @@ class VerifExiste(ListVal) :
              parent=mc.parent
              mc=parent
              k=k-1
-         #on met la liste à jour
+         #on met la liste Ã  jour
           parent.forceRecalcul=self.niveauVerif
           self.listeDesFreres=parent.liste_mc_presents()
 
@@ -1397,17 +1397,17 @@ class VerifExiste(ListVal) :
 
 class RegExpVal(ListVal):
     """
-    Vérifie qu'une chaîne de caractère corresponde à l'expression régulière 'pattern'
+    VÃ©rifie qu'une chaÃ®ne de caractÃ¨re corresponde Ã  l'expression rÃ©guliÃ¨re 'pattern'
     """
 
-    errormsg = u'La chaîne "%(value)s" ne correspond pas au motif "%(pattern)s"'
+    errormsg = u'La chaÃ®ne "%(value)s" ne correspond pas au motif "%(pattern)s"'
 
     def __init__(self, pattern):
         self.pattern = pattern
         self.compiled_regexp = re.compile(pattern)
     
     def info(self):
-        return u'Une chaîne correspondant au motif "%s" est attendue.' % self.pattern
+        return u'Une chaÃ®ne correspondant au motif "%s" est attendue.' % self.pattern
 
     def verif_item(self, valeur):
         if self.compiled_regexp.match(valeur):
@@ -1423,7 +1423,7 @@ class RegExpVal(ListVal):
 
 class FileExtVal(RegExpVal):
     """
-    Vérifie qu'une chaîne de caractère soit un nom de fichier valide avec l'extension 'ext'
+    VÃ©rifie qu'une chaÃ®ne de caractÃ¨re soit un nom de fichier valide avec l'extension 'ext'
     """
 
     def __init__(self, ext):

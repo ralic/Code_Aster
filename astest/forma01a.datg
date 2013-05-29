@@ -1,4 +1,4 @@
-# -*- coding: iso-8859-1 -*-
+# coding=utf-8
 
 import geompy
 import smesh
@@ -83,7 +83,7 @@ M_Plaque.Group(GD,'D')
 M_Plaque.Group(GF,'F')
 M_Plaque.Group(GG,'G')
 
-# Mise à jour de l'arbre
+# Mise Ã  jour de l'arbre
 #---------------------------
 # Si on a une interface graphique...
 if salome.sg.hasDesktop():

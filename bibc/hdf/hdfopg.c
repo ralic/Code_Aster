@@ -1,5 +1,4 @@
 /*           CONFIGURATION MANAGEMENT OF EDF VERSION                  */
-/* MODIF hdfopg hdf  DATE 10/04/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE */
 /* ================================================================== */
 /* COPYRIGHT (C) 1991 - 2012  EDF R&D              WWW.CODE-ASTER.ORG */
 /*                                                                    */
@@ -13,17 +12,17 @@
 /* GENERAL PUBLIC LICENSE FOR MORE DETAILS.                           */
 /*                                                                    */
 /* YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE  */
-/* ALONG WITH THIS PROGRAM; IF NOT, WRITE TO : EDF R&D CODE_ASTER,    */
+/* ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,      */
 /*    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.     */
 /* ================================================================== */
 #include "aster.h"
 #include "aster_fort.h"
 /*-----------------------------------------------------------------------------/
-/ Ouverture d'un groupe HDF, renvoie une erreur si le groupe ne peut être ouvert 
-/  Paramètres :
+/ Ouverture d'un groupe HDF, renvoie une erreur si le groupe ne peut Ãªtre ouvert 
+/  ParamÃ¨tres :
 /   - in idfile : identificateur du fichier (hid_t)
 /   - in  nomgr : nom du groupe (contient toute l'arborescence depuis "/")
-/  Résultats :
+/  RÃ©sultats :
 /     identificateur du groupe, -1 sinon (hid_t = int)
 /-----------------------------------------------------------------------------*/
 #ifndef _DISABLE_HDF5

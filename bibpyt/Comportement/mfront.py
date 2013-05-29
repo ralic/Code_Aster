@@ -1,4 +1,4 @@
-# -*- coding: iso-8859-1 -*-
+# coding=utf-8
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -22,10 +22,10 @@ from cata_comportement import LoiComportement
 
 loi = LoiComportement(
    nom            = 'MFRONT',
-   doc = """loi de comportement dont la routine d'intégration est construire par MFront.""",
+   doc = """loi de comportement dont la routine d'intÃ©gration est construire par MFront.""",
    num_lc         = 50,
    nb_vari        = 0,
-   nom_vari       = None, # leur nombre est donné sous COMP_INCR
+   nom_vari       = None, # leur nombre est donnÃ© sous COMP_INCR
    mc_mater       = ('UMAT'),
    modelisation   = ('3D', 'AXIS', 'D_PLAN'),
    deformation    = ('PETIT', 'PETIT_REAC','GDEF_LOG'),

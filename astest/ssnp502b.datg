@@ -1,6 +1,6 @@
 * maillage de SSNP502B
-* pour modélisation utilisant le mot clé 'CONTACT' 
-* avec frottement, méthode de pénalisation
+* pour modÃ©lisation utilisant le mot clÃ© 'CONTACT' 
+* avec frottement, mÃ©thode de pÃ©nalisation
 
 opti dime 2;
 opti elem qua4;
@@ -51,4 +51,3 @@ sauv form (PLAQUE et ANNEAU) ;
 trac (PLAQUE et ANNEAU);
 
 fin;
-

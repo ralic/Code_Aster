@@ -1,4 +1,4 @@
-# -*- coding: iso-8859-1 -*-
+# coding=utf-8
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -22,7 +22,7 @@ from cata_comportement import LoiComportement
 
 loi = LoiComportement(
    nom            = 'DIS_GRICRA',
-   doc = """Relation de comportement de la liaison grille-crayons des assemblages combustibles, applicable à des elements discrets""",
+   doc = """Relation de comportement de la liaison grille-crayons des assemblages combustibles, applicable Ã  des elements discrets""",
    num_lc         = 9999,
    nb_vari        = 6,
    nom_vari       = ('DIS1','DIS2','DIS3','DIS4','DIS5','IRVECU'),

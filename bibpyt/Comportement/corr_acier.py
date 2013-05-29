@@ -1,4 +1,4 @@
-# -*- coding: iso-8859-1 -*-
+# coding=utf-8
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -22,7 +22,7 @@ from cata_comportement import LoiComportement
 
 loi = LoiComportement(
    nom            = 'CORR_ACIER',
-   doc = """Comportement élastoplastique avec endommagement dépendant du taux de corrosion, cf. R7.01.20""",
+   doc = """Comportement Ã©lastoplastique avec endommagement dÃ©pendant du taux de corrosion, cf. R7.01.20""",
    num_lc         = 24,
    nb_vari        = 3,
    nom_vari       = ('EPSPEQ','ENDO','INDIPLAS'),

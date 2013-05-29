@@ -1,4 +1,4 @@
-# -*- coding: iso-8859-1 -*-
+# coding=utf-8
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -23,10 +23,10 @@ from cata_comportement import LoiComportement
 loi = LoiComportement(
    nom            = 'GRAN_IRRA_LOG',
    doc = """Relation de comportement de fluage et de grandissement sous irradiation pour les assemblages combustibles, 
-   similaire à la loi VISC_IRRA_LOG pour la déformation viscoplastique, et intégrant en plus une déformation de grandissement 
-   sous irradiation (cf. [R5.03.09]). Le champ de fluence est défini par le mot-clé AFFE_VARC de la commande AFFE_MATERIAU.
-   Le grandissement ne se faisant que selon une direction, il est nécessaire dans les cas 3D et 2D de donner la direction du grandissement 
-   par l'opérande ANGL_REP du mot clé MASSIF de l'opérateur AFFE_CARA_ELEM""",
+   similaire Ã  la loi VISC_IRRA_LOG pour la dÃ©formation viscoplastique, et intÃ©grant en plus une dÃ©formation de grandissement 
+   sous irradiation (cf. [R5.03.09]). Le champ de fluence est dÃ©fini par le mot-clÃ© AFFE_VARC de la commande AFFE_MATERIAU.
+   Le grandissement ne se faisant que selon une direction, il est nÃ©cessaire dans les cas 3D et 2D de donner la direction du grandissement 
+   par l'opÃ©rande ANGL_REP du mot clÃ© MASSIF de l'opÃ©rateur AFFE_CARA_ELEM""",
    num_lc         = 28,
    nb_vari        = 3,
    nom_vari       = ('EPSPEQ','IRVECU','EPSGRD'),

@@ -1,4 +1,4 @@
-# -*- coding: iso-8859-1 -*-
+# coding=utf-8
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -21,7 +21,7 @@ from cata_comportement import LoiComportement
 
 loi = LoiComportement(
    nom            = 'PINTO_MENEGOTTO',
-   doc = """Relation de comportement des barres, à comportement cyclique phénoménologique de Pinto et Menegotto""",
+   doc = """Relation de comportement des barres, Ã  comportement cyclique phÃ©nomÃ©nologique de Pinto et Menegotto""",
    num_lc         = 9999,
    nb_vari        = 8,
    nom_vari       = ('EPSRN-1','EPSRN','SIGRN','EPSM+V5','DEPS-TH','INDICYCL','INDIPLAS','INDIFLAM'),

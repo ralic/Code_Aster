@@ -1003,4 +1003,3 @@ accel = DEFI_FONCTION(NOM_PARA='INST',
 ,),
 			   PROL_DROITE='LINEAIRE',
                            PROL_GAUCHE='LINEAIRE');
-

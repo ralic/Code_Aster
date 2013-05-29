@@ -1,5 +1,4 @@
 /*           CONFIGURATION MANAGEMENT OF EDF VERSION                  */
-/* MODIF CPFILE UTILITAI  DATE 19/05/2011   AUTEUR SELLENET N.SELLENET */
 /* ================================================================== */
 /* COPYRIGHT (C) 1991 - 2011  EDF R&D              WWW.CODE-ASTER.ORG */
 /*                                                                    */
@@ -13,7 +12,7 @@
 /* GENERAL PUBLIC LICENSE FOR MORE DETAILS.                           */
 /*                                                                    */
 /* YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE  */
-/* ALONG WITH THIS PROGRAM; IF NOT, WRITE TO : EDF R&D CODE_ASTER,    */
+/* ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,      */
 /*    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.     */
 /* ================================================================== */
 /* appel de la commande systeme de copie de fichier */
@@ -21,7 +20,8 @@
 
 #include "aster.h"
 
-void DEFSSS(CPFILE, cpfile, char *action, STRING_SIZE la, char *nom1, STRING_SIZE lnom1, char *nom2, STRING_SIZE lnom2)
+void DEFSSS(CPFILE, cpfile, char *action, STRING_SIZE la,
+            char *nom1, STRING_SIZE lnom1, char *nom2, STRING_SIZE lnom2)
 {
    char nomcmd[165];char *ncmd;
    long i,l,ldeb,num;

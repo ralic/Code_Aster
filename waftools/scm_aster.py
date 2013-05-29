@@ -1,4 +1,4 @@
-# encoding: utf-8
+# coding=utf-8
 
 import os
 import os.path as osp
@@ -162,4 +162,3 @@ def _get_parent_info(ctx, get_info, init=0):
             info = info_i
             level = lvi
     return info, level
-

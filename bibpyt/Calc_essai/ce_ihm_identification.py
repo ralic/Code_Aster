@@ -1,4 +1,4 @@
-# -*- coding: iso-8859-1 -*-
+# coding=utf-8
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -50,12 +50,12 @@ import aster_core
 class InterfaceIdentification(Frame):
 
     """
-    Classe qui fabrique l'interface graphique permettant de réaliser une identification
-    d'efforts turbulents, et de controler les calculs. On y trouve les méthodes suivantes :
-     - choix_donnees, choix_projection, frame_meth, _choix_methode, visu_resu : définition
+    Classe qui fabrique l'interface graphique permettant de rÃ©aliser une identification
+    d'efforts turbulents, et de controler les calculs. On y trouve les mÃ©thodes suivantes :
+     - choix_donnees, choix_projection, frame_meth, _choix_methode, visu_resu : dÃ©finition
        frame d'interface graphique,
-     - get_list, plot_curve : résultats à visualiser, affichage des courbes,
-     - calculate_force : dirige les calculs (effectués dans la classe CalculInverse)
+     - get_list, plot_curve : rÃ©sultats Ã  visualiser, affichage des courbes,
+     - calculate_force : dirige les calculs (effectuÃ©s dans la classe CalculInverse)
      - crea_champ, proj_champ : utilitaires utilisant les op aster du meme nom
     """
 
@@ -118,7 +118,7 @@ class InterfaceIdentification(Frame):
         self.columnconfigure(1, weight=2)
 
     def setup(self):
-        "Utilisé par outils_ihm.TabbedWindow"
+        "UtilisÃ© par outils_ihm.TabbedWindow"
         mdo = self.objects
         self.menu_resu_fonc.update(mdo.get_inter_spec_name(),
                                    self.var_resu_fonc,self._get_inter_spec)
@@ -147,7 +147,7 @@ class InterfaceIdentification(Frame):
     def _construit_colonne_1(self):
         col = Frame(self, relief = 'sunken',borderwidth=1)
         # Menu de choix des donnes de calcul en entree
-        Label(col, text=u"Choix des données de calcul",
+        Label(col, text=u"Choix des donnÃ©es de calcul",
               font=self.font2).grid(row=0, padx=50, pady=2)
 
         box_cd = self._choix_base_modale(col,relief='flat') 
@@ -165,7 +165,7 @@ class InterfaceIdentification(Frame):
         return col
 
     def _choix_base_modale(self,parent,**args):
-        """Choix des données d'entrée"""
+        """Choix des donnÃ©es d'entrÃ©e"""
         fra = Frame(parent,args)
 
         # Menu choix de la base modale
@@ -180,17 +180,17 @@ class InterfaceIdentification(Frame):
         return fra
    
     def _definit_observabilite(self,parent,root,**args):
-        """Définition du concept d'observabilité."""
+        """DÃ©finition du concept d'observabilitÃ©."""
 
         self.observabilite = ObservationWindow(parent,root,self.mess,self.objects,
-                                               None,u"'observabilité",0,**args)
+                                               None,u"'observabilitÃ©",0,**args)
         return self.observabilite
 
 
     def _definit_commandabilite(self,parent,root,**args):
-        """Définition du concept de commandabilité."""
+        """DÃ©finition du concept de commandabilitÃ©."""
         self.commandabilite = ObservationWindow(parent,root,self.mess,self.objects,
-                                                None,u"e commandabilité",0,**args)
+                                                None,u"e commandabilitÃ©",0,**args)
         return self.commandabilite 
 
 
@@ -216,11 +216,11 @@ class InterfaceIdentification(Frame):
         return fra
 
     def _choix_methode(self, root,**args):
-        """Choix de la méthode de résolution (techniques de régularisation)"""
+        """Choix de la mÃ©thode de rÃ©solution (techniques de rÃ©gularisation)"""
         fra = Frame(root,args )
 
         # Menu de choix de la methode de calcul des efforts
-        Label(fra, text="Définition du calcul",
+        Label(fra, text="DÃ©finition du calcul",
               font=self.font2).grid(row=0, column=0, columnspan=3)
                
         Label(fra, text="Tikhonov")
@@ -229,7 +229,7 @@ class InterfaceIdentification(Frame):
         entree1.grid(row=1,column=2)
         self.alpha.set(0.0)
                 
-        Label(fra, text="SVD tronquée").grid(row=2, column=0)
+        Label(fra, text="SVD tronquÃ©e").grid(row=2, column=0)
         Label(fra, text="Eps =").grid(row=2, column=1)
         entree2 = Entry(fra, textvariable=self.epsilon)
         entree2.grid(row=2, column=2)
@@ -244,7 +244,7 @@ class InterfaceIdentification(Frame):
         return fra
 
     def _construit_colonne_2(self):
-        """ Affichage dans une fenetre des voies à afficher, possibilité
+        """ Affichage dans une fenetre des voies Ã  afficher, possibilitÃ©
         de visualiser les autospectres et les interspectres"""
         # variables pour la visu
         self.nb_col_visu = 2
@@ -262,7 +262,7 @@ class InterfaceIdentification(Frame):
                           relief='sunken',borderwidth=1)
 
         for label in self.label_visu:
-            label.set(u"Noeuds/numéros d'ordre")
+            label.set(u"Noeuds/numÃ©ros d'ordre")
         
         return fra
 
@@ -292,11 +292,11 @@ class InterfaceIdentification(Frame):
             self.mess.disp_mess("Il faut choisir la base modale")
             return 0
         if not self.observabilite.obs_co:
-            self.mess.disp_mess(u"Il faut définir le concept d'observabilité")
+            self.mess.disp_mess(u"Il faut dÃ©finir le concept d'observabilitÃ©")
             return 0
         self.obs_co = self.observabilite.obs_co
         if not self.commandabilite.obs_co:
-            self.mess.disp_mess(u"Il faut définir le concept de commandabilité")
+            self.mess.disp_mess(u"Il faut dÃ©finir le concept de commandabilitÃ©")
             return 0
         self.com_co = self.commandabilite.obs_co
         if self.var_resu_fonc.get() == 'Choisir':
@@ -348,30 +348,30 @@ class InterfaceIdentification(Frame):
             self.Syy_R = self.calcturb.Syy_R
 
     def get_list(self):
-        """Routine qui crée les liste de courbes à afficher.
-        Choix de la donnée à représenter:
-            Depl phy <=> déplacements physiques,
+        """Routine qui crÃ©e les liste de courbes Ã  afficher.
+        Choix de la donnÃ©e Ã  reprÃ©senter:
+            Depl phy <=> dÃ©placements physiques,
             Eff mod <=> efforts modaux,
             Depl phy r <=>
-            Eff mod r <=> efforts modaux reconstitués,
+            Eff mod r <=> efforts modaux reconstituÃ©s,
             Eff phy r <=> efforts physiques
-            Depl synt <=> déplacements physiques resynthétisés
+            Depl synt <=> dÃ©placements physiques resynthÃ©tisÃ©s
             Valeurs  synt <=> valeurs singulieres de la matrice C.phi.Zm1
             regul <=> parametres de regulation"""
         self.var_list = [[],[]]
-        mess_err = "!! Impossible de créer la liste des courbes à afficher !!"
+        mess_err = "!! Impossible de crÃ©er la liste des courbes Ã  afficher !!"
         self.mess.disp_mess(" ")
         for ind_tabl in range(2):
             opt_key = self.var_visu_resu[ind_tabl].get()
             if opt_key.split()[0] == "Choisir" :
                 continue
             optdict = self.opt_data[opt_key]
-            # Récupération de la fonction à appeler
+            # RÃ©cupÃ©ration de la fonction Ã  appeler
             calc_func = optdict["function"]
             calc_func(optdict["resultat_attr"], ind_tabl)
 
     def calcul_depl_phy(self, resultat_attr, ind_tabl):
-        """Calcul les paramètres: 'Depl phy', 'Depl phy r','Depl synt'."""
+        """Calcul les paramÃ¨tres: 'Depl phy', 'Depl phy r','Depl synt'."""
         liste = nume_ddl_phy(self.obs_co)
         
         for ind in range(len(liste)):
@@ -381,7 +381,7 @@ class InterfaceIdentification(Frame):
         self.curve_list[ind_tabl].set_values(self.var_list[ind_tabl])
 
     def calcul_eff_phy(self, resultat_attr, ind_tabl):
-        """Calcul les paramètres: 'Eff Phy'."""
+        """Calcul les paramÃ¨tres: 'Eff Phy'."""
         liste = nume_ddl_phy(self.com_co)
         
         for ind in range(len(liste)):
@@ -392,7 +392,7 @@ class InterfaceIdentification(Frame):
 
 
     def calcul_eff_mod(self, resultat_attr, ind_tabl):
-        """Calcul les paramètres: 'Eff mod', 'Eff mod r'."""
+        """Calcul les paramÃ¨tres: 'Eff mod', 'Eff mod r'."""
         liste = nume_ddl_gene(self.calcturb.res_base)
         
         for mode in range(len(liste)):
@@ -402,7 +402,7 @@ class InterfaceIdentification(Frame):
         self.curve_list[ind_tabl].set_values(self.var_list[ind_tabl])
     
     def calcul_valeurs(self, resultat_attr, ind_tabl):
-        """Calcul les paramètres: 'Valeurs sing', 'regul'."""
+        """Calcul les paramÃ¨tres: 'Valeurs sing', 'regul'."""
         if not self.calcturb.inter_spec.nume_gene:
             liste = nume_ddl_gene(self.calcturb.res_base)
         for ind in liste:
@@ -410,8 +410,8 @@ class InterfaceIdentification(Frame):
         self.curve_list[ind_tabl].set_values(self.var_list[ind_tabl])
 
     def _get_selected_variables(self, ind_tab):
-        """Retourne les variables selectionées dans une colonne
-        affichant les résultats."""
+        """Retourne les variables selectionÃ©es dans une colonne
+        affichant les rÃ©sultats."""
         var_list = []
         liste = self.curve_list[ind_tab].get_selection()
         for idx in liste:
@@ -419,11 +419,11 @@ class InterfaceIdentification(Frame):
         return var_list
 
     def _get_graph_data(self):
-        """Retourne les valeurs et les légendes pour les courbes de résultats.
+        """Retourne les valeurs et les lÃ©gendes pour les courbes de rÃ©sultats.
            Remarque importante : ici les fonctions sont extraites de la matrice
            inter-spectrale python alors que dans ce_calc_spec, on fait un RECU_FONCTION
            sur le concept inter-spectre aster.
-           TODO : homogénéiser les deux procédures dans une méthiode commune à mettre
+           TODO : homogÃ©nÃ©iser les deux procÃ©dures dans une mÃ©thiode commune Ã  mettre
            dans la classe VisuSpectre (dans outils_ihm.py)"""
         # values = liste dont chaque elmt est une courbe
         values = []
@@ -476,7 +476,7 @@ class InterfaceIdentification(Frame):
                 captions.append("%s %s" % (opt_key, var))
 
             if self.xlinlog.get() == 1 and self.radio_donnees.get() == 'Phase':
-                self.mess.disp_mess("Impossible de représenter la phase dans un\n"\
+                self.mess.disp_mess("Impossible de reprÃ©senter la phase dans un\n"\
                                     "diagramme logarithmique !")
                 return ([],[],[])
 
@@ -487,7 +487,7 @@ class InterfaceIdentification(Frame):
 
     def display_curve(self):
         """Selection dans les interspectres disponibles des resultats
-        sélectionnées dans les listes curve_list, et plot
+        sÃ©lectionnÃ©es dans les listes curve_list, et plot
         des courbes correspondantes"""       
         freq, values, caption = self._get_graph_data()
         if freq == []:
@@ -528,12 +528,12 @@ class InterfaceIdentification(Frame):
             self.Syy_S.make_inte_spec(titre, out)
         else:
             self.mess.disp_mess("!! Il n'est pas possible " \
-                                "d'exporter ces données !!")
+                                "d'exporter ces donnÃ©es !!")
             self.mess.disp_mess("  ")
     
 
     def teardown(self):
-        "Utilisé par outils_ihm.TabbedWindow"
+        "UtilisÃ© par outils_ihm.TabbedWindow"
         pass
 
 

@@ -1,4 +1,4 @@
-# -*- coding: iso-8859-1 -*-
+# coding=utf-8
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -22,8 +22,8 @@ from cata_comportement import LoiComportement
 
 loi = LoiComportement(
    nom            = 'CABLE',
-   doc = """Relation de comportement élastique adaptée aux câbles (DEFORMATION: 'GREEN' obligatoire) : 
-   le module d'YOUNG du câble peut être différent en compression et en traction (en particulier il peut être nul en compression).""",
+   doc = """Relation de comportement Ã©lastique adaptÃ©e aux cÃ¢bles (DEFORMATION: 'GREEN' obligatoire) : 
+   le module d'YOUNG du cÃ¢ble peut Ãªtre diffÃ©rent en compression et en traction (en particulier il peut Ãªtre nul en compression).""",
    num_lc         = 9999,
    nb_vari        = 1,
    nom_vari       = ('VIDE'),

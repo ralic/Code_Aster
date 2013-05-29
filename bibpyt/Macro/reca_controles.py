@@ -1,4 +1,4 @@
-# -*- coding: iso-8859-1 -*-
+# coding=utf-8
 # person_in_charge: aimery.assire at edf.fr
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -42,19 +42,19 @@ def erreur_de_type(code_erreur,X):
    code_erreur ==0 --> X est une liste
    code erreur ==1 --> X est un char
    code erreur ==2 --> X est un float
-   test est un boolean (test = 0 dÈfaut et 1 si un test if est verifier
+   test est un boolean (test = 0 d√©faut et 1 si un test if est verifier
    """
 
    txt = ""
    if(code_erreur == 0 ):
       if not is_sequence(X):
-         txt="\nCette entrÈe: " +str(X)+" n'est pas une liste valide"
+         txt="\nCette entr√©e: " +str(X)+" n'est pas une liste valide"
    if(code_erreur == 1 ):
       if not is_str(X):
-         txt="\nCette entrÈe: " +str(X)+" n'est pas une chaine de caractËre valide ; Veuillez la ressaisir en lui appliquant le type char de python"
+         txt="\nCette entr√©e: " +str(X)+" n'est pas une chaine de caract√®re valide ; Veuillez la ressaisir en lui appliquant le type char de python"
    if(code_erreur == 2 ):
       if not is_float(X):
-         txt="\nCette entrÈe:  " +str(X)+" n'est pas une valeur float valide ; Veuillez la ressaisir en lui appliquant le type float de python"
+         txt="\nCette entr√©e:  " +str(X)+" n'est pas une valeur float valide ; Veuillez la ressaisir en lui appliquant le type float de python"
    return txt
    
 
@@ -68,10 +68,10 @@ def erreur_dimension(PARAMETRES,REPONSES):
    txt = ""
    for i in range(len(PARAMETRES)):
       if (len(PARAMETRES[i]) != 4):
-         txt=txt + "\nLa sous-liste de la variable paramËtre numÈro " + str(i+1)+" n'est pas de longueur 4"
+         txt=txt + "\nLa sous-liste de la variable param√®tre num√©ro " + str(i+1)+" n'est pas de longueur 4"
    for i in range(len(REPONSES)):
       if (len(REPONSES[i]) != 3):
-         txt=txt + "\nLa sous-liste de la variable rÈponse numÈro " + str(i+1)+" n'est pas de longueur 3"
+         txt=txt + "\nLa sous-liste de la variable r√©ponse num√©ro " + str(i+1)+" n'est pas de longueur 3"
    return txt
 
 
@@ -79,12 +79,12 @@ def erreur_dimension(PARAMETRES,REPONSES):
 def compare__dim_rep__dim_RESU_EXP(REPONSES,RESU_EXP):
    """
    X et Y sont deux arguments qui doivent avoir la meme dimension
-   pour Èviter l'arret du programme
+   pour √©viter l'arret du programme
    """
 
    txt = ""
    if( len(REPONSES) != len(RESU_EXP)):
-      txt="\nVous avez entrÈ " +str(len(REPONSES))+ " rÈponses et "+str(len(RESU_EXP))+ " expÈriences ; On doit avoir autant de rÈponses que de rÈsultats expÈrimentaux"
+      txt="\nVous avez entr√© " +str(len(REPONSES))+ " r√©ponses et "+str(len(RESU_EXP))+ " exp√©riences ; On doit avoir autant de r√©ponses que de r√©sultats exp√©rimentaux"
    return txt
 
 
@@ -92,12 +92,12 @@ def compare__dim_rep__dim_RESU_EXP(REPONSES,RESU_EXP):
 def compare__dim_poids__dim_RESU_EXP(POIDS,RESU_EXP):
    """
    POIDS et Y sont deux arguments qui doivent avoir la meme dimension
-   pour Èviter l'arret du programme
+   pour √©viter l'arret du programme
    """
 
    txt = ""
    if( len(POIDS) != len(RESU_EXP)):
-      txt="\nVous avez entrÈ " +str(len(POIDS))+ " poids et "+str(len(RESU_EXP))+ " expÈriences ; On doit avoir autant de poids que de rÈsultats expÈrimentaux"
+      txt="\nVous avez entr√© " +str(len(POIDS))+ " poids et "+str(len(RESU_EXP))+ " exp√©riences ; On doit avoir autant de poids que de r√©sultats exp√©rimentaux"
    return txt
 
 
@@ -118,10 +118,10 @@ def verif_fichier(UL,PARAMETRES,REPONSES):
       return txt, txt_alarme
    for i in range(len(PARAMETRES)):
       if((string.find(fic,PARAMETRES[i][0])==-1) or ((string.find(fic,PARAMETRES[i][0]+'=')==-1) and (string.find(fic,PARAMETRES[i][0]+' ')==-1))):
-         txt += "\nLe paramËtre "+PARAMETRES[i][0]+" que vous avez entrÈ pour la phase d'optimisation n'a pas ÈtÈ trouvÈ dans votre fichier de commandes ASTER"
+         txt += "\nLe param√®tre "+PARAMETRES[i][0]+" que vous avez entr√© pour la phase d'optimisation n'a pas √©t√© trouv√© dans votre fichier de commandes ASTER"
    for i in range(len(REPONSES)):
       if((string.find(fic,REPONSES[i][0])==-1) or ((string.find(fic,REPONSES[i][0]+'=')==-1) and (string.find(fic,REPONSES[i][0]+' ')==-1))):
-         txt_alarme += "\nLa rÈponse  "+REPONSES[i][0]+" que vous avez entrÈe pour la phase d'optimisation n'a pas ÈtÈ trouvÈe dans votre fichier de commandes ASTER"
+         txt_alarme += "\nLa r√©ponse  "+REPONSES[i][0]+" que vous avez entr√©e pour la phase d'optimisation n'a pas √©t√© trouv√©e dans votre fichier de commandes ASTER"
    return txt, txt_alarme
 
 
@@ -129,9 +129,9 @@ def verif_fichier(UL,PARAMETRES,REPONSES):
 def verif_valeurs_des_PARAMETRES(PARAMETRES):
    """
    On verifie que pour chaque PARAMETRES de l'optimisation
-   les valeurs entrÈes par l'utilisateur sont telles que :
+   les valeurs entr√©es par l'utilisateur sont telles que :
               val_inf<val_sup
-              val_init appartient ‡ [borne_inf, borne_sup] 
+              val_init appartient √† [borne_inf, borne_sup] 
               val_init!=0         
               borne_sup!=0         
               borne_inf!=0         
@@ -141,7 +141,7 @@ def verif_valeurs_des_PARAMETRES(PARAMETRES):
    # verification des bornes
    for i in range(len(PARAMETRES)):
       if( PARAMETRES[i][2] >PARAMETRES[i][3]):
-         txt=txt + "\nLa borne infÈrieure "+str(PARAMETRES[i][2])+" de  "+PARAMETRES[i][0]+ "est plus grande que sa borne supÈrieure"+str(PARAMETRES[i][3])
+         txt=txt + "\nLa borne inf√©rieure "+str(PARAMETRES[i][2])+" de  "+PARAMETRES[i][0]+ "est plus grande que sa borne sup√©rieure"+str(PARAMETRES[i][3])
    # verification de l'encadrement de val_init 
    for i in range(len(PARAMETRES)):
       if( (PARAMETRES[i][1] < PARAMETRES[i][2]) or (PARAMETRES[i][1] > PARAMETRES[i][3])):
@@ -149,30 +149,30 @@ def verif_valeurs_des_PARAMETRES(PARAMETRES):
    # verification que val_init !=0
    for  i in range(len(PARAMETRES)):
       if (PARAMETRES[i][1] == 0. ):
-         txt=txt + "\nProblËme de valeurs initiales pour le paramËtre "+PARAMETRES[i][0]+" : ne pas donner de valeur initiale nulle mais un ordre de grandeur."
+         txt=txt + "\nProbl√®me de valeurs initiales pour le param√®tre "+PARAMETRES[i][0]+" : ne pas donner de valeur initiale nulle mais un ordre de grandeur."
    # verification que borne_sup !=0
    for  i in range(len(PARAMETRES)):
       if (PARAMETRES[i][3] == 0. ):
-         txt=txt + "\nProblËme de borne supÈrieure pour le paramËtre "+PARAMETRES[i][0]+" : ne pas donner de valeur strictement nulle."
+         txt=txt + "\nProbl√®me de borne sup√©rieure pour le param√®tre "+PARAMETRES[i][0]+" : ne pas donner de valeur strictement nulle."
    # verification que borne_inf !=0
    for  i in range(len(PARAMETRES)):
       if (PARAMETRES[i][2] == 0. ):
-         txt=txt + "\nProblËme de borne infÈrieure pour le paramËtre "+PARAMETRES[i][0]+" : ne pas donner de valeur strictement nulle."
+         txt=txt + "\nProbl√®me de borne inf√©rieure pour le param√®tre "+PARAMETRES[i][0]+" : ne pas donner de valeur strictement nulle."
    return txt
 
 
 # ------------------------------------------------------------------------------
 def verif_UNITE(GRAPHIQUE,UNITE_RESU):
    """
-   On vÈrifie que les unitÈs de rÈsultat et 
-   de graphique sont diffÈrentes
+   On v√©rifie que les unit√©s de r√©sultat et 
+   de graphique sont diff√©rentes
    """
    txt=""
    if GRAPHIQUE:
        try:
           GRAPHE_UL_OUT=GRAPHIQUE['UNITE']
           if (GRAPHE_UL_OUT==UNITE_RESU):
-              txt=txt + "\nLes unitÈs logiques des fichiers de rÈsultats graphiques et de rÈsultats d'optimisation sont les memes."
+              txt=txt + "\nLes unit√©s logiques des fichiers de r√©sultats graphiques et de r√©sultats d'optimisation sont les memes."
        except:
           pass
    return txt
@@ -181,15 +181,15 @@ def verif_UNITE(GRAPHIQUE,UNITE_RESU):
 # ------------------------------------------------------------------------------
 def gestion(UL,PARAMETRES,REPONSES,RESU_EXP,POIDS,GRAPHIQUE,UNITE_RESU,METHODE):
    """
-   Cette methode va utiliser les methodes de cette classe declarÈe ci-dessus
+   Cette methode va utiliser les methodes de cette classe declar√©e ci-dessus
    test  est un boolean: test=0 -> pas d'erreur
-                         test=1 -> erreur dÈtectÈe
+                         test=1 -> erreur d√©tect√©e
    """
 
    texte = ""
    texte_alarme = ""
 
-   # On vÈrifie d'abord si PARAMETRES, REPONSES, RESU_EXP sont bien des listes au sens python
+   # On v√©rifie d'abord si PARAMETRES, REPONSES, RESU_EXP sont bien des listes au sens python
    # test de PARAMETRES
    texte = texte + erreur_de_type(0,PARAMETRES)
    # test de REPONSES
@@ -197,7 +197,7 @@ def gestion(UL,PARAMETRES,REPONSES,RESU_EXP,POIDS,GRAPHIQUE,UNITE_RESU,METHODE):
    # test de RESU_EXP
    texte = texte + erreur_de_type(0,RESU_EXP) 
    
-   # On vÈrifie si chaque sous liste de PARAMETRES, REPONSES,  possËde le type adÈquat
+   # On v√©rifie si chaque sous liste de PARAMETRES, REPONSES,  poss√®de le type ad√©quat
    # test des sous_listes de PARAMETRES
    for i in range(len(PARAMETRES)):
       texte = texte +  erreur_de_type(0,PARAMETRES[i]) 
@@ -210,9 +210,9 @@ def gestion(UL,PARAMETRES,REPONSES,RESU_EXP,POIDS,GRAPHIQUE,UNITE_RESU,METHODE):
    # et   que     la dimension d'une sous liste de REPONSES   = 3
    texte = texte + erreur_dimension(PARAMETRES,REPONSES)
 
-   # on verifie que l'on a autant de rÈponses que de rÈsultats expÈrimentaux
+   # on verifie que l'on a autant de r√©ponses que de r√©sultats exp√©rimentaux
    texte = texte + compare__dim_rep__dim_RESU_EXP(REPONSES,RESU_EXP)
-   #on verifie que l'on a autant de poids que de rÈsultats expÈrimentaux
+   #on verifie que l'on a autant de poids que de r√©sultats exp√©rimentaux
    texte = texte + compare__dim_poids__dim_RESU_EXP(POIDS,RESU_EXP)
 
    # on verifie les types des arguments de chaque sous liste de PARAMETRES et REPONSES
@@ -232,11 +232,11 @@ def gestion(UL,PARAMETRES,REPONSES,RESU_EXP,POIDS,GRAPHIQUE,UNITE_RESU,METHODE):
       texte_fatal, texte_alarme = verif_fichier(UL,PARAMETRES,REPONSES)
       texte += texte_fatal
 
-   # verification des valeurs des PARAMETRES entrÈes par l'utilisateur (pour fmin* les bornes ne sont pas prises en compte)
+   # verification des valeurs des PARAMETRES entr√©es par l'utilisateur (pour fmin* les bornes ne sont pas prises en compte)
    if METHODE == 'LEVENBERG':
       texte = texte + verif_valeurs_des_PARAMETRES(PARAMETRES)
 
-   # verification des unitÈs logiques renseignÈes par l'utilisateur
+   # verification des unit√©s logiques renseign√©es par l'utilisateur
    if METHODE != 'EXTERNE':
       texte = texte + verif_UNITE(GRAPHIQUE,UNITE_RESU)
 

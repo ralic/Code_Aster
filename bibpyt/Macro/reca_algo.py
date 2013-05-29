@@ -1,4 +1,4 @@
-# -*- coding: iso-8859-1 -*-
+# coding=utf-8
 # person_in_charge: aimery.assire at edf.fr
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -49,7 +49,7 @@ def calcul_norme2(V):
 # ------------------------------------------------------------------------------
 class Dimension:
    """
-      Classe gérant l'adimensionnement et le dimensionnement
+      Classe gÃ©rant l'adimensionnement et le dimensionnement
    """
 
    def __init__(self,val_initiales):
@@ -145,9 +145,9 @@ def lambda_init(matrix):
 # ------------------------------------------------------------------------------
 def Levenberg_bornes(val, Dim, val_init, borne_inf, borne_sup, A, erreur, l, ul_out):
    """
-      On resoud le système par contraintes actives:
+      On resoud le systÃ¨me par contraintes actives:
          Q.dval + s + d =0
-         soumis à :
+         soumis Ã  :
          borne_inf < dval < borne_sup
                  0 <  s
                  s.(borne_inf - dval)=0
@@ -155,9 +155,9 @@ def Levenberg_bornes(val, Dim, val_init, borne_inf, borne_sup, A, erreur, l, ul_
    """
    dim = len(val)
    id = NP.identity(dim)
-   # Matrice du système
+   # Matrice du systÃ¨me
    Q=NP.dot(NP.transpose(A),A) +l*id
-   # Second membre du système
+   # Second membre du systÃ¨me
    d=NP.dot(NP.transpose(A),erreur)
    # Ens. de liaisons actives
    Act=NP.array([], dtype=int)
@@ -173,7 +173,7 @@ def Levenberg_bornes(val, Dim, val_init, borne_inf, borne_sup, A, erreur, l, ul_
       I=NP.nonzero(NP.greater(I,0))[0]
       s=NP.zeros(dim)
       for i in Act:
-         # test sur les bornes (on stocke si on est en butée haute ou basse)
+         # test sur les bornes (on stocke si on est en butÃ©e haute ou basse)
          if (val[i]+dval[i]>=borne_sup[i]):
             dval[i]=borne_sup[i]-val[i]
             s[i]=1.
@@ -205,7 +205,7 @@ def Levenberg_bornes(val, Dim, val_init, borne_inf, borne_sup, A, erreur, l, ul_
                           NP.nonzero(NP.less(dval,borne_inf-val))[0],
                           NP.nonzero(NP.greater(s,0.))[0])).astype(int)
       done=(max(val+dval-borne_sup)<=0)&(min(val+dval-borne_inf)>=0)&(min(s)>=0.0)
-      # Pour éviter le cyclage
+      # Pour Ã©viter le cyclage
       if (k>50):
          try:
             l=l*2
@@ -230,13 +230,13 @@ def Levenberg_bornes(val, Dim, val_init, borne_inf, borne_sup, A, erreur, l, ul_
 def actualise_lambda(l, val, new_val, A, erreur, new_J, old_J):
    dim = len(val)
    id = NP.identity(dim)
-   # Matrice du système
+   # Matrice du systÃ¨me
    Q=NP.dot(NP.transpose(A),A) +l*id
-   # Second membre du système
+   # Second membre du systÃ¨me
    d=NP.dot(NP.transpose(A),erreur)
    old_Q=old_J
    new_Q=old_J+0.5*NP.dot(NP.transpose(new_val-val),NP.dot(Q,new_val-val))+NP.dot(NP.transpose(new_val-val),d)
-   # Ratio de la décroissance réelle et de l'approx. quad.
+   # Ratio de la dÃ©croissance rÃ©elle et de l'approx. quad.
    if NP.all((old_Q-new_Q) != 0.):
       R=(old_J-new_J)/(old_Q-new_Q)
       if (R<0.25):
@@ -271,9 +271,9 @@ def test_convergence(gradient_init, erreur, A, s):
 # ------------------------------------------------------------------------------
 def calcul_etat_final(para, A, iter, max_iter, prec, residu, Messg):
    """
-      Fonction appelée quand la convergence est atteinte
+      Fonction appelÃ©e quand la convergence est atteinte
       on calcule le Hessien et les valeurs propres et vecteurs
-      propre associés au Hessien
+      propre associÃ©s au Hessien
       A    = sensibilite
       At*A = hessien
    """

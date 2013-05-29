@@ -1,4 +1,4 @@
-# -*- coding: iso-8859-1 -*-
+# coding=utf-8
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -48,7 +48,7 @@ def impr_fonction_ops(self, FORMAT, COURBE, INFO, **args):
 
    #----------------------------------------------
    # 0. Traitement des arguments, initialisations
-   # unité logique des fichiers réservés
+   # unitÃ© logique des fichiers rÃ©servÃ©s
    ul_reserve=(8,)
    UL = UniteAster()
 
@@ -65,10 +65,10 @@ def impr_fonction_ops(self, FORMAT, COURBE, INFO, **args):
          niv='I'
       UTMESS(niv, 'FONCT0_1', valk=nomfich)
 
-   # 0.2. Récupération des valeurs sous COURBE
+   # 0.2. RÃ©cupÃ©ration des valeurs sous COURBE
    unparmi=('FONCTION','LIST_RESU','FONC_X','ABSCISSE')
 
-   # i0 : indice du mot-clé facteur qui contient LIST_PARA, sinon i0=0
+   # i0 : indice du mot-clÃ© facteur qui contient LIST_PARA, sinon i0=0
    i0=0
    Courbe=[]
    iocc=-1
@@ -81,11 +81,11 @@ def impr_fonction_ops(self, FORMAT, COURBE, INFO, **args):
          if dC[mc]==None: del dC[mc]
       Courbe.append(dC)
    if INFO==2:
-      aster.affiche('MESSAGE',' Nombre de fonctions à analyser : '+str(len(Courbe)))
+      aster.affiche('MESSAGE',' Nombre de fonctions Ã  analyser : '+str(len(Courbe)))
 
    # 0.3. Devra-t-on interpoler globalement ?
    #      Dans ce cas, __linter est le LIST_PARA
-   #      ou, à défaut, les abscisses de la première courbe
+   #      ou, Ã  dÃ©faut, les abscisses de la premiÃ¨re courbe
    interp=False
    if FORMAT=='TABLEAU':
       interp=True
@@ -117,7 +117,7 @@ def impr_fonction_ops(self, FORMAT, COURBE, INFO, **args):
 
 
    #----------------------------------------------
-   # 1. Récupération des valeurs des N courbes sous forme
+   # 1. RÃ©cupÃ©ration des valeurs des N courbes sous forme
    #    d'une liste de N listes
    #----------------------------------------------
    graph=Graph.Graph()
@@ -125,7 +125,7 @@ def impr_fonction_ops(self, FORMAT, COURBE, INFO, **args):
    for dCi in Courbe:
       iocc+=1
 
-      # 1.1. Type d'objet à traiter
+      # 1.1. Type d'objet Ã  traiter
       obj=None
       for typi in unparmi:
          if dCi.has_key(typi):
@@ -138,9 +138,9 @@ def impr_fonction_ops(self, FORMAT, COURBE, INFO, **args):
 
       # 1.2. Extraction des valeurs
 
-      # 1.2.1. Mot-clé FONCTION
+      # 1.2.1. Mot-clÃ© FONCTION
       if   typi=='FONCTION':
-         # formule à un paramètre seulement
+         # formule Ã  un paramÃ¨tre seulement
          if isinstance(obj, formule):
             dpar = obj.Parametres()
             if len(dpar['NOM_PARA']) != 1:
@@ -162,7 +162,7 @@ def impr_fonction_ops(self, FORMAT, COURBE, INFO, **args):
                      __li=dCi['LIST_PARA']
                   else:
                      __li=DEFI_LIST_REEL(VALE=lx)
-               # compléter les paramètres d'interpolation
+               # complÃ©ter les paramÃ¨tres d'interpolation
                dic=dico.copy()
                dic.update(ldicf[i])
                
@@ -176,20 +176,20 @@ def impr_fonction_ops(self, FORMAT, COURBE, INFO, **args):
                   pv,lv2=__ftmp.Valeurs()
                   lx=lv2[0][0]
                   ly=lv2[0][1]
-               # on stocke les données dans le Graph
+               # on stocke les donnÃ©es dans le Graph
                nomresu=dic['NOM_RESU'].strip()+'_'+str(len(graph.Legendes))
                dicC={
                   'Val' : [lx,ly],
                   'Lab' : [dic['NOM_PARA_FONC'],nomresu]
                }
-               # ajoute la valeur du paramètre
+               # ajoute la valeur du paramÃ¨tre
                dCi['LEGENDE'] = '%s %s=%g' % (Leg,dic['NOM_PARA'].strip(),p)
                Graph.AjoutParaCourbe(dicC, args=dCi)
                graph.AjoutCourbe(**dicC)
          else:
             __ftmp=obj
             dpar=__ftmp.Parametres()
-            # pour les formules à un paramètre (test plus haut)
+            # pour les formules Ã  un paramÃ¨tre (test plus haut)
             if type(dpar['NOM_PARA']) in (list, tuple):
                dpar['NOM_PARA'] = dpar['NOM_PARA'][0]
             if interp:
@@ -209,7 +209,7 @@ def impr_fonction_ops(self, FORMAT, COURBE, INFO, **args):
             lr=lval[1]
             if isinstance(obj, (fonction_c, formule_c)) and dCi.get('PARTIE') == 'IMAG':
                lr=lval[2]
-            # on stocke les données dans le Graph
+            # on stocke les donnÃ©es dans le Graph
             if isinstance(obj, (fonction_c, formule_c)) and not dCi.has_key('PARTIE'):
                nomresu=dpar['NOM_RESU'].strip()+'_'+str(len(graph.Legendes))
                dicC={
@@ -225,7 +225,7 @@ def impr_fonction_ops(self, FORMAT, COURBE, INFO, **args):
             Graph.AjoutParaCourbe(dicC, args=dCi)
             graph.AjoutCourbe(**dicC)
 
-      # 1.2.2. Mot-clé LIST_RESU
+      # 1.2.2. Mot-clÃ© LIST_RESU
       elif typi=='LIST_RESU':
          if interp and iocc>0:
             UTMESS('S', 'FONCT0_2')
@@ -233,7 +233,7 @@ def impr_fonction_ops(self, FORMAT, COURBE, INFO, **args):
          lr=obj.Valeurs()
          if len(lx)!=len(lr):
             UTMESS('S', 'FONCT0_3')
-         # on stocke les données dans le Graph
+         # on stocke les donnÃ©es dans le Graph
          dicC={
             'Val' : [lx,lr],
             'Lab' : [dCi['LIST_PARA'].get_name(),obj.get_name()]
@@ -241,7 +241,7 @@ def impr_fonction_ops(self, FORMAT, COURBE, INFO, **args):
          Graph.AjoutParaCourbe(dicC, args=dCi)
          graph.AjoutCourbe(**dicC)
 
-      # 1.2.3. Mot-clé FONC_X
+      # 1.2.3. Mot-clÃ© FONC_X
       # exemple : obj(t)=sin(t), on imprime x=sin(t), y=cos(t)
       #           ob2(t)=cos(t)
       elif typi=='FONC_X':
@@ -257,7 +257,7 @@ def impr_fonction_ops(self, FORMAT, COURBE, INFO, **args):
          dpa2=__ftm2.Parametres()
          intloc=False
          if interp and not dCi.has_key('LIST_PARA'):
-            # dans ce cas, __linter contient les ordonnées de FONC_X
+            # dans ce cas, __linter contient les ordonnÃ©es de FONC_X
             intloc=False
             __li=__linter
          elif dCi.has_key('LIST_PARA'):
@@ -285,8 +285,8 @@ def impr_fonction_ops(self, FORMAT, COURBE, INFO, **args):
             )
          
          lbid,ly=__ftm2.Valeurs()
-         # on stocke les données dans le Graph
-         # on imprime la liste des paramètres seulement si LIST_PARA
+         # on stocke les donnÃ©es dans le Graph
+         # on imprime la liste des paramÃ¨tres seulement si LIST_PARA
          if intloc:
             nomresur=dpar['NOM_RESU'].strip()+'_'+str(len(graph.Legendes))
             nomresu2=dpa2['NOM_RESU'].strip()+'_'+str(len(graph.Legendes)+1)
@@ -304,7 +304,7 @@ def impr_fonction_ops(self, FORMAT, COURBE, INFO, **args):
          Graph.AjoutParaCourbe(dicC, args=dCi)
          graph.AjoutCourbe(**dicC)
 
-      # 1.2.4. Mot-clé ABSCISSE / ORDONNEE
+      # 1.2.4. Mot-clÃ© ABSCISSE / ORDONNEE
       elif typi=='ABSCISSE':
          if interp and iocc>0:
             UTMESS('S', 'FONCT0_6')
@@ -312,7 +312,7 @@ def impr_fonction_ops(self, FORMAT, COURBE, INFO, **args):
          lr=dCi['ORDONNEE']
          if len(lx)!=len(lr):
             UTMESS('S', 'FONCT0_7')
-         # on stocke les données dans le Graph
+         # on stocke les donnÃ©es dans le Graph
          dicC={
             'Val' : [lx,lr],
             'Lab' : ['Absc','Ordo']
@@ -331,7 +331,7 @@ def impr_fonction_ops(self, FORMAT, COURBE, INFO, **args):
    # 2. Impression du 'tableau' de valeurs
    #----------------------------------------------
 
-   # 2.0. Surcharge des propriétés du graphique et des axes
+   # 2.0. Surcharge des propriÃ©tÃ©s du graphique et des axes
    # (bloc quasiment identique dans Table)
    if args['TITRE']!=None:          graph.Titre=args['TITRE']
    if args['SOUS_TITRE']!=None:     graph.SousTitre=args['SOUS_TITRE']
@@ -373,7 +373,7 @@ def impr_fonction_ops(self, FORMAT, COURBE, INFO, **args):
       kargs['FICHIER']=[nomfich, nomdigr]
       kargs['dform']={ 'formR' : '%12.5E' }
 
-   # 2.3. au format XMGRACE et dérivés
+   # 2.3. au format XMGRACE et dÃ©rivÃ©s
    elif FORMAT=='XMGRACE':
       kargs['dform']={ 'formR' : '%.8g' }
       kargs['PILOTE']=args['PILOTE']
@@ -382,7 +382,7 @@ def impr_fonction_ops(self, FORMAT, COURBE, INFO, **args):
    else:
       UTMESS('S', 'FONCT0_8', valk=FORMAT)
 
-   # Traiter le cas des UL réservées
+   # Traiter le cas des UL rÃ©servÃ©es
    if args['UNITE'] and args['UNITE'] in ul_reserve:
       UL.Etat(args['UNITE'], etat='F')
    if FORMAT=='AGRAF' and args['UNITE_DIGR']!=args['UNITE'] \
@@ -392,7 +392,7 @@ def impr_fonction_ops(self, FORMAT, COURBE, INFO, **args):
    # 2.4. On trace !
    graph.Trace(**kargs)
 
-   # 99. Traiter le cas des UL réservées
+   # 99. Traiter le cas des UL rÃ©servÃ©es
    UL.EtatInit()
 
    return ier

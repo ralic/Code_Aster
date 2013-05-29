@@ -1,4 +1,4 @@
-# -*- coding: iso-8859-1 -*-
+# coding=utf-8
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -21,32 +21,32 @@
 cata_msg = {
 
 1 : _(u"""
- Échec dans le calcul des matrices élastiques pour l'amortissement.
+ Ã‰chec dans le calcul des matrices Ã©lastiques pour l'amortissement.
 """),
 
 2 : _(u"""
- Lors de la recopie du champ %(k1)s donné dans ETAT_INIT de la commande
+ Lors de la recopie du champ %(k1)s donnÃ© dans ETAT_INIT de la commande
  STAT_NON_LINE vers le champ %(k2)s, certaines composantes de %(k2)s
- ont du être mises à zéro.
+ ont du Ãªtre mises Ã  zÃ©ro.
  
- Ce problème survient lorsque le champ donné dans ETAT_INIT ne comporte
- pas assez de composantes, on complète donc par des zéros.
+ Ce problÃ¨me survient lorsque le champ donnÃ© dans ETAT_INIT ne comporte
+ pas assez de composantes, on complÃ¨te donc par des zÃ©ros.
 """),
 
 23 : _(u"""
- Le calcul de l'accélération initiale a ignoré les chargements de type:
+ Le calcul de l'accÃ©lÃ©ration initiale a ignorÃ© les chargements de type:
  - ONDE_PLANE
  - LAPLACE
  - GRAPPE_FLUIDE
 """),
 
 24 : _(u"""
- L'état initial n'a pas d'accélération donnée.
+ L'Ã©tat initial n'a pas d'accÃ©lÃ©ration donnÃ©e.
  On la calcule.
  """),
 
 43 : _(u"""
- Contact et pilotage sont des fonctionnalités incompatibles
+ Contact et pilotage sont des fonctionnalitÃ©s incompatibles
 """),
 
 59 : _(u"""
@@ -54,11 +54,11 @@ cata_msg = {
 """),
 
 60 : _(u"""
- Le pilotage de type PRED_ELAS nécessite ETA_PILO_R_MIN et ETA_PILO_R_MAX pour la loi %(k1)s
+ Le pilotage de type PRED_ELAS nÃ©cessite ETA_PILO_R_MIN et ETA_PILO_R_MAX pour la loi %(k1)s
 """),
 
 61 : _(u"""
- Le pilotage de type DEFORMATION n'est pas disponible pour la modélisation %(k1)s
+ Le pilotage de type DEFORMATION n'est pas disponible pour la modÃ©lisation %(k1)s
 """),
 
 62 : _(u"""
@@ -66,47 +66,47 @@ cata_msg = {
 """),
 
 69 : _(u"""
- Problème rencontré :
+ ProblÃ¨me rencontrÃ© :
    la matrice de masse est non inversible.
-   On ne peut donc pas s'en servir pour calculer l'accélération initiale.
-   => on initialise l'accélération à zéro.
+   On ne peut donc pas s'en servir pour calculer l'accÃ©lÃ©ration initiale.
+   => on initialise l'accÃ©lÃ©ration Ã  zÃ©ro.
 
  Conseils :
-   Avez-vous bien affecté une masse sur tous les éléments ?
+   Avez-vous bien affectÃ© une masse sur tous les Ã©lÃ©ments ?
 
- Certains éléments ne peuvent évaluer de matrice masse.
- Dans ce cas, vous pouvez donner un champ d'accélération explicitement nul dans ETAT_INIT pour supprimer l'alarme.
+ Certains Ã©lÃ©ments ne peuvent Ã©valuer de matrice masse.
+ Dans ce cas, vous pouvez donner un champ d'accÃ©lÃ©ration explicitement nul dans ETAT_INIT pour supprimer l'alarme.
 """),
 
 70 : _(u"""
- Problème rencontré :
-   Le calcul de l'accélération initiale a échoué lors de la phase de résolution.
-   => on initialise l'accélération à zéro.
+ ProblÃ¨me rencontrÃ© :
+   Le calcul de l'accÃ©lÃ©ration initiale a Ã©chouÃ© lors de la phase de rÃ©solution.
+   => on initialise l'accÃ©lÃ©ration Ã  zÃ©ro.
 
  Conseils :
-   Avez-vous bien affecté une masse sur tous les éléments ?
+   Avez-vous bien affectÃ© une masse sur tous les Ã©lÃ©ments ?
 
- Certains éléments ne peuvent évaluer de matrice masse.
- Dans ce cas, vous pouvez donner un champ d'accélération explicitement nul dans ETAT_INIT pour supprimer l'alarme.
+ Certains Ã©lÃ©ments ne peuvent Ã©valuer de matrice masse.
+ Dans ce cas, vous pouvez donner un champ d'accÃ©lÃ©ration explicitement nul dans ETAT_INIT pour supprimer l'alarme.
 """),
 
 
 
 
 78 : _(u"""
- Problème rencontré :
-   la matrice de masse est quasi singulière.
-   On se sert de cette matrice pour calculer l'accélération initiale.
-   => l'accélération initiale calculée est peut être excessive en quelques noeuds.
+ ProblÃ¨me rencontrÃ© :
+   la matrice de masse est quasi singuliÃ¨re.
+   On se sert de cette matrice pour calculer l'accÃ©lÃ©ration initiale.
+   => l'accÃ©lÃ©ration initiale calculÃ©e est peut Ãªtre excessive en quelques noeuds.
 
  Conseils :
-   Ces éventuelles perturbations initiales sont en général sans influence sur
-   la suite du calcul car elles sont localisées.
-   Néanmoins, il peut être bénéfique de laisser ces perturbations s'amortir au
-   début du calcul en faisant plusieurs pas avec chargement transitoire nul,
-   avec, éventuellement, un schéma d'intégration choisi volontairement très
+   Ces Ã©ventuelles perturbations initiales sont en gÃ©nÃ©ral sans influence sur
+   la suite du calcul car elles sont localisÃ©es.
+   NÃ©anmoins, il peut Ãªtre bÃ©nÃ©fique de laisser ces perturbations s'amortir au
+   dÃ©but du calcul en faisant plusieurs pas avec chargement transitoire nul,
+   avec, Ã©ventuellement, un schÃ©ma d'intÃ©gration choisi volontairement trÃ¨s
    dissipatif (par exemple HHT avec alpha=-0.3).
-   On peut ensuite reprendre en poursuite avec un schéma moins dissipatif si besoin est.
+   On peut ensuite reprendre en poursuite avec un schÃ©ma moins dissipatif si besoin est.
 """),
 
 

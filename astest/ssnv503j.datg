@@ -184,4 +184,3 @@ Final_MESH.ExportMED("/home/kazymyrenko/RabotaSave/Barrage/CAS_TEST/patin/mailla
 
 if salome.sg.hasDesktop():
   salome.sg.updateObjBrowser(1)
-

@@ -1,4 +1,4 @@
-# -*- coding: iso-8859-1 -*-
+# coding=utf-8
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -22,9 +22,9 @@ from cata_comportement import LoiComportement
 
 loi = LoiComportement(
    nom            = 'ENDO_ISOT_BETON',
-   doc = """Comportement élastique-fragile qui distingue traction et compression du bétonRelation de comportement élastique fragile.
-   Il s'agit d'une modélisation locale à endommagement scalaire et à écrouissage isotrope linéaire négatif qui distingue le comportement
-   en traction et en compression du béton (Cf. [R7.01.04] pour plus de détails).""",
+   doc = """Comportement Ã©lastique-fragile qui distingue traction et compression du bÃ©tonRelation de comportement Ã©lastique fragile.
+   Il s'agit d'une modÃ©lisation locale Ã  endommagement scalaire et Ã  Ã©crouissage isotrope linÃ©aire nÃ©gatif qui distingue le comportement
+   en traction et en compression du bÃ©ton (Cf. [R7.01.04] pour plus de dÃ©tails).""",
    num_lc         = 6,
    nb_vari        = 2,
    nom_vari       = ('ENDO', 'INDIENDO'),

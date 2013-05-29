@@ -1,4 +1,4 @@
-# -*- coding: iso-8859-1 -*-
+# coding=utf-8
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -20,9 +20,9 @@
 
 """Module d'utilitaires pour la gestion des calculs Miss3D.
 
-Les objets/fonctions dÈfinis sont :
-    dict_format     : formats d'impression des rÈels et des entiers
-    MISS_PARAMETERS : rassemble les paramËtres pour un calcul
+Les objets/fonctions d√©finis sont :
+    dict_format     : formats d'impression des r√©els et des entiers
+    MISS_PARAMETERS : rassemble les param√®tres pour un calcul
     lire_nb_valeurs : lit des valeurs dans un fichier texte
     en_ligne        : formatte des valeurs en colonnes
 """
@@ -67,16 +67,16 @@ def get_max_dabsc(fonction):
 
 
 class MISS_PARAMETER(object):
-    """Stocke les paramËtres nÈcessaires au calcul ‡ partir des mots-clÈs.
+    """Stocke les param√®tres n√©cessaires au calcul √† partir des mots-cl√©s.
     """
     def __init__(self, initial_dir, **kwargs):
-        """Enregistrement des valeurs des mots-clÈs.
+        """Enregistrement des valeurs des mots-cl√©s.
         - Comme il n'y a qu'une occurrence de PARAMETRE, cela permet de
-          remonter tous les mots-clÈs dans un seul dictionnaire.
-        - On peut ajouter des vÈrifications infaisables dans le capy.
-        - On ajoute des paramËtres internes.
+          remonter tous les mots-cl√©s dans un seul dictionnaire.
+        - On peut ajouter des v√©rifications infaisables dans le capy.
+        - On ajoute des param√®tres internes.
         """
-        # defauts hors du mot-clÈ PARAMETRE
+        # defauts hors du mot-cl√© PARAMETRE
         self._defaults = {
             '_INIDIR'    : initial_dir,
             '_WRKDIR'    : osp.join(initial_dir, 'tmp_miss3d'),
@@ -87,7 +87,7 @@ class MISS_PARAMETER(object):
             'INST_FIN' : None,
             'PAS_INST' : None,
             'FICHIER_SOL_INCI' : 'NON',
-            # t‚ches ÈlÈmentaires ‡ la demande
+            # t√¢ches √©l√©mentaires √† la demande
             '_calc_impe' : False,
             '_calc_forc' : False,
             '_hasPC' : False,
@@ -99,7 +99,7 @@ class MISS_PARAMETER(object):
         if mcfact is not None:
             mcfact = mcfact[0]
             self._keywords.update( mcfact.cree_dict_valeurs(mcfact.mc_liste) )
-        # autres mots-clÈs
+        # autres mots-cl√©s
         others = kwargs.keys()
         others.remove('PARAMETRE')
         for key in others + self._defaults.keys():
@@ -117,8 +117,8 @@ class MISS_PARAMETER(object):
         self.UL.EtatInit()
 
     def check(self):
-        """VÈrification des rËgles impossible ‡ Ècrire dans le .capy"""
-        # t‚ches ‡ la demande
+        """V√©rification des r√®gles impossible √† √©crire dans le .capy"""
+        # t√¢ches √† la demande
         if self['TYPE_RESU'] in ('HARM_GENE', 'TRAN_GENE', 'TABLE'):
             self.set('_calc_impe', True)
             self.set('_calc_forc', True)
@@ -131,7 +131,7 @@ class MISS_PARAMETER(object):
             if self['EXCIT_SOL'] is not None:
                 self.set('_calc_forc', True)
         self.set('_hasPC', self.get('GROUP_MA_CONTROL') is not None)
-        # unitÈs logiques
+        # unit√©s logiques
         if self.get('UNITE_RESU_IMPE') is None:
             self.set('_exec_Miss', True)
             self['UNITE_RESU_IMPE'] = self.UL.Libre(action='ASSOCIER')
@@ -139,12 +139,12 @@ class MISS_PARAMETER(object):
             self.set('_exec_Miss', True)
             self['UNITE_RESU_FORC'] = self.UL.Libre(action='ASSOCIER')
 
-        # frÈquences
+        # fr√©quences
         if self['LIST_FREQ'] is not None \
         and self['TYPE_RESU'] not in ('FICHIER', 'HARM_GENE', 'TABLE_CONTROL'):
             raise aster.error('MISS0_17')
 
-        # si base modale, vÈrifier/complÈter les amortissements rÈduits
+        # si base modale, v√©rifier/compl√©ter les amortissements r√©duits
         if self['BASE_MODALE']:
             res = aster.dismoi('C', 'NB_MODES_DYN', self['BASE_MODALE'].nom, 'RESULTAT')
             ASSERT(res[0] == 0)
@@ -156,14 +156,14 @@ class MISS_PARAMETER(object):
                 self.set('AMOR_REDUIT', force_list(self['AMOR_REDUIT']))
                 nval = len(self['AMOR_REDUIT'])
                 if nval < self['_NBM_DYN']:
-                    # complËte avec le dernier
+                    # compl√®te avec le dernier
                     nadd = self['_NBM_DYN'] - nval
                     self._keywords['AMOR_REDUIT'].extend([self['AMOR_REDUIT'][-1],] * nadd)
                     nval = self['_NBM_DYN']
                 if nval < self['_NBM_DYN'] + self['_NBM_STAT']:
                     # on ajoute 0.
                     self._keywords['AMOR_REDUIT'].append(0.)
-        # la rËgle ENSEMBLE garantit que les 3 GROUP_MA_xxx sont tous absents ou tous prÈsents
+        # la r√®gle ENSEMBLE garantit que les 3 GROUP_MA_xxx sont tous absents ou tous pr√©sents
         if self['ISSF'] != 'NON':
             if self['GROUP_MA_FLU_STR'] is None:
                 UTMESS('F', 'MISS0_22')
@@ -171,7 +171,7 @@ class MISS_PARAMETER(object):
                 UTMESS('F', 'MISS0_23')
 
     def __iter__(self):
-        """ItÈrateur simple sur le dict des mots-clÈs"""
+        """It√©rateur simple sur le dict des mots-cl√©s"""
         return iter(self._keywords)
     
     def __getitem__(self, key):
@@ -194,8 +194,8 @@ class MISS_PARAMETER(object):
 def lire_nb_valeurs(file_object, nb, extend_to, conversion,
                     nb_bloc=1, nb_ignore=0, max_per_line=-1,
                     regexp_label=None):
-    """Lit nb valeurs dans file_object et les ajoute ‡ extend_to
-    aprËs les avoir converties en utilisant la fonction conversion.
+    """Lit nb valeurs dans file_object et les ajoute √† extend_to
+    apr√®s les avoir converties en utilisant la fonction conversion.
     Ignore nb_ignore lignes pour chacun des nb_bloc lus et lit au
     maximum max_per_line valeurs par ligne.
     Retourne le nombre de lignes lues."""
@@ -266,7 +266,7 @@ def convert_double(fich1, fich2):
     open(fich2, "w").write(new)
 
 def double(string):
-    """Convertit la chaine en rÈelle (accepte le D comme exposant)"""
+    """Convertit la chaine en r√©elle (accepte le D comme exposant)"""
     string = re.sub('([0-9]+)([\-\+][0-9])', '\\1e\\2', string)
     return float(string.replace("D", "e"))
 

@@ -1,4 +1,4 @@
-# -*- coding: iso-8859-1 -*-
+# coding=utf-8
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -21,93 +21,93 @@
 cata_msg={
 
 1: _(u"""
-Le solveur "MUMPS" n'est pas installé dans cette version de Code_Aster.
+Le solveur "MUMPS" n'est pas installÃ© dans cette version de Code_Aster.
 
-Conseil : Vérifiez que vous avez sélectionné la bonne version de Code_Aster.
-          Attention, certains solveurs ne sont disponibles que dans les versions parallèles de Code_Aster.
+Conseil : VÃ©rifiez que vous avez sÃ©lectionnÃ© la bonne version de Code_Aster.
+          Attention, certains solveurs ne sont disponibles que dans les versions parallÃ¨les de Code_Aster.
 """),
 
 2: _(u"""
-La bibliothèque "MED" n'est pas installée dans cette version de Code_Aster.
+La bibliothÃ¨que "MED" n'est pas installÃ©e dans cette version de Code_Aster.
 """),
 
 3: _(u"""
-La bibliothèque "HDF5" n'est pas installée dans cette version de Code_Aster.
+La bibliothÃ¨que "HDF5" n'est pas installÃ©e dans cette version de Code_Aster.
 """),
 
 4: _(u"""
-La bibliothèque "ZMAT" n'est pas installée dans cette version de Code_Aster ou bien elle
-n'a pas été trouvée.
+La bibliothÃ¨que "ZMAT" n'est pas installÃ©e dans cette version de Code_Aster ou bien elle
+n'a pas Ã©tÃ© trouvÃ©e.
 
-Conseil : Vérifiez que l'environnement est correctement défini,
+Conseil : VÃ©rifiez que l'environnement est correctement dÃ©fini,
           notamment la variable LD_LIBRARY_PATH.
 """),
 
 5: _(u"""
 Erreur de programmation :
-    On essaie d'utiliser un opérateur qui n'est pas encore programmé.
+    On essaie d'utiliser un opÃ©rateur qui n'est pas encore programmÃ©.
 """),
 
-# identique au précédent mais il faudrait modifier tous les appelants dans fermetur
+# identique au prÃ©cÃ©dent mais il faudrait modifier tous les appelants dans fermetur
 6: _(u"""
 Erreur de programmation :
-    On essaie d'utiliser un opérateur qui n'est pas encore programmé.
+    On essaie d'utiliser un opÃ©rateur qui n'est pas encore programmÃ©.
 """),
 
 7: _(u"""
-Le renuméroteur "SCOTCH" n'est pas installé dans cette version de Code_Aster.
+Le renumÃ©roteur "SCOTCH" n'est pas installÃ© dans cette version de Code_Aster.
 """),
 
 8: _(u"""
 Erreur de programmation :
-    On essaie d'utiliser une routine de calcul élémentaire
-    qui n'est pas encore programmée.
+    On essaie d'utiliser une routine de calcul Ã©lÃ©mentaire
+    qui n'est pas encore programmÃ©e.
 """),
 
 9: _(u"""
 Erreur de programmation :
-    On essaie d'utiliser une routine d'initialisation élémentaire
-    qui n'est pas encore programmée.
+    On essaie d'utiliser une routine d'initialisation Ã©lÃ©mentaire
+    qui n'est pas encore programmÃ©e.
 """),
 
 10: _(u"""
-Le solveur "PETSc" n'est pas installé dans cette version de Code_Aster.
+Le solveur "PETSc" n'est pas installÃ© dans cette version de Code_Aster.
 
-Conseil : Vérifiez que vous avez sélectionné la bonne version de Code_Aster.
-          Attention, certains solveurs ne sont disponibles que dans les versions parallèles de Code_Aster.
+Conseil : VÃ©rifiez que vous avez sÃ©lectionnÃ© la bonne version de Code_Aster.
+          Attention, certains solveurs ne sont disponibles que dans les versions parallÃ¨les de Code_Aster.
 """),
 
 11: _(u"""
 Erreur de programmation :
     On essaie d'utiliser une routine de comportement
-    qui n'est pas encore programmée.
+    qui n'est pas encore programmÃ©e.
 """),
 
 12: _(u"""
-La bibliothèque "YACS" n'est pas installée dans cette version de Code_Aster.
+La bibliothÃ¨que "YACS" n'est pas installÃ©e dans cette version de Code_Aster.
 """),
 
 13 : _(u"""
-La bibliothèque %(k1)s n'a pas pu être chargée.
+La bibliothÃ¨que %(k1)s n'a pas pu Ãªtre chargÃ©e.
 
-Nom de la bibliothèque : %(k2)s
+Nom de la bibliothÃ¨que : %(k2)s
 
-Conseil : Vérifiez que l'environnement est correctement défini,
+Conseil : VÃ©rifiez que l'environnement est correctement dÃ©fini,
           notamment la variable LD_LIBRARY_PATH.
 """),
 
 14 : _(u"""
-Le symbole demandé n'a pas été trouvé dans la bibliothèque %(k1)s.
+Le symbole demandÃ© n'a pas Ã©tÃ© trouvÃ© dans la bibliothÃ¨que %(k1)s.
 
-Nom de la bibliothèque : %(k2)s
+Nom de la bibliothÃ¨que : %(k2)s
         Nom du symbole : %(k3)s
 
-Conseil : Vérifiez que l'environnement est correctement défini,
+Conseil : VÃ©rifiez que l'environnement est correctement dÃ©fini,
           notamment la variable LD_LIBRARY_PATH.
 """),
 
 15 : _(u"""
-La bibliothèque "METIS" n'est pas installée dans cette version de Code_Aster.
+La bibliothÃ¨que "METIS" n'est pas installÃ©e dans cette version de Code_Aster.
 """),
 
 }

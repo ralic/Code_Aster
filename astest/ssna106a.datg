@@ -20,4 +20,3 @@ dDA = droite D A 4 ;
 mail = daller dAB dBC dCD dDA plan;
 trac mail;
 sauv form mail ;
-

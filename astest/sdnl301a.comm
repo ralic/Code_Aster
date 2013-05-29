@@ -436,4 +436,3 @@ TEST_TABLE(PRECISION=0.050000000000000003,
 #                        MARQUEUR=0,)));
 
 FIN();
-

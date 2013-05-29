@@ -1,4 +1,4 @@
-# -*- coding: iso-8859-1 -*-
+# coding=utf-8
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -21,8 +21,8 @@
 cata_msg = {
 1 : _(u"""
 Erreur utilisateur dans la commande CREA_CHAMP / EXTR / TABLE :
-   Dans la table %(k1)s, pour créer un champ de type %(k2)s,
-   certains paramètres sont obligatoires et d'autres sont interdits :
+   Dans la table %(k1)s, pour crÃ©er un champ de type %(k2)s,
+   certains paramÃ¨tres sont obligatoires et d'autres sont interdits :
 
      NOEU :
        obligatoire : NOEUD
@@ -39,7 +39,7 @@ Erreur utilisateur dans la commande CREA_CHAMP / EXTR / TABLE :
 
 2 : _(u"""
  Erreur utilisateur dans la commande CREA_CHAMP / EXTR / TABLE  :
-   Les paramètres de la table doivent être :
+   Les paramÃ¨tres de la table doivent Ãªtre :
      - soit : MAILLE, NOEUD, POINT, SOUS_POINT
      - soit le nom d'une composante de la grandeur.
 
@@ -48,7 +48,7 @@ Erreur utilisateur dans la commande CREA_CHAMP / EXTR / TABLE :
 
  Conseil :
    Si la table fournie provient de la commande CREA_TABLE / RESU, il faut probablement
-   utiliser la commande CALC_TABLE + OPERATION='EXTR' pour éliminer les colonnes RESULTAT, NUME_ORDRE, ....
+   utiliser la commande CALC_TABLE + OPERATION='EXTR' pour Ã©liminer les colonnes RESULTAT, NUME_ORDRE, ....
 """),
 
 
@@ -59,10 +59,10 @@ Erreur utilisateur dans la commande CREA_CHAMP / EXTR / TABLE :
 
 5 : _(u"""
  Erreur utilisateur :
-   On cherche à créer un CHAM_ELEM / ELNO à partir d'une table (%(k1)s).
+   On cherche Ã  crÃ©er un CHAM_ELEM / ELNO Ã  partir d'une table (%(k1)s).
    La maille  %(k2)s a %(i2)d noeuds mais dans la table,
    une ligne concerne un noeud "impossible" :
-   noeud de numéro local  %(i1)d  ou noeud de nom %(k3)s
+   noeud de numÃ©ro local  %(i1)d  ou noeud de nom %(k3)s
 """),
 
 6 : _(u"""
@@ -78,9 +78,9 @@ Erreur utilisateur :
 
 8 : _(u"""
 Erreur :
-   On cherche à transformer un CHAM_ELEM en carte.
+   On cherche Ã  transformer un CHAM_ELEM en carte.
    CHAM_ELEM : %(k1)s  carte : %(k2)s
-   Pour la maille numéro %(i3)d le nombre de points (ou de sous-points) est > 1
+   Pour la maille numÃ©ro %(i3)d le nombre de points (ou de sous-points) est > 1
    ce qui est interdit.
    Point:       %(i1)d
    Sous-point : %(i2)d
@@ -88,7 +88,7 @@ Erreur :
 
 9 : _(u"""
 Erreur utilisateur :
-   Pour le matériau : %(k1)s, on cherche à redéfinir un mot clé déjà défini : %(k2)s
+   Pour le matÃ©riau : %(k1)s, on cherche Ã  redÃ©finir un mot clÃ© dÃ©jÃ  dÃ©fini : %(k2)s
 """),
 
 10 : _(u"""
@@ -97,29 +97,29 @@ Erreur utilisateur :
    Non convergence pour le calcul de la loi de comportement (NB_ITER_MAX atteint).
 
 Conseil :
-   Augmenter NB_ITER_MAX (ou diminuer la taille des incréments de charge)
+   Augmenter NB_ITER_MAX (ou diminuer la taille des incrÃ©ments de charge)
 
 """),
 
 11 : _(u"""
- mot-clé facteur non traite :  %(k1)s
+ mot-clÃ© facteur non traite :  %(k1)s
 """),
 
 15 : _(u"""
- pas de FREQ initiale définie : on prend la fréquence mini des modes calcules
+ pas de FREQ initiale dÃ©finie : on prend la frÃ©quence mini des modes calcules
    %(r1)f
 """),
 
 16 : _(u"""
- pas de fréquence finale définie : on prend la fréquence max des modes calcules   %(r1)f
+ pas de frÃ©quence finale dÃ©finie : on prend la frÃ©quence max des modes calcules   %(r1)f
 """),
 
 17 : _(u"""
- votre fréquence de coupure   %(r1)f
+ votre frÃ©quence de coupure   %(r1)f
 """),
 
 18 : _(u"""
- est inférieure a celle  du modèle de turbulence adopte :  %(r1)f
+ est infÃ©rieure a celle  du modÃ¨le de turbulence adopte :  %(r1)f
 """),
 
 19 : _(u"""
@@ -127,19 +127,19 @@ Conseil :
 """),
 
 20 : _(u"""
- votre fréquence de coupure :   %(r1)f
+ votre frÃ©quence de coupure :   %(r1)f
 """),
 
 21 : _(u"""
- est supérieure a celle  du modèle de turbulence adopte :   %(r1)f
+ est supÃ©rieure a celle  du modÃ¨le de turbulence adopte :   %(r1)f
 """),
 
 22 : _(u"""
- on prend celle du modèle.
+ on prend celle du modÃ¨le.
 """),
 
 23 : _(u"""
- erreur dans les données mot clé facteur  %(k1)s  occurrence  %(i1)d
+ erreur dans les donnÃ©es mot clÃ© facteur  %(k1)s  occurrence  %(i1)d
 """),
 
 24 : _(u"""
@@ -151,36 +151,36 @@ Conseil :
 """),
 
 26 : _(u"""
- il y a  %(i1)d  valeurs pour le mot clé  %(k1)s il en faut  %(i2)d
+ il y a  %(i1)d  valeurs pour le mot clÃ©  %(k1)s il en faut  %(i2)d
 """),
 
 27 : _(u"""
- erreur dans les données mot clé facteur  %(k1)s  occurrence  %(i1)d
- pour le mot clé  %(k2)s
+ erreur dans les donnÃ©es mot clÃ© facteur  %(k1)s  occurrence  %(i1)d
+ pour le mot clÃ©  %(k2)s
   le noeud n'existe pas  %(k3)s
 """),
 
 28 : _(u"""
- erreur dans les données mot clé facteur  %(k1)s  occurrence  %(i1)d
- pour le mot clé  %(k2)s
+ erreur dans les donnÃ©es mot clÃ© facteur  %(k1)s  occurrence  %(i1)d
+ pour le mot clÃ©  %(k2)s
   le GROUP_NO n'existe pas  %(k3)s
 """),
 
 29 : _(u"""
- trop de noeuds dans le GROUP_NO mot clé facteur  %(k1)s  occurrence  %(i1)d
+ trop de noeuds dans le GROUP_NO mot clÃ© facteur  %(k1)s  occurrence  %(i1)d
    noeud utilise:  %(k2)s
 """),
 
 31 : _(u"""
  poutre : occurrence %(i2)d :
- "CARA" nombre de valeurs entrées:  %(i2)d
- "VALE" nombre de valeurs entrées:  %(i3)d
- vérifiez vos données
+ "CARA" nombre de valeurs entrÃ©es:  %(i2)d
+ "VALE" nombre de valeurs entrÃ©es:  %(i3)d
+ vÃ©rifiez vos donnÃ©es
 
 """),
 
 32 : _(u"""
- erreur dans les données mot clé facteur  %(k1)s  occurrence  %(i1)d
+ erreur dans les donnÃ©es mot clÃ© facteur  %(k1)s  occurrence  %(i1)d
 """),
 
 
@@ -188,47 +188,47 @@ Conseil :
 
 
 35 : _(u"""
- il y a  %(i1)d  valeurs pour le mot clé  ANGL_NAUT il en faut  %(i2)d
+ il y a  %(i1)d  valeurs pour le mot clÃ©  ANGL_NAUT il en faut  %(i2)d
 """),
 
 36 : _(u"""
- erreur dans les données mot clé facteur  %(k1)s  occurrence  %(i1)d
+ erreur dans les donnÃ©es mot clÃ© facteur  %(k1)s  occurrence  %(i1)d
 """),
 
 39 : _(u"""
- il y a  %(i1)d  valeurs pour le mot clé  %(k1)s il en faut  %(i2)d
+ il y a  %(i1)d  valeurs pour le mot clÃ©  %(k1)s il en faut  %(i2)d
 """),
 
 40 : _(u"""
- erreur dans les données mot clé facteur  %(k1)s  occurrence  %(i1)d
+ erreur dans les donnÃ©es mot clÃ© facteur  %(k1)s  occurrence  %(i1)d
 """),
 
 43 : _(u"""
- il y a  %(i1)d  valeurs pour le mot clé  %(k1)s il en faut  %(i2)d
+ il y a  %(i1)d  valeurs pour le mot clÃ©  %(k1)s il en faut  %(i2)d
 """),
 
 44 : _(u"""
- fichier MED :  %(k1)s maillage :  %(k2)s erreur effoco numéro  %(i1)d
+ fichier MED :  %(k1)s maillage :  %(k2)s erreur effoco numÃ©ro  %(i1)d
 """),
 
 51 : _(u"""
- fichier MED :  %(k1)s maillage :  %(k2)s erreur efouvr numéro  %(i1)d
+ fichier MED :  %(k1)s maillage :  %(k2)s erreur efouvr numÃ©ro  %(i1)d
 """),
 
 52 : _(u"""
- fichier MED :  %(k1)s maillage :  %(k2)s erreur efferm numéro  %(i1)d
+ fichier MED :  %(k1)s maillage :  %(k2)s erreur efferm numÃ©ro  %(i1)d
 """),
 
 53 : _(u"""
 
- l'identifiant d'une maille dépasse les 8 caractères autorisés:
+ l'identifiant d'une maille dÃ©passe les 8 caractÃ¨res autorisÃ©s:
    %(k1)s
  maille      : %(k2)s
  PREF_MAILLE : %(k3)s
 """),
 
 54 : _(u"""
- l'utilisation de 'PREF_NUME' est recommandée.
+ l'utilisation de 'PREF_NUME' est recommandÃ©e.
 """),
 
 55 : _(u"""
@@ -240,24 +240,24 @@ Conseil :
 """),
 
 59 : _(u"""
- erreur lors de la définition de la courbe de traction : %(k1)s
+ erreur lors de la dÃ©finition de la courbe de traction : %(k1)s
  le premier point de la courbe de traction %(k2)s a pour abscisse:  %(r1)f
 
 """),
 
 60 : _(u"""
- erreur lors de la définition de la courbe de traction :%(k1)s
- le premier point de la courbe de traction %(k2)s a pour ordonnée:  %(r1)f
+ erreur lors de la dÃ©finition de la courbe de traction :%(k1)s
+ le premier point de la courbe de traction %(k2)s a pour ordonnÃ©e:  %(r1)f
 
 """),
 
 61 : _(u"""
- Erreur lors de la définition de la courbe de traction : %(k1)s
+ Erreur lors de la dÃ©finition de la courbe de traction : %(k1)s
 
  la courbe de traction doit satisfaire les conditions suivantes :
- - les abscisses (déformations) doivent être strictement croissantes,
- - la pente entre 2 points successifs doit être inférieure a la pente
-   élastique (module de Young) entre 0 et le premier point de la courbe.
+ - les abscisses (dÃ©formations) doivent Ãªtre strictement croissantes,
+ - la pente entre 2 points successifs doit Ãªtre infÃ©rieure a la pente
+   Ã©lastique (module de Young) entre 0 et le premier point de la courbe.
 
  pente initiale (module de Young) :   %(r1)f
  pente courante                  :   %(r2)f
@@ -266,31 +266,31 @@ Conseil :
 """),
 
 62 : _(u"""
- Courbe de traction : %(k1)s points presque alignés. Risque de PB dans STAT_NON_LINE
+ Courbe de traction : %(k1)s points presque alignÃ©s. Risque de PB dans STAT_NON_LINE
  en particulier en C_PLAN
   pente initiale :     %(r1)f
   pente courante:      %(r2)f
-  précision relative:  %(r3)f
+  prÃ©cision relative:  %(r3)f
   pour l'abscisse:     %(r4)f
 
 """),
 
 63 : _(u"""
- erreur lors de la définition de la courbe de traction %(k1)s
- le premier point de la fonction indicée par :  %(i1)d de la nappe  %(k2)s
+ erreur lors de la dÃ©finition de la courbe de traction %(k1)s
+ le premier point de la fonction indicÃ©e par :  %(i1)d de la nappe  %(k2)s
  a pour abscisse:  %(r1)f
 
 """),
 
 64 : _(u"""
- erreur lors de la définition de la courbe de traction %(k1)s
- le premier point de la fonction indicée par :  %(i1)d de la nappe  %(k2)s
- a pour ordonnée:  %(r1)f
+ erreur lors de la dÃ©finition de la courbe de traction %(k1)s
+ le premier point de la fonction indicÃ©e par :  %(i1)d de la nappe  %(k2)s
+ a pour ordonnÃ©e:  %(r1)f
 
 """),
 
 65 : _(u"""
- erreur lors de la définition de la courbe de traction %(k1)s
+ erreur lors de la dÃ©finition de la courbe de traction %(k1)s
  pente initiale :   %(r1)f
  pente courante:    %(r2)f
  pour l'abscisse:  %(r3)f
@@ -302,15 +302,15 @@ Conseil :
 """),
 
 74 : _(u"""
- comportement :%(k1)s non trouvé
+ comportement :%(k1)s non trouvÃ©
 """),
 
 75 : _(u"""
- comportement %(k1)s non trouvé pour la maille  %(k2)s
+ comportement %(k1)s non trouvÃ© pour la maille  %(k2)s
 """),
 
 77 : _(u"""
- manque le paramètre  %(k1)s
+ manque le paramÃ¨tre  %(k1)s
 """),
 
 78 : _(u"""
@@ -319,7 +319,7 @@ Conseil :
 
 81 : _(u"""
   La maille de nom %(k1)s n'est pas de type SEG3 ou SEG4,
-  elle ne sera pas affectée par %(k2)s
+  elle ne sera pas affectÃ©e par %(k2)s
 """),
 
 82 : _(u"""
@@ -327,43 +327,43 @@ Conseil :
 """),
 
 83 : _(u"""
-  Erreur a l'interpolation, paramètres non trouvé.
+  Erreur a l'interpolation, paramÃ¨tres non trouvÃ©.
 """),
 
 93 : _(u"""
 Erreur Europlexus
-   Toutes les occurrences de RIGI_PARASOL doivent avoir la même valeur pour le mot
-   clef EUROPLEXUS. La valeur du mot clef EUROPLEXUS à l'occurrence %(i1)d est différente
-   de sa valeur à l'occurrence numéro 1.
+   Toutes les occurrences de RIGI_PARASOL doivent avoir la mÃªme valeur pour le mot
+   clef EUROPLEXUS. La valeur du mot clef EUROPLEXUS Ã  l'occurrence %(i1)d est diffÃ©rente
+   de sa valeur Ã  l'occurrence numÃ©ro 1.
 """),
 
 94 : _(u"""
-     On ne peut pas appliquer un cisaillement 2d sur une modélisation 3D
+     On ne peut pas appliquer un cisaillement 2d sur une modÃ©lisation 3D
 """),
 95 : _(u"""
-     ERREUR: l'auto-spectre est a valeurs négatives
+     ERREUR: l'auto-spectre est a valeurs nÃ©gatives
 """),
 96 : _(u"""
 Erreur Europlexus
-   Europlexus ne gère pas les MAILLES, mais seulement les POINTS.
-   Le problème vient de la maille %(k1)s.
+   Europlexus ne gÃ¨re pas les MAILLES, mais seulement les POINTS.
+   Le problÃ¨me vient de la maille %(k1)s.
 """),
 
 97 : _(u"""
 Erreur Europlexus
-   Données incorrectes. Les dimensions des objets ne sont pas cohérentes (Erreur Fortran : acearp)
+   DonnÃ©es incorrectes. Les dimensions des objets ne sont pas cohÃ©rentes (Erreur Fortran : acearp)
 """),
 
 98 : _(u"""
 Erreur Europlexus
-   Pour accéder aux valeurs nécessaires à Europlexus, il faut que dans la commande AFFE_CARA_ELEM,
+   Pour accÃ©der aux valeurs nÃ©cessaires Ã  Europlexus, il faut que dans la commande AFFE_CARA_ELEM,
    pour le mot clef facteur RIGI_PARASOL, la valeur du mot clef EUROPLEXUS soit 'OUI' dans
    toutes les occurrences.
 """),
 
 99 : _(u"""
-Le vecteur définissant l'axe de rotation a une composante nulle suivant Oz.
-Avec une modélisation C_PLAN ou D_PLAN, l'axe de rotation doit être dirigé suivant Oz.
+Le vecteur dÃ©finissant l'axe de rotation a une composante nulle suivant Oz.
+Avec une modÃ©lisation C_PLAN ou D_PLAN, l'axe de rotation doit Ãªtre dirigÃ© suivant Oz.
 """),
 
 }

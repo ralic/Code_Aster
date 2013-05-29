@@ -89,4 +89,3 @@ end
 plot(t,T(1,:),'b-');
 plot(t,T(in,:),'g-');
 plot(t,T(Imax,:),'b-');
-

@@ -1,4 +1,4 @@
-# -*- coding: iso-8859-1 -*-
+# coding=utf-8
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -23,9 +23,9 @@ from cata_comportement import LoiComportement
 
 loi = LoiComportement(
    nom            = 'JOINT_MECA_FROT',
-   doc = """Loi elastoplastique de Mohr-Coulomb avec adhesion pour modélisation de joints dans les barrages.
-            Elle permet aussi de modéliser, avec les éléments  de joint hydro-mécaniques, un couplage entre 
-            la mécanique et l'écoulement de fluide dans la fissure """,
+   doc = """Loi elastoplastique de Mohr-Coulomb avec adhesion pour modÃ©lisation de joints dans les barrages.
+            Elle permet aussi de modÃ©liser, avec les Ã©lÃ©ments  de joint hydro-mÃ©caniques, un couplage entre 
+            la mÃ©canique et l'Ã©coulement de fluide dans la fissure """,
    num_lc         = 48,
    nb_vari        = 18,
    nom_vari       = ('LAMBDA','INDIPLAS','DEPPLAS1','DEPPLAS2','INDIOUV','SIGT','SAUT_N','SAUT_T1','SAUT_T2','EPAISSJO','SIGN_GLO','GRADP_X','GRADP_Y','GRADP_Z','FH_X','FH_Y','FH_Z','PRESF'),

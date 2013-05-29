@@ -1,5 +1,4 @@
 /*           CONFIGURATION MANAGEMENT OF EDF VERSION                  */
-/* MODIF definition include  DATE 02/10/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE */
 /* ================================================================== */
 /* COPYRIGHT (C) 1991 - 2012  EDF R&D              WWW.CODE-ASTER.ORG */
 /*                                                                    */
@@ -13,32 +12,34 @@
 /* GENERAL PUBLIC LICENSE FOR MORE DETAILS.                           */
 /*                                                                    */
 /* YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE  */
-/* ALONG WITH THIS PROGRAM; IF NOT, WRITE TO : EDF R&D CODE_ASTER,    */
+/* ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,      */
 /*    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.     */
 /* ================================================================== */
+/* disable the message "line too long" because the code is generated  */
+# aslint: disable=C3001
 
 #ifndef DEFINITION_H
 #define DEFINITION_H
 
 #include "aster_depend.h"
 
-/* Pour définir les appels et signatures de fonctions appelables en Fortran
- * On utilise l'operateur de concatenation ## du préprocesseur C (cpp) pour ajouter l'underscore
- * au nom en majuscule ou minuscule de la fonction à définir ou à appeler.
- * Pour les anciens compilateurs non ANSI, utiliser un commentaire vide à la place.
+/* Pour dÃ©finir les appels et signatures de fonctions appelables en Fortran
+ * On utilise l'operateur de concatenation ## du prÃ©processeur C (cpp) pour ajouter l'underscore
+ * au nom en majuscule ou minuscule de la fonction Ã  dÃ©finir ou Ã  appeler.
+ * Pour les anciens compilateurs non ANSI, utiliser un commentaire vide Ã  la place.
  * Pour appeler une subroutine Fortran de nom SUB avec un argument string et 2 arguments autres, faire:
  * #define CALL_SUB(a,b,c) CALLSPP(SUB,sub,a,b,c)
  * puis : CALL_SUB(a,b,c)
- * Pour définir une fonction C de nom SUB avec un argument string et 2 arguments autres,
+ * Pour dÃ©finir une fonction C de nom SUB avec un argument string et 2 arguments autres,
  * appelable depuis le fortran, faire:
  * void DEFSPP(SUB, sub, char * nomobj, STRING_SIZE lnom, DOUBLE *d, INTEGER *i)
  * {
  * }
  * ici, lnom est l'entier qui indique la longueur de la chaine Fortran nomobj
- * Les macros définies ici ne servent qu'à former le nom de la fonction et à
+ * Les macros dÃ©finies ici ne servent qu'Ã  former le nom de la fonction et Ã 
  * mettre les arguments dans le bon ordre. On utilise l'ordre _WIN32 comme
  * base (pointeur char suivi de la longueur) et on reordonne pour les autres compilateurs.
- * STRING_SIZE est le type retourné par strlen.
+ * STRING_SIZE est le type retournÃ© par strlen.
  */
 
 /* Operateur de concatenation */
@@ -184,11 +185,11 @@
 #define CALLSSPSPPSPSS(UN,LN,a,b,c,d,e,f,g,h,i,j)                                F_FUNC(UN,LN)(a,b,c,d,e,f,g,h,i,j,strlen(a),strlen(b),strlen(d),strlen(g),strlen(i),strlen(j))
 #define DEFSSPSPPSPPP(UN,LN,a,la,b,lb,c,d,ld,e,f,g,lg,h,i,j)               STDCALL(UN,LN)(a,b,c,d,e,f,g,h,i,j,la,lb,ld,lg)
 #define CALLSSPSPPSPPP(UN,LN,a,b,c,d,e,f,g,h,i,j)                          F_FUNC(UN,LN)(a,b,c,d,e,f,g,h,i,j,strlen(a),strlen(b),strlen(d),strlen(g))
-/* spécial pour l'interface umat : PPPPPPPPPPPPPPPPPPSPPPPPPPPPPPPPPPPPP */
+/* spÃ©cial pour l'interface umat : PPPPPPPPPPPPPPPPPPSPPPPPPPPPPPPPPPPPP */
 #define DEFUMATWRAP(UN,LN,a,la,b,lb,c,d,e,f,g,h,i,j,k,l,m,n,o,p,q,r,s,t,u,lu,v,w,x,y,z,A,B,C,D,E,F,G,H,I,J,K,L,M)               STDCALL(UN,LN)(a,b,c,d,e,f,g,h,i,j,k,l,m,n,o,p,q,r,s,t,u,v,w,x,y,z,A,B,C,D,E,F,G,H,I,J,K,L,M,la,lb,lu)
 
 
-/* Appels et signatures avec strlen juste après le pointeur de chaine */
+/* Appels et signatures avec strlen juste aprÃ¨s le pointeur de chaine */
 #else
 
 #define DEFS(UN,LN,a,la)               STDCALL(UN,LN)(a,la)
@@ -303,12 +304,12 @@
 #define CALLSSPSPPSPSS(UN,LN,a,b,c,d,e,f,g,h,i,j)                                F_FUNC(UN,LN)(a,strlen(a),b,strlen(b),c,d,strlen(d),e,f,g,strlen(g),h,i,strlen(i),j,strlen(j))
 #define DEFSSPSPPSPPP(UN,LN,a,la,b,lb,c,d,ld,e,f,g,lg,h,i,j)               STDCALL(UN,LN)(a,la,b,lb,c,d,ld,e,f,g,lg,h,i,j)
 #define CALLSSPSPPSPPP(UN,LN,a,b,c,d,e,f,g,h,i,j)                          F_FUNC(UN,LN)(a,strlen(a),b,strlen(b),c,d,strlen(d),e,f,g,strlen(g),h,i,j)
-/* spécial pour l'interface umat : PPPPPPPPPPPPPPPPPPSPPPPPPPPPPPPPPPPPP */
+/* spÃ©cial pour l'interface umat : PPPPPPPPPPPPPPPPPPSPPPPPPPPPPPPPPPPPP */
 #define DEFUMATWRAP(UN,LN,a,la,b,lb,c,d,e,f,g,h,i,j,k,l,m,n,o,p,q,r,s,t,u,lu,v,w,x,y,z,A,B,C,D,E,F,G,H,I,J,K,L,M)               STDCALL(UN,LN)(a,la,b,lb,c,d,e,f,g,h,i,j,k,l,m,n,o,p,q,r,s,t,u,lu,v,w,x,y,z,A,B,C,D,E,F,G,H,I,J,K,L,M)
 
 #endif
 
-/* Appels et signatures sans chaine de caractères */
+/* Appels et signatures sans chaine de caractÃ¨res */
 #define DEF0(UN,LN)               STDCALL(UN,LN)()
 #define CALL0(UN,LN)              F_FUNC(UN,LN)()
 #define DEFP(UN,LN,a)               STDCALL(UN,LN)(a)

@@ -1,4 +1,4 @@
-# -*- coding: iso-8859-1 -*-
+# coding=utf-8
 # person_in_charge: mathieu.courtois at edf.fr
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -35,7 +35,7 @@ import B_utils
 
 class MACRO_ETAPE(B_ETAPE.ETAPE):
    """
-   Cette classe implémente les méthodes relatives à la phase de construction
+   Cette classe implÃ©mente les mÃ©thodes relatives Ã  la phase de construction
    d'une macro-etape.
    """
    macros={}
@@ -45,10 +45,10 @@ class MACRO_ETAPE(B_ETAPE.ETAPE):
 
    def Build(self):
       """
-      Fonction : Construction d'une étape de type MACRO
+      Fonction : Construction d'une Ã©tape de type MACRO
 
-      La construction n'est à faire que pour certaines macros.
-      Ensuite on boucle sur les sous étapes construites
+      La construction n'est Ã  faire que pour certaines macros.
+      Ensuite on boucle sur les sous Ã©tapes construites
       en leur demandant de se construire selon le meme processus
       """
       self.set_current_step()
@@ -82,17 +82,17 @@ class MACRO_ETAPE(B_ETAPE.ETAPE):
 
    def Build_alone(self):
       """
-          Construction d'une étape de type MACRO.
+          Construction d'une Ã©tape de type MACRO.
 
           On ne construit pas les sous commandes et le
-          current step est supposé correctement initialisé
+          current step est supposÃ© correctement initialisÃ©
       """
       ier = self._Build()
       return ier
 
    def _Build(self):
       """
-         Cette méthode réalise le traitement de construction pour
+         Cette mÃ©thode rÃ©alise le traitement de construction pour
          l'objet lui meme
       """
       if CONTEXT.debug : print "MACRO_ETAPE._Build ",self.nom,self.definition.op
@@ -101,7 +101,7 @@ class MACRO_ETAPE(B_ETAPE.ETAPE):
       try:
          if self.definition.proc is not None:
             # On est dans le cas d'une macro en Python. On evalue la fonction
-            # self.definition.proc dans le contexte des valeurs de mots clés (d)
+            # self.definition.proc dans le contexte des valeurs de mots clÃ©s (d)
             # La fonction proc doit demander la numerotation de la commande (appel de set_icmd)
             d=self.cree_dict_valeurs(self.mc_liste)
             ier= apply(self.definition.proc,(self,),d)
@@ -110,11 +110,11 @@ class MACRO_ETAPE(B_ETAPE.ETAPE):
          else:
             # Pour presque toutes les commandes (sauf FORMULE et POURSUITE)
             # le numero de la commande n est pas utile en phase de construction
-            # Néanmoins, on le calcule en appelant la methode set_icmd avec un
-            # incrément de 1
-            # un incrément de 1 indique que la commande compte pour 1 dans
-            # la numérotation globale
-            # un incrément de None indique que la commande ne sera pas numérotée.
+            # NÃ©anmoins, on le calcule en appelant la methode set_icmd avec un
+            # incrÃ©ment de 1
+            # un incrÃ©ment de 1 indique que la commande compte pour 1 dans
+            # la numÃ©rotation globale
+            # un incrÃ©ment de None indique que la commande ne sera pas numÃ©rotÃ©e.
             self.set_icmd(1)
 
          if ier:
@@ -149,7 +149,7 @@ class MACRO_ETAPE(B_ETAPE.ETAPE):
           Fonction:
             Delivrer un nom de concept non encore utilise et unique
       """
-      # nsd est incrémenté à l'enregistrement dans N_JDC
+      # nsd est incrÃ©mentÃ© Ã  l'enregistrement dans N_JDC
       return type + "9" + str(self.jdc.nsd).zfill(6)
 
    def DeclareOut(self,nom,concept):
@@ -160,7 +160,7 @@ class MACRO_ETAPE(B_ETAPE.ETAPE):
           a la macro (nom) et le concept de sortie effectif qui existe deja
           au moment de la construction
           Cette information sera utilisee lors de la creation du concept produit
-          par une sous commande créée postérieurement.
+          par une sous commande crÃ©Ã©e postÃ©rieurement.
       """
       self.Outputs[nom]=concept
 

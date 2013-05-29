@@ -1,4 +1,4 @@
-# -*- coding: iso-8859-1 -*-
+# coding=utf-8
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -22,28 +22,28 @@ cata_msg = {
 
 1 : _(u"""
   Erreur d'utilisation :
-    Pour les méthodes itératives GCPC et FETI, on ne peut pas encore utiliser
-    de matrice non-symétrique.
+    Pour les mÃ©thodes itÃ©ratives GCPC et FETI, on ne peut pas encore utiliser
+    de matrice non-symÃ©trique.
 
   Conseil : Changer de solveur
 """),
 
 3: _(u"""
- Le calcul est séquentiel, on ne peut donc pas utiliser MATR_DISTRIBUEE='OUI'.
+ Le calcul est sÃ©quentiel, on ne peut donc pas utiliser MATR_DISTRIBUEE='OUI'.
  On force MATR_DISTRIBUEE='NON'.
 """),
 
 4: _(u"""
- L'utilisation de MATR_DISTRIBUEE='OUI' nécessite que chaque processeur ait
- au moins 1 degré de liberté qui lui soit alloué.
- Ici, le processeur %(i1)d ne s'est vu attribué aucun ddl.
+ L'utilisation de MATR_DISTRIBUEE='OUI' nÃ©cessite que chaque processeur ait
+ au moins 1 degrÃ© de libertÃ© qui lui soit allouÃ©.
+ Ici, le processeur %(i1)d ne s'est vu attribuÃ© aucun ddl.
 
- Conseil : Modifiez le partitionnement des mailles de votre modèle dans
+ Conseil : Modifiez le partitionnement des mailles de votre modÃ¨le dans
            AFFE_MODELE/PARTITION/PARALLELISME ou diminuez le nombre de processeurs.
 """),
 
 5 : _(u"""
- modèles discordants
+ modÃ¨les discordants
 """),
 
 6 : _(u"""
@@ -51,11 +51,11 @@ cata_msg = {
 """),
 
 7 : _(u"""
- FETI : maille négative avec LIGREL de modèle !
+ FETI : maille nÃ©gative avec LIGREL de modÃ¨le !
 """),
 
 8 : _(u"""
- le mot-clé :  %(k1)s  est incorrect.
+ le mot-clÃ© :  %(k1)s  est incorrect.
  on attend : "CUMU" ou "ZERO"
 """),
 
@@ -64,11 +64,11 @@ cata_msg = {
 """),
 
 10 : _(u"""
- il est imprévu d avoir la composante "LAGR" au delà de 30
+ il est imprÃ©vu d avoir la composante "LAGR" au delÃ  de 30
 """),
 
 11 : _(u"""
- on ne peut assembler que des vecteurs réels ou complexes
+ on ne peut assembler que des vecteurs rÃ©els ou complexes
 """),
 
 12 : _(u"""
@@ -93,13 +93,13 @@ cata_msg = {
 """),
 
 18 : _(u"""
- Erreur développeur dans l'assemblage.
- Les vecteurs élémentaires ou les matrices élémentaires sont incohérentes: ils ne portent pas sur le même modèle ou ils ne calculent pas la même option.
+ Erreur dÃ©veloppeur dans l'assemblage.
+ Les vecteurs Ã©lÃ©mentaires ou les matrices Ã©lÃ©mentaires sont incohÃ©rentes: ils ne portent pas sur le mÃªme modÃ¨le ou ils ne calculent pas la mÃªme option.
 """),
 
 19 : _(u"""
- Erreur développeur dans l'assemblage.
- Les vecteurs élémentaires ou les matrices élémentaires ne contiennent ni sous-structures, ni objet LISTE_RESU.
+ Erreur dÃ©veloppeur dans l'assemblage.
+ Les vecteurs Ã©lÃ©mentaires ou les matrices Ã©lÃ©mentaires ne contiennent ni sous-structures, ni objet LISTE_RESU.
 """),
 
 20 : _(u"""
@@ -109,7 +109,7 @@ cata_msg = {
 """),
 
 21 : _(u"""
- modèles différents
+ modÃ¨les diffÃ©rents
 """),
 
 24 : _(u"""
@@ -121,16 +121,16 @@ cata_msg = {
 """),
 
 26 : _(u"""
- le noeud:  %(k1)s composante:  %(k2)s  est bloqué plusieurs fois.
+ le noeud:  %(k1)s composante:  %(k2)s  est bloquÃ© plusieurs fois.
 """),
 
 27 : _(u"""
- l'entier décrivant la position du premier Lagrange ne peut être égal qu'à +1 ou -1 .
+ l'entier dÃ©crivant la position du premier Lagrange ne peut Ãªtre Ã©gal qu'Ã  +1 ou -1 .
 """),
 
 28 : _(u"""
- le nombre de noeuds effectivement numérotés ne correspond pas au nombre
- de noeuds à numéroter
+ le nombre de noeuds effectivement numÃ©rotÃ©s ne correspond pas au nombre
+ de noeuds Ã  numÃ©roter
 """),
 
 29 : _(u"""
@@ -138,15 +138,15 @@ cata_msg = {
 """),
 
 30 : _(u"""
-  plusieurs phénomènes
+  plusieurs phÃ©nomÃ¨nes
 """),
 
 31 : _(u"""
- les DDL du NUME_DDL ont bougé
+ les DDL du NUME_DDL ont bougÃ©
 """),
 
 32 : _(u"""
- phénomène non prévu dans le MOLOC de NUMER2 pour DD
+ phÃ©nomÃ¨ne non prÃ©vu dans le MOLOC de NUMER2 pour DD
 """),
 
 33 : _(u"""
@@ -158,7 +158,7 @@ cata_msg = {
 """),
 
 35 : _(u"""
- il n y a pas de modèle dans la liste  %(k1)s .NUME.LILI
+ il n y a pas de modÃ¨le dans la liste  %(k1)s .NUME.LILI
 """),
 
 36 : _(u"""
@@ -166,7 +166,7 @@ cata_msg = {
 """),
 
 37 : _(u"""
- méthode :  %(k1)s  inconnue.
+ mÃ©thode :  %(k1)s  inconnue.
 """),
 
 38 : _(u"""
@@ -174,8 +174,8 @@ cata_msg = {
 """),
 
 39 : _(u"""
- le phénomène  %(k1)s  n'est pas admis pour la symétrisation des matrices.
- seuls sont admis les phénomènes "MECANIQUE" et "THERMIQUE"
+ le phÃ©nomÃ¨ne  %(k1)s  n'est pas admis pour la symÃ©trisation des matrices.
+ seuls sont admis les phÃ©nomÃ¨nes "MECANIQUE" et "THERMIQUE"
 """),
 
 41 : _(u"""
@@ -196,8 +196,8 @@ cata_msg = {
  --- VECT_ELEM     : %(k1)s
  --- RESU          : %(k2)s
  --- NOMLI         : %(k3)s
- --- GREL numéro   : %(i1)d
- --- MAILLE numéro : %(i2)d
+ --- GREL numÃ©ro   : %(i1)d
+ --- MAILLE numÃ©ro : %(i2)d
  --- NNOE par NEMA : %(i3)d
  --- NNOE par NODE : %(i4)d
 """),
@@ -205,20 +205,20 @@ cata_msg = {
 45 : _(u"""
 Erreur Programmeur ou utilisateur :
 -----------------------------------
- Le LIGREL    : %(k1)s  référencé par le noeud supplémentaire. : %(i1)d
+ Le LIGREL    : %(k1)s  rÃ©fÃ©rencÃ© par le noeud supplÃ©mentaire. : %(i1)d
  de la maille : %(i2)d  du resuelem  : %(k2)s  du sd_vect_elem : %(k3)s
- n'est pas présent  dans le sd_nume_ddl : %(k4)s
+ n'est pas prÃ©sent  dans le sd_nume_ddl : %(k4)s
 
 Risques & conseils :
 --------------------
  Si vous utilisez la commande MACRO_ELAS_MULT :
-   Si %(k5)s est une charge contenant des conditions aux limites dualisées (DDL_IMPO, ...),
-   Êtes-vous sur d'avoir indiqué cette charge derrière le mot clé CHAR_MECA_GLOBAL ?
-   En effet, il faut indiquer TOUTES les charges dualisées derrière CHAR_MECA_GLOBAL.
+   Si %(k5)s est une charge contenant des conditions aux limites dualisÃ©es (DDL_IMPO, ...),
+   ÃŠtes-vous sur d'avoir indiquÃ© cette charge derriÃ¨re le mot clÃ© CHAR_MECA_GLOBAL ?
+   En effet, il faut indiquer TOUTES les charges dualisÃ©es derriÃ¨re CHAR_MECA_GLOBAL.
 
  Si vous utilisez directement la commande ASSE_VECTEUR :
-   Si %(k5)s est une charge contenant des conditions aux limites dualisées (DDL_IMPO, ...),
-   Êtes-vous sur d'avoir indiqué cette charge derrière le mot clé CHARGE
+   Si %(k5)s est une charge contenant des conditions aux limites dualisÃ©es (DDL_IMPO, ...),
+   ÃŠtes-vous sur d'avoir indiquÃ© cette charge derriÃ¨re le mot clÃ© CHARGE
    de la commande CALC_MATR_ELEM/OPTION='RIGI_MECA' ?
 """),
 
@@ -232,7 +232,7 @@ Risques & conseils :
 
 48 : _(u"""
  --- le noeud  : %(i1)d  du RESUEL    : %(k1)s  du VECT_ELEM   : %(k2)s
- --- n'a pas d''adresse  dans la numérotation : %(k3)s
+ --- n'a pas d''adresse  dans la numÃ©rotation : %(k3)s
 """),
 
 49 : _(u"""
@@ -243,49 +243,49 @@ Risques & conseils :
 63 : _(u"""
  erreur sur le premier Lagrange d'une LIAISON_DDL
  on a mis 2 fois le premier  Lagrange :  %(i1)d
- derrière le noeud :  %(i2)d
+ derriÃ¨re le noeud :  %(i2)d
 """),
 
 64 : _(u"""
- erreur sur le  2ème Lagrange d'une LIAISON_DDL
- on a mis 2 fois le 2ème  Lagrange :  %(i1)d
- derrière le noeud :  %(i2)d
+ erreur sur le  2Ã¨me Lagrange d'une LIAISON_DDL
+ on a mis 2 fois le 2Ã¨me  Lagrange :  %(i1)d
+ derriÃ¨re le noeud :  %(i2)d
 """),
 
 65 : _(u"""
- incohérence dans le dénombrement des ddls
+ incohÃ©rence dans le dÃ©nombrement des ddls
  nombre de ddl a priori    : %(i1)d
  nombre de ddl a posteriori: %(i2)d
 """),
 
 66 : _(u"""
- Il faut vérifier la cohérence des maillages dans les structures de données
- %(k5)s et %(k6)s. Les maillages devraient être les mêmes.
+ Il faut vÃ©rifier la cohÃ©rence des maillages dans les structures de donnÃ©es
+ %(k5)s et %(k6)s. Les maillages devraient Ãªtre les mÃªmes.
 
- On trouve au moins deux maillages différents :
+ On trouve au moins deux maillages diffÃ©rents :
   - maillage 1 : %(k1)s
   - maillage 2 : %(k2)s
 
- Détails :
-   Le maillage 1 : %(k1)s est lié au ligrel 1 : %(k3)s
-   Le maillage 2 : %(k2)s est lié au ligrel 2 : %(k4)s
+ DÃ©tails :
+   Le maillage 1 : %(k1)s est liÃ© au ligrel 1 : %(k3)s
+   Le maillage 2 : %(k2)s est liÃ© au ligrel 2 : %(k4)s
 """),
 
 67 : _(u"""
- Problème dans NUMERO.F avec FETI: L'objet PROF_CHNO.NUEQ est différent de
- l'identité pour i= %(i1)d on a NUEQ(i)= %(i2)d
+ ProblÃ¨me dans NUMERO.F avec FETI: L'objet PROF_CHNO.NUEQ est diffÃ©rent de
+ l'identitÃ© pour i= %(i1)d on a NUEQ(i)= %(i2)d
 """),
 
 68 : _(u"""
- Problème avec le solveur linéaire FETI: %(i1)d incohérence(s) entre la SD_FETI
- et le paramétrage de l'opérateur.
+ ProblÃ¨me avec le solveur linÃ©aire FETI: %(i1)d incohÃ©rence(s) entre la SD_FETI
+ et le paramÃ©trage de l'opÃ©rateur.
 
  Conseil:
  ========
- Vérifiez bien que le modèle et la liste de charges utilisés lors du partitionnement
- (opérateur DEFI_PART...) sont identiques à ceux utilisés pour le calcul.
+ VÃ©rifiez bien que le modÃ¨le et la liste de charges utilisÃ©s lors du partitionnement
+ (opÃ©rateur DEFI_PART...) sont identiques Ã  ceux utilisÃ©s pour le calcul.
 
- Détail informatique: arrêt dans NUMERO.f.
+ DÃ©tail informatique: arrÃªt dans NUMERO.f.
 """),
 
 }

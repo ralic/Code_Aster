@@ -1,4 +1,4 @@
-# -*- coding: iso-8859-1 -*-
+# coding=utf-8
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -22,11 +22,11 @@ from cata_comportement import LoiComportement
 
 loi = LoiComportement(
    nom            = 'LEMAITRE',
-   doc = """Relation de comportement visco-plastique non linéaire de Lemaitre (sans seuil), cf. [R5.03.08]. 
-   Un cas particulier de cette relation (en annulant le paramètre UN_SUR_M) donne une relation de NORTON. 
-   La correspondance des variables internes permet le chaînage avec un calcul utilisant un comportement 
-   élasto-plastique avec écrouissage isotrope (VMIS_ISOT_LINE, VMIS_ISOT_TRAC, VMIS_ISOT_PUIS). 
-   L'ntégration de ce modèle est réalisée par une méthode semi-DEKKER (PARM_THETA=0.5) ou DEKKER (PARM_THETA=1)""",
+   doc = """Relation de comportement visco-plastique non linÃ©aire de Lemaitre (sans seuil), cf. [R5.03.08]. 
+   Un cas particulier de cette relation (en annulant le paramÃ¨tre UN_SUR_M) donne une relation de NORTON. 
+   La correspondance des variables internes permet le chaÃ®nage avec un calcul utilisant un comportement 
+   Ã©lasto-plastique avec Ã©crouissage isotrope (VMIS_ISOT_LINE, VMIS_ISOT_TRAC, VMIS_ISOT_PUIS). 
+   L'ntÃ©gration de ce modÃ¨le est rÃ©alisÃ©e par une mÃ©thode semi-DEKKER (PARM_THETA=0.5) ou DEKKER (PARM_THETA=1)""",
    num_lc         = 29,
    nb_vari        = 2,
    nom_vari       = ('EPSPEQ','VIDE'),

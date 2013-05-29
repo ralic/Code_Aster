@@ -1,4 +1,4 @@
-# -*- coding: iso-8859-1 -*-
+# coding=utf-8
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -26,22 +26,22 @@
 #        
 
 
-#    Ce script python permet d'associer un texte aux numéros d'erreur
-#    appelés dans le sous programme errcou.f 
+#    Ce script python permet d'associer un texte aux numÃ©ros d'erreur
+#    appelÃ©s dans le sous programme errcou.f 
 
 #    Ces messages d'erreur sont issus de la note HI-26/03/007A
 #    "DEVELOPPEMENT D'UN MODE PRODUCTION POUR CALCIUM: MANUEL UTILISATEUR"
 #    ANNEXE 1: CODES D'ERREURS  (PAGE 70)
 #    FAYOLLE ERIC, DEMKO BERTRAND (CS SI)  JUILLET 2003
 #
-#    Les numéros des erreurs de ce script correspondent aux numéros de la
-#    référence bibliographique 
+#    Les numÃ©ros des erreurs de ce script correspondent aux numÃ©ros de la
+#    rÃ©fÃ©rence bibliographique 
  
 
 cata_msg={
 
 1 : _(u"""
-      YACS : Émetteur inconnu
+      YACS : Ã‰metteur inconnu
 """),
 
 2 : _(u"""
@@ -49,7 +49,7 @@ cata_msg={
 """),
 
 3 : _(u"""
-      YACS : Variable ne devant pas être lue mais écrite
+      YACS : Variable ne devant pas Ãªtre lue mais Ã©crite
 """),
 
 
@@ -58,27 +58,27 @@ cata_msg={
 """),
 
 5 : _(u"""
-      YACS : Type de variable différent de celui déclaré
+      YACS : Type de variable diffÃ©rent de celui dÃ©clarÃ©
 """),
 
 6 : _(u"""
-      YACS : Mode de dépendance inconnu
+      YACS : Mode de dÃ©pendance inconnu
 """),
 
 7 : _(u"""
-      YACS : Mode de dépendance différent de celui déclaré
+      YACS : Mode de dÃ©pendance diffÃ©rent de celui dÃ©clarÃ©
 """),
 
 8 : _(u"""
-      YACS : Requête non autorisée
+      YACS : RequÃªte non autorisÃ©e
 """),
 
 9 : _(u"""
-      YACS : Type de déconnexion incorrect
+      YACS : Type de dÃ©connexion incorrect
 """),
 
 10 : _(u"""
-       YACS : Directive de déconnexion incorrecte
+       YACS : Directive de dÃ©connexion incorrecte
 """),
 
 11 : _(u"""
@@ -90,7 +90,7 @@ cata_msg={
 """),
 
 13 : _(u"""
-      YACS : Requête en attente
+      YACS : RequÃªte en attente
 """),
 
 14 : _(u"""
@@ -102,7 +102,7 @@ cata_msg={
 """),
 
 16 : _(u"""
-       YACS : Dimension de tableau récepteur insuffisante
+       YACS : Dimension de tableau rÃ©cepteur insuffisante
 """),
 
 17 : _(u"""
@@ -110,7 +110,7 @@ cata_msg={
 """),
 
 18 : _(u"""
-      YACS : Arrêt anormal d'une instance
+      YACS : ArrÃªt anormal d'une instance
 """),
 
 19 : _(u"""
@@ -122,15 +122,15 @@ cata_msg={
 """),
 
 21 : _(u"""
-      YACS : Nombre de pas de calcul égal à zéro
+      YACS : Nombre de pas de calcul Ã©gal Ã  zÃ©ro
 """),
 
 22 : _(u"""
-      YACS : Machine non déclarée
+      YACS : Machine non dÃ©clarÃ©e
 """),
 
 23 : _(u"""
-      YACS : Erreur variable d'environnement COUPLAGE_GROUPE non positionnée
+      YACS : Erreur variable d'environnement COUPLAGE_GROUPE non positionnÃ©e
 """),
 
 24 : _(u"""
@@ -138,7 +138,7 @@ cata_msg={
 """),
 
 25 : _(u"""
-      YACS : Valeur d'information non utilisée
+      YACS : Valeur d'information non utilisÃ©e
 """),  
 
 26 : _(u"""
@@ -146,11 +146,11 @@ cata_msg={
 """),
 
 27 : _(u"""
-      YACS : Requête annulée à cause du passage en mode normal
+      YACS : RequÃªte annulÃ©e Ã  cause du passage en mode normal
 """),
 
 28 : _(u"""
-      YACS : Coupleur en mode d'exécution normal
+      YACS : Coupleur en mode d'exÃ©cution normal
 """),
 
 29 : _(u"""
@@ -162,23 +162,23 @@ cata_msg={
 """),
 
 31 : _(u"""
-      YACS : Écriture d'une variable dont l'effacement est demandé
+      YACS : Ã‰criture d'une variable dont l'effacement est demandÃ©
 """),
 
 32 : _(u"""
-      YACS : Lecture d'une variable incorrectement connectée
+      YACS : Lecture d'une variable incorrectement connectÃ©e
 """),
 
 33 : _(u"""
-      YACS : Valeur d'information non utilisée
+      YACS : Valeur d'information non utilisÃ©e
 """),  
 
 34 : _(u"""
-      YACS : Valeur d'information non utilisée
+      YACS : Valeur d'information non utilisÃ©e
 """),  
 
 35 : _(u"""
-      YACS : Erreur dans la chaîne de déclaration
+      YACS : Erreur dans la chaÃ®ne de dÃ©claration
 """),
 
 36 : _(u"""
@@ -190,29 +190,29 @@ cata_msg={
 """),
 
 38 : _(u"""
-      YACS : Valeur d'information non utilisée
+      YACS : Valeur d'information non utilisÃ©e
 """),
 
 39 : _(u"""
-      YACS : Mode d'exécution non défini
+      YACS : Mode d'exÃ©cution non dÃ©fini
 """),    
 
 40 : _(u"""   
-      YACS : Instance déconnectée
+      YACS : Instance dÃ©connectÃ©e
 """),
 
 
 41 : _(u"""
- Avertissement YACS (gravité faible) :
-       Dans le SSP %(k1)s la variable %(k2)s a une valeur différente
-       de celle envoyée
+ Avertissement YACS (gravitÃ© faible) :
+       Dans le SSP %(k1)s la variable %(k2)s a une valeur diffÃ©rente
+       de celle envoyÃ©e
 """),
 
 42 : _(u"""
  Erreur YACS :
-       Problème dans le SSP  : %(k1)s
+       ProblÃ¨me dans le SSP  : %(k1)s
        Pour la variable      : %(k2)s
-       A l'itération numéro  : %(i1)d
+       A l'itÃ©ration numÃ©ro  : %(i1)d
 """),
 
 43 : _(u"""   
@@ -224,15 +224,15 @@ cata_msg={
 """),
 
 46 : _(u"""   
-      Le code EDYOS n'a pas convergé
-      Avec le schéma en temps d'Euler, on ne sous divise pas le pas de temps
-      Le calcul s'arrête donc
-      Conseil : tester le schéma en temps adaptatif
+      Le code EDYOS n'a pas convergÃ©
+      Avec le schÃ©ma en temps d'Euler, on ne sous divise pas le pas de temps
+      Le calcul s'arrÃªte donc
+      Conseil : tester le schÃ©ma en temps adaptatif
 """),
 
 47 : _(u"""   
-      Le code EDYOS n'a pas convergé
-      Avec le schéma en temps adaptatif, on va tenter de diminuer le pas de temps
+      Le code EDYOS n'a pas convergÃ©
+      Avec le schÃ©ma en temps adaptatif, on va tenter de diminuer le pas de temps
 """),
 
 48 : _(u"""   
@@ -242,8 +242,8 @@ cata_msg={
 
 49 : _(u"""   
       Erreur de syntaxe pour le couplage avec EDYOS :
-      Pour le mot-clé PALIERS_EDYOS dans le cas où l'on utilise TYPE_EDYOS, 
-      il faut donner à chaque occurrence soit le GROUP_NO du palier, soit son NOEUD.
+      Pour le mot-clÃ© PALIERS_EDYOS dans le cas oÃ¹ l'on utilise TYPE_EDYOS, 
+      il faut donner Ã  chaque occurrence soit le GROUP_NO du palier, soit son NOEUD.
       
 """),
 

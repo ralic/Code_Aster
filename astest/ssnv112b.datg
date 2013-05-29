@@ -1,4 +1,4 @@
-// barrage en 3D : méthode d'obtention identique à CASTEM
+// barrage en 3D : mÃ©thode d'obtention identique Ã  CASTEM
 ri=0.1;
 re=0.2 ;
 h=0.01 ;
@@ -13,7 +13,7 @@ Point(6) = {re, 0., 0,  dens}; //B
 Point(7) = {(ri/(2^0.5)) , (ri/(2^0.5)), 0.,  dens};  //E
 Point(8) = {re/(2^0.5) , re/(2^0.5) , 0.,  dens};  //F
 
-// Points dans le plan supérieur z=20
+// Points dans le plan supÃ©rieur z=20
 Point(9) = {ri, 0., h,  dens};   //PC
 Point(10) = {re, 0., h,  dens};    //PD
 Point(11) = {ri*(2^0.5)/2 , ri*(2^0.5)/2 , h,  dens};   //PG 
@@ -59,5 +59,4 @@ Physical Surface(5) = {18} ; //faceab
 Physical Surface(6) = {20} ; //facae 
 Physical Surface(7) = {22} ;// faceef
 Physical Volume(8)  = {26} ; //volume
-
 

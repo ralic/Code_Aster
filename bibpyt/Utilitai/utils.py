@@ -1,4 +1,4 @@
-# -*- coding: iso-8859-1 -*-
+# coding=utf-8
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -37,7 +37,7 @@ except:
 
 DEBUG = False
 def set_debug(value):
-    """Positionne la variable de déboggage"""
+    """Positionne la variable de dÃ©boggage"""
     global DEBUG
     DEBUG = value
 

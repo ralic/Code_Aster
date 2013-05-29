@@ -1,4 +1,4 @@
-# -*- coding: iso-8859-1 -*-
+# coding=utf-8
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -21,7 +21,7 @@
 cata_msg={
 
 1: _(u"""
- on a un arc ouvert et le "NOEUD_ORIG" n'est pas une extrémité
+ on a un arc ouvert et le "NOEUD_ORIG" n'est pas une extrÃ©mitÃ©
 """),
 
 2: _(u"""
@@ -41,19 +41,19 @@ cata_msg={
 """),
 
 6: _(u"""
- face illégale pour une maille de type %(k1)s
+ face illÃ©gale pour une maille de type %(k1)s
 """),
 
 7: _(u"""
- type de maille non traitée
+ type de maille non traitÃ©e
 """),
 
 8: _(u"""
- type d'intersection non traité: %(k1)s
+ type d'intersection non traitÃ©: %(k1)s
 """),
 
 9: _(u"""
- détection de deux sommets confondus dans une même face
+ dÃ©tection de deux sommets confondus dans une mÃªme face
 """),
 
 10: _(u"""
@@ -66,26 +66,26 @@ cata_msg={
 """),
 
 12: _(u"""
- mot clé facteur: %(k1)s, occurrence numéro: %(i1)d
+ mot clÃ© facteur: %(k1)s, occurrence numÃ©ro: %(i1)d
  maille inexistante: %(k2)s 
 """),
 
 13: _(u"""
- mot clé facteur: %(k1)s, occurrence numéro: %(i1)d
- présence de maille(s) surfacique(s), groupe: %(k2)s 
+ mot clÃ© facteur: %(k1)s, occurrence numÃ©ro: %(i1)d
+ prÃ©sence de maille(s) surfacique(s), groupe: %(k2)s 
 """),
 
 14: _(u"""
- arrêt sur erreur(s) de données
+ arrÃªt sur erreur(s) de donnÃ©es
 """),
 
 15: _(u"""
- mot clé facteur: %(k1)s, occurrence numéro: %(i1)d
- présence de maille surfacique: %(k2)s 
+ mot clÃ© facteur: %(k1)s, occurrence numÃ©ro: %(i1)d
+ prÃ©sence de maille surfacique: %(k2)s 
 """),
 
 16: _(u"""
- mot clé facteur: %(k1)s, occurrence numéro: %(i1)d
+ mot clÃ© facteur: %(k1)s, occurrence numÃ©ro: %(i1)d
  groupe de mailles inexistant: %(k2)s
 """),
 
@@ -94,17 +94,17 @@ cata_msg={
 """),
 
 18: _(u"""
- trop de noeuds dans le GROUP_NO: %(k1)s, noeud utilisé: %(k2)s 
+ trop de noeuds dans le GROUP_NO: %(k1)s, noeud utilisÃ©: %(k2)s 
 """),
 
 19: _(u"""
-  mot clé facteur: %(k1)s, occurrence numéro: %(i1)d
-  le mot clé %(k2)s admet pour argument une liste de 2 réels (a1,a2)
+  mot clÃ© facteur: %(k1)s, occurrence numÃ©ro: %(i1)d
+  le mot clÃ© %(k2)s admet pour argument une liste de 2 rÃ©els (a1,a2)
   telle que -180. < a1 <= a2 < 180.
 """),
 
 20: _(u"""
- mot clé facteur: %(k1)s, occurrence numéro: %(i1)d
+ mot clÃ© facteur: %(k1)s, occurrence numÃ©ro: %(i1)d
  le centre n'est pas vraiment le centre du cercle
 """),
 
@@ -114,35 +114,35 @@ cata_msg={
 """),
 
 22: _(u"""
- face inconnue, maille numéro: %(i1)d  face: %(i2)d 
+ face inconnue, maille numÃ©ro: %(i1)d  face: %(i2)d 
 """),
 
 23: _(u"""
- problème pour trouver l'intersection pour la face %(i1)d de la maille %(i2)d
+ problÃ¨me pour trouver l'intersection pour la face %(i1)d de la maille %(i2)d
 """),
 
 24: _(u"""
- face dégénérée pour la maille numéro: %(i1)d face: %(i2)d 
+ face dÃ©gÃ©nÃ©rÃ©e pour la maille numÃ©ro: %(i1)d face: %(i2)d 
 """),
 
 25: _(u"""
  segment et face coplanaire, nombre de points: %(i3)d
- problème pour trouver l'intersection pour la maille numéro: %(i1)d face: %(i2)d 
+ problÃ¨me pour trouver l'intersection pour la maille numÃ©ro: %(i1)d face: %(i2)d 
 """),
 
 26: _(u"""
- face dégénérée pour la maille numéro: %(i1)d face: %(i2)d arête: %(i3)d 
+ face dÃ©gÃ©nÃ©rÃ©e pour la maille numÃ©ro: %(i1)d face: %(i2)d arÃªte: %(i3)d 
 """),
 
 27: _(u"""
- mot clé facteur: %(k1)s, occurrence numéro: %(i1)d
- origine et extrémité confondues à la précision: %(r1)f 
+ mot clÃ© facteur: %(k1)s, occurrence numÃ©ro: %(i1)d
+ origine et extrÃ©mitÃ© confondues Ã  la prÃ©cision: %(r1)f 
 """),
 
 28: _(u"""
  l'intersection segment %(k1)s avec le maillage %(k2)s est vide
     origine   : %(r1)f %(r2)f %(r3)f
-    extrémité : %(r4)f %(r5)f %(r6)f
+    extrÃ©mitÃ© : %(r4)f %(r5)f %(r6)f
 """),
 
 29: _(u"""
@@ -158,7 +158,7 @@ cata_msg={
 """),
 
 32: _(u"""
- problème pour récupérer la grandeur %(k1)s dans la table "CARA_GEOM"
+ problÃ¨me pour rÃ©cupÃ©rer la grandeur %(k1)s dans la table "CARA_GEOM"
 """),
 
 33: _(u"""

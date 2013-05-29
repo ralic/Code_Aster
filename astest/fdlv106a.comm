@@ -278,7 +278,7 @@ _F(NOM='AMOR               .CONL',VALE_CALC= 1.0000000000000E+00,TOLE_MACHINE=1.
 _F(NOM='AMOR          .SMOS.SMDI',VALE_CALC_I=              1       ,TOLE_MACHINE=0.,),
 _F(NOM='AMOR          .SMOS.SMDE',VALE_CALC_I=              3       ,TOLE_MACHINE=0.,),
 
-# Je suis oblige de commentariser ces TEST_RESU qui sont tres aléatoires !
+# Je suis oblige de commentariser ces TEST_RESU qui sont tres alÃ©atoires !
 #    _F(NOM='MASS               .VALM',VALE_CALC= 1.6601440307688E+09,TOLE_MACHINE=1.E-10),
 #    _F(NOM='RIGI               .VALM',VALE_CALC= 2.1445845663548E+00,TOLE_MACHINE=1.E-10),
 #    _F(NOM='AMOR               .VALM',VALE_CALC=-3.9664442541358E+08,TOLE_MACHINE=1.E-10),

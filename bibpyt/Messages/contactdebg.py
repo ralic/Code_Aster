@@ -1,4 +1,4 @@
-# -*- coding: iso-8859-1 -*-
+# coding=utf-8
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -23,16 +23,16 @@ cata_msg={
 
 
 11: _(u"""
- <CONTACT_2> Le noeud <%(k1)s> n'est pas apparié car il aurait été projeté hors de la zone de tolérance de la maille <%(k2)s> qui était la plus proche. 
- <CONTACT_2> Vous pouvez éventuellement modifier TOLE_PROJ_EXT ou revoir la définition de vos zones esclaves et maîtres. 
+ <CONTACT_2> Le noeud <%(k1)s> n'est pas appariÃ© car il aurait Ã©tÃ© projetÃ© hors de la zone de tolÃ©rance de la maille <%(k2)s> qui Ã©tait la plus proche. 
+ <CONTACT_2> Vous pouvez Ã©ventuellement modifier TOLE_PROJ_EXT ou revoir la dÃ©finition de vos zones esclaves et maÃ®tres. 
 """),
 
 12: _(u"""
- <CONTACT_2> Le noeud <%(k1)s> n'est pas apparié car aucun noeud n'est dans sa zone TOLE_APPA.  
+ <CONTACT_2> Le noeud <%(k1)s> n'est pas appariÃ© car aucun noeud n'est dans sa zone TOLE_APPA.  
 """),
 
 13: _(u"""
- <CONTACT_2> Le noeud <%(k1)s> n'est pas apparié car il appartient a SANS_NOEUD ou SANS_GROUP_NO.  
+ <CONTACT_2> Le noeud <%(k1)s> n'est pas appariÃ© car il appartient a SANS_NOEUD ou SANS_GROUP_NO.  
 """),
 
 

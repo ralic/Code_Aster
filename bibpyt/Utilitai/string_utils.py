@@ -1,4 +1,4 @@
-# -*- coding: iso-8859-1 -*-
+# coding=utf-8
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -19,14 +19,14 @@
 # person_in_charge: mathieu.courtois at edf.fr
 
 """Module rassemblant des fonctions utilitaires de manipulations
-de chaines de caractères
+de chaines de caractÃ¨res
 """
 
 import os
 
 
 # existe aussi dans Noyau.N_types
-# mais on ne souhaite pas que Noyau dépende d'Utilitai
+# mais on ne souhaite pas que Noyau dÃ©pende d'Utilitai
 def force_list(obj):
     """Retourne `obj` si c'est une liste ou un tuple,
     sinon retourne [obj,] (en tant que list).
@@ -37,7 +37,7 @@ def force_list(obj):
 
 
 def clean_string(chaine):
-    """Supprime tous les caractères non imprimables.
+    """Supprime tous les caractÃ¨res non imprimables.
     """
     invalid = '?'
     txt = []
@@ -51,9 +51,9 @@ def clean_string(chaine):
 # existe dans asrun.mystring
 def cut_long_lines(txt, maxlen, sep=os.linesep,
                    l_separ=(' ', ',', ';', '.', ':')):
-    """Coupe les morceaux de `txt` (isolés avec `sep`) de plus de `maxlen`
-    caractères.
-    On utilise successivement les séparateurs de `l_separ`.
+    """Coupe les morceaux de `txt` (isolÃ©s avec `sep`) de plus de `maxlen`
+    caractÃ¨res.
+    On utilise successivement les sÃ©parateurs de `l_separ`.
     """
     l_lines = txt.split(sep)
     newlines = []
@@ -75,8 +75,8 @@ def cut_long_lines(txt, maxlen, sep=os.linesep,
     return newlines
 
 def maximize_lines(l_fields, maxlen, sep):
-    """Construit des lignes dont la longueur est au plus de `maxlen` caractères.
-    Les champs sont assemblés avec le séparateur `sep`.
+    """Construit des lignes dont la longueur est au plus de `maxlen` caractÃ¨res.
+    Les champs sont assemblÃ©s avec le sÃ©parateur `sep`.
     """
     newlines = []
     if len(l_fields) == 0:
@@ -94,7 +94,7 @@ def maximize_lines(l_fields, maxlen, sep):
     return newlines
 
 def force_split(txt, maxlen):
-    """Force le découpage de la ligne à 'maxlen' caractères.
+    """Force le dÃ©coupage de la ligne Ã  'maxlen' caractÃ¨res.
     """
     l_res = []
     while len(txt) > maxlen:

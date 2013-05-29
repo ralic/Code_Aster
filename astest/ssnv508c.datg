@@ -4,7 +4,7 @@ opti dime 3 elem te10 ;
 *-------
 *donnees
 *-------
-*cotés
+*cotÃ©s
 LX = 2.;
 LY = 3.;
 LZ = .01;

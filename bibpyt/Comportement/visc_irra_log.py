@@ -1,4 +1,4 @@
-# -*- coding: iso-8859-1 -*-
+# coding=utf-8
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -23,8 +23,8 @@ from cata_comportement import LoiComportement
 loi = LoiComportement(
    nom            = 'VISC_IRRA_LOG',
    doc = """Loi de fluage axial sous irradiation des assemblages combustibles. 
-   Elle permet de modéliser le fluage primaire et secondaire, paramétrés par la fluence neutronique (cf. [R5.03.09]).
-   Le champ de fluence est défini par le mot-clé AFFE_VARC de la commande AFFE_MATERIAU.""",
+   Elle permet de modÃ©liser le fluage primaire et secondaire, paramÃ©trÃ©s par la fluence neutronique (cf. [R5.03.09]).
+   Le champ de fluence est dÃ©fini par le mot-clÃ© AFFE_VARC de la commande AFFE_MATERIAU.""",
    num_lc         = 28,
    nb_vari        = 2,
    nom_vari       = ('EPSPEQ','IRVECU'),

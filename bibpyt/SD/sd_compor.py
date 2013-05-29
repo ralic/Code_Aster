@@ -1,4 +1,4 @@
-# -*- coding: iso-8859-1 -*-
+# coding=utf-8
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -23,7 +23,7 @@ from SD.sd_mater import sd_mater
 # Remarque :
 #------------
 # la sd_compor est produite par la seule commande DEFI_COMPOR.
-# C'est pourquoi, on fera appel parfois pour la décrire au vocabulaire de cette
+# C'est pourquoi, on fera appel parfois pour la dÃ©crire au vocabulaire de cette
 # commande.
 
 class sd_compor(AsBase):
@@ -59,12 +59,12 @@ class sd_compor(AsBase):
             assert nvi==9+4*nbsys , (nvi, nbsys, cpri)
         cprk=self.CPRK.get_stripped()
 
-        # vérif existence et longueur
+        # vÃ©rif existence et longueur
         assert len(cpri)==13, cpri
         assert len(cprk)==5*nboccm+1, (cpri,cprk)
 #        assert not self.CPRR.get()
 
-        # vérif CPRI :
+        # vÃ©rif CPRI :
         #-------------
         assert cpri[1] == 1   ,cpri
         assert cpri[2] == nvi ,cpri
@@ -73,7 +73,7 @@ class sd_compor(AsBase):
         assert cpri[5] >= 0   ,cpri
         assert cpri[6] == nvi ,cpri
 
-        # vérif CPRK :
+        # vÃ©rif CPRK :
         #-------------
         elas=cprk[5*nboccm]
         assert elas in ('ELAS', 'ELAS_ORTH')  ,cprk
@@ -96,13 +96,13 @@ class sd_compor(AsBase):
         cprk=self.CPRK.get_stripped()
         cprr=self.CPRR.get()
 
-        # vérif existence et longueur
+        # vÃ©rif existence et longueur
         #------------------------------
         assert len(cpri)==7+3*nbphases, (cpri,nbphases)
         assert len(cprr)>=2+4*nbphases, (cpri,cprr,nbphases)
         assert len(cprk)==lgcprk, (cpri,cprk)
 
-        # vérif CPRI :
+        # vÃ©rif CPRI :
         #-------------
         nvitot=cpri[2]
         assert nvitot >= 0        ,cpri
@@ -118,7 +118,7 @@ class sd_compor(AsBase):
             assert numono > 0  and numono <= nbmono   ,(cpri,nbmono)
             assert nvi1   >=0     ,cpri
 
-        # vérif CPRR :
+        # vÃ©rif CPRR :
         #-------------
         frac_tot=0.
         for k in range(nbphases):
@@ -130,7 +130,7 @@ class sd_compor(AsBase):
                 assert angl >=0. and angl <=360. , (angl,dir)
         assert frac_tot > 0.99 and frac_tot < 1.01
 
-        # vérif CPRK :
+        # vÃ©rif CPRK :
         #-------------
         locali   =cprk[0]
         assert locali in ('BZ','BETA')  ,(locali,cprk)
@@ -141,7 +141,7 @@ class sd_compor(AsBase):
             nbfam1=int(cprk[0+decal+2])
             assert nbfam1 > 0 , (nbfam1,k,decal,cprk)
             decal=decal+2+5*nbfam1+1
-            # on pourrait encore vérifier que le .CPRK de mono1 a bien été recopié
+            # on pourrait encore vÃ©rifier que le .CPRK de mono1 a bien Ã©tÃ© recopiÃ©
             # mais il faut bien s'arreter ...
 
 
@@ -151,17 +151,17 @@ class sd_compor(AsBase):
         nbgmax=cpri[2]
         cprk=self.CPRK.get_stripped()
 
-        # vérif existence et longueur
+        # vÃ©rif existence et longueur
         assert len(cpri)==3, cpri
         assert len(cprk)==6*nbgmax+1, (cpri,cprk)
         assert not self.CPRR.get()
 
-        # vérif CPRI :
+        # vÃ©rif CPRI :
         #-------------
         assert cpri[1] > 0, cpri
         assert cpri[2] > 0, cpri
 
-        # vérif CPRK :
+        # vÃ©rif CPRK :
         #-------------
         mater=cprk[6*nbgmax]
         assert mater != '', cprk

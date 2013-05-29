@@ -1,4 +1,4 @@
-# -*- coding: iso-8859-1 -*-
+# coding=utf-8
 # person_in_charge: mathieu.courtois at edf.fr
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -24,18 +24,18 @@
 
 class PRESENT_PRESENT:
    """
-      La règle vérifie que si le premier mot-clé de self.mcs est present 
+      La rÃ¨gle vÃ©rifie que si le premier mot-clÃ© de self.mcs est present 
           parmi les elements de args les autres doivent l'etre aussi
 
-      Ces arguments sont transmis à la règle pour validation sous la forme 
-      d'une liste de noms de mots-clés ou d'un dictionnaire dont 
-      les clés sont des noms de mots-clés.
+      Ces arguments sont transmis Ã  la rÃ¨gle pour validation sous la forme 
+      d'une liste de noms de mots-clÃ©s ou d'un dictionnaire dont 
+      les clÃ©s sont des noms de mots-clÃ©s.
    """
    def verif(self,args):
       """
-          La methode verif effectue la verification specifique à la règle.
-          args peut etre un dictionnaire ou une liste. Les éléments de args
-          sont soit les éléments de la liste soit les clés du dictionnaire.
+          La methode verif effectue la verification specifique Ã  la rÃ¨gle.
+          args peut etre un dictionnaire ou une liste. Les Ã©lÃ©ments de args
+          sont soit les Ã©lÃ©ments de la liste soit les clÃ©s du dictionnaire.
       """
       #  on verifie que si le premier de la liste est present, 
       #    les autres le sont aussi
@@ -46,6 +46,6 @@ class PRESENT_PRESENT:
       if args.has_key(mc0):
         for mc in self.mcs[1:len(self.mcs)]:
           if not args.has_key(mc):
-            text = text + u"- Le mot clé "+`mc0`+ u" étant présent, il faut que : "+mc+ u" soit présent"+'\n'
+            text = text + u"- Le mot clÃ© "+`mc0`+ u" Ã©tant prÃ©sent, il faut que : "+mc+ u" soit prÃ©sent"+'\n'
             test = 0
       return text,test

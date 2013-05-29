@@ -1,4 +1,4 @@
-# -*- coding: iso-8859-1 -*-
+# coding=utf-8
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -21,15 +21,15 @@
 cata_msg={
 
 1: _(u"""
- Le noeud <%(k1)s> ne fait pas partie du modèle.
+ Le noeud <%(k1)s> ne fait pas partie du modÃ¨le.
 """),
 
 2: _(u"""
- Le nombre de noeuds n'est pas égal au nombre de degrés de liberté.
+ Le nombre de noeuds n'est pas Ã©gal au nombre de degrÃ©s de libertÃ©.
 """),
 
 3: _(u"""
- Le noeud <%(k1)s> ne fait pas partie du modèle.
+ Le noeud <%(k1)s> ne fait pas partie du modÃ¨le.
  Impossible d'utiliser l'option <%(k2)s>.
 """),
 

@@ -1,4 +1,4 @@
-# -*- coding: iso-8859-1 -*-
+# coding=utf-8
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -21,11 +21,11 @@
 cata_msg = {
 
 5 : _(u"""
- l'option  %(k1)s n'a pas été calculée pour la SD  %(k2)s
+ l'option  %(k1)s n'a pas Ã©tÃ© calculÃ©e pour la SD  %(k2)s
 """),
 
 6 : _(u"""
- le champ " %(k1)s " ( %(k2)s ) n'a pas été noté dans la SD  %(k3)s
+ le champ " %(k1)s " ( %(k2)s ) n'a pas Ã©tÃ© notÃ© dans la SD  %(k3)s
 """),
 
 7 : _(u"""
@@ -33,7 +33,7 @@ cata_msg = {
 """),
 
 8 : _(u"""
- angle initial différent de -180. degrés.
+ angle initial diffÃ©rent de -180. degrÃ©s.
 """),
 
 9 : _(u"""
@@ -41,7 +41,7 @@ cata_msg = {
 """),
 
 10 : _(u"""
- angle final différent de 180. degrés.
+ angle final diffÃ©rent de 180. degrÃ©s.
 """),
 
 11 : _(u"""
@@ -53,23 +53,23 @@ cata_msg = {
 """),
 
 13 : _(u"""
- la table usure en sortie est différente de celle en entrée
+ la table usure en sortie est diffÃ©rente de celle en entrÃ©e
 """),
 
 14 : _(u"""
- le nombre de secteurs en sortie est différent de celui en entrée
+ le nombre de secteurs en sortie est diffÃ©rent de celui en entrÃ©e
 """),
 
 15 : _(u"""
- problème extraction pour la table  %(k1)s
+ problÃ¨me extraction pour la table  %(k1)s
 """),
 
 17 : _(u"""
- aucune valeur de moment présente
+ aucune valeur de moment prÃ©sente
 """),
 
 18 : _(u"""
- y a un bogue: récupération des fréquences
+ y a un bogue: rÃ©cupÃ©ration des frÃ©quences
 """),
 
 19 : _(u"""
@@ -77,31 +77,31 @@ cata_msg = {
 """),
 
 20 : _(u"""
- rigidité de translation non nulle
+ rigiditÃ© de translation non nulle
 """),
 
 21 : _(u"""
- rigidité de rotation non nulle
+ rigiditÃ© de rotation non nulle
 """),
 
 22 : _(u"""
- nombres de composantes raideurs et mode différents
+ nombres de composantes raideurs et mode diffÃ©rents
 """),
 
 23 : _(u"""
- nombres de GROUP_MA et AMOR_INTERNE différents
+ nombres de GROUP_MA et AMOR_INTERNE diffÃ©rents
 """),
 
 24 : _(u"""
- nombres de composantes amortissements et mode différents
+ nombres de composantes amortissements et mode diffÃ©rents
 """),
 
 26 : _(u"""
- le type du concept résultat  n'est ni EVOL_ELAS, ni EVOL_NOLI.
+ le type du concept rÃ©sultat  n'est ni EVOL_ELAS, ni EVOL_NOLI.
 """),
 
 27 : _(u"""
- vous avez probablement archive l état initial dans la commande STAT_NON_LINE. cela correspond au numéro d ordre 0. nous ne tenons pas compte du résultat a ce numéro d ordre pour le calcul de de la fatigue.
+ vous avez probablement archive l Ã©tat initial dans la commande STAT_NON_LINE. cela correspond au numÃ©ro d ordre 0. nous ne tenons pas compte du rÃ©sultat a ce numÃ©ro d ordre pour le calcul de de la fatigue.
 """),
 
 29 : _(u"""
@@ -121,11 +121,11 @@ cata_msg = {
 
 
 34 : _(u"""
- les champs de déformations aux points de gauss n'existent pas.
+ les champs de dÃ©formations aux points de gauss n'existent pas.
 """),
 
 35 : _(u"""
- le champ simple qui contient les valeurs des déformations n existe pas.
+ le champ simple qui contient les valeurs des dÃ©formations n existe pas.
 """),
 
 
@@ -134,11 +134,11 @@ cata_msg = {
 
 
 37 : _(u"""
- le champ simple qui contient les valeurs des déformations plastiques n'existe pas.
+ le champ simple qui contient les valeurs des dÃ©formations plastiques n'existe pas.
 """),
 
 38 : _(u"""
- le champ de contraintes aux noeuds SIEF_NOEU ou SIEF_NOEU n'a pas été calculé.
+ le champ de contraintes aux noeuds SIEF_NOEU ou SIEF_NOEU n'a pas Ã©tÃ© calculÃ©.
 """),
 
 
@@ -150,7 +150,7 @@ cata_msg = {
 """),
 
 41 : _(u"""
- le champ de déformations aux noeuds n'existe pas.
+ le champ de dÃ©formations aux noeuds n'existe pas.
 """),
 
 
@@ -158,16 +158,16 @@ cata_msg = {
 
 
 43 : _(u"""
- le champ de déformations plastiques aux noeuds n'existe pas.
+ le champ de dÃ©formations plastiques aux noeuds n'existe pas.
 """),
 
 45 : _(u"""
- Pour calculer la déformation élastique, la déformation totale est obligatoire.
+ Pour calculer la dÃ©formation Ã©lastique, la dÃ©formation totale est obligatoire.
 """),
 
 46: _(u"""
- On note que déformation élastique  = déformation TOTALE - déformation PLASTIQUE. Si la déformation
- plastique n'est pas calculée dans le resultat, on prendre la valeur zéro.
+ On note que dÃ©formation Ã©lastique  = dÃ©formation TOTALE - dÃ©formation PLASTIQUE. Si la dÃ©formation
+ plastique n'est pas calculÃ©e dans le resultat, on prendre la valeur zÃ©ro.
 """),
 
 47 : _(u"""
@@ -175,19 +175,19 @@ cata_msg = {
 """),
 
 48 : _(u"""
- Instant initial du cycle ne se trouve pas dans la liste des instants calculés. On prend l'instant initial stocké
+ Instant initial du cycle ne se trouve pas dans la liste des instants calculÃ©s. On prend l'instant initial stockÃ©
  comme instant initial pour la partie du chargement cyclique.
  Risques et conseils: On peut modifier la liste des instants fournie dans STAT_NON_LINE en utilisant une liste d'instant manuelle
- pour assurer que l'instant initial du cycle fait partie des instants calculés.
+ pour assurer que l'instant initial du cycle fait partie des instants calculÃ©s.
 """),
 
 
 57 : _(u"""
-  erreur données.
+  erreur donnÃ©es.
 """),
 
 58 : _(u"""
- présence de point(s) que dans un secteur.
+ prÃ©sence de point(s) que dans un secteur.
 """),
 
 59 : _(u"""
@@ -195,12 +195,12 @@ cata_msg = {
 """),
 
 60 : _(u"""
- le décalage se trouve nécessairement coté revêtement
- le décalage doit être négatif
+ le dÃ©calage se trouve nÃ©cessairement cotÃ© revÃªtement
+ le dÃ©calage doit Ãªtre nÃ©gatif
 """),
 
 76 : _(u"""
- le champ demandé n'est pas prévu
+ le champ demandÃ© n'est pas prÃ©vu
 """),
 
 77 : _(u"""
@@ -220,7 +220,7 @@ cata_msg = {
 """),
 
 85 : _(u"""
- modèle non valide.
+ modÃ¨le non valide.
 """),
 
 86 : _(u"""
@@ -228,7 +228,7 @@ cata_msg = {
 """),
 
 87 : _(u"""
-  ***** arrêt du calcul *****
+  ***** arrÃªt du calcul *****
 """),
 
 89 : _(u"""
@@ -236,36 +236,36 @@ cata_msg = {
 """),
 
 90 : _(u"""
- les tables TABL_MECA_REV et TABL_MECA_MDB n'ont pas les mêmes dimensions
+ les tables TABL_MECA_REV et TABL_MECA_MDB n'ont pas les mÃªmes dimensions
 """),
 
 91 : _(u"""
- les tables n'ont pas les mêmes instants de calculs
+ les tables n'ont pas les mÃªmes instants de calculs
 """),
 
 92 : _(u"""
- les tables n'ont pas les mêmes dimensions
+ les tables n'ont pas les mÃªmes dimensions
 """),
 
 93 : _(u"""
- volume usé trop grand pour la modélisation
+ volume usÃ© trop grand pour la modÃ©lisation
 """),
 
 94 : _(u"""
-Élément inconnu.
-   Type d'élément GIBI          : %(i1)d
+Ã‰lÃ©ment inconnu.
+   Type d'Ã©lÃ©ment GIBI          : %(i1)d
    Nombre de sous objet         : %(i2)d
-   Nombre de sous référence     : %(i3)d
-   Nombre de noeuds par élément : %(i4)d
-   Nombre d'éléments            : %(i5)d
+   Nombre de sous rÃ©fÃ©rence     : %(i3)d
+   Nombre de noeuds par Ã©lÃ©ment : %(i4)d
+   Nombre d'Ã©lÃ©ments            : %(i5)d
 
-La ligne lue dans le fichier doit ressembler à ceci :
+La ligne lue dans le fichier doit ressembler Ã  ceci :
 %(i1)8d%(i2)8d%(i3)8d%(i4)8d%(i5)8d
 """),
 
 95 : _(u"""
-On a lu un objet dit composé (car type d'élément = 0) qui serait
-composé de 0 sous objet !
+On a lu un objet dit composÃ© (car type d'Ã©lÃ©ment = 0) qui serait
+composÃ© de 0 sous objet !
 """),
 
 96 : _(u"""
@@ -274,8 +274,8 @@ composé de 0 sous objet !
 
 97 : _(u"""
  Erreur Utilisateur :
- La maille de peau : %(k1)s ne peut pas être réorientée.
- Car elle est insérée entre 2 mailles "support" placées de part et d'autre : %(k2)s et %(k3)s.
+ La maille de peau : %(k1)s ne peut pas Ãªtre rÃ©orientÃ©e.
+ Car elle est insÃ©rÃ©e entre 2 mailles "support" placÃ©es de part et d'autre : %(k2)s et %(k3)s.
 """),
 
 }

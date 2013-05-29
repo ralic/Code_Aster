@@ -1,5 +1,4 @@
 /*           CONFIGURATION MANAGEMENT OF EDF VERSION                  */
-/* MODIF aster_depend include  DATE 11/04/2012   AUTEUR COURTOIS M.COURTOIS */
 /* ================================================================== */
 /* COPYRIGHT (C) 1991 - 2012  EDF R&D              WWW.CODE-ASTER.ORG */
 /*                                                                    */
@@ -13,7 +12,7 @@
 /* GENERAL PUBLIC LICENSE FOR MORE DETAILS.                           */
 /*                                                                    */
 /* YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE  */
-/* ALONG WITH THIS PROGRAM; IF NOT, WRITE TO : EDF R&D CODE_ASTER,    */
+/* ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,      */
 /*    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.     */
 /* ================================================================== */
 
@@ -24,16 +23,16 @@
    --          DEBUT aster_depend.h          --
    --------------------------------------------
 
-_POSIX et _WINDOWS doivent être exclusifs.
+_POSIX et _WINDOWS doivent Ãªtre exclusifs.
 
 Dans les routines C, ne pas utiliser les noms de plates-formes,
-se ramener à _POSIX/_WINDOWS et +/- _USE_64_BITS.
+se ramener Ã  _POSIX/_WINDOWS et +/- _USE_64_BITS.
 
-Pour les cas (rares) d'adhérence système (constantes, signaux),
-on se limite à SOLARIS, LINUX, IRIX (cas particuliers à
-l'intérieur de _POSIX).
+Pour les cas (rares) d'adhÃ©rence systÃ¨me (constantes, signaux),
+on se limite Ã  SOLARIS, LINUX, IRIX (cas particuliers Ã 
+l'intÃ©rieur de _POSIX).
 
-Compatibilité ascendantes :
+CompatibilitÃ© ascendantes :
  HPUX       => _POSIX, _NO_UNDERSCORE
  IRIX       => _POSIX
  IRIX64     => _POSIX, IRIX, _USE_64_BITS
@@ -114,7 +113,7 @@ Compatibilité ascendantes :
 
 /* plates-formes 64 bits */
 #if defined _USE_64_BITS || LINUX64 || TRU64 || SOLARIS64 || IRIX64
-/* pour compatibilité si on arrive avec LINUX64 */
+/* pour compatibilitÃ© si on arrive avec LINUX64 */
 #ifndef _USE_64_BITS
 #define _USE_64_BITS
 #endif
@@ -189,7 +188,7 @@ Compatibilité ascendantes :
 #define OPT_TAILLE_BLOC_MULT_FRONT __OPT_TAILLE_BLOC_MULT_FRONT__
 #endif
 
-/* Valeurs par défaut pour les répertoires */
+/* Valeurs par dÃ©faut pour les rÃ©pertoires */
 #ifndef REP_MAT
 #define REP_MAT "/aster/materiau/"
 #endif

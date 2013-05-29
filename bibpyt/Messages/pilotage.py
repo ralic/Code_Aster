@@ -1,4 +1,4 @@
-# -*- coding: iso-8859-1 -*-
+# coding=utf-8
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -21,27 +21,27 @@
 cata_msg = {
 
 1  : _(u"""
- Le pilotage de type PRED_ELAS n'est pas possible en modélisation C_PLAN.
+ Le pilotage de type PRED_ELAS n'est pas possible en modÃ©lisation C_PLAN.
 """),
 
 2  : _(u"""
- Pour le cas de l'endommagement saturé dans ENDO_ISOT_BETON, on ne pilote pas.
+ Pour le cas de l'endommagement saturÃ© dans ENDO_ISOT_BETON, on ne pilote pas.
 """),
 
 3  : _(u"""
- Le paramètre COEF_MULT pour le pilotage ne doit pas valoir zéro.
+ Le paramÃ¨tre COEF_MULT pour le pilotage ne doit pas valoir zÃ©ro.
 """),
 
 4  : _(u"""
- La recherche linéaire en pilotage n'est possible qu'avec l'option PILOTAGE dans RECH_LINEAIRE  (sauf pour le cas DDL_IMPO).
+ La recherche linÃ©aire en pilotage n'est possible qu'avec l'option PILOTAGE dans RECH_LINEAIRE  (sauf pour le cas DDL_IMPO).
 """),
 
 48 : _(u"""
- ETA_PILO_MAX doit être inférieur à ETA_PILO_R_MAX
+ ETA_PILO_MAX doit Ãªtre infÃ©rieur Ã  ETA_PILO_R_MAX
 """),
 
 49 : _(u"""
- ETA_PILO_MIN doit être supérieur à ETA_PILO_R_MIN
+ ETA_PILO_MIN doit Ãªtre supÃ©rieur Ã  ETA_PILO_R_MIN
 """),
 
 50 : _(u"""
@@ -66,56 +66,56 @@ cata_msg = {
 """),
 
 59 : _(u"""
- Renseigner le mot-clé FISSURE du mot-clé facteur PILOTAGE avec les sélections
-  ANGL_INCR_DEPL ou NORM_INCR_DEPL avec un modèle X-FEM.
+ Renseigner le mot-clÃ© FISSURE du mot-clÃ© facteur PILOTAGE avec les sÃ©lections
+  ANGL_INCR_DEPL ou NORM_INCR_DEPL avec un modÃ¨le X-FEM.
 """),
 
 60 : _(u"""
  Les types de pilotage SAUT_IMPO et SAUT_L_ARC ne sont disponibles qu'avec un
- modèle X-FEM.
+ modÃ¨le X-FEM.
 """),
 
 61 : _(u"""
- Le noeud pilote %(i1)d n appartient pas à une arête intersectée par la fissure
+ Le noeud pilote %(i1)d n appartient pas Ã  une arÃªte intersectÃ©e par la fissure
 """),
 
 62 : _(u"""
- Il y a plus de noeuds utilisateur que d'arêtes vitales.
- Diminuer le nombre de noeuds pilotés.
+ Il y a plus de noeuds utilisateur que d'arÃªtes vitales.
+ Diminuer le nombre de noeuds pilotÃ©s.
 """),
 
 63 : _(u"""
- Les noeuds pilotés %(i1)d et %(i2)d sont deux extrémités d'une arête intersectée.
- Il est conseillé d'entrer des noeuds qui sont tous du même coté de la fissure.
+ Les noeuds pilotÃ©s %(i1)d et %(i2)d sont deux extrÃ©mitÃ©s d'une arÃªte intersectÃ©e.
+ Il est conseillÃ© d'entrer des noeuds qui sont tous du mÃªme cotÃ© de la fissure.
 """),
 
 64 : _(u"""
- Les noeuds pilotés %(i1)d et %(i2)d sont deux extrémités d'une arête intersectée.
- Il est conseillé d'entrer des noeuds qui sont tous du même coté de la fissure.
+ Les noeuds pilotÃ©s %(i1)d et %(i2)d sont deux extrÃ©mitÃ©s d'une arÃªte intersectÃ©e.
+ Il est conseillÃ© d'entrer des noeuds qui sont tous du mÃªme cotÃ© de la fissure.
 """),
 
 83 : _(u"""
- Problème lors du pilotage.
- Nombre maximum d'itérations atteint.
+ ProblÃ¨me lors du pilotage.
+ Nombre maximum d'itÃ©rations atteint.
 """),
 
 84 : _(u"""
- Problème lors du pilotage.
- Précision machine dépassée.
+ ProblÃ¨me lors du pilotage.
+ PrÃ©cision machine dÃ©passÃ©e.
 """),
 
 85 : _(u"""
- Problème lors du pilotage.
+ ProblÃ¨me lors du pilotage.
  Il y a trois solutions ou plus.
 """),
 
 86 : _(u"""
- Problème lors du pilotage.
+ ProblÃ¨me lors du pilotage.
  La matrice locale n'est pas inversible.
 """),
 
 87 : _(u"""
- Problème lors du pilotage.
+ ProblÃ¨me lors du pilotage.
 """),
 
 88 : _(u"""

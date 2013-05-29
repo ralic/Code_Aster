@@ -1,4 +1,4 @@
-# -*- coding: iso-8859-1 -*-
+# coding=utf-8
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -21,18 +21,18 @@
 cata_msg = {
 
 79 : _(u"""
-   Arrêt par manque de temps CPU pendant les itérations de Newton, au numéro d'instant < %(i1)d >
-      - Temps moyen par itération de Newton : %(r1)f
+   ArrÃªt par manque de temps CPU pendant les itÃ©rations de Newton, au numÃ©ro d'instant < %(i1)d >
+      - Temps moyen par itÃ©ration de Newton : %(r1)f
       - Temps CPU restant                   : %(r2)f
    
-   La base globale est sauvegardée. Elle contient les pas archivés avant l'arrêt.
+   La base globale est sauvegardÃ©e. Elle contient les pas archivÃ©s avant l'arrÃªt.
 """),
 
 80 : _(u"""
-   Arrêt par manque de temps CPU au numéro d'instant < %(i1)d >
+   ArrÃªt par manque de temps CPU au numÃ©ro d'instant < %(i1)d >
       - Temps moyen par pas de temps        : %(r1)f
       - Temps CPU restant                   : %(r2)f
    
-   La base globale est sauvegardée. Elle contient les pas archivés avant l'arrêt.
+   La base globale est sauvegardÃ©e. Elle contient les pas archivÃ©s avant l'arrÃªt.
 """),
 }

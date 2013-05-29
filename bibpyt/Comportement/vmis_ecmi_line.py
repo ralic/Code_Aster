@@ -1,4 +1,4 @@
-# -*- coding: iso-8859-1 -*-
+# coding=utf-8
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -22,8 +22,8 @@ from cata_comportement import LoiComportement
 
 loi = LoiComportement(
    nom            = 'VMIS_ECMI_LINE',
-   doc = """Relation de comportement d'élasto-plasticité de VON MISES à écrouissage combiné, 
-   cinématique linéaire et isotrope linéaire (Cf. [R5.03.16] pour plus de détails).""",
+   doc = """Relation de comportement d'Ã©lasto-plasticitÃ© de VON MISES Ã  Ã©crouissage combinÃ©, 
+   cinÃ©matique linÃ©aire et isotrope linÃ©aire (Cf. [R5.03.16] pour plus de dÃ©tails).""",
    num_lc         = 3,
    nb_vari        = 8,
    nom_vari       = ('EPSPEQ', 'INDIPLAS', 'XCINXX', 'XCINYY', 'XCINZZ', 'XCINXY', 'XCINXZ', 'XCINYZ'),

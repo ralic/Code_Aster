@@ -1,4 +1,4 @@
-# -*- coding: iso-8859-1 -*-
+# coding=utf-8
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -21,21 +21,21 @@
 cata_msg = {
 
 60 : _(u"""
-Appel à CALCUL
-Le nom du paramètre de champ d'entrée numéro %(i1)d est vide.
+Appel Ã  CALCUL
+Le nom du paramÃ¨tre de champ d'entrÃ©e numÃ©ro %(i1)d est vide.
 """),
 
 61 : _(u"""
-Appel à CALCUL
-Le champ d'entrée numéro %(i1)d est vide.
+Appel Ã  CALCUL
+Le champ d'entrÃ©e numÃ©ro %(i1)d est vide.
 """),
 
 62 : _(u"""
-Appel à CALCUL. Le nom du paramètre de champ de sortie numéro %(i1)d est vide.
+Appel Ã  CALCUL. Le nom du paramÃ¨tre de champ de sortie numÃ©ro %(i1)d est vide.
 """),
 
 63 : _(u"""
-Appel à CALCUL. Le champ de sortie numéro %(i1)d est vide.
+Appel Ã  CALCUL. Le champ de sortie numÃ©ro %(i1)d est vide.
 """),
 
 }

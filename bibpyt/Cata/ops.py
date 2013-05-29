@@ -1,4 +1,4 @@
-# -*- coding: iso-8859-1 -*-
+# coding=utf-8
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -38,7 +38,7 @@ try:
    import aster
    import aster_core
    aster_exists = True
-   # Si le module aster est présent, on le connecte
+   # Si le module aster est prÃ©sent, on le connecte
    # au JDC
    import Build.B_CODE
    Build.B_CODE.CODE.codex=aster
@@ -50,7 +50,7 @@ except:
 
 
 def commun_DEBUT_POURSUITE(jdc, PAR_LOT, IMPR_MACRO, CODE, DEBUG, IGNORE_ALARM, LANG, INFO):
-   """Fonction sdprod partie commune à DEBUT et POURSUITE.
+   """Fonction sdprod partie commune Ã  DEBUT et POURSUITE.
    (on stocke un entier au lieu du logique)
    """
    jdc.set_par_lot(PAR_LOT, user_value=True)
@@ -73,13 +73,13 @@ def commun_DEBUT_POURSUITE(jdc, PAR_LOT, IMPR_MACRO, CODE, DEBUG, IGNORE_ALARM, 
       #message.register_print_function(asprint)
       # ne faire qu'une fois
       if not hasattr(jdc, 'msg_init'):
-         # messages d'alarmes désactivés
+         # messages d'alarmes dÃ©sactivÃ©s
          if IGNORE_ALARM:
             if not type(IGNORE_ALARM) in (list, tuple):
                IGNORE_ALARM = [IGNORE_ALARM]
             for idmess in IGNORE_ALARM:
                MessageLog.disable_alarm(idmess)
-      # en POURSUITE, conserver le catalogue de comportement picklé
+      # en POURSUITE, conserver le catalogue de comportement picklÃ©
       if not hasattr(jdc, 'catalc'):
          from Comportement import catalc
          jdc.catalc = catalc
@@ -106,13 +106,13 @@ def build_debut(self,**args):
       self.jdc._Build()
    # On execute la fonction debut pour initialiser les bases
    # Cette execution est indispensable avant toute autre action sur ASTER
-   # op doit être un entier car la fonction debut appelle GCECDU qui demande
-   # le numéro de l'operateur associé (getoper)
+   # op doit Ãªtre un entier car la fonction debut appelle GCECDU qui demande
+   # le numÃ©ro de l'operateur associÃ© (getoper)
    self.definition.op=0
    self.set_icmd(1)
    self.codex.debut(self)
    # On remet op a None juste apres pour eviter que la commande DEBUT
-   # ne soit executée dans la phase d'execution
+   # ne soit executÃ©e dans la phase d'execution
    self.definition.op=None
    return 0
 
@@ -137,35 +137,35 @@ def POURSUITE(self, PAR_LOT, IMPR_MACRO, CODE, DEBUG, IGNORE_ALARM, LANG, INFO, 
      # Le module d'execution est accessible et glob.1 est present
      # Pour eviter de rappeler plusieurs fois la sequence d'initialisation
      # on memorise avec l'attribut fichier_init que l'initialisation
-     # est réalisée
+     # est rÃ©alisÃ©e
      if hasattr(self,'fichier_init'):return
      self.fichier_init='glob.1'
      self.jdc.initexec()
-     # le sous programme fortran appelé par self.codex.poursu demande le numéro
+     # le sous programme fortran appelÃ© par self.codex.poursu demande le numÃ©ro
      # de l'operateur (GCECDU->getoper), on lui donne la valeur 0
      self.definition.op=0
      self.codex.poursu(self)
      # Par la suite pour ne pas executer la commande pendant la phase
-     # d'execution on le remet à None
+     # d'execution on le remet Ã  None
      self.definition.op = None
      self.g_context = {}
 
-     # Il peut exister un contexte python sauvegardé sous forme  pickled
-     # On récupère ces objets après la restauration des concepts pour que
-     # la récupération des objets pickled soit prioritaire.
-     # On vérifie que les concepts relus dans glob.1 sont bien tous
-     # presents sous le même nom et du même type dans pick.1
-     # Le contexte est ensuite updaté (surcharge) et donc enrichi des
+     # Il peut exister un contexte python sauvegardÃ© sous forme  pickled
+     # On rÃ©cupÃ¨re ces objets aprÃ¨s la restauration des concepts pour que
+     # la rÃ©cupÃ©ration des objets pickled soit prioritaire.
+     # On vÃ©rifie que les concepts relus dans glob.1 sont bien tous
+     # presents sous le mÃªme nom et du mÃªme type dans pick.1
+     # Le contexte est ensuite updatÃ© (surcharge) et donc enrichi des
      # variables qui ne sont pas des concepts.
      # On supprime du pickle_context les concepts valant None, ca peut
-     # être le cas des concepts non executés, placés après FIN.
+     # Ãªtre le cas des concepts non executÃ©s, placÃ©s aprÃ¨s FIN.
      UTMESS('I', 'SUPERVIS2_1', valk='pick.1')
      pickle_context = get_pickled_context()
      if pickle_context == None:
         UTMESS('F', 'SUPERVIS_86')
         return
      self.jdc.restore_pickled_attrs(pickle_context)
-     # vérification cohérence pick/base
+     # vÃ©rification cohÃ©rence pick/base
      savsign = self.jdc._sign
      newsign = self.jdc.signature(base)
      if args.get('FORMAT_HDF') == 'OUI':
@@ -194,7 +194,7 @@ def POURSUITE(self, PAR_LOT, IMPR_MACRO, CODE, DEBUG, IGNORE_ALARM, LANG, INFO, 
                 i_int = 'exception'
             co.executed = 1
             UTMESS('I', 'SUPERVIS_66', valk=(co.nom, typnam.lower(), i_int))
-            # pour que sds_dict soit cohérent avec g_context
+            # pour que sds_dict soit cohÃ©rent avec g_context
             self.jdc.sds_dict[elem] = co
             if elem != co.nom:
                name = re.sub('_([0-9]+)$', '[\\1]', co.nom)
@@ -230,7 +230,7 @@ def POURSUITE(self, PAR_LOT, IMPR_MACRO, CODE, DEBUG, IGNORE_ALARM, LANG, INFO, 
    else:
      # Si le module d'execution n est pas accessible ou glob.1 absent on
      # demande un fichier (EFICAS)
-     # Il faut éviter de réinterpréter le fichier à chaque appel de
+     # Il faut Ã©viter de rÃ©interprÃ©ter le fichier Ã  chaque appel de
      # POURSUITE
      if hasattr(self,'fichier_init'):
         return
@@ -238,20 +238,20 @@ def POURSUITE(self, PAR_LOT, IMPR_MACRO, CODE, DEBUG, IGNORE_ALARM, LANG, INFO, 
 
 def get_pickled_context():
     """
-       Cette fonction permet de réimporter dans le contexte courant du jdc (jdc.g_context)
-       les objets python qui auraient été sauvegardés, sous forme pickled, lors d'une
-       précédente étude. Un fichier pick.1 doit être présent dans le répertoire de travail
+       Cette fonction permet de rÃ©importer dans le contexte courant du jdc (jdc.g_context)
+       les objets python qui auraient Ã©tÃ© sauvegardÃ©s, sous forme pickled, lors d'une
+       prÃ©cÃ©dente Ã©tude. Un fichier pick.1 doit Ãªtre prÃ©sent dans le rÃ©pertoire de travail
     """
     fpick = 'pick.1'
     if not osp.isfile(fpick):
        return None
 
-    # Le fichier pick.1 est présent. On essaie de récupérer les objets python sauvegardés
+    # Le fichier pick.1 est prÃ©sent. On essaie de rÃ©cupÃ©rer les objets python sauvegardÃ©s
     context={}
     try:
        file=open(fpick, 'rb')
-       # Le contexte sauvegardé a été picklé en une seule fois. Il est seulement
-       # possible de le récupérer en bloc. Si cette opération echoue, on ne récupère
+       # Le contexte sauvegardÃ© a Ã©tÃ© picklÃ© en une seule fois. Il est seulement
+       # possible de le rÃ©cupÃ©rer en bloc. Si cette opÃ©ration echoue, on ne rÃ©cupÃ¨re
        # aucun objet.
        context = pickle.load(file)
        file.close()
@@ -266,7 +266,7 @@ def POURSUITE_context(self,d):
    """
        Fonction op_init de la macro POURSUITE
    """
-   # self représente la macro POURSUITE ...
+   # self reprÃ©sente la macro POURSUITE ...
    d.update(self.g_context)
    # Une commande POURSUITE n'est possible qu'au niveau le plus haut
    # On ajoute directement les concepts dans le contexte du jdc
@@ -311,10 +311,10 @@ def INCLUDE_context(self,d):
     d.update(ctxt)
 
 def build_include(self,**args):
-    """Fonction ops de la macro INCLUDE appelée lors de la phase de Build"""
+    """Fonction ops de la macro INCLUDE appelÃ©e lors de la phase de Build"""
     # Pour presque toutes les commandes (sauf FORMULE et POURSUITE)
-    # le numéro de la commande n est pas utile en phase de construction
-    # La macro INCLUDE ne sera pas numérotée (incrément=None)
+    # le numÃ©ro de la commande n est pas utile en phase de construction
+    # La macro INCLUDE ne sera pas numÃ©rotÃ©e (incrÃ©ment=None)
     ier=0
     self.set_icmd(None)
     # On n'execute pas l'ops d'include en phase BUILD car il ne sert a rien.
@@ -327,11 +327,11 @@ def _detr_list_co(self, context):
     # par nom de concept (typ=assd)
     for mc in self['CONCEPT'] or []:
         list_co.update(force_list(mc["NOM"]))
-    # par chaine de caractères (typ='TXM')
+    # par chaine de caractÃ¨res (typ='TXM')
     for mc in self['OBJET'] or []:
         # longueur <= 8, on cherche les concepts existants
         for nom in force_list(mc['CHAINE']):
-            assert type(nom) in (str, unicode), 'On attend une chaine de caractères : %s' % nom
+            assert type(nom) in (str, unicode), 'On attend une chaine de caractÃ¨res : %s' % nom
             if len(nom.strip()) <= 8:
                 if self.jdc.sds_dict.get(nom) != None:
                     list_co.add(self.jdc.sds_dict[nom])
@@ -341,8 +341,8 @@ def _detr_list_co(self, context):
     return list_co
 
 def DETRUIRE(self, CONCEPT, OBJET, **args):
-   """Fonction OPS pour la macro DETRUIRE : exécution réelle."""
-   # pour les formules, il ne faut pas vider l'attribut "parent_context" trop tôt
+   """Fonction OPS pour la macro DETRUIRE : exÃ©cution rÃ©elle."""
+   # pour les formules, il ne faut pas vider l'attribut "parent_context" trop tÃ´t
    for co in _detr_list_co(self, {}):
        co.supprime(force=True)
    self.set_icmd(1)
@@ -357,9 +357,9 @@ def build_detruire(self, d):
       assert isinstance(co, ASSD), 'On attend un concept : %s (type=%s)' % (co, type(co))
       nom = co.nom
       #message.debug(SUPERV, "refcount_1(%s) = %d", nom, sys.getrefcount(co))
-      # traitement particulier pour les listes de concepts, on va mettre à None
-      # le terme de l'indice demandé dans la liste :
-      # nomconcept_i est supprimé, nomconcept[i]=None
+      # traitement particulier pour les listes de concepts, on va mettre Ã  None
+      # le terme de l'indice demandÃ© dans la liste :
+      # nomconcept_i est supprimÃ©, nomconcept[i]=None
       i = nom.rfind('_')
       if i > 0 and not nom.endswith('_'):
          concept_racine = nom[:i]
@@ -368,7 +368,7 @@ def build_detruire(self, d):
                num = int(nom[i+1:])
                d[concept_racine][num] = None
             except (ValueError, IndexError):
-               # cas : RESU_aaa ou (RESU_8 avec RESU[8] non initialisé)
+               # cas : RESU_aaa ou (RESU_8 avec RESU[8] non initialisÃ©)
                pass
       # pour tous les concepts :
       if d.has_key(nom):
@@ -377,20 +377,20 @@ def build_detruire(self, d):
          del self.jdc.sds_dict[nom]
       # "suppression" du concept
       co.supprime()
-      # On signale au parent que le concept n'existe plus après l'étape self
+      # On signale au parent que le concept n'existe plus aprÃ¨s l'Ã©tape self
       self.parent.delete_concept_after_etape(self, co)
-      # marque comme détruit == non executé
+      # marque comme dÃ©truit == non executÃ©
       co.executed = 0
 
 
 def build_procedure(self,**args):
     """
-    Fonction ops de la macro PROCEDURE appelée lors de la phase de Build
+    Fonction ops de la macro PROCEDURE appelÃ©e lors de la phase de Build
     """
     ier=0
     # Pour presque toutes les commandes (sauf FORMULE et POURSUITE)
-    # le numéro de la commande n est pas utile en phase de construction
-    # On ne numérote pas une macro PROCEDURE (incrément=None)
+    # le numÃ©ro de la commande n est pas utile en phase de construction
+    # On ne numÃ©rote pas une macro PROCEDURE (incrÃ©ment=None)
     self.set_icmd(None)
     #ier=self.codex.opsexe(self,3)
     return ier
@@ -412,7 +412,7 @@ def build_formule(self, d):
         NOM_PARA = [NOM_PARA, ]
     for para in NOM_PARA:
         if para.strip() != para:
-            raise Accas.AsException("nom de paramètre invalide (contient des blancs)" \
+            raise Accas.AsException("nom de paramÃ¨tre invalide (contient des blancs)" \
                " : %s" % repr(para))
     if self.sd == None:
         return
@@ -440,7 +440,7 @@ def build_gene_vari_alea(self, d):
         k = 1. / (moyen - a)
         if exp(-b * k) < 1.e-12:
             UTMESS('F', 'PROBA0_3')
-        # résolution par point fixe
+        # rÃ©solution par point fixe
         eps = 1.E-4
         nitmax = 100000
         test = 0.
@@ -448,7 +448,7 @@ def build_gene_vari_alea(self, d):
             test = k
             k = 1. / (moyen - (a * exp(-a * k) - b * exp(-b * k)) / \
                                (exp(-a * k) - exp(-b * k)))
-        # génération de la variable aléatoire
+        # gÃ©nÃ©ration de la variable alÃ©atoire
         alpha = exp(-a * k) - exp(-b * k)
         self.sd.valeur = -(log(exp(-a * k) - alpha * self.getran()[0])) / k
     elif TYPE == 'EXPONENTIELLE':

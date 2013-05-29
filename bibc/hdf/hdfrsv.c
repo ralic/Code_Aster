@@ -1,5 +1,4 @@
 /*           CONFIGURATION MANAGEMENT OF EDF VERSION                  */
-/* MODIF hdfrsv hdf  DATE 10/04/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE */
 /* ================================================================== */
 /* COPYRIGHT (C) 1991 - 2012  EDF R&D              WWW.CODE-ASTER.ORG */
 /*                                                                    */
@@ -13,19 +12,19 @@
 /* GENERAL PUBLIC LICENSE FOR MORE DETAILS.                           */
 /*                                                                    */
 /* YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE  */
-/* ALONG WITH THIS PROGRAM; IF NOT, WRITE TO : EDF R&D CODE_ASTER,    */
+/* ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,      */
 /*    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.     */
 /* ================================================================== */
 #include "aster.h"
 #include "aster_fort.h"
 /*-----------------------------------------------------------------------------/
-/ Lecture sur un fichier HDF d'un segment de valeur associé à un objet JEVEUX
-/  Paramètres : 
+/ Lecture sur un fichier HDF d'un segment de valeur associÃ© Ã  un objet JEVEUX
+/  ParamÃ¨tres : 
 /   - in  idfic  : identificateur du dataset (hid_t)
-/   - out  sv    : valeurs associées 
+/   - out  sv    : valeurs associÃ©es 
 /   - in  lsv    : nombre de valeurs 
 /   - in  icv    : active ou non la conversion Integer*8/integer*4
-/  Résultats :
+/  RÃ©sultats :
 /     =0 OK, -1 sinon 
 /-----------------------------------------------------------------------------*/
 #ifndef _DISABLE_HDF5

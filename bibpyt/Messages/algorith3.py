@@ -1,4 +1,4 @@
-# -*- coding: iso-8859-1 -*-
+# coding=utf-8
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -22,34 +22,34 @@ cata_msg = {
 
 
 8 : _(u"""
- élément non traité
+ Ã©lÃ©ment non traitÃ©
 """),
 
 9 : _(u"""
- Vous avez choisie une méthode à pas de temps adaptatif. Il n'est pas possible de prendre en compte une
- liste d'instants de calcul définie a priori.
+ Vous avez choisie une mÃ©thode Ã  pas de temps adaptatif. Il n'est pas possible de prendre en compte une
+ liste d'instants de calcul dÃ©finie a priori.
 """),
 
 10 : _(u"""
-  -> Contact avec DYNA_TRAN_MODAL : Il y a interpénétration d'une valeur supérieure à (DIST_MAIT + DIST_ESCL).
+  -> Contact avec DYNA_TRAN_MODAL : Il y a interpÃ©nÃ©tration d'une valeur supÃ©rieure Ã  (DIST_MAIT + DIST_ESCL).
   -> Risque & Conseil :
-     DIST_MAIT et DIST_ESCL permettent de tenir compte d'une épaisseur de matériau non représentée dans le maillage
-     (rayon d'une poutre, épaisseur d'une coque ou simplement une bosse). Une trop forte interpénétration peut venir 
-     d'une erreur dans le fichier de commande : RIGI_NOR trop faible ; noeuds de contact qui ne sont en vis à vis ; 
-     OBSTACLE et NORM_OBSTACLE incohérents. Dans le cas de deux poutres aux fibres neutres confondues, elle peut 
-     générer des erreurs dans l'orientation des forces de contact.
+     DIST_MAIT et DIST_ESCL permettent de tenir compte d'une Ã©paisseur de matÃ©riau non reprÃ©sentÃ©e dans le maillage
+     (rayon d'une poutre, Ã©paisseur d'une coque ou simplement une bosse). Une trop forte interpÃ©nÃ©tration peut venir 
+     d'une erreur dans le fichier de commande : RIGI_NOR trop faible ; noeuds de contact qui ne sont en vis Ã  vis ; 
+     OBSTACLE et NORM_OBSTACLE incohÃ©rents. Dans le cas de deux poutres aux fibres neutres confondues, elle peut 
+     gÃ©nÃ©rer des erreurs dans l'orientation des forces de contact.
 """),
 
 11 : _(u"""
- méthode à pas adaptatif : la donnée du pas est obligatoire 
+ mÃ©thode Ã  pas adaptatif : la donnÃ©e du pas est obligatoire 
 """),
 
 12 : _(u"""
- le pas de temps ne peut pas être nul  
+ le pas de temps ne peut pas Ãªtre nul  
 """),
 
 13 : _(u"""
- les matrices de masse élémentaires doivent obligatoirement avoir été calculées
+ les matrices de masse Ã©lÃ©mentaires doivent obligatoirement avoir Ã©tÃ© calculÃ©es
  avec l'option MASS_MECA_DIAG
 """),
 
@@ -58,55 +58,55 @@ cata_msg = {
 """),
 
 15 : _(u"""
- La méthode d'intégration %(k1)s n'est pas disponible pour les analyses 
+ La mÃ©thode d'intÃ©gration %(k1)s n'est pas disponible pour les analyses 
  transitoires sur base modale
 """),
 
 16 : _(u"""
 A l'instant %(r1)f, l'erreur vaut %(r2)f
-Cette erreur est supérieure à 1.
+Cette erreur est supÃ©rieure Ã  1.
 Le pas de temps vaut %(r3)f
-On arrête de le réduire, car le nombre de réductions a atteint %(i1)d, qui est le maximum possible.
+On arrÃªte de le rÃ©duire, car le nombre de rÃ©ductions a atteint %(i1)d, qui est le maximum possible.
 """),
 
 17 : _(u"""
- méthode à pas adaptatif : pas de temps minimal atteint
+ mÃ©thode Ã  pas adaptatif : pas de temps minimal atteint
 """),
 
 18 : _(u"""
  La liste des instants de calcul ne doit contenir qu'un seul pas
- Conseil: si vous avez défini une liste d'instants manuellement par des valeurs discrètes,
- veillez à ce que le pas soit constant dans tout l'intervalle.
+ Conseil: si vous avez dÃ©fini une liste d'instants manuellement par des valeurs discrÃ¨tes,
+ veillez Ã  ce que le pas soit constant dans tout l'intervalle.
 """),
 
 19 : _(u"""
- La méthode d'intégration %(k1)s n'est pas disponible pour les analyses 
+ La mÃ©thode d'intÃ©gration %(k1)s n'est pas disponible pour les analyses 
  transitoires sur base physique
 """),
 
 20 : _(u"""
- le chargement de type DIRICHLET nécessite la résolution par le schéma de NEWMARK
+ le chargement de type DIRICHLET nÃ©cessite la rÃ©solution par le schÃ©ma de NEWMARK
 """),
 
 21 : _(u"""
 Nombre de pas de calcul : %(i1)d
-Nombre d'itérations     : %(i2)d
+Nombre d'itÃ©rations     : %(i2)d
 """),
 
 23 : _(u"""
- vous calculez une impédance absorbante
+ vous calculez une impÃ©dance absorbante
 """),
 
 24 : _(u"""
- on n'a pas pu trouver le dernier instant sauvé.
+ on n'a pas pu trouver le dernier instant sauvÃ©.
 """),
 
 25 : _(u"""
- le champ "DEPL" n'est pas trouvé dans le concept DYNA_TRANS  %(k1)s 
+ le champ "DEPL" n'est pas trouvÃ© dans le concept DYNA_TRANS  %(k1)s 
 """),
 
 26 : _(u"""
- le champ "VITE" n'est pas trouvé dans le concept DYNA_TRANS  %(k1)s 
+ le champ "VITE" n'est pas trouvÃ© dans le concept DYNA_TRANS  %(k1)s 
 """),
 
 27 : _(u"""
@@ -114,7 +114,7 @@ Nombre d'itérations     : %(i2)d
 """),
 
 28 : _(u"""
- déplacements initiaux nuls.
+ dÃ©placements initiaux nuls.
 """),
 
 29 : _(u"""
@@ -122,23 +122,23 @@ Nombre d'itérations     : %(i2)d
 """),
 
 36 : _(u"""
- NUME_INIT: on n'a pas trouvé le NUME_INIT dans le résultat  %(k1)s 
+ NUME_INIT: on n'a pas trouvÃ© le NUME_INIT dans le rÃ©sultat  %(k1)s 
 """),
 
 37 : _(u"""
- incohérence sur H, ALPHA, ELAS
+ incohÃ©rence sur H, ALPHA, ELAS
 """),
 
 40 : _(u"""
- le NOM_CHAM  %(k1)s n'appartient pas à la structure de données
+ le NOM_CHAM  %(k1)s n'appartient pas Ã  la structure de donnÃ©es
 """),
 
 41 : _(u"""
- erreur(s) dans les données
+ erreur(s) dans les donnÃ©es
 """),
 
 42 : _(u"""
- critère inconnu :  %(k1)s 
+ critÃ¨re inconnu :  %(k1)s 
 """),
 
 43 :_(u"""
@@ -150,11 +150,11 @@ Nombre d'itérations     : %(i2)d
 """),
 
 56 : _(u"""
- la durée du transitoire est limitée par les possibilités de la transformée de Fourier rapide 
+ la durÃ©e du transitoire est limitÃ©e par les possibilitÃ©s de la transformÃ©e de Fourier rapide 
 """),
 
 57 : _(u"""
- la durée de la simulation temporelle est insuffisante pour le passage du transitoire
+ la durÃ©e de la simulation temporelle est insuffisante pour le passage du transitoire
 """),
 
 58 : _(u"""
@@ -162,48 +162,48 @@ Nombre d'itérations     : %(i2)d
 """),
 
 60 : _(u"""
- la matrice interspectrale possède un pivot nul.
+ la matrice interspectrale possÃ¨de un pivot nul.
 """),
 
 61 : _(u"""
- option non prévue !
+ option non prÃ©vue !
 """),
 
 62 : _(u"""
- Problème 1 test spectre fi par ARPACK
+ ProblÃ¨me 1 test spectre fi par ARPACK
 """),
 
 63 : _(u"""
- Problème 2 test spectre fi par ARPACK
+ ProblÃ¨me 2 test spectre fi par ARPACK
 """),
 
 64 : _(u"""
- valeur de STOGI incohérente
+ valeur de STOGI incohÃ©rente
 """),
 
 65 : _(u"""
- en parallèle STOGI=OUI obligatoire pour l'instant
+ en parallÃ¨le STOGI=OUI obligatoire pour l'instant
 """),
 
 66 : _(u"""
- option de calcul incohérente
+ option de calcul incohÃ©rente
 """),
 
 67 : _(u"""
- Problème division par zéro dans la construction du BETA
+ ProblÃ¨me division par zÃ©ro dans la construction du BETA
 """),
 
 72 : _(u"""
- donnée erronée, multiplicité nulle
+ donnÃ©e erronÃ©e, multiplicitÃ© nulle
 """),
 
 78 : _(u"""
- pas de discrétisation de l'interspectre non constant.
+ pas de discrÃ©tisation de l'interspectre non constant.
 """),
 
 80 : _(u"""
  "NB_POIN" n est pas une puissance de 2
- on prend la puissance de 2 supérieure
+ on prend la puissance de 2 supÃ©rieure
 """),
 
 81 : _(u"""
@@ -212,7 +212,7 @@ Nombre d'itérations     : %(i2)d
 """),
 
 82 : _(u"""
- matrice moyenne non définie positive
+ matrice moyenne non dÃ©finie positive
 """),
 
 83 : _(u"""
@@ -220,19 +220,19 @@ Nombre d'itérations     : %(i2)d
 """),
 
 86 : _(u"""
- pas d'interpolation possible pour les fréquences.
+ pas d'interpolation possible pour les frÃ©quences.
 """),
 
 87 : _(u"""
- dérivée de F nulle
+ dÃ©rivÃ©e de F nulle
 """),
 
 88 : _(u"""
- GM négatif
+ GM nÃ©gatif
 """),
 
 89 : _(u"""
- valeurs propres non ordonnées :
+ valeurs propres non ordonnÃ©es :
  %(k1)s  %(k2)s  %(k3)s 
 """),
 
@@ -241,7 +241,7 @@ Nombre d'itérations     : %(i2)d
 """),
 
 92 : _(u"""
- modélisations C_PLAN et 1D pas autorisées
+ modÃ©lisations C_PLAN et 1D pas autorisÃ©es
 """),
 
 

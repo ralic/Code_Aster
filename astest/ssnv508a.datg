@@ -19,7 +19,7 @@ NY = 20;
 
 EPSI = 0.000001;
 *---------------------------------------------
-*construction des surfaces dans le plan inférieur
+*construction des surfaces dans le plan infÃ©rieur
 *---------------------------------------------
 
 p1 = LXP  LYM;

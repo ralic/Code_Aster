@@ -1,4 +1,4 @@
-# -*- coding: iso-8859-1 -*-
+# coding=utf-8
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -18,7 +18,7 @@
 # ======================================================================
 # person_in_charge: gerald.nicolas at edf.fr
 """
-Cette classe crée le fichier de configuration permettant de lancer HOMARD
+Cette classe crÃ©e le fichier de configuration permettant de lancer HOMARD
 depuis Code_Aster.
 """
 __revision__ = "V1.14"
@@ -42,10 +42,10 @@ except ImportError:
 # ------------------------------------------------------------------------------
 class creation_donnees_homard:
   """
-  Cette classe crée les données permettant de lancer HOMARD depuis Code_Aster.
+  Cette classe crÃ©e les donnÃ©es permettant de lancer HOMARD depuis Code_Aster.
       Ce sont :
       . le fichier de configuration
-      . le fichier des données dans le cas d'information
+      . le fichier des donnÃ©es dans le cas d'information
 
    Arguments (stockes en tant qu'attribut) :
       . nom_macro : nom de la macro-commande qui appelle :
@@ -56,7 +56,7 @@ class creation_donnees_homard:
 
    Attributs :
       . Nom_Fichier_Configuration : nom du fichier de configuration (immuable)
-      . Nom_Fichier_Donnees : nom du fichier de données (immuable)
+      . Nom_Fichier_Donnees : nom du fichier de donnÃ©es (immuable)
       . mode_homard : le mode pour filtrer ici ("ADAP" ou "INFO")
       . mode_homard_texte : le mode d'utilisation, en francais ("ADAPTATION" ou "INFORMATION")
       . elements_acceptes : les mailles acceptees par HOMARD
@@ -78,7 +78,7 @@ class creation_donnees_homard:
     else :
       UTMESS("F", 'HOMARD0_1')
 #
-# 2. Données generales de cette initialisation
+# 2. DonnÃ©es generales de cette initialisation
 #
      # for mot_cle in mots_cles.keys() :
         #print "mots_cles[", mot_cle, "] = ", mots_cles[mot_cle]
@@ -106,7 +106,7 @@ class creation_donnees_homard:
     """
     Transforme un entier positif en une chaine d'au moins deux caracteres
     """
-    #print "\nArguments à l'entree de", __name__, ":", entier
+    #print "\nArguments Ã  l'entree de", __name__, ":", entier
 #
     if type(entier) == type(0) :
       la_chaine = '%02d' % entier
@@ -125,14 +125,14 @@ class creation_donnees_homard:
 # ------------------------------------------------------------------------------
   def creation_configuration (self) :
     """
-    Cree les données necessaires à la configuration
+    Cree les donnÃ©es necessaires Ã  la configuration
     """
 #
     message_erreur = None
 #
     while message_erreur == None :
 #
-#     1. Les chaines liées aux numeros d'iteration
+#     1. Les chaines liÃ©es aux numeros d'iteration
 #
       if self.mode_homard in [ "ADAP", "MODI" ] :
         niter = self.dico_configuration["niter"]
@@ -168,7 +168,7 @@ class creation_donnees_homard:
         self.critere_deraffinement = None
         self.niveau = []
 #
-#     4. Le type de bilan : il faut convertir la donnée textuelle en un entier,
+#     4. Le type de bilan : il faut convertir la donnÃ©e textuelle en un entier,
 #        produit de nombres premiers.
 #        Si rien n'est demande, on met 1.
 #
@@ -190,7 +190,7 @@ class creation_donnees_homard:
         aux = 0
       self.TypeBila = aux
 #
-#     5. Les entrées/sorties au format MED
+#     5. Les entrÃ©es/sorties au format MED
 #
       self.CCNoMN__ = self.dico_configuration["NOM_MED_MAILLAGE_N"]
       if self.mode_homard == "ADAP" :
@@ -200,7 +200,7 @@ class creation_donnees_homard:
         else :
           self.CCMaiAnn = None
 #
-#     6. Les entrées/sorties au format HOMARD
+#     6. Les entrÃ©es/sorties au format HOMARD
 #
       if self.mode_homard == "ADAP" :
         self.fic_homard_niter   = "maill." + self.str_niter   + ".hom.med"
@@ -236,7 +236,7 @@ class creation_donnees_homard:
           #print "... self.TypeRaff = ",self.TypeRaff
           #print "... self.TypeDera = ",self.TypeDera
 #
-#     7.2. L'éventuel seuil de raffinement
+#     7.2. L'Ã©ventuel seuil de raffinement
 #
         if self.TypeRaff == "libre" and self.mots_cles["ADAPTATION"] != "RAFF_DERA_ZONE" :
           d_aux = {}
@@ -251,7 +251,7 @@ class creation_donnees_homard:
               self.critere_raffinement = (d_aux[mot_cle][0], aux)
               #print "... self.critere_raffinement = ", self.critere_raffinement
 #
-#     7.3. L'éventuel seuil de deraffinement
+#     7.3. L'Ã©ventuel seuil de deraffinement
 #
         if self.TypeDera == "libre" and self.mots_cles["ADAPTATION"] != "RAFF_DERA_ZONE" :
           d_aux = {}
@@ -296,7 +296,7 @@ class creation_donnees_homard:
                              ", doit etre < au niveau maxi, "+str(self.mots_cles["NIVE_MAX"])+"."
             break
 #
-#     7.5. Les éventuelles zones de raffinement
+#     7.5. Les Ã©ventuelles zones de raffinement
 #
         if self.dico_configuration.has_key("Zones_raffinement") :
           iaux = 0
@@ -358,7 +358,7 @@ class creation_donnees_homard:
       try :
         os.remove (nomfic)
       except os.error, codret_partiel :
-        print "Probleme au remove, erreur numéro ", codret_partiel[0], ":", codret_partiel[1]
+        print "Probleme au remove, erreur numÃ©ro ", codret_partiel[0], ":", codret_partiel[1]
         UTMESS("F", 'HOMARD0_3', valk=nomfic)
 #
     fichier = open (nomfic,"w")
@@ -400,7 +400,7 @@ class creation_donnees_homard:
     Ecrit une ligne du fichier de configuration dans le cas : motcle + valeur
    Arguments :
       . motcle : le mot-cle HOMARD a ecrire
-      . valeur : la valeur associée
+      . valeur : la valeur associÃ©e
     """
 #
     ligne = motcle + " " + str(valeur) + "\n"
@@ -413,7 +413,7 @@ class creation_donnees_homard:
     Ecrit une ligne du fichier de configuration dans le cas : motcle + valeur1 + valeur2
    Arguments :
       . motcle : le mot-cle HOMARD a ecrire
-      . valeur : la valeur associée
+      . valeur : la valeur associÃ©e
     """
 #
     ligne = motcle + " " + str(valeur1) + " " + str(valeur2) + "\n"
@@ -728,7 +728,7 @@ class creation_donnees_homard:
 # ------------------------------------------------------------------------------
   def ecrire_fichier_donnees (self) :
     """
-    Ecrit le fichier des données dans le cas d'une demande d'information
+    Ecrit le fichier des donnÃ©es dans le cas d'une demande d'information
     """
     message_erreur = None
 #

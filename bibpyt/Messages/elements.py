@@ -1,4 +1,4 @@
-# -*- coding: iso-8859-1 -*-
+# coding=utf-8
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -21,49 +21,49 @@
 cata_msg = {
 
 1 : _(u"""
- AFFE_CARA_ELEM : mot clé GENE_TUYAU
- problème : OMEGA est différent de OMEGA2
+ AFFE_CARA_ELEM : mot clÃ© GENE_TUYAU
+ problÃ¨me : OMEGA est diffÃ©rent de OMEGA2
  OMEGA  = %(r1)f
  OMEGA2 = %(r2)f
 """),
 
 2 : _(u"""
 Erreur :
-   Le calcul du chargement dû au séchage n'est pas programmé par le type d'élément %(k1)s.
+   Le calcul du chargement dÃ» au sÃ©chage n'est pas programmÃ© par le type d'Ã©lÃ©ment %(k1)s.
 
 Conseil :
-  Émettre une demande d'évolution.
+  Ã‰mettre une demande d'Ã©volution.
 """),
 
 3 : _(u"""
-Vous utilisez des éléments de type GRILLE_MEMBRANE. Le mot-clé ANGL_REP de la commande AFFE_CARA_ELEM
+Vous utilisez des Ã©lÃ©ments de type GRILLE_MEMBRANE. Le mot-clÃ© ANGL_REP de la commande AFFE_CARA_ELEM
 permet d'indiquer la direction des armatures.
-La projection de ce vecteur directeur dans le plan de certains des éléments de GRILLE_MEMBRANE est nulle.
+La projection de ce vecteur directeur dans le plan de certains des Ã©lÃ©ments de GRILLE_MEMBRANE est nulle.
 
 Conseil :
-  Vérifiez les données sous le mot clef ANGL_REP de la commande AFFE_CARA_ELEM.
+  VÃ©rifiez les donnÃ©es sous le mot clef ANGL_REP de la commande AFFE_CARA_ELEM.
 """),
 
 4 : _(u"""
-Problème dans le calcul de l'option FORC_NODA / REAC_NODA :
+ProblÃ¨me dans le calcul de l'option FORC_NODA / REAC_NODA :
 
 Le nombre de sous-point du champ de contrainte contenu dans la SD n'est
-pas cohérent avec ce qui a été défini dans AFFE_CARA_ELEM.
+pas cohÃ©rent avec ce qui a Ã©tÃ© dÃ©fini dans AFFE_CARA_ELEM.
 
-Il est probable que le champ de contrainte a été extrait sur un seul sous-point.
+Il est probable que le champ de contrainte a Ã©tÃ© extrait sur un seul sous-point.
 
-Il est impératif d'utiliser un champ de contrainte complet pour le calcul de FORC_NODA.
+Il est impÃ©ratif d'utiliser un champ de contrainte complet pour le calcul de FORC_NODA.
 """),
 
 5 : _(u"""
- problème de maillage TUYAU :
- pour une maille définie par les noeuds N1 N2 N3,
- le noeud N3 doit être le noeud milieu
+ problÃ¨me de maillage TUYAU :
+ pour une maille dÃ©finie par les noeuds N1 N2 N3,
+ le noeud N3 doit Ãªtre le noeud milieu
 """),
 
 6 : _(u"""
   GENE_TUYAU
-  il faut donner un vecteur non colinéaire au tuyau
+  il faut donner un vecteur non colinÃ©aire au tuyau
 """),
 
 7 : _(u"""
@@ -75,94 +75,94 @@ Il est impératif d'utiliser un champ de contrainte complet pour le calcul de FOR
 
 8 : _(u"""
 La raideur tangente de la section est nulle.
-Vérifier votre matériau, vous avez peut être défini un matériau élastoplastique parfait.
+VÃ©rifier votre matÃ©riau, vous avez peut Ãªtre dÃ©fini un matÃ©riau Ã©lastoplastique parfait.
 
-Risque & Conseil : mettre un léger écrouissage peut permettre de passer cette difficulté.
+Risque & Conseil : mettre un lÃ©ger Ã©crouissage peut permettre de passer cette difficultÃ©.
 """),
 
 
 9 : _(u"""
- il faut renseigner le coefficient E_N  dans les cas des déformations planes et de l'asymétrie
+ il faut renseigner le coefficient E_N  dans les cas des dÃ©formations planes et de l'asymÃ©trie
  on ne regarde donc que le cas des contraintes planes.
 """),
 
 10 : _(u"""
  Sous-programme CHPVER :
  le champ  %(k1)s n'a pas le bon type :
-   type autorisé  :%(k2)s
+   type autorisÃ©  :%(k2)s
    type du champ  :%(k3)s
 """),
 
 11 : _(u"""
- La modélisation utilisée n'est pas traitée.
+ La modÃ©lisation utilisÃ©e n'est pas traitÃ©e.
 """),
 
 12 : _(u"""
- Le nombre de couche doit être obligatoirement supérieur à zéro.
+ Le nombre de couche doit Ãªtre obligatoirement supÃ©rieur Ã  zÃ©ro.
 """),
 
 13 : _(u"""
- Le nombre de couche est limité à 10 pour la modélisation COQUE_3D.
+ Le nombre de couche est limitÃ© Ã  10 pour la modÃ©lisation COQUE_3D.
 """),
 
 14 : _(u"""
- Le type d'élément %(k1)s n'est pas prévu.
+ Le type d'Ã©lÃ©ment %(k1)s n'est pas prÃ©vu.
 """),
 
 15 : _(u"""
- La nature du matériau %(k1)s n'est pas traitée.
- Seules sont considérées les natures : ELAS, ELAS_ISTR, ELAS_ORTH.
+ La nature du matÃ©riau %(k1)s n'est pas traitÃ©e.
+ Seules sont considÃ©rÃ©es les natures : ELAS, ELAS_ISTR, ELAS_ORTH.
 """),
 
 17 : _(u"""
- noeuds confondus pour un élément
+ noeuds confondus pour un Ã©lÃ©ment
 """),
 
 18 : _(u"""
- le nombre de noeuds d'un tuyau est différent de 3 ou 4
+ le nombre de noeuds d'un tuyau est diffÃ©rent de 3 ou 4
 """),
 
 20 : _(u"""
- Aucun type d'éléments ne correspond au type demandé.
+ Aucun type d'Ã©lÃ©ments ne correspond au type demandÃ©.
 """),
 
 21 : _(u"""
- prédicteur ELAS hors champs
+ prÃ©dicteur ELAS hors champs
 """),
 
 24 : _(u"""
- dérivées de "MP" non définies
+ dÃ©rivÃ©es de "MP" non dÃ©finies
 """),
 
 25 : _(u"""
- On passe en mécanisme 2.
+ On passe en mÃ©canisme 2.
 """),
 
 26 : _(u"""
- Chargement en mécanisme 2 trop important.
- À vérifier.
+ Chargement en mÃ©canisme 2 trop important.
+ Ã€ vÃ©rifier.
 """),
 
 27 : _(u"""
- On poursuit en mécanisme 2.
+ On poursuit en mÃ©canisme 2.
 """),
 
 28 : _(u"""
- décharge négative sans passer par le mécanisme 1
+ dÃ©charge nÃ©gative sans passer par le mÃ©canisme 1
  diminuer le pas de temps
 """),
 
 29 : _(u"""
- on revient en mécanisme 1
+ on revient en mÃ©canisme 1
 """),
 
 30 : _(u"""
- pas de retour dans le mécanisme 1 trop important
+ pas de retour dans le mÃ©canisme 1 trop important
  diminuer le pas de temps
 """),
 
 31 : _(u"""
- type d'élément  %(k1)s  incompatible avec  %(k2)s
+ type d'Ã©lÃ©ment  %(k1)s  incompatible avec  %(k2)s
 """),
 
 32 : _(u"""
@@ -170,89 +170,89 @@ Risque & Conseil : mettre un léger écrouissage peut permettre de passer cette di
 """),
 
 34 : _(u"""
- élément non traité  %(k1)s
+ Ã©lÃ©ment non traitÃ©  %(k1)s
 """),
 
 36 : _(u"""
- nombre de couches négatif ou nul :  %(k1)s
+ nombre de couches nÃ©gatif ou nul :  %(k1)s
 """),
 
 37 : _(u"""
  Sous-programme CHPVER :
  le champ  %(k1)s n'a pas la bonne grandeur :
-   grandeur autorisée  :%(k2)s
+   grandeur autorisÃ©e  :%(k2)s
    grandeur du champ   :%(k3)s
 """),
 
 
 38 : _(u"""
- Élément de poutre %(k1)s :
- Vous faites des calculs avec l'option GROT_GDEP. Lors de la réactualisation de la géométrie,
+ Ã‰lÃ©ment de poutre %(k1)s :
+ Vous faites des calculs avec l'option GROT_GDEP. Lors de la rÃ©actualisation de la gÃ©omÃ©trie,
  un angle d'orientation de la poutre %(k1)s varie de plus de PI/8.
- Angle concerné %(k2)s avec un saut de %(r1)f degrés.
+ Angle concernÃ© %(k2)s avec un saut de %(r1)f degrÃ©s.
 
- * Cela peut arriver lorsque l'axe de la poutre correspond à l'axe global Z. Dans ce cas le
- calcul des angles définissant l'orientation de la poutre peut présenter une indétermination.
+ * Cela peut arriver lorsque l'axe de la poutre correspond Ã  l'axe global Z. Dans ce cas le
+ calcul des angles dÃ©finissant l'orientation de la poutre peut prÃ©senter une indÃ©termination.
  -> Risque & Conseils :
-    Des problèmes de convergence peuvent survenir.
-    a) Essayez de définir une poutre qui n'est pas exactement verticale en déplaçant légèrement
+    Des problÃ¨mes de convergence peuvent survenir.
+    a) Essayez de dÃ©finir une poutre qui n'est pas exactement verticale en dÃ©plaÃ§ant lÃ©gÃ¨rement
        un des noeuds.
     b) Essayez de modifiez votre maillage, pour qu'au cours du calcul, l'axe de la poutre ne soit
        jamais l'axe Z global.
 
- * Cela peut être due à une instabilité de type flambement, déversement, ...
+ * Cela peut Ãªtre due Ã  une instabilitÃ© de type flambement, dÃ©versement, ...
  -> Risque & Conseils :
-    Des problèmes de convergence peuvent survenir.
-    L'utilisation du pilotage peut permettre de passer cette instabilité.
+    Des problÃ¨mes de convergence peuvent survenir.
+    L'utilisation du pilotage peut permettre de passer cette instabilitÃ©.
 """),
 
 
 40 : _(u"""
-  -> L'axe de référence pour le calcul du repère local est normal à un
-     au moins un élément de plaque.
+  -> L'axe de rÃ©fÃ©rence pour le calcul du repÃ¨re local est normal Ã  un
+     au moins un Ã©lÃ©ment de plaque.
   -> Risque & Conseil :
-     Il faut modifier l'axe de référence (axe X par défaut) en utilisant
+     Il faut modifier l'axe de rÃ©fÃ©rence (axe X par dÃ©faut) en utilisant
      ANGL_REP ou VECTEUR.
 
 """),
 
 41 : _(u"""
- impossibilité :
- vous avez un matériau de type "ELAS_COQUE" et vous n'avez pas défini la raideur de membrane,
+ impossibilitÃ© :
+ vous avez un matÃ©riau de type "ELAS_COQUE" et vous n'avez pas dÃ©fini la raideur de membrane,
  ni sous la forme "MEMB_L", ni sous la forme "M_LLLL".
 """),
 
 42 : _(u"""
- Le comportement matériau %(k1)s n'est pas traité. Conseil : utilisez
- la commande DEFI_COMPOSITE pour définir une coque mono couche avec ce
+ Le comportement matÃ©riau %(k1)s n'est pas traitÃ©. Conseil : utilisez
+ la commande DEFI_COMPOSITE pour dÃ©finir une coque mono couche avec ce
  comportement.
 """),
 
 43 : _(u"""
- impossibilité :
- vous avez un matériau de type "ELAS_COQUE" et le déterminant de la sous matrice de Hooke relative au cisaillement est nul.
+ impossibilitÃ© :
+ vous avez un matÃ©riau de type "ELAS_COQUE" et le dÃ©terminant de la sous matrice de Hooke relative au cisaillement est nul.
 """),
 
 46 : _(u"""
- nombre de couches négatif ou nul
+ nombre de couches nÃ©gatif ou nul
 """),
 
 48 : _(u"""
- impossibilité, la surface de l'élément est nulle.
+ impossibilitÃ©, la surface de l'Ã©lÃ©ment est nulle.
 """),
 
 50 : _(u"""
- comportement élastique inexistant
+ comportement Ã©lastique inexistant
 """),
 
 52 : _(u"""
-  -> Le type de comportement %(k1)s n'est pas prévu pour le calcul de
+  -> Le type de comportement %(k1)s n'est pas prÃ©vu pour le calcul de
      SIEF_ELGA avec chargement thermique.
 """),
 
 53 : _(u"""
 Erreur utilisateur :
-  Température sur la maille: %(k1)s : il manque la composante "TEMP_MIL"
+  TempÃ©rature sur la maille: %(k1)s : il manque la composante "TEMP_MIL"
 """),
 
 55 : _(u"""
@@ -260,7 +260,7 @@ Erreur utilisateur :
 """),
 
 58 : _(u"""
- la nature du matériau  %(k1)s  nécessite la définition du coefficient  B_ENDOGE dans DEFI_MATERIAU.
+ la nature du matÃ©riau  %(k1)s  nÃ©cessite la dÃ©finition du coefficient  B_ENDOGE dans DEFI_MATERIAU.
 """),
 
 62 : _(u"""
@@ -276,8 +276,8 @@ Erreur utilisateur :
 """),
 
 66 : _(u"""
- Si vous avez renseigné le mot-clé NOEUD_ORIG, donnez un groupe de mailles sous GROUP_MA ou une liste de mailles
- sous MAILLE. On ne réordonne pas les groupes de noeuds et les listes de noeuds.
+ Si vous avez renseignÃ© le mot-clÃ© NOEUD_ORIG, donnez un groupe de mailles sous GROUP_MA ou une liste de mailles
+ sous MAILLE. On ne rÃ©ordonne pas les groupes de noeuds et les listes de noeuds.
 """),
 
 67 : _(u"""
@@ -286,33 +286,33 @@ Erreur utilisateur :
 
 
 68 : _(u"""
- Le noeud origine ou extrémité %(k1)s ne fait pas partie des mailles de la ligne.
+ Le noeud origine ou extrÃ©mitÃ© %(k1)s ne fait pas partie des mailles de la ligne.
 """),
 
 69 : _(u"""
- Le noeud origine ou extrémité  %(k1)s  n'est pas une extrémité de la ligne.
+ Le noeud origine ou extrÃ©mitÃ©  %(k1)s  n'est pas une extrÃ©mitÃ© de la ligne.
 """),
 
 70 : _(u"""
  Alarme DEFI_GROUP / CREA_GROUP_NO / OPTION='NOEUD_ORDO' :
-   Le groupe de mailles spécifié forme une ligne fermée (NOEUD_ORIG et NOEUD_EXTR identiques).
-   Vous n'avez pas renseigné le mot clé VECT_ORIE. La ligne est donc orientée arbitrairement.
+   Le groupe de mailles spÃ©cifiÃ© forme une ligne fermÃ©e (NOEUD_ORIG et NOEUD_EXTR identiques).
+   Vous n'avez pas renseignÃ© le mot clÃ© VECT_ORIE. La ligne est donc orientÃ©e arbitrairement.
 """),
 
 71 : _(u"""
  Erreur utilisateur :
-   On cherche à orienter une ligne (un ensemble de segments).
-   La recherche du noeud "origine" de la ligne échoue.
+   On cherche Ã  orienter une ligne (un ensemble de segments).
+   La recherche du noeud "origine" de la ligne Ã©choue.
 
  Conseil :
-   La ligne est peut-être une ligne fermée (sans extrémités).
-   Il faut alors utiliser les mots clés GROUP_NO_ORIG et GROUP_NO_EXTR
+   La ligne est peut-Ãªtre une ligne fermÃ©e (sans extrÃ©mitÃ©s).
+   Il faut alors utiliser les mots clÃ©s GROUP_NO_ORIG et GROUP_NO_EXTR
    (ou NOEUD_ORIG et NOEUD_EXTR).
 
 """),
 
 72 : _(u"""
- GROUP_NO orienté : noeud origine =  %(k1)s
+ GROUP_NO orientÃ© : noeud origine =  %(k1)s
 """),
 
 73 : _(u"""
@@ -323,7 +323,7 @@ Erreur utilisateur :
 
 
 77 : _(u"""
- le noeud extrémité  %(k1)s  n'est pas le dernier noeud
+ le noeud extrÃ©mitÃ©  %(k1)s  n'est pas le dernier noeud
 """),
 
 
@@ -331,23 +331,23 @@ Erreur utilisateur :
 
 
 83 : _(u"""
- Le type des mailles des lèvres doit être quadrangle ou triangle.
+ Le type des mailles des lÃ¨vres doit Ãªtre quadrangle ou triangle.
 """),
 
 
 87 : _(u"""
- Mauvaise définition de MP1 et MP2
+ Mauvaise dÃ©finition de MP1 et MP2
 """),
 
 88 : _(u"""
- Option %(k1)s n'est pas disponible pour l'élément %(k2)s et la loi de comportement %(k3)s
+ Option %(k1)s n'est pas disponible pour l'Ã©lÃ©ment %(k2)s et la loi de comportement %(k3)s
 """),
 
 90 : _(u"""
 Erreur de programmation :
-   L'attribut NBSIGM n'est pas défini pour cette modélisation.
+   L'attribut NBSIGM n'est pas dÃ©fini pour cette modÃ©lisation.
 Solution :
-   Il faut modifier le catalogue phenomene_modelisation__.cata pour ajouter NBSIGM pour cette modélisation.
+   Il faut modifier le catalogue phenomene_modelisation__.cata pour ajouter NBSIGM pour cette modÃ©lisation.
 """),
 
 }

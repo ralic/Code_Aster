@@ -1,4 +1,4 @@
-# -*- coding: iso-8859-1 -*-
+# coding=utf-8
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -46,7 +46,7 @@ class VISU:
         machine_salome_port : port du NS Salome
 
         remarque :
-        le service NS Salome est deduit des 2 paramètres ci-dessus.
+        le service NS Salome est deduit des 2 paramÃ¨tres ci-dessus.
         le service NS Salome peut egalement etre specifie dans les arguments de la ligne de commande ( ORBInitRef )
 
         """
@@ -60,7 +60,7 @@ class VISU:
         else:
             self.chemin_script = './Python/Templates/salomeParaviz.py'
 
-        # Construction paramètre pour SALOME
+        # Construction paramÃ¨tre pour SALOME
         self.salome_host           = param['machine_salome']
         self.salome_port           = int(param['machine_salome_port'])
         self.salome_runscript      = param['machine_salome_runscript']
@@ -73,7 +73,7 @@ class VISU:
             self.salome_host = 'localhost'
 
 
-        # selection de l'étude SALOME ( parmi celles ouvertes )
+        # selection de l'Ã©tude SALOME ( parmi celles ouvertes )
         try:
             studyList = self.__studyList( param )
         except:
@@ -83,7 +83,7 @@ class VISU:
         if studyList:
             if len( studyList ) == 1:           # une seule etude -> on publie dans celle-ci
                 self.studyName = studyList[0]
-            else:                               # plusieurs études -> l'utilisateur doit en selectionner une
+            else:                               # plusieurs Ã©tudes -> l'utilisateur doit en selectionner une
                 studyList.extend(["New"])
                 self.studyName = SAISIE_MODE( studyList, _("Choix de l'etude SALOME pour visualisation"), vbar=1 )
         else:
@@ -94,7 +94,7 @@ class VISU:
     # --------------------------------------------------------------------------
     def __studyList( self, param ):
         """
-        Retourne la liste des études
+        Retourne la liste des Ã©tudes
         """
 
         result = []
@@ -162,7 +162,7 @@ class VISU:
         """
         Lance la visualisation dans SALOME
         """
-        raise NotImplementedError("Non implémentée")
+        raise NotImplementedError("Non implÃ©mentÃ©e")
 
 
 # =========================================================================
@@ -170,11 +170,11 @@ class VISU:
 class ISOVALEURS( VISU ):
     def __init__( self, fichier, param,  selection, options ) :
         if not os.path.exists( fichier ):
-            raise _("Fichier MED résultat de Stanley non accessible par SALOME : ") + fichier
+            raise _("Fichier MED rÃ©sultat de Stanley non accessible par SALOME : ") + fichier
 
         VISU .__init__( self,  param )
 
-        # Si on n'a pas trouvé de session Salome ouverte on sort
+        # Si on n'a pas trouvÃ© de session Salome ouverte on sort
         if not self.studyName: return
         if self.studyName=="New": self.studyName=''
 
@@ -198,7 +198,7 @@ class ISOVALEURS( VISU ):
     # --------------------------------------------------------------------------
     def __visuType(self, selection):
         """
-        selection du type de visualisation selon le nom du champ de la selection donnée en paramètre
+        selection du type de visualisation selon le nom du champ de la selection donnÃ©e en paramÃ¨tre
         ScalarMap
         DeformedShapeOnField
         GaussPointsOnField
@@ -283,7 +283,7 @@ class COURBES( VISU ):
 
         VISU .__init__(self, param)
 
-        # Si on n'a pas trouvé de session Salome ouverte on sort
+        # Si on n'a pas trouvÃ© de session Salome ouverte on sort
         if not self.studyName: return
         if self.studyName=="New": self.studyName=''
 
@@ -401,7 +401,7 @@ class MEDInfo:
     """
     def __init__( self, selection ):
         """
-        Recupère les informations( nom maillage, champ ) du fichier MED resultat en sortie de Stanley
+        RecupÃ¨re les informations( nom maillage, champ ) du fichier MED resultat en sortie de Stanley
         """
         self.name           = selection.contexte.maillage.nom
         self.fieldName      = selection.contexte.resultat.nom

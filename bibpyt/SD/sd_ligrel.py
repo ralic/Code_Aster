@@ -1,4 +1,4 @@
-# -*- coding: iso-8859-1 -*-
+# coding=utf-8
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -36,7 +36,7 @@ class sd_ligrel(AsBase):
     PRNM = AsVI()
 
     # AU_MOINS_UN : LIEL, SSSA
-    # LIEL : il existe des éléments finis
+    # LIEL : il existe des Ã©lÃ©ments finis
     # SSSA : il existe des sous-structures statiques
     LIEL = Facultatif(AsColl( acces='NU', stockage='CONTIG', modelong='VARIABLE', type='I', ))
     SSSA = Facultatif(AsVI())
@@ -49,7 +49,7 @@ class sd_ligrel(AsBase):
     PRNS = Facultatif(AsVI())
     LGNS = Facultatif(AsVI())
 
-    # si le ligrel contient des éléments nécessitant le voisinage :
+    # si le ligrel contient des Ã©lÃ©ments nÃ©cessitant le voisinage :
     NVGE = Facultatif(AsVK16(lonmax=1,))
 
 
@@ -66,8 +66,8 @@ class sd_ligrel(AsBase):
         if not self.exists() : return
         lgrf=self.LGRF.get_stripped()
         sd2=sd_maillage(lgrf[0]); sd2.check(checker)
-        # assert lgrf[1] != ''   # on ne sait pas toujours "remonter" à un modèle (lgphmo.f)
-        # Je n'arrive pas à importer sd_modele (cyclage des imports):
+        # assert lgrf[1] != ''   # on ne sait pas toujours "remonter" Ã  un modÃ¨le (lgphmo.f)
+        # Je n'arrive pas Ã  importer sd_modele (cyclage des imports):
         # from SD.sd_modele    import sd_modele
         # sd2=sd_modele.sd_modele(lgrf[1]); sd2.check(checker)
 
@@ -100,7 +100,7 @@ class sd_ligrel(AsBase):
             assert exi_prns
             assert exi_lgns
             assert exi_nema
-            assert self.LGNS.lonmax >= nb_no_tard   # .LGNS est surdimensionné
+            assert self.LGNS.lonmax >= nb_no_tard   # .LGNS est surdimensionnÃ©
             nbec= self.PRNS.lonmax / nb_no_tard
             assert self.PRNS.lonmax == nb_no_tard * nbec , (nbec, nb_no_tard)
             assert nbec >= 1 and nbec < 10 , nbec

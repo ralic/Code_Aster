@@ -1,4 +1,4 @@
-# -*- coding: iso-8859-1 -*-
+# coding=utf-8
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -19,9 +19,9 @@
 # person_in_charge: romeo.fernandes at edf.fr
 
 """
-Module dédié à la macro MAC3COEUR.
+Module dÃ©diÃ© Ã  la macro MAC3COEUR.
 
-Définition d'une conception de coeur (ensemble d'assemblages).
+DÃ©finition d'une conception de coeur (ensemble d'assemblages).
 """
 
 import os
@@ -32,28 +32,28 @@ from mac3coeur_assemblage import ACFactory
 
 
 class Coeur(object):
-    """Classe définissant un coeur de reacteur."""
+    """Classe dÃ©finissant un coeur de reacteur."""
     type_coeur = None
     required_parameters = [
-        #Nombre d'assemblages pour définir le coeur
+        #Nombre d'assemblages pour dÃ©finir le coeur
         'NBAC',
         # Position des grilles pour definition du champ de fluence
         'altitude',
         # Position des crayons et tubes-guides pour definition du champ de fluence
         'XINFT', 'XSUPT', 'XINFC', 'XSUPC', 'LONCR','LONTU',
-        # Caractéristique de la cuve 
+        # CaractÃ©ristique de la cuve 
         'pas_assemblage',       
         'XINFCUVE','XSUPCUVE',
-        #---fleche des ressorts de maintien à la fermeture de la cuve
+        #---fleche des ressorts de maintien Ã  la fermeture de la cuve
         'flechResMaint',
-        #---Dimensions de la cavité entre PIC (ou FSC) et PSC
+        #---Dimensions de la cavitÃ© entre PIC (ou FSC) et PSC
         'Hcav1centre','Hcav2centre','Hcav3centre','Hcav4centre',
         'Hcav1periph','Hcav2periph','Hcav3periph','Hcav4periph',
-        #Températures caractérisitiques
+        #TempÃ©ratures caractÃ©risitiques
         'TP_REF','ARRET_FR','ARRET_CH','TINFCUVE','TSUPCUVE','TENVELOP','TP_TG1','TP_TG2','TXX1','TXX2','TXX3','TXX4',
         #Abscisses caracteristiques pour le profil de temperature des crayons
         'SXX2','SXX3',
-        # paramètres de l'interpolation linéaire
+        # paramÃ¨tres de l'interpolation linÃ©aire
         #du coefficient de dilatation des internes de cuve
         'ALPH1','ALPH2',
         # Geometrie du coeur
@@ -84,23 +84,23 @@ class Coeur(object):
         self.dnume2 = dict(zip(self.ALPHAMAC, range(1, len(self.ALPHAMAC) + 1)))
 
     def _init_from_attrs(self):
-        """Initialisation à partir des attributs de classe."""
+        """Initialisation Ã  partir des attributs de classe."""
         for attr in dir(self):
             if self._keys.get(attr):
                 self._para[attr] = getattr(self, attr)
 
     def __getattr__(self, para):
-        """Retourne la valeur d'un paramètre."""
+        """Retourne la valeur d'un paramÃ¨tre."""
         if self._para.get(para) is None:
             raise KeyError("parameter not defined : '%s'" % para)
         return self._para.get(para)
 
     def get_geom_coeur(self):
-        """Retourne la géométrie du coeur."""
+        """Retourne la gÃ©omÃ©trie du coeur."""
         raise NotImplementedError
 
     def position_toaster(self, position):
-        """Retourne la position Aster correspondant à la position DAMAC."""
+        """Retourne la position Aster correspondant Ã  la position DAMAC."""
         lig, col = position[0], position[1:]
         ind = int(col) - 1
         try:
@@ -110,7 +110,7 @@ class Coeur(object):
         return posi_aster
 
     def position_todamac(self,position):
-        """Retourne la position DAMAC correspondant à la position Aster."""
+        """Retourne la position DAMAC correspondant Ã  la position Aster."""
         col, lig = position.split("_")
         try:
            posi_damac = self.dcorr2[lig] + '%02d' %(self.dnume2[col])
@@ -120,7 +120,7 @@ class Coeur(object):
         return posi_damac
 
     def position_fromthyc(self, posX, posY):
-        """Retourne la position Aster correspondant à la position Thyc."""
+        """Retourne la position Aster correspondant Ã  la position Thyc."""
         lig, col = position[0], position[1:]
         ind = int(col) - 1
         try:
@@ -130,7 +130,7 @@ class Coeur(object):
         return posi_aster
 
     def init_from_table(self, tab):
-        """Initialise le coeur à partir d'une table."""
+        """Initialise le coeur Ã  partir d'une table."""
         self.nbac = len(tab)
         for rows in tab:
             idAC   = rows['idAC'].strip()
@@ -302,7 +302,7 @@ class Coeur(object):
             mtmp = (_F(GROUP_NO = 'G_'+posi_aster+'_'+str(1), FX = string.atof(line[2])/FOHYCH_1*ac.K_GRE/KTOT/4.0),)
             mcp.extend(mtmp)
 
-            # Force axiale pour chacune des grilles de mélange
+            # Force axiale pour chacune des grilles de mÃ©lange
             for j in range(1,ac.NBGR-1):
                 mtmp = (_F(GROUP_NO = 'G_'+posi_aster+'_'+str(j+1), FX = string.atof(line[2])/FOHYCH_1*ac.K_GRM/KTOT/4.0),)
                 mcp.extend(mtmp)
@@ -352,7 +352,7 @@ class Coeur(object):
 
     def repr(self):
         """Liste les assemblages."""
-        txt = ["Lecture du Coeur %s - composé de %d assemblages" \
+        txt = ["Lecture du Coeur %s - composÃ© de %d assemblages" \
                % (self.name, self.nbac)]
         all = self.collAC.items()
         all.sort()
@@ -362,35 +362,35 @@ class Coeur(object):
         return os.linesep.join(txt)
 
     def mcf_geom_fibre(self):
-        """Retourne les mots-clés facteurs pour DEFI_GEOM_FIBRE."""
+        """Retourne les mots-clÃ©s facteurs pour DEFI_GEOM_FIBRE."""
         mcf = []
         for ac in self.collAC.values():
             mcf.extend(ac.mcf_geom_fibre())
         return mcf
 
     def mcf_cara_multifibre(self):
-        """Retourne les mots-clés facteurs pour AFFE_CARA_ELEM/MULTIFIBRE."""
+        """Retourne les mots-clÃ©s facteurs pour AFFE_CARA_ELEM/MULTIFIBRE."""
         mcf = []
         for ac in self.collAC.values():
             mcf.extend(ac.mcf_cara_multifibre())
         return mcf
 
     def mcf_cara_barre(self):
-        """Retourne les mots-clés facteurs pour AFFE_CARA_ELEM/BARRE."""
+        """Retourne les mots-clÃ©s facteurs pour AFFE_CARA_ELEM/BARRE."""
         mcf = []
         for ac in self.collAC.values():
             mcf.extend(ac.mcf_cara_barre())
         return mcf
 
     def mcf_cara_poutre(self):
-        """Retourne les mots-clés facteurs pour AFFE_CARA_ELEM/POUTRE."""
+        """Retourne les mots-clÃ©s facteurs pour AFFE_CARA_ELEM/POUTRE."""
         mcf = []
         for ac in self.collAC.values():
             mcf.extend(ac.mcf_cara_poutre())
         return mcf
 
     def mcf_cara_discret(self):
-        """Retourne les mots-clés facteurs pour AFFE_CARA_ELEM/DISCRET."""
+        """Retourne les mots-clÃ©s facteurs pour AFFE_CARA_ELEM/DISCRET."""
         mcf = []
         for ac in self.collAC.values():
             mcf.extend(ac.mcf_cara_discret())
@@ -412,7 +412,7 @@ class Coeur(object):
         return _AF_CIN
 
     def chargement_archimede1(self):
-        """Retourne les mots-clés facteurs pour AFFE_CHAR_MECA/FORCE_NODALE."""
+        """Retourne les mots-clÃ©s facteurs pour AFFE_CHAR_MECA/FORCE_NODALE."""
         mcf = []
         for ac in self.collAC.values():
             mcf.extend(ac.chargement_archimede1())
@@ -426,7 +426,7 @@ class Coeur(object):
         return _ARCH_1
 
     def chargement_archimede2(self):
-        """Retourne les mots-clés facteurs pour AFFE_CHAR_MECA_F/FORCE_POUTRE."""
+        """Retourne les mots-clÃ©s facteurs pour AFFE_CHAR_MECA_F/FORCE_POUTRE."""
         DEFI_FONCTION = self.macro.get_cmd('DEFI_FONCTION')
         mcf = []
         for ac in self.collAC.values():
@@ -534,7 +534,7 @@ class Coeur(object):
         return _PESA
 
     def definition_effor_maintien(self,MODELE):
-        """Retourne les déplacements imposés aux noeuds modélisant la PSC
+        """Retourne les dÃ©placements imposÃ©s aux noeuds modÃ©lisant la PSC
         et traduisant la fermeture de la cuve"""
         from Accas import _F
         DEFI_FONCTION = self.macro.get_cmd('DEFI_FONCTION')
@@ -563,7 +563,7 @@ class Coeur(object):
         return _F_EMBO
 
     def definition_effor_maintien_force(self,MODELE,ForceMaintien):
-        """Retourne le chargement d'effort de maintien considéré constant"""
+        """Retourne le chargement d'effort de maintien considÃ©rÃ© constant"""
         from Accas import _F
         DEFI_FONCTION = self.macro.get_cmd('DEFI_FONCTION')
         AFFE_CHAR_MECA_F = self.macro.get_cmd('AFFE_CHAR_MECA_F')
@@ -646,17 +646,17 @@ class Coeur(object):
         return _MA
         
     def recuperation_donnees_geom(self,MAILL):
-        """recuperation de donnees géometrique a partir du maillage"""
+        """recuperation de donnees gÃ©ometrique a partir du maillage"""
         from Accas import _F
         CREA_MAILLAGE = self.macro.get_cmd('CREA_MAILLAGE')
         RECU_TABLE = self.macro.get_cmd('RECU_TABLE')
         DETRUIRE = self.macro.get_cmd('DETRUIRE')                
                 
-        #--- recuperation de donnees géometriques ---
+        #--- recuperation de donnees gÃ©ometriques ---
         # nombre d'assemblages dans le coeur
         self.NBAC = len(self.collAC.values())
         
-        # altitudes mini et maxi de la cavité de coeur
+        # altitudes mini et maxi de la cavitÃ© de coeur
         _ma_tmp = CREA_MAILLAGE(MAILLAGE = MAILL,RESTREINT = _F(GROUP_MA = 'EBOINF',),)
         _TAB_tmp= RECU_TABLE(CO = _ma_tmp, NOM_TABLE = 'CARA_GEOM',)
         self.XINFCUVE = _TAB_tmp['X_MIN',1]
@@ -695,7 +695,7 @@ class Coeur(object):
         DETRUIRE(CONCEPT=_F(NOM=_ma_tmp),INFO=1,);
         DETRUIRE(CONCEPT=_F(NOM=_TAB_tmp),INFO=1,);
         altimaxtmp = 0
-        while altimaxtmp != altimax : #tant que l'on ne dépasse pas la grille la plus haute
+        while altimaxtmp != altimax : #tant que l'on ne dÃ©passe pas la grille la plus haute
           _ma_tmp = CREA_MAILLAGE(MAILLAGE = MAILL,RESTREINT = _F(GROUP_MA = 'GRIL_'+str(len(self.altitude)+1),),)
           _TAB_tmp= RECU_TABLE(CO = _ma_tmp, NOM_TABLE = 'CARA_GEOM',)
           altimintmp = _TAB_tmp['X_MAX',1]
@@ -1069,8 +1069,8 @@ class Coeur(object):
         
 
     def dilatation_cuve(self,MODEL,MAILL):
-        """Retourne les déplacements imposés aux noeuds modélisant les internes de cuves
-        (supports inférieur (PIC ou FSC), supérieur (PSC) et cloisons)
+        """Retourne les dÃ©placements imposÃ©s aux noeuds modÃ©lisant les internes de cuves
+        (supports infÃ©rieur (PIC ou FSC), supÃ©rieur (PSC) et cloisons)
         et traduisant les dilatations thermiques des internes et leurs deformations de natures mecaniques"""
         from Accas import _F
         DEFI_FONCTION = self.macro.get_cmd('DEFI_FONCTION')
@@ -1078,7 +1078,7 @@ class Coeur(object):
         AFFE_CHAR_MECA_F = self.macro.get_cmd('AFFE_CHAR_MECA_F')
         RECU_TABLE = self.macro.get_cmd('RECU_TABLE')
         
-        # definition des evolutions de températures
+        # definition des evolutions de tempÃ©ratures
         # sur la PIC/FSC, la PSC et l'enveloppe
         _TEMPPIC=DEFI_FONCTION(NOM_PARA='INST',
                               NOM_RESU='TEMP',
@@ -1133,8 +1133,8 @@ class Coeur(object):
 
         TP_REFlocal = self.TP_REF
         
-        # interpolation linéaire du coefficient de dilatation
-        #des internes de cuve en fonction de la température
+        # interpolation linÃ©aire du coefficient de dilatation
+        #des internes de cuve en fonction de la tempÃ©rature
         ALPH1local=self.ALPH1
         ALPH2local=self.ALPH2
         ALPHENV='(%(ALPH1local)e*' + _TEMPENV.nom + '(INST) + %(ALPH2local)e)'
@@ -1162,8 +1162,8 @@ class Coeur(object):
         #---------------------------------------------------------------
         L='(sqrt( ((Y-%(Y0)f)**2)+ ((Z-%(Z0)f)**2)))'
         epsilon=1.E-6
-        # on rentre un epsilon pour le cas où L=0 (assemblage central)
-        # pour éviter la division par zéro
+        # on rentre un epsilon pour le cas oÃ¹ L=0 (assemblage central)
+        # pour Ã©viter la division par zÃ©ro
         COSTE='(Y-%(Y0)f)/('+ L +'+%(epsilon)e)'
         SINTE='(Z-%(Z0)f)/('+ L +'+%(epsilon)e)'
         Dcth=L+' * '+ALPHENV+' * (' + _TEMPENV.nom + '(INST)-%(TP_REFlocal)f) '
@@ -1188,8 +1188,8 @@ class Coeur(object):
         #--                  Deplacements verticaux                   --
         #--                      de la PIC/FSC                        --
         #---------------------------------------------------------------
-        # le déplacement de la PIC est égal à la différence de hauteur de cavité
-        # (entre l'instant "cuve fermée à 20C"et l'instant considéré)
+        # le dÃ©placement de la PIC est Ã©gal Ã  la diffÃ©rence de hauteur de cavitÃ©
+        # (entre l'instant "cuve fermÃ©e Ã  20C"et l'instant considÃ©rÃ©)
         # 
         # centre du coeur
         _DthXpicCentre=DEFI_FONCTION(NOM_PARA='INST',
@@ -1253,11 +1253,11 @@ class Coeur(object):
 
 class CoeurFactory(Mac3Factory):
     """Classe pour construire les objets Coeur."""
-    # Ex.: La classe "Coeur" sera nommée Coeur_900 dans le fichier Coeur_900.datg
+    # Ex.: La classe "Coeur" sera nommÃ©e Coeur_900 dans le fichier Coeur_900.datg
     prefix = 'Coeur_'
 
     def build_supported_types(self):
-        """Construit la liste des types autorisés."""
+        """Construit la liste des types autorisÃ©s."""
         ctxt = {}
         for obj, val in globals().items():
             if type(val) is type and issubclass(val, Coeur):
@@ -1266,7 +1266,7 @@ class CoeurFactory(Mac3Factory):
 
 
 class MateriauAC(object):
-    """Conteneur des matériaux d'un assemblage."""
+    """Conteneur des matÃ©riaux d'un assemblage."""
     _types = ('DIL', 'MNT', 'ES', 'EI', 'CR', 'TG', 'GC_ME', 'GC_EB', 'GC_EH')
 
     def __init__(self, typeAC, macro):
@@ -1277,7 +1277,7 @@ class MateriauAC(object):
         self.include_materiau()
 
     def include_materiau(self):
-        """Crée les matériaux"""
+        """CrÃ©e les matÃ©riaux"""
         INCLUDE_MATERIAU = self.macro.get_cmd("INCLUDE_MATERIAU")
 
         for typ in self._types:

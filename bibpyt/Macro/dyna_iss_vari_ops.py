@@ -1,4 +1,4 @@
-# -*- coding: iso-8859-1 -*-
+# coding=utf-8
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -66,7 +66,7 @@ def dyna_iss_vari_ops(self, NOM_CMP, PRECISION, INTERF,MATR_COHE, UNITE_RESU_FOR
    # Comptage commandes + declaration concept sortant
    self.set_icmd(1)
    macro='DYNA_ISS_VARI'
-   # Type de résultat
+   # Type de rÃ©sultat
    fonc_acce  =  args['FONC_SIGNAL']
    if fonc_acce !=None:
       TYPE_RESU='TRANS'
@@ -201,12 +201,12 @@ def dyna_iss_vari_ops(self, NOM_CMP, PRECISION, INTERF,MATR_COHE, UNITE_RESU_FOR
    abscisse = [None]*NB_FREQ
 
 
-# MODEL fonction de cohérence
+# MODEL fonction de cohÃ©rence
    MODEL = MATR_COHE['TYPE']
    print 'MODEL :',   MODEL
 
 
- #  POUR TRANS, on sort le champ en déplacement: c'est équivalent du champ en deplacement si on applique un signal en ACCE
+ #  POUR TRANS, on sort le champ en dÃ©placement: c'est Ã©quivalent du champ en deplacement si on applique un signal en ACCE
 
    __CHAM=CREA_CHAMP( TYPE_CHAM='NOEU_DEPL_R',
                 OPERATION='EXTR',
@@ -262,7 +262,7 @@ def dyna_iss_vari_ops(self, NOM_CMP, PRECISION, INTERF,MATR_COHE, UNITE_RESU_FOR
 #
 
       if MODEL=='MITA_LUCO' :
-  # PARAMETRES fonction de cohérence
+  # PARAMETRES fonction de cohÃ©rence
          VITE_ONDE = MATR_COHE['VITE_ONDE']
          alpha = MATR_COHE['PARA_ALPHA']
 # # ----MITA & LUCO
@@ -526,13 +526,13 @@ def dyna_iss_vari_ops(self, NOM_CMP, PRECISION, INTERF,MATR_COHE, UNITE_RESU_FOR
          #  recuperer le vecteur modal depl calcule par dyge
             RS = NP.array(__dyge.sdj.DEPL.get())
             DETRUIRE(CONCEPT=_F(NOM=(__dyge)),INFO=1)
-             # stockage des matrices résultats: sum(s_q s_q* )
+             # stockage des matrices rÃ©sultats: sum(s_q s_q* )
             SP=SP+RS*NP.conj(RS[:,NP.newaxis])
 
 
 
 #--------------------------------------------
-# stockage de résultats pour toutes les fréquences calculées
+# stockage de rÃ©sultats pour toutes les frÃ©quences calculÃ©es
 
       if  TYPE_RESU=="SPEC":      #SPEC = (NB_FREQ,nbmodt,nbmodt)
          SPEC[k]=SP
@@ -595,7 +595,7 @@ def dyna_iss_vari_ops(self, NOM_CMP, PRECISION, INTERF,MATR_COHE, UNITE_RESU_FOR
 #  Si TRANS: Ecriture de  tran_gene
 #---------------------------------------------------------------------
 # 1) on cree un concept harm_gene (factice) et le remplit a l'aide de putvectjev avec les bonnes valeurs,
-# 2) On interpole les valeurs non calculés (l_freq_sig)
+# 2) On interpole les valeurs non calculÃ©s (l_freq_sig)
 # 3) puis on fait la FFT pour obtenir le signal temporel
 
    elif TYPE_RESU=='TRANS':
@@ -613,11 +613,11 @@ def dyna_iss_vari_ops(self, NOM_CMP, PRECISION, INTERF,MATR_COHE, UNITE_RESU_FOR
                                   ),
                         );
 
-#   ATTENTION:  on sort le champ en dépalcement: c'est équivalent au champ en acceleration car on a applique un signal en ACCE pour fosi en acce
-      #   #         cela evite de diviser pr w2 pour intégrer l'acceleration (erreurs numeriques au point 0)
+#   ATTENTION:  on sort le champ en dÃ©palcement: c'est Ã©quivalent au champ en acceleration car on a applique un signal en ACCE pour fosi en acce
+      #   #         cela evite de diviser pr w2 pour intÃ©grer l'acceleration (erreurs numeriques au point 0)
       #   #         on remplace donc le champ en acceleration
 
-#      si tous les point on été calculés: pas d'interpolation
+#      si tous les point on Ã©tÃ© calculÃ©s: pas d'interpolation
       if  FREQ_FIN ==None :
          for  k,freqk in enumerate(l_freq_sig):
             coef_a=(vale_re[k]+vale_im[k]*1.j)
@@ -658,7 +658,7 @@ def dyna_iss_vari_ops(self, NOM_CMP, PRECISION, INTERF,MATR_COHE, UNITE_RESU_FOR
 
       dyha= REST_SPEC_TEMP( RESU_GENE = __dyge0 ,
 #                        METHODE = 'PROL_ZERO' ,
-                          SYMETRIE = 'NON' ,        # signal non symmétrique: a completer
+                          SYMETRIE = 'NON' ,        # signal non symmÃ©trique: a completer
 #                        SYMETRIE = 'OUI' ,           # pas de prolongation
                           NOM_CHAM = 'ACCE' );
 

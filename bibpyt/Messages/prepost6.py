@@ -1,4 +1,4 @@
-# -*- coding: iso-8859-1 -*-
+# coding=utf-8
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -21,26 +21,26 @@
 cata_msg = {
 
 2 : _(u"""
- -> le nombre de mailles de votre maillage (%(i1)d) est supérieur
-    à la limite de 9 999 999.
- -> Risque & Conseil : veuillez vérifier le script GIBI qui vous a permis
-    de générer le fichier MGIB.
+ -> le nombre de mailles de votre maillage (%(i1)d) est supÃ©rieur
+    Ã  la limite de 9 999 999.
+ -> Risque & Conseil : veuillez vÃ©rifier le script GIBI qui vous a permis
+    de gÃ©nÃ©rer le fichier MGIB.
 """),
 
 
 3 : _(u"""
- le volume diffère du volume use mais le nombre d'itération
-  est supérieur a  %(i1)d
+ le volume diffÃ¨re du volume use mais le nombre d'itÃ©ration
+  est supÃ©rieur a  %(i1)d
       volume use:  %(r1)f
   volume calcule:  %(r2)f
 """),
 
 4 : _(u"""
- vérifiez les paramètres d'usure pour le secteur  %(i1)d
+ vÃ©rifiez les paramÃ¨tres d'usure pour le secteur  %(i1)d
 """),
 
 5 : _(u"""
- vérifiez les paramètres d'usure pour le secteur  %(i1)d
+ vÃ©rifiez les paramÃ¨tres d'usure pour le secteur  %(i1)d
 """),
 
 6 : _(u"""
@@ -58,7 +58,7 @@ cata_msg = {
 """),
 
 9 : _(u"""
-   nombre de cycles détectés =  %(i1)d
+   nombre de cycles dÃ©tectÃ©s =  %(i1)d
 """),
 
 10 : _(u"""
@@ -70,16 +70,16 @@ cata_msg = {
 """),
 
 27 : _(u"""
- paramètres de calcul du dommage nombre de numéros d'ordre  =  %(i1)d
+ paramÃ¨tres de calcul du dommage nombre de numÃ©ros d'ordre  =  %(i1)d
  nombre de points de calcul =  %(i2)d
 """),
 
 28 : _(u"""
  calcul     du      dommage en %(k1)s points  de   calcul  du    dommage %(k2)s
- composante(s) grandeur équivalente %(k3)s
- méthode  d'extraction  des    pics %(k4)s
- méthode  de  comptage  des  cycles %(k5)s
- méthode  de  calcul    du  dommage %(k6)s
+ composante(s) grandeur Ã©quivalente %(k3)s
+ mÃ©thode  d'extraction  des    pics %(k4)s
+ mÃ©thode  de  comptage  des  cycles %(k5)s
+ mÃ©thode  de  calcul    du  dommage %(k6)s
 
 """),
 
@@ -100,41 +100,41 @@ cata_msg = {
 
 32 : _(u"""
 
-  Le GROUP_MA GMSH GM10000 contient %(i1)d éléments :
+  Le GROUP_MA GMSH GM10000 contient %(i1)d Ã©lÃ©ments :
 """),
 
 33 : _(u"""
-       %(i1)d éléments de type %(k1)s
+       %(i1)d Ã©lÃ©ments de type %(k1)s
 """),
 
 34 : _(u"""
-    La composante %(k1)s que vous avez renseignée ne fait pas partie
-    des composantes du champ à imprimer.
+    La composante %(k1)s que vous avez renseignÃ©e ne fait pas partie
+    des composantes du champ Ã  imprimer.
 """),
 
 35 : _(u"""
-    Le type de champ %(k1)s n'est pas autorisé avec les champs
-    élémentaires %(k2)s.
-    L'impression du champ sera effectué avec le type SCALAIRE.
+    Le type de champ %(k1)s n'est pas autorisÃ© avec les champs
+    Ã©lÃ©mentaires %(k2)s.
+    L'impression du champ sera effectuÃ© avec le type SCALAIRE.
 """),
 
 36 : _(u"""
  Veuillez utiliser IMPR_GENE pour l'impression
- de résultats en variables généralisées.
+ de rÃ©sultats en variables gÃ©nÃ©ralisÃ©es.
 """),
 
 
 
 
 38 : _(u"""
- Problème dans la lecture du fichier de maillage GMSH.
- Le fichier de maillage ne semble pas être un fichier de type GMSH :
- il manque la balise de début de fichier.
+ ProblÃ¨me dans la lecture du fichier de maillage GMSH.
+ Le fichier de maillage ne semble pas Ãªtre un fichier de type GMSH :
+ il manque la balise de dÃ©but de fichier.
 """),
 
 39 : _(u"""
- <I> Depuis la version 2.2.0 de GMSH il est possible de lire et écrire le format MED.
-     Conseil : Utilisez plutôt GMSH avec MED comme format d'entrée et de sortie.
+ <I> Depuis la version 2.2.0 de GMSH il est possible de lire et Ã©crire le format MED.
+     Conseil : Utilisez plutÃ´t GMSH avec MED comme format d'entrÃ©e et de sortie.
 
 """),
 
@@ -143,35 +143,35 @@ cata_msg = {
 """),
 
 41 : _(u"""
- Problème dans la lecture du fichier de maillage GMSH.
+ ProblÃ¨me dans la lecture du fichier de maillage GMSH.
  Il manque la balise de fin de la liste de noeud.
 """),
 
 42 : _(u"""
- Problème dans la lecture du fichier de maillage GMSH.
- Il manque la balise de début de la liste des éléments.
+ ProblÃ¨me dans la lecture du fichier de maillage GMSH.
+ Il manque la balise de dÃ©but de la liste des Ã©lÃ©ments.
 """),
 
 43 : _(u"""
- -> le nombre de mailles de votre maillage (%(i1)d) est supérieur
-    à la limite de 9 999 999.
- -> Risque & Conseil : générez un fichier MED directement depuis GMSH.
+ -> le nombre de mailles de votre maillage (%(i1)d) est supÃ©rieur
+    Ã  la limite de 9 999 999.
+ -> Risque & Conseil : gÃ©nÃ©rez un fichier MED directement depuis GMSH.
 """),
 
 44 : _(u"""
- Attention, l'origine de votre chemin est située à l'intérieur d'un élément.
- Le premier segment élémentaire (origine - intersection avec la première face)
+ Attention, l'origine de votre chemin est situÃ©e Ã  l'intÃ©rieur d'un Ã©lÃ©ment.
+ Le premier segment Ã©lÃ©mentaire (origine - intersection avec la premiÃ¨re face)
  ne fera pas partie du chemin.
- Conseil : prolonger votre chemin à l'origine (mettre l'origine en dehors du
-  maillage) si vous voulez que votre chemin ne soit pas tronqué.
+ Conseil : prolonger votre chemin Ã  l'origine (mettre l'origine en dehors du
+  maillage) si vous voulez que votre chemin ne soit pas tronquÃ©.
 """),
 
 45 : _(u"""
- Attention, l'extrémité de votre chemin est située à l'intérieur d'un élément.
- Le dernier segment élémentaire (intersection avec la dernière face - extrémité)
+ Attention, l'extrÃ©mitÃ© de votre chemin est situÃ©e Ã  l'intÃ©rieur d'un Ã©lÃ©ment.
+ Le dernier segment Ã©lÃ©mentaire (intersection avec la derniÃ¨re face - extrÃ©mitÃ©)
  ne fera pas partie du chemin.
- Conseil : prolonger votre chemin à l'extrémité (mettre l'extrémité en dehors du
- maillage) si vous voulez que votre chemin ne soit pas tronqué.
+ Conseil : prolonger votre chemin Ã  l'extrÃ©mitÃ© (mettre l'extrÃ©mitÃ© en dehors du
+ maillage) si vous voulez que votre chemin ne soit pas tronquÃ©.
 """),
 
 }

@@ -1,4 +1,4 @@
-# -*- coding: iso-8859-1 -*-
+# coding=utf-8
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -77,10 +77,10 @@ def calc_precont_ops(self,reuse,MODELE,CHAM_MATER,CARA_ELEM,EXCIT,
   __L0   = dIncrement['LIST_INST']
 
   if   type(__L0) == listr8_sdaster:
-  #cas où liste definie par DEFI_LIST_REEL
+  #cas oÃ¹ liste definie par DEFI_LIST_REEL
      __L1   = __L0.Valeurs()
   elif type(__L0) == list_inst:
-  # cas où liste definie par DEFI_LIST_INST
+  # cas oÃ¹ liste definie par DEFI_LIST_INST
      tmp = __L0.get_name().ljust(8) + '.LIST.' + 'DITR'.ljust(18)
      __L1 = aster.getvectjev(tmp)
 
@@ -94,7 +94,7 @@ def calc_precont_ops(self,reuse,MODELE,CHAM_MATER,CARA_ELEM,EXCIT,
   else :
       dEtatInit=None
 
-  # Teste si INST_INIT est donné ou bien recalcule __TMIN
+  # Teste si INST_INIT est donnÃ© ou bien recalcule __TMIN
   if dIncrement['INST_INIT'] == None:
     if self.reuse == None:
       __TMIN = __L1[0]
@@ -104,7 +104,7 @@ def calc_precont_ops(self,reuse,MODELE,CHAM_MATER,CARA_ELEM,EXCIT,
   else:
     __TMIN = dIncrement['INST_INIT']
 
-  # Teste si INST_FIN est donné ou bien recalcule __TMAX
+  # Teste si INST_FIN est donnÃ© ou bien recalcule __TMAX
   if dIncrement['INST_FIN'] == None:
     __TMAX = __L1[-1]
   else:
@@ -124,11 +124,11 @@ def calc_precont_ops(self,reuse,MODELE,CHAM_MATER,CARA_ELEM,EXCIT,
   __TINT = (9.*__L2[-1] + __L2[-2])/10.
   __L2[-1:-1] = [__TINT]
 
-  # __LST0 est la liste d'instants utilisée pour l'etape 1
+  # __LST0 est la liste d'instants utilisÃ©e pour l'etape 1
   __LST0=DEFI_LIST_REEL( DEBUT = __TMIN,
                         INTERVALLE = _F(JUSQU_A = __TMAX, NOMBRE = 1),)
 
-  # __LST et __FCT sont utilisés pour les etapes 2 et 3
+  # __LST et __FCT sont utilisÃ©s pour les etapes 2 et 3
   __LST=DEFI_LIST_REEL(VALE=__L2,);
   __FCT=DEFI_FONCTION(INTERPOL=('LIN','LIN'),
                          NOM_PARA='INST',
@@ -232,8 +232,8 @@ def calc_precont_ops(self,reuse,MODELE,CHAM_MATER,CARA_ELEM,EXCIT,
   __GROUP_MA_CABLES = __GROUP_MA_A + __GROUP_MA_I
 
 
-  # 1.4 Creation des mots-clés facteurs COMP_INCR
-  # pour étape 2 (dComp_incr0) et étape 3 (dComp_incr1)
+  # 1.4 Creation des mots-clÃ©s facteurs COMP_INCR
+  # pour Ã©tape 2 (dComp_incr0) et Ã©tape 3 (dComp_incr1)
   # ------------------------------------------------------
 
   dComp_incr=[]
@@ -350,7 +350,7 @@ def calc_precont_ops(self,reuse,MODELE,CHAM_MATER,CARA_ELEM,EXCIT,
   #     en desactivant les cables
   #-----------------------------------------------------------------------
 
-  # Regeneration des mots-cles EXCIT passés en argument de la macro
+  # Regeneration des mots-cles EXCIT passÃ©s en argument de la macro
   dExcit=[]
   for j in EXCIT :
       dExcit.append(j.cree_dict_valeurs(j.mc_liste))
@@ -387,7 +387,7 @@ def calc_precont_ops(self,reuse,MODELE,CHAM_MATER,CARA_ELEM,EXCIT,
                      EXCIT = dExcit1,
                      **motscle4)
 
-  # Recuperation du dernier numero d'ordre pour pouvoir  l'écraser dans RES
+  # Recuperation du dernier numero d'ordre pour pouvoir  l'Ã©craser dans RES
   __dico2 = RES.LIST_VARI_ACCES()
   __no = __dico2['NUME_ORDRE'][-1]
 

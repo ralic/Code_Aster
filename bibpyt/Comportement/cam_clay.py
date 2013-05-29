@@ -1,4 +1,4 @@
-# -*- coding: iso-8859-1 -*-
+# coding=utf-8
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -22,10 +22,10 @@ from cata_comportement import LoiComportement
 
 loi = LoiComportement(
    nom            = 'CAM_CLAY',
-   doc = """Comportement élastoplastique des sols normalement consolidés (argiles par exemple). cf. R7.01.14
-   La partie élastique est non-linéaire. La partie plastique peut être durcissante ou adoucissante. 
-   Si le modèle CAM_CLAY est utilisé avec la modélisation THM, le mot clé PORO renseigné sous CAM_CLAY et 
-   sous THM_INIT doit être le même.""",
+   doc = """Comportement Ã©lastoplastique des sols normalement consolidÃ©s (argiles par exemple). cf. R7.01.14
+   La partie Ã©lastique est non-linÃ©aire. La partie plastique peut Ãªtre durcissante ou adoucissante. 
+   Si le modÃ¨le CAM_CLAY est utilisÃ© avec la modÃ©lisation THM, le mot clÃ© PORO renseignÃ© sous CAM_CLAY et 
+   sous THM_INIT doit Ãªtre le mÃªme.""",
    num_lc         = 22,
    nb_vari        = 7,
    nom_vari       = ('PCR','INDIPLAS','SIGP','SIEQ','EPSPVOL','EPSPEQ','INDIVIDE'),

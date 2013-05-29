@@ -1,4 +1,4 @@
-# -*- coding: iso-8859-1 -*-
+# coding=utf-8
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -23,16 +23,16 @@ from cata_comportement import LoiComportement
 loi = LoiComportement(
    nom            = 'MAZARS_GC',
    doc = """
-   Loi d'endommagement isotrope élastique-fragile du béton, suivant le modèle de Mazars.
-   Permet de rendre compte de l'adoucissement en compression et la fragilité en traction.
+   Loi d'endommagement isotrope Ã©lastique-fragile du bÃ©ton, suivant le modÃ¨le de Mazars.
+   Permet de rendre compte de l'adoucissement en compression et la fragilitÃ© en traction.
    Dans le cas des poutres multifibres :
       Distingue l'endommagement en traction et en compression. Deux variables d'endommagement scalaire
-      sont utilisées pour faire la distinction entre l'endommagement de traction et de compression.
+      sont utilisÃ©es pour faire la distinction entre l'endommagement de traction et de compression.
    En contrainte plane :
-      Pas de couplage possible avec d'autres phénomènes tels que le fluage.
+      Pas de couplage possible avec d'autres phÃ©nomÃ¨nes tels que le fluage.
       Cette version permet de rendre mieux compte du cisaillement.
    """,
-   # dans le cas multifibres => interception dans pmfcom, donc pas d'appel à lc0008
+   # dans le cas multifibres => interception dans pmfcom, donc pas d'appel Ã  lc0008
    num_lc         = 8,
    nb_vari        = 8,
    nom_vari       = ('CRITSIG','CRITEPS','ENDO','EPSEQT','EPSEQC','RSIGMA','TEMP_MAX','DISSIP',),

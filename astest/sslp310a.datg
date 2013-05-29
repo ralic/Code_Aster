@@ -416,7 +416,7 @@ s_ral = cont surf plan ;
 vtot = vtot et s_ral ;
 *
 
-* Symétrie
+* SymÃ©trie
 * ------
 vtot_2 = vtot SYME DROIT P0 P0BIS;
 *

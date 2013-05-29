@@ -6,11 +6,11 @@ dens 1 ;
 *DONNEES
 *----------------------------------------
 
-* dimensions des cotés
+* dimensions des cotÃ©s
 LX = 0.2;
 LY = 0.5;
 
-* nombre d'éléments (forcement pairs)
+* nombre d'Ã©lÃ©ments (forcement pairs)
 NX = 100;
 NY = 100;
 

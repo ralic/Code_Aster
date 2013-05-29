@@ -1,6 +1,5 @@
 /* ------------------------------------------------------------------ */
 /*           CONFIGURATION MANAGEMENT OF EDF VERSION                  */
-/* MODIF UTTCSM UTILITAI  DATE 19/05/2011   AUTEUR SELLENET N.SELLENET */
 /* ================================================================== */
 /* COPYRIGHT (C) 1991 - 2011  EDF R&D              WWW.CODE-ASTER.ORG */
 /*                                                                    */
@@ -14,7 +13,7 @@
 /* GENERAL PUBLIC LICENSE FOR MORE DETAILS.                           */
 /*                                                                    */
 /* YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE  */
-/* ALONG WITH THIS PROGRAM; IF NOT, WRITE TO : EDF R&D CODE_ASTER,    */
+/* ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,      */
 /*    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.     */
 /* ================================================================== */
 /* ------------------------------------------------------------------ */
@@ -37,7 +36,7 @@
    On trouve parfois ceci :
    "CLK_TCK is described as an obsolete name for CLOCKS_PER_SEC"
 
-   Quand les deux sont définis, il y a un facteur 10000 entre
+   Quand les deux sont dÃ©finis, il y a un facteur 10000 entre
    les deux (CLOCKS_PER_SEC = 1e6, CLK_TCK = 100).
 */
 
@@ -61,10 +60,10 @@ void DEFP(UTTCSM, uttcsm, DOUBLE *t_csm)
 
 #else
 /* calcul de elaps : date depuis epoch en secondes
-   ce nombre est stocké dans un double
-   Parfois à la seconde près.
+   ce nombre est stockÃ© dans un double
+   Parfois Ã  la seconde prÃ¨s.
    Sous WIN, gettimeofday n'existe pas.
-   Une implémentation : http://www.suacommunity.com/dictionary/gettimeofday-entry.php
+   Une implÃ©mentation : http://www.suacommunity.com/dictionary/gettimeofday-entry.php
 */
     time_t t1, t0, *pt1 ;
     t0=0;

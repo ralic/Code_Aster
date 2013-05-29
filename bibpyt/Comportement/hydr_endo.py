@@ -1,4 +1,4 @@
-# -*- coding: iso-8859-1 -*-
+# coding=utf-8
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -22,10 +22,10 @@ from cata_comportement import LoiComportement
 
 loi = LoiComportement(
    nom            = 'HYDR_ENDO',
-   doc = """Loi de comportement hydraulique, si le comportement mécanique est endommageant  
-   (donc si on utilise 'MAZARS' ou 'ENDO_ISOT_BETON') sous RELATION_KIT. Ce mot clé permet de renseigner la 
-   courbe de saturation et sa dérivée en fonction de la pression capillaire 
-   ainsi que la perméabilité relative et sa dérivée en fonction de la saturation.""",
+   doc = """Loi de comportement hydraulique, si le comportement mÃ©canique est endommageant  
+   (donc si on utilise 'MAZARS' ou 'ENDO_ISOT_BETON') sous RELATION_KIT. Ce mot clÃ© permet de renseigner la 
+   courbe de saturation et sa dÃ©rivÃ©e en fonction de la pression capillaire 
+   ainsi que la permÃ©abilitÃ© relative et sa dÃ©rivÃ©e en fonction de la saturation.""",
    num_lc         = 9999,
    nb_vari        = 1,
    nom_vari       = ('HYDREND1'),

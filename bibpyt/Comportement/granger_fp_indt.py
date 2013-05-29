@@ -1,4 +1,4 @@
-# -*- coding: iso-8859-1 -*-
+# coding=utf-8
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -21,7 +21,7 @@ from cata_comportement import LoiComportement
 
 loi = LoiComportement(
    nom            = 'GRANGER_FP_INDT',
-   doc = """Comportement de fluage propre du beton, identique à GRANGER_FP_V mais traitant uniquement un comportement isotherme.
+   doc = """Comportement de fluage propre du beton, identique Ã  GRANGER_FP_V mais traitant uniquement un comportement isotherme.
    cf. R7.01.01""",
    num_lc         = 26,
    nb_vari        = 55,

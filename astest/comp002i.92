@@ -21,7 +21,7 @@ def ERREUR(X,Xref,coef=1.,prec_zero=0.):
         return err
 #######################################################################
 def RENOMME(i,N_pas,label_cal,ch_param,RESU,R_SI):
-# On renomme les composantes en fonction de  l'ordre de discrétisation
+# On renomme les composantes en fonction de  l'ordre de discrÃ©tisation
         N = N_pas[i]
         chN=label_cal[i]+str(N)
         for ch in ch_param:

@@ -1,4 +1,4 @@
-# -*- coding: iso-8859-1 -*-
+# coding=utf-8
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -19,7 +19,7 @@
 # person_in_charge: mathieu.courtois at edf.fr
 
 """
-   Utilitaires pour la vérification des SD
+   Utilitaires pour la vÃ©rification des SD
 """
 
 # pour utilisation dans eficas
@@ -31,60 +31,60 @@ except:
 import copy
 
 
-#  1) Utilitaires pour vérifier certaines propriétés.
-#     Ces utilitaires ne provoquent pas d'arret mais écrivent des messages dans un "checker"
+#  1) Utilitaires pour vÃ©rifier certaines propriÃ©tÃ©s.
+#     Ces utilitaires ne provoquent pas d'arret mais Ã©crivent des messages dans un "checker"
 #  -----------------------------------------------------------------------------------------
 
 #   1.1 Utilitaires pour des scalaires :
 #   ------------------------------------
 def sdu_assert(ojb, checker, bool,comment=''):
-    """Vérifie que le booléen (bool) est vrai"""
+    """VÃ©rifie que le boolÃ©en (bool) est vrai"""
     if not bool:
-        checker.err(ojb, "condition non respectée :  (%s)" % (comment,))
+        checker.err(ojb, "condition non respectÃ©e :  (%s)" % (comment,))
 
 def sdu_compare(ojb, checker, val1, comp, val2, comment=''):
-    """Vérifie que la relation de comparaison entre val1 et val2 est respectée :
+    """VÃ©rifie que la relation de comparaison entre val1 et val2 est respectÃ©e :
        comp= '==' / '!=' / '>=' / '>' / '<=' / '<'"""
     comp=comp.strip()
     ok = 0
     if comp == "==":
         ok = val1 == val2
-        comp1 = "n'est pas égale au"
+        comp1 = "n'est pas Ã©gale au"
     elif comp == "!=":
         ok = val1 != val2
-        comp1 = "est égale au"
+        comp1 = "est Ã©gale au"
     elif comp == ">=":
         ok = val1 >= val2
-        comp1 = "est inférieure strictement au"
+        comp1 = "est infÃ©rieure strictement au"
     elif comp == "<=":
         ok = val1 <= val2
-        comp1 = "est supérieure strictement au"
+        comp1 = "est supÃ©rieure strictement au"
     elif comp == ">":
         ok = val1 > val2
-        comp1 = "est inférieure ou égale au"
+        comp1 = "est infÃ©rieure ou Ã©gale au"
     elif comp == "<":
         ok = val1 < val2
-        comp1 = "est supérieure ou égale au"
+        comp1 = "est supÃ©rieure ou Ã©gale au"
     else:
-        sdu_assert(ojb, checker, 0, 'sdu_compare: opérateur de comparaison interdit: '+comp)
+        sdu_assert(ojb, checker, 0, 'sdu_compare: opÃ©rateur de comparaison interdit: '+comp)
 
     if not ok:
-        checker.err(ojb, "condition non respectée pour le test suivant : longueur séquence (%s) %s nombre d'éléments différents dans la séquence (%s) (%s)" % (val1,comp1,val2,comment))
+        checker.err(ojb, "condition non respectÃ©e pour le test suivant : longueur sÃ©quence (%s) %s nombre d'Ã©lÃ©ments diffÃ©rents dans la sÃ©quence (%s) (%s)" % (val1,comp1,val2,comment))
 
 
-#   1.2 Utilitaires pour des séquences :
+#   1.2 Utilitaires pour des sÃ©quences :
 #   ------------------------------------
 def sdu_tous_differents(ojb,checker,sequence=None,comment=''):
-    """Vérifie que les éléments de la séquence sont tous différents.
+    """VÃ©rifie que les Ã©lÃ©ments de la sÃ©quence sont tous diffÃ©rents.
     Si l'argument sequence est None, on prend l'ensemble de l'ojb."""
     if sequence:
         seq=sequence
     else:
         seq=ojb.get()
-    sdu_compare(ojb, checker, len(seq), '==', len(set(seq)), comment='Tous les éléments de la séquence devraient être différents, mais ils ne le sont pas'+comment)
+    sdu_compare(ojb, checker, len(seq), '==', len(set(seq)), comment='Tous les Ã©lÃ©ments de la sÃ©quence devraient Ãªtre diffÃ©rents, mais ils ne le sont pas'+comment)
 
 def sdu_tous_non_blancs(ojb,checker,sequence=None,comment=''):
-    """Vérifie que les éléments (chaines) de la séquence sont tous "non blancs".
+    """VÃ©rifie que les Ã©lÃ©ments (chaines) de la sÃ©quence sont tous "non blancs".
     Si l'argument sequence est None, on prend l'ensemble de l'ojb."""
     if sequence:
         seq=sequence
@@ -94,8 +94,8 @@ def sdu_tous_non_blancs(ojb,checker,sequence=None,comment=''):
         assert len(elem.strip()) > 0 , (seq,self, 'tous "non blancs" '+comment)
 
 def sdu_tous_compris(ojb,checker,sequence=None,vmin=None,vmax=None,comment=''):
-    """Vérifie que toutes les valeurs de la sequence sont comprises entre vmin et vmax
-    Les bornes vmin et vmax sont autorisées
+    """VÃ©rifie que toutes les valeurs de la sequence sont comprises entre vmin et vmax
+    Les bornes vmin et vmax sont autorisÃ©es
     Si l'argument sequence est None, on prend l'ensemble de l'ojb."""
     assert (not vmin is None) or (not vmax is None),'Il faut fournir au moins une des valeurs vmin ou vmax'
     if sequence:
@@ -112,11 +112,11 @@ def sdu_tous_compris(ojb,checker,sequence=None,vmin=None,vmax=None,comment=''):
         checker.err( ojb, "L'objet doit contenir des valeurs dans l'intervalle : [%s, %s] "  % (vmin,vmax))
 
 def sdu_monotone(seqini):
-    """vérifie qu'une séquence est triée par ordre croissant (ou décroissant)
+    """vÃ©rifie qu'une sÃ©quence est triÃ©e par ordre croissant (ou dÃ©croissant)
     retourne :
-       3 : ni croissant ni décroissant  (désordre)
+       3 : ni croissant ni dÃ©croissant  (dÃ©sordre)
        1 : croissant
-      -1 : décroissant
+      -1 : dÃ©croissant
        0 : constant"""
     import numpy
     if len(seqini) < 2:
@@ -139,7 +139,7 @@ def sdu_monotone(seqini):
 #  -----------------------------------------------------------------------------------------
 
 def sdu_verif_nom_gd(nomgd):
-    """vérifie que nomgd est bien un nom de grandeur"""
+    """vÃ©rifie que nomgd est bien un nom de grandeur"""
     nomgd2=nomgd.strip()
     ptn=aster.getvectjev('&CATA.GD.NOMGD')
     ok=False
@@ -148,32 +148,32 @@ def sdu_verif_nom_gd(nomgd):
           ok=True
           break
     if not ok:
-        checker.err(ojb, "condition non respectée : "+nomgd+" n'est pas un nom de grandeur.")
+        checker.err(ojb, "condition non respectÃ©e : "+nomgd+" n'est pas un nom de grandeur.")
 
 def sdu_nom_gd(numgd):
-    """retourne le nom de la grandeur de numéro (numgd)"""
+    """retourne le nom de la grandeur de numÃ©ro (numgd)"""
     assert numgd > 0 and numgd <1000 , numgd
     ptn=aster.getvectjev('&CATA.GD.NOMGD')
     return ptn[numgd-1].strip()
 
 def sdu_licmp_gd(numgd):
-    """retourne la liste des cmps de la grandeur de numéro (numgd)"""
+    """retourne la liste des cmps de la grandeur de numÃ©ro (numgd)"""
     nomgd=sdu_nom_gd(numgd)
     nocmp=aster.getcolljev('&CATA.GD.NOMCMP')
     return nocmp[nomgd.ljust(24)]
 
 def sdu_nb_ec(numgd):
-    """retourne le nombre d'entiers codés pour décrire les composantes de la grandeur (numgd)"""
+    """retourne le nombre d'entiers codÃ©s pour dÃ©crire les composantes de la grandeur (numgd)"""
     assert numgd > 0 and numgd <1000 , numgd
     descrigd=aster.getcolljev('&CATA.GD.DESCRIGD')
     return descrigd[numgd-1][-1+3]
 
 
-#  3) Utilitaires pour la vérification de l'existence des objets :
+#  3) Utilitaires pour la vÃ©rification de l'existence des objets :
 #  -----------------------------------------------------------------------------------------
 
 def sdu_ensemble(lojb):
-    """vérifie que les objets JEVEUX de lojb existent simultanément :"""
+    """vÃ©rifie que les objets JEVEUX de lojb existent simultanÃ©ment :"""
     assert len(lojb) > 1 , lojb
     lexi=[]
     for obj1 in lojb:

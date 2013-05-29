@@ -1,4 +1,4 @@
-# -*- coding: iso-8859-1 -*-
+# coding=utf-8
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -18,7 +18,7 @@
 # ======================================================================
 # person_in_charge: josselin.delmas at edf.fr
 
-# Pour la méthode d'adaptation du pas de temps
+# Pour la mÃ©thode d'adaptation du pas de temps
 
 cata_msg={
 
@@ -27,39 +27,39 @@ cata_msg={
 """),
 
 2: _(u"""
-    Pour la méthode d'adaptation de type <%(k1)s>, le pas de temps calculé vaut <%(r1)19.12e>.
+    Pour la mÃ©thode d'adaptation de type <%(k1)s>, le pas de temps calculÃ© vaut <%(r1)19.12e>.
 """),
 
 3: _(u"""
-    Pour la méthode d'adaptation de type <%(k1)s>, le critère n'est pas vérifié. Le pas de temps n'est pas adapté.
+    Pour la mÃ©thode d'adaptation de type <%(k1)s>, le critÃ¨re n'est pas vÃ©rifiÃ©. Le pas de temps n'est pas adaptÃ©.
 """),
 
 4: _(u"""
-    Aucun critère d'adaptation n'est vérifié. On garde le pas de temps <%(r1)19.12e>.
+    Aucun critÃ¨re d'adaptation n'est vÃ©rifiÃ©. On garde le pas de temps <%(r1)19.12e>.
 """),
 
 5: _(u"""
-    Sur tous les critères d'adaptation, le plus petit pas de temps vaut <%(r1)19.12e>.
+    Sur tous les critÃ¨res d'adaptation, le plus petit pas de temps vaut <%(r1)19.12e>.
 """),
 
 6: _(u"""
-    Après ajustement sur les points de passage obligatoires, le plus petit pas de temps vaut <%(r1)19.12e>.
+    AprÃ¨s ajustement sur les points de passage obligatoires, le plus petit pas de temps vaut <%(r1)19.12e>.
 """),
 
 10 : _(u"""
-    On maintient la découpe du pas de temps à <%(r1)19.12e>.
+    On maintient la dÃ©coupe du pas de temps Ã  <%(r1)19.12e>.
 """),
 
 11 : _(u"""
-    La valeur du pas de temps retenu <%(r1)19.12e> est inférieure à PAS_MINI.
+    La valeur du pas de temps retenu <%(r1)19.12e> est infÃ©rieure Ã  PAS_MINI.
 """),
 
 12 : _(u"""
-    La valeur du pas de temps <%(r1)19.12e> est supérieure à PAS_MAXI <%(r2)19.12e>.
-    On limite le pas de temps à PAS_MAXI <%(r2)19.12e>.
+    La valeur du pas de temps <%(r1)19.12e> est supÃ©rieure Ã  PAS_MAXI <%(r2)19.12e>.
+    On limite le pas de temps Ã  PAS_MAXI <%(r2)19.12e>.
 """),
 
 13 : _(u"""
- On a dépassé le nombre maximal de pas de temps autorisé.
+ On a dÃ©passÃ© le nombre maximal de pas de temps autorisÃ©.
 """),
 }

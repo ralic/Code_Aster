@@ -1,4 +1,4 @@
-# -*- coding: iso-8859-1 -*-
+# coding=utf-8
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -22,8 +22,8 @@ from cata_comportement import LoiComportement
 
 loi = LoiComportement(
    nom            = 'LIQU_AD_GAZ_VAPE',
-   doc = """Loi de comportement pour un milieu poreux non saturé eau/vapeur/air sec/air dissous 
-   avec changement de phase (Cf. [R7.01.11] pour plus de détails).""",
+   doc = """Loi de comportement pour un milieu poreux non saturÃ© eau/vapeur/air sec/air dissous 
+   avec changement de phase (Cf. [R7.01.11] pour plus de dÃ©tails).""",
    num_lc         = 9999,
    nb_vari        = 3,
    nom_vari       = ('LIQADGV1','LIQADGV2','LIQADGV3'),

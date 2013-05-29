@@ -1,4 +1,4 @@
-# -*- coding: iso-8859-1 -*-
+# coding=utf-8
 # person_in_charge: mathieu.courtois at edf.fr
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -22,7 +22,7 @@
 
 
 """
-    Ce module contient la classe MCCOMPO qui sert à factoriser les comportements
+    Ce module contient la classe MCCOMPO qui sert Ã  factoriser les comportements
     des OBJECT composites
 """
 
@@ -38,24 +38,24 @@ class MCCOMPO(N_OBJECT.OBJECT):
    def build_mc(self):
       """
           Construit la liste des sous-entites du MCCOMPO
-          à partir du dictionnaire des arguments (valeur)
+          Ã  partir du dictionnaire des arguments (valeur)
       """
       if CONTEXT.debug : print "MCCOMPO.build_mc ",self.nom
-      # Dans la phase de reconstruction args peut contenir des mots-clés
+      # Dans la phase de reconstruction args peut contenir des mots-clÃ©s
       # qui ne sont pas dans le dictionnaire des entites de definition (self.definition.entites)
       # de l'objet courant (self)
-      #  mais qui sont malgré tout des descendants de l'objet courant (petits-fils, ...)
+      #  mais qui sont malgrÃ© tout des descendants de l'objet courant (petits-fils, ...)
       args = self.valeur
       if args == None : args ={}
       mc_liste=[]
 
-      # On recopie le dictionnaire des arguments pour protéger l'original des delete (del args[k])
+      # On recopie le dictionnaire des arguments pour protÃ©ger l'original des delete (del args[k])
       args = args.copy()
 
       # Phase 1:
       # On construit les sous entites presentes ou obligatoires
-      # 1- les entites présentes dans les arguments et dans la définition
-      # 2- les entités non présentes dans les arguments, présentes dans la définition avec un défaut
+      # 1- les entites prÃ©sentes dans les arguments et dans la dÃ©finition
+      # 2- les entitÃ©s non prÃ©sentes dans les arguments, prÃ©sentes dans la dÃ©finition avec un dÃ©faut
       # Phase 1.1 : on traite d'abord les SIMP pour enregistrer les mots cles globaux
       for k,v in self.definition.entites.items():
         if v.label != 'SIMP':continue
@@ -92,10 +92,10 @@ class MCCOMPO(N_OBJECT.OBJECT):
            del args[k]
 
       # Phase 2:
-      # On construit les objets (en général, blocs) conditionnés par les mots-clés précédemment créés.
+      # On construit les objets (en gÃ©nÃ©ral, blocs) conditionnÃ©s par les mots-clÃ©s prÃ©cÃ©demment crÃ©Ã©s.
       # A ce stade, mc_liste ne contient que les fils de l'objet courant
-      # args ne contient plus que des mots-clés qui n'ont pas été attribués car ils sont
-      #      à attribuer à des blocs du niveau inférieur ou bien sont des mots-clés erronés
+      # args ne contient plus que des mots-clÃ©s qui n'ont pas Ã©tÃ© attribuÃ©s car ils sont
+      #      Ã  attribuer Ã  des blocs du niveau infÃ©rieur ou bien sont des mots-clÃ©s erronÃ©s
       dico_valeurs = self.cree_dict_condition(mc_liste,condition=1)
       for k,v in self.definition.entites.items():
          if v.label != 'BLOC':continue
@@ -104,19 +104,19 @@ class MCCOMPO(N_OBJECT.OBJECT):
          if v.verif_presence(dico_valeurs,globs):
             # Si le bloc existe :
             #        1- on le construit
-            #        2- on l'ajoute à mc_liste
-            #        3- on récupère les arguments restant
-            #        4- on reconstruit le dictionnaire équivalent à mc_liste
+            #        2- on l'ajoute Ã  mc_liste
+            #        3- on rÃ©cupÃ¨re les arguments restant
+            #        4- on reconstruit le dictionnaire Ã©quivalent Ã  mc_liste
             bloc = v(nom=k,val=args,parent=self)
             mc_liste.append(bloc)
             args=bloc.reste_val
             # On ne recalcule pas le contexte car on ne tient pas compte des blocs
-            # pour évaluer les conditions de présence des blocs
+            # pour Ã©valuer les conditions de prÃ©sence des blocs
             #dico_valeurs = self.cree_dict_valeurs(mc_liste)
 
       # On conserve les arguments superflus dans l'attribut reste_val
       self.reste_val=args
-      # On ordonne la liste ainsi créée suivant l'ordre du catalogue
+      # On ordonne la liste ainsi crÃ©Ã©e suivant l'ordre du catalogue
       # (utile seulement pour IHM graphique)
       mc_liste = self.ordonne_liste(mc_liste)
       # on retourne la liste ainsi construite
@@ -136,37 +136,37 @@ class MCCOMPO(N_OBJECT.OBJECT):
 
    def cree_dict_valeurs(self,liste=[],condition=0):
       """
-        Cette méthode crée un contexte (sous la forme d'un dictionnaire)
-        à partir des valeurs des mots clés contenus dans l'argument liste.
-        L'opération consiste à parcourir la liste (d'OBJECT) et à la
-        transformer en un dictionnaire dont les clés sont les noms des
-        mots clés et les valeurs dépendent du type d'OBJECT.
+        Cette mÃ©thode crÃ©e un contexte (sous la forme d'un dictionnaire)
+        Ã  partir des valeurs des mots clÃ©s contenus dans l'argument liste.
+        L'opÃ©ration consiste Ã  parcourir la liste (d'OBJECT) et Ã  la
+        transformer en un dictionnaire dont les clÃ©s sont les noms des
+        mots clÃ©s et les valeurs dÃ©pendent du type d'OBJECT.
         Ce dictionnaire servira de liste d'arguments d'appel pour les
         fonctions sd_prod de commandes et ops de macros ou de contexte
-        d'évaluation des conditions de présence de BLOC.
+        d'Ã©valuation des conditions de prÃ©sence de BLOC.
 
-        Si l'argument condition de la méthode vaut 1, on ne
-        remonte pas les valeurs des mots clés contenus dans des blocs
+        Si l'argument condition de la mÃ©thode vaut 1, on ne
+        remonte pas les valeurs des mots clÃ©s contenus dans des blocs
         pour eviter les bouclages.
 
-        Cette méthode réalise les opérations suivantes en plus de transformer
+        Cette mÃ©thode rÃ©alise les opÃ©rations suivantes en plus de transformer
         la liste en dictionnaire :
 
-           - ajouter tous les mots-clés non présents avec la valeur None
-           - ajouter tous les mots-clés globaux (attribut position = 'global'
+           - ajouter tous les mots-clÃ©s non prÃ©sents avec la valeur None
+           - ajouter tous les mots-clÃ©s globaux (attribut position = 'global'
              et 'global_jdc')
 
-        L'argument liste est, en général, une mc_liste en cours de
-        construction, contenant les mots-clés locaux et les blocs déjà créés.
+        L'argument liste est, en gÃ©nÃ©ral, une mc_liste en cours de
+        construction, contenant les mots-clÃ©s locaux et les blocs dÃ©jÃ  crÃ©Ã©s.
 
       """
       dico={}
       for v in liste:
         if v.isBLOC():
            # Si v est un BLOC, on inclut ses items dans le dictionnaire
-           # représentatif du contexte. Les blocs sont retournés par get_valeur
-           # sous la forme d'un dictionnaire : les mots-clés fils de blocs sont
-           # donc remontés au niveau du contexte.
+           # reprÃ©sentatif du contexte. Les blocs sont retournÃ©s par get_valeur
+           # sous la forme d'un dictionnaire : les mots-clÃ©s fils de blocs sont
+           # donc remontÃ©s au niveau du contexte.
            if not condition:
                dadd = v.get_valeur()
                assert intersection_vide(dico, dadd)
@@ -175,32 +175,32 @@ class MCCOMPO(N_OBJECT.OBJECT):
            assert not dico.has_key(v.nom), "deja vu : %s" % v.nom
            dico[v.nom]=v.get_valeur()
 
-      # On rajoute tous les autres mots-clés locaux possibles avec la valeur
-      # par défaut ou None
-      # Pour les mots-clés facteurs, on ne traite que ceux avec statut défaut ('d')
-      # et caché ('c')
-      # On n'ajoute aucune information sur les blocs. Ils n'ont pas de défaut seulement
+      # On rajoute tous les autres mots-clÃ©s locaux possibles avec la valeur
+      # par dÃ©faut ou None
+      # Pour les mots-clÃ©s facteurs, on ne traite que ceux avec statut dÃ©faut ('d')
+      # et cachÃ© ('c')
+      # On n'ajoute aucune information sur les blocs. Ils n'ont pas de dÃ©faut seulement
       # une condition.
-      #XXX remplacer le not has_key par un dico différent et faire dico2.update(dico)
+      #XXX remplacer le not has_key par un dico diffÃ©rent et faire dico2.update(dico)
       #    ce n'est qu'un pb de perf
       for k,v in self.definition.entites.items():
         if not dico.has_key(k):
            if v.label == 'SIMP':
-              # Mot clé simple
+              # Mot clÃ© simple
               dico[k]=v.defaut
            elif v.label == 'FACT' :
               if v.statut in ('c','d') :
-                 # Mot clé facteur avec défaut ou caché provisoire
+                 # Mot clÃ© facteur avec dÃ©faut ou cachÃ© provisoire
                  dico[k]=v(val=None,nom=k,parent=self)
                  # On demande la suppression des pointeurs arrieres
                  # pour briser les eventuels cycles
                  dico[k].supprime()
               else:
                  dico[k]=None
-      # A ce stade on a rajouté tous les mots-clés locaux possibles (fils directs) avec leur
-      # valeur par défaut ou la valeur None
+      # A ce stade on a rajoutÃ© tous les mots-clÃ©s locaux possibles (fils directs) avec leur
+      # valeur par dÃ©faut ou la valeur None
 
-      # On rajoute les mots-clés globaux sans écraser les clés existantes
+      # On rajoute les mots-clÃ©s globaux sans Ã©craser les clÃ©s existantes
       dico_mc = self.recherche_mc_globaux()
       dico_mc.update(dico)
       dico=dico_mc
@@ -208,7 +208,7 @@ class MCCOMPO(N_OBJECT.OBJECT):
       return dico
 
    def cree_dict_toutes_valeurs(self):
-      """Semblable à `cree_dict_valeurs(liste=self.mc_liste)` en supprimant les
+      """Semblable Ã  `cree_dict_valeurs(liste=self.mc_liste)` en supprimant les
       valeurs None."""
       dico = self.cree_dict_valeurs(self.mc_liste, condition=0)
       dico = dict([(k, v) for k, v in dico.items() if v is not None])
@@ -216,21 +216,21 @@ class MCCOMPO(N_OBJECT.OBJECT):
 
    def cree_dict_condition(self,liste=[],condition=0):
       """
-          Methode pour construire un contexte qui servira dans l'évaluation
-          des conditions de présence de blocs. Si une commande a un concept
-          produit réutilisé, on ajoute la clé 'reuse'
+          Methode pour construire un contexte qui servira dans l'Ã©valuation
+          des conditions de prÃ©sence de blocs. Si une commande a un concept
+          produit rÃ©utilisÃ©, on ajoute la clÃ© 'reuse'
       """
       dico=self.cree_dict_valeurs(liste,condition=1)
       # On ajoute la cle "reuse" pour les MCCOMPO qui ont un attribut reuse. A destination
-      # uniquement des commandes. Ne devrait pas etre dans cette classe mais dans une classe dérivée
+      # uniquement des commandes. Ne devrait pas etre dans cette classe mais dans une classe dÃ©rivÃ©e
       if not dico.has_key('reuse') and hasattr(self,'reuse'):
          dico['reuse']=self.reuse
       return dico
 
    def recherche_mc_globaux(self):
       """
-          Retourne la liste des mots-clés globaux de l'étape à laquelle appartient self
-          et des mots-clés globaux du jdc
+          Retourne la liste des mots-clÃ©s globaux de l'Ã©tape Ã  laquelle appartient self
+          et des mots-clÃ©s globaux du jdc
       """
       etape = self.get_etape()
       if etape :
@@ -246,7 +246,7 @@ class MCCOMPO(N_OBJECT.OBJECT):
 
    def recherche_mc_globaux_facultatifs(self):
       """
-          Cette méthode interroge la définition de self et retourne la liste des mots-clés fils
+          Cette mÃ©thode interroge la dÃ©finition de self et retourne la liste des mots-clÃ©s fils
           directs de self de type 'global'.
           position='global' n'est donc possible (et n'a de sens) qu'au plus haut niveau.
       """
@@ -263,8 +263,8 @@ class MCCOMPO(N_OBJECT.OBJECT):
 
    def supprime(self):
       """
-         Méthode qui supprime toutes les références arrières afin que l'objet puisse
-         etre correctement détruit par le garbage collector
+         MÃ©thode qui supprime toutes les rÃ©fÃ©rences arriÃ¨res afin que l'objet puisse
+         etre correctement dÃ©truit par le garbage collector
       """
       N_OBJECT.OBJECT.supprime(self)
       for child in self.mc_liste :
@@ -272,18 +272,18 @@ class MCCOMPO(N_OBJECT.OBJECT):
 
    def __getitem__(self,key):
       """
-         Cette méthode retourne la valeur d'un sous mot-clé (key)
+         Cette mÃ©thode retourne la valeur d'un sous mot-clÃ© (key)
       """
       return self.get_mocle(key)
 
    def get_mocle(self,key):
       """
-          Retourne la valeur du sous mot-clé key
-          Ce sous mot-clé peut exister, avoir une valeur par defaut ou etre
+          Retourne la valeur du sous mot-clÃ© key
+          Ce sous mot-clÃ© peut exister, avoir une valeur par defaut ou etre
           dans un BLOC fils de self
       """
       # on cherche dans les mots cles presents, le mot cle de nom key
-      # s'il est là on retourne sa valeur (méthode get_val)
+      # s'il est lÃ  on retourne sa valeur (mÃ©thode get_val)
       for child in self.mc_liste:
         if child.nom == key : return child.get_valeur()
       #  Si on n a pas trouve de mot cle present on retourne le defaut
@@ -323,7 +323,7 @@ class MCCOMPO(N_OBJECT.OBJECT):
           Retourne le fils de self de nom name ou None s'il n'existe pas
           Si restreint vaut oui : ne regarde que dans la mc_liste
           Si restreint vaut non : regarde aussi dans les entites possibles
-          avec defaut (Ce dernier cas n'est utilisé que dans le catalogue)
+          avec defaut (Ce dernier cas n'est utilisÃ© que dans le catalogue)
       """
       for v in self.mc_liste:
         if v.nom == name : return v
@@ -339,7 +339,7 @@ class MCCOMPO(N_OBJECT.OBJECT):
 
    def append_mc_global(self,mc):
       """
-         Ajoute le mot-clé mc à la liste des mots-clés globaux de l'étape
+         Ajoute le mot-clÃ© mc Ã  la liste des mots-clÃ©s globaux de l'Ã©tape
       """
       etape = self.get_etape()
       if etape :
@@ -348,7 +348,7 @@ class MCCOMPO(N_OBJECT.OBJECT):
 
    def append_mc_global_jdc(self,mc):
       """
-          Ajoute le mot-clé mc à la liste des mots-clés globaux du jdc
+          Ajoute le mot-clÃ© mc Ã  la liste des mots-clÃ©s globaux du jdc
       """
       nom = mc.nom
       self.jdc.mc_globaux[nom]=mc
@@ -358,9 +358,9 @@ class MCCOMPO(N_OBJECT.OBJECT):
     objet = self.makeobjet()
     # FR : attention !!! avec makeobjet, objet a le meme parent que self
     # ce qui n'est pas du tout bon dans le cas d'une copie !!!!!!!
-    # FR : peut-on passer par là autrement que dans le cas d'une copie ???
+    # FR : peut-on passer par lÃ  autrement que dans le cas d'une copie ???
     # FR --> je suppose que non
-    # XXX CCAR : le pb c'est qu'on vérifie ensuite quel parent avait l'objet
+    # XXX CCAR : le pb c'est qu'on vÃ©rifie ensuite quel parent avait l'objet
     # Il me semble preferable de changer le parent a la fin quand la copie est acceptee
     objet.valeur = copy(self.valeur)
     objet.val = copy(self.val)
@@ -383,7 +383,7 @@ class MCCOMPO(N_OBJECT.OBJECT):
 
    def get_sd_utilisees(self):
       """
-        Retourne la liste des concepts qui sont utilisés à l'intérieur de self
+        Retourne la liste des concepts qui sont utilisÃ©s Ã  l'intÃ©rieur de self
         ( comme valorisation d'un MCS)
       """
       l=[]
@@ -393,9 +393,9 @@ class MCCOMPO(N_OBJECT.OBJECT):
 
    def get_sd_mcs_utilisees(self):
       """
-          Retourne la ou les SD utilisée par self sous forme d'un dictionnaire :
-            - Si aucune sd n'est utilisée, le dictionnaire est vide.
-            - Sinon, les clés du dictionnaire sont les mots-clés derrière lesquels on
+          Retourne la ou les SD utilisÃ©e par self sous forme d'un dictionnaire :
+            - Si aucune sd n'est utilisÃ©e, le dictionnaire est vide.
+            - Sinon, les clÃ©s du dictionnaire sont les mots-clÃ©s derriÃ¨re lesquels on
               trouve des sd ; la valeur est la liste des sd attenante.
               Exemple ::
 
@@ -434,7 +434,7 @@ class MCCOMPO(N_OBJECT.OBJECT):
 
 
 def intersection_vide(dict1, dict2):
-    """Verification qu'il n'y a pas de clé commune entre 'dict1' et 'dict2'."""
+    """Verification qu'il n'y a pas de clÃ© commune entre 'dict1' et 'dict2'."""
     sk1 = set(dict1.keys())
     sk2 = set(dict2.keys())
     inter = sk1.intersection(sk2)

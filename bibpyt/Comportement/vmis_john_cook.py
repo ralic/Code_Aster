@@ -1,4 +1,4 @@
-# -*- coding: iso-8859-1 -*-
+# coding=utf-8
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -22,7 +22,7 @@ from cata_comportement import LoiComportement
 
 loi = LoiComportement(
    nom            = 'VMIS_JOHN_COOK',
-   doc = """Loi de plasticité de Von Mises à écrouissage de Johnson-Cook [R5.03.02]""",
+   doc = """Loi de plasticitÃ© de Von Mises Ã  Ã©crouissage de Johnson-Cook [R5.03.02]""",
    num_lc         = 54,
    nb_vari        = 5,
    nom_vari       = ('EPSPEQ', 'INDIPLAS','DEPSPEQ','DINSTM','DDISSM',),

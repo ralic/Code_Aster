@@ -1,4 +1,4 @@
-# -*- coding: iso-8859-1 -*-
+# coding=utf-8
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -35,7 +35,7 @@ class sd_resultat(sd_titre):
     ORDR = AsVI(SDNom(debut=19), )
     DESC = AsObject(SDNom(debut=19), genr='N', xous='S', type='K', ltyp=16, )
 
-    # la déclaration suivante simplifie la fonction check_resultat_i_char
+    # la dÃ©claration suivante simplifie la fonction check_resultat_i_char
     CHAR = Facultatif(AsVK24(SDNom(debut=19),))
 
     sd_l_table = Facultatif(sd_l_table(SDNom(nomj='')))
@@ -54,7 +54,7 @@ class sd_resultat(sd_titre):
                 nom=tach[nosym][kordr]
                 if not nom.strip(): continue
 
-                # on vérifie la règle de nommage des champs (numéro de rangement)
+                # on vÃ©rifie la rÃ¨gle de nommage des champs (numÃ©ro de rangement)
                 assert int(nom[13:19])==kordr , nom
 
                 sd2 = sd_champ(nom)
@@ -75,7 +75,7 @@ class sd_resultat(sd_titre):
                            ltyp=Parmi(4,8,16,24),) ; sd2.check(checker)
 
 
-    # indirection vers les sd_l_charges stockées comme paramètres sous le nom EXCIT :
+    # indirection vers les sd_l_charges stockÃ©es comme paramÃ¨tres sous le nom EXCIT :
     def check_resultat_i_EXCIT(self, checker):
         lnom = self.CHAR.get()
         if not lnom: return
@@ -87,7 +87,7 @@ class sd_resultat(sd_titre):
             sd2 = sd_l_charges(nomj=nom); sd2.check(checker)
 
 
-    # vérification de .ORDR :
+    # vÃ©rification de .ORDR :
     def check_ORDR(self, checker):
         V = self.ORDR
         nuti=V.lonuti
@@ -95,7 +95,7 @@ class sd_resultat(sd_titre):
         sdu_compare(V, checker, nuti, '> ', 0   , comment='nuti > 0')
         sdu_compare(V, checker, nuti, '<=', nmax, comment='nuti <= nmax')
 
-        # les numeros d'ordre doivent etre tous différents :
+        # les numeros d'ordre doivent etre tous diffÃ©rents :
         sdu_tous_differents(V,checker,V.get()[:nuti],'1:NUTI')
 
         # les numeros d'ordre doivent etre croissants (voir rsutrg.f)
@@ -103,7 +103,7 @@ class sd_resultat(sd_titre):
             assert sdu_monotone(V.get()[:nuti]) in (1,)
 
 
-    # vérification des longueurs des différents objets :
+    # vÃ©rification des longueurs des diffÃ©rents objets :
     def check_LONGUEURS(self, checker):
         ordr = self.ORDR.get()
         tach = self.TACH.get()
@@ -111,12 +111,12 @@ class sd_resultat(sd_titre):
         tava = self.TAVA.get()
         desc = self.DESC.get()
 
-        nbmax_ordr=len(ordr)   # la SD est concue pour stocker jusqu'à nbmax_ordr nume_ordre
-        nbmax_para=len(nova)   # la SD est concue pour stocker jusqu'à nbmax_para paramètres
-        nbmax_nosym=len(desc)  # la SD est concue pour stocker jusqu'à nbmax_nosym nom_cham
+        nbmax_ordr=len(ordr)   # la SD est concue pour stocker jusqu'Ã  nbmax_ordr nume_ordre
+        nbmax_para=len(nova)   # la SD est concue pour stocker jusqu'Ã  nbmax_para paramÃ¨tres
+        nbmax_nosym=len(desc)  # la SD est concue pour stocker jusqu'Ã  nbmax_nosym nom_cham
 
-        sdu_compare(self.TACH,checker,len(tach),'==',nbmax_nosym,'Incohérence TACH/DESC')
-        sdu_compare(self.TAVA,checker,len(tava),'==',nbmax_para, 'Incohérence TAVA/NOVA')
+        sdu_compare(self.TACH,checker,len(tach),'==',nbmax_nosym,'IncohÃ©rence TACH/DESC')
+        sdu_compare(self.TAVA,checker,len(tava),'==',nbmax_para, 'IncohÃ©rence TAVA/NOVA')
 
         # .TACH
         for ksym in tach.keys():
@@ -124,7 +124,7 @@ class sd_resultat(sd_titre):
             sdu_compare(self.TACH,checker,len(tach[ksym]),'==',nbmax_ordr,nosym+' LONMAX(.TACH) != LONMAX(.ORDR)')
 
 
-        # objets trouvés dans .TAVA
+        # objets trouvÃ©s dans .TAVA
         for knova in tava.keys():
             sdu_compare(tava,checker,len(tava[knova]),'==',4,'LONMAX(TAVA[ksym]==4')
             suffix=tava[knova][0][:5]
@@ -133,20 +133,20 @@ class sd_resultat(sd_titre):
             nom=self.nomj()[:19]+suffix
             sd2 = AsObject(SDNom(nomj=nom,debut=0), xous='S', genr='V', type=Parmi('I','R','C','K'),
                            ltyp=Parmi(4,8,16,24),)
-            sdu_compare(sd2,checker,len(sd2.get()),'==',npara*nbmax_ordr,'Incohérence LONMAX / LONMAX(.ORDR)')
+            sdu_compare(sd2,checker,len(sd2.get()),'==',npara*nbmax_ordr,'IncohÃ©rence LONMAX / LONMAX(.ORDR)')
 
 
-    # vérifications supplémentaires :
+    # vÃ©rifications supplÃ©mentaires :
     def check_veri1(self, checker):
         ordr = self.ORDR.get()
         nova = self.NOVA.get()
         tava = self.TAVA.get()
 
-        nbmax_ordr=len(ordr)        # la SD est concue pour stocker jusqu'à nbmax_ordr nume_ordre
-        nbuti_ordr=self.ORDR.lonuti # la SD contient réellement nbuti_ordr nume_ordre
+        nbmax_ordr=len(ordr)        # la SD est concue pour stocker jusqu'Ã  nbmax_ordr nume_ordre
+        nbuti_ordr=self.ORDR.lonuti # la SD contient rÃ©ellement nbuti_ordr nume_ordre
 
 
-        # objets trouvés dans .TAVA
+        # objets trouvÃ©s dans .TAVA
         for knova in tava.keys():
             nova1=nova[knova-1].strip()
             suffix=tava[knova][0][:5]
@@ -158,9 +158,9 @@ class sd_resultat(sd_titre):
             acces=tava[knova][3].strip()
             assert acces in ('PARA','ACCES') , acces
 
-            # on vérifie que les variables d'accès sont toutes différentes :
+            # on vÃ©rifie que les variables d'accÃ¨s sont toutes diffÃ©rentes :
             if acces == 'ACCES' :
-                # pour l'instant, on ne vérifie que 'INST' car 'FREQ', 'NUME_MODE', 'NOEUD_CMP' ne semblent pas tous différents ...
+                # pour l'instant, on ne vÃ©rifie que 'INST' car 'FREQ', 'NUME_MODE', 'NOEUD_CMP' ne semblent pas tous diffÃ©rents ...
                 if nova1 != 'INST' : continue
 
                 nom=self.nomj()[:19]+suffix
@@ -172,7 +172,7 @@ class sd_resultat(sd_titre):
 
                 sdu_tous_differents(sd2,checker,seq,nova1)
 
-            # on vérifie les éventuelles sd_l_charge (EXCIT) :
+            # on vÃ©rifie les Ã©ventuelles sd_l_charge (EXCIT) :
             if nova1=="EXCIT" :
                 nom=self.nomj()[:19]+suffix
                 sd2 = AsObject(SDNom(nomj=nom,debut=0),)

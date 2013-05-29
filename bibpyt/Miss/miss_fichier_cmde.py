@@ -1,4 +1,4 @@
-# -*- coding: iso-8859-1 -*-
+# coding=utf-8
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -48,7 +48,7 @@ class MissCmdeGenerator(object):
     def __init__(self, param, struct, filename_callback):
         """Initialisation
         `filename_callback` fournit un nom de fichier 'local' pour un
-        type donné"""
+        type donnÃ©"""
         self.param = param
         self.fname = filename_callback
         self.dinf =  {
@@ -105,14 +105,14 @@ class MissCmdeGenerator(object):
         return text
 
     def bloc_group(self):
-        """Déclaration des groupes"""
+        """DÃ©claration des groupes"""
         cmd = "    2 VOLUME\nFIN"
         if self.param['_hasPC']:
             cmd += "\n    3 VOLUME\nFIN"
         self.dinf['bloc_group'] = cmd
 
     def bloc_lfreq(self):
-        """Définition des fréquences de calcul"""
+        """DÃ©finition des frÃ©quences de calcul"""
         self.dinf.update({
             "freq_min" : self.param["FREQ_MIN"],
             "freq_max" : self.param["FREQ_MAX"],
@@ -121,7 +121,7 @@ class MissCmdeGenerator(object):
             "_nbfreq" : 0,  # == nbfreq + 1 ?
             "bloc_lfreq" : "",
         })
-        # formats possibles pour les fréquences
+        # formats possibles pour les frÃ©quences
         assert (self.param["FREQ_MIN"],
                 self.param["LIST_FREQ"]).count(None) == 1, \
                 'expect FREQ_MIN xor LIST_FREQ, not together'
@@ -138,7 +138,7 @@ class MissCmdeGenerator(object):
         self.param.set('_nbfreq', self.dinf['_nbfreq'])
 
     def bloc_sous_domaine(self):
-        """Définition des sous-domaines"""
+        """DÃ©finition des sous-domaines"""
         if self.param['_hasPC']:
             cmd = def_sous_domaine(1, (1, 3), "KCM")
             cmd += def_sous_domaine(2, (-1, 2), "STRAtifie")
@@ -180,12 +180,12 @@ class MissCmdeGenerator(object):
         self.dinf['bloc_post'] = cmd
 
     def bloc_fin(self):
-        """Fin exécution"""
+        """Fin exÃ©cution"""
         self.dinf['bloc_fin'] = def_fin()
 
-    # calculs ou post-traitements ajoutés selon les cas
+    # calculs ou post-traitements ajoutÃ©s selon les cas
     def cmd_calc(self):
-        """Calcul des impédances et/ou forces sismiques"""
+        """Calcul des impÃ©dances et/ou forces sismiques"""
         what = ""
         if self.param['_calc_impe'] or self.param['_hasPC']:
             what += " IMPEDANCE"
@@ -197,7 +197,7 @@ class MissCmdeGenerator(object):
         return def_exec(what)
 
     def cmd_post_impe(self, num=None):
-        """Post des impédances"""
+        """Post des impÃ©dances"""
         if not self.param['_calc_impe']:
             return ""
         cmd = init_post()
@@ -215,7 +215,7 @@ class MissCmdeGenerator(object):
         return cmd
 
     def cmd_post_pc(self):
-        """Post-traitement pour les points de contrôle"""
+        """Post-traitement pour les points de contrÃ´le"""
         if not self.param['_hasPC']:
             return ""
         cmd = ""
@@ -233,13 +233,13 @@ class MissCmdeGeneratorInci(MissCmdeGenerator):
     Calcul du champ incident pour la methode Laplace-temps"""
 
     def bloc_lfreq(self):
-        """Définition des fréquences de calcul"""
+        """DÃ©finition des frÃ©quences de calcul"""
         N = int(self.param['INST_FIN'] / self.param['PAS_INST'])
         Fs = 1. / self.param['PAS_INST']
         self.param['FREQ_MAX'] = Fs
         self.param['FREQ_MIN'] = Fs / N
         self.param['FREQ_PAS'] = Fs / N
-        # car FREQ_IMAG ne sert qu'à déclencher le traitement
+        # car FREQ_IMAG ne sert qu'Ã  dÃ©clencher le traitement
         self.param.set('FREQ_IMAG', None)
         MissCmdeGenerator.bloc_lfreq(self)
 
@@ -256,8 +256,8 @@ class MissCmdeGeneratorISSF(MissCmdeGenerator):
         self.dinf['bloc_group'] = ""
 
     def bloc_sous_domaine(self):
-        """Définition des sous-domaines"""
-        #XXX d'où sortent ces valeurs ?!
+        """DÃ©finition des sous-domaines"""
+        #XXX d'oÃ¹ sortent ces valeurs ?!
         prty = "DFLUI RO 1000 CELER 1500 SURF 0."
         cmd = def_sous_domaine(1, (-1, 3, 4), "STRAtifie")
         cmd += def_sous_domaine(2, (-2, -3), prty)
@@ -283,7 +283,7 @@ class MissCmdeGeneratorISSF(MissCmdeGenerator):
         self.dinf['bloc_calcul'] = cmd
 
 def MissCmdeGen(param, struct, filename_callback, lapl_temps=False):
-    """Return un objet générateur de fichier de commandes Miss"""
+    """Return un objet gÃ©nÃ©rateur de fichier de commandes Miss"""
     if lapl_temps:
         return MissCmdeGeneratorInci(param, struct, filename_callback)
     elif param['ISSF'] == 'OUI':
@@ -319,7 +319,7 @@ class TestMissCmde(unittest.TestCase):
         self.struct = Struct()
         self.par = Parameters()
         self.par.update({
-            # valeurs par défaut des mots-clés, cf. calc_miss.capy
+            # valeurs par dÃ©faut des mots-clÃ©s, cf. calc_miss.capy
             'PROJET' : "MODELE",
             'FREQ_MIN' : None,
             'FREQ_MAX' : None,

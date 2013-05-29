@@ -1,4 +1,4 @@
-# -*- coding: iso-8859-1 -*-
+# coding=utf-8
 # person_in_charge: mathieu.courtois at edf.fr
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -27,5 +27,5 @@ from Validation import V_A_CLASSER
 class A_CLASSER(V_A_CLASSER.A_CLASSER,N_REGLE.REGLE):
    """
        La classe utilise l'initialiseur  du module V_. 
-       Il faut absolument que V_A_CLASSER soit en premier dans l'héritage
+       Il faut absolument que V_A_CLASSER soit en premier dans l'hÃ©ritage
    """

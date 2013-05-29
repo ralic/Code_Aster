@@ -1,4 +1,4 @@
-# -*- coding: iso-8859-1 -*-
+# coding=utf-8
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -18,24 +18,24 @@
 # ======================================================================
 # person_in_charge: josselin.delmas at edf.fr
 
-# Attention a ne pas faire de retour ‡ la ligne !
+# Attention a ne pas faire de retour √† la ligne !
 
 cata_msg = {
 
 1 : _(u"""
- Vous risquez d'Ècraser des donnÈes dÈj‡ stockÈes dans la structure de donnÈes rÈsultat.
- Dernier instant stockÈ dans la structure de donnÈes rÈsultat: %(r1)19.12e
+ Vous risquez d'√©craser des donn√©es d√©j√† stock√©es dans la structure de donn√©es r√©sultat.
+ Dernier instant stock√© dans la structure de donn√©es r√©sultat: %(r1)19.12e
  Premier instant du calcul: %(r2)19.12e
 """),
 
 4 : _(u"""
- Archivage de l'Ètat initial"""),
+ Archivage de l'√©tat initial"""),
 
 5 : _(u"""
   Archivage des champs
 """),
 
-6 : _(u"""    Champ stockÈ <%(k1)s> ‡ l'instant %(r1)19.12e pour le numÈro d'ordre %(i1)d"""),
+6 : _(u"""    Champ stock√© <%(k1)s> √† l'instant %(r1)19.12e pour le num√©ro d'ordre %(i1)d"""),
 
 
 }

@@ -1,4 +1,4 @@
-# -*- coding: iso-8859-1 -*-
+# coding=utf-8
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -22,13 +22,13 @@ from cata_comportement import LoiComportement
 
 loi = LoiComportement(
    nom            = 'BETON_REGLE_PR',
-   doc = """Relation de comportement de béton (développée par la société NECS) dite 'parabole rectangle' [R7.01.22].
-   La loi BETON_REGLE_PR est une loi de béton se rapprochant des lois réglementaires de béton (d'où son nom) 
-   qui a les caractéristiques sommaires suivantes :
--c'est une loi 2D et plus exactement 2 fois 1D : dans le repère propre de déformation, on écrit une loi 1D contrainte-déformation ;
--la loi 1D sur chaque direction de déformation propre est la suivante :
-* en traction, linéaire jusqu'à un pic, adoucissement linéaire jusqu'à 0 ;
-* en compression, une loi puissance jusqu'à un plateau (d'ou PR : parabole-rectangle).""",
+   doc = """Relation de comportement de bÃ©ton (dÃ©veloppÃ©e par la sociÃ©tÃ© NECS) dite 'parabole rectangle' [R7.01.22].
+   La loi BETON_REGLE_PR est une loi de bÃ©ton se rapprochant des lois rÃ©glementaires de bÃ©ton (d'oÃ¹ son nom) 
+   qui a les caractÃ©ristiques sommaires suivantes :
+-c'est une loi 2D et plus exactement 2 fois 1D : dans le repÃ¨re propre de dÃ©formation, on Ã©crit une loi 1D contrainte-dÃ©formation ;
+-la loi 1D sur chaque direction de dÃ©formation propre est la suivante :
+* en traction, linÃ©aire jusqu'Ã  un pic, adoucissement linÃ©aire jusqu'Ã  0 ;
+* en compression, une loi puissance jusqu'Ã  un plateau (d'ou PR : parabole-rectangle).""",
    num_lc         = 9,
    nb_vari        = 1,
    nom_vari       = ('EPSPEQ'),

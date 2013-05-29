@@ -1,4 +1,4 @@
-# -*- coding: iso-8859-1 -*-
+# coding=utf-8
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -21,22 +21,22 @@
 cata_msg = {
 
 1 : _(u"""
- Le champ %(k1)s est dÈj‡ prÈsent dans la structure de donnÈes
- ‡ tous les instants demandÈs.
- Aucun calcul ne sera donc rÈalisÈ pour cette option.
+ Le champ %(k1)s est d√©j√† pr√©sent dans la structure de donn√©es
+ √† tous les instants demand√©s.
+ Aucun calcul ne sera donc r√©alis√© pour cette option.
 
 Conseil :
- Si vous souhaitez rÈellement calculer ‡ nouveau cette option,
- crÈez une nouvelle structure de donnÈes.
+ Si vous souhaitez r√©ellement calculer √† nouveau cette option,
+ cr√©ez une nouvelle structure de donn√©es.
 """),
 
 2 : _(u"""
- L'option %(k1)s nÈcessaire au calcul de l'option %(k2)s est
- manquante dans les structures de donnÈes rÈsultat %(k3)s et
- %(k4)s pour le numÈro d'ordre %(i1)d.
+ L'option %(k1)s n√©cessaire au calcul de l'option %(k2)s est
+ manquante dans les structures de donn√©es r√©sultat %(k3)s et
+ %(k4)s pour le num√©ro d'ordre %(i1)d.
  
  Le calcul de cette option n'est donc pas possible.
- L'option demandÈe n'est calculable sur les ÈlÈments du modËle.
+ L'option demand√©e n'est calculable sur les √©l√©ments du mod√®le.
 """),
 
 }

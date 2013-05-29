@@ -2,7 +2,7 @@ opti sauver format 'ssnl107d.mgib' ;
 *
 OPTI DIME 3 ELEM QUA4;
 *
-* création de la plaque
+* crÃ©ation de la plaque
 *
 P1 = 0. 0. 0.;
 P2 = 0. 1. 0.;
@@ -19,7 +19,7 @@ C1C2 = COQU1 et COQU2;
 *
 OPTI DIME 3 ELEM SEG2;
 *
-* création des 2 poutres
+* crÃ©ation des 2 poutres
 *
 P5 = 10. 0. 1.;
 P6 = 10. 1. 1.2 ;

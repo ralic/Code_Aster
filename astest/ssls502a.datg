@@ -1,5 +1,5 @@
-*maillage paramétré d'un cylindre
-*orthotrope court soumis à une ligne de charge
+*maillage paramÃ©trÃ© d'un cylindre
+*orthotrope court soumis Ã  une ligne de charge
 *----------------------------------------------
 opti dime 3 elem seg2 ;
 opti niveau 8 ;

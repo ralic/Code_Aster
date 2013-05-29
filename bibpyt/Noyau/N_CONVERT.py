@@ -1,4 +1,4 @@
-# -*- coding: iso-8859-1 -*-
+# coding=utf-8
 # person_in_charge: mathieu.courtois at edf.fr
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -19,14 +19,14 @@
 # ======================================================================
 
 """
-   Module de conversion des valeurs saisies par l'utilisateur après vérification.
+   Module de conversion des valeurs saisies par l'utilisateur aprÃ¨s vÃ©rification.
 """
 
 from N_types import is_int, is_float, is_sequence
 
 
 def has_int_value(real):
-   """Est-ce que 'real' a une valeur entière ?
+   """Est-ce que 'real' a une valeur entiÃ¨re ?
    """
    return abs(int(real) - real) < 1.e-12
 
@@ -56,7 +56,7 @@ class Conversion:
          return tuple(result)
 
    def function(self, o):
-      raise NotImplementedError, 'cette classe doit être dérivée'
+      raise NotImplementedError, 'cette classe doit Ãªtre dÃ©rivÃ©e'
 
 
 class TypeConversion(Conversion):

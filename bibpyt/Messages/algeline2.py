@@ -1,4 +1,4 @@
-# -*- coding: iso-8859-1 -*-
+# coding=utf-8
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -21,13 +21,13 @@
 cata_msg = {
 
 1 : _(u"""
- L'argument de "BLOC_DEBUT" doit être strictement positif,
- il est pris à 1
+ L'argument de "BLOC_DEBUT" doit Ãªtre strictement positif,
+ il est pris Ã  1
 """),
 
 2 : _(u"""
  Calcul des modes en eau au repos :
- une des valeurs propres de la matrice n'est pas réelle
+ une des valeurs propres de la matrice n'est pas rÃ©elle
 """),
 
 3 : _(u"""
@@ -40,7 +40,7 @@ cata_msg = {
 """),
 
 5 : _(u"""
- mot-clé facteur incorrect
+ mot-clÃ© facteur incorrect
 """),
 
 6 : _(u"""
@@ -53,64 +53,64 @@ cata_msg = {
 
 8 : _(u"""
  L'argument de "BLOC_FIN" est plus grand que le nombre de blocs de la matrice,
- il est ramené à cette valeur
+ il est ramenÃ© Ã  cette valeur
 """),
 
 9 : _(u"""
- Les matrices à combiner ne sont pas construites sur le même maillage.
+ Les matrices Ã  combiner ne sont pas construites sur le mÃªme maillage.
 """),
 
 10 : _(u"""
  Erreur de programmation :
- On cherche à combiner 2 matrices qui n'ont pas les mêmes charges cinématiques.
+ On cherche Ã  combiner 2 matrices qui n'ont pas les mÃªmes charges cinÃ©matiques.
  Noms des 2 matrices :
     %(k1)s
     %(k2)s
 
  Solution :
-    1) émettre une fiche d'anomalie / évolution
-    2) En attendant : ne pas utiliser de charges cinématiques :
+    1) Ã©mettre une fiche d'anomalie / Ã©volution
+    2) En attendant : ne pas utiliser de charges cinÃ©matiques :
        remplacer AFFE_CHAR_CINE par AFFE_CHAR_MECA
 """),
 
 11 : _(u"""
- Les matrices "%(k1)s"  et  "%(k2)s"  n'ont pas la même structure.
+ Les matrices "%(k1)s"  et  "%(k2)s"  n'ont pas la mÃªme structure.
 """),
 
 12 : _(u"""
- Résolution système linéaire méthode de Crout.
+ RÃ©solution systÃ¨me linÃ©aire mÃ©thode de Crout.
  Attention: une dimension nulle ou nmax.lt.dmax(1,n)
 """),
 
 13 : _(u"""
- Résolution système linéaire méthode de Crout.
- Attention: une dimension négative ou nulle
+ RÃ©solution systÃ¨me linÃ©aire mÃ©thode de Crout.
+ Attention: une dimension nÃ©gative ou nulle
 """),
 
 14 : _(u"""
- Résolution système linéaire méthode de Crout.
+ RÃ©solution systÃ¨me linÃ©aire mÃ©thode de Crout.
  Attention: les dimensions des tableaux ne sont pas correctes
 """),
 
 15 : _(u"""
- Pas de charge critique  dans l'intervalle demandé
+ Pas de charge critique  dans l'intervalle demandÃ©
 """),
 
 16 : _(u"""
-  %(k1)s charges critiques  dans l'intervalle demandé
+  %(k1)s charges critiques  dans l'intervalle demandÃ©
 """),
 
 17 : _(u"""
- Au moins une valeur propre calculée est en dehors de la bande demandée.
- Ces valeurs propres extérieures n'apparaîtront pas dans le résultat de l'opérateur.
+ Au moins une valeur propre calculÃ©e est en dehors de la bande demandÃ©e.
+ Ces valeurs propres extÃ©rieures n'apparaÃ®tront pas dans le rÃ©sultat de l'opÃ©rateur.
 """),
 
 18 : _(u"""
- Les matrices " %(k1)s " et " %(k2)s " n'ont pas le même domaine de définition
+ Les matrices " %(k1)s " et " %(k2)s " n'ont pas le mÃªme domaine de dÃ©finition
 """),
 
 19 : _(u"""
- Problèmes a l'allocation des descripteurs de la matrice " %(k1)s "
+ ProblÃ¨mes a l'allocation des descripteurs de la matrice " %(k1)s "
 """),
 
 20 : _(u"""
@@ -118,62 +118,62 @@ cata_msg = {
 """),
 
 21 : _(u"""
- L'argument de "BLOC_FIN" doit être strictement positif
+ L'argument de "BLOC_FIN" doit Ãªtre strictement positif
 """),
 
 
 
 23 : _(u"""
- On a rencontré un problème à la lecture de la table %(k1)s.
+ On a rencontrÃ© un problÃ¨me Ã  la lecture de la table %(k1)s.
  
  --> Conseil:
- Vérifiez que cette carte a bien été générée précédemment par un appel à INFO_MODE.
+ VÃ©rifiez que cette carte a bien Ã©tÃ© gÃ©nÃ©rÃ©e prÃ©cÃ©demment par un appel Ã  INFO_MODE.
 """),
 
 24 : _(u"""
- On a rencontré un problème à la lecture de la table %(k1)s. Elle ne comporte aucune ligne
+ On a rencontrÃ© un problÃ¨me Ã  la lecture de la table %(k1)s. Elle ne comporte aucune ligne
  dont les bornes sont strictement comprises entre les valeurs de la bande de test:
                                     [ %(r1)f , %(r2)f ]
  
  --> Conseil:
- Vérifiez le contenu de la table via un IMPR_TABLE et modifiez les bornes de l'option BANDE
- en conséquence.
+ VÃ©rifiez le contenu de la table via un IMPR_TABLE et modifiez les bornes de l'option BANDE
+ en consÃ©quence.
   
- Au pire, relancez votre calcul sans spécifier de nom de table. L'opérateur effectuera alors
- l'étape complète de prétraitement de manière transparente.
- Mais le calcul sera un peu plus coûteux puisqu'il ne mutualisera pas cette étape commune avec
+ Au pire, relancez votre calcul sans spÃ©cifier de nom de table. L'opÃ©rateur effectuera alors
+ l'Ã©tape complÃ¨te de prÃ©traitement de maniÃ¨re transparente.
+ Mais le calcul sera un peu plus coÃ»teux puisqu'il ne mutualisera pas cette Ã©tape commune avec
  INFO_MODE.
 """),
 
 25 : _(u"""
- On a rencontré un problème à la lecture de la table %(k1)s. Elle comporte des trous ou des
+ On a rencontrÃ© un problÃ¨me Ã  la lecture de la table %(k1)s. Elle comporte des trous ou des
  recouvrements par  rapport aux bornes choisies. Le solveur modal risque donc de pas calculer
  strictement tous les modes requis.
  
  --> Conseil:
- Vérifiez le contenu de la table via un IMPR_TABLE.
+ VÃ©rifiez le contenu de la table via un IMPR_TABLE.
 
- Modifiez éventuellement la valeur par défaut du paramètre VERI_MODE/PREC_SHIFT. Elle détermine
- l'écartement entre les bornes de la bande de test et celles de la bande recherchée.
+ Modifiez Ã©ventuellement la valeur par dÃ©faut du paramÃ¨tre VERI_MODE/PREC_SHIFT. Elle dÃ©termine
+ l'Ã©cartement entre les bornes de la bande de test et celles de la bande recherchÃ©e.
 
 
- Au pire, relancez votre calcul sans spécifier de nom de table. L'opérateur effectuera alors
- l'étape complète de prétraitement de manière transparente.
- Mais le calcul sera un plus coûteux puisqu'il ne mutualisera pas cette étape commune avec
+ Au pire, relancez votre calcul sans spÃ©cifier de nom de table. L'opÃ©rateur effectuera alors
+ l'Ã©tape complÃ¨te de prÃ©traitement de maniÃ¨re transparente.
+ Mais le calcul sera un plus coÃ»teux puisqu'il ne mutualisera pas cette Ã©tape commune avec
  INFO_MODE.
 """),
 
 26 : _(u"""
- Attention, la bande sélectionnée dans la table %(k1)s comporte au moins une de ses bornes légèrement
- décalée. Ce décalage a été opéré afin de ne pas perturber la méthode de comptage (méthode de
- Sturm). Il a été effectué en se basant sur la paramétrage (NMAX_ITER_SHIFT/PREC_SHIFT/SEUIL_**)
- de l'opérateur INFO_MODE qui a générer la TABLE.
+ Attention, la bande sÃ©lectionnÃ©e dans la table %(k1)s comporte au moins une de ses bornes lÃ©gÃ¨rement
+ dÃ©calÃ©e. Ce dÃ©calage a Ã©tÃ© opÃ©rÃ© afin de ne pas perturber la mÃ©thode de comptage (mÃ©thode de
+ Sturm). Il a Ã©tÃ© effectuÃ© en se basant sur la paramÃ©trage (NMAX_ITER_SHIFT/PREC_SHIFT/SEUIL_**)
+ de l'opÃ©rateur INFO_MODE qui a gÃ©nÃ©rer la TABLE.
 """),
 
 27 : _(u"""
- Opérateur INFO_MODE + COMPTAGE/METHODE='AUTO'.
- Compte-tenu des propriétés des matrices fournies (nombre, type, symétrie), on a choisi pour vous la
- méthode de comptage: %(k1)s.
+ OpÃ©rateur INFO_MODE + COMPTAGE/METHODE='AUTO'.
+ Compte-tenu des propriÃ©tÃ©s des matrices fournies (nombre, type, symÃ©trie), on a choisi pour vous la
+ mÃ©thode de comptage: %(k1)s.
 """),
 
 28 : _(u"""
@@ -185,61 +185,61 @@ cata_msg = {
 
 31 : _(u"""
  Cas TYPE_MODE='GENERAL'.
- Compte-tenu des propriétés des matrices fournies (type, symétrie), on bascule automatiquement
+ Compte-tenu des propriÃ©tÃ©s des matrices fournies (type, symÃ©trie), on bascule automatiquement
  en mode de fonctionnement : %(k1)s.
 """),
 
 33 : _(u"""
  Type de mode inconnu :  %(k1)s.
- Les modes donnés en entrée doivent être de type MODE_MECA, MODE_MECA_C OU MODE_FLAMB.
+ Les modes donnÃ©s en entrÃ©e doivent Ãªtre de type MODE_MECA, MODE_MECA_C OU MODE_FLAMB.
 """),
 
 34 : _(u"""
- Il n'est pas permis de modifier un objet père
+ Il n'est pas permis de modifier un objet pÃ¨re
 """),
 
 35 : _(u"""
- Mode non calculé à partir de matrices assemblées
+ Mode non calculÃ© Ã  partir de matrices assemblÃ©es
 """),
 
 36 : _(u"""
- Normalisation impossible, le noeud n'est pas présent dans le modèle.
+ Normalisation impossible, le noeud n'est pas prÃ©sent dans le modÃ¨le.
 """),
 
 37 : _(u"""
- Normalisation impossible, la composante n'est pas présente dans le modèle.
+ Normalisation impossible, la composante n'est pas prÃ©sente dans le modÃ¨le.
 """),
 
 38 : _(u"""
- Il manque des paramètres de type entier.
+ Il manque des paramÃ¨tres de type entier.
 """),
 
 39 : _(u"""
- Il manque des paramètres de type réel.
+ Il manque des paramÃ¨tres de type rÃ©el.
 """),
 
 40 : _(u"""
- IL manque des paramètres de type caractère.
+ IL manque des paramÃ¨tres de type caractÃ¨re.
 """),
 
 41 : _(u"""
- Normalisation impossible : aucune composante n'est présente dans le modèle.
+ Normalisation impossible : aucune composante n'est prÃ©sente dans le modÃ¨le.
 """),
 
 
 
 43 : _(u"""
- on ne tient pas compte du mot-clé facteur MODE_SIGNE pour une base modale de type MODE_MECA_C.
+ on ne tient pas compte du mot-clÃ© facteur MODE_SIGNE pour une base modale de type MODE_MECA_C.
 """),
 
 44 : _(u"""
- " %(k1)s "  type de mode non traité
+ " %(k1)s "  type de mode non traitÃ©
 """),
 
 
 
 46 : _(u"""
- Le calcul de flambement ne peut pas être mené pour un problème avec une matrice %(k1)s complexe.
+ Le calcul de flambement ne peut pas Ãªtre menÃ© pour un problÃ¨me avec une matrice %(k1)s complexe.
 """),
 
 
@@ -248,7 +248,7 @@ cata_msg = {
 
 
 52 : _(u"""
- Avec l'option %(k1)s, il faut au moins deux valeurs sous le mot-clé %(k2)s.
+ Avec l'option %(k1)s, il faut au moins deux valeurs sous le mot-clÃ© %(k2)s.
 """),
 
 
@@ -256,113 +256,113 @@ cata_msg = {
 
 
 55 : _(u"""
- Pour un problème généralisé, le mot-clé AMOR_REDUIT ne peut pas être utilisé.
+ Pour un problÃ¨me gÃ©nÃ©ralisÃ©, le mot-clÃ© AMOR_REDUIT ne peut pas Ãªtre utilisÃ©.
 """),
 
 56 : _(u"""
- Pour un problème quadratique, si le mot-clé AMOR_REDUIT est présent,
+ Pour un problÃ¨me quadratique, si le mot-clÃ© AMOR_REDUIT est prÃ©sent,
  seule l'option 'PROCHE' est utilisable.
 """),
 
 57 : _(u"""
- Le mot-clé AMOR_REDUIT étant présent, le nombre de valeurs renseignées sous ce mot-clé
- doit être le même que celui sous le mot-clé FREQ.
+ Le mot-clÃ© AMOR_REDUIT Ã©tant prÃ©sent, le nombre de valeurs renseignÃ©es sous ce mot-clÃ©
+ doit Ãªtre le mÃªme que celui sous le mot-clÃ© FREQ.
 """),
 
 58 : _(u"""
  Les matrices "%(k1)s" et "%(k2)s" ne sont pas compatibles entre elles.
  
- --> Conseil : vérifier la manière dont elles sont construites
- (elles doivent notamment reposer sur le même maillage, être calculées avec les mêmes conditions aux limites,
- avoir la même numérotation de DDL, avoir les mêmes propriétés de (non) symétrie, ...).
+ --> Conseil : vÃ©rifier la maniÃ¨re dont elles sont construites
+ (elles doivent notamment reposer sur le mÃªme maillage, Ãªtre calculÃ©es avec les mÃªmes conditions aux limites,
+ avoir la mÃªme numÃ©rotation de DDL, avoir les mÃªmes propriÃ©tÃ©s de (non) symÃ©trie, ...).
 """),
 
 59 : _(u"""
- présence de fréquences négatives dans les données.
+ prÃ©sence de frÃ©quences nÃ©gatives dans les donnÃ©es.
 """),
 
 62 : _(u"""
- pas de valeurs propres dans la bande de calcul, le concept ne peut donc pas être créé.
+ pas de valeurs propres dans la bande de calcul, le concept ne peut donc pas Ãªtre crÃ©Ã©.
 """),
 
 
 
 64 : _(u"""
  La valeur de PARAM_ORTHO_SOREN n'est pas valide.
- Elle doit être dans l'intervalle [1,2*epsilon ; 0,83-epsilon]
- où epsilon est la précision machine.
+ Elle doit Ãªtre dans l'intervalle [1,2*epsilon ; 0,83-epsilon]
+ oÃ¹ epsilon est la prÃ©cision machine.
 """),
 
 65 : _(u"""
- La détection des modes de corps rigide (demandée avec OPTION='MODE_RIGIDE')
- est utilisable uniquement avec la méthode 'TRI_DIAG'.
+ La dÃ©tection des modes de corps rigide (demandÃ©e avec OPTION='MODE_RIGIDE')
+ est utilisable uniquement avec la mÃ©thode 'TRI_DIAG'.
 """),
 
 66 : _(u"""
- L'option 'BANDE' n'est pas autorisée pour un problème avec amortissement
- (%(k1)s complexe et/ou présence du mot-clé %(k2)s).
+ L'option 'BANDE' n'est pas autorisÃ©e pour un problÃ¨me avec amortissement
+ (%(k1)s complexe et/ou prÃ©sence du mot-clÃ© %(k2)s).
  
  -> Conseil :
  utiliser l'option 'CENTRE'.
 """),
 
 67 : _(u"""
- L'approche imaginaire ou complexe n'est pas compatible avec une borne inférieure nulle de l'intervalle de recherche
- (par exemple, si l'option 'PLUS_PETITE' est utilisée, c'est le cas).
+ L'approche imaginaire ou complexe n'est pas compatible avec une borne infÃ©rieure nulle de l'intervalle de recherche
+ (par exemple, si l'option 'PLUS_PETITE' est utilisÃ©e, c'est le cas).
 """),
 
 68 : _(u"""
- La détection des modes de corps rigide (OPTION='MODE_RIGIDE') n'est pas utilisable pour un problème avec amortissement
- (%(k1)s complexe, et/ou présence du mot-clé %(k2)s).
+ La dÃ©tection des modes de corps rigide (OPTION='MODE_RIGIDE') n'est pas utilisable pour un problÃ¨me avec amortissement
+ (%(k1)s complexe, et/ou prÃ©sence du mot-clÃ© %(k2)s).
 """),
 
 69 : _(u"""
- Pour un problème avec matrice complexe,
- seules les méthodes 'SORENSEN' et 'QZ' sont utilisables.
+ Pour un problÃ¨me avec matrice complexe,
+ seules les mÃ©thodes 'SORENSEN' et 'QZ' sont utilisables.
 """),
 
 70 : _(u"""
- Pour un problème avec matrice complexe, le calcul ne peut pas être fait si la borne inférieure de l'intervalle de recherche est nulle
- (par exemple, si l'option 'PLUS_PETITE' est utilisée, c'est le cas ; conseil : utiliser l'option 'CENTRE').
+ Pour un problÃ¨me avec matrice complexe, le calcul ne peut pas Ãªtre fait si la borne infÃ©rieure de l'intervalle de recherche est nulle
+ (par exemple, si l'option 'PLUS_PETITE' est utilisÃ©e, c'est le cas ; conseil : utiliser l'option 'CENTRE').
 """),
 
 71 : _(u"""
- Pour un problème quadratique, la méthode de 'SORENSEN' n'est pas utilisable si la borne inférieure de l'intervalle de recherche est nulle
- (par exemple, si l'option 'PLUS_PETITE' est utilisée, c'est le cas ; conseil : utiliser l'option 'CENTRE').
+ Pour un problÃ¨me quadratique, la mÃ©thode de 'SORENSEN' n'est pas utilisable si la borne infÃ©rieure de l'intervalle de recherche est nulle
+ (par exemple, si l'option 'PLUS_PETITE' est utilisÃ©e, c'est le cas ; conseil : utiliser l'option 'CENTRE').
 """),
 
 72 : _(u"""
- La dimension du sous-espace de travail (mot-clé DIM_SOUS_ESPACE)
- est inférieure au nombre de modes de corps rigide.
+ La dimension du sous-espace de travail (mot-clÃ© DIM_SOUS_ESPACE)
+ est infÃ©rieure au nombre de modes de corps rigide.
 """),
 
 73 : _(u"""
- Attention : pour l'instant, il n'y a pas de vérification de type STURM (comptage du bon nombre des valeurs propres calculées)
+ Attention : pour l'instant, il n'y a pas de vÃ©rification de type STURM (comptage du bon nombre des valeurs propres calculÃ©es)
  lorsqu'on est dans le plan complexe :
-       problème modal généralisé avec %(k1)s complexe,
-    ou problème modal généralisé avec matrice(s) non symétrique(s),
-    ou problème modal quadratique (présence du mot-clé %(k2)s).
+       problÃ¨me modal gÃ©nÃ©ralisÃ© avec %(k1)s complexe,
+    ou problÃ¨me modal gÃ©nÃ©ralisÃ© avec matrice(s) non symÃ©trique(s),
+    ou problÃ¨me modal quadratique (prÃ©sence du mot-clÃ© %(k2)s).
    """),
 
 74 : _(u"""
- Erreur de vérification des modes calculés : au moins un des critères de validation renseignés sous le mot-clé facteur VERI_MODE n'est pas respecté.
+ Erreur de vÃ©rification des modes calculÃ©s : au moins un des critÃ¨res de validation renseignÃ©s sous le mot-clÃ© facteur VERI_MODE n'est pas respectÃ©.
  
  Conseils :
- Si vous voulez tout de même utiliser les modes calculés (à vos risques et périls !), relancez le calcul en modifiant les mots-clés situés sous le mot-clé facteur VERI_MODE,
-   - soit en utilisant des valeurs moins contraignantes sur les critères de qualité,
+ Si vous voulez tout de mÃªme utiliser les modes calculÃ©s (Ã  vos risques et pÃ©rils !), relancez le calcul en modifiant les mots-clÃ©s situÃ©s sous le mot-clÃ© facteur VERI_MODE,
+   - soit en utilisant des valeurs moins contraignantes sur les critÃ¨res de qualitÃ©,
    - soit en utilisant l'option STOP_ERREUR='NON'.
 """),
 
 75 : _(u"""
-  le problème traité étant quadratique, on double l'espace de recherche
+  le problÃ¨me traitÃ© Ã©tant quadratique, on double l'espace de recherche
 """),
 
 76 : _(u"""
- 3 ou 6 valeurs pour le mot-clé "DIRECTION"
+ 3 ou 6 valeurs pour le mot-clÃ© "DIRECTION"
 """),
 
 77 : _(u"""
- pour le mot-clé facteur  "PSEUDO_MODE", il faut donner la matrice de masse.
+ pour le mot-clÃ© facteur  "PSEUDO_MODE", il faut donner la matrice de masse.
 """),
 
 78 : _(u"""
@@ -370,23 +370,23 @@ cata_msg = {
 """),
 
 79 : _(u"""
- Les NUME_DDL associés aux matrices MATR_RIGI et MATR_MASS sont différents.
+ Les NUME_DDL associÃ©s aux matrices MATR_RIGI et MATR_MASS sont diffÃ©rents.
 """),
 
 80 : _(u"""
- bases modales BASE_1 et BASE_2 avec numérotations incompatibles
+ bases modales BASE_1 et BASE_2 avec numÃ©rotations incompatibles
 """),
 
 81 : _(u"""
- bases modales et matrice MATR_ASSE avec numérotations incompatibles
+ bases modales et matrice MATR_ASSE avec numÃ©rotations incompatibles
 """),
 
 82 : _(u"""
- nombre de modes et d amortissements différents
+ nombre de modes et d amortissements diffÃ©rents
 """),
 
 83 : _(u"""
- nombre de modes et d amortissements de CONNORS différents
+ nombre de modes et d amortissements de CONNORS diffÃ©rents
 """),
 
 85 : _(u"""
@@ -398,29 +398,29 @@ cata_msg = {
 """),
 
 87 : _(u"""
-  pas de produit car le champ aux noeuds  %(k1)s  existe déjà.
+  pas de produit car le champ aux noeuds  %(k1)s  existe dÃ©jÃ .
 """),
 
 88 : _(u"""
-  Problème de programmation :
+  ProblÃ¨me de programmation :
     La matrice globale %(k1)s n'existe pas.
-    Elle est nécessaire pour déterminer les degrés de liberté bloqués par AFFE_CHAR_CINE.
+    Elle est nÃ©cessaire pour dÃ©terminer les degrÃ©s de libertÃ© bloquÃ©s par AFFE_CHAR_CINE.
 
   Solution (pour l'utilisateur) :
-    1) Ne pas utiliser de charges cinématiques (AFFE_CHAR_CINE)
-    2) Émettre une fiche d'anomalie.
+    1) Ne pas utiliser de charges cinÃ©matiques (AFFE_CHAR_CINE)
+    2) Ã‰mettre une fiche d'anomalie.
 
   Solution (pour le programmeur) :
-    La matrice globale a été détruite abusivement.
-    Instrumenter la routine de destruction pour déterminer la routine coupable.
+    La matrice globale a Ã©tÃ© dÃ©truite abusivement.
+    Instrumenter la routine de destruction pour dÃ©terminer la routine coupable.
 """),
 
 89 : _(u"""
- le mot-clé MAILLAGE est obligatoire avec le mot-clé CREA_FISS.
+ le mot-clÃ© MAILLAGE est obligatoire avec le mot-clÃ© CREA_FISS.
 """),
 
 90 : _(u"""
- le mot-clé MAILLAGE est obligatoire avec le mot-clé LINE_QUAD.
+ le mot-clÃ© MAILLAGE est obligatoire avec le mot-clÃ© LINE_QUAD.
 """),
 
 91 : _(u"""
@@ -432,7 +432,7 @@ cata_msg = {
 """),
 
 93 : _(u"""
- le mot-clé MAILLAGE est obligatoire avec le mot-clé QUAD_LINE.
+ le mot-clÃ© MAILLAGE est obligatoire avec le mot-clÃ© QUAD_LINE.
 """),
 
 94 : _(u"""
@@ -444,7 +444,7 @@ cata_msg = {
 """),
 
 96 : _(u"""
- le mot-clé MAILLAGE est obligatoire avec le mot-clé MODI_MAILLE.
+ le mot-clÃ© MAILLAGE est obligatoire avec le mot-clÃ© MODI_MAILLE.
 """),
 
 97 : _(u"""
@@ -452,7 +452,7 @@ cata_msg = {
 """),
 
 98 : _(u"""
- le mot-clé MAILLAGE est obligatoire avec le mot-clé COQU_VOLU.
+ le mot-clÃ© MAILLAGE est obligatoire avec le mot-clÃ© COQU_VOLU.
 """),
 
 99 : _(u"""

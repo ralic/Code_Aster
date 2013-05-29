@@ -1,4 +1,4 @@
-# -*- coding: iso-8859-1 -*-
+# coding=utf-8
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -21,35 +21,35 @@
 cata_msg = {
 
 4 : _(u"""
- Il y a un problème pour récupérer les variables d'accès.
+ Il y a un problÃ¨me pour rÃ©cupÃ©rer les variables d'accÃ¨s.
 """),
 
 5 : _(u"""
- Seules les variables d'accès réelles sont traitées.
+ Seules les variables d'accÃ¨s rÃ©elles sont traitÃ©es.
 """),
 
 6 : _(u"""
- Seuls les paramètres réels sont traités.
+ Seuls les paramÃ¨tres rÃ©els sont traitÃ©s.
 """),
 
 7 : _(u"""
- L'unité logique est inexistante.
+ L'unitÃ© logique est inexistante.
 """),
 
 8 : _(u"""
-  Les fonctions à une seule variable sont admises.
+  Les fonctions Ã  une seule variable sont admises.
 """),
 
 10 : _(u"""
-  Les fonctions de type " %(k1)s " ne sont pas encore imprimées.
+  Les fonctions de type " %(k1)s " ne sont pas encore imprimÃ©es.
 """),
 
 11 : _(u"""
-  Les fonctions de type " %(k1)s " ne sont pas imprimées.
+  Les fonctions de type " %(k1)s " ne sont pas imprimÃ©es.
 """),
 
 12 : _(u"""
- interpolation sur paramètres non permise
+ interpolation sur paramÃ¨tres non permise
 """),
 
 13 : _(u"""
@@ -65,11 +65,11 @@ cata_msg = {
 """),
 
 17 : _(u"""
- on ne connaît pas ce type d'interpolation:  %(k1)s
+ on ne connaÃ®t pas ce type d'interpolation:  %(k1)s
 """),
 
 31 : _(u"""
- on ne trouve pas l'équation  %(k1)s  dans le "prof_chno"
+ on ne trouve pas l'Ã©quation  %(k1)s  dans le "prof_chno"
 """),
 
 
@@ -77,19 +77,19 @@ cata_msg = {
 
 
 36 : _(u"""
- GROUP_MA_INTERF: un élément n'est ni tria3 ni tria6 ni QUAD4 ni QUAD8
+ GROUP_MA_INTERF: un Ã©lÃ©ment n'est ni tria3 ni tria6 ni QUAD4 ni QUAD8
 """),
 
 37 : _(u"""
- GROUP_MA_FLU_STR: un élément n'est ni tria3 ni tria6 ni QUAD4 ni QUAD8
+ GROUP_MA_FLU_STR: un Ã©lÃ©ment n'est ni tria3 ni tria6 ni QUAD4 ni QUAD8
 """),
 
 38 : _(u"""
- GROUP_MA_FLU_SOL: un élément n'est ni tria3 ni tria6 ni QUAD4 ni QUAD8
+ GROUP_MA_FLU_SOL: un Ã©lÃ©ment n'est ni tria3 ni tria6 ni QUAD4 ni QUAD8
 """),
 
 39 : _(u"""
- GROUP_MA_SOL_SOL: un élément n'est ni tria3 ni tria6 ni QUAD4 ni QUAD8
+ GROUP_MA_SOL_SOL: un Ã©lÃ©ment n'est ni tria3 ni tria6 ni QUAD4 ni QUAD8
 """),
 
 
@@ -97,7 +97,7 @@ cata_msg = {
 
 
 47 : _(u"""
-  Le fichier " %(k1)s " n'est relié a aucune unité logique.
+  Le fichier " %(k1)s " n'est reliÃ© a aucune unitÃ© logique.
 """),
 
 
@@ -108,35 +108,35 @@ cata_msg = {
 """),
 
 53 : _(u"""
- Le nombre maximum d'itérations est atteint.
+ Le nombre maximum d'itÃ©rations est atteint.
 """),
 
 54 : _(u"""
-  La dimension de l'espace doit être inférieur ou égal à 3.
+  La dimension de l'espace doit Ãªtre infÃ©rieur ou Ã©gal Ã  3.
 """),
 
 55 : _(u"""
- les points du nuage de départ sont tous en (0.,0.,0.).
+ les points du nuage de dÃ©part sont tous en (0.,0.,0.).
 """),
 
 56 : _(u"""
- le nuage de départ est vide.
+ le nuage de dÃ©part est vide.
 """),
 
 57 : _(u"""
- les points du nuage de départ sont tous confondus.
+ les points du nuage de dÃ©part sont tous confondus.
 """),
 
 58 : _(u"""
- les points du nuage de départ sont tous alignes.
+ les points du nuage de dÃ©part sont tous alignes.
 """),
 
 59 : _(u"""
- les points du nuage de départ sont tous coplanaires.
+ les points du nuage de dÃ©part sont tous coplanaires.
 """),
 
 60 : _(u"""
- méthode inconnue :  %(k1)s
+ mÃ©thode inconnue :  %(k1)s
 """),
 
 61 : _(u"""
@@ -148,7 +148,7 @@ cata_msg = {
 """),
 
 63 : _(u"""
- la composante relcom n'a pas été affectée pour la grandeur COMPOR
+ la composante relcom n'a pas Ã©tÃ© affectÃ©e pour la grandeur COMPOR
 """),
 
 66 : _(u"""
@@ -164,7 +164,7 @@ cata_msg = {
 """),
 
 69 : _(u"""
- nombre de valeurs différent  pour "NOEUD_PARA" et "VALE_Y"
+ nombre de valeurs diffÃ©rent  pour "NOEUD_PARA" et "VALE_Y"
 """),
 
 70 : _(u"""
@@ -172,33 +172,33 @@ cata_msg = {
 """),
 
 71 : _(u"""
-La fonction a des valeurs négatives. Ce n'est pas compatible avec une
+La fonction a des valeurs nÃ©gatives. Ce n'est pas compatible avec une
 interpolation "LOG".
 
 Conseil :
     Vous pouvez forcer le type d'interpolation de la fonction produite
-    avec le mot-clé INTERPOL (ou INTERPOL_FONC quand il s'agit de nappe).
+    avec le mot-clÃ© INTERPOL (ou INTERPOL_FONC quand il s'agit de nappe).
 """),
 
 72 : _(u"""
-Les paramètres de la nappe ne sont pas croissants !
+Les paramÃ¨tres de la nappe ne sont pas croissants !
 """),
 
 73 : _(u"""
-On ne peut pas définir une nappe avec deux fonctions différentes pour la même
-valeur du paramètre.
+On ne peut pas dÃ©finir une nappe avec deux fonctions diffÃ©rentes pour la mÃªme
+valeur du paramÃ¨tre.
 """),
 
 75 : _(u"""
-Les listes NUME_LIGN et LISTE_R/LISTE_K/LISTE_I doivent contenir le même nombre de termes.
+Les listes NUME_LIGN et LISTE_R/LISTE_K/LISTE_I doivent contenir le mÃªme nombre de termes.
 """),
 
 76 : _(u"""
-Les noms de paramètres doivent être différents
+Les noms de paramÃ¨tres doivent Ãªtre diffÃ©rents
 """),
 
 77 : _(u"""
- les listes d'abscisses et d'ordonnées doivent être de mêmes longueurs
+ les listes d'abscisses et d'ordonnÃ©es doivent Ãªtre de mÃªmes longueurs
 """),
 
 78 : _(u"""
@@ -206,7 +206,7 @@ Les noms de paramètres doivent être différents
 """),
 
 79 : _(u"""
- les noms de chaque paramètre doivent être différents
+ les noms de chaque paramÃ¨tre doivent Ãªtre diffÃ©rents
 """),
 
 80 : _(u"""
@@ -218,21 +218,21 @@ Les noms de paramètres doivent être différents
 """),
 
 84 : _(u"""
- la fonction doit s appuyée sur un maillage pour lequel une abscisse curviligne est définie.
+ la fonction doit s appuyÃ©e sur un maillage pour lequel une abscisse curviligne est dÃ©finie.
 """),
 
 85 : _(u"""
- mauvaise définition des noeuds début et fin
+ mauvaise dÃ©finition des noeuds dÃ©but et fin
 """),
 
 86 : _(u"""
- le nombre de champs à lire est supérieur a 100
+ le nombre de champs Ã  lire est supÃ©rieur a 100
 """),
 
 
 
 88 : _(u"""
-  Pour le format ENSIGHT, le mot-clé MODELE est obligatoire.
+  Pour le format ENSIGHT, le mot-clÃ© MODELE est obligatoire.
 """),
 
 89 : _(u"""
@@ -240,12 +240,12 @@ Les noms de paramètres doivent être différents
 """),
 
 91 : _(u"""
-  Le type d'élément %(k1)s n'est pas prévu.
+  Le type d'Ã©lÃ©ment %(k1)s n'est pas prÃ©vu.
 """),
 
 94 : _(u"""
-  Le champ %(k1)s n'est pas prévu.
-  Vous pouvez demander l'évolution.
+  Le champ %(k1)s n'est pas prÃ©vu.
+  Vous pouvez demander l'Ã©volution.
 """),
 
 95 : _(u"""
@@ -255,12 +255,12 @@ Les noms de paramètres doivent être différents
 97 : _(u"""
 Erreur Utilisateur :
   On n'a pu lire aucun champ dans le fichier.
-  La structure de données créée est vide.
+  La structure de donnÃ©es crÃ©Ã©e est vide.
 
 Risques & Conseils :
   Si le fichier lu est au format IDEAS, et si la commande est LIRE_RESU,
-  le problème vient peut-être d'une mauvaise utilisation (ou d'une absence d'utilisation)
-  du mot clé FORMAT_IDEAS. Il faut examiner les "entêtes" des DATASET du fichier à lire.
+  le problÃ¨me vient peut-Ãªtre d'une mauvaise utilisation (ou d'une absence d'utilisation)
+  du mot clÃ© FORMAT_IDEAS. Il faut examiner les "entÃªtes" des DATASET du fichier Ã  lire.
 """),
 
 }

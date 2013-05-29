@@ -1,4 +1,4 @@
-# -*- coding: iso-8859-1 -*-
+# coding=utf-8
 # person_in_charge: mathieu.courtois at edf.fr
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -22,7 +22,7 @@
 
 
 """
-   Ce module contient la classe  de base MCCOMPO qui sert à factoriser
+   Ce module contient la classe  de base MCCOMPO qui sert Ã  factoriser
    les traitements des objets composites de type OBJECT
 """
 # Modules Python
@@ -36,7 +36,7 @@ from Noyau.strfunc import ufmt, to_unicode
 
 class MCCOMPO:
    """
-       L'attribut mc_liste a été créé par une classe dérivée de la
+       L'attribut mc_liste a Ã©tÃ© crÃ©Ã© par une classe dÃ©rivÃ©e de la
        classe MCCOMPO du Noyau
    """
 
@@ -44,12 +44,12 @@ class MCCOMPO:
 
    def __init__(self):
       self.state = 'undetermined'
-      # défini dans les classes dérivées
+      # dÃ©fini dans les classes dÃ©rivÃ©es
       self.txt_nat = ''
 
    def init_modif_up(self):
       """
-         Propage l'état modifié au parent s'il existe et n'est pas l'objet
+         Propage l'Ã©tat modifiÃ© au parent s'il existe et n'est pas l'objet
          lui-meme
       """
       if self.parent and self.parent != self :
@@ -57,7 +57,7 @@ class MCCOMPO:
 
    def report(self):
       """
-          Génère le rapport de validation de self
+          GÃ©nÃ¨re le rapport de validation de self
       """
       self.cr=self.CR()
       self.cr.debut = self.txt_nat+self.nom
@@ -74,16 +74,16 @@ class MCCOMPO:
 
    def verif_regles(self):
       """
-         A partir du dictionnaire des mots-clés présents, vérifie si les règles
+         A partir du dictionnaire des mots-clÃ©s prÃ©sents, vÃ©rifie si les rÃ¨gles
          de self sont valides ou non.
 
-         Retourne une chaine et un booléen :
+         Retourne une chaine et un boolÃ©en :
 
-           - texte = la chaine contient le message d'erreur de la (les) règle(s) violée(s) ('' si aucune)
+           - texte = la chaine contient le message d'erreur de la (les) rÃ¨gle(s) violÃ©e(s) ('' si aucune)
 
-           - testglob = booléen 1 si toutes les règles OK, 0 sinon
+           - testglob = boolÃ©en 1 si toutes les rÃ¨gles OK, 0 sinon
       """
-      # On verifie les regles avec les defauts affectés
+      # On verifie les regles avec les defauts affectÃ©s
       dictionnaire = self.dict_mc_presents(restreint='non')
       texte = ['']
       testglob = 1
@@ -97,22 +97,22 @@ class MCCOMPO:
 
    def dict_mc_presents(self,restreint='non'):
       """
-          Retourne le dictionnaire {mocle : objet} construit à partir de self.mc_liste
-          Si restreint == 'non' : on ajoute tous les mots-clés simples du catalogue qui ont
-          une valeur par défaut
-          Si restreint == 'oui' : on ne prend que les mots-clés effectivement entrés par
-          l'utilisateur (cas de la vérification des règles)
+          Retourne le dictionnaire {mocle : objet} construit Ã  partir de self.mc_liste
+          Si restreint == 'non' : on ajoute tous les mots-clÃ©s simples du catalogue qui ont
+          une valeur par dÃ©faut
+          Si restreint == 'oui' : on ne prend que les mots-clÃ©s effectivement entrÃ©s par
+          l'utilisateur (cas de la vÃ©rification des rÃ¨gles)
       """
       dico={}
-      # on ajoute les couples {nom mot-clé:objet mot-clé} effectivement présents
+      # on ajoute les couples {nom mot-clÃ©:objet mot-clÃ©} effectivement prÃ©sents
       for v in self.mc_liste:
         if v == None : continue
         k=v.nom
         dico[k]=v
       if restreint == 'oui' : return dico
       # Si restreint != 'oui',
-      # on ajoute les couples {nom mot-clé:objet mot-clé} des mots-clés simples
-      # possibles pour peu qu'ils aient une valeur par défaut
+      # on ajoute les couples {nom mot-clÃ©:objet mot-clÃ©} des mots-clÃ©s simples
+      # possibles pour peu qu'ils aient une valeur par dÃ©faut
       for k,v in self.definition.entites.items():
         if v.label != 'SIMP' : continue
         if not v.defaut : continue

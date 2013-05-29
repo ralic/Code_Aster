@@ -1,4 +1,4 @@
-# -*- coding: iso-8859-1 -*-
+# coding=utf-8
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -22,12 +22,12 @@ from cata_comportement import LoiComportement
 
 loi = LoiComportement(
    nom            = 'GATT_MONERIE',
-   doc = """Comportement thermo-mécanique du combustible qui permet de simuler des essais d'indentation 
-   (cf. [R5.03.08]). Cette loi de comportement est une loi élasto-viscoplastique isotrope sans écrouissage 
-   dont les spécificités sont :
+   doc = """Comportement thermo-mÃ©canique du combustible qui permet de simuler des essais d'indentation 
+   (cf. [R5.03.08]). Cette loi de comportement est une loi Ã©lasto-viscoplastique isotrope sans Ã©crouissage 
+   dont les spÃ©cificitÃ©s sont :
  - le potentiel de dissipation est la somme de deux potentiels de type Norton (sans seuil),
- - le combustible présentant une porosité résiduelle susceptible d'évoluer en compression (densification), 
-   ce potentiel dépend, en plus de la contrainte équivalente, de la contrainte hydrostatique.""",
+ - le combustible prÃ©sentant une porositÃ© rÃ©siduelle susceptible d'Ã©voluer en compression (densification), 
+   ce potentiel dÃ©pend, en plus de la contrainte Ã©quivalente, de la contrainte hydrostatique.""",
    num_lc         = 27,
    nb_vari        = 2,
    nom_vari       = ('EPSPEQ','FVOLPORO'),

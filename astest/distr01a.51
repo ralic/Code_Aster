@@ -9,4 +9,3 @@ P = 1.e6
 for a in list_theta:
     VALE.append(_F(F_Norm = P*cos(a),
                    F_Tang = P*sin(a),))
-

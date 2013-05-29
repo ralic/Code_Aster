@@ -1,4 +1,4 @@
-# -*- coding: iso-8859-1 -*-
+# coding=utf-8
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -26,10 +26,10 @@ sfmt = dict_format['sR']
 
 
 def fichier_sol(tab, param=None):
-    """Retourne le contenu du fichier de sol construit à partir de
-    la table des données de sol et éventuellement des paramètres du calcul.
+    """Retourne le contenu du fichier de sol construit Ã  partir de
+    la table des donnÃ©es de sol et Ã©ventuellement des paramÃ¨tres du calcul.
     """
-    # vérification de la table
+    # vÃ©rification de la table
     for p in ("NUME_COUCHE", "NUME_MATE", "E", "NU", "RHO", "EPAIS",
               "AMOR_HYST", "RECEPTEUR", "SUBSTRATUM"):
         if not p in tab.para:
@@ -41,9 +41,9 @@ def fichier_sol(tab, param=None):
     if len(tsubstr) != 1:
         raise aster.error('MISS0_3')
     
-    # complète la table
+    # complÃ¨te la table
     tsol = tab.copy()
-    # ... niveau récepteur
+    # ... niveau rÃ©cepteur
     def f_recep(v):
         res = ""
         if v.strip() == "OUI":
@@ -57,7 +57,7 @@ def fichier_sol(tab, param=None):
             res = num
         return res
     tsol.fromfunction("s_FORCE", f_force, ("NUME_COUCHE", "SOURCE"))
-    # ... êta
+    # ... Ãªta
     tsol.fromfunction("ETA", lambda x : 0., "NUME_COUCHE")
 
     content = []
@@ -73,7 +73,7 @@ def fichier_sol(tab, param=None):
         % dict_format
     last_id_mate = 0
     for row in tsol:
-        if row['NUME_MATE'] == last_id_mate:   # déjà vu, on saute
+        if row['NUME_MATE'] == last_id_mate:   # dÃ©jÃ  vu, on saute
             continue
         last_id_mate = row['NUME_MATE']
         content.append(format % row)
@@ -101,7 +101,7 @@ def fichier_sol(tab, param=None):
         for ic, row in enumerate(tsol):
             if row["s_FORCE"] != 0:
                 content.append(format % row)    
-    # complément des paramètres du calcul
+    # complÃ©ment des paramÃ¨tres du calcul
     if param and param.get('OFFSET_MAX'):
         # ALGO
         if param['ALGO']:

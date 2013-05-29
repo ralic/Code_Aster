@@ -1,4 +1,4 @@
-# -*- coding: iso-8859-1 -*-
+# coding=utf-8
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -17,7 +17,7 @@
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 
-# Attention a ne pas faire de retour à la ligne !
+# Attention a ne pas faire de retour Ã  la ligne !
 
 cata_msg = {
 
@@ -25,17 +25,17 @@ cata_msg = {
 1 : _(u"""
   Statistiques sur tout le transitoire
     * Nombre de pas de temps                      : %(i1)d
-    * Nombre d'itérations de Newton               : %(i2)d
-    * Nombre d'intégrations du comportement       : %(i3)d
+    * Nombre d'itÃ©rations de Newton               : %(i2)d
+    * Nombre d'intÃ©grations du comportement       : %(i3)d
     * Nombre de factorisations de la matrice      : %(i4)d
-    * Nombre de résolutions de systèmes linéaires : %(i5)d
+    * Nombre de rÃ©solutions de systÃ¨mes linÃ©aires : %(i5)d
 """),
 
-2 : _(u"""    * Nombre d'itérations de recherche linéaire   : %(i1)d"""),
+2 : _(u"""    * Nombre d'itÃ©rations de recherche linÃ©aire   : %(i1)d"""),
 
-3 : _(u"""    * Nombre d'itérations du solveur FETI         : %(i1)d"""),
+3 : _(u"""    * Nombre d'itÃ©rations du solveur FETI         : %(i1)d"""),
 
-10 : _(u"""    * Nombre d'itérations de résolution contact   : %(i1)d"""),
+10 : _(u"""    * Nombre d'itÃ©rations de rÃ©solution contact   : %(i1)d"""),
 
 11 : _(u"""    * Nombre d'appariements                       : %(i1)d"""),
 
@@ -48,7 +48,7 @@ cata_msg = {
 """),
 
 50 : _(u"""
-  Temps CPU consommé dans le transitoire          : %(k1)s
+  Temps CPU consommÃ© dans le transitoire          : %(k1)s
 """),
 
 51 : _(u"""    * Temps assemblage matrice                    : %(k1)s"""),
@@ -57,17 +57,17 @@ cata_msg = {
 
 53 : _(u"""    * Temps total factorisation matrice           : %(k1)s"""),
 
-54 : _(u"""    * Temps total intégration comportement        : %(k1)s"""),
+54 : _(u"""    * Temps total intÃ©gration comportement        : %(k1)s"""),
 
-55 : _(u"""    * Temps total résolution K.U=F                : %(k1)s"""),
+55 : _(u"""    * Temps total rÃ©solution K.U=F                : %(k1)s"""),
 
-56 : _(u"""    * Temps résolution contact                    : %(k1)s"""),
+56 : _(u"""    * Temps rÃ©solution contact                    : %(k1)s"""),
 
 57 : _(u"""    * Temps construction matrices contact         : %(k1)s"""),
 
 64 : _(u"""    * Temps construction vecteurs contact         : %(k1)s"""),
 
-58 : _(u"""    * Temps préparation données contact           : %(k1)s"""),
+58 : _(u"""    * Temps prÃ©paration donnÃ©es contact           : %(k1)s"""),
 
 59 : _(u"""    * Temps frottement                            : %(k1)s"""),
 
@@ -77,8 +77,8 @@ cata_msg = {
 
 62 : _(u"""    * Temps post-traitement (contact, flambement) : %(k1)s"""),
 
-63 : _(u"""    * Temps autres opérations                     : %(k1)s"""),
+63 : _(u"""    * Temps autres opÃ©rations                     : %(k1)s"""),
 
-70 : _(u"""     dont temps "perdu" dans les découpes   : %(k1)s -> la liste d'instant est efficace à %(r1).1f %%"""),
+70 : _(u"""     dont temps "perdu" dans les dÃ©coupes   : %(k1)s -> la liste d'instant est efficace Ã  %(r1).1f %%"""),
 
 }

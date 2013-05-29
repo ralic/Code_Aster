@@ -1,4 +1,4 @@
-# -*- coding: iso-8859-1 -*-
+# coding=utf-8
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2010  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -19,7 +19,7 @@
 
 # person_in_charge: charles.bodel at edf.fr
 
-# Fichier comprenant une procédure de test de CALC_ESSAI avec les différentes
+# Fichier comprenant une procÃ©dure de test de CALC_ESSAI avec les diffÃ©rentes
 # options de calcul.
 
 import aster
@@ -156,9 +156,9 @@ class MessageBox:
 
 
 def to_dict_lst(groups):
-    """Transforme la liste renvoyée par le superviseur
+    """Transforme la liste renvoyÃ©e par le superviseur
     en une liste de dictionaires. Il est important que
-    les degrés de liberté soient dans une liste."""
+    les degrÃ©s de libertÃ© soient dans une liste."""
     res_lst = []
     for grp in groups:
         rdict = {"NOM" : grp["GROUP_NO"],
@@ -171,26 +171,26 @@ def lance_modif_struct_calcul(macro, ce_objects,
                               GROUP_NO_CAPTEURS,
                               GROUP_NO_EXTERIEUR,
                               out_modifstru):
-    """Démarre le calcul CALC_ESSAI sur la structure modifiée.
+    """DÃ©marre le calcul CALC_ESSAI sur la structure modifiÃ©e.
        
-       :param macro: la macro étape CALC_ESSAI.
+       :param macro: la macro Ã©tape CALC_ESSAI.
 
-       :param ce_objects: les objects, utilisés par le module CALC_ESSAI,
-                              présents dans la mémoire JEVEUX au moment
-                              de la macro étape.
+       :param ce_objects: les objects, utilisÃ©s par le module CALC_ESSAI,
+                              prÃ©sents dans la mÃ©moire JEVEUX au moment
+                              de la macro Ã©tape.
 
-       :param MODIFSTRUCT: la macro étape permettant le calcul de la structure
-                           modifiée depuis le fichier de commande Aster. 
+       :param MODIFSTRUCT: la macro Ã©tape permettant le calcul de la structure
+                           modifiÃ©e depuis le fichier de commande Aster. 
 
        :param CAPTEURS: dictionaire (ou FACT) contenant les choix
-                        de groupes de noeuds et leurs degrés de liberté
+                        de groupes de noeuds et leurs degrÃ©s de libertÃ©
                         pour les capteurs.
 
        :param EXTERIEUR: dictionaire (ou FACT) contenant les choix
-                          de groupes de noeuds et leurs degrés de liberté
+                          de groupes de noeuds et leurs degrÃ©s de libertÃ©
                           pour les ddl exterieurs.
                           
-       :param out_modifstru: dictionaire (ou FACT) utilisé pour les résultats."""
+       :param out_modifstru: dictionaire (ou FACT) utilisÃ© pour les rÃ©sultats."""
 
     from Accas import _F       
     from Calc_essai.ce_calcul_modifstruct import CalcEssaiModifStruct

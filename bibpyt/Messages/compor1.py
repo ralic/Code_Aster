@@ -1,4 +1,4 @@
-# -*- coding: iso-8859-1 -*-
+# coding=utf-8
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -27,19 +27,19 @@ cata_msg={
 
 2: _(u"""
  HUJDDD :: on ne calcule pas DPSIDS pour K=4.
-           - vérifiez la programmation -
+           - vÃ©rifiez la programmation -
 """),
 
 3: _(u"""
  CAM_CLAY : Le coefficient de poisson et/ou le module de YOUNG ne sont pas corrects
             dans la maille %(k1)s.
 
-             Vérifiez la cohérence des données mécaniques suivantes :
+             VÃ©rifiez la cohÃ©rence des donnÃ©es mÃ©caniques suivantes :
                  E, NU, eO (indice des vides), KAPA
-                 (contrainte volumique initiale) et KCAM la compressibilité
+                 (contrainte volumique initiale) et KCAM la compressibilitÃ©
                  initiale. Si PTRAC et KCAM sont nuls, il faut initialiser les contraintes.
 
-                 Il faut notamment vérifier ceci:
+                 Il faut notamment vÃ©rifier ceci:
 
         NU = (TROIS*((UN+E0)*SIGMMO+KAPA*KCAM)-DEUXMU*KAPA)/
      &         (SIX*((UN+E0)*SIGMMO+KAPA*KCAM)+DEUXMU*KAPA)
@@ -48,12 +48,12 @@ cata_msg={
 """),
 
 4: _(u"""
- HUJEUX :: les modélisations autorisées sont 3D D_PLAN ou AXIS
+ HUJEUX :: les modÃ©lisations autorisÃ©es sont 3D D_PLAN ou AXIS
 """),
 
 5: _(u"""
- HUJEUX :: K différent de NBMECA pour le mécanisme isotrope
-           - vérifiez la programmation -
+ HUJEUX :: K diffÃ©rent de NBMECA pour le mÃ©canisme isotrope
+           - vÃ©rifiez la programmation -
 """),
 
 6: _(u"""
@@ -66,28 +66,28 @@ cata_msg={
 """),
 
 8: _(u"""
- HUJEUX :: mécanisme indéterminé
-           - vérifiez la programmation -
+ HUJEUX :: mÃ©canisme indÃ©terminÃ©
+           - vÃ©rifiez la programmation -
 """),
 
 9 : _(u"""
-Arrêt suite à l'échec de l'intégration de la loi de comportement.
-Vérifiez vos paramètres, la cohérence des unités.
+ArrÃªt suite Ã  l'Ã©chec de l'intÃ©gration de la loi de comportement.
+VÃ©rifiez vos paramÃ¨tres, la cohÃ©rence des unitÃ©s.
 Essayez d'augmenter ITER_INTE_MAXI, ou de subdiviser le pas de temps
 localement via ITER_INTE_PAS.
 """),
 
 10: _(u"""
- HUJKSI :: mot-clé inconnu
+ HUJKSI :: mot-clÃ© inconnu
 """),
 
 11: _(u"""
- HUJNVI :: modélisation inconnue
+ HUJNVI :: modÃ©lisation inconnue
 """),
 
 12: _(u"""
- HUJCI1 :: l'incrément de déformation est nul:
-           on ne peut pas trouver le zéro de la fonction.
+ HUJCI1 :: l'incrÃ©ment de dÃ©formation est nul:
+           on ne peut pas trouver le zÃ©ro de la fonction.
 """),
 
 14: _(u"""
@@ -96,150 +96,150 @@ localement via ITER_INTE_PAS.
 
 15: _(u"""
   Pour les poutres multifibres, l'utilisation de lois de comportement via
-  ALGO_1D='DEBORST' nécessite d'avoir un seul matériau par poutre!
+  ALGO_1D='DEBORST' nÃ©cessite d'avoir un seul matÃ©riau par poutre!
  """),
 
 16 : _(u"""
-Arrêt suite à l'échec de l'intégration de la loi de comportement.
+ArrÃªt suite Ã  l'Ã©chec de l'intÃ©gration de la loi de comportement.
 
-Erreur numérique (overflow) : la plasticité cumulée devient très grande.
+Erreur numÃ©rique (overflow) : la plasticitÃ© cumulÃ©e devient trÃ¨s grande.
 """),
 
 17 : _(u"""
-  HUJCI1 :: Soit le zéro n'existe pas, soit il se trouve hors des
+  HUJCI1 :: Soit le zÃ©ro n'existe pas, soit il se trouve hors des
             bornes admissibles.
 """),
 
 18 : _(u"""
-  HUJCI1 :: Cas de traction à l'instant moins.
+  HUJCI1 :: Cas de traction Ã  l'instant moins.
 """),
 
 19 : _(u"""
-  MONOCRISTAL :: écrouissage cinématique non trouvé.
+  MONOCRISTAL :: Ã©crouissage cinÃ©matique non trouvÃ©.
 """),
 
 20 : _(u"""
-  MONOCRISTAL :: écoulement non trouvé.
+  MONOCRISTAL :: Ã©coulement non trouvÃ©.
 """),
 
 21 : _(u"""
-  MONOCRISTAL :: écrouissage isotrope non trouvé.
+  MONOCRISTAL :: Ã©crouissage isotrope non trouvÃ©.
 """),
 
 23 : _(u"""
-  MONOCRISTAL :: la matrice d'interaction est définie avec
-  4 coefficients. Ceci n'est applicable qu'avec 24 systèmes de
+  MONOCRISTAL :: la matrice d'interaction est dÃ©finie avec
+  4 coefficients. Ceci n'est applicable qu'avec 24 systÃ¨mes de
   glissement (famille BCC24).
 """),
 
 24 : _(u"""
-  MONOCRISTAL :: la matrice d'interaction est définie avec
-  6 coefficients. Ceci n'est applicable qu'avec 12 systèmes de
+  MONOCRISTAL :: la matrice d'interaction est dÃ©finie avec
+  6 coefficients. Ceci n'est applicable qu'avec 12 systÃ¨mes de
   glissement.
 """),
 
 25 : _(u"""
-  MONOCRISTAL :: la matrice d'interaction est définie avec
+  MONOCRISTAL :: la matrice d'interaction est dÃ©finie avec
   un nombre de coefficients incorrect :: il en faut 1, ou 4, ou 6.
 """),
 
 26: _(u"""
- LETK - lklmat :: paramètres de la loi LETK non cohérents
+ LETK - lklmat :: paramÃ¨tres de la loi LETK non cohÃ©rents
 """),
 
 27 : _(u"""
-  comportement cristallin  : les coefficients matériau ne peuvent dépendre de la température.
+  comportement cristallin  : les coefficients matÃ©riau ne peuvent dÃ©pendre de la tempÃ©rature.
 """),
 
 28 : _(u"""
-  comportement cristallin homogénéisé : les coefficients matériau ne peuvent dépendre de la température.
+  comportement cristallin homogÃ©nÃ©isÃ© : les coefficients matÃ©riau ne peuvent dÃ©pendre de la tempÃ©rature.
 """),
 
 29: _(u"""
- LETK - lkdhds :: division par zéro - entrée en plasticité avec un déviateur  nul.
- le pas de temps est trop petit - augmenter le pas de temps pour augmenter le déviateur.
+ LETK - lkdhds :: division par zÃ©ro - entrÃ©e en plasticitÃ© avec un dÃ©viateur  nul.
+ le pas de temps est trop petit - augmenter le pas de temps pour augmenter le dÃ©viateur.
 """),
 
 30: _(u"""
- LETK - lkds2h :: division par zéro - entrée en plasticité avec un déviateur nul.
- le pas de temps est trop petit - augmenter le pas de temps pour augmenter le déviateur.
+ LETK - lkds2h :: division par zÃ©ro - entrÃ©e en plasticitÃ© avec un dÃ©viateur nul.
+ le pas de temps est trop petit - augmenter le pas de temps pour augmenter le dÃ©viateur.
 """),
 
 31: _(u"""
- LETK - lkcaln :: division par zéro - entrée en plasticité avec un déviateur nul.
- le pas de temps est trop petit - augmenter le pas de temps pour augmenter le déviateur.
+ LETK - lkcaln :: division par zÃ©ro - entrÃ©e en plasticitÃ© avec un dÃ©viateur nul.
+ le pas de temps est trop petit - augmenter le pas de temps pour augmenter le dÃ©viateur.
 """),
 
 32: _(u"""
- VISC_CINx_CHAB :: pour la viscosité, renseigner le mot-clé LEMAITRE dans DEFI_MATERIAU.
- Si vous voulez seulement de l'élastoplasticité, il faut utiliser VMIS_CINx_CHAB.
+ VISC_CINx_CHAB :: pour la viscositÃ©, renseigner le mot-clÃ© LEMAITRE dans DEFI_MATERIAU.
+ Si vous voulez seulement de l'Ã©lastoplasticitÃ©, il faut utiliser VMIS_CINx_CHAB.
 """),
 
 33: _(u"""
- NMHUJ :: ELAS/ELAS_ORTH :: erreur de lecture des propriétés matériaux.
+ NMHUJ :: ELAS/ELAS_ORTH :: erreur de lecture des propriÃ©tÃ©s matÃ©riaux.
 """),
 
 34: _(u"""
- HUJTID :: ELAS/ELAS_ORTH :: cas non prévu.
+ HUJTID :: ELAS/ELAS_ORTH :: cas non prÃ©vu.
 """),
 
 35: _(u"""
- HUJDP :: ELAS/ELAS_ORTH :: cas non prévu.
+ HUJDP :: ELAS/ELAS_ORTH :: cas non prÃ©vu.
 """),
 
 36: _(u"""
- HUJTEL :: ELAS/ELAS_ORTH :: cas non prévu.
+ HUJTEL :: ELAS/ELAS_ORTH :: cas non prÃ©vu.
 """),
 
 37: _(u"""
- HUJPOT :: ELAS/ELAS_ORTH :: cas non prévu.
+ HUJPOT :: ELAS/ELAS_ORTH :: cas non prÃ©vu.
 """),
 
 38: _(u"""
- HUJJID :: ELAS/ELAS_ORTH :: cas non prévu.
+ HUJJID :: ELAS/ELAS_ORTH :: cas non prÃ©vu.
 """),
 
 39: _(u"""
- HUJIID :: ELAS/ELAS_ORTH :: cas non prévu.
+ HUJIID :: ELAS/ELAS_ORTH :: cas non prÃ©vu.
 """),
 
 40: _(u"""
- HUJELA :: ELAS/ELAS_ORTH :: cas non prévu.
+ HUJELA :: ELAS/ELAS_ORTH :: cas non prÃ©vu.
 """),
 
 
 41: _(u"""
  CAM_CLAY ::
- Pour la maille <%(k1)s> une des exponentielles pose un problème numérique.
- La subdivision du pas de temps au niveau global est déclenchée.
+ Pour la maille <%(k1)s> une des exponentielles pose un problÃ¨me numÃ©rique.
+ La subdivision du pas de temps au niveau global est dÃ©clenchÃ©e.
  Il faut pour cela l'autoriser avec la commande DEFI_LIST_INST.
  Information sur les bornes :
    Valeur max :   <%(r1)E>
-   borne correspondant à <%(k2)s> : <%(r2)E>
-   borne correspondant à <%(k3)s> : <%(r3)E>
+   borne correspondant Ã  <%(k2)s> : <%(r2)E>
+   borne correspondant Ã  <%(k3)s> : <%(r3)E>
 """),
 
 42: _(u"""
- CAM_CLAY ::  KCAM et PTRAC doivent vérifier la relation suivante :
+ CAM_CLAY ::  KCAM et PTRAC doivent vÃ©rifier la relation suivante :
 
               KCAM > -K0 * PTRAC  ou KCAM > -(1+e0)/KAPA * PTRAC
 """),
 
 
 43: _(u"""
- Le numéro de loi de comportement choisi <%(i1)i> est hors des bornes 1-100
+ Le numÃ©ro de loi de comportement choisi <%(i1)i> est hors des bornes 1-100
 """),
 
 
 44: _(u"""
- Le type de déformation choisi <%(k1)s> est incompatible avec le comportement <%(k2)s>
+ Le type de dÃ©formation choisi <%(k1)s> est incompatible avec le comportement <%(k2)s>
 """),
 
 45: _(u"""
- Le type d'algorithme d'intégration choisi : <%(k1)s> (sous COMP_INCR/%(k2)s) est incompatible avec le comportement <%(k3)s>.
+ Le type d'algorithme d'intÃ©gration choisi : <%(k1)s> (sous COMP_INCR/%(k2)s) est incompatible avec le comportement <%(k3)s>.
 
 Conseil :
-Ne renseignez pas le mot-clé COMP_INCR/%(k2)s, afin de sélectionner l'algorithme par défaut.
+Ne renseignez pas le mot-clÃ© COMP_INCR/%(k2)s, afin de sÃ©lectionner l'algorithme par dÃ©faut.
 """),
 
 46: _(u"""
@@ -247,39 +247,39 @@ Ne renseignez pas le mot-clé COMP_INCR/%(k2)s, afin de sélectionner l'algorithme
 """),
 
 47: _(u"""
- La modélisation choisie <%(k1)s> est incompatible avec le comportement <%(k2)s>. Pour modéliser
+ La modÃ©lisation choisie <%(k1)s> est incompatible avec le comportement <%(k2)s>. Pour modÃ©liser
  des contraintes planes (ou des coques) avec ce comportement, on utilise ALGO_C_PLAN='DEBORST'
 """),
 
 48: _(u"""
- La modélisation choisie <%(k1)s> est incompatible avec le comportement <%(k2)s>. Pour modéliser
+ La modÃ©lisation choisie <%(k1)s> est incompatible avec le comportement <%(k2)s>. Pour modÃ©liser
  des contraintes 1D (barres, poutres) avec ce comportement, on utilise ALGO_1D='DEBORST'
 """),
 
 49: _(u"""
- La modélisation choisie <%(k1)s> est incompatible avec le comportement <%(k2)s>
+ La modÃ©lisation choisie <%(k1)s> est incompatible avec le comportement <%(k2)s>
 """),
 
 50: _(u"""
- Aucun comportement n'est défini sur la maille <%(k1)s>. Code_Aster a défini par défaut
+ Aucun comportement n'est dÃ©fini sur la maille <%(k1)s>. Code_Aster a dÃ©fini par dÃ©faut
   COMP_INCR='ELAS', DEFORMATION='PETIT'.
 """),
 
 52: _(u"""
- La modélisation choisie <%(k1)s> sur la maille <%(k2)s> est incompatible avec les déformations <%(k3)s>.
- Utilisez un autre type de déformations (cf. U4.51.11 et les documents R).
+ La modÃ©lisation choisie <%(k1)s> sur la maille <%(k2)s> est incompatible avec les dÃ©formations <%(k3)s>.
+ Utilisez un autre type de dÃ©formations (cf. U4.51.11 et les documents R).
 """),
 
 54: _(u"""
- ECRO_LINE : la pente d'écrouissage H et/ou le module de YOUNG E ne sont pas compatibles :
-             H doit être strictement inférieur à E. Ici H=<%(r1)E>, et E=<%(r2)E>.
-             Pour modéliser l'élasticité linéaire, il suffit de choisir SY grand, et H < E.
+ ECRO_LINE : la pente d'Ã©crouissage H et/ou le module de YOUNG E ne sont pas compatibles :
+             H doit Ãªtre strictement infÃ©rieur Ã  E. Ici H=<%(r1)E>, et E=<%(r2)E>.
+             Pour modÃ©liser l'Ã©lasticitÃ© linÃ©aire, il suffit de choisir SY grand, et H < E.
 """),
 
 55: _(u"""
-La <%(k1)s> dichotomie pour la loi IRRAD3M n'a pas trouvé de solution pour
-le nombre d'itération donné <%(i1)d>.\n
-Information pour le débogage
+La <%(k1)s> dichotomie pour la loi IRRAD3M n'a pas trouvÃ© de solution pour
+le nombre d'itÃ©ration donnÃ© <%(i1)d>.\n
+Information pour le dÃ©bogage
    Borne 0                 : <%(r1).15E>
    Borne 1                 : <%(r2).15E>
    Puissance N             : <%(r3).15E>
@@ -287,7 +287,7 @@ Information pour le débogage
    RM                      : <%(r5).15E>
    EU                      : <%(r6).15E>
    R02                     : <%(r7).15E>
-   Précision demandée      : <%(r8).15E>
+   PrÃ©cision demandÃ©e      : <%(r8).15E>
 Valeurs initiales
    N0                      : <%(r9).15E>
    Borne 0                 : <%(r10).15E>
@@ -304,16 +304,16 @@ Grandeurs au point de Gauss :
 
 57: _(u"""
 Pour information
-   Température a t- : <%(r1)E>
-   Température a t+ : <%(r2)E>
+   TempÃ©rature a t- : <%(r1)E>
+   TempÃ©rature a t+ : <%(r2)E>
 """),
 
 58: _(u"""
-Le franchissement du seuil de fluage ne se fait pas dans la tolérance donnée dans DEFI_MATERIAU
+Le franchissement du seuil de fluage ne se fait pas dans la tolÃ©rance donnÃ©e dans DEFI_MATERIAU
 pour la loi IRRAD3M, par le mot clef TOLER_ET.
-   Tolérance sur le franchissement du seuil : <%(r1)E>
+   TolÃ©rance sur le franchissement du seuil : <%(r1)E>
    Erreur sur le franchissement du seuil    : <%(r2)E>
-La subdivision du pas de temps est déclenchée.
+La subdivision du pas de temps est dÃ©clenchÃ©e.
 Il faut pour cela l'autoriser avec le mot clef SUBD_METHODE de la commande STAT_NON_LINE.
 """),
 
@@ -322,11 +322,11 @@ Il faut pour cela l'autoriser avec le mot clef SUBD_METHODE de la commande STAT_
 """),
 
 60: _(u"""
-Couplage: on ne fait pas dépendre E, MU et ALPHA de la température T, on prend T=0 comme pour ENDO_ISOT_BETON
+Couplage: on ne fait pas dÃ©pendre E, MU et ALPHA de la tempÃ©rature T, on prend T=0 comme pour ENDO_ISOT_BETON
 """),
 
 61: _(u"""
-Couplage: on fait dépendre E, MU et ALPHA de la température maximale Tmax, comme pour MAZARS
+Couplage: on fait dÃ©pendre E, MU et ALPHA de la tempÃ©rature maximale Tmax, comme pour MAZARS
 """),
 
 63 : _(u"""
@@ -341,32 +341,32 @@ Couplage: on fait dépendre E, MU et ALPHA de la température maximale Tmax, comme
 
 65 : _(u"""
    Attention dans la routine majpad la pression d'air dissous devient
-   négative à la maille %(k1)s.
+   nÃ©gative Ã  la maille %(k1)s.
 """),
 
 66 : _(u"""
 La loi de comportement ENDO_SCALAIRE n'est disponible que pour la formulation
-non locale GRAD_VARI, assurez vous que votre modélisation soit l'une des trois
+non locale GRAD_VARI, assurez vous que votre modÃ©lisation soit l'une des trois
 suivantes : - D_PLAN_GRAD_VARI
             - AXIS_GRAD_VARI
             - 3D_GRAD_VARI
 """),
 67 : _(u"""
-Dans la définition du matériau RUPT_DUCT les coefficients de forme de la loi CZM_TRA_MIX doivent vérifier : COEF_EXTR <= COEF_PLAS
+Dans la dÃ©finition du matÃ©riau RUPT_DUCT les coefficients de forme de la loi CZM_TRA_MIX doivent vÃ©rifier : COEF_EXTR <= COEF_PLAS
 """),
 
 69 : _(u"""
-Le type de déformations %(k1)s n'est pas compatible avec les modélisations SHB. Utilisez PETIT ou GROT_GDEP.
+Le type de dÃ©formations %(k1)s n'est pas compatible avec les modÃ©lisations SHB. Utilisez PETIT ou GROT_GDEP.
 """),
 
 70 : _(u"""
-Problème lors du traitement de l'occurrence numéro %(i1)d du mot-clé facteur %(k2)s :
-  La donnée du mot-clé %(k1)s n'est pas cohérente avec le reste des données (MODELISATION, RELATION).
-  Le mot-clé %(k1)s sera ignoré.
+ProblÃ¨me lors du traitement de l'occurrence numÃ©ro %(i1)d du mot-clÃ© facteur %(k2)s :
+  La donnÃ©e du mot-clÃ© %(k1)s n'est pas cohÃ©rente avec le reste des donnÃ©es (MODELISATION, RELATION).
+  Le mot-clÃ© %(k1)s sera ignorÃ©.
 """),
 
 71 : _(u"""
-Erreur dans le calcul du tenseur équivalent au sens de HILL.
+Erreur dans le calcul du tenseur Ã©quivalent au sens de HILL.
 """),
 
 72: _(u"""
@@ -374,21 +374,21 @@ Erreur dans le calcul du tenseur équivalent au sens de HILL.
 """),
 
 73: _(u"""
-Lors d'un calcul avec des poutres multifibres, il est nécessaire de renseigner le mot-clé 
+Lors d'un calcul avec des poutres multifibres, il est nÃ©cessaire de renseigner le mot-clÃ© 
 AFFE_COMPOR dans AFFE_MATERIAU.
 """),
 
-75 : _(u""" == Paramètres de la loi %(k1)s ==
- Partie élasticité :
+75 : _(u""" == ParamÃ¨tres de la loi %(k1)s ==
+ Partie Ã©lasticitÃ© :
    %(k2)s
- Partie non-linéaire :
+ Partie non-linÃ©aire :
    %(k3)s
  Pour information :
    %(k4)s
  =================================================="""),
 
 76 : _(u"""
-Pour le comportement %(k1)s les paramètres %(k2)s et %(k3)s sont obligatoires.
+Pour le comportement %(k1)s les paramÃ¨tres %(k2)s et %(k3)s sont obligatoires.
 """),
 
 77 : _(u"""
@@ -412,6 +412,6 @@ DELTA2 = %(r1)f doit toujours rester entre 0 et 1.
 """),
 
 82 : _(u"""
-La température est obligatoire pour le comportement cristallin %(k1)s.
+La tempÃ©rature est obligatoire pour le comportement cristallin %(k1)s.
 """),
 }

@@ -1,3 +1,4 @@
+# coding=utf-8
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # person_in_charge: J-pierre.lefebvre at edf.fr
 # ======================================================================

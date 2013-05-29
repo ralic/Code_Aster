@@ -1,4 +1,4 @@
-# encoding: utf-8
+# coding=utf-8
 
 import os.path as osp
 from functools import partial
@@ -105,5 +105,4 @@ int main(void){
         raise
     else:
         self.end_msg( '.'.join([str(i) for i in eval(ret)]) )
-
 

@@ -1,6 +1,6 @@
 OPTI DIME 3 ELEM CUB8 ;
 
-* maillage d'un cube régulier :
+* maillage d'un cube rÃ©gulier :
 
 l0=10.;
 n0=4;
@@ -22,4 +22,3 @@ OPTI SAUV FORM 'mumps01a.mgib' ;
 sauv FORM CUBE1;
 
 FIN;
-

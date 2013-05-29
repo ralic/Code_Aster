@@ -1,4 +1,4 @@
-# -*- coding: iso-8859-1 -*-
+# coding=utf-8
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -21,7 +21,7 @@
 cata_msg={
 
 1: _(u"""
- les 2 maillages ne sont pas du même type : 2D (ou 3D).
+ les 2 maillages ne sont pas du mÃªme type : 2D (ou 3D).
 """),
 
 2: _(u"""
@@ -41,32 +41,32 @@ cata_msg={
 """),
 
 6: _(u"""
- le noeud: %(k1)s  n'a pas les mêmes coordonnées dans les maillages:  %(k2)s  et  %(k3)s
+ le noeud: %(k1)s  n'a pas les mÃªmes coordonnÃ©es dans les maillages:  %(k2)s  et  %(k3)s
 """),
 
 7: _(u"""
- matrice de rigidité non inversible (modes rigides ???)
- - attention : critères de choc non calculés
+ matrice de rigiditÃ© non inversible (modes rigides ???)
+ - attention : critÃ¨res de choc non calculÃ©s
 """),
 
 8: _(u"""
- matrice de rigidité : pivot quasi nul (modes rigides ???)
- - attention : critères de choc non calculés
+ matrice de rigiditÃ© : pivot quasi nul (modes rigides ???)
+ - attention : critÃ¨res de choc non calculÃ©s
 """),
 
 9: _(u"""
  mot-clef "DEFINITION" interdit :
- le MACR_ELEM :  %(k1)s  est déjà défini.
+ le MACR_ELEM :  %(k1)s  est dÃ©jÃ  dÃ©fini.
 """),
 
 10: _(u"""
  mot-clef "RIGI_MECA" interdit :
- il est déjà calculé.
+ il est dÃ©jÃ  calculÃ©.
 """),
 
 11: _(u"""
  mot-clef "RIGI_MECA" interdit :
- le résultat :  %(k1)s  existe déjà.
+ le rÃ©sultat :  %(k1)s  existe dÃ©jÃ .
 """),
 
 12: _(u"""
@@ -76,7 +76,7 @@ cata_msg={
 
 13: _(u"""
  mot-clef "MASS_MECA" interdit :
- il est déjà calculé.
+ il est dÃ©jÃ  calculÃ©.
 """),
 
 14: _(u"""
@@ -85,8 +85,8 @@ cata_msg={
 """),
 
 15: _(u"""
- cet opérateur modifie un maillage existant
- le résultat doit être identique au concept donné dans l'argument MAILLAGE.
+ cet opÃ©rateur modifie un maillage existant
+ le rÃ©sultat doit Ãªtre identique au concept donnÃ© dans l'argument MAILLAGE.
 """),
 
 16: _(u"""
@@ -111,30 +111,30 @@ cata_msg={
 """),
 
 21: _(u"""
- critère inconnu
+ critÃ¨re inconnu
 """),
 
 22: _(u"""
- noeud %(k1)s trop éloigné de la normale au segment
+ noeud %(k1)s trop Ã©loignÃ© de la normale au segment
  distance = %(r1)f
 """),
 
 23: _(u"""
-  On cherche à classer une liste de noeuds par abscisses croissantes
+  On cherche Ã  classer une liste de noeuds par abscisses croissantes
   de leur projection sur un segment de droite.
-  2 noeuds ont la même projection sur la droite.
+  2 noeuds ont la mÃªme projection sur la droite.
   Le classement est donc arbitraire.
 
   -> Risque & Conseil :
-     Vérifiez votre maillage.
+     VÃ©rifiez votre maillage.
 """),
 
 24: _(u"""
- mot clef "SOUS_STRUC" interdit pour ce modèle sans sous-structures.
+ mot clef "SOUS_STRUC" interdit pour ce modÃ¨le sans sous-structures.
 """),
 
 25: _(u"""
- liste de mailles plus longue que la liste des sous-structures du modèle.
+ liste de mailles plus longue que la liste des sous-structures du modÃ¨le.
 """),
 
 26: _(u"""
@@ -142,15 +142,15 @@ cata_msg={
 """),
 
 27: _(u"""
- la maille :  %(k1)s  n'est pas active dans le modèle
+ la maille :  %(k1)s  n'est pas active dans le modÃ¨le
 """),
 
 28: _(u"""
- la maille :  %(k1)s  ne connaît pas le chargement :  %(k2)s
+ la maille :  %(k1)s  ne connaÃ®t pas le chargement :  %(k2)s
 """),
 
 29: _(u"""
- arrêt suite aux erreurs détectées.
+ arrÃªt suite aux erreurs dÃ©tectÃ©es.
 """),
 
 30: _(u"""
@@ -166,11 +166,11 @@ cata_msg={
 """),
 
 33: _(u"""
- l'indice final est inférieur a l'indice initial
+ l'indice final est infÃ©rieur a l'indice initial
 """),
 
 34: _(u"""
- l'indice final est supérieur a la taille du groupe
+ l'indice final est supÃ©rieur a la taille du groupe
 """),
 
 35: _(u"""
@@ -178,20 +178,20 @@ cata_msg={
 """),
 
 36: _(u"""
- le GROUP_MA : %(k1)s est vide. on ne le crée pas.
+ le GROUP_MA : %(k1)s est vide. on ne le crÃ©e pas.
 """),
 
 37: _(u"""
- Le groupe de noeuds '%(k1)s' existe déjà.
+ Le groupe de noeuds '%(k1)s' existe dÃ©jÃ .
 
  Conseil :
     Si vous souhaitez utiliser un nom de groupe existant, il suffit
-    de le détruire avec DEFI_GROUP / DETR_GROUP_NO.
+    de le dÃ©truire avec DEFI_GROUP / DETR_GROUP_NO.
 """),
 
 
 38: _(u"""
- le GROUP_NO : %(k1)s  est vide, on ne le crée pas.
+ le GROUP_NO : %(k1)s  est vide, on ne le crÃ©e pas.
 """),
 
 39: _(u"""
@@ -203,15 +203,15 @@ cata_msg={
 """),
 
 41: _(u"""
- l'extérieur du MACR_ELEM_STAT contient des noeuds qui ne portent aucun ddl, ces noeuds sont éliminés.
+ l'extÃ©rieur du MACR_ELEM_STAT contient des noeuds qui ne portent aucun ddl, ces noeuds sont Ã©liminÃ©s.
 """),
 
 42: _(u"""
- l'extérieur du MACR_ELEM_STAT contient des noeuds en double. ils sont éliminés.
+ l'extÃ©rieur du MACR_ELEM_STAT contient des noeuds en double. ils sont Ã©liminÃ©s.
 """),
 
 43: _(u"""
- grandeur:  %(k1)s  interdite. (seule autorisée: DEPL_R)
+ grandeur:  %(k1)s  interdite. (seule autorisÃ©e: DEPL_R)
 """),
 
 44: _(u"""
@@ -219,7 +219,7 @@ cata_msg={
 """),
 
 45: _(u"""
- numéro. équation incorrect
+ numÃ©ro. Ã©quation incorrect
 """),
 
 46: _(u"""
@@ -247,19 +247,19 @@ cata_msg={
 """),
 
 52: _(u"""
- trop de réels pour le mot clef "TRAN"
+ trop de rÃ©els pour le mot clef "TRAN"
 """),
 
 53: _(u"""
- trop de réels pour le mot clef "ANGL_NAUT"
+ trop de rÃ©els pour le mot clef "ANGL_NAUT"
 """),
 
 54: _(u"""
- trop de réels pour le mot clef "centre"
+ trop de rÃ©els pour le mot clef "centre"
 """),
 
 55: _(u"""
- mélange de maillages 2d et 3d
+ mÃ©lange de maillages 2d et 3d
 """),
 
 56: _(u"""
@@ -267,7 +267,7 @@ cata_msg={
 """),
 
 57: _(u"""
- les arguments "préfixe" et "index" conduisent a des noms de noeuds trop longs (8 caractères max).
+ les arguments "prÃ©fixe" et "index" conduisent a des noms de noeuds trop longs (8 caractÃ¨res max).
 """),
 
 58: _(u"""
@@ -279,15 +279,15 @@ cata_msg={
 """),
 
 60: _(u"""
-  le noeud :  %(k1)s  de la maille :  %(k2)s  a été éliminé (recollement). on ne peut donc le renommer.
+  le noeud :  %(k1)s  de la maille :  %(k2)s  a Ã©tÃ© Ã©liminÃ© (recollement). on ne peut donc le renommer.
 """),
 
 61: _(u"""
- les arguments "préfixe" et "index" conduisent a des noms de GROUP_NO trop longs (8 caractères max).
+ les arguments "prÃ©fixe" et "index" conduisent a des noms de GROUP_NO trop longs (8 caractÃ¨res max).
 """),
 
 62: _(u"""
- le GROUP_NO :  %(k1)s  est vide. on ne le crée pas.
+ le GROUP_NO :  %(k1)s  est vide. on ne le crÃ©e pas.
 """),
 
 63: _(u"""
@@ -299,19 +299,19 @@ cata_msg={
 """),
 
 65: _(u"""
- la liste de mailles  n'a pas la même longueur que la liste de GROUP_NO.
+ la liste de mailles  n'a pas la mÃªme longueur que la liste de GROUP_NO.
 """),
 
 66: _(u"""
- la liste de mailles  doit être de dimension au moins 2 pour le recollement
+ la liste de mailles  doit Ãªtre de dimension au moins 2 pour le recollement
 """),
 
 67: _(u"""
- les GROUP_NO a recoller :  %(k1)s  et  %(k2)s  n'ont pas le même nombre de noeuds.
+ les GROUP_NO a recoller :  %(k1)s  et  %(k2)s  n'ont pas le mÃªme nombre de noeuds.
 """),
 
 68: _(u"""
- pour le recollement géométrique des GROUP_NO :  %(k1)s  et  %(k2)s  certains noeuds ne sont pas apparies
+ pour le recollement gÃ©omÃ©trique des GROUP_NO :  %(k1)s  et  %(k2)s  certains noeuds ne sont pas apparies
 """),
 
 69: _(u"""
@@ -319,7 +319,7 @@ cata_msg={
 """),
 
 70: _(u"""
- la sous-structuration n'est possible qu'en mécanique
+ la sous-structuration n'est possible qu'en mÃ©canique
 """),
 
 71: _(u"""
@@ -339,31 +339,31 @@ cata_msg={
 """),
 
 76: _(u"""
- ddl non prévu. on attend: DX
+ ddl non prÃ©vu. on attend: DX
 """),
 
 77: _(u"""
- ddls non prévus
+ ddls non prÃ©vus
 """),
 
 79: _(u"""
- le calcul de réponse pour ce type de résultat n'est disponible que sur les MACR_ELEM_STAT obtenus a partir de la mesure
+ le calcul de rÃ©ponse pour ce type de rÃ©sultat n'est disponible que sur les MACR_ELEM_STAT obtenus a partir de la mesure
 """),
 
 80: _(u"""
- la matrice de rigidité condensée n'a pas été calculée
+ la matrice de rigiditÃ© condensÃ©e n'a pas Ã©tÃ© calculÃ©e
 """),
 
 81: _(u"""
- la matrice de masse condensée n'a pas été calculée
+ la matrice de masse condensÃ©e n'a pas Ã©tÃ© calculÃ©e
 """),
 
 82: _(u"""
- nombre de ddl capteur insuffisant ou nombre vecteurs de base trop élevé, nombre ddl capteur : %(i1)d ,nombre vecteurs de base : %(i2)d
+ nombre de ddl capteur insuffisant ou nombre vecteurs de base trop Ã©levÃ©, nombre ddl capteur : %(i1)d ,nombre vecteurs de base : %(i2)d
 """),
 
 83: _(u"""
- nombre ddl interface insuffisant ou nombre modes identifies trop élevé, nombre ddl interface : %(i1)d ,nombre modes identifies : %(i2)d
+ nombre ddl interface insuffisant ou nombre modes identifies trop Ã©levÃ©, nombre ddl interface : %(i1)d ,nombre modes identifies : %(i2)d
 """),
 
 
@@ -380,7 +380,7 @@ cata_msg={
 
 87: _(u"""
  Le groupe de noeuds %(k1)s contient plus qu'un seul noeud. 
- Noeud utilisé pour réaliser l'opération demandée :  %(k2)s
+ Noeud utilisÃ© pour rÃ©aliser l'opÃ©ration demandÃ©e :  %(k2)s
 """),
 
 88: _(u"""
@@ -388,28 +388,28 @@ cata_msg={
 """),
 
 89: _(u"""
-  Pour le noeud %(k1)s de la maille %(k2)s, la coordonnée X est négative (x=%(r1)G).
+  Pour le noeud %(k1)s de la maille %(k2)s, la coordonnÃ©e X est nÃ©gative (x=%(r1)G).
 """),
 
 90: _(u"""
- Or, pour une modélisation axisymétrique, la coordonnée X doit être positive, nulle ou
- très faiblement négative ( > -1.d-6 * X_MAX)
+ Or, pour une modÃ©lisation axisymÃ©trique, la coordonnÃ©e X doit Ãªtre positive, nulle ou
+ trÃ¨s faiblement nÃ©gative ( > -1.d-6 * X_MAX)
 
  Conseils :
-  * Vérifiez votre maillage.
+  * VÃ©rifiez votre maillage.
   * Vous pouvez utiliser MODI_MAILLAGE / DEFORME pour repositionner votre maillage
     dans le demi espace  X >= 0
 """),
 
 93: _(u"""
-    pour le mode no : %(i1)d taux de flexibilité locale   :  %(r1)f
+    pour le mode no : %(i1)d taux de flexibilitÃ© locale   :  %(r1)f
  souplesse locale             :  %(r2)f
  taux effort tranchant local  :  %(r3)f
 
 """),
 
 94: _(u"""
-   -- bilan noeud de choc : %(k1)s  taux de restitution flexibilité      :  %(r1)f
+   -- bilan noeud de choc : %(k1)s  taux de restitution flexibilitÃ©      :  %(r1)f
   taux de restitution effort tranchant :  %(r2)f
 """),
 
@@ -422,11 +422,11 @@ cata_msg={
 """),
 
 98: _(u"""
- !! attention plus petite val singulière déformation statique :  %(r1)f !! nous la forçons a :  %(r2)f
+ !! attention plus petite val singuliÃ¨re dÃ©formation statique :  %(r1)f !! nous la forÃ§ons a :  %(r2)f
 """),
 
 99: _(u"""
- ---- conditionnement déformation statique :  %(r1)f
+ ---- conditionnement dÃ©formation statique :  %(r1)f
 """),
 
 }

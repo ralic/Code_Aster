@@ -1,4 +1,4 @@
-# -*- coding: iso-8859-1 -*-
+# coding=utf-8
 
 import geompy
 import smesh
@@ -44,7 +44,7 @@ bas  = Face_1.GroupOnGeom(bas,'bas',SMESH.EDGE)
 FACE = Face_1.GroupOnGeom(FACE,'FACE',SMESH.FACE)
 C    = Face_1.GroupOnGeom(C,'C',SMESH.NODE)
 
-#Mise à jour de l'arbre d'étude
+#Mise Ã  jour de l'arbre d'Ã©tude
 #==============================
 
 from salome import sg

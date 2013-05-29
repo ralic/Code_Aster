@@ -1,4 +1,4 @@
-# -*- coding: iso-8859-1 -*-
+# coding=utf-8
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -22,9 +22,9 @@ from cata_comportement import LoiComportement
 
 loi = LoiComportement(
    nom            = 'ROUSSELIER',
-   doc = """Relation de comportement élasto-plastique de G.Rousselier en grandes déformations.
-   Elle permet de rendre compte de la croissance des cavités et de décrire la rupture ductile.
-   Pour faciliter l'intégration de ce modèle, il est conseillé d'utiliser systématiquement le redécoupage global du pas de temps (SUBD_PAS).""",
+   doc = """Relation de comportement Ã©lasto-plastique de G.Rousselier en grandes dÃ©formations.
+   Elle permet de rendre compte de la croissance des cavitÃ©s et de dÃ©crire la rupture ductile.
+   Pour faciliter l'intÃ©gration de ce modÃ¨le, il est conseillÃ© d'utiliser systÃ©matiquement le redÃ©coupage global du pas de temps (SUBD_PAS).""",
    num_lc         = 36,
    nb_vari        = 9,
    nom_vari       = ('EPSPEQ','POROSITE','EPSEXX','EPSEYY','EPSEZZ','EPSEXY','EPSEXZ','EPSEYZ','INDIPLAS'),

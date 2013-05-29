@@ -1,4 +1,4 @@
-# -*- coding: iso-8859-1 -*-
+# coding=utf-8
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -21,7 +21,7 @@
 cata_msg = {
 
 1 : _(u"""
-La charge <%(k1)s> a été utilisée plus d'une fois dans EXCIT: il faut la supprimer.
+La charge <%(k1)s> a Ã©tÃ© utilisÃ©e plus d'une fois dans EXCIT: il faut la supprimer.
 """),
 
 2 : _(u"""
@@ -29,17 +29,17 @@ Il n'y a aucune charge dans le mot-clef facteur EXCIT. Ce n'est pas possible ave
 """),
 
 22 : _(u"""
-La charge <%(k1)s> n'est pas mécanique.
+La charge <%(k1)s> n'est pas mÃ©canique.
 """),
 
 23 : _(u"""
 La charge <%(k1)s> est de type Dirichlet :
- elle ne peut pas être suiveuse.
+ elle ne peut pas Ãªtre suiveuse.
 """),
 
 24 : _(u"""
-La charge <%(k1)s> est de type cinématique (AFFE_CHAR_CINE):
- elle ne peut pas être différentielle.
+La charge <%(k1)s> est de type cinÃ©matique (AFFE_CHAR_CINE):
+ elle ne peut pas Ãªtre diffÃ©rentielle.
 """),
 
 
@@ -47,8 +47,8 @@ La charge <%(k1)s> est de type cinématique (AFFE_CHAR_CINE):
 
 
 27 : _(u"""
-La charge <%(k1)s> est de type cinématique (AFFE_CHAR_CINE):
- elle ne peut pas être pilotée.
+La charge <%(k1)s> est de type cinÃ©matique (AFFE_CHAR_CINE):
+ elle ne peut pas Ãªtre pilotÃ©e.
 """),
 
 28 : _(u"""
@@ -56,12 +56,12 @@ On ne peut piloter la charge <%(k1)s> car c'est une charge fonction du temps
 """),
 
 34 : _(u"""
-La charge de type EVOL_CHAR <%(k1)s>  ne peut pas être pilotée.
+La charge de type EVOL_CHAR <%(k1)s>  ne peut pas Ãªtre pilotÃ©e.
 """),
 
 38 : _(u"""
 La charge <%(k1)s> ne peut pas utiliser de fonction multiplicatrice FONC_MULT
- car elle est pilotée.
+ car elle est pilotÃ©e.
 """),
 
 39 : _(u"""
@@ -77,15 +77,15 @@ Le chargement FORCE_SOL n'est utilisable qu'en dynamique.
 """),
 
 51 : _(u"""
-Le chargement FORCE_SOL ne peut pas être de type suiveur
+Le chargement FORCE_SOL ne peut pas Ãªtre de type suiveur
 """),
 
 52 : _(u"""
-Le chargement FORCE_SOL ne peut pas être de type Dirichlet différentiel.
+Le chargement FORCE_SOL ne peut pas Ãªtre de type Dirichlet diffÃ©rentiel.
 """),
 
 53 : _(u"""
-Le chargement FORCE_SOL ne peut pas être une fonction.
+Le chargement FORCE_SOL ne peut pas Ãªtre une fonction.
 """),
 
 54 : _(u"""

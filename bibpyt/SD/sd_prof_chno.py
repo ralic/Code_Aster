@@ -1,4 +1,4 @@
-# -*- coding: iso-8859-1 -*-
+# coding=utf-8
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -29,7 +29,7 @@ class sd_prof_chno(AsBase):
 
 
     def exists(self):
-        # retourne "vrai" si la SD semble exister (et donc qu'elle peut etre vérifiée)
+        # retourne "vrai" si la SD semble exister (et donc qu'elle peut etre vÃ©rifiÃ©e)
         return self.PRNO.exists
 
     def check_1(self, checker):

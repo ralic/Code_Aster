@@ -1,4 +1,4 @@
-# -*- coding: iso-8859-1 -*-
+# coding=utf-8
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -22,7 +22,7 @@ from cata_comportement import LoiComportement
 
 loi = LoiComportement(
    nom            = 'ASSE_CORN',
-   doc = """Relation de comportement élasto-plastique isotherme pour les assemblages boulonnés de cornières de pylônes [R5.03.32]""",
+   doc = """Relation de comportement Ã©lasto-plastique isotherme pour les assemblages boulonnÃ©s de corniÃ¨res de pylÃ´nes [R5.03.32]""",
    num_lc         = 9999,
    nb_vari        = 7,
    nom_vari       = ('ASSCORN1','ASSCORN2','ASSCORN3','ASSCORN4','ASSCORN5','ASSCORN6','ASSCORN7'),

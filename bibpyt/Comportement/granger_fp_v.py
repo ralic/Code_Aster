@@ -1,4 +1,4 @@
-# -*- coding: iso-8859-1 -*-
+# coding=utf-8
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -21,7 +21,7 @@ from cata_comportement import LoiComportement
 
 loi = LoiComportement(
    nom            = 'GRANGER_FP_V',
-   doc = """Comportement de fluage propre du beton avec prise en compte du phénomène de vieillissement R7.01.01""",
+   doc = """Comportement de fluage propre du beton avec prise en compte du phÃ©nomÃ¨ne de vieillissement R7.01.01""",
    num_lc         = 26,
    nb_vari        = 55,
    nom_vari       = ('VG1','VG2','VG3','VG4','VG5','VG6','VG7','VG8','VG9','VG10','VG11','VG12','VG13','VG14','VG15','VG16','VG17','VG18','VG19','VG20','VG21','VG22','VG23','VG24','VG25','VG26','VG27','VG28','VG29','VG30','VG31','VG32','VG33','VG34','VG35','VG36','VG37','VG38','VG39','VG40','VG41','VG42','VG43','VG44','VG45','VG46','VG47','VG48','VG49','VG50','VG51','VG52','VG53','VG54','VG55'),

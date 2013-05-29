@@ -1,4 +1,4 @@
-# -*- coding: iso-8859-1 -*-
+# coding=utf-8
 # person_in_charge: aimery.assire at edf.fr
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -29,7 +29,7 @@ from recal import Affiche_Param
 
 class Message :
    """
-       classe gérant l'affichage des messages concernant le déroulement de l'optmisation
+       classe gÃ©rant l'affichage des messages concernant le dÃ©roulement de l'optmisation
    """
 
    # ------------------------------------------------------------------------------

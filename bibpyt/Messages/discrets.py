@@ -1,4 +1,4 @@
-# -*- coding: iso-8859-1 -*-
+# coding=utf-8
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -18,52 +18,52 @@
 # ======================================================================
 # person_in_charge: josselin.delmas at edf.fr
 
-# Messages pour les éléments discrets non-linéaires
+# Messages pour les Ã©lÃ©ments discrets non-linÃ©aires
 cata_msg={
 
 1: _(u"""
-Pour l'élément discret %(k1)s .
-Il n'y a pas de rotation non-linéaire possible.
+Pour l'Ã©lÃ©ment discret %(k1)s .
+Il n'y a pas de rotation non-linÃ©aire possible.
 """),
 
 2: _(u"""
-Pour l'élément discret %(k1)s .
-Il n'y a pas de comportement non-linéaire possible suivant Z
+Pour l'Ã©lÃ©ment discret %(k1)s .
+Il n'y a pas de comportement non-linÃ©aire possible suivant Z
 ou en rotation autour de X,Y en 2D.
 """),
 
 3: _(u"""
-Pour l'élément discret %(k1)s .
-Il n'y a pas de comportement non-linéaire possible en rotation
+Pour l'Ã©lÃ©ment discret %(k1)s .
+Il n'y a pas de comportement non-linÃ©aire possible en rotation
 ou suivant Z en 2D.
 """),
 
 4: _(u"""
-Pour l'élément discret.
+Pour l'Ã©lÃ©ment discret.
 Le pas de temps est devenu trop petit : %(r1)12.5E .
 """),
 
 5: _(u"""
-Pour l'élément discret %(k5)s .
-Les caractéristiques sont obligatoirement données dans le repère local du discret.
+Pour l'Ã©lÃ©ment discret %(k5)s .
+Les caractÃ©ristiques sont obligatoirement donnÃ©es dans le repÃ¨re local du discret.
 
 Pour information :
-   Modèle   : <%(k1)s>, Option   : <%(k2)s>
+   ModÃ¨le   : <%(k1)s>, Option   : <%(k2)s>
    Comportement : <%(k3)s>, Relation : <%(k4)s>
    Maille   : <%(k5)s>
 """),
 
 6: _(u"""
-Pour les éléments discrets il faut définir un repère dans AFFE_CARA_ELEM
+Pour les Ã©lÃ©ments discrets il faut dÃ©finir un repÃ¨re dans AFFE_CARA_ELEM
 
 Pour information :
-   Modèle   : <%(k1)s>, Option   : <%(k2)s>
+   ModÃ¨le   : <%(k1)s>, Option   : <%(k2)s>
    Comportement : <%(k3)s>, Relation : <%(k4)s>
    Maille   : <%(k5)s>
 """),
 
 7 : _(u"""
-Le Comportement <%(k4)s> affecté à un DISCRET est non valide
+Le Comportement <%(k4)s> affectÃ© Ã  un DISCRET est non valide
 Les comportements valides sont :
    COMP_ELAS   ELAS
 
@@ -72,7 +72,7 @@ Les comportements valides sont :
                DIS_GOUJ2E
 
 Pour information :
-   Modèle   : <%(k1)s>, Option   : <%(k2)s>
+   ModÃ¨le   : <%(k1)s>, Option   : <%(k2)s>
    Comportement : <%(k3)s>, Relation : <%(k4)s>
    Maille   : <%(k5)s>
 """),
@@ -81,105 +81,105 @@ Pour information :
 Pour les discrets, avec COMP_ELAS le seul comportement valide est ELAS.
 
 Pour information :
-   Modèle   : <%(k1)s>, Option   : <%(k2)s>
+   ModÃ¨le   : <%(k1)s>, Option   : <%(k2)s>
    Comportement : <%(k3)s>, Relation : <%(k4)s>
    Maille   : <%(k5)s>
 """),
 
 10 : _(u"""
-Pour l'élément DISCRET de modèle <%(k1)s> la matrice de décharge est non développée.
+Pour l'Ã©lÃ©ment DISCRET de modÃ¨le <%(k1)s> la matrice de dÃ©charge est non dÃ©veloppÃ©e.
 
 Pour information :
-   Modèle   : <%(k1)s>, Option   : <%(k2)s>
+   ModÃ¨le   : <%(k1)s>, Option   : <%(k2)s>
    Comportement : <%(k3)s>, Relation : <%(k4)s>
    Maille   : <%(k5)s>
 """),
 
 11 : _(u"""
-La loi <%(k4)s> doit être utilisée avec des éléments du type DIS_TR_L : élément SEG2 + modélisation DIS_TR
+La loi <%(k4)s> doit Ãªtre utilisÃ©e avec des Ã©lÃ©ments du type DIS_TR_L : Ã©lÃ©ment SEG2 + modÃ©lisation DIS_TR
 
 Pour information :
-   Modèle   : <%(k1)s>, Option   : <%(k2)s>
+   ModÃ¨le   : <%(k1)s>, Option   : <%(k2)s>
    Comportement : <%(k3)s>, Relation : <%(k4)s>
    Maille   : <%(k5)s>
 """),
 
 12 : _(u"""
-La commande %(k4)s ne sait pas traiter les matrices non-symétriques, pour l'option %(k1)s.
-Message de la routine %(k3)s, pour l'élément %(k2)s.
+La commande %(k4)s ne sait pas traiter les matrices non-symÃ©triques, pour l'option %(k1)s.
+Message de la routine %(k3)s, pour l'Ã©lÃ©ment %(k2)s.
 """),
 
 13 : _(u"""
-L'élément %(k1)s est inconnu pour la maille %(k3)s.
+L'Ã©lÃ©ment %(k1)s est inconnu pour la maille %(k3)s.
 Message de la routine %(k2)s.
 """),
 
 14 : _(u"""
-L'option %(k1)s est inconnue pour l'élément %(k2)s.
+L'option %(k1)s est inconnue pour l'Ã©lÃ©ment %(k2)s.
 Message de la routine %(k3)s.
 """),
 
 15 : _(u"""
-L'option %(k1)s ne sait pas traiter l'élément %(k2)s.
+L'option %(k1)s ne sait pas traiter l'Ã©lÃ©ment %(k2)s.
 Message de la routine %(k3)s.
 """),
 
 16 : _(u"""
-Il est interdit d'avoir des éléments discrets 2D et 3D dans un modèle.
+Il est interdit d'avoir des Ã©lÃ©ments discrets 2D et 3D dans un modÃ¨le.
 """),
 
 17 : _(u"""
-Votre modélisation ne comporte pas d'élément discret.
+Votre modÃ©lisation ne comporte pas d'Ã©lÃ©ment discret.
 """),
 
 18 : _(u"""
-Seul DEFORMATION ='PETIT' est possible pour les éléments discrets.
+Seul DEFORMATION ='PETIT' est possible pour les Ã©lÃ©ments discrets.
 """),
 
 20 : _(u"""
-Votre modélisation doit être soit 2D soit 3D.
-Il est interdit d'avoir des discrets sur une modélisation %(k1)s.
+Votre modÃ©lisation doit Ãªtre soit 2D soit 3D.
+Il est interdit d'avoir des discrets sur une modÃ©lisation %(k1)s.
 """),
 
 21 :_(u"""
 AFFE_CARA_ELEM/RIGI_PARASOL
   Le nombre de valeurs fournies sous VALE ne correspond pas au nombre attendu.
-  Vous devez vérifier l'adéquation des dimensions des éléments sous CARA avec le nombre de valeur sous VALE.
+  Vous devez vÃ©rifier l'adÃ©quation des dimensions des Ã©lÃ©ments sous CARA avec le nombre de valeur sous VALE.
 """),
 
 25 :_(u"""
-Vous utilisez des discrets %(k1)s alors que vous n'avez pas affecté ses caractéristiques.
-Il faut vérifier les affectations sous AFFE_CARA_ELEM/DISCRET OU DISCRET_2D.
+Vous utilisez des discrets %(k1)s alors que vous n'avez pas affectÃ© ses caractÃ©ristiques.
+Il faut vÃ©rifier les affectations sous AFFE_CARA_ELEM/DISCRET OU DISCRET_2D.
 """),
 
 26 :_(u"""
-Vous utilisez la matrice de MASSE pour un discret %(k1)s alors que vous n'avez pas affecté
-les caractéristiques de masses. Par défaut la masse est nulle.
-Il faut vérifier les affectations sous AFFE_CARA_ELEM/DISCRET.
+Vous utilisez la matrice de MASSE pour un discret %(k1)s alors que vous n'avez pas affectÃ©
+les caractÃ©ristiques de masses. Par dÃ©faut la masse est nulle.
+Il faut vÃ©rifier les affectations sous AFFE_CARA_ELEM/DISCRET.
 """),
 
 27 :_(u"""
-Vous utilisez la matrice de RAIDEUR pour un discret %(k1)s alors que vous n'avez pas affecté
-les caractéristiques de raideurs. Par défaut la raideur est nulle.
-Il faut vérifier les affectations sous AFFE_CARA_ELEM/DISCRET.
+Vous utilisez la matrice de RAIDEUR pour un discret %(k1)s alors que vous n'avez pas affectÃ©
+les caractÃ©ristiques de raideurs. Par dÃ©faut la raideur est nulle.
+Il faut vÃ©rifier les affectations sous AFFE_CARA_ELEM/DISCRET.
 """),
 
 28 :_(u"""
-Vous utilisez la matrice d'amortissement pour un discrets %(k1)s alors que vous n'avez pas affecté
-les caractéristiques d'amortissements. Par défaut l'amortissement est nul.
-Il faut vérifier les affectations sous AFFE_CARA_ELEM/DISCRET.
+Vous utilisez la matrice d'amortissement pour un discrets %(k1)s alors que vous n'avez pas affectÃ©
+les caractÃ©ristiques d'amortissements. Par dÃ©faut l'amortissement est nul.
+Il faut vÃ©rifier les affectations sous AFFE_CARA_ELEM/DISCRET.
 """),
 
 30 :_(u"""Informations :
    Maille de nom %(k1)s, de %(i1)d noeud(s).
-   Nom et coordonnées des noeuds :
+   Nom et coordonnÃ©es des noeuds :
 """),
 31 :_(u"""      %(k1)8s   %(r1)12.5E   %(r2)12.5E   %(r3)12.5E
 """),
 
 
 40 :_(u"""
-L'utilisation des discrets non-symétriques n'est actuellement pas possible pour des calculs non-linéaires.
+L'utilisation des discrets non-symÃ©triques n'est actuellement pas possible pour des calculs non-linÃ©aires.
 """),
 
 }

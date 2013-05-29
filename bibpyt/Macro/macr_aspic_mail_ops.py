@@ -1,4 +1,4 @@
-# -*- coding: iso-8859-1 -*-
+# coding=utf-8
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -28,7 +28,7 @@ def write_file_dgib_ASPID0(nomFichierDATG,UNITD, EPT1, DET1, D1, D2, EPT2, DET2,
                            ALPHA, JEU, EPC, DEC, XMAX, TYPMAI, THETA, TYPELE,
                            ITYPSO, DPENE, NIVMAG, loc_datg):
   import aster
-# Ouverture du fichier d'entrée de commandes
+# Ouverture du fichier d'entrÃ©e de commandes
   fdgib=open(nomFichierDATG,'w')
   texte = """
 ****************************************************************
@@ -68,7 +68,7 @@ def write_file_dgib_ASPID1(nomFichierDATG,UNITD, EPT1, DET1, D1, D2, EPT2, DET2,
                            TFISS,ZETA,ITYPSO,DPENE, NIVMAG, loc_datg) :
 
   import aster
-# Ouverture du fichier d'entrée de commandes
+# Ouverture du fichier d'entrÃ©e de commandes
   fdgib=open(nomFichierDATG,'w')
   POIVIR = ' ;                                         \n'
   texte='****************************************************************\n'
@@ -364,7 +364,7 @@ def write_file_dgib_ASPID2(nomFichierDATG,UNITD, EPT1, DET1, D1, D2, EPT2, DET2,
   message=message+ ' PROFONDEUR SUR EQUERRE   : %.2f \n'%A
   aster.affiche('MESSAGE',message)
 
-# Ouverture du fichier d'entrée de commandes
+# Ouverture du fichier d'entrÃ©e de commandes
 
   fdgib=open(nomFichierDATG,'w')
   POIVIR = ' ;                                         \n'
@@ -829,7 +829,7 @@ def macr_aspic_mail_ops(self,EXEC_MAILLAGE,TYPE_ELEM,RAFF_MAIL,TUBULURE,
                     FORMAT = impr['FORMAT'],**motscles )
 #
 #
-#     --- Verification profondeur fissure (courte débouchante) ---
+#     --- Verification profondeur fissure (courte dÃ©bouchante) ---
 #
   if FISCOU  and not (TFISS=='NON_DEB')    :
       nomres=DEFI_GROUP( reuse=nomres,

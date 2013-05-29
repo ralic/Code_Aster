@@ -68,4 +68,3 @@ sut = sut et lp1p2 et lp1p111 et lp111p41 et lp4p41 et lp2p4  ;
 opti sauv format 
  '/home/cibhhgb/g_theta/2d/sut.mgib' ;
  sauv format sut ;
-

@@ -1,4 +1,4 @@
-# -*- coding: iso-8859-1 -*-
+# coding=utf-8
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -21,24 +21,24 @@
 cata_msg={
 
 1: _(u"""
- pas fréquentiel négatif ou nul
+ pas frÃ©quentiel nÃ©gatif ou nul
 """),
 
 2: _(u"""
-  la méthode est de CORCOS. on a  besoin des vecteurs directeurs VECT_X et VECT_Y de la plaque
+  la mÃ©thode est de CORCOS. on a  besoin des vecteurs directeurs VECT_X et VECT_Y de la plaque
 """),
 
 3: _(u"""
-  la méthode est de AU-YANG
+  la mÃ©thode est de AU-YANG
   on a besoin du  vecteur de l'axe VECT_X et de l'origine ORIG_AXE du cylindre
 """),
 
 4: _(u"""
- le type de spectre est incompatible avec la configuration étudiée
+ le type de spectre est incompatible avec la configuration Ã©tudiÃ©e
 """),
 
 5: _(u"""
- problème rencontré lors de l'interpolation d'un interspectre
+ problÃ¨me rencontrÃ© lors de l'interpolation d'un interspectre
 """),
 
 6: _(u"""
@@ -46,45 +46,45 @@ cata_msg={
 """),
 
 7: _(u"""
- l'intégrale double pour le calcul de la longueur de corrélation ne converge pas.
+ l'intÃ©grale double pour le calcul de la longueur de corrÃ©lation ne converge pas.
  JM,IM  = %(i1)d , %(i2)d
  valeur finale = %(r1)f
- valeur au pas précédent = %(r2)f
+ valeur au pas prÃ©cÃ©dent = %(r2)f
  erreur relative = %(r3)f
 """),
 
 8: _(u"""
- la liste de noms doit être de même longueur que la liste de GROUP_MA
+ la liste de noms doit Ãªtre de mÃªme longueur que la liste de GROUP_MA
 """),
 
 9: _(u"""
- le GROUP_NO :  %(k1)s  existe déjà, on ne le crée donc pas.
+ le GROUP_NO :  %(k1)s  existe dÃ©jÃ , on ne le crÃ©e donc pas.
 """),
 
 10: _(u"""
- le nom  %(k1)s  existe déjà
+ le nom  %(k1)s  existe dÃ©jÃ 
 """),
 
 11: _(u"""
- le groupe  %(k1)s  existe déjà
+ le groupe  %(k1)s  existe dÃ©jÃ 
 """),
 
 12: _(u"""
- Vous avez demandé l'affectation d'un modèle sur un %(k1)s,
+ Vous avez demandÃ© l'affectation d'un modÃ¨le sur un %(k1)s,
  or le maillage %(k2)s n'en contient aucun.
- L'affectation du modèle n'est donc pas possible.
+ L'affectation du modÃ¨le n'est donc pas possible.
 """),
 
 13: _(u"""
- L'interpolation par spline cubique du câble numéro %(i1)d renseigné dans
- DEFI_CABLE_BP a échoué.
- Le nombre de changements de signe de la dérivée seconde en X,Y ou Z de
- la trajectoire du câble par rapport à l'abscisse curviligne est : %(i2)d.
- Alors que le nombre de variations de la dérivée première est : %(i3)d.
+ L'interpolation par spline cubique du cÃ¢ble numÃ©ro %(i1)d renseignÃ© dans
+ DEFI_CABLE_BP a Ã©chouÃ©.
+ Le nombre de changements de signe de la dÃ©rivÃ©e seconde en X,Y ou Z de
+ la trajectoire du cÃ¢ble par rapport Ã  l'abscisse curviligne est : %(i2)d.
+ Alors que le nombre de variations de la dÃ©rivÃ©e premiÃ¨re est : %(i3)d.
 
- Ceci est certainement dû à des irrégularités dans le maillage.
+ Ceci est certainement dÃ» Ã  des irrÃ©gularitÃ©s dans le maillage.
 
- L'interpolation est donc faite par une méthode discrète.
+ L'interpolation est donc faite par une mÃ©thode discrÃ¨te.
 """),
 
 15: _(u"""
@@ -92,55 +92,55 @@ cata_msg={
 """),
 
 16: _(u"""
- FAISCEAU_AXIAL : il faut autant d'arguments pour les opérandes <TYPE_GRILLE> et <COOR_GRILLE>
+ FAISCEAU_AXIAL : il faut autant d'arguments pour les opÃ©randes <TYPE_GRILLE> et <COOR_GRILLE>
 """),
 
 17: _(u"""
- FAISCEAU_AXIAL, opérande <TYPE_GRILLE> : détection d'une valeur illicite
+ FAISCEAU_AXIAL, opÃ©rande <TYPE_GRILLE> : dÃ©tection d'une valeur illicite
 """),
 
 18: _(u"""
- FAISCEAU_AXIAL : il faut autant d'arguments pour les opérandes <LONG_TYPG>, <LARG_TYPG>, <EPAI_TYPG>, <RUGO_TYPG>, <COEF_TRAI_TYPG> et <COEF_DPOR_TYPG>
+ FAISCEAU_AXIAL : il faut autant d'arguments pour les opÃ©randes <LONG_TYPG>, <LARG_TYPG>, <EPAI_TYPG>, <RUGO_TYPG>, <COEF_TRAI_TYPG> et <COEF_DPOR_TYPG>
 """),
 
 19: _(u"""
- <FAISCEAU_TRANS> le mot clé <COUPLAGE> doit être renseigné au moins une fois sous l'une des occurrence du mot-clé facteur <FAISCEAU_TRANS>
+ <FAISCEAU_TRANS> le mot clÃ© <COUPLAGE> doit Ãªtre renseignÃ© au moins une fois sous l'une des occurrence du mot-clÃ© facteur <FAISCEAU_TRANS>
 """),
 
 20: _(u"""
- <FAISCEAU_TRANS> : si couplage <TYPE_PAS> , <TYPE_RESEAU> et <PAS> mots-clés obligatoires dans au moins l une des occurrences du mot-clé facteur
+ <FAISCEAU_TRANS> : si couplage <TYPE_PAS> , <TYPE_RESEAU> et <PAS> mots-clÃ©s obligatoires dans au moins l une des occurrences du mot-clÃ© facteur
 """),
 
 21: _(u"""
- FAISCEAU_TRANS : si pas de couplage <COEF_MASS_AJOU> mot-clé obligatoire dans au moins l une des occurrences du mot clé facteur <FAISCEAU_TRANS>
+ FAISCEAU_TRANS : si pas de couplage <COEF_MASS_AJOU> mot-clÃ© obligatoire dans au moins l une des occurrences du mot clÃ© facteur <FAISCEAU_TRANS>
 """),
 
 22: _(u"""
- <FAISCEAU_TRANS> : le mot-clé <CARA_ELEM> doit être renseigne au moins une fois dans l une des occurrences du mot-clé facteur <FAISCEAU_TRANS>
+ <FAISCEAU_TRANS> : le mot-clÃ© <CARA_ELEM> doit Ãªtre renseigne au moins une fois dans l une des occurrences du mot-clÃ© facteur <FAISCEAU_TRANS>
 """),
 
 23: _(u"""
- <FAISCEAU_TRANS> : le mot-clé <PROF_RHO_F_INT> doit être renseigne au moins une fois dans l une des occurrences du mot-clé facteur <FAISCEAU_TRANS>
+ <FAISCEAU_TRANS> : le mot-clÃ© <PROF_RHO_F_INT> doit Ãªtre renseigne au moins une fois dans l une des occurrences du mot-clÃ© facteur <FAISCEAU_TRANS>
 """),
 
 24: _(u"""
- <FAISCEAU_TRANS> : le mot-clé <PROF_RHO_F_EXT> doit être renseigne au moins une fois dans l une des occurrences du mot-clé facteur <FAISCEAU_TRANS>
+ <FAISCEAU_TRANS> : le mot-clÃ© <PROF_RHO_F_EXT> doit Ãªtre renseigne au moins une fois dans l une des occurrences du mot-clÃ© facteur <FAISCEAU_TRANS>
 """),
 
 25: _(u"""
- <FAISCEAU_TRANS> : le mot-clé <NOM_CMP> doit être renseigne au moins une fois dans l une des occurrences du mot-clé facteur <FAISCEAU_TRANS>
+ <FAISCEAU_TRANS> : le mot-clÃ© <NOM_CMP> doit Ãªtre renseigne au moins une fois dans l une des occurrences du mot-clÃ© facteur <FAISCEAU_TRANS>
 """),
 
 26: _(u"""
- grappe : si prise en compte du couplage, les mots-clés <grappe_2>, <noeud>, <CARA_ELEM>, <MODELE> et <RHO_FLUI> doivent être renseignes
+ grappe : si prise en compte du couplage, les mots-clÃ©s <grappe_2>, <noeud>, <CARA_ELEM>, <MODELE> et <RHO_FLUI> doivent Ãªtre renseignes
 """),
 
 27: _(u"""
- FAISCEAU_AXIAL : plusieurs occurrences pour le mot-clé facteur => faisceau équivalent => mots-clés <RAYON_TUBE> et <COOR_TUBE> obligatoires a chaque occurrence
+ FAISCEAU_AXIAL : plusieurs occurrences pour le mot-clÃ© facteur => faisceau Ã©quivalent => mots-clÃ©s <RAYON_TUBE> et <COOR_TUBE> obligatoires a chaque occurrence
 """),
 
 28: _(u"""
- FAISCEAU_AXIAL : on attend un nombre pair d arguments pour le mot-clé <COOR_TUBE>. il faut fournir deux coordonnées pour définir la position de chacun des tubes du faisceau réel
+ FAISCEAU_AXIAL : on attend un nombre pair d arguments pour le mot-clÃ© <COOR_TUBE>. il faut fournir deux coordonnÃ©es pour dÃ©finir la position de chacun des tubes du faisceau rÃ©el
 """),
 
 29: _(u"""
@@ -148,23 +148,23 @@ cata_msg={
 """),
 
 30: _(u"""
- FAISCEAU_AXIAL : le vecteur directeur du faisceau doit être l un des vecteurs unitaires de la base liée au repère global
+ FAISCEAU_AXIAL : le vecteur directeur du faisceau doit Ãªtre l un des vecteurs unitaires de la base liÃ©e au repÃ¨re global
 """),
 
 31: _(u"""
- FAISCEAU_AXIAL : il faut 4 données pour le mot-clé <pesanteur> : la norme du vecteur et ses composantes dans le repère global, dans cet ordre
+ FAISCEAU_AXIAL : il faut 4 donnÃ©es pour le mot-clÃ© <pesanteur> : la norme du vecteur et ses composantes dans le repÃ¨re global, dans cet ordre
 """),
 
 32: _(u"""
- FAISCEAU_AXIAL : il faut 3 ou 4 données pour le mot-clé <CARA_PAROI> : 3 pour une enceinte circulaire : <YC>,<ZC>,<r>. 4 pour une enceinte rectangulaire : <YC>,<ZC>,<HY>,<HZ>
+ FAISCEAU_AXIAL : il faut 3 ou 4 donnÃ©es pour le mot-clÃ© <CARA_PAROI> : 3 pour une enceinte circulaire : <YC>,<ZC>,<r>. 4 pour une enceinte rectangulaire : <YC>,<ZC>,<HY>,<HZ>
 """),
 
 33: _(u"""
- FAISCEAU_AXIAL : pour définir une enceinte, il faut autant d arguments pour les mots-clés <CARA_PAROI> et <VALE_PAROI>
+ FAISCEAU_AXIAL : pour dÃ©finir une enceinte, il faut autant d arguments pour les mots-clÃ©s <CARA_PAROI> et <VALE_PAROI>
 """),
 
 34: _(u"""
- FAISCEAU_AXIAL : mot-clé <CARA_PAROI>. données incohérentes pour une enceinte circulaire
+ FAISCEAU_AXIAL : mot-clÃ© <CARA_PAROI>. donnÃ©es incohÃ©rentes pour une enceinte circulaire
 """),
 
 35: _(u"""
@@ -172,7 +172,7 @@ cata_msg={
 """),
 
 36: _(u"""
- FAISCEAU_AXIAL : mot-clé <CARA_PAROI>. données incohérentes pour une enceinte rectangulaire
+ FAISCEAU_AXIAL : mot-clÃ© <CARA_PAROI>. donnÃ©es incohÃ©rentes pour une enceinte rectangulaire
 """),
 
 37: _(u"""
@@ -180,27 +180,27 @@ cata_msg={
 """),
 
 38: _(u"""
- FAISCEAU_AXIAL : le mot-clé <ANGL_VRIL> est obligatoire quand on définit une enceinte rectangulaire
+ FAISCEAU_AXIAL : le mot-clÃ© <ANGL_VRIL> est obligatoire quand on dÃ©finit une enceinte rectangulaire
 """),
 
 39: _(u"""
- FAISCEAU_AXIAL : le mot-clé <VECT_X> est obligatoire si il n y a qu'une seule occurrence pour le mot-clé facteur. sinon, il doit apparaître dans au moins une des occurrences
+ FAISCEAU_AXIAL : le mot-clÃ© <VECT_X> est obligatoire si il n y a qu'une seule occurrence pour le mot-clÃ© facteur. sinon, il doit apparaÃ®tre dans au moins une des occurrences
 """),
 
 40: _(u"""
- FAISCEAU_AXIAL : le mot-clé <PROF_RHO_FLUI> est obligatoire si il n y a qu'une seule occurrence pour le mot-clé facteur. sinon, il doit apparaître dans au moins une des occurrences
+ FAISCEAU_AXIAL : le mot-clÃ© <PROF_RHO_FLUI> est obligatoire si il n y a qu'une seule occurrence pour le mot-clÃ© facteur. sinon, il doit apparaÃ®tre dans au moins une des occurrences
 """),
 
 41: _(u"""
- FAISCEAU_AXIAL : le mot-clé <PROF_VISC_CINE> est obligatoire si il n y a qu'une seule occurrence pour le mot-clé facteur. sinon, il doit apparaître dans au moins une des occurrences
+ FAISCEAU_AXIAL : le mot-clÃ© <PROF_VISC_CINE> est obligatoire si il n y a qu'une seule occurrence pour le mot-clÃ© facteur. sinon, il doit apparaÃ®tre dans au moins une des occurrences
 """),
 
 42: _(u"""
- FAISCEAU_AXIAL : le mot-clé <RUGO_TUBE> est obligatoire si il n y a qu'une seule occurrence pour le mot-clé facteur. sinon, il doit apparaître dans au moins une des occurrences
+ FAISCEAU_AXIAL : le mot-clÃ© <RUGO_TUBE> est obligatoire si il n y a qu'une seule occurrence pour le mot-clÃ© facteur. sinon, il doit apparaÃ®tre dans au moins une des occurrences
 """),
 
 43: _(u"""
- FAISCEAU_AXIAL : les mots-clés <CARA_PAROI> et <VALE_PAROI> sont obligatoires si il n y a qu'une seule occurrence pour le mot-clé facteur. sinon, ils doivent apparaître ensemble dans au moins une des occurrences. le mot-clé <ANGL_VRIL> doit également être présent si l on définit une enceinte rectangulaire
+ FAISCEAU_AXIAL : les mots-clÃ©s <CARA_PAROI> et <VALE_PAROI> sont obligatoires si il n y a qu'une seule occurrence pour le mot-clÃ© facteur. sinon, ils doivent apparaÃ®tre ensemble dans au moins une des occurrences. le mot-clÃ© <ANGL_VRIL> doit Ã©galement Ãªtre prÃ©sent si l on dÃ©finit une enceinte rectangulaire
 """),
 
 44: _(u"""
@@ -208,89 +208,89 @@ cata_msg={
 """),
 
 45: _(u"""
- COQUE_COAX : l axe de révolution des coques doit avoir pour vecteur directeur l un des vecteurs unitaires de la base liée au repère global
+ COQUE_COAX : l axe de rÃ©volution des coques doit avoir pour vecteur directeur l un des vecteurs unitaires de la base liÃ©e au repÃ¨re global
 """),
 
 46: _(u"""
- caractérisation de la topologie de la structure béton : le groupe de mailles associe ne doit contenir que des mailles 2d ou que des mailles 3d
+ caractÃ©risation de la topologie de la structure bÃ©ton : le groupe de mailles associe ne doit contenir que des mailles 2d ou que des mailles 3d
 """),
 
 47: _(u"""
- récupération du matériau béton : les caractéristiques matérielles n ont pas été affectées a la maille no %(k1)s  appartenant au groupe de mailles                                 associe a la structure béton
+ rÃ©cupÃ©ration du matÃ©riau bÃ©ton : les caractÃ©ristiques matÃ©rielles n ont pas Ã©tÃ© affectÃ©es a la maille no %(k1)s  appartenant au groupe de mailles                                 associe a la structure bÃ©ton
 """),
 
 48: _(u"""
- récupération des caractéristiques du matériau béton : absence de relation de comportement de type <BPEL_BETON> ou <ETCC_BETON>
+ rÃ©cupÃ©ration des caractÃ©ristiques du matÃ©riau bÃ©ton : absence de relation de comportement de type <BPEL_BETON> ou <ETCC_BETON>
 """),
 
 49: _(u"""
- le calcul de la tension est fait selon BPEL. il ne peut y avoir qu'un seule jeu de données. vérifiez la cohérence du paramètre PERT_FLUA  dans les DEFI_MATERIAU
+ le calcul de la tension est fait selon BPEL. il ne peut y avoir qu'un seule jeu de donnÃ©es. vÃ©rifiez la cohÃ©rence du paramÃ¨tre PERT_FLUA  dans les DEFI_MATERIAU
 """),
 
 51: _(u"""
- le calcul de la tension est fait selon BPEL. il ne peut y avoir qu'un seule jeu de données. vérifiez la cohérence du paramètre PERT_RETR dans les DEFI_MATERIAU
+ le calcul de la tension est fait selon BPEL. il ne peut y avoir qu'un seule jeu de donnÃ©es. vÃ©rifiez la cohÃ©rence du paramÃ¨tre PERT_RETR dans les DEFI_MATERIAU
 """),
 
 52: _(u"""
- récupération des caractéristique du matériau béton, relation de comportement <BPEL_BETON> : au moins un paramètre indéfini
+ rÃ©cupÃ©ration des caractÃ©ristique du matÃ©riau bÃ©ton, relation de comportement <BPEL_BETON> : au moins un paramÃ¨tre indÃ©fini
 """),
 
 53: _(u"""
- récupération des caractéristiques du matériau béton, relation de comportement <BPEL_BETON> : au moins une valeur de paramètre invalide
+ rÃ©cupÃ©ration des caractÃ©ristiques du matÃ©riau bÃ©ton, relation de comportement <BPEL_BETON> : au moins une valeur de paramÃ¨tre invalide
 """),
 
 54: _(u"""
- caractérisations de la topologie du câble no %(k1)s  : on a trouve une maille d un type non acceptable
+ caractÃ©risations de la topologie du cÃ¢ble no %(k1)s  : on a trouve une maille d un type non acceptable
 """),
 
 55: _(u"""
- caractérisation de la topologie du câble no %(k1)s  : il existe plus de deux chemins possibles au départ du noeud  %(k2)s
+ caractÃ©risation de la topologie du cÃ¢ble no %(k1)s  : il existe plus de deux chemins possibles au dÃ©part du noeud  %(k2)s
 """),
 
 56: _(u"""
- caractérisation de la topologie du câble no %(k1)s  : il n existe aucun chemin possible au départ du noeud  %(k2)s
+ caractÃ©risation de la topologie du cÃ¢ble no %(k1)s  : il n existe aucun chemin possible au dÃ©part du noeud  %(k2)s
 """),
 
 57: _(u"""
- caractérisation de la topologie du câble no %(k1)s  : deux chemins continus possibles de  %(k2)s  a  %(k3)s  : ambiguïté
+ caractÃ©risation de la topologie du cÃ¢ble no %(k1)s  : deux chemins continus possibles de  %(k2)s  a  %(k3)s  : ambiguÃ¯tÃ©
 """),
 
 58: _(u"""
- caractérisation de la topologie du câble no %(k1)s  : aucun chemin continu valide
+ caractÃ©risation de la topologie du cÃ¢ble no %(k1)s  : aucun chemin continu valide
 """),
 
 59: _(u"""
- interpolation de la trajectoire du câble no %(k1)s  : deux noeuds sont géométriquement confondus
+ interpolation de la trajectoire du cÃ¢ble no %(k1)s  : deux noeuds sont gÃ©omÃ©triquement confondus
 """),
 
 60: _(u"""
- interpolation de la trajectoire du câble no %(k1)s  : détection d un point de rebroussement
+ interpolation de la trajectoire du cÃ¢ble no %(k1)s  : dÃ©tection d un point de rebroussement
 """),
 
 61: _(u"""
 Erreur utilisateur :
- Vous devez fournir le mot clé MAILLAGE pour un champ aux noeuds ou une carte.
+ Vous devez fournir le mot clÃ© MAILLAGE pour un champ aux noeuds ou une carte.
 """),
 
 62: _(u"""
 Erreur utilisateur :
- vous devez fournir les mots clés MODELE et OPTION pour un champ élémentaire
+ vous devez fournir les mots clÃ©s MODELE et OPTION pour un champ Ã©lÃ©mentaire
 """),
 
 63: _(u"""
- occurrence  %(k1)s  de  %(k2)s : impossible d affecter les valeurs demandées sur le(la) %(k3)s  qui n a pas été affecte(e) par un élément
+ occurrence  %(k1)s  de  %(k2)s : impossible d affecter les valeurs demandÃ©es sur le(la) %(k3)s  qui n a pas Ã©tÃ© affecte(e) par un Ã©lÃ©ment
 """),
 
 64: _(u"""
- occurrence  %(k1)s  de  %(k2)s : impossible d affecter les valeurs demandées sur le(la)  %(k3)s  qui ne supporte pas un élément du bon type
+ occurrence  %(k1)s  de  %(k2)s : impossible d affecter les valeurs demandÃ©es sur le(la)  %(k3)s  qui ne supporte pas un Ã©lÃ©ment du bon type
 """),
 
 65: _(u"""
- occurrence  %(k1)s  de  %(k2)s  : le(la) %(k3)s  ne supporte pas un élément compatible avec la caractéristique  %(k4)s
+ occurrence  %(k1)s  de  %(k2)s  : le(la) %(k3)s  ne supporte pas un Ã©lÃ©ment compatible avec la caractÃ©ristique  %(k4)s
 """),
 
 66: _(u"""
-  %(k1)s  item attendu en début de ligne
+  %(k1)s  item attendu en dÃ©but de ligne
 """),
 
 67: _(u"""
@@ -302,21 +302,21 @@ Erreur utilisateur :
 """),
 
 69: _(u"""
-  Les fonctions de forme pour le mode no. %(i1)d ne sont pas définies à partir de l'abscisse 0.
+  Les fonctions de forme pour le mode no. %(i1)d ne sont pas dÃ©finies Ã  partir de l'abscisse 0.
 """),
 
 70: _(u"""
-  Les fonctions de forme pour le mode no. %(i1)d ne sont pas définies sur le même intervalle.
+  Les fonctions de forme pour le mode no. %(i1)d ne sont pas dÃ©finies sur le mÃªme intervalle.
 """),
 
 71: _(u"""
- Les discrétisations des fonctions de forme pour les différents modes ne sont pas cohérentes.
- Le domaine de définition 0,L doivent être communs à toutes les fonctions.
+ Les discrÃ©tisations des fonctions de forme pour les diffÃ©rents modes ne sont pas cohÃ©rentes.
+ Le domaine de dÃ©finition 0,L doivent Ãªtre communs Ã  toutes les fonctions.
 """),
 
 72: _(u"""
- Les discrétisations des fonctions de forme pour les différents modes ne sont pas cohérentes.
- Le nombre de points de discrétisation doivent être communs à toutes les fonctions.
+ Les discrÃ©tisations des fonctions de forme pour les diffÃ©rents modes ne sont pas cohÃ©rentes.
+ Le nombre de points de discrÃ©tisation doivent Ãªtre communs Ã  toutes les fonctions.
 """),
 
 75: _(u"""
@@ -332,12 +332,12 @@ Erreur utilisateur :
 """),
 
 79: _(u"""
- le type  %(k1)s d'objets a vérifier n'est pas correct : il ne peut être égal qu'a GROUP_NO ou noeud ou GROUP_MA ou maille
+ le type  %(k1)s d'objets a vÃ©rifier n'est pas correct : il ne peut Ãªtre Ã©gal qu'a GROUP_NO ou noeud ou GROUP_MA ou maille
 """),
 
 80: _(u"""
- défaut de planéité
- l angle entre les normales aux mailles: %(k1)s  et  %(k2)s  est supérieur à ANGL_MAX.
+ dÃ©faut de planÃ©itÃ©
+ l angle entre les normales aux mailles: %(k1)s  et  %(k2)s  est supÃ©rieur Ã  ANGL_MAX.
 """),
 
 81: _(u"""
@@ -345,15 +345,15 @@ Erreur utilisateur :
 """),
 
 82: _(u"""
-  %(k1)s  un identificateur dépasse 8 caractères
+  %(k1)s  un identificateur dÃ©passe 8 caractÃ¨res
 """),
 
 83: _(u"""
-  %(k1)s  le mot clé FIN n'est pas attendu
+  %(k1)s  le mot clÃ© FIN n'est pas attendu
 """),
 
 84: _(u"""
-  %(k1)s  le mot clé FINSF n est pas attendu
+  %(k1)s  le mot clÃ© FINSF n est pas attendu
 """),
 
 85: _(u"""
@@ -362,46 +362,46 @@ Erreur utilisateur :
 
 86: _(u"""
  la maille de nom :  %(k1)s  n'est pas de type SEGMENT
- elle ne sera pas affectée par  %(k2)s
+ elle ne sera pas affectÃ©e par  %(k2)s
 """),
 
 87: _(u"""
  la maille de nom :  %(k1)s  n'est pas de type TRIA ou QUAD
- elle ne sera pas affectée par  %(k2)s
+ elle ne sera pas affectÃ©e par  %(k2)s
 """),
 
 88: _(u"""
-  -> Erreur dans les mailles du mot-clé facteur %(k1)s :
-     aucune maille n'est du bon type. Elles sont toutes ignorées.
+  -> Erreur dans les mailles du mot-clÃ© facteur %(k1)s :
+     aucune maille n'est du bon type. Elles sont toutes ignorÃ©es.
 """),
 
 89: _(u"""
- la maille de numéro :  %(k1)s  n'est pas de type SEGMENT
- elle ne sera pas affectée par  %(k2)s
+ la maille de numÃ©ro :  %(k1)s  n'est pas de type SEGMENT
+ elle ne sera pas affectÃ©e par  %(k2)s
 """),
 
 90: _(u"""
- la maille de numéro :  %(k1)s  n'est pas de type TRIA ou QUAD
- elle ne sera pas affectée par  %(k2)s
+ la maille de numÃ©ro :  %(k1)s  n'est pas de type TRIA ou QUAD
+ elle ne sera pas affectÃ©e par  %(k2)s
 """),
 
 91: _(u"""
- erreur dans les noms de maille du GROUP_MA:  %(k1)s  du mot-clé facteur  %(k2)s
+ erreur dans les noms de maille du GROUP_MA:  %(k1)s  du mot-clÃ© facteur  %(k2)s
  aucune maille n'est du bon type
 """),
 
 92: _(u"""
- la maille de nom :  %(k1)s  n'est pas une maille 3d, elle ne sera pas affectée par  %(k2)s
+ la maille de nom :  %(k1)s  n'est pas une maille 3d, elle ne sera pas affectÃ©e par  %(k2)s
 """),
 
 93: _(u"""
- la maille de numéro :  %(k1)s  n'est pas une maille 3d, elle ne sera pas affectée par  %(k2)s
+ la maille de numÃ©ro :  %(k1)s  n'est pas une maille 3d, elle ne sera pas affectÃ©e par  %(k2)s
 """),
 
 97: _(u"""
   -> Le GROUP_MA %(k1)s du maillage %(k2)s se retrouve vide du fait
-     de l'élimination des mailles servant au collage.
-     Il n'est donc pas recréé dans le maillage assemblé.
+     de l'Ã©limination des mailles servant au collage.
+     Il n'est donc pas recrÃ©Ã© dans le maillage assemblÃ©.
 """),
 
 99: _(u"""

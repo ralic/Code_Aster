@@ -1,4 +1,4 @@
-# -*- coding: iso-8859-1 -*-
+# coding=utf-8
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -34,7 +34,7 @@ class sd_dyna_gene(sd_titre) :
     VITE = Facultatif(OJBVect(type=Parmi('C', 'R'))) # peuvent etre des gros objets. Contienent des reels si calcul TRAN et des complexes si HARM 
     DEPL = Facultatif(OJBVect(type=Parmi('C', 'R'))) # #####
 
-    PTEM = Facultatif(AsVR()) # Pas de temps d'integration sauvegardés aux instants d'archivage
+    PTEM = Facultatif(AsVR()) # Pas de temps d'integration sauvegardÃ©s aux instants d'archivage
 
     DISC = AsVR()  # gros objet. contient la liste des instants du calcul sauvegardes si TRANS et les frequences si HARM
     ORDR = AsVI()  # gros objet. 

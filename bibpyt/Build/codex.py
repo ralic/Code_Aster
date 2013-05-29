@@ -1,4 +1,4 @@
-# -*- coding: iso-8859-1 -*-
+# coding=utf-8
 # person_in_charge: mathieu.courtois at edf.fr
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -32,7 +32,7 @@ class FatalError(error):pass
 
 def argv(args):
    """
-      Cette fonction sert a initialiser le code avec les paramètres
+      Cette fonction sert a initialiser le code avec les paramÃ¨tres
       de la ligne de commande passes dans args
       Interface avec le C
    """
@@ -40,7 +40,7 @@ def argv(args):
 
 def init(debug):
    """
-      Deuxième fonction d'initialisation interfacee avec le FORTRAN
+      DeuxiÃ¨me fonction d'initialisation interfacee avec le FORTRAN
    """
    #print "codex.init : ", debug
 

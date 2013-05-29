@@ -1,4 +1,4 @@
-# -*- coding: iso-8859-1 -*-
+# coding=utf-8
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -22,8 +22,8 @@ from cata_comportement import LoiComportement
 
 loi = LoiComportement(
    nom            = 'RUPT_FRAG',
-   doc = """Relation de comportement non locale basée sur la formulation de J.J. Marigo et G. Francfort de la mécanique de la rupture (pas d'équivalent en version locale).
-   Ce modèle décrit l'apparition et la propagation de fissures dans un matériau élastique (cf. [R7.02.11]).""",
+   doc = """Relation de comportement non locale basÃ©e sur la formulation de J.J. Marigo et G. Francfort de la mÃ©canique de la rupture (pas d'Ã©quivalent en version locale).
+   Ce modÃ¨le dÃ©crit l'apparition et la propagation de fissures dans un matÃ©riau Ã©lastique (cf. [R7.02.11]).""",
    num_lc         = 9999,
    nb_vari        = 1,
    nom_vari       = ('ENDO'),

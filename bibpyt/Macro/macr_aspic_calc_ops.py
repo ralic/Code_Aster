@@ -1,4 +1,4 @@
-# -*- coding: iso-8859-1 -*-
+# coding=utf-8
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -185,7 +185,7 @@ def macr_aspic_calc_ops(self,TYPE_MAILLAGE,TUBULURE,MAILLAGE,MODELE,CHAM_MATER,C
                              EXCIT      = _F(CHARGE=__chther,),
                              INCREMENT  = mcfact, )
 #
-#     --- commande AFFE_MATERIAU (mécanique)---
+#     --- commande AFFE_MATERIAU (mÃ©canique)---
 #
   if CHAM_MATER!=None :
       self.DeclareOut('_affmth',CHAM_MATER)
@@ -318,7 +318,7 @@ def macr_aspic_calc_ops(self,TYPE_MAILLAGE,TUBULURE,MAILLAGE,MODELE,CHAM_MATER,C
 #
   motscles={}
 #
-  mcfex=[]  # mot clé facteur EXCIT
+  mcfex=[]  # mot clÃ© facteur EXCIT
   mcfex.append(_F(CHARGE=_conlim,))
   if PRES_REP['FONC_MULT']!=None :
      mcfex.append(_F(CHARGE=_chpres,FONC_MULT=PRES_REP['FONC_MULT']))
@@ -349,7 +349,7 @@ def macr_aspic_calc_ops(self,TYPE_MAILLAGE,TUBULURE,MAILLAGE,MODELE,CHAM_MATER,C
      
   motscles['EXCIT'] =mcfex
 #
-  mcfci=[]  # mot clé facteur COMP_INCR :obligatoire pour les noeuds discrets dans STAT_NON_LINE
+  mcfci=[]  # mot clÃ© facteur COMP_INCR :obligatoire pour les noeuds discrets dans STAT_NON_LINE
   mcfci.append(  _F(GROUP_MA=NOMNOE,RELATION='ELAS'))
   motscles['COMP_INCR'] =mcfci
 #
@@ -686,7 +686,7 @@ def macr_aspic_calc_ops(self,TYPE_MAILLAGE,TUBULURE,MAILLAGE,MODELE,CHAM_MATER,C
                                           OPERATION  ='EXTRACTION',))
         IMPR_TABLE(TABLE = __rthfis2, )
 #
-#   --- post traitement fissure :  interpénétration des lèvres ----
+#   --- post traitement fissure :  interpÃ©nÃ©tration des lÃ¨vres ----
 #
 
     if TYPE_MAILLAGE[:4]=='FISS' :

@@ -1,4 +1,4 @@
-# -*- coding: iso-8859-1 -*-
+# coding=utf-8
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -18,7 +18,7 @@
 # ======================================================================
 import sys
 """
-Définition de la méthode UTMESS pour reca_xxxx.py, Graph.py, Table.py
+DÃ©finition de la mÃ©thode UTMESS pour reca_xxxx.py, Graph.py, Table.py
 """
 def UTMESS(code,sprg,texte):
    fmt='\n <%s> <%s> %s\n\n'

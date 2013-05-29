@@ -7,7 +7,7 @@ opti dime 3 ;
 opti nive 10 ;
 opti elem seg2 ;
 
-* nombre d'éléments dans la longueur
+* nombre d'Ã©lÃ©ments dans la longueur
 N = 40 ;
 
 * longueur de la poutre
@@ -19,7 +19,7 @@ dc = -1320.8 ;
 A  = 0. 0.  0. ;
 A1 = L  0.  0. ;
 
-* décalage
+* dÃ©calage
 dd  = 914.4 ;
 h   = 508. ;
 

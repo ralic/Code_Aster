@@ -1,4 +1,4 @@
-# -*- coding: iso-8859-1 -*-
+# coding=utf-8
 # person_in_charge: mathieu.courtois at edf.fr
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -42,7 +42,7 @@ import B_OBJECT
 
 class ETAPE(B_OBJECT.OBJECT, B_CODE.CODE):
     """
-    Cette classe implémente les méthodes relatives à la phase de construction d'une étape.
+    Cette classe implÃ©mente les mÃ©thodes relatives Ã  la phase de construction d'une Ã©tape.
     """
 
     def affiche_cmd(self):
@@ -56,7 +56,7 @@ class ETAPE(B_OBJECT.OBJECT, B_CODE.CODE):
         """
         Demande au jdc un numero de commande unique.
 
-        @param icmd: entier indiquant l'incrément de numero de commande demandé (en général 1)
+        @param icmd: entier indiquant l'incrÃ©ment de numero de commande demandÃ© (en gÃ©nÃ©ral 1)
         """
         if icmd is not None:
             self.icmd = self.jdc.icmd = self.jdc.icmd + icmd
@@ -66,15 +66,15 @@ class ETAPE(B_OBJECT.OBJECT, B_CODE.CODE):
 
     def Build(self):
         """
-          Fonction : Construction d'une étape de type OPER ou PROC
-           En général, il n'y a pas de construction à faire
+          Fonction : Construction d'une Ã©tape de type OPER ou PROC
+           En gÃ©nÃ©ral, il n'y a pas de construction Ã  faire
         """
         ier = self._Build()
         return ier
 
     def _Build(self):
         """
-            Cette méthode réalise le traitement de construction pour
+            Cette mÃ©thode rÃ©alise le traitement de construction pour
             l'objet lui meme
         """
         if CONTEXT.debug : print "ETAPE._Build ", self.nom
@@ -108,8 +108,8 @@ class ETAPE(B_OBJECT.OBJECT, B_CODE.CODE):
 
     def gettyp(self, typaster):
         """Retourne la liste des noms de concepts du type `typaster`.
-        `mxval` : longueur maximale de la liste retournée.
-        On passe mxval=0, pour savoir comment dimensionner le vecteur résultat.
+        `mxval` : longueur maximale de la liste retournÃ©e.
+        On passe mxval=0, pour savoir comment dimensionner le vecteur rÃ©sultat.
         """
         from Cata import cata
         lconcept = []
@@ -160,7 +160,7 @@ class ETAPE(B_OBJECT.OBJECT, B_CODE.CODE):
         if taille == 0:
             # On verifie que la definition du mot-cle nom_motfac existe
             if self.getexm(nom_motfac, '') == 0 :
-                raise AsException("le mot clé facteur " + nom_motfac + " n existe pas "
+                raise AsException("le mot clÃ© facteur " + nom_motfac + " n existe pas "
                                   "dans le catalogue de la commande")
 
         if CONTEXT.debug : print '\tGETFAC : ', "taille =", taille
@@ -168,7 +168,7 @@ class ETAPE(B_OBJECT.OBJECT, B_CODE.CODE):
 
     def get_mcsimp(self, nom_motfac, nom_motcle):
         """Fonction :
-             retourne le mot-clé si :
+             retourne le mot-clÃ© si :
                    - le mot-cle de nom nom_motcle existe dans le mot-cle facteur
                             de nom nom_motfac
                    - ou si le mot-cle de nom nom_motcle existe dans l'etape
@@ -217,10 +217,10 @@ class ETAPE(B_OBJECT.OBJECT, B_CODE.CODE):
 
     def getvtx(self, nom_motfac, nom_motcle, iocc, mxval):
         """
-            Cette méthode retourne la valeur du mot-clé simple nom_motcle de la commande self.
-            Ce mot clé peut etre directement sous la commande (nom_motfac == "") ou sous
+            Cette mÃ©thode retourne la valeur du mot-clÃ© simple nom_motcle de la commande self.
+            Ce mot clÃ© peut etre directement sous la commande (nom_motfac == "") ou sous
             un mot cle facteur (nom_motfac != "").
-            Dans ce cas iocc indique le numéro du mot-clé facteur à utiliser
+            Dans ce cas iocc indique le numÃ©ro du mot-clÃ© facteur Ã  utiliser
         """
         if CONTEXT.debug:
             prbanner("getvtx %s %s %d %d" % (nom_motfac, nom_motcle, iocc, mxval))
@@ -232,7 +232,7 @@ class ETAPE(B_OBJECT.OBJECT, B_CODE.CODE):
             print '! Etape  :', getattr(self, 'nom', '?'), '/', nom_motfac, '/', nom_motcle
             print '! Parent :', getattr(self.parent, 'nom', '?')
             print "! ERREUR incoherence fortran/catalogue de commande, " \
-                  "chaine de caractères attendue et non :"
+                  "chaine de caractÃ¨res attendue et non :"
             print "!", valeur[1]
             raise AssertionError
 
@@ -248,7 +248,7 @@ class ETAPE(B_OBJECT.OBJECT, B_CODE.CODE):
 
     def get_valeur_mc(self, nom_motfac, nom_motcle, iocc, mxval):
         """
-          Méthode générique pour retourner la valeur de nom_motfac/nom_motcle
+          MÃ©thode gÃ©nÃ©rique pour retourner la valeur de nom_motfac/nom_motcle
         """
         nom_motfac = nom_motfac.strip()
         nom_motcle = nom_motcle.strip()
@@ -262,8 +262,8 @@ class ETAPE(B_OBJECT.OBJECT, B_CODE.CODE):
         return retval
 
     def getdef(self, nom_motfac, nom_motcle, iocc):
-        """Retourne 1 si le mot-clé a été renseigné par l'utilisateur,
-        0 si c'est la valeur par défaut qui a été utilisée."""
+        """Retourne 1 si le mot-clÃ© a Ã©tÃ© renseignÃ© par l'utilisateur,
+        0 si c'est la valeur par dÃ©faut qui a Ã©tÃ© utilisÃ©e."""
         nom_motfac = nom_motfac.strip()
         nom_motcle = nom_motcle.strip()
         idef = 1   # absent ou defaut
@@ -282,20 +282,20 @@ class ETAPE(B_OBJECT.OBJECT, B_CODE.CODE):
 
     def get_valeur_motcle(self, nom_motfac, iocc, nom_motcle) :
         """
-            Cette méthode a pour but de retourner la valeur du MCS nom_motcle
-            de la ième occurrence du MCF nom_motfac, en tenant compte des valeurs par défaut.
+            Cette mÃ©thode a pour but de retourner la valeur du MCS nom_motcle
+            de la iÃ¨me occurrence du MCF nom_motfac, en tenant compte des valeurs par dÃ©faut.
         """
         if self.getexm(nom_motfac, nom_motcle) == 0 :
             raise AsException("le couple mcfact =" + nom_motfac + " mcsimp =" + \
                               nom_motcle + " n existe pas dans le catalogue")
 
         if nom_motfac != None and nom_motfac != '':
-        # on doit rechercher la ième occurrence du MCF nom_motfac
+        # on doit rechercher la iÃ¨me occurrence du MCF nom_motfac
             try:
                 motfac = self.get_mocle(nom_motfac)[iocc]
             except:
                 if CONTEXT.debug :
-                    print "\terreur à la recherche de :", nom_motfac
+                    print "\terreur Ã  la recherche de :", nom_motfac
                     traceback.print_exc()
                 return None
 
@@ -303,7 +303,7 @@ class ETAPE(B_OBJECT.OBJECT, B_CODE.CODE):
                 return motfac.get_mocle(nom_motcle)
             except:
                 if CONTEXT.debug :
-                    print "\terreur à la recherche de :", nom_motcle
+                    print "\terreur Ã  la recherche de :", nom_motcle
                     traceback.print_exc()
                 return None
         else :
@@ -311,14 +311,14 @@ class ETAPE(B_OBJECT.OBJECT, B_CODE.CODE):
                 return self.get_mocle(nom_motcle)
             except:
                 if CONTEXT.debug :
-                    print "\terreur à la recherche de :", nom_motcle
+                    print "\terreur Ã  la recherche de :", nom_motcle
                     traceback.print_exc()
                 return None
 
     def get_valeur_motcle_pour_getvid(self, nom_motfac, iocc, nom_motcle) :
         """
-          Cette méthode a pour but de retourner la valeur du MCS nom_motcle
-          de la ième occurrence du MCF nom_motfac.
+          Cette mÃ©thode a pour but de retourner la valeur du MCS nom_motcle
+          de la iÃ¨me occurrence du MCF nom_motfac.
         """
         valeur = self.get_valeur_motcle(nom_motfac, iocc, nom_motcle)
 
@@ -337,7 +337,7 @@ class ETAPE(B_OBJECT.OBJECT, B_CODE.CODE):
 
     def transforme_valeur_nom(self, valeur):
         """
-          Cette méthode a pour but de retourner soit une chaine de caractères représentant valeur
+          Cette mÃ©thode a pour but de retourner soit une chaine de caractÃ¨res reprÃ©sentant valeur
           (dans le cas ou valeur n'est pas une instance retourne la string valeur, sinon retourne valeur.nom)
           Traite le cas ou valeur est un tuple d'instances et retourne alors le tuple des strings
         """
@@ -356,8 +356,8 @@ class ETAPE(B_OBJECT.OBJECT, B_CODE.CODE):
           Classe  : B_ETAPE.ETAPE
           Methode : Traite_value
           INTENTION : Traitement du cas ou la donnee est un faux entier ou reel (classe entier et reel)
-                      de accas.capy. L'attribut 'valeur' de la sd a été renseigné par la commande qui
-                      l'a produite. C'est cette valeur qui est donc renvoyée ici.
+                      de accas.capy. L'attribut 'valeur' de la sd a Ã©tÃ© renseignÃ© par la commande qui
+                      l'a produite. C'est cette valeur qui est donc renvoyÃ©e ici.
         """
         if CONTEXT.debug : print "Traite_value: ", valeur
         if valeur[0] == 0:
@@ -369,13 +369,13 @@ class ETAPE(B_OBJECT.OBJECT, B_CODE.CODE):
                 k = k.valeur
             if is_sequence(k):
                 if leType == "C8" and k[0] in ("MP", "RI") :
-                    # on est en presence d'un complexe isolé
+                    # on est en presence d'un complexe isolÃ©
                     list_apres.append( k )
                 else:
                     # on est en presence d'une liste de (R8, C8, IS, TX, LS)
                     list_apres.extend( k )
             else:
-                # on est en presence d'un (R8, C8, IS, TX, LS) isolé
+                # on est en presence d'un (R8, C8, IS, TX, LS) isolÃ©
                 list_apres.append( k )
         if valeur[0] < 0:
             # la longueur initiale etait superieure a mxval.
@@ -387,7 +387,7 @@ class ETAPE(B_OBJECT.OBJECT, B_CODE.CODE):
         return valeur_apres
 
     def check_values(self, func, values):
-        """Vérifier que les éléments de 'values' sont du bon type (pour getvid, getvtx, getvr8).
+        """VÃ©rifier que les Ã©lÃ©ments de 'values' sont du bon type (pour getvid, getvtx, getvr8).
         """
         ok = True
         if not is_sequence(values):
@@ -402,17 +402,17 @@ class ETAPE(B_OBJECT.OBJECT, B_CODE.CODE):
         return ok
 
     def check_float(self, values):
-        """Vérifier que les éléments de 'values' sont des réels (pour getvtx).
+        """VÃ©rifier que les Ã©lÃ©ments de 'values' sont des rÃ©els (pour getvtx).
         """
         return self.check_values(is_float_or_int, values)
 
     def check_text(self, values):
-        """Vérifier que les éléments de 'values' sont des chaines de caractères (pour getvtx).
+        """VÃ©rifier que les Ã©lÃ©ments de 'values' sont des chaines de caractÃ¨res (pour getvtx).
         """
         return self.check_values(is_str, values)
 
     def check_assd(self, values):
-        """Vérifier que les éléments de 'values' sont des concepts (pour getvid).
+        """VÃ©rifier que les Ã©lÃ©ments de 'values' sont des concepts (pour getvid).
         """
         return self.check_values(is_assd, values)
 
@@ -428,7 +428,7 @@ class ETAPE(B_OBJECT.OBJECT, B_CODE.CODE):
         """
             Methode B_ETAPE.ETAPE.getltx
             Auteur : Antoine Tessayan
-            Intention : récupérer dans un tuple la longueur des variables de type texte
+            Intention : rÃ©cupÃ©rer dans un tuple la longueur des variables de type texte
                             du mocle nom_motcle
         """
         if CONTEXT.debug : prbanner("getltx %s %s %d %d" %(nom_motfac, nom_motcle, iocc, mxval))
@@ -448,8 +448,8 @@ class ETAPE(B_OBJECT.OBJECT, B_CODE.CODE):
     def getvis(self, nom_motfac, nom_motcle, iocc, mxval):
         """
             Methode B_ETAPE.ETAPE.getvis
-            Auteur : Christian Carémoli
-            Intention : récupérer la liste des valeurs entières pour le mot-cle passe
+            Auteur : Christian CarÃ©moli
+            Intention : rÃ©cupÃ©rer la liste des valeurs entiÃ¨res pour le mot-cle passe
                             en argument (cette fonction traite les blocs)
         """
         if CONTEXT.debug : prbanner("getvis %s %s %d %d" %(nom_motfac, nom_motcle, iocc, mxval))
@@ -492,13 +492,13 @@ class ETAPE(B_OBJECT.OBJECT, B_CODE.CODE):
 
     def fiintf(self, coderr, nom_fonction, nom_param, val):
         """Cette methode permet d'appeler une formule python depuis le fortran.
-        Elle évalue les concepts FORMULE.
+        Elle Ã©value les concepts FORMULE.
         coderr: comportement en cas d'erreur:
             'F': erreur fatale, 'A': alarme, ' ': silencieux (dans ce cas,
             il faut utiliser le code retour)
         nom_fonction: nom de la fonction
-        nom_param: nom de ses paramètres
-        val: valeurs des paramètres (même cardinal que nom_param)
+        nom_param: nom de ses paramÃ¨tres
+        val: valeurs des paramÃ¨tres (mÃªme cardinal que nom_param)
         Elle retourne 2 valeurs : code_retour, valeur
         """
         def _print_msg(case, **kwargs):
@@ -540,7 +540,7 @@ class ETAPE(B_OBJECT.OBJECT, B_CODE.CODE):
         if self._cache_func.get(nom_fonction).get(nom_param):
             inter = self._cache_func[nom_fonction][nom_param]
         else:
-            # paramètres manquants, paramètres en double
+            # paramÃ¨tres manquants, paramÃ¨tres en double
             miss, inter, dble = B_utils.miss_dble(objet_sd.nompar, nom_param)
             self._cache_func[nom_fonction][nom_param] = inter
             if len(miss) > 0:
@@ -560,14 +560,14 @@ class ETAPE(B_OBJECT.OBJECT, B_CODE.CODE):
         # appel de fonction definie dans le corps du jeu de commandes
         try:
             context = {}
-            # mettre le contexte du parent de l'étape courante (INCLUDE par exemple)
+            # mettre le contexte du parent de l'Ã©tape courante (INCLUDE par exemple)
             last_etape, last_ctxt = self._cache_ctxt
             if last_etape != id(self):
                 last_ctxt = {}
                 last_ctxt.update( self.parent.get_contexte_avant(self) )
                 self._cache_ctxt = id(self), last_ctxt
             context = last_ctxt
-            # récupération des constantes locales en cas de MACRO
+            # rÃ©cupÃ©ration des constantes locales en cas de MACRO
             context.update(getattr(self.parent, 'macro_const_context', {}))
             # on reduit le dict au seul parametre de la formule
             dp = dict(zip(nom_param, val))
@@ -591,7 +591,7 @@ class ETAPE(B_OBJECT.OBJECT, B_CODE.CODE):
             # elements de contexte
             print '! Etape  :', getattr(self, 'nom', '?'), '/', nom_motfac, '/', nom_motcle
             print '! Parent :', getattr(self.parent, 'nom', '?')
-            print "! ERREUR incoherence fortran/catalogue de commande, réel attendu et non :"
+            print "! ERREUR incoherence fortran/catalogue de commande, rÃ©el attendu et non :"
             print "!", valeur[1]
             raise AssertionError
 
@@ -605,7 +605,7 @@ class ETAPE(B_OBJECT.OBJECT, B_CODE.CODE):
         """
             Methode B_ETAPE.ETAPE.getvc8
             Auteurs : FR/AY
-            Intention : récupérer la liste des valeurs complexes pour le mot-cle passe
+            Intention : rÃ©cupÃ©rer la liste des valeurs complexes pour le mot-cle passe
                             en argument (cette fonction traite les blocs)
         """
         if CONTEXT.debug : prbanner("getvc8 %s %s %d %d" %(nom_motfac, nom_motcle, iocc, mxval))
@@ -620,8 +620,8 @@ class ETAPE(B_OBJECT.OBJECT, B_CODE.CODE):
     def getvid(self, nom_motfac, nom_motcle, iocc, mxval):
         """
           Methode B_ETAPE.ETAPE.getvid
-          Auteur : Christian Carémoli
-          Intention : récupérer la liste des valeurs pour le mot-cle passe
+          Auteur : Christian CarÃ©moli
+          Intention : rÃ©cupÃ©rer la liste des valeurs pour le mot-cle passe
                       en argument (cette fonction traite les blocs)
         """
         if CONTEXT.debug : prbanner("getvid %s %s %d %d" %(nom_motfac, nom_motcle, iocc, mxval))
@@ -642,8 +642,8 @@ class ETAPE(B_OBJECT.OBJECT, B_CODE.CODE):
     def getvls(self, nom_motfac, nom_motcle, iocc, mxval):
         """
             Methode B_ETAPE.ETAPE.getvls
-            Auteur : Christian Carémoli
-            Intention : récupérer la liste des valeurs logiques pour le mot-cle passe
+            Auteur : Christian CarÃ©moli
+            Intention : rÃ©cupÃ©rer la liste des valeurs logiques pour le mot-cle passe
                             en argument (cette fonction traite les blocs)
         """
         if CONTEXT.debug : prbanner("getvls %s %s %d %d" %(nom_motfac, nom_motcle, iocc, mxval))
@@ -668,7 +668,7 @@ class ETAPE(B_OBJECT.OBJECT, B_CODE.CODE):
 
         try :
             # On essaie de recuperer le concept no parmi les concepts existant dans le contexte
-            # avant l'étape self
+            # avant l'Ã©tape self
             objet_sd = self.parent.get_sd_avant_etape(no, self)
             if objet_sd == None:
                 # Si on n'a rien trouve
@@ -687,7 +687,7 @@ class ETAPE(B_OBJECT.OBJECT, B_CODE.CODE):
             valeur = ' '
         except :
             #raise AsException("Probleme dans gettco: %s, %s ; Objet introuvable!" % (self.nom, nom_concept))
-            # objet inexistant : l'appelant doit décoder le ' '
+            # objet inexistant : l'appelant doit dÃ©coder le ' '
             valeur = ' '
         #message.debug(SUPERV, "concept : %s, type : '%s'", nom_concept, valeur)
         return valeur
@@ -759,7 +759,7 @@ class ETAPE(B_OBJECT.OBJECT, B_CODE.CODE):
                 mcfact = mcfact[iocc]
         else :
             mcfact = self
-        # On a trouvé le mot cle facteur
+        # On a trouvÃ© le mot cle facteur
         dico_mcsimp = mcfact.cree_dict_valeurs(mcfact.mc_liste)
         if self.nom == 'TEST_RESU' and dico_mcsimp.get('VALE_C') != None:
             pass
@@ -796,7 +796,7 @@ class ETAPE(B_OBJECT.OBJECT, B_CODE.CODE):
                     lty.append('C8')
                 else :
                     lty.append('I')
-        assert len(lmc) == len(lty), "cardinalité différente : \n%s\n%s" % (lmc, lty)
+        assert len(lmc) == len(lty), "cardinalitÃ© diffÃ©rente : \n%s\n%s" % (lmc, lty)
         return (lmc, lty)
 
 
@@ -852,7 +852,7 @@ class ETAPE(B_OBJECT.OBJECT, B_CODE.CODE):
                 indicateur sur le type ( 1 = le concept sortant est bien un 'entier',
                                          0 = mauvais type de concept)
           Fonction:
-                renvoyer une valeur entière depuis le fortran vers l'attribut
+                renvoyer une valeur entiÃ¨re depuis le fortran vers l'attribut
                 valeur de la sd 'entier'
         """
         if B_utils.Typast(AsType(self.sd)) != 'IS ' :
@@ -867,7 +867,7 @@ class ETAPE(B_OBJECT.OBJECT, B_CODE.CODE):
                 indicateur sur le type ( 1 = le concept sortant est bien un 'reel',
                                          0 = mauvais type de concept)
           Fonction:
-                renvoyer une valeur entière depuis le fortran vers l'attribut
+                renvoyer une valeur entiÃ¨re depuis le fortran vers l'attribut
                 valeur de la sd 'entier'
         """
         if B_utils.Typast(AsType(self.sd)) != 'R8 ' :

@@ -1,4 +1,4 @@
-# -*- coding: iso-8859-1 -*-
+# coding=utf-8
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -251,7 +251,7 @@ class EUROPLEXUS:
 
           if args.has_key('TABLE_COURBE'): self.TABLE_COURBE = args['TABLE_COURBE']
           else:                            self.TABLE_COURBE = None
-          # Dictionnaire contenant le texte associé au fichier de commande Europlexus
+          # Dictionnaire contenant le texte associÃ© au fichier de commande Europlexus
           self.epx = {}
 
           if debug: print 'pas nbre courbe = %s'%self.PAS_NBRE_COURBE
@@ -418,7 +418,7 @@ class EUROPLEXUS:
 
 
         # Extensions des formats de maillage
-        # Que le maillage (ou résultat) soit en CASTEM ou en MED, on a toujours l'extenstion '.msh'.
+        # Que le maillage (ou rÃ©sultat) soit en CASTEM ou en MED, on a toujours l'extenstion '.msh'.
         # donner un nom au fichier de maillage parce que le fort.unite peut etre ecrase par d'autre operation d'ecriture
         nom_fichier = self.nom_fichiers['MAILLAGE'] + '.msh'
         fichier_maillage = self.REPE_epx + os.sep + nom_fichier
@@ -438,9 +438,9 @@ class EUROPLEXUS:
             concept_maillage = copy.copy(self.NEW_MA)
 
 
-        # On crée des groupes de noeuds de mêmes noms que les groupes de mailles présents dans le modèle
+        # On crÃ©e des groupes de noeuds de mÃªmes noms que les groupes de mailles prÃ©sents dans le modÃ¨le
         # car EPX ne sait pas faire la correspondance comme en CASTEM
-        # Cela pourra être supprimer quand le problème sera résolu dans EPX.
+        # Cela pourra Ãªtre supprimer quand le problÃ¨me sera rÃ©solu dans EPX.
         liste_gma=[]
 
         # groupes de mailles du modele
@@ -458,7 +458,7 @@ class EUROPLEXUS:
         DEFI_FICHIER(UNITE=unite, FICHIER=fichier_maillage, ACTION='ASSOCIER')
 
         if self.ETAT_INIT is not None:
-            # Europlexus ne sait pas lire un état initial de contraintes sur les POU_D_E
+            # Europlexus ne sait pas lire un Ã©tat initial de contraintes sur les POU_D_E
             if 'POUT' in self.modelisations and self.ETAT_INIT['CONTRAINTE']=='OUI': UTMESS('F','PLEXUS_17')
             RESULTAT = self.ETAT_INIT['RESULTAT']
 
@@ -480,7 +480,7 @@ class EUROPLEXUS:
                   RESU   = _F(NUME_ORDRE=nume_ordre,RESULTAT=RESULTAT,NOM_CHAM=list_cham)
                  )
 
-            # on remet les contraintes des coques dans le repère utilisateur pour ne pas
+            # on remet les contraintes des coques dans le repÃ¨re utilisateur pour ne pas
             # modifier le resultat
             if self.ETAT_INIT['CONTRAINTE']=='OUI':
                 if 'T3GS' in self.modelisations or 'Q4GS' in self.modelisations :
@@ -519,11 +519,11 @@ class EUROPLEXUS:
         epx[MODULE] = ['*--DIMENSIONNEMENT']
         epx[MODULE].append('\n')
 
-        # Test si des parametres de dime seront introuduites à l'aide d'un fichier externe
+        # Test si des parametres de dime seront introuduites Ã  l'aide d'un fichier externe
         try    : unite_dime = self.DIME['UNITE_DIME']
         except : unite_dime = None
 
-        # Recuperer le dictionnaire issu du fichier associe à UNITE_DIME (s'il existe)
+        # Recuperer le dictionnaire issu du fichier associe Ã  UNITE_DIME (s'il existe)
         if unite_dime is not None :
             fort = 'fort.%i' %unite_dime
             dic_fichier = self.fichier2dic(fort)
@@ -660,7 +660,7 @@ class EUROPLEXUS:
 
 
       # liste comportant les modelisations definis dans le module GEOMETRIE
-      # cette liste va servir à determiner les indices des champs stockes dans le fichier med (get_resu)
+      # cette liste va servir Ã  determiner les indices des champs stockes dans le fichier med (get_resu)
       self.modelisations = []
       # Ecriture sous format europlexus
       for modelisation in  dic_gma.keys() :
@@ -831,7 +831,7 @@ class EUROPLEXUS:
                 group_ma = self.get_group_ma(elem)
                 type_section = elem['SECTION']
                 if type_section == 'GENERALE' :
-                    # A correspond à SECT
+                    # A correspond Ã  SECT
                     cara = tolist(elem['CARA'])
                     vale = tolist(elem['VALE'])
                     car = cara[0]
@@ -1139,14 +1139,14 @@ class EUROPLEXUS:
         dic_relation = {}
         for comp in self.COMP_INCR :
             for gr in comp['GROUP_MA']:
-                if gr in dic_relation: raise Exception('Une relation existe déjà pour le groupe %s' %gr)
+                if gr in dic_relation: raise Exception('Une relation existe dÃ©jÃ  pour le groupe %s' %gr)
                 dic_relation[gr] = comp['RELATION']
 
 
         # Dictionnaire stoquant les caracteristiques mecaniques et les group_ma associe a chaque materiau
         dic_mater = {}
         typMat = {}
-        # GLRC impose de définir l'orientation : on stocke dans gmaGLRC les GMA dont il faudra retrouver l'orientation dans MODI_MAILLAGE/ORIE_NORM_COQUE
+        # GLRC impose de dÃ©finir l'orientation : on stocke dans gmaGLRC les GMA dont il faudra retrouver l'orientation dans MODI_MAILLAGE/ORIE_NORM_COQUE
         self.gmaGLRC = []
         epx['FONC_MATER'] = []
         ref_fonc=[]
@@ -1298,9 +1298,9 @@ class EUROPLEXUS:
 
             else:
                 if relation == 'ELAS' :
-                    if typMat[nom_mater] != 'ELAS': raise Exception("Le matériau n'a pas le bon type")
+                    if typMat[nom_mater] != 'ELAS': raise Exception("Le matÃ©riau n'a pas le bon type")
                 elif relation == 'GLRC_DAMAGE':
-                    if typMat[nom_mater] != 'GLRC': raise Exception("Le matériau n'a pas le bon type")
+                    if typMat[nom_mater] != 'GLRC': raise Exception("Le matÃ©riau n'a pas le bon type")
                     self.gmaGLRC.extend(group_ma)
 
             if debug: print 'MATER = %s \n type = %s \n dic = %s'%(nom_mater,typMat, dic_mater[nom_mater])
@@ -1454,7 +1454,7 @@ class EUROPLEXUS:
       # Initialisation des variables decrivant le chargement et les conditions de blocage
       CHARGEMENT = []
       LIAISON   = []
-      # INFO et MODELE ne sont pas des charges mais sont présents dans le dico definissant la charge
+      # INFO et MODELE ne sont pas des charges mais sont prÃ©sents dans le dico definissant la charge
       mot_cle_charge_OK=['INFO','MODELE','PRES_REP','DDL_IMPO','RELA_CINE_BP',]
 
       for excit in excit_list:
@@ -1481,7 +1481,7 @@ class EUROPLEXUS:
             UTMESS('F','PLEXUS_7')
           (temps,valeurs) = fonction.Valeurs()
           for pres_rep in  pres_rep_list :
-            # Convention de signe différente entre Aster et EPX
+            # Convention de signe diffÃ©rente entre Aster et EPX
             pression =  - pres_rep['PRES']
             group_ma = self.get_group_ma(pres_rep)
             CHARGEMENT.append(6*' ' +'PRESS COQU %s' %pression)
@@ -2160,7 +2160,7 @@ class EUROPLEXUS:
 
       os.symlink(fichier_med,fort)
 
-      # Regeneration des mots-cles EXCIT passés en argument de la macro
+      # Regeneration des mots-cles EXCIT passÃ©s en argument de la macro
       dExcit=[]
       for j in self.EXCIT :
          dExcit.append(j.cree_dict_valeurs(j.mc_liste))

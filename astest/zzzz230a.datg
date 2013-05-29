@@ -1,7 +1,7 @@
 opti dime 2 elem qua8 ;
 
 *------------------------------------------------------------
-* géométrie :
+* gÃ©omÃ©trie :
 * ------------
 *
 *   D-------------------------C
@@ -19,17 +19,17 @@ opti dime 2 elem qua8 ;
 *   +-----------+-------------B
 *  A            E
 *
-* Géométrie des points :
+* GÃ©omÃ©trie des points :
 *   A: 0,0       B: 1,0    C: 1,1     D: 0,1
 *   G: 0,0.5     F: 0.5,0.5
 *   H: 0.25,0.25
 *
-*  Le carré ABCD est maillé grossièrement
-*  Le carré AEFG est maillé plus finement : c'est le zoom
+*  Le carrÃ© ABCD est maillÃ© grossiÃ¨rement
+*  Le carrÃ© AEFG est maillÃ© plus finement : c'est le zoom
 *
-*  On s'intéresse au déplacement du point H
-*    Dans le carré grossier (ABCD) H se nomme HG
-*    Dans le carré zoom     (AEFG) H se nomme HZ
+*  On s'intÃ©resse au dÃ©placement du point H
+*    Dans le carrÃ© grossier (ABCD) H se nomme HG
+*    Dans le carrÃ© zoom     (AEFG) H se nomme HZ
 *
 * -------------------------------------------------------------
 

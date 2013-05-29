@@ -1,4 +1,4 @@
-# -*- coding: iso-8859-1 -*-
+# coding=utf-8
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -21,48 +21,48 @@
 cata_msg={
 
 1: _(u"""
- Formule interdite pour définir ALPHA(TEMP) : la fonction soit être tabulée.
+ Formule interdite pour dÃ©finir ALPHA(TEMP) : la fonction soit Ãªtre tabulÃ©e.
  Utilisez CALC_FONC_INTERP
 """),
 
 2: _(u"""
- resserrer le mot clé PRECISION pour le matériau ELAS_FO
+ resserrer le mot clÃ© PRECISION pour le matÃ©riau ELAS_FO
 """),
 
 3: _(u"""
- calcul de la tension le long du câble numéro %(k1)s  :
+ calcul de la tension le long du cÃ¢ble numÃ©ro %(k1)s  :
  la longueur sur laquelle on devrait prendre en compte les pertes de tension par recul de l ancrage
- est supérieure à la longueur du câble"""),
+ est supÃ©rieure Ã  la longueur du cÃ¢ble"""),
 
 4: _(u"""
-  calcul de la tension le long du câble numéro %(k1)s  :
+  calcul de la tension le long du cÃ¢ble numÃ©ro %(k1)s  :
   la longueur sur laquelle on doit prendre en compte les pertes de tension par recul de l ancrage
-  est égale à la longueur du câble"""),
+  est Ã©gale Ã  la longueur du cÃ¢ble"""),
 
 5: _(u"""
- Formule interdite pour le calcul d'intégrale : la fonction soit être tabulée.
+ Formule interdite pour le calcul d'intÃ©grale : la fonction soit Ãªtre tabulÃ©e.
  Utilisez CALC_FONC_INTERP pour tabuler la formule %(k1)s
 """),
 
 6: _(u"""
 Erreur d'utilisation :
- Le modèle contient un mélange d'éléments 2D (vivant dans le plan Oxy) et 3D.
- Le code n'a pas prévu ce cas de figure ici.
+ Le modÃ¨le contient un mÃ©lange d'Ã©lÃ©ments 2D (vivant dans le plan Oxy) et 3D.
+ Le code n'a pas prÃ©vu ce cas de figure ici.
 
 Risques et conseils :
- Il faut peut être émettre une demande d'évolution pour pouvoir traiter ce problème.
+ Il faut peut Ãªtre Ã©mettre une demande d'Ã©volution pour pouvoir traiter ce problÃ¨me.
 """),
 
 7: _(u"""
 Occurrence de %(k2)s.
-La maille %(k1)s a déjà été affectée par une orientation.
-   Orientation précédente : %(r1)f
+La maille %(k1)s a dÃ©jÃ  Ã©tÃ© affectÃ©e par une orientation.
+   Orientation prÃ©cÃ©dente : %(r1)f
    Orientation nouvelle   : %(r2)f
-La règle de surcharge est appliquée
+La rÃ¨gle de surcharge est appliquÃ©e
 """),
 
 8: _(u"""
-  Il n'y a pas d'élément discret fixé au noeud %(k1)s du radier.
+  Il n'y a pas d'Ã©lÃ©ment discret fixÃ© au noeud %(k1)s du radier.
 """),
 
 
@@ -70,22 +70,22 @@ La règle de surcharge est appliquée
   Erreur utilisateur :
     l'objet %(k1)s n'existe pas. On ne peut pas continuer.
   Risques & conseils :
-    Dans ce contexte, les seuls solveurs autorisés sont MULT_FRONT et LDLT
+    Dans ce contexte, les seuls solveurs autorisÃ©s sont MULT_FRONT et LDLT
 """),
 
 10: _(u"""
-  Le nombre de noeuds du radier et le nombre d'éléments discrets du groupe %(k1)s sont différents :
+  Le nombre de noeuds du radier et le nombre d'Ã©lÃ©ments discrets du groupe %(k1)s sont diffÃ©rents :
   Nombre de noeuds du radier : %(i1)d
-  Nombre d'éléments discrets         : %(i2)d
+  Nombre d'Ã©lÃ©ments discrets         : %(i2)d
 """),
 
 
 13: _(u"""
- problème pour récupérer une grandeur dans la table CARA_GEOM
+ problÃ¨me pour rÃ©cupÃ©rer une grandeur dans la table CARA_GEOM
 """),
 
 14: _(u"""
- plus petite taille de maille négative ou nulle
+ plus petite taille de maille nÃ©gative ou nulle
 """),
 
 15: _(u"""
@@ -97,43 +97,43 @@ La règle de surcharge est appliquée
 """),
 
 17: _(u"""
- les groupes de mailles GROUP_MA_1= %(k1)s  et GROUP_MA_2= %(k2)s  ont des cardinaux différents
+ les groupes de mailles GROUP_MA_1= %(k1)s  et GROUP_MA_2= %(k2)s  ont des cardinaux diffÃ©rents
 """),
 
 18: _(u"""
- nombre de noeuds incohérent sous les 2 GROUP_MA a coller
+ nombre de noeuds incohÃ©rent sous les 2 GROUP_MA a coller
 """),
 
 19: _(u"""
- un noeud de GROUP_MA_2 n'est géométriquement appariable avec aucun de GROUP_MA_1
+ un noeud de GROUP_MA_2 n'est gÃ©omÃ©triquement appariable avec aucun de GROUP_MA_1
 """),
 
 
 
 21: _(u"""
-  -> Le GROUP_MA %(k1)s est présent dans les 2 maillages que l'on assemble.
-     Il y a conflit de noms. Le GROUP_MA du 2ème maillage est renommé.
+  -> Le GROUP_MA %(k1)s est prÃ©sent dans les 2 maillages que l'on assemble.
+     Il y a conflit de noms. Le GROUP_MA du 2Ã¨me maillage est renommÃ©.
   -> Risque & Conseil :
-     Vérifiez que le nom du GROUP_MA retenu est bien celui souhaité.
+     VÃ©rifiez que le nom du GROUP_MA retenu est bien celui souhaitÃ©.
 """),
 
 22: _(u"""
-  -> Le GROUP_NO %(k1)s est présent dans les 2 maillages que l'on assemble.
-     Il y a conflit de noms. Le GROUP_NO du 2ème maillage est renommé.
+  -> Le GROUP_NO %(k1)s est prÃ©sent dans les 2 maillages que l'on assemble.
+     Il y a conflit de noms. Le GROUP_NO du 2Ã¨me maillage est renommÃ©.
   -> Risque & Conseil :
-     Vérifiez que le nom du GROUP_NO retenu est bien celui souhaité.
+     VÃ©rifiez que le nom du GROUP_NO retenu est bien celui souhaitÃ©.
 """),
 
 23: _(u"""
- traitement non prévu pour un modèle avec mailles tardives.
+ traitement non prÃ©vu pour un modÃ¨le avec mailles tardives.
 """),
 
 24: _(u"""
- absence de carte d'orientation des éléments. la structure étudiée n'est pas une poutre.
+ absence de carte d'orientation des Ã©lÃ©ments. la structure Ã©tudiÃ©e n'est pas une poutre.
 """),
 
 25: _(u"""
- problème pour déterminer les rangs des composantes <ALPHA> , <BETA> , <GAMMA> de la grandeur <CAORIE>
+ problÃ¨me pour dÃ©terminer les rangs des composantes <ALPHA> , <BETA> , <GAMMA> de la grandeur <CAORIE>
  """),
 
 26: _(u"""
@@ -141,27 +141,27 @@ La règle de surcharge est appliquée
 """),
 
 27: _(u"""
- Détection d'un élément d'un type non admissible. La structure étudiée n'est pas une poutre droite.
+ DÃ©tection d'un Ã©lÃ©ment d'un type non admissible. La structure Ã©tudiÃ©e n'est pas une poutre droite.
 """),
 
 28: _(u"""
- l'élément supporté par la maille numéro %(i1)d n'a pas été orienté.
+ l'Ã©lÃ©ment supportÃ© par la maille numÃ©ro %(i1)d n'a pas Ã©tÃ© orientÃ©.
 """),
 
 29: _(u"""
- carte d'orientation incomplète pour l'élément supporté par la maille numéro %(i1)d.
+ carte d'orientation incomplÃ¨te pour l'Ã©lÃ©ment supportÃ© par la maille numÃ©ro %(i1)d.
 """),
 
 30: _(u"""
- les éléments de la structure ne sont pas d'un type attendu. la structure étudiée n'est pas une poutre droite.
+ les Ã©lÃ©ments de la structure ne sont pas d'un type attendu. la structure Ã©tudiÃ©e n'est pas une poutre droite.
 """),
 
 31: _(u"""
- l'axe directeur de la poutre doit être parallèle avec l'un des axes du repère global.
+ l'axe directeur de la poutre doit Ãªtre parallÃ¨le avec l'un des axes du repÃ¨re global.
 """),
 
 32: _(u"""
- la structure étudiée n'est pas une poutre droite.
+ la structure Ã©tudiÃ©e n'est pas une poutre droite.
 """),
 
 
@@ -175,14 +175,14 @@ La règle de surcharge est appliquée
 
 42: _(u"""
 Erreur Utilisateur :
- Le paramètre ALPHA (dilatation) du matériau est une fonction de la température.
- Cette fonction (%(k1)s) n'est définie que par un point.
+ Le paramÃ¨tre ALPHA (dilatation) du matÃ©riau est une fonction de la tempÃ©rature.
+ Cette fonction (%(k1)s) n'est dÃ©finie que par un point.
  TEMP_DEF_ALPHA et TEMP_REF ne sont pas identiques.
  On ne peut pas faire le changement de variable TEMP_DEF_ALPHA -> TEMP_REF.
- On s'arrête donc.
+ On s'arrÃªte donc.
 
 Risque & Conseil:
- Il faut définir la fonction ALPHA avec plus d'un point.
+ Il faut dÃ©finir la fonction ALPHA avec plus d'un point.
 """),
 
 
@@ -192,11 +192,11 @@ Risque & Conseil:
 """),
 
 45: _(u"""
- aucun noeud ne connaît le DDL:  %(k1)s
+ aucun noeud ne connaÃ®t le DDL:  %(k1)s
 """),
 
 46: _(u"""
- le descripteur_grandeur associé au modèle ne tient pas sur dix entiers codés
+ le descripteur_grandeur associÃ© au modÃ¨le ne tient pas sur dix entiers codÃ©s
 """),
 
 47: _(u"""
@@ -204,62 +204,62 @@ Risque & Conseil:
 """),
 
 48: _(u"""
- récupération des caractéristiques élémentaires du câble no %(k1)s  : détection d un élément différent du type <MECA_barre>
+ rÃ©cupÃ©ration des caractÃ©ristiques Ã©lÃ©mentaires du cÃ¢ble no %(k1)s  : dÃ©tection d un Ã©lÃ©ment diffÃ©rent du type <MECA_barre>
 """),
 
 49: _(u"""
- les caractéristiques matérielles n'ont pas été affectées à la maille no %(k1)s  appartenant au câble no %(k2)s
+ les caractÃ©ristiques matÃ©rielles n'ont pas Ã©tÃ© affectÃ©es Ã  la maille no %(k1)s  appartenant au cÃ¢ble no %(k2)s
  """),
 
 50: _(u"""
- des matériaux différents ont été affectés aux mailles appartenant au câble no %(k1)s
+ des matÃ©riaux diffÃ©rents ont Ã©tÃ© affectÃ©s aux mailles appartenant au cÃ¢ble no %(k1)s
 """),
 
 51: _(u"""
- récupération des caractéristiques du matériau ACIER associé au câble no %(k1)s  : absence de relation de comportement de type <ELAS>
+ rÃ©cupÃ©ration des caractÃ©ristiques du matÃ©riau ACIER associÃ© au cÃ¢ble no %(k1)s  : absence de relation de comportement de type <ELAS>
 """),
 
 52: _(u"""
- récupération des caractéristiques du matériau ACIER associé au câble no %(k1)s , relation de comportement <ELAS> : module de Young indéfini
+ rÃ©cupÃ©ration des caractÃ©ristiques du matÃ©riau ACIER associÃ© au cÃ¢ble no %(k1)s , relation de comportement <ELAS> : module de Young indÃ©fini
 """),
 
 53: _(u"""
- récupération des caractéristiques du matériau ACIER associé au câble no %(k1)s , relation de comportement <ELAS> : valeur invalide pour le module de Young
+ rÃ©cupÃ©ration des caractÃ©ristiques du matÃ©riau ACIER associÃ© au cÃ¢ble no %(k1)s , relation de comportement <ELAS> : valeur invalide pour le module de Young
 """),
 
 54: _(u"""
- récupération des caractéristiques du matériau ACIER associé au câble no %(k1)s  : absence de relation de comportement de type <BPEL_ACIER> ou <ETCC_ACIER>
+ rÃ©cupÃ©ration des caractÃ©ristiques du matÃ©riau ACIER associÃ© au cÃ¢ble no %(k1)s  : absence de relation de comportement de type <BPEL_ACIER> ou <ETCC_ACIER>
 """),
 
 55: _(u"""
- récupération des caractéristiques du matériau ACIER associé au câble no %(k1)s , relation de comportement <BPEL_ACIER> : Le paramètre F_PRG doit être positif et non nul
+ rÃ©cupÃ©ration des caractÃ©ristiques du matÃ©riau ACIER associÃ© au cÃ¢ble no %(k1)s , relation de comportement <BPEL_ACIER> : Le paramÃ¨tre F_PRG doit Ãªtre positif et non nul
  """),
 56 : _(u"""
- Pour faire un calcul de relaxation type ETCC_REPRISE, vous devez  renseigner le mot-clé TENSION_CT de DEFI_CABLE pour chaque câble de précontrainte, 
+ Pour faire un calcul de relaxation type ETCC_REPRISE, vous devez  renseigner le mot-clÃ© TENSION_CT de DEFI_CABLE pour chaque cÃ¢ble de prÃ©contrainte, 
 """),
 
 57: _(u"""
- les caractéristiques géométriques n'ont pas été affectées à la maille no %(k1)s  appartenant au câble no %(k2)s
+ les caractÃ©ristiques gÃ©omÃ©triques n'ont pas Ã©tÃ© affectÃ©es Ã  la maille no %(k1)s  appartenant au cÃ¢ble no %(k2)s
  """),
 
 58: _(u"""
- l'aire de la section droite n a pas été affectée à la maille no %(k1)s  appartenant au câble no %(k2)s
+ l'aire de la section droite n a pas Ã©tÃ© affectÃ©e Ã  la maille no %(k1)s  appartenant au cÃ¢ble no %(k2)s
 """),
 
 59: _(u"""
- valeur invalide pour l'aire de la section droite affectée à la maille numéro %(k1)s  appartenant au câble numéro %(k2)s
+ valeur invalide pour l'aire de la section droite affectÃ©e Ã  la maille numÃ©ro %(k1)s  appartenant au cÃ¢ble numÃ©ro %(k2)s
 """),
 
 60: _(u"""
- des aires de section droite différentes ont été affectées aux mailles appartenant au câble no %(k1)s
+ des aires de section droite diffÃ©rentes ont Ã©tÃ© affectÃ©es aux mailles appartenant au cÃ¢ble no %(k1)s
 """),
 
 62: _(u"""
-  numéro d'occurrence négatif
+  numÃ©ro d'occurrence nÃ©gatif
 """),
 
 63: _(u"""
- pas de blocage de déplacement tangent sur des faces d'éléments 3D.
+ pas de blocage de dÃ©placement tangent sur des faces d'Ã©lÃ©ments 3D.
  rentrer la condition aux limites par DDL_IMPO ou LIAISON_DDL
 """),
 
@@ -268,7 +268,7 @@ Risque & Conseil:
 """),
 
 65: _(u"""
- le descripteur_grandeur des forces ne tient pas sur dix entiers codés
+ le descripteur_grandeur des forces ne tient pas sur dix entiers codÃ©s
 """),
 
 66: _(u"""
@@ -276,44 +276,44 @@ Risque & Conseil:
 """),
 
 67 : _(u"""
-La table fournie dans DEFI_CABLE doit contenir l'abscisse curviligne et la tension du câble.
+La table fournie dans DEFI_CABLE doit contenir l'abscisse curviligne et la tension du cÃ¢ble.
 """),
 
 68 : _(u"""
-La table fournie n'a pas la bonne dimension : vérifiez qu'il s'agit du bon câble ou que plusieurs 
+La table fournie n'a pas la bonne dimension : vÃ©rifiez qu'il s'agit du bon cÃ¢ble ou que plusieurs 
 instants ne sont pas contenus dans la table.
 """),
 
 69 : _(u"""
-Les abscisses curvilignes de la table fournie ne correspondent pas à celles du câble étudié
+Les abscisses curvilignes de la table fournie ne correspondent pas Ã  celles du cÃ¢ble Ã©tudiÃ©
 """),
 
 70 : _(u""" Attention, vous voulez calculer les pertes par relaxation de l'acier, mais 
-      le coefficient RELAX_1000 est nul. Les pertes associées sont donc nulles. 
+      le coefficient RELAX_1000 est nul. Les pertes associÃ©es sont donc nulles. 
  """),
 82: _(u"""
  pour LIAISON_UNIF, entrer plus d'un seul noeud
 """),
 
 83: _(u"""
- on doit utiliser le mot clé CHAM_NO pour donner le CHAM_NO dont les composantes seront les seconds membres de la relation linéaire.
+ on doit utiliser le mot clÃ© CHAM_NO pour donner le CHAM_NO dont les composantes seront les seconds membres de la relation linÃ©aire.
 
  """),
 
 84: _(u"""
- il faut que le CHAM_NO dont les termes servent de seconds membres à la relation linéaire à écrire ait été défini.
+ il faut que le CHAM_NO dont les termes servent de seconds membres Ã  la relation linÃ©aire Ã  Ã©crire ait Ã©tÃ© dÃ©fini.
  """),
 
 85: _(u"""
- on doit donner un CHAM_NO après le mot clé CHAM_NO derrière le mot facteur CHAMNO_IMPO .
+ on doit donner un CHAM_NO aprÃ¨s le mot clÃ© CHAM_NO derriÃ¨re le mot facteur CHAMNO_IMPO .
 """),
 
 86: _(u"""
- il faut définir la valeur du coefficient de la relation linéaire après le mot clé COEF_MULT derrière le mot facteur CHAMNO_IMPO
+ il faut dÃ©finir la valeur du coefficient de la relation linÃ©aire aprÃ¨s le mot clÃ© COEF_MULT derriÃ¨re le mot facteur CHAMNO_IMPO
 """),
 
 87: _(u"""
- le descripteur_grandeur de la grandeur de nom  %(k1)s  ne tient pas sur dix entiers codés
+ le descripteur_grandeur de la grandeur de nom  %(k1)s  ne tient pas sur dix entiers codÃ©s
 """),
 
 89: _(u"""
@@ -321,28 +321,28 @@ Les abscisses curvilignes de la table fournie ne correspondent pas à celles du c
 """),
 
 90: _(u"""
- Le calcul par l'opérateur <CALC_FLUI_STRU> des paramètres du mode no %(i1)d
- n'a pas convergé pour la vitesse no %(i2)d. On ne calcule donc pas
- d'interspectre de réponse modale pour cette vitesse.
+ Le calcul par l'opÃ©rateur <CALC_FLUI_STRU> des paramÃ¨tres du mode no %(i1)d
+ n'a pas convergÃ© pour la vitesse no %(i2)d. On ne calcule donc pas
+ d'interspectre de rÃ©ponse modale pour cette vitesse.
 """),
 
 91: _(u"""
-La fonction n'a pas été trouvée dans la colonne %(k1)s de la table %(k2)s
-(ou bien le paramètre %(k1)s n'existe pas dans la table).
+La fonction n'a pas Ã©tÃ© trouvÃ©e dans la colonne %(k1)s de la table %(k2)s
+(ou bien le paramÃ¨tre %(k1)s n'existe pas dans la table).
 """),
 
 92: _(u"""
-Les mots-clés admissibles pour définir la première liste de noeuds sous le mot-clé facteur  %(k1)s sont :
+Les mots-clÃ©s admissibles pour dÃ©finir la premiÃ¨re liste de noeuds sous le mot-clÃ© facteur  %(k1)s sont :
 "GROUP_NO_1" ou "NOEUD_1" ou "GROUP_MA_1" ou "MAILLE_1".
 """),
 
 93: _(u"""
-Les mots-clés admissibles pour définir la seconde liste de noeuds sous le mot-clé facteur  %(k1)s  sont :
+Les mots-clÃ©s admissibles pour dÃ©finir la seconde liste de noeuds sous le mot-clÃ© facteur  %(k1)s  sont :
 "GROUP_NO_2" ou "NOEUD_2" ou "GROUP_MA_2" ou "MAILLE_2".
 """),
 
 94: _(u"""
-  LIAISON_GROUP : on ne sait pas calculer la normale à un noeud. Il faut passer par les mailles
+  LIAISON_GROUP : on ne sait pas calculer la normale Ã  un noeud. Il faut passer par les mailles
 """),
 
 95: _(u"""
@@ -354,14 +354,14 @@ Les mots-clés admissibles pour définir la seconde liste de noeuds sous le mot-cl
 """),
 
 97: _(u"""
-  Assemblage de maillages : Présence de noeuds confondus dans la zone à coller GROUP_MA_1.
+  Assemblage de maillages : PrÃ©sence de noeuds confondus dans la zone Ã  coller GROUP_MA_1.
 """),
 
 98: _(u"""
- on doit utiliser le mot clé CHAM_NO pour donner le CHAM_NO dont les composantes seront les coefficients de la relation linéaire.
+ on doit utiliser le mot clÃ© CHAM_NO pour donner le CHAM_NO dont les composantes seront les coefficients de la relation linÃ©aire.
 """),
 
 99: _(u"""
- il faut que le CHAM_NO dont les termes servent de coefficients à la relation linéaire à écrire ait été défini.
+ il faut que le CHAM_NO dont les termes servent de coefficients Ã  la relation linÃ©aire Ã  Ã©crire ait Ã©tÃ© dÃ©fini.
 """),
 }

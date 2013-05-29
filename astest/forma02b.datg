@@ -1,4 +1,4 @@
-# -*- coding: iso-8859-1 -*-
+# coding=utf-8
 # SALOME 4.1.4
 
 from geompy import *
@@ -101,7 +101,7 @@ id_GeoCoude = addToStudy(GeoCoude,"GeoCoude")
 
 
 #---------------------------
-# Création des groupes
+# CrÃ©ation des groupes
 #---------------------------
 
 EFOND = CreateGroup(GeoCoude, ShapeType["FACE"])
@@ -181,7 +181,7 @@ algo2.Propagation()
 maillageCoude.Compute()
 
 
-# Création des groupes du maillage
+# CrÃ©ation des groupes du maillage
 #---------------------------------
 maillageCoude.Group(EFOND, "EFOND" )
 maillageCoude.Group(BASE, "BASE" )
@@ -194,16 +194,15 @@ maillageCoude.Group(P_EFOND, "P_EFOND")
 ## On peut sauver dans le dossier courant :
 #import os
 #Repertoire=os.getcwd()
-##ou bien en spécifier un
+##ou bien en spÃ©cifier un
 #Repertoire='MonRepertoire'
 #maillageCoude.ExportToMED(Repertoire+"forma01c.mail.med",SMESH.MED_V2_2)
 
-# Mise à jour de l'arbre
+# Mise Ã  jour de l'arbre
 #---------------------------
 # Si on a une interface graphique...
 if salome.sg.hasDesktop():
    gg = salome.ImportComponentGUI("GEOM")
    gg.createAndDisplayFitAllGO(id_GeoCoude)
    salome.sg.updateObjBrowser(1)
-
 

@@ -4,7 +4,7 @@ opti dime 3 elem TET4 ;
 *-------
 *donnees
 *-------
-*cotés
+*cotÃ©s
 LX = 5;
 LY = 5;
 LZ = 25;

@@ -11,4 +11,3 @@ mult2inc = FORMULE(NOM_PARA='INST', VALE="mult2(INST)")
 assert mult2(2.) == 4.
 assert mult2inc(2.) == 4.
 print "mult2inc(2.) =", mult2inc(2.)
-

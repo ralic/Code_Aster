@@ -33,4 +33,3 @@ mailG = daller dABG dBCG dCDG dDAG plan;
 mail = mailP et mailG;
 trac mail;
 sauv form mail ;
-

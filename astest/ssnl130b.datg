@@ -1,4 +1,4 @@
-# -*- coding: iso-8859-1 -*-
+# coding=utf-8
 
 from geompy import *
 
@@ -54,11 +54,11 @@ Maillage.Quadrangle()
 ok = Maillage.Compute()
 
 if not ok:
-    raise Exception("Erreur lors de la génération du maillage")
+    raise Exception("Erreur lors de la gÃ©nÃ©ration du maillage")
 
 gr_edge_longueur = Maillage.Group(sub_edge_longueur, "DALLE_2D")
 
-# Crée les ressorts sur tous les noeuds de gr_edge_longueur
+# CrÃ©e les ressorts sur tous les noeuds de gr_edge_longueur
 gno_edge_longueur = Maillage.CreateDimGroup([gr_edge_longueur], smesh.NODE, "PTDALLE")
 l_no_edge_longueur = gno_edge_longueur.GetIDs()
 l_edges_ressorts = []

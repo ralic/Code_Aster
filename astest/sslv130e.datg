@@ -47,4 +47,3 @@ OPTI SAUV FORMAT 'sslv130e.mgib' ;
 SAUV FORMAT (VOLUME et FACINF et FACSUP et FACEEF et FACEAE et FACEAB);
 trace volume;
 fin ;
-

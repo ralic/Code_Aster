@@ -203,7 +203,7 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=1,
           )
 
 # comparaison EPEQ_ELNO vs INVA_2(EPSI_ELNO)
-# plusieurs variantes à titre d'exemple
+# plusieurs variantes Ã  titre d'exemple
 fEpsEq0 = FORMULE(
     NOM_PARA=('EPXX', 'EPYY', 'EPZZ', 'EPXY', 'EPXZ', 'EPYZ'),
     VALE="""sqrt(2./3. * (

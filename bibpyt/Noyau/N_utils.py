@@ -1,4 +1,4 @@
-# -*- coding: iso-8859-1 -*-
+# coding=utf-8
 # person_in_charge: mathieu.courtois at edf.fr
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -33,11 +33,11 @@ from N_types import is_int, is_float, is_complex, is_str, is_sequence, is_assd
 SEP='_'
 
 try:
-   # Si la version de Python possËde la fonction _getframe
+   # Si la version de Python poss√®de la fonction _getframe
    # on l'utilise.
    cur_frame=sys._getframe
 except:
-   # Sinon on l'Èmule
+   # Sinon on l'√©mule
    def cur_frame(offset=0):
      """ Retourne la frame d execution effective eventuellement en remontant
          de offset niveaux dans la pile d execution
@@ -67,8 +67,8 @@ def callee_where(niveau=4):
 
 def AsType(a):
    """
-      Retourne le type d'un concept (a) ‡ partir
-      des caractÈristiques de l'objet Python
+      Retourne le type d'un concept (a) √† partir
+      des caract√©ristiques de l'objet Python
    """
    if is_sequence(a):
        return AsType(a[0])
@@ -93,10 +93,10 @@ def prbanner(s):
 
 def repr_float(valeur):
   """
-      Cette fonction reprÈsente le rÈel valeur comme une chaine de caractËres
-      sous forme mantisse exposant si nÈcessaire cad si le nombre contient plus de
-      5 caractËres
-      NB : valeur est un rÈel au format Python ou une chaine de caractËres reprÈsentant un rÈel
+      Cette fonction repr√©sente le r√©el valeur comme une chaine de caract√®res
+      sous forme mantisse exposant si n√©cessaire cad si le nombre contient plus de
+      5 caract√®res
+      NB : valeur est un r√©el au format Python ou une chaine de caract√®res repr√©sentant un r√©el
   """
   if type(valeur) == str : valeur = eval(valeur)
   if valeur == 0. : return '0.0'
@@ -106,10 +106,10 @@ def repr_float(valeur):
     if abs(valeur) > 0.01 : return repr(valeur)
   t=repr(valeur)
   if t.find('e') != -1 or t.find('E') != -1 :
-    # le rÈel est dÈj‡ sous forme mantisse exposant !
+    # le r√©el est d√©j√† sous forme mantisse exposant !
     # --> on remplace e par E
     t=t.replace('e','E')
-    # --> on doit encore vÈrifier que la mantisse contient bien un '.'
+    # --> on doit encore v√©rifier que la mantisse contient bien un '.'
     if t.find('.')!= -1:
       return t
     else:
@@ -123,7 +123,7 @@ def repr_float(valeur):
     t=t[1:]
   cpt = 0
   if t[0].atof() == 0.:
-    # rÈel plus petit que 1
+    # r√©el plus petit que 1
     neg = 1
     t=t[2:]
     cpt=1
@@ -134,7 +134,7 @@ def repr_float(valeur):
     for c in t[1:]:
       s=s+c
   else:
-    # rÈel plus grand que 1
+    # r√©el plus grand que 1
     s=s+t[0]+'.'
     if t[1:].atof() == 0.:
       l=t[1:].split('.')

@@ -1,4 +1,4 @@
-# -*- coding: iso-8859-1 -*-
+# coding=utf-8
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -18,8 +18,8 @@
 # ======================================================================
 
 """
-   Ce package contient la fonctionnalité de validation des objets de type OBJECT. 
-   Cette fonctionnalité est implémentée sous la forme de classes de type MIXIN qui
-   doivent etre combinées aux classes de bases de Noyau par héritage multiple dans 
-   un troisième package, en général, Accas.
+   Ce package contient la fonctionnalitÃ© de validation des objets de type OBJECT. 
+   Cette fonctionnalitÃ© est implÃ©mentÃ©e sous la forme de classes de type MIXIN qui
+   doivent etre combinÃ©es aux classes de bases de Noyau par hÃ©ritage multiple dans 
+   un troisiÃ¨me package, en gÃ©nÃ©ral, Accas.
 """

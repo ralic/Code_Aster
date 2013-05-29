@@ -1,4 +1,4 @@
-# -*- coding: iso-8859-1 -*-
+# coding=utf-8
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -21,7 +21,7 @@
 cata_msg = {
 
 2 : _(u"""
-  -> le sommet de numÈro global %(i1)i n appartient pas
+  -> le sommet de num√©ro global %(i1)i n appartient pas
   -> a la maille %(i2)i
 """),
 
@@ -34,7 +34,7 @@ cata_msg = {
 """),
 
 5 : _(u"""
-  -> Le nombre de mailles %(i1)i est infÈrieur a 1
+  -> Le nombre de mailles %(i1)i est inf√©rieur a 1
 """),
 6 : _(u"""
   -> Le type de voisinage %(k1)s est inconnu
@@ -46,35 +46,35 @@ cata_msg = {
   -> La loi de comportement  %(k1)s est inconnu
 """),
 9 : _(u"""
-  -> Le type de modÈlisation volumes finis (TYPVF)  %(i1)i   est inconnu.
+  -> Le type de mod√©lisation volumes finis (TYPVF)  %(i1)i   est inconnu.
      Vous avez le choix entre :
-                          TYPVF=1  => SchÈma VF a deux points
-                          TYPVF=2  => SchÈma SUDM
-                          TYPVF=3  => SchÈma SUDA
-                          TYPVF=4  => SchÈma SUC
+                          TYPVF=1  => Sch√©ma VF a deux points
+                          TYPVF=2  => Sch√©ma SUDM
+                          TYPVF=3  => Sch√©ma SUDA
+                          TYPVF=4  => Sch√©ma SUC
                                                                           
 """),
 10 : _(u"""
-  -> Le nom de la modÈlisation  %(k1)s  est inconnu
+  -> Le nom de la mod√©lisation  %(k1)s  est inconnu
 """),
 11 : _(u"""
   -> L'option  %(k1)s est inconnue
 """),
 12 : _(u"""
-  -> ELREFE  %(k1)s   inconnue : En 3D et en VF on peut utiliser uniquement des hexaËdres
-    a 27 DDL et des tÈtraËdres a 27 DDL.
+  -> ELREFE  %(k1)s   inconnue : En 3D et en VF on peut utiliser uniquement des hexa√®dres
+    a 27 DDL et des t√©tra√®dres a 27 DDL.
 """),
 13 : _(u"""
-  -> l'ÈlÈment %(k1)s et la face  %(i1)i est non plane 
+  -> l'√©l√©ment %(k1)s et la face  %(i1)i est non plane 
 """),
 14 : _(u"""
   -> Il est possible d'utiliser comme inconnue dans la maille le centre du cercle
      circonscrit (a la place du centre de gravite) ce qui nous permet de retrouver
-     un schÈma volumes finis a deux points. Cependant cette possibilitÈ n'est programme
-     que pour des maillages 2D composÈs de triangles.
+     un sch√©ma volumes finis a deux points. Cependant cette possibilit√© n'est programme
+     que pour des maillages 2D compos√©s de triangles.
 """),
 15 : _(u"""
-  -> Le nombre de noeuds de l'ÈlÈment est inconnu en VF. 
+  -> Le nombre de noeuds de l'√©l√©ment est inconnu en VF. 
      Nous pouvons utiliser uniquement des mailles quadratiques. Il est donc 
      possible d'avoir 7 noeuds on a alors une maille TRIA7,
      9 noeuds on a alors un QUAD9, etc...

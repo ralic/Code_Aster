@@ -1,4 +1,4 @@
-# -*- coding: iso-8859-1 -*-
+# coding=utf-8
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -18,8 +18,8 @@
 # ======================================================================
 
 
-# Il NE faudrait utiliser cette fonction QUE sur des tableaux hétérogènes.
-# Pour les tableaux homogènes (int, float, string), utiliser numpy.transpose.
+# Il NE faudrait utiliser cette fonction QUE sur des tableaux hÃ©tÃ©rogÃ¨nes.
+# Pour les tableaux homogÃ¨nes (int, float, string), utiliser numpy.transpose.
 
 def transpose(liste):
     """Transposition de double liste

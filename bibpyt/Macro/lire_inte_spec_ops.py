@@ -1,4 +1,4 @@
-# -*- coding: iso-8859-1 -*-
+# coding=utf-8
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -44,7 +44,7 @@ def lire_inte_spec_ops(self,
     self.set_icmd(1)
     nompro='LIRE_INTE_SPEC'
 
-    # Lecture de la fonction dans un fichier d unité logique UNITE
+    # Lecture de la fonction dans un fichier d unitÃ© logique UNITE
     UL = UniteAster()
     nomfich=UL.Nom(UNITE)
     if not os.path.isfile(nomfich):
@@ -126,7 +126,7 @@ def lire_inte_spec_ops(self,
                 liste.append(valeurs[2*ind_freq+1])
                 freq = freq + df
 
-            # création de la fonction ASTER :
+            # crÃ©ation de la fonction ASTER :
             _fonc=DEFI_FONCTION( NOM_PARA   = NOM_PARA,
                                  NOM_RESU   = NOM_RESU,
                                  PROL_DROITE= PROL_DROITE,
@@ -200,7 +200,7 @@ def lire_inte_spec_ops(self,
                   liste=liste+[vale_fonc[3*i],module*cos(phase),module*sin(phase)]
 
 
-            # création de la fonction ASTER :
+            # crÃ©ation de la fonction ASTER :
             _fonc=DEFI_FONCTION( NOM_PARA   =NOM_PARA,
                                  NOM_RESU   =NOM_RESU,
                                  PROL_DROITE=PROL_DROITE,
@@ -229,11 +229,11 @@ def lire_inte_spec_ops(self,
                           TITRE=TITRE,)
 
     else:
-        # mot-clé != 'ASTER', ou 'IDEAS' => ERREUR !
+        # mot-clÃ© != 'ASTER', ou 'IDEAS' => ERREUR !
         UTMESS('F', 'SPECTRAL0_12')
         
 
-    # remet UNITE dans son état initial
+    # remet UNITE dans son Ã©tat initial
     UL.EtatInit()
     return ier
         

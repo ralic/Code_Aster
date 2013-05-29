@@ -1,4 +1,4 @@
-# -*- coding: iso-8859-1 -*-
+# coding=utf-8
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -20,18 +20,18 @@
 
 cata_msg={
 1: _(u"""
-Afin de pouvoir gÈnÈrer les GROUP_MA, rÈduisez le nombre 
-de caractËres de NOM_GROUP_MA ‡ un maximum de : %(i1)d 
+Afin de pouvoir g√©n√©rer les GROUP_MA, r√©duisez le nombre 
+de caract√®res de NOM_GROUP_MA √† un maximum de : %(i1)d 
 """),
 
 2: _(u"""
-Il existe dÈj‡ un GROUP_MA nommÈ : %(k1)s
+Il existe d√©j√† un GROUP_MA nomm√© : %(k1)s
 """),
 
 3: _(u"""
-Le modËle contient des noeuds (AFFE_MODELE/AFFE/GROUP_NO). On ne peut pas partitionner.
+Le mod√®le contient des noeuds (AFFE_MODELE/AFFE/GROUP_NO). On ne peut pas partitionner.
 
-Conseil : il faut crÈer des mailles POI1 avec l'opÈrateur CREA_MAILLAGE/CREA_POI1
+Conseil : il faut cr√©er des mailles POI1 avec l'op√©rateur CREA_MAILLAGE/CREA_POI1
           puis refaire un MODELE avec AFFE_MODELE/AFFE/GROUP_MA uniquement.
 """),
 

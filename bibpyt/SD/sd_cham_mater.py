@@ -1,4 +1,4 @@
-# -*- coding: iso-8859-1 -*-
+# coding=utf-8
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -29,7 +29,7 @@ from SD.sd_util import *
 # Remarque :
 #------------
 # la sd_cham_mater est produite par la seule commande AFFE_MATERIAU.
-# C'est pourquoi, on fera appel parfois pour la décrire au vocabulaire de cette
+# C'est pourquoi, on fera appel parfois pour la dÃ©crire au vocabulaire de cette
 # commande.
 
 
@@ -37,7 +37,7 @@ from SD.sd_util import *
 class sd_cham_mater_varc(AsBase):
 #----------------------------------
 # la sd_cham_mater_varc est la partie de la sd_cham_mater correspondant aux variables de commande
-# (mot clé AFFE_VARC)
+# (mot clÃ© AFFE_VARC)
 
     nomj = SDNom(fin=8)
     CVRCNOM  = AsVK8()
@@ -74,7 +74,7 @@ class sd_cham_mater_varc(AsBase):
                       sd3=sd_champ(vale[ncmp*kedit+2]) ; sd3.check(checker)
 
 
-    # vérification des objets .CVRC* :
+    # vÃ©rification des objets .CVRC* :
     def check_CVRC(self, checker):
         if not self.exists() : return
         cvrccmp=self.CVRCCMP.get()
@@ -105,22 +105,22 @@ class sd_cham_mater(AsBase):
 #=============================
     nomj = SDNom(fin=8)
 
-    # CHAMP_MAT est une carte contenant la liste des noms de matériaux
-    # affectées sur les mailles du maillage.
+    # CHAMP_MAT est une carte contenant la liste des noms de matÃ©riaux
+    # affectÃ©es sur les mailles du maillage.
     CHAMP_MAT = sd_carte()
 
     # si AFFE_VARC :
     varc = Facultatif(sd_cham_mater_varc(SDNom(nomj='')))
 
     # si AFFE_COMPOR :
-    # COMPOR est une carte définissant les sd_compor affectés
+    # COMPOR est une carte dÃ©finissant les sd_compor affectÃ©s
     # sur les mailles du maillage
     COMPOR = Facultatif(sd_carte())
 
 
     def check_CHAMP_MAT(self,checker) :
     #----------------------------------
-        # on vérifie que la carte .CHAMP_MAT contient bien des noms de matériau.
+        # on vÃ©rifie que la carte .CHAMP_MAT contient bien des noms de matÃ©riau.
         vale=self.CHAMP_MAT.VALE.get_stripped()
         desc=self.CHAMP_MAT.DESC.get()
         numgd    =desc[0]
@@ -149,13 +149,13 @@ class sd_cham_mater(AsBase):
                         assert 0 , ' On doit trouver la valeur de TREF: '+x1
                     continue
 
-                # cas général : x1 est un nom de sd_mater
+                # cas gÃ©nÃ©ral : x1 est un nom de sd_mater
                 sd2=sd_mater(x1) ; sd2.check(checker)
 
 
     def check_COMPOR(self,checker) :
     #----------------------------------
-        # on vérifie (un peu)  la carte .COMPOR (si elle existe)
+        # on vÃ©rifie (un peu)  la carte .COMPOR (si elle existe)
         desc=self.COMPOR.DESC.get()
         if not desc : return
         vale=self.COMPOR.VALE.get_stripped()

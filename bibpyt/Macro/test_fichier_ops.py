@@ -1,4 +1,4 @@
-# -*- coding: iso-8859-1 -*-
+# coding=utf-8
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -71,7 +71,7 @@ def test_fichier_ops(self, FICHIER, NB_VALE, VALE_CALC, VALE_CALC_K, TYPE_TEST,
                      TOLE_MACHINE, CRITERE, INFO, **kwargs):
    """
      Macro permettant de tester la non-regression d'un fichier.
-     On teste le nombre de réels présents, et, facultativement, la
+     On teste le nombre de rÃ©els prÃ©sents, et, facultativement, la
      somme de ces nombres et le texte du fichier.
    """
    ier = 0
@@ -92,7 +92,7 @@ def test_fichier_ops(self, FICHIER, NB_VALE, VALE_CALC, VALE_CALC_K, TYPE_TEST,
    is_ok = 0
    TYPE_TEST = TYPE_TEST or 'SOMM'
 
-   # vérifier que le fichier a été fermé
+   # vÃ©rifier que le fichier a Ã©tÃ© fermÃ©
    __tinfo = INFO_EXEC_ASTER(LISTE_INFO='ETAT_UNITE', FICHIER=FICHIER)
    if __tinfo['ETAT_UNITE', 1].find('OUVERT') > -1:
       UTMESS('S','TEST0_2',valk=FICHIER)
@@ -102,18 +102,18 @@ def test_fichier_ops(self, FICHIER, NB_VALE, VALE_CALC, VALE_CALC_K, TYPE_TEST,
       UTMESS('S', 'TEST0_3', valk=FICHIER)
    fileobj = open(FICHIER, 'r')
 
-   # filtre par expression régulière
+   # filtre par expression rÃ©guliÃ¨re
    try:
       fileobj = regexp_filter(fileobj, kwargs['EXPR_IGNORE'])
    except TestFichierError, valk:
       UTMESS('S', 'TEST0_1', valk=valk)
 
-   # calcule le nombre de réels et la somme ou min/max
+   # calcule le nombre de rÃ©els et la somme ou min/max
    nbval, valeur, chksum = test_iter(fileobj, function=dict_func_test[TYPE_TEST], verbose=(INFO > 1))
    fileobj.close()
 
    # produit le TEST_TABLE
-   refsum = VALE_CALC_K or 'non testé'
+   refsum = VALE_CALC_K or 'non testÃ©'
    is_ok = int(chksum == refsum)
    __tab1 = CREA_TABLE(LISTE=(_F(PARA='NBVAL',  LISTE_I=nbval,),
                               _F(PARA='VALEUR', LISTE_R=valeur,),
@@ -121,7 +121,7 @@ def test_fichier_ops(self, FICHIER, NB_VALE, VALE_CALC, VALE_CALC_K, TYPE_TEST,
    if VALE_CALC is not None:
       sVALE = '%20.13e' % VALE_CALC
    else:
-      sVALE = 'non testé'
+      sVALE = 'non testÃ©'
    UTMESS('I', 'TEST0_4', vali=(nbval, NB_VALE), valr=valeur, valk=(chksum, refsum, FICHIER, sVALE))
    
    TEST_TABLE(TABLE=__tab1,
@@ -149,12 +149,12 @@ def test_fichier_ops(self, FICHIER, NB_VALE, VALE_CALC, VALE_CALC_K, TYPE_TEST,
 #-------------------------------------------------------------------------------
 def regexp_filter(file_in, regexp_ignore, debug=False):
    """Filtre le fichier fourni (file descriptor) en utilisant les
-   expressions régulières fournies.
-   On retourne l'objet file vers le fichier modifié (ou non).
+   expressions rÃ©guliÃ¨res fournies.
+   On retourne l'objet file vers le fichier modifiÃ© (ou non).
    """
    if not regexp_ignore:      # None or []
       return file_in
-   # vérification des expressions régulières
+   # vÃ©rification des expressions rÃ©guliÃ¨res
    if type(regexp_ignore) not in (list, tuple):
       regexp_ignore = [regexp_ignore,]
    l_regexp = []
@@ -196,14 +196,14 @@ re_fortran    = re.compile('([0-9]+)[dD]([\-\+]{0,1}[0-9]+)')
 #-------------------------------------------------------------------------------
 def test_iter(obj, function, verbose=False):
    """
-   Cette fonction compte le nombre de réels dans le fichier et une grandeur
-   à partir des valeurs (somme, sommes des valeurs absolues, min/max...).
+   Cette fonction compte le nombre de rÃ©els dans le fichier et une grandeur
+   Ã  partir des valeurs (somme, sommes des valeurs absolues, min/max...).
    IN :
-      obj      : objet 'file' ou 'string' sur le lequel on peut itérer
+      obj      : objet 'file' ou 'string' sur le lequel on peut itÃ©rer
       function : fonction de test   val = func_test(val, [xi, ...])
-      verbose  : on affiche le résumé si info>0
+      verbose  : on affiche le rÃ©sumÃ© si info>0
    OUT :
-      nombre de valeurs, valeur résultat
+      nombre de valeurs, valeur rÃ©sultat
    """
    max_buff_size = 1000
    nbval = 0
@@ -211,17 +211,17 @@ def test_iter(obj, function, verbose=False):
    hfile = hash_new()
    
    # Si on lit tout le fichier d'un coup, on va environ 3 fois plus vite
-   # que si on le lit ligne à ligne, mais on consomme en mémoire environ
+   # que si on le lit ligne Ã  ligne, mais on consomme en mÃ©moire environ
    # 5 fois la taille du fichier...
    # En lisant par paquet de 1000 (ou 10000), on va quasiment aussi vite
-   # en consommant très peu de mémoire.
+   # en consommant trÃ¨s peu de mÃ©moire.
    
    #    fichier     tout   ligne/ligne   1000 lignes
    #     10 Mo       3 s      10 s       3 s
    #     50 Mo      17 s      48 s      17 s
    #    100 Mo      34 s      96 s      35 s
    
-   # l'itérateur est l'objet file lui-même ou on le crée sur la liste
+   # l'itÃ©rateur est l'objet file lui-mÃªme ou on le crÃ©e sur la liste
    if type(obj) is file:
       obj.seek(0)
       iterator = obj
@@ -258,7 +258,7 @@ def test_iter(obj, function, verbose=False):
       hfile.update(text)
       
       if verbose:
-         print 'Nombres réels et entiers :'
+         print 'Nombres rÃ©els et entiers :'
          print l_float
          print 'Texte :'
          print text
@@ -269,7 +269,7 @@ def test_iter(obj, function, verbose=False):
 
 #-------------------------------------------------------------------------------
 def test_file(filename, regexp_ignore=[], type_test='SOMM', verbose=False):
-   """Raccourci pour tester rapidement un fichier (utilisé par stanley.py).
+   """Raccourci pour tester rapidement un fichier (utilisÃ© par stanley.py).
    """
    if type(regexp_ignore) not in (list, tuple):
       regexp_ignore = [regexp_ignore,]
@@ -291,14 +291,14 @@ if __name__ == '__main__':
       help='type du test : SOMM, SOMM_ABS, MIN, MAX')
    p.add_option('--expr_ignore',
       action='store', dest='exp', type='string',
-      help='expression régulière à ignorer')
+      help='expression rÃ©guliÃ¨re Ã  ignorer')
    p.add_option('-v', '--verbose',
       action='store_true', dest='verbose', default=False,
       help='mode bavard')
    opts, args = p.parse_args()
 
    if len(args) == 0:
-      p.error('fichier à tester ?')
+      p.error('fichier Ã  tester ?')
 
    if opts.exp is None:
       exp = []

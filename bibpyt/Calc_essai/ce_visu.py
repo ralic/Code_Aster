@@ -1,4 +1,4 @@
-# -*- coding: iso-8859-1 -*-
+# coding=utf-8
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2010  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -37,19 +37,19 @@ class Visu(Visu):
     
     def readMED(self, medFilePathName, meshName = None, entity=None):
         """        
-        Chargement des données du maillage à afficher à partir d'un fichier MED
+        Chargement des donnÃ©es du maillage Ã  afficher Ã  partir d'un fichier MED
         
         EXCEPTION-> Non
         
         @type     medFilePathName:     string
         @param  medFilePathName:     chemin absolu du fichier MED
         @type     meshName:     string
-        @param  meshName:     nom d'un des maillages présents dans le fichier MED
+        @param  meshName:     nom d'un des maillages prÃ©sents dans le fichier MED
         @type     entity:     type defini ds ce module
-        @param  entity:     entité à visualiser sur le maillage de nom meshName 
+        @param  entity:     entitÃ© Ã  visualiser sur le maillage de nom meshName 
         
-        @rtype:   None en cas d'ERREUR( mauvais paramètres ?)
-        @return:  None en cas d'ERREUR( mauvais paramètres ?)        
+        @rtype:   None en cas d'ERREUR( mauvais paramÃ¨tres ?)
+        @return:  None en cas d'ERREUR( mauvais paramÃ¨tres ?)        
         """
         ok = None
         #try:

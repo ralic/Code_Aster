@@ -1,4 +1,4 @@
-# -*- coding: iso-8859-1 -*-
+# coding=utf-8
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -45,7 +45,7 @@ def impr_table_ops(self, FORMAT, TABLE, INFO, **args):
 
    #----------------------------------------------
    # 0. Traitement des arguments, initialisations
-   # unité logique des fichiers réservés
+   # unitÃ© logique des fichiers rÃ©servÃ©s
    ul_reserve=(8,)
    UL = UniteAster()
 
@@ -57,7 +57,7 @@ def impr_table_ops(self, FORMAT, TABLE, INFO, **args):
       if FORMAT=='XMGRACE':
          UTMESS('A','TABLE0_6',valk=nomfich)
 
-   # 0.2. Création des dictionnaires des FILTRES
+   # 0.2. CrÃ©ation des dictionnaires des FILTRES
    Filtre=[]
    if args['FILTRE']:
       for Fi in args['FILTRE']:
@@ -68,18 +68,18 @@ def impr_table_ops(self, FORMAT, TABLE, INFO, **args):
    # format pour l'impression des filtres
    form_filtre='\nFILTRE -> NOM_PARA: %-16s CRIT_COMP: %-4s VALE: %s'
 
-   # 0.3. Création de la liste des tables
-   # on conserve la liste même si aujourd'hui, on n'en imprime qu'une à la fois
+   # 0.3. CrÃ©ation de la liste des tables
+   # on conserve la liste mÃªme si aujourd'hui, on n'en imprime qu'une Ã  la fois
    ltab=[[TABLE.EXTR_TABLE(), TABLE]]
 
-   # 0.4.1. liste des paramètres à conserver
+   # 0.4.1. liste des paramÃ¨tres Ã  conserver
    nom_para=ltab[0][0].para
    if args['NOM_PARA']:
       nom_para=args['NOM_PARA']
    if not type(nom_para) in (list, tuple):
       nom_para=[nom_para,]
 
-   # 0.4.2. Traiter le cas des UL réservées
+   # 0.4.2. Traiter le cas des UL rÃ©servÃ©es
    if args['UNITE'] and args['UNITE'] in ul_reserve:
       UL.Etat(args['UNITE'], etat='F')
 
@@ -117,15 +117,15 @@ def impr_table_ops(self, FORMAT, TABLE, INFO, **args):
          tab.sort(CLES=dT['NOM_PARA'], ORDRE=dT['ORDRE'])
 
       # ----- 4. Impression
-      # vérification des paramètres
+      # vÃ©rification des paramÃ¨tres
       for p in nom_para:
          if not p in tab.para:
            UTMESS('A','TABLE0_7',valk=p)
 
-      # sélection des paramètres et suppression des colonnes vides
+      # sÃ©lection des paramÃ¨tres et suppression des colonnes vides
       timp = tab.SansColonneVide(nom_para)
 
-      # passage des mots-clés de mise en forme à la méthode Impr
+      # passage des mots-clÃ©s de mise en forme Ã  la mÃ©thode Impr
       kargs=args.copy()
       kargs.update({
          'FORMAT'    : FORMAT,
@@ -154,17 +154,17 @@ def impr_table_ops(self, FORMAT, TABLE, INFO, **args):
          kargs['dform']={ 'formR' : '%12.5E' }
          kfonc['FORMAT']='TABLEAU'
 
-      # 4.3. au format XMGRACE et dérivés
+      # 4.3. au format XMGRACE et dÃ©rivÃ©s
       elif FORMAT=='XMGRACE':
          kargs['dform']={ 'formR' : '%.8g' }
          kargs['PILOTE']=args['PILOTE']
          kfonc['PILOTE']=args['PILOTE']
 
-      # 4.4. format spécifié dans les arguments
+      # 4.4. format spÃ©cifiÃ© dans les arguments
       if args['FORMAT_R']:
          kargs['dform'].update({ 'formR' : fmtF2PY(args['FORMAT_R']) })
 
-      # 4.5. regroupement par paramètre : PAGINATION
+      # 4.5. regroupement par paramÃ¨tre : PAGINATION
       if args['PAGINATION']:
          l_ppag=args['PAGINATION']
          if not type(l_ppag) in (list, tuple):
@@ -183,7 +183,7 @@ def impr_table_ops(self, FORMAT, TABLE, INFO, **args):
          p_extr = set(['FONCTION', 'FONCTION_C'])
          p_extr.intersection_update(timp.para)
          if len(p_extr) > 0:
-            # on réduit timp aux colonnes FONCTION et FONCTION_C
+            # on rÃ©duit timp aux colonnes FONCTION et FONCTION_C
             textr = timp.__getitem__(list(p_extr))
             for row in textr:
                for par,cell in row.items():
@@ -191,7 +191,7 @@ def impr_table_ops(self, FORMAT, TABLE, INFO, **args):
                      cell = cell.strip()
                      if aster.getvectjev('%-19s.PROL' % cell) != None:
                         dfon.append(['%-19s' % cell, par])
-            # impression des fonctions trouvées
+            # impression des fonctions trouvÃ©es
             for f,par in dfon:
                __fonc=RECU_FONCTION(
                   TABLE=sdtab,
@@ -205,14 +205,14 @@ def impr_table_ops(self, FORMAT, TABLE, INFO, **args):
                __fonc.Trace(**kfonc)
                DETRUIRE(CONCEPT=_F(NOM=(__fonc,),), INFO=1,)
 
-   # 99. Traiter le cas des UL réservées
+   # 99. Traiter le cas des UL rÃ©servÃ©es
    UL.EtatInit()
    return ier
 
 
 def fmtF2PY(fformat):
    """Convertit un format Fortran en format Python (printf style).
-   Gère uniquement les fortrans réels, par exemple : E12.5, 1PE13.6, D12.5...
+   GÃ¨re uniquement les fortrans rÃ©els, par exemple : E12.5, 1PE13.6, D12.5...
    """
    fmt=''
    matP=re.search('([0-9]+)P',fformat)
@@ -226,5 +226,5 @@ def fmtF2PY(fformat):
    except (ValueError, TypeError), msg:
       fmt='%12.5E'
       print 'Error :',msg
-      print 'Format par défaut utilisé :',fmt
+      print 'Format par dÃ©faut utilisÃ© :',fmt
    return fmt

@@ -1,4 +1,4 @@
-# -*- coding: iso-8859-1 -*-
+# coding=utf-8
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -21,20 +21,20 @@
 cata_msg = {
 
 2 : _(u"""
- l'utilisation de cette commande n'est légitime que si
- la configuration étudiée est du type "FAISCEAU_TRANS"
+ l'utilisation de cette commande n'est lÃ©gitime que si
+ la configuration Ã©tudiÃ©e est du type "FAISCEAU_TRANS"
 """),
 
 4 : _(u"""
- le nom d'un paramètre ne peut pas dépasser 16 caractères
+ le nom d'un paramÃ¨tre ne peut pas dÃ©passer 16 caractÃ¨res
 """),
 
 5 : _(u"""
- le paramètre  %(k1)s  n'existe pas
+ le paramÃ¨tre  %(k1)s  n'existe pas
 """),
 
 6 : _(u"""
- seuls les paramètres de types réel, entier ou complexe sont traites
+ seuls les paramÃ¨tres de types rÃ©el, entier ou complexe sont traites
 """),
 
 7 : _(u"""
@@ -42,7 +42,7 @@ cata_msg = {
 """),
 
 8 : _(u"""
- code retour non nul détecté
+ code retour non nul dÃ©tectÃ©
 """),
 
 9 : _(u"""
@@ -50,15 +50,15 @@ cata_msg = {
 """),
 
 10 : _(u"""
- mailles ponctuelles                           plexus POI1 ignorées
+ mailles ponctuelles                           plexus POI1 ignorÃ©es
 """),
 
 11 : _(u"""
- le format doit être IDEAS
+ le format doit Ãªtre IDEAS
 """),
 
 12 : _(u"""
- le maillage doit être issu d'IDEAS
+ le maillage doit Ãªtre issu d'IDEAS
 """),
 
 13 : _(u"""
@@ -70,7 +70,7 @@ cata_msg = {
 """),
 
 15 : _(u"""
- Problème lecture du fichier IDEAS
+ ProblÃ¨me lecture du fichier IDEAS
 """),
 
 17 : _(u"""
@@ -82,7 +82,7 @@ cata_msg = {
 """),
 
 19 : _(u"""
- problème maillage <-> modèle
+ problÃ¨me maillage <-> modÃ¨le
 """),
 
 
@@ -90,18 +90,18 @@ cata_msg = {
 
 
 21 : _(u"""
- maillage et modèle incohérents.
+ maillage et modÃ¨le incohÃ©rents.
 """),
 
 22 : _(u"""
- pour TYPE_RESU:'EL..' il faut renseigner le mot clé modèle.
+ pour TYPE_RESU:'EL..' il faut renseigner le mot clÃ© modÃ¨le.
 """),
 
 23 : _(u"""
 Erreur :
-  Aucun élément fini du ligrel '%(k1)s' ne sait calculer le
-  paramètre: %(k2)s de l'option:  %(k3)s.
-  Le champ par éléments que l'on veut créer est vide. On ne peut pas continuer.
+  Aucun Ã©lÃ©ment fini du ligrel '%(k1)s' ne sait calculer le
+  paramÃ¨tre: %(k2)s de l'option:  %(k3)s.
+  Le champ par Ã©lÃ©ments que l'on veut crÃ©er est vide. On ne peut pas continuer.
 """),
 
 24 : _(u"""
@@ -117,7 +117,7 @@ Erreur :
 """),
 
 27 : _(u"""
- grandeurs différentes pour : %(k1)s et : %(k2)s
+ grandeurs diffÃ©rentes pour : %(k1)s et : %(k2)s
 """),
 
 28 : _(u"""
@@ -129,23 +129,23 @@ Erreur :
 """),
 
 30 : _(u"""
- il manque des températures  associées aux bases de résultats (mot-clé tempe)
+ il manque des tempÃ©ratures  associÃ©es aux bases de rÃ©sultats (mot-clÃ© tempe)
 """),
 
 31 : _(u"""
- le paramètre m de WEIBULL doit être le même pour toutes les bases résultats !
+ le paramÃ¨tre m de WEIBULL doit Ãªtre le mÃªme pour toutes les bases rÃ©sultats !
 """),
 
 32 : _(u"""
- le paramètre SIGM_REFE de WEIBULL doit être le même pour toutes les bases résultats !
+ le paramÃ¨tre SIGM_REFE de WEIBULL doit Ãªtre le mÃªme pour toutes les bases rÃ©sultats !
 """),
 
 33 : _(u"""
- aucun numéro d'unité logique n'est associe a  %(k1)s
+ aucun numÃ©ro d'unitÃ© logique n'est associe a  %(k1)s
 """),
 
 34 : _(u"""
- aucun numéro d'unité logique n'est disponible
+ aucun numÃ©ro d'unitÃ© logique n'est disponible
 """),
 
 35 : _(u"""
@@ -153,12 +153,12 @@ Erreur :
 """),
 
 36 : _(u"""
- Arrêt de la procédure de recalage : le paramètre m est devenu trop petit (m<1),
- vérifiez vos listes d'instants de rupture
+ ArrÃªt de la procÃ©dure de recalage : le paramÃ¨tre m est devenu trop petit (m<1),
+ vÃ©rifiez vos listes d'instants de rupture
 """),
 
 37 : _(u"""
- les paramètres de la nappe ont été réordonnées.
+ les paramÃ¨tres de la nappe ont Ã©tÃ© rÃ©ordonnÃ©es.
 """),
 
 38 : _(u"""
@@ -170,16 +170,16 @@ Erreur :
 """),
 
 40 : _(u"""
- impossibilité : la maille  %(k1)s  doit être de type "SEG2" ou "SEG3"
+ impossibilitÃ© : la maille  %(k1)s  doit Ãªtre de type "SEG2" ou "SEG3"
  et elle est de type :  %(k2)s
 """),
 
 42 : _(u"""
- le contour dont on doit calculer l'aire n'est pas fermé
+ le contour dont on doit calculer l'aire n'est pas fermÃ©
 """),
 
 43 : _(u"""
- le mot-clé "reuse" n'existe que pour l'opération "ASSE"
+ le mot-clÃ© "reuse" n'existe que pour l'opÃ©ration "ASSE"
 """),
 
 46 : _(u"""
@@ -191,7 +191,7 @@ Erreur :
 """),
 
 48 : _(u"""
- on ne traite que des problèmes 2d.
+ on ne traite que des problÃ¨mes 2d.
 """),
 
 49 : _(u"""
@@ -199,14 +199,14 @@ Erreur :
 """),
 
 50 : _(u"""
- On doit donner un résultat de type "EVOL_THER" après le mot-clé "LAPL_PHI"
- du mot-clé facteur "CARA_POUTRE" dans la commande POST_ELEM pour calculer
+ On doit donner un rÃ©sultat de type "EVOL_THER" aprÃ¨s le mot-clÃ© "LAPL_PHI"
+ du mot-clÃ© facteur "CARA_POUTRE" dans la commande POST_ELEM pour calculer
  la constante de torsion.
 """),
 
 51 : _(u"""
- Le nombre d'ordres du résultat  %(k1)s  nécessaire pour calculer la constante
- de torsion doit être égal a 1.
+ Le nombre d'ordres du rÃ©sultat  %(k1)s  nÃ©cessaire pour calculer la constante
+ de torsion doit Ãªtre Ã©gal a 1.
 """),
 
 
@@ -218,60 +218,60 @@ Erreur :
 """),
 
 54 : _(u"""
- On doit donner un résultat de type "EVOL_THER" après le mot-clé "LAPL_PHI_Y"
- du mot-clé facteur "CARA_POUTRE" dans la commande POST_ELEM pour calculer les
- coefficients de cisaillement et les coordonnées du centre de torsion.
+ On doit donner un rÃ©sultat de type "EVOL_THER" aprÃ¨s le mot-clÃ© "LAPL_PHI_Y"
+ du mot-clÃ© facteur "CARA_POUTRE" dans la commande POST_ELEM pour calculer les
+ coefficients de cisaillement et les coordonnÃ©es du centre de torsion.
 """),
 
 55 : _(u"""
- On doit donner un résultat de type "EVOL_THER" après le mot-clé "LAPL_PHI_Z"
- du mot-clé facteur "CARA_POUTRE" dans la commande POST_ELEM pour calculer les
- coefficients de cisaillement et les coordonnées du centre de torsion.
+ On doit donner un rÃ©sultat de type "EVOL_THER" aprÃ¨s le mot-clÃ© "LAPL_PHI_Z"
+ du mot-clÃ© facteur "CARA_POUTRE" dans la commande POST_ELEM pour calculer les
+ coefficients de cisaillement et les coordonnÃ©es du centre de torsion.
 """),
 
 56 : _(u"""
- Le nombre d'ordres du résultat  %(k1)s  nécessaire pour calculer les coefficients
- de cisaillement et les coordonnées du centre de torsion doit être égal a 1.
+ Le nombre d'ordres du rÃ©sultat  %(k1)s  nÃ©cessaire pour calculer les coefficients
+ de cisaillement et les coordonnÃ©es du centre de torsion doit Ãªtre Ã©gal a 1.
 """),
 
 57 : _(u"""
- On doit donner un résultat de type "EVOL_THER" après le mot-clé "LAPL_PHI"
- du mot-clé facteur "CARA_POUTRE" dans la commande POST_ELEM pour calculer la
+ On doit donner un rÃ©sultat de type "EVOL_THER" aprÃ¨s le mot-clÃ© "LAPL_PHI"
+ du mot-clÃ© facteur "CARA_POUTRE" dans la commande POST_ELEM pour calculer la
  constante de gauchissement.
 """),
 
 58 : _(u"""
- Le nombre d'ordres du résultat  %(k1)s  nécessaire pour calculer la constante de
- gauchissement doit être égal a 1.
+ Le nombre d'ordres du rÃ©sultat  %(k1)s  nÃ©cessaire pour calculer la constante de
+ gauchissement doit Ãªtre Ã©gal a 1.
 """),
 
 59 : _(u"""
  Il faut donner le nom d'une table issue d'un premier calcul avec l'option "CARA_GEOM"
- de  POST_ELEM après le mot-clé "CARA_GEOM" du mot-clé facteur "CARA_POUTRE".
+ de  POST_ELEM aprÃ¨s le mot-clÃ© "CARA_GEOM" du mot-clÃ© facteur "CARA_POUTRE".
 """),
 
 60 : _(u"""
- Il faut obligatoirement définir l'option de calcul des caractéristiques de poutre
- après le mot-clé "option" du mot-clé facteur "CARA_POUTRE" de la commande POST_ELEM.
+ Il faut obligatoirement dÃ©finir l'option de calcul des caractÃ©ristiques de poutre
+ aprÃ¨s le mot-clÃ© "option" du mot-clÃ© facteur "CARA_POUTRE" de la commande POST_ELEM.
 """),
 
 61 : _(u"""
- l'option  %(k1)s n'est pas admise après le mot-clé facteur "CARA_POUTRE".
+ l'option  %(k1)s n'est pas admise aprÃ¨s le mot-clÃ© facteur "CARA_POUTRE".
 """),
 
 62 : _(u"""
- il faut donner le nom d'un résultat de type EVOL_THER
- après le mot-clé LAPL_PHI du mot-clé facteur "CARA_POUTRE".
+ il faut donner le nom d'un rÃ©sultat de type EVOL_THER
+ aprÃ¨s le mot-clÃ© LAPL_PHI du mot-clÃ© facteur "CARA_POUTRE".
 """),
 
 63 : _(u"""
- il faut donner le nom d'un résultat de type EVOL_THER
- après le mot-clé LAPL_PHI_Y du mot-clé facteur "CARA_POUTRE".
+ il faut donner le nom d'un rÃ©sultat de type EVOL_THER
+ aprÃ¨s le mot-clÃ© LAPL_PHI_Y du mot-clÃ© facteur "CARA_POUTRE".
 """),
 
 64 : _(u"""
- il faut donner le nom d'un résultat de type EVOL_THER
- après le mot-clé LAPL_PHI_Z du mot-clé facteur "CARA_POUTRE".
+ il faut donner le nom d'un rÃ©sultat de type EVOL_THER
+ aprÃ¨s le mot-clÃ© LAPL_PHI_Z du mot-clÃ© facteur "CARA_POUTRE".
 """),
 
 68 : _(u"""
@@ -280,15 +280,15 @@ Erreur :
 """),
 
 69 : _(u"""
- champ de vitesse donné
+ champ de vitesse donnÃ©
 """),
 
 70 : _(u"""
- champ de déplacement donné
+ champ de dÃ©placement donnÃ©
 """),
 
 71 : _(u"""
- option masse cohérente.
+ option masse cohÃ©rente.
 """),
 
 72 : _(u"""
@@ -305,12 +305,12 @@ Erreur :
 """),
 
 76 : _(u"""
- Pour calculer les indicateurs globaux d'énergie, il faut donner un résultat
+ Pour calculer les indicateurs globaux d'Ã©nergie, il faut donner un rÃ©sultat
  issu de STAT_NON_LINE .
 """),
 
 77 : _(u"""
- on attend un résultat de type "EVOL_NOLI" ou "EVOL_ELAS".
+ on attend un rÃ©sultat de type "EVOL_NOLI" ou "EVOL_ELAS".
 """),
 
 
@@ -319,24 +319,24 @@ Erreur :
 
 
 79 : _(u"""
- Le résultat  %(k1)s  doit comporter un champ de variables internes au numéro
+ Le rÃ©sultat  %(k1)s  doit comporter un champ de variables internes au numÃ©ro
  d'ordre  %(k2)s  .
 """),
 
 80 : _(u"""
- Impossibilité : le volume du modèle traite est nul.
+ ImpossibilitÃ© : le volume du modÃ¨le traite est nul.
 """),
 
 81 : _(u"""
- impossibilité : le volume du GROUP_MA  %(k1)s  est nul.
+ impossibilitÃ© : le volume du GROUP_MA  %(k1)s  est nul.
 """),
 
 82 : _(u"""
- impossibilité : le volume de la maille  %(k1)s  est nul.
+ impossibilitÃ© : le volume de la maille  %(k1)s  est nul.
 """),
 
 83 : _(u"""
- Erreur: les options de calcul doivent être identiques pour toutes les occurrences
+ Erreur: les options de calcul doivent Ãªtre identiques pour toutes les occurrences
  du mot clef facteur
 """),
 
@@ -361,11 +361,11 @@ Erreur :
 
 
 89 : _(u"""
- les 2 nuages : %(k1)s  et  %(k2)s  doivent avoir le même nombre de coordonnées.
+ les 2 nuages : %(k1)s  et  %(k2)s  doivent avoir le mÃªme nombre de coordonnÃ©es.
 """),
 
 90 : _(u"""
- les 2 nuages : %(k1)s  et  %(k2)s  doivent avoir la même grandeur associée.
+ les 2 nuages : %(k1)s  et  %(k2)s  doivent avoir la mÃªme grandeur associÃ©e.
 """),
 
 91 : _(u"""
@@ -375,11 +375,11 @@ Erreur :
 
 
 93 : _(u"""
- seuls les types "réel" et "complexe" sont autorises.
+ seuls les types "rÃ©el" et "complexe" sont autorises.
 """),
 
 94 : _(u"""
- MINMAX est toujours calculé sur TOUT le modèle pour les champs aux noeuds.
+ MINMAX est toujours calculÃ© sur TOUT le modÃ¨le pour les champs aux noeuds.
 """),
 
 }

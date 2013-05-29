@@ -1,4 +1,4 @@
-# -*- coding: iso-8859-1 -*-
+# coding=utf-8
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -21,7 +21,7 @@
 cata_msg = {
 
 1 : _(u"""
- La modélisation C_PLAN n'est pas compatible avec la loi de comportement ELAS_VMIS_PUIS.
+ La modÃ©lisation C_PLAN n'est pas compatible avec la loi de comportement ELAS_VMIS_PUIS.
 """),
 
 3 : _(u"""
@@ -34,7 +34,7 @@ cata_msg = {
 
 11 : _(u"""
  PULS(I) = 0.
- initialisation à PULS0(I).
+ initialisation Ã  PULS0(I).
 """),
 
 13 : _(u"""
@@ -42,7 +42,7 @@ cata_msg = {
 """),
 
 16 : _(u"""
- les charges cinématiques sont pour l'instant proscrites avec FETI
+ les charges cinÃ©matiques sont pour l'instant proscrites avec FETI
 """),
 
 21 : _(u"""
@@ -50,28 +50,28 @@ cata_msg = {
 """),
 
 25 : _(u"""
- données incompatibles.
+ donnÃ©es incompatibles.
 """),
 
 32 : _(u"""
-  la numérotation n'est pas cohérente avec le modèle généralisé
-  si vous avez activé l'option INITIAL dans NUME_DDL_GENE faites de même ici !
+  la numÃ©rotation n'est pas cohÃ©rente avec le modÃ¨le gÃ©nÃ©ralisÃ©
+  si vous avez activÃ© l'option INITIAL dans NUME_DDL_GENE faites de mÃªme ici !
 """),
 
 33 : _(u"""
  calcul des options RIGI_MECA_TANG, RAPH_MECA et FULL_MECA
- en mécanique des milieux poreux avec couplage THM
+ en mÃ©canique des milieux poreux avec couplage THM
  ---> erreur de dimensionnement
 """),
 
 34 : _(u"""
- il y a incohérence entre :
+ il y a incohÃ©rence entre :
     la loi de couplage de DEFI_MATERIAU : %(k1)s
  et la loi de couplage de STAT_NON_LINE : %(k2)s
 """),
 
 35 : _(u"""
- les champs " %(k1)s " et " %(k2)s " n'ont pas le même domaine de définition.
+ les champs " %(k1)s " et " %(k2)s " n'ont pas le mÃªme domaine de dÃ©finition.
 """),
 
 36 : _(u"""
@@ -79,53 +79,53 @@ cata_msg = {
 """),
 
 42 : _(u"""
- BETON_DOUBLE_DP: incrément de déformation plastique en traction négatif
- --> redécoupage automatique du pas de temps
+ BETON_DOUBLE_DP: incrÃ©ment de dÃ©formation plastique en traction nÃ©gatif
+ --> redÃ©coupage automatique du pas de temps
 """),
 
 43 : _(u"""
- BETON_DOUBLE_DP: incrément de déformation plastique en compression négatif
- --> redécoupage automatique du pas de temps
+ BETON_DOUBLE_DP: incrÃ©ment de dÃ©formation plastique en compression nÃ©gatif
+ --> redÃ©coupage automatique du pas de temps
 """),
 
 44 : _(u"""
- intégration élastoplastique de la loi BETON_DOUBLE_DP :
- la condition d'applicabilité sur la taille des éléments
- n'est pas respectée en compression.
+ intÃ©gration Ã©lastoplastique de la loi BETON_DOUBLE_DP :
+ la condition d'applicabilitÃ© sur la taille des Ã©lÃ©ments
+ n'est pas respectÃ©e en compression.
 """),
 
 45 : _(u"""
- intégration élastoplastique de la loi BETON_DOUBLE_DP :
- la condition d'applicabilité sur la taille des éléments
- n'est pas respectée en compression pour la maille:  %(k1)s
+ intÃ©gration Ã©lastoplastique de la loi BETON_DOUBLE_DP :
+ la condition d'applicabilitÃ© sur la taille des Ã©lÃ©ments
+ n'est pas respectÃ©e en compression pour la maille:  %(k1)s
 """),
 
 46 : _(u"""
- intégration élastoplastique de la loi BETON_DOUBLE_DP :
- la condition d'applicabilité sur la taille des éléments
- n est pas respectée en traction.
+ intÃ©gration Ã©lastoplastique de la loi BETON_DOUBLE_DP :
+ la condition d'applicabilitÃ© sur la taille des Ã©lÃ©ments
+ n est pas respectÃ©e en traction.
 """),
 
 47 : _(u"""
- intégration élastoplastique de la loi BETON_DOUBLE_DP :
- la condition d'applicabilité sur la taille des éléments
- n'est pas respectée en traction pour la maille:  %(k1)s
+ intÃ©gration Ã©lastoplastique de la loi BETON_DOUBLE_DP :
+ la condition d'applicabilitÃ© sur la taille des Ã©lÃ©ments
+ n'est pas respectÃ©e en traction pour la maille:  %(k1)s
 """),
 
 48 : _(u"""
-  -> Intégration élastoplastique de loi multicritères BETON_DOUBLE_DP :
-     la contrainte équivalente est nulle pour la maille %(k1)s
+  -> IntÃ©gration Ã©lastoplastique de loi multicritÃ¨res BETON_DOUBLE_DP :
+     la contrainte Ã©quivalente est nulle pour la maille %(k1)s
      le calcul de la matrice tangente est impossible.
   -> Risque & Conseil :
 """),
 
 51 : _(u"""
  BETON_DOUBLE_DP:
- le cas des contraintes planes n'est pas traité pour ce modèle.
+ le cas des contraintes planes n'est pas traitÃ© pour ce modÃ¨le.
 """),
 
 52 : _(u"""
-  Le nombre de modes et de degré de liberté d'interface sont différents.
+  Le nombre de modes et de degrÃ© de libertÃ© d'interface sont diffÃ©rents.
 """),
 
 53 : _(u"""
@@ -143,14 +143,14 @@ cata_msg = {
 
 
 60 : _(u"""
- certains coefficients de masse ajoutée sont négatifs.
- vérifiez l'orientation des normales des éléments d'interface.
- convention adoptée : structure vers fluide
+ certains coefficients de masse ajoutÃ©e sont nÃ©gatifs.
+ vÃ©rifiez l'orientation des normales des Ã©lÃ©ments d'interface.
+ convention adoptÃ©e : structure vers fluide
 """),
 
 61 : _(u"""
- certains coefficients d'amortissement ajouté sont négatifs.
- possibilité d'instabilité de flottement
+ certains coefficients d'amortissement ajoutÃ© sont nÃ©gatifs.
+ possibilitÃ© d'instabilitÃ© de flottement
 """),
 
 62 : _(u"""
@@ -158,15 +158,15 @@ cata_msg = {
 """),
 
 63 : _(u"""
- valeurs propres de la matrice de raideur non réelles
+ valeurs propres de la matrice de raideur non rÃ©elles
 """),
 
 64 : _(u"""
- valeurs propres de la matrice de raideur réelles négatives
+ valeurs propres de la matrice de raideur rÃ©elles nÃ©gatives
 """),
 
 65 : _(u"""
- erreur dans la sélection des valeurs propres de la matrice de raideur
+ erreur dans la sÃ©lection des valeurs propres de la matrice de raideur
 """),
 
 66 : _(u"""
@@ -178,17 +178,17 @@ cata_msg = {
 """),
 
 68 : _(u"""
- trop de familles de systèmes de glissement.
+ trop de familles de systÃ¨mes de glissement.
  augmenter la limite actuelle (5)
 """),
 
 69 : _(u"""
- trop de familles de systèmes de glissement.
+ trop de familles de systÃ¨mes de glissement.
  modifier GERPAS
 """),
 
 70 : _(u"""
- Le nombre de système de glissement est égal à 0
+ Le nombre de systÃ¨me de glissement est Ã©gal Ã  0
 """),
 
 71 : _(u"""
@@ -196,19 +196,19 @@ cata_msg = {
 """),
 
 72 : _(u"""
- traitement non prévu pour le type d'obstacle demandé
+ traitement non prÃ©vu pour le type d'obstacle demandÃ©
 """),
 
 73 : _(u"""
- obstacle de type discret mal défini (un angle est supérieur à pi).
+ obstacle de type discret mal dÃ©fini (un angle est supÃ©rieur Ã  pi).
 """),
 
 96 : _(u"""
- ce mot clé de MODI_MAILLAGE attend un vecteur de norme non nulle.
+ ce mot clÃ© de MODI_MAILLAGE attend un vecteur de norme non nulle.
 """),
 
 97 : _(u"""
- le mot clé REPERE de MODI_MAILLAGE attend deux vecteurs non nuls orthogonaux.
+ le mot clÃ© REPERE de MODI_MAILLAGE attend deux vecteurs non nuls orthogonaux.
 """),
 
 }

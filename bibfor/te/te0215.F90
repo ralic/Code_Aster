@@ -1,5 +1,6 @@
 subroutine te0215(nomopt,nomte)
-    implicit real*8 (a-h,o-z)
+! aslint: disable=W0104
+    implicit none
 !     ------------------------------------------------------------------
 !            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! MODIF FERMETUR DATE 03/08/95  AUTEUR GIBHHCM C.MASSERET

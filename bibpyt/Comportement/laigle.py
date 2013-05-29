@@ -1,4 +1,4 @@
-# -*- coding: iso-8859-1 -*-
+# coding=utf-8
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -22,8 +22,8 @@ from cata_comportement import LoiComportement
 
 loi = LoiComportement(
    nom            = 'LAIGLE',
-   doc = """Relation de comportement pour la modélisation des roches suivant le modèle de Laigle, cf. le document [R7.01.15].
-   Pour faciliter l'intégration de ce modèle, on peut utiliser le redécoupage automatique local du pas de temps (ITER_INTE_PAS).""",
+   doc = """Relation de comportement pour la modÃ©lisation des roches suivant le modÃ¨le de Laigle, cf. le document [R7.01.15].
+   Pour faciliter l'intÃ©gration de ce modÃ¨le, on peut utiliser le redÃ©coupage automatique local du pas de temps (ITER_INTE_PAS).""",
    num_lc         = 33,
    nb_vari        = 4,
    nom_vari       = ('EPSPEQ','EPSPVOL','DOMCOMP','INDIPLAS'),

@@ -1,4 +1,4 @@
-# -*- coding: iso-8859-1 -*-
+# coding=utf-8
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -26,18 +26,18 @@ cata_msg={
 2 : _(u"""
     Vous utilisez une vieille version de Code_Aster.
 
-    En mettant à jour votre version, vous bénéficierez des dernières améliorations
-    apportées au code depuis 15 mois.
-    Si vous avez des développements privés, vous risquez d'avoir un travail
-    important de portage si vous ne suivez pas les mises à jour.
+    En mettant Ã  jour votre version, vous bÃ©nÃ©ficierez des derniÃ¨res amÃ©liorations
+    apportÃ©es au code depuis 15 mois.
+    Si vous avez des dÃ©veloppements privÃ©s, vous risquez d'avoir un travail
+    important de portage si vous ne suivez pas les mises Ã  jour.
 """),
 
-3 : _(u"""%(k1)-8s %(k2)-16s ignoré"""),
+3 : _(u"""%(k1)-8s %(k2)-16s ignorÃ©"""),
 
 #4 plus bas avec 10
 
 5 : _(u"""
-Erreur inattendue lors de l'exécution de la commande '%(k1)s'.
+Erreur inattendue lors de l'exÃ©cution de la commande '%(k1)s'.
 Merci de signaler cette anomalie.
 
 Erreur :
@@ -47,20 +47,20 @@ Erreur :
 """),
 
 6 : _(u"""
-Erreur lors du chargement du catalogue du matériau '%(k1)s'.
+Erreur lors du chargement du catalogue du matÃ©riau '%(k1)s'.
 """),
 
 7 : _(u"""
-Erreur dans le catalogue du matériau '%(k1)s'.
+Erreur dans le catalogue du matÃ©riau '%(k1)s'.
 
 Il n'est pas possible d'avoir plusieurs occurrences pour le
-mot-clé facteur '%(k2)s'.
+mot-clÃ© facteur '%(k2)s'.
 """),
 
 8 : _(u"""
-L'opération de retassage de la base GLOBALE (mot clé RETASSAGE="OUI"
+L'opÃ©ration de retassage de la base GLOBALE (mot clÃ© RETASSAGE="OUI"
 dans la commande FIN) est inutile lorsque l'on sauvegarde cette
-dernière au format HDF (mot clé FORMAT_HDF="OUI" dans la commande FIN).
+derniÃ¨re au format HDF (mot clÃ© FORMAT_HDF="OUI" dans la commande FIN).
 """),
 
 #9 plus bas avec 10
@@ -77,35 +77,35 @@ dernière au format HDF (mot clé FORMAT_HDF="OUI" dans la commande FIN).
        'flags' : 'CENTER | ALL_UNIT',
 },
 
-23 : {  'message' : _(u"""Version %(k1)s modifiée le %(k2)s
-               révision %(k3)s - branche '%(k4)s'"""),
+23 : {  'message' : _(u"""Version %(k1)s modifiÃ©e le %(k2)s
+               rÃ©vision %(k3)s - branche '%(k4)s'"""),
        'flags' : 'CENTER | ALL_UNIT',
 },
 
 10 : {  'message' : _(u"""Copyright EDF R&D %(k1)s - %(k2)s
 
-                Exécution du : %(k3)s
+                ExÃ©cution du : %(k3)s
                 Nom de la machine : %(k4)s
                 Architecture : %(k5)s
                 Type de processeur : %(k6)s
-                Système d'exploitation : %(k7)s
+                SystÃ¨me d'exploitation : %(k7)s
                 Langue des messages : %(k8)s
 """), 'flags' : 'CENTER | ALL_UNIT',
 },
 # fin Lignes d'entete
 
-11 : {  'message' : _(u"""Parallélisme MPI : actif
+11 : {  'message' : _(u"""ParallÃ©lisme MPI : actif
                 Rang du processeur courant : %(i1)d
-                Nombre de processeurs utilisés : %(i2)d"""),
+                Nombre de processeurs utilisÃ©s : %(i2)d"""),
         'flags' : 'CENTER | ALL_UNIT',
 },
 
-12 : {  'message' : _(u"""Parallélisme MPI : inactif"""),
+12 : {  'message' : _(u"""ParallÃ©lisme MPI : inactif"""),
         'flags' : 'CENTER | ALL_UNIT',
 },
 
-13 : {  'message' : _(u"""Parallélisme OpenMP : actif
-                Nombre de processus utilisés : %(i1)d"""),
+13 : {  'message' : _(u"""ParallÃ©lisme OpenMP : actif
+                Nombre de processus utilisÃ©s : %(i1)d"""),
         'flags' : 'CENTER | ALL_UNIT',
 },
 
@@ -125,7 +125,7 @@ dernière au format HDF (mot clé FORMAT_HDF="OUI" dans la commande FIN).
         'flags' : 'CENTER | ALL_UNIT',
 },
 
-18 : {  'message' : _(u"""Librairie MUMPS : installée"""),
+18 : {  'message' : _(u"""Librairie MUMPS : installÃ©e"""),
         'flags' : 'CENTER | ALL_UNIT',
 },
 
@@ -141,8 +141,8 @@ dernière au format HDF (mot clé FORMAT_HDF="OUI" dans la commande FIN).
         'flags' : 'CENTER | ALL_UNIT',
 },
 
-22 : {  'message' : _(u"""Mémoire limite pour l'exécution : %(r2).2f Mo      
-                          consommée par l'initialisation : %(r3).2f Mo
+22 : {  'message' : _(u"""MÃ©moire limite pour l'exÃ©cution : %(r2).2f Mo      
+                          consommÃ©e par l'initialisation : %(r3).2f Mo
                          par les objets du jeu de commandes : %(r4).2f Mo
                          reste pour l'allocation dynamique : %(r1).2f Mo"""),
         'flags' : 'CENTER | ALL_UNIT',
@@ -150,7 +150,7 @@ dernière au format HDF (mot clé FORMAT_HDF="OUI" dans la commande FIN).
 
 # 23 plus haut avec 10
 
-24 : {  'message' : _(u"""Taille limite des fichiers d'échange : %(r1).2f Go
+24 : {  'message' : _(u"""Taille limite des fichiers d'Ã©change : %(r1).2f Go
 """), 'flags' : 'CENTER | ALL_UNIT',
 },
 
@@ -163,10 +163,10 @@ dernière au format HDF (mot clé FORMAT_HDF="OUI" dans la commande FIN).
 72 : _(u"""  # Commande :
   # ----------"""),
 
-73 : _(u"""  # Mémoire (Mo) : %(r1)8.2f / %(r2)8.2f / %(r3)8.2f / %(r4)8.2f (VmPeak / VmSize / Optimum / Minimum)"""),
+73 : _(u"""  # MÃ©moire (Mo) : %(r1)8.2f / %(r2)8.2f / %(r3)8.2f / %(r4)8.2f (VmPeak / VmSize / Optimum / Minimum)"""),
 
-# attention au décalage
-74 : _(u"""  # Mémoire (Mo) : %(r2)8.2f / %(r3)8.2f / %(r4)8.2f (VmSize / Optimum / Minimum)"""),
+# attention au dÃ©calage
+74 : _(u"""  # MÃ©moire (Mo) : %(r2)8.2f / %(r3)8.2f / %(r4)8.2f (VmSize / Optimum / Minimum)"""),
 
 75 : _(u"""  # Fin commande No : %(i1)04d   user+syst:%(r1)12.2fs (syst:%(r2)12.2fs, elaps:%(r3)12.2fs)"""),
 
@@ -174,17 +174,17 @@ dernière au format HDF (mot clé FORMAT_HDF="OUI" dans la commande FIN).
 
 # sans formatage pour STAT_NON_LINE (impmem)
 77 : _(u"""
-  Mémoire (Mo) : %(r1)8.2f / %(r2)8.2f / %(r3)8.2f / %(r4)8.2f (VmPeak / VmSize / Optimum / Minimum)
+  MÃ©moire (Mo) : %(r1)8.2f / %(r2)8.2f / %(r3)8.2f / %(r4)8.2f (VmPeak / VmSize / Optimum / Minimum)
 """),
 
-# attention au décalage
+# attention au dÃ©calage
 78 : _(u"""
-  Mémoire (Mo) : %(r2)8.2f / %(r3)8.2f / %(r4)8.2f (VmSize / Optimum / Minimum)
+  MÃ©moire (Mo) : %(r2)8.2f / %(r3)8.2f / %(r4)8.2f (VmSize / Optimum / Minimum)
 """),
 
 
 97 : {  'message' : _(u"""
- <FIN> Arrêt normal dans "FIN".
+ <FIN> ArrÃªt normal dans "FIN".
 """), 'flags' : 'ALL_UNIT',
 },
 

@@ -1,7 +1,7 @@
 *
-*Indentation élasto-plastique d'un demi-plan par un indenteur
+*Indentation Ã©lasto-plastique d'un demi-plan par un indenteur
 * Modelisation D
-*Solide : Modelisation 3D (axisymétrique)
+*Solide : Modelisation 3D (axisymÃ©trique)
 *Contact: Methode CONTACT (contrainte)
 *
 *
@@ -64,7 +64,7 @@ SESC = rege SESC;
 
 elim 0.001 (BATI et SBXY et SBYZ et BASE et SESC);
 
-***Construction de la sphère
+***Construction de la sphÃ¨re
 E  =   0.         1500.         0. ;
 F  =   250.      1566.9899      0. ;
 G  =   200.       1650.         0. ;

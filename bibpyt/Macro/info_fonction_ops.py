@@ -1,4 +1,4 @@
-# -*- coding: iso-8859-1 -*-
+# coding=utf-8
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -34,7 +34,7 @@ def info_fonction_ops(self,RMS,NOCI_SEISME,MAX,NORME,ECART_TYPE,INFO,**args):
   IMPR_TABLE     = self.get_cmd('IMPR_TABLE')
   CALC_FONCTION  = self.get_cmd('CALC_FONCTION')
   
-  ### Comptage commandes + déclaration concept sortant
+  ### Comptage commandes + dÃ©claration concept sortant
   self.set_icmd(1)
   self.DeclareOut('C_out',self.sd)
 
@@ -63,7 +63,7 @@ def info_fonction_ops(self,RMS,NOCI_SEISME,MAX,NORME,ECART_TYPE,INFO,**args):
               UTMESS('F', 'FONCT0_56')
           interv = tint.tolist()
 
-      # vérifications de cohérence
+      # vÃ©rifications de cohÃ©rence
       typobj = set()
       npara = set()
       nparf = set()
@@ -76,20 +76,20 @@ def info_fonction_ops(self,RMS,NOCI_SEISME,MAX,NORME,ECART_TYPE,INFO,**args):
           nresu.add(tf.para['NOM_RESU'])
           l_nom.append(tf.nom)
       if len(typobj) > 1:
-          # types (fonction, fonction_c, nappe) non homogènes
+          # types (fonction, fonction_c, nappe) non homogÃ¨nes
           UTMESS('F', 'FONCT0_37')
       is_nappe = typobj.pop() is t_nappe
       if len(npara) > 1:
-          # NOM_PARA non homogènes
+          # NOM_PARA non homogÃ¨nes
           UTMESS('F', 'FONCT0_38', valk=' '.join(npara))
       if len(nparf) > 1:
-          # NOM_PARA_FONC non homogènes
+          # NOM_PARA_FONC non homogÃ¨nes
           UTMESS('F', 'FONCT0_38', valk=' '.join(nparf))
       if len(nresu) > 1:
-          # NOM_RESU non homogènes
+          # NOM_RESU non homogÃ¨nes
           UTMESS('F', 'FONCT0_39', valk=' '.join(nresu))
       
-      # nom des paramètres et leurs types
+      # nom des paramÃ¨tres et leurs types
       k_para = npara.pop()
       k_parf = nparf.pop()
       k_ordo = nresu.pop()
@@ -139,7 +139,7 @@ def info_fonction_ops(self,RMS,NOCI_SEISME,MAX,NORME,ECART_TYPE,INFO,**args):
                                         k_min : x1, k_max : x2})
                       tab.append(line)
       tab.titr = "Extrema de " + ', '.join(l_nom)
-      # table résultat
+      # table rÃ©sultat
       dprod = tab.dict_CREA_TABLE()
       C_out = CREA_TABLE(**dprod)
 
@@ -215,7 +215,7 @@ def info_fonction_ops(self,RMS,NOCI_SEISME,MAX,NORME,ECART_TYPE,INFO,**args):
   if (NOCI_SEISME != None):
      l_table=[]
      if NOCI_SEISME['SPEC_OSCI'] !=None :
-        ### cas intensité spectrale d'une nappe de SRO
+        ### cas intensitÃ© spectrale d'une nappe de SRO
         ### la seule option licite est INTE_SPEC
 #intensite spectrale, il est prudent de verifier la norme de la nappe sur laquelle \
 #porte le calcul, ceci peut etre une source d erreurs.''')
@@ -252,7 +252,7 @@ def info_fonction_ops(self,RMS,NOCI_SEISME,MAX,NORME,ECART_TYPE,INFO,**args):
         else                                : tfin=__ac.vale_x[-1]
         # calcul de la vitesse :
         __vi=__ac.trapeze(NOCI_SEISME['COEF'])
-        # calcul du déplacement :
+        # calcul du dÃ©placement :
         __de=__vi.trapeze(NOCI_SEISME['COEF'])
         # calcul de |acceleration| :
         __aa=__ac.abs()
@@ -265,7 +265,7 @@ def info_fonction_ops(self,RMS,NOCI_SEISME,MAX,NORME,ECART_TYPE,INFO,**args):
         if   NOCI_SEISME['FREQ'     ]!=None : l_freq=NOCI_SEISME['FREQ']
         elif NOCI_SEISME['LIST_FREQ']!=None : l_freq=NOCI_SEISME['LIST_FREQ'].Valeurs()
         else                                :  
-           # fréquences par défaut
+           # frÃ©quences par dÃ©faut
            l_freq=[]
            for i in range(56) : l_freq.append( 0.2+0.050*i)
            for i in range( 8) : l_freq.append( 3.0+0.075*i)

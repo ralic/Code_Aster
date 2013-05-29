@@ -1,4 +1,4 @@
-# -*- coding: iso-8859-1 -*-
+# coding=utf-8
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -19,11 +19,11 @@
 # person_in_charge: mathieu.courtois at edf.fr
 
 """
-Conceptuellement, les objets définis ici pourraient l'être dans le module
+Conceptuellement, les objets dÃ©finis ici pourraient l'Ãªtre dans le module
 C/Python 'aster_core' (qui est en C pour l'interface avec le fortran).
-Il est plus simple et plus naturel de les écrire en Python.
+Il est plus simple et plus naturel de les Ã©crire en Python.
 
-Ces fonctions sont indépendantes des étapes (sinon elles seraient dans
+Ces fonctions sont indÃ©pendantes des Ã©tapes (sinon elles seraient dans
 B_ETAPE/E_ETAPE) et des concepts/ASSD.
 """
 
@@ -53,15 +53,15 @@ def check_value(option, opt, value, parser):
 
 class CoreOptions(object):
     """Classe de stockage des arguments et options de la ligne de commande
-    afin de permettre une interrogation ultérieure depuis n'importe quelle
+    afin de permettre une interrogation ultÃ©rieure depuis n'importe quelle
     partie du code.
-    On centralise également le stockage d'informations de base comme le nom
+    On centralise Ã©galement le stockage d'informations de base comme le nom
     de la machine, la plate-forme, etc.
 
-    :Attention: ``sys.path`` est modifiée juste après le l'interprétation de
+    :Attention: ``sys.path`` est modifiÃ©e juste aprÃ¨s le l'interprÃ©tation de
                 la ligne de commande. La liste est enrichie avec la valeur de
-                ``--bibpyt`` (ajouté en debut de list).
-                "." et "bibpyt/Cata"  sont aussi ajoutés.
+                ``--bibpyt`` (ajoutÃ© en debut de list).
+                "." et "bibpyt/Cata"  sont aussi ajoutÃ©s.
     """
     doc = """usage: ./%%prog %s [-h|--help] [options]""" % sys.argv[0]
 
@@ -147,7 +147,7 @@ class CoreOptions(object):
             sys.path.append(osp.join(osp.abspath(bibpyt), 'Cata'))
 
     def init_info(self):
-        """Stocke les informations générales (machine, os...)."""
+        """Stocke les informations gÃ©nÃ©rales (machine, os...)."""
         import aster_core
         import aster
         # hostname
@@ -186,12 +186,12 @@ class CoreOptions(object):
                 self.info['versMIN'], self.info['versSUB'])
 
     def set_info(self, key, value):
-        """Définit la valeur d'une information générale."""
+        """DÃ©finit la valeur d'une information gÃ©nÃ©rale."""
         assert self.info.has_key(key), "general information '%s' not defined" % key
         self.info[key] = value
 
     def default_values(self):
-        """Définit les valeurs par défaut pour certaines options."""
+        """DÃ©finit les valeurs par dÃ©faut pour certaines options."""
         if self.opts.tpmax is None and platform.system() == 'Linux':
             # use rlimit to set to the cpu "ulimit"
             import resource
@@ -223,16 +223,16 @@ class CoreOptions(object):
 
 def getargs(argv=None):
     """
-    Récupération des arguments passés à la ligne de commande
+    RÃ©cupÃ©ration des arguments passÃ©s Ã  la ligne de commande
     """
     coreopts = CoreOptions()
     coreopts.parse_args(argv or sys.argv)
     return coreopts
 
 def checksd(nomsd, typesd):
-    """Vérifie la validité de la SD `nom_sd` (nom jeveux) de type `typesd`.
+    """VÃ©rifie la validitÃ© de la SD `nom_sd` (nom jeveux) de type `typesd`.
     Exemple : typesd = sd_maillage
-    C'est le pendant de la "SD.checksd.check" à partir d'objets nommés.
+    C'est le pendant de la "SD.checksd.check" Ã  partir d'objets nommÃ©s.
     Code retour :
       0 : tout est ok
       1 : erreurs lors du checksd
@@ -248,7 +248,7 @@ def checksd(nomsd, typesd):
     except ImportError, msg:
         UTMESS('F', 'SDVERI_1', valk=typesd)
         return iret
-    # on récupère la classe typesd
+    # on rÃ©cupÃ¨re la classe typesd
     clas = getattr(sd_module, typesd, None)
     if clas:
         objsd = clas(nomj=nomsd)
@@ -265,7 +265,7 @@ def checksd(nomsd, typesd):
     return iret
 
 def _print_header():
-    """Appelé par entete.F pour afficher des informations sur
+    """AppelÃ© par entete.F pour afficher des informations sur
     la machine."""
     import aster_core
     from i18n import localization
@@ -318,10 +318,10 @@ def _print_alarm():
     UTMESS('I', 'VIDE_1')
 
 def print_header(part):
-    """Appelé par entete.F pour afficher des informations sur la machine.
-    Certaines informations étant obtenues en fortran, une partie des messages
-    est imprimée par le fortran. On a donc découpé en plusieurs morceaux.
-    part = 1 : entête principal : ici
+    """AppelÃ© par entete.F pour afficher des informations sur la machine.
+    Certaines informations Ã©tant obtenues en fortran, une partie des messages
+    est imprimÃ©e par le fortran. On a donc dÃ©coupÃ© en plusieurs morceaux.
+    part = 1 : entÃªte principal : ici
     part = 2 : informations librairies : dans entete.F
     part = 3 : message d'alarme en cas de modification du code source : ici
     """
@@ -356,15 +356,15 @@ def get_version_desc():
     names = {
         'stable' : _(u"""EXPLOITATION (stable)"""),
         'stable-updates' : _(u"""CORRECTIVE AVANT STABILISATION (stable-updates)"""),
-        'testing' : _(u"""DÉVELOPPEMENT STABILISÉE (testing)"""),
-        'unstable' : _(u"""DÉVELOPPEMENT (unstable)"""),
+        'testing' : _(u"""DÃ‰VELOPPEMENT STABILISÃ‰E (testing)"""),
+        'unstable' : _(u"""DÃ‰VELOPPEMENT (unstable)"""),
     }
     name = get_version_name()
-    typvers = names.get(name, _(u"""DÉVELOPPEMENT (%s)""") % name)
+    typvers = names.get(name, _(u"""DÃ‰VELOPPEMENT (%s)""") % name)
     return typvers
 
 def _bwc_arguments(argv):
-    """Fonction de compatibilité de transition vers des options "GNU".
+    """Fonction de compatibilitÃ© de transition vers des options "GNU".
     """
     from warnings import warn, simplefilter
     # DeprecationWarning are ignored in python2.7 by default

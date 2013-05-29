@@ -1,4 +1,4 @@
-# -*- coding: iso-8859-1 -*-
+# coding=utf-8
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -25,7 +25,7 @@ from SD.sd_fonction import sd_fonction
 
 class sd_mater_XDEP(AsBase):
 #---------------------------
-    # on dirait une fonction, mais c'est plutot la concaténation de plusieurs fonctions
+    # on dirait une fonction, mais c'est plutot la concatÃ©nation de plusieurs fonctions
     nomj = SDNom(fin=19)
     PROL = AsVK24()
     VALE = AsVR()
@@ -39,7 +39,7 @@ class sd_compor1(AsBase):
     VALR = AsVR(SDNom(), )
 
 
-    # parfois, THER_NL crée une sd_fonction pour BETA
+    # parfois, THER_NL crÃ©e une sd_fonction pour BETA
     def check_compor1_i_VALK(self, checker):
         nom= self.nomj().strip()
         if nom[8:16]=='.THER_NL' :
@@ -53,8 +53,8 @@ class sd_compor1(AsBase):
                 k=k2-nbr-nbc
                 nomfon=valk[nbr+nbc+nbk/2+k]
                 sd2=sd_fonction(nomfon) ; sd2.check(checker)
-        #Dans GLRC_DAMA on utilise soit des fonctions pour le critère de plasticité
-        #soit des constantes. Quand on utilise des fonctions, on doit vérifier leurs structures
+        #Dans GLRC_DAMA on utilise soit des fonctions pour le critÃ¨re de plasticitÃ©
+        #soit des constantes. Quand on utilise des fonctions, on doit vÃ©rifier leurs structures
         if nom[8:16]=='.GLRC_DA' :
             valk=list(self.VALK.get_stripped())
             if valk :
@@ -76,8 +76,8 @@ class sd_mater(AsBase):
 #----------------------
     nomj = SDNom(fin=8)
     NOMRC = AsVK16(SDNom(nomj='.MATERIAU.NOMRC'), )
-    rdep = Facultatif(sd_mater_XDEP(SDNom(nomj='.&&RDEP')))  # à documenter
-    mzp  = Facultatif(sd_mater_XDEP(SDNom(nomj='.&&MZP' )))  # à documenter
+    rdep = Facultatif(sd_mater_XDEP(SDNom(nomj='.&&RDEP')))  # Ã  documenter
+    mzp  = Facultatif(sd_mater_XDEP(SDNom(nomj='.&&MZP' )))  # Ã  documenter
 
     # existence possible de la SD :
     def exists(self):

@@ -1,4 +1,4 @@
-# -*- coding: iso-8859-1 -*-
+# coding=utf-8
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -22,7 +22,7 @@ from cata_comportement import LoiComportement
 
 loi = LoiComportement(
    nom            = 'LIQU_GAZ_ATM',
-   doc = """Loi de comportement pour un milieu poreux non saturé avec un liquide et du gaz à pression atmosphérique (Cf. [R7.01.11] pour plus de détails).""",
+   doc = """Loi de comportement pour un milieu poreux non saturÃ© avec un liquide et du gaz Ã  pression atmosphÃ©rique (Cf. [R7.01.11] pour plus de dÃ©tails).""",
    num_lc         = 9999,
    nb_vari        = 2,
    nom_vari       = ('LIQGATM1','LIQGATM2'),

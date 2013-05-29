@@ -1,4 +1,4 @@
-# -*- coding: iso-8859-1 -*-
+# coding=utf-8
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -25,75 +25,75 @@ Pour que CALC_EUROPLEXUS fonctionne il faut ajouter DEBUG=_F(HIST_ETAPE='OUI')
 dans la commande DEBUT.
 Remarque : CALC_EUROPLEXUS ne fonctionne pas en POURSUITE"""),
 
-2:  _(u"""Le mot-clé %(k1)s n'existe pas"""),
+2:  _(u"""Le mot-clÃ© %(k1)s n'existe pas"""),
 
-3 : _(u"""Le mot-clé GROUP_MA est obligatoire dans AFFE_MODELE"""),
+3 : _(u"""Le mot-clÃ© GROUP_MA est obligatoire dans AFFE_MODELE"""),
 
 4 : _(u"""Le type de section de poutre %(k1)s n'est pas encore pris en compte dans le passage vers Europlexus"""),
 
 5 : _(u"""Le type de section de barre %(k1)s n'est pas encore pris en compte dans le passage vers Europlexus"""),
 
-6 : _(u"""La modélisation %(k1)s n'est pas disponible dans CALC_EUROPLEXUS"""),
+6 : _(u"""La modÃ©lisation %(k1)s n'est pas disponible dans CALC_EUROPLEXUS"""),
 
-7 : _(u"""Le mot-clé FONC_MULT est obligatoire pour le chargement de type PRES_REP"""),
+7 : _(u"""Le mot-clÃ© FONC_MULT est obligatoire pour le chargement de type PRES_REP"""),
 
-8 : _(u"""Le concept EVOL_NOLI %(k1)s ne possède pas de mot-clé CARA_ELEM"""),
+8 : _(u"""Le concept EVOL_NOLI %(k1)s ne possÃ¨de pas de mot-clÃ© CARA_ELEM"""),
 
-9 : _(u"""Il faut avoir au moins un des mots-clés DDL_IMPO et PRES_REP dans AFFE_CHAR_MECA"""),
+9 : _(u"""Il faut avoir au moins un des mots-clÃ©s DDL_IMPO et PRES_REP dans AFFE_CHAR_MECA"""),
 
 10: _(u"""
 Les vecteurs y_local des GROUP_MA %(k1)s
-calculés à partir des angles nautiques ne sont pas identiques.
+calculÃ©s Ã  partir des angles nautiques ne sont pas identiques.
 Veuillez imposer directement VECT_Y dans AFFE_CARA_ELEM si vous
-êtes sur de l'orientation
+Ãªtes sur de l'orientation
 """),
 
 11: _(u"""
 Les vecteurs y_local des mailles du GROUP_MA %(k1)s
-calculés à partir des angles nautiques ne sont pas identiques.
+calculÃ©s Ã  partir des angles nautiques ne sont pas identiques.
 Veuillez imposer directement VECT_Y dans AFFE_CARA_ELEM si vous
-êtes sur de l'orientation
+Ãªtes sur de l'orientation
 """),
 
 12: _(u"""
-Le mot-clé facteur FONC_PARASOL est obligatoire quand le mot-clé RIGI_PARASOL e
-est renseigné dans AFFE_CARA_ELEM
+Le mot-clÃ© facteur FONC_PARASOL est obligatoire quand le mot-clÃ© RIGI_PARASOL e
+est renseignÃ© dans AFFE_CARA_ELEM
 """),
 
 13: _(u"""
-Les déplacements imposés non nuls dans DDL_IMPO ne sont pas autorisés
+Les dÃ©placements imposÃ©s non nuls dans DDL_IMPO ne sont pas autorisÃ©s
 """),
 
 14 : _(u"""
-Le fichier MED contenant les résultats d'Europlexus est introuvable.
-L'exécution d'Europlexus s'est probablement mal déroulée
+Le fichier MED contenant les rÃ©sultats d'Europlexus est introuvable.
+L'exÃ©cution d'Europlexus s'est probablement mal dÃ©roulÃ©e
 """),
 
-15 : _(u"""En présence du mot-clé %(k1)s dans AFFE_CARA_ELEM
-le mot-clé %(k2)s devrait être présent dans CALC_EUROPLEXUS.
+15 : _(u"""En prÃ©sence du mot-clÃ© %(k1)s dans AFFE_CARA_ELEM
+le mot-clÃ© %(k2)s devrait Ãªtre prÃ©sent dans CALC_EUROPLEXUS.
 """),
 
-16 : _(u"""En présence du mot-clé %(k1)s dans CALC_EUROPLEXUS
-le mot-clé %(k2)s est obligatoire dans AFFE_CARA_ELEM.
+16 : _(u"""En prÃ©sence du mot-clÃ© %(k1)s dans CALC_EUROPLEXUS
+le mot-clÃ© %(k2)s est obligatoire dans AFFE_CARA_ELEM.
 """),
 
-17 : _(u"""On ne peut pas fournir un état initial de contraintes sur les éléments POU_D_EM.
+17 : _(u"""On ne peut pas fournir un Ã©tat initial de contraintes sur les Ã©lÃ©ments POU_D_EM.
 """),
 
-18 : _(u"""Le mot clé %(k1)s du concept CARA_ELEM n'est pas pris en compte par CALC_EUROPLEXUS'
+18 : _(u"""Le mot clÃ© %(k1)s du concept CARA_ELEM n'est pas pris en compte par CALC_EUROPLEXUS'
 """),
 19 : _(u"""Le type de charge %(k1)s n'est pas pris en compte par CALC_EUROPLEXUS'
 """),
-20 : _(u"""Les groupes de mailles auxquels le matériau %(k1)s est affecté n'ont pas tous la même relation.
-           Voir mot-clé COMP_INCR.
+20 : _(u"""Les groupes de mailles auxquels le matÃ©riau %(k1)s est affectÃ© n'ont pas tous la mÃªme relation.
+           Voir mot-clÃ© COMP_INCR.
 """),
 
-21 : _(u"""On ne trouve pas les caractéristiques élastiques du matériau %(k1)s.
+21 : _(u"""On ne trouve pas les caractÃ©ristiques Ã©lastiques du matÃ©riau %(k1)s.
 """),
-22 : _(u"""La valeur du mot-clé RELATION du matériau %(k1)s est différente de GLRC_DAMAGE.
+22 : _(u"""La valeur du mot-clÃ© RELATION du matÃ©riau %(k1)s est diffÃ©rente de GLRC_DAMAGE.
 """),
-23 : _(u"""On ne trouve pas le mot-clé BETON dans le matériau %(k1)s.
-           Ce mot-clé est indispensable à la loi GLRC_DAMAGE.
+23 : _(u"""On ne trouve pas le mot-clÃ© BETON dans le matÃ©riau %(k1)s.
+           Ce mot-clÃ© est indispensable Ã  la loi GLRC_DAMAGE.
 """),
 
 }

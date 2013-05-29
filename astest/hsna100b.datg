@@ -37,4 +37,3 @@ Physical Surface(73) = {v1[0]-9,v2[0]-9};
 Physical Line(74) = {3};
 Physical Volume(75) = {v1[1]};
 Physical Volume(76) = {v2[1]};
-

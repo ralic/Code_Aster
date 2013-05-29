@@ -1,4 +1,4 @@
-# -*- coding: iso-8859-1 -*-
+# coding=utf-8
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -33,7 +33,7 @@ class sd_matr_asse_gene(sd_matr_asse_com):
         return self.REFA.exists
 
 
-    # indirection vers sd_nume_ddl à faire car FACT_LDLT modifie le sd_nume_ddl_gene de la sd_matr_asse :
+    # indirection vers sd_nume_ddl Ã  faire car FACT_LDLT modifie le sd_nume_ddl_gene de la sd_matr_asse :
     def check_matr_asse_gene_i_REFA(self, checker):
         if not self.exists : return
         nom=self.REFA.get()[1]

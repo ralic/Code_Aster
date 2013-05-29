@@ -1,4 +1,4 @@
-# -*- coding: iso-8859-1 -*-
+# coding=utf-8
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -57,9 +57,9 @@ from Calc_essai.ce_ihm_parametres import CalcEssaiSalome
         
 class InterfaceCorrelation(Frame):
     """!Interface principale de l'outil de projection des modes
-    expérimentaux sur les modes numériques
+    expÃ©rimentaux sur les modes numÃ©riques
     
-    permet la sélection et de calcul des modes en air et écoulement"""
+    permet la sÃ©lection et de calcul des modes en air et Ã©coulement"""
     def __init__(self,
                  root,
                  objects,
@@ -70,22 +70,22 @@ class InterfaceCorrelation(Frame):
 
         :IVariable:
          - `root`: fenetre parente
-         - `objects`: objet permettant d'accéder aux résultats aster existants dans le JDC
-         - `mode_exp`: valeur associée au bouton de sélection des modes expérimentaux
-         - `mode_etendu`: valeur associée au bouton de sélection des modes étendus
-         - `mode_nume`: valeur associée au bouton de sélection des modes numériques
-         - `mode_nume_red`: valeur associée au bouton de sélection des modes numériques réduits
-         - `use_nume_mass`: indicateur d'utilisation de la matrice de masse numérique
-         - `proj_champ_meth`: méthode à utiliser pour PROJ_CHAMP (SVD ou LU)
-         - `proj_svd_param`: si méthode SVD, alors paramètre de sélection
+         - `objects`: objet permettant d'accÃ©der aux rÃ©sultats aster existants dans le JDC
+         - `mode_exp`: valeur associÃ©e au bouton de sÃ©lection des modes expÃ©rimentaux
+         - `mode_etendu`: valeur associÃ©e au bouton de sÃ©lection des modes Ã©tendus
+         - `mode_nume`: valeur associÃ©e au bouton de sÃ©lection des modes numÃ©riques
+         - `mode_nume_red`: valeur associÃ©e au bouton de sÃ©lection des modes numÃ©riques rÃ©duits
+         - `use_nume_mass`: indicateur d'utilisation de la matrice de masse numÃ©rique
+         - `proj_champ_meth`: mÃ©thode Ã  utiliser pour PROJ_CHAMP (SVD ou LU)
+         - `proj_svd_param`: si mÃ©thode SVD, alors paramÃ¨tre de sÃ©lection
          - `mac_windows`: liste des fenetres d'affichage de MAC modes
         """
         
-        Frame.__init__(self, root, relief='flat', borderwidth=4) # Première frame
+        Frame.__init__(self, root, relief='flat', borderwidth=4) # PremiÃ¨re frame
         self.mess = mess
         self.root = root
         self.macro = macro
-        self.objects = objects #     objets Aster en mémoire
+        self.objects = objects #     objets Aster en mÃ©moire
         self.param_visu = param_visu
         self.is_resu1 = IntVar()
         self.is_resu2 = IntVar()
@@ -107,7 +107,7 @@ class InterfaceCorrelation(Frame):
 
 
     def setup(self):
-        """!Appelée par le gestionnaire de tab lors de l'affichage
+        """!AppelÃ©e par le gestionnaire de tab lors de l'affichage
             Permet de prendre en compte des nouveaux concepts
             et de les ajouter dans les MyMenu et cie..."""
         mdo = self.objects
@@ -121,17 +121,17 @@ class InterfaceCorrelation(Frame):
 
 
     def teardown(self):
-        """!Appelée par le gestionnaire de tab lors du masquage (passage à un autre tab)"""
+        """!AppelÃ©e par le gestionnaire de tab lors du masquage (passage Ã  un autre tab)"""
         return
 
 
     def interface_main(self):
-        """!Fonction principale de création de l'interface
+        """!Fonction principale de crÃ©ation de l'interface
 
         """
         self.columnconfigure(0, weight=1)
         self.rowconfigure(2, weight=1)
-        l = Label(self,text=u"Expansion de données ", pady=5, font=("Helvetica", "16") )
+        l = Label(self,text=u"Expansion de donnÃ©es ", pady=5, font=("Helvetica", "16") )
         l.grid(row=0)
 
         select_box = self.interface_selection(self)
@@ -148,14 +148,14 @@ class InterfaceCorrelation(Frame):
         Label(f, text="   ").grid(row=0, column=0, columnspan=3, sticky='w'+'e' )
         
         # menu de selection du resultat numerique
-        Label(f,text=u"Base numérique d'expansion").grid(row=1,column=0,sticky='e')
+        Label(f,text=u"Base numÃ©rique d'expansion").grid(row=1,column=0,sticky='e')
         self.var_resu_num = StringVar()
         self.menu_resu_num = MyMenu( f, options = self.objects.get_mode_meca_name(),
                                      var = self.var_resu_num, cmd = self.num_changed )
         self.menu_resu_num.grid(row=1, column=1, sticky='ew')
 
         # menu de selection du resultat experimental
-        Label(f,text=u"Résultat expérimental").grid(row=1,column=2,sticky='e')
+        Label(f,text=u"RÃ©sultat expÃ©rimental").grid(row=1,column=2,sticky='e')
         self.var_resu_exp = StringVar()
         self.menu_resu_exp = MyMenu( f, options = self.objects.get_resultats_name(),
                                      var = self.var_resu_exp, cmd = self.exp_changed )
@@ -174,7 +174,7 @@ class InterfaceCorrelation(Frame):
 
 ## La norme pourrait etre utilisee pour le MAC, mais elle ne l'est pas actuellement : on commente ces lignes
 ##        # menu de selection de la norme numerique
-##        Label(f,text="Norme numérique").grid(row=2,column=0,sticky='e')
+##        Label(f,text="Norme numÃ©rique").grid(row=2,column=0,sticky='e')
 ##        self.var_norme_num = StringVar()
 ##        self.menu_norme_num = MyMenu( f, options = self.objects.get_matr_norme(),
 ##                                      var = self.var_norme_num, cmd = self.num_changed )
@@ -188,8 +188,8 @@ class InterfaceCorrelation(Frame):
 ##        self.menu_norme_exp.grid(row=2, column=3, sticky='ew')
 
         # Type de resu experimental (dyna_harmo ou modes)
-        Label(f,text=u"Type de résultat expérimental").grid(row=1,column=4,columnspan=2)
-        Radiobutton(f,text=u"résultat harmonique",value='harmo',
+        Label(f,text=u"Type de rÃ©sultat expÃ©rimental").grid(row=1,column=4,columnspan=2)
+        Radiobutton(f,text=u"rÃ©sultat harmonique",value='harmo',
                     variable=self.type_resu_exp).grid(row=2,column=4)
         Radiobutton(f,text=u"modes",value='mode',
                     variable=self.type_resu_exp).grid(row=2,column=5)
@@ -229,29 +229,29 @@ class InterfaceCorrelation(Frame):
 
 
     def interface_parametres(self, root):
-        """!Création de l'interface de choix des paramètres de calcul
+        """!CrÃ©ation de l'interface de choix des paramÃ¨tres de calcul
 
-        On permet à l'utilisateur de choisir les modes numériques et expérimentaux
-        ainsi que la méthode de projection
+        On permet Ã  l'utilisateur de choisir les modes numÃ©riques et expÃ©rimentaux
+        ainsi que la mÃ©thode de projection
         """
         self.var_expans_param_frame_visible=IntVar()
         self.export_name=StringVar()
         self.param = None
         self.suffix = ['_NX','_EX','_ET','_RD']
-        listres = ["résultat numérique   extrait  NX",
-                   "résultat expérimental extrait EX",
-                   "résultat étendu ET",
-                   "résultat réduit RD"]
+        listres = ["rÃ©sultat numÃ©rique   extrait  NX",
+                   "rÃ©sultat expÃ©rimental extrait EX",
+                   "rÃ©sultat Ã©tendu ET",
+                   "rÃ©sultat rÃ©duit RD"]
 
         f = Frame(root,relief='sunken',borderwidth=1)
 
-        self.param_proj_mesu=ParamProjMesuModal(f, u"Paramètres de PROJ_MESU_MODAL")
+        self.param_proj_mesu=ParamProjMesuModal(f, u"ParamÃ¨tres de PROJ_MESU_MODAL")
         self.param = self.param_proj_mesu.get_option()
 
         # parametres de proj_mesu_modal
         paraf = Frame(f,borderwidth = 1)    
-        Label(paraf, text=u"Paramètres de PROJ_MESU_MODAL").grid(row=0,column=0,rowspan=2,sticky='nswe' )
-        Checkbutton(paraf,text=u"Réglages",
+        Label(paraf, text=u"ParamÃ¨tres de PROJ_MESU_MODAL").grid(row=0,column=0,rowspan=2,sticky='nswe' )
+        Checkbutton(paraf,text=u"RÃ©glages",
                     command=self.display_expans_param_frame,
                     variable=self.var_expans_param_frame_visible,
                     indicatoron=0).grid(row=2,column=0,pady=5,sticky='e')
@@ -264,9 +264,9 @@ class InterfaceCorrelation(Frame):
         launchf.grid(row=1,column=0,sticky='ew',pady=10,padx=10 )
         
         
-        self.liste_num = ModeFreqList( f, u"Modes Numériques" )
+        self.liste_num = ModeFreqList( f, u"Modes NumÃ©riques" )
         self.liste_num.grid(row=0, column=3, rowspan=3, sticky='nsew',pady=10,padx=10  )
-        self.liste_exp = ModeFreqList( f, u"Modes Expérimentaux" )
+        self.liste_exp = ModeFreqList( f, u"Modes ExpÃ©rimentaux" )
         self.liste_exp.grid(row=0, column=4, rowspan=3, sticky='nsew',pady=10,padx=10  )
         
         f.grid(row=1, sticky='ew')
@@ -277,7 +277,7 @@ class InterfaceCorrelation(Frame):
         self.expans_param_frame = frm1 = Toplevel()
         frm1.rowconfigure(0,weight=1)
         frm1.columnconfigure(0,weight=1)
-        self.param_proj_mesu = ParamProjMesuModal(frm1, u"Paramètres de PROJ_MESU_MODAL")
+        self.param_proj_mesu = ParamProjMesuModal(frm1, u"ParamÃ¨tres de PROJ_MESU_MODAL")
         self.param_proj_mesu.grid(row=0,column=0,sticky='nsew')
         if self.param:
             self.param_proj_mesu.set_option(self.param)
@@ -317,15 +317,15 @@ class InterfaceCorrelation(Frame):
     def prepare_calcul(self, *args):
         """! Demande le lancement de la macro MACRO_EXPANS dans calc_proj_resu
         """
-        # Validité des donnees :
+        # ValiditÃ© des donnees :
         if self.resu_num == None or self.resu_exp == None:
-            self.mess.disp_mess(u"Il manque des données pour le calcul")
+            self.mess.disp_mess(u"Il manque des donnÃ©es pour le calcul")
             return
         if self.resu_num.modele == None:
-            self.mess.disp_mess(u"Il manque le modele associe au résultat numérique")
+            self.mess.disp_mess(u"Il manque le modele associe au rÃ©sultat numÃ©rique")
             return
         if self.resu_exp.modele == None:
-            self.mess.disp_mess(u"Il manque le modele associe au résultat expérimental")
+            self.mess.disp_mess(u"Il manque le modele associe au rÃ©sultat expÃ©rimental")
             return
 
         self.modes_num_list = self.liste_num.get_selection()

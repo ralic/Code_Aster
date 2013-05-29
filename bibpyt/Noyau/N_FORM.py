@@ -1,4 +1,4 @@
-# -*- coding: iso-8859-1 -*-
+# coding=utf-8
 # person_in_charge: mathieu.courtois at edf.fr
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -26,7 +26,7 @@ import N_FORM_ETAPE
 
 class FORM(N_MACRO.MACRO):
     """
-       Cette classe sert à définir dans le catalogue des objets de type
+       Cette classe sert Ã  dÃ©finir dans le catalogue des objets de type
        FORMULE pour ASTER.
        Elle surcharge la classe MACRO
     """

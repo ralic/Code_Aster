@@ -19,24 +19,24 @@
 DEBUT(CODE=_F(NOM='SUPV003B', NIV_PUB_WEB='INTERNET'),
       PAR_LOT='NON', IGNORE_ALARM='SUPERVIS_1')
 """
-Ce test doit être lancé sur au moins deux processeurs.
+Ce test doit Ãªtre lancÃ© sur au moins deux processeurs.
 
 - Sur le proc #1, on lit un maillage contenant des noeuds orphelins,
-  des mailles doubles... Il émet donc des alarmes de vérification du maillage.
+  des mailles doubles... Il Ã©met donc des alarmes de vÃ©rification du maillage.
 
 - Le proc #0 lit un maillage sain : pas d'alarme.
-  FIN doit récupérer le nombre d'alarmes émises sur les autres processeurs.
-  Comme une alarme est émise sur #1, on vérifie que l'alarme APPELMPI_1/2 est
-  émise sur le proc #0.
+  FIN doit rÃ©cupÃ©rer le nombre d'alarmes Ã©mises sur les autres processeurs.
+  Comme une alarme est Ã©mise sur #1, on vÃ©rifie que l'alarme APPELMPI_1/2 est
+  Ã©mise sur le proc #0.
 
-On ne peut pas faire de TEST_RESU car il faudrait le faire **après** FIN.
+On ne peut pas faire de TEST_RESU car il faudrait le faire **aprÃ¨s** FIN.
 
-On surcharge la méthode qui traite la fin d'exécution du jdc pour récupérer
-la liste des alarmes émises. Et on vérifie qu'on y trouve une des deux alarmes
-émises en cas de "transfert" d'anomalies vers le proc #0.
+On surcharge la mÃ©thode qui traite la fin d'exÃ©cution du jdc pour rÃ©cupÃ©rer
+la liste des alarmes Ã©mises. Et on vÃ©rifie qu'on y trouve une des deux alarmes
+Ã©mises en cas de "transfert" d'anomalies vers le proc #0.
 
-FIN s'est passé correctement, donc on affiche un message <F> dans le fichier
-RESULTAT pour dégrader le diagnostic.
+FIN s'est passÃ© correctement, donc on affiche un message <F> dans le fichier
+RESULTAT pour dÃ©grader le diagnostic.
 """
 
 import aster_core
@@ -50,7 +50,7 @@ def just_for_test_decorator(meth):
         idmsg = set([item[0] for item in res])
         ok = idmsg.intersection(['APPELMPI_1', 'APPELMPI_2'])
         if not ok:
-            # devrait être imprimé dans le fichier RESULTAT et
+            # devrait Ãªtre imprimÃ© dans le fichier RESULTAT et
             # donc se voir dans le diagnostic.
             MSG('F', 'DVP_1')
         assert ok, "<F> Alarm not transfered to proc #0"

@@ -1,4 +1,4 @@
-# -*- coding: iso-8859-1 -*-
+# coding=utf-8
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -21,8 +21,8 @@
 cata_msg={
 1: _(u"""
   !!! mode no : %(i1)d
-    linéairement dépendant a déformation statique valeur singulière min :  %(r1)f
-    !! nous la forçons a :  %(r2)f
+    linÃ©airement dÃ©pendant a dÃ©formation statique valeur singuliÃ¨re min :  %(r1)f
+    !! nous la forÃ§ons a :  %(r2)f
 """),
 
 2: _(u"""
@@ -31,59 +31,59 @@ cata_msg={
 
 4: _(u"""
  mot-clef "AMOR_MECA" interdit :
- il est déjà calcule.
+ il est dÃ©jÃ  calcule.
 """),
 
 5: _(u"""
  mot-clef "AMOR_MECA" interdit :
- le résultat :  %(k1)s  existe déjà.
+ le rÃ©sultat :  %(k1)s  existe dÃ©jÃ .
 """),
 
 6: _(u"""
- -> Utilisation d'une fonctionnalité qui va disparaître (APPUI_LACHE)
+ -> Utilisation d'une fonctionnalitÃ© qui va disparaÃ®tre (APPUI_LACHE)
  -> Risque & Conseil:
     Utilisez  CREA_GROUP_MA / OPTION = 'APPUI', TYPE_APPUI='AU_MOINS_UN'.
 """),
 
 
 7: _(u"""
- -> Le groupe de mailles %(k1)s est vide. On ne le crée donc pas !
+ -> Le groupe de mailles %(k1)s est vide. On ne le crÃ©e donc pas !
  -> Risque & Conseil:
-    Veuillez vous assurer que le type de mailles souhaité soit cohérent
+    Veuillez vous assurer que le type de mailles souhaitÃ© soit cohÃ©rent
     avec votre maillage.
 """),
 
 8 : _(u"""
-  Aucun DDL actif n'a été trouve pour les interfaces données
-   => Les modes d'attaches, de contrainte ou de couplage ne peuvent pas être calcules.
+  Aucun DDL actif n'a Ã©tÃ© trouve pour les interfaces donnÃ©es
+   => Les modes d'attaches, de contrainte ou de couplage ne peuvent pas Ãªtre calcules.
 
-  CONSEIL : Vérifiez la cohérence de la définition des interfaces (conditions limites)
-            avec la méthode retenue :
-             - CRAIGB   : le modèle doit être défini avec des interfaces encastrées,
-             - CB_HARMO : le modèle doit être défini avec des interfaces encastrées,
-             - MNEAL    : le modèle doit être défini avec des interfaces libres.
+  CONSEIL : VÃ©rifiez la cohÃ©rence de la dÃ©finition des interfaces (conditions limites)
+            avec la mÃ©thode retenue :
+             - CRAIGB   : le modÃ¨le doit Ãªtre dÃ©fini avec des interfaces encastrÃ©es,
+             - CB_HARMO : le modÃ¨le doit Ãªtre dÃ©fini avec des interfaces encastrÃ©es,
+             - MNEAL    : le modÃ¨le doit Ãªtre dÃ©fini avec des interfaces libres.
 """),
 
 
 9 : _(u"""
- Le support indiqué pour la restitution %(k1)s n'est
-  pas cohérent avec le support utilisé pour la base modale %(k2)s.
+ Le support indiquÃ© pour la restitution %(k1)s n'est
+  pas cohÃ©rent avec le support utilisÃ© pour la base modale %(k2)s.
  CONSEIL : Renseigner le bon support de restitution dans le fichier de commande.
 """),
 
 10 : _(u"""
- Lors de la copie du groupe de mailles %(k1)s appartenant à la sous-structure %(k2)s,
- le nom qui lui sera affecté dans squelette dépasse 8 caractères. La troncature peut
- générer un conflit plus tard avec les noms des autres groupes de mailles.
+ Lors de la copie du groupe de mailles %(k1)s appartenant Ã  la sous-structure %(k2)s,
+ le nom qui lui sera affectÃ© dans squelette dÃ©passe 8 caractÃ¨res. La troncature peut
+ gÃ©nÃ©rer un conflit plus tard avec les noms des autres groupes de mailles.
 """),
 
 11 : _(u"""
- Vous avez traité plusieurs champs simultanément.
- On ne peut pas utiliser les résultats obtenus pour des calculs de modification structurale.
+ Vous avez traitÃ© plusieurs champs simultanÃ©ment.
+ On ne peut pas utiliser les rÃ©sultats obtenus pour des calculs de modification structurale.
 """),
 
 12 : _(u"""
-fréquences non identique pour les différentes interfaces.
+frÃ©quences non identique pour les diffÃ©rentes interfaces.
 on retient FREQ = %(r1)f
 """),
 

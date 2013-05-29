@@ -40,12 +40,12 @@ trac (S1 et S2 et s3) ;
 BARRE = S1 et S2 et S3 ;
 
 *****************************
-*définition des CL
+*dÃ©finition des CL
 *****************************
 ECHANGES = D1_2 et D2_3 et D3_4 ;
 
 *******************************************
-* définition des noeuds de post-traitement
+* dÃ©finition des noeuds de post-traitement
 *******************************************
 TC9 = 43.e-3 50.e-3 ;
 TC0 = 50.e-3 50.e-3 ;
@@ -65,5 +65,4 @@ opti sauv form 'barreau1.mgib' ;
 sauv form ma ;
 
 fin ;
-
 

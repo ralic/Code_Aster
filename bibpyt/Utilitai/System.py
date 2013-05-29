@@ -1,4 +1,4 @@
-# -*- coding: iso-8859-1 -*-
+# coding=utf-8
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -19,10 +19,10 @@
 
 # person_in_charge: mathieu.courtois at edf.fr
 
-"""Ce module définit la classe `SYSTEM` et la fonction `ExecCommand`
-qui est présente uniquement pour commodité pour les Macros.
+"""Ce module dÃ©finit la classe `SYSTEM` et la fonction `ExecCommand`
+qui est prÃ©sente uniquement pour commoditÃ© pour les Macros.
 
-La classe SYSTEM est semblable à celle utilisée dans asrun.
+La classe SYSTEM est semblable Ã  celle utilisÃ©e dans asrun.
 """
 
 __all__ = ["SYSTEM", "ExecCommand"]
@@ -202,7 +202,7 @@ class SYSTEM:
       return result
 
 
-# Juste par commodité.
+# Juste par commoditÃ©.
 system = SYSTEM()
 ExecCommand = system.Shell
 

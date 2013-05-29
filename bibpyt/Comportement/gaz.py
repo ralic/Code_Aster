@@ -1,4 +1,4 @@
-# -*- coding: iso-8859-1 -*-
+# coding=utf-8
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -22,9 +22,9 @@ from cata_comportement import LoiComportement
 
 loi = LoiComportement(
    nom            = 'GAZ',
-   doc = """Loi de comportement d'un gaz parfait, c'est-à-dire vérifiant la relation P/rho=RT/Mv, où P est la pression, 
-   rho la masse volumique, Mv la masse molaire, R la constante de Boltzman et T la température (Cf. [R7.01.11]).
-   Pour milieu saturé uniquement. """,
+   doc = """Loi de comportement d'un gaz parfait, c'est-Ã -dire vÃ©rifiant la relation P/rho=RT/Mv, oÃ¹ P est la pression, 
+   rho la masse volumique, Mv la masse molaire, R la constante de Boltzman et T la tempÃ©rature (Cf. [R7.01.11]).
+   Pour milieu saturÃ© uniquement. """,
    num_lc         = 9999,
    nb_vari        = 1,
    nom_vari       = ('GAZ1'),

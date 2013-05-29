@@ -1,4 +1,4 @@
-# -*- coding: iso-8859-1 -*-
+# coding=utf-8
 # person_in_charge: mathieu.courtois at edf.fr
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -16,17 +16,15 @@
 # YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 # ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
-#
-#
 # ======================================================================
 
 """
-   Ce module contient la classe mixin PROC_ETAPE qui porte les méthodes
-   nécessaires pour réaliser la validation d'un objet de type PROC_ETAPE
-   dérivé de OBJECT.
+   Ce module contient la classe mixin PROC_ETAPE qui porte les mÃ©thodes
+   nÃ©cessaires pour rÃ©aliser la validation d'un objet de type PROC_ETAPE
+   dÃ©rivÃ© de OBJECT.
 
    Une classe mixin porte principalement des traitements et est
-   utilisée par héritage multiple pour composer les traitements.
+   utilisÃ©e par hÃ©ritage multiple pour composer les traitements.
 """
 # Modules EFICAS
 import V_ETAPE
@@ -37,25 +35,25 @@ from Noyau.strfunc import ufmt
 
 class PROC_ETAPE(V_ETAPE.ETAPE):
    """
-      On réutilise les méthodes report,verif_regles
-      de ETAPE par héritage.
+      On rÃ©utilise les mÃ©thodes report,verif_regles
+      de ETAPE par hÃ©ritage.
    """
 
    def isvalid(self,sd='oui',cr='non'):
       """
-         Methode pour verifier la validité de l'objet PROC_ETAPE. Cette méthode
-         peut etre appelée selon plusieurs modes en fonction de la valeur
-         de sd et de cr (sd n'est pas utilisé).
+         Methode pour verifier la validitÃ© de l'objet PROC_ETAPE. Cette mÃ©thode
+         peut etre appelÃ©e selon plusieurs modes en fonction de la valeur
+         de sd et de cr (sd n'est pas utilisÃ©).
 
-         Si cr vaut oui elle crée en plus un compte-rendu.
+         Si cr vaut oui elle crÃ©e en plus un compte-rendu.
 
-         Cette méthode a plusieurs fonctions :
+         Cette mÃ©thode a plusieurs fonctions :
 
-          - retourner un indicateur de validité 0=non, 1=oui
+          - retourner un indicateur de validitÃ© 0=non, 1=oui
 
           - produire un compte-rendu : self.cr
 
-          - propager l'éventuel changement d'état au parent
+          - propager l'Ã©ventuel changement d'Ã©tat au parent
       """
       if CONTEXT.debug : print "ETAPE.isvalid ",self.nom
       if self.state == 'unchanged' :
@@ -65,7 +63,7 @@ class PROC_ETAPE(V_ETAPE.ETAPE):
         valid=valid * self.valid_regles(cr)
         if self.reste_val != {}:
           if cr == 'oui' :
-            self.cr.fatal(_(u"Mots clés inconnus : %s"), ','.join(self.reste_val.keys()))
+            self.cr.fatal(_(u"Mots clÃ©s inconnus : %s"), ','.join(self.reste_val.keys()))
           valid=0
         self.set_valid(valid)
         return self.valid

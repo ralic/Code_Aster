@@ -47,4 +47,3 @@ elim 0.001 mail ;
 opti sauv form 'sslx102a.mgib';
 sauv 'FORMAT' mail;
 trac mail;
-

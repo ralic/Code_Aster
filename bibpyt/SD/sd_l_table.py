@@ -1,4 +1,4 @@
-# -*- coding: iso-8859-1 -*-
+# coding=utf-8
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -26,8 +26,8 @@ class sd_l_table(AsBase):
 #------------------------
     nomj = SDNom(fin=19)
 
-    # la SD l_table (liste de tables) est une SD destinée à stocker un ensemble de tables
-    # les tables stockées dans la l_table sont identifiées par un "petit nom" (K16)
+    # la SD l_table (liste de tables) est une SD destinÃ©e Ã  stocker un ensemble de tables
+    # les tables stockÃ©es dans la l_table sont identifiÃ©es par un "petit nom" (K16)
 
     LTNT = AsVK16()
     LTNS = AsVK24()

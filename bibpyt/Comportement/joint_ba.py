@@ -1,4 +1,4 @@
-# -*- coding: iso-8859-1 -*-
+# coding=utf-8
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -22,10 +22,10 @@ from cata_comportement import LoiComportement
 
 loi = LoiComportement(
    nom            = 'JOINT_BA',
-   doc = """Relation de comportement locale en 2D décrivant le phénomène de la liaison acier - béton pour les structures en béton armé.
-   Elle permet de rendre compte de l'influence de la liaison dans la redistribution des contraintes dans le corps du béton ainsi que la prédiction des fissures et leur espacement. 
+   doc = """Relation de comportement locale en 2D dÃ©crivant le phÃ©nomÃ¨ne de la liaison acier - bÃ©ton pour les structures en bÃ©ton armÃ©.
+   Elle permet de rendre compte de l'influence de la liaison dans la redistribution des contraintes dans le corps du bÃ©ton ainsi que la prÃ©diction des fissures et leur espacement. 
    Disponible pour des chargements en monotone et en cyclique, elle prend en compte les effets du frottement des fissures, et du confinement. 
-   Une seule variable d'endommagement scalaire est utilisée (cf. [R7.01.21] pour plus de détails).""",
+   Une seule variable d'endommagement scalaire est utilisÃ©e (cf. [R7.01.21] pour plus de dÃ©tails).""",
    num_lc         = 13,
    nb_vari        = 6,
    nom_vari       = ('ENDONOR','ENDOTAN','ECRISOM1','ECRISOM2', 'GLIS','ECROCINE'),

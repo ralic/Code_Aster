@@ -1,4 +1,4 @@
-# -*- coding: iso-8859-1 -*-
+# coding=utf-8
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -33,8 +33,8 @@ cata_msg={
 """),
 
 3: _(u"""
-  BORNE SUP très grande, problème de précision possible,
-  vérifiez la distribution des valeurs générées.
+  BORNE SUP trÃ¨s grande, problÃ¨me de prÃ©cision possible,
+  vÃ©rifiez la distribution des valeurs gÃ©nÃ©rÃ©es.
 """),
 
 4: _(u"""
@@ -68,7 +68,7 @@ cata_msg={
 """),
 
 11: _(u"""
-  Nombre de tirages supérieur a la taille de l'échantillon.
+  Nombre de tirages supÃ©rieur a la taille de l'Ã©chantillon.
 """),
 
 

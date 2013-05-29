@@ -1,4 +1,4 @@
-# -*- coding: iso-8859-1 -*-
+# coding=utf-8
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -21,21 +21,21 @@
 cata_msg = {
 
 1 : _(u"""
-Redéfinition du DISPLAY vers %(k1)s.
+RedÃ©finition du DISPLAY vers %(k1)s.
 """),
 
 2 : _(u"""
-STANLEY fonctionne en mode validation de non régression.
+STANLEY fonctionne en mode validation de non rÃ©gression.
 """),
 
 3 : _(u"""
-Aucune variable d'environnement DISPLAY définie !
+Aucune variable d'environnement DISPLAY dÃ©finie !
 %(k1)s ne pourra pas fonctionner. On l'ignore.
 
-Si vous êtes en Interactif, cochez le bouton Suivi Interactif
+Si vous Ãªtes en Interactif, cochez le bouton Suivi Interactif
 dans ASTK.
 
-Vous pouvez également préciser votre DISPLAY dans les arguments
+Vous pouvez Ã©galement prÃ©ciser votre DISPLAY dans les arguments
 de la commande STANLEY :
 
 STANLEY(DISPLAY='adresse_IP:0.0');
@@ -46,7 +46,7 @@ Une erreur est intervenue. Raison : %(k1)s
 """),
 
 5 : _(u"""
-Cette action n'est pas réalisable: %(k1)s
+Cette action n'est pas rÃ©alisable: %(k1)s
 """),
 
 6 : _(u"""
@@ -54,16 +54,16 @@ En mode DISTANT, la variable %(k1)s est obligatoire. On abandonne.
 """),
 
 7 : _(u"""
-Le paramètre 'machine_GMSH_exe' ou 'machine_VISU' n'est pas renseigné, 
+Le paramÃ¨tre 'machine_GMSH_exe' ou 'machine_VISU' n'est pas renseignÃ©, 
 il faut ouvrir le fichier manuellement.
 """),
 
 8 : _(u"""
-Lancement terminé.
+Lancement terminÃ©.
 """),
 
 9 : _(u"""
-Exécution de %(k1)s
+ExÃ©cution de %(k1)s
 """),
 
 10 : _(u"""
@@ -75,7 +75,7 @@ Dans le mode WINDOWS, la variable %(k1)s est obligatoire. On abandonne.
 """),
 
 12 : _(u"""
-Les fichiers de post-traitement sont copiés.
+Les fichiers de post-traitement sont copiÃ©s.
 Veuillez maintenant ouvrir manuellement skin.pos avec GMSH.
 """),
 
@@ -85,43 +85,43 @@ Veuillez maintenant ouvrir manuellement fort.33.pos avec GMSH.
 """),
 
 14 : _(u"""
-Impossible de contacter le serveur SALOME! Vérifier qu'il est bien lancé.
+Impossible de contacter le serveur SALOME! VÃ©rifier qu'il est bien lancÃ©.
 """),
 
 15 : _(u"""
-Impossible de récupérer le nom de la machine locale! 
+Impossible de rÃ©cupÃ©rer le nom de la machine locale! 
 Solution alternative : utiliser le mode DISTANT en indiquant l'adresse IP
-ou le nom de la machine dans la case 'machine de Salomé'.
+ou le nom de la machine dans la case 'machine de SalomÃ©'.
 """),
 
 16 : _(u"""
-Pour visualisation dans Salomé, la variable %(k1)s est obligatoire. On abandonne.
+Pour visualisation dans SalomÃ©, la variable %(k1)s est obligatoire. On abandonne.
 """),
 
 17 : _(u"""
-Pour visualisation dans Salomé, la variable machine_SALOME_port est obligatoire. 
+Pour visualisation dans SalomÃ©, la variable machine_SALOME_port est obligatoire. 
 On abandonne.
 """),
 
 18 : _(u"""
-Erreur : mode WINDOWS non implémenté
+Erreur : mode WINDOWS non implÃ©mentÃ©
 """),
 
 19 : _(u"""
-Erreur: il est possible que STANLEY ne puisse pas contacter Salomé :
+Erreur: il est possible que STANLEY ne puisse pas contacter SalomÃ© :
 
- - machine Salomé définie   : %(k1)s
- - port de Salomé           : %(k2)s
+ - machine SalomÃ© dÃ©finie   : %(k1)s
+ - port de SalomÃ©           : %(k2)s
  - lanceur runSalomeScript  : %(k3)s
 
-Vous pouvez modifier ces valeurs dans les paramètres dans STANLEY. 
+Vous pouvez modifier ces valeurs dans les paramÃ¨tres dans STANLEY. 
 
-Si STANLEY est bien lancé, vous pouvez essayer d'activer le module VISU.
+Si STANLEY est bien lancÃ©, vous pouvez essayer d'activer le module VISU.
 
 """),
 
 20 : _(u"""
-Exécution terminée.
+ExÃ©cution terminÃ©e.
 """),
 
 #21 : _(u""" """),
@@ -136,45 +136,45 @@ Lecture du fichier d'environnement : %(k1)s
 
 24 : _(u"""
 Il n'y a pas de fichier d'environnement. 
-On démarre avec une configuration par défaut.
+On dÃ©marre avec une configuration par dÃ©faut.
 """),
 
 25 : _(u"""
 Le fichier d'environnement n'a pas la version attendue. 
-On continue mais en cas de problème, effacer le répertoire ~/%(k1)s et relancer.
+On continue mais en cas de problÃ¨me, effacer le rÃ©pertoire ~/%(k1)s et relancer.
 """),
 
 26 : _(u"""
 Le fichier d'environnement n'est pas exploitable (par exemple c'est une ancienne version).
-On démarre avec une configuration par défaut.
+On dÃ©marre avec une configuration par dÃ©faut.
 """),
 
 27 : _(u"""
-On initialise une configuration par défaut.
+On initialise une configuration par dÃ©faut.
 """),
 
 28 : _(u"""
-Nouveaux paramètres sauvegardés dans : %(k1)s
+Nouveaux paramÃ¨tres sauvegardÃ©s dans : %(k1)s
 """),
 
 29 : _(u"""
-Impossible de sauvegarder les paramètres dans : %(k1)s
+Impossible de sauvegarder les paramÃ¨tres dans : %(k1)s
 """),
 
 31 : _(u"""
-Problème : %(k1)s
+ProblÃ¨me : %(k1)s
 """),
 
 32 : _(u"""
-Impossible d'ouvrir en écriture le fichier %(k1)s
+Impossible d'ouvrir en Ã©criture le fichier %(k1)s
 """),
 
 33 : _(u"""
-Attention : on ne peut pas tracer un champ aux points de Gauss sur la déformée...
+Attention : on ne peut pas tracer un champ aux points de Gauss sur la dÃ©formÃ©e...
 """),
 
 34 : _(u"""
-Le champ est tracé avec la déformée.
+Le champ est tracÃ© avec la dÃ©formÃ©e.
 """),
 
 36 : _(u"""
@@ -182,13 +182,13 @@ On ne peut pas tracer une courbe avec une seule abscisse.
 """),
 
 37 : _(u"""
-Tous les concepts Aster nécessaires à STANLEY n'ont pas été calculés. 
+Tous les concepts Aster nÃ©cessaires Ã  STANLEY n'ont pas Ã©tÃ© calculÃ©s. 
 Il manque :
 %(k1)s
 """),
 
 38 : _(u"""
-STANLEY - Erreur lors de l'appel à la commande Aster:
+STANLEY - Erreur lors de l'appel Ã  la commande Aster:
 
 %(k1)s
 Raison:
@@ -196,7 +196,7 @@ Raison:
 """),
 
 40 : _(u"""
-STANLEY - Projection aux points de Gauss: type de résultat non développé
+STANLEY - Projection aux points de Gauss: type de rÃ©sultat non dÃ©veloppÃ©
 %(k1)s
 """),
 

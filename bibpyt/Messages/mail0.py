@@ -1,4 +1,4 @@
-# -*- coding: iso-8859-1 -*-
+# coding=utf-8
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -24,8 +24,8 @@ cata_msg = {
 Plus de %(i1)d faces touchent le noeud %(k1)s.
 
 Risque & conseils :
-   Vérifier la validité de votre maillage autour de ce point.
-   Dans une grille, un noeud est commun à 12 faces.
+   VÃ©rifier la validitÃ© de votre maillage autour de ce point.
+   Dans une grille, un noeud est commun Ã  12 faces.
 """),
 
 
@@ -33,7 +33,7 @@ Risque & conseils :
 
 
 14 : _(u"""
- Le mot-clé MAILLAGE est obligatoire avec le mot-clé %(k1)s.
+ Le mot-clÃ© MAILLAGE est obligatoire avec le mot-clÃ© %(k1)s.
 """),
 
 }

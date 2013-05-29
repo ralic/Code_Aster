@@ -1,4 +1,4 @@
-# -*- coding: iso-8859-1 -*-
+# coding=utf-8
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -17,52 +17,52 @@
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
 # ======================================================================
 
-# Attention a ne pas faire de retour à la ligne !
+# Attention a ne pas faire de retour Ã  la ligne !
 
 cata_msg = {
 
 1 : _(u"""
- On utilise l'opérateur en enrichissant les résultats (REUSE).
- Mais on ne définit pas d'état initial: on prend un état initial nul.
+ On utilise l'opÃ©rateur en enrichissant les rÃ©sultats (REUSE).
+ Mais on ne dÃ©finit pas d'Ã©tat initial: on prend un Ã©tat initial nul.
 """),
 
 2 : _(u"""
- On ne trouve aucun numéro d'ordre dans la structure de données résultat de nom <%(k1)s> 
+ On ne trouve aucun numÃ©ro d'ordre dans la structure de donnÃ©es rÃ©sultat de nom <%(k1)s> 
 """),
 
 3 : _(u"""
- L'instant spécifié sous ETAT_INIT/INST n'est pas trouvé dans la structure de données résultat de nom <%(k1)s>.
+ L'instant spÃ©cifiÃ© sous ETAT_INIT/INST n'est pas trouvÃ© dans la structure de donnÃ©es rÃ©sultat de nom <%(k1)s>.
 """),
 
 4 : _(u"""
- Il y a plusieurs instants dans la structure de données résultat de nom <%(k1)s> qui correspondent à celui spécifié sous ETAT_INIT/INIT.
+ Il y a plusieurs instants dans la structure de donnÃ©es rÃ©sultat de nom <%(k1)s> qui correspondent Ã  celui spÃ©cifiÃ© sous ETAT_INIT/INIT.
 """),
 
 5 : _(u"""
- A l'instant initial, tous les termes du bilan d'énergie sont nuls bien qu'un état initial non vierge soit renseigné. Le bilan d'énergie indique la variation des différents termes d'énergie entre deux instants de calcul consécutifs ainsi que leur variation totale entre l'instant courant et l'instant initial.
+ A l'instant initial, tous les termes du bilan d'Ã©nergie sont nuls bien qu'un Ã©tat initial non vierge soit renseignÃ©. Le bilan d'Ã©nergie indique la variation des diffÃ©rents termes d'Ã©nergie entre deux instants de calcul consÃ©cutifs ainsi que leur variation totale entre l'instant courant et l'instant initial.
 """),
 
 10 : _(u"""
- Lecture de l'état initial
+ Lecture de l'Ã©tat initial
 """),
 
 20 : _(u"""
- Il n'y a pas d'état initial défini. On prend un état initial nul.
+ Il n'y a pas d'Ã©tat initial dÃ©fini. On prend un Ã©tat initial nul.
 """),
 
 30 : _(u"""
-  Le champ %(k1)s n'est pas trouvé dans ETAT_INIT et on ne sait pas l'initialiser à zéro.
+  Le champ %(k1)s n'est pas trouvÃ© dans ETAT_INIT et on ne sait pas l'initialiser Ã  zÃ©ro.
 """),
 
-31 : _(u"""  Le champ <%(k1)s> est initialisé a zéro"""),
+31 : _(u"""  Le champ <%(k1)s> est initialisÃ© a zÃ©ro"""),
 
-32 : _(u"""  Le champ <%(k1)s> est lu dans ETAT_INIT dans la structure de données résultats de nom <%(k2)s>"""),
+32 : _(u"""  Le champ <%(k1)s> est lu dans ETAT_INIT dans la structure de donnÃ©es rÃ©sultats de nom <%(k2)s>"""),
 
-33 : _(u"""  Le champ <%(k1)s> est lu dans ETAT_INIT, par un champ donné explicitement"""),
+33 : _(u"""  Le champ <%(k1)s> est lu dans ETAT_INIT, par un champ donnÃ© explicitement"""),
 
-34 : _(u"""  Le champ de température initiale est calculé par un état stationnaire"""),
+34 : _(u"""  Le champ de tempÃ©rature initiale est calculÃ© par un Ã©tat stationnaire"""),
 
-35 : _(u"""  Le champ de température initiale est donné par une valeur qui vaut %(r1)19.12e"""),
+35 : _(u"""  Le champ de tempÃ©rature initiale est donnÃ© par une valeur qui vaut %(r1)19.12e"""),
 
 50 : _(u"""
   Le champ <%(k1)s> est d'un type inconnu.

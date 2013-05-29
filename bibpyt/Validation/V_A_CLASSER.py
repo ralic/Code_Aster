@@ -1,4 +1,4 @@
-# -*- coding: iso-8859-1 -*-
+# coding=utf-8
 # person_in_charge: mathieu.courtois at edf.fr
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -24,12 +24,12 @@ from Noyau.strfunc import convert, ufmt
 
 class A_CLASSER:
    """
-      La règle A_CLASSER vérifie que ...
+      La rÃ¨gle A_CLASSER vÃ©rifie que ...
 
    """
    def __init__(self,*args):
       if len(args) > 2 :
-        print convert(ufmt(_(u"Erreur à la création de la règle A_CLASSER(%s)"),
+        print convert(ufmt(_(u"Erreur Ã  la crÃ©ation de la rÃ¨gle A_CLASSER(%s)"),
                            args))
         return
       self.args=args
@@ -45,9 +45,9 @@ class A_CLASSER:
       elif type(args[1]) == str:
         self.args1 = (args[1],)
       else :
-        print convert(ufmt(_(u"Le deuxième argument de :%s doit etre un "
+        print convert(ufmt(_(u"Le deuxiÃ¨me argument de :%s doit etre un "
                              u"tuple ou une chaine"), args))
-      # création de la liste des mcs
+      # crÃ©ation de la liste des mcs
       liste = []
       liste.extend(self.args0)
       liste.extend(self.args1)
@@ -55,8 +55,8 @@ class A_CLASSER:
       self.init_couples_permis()
 
    def init_couples_permis(self):
-      """ Crée la liste des couples permis parmi les self.args, càd pour chaque élément
-          de self.args0 crée tous les couples possibles avec un élément de self.args1"""
+      """ CrÃ©e la liste des couples permis parmi les self.args, cÃ d pour chaque Ã©lÃ©ment
+          de self.args0 crÃ©e tous les couples possibles avec un Ã©lÃ©ment de self.args1"""
       liste = []
       for arg0 in self.args0:
         for arg1 in self.args1:
@@ -65,10 +65,10 @@ class A_CLASSER:
 
    def verif(self,args):
       """
-          args peut etre un dictionnaire ou une liste. Les éléments de args
-          sont soit les éléments de la liste soit les clés du dictionnaire.
+          args peut etre un dictionnaire ou une liste. Les Ã©lÃ©ments de args
+          sont soit les Ã©lÃ©ments de la liste soit les clÃ©s du dictionnaire.
       """
-      # création de la liste des couples présents dans le fichier de commandes
+      # crÃ©ation de la liste des couples prÃ©sents dans le fichier de commandes
       l_couples = []
       couple = []
       text = u''
@@ -81,14 +81,14 @@ class A_CLASSER:
             couple = [nom,]
       if len(couple) > 0 :
         l_couples.append(tuple(couple))
-      # l_couples peut etre vide si l'on n'a pas réussi à trouver au moins un
-      # élément de self.mcs
+      # l_couples peut etre vide si l'on n'a pas rÃ©ussi Ã  trouver au moins un
+      # Ã©lÃ©ment de self.mcs
       if len(l_couples) == 0 :
         message = ufmt(_(u"- Il faut qu'au moins un objet de la liste : %r"
                          u" soit suivi d'au moins un objet de la liste : %r"),
                        self.args0, self.args1)
         return message,0
-      # A ce stade, on a trouvé des couples : il faut vérifier qu'ils sont
+      # A ce stade, on a trouvÃ© des couples : il faut vÃ©rifier qu'ils sont
       # tous licites
       num = 0
       for couple in l_couples :
@@ -96,7 +96,7 @@ class A_CLASSER:
         if len(couple) == 1 :
           # on a un 'faux' couple
           if couple[0] not in self.args1:
-            text = text + ufmt(_(u"- L'objet : %s doit être suivi d'un objet de la liste : %r\n"),
+            text = text + ufmt(_(u"- L'objet : %s doit Ãªtre suivi d'un objet de la liste : %r\n"),
                                couple[0], self.args1)
             test = 0
           else :
@@ -104,11 +104,11 @@ class A_CLASSER:
               # ce n'est pas le seul couple --> licite
               break
             else :
-              text = text + ufmt(_(u"- L'objet : %s doit être précédé d'un objet de la liste : %r\n"),
+              text = text + ufmt(_(u"- L'objet : %s doit Ãªtre prÃ©cÃ©dÃ© d'un objet de la liste : %r\n"),
                                  couple[0], self.args0)
               test = 0
         elif couple not in self.liste_couples :
-          text = text + ufmt(_(u"- L'objet : %s ne peut être suivi de : %s\n"),
+          text = text + ufmt(_(u"- L'objet : %s ne peut Ãªtre suivi de : %s\n"),
                              couple[0], couple[1])
           test = 0
       return text,test

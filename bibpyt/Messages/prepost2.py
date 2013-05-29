@@ -1,4 +1,4 @@
-# -*- coding: iso-8859-1 -*-
+# coding=utf-8
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -25,11 +25,11 @@ cata_msg = {
 """),
 
 2 : _(u"""
-Modèle inconnu, pas d'impression du champ  %(k1)s
+ModÃ¨le inconnu, pas d'impression du champ  %(k1)s
 """),
 
 3 : _(u"""
-On ne sait pas écrire des champs par élément aux points de gauss au format CASTEM
+On ne sait pas Ã©crire des champs par Ã©lÃ©ment aux points de gauss au format CASTEM
 """),
 
 4 : _(u"""
@@ -37,27 +37,27 @@ On ne sait pas écrire des champs par élément aux points de gauss au format CASTE
 """),
 
 5 : _(u"""
- Le mot-clé RESTREINT n'est pas autorisé dans EXTR_RESU en reuse.
+ Le mot-clÃ© RESTREINT n'est pas autorisÃ© dans EXTR_RESU en reuse.
 """),
 
 35 : _(u"""
-   désolé on ne sait pas écrire les champs aux noeuds de représentation constante et a valeurs complexes au format  %(k1)s
+   dÃ©solÃ© on ne sait pas Ã©crire les champs aux noeuds de reprÃ©sentation constante et a valeurs complexes au format  %(k1)s
 """),
 
 36 : _(u"""
-   désole on ne sait pas écrire le champ aux noeuds  %(k1)s  au format  %(k2)s
+   dÃ©sole on ne sait pas Ã©crire le champ aux noeuds  %(k1)s  au format  %(k2)s
 """),
 
 40 : _(u"""
- aucune des composantes demandées sous le mot-clé NOM_CMP pour l'impression du CHAM_GD  %(k1)s  n'est présente dans la grandeur  %(k2)s
+ aucune des composantes demandÃ©es sous le mot-clÃ© NOM_CMP pour l'impression du CHAM_GD  %(k1)s  n'est prÃ©sente dans la grandeur  %(k2)s
 """),
 
 41 : _(u"""
- aucune des composantes demandées sous le mot-clé NOM_CMP pour l'impression du champ  %(k1)s  du concept  %(k2)s  n'est présente dans la grandeur  %(k3)s
+ aucune des composantes demandÃ©es sous le mot-clÃ© NOM_CMP pour l'impression du champ  %(k1)s  du concept  %(k2)s  n'est prÃ©sente dans la grandeur  %(k3)s
 """),
 
 46 : _(u"""
-  numéro d'ordre  %(k1)s  non licite
+  numÃ©ro d'ordre  %(k1)s  non licite
 """),
 
 51 : _(u"""
@@ -69,7 +69,7 @@ On ne sait pas écrire des champs par élément aux points de gauss au format CASTE
 """),
 
 53 : _(u"""
- nombre de composantes différent
+ nombre de composantes diffÃ©rent
 """),
 
 54 : _(u"""
@@ -77,8 +77,8 @@ On ne sait pas écrire des champs par élément aux points de gauss au format CASTE
 """),
 
 55 : _(u"""
- L'ordre des composantes établi lorsque que vous avez renseigné le mot-clé
- NOM_CMP est différent de celui du catalogue Aster:
+ L'ordre des composantes Ã©tabli lorsque que vous avez renseignÃ© le mot-clÃ©
+ NOM_CMP est diffÃ©rent de celui du catalogue Aster:
     - ordre des composantes fournies     : %(k1)s %(k2)s %(k3)s %(k4)s %(k5)s %(k6)s
     - ordre des composantes du catalogue : %(k7)s %(k8)s %(k9)s %(k10)s %(k11)s %(k12)s
 """),
@@ -88,7 +88,7 @@ On ne sait pas écrire des champs par élément aux points de gauss au format CASTE
 """),
 
 57 : _(u"""
- nombre de sous-points différent de 1
+ nombre de sous-points diffÃ©rent de 1
 """),
 
 58 : _(u"""
@@ -105,11 +105,11 @@ On ne sait pas écrire des champs par élément aux points de gauss au format CASTE
 """),
 
 61 : _(u"""
- erreur de programmation : nombre de composantes différent de 1 ou 3.
+ erreur de programmation : nombre de composantes diffÃ©rent de 1 ou 3.
 """),
 
 62 : _(u"""
- on ne peut pas traiter des éléments a plus de 99 noeuds !
+ on ne peut pas traiter des Ã©lÃ©ments a plus de 99 noeuds !
 """),
 
 63 : _(u"""
@@ -117,81 +117,81 @@ On ne sait pas écrire des champs par élément aux points de gauss au format CASTE
 """),
 
 64 : _(u"""
- SEG4 élément inexistant dans CASTEM, converti en SEG2
+ SEG4 Ã©lÃ©ment inexistant dans CASTEM, converti en SEG2
 """),
 
 65 : _(u"""
- tria7 élément inexistant dans CASTEM, converti en tria6
+ tria7 Ã©lÃ©ment inexistant dans CASTEM, converti en tria6
 """),
 
 66 : _(u"""
- QUAD9 élément inexistant dans CASTEM, converti en QUAD8
+ QUAD9 Ã©lÃ©ment inexistant dans CASTEM, converti en QUAD8
 """),
 
 67 : _(u"""
- les champs n'ont pas la même grandeur
+ les champs n'ont pas la mÃªme grandeur
 """),
 
 68 : _(u"""
- les champs n'ont pas la même numérotation
+ les champs n'ont pas la mÃªme numÃ©rotation
 """),
 
 69 : _(u"""
- les champs n'ont pas le même type de valeurs
+ les champs n'ont pas le mÃªme type de valeurs
 """),
 
 70 : _(u"""
-   désolé on ne sait pas écrire les champs aux noeuds de représentation constante au format IDEAS
+   dÃ©solÃ© on ne sait pas Ã©crire les champs aux noeuds de reprÃ©sentation constante au format IDEAS
 """),
 
 
 
 
 77 : _(u"""
- la dimension du problème est invalide : il faut : 1d, 2d, 3d.
+ la dimension du problÃ¨me est invalide : il faut : 1d, 2d, 3d.
 """),
 
 78 : _(u"""
- HEXA27 élément inexistant dans IDEAS, converti en HEXA20
+ HEXA27 Ã©lÃ©ment inexistant dans IDEAS, converti en HEXA20
 """),
 
 79 : _(u"""
- tria7 élément inexistant dans IDEAS, converti en tria6
+ tria7 Ã©lÃ©ment inexistant dans IDEAS, converti en tria6
 """),
 
 80 : _(u"""
- QUAD9 élément inexistant dans IDEAS, converti en QUAD8
+ QUAD9 Ã©lÃ©ment inexistant dans IDEAS, converti en QUAD8
 """),
 
 81 : _(u"""
- SEG4 élément inexistant dans IDEAS, converti en SEG2
+ SEG4 Ã©lÃ©ment inexistant dans IDEAS, converti en SEG2
 """),
 
 82 : _(u"""
- élément PYRAM5 non disponible dans IDEAS
+ Ã©lÃ©ment PYRAM5 non disponible dans IDEAS
 """),
 
 83 : _(u"""
- élément PYRAM13 non disponible dans IDEAS
+ Ã©lÃ©ment PYRAM13 non disponible dans IDEAS
 """),
 
 84 : _(u"""
- Le champ %(k1)s est un champ aux noeuds par éléments
+ Le champ %(k1)s est un champ aux noeuds par Ã©lÃ©ments
  contenant des %(k2)s
  Or l'impression de ce type de champ n'est pas encore possible au format MED
  On n'imprimera donc pas ce champ dans le fichier MED
 """),
 
 85 : _(u"""
- L'élément PENTA18 est inexistant dans IDEAS, il est converti en PENTA15.
+ L'Ã©lÃ©ment PENTA18 est inexistant dans IDEAS, il est converti en PENTA15.
 """),
 
 86 : _(u"""
- L'élément PENTA18 est inexistant dans CASTEM, il est converti en PENTA15.
+ L'Ã©lÃ©ment PENTA18 est inexistant dans CASTEM, il est converti en PENTA15.
 """),
 
 93 : _(u"""
- on ne sait pas écrire les mailles de type  %(k1)s
+ on ne sait pas Ã©crire les mailles de type  %(k1)s
 """),
 
 }

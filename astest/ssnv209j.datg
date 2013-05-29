@@ -6,13 +6,13 @@ opti dime 3 elem tet4 ;
 *----------------------------------------
 eps = 0.001;
 
-* dimensions des cotés
+* dimensions des cotÃ©s
 
 r      = 0.04;
 lzd    = -1*r/4;
 lz     = (r-lzd);
 
-* nombre d'éléments
+* nombre d'Ã©lÃ©ments
 nz = 12;
 nr = enti ((nz*4./5.) + 0.5);
 nr = nr - 2;

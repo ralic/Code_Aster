@@ -1,13 +1,13 @@
 #############################################
-# Solution quasi-analytique de l'equation diff à coefficients variables
+# Solution quasi-analytique de l'equation diff Ã  coefficients variables
 # x''[t] + Cr[t] * x'[t] + Om0[t]**2 * x[t] == Fr * Sin[Om*(t+t0)] + F0
 # avec conditions initiales x[0] == D0 , x'[0] == V0
 #############################################
 
-Fr = Fa / m        # Amplitude réduite de la force
+Fr = Fa / m        # Amplitude rÃ©duite de la force
 Om = pi * 2 * f   #  pulsation de l'excitation
 
-Duree = t[len(t)-1]     # durée de calucl en sec.
+Duree = t[len(t)-1]     # durÃ©e de calucl en sec.
 n  = len(t)             # nb de points de calcul
 DT = Duree / ( n-1 )    # pas de temps nominal
 nn = int(1E4)           # nb de points calcul pour recherche du point d'entree et sortie de contact
@@ -17,17 +17,17 @@ AA = matrix(zeros( (3 , 3) ))
 X = array([0.]*3)
 
 T = array([0.]*(n))   # vecteur temps
-D = array([0.]*(n))   # vecteur déplacement
+D = array([0.]*(n))   # vecteur dÃ©placement
 V = array([0.]*(n))   # vecteur vitesse
-A = array([0.]*(n))   # vecteur accélération
+A = array([0.]*(n))   # vecteur accÃ©lÃ©ration
 
 D0 = 0.0 ; V0 = 0.0     # Conditions initiales
 
-t0 = 0  # décalage temporel
+t0 = 0  # dÃ©calage temporel
 J = 0   # indicateur de contact (0=vol libre, 1=contact)
 
-K = k_rappel        # raideur du système
-Cr = c_rappel / m   # amortissement réduit
+K = k_rappel        # raideur du systÃ¨me
+Cr = c_rappel / m   # amortissement rÃ©duit
 Om0 = sqrt( K / m ) # pulsation propre
 F0 = 0              # force constante
 
@@ -41,7 +41,7 @@ for i in range(1,n):
     DA = DD[0]
 
     if (DA > jeu_choc and J == 0):
-        ####### entrée de contact
+        ####### entrÃ©e de contact
         t = T[i-1] - t0
         TT0 = t + TT   # on utilise un pas de temps beaucoup plus fin
         Dc = [0.]*len(TT0)
@@ -50,7 +50,7 @@ for i in range(1,n):
             DD0 = DEP( tt , t0 , Om0 , Om , Cr , Fr , F0 , D0 , V0 )
             Dc[j] = DD0[0]
             j=j+1
-        liste_tmp = list( abs(array(Dc)-jeu_choc) ) # "astuce": conversion en liste, pour pouvoir repérer l'indice d'une valeur donnée
+        liste_tmp = list( abs(array(Dc)-jeu_choc) ) # "astuce": conversion en liste, pour pouvoir repÃ©rer l'indice d'une valeur donnÃ©e
         Dm = min( liste_tmp )    # valeur la plus proche de l'obstacle
         Im = liste_tmp.index(Dm) # instant correspondant
         del liste_tmp
@@ -78,9 +78,9 @@ for i in range(1,n):
         else:
             t = float(t2.real)
         DD = DEP( t , t0 , Om0 , Om , Cr , Fr , F0 , D0 , V0 )
-        # mise à jour des conditions initiales:
+        # mise Ã  jour des conditions initiales:
         D0 = DD[0] ; V0 = DD[1]
-        # mise à jour des paramètres du système (raideur, ...):
+        # mise Ã  jour des paramÃ¨tres du systÃ¨me (raideur, ...):
         K = k_rappel + kn_choc ;  Cr = (c_rappel + cn_choc)/m ; Om0 = sqrt( K / m ) ; F0 = kn_choc * jeu_choc / m  ;
         t0 = t + t0
         J = 1

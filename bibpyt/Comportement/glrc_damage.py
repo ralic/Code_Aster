@@ -1,4 +1,4 @@
-# -*- coding: iso-8859-1 -*-
+# coding=utf-8
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -22,13 +22,13 @@ from cata_comportement import LoiComportement
 
 loi = LoiComportement(
    nom            = 'GLRC_DAMAGE',
-   doc = """Modèle global de plaque en béton armé capable de représenter son comportement jusqu'à la ruine. 
-   Contrairement aux modélisations locales où chaque constituant du matériau est modélisé à part, dans les modèles globaux, 
-   la loi de comportement s'écrit directement en terme de contraintes et de déformations généralisées. 
-   Les phénomènes pris en compte sont l'élasto-plasticité couplée entre les effets de membrane et de flexion 
-   (contre une élasto-plasticité en flexion seulement dans GLRC) et l'endommagement en flexion. 
-   L'endommagement couplé membrane/flexion est traité par GLRC_DM, lequel, par contre, néglige complètement l'élasto-plasticité. 
-   Pour les précisions sur la formulation du modèle voir [R7.01.31].""",
+   doc = """ModÃ¨le global de plaque en bÃ©ton armÃ© capable de reprÃ©senter son comportement jusqu'Ã  la ruine. 
+   Contrairement aux modÃ©lisations locales oÃ¹ chaque constituant du matÃ©riau est modÃ©lisÃ© Ã  part, dans les modÃ¨les globaux, 
+   la loi de comportement s'Ã©crit directement en terme de contraintes et de dÃ©formations gÃ©nÃ©ralisÃ©es. 
+   Les phÃ©nomÃ¨nes pris en compte sont l'Ã©lasto-plasticitÃ© couplÃ©e entre les effets de membrane et de flexion 
+   (contre une Ã©lasto-plasticitÃ© en flexion seulement dans GLRC) et l'endommagement en flexion. 
+   L'endommagement couplÃ© membrane/flexion est traitÃ© par GLRC_DM, lequel, par contre, nÃ©glige complÃ¨tement l'Ã©lasto-plasticitÃ©. 
+   Pour les prÃ©cisions sur la formulation du modÃ¨le voir [R7.01.31].""",
    num_lc         = 9999,
    nb_vari        = 19,
    nom_vari       = ('EPSP1','EPSP2','EPSP3','KHIP1','KHIP2','KHIP3','DISSIP','ENDOFL+','ENDOFL-','DISSENDO','ANGL1','ANGL2','ANGL3','XMEMB1','XMEMB2','XMEMB3','XFLEX1','XFLEX2','XFLEX3'),

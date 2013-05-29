@@ -1,4 +1,4 @@
-# -*- coding: iso-8859-1 -*-
+# coding=utf-8
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -22,10 +22,10 @@ from cata_comportement import LoiComportement
 
 loi = LoiComportement(
    nom            = 'HUJEUX',
-   doc = """Relation de comportement élasto-plastique cyclique pour la mécanique des sols (géomatériaux granulaires :
-   argiles sableuses, normalement consolidées ou sur-consolidées, graves) (Cf. [R7.01.23] pour plus de détails).
-   Ce modèle est un modèle multicritère qui comporte un mécanisme élastique non linéaire, trois mécanismes plastiques déviatoires et un mécanisme plastique isotrope. 
-   Pour faciliter l'intégration de ce modèle, on peut utiliser le redécoupage automatique local du pas de temps (ITER_INTE_PAS)""",
+   doc = """Relation de comportement Ã©lasto-plastique cyclique pour la mÃ©canique des sols (gÃ©omatÃ©riaux granulaires :
+   argiles sableuses, normalement consolidÃ©es ou sur-consolidÃ©es, graves) (Cf. [R7.01.23] pour plus de dÃ©tails).
+   Ce modÃ¨le est un modÃ¨le multicritÃ¨re qui comporte un mÃ©canisme Ã©lastique non linÃ©aire, trois mÃ©canismes plastiques dÃ©viatoires et un mÃ©canisme plastique isotrope. 
+   Pour faciliter l'intÃ©gration de ce modÃ¨le, on peut utiliser le redÃ©coupage automatique local du pas de temps (ITER_INTE_PAS)""",
    num_lc         = 34,
    nb_vari        = 50,
    nom_vari       = ('FECRDVM1','FECRDVM2','FECRDVM3','FECRISM1','FECRDVC1','FECRDVC2','FECRDVC3','FECRISC1','HIS9','HIS10','HIS11','HIS12','HIS13','HIS14','HIS15','HIS16','HIS17','HIS18','HIS19','HIS20','HIS21','HIS22','EPSPVOL','INDETAM1','INDETAM2','INDETAM3','INDETAM4','INDETAC1','INDETAC2','INDETAC3','INDETAC4','CRITHILL','DETOPTG','HIS34','NBITER','XHYZ1','XHYZ2','THYZ1','THYZ2','RHYZ','XHXZ1','XHXZ2','THXZ1','THXZ2','RHXZ','XHXY1','XHXY2','THXY1','THXY2','RHYZ'),

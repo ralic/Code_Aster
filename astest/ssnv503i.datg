@@ -1,4 +1,4 @@
-*Patin glissant sur un plan rigide inclinée
+*Patin glissant sur un plan rigide inclinÃ©e
 *
 ***Construction du plan rigide
 
@@ -13,7 +13,7 @@ alpha = 30. ;
 
 N = 12 ;
 
-*Création du plan rigide
+*CrÃ©ation du plan rigide
 S1 = 0.  0.   0. ;
 S2 = 0.  0. -60. ;
 lS1S2= droit 1 S1 S2 ;
@@ -35,7 +35,7 @@ OUBLIER LS1S2 ;
 
 *trac cach(BATI );
 
-*Création du patin
+*CrÃ©ation du patin
 N2 = entier N/3 ;
 N3 = 2*N2 ;
 A = 10. (5.+J) (-20.) ;
@@ -59,7 +59,7 @@ ELIM 0.001 PATIN ;
 PATIN = REGENERER PATIN; 
 OUBLIER Surf2 ;
 
-*Création des ressorts
+*CrÃ©ation des ressorts
 R1 = 60. ( 5.+J)  -20. ;
 R2 = 60. ( 5.+J)  -40. ;
 R3 = 60. (25.+J)  -40. ;

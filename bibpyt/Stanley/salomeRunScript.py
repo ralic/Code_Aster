@@ -1,4 +1,4 @@
-# -*- coding: iso-8859-1 -*-
+# coding=utf-8
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -35,7 +35,7 @@ def MakeTempScript(SALOMESCRIPT, **args):
        from Utilitai.Utmess import  UTMESS
    except:
        def UTMESS(code='I', txt='',valk='', vali='', valr=''):
-           print 'Le champs :"%s" n''a pas été trouvé dans le script Salome, mais il n''est peut être pas nécessaire.' % valk
+           print 'Le champs :"%s" n''a pas Ã©tÃ© trouvÃ© dans le script Salome, mais il n''est peut Ãªtre pas nÃ©cessaire.' % valk
 
    try:
       # Recupere le script Salome

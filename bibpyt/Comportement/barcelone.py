@@ -1,4 +1,4 @@
-# -*- coding: iso-8859-1 -*-
+# coding=utf-8
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -22,12 +22,12 @@ from cata_comportement import LoiComportement
 
 loi = LoiComportement(
    nom            = 'BARCELONE',
-   doc = """Relation décrivant le comportement mécanique élasto-plastique des sols non saturés 
-            couplé au comportement hydraulique (Cf. [R7.01.14] pour plus de détail). 
-            Ce modèle se ramène au modèle de Cam_Clay dans le cas saturé. Deux critères interviennent : 
-            un critère de plasticité mécanique (celui de Cam_Clay) 
-            et un critère hydrique contrôlé par la succion (ou pression capillaire).
-            Ce modèle doit être utilisé dans des relations KIT_HHM ou KIT_THHM.""",
+   doc = """Relation dÃ©crivant le comportement mÃ©canique Ã©lasto-plastique des sols non saturÃ©s 
+            couplÃ© au comportement hydraulique (Cf. [R7.01.14] pour plus de dÃ©tail). 
+            Ce modÃ¨le se ramÃ¨ne au modÃ¨le de Cam_Clay dans le cas saturÃ©. Deux critÃ¨res interviennent : 
+            un critÃ¨re de plasticitÃ© mÃ©canique (celui de Cam_Clay) 
+            et un critÃ¨re hydrique contrÃ´lÃ© par la succion (ou pression capillaire).
+            Ce modÃ¨le doit Ãªtre utilisÃ© dans des relations KIT_HHM ou KIT_THHM.""",
    num_lc         = 9999,
    nb_vari        = 5,
    nom_vari       = ('PCR','INDIPLAS','SEUILHYD','INDIHYDR','COHESION'),

@@ -4,18 +4,18 @@ dens 1 ;
 *----------------------------------------
 *DONNEES
 *----------------------------------------
-*cotés
+*cotÃ©s
 LX = 5;
 LY = 5;
 LZ = 25;
 
-* nombre d'éléments
+* nombre d'Ã©lÃ©ments
 NX = 1;
 NY = 1;
 NZ = 5; 
 
 *---------------------------------------------
-*construction des surfaces dans le plan inférieur
+*construction des surfaces dans le plan infÃ©rieur
 *---------------------------------------------
 *OPTI ELEM SEG2;
 p1 = LX   0.  0.;

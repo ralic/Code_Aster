@@ -2,7 +2,7 @@
 * Calcul d'une plaque en flexion 3 points
 *
 * Description du maillage
-*  La plaque est composée de deux parties (P1,P2)
+*  La plaque est composÃ©e de deux parties (P1,P2)
 *
 *         F       H         E                  D
 *        /-----------------/------------------/

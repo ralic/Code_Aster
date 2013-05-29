@@ -1,8 +1,8 @@
 opti dime 2 elem qua8 ;
 
 * pour  mailler :
-*   - 2 carrés (différents) superposés ABCD [0, 1]x[0, 1]  (CARRE1 et CARRE2)
-*   - 1 diagonale du carré (AC)
+*   - 2 carrÃ©s (diffÃ©rents) superposÃ©s ABCD [0, 1]x[0, 1]  (CARRE1 et CARRE2)
+*   - 1 diagonale du carrÃ© (AC)
 *   - 1 cube [-0.5, +0.5]x[-0.5, +0.5]x[0, 1]  (CUBE1)
 * --------------------------------------------------------------------------
 

@@ -1,5 +1,4 @@
 /*           CONFIGURATION MANAGEMENT OF EDF VERSION                  */
-/* MODIF aster include  DATE 15/10/2012   AUTEUR COURTOIS M.COURTOIS */
 /* ================================================================== */
 /* COPYRIGHT (C) 1991 - 2012  EDF R&D              WWW.CODE-ASTER.ORG */
 /*                                                                    */
@@ -13,7 +12,7 @@
 /* GENERAL PUBLIC LICENSE FOR MORE DETAILS.                           */
 /*                                                                    */
 /* YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE  */
-/* ALONG WITH THIS PROGRAM; IF NOT, WRITE TO : EDF R&D CODE_ASTER,    */
+/* ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,      */
 /*    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.     */
 /* ================================================================== */
 
@@ -45,20 +44,22 @@ typedef int Py_ssize_t;
 #endif
 
 /* pour preciser quel fichier affiche les  messages et les valeurs */
-#define INTERRUPTION(code) { ICI ; fprintf(stderr,"INTERRUPTION - code retour %d\n",code) ;abort() ; }
-#define ICI fflush(stdout);fprintf( stderr, "%s  %d : " , __FILE__ , __LINE__  ) ; fflush(stderr) ;
+#define INTERRUPTION(code) { ICI; fprintf(stderr,"INTERRUPTION - code retour %d\n",code); abort(); }
+#define ICI fflush(stdout);fprintf( stderr, "%s  %d : " , __FILE__ , __LINE__  ) ; fflush(stderr);
 
 /* Utiliser -DUSE_ASSERT pour activer les ASSERT */
 #ifdef USE_ASSERT
-#define AS_ASSERT(condition) if( !(condition) ){ ICI ; fprintf(stderr,"condition %s VIOLEE\n",#condition);INTERRUPTION(17);}
+#define AS_ASSERT(condition) if( !(condition) ){ ICI; \
+        fprintf(stderr,"condition %s VIOLEE\n",#condition); INTERRUPTION(17);}
 #else
 #define AS_ASSERT(condition)
 #endif
 
 #define PRINTERR if(PyErr_Occurred()){ \
-            fprintf(stderr,"Warning: une exception n'a pas ete traitée\n"); \
+            fprintf(stderr,"Warning: une exception n'a pas ete traitÃ©e\n"); \
             PyErr_Print(); \
-            fprintf(stderr,"Warning: on l'annule pour continuer mais elle aurait du etre traitée avant\n"); \
+            fprintf(stderr,"Warning: on l'annule pour continuer mais elle "\
+                "aurait du etre traitÃ©e avant\n"); \
             PyErr_Clear(); \
         }
 

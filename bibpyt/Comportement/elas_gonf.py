@@ -1,4 +1,4 @@
-# -*- coding: iso-8859-1 -*-
+# coding=utf-8
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -22,9 +22,9 @@ from cata_comportement import LoiComportement
 
 loi = LoiComportement(
    nom            = 'ELAS_GONF',
-   doc = """Relation décrivant le comportement mécanique élasto-plastique des sols non saturés
-            pour des argiles gonflantes. Modèle reliant la pression de gonflement a la succion.
-            Ce modèle doit être utilisé dans des relations KIT_HHM ou KIT_THHM.""",
+   doc = """Relation dÃ©crivant le comportement mÃ©canique Ã©lasto-plastique des sols non saturÃ©s
+            pour des argiles gonflantes. ModÃ¨le reliant la pression de gonflement a la succion.
+            Ce modÃ¨le doit Ãªtre utilisÃ© dans des relations KIT_HHM ou KIT_THHM.""",
    num_lc         = 9999,
    nb_vari        = 0,
    nom_vari       = None,

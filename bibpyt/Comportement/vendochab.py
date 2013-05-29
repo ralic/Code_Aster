@@ -1,4 +1,4 @@
-# -*- coding: iso-8859-1 -*-
+# coding=utf-8
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -22,8 +22,8 @@ from cata_comportement import LoiComportement
 
 loi = LoiComportement(
    nom            = 'VENDOCHAB',
-   doc = """Modèle viscoplastique couplé à l'endommagement isotrope de Lemaitre-Chaboche [R5.03.15].
-   Ce modèle s'emploie avec les mots clés DEFORMATION = PETIT ou PETIT_REAC.""",
+   doc = """ModÃ¨le viscoplastique couplÃ© Ã  l'endommagement isotrope de Lemaitre-Chaboche [R5.03.15].
+   Ce modÃ¨le s'emploie avec les mots clÃ©s DEFORMATION = PETIT ou PETIT_REAC.""",
    num_lc         = 31,
    nb_vari        = 10,
    nom_vari       = ('EPSPXX','EPSPYY','EPSPZZ','EPSPXY','EPSPXZ','EPSPYZ','EPSPEQ','ECROISOT','ENDO','INDIPLAS'),

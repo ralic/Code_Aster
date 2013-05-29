@@ -1,4 +1,4 @@
-# -*- coding: iso-8859-1 -*-
+# coding=utf-8
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -21,8 +21,8 @@
 cata_msg = {
 
 2 : _(u"""
- la méthode de Newmark est programmée sous sa forme implicite:
- le paramètre BETA ne doit pas être nul.
+ la mÃ©thode de Newmark est programmÃ©e sous sa forme implicite:
+ le paramÃ¨tre BETA ne doit pas Ãªtre nul.
  """),
 
 4 : _(u"""
@@ -38,12 +38,12 @@ cata_msg = {
 """),
 
 10 : _(u"""
- nombre de vecteurs demandé trop grand
+ nombre de vecteurs demandÃ© trop grand
  on prend tous les modes du concept MODE_MECA
 """),
 
 12 : _(u"""
- La borne inférieure est incorrecte.
+ La borne infÃ©rieure est incorrecte.
 """),
 
 15 : _(u"""
@@ -55,31 +55,31 @@ cata_msg = {
 """),
 
 17 : _(u"""
- Le nombre de pas est négatif.
+ Le nombre de pas est nÃ©gatif.
 """),
 
 18 : _(u"""
- Les matrices assemblées généralisées doivent avoir un stockage plein (cf. NUME_DDL_GENE)
+ Les matrices assemblÃ©es gÃ©nÃ©ralisÃ©es doivent avoir un stockage plein (cf. NUME_DDL_GENE)
 """),
 
 19 : _(u"""
- COEF_VAR_AMOR non nul et amortissement non présent
+ COEF_VAR_AMOR non nul et amortissement non prÃ©sent
 """),
 
 26 : _(u"""
- le modèle est obligatoire
+ le modÃ¨le est obligatoire
 """),
 
 27 : _(u"""
- impossible de combiner les mots clés CHARGE et VECT_ASSE en dehors des ondes planes
+ impossible de combiner les mots clÃ©s CHARGE et VECT_ASSE en dehors des ondes planes
 """),
 
 28 : _(u"""
- concept réentrant : "RESULTAT" doit porter le même nom que la sortie
+ concept rÃ©entrant : "RESULTAT" doit porter le mÃªme nom que la sortie
 """),
 
 29 : _(u"""
- concept réentrant : "RESULTAT" est d'un type différent
+ concept rÃ©entrant : "RESULTAT" est d'un type diffÃ©rent
 """),
 
 30 : _(u"""
@@ -87,11 +87,11 @@ cata_msg = {
 """),
 
 34 : _(u"""
- les matrices ne possèdent pas toutes la même numérotation
+ les matrices ne possÃ¨dent pas toutes la mÃªme numÃ©rotation
 """),
 
 39 : _(u"""
- base modale et MATR_ASSE avec numérotations différentes
+ base modale et MATR_ASSE avec numÃ©rotations diffÃ©rentes
 """),
 
 40 : _(u"""
@@ -99,15 +99,15 @@ cata_msg = {
 """),
 
 41 : _(u"""
- base modale et VECT_ASSE avec  numérotations différentes
+ base modale et VECT_ASSE avec  numÃ©rotations diffÃ©rentes
 """),
 
 42 : _(u"""
- la base constituée ne forme pas une famille libre
+ la base constituÃ©e ne forme pas une famille libre
 """),
 
 43 : _(u"""
- le nombre de valeurs doit être pair.
+ le nombre de valeurs doit Ãªtre pair.
 """),
 
 44 : _(u"""
@@ -123,69 +123,69 @@ cata_msg = {
 """),
 
 47 : _(u"""
- mots-clés 'SOUS_STRUC' et 'SQUELETTE' interdits
+ mots-clÃ©s 'SOUS_STRUC' et 'SQUELETTE' interdits
 """),
 
 48 : _(u"""
- le mot-clé 'MODE_MECA' doit être présent
+ le mot-clÃ© 'MODE_MECA' doit Ãªtre prÃ©sent
 """),
 
 49 : _(u"""
- l'instant de récupération est en dehors du domaine de calcul.
+ l'instant de rÃ©cupÃ©ration est en dehors du domaine de calcul.
 """),
 
 50 : _(u"""
- la fréquence  de récupération n'a pas été calculée.
+ la frÃ©quence  de rÃ©cupÃ©ration n'a pas Ã©tÃ© calculÃ©e.
 """),
 
 51 : _(u"""
- Vous avez demandé de restituer sur une fréquence (mot-clé FREQ) pour un concept transitoire
- sur base généralisée. Pour ce type de concept vous devez utiliser le mot-clé 'INST'.
+ Vous avez demandÃ© de restituer sur une frÃ©quence (mot-clÃ© FREQ) pour un concept transitoire
+ sur base gÃ©nÃ©ralisÃ©e. Pour ce type de concept vous devez utiliser le mot-clÃ© 'INST'.
 """),
 52 : _(u"""
- Vous avez demandé de restituer sur un instant (mot-clé INST) pour un concept harmonique
- sur base généralisée. Pour ce type de concept vous devez utiliser le mot-clé 'FREQ'.
+ Vous avez demandÃ© de restituer sur un instant (mot-clÃ© INST) pour un concept harmonique
+ sur base gÃ©nÃ©ralisÃ©e. Pour ce type de concept vous devez utiliser le mot-clÃ© 'FREQ'.
 """),
 
 55 : _(u"""
- mauvaise définition de l'interspectre.
+ mauvaise dÃ©finition de l'interspectre.
 """),
 
 56 : _(u"""
- le "NB_PTS" doit être une puissance de 2.
+ le "NB_PTS" doit Ãªtre une puissance de 2.
 """),
 
 57 : _(u"""
- si les mots-clés NUME_ORDRE et AMOR_REDUIT sont utilisés,
+ si les mots-clÃ©s NUME_ORDRE et AMOR_REDUIT sont utilisÃ©s,
  il faut autant d'arguments pour l'un et l'autre
 """),
 
 58 : _(u"""
- le concept MODE_MECA d'entrée doit être celui correspondant à la base modale initiale
+ le concept MODE_MECA d'entrÃ©e doit Ãªtre celui correspondant Ã  la base modale initiale
  pour le calcul de couplage fluide-structure
 """),
 
 60 : _(u"""
- tous les modes non couplés étant retenus, le nombre d'arguments valide
- pour le mot-clé AMOR_REDUIT est la différence entre le nombre de modes
+ tous les modes non couplÃ©s Ã©tant retenus, le nombre d'arguments valide
+ pour le mot-clÃ© AMOR_REDUIT est la diffÃ©rence entre le nombre de modes
  de la base modale initiale et le nombre de modes pris en compte pour
  le couplage fluide-structure
 """),
 
 61 : _(u"""
- les numéros d'ordre fournis ne correspondent pas à des modes non perturbés
+ les numÃ©ros d'ordre fournis ne correspondent pas Ã  des modes non perturbÃ©s
 """),
 
 62 : _(u"""
- option symétrie : la dimension de POINT et AXE_1 doit être identique.
+ option symÃ©trie : la dimension de POINT et AXE_1 doit Ãªtre identique.
 """),
 
 63 : _(u"""
- option symétrie : AXE_2 est inutile en 2D, il est ignoré.
+ option symÃ©trie : AXE_2 est inutile en 2D, il est ignorÃ©.
 """),
 
 64 : _(u"""
- option symétrie : la dimension de POINT et AXE_2 doit être identique.
+ option symÃ©trie : la dimension de POINT et AXE_2 doit Ãªtre identique.
 """),
 
 
@@ -206,7 +206,7 @@ cata_msg = {
 
 80 : _(u"""
  pour utiliser le comportement "HYDR", il faut surcharger le code
- en "mode développement" avec les routines "PERMEA" et "SATURA".
+ en "mode dÃ©veloppement" avec les routines "PERMEA" et "SATURA".
 """),
 
 81 : _(u"""
@@ -214,7 +214,7 @@ cata_msg = {
 """),
 
 84 : _(u"""
- précision machine dépassée
+ prÃ©cision machine dÃ©passÃ©e
 """),
 
 
@@ -228,27 +228,27 @@ cata_msg = {
 
 
 91 : _(u"""
- le nombre de noeuds mesuré doit être inférieur au nombre de noeuds du modèle
+ le nombre de noeuds mesurÃ© doit Ãªtre infÃ©rieur au nombre de noeuds du modÃ¨le
 """),
 
 92 : _(u"""
- maille SEG2 non trouvée
+ maille SEG2 non trouvÃ©e
 """),
 
 93 : _(u"""
- intégration élastoplastique de loi BETON_DOUBLE_DP :
- pas de convergence lors de la projection au sommet des cônes de traction et de compression
- --> utiliser le redécoupage automatique du pas de temps.
+ intÃ©gration Ã©lastoplastique de loi BETON_DOUBLE_DP :
+ pas de convergence lors de la projection au sommet des cÃ´nes de traction et de compression
+ --> utiliser le redÃ©coupage automatique du pas de temps.
 """),
 
 94 : _(u"""
- intégration élastoplastique de loi BETON_DOUBLE_DP :
- pas de convergence lors de la résolution pour NSEUIL =  %(k1)s
- --> utiliser le redécoupage automatique du pas de temps.
+ intÃ©gration Ã©lastoplastique de loi BETON_DOUBLE_DP :
+ pas de convergence lors de la rÃ©solution pour NSEUIL =  %(k1)s
+ --> utiliser le redÃ©coupage automatique du pas de temps.
 """),
 
 95 : _(u"""
- non convergence à la maille:  %(k1)s
+ non convergence Ã  la maille:  %(k1)s
 """),
 
 96 : _(u"""
@@ -264,8 +264,8 @@ cata_msg = {
 """),
 
 100 : _(u"""
- Vous ne pouvez pas mélanger deux modélisations avec et sans dépendance
-des paramètres matériau à la température (mots-clés ELAS, ELAS_FO).
+ Vous ne pouvez pas mÃ©langer deux modÃ©lisations avec et sans dÃ©pendance
+des paramÃ¨tres matÃ©riau Ã  la tempÃ©rature (mots-clÃ©s ELAS, ELAS_FO).
 """),
 
 }

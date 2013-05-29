@@ -1,4 +1,4 @@
-# -*- coding: iso-8859-1 -*-
+# coding=utf-8
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -21,11 +21,11 @@
 cata_msg = {
 
 4 : _(u"""
-  le nombre de noeuds sélectionnés est supérieur au nombre de noeuds du maillage. on va tronquer la liste.
+  le nombre de noeuds sÃ©lectionnÃ©s est supÃ©rieur au nombre de noeuds du maillage. on va tronquer la liste.
 """),
 
 5 : _(u"""
- chaîne de caractères trop longues : imprimer moins de champs
+ chaÃ®ne de caractÃ¨res trop longues : imprimer moins de champs
 """),
 
 6 : _(u"""
@@ -44,49 +44,49 @@ cata_msg = {
 
 
 31 : _(u"""
- on n'a pas trouvé le numéro d'ordre à l'adresse indiquée
+ on n'a pas trouvÃ© le numÃ©ro d'ordre Ã  l'adresse indiquÃ©e
 """),
 
 32 : _(u"""
- on n'a pas trouvé l'instant à l'adresse indiquée
+ on n'a pas trouvÃ© l'instant Ã  l'adresse indiquÃ©e
 """),
 
 33 : _(u"""
- on n'a pas trouvé la fréquence à l'adresse indiquée
+ on n'a pas trouvÃ© la frÃ©quence Ã  l'adresse indiquÃ©e
 """),
 
 34 : _(u"""
- on n'a pas trouvé dans le fichier UNV le type de champ
+ on n'a pas trouvÃ© dans le fichier UNV le type de champ
 """),
 
 35 : _(u"""
- on n'a pas trouvé dans le fichier UNV le nombre de composantes à lire
+ on n'a pas trouvÃ© dans le fichier UNV le nombre de composantes Ã  lire
 """),
 
 36 : _(u"""
- on n'a pas trouvé dans le fichier UNV la nature du champ
- (réel ou complexe)
+ on n'a pas trouvÃ© dans le fichier UNV la nature du champ
+ (rÃ©el ou complexe)
 """),
 
 37 : _(u"""
- le type de champ demandé est différent du type de champ à lire
+ le type de champ demandÃ© est diffÃ©rent du type de champ Ã  lire
 """),
 
 38 : _(u"""
- le champ demande n'est pas de même nature que le champ à lire
- (réel/complexe)
+ le champ demande n'est pas de mÃªme nature que le champ Ã  lire
+ (rÃ©el/complexe)
 """),
 
 39 : _(u"""
- le mot clé MODELE est obligatoire pour un CHAM_ELEM
+ le mot clÃ© MODELE est obligatoire pour un CHAM_ELEM
 """),
 
 40 : _(u"""
- Problème correspondance noeud IDEAS
+ ProblÃ¨me correspondance noeud IDEAS
 """),
 
 41 : _(u"""
- le champ de type ELGA n'est pas supporté
+ le champ de type ELGA n'est pas supportÃ©
 """),
 
 63 : _(u"""
@@ -98,11 +98,11 @@ cata_msg = {
 """),
 
 65 : _(u"""
- pour la variable d'accès "NOEUD_CMP", il faut un nombre pair de valeurs.
+ pour la variable d'accÃ¨s "NOEUD_CMP", il faut un nombre pair de valeurs.
 """),
 
 66 : _(u"""
- le modèle et le maillage introduits ne sont pas cohérents
+ le modÃ¨le et le maillage introduits ne sont pas cohÃ©rents
 """),
 
 67 : _(u"""
@@ -110,38 +110,38 @@ cata_msg = {
 """),
 
 68 : _(u"""
- vous voulez imprimer sur un même fichier le maillage et un champ
+ vous voulez imprimer sur un mÃªme fichier le maillage et un champ
  ce qui est incompatible avec le format GMSH
 """),
 
 69 : _(u"""
- L'impression d'un champ complexe nécessite l'utilisation du mot-clé PARTIE.
- Ce mot-clé permet de choisir la partie du champ à imprimer (réelle ou imaginaire).
+ L'impression d'un champ complexe nÃ©cessite l'utilisation du mot-clÃ© PARTIE.
+ Ce mot-clÃ© permet de choisir la partie du champ Ã  imprimer (rÃ©elle ou imaginaire).
 """),
 
 70 : _(u"""
- Vous avez demandé une impression au format ASTER sans préciser de MAILLAGE.
- Aucune impression ne sera réalisée car IMPR_RESU au format ASTER n'imprime qu'un MAILLAGE.
+ Vous avez demandÃ© une impression au format ASTER sans prÃ©ciser de MAILLAGE.
+ Aucune impression ne sera rÃ©alisÃ©e car IMPR_RESU au format ASTER n'imprime qu'un MAILLAGE.
 """),
 
 73 : _(u"""
- l'impression avec sélection sur des entités topologiques n'a pas de sens au format CASTEM  : toutes les valeurs sur tout le maillage seront donc imprimées.
+ l'impression avec sÃ©lection sur des entitÃ©s topologiques n'a pas de sens au format CASTEM  : toutes les valeurs sur tout le maillage seront donc imprimÃ©es.
 """),
 
 74 : _(u"""
- Le maillage %(k1)s n'est pas cohérent avec le maillage %(k2)s portant le résultat %(k3)s
+ Le maillage %(k1)s n'est pas cohÃ©rent avec le maillage %(k2)s portant le rÃ©sultat %(k3)s
 """),
 
 75 : _(u"""
- fichier GIBI créé par SORT FORMAT non supporté dans cette version
+ fichier GIBI crÃ©Ã© par SORT FORMAT non supportÃ© dans cette version
 """),
 
 76 : _(u"""
- version de GIBI non supportée, la lecture peut échouer
+ version de GIBI non supportÃ©e, la lecture peut Ã©chouer
 """),
 
 77 : _(u"""
- fichier GIBI erroné
+ fichier GIBI erronÃ©
 """),
 
 78 : _(u"""
@@ -165,11 +165,11 @@ cata_msg = {
 """),
 
 94 : _(u"""
- il faut définir deux paramètres pour une nappe.
+ il faut dÃ©finir deux paramÃ¨tres pour une nappe.
 """),
 
 95 : _(u"""
- pour le paramètre donné on n'a pas trouvé la fonction.
+ pour le paramÃ¨tre donnÃ© on n'a pas trouvÃ© la fonction.
 """),
 
 

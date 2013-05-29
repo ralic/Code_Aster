@@ -1,4 +1,4 @@
-# -*- coding: iso-8859-1 -*-
+# coding=utf-8
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -28,26 +28,26 @@ class sd_macr_elem_stat(AsBase):
 #----------------------------------------------
     nomj = SDNom(fin=8)
 
-    # description géométrique et topolique :
+    # description gÃ©omÃ©trique et topolique :
     DESM = AsVI(lonmax=10)
     REFM = AsVK8()
     LINO = AsVI()
     VARM = AsVR(lonmax=2)
-    CONX = Facultatif(AsVI()) # l'objet devient obligatoire dès l'étape de condensation de la rigidité
+    CONX = Facultatif(AsVI()) # l'objet devient obligatoire dÃ¨s l'Ã©tape de condensation de la rigiditÃ©
 
-    # rigidité condensée :
+    # rigiditÃ© condensÃ©e :
     rigimeca = Facultatif(sd_matr_asse_gd(SDNom(nomj='.RIGIMECA', fin=19)))
     MAEL_RAID_VALE = Facultatif(AsVR())
     PHI_IE   = Facultatif(AsColl(acces='NU', stockage='DISPERSE', modelong='CONSTANT', type='R', ltyp=8))
 
-    # masse condensée :
+    # masse condensÃ©e :
     massmeca = Facultatif(sd_matr_asse_gd(SDNom(nomj='.MASSMECA', fin=19)))
     MAEL_MASS_VALE = Facultatif(AsVR())
 
-    # amortissement condensé :
+    # amortissement condensÃ© :
     MAEL_AMOR_VALE = Facultatif(AsVR())
 
-    # chargements condensés :
+    # chargements condensÃ©s :
     LICA = Facultatif(AsColl(acces='NO', stockage='DISPERSE', modelong='CONSTANT', type='R', ltyp=8))
     LICH = Facultatif(AsColl(acces='NO', stockage='CONTIG', modelong='CONSTANT', type='K', ltyp=8))
 
@@ -57,7 +57,7 @@ class sd_macr_elem_stat(AsBase):
 
     def check_longueurs(self, checker):
     #------------------------------------
-        # vérifs existence, longueurs, ...
+        # vÃ©rifs existence, longueurs, ...
 
         desm=self.DESM.get()
         refm=self.REFM.get()
@@ -66,7 +66,7 @@ class sd_macr_elem_stat(AsBase):
         assert nbnoe  >  0   ,desm
         assert nbchar >= 0   ,desm
 
-        # si on n'a pas encore condensé la rigidité, certaines valeurs ne sont pas encore calculées :
+        # si on n'a pas encore condensÃ© la rigiditÃ©, certaines valeurs ne sont pas encore calculÃ©es :
         if self.MAEL_RAID_VALE.exists :
             assert nbnoi  >  0   ,desm
             assert nddle  >  1   ,desm
@@ -81,7 +81,7 @@ class sd_macr_elem_stat(AsBase):
         assert self.REFM.lonmax == 9+nbchar    ,(desm, self.REFM.get())
         assert self.LINO.lonmax == nbnoe       ,(desm, self.LINO.get())
 
-        # rigidité condensée :
+        # rigiditÃ© condensÃ©e :
         if self.MAEL_RAID_VALE.exists :
             assert self.MAEL_RAID_VALE.lonmax ==  (nddle*(nddle+1))/2
 
@@ -92,17 +92,17 @@ class sd_macr_elem_stat(AsBase):
             for ke in phi_ie.keys() :
                 assert len(phi_ie[ke]) == nddli*nlblph  ,(nddli,nlblph,nddle,len(phi_ie[ke]),ke)
 
-        # masse condensée :
+        # masse condensÃ©e :
         if self.MAEL_MASS_VALE.exists :
             assert self.MAEL_MASS_VALE.lonmax ==  (nddle*(nddle+1))/2
             assert refm[6] == 'OUI_MASS'
 
-        # amortissement condensé : (JP : je ne sais pas si ca peut exister ?)
+        # amortissement condensÃ© : (JP : je ne sais pas si ca peut exister ?)
         if self.MAEL_AMOR_VALE.exists :
             assert self.MAEL_AMOR_VALE.lonmax ==  (nddle*(nddle+1))/2
             assert refm[7] == 'OUI_AMOR'
 
-        # chargements condensés :
+        # chargements condensÃ©s :
         if nbcas > 0 :
             assert self.LICA.exists
             assert self.LICA.nmaxoc >= nbcas

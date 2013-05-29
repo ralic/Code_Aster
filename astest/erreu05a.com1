@@ -1,21 +1,21 @@
 # VERIFIER QUE LA POURSUITE EST POSSIBLE
 POURSUITE(CODE=_F(NOM='ERREU05A'),
               PAR_LOT='NON', IGNORE_ALARM='SUPERVIS_1')
-# ALARME 'SUPERVIS_1' : Pour pouvoir vérifier que le calcul initial
-#                       a bien été interrompu après un pas de temps.
+# ALARME 'SUPERVIS_1' : Pour pouvoir vÃ©rifier que le calcul initial
+#                       a bien Ã©tÃ© interrompu aprÃ¨s un pas de temps.
 
-# 1. On vérifie qu'un seul pas de temps est présent dans le concept 'resu'.
+# 1. On vÃ©rifie qu'un seul pas de temps est prÃ©sent dans le concept 'resu'.
 l_para = resu.LIST_VARI_ACCES()
 ref = 1
 val = len(l_para['NUME_ORDRE'])
 aster.affiche("MESSAGE", """
    Nombre de pas de temps attendu : %d
-   Nombre de pas de temps calculé : %d
+   Nombre de pas de temps calculÃ© : %d
 """ % (ref, val))
 bool1 = int(val == ref)
 assert val == ref, "un et un seul pas de temps attendu : %s" % repr(l_para)
 
-# 2. on calcule un pas supplémentaire (licite) pour vérifier que
+# 2. on calcule un pas supplÃ©mentaire (licite) pour vÃ©rifier que
 #    le concept est complet.
 l_inst2=DEFI_LIST_REEL(VALE=(0., 4.),)
 
@@ -29,13 +29,13 @@ resu=STAT_NON_LINE(reuse=resu,
                    INCREMENT=_F(LIST_INST=inst2),
                    ETAT_INIT=_F(EVOL_NOLI=resu,),)
 
-# 2.1. On vérifie que le pas supplémentaire est dans le concept 'resu'.
+# 2.1. On vÃ©rifie que le pas supplÃ©mentaire est dans le concept 'resu'.
 l_para = resu.LIST_VARI_ACCES()
 ref += 1
 val = len(l_para['NUME_ORDRE'])
 aster.affiche("MESSAGE", """
    Nombre de pas de temps attendu : %d
-   Nombre de pas de temps calculé : %d
+   Nombre de pas de temps calculÃ© : %d
 """ % (ref, val))
 bool2 = int(val == ref)
 assert val == ref, "un et un seul pas de temps attendu : %s" % repr(l_para)

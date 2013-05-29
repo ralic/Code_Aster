@@ -1,4 +1,4 @@
-# -*- coding: iso-8859-1 -*-
+# coding=utf-8
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -19,11 +19,11 @@
 
 
 '''
-script à appeler à la fin de la procédure majnew
-     apres la mise à jour de vers/catalo/*/*.cata
+script Ã  appeler Ã  la fin de la procÃ©dure majnew
+     apres la mise Ã  jour de vers/catalo/*/*.cata
 
-ce script fabrique une version "capy" des catalogues d'éléments officiels
-pour que la procédure ccat92 de surcharge des catalogues soit plus rapide en
+ce script fabrique une version "capy" des catalogues d'Ã©lÃ©ments officiels
+pour que la procÃ©dure ccat92 de surcharge des catalogues soit plus rapide en
 CPU
 '''
 
@@ -94,7 +94,7 @@ def _main(rep_cata_offi, nom_capy_offi):
     from Lecture_Cata_Ele.lecture import lire_cata
     import Lecture_Cata_Ele.utilit as utilit
 
-    # concaténation des catalogues
+    # concatÃ©nation des catalogues
     #-----------------------------
     with open('tou.cata', 'w') as toucata:
         for soucat in ("compelem", "options", "typelem"):
@@ -106,7 +106,7 @@ def _main(rep_cata_offi, nom_capy_offi):
 
     # lecture des catalogues
     #-----------------------
-    # pour ne pas utiliser trop de mémoire, on splite le fichier pour
+    # pour ne pas utiliser trop de mÃ©moire, on splite le fichier pour
     # la lecture :
     liste_morceaux = utilit.cata_split('tou.cata', 'morceau', 5000)
 

@@ -1,4 +1,4 @@
-# -*- coding: iso-8859-1 -*-
+# coding=utf-8
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -21,14 +21,14 @@
 cata_msg = {
 
 3 : _(u"""
- type d'interface non supportée en cyclique
+ type d'interface non supportÃ©e en cyclique
  type interface -->  %(k1)s
 """),
 
 4 : _(u"""
- arrêt sur type de résultat non supporté
- type donné      -->  %(k1)s
- types supportés -->  %(k2)s %(k3)s
+ arrÃªt sur type de rÃ©sultat non supportÃ©
+ type donnÃ©      -->  %(k1)s
+ types supportÃ©s -->  %(k2)s %(k3)s
 """),
 
 
@@ -41,66 +41,66 @@ cata_msg = {
 """),
 
 13 : _(u"""
- arrêt sur base modale de type illicite
+ arrÃªt sur base modale de type illicite
  base modale  -->  %(k1)s
  type         -->  %(k2)s
  type attendu -->  %(k3)s
 """),
 
 14 : _(u"""
- arrêt sur matrice de raideur non unique
+ arrÃªt sur matrice de raideur non unique
 """),
 
 15 : _(u"""
- arrêt sur matrice de masse non unique
+ arrÃªt sur matrice de masse non unique
 """),
 
 16 : _(u"""
- arrêt sur matrice d'amortissement non unique en argument
+ arrÃªt sur matrice d'amortissement non unique en argument
 """),
 
 17 : _(u"""
- Le type de matrice %(k1)s est inconnu. Erreur développeur
+ Le type de matrice %(k1)s est inconnu. Erreur dÃ©veloppeur
 """),
 
 21 : _(u"""
- les matrices assemblées n'ont pas la même numérotation
+ les matrices assemblÃ©es n'ont pas la mÃªme numÃ©rotation
  masse   = %(k1)s
  raideur = %(k2)s
 """),
 
 22 : _(u"""
- les matrices assemblées n'ont pas la même numérotation
+ les matrices assemblÃ©es n'ont pas la mÃªme numÃ©rotation
  amortissement = %(k1)s
  raideur       = %(k2)s
 """),
 
 23 : _(u"""
 
- les matrices assemblées et la base modale n'ont pas le même maillage initial
+ les matrices assemblÃ©es et la base modale n'ont pas le mÃªme maillage initial
  maillage matrice     : %(k1)s
  maillage base modale : %(k2)s
 """),
 
 24 : _(u"""
- arrêt sur problème de cohérence
- MODE_MECA donné       -->  %(k1)s
- numérotation associée -->  %(k2)s
- INTERF_DYNA donnée    -->  %(k3)s
- numérotation associée -->  %(k4)s
+ arrÃªt sur problÃ¨me de cohÃ©rence
+ MODE_MECA donnÃ©       -->  %(k1)s
+ numÃ©rotation associÃ©e -->  %(k2)s
+ INTERF_DYNA donnÃ©e    -->  %(k3)s
+ numÃ©rotation associÃ©e -->  %(k4)s
 """),
 
 25 : _(u"""
- sous-structure inexistante dans le modèle généralisé
- modèle généralisé : %(k1)s
+ sous-structure inexistante dans le modÃ¨le gÃ©nÃ©ralisÃ©
+ modÃ¨le gÃ©nÃ©ralisÃ© : %(k1)s
  sous-structure    : %(k2)s
 """),
 
 26 : _(u"""
- problème de cohérence du nombre de champs de la base modale
+ problÃ¨me de cohÃ©rence du nombre de champs de la base modale
  base modale                  : %(k1)s
  nombre de champs de la base  : %(i1)d
- nombre de degrés généralisés : %(i2)d
+ nombre de degrÃ©s gÃ©nÃ©ralisÃ©s : %(i2)d
 """),
 
 27 : _(u"""
@@ -108,28 +108,28 @@ cata_msg = {
 """),
 
 28 : _(u"""
-  aucun type d'interface défini pour la sous-structure :  %(i1)d
+  aucun type d'interface dÃ©fini pour la sous-structure :  %(i1)d
   pas de mode rigide d'interface
-  le calcul de masses effectives risque d'être imprécis %(i2)d
+  le calcul de masses effectives risque d'Ãªtre imprÃ©cis %(i2)d
 """),
 
 30 : _(u"""
- incohérence détectée dans le squelette
- objet non trouvé :  %(k1)s
+ incohÃ©rence dÃ©tectÃ©e dans le squelette
+ objet non trouvÃ© :  %(k1)s
 """),
 
 31 : _(u"""
- problème de cohérence entre le nombre de concepts MODE_MECA et
+ problÃ¨me de cohÃ©rence entre le nombre de concepts MODE_MECA et
  la liste des NMAX_MODE:
  nombre de concepts MODE_MECA dans la liste MODE_MECA     : %(i1)d
  nombre de valeurs de la liste NMAX_MODE                  : %(i2)d
  Conseils & solution:
-  Les deux listes doivent avoir la même taille.
+  Les deux listes doivent avoir la mÃªme taille.
 """),
 
 
 35 : _(u"""
- aucun champ n'est calculé dans la structure de données  %(k1)s
+ aucun champ n'est calculÃ© dans la structure de donnÃ©es  %(k1)s
 """),
 
 50 : _(u"""
@@ -137,21 +137,21 @@ cata_msg = {
 """),
 
 51 : _(u"""
- il faut au moins un MODE_MECA a la 1ère occurrence de RITZ
+ il faut au moins un MODE_MECA a la 1Ã¨re occurrence de RITZ
 """),
 
 61 : _(u"""
- le pas de temps du calcul métallurgique ne correspond pas
+ le pas de temps du calcul mÃ©tallurgique ne correspond pas
  au pas de temps du calcul thermique
- - numéro d'ordre              : %(i1)d
+ - numÃ©ro d'ordre              : %(i1)d
  - pas de temps thermique      : %(r1)f
- - pas de temps métallurgique  : %(r2)f
+ - pas de temps mÃ©tallurgique  : %(r2)f
 """),
 
 
 
 63 : _(u"""
- données incompatibles :
+ donnÃ©es incompatibles :
  pour le MODE_STAT  :  %(k1)s
  il manque le champ :  %(k2)s
 """),
@@ -159,17 +159,17 @@ cata_msg = {
 
 66 : _(u"""
  Taille de bloc insuffisante
- taille de bloc demandée (kr8): %(r1)f
- taille de bloc utilisée (kr8): %(r2)f
+ taille de bloc demandÃ©e (kr8): %(r1)f
+ taille de bloc utilisÃ©e (kr8): %(r2)f
 """),
 
 68 : _(u"""
-  Estimation de la durée du régime transitoire :
-  valeur minimale conseillée :  %(r1)f
+  Estimation de la durÃ©e du rÃ©gime transitoire :
+  valeur minimale conseillÃ©e :  %(r1)f
 """),
 
 69 : _(u"""
- non-linéarité incompatible avec la définition du modèle généralisé
+ non-linÃ©aritÃ© incompatible avec la dÃ©finition du modÃ¨le gÃ©nÃ©ralisÃ©
  NOEUD_1      :  %(k1)s
  SOUS_STRUC_1 :  %(k2)s
  NOEUD_2      :  %(k3)s
@@ -177,7 +177,7 @@ cata_msg = {
 """),
 
 70 : _(u"""
- problème de cohérence du nombre de noeuds d'interface
+ problÃ¨me de cohÃ©rence du nombre de noeuds d'interface
  sous-structure1            : %(k1)s
  interface1                 : %(k2)s
  nombre de noeuds interface1: %(i1)d
@@ -187,20 +187,20 @@ cata_msg = {
 """),
 
 71 : _(u"""
- problème de cohérence des interfaces orientées
+ problÃ¨me de cohÃ©rence des interfaces orientÃ©es
  sous-structure1           : %(k1)s
  interface1                : %(k2)s
- présence composante sur 1 : %(k3)s
+ prÃ©sence composante sur 1 : %(k3)s
  sous-structure2           : %(k4)s
  interface2                : %(k5)s
  composante inexistante sur 2 %(k6)s
 """),
 
 72 : _(u"""
- problème de cohérence des interfaces orientées
+ problÃ¨me de cohÃ©rence des interfaces orientÃ©es
  sous-structure2           : %(k1)s
  interface2                : %(k2)s
- présence composante sur 2 : %(k3)s
+ prÃ©sence composante sur 2 : %(k3)s
  sous-structure1           : %(k4)s
  interface1                : %(k5)s
  composante inexistante sur 1 %(k6)s
@@ -209,31 +209,31 @@ cata_msg = {
 73 : _(u"""
  Sous-structures incompatibles
  sous-structure 1             : %(k1)s
- MACR_ELEM associé            : %(k2)s
- numéro grandeur sous-jacente : %(i1)d
+ MACR_ELEM associÃ©            : %(k2)s
+ numÃ©ro grandeur sous-jacente : %(i1)d
  sous-structure 2             : %(k3)s
- MACR_ELEM associé            : %(k4)s
- numéro grandeur sous-jacente : %(i2)d
+ MACR_ELEM associÃ©            : %(k4)s
+ numÃ©ro grandeur sous-jacente : %(i2)d
 """),
 
 74 : _(u"""
- arrêt sur incompatibilité de sous-structures
+ arrÃªt sur incompatibilitÃ© de sous-structures
 """),
 
 75 : _(u"""
-  Erreur développement : code retour 1 dans NMCOMP en calculant la matrice tangente
+  Erreur dÃ©veloppement : code retour 1 dans NMCOMP en calculant la matrice tangente
  """),
 
 77 : _(u"""
- les types des deux matrices sont différents
+ les types des deux matrices sont diffÃ©rents
  type de la matrice de raideur :  %(k1)s
  type de la matrice de masse   :  %(k2)s
 """),
 
 78 : _(u"""
- les numérotations des deux matrices sont différentes
- numérotation matrice de raideur :  %(k1)s
- numérotation matrice de masse   :  %(k2)s
+ les numÃ©rotations des deux matrices sont diffÃ©rentes
+ numÃ©rotation matrice de raideur :  %(k1)s
+ numÃ©rotation matrice de masse   :  %(k2)s
 """),
 
 79 : _(u"""
@@ -247,27 +247,27 @@ cata_msg = {
 """),
 
 82 : _(u"""
- calcul du nombre de diamètres modaux demandé impossible
- nombre de diamètres demandé --> %(i1)d
+ calcul du nombre de diamÃ¨tres modaux demandÃ© impossible
+ nombre de diamÃ¨tres demandÃ© --> %(i1)d
 """),
 
 83 : _(u"""
- calcul des modes propres limité au nombre de diamètres maximum --> %(i1)d
+ calcul des modes propres limitÃ© au nombre de diamÃ¨tres maximum --> %(i1)d
 """),
 
 84 : _(u"""
  calcul cyclique :
- aucun nombre de diamètres nodaux licite
+ aucun nombre de diamÃ¨tres nodaux licite
 """),
 
 85 : _(u"""
- liste de fréquences incompatible avec l'option
- nombre de fréquences --> %(i1)d
+ liste de frÃ©quences incompatible avec l'option
+ nombre de frÃ©quences --> %(i1)d
  option               --> %(k1)s
 """),
 
 87 : _(u"""
-  résolution du problème généralisé complexe
+  rÃ©solution du problÃ¨me gÃ©nÃ©ralisÃ© complexe
   nombre de modes dynamiques:  %(i1)d
   nombre de ddl droite      :  %(i2)d
 """),
@@ -279,7 +279,7 @@ cata_msg = {
 """),
 
 89 : _(u"""
-  dimension max du problème :  %(i1)d
+  dimension max du problÃ¨me :  %(i1)d
 """),
 
 91 : _(u"""
@@ -288,13 +288,13 @@ cata_msg = {
 """),
 
 93 : _(u"""
- arrêt sur dimension matrice TETA incorrecte
+ arrÃªt sur dimension matrice TETA incorrecte
  dimension effective   :  %(i1)d
  dimension en argument :  %(i2)d
 """),
 
 94: _(u"""
- erreur de répétitivité cyclique
+ erreur de rÃ©pÃ©titivitÃ© cyclique
 """),
 
 95: _(u"""
@@ -303,7 +303,7 @@ cata_msg = {
 """),
 
 99 : _(u"""
- arrêt sur nombres de noeuds interface non identiques
+ arrÃªt sur nombres de noeuds interface non identiques
  nombre de noeuds interface droite:  %(i1)d
  nombre de noeuds interface gauche:  %(i2)d
 """),

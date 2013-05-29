@@ -1,4 +1,4 @@
-# -*- coding: iso-8859-1 -*-
+# coding=utf-8
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -21,32 +21,32 @@
 cata_msg={
 
 1 : _(u"""
- L'utilisation du mot-clé PAR_LOT='NON' permet d'accéder en lecture et en écriture
- au contenu des concepts Aster. De ce fait, votre étude est exclue du périmètre
- qualifié de Code_Aster puisque toutes ses étapes ne peuvent être certifiées.
+ L'utilisation du mot-clÃ© PAR_LOT='NON' permet d'accÃ©der en lecture et en Ã©criture
+ au contenu des concepts Aster. De ce fait, votre Ã©tude est exclue du pÃ©rimÃ¨tre
+ qualifiÃ© de Code_Aster puisque toutes ses Ã©tapes ne peuvent Ãªtre certifiÃ©es.
 
  Conseils :
-   - Il n'y a pas particulièrement de risque de résultat faux... sauf si votre
+   - Il n'y a pas particuliÃ¨rement de risque de rÃ©sultat faux... sauf si votre
      programmation l'introduit.
-   - Distinguez le calcul lui-même (qui doit sans doute passer en PAR_LOT='OUI')
-     des post-traitements (qui nécessiteraient le mode PAR_LOT='NON') qui peuvent
-     être réalisés en POURSUITE.
+   - Distinguez le calcul lui-mÃªme (qui doit sans doute passer en PAR_LOT='OUI')
+     des post-traitements (qui nÃ©cessiteraient le mode PAR_LOT='NON') qui peuvent
+     Ãªtre rÃ©alisÃ©s en POURSUITE.
 """),
 
 3: _(u"""
-  Erreur programmeur : %(k1)s non appariés.
+  Erreur programmeur : %(k1)s non appariÃ©s.
 """),
 
 8: _(u"""
-  Un nom de concept intermédiaire doit commencer par '.' ou '_' et non :  %(k1)s
+  Un nom de concept intermÃ©diaire doit commencer par '.' ou '_' et non :  %(k1)s
 """),
 
 12: _(u"""
-  Exécution de JEVEUX en mode DEBUG
+  ExÃ©cution de JEVEUX en mode DEBUG
 """),
 
 13: _(u"""
-  %(k1)s  nom de base déjà définie
+  %(k1)s  nom de base dÃ©jÃ  dÃ©finie
 """),
 
 14: _(u"""
@@ -54,15 +54,15 @@ cata_msg={
 """),
 
 15: _(u"""
-  Problème d'allocation des bases de données
+  ProblÃ¨me d'allocation des bases de donnÃ©es
 """),
 
 16: _(u"""
-  Écriture des catalogues des éléments faite.
+  Ã‰criture des catalogues des Ã©lÃ©ments faite.
 """),
 
 17: _(u"""
-  Relecture des catalogues des éléments faite.
+  Relecture des catalogues des Ã©lÃ©ments faite.
 """),
 
 18: _(u"""
@@ -70,10 +70,10 @@ cata_msg={
 """),
 
 19: _(u"""
-  Début de lecture..."""),
+  DÃ©but de lecture..."""),
 
 20: _(u"""
-  "%(k1)s" argument invalide du mot clé "FICHIER" du mot clé facteur "CATALOGUE"
+  "%(k1)s" argument invalide du mot clÃ© "FICHIER" du mot clÃ© facteur "CATALOGUE"
 """),
 
 21: _(u"""
@@ -81,27 +81,27 @@ cata_msg={
 """),
 
 22 : { 'message' : _(u"""
-   Les mots-clés facteurs CODE et DEBUG dans DEBUT/POURSUITE sont réservés aux cas-tests.
-   Il ne faut pas les utiliser dans les études car ils modifient certaines valeurs par
-   défaut des commandes DEBUT/POURSUITE qui ont des conséquences sur le comportement
+   Les mots-clÃ©s facteurs CODE et DEBUG dans DEBUT/POURSUITE sont rÃ©servÃ©s aux cas-tests.
+   Il ne faut pas les utiliser dans les Ã©tudes car ils modifient certaines valeurs par
+   dÃ©faut des commandes DEBUT/POURSUITE qui ont des consÃ©quences sur le comportement
    en cas d'erreur ou sur les performances.
 """), 'flags' : 'DECORATED',
 },
 
 23: _(u"""
-  Débogage JXVERI demandé
+  DÃ©bogage JXVERI demandÃ©
 """),
 
 24: _(u"""
-  Débogage SDVERI demandé
+  DÃ©bogage SDVERI demandÃ©
 """),
 
 31: _(u"""
- Valeur invalide pour le mot clé RESERVE_CPU
+ Valeur invalide pour le mot clÃ© RESERVE_CPU
 """),
 
 32: _(u"""
- La procédure "%(k1)s" ne peut être appelée en cours d'exécution des commandes
+ La procÃ©dure "%(k1)s" ne peut Ãªtre appelÃ©e en cours d'exÃ©cution des commandes
 """),
 
 38: _(u"""
@@ -109,65 +109,65 @@ cata_msg={
 """),
 
 39: _(u"""
-Arrêt de l'exécution suite à la réception du signal utilisateur %(k1)s.
-Fermeture des bases jeveux afin de permettre la POURSUITE ultérieure du calcul.
+ArrÃªt de l'exÃ©cution suite Ã  la rÃ©ception du signal utilisateur %(k1)s.
+Fermeture des bases jeveux afin de permettre la POURSUITE ultÃ©rieure du calcul.
 """),
 
 40: _(u"""
- Vous utilisez une version dont les routines suivantes ont été surchargées :
+ Vous utilisez une version dont les routines suivantes ont Ã©tÃ© surchargÃ©es :
    %(ktout)s
 """),
 
-41: _(u"""La version %(k1)s a été modifiée par %(i1)d révisions.
+41: _(u"""La version %(k1)s a Ã©tÃ© modifiÃ©e par %(i1)d rÃ©visions.
 """),
 
-42: _(u"""Les fichiers suivants ont été modifiés par rapport à la dernière révision %(k1)s :
+42: _(u"""Les fichiers suivants ont Ã©tÃ© modifiÃ©s par rapport Ã  la derniÃ¨re rÃ©vision %(k1)s :
 
 %(k2)s
 """),
 
 43: _(u"""
-  Débogage %(k1)s suspendu
+  DÃ©bogage %(k1)s suspendu
 """),
 
 44: _(u"""
-  Débogage %(k1)s demandé
+  DÃ©bogage %(k1)s demandÃ©
 """),
 
 50: _(u"""
- La commande a un numéro non appelable dans cette version.
- Le numéro erroné est  %(i1)d
+ La commande a un numÃ©ro non appelable dans cette version.
+ Le numÃ©ro erronÃ© est  %(i1)d
 """),
 
 52: _(u"""
-  Fin de lecture (durée  %(r1)f  s.) %(k1)s
+  Fin de lecture (durÃ©e  %(r1)f  s.) %(k1)s
 """),
 
 56: _(u"""
-  Incohérence entre le catalogue et le corps de la macro-commande.
+  IncohÃ©rence entre le catalogue et le corps de la macro-commande.
 """),
 
 60: _(u"""
-  La procédure a un numéro non appelable dans cette version.
-  Le numéro erroné est %(i1)d.
+  La procÃ©dure a un numÃ©ro non appelable dans cette version.
+  Le numÃ©ro erronÃ© est %(i1)d.
 """),
 
 61: _(u"""
-  La commande a un numéro non appelable dans cette version
-  Le numéro erroné est : %(i1)d
+  La commande a un numÃ©ro non appelable dans cette version
+  Le numÃ©ro erronÃ© est : %(i1)d
 """),
 
 63: _(u"""
      ARRET PAR MANQUE DE TEMPS CPU
-     Les commandes suivantes sont ignorées, on passe directement dans FIN
-     La base globale est sauvegardée
-     Temps consommé de la réserve CPU        :  %(r1).2f s\n
+     Les commandes suivantes sont ignorÃ©es, on passe directement dans FIN
+     La base globale est sauvegardÃ©e
+     Temps consommÃ© de la rÃ©serve CPU        :  %(r1).2f s\n
 """),
 
 64: _(u"""
   Valeur initiale du temps CPU maximum =   %(i1)d secondes
-  Valeur du temps CPU maximum passé aux commandes =   %(i2)d secondes
-  Réserve CPU prévue = %(i3)d secondes
+  Valeur du temps CPU maximum passÃ© aux commandes =   %(i2)d secondes
+  RÃ©serve CPU prÃ©vue = %(i3)d secondes
 """),
 
 65 : _(u"""
@@ -181,37 +181,37 @@ Fermeture des bases jeveux afin de permettre la POURSUITE ultérieure du calcul.
 """),
 
 68: _(u"""
-  La signature de la base sauvegardée est (à l'adresse %(i1)d) :
+  La signature de la base sauvegardÃ©e est (Ã  l'adresse %(i1)d) :
     %(k1)s
 """),
 
 69: _(u"""
-Les fichiers glob.1 et pick.1 ne sont pas cohérents !
+Les fichiers glob.1 et pick.1 ne sont pas cohÃ©rents !
 
-D'après le fichier pick.1, la signature de la base à l'adresse %(i1)d devrait être :
+D'aprÃ¨s le fichier pick.1, la signature de la base Ã  l'adresse %(i1)d devrait Ãªtre :
     %(k1)s
 Or la signature de glob.1 est :
     %(k2)s
 """),
 
 70: _(u"""
-  La signature de la base relue est conforme à celle attendue (à l'adresse %(i1)d) :
+  La signature de la base relue est conforme Ã  celle attendue (Ã  l'adresse %(i1)d) :
     %(k1)s
 """),
 
 71: _(u"""
-  La signature de la base au format HDF ne peut pas être vérifiée.
+  La signature de la base au format HDF ne peut pas Ãªtre vÃ©rifiÃ©e.
 """),
 
 72: _(u"""
-  L'exécution précédente s'est terminée correctement.
+  L'exÃ©cution prÃ©cÃ©dente s'est terminÃ©e correctement.
 """),
 
 73 : _(u"""relu: %(k1)s = %(k2)s"""),
 
 76: _(u"""
-  L'exécution précédente a été interrompue au cours d'une commande qui a produit
-  le concept '%(k1)s' de type <%(k2)s> qui a été néanmoins validé par l'opérateur.
+  L'exÃ©cution prÃ©cÃ©dente a Ã©tÃ© interrompue au cours d'une commande qui a produit
+  le concept '%(k1)s' de type <%(k2)s> qui a Ã©tÃ© nÃ©anmoins validÃ© par l'opÃ©rateur.
 """),
 
 81: _(u"""
@@ -221,7 +221,7 @@ Or la signature de glob.1 est :
 """),
 
 82: _(u"""
- L'argument du mot clé "CAS" est erroné.
+ L'argument du mot clÃ© "CAS" est erronÃ©.
  Valeur lue %(k1)s
  nombre de valeurs attendues %(i1)d
  valeurs attendues : %(k1)s,%(k2)s, ...
@@ -229,8 +229,8 @@ Or la signature de glob.1 est :
 
 83: _(u"""
 
- Le nombre d'enregistrements (NMAX_ENRE) et leurs longueurs (LONG_ENRE) conduisent à un
- fichier dont la taille maximale en Mo (%(i1)d) est supérieure à limite autorisée :  %(i2)d
+ Le nombre d'enregistrements (NMAX_ENRE) et leurs longueurs (LONG_ENRE) conduisent Ã  un
+ fichier dont la taille maximale en Mo (%(i1)d) est supÃ©rieure Ã  limite autorisÃ©e :  %(i2)d
 
  Vous pouvez augmenter cette limite en utilisant l'argument "-max_base" sur la ligne
  de commande suivi d'une valeur en Mo.
@@ -238,49 +238,49 @@ Or la signature de glob.1 est :
 """),
 
 86: _(u"""
- Erreur à la relecture du fichier pick.1 : aucun objet sauvegardé ne sera récupéré.
+ Erreur Ã  la relecture du fichier pick.1 : aucun objet sauvegardÃ© ne sera rÃ©cupÃ©rÃ©.
 """),
 
 89: _(u"""
- Il n'y a pas de fichier glob.1 ou bhdf.1 dans le répertoire courant.
+ Il n'y a pas de fichier glob.1 ou bhdf.1 dans le rÃ©pertoire courant.
 
 Conseils:
-   - Vérifiez que vous avez une base (de type base ou bhdf) dans votre étude.
-   - Vérifiez si elle doit être décompressée ou pas.
+   - VÃ©rifiez que vous avez une base (de type base ou bhdf) dans votre Ã©tude.
+   - VÃ©rifiez si elle doit Ãªtre dÃ©compressÃ©e ou pas.
 """),
 
 93 : _(u"""
-La variable python "%(k1)s" fait référence au concept "%(k2)s".
-Cela se produit avec ce type d'enchaînement :
+La variable python "%(k1)s" fait rÃ©fÃ©rence au concept "%(k2)s".
+Cela se produit avec ce type d'enchaÃ®nement :
    %(k2)s = COMMANDE(...)
    %(k1)s = %(k2)s
 
-On détruit cette variable ("%(k1)s" dans l'exemple ci-dessus).
+On dÃ©truit cette variable ("%(k1)s" dans l'exemple ci-dessus).
 
 -> Conseil :
-   Pour éviter cette alarme, supprimer la référence dans le jeu de commandes
+   Pour Ã©viter cette alarme, supprimer la rÃ©fÃ©rence dans le jeu de commandes
    qui produit la base :
       %(k1)s
 """),
 
 95 : _(u"""
-Le temps CPU système (%(r1).1f) atteint une valeur supérieure à %(i1)d%% du temps CPU (%(r2).1f).
-Ce comportement est peut-être anormal.
+Le temps CPU systÃ¨me (%(r1).1f) atteint une valeur supÃ©rieure Ã  %(i1)d%% du temps CPU (%(r2).1f).
+Ce comportement est peut-Ãªtre anormal.
 
 -> Conseil :
-   Augmenter la quantité de mémoire peut permettre de diminuer le temps système.
+   Augmenter la quantitÃ© de mÃ©moire peut permettre de diminuer le temps systÃ¨me.
 """),
 
 96 : { 'message' : _(u"""
 
-    Réception du signal USR1. Interruption du calcul demandée...
+    RÃ©ception du signal USR1. Interruption du calcul demandÃ©e...
 
 """), 'flags' : 'DECORATED',
 },
 
 97 : { 'message' : _(u"""
 
-    Interruption du calcul suite à la réception d'un <Control-C>.
+    Interruption du calcul suite Ã  la rÃ©ception d'un <Control-C>.
 
 """), 'flags' : 'DECORATED',
 },

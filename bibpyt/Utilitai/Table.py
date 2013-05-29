@@ -1,4 +1,4 @@
-# -*- coding: iso-8859-1 -*-
+# coding=utf-8
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -38,24 +38,24 @@ if not sys.modules.has_key('Graph'):
    except ImportError:
       import Graph
 
-# formats de base (identiques ‡ ceux du module Graph)
+# formats de base (identiques √† ceux du module Graph)
 DicForm = {
-   'csep'  : ' ',       # sÈparateur
+   'csep'  : ' ',       # s√©parateur
    'ccom'  : '#',       # commentaire
    'ccpara' : '',       # commentaire des labels
-   'cdeb'  : '',        # dÈbut de ligne
+   'cdeb'  : '',        # d√©but de ligne
    'cfin'  : '\n',      # fin de ligne
-   'sepch' : ';',       # sÈparateur entre deux lignes d'une cellule
+   'sepch' : ';',       # s√©parateur entre deux lignes d'une cellule
    'formK' : '%-12s',   # chaines
-   'formR' : '%12.5E',  # rÈels
+   'formR' : '%12.5E',  # r√©els
    'formI' : '%12d'     # entiers
 }
-# type par dÈfaut des chaines de caractËres
+# type par d√©faut des chaines de caract√®res
 Kdef = 'K24'
 
 class TableBase(object):
-   """Classe pour partager les mÈthodes d'impression entre Table et Colonne
-   (c'est surtout utile pour vÈrifier que l'extraction et les filtres sur les
+   """Classe pour partager les m√©thodes d'impression entre Table et Colonne
+   (c'est surtout utile pour v√©rifier que l'extraction et les filtres sur les
    colonnes sont corrects).
    """
    def __init__(self):
@@ -77,9 +77,9 @@ class TableBase(object):
       return len(self.rows)
 
    def Impr(self, FICHIER=None, FORMAT='TABLEAU', dform=None, **opts):
-      """Impresssion de la Table selon le format spÈcifiÈ.
+      """Impresssion de la Table selon le format sp√©cifi√©.
          FICHIER : nom du(des) fichier(s). Si None, on dirige vers stdout
-         dform : dictionnaire de formats d'impression (format des rÈels,
+         dform : dictionnaire de formats d'impression (format des r√©els,
             commentaires, saut de ligne...)
          opts  : selon FORMAT.
       """
@@ -112,9 +112,9 @@ class TableBase(object):
             ppag = list(kargs['PAGINATION'])
          del kargs['PAGINATION']
          npag = len(ppag)
-         # paramËtres hors ceux de la pagination
+         # param√®tres hors ceux de la pagination
          lkeep = [p for p in self.para if ppag.count(p)==0]
-         # crÈation des listes des valeurs distinctes
+         # cr√©ation des listes des valeurs distinctes
          lvd = []
          for p in ppag:
             lvp = getattr(self,p).values()
@@ -124,7 +124,7 @@ class TableBase(object):
                   lvn.append(it)
             lvn.sort()
             lvd.append(lvn)
-         # crÈation des n-uplets
+         # cr√©ation des n-uplets
          s  = '[['+','.join(['x'+str(i) for i in range(npag)])+'] '
          s += ' '.join(['for x'+str(i)+' in lvd['+str(i)+']' for i in range(npag)])+']'
          try:
@@ -156,7 +156,7 @@ class TableBase(object):
          f.close()
 
    def ReprTable(self,FORMAT='TABLEAU',dform=None,**ignore):
-      """ReprÈsentation d'une Table ou d'une Colonne sous forme d'un tableau.
+      """Repr√©sentation d'une Table ou d'une Colonne sous forme d'un tableau.
       """
       rows=self.rows
       para=self.para
@@ -166,10 +166,10 @@ class TableBase(object):
          typ =[self.type,]
       if dform==None:
          dform = DicForm.copy()
-      # est-ce que l'attribut .type est renseignÈ ?
+      # est-ce que l'attribut .type est renseign√© ?
       typdef=typ != [None]*len(typ)
       txt=[]
-      # ['']+ pour ajouter un sÈparateur en dÈbut de ligne
+      # ['']+ pour ajouter un s√©parateur en d√©but de ligne
       lspa=['',]
       # lmax : largeur max des colonnes = max(form{K,R,I},len(parametre))
       lmax=[]
@@ -180,7 +180,7 @@ class TableBase(object):
                [len(FMT(dform,k,t) % 0) for k in ('formK','formR','formI')])
          lspa.append(FMT(dform,'formK',t,larg_max,str(p)) % p)
          lmax.append(larg_max)
-         assert t is not None, "Type de la colonne '%s' non dÈfini" % p
+         assert t is not None, "Type de la colonne '%s' non d√©fini" % p
          strfmt[p] = FMT(dform, 'form'+t[0], t, larg_max)
          strfmt_none[p] = FMT(dform, 'formK', t, larg_max)
       if typdef:
@@ -210,7 +210,7 @@ class TableBase(object):
                lig.append(strfmt[p] % val)
             else:
                s = strfmt_none[p] % '-'
-               # format AGRAF = TABLEAU + '\' devant les chaines de caractËres !
+               # format AGRAF = TABLEAU + '\' devant les chaines de caract√®res !
                if FORMAT=='AGRAF':
                   s='\\'+s
                lig.append(s)
@@ -224,9 +224,9 @@ class TableBase(object):
 
       return ''.join(txt)
    def ImprTabCroise(self,**kargs):
-      """Impression au format TABLEAU_CROISE d'une table ayant 3 paramËtres.
+      """Impression au format TABLEAU_CROISE d'une table ayant 3 param√®tres.
       """
-      # crÈation du tableau croisÈ et impression au format TABLEAU
+      # cr√©ation du tableau crois√© et impression au format TABLEAU
       tabc=self.Croise()
       kargs['FORMAT']='TABLEAU'
       tabc.Impr(**kargs)
@@ -251,7 +251,7 @@ class TableBase(object):
       Graph.AjoutParaCourbe(dicC, args)
       graph.AjoutCourbe(**dicC)
 
-      # Surcharge des propriÈtÈs du graphique et des axes
+      # Surcharge des propri√©t√©s du graphique et des axes
       # (bloc quasiment identique dans impr_fonction_ops)
       if args.get('TITRE'):            graph.Titre=args['TITRE']
       if args.get('BORNE_X'):
@@ -275,28 +275,28 @@ class TableBase(object):
 class Table(TableBase):
    """Une table est construite comme une liste de lignes, chaque ligne est
    un dictionnaire.
-   On crÈe puis on ajoute les lignes avec la mÈthode append :
+   On cr√©e puis on ajoute les lignes avec la m√©thode append :
       t=Table()
       t.append(dict(a=1,b=2))
       t.append(dict(a=3,b=4))
-   La mÈthode __iter__ dÈfinit un itÈrateur sur les lignes de la table,
-   __repr__ retourne une reprÈsentation de la table, utilisÈe par "print t".
-   Grace ‡ la classe Colonne et ‡ sa mÈthode _extract, il est possible
-   de construire une sous-table qui satisfait un critËre donnÈ.
-   Le critËre est donnÈ par une fonction Python qui retourne vrai
-   ou faux si la valeur d'une colonne respecte le critËre ou non.
+   La m√©thode __iter__ d√©finit un it√©rateur sur les lignes de la table,
+   __repr__ retourne une repr√©sentation de la table, utilis√©e par "print t".
+   Grace √† la classe Colonne et √† sa m√©thode _extract, il est possible
+   de construire une sous-table qui satisfait un crit√®re donn√©.
+   Le crit√®re est donn√© par une fonction Python qui retourne vrai
+   ou faux si la valeur d'une colonne respecte le crit√®re ou non.
    Exemple:
      def critere(valeur):
          return valeur < 10
      soustable = t.a._extract(critere)
-   t.a retourne un objet intermÈdiaire de la classe Colonne qui mÈmorise
-   le nom de la colonne demandÈe (a, ici).
+   t.a retourne un objet interm√©diaire de la classe Colonne qui m√©morise
+   le nom de la colonne demand√©e (a, ici).
    """
    def __init__(self, rows=[], para=[], typ=[], titr='', nom=''):
       """Constructeur de la Table :
          rows : liste des lignes (dict)
-         para : liste des paramËtres
-         type : liste des types des paramËtres
+         para : liste des param√®tres
+         type : liste des types des param√®tres
          titr : titre de la table
          nom : nom du concept table_sdaster dont est issue la table
       """
@@ -321,7 +321,7 @@ class Table(TableBase):
       return Table(rows, self.para[:], self.type[:], self.titr, self.nom)
 
    def add_para(self, para, typ):
-      """Ajoute un nouveau paramËtre."""
+      """Ajoute un nouveau param√®tre."""
       if not is_sequence(para):
          para=[para,]
       if not is_sequence(typ):
@@ -334,8 +334,8 @@ class Table(TableBase):
             self.type.append(t)
 
    def append(self, obj):
-      """Ajoute une ligne (type dict) qui peut Èventuellement dÈfinir un
-      nouveau paramËtre."""
+      """Ajoute une ligne (type dict) qui peut √©ventuellement d√©finir un
+      nouveau param√®tre."""
       para=obj.keys()
       for p in para:
          if not p in self.para:
@@ -352,8 +352,8 @@ class Table(TableBase):
           self.append(row)
 
    def SansColonneVide(self, l_para=None):
-      """Retourne une copie de la table dans laquelle on a supprimÈ les colonnes
-      vides (les lignes vides sont automatiquement supprimÈes).
+      """Retourne une copie de la table dans laquelle on a supprim√© les colonnes
+      vides (les lignes vides sont automatiquement supprim√©es).
       """
       # ptest : colonnes potentiellement vides
       pkeep = l_para or self.para
@@ -386,14 +386,14 @@ class Table(TableBase):
          self.append({k_para : k_value[j]})
 
    def fromfunction(self, nom_para, funct, l_para=None, const=None):
-      """Ajoute une colonne `nom_para` en Èvaluant la fonction `funct` sur
-      la valeur des paramËtres `l_para` (qui doivent exister dans la table).
+      """Ajoute une colonne `nom_para` en √©valuant la fonction `funct` sur
+      la valeur des param√®tres `l_para` (qui doivent exister dans la table).
       Si `l_para` n'est pas fourni, on prend `funct`.nompar (FORMULE Aster).
       On peut passer un dictionnaire de constantes dans `const`. Quand on
       utilise une FORMULE Aster, les constantes sont prises dans le contexte
       global.
       """
-      # vÈrif prÈalables
+      # v√©rif pr√©alables
       if not hasattr(funct, '__call__'):
          UTMESS('F', 'TABLE0_25', valk=(funct.__name__, '__call__'))
       if nom_para in self.para :
@@ -411,16 +411,16 @@ class Table(TableBase):
          const = {}
       if type(const) is not dict:
          UTMESS('F', 'TABLE0_28', valk=('const', 'dict'))
-      # liste des valeurs des paramËtres
+      # liste des valeurs des param√®tres
       tabpar = []
       for para in l_para:
          vals = getattr(self, para).values()
          tabpar.append(vals)
       tabpar = transpose.transpose(tabpar)
-      # Èvaluation de la fonction sur ces paramËtres
+      # √©valuation de la fonction sur ces param√®tres
       vectval = []
       for lpar in tabpar:
-         # si un paramËtre est absent, on ne peut pas Èvaluer la formule
+         # si un param√®tre est absent, on ne peut pas √©valuer la formule
          if None in lpar:
             vectval.append(None)
          else:
@@ -429,7 +429,7 @@ class Table(TableBase):
       self[nom_para] = vectval
 
    def __iter__(self):
-      """ItËre sur les lignes de la Table"""
+      """It√®re sur les lignes de la Table"""
       return iter(self.rows)
 
    def __getattr__(self, column):
@@ -443,13 +443,13 @@ class Table(TableBase):
 
    def sort(self, CLES=None, ORDRE='CROISSANT'):
       """Tri de la table.
-         CLES  : liste des clÈs de tri
+         CLES  : liste des cl√©s de tri
          ORDRE : CROISSANT ou DECROISSANT
       """
-      # par dÈfaut, on prend tous les paramËtres
+      # par d√©faut, on prend tous les param√®tres
       if CLES == None:
          CLES = self.para[:]
-      # vÈrification des arguments
+      # v√©rification des arguments
       if not is_sequence(CLES):
          CLES = [CLES]
       else:
@@ -463,7 +463,7 @@ class Table(TableBase):
       self.rows = sort_table(self.rows, self.para, CLES, (ORDRE=='DECROISSANT'))
 
    def __delitem__(self, args):
-      """Supprime les colonnes correspondantes aux ÈlÈments de args """
+      """Supprime les colonnes correspondantes aux √©l√©ments de args """
       if not is_sequence(args):
          args=[args,]
       for item in args:
@@ -478,7 +478,7 @@ class Table(TableBase):
                del line[item]
 
    def __getitem__(self, args):
-      """Extrait la sous table composÈe des colonnes dont les paramËtres sont dans args """
+      """Extrait la sous table compos√©e des colonnes dont les param√®tres sont dans args """
       if not is_sequence(args):
          args=[args,]
       else:
@@ -500,7 +500,7 @@ class Table(TableBase):
       return Table(new_rows, new_para, new_type, self.titr, self.nom)
 
    def OrdreColonne(self, cols):
-      """RÈordonne les colonnes en mettant en premier 'cols'.
+      """R√©ordonne les colonnes en mettant en premier 'cols'.
       Ignore les colonnes qui ne seraient pas dans 'self.para'."""
       if type(cols) not in (list, tuple):
          cols = [cols]
@@ -515,12 +515,12 @@ class Table(TableBase):
 
    def _tuplevalues(self, dico):
       """Retourne la liste des valeurs d'une ligne dans l'ordre self.para
-      ("hashable" pour en faire une clÈ de dict.)
+      ("hashable" pour en faire une cl√© de dict.)
       """
       return tuple(map(dico.get, self.para))
 
    def __and__(self, other):
-      """Intersection de deux tables (opÈrateur &)"""
+      """Intersection de deux tables (op√©rateur &)"""
       if other.para != self.para:
          UTMESS('A','TABLE0_30')
          return Table()
@@ -530,7 +530,7 @@ class Table(TableBase):
          return Table(tmp, self.para, self.type, self.titr)
 
    def __or__(self, other):
-      """Union de deux tables (opÈrateur |)"""
+      """Union de deux tables (op√©rateur |)"""
       if other.para != self.para:
          UTMESS('A','TABLE0_30')
          return Table()
@@ -542,7 +542,7 @@ class Table(TableBase):
 
    def values(self):
       """Renvoie la table sous la forme d'un dictionnaire de listes dont les
-      clÈs sont les paramËtres.
+      cl√©s sont les param√®tres.
       """
       dico={}
       for column in self.para:
@@ -550,16 +550,16 @@ class Table(TableBase):
       return dico
 
    def dict_CREA_TABLE(self):
-      """Renvoie le dictionnaire des mots-clÈs ‡ fournir ‡ la commande CREA_TABLE
+      """Renvoie le dictionnaire des mots-cl√©s √† fournir √† la commande CREA_TABLE
       pour produire une table_sdaster.
       """
       self.titr = cut_long_lines(self.titr, 80)
-      # il y a eu limite ‡ 50 titres dans le fortran autant le limiter maintenant
+      # il y a eu limite √† 50 titres dans le fortran autant le limiter maintenant
       dico={ 'TITRE' : ['%-80s' % lig for lig in self.titr.split('\n')][:50],
              'LISTE' : [], }
-      # remplissage de chaque occurrence (pour chaque paramËtre) du mot-clÈ facteur LISTE
+      # remplissage de chaque occurrence (pour chaque param√®tre) du mot-cl√© facteur LISTE
       for i in range(len(self.para)):
-         # nom du paramËtre et type si K*
+         # nom du param√®tre et type si K*
          d={ 'PARA' : self.para[i], }
          typ=self.type[i]
          if typ[0]=='K':
@@ -595,8 +595,8 @@ class Table(TableBase):
       return dico
 
    def Array(self,Para,Champ):
-      """Renvoie sous forme de NumArray le rÈsultat d'une extraction dans une table
-      mÈthode utile ‡ macr_recal
+      """Renvoie sous forme de NumArray le r√©sultat d'une extraction dans une table
+      m√©thode utile √† macr_recal
       """
       import numpy
       __Rep = self[Para,Champ].values()
@@ -608,8 +608,8 @@ class Table(TableBase):
       return F
 
    def Croise(self):
-      """Retourne un tableau croisÈ P3(P1,P2) ‡ partir d'une table ayant
-      trois paramËtres (P1, P2, P3).
+      """Retourne un tableau crois√© P3(P1,P2) √† partir d'une table ayant
+      trois param√®tres (P1, P2, P3).
       """
       if len(self.para) != 3:
          UTMESS('A', 'TABLE0_36')
@@ -644,12 +644,12 @@ class Table(TableBase):
       return Table(new_rows, new_para, new_type, new_titr)
 
    def Renomme(self, pold, pnew):
-      """Renomme le paramËtre `pold` en `pnew`.
+      """Renomme le param√®tre `pold` en `pnew`.
       """
       if not pold in self.para:
-         raise KeyError, 'ParamËtre %s inexistant dans cette table' % pold
+         raise KeyError, 'Param√®tre %s inexistant dans cette table' % pold
       elif self.para.count(pnew) > 0:
-         raise KeyError, 'Le paramËtre %s existe dÈj‡ dans la table' % pnew
+         raise KeyError, 'Le param√®tre %s existe d√©j√† dans la table' % pnew
       else:
          self.para[self.para.index(pold)] = pnew
          for lig in self:
@@ -658,22 +658,22 @@ class Table(TableBase):
                 del lig[pold]
 
 class Colonne(TableBase):
-   """Classe intermÈdiaire pour mÈmoriser un couple (table, nom de colonne)
-   et exprimer les critËres d'extraction sous une forme naturelle en python
+   """Classe interm√©diaire pour m√©moriser un couple (table, nom de colonne)
+   et exprimer les crit√®res d'extraction sous une forme naturelle en python
    en surchargeant les operateurs <, >, != et =.
-   Alors on peut Ècrire la requete simple :
+   Alors on peut √©crire la requete simple :
      soustable=t.a<10
    Ainsi que des requetes plus complexes :
      soustable=t.a<10 and t.b <4
    ou
      soustable=t.a<10 or t.b <4
-   Les "alias" EQ, NE, LE, LT, GE, GT permettent ‡ la macro IMPR_TABLE
-   d'utiliser directement le mot-clÈ utilisateur CRIT_COMP dÈfini dans le
+   Les "alias" EQ, NE, LE, LT, GE, GT permettent √† la macro IMPR_TABLE
+   d'utiliser directement le mot-cl√© utilisateur CRIT_COMP d√©fini dans le
    catalogue : getattr(Table,CRIT_COMP).
    """
    def __init__(self, table, column, typ=None):
-      """Constructeur (objet Table associÈ, paramËtre de la colonne, type du
-      paramËtre).
+      """Constructeur (objet Table associ√©, param√®tre de la colonne, type du
+      param√®tre).
       """
       self.Table=table
       self.rows=self.Table.rows
@@ -683,7 +683,7 @@ class Colonne(TableBase):
 
    def _extract(self, fun):
       """Construit une table avec les lignes de self.Table
-         dont l'ÈlÈment de nom self.para satisfait le critËre fun,
+         dont l'√©l√©ment de nom self.para satisfait le crit√®re fun,
          fun est une fonction qui retourne vrai ou faux
       """
       return Table([row for row in self.Table if fun(row.get(self.para))],
@@ -732,8 +732,8 @@ class Colonne(TableBase):
             return self._extract(lambda v : _func_test_rela(v, VALE, PRECISION))
 
    def REGEXP(self, regexp):
-      """Retient les lignes dont le paramËtre satisfait l'expression
-      rÈguliËre `regexp`.
+      """Retient les lignes dont le param√®tre satisfait l'expression
+      r√©guli√®re `regexp`.
       """
       if not is_str(regexp):
          return self._extract(lambda v : False)
@@ -754,35 +754,35 @@ class Colonne(TableBase):
             return self._extract(lambda v : not (_func_test_rela(v, VALE, PRECISION)))
 
    def MAXI(self):
-      # important pour les performances de rÈcupÈrer le max une fois pour toutes
+      # important pour les performances de r√©cup√©rer le max une fois pour toutes
       maxi=max(self)
       return self._extract(lambda v: v==maxi)
 
    def MINI(self):
-      # important pour les performances de rÈcupÈrer le min une fois pour toutes
+      # important pour les performances de r√©cup√©rer le min une fois pour toutes
       mini=min(self)
       return self._extract(lambda v: v==mini)
 
    def MAXI_ABS(self):
-      # important pour les performances de rÈcupÈrer le max une fois pour toutes
+      # important pour les performances de r√©cup√©rer le max une fois pour toutes
       maxi_abs=max([abs(v) for v in self.values() if is_number(v)])
       return self._extract(lambda v: v==maxi_abs or v==-maxi_abs)
 
    def MINI_ABS(self):
-      # important pour les performances de rÈcupÈrer le min une fois pour toutes
+      # important pour les performances de r√©cup√©rer le min une fois pour toutes
       mini_abs=min([abs(v) for v in self.values() if is_number(v)])
       # tester le type de v est trop long donc pas de abs(v)
       return self._extract(lambda v: v==mini_abs or v==-mini_abs)
 
    def __iter__(self):
-      """ItËre sur les ÈlÈments de la colonne"""
+      """It√®re sur les √©l√©ments de la colonne"""
       for row in self.Table:
-         # si l'ÈlÈment n'est pas prÈsent on retourne None
+         # si l'√©l√©ment n'est pas pr√©sent on retourne None
          yield row.get(self.para)
          #yield row[self.para]
 
    def __getitem__(self, i):
-      """Retourne la iËme valeur d'une colonne"""
+      """Retourne la i√®me valeur d'une colonne"""
       return self.values()[i]
 
    def values(self):
@@ -793,7 +793,7 @@ class Colonne(TableBase):
       """Renvoie la liste des valeurs non 'None'"""
       return [val for val in self.values() if val != None]
 
-   # Èquivalences avec les opÈrateurs dans Aster
+   # √©quivalences avec les op√©rateurs dans Aster
    LE=__le__
    LT=__lt__
    GE=__ge__
@@ -862,10 +862,10 @@ def sort_table(rows, l_para, w_para, reverse=False):
    return new_rows
 
 def FMT(dform, nform, typAster=None, larg=0, val=''):
-   """Retourne un format d'impression Python ‡ partir d'un type Aster ('R','I',
+   """Retourne un format d'impression Python √† partir d'un type Aster ('R','I',
    'K8', 'K16'...). Si typAster==None, retourne dform[nform].
       larg : largeur minimale du format (val permet de ne pas ajouter des blancs
-      si la chaine ‡ afficher est plus longue que le format, on prend le partie
+      si la chaine √† afficher est plus longue que le format, on prend le partie
       de ne pas tronquer les chaines)
    """
    if typAster==None:
@@ -879,7 +879,7 @@ def FMT(dform, nform, typAster=None, larg=0, val=''):
    else:
       # typAster = Kn
       fmt='%-'+typAster[1:]+'s'
-   # on ajoute Èventuellement des blancs pour atteindre la largeur demandÈe
+   # on ajoute √©ventuellement des blancs pour atteindre la largeur demand√©e
    if larg != 0:
       fmt=' '*max(min(larg-len(val),larg-len(fmt % 0)),0) + fmt
    return fmt
@@ -887,11 +887,11 @@ def FMT(dform, nform, typAster=None, larg=0, val=''):
 def merge(tab1, tab2, labels=[], restrict=False):
    """Assemble les deux tables tb1 et tb2 selon une liste de labels communs.
       Si labels est vide:
-       - les lignes de tb2 sont ajoutÈs ‡ celles de tb1,
+       - les lignes de tb2 sont ajout√©s √† celles de tb1,
       sinon :
        - si on trouve les valeurs de tb2 sur les labels dans tb1 (et une seule fois),
          on surcharge tb1 avec les lignes de tb2 ;
-       - sinon on ajoute la ligne de tb2 ‡ la fin de tb1.
+       - sinon on ajoute la ligne de tb2 √† la fin de tb1.
    """
    tb1 = tab1.copy()
    tb2 = tab2.copy()
@@ -900,7 +900,7 @@ def merge(tab1, tab2, labels=[], restrict=False):
    for key in labels :
        if key not in tb1.para : UTMESS('F','TABLE0_27', valk=key)
        if key not in tb2.para : UTMESS('F','TABLE0_27', valk=key)
-   # ensemble des paramËtres et des types
+   # ensemble des param√®tres et des types
    n_para=tb1.para[:]
    n_type=tb1.type[:]
    for i in tb2.para:
@@ -953,15 +953,15 @@ def merge(tab1, tab2, labels=[], restrict=False):
          rows1[dic1[i2]].update(r2)
       except KeyError:
          func_append_r2(r2)
-   # concatÈnation des titres + info sur le merge
+   # concat√©nation des titres + info sur le merge
    tit = '\n'.join([tb1.titr, tb2.titr, 'MERGE avec labels=%s' % repr(labels)])
    return Table(rows1, n_para, n_type, tit)
 
 def typaster(obj, prev=None, strict=False):
-   """Retourne le type Aster ('R', 'I', Kdef) correspondant ‡ l'objet obj.
-   Si prev est fourni, on vÈrifie que obj est du type prev.
+   """Retourne le type Aster ('R', 'I', Kdef) correspondant √† l'objet obj.
+   Si prev est fourni, on v√©rifie que obj est du type prev.
    Si strict=False, on autorise que obj ne soit pas du type prev s'ils sont
-   tous les deux numÈriques ; dans ce cas, on retourne le "type enveloppe" 'R'.
+   tous les deux num√©riques ; dans ce cas, on retourne le "type enveloppe" 'R'.
    """
    dtyp={
       IntType    : 'I',
@@ -989,12 +989,12 @@ def typaster(obj, prev=None, strict=False):
          raise TypeError, "La valeur %s n'est pas compatible avec le type %s" \
                % (repr(obj),repr(prev))
    else:
-      raise TypeError, 'Une table ne peut contenir que des entiers, rÈels ' \
-                       'ou chaines de caractËres.'
+      raise TypeError, 'Une table ne peut contenir que des entiers, r√©els ' \
+                       'ou chaines de caract√®res.'
 
 # fonctions utilitaires
 def _func_test_abs(v, VALE, PRECISION):
-   """Retourne True si v est parmi VALE ‡ PRECISION prËs en absolu
+   """Retourne True si v est parmi VALE √† PRECISION pr√®s en absolu
    """
    for x in VALE:
       if v != None and (x-PRECISION <= v <= x+PRECISION):
@@ -1002,7 +1002,7 @@ def _func_test_abs(v, VALE, PRECISION):
    return False
 
 def _func_test_rela(v, VALE, PRECISION):
-   """Retourne True si v est parmi VALE ‡ PRECISION prËs en relatif
+   """Retourne True si v est parmi VALE √† PRECISION pr√®s en relatif
    """
    for x in VALE:
       sign = float(x > 0.) or -1.

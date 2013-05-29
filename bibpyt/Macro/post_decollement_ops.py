@@ -1,4 +1,4 @@
-# -*- coding: iso-8859-1 -*-
+# coding=utf-8
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -19,7 +19,7 @@
 
 ########################
 
-# fonction qui renvoie une liste de 0/1 en fonction du signe des éléments de la liste listIN:
+# fonction qui renvoie une liste de 0/1 en fonction du signe des Ã©lÃ©ments de la liste listIN:
 def fctZeroUn(listIN):
    listOUT=[]
    for n in listIN:
@@ -50,7 +50,7 @@ def post_decollement_ops(self,RESULTAT,NOM_CHAM,NOM_CMP,GROUP_MA,INFO,**args):
   AFFE_MATERIAU  = self.get_cmd('AFFE_MATERIAU')
   IMPR_TABLE     = self.get_cmd('IMPR_TABLE')
 
-  ### Comptage commandes + déclaration concept sortant
+  ### Comptage commandes + dÃ©claration concept sortant
   self.set_icmd(1)
   self.DeclareOut('C_out',self.sd)
   
@@ -100,7 +100,7 @@ def post_decollement_ops(self,RESULTAT,NOM_CHAM,NOM_CMP,GROUP_MA,INFO,**args):
 
   __linst=RESULTAT.LIST_VARI_ACCES()['INST']
 
-  ### Calcul de la surface des noeuds décollés
+  ### Calcul de la surface des noeuds dÃ©collÃ©s
   __pct=[]
   
   for  inst in __linst:

@@ -1,4 +1,4 @@
-# -*- coding: iso-8859-1 -*-
+# coding=utf-8
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -19,10 +19,10 @@
 # person_in_charge: josselin.delmas at edf.fr
 
 """
-   Messages à l'attention des développeurs, type "ASSERT"
-   Lorsque l'utilisateur tombe sur un tel message, tout ce qu'il a à faire,
+   Messages Ã  l'attention des dÃ©veloppeurs, type "ASSERT"
+   Lorsque l'utilisateur tombe sur un tel message, tout ce qu'il a Ã  faire,
    c'est de rapporter le bug, le texte du message devant aider le
-   développeur à faire le diagnostic.
+   dÃ©veloppeur Ã  faire le diagnostic.
    
    "UTPRIN" ajoute automatiquement ces deux lignes :
       Il y a probablement une erreur dans la programmation.
@@ -32,11 +32,11 @@
 cata_msg={
 
 1 : _(u"""
-   Erreur de programmation : condition non respectée.
+   Erreur de programmation : condition non respectÃ©e.
 """),
 
 2 : _(u"""
-   Erreur numérique (floating point exception).
+   Erreur numÃ©rique (floating point exception).
 """),
 
 3 : _(u"""
@@ -45,27 +45,27 @@ cata_msg={
 """),
 
 4 : _(u"""
-   On ne sait pas traiter ce type d'élément : %(k1)s
+   On ne sait pas traiter ce type d'Ã©lÃ©ment : %(k1)s
 """),
 
 5 : _(u"""
  Erreur de programmation :
   On ne trouve pas le triplet ( %(k1)s )
-  correspondant à (nomte elrefe famille).
+  correspondant Ã  (nomte elrefe famille).
  Conseils :
-  Vérifiez le catalogue d'éléments.
-  L'elrefe ou la famille de points de Gauss ne sont pas définis.
+  VÃ©rifiez le catalogue d'Ã©lÃ©ments.
+  L'elrefe ou la famille de points de Gauss ne sont pas dÃ©finis.
 """),
 
 9 : _(u"""
    Erreur de programmation dans un module Python. 
-   Condition non respectée : %(k2)s
+   Condition non respectÃ©e : %(k2)s
 
       %(k1)s
 """),
 
 97 : _(u"""
-   Erreur signalée dans la bibliothèque MED
+   Erreur signalÃ©e dans la bibliothÃ¨que MED
      nom de l'utilitaire : %(k1)s
              code retour : %(i1)d
 """),

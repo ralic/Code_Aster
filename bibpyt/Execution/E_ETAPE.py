@@ -1,4 +1,4 @@
-# -*- coding: iso-8859-1 -*-
+# coding=utf-8
 # person_in_charge: mathieu.courtois at edf.fr
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -42,17 +42,17 @@ from code_file import CodeVisitor
 
 class ETAPE:
    """
-   Cette classe implémente les méthodes relatives à la phase d'execution.
+   Cette classe implÃ©mente les mÃ©thodes relatives Ã  la phase d'execution.
 
-   Les méthodes principales sont:
+   Les mÃ©thodes principales sont:
       - Exec, realise la phase d'execution, en mode par lot
       - Execute, realise la phase d'execution, en mode commande par commande
    """
 
    def Exec(self):
       """
-      Realise une passe d'execution sur l'operateur "fortran" associé
-      si le numero d'operateur (self.definition.op) est défini.
+      Realise une passe d'execution sur l'operateur "fortran" associÃ©
+      si le numero d'operateur (self.definition.op) est dÃ©fini.
 
       On execute l'operateur numero self.definition.op
       en lui passant les arguments :
@@ -61,16 +61,16 @@ class ETAPE:
                -  0 = execution par lot (verification globale avant execution)
                -  1 = execution commande par commande (verification + execution commande par commande)
         - ipass : passe d'execution
-               -  1 = verifications supplémentaires
+               -  1 = verifications supplÃ©mentaires
                -  2 = execution effective
-        - icmd  : numéro d'ordre de la commande
+        - icmd  : numÃ©ro d'ordre de la commande
       Retour : iertot = nombre d erreurs
       """
       from Utilitai.Utmess import UTMESS, MessageLog
       if CONTEXT.debug :
            prbanner(" appel de l operateur %s numero %s " % (self.definition.nom,self.definition.op))
 
-      # On n'execute pas les etapes qui n'ont pas de numero d'operateur associé
+      # On n'execute pas les etapes qui n'ont pas de numero d'operateur associÃ©
       if self.definition.op is None :return 0
 
       assert(type(self.definition.op)==int),"type(self.definition.op)="+`type(self.definition.op)`
@@ -97,11 +97,11 @@ class ETAPE:
              co.executed = 1
 
           if self.definition.op_init is None:
-             # vérification de la SD produite
+             # vÃ©rification de la SD produite
              if self.sd and self.jdc.sdveri:
-                # on force la vérif si :
-                     # concept réentrant
-                     # sd.nom absent du contexte (detruit ? car les nouveaux sont forcément vérifiés)
+                # on force la vÃ©rif si :
+                     # concept rÃ©entrant
+                     # sd.nom absent du contexte (detruit ? car les nouveaux sont forcÃ©ment vÃ©rifiÃ©s)
                      # pb avec macro reentrante et commande non reentrante : cf. ssnv164b ou ssll14a
                 force = (self.reuse is not None) \
                      or (self.parent.get_contexte_avant(self).get(self.sd.nom) is None) \
@@ -131,9 +131,9 @@ class ETAPE:
       from Utilitai.Utmess import UTMESS
       voir = (not isinstance(self.parent, MACRO_ETAPE)) or self.parent.nom == 'INCLUDE' \
              or self.jdc.impr_macro == 1
-      # top départ du chrono de la commande
+      # top dÃ©part du chrono de la commande
       etiq = self.nom
-      # id unique pour l'étape. L'attribut n'est pas déclaré dans l'__init__...
+      # id unique pour l'Ã©tape. L'attribut n'est pas dÃ©clarÃ© dans l'__init__...
       count = (self.icmd or 0)
       self.id_timer = str(time.time() + count)
       if (isinstance(self.parent,MACRO_ETAPE)) or \
@@ -143,7 +143,7 @@ class ETAPE:
          self.jdc.timer.Start(self.id_timer, name=etiq)
 
       # impression du fichier .code : compte rendu des commandes et
-      # mots clés activés par l'ETAPE
+      # mots clÃ©s activÃ©s par l'ETAPE
       if self.jdc.fico != None:
         fcode = CodeVisitor(self.jdc.fico)
         self.accept(fcode)
@@ -162,7 +162,7 @@ class ETAPE:
             UTMESS('I', 'SUPERVIS2_71', vali=self.icmd, valk=type_concept)
             UTMESS('I', 'SUPERVIS2_70')
          else:
-            # commande non comptabilisée (INCLUDE)
+            # commande non comptabilisÃ©e (INCLUDE)
             UTMESS('I', 'SUPERVIS2_72', valk=type_concept)
 
          # recuperation du texte de la commande courante
@@ -239,7 +239,7 @@ class ETAPE:
          raise
 
    def detruit_sdprod(self):
-      """ Cette méthode supprime le concept produit par la commande
+      """ Cette mÃ©thode supprime le concept produit par la commande
           du registre tenu par le JDC
       """
       if self.sd is not None:

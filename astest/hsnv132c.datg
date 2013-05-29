@@ -14,7 +14,7 @@ NY = 11;
 NZ = 1;
 
 *---------------------------------------------
-*construction des surfaces dans le plan inférieur
+*construction des surfaces dans le plan infÃ©rieur
 *---------------------------------------------
 
 p1 = 0.  0.  0.  ;

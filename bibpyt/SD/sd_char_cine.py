@@ -1,4 +1,4 @@
-# -*- coding: iso-8859-1 -*-
+# coding=utf-8
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -33,7 +33,7 @@ class sd_char_cine(AsBase):
 
 
     def exists(self):
-        # retourne "vrai" si la SD semble exister (et donc qu'elle peut etre vérifiée)
+        # retourne "vrai" si la SD semble exister (et donc qu'elle peut etre vÃ©rifiÃ©e)
         return self.AFCK.exists
 
 
@@ -88,13 +88,13 @@ class sd_char_cine(AsBase):
             assert self.AFCV.lonmax >= nbloc , (nbloc,self.AFCV.lonmax)
 
             if tsca == 'RE' :
-                assert tsca2=='R', tsca2  # champ de réels
+                assert tsca2=='R', tsca2  # champ de rÃ©els
             if tsca == 'FT' :
                 assert tsca2=='K', tsca2  # champ de fonctions
             if tsca == 'CX' :
                 assert tsca2=='C', tsca2  # champ de complexes
 
-            # vérification des fonctions :
+            # vÃ©rification des fonctions :
             if tsca == 'FT'  :
                 afcv  = self.AFCV.get()
                 for fonc in afcv[:nbloc] :

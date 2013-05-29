@@ -1,4 +1,4 @@
-# -*- coding: iso-8859-1 -*-
+# coding=utf-8
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -21,11 +21,11 @@
 cata_msg = {
 
 1 : _(u"""
- Le fichier de nom %(k1)s associé à l'unité logique %(k2)s n'existe pas.
+ Le fichier de nom %(k1)s associÃ© Ã  l'unitÃ© logique %(k2)s n'existe pas.
 """),
 
 3 : _(u"""
- sélection de ddl : choix < %(k1)s > inconnu
+ sÃ©lection de ddl : choix < %(k1)s > inconnu
 """),
 
 4 : _(u"""
@@ -41,11 +41,11 @@ cata_msg = {
 """),
 
 7 : _(u"""
- redéfinition de l'unité logique  %(k1)s  non autorisée
+ redÃ©finition de l'unitÃ© logique  %(k1)s  non autorisÃ©e
 """),
 
 8 : _(u"""
- nombre maximum d'unités logiques ouvertes atteint  %(k1)s
+ nombre maximum d'unitÃ©s logiques ouvertes atteint  %(k1)s
 """),
 
 9 : _(u"""
@@ -53,11 +53,11 @@ cata_msg = {
 """),
 
 10 : _(u"""
- aucun numéro d'unité logique disponible
+ aucun numÃ©ro d'unitÃ© logique disponible
 """),
 
 11 : _(u"""
- unité logique  %(k1)s  associée au nom  %(k2)s  et au fichier  %(k3)s
+ unitÃ© logique  %(k1)s  associÃ©e au nom  %(k2)s  et au fichier  %(k3)s
 """),
 
 12 : _(u"""
@@ -65,7 +65,7 @@ cata_msg = {
 """),
 
 13 : _(u"""
- unité logique  %(k1)s  déjà utilisée en accès  %(k2)s  par le fichier  %(k3)s
+ unitÃ© logique  %(k1)s  dÃ©jÃ  utilisÃ©e en accÃ¨s  %(k2)s  par le fichier  %(k3)s
 """),
 
 14 : _(u"""
@@ -73,7 +73,7 @@ cata_msg = {
 """),
 
 15 : _(u"""
- unité logique  %(k1)s  déjà utilisée en mode binaire par le fichier  %(k2)s
+ unitÃ© logique  %(k1)s  dÃ©jÃ  utilisÃ©e en mode binaire par le fichier  %(k2)s
 """),
 
 16 : _(u"""
@@ -81,51 +81,51 @@ cata_msg = {
 """),
 
 17 : _(u"""
- unité logique  %(k1)s  déjà utilisée par le fichier  %(k2)s  associée au nom  %(k3)s
+ unitÃ© logique  %(k1)s  dÃ©jÃ  utilisÃ©e par le fichier  %(k2)s  associÃ©e au nom  %(k3)s
 """),
 
 18 : _(u"""
- unité logique  %(k1)s , problème lors de l'open  %(k2)s
+ unitÃ© logique  %(k1)s , problÃ¨me lors de l'open  %(k2)s
 """),
 
 19 : _(u"""
- unité logique  %(k1)s , problème lors du positionnement
+ unitÃ© logique  %(k1)s , problÃ¨me lors du positionnement
 """),
 
 20 : _(u"""
- Problème lors de la récupération d'informations sur l'unité logique %(k1)s.
+ ProblÃ¨me lors de la rÃ©cupÃ©ration d'informations sur l'unitÃ© logique %(k1)s.
 """),
 
 21 : _(u"""
- Le nombre d'unités logiques ouvertes est supérieur à %(i1)d.
+ Le nombre d'unitÃ©s logiques ouvertes est supÃ©rieur Ã  %(i1)d.
 """),
 
 22 : _(u"""
- unité logique  %(k1)s , problème lors du close de la réservation.
+ unitÃ© logique  %(k1)s , problÃ¨me lors du close de la rÃ©servation.
 """),
 
 23 : _(u"""
- La redéfinition de l'unité logique  %(k1)s n'est pas autorisée.
+ La redÃ©finition de l'unitÃ© logique  %(k1)s n'est pas autorisÃ©e.
 """),
 
 24 : _(u"""
- Le type d'accès est inconnu "%(k1)s" pour l'unité %(k2)s.
+ Le type d'accÃ¨s est inconnu "%(k1)s" pour l'unitÃ© %(k2)s.
 """),
 
 25 : _(u"""
- fichier non nomme, unité  %(k1)s
+ fichier non nomme, unitÃ©  %(k1)s
 """),
 
 26 : _(u"""
- fichier non ouvert, unité  %(k1)s
+ fichier non ouvert, unitÃ©  %(k1)s
 """),
 
 27 : _(u"""
- rembobinage impossible, unité  %(k1)s
+ rembobinage impossible, unitÃ©  %(k1)s
 """),
 
 28 : _(u"""
- positionnement inconnu " %(k1)s ", unité  %(k2)s
+ positionnement inconnu " %(k1)s ", unitÃ©  %(k2)s
 """),
 
 29 : _(u"""
@@ -141,39 +141,39 @@ cata_msg = {
 """),
 
 32 : _(u"""
- Le champ '%(k1)s' n'est pas un champ par éléments aux noeuds.
+ Le champ '%(k1)s' n'est pas un champ par Ã©lÃ©ments aux noeuds.
 """),
 
 34 : _(u"""
- La maille '%(k1)s' n'est pas affectée dans le groupe d'éléments finis '%(k2)s'.
+ La maille '%(k1)s' n'est pas affectÃ©e dans le groupe d'Ã©lÃ©ments finis '%(k2)s'.
 """),
 
 35 : _(u"""
- La maille '%(k1)s' possède un type d'élément ignorant le champ par élément testé.
+ La maille '%(k1)s' possÃ¨de un type d'Ã©lÃ©ment ignorant le champ par Ã©lÃ©ment testÃ©.
 """),
 
 36 : _(u"""
- Le numéro de sous-point demandé est supérieur au numéro maximum de sous-point.
+ Le numÃ©ro de sous-point demandÃ© est supÃ©rieur au numÃ©ro maximum de sous-point.
 """),
 
 37 : _(u"""
- Le numéro de point demandé (%(i1)d) est supérieur au numéro maximum de point (%(i2)d).
+ Le numÃ©ro de point demandÃ© (%(i1)d) est supÃ©rieur au numÃ©ro maximum de point (%(i2)d).
 """),
 
 38 : _(u"""
- L'élément n'admet pas la composante '%(k1)s'.
+ L'Ã©lÃ©ment n'admet pas la composante '%(k1)s'.
 """),
 
 39 : _(u"""
- Détermination de la localisation des points de gauss.
+ DÃ©termination de la localisation des points de gauss.
 """),
 
 41 : _(u"""
- XOUS :  %(k1)s  non prévu.
+ XOUS :  %(k1)s  non prÃ©vu.
 """),
 
 42 : _(u"""
- chaîne sch1 trop longue >24
+ chaÃ®ne sch1 trop longue >24
 """),
 
 43 : _(u"""
@@ -185,7 +185,7 @@ cata_msg = {
 """),
 
 45 : _(u"""
- on demande un nombre de composantes négatif pour  %(k1)s
+ on demande un nombre de composantes nÃ©gatif pour  %(k1)s
 """),
 
 46 : _(u"""
@@ -223,19 +223,19 @@ Erreur Programmeur / UTTCPU :
 
 55 : _(u"""
 Erreur Programmeur / UTTCPU  :
- L"appel a uttcpu ne peut être effectue avec la valeur "DEBUT" pour l"argument PARA
+ L"appel a uttcpu ne peut Ãªtre effectue avec la valeur "DEBUT" pour l"argument PARA
  Il faut d'abord avoir fait "INIT".
 """),
 
 56 : _(u"""
 Erreur Programmeur / UTTCPU  :
- L"appel a uttcpu ne peut être effectué avec la valeur "FIN" pour l"argument PARA.
+ L"appel a uttcpu ne peut Ãªtre effectuÃ© avec la valeur "FIN" pour l"argument PARA.
  Il faut d'abord avoir fait "DEBUT".
 """),
 
 57 : _(u"""
 Erreur Programmeur / UTTCPU  :
- L"appel a uttcpu ne peut être effectue avec la valeur  %(k1)s  pour l"argument PARA
+ L"appel a uttcpu ne peut Ãªtre effectue avec la valeur  %(k1)s  pour l"argument PARA
 """),
 
 58 : _(u"""
@@ -251,7 +251,7 @@ Erreur Programmeur / UTTCPU  :
 """),
 
 88 : _(u"""
- L'option " %(k1)s " est à recalculer
+ L'option " %(k1)s " est Ã  recalculer
 """),
 
 89 : _(u"""
@@ -267,28 +267,28 @@ Erreur Programmeur / UTTCPU  :
 
 
 92 : _(u"""
- Interpolation LOG et complexe en ordonnées sont incompatibles !
+ Interpolation LOG et complexe en ordonnÃ©es sont incompatibles !
 """),
 
 93 : _(u"""
- Vous essayez de stocker le modèle, le champ matériau ou
- des caractéristiques élémentaires dans la SD résultat.
- Ce n'est pas possible pour une SD résultat de type %(k1)s,
- on ne stocke aucun de ces trois éléments.
+ Vous essayez de stocker le modÃ¨le, le champ matÃ©riau ou
+ des caractÃ©ristiques Ã©lÃ©mentaires dans la SD rÃ©sultat.
+ Ce n'est pas possible pour une SD rÃ©sultat de type %(k1)s,
+ on ne stocke aucun de ces trois Ã©lÃ©ments.
 """),
 
 94 : _(u"""
- Vous essayer de stocker la SD charge dans la SD résultat.
- Ce n'est pas possible pour une SD résultat de type %(k1)s,
+ Vous essayer de stocker la SD charge dans la SD rÃ©sultat.
+ Ce n'est pas possible pour une SD rÃ©sultat de type %(k1)s,
  on ne stocke pas la charge.
 """),
 
 97 : _(u"""
- le type de champ  %(k1)s n'est pas accepté
+ le type de champ  %(k1)s n'est pas acceptÃ©
  veuillez consulter la documentation U correspondante
 """),
 
 98 : _(u"""
- Pour une SD résultat de type %(k1)s, le modèle ne sera pas stocké.
+ Pour une SD rÃ©sultat de type %(k1)s, le modÃ¨le ne sera pas stockÃ©.
 """),
 }

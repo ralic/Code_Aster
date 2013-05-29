@@ -1,4 +1,4 @@
-# -*- coding: iso-8859-1 -*-
+# coding=utf-8
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -45,7 +45,7 @@ def macro_elas_mult_ops(self,MODELE,CHAM_MATER,CARA_ELEM,NUME_DDL,
   # La macro compte pour 1 dans la numerotation des commandes
   self.set_icmd(1)
 
-  # Le concept sortant (de type mult_elas ou fourier_elas) est nommé
+  # Le concept sortant (de type mult_elas ou fourier_elas) est nommÃ©
   # 'nomres' dans le contexte de la macro
 
   self.DeclareOut('nomres',self.sd)
@@ -54,16 +54,16 @@ def macro_elas_mult_ops(self,MODELE,CHAM_MATER,CARA_ELEM,NUME_DDL,
   ifour = 0
   for m in CAS_CHARGE:
      if m['NOM_CAS']:
-        ielas=1                 # mot clé NOM_CAS      présent sous CAS_CHARGE
+        ielas=1                 # mot clÃ© NOM_CAS      prÃ©sent sous CAS_CHARGE
         tyresu = 'MULT_ELAS'
      else:
-        ifour=1                 # mot clé MODE_FOURIER présent sous CAS_CHARGE
+        ifour=1                 # mot clÃ© MODE_FOURIER prÃ©sent sous CAS_CHARGE
         tyresu = 'FOURIER_ELAS'
   if ielas==1 and ifour==1:
      UTMESS('F','ELASMULT0_1')
 
   if (numeddl in self.sdprods) or (numeddl==None):
-    # Si le concept numeddl est dans self.sdprods ou n est pas nommé
+    # Si le concept numeddl est dans self.sdprods ou n est pas nommÃ©
     # il doit etre  produit par la macro
     # il faudra donc appeler la commande NUME_DDL
     lnume = 1
@@ -108,7 +108,7 @@ def macro_elas_mult_ops(self,MODELE,CHAM_MATER,CARA_ELEM,NUME_DDL,
   for m in CAS_CHARGE:
      iocc=iocc+1
 
-     # calcul de lcharg : liste des listes de char_meca (mots clé CHAR_MECA et CHAR_MECA_GLOBAL)
+     # calcul de lcharg : liste des listes de char_meca (mots clÃ© CHAR_MECA et CHAR_MECA_GLOBAL)
      xx1=m['CHAR_MECA']
      if type(xx1) != type((1,)) : xx1=(xx1,)
      xx2=CHAR_MECA_GLOBAL

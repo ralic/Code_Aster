@@ -1,4 +1,4 @@
-# -*- coding: iso-8859-1 -*-
+# coding=utf-8
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -20,7 +20,7 @@
 
 cata_msg={
 1: _(u"""
-On ne peut avoir à la fois NOM_CAS et MODE_FOURIER.
+On ne peut avoir Ã  la fois NOM_CAS et MODE_FOURIER.
 """),
 
 }

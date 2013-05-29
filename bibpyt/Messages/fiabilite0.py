@@ -1,4 +1,4 @@
-# -*- coding: iso-8859-1 -*-
+# coding=utf-8
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -20,7 +20,7 @@
 
 cata_msg={
 1: _(u"""
-Le nombre d'éléments du mot clé MATRICE doit être égal à : %(i1)d
+Le nombre d'Ã©lÃ©ments du mot clÃ© MATRICE doit Ãªtre Ã©gal Ã  : %(i1)d
 """),
 
 }

@@ -1,4 +1,4 @@
-# -*- coding: iso-8859-1 -*-
+# coding=utf-8
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -20,28 +20,28 @@ cata_msg={
 
 1 : _(u"""
  Erreur dans ENV_CINE_YACS : 
- il faut donner RESULTAT ou ETAT_INIT, pas les deux en même temps
+ il faut donner RESULTAT ou ETAT_INIT, pas les deux en mÃªme temps
 """),
 
 2 : _(u"""
- Erreur dans ENV_CINE_YACS : problème avec VIS_A_VIS
+ Erreur dans ENV_CINE_YACS : problÃ¨me avec VIS_A_VIS
 """),
 
 3 : _(u"""
- Erreur dans ENV_CINE_YACS : problème avec ETAT_INIT :
+ Erreur dans ENV_CINE_YACS : problÃ¨me avec ETAT_INIT :
  il faut donner DEPL, VITE et ACCE
 """),
 
 4 : _(u"""
- Erreur dans ENV_CINE_YACS : incohérence entre maillage et champs
+ Erreur dans ENV_CINE_YACS : incohÃ©rence entre maillage et champs
 """),
 
 5 : _(u"""
- Erreur dans MODI_CHAR_YACS : problème avec VIS_A_VIS
+ Erreur dans MODI_CHAR_YACS : problÃ¨me avec VIS_A_VIS
 """),
 
 6 : _(u"""
- Erreur dans MODI_CHAR_YACS : incohérence entre maillage et champs
+ Erreur dans MODI_CHAR_YACS : incohÃ©rence entre maillage et champs
 """),
 
 7 : _(u"""
@@ -50,11 +50,11 @@ cata_msg={
 
 8 : _(u"""
  Erreur dans PROJ_CHAMP option COUPLAGE      
-     Nombre d'interfaces définies dans Code_Saturne : %(i1)i
-     Nombre d'interfaces définies dans Code_Aster   : %(i2)i
-     Vérifiez la cohérence entre :
-       Code_Aster   : Le mot-clé GROUP_MA_IFS de la commande CALC_IFS_DNL
-       Code_Saturne : La définition des structures dans USASTE.F
+     Nombre d'interfaces dÃ©finies dans Code_Saturne : %(i1)i
+     Nombre d'interfaces dÃ©finies dans Code_Aster   : %(i2)i
+     VÃ©rifiez la cohÃ©rence entre :
+       Code_Aster   : Le mot-clÃ© GROUP_MA_IFS de la commande CALC_IFS_DNL
+       Code_Saturne : La dÃ©finition des structures dans USASTE.F
 """),
 
 9 : _(u"""
@@ -72,7 +72,7 @@ cata_msg={
 
 12 : _(u"""
  Erreur dans PROJ_CHAMP option COUPLAGE :
-     le nombre de noeuds à l'interface : %(i1)i est supérieur à la limite autorisée : %(i2)i
+     le nombre de noeuds Ã  l'interface : %(i1)i est supÃ©rieur Ã  la limite autorisÃ©e : %(i2)i
 """),
 
 }

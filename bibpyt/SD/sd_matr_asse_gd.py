@@ -1,4 +1,4 @@
-# -*- coding: iso-8859-1 -*-
+# coding=utf-8
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -28,9 +28,9 @@ class sd_matr_asse_gd(sd_matr_asse_com):
     nomj = SDNom(fin=19)
 
 
-    # indirection vers sd_nume_ddl_gd à faire car FACT_LDLT modifie le sd_nume_ddl_gd de la sd_matr_asse :
+    # indirection vers sd_nume_ddl_gd Ã  faire car FACT_LDLT modifie le sd_nume_ddl_gd de la sd_matr_asse :
     def check_matr_asse_gd_i_REFA(self, checker):
-        # on est obligé de se protéger dans le cas des Facultatif(sd_matr_asse) :
+        # on est obligÃ© de se protÃ©ger dans le cas des Facultatif(sd_matr_asse) :
         if not self.REFA.get() : return
         nom=self.REFA.get()[1]
         sd2=sd_nume_ddl_gd(nom) ; sd2.check(checker)

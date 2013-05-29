@@ -1,7 +1,7 @@
 
-*Patin glissant sur un plan rigide incline‰
-* Mod‰lisatio A
-*Solide : Mod‰lisation D_PLAN (mailles QUA4)
+*Patin glissant sur un plan rigide inclineÂ‰
+* ModÂ‰lisatio A
+*Solide : ModÂ‰lisation D_PLAN (mailles QUA4)
 *Contact: CONTACT 
 
 
@@ -117,7 +117,6 @@ sauv form (PATIN et BATI et RES_HAUT et RES_LAT) ;
 trac(BATI et PATIN et RES_HAUT et RES_LAT);
 
 fin;
-
 
 
 

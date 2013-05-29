@@ -1,4 +1,4 @@
-# -*- coding: iso-8859-1 -*-
+# coding=utf-8
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -22,7 +22,7 @@ from cata_comportement import LoiComportement
 
 loi = LoiComportement(
    nom            = 'SANS',
-   doc = """comportement inopérant, utile à la simulation des cables de précontrainte""",
+   doc = """comportement inopÃ©rant, utile Ã  la simulation des cables de prÃ©contrainte""",
    num_lc         = 38,
    nb_vari        = 1,
    nom_vari       = ('VIDE'), 

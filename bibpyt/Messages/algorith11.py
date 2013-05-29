@@ -1,4 +1,4 @@
-# -*- coding: iso-8859-1 -*-
+# coding=utf-8
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -21,12 +21,12 @@
 cata_msg = {
 
 1 : _(u"""
-La valeur supérieure de KMOD0 est nulle.
-On prend la valeur supérieure KMOD.
+La valeur supÃ©rieure de KMOD0 est nulle.
+On prend la valeur supÃ©rieure KMOD.
 """),
 
 2 : _(u"""
-La valeur supérieure de KMOD est nulle.
+La valeur supÃ©rieure de KMOD est nulle.
 """),
 
 3 : _(u"""
@@ -38,39 +38,39 @@ La force normale est nulle.
 """),
 
 6 : _(u"""
-La somme des impacts écrouissage est inférieure à la somme des glissements.
+La somme des impacts Ã©crouissage est infÃ©rieure Ã  la somme des glissements.
 """),
 
 7 : _(u"""
-NOM_CAS n'est pas une variable d'accès d'un résultat de type EVOL_THER.
+NOM_CAS n'est pas une variable d'accÃ¨s d'un rÃ©sultat de type EVOL_THER.
 """),
 
 8 : _(u"""
-NUME_MODE n'est pas une variable d'accès d'un résultat de type EVOL_THER.
+NUME_MODE n'est pas une variable d'accÃ¨s d'un rÃ©sultat de type EVOL_THER.
 """),
 
 9 : _(u"""
-NUME_MODE n'est pas une variable d'accès d'un résultat de type MULT_ELAS.
+NUME_MODE n'est pas une variable d'accÃ¨s d'un rÃ©sultat de type MULT_ELAS.
 """),
 
 10 : _(u"""
-INST n'est pas une variable d'accès d'un résultat de type MULT_ELAS.
+INST n'est pas une variable d'accÃ¨s d'un rÃ©sultat de type MULT_ELAS.
 """),
 
 11 : _(u"""
-NOM_CAS n'est pas une variable d'accès d'un résultat de type FOURIER_ELAS.
+NOM_CAS n'est pas une variable d'accÃ¨s d'un rÃ©sultat de type FOURIER_ELAS.
 """),
 
 12 : _(u"""
-INST n'est pas une variable d'accès d'un résultat de type FOURIER_ELAS.
+INST n'est pas une variable d'accÃ¨s d'un rÃ©sultat de type FOURIER_ELAS.
 """),
 
 13 : _(u"""
-NOM_CAS n'est pas une variable d'accès d'un résultat de type FOURIER_THER.
+NOM_CAS n'est pas une variable d'accÃ¨s d'un rÃ©sultat de type FOURIER_THER.
 """),
 
 14 : _(u"""
-INST n'est pas une variable d'accès d'un résultat de type FOURIER_THER.
+INST n'est pas une variable d'accÃ¨s d'un rÃ©sultat de type FOURIER_THER.
 """),
 
 15 : _(u"""
@@ -94,24 +94,24 @@ Absence de potentiel permanent.
 """),
 
 25 : _(u"""
-Le modèle fluide n'est pas thermique.
+Le modÃ¨le fluide n'est pas thermique.
 """),
 
 26 : _(u"""
-Le modèle interface n'est pas thermique.
+Le modÃ¨le interface n'est pas thermique.
 """),
 
 27 : _(u"""
-Le modèle fluide est incompatible avec le calcul de masse ajoutée.
-Utilisez les modélisations PLAN ou 3D ou AXIS.
+Le modÃ¨le fluide est incompatible avec le calcul de masse ajoutÃ©e.
+Utilisez les modÃ©lisations PLAN ou 3D ou AXIS.
 """),
 
 29 : _(u"""
-Le nombre d'amortissement modaux est différent du nombre de modes dynamiques.
+Le nombre d'amortissement modaux est diffÃ©rent du nombre de modes dynamiques.
 """),
 
 30 : _(u"""
-Il n y a pas le même nombre de modes retenus  dans l'excitation modale et 
+Il n y a pas le mÃªme nombre de modes retenus  dans l'excitation modale et 
 dans la base modale
 """),
 
@@ -120,11 +120,11 @@ Il faut autant d'indices en i et j.
 """),
 
 32 : _(u"""
-Avec SOUR_PRESS et SOUR_FORCE, il faut deux points par degré de liberté d'application
+Avec SOUR_PRESS et SOUR_FORCE, il faut deux points par degrÃ© de libertÃ© d'application
 """),
 
 33 : _(u"""
-Mauvais accord entre le nombre d'appuis et le nombre de valeur dans le mot-clé NUME_ORDRE_I
+Mauvais accord entre le nombre d'appuis et le nombre de valeur dans le mot-clÃ© NUME_ORDRE_I
 """),
 
 34 : _(u"""
@@ -132,19 +132,19 @@ Il faut autant de noms de composantes que de noms de noeuds.
 """),
 
 35 : _(u"""
-Précisez le mode statique.
+PrÃ©cisez le mode statique.
 """),
 
 36 : _(u"""
-Le mode statique n'est pas nécessaire.
+Le mode statique n'est pas nÃ©cessaire.
 """),
 
 37 : _(u"""
-La fréquence minimale doit être plus petite que la fréquence maximale.
+La frÃ©quence minimale doit Ãªtre plus petite que la frÃ©quence maximale.
 """),
 
 73 : _(u"""
-Le paramètre matériau taille limite D10 n'est pas défini.
+Le paramÃ¨tre matÃ©riau taille limite D10 n'est pas dÃ©fini.
 """),
 
 79 : _(u"""
@@ -158,7 +158,7 @@ Erreur de la direction de glissement dans NMVPIR.
 """),
 
 83 : _(u"""
-Arrêt par manque de temps CPU.
+ArrÃªt par manque de temps CPU.
 """),
 
 86 : _(u"""
@@ -166,68 +166,68 @@ La perturbation est trop petite, calcul impossible.
 """),
 
 87 : _(u"""
-Champ déjà existant
-Le champ %(k1)s à l'instant %(r1)g est remplacé par le champ %(k2)s à l'instant %(r2)g avec la précision %(r3)g.
+Champ dÃ©jÃ  existant
+Le champ %(k1)s Ã  l'instant %(r1)g est remplacÃ© par le champ %(k2)s Ã  l'instant %(r2)g avec la prÃ©cision %(r3)g.
 """),
 
 88 : _(u"""
-Arrêt débordement assemblage : ligne. 
+ArrÃªt dÃ©bordement assemblage : ligne. 
 """),
 
 90 : _(u"""
-Arrêt débordement assemblage : colonne. 
+ArrÃªt dÃ©bordement assemblage : colonne. 
 """),
 
 92 : _(u"""
-Arrêt pour nombre de sous-structures invalide : 
+ArrÃªt pour nombre de sous-structures invalide : 
  Il en faut au minimum : %(i1)d 
- Vous en avez défini   : %(i2)d 
+ Vous en avez dÃ©fini   : %(i2)d 
 """),
 
 93 : _(u"""
-Arrêt pour nombre de noms de sous-structures invalide :
+ArrÃªt pour nombre de noms de sous-structures invalide :
  Il en faut exactement : %(i1)d 
- Vous en avez défini   : %(i2)d 
+ Vous en avez dÃ©fini   : %(i2)d 
 """),
 
 94 : _(u"""
-Arrêt pour nombre de MACR_ELEM invalide :
+ArrÃªt pour nombre de MACR_ELEM invalide :
  Sous-structure %(k1)s
  Il en faut exactement : %(i2)d 
- Vous en avez défini   : %(i1)d 
+ Vous en avez dÃ©fini   : %(i1)d 
 """),
 
 95 : _(u"""
-Arrêt pour nombre d'angles nautiques invalide :
+ArrÃªt pour nombre d'angles nautiques invalide :
  Sous-structure %(k1)s 
  Il en faut exactement : %(i2)d 
- Vous en avez défini   : %(i1)d 
+ Vous en avez dÃ©fini   : %(i1)d 
 """),
 
 96 : _(u"""
-Arrêt pour nombre de translations invalide :
+ArrÃªt pour nombre de translations invalide :
  Sous-structure %(k1)s 
  Il en faut exactement : %(i2)d 
- Vous en avez défini   : %(i1)d  
+ Vous en avez dÃ©fini   : %(i1)d  
 """),
 
 97 : _(u"""
-Arrêt pour nombre de liaisons définies invalide :
+ArrÃªt pour nombre de liaisons dÃ©finies invalide :
  Il en faut exactement : %(i2)d 
- Vous en avez défini   : %(i1)d 
+ Vous en avez dÃ©fini   : %(i1)d 
 """),
 
 98 : _(u"""
-Arrêt pour nombre de mots-clés invalide :
- Numéro liaison : %(i1)d
- Mot-clé        : %(k1)s 
+ArrÃªt pour nombre de mots-clÃ©s invalide :
+ NumÃ©ro liaison : %(i1)d
+ Mot-clÃ©        : %(k1)s 
  Il en faut exactement : %(i3)d 
- Vous en avez défini   : %(i2)d
+ Vous en avez dÃ©fini   : %(i2)d
 """),
 
 99 : _(u"""
-Arrêt pour sous-structure indéfinie :
- Numéro liaison    : %(i1)d
+ArrÃªt pour sous-structure indÃ©finie :
+ NumÃ©ro liaison    : %(i1)d
  Nom sous-structure: %(k1)s 
 """),
 

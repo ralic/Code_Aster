@@ -1,4 +1,4 @@
-# -*- coding: iso-8859-1 -*-
+# coding=utf-8
 # person_in_charge: mathieu.courtois at edf.fr
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -24,18 +24,18 @@
 
 class ENSEMBLE:
    """
-      La règle vérifie que si un mot-clé de self.mcs est present 
+      La rÃ¨gle vÃ©rifie que si un mot-clÃ© de self.mcs est present 
           parmi les elements de args tous les autres doivent etre presents.
 
-      Ces arguments sont transmis à la règle pour validation sous la forme 
-      d'une liste de noms de mots-clés ou d'un dictionnaire dont 
-      les clés sont des noms de mots-clés.
+      Ces arguments sont transmis Ã  la rÃ¨gle pour validation sous la forme 
+      d'une liste de noms de mots-clÃ©s ou d'un dictionnaire dont 
+      les clÃ©s sont des noms de mots-clÃ©s.
    """
    def verif(self,args):
       """
-          La methode verif effectue la verification specifique à la règle.
-          args peut etre un dictionnaire ou une liste. Les éléments de args
-          sont soit les éléments de la liste soit les clés du dictionnaire.
+          La methode verif effectue la verification specifique Ã  la rÃ¨gle.
+          args peut etre un dictionnaire ou une liste. Les Ã©lÃ©ments de args
+          sont soit les Ã©lÃ©ments de la liste soit les clÃ©s du dictionnaire.
       """
       #  on compte le nombre de mots cles presents, il doit etre egal a la liste
       #  figurant dans la regle
@@ -51,6 +51,6 @@ class ENSEMBLE:
         for mc in self.mcs:
           if mc != pivot :
             if not args.has_key(mc):
-              text = text + "- "+ pivot + u" étant présent, "+mc+ u" doit être présent"+'\n'
+              text = text + "- "+ pivot + u" Ã©tant prÃ©sent, "+mc+ u" doit Ãªtre prÃ©sent"+'\n'
               test = 0
       return text,test

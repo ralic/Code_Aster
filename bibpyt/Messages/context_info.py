@@ -1,4 +1,4 @@
-# -*- coding: iso-8859-1 -*-
+# coding=utf-8
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -19,10 +19,10 @@
 # person_in_charge: mathieu.courtois at edf.fr
 
 """
-   Ensemble de fonctions permettant de récupérer des infos sur le contexte
+   Ensemble de fonctions permettant de rÃ©cupÃ©rer des infos sur le contexte
    dans lequel se produit une erreur.
    L'objectif est :
-      - d'aider à la compréhension du message,
+      - d'aider Ã  la comprÃ©hension du message,
       - de fournir, si possible, des pistes de solution.
 """
 
@@ -31,7 +31,7 @@ __all__ = ['context_concept', 'message_context_concept']
 # -----------------------------------------------------------------------------
 def context_concept(nom_concept):
    """Retourne le nom de la commande ayant produit le concept `nom_concept`
-   et la liste des (commande, [mot-clé facteur,] mot-clé) où il est utilisé.
+   et la liste des (commande, [mot-clÃ© facteur,] mot-clÃ©) oÃ¹ il est utilisÃ©.
    """
    dico = { 'concept' : nom_concept, 'cmde_prod' : '', 'cmde_use' : [] }
    jdc = CONTEXT.get_current_step()
@@ -39,7 +39,7 @@ def context_concept(nom_concept):
    if co == None:
       return dico
    dico['cmde_prod'] = co.etape
-   # étape utilisant `nom_concept`
+   # Ã©tape utilisant `nom_concept`
    l_etape = jdc.get_liste_etapes()
    l_cmde = []
    for etape in l_etape:
@@ -53,7 +53,7 @@ def context_concept(nom_concept):
 def message_context_concept(*args, **kwargs):
    """Appel context_concept et formatte le message.
    """
-   fmt_concept = """Le concept '%(nom_concept)s' a été produit par %(nom_cmde_prod)s."""
+   fmt_concept = """Le concept '%(nom_concept)s' a Ã©tÃ© produit par %(nom_cmde_prod)s."""
    dico = context_concept(*args, **kwargs)
    d = {
       'nom_concept'   : dico['concept'],

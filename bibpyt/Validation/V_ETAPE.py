@@ -1,4 +1,4 @@
-# -*- coding: iso-8859-1 -*-
+# coding=utf-8
 # person_in_charge: mathieu.courtois at edf.fr
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -22,12 +22,12 @@
 
 
 """
-   Ce module contient la classe mixin ETAPE qui porte les méthodes
-   nécessaires pour réaliser la validation d'un objet de type ETAPE
-   dérivé de OBJECT.
+   Ce module contient la classe mixin ETAPE qui porte les mÃ©thodes
+   nÃ©cessaires pour rÃ©aliser la validation d'un objet de type ETAPE
+   dÃ©rivÃ© de OBJECT.
 
    Une classe mixin porte principalement des traitements et est
-   utilisée par héritage multiple pour composer les traitements.
+   utilisÃ©e par hÃ©ritage multiple pour composer les traitements.
 """
 # Modules Python
 import types
@@ -57,7 +57,7 @@ class ETAPE(V_MCCOMPO.MCCOMPO):
        text_erreurs,test_regles = self.verif_regles()
        if not test_regles :
           if cr == 'oui' :
-              self.cr.fatal(_(u"Règle(s) non respectée(s) : %s"), text_erreurs)
+              self.cr.fatal(_(u"RÃ¨gle(s) non respectÃ©e(s) : %s"), text_erreurs)
           return 0
        return 1
 
@@ -66,20 +66,20 @@ class ETAPE(V_MCCOMPO.MCCOMPO):
        valid=1
        if self.sd.nom != None :
           if self.jdc and self.jdc.definition.code == 'ASTER' and len(self.sd.nom) > 8 :
-             #  le nom de la sd doit avoir une longueur <= 8 caractères pour ASTER
+             #  le nom de la sd doit avoir une longueur <= 8 caractÃ¨res pour ASTER
              if cr == 'oui' :
-                self.cr.fatal(_(u"Le nom de concept %s est trop long (8 caractères maxi)"),
+                self.cr.fatal(_(u"Le nom de concept %s est trop long (8 caractÃ¨res maxi)"),
                     self.sd.nom)
              valid = 0
           if self.sd.nom.find('sansnom') != -1 :
              # la SD est 'sansnom' : --> erreur
              if cr == 'oui' :
-                self.cr.fatal(_(u"Pas de nom pour le concept retourné"))
+                self.cr.fatal(_(u"Pas de nom pour le concept retournÃ©"))
              valid = 0
           elif re.search('^SD_[0-9]*$', self.sd.nom):
-             # la SD est 'SD_' cad son nom = son id donc pas de nom donné par utilisateur : --> erreur
+             # la SD est 'SD_' cad son nom = son id donc pas de nom donnÃ© par utilisateur : --> erreur
              if cr == 'oui' :
-                self.cr.fatal(_(u"Nom de concept invalide ('SD_' est réservé)"))
+                self.cr.fatal(_(u"Nom de concept invalide ('SD_' est rÃ©servÃ©)"))
              valid = 0
        return valid
 
@@ -99,17 +99,17 @@ class ETAPE(V_MCCOMPO.MCCOMPO):
 
    def isvalid(self,sd='oui',cr='non'):
       """
-         Methode pour verifier la validité de l'objet ETAPE. Cette méthode
-         peut etre appelée selon plusieurs modes en fonction de la valeur
+         Methode pour verifier la validitÃ© de l'objet ETAPE. Cette mÃ©thode
+         peut etre appelÃ©e selon plusieurs modes en fonction de la valeur
          de sd et de cr.
 
-         Si cr vaut oui elle crée en plus un compte-rendu.
+         Si cr vaut oui elle crÃ©e en plus un compte-rendu.
 
-         Cette méthode a plusieurs fonctions :
+         Cette mÃ©thode a plusieurs fonctions :
 
-          - mettre à jour l'état de self (update)
+          - mettre Ã  jour l'Ã©tat de self (update)
 
-          - retourner un indicateur de validité 0=non, 1=oui
+          - retourner un indicateur de validitÃ© 0=non, 1=oui
 
           - produire un compte-rendu : self.cr
 
@@ -123,25 +123,25 @@ class ETAPE(V_MCCOMPO.MCCOMPO):
 
         if self.reste_val != {}:
           if cr == 'oui' :
-            self.cr.fatal(_(u"Mots clés inconnus : %s"), ','.join(self.reste_val.keys()))
+            self.cr.fatal(_(u"Mots clÃ©s inconnus : %s"), ','.join(self.reste_val.keys()))
           valid=0
 
         if sd == "non":
-          # Dans ce cas, on ne teste qu'une validité partielle (sans tests sur le concept produit)
-          # Conséquence : on ne change pas l'état ni l'attribut valid, on retourne simplement
-          # l'indicateur de validité valid
+          # Dans ce cas, on ne teste qu'une validitÃ© partielle (sans tests sur le concept produit)
+          # ConsÃ©quence : on ne change pas l'Ã©tat ni l'attribut valid, on retourne simplement
+          # l'indicateur de validitÃ© valid
           return valid
 
         if self.definition.reentrant == 'n' and self.reuse:
           # Il ne peut y avoir de concept reutilise avec un OPER non reentrant
           if cr == 'oui' :
-              self.cr.fatal(_(u'Opérateur non réentrant : ne pas utiliser reuse'))
+              self.cr.fatal(_(u'OpÃ©rateur non rÃ©entrant : ne pas utiliser reuse'))
           valid=0
 
         if self.sd == None:
           # Le concept produit n'existe pas => erreur
           if cr == 'oui' :
-              self.cr.fatal(_(u"Concept retourné non défini"))
+              self.cr.fatal(_(u"Concept retournÃ© non dÃ©fini"))
           valid = 0
         else:
           valid = valid * self.valid_sdnom(cr)
@@ -155,49 +155,49 @@ class ETAPE(V_MCCOMPO.MCCOMPO):
 
    def update_sdprod(self,cr='non'):
       """
-           Cette méthode met à jour le concept produit en fonction des conditions initiales :
+           Cette mÃ©thode met Ã  jour le concept produit en fonction des conditions initiales :
 
-            1. Il n'y a pas de concept retourné (self.definition.sd_prod == None)
+            1. Il n'y a pas de concept retournÃ© (self.definition.sd_prod == None)
 
-            2. Le concept retourné n existait pas (self.sd == None)
+            2. Le concept retournÃ© n existait pas (self.sd == None)
 
-            3. Le concept retourné existait. On change alors son type ou on le supprime
+            3. Le concept retournÃ© existait. On change alors son type ou on le supprime
 
-           En cas d'erreur (exception) on retourne un indicateur de validité de 0 sinon de 1
+           En cas d'erreur (exception) on retourne un indicateur de validitÃ© de 0 sinon de 1
       """
       sd_prod=self.definition.sd_prod
-      if type(sd_prod) == types.FunctionType: # Type de concept retourné calculé
+      if type(sd_prod) == types.FunctionType: # Type de concept retournÃ© calculÃ©
         d=self.cree_dict_valeurs(self.mc_liste)
         try:
           sd_prod= apply(sd_prod,(),d)
         except:
-          # Erreur pendant le calcul du type retourné
+          # Erreur pendant le calcul du type retournÃ©
           if CONTEXT.debug:traceback.print_exc()
           self.sd=None
           if cr == 'oui' :
              l=traceback.format_exception(sys.exc_info()[0],
                                           sys.exc_info()[1],
                                           sys.exc_info()[2])
-             self.cr.fatal(_(u'Impossible d affecter un type au résultat\n %s'), ' '.join(l[2:]))
+             self.cr.fatal(_(u'Impossible d affecter un type au rÃ©sultat\n %s'), ' '.join(l[2:]))
           return 0
       # on teste maintenant si la SD est r\351utilis\351e ou s'il faut la cr\351er
       valid=1
       if self.reuse:
         if AsType(self.reuse) != sd_prod:
           if cr == 'oui' :
-              self.cr.fatal(_(u'Type de concept réutilisé incompatible avec type produit'))
+              self.cr.fatal(_(u'Type de concept rÃ©utilisÃ© incompatible avec type produit'))
           valid= 0
         if self.sdnom!='':
            if self.sdnom[0] != '_' and self.reuse.nom != self.sdnom:
              # Le nom de la variable de retour (self.sdnom) doit etre le meme que celui du concept reutilise (self.reuse.nom)
              if cr == 'oui' :
-                self.cr.fatal(_(u'Concept réutilisé : le nom de la variable de '
-                                     u'retour devrait être %s et non %s'),
+                self.cr.fatal(_(u'Concept rÃ©utilisÃ© : le nom de la variable de '
+                                     u'retour devrait Ãªtre %s et non %s'),
                                    self.reuse.nom, self.sdnom)
              valid= 0
         if valid:self.sd=self.reuse
       else:
-        if sd_prod == None:# Pas de concept retourné
+        if sd_prod == None:# Pas de concept retournÃ©
           # Que faut il faire de l eventuel ancien sd ?
           self.sd = None
         else:
@@ -207,13 +207,13 @@ class ETAPE(V_MCCOMPO.MCCOMPO):
              if self.sd.__class__ != sd_prod:
                self.sd.change_type(sd_prod)
           else:
-             # Le sd n existait pas , on ne le crée pas
+             # Le sd n existait pas , on ne le crÃ©e pas
              if cr == 'oui' :
-                 self.cr.fatal(_(u"Concept retourné non défini"))
+                 self.cr.fatal(_(u"Concept retournÃ© non dÃ©fini"))
              valid=0
         if self.definition.reentrant == 'o':
            if cr == 'oui' :
-               self.cr.fatal(_(u'Commande obligatoirement réentrante : spécifier reuse=concept'))
+               self.cr.fatal(_(u'Commande obligatoirement rÃ©entrante : spÃ©cifier reuse=concept'))
            valid=0
       return valid
 

@@ -1,4 +1,4 @@
-# -*- coding: iso-8859-1 -*-
+# coding=utf-8
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -21,19 +21,19 @@
 cata_msg = {
 
 1 : _(u"""
- Problème d'orientation: aucune maille ne touche le noeud indiqué
+ ProblÃ¨me d'orientation: aucune maille ne touche le noeud indiquÃ©
 """),
 
 2 : _(u"""
- Certaines mailles n'ont pas pu être réorientées. L'ensemble des mailles n'est pas connexe.
+ Certaines mailles n'ont pas pu Ãªtre rÃ©orientÃ©es. L'ensemble des mailles n'est pas connexe.
 """),
 
 3 : _(u"""
- on ne trouve pas de noeud assez près du noeud  %(k1)s
+ on ne trouve pas de noeud assez prÃ¨s du noeud  %(k1)s
 """),
 
 4 : _(u"""
-  Erreurs dans les données
+  Erreurs dans les donnÃ©es
 """),
 
 5 : _(u"""
@@ -41,11 +41,11 @@ cata_msg = {
 """),
 
 6 : _(u"""
-  Nombre de noeuds négatif
+  Nombre de noeuds nÃ©gatif
 """),
 
 7 : _(u"""
- nombre de noeuds sommets non prévu
+ nombre de noeuds sommets non prÃ©vu
 """),
 
 8 : _(u"""
@@ -69,39 +69,39 @@ cata_msg = {
 """),
 
 13 : _(u"""
- Les %(i1)d noeuds imprimés ci-dessus n'appartiennent pas au modèle (c'est à dire
- qu'ils ne portent aucun degré de liberté) et pourtant ils ont été affectés dans
- le mot-clé facteur : %(k1)s
+ Les %(i1)d noeuds imprimÃ©s ci-dessus n'appartiennent pas au modÃ¨le (c'est Ã  dire
+ qu'ils ne portent aucun degrÃ© de libertÃ©) et pourtant ils ont Ã©tÃ© affectÃ©s dans
+ le mot-clÃ© facteur : %(k1)s
 """),
 
 14 : _(u"""
- Pour le chargement thermique ECHANGE_PAROI, le modèle fourni doit être homogène
+ Pour le chargement thermique ECHANGE_PAROI, le modÃ¨le fourni doit Ãªtre homogÃ¨ne
  en dimension : 3D, 2D ou AXIS.
 """),
 
 17 : _(u"""
- La maille  %(k1)s du GROUP_MA  %(k2)s donné après le mot-clé  %(k3)s n'a pas un
- type géométrique autorisé
+ La maille  %(k1)s du GROUP_MA  %(k2)s donnÃ© aprÃ¨s le mot-clÃ©  %(k3)s n'a pas un
+ type gÃ©omÃ©trique autorisÃ©
 """),
 
 18 : _(u"""
- la maille  %(k1)s donnée après le mot-clé  %(k2)s n'a pas un type géométrique autorisé
+ la maille  %(k1)s donnÃ©e aprÃ¨s le mot-clÃ©  %(k2)s n'a pas un type gÃ©omÃ©trique autorisÃ©
 """),
 
 20 : _(u"""
- ce type de maille n'est pas encore traité :  %(k1)s
+ ce type de maille n'est pas encore traitÃ© :  %(k1)s
 """),
 
 21 : _(u"""
- le nombre total de noeuds est différent de la somme des noeuds sommets, arêtes et intérieurs
+ le nombre total de noeuds est diffÃ©rent de la somme des noeuds sommets, arÃªtes et intÃ©rieurs
 """),
 
 22 : _(u"""
- les deux listes %(k1)s  et  %(k2)s  ne sont pas de même longueur
+ les deux listes %(k1)s  et  %(k2)s  ne sont pas de mÃªme longueur
 """),
 
 26 : _(u"""
- AFFE_FIBRE pour " %(k1)s ": il y a  %(k2)s  valeurs pour "VALE", ce devrait être un multiple de 3
+ AFFE_FIBRE pour " %(k1)s ": il y a  %(k2)s  valeurs pour "VALE", ce devrait Ãªtre un multiple de 3
 """),
 
 27 : _(u"""
@@ -109,35 +109,35 @@ cata_msg = {
 """),
 
 28 : _(u"""
- Le noeud <%(k1)s> de la poutre, de coordonnées <%(r1)g  %(r2)g  %(r3)g>,
- ne doit pas appartenir à des mailles constituant la trace de la poutre sur la coque.
- Le problème vient de l'occurrence %(i1)d de LIAISON_ELEM.
+ Le noeud <%(k1)s> de la poutre, de coordonnÃ©es <%(r1)g  %(r2)g  %(r3)g>,
+ ne doit pas appartenir Ã  des mailles constituant la trace de la poutre sur la coque.
+ Le problÃ¨me vient de l'occurrence %(i1)d de LIAISON_ELEM.
 
-Solution : Il faut dédoubler le noeud.
+Solution : Il faut dÃ©doubler le noeud.
 """),
 
 29 : _(u"""
- Une maille des groupes modélisant la dalle a une dimension topologique différente
+ Une maille des groupes modÃ©lisant la dalle a une dimension topologique diffÃ©rente
  de 1 et 2.
 """),
 
 30 : _(u"""
- L'indicateur : %(k1)s de position des multiplicateurs de Lagrange associés à
- une relation linéaire n'est pas correct.
+ L'indicateur : %(k1)s de position des multiplicateurs de Lagrange associÃ©s Ã 
+ une relation linÃ©aire n'est pas correct.
 """),
 
 31 : _(u"""
-  ->  En thermique, les fonctions définissant le matériau (enthalpie, capacité calorifique, conductivité)
-      doivent obligatoirement être décrites par des fonctions tabulées et non des formules.
-      En effet, on a besoin d'évaluer la dérivée de ces fonctions. Elle peut être plus facilement et
-      précisément obtenue pour une fonction linéaire par morceaux que pour une expression 'formule'.
+  ->  En thermique, les fonctions dÃ©finissant le matÃ©riau (enthalpie, capacitÃ© calorifique, conductivitÃ©)
+      doivent obligatoirement Ãªtre dÃ©crites par des fonctions tabulÃ©es et non des formules.
+      En effet, on a besoin d'Ã©valuer la dÃ©rivÃ©e de ces fonctions. Elle peut Ãªtre plus facilement et
+      prÃ©cisÃ©ment obtenue pour une fonction linÃ©aire par morceaux que pour une expression 'formule'.
   -> Conseil:
-      Tabulez votre formule, à une finesse de discrétisation d'abscisse (TEMP) à votre convenance,
+      Tabulez votre formule, Ã  une finesse de discrÃ©tisation d'abscisse (TEMP) Ã  votre convenance,
       par la commande CALC_FONC_INTERP
  """),
 
 32 : _(u"""
- impossibilité, le noeud  %(k1)s ne porte le degré de liberté de rotation %(k2)s
+ impossibilitÃ©, le noeud  %(k1)s ne porte le degrÃ© de libertÃ© de rotation %(k2)s
 """),
 
 33 : _(u"""
@@ -145,20 +145,20 @@ Solution : Il faut dédoubler le noeud.
 """),
 
 34 : _(u"""
- un élément n'est ni TRIA3 ni TRIA6 ni QUAD4 ni QUAD8
+ un Ã©lÃ©ment n'est ni TRIA3 ni TRIA6 ni QUAD4 ni QUAD8
 """),
 
 35 : _(u"""
- Les mailles des groupes modélisant la dalle ne sont pas toutes de même
+ Les mailles des groupes modÃ©lisant la dalle ne sont pas toutes de mÃªme
  dimension topologique (RIGI_PARASOL)
 """),
 
 36 : _(u"""
-  le noeud  %(k1)s  doit appartenir à une seule maille
+  le noeud  %(k1)s  doit appartenir Ã  une seule maille
 """),
 
 37 : _(u"""
- la maille à laquelle appartient le noeud  %(k1)s  doit être de type SEG3
+ la maille Ã  laquelle appartient le noeud  %(k1)s  doit Ãªtre de type SEG3
 """),
 
 38 : _(u"""
@@ -170,15 +170,15 @@ Solution : Il faut dédoubler le noeud.
 """),
 
 40 : _(u"""
- il faut indiquer le mot-clé 'NOEUD_2' ou 'GROUP_NO_2' après le mot-clé facteur  %(k1)s  pour l'option '3D_POU'.
+ il faut indiquer le mot-clÃ© 'NOEUD_2' ou 'GROUP_NO_2' aprÃ¨s le mot-clÃ© facteur  %(k1)s  pour l'option '3D_POU'.
 """),
 
 41 : _(u"""
- il ne faut donner qu'un seul noeud de poutre à raccorder au massif.
+ il ne faut donner qu'un seul noeud de poutre Ã  raccorder au massif.
 """),
 
 42 : _(u"""
- il ne faut donner qu'un un seul GROUP_NO à un noeud à raccorder au massif.
+ il ne faut donner qu'un un seul GROUP_NO Ã  un noeud Ã  raccorder au massif.
 """),
 
 43 : _(u"""
@@ -186,152 +186,152 @@ Solution : Il faut dédoubler le noeud.
 """),
 
 44 : _(u"""
- impossibilité, le noeud  %(k1)s porte le degré de liberté de rotation  %(k2)s
+ impossibilitÃ©, le noeud  %(k1)s porte le degrÃ© de libertÃ© de rotation  %(k2)s
 """),
 
 45 : _(u"""
- impossibilité, le noeud poutre  %(k1)s  devrait porter le degré de liberté  %(k2)s
+ impossibilitÃ©, le noeud poutre  %(k1)s  devrait porter le degrÃ© de libertÃ©  %(k2)s
 """),
 
 46 : _(u"""
- impossibilité, la surface de raccord du massif est nulle
+ impossibilitÃ©, la surface de raccord du massif est nulle
 """),
 
 47 : _(u"""
- il faut donner un CARA_ELEM pour récupérer les caractéristiques de tuyau.
+ il faut donner un CARA_ELEM pour rÃ©cupÃ©rer les caractÃ©ristiques de tuyau.
 """),
 
 48 : _(u"""
- il faut indiquer le mot-clé 'NOEUD_2' ou 'GROUP_NO_2' après le mot-clé facteur  %(k1)s  pour l'option  %(k2)s
+ il faut indiquer le mot-clÃ© 'NOEUD_2' ou 'GROUP_NO_2' aprÃ¨s le mot-clÃ© facteur  %(k1)s  pour l'option  %(k2)s
 """),
 
 49 : _(u"""
- il ne faut donner qu'un seul noeud de poutre à raccorder à la coque.
+ il ne faut donner qu'un seul noeud de poutre Ã  raccorder Ã  la coque.
 """),
 
 50 : _(u"""
- il ne faut donner qu'un seul GROUP_NO à un noeud à raccorder à la coque.
+ il ne faut donner qu'un seul GROUP_NO Ã  un noeud Ã  raccorder Ã  la coque.
 """),
 
 51 : _(u"""
- il faut donner un vecteur orientant l'axe de la poutre sous le mot-clé "AXE_POUTRE".
+ il faut donner un vecteur orientant l'axe de la poutre sous le mot-clÃ© "AXE_POUTRE".
 """),
 
 52 : _(u"""
- il faut donner un vecteur non nul orientant l'axe de la poutre sous le mot-clé "AXE_POUTRE".
+ il faut donner un vecteur non nul orientant l'axe de la poutre sous le mot-clÃ© "AXE_POUTRE".
 """),
 
 53 : _(u"""
- il faut donner un CARA_ELEM pour récupérer l'épaisseur des éléments de bord.
+ il faut donner un CARA_ELEM pour rÃ©cupÃ©rer l'Ã©paisseur des Ã©lÃ©ments de bord.
 """),
 
 54 : _(u"""
- impossibilité, le noeud  %(k1)s ne porte pas le degré de liberté de rotation  %(k2)s
+ impossibilitÃ©, le noeud  %(k1)s ne porte pas le degrÃ© de libertÃ© de rotation  %(k2)s
 """),
 
 55 : _(u"""
- impossibilité, la surface de raccord de la coque est nulle
+ impossibilitÃ©, la surface de raccord de la coque est nulle
 """),
 
 56 : _(u"""
- plusieurs comportements de type  %(k1)s  ont été trouvés
+ plusieurs comportements de type  %(k1)s  ont Ã©tÃ© trouvÃ©s
 
   -> Conseil:
-     Vous avez sans doute enrichi votre matériau. Vous ne pouvez pas
-     avoir en même temps les mots clés 'ELAS', 'ELAS_FO', 'ELAS_xxx',...
+     Vous avez sans doute enrichi votre matÃ©riau. Vous ne pouvez pas
+     avoir en mÃªme temps les mots clÃ©s 'ELAS', 'ELAS_FO', 'ELAS_xxx',...
 """),
 
 57 : _(u"""
- comportement de type  %(k1)s  non trouvé
+ comportement de type  %(k1)s  non trouvÃ©
 """),
 
 58 : _(u"""
- nappe interdite pour les caractéristiques matériau
+ nappe interdite pour les caractÃ©ristiques matÃ©riau
 """),
 
 59 : _(u"""
- déformation plastique cumulée p < 0
+ dÃ©formation plastique cumulÃ©e p < 0
 """),
 
 60 : _(u"""
-  Le prolongement à droite étant exclu pour la fonction %(k1)s,
-  il n'est pas possible d'extrapoler la fonction R(p) au delà de p = %(r1)f
+  Le prolongement Ã  droite Ã©tant exclu pour la fonction %(k1)s,
+  il n'est pas possible d'extrapoler la fonction R(p) au delÃ  de p = %(r1)f
 """),
 
 62 : _(u"""
- la limite d'élasticité est déjà renseignée dans ELAS_META
+ la limite d'Ã©lasticitÃ© est dÃ©jÃ  renseignÃ©e dans ELAS_META
 """),
 
 63 : _(u"""
- objet  %(k1)s .materiau.nomrc non trouvé
+ objet  %(k1)s .materiau.nomrc non trouvÃ©
 """),
 
 64 : _(u"""
- type sd non traité:  %(k1)s
+ type sd non traitÃ©:  %(k1)s
 """),
 
 69 : _(u"""
- le mot-clé : %(k1)s  est identique (sur ses 8 premiers caractères) à un autre.
+ le mot-clÃ© : %(k1)s  est identique (sur ses 8 premiers caractÃ¨res) Ã  un autre.
 """),
 
 70 : _(u"""
- erreur lors de la définition de la courbe de traction, il manque le paramètre : %(k1)s
+ erreur lors de la dÃ©finition de la courbe de traction, il manque le paramÃ¨tre : %(k1)s
 """),
 
 71 : _(u"""
- erreur lors de la définition de la courbe de traction : %(k1)s  nombre de points < 2  !
+ erreur lors de la dÃ©finition de la courbe de traction : %(k1)s  nombre de points < 2  !
 """),
 
 72 : _(u"""
- erreur lors de la définition de la courbe de traction : %(k1)s  nombre de points < 1  !
+ erreur lors de la dÃ©finition de la courbe de traction : %(k1)s  nombre de points < 1  !
 """),
 
 73 : _(u"""
- erreurs rencontrées.
+ erreurs rencontrÃ©es.
 """),
 
 74 : _(u"""
- erreur lors de la définition de la nappe des courbes de traction: nombre de points < 2 !
+ erreur lors de la dÃ©finition de la nappe des courbes de traction: nombre de points < 2 !
 """),
 
 75 : _(u"""
- erreur lors de la définition de la nappe des courbes de traction:  %(k1)s  nombre de points < 1 !
+ erreur lors de la dÃ©finition de la nappe des courbes de traction:  %(k1)s  nombre de points < 1 !
 """),
 
 76 : _(u"""
-  erreur lors de la définition de la courbe de traction: FONCTION ou NAPPE !
+  erreur lors de la dÃ©finition de la courbe de traction: FONCTION ou NAPPE !
 """),
 
 80 : _(u"""
- comportement TRACTION non trouvé
+ comportement TRACTION non trouvÃ©
 """),
 
 81 : _(u"""
- fonction SIGM non trouvée
+ fonction SIGM non trouvÃ©e
 """),
 
 82 : _(u"""
- comportement META_TRACTION non trouvé
+ comportement META_TRACTION non trouvÃ©
 """),
 
 83 : _(u"""
- fonction SIGM_F1 non trouvée
+ fonction SIGM_F1 non trouvÃ©e
 """),
 
 84 : _(u"""
- fonction SIGM_F2 non trouvée
+ fonction SIGM_F2 non trouvÃ©e
 """),
 
 85 : _(u"""
- fonction SIGM_F3 non trouvée
+ fonction SIGM_F3 non trouvÃ©e
 """),
 
 86 : _(u"""
- fonction SIGM_F4 non trouvée
+ fonction SIGM_F4 non trouvÃ©e
 """),
 
 87 : _(u"""
- fonction SIGM_C non trouvée
+ fonction SIGM_C non trouvÃ©e
 """),
 
 88 : _(u"""
@@ -339,11 +339,11 @@ Solution : Il faut dédoubler le noeud.
 """),
 
 89 : _(u"""
- prolongement à gauche EXCLU pour la courbe  %(k1)s
+ prolongement Ã  gauche EXCLU pour la courbe  %(k1)s
 """),
 
 90 : _(u"""
- prolongement à droite EXCLU pour la courbe  %(k1)s
+ prolongement Ã  droite EXCLU pour la courbe  %(k1)s
 """),
 
 91 : _(u"""
@@ -351,23 +351,23 @@ Solution : Il faut dédoubler le noeud.
 """),
 
 92 : _(u"""
- matériau : %(k1)s  non affecté par la commande AFFE_MATERIAU.
+ matÃ©riau : %(k1)s  non affectÃ© par la commande AFFE_MATERIAU.
 """),
 
 93 : _(u"""
-  les fonctions complexes ne sont pas implémentées
+  les fonctions complexes ne sont pas implÃ©mentÃ©es
 """),
 
 94 : _(u"""
- Le nombre de paramètres est supérieur à 30 pour le matériau  %(k1)s
+ Le nombre de paramÃ¨tres est supÃ©rieur Ã  30 pour le matÃ©riau  %(k1)s
 """),
 
 95 : _(u"""
- mauvaise définition de la plage de fréquence, aucun mode pris en compte
+ mauvaise dÃ©finition de la plage de frÃ©quence, aucun mode pris en compte
 """),
 
 96 : _(u"""
- les %(i1)d mailles imprimées ci-dessus n'appartiennent pas au modèle et pourtant elles ont été affectées dans le mot-clé facteur : %(k1)s
+ les %(i1)d mailles imprimÃ©es ci-dessus n'appartiennent pas au modÃ¨le et pourtant elles ont Ã©tÃ© affectÃ©es dans le mot-clÃ© facteur : %(k1)s
 """),
 
 97 : _(u"""
@@ -375,11 +375,11 @@ Solution : Il faut dédoubler le noeud.
 """),
 
 98 : _(u"""
- FREQ INIT nécessaire avec CHAMNO
+ FREQ INIT nÃ©cessaire avec CHAMNO
 """),
 
 99 : _(u"""
- FREQ FIN nécessaire avec CHAMNO
+ FREQ FIN nÃ©cessaire avec CHAMNO
 """),
 
 }

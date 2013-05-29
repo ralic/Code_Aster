@@ -1,4 +1,4 @@
-TITRE 'TPLL01 : mur plan infini en thermique linéaire' ;
+TITRE 'TPLL01 : mur plan infini en thermique linÃ©aire' ;
 *
 opti dime 3 elem CU20 ;
 *

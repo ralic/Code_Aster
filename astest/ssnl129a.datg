@@ -53,7 +53,7 @@ maillage = VOL1 et s1 et s2 et s3 et s4 et s5 et s6
  et l48 et l56 et l67 et l78 et l85;
                                                           
 ELIM 0.001 maillage;
-TITRE 'Elément cubique';
+TITRE 'ElÃ©ment cubique';
 TRAC maillage;
 SAUV format maillage; 
 

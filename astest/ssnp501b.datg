@@ -1,6 +1,6 @@
 * maillage de SSNP501B
-* pour modélisation utilisant le mot clé 'CONTACT' 
-* sans frottement, méthode Lagrangienne
+* pour modÃ©lisation utilisant le mot clÃ© 'CONTACT' 
+* sans frottement, mÃ©thode Lagrangienne
 
 opti dime 2;
 opti elem qua4;
@@ -51,4 +51,3 @@ sauv form (PLAQUE et ANNEAU et LESC et LCD) ;
 trac (PLAQUE et ANNEAU);
 
 fin;
-

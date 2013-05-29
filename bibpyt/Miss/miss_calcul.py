@@ -1,4 +1,4 @@
-# -*- coding: iso-8859-1 -*-
+# coding=utf-8
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -20,9 +20,9 @@
 
 """Module permettant le lancement d'un calcul MISS3D
 
-Les classes définies sont :
-    CALCUL_MISS      : classe générique d'un appel à MISS3D
-    CALCUL_MISS_IMPE : spécialisation au calcul d'impédance
+Les classes dÃ©finies sont :
+    CALCUL_MISS      : classe gÃ©nÃ©rique d'un appel Ã  MISS3D
+    CALCUL_MISS_IMPE : spÃ©cialisation au calcul d'impÃ©dance
 """
 
 import os
@@ -52,14 +52,14 @@ from Miss.miss_post           import PostMissFactory, info_freq
 
 
 class CALCUL_MISS(object):
-    """Définition d'un calcul MISS3D.
+    """DÃ©finition d'un calcul MISS3D.
     """
     option_calcul = None
 
     def __init__(self, parent, parameters):
         """Initialisations"""
         if not self.option_calcul:
-            raise NotImplementedError, "option_calcul non défini"
+            raise NotImplementedError, "option_calcul non dÃ©fini"
         self.parent = parent
         self.param = parameters
         self.data = None
@@ -67,14 +67,14 @@ class CALCUL_MISS(object):
         self.debug = self.verbose
         self.resu_aster_reader = None
         if self.verbose:
-            _print('Paramètres du calcul', self.param)
+            _print('ParamÃ¨tres du calcul', self.param)
         if self.debug:
             from Utilitai.as_timer import ASTER_TIMER
             self.timer = ASTER_TIMER()
             set_debug(True)
 
     def run(self):
-        """Enchaine les tâches élémentaires"""
+        """Enchaine les tÃ¢ches Ã©lÃ©mentaires"""
         self.prepare_donnees()
         self.execute()
         self.post_traitement()
@@ -88,7 +88,7 @@ class CALCUL_MISS(object):
         self.resu_aster_reader = ResuAsterReader(len(mcgrp))
 
     def prepare_donnees(self):
-        """Préparation des données"""
+        """PrÃ©paration des donnÃ©es"""
         self.cree_reptrav()
         self.init_reader()
         self.cree_resultat_aster()
@@ -98,17 +98,17 @@ class CALCUL_MISS(object):
         self.cree_fichier_sol()
         self.cree_commande_miss()
         self.cree_fichier_option()
-        # libérer la structure contenant les données numériques
+        # libÃ©rer la structure contenant les donnÃ©es numÃ©riques
         self.init_data()
 
     def init_data(self):
-        """Libérer la structure contenant les données numériques
+        """LibÃ©rer la structure contenant les donnÃ©es numÃ©riques
         """
         self.data = None
 
 
     def execute(self):
-        """Exécute MISS3D.
+        """ExÃ©cute MISS3D.
         """
         self._dbg_trace("Start")
         
@@ -118,7 +118,7 @@ class CALCUL_MISS(object):
         try:
             os.chdir(self.param['_WRKDIR'])
             if self.verbose:
-                _print("Exécution de MISS3D dans :", self.param['_WRKDIR'])
+                _print("ExÃ©cution de MISS3D dans :", self.param['_WRKDIR'])
                 os.system('ls -la')
             comment = "Lancement de la commande :\n%s" % cmd
             if self.verbose:
@@ -126,7 +126,7 @@ class CALCUL_MISS(object):
             iret, output, error = ExecCommand(cmd, alt_comment=comment,
                                               verbose=False, separated_stderr=True)
             if self.verbose:
-                _print("Contenu du répertoire après l'exécution de MISS3D :")
+                _print("Contenu du rÃ©pertoire aprÃ¨s l'exÃ©cution de MISS3D :")
                 os.system('ls -la')
         finally:
             os.chdir(self.param['_INIDIR'])
@@ -144,7 +144,7 @@ class CALCUL_MISS(object):
 
 
     def post_traitement(self):
-        """Opérations de post-traitement.
+        """OpÃ©rations de post-traitement.
         """
         self._dbg_trace("Start")
         self.fichier_resultat()
@@ -152,7 +152,7 @@ class CALCUL_MISS(object):
         post = PostMissFactory(self.param['TYPE_RESU'], self.parent, self.param)
         post.set_filename_callback(self._fichier_tmp)
         post.run()
-        # nécessaire s'il y a deux exécutions Miss dans le même calcul Aster
+        # nÃ©cessaire s'il y a deux exÃ©cutions Miss dans le mÃªme calcul Aster
         self.menage()
         self._dbg_trace("Stop")
         if self.debug:
@@ -160,7 +160,7 @@ class CALCUL_MISS(object):
 
 
     def fichier_resultat(self):
-        """Copie les fichiers résultats dans les unités logiques."""
+        """Copie les fichiers rÃ©sultats dans les unitÃ©s logiques."""
         if self.param['UNITE_IMPR_ASTER'] and osp.exists(self._fichier_tmp("aster")):
             copie_fichier(self._fichier_tmp("aster"),
                           self._fichier_aster(self.param['UNITE_IMPR_ASTER']))
@@ -173,14 +173,14 @@ class CALCUL_MISS(object):
 
 
     def cree_reptrav(self):
-        """Création du répertoire d'exécution de MISS.
+        """CrÃ©ation du rÃ©pertoire d'exÃ©cution de MISS.
         """
         if not osp.exists(self.param['_WRKDIR']):
             os.makedirs(self.param['_WRKDIR'])
 
 
     def menage(self):
-        """Suppression des fichiers/répertoires de travail.
+        """Suppression des fichiers/rÃ©pertoires de travail.
         """
         if osp.exists(self.param['_WRKDIR']) and self.param['REPERTOIRE'] is None:
             shutil.rmtree(self.param['_WRKDIR'])
@@ -225,7 +225,7 @@ class CALCUL_MISS(object):
         self._dbg_trace("Stop")
 
     def cree_fichier_pc(self):
-        """Produit les fichiers pour les points de contrôle"""
+        """Produit les fichiers pour les points de contrÃ´le"""
         if not self.param['_hasPC']:
             return
         self._dbg_trace("Start")
@@ -259,7 +259,7 @@ class CALCUL_MISS(object):
     def cree_commande_miss(self, ext='in', lapl_temps=False):
         """Produit le fichier de commandes Miss"""
         self._dbg_trace("Start")
-        # Execute méthode classique
+        # Execute mÃ©thode classique
         generator = MissCmdeGen(self.param, self.data, self._fichier_tmp_local,
                                 lapl_temps=lapl_temps)
         content = generator.build()
@@ -291,7 +291,7 @@ class CALCUL_MISS(object):
 
 
     def _fichier_aster(self, unite):
-        """Nom du fichier d'unité logique unite dans le répertoire d'exécution de Code_Aster.
+        """Nom du fichier d'unitÃ© logique unite dans le rÃ©pertoire d'exÃ©cution de Code_Aster.
         """
         return osp.join(self.param['_INIDIR'], "fort.%d" % unite)
 
@@ -306,12 +306,12 @@ class CALCUL_MISS(object):
 
 
 class CALCUL_MISS_IMPE(CALCUL_MISS):
-    """Définition d'un calcul MISS3D de type MISS_IMPE."""
+    """DÃ©finition d'un calcul MISS3D de type MISS_IMPE."""
     option_calcul = 'MISS_IMPE'
 
 
 class CALCUL_MISS_ISSF(CALCUL_MISS):
-    """Définition d'un calcul MISS3D de type MISS_IMPE avec ISSF."""
+    """DÃ©finition d'un calcul MISS3D de type MISS_IMPE avec ISSF."""
     option_calcul = 'MISS_IMPE'
 
     def cree_resultat_aster(self):
@@ -344,24 +344,24 @@ class CALCUL_MISS_ISSF(CALCUL_MISS):
 
 
 class CALCUL_MISS_POST(CALCUL_MISS):
-    """Définition d'une exécution de CALC_MISS où seul le
-    post-traitement est demandé."""
+    """DÃ©finition d'une exÃ©cution de CALC_MISS oÃ¹ seul le
+    post-traitement est demandÃ©."""
     option_calcul = 'POST-TRAITEMENT'
 
     def prepare_donnees(self):
-        """Préparation des données."""
+        """PrÃ©paration des donnÃ©es."""
 
 
     def execute(self):
-        """Exécute MISS3D."""
+        """ExÃ©cute MISS3D."""
 
 
     def fichier_resultat(self):
-        """Copie les fichiers résultats dans les unités logiques."""
+        """Copie les fichiers rÃ©sultats dans les unitÃ©s logiques."""
 
 
 class CALCUL_MISS_FICHIER_TEMPS(CALCUL_MISS):
-    """Définition d'une exécution de CALC_MISS dans le domaine de Laplace.
+    """DÃ©finition d'une exÃ©cution de CALC_MISS dans le domaine de Laplace.
     """
     option_calcul = 'IMPE_LAPL'
 
@@ -377,7 +377,7 @@ class CALCUL_MISS_FICHIER_TEMPS(CALCUL_MISS):
         self.L_points = factor*N_inst
         self.nbr_freq = self.L_points/2 + 1
 
-        # Noms des fichiers à utiliser
+        # Noms des fichiers Ã  utiliser
         
         lfich = ( "impe_Laplace", "forc_Laplace" )
         lfich = map(self._fichier_tmp, lfich)
@@ -392,7 +392,7 @@ class CALCUL_MISS_FICHIER_TEMPS(CALCUL_MISS):
         self._fichier_impe = lfich[0]
         self._fichier_forc = lfich[1]
 
-        # Variables à rajouter dans 'param'
+        # Variables Ã  rajouter dans 'param'
         self.param.set('LIST_FREQ', None)
         self.param.set('FREQ_IMAG', None)
         # Nombre de modes (dynamiques) d'interface
@@ -404,7 +404,7 @@ class CALCUL_MISS_FICHIER_TEMPS(CALCUL_MISS):
          
     
     def execute(self):
-        """Exécute MISS3D : calcul du champ incident + boucle sur les fréquences complexes"""
+        """ExÃ©cute MISS3D : calcul du champ incident + boucle sur les frÃ©quences complexes"""
         self.init_attr()
 
         if self.param['EXCIT_SOL']:
@@ -427,12 +427,12 @@ class CALCUL_MISS_FICHIER_TEMPS(CALCUL_MISS):
 
    
     def _exec_boucle_lapl(self,fd): 
-        """Exécute MISS3D dans une boucle sur toutes les fréquences complexes"""
+        """ExÃ©cute MISS3D dans une boucle sur toutes les frÃ©quences complexes"""
         L_points = self.L_points
         dt = self.dt
         rho = self.rho
-        #TODO la règle UN_PARMI(FREQ_MIN, LIST_FREQ, FREQ_IMAG) ne convient pas!
-        # au moins mettre FREQ_MIN à None
+        #TODO la rÃ¨gle UN_PARMI(FREQ_MIN, LIST_FREQ, FREQ_IMAG) ne convient pas!
+        # au moins mettre FREQ_MIN Ã  None
         self.param.set('FREQ_MIN', None)
 
         for k in range(0, self.nbr_freq):
@@ -452,7 +452,7 @@ class CALCUL_MISS_FICHIER_TEMPS(CALCUL_MISS):
             text = open(self._fichier_impe, 'r').read()
             fd.write(text)
             
-        # libérer la structure contenant les données numériques
+        # libÃ©rer la structure contenant les donnÃ©es numÃ©riques
         CALCUL_MISS.init_data(self)
 
 
@@ -461,20 +461,20 @@ class CALCUL_MISS_FICHIER_TEMPS(CALCUL_MISS):
         CALCUL_MISS.cree_commande_miss(self, ext='inci', lapl_temps=True)
 
     def fichier_resultat(self):
-        """Libérer la structure contenant les données numériques
+        """LibÃ©rer la structure contenant les donnÃ©es numÃ©riques
         """
         if self.param['UNITE_IMPR_ASTER'] and osp.exists(self._fichier_tmp("aster")):
             copie_fichier(self._fichier_tmp("aster"),
                           self._fichier_aster(self.param['UNITE_IMPR_ASTER']))
 
     def init_data(self):
-        """Libérer la structure contenant les données numériques
+        """LibÃ©rer la structure contenant les donnÃ©es numÃ©riques
         """
         pass
 
 
 def CalculMissFactory(parent, param):
-    """Crée l'objet CALCUL_MISS pour résoudre l'option demandée.
+    """CrÃ©e l'objet CALCUL_MISS pour rÃ©soudre l'option demandÃ©e.
     """
     if param['TYPE_RESU'] == 'FICHIER_TEMPS':
         return CALCUL_MISS_FICHIER_TEMPS(parent, param)
@@ -487,11 +487,11 @@ def CalculMissFactory(parent, param):
         return CALCUL_MISS_IMPE(parent, param)
 
 def get_number_PC(parent, macr_elem, lgrpc):
-    """Retourne le nombre de points de contrôle"""
+    """Retourne le nombre de points de contrÃ´le"""
     nomail = macr_elem.sdj.REFM.get()[1]
     mail = parent.get_concept(nomail)
     assert mail is not None, \
-        'impossible de récupérer le maillage du macro-élément'
+        'impossible de rÃ©cupÃ©rer le maillage du macro-Ã©lÃ©ment'
     lgrpma = mail.LIST_GROUP_MA()
     result = sum([nbel for name, nbel, dim in lgrpma if name in lgrpc])
     return result

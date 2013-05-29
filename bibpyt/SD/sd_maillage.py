@@ -1,4 +1,4 @@
-# -*- coding: iso-8859-1 -*-
+# coding=utf-8
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -35,7 +35,7 @@ class sd_maillage(sd_titre):
     NOMNOE = AsPn(ltyp=8)
     COORDO = sd_cham_no()
 
-    # normalement, un sd_maillage a toujours une "sd_l_table" contenant des caractéristiques géométriques :
+    # normalement, un sd_maillage a toujours une "sd_l_table" contenant des caractÃ©ristiques gÃ©omÃ©triques :
     lt = sd_l_table(SDNom(nomj=''))
 
     # si le sd_maillage a des groupes :
@@ -55,12 +55,12 @@ class sd_maillage(sd_titre):
     PARA_R  = Facultatif(AsVR())
     TYPL    = Facultatif(AsVI())
 
-    # si le sd_maillage est linéique (tube_GV) :
+    # si le sd_maillage est linÃ©ique (tube_GV) :
     abs_curv  = Facultatif(sd_carte(SDNom(nomj='.ABS_CURV')))
 
     ADAPTATION = Facultatif(AsVI(lonmax=1, ))
 
-    # Ces objets sont nécessaires pour CREA_MAILLAGE RESTREINT
+    # Ces objets sont nÃ©cessaires pour CREA_MAILLAGE RESTREINT
     CRNO  = Facultatif(AsVI())
     CRMA  = Facultatif(AsVI())
     MAOR  = Facultatif(AsVK8())
@@ -77,7 +77,7 @@ class sd_maillage(sd_titre):
         return nb_no, nb_nl, nb_ma, nb_sm, nb_sm_mx, dim_coor
 
 # remarque :  la sd_maillage pouvant etre "volumineuse", on s'interdit (pour des raisons de temps CPU)
-#             de vérifier le contenu des gros objets.
+#             de vÃ©rifier le contenu des gros objets.
 
     def check_DIME(self,checker):
         nb_no, nb_nl, nb_ma, nb_sm, nb_sm_mx, dim_coor = self.u_dime()

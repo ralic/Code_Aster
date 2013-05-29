@@ -1,4 +1,4 @@
-# -*- coding: iso-8859-1 -*-
+# coding=utf-8
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -20,11 +20,11 @@
 
 cata_msg={
 1: _(u"""
-GROUP_MA et GROUP_MA_BORD incohérents.
+GROUP_MA et GROUP_MA_BORD incohÃ©rents.
 """),
 
 2: _(u"""
-GROUP_MA et NOEUD incohérents.
+GROUP_MA et NOEUD incohÃ©rents.
 """),
 
 3: _(u"""

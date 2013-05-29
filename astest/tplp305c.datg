@@ -77,4 +77,3 @@ Transfinite Volume{26};
 
 // volume : G3D_29
 Physical Volume(29) = {26};
-

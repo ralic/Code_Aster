@@ -25,4 +25,3 @@ Physical Line(13) = {s1[0]+1};
 Physical Line(14) = {s1[0]};
 Physical Surface(15) = {s1[1]};
 Physical Point(16) = {4};
-

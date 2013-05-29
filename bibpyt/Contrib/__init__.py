@@ -1,4 +1,4 @@
-# -*- coding: iso-8859-1 -*-
+# coding=utf-8
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -18,9 +18,9 @@
 # ======================================================================
 
 """
-Ce package contient des outils qui ne sont pas officiellement supportés.
-Ils peuvent toutefois être utiles pour certaines applications.
+Ce package contient des outils qui ne sont pas officiellement supportÃ©s.
+Ils peuvent toutefois Ãªtre utiles pour certaines applications.
 
-Il n'y a pas d'engagement de qualité les concernant. Vous devez procéder
-à toutes les validations nécessaires avant de les utiliser dans une étude.
+Il n'y a pas d'engagement de qualitÃ© les concernant. Vous devez procÃ©der
+Ã  toutes les validations nÃ©cessaires avant de les utiliser dans une Ã©tude.
 """

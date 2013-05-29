@@ -931,7 +931,7 @@ CHAR25=AFFE_CHAR_MECA(MODELE=MODELE,
                                   DRZ=0.0,),);
 
 
-#Supports POIDS bloquÈs pour poids propre ?
+#Supports POIDS bloqu√©s pour poids propre ?
 #
 
 
@@ -946,7 +946,7 @@ YOUNG=DEFI_FONCTION(NOM_PARA='TEMP',
                     PROL_DROITE='EXCLU',
                     PROL_GAUCHE='EXCLU',);
 #
-# NU EN FONCTION DE LA TEMPÈRATURE
+# NU EN FONCTION DE LA TEMP√©RATURE
 #
 
 POISSON=DEFI_FONCTION(NOM_PARA='TEMP',
@@ -954,7 +954,7 @@ POISSON=DEFI_FONCTION(NOM_PARA='TEMP',
                       PROL_DROITE='CONSTANT',
                       PROL_GAUCHE='CONSTANT',);
 #
-# ALPHA EN FONCTION DE LA TEMPÈRATURE
+# ALPHA EN FONCTION DE LA TEMP√©RATURE
 #
 
 ALPHA=DEFI_FONCTION(NOM_PARA='TEMP',
@@ -1224,4 +1224,3 @@ TEST_FICHIER(FICHIER='fort.38',
              VALE_CALC=4.79081139e+04,
              VALE_CALC_K='acda10a804104216eaab3937140bcfb2',
              TOLE_MACHINE=1.E-3)
-

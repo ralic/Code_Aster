@@ -2628,7 +2628,7 @@ plaque bloc = PLAQDERA
     nbxzi nbyzi nbzzi yczin zczin tyzin tzzin nxep 
     zaxis itrac ;
 *
-* extrusion complementaire dans l'epaisseur de epzint € eptub 
+* extrusion complementaire dans l'epaisseur de epzint Â€ eptub 
 *
 **  ATTENTION A CE QUE EPTUB - EPZINT NE SOIT TROP PETIT !!
 **

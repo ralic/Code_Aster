@@ -1,4 +1,4 @@
-# -*- coding: iso-8859-1 -*-
+# coding=utf-8
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -21,53 +21,53 @@
 cata_msg = {
 
 1 : _(u"""
- L'option %(k1)s est déjà calculée pour le numéro d'ordre %(k2)s.
- On la recalcule car les données peuvent être différentes.
+ L'option %(k1)s est dÃ©jÃ  calculÃ©e pour le numÃ©ro d'ordre %(k2)s.
+ On la recalcule car les donnÃ©es peuvent Ãªtre diffÃ©rentes.
 """),
 
 2 : _(u"""
-Champ inexistant SIEF_ELGA ou SIEF_ELGA numéro d'ordre %(k1)s pour le calcul de l'option %(k2)s
+Champ inexistant SIEF_ELGA ou SIEF_ELGA numÃ©ro d'ordre %(k1)s pour le calcul de l'option %(k2)s
 """),
 
 3 : _(u"""
-Champ inexistant DEPL numéro d'ordre %(k1)s pour le calcul de l'option %(k2)s
+Champ inexistant DEPL numÃ©ro d'ordre %(k1)s pour le calcul de l'option %(k2)s
 """),
 
 4 : _(u"""
- Il n'existe aucun noeud lié à la liste de de mailles ou au groupe de mailles fournit à IMPR_RESU.
+ Il n'existe aucun noeud liÃ© Ã  la liste de de mailles ou au groupe de mailles fournit Ã  IMPR_RESU.
  
- Conseil : Vérifiez les mots-clés MAILLE ou GROUP_MA fournit à IMPR_RESU.
+ Conseil : VÃ©rifiez les mots-clÃ©s MAILLE ou GROUP_MA fournit Ã  IMPR_RESU.
 """),
 
 8 : _(u"""
 
- la taille mémoire   nécessaire au vecteur de travail dans   lequel nous stockons les composantes   u et v du vecteur TAU est trop importante   par rapport a la place disponible.
+ la taille mÃ©moire   nÃ©cessaire au vecteur de travail dans   lequel nous stockons les composantes   u et v du vecteur TAU est trop importante   par rapport a la place disponible.
  taille disponible :  %(i1)d
- taille nécessaire :  %(i2)d
+ taille nÃ©cessaire :  %(i2)d
 """),
 
 10 : _(u"""
  le noeud traite  n'est associe a aucune maille volumique.
- numéro du noeud =  %(i1)d
- nombre de mailles attachées au noeud =  %(i2)d
+ numÃ©ro du noeud =  %(i1)d
+ nombre de mailles attachÃ©es au noeud =  %(i2)d
 """),
 
 16 : _(u"""
- appel erroné numéro d'ordre %(i1)d code retour de rsexch : %(i2)d
- Problème CHAM_NO %(k1)s
+ appel erronÃ© numÃ©ro d'ordre %(i1)d code retour de rsexch : %(i2)d
+ ProblÃ¨me CHAM_NO %(k1)s
 """),
 
 19 : _(u"""
- nombre de noeud(s) éliminé(s) du maillage  %(i1)d
+ nombre de noeud(s) Ã©liminÃ©(s) du maillage  %(i1)d
 """),
 
 20 : _(u"""
- nombre de maille(s) éliminée(s) du maillage  %(i1)d
+ nombre de maille(s) Ã©liminÃ©e(s) du maillage  %(i1)d
 """),
 
 21 : _(u"""
- le numéro du groupe de mailles est trop grand:  %(i1)d
-  le numéro du groupe doit être inférieur a  %(i2)d
+ le numÃ©ro du groupe de mailles est trop grand:  %(i1)d
+  le numÃ©ro du groupe doit Ãªtre infÃ©rieur a  %(i2)d
 """),
 
 25 : _(u"""
@@ -95,36 +95,36 @@ Champ inexistant DEPL numéro d'ordre %(k1)s pour le calcul de l'option %(k2)s
 """),
 
 41 : _(u"""
-  le paramètre  %(k1)s n'existe pas %(k2)s
+  le paramÃ¨tre  %(k1)s n'existe pas %(k2)s
 """),
 
 45 : _(u"""
- noeud inconnu dans le fichier  IDEAS  noeud numéro :  %(i1)d
+ noeud inconnu dans le fichier  IDEAS  noeud numÃ©ro :  %(i1)d
 """),
 
 46 : _(u"""
- élément inconnu dans le fichier IDEAS élément numéro :  %(i1)d
+ Ã©lÃ©ment inconnu dans le fichier IDEAS Ã©lÃ©ment numÃ©ro :  %(i1)d
 """),
 
 54 : _(u"""
- problème dans  nomta traitement de l'instant  %(r1)f
-  récupération de  %(k1)s
+ problÃ¨me dans  nomta traitement de l'instant  %(r1)f
+  rÃ©cupÃ©ration de  %(k1)s
   pour le secteur  %(i1)d
 """),
 
 57 : _(u"""
- problème dans  nomta traitement de l'instant  %(r1)f
-  récupération de  %(k1)s
+ problÃ¨me dans  nomta traitement de l'instant  %(r1)f
+  rÃ©cupÃ©ration de  %(k1)s
 """),
 
 58 : _(u"""
- problème dans  nomta traitement de l'instant  %(r1)f
-  récupération "numeli" pour  %(k1)s
+ problÃ¨me dans  nomta traitement de l'instant  %(r1)f
+  rÃ©cupÃ©ration "numeli" pour  %(k1)s
 """),
 
 59 : _(u"""
- problème dans  nomta traitement de l'instant  %(r1)f
-  récupération "numeli" pour le secteur  %(i1)d
+ problÃ¨me dans  nomta traitement de l'instant  %(r1)f
+  rÃ©cupÃ©ration "numeli" pour le secteur  %(i1)d
 """),
 
 61 : _(u"""
@@ -132,37 +132,37 @@ Champ inexistant DEPL numéro d'ordre %(k1)s pour le calcul de l'option %(k2)s
 """),
 
 64 : _(u"""
- la valeur d'amortissement réduit est trop grande
+ la valeur d'amortissement rÃ©duit est trop grande
  la valeur d'amortissement :  %(r1)f
   du mode propre  %(i1)d
-  est tronquée au seuil :  %(r2)f
+  est tronquÃ©e au seuil :  %(r2)f
 """),
 
 67 : _(u"""
 
- la taille mémoire   nécessaire au vecteur de travail   est trop importante   par rapport a la place disponible.
+ la taille mÃ©moire   nÃ©cessaire au vecteur de travail   est trop importante   par rapport a la place disponible.
  taille disponible :  %(i1)d
- taille nécessaire :  %(i2)d
+ taille nÃ©cessaire :  %(i2)d
 """),
 
 68 : _(u"""
 
- la taille du vecteur  contenant les caractéristiques des   paquets de mailles est trop petite.
+ la taille du vecteur  contenant les caractÃ©ristiques des   paquets de mailles est trop petite.
  nombre de paquets max :  %(i1)d
- nombre de paquets réels:  %(i2)d
+ nombre de paquets rÃ©els:  %(i2)d
 """),
 
 70 : _(u"""
 
- la taille du vecteur  contenant les caractéristiques des   paquets de noeuds est trop petite.
+ la taille du vecteur  contenant les caractÃ©ristiques des   paquets de noeuds est trop petite.
  nombre de paquets max :  %(i1)d
- nombre de paquets réels:  %(i2)d
+ nombre de paquets rÃ©els:  %(i2)d
 """),
 
 73 : _(u"""
- appel erroné  résultat :  %(k1)s   archivage numéro :  %(i1)d
+ appel erronÃ©  rÃ©sultat :  %(k1)s   archivage numÃ©ro :  %(i1)d
    code retour de rsexch :  %(i2)d
-   problème champ :  %(k2)s
+   problÃ¨me champ :  %(k2)s
 """),
 
 74 : _(u"""
@@ -175,17 +175,17 @@ Champ inexistant DEPL numéro d'ordre %(k1)s pour le calcul de l'option %(k2)s
 
 76 : _(u"""
  noeud non contenu dans une  maille sachant calculer l" option
- noeud numéro :  %(i1)d
+ noeud numÃ©ro :  %(i1)d
 """),
 
 77 : _(u"""
- *** banque de données *** pour le type de géométrie  %(k1)s
-  le couple de matériaux  %(k2)s
+ *** banque de donnÃ©es *** pour le type de gÃ©omÃ©trie  %(k1)s
+  le couple de matÃ©riaux  %(k2)s
   ne se trouve pas dans la banque. %(k3)s
 """),
 
 78 : _(u"""
- le calcul du rayon n'est pas assez précis.
+ le calcul du rayon n'est pas assez prÃ©cis.
     cupn0 =  %(r1)f
     cvpn0 =  %(r2)f
     cupn1 =  %(r3)f

@@ -1,4 +1,4 @@
-# -*- coding: iso-8859-1 -*-
+# coding=utf-8
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -37,19 +37,19 @@ cata_msg={
 """),
 
  5: _(u"""
- cas du MONO_APPUI: vous avez déjà donné un spectre pour cette direction.
+ cas du MONO_APPUI: vous avez dÃ©jÃ  donnÃ© un spectre pour cette direction.
 """),
 
  6: _(u"""
- erreur(s) rencontrée(s) lors de la lecture des supports.
+ erreur(s) rencontrÃ©e(s) lors de la lecture des supports.
 """),
 
  7: _(u"""
- vous avez déjà donné un spectre pour le support %(k1)s
+ vous avez dÃ©jÃ  donnÃ© un spectre pour le support %(k1)s
 """),
 
  8: _(u"""
- on ne peut pas traiter du MONO_APPUI et du MULTI_APPUI simultanément.
+ on ne peut pas traiter du MONO_APPUI et du MULTI_APPUI simultanÃ©ment.
 """),
 
 
@@ -77,15 +77,15 @@ cata_msg={
 """),
 
 14: _(u"""
- on ne peut pas demander de réponse secondaire sans la réponse primaire
+ on ne peut pas demander de rÃ©ponse secondaire sans la rÃ©ponse primaire
 """),
 
 15: _(u"""
  analyse spectrale :
-   la base modale utilisée est               : %(k1)s
+   la base modale utilisÃ©e est               : %(k1)s
    le nombre de vecteurs de base est         : %(i1)d
-   la règle de combinaison modale est        : %(k2)s
-   les options de calcul demandées sont      : %(k3)s """
+   la rÃ¨gle de combinaison modale est        : %(k2)s
+   les options de calcul demandÃ©es sont      : %(k3)s """
    ),
 
 16: _(u"""
@@ -97,17 +97,17 @@ cata_msg={
    ),
 
 18: _(u"""
-   la règle de combinaison des réponses
+   la rÃ¨gle de combinaison des rÃ©ponses
    directionnelles est                       : %(k1)s """
    ),
 
 19: _(u"""
-   la règle de combinaison des contributions
+   la rÃ¨gle de combinaison des contributions
    de chaque mouvement d'appui est           : %(k1)s """
    ),
 
 20: _(u"""
- erreur dans les données
+ erreur dans les donnÃ©es
    la masse de la structure n'existe pas dans la table: %(k1)s
 """),
 
@@ -116,63 +116,63 @@ cata_msg={
 """),
 
 22: _(u"""
- COMB_DEPL_APPUI: il faut au moins définir 2 cas derrière le mot clé LIST_CAS.
+ COMB_DEPL_APPUI: il faut au moins dÃ©finir 2 cas derriÃ¨re le mot clÃ© LIST_CAS.
 """),
 
 23: _(u"""
- données incompatibles
+ donnÃ©es incompatibles
    pour la direction   : %(k1)s
    nombre de blocage   : %(i1)d
    nombre d'excitations: %(i2)d
 """),
 
 24: _(u"""
- données incompatibles
-   pour les modes mécaniques : %(k1)s
+ donnÃ©es incompatibles
+   pour les modes mÃ©caniques : %(k1)s
    il manque l'option        : %(k2)s
 """),
 
 25: _(u"""
-  problème stockage
+  problÃ¨me stockage
     option de calcul: %(k1)s
     occurrence       : %(i1)d
     nom du champ    : %(k3)s
 """),
 
 26: _(u"""
-  problème stockage
+  problÃ¨me stockage
     option de calcul: %(k1)s
     direction       : %(k2)s
     nom du champ    : %(k3)s
 """),
 
 27: _(u"""
-  La base modale utilisé %(k1)s ne contient pas tous les paramètres modaux
-  nécessaires au calcul.
-  Il faut que le concept soit issu d'un calcul sur coordonnées physiques et
-  non pas généralisées.
+  La base modale utilisÃ© %(k1)s ne contient pas tous les paramÃ¨tres modaux
+  nÃ©cessaires au calcul.
+  Il faut que le concept soit issu d'un calcul sur coordonnÃ©es physiques et
+  non pas gÃ©nÃ©ralisÃ©es.
 """),
 
 28: _(u"""
-  Dans le cas d'excitations décorrélées,
-  le mot-clé COMB_MULT_APPUI n'est pas pris en compte.
+  Dans le cas d'excitations dÃ©corrÃ©lÃ©es,
+  le mot-clÃ© COMB_MULT_APPUI n'est pas pris en compte.
 """),
 
 29: _(u"""
-  La définition du groupe d'appuis n'est pas correcte dans le cas décorrélé:
-  au moins une excitation appartient à plusieurs groupes d'appuis.
-  Les groupes d'appuis doivent être disjoints.
+  La dÃ©finition du groupe d'appuis n'est pas correcte dans le cas dÃ©corrÃ©lÃ©:
+  au moins une excitation appartient Ã  plusieurs groupes d'appuis.
+  Les groupes d'appuis doivent Ãªtre disjoints.
 """),
 
 30: _(u"""
-  La définition du groupe d'appuis n'est pas correcte dans le cas décorrélé.
-  Un seul groupe d'appuis a été constitué contenant tous les appuis.
-  Relancez le calcul avec le mot-clé MULTI_APPUI=CORRELE.
+  La dÃ©finition du groupe d'appuis n'est pas correcte dans le cas dÃ©corrÃ©lÃ©.
+  Un seul groupe d'appuis a Ã©tÃ© constituÃ© contenant tous les appuis.
+  Relancez le calcul avec le mot-clÃ© MULTI_APPUI=CORRELE.
 """),
 
 31: _(u"""
  Attention,
- il n'y a pas de déplacements différentiels pris en compte dans votre calcul
+ il n'y a pas de dÃ©placements diffÃ©rentiels pris en compte dans votre calcul
  spectral multiappui.
 """),
 

@@ -1,5 +1,4 @@
 /*           CONFIGURATION MANAGEMENT OF EDF VERSION                  */
-/* MODIF hdfwsv hdf  DATE 10/04/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE */
 /* ================================================================== */
 /* COPYRIGHT (C) 1991 - 2012  EDF R&D              WWW.CODE-ASTER.ORG */
 /*                                                                    */
@@ -13,20 +12,20 @@
 /* GENERAL PUBLIC LICENSE FOR MORE DETAILS.                           */
 /*                                                                    */
 /* YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE  */
-/* ALONG WITH THIS PROGRAM; IF NOT, WRITE TO : EDF R&D CODE_ASTER,    */
+/* ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,      */
 /*    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.     */
 /* ================================================================== */
 #include "aster.h"
 #include "aster_fort.h"
 /*-----------------------------------------------------------------------------/
-/ Ecriture sur un fichier HDF d'un segment de valeur associé à un objet JEVEUX
-/  Paramètres : 
+/ Ecriture sur un fichier HDF d'un segment de valeur associÃ© Ã  un objet JEVEUX
+/  ParamÃ¨tres : 
 /   - in  idfic  : identificateur du fichier (hid_t)
 /   - in  nomg   : nom du groupe (char *)
 /   - in  nomdts : nom du dataset (char *)
-/   - in  type   : type des valeurs stockées (char *)
-/   - in  sv     : valeurs associées 
-/  Résultats :
+/   - in  type   : type des valeurs stockÃ©es (char *)
+/   - in  sv     : valeurs associÃ©es 
+/  RÃ©sultats :
 /     identificateur du fichier, -1 sinon (hid_t = int)
 /-----------------------------------------------------------------------------*/
 #ifndef _DISABLE_HDF5
@@ -75,7 +74,7 @@ INTEGER DEFPSSSPSP(HDFWSV, hdfwsv, INTEGER *idf, char *nomg, STRING_SIZE lg,
   }
   vtype[lt] = '\0';
 /*
- *   Type à déterminer en fonction de l'argument type 
+ *   Type Ã  dÃ©terminer en fonction de l'argument type 
 */
   dimsf[0] = (hsize_t)*lsv;
   if        (strcmp(vtype,"R") == 0) {
@@ -114,7 +113,8 @@ INTEGER DEFPSSSPSP(HDFWSV, hdfwsv, INTEGER *idf, char *nomg, STRING_SIZE lg,
 
   if ((dataspace = H5Screate_simple(1, dimsf, NULL))<0 )
     return -1 ; 
-  if ((dataset = H5Dcreate(idfic, nomd, datatype, dataspace, H5P_DEFAULT, H5P_DEFAULT, H5P_DEFAULT))<0 )
+  if ((dataset = H5Dcreate(idfic, nomd, datatype, dataspace, H5P_DEFAULT,
+                           H5P_DEFAULT, H5P_DEFAULT))<0 )
     return -1 ;
   if ((iret = H5Dwrite(dataset, datatype, H5S_ALL, H5S_ALL, H5P_DEFAULT, sv))<0 )
     return -1 ;

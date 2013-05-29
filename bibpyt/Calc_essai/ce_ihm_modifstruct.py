@@ -1,4 +1,4 @@
-# -*- coding: iso-8859-1 -*-
+# coding=utf-8
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -50,7 +50,7 @@ class InterfaceModifStruct(Frame):
 
         :IVariable:
          - `root`: fenetre parente
-         - `ce_objects`: objet CALC_ESSAI, permettant d'accéder aux résultats aster
+         - `ce_objects`: objet CALC_ESSAI, permettant d'accÃ©der aux rÃ©sultats aster
          - `macro`: self de la macro qui utilise cet objet
          - `mess`: fenetre de messages
          - `outputs`: concepts Aster de l'utilisateur a afficher en sortie
@@ -136,7 +136,7 @@ class InterfaceExpansion(Frame):
         self.term = []
 
         objects = self.root.objects
-        # Déclaration des variables Tk
+        # DÃ©claration des variables Tk
         self.var_resu_exp = StringVar()
         self.condens_meth = StringVar()
         self.var_modl_sup = StringVar()
@@ -288,8 +288,8 @@ class InterfaceExpansion(Frame):
         self.param_dlg.withdraw()
 
     def modele_support_changed(self):
-        """Selectionne les matrices de raideur compatibles avec le modèle
-        support sélectionné
+        """Selectionne les matrices de raideur compatibles avec le modÃ¨le
+        support sÃ©lectionnÃ©
         """
         obj_dict = CONTEXT.get_current_step().get_contexte_courant()
         modsup = self.var_modl_sup.get()
@@ -359,8 +359,8 @@ class InterfaceExpansion(Frame):
 ##        self.anything_changed())
 
     def _can_set_modif_struct_para(self):
-        """Renvoit  True si tous les paramêtres pour calculer les modes
-        de la structure modifiée ont pu être obtenu."""
+        """Renvoit  True si tous les paramÃªtres pour calculer les modes
+        de la structure modifiÃ©e ont pu Ãªtre obtenu."""
         disp_mess = self.root.mess.disp_mess
         retour = True
 
@@ -384,7 +384,7 @@ class InterfaceExpansion(Frame):
         matr_rig = objects.get_matr(self.var_raid_name.get())
         if matr_rig == None :
             disp_mess( (u"Il faut selectionner une matrice raideur " \
-                        u"parmi celles proposées!") )
+                        u"parmi celles proposÃ©es!") )
             retour = False
         else:
             self.modif_struct.set_stiffness_matrix(matr_rig)
@@ -439,7 +439,7 @@ class InterfaceExpansion(Frame):
         x_bsmo = self.modif_struct.calc_base_proj(calc_freq)
         self.liste_sup.set_resu(x_bsmo)
 
-        # on sauve le nom du modele sup utilisé
+        # on sauve le nom du modele sup utilisÃ©
         # pour calculer la base d'expansion (pour affichage par GMSH)
         #self.base_expansion_modl = modlsup
         #self.base_expansion = self.modif_struct.base_expansion
@@ -684,8 +684,8 @@ class InterfaceCouplage(Frame):
         self.liste_resu.set_resu( resu )
 
     def _can_set_modif_struct_para(self):
-        """Renvoit True si tous les paramêtres pour lancer le calcul
-        sur la stucture modifiée ont pu être obtenu."""
+        """Renvoit True si tous les paramÃªtres pour lancer le calcul
+        sur la stucture modifiÃ©e ont pu Ãªtre obtenu."""
         expans = self.root.expansion
         disp_mess = self.root.mess.disp_mess
         retour = True
@@ -711,15 +711,15 @@ class InterfaceCouplage(Frame):
 
         modes_ide = expans.liste_exp.get_selection()
         if not modes_ide:
-            disp_mess(u"Il faut sélectionner des modes " \
-                      u"du modèle experimental pour la condensation")
+            disp_mess(u"Il faut sÃ©lectionner des modes " \
+                      u"du modÃ¨le experimental pour la condensation")
             retour = False
         else:
             self.modif_struct.set_modes_ide(modes_ide)
 
         modes_expansion = [int(m) for m in expans.liste_sup.get_selection()]
         if not modes_expansion:
-            disp_mess(u"Il faut sélectionner des modes " \
+            disp_mess(u"Il faut sÃ©lectionner des modes " \
                       u"de la base d'expansion pour la condensation")
             retour = False
         else:
@@ -745,7 +745,7 @@ class InterfaceCouplage(Frame):
         return True
 
     def calc_condensation(self):
-        """Lance le calcul de condensation sur la structure modifiée."""
+        """Lance le calcul de condensation sur la structure modifiÃ©e."""
 
         if not self._can_set_modif_struct_para():
             return
@@ -805,7 +805,7 @@ class InterfaceVisu(Frame):
             et compariaison modele initial / modele modifie
 
         permet de choisir d'afficher les modes avec gmsh
-        gère la compatibilité des choix de l'utilisateur (les calculs de MAC
+        gÃ¨re la compatibilitÃ© des choix de l'utilisateur (les calculs de MAC
         ne sont pas tous possibles)
 
         """

@@ -1,10 +1,10 @@
-// plaque 2D trouée
+// plaque 2D trouÃ©e
 
 // dimensions
 lx=0.1;
 ly=0.1;
 
-//densités
+//densitÃ©s
 dens  = 0.5;
 dens1 = 0.1;
 
@@ -72,4 +72,3 @@ Physical Surface ( 1 ) = { 1 };     // MSURF
 Physical Point   ( 2 ) = { 2 };   // NAPPUI1
 Physical Point   ( 3 ) = { 3 };   // NAPPUI2
 Physical Point   ( 4 ) = { 6 };     // NFORCE
-

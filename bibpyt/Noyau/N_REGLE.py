@@ -1,4 +1,4 @@
-# -*- coding: iso-8859-1 -*-
+# coding=utf-8
 # person_in_charge: mathieu.courtois at edf.fr
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -26,7 +26,7 @@
 
     La classe REGLE est la classe de base : elle est virtuelle, elle ne doit pas etre instanciee.
 
-    Les classes regles dérivées qui seront instanciées doivent implementer la methode verif
+    Les classes regles dÃ©rivÃ©es qui seront instanciÃ©es doivent implementer la methode verif
     dont l argument est le dictionnaire des mots cles effectivement presents
     sur lesquels sera operee la verification de la regle
 
@@ -34,9 +34,9 @@
 
     Exemple ::
 
-    # Création de l'objet règle UNPARMI
+    # CrÃ©ation de l'objet rÃ¨gle UNPARMI
     r=UNPARMI("INFO","AFFE")
-    # Vérification de la règle r sur le dictionnaire passé en argument
+    # VÃ©rification de la rÃ¨gle r sur le dictionnaire passÃ© en argument
     r.verif({"INFO":v1,"AFFE":v2)
 """
 
@@ -45,30 +45,30 @@ import types
 class REGLE:
    def __init__(self,*args):
       """
-          Les classes dérivées peuvent utiliser cet initialiseur par défaut ou
+          Les classes dÃ©rivÃ©es peuvent utiliser cet initialiseur par dÃ©faut ou
           le surcharger
       """
       self.mcs=args
 
    def verif(self,args):
       """
-         Les classes dérivées doivent implémenter cette méthode
-         qui doit retourner une paire dont le premier élément est une chaine de caractère
-         et le deuxième un entier.
+         Les classes dÃ©rivÃ©es doivent implÃ©menter cette mÃ©thode
+         qui doit retourner une paire dont le premier Ã©lÃ©ment est une chaine de caractÃ¨re
+         et le deuxiÃ¨me un entier.
  
-         L'entier peut valoir 0 ou 1. -- s'il vaut 1, la règle est vérifiée
-          s'il vaut 0, la règle n'est pas vérifiée et le texte joint contient
-         un commentaire de la non validité.
+         L'entier peut valoir 0 ou 1. -- s'il vaut 1, la rÃ¨gle est vÃ©rifiÃ©e
+          s'il vaut 0, la rÃ¨gle n'est pas vÃ©rifiÃ©e et le texte joint contient
+         un commentaire de la non validitÃ©.
       """
       raise NotImplementedError('class REGLE should be derived')
 
    def liste_to_dico(self,args):
       """
-         Cette méthode est utilitaire pour les seuls besoins
-         des classes dérivées. 
+         Cette mÃ©thode est utilitaire pour les seuls besoins
+         des classes dÃ©rivÃ©es. 
 
-         Elle transforme une liste de noms de mots clés en un 
-         dictionnaire équivalent dont les clés sont les noms des mts-clés
+         Elle transforme une liste de noms de mots clÃ©s en un 
+         dictionnaire Ã©quivalent dont les clÃ©s sont les noms des mts-clÃ©s
 
          Ceci permet d'avoir un traitement identique pour les listes et les dictionnaires
       """

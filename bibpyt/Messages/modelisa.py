@@ -1,4 +1,4 @@
-# -*- coding: iso-8859-1 -*-
+# coding=utf-8
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -22,78 +22,78 @@ cata_msg = {
 
 1 : _(u"""
  l'option de calcul d'une abscisse curviligne sur un groupe de mailles
- n'est pas implantée
+ n'est pas implantÃ©e
 """),
 
 2 : _(u"""
- il est possible de définir une abscisse curviligne uniquement
+ il est possible de dÃ©finir une abscisse curviligne uniquement
  pour des mailles de type: POI1 ou SEG2
 """),
 
 3 : _(u"""
- point non trouvé parmi les SEG2
+ point non trouvÃ© parmi les SEG2
 """),
 
 4 : _(u"""
- mauvaise définition pour l'abscisse curviligne
- détection de plusieurs chemins.
+ mauvaise dÃ©finition pour l'abscisse curviligne
+ dÃ©tection de plusieurs chemins.
 """),
 
 6 : _(u"""
- méthode AU-YANG : la géométrie doit être cylindrique
+ mÃ©thode AU-YANG : la gÃ©omÃ©trie doit Ãªtre cylindrique
 """),
 
 7 : _(u"""
- BARRE : une erreur a été détectée lors de l'affectation des valeurs dans le tampon
+ BARRE : une erreur a Ã©tÃ© dÃ©tectÃ©e lors de l'affectation des valeurs dans le tampon
 """),
 
 8 : _(u"""
- Vous affectez des caractéristiques de type %(k1)s à la maille %(k2)s qui est pas de ce type.
+ Vous affectez des caractÃ©ristiques de type %(k1)s Ã  la maille %(k2)s qui est pas de ce type.
 
  Conseil :
-   Vérifier le résultat de la commande AFFE_MODELE pour la maille %(k2)s.
+   VÃ©rifier le rÃ©sultat de la commande AFFE_MODELE pour la maille %(k2)s.
 """),
 
 10 : _(u"""
- la norme de l'axe AXE définie sous le mot clé facteur GRILLE ou MEMBRANE est nul.
+ la norme de l'axe AXE dÃ©finie sous le mot clÃ© facteur GRILLE ou MEMBRANE est nul.
 """),
 
 11 : _(u"""
- L'axe AXE est colinéaire à la normale de l'élément. On ne peut pas définir
+ L'axe AXE est colinÃ©aire Ã  la normale de l'Ã©lÃ©ment. On ne peut pas dÃ©finir
  l'orientation des armatures.
 """),
 
 12 : _(u"""
- orientation : une erreur a été détectée lors de l'affectation des orientations
+ orientation : une erreur a Ã©tÃ© dÃ©tectÃ©e lors de l'affectation des orientations
 """),
 
 13 : _(u"""
- erreur(s) dans les données.
+ erreur(s) dans les donnÃ©es.
 """),
 
 14 : _(u"""
- POUTRE : une erreur a été détectée lors de l'affectation des valeurs dans le tampon
+ POUTRE : une erreur a Ã©tÃ© dÃ©tectÃ©e lors de l'affectation des valeurs dans le tampon
 """),
 
 15 : _(u"""
- poutre : une  erreur a été détectée lors des vérifications des valeurs entrées
+ poutre : une  erreur a Ã©tÃ© dÃ©tectÃ©e lors des vÃ©rifications des valeurs entrÃ©es
 """),
 
 16 : _(u"""
- vous fournissez deux caractéristiques élémentaires. Il est obligatoire de fournir une caractéristique
- relative à l'amortissement et une caractéristique relative à la rigidité
+ vous fournissez deux caractÃ©ristiques Ã©lÃ©mentaires. Il est obligatoire de fournir une caractÃ©ristique
+ relative Ã  l'amortissement et une caractÃ©ristique relative Ã  la rigiditÃ©
 """),
 
 17 : _(u"""
- caractéristique  %(k1)s  non admise actuellement
+ caractÃ©ristique  %(k1)s  non admise actuellement
 """),
 
 18 : _(u"""
- le noeud  %(k1)s  non modélisé par un discret
+ le noeud  %(k1)s  non modÃ©lisÃ© par un discret
 """),
 
 19 : _(u"""
- pas de noeuds du Radier modélisés par des discrets
+ pas de noeuds du Radier modÃ©lisÃ©s par des discrets
 """),
 
 20 : _(u"""
@@ -101,109 +101,109 @@ cata_msg = {
 """),
 
 21 : _(u"""
- le noeud  %(k1)s  extrémité d'un des discrets n'existe pas dans la surface donnée par GROUP_MA.
+ le noeud  %(k1)s  extrÃ©mitÃ© d'un des discrets n'existe pas dans la surface donnÃ©e par GROUP_MA.
 """),
 
 22 : _(u"""
- La température de référence doit être comprise entre %(r1)f et %(r2)f.
+ La tempÃ©rature de rÃ©fÃ©rence doit Ãªtre comprise entre %(r1)f et %(r2)f.
 """),
 
 23 : _(u"""
  AFFE_CARA_ELEM :
- La caractéristique %(k1)s, coefficient de cisaillement, pour les poutres doit toujours
-être >=1.0
-   Valeur donnée : %(r1)f
+ La caractÃ©ristique %(k1)s, coefficient de cisaillement, pour les poutres doit toujours
+Ãªtre >=1.0
+   Valeur donnÃ©e : %(r1)f
 """),
 
 24 : _(u"""
-  GENE_TUYAU : préciser un seul noeud par tuyau
+  GENE_TUYAU : prÃ©ciser un seul noeud par tuyau
 """),
 
 25 : _(u"""
  ORIENTATION : GENE_TUYAU
- le noeud doit être une des extrémités
+ le noeud doit Ãªtre une des extrÃ©mitÃ©s
 """),
 
 26 : _(u"""
-  Il y a un problème lors de l'affectation du mot clé MODI_METRIQUE sur la maille %(k1)s
+  Il y a un problÃ¨me lors de l'affectation du mot clÃ© MODI_METRIQUE sur la maille %(k1)s
 """),
 
 27 : _(u"""
- on ne peut pas mélanger des tuyaux à 3 et 4 noeuds pour le moment
+ on ne peut pas mÃ©langer des tuyaux Ã  3 et 4 noeuds pour le moment
 """),
 
 28 : _(u"""
  ORIENTATION : GENE_TUYAU
- un seul noeud doit être affecté
+ un seul noeud doit Ãªtre affectÃ©
 """),
 
 29 : _(u"""
- vous ne pouvez affecter des valeurs de type "POUTRE" au modèle  %(k1)s
- qui ne contient pas un seul élément poutre
+ vous ne pouvez affecter des valeurs de type "POUTRE" au modÃ¨le  %(k1)s
+ qui ne contient pas un seul Ã©lÃ©ment poutre
 """),
 
 30 : _(u"""
- vous ne pouvez affecter des valeurs de type "COQUE" au modèle  %(k1)s
- qui ne contient pas un seul élément coque
+ vous ne pouvez affecter des valeurs de type "COQUE" au modÃ¨le  %(k1)s
+ qui ne contient pas un seul Ã©lÃ©ment coque
 """),
 
 31 : _(u"""
- vous ne pouvez affecter des valeurs de type "DISCRET" au modèle  %(k1)s
- qui ne contient pas un seul élément discret
+ vous ne pouvez affecter des valeurs de type "DISCRET" au modÃ¨le  %(k1)s
+ qui ne contient pas un seul Ã©lÃ©ment discret
 """),
 
 32 : _(u"""
- vous ne pouvez affecter des valeurs de type "ORIENTATION" au modèle  %(k1)s
- qui ne contient ni élément poutre ni élément DISCRET ni élément BARRE
+ vous ne pouvez affecter des valeurs de type "ORIENTATION" au modÃ¨le  %(k1)s
+ qui ne contient ni Ã©lÃ©ment poutre ni Ã©lÃ©ment DISCRET ni Ã©lÃ©ment BARRE
 """),
 
 33 : _(u"""
- vous ne pouvez affecter des valeurs de type "CABLE" au modèle  %(k1)s
- qui ne contient pas un seul élément CABLE
+ vous ne pouvez affecter des valeurs de type "CABLE" au modÃ¨le  %(k1)s
+ qui ne contient pas un seul Ã©lÃ©ment CABLE
 """),
 
 34 : _(u"""
- vous ne pouvez affecter des valeurs de type "BARRE" au modèle  %(k1)s
- qui ne contient pas un seul élément BARRE
+ vous ne pouvez affecter des valeurs de type "BARRE" au modÃ¨le  %(k1)s
+ qui ne contient pas un seul Ã©lÃ©ment BARRE
 """),
 
 35 : _(u"""
- vous ne pouvez affecter des valeurs de type "MASSIF" au modèle  %(k1)s
- qui ne contient pas un seul élément thermique ou mécanique
+ vous ne pouvez affecter des valeurs de type "MASSIF" au modÃ¨le  %(k1)s
+ qui ne contient pas un seul Ã©lÃ©ment thermique ou mÃ©canique
 """),
 
 36 : _(u"""
- vous ne pouvez affecter des valeurs de type "GRILLE" au modèle  %(k1)s
- qui ne contient pas un seul élément GRILLE
+ vous ne pouvez affecter des valeurs de type "GRILLE" au modÃ¨le  %(k1)s
+ qui ne contient pas un seul Ã©lÃ©ment GRILLE
 """),
 
 37 : _(u"""
- impossible d'affecter des caractéristiques à des noeuds de ce modèle
- car aucun noeud ne supporte un élément
+ impossible d'affecter des caractÃ©ristiques Ã  des noeuds de ce modÃ¨le
+ car aucun noeud ne supporte un Ã©lÃ©ment
 """),
 
 38 : _(u"""
- la maille  %(k1)s  n'a pas été affectée par des caractéristiques de poutre.
+ la maille  %(k1)s  n'a pas Ã©tÃ© affectÃ©e par des caractÃ©ristiques de poutre.
 """),
 
 39 : _(u"""
- la maille  %(k1)s  n'a pas été affectée par une matrice (DISCRET).
+ la maille  %(k1)s  n'a pas Ã©tÃ© affectÃ©e par une matrice (DISCRET).
 """),
 
 40 : _(u"""
- la maille  %(k1)s  n'a pas été affectée par des caractéristiques de câble.
+ la maille  %(k1)s  n'a pas Ã©tÃ© affectÃ©e par des caractÃ©ristiques de cÃ¢ble.
 """),
 
 41 : _(u"""
- la maille  %(k1)s  n'a pas été affectée par des caractéristiques de barre.
+ la maille  %(k1)s  n'a pas Ã©tÃ© affectÃ©e par des caractÃ©ristiques de barre.
 """),
 
 42 : _(u"""
- la maille  %(k1)s  n'a pas été affectée par des caractéristiques de grille.
+ la maille  %(k1)s  n'a pas Ã©tÃ© affectÃ©e par des caractÃ©ristiques de grille.
 """),
 
 43 : _(u"""
- le noeud  %(k1)s  n'a pas été affecté par une matrice.
+ le noeud  %(k1)s  n'a pas Ã©tÃ© affectÃ© par une matrice.
 """),
 
 44 : _(u"""
@@ -250,7 +250,7 @@ cata_msg = {
 50 : _(u"""
  barre :
  occurrence  %(k1)s
- "CARA" : nombre de valeurs entrées incorrect
+ "CARA" : nombre de valeurs entrÃ©es incorrect
  il en faut  %(k2)s
 """),
 
@@ -264,12 +264,12 @@ cata_msg = {
 52 : _(u"""
  CABLE :
  occurrence 1
- le mot clé "section" est obligatoire.
+ le mot clÃ© "section" est obligatoire.
 """),
 
 53 : _(u"""
  coque : occurrence 1
- le mot clé "EPAIS" ou "EPAIS_FO" est obligatoire.
+ le mot clÃ© "EPAIS" ou "EPAIS_FO" est obligatoire.
 """),
 
 54 : _(u"""
@@ -277,67 +277,67 @@ cata_msg = {
 """),
 
 55 : _(u"""
- vous ne pouvez affecter des valeurs de type "MEMBRANE" au modèle  %(k1)s
- qui ne contient pas un seul élément MEMBRANE
+ vous ne pouvez affecter des valeurs de type "MEMBRANE" au modÃ¨le  %(k1)s
+ qui ne contient pas un seul Ã©lÃ©ment MEMBRANE
 """),
 
 56 : _(u"""
- impossibilité, la maille  %(k1)s  doit être une maille de type  %(k2)s , et elle est de type :  %(k3)s  pour la caractéristique  %(k4)s
+ impossibilitÃ©, la maille  %(k1)s  doit Ãªtre une maille de type  %(k2)s , et elle est de type :  %(k3)s  pour la caractÃ©ristique  %(k4)s
 """),
 
 57 : _(u"""
  orientation :
  occurrence 1
- le mot clé "VALE" est obligatoire
+ le mot clÃ© "VALE" est obligatoire
 """),
 
 58 : _(u"""
  orientation :
  occurrence 1
- le mot clé "CARA" est obligatoire
+ le mot clÃ© "CARA" est obligatoire
 """),
 
 59 : _(u"""
  orientation :
  occurrence  %(k1)s
- présence de "VALE" obligatoire si "CARA" est présent
+ prÃ©sence de "VALE" obligatoire si "CARA" est prÃ©sent
 """),
 
 60 : _(u"""
  orientation :
  occurrence  %(k1)s
  val :  %(k2)s
- nombre de valeurs entrées incorrect
+ nombre de valeurs entrÃ©es incorrect
 """),
 
 61 : _(u"""
  DEFI_ARC:
- le rayon de courbure doit être positif.
+ le rayon de courbure doit Ãªtre positif.
 """),
 
 62 : _(u"""
  DEFI_ARC:
- il faut 3 réels pour définir le centre de courbure.
+ il faut 3 rÃ©els pour dÃ©finir le centre de courbure.
 """),
 
 63 : _(u"""
  DEFI_ARC:
- il faut 3 réels pour définir le point de concours des tangentes.
+ il faut 3 rÃ©els pour dÃ©finir le point de concours des tangentes.
 """),
 
 64 : _(u"""
  DEFI_ARC:
- le coefficient de flexibilité doit être positif.
+ le coefficient de flexibilitÃ© doit Ãªtre positif.
 """),
 
 65 : _(u"""
- DEFI_ARC: l'indice de contrainte doit être positif.
+ DEFI_ARC: l'indice de contrainte doit Ãªtre positif.
 """),
 
 66 : _(u"""
  poutre :
  occurrence  %(k1)s
- section "cercle", VARI_SECT "constant" la caractéristique "r" est obligatoire
+ section "cercle", VARI_SECT "constant" la caractÃ©ristique "r" est obligatoire
 """),
 
 
@@ -345,123 +345,123 @@ cata_msg = {
 
 
 69 : _(u"""
- occurrence  %(k1)s de "barre" (maille  %(k2)s ) écrasement d un type de géométrie de section par un autre
+ occurrence  %(k1)s de "barre" (maille  %(k2)s ) Ã©crasement d un type de gÃ©omÃ©trie de section par un autre
 """),
 
 70 : _(u"""
  barre :
  maille  %(k1)s
  section GENERALE
- il manque la caractéristique  %(k2)s
+ il manque la caractÃ©ristique  %(k2)s
 """),
 
 71 : _(u"""
  barre :
  maille  %(k1)s
  section GENERALE
- la valeur de  %(k2)s  doit être  strictement positive.
+ la valeur de  %(k2)s  doit Ãªtre  strictement positive.
 """),
 
 72 : _(u"""
  barre :
  maille  %(k1)s
  section rectangle
- il manque  la caractéristique  %(k2)s
+ il manque  la caractÃ©ristique  %(k2)s
 """),
 
 73 : _(u"""
  barre :
  maille  %(k1)s
  section rectangle
- la valeur de  %(k2)s  doit être  strictement positive.
+ la valeur de  %(k2)s  doit Ãªtre  strictement positive.
 """),
 
 74 : _(u"""
  barre :
  maille  %(k1)s
  section cercle
- il manque  la caractéristique  %(k2)s
+ il manque  la caractÃ©ristique  %(k2)s
 """),
 
 75 : _(u"""
  barre :
  maille  %(k1)s
  section cercle
- la valeur de  %(k2)s  doit être  strictement positive.
+ la valeur de  %(k2)s  doit Ãªtre  strictement positive.
 """),
 
 76 : _(u"""
  barre :
  maille  %(k1)s
  section cercle
- la valeur de  %(k2)s  doit être positive.
+ la valeur de  %(k2)s  doit Ãªtre positive.
 """),
 
 77 : _(u"""
  poutre :
  maille  %(k1)s
  section GENERALE
- il manque la caractéristique  %(k2)s
+ il manque la caractÃ©ristique  %(k2)s
 """),
 
 78 : _(u"""
  poutre :
  maille  %(k1)s
  section GENERALE
- élément poutre : il manque la caractéristique  %(k2)s
+ Ã©lÃ©ment poutre : il manque la caractÃ©ristique  %(k2)s
 """),
 
 79 : _(u"""
  poutre :
  maille  %(k1)s
  section rectangle
- il manque  la caractéristique  %(k2)s
+ il manque  la caractÃ©ristique  %(k2)s
 """),
 
 80 : _(u"""
  poutre :
  maille  %(k1)s
  section cercle
- il manque la caractéristique  %(k2)s
+ il manque la caractÃ©ristique  %(k2)s
 """),
 
 81 : _(u"""
  poutre :
  maille  %(k1)s
- section générale
- la valeur de  %(k2)s  doit être strictement positive
+ section gÃ©nÃ©rale
+ la valeur de  %(k2)s  doit Ãªtre strictement positive
 """),
 
 82 : _(u"""
  poutre :
  maille  %(k1)s
  section rectangle
- la valeur de  %(k2)s  doit être strictement positive
+ la valeur de  %(k2)s  doit Ãªtre strictement positive
 """),
 
 83 : _(u"""
  poutre :
  maille  %(k1)s
  section cercle
- la valeur de  %(k2)s  doit être strictement positive
+ la valeur de  %(k2)s  doit Ãªtre strictement positive
 """),
 
 84 : _(u"""
  poutre :
  maille  %(k1)s
  section rectangle
- la valeur de  %(k2)s  ne doit pas dépasser  %(k3)s /2
+ la valeur de  %(k2)s  ne doit pas dÃ©passer  %(k3)s /2
 """),
 
 85 : _(u"""
  poutre :
  maille  %(k1)s
  section cercle
- la valeur de  %(k2)s  ne doit pas dépasser celle de  %(k3)s
+ la valeur de  %(k2)s  ne doit pas dÃ©passer celle de  %(k3)s
 """),
 
 86 : _(u"""
- section CIRCULAIRE/RECTANGULAIRE non supportée par POUTRE/TUYAU/FAISCEAU
+ section CIRCULAIRE/RECTANGULAIRE non supportÃ©e par POUTRE/TUYAU/FAISCEAU
 """),
 
 87 : _(u"""
@@ -495,16 +495,16 @@ cata_msg = {
 
 92 : _(u"""
  occurrence  %(k1)s de "poutre" (maille  %(k2)s )
- écrasement d'un type de variation de section par un autre
+ Ã©crasement d'un type de variation de section par un autre
 """),
 
 93 : _(u"""
  occurrence  %(k1)s de "poutre" (maille  %(k2)s )
- écrasement d'un type de géométrie de section par un autre
+ Ã©crasement d'un type de gÃ©omÃ©trie de section par un autre
 """),
 
 94 : _(u"""
- le DESCRIPTEUR_GRANDEUR des déplacements ne tient pas sur dix entiers codés
+ le DESCRIPTEUR_GRANDEUR des dÃ©placements ne tient pas sur dix entiers codÃ©s
 """),
 
 95 : _(u"""
@@ -520,17 +520,17 @@ cata_msg = {
 """),
 
 99 : _(u"""
-Problème :
-  Une relation linéaire entre ddls a un second membre de type "fonction".
+ProblÃ¨me :
+  Une relation linÃ©aire entre ddls a un second membre de type "fonction".
   On ne peut pas la normaliser (afin que son plus grand coefficient soit 1.) car on ne
-  sait pas "diviser" une fonction par un réel.
+  sait pas "diviser" une fonction par un rÃ©el.
 
-  Le plus grand coefficient de la relation est très différent de 1.  (<1.d-3 ou > 1.d3).
-  Cette équation (non normalisée) peut conduire à des difficultés numériques lors de
-  la résolution des systèmes linéaires.
+  Le plus grand coefficient de la relation est trÃ¨s diffÃ©rent de 1.  (<1.d-3 ou > 1.d3).
+  Cette Ã©quation (non normalisÃ©e) peut conduire Ã  des difficultÃ©s numÃ©riques lors de
+  la rÃ©solution des systÃ¨mes linÃ©aires.
 
 Conseil :
-  Utilisez le solveur MUMPS afin de contrôler la qualité de la résolutions des systèmes linéaires.
+  Utilisez le solveur MUMPS afin de contrÃ´ler la qualitÃ© de la rÃ©solutions des systÃ¨mes linÃ©aires.
 """),
 
 }

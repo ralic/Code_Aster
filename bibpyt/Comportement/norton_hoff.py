@@ -1,4 +1,4 @@
-# -*- coding: iso-8859-1 -*-
+# coding=utf-8
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -22,15 +22,15 @@ from cata_comportement import LoiComportement
 
 loi = LoiComportement(
    nom            = 'NORTON_HOFF',
-   doc = """Loi de visco-plasticité  indépendante de la température, régularisant la loi rigide-plastique de Von Mises 
-   à utiliser pour le calcul de charges limites de structures, à seuil de VON MISES. 
-   Le seul paramètre matériau est la limite d'élasticité à renseigner dans l'opérateur DEFI_MATERIAU [U4.43.01] 
-   sous le mot-clé ECRO_LINE (Cf. [R7.07.01] et [R5.03.12] pour plus de détails). 
-   Pour le calcul de la charge limite, il existe un mot clé spécifique sous PILOTAGE pour ce modèle 
-   (voir mot clé PILOTAGE='ANA_LIM' de STAT_NON_LINE [U4.51.03]). 
-   Il est fortement conseillé d'employer de la recherche linéaire (voir mot clé RECH_LINEAIRE de STAT_NON_LINE [U4.51.03]). 
-   En effet, le calcul de la charge limite requiert beaucoup d'itérations de recherche linéaire (de l'ordre de 50) 
-   et d'itérations de Newton (de l'ordre de 50).""",
+   doc = """Loi de visco-plasticitÃ©  indÃ©pendante de la tempÃ©rature, rÃ©gularisant la loi rigide-plastique de Von Mises 
+   Ã  utiliser pour le calcul de charges limites de structures, Ã  seuil de VON MISES. 
+   Le seul paramÃ¨tre matÃ©riau est la limite d'Ã©lasticitÃ© Ã  renseigner dans l'opÃ©rateur DEFI_MATERIAU [U4.43.01] 
+   sous le mot-clÃ© ECRO_LINE (Cf. [R7.07.01] et [R5.03.12] pour plus de dÃ©tails). 
+   Pour le calcul de la charge limite, il existe un mot clÃ© spÃ©cifique sous PILOTAGE pour ce modÃ¨le 
+   (voir mot clÃ© PILOTAGE='ANA_LIM' de STAT_NON_LINE [U4.51.03]). 
+   Il est fortement conseillÃ© d'employer de la recherche linÃ©aire (voir mot clÃ© RECH_LINEAIRE de STAT_NON_LINE [U4.51.03]). 
+   En effet, le calcul de la charge limite requiert beaucoup d'itÃ©rations de recherche linÃ©aire (de l'ordre de 50) 
+   et d'itÃ©rations de Newton (de l'ordre de 50).""",
    num_lc         = 17,
    nb_vari        = 1,
    nom_vari       = ('VIDE',),

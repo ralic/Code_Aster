@@ -1,4 +1,4 @@
-# -*- coding: iso-8859-1 -*-
+# coding=utf-8
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -42,12 +42,12 @@ def macr_spectre_ops(self,MAILLAGE,PLANCHER,NOM_CHAM,CALCUL,RESU,IMPRESSION=None
   IMPR_FONCTION    = self.get_cmd('IMPR_FONCTION')
   CREA_TABLE       = self.get_cmd('CREA_TABLE')
 
-  ### Comptage commandes + déclaration concept sortant
+  ### Comptage commandes + dÃ©claration concept sortant
   self.set_icmd(1)
   self.DeclareOut('tab',self.sd)
   macro='MACR_SPECTRE'
 
-  ### construction de la liste des noeuds à traiter
+  ### construction de la liste des noeuds Ã  traiter
   planch_nodes={}
   dic_gpno=aster.getcolljev(MAILLAGE.nom.ljust(8)+".GROUPENO")
   l_nodes =aster.getvectjev(MAILLAGE.nom.ljust(8)+".NOMNOE")
@@ -102,10 +102,10 @@ def macr_spectre_ops(self,MAILLAGE,PLANCHER,NOM_CHAM,CALCUL,RESU,IMPRESSION=None
           for dd in ('X','Y','Z') :
 
   ############################################################
-  ### boucle 4 sur les résultats
+  ### boucle 4 sur les rÃ©sultats
               l_fonc=[]
               for resu in RESU :
-                  ### Récupération des fonctions
+                  ### RÃ©cupÃ©ration des fonctions
                   motscles={}
                   if resu['RESU_GENE']!=None :
                      #if CALCUL=='ABSOLU' :
@@ -172,11 +172,11 @@ def macr_spectre_ops(self,MAILLAGE,PLANCHER,NOM_CHAM,CALCUL,RESU,IMPRESSION=None
 
                      l_fonc.append(__spo)
 
-  ### fin boucle 4 sur les résultats
+  ### fin boucle 4 sur les rÃ©sultats
   ############################################################
 
   ############################################################
-  ### calcul de la moyenne sur les resultats à noeud et direction fixes
+  ### calcul de la moyenne sur les resultats Ã  noeud et direction fixes
               nbresu=len(RESU)
               if NOM_CHAM=='ACCE' :
                  mcfCMBx=[]
@@ -287,7 +287,7 @@ def macr_spectre_ops(self,MAILLAGE,PLANCHER,NOM_CHAM,CALCUL,RESU,IMPRESSION=None
          DRmH = max([DRmX,DRmY])
 
   ############################################################
-  ### Renseignement de la table finale des résultats
+  ### Renseignement de la table finale des rÃ©sultats
       if   NOM_CHAM=='ACCE' :
            nbind=len(AMOR_SPEC)
            for i in range(nbind) :
@@ -359,13 +359,13 @@ def macr_spectre_ops(self,MAILLAGE,PLANCHER,NOM_CHAM,CALCUL,RESU,IMPRESSION=None
   ############################################################
 
   ############################################################
-  ### Renseignement de la table finale des résultats
+  ### Renseignement de la table finale des rÃ©sultats
   lListe=[]
   if   NOM_CHAM=='DEPL' :
       lListe.append(_F(LISTE_K=l_plancher,PARA='PLANCHER'))
       titre = 'Calcul des spectres enveloppes'
   if   NOM_CHAM=='ACCE' :
-      titre = ['Calcul des spectres enveloppes par planchers pour les amortissements numérotés :',]
+      titre = ['Calcul des spectres enveloppes par planchers pour les amortissements numÃ©rotÃ©s :',]
       b=[' %d : %g ' % (i,AMOR_SPEC[i]) for i in range(len(AMOR_SPEC)) ]
       titre.append('/'.join(b))
   lkeys=dico_glob.keys()

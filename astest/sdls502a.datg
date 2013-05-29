@@ -1,5 +1,5 @@
-*maillage paramétré d'une plaque
-*simplement supportée
+*maillage paramÃ©trÃ© d'une plaque
+*simplement supportÃ©e
 *----------------------------------------------
 opti dime 3 elem seg2 ;
 opti niveau 8 ;

@@ -1,4 +1,4 @@
-# -*- coding: iso-8859-1 -*-
+# coding=utf-8
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -21,15 +21,15 @@
 cata_msg = {
 
 1: _(u"""
-Alarme dans CREA_MAILLAGE pour le mot clé facteur %(k1)s :
-Vous avez avez utilisé le mot clé GROUP_MA (ou MAILLE) pour modifier
+Alarme dans CREA_MAILLAGE pour le mot clÃ© facteur %(k1)s :
+Vous avez avez utilisÃ© le mot clÃ© GROUP_MA (ou MAILLE) pour modifier
 certaines mailles d'un maillage (que l'on suppose conforme).
 
 Ceci est dangereux car cela peut produire un maillage non conforme.
 """),
 
 2: _(u"""
-Alarme dans CREA_MAILLAGE pour le mot clé facteur QUAD_TRIA3 :
+Alarme dans CREA_MAILLAGE pour le mot clÃ© facteur QUAD_TRIA3 :
 Vous voulez modifier certains quadrangles en TRIA3, mais il existe
 des TRIA6 dans le maillage.
 
@@ -38,63 +38,63 @@ Ceci est dangereux car cela peut produire un maillage non conforme.
 
 3: _(u"""
  Erreur utilisateur dans CREA_MAILLAGE / QUAD_LINE :
-  Vous avez demandé de transformer des mailles quadratiques en mailles linéaires.
+  Vous avez demandÃ© de transformer des mailles quadratiques en mailles linÃ©aires.
   Mais il n'y a aucun noeud qu'il est possible de supprimer car ils appartiennent
-  tous à d'autres mailles quadratiques.
+  tous Ã  d'autres mailles quadratiques.
 """),
 
 4 : _(u"""
-  -> Le modèle contient un mélange d'éléments finis 2D (plan Oxy) et 3D
+  -> Le modÃ¨le contient un mÃ©lange d'Ã©lÃ©ments finis 2D (plan Oxy) et 3D
 
   -> Risque & Conseil :
-     Sur ce genre de modèle, on ne sait pas déterminer s'il est 2D ou 3D.
-     Parfois, cela empêche de faire le "bon choix".
+     Sur ce genre de modÃ¨le, on ne sait pas dÃ©terminer s'il est 2D ou 3D.
+     Parfois, cela empÃªche de faire le "bon choix".
 """),
 
 5 : _(u"""
- mot-clé  %(k1)s  interdit en 2d
+ mot-clÃ©  %(k1)s  interdit en 2d
 """),
 
 6 : _(u"""
-  -> Phase de vérification du maillage : présence de noeuds orphelins.
-     Les noeuds orphelins sont des noeuds qui n'appartiennent à aucune maille.
+  -> Phase de vÃ©rification du maillage : prÃ©sence de noeuds orphelins.
+     Les noeuds orphelins sont des noeuds qui n'appartiennent Ã  aucune maille.
 """),
 
 7 : _(u"""
- certains noeuds connectent plus de 200 mailles. ces mailles ne sont pas vérifiées.
+ certains noeuds connectent plus de 200 mailles. ces mailles ne sont pas vÃ©rifiÃ©es.
 """),
 
 8 : _(u"""
-  -> Phase de vérification du maillage : présence de mailles doubles (ou triples, ...)
-     Les mailles multiples sont des mailles de noms différents qui ont la même connectivité
-     (elles s'appuient sur les mêmes noeuds).
+  -> Phase de vÃ©rification du maillage : prÃ©sence de mailles doubles (ou triples, ...)
+     Les mailles multiples sont des mailles de noms diffÃ©rents qui ont la mÃªme connectivitÃ©
+     (elles s'appuient sur les mÃªmes noeuds).
 
   -> Risque & Conseil :
-     Le risque est de modéliser 2 fois (ou plus) l'espace. On peut par exemple avoir
-     un modèle 2 fois trop lourd ou 2 fois trop rigide.
-     Remarque : les mailles concernées sont imprimées dans le fichier "message".
-     Sur ce maillage, il est imprudent d'affecter des quantités avec le mot clé TOUT='OUI'.
+     Le risque est de modÃ©liser 2 fois (ou plus) l'espace. On peut par exemple avoir
+     un modÃ¨le 2 fois trop lourd ou 2 fois trop rigide.
+     Remarque : les mailles concernÃ©es sont imprimÃ©es dans le fichier "message".
+     Sur ce maillage, il est imprudent d'affecter des quantitÃ©s avec le mot clÃ© TOUT='OUI'.
 """),
 
 9 : _(u"""
-  -> Phase de vérification du maillage : présence de mailles dégénérées.
-     Le rapport entre la plus petite arête sur la plus grande est inférieur à 0.001
+  -> Phase de vÃ©rification du maillage : prÃ©sence de mailles dÃ©gÃ©nÃ©rÃ©es.
+     Le rapport entre la plus petite arÃªte sur la plus grande est infÃ©rieur Ã  0.001
 
   -> Risque & Conseil :
-     Vérifiez votre maillage. La présence de telles mailles peut conduire à des
-     problèmes de convergence et nuire à la qualité des résultats.
+     VÃ©rifiez votre maillage. La prÃ©sence de telles mailles peut conduire Ã  des
+     problÃ¨mes de convergence et nuire Ã  la qualitÃ© des rÃ©sultats.
 """),
 
 10 : _(u"""
- - chckma phase de vérification du maillage - mailles dégénérées
+ - chckma phase de vÃ©rification du maillage - mailles dÃ©gÃ©nÃ©rÃ©es
 """),
 
 11: _(u"""
-Alarme dans CREA_MAILLAGE pour le mot clé facteur %(k1)s :
+Alarme dans CREA_MAILLAGE pour le mot clÃ© facteur %(k1)s :
 Vous voulez transformer certaines mailles en ajoutant des noeuds au
 centre des faces quadrangulaires.
-Mais il existe d'autres mailles ayant des faces quadrangulaires à 8 noeuds
-qui ne sont pas modifiées.
+Mais il existe d'autres mailles ayant des faces quadrangulaires Ã  8 noeuds
+qui ne sont pas modifiÃ©es.
 
 Ceci est dangereux car cela peut produire un maillage non conforme.
 """),
@@ -105,11 +105,11 @@ Ceci est dangereux car cela peut produire un maillage non conforme.
 
 
 13 : _(u"""
- seule la grandeur NEUT_F est traitée actuellement.
+ seule la grandeur NEUT_F est traitÃ©e actuellement.
 """),
 
 14 : _(u"""
- les champs de CHAM_F et CHAM_PARA n'ont pas la même discrétisation NOEU/CART/ELGA/ELNO/ELEM.
+ les champs de CHAM_F et CHAM_PARA n'ont pas la mÃªme discrÃ©tisation NOEU/CART/ELGA/ELNO/ELEM.
 """),
 
 
@@ -122,23 +122,23 @@ Ceci est dangereux car cela peut produire un maillage non conforme.
 """),
 
 17 : _(u"""
- pour récupérer le champ de géométrie, il faut utiliser le mot clé maillage
+ pour rÃ©cupÃ©rer le champ de gÃ©omÃ©trie, il faut utiliser le mot clÃ© maillage
 """),
 
 18 : _(u"""
- le mot-clé type_champ =  %(k1)s n'est pas cohérent avec le type du champ extrait :  %(k2)s_%(k3)s
+ le mot-clÃ© type_champ =  %(k1)s n'est pas cohÃ©rent avec le type du champ extrait :  %(k2)s_%(k3)s
 """),
 
 19 : _(u"""
- On ne peut extraire qu'un numéro d'ordre. Vous en avez spécifié plusieurs.
+ On ne peut extraire qu'un numÃ©ro d'ordre. Vous en avez spÃ©cifiÃ© plusieurs.
 """),
 
 24 : _(u"""
- arrêt sur erreur(s), normale non sortante
+ arrÃªt sur erreur(s), normale non sortante
 """),
 
 25 : _(u"""
-  la liste : %(k1)s  a concaténer avec la liste  %(k2)s  doit exister
+  la liste : %(k1)s  a concatÃ©ner avec la liste  %(k2)s  doit exister
 """),
 
 26 : _(u"""
@@ -146,35 +146,35 @@ Ceci est dangereux car cela peut produire un maillage non conforme.
 """),
 
 27 : _(u"""
- la concaténation de listes de type  %(k1)s  n'est pas encore prévue.
+ la concatÃ©nation de listes de type  %(k1)s  n'est pas encore prÃ©vue.
 """),
 
 28 : _(u"""
- <coefal> le numéro de corrélation et/ou le type de réseau passes dans le fichier de commande ne  sont pas cohérents avec le fichier .70
+ <coefal> le numÃ©ro de corrÃ©lation et/ou le type de rÃ©seau passes dans le fichier de commande ne  sont pas cohÃ©rents avec le fichier .70
 """),
 
 29 : _(u"""
- <coefam> le numéro de corrélation et/ou le type de réseau passes dans le fichier de commande ne  sont pas cohérents avec le fichier .70
+ <coefam> le numÃ©ro de corrÃ©lation et/ou le type de rÃ©seau passes dans le fichier de commande ne  sont pas cohÃ©rents avec le fichier .70
 """),
 
 30 : _(u"""
- <coefam> ce type de réseau n est pas encore implante dans le code
+ <coefam> ce type de rÃ©seau n est pas encore implante dans le code
 """),
 
 31 : _(u"""
- <coefra> le numéro de corrélation et/ou le type de réseau passes dans le fichier de commande ne  sont pas cohérents avec le fichier .71
+ <coefra> le numÃ©ro de corrÃ©lation et/ou le type de rÃ©seau passes dans le fichier de commande ne  sont pas cohÃ©rents avec le fichier .71
 """),
 
 32 : _(u"""
- <coefra> ce type de réseau n est pas encore implante dans le code
+ <coefra> ce type de rÃ©seau n est pas encore implante dans le code
 """),
 
 33 : _(u"""
- <coefrl> le numéro de corrélation et/ou le type de réseau passes dans le fichier de commande ne  sont pas cohérents avec le fichier .71
+ <coefrl> le numÃ©ro de corrÃ©lation et/ou le type de rÃ©seau passes dans le fichier de commande ne  sont pas cohÃ©rents avec le fichier .71
 """),
 
 35 : _(u"""
- jacobien négatif
+ jacobien nÃ©gatif
 """),
 
 36 : _(u"""
@@ -182,7 +182,7 @@ Ceci est dangereux car cela peut produire un maillage non conforme.
 """),
 
 37 : _(u"""
- on essaie de créer ou d'agrandir le LIGREL de charge avec un nombre de termes négatif ou nul
+ on essaie de crÃ©er ou d'agrandir le LIGREL de charge avec un nombre de termes nÃ©gatif ou nul
 """),
 
 
@@ -190,32 +190,32 @@ Ceci est dangereux car cela peut produire un maillage non conforme.
 
 
 39 : _(u"""
- problème rencontré lors de l interpolation d une des déformées modales
+ problÃ¨me rencontrÃ© lors de l interpolation d une des dÃ©formÃ©es modales
 """),
 
 40 : _(u"""
- problème rencontré lors de l interpolation d une des fonctions
+ problÃ¨me rencontrÃ© lors de l interpolation d une des fonctions
 """),
 
 41 : _(u"""
- problèmes dans le cas 3d ou les noeuds sont alignes, la distance séparant 2 noeuds non identiques de la liste est trop petite
+ problÃ¨mes dans le cas 3d ou les noeuds sont alignes, la distance sÃ©parant 2 noeuds non identiques de la liste est trop petite
 """),
 
 42 : _(u"""
-  -> Mélange de mailles quadratiques avec des QUAD8. Aster supprime la liaison
+  -> MÃ©lange de mailles quadratiques avec des QUAD8. Aster supprime la liaison
      sur le noeud milieu des QUAD8
   -> Risque & Conseil :
-     Le problème de contact avec des mailles quadratiques est mal traité dans Aster, vous risquez d'obtenir des
+     Le problÃ¨me de contact avec des mailles quadratiques est mal traitÃ© dans Aster, vous risquez d'obtenir des
      pressions de contact oscillantes entre noeuds milieux et noeuds sommets. Essayez, dans la mesure du possible,
-     d'utiliser des éléments linéaires.
+     d'utiliser des Ã©lÃ©ments linÃ©aires.
 """),
 
 43 : _(u"""
- incohérence car aucun noeud n'a de ddl DRZ et la routine traite le cas 2d ou il y a au moins un ddl DRZ
+ incohÃ©rence car aucun noeud n'a de ddl DRZ et la routine traite le cas 2d ou il y a au moins un ddl DRZ
 """),
 
 44 : _(u"""
- incohérence car aucun noeud n'a de ddl de rotation DRX et dry et DRZ et la routine traite le cas 3d ou il y a au moins un noeud ayant ces 3 ddls
+ incohÃ©rence car aucun noeud n'a de ddl de rotation DRX et dry et DRZ et la routine traite le cas 3d ou il y a au moins un noeud ayant ces 3 ddls
 """),
 
 
@@ -235,7 +235,7 @@ Ceci est dangereux car cela peut produire un maillage non conforme.
 
 
 50 : _(u"""
- la maille :  %(k1)s  n'est pas affectée par un élément fini.
+ la maille :  %(k1)s  n'est pas affectÃ©e par un Ã©lÃ©ment fini.
 """),
 
 
@@ -248,43 +248,43 @@ Ceci est dangereux car cela peut produire un maillage non conforme.
 """),
 
 54 : _(u"""
- le noeud d application de l excitation ne doit pas être situe au bord du domaine de définition du maillage.
+ le noeud d application de l excitation ne doit pas Ãªtre situe au bord du domaine de dÃ©finition du maillage.
 """),
 
 55 : _(u"""
- la fenêtre excitée déborde du domaine de définition du maillage.
+ la fenÃªtre excitÃ©e dÃ©borde du domaine de dÃ©finition du maillage.
 """),
 
 56 : _(u"""
- la demi fenêtre excitée en amont du noeud central d application n est pas définie.
+ la demi fenÃªtre excitÃ©e en amont du noeud central d application n est pas dÃ©finie.
 """),
 
 57 : _(u"""
- la demi fenêtre excitée en amont du noeud central d application déborde du domaine de définition du maillage.
+ la demi fenÃªtre excitÃ©e en amont du noeud central d application dÃ©borde du domaine de dÃ©finition du maillage.
 """),
 
 58 : _(u"""
- les demi fenêtres excitées en aval et en amont du noeud central d application ne sont pas raccordées.
+ les demi fenÃªtres excitÃ©es en aval et en amont du noeud central d application ne sont pas raccordÃ©es.
 """),
 
 59 : _(u"""
- la demi fenêtre excitée en aval du noeud central d application n est pas définie.
+ la demi fenÃªtre excitÃ©e en aval du noeud central d application n est pas dÃ©finie.
 """),
 
 60 : _(u"""
- la demi fenêtre excitée en aval du noeud central d application déborde du domaine de définition du maillage.
+ la demi fenÃªtre excitÃ©e en aval du noeud central d application dÃ©borde du domaine de dÃ©finition du maillage.
 """),
 
 61 : _(u"""
- les fonctions interprétées doivent être tabulées auparavant
+ les fonctions interprÃ©tÃ©es doivent Ãªtre tabulÃ©es auparavant
 """),
 
 62 : _(u"""
- nappe interdite pour définir le flux
+ nappe interdite pour dÃ©finir le flux
 """),
 
 63 : _(u"""
-  on déborde a gauche
+  on dÃ©borde a gauche
 """),
 
 64 : _(u"""
@@ -292,7 +292,7 @@ Ceci est dangereux car cela peut produire un maillage non conforme.
 """),
 
 65 : _(u"""
-  on déborde a droite
+  on dÃ©borde a droite
 """),
 
 66 : _(u"""
@@ -304,13 +304,13 @@ Ceci est dangereux car cela peut produire un maillage non conforme.
 """),
 
 68 : _(u"""
- les mailles de type  %(k1)s ne sont pas traitées pour la sélection des noeuds
+ les mailles de type  %(k1)s ne sont pas traitÃ©es pour la sÃ©lection des noeuds
 """),
 
 69 : _(u"""
  Erreur d'utilisation :
-   On cherche à nommer un objet en y insérant un numéro.
-   Le numéro %(i1)d est trop grand vis à vis de la chaîne de caractère.
+   On cherche Ã  nommer un objet en y insÃ©rant un numÃ©ro.
+   Le numÃ©ro %(i1)d est trop grand vis Ã  vis de la chaÃ®ne de caractÃ¨re.
 
  Risque et Conseil :
    Vous avez atteint la limite de ce que sait faire le code
@@ -318,15 +318,15 @@ Ceci est dangereux car cela peut produire un maillage non conforme.
 """),
 
 70 : _(u"""
- erreur : deux noeuds du câble sont confondus on ne peut pas définir le cylindre.
+ erreur : deux noeuds du cÃ¢ble sont confondus on ne peut pas dÃ©finir le cylindre.
 """),
 
 71 : _(u"""
- immersion du câble no %(k1)s  dans la structure béton : le noeud  %(k2)s  se trouve a l'extérieur de la structure
+ immersion du cÃ¢ble no %(k1)s  dans la structure bÃ©ton : le noeud  %(k2)s  se trouve a l'extÃ©rieur de la structure
 """),
 
 72 : _(u"""
- maille dégénérée
+ maille dÃ©gÃ©nÃ©rÃ©e
 """),
 
 
@@ -341,7 +341,7 @@ Ceci est dangereux car cela peut produire un maillage non conforme.
 """),
 
 77 : _(u"""
-  %(k1)s  mot clé lu " %(k2)s " incompatible avec " %(k3)s "
+  %(k1)s  mot clÃ© lu " %(k2)s " incompatible avec " %(k3)s "
 """),
 
 78 : _(u"""
@@ -357,21 +357,21 @@ Ceci est dangereux car cela peut produire un maillage non conforme.
 """),
 
 81 : _(u"""
-  %(k1)s  erreur de syntaxe : mot clé " %(k2)s " non reconnu
+  %(k1)s  erreur de syntaxe : mot clÃ© " %(k2)s " non reconnu
 """),
 
 82 : _(u"""
-  %(k1)s  mot clé " %(k2)s " ignore
+  %(k1)s  mot clÃ© " %(k2)s " ignore
 """),
 
 83 : _(u"""
-  le vecteur est perpendiculaire à la poutre.
+  le vecteur est perpendiculaire Ã  la poutre.
 """),
 
 84 : _(u"""
-  La poutre présente une ou plusieurs branches: cas non permis.
-  Essayez de créer des groupes de mailles différents pour
-  chaque branche et de les orienter indépendemment.
+  La poutre prÃ©sente une ou plusieurs branches: cas non permis.
+  Essayez de crÃ©er des groupes de mailles diffÃ©rents pour
+  chaque branche et de les orienter indÃ©pendemment.
 """),
 
 
@@ -379,14 +379,14 @@ Ceci est dangereux car cela peut produire un maillage non conforme.
 
 
 89 : _(u"""
- mot clé WOHLER non trouve
+ mot clÃ© WOHLER non trouve
 """),
 
 
 
 
 91 : _(u"""
- mot clé MANSON_COFFIN non trouve
+ mot clÃ© MANSON_COFFIN non trouve
 """),
 
 92 : _(u"""
@@ -394,21 +394,21 @@ Ceci est dangereux car cela peut produire un maillage non conforme.
 """),
 
 93 : _(u"""
-  Problème lors de la lecture du fichier maillage
-  numéro de la dernière ligne traitée : %(i1)d
+  ProblÃ¨me lors de la lecture du fichier maillage
+  numÃ©ro de la derniÃ¨re ligne traitÃ©e : %(i1)d
 
   -> Risque & Conseil :
-  Vérifiez que le maillage est au format Aster (.mail).
-  Vérifiez que le mot clé FIN est présent à la fin du fichier de maillage.
+  VÃ©rifiez que le maillage est au format Aster (.mail).
+  VÃ©rifiez que le mot clÃ© FIN est prÃ©sent Ã  la fin du fichier de maillage.
 """),
 
 94 : _(u"""
-  Problème lors de la lecture du fichier maillage
-  Le fichier à lire est vide.
+  ProblÃ¨me lors de la lecture du fichier maillage
+  Le fichier Ã  lire est vide.
 
   -> Risque & Conseil :
-  Vérifiez la valeur mise derrière le mot clé UNITE et
-  que cette valeur par défaut correspond au type "mail" dans ASTK
+  VÃ©rifiez la valeur mise derriÃ¨re le mot clÃ© UNITE et
+  que cette valeur par dÃ©faut correspond au type "mail" dans ASTK
 """),
 
 
@@ -422,11 +422,11 @@ Ceci est dangereux car cela peut produire un maillage non conforme.
 
 
 97 : _(u"""
- le nom du groupe  %(k1)s  est tronque a 8 caractères
+ le nom du groupe  %(k1)s  est tronque a 8 caractÃ¨res
 """),
 
 98 : _(u"""
- il faut un nom après "nom="
+ il faut un nom aprÃ¨s "nom="
 """),
 
 

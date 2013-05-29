@@ -1,4 +1,4 @@
-# -*- coding: iso-8859-1 -*-
+# coding=utf-8
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -120,7 +120,7 @@ class TableReaderFree(TableReader):
                 cur = 0
             elif nbcol > 1 and cur < nbcol:
                 # less fields = new block
-                _printDBG("Nouveau bloc à la ligne ", i)
+                _printDBG("Nouveau bloc Ã  la ligne ", i)
                 if curblock >= nblock and not self.debug:
                     break
                 curblock += 1
@@ -238,7 +238,7 @@ class TableReaderAster(TableReader):
         self.set_title()
         self.extract_lines()
 
-        # ligne des paramètres et des types
+        # ligne des paramÃ¨tres et des types
         para = msplit(self.lines.pop(0), self.sep)
         types = msplit(self.lines.pop(0), self.sep)
         if callable(check_para):

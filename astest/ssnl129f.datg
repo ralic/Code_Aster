@@ -1,6 +1,6 @@
 * AUTEUR : Aurore Parrot             le 23 juillet 2002                           
 * FICHIER : VER
-* Maillage d'un élément QUA4
+* Maillage d'un Ã©lÃ©ment QUA4
 *
 * VERSION : GIBI99
 *
@@ -39,7 +39,7 @@ s1 = l12 l23 l34 l41 DALL PLAN;
 maillage = s1 et l12 et l23 et l34 et l41;
                                                           
 ELIM 0.001 maillage;
-TITRE 'Elément quadratique';
+TITRE 'ElÃ©ment quadratique';
 TRAC maillage;
 SAUV format maillage; 
 

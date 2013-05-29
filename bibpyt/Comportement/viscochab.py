@@ -1,4 +1,4 @@
-# -*- coding: iso-8859-1 -*-
+# coding=utf-8
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -22,8 +22,8 @@ from cata_comportement import LoiComportement
 
 loi = LoiComportement(
    nom            = 'VISCOCHAB',
-   doc = """Modèle élastoviscoplastique de Lemaitre-Chaboche avec effet de mémoire et restauration.
-   Ce modèle s'emploie avec les mots clés DEFORMATION = PETIT ou PETIT_REAC.""",
+   doc = """ModÃ¨le Ã©lastoviscoplastique de Lemaitre-Chaboche avec effet de mÃ©moire et restauration.
+   Ce modÃ¨le s'emploie avec les mots clÃ©s DEFORMATION = PETIT ou PETIT_REAC.""",
    num_lc         = 32,
    nb_vari        = 28,
    nom_vari       = ('VISCHA1','VISCHA2','VISCHA3','VISCHA4','VISCHA5','VISCHA6','VISCHA7','VISCHA8','VISCHA9','VISCHA10','VISCHA11','VISCHA12','VISCHA13','VISCHA14','VISCHA15','VISCHA16','VISCHA17','VISCHA18','VISCHA19','VISCHA20','VISCHA21','VISCHA22','VISCHA23','VISCHA24','VISCHA25','VISCHA26','VISCHA27','VISCHA28',),

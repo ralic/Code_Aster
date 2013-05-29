@@ -1,4 +1,4 @@
-# -*- coding: iso-8859-1 -*-
+# coding=utf-8
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -22,7 +22,7 @@ from cata_comportement import LoiComportement
 
 loi = LoiComportement(
    nom            = 'ENDO_HETEROGENE',
-   doc = """Comportement élastique-heterogene, à endommagement  - R5.03.24""",
+   doc = """Comportement Ã©lastique-heterogene, Ã  endommagement  - R5.03.24""",
    num_lc         = 47,
    nb_vari        = 12,
    nom_vari       = ('ENDO','INDIENDO','ALEA','SURF','ELEP1','ELEP2','COMR','COMPT','X1','Y1','X2','Y2'),

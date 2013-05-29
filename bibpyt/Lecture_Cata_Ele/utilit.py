@@ -1,4 +1,4 @@
-# -*- coding: iso-8859-1 -*-
+# coding=utf-8
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -20,8 +20,8 @@ import string,sys,cPickle,copy,os
 
 ##################################################################################
 #  1    utilitaires pour supprimer ce qui est inutile dans les catalogues
-#  2    utilitaires pour vérifications et émission de messages
-#  3    utilitaires pour création des objets jeveux en Python
+#  2    utilitaires pour vÃ©rifications et Ã©mission de messages
+#  3    utilitaires pour crÃ©ation des objets jeveux en Python
 ##################################################################################
 
 
@@ -47,7 +47,7 @@ def menage_type_elem(modlocs,opts):
 
 def menage_te_option(opts):
 #------------------------------------------------------------
-#   pour supprimer les paramètres d'une option non calculée :
+#   pour supprimer les paramÃ¨tres d'une option non calculÃ©e :
 #------------------------------------------------------------
     if opts:
         for i in range(len(opts)) :
@@ -60,18 +60,18 @@ def menage_te_option(opts):
 
 def menage_te_moloc(modlocs,opts):
 #-------------------------------------------------
-# pour supprimer les modes locaux inutilisés :
+# pour supprimer les modes locaux inutilisÃ©s :
 #-------------------------------------------------
 
     utilise={}; utilise_in={}
     if opts:
         for opt in opts :
-            # paramètres "in"
+            # paramÃ¨tres "in"
             liste=opt[2]; dim=len(liste)/2
             for kk in range(dim):
                 mode =liste[2*kk]
                 utilise[mode]=1 ; utilise_in[mode]=1
-            # paramètres "out"
+            # paramÃ¨tres "out"
             liste=opt[3]; dim=len(liste)/2
             for kk in range(dim):
                 mode =liste[2*kk]
@@ -80,13 +80,13 @@ def menage_te_moloc(modlocs,opts):
 
     MLOCs,MLVEs,MLMAs=modlocs
 
-    # on détruit les modes locaux de type vecteur/matrice inutilisés dans les options :
+    # on dÃ©truit les modes locaux de type vecteur/matrice inutilisÃ©s dans les options :
     for moloc in MLVEs:
         if not utilise.has_key(moloc[0]) :  MLVEs.remove(moloc)
     for moloc in MLMAs:
         if not utilise.has_key(moloc[0]) :  MLMAs.remove(moloc)
 
-    # on ajoute les modes nécessaires aux modes vecteur/matrice :
+    # on ajoute les modes nÃ©cessaires aux modes vecteur/matrice :
     for moloc in MLVEs:
         utilise[moloc[2]]=1
     for moloc in MLMAs:
@@ -100,7 +100,7 @@ def menage_te_moloc(modlocs,opts):
 
 
 ##################################################################################
-#  2    utilitaires pour vérifications et émission de messages
+#  2    utilitaires pour vÃ©rifications et Ã©mission de messages
 ##################################################################################
 
 from Execution.strfunc import convert
@@ -136,7 +136,7 @@ class ERREUR:
         try :
             x=liste.index(element)
         except ValueError:
-            self.mess(code,str(element)+" n'appartient pas à la liste: "+str(liste))
+            self.mess(code,str(element)+" n'appartient pas Ã  la liste: "+str(liste))
 
 
     def veri_pas_doublon(self,code,liste):
@@ -147,11 +147,11 @@ class ERREUR:
 
     def veri_long_chaine(self,code,chaine,n):
         if len(chaine) > n :
-            self.mess(code,chaine +'est une chaine de caractères trop longue (>'+str(n)+').')
+            self.mess(code,chaine +'est une chaine de caractÃ¨res trop longue (>'+str(n)+').')
 
     def veri_new_key(self,code,nom,dico):
         if dico.has_key(nom):
-            self.mess(code,'le nom: ' + nom + ' est déjà défini.')
+            self.mess(code,'le nom: ' + nom + ' est dÃ©jÃ  dÃ©fini.')
             return 1
         else:
             return 0
@@ -159,11 +159,11 @@ class ERREUR:
     def fini(self):
         # pour demander l'arret du code si necessaire :
         if self.IER > 0 :
-            print "<F> ERREUR FATALE déclanchée suite aux erreurs <E> précédentes"
+            print "<F> ERREUR FATALE dÃ©clanchÃ©e suite aux erreurs <E> prÃ©cÃ©dentes"
             raise StandardError
 
     def contexte(self,texte,statut="RAZ"):
-        # pour définir le contexte d'un message d'erreur:
+        # pour dÃ©finir le contexte d'un message d'erreur:
         if statut=='RAZ' :
             self.contxt=[]
             if len(texte) > 0 : self.contxt.append(texte)
@@ -172,7 +172,7 @@ class ERREUR:
         else :
             self.mess('F','erreur pgmeur')
 
-# ERR: objet ERREUR partagé par toute l'application :
+# ERR: objet ERREUR partagÃ© par toute l'application :
 # ----------------------------------------------------
 ERR=ERREUR()
 
@@ -195,7 +195,7 @@ def cmp_gd(a,b):
 
 
 def tronque_n(lmax,liste) :
-# pour tronquer une liste de chaines de caratères:
+# pour tronquer une liste de chaines de caratÃ¨res:
     for x in liste :
         if len(x) > lmax :
             ERR.mess('A',"troncature : avant : "+x+" apres: "+x[0:lmax])
@@ -203,7 +203,7 @@ def tronque_n(lmax,liste) :
         return liste
 
 def tronque_1(lmax,x) :
-# pour tronquer une chaine de caratères:
+# pour tronquer une chaine de caratÃ¨res:
     if len(x) > lmax :
         ERR.mess('A',"troncature : avant : "+x+" apres: "+x[0:lmax])
     x = x[0:lmax]
@@ -211,7 +211,7 @@ def tronque_1(lmax,x) :
 
 
 def chaine(var,long,cadre='G'):
-    # une petite fonction pour formater les chaines de caratères
+    # une petite fonction pour formater les chaines de caratÃ¨res
     if cadre == 'G':
         return str(var)[0:long]+" "*(long-len(str(var)))
     elif cadre == 'D':
@@ -220,24 +220,24 @@ def chaine(var,long,cadre='G'):
         ERR.mess('F', "Erreur")
 
 ##################################################################################
-#  3    utilitaires pour création des objets jeveux en Python
+#  3    utilitaires pour crÃ©ation des objets jeveux en Python
 ##################################################################################
 
 
 def cree_os(dicobj,nom,tsca,long):
-    if dicobj.has_key(nom):  ERR.mess('F', "Erreur objet déjà déclaré:"+nom)
+    if dicobj.has_key(nom):  ERR.mess('F', "Erreur objet dÃ©jÃ  dÃ©clarÃ©:"+nom)
     o1= JV_SIMPLE(nom,tsca,long)
     dicobj[nom]=o1
     return o1
 
 def cree_pn(dicobj,nom,tsca):
-    if dicobj.has_key(nom):  ERR.mess('F', "Erreur objet déjà déclaré:"+nom)
+    if dicobj.has_key(nom):  ERR.mess('F', "Erreur objet dÃ©jÃ  dÃ©clarÃ©:"+nom)
     o1= JV_PNOM(nom,tsca)
     dicobj[nom]=o1
     return o1
 
 def cree_co(dicobj,nom,tsca,tsca_pn,contig,acces,longv):
-    if dicobj.has_key(nom):  ERR.mess('F', "Erreur objet déjà déclaré:"+nom)
+    if dicobj.has_key(nom):  ERR.mess('F', "Erreur objet dÃ©jÃ  dÃ©clarÃ©:"+nom)
     o1= JV_COLLEC(nom,tsca,tsca_pn,contig,acces,longv)
     dicobj[nom]=o1
     return o1
@@ -247,7 +247,7 @@ class JV_COLLEC:
 
     def __init__(self,nom,tsca,tsca_pn,contig,acces,longv):
     # ----------------------------------------------------------------------------------------
-    # pour créer une collection jeveux
+    # pour crÃ©er une collection jeveux
     # tsca = /'I' /'R' /'C' /'K8' /'K16' ...
     # tsca_pn = /'K8' /'K16' /'K24' ... : longueur des chaines permettant l'acces aux OC
     # contig = /'CONTIG' /'DISPER'
@@ -269,7 +269,7 @@ class JV_COLLEC:
     def cree_oc(self,nom,long):
         oc1=JV_SIMPLE(nom,self.tsca,long)
         num=self.pn.jenonu(nom,'COOL')
-        if num > 0 : ERR.mess('F', "Erreur : nom existant déjà: "+nom+" dans: "+self.nom)
+        if num > 0 : ERR.mess('F', "Erreur : nom existant dÃ©jÃ : "+nom+" dans: "+self.nom)
         if self.longv >0 and long != self.longv : ERR.mess('F', "Erreur : longueur incorrecte: "+
                                                   str(long)+" pour: "+self.nom)
         self.objs.append(oc1)
@@ -304,7 +304,7 @@ class JV_COLLEC:
 
         for oc1 in self.objs:
             if self.acces=="NO":
-                # les collections ayant leur pointeur de nom en interne ont un accès K8
+                # les collections ayant leur pointeur de nom en interne ont un accÃ¨s K8
                 file.write( "|NOM="+chaine(oc1.nom,8)+"|LONMAX="+chaine(len(oc1.valeurs),12,'D')+"\n")
             else:
                 file.write( "|LONMAX="+chaine(len(oc1.valeurs),12,'D')+"\n")
@@ -314,7 +314,7 @@ class JV_COLLEC:
             elif self.tsca[0] == "I":
                 for val in oc1.valeurs: file.write(chaine(val,12,'D')+"\n")
             else:
-                ERR.mess('F', "Erreur : programmation à ajouter ...")
+                ERR.mess('F', "Erreur : programmation Ã  ajouter ...")
 
 
 
@@ -323,7 +323,7 @@ class JV_SIMPLE:
 
     def __init__(self,nom,tsca,long):
     # ----------------------------------------------------------------------------------------
-    # pour créer un vecteur jeveux
+    # pour crÃ©er un vecteur jeveux
     # tsca = /'I' /'R' /'C' /'K8' /'K16' ...
     # long : longueur du vecteur
         self.nom=nom
@@ -342,10 +342,10 @@ class JV_SIMPLE:
         if indice <1 or indice > len(self.valeurs) : ERR.mess('F', "Erreur")
         if self.tsca[0]=="K" and type(valeur) != type("a"):  ERR.mess('F', "Erreur : on attend une chaine: "+str(valeur))
         if self.tsca[0]=="I" and type(valeur) != type(1):    ERR.mess('F', "Erreur : on attend un entier: "+str(valeur))
-        if self.tsca[0]=="R" and type(valeur) != type(1.e0): ERR.mess('F', "Erreur : on attend un réel: "+str(valeur))
+        if self.tsca[0]=="R" and type(valeur) != type(1.e0): ERR.mess('F', "Erreur : on attend un rÃ©el: "+str(valeur))
 
         if self.tsca[0]=="K" :
-            # on tronque éventuellement la chaine :
+            # on tronque Ã©ventuellement la chaine :
             ERR.veri_long_chaine('E',valeur,int(self.tsca[1:3]))
             nom2=valeur[0:int(self.tsca[1:3])]
             self.valeurs[indice-1]=nom2
@@ -364,14 +364,14 @@ class JV_SIMPLE:
         elif self.tsca[0] == "I":
             for val in self.valeurs: file.write(chaine(val,12,'D')+"\n")
         else:
-            ERR.mess('F', "Erreur : programmation à ajouter ...")
+            ERR.mess('F', "Erreur : programmation Ã  ajouter ...")
 
 
 class JV_PNOM:
 
     def __init__(self,nom,tsca):
     # ----------------------------------------------------------------------------------------
-    # pour créer un pointeur de noms jeveux
+    # pour crÃ©er un pointeur de noms jeveux
     # tsca = /'I' /'R' /'C' /'K8' /'K16' ...
         self.nom=nom
         self.typojb='pteur_nom'
@@ -382,8 +382,8 @@ class JV_PNOM:
         self.nomuti=0
 
     def jenonu(self,nom,stop='PAS_COOL'):
-    # rend le numéro (num de 1 à n) d'un nom dans un pointeur de noms.
-    # num est < 0 si le nom a été ajouté au pointeur.
+    # rend le numÃ©ro (num de 1 Ã  n) d'un nom dans un pointeur de noms.
+    # num est < 0 si le nom a Ã©tÃ© ajoutÃ© au pointeur.
         if type(nom) != type("a"):  ERR.mess('F', "Erreur : on attend nom=chaine.")
         ERR.veri_long_chaine('E',nom,int(self.tsca[1:3]))
         nom2=nom[0:int(self.tsca[1:3])]
@@ -400,9 +400,9 @@ class JV_PNOM:
 
     def ajout_nom(self,nom):
     # ajoute un nom dans un pointeur de noms.
-    # s'arrete en erreur fatale si le nom existe déjà
+    # s'arrete en erreur fatale si le nom existe dÃ©jÃ 
         if self.dico.has_key(nom) :
-            ERR.mess('F', "Erreur: le nom: "+nom+" existe déjà dans: "+self.nom)
+            ERR.mess('F', "Erreur: le nom: "+nom+" existe dÃ©jÃ  dans: "+self.nom)
         else:
             indice=self.nomuti+1
             self.nomuti=indice
@@ -434,7 +434,7 @@ def write_capy(capy,nomfic):
 
 def read_capy(nomfic):
 #==================================
-#   récupérer un catalogue python (capy) sur un fichier (un-cPickle)
+#   rÃ©cupÃ©rer un catalogue python (capy) sur un fichier (un-cPickle)
     fimpr = open(nomfic,"r")
     capy=cPickle.load(fimpr)
     fimpr.close()
@@ -443,12 +443,12 @@ def read_capy(nomfic):
 
 def surch_capy(capy1,capy2):
 #==================================
-#   ajouter/remplacer  capy2 à capy1
+#   ajouter/remplacer  capy2 Ã  capy1
 #   Attention : cette fonction modifie capy1 (enrichissement + remplacement)
 
     if capy2 is None : return 0
 
-    ERR.mess('I',"Début de la surcharge des catalogues")
+    ERR.mess('I',"DÃ©but de la surcharge des catalogues")
 
     if capy2.gd : capy1.gd=capy2.gd
     if capy2.ph : capy1.ph=capy2.ph
@@ -488,7 +488,7 @@ def surch_capy(capy1,capy2):
             capy1.dictg[nom]=num3
             capy1.tg.append(copy.deepcopy(capy2.tg[num2]))
 
-    # on met les options ,les type_elem et les type_gene dans l'ordre alphabétique:
+    # on met les options ,les type_elem et les type_gene dans l'ordre alphabÃ©tique:
     # -----------------------------------------------------------------------------
     likeys= capy1.dicop.keys(); likeys.sort(); liste2=[]; dico2={};k=0
     for ke in likeys:
@@ -518,7 +518,7 @@ def cata_split(nomfic,prefix,nblig):
     file=open(nomfic,"r")
     t=file.readlines()
 
-    # on note le numéro des lignes correspondant au découpage
+    # on note le numÃ©ro des lignes correspondant au dÃ©coupage
     # ----------------------------------------------------------
     num_lig=[0]
     ico=0
@@ -532,7 +532,7 @@ def cata_split(nomfic,prefix,nblig):
                     num_lig.append(i)
     num_lig.append(len(t))
 
-    # on écrit les différents fichiers :
+    # on Ã©crit les diffÃ©rents fichiers :
     #------------------------------------
     liste_fic=[]
     for ific in range(len(num_lig)-1) :
@@ -546,12 +546,12 @@ def cata_split(nomfic,prefix,nblig):
 
 def concat_capy(capy1,capy2):
 #==================================
-#   ajouter  capy2 à capy1
+#   ajouter  capy2 Ã  capy1
 #   Attention : cette fonction modifie capy1 (enrichissement + remplacement)
 
     if capy2 is None : return 0
 
-    ERR.mess('I',"Début de la concaténation des catalogues")
+    ERR.mess('I',"DÃ©but de la concatÃ©nation des catalogues")
 
     if capy2.gd : capy1.gd=capy2.gd
     if capy2.ph : capy1.ph=capy2.ph
@@ -592,16 +592,16 @@ def concat_capy(capy1,capy2):
             capy1.tg.append(copy.deepcopy(capy2.tg[num2]))
 
 
-    ERR.mess('I',"Fin de la concaténation des catalogues")
+    ERR.mess('I',"Fin de la concatÃ©nation des catalogues")
     return 0
 
 
 def detruire_cata(capy,unigest) :
 #==================================
-    u"""détruire dans un objet 'capy' les catalogues indiqués dans le fichier
+    u"""dÃ©truire dans un objet 'capy' les catalogues indiquÃ©s dans le fichier
     unigest
 
-    :capy: objet capy à modifier
+    :capy: objet capy Ã  modifier
     :unigest: nom du fichier unigest
     """
     if not unigest or not os.path.isfile(os.path.abspath(unigest)):
@@ -635,10 +635,10 @@ def detruire_cata(capy,unigest) :
                     numav = dico[nom2]
                     if numav > num:
                         dico[nom2] = numav - 1
-                mess = u"Le catalogue: %s de type: %s a été détruit."
+                mess = u"Le catalogue: %s de type: %s a Ã©tÃ© dÃ©truit."
                 ERR.mess('I', mess % (nom, type))
             else:
-                mess = u"Le catalogue: %s de type : %s ne peut pas etre détruit."
+                mess = u"Le catalogue: %s de type : %s ne peut pas etre dÃ©truit."
                 ERR.mess('E', mess % (nom, type))
 
 
@@ -650,7 +650,7 @@ def ut_qui_use_cmp(capy,nomgd,nomcmp):
 #=====================================
 
 
-# pour écrire quels sont les triplets (modelisation,typelem,option)
+# pour Ã©crire quels sont les triplets (modelisation,typelem,option)
 # qui utilisent une CMP d'une grandeur :
 
     lte=[]
@@ -719,7 +719,7 @@ def ut_qui_use_cmp(capy,nomgd,nomcmp):
 
 
 
-# impression de la liste des modélisations utilisant nomgd,nomcmp:
+# impression de la liste des modÃ©lisations utilisant nomgd,nomcmp:
 # ----------------------------------------------------------------
     lmodeli={}
     for (ph,lmod) in capy.ph.l_pheno:

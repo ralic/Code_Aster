@@ -1,4 +1,4 @@
-# -*- coding: iso-8859-1 -*-
+# coding=utf-8
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -37,7 +37,7 @@ def macro_bascule_schema_ops (self,MODELE,CHAM_MATER,CARA_ELEM,
   DEFI_LIST_REEL =self.get_cmd('DEFI_LIST_REEL')
   # La macro compte pour 1 dans la numerotation des commandes
   self.set_icmd(1)
-  # Le concept sortant (de type evol_noli) est nommé
+  # Le concept sortant (de type evol_noli) est nommÃ©
   # 'nomres' dans le contexte de la macro
   self.DeclareOut('nomres',self.sd)
   #
@@ -235,7 +235,7 @@ def macro_bascule_schema_ops (self,MODELE,CHAM_MATER,CARA_ELEM,
         #
      if __prc=='EXPLICITE' :
             # calcul sur la zone de recouvrement
-            print('Calcul d''une solution explicite stabilisée')
+            print('Calcul d''une solution explicite stabilisÃ©e')
             __U1=CREA_CHAMP(OPERATION='EXTR', PRECISION=1.E-7, RESULTAT=nomres,
                             TYPE_CHAM='NOEU_DEPL_R', NOM_CHAM='DEPL', INST=__L0[j-1],)
             #
@@ -281,7 +281,7 @@ def macro_bascule_schema_ops (self,MODELE,CHAM_MATER,CARA_ELEM,
                              TYPE_CHAM='NOEU_DEPL_R', NOM_CHAM='ACCE',      INST=(__L0[j-1])+(10*(__dtexp)),)
             #
             # equilibrage du premier pas implicite
-            print('Equilibrage du pas explicite stabilisée')
+            print('Equilibrage du pas explicite stabilisÃ©e')
             dincri1=copy.copy(dincri)
             dincri1[-1]['INST_FIN'] = ((__L0[j-1])+(10*(__dtexp)))
             dincri1[-1]['INST_INIT']=  (__L0[j-1])
@@ -310,7 +310,7 @@ def macro_bascule_schema_ops (self,MODELE,CHAM_MATER,CARA_ELEM,
             __Vai=CREA_CHAMP(OPERATION='EXTR',        PRECISION=1.E-7,      RESULTAT=nomres,
                              TYPE_CHAM='ELGA_VARI_R', NOM_CHAM='VARI_ELGA', INST=(__L0[j-1])+(10*(__dtexp)),)
             #
-            print('Calcul implicite après équilibrage')
+            print('Calcul implicite aprÃ¨s Ã©quilibrage')
             dincri1=copy.copy(dincri)
             dincri1[-1]['INST_INIT']= ((__L0[j-1])+(10*(__dtexp)))
             if ( j < __nb ) :

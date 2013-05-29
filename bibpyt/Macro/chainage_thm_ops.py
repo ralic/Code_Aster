@@ -1,4 +1,4 @@
-# -*- coding: iso-8859-1 -*-
+# coding=utf-8
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -19,7 +19,7 @@
 
 ############################################
 #
-# On pourrait éventuellement utiliser MACR_ADAP_MAIL dans
+# On pourrait Ã©ventuellement utiliser MACR_ADAP_MAIL dans
 # cette macro pour gagner du temps sur
 # la phase de projection ...
 # Serait utile surtout pour le 3D et pour les gros
@@ -41,10 +41,10 @@ def chainage_thm_ops(self,TYPE_CHAINAGE,**args):
      Ecriture de la macro CHAINAGE_THM
   """
   ##################################################################
-  # RESU_MECA / MODELE_HYDR : résultat mécanique à projeter
-  #                           modèle hydraulique d'arrivée
-  # RESU_HYDR / MODELE_MECA : résultat hydraulique à projeter
-  #                           modèle mécanique d'arrivée
+  # RESU_MECA / MODELE_HYDR : rÃ©sultat mÃ©canique Ã  projeter
+  #                           modÃ¨le hydraulique d'arrivÃ©e
+  # RESU_HYDR / MODELE_MECA : rÃ©sultat hydraulique Ã  projeter
+  #                           modÃ¨le mÃ©canique d'arrivÃ©e
   # INST                    : instant auquel on veut les variables de commande
   # MATR_MH / MATR_HM1 / MATR_HM2 : matrices de projection pour gagner
   #                                 du temps sur les phases de projection
@@ -55,7 +55,7 @@ def chainage_thm_ops(self,TYPE_CHAINAGE,**args):
   ##################################################################
 
   #########################################################
-  # Introduction : déclarations préalables
+  # Introduction : dÃ©clarations prÃ©alables
   #########################################################
 
   ier=0
@@ -71,10 +71,10 @@ def chainage_thm_ops(self,TYPE_CHAINAGE,**args):
   DEFI_LIST_REEL  = self.get_cmd('DEFI_LIST_REEL')
 
   #########################################################
-  # Début de la macro-commande
+  # DÃ©but de la macro-commande
   #########################################################
 
-  # précision machine
+  # prÃ©cision machine
   prec = numpy.finfo(float).eps
   
   motscles=dict()
@@ -89,13 +89,13 @@ def chainage_thm_ops(self,TYPE_CHAINAGE,**args):
     if (TYPE_RESU == "CHAM_NO")    : b_type_resu_cham_no = True
 
   #########################################################
-  # 3 possibilités pour TYPE_CHAINAGE :
+  # 3 possibilitÃ©s pour TYPE_CHAINAGE :
   #  1. HYDR_MECA
   #  2. MECA_HYDR
   #  3. INIT
   #########################################################
   #########################################################
-  # 1. Chaînage HYDRAULIQUE ===> MECANIQUE
+  # 1. ChaÃ®nage HYDRAULIQUE ===> MECANIQUE
   #########################################################
   
   if (TYPE_CHAINAGE == "HYDR_MECA") :
@@ -105,7 +105,7 @@ def chainage_thm_ops(self,TYPE_CHAINAGE,**args):
      nomres = CHAINAGE_HYDR_MECA(self,args,motscles)
 
   #########################################################
-  # 2. Chaînage MECANIQUE ===> HYDRAULIQUE
+  # 2. ChaÃ®nage MECANIQUE ===> HYDRAULIQUE
   #########################################################
   
   elif (TYPE_CHAINAGE == "MECA_HYDR") :

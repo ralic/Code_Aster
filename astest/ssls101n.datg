@@ -1,8 +1,8 @@
 opti dime 3 elem tri3 ;
 
 *  On maille un quart de disque de rayon R1=1
-*  La zone intérieure (ABC) est maillée en triangles
-*  La zone extérieure (DBCE) est maillée en quadrangles
+*  La zone intÃ©rieure (ABC) est maillÃ©e en triangles
+*  La zone extÃ©rieure (DBCE) est maillÃ©e en quadrangles
 *  Les 2 maillages sont incompatibles
 * ------------------------------------------------------------
 
@@ -31,7 +31,7 @@ ea = droi n1 e1 a ;
 tour01= ad et de et ea; elim 0.001 tour01 ;
 ade = surf tour01 'PLANE';
 
-* Couronne extérieure du disque DBCE :
+* Couronne extÃ©rieure du disque DBCE :
 *------------------------------------
 opti dime 3 elem qua4 ;
 n2=12; n4=13;

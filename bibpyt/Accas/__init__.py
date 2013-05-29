@@ -1,4 +1,4 @@
-# -*- coding: iso-8859-1 -*-
+# coding=utf-8
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -54,7 +54,7 @@ from A_MCLIST import MCList
 from A_MCBLOC import MCBLOC
 from A_MCSIMP import MCSIMP
 
-# Les règles
+# Les rÃ¨gles
 from A_AU_MOINS_UN import AU_MOINS_UN
 from A_UN_PARMI import UN_PARMI
 from A_PRESENT_PRESENT import PRESENT_PRESENT

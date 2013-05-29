@@ -1,4 +1,4 @@
-# -*- coding: iso-8859-1 -*-
+# coding=utf-8
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -49,7 +49,7 @@ def verif_un_instant(tabin, OPERATION, COMPTAGE):
    """ verification qu'il n'y a qu'un instant ou numero d'ordre """
    # si NUME_ORDRE est present dans la table
    if 'NUME_ORDRE' in tabin.para:
-      # récupération de la liste des NUME_ORDRE dans un ensemble (set)
+      # rÃ©cupÃ©ration de la liste des NUME_ORDRE dans un ensemble (set)
       s = set(tabin.NUME_ORDRE.values())
       n = len(s)
       if n > 1:
@@ -57,7 +57,7 @@ def verif_un_instant(tabin, OPERATION, COMPTAGE):
 
    # si INST est present dans la table
    if 'INST' in tabin.para:
-      # récupération de la liste des INST dans un ensemble (set)
+      # rÃ©cupÃ©ration de la liste des INST dans un ensemble (set)
       s = set(tabin.INST.values())
       n = len(s)
       if n > 1:
@@ -95,8 +95,8 @@ def amestoy(k1,k2,crit_ang):
    K21 = [0., 0.0864, 0.1680, 0.2403, 0.2995, 0.3431, 0.3696, 0.3788, 0.3718, 0.3507]
    K12 = [0.,  -0.2597, -0.5068, -0.7298, -0.9189, -1.0665, -1.1681, -1.2220, -1.2293, -1.1936]
    K22 = [1., 0.9764, 0.9071, 0.7972, 0.6540, 0.4872, 0.3077, 0.1266, -0.0453, -0.1988]
-   # kdevp : pour phi de 0 à 90
-   # kdevm : pour phi de -0 à -90
+   # kdevp : pour phi de 0 Ã  90
+   # kdevm : pour phi de -0 Ã  -90
    k1devp = NP.array(K11) * k1 + NP.array(K12) * k2
    k1devm = NP.array(K11) * k1 - NP.array(K12) * k2
    k2devp =  NP.array(K21) * k1 + NP.array(K22) * k2
@@ -112,7 +112,7 @@ def amestoy(k1,k2,crit_ang):
       i = l.index(max(l))
    elif crit_ang == 'K2_NUL':
       i = l.index(min(l))
-   # calcul de phi par rapport à l'indice trouve
+   # calcul de phi par rapport Ã  l'indice trouve
    if i<10 :
       phi = i*10.
    else :
@@ -188,7 +188,7 @@ def verif_val_neg(val_k1):
 
 
 def mise_zero(x) :
-   """ mise à zero des valeurs negatives"""
+   """ mise Ã  zero des valeurs negatives"""
    if   x<0.  : return 0.
    elif x>=0. : return x
 
@@ -239,7 +239,7 @@ def post_rupture_ops(self, TABLE, OPERATION, **args):
    # extraction de la ou des tables en entree dans l'espace python -> table python
    l_tabin = [t.EXTR_TABLE() for t in TABLE]
    if nb_tabin == 1:
-      # pour simplifier l'écriture
+      # pour simplifier l'Ã©criture
       tabin = l_tabin[0]
       TABIN = TABLE[0]
 
@@ -275,7 +275,7 @@ def post_rupture_ops(self, TABLE, OPERATION, **args):
                                     FORMULE=__formul,
                                     NOM_PARA=args['NOM_PARA']))
       else :
-        # récupération de l'abscisse maximale et ajout dans l'environnement
+        # rÃ©cupÃ©ration de l'abscisse maximale et ajout dans l'environnement
         smax = max(tabin.ABSC_CURV.values())
         self.update_const_context({'smax' : smax})
 
@@ -411,7 +411,7 @@ def post_rupture_ops(self, TABLE, OPERATION, **args):
       #  comptage unitaire
       if COMPTAGE == 'UNITAIRE' :
 
-         # recuperation des mot-clés
+         # recuperation des mot-clÃ©s
          COEF_MULT_MAXI=args['COEF_MULT_MAXI']
          COEF_MULT_MINI=args['COEF_MULT_MINI']
 
@@ -482,11 +482,11 @@ def post_rupture_ops(self, TABLE, OPERATION, **args):
 
          for j,fond_j in enumerate(nume_fond):
 
-           # récupération du num_pt maximale pour le fond 'fond_j'
+           # rÃ©cupÃ©ration du num_pt maximale pour le fond 'fond_j'
            tab_fond_j = tabin.NUME_FOND==fond_j
            nbpt=max(tab_fond_j.NUM_PT.values())
 
-           # si on effectue le comptage sur plusieurs quantités,
+           # si on effectue le comptage sur plusieurs quantitÃ©s,
            # il faut qu'elles aient le meme nombre de cycles
            # pour cela, on stocke pour chaque quantite le nombres de cycles dans 'nb_cycles'
            nb_cycles=[]
@@ -496,7 +496,7 @@ def post_rupture_ops(self, TABLE, OPERATION, **args):
 
              numpt=ipt+1
 
-             # boucle sur les quantites à compter
+             # boucle sur les quantites Ã  compter
              __TABC=[None]*nq
              for i,q in enumerate(list_q):
 
@@ -527,7 +527,7 @@ def post_rupture_ops(self, TABLE, OPERATION, **args):
                if i==0 :
                   nb_cycles_ref = __TABC[i].EXTR_TABLE().CYCLE.values()[-1]
                else :
-                  # verif que l'on a bien le meme nb de cycles que la 1ere quantité
+                  # verif que l'on a bien le meme nb de cycles que la 1ere quantitÃ©
                   nb_cycles_i = __TABC[i].EXTR_TABLE().CYCLE.values()[-1]
                   if nb_cycles_ref != nb_cycles_i :
                      UTMESS('F','RUPTURE1_61')
@@ -605,7 +605,7 @@ def post_rupture_ops(self, TABLE, OPERATION, **args):
    #-----------------------------------------------------------------------
    if OPERATION == 'CUMUL_CYCLES' :
 
-      # quantité sur laquelle s'effectue le cumul
+      # quantitÃ© sur laquelle s'effectue le cumul
       q = args['NOM_PARA']
       verif_exi(tabin, q)
 
@@ -631,7 +631,7 @@ def post_rupture_ops(self, TABLE, OPERATION, **args):
 
         tab_fond_i = tabin.NUME_FOND==fond_i
 
-        # récupération du num_pt maximale pour le fond 'fond_i'
+        # rÃ©cupÃ©ration du num_pt maximale pour le fond 'fond_i'
         nbpt = max(tab_fond_i.NUM_PT.values())
 
         # boucle sur les points du fond de fissure
@@ -693,7 +693,7 @@ def post_rupture_ops(self, TABLE, OPERATION, **args):
       # si pilotage en increment d'avancee max : calcul du l'increment de cycles pilo
       if DAmax_pilo :
 
-         # récupération de l'avancee max des points des fonds pour toutes les fissures
+         # rÃ©cupÃ©ration de l'avancee max des points des fonds pour toutes les fissures
          damax=0
          for tab_i in l_tabin:
             damax = max( damax , max(tab_i.DELTA_A.values()))

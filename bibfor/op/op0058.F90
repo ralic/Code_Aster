@@ -1,5 +1,5 @@
 subroutine op0058( )
-    implicit real*8 (a-h,o-z)
+    implicit none
 !     ------------------------------------------------------------------
 !            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! MODIF FERMETUR DATE 03/08/95  AUTEUR GIBHHCM C.MASSERET
@@ -20,8 +20,5 @@ subroutine op0058( )
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 !     ------------------------------------------------------------------
-    character(len=16)   :: nomcmd, concep
-    character(len=8)    :: nomres
-    call getres(nomres,concep,nomcmd)
     call u2mess('F','FERMETUR_5')
 end subroutine

@@ -1,6 +1,6 @@
 opti echo 1 opti dime 3 elem cu20 mode tridim ;
 TITRE ' ';
-*paramètres géometriques
+*paramÃ¨tres gÃ©ometriques
 R = 1.;
 e = 0.1;
 *e = 0.01;
@@ -60,13 +60,13 @@ SS2 = SS1 PLUS (0. 0. e) ;
 oublier PFD;
 oublier PFB;
 oublier PEF;
-*définition du contour
+*dÃ©finition du contour
 CONT = PAB et PBC;
 CONT2 = CONT PLUS (0. 0. e) ;
 OPTION ELEM QUA8;
 SS3 = CONT regler nepai CONT2;
 
-*définition de surface de symétries
+*dÃ©finition de surface de symÃ©tries
 
 dd1= POD et PDA;
 dd2= dd1 PLUS (0. 0. e);

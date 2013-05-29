@@ -1,4 +1,4 @@
-# -*- coding: iso-8859-1 -*-
+# coding=utf-8
 # person_in_charge: mathieu.courtois at edf.fr
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -22,8 +22,8 @@
 
 
 """ 
-    Ce module contient la classe MCBLOC qui sert à controler la valeur
-    d'un bloc de mots-clés par rapport à sa définition portée par un objet
+    Ce module contient la classe MCBLOC qui sert Ã  controler la valeur
+    d'un bloc de mots-clÃ©s par rapport Ã  sa dÃ©finition portÃ©e par un objet
     de type ENTITE
 """
 
@@ -33,7 +33,7 @@ import N_MCCOMPO
 
 class MCBLOC(N_MCCOMPO.MCCOMPO):
    """
-      Classe support d'un bloc de mots-clés.
+      Classe support d'un bloc de mots-clÃ©s.
   
    """
 
@@ -42,17 +42,17 @@ class MCBLOC(N_MCCOMPO.MCCOMPO):
       """
          Attributs :
 
-          - val : valeur du bloc (dictionnaire dont les clés sont des noms de mots-clés et les valeurs
-                  les valeurs des mots-clés)
+          - val : valeur du bloc (dictionnaire dont les clÃ©s sont des noms de mots-clÃ©s et les valeurs
+                  les valeurs des mots-clÃ©s)
 
-          - definition : objet de définition de type BLOC associé au bloc (porte les attributs de définition)
+          - definition : objet de dÃ©finition de type BLOC associÃ© au bloc (porte les attributs de dÃ©finition)
 
-          - nom : nom du bloc. Ce nom lui est donné par celui qui crée le bloc de mot-clé
+          - nom : nom du bloc. Ce nom lui est donnÃ© par celui qui crÃ©e le bloc de mot-clÃ©
 
-          - parent : le créateur du bloc. Ce peut etre un mot-clé facteur ou un autre objet composite de type
-                     OBJECT. Si parent vaut None, le bloc ne possède pas de contexte englobant.
+          - parent : le crÃ©ateur du bloc. Ce peut etre un mot-clÃ© facteur ou un autre objet composite de type
+                     OBJECT. Si parent vaut None, le bloc ne possÃ¨de pas de contexte englobant.
 
-          - mc_liste : liste des sous-objets du bloc construite par appel à la méthode build_mc
+          - mc_liste : liste des sous-objets du bloc construite par appel Ã  la mÃ©thode build_mc
 
       """
       self.definition=definition
@@ -65,7 +65,7 @@ class MCBLOC(N_MCCOMPO.MCCOMPO):
          self.niveau = self.parent.niveau
          self.etape = self.parent.etape
       else:
-         # Le mot cle a été créé sans parent
+         # Le mot cle a Ã©tÃ© crÃ©Ã© sans parent
          self.jdc = None
          self.niveau = None
          self.etape = None
@@ -74,39 +74,39 @@ class MCBLOC(N_MCCOMPO.MCCOMPO):
    def get_valeur(self):
       """
          Retourne la "valeur" de l'objet bloc. Il s'agit d'un dictionnaire dont
-         les clés seront les noms des objets de self.mc_liste et les valeurs
+         les clÃ©s seront les noms des objets de self.mc_liste et les valeurs
          les valeurs des objets de self.mc_liste obtenues par application de 
-         la méthode get_valeur.
+         la mÃ©thode get_valeur.
 
-         Dans le cas particulier d'un objet bloc les éléments du dictionnaire
-         obtenu par appel de la méthode get_valeur sont intégrés au niveau
-         supérieur.
+         Dans le cas particulier d'un objet bloc les Ã©lÃ©ments du dictionnaire
+         obtenu par appel de la mÃ©thode get_valeur sont intÃ©grÃ©s au niveau
+         supÃ©rieur.
           
       """
       dico={}
       for mocle in self.mc_liste:
         if mocle.isBLOC():
            # Si mocle est un BLOC, on inclut ses items dans le dictionnaire
-           # représentatif de la valeur de self. Les mots-clés fils de blocs sont
-           # donc remontés au niveau supérieur.
+           # reprÃ©sentatif de la valeur de self. Les mots-clÃ©s fils de blocs sont
+           # donc remontÃ©s au niveau supÃ©rieur.
            dico.update(mocle.get_valeur())
         else:
            dico[mocle.nom]=mocle.get_valeur()
 
-      # On rajoute tous les autres mots-clés locaux possibles avec la valeur
-      # par défaut ou None
-      # Pour les mots-clés facteurs, on ne traite que ceux avec statut défaut ('d')
-      # et caché ('c')
-      # On n'ajoute aucune information sur les blocs. Ils n'ont pas de défaut seulement
+      # On rajoute tous les autres mots-clÃ©s locaux possibles avec la valeur
+      # par dÃ©faut ou None
+      # Pour les mots-clÃ©s facteurs, on ne traite que ceux avec statut dÃ©faut ('d')
+      # et cachÃ© ('c')
+      # On n'ajoute aucune information sur les blocs. Ils n'ont pas de dÃ©faut seulement
       # une condition.
       for k,v in self.definition.entites.items():
         if not dico.has_key(k):
            if v.label == 'SIMP':
-              # Mot clé simple
+              # Mot clÃ© simple
               dico[k]=v.defaut
            elif v.label == 'FACT':
                 if v.statut in ('c','d') :
-                   # Mot clé facteur avec défaut ou caché provisoire
+                   # Mot clÃ© facteur avec dÃ©faut ou cachÃ© provisoire
                    dico[k]=v(val=None,nom=k,parent=self)
                    # On demande la suppression des pointeurs arrieres
                    # pour briser les eventuels cycles

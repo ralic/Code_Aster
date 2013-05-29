@@ -1,4 +1,4 @@
-# -*- coding: iso-8859-1 -*-
+# coding=utf-8
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -17,12 +17,12 @@
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 
-# Attention a ne pas faire de retour à la ligne !
+# Attention a ne pas faire de retour Ã  la ligne !
 
 cata_msg = {
 
 1 : _(u"""
- Instant de calcul: %(r1)19.12e - Niveau de découpe: %(i1)d
+ Instant de calcul: %(r1)19.12e - Niveau de dÃ©coupe: %(i1)d
 """),
 
 2 : _(u"""
@@ -35,11 +35,11 @@ cata_msg = {
 
 4 : _(u"""
  La gestion automatique du pas de temps (DEFI_LIST_INST/METHODE='AUTO')
- avec le schéma IMPLEX (DEFI_LIST_INST/MODE_CALCUL_TPLUS='IMPLEX') nécessite
- de traiter la résolution par la méthode IMPLEX (STAT/DYNA_NON_LINE/METHODE='IMPLEX').
+ avec le schÃ©ma IMPLEX (DEFI_LIST_INST/MODE_CALCUL_TPLUS='IMPLEX') nÃ©cessite
+ de traiter la rÃ©solution par la mÃ©thode IMPLEX (STAT/DYNA_NON_LINE/METHODE='IMPLEX').
  Conseil :
    - Choisissez STAT/DYNA_NON_LINE/METHODE='IMPLEX'
-   - ou bien choisissez un autre schéma d'adaptation du pas de temps (DEFI_LIST_INST/MODE_CALCUL_TPLUS).
+   - ou bien choisissez un autre schÃ©ma d'adaptation du pas de temps (DEFI_LIST_INST/MODE_CALCUL_TPLUS).
  """),
 
 5 : _(u"""
@@ -51,23 +51,23 @@ cata_msg = {
 """),
 
 10 : _(u"""
-  Le mode vibratoire de numéro d'ordre %(i1)d a pour fréquence %(r1)19.12e
+  Le mode vibratoire de numÃ©ro d'ordre %(i1)d a pour frÃ©quence %(r1)19.12e
 """),
 
 11 : _(u"""
-  Le mode de flambement de numéro d'ordre %(i1)d a pour charge critique %(r1)19.12e
+  Le mode de flambement de numÃ©ro d'ordre %(i1)d a pour charge critique %(r1)19.12e
 """),
 
 12 : _(u"""
-  Le mode de stabilité de numéro d'ordre %(i1)d a pour charge critique %(r1)19.12e
+  Le mode de stabilitÃ© de numÃ©ro d'ordre %(i1)d a pour charge critique %(r1)19.12e
 """),
 
 13 : _(u"""
- On ne peut pas utiliser CRIT_STAB en calcul parallèle
+ On ne peut pas utiliser CRIT_STAB en calcul parallÃ¨le
 """),
 
 60 : _(u"""
-  Critère(s) de convergence atteint(s)
+  CritÃ¨re(s) de convergence atteint(s)
 """),
 
 61 : _(u"""
@@ -78,7 +78,7 @@ cata_msg = {
       Attention ! Convergence atteinte avec RESI_GLOB_MAXI au lieu de RESI_GLOB_RELA pour cause de chargement presque nul.
 """),
 
-70 : _(u"""    Le résidu de type <%(k1)s> vaut %(r1)19.12e au noeud et degré de liberté <%(k2)s>"""),
+70 : _(u"""    Le rÃ©sidu de type <%(k1)s> vaut %(r1)19.12e au noeud et degrÃ© de libertÃ© <%(k2)s>"""),
 
 
 }

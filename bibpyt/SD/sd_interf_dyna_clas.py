@@ -1,4 +1,4 @@
-# -*- coding: iso-8859-1 -*-
+# coding=utf-8
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -67,8 +67,8 @@ class sd_interf_dyna_clas(AsBase):
 
 
     def check_NOMS(self,checker):
-        # il n'y a rien à vérifier : un pointeur de noms contient
-        # toujours des noms "non blancs" et "tous différents"
+        # il n'y a rien Ã  vÃ©rifier : un pointeur de noms contient
+        # toujours des noms "non blancs" et "tous diffÃ©rents"
         pass
 
 

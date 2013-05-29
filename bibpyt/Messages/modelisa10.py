@@ -1,4 +1,4 @@
-# -*- coding: iso-8859-1 -*-
+# coding=utf-8
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -21,38 +21,38 @@
 cata_msg = {
 
 1 : _(u"""
-Le vecteur définissant l'axe de rotation a une composante non nulle suivant Ox ou Oz,
-ce qui induit un chargement non axisymétrique. Avec une modélisation AXIS ou AXIS_FOURIER,
-l'axe de rotation doit être dirigé suivant Oy.
+Le vecteur dÃ©finissant l'axe de rotation a une composante non nulle suivant Ox ou Oz,
+ce qui induit un chargement non axisymÃ©trique. Avec une modÃ©lisation AXIS ou AXIS_FOURIER,
+l'axe de rotation doit Ãªtre dirigÃ© suivant Oy.
 """),
 
 2 : _(u"""
-Les coordonnées du centre de rotation ont au moins une composante non nulle, ce qui induit
-un chargement non axisymétrique. Avec une modélisation AXIS ou AXIS_FOURIER,
-le centre de rotation doit être confondu avec l'origine.
+Les coordonnÃ©es du centre de rotation ont au moins une composante non nulle, ce qui induit
+un chargement non axisymÃ©trique. Avec une modÃ©lisation AXIS ou AXIS_FOURIER,
+le centre de rotation doit Ãªtre confondu avec l'origine.
 """),
 
 3 : _(u"""
-Le vecteur définissant l'axe de rotation a une composante non nulle suivant Ox ou Oy,
-ce qui induit des forces centrifuges hors plan. Avec une modélisation C_PLAN ou D_PLAN,
-l'axe de rotation doit être dirigé suivant Oz.
+Le vecteur dÃ©finissant l'axe de rotation a une composante non nulle suivant Ox ou Oy,
+ce qui induit des forces centrifuges hors plan. Avec une modÃ©lisation C_PLAN ou D_PLAN,
+l'axe de rotation doit Ãªtre dirigÃ© suivant Oz.
 """),
 
 
 4 : _(u"""
-Les mailles affectées à la modélisation TUYAU ne semblent pas former des lignes continues.
-Il y a probablement un problème dans le maillage (superposition d'éléments par exemple).
-Pour obtenir le détail des mailles affectées, utilisez INFO=2.
+Les mailles affectÃ©es Ã  la modÃ©lisation TUYAU ne semblent pas former des lignes continues.
+Il y a probablement un problÃ¨me dans le maillage (superposition d'Ã©lÃ©ments par exemple).
+Pour obtenir le dÃ©tail des mailles affectÃ©es, utilisez INFO=2.
 """),
 
 5 : _(u"""
-Le quadrangle de nom %(k1)s est dégénéré : les cotés 1-2 et 1-3 sont colinéaires.
+Le quadrangle de nom %(k1)s est dÃ©gÃ©nÃ©rÃ© : les cotÃ©s 1-2 et 1-3 sont colinÃ©aires.
 Reprenez votre maillage.
 """),
 
 6 : _(u"""
-Le modèle est de dimension %(i1)d . ARETE_IMPO s'applique sur des arêtes d'éléments 3D,
-donc un modèle de dimension 3. Pour les arêtes d'éléments 2D utiliser FACE_IMPO.
+Le modÃ¨le est de dimension %(i1)d . ARETE_IMPO s'applique sur des arÃªtes d'Ã©lÃ©ments 3D,
+donc un modÃ¨le de dimension 3. Pour les arÃªtes d'Ã©lÃ©ments 2D utiliser FACE_IMPO.
 """),
 7 : _(u"""
 Il faut au moins un noeud esclave.
@@ -63,23 +63,23 @@ Le groupe d'esclaves %(k1)s est vide.
 """),
 
 9 : _(u"""
-Le groupe du noeud maître %(k1)s contient %(i1)d noeuds alors qu'il en faut un seul.
+Le groupe du noeud maÃ®tre %(k1)s contient %(i1)d noeuds alors qu'il en faut un seul.
 """),
 
 10 : _(u"""
-Arguments incompatibles : il y a %(i1)d degrés de liberté esclaves mais %(i2)d noeuds esclaves.
+Arguments incompatibles : il y a %(i1)d degrÃ©s de libertÃ© esclaves mais %(i2)d noeuds esclaves.
 """),
 
 11 : _(u"""
-Le degré de liberté  %(k1)s est invalide.
+Le degrÃ© de libertÃ©  %(k1)s est invalide.
 """),
 
 12 : _(u"""
-Arguments incompatibles : il y a %(i1)d degrés de liberté esclaves mais %(i2)d coefficients esclaves.
+Arguments incompatibles : il y a %(i1)d degrÃ©s de libertÃ© esclaves mais %(i2)d coefficients esclaves.
 """),
 
 13 : _(u"""
-Arguments incompatibles : il y a %(i1)d degrés de liberté esclaves mais %(i2)d noeuds esclaves.
+Arguments incompatibles : il y a %(i1)d degrÃ©s de libertÃ© esclaves mais %(i2)d noeuds esclaves.
 """),
 
 14 : _(u"""
@@ -88,17 +88,17 @@ MODELE_INTERFACE dans PROJ_SPEC_BASE
 """),
 
 15 : _(u"""
-La géométrie de la section utilisée n'est pas prévue par l'opérande SECTION = 'RECTANGLE' de AFFE_CARA_ELEM.
+La gÃ©omÃ©trie de la section utilisÃ©e n'est pas prÃ©vue par l'opÃ©rande SECTION = 'RECTANGLE' de AFFE_CARA_ELEM.
 L'un des bords est trop fin. 
-Utilisez l'opérande SECTION = 'GENERALE'.
+Utilisez l'opÃ©rande SECTION = 'GENERALE'.
 """),
 
 16 : _(u"""
-Il est obligatoire de fournir au moins un comportement pour définir le matériau.
+Il est obligatoire de fournir au moins un comportement pour dÃ©finir le matÃ©riau.
 """),
 
 17 : _(u"""
-La valeur du mot clé DEFORMATION='%(k1)s' et incompatible avec la modélisation.
+La valeur du mot clÃ© DEFORMATION='%(k1)s' et incompatible avec la modÃ©lisation.
 """),
 
 }

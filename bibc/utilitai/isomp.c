@@ -1,5 +1,4 @@
 /*           CONFIGURATION MANAGEMENT OF EDF VERSION                  */
-/* MODIF ISOMP utilitai  DATE 21/05/2012   AUTEUR COURTOIS M.COURTOIS */
 /* ================================================================== */
 /* COPYRIGHT (C) 1991 - 2012  EDF R&D              WWW.CODE-ASTER.ORG */
 /*                                                                    */
@@ -13,7 +12,7 @@
 /* GENERAL PUBLIC LICENSE FOR MORE DETAILS.                           */
 /*                                                                    */
 /* YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE  */
-/* ALONG WITH THIS PROGRAM; IF NOT, WRITE TO : EDF R&D CODE_ASTER,    */
+/* ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,      */
 /*    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.     */
 /* ================================================================== */
 #include "aster.h"
@@ -21,8 +20,8 @@
 INTEGER DEF0(ISOMP, isomp)
 /*
 ** Fonction pour interroger l'indicateur le type d'executable Aster 
-** Renvoie 1 si l'exécutable a été compilé avec l'option _USE_OPENMP
-** Renvoie 0 si l'exécutable n'a pas été compilé avec l'option _USE_OPENMP
+** Renvoie 1 si l'exÃ©cutable a Ã©tÃ© compilÃ© avec l'option _USE_OPENMP
+** Renvoie 0 si l'exÃ©cutable n'a pas Ã©tÃ© compilÃ© avec l'option _USE_OPENMP
 */
 {
 #ifdef _USE_OPENMP

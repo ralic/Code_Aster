@@ -1,4 +1,4 @@
-# -*- coding: iso-8859-1 -*-
+# coding=utf-8
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -22,21 +22,21 @@ cata_msg = {
 
 1 : _(u"""
  couplage fluage/fissuration :
- il faut définir deux lois de comportement exactement.
+ il faut dÃ©finir deux lois de comportement exactement.
 """),
 
 2 : _(u"""
- GRANGER et ENDO_ISOT_BETON ou MAZARS non encore développé
+ GRANGER et ENDO_ISOT_BETON ou MAZARS non encore dÃ©veloppÃ©
 """),
 
 3 : _(u"""
- loi de comportement non autorisée dans le couplage fluage/fissuration
+ loi de comportement non autorisÃ©e dans le couplage fluage/fissuration
 """),
 
 4 : _(u"""
  DEBORST non compatible avec couplage UMLV/Mazars.
- Mais le traitement analytique est réalisé, il suffit de supprimer le
- mot-clé DEBORST),
+ Mais le traitement analytique est rÃ©alisÃ©, il suffit de supprimer le
+ mot-clÃ© DEBORST),
 
 """),
 5 : _(u"""
@@ -45,19 +45,19 @@ cata_msg = {
 """),
 
 6 : _(u"""
- loi de fluage non autorisée dans le couplage fluage/fissuration
+ loi de fluage non autorisÃ©e dans le couplage fluage/fissuration
 """),
 
 7 : _(u"""
- pas d'orthotropie non linéaire
+ pas d'orthotropie non linÃ©aire
 """),
 
 8 : _(u"""
- loi de comportement hyper-élastique non prévue
+ loi de comportement hyper-Ã©lastique non prÃ©vue
 """),
 
 9 : _(u"""
- C_PLAN méthode DEBORST et grandes déformations sont incompatibles
+ C_PLAN mÃ©thode DEBORST et grandes dÃ©formations sont incompatibles
 """),
 
 10 : _(u"""
@@ -66,12 +66,12 @@ cata_msg = {
 
 11 : _(u"""
  couplage fluage/fissuration :
- la première loi doit être une loi de fluage de type GRANGER_FP ou GRANGER_FP_V.
+ la premiÃ¨re loi doit Ãªtre une loi de fluage de type GRANGER_FP ou GRANGER_FP_V.
 """),
 
 12 : _(u"""
  couplage fluage/fissuration :
- nombre total de variables internes incohérent <--> erreur de programmation.
+ nombre total de variables internes incohÃ©rent <--> erreur de programmation.
 """),
 
 15 : _(u"""
@@ -83,18 +83,18 @@ cata_msg = {
 """),
 
 20 : _(u"""
- le champ de déplacement DIDI n'est pas trouvé dans le concept  %(k1)s
+ le champ de dÃ©placement DIDI n'est pas trouvÃ© dans le concept  %(k1)s
 """),
 
 60 : _(u"""
-  -> Le critère de convergence pour intégrer le comportement 'RESI_INTE_RELA'
-     est lâche (très supérieur à la valeur par défaut).
+  -> Le critÃ¨re de convergence pour intÃ©grer le comportement 'RESI_INTE_RELA'
+     est lÃ¢che (trÃ¨s supÃ©rieur Ã  la valeur par dÃ©faut).
   -> Risque & Conseil :
-     Cela peut nuire à la qualité de la solution et à la convergence.
+     Cela peut nuire Ã  la qualitÃ© de la solution et Ã  la convergence.
 """),
 
 61 : _(u"""
- option  %(k1)s  non traitée
+ option  %(k1)s  non traitÃ©e
 """),
 
 63 : _(u"""
@@ -102,20 +102,20 @@ cata_msg = {
 """),
 
 64 : _(u"""
- existence d'un élément à discontinuité trop grand
- non unicité du saut
+ existence d'un Ã©lÃ©ment Ã  discontinuitÃ© trop grand
+ non unicitÃ© du saut
 """),
 
 65 : _(u"""
- non convergence du NEWTON pour le calcul du saut numéro 1
+ non convergence du NEWTON pour le calcul du saut numÃ©ro 1
 """),
 
 66 : _(u"""
- non convergence du NEWTON pour le calcul du saut numéro 2
+ non convergence du NEWTON pour le calcul du saut numÃ©ro 2
 """),
 
 67 : _(u"""
- non convergence du NEWTON pour le calcul du saut numéro 3
+ non convergence du NEWTON pour le calcul du saut numÃ©ro 3
 """),
 
 68 : _(u"""
@@ -123,7 +123,7 @@ cata_msg = {
 """),
 
 69 : _(u"""
- loi %(k1)s  non implantée pour les éléments discrets
+ loi %(k1)s  non implantÃ©e pour les Ã©lÃ©ments discrets
 """),
 
 
@@ -131,36 +131,36 @@ cata_msg = {
 
 
 74 : _(u"""
-  valeur de D_SIGM_EPSI non trouvée
+  valeur de D_SIGM_EPSI non trouvÃ©e
 """),
 
 75 : _(u"""
-  valeur de SY non trouvée
+  valeur de SY non trouvÃ©e
 """),
 
 76 : _(u"""
- développement non implanté
+ dÃ©veloppement non implantÃ©
 """),
 
 79 : _(u"""
- loi de comportement avec irradiation, le paramètre N doit être supérieur à 0
+ loi de comportement avec irradiation, le paramÃ¨tre N doit Ãªtre supÃ©rieur Ã  0
 """),
 
 80 : _(u"""
- loi de comportement avec irradiation, le paramètre PHI_ZERO doit être supérieur à 0
+ loi de comportement avec irradiation, le paramÃ¨tre PHI_ZERO doit Ãªtre supÃ©rieur Ã  0
 """),
 
 81 : _(u"""
- loi de comportement avec irradiation, le paramètre phi/K.PHI_ZERO+L doit être supérieur ou égal à 0
+ loi de comportement avec irradiation, le paramÃ¨tre phi/K.PHI_ZERO+L doit Ãªtre supÃ©rieur ou Ã©gal Ã  0
 """),
 
 82 : _(u"""
- loi de comportement avec irradiation, le paramètre phi/K.PHI_ZERO+L vaut 0. Dans ces conditions le paramètre BETA doit être positif ou nul
+ loi de comportement avec irradiation, le paramÃ¨tre phi/K.PHI_ZERO+L vaut 0. Dans ces conditions le paramÃ¨tre BETA doit Ãªtre positif ou nul
 """),
 
 83 : _(u"""
- Vous utilisez le modèle BETON_UMLV_FP avec un modèle d'endommagement.
- Attention, la mise à jour des contraintes sera faite suivant les déformations totales et non pas suivant un schéma incrémental.
+ Vous utilisez le modÃ¨le BETON_UMLV_FP avec un modÃ¨le d'endommagement.
+ Attention, la mise Ã  jour des contraintes sera faite suivant les dÃ©formations totales et non pas suivant un schÃ©ma incrÃ©mental.
 """),
 
 96 : _(u"""
@@ -168,8 +168,8 @@ cata_msg = {
 """),
 
 98 : _(u"""
- il faut déclarer FONC_DESORP sous ELAS_FO pour le fluage de dessiccation
- intrinsèque avec SECH comme paramètre
+ il faut dÃ©clarer FONC_DESORP sous ELAS_FO pour le fluage de dessiccation
+ intrinsÃ¨que avec SECH comme paramÃ¨tre
 """),
 
 }

@@ -1,6 +1,6 @@
 * maillage de SSNP501A
-* pour modélisation utilisant le mot clé 'CONTACT' 
-* sans frottement, méthode des contraintes actives
+* pour modÃ©lisation utilisant le mot clÃ© 'CONTACT' 
+* sans frottement, mÃ©thode des contraintes actives
 
 opti dime 2;
 opti elem qua4;
@@ -51,4 +51,3 @@ sauv form (PLAQUE et ANNEAU) ;
 trac (PLAQUE et ANNEAU);
 
 fin;
-

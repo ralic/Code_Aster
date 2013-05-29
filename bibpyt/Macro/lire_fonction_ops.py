@@ -1,4 +1,4 @@
-# -*- coding: iso-8859-1 -*-
+# coding=utf-8
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -53,7 +53,7 @@ def lire_blocs(nomfich, SEPAR):
             raise LectureBlocError,  'Ligne %d : %d champs au lieu de %d attendus' % (il, len(splin), llen)
       except ValueError:
          if lignes==[]:
-            pass  # dans ce cas, on a plusieurs lignes délimitant 2 fonctions
+            pass  # dans ce cas, on a plusieurs lignes dÃ©limitant 2 fonctions
          else:
             blocs.append(numpy.array(lignes))
             info(len(blocs), len(lignes), llen)
@@ -67,19 +67,19 @@ def lire_blocs(nomfich, SEPAR):
 
 # ------------------------------------------------------------------------------
 def liste_double(nomfich,INDIC_PARA,INDIC_RESU,SEPAR):
-  """Méthode de construction du VALE pour le format libre
+  """MÃ©thode de construction du VALE pour le format libre
   format LIBRE
-  Les lignes contenant autre chose que des séquences de nombres
-  réels et de séparateurs sont considérées comme délimitant deux
-  fonctions différentes. Cette situation correspond à l exception
-  ValueError levée par le map de float. Le deuxieme indice de
+  Les lignes contenant autre chose que des sÃ©quences de nombres
+  rÃ©els et de sÃ©parateurs sont considÃ©rÃ©es comme dÃ©limitant deux
+  fonctions diffÃ©rentes. Cette situation correspond Ã  l exception
+  ValueError levÃ©e par le map de float. Le deuxieme indice de
   INDIC_PARA et INDIC_RESU est l indice permettant de pointer sur la
-  fonction voulue, au sens de ce découpage.
+  fonction voulue, au sens de ce dÃ©coupage.
   """
   from Utilitai.transpose import transpose
   blocs = lire_blocs(nomfich, SEPAR)
 
-  # vérifications de cohérences lignes et colonnes
+  # vÃ©rifications de cohÃ©rences lignes et colonnes
   nb_blocs = len(blocs)
   bloc_para = INDIC_PARA[0]
   col_para  = INDIC_PARA[1]
@@ -121,7 +121,7 @@ def liste_simple(nomfich,INDIC_PARA,SEPAR):
   """
   blocs = lire_blocs(nomfich, SEPAR)
 
-  # vérifications de cohérences lignes et colonnes
+  # vÃ©rifications de cohÃ©rences lignes et colonnes
   nb_blocs = len(blocs)
   bloc_para = INDIC_PARA[0]
   col_para  = INDIC_PARA[1]
@@ -140,7 +140,7 @@ def liste_simple(nomfich,INDIC_PARA,SEPAR):
 def lire_fonction_ops(self,FORMAT,TYPE,SEPAR,INDIC_PARA,UNITE,
                       NOM_PARA,NOM_RESU,INTERPOL,PROL_DROITE,
                       PROL_GAUCHE,VERIF,INFO,TITRE,**args):
-  """Méthode corps de la macro
+  """MÃ©thode corps de la macro
   """
   from Accas import _F
   from Utilitai.Utmess     import  UTMESS
@@ -160,7 +160,7 @@ def lire_fonction_ops(self,FORMAT,TYPE,SEPAR,INDIC_PARA,UNITE,
 
   nompro='LIRE_FONCTION'
 
-  # Lecture de la fonction dans un fichier d unité logique UNITE
+  # Lecture de la fonction dans un fichier d unitÃ© logique UNITE
   UL = UniteAster()
   nomfich=UL.Nom(UNITE)
   if not osp.isfile(nomfich):
@@ -176,7 +176,7 @@ def lire_fonction_ops(self,FORMAT,TYPE,SEPAR,INDIC_PARA,UNITE,
     except LectureBlocError, message:
        UTMESS('F', 'FONCT0_42', valk=message)
 
-    # création de la fonction ASTER :
+    # crÃ©ation de la fonction ASTER :
     ut_fonc=DEFI_FONCTION( NOM_PARA   =NOM_PARA,
                            NOM_RESU   =NOM_RESU,
                            PROL_DROITE=PROL_DROITE,
@@ -215,7 +215,7 @@ def lire_fonction_ops(self,FORMAT,TYPE,SEPAR,INDIC_PARA,UNITE,
         phase =liste_vale_i[2*i+1]
         liste.extend([liste_vale_r[2*i],module*cos(phase),module*sin(phase)])
 
-    # création de la fonction ASTER :
+    # crÃ©ation de la fonction ASTER :
     ut_fonc=DEFI_FONCTION( NOM_PARA    =NOM_PARA,
                            NOM_RESU    =NOM_RESU,
                            PROL_DROITE =PROL_DROITE,
@@ -228,7 +228,7 @@ def lire_fonction_ops(self,FORMAT,TYPE,SEPAR,INDIC_PARA,UNITE,
 
   elif TYPE=='NAPPE':
 
-    # création de la nappe ASTER :
+    # crÃ©ation de la nappe ASTER :
     motscles={}
     motscles['DEFI_FONCTION']=[]
     for elem in mc_DEFI_FONCTION:
@@ -246,7 +246,7 @@ def lire_fonction_ops(self,FORMAT,TYPE,SEPAR,INDIC_PARA,UNITE,
     except LectureBlocError, message:
        UTMESS('F', 'FONCT0_42', valk=message)
 
-    # création de la nappe
+    # crÃ©ation de la nappe
     ut_fonc=DEFI_NAPPE( PARA          =liste_para,
                         NOM_PARA      =NOM_PARA,
                         NOM_PARA_FONC =args['NOM_PARA_FONC'],
@@ -258,6 +258,6 @@ def lire_fonction_ops(self,FORMAT,TYPE,SEPAR,INDIC_PARA,UNITE,
                         TITRE         =TITRE,
                         VERIF         =VERIF,
                         **motscles)
-  # remet UNITE dans son état initial
+  # remet UNITE dans son Ã©tat initial
   UL.EtatInit()
   return ier

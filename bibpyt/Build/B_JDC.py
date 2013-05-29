@@ -1,4 +1,4 @@
-# -*- coding: iso-8859-1 -*-
+# coding=utf-8
 # person_in_charge: mathieu.courtois at edf.fr
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -34,10 +34,10 @@ from B_CODE import CODE
 
 class JDC(CODE):
   """
-  Cette classe implémente les méthodes de l'objet JDC pour la phase de construction (Build).
+  Cette classe implÃ©mente les mÃ©thodes de l'objet JDC pour la phase de construction (Build).
 
-  Les méthodes principales sont :
-     - Build, qui réalise la construction de toutes les étapes du jeu de commandes
+  Les mÃ©thodes principales sont :
+     - Build, qui rÃ©alise la construction de toutes les Ã©tapes du jeu de commandes
   """
 
   def __init__(self):
@@ -47,17 +47,17 @@ class JDC(CODE):
 
   def register(self,etape):
      """
-        Cette méthode ajoute etape dans la liste des etapes : self.etapes
-        et retourne un numéro d'enregistrement
-        En plus, elle rend actives les étapes comprises entre DEBUT, POURSUITE
+        Cette mÃ©thode ajoute etape dans la liste des etapes : self.etapes
+        et retourne un numÃ©ro d'enregistrement
+        En plus, elle rend actives les Ã©tapes comprises entre DEBUT, POURSUITE
         et FIN et inactives les autres.
      """
      if etape.nom in ('DEBUT', 'POURSUITE') and self.actif_status == 0:
-        # On passe en état actif
+        # On passe en Ã©tat actif
         self.actif_status=1
         etape.actif=1
      elif etape.nom == 'FIN':
-        # On passe en état inactif après FIN
+        # On passe en Ã©tat inactif aprÃ¨s FIN
         etape.actif=1
         self.actif_status=-1
      elif self.actif_status == 1:
@@ -72,15 +72,15 @@ class JDC(CODE):
 
   def Build(self):
     """
-    Fonction : Construction des étapes du jeu de commandes
+    Fonction : Construction des Ã©tapes du jeu de commandes
 
-    Toutes les étapes n'ont pas besoin d'etre construites.
-    En général, seules certaines macros nécessitent d'etre construites.
-    Cependant, on demande à toutes les étapes de se construire,
-    cette phase pouvant etre réduite à sa plus simple expression.
-    Il faut prendre garde que en cas d'exécution en mode commande par
-    commande, la construction doit etre immédiatement suivie par l'exécution
-    éventuellement précédée par la vérification
+    Toutes les Ã©tapes n'ont pas besoin d'etre construites.
+    En gÃ©nÃ©ral, seules certaines macros nÃ©cessitent d'etre construites.
+    Cependant, on demande Ã  toutes les Ã©tapes de se construire,
+    cette phase pouvant etre rÃ©duite Ã  sa plus simple expression.
+    Il faut prendre garde que en cas d'exÃ©cution en mode commande par
+    commande, la construction doit etre immÃ©diatement suivie par l'exÃ©cution
+    Ã©ventuellement prÃ©cÃ©dÃ©e par la vÃ©rification
     """
     # Pour etre sur de ne pas se planter sur l appel a set_context on le met d abord a blanc
     CONTEXT.unset_current_step()
@@ -103,13 +103,13 @@ class JDC(CODE):
       ier=ier+ret
       if ret == 0:
         e.update_context(self.g_context)
-    #  On remet le contexte à blanc : impossible de créer des étapes
+    #  On remet le contexte Ã  blanc : impossible de crÃ©er des Ã©tapes
     CONTEXT.unset_current_step()
     return ier
 
   def _Build(self):
      """
-         Cette méthode réalise le traitement de construction pour le
+         Cette mÃ©thode rÃ©alise le traitement de construction pour le
          JDC lui meme
      """
      if CONTEXT.debug : print "Build_JDC ",self.nom
@@ -124,8 +124,8 @@ class JDC(CODE):
 
   def get_sd_avant_etape(self,nom_sd,etape):
      """
-         Cette méthode retourne la SD de nom nom_sd qui est éventuellement
-          définie avant etape
+         Cette mÃ©thode retourne la SD de nom nom_sd qui est Ã©ventuellement
+          dÃ©finie avant etape
      """
      d=self.get_contexte_avant(etape)
      sd= d.get(nom_sd,None)

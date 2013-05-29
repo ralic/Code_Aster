@@ -1,8 +1,8 @@
 opti dime 3 elem tri3 ;
 
 *  On maille un quart de disque de rayon R1=1 et d'epaisseur ep=0.1
-*  La partie intérieure ADET (rayon R2=0.3) est maillée en pentaèdres (3D)
-*  La partie extérieure DBCE est maillée en triangles (coque)
+*  La partie intÃ©rieure ADET (rayon R2=0.3) est maillÃ©e en pentaÃ¨dres (3D)
+*  La partie extÃ©rieure DBCE est maillÃ©e en triangles (coque)
 *  Les 2 maillages sont disjoints et incompatibles
 * --------------------------------------------------------------------
 
@@ -14,7 +14,7 @@ meps2= 0. - (ep/2.);
 v1= (0. 0. ep);
 
 
-* Couronne extérieure du disque DBCE :
+* Couronne extÃ©rieure du disque DBCE :
 *------------------------------------
 a  = 0.   0.  0.;
 b  = R1   0.  0.;

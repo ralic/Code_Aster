@@ -1,4 +1,4 @@
-# -*- coding: iso-8859-1 -*-
+# coding=utf-8
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -854,7 +854,7 @@ Entree :
 Sortie :
   la_chaine : la chaine
   """
-    #print "\nArguments à l'entree de", __name__, ":", entier
+    #print "\nArguments Ã  l'entree de", __name__, ":", entier
 #
   if type(entier) == type(0) :
     la_chaine = '%02d' % entier
@@ -1356,7 +1356,7 @@ def macr_adap_mail_ops ( self,
                     **motscfa )
 #
 # 4.3. Le(s) champ(s)
-#        Attention : il se peut que l'on demande la mise à jour du champ qui a servi comme
+#        Attention : il se peut que l'on demande la mise Ã  jour du champ qui a servi comme
 #                    pilotage de l'adaptation. Si c'est le cas, il ne faut pas demander son
 #                    impression sinon il y a plantage d'IMPR_RESU qui ne sait pas substituer
 #                    deux champs. D'ailleurs, c'est plus economique ainsi !

@@ -406,4 +406,3 @@ TEST_RESU(RESU=_F(INST=1000,
           )
 
 FIN();
-

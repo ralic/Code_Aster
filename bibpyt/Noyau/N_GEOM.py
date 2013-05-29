@@ -1,4 +1,4 @@
-# -*- coding: iso-8859-1 -*-
+# coding=utf-8
 # person_in_charge: mathieu.courtois at edf.fr
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -28,8 +28,8 @@ from N_ASSD import ASSD
 
 class GEOM(ASSD):
    """
-      Cette classe sert à définir les types de concepts
-      géométriques comme GROUP_NO, GROUP_MA,NOEUD et MAILLE
+      Cette classe sert Ã  dÃ©finir les types de concepts
+      gÃ©omÃ©triques comme GROUP_NO, GROUP_MA,NOEUD et MAILLE
 
    """
    def __init__(self,nom,etape=None,sd=None,reg='oui'):
@@ -58,7 +58,7 @@ class GEOM(ASSD):
    def __convert__(cls,valeur):
       if isinstance(valeur, (str,unicode)) and len(valeur.strip()) <= 8:
          return valeur.strip()
-      raise ValueError(_(u'On attend une chaine de caractères (de longueur <= 8).'))
+      raise ValueError(_(u'On attend une chaine de caractÃ¨res (de longueur <= 8).'))
    __convert__=classmethod(__convert__)
 
 class geom(GEOM):pass

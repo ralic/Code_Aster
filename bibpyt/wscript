@@ -1,4 +1,4 @@
-# encoding: utf-8
+# coding=utf-8
 
 def build(self):
     get_srcs = self.path.get_src().ant_glob

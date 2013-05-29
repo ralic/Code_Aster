@@ -1,4 +1,4 @@
-# -*- coding: iso-8859-1 -*-
+# coding=utf-8
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -22,7 +22,7 @@ from cata_comportement import LoiComportement
 
 loi = LoiComportement(
    nom            = 'LABORD_1D',
-   doc = """Relation de comportement de Laborderie, modèles d'endommagement 1D.""",
+   doc = """Relation de comportement de Laborderie, modÃ¨les d'endommagement 1D.""",
    num_lc         = 9999,
    nb_vari        = 5,
    nom_vari       = ('ENDO_T','ENDO_C','SEUIL_T','SEUIL_C','EPSP'),

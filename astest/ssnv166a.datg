@@ -535,7 +535,7 @@ elim crit Vtube ;
 *  MAILLAGE 3D DES VOLUMES LATERAUX
 *  ================================
 *
-*   Calcul des longueurs des volumes en respect € 
+*   Calcul des longueurs des volumes en respect Â€ 
 *    la position axiale de la fissure
 long_p = (longtube / 2.) - ray_tore - posaxfis ;
 long_n = (-1.) * ((longtube / 2.) - ray_tore + posaxfis) ;
@@ -564,7 +564,7 @@ Slat_n = (enve vtube) elem appui strict pp ;
 
 *  Maillage des volumes par extrusion
 *  ----------------------------------
-*  definition des densit‰s
+*  definition des densitÂ‰s
 Nvol_p = entier(long_p / 
   (norm ((llev_ex poin 1) moins (llev_ex poin 2)))) ;
 Nvol_n = entier(long_n / 
@@ -671,5 +671,4 @@ sauv format maille ;
 * FIN DU MAILLAGE
 * ===============
 FIN ;
-
 

@@ -1,4 +1,4 @@
-# -*- coding: iso-8859-1 -*-
+# coding=utf-8
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -32,41 +32,41 @@ Impossible de tuer le fichier %(k1)s
 """),
 
 4: _(u"""
-Impossible de créer le répertoire de travail pour HOMARD : %(k1)s
+Impossible de crÃ©er le rÃ©pertoire de travail pour HOMARD : %(k1)s
 """),
 
 5: _(u"""
-Impossible de détruire le fichier :%(k1)s
+Impossible de dÃ©truire le fichier :%(k1)s
 """),
 
 6: _(u"""
-La vérification de l'interpénétration peut être très longue.
+La vÃ©rification de l'interpÃ©nÃ©tration peut Ãªtre trÃ¨s longue.
 Il ne faut l'utiliser que volontairement. Voir la documentation.
 """),
 
 7: _(u"""
-Dès que le nombre de mailles est important, la vérification de l'interpénétration peut devenir très longue.
+DÃ¨s que le nombre de mailles est important, la vÃ©rification de l'interpÃ©nÃ©tration peut devenir trÃ¨s longue.
 En principe, on ne devrait l'utiliser que dans les cas suivants :
   . Informations sur un maillage avec MACR_INFO_MAIL
-  . Débogage sur une adaptation avec MACR_ADAP_MAIL
+  . DÃ©bogage sur une adaptation avec MACR_ADAP_MAIL
 Conseil :
-Pour un usage courant de l'adaptation, il est recommandé de passer à NON toutes les
-options de contrôle ; autrement dit, laisser les options par défaut.
+Pour un usage courant de l'adaptation, il est recommandÃ© de passer Ã  NON toutes les
+options de contrÃ´le ; autrement dit, laisser les options par dÃ©faut.
 """),
 
 8: _(u"""
-Impossible de trouver le répertoire de travail pour HOMARD : %(k1)s
+Impossible de trouver le rÃ©pertoire de travail pour HOMARD : %(k1)s
 Certainement un oubli dans le lancement de la poursuite.
 """),
 
 9: _(u"""
 Vous demandez une adaptation du maillage %(k1)s vers %(k2)s
-Auparavant, vous aviez déjà fait une adaptation qui a produit le maillage %(k3)s
-Ce maillage %(k3)s est le résultat de %(i1)d adaptation(s) à partir du maillage initial %(k4)s
+Auparavant, vous aviez dÃ©jÃ  fait une adaptation qui a produit le maillage %(k3)s
+Ce maillage %(k3)s est le rÃ©sultat de %(i1)d adaptation(s) Ã  partir du maillage initial %(k4)s
 
-Les arguments que vous avez donnés à MACR_ADAP_MAIL ne permettront pas de tenir compte
+Les arguments que vous avez donnÃ©s Ã  MACR_ADAP_MAIL ne permettront pas de tenir compte
 de l'historique d'adaptation. Est-ce volontaire ?
-Pour poursuivre la séquence, il faudrait partir maintenant de %(k3)s.
+Pour poursuivre la sÃ©quence, il faudrait partir maintenant de %(k3)s.
 
 """),
 

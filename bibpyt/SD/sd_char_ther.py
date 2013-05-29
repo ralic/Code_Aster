@@ -1,4 +1,4 @@
-# -*- coding: iso-8859-1 -*-
+# coding=utf-8
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -50,8 +50,8 @@ class sd_char_chth(AsBase):
     T_EXT = Facultatif(sd_carte())
 
 
-    # parfois, TEMP_IMPO crée une carte de sd_fonction :
-    # il faut alors vérifier ces sd_fonction
+    # parfois, TEMP_IMPO crÃ©e une carte de sd_fonction :
+    # il faut alors vÃ©rifier ces sd_fonction
     def check_CIMPO_FONC(self, checker):
         if self.CIMPO.VALE.ltyp != 24 : return
         vale=self.CIMPO.VALE.get()

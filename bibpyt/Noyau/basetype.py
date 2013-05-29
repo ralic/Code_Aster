@@ -1,4 +1,4 @@
-# -*- coding: iso-8859-1 -*-
+# coding=utf-8
 # person_in_charge: mathieu.courtois at edf.fr
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -22,19 +22,19 @@
 Description des types de base aster
 -----------------------------------
 
-version 2 - réécrite pour essayer de simplifier
-le problème des instances/types et instances/instances.
+version 2 - rÃ©Ã©crite pour essayer de simplifier
+le problÃ¨me des instances/types et instances/instances.
 
-Le type de base `Type` permet de représenter une structure
-de donnée. Une instance de `Type` comme attribut d'une classe
-dérivée de `Type` représente une sous-structure nommée.
+Le type de base `Type` permet de reprÃ©senter une structure
+de donnÃ©e. Une instance de `Type` comme attribut d'une classe
+dÃ©rivÃ©e de `Type` reprÃ©sente une sous-structure nommÃ©e.
 
-Une instance de `Type` 'libre' représente une instance de la
-structure de donnée complète.
+Une instance de `Type` 'libre' reprÃ©sente une instance de la
+structure de donnÃ©e complÃ¨te.
 
-C'est ce comportement qui est capturé dans la classe BaseType
+C'est ce comportement qui est capturÃ© dans la classe BaseType
 
-La classe `Type` hérite de BaseType et y associe la métaclasse MetaType.
+La classe `Type` hÃ©rite de BaseType et y associe la mÃ©taclasse MetaType.
 
 """
 
@@ -46,23 +46,23 @@ __docformat__ = "restructuredtext"
 
 
 class MetaType(type):
-    """Métaclasse d'un type représentant une structure de données.
-    Les méthodes spéciales __new__ et __call__ sont réimplémentées
+    """MÃ©taclasse d'un type reprÃ©sentant une structure de donnÃ©es.
+    Les mÃ©thodes spÃ©ciales __new__ et __call__ sont rÃ©implÃ©mentÃ©es
     """
     def __new__( mcs, name, bases, classdict ):
-        """Création d'une nouvelle 'classe' dérivant de Type.
+        """CrÃ©ation d'une nouvelle 'classe' dÃ©rivant de Type.
 
-        Cette méthode permet de calculer certains attributs automatiquement:
+        Cette mÃ©thode permet de calculer certains attributs automatiquement:
 
          - L'attribut _subtypes qui contient la liste des sous-structures
-           de type 'Type' attributs (directs ou hérités) de cette classe.
+           de type 'Type' attributs (directs ou hÃ©ritÃ©s) de cette classe.
 
-        Pour chaque attribut de classe héritant de Type, on recrée une nouvelle
-        instance des attributs hérités pour pouvoir maintenir une structure de
-        parentée entre l'attribut de classe et sa nouvelle classe.
+        Pour chaque attribut de classe hÃ©ritant de Type, on recrÃ©e une nouvelle
+        instance des attributs hÃ©ritÃ©s pour pouvoir maintenir une structure de
+        parentÃ©e entre l'attribut de classe et sa nouvelle classe.
 
         L'effet obtenu est que tous les attributs de classe ou des classes parentes
-        de cette classe sont des attributs associés à la classe feuille. Ces attributs
+        de cette classe sont des attributs associÃ©s Ã  la classe feuille. Ces attributs
         ont eux-meme un attribut parent qui pointe sur la classe qui les contient.
         """
         new_cls = type.__new__( mcs, name, bases, classdict )
@@ -71,8 +71,8 @@ class MetaType(type):
             if hasattr(b,'_subtypes'):
                 new_cls._subtypes += b._subtypes
         # affecte la classe comme parent des attributs de classe
-        # et donne l'occasion aux attributs de se renommer à partir
-        # du nom utilisé.
+        # et donne l'occasion aux attributs de se renommer Ã  partir
+        # du nom utilisÃ©.
         for k, v in classdict.items():
             if not isinstance( v, BaseType ):
                 continue
@@ -94,10 +94,10 @@ class MetaType(type):
            setattr( inst, nam, newobj )
 
     def __call__(cls, *args, **kwargs):
-        """Instanciation d'un Type structuré.
-        Lors de l'instanciation on effectue un travail similaire à la
-        création de classe: Les attributs sont re-parentés à l'instance
-        et réinstanciés pour obtenir une instanciation de toute la structure
+        """Instanciation d'un Type structurÃ©.
+        Lors de l'instanciation on effectue un travail similaire Ã  la
+        crÃ©ation de classe: Les attributs sont re-parentÃ©s Ã  l'instance
+        et rÃ©instanciÃ©s pour obtenir une instanciation de toute la structure
         et de ses sous-structures.
 
         Les attributs de classe deviennent des attributs d'instance.
@@ -131,19 +131,19 @@ class BaseType(object):
             obj.reparent( self, nam )
 
     def supprime(self, delete=False):
-        """Permet de casser les boucles de références pour que les ASSD
-        puissent être détruites.
-        Si `delete` vaut True, on supprime l'objet lui-même et pas
-        seulement les références remontantes."""
+        """Permet de casser les boucles de rÃ©fÃ©rences pour que les ASSD
+        puissent Ãªtre dÃ©truites.
+        Si `delete` vaut True, on supprime l'objet lui-mÃªme et pas
+        seulement les rÃ©fÃ©rences remontantes."""
         self._parent = None
         self._name = None
         for nam in self._subtypes:
             obj = getattr(self, nam)
             obj.supprime(delete)
         #XXX MC : avec ce code, j'ai l'impression qu'on supprime aussi
-        # des attributs de classe, ce qui pose problème pour une
+        # des attributs de classe, ce qui pose problÃ¨me pour une
         # instanciation future...
-        # Supprimer les références remontantes devrait suffir.
+        # Supprimer les rÃ©fÃ©rences remontantes devrait suffir.
         #if delete:
             #while len(self._subtypes):
                 #nam = self._subtypes.pop(0)

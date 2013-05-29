@@ -1,5 +1,4 @@
 /*           CONFIGURATION MANAGEMENT OF EDF VERSION                  */
-/* MODIF hdfclg hdf  DATE 10/04/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE */
 /* ================================================================== */
 /* COPYRIGHT (C) 1991 - 2012  EDF R&D              WWW.CODE-ASTER.ORG */
 /*                                                                    */
@@ -13,16 +12,16 @@
 /* GENERAL PUBLIC LICENSE FOR MORE DETAILS.                           */
 /*                                                                    */
 /* YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE  */
-/* ALONG WITH THIS PROGRAM; IF NOT, WRITE TO : EDF R&D CODE_ASTER,    */
+/* ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,      */
 /*    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.     */
 /* ================================================================== */
 #include "aster.h"
 #include "aster_fort.h"
 /*-----------------------------------------------------------------------------/
-/ Fermeture d'un groupe HDF, renvoie une erreur si le groupe ne peut être fermé 
-/  Paramètres :
+/ Fermeture d'un groupe HDF, renvoie une erreur si le groupe ne peut Ãªtre fermÃ© 
+/  ParamÃ¨tres :
 /   - in idgrp : identificateur du groupe (hid_t)
-/  Résultats :
+/  RÃ©sultats :
 /     0 = fermeture OK, -1 sinon (long)
 /-----------------------------------------------------------------------------*/
 #ifndef _DISABLE_HDF5

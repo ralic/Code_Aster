@@ -35,8 +35,8 @@ MATEM4=AFFE_MATERIAU(MAILLAGE=MAIL_ME,
                                     NOM_VARC='PTOT',),);
 
 ##################################
-# On va maintenant résoudre le
-# problème mécanique
+# On va maintenant rÃ©soudre le
+# problÃ¨me mÃ©canique
 ##################################
 
 LISTINST=DEFI_LIST_REEL(DEBUT=0.0,
@@ -83,7 +83,7 @@ PESANT2=AFFE_CHAR_MECA(MODELE=MODE2,
                                    DIRECTION=(-1.,0.,0.,),),);
 
 #####################################################
-# On va affecter la condition de Neumann en mécanique
+# On va affecter la condition de Neumann en mÃ©canique
 #####################################################
 
 FORMI1=AFFE_CHAR_MECA_F(MODELE=MODE1,
@@ -95,14 +95,14 @@ FORMI2=AFFE_CHAR_MECA_F(MODELE=MODE2,
                                       PRES=PRES_IMP,),);
 
 #######################
-# Résolution du système
+# RÃ©solution du systÃ¨me
 #######################
 
 ###
 # 1. Par meca_statique
 ###
 #
-# 3 possibilités pour la résolution :
+# 3 possibilitÃ©s pour la rÃ©solution :
 # 1. MECA_STATIQUE                  => MS
 # 2. STAT_NON_LINE(COMP_INCR(ELAS)) => SNLCI
 # 3. STAT_NON_LINE(COMP_ELAS(ELAS)) => SNLCE

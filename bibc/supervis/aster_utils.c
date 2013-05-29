@@ -1,5 +1,4 @@
 /*           CONFIGURATION MANAGEMENT OF EDF VERSION                  */
-/* MODIF aster_utils supervis  DATE 14/02/2012   AUTEUR COURTOIS M.COURTOIS */
 /* ================================================================== */
 /* COPYRIGHT (C) 1991 - 2012  EDF R&D              WWW.CODE-ASTER.ORG */
 /*                                                                    */
@@ -13,7 +12,7 @@
 /* GENERAL PUBLIC LICENSE FOR MORE DETAILS.                           */
 /*                                                                    */
 /* YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE  */
-/* ALONG WITH THIS PROGRAM; IF NOT, WRITE TO : EDF R&D CODE_ASTER,    */
+/* ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,      */
 /*    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.     */
 /* ================================================================== */
 /* person_in_charge: mathieu.courtois at edf.fr */
@@ -23,11 +22,11 @@
 #include "aster_fort.h"
 
 /*
- * Fonctions de manipulation des chaines de caractères pour échange avec le Fortran.
+ * Fonctions de manipulation des chaines de caractÃ¨res pour Ã©change avec le Fortran.
  */
 STRING_SIZE FStrlen( _IN char *fstr, _IN STRING_SIZE flen )
 {
-    /* Retourne la longueur (dernier caractère non blanc) de "fstr".
+    /* Retourne la longueur (dernier caractÃ¨re non blanc) de "fstr".
      */
     STRING_SIZE n;
     _check_string_length(flen);
@@ -38,9 +37,9 @@ STRING_SIZE FStrlen( _IN char *fstr, _IN STRING_SIZE flen )
 
 char * MakeCStrFromFStr( _IN char *fstr, _IN STRING_SIZE flen )
 {
-    /* Alloue et retourne une chaine C (terminant par \0) étant
+    /* Alloue et retourne une chaine C (terminant par \0) Ã©tant
      * la copie de la chaine Fortran sans les blancs finaux.
-     * La chaine devra etre libérée par l'appelant.
+     * La chaine devra etre libÃ©rÃ©e par l'appelant.
      */
     char *cstr = NULL;
     STRING_SIZE n;
@@ -55,8 +54,8 @@ char * MakeCStrFromFStr( _IN char *fstr, _IN STRING_SIZE flen )
 
 void CopyCStrToFStr( _INOUT char *fstr, _IN char *cstr, _IN STRING_SIZE flen )
 {
-    /* Copie une chaine C dans une chaine Fortran déjà allouée (de taille
-     * flen) et sans ajout du '\0' à la fin.
+    /* Copie une chaine C dans une chaine Fortran dÃ©jÃ  allouÃ©e (de taille
+     * flen) et sans ajout du '\0' Ã  la fin.
      */
     STRING_SIZE i, n;
     n = strlen(cstr);
@@ -74,10 +73,10 @@ void CopyCStrToFStr( _INOUT char *fstr, _IN char *cstr, _IN STRING_SIZE flen )
 
 char * MakeFStrFromCStr( _IN char *cstr, _IN STRING_SIZE flen )
 {
-    /* Alloue et retourne une chaine C (complétée par des blancs
-     * destinée à être transmise au Fortran, d'où FStr) étant
+    /* Alloue et retourne une chaine C (complÃ©tÃ©e par des blancs
+     * destinÃ©e Ã  Ãªtre transmise au Fortran, d'oÃ¹ FStr) Ã©tant
      * la copie de la chaine C.
-     * La chaine devra etre libérée par l'appelant.
+     * La chaine devra etre libÃ©rÃ©e par l'appelant.
      */
     char *fstr = NULL;
     fstr = (char*)malloc((flen + 1) * sizeof(char));
@@ -88,17 +87,17 @@ char * MakeFStrFromCStr( _IN char *cstr, _IN STRING_SIZE flen )
 
 void BlankStr( _IN char *fstr, _IN STRING_SIZE flen )
 {
-    /* Initialise un blanc une chaine de caractères (sans '\0' à la fin).
-     * S'applique à une chaine allouée par le Fortran.
+    /* Initialise un blanc une chaine de caractÃ¨res (sans '\0' Ã  la fin).
+     * S'applique Ã  une chaine allouÃ©e par le Fortran.
      */
     memset(fstr, ' ', flen);
 }
 
 char * MakeBlankFStr( _IN STRING_SIZE flen )
 {
-    /* Initialise un blanc une chaine de caractères avec '\0' à la fin
-     * (qui peut ainsi être passé au Fortran).
-     * Alloue une chaine qui sera passée au Fortran.
+    /* Initialise un blanc une chaine de caractÃ¨res avec '\0' Ã  la fin
+     * (qui peut ainsi Ãªtre passÃ© au Fortran).
+     * Alloue une chaine qui sera passÃ©e au Fortran.
      */
     char *fstr;
     fstr = (char*)malloc((flen + 1) * sizeof(char));
@@ -109,18 +108,18 @@ char * MakeBlankFStr( _IN STRING_SIZE flen )
 
 char * MakeTabFStr( _IN int size, _IN STRING_SIZE flen )
 {
-    /* Alloue un tableau de chaine de caractères Fortran. Chaque chaine
-     * est de longueur "flen". Le même "flen" sera utilisé
+    /* Alloue un tableau de chaine de caractÃ¨res Fortran. Chaque chaine
+     * est de longueur "flen". Le mÃªme "flen" sera utilisÃ©
      * dans SetTabFStr.
-     * Alloue un tableau de chaine qui sera passé au Fortran.
+     * Alloue un tableau de chaine qui sera passÃ© au Fortran.
      */
     return MakeBlankFStr(size * flen);
 }
 
 void SetTabFStr( _IN char *tab, _IN int index, _IN char *cstr, _IN STRING_SIZE flen )
 {
-    /* Remplit l'indice "index" (de 0 à size-1) du tableau de chaine
-     * de caractères "tab" avec la chaine "cstr".
+    /* Remplit l'indice "index" (de 0 Ã  size-1) du tableau de chaine
+     * de caractÃ¨res "tab" avec la chaine "cstr".
      */
     char *strk = NULL;
     strk = &tab[index * flen];
@@ -181,7 +180,7 @@ int conv_un_c8( _IN PyObject *tup, _OUT DOUBLE *val)
         *(val+1)=(DOUBLE)PyComplex_ImagAsDouble(tup);
     }
     else if(PyTuple_Check(tup)){
-        /* On est dans le cas d'un complexe représenté par un triplet : "RI" ou "MP",x,y */
+        /* On est dans le cas d'un complexe reprÃ©sentÃ© par un triplet : "RI" ou "MP",x,y */
         if(!PyArg_ParseTuple(tup,"sdd",&repres,&x,&y))
             MYABORT("erreur dans la partie Python");
         if (strcmp(repres,"RI")==0){
@@ -314,7 +313,7 @@ void converltx( _IN int nval, _IN PyObject *tup, _OUT char *val, _IN STRING_SIZE
 }
 
 /*
- * Fonctions pour créer des listes et tuples
+ * Fonctions pour crÃ©er des listes et tuples
  */
 PyObject * MakeTupleString(long nbval, char *kval, STRING_SIZE lkval, INTEGER *lval)
 {

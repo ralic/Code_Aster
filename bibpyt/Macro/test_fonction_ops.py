@@ -1,4 +1,4 @@
-# -*- coding: iso-8859-1 -*-
+# coding=utf-8
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -131,20 +131,20 @@ def TesterValeur(nomPara,valPu,valRef,res,epsi,crit,sSigne):
 #------------------------------------------
 def RoundValues(crit,res,vtc,err,curEps):
    """
-      Effectue des troncatures en fonction des valeurs réelles fournies
+      Effectue des troncatures en fonction des valeurs rÃ©elles fournies
       et retourne eventuellement des valeurs sans exposant.
 
       input :
         crit    (K)  :  'RELATIF' /'ABSOLU'
-        res     (R)  :  valeur calculée par aster (réelle)
+        res     (R)  :  valeur calculÃ©e par aster (rÃ©elle)
         vtc     (R)  :  valeur attendue par l'utilisateur (VALE_REFE ou VALE_CALC)
-        err     (R)  :  erreur calculée en % (colonne ERREUR)
-        curEps  (R)  :  tolérance acceptable pour l'erreur en % (colonne TOLE)
+        err     (R)  :  erreur calculÃ©e en % (colonne ERREUR)
+        curEps  (R)  :  tolÃ©rance acceptable pour l'erreur en % (colonne TOLE)
       output :
-        resr    (K)  :  chaine représentant "res" (arrondie pour l'affichage)
-        vtcr    (K)  :  chaine représentant "vtc" (arrondie pour l'affichage)
-        errr    (K)  :  chaine représentant "err" (arrondie pour l'affichage)
-        curEpsr (K)  :  chaine représentant "curEps" (arrondie pour l'affichage)
+        resr    (K)  :  chaine reprÃ©sentant "res" (arrondie pour l'affichage)
+        vtcr    (K)  :  chaine reprÃ©sentant "vtc" (arrondie pour l'affichage)
+        errr    (K)  :  chaine reprÃ©sentant "err" (arrondie pour l'affichage)
+        curEpsr (K)  :  chaine reprÃ©sentant "curEps" (arrondie pour l'affichage)
    """
    import math
    # valeur calculee, valeur de reference:
@@ -152,11 +152,11 @@ def RoundValues(crit,res,vtc,err,curEps):
    res2 = """%20.15E """%res
    vtc2 = """%20.15E """%vtc
 
-   # détermination du nombre de digits à afficher pour resr et vtc : ndigit
+   # dÃ©termination du nombre de digits Ã  afficher pour resr et vtc : ndigit
    # ----------------------------------------------------------------------
    if crit[0:4]=='RELA' :
       ndigit=-int(math.log10(abs(curEps)))
-      ndigit=ndigit+2      # +2 à cause des %
+      ndigit=ndigit+2      # +2 Ã  cause des %
       ndigit=max(ndigit,2) # il en faut un minimum quand meme
    else :
       if curEps != 0. :
@@ -165,7 +165,7 @@ def RoundValues(crit,res,vtc,err,curEps):
          ndigit=10
       if res != 0. : ndigit=ndigit+int(math.log10(abs(res)))
       ndigit=max(ndigit,2) # il en faut un minimum quand meme
-   ndigit=min(ndigit,15) # limite de la double présision
+   ndigit=min(ndigit,15) # limite de la double prÃ©sision
 
    # arrondi des 2 valeurs rest et vtc :
    #------------------------------------
@@ -175,7 +175,7 @@ def RoundValues(crit,res,vtc,err,curEps):
    vtct=chndec%vtc
    vtct=vtct.strip()
 
-   # écriture éventuelle sans exposant :
+   # Ã©criture Ã©ventuelle sans exposant :
    #---------------------------------------------
    def sansExp(res,rest,crit,ndigit) :
       ares=abs(res)
@@ -711,7 +711,7 @@ def test_fonction_ops(self,TEST_NOOK,VALEUR,ATTRIBUT,**args):
          # Construction de l'affichage
          nomFct = fonction.get_name()
 
-         # ligne 1 (affichée qu'à la première occurrence)
+         # ligne 1 (affichÃ©e qu'Ã  la premiÃ¨re occurrence)
          current = {}
          if first_affiche_ligne1 :
              first_affiche_ligne1=False

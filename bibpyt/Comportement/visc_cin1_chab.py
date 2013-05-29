@@ -1,4 +1,4 @@
-# -*- coding: iso-8859-1 -*-
+# coding=utf-8
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -22,7 +22,7 @@ from cata_comportement import LoiComportement
 
 loi = LoiComportement(
    nom            = 'VISC_CIN1_CHAB',
-   doc = """Loi élasto-visco-plastique de Chaboche à 1 variable cinématique""",
+   doc = """Loi Ã©lasto-visco-plastique de Chaboche Ã  1 variable cinÃ©matique""",
    num_lc         = 4,
    nb_vari        = 8,
    nom_vari       = ('EPSPEQ', 'INDIPLAS', 'ALPHAXX', 'ALPHAYY', 'ALPHAZZ', 'ALPHAXY', 'ALPHAXZ', 'ALPHAYZ'),

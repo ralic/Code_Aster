@@ -1,4 +1,4 @@
-# -*- coding: iso-8859-1 -*-
+# coding=utf-8
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -22,13 +22,13 @@ cata_msg = {
 
 1 : _(u"""
 
- L'attribut %(k1)s est non modifiable ou déjà défini.
+ L'attribut %(k1)s est non modifiable ou dÃ©jÃ  dÃ©fini.
 
 """),
 
 2 : _(u"""
 
- L'attribut %(k1)s est non modifiable ou déjà défini pour un objet simple.
+ L'attribut %(k1)s est non modifiable ou dÃ©jÃ  dÃ©fini pour un objet simple.
 
 """),
 
@@ -46,13 +46,13 @@ cata_msg = {
 
 5 : _(u"""
 
- Pour une collection contiguë, il faut définit %(k1)s dans l'ordre de création des objets.
+ Pour une collection contiguÃ«, il faut dÃ©finit %(k1)s dans l'ordre de crÃ©ation des objets.
 
 """),
 
 6 : _(u"""
 
- L'attribut %(k1)s n'est pas modifiable ou déjà défini (attribut LONO non nul).
+ L'attribut %(k1)s n'est pas modifiable ou dÃ©jÃ  dÃ©fini (attribut LONO non nul).
 
 """),
 
@@ -64,7 +64,7 @@ cata_msg = {
 
 8 : _(u"""
 
- Le premier argument %(k1)s n'est pas du bon type (différent de CHARACTER).
+ Le premier argument %(k1)s n'est pas du bon type (diffÃ©rent de CHARACTER).
 
 """),
 
@@ -82,26 +82,26 @@ cata_msg = {
 
 11 : _(u"""
 
- La longueur ou la position de la sous chaîne %(k1)s est invalide.
+ La longueur ou la position de la sous chaÃ®ne %(k1)s est invalide.
 
 """),
 
 12 : _(u"""
 
- L'objet %(k1)s n'est pas de genre "N" répertoire de noms, la requête JENUNO est invalide.
+ L'objet %(k1)s n'est pas de genre "N" rÃ©pertoire de noms, la requÃªte JENUNO est invalide.
 
 """),
 
 13 : _(u"""
 
- Le répertoire de noms %(k1)s contient %(i1)d points d'entrée, la requête JENUNO
- sur le numéro %(i2)d est invalide.
+ Le rÃ©pertoire de noms %(k1)s contient %(i1)d points d'entrÃ©e, la requÃªte JENUNO
+ sur le numÃ©ro %(i2)d est invalide.
 
 """),
 
 14 : _(u"""
 
- La collection %(k1)s ne possède pas de pointeur de noms, la requête JENUNO est invalide.
+ La collection %(k1)s ne possÃ¨de pas de pointeur de noms, la requÃªte JENUNO est invalide.
 
 """),
 
@@ -131,119 +131,119 @@ cata_msg = {
 
 19 : _(u"""
 
- Le segment de valeurs associé à l'attribut %(k1)s n'est pas accessible en mémoire (adresse nulle).
+ Le segment de valeurs associÃ© Ã  l'attribut %(k1)s n'est pas accessible en mÃ©moire (adresse nulle).
 
 """),
 
 20 : _(u"""
 
- L'accès au répertoire de noms %(k1)s est invalide.
+ L'accÃ¨s au rÃ©pertoire de noms %(k1)s est invalide.
 
 """),
 
 21 : _(u"""
 
- L'accès à la collection dispersée %(k1)s n'est pas valide en bloc, il faut y accéder avec un nom ou un
- numéro d'objet de collection.
+ L'accÃ¨s Ã  la collection dispersÃ©e %(k1)s n'est pas valide en bloc, il faut y accÃ©der avec un nom ou un
+ numÃ©ro d'objet de collection.
 
 """),
 
 22 : _(u"""
 
- L'objet de la collection %(k1)s contiguë est de longueur nulle.
+ L'objet de la collection %(k1)s contiguÃ« est de longueur nulle.
 
 """),
 
 27 : _(u"""
 
- Le paramètre d'accès %(r1)f est invalide, la valeur doit être E ou L.
+ Le paramÃ¨tre d'accÃ¨s %(r1)f est invalide, la valeur doit Ãªtre E ou L.
 
 """),
 
 28 : _(u"""
 
- La valeur de l'attribut %(k1)s est invalide, la valeur doit être LONCUM.
+ La valeur de l'attribut %(k1)s est invalide, la valeur doit Ãªtre LONCUM.
 
 """),
 
 29 : _(u"""
 
- Cette requête n'est valide que sur une collection contiguë.
+ Cette requÃªte n'est valide que sur une collection contiguÃ«.
 
 """),
 
 30 : _(u"""
 
- L'attribut LONCUM n'est valide que sur une collection contiguë.
+ L'attribut LONCUM n'est valide que sur une collection contiguÃ«.
 
 """),
 
 31 : _(u"""
 
- La liste de paramètres de création d'objet est incomplète.
+ La liste de paramÃ¨tres de crÃ©ation d'objet est incomplÃ¨te.
 
 """),
 
 32 : _(u"""
 
- La liste de paramètres de création d'objet contient des champs superflus.
+ La liste de paramÃ¨tres de crÃ©ation d'objet contient des champs superflus.
 
 """),
 
 33 : _(u"""
 
- Le répertoire de noms %(k1)s est saturé, il faut le redimensionner.
+ Le rÃ©pertoire de noms %(k1)s est saturÃ©, il faut le redimensionner.
 
 """),
 
 34 : _(u"""
 
- Le nom %(k1)s est introuvable dans le répertoire de noms %(k2)s.
+ Le nom %(k1)s est introuvable dans le rÃ©pertoire de noms %(k2)s.
 
 """),
 
 35 : _(u"""
 
- Le nom %(k1)s existe déjà dans le répertoire de noms %(k2)s.
+ Le nom %(k1)s existe dÃ©jÃ  dans le rÃ©pertoire de noms %(k2)s.
 
 """),
 
 36 : _(u"""
 
- Impossible d'insérer le nom %(k1)s dans le répertoire de noms %(k2)s, il y trop de collisions avec
+ Impossible d'insÃ©rer le nom %(k1)s dans le rÃ©pertoire de noms %(k2)s, il y trop de collisions avec
  la fonction de hashage.
 
 """),
 
 38 : _(u"""
 
- Un objet de genre N (répertoire de noms) doit être de type K (caractère).
+ Un objet de genre N (rÃ©pertoire de noms) doit Ãªtre de type K (caractÃ¨re).
 
 """),
 
 39 : _(u"""
 
- Il faut définir la longueur du type caractère, par exemple K8 ou K32.
+ Il faut dÃ©finir la longueur du type caractÃ¨re, par exemple K8 ou K32.
 
 """),
 
 40 : _(u"""
 
- La longueur du type caractère vaut %(i1)d, elle doit être comprise entre 1 et 512 .
+ La longueur du type caractÃ¨re vaut %(i1)d, elle doit Ãªtre comprise entre 1 et 512 .
 
 """),
 
 41 : _(u"""
 
- Pour un objet de genre N (répertoire de noms), la longueur du type caractère
+ Pour un objet de genre N (rÃ©pertoire de noms), la longueur du type caractÃ¨re
  vaut %(i1)d, elle n'est pas un multiple de 8.
 
 """),
 
 42 : _(u"""
 
- Pour un objet de genre N (répertoire de noms), la longueur du type caractère
- vaut %(i1)d, elle ne peut être supérieure à 24.
+ Pour un objet de genre N (rÃ©pertoire de noms), la longueur du type caractÃ¨re
+ vaut %(i1)d, elle ne peut Ãªtre supÃ©rieure Ã  24.
 
 """),
 
@@ -255,75 +255,75 @@ cata_msg = {
 
 44 : _(u"""
 
- Pour une collection nommée, la création d'objet est uniquement autorisée par nom.
+ Pour une collection nommÃ©e, la crÃ©ation d'objet est uniquement autorisÃ©e par nom.
 
 """),
 
 45 : _(u"""
 
- L'objet de collection %(i1)d existe déjà.
+ L'objet de collection %(i1)d existe dÃ©jÃ .
 
 """),
 
 46 : _(u"""
 
- Il est impossible de créer l'objet de collection, le répertoire est saturé.
+ Il est impossible de crÃ©er l'objet de collection, le rÃ©pertoire est saturÃ©.
 
 """),
 
 47 : _(u"""
 
- L'accès par nom à une collection numérotée est impossible.
+ L'accÃ¨s par nom Ã  une collection numÃ©rotÃ©e est impossible.
 
 """),
 
 48 : _(u"""
 
- Une erreur d'écriture de l'attribut %(k1)s au format HDF s'est produite, l'exécution continue.
+ Une erreur d'Ã©criture de l'attribut %(k1)s au format HDF s'est produite, l'exÃ©cution continue.
 
 """),
 
 49 : _(u"""
 
- Un écrasement de l'identificateur de l'objet est détecté, sa valeur ne peut pas être nulle.
+ Un Ã©crasement de l'identificateur de l'objet est dÃ©tectÃ©, sa valeur ne peut pas Ãªtre nulle.
 
 """),
 
 50 : _(u"""
 
- Un écrasement de la classe de l'objet est détecté, sa valeur %(i1)d est invalide.
+ Un Ã©crasement de la classe de l'objet est dÃ©tectÃ©, sa valeur %(i1)d est invalide.
 
 """),
 
 51 : _(u"""
 
- Un écrasement de la classe de l'objet est détecté, sa valeur %(k1)s est invalide.
+ Un Ã©crasement de la classe de l'objet est dÃ©tectÃ©, sa valeur %(k1)s est invalide.
 
 """),
 
 52 : _(u"""
 
-  Il est impossible d'accéder au DATASET HDF associé à %(k1)s.
+  Il est impossible d'accÃ©der au DATASET HDF associÃ© Ã  %(k1)s.
 
 """),
 
 54 : _(u"""
 
-  Un écrasement amont est détecté, la zone mémoire (adresse %(i1)d) a été utilisée
-  devant l'adresse autorisée %(i1)d.
+  Un Ã©crasement amont est dÃ©tectÃ©, la zone mÃ©moire (adresse %(i1)d) a Ã©tÃ© utilisÃ©e
+  devant l'adresse autorisÃ©e %(i1)d.
 
 """),
 
 55 : _(u"""
 
-  Un écrasement aval est détecté, la zone mémoire (adresse %(i1)d) a été utilisée
-  au-delà de la longueur autorisée.
+  Un Ã©crasement aval est dÃ©tectÃ©, la zone mÃ©moire (adresse %(i1)d) a Ã©tÃ© utilisÃ©e
+  au-delÃ  de la longueur autorisÃ©e.
 
 """),
 
 56 : _(u"""
 
-  La structure du nom de l'objet est invalide au-delà des 24 premiers caractères,
+  La structure du nom de l'objet est invalide au-delÃ  des 24 premiers caractÃ¨res,
   elle vaut %(k1)s.
 
 """),
@@ -336,32 +336,32 @@ cata_msg = {
 
 58 : _(u"""
 
-  La structure du nom de l'objet est invalide, le caractère %(k1)s est illicite.
+  La structure du nom de l'objet est invalide, le caractÃ¨re %(k1)s est illicite.
 
 """),
 
 59 : _(u"""
 
-  L'objet ne possède pas d'image disque (adresse disque nulle).
+  L'objet ne possÃ¨de pas d'image disque (adresse disque nulle).
 
 """),
 
 60 : _(u"""
 
-  L'objet de type K (chaîne de caractères) est déjà alloué en mémoire, il n'est pas
-  possible de le déplacer sans l'avoir auparavant libéré.
+  L'objet de type K (chaÃ®ne de caractÃ¨res) est dÃ©jÃ  allouÃ© en mÃ©moire, il n'est pas
+  possible de le dÃ©placer sans l'avoir auparavant libÃ©rÃ©.
 
 """),
 
 61 : _(u"""
 
-  L'objet n'est pas en mémoire et ne possède pas d'image disque (adresse disque nulle).
+  L'objet n'est pas en mÃ©moire et ne possÃ¨de pas d'image disque (adresse disque nulle).
 
 """),
 
 62 : _(u"""
 
-  La longueur des objets de collection constante n'a pas été définie.
+  La longueur des objets de collection constante n'a pas Ã©tÃ© dÃ©finie.
 
 """),
 
@@ -373,88 +373,88 @@ cata_msg = {
 
 64 : _(u"""
 
- Le volume des données temporaires (objets de la base Volatile) écrites sur disque (%(r3).2f Mo)
- est plus de %(r1).2f fois supérieur au volume de données lues (%(r2).2f Mo).
+ Le volume des donnÃ©es temporaires (objets de la base Volatile) Ã©crites sur disque (%(r3).2f Mo)
+ est plus de %(r1).2f fois supÃ©rieur au volume de donnÃ©es lues (%(r2).2f Mo).
 
 Risques et conseils :
- Ce déséquilibre n'a pas de conséquence sur les résultats de calcul, il indique simplement que
- certaines structures de données temporaires ont été écrites sur disque et détruites sans avoir
- été relues. C'est le cas lorsque vous utilisez le solveur MUMPS, car certaines structures de 
- données sont volontairement déchargées pour maximiser la mémoire lors de la résolution.
+ Ce dÃ©sÃ©quilibre n'a pas de consÃ©quence sur les rÃ©sultats de calcul, il indique simplement que
+ certaines structures de donnÃ©es temporaires ont Ã©tÃ© Ã©crites sur disque et dÃ©truites sans avoir
+ Ã©tÃ© relues. C'est le cas lorsque vous utilisez le solveur MUMPS, car certaines structures de 
+ donnÃ©es sont volontairement dÃ©chargÃ©es pour maximiser la mÃ©moire lors de la rÃ©solution.
 
 """),
 
 65 : _(u"""
 
- Le segment de valeurs associé à l'objet %(i1)d de la collection %(k1)s ne possède
- ni adresse mémoire, ni adresse disque.
+ Le segment de valeurs associÃ© Ã  l'objet %(i1)d de la collection %(k1)s ne possÃ¨de
+ ni adresse mÃ©moire, ni adresse disque.
 
 """),
 
 
 66 : _(u"""
 
- Le segment de valeurs associé à l'objet simple %(k1)s ne possède ni adresse mémoire,
+ Le segment de valeurs associÃ© Ã  l'objet simple %(k1)s ne possÃ¨de ni adresse mÃ©moire,
  ni adresse disque.
 
 """),
 
 67 : _(u"""
 
- La valeur %(i1)d affectée à l'attribut %(k1)s est invalide.
+ La valeur %(i1)d affectÃ©e Ã  l'attribut %(k1)s est invalide.
 
 """),
 
 68 : _(u"""
 
- L'accès à l'objet simple %(k1)s par la fonction JEXNOM ou JEXNUM est invalide.
- Il faut que l'objet simple soit de genre répertoire de noms.
+ L'accÃ¨s Ã  l'objet simple %(k1)s par la fonction JEXNOM ou JEXNUM est invalide.
+ Il faut que l'objet simple soit de genre rÃ©pertoire de noms.
  
 """),
 
 69 : _(u"""
 
- Le nom de répertoire associé à la base Globale est trop long %(k1)s,
- il comporte %(i1)d caractères, il ne doit pas dépasser 119.
+ Le nom de rÃ©pertoire associÃ© Ã  la base Globale est trop long %(k1)s,
+ il comporte %(i1)d caractÃ¨res, il ne doit pas dÃ©passer 119.
  
 """),
 
 70 : _(u"""
 
- Le nom de répertoire associé à la base Volatile est trop long %(k1)s,
- il comporte %(i1)d caractères, il ne doit pas dépasser 119.
+ Le nom de rÃ©pertoire associÃ© Ã  la base Volatile est trop long %(k1)s,
+ il comporte %(i1)d caractÃ¨res, il ne doit pas dÃ©passer 119.
  
 """),
  
 71 : _(u"""
- La mémoire totale de %(r1).2f Mo allouée à l'étude est insuffisante, il est nécessaire
- de disposer d'au moins %(r3).2f Mo uniquement pour démarrer l'exécution.
+ La mÃ©moire totale de %(r1).2f Mo allouÃ©e Ã  l'Ã©tude est insuffisante, il est nÃ©cessaire
+ de disposer d'au moins %(r3).2f Mo uniquement pour dÃ©marrer l'exÃ©cution.
 """),
  
 72 : _(u"""
  Il n'est pas possible de modifier la valeur limite totale de l'allocation dynamique JEVEUX.
  La valeur fournie en argument vaut %(r2).2f.
- Actuellement %(r1).2f Mo sont nécessaires au gestionnaire de mémoire.
+ Actuellement %(r1).2f Mo sont nÃ©cessaires au gestionnaire de mÃ©moire.
 """),
 
-74 : _(u"""  La mémoire consommée actuellement hors JEVEUX est de %(r1).2f Mo.
-  La limite de l'allocation dynamique JEVEUX est fixée à %(r2).2f Mo.
+74 : _(u"""  La mÃ©moire consommÃ©e actuellement hors JEVEUX est de %(r1).2f Mo.
+  La limite de l'allocation dynamique JEVEUX est fixÃ©e Ã  %(r2).2f Mo.
 """),
 
 75 : _(u"""
- La plate-forme utilisée ne permet pas d'avoir accès à la valeur de VmPeak.
+ La plate-forme utilisÃ©e ne permet pas d'avoir accÃ¨s Ã  la valeur de VmPeak.
 """),
 
 
 77 : _(u"""
- La mémoire demandée au lancement est sous estimée, elle est de %(r2).2f Mo.
- Le pic mémoire utilisée est de %(r1).2f Mo.
+ La mÃ©moire demandÃ©e au lancement est sous estimÃ©e, elle est de %(r2).2f Mo.
+ Le pic mÃ©moire utilisÃ©e est de %(r1).2f Mo.
 
 """),
 
 78 : _(u"""
- La mémoire demandée au lancement est surestimée, elle est de %(r2).2f Mo.
- Le pic mémoire utilisée est de %(r1).2f Mo.
+ La mÃ©moire demandÃ©e au lancement est surestimÃ©e, elle est de %(r2).2f Mo.
+ Le pic mÃ©moire utilisÃ©e est de %(r1).2f Mo.
 
 """),
 }

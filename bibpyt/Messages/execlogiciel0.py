@@ -1,4 +1,4 @@
-# -*- coding: iso-8859-1 -*-
+# coding=utf-8
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -20,7 +20,7 @@
 
 cata_msg={
 1 : _(u"""
-Format Salomé, l'argument 1 doit être
+Format SalomÃ©, l'argument 1 doit Ãªtre
 le nom du fichier MED produit par le script python.
 """),
 
@@ -34,11 +34,11 @@ Code retour incorrect (MAXI %(i1)d) : %(i2)d
 """),
 
 4 : _(u"""
-Le mot-clé logiciel n'est pas utilise avec ce format.
+Le mot-clÃ© logiciel n'est pas utilise avec ce format.
 """),
 
 5 : _(u"""
-Erreurs lors de l'exécution du fichier ci-dessous :
+Erreurs lors de l'exÃ©cution du fichier ci-dessous :
 <<<<<<<<<<<<<<< DEBUT DU FICHIER >>>>>>>>>>>>>>>
 %(k1)s
 <<<<<<<<<<<<<<<  FIN  DU FICHIER >>>>>>>>>>>>>>>
@@ -71,89 +71,89 @@ Mode de lancement inconnu : %(k1)s
 """),
 
 11 : _(u"""
- Code retour = %(i1)d      (maximum toléré : %(i2)d)
+ Code retour = %(i1)d      (maximum tolÃ©rÃ© : %(i2)d)
 """),
 
 #12 : _(u""" """),
 
 13 : _(u"""
- -> Le maillage n'a pas été produit par le logiciel externe (format "%(k1)s")
+ -> Le maillage n'a pas Ã©tÃ© produit par le logiciel externe (format "%(k1)s")
 
  -> Conseil :
     Vous devriez trouver ci-dessus des messages du logiciel en question
-    expliquant les raisons de cet échec.
+    expliquant les raisons de cet Ã©chec.
 """),
 
 
 
 
 14 : _(u"""
- -> Il y a eu une erreur lors de la connexion à la machine distante via SSH :
-    . Il est probable que les clés SSH ne soient pas configurées correctement.
+ -> Il y a eu une erreur lors de la connexion Ã  la machine distante via SSH :
+    . Il est probable que les clÃ©s SSH ne soient pas configurÃ©es correctement.
 
  -> Conseil :
-    Vérifier que les clés SSH sont correctement configurées sur les différentes machines.
+    VÃ©rifier que les clÃ©s SSH sont correctement configurÃ©es sur les diffÃ©rentes machines.
     Vous pouvez essayer de relancer manuellement la commande suivante depuis le serveur Aster :
 %(k1)s
 """),
 
 
 15 : _(u"""
- -> Il y a eu une erreur lors de la connexion à la machine distante via SSH :
-    . La machine distante n'a pas pus être contactée.
+ -> Il y a eu une erreur lors de la connexion Ã  la machine distante via SSH :
+    . La machine distante n'a pas pus Ãªtre contactÃ©e.
 
  -> Conseil :
-    Vérifier l'adresse de la machine.
+    VÃ©rifier l'adresse de la machine.
     Vous pouvez essayer de relancer manuellement la commande suivante depuis le serveur Aster :
 %(k1)s
 """),
 
 
 16 : _(u"""
- -> Il y a eu une erreur lors de la connexion à la machine distante via SSH :
-    . Le serveur SSH de la machine distante n'a pas pus être contacté.
+ -> Il y a eu une erreur lors de la connexion Ã  la machine distante via SSH :
+    . Le serveur SSH de la machine distante n'a pas pus Ãªtre contactÃ©.
 
  -> Conseil :
-    Vérifier le port SSH de la machine.
+    VÃ©rifier le port SSH de la machine.
     Vous pouvez essayer de relancer manuellement la commande suivante depuis le serveur Aster :
 %(k1)s
 """),
 
 17 : _(u"""
- -> Il y a eu une erreur lors de la connexion à la machine distante via SSH :
-    . Il est probable que le logiciel défini par le mot clé LOGICIEL ne soit pas présent
+ -> Il y a eu une erreur lors de la connexion Ã  la machine distante via SSH :
+    . Il est probable que le logiciel dÃ©fini par le mot clÃ© LOGICIEL ne soit pas prÃ©sent
       sur la machine distante.
 
  -> Conseil :
-    Vérifier le mot-clé LOGICIEL
+    VÃ©rifier le mot-clÃ© LOGICIEL
     Vous pouvez essayer de relancer manuellement la commande suivante depuis le serveur Aster :
 %(k1)s
 """),
 
 18 : _(u"""
- -> Il y a eu une erreur lors de la connexion à la machine distante via SSH :
+ -> Il y a eu une erreur lors de la connexion Ã  la machine distante via SSH :
     . Soit l'adresse (ou le port SSH) de la machine n'est pas correcte.
-    . Soit les clés SSH ne sont pas configurées correctement.
-    . Soit le logiciel défini par le mot clé LOGICIEL n'est pas présent sur la machine distante.
-    . Soit une autre raison est à l'origine de cet échec.
+    . Soit les clÃ©s SSH ne sont pas configurÃ©es correctement.
+    . Soit le logiciel dÃ©fini par le mot clÃ© LOGICIEL n'est pas prÃ©sent sur la machine distante.
+    . Soit une autre raison est Ã  l'origine de cet Ã©chec.
 
  -> Conseil :
-    Vous devriez trouver ci-dessus des messages expliquant les raisons de cet échec.
+    Vous devriez trouver ci-dessus des messages expliquant les raisons de cet Ã©chec.
     Vous pouvez essayer de relancer manuellement la commande suivante depuis le serveur Aster :
 %(k1)s
 """),
 
-19 : _(u"""Information : le champs "%(k1)s" n'a pas été trouvé dans le script Salomé, mais il n'est peut être pas nécessaire."""),
+19 : _(u"""Information : le champs "%(k1)s" n'a pas Ã©tÃ© trouvÃ© dans le script SalomÃ©, mais il n'est peut Ãªtre pas nÃ©cessaire."""),
 
 20 : _(u"""
 
 
 ----------------------------------------------------------------------------------
------ Script Salomé --------------------------------------------------------------
+----- Script SalomÃ© --------------------------------------------------------------
 
 %(k1)s
 
------ fin Script Salomé ----------------------------------------------------------
+----- fin Script SalomÃ© ----------------------------------------------------------
 ----------------------------------------------------------------------------------
 
 
@@ -162,7 +162,7 @@ Mode de lancement inconnu : %(k1)s
 21 : _(u"""
 
 ----------------------------------------------------------------------------------
------ Commandes à exécuter -------------------------------------------------------
+----- Commandes Ã  exÃ©cuter -------------------------------------------------------
 
 %(k1)s
 
@@ -172,22 +172,22 @@ Mode de lancement inconnu : %(k1)s
 """),
 
 22 : _(u"""
-Les mots-clés SALOME_HOST et SSH_ADRESSE ont été définis simultanément et sont différents.
-C'est SALOME_HOST qui définira l'adresse de la machine distante.
+Les mots-clÃ©s SALOME_HOST et SSH_ADRESSE ont Ã©tÃ© dÃ©finis simultanÃ©ment et sont diffÃ©rents.
+C'est SALOME_HOST qui dÃ©finira l'adresse de la machine distante.
 """),
 
 23 : _(u"""
-Les listes de paramètres (mot-clé NOM_PARA) et de valeurs (mot-clé VALE) doivent être de même longueur !
+Les listes de paramÃ¨tres (mot-clÃ© NOM_PARA) et de valeurs (mot-clÃ© VALE) doivent Ãªtre de mÃªme longueur !
 """),
 
 24 : _(u"""
-Le nom du répertoire contenant les outils externes est trop long pour être stocké
-dans la variable prévue (de longueur %(i1)d).
+Le nom du rÃ©pertoire contenant les outils externes est trop long pour Ãªtre stockÃ©
+dans la variable prÃ©vue (de longueur %(i1)d).
 
 Conseil :
-    - Vous pouvez déplacer/copier les outils dans un autre répertoire de nom plus court
+    - Vous pouvez dÃ©placer/copier les outils dans un autre rÃ©pertoire de nom plus court
       et utiliser l'argument optionnel "-rep_outils /nouveau/chemin" pour contourner
-      le problème.
+      le problÃ¨me.
 """),
 
 }

@@ -1,5 +1,4 @@
 /*           CONFIGURATION MANAGEMENT OF EDF VERSION                  */
-/* MODIF dll_zmat supervis  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS */
 /* ================================================================== */
 /* COPYRIGHT (C) 1991 - 2012  EDF R&D              WWW.CODE-ASTER.ORG */
 /*                                                                    */
@@ -13,7 +12,7 @@
 /* GENERAL PUBLIC LICENSE FOR MORE DETAILS.                           */
 /*                                                                    */
 /* YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE  */
-/* ALONG WITH THIS PROGRAM; IF NOT, WRITE TO : EDF R&D CODE_ASTER,    */
+/* ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,      */
 /*    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.     */
 /* ================================================================== */
 
@@ -113,10 +112,11 @@ void load_zmat_lib()
 
 
 void STDCALL(ZASWRP, zaswrp) (
-    INTEGER* iel, INTEGER* modele, INTEGER* nvar, INTEGER* ndef, INTEGER* nunit, DOUBLE* instam, DOUBLE* instap,
+    INTEGER* iel, INTEGER* modele, INTEGER* nvar, INTEGER* ndef, INTEGER* nunit,
+    DOUBLE* instam, DOUBLE* instap,
     DOUBLE* nvarcm, DOUBLE* nomvar, DOUBLE* varplu, DOUBLE* varmoi, DOUBLE* varref,
-    DOUBLE* epsm, DOUBLE* deps, DOUBLE* sigm, DOUBLE* vim, INTEGER* nopt, DOUBLE* angmas, DOUBLE* sigp, DOUBLE* vip,
-    DOUBLE* dsidep, INTEGER* codret )
+    DOUBLE* epsm, DOUBLE* deps, DOUBLE* sigm, DOUBLE* vim, INTEGER* nopt, DOUBLE* angmas,
+    DOUBLE* sigp, DOUBLE* vip, DOUBLE* dsidep, INTEGER* codret )
 {
 #ifdef _POSIX
     /* ZASter WRaPper : wrapper to Zaster C++ function through the function pointer

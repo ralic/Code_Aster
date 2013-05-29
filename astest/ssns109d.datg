@@ -8,11 +8,11 @@ OPTI NIVE 11 ;
 
 OPTI SAUV FORM '/home02/trinh/xavier/testnonli/shb15/pconsol/15.mgib';
 
-*paramètres géometriques
+*paramÃ¨tres gÃ©ometriques
 L = 10.;
 B = 1.;
 h = 0.1;
-*paramètres de maillage
+*paramÃ¨tres de maillage
 Nlong=15;
 Nlarg=1;
 Nepai=1;

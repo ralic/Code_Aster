@@ -1,4 +1,4 @@
-# -*- coding: iso-8859-1 -*-
+# coding=utf-8
 # person_in_charge: mathieu.courtois at edf.fr
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -35,9 +35,9 @@ class ENTITE:
    """
    def get_entite(self,nom,typ=None):
       """ 
-          Cette méthode retourne la sous entite de nom nom et de type typ
-          Les blocs sont explorés recursivement mais pas les mots cles facteurs
-          Si typ == None on ne vérifie pas le type. Sinon, on ne retourne la sous entité
+          Cette mÃ©thode retourne la sous entite de nom nom et de type typ
+          Les blocs sont explorÃ©s recursivement mais pas les mots cles facteurs
+          Si typ == None on ne vÃ©rifie pas le type. Sinon, on ne retourne la sous entitÃ©
           que si elle est du bon type.
           Si aucune sous entite ne satisfait les criteres la methode retourne None
       """

@@ -1,4 +1,4 @@
-# -*- coding: iso-8859-1 -*-
+# coding=utf-8
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -22,7 +22,7 @@
 cata_msg = {
 
 1 : _(u"""
- On ne peut pas avoir simultanément une charge de type VECT_ASSE et une charge du type CHARGE.
+ On ne peut pas avoir simultanÃ©ment une charge de type VECT_ASSE et une charge du type CHARGE.
 """),
 
 2 : _(u"""
@@ -30,7 +30,7 @@ cata_msg = {
 """),
 
 3 : _(u"""
- La charge de nom <%(k1)s> n'est pas autorisée dans la commande <%(k2)s>.
+ La charge de nom <%(k1)s> n'est pas autorisÃ©e dans la commande <%(k2)s>.
 """),
 
 4 : _(u"""
@@ -38,40 +38,40 @@ cata_msg = {
 """),
 
 5 : _(u"""
- La charge de nom <%(k1)s> se base sur un MODELE différent de la commande.
+ La charge de nom <%(k1)s> se base sur un MODELE diffÃ©rent de la commande.
 """),
 
 6 : _(u"""
- Les charges n'ont pas le même MODELE.
+ Les charges n'ont pas le mÃªme MODELE.
 """),
 
 7 : _(u"""
- La charge de nom <%(k1)s> ne peut pas être suiveuse.
- Les charges de type Dirichlet par élimination (AFFE_CHAR_CINE) ne peuvent pas être des charges suiveuses.
+ La charge de nom <%(k1)s> ne peut pas Ãªtre suiveuse.
+ Les charges de type Dirichlet par Ã©limination (AFFE_CHAR_CINE) ne peuvent pas Ãªtre des charges suiveuses.
 """),
 
 8 : _(u"""
- La charge de nom <%(k1)s> ne peut pas être DIDI.
- Les charges de type Dirichlet par élimination (AFFE_CHAR_CINE) ne peuvent pas être des charges DIDI.
+ La charge de nom <%(k1)s> ne peut pas Ãªtre DIDI.
+ Les charges de type Dirichlet par Ã©limination (AFFE_CHAR_CINE) ne peuvent pas Ãªtre des charges DIDI.
 """),
 
 9 : _(u"""
- La charge de nom <%(k1)s> ne peut pas être pilotée.
- Les charges de type Dirichlet par élimination (AFFE_CHAR_CINE) ne peuvent pas être des charges pilotées.
+ La charge de nom <%(k1)s> ne peut pas Ãªtre pilotÃ©e.
+ Les charges de type Dirichlet par Ã©limination (AFFE_CHAR_CINE) ne peuvent pas Ãªtre des charges pilotÃ©es.
 """),
 
 10 : _(u"""
- La charge de nom <%(k1)s> ne peut pas être suiveuse.
- Les charges de type Dirichlet ne peuvent pas être des charges suiveuses.
+ La charge de nom <%(k1)s> ne peut pas Ãªtre suiveuse.
+ Les charges de type Dirichlet ne peuvent pas Ãªtre des charges suiveuses.
 """),
 
 11 : _(u"""
- La charge de nom <%(k1)s> ne peut pas être pilotée.
- Les charges de type EVOL_CHAR ne peuvent pas être des charges pilotées.
+ La charge de nom <%(k1)s> ne peut pas Ãªtre pilotÃ©e.
+ Les charges de type EVOL_CHAR ne peuvent pas Ãªtre des charges pilotÃ©es.
 """),
 
 12 : _(u"""
- La charge de nom <%(k1)s> ne peut pas être pilotée car elle est fonction du temps.
+ La charge de nom <%(k1)s> ne peut pas Ãªtre pilotÃ©e car elle est fonction du temps.
 """),
 
 }

@@ -1,8 +1,22 @@
-# -*- coding: iso-8859-1 -*-
+# coding=utf-8
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 #  Copyright (c) 1998-2000 John Aycock
 #  Copyright (c) 2008-2013 EDF R&D      www.code-aster.org
 #
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
+
 #  Permission is hereby granted, free of charge, to any person obtaining
 #  a copy of this software and associated documentation files (the
 #  "Software"), to deal in the Software without restriction, including
@@ -13,14 +27,6 @@
 #
 #  The above copyright notice and this permission notice shall be
 #  included in all copies or substantial portions of the Software.
-#
-#  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
-#  EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
-#  MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
-#  IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY
-#  CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
-#  TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
-#  SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 
 __version__ = 'SPARK-0.6.1'
@@ -67,7 +73,7 @@ class GenericScanner:
         return string.join(rv, '|')
 
     def error(self, s, pos):
-        ERR.mess("F","Erreur lexicale. Dernier Token lu avec succès : '"+str(self.rv[-1])+"'")
+        ERR.mess("F","Erreur lexicale. Dernier Token lu avec succÃ¨s : '"+str(self.rv[-1])+"'")
 
     def tokenize(self, s):
         pos = 0
@@ -186,7 +192,7 @@ class GenericParser:
 
     def error(self, token):
         global FIC_CATA
-        # on imprime les lignes autour du problème :
+        # on imprime les lignes autour du problÃ¨me :
         if os.path.isfile(FIC_CATA) :
             fcata = open(FIC_CATA,"r")
             lines=fcata.readlines()
@@ -195,7 +201,7 @@ class GenericParser:
             nblig=line2-line1+1
             for i in range(nblig):
                 print ">>> %6d ! %s" %(line1+i,lines[line1-1+i]),
-        ERR.mess("F","Erreur de syntaxe près du token :"+str(token))
+        ERR.mess("F","Erreur de syntaxe prÃ¨s du token :"+str(token))
 
     def parse(self, tokens):
         tree = {}

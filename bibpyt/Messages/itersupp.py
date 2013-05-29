@@ -1,4 +1,4 @@
-# -*- coding: iso-8859-1 -*-
+# coding=utf-8
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -18,26 +18,26 @@
 # ======================================================================
 # person_in_charge: josselin.delmas at edf.fr
 
-# Pour la mÈthode ITER_SUPPL de DEFI_LIST_INST
+# Pour la m√©thode ITER_SUPPL de DEFI_LIST_INST
 
 cata_msg={
 
 
-2: _(u"""          On ne peux pas tenter d'autoriser des itÈrations de Newton supplÈmentaires car on dÈpasse dÈj‡ le nombre
-                   d'itÈrations maximum autorisÈ <%(i1)d>.
+2: _(u"""          On ne peux pas tenter d'autoriser des it√©rations de Newton suppl√©mentaires car on d√©passe d√©j√† le nombre
+                   d'it√©rations maximum autoris√© <%(i1)d>.
 """),
 
-3: _(u"""          On estime qu'on va pouvoir converger en <%(i1)d> itÈrations de Newton."""),
+3: _(u"""          On estime qu'on va pouvoir converger en <%(i1)d> it√©rations de Newton."""),
 
-4: _(u"""          L'extrapolation des rÈsidus donne un nombre d'itÈrations infÈrieur ‡ ITER_GLOB_ELAS et ITER_GLOB_MAXI.
-                   Cela peut se produire si vous avez donnÈ ITER_GLOB_ELAS infÈrieur ‡ ITER_GLOB_MAXI et que l'extrapolation du
-                   nombre d'itÈrations est faite en rÈgime Èlastique."""),
+4: _(u"""          L'extrapolation des r√©sidus donne un nombre d'it√©rations inf√©rieur √† ITER_GLOB_ELAS et ITER_GLOB_MAXI.
+                   Cela peut se produire si vous avez donn√© ITER_GLOB_ELAS inf√©rieur √† ITER_GLOB_MAXI et que l'extrapolation du
+                   nombre d'it√©rations est faite en r√©gime √©lastique."""),
 
 
-5: _(u"""          L'extrapolation des rÈsidus donne un nombre d'itÈrations <%(i1)d> supÈrieur au maximum autorisÈ <%(i2)d>"""),
+5: _(u"""          L'extrapolation des r√©sidus donne un nombre d'it√©rations <%(i1)d> sup√©rieur au maximum autoris√© <%(i2)d>"""),
 
-6: _(u""" <Action><…chec> …chec dans la tentative d'autoriser des itÈrations de Newton supplÈmentaires."""),
+6: _(u""" <Action><√âchec> √âchec dans la tentative d'autoriser des it√©rations de Newton suppl√©mentaires."""),
 
-7: _(u""" <Action> On autorise des itÈrations de Newton supplÈmentaires."""),
+7: _(u""" <Action> On autorise des it√©rations de Newton suppl√©mentaires."""),
 
 }

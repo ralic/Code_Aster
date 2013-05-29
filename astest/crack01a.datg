@@ -1,4 +1,4 @@
-# -*- coding: iso-8859-1 -*-
+# coding=utf-8
 
 import geompy
 
@@ -64,7 +64,7 @@ PEAUEXT  = Mesh_1.GroupOnGeom(PEAUEXT,'PEAUEXT',SMESH.FACE)
 BORD1    = Mesh_1.GroupOnGeom(BORD1,'BORD1',SMESH.FACE)
 VOL      = Mesh_1.GroupOnGeom(VOL,'VOL',SMESH.VOLUME)
 
-#Mise à jour de l'arbre d'étude
+#Mise Ã  jour de l'arbre d'Ã©tude
 #==============================
 
 from salome import sg

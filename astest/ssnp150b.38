@@ -168,4 +168,3 @@ else:
   FvolX=FORMULE(VALE=FvX, NOM_PARA=('X','Y') );
   FvolY=FORMULE(VALE=FvY, NOM_PARA=('X','Y') );
 
-

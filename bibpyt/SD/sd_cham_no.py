@@ -1,4 +1,4 @@
-# -*- coding: iso-8859-1 -*-
+# coding=utf-8
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -30,7 +30,7 @@ class sd_cham_no(sd_titre):
     DESC = AsVI(docu='CHNO', )
 
     def exists(self):
-        # retourne "vrai" si la SD semble exister (et donc qu'elle peut etre vérifiée)
+        # retourne "vrai" si la SD semble exister (et donc qu'elle peut etre vÃ©rifiÃ©e)
         return self.REFE.exists
 
     def u_desc(self):
@@ -56,9 +56,9 @@ class sd_cham_no(sd_titre):
 
         mail, prof_chno = self.u_refe()
 
-        # faut-il vérifier le sd_maillage de chaque sd_cham_no ?   AJACOT_PB
+        # faut-il vÃ©rifier le sd_maillage de chaque sd_cham_no ?   AJACOT_PB
         #  - cela risque de couter cher
-        #  - cela pose un problème "import circulaire" avec sd_maillage -> sd_cham_no => import ici
+        #  - cela pose un problÃ¨me "import circulaire" avec sd_maillage -> sd_cham_no => import ici
         from SD.sd_maillage import sd_maillage
         sd2 = sd_maillage(mail)
         sd2.check(checker)

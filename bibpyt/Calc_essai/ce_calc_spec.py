@@ -1,4 +1,4 @@
-# -*- coding: iso-8859-1 -*-
+# coding=utf-8
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -96,7 +96,7 @@ class InterfaceCalcSpec(Frame):
 
         Label(fl,text="Tables disponibles :",pady=5).grid(row=r,column=0)
         Label(fl,text="Points de mesures :",pady=5).grid(row=r,column=2)
-        Label(fl,text=u"Points de référence :",pady=5).grid(row=r,column=4)
+        Label(fl,text=u"Points de rÃ©fÃ©rence :",pady=5).grid(row=r,column=4)
 
         r=r+1
 
@@ -159,7 +159,7 @@ class InterfaceCalcSpec(Frame):
 
         r=r+1
         Label(fp,text="Longueur :",pady=5).grid(row=r,column=0)
-        longueur=[u"Durée","Points","Pourcent"]
+        longueur=[u"DurÃ©e","Points","Pourcent"]
         self.radio_long = IntVar()
         for lon in range(len(longueur)) :
            Radiobutton(fp, text=longueur[lon],variable=self.radio_long, value=lon).grid(row=r,column=lon+2)
@@ -169,7 +169,7 @@ class InterfaceCalcSpec(Frame):
         r=r+1
         Label(fp,text="Recouvrement :",pady=5).grid(row=r,column=0)
         self.radio_rec = IntVar()
-        recouvr=[u"Durée","Points","Pourcent"]
+        recouvr=[u"DurÃ©e","Points","Pourcent"]
         for rec in range(len(recouvr)) :
            Radiobutton(fp, text=recouvr[rec], variable=self.radio_rec, value=rec).grid(row=r,column=rec+2)
         self.entry_rec=Entry(fp,background='white',width=10)
@@ -188,7 +188,7 @@ class InterfaceCalcSpec(Frame):
         self.view_spec = Button(fp, text="Transferts", command=self.calc_transfert)
         self.view_spec.grid(row=r,column=2)
 
-        self.view_spec = Button(fp, text=u"Cohérence", command=self.calc_coherence)
+        self.view_spec = Button(fp, text=u"CohÃ©rence", command=self.calc_coherence)
         self.view_spec.grid(row=r,column=3)
 
         r=r+1
@@ -238,7 +238,7 @@ class InterfaceCalcSpec(Frame):
 
         #-- On teste les entrees
         if self.list_mes.size()==0 :
-            self.mess.disp_mess(u"Pas de mesure sélectionnée pour la visualisation")
+            self.mess.disp_mess(u"Pas de mesure sÃ©lectionnÃ©e pour la visualisation")
             return
 
         #-- Si OK, on continu
@@ -292,10 +292,10 @@ class InterfaceCalcSpec(Frame):
         l_coul = [couleur[i1 % nbc] for i1 in range(len(ind_v))]
 
         # selon le type de donnees extraites, parametres et legendes :
-        data={'I':[self.Spec,'FONCTION_C','Fréquence','Hz','Inter-spectre','unite^2/Hz','Inter-spectre'],
-              'T':[self.FRF,'FONCTION_C','Fréquence','Hz','Fonction_de_transfert',
+        data={'I':[self.Spec,'FONCTION_C','FrÃ©quence','Hz','Inter-spectre','unite^2/Hz','Inter-spectre'],
+              'T':[self.FRF,'FONCTION_C','FrÃ©quence','Hz','Fonction_de_transfert',
                    'unite_mesure/unite_ref/Hz','Fonction de transfert'],
-              'C':[self.Coh,'FONCTION_C','Fréquence','Hz','Cohérence',' ','Cohérence'],
+              'C':[self.Coh,'FONCTION_C','FrÃ©quence','Hz','CohÃ©rence',' ','CohÃ©rence'],
               'E':[self.tab_temp,'FONCTION','Temps','s','Fonction_temporelle','unite_mesure',
                    'Fonction_temporelle']}
 
@@ -378,7 +378,7 @@ class InterfaceCalcSpec(Frame):
 
 
         if (test1+test2)==0 :
-            self.mess.disp_mess(u"Sélectionner au moins une mesure et une référence")
+            self.mess.disp_mess(u"SÃ©lectionner au moins une mesure et une rÃ©fÃ©rence")
             return
 
 
@@ -466,7 +466,7 @@ class InterfaceCalcSpec(Frame):
         test2=len(self.list_mes.curselection())
 
         if (test1*test2)==0 :
-            self.mess.disp_mess(u"Sélectionner au moins une mesure et une référence")
+            self.mess.disp_mess(u"SÃ©lectionner au moins une mesure et une rÃ©fÃ©rence")
             return
 
         #-- Si OK, on continu
@@ -549,7 +549,7 @@ class InterfaceCalcSpec(Frame):
         for nume_i,nume_j in self.coupl_ddl:
            lst.append('Pt. ' + str(nume_i) + ' - Pt. ' + str(nume_j) )
         self.curve_list.set_values(lst)
-        self.label_visu.set(u"Cohérences :")
+        self.label_visu.set(u"CohÃ©rences :")
         
 
     def calc_transfert(self) :
@@ -559,10 +559,10 @@ class InterfaceCalcSpec(Frame):
         test2=len(self.list_mes.curselection())
 
         if (test1*test2)==0 :
-            self.mess.disp_mess(u"Sélectionner au moins une mesure et une référence")
+            self.mess.disp_mess(u"SÃ©lectionner au moins une mesure et une rÃ©fÃ©rence")
             return
         if test1 > 1:
-            self.mess.disp_mess(u"Pour le calcul des fonctions de transfert, ne sélectionner qu'une seule référence !")
+            self.mess.disp_mess(u"Pour le calcul des fonctions de transfert, ne sÃ©lectionner qu'une seule rÃ©fÃ©rence !")
             return            
 
         #-- Si OK, on continu
@@ -743,7 +743,7 @@ class InterfaceCalcSpec(Frame):
         # on recupere le nom de la table_fonction selectionnee (1 seule)
         ind_tab = list_tab.curselection()
         if len(ind_tab) > 1:
-            self.mess.disp_mess(u"Ne sélectionner qu'une seule table pour le calcul")
+            self.mess.disp_mess(u"Ne sÃ©lectionner qu'une seule table pour le calcul")
             return
         ind_tab = int(ind_tab[0])
 

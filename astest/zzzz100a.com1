@@ -1,7 +1,7 @@
 POURSUITE( CODE=_F(NOM='ZZZZ100A'), PAR_LOT='NON')
 
 # But : Tester l'evaluation des fonctions et formules en poursuite.
-#       Le PAR_LOT='NON' est nécessaire pour évaluer des fonctions produites
+#       Le PAR_LOT='NON' est nÃ©cessaire pour Ã©valuer des fonctions produites
 #       dans un autre jdc.
 
 tab = CREA_TABLE(LISTE=_F(PARA='TEST',

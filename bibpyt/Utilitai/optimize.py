@@ -1,4 +1,4 @@
-# -*- coding: iso-8859-1 -*-
+# coding=utf-8
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -573,7 +573,6 @@ if __name__ == "__main__":
     for k in range(len(algor)):
         print algor[k], "\t -- ", times[k]
         
-
 
 
 

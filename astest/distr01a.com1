@@ -1,7 +1,7 @@
 POURSUITE(CODE=_F(NOM='DISTR01A',))
 
 # Uniquement pour les besoins du cas-test.
-# On prend la moyenne pour minimiser l'impact de la valeur près
+# On prend la moyenne pour minimiser l'impact de la valeur prÃ¨s
 # de l'encastrement.
 tabtest=POST_RELEVE_T(ACTION=_F(OPERATION='MOYENNE_ARITH',
                                 INTITULE='Moyenne',

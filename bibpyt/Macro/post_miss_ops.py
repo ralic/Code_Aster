@@ -1,4 +1,4 @@
-# -*- coding: iso-8859-1 -*-
+# coding=utf-8
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -35,7 +35,7 @@ def post_miss_ops(self, **kwargs):
     # La macro compte pour 1 dans la numerotation des commandes
     self.set_icmd(1)
 
-    # création de l'objet POST_MISS_xxx
+    # crÃ©ation de l'objet POST_MISS_xxx
     post = PostMissFactory(kwargs['OPTION'], self, kwargs)
 
     try:

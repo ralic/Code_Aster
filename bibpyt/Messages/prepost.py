@@ -1,4 +1,4 @@
-# -*- coding: iso-8859-1 -*-
+# coding=utf-8
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -27,92 +27,92 @@ cata_msg = {
 2 : _(u"""
 
 Attention :
-  Vous avez demandé l'impression d'un CHAM_ELEM de VARI_R :
-  on complète le nombre de composantes V1, V2, ... avec des zéros
-  pour que toutes les mailles aient le même nombre de composantes.
+  Vous avez demandÃ© l'impression d'un CHAM_ELEM de VARI_R :
+  on complÃ¨te le nombre de composantes V1, V2, ... avec des zÃ©ros
+  pour que toutes les mailles aient le mÃªme nombre de composantes.
 
 """),
 
 4 : _(u"""
- La méthode  %(k1)s  est illicite
+ La mÃ©thode  %(k1)s  est illicite
 """),
 
 5 : _(u"""
- la longueur du défaut n'est pas en accord avec les tables définies
- coté revêtement et coté métal de base
+ la longueur du dÃ©faut n'est pas en accord avec les tables dÃ©finies
+ cotÃ© revÃªtement et cotÃ© mÃ©tal de base
 """),
 
 8 : _(u"""
- prolongement à gauche exclu
+ prolongement Ã  gauche exclu
 """),
 
 9 : _(u"""
- prolongement à droite exclu
+ prolongement Ã  droite exclu
 """),
 
 10 : _(u"""
- phénomène non valide
+ phÃ©nomÃ¨ne non valide
 """),
 
 13 : _(u"""
- Les valeurs non existantes du champ %(k1)s lues sur le maillage donné
- sont considérées nulles.
+ Les valeurs non existantes du champ %(k1)s lues sur le maillage donnÃ©
+ sont considÃ©rÃ©es nulles.
 """),
 
 14 : _(u"""
- Le NUME_DDL a été déterminé à partir de la matrice de rigidité %(k1)s.
+ Le NUME_DDL a Ã©tÃ© dÃ©terminÃ© Ã  partir de la matrice de rigiditÃ© %(k1)s.
 """),
 
 21 : _(u"""
  Intersection Droite / Cercle
- pas d'intersection trouvée
+ pas d'intersection trouvÃ©e
 """),
 
 28 : _(u"""
- volume supérieur à 1.d6
+ volume supÃ©rieur Ã  1.d6
 """),
 
 31 : _(u"""
- structure de données RESULTAT inconnue  %(k1)s
+ structure de donnÃ©es RESULTAT inconnue  %(k1)s
 """),
 
 36 : _(u"""
- Le champ de:  %(k1)s  a des éléments ayant des sous-points.
- Ces éléments ne seront pas traités.
+ Le champ de:  %(k1)s  a des Ã©lÃ©ments ayant des sous-points.
+ Ces Ã©lÃ©ments ne seront pas traitÃ©s.
 """),
 
 38 : _(u"""
- le vecteur défini sous le mot clé ACTION/AXE_Z a une norme nulle.
+ le vecteur dÃ©fini sous le mot clÃ© ACTION/AXE_Z a une norme nulle.
 """),
 
 46 : _(u"""
- erreur dans la création du fichier de maillage au format GIBI.
+ erreur dans la crÃ©ation du fichier de maillage au format GIBI.
  Celui-ci ne contient pas d'objet de type maillage.
 
  Risque & Conseil:
- Assurez vous que votre procédure GIBI sauvegarde bien les objets du maillage (pile 32 dans le formalisme GIBI)
+ Assurez vous que votre procÃ©dure GIBI sauvegarde bien les objets du maillage (pile 32 dans le formalisme GIBI)
 """),
 
 51 : _(u"""
- l'option de calcul " %(k1)s " n'existe pas dans la structure de données %(k2)s
+ l'option de calcul " %(k1)s " n'existe pas dans la structure de donnÃ©es %(k2)s
 """),
 
 52 : _(u"""
- le champ " %(k1)s " pour l'option de calcul " %(k2)s ", n'a pas été notée
- dans la structure de données %(k3)s
+ le champ " %(k1)s " pour l'option de calcul " %(k2)s ", n'a pas Ã©tÃ© notÃ©e
+ dans la structure de donnÃ©es %(k3)s
 """),
 
 53 : _(u"""
- la dimension du problème est invalide : il faut : 1d, 2d ou 3d.
+ la dimension du problÃ¨me est invalide : il faut : 1d, 2d ou 3d.
 """),
 
 54 : _(u"""
- nombre de noeuds supérieur au maximum autorisé : 27.
+ nombre de noeuds supÃ©rieur au maximum autorisÃ© : 27.
 """),
 
 55 : _(u"""
  objet &&GILIRE.INDIRECT inexistant
- problème à la lecture des points
+ problÃ¨me Ã  la lecture des points
 """),
 
 56 : _(u"""
@@ -120,25 +120,25 @@ Attention :
 """),
 
 57 : _(u"""
- nombre d'objets supérieur au maximum autorisé : 99999.
+ nombre d'objets supÃ©rieur au maximum autorisÃ© : 99999.
 """),
 
 59 : _(u"""
- le maillage GIBI est peut être erroné :
- il est écrit : "NIVEAU RREUR N_ERR"  avec N_ERR est >0 .
- on continue quand même, mais si vous avez des problèmes plus loin ...
+ le maillage GIBI est peut Ãªtre erronÃ© :
+ il est Ã©crit : "NIVEAU RREUR N_ERR"  avec N_ERR est >0 .
+ on continue quand mÃªme, mais si vous avez des problÃ¨mes plus loin ...
 """),
 
 60 : _(u"""
- arrêt sur erreur(s)
+ arrÃªt sur erreur(s)
 """),
 
 69 : _(u"""
- problème à l'ouverture du fichier
+ problÃ¨me Ã  l'ouverture du fichier
 """),
 
 70 : _(u"""
- problème à la fermeture du fichier
+ problÃ¨me Ã  la fermeture du fichier
 """),
 
 74 : _(u"""
@@ -151,16 +151,16 @@ Attention :
 
 76 : _(u"""
   -> Il y a des groupes de noeuds dans le maillage %(k1)s.
-     Ils  n'apparaîtront pas dans le fichier géométrie ENSIGHT.
-     Seuls des groupes de mailles peuvent y être intégrés.
+     Ils  n'apparaÃ®tront pas dans le fichier gÃ©omÃ©trie ENSIGHT.
+     Seuls des groupes de mailles peuvent y Ãªtre intÃ©grÃ©s.
 """),
 
 77 : _(u"""
-  incompatibilité entre les GREL
+  incompatibilitÃ© entre les GREL
 """),
 
 79 : _(u"""
-  le nombre de couches est supérieur à 1
+  le nombre de couches est supÃ©rieur Ã  1
 """),
 
 80 : _(u"""
@@ -168,15 +168,15 @@ Attention :
 """),
 
 83: _(u"""
- Certaines composantes sélectionnées ne font pas partie du LIGREL
+ Certaines composantes sÃ©lectionnÃ©es ne font pas partie du LIGREL
 """),
 
 84 : _(u"""
- Élément PYRAM5 non disponible dans IDEAS
+ Ã‰lÃ©ment PYRAM5 non disponible dans IDEAS
 """),
 
 85 : _(u"""
- Élément PYRAM13 non disponible dans IDEAS
+ Ã‰lÃ©ment PYRAM13 non disponible dans IDEAS
 """),
 
 86 : _(u"""
@@ -198,13 +198,13 @@ Attention :
 """),
 
 98 : _(u"""
- Le champ:  %(k1)s  a des éléments ayant des sous-points.
- Il est écrit avec un format différent.
+ Le champ:  %(k1)s  a des Ã©lÃ©ments ayant des sous-points.
+ Il est Ã©crit avec un format diffÃ©rent.
 """),
 
 99 : _(u"""
- Le champ:  %(k1)s  a des éléments ayant des sous-points.
- Ces éléments ne seront pas écrits.
+ Le champ:  %(k1)s  a des Ã©lÃ©ments ayant des sous-points.
+ Ces Ã©lÃ©ments ne seront pas Ã©crits.
 """),
 
 }

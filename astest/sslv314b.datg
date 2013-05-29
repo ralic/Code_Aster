@@ -5,14 +5,14 @@ dens 10 ;
 *----------------------------------------
 *DONNEES
 *----------------------------------------
-* dimensions des cotés
+* dimensions des cotÃ©s
 LX = 1;
 LY = 8;
 LZ = 18;
 * Taille de la zone centrale raffinee
 LZ2 = 2;
 
-* nombre d'éléments
+* nombre d'Ã©lÃ©ments
 *NX = 10;
 *NY1 = 25;
 *NY2 = 10;
@@ -25,7 +25,7 @@ NZ1 = 5;
 NZ2 = 10; 
 
 *---------------------------------------------
-*construction des surfaces dans le plan inférieur
+*construction des surfaces dans le plan infÃ©rieur
 *---------------------------------------------
 
 p1 = LX   0.  0.;

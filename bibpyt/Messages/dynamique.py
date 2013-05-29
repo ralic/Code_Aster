@@ -1,4 +1,4 @@
-# -*- coding: iso-8859-1 -*-
+# coding=utf-8
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -21,41 +21,41 @@
 cata_msg={
 
 1: _(u"""
- schéma inconnu
+ schÃ©ma inconnu
 """),
 
 2: _(u"""
- la liste d'instants fournie ne respecte pas la condition de stabilité.
+ la liste d'instants fournie ne respecte pas la condition de stabilitÃ©.
 """),
 
 3: _(u"""
- la condition de stabilité n'a pas pu être calculée pour tous les éléments. elle peut être trop grande.
+ la condition de stabilitÃ© n'a pas pu Ãªtre calculÃ©e pour tous les Ã©lÃ©ments. elle peut Ãªtre trop grande.
 """),
 
 4: _(u"""
-  -> La condition de stabilité n'a pu être calculée pour aucun élément.
+  -> La condition de stabilitÃ© n'a pu Ãªtre calculÃ©e pour aucun Ã©lÃ©ment.
   -> Risque & Conseil :
-     Vous prenez le risque de sortir du cadre de la stabilité conditionnelle du schéma de temps explicite. Vérifiez bien
-     que vos éléments finis ont une taille et un matériau (module de Young) compatibles avec le respect de la condition
-     de Courant vis-à-vis du pas de temps que vous avez imposé (temps de propagation des ondes dans la maille, voir
-     documentation). Si c'est le cas, lever l'arrêt fatal en utilisant l'option "STOP_CFL", à vos risques et périls
-     (risques de résultats faux).
+     Vous prenez le risque de sortir du cadre de la stabilitÃ© conditionnelle du schÃ©ma de temps explicite. VÃ©rifiez bien
+     que vos Ã©lÃ©ments finis ont une taille et un matÃ©riau (module de Young) compatibles avec le respect de la condition
+     de Courant vis-Ã -vis du pas de temps que vous avez imposÃ© (temps de propagation des ondes dans la maille, voir
+     documentation). Si c'est le cas, lever l'arrÃªt fatal en utilisant l'option "STOP_CFL", Ã  vos risques et pÃ©rils
+     (risques de rÃ©sultats faux).
 """),
 
 5: _(u"""
- Pas de temps maximal (condition CFL) pour le schéma des différences centrées : %(r1)g s, sur la maille : %(k1)s
+ Pas de temps maximal (condition CFL) pour le schÃ©ma des diffÃ©rences centrÃ©es : %(r1)g s, sur la maille : %(k1)s
 """),
 
 6: _(u"""
-  Pas de temps maximal (condition CFL) pour le schéma de Tchamwa-Wilgosz : %(r1)g s, sur la maille : %(k1)s
+  Pas de temps maximal (condition CFL) pour le schÃ©ma de Tchamwa-Wilgosz : %(r1)g s, sur la maille : %(k1)s
 """),
 
 7: _(u"""
- Pas de temps maximal (condition CFL) pour le schéma des différences centrées : %(r1)g s
+ Pas de temps maximal (condition CFL) pour le schÃ©ma des diffÃ©rences centrÃ©es : %(r1)g s
 """),
 
 8: _(u"""
-  Pas de temps maximal (condition CFL) pour le schéma de Tchamwa-Wilgosz : %(r1)g s
+  Pas de temps maximal (condition CFL) pour le schÃ©ma de Tchamwa-Wilgosz : %(r1)g s
 """),
 
 9: _(u"""
@@ -63,22 +63,22 @@ cata_msg={
 """),
 
 10: _(u"""
-   Arrêt par manque de temps CPU au groupe de pas de temps : %(i1)d
+   ArrÃªt par manque de temps CPU au groupe de pas de temps : %(i1)d
                                  au "petit" pas de temps   : %(i2)d
       - Temps moyen par "petit" pas : %(r1)f
       - Temps CPU restant           : %(r2)f
 
-   La base globale est sauvegardée. Elle contient les pas archivés avant l'arrêt.
+   La base globale est sauvegardÃ©e. Elle contient les pas archivÃ©s avant l'arrÃªt.
 """),
 
 11: _(u"""
-   Arrêt par manque de temps CPU après le calcul de %(i1)d pas.
-      - Dernier instant archivé : %(r1)f
-      - Numéro d'ordre correspondant : %(i2)d
+   ArrÃªt par manque de temps CPU aprÃ¨s le calcul de %(i1)d pas.
+      - Dernier instant archivÃ© : %(r1)f
+      - NumÃ©ro d'ordre correspondant : %(i2)d
       - Temps moyen pour les %(i3)d pas de temps : %(r2)f
       - Temps CPU restant            : %(r3)f
 
-   La base globale est sauvegardée. Elle contient les pas archivés avant l'arrêt.
+   La base globale est sauvegardÃ©e. Elle contient les pas archivÃ©s avant l'arrÃªt.
 """),
 
 12: _(u"""
@@ -90,84 +90,84 @@ cata_msg={
 """),
 
 13: _(u"""
-   Arrêt par manque de temps CPU à la fréquence : %(i1)d
-      - Temps moyen par pas fréquence : %(r1)f
+   ArrÃªt par manque de temps CPU Ã  la frÃ©quence : %(i1)d
+      - Temps moyen par pas frÃ©quence : %(r1)f
       - Temps CPU restant             : %(r2)f
 
-   La base globale est sauvegardée. Elle contient les pas archivés avant l'arrêt.
+   La base globale est sauvegardÃ©e. Elle contient les pas archivÃ©s avant l'arrÃªt.
 """),
 
 14: _(u"""
-   La matrice est presque singulière à la fréquence : %(r1)f
-   Cette fréquence est probablement une fréquence propre du système.
+   La matrice est presque singuliÃ¨re Ã  la frÃ©quence : %(r1)f
+   Cette frÃ©quence est probablement une frÃ©quence propre du systÃ¨me.
 """),
 
 15 : _(u"""
- Pas de temps maximal (mot-clé PAS_MAXI) demandé : %(r1)f plus petit que
- le pas de temps initial demandé par l'utilisateur (mot-clé PAS) : %(r2)f
- Il faut s'assurer que PAS est bien inférieur ou égal à PAS_MAXI
+ Pas de temps maximal (mot-clÃ© PAS_MAXI) demandÃ© : %(r1)f plus petit que
+ le pas de temps initial demandÃ© par l'utilisateur (mot-clÃ© PAS) : %(r2)f
+ Il faut s'assurer que PAS est bien infÃ©rieur ou Ã©gal Ã  PAS_MAXI
 """),
 
 16 : _(u"""
- Pas de temps maximal calculé pour le schéma ADAPT : %(r1)f
+ Pas de temps maximal calculÃ© pour le schÃ©ma ADAPT : %(r1)f
 
- Risque & Conseil : la méthode de calcul automatique de ce pas maximal semble être prise en défaut.
- On recommande donc de définir explicitement cette valeur avec le mot-clé PAS_MAXI (sous INCREMENT).
+ Risque & Conseil : la mÃ©thode de calcul automatique de ce pas maximal semble Ãªtre prise en dÃ©faut.
+ On recommande donc de dÃ©finir explicitement cette valeur avec le mot-clÃ© PAS_MAXI (sous INCREMENT).
 """),
 
 17 : _(u"""
- Pas de temps maximal (mot-clé PAS_MAXI) demandé trop grand :   %(r1)f
- Pas de temps nécessaire pour le calcul: %(r2)f
- Risques de problèmes de précision
+ Pas de temps maximal (mot-clÃ© PAS_MAXI) demandÃ© trop grand :   %(r1)f
+ Pas de temps nÃ©cessaire pour le calcul: %(r2)f
+ Risques de problÃ¨mes de prÃ©cision
 """),
 
 18 : _(u"""
- Le nombre maximal de sous division du pas : %(i1)d est atteint à l'instant : %(r1)f
+ Le nombre maximal de sous division du pas : %(i1)d est atteint Ã  l'instant : %(r1)f
  Le pas de temps vaut alors : %(r2)f
- On continue cependant la résolution en passant au pas suivant.
+ On continue cependant la rÃ©solution en passant au pas suivant.
 
- Risque & Conseil : la solution calculée risque d'être imprécise.
- Il faudrait relancer la calcul en autorisant le schéma ADAPT à utiliser un pas de temps plus petit.
- Pour cela on peut jouer sur au moins un des trois paramètres suivants :
- - diminuer le pas de temps initial (mot-clé PAS),
- - augmenter le nombre maximal de sous découpages du pas (mot-clé NMAX_ITER_PAS),
- - augmenter le facteur de division du pas (mot-clé COEF_DIVI_PAS)
+ Risque & Conseil : la solution calculÃ©e risque d'Ãªtre imprÃ©cise.
+ Il faudrait relancer la calcul en autorisant le schÃ©ma ADAPT Ã  utiliser un pas de temps plus petit.
+ Pour cela on peut jouer sur au moins un des trois paramÃ¨tres suivants :
+ - diminuer le pas de temps initial (mot-clÃ© PAS),
+ - augmenter le nombre maximal de sous dÃ©coupages du pas (mot-clÃ© NMAX_ITER_PAS),
+ - augmenter le facteur de division du pas (mot-clÃ© COEF_DIVI_PAS)
 """),
 
 19 : _(u"""
- Le chargement contient plus d'une charge répartie.
- Le calcul n'est pas possible pour les modèles de poutre.
+ Le chargement contient plus d'une charge rÃ©partie.
+ Le calcul n'est pas possible pour les modÃ¨les de poutre.
 """),
 
 20 : _(u"""
- La fréquence d'actualisation de FORCE_SOL est prise dans le fichier des raideurs.
+ La frÃ©quence d'actualisation de FORCE_SOL est prise dans le fichier des raideurs.
 """),
 
 21 : _(u"""
- La fréquence d'actualisation de FORCE_SOL est prise dans le fichier des masses.
+ La frÃ©quence d'actualisation de FORCE_SOL est prise dans le fichier des masses.
 """),
 
 22 : _(u"""
- La fréquence d'actualisation de FORCE_SOL est prise dans le fichier des amortissements.
+ La frÃ©quence d'actualisation de FORCE_SOL est prise dans le fichier des amortissements.
 """),
 
 23 : _(u"""
-    Nombre de fréquences: %(i1)d
-    Intervalle des fréquences: %(r1)f
+    Nombre de frÃ©quences: %(i1)d
+    Intervalle des frÃ©quences: %(r1)f
 """),
 
 30 : _(u"""
- La fréquence d'actualisation de FORCE_SOL dans le fichier des masses est incohérente avec
-celle choisie précédemment.
+ La frÃ©quence d'actualisation de FORCE_SOL dans le fichier des masses est incohÃ©rente avec
+celle choisie prÃ©cÃ©demment.
 """),
 
 31 : _(u"""
- La fréquence d'actualisation de FORCE_SOL dans le fichier des amortissements est incohérente avec
-celle choisie précédemment.
+ La frÃ©quence d'actualisation de FORCE_SOL dans le fichier des amortissements est incohÃ©rente avec
+celle choisie prÃ©cÃ©demment.
 """),
 
 25 : _(u"""
- La fréquence d'actualisation de FORCE_SOL n'est pas cohérente avec la fréquence d'archivage des résultats dans
+ La frÃ©quence d'actualisation de FORCE_SOL n'est pas cohÃ©rente avec la frÃ©quence d'archivage des rÃ©sultats dans
  DYNA_NON_LINE.
 """),
 

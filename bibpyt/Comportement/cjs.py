@@ -1,4 +1,4 @@
-# -*- coding: iso-8859-1 -*-
+# coding=utf-8
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -22,7 +22,7 @@ from cata_comportement import LoiComportement
 
 loi = LoiComportement(
    nom            = 'CJS',
-   doc = """Comportement élastoplastique multicritère des sols  cf. R7.01.13""",
+   doc = """Comportement Ã©lastoplastique multicritÃ¨re des sols  cf. R7.01.13""",
    num_lc         = 23,
    nb_vari        = 16,
    nom_vari       = ('SEUILISO','ANGLEDEV','XCINXX','XCINYY','XCINZZ','XCINXY','XCINXZ','XCINYZ','DISTSDEV','SDEVCRIT','DISTSISO','NBITER','RESIDU','NBSSPAS','SDEVEPSP','INDIPLAS'),

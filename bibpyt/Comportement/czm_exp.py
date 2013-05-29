@@ -1,4 +1,4 @@
-# -*- coding: iso-8859-1 -*-
+# coding=utf-8
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -22,7 +22,7 @@ from cata_comportement import LoiComportement
 
 loi = LoiComportement(
    nom            = 'CZM_EXP',
-   doc = """Loi cohésive exponentielle  de type Barenblatt - R7.02.11""",
+   doc = """Loi cohÃ©sive exponentielle  de type Barenblatt - R7.02.11""",
    num_lc         = 12,
    nb_vari        = 7,
    nom_vari       = ('SAUT_N', 'SAUT_T1', 'SEUILDEP','INDIENDO', 'PCENERDI', 'SIGM_N','SIGM_T1'),

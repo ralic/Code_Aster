@@ -87,4 +87,3 @@ MA.Group(SYM_Y,'SYM_Y')
 MA.Group(M_HAUT,'M_HAUT')
 MA.Group(M_BAS,'M_BAS')
 MA.Group(VOL,'VOL')
-

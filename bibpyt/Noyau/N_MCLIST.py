@@ -1,4 +1,4 @@
-# -*- coding: iso-8859-1 -*-
+# coding=utf-8
 # person_in_charge: mathieu.courtois at edf.fr
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -22,8 +22,8 @@
 
 
 """ 
-    Ce module contient la classe MCList qui sert ‡ controler la valeur
-    d'une liste de mots-clÈs facteur par rapport ‡ sa dÈfinition portÈe par un objet
+    Ce module contient la classe MCList qui sert √† controler la valeur
+    d'une liste de mots-cl√©s facteur par rapport √† sa d√©finition port√©e par un objet
     de type ENTITE
 """
 
@@ -46,30 +46,30 @@ class MCList(UserList.UserList):
          self.niveau = self.parent.niveau
          self.etape = self.parent.etape
       else:
-         # Le mot cle a ÈtÈ crÈÈ sans parent
+         # Le mot cle a √©t√© cr√©√© sans parent
          self.jdc = None
          self.niveau = None
          self.etape = None
 
    def get_valeur(self):
       """
-         Retourne la "valeur" d'un objet MCList. Sert ‡ construire
-         un contexte d'Èvaluation pour une expression Python.
+         Retourne la "valeur" d'un objet MCList. Sert √† construire
+         un contexte d'√©valuation pour une expression Python.
          On retourne l'objet lui-meme.
       """
       return self
 
    def get_val(self):
       """
-          Une autre mÈthode qui retourne une "autre" valeur d'une MCList
-          Elle est utilisÈe par la mÈthode get_mocle
+          Une autre m√©thode qui retourne une "autre" valeur d'une MCList
+          Elle est utilis√©e par la m√©thode get_mocle
       """
       return self
 
    def supprime(self):
       """ 
-         MÈthode qui supprime toutes les rÈfÈrences arriËres afin que l'objet puisse
-         etre correctement dÈtruit par le garbage collector 
+         M√©thode qui supprime toutes les r√©f√©rences arri√®res afin que l'objet puisse
+         etre correctement d√©truit par le garbage collector 
       """
       self.parent = None
       self.etape = None
@@ -81,7 +81,7 @@ class MCList(UserList.UserList):
    def get_child(self,name):
       """ 
           Retourne le fils de nom name s'il est contenu dans self
-          Par dÈfaut retourne le fils du premier de la liste 
+          Par d√©faut retourne le fils du premier de la liste 
       """
       obj = self.data[0]
       # Phase 1 : on cherche dans les fils directs de obj
@@ -92,7 +92,7 @@ class MCList(UserList.UserList):
         if child.isBLOC() :
           resu = child.get_child(name)
           if resu != None : return resu
-      # Phase 3 : on cherche dans les entites possibles pour les dÈfauts
+      # Phase 3 : on cherche dans les entites possibles pour les d√©fauts
       for k,v in obj.definition.entites.items():
         #if k == name: return v.defaut
         if k == name:
@@ -116,7 +116,7 @@ class MCList(UserList.UserList):
 
    def get_sd_utilisees(self):
       """ 
-        Retourne la liste des concepts qui sont utilisÈs ‡ l'intÈrieur de self
+        Retourne la liste des concepts qui sont utilis√©s √† l'int√©rieur de self
         ( comme valorisation d'un MCS) 
       """
       l=[]
@@ -126,9 +126,9 @@ class MCList(UserList.UserList):
 
    def get_sd_mcs_utilisees(self):
       """ 
-          Retourne la ou les SD utilisÈe par self sous forme d'un dictionnaire :
-            - Si aucune sd n'est utilisÈe, le dictionnaire est vide.
-            - Sinon, les clÈs du dictionnaire sont les mots-clÈs derriËre lesquels on
+          Retourne la ou les SD utilis√©e par self sous forme d'un dictionnaire :
+            - Si aucune sd n'est utilis√©e, le dictionnaire est vide.
+            - Sinon, les cl√©s du dictionnaire sont les mots-cl√©s derri√®re lesquels on
               trouve des sd ; la valeur est la liste des sd attenante.
 
               Exemple ::
@@ -168,10 +168,10 @@ class MCList(UserList.UserList):
 
    def copy(self):
       """
-        RÈalise la copie d'une MCList
+        R√©alise la copie d'une MCList
       """
       liste = self.data[0].definition.list_instance()
-      # FR -->Il faut spÈcifier un parent pour la mÈthode init qui attend 2 arguments ...
+      # FR -->Il faut sp√©cifier un parent pour la m√©thode init qui attend 2 arguments ...
       liste.init(self.nom,self.parent)
       for objet in self:
         new_obj = objet.copy()
@@ -193,9 +193,9 @@ class MCList(UserList.UserList):
 
    def get_etape(self):
       """
-         Retourne l'Ètape ‡ laquelle appartient self
-         Un objet de la catÈgorie etape doit retourner self pour indiquer que
-         l'Ètape a ÈtÈ trouvÈe
+         Retourne l'√©tape √† laquelle appartient self
+         Un objet de la cat√©gorie etape doit retourner self pour indiquer que
+         l'√©tape a √©t√© trouv√©e
          XXX double emploi avec self.etape ???
       """
       if self.parent == None: return None

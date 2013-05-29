@@ -1,4 +1,4 @@
-# -*- coding: iso-8859-1 -*-
+# coding=utf-8
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -40,7 +40,7 @@ def macr_ecla_pg_ops(self,RESULTAT,MAILLAGE,RESU_INIT,MODELE_INIT,
     self.set_icmd(1)
 
 
-    # Appel à CREA_MAILLAGE :
+    # Appel Ã  CREA_MAILLAGE :
     motscles={}
     if   TOUT      : motscles['TOUT']       =TOUT
     if   GROUP_MA  : motscles['GROUP_MA']   =GROUP_MA
@@ -52,7 +52,7 @@ def macr_ecla_pg_ops(self,RESULTAT,MAILLAGE,RESU_INIT,MODELE_INIT,
 
 
 
-    # Appel à CREA_RESU :
+    # Appel Ã  CREA_RESU :
     typ2=AsType(RESU_INIT).__name__
     if   TOUT_ORDRE         : motscles['TOUT_ORDRE']     =TOUT_ORDRE
     if   NUME_ORDRE != None : motscles['NUME_ORDRE']     =NUME_ORDRE

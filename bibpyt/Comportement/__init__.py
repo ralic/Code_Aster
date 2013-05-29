@@ -1,4 +1,4 @@
-# -*- coding: iso-8859-1 -*-
+# coding=utf-8
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -19,7 +19,7 @@
 # person_in_charge: mathieu.courtois at edf.fr
 
 """
-Ce package contient la définition des comportements.
+Ce package contient la dÃ©finition des comportements.
 """
 
 #_debug = True
@@ -41,7 +41,7 @@ l_mod = [modname for modname in l_mod if modname not in ('__init__', 'cata_compo
 for modname in l_mod:
    try:
       mod = __import__('%s.%s' % (pkg, modname), globals(), locals(), [modname])
-      # liste des lois de comportements définies dans le module
+      # liste des lois de comportements dÃ©finies dans le module
       for objname in dir(mod):
          obj = getattr(mod, objname)
          if type(obj) == LoiComportement:

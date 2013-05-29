@@ -1,4 +1,4 @@
-# -*- coding: iso-8859-1 -*-
+# coding=utf-8
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -20,27 +20,27 @@
 
 """Macro-commande INCLUDE_MATERIAU
 
-Définition des mots-clés et fonctions utilisables dans les catalogues :
-  - extraction : indique si un mot-clé facteur doit être conservé en
-    fonction de la présence d'EXTRACTION.
-      - Si extraction == True, on conserve le mot-clé facteur si
-        EXTRACTION est présent.
-      - Si extraction == False, on conserve le mot-clé facteur si
+DÃ©finition des mots-clÃ©s et fonctions utilisables dans les catalogues :
+  - extraction : indique si un mot-clÃ© facteur doit Ãªtre conservÃ© en
+    fonction de la prÃ©sence d'EXTRACTION.
+      - Si extraction == True, on conserve le mot-clÃ© facteur si
+        EXTRACTION est prÃ©sent.
+      - Si extraction == False, on conserve le mot-clÃ© facteur si
         EXTRACTION est absent.
-      - Si extraction n'est pas indiqué (vaut None), le mot-clé facteur
-        est conservé que EXTRACTION soit présent ou non.
-  - temp_eval : indique qu'une fonction doit être évaluée en fonction de
-    la température.
+      - Si extraction n'est pas indiquÃ© (vaut None), le mot-clÃ© facteur
+        est conservÃ© que EXTRACTION soit prÃ©sent ou non.
+  - temp_eval : indique qu'une fonction doit Ãªtre Ã©valuÃ©e en fonction de
+    la tempÃ©rature.
   - coef_unit : fonction qui renvoie un coefficient multiplicatif selon
-    l'unité
+    l'unitÃ©
       - en m : retourne 1.
       - en mm : retourne 10^expo
-  - defi_motscles : fonction qui définit tous les mots-clés, filtrés
+  - defi_motscles : fonction qui dÃ©finit tous les mots-clÃ©s, filtrÃ©s
     ensuite en fonction de EXTRACTION.
-  - motscles : objet résultat de DEFI_MOTSCLES contenant les mots-clés
-    à utiliser dans DEFI_MATERIAU.
+  - motscles : objet rÃ©sultat de DEFI_MOTSCLES contenant les mots-clÃ©s
+    Ã  utiliser dans DEFI_MATERIAU.
 
-On définit ici la liste des commandes utilisables dans un matériau.
+On dÃ©finit ici la liste des commandes utilisables dans un matÃ©riau.
 """
 
 import os.path as osp
@@ -61,8 +61,8 @@ COMMANDES = [
 ]
 
 def build_context(unite, temp):
-    """Construit le contexte pour exécuter un catalogue matériau."""
-    # définition du coefficient multiplicatif selon l'unité.
+    """Construit le contexte pour exÃ©cuter un catalogue matÃ©riau."""
+    # dÃ©finition du coefficient multiplicatif selon l'unitÃ©.
     unite = unite.lower()
     assert unite in ("m", "mm")
     if unite == "m":
@@ -70,13 +70,13 @@ def build_context(unite, temp):
     else:
         coef_unit = lambda expo : pow(10., expo)
 
-    # extraction à une température donnée
+    # extraction Ã  une tempÃ©rature donnÃ©e
     if temp is not None:
         func_temp = lambda f : f(temp)
     else:
         func_temp = lambda x : x
 
-    # fonction pour récupérer les mots clés
+    # fonction pour rÃ©cupÃ©rer les mots clÃ©s
     def defi_motscles(**kwargs):
         return kwargs
 
@@ -106,7 +106,7 @@ def include_materiau_ops(self, NOM_AFNOR, TYPE_MODELE, VARIANTE, TYPE_VALE,
     if not osp.exists(fmat):
         UTMESS('F', 'FICHIER_1', valk=fmat)
 
-    # extraction à une température donnée
+    # extraction Ã  une tempÃ©rature donnÃ©e
     extract = EXTRACTION is not None
     if extract:
         TEMP_EVAL = EXTRACTION['TEMP_EVAL']
@@ -116,25 +116,25 @@ def include_materiau_ops(self, NOM_AFNOR, TYPE_MODELE, VARIANTE, TYPE_VALE,
         keep_compor = lambda compor : True
 
     context = build_context(UNITE_LONGUEUR, TEMP_EVAL)
-    # ajout des commandes autorisées
+    # ajout des commandes autorisÃ©es
     commandes = dict([(cmd, self.get_cmd(cmd)) for cmd in COMMANDES])
     context.update(commandes)
     context['_F'] = _F
 
-    # exécution du catalogue
+    # exÃ©cution du catalogue
     execfile(fmat, context)
     kwcata = context.get(MOTSCLES)
     if kwcata is None:
         UTMESS('F', 'SUPERVIS2_6', valk=bnmat)
-    # certains concepts cachés doivent être connus plus tard (au moins les objets FORMULE)
+    # certains concepts cachÃ©s doivent Ãªtre connus plus tard (au moins les objets FORMULE)
     to_add = dict([(v.nom, v) for k, v in context.items() if isinstance(v, formule)])
     self.sdprods.extend(to_add.values())
     if INFO == 2:
-        aster.affiche('MESSAGE', " Mots-clés issus du catalogue : \n%s" \
+        aster.affiche('MESSAGE', " Mots-clÃ©s issus du catalogue : \n%s" \
             % pprint.pformat(kwcata))
         aster.affiche('MESSAGE', 'Concepts transmis au contexte global :\n%s' % to_add)
 
-    # filtre des mots-clés
+    # filtre des mots-clÃ©s
     for mcf, value in kwcata.items():
         if not keep_compor(mcf):
             del kwcata[mcf]

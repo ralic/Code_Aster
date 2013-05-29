@@ -1,4 +1,4 @@
-# -*- coding: iso-8859-1 -*-
+# coding=utf-8
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -54,7 +54,7 @@ debug = False
 # -------------------------------------------------------------------------------
 # -------------------------------------------------------------------------------
 def get_absolute_path(path):
-   """Retourne le chemin absolu en suivant les liens éventuels.
+   """Retourne le chemin absolu en suivant les liens Ã©ventuels.
    """
    if os.path.islink(path):
       path = os.path.realpath(path)
@@ -64,7 +64,7 @@ def get_absolute_path(path):
 # -------------------------------------------------------------------------------
 #if os.environ.has_key('bibpytdir'): sys.path.append( os.environ['bibpytdir'] )
 
-# recupere "bibpyt" à partir de "bibpyt/Macro/recal.py"
+# recupere "bibpyt" Ã  partir de "bibpyt/Macro/recal.py"
 sys.path.append(get_absolute_path(os.path.join(sys.argv[0], '..', '..')))
 
 from Utilitai.Utmess import UTMESS
@@ -237,7 +237,7 @@ def make_include_files(UNITE_INCLUDE, calcul, parametres):
 
 # -------------------------------------------------------------------------------
 def mes_concepts(list_concepts=[],base=None):
-   """ Fonction qui liste les concepts créés """
+   """ Fonction qui liste les concepts crÃ©Ã©s """
    for e in base.etapes:
       if e.nom in ('INCLUDE','MACR_RECAL',) :
          list_concepts=list(mes_concepts(list_concepts=list_concepts,base=e))
@@ -376,7 +376,7 @@ def Ecriture_Derivees(output_file, derivees):
 # --------------------------------------------------------------------------------------------------
 class CALCULS_ASTER:
    """
-      Classe gérant les calculs Aster (distribues ou include)
+      Classe gÃ©rant les calculs Aster (distribues ou include)
    """
 
    # ---------------------------------------------------------------------------
@@ -1082,7 +1082,7 @@ class CALCULS_ASTER:
 # --------------------------------------------------------------------------------------------------
 class CALC_ERROR:
    """
-      Classe gérant l'erreur par rapport aux donnees experimentales, la matrice des sensibilites
+      Classe gÃ©rant l'erreur par rapport aux donnees experimentales, la matrice des sensibilites
    """
    # ---------------------------------------------------------------------------
    def __init__(self, experience, X0, calcul, poids=None, objective_type='vector', info=0, unite_resu=None):
@@ -1181,12 +1181,12 @@ class CALC_ERROR:
       len_para  = len(val)  # initialement len(self.para)
 
 
-      # Erreur de l'interpolation de F_interp : valeur de F interpolée sur les valeurs experimentales
+      # Erreur de l'interpolation de F_interp : valeur de F interpolÃ©e sur les valeurs experimentales
       F = Lcalc[0]
-      F_interp = self.Simul.multi_interpole_sensib(F, reponses)  #F_interp est une liste contenant des tab num des reponses interpolés
+      F_interp = self.Simul.multi_interpole_sensib(F, reponses)  #F_interp est une liste contenant des tab num des reponses interpolÃ©s
 
 
-      # Creation de la liste des matrices de sensibilités
+      # Creation de la liste des matrices de sensibilitÃ©s
       L_A=[]
       for i in range(len(reponses)):
           L_A.append(NP.zeros((len(resu_exp[i]),len(val))) )
@@ -1195,10 +1195,10 @@ class CALC_ERROR:
 
           F_perturbe = Lcalc[k+1]
 
-          # Erreur de l'interpolation de F_perturb : valeur de F (perturbée) interpolée sur les valeurs experimentales
+          # Erreur de l'interpolation de F_perturb : valeur de F (perturbÃ©e) interpolÃ©e sur les valeurs experimentales
           F_perturbe_interp = self.Simul.multi_interpole_sensib(F_perturbe, reponses)
 
-          # Calcul de L_A (matrice sensibilité des erreurs sur F interpolée)
+          # Calcul de L_A (matrice sensibilitÃ© des erreurs sur F interpolÃ©e)
           h = val[k]*dX[k]
           for j in range(len(reponses)):
              for i in range(len(resu_exp[j])):
@@ -1207,13 +1207,13 @@ class CALC_ERROR:
                 else:
                    if self.unite_resu:
                        fic=open(os.getcwd()+'/fort.'+str(unite_resu),'a')
-                       fic.write('\n Probleme de division par zéro dans le calcul de la matrice de sensiblité')
-                       fic.write('\n Le parametre '+para[k]+'est nul ou plus petit que la précision machine')
+                       fic.write('\n Probleme de division par zÃ©ro dans le calcul de la matrice de sensiblitÃ©')
+                       fic.write('\n Le parametre '+para[k]+'est nul ou plus petit que la prÃ©cision machine')
                        fic.close()
                    UTMESS('F','RECAL0_45',valk=para[k])
                    return
 
-      # On construit la matrice de sensiblité sous forme d'un tab num
+      # On construit la matrice de sensiblitÃ© sous forme d'un tab num
       dim =[]
       for i in range(len(L_A)):
          dim.append(len(L_A[i]))
@@ -1234,7 +1234,7 @@ class CALC_ERROR:
       # Si on n'est pas encore passe par CalcError...
       if self.erreur is None:
           self.erreur = self.CalcError(Lcalc)
-      self.gradient_init = self.calcul_gradient(self.A, self.erreur)  #utile pour le test de convergence, on prend les valeurs dimensionnées
+      self.gradient_init = self.calcul_gradient(self.A, self.erreur)  #utile pour le test de convergence, on prend les valeurs dimensionnÃ©es
       self.residu = self.test_convergence(self.gradient_init, self.erreur, self.A, NP.zeros(len(self.gradient_init)))
 
       if self.debug:

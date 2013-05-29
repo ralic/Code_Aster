@@ -1,4 +1,4 @@
-# -*- coding: iso-8859-1 -*-
+# coding=utf-8
 # person_in_charge: mathieu.courtois at edf.fr
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -23,7 +23,7 @@
 
 """
     Ce module contient la classe de definition BLOC
-    qui permet de spécifier les caractéristiques des blocs de mots clés
+    qui permet de spÃ©cifier les caractÃ©ristiques des blocs de mots clÃ©s
 """
 
 import types,string,sys
@@ -41,10 +41,10 @@ class BLOC(N_ENTITE.ENTITE):
 
     Cette classe a deux attributs de classe :
 
-      - class_instance qui indique la classe qui devra etre utilisée
-        pour créer l'objet qui servira à controler la conformité d'un
-        bloc de mots-clés avec sa définition
-      - label qui indique la nature de l'objet de définition (ici, BLOC)
+      - class_instance qui indique la classe qui devra etre utilisÃ©e
+        pour crÃ©er l'objet qui servira Ã  controler la conformitÃ© d'un
+        bloc de mots-clÃ©s avec sa dÃ©finition
+      - label qui indique la nature de l'objet de dÃ©finition (ici, BLOC)
 
    """
    class_instance = N_MCBLOC.MCBLOC
@@ -54,17 +54,17 @@ class BLOC(N_ENTITE.ENTITE):
                      **args):
 
       """
-          Un bloc est caractérisé par les attributs suivants :
+          Un bloc est caractÃ©risÃ© par les attributs suivants :
 
             - fr   : chaine de caractere commentaire pour aide en ligne (en francais)
             - ang : chaine de caractere commentaire pour aide en ligne (en anglais)
-            - regles : liste d'objets de type REGLE pour vérifier la cohérence des sous-objets
+            - regles : liste d'objets de type REGLE pour vÃ©rifier la cohÃ©rence des sous-objets
             - statut : obligatoire ('o') ou facultatif ('f')
-            - condition : chaine de caractère evaluable par l'interpreteur Python
-            - entites : dictionnaire contenant les sous-objets de self (mots-clés).
-              La clé du dictionnaire est le nom du mot-clé et la valeur l'objet de
-              définition correspondant. Cet attribut est initialisé avec l'argument
-              args de la méthode __init__
+            - condition : chaine de caractÃ¨re evaluable par l'interpreteur Python
+            - entites : dictionnaire contenant les sous-objets de self (mots-clÃ©s).
+              La clÃ© du dictionnaire est le nom du mot-clÃ© et la valeur l'objet de
+              dÃ©finition correspondant. Cet attribut est initialisÃ© avec l'argument
+              args de la mÃ©thode __init__
 
       """
       # Initialisation des attributs
@@ -89,8 +89,8 @@ class BLOC(N_ENTITE.ENTITE):
 
    def verif_cata(self):
       """
-         Cette méthode vérifie si les attributs de définition sont valides.
-         Les éventuels messages d'erreur sont écrits dans l'objet compte-rendu (self.cr).
+         Cette mÃ©thode vÃ©rifie si les attributs de dÃ©finition sont valides.
+         Les Ã©ventuels messages d'erreur sont Ã©crits dans l'objet compte-rendu (self.cr).
       """
       self.check_fr()
       self.check_docu()
@@ -101,18 +101,18 @@ class BLOC(N_ENTITE.ENTITE):
 
    def verif_presence(self,dict,globs):
       """
-         Cette méthode vérifie si le dictionnaire passé en argument (dict)
-         est susceptible de contenir un bloc de mots-clés conforme à la
-         définition qu'il porte.
+         Cette mÃ©thode vÃ©rifie si le dictionnaire passÃ© en argument (dict)
+         est susceptible de contenir un bloc de mots-clÃ©s conforme Ã  la
+         dÃ©finition qu'il porte.
 
-         Si la réponse est oui, la méthode retourne 1
+         Si la rÃ©ponse est oui, la mÃ©thode retourne 1
 
-         Si la réponse est non, la méthode retourne 0
+         Si la rÃ©ponse est non, la mÃ©thode retourne 0
 
-         Le dictionnaire dict a pour clés les noms des mots-clés et pour valeurs
-         les valeurs des mots-clés
+         Le dictionnaire dict a pour clÃ©s les noms des mots-clÃ©s et pour valeurs
+         les valeurs des mots-clÃ©s
       """
-      # On recopie le dictionnaire pour protéger l'original
+      # On recopie le dictionnaire pour protÃ©ger l'original
       dico = bloc_utils()
       dico.update(dict)
       if self.condition != None :
@@ -120,7 +120,7 @@ class BLOC(N_ENTITE.ENTITE):
           test = eval(self.condition,globs,dico)
           return test
         except NameError:
-          # erreur 'normale' : un mot-clé n'est pas présent et on veut l'évaluer dans la condition
+          # erreur 'normale' : un mot-clÃ© n'est pas prÃ©sent et on veut l'Ã©valuer dans la condition
           if CONTEXT.debug:
              l=traceback.format_exception(sys.exc_info()[0],sys.exc_info()[1],sys.exc_info()[2])
              print "WARNING : Erreur a l'evaluation de la condition "+string.join(l)
@@ -139,11 +139,11 @@ class BLOC(N_ENTITE.ENTITE):
 
 
 def bloc_utils():
-    """Définit un ensemble de fonctions utilisables pour écrire les
+    """DÃ©finit un ensemble de fonctions utilisables pour Ã©crire les
     conditions de BLOC."""
     def au_moins_un(mcsimp, valeurs):
         """Valide si la (ou une) valeur de 'mcsimp' est au moins une fois dans
-        la ou les 'valeurs'. Similaire à la règle AU_MOINS_UN, 'mcsimp' peut
+        la ou les 'valeurs'. Similaire Ã  la rÃ¨gle AU_MOINS_UN, 'mcsimp' peut
         contenir plusieurs valeurs."""
         test = set(force_list(mcsimp))
         valeurs = set(force_list(valeurs))

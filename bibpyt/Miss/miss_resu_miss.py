@@ -1,4 +1,4 @@
-# -*- coding: iso-8859-1 -*-
+# coding=utf-8
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -87,7 +87,7 @@ class MissCsolReader(object):
                     self.values[ipc].set(iddl, real, imag)
 
 class ResultatPC:
-    """Simple conteneur des valeurs relus en un point de contrôle"""
+    """Simple conteneur des valeurs relus en un point de contrÃ´le"""
 
     def __init__(self):
         """Initialisation"""

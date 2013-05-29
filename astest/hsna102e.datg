@@ -1,7 +1,7 @@
 * fichier de commande GIBI
-* création d'un maillage axisymétrique pour réaliser un calcul de séchage
+* crÃ©ation d'un maillage axisymÃ©trique pour rÃ©aliser un calcul de sÃ©chage
 *
-* une seule ligne d'éléments est modélisée.
+* une seule ligne d'Ã©lÃ©ments est modÃ©lisÃ©e.
 *
 *          8 cm
 *   <------------------->
@@ -14,10 +14,10 @@
 *
 *
 opti dime 2 elem QUA8 ;
-* géométrie (unité [m])
+* gÃ©omÃ©trie (unitÃ© [m])
 p0 = 0. 0. ;
 p8= 0.08 0. ; 
-* densités aux points p0 et p1
+* densitÃ©s aux points p0 et p1
 dp0 = 0.001 ; 
 dp8 = 0.001 ;
 dinf = droi p0 DINI dp0 p8 DFIN dp8 ;

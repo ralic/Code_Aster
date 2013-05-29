@@ -1,4 +1,4 @@
-# -*- coding: iso-8859-1 -*-
+# coding=utf-8
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -39,7 +39,7 @@ def PROD_ROT(X1,X2):
             return None
 #######################################################################
 def RENOMME(self,i,N_pas,label_cal,ch_param,__RES,__RSI):
-   """On renomme les composantes en fonction de  l'ordre de discrétisation.
+   """On renomme les composantes en fonction de  l'ordre de discrÃ©tisation.
    On modifie les tables de la listes __RSI.
    """
    from Accas import _F
@@ -361,7 +361,7 @@ def CHAR2D(self,POISSON,YOUNG,_tempsar,INFO):
 
 def test_compor_ops(self,OPTION,NEWTON,CONVERGENCE,COMP_INCR,COMP_ELAS,LIST_MATER,VARI_TEST,INFO,
                              **args):
- # seule l'option "THER", c'est à dire le test thermomecanique est programmé à ce jour
+ # seule l'option "THER", c'est Ã  dire le test thermomecanique est programmÃ© Ã  ce jour
  # ajouter l'option MECA (tests comp001,002), l'option HYDR, etc..
   from Accas import _F
   import numpy as NP

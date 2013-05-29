@@ -1,4 +1,4 @@
-# -*- coding: iso-8859-1 -*-
+# coding=utf-8
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -20,8 +20,8 @@
 #
 class fiabilite_fichier :
 #
-  """ Classe des fichiers de donnÈes des logiciels fiabilistes
-      Cette classe a ÈtÈ mise au point pour le couplage entre
+  """ Classe des fichiers de donn√©es des logiciels fiabilistes
+      Cette classe a √©t√© mise au point pour le couplage entre
       Code_ASTER et MEFISTO, mais pourrait servir ailleurs.
   """
 #
@@ -37,11 +37,11 @@ class fiabilite_fichier :
 #
     self.jdc = jdc
 #
-#   Rep_Calc_LOGICIEL_global : le rÈpertoire d'exÈcution du logiciel de fiabilitÈ
+#   Rep_Calc_LOGICIEL_global : le r√©pertoire d'ex√©cution du logiciel de fiabilit√©
 #
     self.Rep_Calc_LOGICIEL_global = Rep_Calc_LOGICIEL_global
 #
-#   nomfic : nom local du fichier ‡ crÈer
+#   nomfic : nom local du fichier √† cr√©er
 #
     self.nomfic = nomfic
 #
@@ -50,21 +50,21 @@ class fiabilite_fichier :
     self.messages_erreur = { 0 : "Tout va bien",
                              1 : "==> Ce fichier est inconnu.",
                              2 : "==> Ce type d'ouverture est inconnu.",
-                            10 : "==> ProblËme ‡ l'ouverture.",
-                            11 : "==> ProblËme ‡ la fermeture.",
-                            20 : "==> ProblËme ‡ l'impression." }
+                            10 : "==> Probl√®me √† l'ouverture.",
+                            11 : "==> Probl√®me √† la fermeture.",
+                            20 : "==> Probl√®me √† l'impression." }
 #
 #   info : niveau d'information au sens ASTER
 #
     self.info = info
 #
-#   ligne_sep : ligne de sÈparation
+#   ligne_sep : ligne de s√©paration
 #
     self.ligne_sep = "========================================================="
     self.ligne_commentaire = "#" + self.ligne_sep + "\n"
 #
     if info >= 2 :
-      print "CrÈation du fichier : "+self.nomfic
+      print "Cr√©ation du fichier : "+self.nomfic
 #
 #====
 # 2. Ouverture du fichier
@@ -72,11 +72,11 @@ class fiabilite_fichier :
 #
   def Ouvre_Fichier ( self, type_ouvr ) :
 #
-# 2.0. ==> PrÈalables
+# 2.0. ==> Pr√©alables
 #
     """
-    Ouvre le fichier en lecture ou Ècriture.
-    0 : tout s'est bien passÈ
+    Ouvre le fichier en lecture ou √©criture.
+    0 : tout s'est bien pass√©
     1 : on veut ouvrir en lecture un fichier qui n'existe pas
     2 : le mode d'ouverture est inconnu
    10 : impossible d'ouvrir
@@ -128,11 +128,11 @@ class fiabilite_fichier :
 #
   def Ferme_Fichier ( self ) :
 #
-# 3.0. ==> PrÈalables
+# 3.0. ==> Pr√©alables
 #
     """
     Ferme le fichier.
-    0 : tout s'est bien passÈ
+    0 : tout s'est bien pass√©
    20 : impossible d'imprimer
     """
 #
@@ -170,11 +170,11 @@ class fiabilite_fichier :
 #
   def Imprime_Fichier ( self ) :
 #
-# 4.0. ==> PrÈalables
+# 4.0. ==> Pr√©alables
 #
     """
     Imprime le fichier.
-    0 : tout s'est bien passÈ
+    0 : tout s'est bien pass√©
    20 : impossible d'imprimer
     """
 #
@@ -211,10 +211,10 @@ class fiabilite_fichier :
   def Ecrit_Commentaires ( self, comm ) :
 #
     """
-    Liste = commentaires ‡ Ècrire
-    Soit c'est une chaine qu'on Ècrit sur une ligne ;
-    Soit c'est une liste, qu'on Ècrit ‡ raison de une par ligne.
-    Remarque : cela suppose que le fichier est ouvert en Ècriture
+    Liste = commentaires √† √©crire
+    Soit c'est une chaine qu'on √©crit sur une ligne ;
+    Soit c'est une liste, qu'on √©crit √† raison de une par ligne.
+    Remarque : cela suppose que le fichier est ouvert en √©criture
     """
 #
     if type(comm) == type([ ]) :
@@ -232,10 +232,10 @@ class fiabilite_fichier :
   def Ecrit_Titre ( self, comm ) :
 #
     """
-    Liste = commentaires ‡ Ècrire, encadrÈs par des sÈparateurs
-    Soit c'est une chaine qu'on Ècrit sur une ligne ;
-    Soit c'est une liste, qu'on Ècrit ‡ raison de une par ligne.
-    Remarque : cela suppose que le fichier est ouvert en Ècriture
+    Liste = commentaires √† √©crire, encadr√©s par des s√©parateurs
+    Soit c'est une chaine qu'on √©crit sur une ligne ;
+    Soit c'est une liste, qu'on √©crit √† raison de une par ligne.
+    Remarque : cela suppose que le fichier est ouvert en √©criture
     """
 #
     self.fic.write(self.ligne_commentaire)
@@ -249,8 +249,8 @@ class fiabilite_fichier :
   def Ecrit_Valeurs ( self, val ) :
 #
     """
-    Liste = liste des valeurs ‡ Ècrire, reprÈsenatn une ligne
-    Remarque : cela suppose que le fichier est ouvert en Ècriture
+    Liste = liste des valeurs √† √©crire, repr√©senatn une ligne
+    Remarque : cela suppose que le fichier est ouvert en √©criture
     """
 #
     if type(val) == type([ ]) :
@@ -275,14 +275,14 @@ if __name__ == "__main__" :
   import sys
   import tempfile
 #
-# 1. ==> PrÈalable
+# 1. ==> Pr√©alable
 #
   Rep_Calc_LOGICIEL_global = tempfile.mktemp()
   os.mkdir(Rep_Calc_LOGICIEL_global)
 #
   jdc = None
 #
-# 2. ==> CrÈation de la classe
+# 2. ==> Cr√©ation de la classe
 #
   nomfic = "dataGrad"
   fic = fiabilite_fichier ( jdc, Rep_Calc_LOGICIEL_global , nomfic )

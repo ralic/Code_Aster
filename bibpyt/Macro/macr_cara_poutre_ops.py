@@ -1,4 +1,4 @@
-# -*- coding: iso-8859-1 -*-
+# coding=utf-8
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -57,7 +57,7 @@ def macr_cara_poutre_ops(self,MAILLAGE,SYME_Y,SYME_Z,GROUP_MA_BORD,
    # La macro compte pour 1 dans la numerotation des commandes
    self.set_icmd(1)
 
-   # Le concept sortant (de type table_sdaster) est nommé 'nomres' dans le contexte de la macro
+   # Le concept sortant (de type table_sdaster) est nommÃ© 'nomres' dans le contexte de la macro
    self.DeclareOut('nomres',self.sd)
    #
    if ( MAILLAGE != None ):
@@ -94,7 +94,7 @@ def macr_cara_poutre_ops(self,MAILLAGE,SYME_Y,SYME_Z,GROUP_MA_BORD,
    mfact=_F(TOUT='OUI',**motsimps)
    __cageo=POST_ELEM(MODELE=__nomamo, CHAM_MATER=__nomama, CARA_GEOM=mfact)
 
-   # nb  :  si GROUP_MA n'existe pas, le mot clé est ignoré
+   # nb  :  si GROUP_MA n'existe pas, le mot clÃ© est ignorÃ©
    #
    # =====================================================================
    #  CALCUL DE LA CONSTANTE DE TORSION SUR TOUT LE MAILLAGE
@@ -711,13 +711,13 @@ def macr_cara_poutre_ops(self,MAILLAGE,SYME_Y,SYME_Z,GROUP_MA_BORD,
          MODELE=__nomamo, CHAM_MATER=__nomama,CARA_GEOM=mfact
       )
    #
-   # On retourne une table exploitable par AFFE_CARA_ELEM, avec seulement les caractéristiques nécessaires
+   # On retourne une table exploitable par AFFE_CARA_ELEM, avec seulement les caractÃ©ristiques nÃ©cessaires
    if (TABLE_CARA == "OUI") :
       # si GROUP_MA     : le concept NomMaillageOld ne fait plus partie de la table
       # si pas GROUP_MA :
-      #     si NOM      : le nom du concept NomMaillageOld est remplacé par NomMaillageNew
-      #     si pas NOM  : le nom du concept NomMaillageOld est gardé
-      # On enlève la ligne avec LIEU='-'
+      #     si NOM      : le nom du concept NomMaillageOld est remplacÃ© par NomMaillageNew
+      #     si pas NOM  : le nom du concept NomMaillageOld est gardÃ©
+      # On enlÃ¨ve la ligne avec LIEU='-'
       nomres = CALC_TABLE(
          reuse=nomres,TABLE=nomres,
          ACTION=_F(OPERATION='FILTRE',NOM_PARA='LIEU',CRIT_COMP='NON_VIDE'),
@@ -732,7 +732,7 @@ def macr_cara_poutre_ops(self,MAILLAGE,SYME_Y,SYME_Z,GROUP_MA_BORD,
          )
          TabTmp = nomres.EXTR_TABLE().dict_CREA_TABLE()
       else:
-         # si NomMaillageNew est donné on remplace LIEU=NomMaillageOld par LIEU=NomMaillageNew
+         # si NomMaillageNew est donnÃ© on remplace LIEU=NomMaillageOld par LIEU=NomMaillageNew
          if ( NomMaillageNew != None ):
             TabTmp = nomres.EXTR_TABLE()
             for ii in range(len(TabTmp.rows)):
@@ -769,7 +769,7 @@ def macr_cara_poutre_ops(self,MAILLAGE,SYME_Y,SYME_Z,GROUP_MA_BORD,
                ),
          )
    #
-   # On retourne une table contenant toutes les caractéristiques calculées
+   # On retourne une table contenant toutes les caractÃ©ristiques calculÃ©es
    else:
       if GROUP_MA_BORD and not GROUP_MA:
          nomres=CALC_TABLE(

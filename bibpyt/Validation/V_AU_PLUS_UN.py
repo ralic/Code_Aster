@@ -1,4 +1,4 @@
-# -*- coding: iso-8859-1 -*-
+# coding=utf-8
 # person_in_charge: mathieu.courtois at edf.fr
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -21,20 +21,20 @@
 
 class AU_PLUS_UN:
    """
-      La règle vérifie que l'on trouve 1 (au plus) des mots-clés
-      de la règle parmi les arguments d'un OBJECT.
+      La rÃ¨gle vÃ©rifie que l'on trouve 1 (au plus) des mots-clÃ©s
+      de la rÃ¨gle parmi les arguments d'un OBJECT.
 
-      Ces arguments sont transmis à la règle pour validation sous la forme
-      d'une liste de noms de mots-clés ou d'un dictionnaire dont
-      les clés sont des noms de mots-clés.
+      Ces arguments sont transmis Ã  la rÃ¨gle pour validation sous la forme
+      d'une liste de noms de mots-clÃ©s ou d'un dictionnaire dont
+      les clÃ©s sont des noms de mots-clÃ©s.
    """
    def verif(self, args):
       """
-          La méthode verif vérifie que l'on trouve 1 (au plus) des mos-clés
-          de la liste self.mcs parmi les éléments de args
+          La mÃ©thode verif vÃ©rifie que l'on trouve 1 (au plus) des mos-clÃ©s
+          de la liste self.mcs parmi les Ã©lÃ©ments de args
 
-          args peut etre un dictionnaire ou une liste. Les éléments de args
-          sont soit les éléments de la liste soit les clés du dictionnaire.
+          args peut etre un dictionnaire ou une liste. Les Ã©lÃ©ments de args
+          sont soit les Ã©lÃ©ments de la liste soit les clÃ©s du dictionnaire.
       """
       #  on compte le nombre de mots cles presents
       text = ''
@@ -43,7 +43,7 @@ class AU_PLUS_UN:
       for mc in self.mcs:
          count = count + args.get(mc, 0)
       if count > 1:
-         text = u"- Il ne faut qu'un mot-clé (au plus) parmi : "+`self.mcs`+'\n'
+         text = u"- Il ne faut qu'un mot-clÃ© (au plus) parmi : "+`self.mcs`+'\n'
          return text, 0
       return text, 1
 

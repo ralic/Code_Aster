@@ -1,4 +1,4 @@
-# -*- coding: iso-8859-1 -*-
+# coding=utf-8
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -43,7 +43,7 @@ debug = False
 # ------------------------------------------------------------------------------
 def ExecCommand_SSH(scmd, alt_comment='', verbose=False, separated_stderr=True):
    """ Lance une commande distante via SSH
-       Recupere les differents problemes liés à SSH
+       Recupere les differents problemes liÃ©s Ã  SSH
    """
    import aster
    from Utilitai.Utmess     import  UTMESS
@@ -111,12 +111,12 @@ def exec_logiciel_ops(self, LOGICIEL, ARGUMENT, MACHINE_DISTANTE, MAILLAGE, SALO
    self.set_icmd(1)
 
    #----------------------------------------------
-   # constantes des modes d'exécution
+   # constantes des modes d'exÃ©cution
    CMD_EXTERNE = 1
    EXECFILE    = 2
    mode_lancement = None
 
-   # paramètres nécessaires pour écrire la ligne de commande
+   # paramÃ¨tres nÃ©cessaires pour Ã©crire la ligne de commande
    # !! d_para['options'] est une liste !!
    d_para = {'prog' : '', 'options' : ''}
 
@@ -163,7 +163,7 @@ def exec_logiciel_ops(self, LOGICIEL, ARGUMENT, MACHINE_DISTANTE, MAILLAGE, SALO
 
 
    #----------------------------------------------
-   # 1. Préparation des données
+   # 1. PrÃ©paration des donnÃ©es
    # 1.1. EXEC_LOGICIEL standard
    if MAILLAGE == None and SALOME == None:
       mode_lancement = CMD_EXTERNE
@@ -298,7 +298,7 @@ def exec_logiciel_ops(self, LOGICIEL, ARGUMENT, MACHINE_DISTANTE, MAILLAGE, SALO
                   }
          cmd_salome.append( cmd_scp % d_scp )
 
-         # Recopie les fichiers d'entrée sur le serveur distant
+         # Recopie les fichiers d'entrÃ©e sur le serveur distant
          for i in range(len(FICHIERS_ENTREE)):
              fsrc = FICHIERS_ENTREE[i]
              fdst = FICHIERS_ENTREE_DIST[i]
@@ -366,7 +366,7 @@ def exec_logiciel_ops(self, LOGICIEL, ARGUMENT, MACHINE_DISTANTE, MAILLAGE, SALO
 
 
    #----------------------------------------------
-   # 2. lecture des mots-clés
+   # 2. lecture des mots-clÃ©s
    if LOGICIEL != None:
       d_para['prog'] = LOGICIEL
 
@@ -376,7 +376,7 @@ def exec_logiciel_ops(self, LOGICIEL, ARGUMENT, MACHINE_DISTANTE, MAILLAGE, SALO
 
 
    #----------------------------------------------
-   # 3. Exécution
+   # 3. ExÃ©cution
    # 3a. Lancement d'une commande externe
    if mode_lancement == CMD_EXTERNE:
 
@@ -433,7 +433,7 @@ def exec_logiciel_ops(self, LOGICIEL, ARGUMENT, MACHINE_DISTANTE, MAILLAGE, SALO
 
 
    #----------------------------------------------
-   # 3b. Exécution d'un fichier Python
+   # 3b. ExÃ©cution d'un fichier Python
    elif mode_lancement == EXECFILE:
       if d_para['prog'] != '':
          UTMESS('A', 'EXECLOGICIEL0_4')
@@ -448,7 +448,7 @@ def exec_logiciel_ops(self, LOGICIEL, ARGUMENT, MACHINE_DISTANTE, MAILLAGE, SALO
       if not osp.exists(d_para['fichMED']):
          UTMESS('F', 'EXECLOGICIEL0_6', valk=d_para['fichMED'])
       else:
-         # copie fichMED vers fichOUT pour pouvoir le récupérer
+         # copie fichMED vers fichOUT pour pouvoir le rÃ©cupÃ©rer
          shutil.copyfile(d_para['fichMED'], d_para['fichOUT'])
 
    else:
@@ -464,7 +464,7 @@ def exec_logiciel_ops(self, LOGICIEL, ARGUMENT, MACHINE_DISTANTE, MAILLAGE, SALO
       if not osp.exists(d_para['fichOUT']):
         UTMESS('F', 'EXECLOGICIEL0_13', valk=dMCF['FORMAT'])
 
-      # déclaration du concept maillage en sortie
+      # dÃ©claration du concept maillage en sortie
       self.DeclareOut('mail', dMCF['MAILLAGE'])
 
       lire_mail_opts = {}
@@ -477,7 +477,7 @@ def exec_logiciel_ops(self, LOGICIEL, ARGUMENT, MACHINE_DISTANTE, MAILLAGE, SALO
                   UNITE_MAILLAGE = umail)
 
       elif dMCF['FORMAT'] == 'SALOME':
-         # ici l'unité en entrée de LIRE_MAILLAGE ne correspond pas au .mail
+         # ici l'unitÃ© en entrÃ©e de LIRE_MAILLAGE ne correspond pas au .mail
          # mais au fichier MED en sortie du execfile.
          umail = dMCF['UNITE']
          etat = UL.Etat(umail, etat='O', TYPE='LIBRE', nom=d_para['fichMED'])

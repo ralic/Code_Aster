@@ -1,4 +1,4 @@
-# -*- coding: iso-8859-1 -*-
+# coding=utf-8
 # person_in_charge: mathieu.courtois at edf.fr
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -23,7 +23,7 @@
 
 """
     Ce module porte la classe CODE qui porte l'attribut codex
-    qui pointe vers le module représentant le code de calcul
+    qui pointe vers le module reprÃ©sentant le code de calcul
 """
 import codex
 

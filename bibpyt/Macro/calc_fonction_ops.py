@@ -1,4 +1,4 @@
-# -*- coding: iso-8859-1 -*-
+# coding=utf-8
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -42,7 +42,7 @@ from Macro.defi_inte_spec_ops import tocomplex
 def calc_fonction_ops(self, **args):
     """Corps de la macro CALC_FONCTION"""
     self.set_icmd(1)
-    # éléments de contexte
+    # Ã©lÃ©ments de contexte
     ctxt = Context()
 
     operation = calc_fonction_operation(self, ctxt, args)
@@ -259,7 +259,7 @@ class CalcFonction_CORR_ACCE(CalcFonctionOper):
             # suppression de la tendance deplacement
             # calcul du deplacement : integration
             fres = fres.trapeze(0.)
-            # calcul de la tendance du déplacement : y = a1*x +a0
+            # calcul de la tendance du dÃ©placement : y = a1*x +a0
             fres = fres.suppr_tend()
             # regeneration de la vitesse : derivation
             fres = fres.derive()
@@ -447,7 +447,7 @@ class CalcFonction_SPEC_OSCI(CalcFonctionOper):
         import aster_fonctions
         f_in = self._lf[0]
         l_freq, l_amor = self._dat['FREQ'], self._dat['AMOR']
-        # appel à SPEC_OSCI
+        # appel Ã  SPEC_OSCI
         spectr = aster_fonctions.SPEC_OSCI(f_in.vale_x, f_in.vale_y,
                                            l_freq, l_amor)
         # construction de la nappe
@@ -566,13 +566,13 @@ class CalcFonction_REGR_POLYNOMIALE(CalcFonctionOper):
         deg = self.kw['DEGRE']
         coef = NP.polyfit(f_in.vale_x, f_in.vale_y, deg)
         if coef is None:
-            raise FonctionError("La régression polynomiale n'a pas convergé.")
+            raise FonctionError("La rÃ©gression polynomiale n'a pas convergÃ©.")
         # interpolation sur une liste d'abscisses
         absc = f_in.vale_x
         if self.args['LIST_PARA'] is not None:
             absc = self.args['LIST_PARA'].Valeurs()
         vale = NP.polyval(coef, absc)
-        # paramètres
+        # paramÃ¨tres
         para = f_in.para.copy()
         para['INTERPOL'] = ['LIN', 'LIN']
         self.resu = t_fonction(absc, vale, para)
@@ -582,8 +582,8 @@ class CalcFonction_REGR_POLYNOMIALE(CalcFonctionOper):
 
 
 class Context(object):
-    """Permet de stocker des éléments de contexte pour aider au
-    diagnostic lors de l'émission de message.
+    """Permet de stocker des Ã©lÃ©ments de contexte pour aider au
+    diagnostic lors de l'Ã©mission de message.
     usage :
        context = Context()
        context.f = 'nomfon'
@@ -593,14 +593,14 @@ class Context(object):
         self.__nomf = None
 
     def get_val(self):
-        """Retourne le texte formatté."""
+        """Retourne le texte formattÃ©."""
         nomf = self.__nomf
         if type(nomf) not in (list, tuple):
             nomf = [nomf,]
         pluriel = ''
         if len(nomf) > 1:
             pluriel = 's'
-        res = """Fonction%(s)s concernée%(s)s : %(nomf)s""" % {
+        res = """Fonction%(s)s concernÃ©e%(s)s : %(nomf)s""" % {
             's'    : pluriel,
             'nomf' : ', '.join(nomf),
         }

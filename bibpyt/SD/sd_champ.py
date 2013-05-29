@@ -1,4 +1,4 @@
-# -*- coding: iso-8859-1 -*-
+# coding=utf-8
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -26,7 +26,7 @@ from SD.sd_carte import sd_carte
 from SD.sd_resuelem import sd_resuelem
 
 #---------------------------------------------------------------------------------
-# classe "chapeau" à sd_cham_no, sd_cham_elem, sd_carte, ...
+# classe "chapeau" Ã  sd_cham_no, sd_cham_elem, sd_carte, ...
 #---------------------------------------------------------------------------------
 
 class sd_champ(AsBase):

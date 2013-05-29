@@ -1,4 +1,4 @@
-# -*- coding: iso-8859-1 -*-
+# coding=utf-8
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -22,77 +22,77 @@ cata_msg = {
 
 1 : _(u"""
 Certains pas de temps de la liste (LISTE_INST) sont plus petits
- que le pas de temps minimal renseigné (SUBD_PAS_MINI)
+ que le pas de temps minimal renseignÃ© (SUBD_PAS_MINI)
 """),
 
 2 : _(u"""
- L'instant initial de la liste est plus grand que le deuxième instant.
+ L'instant initial de la liste est plus grand que le deuxiÃ¨me instant.
  Si vous faites une reprise de calcul (REUSE), vous pouvez utiliser le mot-clef ETAT_INIT/INST_ETAT_INIT pour corriger cela.
 """),
 
 3 : _(u"""
- Problème lors de la récupération de la table contenant les paramètres calculés du résultat <%(k1)s>.
+ ProblÃ¨me lors de la rÃ©cupÃ©ration de la table contenant les paramÃ¨tres calculÃ©s du rÃ©sultat <%(k1)s>.
 Conseils :
-   Vérifiez que le résultat <%(k1)s> provient bien de la commande STAT_NON_LINE ou DYNA_NON_LINE.
+   VÃ©rifiez que le rÃ©sultat <%(k1)s> provient bien de la commande STAT_NON_LINE ou DYNA_NON_LINE.
 """),
 
 4 : _(u"""
- Problème lors de la récupération de la table contenant les paramètres calculés du résultat <%(k1)s>.
- Ce résultat a été construit en reprise (REUSE). On ne sait pas extraire une liste d'instants correcte.
+ ProblÃ¨me lors de la rÃ©cupÃ©ration de la table contenant les paramÃ¨tres calculÃ©s du rÃ©sultat <%(k1)s>.
+ Ce rÃ©sultat a Ã©tÃ© construit en reprise (REUSE). On ne sait pas extraire une liste d'instants correcte.
 Conseils :
    Faites votre calcul initial sans reprise.
 """),
 
 
 5 : _(u"""
- L'adaptation du pas de temps a été désactivée. Seuls les instants définis par LIST_INST seront calculés
- (hormis les sous découpages éventuels).
+ L'adaptation du pas de temps a Ã©tÃ© dÃ©sactivÃ©e. Seuls les instants dÃ©finis par LIST_INST seront calculÃ©s
+ (hormis les sous dÃ©coupages Ã©ventuels).
 """),
 
 8 : _(u"""
- Vous faites un calcul de thermique sans résolution stationnaire et sans
- non plus de résolution transitoire.
+ Vous faites un calcul de thermique sans rÃ©solution stationnaire et sans
+ non plus de rÃ©solution transitoire.
 
  Conseils :
-   Renseignez la discrétisation temporelle par le mot clé INCREMENT
+   Renseignez la discrÃ©tisation temporelle par le mot clÃ© INCREMENT
 """),
 
 9 : _(u"""
  Attention, en cas d'erreur (contact, loi de comportement, pilotage, ...), le pas de temps
- ne sera pas redécoupé.
+ ne sera pas redÃ©coupÃ©.
 """),
 
 
 10 : _(u"""
- On ne peut définir qu'une seule occurrence de ECHEC/EVENEMENT='ERREUR'.
+ On ne peut dÃ©finir qu'une seule occurrence de ECHEC/EVENEMENT='ERREUR'.
 """),
 
 14 : _(u"""
- Attention : avec MODE_CALCUL_TPLUS = 'IMPLEX', on doit demander le calcul à tous les instants
+ Attention : avec MODE_CALCUL_TPLUS = 'IMPLEX', on doit demander le calcul Ã  tous les instants
  (EVENEMENT='TOUT_INST')
 """),
 
 15 : _(u"""
- Attention : MODE_CALCUL_TPLUS = 'IMPLEX' ne permet qu'un mot clé ADAPTATION
+ Attention : MODE_CALCUL_TPLUS = 'IMPLEX' ne permet qu'un mot clÃ© ADAPTATION
 """),
 
 40 : _(u"""
-  Le solveur <%(k1)s> ne permet pas la détection de singularité.
-  La découpe du pas de temps en cas d'erreur (pivot nul) n'est donc pas possible.
+  Le solveur <%(k1)s> ne permet pas la dÃ©tection de singularitÃ©.
+  La dÃ©coupe du pas de temps en cas d'erreur (pivot nul) n'est donc pas possible.
 """),
 
 41 : _(u"""
-  Le préconditionneur <%(k1)s> ne supporte pas la réactualisation automatique.
+  Le prÃ©conditionneur <%(k1)s> ne supporte pas la rÃ©actualisation automatique.
 """),
 
 42 : _(u"""
-  Le solveur <%(k1)s> n'est pas un solveur itératif.
-  La réactualisation du préconditionneur n'est donc pas possible.
+  Le solveur <%(k1)s> n'est pas un solveur itÃ©ratif.
+  La rÃ©actualisation du prÃ©conditionneur n'est donc pas possible.
 """),
 
 86 : _(u"""
 Il n'y a aucun pas de calcul temporel.
-En mécanique, 'LIST_INST' est absent.
+En mÃ©canique, 'LIST_INST' est absent.
 En thermique, 'LIST_INST' est absent ou un singleton.
 """),
 
@@ -103,17 +103,17 @@ La liste d'instants n'est pas strictement croissante.
 89 : _(u"""
 L'instant initial est introuvable dans la liste d'instants (LIST_INST).
 Risque & Conseil :
-   Vérifiez le mot-clé INST_INIT (ou NUME_INST_INIT), en tenant compte de la précision (mot-clé PRECISION).
+   VÃ©rifiez le mot-clÃ© INST_INIT (ou NUME_INST_INIT), en tenant compte de la prÃ©cision (mot-clÃ© PRECISION).
 """),
 
 92 : _(u"""
-On ne peut faire le calcul car l'instant final donné est égal au dernier instant stocké dans la structure de données RESULTAT. Il n'y a qu'un incrément disponible alors qu'il faut au moins deux pas de temps dans les opérateurs non-linéaires.
+On ne peut faire le calcul car l'instant final donnÃ© est Ã©gal au dernier instant stockÃ© dans la structure de donnÃ©es RESULTAT. Il n'y a qu'un incrÃ©ment disponible alors qu'il faut au moins deux pas de temps dans les opÃ©rateurs non-linÃ©aires.
 """),
 
 94 : _(u"""
 L'instant final est introuvable dans la liste d'instants (LIST_INST).
 Risque & Conseil :
-   Vérifiez le mot-clé INST_FIN (ou NUME_INST_FIN), en tenant compte de la précision (mot-clé PRECISION).
+   VÃ©rifiez le mot-clÃ© INST_FIN (ou NUME_INST_FIN), en tenant compte de la prÃ©cision (mot-clÃ© PRECISION).
 """),
 
 

@@ -1,4 +1,4 @@
-# -*- coding: iso-8859-1 -*-
+# coding=utf-8
 
 # SALOME V6.3.0
 
@@ -95,7 +95,7 @@ smesh.SetName(F_1               ,'F')
 smesh.SetName(G_1               ,'G')
 
 
-# Mise à jour de l'arbre
+# Mise Ã  jour de l'arbre
 #---------------------------
 # Si on a une interface graphique...
 

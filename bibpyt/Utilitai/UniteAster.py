@@ -1,4 +1,4 @@
-# -*- coding: iso-8859-1 -*-
+# coding=utf-8
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -31,38 +31,38 @@ from Cata.cata import DETRUIRE
 #-------------------------------------------------------------------------------
 #-------------------------------------------------------------------------------
 class UniteAster:
-   """Classe pour manipuler les fichiers en Python en accord avec les unitÈs
-   logiques utilisÈes en Fortran.
-   De maniËre analogue au Fortran, les Ètats possibles d'une unitÈ sont :
-      'F' : fermÈ, 'O' : ouvert, 'R' : rÈservÈ.
+   """Classe pour manipuler les fichiers en Python en accord avec les unit√©s
+   logiques utilis√©es en Fortran.
+   De mani√®re analogue au Fortran, les √©tats possibles d'une unit√© sont :
+      'F' : ferm√©, 'O' : ouvert, 'R' : r√©serv√©.
 
-   MÈthodes :
-      Nom      : Retourne le nom du fichier associÈ ‡ une unitÈ,
-      Etat     : Retourne l'Ètat d'une unitÈ,
-      Libre    : Retourne un numÈro d'unitÈ libre,
-      EtatInit : Remet une, plusieurs ou toutes les unitÈs dans leur Ètat initial.
+   M√©thodes :
+      Nom      : Retourne le nom du fichier associ√© √† une unit√©,
+      Etat     : Retourne l'√©tat d'une unit√©,
+      Libre    : Retourne un num√©ro d'unit√© libre,
+      EtatInit : Remet une, plusieurs ou toutes les unit√©s dans leur √©tat initial.
 
-   MÈthode privÈe :
+   M√©thode priv√©e :
       _setinfo : pour remplir le dictionnaire des 'infos'
-   Attribut privÈ :
-      infos[numÈro unitÈ] = { 'nom' : x, 'etat' : x , 'etat_init' : x }
+   Attribut priv√© :
+      infos[num√©ro unit√©] = { 'nom' : x, 'etat' : x , 'etat_init' : x }
    """
 #-------------------------------------------------------------------------------
    def __init__(self):
-      """Initialise le dictionnaire des unitÈs.
+      """Initialise le dictionnaire des unit√©s.
       """
       self.infos = {}
 
 #-------------------------------------------------------------------------------
    def _setinfo(self, ul):
-      """Remplit les infos de l'unitÈ 'ul'.
+      """Remplit les infos de l'unit√© 'ul'.
       """
       # ul peut etre un entier Aster
       try:
          unit = ul.valeur
       except:
          unit = int(ul)
-      # Si la clÈ n'existe pas
+      # Si la cl√© n'existe pas
       ini = False
       if not self.infos.has_key(unit):
          self.infos[unit] = {}
@@ -73,7 +73,7 @@ class UniteAster:
 
       __tab=INFO_EXEC_ASTER(UNITE=unit, LISTE_INFO=('ETAT_UNITE'))
       
-      # O:ouvert, F:fermÈ, R:rÈservÈ
+      # O:ouvert, F:ferm√©, R:r√©serv√©
       self.infos[unit]['etat'] = __tab['ETAT_UNITE',1].strip()[0]
       if ini:
          self.infos[unit]['etat_init'] = self.infos[unit]['etat']
@@ -84,7 +84,7 @@ class UniteAster:
       elif self.infos[unit]['etat'] == 'F':
          nomfich='fort.'+str(unit)
       else:
-         message = "Etat de l'unitÈ inconnu : %s" % self.infos[unit]['etat']
+         message = "Etat de l'unit√© inconnu : %s" % self.infos[unit]['etat']
          print __tab.EXTR_TABLE()
          raise aster.error,"<F> <UniteAster._setinfo> %s" % message
       self.infos[unit]['nom'] = nomfich
@@ -93,7 +93,7 @@ class UniteAster:
 
 #-------------------------------------------------------------------------------
    def Libre(self, nom=None, action='RESERVER'):
-      """RÈserve/associe et retourne une unitÈ libre en y associant, s'il est
+      """R√©serve/associe et retourne une unit√© libre en y associant, s'il est
       fourni, le fichier 'nom'.
       """
       __tab=INFO_EXEC_ASTER(LISTE_INFO=('UNITE_LIBRE'))
@@ -102,9 +102,9 @@ class UniteAster:
       if nom==None:
          nom='fort.'+str(unit)
 
-      # Si la clÈ existe, c'est que le fichier n'Ètait pas libre
+      # Si la cl√© existe, c'est que le fichier n'√©tait pas libre
       if self.infos.has_key(unit):
-         message = "Cette unitÈ est dÈj‡ affectÈe au fichier %s" % \
+         message = "Cette unit√© est d√©j√† affect√©e au fichier %s" % \
             self.infos[unit]['nom']
          raise aster.error,"<F> <UniteAster.Libre> %s" % message
 
@@ -117,42 +117,42 @@ class UniteAster:
 
 #-------------------------------------------------------------------------------
    def Nom(self, ul):
-      """Retourne le nom du fichier associÈ ‡ l'unitÈ 'ul'.
+      """Retourne le nom du fichier associ√© √† l'unit√© 'ul'.
       """
       # ul peut etre un entier Aster
       try:
          unit = ul.valeur
       except:
          unit = int(ul)
-      # Si la clÈ n'existe pas
+      # Si la cl√© n'existe pas
       if not self.infos.has_key(unit):
          self._setinfo(unit)
       return self.infos[unit]['nom']
 
 #-------------------------------------------------------------------------------
    def Etat(self, ul, **kargs):
-      """Retourne l'Ètat de l'unitÈ si 'etat' n'est pas fourni
-      et/ou change son Ètat :
-         kargs['etat']  : nouvel Ètat,
+      """Retourne l'√©tat de l'unit√© si 'etat' n'est pas fourni
+      et/ou change son √©tat :
+         kargs['etat']  : nouvel √©tat,
          kargs['nom']   : nom du fichier,
-         kargs['TYPE']  : type du fichier ‡ ouvrir ASCII/BINARY/LIBRE,
-         kargs['ACCES'] : type d'accËs NEW/APPEND/OLD (APPEND uniquement en ASCII).
+         kargs['TYPE']  : type du fichier √† ouvrir ASCII/BINARY/LIBRE,
+         kargs['ACCES'] : type d'acc√®s NEW/APPEND/OLD (APPEND uniquement en ASCII).
       """
       # ul peut etre un entier Aster
       try:
          unit = ul.valeur
       except:
          unit = int(ul)
-      # Si la clÈ n'existe pas
+      # Si la cl√© n'existe pas
       if not self.infos.has_key(unit):
          self._setinfo(unit)
       if not kargs.has_key('etat'):
          return self.infos[unit]['etat']
 
-      # En fonction de la demande, on bascule son Ètat ou pas
+      # En fonction de la demande, on bascule son √©tat ou pas
       new = kargs.get('etat')
       if not new in ['R', 'F', 'O']:
-         message = "Nouvel Ètat de l'unitÈ incorrect : %s" % new
+         message = "Nouvel √©tat de l'unit√© incorrect : %s" % new
          raise aster.error,"<F> <UniteAster.Etat> %s" % message
 
       if self.infos[unit]['etat'] == new:
@@ -169,7 +169,7 @@ class UniteAster:
       elif new == 'O':
          if self.infos[unit]['etat'] == 'R':
             DEFI_FICHIER(ACTION='LIBERER', UNITE=unit)
-         # valeurs par dÈfaut
+         # valeurs par d√©faut
          typ   = kargs.get('TYPE', 'ASCII')
          if typ == 'ASCII':
             acces = 'APPEND'
@@ -187,8 +187,8 @@ class UniteAster:
 
 #-------------------------------------------------------------------------------
    def EtatInit(self, ul=None):
-      """Remet l'unitÈ 'ul' dans son Ètat initial.
-      Si 'ul' est omis, toutes les unitÈs sont remises dans leur Ètat initial.
+      """Remet l'unit√© 'ul' dans son √©tat initial.
+      Si 'ul' est omis, toutes les unit√©s sont remises dans leur √©tat initial.
       """
       if ul == None:
          for uli, vul in self.infos.items():
@@ -202,7 +202,7 @@ class UniteAster:
                unit = u.valeur
             except:
                unit = int(u)
-            # Si la clÈ n'existe pas
+            # Si la cl√© n'existe pas
             if not self.infos.has_key(unit):
                self._setinfo(unit)
             else:

@@ -1,5 +1,5 @@
 *
-*Maillage Modélisation B (3D):
+*Maillage ModÃ©lisation B (3D):
 *Extrusion d'un lopin
 *Elements solide (HEXA8)
 *Element pour le contact (QUAD4)
@@ -28,7 +28,7 @@ l10= 45. ;
 l11= 48. ;
 l12= 60. ;
 *
-* coordonnées des points
+* coordonnÃ©es des points
 *
 A = l1                0.                      0.  ;
 B = l1                l3                      0.  ; 
@@ -45,7 +45,7 @@ L = l1                l2                      0.  ;
 M = l1                 0.                     0.  ;
 N = 0.                 0.                     0.  ;
 *
-*Création de la filière
+*CrÃ©ation de la filiÃ¨re
 *
 lAB = droit 14 A B ;
 lBC = droit 6 B C ;
@@ -67,19 +67,19 @@ v1= fil volu ROTA nbvol beta N K ;
 v1 = elim .1 v1;
 FILIERE= regenere v1 ;
 *
-* Création des surfaces de la filiere pour les conditions de symétrie
+* CrÃ©ation des surfaces de la filiere pour les conditions de symÃ©trie
 *
 FIL_SYM1 = FIL;
 FIL_SYM2 = FACE 2 v1;
 *
-* Création de la surface extérieure la filiere
+* CrÃ©ation de la surface extÃ©rieure la filiere
 *
 LEXT = (LJA et LIJ et LHI);
 FIL_EXT = LEXT ROTA nbvol beta N K;
 FIL_EXT = elim .1   FIL_EXT;
 FIL_EXT = regenerer FIL_EXT;
 *
-* Création des surfaces maitres (Filiaire)
+* CrÃ©ation des surfaces maitres (Filiaire)
 *
 LAF = (LAB et LBC et LCD et LDE et LEF);
 FIL_MAI1 = LAF ROTA nbvol beta N K;
@@ -91,7 +91,7 @@ FILIERE = elim 0.0001 (FILIERE et FIL_SYM1 et FIL_SYM2 et
           FIL_EXT et FIL_MAI1 et FIL_MAI2);
 *
 *-------------------------------------------
-*Création du LOPIN
+*CrÃ©ation du LOPIN
 *-------------------------------------------
 *
 lLM = droit 10 L M ;
@@ -105,18 +105,18 @@ v2= lop volu ROTA nbvol beta N K ;
 V2 = ELIM .1 V2;
 LOPIN= regenere v2 ;
 *
-* Création des surfaces du lopin pour les conditions de symétrie
+* CrÃ©ation des surfaces du lopin pour les conditions de symÃ©trie
 *
 LOP_SYM1 = LOP;
 LOP_SYM2 = FACE 2 v2;
 *
-* Création de la surface pour imposer un déplacement
+* CrÃ©ation de la surface pour imposer un dÃ©placement
 *
 LOP_DDL = LMN ROTA nbvol beta K G;
 LOP_DDL = ELIM .1 LOP_DDL;
 LOP_DDL = regener LOP_DDL;
 *
-* Création de la surface esclave pour le lopin
+* CrÃ©ation de la surface esclave pour le lopin
 *
 LOP_ESC1 = LLM ROTA nbvol beta N K;
 LOP_ESC2 = LKL ROTA nbvol beta N G;

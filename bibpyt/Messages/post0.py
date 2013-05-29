@@ -1,4 +1,4 @@
-# -*- coding: iso-8859-1 -*-
+# coding=utf-8
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -20,7 +20,7 @@
 
 cata_msg={
 1: _(u"""
-Définition incorrecte de la ligne de coupe.
+DÃ©finition incorrecte de la ligne de coupe.
 """),
 
 2: _(u"""
@@ -28,37 +28,37 @@ Valeurs incorrectes pour VECT_Y.
 """),
 
 3: _(u"""
-Valeurs incorrectes pour VECT_Y: X colinéaire à Y.
+Valeurs incorrectes pour VECT_Y: X colinÃ©aire Ã  Y.
 """),
 
 4: _(u"""
-Le vecteur Y n'est pas orthogonal à la ligne de coupe.
-Le vecteur Y a été orthonormalisé pour vous.
+Le vecteur Y n'est pas orthogonal Ã  la ligne de coupe.
+Le vecteur Y a Ã©tÃ© orthonormalisÃ© pour vous.
 VECT_Y=(%(r1)f,%(r2)f,%(r3)f)
 """),
 
 5: _(u"""
-Le type %(k1)s n'est pas cohérent avec le choix du repère (REPERE %(k2)s).
+Le type %(k1)s n'est pas cohÃ©rent avec le choix du repÃ¨re (REPERE %(k2)s).
 """),
 
 6: _(u"""
-Définition incorrecte de COOR_ORIG et CENTRE.
+DÃ©finition incorrecte de COOR_ORIG et CENTRE.
 """),
 
 7: _(u"""
-Définition incorrecte de DNOR.
+DÃ©finition incorrecte de DNOR.
 """),
 
 8: _(u"""
-Attention la ligne de coupe traverse des zones sans matière :
- - Les coordonnées des points sur la ligne de coupe sont :
+Attention la ligne de coupe traverse des zones sans matiÃ¨re :
+ - Les coordonnÃ©es des points sur la ligne de coupe sont :
             %(k1)s
- - Les coordonnées des points éliminés (car hors de la matière) sont:
+ - Les coordonnÃ©es des points Ã©liminÃ©s (car hors de la matiÃ¨re) sont:
             %(k2)s
 """),
 
 9: _(u"""
-Nom du modèle absent dans le concept résultat %(k1)s.
+Nom du modÃ¨le absent dans le concept rÃ©sultat %(k1)s.
 """),
 
 10: _(u"""
@@ -66,11 +66,11 @@ Veuillez renseigner le MODELE si vous utilisez un CHAM_GD.
 """),
 
 11: _(u"""
-Dimensions de maillage et de coordonnées incohérentes.
+Dimensions de maillage et de coordonnÃ©es incohÃ©rentes.
 """),
 
 12: _(u"""
-Le mot-clé 'DNOR' est obligatoire en 3D pour le type 'ARC'.
+Le mot-clÃ© 'DNOR' est obligatoire en 3D pour le type 'ARC'.
 """),
 
 13: _(u"""
@@ -91,87 +91,87 @@ avec des lignes de coupes SEGMENT ou GROUP_NO.
 """),
 
 17: _(u"""
-Le champ %(k1)s n'est pas traité par MACR_LIGNE_COUPE en repère %(k2)s.
-Le calcul est effectué en repère global.
+Le champ %(k1)s n'est pas traitÃ© par MACR_LIGNE_COUPE en repÃ¨re %(k2)s.
+Le calcul est effectuÃ© en repÃ¨re global.
 """),
 
 18: _(u"""
-%(k1)s est un type de champ aux éléments, non traité par PROJ_CHAMP, donc par MACR_LIGN_COUPE
+%(k1)s est un type de champ aux Ã©lÃ©ments, non traitÃ© par PROJ_CHAMP, donc par MACR_LIGN_COUPE
 
 Conseil : pour un champ aux points de Gauss, veuillez passer par un champ ELNO
 """),
 
 19: _(u"""
-La SD RESULTAT ne contient aucun champ pour le numéro d'ordre %(i1)d.
+La SD RESULTAT ne contient aucun champ pour le numÃ©ro d'ordre %(i1)d.
 On ne peut pas calculer les efforts.
 """),
 
 21: _(u"""
-Le point à l'occurrence %(i1)d a une cote h= %(r1)f, donc non nulle.
-Les efforts étant intégrés sur la section, on n en tient pas compte.
+Le point Ã  l'occurrence %(i1)d a une cote h= %(r1)f, donc non nulle.
+Les efforts Ã©tant intÃ©grÃ©s sur la section, on n en tient pas compte.
 """),
 
 22: _(u"""
-Le point à l'occurrence %(i1)d n a que 3 coordonnées. Pour le calcul
-des déformations on doit rentrer une position dans l'épaisseur.
+Le point Ã  l'occurrence %(i1)d n a que 3 coordonnÃ©es. Pour le calcul
+des dÃ©formations on doit rentrer une position dans l'Ã©paisseur.
 """),
 
 23: _(u"""
-Le concept résultat %(k1)s ne contient pas de modèle.
-On ne pourra donc pas projeter de champs aux éléments (champs de contraintes, etc.).
+Le concept rÃ©sultat %(k1)s ne contient pas de modÃ¨le.
+On ne pourra donc pas projeter de champs aux Ã©lÃ©ments (champs de contraintes, etc.).
 Pour projeter des champs aux noeuds, on utilisera directement le maillage. 
 """),
 
 24: _(u"""
-Attention la ligne de coupe %(i1)d traverse des zones sans matière :
- - Les coordonnées des points sur la ligne de coupe sont :
+Attention la ligne de coupe %(i1)d traverse des zones sans matiÃ¨re :
+ - Les coordonnÃ©es des points sur la ligne de coupe sont :
             %(k1)s
- - Le nombre de points éliminés (car hors de la matière) est:
+ - Le nombre de points Ã©liminÃ©s (car hors de la matiÃ¨re) est:
             %(i2)d
 """),
 
 25: _(u"""
-La SD RESULTAT ne contient aucun champ au numéro d ordre %(i1)d.
+La SD RESULTAT ne contient aucun champ au numÃ©ro d ordre %(i1)d.
 """),
 
 26: _(u"""
-La SD RESULTAT ne contient aucun champ à l instant %(r1)f.
+La SD RESULTAT ne contient aucun champ Ã  l instant %(r1)f.
 """),
 
 33 : _(u"""
-Sur certains points de la fissure %(k1)s le calcul de l'ouverture de fissure n'a pas été possible. Trois situations sont envisageables : 
+Sur certains points de la fissure %(k1)s le calcul de l'ouverture de fissure n'a pas Ã©tÃ© possible. Trois situations sont envisageables : 
       (1) Le point est sur le bord
-      (2) L'endommagement maximal n'a été atteint sur la zone endommagée
-      (3) La valeur BORNE_MAX est trop élevée
+      (2) L'endommagement maximal n'a Ã©tÃ© atteint sur la zone endommagÃ©e
+      (3) La valeur BORNE_MAX est trop Ã©levÃ©e
 """),
 
 34: _(u"""
-Pour la commande POST_ENDO_FISS, le maillage doit être contenu dans un plan parallèle aux plans XY, XZ, YZ.
+Pour la commande POST_ENDO_FISS, le maillage doit Ãªtre contenu dans un plan parallÃ¨le aux plans XY, XZ, YZ.
 """),
 
 35: _(u"""
-Le champ pour la recherche de l'ouverture de fissure doit être un champ aux noeuds.
+Le champ pour la recherche de l'ouverture de fissure doit Ãªtre un champ aux noeuds.
 """),
 
 
 
 39 : _(u"""
-En 3D, le mot-clé NORMALE doit être renseigné dans la commande DEFI_FOND_FISS.
+En 3D, le mot-clÃ© NORMALE doit Ãªtre renseignÃ© dans la commande DEFI_FOND_FISS.
 """),
 
 41 : _(u"""
-L'instant ou numéro d'ordre demandé n'existe pas dans le résultat et champ renseignés en entrée de la commande.
+L'instant ou numÃ©ro d'ordre demandÃ© n'existe pas dans le rÃ©sultat et champ renseignÃ©s en entrÃ©e de la commande.
 """),
 
 42 : _(u"""
-Le champ demandé pour la recherche du trajet de fissuration n'existe pas dans le résultat renseigné en entrée de la commande.
+Le champ demandÃ© pour la recherche du trajet de fissuration n'existe pas dans le rÃ©sultat renseignÃ© en entrÃ©e de la commande.
 """),
 
 43 : _(u"""
-Si OUVERTURE='OUI' il est nécessaire de renseigner un concept RESULTAT en entrée de la commande (et pas un CHAM_GD).
+Si OUVERTURE='OUI' il est nÃ©cessaire de renseigner un concept RESULTAT en entrÃ©e de la commande (et pas un CHAM_GD).
 """),
 
 44 : _(u"""
-Si OUVERTURE='OUI' il est nécessaire de renseigner le mot-clé BORNE_MAX.
+Si OUVERTURE='OUI' il est nÃ©cessaire de renseigner le mot-clÃ© BORNE_MAX.
 """),
 }

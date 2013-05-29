@@ -1,4 +1,4 @@
-# -*- coding: iso-8859-1 -*-
+# coding=utf-8
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -21,7 +21,7 @@ from cata_comportement import LoiComportement
 
 loi = LoiComportement(
    nom            = 'GDEF_HYPO_ELAS',
-   doc = """Algo pour résolution en grandes déformations.""",
+   doc = """Algo pour rÃ©solution en grandes dÃ©formations.""",
    num_lc         = 9999,
    nb_vari        = 9,
    nom_vari       = ('SH1','SH2','SH3','SH4','SH5','SH6','SH7','SH8','SH9'),

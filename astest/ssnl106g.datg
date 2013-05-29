@@ -74,4 +74,3 @@ OPTI ELEM SEG2 ;
 REP1 = @repere ;
 trac (rep1 et surf1);
 
-

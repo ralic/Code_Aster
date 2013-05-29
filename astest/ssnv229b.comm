@@ -41,12 +41,12 @@ DEBUT(CODE=_F(NOM='SSNV229B',NIV_PUB_WEB='INTERNET'),
 #######################################################################
 
 # PARAMETRES DES MATERIAUX
-# Béton
+# BÃ©ton
 E_bet = 30000.E6;
 NU_bet   = 0.13;
 ALPHA_b = 0.00001;
 
-# Câbles
+# CÃ¢bles
 E_cab    = 191500.E6;
 NU_cab  = 0.3;
 S_cab=3*0.002641;
@@ -194,7 +194,7 @@ res0=CALC_PRECONT(reuse=res0,
      CARA_ELEM  = cara,
      COMP_INCR=_F(RELATION='ELAS',),  
      EXCIT      = (_F(CHARGE = clim,), 
-                   _F(CHARGE = ch_odd0,),),#  les liaisons cinématiques des câbles déjà mis en tension doivent être inclues comme chargement
+                   _F(CHARGE = ch_odd0,),),#  les liaisons cinÃ©matiques des cÃ¢bles dÃ©jÃ  mis en tension doivent Ãªtre inclues comme chargement
      CABLE_BP=cab_eve0,
      INCREMENT=_F(LIST_INST=tps,INST_FIN=2.0,),);
 
@@ -203,7 +203,7 @@ res0=CALC_PRECONT(reuse=res0,
 ## RECUPERATION DES EFFORTS DANS LES CABLES
 #############################################################
 
-# Calcul des contraintes et déformations dans les éléments
+# Calcul des contraintes et dÃ©formations dans les Ã©lÃ©ments
 res0=CALC_CHAMP(reuse      = res0,
                 RESULTAT   = res0,
                 INST      = 2.,

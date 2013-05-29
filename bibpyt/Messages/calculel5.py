@@ -1,4 +1,4 @@
-# -*- coding: iso-8859-1 -*-
+# coding=utf-8
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -22,71 +22,71 @@ cata_msg = {
 
 1 : _(u"""
 Erreur utilisateur dans MODI_MAILLAGE / DEFORME :
-  Le fichier de déplacement fourni est associé au maillage : %(k2)s
-  Alors que le maillage à déformer est : %(k1)s
+  Le fichier de dÃ©placement fourni est associÃ© au maillage : %(k2)s
+  Alors que le maillage Ã  dÃ©former est : %(k1)s
 
-  Il faut que ces 2 maillages soient les mêmes.
+  Il faut que ces 2 maillages soient les mÃªmes.
 
 Conseils :
-  Pour créer un champ de déplacement adapté au maillage %(k1)s, on peut utiliser
+  Pour crÃ©er un champ de dÃ©placement adaptÃ© au maillage %(k1)s, on peut utiliser
   la commande PROJ_CHAMP.
 """),
 
 3 : _(u"""
  Erreur d'utilisation de POST_CHAMP :
-   Dans la structure de données %(k2)s,
-   vous avez demandé l'extraction du champ %(k1)s pour le numéro d'ordre %(i1)d.
+   Dans la structure de donnÃ©es %(k2)s,
+   vous avez demandÃ© l'extraction du champ %(k1)s pour le numÃ©ro d'ordre %(i1)d.
    Mais ce champ n'existe pas.
 """),
 
 4 : _(u"""
- !! problème création CHAM_ELEM nul dans alchml !!
+ !! problÃ¨me crÃ©ation CHAM_ELEM nul dans alchml !!
 """),
 
 5 : _(u"""
 Erreur utilisateur :
-  Vous essayez de faire un calcul non-linéaire mécanique sur un modèle dont les éléments
-  ne sont pas programmés pour cela.
-  On arrête le calcul.
+  Vous essayez de faire un calcul non-linÃ©aire mÃ©canique sur un modÃ¨le dont les Ã©lÃ©ments
+  ne sont pas programmÃ©s pour cela.
+  On arrÃªte le calcul.
 
 Risques & conseils :
   Vous devriez changer de MODELISATION.
-  Par exemple, la modélisation 'DST' ne peut pas faire du non-linéaire alors que la
-  modélisation 'DKT' le peut.
+  Par exemple, la modÃ©lisation 'DST' ne peut pas faire du non-linÃ©aire alors que la
+  modÃ©lisation 'DKT' le peut.
 """),
 
 6 : _(u"""
 Erreur utilisateur :
- Vous utilisez le mot clé NOM_CMP, mais l'une (au moins) des composantes indiquées
- n'appartient pas à la grandeur : %(k1)s
+ Vous utilisez le mot clÃ© NOM_CMP, mais l'une (au moins) des composantes indiquÃ©es
+ n'appartient pas Ã  la grandeur : %(k1)s
 """),
 
 7 : _(u"""
 Alarme utilisateur :
-  Vous utilisez la commande PROJ_CHAMP ou un mot clé nécessitant de "projeter"
+  Vous utilisez la commande PROJ_CHAMP ou un mot clÃ© nÃ©cessitant de "projeter"
   des noeuds sur des mailles (par exemple LIAISON_MAIL).
-  L'un des noeuds (%(k1)s) du maillage (%(k2)s) a été projeté à une distance D non nulle significative.
+  L'un des noeuds (%(k1)s) du maillage (%(k2)s) a Ã©tÃ© projetÃ© Ã  une distance D non nulle significative.
   (D>10%% de la taille de la maille la plus proche (%(k3)s) du maillage (%(k4)s)).
 """),
 
 8 : _(u"""
- il faut renseigner le mot clé MAILLE
+ il faut renseigner le mot clÃ© MAILLE
 """),
 
 9 : _(u"""
 Erreur utilisateur :
-  Vous ne pouvez pas utiliser la méthode ECLA_PG avec le mot-clé RESULTAT.
+  Vous ne pouvez pas utiliser la mÃ©thode ECLA_PG avec le mot-clÃ© RESULTAT.
 Conseil :
-   Extrayez le champ aux ELGA que contient votre résultat puis utilisez la méthode ECLA_PG avec le mot-clé CHAM_GD.
+   Extrayez le champ aux ELGA que contient votre rÃ©sultat puis utilisez la mÃ©thode ECLA_PG avec le mot-clÃ© CHAM_GD.
 """),
 
 10: _(u"""
 Erreur d'utilisation dans la commande CREA_MAILLAGE :
-  Le mot clé MAILLAGE est ici obligatoire.
+  Le mot clÃ© MAILLAGE est ici obligatoire.
 """),
 
 11 : _(u"""
- le paramètre est a valeurs de type  " %(k1)s "  et la valeur de référence de type  " %(k2)s ".
+ le paramÃ¨tre est a valeurs de type  " %(k1)s "  et la valeur de rÃ©fÃ©rence de type  " %(k2)s ".
 """),
 
 12 : _(u"""
@@ -94,7 +94,7 @@ Erreur d'utilisation dans la commande CREA_MAILLAGE :
 """),
 
 13 : _(u"""
- le champ  %(k1)s  est a valeurs de type  " %(k2)s "  et la valeur de référence de type  " %(k3)s ".
+ le champ  %(k1)s  est a valeurs de type  " %(k2)s "  et la valeur de rÃ©fÃ©rence de type  " %(k3)s ".
 """),
 
 14 : _(u"""
@@ -103,17 +103,17 @@ Erreur d'utilisation dans la commande CREA_MAILLAGE :
 
 15 : _(u"""
 ***********************************
- Erreur dans un calcul élémentaire.
+ Erreur dans un calcul Ã©lÃ©mentaire.
  Contexte de l'erreur :
-   Maille concernée : %(k1)s
+   Maille concernÃ©e : %(k1)s
 """),
 
 16 : _(u"""   Option de calcul : %(k1)s
    Commentaire:"""),
 17 : _(u"""%(k1)s"""),
-18 : _(u"""     Paramètre d'entrée : %(k1)s
+18 : _(u"""     ParamÃ¨tre d'entrÃ©e : %(k1)s
       Commentaire:"""),
-19 : _(u"""     Paramètre de sortie : %(k1)s
+19 : _(u"""     ParamÃ¨tre de sortie : %(k1)s
      Commentaire:"""),
 
 20 : _(u"""
@@ -124,26 +124,26 @@ Erreur d'utilisation dans la commande CREA_MAILLAGE :
  le GROUP_MA  %(k1)s  contient  %(k2)s  mailles
 """),
 
-22 : _(u"""     Grandeur associée au champ : %(k1)s
+22 : _(u"""     Grandeur associÃ©e au champ : %(k1)s
      Commentaire:"""),
 23 : _(u"""***********************************"""),
 
 30 : _(u"""
 PROJ_CHAMP :
-  La méthode SOUS_POINT accepte uniquement les résultats de type
+  La mÃ©thode SOUS_POINT accepte uniquement les rÃ©sultats de type
   EVOL_THER."""),
 
 31 : _(u"""
 PROJ_CHAMP :
-  Le mot-clé facteur VIS_A_VIS est interdit avec la méthode SOUS_POINT."""),
+  Le mot-clÃ© facteur VIS_A_VIS est interdit avec la mÃ©thode SOUS_POINT."""),
 
 32 : _(u"""
 PROJ_CHAMP (ou LIAISON_MAILLE) :
-  La méthode %(k1)s est incompatible avec les champs aux noeuds."""),
+  La mÃ©thode %(k1)s est incompatible avec les champs aux noeuds."""),
 
 33 : _(u"""
 PROJ_CHAMP (ou LIAISON_MAILLE) :
-  La méthode %(k1)s est incompatible avec les champs par élément de type %(k2)s."""),
+  La mÃ©thode %(k1)s est incompatible avec les champs par Ã©lÃ©ment de type %(k2)s."""),
 
 34 : _(u"""
    Maillage quadratique obligatoire avec terme source non nul.
@@ -151,31 +151,31 @@ PROJ_CHAMP (ou LIAISON_MAILLE) :
 
 35 : _(u"""
 PROJ_CHAMP (ou LIAISON_MAILLE) :
-  Vous cherchez à projeter un champ par élément (ELGA).
-  Pour cela, il vous faut renseigner le mot-clé MODELE_1."""),
+  Vous cherchez Ã  projeter un champ par Ã©lÃ©ment (ELGA).
+  Pour cela, il vous faut renseigner le mot-clÃ© MODELE_1."""),
 
 36 : _(u"""
 PROJ_CHAMP (ou LIAISON_MAILLE) :
-  Le mot-clé TYPE_CHAM est incompatible avec le mot-clé CHAM_GD.
-  Il n'est utilisable qu'avec le mot-clé RESULTAT."""),
+  Le mot-clÃ© TYPE_CHAM est incompatible avec le mot-clÃ© CHAM_GD.
+  Il n'est utilisable qu'avec le mot-clÃ© RESULTAT."""),
 
 37 : _(u"""
 PROJ_CHAMP (ou LIAISON_MAILLE) :
-  Vous cherchez à projeter un champ par élément (ELNO, ELEM ou ELGA).
-  Pour cela, il vous faut renseigner le mot-clé MODELE_2."""),
+  Vous cherchez Ã  projeter un champ par Ã©lÃ©ment (ELNO, ELEM ou ELGA).
+  Pour cela, il vous faut renseigner le mot-clÃ© MODELE_2."""),
 
 38 : _(u"""
-  il faut définir un champ de vitesse
+  il faut dÃ©finir un champ de vitesse
 """),
 
 39 : _(u"""
- la grandeur pour la variable:  %(k1)s  doit être:  %(k2)s  mais elle est:  %(k3)s
+ la grandeur pour la variable:  %(k1)s  doit Ãªtre:  %(k2)s  mais elle est:  %(k3)s
 """),
 
 40 : _(u"""
 PROJ_CHAMP  :
-  Vous utilisez la méthode SOUS_POINT.
-  Pour cela, il vous faut renseigner le mot-clé MODELE_2."""),
+  Vous utilisez la mÃ©thode SOUS_POINT.
+  Pour cela, il vous faut renseigner le mot-clÃ© MODELE_2."""),
 
 41 : _(u"""
  pas de variables internes initiales pour la maille  %(k1)s
@@ -187,10 +187,10 @@ PROJ_CHAMP  :
 
 43 : _(u"""
 PROJ_CHAMP (ou LIAISON_MAILLE) :
-  Le noeud %(k1)s de coordonnées (%(r1)f,%(r2)f,%(r3)f) est projeté à la distance %(r4)f"""),
+  Le noeud %(k1)s de coordonnÃ©es (%(r1)f,%(r2)f,%(r3)f) est projetÃ© Ã  la distance %(r4)f"""),
 
 44 : _(u"""
- ! le champ doit être un CHAM_ELEM !
+ ! le champ doit Ãªtre un CHAM_ELEM !
 """),
 
 45 : _(u"""
@@ -203,28 +203,28 @@ PROJ_CHAMP (ou LIAISON_MAILLE) :
 
 48 : _(u"""
  PROJ_CHAMP (ou LIAISON_MAIL) :
- Nombre de noeuds projetés sur des mailles un peu distantes : %(i1)d.
- (la distance à la maille est supérieure à 1/10ème du diamètre de la maille)
+ Nombre de noeuds projetÃ©s sur des mailles un peu distantes : %(i1)d.
+ (la distance Ã  la maille est supÃ©rieure Ã  1/10Ã¨me du diamÃ¨tre de la maille)
 
- Le noeud %(k1)s est projeté le plus loin à la distance %(r1)f"""),
+ Le noeud %(k1)s est projetÃ© le plus loin Ã  la distance %(r1)f"""),
 
 
 49 : _(u"""
  LIAISON_MAIL :
- La relation linéaire destinée à éliminer le noeud esclave %(k1)s est une tautologie
- car la maille maître en vis à vis de ce noeud possède ce même noeud dans sa connectivité.
- On ne l'écrit donc pas.
+ La relation linÃ©aire destinÃ©e Ã  Ã©liminer le noeud esclave %(k1)s est une tautologie
+ car la maille maÃ®tre en vis Ã  vis de ce noeud possÃ¨de ce mÃªme noeud dans sa connectivitÃ©.
+ On ne l'Ã©crit donc pas.
 """),
 
 52 : _(u"""
- Le calcul du champ SIGM_ELNO n'a pas été fait sur la maille volumique %(k1)s qui borde
+ Le calcul du champ SIGM_ELNO n'a pas Ã©tÃ© fait sur la maille volumique %(k1)s qui borde
  la maille surfacique %(k2)s.
 
  Conseils :
-  Il faut faire le calcul du champ SIGM_ELNO sur les éléments volumiques de l'autre "coté"
+  Il faut faire le calcul du champ SIGM_ELNO sur les Ã©lÃ©ments volumiques de l'autre "cotÃ©"
   de la face en choisissant le bon groupe de mailles soit en faisant le calcul sur tout
   le volume.
-  Il est aussi possible de supprimer le calcul préalable de SIGM_ELNO, le calcul sera fait
+  Il est aussi possible de supprimer le calcul prÃ©alable de SIGM_ELNO, le calcul sera fait
   automatiquement sur les bonnes mailles volumiques.
 """),
 
@@ -234,31 +234,31 @@ PROJ_CHAMP (ou LIAISON_MAILLE) :
 """),
 
 54 : _(u"""
- Aucune maille de peau n'a été fournie.
+ Aucune maille de peau n'a Ã©tÃ© fournie.
 
- Vous devez renseigner le mot-clé MAILLE/GROUP_MA en donnant une liste de mailles ou
+ Vous devez renseigner le mot-clÃ© MAILLE/GROUP_MA en donnant une liste de mailles ou
  un groupe de maille contenant des mailles de peau.
- Si vous avez renseigné le mot-clé TOUT='OUI', cela signifie qu'il n'y a pas de mailles
- de peau dans votre modèle ; il faut revoir le maillage.
+ Si vous avez renseignÃ© le mot-clÃ© TOUT='OUI', cela signifie qu'il n'y a pas de mailles
+ de peau dans votre modÃ¨le ; il faut revoir le maillage.
 """),
 
 56 : _(u"""
- La combinaison 'fonction multiplicatrice' et 'chargement de type fonction' n'est pas autorisée car
- votre chargement %(k1)s contient une charge exprimée par une formule.
- Pour réaliser cette combinaison, vous devez transformer votre charge 'formule' en charge 'fonction'
- (via l'opérateur DEFI_FONCTION ou CALC_FONC_INTERP).
+ La combinaison 'fonction multiplicatrice' et 'chargement de type fonction' n'est pas autorisÃ©e car
+ votre chargement %(k1)s contient une charge exprimÃ©e par une formule.
+ Pour rÃ©aliser cette combinaison, vous devez transformer votre charge 'formule' en charge 'fonction'
+ (via l'opÃ©rateur DEFI_FONCTION ou CALC_FONC_INTERP).
  On poursuit sans tenir compte de la fonction multiplicatrice.
 """),
 
 57 : _(u"""
- La combinaison de chargements de même type n'est pas autorisée car l'un des chargements
- contient une charge exprimée par une formule.
- Pour réaliser cette combinaison, vous devez transformer votre charge 'formule' en charge 'fonction'
- (via l'opérateur DEFI_FONCTION ou CALC_FONC_INTERP)
+ La combinaison de chargements de mÃªme type n'est pas autorisÃ©e car l'un des chargements
+ contient une charge exprimÃ©e par une formule.
+ Pour rÃ©aliser cette combinaison, vous devez transformer votre charge 'formule' en charge 'fonction'
+ (via l'opÃ©rateur DEFI_FONCTION ou CALC_FONC_INTERP)
 """),
 
 58 : _(u"""
- La combinaison de chargements de type 'déformation initiale' n'a aucun sens physique.'
+ La combinaison de chargements de type 'dÃ©formation initiale' n'a aucun sens physique.'
 """),
 
 59 : _(u"""
@@ -266,34 +266,34 @@ PROJ_CHAMP (ou LIAISON_MAILLE) :
 """),
 
 60 : _(u"""
- La combinaison de chargements de type 'rotation' est déconseillée.
- Veuillez plutôt utiliser un chargement de type 'force interne'.
+ La combinaison de chargements de type 'rotation' est dÃ©conseillÃ©e.
+ Veuillez plutÃ´t utiliser un chargement de type 'force interne'.
 """),
 
 65 : _(u"""
- composante non définie dans  la grandeur.  composante:  %(k1)s
+ composante non dÃ©finie dans  la grandeur.  composante:  %(k1)s
 """),
 
 66 : _(u"""
 
- le nombre de composantes affectées n'est pas égal  au nombre de composantes a affecter
- occurrence de AFFE numéro %(i1)d
- nombre de composante affectées :  %(i2)d
+ le nombre de composantes affectÃ©es n'est pas Ã©gal  au nombre de composantes a affecter
+ occurrence de AFFE numÃ©ro %(i1)d
+ nombre de composante affectÃ©es :  %(i2)d
  nombre de composante a affecter :  %(i3)d
 """),
 
 67 : _(u"""
- erreurs données le GROUP_MA  %(k1)s
-  n'a pas le même nombre de mailles  que le GROUP_MA  %(k2)s
+ erreurs donnÃ©es le GROUP_MA  %(k1)s
+  n'a pas le mÃªme nombre de mailles  que le GROUP_MA  %(k2)s
 """),
 
 68 : _(u"""
- erreurs données le GROUP_MA  %(k1)s
-  n'a pas les mêmes types de maille  que le GROUP_MA  %(k2)s
+ erreurs donnÃ©es le GROUP_MA  %(k1)s
+  n'a pas les mÃªmes types de maille  que le GROUP_MA  %(k2)s
 """),
 
 69 : _(u"""
- erreurs données : la maille  %(k1)s  du maillage  %(k2)s
+ erreurs donnÃ©es : la maille  %(k1)s  du maillage  %(k2)s
   n'est pas la translation de la  maille  %(k3)s
   du maillage  %(k4)s
     vecteur translation :  %(r1)f %(r2)f %(r3)f
@@ -304,11 +304,11 @@ PROJ_CHAMP (ou LIAISON_MAILLE) :
 """),
 
 71 : _(u"""
- plusieurs numéros d'ordre trouves pour l'instant  %(r1)f
+ plusieurs numÃ©ros d'ordre trouves pour l'instant  %(r1)f
 """),
 
 72 : _(u"""
- cette commande est réentrante :   sd resultat en sortie     %(k1)s
+ cette commande est rÃ©entrante :   sd resultat en sortie     %(k1)s
     sd resultat "RESU_FINAL"  %(k2)s
 """),
 
@@ -318,16 +318,16 @@ PROJ_CHAMP (ou LIAISON_MAILLE) :
 """),
 
 76 : _(u"""
- Il n'est pas encore possible de découper le type_élément :  %(k1)s  en sous-éléments
+ Il n'est pas encore possible de dÃ©couper le type_Ã©lÃ©ment :  %(k1)s  en sous-Ã©lÃ©ments
     elrefa  :  %(k2)s ;
     famille :  %(k3)s.
- Faites une demande d'évolution.
+ Faites une demande d'Ã©volution.
 """),
 
 78 : _(u"""
- Il n'est pas encore possible de découper le type_élément :  %(k1)s  en sous-éléments
+ Il n'est pas encore possible de dÃ©couper le type_Ã©lÃ©ment :  %(k1)s  en sous-Ã©lÃ©ments
     elrefa :  %(k2)s.
- Faites une demande d'évolution.
+ Faites une demande d'Ã©volution.
 """),
 
 
@@ -336,9 +336,9 @@ PROJ_CHAMP (ou LIAISON_MAILLE) :
 
 
 85 : _(u"""
- Problème liste de mailles carte : %(k1)s  numéro entité : %(i1)d
+ ProblÃ¨me liste de mailles carte : %(k1)s  numÃ©ro entitÃ© : %(i1)d
   position dans liste : %(i2)d
-  numéro de maille  : %(i3)d
+  numÃ©ro de maille  : %(i3)d
 """),
 
 }

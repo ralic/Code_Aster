@@ -1,4 +1,4 @@
-# -*- coding: iso-8859-1 -*-
+# coding=utf-8
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -22,8 +22,8 @@ from cata_comportement import LoiComportement
 
 loi = LoiComportement(
    nom            = 'ELAS_POUTRE_GR',
-   doc = """ERelation de comportement élastique pour les poutres en grands déplacements et grandes rotations 
-   (DEFORMATION: 'GREEN_GR' est obligatoire). (Cf. [R5.03.40] pour plus de détail).""",
+   doc = """ERelation de comportement Ã©lastique pour les poutres en grands dÃ©placements et grandes rotations 
+   (DEFORMATION: 'GREEN_GR' est obligatoire). (Cf. [R5.03.40] pour plus de dÃ©tail).""",
    num_lc         = 9999,
    nb_vari        = 3,
    nom_vari       = ('GR1','GR2','GR3'),

@@ -1,4 +1,4 @@
-# -*- coding: iso-8859-1 -*-
+# coding=utf-8
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -20,7 +20,7 @@
 """
 script pour surcharger les catalogues officiels
 
-ce script fabrique un fichier .ojb  contenant l'info présente dans l'ENSEMBLE
+ce script fabrique un fichier .ojb  contenant l'info prÃ©sente dans l'ENSEMBLE
 des catalogues (+surcharge)
 """
 
@@ -95,7 +95,7 @@ def _main(surch, unigest, nom_capy_offi, resu_ojb):
 
     capy_surch = None
     if surch and osp.isfile(surch):
-        # pour ne pas utiliser trop de mémoire, on decoupe
+        # pour ne pas utiliser trop de mÃ©moire, on decoupe
         # le fichier pour la lecture :
         liste_morceaux = utilit.cata_split(surch, "morceau", 5000)
         capy_surch = lire_cata(liste_morceaux[0])
@@ -105,7 +105,7 @@ def _main(surch, unigest, nom_capy_offi, resu_ojb):
 
     capy_offi = utilit.read_capy(nom_capy_offi)
 
-    # prise en compte des destructions demandées via unigest :
+    # prise en compte des destructions demandÃ©es via unigest :
     utilit.detruire_cata(capy_offi, unigest)
 
     utilit.surch_capy(capy_offi, capy_surch)

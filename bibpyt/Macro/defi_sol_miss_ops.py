@@ -1,4 +1,4 @@
-# -*- coding: iso-8859-1 -*-
+# coding=utf-8
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -22,7 +22,7 @@ import os
 
 def defi_sol_miss_ops(self, MATERIAU, COUCHE, TITRE, INFO, **args):
    """Macro DEFI_SOL_MISS :
-   définir les caractéristiques du sol pour un calcul MISS3D
+   dÃ©finir les caractÃ©ristiques du sol pour un calcul MISS3D
    """
    import aster
 
@@ -38,14 +38,14 @@ def defi_sol_miss_ops(self, MATERIAU, COUCHE, TITRE, INFO, **args):
    # Le concept sortant (de type table_sdaster) est tabout
    self.DeclareOut("tabout", self.sd)
 
-   # 1. Création des dictionnaires des MATERIAUX
+   # 1. CrÃ©ation des dictionnaires des MATERIAUX
    l_mate = []
    for Mi in MATERIAU:
       dM = Mi.cree_dict_valeurs(Mi.mc_liste)
       l_mate.append(dM)
    nb_mate = len(l_mate)
 
-   # 2. Création des dictionnaires des COUCHES
+   # 2. CrÃ©ation des dictionnaires des COUCHES
    l_couche = []
    n_substr = 0
    n_epais = 0
@@ -62,8 +62,8 @@ def defi_sol_miss_ops(self, MATERIAU, COUCHE, TITRE, INFO, **args):
       UTMESS("F", "MISS0_21")
    nb_couche = len(l_couche)
 
-   # 3. définition de la table
-   # para/typ pré-trie les colonnes
+   # 3. dÃ©finition de la table
+   # para/typ prÃ©-trie les colonnes
    tab = Table(para=["NUME_COUCHE", "EPAIS", "RHO", "E", "NU", "AMOR_HYST", "RECEPTEUR", "SOURCE", "NUME_MATE", "SUBSTRATUM"],
                typ=["I", "R", "R", "R", "R", "R", "K8", "K8", "I", "K8"])
    idc = 0
@@ -90,6 +90,6 @@ def defi_sol_miss_ops(self, MATERIAU, COUCHE, TITRE, INFO, **args):
    if INFO == 2:
       print tab
 
-   # 5. création de la table
+   # 5. crÃ©ation de la table
    dprod = tab.dict_CREA_TABLE()
    tabout = CREA_TABLE(**dprod)

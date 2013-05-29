@@ -1,4 +1,4 @@
-# -*- coding: iso-8859-1 -*-
+# coding=utf-8
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -33,7 +33,7 @@ Le fichier %(k1)s est introuvable.
 """),
 
 5: _(u"""
-La dimension DIM n est pas précisée dans le fichier lu.
+La dimension DIM n est pas prÃ©cisÃ©e dans le fichier lu.
 """),
 
 6: _(u"""
@@ -41,7 +41,7 @@ Nombre de fonctions incorrect.
 """),
 
 7: _(u"""
-Erreur dans les données de fonctions.
+Erreur dans les donnÃ©es de fonctions.
 """),
 
 9: _(u"""
@@ -49,15 +49,15 @@ Le fichier IDEAS est vide ou ne contient pas le data set demande
 """),
 
 10: _(u"""
-Un des data sets 58 contient une donnée qui n'est pas un interspectre
+Un des data sets 58 contient une donnÃ©e qui n'est pas un interspectre
 """),
 
 11: _(u"""
-On ne traite pas les cas ou les abscisses fréquentielles ne sont pas régulièrement espacées
+On ne traite pas les cas ou les abscisses frÃ©quentielles ne sont pas rÃ©guliÃ¨rement espacÃ©es
 """),
 
 12: _(u"""
-Le mot-clé format correspond au format du fichier source, qui peut être 'ASTER' ou 'IDEAS' (pour lire les DS58)
+Le mot-clÃ© format correspond au format du fichier source, qui peut Ãªtre 'ASTER' ou 'IDEAS' (pour lire les DS58)
 """),
 
 

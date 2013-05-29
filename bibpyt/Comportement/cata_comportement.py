@@ -1,4 +1,4 @@
-# -*- coding: iso-8859-1 -*-
+# coding=utf-8
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -26,10 +26,10 @@
    Contenu du module :
 
    - CataLoiComportement : le catalogue
-      Méthodes : add, get, create, get_info, get_vari, query, get_algo
+      MÃ©thodes : add, get, create, get_info, get_vari, query, get_algo
 
    - LoiComportement : l'objet loi de comportement
-      Définition, stockage et récupération des valeurs
+      DÃ©finition, stockage et rÃ©cupÃ©ration des valeurs
 
    - KIT : permet l'assemblage de loi de comportement
 
@@ -37,23 +37,23 @@
 Interfaces Fortran/Python :
 
    Fonctionnement dans NMDORC : exemple VMIS_ISOT_TRAC + DEBORST
-      1. on construit le comportement rencontré
+      1. on construit le comportement rencontrÃ©
          CALL LCCREE(NBKIT, LKIT, COMPOR)
          ==> comport = catalc.create(*list_kit)
 
-      2. récupération du numéro de routine et le nbre de variables internes
+      2. rÃ©cupÃ©ration du numÃ©ro de routine et le nbre de variables internes
          CALL LCINFO(COMPOR, NUMLC, NBVARI)
          ==> num_lc, nb_vari = catalc.get_info(COMPOR)
 
-      3. récupère la liste des variables internes
+      3. rÃ©cupÃ¨re la liste des variables internes
          CALL LCVARI(COMPOR, NBVARI, LVARI)
          ==> nom_vari = catalc.get_vari(COMPOR)
 
-      4. est-ce que VALEUR est un valeur autorisée de PROPRIETE ?
+      4. est-ce que VALEUR est un valeur autorisÃ©e de PROPRIETE ?
          CALL LCTEST(COMPOR, PROPRIETE, VALEUR, IRET)
          ==> iret = catalc.query(COMPOR, PROPRIETE, VALEUR)
 
-      5. récupère le nom du 1er algorithme d'integration
+      5. rÃ©cupÃ¨re le nom du 1er algorithme d'integration
          CALL LCALGO(COMPOR, ALGO)
          ==> algo_inte = catalc.get_algo(COMPOR)
 
@@ -82,23 +82,23 @@ class CataComportementError(Exception):
 
 # utilitaires
 def force_to_tuple(value):
-   """Retourne systématiquement un tuple (vide si value==None)."""
+   """Retourne systÃ©matiquement un tuple (vide si value==None)."""
    if value is None:
       return tuple()
    return force_tuple(value)
 
 def check_type(typ, value, accept_None=False):
-   """Vérification de type"""
+   """VÃ©rification de type"""
    l_typ = force_to_tuple(typ)
    l_val = force_to_tuple(value)
    for val in l_val:
       if val is None and accept_None:
          pass
       elif type(val) not in l_typ:
-         raise CataComportementError, "%r n'est pas d'un type autorisé : %r" % (val, l_typ)
+         raise CataComportementError, "%r n'est pas d'un type autorisÃ© : %r" % (val, l_typ)
 
 def union(args):
-   """Union de N séquences."""
+   """Union de N sÃ©quences."""
    res = []
    for seq in args:
       if seq is None:
@@ -108,7 +108,7 @@ def union(args):
    return tuple(res)
 
 def intersection(args):
-   """Intersection de N séquences."""
+   """Intersection de N sÃ©quences."""
    if len(args) < 1:
       return tuple()
    res = list(args[0])
@@ -121,7 +121,7 @@ def intersection(args):
    return tuple(res)
 
 def first(args):
-   """Retourne la 1ère valeur."""
+   """Retourne la 1Ã¨re valeur."""
    return args[0]
 
 
@@ -133,7 +133,7 @@ class Base(object):
       return copy.copy(self)
 
    def gen_property(prop, typ, comment):
-      """Génère la propriété 'prop' avec ses fonctions get, set, del"""
+      """GÃ©nÃ¨re la propriÃ©tÃ© 'prop' avec ses fonctions get, set, del"""
       def getfunc(comport):
          return getattr(comport, '_' + prop)
 
@@ -148,7 +148,7 @@ class Base(object):
    gen_property = staticmethod(gen_property)
 
    def gen_getfunc(oper, prop):
-      """Génère la fonction get de la propriété 'prop'.
+      """GÃ©nÃ¨re la fonction get de la propriÃ©tÃ© 'prop'.
       'oper' est une fonction qui prend N valeurs de 'prop' et en retourne une"""
       def func(kit):
          return oper([getattr(comport, prop) for comport in kit.list_comport])
@@ -174,23 +174,23 @@ class Base(object):
    routine                    : %(num_lc)r
    nb de variables internes   : %(nb_vari)r
    nom des variables internes : %(nom_vari)r
-   modélisations disponibles  : %(modelisation)r
-   types de déformations      : %(deformation)r
-   mots-clés du matériau      : %(mc_mater)r
+   modÃ©lisations disponibles  : %(modelisation)r
+   types de dÃ©formations      : %(deformation)r
+   mots-clÃ©s du matÃ©riau      : %(mc_mater)r
    variables de commandes     : %(nom_varc)r
-   schémas d'intégration      : %(algo_inte)r
+   schÃ©mas d'intÃ©gration      : %(algo_inte)r
    type de matrice tangente   : %(type_matr_tang)r
-   propriétés supplémentaires : %(proprietes)r
+   propriÃ©tÃ©s supplÃ©mentaires : %(proprietes)r
 """
       return template % self.dict_info()
 
    def __repr__(self):
-      # par défaut
+      # par dÃ©faut
       return self.long_repr()
 
 
 class LoiComportement(Base):
-   """Définition d'une loi de comportement.
+   """DÃ©finition d'une loi de comportement.
 
    nom_vari, proprietes : definition, affectation de valeurs
    mc_mater : besoin de regles ENSEMBLE, AU_MOINS_UN, UN_PARMI
@@ -203,7 +203,7 @@ class LoiComportement(Base):
       self.doc    = doc
       for prop in __properties__:
          setattr(self, '_' + prop, None)
-      # propriétés fournies
+      # propriÃ©tÃ©s fournies
       for prop in [k for k in kwargs.keys() if k in __properties__]:
          setattr(self, prop, kwargs.get(prop))
 
@@ -233,35 +233,35 @@ class LoiComportement(Base):
 
    nom_vari = property(get_nom_vari, set_nom_vari, del_nom_vari, "Noms des variables internes")
 
-#  définition des propriétés simples (juste vérification de type à l'affectation)
-   mc_mater       = Base.gen_property('mc_mater',       (str, unicode), "Mots-clés matériaux")
-   modelisation   = Base.gen_property('modelisation',   (str, unicode), "Modélisations")
-   deformation    = Base.gen_property('deformation',    (str, unicode), "Types de déformation")
+#  dÃ©finition des propriÃ©tÃ©s simples (juste vÃ©rification de type Ã  l'affectation)
+   mc_mater       = Base.gen_property('mc_mater',       (str, unicode), "Mots-clÃ©s matÃ©riaux")
+   modelisation   = Base.gen_property('modelisation',   (str, unicode), "ModÃ©lisations")
+   deformation    = Base.gen_property('deformation',    (str, unicode), "Types de dÃ©formation")
    nom_varc       = Base.gen_property('nom_varc',       (str, unicode), "Noms des variables de commandes")
-   algo_inte      = Base.gen_property('algo_inte',      (str, unicode), "Schéma d'intégration")
+   algo_inte      = Base.gen_property('algo_inte',      (str, unicode), "SchÃ©ma d'intÃ©gration")
    type_matr_tang = Base.gen_property('type_matr_tang', (str, unicode), "Type de matrice tangente")
-   proprietes     = Base.gen_property('proprietes',     (str, unicode), "Propriétés")
+   proprietes     = Base.gen_property('proprietes',     (str, unicode), "PropriÃ©tÃ©s")
 
    def check_vari(self):
-      """Vérifie la cohérence de la définition des variables internes"""
+      """VÃ©rifie la cohÃ©rence de la dÃ©finition des variables internes"""
       #from warnings import warn
       if self._nb_vari is not None and self._nom_vari is not None \
          and self._nb_vari != len(self._nom_vari):
          print self
          raise CataComportementError("Nombre de variables internes = %d, "
-            "incohérent avec la liste des variables internes %s" \
+            "incohÃ©rent avec la liste des variables internes %s" \
             % (self._nb_vari, self._nom_vari))
       if self._nom_vari:
           err = [nvi for nvi in self._nom_vari if DICT_NOM_VARI.get(nvi) is None]
           if len(err) > 0:
-              msg = u"Comportement '%s', nom de variables internes non autorisés : %s" \
+              msg = u"Comportement '%s', nom de variables internes non autorisÃ©s : %s" \
                 % (self.nom, ', '.join(err))
               raise CataComportementError(msg)
              # warn(convert(msg), RuntimeWarning, stacklevel=4)
 
 
 class KIT(Base):
-   """Définit un assemblage de loi de comportement par KIT par un 'nom' et une
+   """DÃ©finit un assemblage de loi de comportement par KIT par un 'nom' et une
    liste de comportements"""
    def __init__(self, nom, *list_comport):
       """Initialisations"""
@@ -270,13 +270,13 @@ class KIT(Base):
       self.nom          = nom
       self.list_comport = [comport.copy() for comport in list_comport]
       self.list_nom     = [comport.nom for comport in self.list_comport]
-      txt = ['Assemblage composé de %s' % ', '.join(self.list_nom)]
+      txt = ['Assemblage composÃ© de %s' % ', '.join(self.list_nom)]
       for comport in self.list_comport:
          if comport.doc:
             txt.append('%s : %s' % (comport.nom, comport.doc))
       self.doc = os.linesep.join(txt)
 
-   # definition des propriétés (seulement la méthode get)
+   # definition des propriÃ©tÃ©s (seulement la mÃ©thode get)
    num_lc         = property(Base.gen_getfunc(first,        'num_lc'))
    nb_vari        = property(Base.gen_getfunc(sum,          'nb_vari'))
    nom_vari       = property(Base.gen_getfunc(union,        'nom_vari'))
@@ -290,7 +290,7 @@ class KIT(Base):
 
 
 class KIT_META(KIT):
-   """Définit un assemblage de loi de comportement par KIT par un 'nom' et une
+   """DÃ©finit un assemblage de loi de comportement par KIT par un 'nom' et une
    liste de comportements"""
 
    def __init__(self, nom, *list_comport):
@@ -314,20 +314,20 @@ class KIT_META(KIT):
          for vari in meta.nom_vari:
             self._nom_vari.append('%s_%s' % (vari, phase))
 
-      # si écrouissage isotrope, l'indicateur de plasticité arrive avant !
+      # si Ã©crouissage isotrope, l'indicateur de plasticitÃ© arrive avant !
       if meta.nb_vari == 1:
          self._nom_vari.append('INDICAT')
 
-      # variables internes moyennes (écrouissage moyen)
+      # variables internes moyennes (Ã©crouissage moyen)
       for vari in meta.nom_vari:
          self._nom_vari.append('%s_MOYEN' % vari)
 
-      # si écrouissage cinématique, l'indicateur de plasticité arrive après !
+      # si Ã©crouissage cinÃ©matique, l'indicateur de plasticitÃ© arrive aprÃ¨s !
       if meta.nb_vari > 1:
          self._nom_vari.append('INDICAT')
 
       if len(self._nom_vari) != self._nb_vari:
-         raise CataComportementError, "Nombre de variables internes = %d, incohérent avec la liste des variables internes %s" % (self._nb_vari, self._nom_vari)
+         raise CataComportementError, "Nombre de variables internes = %d, incohÃ©rent avec la liste des variables internes %s" % (self._nb_vari, self._nom_vari)
 
    def get_nb_vari(self):
       return self._nb_vari or 0
@@ -343,14 +343,14 @@ class KIT_META(KIT):
 class CataLoiComportement(object):
    """Catalogue de loi de comportement.
    Il s'agit juste d'un dictionnaire contenant les objets de type LoiComportement
-   et quelques méthodes d'interrogation"""
+   et quelques mÃ©thodes d'interrogation"""
 
    def __init__(self):
       """Initialisations"""
       self._dico = {}
       # pour nommer les comportements
       self._name_num      = 0
-      self._name_template = 'COMP%012d'     # 16 caractères
+      self._name_template = 'COMP%012d'     # 16 caractÃ¨res
       self.debug = False
 
    def _name(self):
@@ -362,7 +362,7 @@ class CataLoiComportement(object):
       """Ajoute une loi de comportement au catalogue"""
       loi = comport.nom
       if self._dico.get(loi) is not None:
-         raise CataComportementError, 'Comportement déjà défini : %s' % loi
+         raise CataComportementError, 'Comportement dÃ©jÃ  dÃ©fini : %s' % loi
       self._dico[loi] = comport
 
    def get(self, loi):
@@ -373,8 +373,8 @@ class CataLoiComportement(object):
       return comport
 
    def create(self, *list_kit):
-      """Créer un assemblage de LC composé des comportements listés dans 'list_kit'
-      et retourne le nom attribué automatiquement à ce comportement.
+      """CrÃ©er un assemblage de LC composÃ© des comportements listÃ©s dans 'list_kit'
+      et retourne le nom attribuÃ© automatiquement Ã  ce comportement.
 
       CALL LCCREE(NBKIT, LKIT, COMPOR)
       ==> comport = catalc.create(*list_kit)"""
@@ -387,7 +387,7 @@ class CataLoiComportement(object):
       return nom
 
    def get_info(self, loi):
-      """Retourne le numéro de routine et le nbre de variables internes
+      """Retourne le numÃ©ro de routine et le nbre de variables internes
 
       CALL LCINFO(COMPOR, NUMLC, NBVARI)
       ==> num_lc, nb_vari = catalc.get_info(COMPOR)"""
@@ -407,7 +407,7 @@ class CataLoiComportement(object):
       return comport.nom_vari
 
    def query(self, loi, attr, valeur):
-      """Est-ce que VALEUR est un valeur autorisée de PROPRIETE ?
+      """Est-ce que VALEUR est un valeur autorisÃ©e de PROPRIETE ?
          CALL LCTEST(COMPOR, PROPRIETE, VALEUR, IRET)
          ==> iret = catalc.query(COMPOR, PROPRIETE, VALEUR)"""
       if self.debug:
@@ -430,7 +430,7 @@ class CataLoiComportement(object):
       return comport.algo_inte
 
    def __repr__(self):
-      """Représentation du catalogue"""
+      """ReprÃ©sentation du catalogue"""
       sep = '-'*90
       txt = [sep]
       for k in self._dico.keys():

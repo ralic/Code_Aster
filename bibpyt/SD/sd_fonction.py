@@ -1,4 +1,4 @@
-# -*- coding: iso-8859-1 -*-
+# coding=utf-8
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -24,10 +24,10 @@ from SD.sd_util import *
 
 
 #----------------------------------------------------------------
-# définition de 3 classes :
+# dÃ©finition de 3 classes :
 #  sd_formule        (objets python + jeveux)
 #  sd_fonction_aster (objets jeveux)
-#  sd_fonction       (chapeau des 2 classes précédentes)
+#  sd_fonction       (chapeau des 2 classes prÃ©cÃ©dentes)
 #----------------------------------------------------------------
 
 
@@ -59,7 +59,7 @@ class sd_fonction_aster(sd_titre):
         assert prol , self
         typfon= prol[0].strip()
         assert typfon in ('CONSTANT', 'FONCTION', 'FONCT_C', 'NAPPE', 'INTERPRE')  ,prol
-       #ltabul = True : la fonction est tabulée (et non interpretée)
+       #ltabul = True : la fonction est tabulÃ©e (et non interpretÃ©e)
         ltabul = typfon != 'INTERPRE'
 
         if typfon == 'NAPPE' :
@@ -73,13 +73,13 @@ class sd_fonction_aster(sd_titre):
             assert interp[:3] in ('NON', 'LIN', 'LOG') , prol
             assert interp[4:] in ('NON', 'LIN', 'LOG') , prol
 
-        if ltabul :  # nom d'un paramètre
+        if ltabul :  # nom d'un paramÃ¨tre
             para=prol[2].strip()
             assert para != '', prol
 
-        assert prol[3].strip() != ''  , prol  # type du résultat
+        assert prol[3].strip() != ''  , prol  # type du rÃ©sultat
 
-        if ltabul :  # prolongement à droite et à gauche
+        if ltabul :  # prolongement Ã  droite et Ã  gauche
             prolgd=prol[4].strip()
             assert len(prolgd)==2, prol
             assert prolgd[0] in ('E', 'C', 'L', 'I'), prol
@@ -88,7 +88,7 @@ class sd_fonction_aster(sd_titre):
         if typfon == 'NAPPE' :
             nf= (len(prol) - 7)/2
             assert len(prol)==7+2*nf, prol
-            # 1er paramètre de la nappe
+            # 1er paramÃ¨tre de la nappe
             assert prol[6].strip() != ''  , prol
 
             for kf in range(nf):

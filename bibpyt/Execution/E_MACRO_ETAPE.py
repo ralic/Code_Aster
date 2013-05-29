@@ -1,4 +1,4 @@
-# -*- coding: iso-8859-1 -*-
+# coding=utf-8
 # person_in_charge: mathieu.courtois at edf.fr
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -29,10 +29,10 @@ from strfunc import ufmt
 
 class MACRO_ETAPE(E_ETAPE.ETAPE):
    """
-   Cette classe implémente les méthodes relatives à la phase d'execution
+   Cette classe implÃ©mente les mÃ©thodes relatives Ã  la phase d'execution
    des macro-commandes.
 
-   Les principales méthodes sont:
+   Les principales mÃ©thodes sont:
       - Exec, pour l'execution en mode par lot
       - Execute, pour l'execution en mode commande par commande (par_lot="NON")
    """
@@ -87,7 +87,7 @@ class MACRO_ETAPE(E_ETAPE.ETAPE):
 
          if ier > 0 :
             # On termine le traitement
-            cr.fatal(_(u"Erreurs à l'exécution de la macro %s"), self.nom)
+            cr.fatal(_(u"Erreurs Ã  l'exÃ©cution de la macro %s"), self.nom)
             raise EOFError
 
          E_ETAPE.ETAPE.Exec(self)
@@ -150,7 +150,7 @@ class MACRO_ETAPE(E_ETAPE.ETAPE):
    def BuildExec(self):
       """
       Cette methode enchaine en une seule passe les phases de construction et d'execution.
-      Utilisée en PAR_LOT='OUI'.
+      UtilisÃ©e en PAR_LOT='OUI'.
       """
       #message.debug(SUPERV, "BuildExec %s", self.nom)
       self.set_current_step()
@@ -163,8 +163,8 @@ class MACRO_ETAPE(E_ETAPE.ETAPE):
                             '    fichier : '+`self.appel[1]`,
                       fin = 'Fin Etape : '+self.nom)
 
-      # Si la liste des etapes est remplie avant l'appel à Build
-      # on a affaire à une macro de type INCLUDE
+      # Si la liste des etapes est remplie avant l'appel Ã  Build
+      # on a affaire Ã  une macro de type INCLUDE
       # Il faut executer les etapes explicitement apres Build
       if self.etapes:has_etapes=1
       else: has_etapes=0
@@ -206,14 +206,14 @@ class MACRO_ETAPE(E_ETAPE.ETAPE):
       self.reset_current_step()
 
    def delete_tmp_sd(self):
-      """Destruction des concepts temporaires internes à la macro
-      préfixés par '.' dans la base jeveux"""
+      """Destruction des concepts temporaires internes Ã  la macro
+      prÃ©fixÃ©s par '.' dans la base jeveux"""
       if self.nom != 'DETRUIRE' :
        s_obj=set()
        for etape in self.etapes :
           if etape.sd != None and etape.sd.nom != None and etape.sd.nom[:1] == '.':
              s_obj.add(etape.sd)
-       # au cas où self.sd serait arrivé dans s_obj
+       # au cas oÃ¹ self.sd serait arrivÃ© dans s_obj
        s_obj.discard(self.sd)
        if len(s_obj) > 0:
            DETRUIRE = self.get_cmd('DETRUIRE')

@@ -1,6 +1,5 @@
 /* ------------------------------------------------------------------ */
 /*           CONFIGURATION MANAGEMENT OF EDF VERSION                  */
-/* MODIF python supervis  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS */
 /* person_in_charge: j-pierre.lefebvre at edf.fr */
 /* ================================================================== */
 /* COPYRIGHT (C) 1991 - 2012  EDF R&D              WWW.CODE-ASTER.ORG */
@@ -15,20 +14,7 @@
 /* GENERAL PUBLIC LICENSE FOR MORE DETAILS.                           */
 /*                                                                    */
 /* YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE  */
-/* ALONG WITH THIS PROGRAM; IF NOT, WRITE TO : EDF R&D CODE_ASTER,    */
-/*    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.     */
-/*                                                                    */
-/* THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR      */
-/* MODIFY IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS     */
-/* PUBLISHED BY THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE */
-/* LICENSE, OR (AT YOUR OPTION) ANY LATER VERSION.                    */
-/* THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL,    */
-/* BUT WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF     */
-/* MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU   */
-/* GENERAL PUBLIC LICENSE FOR MORE DETAILS.                           */
-/*                                                                    */
-/* YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE  */
-/* ALONG WITH THIS PROGRAM; IF NOT, WRITE TO : EDF R&D CODE_ASTER,    */
+/* ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,      */
 /*    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.     */
 /* ================================================================== */
 /* Minimal main program -- everything is loaded from the library */
@@ -84,7 +70,7 @@ _MAIN_(argc, argv)
     PyImport_AppendInittab("aster_core",initaster_core);
     PyImport_AppendInittab("aster",initaster);
 
-    /* Module définissant des opérations sur les objets fonction_sdaster */
+    /* Module dÃ©finissant des opÃ©rations sur les objets fonction_sdaster */
     PyImport_AppendInittab("aster_fonctions",initaster_fonctions);
 #ifndef _DISABLE_MED
     PyImport_AppendInittab("med_aster",initmed_fonctions);

@@ -1,4 +1,4 @@
-# -*- coding: iso-8859-1 -*-
+# coding=utf-8
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -22,8 +22,8 @@ from cata_comportement import LoiComportement
 
 loi = LoiComportement(
    nom            = 'META_V_CL',
-   doc = """Loi de comportement elasto-visco-plastique à écrouissage cinématique linéaire,
-   prenant en compte la métallurgie""",
+   doc = """Loi de comportement elasto-visco-plastique Ã  Ã©crouissage cinÃ©matique linÃ©aire,
+   prenant en compte la mÃ©tallurgie""",
    num_lc         = 15,
    nb_vari        = 6,
    nom_vari       = ('XCINXX', 'XCINYY', 'XCINZZ', 'XCINXY', 'XCINXZ', 'XCINYZ', ),

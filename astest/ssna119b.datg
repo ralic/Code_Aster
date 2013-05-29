@@ -97,7 +97,7 @@ if salome.sg.hasDesktop():
 # MODULE ssna119b_GEOM.py
 # ===================================================
 
-# -*- coding: iso-8859-1 -*-
+# coding=utf-8
 
 ###
 ### This file is generated automatically by SALOME v5.1.4 with dump python functionality (GEOM component)

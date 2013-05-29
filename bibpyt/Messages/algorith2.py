@@ -1,4 +1,4 @@
-# -*- coding: iso-8859-1 -*-
+# coding=utf-8
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -22,36 +22,36 @@ cata_msg = {
 
 1 : _(u"""
 Erreur utilisateur dans la commande CREA_RESU / AFFE :
- Le maillage associé au mot clé CHAM_GD           : %(k1)s
- est différent de celui associé au mot clé MODELE : %(k2)s
+ Le maillage associÃ© au mot clÃ© CHAM_GD           : %(k1)s
+ est diffÃ©rent de celui associÃ© au mot clÃ© MODELE : %(k2)s
 """),
 
 2 : _(u"""
- L'état initial défini n'est pas plastiquement admissible pour le modèle LETK.
- L'état initial de contraintes est erroné ou les propriétés matériaux ne sont pas adaptées au problème posé.
- Le calcul s'arrête en erreur fatale par précautions.
+ L'Ã©tat initial dÃ©fini n'est pas plastiquement admissible pour le modÃ¨le LETK.
+ L'Ã©tat initial de contraintes est erronÃ© ou les propriÃ©tÃ©s matÃ©riaux ne sont pas adaptÃ©es au problÃ¨me posÃ©.
+ Le calcul s'arrÃªte en erreur fatale par prÃ©cautions.
 """),
 
 3 : _(u"""
- REPERE='COQUE' ne traite que les champs aux éléments, pas les champs aux noeuds.
- On arrête le calcul.
+ REPERE='COQUE' ne traite que les champs aux Ã©lÃ©ments, pas les champs aux noeuds.
+ On arrÃªte le calcul.
 """),
 
 4 : _(u"""
- Le repère utilisateur défini par VECT_X et VECT_Y ne peut être utilisé qu'en 3D.
+ Le repÃ¨re utilisateur dÃ©fini par VECT_X et VECT_Y ne peut Ãªtre utilisÃ© qu'en 3D.
 """),
 
 
 6 : _(u"""
- il faut définir NOM_CMP
+ il faut dÃ©finir NOM_CMP
 """),
 
 7 : _(u"""
- Il faut définir 3 angles nautiques.
+ Il faut dÃ©finir 3 angles nautiques.
 """),
 
 8 : _(u"""
- L'origine doit être définie par 3 coordonnées.
+ L'origine doit Ãªtre dÃ©finie par 3 coordonnÃ©es.
 """),
 
 9 : _(u"""
@@ -59,37 +59,37 @@ Erreur utilisateur dans la commande CREA_RESU / AFFE :
 """),
 
 10 : _(u"""
- En 2D, seules les premières 2 coordonnées sont considérées pour l'origine.
+ En 2D, seules les premiÃ¨res 2 coordonnÃ©es sont considÃ©rÃ©es pour l'origine.
 """),
 
 11 : _(u"""
- L'axe z n'a pas de sens en 2D. Le mot-clé AXE_Z est inutile.
+ L'axe z n'a pas de sens en 2D. Le mot-clÃ© AXE_Z est inutile.
 """),
 
 12 : _(u"""
- le noeud se trouve sur l'axe du repère cylindrique.
- on prend le noeud moyen des centres géométriques.
+ le noeud se trouve sur l'axe du repÃ¨re cylindrique.
+ on prend le noeud moyen des centres gÃ©omÃ©triques.
 """),
 
 13 : _(u"""
-  -> Lors du passage au repère cylindrique, un noeud a été localisé sur l'axe
-     du repère cylindrique. Code_Aster utilise dans ce cas le centre de gravité de
-     l'élément pour le calcul de la matrice de passage en repère cylindrique.
+  -> Lors du passage au repÃ¨re cylindrique, un noeud a Ã©tÃ© localisÃ© sur l'axe
+     du repÃ¨re cylindrique. Code_Aster utilise dans ce cas le centre de gravitÃ© de
+     l'Ã©lÃ©ment pour le calcul de la matrice de passage en repÃ¨re cylindrique.
   -> Risque & Conseil :
-     Si ce centre de gravité se trouve également sur l'axe du repère, le calcul
-     s'arrête en erreur fatale.
+     Si ce centre de gravitÃ© se trouve Ã©galement sur l'axe du repÃ¨re, le calcul
+     s'arrÃªte en erreur fatale.
 """),
 
 14 : _(u"""
- champ %(k1)s non traité par le changement de repère cylindrique
+ champ %(k1)s non traitÃ© par le changement de repÃ¨re cylindrique
 """),
 
 15 : _(u"""
- les modélisations autorisées sont 3D et D_PLAN et AXIS
+ les modÃ©lisations autorisÃ©es sont 3D et D_PLAN et AXIS
 """),
 
 16 : _(u"""
- le choix des paramètres ne correspond pas à l'un des modèles CJS
+ le choix des paramÃ¨tres ne correspond pas Ã  l'un des modÃ¨les CJS
 """),
 
 17 : _(u"""
@@ -97,11 +97,11 @@ Erreur utilisateur dans la commande CREA_RESU / AFFE :
 """),
 
 18 : _(u"""
- la loi CJS ne converge pas avec le nombre maximal d'itérations (intégration locale)
+ la loi CJS ne converge pas avec le nombre maximal d'itÃ©rations (intÃ©gration locale)
 """),
 
 20 : _(u"""
- modélisation inconnue
+ modÃ©lisation inconnue
 """),
 
 22 : _(u"""
@@ -109,11 +109,11 @@ Erreur utilisateur dans la commande CREA_RESU / AFFE :
 """),
 
 23 : _(u"""
- Le type de maille %(k1)s n'est pas prévu.
+ Le type de maille %(k1)s n'est pas prÃ©vu.
 """),
 
 24 : _(u"""
- la maille doit être de type TETRA4, TETRA10, PENTA6, PENTA15, HEXA8 ou HEXA20.
+ la maille doit Ãªtre de type TETRA4, TETRA10, PENTA6, PENTA15, HEXA8 ou HEXA20.
  ou TRIA3-6 ou QUAD4-8
  or la maille est de type :  %(k1)s .
 """),
@@ -131,7 +131,7 @@ Erreur utilisateur dans la commande CREA_RESU / AFFE :
 """),
 
 29 : _(u"""
- Dans le groupe à réorienter pour ORIE_FISSURE,
+ Dans le groupe Ã  rÃ©orienter pour ORIE_FISSURE,
  Il existe des mailles 2d et 3d.
  C'est interdit.
 """),
@@ -141,10 +141,10 @@ Erreur d'utilisation pour MODI_MAILLAGE / ORIE_FISSURE :
   On ne peut pas orienter les mailles.
 
 Risques & conseils :
-  Les mailles à orienter doivent correspondre à une mono couche d'éléments (2D ou 3D).
-  Ces éléments doivent s'appuyer sur d'autres éléments de même dimension (2D ou 3D)
-  pour pouvoir déterminer la direction transverse à la couche.
-  Consulter la documentation d'utilisation pour plus de détails.
+  Les mailles Ã  orienter doivent correspondre Ã  une mono couche d'Ã©lÃ©ments (2D ou 3D).
+  Ces Ã©lÃ©ments doivent s'appuyer sur d'autres Ã©lÃ©ments de mÃªme dimension (2D ou 3D)
+  pour pouvoir dÃ©terminer la direction transverse Ã  la couche.
+  Consulter la documentation d'utilisation pour plus de dÃ©tails.
 """),
 
 
@@ -160,117 +160,117 @@ Risques & conseils :
 """),
 
 41 : _(u"""
- en parallèle, il faut au moins un sous-domaine par processeur !
+ en parallÃ¨le, il faut au moins un sous-domaine par processeur !
 """),
 
 42 : _(u"""
- en parallèle, STOGI = OUI obligatoire pour limiter les messages !
+ en parallÃ¨le, STOGI = OUI obligatoire pour limiter les messages !
 """),
 
 43 : _(u"""
- pas de calcul sur le critère de Rice disponible
+ pas de calcul sur le critÃ¨re de Rice disponible
 """),
 
 44 : _(u"""
- cette commande doit nécessairement avoir le type EVOL_THER.
+ cette commande doit nÃ©cessairement avoir le type EVOL_THER.
 """),
 
 45 : _(u"""
- seuls les champs de fonctions aux noeuds sont évaluables:  %(k1)s
+ seuls les champs de fonctions aux noeuds sont Ã©valuables:  %(k1)s
 """),
 
 46 : _(u"""
- nous traitons les champs de réels et de fonctions: . %(k1)s
+ nous traitons les champs de rÃ©els et de fonctions: . %(k1)s
 """),
 
 47 : _(u"""
- le nom symbolique du champ à chercher n'est pas licite. %(k1)s
+ le nom symbolique du champ Ã  chercher n'est pas licite. %(k1)s
 """),
 
 48 : _(u"""
- plusieurs instants correspondent à celui spécifié sous AFFE
+ plusieurs instants correspondent Ã  celui spÃ©cifiÃ© sous AFFE
 """),
 
 49 : _(u"""
- NUME_FIN inférieur à NUME_INIT
+ NUME_FIN infÃ©rieur Ã  NUME_INIT
 """),
 
 50 : _(u"""
- CMP non traitée
+ CMP non traitÃ©e
 """),
 
 54 : _(u"""
-  incrément de déformation cumulée (DP) = - %(k1)s
+  incrÃ©ment de dÃ©formation cumulÃ©e (DP) = - %(k1)s
 """),
 
 55 : _(u"""
- erreur d'intégration
- - essai d(intégration  numéro  %(k1)s
+ erreur d'intÃ©gration
+ - essai d(intÃ©gration  numÃ©ro  %(k1)s
  - convergence vers une solution non conforme
- - incrément de déformation cumulée négative = - %(k2)s
- - redécoupage du pas de temps
+ - incrÃ©ment de dÃ©formation cumulÃ©e nÃ©gative = - %(k2)s
+ - redÃ©coupage du pas de temps
 """),
 
 56 : _(u"""
   erreur
-  - non convergence à l'itération max  %(k1)s
-  - convergence régulière mais trop lente
+  - non convergence Ã  l'itÃ©ration max  %(k1)s
+  - convergence rÃ©guliÃ¨re mais trop lente
   - erreur >  %(k2)s
-  - redécoupage du pas de temps
+  - redÃ©coupage du pas de temps
 """),
 
 57 : _(u"""
   erreur
-  - non convergence à l'itération max  %(k1)s
-  - convergence irrégulière & erreur >  %(k2)s
-  - redécoupage du pas de temps
+  - non convergence Ã  l'itÃ©ration max  %(k1)s
+  - convergence irrÃ©guliÃ¨re & erreur >  %(k2)s
+  - redÃ©coupage du pas de temps
 """),
 
 58 : _(u"""
   erreur
-  - non convergence à l'itération max  %(k1)s
+  - non convergence Ã  l'itÃ©ration max  %(k1)s
   - erreur >  %(k2)s
-  - redécoupage du pas de temps
+  - redÃ©coupage du pas de temps
 """),
 
 59 : _(u"""
-  la transformation géométrique est singulière pour la maille : %(k1)s
+  la transformation gÃ©omÃ©trique est singuliÃ¨re pour la maille : %(k1)s
   (jacobien = 0.)
 """),
 
 61 : _(u"""
- les listes des groupes de noeuds à fournir doivent contenir le même nombre de groupes de noeuds
+ les listes des groupes de noeuds Ã  fournir doivent contenir le mÃªme nombre de groupes de noeuds
 """),
 
 62 : _(u"""
-  les listes des groupes de noeuds doivent contenir le même nombre de noeuds
+  les listes des groupes de noeuds doivent contenir le mÃªme nombre de noeuds
 """),
 
 63 : _(u"""
- on n'imprime que des champs réels
+ on n'imprime que des champs rÃ©els
 """),
 
 64 : _(u"""
-  %(k1)s CHAM_NO déjà existant
+  %(k1)s CHAM_NO dÃ©jÃ  existant
 """),
 
 65 : _(u"""
- appel erroné a RSEXCH
+ appel erronÃ© a RSEXCH
 """),
 
 66 : _(u"""
- calcul du transitoire : choc en phase transitoire - pas de solution trouvée.
+ calcul du transitoire : choc en phase transitoire - pas de solution trouvÃ©e.
  utiliser l'option ETAT_STAT = NON
 """),
 
 79 : _(u"""
- pas de valeurs propres trouvées
+ pas de valeurs propres trouvÃ©es
 """),
 
 
 80 : _(u"""
- le champ %(k1)s associé à la grandeur de type %(k2)s ne peut pas être utilisé dans une
- structure de données de type %(k3)s
+ le champ %(k1)s associÃ© Ã  la grandeur de type %(k2)s ne peut pas Ãªtre utilisÃ© dans une
+ structure de donnÃ©es de type %(k3)s
 """),
 
 }

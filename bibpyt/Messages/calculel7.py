@@ -1,4 +1,4 @@
-# -*- coding: iso-8859-1 -*-
+# coding=utf-8
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -21,34 +21,34 @@
 cata_msg = {
 
 2 : _(u"""
-  option %(k1)s : pour l élément  %(k2)s  il faut ajouter dans le %(k3)s
- le nombre de composante calculées du flux
+  option %(k1)s : pour l Ã©lÃ©ment  %(k2)s  il faut ajouter dans le %(k3)s
+ le nombre de composante calculÃ©es du flux
 """),
 
 3: _(u"""
-  Le MODELE doit être le même pour tous les numéros d'ordre du RESULTAT.
-  Faire le post-traitement en rentrant le numéro d'ordre ou explicitement
-  le nom du modèle.
+  Le MODELE doit Ãªtre le mÃªme pour tous les numÃ©ros d'ordre du RESULTAT.
+  Faire le post-traitement en rentrant le numÃ©ro d'ordre ou explicitement
+  le nom du modÃ¨le.
 """),
 
 4 : _(u"""
-  Le nombre de couches est limité à %(i1)d, or vous en avez définies %(i2)d !
+  Le nombre de couches est limitÃ© Ã  %(i1)d, or vous en avez dÃ©finies %(i2)d !
   Veuillez contacter votre assistance technique.
 """),
 
 5 : _(u"""
-  Pour l'option %(k1)s, le nombre de couches est limité à 1,
-  or vous en avez définies %(i1)d !
+  Pour l'option %(k1)s, le nombre de couches est limitÃ© Ã  1,
+  or vous en avez dÃ©finies %(i1)d !
   Veuillez contacter votre assistance technique.
 """),
 
 6 : _(u"""
-  Pour ce type d'opération, il n'est pas permis d'utiliser la structure de
-  données résultat existante %(k1)s derrière le mot clé reuse.
+  Pour ce type d'opÃ©ration, il n'est pas permis d'utiliser la structure de
+  donnÃ©es rÃ©sultat existante %(k1)s derriÃ¨re le mot clÃ© reuse.
 """),
 
 7 : _(u"""
-  Erreur développeur : le champ n'a pas été créé car aucun type élément  
-  ne connaît le paramètre %(k1)s de l'option %(k2)s. 
+  Erreur dÃ©veloppeur : le champ n'a pas Ã©tÃ© crÃ©Ã© car aucun type Ã©lÃ©ment  
+  ne connaÃ®t le paramÃ¨tre %(k1)s de l'option %(k2)s. 
 """),
 }

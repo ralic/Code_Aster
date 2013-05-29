@@ -1,4 +1,4 @@
-# -*- coding: iso-8859-1 -*-
+# coding=utf-8
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -18,8 +18,8 @@
 # ======================================================================
 # person_in_charge: mathieu.courtois at edf.fr
 
-"""Définition des exceptions utilisées par le module 'aster'.
-Elles sont enregistrées avec un numéro qui permet de les lever
+"""DÃ©finition des exceptions utilisÃ©es par le module 'aster'.
+Elles sont enregistrÃ©es avec un numÃ©ro qui permet de les lever
 depuis le fortran.
 """
 
@@ -27,7 +27,7 @@ import os
 from strfunc import convert
 
 class error(Exception):
-    """Exception levée par toutes les erreurs.
+    """Exception levÃ©e par toutes les erreurs.
     Arguments = (id_message, valk, vali, valr) ou bien une liste de 'error'.
     """
     def __init__(self, arg0, valk=(), vali=(), valr=()):
@@ -82,35 +82,35 @@ class error(Exception):
 
 
 class FatalError(error):
-    """Uniquement définie pour assurer la compatibilité.
-    Utiliser plutôt error"""
+    """Uniquement dÃ©finie pour assurer la compatibilitÃ©.
+    Utiliser plutÃ´t error"""
 
 class NonConvergenceError(error):
-    """Levée en cas de non convergence"""
+    """LevÃ©e en cas de non convergence"""
 
 class EchecComportementError(error):
-    """En cas d'échec d'intégration du comportement"""
+    """En cas d'Ã©chec d'intÃ©gration du comportement"""
 
 class BandeFrequenceVideError(error):
-    """Aucune fréquence trouvée"""
+    """Aucune frÃ©quence trouvÃ©e"""
 
 class MatriceSinguliereError(error):
-    """Matrice Singulière"""
+    """Matrice SinguliÃ¨re"""
 
 class TraitementContactError(error):
     """Echec dans le traitement du contact"""
 
 class MatriceContactSinguliereError(error):
-    """Matrice de contact singulière"""
+    """Matrice de contact singuliÃ¨re"""
 
 class ArretCPUError(error):
-    """Arrêt par manque de temps CPU"""
+    """ArrÃªt par manque de temps CPU"""
 
 class PilotageError(error):
     """Echec du pilotage"""
 
 class BoucleGeometrieError(error):
-    """Echec dans la boucle de point fixe sur la géométrie"""
+    """Echec dans la boucle de point fixe sur la gÃ©omÃ©trie"""
 
 class BoucleFrottementError(error):
     """Echec dans la boucle de point fixe sur le seuil de frottement"""
@@ -119,13 +119,13 @@ class BoucleContactError(error):
     """Echec dans la boucle de point fixe sur le statut de contact"""
 
 class EventError(error):
-    """Arrêt par évènement déclenché"""
+    """ArrÃªt par Ã©vÃ¨nement dÃ©clenchÃ©"""
 
 class ActionError(error):
-    """Arrêt par échec de l'action"""
+    """ArrÃªt par Ã©chec de l'action"""
 
 class ResolutionError(error):
-    """Échec lors de la résolution du système linéaire"""
+    """Ã‰chec lors de la rÃ©solution du systÃ¨me linÃ©aire"""
 
 class ExceptionsStore(object):
     """Class to store the exceptions of 'aster' module.

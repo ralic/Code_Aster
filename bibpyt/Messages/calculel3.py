@@ -1,4 +1,4 @@
-# -*- coding: iso-8859-1 -*-
+# coding=utf-8
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -21,22 +21,22 @@
 cata_msg = {
 
 1 : _(u"""
- manque les accélérations
+ manque les accÃ©lÃ©rations
 """),
 
 2 : _(u"""
  pour une SD RESULTAT de type DYNA_TRANS,
- seuls les mots-clés FONC_MULT et COEF_MULT sont autorisés
+ seuls les mots-clÃ©s FONC_MULT et COEF_MULT sont autorisÃ©s
 """),
 
 3 : _(u"""
  pour une SD RESULTAT de type  EVOL_ELAS,
- seul le mot-clé FONC_MULT est autorisé
+ seul le mot-clÃ© FONC_MULT est autorisÃ©
 """),
 
 4 : _(u"""
- l'utilisation du mot-clé FONC_MULT n'est licite que pour
- les structures de données résultat :  EVOL_ELAS, DYNA_TRANS, DYNA_HARMO
+ l'utilisation du mot-clÃ© FONC_MULT n'est licite que pour
+ les structures de donnÃ©es rÃ©sultat :  EVOL_ELAS, DYNA_TRANS, DYNA_HARMO
 """),
 
 5 : _(u"""
@@ -44,7 +44,7 @@ cata_msg = {
 """),
 
 6 : _(u"""
- La composante %(k1)s n'existe pas dans le champ sur la maille spécifiée.
+ La composante %(k1)s n'existe pas dans le champ sur la maille spÃ©cifiÃ©e.
 """),
 
 7 : _(u"""
@@ -52,39 +52,39 @@ cata_msg = {
 """),
 
 11 : _(u"""
- le résultat  %(k1)s  doit comporter un champ de déplacement au numéro d'ordre  %(k2)s  .
+ le rÃ©sultat  %(k1)s  doit comporter un champ de dÃ©placement au numÃ©ro d'ordre  %(k2)s  .
 """),
 
 12 : _(u"""
- Le mot clé PREC_ERR est OBLIGATOIRE avec l'option SING_ELEM.
- Il faut renseigner le mot clé PREC_ERR avec une valeur comprise entre 0 et 1.
+ Le mot clÃ© PREC_ERR est OBLIGATOIRE avec l'option SING_ELEM.
+ Il faut renseigner le mot clÃ© PREC_ERR avec une valeur comprise entre 0 et 1.
 """),
 
 13 : _(u"""
- Le mot clé PREC_ERR doit être strictement positif.
+ Le mot clÃ© PREC_ERR doit Ãªtre strictement positif.
 """),
 
 14 : _(u"""
- Il n'y a pas de champ d'estimateur d'erreur dans la structure de donnée résultat.
+ Il n'y a pas de champ d'estimateur d'erreur dans la structure de donnÃ©e rÃ©sultat.
  On ne calcule pas l'option SING_ELEM.
- Le calcul préalable d'un estimateur d'erreur est OBLIGATOIRE pour le calcul de cette option.
+ Le calcul prÃ©alable d'un estimateur d'erreur est OBLIGATOIRE pour le calcul de cette option.
 """),
 
 15: _(u"""
- Par défaut on utilise l'estimateur en résidu ERME_ELEM.
+ Par dÃ©faut on utilise l'estimateur en rÃ©sidu ERME_ELEM.
 """),
 
 16 : _(u"""
- Par défaut on utilise l'estimateur basé sur les contraintes lissées version 2 ERZ2_ELEM.
+ Par dÃ©faut on utilise l'estimateur basÃ© sur les contraintes lissÃ©es version 2 ERZ2_ELEM.
 """),
 
 17 : _(u"""
 Erreur utilisateur dans la commande CREA_CHAMP / EXTR :
    Le champ que l'on veut extraire (%(k1)s n'existe pas dans la structure
-   de donnée CARA_ELEM ou CHAR_MECA.
+   de donnÃ©e CARA_ELEM ou CHAR_MECA.
 
 Conseil :
-  Pour "voir" les champs existants dans la structure de donnée XXXX,
+  Pour "voir" les champs existants dans la structure de donnÃ©e XXXX,
   vous pouvez utiliser la commande :
    IMPR_CO(CONCEPT=_F(NOM=XXXX), NIVEAU=-1)
 
@@ -94,7 +94,7 @@ Conseil :
 
 
 19 : _(u"""
- problème à l'appel de ALCHML pour  %(k1)s
+ problÃ¨me Ã  l'appel de ALCHML pour  %(k1)s
 """),
 
 
@@ -110,8 +110,8 @@ Conseil :
 
 26: _(u"""
  L'estimateur %(k1)s que vous avez choisi pour le calcul de l'option SING_ELEM
- n'existe pas dans la structure de donnée résultat %(k2)s.
- L'option SING_ELEM n'est pas calculée.
+ n'existe pas dans la structure de donnÃ©e rÃ©sultat %(k2)s.
+ L'option SING_ELEM n'est pas calculÃ©e.
 """),
 
 27 : _(u"""
@@ -121,13 +121,13 @@ Conseil :
 28 : _(u"""
 PROJ_CHAMP / METHODE='ECLA_PG' :
  On va traiter les mailles de dimension :  %(i1)d
- Les autres mailles sont ignorées
+ Les autres mailles sont ignorÃ©es
 """),
 
 29 : _(u"""
- Il n'y a pas de champ d'énergie dans la structure de donnée résultat.
+ Il n'y a pas de champ d'Ã©nergie dans la structure de donnÃ©e rÃ©sultat.
  On ne calcule pas l'option SING_ELEM.
- Le calcul préalable de l'option  EPOT_ELEM ou ETOT_ELEM est OBLIGATOIRE
+ Le calcul prÃ©alable de l'option  EPOT_ELEM ou ETOT_ELEM est OBLIGATOIRE
  pour le calcul de cette option.
 """),
 
@@ -136,7 +136,7 @@ PROJ_CHAMP / METHODE='ECLA_PG' :
 
 
 31 : _(u"""
- la masse du MACR_ELEM : %(k1)s  n'a pas encore été calculée.
+ la masse du MACR_ELEM : %(k1)s  n'a pas encore Ã©tÃ© calculÃ©e.
 """),
 
 32 : _(u"""
@@ -144,27 +144,27 @@ PROJ_CHAMP / METHODE='ECLA_PG' :
 """),
 
 33 : _(u"""
- la rigidité du MACR_ELEM : %(k1)s  n'a pas encore été calculée.
+ la rigiditÃ© du MACR_ELEM : %(k1)s  n'a pas encore Ã©tÃ© calculÃ©e.
 """),
 
 34 : _(u"""
- il manque des rigidités.
+ il manque des rigiditÃ©s.
 """),
 
 35 : _(u"""
- le modèle doit contenir des éléments finis ou des sous-structures.
+ le modÃ¨le doit contenir des Ã©lÃ©ments finis ou des sous-structures.
 """),
 
 36 : _(u"""
- A cause des alarmes précédentes, l'option SING_ELEM n'est pas calculée.
+ A cause des alarmes prÃ©cÃ©dentes, l'option SING_ELEM n'est pas calculÃ©e.
 """),
 
 37 : _(u"""
- Attention : Certains ddls sont "imposés" plusieurs fois par AFFE_CHAR_CINE.
- Pour ces ddls, la valeur imposée sera la SOMME des différentes valeurs imposées.
- Ce n'est peut-être pas ce qui est voulu.
+ Attention : Certains ddls sont "imposÃ©s" plusieurs fois par AFFE_CHAR_CINE.
+ Pour ces ddls, la valeur imposÃ©e sera la SOMME des diffÃ©rentes valeurs imposÃ©es.
+ Ce n'est peut-Ãªtre pas ce qui est voulu.
 
- Exemple d'un ddl imposé plusieurs fois :
+ Exemple d'un ddl imposÃ© plusieurs fois :
    Noeud : %(k1)s  Composante : %(k2)s
 
 """),
@@ -174,52 +174,52 @@ PROJ_CHAMP / METHODE='ECLA_PG' :
 """),
 
 39 : _(u"""
- le modèle contient des éléments de structure
- il faut probablement utiliser le mot-clé CARA_ELEM.
+ le modÃ¨le contient des Ã©lÃ©ments de structure
+ il faut probablement utiliser le mot-clÃ© CARA_ELEM.
 """),
 
 40 : _(u"""
-  -> Le modèle a probablement besoin d'un champ de matériau (mot-clé CHAM_MATER).
+  -> Le modÃ¨le a probablement besoin d'un champ de matÃ©riau (mot-clÃ© CHAM_MATER).
 
   -> Risque & Conseil :
-     Ce message peut aider à comprendre un éventuel problème ultérieur lors de calculs élémentaires
-     nécessitant des caractéristiques matérielles.
-     Vérifiez si votre modélisation nécessite un CHAM_MATER.
+     Ce message peut aider Ã  comprendre un Ã©ventuel problÃ¨me ultÃ©rieur lors de calculs Ã©lÃ©mentaires
+     nÃ©cessitant des caractÃ©ristiques matÃ©rielles.
+     VÃ©rifiez si votre modÃ©lisation nÃ©cessite un CHAM_MATER.
 """),
 
 41 : _(u"""
- les charges ne s'appuient pas toutes sur le même modèle.
+ les charges ne s'appuient pas toutes sur le mÃªme modÃ¨le.
 """),
 
 42 : _(u"""
- les charges ne s'appuient pas sur le modèle donné en argument.
+ les charges ne s'appuient pas sur le modÃ¨le donnÃ© en argument.
 """),
 
 43 : _(u"""
- les charges sont de type différent.
+ les charges sont de type diffÃ©rent.
 """),
 
 44 : _(u"""
- les charges ne s'appuient pas toutes sur le même modèle
+ les charges ne s'appuient pas toutes sur le mÃªme modÃ¨le
 """),
 
 45 : _(u"""
- données incorrectes.
+ donnÃ©es incorrectes.
 """),
 
 46 : _(u"""
-La MATR_ASSE et le CHAM_NO ont des numérotations différentes (%(k1)s et %(k2)s).
-Si la MATR_ASSE contient des ddls LAGR, ceux-ci sont mis à zéro.
+La MATR_ASSE et le CHAM_NO ont des numÃ©rotations diffÃ©rentes (%(k1)s et %(k2)s).
+Si la MATR_ASSE contient des ddls LAGR, ceux-ci sont mis Ã  zÃ©ro.
 """),
 
 47 : _(u"""
 Possible erreur d'utilisation :
-  Vous voulez "poursuivre" un calcul non-linéaire (STAT_NON_LINE ou DYNA_NON_LINE).
-  Pour cela, vous précisez un état initial (mot clé ETAT_INIT / EVOL_NOLI).
-  Pour le calcul du premier pas de temps, le champ des variables internes du début du pas est pris
+  Vous voulez "poursuivre" un calcul non-linÃ©aire (STAT_NON_LINE ou DYNA_NON_LINE).
+  Pour cela, vous prÃ©cisez un Ã©tat initial (mot clÃ© ETAT_INIT / EVOL_NOLI).
+  Pour le calcul du premier pas de temps, le champ des variables internes du dÃ©but du pas est pris
   dans le concept EVOL_NOLI fourni.
-  Pour l'élément porté par la maille %(k1)s, ce champ de variables internes a été calculé avec
-  la relation de comportement %(k2)s, mais le comportement choisi pour le calcul est différent (%(k3)s).
+  Pour l'Ã©lÃ©ment portÃ© par la maille %(k1)s, ce champ de variables internes a Ã©tÃ© calculÃ© avec
+  la relation de comportement %(k2)s, mais le comportement choisi pour le calcul est diffÃ©rent (%(k3)s).
 
 Risques & conseils :
   Ce changement de comportement est-il volontaire ou s'agit-il d'une faute de frappe ?
@@ -227,21 +227,21 @@ Risques & conseils :
 
 48 : _(u"""
 Possible erreur d'utilisation :
-  Vous voulez "poursuivre" un calcul non-linéaire (STAT_NON_LINE ou DYNA_NON_LINE).
-  Pour cela, vous précisez un état initial (mot clé ETAT_INIT / VARI=chvari).
-  Pour le calcul du premier pas de temps, le champ des variables internes utilisé pour le début du pas
+  Vous voulez "poursuivre" un calcul non-linÃ©aire (STAT_NON_LINE ou DYNA_NON_LINE).
+  Pour cela, vous prÃ©cisez un Ã©tat initial (mot clÃ© ETAT_INIT / VARI=chvari).
+  Pour le calcul du premier pas de temps, le champ des variables internes utilisÃ© pour le dÃ©but du pas
   est "chvari".
-  Pour l'élément porté par la maille %(k1)s, ce champ de variables internes n'a pas le même nombre de
+  Pour l'Ã©lÃ©ment portÃ© par la maille %(k1)s, ce champ de variables internes n'a pas le mÃªme nombre de
   variables internes (%(i1)d) que le nombre attendu par le comportement choisi pour le calcul (%(i2)d).
 
   Il y a donc un changement de comportement pour la maille %(k1)s
 
   Un changement de comportement lors d'un transitoire est a priori "douteux".
-  Il semble que vous soyez dans l'un des cas tolérés par le code :
-    / comportement "-" élastique
-    / comportement "+" élastique
+  Il semble que vous soyez dans l'un des cas tolÃ©rÃ©s par le code :
+    / comportement "-" Ã©lastique
+    / comportement "+" Ã©lastique
 
-  Sur cet élément, les variables internes "-" sont mises à zéro.
+  Sur cet Ã©lÃ©ment, les variables internes "-" sont mises Ã  zÃ©ro.
 
 Risques & conseils :
   Ce changement de comportement est-il volontaire ou s'agit-il d'une faute de frappe ?
@@ -249,46 +249,46 @@ Risques & conseils :
 
 49 : _(u"""
 Erreur d'utilisation :
-  Vous voulez "poursuivre" un calcul non-linéaire (STAT_NON_LINE ou DYNA_NON_LINE).
-  Pour cela, vous précisez un état initial (mot clé ETAT_INIT / VARI=chvari).
-  Pour le calcul du premier pas de temps, le champ des variables internes utilisé pour le début du pas
+  Vous voulez "poursuivre" un calcul non-linÃ©aire (STAT_NON_LINE ou DYNA_NON_LINE).
+  Pour cela, vous prÃ©cisez un Ã©tat initial (mot clÃ© ETAT_INIT / VARI=chvari).
+  Pour le calcul du premier pas de temps, le champ des variables internes utilisÃ© pour le dÃ©but du pas
   est "chvari".
-  Pour l'élément porté par la maille %(k1)s, ce champ de variables internes n'a pas le même nombre de
+  Pour l'Ã©lÃ©ment portÃ© par la maille %(k1)s, ce champ de variables internes n'a pas le mÃªme nombre de
   variables internes (%(i1)d) que le nombre attendu par le comportement choisi pour le calcul (%(i2)d).
 
   Il y a donc un changement de comportement pour la maille %(k1)s
-  Le code n'accepte de changement de comportement que dans quelques cas très particuliers :
+  Le code n'accepte de changement de comportement que dans quelques cas trÃ¨s particuliers :
     - LEMAITRE <-> VMIS_ISOT_XXXX
     - ELAS     <-> XXXX
-  Il ne semble pas que vous soyez dans ce cas de figure. L'exécution est arrêtée.
+  Il ne semble pas que vous soyez dans ce cas de figure. L'exÃ©cution est arrÃªtÃ©e.
 
 Risques & conseils :
-  Vérifiez le comportement affecté sur cette maille.
+  VÃ©rifiez le comportement affectÃ© sur cette maille.
 """),
 
 50 : _(u"""
- La commande a besoin d'un nom de modèle.
+ La commande a besoin d'un nom de modÃ¨le.
 """),
 
 51 : _(u"""
   Erreur Utilisateur :
     On essaie d'utiliser dans la commande %(k1)s
-    un modèle pour lequel des éléments finis ont été affectés directement
+    un modÃ¨le pour lequel des Ã©lÃ©ments finis ont Ã©tÃ© affectÃ©s directement
     sur des noeuds (AFFE_MODELE / AFFE / GROUP_NO).
     Ceci est interdit.
 
   Conseils :
-    Il faut définir le modèle avec les mots clé GROUP_MA et MAILLE.
-    Pour cela, il faut créer dans le maillage des mailles de type POI1.
+    Il faut dÃ©finir le modÃ¨le avec les mots clÃ© GROUP_MA et MAILLE.
+    Pour cela, il faut crÃ©er dans le maillage des mailles de type POI1.
     C'est possible avec la commande CREA_MAILLAGE / CREA_POI1.
 """),
 
 52 : _(u"""
- le champ doit être un CHAM_ELEM.
+ le champ doit Ãªtre un CHAM_ELEM.
 """),
 
 53 : _(u"""
- ne traite qu'un CHAM_ELEM réel
+ ne traite qu'un CHAM_ELEM rÃ©el
 """),
 
 54 : _(u"""
@@ -296,15 +296,15 @@ Risques & conseils :
 """),
 
 57 : _(u"""
- on ne sait pas moyenner cette composante négative
+ on ne sait pas moyenner cette composante nÃ©gative
 """),
 
 58 : _(u"""
- champs sur des modèles différents
+ champs sur des modÃ¨les diffÃ©rents
 """),
 
 59 : _(u"""
-  %(k1)s  doit être un CHAM_ELEM.
+  %(k1)s  doit Ãªtre un CHAM_ELEM.
 """),
 
 60 : _(u"""
@@ -316,7 +316,7 @@ Risques & conseils :
 """),
 
 62 : _(u"""
- composante non définie
+ composante non dÃ©finie
 """),
 
 
@@ -328,7 +328,7 @@ Risques & conseils :
 """),
 
 72 : _(u"""
-  il ne faut pas définir plus d"un champ de vitesse
+  il ne faut pas dÃ©finir plus d"un champ de vitesse
 """),
 
 73 : _(u"""
@@ -341,10 +341,10 @@ Risques & conseils :
 
 78 : _(u"""
 Utilisation de LIAISON_ELEM / OPTION='%(k1)s', occurrence %(i1)d :
-Le noeud "poutre" (GROUP_NO_2) n'est pas situé géométriquement au même endroit que
-le centre de gravité de la section (GROUP_MA_1). La distance entre les 2 noeuds est
-supérieure à %(r7)g%% du "rayon" (Aire/Pi)^0.5 de la section.
-   Position du centre de gravité de la section :
+Le noeud "poutre" (GROUP_NO_2) n'est pas situÃ© gÃ©omÃ©triquement au mÃªme endroit que
+le centre de gravitÃ© de la section (GROUP_MA_1). La distance entre les 2 noeuds est
+supÃ©rieure Ã  %(r7)g%% du "rayon" (Aire/Pi)^0.5 de la section.
+   Position du centre de gravitÃ© de la section :
       %(r1)g   %(r2)g   %(r3)g
    Position du noeud "poutre" :
       %(r4)g   %(r5)g   %(r6)g
@@ -353,15 +353,15 @@ supérieure à %(r7)g%% du "rayon" (Aire/Pi)^0.5 de la section.
 """),
 
 79 : _(u"""
- la matrice A est singulière
+ la matrice A est singuliÃ¨re
 """),
 
 80 : _(u"""
  Utilisation de LIAISON_ELEM / OPTION='%(k1)s', occurrence %(i1)d :
-Le noeud "poutre" (GROUP_NO_2) n'est pas situé géométriquement au même endroit que
-le centre de gravité de la section (GROUP_MA_1). La distance entre les 2 noeuds est
-supérieure à %(r7)g%% du "rayon" (Aire/Pi)^0.5 de la section.
-   Position du centre de gravité de la section :
+Le noeud "poutre" (GROUP_NO_2) n'est pas situÃ© gÃ©omÃ©triquement au mÃªme endroit que
+le centre de gravitÃ© de la section (GROUP_MA_1). La distance entre les 2 noeuds est
+supÃ©rieure Ã  %(r7)g%% du "rayon" (Aire/Pi)^0.5 de la section.
+   Position du centre de gravitÃ© de la section :
       %(r1)g   %(r2)g   %(r3)g
    Position du noeud "poutre" :
       %(r4)g   %(r5)g   %(r6)g
@@ -369,9 +369,9 @@ supérieure à %(r7)g%% du "rayon" (Aire/Pi)^0.5 de la section.
    Rayon    : %(r8)g
 
 Risque et conseils :
-   Vérifiez la position du noeud "poutre".
+   VÃ©rifiez la position du noeud "poutre".
    Rappel : on ne peut pas utiliser ce type de liaison pour relier une poutre avec
-   une section 3D qui ne serait que partiellement maillée (symétrie du maillage).
+   une section 3D qui ne serait que partiellement maillÃ©e (symÃ©trie du maillage).
 """),
 
 81 : _(u"""
@@ -379,15 +379,15 @@ Risque et conseils :
 """),
 
 82 : _(u"""
- le mode local est de type matrice non_carrée
+ le mode local est de type matrice non_carrÃ©e
 """),
 
 84 : _(u"""
- il n y a pas de paramètre  %(k1)s  associe a la grandeur: %(k2)s  dans l option: %(k3)s
+ il n y a pas de paramÃ¨tre  %(k1)s  associe a la grandeur: %(k2)s  dans l option: %(k3)s
 """),
 
 85 : _(u"""
- il y a plusieurs paramètres  %(k1)s  associes a la grandeur: %(k2)s  dans l option: %(k3)s
+ il y a plusieurs paramÃ¨tres  %(k1)s  associes a la grandeur: %(k2)s  dans l option: %(k3)s
 """),
 
 88: _(u"""
@@ -395,15 +395,15 @@ Risque et conseils :
 """),
 
 89 : _(u"""
- les charges ne s'appuient pas toutes sur le même modèle.
+ les charges ne s'appuient pas toutes sur le mÃªme modÃ¨le.
 """),
 
 90 : _(u"""
- le champ %(k1)s doit être une CARTE.
+ le champ %(k1)s doit Ãªtre une CARTE.
 """),
 
 91 : _(u"""
- une des charges n'est pas mécanique
+ une des charges n'est pas mÃ©canique
 """),
 
 92 : _(u"""
@@ -415,38 +415,38 @@ Risque et conseils :
 """),
 
 94 : _(u"""
- le champ doit être un CHAM_ELEM aux points de gauss
+ le champ doit Ãªtre un CHAM_ELEM aux points de gauss
 """),
 
 95 : _(u"""
  avec un CHAM_ELEM calcule sur une liste de maille,
- il faut utiliser le mot clé "MODELE"
+ il faut utiliser le mot clÃ© "MODELE"
 """),
 
 96 : _(u"""
   Pour prendre en compte les termes d'inertie,
-  il est préférable d'utiliser la commande CALC_CHAMP.
-  Le mot-clé ACCE n'est pas traité et les résultats risquent d'être faux.
+  il est prÃ©fÃ©rable d'utiliser la commande CALC_CHAMP.
+  Le mot-clÃ© ACCE n'est pas traitÃ© et les rÃ©sultats risquent d'Ãªtre faux.
 """),
 
 97 : _(u"""
   Erreur d'utilisation :
-    Fonctionnalité : projection de maillage
-    On cherche à projeter des mailles sur certains noeuds.
-    Mais la liste des noeuds que l'on arrive à projeter dans les mailles est vide.
+    FonctionnalitÃ© : projection de maillage
+    On cherche Ã  projeter des mailles sur certains noeuds.
+    Mais la liste des noeuds que l'on arrive Ã  projeter dans les mailles est vide.
 
   Conseil :
-    Cette erreur peut venir d'une mauvaise utilisation du mot clé
+    Cette erreur peut venir d'une mauvaise utilisation du mot clÃ©
     PROJ_CHAMP/DISTANCE_MAX
 """),
 
 98 : _(u"""
- Le calcul de carte de taille et de détection de singularité n'est pas
- programmé en 3D pour les éléments de type HEXA, PENTA et PYRAM.
+ Le calcul de carte de taille et de dÃ©tection de singularitÃ© n'est pas
+ programmÃ© en 3D pour les Ã©lÃ©ments de type HEXA, PENTA et PYRAM.
 """),
 
 99 : _(u"""
- Problème de convergence pour calculer la nouvelle carte de taille.
+ ProblÃ¨me de convergence pour calculer la nouvelle carte de taille.
 """),
 
 

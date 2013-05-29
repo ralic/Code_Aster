@@ -1,4 +1,4 @@
-# -*- coding: iso-8859-1 -*-
+# coding=utf-8
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -271,7 +271,7 @@ def makeXMGRACEdeforme(unit,name,typeAC,coeur,valdefac):
         xmgrfile.write('%10.8f %10.8f\n' %(valdefac[name][4*k],ac.altitude[k]))
 
     xmgrfile.write('&\n@s2 on\n@with s2\n-20.0 -0.1\n&\n@s3 on\n@with s3\n20.0 4.6\n')
-    xmgrfile.write('&\n@subtitle \"D\éform\ée de l\'assemblage %s (amplitudes (mm)/hauteur (m))"\n@DEVICE \"JPEG\" PAGE SIZE 1200,1200\n@autoscale\n@redraw\n'%(name))
+    xmgrfile.write('&\n@subtitle \"D\Ã©form\Ã©e de l\'assemblage %s (amplitudes (mm)/hauteur (m))"\n@DEVICE \"JPEG\" PAGE SIZE 1200,1200\n@autoscale\n@redraw\n'%(name))
     xmgrfile.close()
 
 

@@ -10,7 +10,7 @@ opti elem QUA4 ;
 *
 *Constantes
 *
-* nombre d'éléments dans la longueur
+* nombre d'Ã©lÃ©ments dans la longueur
 N = 40;
 * demi hauteur de la poutre
 h = 63.5/2. ;
@@ -22,7 +22,7 @@ dc = -1320.8 ;
 A  = 0.  h  ;
 A3 = 0.  (-1*h);
 
-* décalage
+* dÃ©calage
 dd = 914.4 ;
 
 xb = (lo + dd) ;

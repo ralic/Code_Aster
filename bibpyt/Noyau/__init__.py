@@ -1,4 +1,4 @@
-# -*- coding: iso-8859-1 -*-
+# coding=utf-8
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -22,17 +22,17 @@
 
 """
     Ce package fournit les classes de base d'EFICAS.
-    Ces classes permettent d'effectuer quelques opérations basiques :
+    Ces classes permettent d'effectuer quelques opÃ©rations basiques :
 
-      - la création
+      - la crÃ©ation
 
-      - la vérification des définitions
+      - la vÃ©rification des dÃ©finitions
 
-      - la création d'objets de type OBJECT à partir d'une définition de type ENTITE
+      - la crÃ©ation d'objets de type OBJECT Ã  partir d'une dÃ©finition de type ENTITE
 """
 # Avant toutes choses, on met le module context dans le global de l'interpreteur (__builtin__)
-# sous le nom CONTEXT afin d'avoir accès aux fonctions
-# get_current_step, set_current_step et unset_current_step de n'importe où
+# sous le nom CONTEXT afin d'avoir accÃ¨s aux fonctions
+# get_current_step, set_current_step et unset_current_step de n'importe oÃ¹
 import context
 import __builtin__
 __builtin__.CONTEXT=context
@@ -47,6 +47,6 @@ __builtin__._ = _
 from N_SIMP import SIMP
 from N_FACT import FACT
 
-# structures de données
+# structures de donnÃ©es
 import asojb
 from asojb import AsBase

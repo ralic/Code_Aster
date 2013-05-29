@@ -1,5 +1,4 @@
 /*           CONFIGURATION MANAGEMENT OF EDF VERSION                  */
-/* MODIF hdftsd hdf  DATE 10/04/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE */
 /* ================================================================== */
 /* COPYRIGHT (C) 1991 - 2012  EDF R&D              WWW.CODE-ASTER.ORG */
 /*                                                                    */
@@ -13,20 +12,20 @@
 /* GENERAL PUBLIC LICENSE FOR MORE DETAILS.                           */
 /*                                                                    */
 /* YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE  */
-/* ALONG WITH THIS PROGRAM; IF NOT, WRITE TO : EDF R&D CODE_ASTER,    */
+/* ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,      */
 /*    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.     */
 /* ================================================================== */
 #include "aster.h"
 #include "aster_fort.h"
 /*-----------------------------------------------------------------------------/
-/ Récupération du type et de la taille des valeurs stockées dans un dataset
+/ RÃ©cupÃ©ration du type et de la taille des valeurs stockÃ©es dans un dataset
 / au sein d'un fichier HDF 
-/  Paramètres :
+/  ParamÃ¨tres :
 /   - in  iddat : identificateur du dataset (hid_t)
-/   - out type  : type associé (char *)
+/   - out type  : type associÃ© (char *)
 /   - out ltype : longueur du type (long)
-/   - out lv    : longueur du vecteur associé (dataspace de dim 1) (long)
-/  Résultats :
+/   - out lv    : longueur du vecteur associÃ© (dataspace de dim 1) (long)
+/  RÃ©sultats :
 /    =O OK, -1 sinon
 /-----------------------------------------------------------------------------*/
 #ifndef _DISABLE_HDF5
@@ -34,7 +33,8 @@
 #endif
 #define FALSE   0
 
-INTEGER DEFPSPP(HDFTSD, hdftsd, INTEGER *iddat, char *type, STRING_SIZE lt, INTEGER *ltype, INTEGER *lv)
+INTEGER DEFPSPP(HDFTSD, hdftsd, INTEGER *iddat, char *type, STRING_SIZE lt,
+                INTEGER *ltype, INTEGER *lv)
 {
   INTEGER iret=-1;
 #ifndef _DISABLE_HDF5

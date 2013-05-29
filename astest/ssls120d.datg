@@ -49,4 +49,3 @@ laxe = prog 3. 3. 3. ;
 
 rep1 = @repere laxe ;
 trac (virole et lignebas et symet et rep1);
-

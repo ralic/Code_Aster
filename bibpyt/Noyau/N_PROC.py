@@ -1,4 +1,4 @@
-# -*- coding: iso-8859-1 -*-
+# coding=utf-8
 # person_in_charge: mathieu.courtois at edf.fr
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -23,7 +23,7 @@
 
 """
     Ce module contient la classe de definition PROC
-    qui permet de spécifier les caractéristiques d'une procédure
+    qui permet de spÃ©cifier les caractÃ©ristiques d'une procÃ©dure
 """
 
 import types,string,traceback
@@ -34,48 +34,48 @@ from strfunc import ufmt
 
 class PROC(N_ENTITE.ENTITE):
    """
-    Classe pour definir un opérateur
+    Classe pour definir un opÃ©rateur
 
     Cette classe a deux attributs de classe
 
-    - class_instance qui indique la classe qui devra etre utilisée
-            pour créer l'objet qui servira à controler la conformité d'un
-            opérateur avec sa définition
+    - class_instance qui indique la classe qui devra etre utilisÃ©e
+            pour crÃ©er l'objet qui servira Ã  controler la conformitÃ© d'un
+            opÃ©rateur avec sa dÃ©finition
 
-    - label qui indique la nature de l'objet de définition (ici, PROC)
+    - label qui indique la nature de l'objet de dÃ©finition (ici, PROC)
 
 
     et les attributs d'instance suivants :
 
     - nom   : son nom
 
-    - op   : le numéro d'opérateur
+    - op   : le numÃ©ro d'opÃ©rateur
 
-    - reentrant : vaut 'n' ou 'o'. Indique si l'opérateur est réentrant ou pas. Un opérateur
-                        réentrant peut modifier un concept d'entrée et le produire comme concept de sortie
+    - reentrant : vaut 'n' ou 'o'. Indique si l'opÃ©rateur est rÃ©entrant ou pas. Un opÃ©rateur
+                        rÃ©entrant peut modifier un concept d'entrÃ©e et le produire comme concept de sortie
 
-    - repetable : vaut 'n' ou 'o'. Indique si l'opérateur est répetable ou pas. Un opérateur
-                        non répétable ne doit apparaitre qu'une fois dans une exécution. C'est du ressort
-                        de l'objet gérant le contexte d'exécution de vérifier cette contrainte.
+    - repetable : vaut 'n' ou 'o'. Indique si l'opÃ©rateur est rÃ©petable ou pas. Un opÃ©rateur
+                        non rÃ©pÃ©table ne doit apparaitre qu'une fois dans une exÃ©cution. C'est du ressort
+                        de l'objet gÃ©rant le contexte d'exÃ©cution de vÃ©rifier cette contrainte.
 
-    - fr   : commentaire associé en francais
+    - fr   : commentaire associÃ© en francais
 
-    - ang : commentaire associé en anglais
+    - ang : commentaire associÃ© en anglais
 
-    - docu : clé de documentation associée
+    - docu : clÃ© de documentation associÃ©e
 
-    - regles : liste des règles associées
+    - regles : liste des rÃ¨gles associÃ©es
 
     - op_init : cet attribut vaut None ou une fonction. Si cet attribut ne vaut pas None, cette
-                      fonction est exécutée lors des phases d'initialisation de l'étape associée.
+                      fonction est exÃ©cutÃ©e lors des phases d'initialisation de l'Ã©tape associÃ©e.
 
-    - niveau : indique le niveau dans lequel est rangé l'opérateur. Les opérateurs peuvent etre
-                     rangés par niveau. Ils apparaissent alors exclusivement dans leur niveau de rangement.
-                     Si niveau vaut None, l'opérateur est rangé au niveau global.
+    - niveau : indique le niveau dans lequel est rangÃ© l'opÃ©rateur. Les opÃ©rateurs peuvent etre
+                     rangÃ©s par niveau. Ils apparaissent alors exclusivement dans leur niveau de rangement.
+                     Si niveau vaut None, l'opÃ©rateur est rangÃ© au niveau global.
 
-    - entites : dictionnaire dans lequel sont stockés les sous entités de l'opérateur. Il s'agit
-                      des entités de définition pour les mots-clés : FACT, BLOC, SIMP. Cet attribut
-                      est initialisé avec args, c'est à dire les arguments d'appel restants.
+    - entites : dictionnaire dans lequel sont stockÃ©s les sous entitÃ©s de l'opÃ©rateur. Il s'agit
+                      des entitÃ©s de dÃ©finition pour les mots-clÃ©s : FACT, BLOC, SIMP. Cet attribut
+                      est initialisÃ© avec args, c'est Ã  dire les arguments d'appel restants.
 
 
    """
@@ -85,7 +85,7 @@ class PROC(N_ENTITE.ENTITE):
    def __init__(self,nom,op,reentrant='n',repetable='o',fr="",ang="",
                 docu="",regles=(),op_init=None,niveau = None,UIinfo=None,**args):
       """
-         Méthode d'initialisation de l'objet PROC. Les arguments sont utilisés pour initialiser
+         MÃ©thode d'initialisation de l'objet PROC. Les arguments sont utilisÃ©s pour initialiser
          les attributs de meme nom
       """
       self.nom=nom
@@ -124,9 +124,9 @@ class PROC(N_ENTITE.ENTITE):
 
    def make_objet(self,mc_list='oui'):
       """
-           Cette méthode crée l'objet PROC_ETAPE dont la définition est self sans
-            l'enregistrer ni créer sa sdprod.
-           Si l'argument mc_list vaut 'oui', elle déclenche en plus la construction
+           Cette mÃ©thode crÃ©e l'objet PROC_ETAPE dont la dÃ©finition est self sans
+            l'enregistrer ni crÃ©er sa sdprod.
+           Si l'argument mc_list vaut 'oui', elle dÃ©clenche en plus la construction
            des objets MCxxx.
       """
       etape= self.class_instance(oper=self,args={})
@@ -135,7 +135,7 @@ class PROC(N_ENTITE.ENTITE):
 
    def verif_cata(self):
       """
-          Méthode de vérification des attributs de définition
+          MÃ©thode de vÃ©rification des attributs de dÃ©finition
       """
       self.check_regles()
       self.check_fr()
@@ -147,7 +147,7 @@ class PROC(N_ENTITE.ENTITE):
 
    def supprime(self):
       """
-          Méthode pour supprimer les références arrières susceptibles de provoquer
-          des cycles de références
+          MÃ©thode pour supprimer les rÃ©fÃ©rences arriÃ¨res susceptibles de provoquer
+          des cycles de rÃ©fÃ©rences
       """
       self.niveau=None

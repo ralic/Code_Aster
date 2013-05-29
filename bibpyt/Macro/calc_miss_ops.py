@@ -1,4 +1,4 @@
-# -*- coding: iso-8859-1 -*-
+# coding=utf-8
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -25,7 +25,7 @@ import traceback
 
 def calc_miss_ops(self, **kwargs):
     """Macro CALC_MISS :
-    Préparation des données et exécution d'un calcul MISS3D
+    PrÃ©paration des donnÃ©es et exÃ©cution d'un calcul MISS3D
     """
     import aster
     from Utilitai.Utmess  import UTMESS
@@ -36,10 +36,10 @@ def calc_miss_ops(self, **kwargs):
     # La macro compte pour 1 dans la numerotation des commandes
     self.set_icmd(1)
 
-    # conteneur des paramètres du calcul
+    # conteneur des paramÃ¨tres du calcul
     param = MISS_PARAMETER(initial_dir=os.getcwd(), **kwargs)
     
-    # création de l'objet CALCUL_MISS_xxx
+    # crÃ©ation de l'objet CALCUL_MISS_xxx
     calcul = CalculMissFactory(self, param)
 
     try:

@@ -1,4 +1,4 @@
-# -*- coding: iso-8859-1 -*-
+# coding=utf-8
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -22,8 +22,8 @@ from cata_comportement import LoiComportement
 
 loi = LoiComportement(
    nom            = 'ENDO_ORTH_BETON',
-   doc = """Relation de comportement anisotrope du béton avec endommagement [R7.01.09]. 
-   Il s'agit d'une modélisation locale d'endommagement prenant en compte la refermeture des fissures.""",
+   doc = """Relation de comportement anisotrope du bÃ©ton avec endommagement [R7.01.09]. 
+   Il s'agit d'une modÃ©lisation locale d'endommagement prenant en compte la refermeture des fissures.""",
    num_lc         = 7,
    nb_vari        = 7,
    nom_vari       = ('ENDOXX','ENDOYY','ENDOZZ','ENDOXY','ENDOXZ','ENDOYZ','ENDOCOMP'),

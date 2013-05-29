@@ -1,4 +1,4 @@
-# -*- coding: iso-8859-1 -*-
+# coding=utf-8
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -18,34 +18,34 @@
 # ======================================================================
 """
     Maquette demande SEPTEN fonction de lissage enveloppe
-    Les données se présentent sous la forme d'un fichier texte comportant
-    un ensemble de groupe de lignes organisé comme suit :
-        - ligne 1 : Informations générales
+    Les donnÃ©es se prÃ©sentent sous la forme d'un fichier texte comportant
+    un ensemble de groupe de lignes organisÃ© comme suit :
+        - ligne 1 : Informations gÃ©nÃ©rales
         - ligne 2 : une liste de valeur d'amortissement
         - lignes 3...n : une liste de valeur commencant par une frequence suivit 
                          des amplitudes du spectre pour chacun des amortissements
                          liste en ligne 2
     Points importants :
-        - Le nombre de lignes définissant le spectre peut varier
+        - Le nombre de lignes dÃ©finissant le spectre peut varier
         - Le nombre de valeur d'amortissement peut varier ?
 
-    ==> On propose d'opérer ligne par ligne
-    ==> L'absence d'informations sur la variabilité du nombre d'éléments oblige à traiter le cas général
+    ==> On propose d'opÃ©rer ligne par ligne
+    ==> L'absence d'informations sur la variabilitÃ© du nombre d'Ã©lÃ©ments oblige Ã  traiter le cas gÃ©nÃ©ral
 
         
 
-    Etapes du développement :
-        24/05/2005 : Test de lecture du fichier, choix d'une stratégie de gestion
-        25/05/2005 : Objet itérable pour la  lecture du fichier
-        29/05/2005 : Créations de filtres pour les spectres
+    Etapes du dÃ©veloppement :
+        24/05/2005 : Test de lecture du fichier, choix d'une stratÃ©gie de gestion
+        25/05/2005 : Objet itÃ©rable pour la  lecture du fichier
+        29/05/2005 : CrÃ©ations de filtres pour les spectres
 """
 
 import math
 
 def nearestKeys(k1, dct) :
     """
-        retourne les clés (doublet) les plus proches de 'key' dans le dictionnaire dct
-        par valeur inférieure et supérieures
+        retourne les clÃ©s (doublet) les plus proches de 'key' dans le dictionnaire dct
+        par valeur infÃ©rieure et supÃ©rieures
     """
     kr = min(dct.keys())
     for k2 in dct.keys() :
@@ -61,7 +61,7 @@ def nearestKeys(k1, dct) :
 
 def interpole(x2, x0, y0, x1, y1) :
     """
-        renvoie la valeur pour x2 interpolée (linéairement) entre x0 et x1  
+        renvoie la valeur pour x2 interpolÃ©e (linÃ©airement) entre x0 et x1  
     """
     try : 
         a = (y1-y0) / (x1-x0)
@@ -83,7 +83,7 @@ def listToDict(lst) :
 def inclus(l1, l2) :
     """
         Teste si une liste (lst1) est incluse dans une autre (lst2)
-        Renvoie le premier élément de l1 qui n'est pas inclus ou None si l1 inclus dans l2)
+        Renvoie le premier Ã©lÃ©ment de l1 qui n'est pas inclus ou None si l1 inclus dans l2)
     """
     for v in l1 :
         try :
@@ -94,8 +94,8 @@ def inclus(l1, l2) :
 
 def exclus(i1, i2) :
     """
-        Teste si deux listes ne partagent pas d'élément commun
-        Renvoie le premier élément de l1 qui n'est pas exclus ou None si l1 exclus de l2)
+        Teste si deux listes ne partagent pas d'Ã©lÃ©ment commun
+        Renvoie le premier Ã©lÃ©ment de l1 qui n'est pas exclus ou None si l1 exclus de l2)
     """
     for v in i1 :
         try :
@@ -107,35 +107,35 @@ def exclus(i1, i2) :
         
 class NappeCreationError(Exception) :
     def __init__(self) :
-        self.mess = "Un problème est survenu lors dla création d'une nappe"
+        self.mess = "Un problÃ¨me est survenu lors dla crÃ©ation d'une nappe"
         self.otherExcept = Exception()
         
     def getMess(self) :
-        """ Retourne le message associé à l'erreur """
-        # Analyse les différents cas d'erreurs
+        """ Retourne le message associÃ© Ã  l'erreur """
+        # Analyse les diffÃ©rents cas d'erreurs
         if self.otherExcept == IOError :
-            self.mess += "\nProblème à l'ouverture du fichier\n"
+            self.mess += "\nProblÃ¨me Ã  l'ouverture du fichier\n"
 
         return self.mess
     
 class SpectreError(Exception) :
     def __init__(self) :
-        self.mess = "Un problème est survenu lors de la construction du spectre"
+        self.mess = "Un problÃ¨me est survenu lors de la construction du spectre"
         self.otherExcept = Exception()
         
     def getMess(self) :
-        """ Retourne le message associé à l'erreur """
-        # Analyse les différents cas d'erreurs
+        """ Retourne le message associÃ© Ã  l'erreur """
+        # Analyse les diffÃ©rents cas d'erreurs
         if self.otherExcept == IOError :
-            self.mess += "\nProblème à l'ouverture du fichier\n"
+            self.mess += "\nProblÃ¨me Ã  l'ouverture du fichier\n"
 
         return self.mess
     
 class filtre :
     """
         La classe filtre est la classe de base des filtres applicables au spectre
-        Elle possède une fonction privée filtre qui prend un spectre en entrée et qui
-        retourne un spectre filtré en sortie et qui est appelée par la fonction __call__
+        Elle possÃ¨de une fonction privÃ©e filtre qui prend un spectre en entrÃ©e et qui
+        retourne un spectre filtrÃ© en sortie et qui est appelÃ©e par la fonction __call__
     """
     def __init__(self): pass
     def __call__(self, sp) :
@@ -146,7 +146,7 @@ class filtre :
         return spr # la fonction filtre de la classe de base retourne le spectre sans le modifier
 
 class filtreExpand(filtre) :
-    """ effectue l'expansion du spectre selon spécif du SEPTEN """
+    """ effectue l'expansion du spectre selon spÃ©cif du SEPTEN """
     def __init__(self, **listOpt) :
         try :
             self.expandCoef = listOpt['coef']
@@ -156,7 +156,7 @@ class filtreExpand(filtre) :
     def _filtre(self, sp) :
         spLower = spectre()
         spUpper = spectre()
-        # Etape 1 : Construction du spectre inférieur sans considération des échelons de fréquence
+        # Etape 1 : Construction du spectre infÃ©rieur sans considÃ©ration des Ã©chelons de frÃ©quence
         for i in range(0, len(sp.listFreq)) :
             spLower.listFreq = spLower.listFreq + [sp.listFreq[i] - abs(sp.listFreq[i]*self.expandCoef)]
             spLower.dataVal = spLower.dataVal + [sp.dataVal[i]]
@@ -164,25 +164,25 @@ class filtreExpand(filtre) :
             spUpper.dataVal = spUpper.dataVal + [sp.dataVal[i]]
 
 
-        # Etape 2 : Construction du spectre "élargi" sur la base de fréquence du spectre initial
-        #           On tronque en deca de la fréquence minimale du spectre de référence
+        # Etape 2 : Construction du spectre "Ã©largi" sur la base de frÃ©quence du spectre initial
+        #           On tronque en deca de la frÃ©quence minimale du spectre de rÃ©fÃ©rence
         index = 0
         while spLower.listFreq[index] < sp.listFreq[0] : index+=1
             
-        # Recopie des valeurs à conserver
+        # Recopie des valeurs Ã  conserver
         spLower.dataVal = spLower.dataVal[index:]
 
         index = 0
         while spUpper.listFreq[index] < sp.listFreq[len(sp.listFreq)-1] : index+=1
             
-        # Recopie des valeurs à conserver
+        # Recopie des valeurs Ã  conserver
         spUpper.dataVal = spUpper.dataVal[0:index]
-        # calcul du nombre d'éléments à rajouter
+        # calcul du nombre d'Ã©lÃ©ments Ã  rajouter
         nb = len(sp.dataVal) - index
-        #Décalage le la liste de nb elements
+        #DÃ©calage le la liste de nb elements
         for i in range(0, nb) : spUpper.dataVal.insert(0,-1.0e6)
 
-        #On remplace la base de fréquence 'décalée' de lower et upper par la base de fréquence 'standard'
+        #On remplace la base de frÃ©quence 'dÃ©calÃ©e' de lower et upper par la base de frÃ©quence 'standard'
         spLower.listFreq = sp.listFreq
         spUpper.listFreq = sp.listFreq
 
@@ -211,8 +211,8 @@ class filtreExpand(filtre) :
 class filtreLog(filtre) :
     """
         Convertit un spectre en LogLog (log base 10)
-            + Possibilité d'obtenir un linLog (abcsisses linéaires, ordonnées en log)
-            + Possibilité d'obtenir un logLin (abcsisses log, ordonnées en linéaires) 
+            + PossibilitÃ© d'obtenir un linLog (abcsisses linÃ©aires, ordonnÃ©es en log)
+            + PossibilitÃ© d'obtenir un logLin (abcsisses log, ordonnÃ©es en linÃ©aires) 
     """
     def __init__(self, **listOpt) :
         try :
@@ -239,7 +239,7 @@ class filtreLog(filtre) :
 
 class filtreLin(filtre) :
     """
-        Convertit un spectre en LinLin (10^n) à partir d'un spectre en linLog,LogLin ou logLog
+        Convertit un spectre en LinLin (10^n) Ã  partir d'un spectre en linLog,LogLin ou logLog
     """
     def __init__(self, **listOpt) :
         try :
@@ -282,7 +282,7 @@ class filtreBandWidth(filtre) :
             if spr.listFreq[i] > self.upperBound :
                 toDel = toDel + [i]
 
-        # Nettoyage des fréquences à suppimer (on commence par les plus hautes)
+        # Nettoyage des frÃ©quences Ã  suppimer (on commence par les plus hautes)
         for i in toDel[::-1] :
             del spr.listFreq[i]
             del spr.dataVal[i]
@@ -294,7 +294,7 @@ class filtreBandWidth(filtre) :
             else :
                 break
 
-        # Nettoyage des fréquences à suppimer (on finit par les plus basses)
+        # Nettoyage des frÃ©quences Ã  suppimer (on finit par les plus basses)
         for i in toDel[::-1] :
             del spr.listFreq[i]
             del spr.dataVal[i]
@@ -303,7 +303,7 @@ class filtreBandWidth(filtre) :
 
 class filtreCrible(filtre):
     """
-        Criblage du spectre selon specif SEPTEN §C-5 (ce que j'en comprend)
+        Criblage du spectre selon specif SEPTEN Â§C-5 (ce que j'en comprend)
     """
     def __init__(self, **listOpt):
         try :
@@ -314,25 +314,25 @@ class filtreCrible(filtre):
         self.listEtats = []
 
     def _filtre(self, sp) :
-            self._initListeEtats(sp) # Création de la table des étsts des valeurs du spectre
+            self._initListeEtats(sp) # CrÃ©ation de la table des Ã©tsts des valeurs du spectre
             coef = 1
 
-            # Parcours de la liste des fréquences
+            # Parcours de la liste des frÃ©quences
             i1, i2, i3 = 0, 2, 1
             bTest = True
             while True :
                 try :
                     bTest = self._amplitude(sp, i1, i2, i3, coef)
                     if not(bTest) and ((i2-i1) > 2) :
-                        # Le point a été éliminé, on réexamine le point précédent sauf si c'est le premier examiné
+                        # Le point a Ã©tÃ© Ã©liminÃ©, on rÃ©examine le point prÃ©cÃ©dent sauf si c'est le premier examinÃ©
                         i3 -= 1
                         if self._amplitude(sp, i1, i2, i3, coef) :
-                            # Le point a été "récupéré", il devient la nouvelle origine
+                            # Le point a Ã©tÃ© "rÃ©cupÃ©rÃ©", il devient la nouvelle origine
                             i1 = i3
-                            i2 = i2 # écrit quand meme pour la compréhension
+                            i2 = i2 # Ã©crit quand meme pour la comprÃ©hension
                             i3 += 1
                         else :
-                            # Le point reste désactivé, on avance au point suivant, le point d'origine est conservé
+                            # Le point reste dÃ©sactivÃ©, on avance au point suivant, le point d'origine est conservÃ©
                             i1 = i1
                             i2 += 1
                             i3 += 2
@@ -340,7 +340,7 @@ class filtreCrible(filtre):
                         i1 = i1
                         i2 += 1
                         i3 += 1
-                    else : # Le point est conservé, il devient la nouvelle origine
+                    else : # Le point est conservÃ©, il devient la nouvelle origine
                         i1 = i3
                         i2 += 1
                         i3 += 1
@@ -351,17 +351,17 @@ class filtreCrible(filtre):
 
     def _initListeEtats(self, sp) :
         """
-            Crée une liste associant à chaque fréquence du spectre passé en paramètre, un état booléen
-            qui spécifie si ce couple fréquence-valeur est supprimé ou pas
-            NB : au départ toutes les valeur sont "True" car aucune valeur n'a été supprimée
+            CrÃ©e une liste associant Ã  chaque frÃ©quence du spectre passÃ© en paramÃ¨tre, un Ã©tat boolÃ©en
+            qui spÃ©cifie si ce couple frÃ©quence-valeur est supprimÃ© ou pas
+            NB : au dÃ©part toutes les valeur sont "True" car aucune valeur n'a Ã©tÃ© supprimÃ©e
         """
         self.listEtats = [True for x in sp.listFreq]
 
     def _crible(self, sp) :
         """
-            Supprime les points de fréquence qui sont marqué False dans listEtats
+            Supprime les points de frÃ©quence qui sont marquÃ© False dans listEtats
         """
-        sp2 = spectre([], []) # On force car il y a un problème de persistance su spectre précédent
+        sp2 = spectre([], []) # On force car il y a un problÃ¨me de persistance su spectre prÃ©cÃ©dent
         for x,y,z in zip(self.listEtats, sp.listFreq, sp.dataVal) :
             if x :
                 sp2.listFreq.append(y)
@@ -371,12 +371,12 @@ class filtreCrible(filtre):
 
     def _amplitude(self, sp, id1, id2, id3, coef=1) :
         """
-            teste le point d'indice id3 par rapport aux points à sa gauche(p1 d'indice id1) et 
-            à sa droite (p2 d'indice id2).
-            Le point est éliminé si sa valeur est en dessous de la droite reliant les points
-            d'indice id1 et id2 sauf si sa distance à cette droite est supérieure à :
-                tolerance*ordonnée
-            Le critère est purement sur l'amplitude du point indépendemment de l'intervalle
+            teste le point d'indice id3 par rapport aux points Ã  sa gauche(p1 d'indice id1) et 
+            Ã  sa droite (p2 d'indice id2).
+            Le point est Ã©liminÃ© si sa valeur est en dessous de la droite reliant les points
+            d'indice id1 et id2 sauf si sa distance Ã  cette droite est supÃ©rieure Ã  :
+                tolerance*ordonnÃ©e
+            Le critÃ¨re est purement sur l'amplitude du point indÃ©pendemment de l'intervalle
             sur lequel il s'applique
         """
         x0 = sp.listFreq[id1]
@@ -388,21 +388,21 @@ class filtreCrible(filtre):
 
         yp2 = interpole(x2, x0, y0, x1, y1)
         
-        # Le point est il susceptible d'etre supprimé (est il en dessous de la droite p1-p2 ?)
-        # Faut-il le supprimer pour autant (distance y2 à yp2 > tolerance% de y2)
+        # Le point est il susceptible d'etre supprimÃ© (est il en dessous de la droite p1-p2 ?)
+        # Faut-il le supprimer pour autant (distance y2 Ã  yp2 > tolerance% de y2)
         bSup = not((y2 < yp2) and (abs(yp2-y2)/y2 < self.tolerance))
 
-        # Changement de l'état du point
+        # Changement de l'Ã©tat du point
         self.listEtats[id3] = bSup
 
         return bSup
 
 class filtreChevauchement(filtre):
     """
-        Compare un spectre à un spectre de référence fréquence par fréquence.
-        Si une fréquence n'existe pas, on cherche la valeur équivalent par interpolation
-        Pour éviter tout recouvrement, il est éventuellement nécessaire de rajouter
-        des informations à certaines fréquences
+        Compare un spectre Ã  un spectre de rÃ©fÃ©rence frÃ©quence par frÃ©quence.
+        Si une frÃ©quence n'existe pas, on cherche la valeur Ã©quivalent par interpolation
+        Pour Ã©viter tout recouvrement, il est Ã©ventuellement nÃ©cessaire de rajouter
+        des informations Ã  certaines frÃ©quences
     """
     def __init__(self, **listOpt) :
         try :
@@ -423,33 +423,33 @@ class filtreChevauchement(filtre):
         spRefDict = self.spRef.buildMap()
         spTestDict = {}
 
-        # On commence par construire un dictionnaire des valeurs à tester comportant toutes les clés contenues
+        # On commence par construire un dictionnaire des valeurs Ã  tester comportant toutes les clÃ©s contenues
         for k in spDict.keys() : spTestDict[k] = True
         for k in spRefDict.keys() : spTestDict[k] = True
 
         # On teste ensuite toutes les valeurs du dictionnaire
         for k in spTestDict.keys() :
-            # Test d'existence dans le dictionnaire du spectre de référence
+            # Test d'existence dans le dictionnaire du spectre de rÃ©fÃ©rence
             try :
                 vr = spRefDict[k]
             except KeyError :
                 ki = nearestKeys(k, spRefDict)
                 vr = interpole(k, ki[0], spRefDict[ki[0]], ki[1], spRefDict[ki[1]])
-            # Test d'existence dans le dictionnaire du spectre à tester
+            # Test d'existence dans le dictionnaire du spectre Ã  tester
             try :
                 vt = spDict[k]
             except KeyError :
                 ki = nearestKeys(k, spDict)
                 vt = interpole(k, ki[0], spDict[ki[0]], ki[1], spDict[ki[1]])
 
-            # Comparaison des deux valeurs. La clé est ajoutée si elle n'existe pas
+            # Comparaison des deux valeurs. La clÃ© est ajoutÃ©e si elle n'existe pas
             if vt*self.ordre < vr*self.ordre : spDict[k] = vr
 
         return spectre.sortSpectre(spDict)
 
 class spectre :
     """
-        décrit un spectre composé d'un ensemble de résultat associé à un ensemble de fréquence
+        dÃ©crit un spectre composÃ© d'un ensemble de rÃ©sultat associÃ© Ã  un ensemble de frÃ©quence
     """
     def __init__(self, listFreq = [], dataVal = []) :
         self.listFreq = [v for v in listFreq]
@@ -457,14 +457,14 @@ class spectre :
 
     def filtre(self, fi) :
         """
-        Applique le filtre passé en paramètre au spectre et retourne un nouveau spectre
+        Applique le filtre passÃ© en paramÃ¨tre au spectre et retourne un nouveau spectre
         """
         return fi(self)
     
     def __staticSortSpectre(dict) :
         """
-            Convertit un spectre présenté sous forme d'un dictionnaire en un spectre normal
-            Fonction créé parceque les clés du dictionnaire ne sont pas ordonnées
+            Convertit un spectre prÃ©sentÃ© sous forme d'un dictionnaire en un spectre normal
+            Fonction crÃ©Ã© parceque les clÃ©s du dictionnaire ne sont pas ordonnÃ©es
         """
         lstFrq = dict.keys()
         lstFrq.sort()
@@ -477,14 +477,14 @@ class spectre :
 
         return spectre(lstFrq, lstVal)
     
-    sortSpectre = staticmethod(__staticSortSpectre) # définition en tant que méthode statique
+    sortSpectre = staticmethod(__staticSortSpectre) # dÃ©finition en tant que mÃ©thode statique
 
     def getCoupleVal(self,indice) :
         return (self.listFreq[indice], self.dataVal[indice])
     
     def moyenne(self) :
         """
-            Calcule la moyenne pondéré : somme(An* dfn) /F
+            Calcule la moyenne pondÃ©rÃ© : somme(An* dfn) /F
         """
         somme = 0.0
         X0 = self.listFreq[0]
@@ -501,10 +501,10 @@ class spectre :
 
     def seuil(self, limit=75) :
         """
-            retourne un couple d'index délimitant l'ensemble des valeurs du spectre
-            définissant "limit" pourcent du total cumulé des valeurs
-            [borne à gauche inclue, borne à droite exclue[
-            ATTENTION on fait l'hypothèse que le spectre a une forme en cloche.
+            retourne un couple d'index dÃ©limitant l'ensemble des valeurs du spectre
+            dÃ©finissant "limit" pourcent du total cumulÃ© des valeurs
+            [borne Ã  gauche inclue, borne Ã  droite exclue[
+            ATTENTION on fait l'hypothÃ¨se que le spectre a une forme en cloche.
         """
         resu = [0 for v in self.dataVal] # initialisation du tableau resultat
 
@@ -536,22 +536,22 @@ class spectre :
         # ETAPE 3 : RECHERCHE DES BORNES
         limit = (100.0 - limit) / 2.0
         b1 = b2 = True
-        for v1, v2 in zip(resu[:], resu[::-1]): # Parcours simultané dans les deux sens
-            if b1 and v1 >= limit : # Borne à gauche trouvée
+        for v1, v2 in zip(resu[:], resu[::-1]): # Parcours simultanÃ© dans les deux sens
+            if b1 and v1 >= limit : # Borne Ã  gauche trouvÃ©e
                 i1 = resu.index(v1)
                 b1 = False
-            if b2 and v2 >= limit : # Borne à droite trouvée
-                i2 = resu.index(v2) + 1 # Borne à droit exclue de l'intervalle
+            if b2 and v2 >= limit : # Borne Ã  droite trouvÃ©e
+                i2 = resu.index(v2) + 1 # Borne Ã  droit exclue de l'intervalle
                 b2 = False
                 
         return (i1, i2)
         
     def cut(self, nuplet) :
         """
-            Découpe un spectre en sous-spectres qui sont retournés en sortie de la fonction
+            DÃ©coupe un spectre en sous-spectres qui sont retournÃ©s en sortie de la fonction
             sous la forme d'un tableau de spectres
         """
-        # transformation du nuplet en tableau (permet de lui ajouter un élément)
+        # transformation du nuplet en tableau (permet de lui ajouter un Ã©lÃ©ment)
         tabNuplet = [v for v in nuplet]
         tabNuplet.append(len(self.listFreq))
 
@@ -572,9 +572,9 @@ class spectre :
 
     def __staticMerge(tabSpectre) :
         """
-            A l'inverse de la fonction cut, construit un seul spectre à partir d'un ensemble de spectres
+            A l'inverse de la fonction cut, construit un seul spectre Ã  partir d'un ensemble de spectres
         """
-        # On vérifie d'abord que les spectres ne partagent pas la meme bande de fréquence (fut ce partiellement)
+        # On vÃ©rifie d'abord que les spectres ne partagent pas la meme bande de frÃ©quence (fut ce partiellement)
         for i in range(0, len(tabSpectre)-1) :
             if exclus(tabSpectre[i].listFreq, tabSpectre[i+1].listFreq) : raise SpectreError
         if exclus(tabSpectre[0].listFreq, tabSpectre[len(tabSpectre)-1].listFreq) : raise SpectreError
@@ -588,11 +588,11 @@ class spectre :
 
         return spRes
 
-    merge = staticmethod(__staticMerge) # définition en tant que méthode statique
+    merge = staticmethod(__staticMerge) # dÃ©finition en tant que mÃ©thode statique
     
     def buildMap(self) :
         """
-            Construit un dictionnaire à partir d'un spectre
+            Construit un dictionnaire Ã  partir d'un spectre
         """
         dict = {}
         for i, j in zip(self.listFreq, self.dataVal) :
@@ -602,7 +602,7 @@ class spectre :
 
 class nappe :
     """
-        décrit un objet nappe qui associe à un ensemble de fréquence à une enesmble de résultats
+        dÃ©crit un objet nappe qui associe Ã  un ensemble de frÃ©quence Ã  une enesmble de rÃ©sultats
     """
     def __init__(self, listFreq = [], listeTable = [], listAmor = [], entete = ""):
         self.listFreq = [v for v in listFreq] # recopie physique !
@@ -615,15 +615,15 @@ class nappe :
 
     def __staticBuildFromListSpectre(lsp) :
         """
-            Construction d'une nappe à partir d'une liste de spectres
+            Construction d'une nappe Ã  partir d'une liste de spectres
         """
-        # On commence par vérifier que toutes les nappes on la meme base de fréquences
-        # A inclus dans B inclus dans C inclus dans .... et DERNIER inclus dans PREMIER ==> tous égaux 
+        # On commence par vÃ©rifier que toutes les nappes on la meme base de frÃ©quences
+        # A inclus dans B inclus dans C inclus dans .... et DERNIER inclus dans PREMIER ==> tous Ã©gaux 
         for i in range(0,len(lsp.listSp)-1) :
             if inclus(lsp.listSp[i].listFreq, lsp.listSp[i+1].listFreq) : raise NappeCreationError
         if inclus(lsp.listSp[i+1].listFreq, lsp.listSp[0].listFreq) : raise NappeCreationError
 
-        # Construction de la nappe à proprement parler
+        # Construction de la nappe Ã  proprement parler
         listeFreq = [fr for fr in lsp.listSp[0].listFreq]
         listeTable = [list() for sp in lsp.listSp]
         for sp, lv in zip(lsp.listSp, listeTable) :
@@ -631,14 +631,14 @@ class nappe :
                 lv.append(v)
         return nappe(listeFreq, listeTable, [], 'toto')
         
-    buildFromListSpectre = staticmethod(__staticBuildFromListSpectre) # définition en tant que méthode statique
+    buildFromListSpectre = staticmethod(__staticBuildFromListSpectre) # dÃ©finition en tant que mÃ©thode statique
 
     def getNbSpectres(self) :
-        """ Retourne le nombre d'éléments dans la nappe """
+        """ Retourne le nombre d'Ã©lÃ©ments dans la nappe """
         return len(self.listAmor)
 
     def getNbFreq(self) :
-        """ Retourne le nombre d'éléments dans chaque spectre """
+        """ Retourne le nombre d'Ã©lÃ©ments dans chaque spectre """
         return len(self.listFreq)
 
     def getSpectre(self, index) :
@@ -649,7 +649,7 @@ class nappe :
 
     def filtreDoublons(self):
         """
-            Supprime bandes de fréquences constantes 
+            Supprime bandes de frÃ©quences constantes 
         """
         prevCpl = None
         bCount = False
@@ -664,10 +664,10 @@ class nappe :
             bTest = True
             for v1, v2 in zip(cpl[1], prevCpl[1]) :
                 bTest &= (v1==v2)
-            if bTest and not bCount : # Début d'une suite de valeurs égales
+            if bTest and not bCount : # DÃ©but d'une suite de valeurs Ã©gales
                 bCount = True
                 lst.append(i)
-            elif not bTest and bCount : # Fin d'une suite de valeurs égales
+            elif not bTest and bCount : # Fin d'une suite de valeurs Ã©gales
                 bCount = False
                 lst.append(i)
                 lstBor.append(lst)
@@ -689,8 +689,8 @@ class nappe :
 
     def __getListFreq(self) :
         """
-            Fonction privé qui parcours la matrice ligne par ligne
-            Retourne à chaque itération un couple frequence, liste de valeurs 
+            Fonction privÃ© qui parcours la matrice ligne par ligne
+            Retourne Ã  chaque itÃ©ration un couple frequence, liste de valeurs 
         """
         fr = 0.0
 
@@ -705,8 +705,8 @@ class nappe :
 
 class listSpectre :
     """
-        classe container d'une liste de spectre ne partageant pas la meme base de fréquence
-        cas des spectres à l'issue de la première passe de l'opération de filtrage d'enveloppe
+        classe container d'une liste de spectre ne partageant pas la meme base de frÃ©quence
+        cas des spectres Ã  l'issue de la premiÃ¨re passe de l'opÃ©ration de filtrage d'enveloppe
     """
     def __init__(self, *listSp) :
         self.listSp = []
@@ -714,12 +714,12 @@ class listSpectre :
             self.listSp = sp
 
     def append(self, spectre) :
-        """ Ajoute un spectre à la liste """
+        """ Ajoute un spectre Ã  la liste """
         self.listSp.append(spectre)
         
     def __staticBuildFromNappe(uneNappe) :
         """
-            Construit une liste de spectres (indépendants) à partir d'une nappe
+            Construit une liste de spectres (indÃ©pendants) Ã  partir d'une nappe
         """
         res = listSpectre()
         for i in range(0, len(uneNappe.listAmor)) :
@@ -727,7 +727,7 @@ class listSpectre :
 
         return res
     
-    buildFromNappe = staticmethod(__staticBuildFromNappe) #Définition en tant que méthode statique
+    buildFromNappe = staticmethod(__staticBuildFromNappe) #DÃ©finition en tant que mÃ©thode statique
     
     def testChevauchement(self) :
         """
@@ -739,39 +739,39 @@ class listSpectre :
 
     def createBase(self, lspRef = None) :
         """
-            Crée une base de fréquence commune pour l'ensemble des spectres
+            CrÃ©e une base de frÃ©quence commune pour l'ensemble des spectres
             En s'assurant que le l'on reste enveloppe des spectre de la liste lspRef
         """
-        lspRes = listSpectre([spectre() for sp in self.listSp]) # Liste résultante
+        lspRes = listSpectre([spectre() for sp in self.listSp]) # Liste rÃ©sultante
 
-        # Recherche des fréquences attribuées à 5 spectres, 4 spectres, ... classées dans un dictionnaire
+        # Recherche des frÃ©quences attribuÃ©es Ã  5 spectres, 4 spectres, ... classÃ©es dans un dictionnaire
         dctOc = self.__sortByOccurence()
 
         iOcc = max(dctOc.keys())
-        lst = dctOc[iOcc] # On comence par mettre les frequences communes à tous les spectres
+        lst = dctOc[iOcc] # On comence par mettre les frequences communes Ã  tous les spectres
         lst.sort() 
         iOcc -= 1
         test = 0
         while True : 
             lspRes.__addFreqFromList(self, lst)
-            # On vérifie si on reste enveloppe du spectre initial
+            # On vÃ©rifie si on reste enveloppe du spectre initial
             spTest = spectre()
             lstComp = list()
             for sp0, sp1 in zip(lspRes.listSp, self.listSp) :
                 filter = filtreChevauchement(ref=sp1)
                 spTest = sp0.filtre(filter)
-                # Crée une liste des fréquences ajoutées (s'il y en a...)
+                # CrÃ©e une liste des frÃ©quences ajoutÃ©es (s'il y en a...)
                 for fr in spTest.listFreq :
                     try :
                         idx = sp0.listFreq.index(fr)
-                    except ValueError : # Valeur non trouvée dans le tableau
+                    except ValueError : # Valeur non trouvÃ©e dans le tableau
                         lstComp.append(fr)
 
-            if len(lstComp) > 0 : # Il est nécessaire de compléter les spectres
-                # on prend de préférence les fréquences définies sur le plus de spectre possible
+            if len(lstComp) > 0 : # Il est nÃ©cessaire de complÃ©ter les spectres
+                # on prend de prÃ©fÃ©rence les frÃ©quences dÃ©finies sur le plus de spectre possible
                 while True :
                     lstFreq = dctOc[iOcc]
-                    prevLst = lst # On sauvegarde la liste précédente pour comparaison
+                    prevLst = lst # On sauvegarde la liste prÃ©cÃ©dente pour comparaison
                     lst = self.__buildList(lstComp, lstFreq)
                     if not(inclus(lst, prevLst)) :
                         iOcc -= 1
@@ -783,9 +783,9 @@ class listSpectre :
 
         self.listSp = lspRes.listSp # Remplacement de la liste des spectres
 
-        # On s'assure que le spectre reste enveloppe du spectre de référence rajoute des fréquences si nécessaire
+        # On s'assure que le spectre reste enveloppe du spectre de rÃ©fÃ©rence rajoute des frÃ©quences si nÃ©cessaire
         # 1. filtre chevauchement
-        if lspRef : # Si une liste de spectre de référence a été définie, on vérifie le caractère enveloppe du résultat
+        if lspRef : # Si une liste de spectre de rÃ©fÃ©rence a Ã©tÃ© dÃ©finie, on vÃ©rifie le caractÃ¨re enveloppe du rÃ©sultat
             listComp = list()
 
             for sp1, sp2 in zip(self.listSp, lspRef.listSp) :
@@ -793,25 +793,25 @@ class listSpectre :
                 spTest = sp1.filtre(filter)
                 test = inclus(spTest.listFreq, sp1.listFreq)
                 if test : listComp.append(test)
-            # 3. Complément éventuel de l'ensemble des spectres
+            # 3. ComplÃ©ment Ã©ventuel de l'ensemble des spectres
             if listComp : lspRes.__addFreqFromList(self, listComp)
 
         self.listSp = lspRes.listSp # Remplacement de la liste des spectres
 
     def filtre(self, filter):
         """
-            Applique un filtre à l'ensemble des spectres de la liste
+            Applique un filtre Ã  l'ensemble des spectres de la liste
         """
         self.listSp = [sp.filtre(filter) for sp in self.listSp]
 
 
     def __sortByOccurence(self) :
         """
-            Fonction qui trie les fréquences par leur occurence d'apparition dans la liste de spectre
+            Fonction qui trie les frÃ©quences par leur occurence d'apparition dans la liste de spectre
         """
         dct = {}
         for sp in self.listSp : # Boucle sur tous les spectres
-           for fr in sp.listFreq : # Boucle sur toutes les fréquences de chaque spectre
+           for fr in sp.listFreq : # Boucle sur toutes les frÃ©quences de chaque spectre
                 try :
                     dct[fr] += 1
                 except KeyError :
@@ -830,11 +830,11 @@ class listSpectre :
     
     def __addFreqFromList(self, lstSp, lstFreq) :
         """
-            Rajoute les fréquences contenues dans lstFreq aux spectres d'un listeSpectre
-            à partir des spectres fournis par le listeSpectre (lstSp) passé en paramètre
-            en procédant éventuellement à une interpolation linéaire
+            Rajoute les frÃ©quences contenues dans lstFreq aux spectres d'un listeSpectre
+            Ã  partir des spectres fournis par le listeSpectre (lstSp) passÃ© en paramÃ¨tre
+            en procÃ©dant Ã©ventuellement Ã  une interpolation linÃ©aire
         """
-        # Suppression des doublons de la liste des fréquences
+        # Suppression des doublons de la liste des frÃ©quences
         lstFreq = listToDict(lstFreq).keys() # lst est la liste des points qu'il faudrait ajouter pour rester enveloppe
         lstFreq.sort()
         
@@ -843,23 +843,23 @@ class listSpectre :
             spDctSelf = self.listSp[i].buildMap()
             spDctRef = lstSp.listSp[i].buildMap() 
             for fr in lstFreq :
-                # On cherche la valeur dans le spectre de référence
+                # On cherche la valeur dans le spectre de rÃ©fÃ©rence
                 try :
                     vr = spDctRef[fr]
                 except KeyError :
                     ki = nearestKeys(fr, spDctRef)
                     vr = interpole(fr, ki[0], spDctRef[ki[0]], ki[1], spDctRef[ki[1]])
 
-                # On rajoute la valeur dans le spectre résultat
+                # On rajoute la valeur dans le spectre rÃ©sultat
                 spDctSelf[fr] = vr
 
-            # Conversion du dictionnaire en spectre réel
+            # Conversion du dictionnaire en spectre rÃ©el
             self.listSp[i] = spectre.sortSpectre(spDctSelf)
             
     def __buildList(self, lstComp, lstFreq) :
         """
-            Construit une liste de fréquences à ajouter à partir d'une liste de fréquences
-            à ajouter (listComp) et d'une liste de référence, (listFreq)
+            Construit une liste de frÃ©quences Ã  ajouter Ã  partir d'une liste de frÃ©quences
+            Ã  ajouter (listComp) et d'une liste de rÃ©fÃ©rence, (listFreq)
             retourne une liste
         """
         lst = list()
@@ -867,7 +867,7 @@ class listSpectre :
             try :
                 idx = lstFreq.index(fr)
                 lst.append(fr)
-            except ValueError : # Fréquence non présente, recherche de la plus proche 
+            except ValueError : # FrÃ©quence non prÃ©sente, recherche de la plus proche 
                 couple = nearestKeys(fr, listToDict(lstFreq))
                 if abs(couple[0]-fr) > abs(couple[1]-fr) :
                     lst.append(couple[1])
@@ -880,14 +880,14 @@ class listSpectre :
         
       
 def lissage(nappe=nappe,fmin=0.2,fmax=35.5,elarg=0.1,tole_liss=0.25) :
-    resultat = listSpectre() # Le résultat sera contenu dans une liste de spectre
+    resultat = listSpectre() # Le rÃ©sultat sera contenu dans une liste de spectre
     lspBrut = listSpectre.buildFromNappe(nappe)
     # Passage en LogLog
     lspBrut.filtre(filtreLog())
     for j in range(0,nappe.getNbSpectres()) :
         # Spectre brut
         sp = nappe.getSpectre(j)
-        # Limitation de la bande de fréquence
+        # Limitation de la bande de frÃ©quence
         filter = filtreBandWidth(lower=fmin, upper=fmax)
         sp = sp.filtre(filter)
         # Expansion du spectre
@@ -896,7 +896,7 @@ def lissage(nappe=nappe,fmin=0.2,fmax=35.5,elarg=0.1,tole_liss=0.25) :
         # Passage en LogLin
         filter = filtreLog(logOrd=False)
         sp = sp.filtre(filter)
-        # éclatement du spectre en 3 sous-parties
+        # Ã©clatement du spectre en 3 sous-parties
         tabSpectre = sp.cut(sp.seuil())
         # traitement individuel des sous parties
         filter = filtreCrible(tolerance=2.*tole_liss)
@@ -913,18 +913,18 @@ def lissage(nappe=nappe,fmin=0.2,fmax=35.5,elarg=0.1,tole_liss=0.25) :
         # On passe en log-log pour les tests de chevauchement
         filter = filtreLog(logAbc=False)
         sp = sp.filtre(filter)
-        # Ecriture dans la liste de spectres résultat
-        resultat.append(sp) # Ajoute la spectre lissé à la liste des spectres
+        # Ecriture dans la liste de spectres rÃ©sultat
+        resultat.append(sp) # Ajoute la spectre lissÃ© Ã  la liste des spectres
             
     resultat.testChevauchement() # Test de chevauchement entre les spectre de la liste
-    resultat.createBase(lspBrut) # construction d'une base commune de fréquence
+    resultat.createBase(lspBrut) # construction d'une base commune de frÃ©quence
 
     # Passage en lin
     resultat.filtre(filtreLin())
         
-    # Construction de la nappe résultat
+    # Construction de la nappe rÃ©sultat
     nappeRes = nappe.buildFromListSpectre(resultat)
     nappeRes.listAmor=nappe.listAmor
-    nappeRes.filtreDoublons() # Suppression des valeurs identiques accolées
+    nappeRes.filtreDoublons() # Suppression des valeurs identiques accolÃ©es
     
     return nappeRes

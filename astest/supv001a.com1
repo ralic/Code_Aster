@@ -14,7 +14,7 @@ from ma_macro import MON_INCLUDE
 # form n'est utilisable que dans l'INCLUDE, la ou est defini 'para'
 form = FORMULE(NOM_PARA='INST', VALE='para * INST')
 
-# vérifie que l'INCLUDE ne crée pas de conflit avec les concepts du jdc
+# vÃ©rifie que l'INCLUDE ne crÃ©e pas de conflit avec les concepts du jdc
 fonc = DEFI_FONCTION(NOM_PARA='X',
                      VALE=(1., 0.),
                      PROL_GAUCHE='CONSTANT',
@@ -22,12 +22,12 @@ fonc = DEFI_FONCTION(NOM_PARA='X',
 
 MON_INCLUDE(UNITE=11,
             INTERNE=('tab', 'fonc'),
-            # INTERNE sert à dire à la macro que des concepts sont nommés
+            # INTERNE sert Ã  dire Ã  la macro que des concepts sont nommÃ©s
             # 'tab' et 'fonc' mais elle doit les produire sous un nom
             # temporaire pour ne pas rentrer en conflit avec le jdc.
             TABLE=CO('tabres'),
-            # permet de produire une table pour vérifier qu'elle a bien
-            # été créée dans l'INCLUDE.
+            # permet de produire une table pour vÃ©rifier qu'elle a bien
+            # Ã©tÃ© crÃ©Ã©e dans l'INCLUDE.
 )
 
 DETRUIRE(CONCEPT=_F(NOM=form))

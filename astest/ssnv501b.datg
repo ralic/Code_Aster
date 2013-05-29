@@ -23,7 +23,7 @@ lDA1 = droit  2 D  A1 ;
 FLAN = daller lA1B lBC1 lC1D lDA1 plan ;
 elim 0.001 FLAN ;
 *
-*Construction rayon entr‰e matrice
+*Construction rayon entrÂ‰e matrice
 *
 F  = 52.83        7.35     ;
 G  = 59.18        7.35     ;
@@ -36,7 +36,7 @@ li1 = lC2G et lGF et lFC2;
 *
 MATRICE = surface li1 plane ;
 *
-*Construction poin‡on
+*Construction poinÂ‡on
 *
 E  = 50.8           (-50.8)   ;
 H  = 0.             (-50.8)   ;

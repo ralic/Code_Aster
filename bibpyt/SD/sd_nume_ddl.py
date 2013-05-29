@@ -1,4 +1,4 @@
-# -*- coding: iso-8859-1 -*-
+# coding=utf-8
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -25,7 +25,7 @@ from SD.sd_nume_ddl_gd import sd_nume_ddl_gd
 
 
 #---------------------------------------------------------------------------------
-# classe "chapeau" à sd_nume_ddl_gene et sd_nume_ddl_gd ne servant que pour "check"
+# classe "chapeau" Ã  sd_nume_ddl_gene et sd_nume_ddl_gd ne servant que pour "check"
 #---------------------------------------------------------------------------------
 
 

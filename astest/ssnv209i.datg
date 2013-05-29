@@ -5,14 +5,14 @@ opti dime 2 elem tri3;
 *----------------------------------------
 eps = 0.001;
 
-* dimensions des cotés
+* dimensions des cotÃ©s
 
 r   = 0.04;
 ly  = r;
 lyd = -1*r/4;
 lx  = r;
 
-* nombre d'éléments
+* nombre d'Ã©lÃ©ments
 ny  = 10;
 nyd = 3;
 nx  = 16;

@@ -1,4 +1,4 @@
-# -*- coding: iso-8859-1 -*-
+# coding=utf-8
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -22,22 +22,22 @@ from cata_comportement import LoiComportement
 
 loi = LoiComportement(
    nom            = 'KIT_HHM',
-   doc = """KIT associé au comportement des milieux poreux (modélisations thermo-hydro-mécanique).
-   Pour plus de détails sur les modélisations thermo-hydro-mécaniques et les modèles de comportement, 
+   doc = """KIT associÃ© au comportement des milieux poreux (modÃ©lisations thermo-hydro-mÃ©canique).
+   Pour plus de dÃ©tails sur les modÃ©lisations thermo-hydro-mÃ©caniques et les modÃ¨les de comportement, 
    on pourra consulter les documents [R7.01.10] et [R7.01.11], ainsi que la notice d'utilisation [U2.04.05].
-   Les relations KIT_XXXX permettent de résoudre simultanément de deux à quatre équations d'équilibre. 
-   Les équations considérées dépendent du suffixe XXXX avec la règle suivante :
-   - M désigne l'équation d'équilibre mécanique,
-   - T désigne l'équation d'équilibre thermique,
-   - H désigne une équation d'équilibre hydraulique.
-   - V désigne la présence d'une phase sous forme vapeur (en plus du liquide)
-   Les problèmes thermo-hydro-mécaniques associés sont traités de facon totalement couplée.
-   Une seule lettre H signifie que le milieu poreux est saturé (une seule variable de pression p), 
-   par exemple soit de gaz, soit de liquide, soit d'un mélange liquide/gaz (dont la pression du gaz est constante).
-   Deux lettres H signifient que le milieu poreux est non saturé (deux variables de pression p), par exemple 
-   un mélange liquide/vapeur/gaz. La présence des deux lettres HV signifie que le milieu poreux est saturé par 
-   un composant (en pratique de l'eau), mais que ce composant peut être sous forme liquide ou vapeur. 
-   Il n'y a alors qu'une équation de conservation de ce composant, donc un seul degré de liberté pression, 
+   Les relations KIT_XXXX permettent de rÃ©soudre simultanÃ©ment de deux Ã  quatre Ã©quations d'Ã©quilibre. 
+   Les Ã©quations considÃ©rÃ©es dÃ©pendent du suffixe XXXX avec la rÃ¨gle suivante :
+   - M dÃ©signe l'Ã©quation d'Ã©quilibre mÃ©canique,
+   - T dÃ©signe l'Ã©quation d'Ã©quilibre thermique,
+   - H dÃ©signe une Ã©quation d'Ã©quilibre hydraulique.
+   - V dÃ©signe la prÃ©sence d'une phase sous forme vapeur (en plus du liquide)
+   Les problÃ¨mes thermo-hydro-mÃ©caniques associÃ©s sont traitÃ©s de facon totalement couplÃ©e.
+   Une seule lettre H signifie que le milieu poreux est saturÃ© (une seule variable de pression p), 
+   par exemple soit de gaz, soit de liquide, soit d'un mÃ©lange liquide/gaz (dont la pression du gaz est constante).
+   Deux lettres H signifient que le milieu poreux est non saturÃ© (deux variables de pression p), par exemple 
+   un mÃ©lange liquide/vapeur/gaz. La prÃ©sence des deux lettres HV signifie que le milieu poreux est saturÃ© par 
+   un composant (en pratique de l'eau), mais que ce composant peut Ãªtre sous forme liquide ou vapeur. 
+   Il n'y a alors qu'une Ã©quation de conservation de ce composant, donc un seul degrÃ© de libertÃ© pression, 
    mais il y a un flux liquide et un flux vapeur.
    """,
    num_lc         = 9999,

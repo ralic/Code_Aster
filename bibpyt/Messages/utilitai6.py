@@ -1,4 +1,4 @@
-# -*- coding: iso-8859-1 -*-
+# coding=utf-8
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -26,72 +26,72 @@ cata_msg = {
 
 2 : _(u"""
  Erreur utilisateur (CREA_CHAMP/AFFE) :
-   Le type du champ que l'on cherche à créer (réel, entier, complexe, fonction)
-   n'est pas compatible avec le mot clé utilisé (VALE, VALE_I, VALE_C, VALE_F).
+   Le type du champ que l'on cherche Ã  crÃ©er (rÃ©el, entier, complexe, fonction)
+   n'est pas compatible avec le mot clÃ© utilisÃ© (VALE, VALE_I, VALE_C, VALE_F).
 
  Il faut respecter la correspondance suivante :
-    - champ réel        -> VALE
+    - champ rÃ©el        -> VALE
     - champ complexe    -> VALE_C
     - champ entier      -> VALE_I
     - champ fonction    -> VALE_F
 """),
 
 3 : _(u"""
- la liste de composantes et la liste des valeurs n'ont pas la même dimension
- occurrence de AFFE numéro  %(i1)d
+ la liste de composantes et la liste des valeurs n'ont pas la mÃªme dimension
+ occurrence de AFFE numÃ©ro  %(i1)d
 """),
 
 4 : _(u"""
- une composante n'appartient pas à la grandeur
- occurrence de AFFE numéro  %(i1)d
+ une composante n'appartient pas Ã  la grandeur
+ occurrence de AFFE numÃ©ro  %(i1)d
  grandeur   :  %(k1)s
  composante :  %(k2)s
 """),
 
 5 : _(u"""
- le NUME_DDL en entrée ne s'appuie pas sur la même grandeur que celle de la commande
- grandeur associée au NUME_DDL : %(k1)s
+ le NUME_DDL en entrÃ©e ne s'appuie pas sur la mÃªme grandeur que celle de la commande
+ grandeur associÃ©e au NUME_DDL : %(k1)s
  grandeur de la commande       :  %(k2)s
 """),
 
 11 : _(u"""
- une composante n'appartient pas à la grandeur
+ une composante n'appartient pas Ã  la grandeur
  grandeur   :  %(k1)s
  composante :  %(k2)s
 """),
 
 12 : _(u"""
- variable inconnue:  %(k1)s  pour le résultat :  %(k2)s
+ variable inconnue:  %(k1)s  pour le rÃ©sultat :  %(k2)s
 """),
 
 13 : _(u"""
- problème rencontré lors de la recherche de la variable :  %(k1)s
+ problÃ¨me rencontrÃ© lors de la recherche de la variable :  %(k1)s
          DEBUT :  %(k2)s
            fin :  %(k3)s
 """),
 
 14 : _(u"""
  interpolation non permise
- valeur à interpoler : %(r1)f
- borne inférieure    : %(r2)f
- borne supérieure    : %(r3)f
+ valeur Ã  interpoler : %(r1)f
+ borne infÃ©rieure    : %(r2)f
+ borne supÃ©rieure    : %(r3)f
 """),
 
 16 : _(u"""
  interpolation impossible
- instant à interpoler:  %(r1)f
+ instant Ã  interpoler:  %(r1)f
 """),
 
 17 : _(u"""
  interpolation impossible
- instant à interpoler:  %(r1)f
- borne inférieure    :  %(r2)f
+ instant Ã  interpoler:  %(r1)f
+ borne infÃ©rieure    :  %(r2)f
 """),
 
 18 : _(u"""
  interpolation impossible
- instant à interpoler:  %(r1)f
- borne supérieure    : %(r2)f
+ instant Ã  interpoler:  %(r1)f
+ borne supÃ©rieure    : %(r2)f
 """),
 
 
@@ -112,7 +112,7 @@ cata_msg = {
 """),
 
 38 : _(u"""
- il y a  %(i1)d paramètre(s) identique(s) dans la définition de la nappe
+ il y a  %(i1)d paramÃ¨tre(s) identique(s) dans la dÃ©finition de la nappe
 """),
 
 44 : _(u"""
@@ -128,24 +128,24 @@ cata_msg = {
 """),
 
 48 : _(u"""
- méthode de Newton
+ mÃ©thode de Newton
  exposant de la loi  = %(r1)f
- nombre d'itérations = %(i1)d
- résidu fonction = %(r2)f
- résidu = %(r3)f
- précision = %(r4)f
+ nombre d'itÃ©rations = %(i1)d
+ rÃ©sidu fonction = %(r2)f
+ rÃ©sidu = %(r3)f
+ prÃ©cision = %(r4)f
 """),
 
 51 : _(u"""
- pas de champ correspondant à l'instant demandé.
- résultat  %(k1)s
- accès "INST_INIT" : %(r1)f
+ pas de champ correspondant Ã  l'instant demandÃ©.
+ rÃ©sultat  %(k1)s
+ accÃ¨s "INST_INIT" : %(r1)f
 """),
 
 52 : _(u"""
- plusieurs champs correspondant à l'instant demandé
- résultat  %(k1)s
- accès "INST_INIT" : %(r1)f
+ plusieurs champs correspondant Ã  l'instant demandÃ©
+ rÃ©sultat  %(k1)s
+ accÃ¨s "INST_INIT" : %(r1)f
  nombre : %(i1)d
 """),
 
@@ -162,37 +162,37 @@ cata_msg = {
 """),
 
 55 : _(u"""
- paramètres initiaux de WEIBULL
+ paramÃ¨tres initiaux de WEIBULL
  exposant de la loi      = %(r1)f
- volume de référence     = %(r2)f
- contrainte de référence = %(r3)f
+ volume de rÃ©fÃ©rence     = %(r2)f
+ contrainte de rÃ©fÃ©rence = %(r3)f
 """),
 
 56 : _(u"""
  statistiques recalage :
- nombre d'itérations  = %(i1)d
+ nombre d'itÃ©rations  = %(i1)d
  convergence atteinte = %(r1)f
 """),
 
 60 : _(u"""
- homogénéité du champ de matériaux pour WEIBULL
- nombre de RC WEIBULL trouvées =  %(i1)d
+ homogÃ©nÃ©itÃ© du champ de matÃ©riaux pour WEIBULL
+ nombre de RC WEIBULL trouvÃ©es =  %(i1)d
  les calculs sont valables pour  un seul comportement WEIBULL %(k1)s
- on choisit la première relation du type WEIBULL %(k2)s
+ on choisit la premiÃ¨re relation du type WEIBULL %(k2)s
 """),
 
 61 : _(u"""
- paramètres de la RC WEIBULL_FO
+ paramÃ¨tres de la RC WEIBULL_FO
  exposant de la loi      = %(r1)f
- volume de référence     = %(r2)f
- contrainte de référence conventionnelle = %(r3)f
+ volume de rÃ©fÃ©rence     = %(r2)f
+ contrainte de rÃ©fÃ©rence conventionnelle = %(r3)f
 """),
 
 62 : _(u"""
- paramètres de la RC WEIBULL
+ paramÃ¨tres de la RC WEIBULL
  exposant de la loi      = %(r1)f
- volume de référence     = %(r2)f
- contrainte de référence = %(r3)f
+ volume de rÃ©fÃ©rence     = %(r2)f
+ contrainte de rÃ©fÃ©rence = %(r3)f
 """),
 
 
@@ -200,50 +200,50 @@ cata_msg = {
 
 72 : _(u"""
  trop de mailles dans le GROUP_MA
- maille utilisée:  %(k1)s
+ maille utilisÃ©e:  %(k1)s
 """),
 
 77 : _(u"""
-Concept résultat %(k1)s :
-le numéro d'ordre %(i1)d est inconnu.
+Concept rÃ©sultat %(k1)s :
+le numÃ©ro d'ordre %(i1)d est inconnu.
 """),
 
 78 : _(u"""
-Concept résultat %(k1)s :
-le numéro d'archivage %(i1)d est supérieur au max %(i2)d.
+Concept rÃ©sultat %(k1)s :
+le numÃ©ro d'archivage %(i1)d est supÃ©rieur au max %(i2)d.
 """),
 
 79 : _(u"""
-Concept résultat %(k1)s :
-le numéro de rangement %(i1)d est supérieur au max %(i2)d.
+Concept rÃ©sultat %(k1)s :
+le numÃ©ro de rangement %(i1)d est supÃ©rieur au max %(i2)d.
 """),
 
 80 : _(u"""
-Concept résultat %(k1)s :
+Concept rÃ©sultat %(k1)s :
 la variable %(k2)s est inconnue pour le type %(k3)s.
 """),
 
 84 : _(u"""
- le "NOM_PARA_RESU"  %(k1)s n'est pas un paramètre du résultat  %(k2)s
+ le "NOM_PARA_RESU"  %(k1)s n'est pas un paramÃ¨tre du rÃ©sultat  %(k2)s
 """),
 
 89 : _(u"""
- erreur dans les données
- le paramètre  %(k1)s n'existe pas
+ erreur dans les donnÃ©es
+ le paramÃ¨tre  %(k1)s n'existe pas
 """),
 
 93 : _(u"""
- le paramètre  %(k1)s n'existe pas dans la table %(k2)s
- il est nécessaire
+ le paramÃ¨tre  %(k1)s n'existe pas dans la table %(k2)s
+ il est nÃ©cessaire
  veuillez consulter la documentation de la commande
 """),
 
 99 : _(u"""
- erreur dans les données
- paramètre :  %(k1)s
- plusieurs valeurs trouvées
- pour le paramètre : %(k3)s
- et le paramètre   : %(k4)s
+ erreur dans les donnÃ©es
+ paramÃ¨tre :  %(k1)s
+ plusieurs valeurs trouvÃ©es
+ pour le paramÃ¨tre : %(k3)s
+ et le paramÃ¨tre   : %(k4)s
 """),
 
 }

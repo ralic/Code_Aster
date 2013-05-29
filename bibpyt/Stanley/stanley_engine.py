@@ -1,4 +1,4 @@
-# -*- coding: iso-8859-1 -*-
+# coding=utf-8
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -73,7 +73,7 @@ from Utilitai import sup_gmsh
 from Utilitai.Utmess import UTMESS
 from graphiqueTk import *
 import ihm_parametres
-#XXX c'est peut-être une commodité mais ça rend le code incompréhensible !
+#XXX c'est peut-Ãªtre une commoditÃ© mais Ã§a rend le code incomprÃ©hensible !
 from Cata.cata import *
 from Accas import _F
 from types import *
@@ -117,7 +117,7 @@ def DETR(lnom):
 # ==============================================================================
 
 # Definition d'une table de concept maillage, d'une variable d'increment et de
-# deux unités logiques disponibles pour les operations du superviseur GMSH
+# deux unitÃ©s logiques disponibles pour les operations du superviseur GMSH
 global _MA, _NUM, _UL
 _MA=[None]*1000
 _NUM=0
@@ -218,7 +218,7 @@ class PARAMETRES :
     # Ce parametre sert a definir si les parametres doivent etre sauvegardes en sortant de l'IHM
     self.Saved = True
 
-    # Ce parametre sert a definir si les fontes ont ete changées dans la fenetre de parametres
+    # Ce parametre sert a definir si les fontes ont ete changÃ©es dans la fenetre de parametres
     self.change_fonte = False
 
 # ------------------------------------------------------------------------------
@@ -305,7 +305,7 @@ class PARAMETRES :
 
       # Parametres Graphiques specifiques a Gmsh, Xmgrace, Salome
       'TAILLE_MIN'            : { 'label': _(u"Gmsh : Taille minimale"),           'val': 0.,                 'type': types.FloatType,  'section': 'VISUALISATION',   'mode_graphique': ['Gmsh/Xmgrace'],                                                  'bulle': '', },
-      'SHRINK'                : { 'label': _(u"Gmsh : Shrink"),                    'val': 1.,                 'type': types.FloatType,  'section': 'VISUALISATION',   'mode_graphique': ['Gmsh/Xmgrace'],                                                  'bulle': _(u"Parametre pour Gmsh : SHRINK\n\nFacteur de réduction homothétique permettant d'assurer la non interpénétration des mailles."), },
+      'SHRINK'                : { 'label': _(u"Gmsh : Shrink"),                    'val': 1.,                 'type': types.FloatType,  'section': 'VISUALISATION',   'mode_graphique': ['Gmsh/Xmgrace'],                                                  'bulle': _(u"Parametre pour Gmsh : SHRINK\n\nFacteur de rÃ©duction homothÃ©tique permettant d'assurer la non interpÃ©nÃ©tration des mailles."), },
       'SKIN'                  : { 'label': _(u"Gmsh : Affichage sur la peau"),     'val': 'non',              'type': 'liste',          'section': 'VISUALISATION',   'mode_graphique': ['Gmsh/Xmgrace'], 'val_possible': ["oui", "non"],                  'bulle': _(u"Parametre pour Gmsh : affichage sur la peau uniquement."), },
       'version_fichier_gmsh'  : { 'label': _(u"Gmsh : Version du fichier"),        'val': '1.2',              'type': 'liste',          'section': 'VISUALISATION',   'mode_graphique': ['Gmsh/Xmgrace'], 'val_possible': ["1.0", "1.2"],                  'bulle': _(u"Parametre pour Gmsh : version du fichier resultat."), },
       'Visualiseur'           : { 'label': _(u"Salome : Visualiseur"),             'val': 'PARAVIZ',          'type': 'liste',          'section': 'VISUALISATION',   'mode_graphique': ['Salome'],       'val_possible': ["POSTPRO", "PARAVIZ"],          'bulle': _(u"Parametre pour Salome : visualisation dans POSTPRO ou PARAVIZ."), },
@@ -329,7 +329,7 @@ class PARAMETRES :
       'partage_win_login'     : { 'label': _(u"Nom d'utilisateur du partage"),     'val': '',                 'type': 'texte',          'section': 'CONFIG',          'mode_graphique': ['Gmsh/Xmgrace'],             'mode': ['WINDOWS'],                 'bulle': _(u"Partage Windows/Samba : nom d'utilisateur"), },
       'partage_win_pass'      : { 'label': _(u"Mot de passe du partage"),          'val': '',                 'type': 'texte',          'section': 'CONFIG',          'mode_graphique': ['Gmsh/Xmgrace'],             'mode': ['WINDOWS'],                 'bulle': _(u"Partage Windows/Samba : mot de passe"), },
 
-      'protocole'             : { 'label': _(u"Protocole reseau"),                 'val': 'rcp/rsh',          'type': 'liste',          'section': 'CONFIG',                                              'val_possible': ["rcp/rsh", "scp/ssh"], 'mode': ['DISTANT'], 'bulle': _(u"Protocole de transfert reseau. \nLes .rhosts ou clés SSH doivent etre à jours."), },
+      'protocole'             : { 'label': _(u"Protocole reseau"),                 'val': 'rcp/rsh',          'type': 'liste',          'section': 'CONFIG',                                              'val_possible': ["rcp/rsh", "scp/ssh"], 'mode': ['DISTANT'], 'bulle': _(u"Protocole de transfert reseau. \nLes .rhosts ou clÃ©s SSH doivent etre Ã  jours."), },
 
       'tmp'                   : { 'label': _(u"Repertoire temporaire"),            'val': '/tmp',             'type': 'texte',          'section': 'CONFIG',          'mode_graphique': ['Gmsh/Xmgrace', 'Salome'],   'mode': ['LOCAL', 'DISTANT'],        'bulle': _(u"Repertoire temporaire"), },
 
@@ -344,10 +344,10 @@ class PARAMETRES :
 LOCAL: pour les utilisateurs qui travaillent sur une version locale d'Aster.
 
 DISTANT: le serveur Aster et/ou la machine de Gmsh est une machine distante,
-ou bien on utilise un partage Samba pour récuperer les fichiers Gmsh.
+ou bien on utilise un partage Samba pour rÃ©cuperer les fichiers Gmsh.
 
 WINDOWS: pour les utilisateur qui travaillent sous Windows / Exceed avec un
-répertoire partagé.
+rÃ©pertoire partagÃ©.
 """)
 
 
@@ -355,7 +355,7 @@ répertoire partagé.
 """Parametre pour Gmsh : TAILLE_MIN
 
 Ceci permet de fixer la taille minimale d'un cote d'un element. Si cette taille n'est pas atteinte, on
-procede à une transformation geometrique (affinite le long du cote trop petit). L'interet est de
+procede Ã  une transformation geometrique (affinite le long du cote trop petit). L'interet est de
 pouvoir visualiser des resultats sur des elements tres etires (comme les elements de joint).
 Par defaut, tm vaut 0. : on ne modifie pas la geometrie des elements.
 """)
@@ -369,40 +369,40 @@ Mode LOCAL:
 
 Il n'y a qu'une seule machine : le serveur de calcul Aster est sur le poste de travail de l'utilisateur (la machine locale).
 
-Gmsh est executé sur la machine locale.
+Gmsh est executÃ© sur la machine locale.
 
-Il n'y a donc aucune adresse de machine à fournir.
+Il n'y a donc aucune adresse de machine Ã  fournir.
 """,
 
 'DISTANT': """
 Mode DISTANT:
 
-- La "Machine de Gmsh" est la machine sur laquelle sera executé Gmsh.
-- La "Machine de visualisation" est le poste de travail de l'utilisateur, et en général, c'est la "Machine de Gmsh".
+- La "Machine de Gmsh" est la machine sur laquelle sera executÃ© Gmsh.
+- La "Machine de visualisation" est le poste de travail de l'utilisateur, et en gÃ©nÃ©ral, c'est la "Machine de Gmsh".
 
 Remarques:
 
-. La "Machine de visualisation" peut eventuellement etre différente de la "Machine de Gmsh". On a dans ce cas un schéma à trois machines différentes.
-Gmsh sera executé à distance et son display sera renvoyé vers "Machine de visualisation" (mettre son IP).
+. La "Machine de visualisation" peut eventuellement etre diffÃ©rente de la "Machine de Gmsh". On a dans ce cas un schÃ©ma Ã  trois machines diffÃ©rentes.
+Gmsh sera executÃ© Ã  distance et son display sera renvoyÃ© vers "Machine de visualisation" (mettre son IP).
 
-. Si le paramètre "Machine de visualisation" est vide, le fichier .pos sera déposé dans le répertoire temporaire sur la "Machine de Gmsh", mais Gmsh ne sera pas lancé.
-On pourra donc récupérer manuellement le fichier .pos par réseau et le visualiser (cette configuration permet d'utiliser Stanley via Exceed sous Windows et de récupérer manuellement le fichier sous Windows, par exemple en ftp).
+. Si le paramÃ¨tre "Machine de visualisation" est vide, le fichier .pos sera dÃ©posÃ© dans le rÃ©pertoire temporaire sur la "Machine de Gmsh", mais Gmsh ne sera pas lancÃ©.
+On pourra donc rÃ©cupÃ©rer manuellement le fichier .pos par rÃ©seau et le visualiser (cette configuration permet d'utiliser Stanley via Exceed sous Windows et de rÃ©cupÃ©rer manuellement le fichier sous Windows, par exemple en ftp).
 """,
 
 'WINDOWS': """
 Mode WINDOWS:
 
-Dans ce mode, le poste de travail de l'utilisateur est une machine sous Windows et on accède à Stanley par un serveur X11 comme Xming ou Exceed.
+Dans ce mode, le poste de travail de l'utilisateur est une machine sous Windows et on accÃ¨de Ã  Stanley par un serveur X11 comme Xming ou Exceed.
 
 On a deux cas possibles :
-1. L'utilisateur a les droits pour définir un "répertoire partagé" sous son Windows (bouton droit sur un répertoire + Partage) et dans ce cas il crée lui meme son partage.
+1. L'utilisateur a les droits pour dÃ©finir un "rÃ©pertoire partagÃ©" sous son Windows (bouton droit sur un rÃ©pertoire + Partage) et dans ce cas il crÃ©e lui meme son partage.
 2. L'utilisateur utilise une tierce machine avec un serveur Samba sur un serveur Unix/Linux.
 
 - La "Machine Windows/Samba" est la machine qui abrite le partage Windows ou Samba.
-- Le "Nom du partage Windows/Samba" est le nom sous lequel le répertoire Windows a été partagé, ou le nom du partage Samba.
-- Si nécessaire, on spécifie le nom d'utilisateur du partage et le mot de passe du partage.
+- Le "Nom du partage Windows/Samba" est le nom sous lequel le rÃ©pertoire Windows a Ã©tÃ© partagÃ©, ou le nom du partage Samba.
+- Si nÃ©cessaire, on spÃ©cifie le nom d'utilisateur du partage et le mot de passe du partage.
 
-Les fichiers .pos sont transférés sur le disque partagé Windows ou le partage Samba.
+Les fichiers .pos sont transfÃ©rÃ©s sur le disque partagÃ© Windows ou le partage Samba.
 Dans les deux cas, il faut ouvrir depuis Windows le fichier .pos manuellement avec Gmsh Windows.
 """,
 }
@@ -412,17 +412,17 @@ Dans les deux cas, il faut ouvrir depuis Windows le fichier .pos manuellement av
 Mode LOCAL:
 
 Il n'y a qu'une seule machine : le serveur de calcul Aster est sur le poste de travail de l'utilisateur (la machine locale).
-Salome est executé sur la machine locale et doit etre lancé indépendament de Stanley.
+Salome est executÃ© sur la machine locale et doit etre lancÃ© indÃ©pendament de Stanley.
 
-Il n'y a donc aucune adresse de machine à fournir.
+Il n'y a donc aucune adresse de machine Ã  fournir.
 """,
 
 'DISTANT': """
 Mode DISTANT:
 
-- La "Machine de Salome" est la machine sur laquelle sera executé Salome. C'est une machine distante du serveur de calcul Aster.
+- La "Machine de Salome" est la machine sur laquelle sera executÃ© Salome. C'est une machine distante du serveur de calcul Aster.
 
-Salome doit etre lancé indépendament de Stanley.
+Salome doit etre lancÃ© indÃ©pendament de Stanley.
 """,
 
 'WINDOWS': """
@@ -439,14 +439,14 @@ Ce mode est indisponible car Salome n'existe pas encore sous Windows.
 
   def Detecte_Derniere_Config(self):
     '''
-       Lecture de la derniere config connues/utilisée.
+       Lecture de la derniere config connues/utilisÃ©e.
        Si echec, alors creation d'une nouvelle configuration.
     '''
 
     ok_env=True
     res=True
 
-    # essaye de lire le nom de la derniere config utilisée
+    # essaye de lire le nom de la derniere config utilisÃ©e
     fic_env = os.path.join(os.environ['HOME'], __rcstanley__, __fichier_last__)
 
     # Essaye de determiner le dernier fichier d'environnement utilise
@@ -616,9 +616,9 @@ Ce mode est indisponible car Salome n'existe pas encore sous Windows.
 
   def Ouvrir_Sous(self, interface):
     '''
-       Ouvre les parametres a partir d'un fichier à choisir
+       Ouvre les parametres a partir d'un fichier Ã  choisir
     '''
-    fp=tkFileDialog.askopenfile(mode='r',filetypes=[("Fichiers Stanley", "*.stn"),("Tous", "*")],parent=interface.rootTk,title="Sélectionner le fichier contenant la configuration Stanley",initialdir='~/%s' % __rcstanley__)
+    fp=tkFileDialog.askopenfile(mode='r',filetypes=[("Fichiers Stanley", "*.stn"),("Tous", "*")],parent=interface.rootTk,title="SÃ©lectionner le fichier contenant la configuration Stanley",initialdir='~/%s' % __rcstanley__)
     if (fp != None):
        fichier = fp.name
        res = self.Ouvrir_Fichier(fichier)
@@ -629,10 +629,10 @@ Ce mode est indisponible car Salome n'existe pas encore sous Windows.
 
   def Sauvegarder_Rapide(self, interface):
     '''
-       Sauvegarde les options dans la derniere config connues/utilisée
+       Sauvegarde les options dans la derniere config connues/utilisÃ©e
     '''
 
-    # essaye de lire le nom de la derniere config utilisée
+    # essaye de lire le nom de la derniere config utilisÃ©e
     fic_env = os.path.join(os.environ['HOME'],__rcstanley__, __fichier_last__)
 
     try:
@@ -660,7 +660,7 @@ Ce mode est indisponible car Salome n'existe pas encore sous Windows.
     try:
       os.mkdir(os.path.join(os.environ['HOME'], __rcstanley__))
     except: pass
-    fp=tkFileDialog.asksaveasfile(filetypes=[("Fichiers Stanley", "*.stn"),("Tous", "*")],parent=interface.rootTk,title="Sélectionner le fichier contenant la configuration Stanley",initialdir='~/%s' % __rcstanley__)
+    fp=tkFileDialog.asksaveasfile(filetypes=[("Fichiers Stanley", "*.stn"),("Tous", "*")],parent=interface.rootTk,title="SÃ©lectionner le fichier contenant la configuration Stanley",initialdir='~/%s' % __rcstanley__)
     if (fp != None):
        if fp.name[-4:]!='.stn':
           fichier=fp.name+'.stn'
@@ -702,7 +702,7 @@ Ce mode est indisponible car Salome n'existe pas encore sous Windows.
 
     if res:
        self.Saved = True
-       txt = _(u"Nouveaux parametres sauvegardés dans : %s") % fichier
+       txt = _(u"Nouveaux parametres sauvegardÃ©s dans : %s") % fichier
        UTMESS('I','STANLEY_28',valk=[fichier])
        interface.ligne_etat.Affecter( txt )
     else:
@@ -717,11 +717,11 @@ Ce mode est indisponible car Salome n'existe pas encore sous Windows.
 
   def Terminer(self, interface):
     '''
-       Termine l'execution de Stanley en verifiant la necessité de sauvegarder les parametres
+       Termine l'execution de Stanley en verifiant la necessitÃ© de sauvegarder les parametres
     '''
 
     if self.Saved == False:
-       reponse = tkMessageBox.askokcancel(_(u"Sauvegarde des parametres"), _(u"Les paramètres ont été modifiés. Voulez-vous les sauvegarder?") )
+       reponse = tkMessageBox.askokcancel(_(u"Sauvegarde des parametres"), _(u"Les paramÃ¨tres ont Ã©tÃ© modifiÃ©s. Voulez-vous les sauvegarder?") )
        if   reponse == 1: reponse = True
        elif reponse == 0: reponse = False
        if reponse: self.Sauvegarder_Sous(interface)
@@ -741,7 +741,7 @@ Ce mode est indisponible car Salome n'existe pas encore sous Windows.
        cle     = 'fonte'
        if objet_para.nouveau_para[section][cle] != self.para[section][cle]: self.change_fonte = True
 
-       # Affectation des parametres saisis dans l'IHM à la variable self.para
+       # Affectation des parametres saisis dans l'IHM Ã  la variable self.para
        res = self.Affectation_dico_para(objet_para.nouveau_para)
 
 
@@ -1019,7 +1019,7 @@ class ETAT_RESU:
     for nom_cham in self.ch.keys() :
       if nom_cham not in cata.Champs_presents() :
         del self.ch[nom_cham]
-# AA : pour ajouter automatiquement une option deja calculée, il faut pouvoir determiner son support geometrique... On laisse pour le moment de coté.
+# AA : pour ajouter automatiquement une option deja calculÃ©e, il faut pouvoir determiner son support geometrique... On laisse pour le moment de cotÃ©.
 #        cata.Ajoute_Champs(nom_cham)
 
 
@@ -1489,7 +1489,7 @@ class STANLEY:
       'SalomeIsovaleurs': DRIVER_SALOME_ISOVALEURS(self)
       }
 
-   # Transformation du modèle
+   # Transformation du modÃ¨le
     self.ModeleVersCentralise()
 
    # Lancement de l'interface graphique (jusqu'a ce qu'on quitte)
@@ -1506,7 +1506,7 @@ class STANLEY:
 
   def ModeleVersCentralise(self):
     """
-      Transforme le modèle en modèle centralisé pour post-traiter des bases produites en parallèle
+      Transforme le modÃ¨le en modÃ¨le centralisÃ© pour post-traiter des bases produites en parallÃ¨le
     """
 
     para = {
@@ -1633,7 +1633,7 @@ class STANLEY:
     self.parametres.Afficher_Config(self.interface)
 
     if self.parametres.change_fonte:
-       reponse = tkMessageBox.askokcancel(_(u"Changement des fontes"), _(u"Pour actualiser les fontes, il faut relancer l'IHM. Voulez-vous relancer Stanley ? Le fichier des paramètres sera modifiés.") )
+       reponse = tkMessageBox.askokcancel(_(u"Changement des fontes"), _(u"Pour actualiser les fontes, il faut relancer l'IHM. Voulez-vous relancer Stanley ? Le fichier des paramÃ¨tres sera modifiÃ©s.") )
        if   reponse == 1: reponse = True
        elif reponse == 0: reponse = False
        if reponse:
@@ -1925,7 +1925,7 @@ class INTERFACE :
 
    # Boutons
     BOUTON(frame_boutons, 'PaleGreen1', 'TRACER'   , self.stan.Tracer,   x=2,y=0, fonte=fonte)
-    self.case_sur_deformee = CASE_A_COCHER(frame_boutons, x=2, y=0, txt=_(u"Sur déformée"), fonte=fonte)
+    self.case_sur_deformee = CASE_A_COCHER(frame_boutons, x=2, y=0, txt=_(u"Sur dÃ©formÃ©e"), fonte=fonte)
     BOUTON(frame_boutons, 'orange',     'CALCULER' , self.stan.Calculer, x=2,y=0, fonte=fonte)
     BOUTON(frame_boutons, 'skyblue',    'SELECTION', self.stan.Select,   x=2,y=0, fonte=fonte)
     BOUTON(frame_boutons, 'IndianRed1', 'SORTIR'   , self.stan.Quitter,  x=2,y=0, fonte=fonte)
@@ -2248,7 +2248,7 @@ class DRIVER :
   # ----------------------------------------------------------------------------
   def Test_fichier_resu(self, driver, FICHIER, FICHIER_VALID, selection):
     """
-       Permet de generer le md5 pour verifier la conformité du fichier de sortie
+       Permet de generer le md5 pour verifier la conformitÃ© du fichier de sortie
     """
 
     # Type de trace
@@ -2299,7 +2299,7 @@ class DRIVER_ISOVALEURS(DRIVER):
   def Options_Impr_Resu(self, contexte, selection, options={}):
 
     """
-      Options d'IMPR_RESU communes à tous les drivers d'isovaleurs
+      Options d'IMPR_RESU communes Ã  tous les drivers d'isovaleurs
 
       IN
         contexte   CONTEXTE du champ
@@ -2409,7 +2409,7 @@ class DRIVER_GMSH(DRIVER_ISOVALEURS):
                 para = [ para, para1 ]
 
 
-    # Tracé au format GMSH
+    # TracÃ© au format GMSH
     DEFI_FICHIER(UNITE = 33, INFO=1)
     try:
       IMPR_RESU( UNITE   = ul,
@@ -2988,7 +2988,7 @@ class DRIVER_SUP_GMSH(DRIVER) :
 # ==============================================================================
 def concept_exists_and_intypes(co, macro, types, append_to):
     """Ajoute le concept dans la liste 'append_to' si 'co' existe
-    (c'est à dire si son étape a été exécutée) et si son type est parmi 'types'.
+    (c'est Ã  dire si son Ã©tape a Ã©tÃ© exÃ©cutÃ©e) et si son type est parmi 'types'.
     """
     concept = macro.get_concept(co)
     types = force_tuple(types)
@@ -3031,7 +3031,7 @@ class PRE_STANLEY :
     self.rootTk    = Tk.Tk()
     self.rootTk.wm_title( _(u"PRE_STANLEY : choix des concepts") )
 
-    # Récupération des concepts Aster présents dans la base
+    # RÃ©cupÃ©ration des concepts Aster prÃ©sents dans la base
     self.macro = CONTEXT.get_current_step()
     self.jdc = self.macro.jdc
     t_maillage=[]
@@ -3068,7 +3068,7 @@ class PRE_STANLEY :
     self.t_cham_mater.sort()
     self.t_cara_elem.sort()
 
-    # Si un des concepts n'a pas été trouvé au moins une fois on arrete
+    # Si un des concepts n'a pas Ã©tÃ© trouvÃ© au moins une fois on arrete
     _lst = []
     if len(t_maillage) ==0:   _lst.append('MAILLAGE')
     if len(t_modele) ==0:     _lst.append('MODELE')
@@ -3084,7 +3084,7 @@ class PRE_STANLEY :
 
     else:
 
-      # Detecte les concepts associés a chaque resultat
+      # Detecte les concepts associÃ©s a chaque resultat
       self.concepts = self.Autodetecte_Concepts(self.t_evol)
 
       # Sinon on continue
@@ -3100,7 +3100,7 @@ class PRE_STANLEY :
 
   def Autodetecte_Concepts(self, t_evol) :
     """
-       Detecte les concepts associés à un resultat
+       Detecte les concepts associÃ©s Ã  un resultat
     """
 
     dico = {}
@@ -3174,7 +3174,7 @@ class PRE_STANLEY :
         Definit la frequence de scan
     """
 
-    # Si le resultat a changé on reselectionne les autres concepts
+    # Si le resultat a changÃ© on reselectionne les autres concepts
     if self.evol.Scan():
        try:
           self.Change_selections()

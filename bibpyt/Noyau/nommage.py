@@ -1,4 +1,4 @@
-# -*- coding: iso-8859-1 -*-
+# coding=utf-8
 # person_in_charge: mathieu.courtois at edf.fr
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -22,17 +22,17 @@
 
 
 """
-   Ce module sert à nommer les concepts produits par les commandes.
+   Ce module sert Ã  nommer les concepts produits par les commandes.
    Le nom du concept est obtenu en appelant la fonction GetNomConceptResultat
    du module avec le nom de la commande en argument.
 
    Cette fonction parcourt le source dans lequel la commande se trouve, parse le
-   fichier et retrouve le nom du concept qui se trouve à gauche du signe = précédant
+   fichier et retrouve le nom du concept qui se trouve Ã  gauche du signe = prÃ©cÃ©dant
    le nom de la commande.
 
    Cette fonction utilise la fonction cur_frame du module N_utils qui retourne la frame
-   d'exécution Python située 2 niveaux au-dessus. C'est à partir de cette frame que
-   l'on retrouve le fichier source et le numéro de ligne où se trouve l'appel à la commande.
+   d'exÃ©cution Python situÃ©e 2 niveaux au-dessus. C'est Ã  partir de cette frame que
+   l'on retrouve le fichier source et le numÃ©ro de ligne oÃ¹ se trouve l'appel Ã  la commande.
 
 """
 
@@ -50,19 +50,19 @@ pattern_comment   = re.compile(r"^\s*#.*")
 
 def _GetNomConceptResultat(ope, level=2):
   """
-     Cette fonction recherche dans la pile des appels, l'appel à la commande
-     qui doit etre situé à 2 niveaux au-dessus (cur_frame(2)).
-     On retrouve d'abord la frame d'exécution f. Puis le numéro de la ligne
+     Cette fonction recherche dans la pile des appels, l'appel Ã  la commande
+     qui doit etre situÃ© Ã  2 niveaux au-dessus (cur_frame(2)).
+     On retrouve d'abord la frame d'exÃ©cution f. Puis le numÃ©ro de la ligne
      dans le source f.f_lineno et le nom du fichier source (f.f_code.co_filename).
-     A partir de là, on récupère la ligne de source avec linecache.getline
-     et on vérifie que cette ligne correspond véritablement à l'appel.
+     A partir de lÃ , on rÃ©cupÃ¨re la ligne de source avec linecache.getline
+     et on vÃ©rifie que cette ligne correspond vÃ©ritablement Ã  l'appel.
 
      En effet, lorsque les commandes tiennent sur plusieurs lignes, on retrouve
-     la dernière ligne. Il faut donc remonter dans le source jusqu'à la première
+     la derniÃ¨re ligne. Il faut donc remonter dans le source jusqu'Ã  la premiÃ¨re
      ligne.
 
      Enfin la fonction evalnom forme un nom acceptable lorsque le concept est un
-     élément d'une liste, par exemple.
+     Ã©lÃ©ment d'une liste, par exemple.
 
   """
   f=N_utils.cur_frame(level)
@@ -127,7 +127,7 @@ def f_lineno(f):
    """
       Calcule le numero de ligne courant
       Devrait marcher meme avec -O
-      Semble ne pas marcher en présence de tuples longs
+      Semble ne pas marcher en prÃ©sence de tuples longs
    """
    c=f.f_code
    if not hasattr(c, 'co_lnotab'):return f.f_lineno
@@ -144,7 +144,7 @@ def f_lineno(f):
 
 
 class NamingSystem(N_utils.Singleton):
-    """Cette classe définit un système de nommage dynamique des concepts."""
+    """Cette classe dÃ©finit un systÃ¨me de nommage dynamique des concepts."""
     _singleton_id = 'nommage.NamingSystem'
     
     def __init__(self):
@@ -153,7 +153,7 @@ class NamingSystem(N_utils.Singleton):
         self.use_global_naming()
 
     def use_naming_function(self, function):
-        """Utilise une fonction particulière de nommage."""
+        """Utilise une fonction particuliÃ¨re de nommage."""
         self.naming_func = function
 
     def use_global_naming(self):
@@ -161,7 +161,7 @@ class NamingSystem(N_utils.Singleton):
         self.naming_func = partial(self.native, level=3)
 
     def __call__(self, *args):
-        """Appel à la fonction de nommage."""
+        """Appel Ã  la fonction de nommage."""
         return self.naming_func(*args)
 
 GetNomConceptResultat = NamingSystem()

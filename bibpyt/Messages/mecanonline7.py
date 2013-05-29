@@ -1,4 +1,4 @@
-# -*- coding: iso-8859-1 -*-
+# coding=utf-8
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -18,31 +18,31 @@
 # ======================================================================
 
 
-# Attention a ne pas faire de retour à la ligne !
+# Attention a ne pas faire de retour Ã  la ligne !
 
 cata_msg = {
 
 1 : _(u"""
-  Temps CPU consommé dans ce pas de temps  : %(k1)s
+  Temps CPU consommÃ© dans ce pas de temps  : %(k1)s
 """),
 
-2 : _(u"""    * Temps moyen par itération de Newton  : %(k1)s ( %(i1)d itérations     )"""),
+2 : _(u"""    * Temps moyen par itÃ©ration de Newton  : %(k1)s ( %(i1)d itÃ©rations     )"""),
 
 3 : _(u"""    * Temps total factorisation matrice    : %(k1)s ( %(i1)d factorisations )"""),
 
-4 : _(u"""    * Temps total intégration comportement : %(k1)s ( %(i1)d intégrations   )"""),
+4 : _(u"""    * Temps total intÃ©gration comportement : %(k1)s ( %(i1)d intÃ©grations   )"""),
 
-5 : _(u"""    * Temps total résolution K.U=F         : %(k1)s ( %(i1)d résolutions    )"""),
+5 : _(u"""    * Temps total rÃ©solution K.U=F         : %(k1)s ( %(i1)d rÃ©solutions    )"""),
 
-6 : _(u"""    * Temps autres opérations              : %(k1)s"""),
+6 : _(u"""    * Temps autres opÃ©rations              : %(k1)s"""),
 
 7 : _(u"""    * Temps post-traitement                : %(k1)s"""),
 
-8 : _(u"""    * Nombre d'itérations de recherche linéaire   : %(i1)d"""),
+8 : _(u"""    * Nombre d'itÃ©rations de recherche linÃ©aire   : %(i1)d"""),
 
-9 : _(u"""    * Nombre d'itérations du solveur FETI         : %(i1)d"""),
+9 : _(u"""    * Nombre d'itÃ©rations du solveur FETI         : %(i1)d"""),
 
-10 : _(u"""    * Temps résolution contact             : %(k1)s ( %(i1)d itérations     )"""),
+10 : _(u"""    * Temps rÃ©solution contact             : %(k1)s ( %(i1)d itÃ©rations     )"""),
 
 11 : _(u"""    * Temps appariement contact            : %(k1)s ( %(i1)d appariements   )"""),
 
@@ -56,7 +56,7 @@ cata_msg = {
 
 23 : _(u"""    * Temps contact                        : %(k1)s ( %(i1)d boucles        )"""),
 
-24 : _(u"""    * Temps préparation données contact    : %(k1)s ( %(i1)d préparations   )"""),
+24 : _(u"""    * Temps prÃ©paration donnÃ©es contact    : %(k1)s ( %(i1)d prÃ©parations   )"""),
 
 25 : _(u"""    * Temps construction vecteurs contact  : %(k1)s ( %(i1)d constructions  )"""),
 
@@ -66,6 +66,6 @@ cata_msg = {
 
 31 : _(u"""    * Nombre de liaisons de contact               : %(i1)d"""),
 
-32 : _(u"""    * Nombre de liaisons de frottement adhérentes : %(i1)d"""),
+32 : _(u"""    * Nombre de liaisons de frottement adhÃ©rentes : %(i1)d"""),
 
 }

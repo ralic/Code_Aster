@@ -146,7 +146,7 @@ charpoid = chargement fpoi evpoi;
 
 
 *
-* descripton des caracteristiques generales pour les pertes quasi instantannées 
+* descripton des caracteristiques generales pour les pertes quasi instantannÃ©es 
 *
 
 coefprec = TABLE     ;
@@ -222,14 +222,14 @@ gr41  . 'COEF_PREC' = coefprec;
 gr41  . 'TYPE_CAB'  = '2EXT';
 
 *
-*  appele à la procédure TENSION pour calcule les efoorts de précontrainte
+*  appele Ã  la procÃ©dure TENSION pour calcule les efoorts de prÃ©contrainte
 *
 
 CAS3etap = tension CAS3etap;
 list ( cas3etap . 1 . 1 . modele extr maillage);
 list ( cas3etap . 1 . 1 . prec);
 *
-* données relatives au  fluage du béton
+* donnÃ©es relatives au  fluage du bÃ©ton
 *
 
 TFLUA= table ;
@@ -240,7 +240,7 @@ tflua. 'AGE_COFFR'= manu chml mobeton 'SCAL' 150. 'STRESSES';
 *    ------> age de precontrainte
 tflua. 'AGE_PREC'= manu chml mobeton  'SCAL'  150. 'STRESSES';
 
-* definition du rayon de séchage 
+* definition du rayon de sÃ©chage 
 raysec1=manu chml mobet1  'EPAI' 50.   'STRESSES';
 raysec2=manu chml mobet2  'EPAI' 100.   'STRESSES';
 raysec= raysec1 et raysec2;
@@ -258,7 +258,7 @@ tflua.'MOD_BETON'= mobeton;
 tflua.'MAT_BETON'= mabeton;
 
 *
-* données générales et relatives au reste de la structure (hormis cables) 
+* donnÃ©es gÃ©nÃ©rales et relatives au reste de la structure (hormis cables) 
 *
 
 tbet = table;

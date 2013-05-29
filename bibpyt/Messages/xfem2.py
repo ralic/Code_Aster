@@ -1,4 +1,4 @@
-# -*- coding: iso-8859-1 -*-
+# coding=utf-8
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -22,7 +22,7 @@ cata_msg = {
 
 1 : _(u"""
   -> On ne peut pas faire propager une interface.
-     Seule les fissures (possédant un fond de fissure) peuvent être propagées.
+     Seule les fissures (possÃ©dant un fond de fissure) peuvent Ãªtre propagÃ©es.
 """),
 
 
@@ -32,265 +32,265 @@ cata_msg = {
 """),
 
 5 : _(u"""
-  -> Avec GROT_GDEP + COMP_INCR, la modélisation axisymétrique n'est pas disponible.
+  -> Avec GROT_GDEP + COMP_INCR, la modÃ©lisation axisymÃ©trique n'est pas disponible.
 """),
 
 6 : _(u"""
-  -> Le nombre de fissures est limité à %(i1)d, or vous en avez définies %(i2)d !
+  -> Le nombre de fissures est limitÃ© Ã  %(i1)d, or vous en avez dÃ©finies %(i2)d !
      Veuillez contacter votre assistance technique.
 """),
 
 7 : _(u"""
-  -> Le contact a été activé dans XFEM (CONTACT_XFEM='OUI' dans MODI_MODELE_XFEM)
+  -> Le contact a Ã©tÃ© activÃ© dans XFEM (CONTACT_XFEM='OUI' dans MODI_MODELE_XFEM)
   -> Risque & Conseil:
-     Vous devez également l'activer dans AFFE_CHAR_MECA/CONTACT_XFEM
+     Vous devez Ã©galement l'activer dans AFFE_CHAR_MECA/CONTACT_XFEM
 """),
 
 8 : _(u"""
-  -> Le modèle %(k1)s transmis dans AFFE_CHAR_MECA/CONTACT n'est pas un modèle
+  -> Le modÃ¨le %(k1)s transmis dans AFFE_CHAR_MECA/CONTACT n'est pas un modÃ¨le
      XFEM.
   -> Risque & Conseil:
-     Veuillez utiliser la commande MODI_MODELE_XFEM pour fournir à
-     AFFE_CHAR_MECA/CONTACT un modèle XFEM.
+     Veuillez utiliser la commande MODI_MODELE_XFEM pour fournir Ã 
+     AFFE_CHAR_MECA/CONTACT un modÃ¨le XFEM.
 """),
 
 9 : _(u"""
-  -> Le modèle %(k1)s transmis dans AFFE_CHAR_MECA/CONTACT n'est pas un modèle
+  -> Le modÃ¨le %(k1)s transmis dans AFFE_CHAR_MECA/CONTACT n'est pas un modÃ¨le
      XFEM avec contact.
   -> Risque & Conseil:
      Veuillez activer CONTACT='OUI' dans MODI_MODELE_XFEM.
 """),
 
 10 : _(u"""
-  -> Toutes les fissures ne sont pas rattachées au même maillage.
-     La fissure %(k1)s est rattachée au maillage %(k2)s alors que 
-     la fissure %(k3)s est rattachée au maillage %(k4)s.
+  -> Toutes les fissures ne sont pas rattachÃ©es au mÃªme maillage.
+     La fissure %(k1)s est rattachÃ©e au maillage %(k2)s alors que 
+     la fissure %(k3)s est rattachÃ©e au maillage %(k4)s.
 """),
 
 11 : _(u"""
-  -> Le modèle %(k1)s transmis dans AFFE_CHAR_MECA/CONTACT_XFEM n'est pas
-     le modèle XFEM utilisé dans le AFFE_CHAR_MECA/CONTACT nommé %(k2)s.
+  -> Le modÃ¨le %(k1)s transmis dans AFFE_CHAR_MECA/CONTACT_XFEM n'est pas
+     le modÃ¨le XFEM utilisÃ© dans le AFFE_CHAR_MECA/CONTACT nommÃ© %(k2)s.
   -> Risque & Conseil:
-     Risques de résultats faux.
+     Risques de rÃ©sultats faux.
 """),
 
 12 : _(u"""
-  -> Le modèle %(k1)s transmis dans AFFE_CHAR_MECA/CONTACT_XFEM n'est pas un modèle
+  -> Le modÃ¨le %(k1)s transmis dans AFFE_CHAR_MECA/CONTACT_XFEM n'est pas un modÃ¨le
      XFEM.
   -> Risque & Conseil:
-     Veuillez utiliser la commande MODI_MODELE_XFEM pour fournir à
-     AFFE_CHAR_MECA/CONTACT_XFEM un modèle XFEM.
+     Veuillez utiliser la commande MODI_MODELE_XFEM pour fournir Ã 
+     AFFE_CHAR_MECA/CONTACT_XFEM un modÃ¨le XFEM.
 """),
 
 15 : _(u"""
-  -> Point de FOND_FISS sans maille de surface rattachée.
+  -> Point de FOND_FISS sans maille de surface rattachÃ©e.
   -> Risque & Conseil:
-     Veuillez revoir la définition des level-sets.
+     Veuillez revoir la dÃ©finition des level-sets.
 """),
 
 17 : _(u"""
-  -> Segment de FOND_FISS sans maille de surface rattachée
+  -> Segment de FOND_FISS sans maille de surface rattachÃ©e
   -> Risque & Conseil:
-     Veuillez revoir la définition des level-sets.
+     Veuillez revoir la dÃ©finition des level-sets.
 """),
 
 18 : _(u"""
-  -> Le mot-clé CRITERE de PROPA_FISS est différent de 'ANGLE_IMPO' et le tableau
-     des facteurs d'intensité de contraintes (SIF) de la fissure %(k1)s contient
+  -> Le mot-clÃ© CRITERE de PROPA_FISS est diffÃ©rent de 'ANGLE_IMPO' et le tableau
+     des facteurs d'intensitÃ© de contraintes (SIF) de la fissure %(k1)s contient
      une colonne 'BETA'.
   -> Risque & Conseil:
-     Les valeurs de l'angle de bifurcation notées dans ce tableau ne sont
+     Les valeurs de l'angle de bifurcation notÃ©es dans ce tableau ne sont
      pas prises en compte. Si vous souhaitez imposer les valeurs de l'angle
      de bifurcation aux points du fonds de fissure, veuillez indiquer
      CRITERE='ANGLE_IMPO'.
 """),
 
 19 : _(u"""
-  -> Le mot-clé CRITERE de PROPA_FISS vaut 'ANGLE_IMPO' et le tableau
-     des facteurs d'intensité de contraintes (SIF) de la fissure %(k1)s ne contient
+  -> Le mot-clÃ© CRITERE de PROPA_FISS vaut 'ANGLE_IMPO' et le tableau
+     des facteurs d'intensitÃ© de contraintes (SIF) de la fissure %(k1)s ne contient
      pas de colonne 'BETA'.
   -> Risque & Conseil:
      Si vous souhaitez imposer les valeurs de l'angle de bifurcation aux points 
      du fonds de fissure, veuillez indiquer CRITERE='ANGLE_IMPO' et ajouter
-     une colonne 'BETA' au tableau de SIF manuellement ou si le modèle est en 3D,
+     une colonne 'BETA' au tableau de SIF manuellement ou si le modÃ¨le est en 3D,
      en utilisant l'option 'CALC_K_G' de la commande CALC_G.
 """),
 
 20 : _(u"""
   -> En 3D, si METHODE_PROPA='MAILLAGE' dans PROPA_FISS il faut absolument une
      colonne 'ABSC_CURV' contenant les abscisses curvilignes des points du fond
-     dans le tableau des facteurs d'intensité de contraintes (SIF).
+     dans le tableau des facteurs d'intensitÃ© de contraintes (SIF).
   -> Risque & Conseil:
-     Veuillez vérifier la présence de cette colonne.
+     Veuillez vÃ©rifier la prÃ©sence de cette colonne.
 """),
 
 
 
 50 : _(u"""
-  -> Le maillage utilisé pour la représentation des level-sets est 2D
-     mais il contient des éléments 1D aussi.
-  -> La méthode UPWIND sélectionnée dans PROPA_FISS peut gérer des
-     grilles 2D définies seulement par des éléments QUAD4.
+  -> Le maillage utilisÃ© pour la reprÃ©sentation des level-sets est 2D
+     mais il contient des Ã©lÃ©ments 1D aussi.
+  -> La mÃ©thode UPWIND sÃ©lectionnÃ©e dans PROPA_FISS peut gÃ©rer des
+     grilles 2D dÃ©finies seulement par des Ã©lÃ©ments QUAD4.
   -> Risque & Conseil:
-     Veuillez donner un maillage défini seulement par des éléments
+     Veuillez donner un maillage dÃ©fini seulement par des Ã©lÃ©ments
      QUAD4.
   """),
 
 51 : _(u"""
   -> Il n'y a aucune maille enrichie.
   -> Risque & Conseil:
-     Veuillez vérifier les définitions des level-sets.
+     Veuillez vÃ©rifier les dÃ©finitions des level-sets.
   """),
 
 52 : _(u"""
-  -> Le maillage utilisé pour la représentation des level-sets est 3D
-     mais il contient des éléments 2D et/ou 1D aussi.
-  -> La méthode UPWIND sélectionnée dans PROPA_FISS peut gérer des
-     grilles 3D définies seulement par des éléments HEXA8.
+  -> Le maillage utilisÃ© pour la reprÃ©sentation des level-sets est 3D
+     mais il contient des Ã©lÃ©ments 2D et/ou 1D aussi.
+  -> La mÃ©thode UPWIND sÃ©lectionnÃ©e dans PROPA_FISS peut gÃ©rer des
+     grilles 3D dÃ©finies seulement par des Ã©lÃ©ments HEXA8.
   -> Risque & Conseil:
-     Veuillez donner un maillage défini seulement par des éléments
+     Veuillez donner un maillage dÃ©fini seulement par des Ã©lÃ©ments
      HEXA8.
   """),
 
 53 : _(u"""
-  -> Dans le maillage utilisé pour la représentation des level-sets,
-     il y a des éléments qui ne sont pas disponibles pour la méthode
+  -> Dans le maillage utilisÃ© pour la reprÃ©sentation des level-sets,
+     il y a des Ã©lÃ©ments qui ne sont pas disponibles pour la mÃ©thode
      UPWIND (PROPA_FISS).
   -> Risque & Conseil:
-     Veuillez vérifier le maillage et utiliser uniquement des éléments
+     Veuillez vÃ©rifier le maillage et utiliser uniquement des Ã©lÃ©ments
      QUAD4 en 2D et HEXA8 en 3D.
   """),
 
 54 : _(u"""
-  -> Il n'y a pas d'éléments disponibles pour la méthode UPWIND
-     (PROPA_FISS) dans le maillage utilisé pour la représentation
+  -> Il n'y a pas d'Ã©lÃ©ments disponibles pour la mÃ©thode UPWIND
+     (PROPA_FISS) dans le maillage utilisÃ© pour la reprÃ©sentation
      des level-sets.
   -> Risque & Conseil:
-     Veuillez vérifier le maillage et utiliser uniquement des éléments
+     Veuillez vÃ©rifier le maillage et utiliser uniquement des Ã©lÃ©ments
      QUAD4 en 2D et HEXA8 en 3D.
   """),
 
 55 : _(u"""
-  -> Dans le maillage utilisé pour la représentation des level-sets
-     (PROPA_FISS), il y a des arêtes qui ne sont pas orthogonales aux
-     autres arêtes.
+  -> Dans le maillage utilisÃ© pour la reprÃ©sentation des level-sets
+     (PROPA_FISS), il y a des arÃªtes qui ne sont pas orthogonales aux
+     autres arÃªtes.
   -> Risque & Conseil:
-     Risques de résultats faux.
-     Veuillez vérifier que toutes les arêtes des éléments du maillage
+     Risques de rÃ©sultats faux.
+     Veuillez vÃ©rifier que toutes les arÃªtes des Ã©lÃ©ments du maillage
      soient orthogonales entre elles.
   """),
 
 56 : _(u"""
-  -> Aucun noeud n'a été trouvé pour le calcul du résidu local.
-  -> Le calcul du résidu local n'est pas possible.
+  -> Aucun noeud n'a Ã©tÃ© trouvÃ© pour le calcul du rÃ©sidu local.
+  -> Le calcul du rÃ©sidu local n'est pas possible.
   -> Risque & Conseil:
-     Veuillez vérifier que la fissure n'est pas à l'extérieur du
-     maillage après la propagation actuelle.
+     Veuillez vÃ©rifier que la fissure n'est pas Ã  l'extÃ©rieur du
+     maillage aprÃ¨s la propagation actuelle.
   """),
 
 57 : _(u"""
-  -> La définition de un ou plusieurs éléments du maillage utilisé pour
-     la représentation des level-sets (PROPA_FISS) n'est pas correcte.
+  -> La dÃ©finition de un ou plusieurs Ã©lÃ©ments du maillage utilisÃ© pour
+     la reprÃ©sentation des level-sets (PROPA_FISS) n'est pas correcte.
   -> Risque & Conseil:
-     Il y a une arête avec une longueur nulle dans le maillage.
-     Veuillez vérifier la définition des éléments du maillage (par
-     exemple: un noeud est utilisé seulement une fois dans la définition
-     d'un élément; il n'y a pas de noeuds doubles...)
+     Il y a une arÃªte avec une longueur nulle dans le maillage.
+     Veuillez vÃ©rifier la dÃ©finition des Ã©lÃ©ments du maillage (par
+     exemple: un noeud est utilisÃ© seulement une fois dans la dÃ©finition
+     d'un Ã©lÃ©ment; il n'y a pas de noeuds doubles...)
   """),
 
 58 : _(u"""
-  -> La dimension (2D ou 3D) du modèle physique et la dimension (2D ou
-     3D) du modèle utilisé pour la grille auxiliaire ne sont pas égales.
+  -> La dimension (2D ou 3D) du modÃ¨le physique et la dimension (2D ou
+     3D) du modÃ¨le utilisÃ© pour la grille auxiliaire ne sont pas Ã©gales.
   -> Risque & Conseil:
-     Veuillez utiliser deux modèles avec la même dimension (les deux 2D
+     Veuillez utiliser deux modÃ¨les avec la mÃªme dimension (les deux 2D
      ou les deux 3D).
   """),
 
 60 : _(u"""
-  -> L'opérande TEST_MAIL a été utilisée dans l'opérateur PROPA_FISS.
-     La même vitesse d'avancée est utilisée pour tous les points du
-     fond de fissure et l'angle de propagation est fixé égal à zéro.
+  -> L'opÃ©rande TEST_MAIL a Ã©tÃ© utilisÃ©e dans l'opÃ©rateur PROPA_FISS.
+     La mÃªme vitesse d'avancÃ©e est utilisÃ©e pour tous les points du
+     fond de fissure et l'angle de propagation est fixÃ© Ã©gal Ã  zÃ©ro.
   -> Risque & Conseil:
-     L'avancée de la fissure n'est pas liée aux contraintes affectant
-     la structure et donc les résultats de la propagation n'ont pas
+     L'avancÃ©e de la fissure n'est pas liÃ©e aux contraintes affectant
+     la structure et donc les rÃ©sultats de la propagation n'ont pas
      une signification physique.
-     L'opérande TEST_MAIL doit être utilisé uniquement pour vérifier
-     si le maillage est suffisamment raffiné pour la représentation
+     L'opÃ©rande TEST_MAIL doit Ãªtre utilisÃ© uniquement pour vÃ©rifier
+     si le maillage est suffisamment raffinÃ© pour la reprÃ©sentation
      des level-sets.
   """),
 
 63 : _(u"""
-  -> La valeur de l'avancée DA_MAX utilisée est petite par rapport à la
-     longueur de la plus petite arrête du maillage utilisé pour
-     la représentation des level-sets:
+  -> La valeur de l'avancÃ©e DA_MAX utilisÃ©e est petite par rapport Ã  la
+     longueur de la plus petite arrÃªte du maillage utilisÃ© pour
+     la reprÃ©sentation des level-sets:
      DA_MAX = %(r1)f
-     Longueur minimale arrêt = %(r2)f
+     Longueur minimale arrÃªt = %(r2)f
   -> Risque & Conseil:
-     Risques de résultats faux. Veuillez vérifier les résultats en
-     utilisant un maillage plus raffiné pour la représentation des
+     Risques de rÃ©sultats faux. Veuillez vÃ©rifier les rÃ©sultats en
+     utilisant un maillage plus raffinÃ© pour la reprÃ©sentation des
      level-sets.
   """),
 
 64 : _(u"""
   -> La valeur du RAYON est plus petite que la longueur de la plus petite
-     arrête du maillage utilisé pour la représentation des level-sets:
+     arrÃªte du maillage utilisÃ© pour la reprÃ©sentation des level-sets:
      RAYON = %(r1)f
-     LONGUEUR minimale arrêt = %(r2)f
-  -> Le calcul du résidu local n'est pas possible.
+     LONGUEUR minimale arrÃªt = %(r2)f
+  -> Le calcul du rÃ©sidu local n'est pas possible.
   -> Risque & Conseil:
      Veuillez utiliser une valeur du RAYON plus grande.
   """),
 
 65 : _(u"""
-  -> Le nombre maximal d'itérations a été atteint.
+  -> Le nombre maximal d'itÃ©rations a Ã©tÃ© atteint.
   -> Risque & Conseil:
-     Essayer d'utiliser un maillage plus raffiné, ou bien une grille auxiliaire.
+     Essayer d'utiliser un maillage plus raffinÃ©, ou bien une grille auxiliaire.
   """),
 
 70 : _(u"""
   -> La macro-commande PROPA_FISS ne peut traiter qu'un seul instant de calcul.
   -> Risque & Conseil:
-     Veuillez vérifier que les tableaux des facteurs d'intensité de contraintes
-     donnés dans l'opérateur PROPA_FISS ne contiennent qu'un seul instant.
+     Veuillez vÃ©rifier que les tableaux des facteurs d'intensitÃ© de contraintes
+     donnÃ©s dans l'opÃ©rateur PROPA_FISS ne contiennent qu'un seul instant.
 """),
 
 
 
 
 73 : _(u"""
-  -> L'option NB_POINT_FOND a été utilisé dans PROPA_FISS mais le
-     modèle est 2D.
+  -> L'option NB_POINT_FOND a Ã©tÃ© utilisÃ© dans PROPA_FISS mais le
+     modÃ¨le est 2D.
   -> Risque & Conseil:
-     Cette option n'est utile qu'avec un modèle 3D.
-     Ce mot-clé n'est pas pris en compte.
+     Cette option n'est utile qu'avec un modÃ¨le 3D.
+     Ce mot-clÃ© n'est pas pris en compte.
   """),
 
 74 : _(u"""
-  -> Aucune fissure du modèle ne se propage.
+  -> Aucune fissure du modÃ¨le ne se propage.
   -> Risque & Conseil:
-     Veuillez vérifier les conditions du chargement du modèle et les
-     constantes de la loi de propagation données à PROPA_FISS.
+     Veuillez vÃ©rifier les conditions du chargement du modÃ¨le et les
+     constantes de la loi de propagation donnÃ©es Ã  PROPA_FISS.
   """),
 
 75 : _(u"""
   -> Une valeur de la liste de NB_POINT_FOND ne correspond pas au nombre de
-     lignes du tableau des facteurs d'intensité de contraintes (SIF) pour
+     lignes du tableau des facteurs d'intensitÃ© de contraintes (SIF) pour
      le fond %(i1)d de la fissure %(k1)s.
   -> Risque & Conseil:
-     Veuillez vérifier que la liste NB_POINT_FOND donnée dans PROPA_FISS
-     soit identique à celle utilisée pour construire le tableau des SIF.
+     Veuillez vÃ©rifier que la liste NB_POINT_FOND donnÃ©e dans PROPA_FISS
+     soit identique Ã  celle utilisÃ©e pour construire le tableau des SIF.
   """),
 
 
 
 78 : _(u"""
-  -> L'option NB_POINT_FOND a été utilisée dans PROPA_FISS
-     mais le nombre de valeurs données n'est pas égale au nombre total
-     des morceaux des fissures dans le modèle.
+  -> L'option NB_POINT_FOND a Ã©tÃ© utilisÃ©e dans PROPA_FISS
+     mais le nombre de valeurs donnÃ©es n'est pas Ã©gale au nombre total
+     des morceaux des fissures dans le modÃ¨le.
 
   -> Conseil:
-     Veuillez vérifier que l'option NB_POINT_FOND a été utilisée
-     correctement dans PROPA_FISS et que les valeurs données pour
+     Veuillez vÃ©rifier que l'option NB_POINT_FOND a Ã©tÃ© utilisÃ©e
+     correctement dans PROPA_FISS et que les valeurs donnÃ©es pour
      chaque fissure sont correctes.
   """),
 
@@ -298,215 +298,215 @@ cata_msg = {
 
 80 : _(u"""
   -> Le nombre des valeurs dans un des tableaux des facteurs
-     d'intensité de contraintes (SIF) est supérieur au nombre des
+     d'intensitÃ© de contraintes (SIF) est supÃ©rieur au nombre des
      points du fond de la fissure correspondante.
   -> Risque & Conseil:
-     Veuillez vérifier que les tableaux de SIF donnés par l'opérateur
-     PROPA_FISS sont corrects. Si NB_POINT_FOND a été utilisé, veuillez
-     vérifier aussi que la liste donnée pour chaque fissure est correcte.
+     Veuillez vÃ©rifier que les tableaux de SIF donnÃ©s par l'opÃ©rateur
+     PROPA_FISS sont corrects. Si NB_POINT_FOND a Ã©tÃ© utilisÃ©, veuillez
+     vÃ©rifier aussi que la liste donnÃ©e pour chaque fissure est correcte.
   """),
 
 81 : _(u"""
   -> Les valeurs de COEF_MULT_MAXI et COEF_MULT_MINI de COMP_LINE sont
-     égales à zéro.
+     Ã©gales Ã  zÃ©ro.
   -> Risque & Conseil:
-     Au moins une des deux valeurs doit être différente de zéro pour
-     avoir un cycle de fatigue. Veuillez vérifier les valeurs données.
+     Au moins une des deux valeurs doit Ãªtre diffÃ©rente de zÃ©ro pour
+     avoir un cycle de fatigue. Veuillez vÃ©rifier les valeurs donnÃ©es.
   """),
 
 
 
 
 85 : _(u"""
-   Les propriétés matériaux dépendent de la température. La température en fond
-   de fissure n'étant pas connue, le calcul se poursuit en prenant la température
-   de référence du matériau (TEMP = %(r1)f).
+   Les propriÃ©tÃ©s matÃ©riaux dÃ©pendent de la tempÃ©rature. La tempÃ©rature en fond
+   de fissure n'Ã©tant pas connue, le calcul se poursuit en prenant la tempÃ©rature
+   de rÃ©fÃ©rence du matÃ©riau (TEMP = %(r1)f).
 """),
 
 86 : _(u"""
- -> Le maillage/la grille sur lequel/laquelle vous voulez créer le group
-    n'est pas associé/associée à la fissure donnée.
+ -> Le maillage/la grille sur lequel/laquelle vous voulez crÃ©er le group
+    n'est pas associÃ©/associÃ©e Ã  la fissure donnÃ©e.
 
  -> Risque & Conseil:
-    Veuillez vérifier d'avoir spécifié le bon maillage/grille et/ou
+    Veuillez vÃ©rifier d'avoir spÃ©cifiÃ© le bon maillage/grille et/ou
     la bonne fissure.
 """),
 
 87 : _(u"""
-  -> L'opérande TEST_MAIL a été utilisé dans l'opérateur PROPA_FISS.
-  -> Cet opérande n'a de sens que pour un modèle 3D.
+  -> L'opÃ©rande TEST_MAIL a Ã©tÃ© utilisÃ© dans l'opÃ©rateur PROPA_FISS.
+  -> Cet opÃ©rande n'a de sens que pour un modÃ¨le 3D.
   -> Risque & Conseil:
-     Ne pas utiliser TEST_MAIL pour un modèle 2D.
+     Ne pas utiliser TEST_MAIL pour un modÃ¨le 2D.
   """),
 
 88 : _(u"""
-  -> La valeur du rayon du tore de localisation de la zone de mise à
-     jour est supérieure à la valeur limite. Cette dernière est
-     déterminée par la valeur du rayon du tore utilisée à la propagation
-     précédente et la valeur de l'avancée de la fissure (DA_MAX) imposée
-     à la propagation courante.
+  -> La valeur du rayon du tore de localisation de la zone de mise Ã 
+     jour est supÃ©rieure Ã  la valeur limite. Cette derniÃ¨re est
+     dÃ©terminÃ©e par la valeur du rayon du tore utilisÃ©e Ã  la propagation
+     prÃ©cÃ©dente et la valeur de l'avancÃ©e de la fissure (DA_MAX) imposÃ©e
+     Ã  la propagation courante.
 
      Rayon actuel = %(r1)f
      Rayon limite = %(r2)f
 
   -> Risque & Conseil:
-     Risques de résultats faux si la fissure ne propage pas en mode I.
+     Risques de rÃ©sultats faux si la fissure ne propage pas en mode I.
 
-     Pour éviter ce risque, vous pouvez utiliser la même avancée de la
-     fissure (DA_MAX) et le même rayon (RAYON) que ceux qui ont été
-     utilisés à la propagation précédente.
+     Pour Ã©viter ce risque, vous pouvez utiliser la mÃªme avancÃ©e de la
+     fissure (DA_MAX) et le mÃªme rayon (RAYON) que ceux qui ont Ã©tÃ©
+     utilisÃ©s Ã  la propagation prÃ©cÃ©dente.
 
-     Si vous ne pouvez pas utiliser les même valeurs, vous pouvez
+     Si vous ne pouvez pas utiliser les mÃªme valeurs, vous pouvez
      choisir une des solutions suivantes:
-     - donner une valeur de RAYON_TORE inférieure à la valeur limite
+     - donner une valeur de RAYON_TORE infÃ©rieure Ã  la valeur limite
        pour la propagation courante
      - utiliser une valeur de RAYON_TORE plus grande pour les
-       propagations précédentes
-     - augmenter l'avancée de la fissure (DA_MAX) à la propagation
+       propagations prÃ©cÃ©dentes
+     - augmenter l'avancÃ©e de la fissure (DA_MAX) Ã  la propagation
        courante
 
-     Sinon, même si fortement déconseillé, vous pouvez choisir de ne pas
-     utiliser la localisation de la zone de mise à jour
+     Sinon, mÃªme si fortement dÃ©conseillÃ©, vous pouvez choisir de ne pas
+     utiliser la localisation de la zone de mise Ã  jour
      (ZONE_MAJ='TOUT').
   """),
 
 89 : _(u"""
-  -> La fissure à propager n'existe pas dans le modèle:
+  -> La fissure Ã  propager n'existe pas dans le modÃ¨le:
      FISS_ACTUELLE = %(k1)s
      MODELE        = %(k2)s
   -> Conseil:
-     Veuillez vérifier que la fissure et le modèle sont correctement
-     définis.
+     Veuillez vÃ©rifier que la fissure et le modÃ¨le sont correctement
+     dÃ©finis.
   """),
 
 
 91 : _(u"""
-  -> Le nouveau fond de fissure n'est pas très régulier. Cela signifie
-     que le maillage ou la grille auxiliaire utilisés pour la
-     représentation de la fissure par level-sets ne sont pas
-     suffisamment raffinés pour bien décrire la forme du fond de la
-     fissure utilisée.
+  -> Le nouveau fond de fissure n'est pas trÃ¨s rÃ©gulier. Cela signifie
+     que le maillage ou la grille auxiliaire utilisÃ©s pour la
+     reprÃ©sentation de la fissure par level-sets ne sont pas
+     suffisamment raffinÃ©s pour bien dÃ©crire la forme du fond de la
+     fissure utilisÃ©e.
   -> Risque & Conseil:
-     Risques de résultats faux en utilisant le maillage ou la grille
-     auxiliaire testés. Veuillez utiliser un maillage ou une grille
-     auxiliaire plus raffinés.
+     Risques de rÃ©sultats faux en utilisant le maillage ou la grille
+     auxiliaire testÃ©s. Veuillez utiliser un maillage ou une grille
+     auxiliaire plus raffinÃ©s.
   """),
 
 92 : _(u"""
-  -> Vous avez demandé la création d'un group de noeuds dans un tore
+  -> Vous avez demandÃ© la crÃ©ation d'un group de noeuds dans un tore
      construit autour du fond de la fissure suivante:
 
      FISSURE = %(k1)s
 
-     Toutefois cette fissure a été calculée par PROPA_FISS en utilisant
-     la localisation du domaine (ZONE_MAJ='TORE', par défaut).
-     Dans ce cas le group de noeuds doit être forcement défini en
-     utilisant le tore déjà utilisé par PROPA_FISS.
+     Toutefois cette fissure a Ã©tÃ© calculÃ©e par PROPA_FISS en utilisant
+     la localisation du domaine (ZONE_MAJ='TORE', par dÃ©faut).
+     Dans ce cas le group de noeuds doit Ãªtre forcement dÃ©fini en
+     utilisant le tore dÃ©jÃ  utilisÃ© par PROPA_FISS.
 
-  -> Le group de noeuds sera crée en utilisant le domaine de
+  -> Le group de noeuds sera crÃ©e en utilisant le domaine de
      localisation de la fissure (option TYPE_GROUP='ZONE_MAJ').
 
   """),
 
 
 93 : _(u"""
-  -> Aucune fissure n'est définie sur le modèle spécifié:
+  -> Aucune fissure n'est dÃ©finie sur le modÃ¨le spÃ©cifiÃ©:
      MODELE = %(k1)s
   -> Risque & Conseil:
-     Veuillez définir une fissure sur le modèle ci-dessus en utilisant
-     les opérateurs DEFI_FISS_XFEM et MODI_MODELE_XFEM avant
+     Veuillez dÃ©finir une fissure sur le modÃ¨le ci-dessus en utilisant
+     les opÃ©rateurs DEFI_FISS_XFEM et MODI_MODELE_XFEM avant
      l'utilisation de PROPA_FISS.
   """),
 
 94 : _(u"""
-  -> L'avancée donnée (DA_MAX) pour la propagation courante est
-     inférieure à la valeur minimale conseillée.
+  -> L'avancÃ©e donnÃ©e (DA_MAX) pour la propagation courante est
+     infÃ©rieure Ã  la valeur minimale conseillÃ©e.
 
-     DA_MAX donnée                     = %(r1)f
-     Avancée maximale fissure courante = %(r2)f
-     DA_MAX minimal conseillé          = %(r3)f
+     DA_MAX donnÃ©e                     = %(r1)f
+     AvancÃ©e maximale fissure courante = %(r2)f
+     DA_MAX minimal conseillÃ©          = %(r3)f
 
   -> Risque & Conseil:
-     Risque de résultats faux. Dans le cas de propagation 3D en mode
-     mixte, on conseille en général d'utiliser une avancée de fissure
-     supérieure à celle minimale écrite ci-dessus, même si des bonnes
-     résultats peuvent être obtenus en utilisant une avancée inférieure.
+     Risque de rÃ©sultats faux. Dans le cas de propagation 3D en mode
+     mixte, on conseille en gÃ©nÃ©ral d'utiliser une avancÃ©e de fissure
+     supÃ©rieure Ã  celle minimale Ã©crite ci-dessus, mÃªme si des bonnes
+     rÃ©sultats peuvent Ãªtre obtenus en utilisant une avancÃ©e infÃ©rieure.
 
-     La valeur minimale de DA_MAX dépende de la valeur de l'opérande
-     RAYON et de l'angle de propagation de la fissure. Dans le cas où la
-     valeur DA_MAX donnée ne peut pas être changée, sa valeur minimale
-     conseillée peut être diminuée en agissant sur la valeur de RAYON,
-     c'est-à-dire en utilisant une valeur de RAYON plus petite. Cela
-     influence l'opérateur CALC_G aussi et normalement est faisable en
-     utilisant un maillage plus raffiné.
+     La valeur minimale de DA_MAX dÃ©pende de la valeur de l'opÃ©rande
+     RAYON et de l'angle de propagation de la fissure. Dans le cas oÃ¹ la
+     valeur DA_MAX donnÃ©e ne peut pas Ãªtre changÃ©e, sa valeur minimale
+     conseillÃ©e peut Ãªtre diminuÃ©e en agissant sur la valeur de RAYON,
+     c'est-Ã -dire en utilisant une valeur de RAYON plus petite. Cela
+     influence l'opÃ©rateur CALC_G aussi et normalement est faisable en
+     utilisant un maillage plus raffinÃ©.
   """),
 
 95 : _(u"""
-  -> Le modèle grille donné est défini sur un maillage (%(k1)s)
+  -> Le modÃ¨le grille donnÃ© est dÃ©fini sur un maillage (%(k1)s)
      et pas sur une grille.
 
   -> Risque & Conseil:
-     Veuillez donner un modèle grille défini sur une grille. Cette
-     grille doit être définie par DEFI_GRILLE à partir d'un maillage.
+     Veuillez donner un modÃ¨le grille dÃ©fini sur une grille. Cette
+     grille doit Ãªtre dÃ©finie par DEFI_GRILLE Ã  partir d'un maillage.
   """),
 
 96 : _(u"""
- -> Le maillage sur lequel vous voulez créer le group n'est pas associé à
-    la fissure donnée.
+ -> Le maillage sur lequel vous voulez crÃ©er le group n'est pas associÃ© Ã 
+    la fissure donnÃ©e.
 
- -> Les maillages suivants sont associés à cette fissure:
+ -> Les maillages suivants sont associÃ©s Ã  cette fissure:
       maillage physique = %(k1)s
       maillage grille   = %(k2)s
 
  -> Risque & Conseil:
-    Veuillez vérifier d'avoir spécifié le bon maillage et/ou la bonne fissure.
+    Veuillez vÃ©rifier d'avoir spÃ©cifiÃ© le bon maillage et/ou la bonne fissure.
 """),
 
 97 : _(u"""
-  -> La localisation de la zone de mise à jour a été utilisé pour la
-     détermination de la configuration actuelle des fissures du modèle.
+  -> La localisation de la zone de mise Ã  jour a Ã©tÃ© utilisÃ© pour la
+     dÃ©termination de la configuration actuelle des fissures du modÃ¨le.
      Par contre, pour la propagation courante, la localisation n'a pas
-     été activée.
+     Ã©tÃ© activÃ©e.
   -> Risque & Conseil:
-     Veuillez utiliser la localisation de la zone de mise à jour
+     Veuillez utiliser la localisation de la zone de mise Ã  jour
      (ZONE_MAJ='TORE') pour la propagation courante aussi.
   """),
 
 98 : _(u"""
-  -> Aucune grille auxiliaire n'est utilisée pour la représentation de
-     la fissure donnée.
+  -> Aucune grille auxiliaire n'est utilisÃ©e pour la reprÃ©sentation de
+     la fissure donnÃ©e.
   -> Risque & Conseil:
-     Veuillez vérifier que vous avez demandé les level-sets de la bonne
+     Veuillez vÃ©rifier que vous avez demandÃ© les level-sets de la bonne
      fissure.
   """),
 
 99 : _(u"""
-  -> La valeur du rayon du tore de localisation de la zone de mise à
-     jour est plus petite que celle qui est nécessaire pour la bonne
-     mise à jour des level-sets.
-     Rayon à utiliser = %(r1)f
+  -> La valeur du rayon du tore de localisation de la zone de mise Ã 
+     jour est plus petite que celle qui est nÃ©cessaire pour la bonne
+     mise Ã  jour des level-sets.
+     Rayon Ã  utiliser = %(r1)f
      Rayon minimal    = %(r2)f
   -> Risque & Conseil:
 
-  -> Si vous avez utilisé l'opérande RAYON_TORE, veuillez augmenter la
-     valeur donné ou diminuer la valeur de DA_MAX ou RAYON.
+  -> Si vous avez utilisÃ© l'opÃ©rande RAYON_TORE, veuillez augmenter la
+     valeur donnÃ© ou diminuer la valeur de DA_MAX ou RAYON.
 
-  -> Si vous n'avez pas utilisé l'opérande RAYON_TORE, cette erreur
-     signifie que l'estimation automatique faite par l'opérateur
+  -> Si vous n'avez pas utilisÃ© l'opÃ©rande RAYON_TORE, cette erreur
+     signifie que l'estimation automatique faite par l'opÃ©rateur
      PROPA_FISS ne marche pas bien pour la propagation courante. Elle
-     peut être utilisée dans les cas où les valeurs de RAYON et DA_MAX
+     peut Ãªtre utilisÃ©e dans les cas oÃ¹ les valeurs de RAYON et DA_MAX
      ne changent pas entre deux propagations successives et la taille
-     des éléments dans la zone de propagation est presque constante.
+     des Ã©lÃ©ments dans la zone de propagation est presque constante.
      Veuillez donc donner explicitement une valeur du rayon en utilisant
-     l'opérande RAYON_TORE.
+     l'opÃ©rande RAYON_TORE.
      Vous pouvez calculer une estimation de cette valeur en utilisant la
      formule suivante:
 
      RAYON_TORE=RAYON_max+DA_MAX_max+2*h_max
 
-     où RAYON_max et DA_MAX_max sont les valeurs maximales des opérandes
+     oÃ¹ RAYON_max et DA_MAX_max sont les valeurs maximales des opÃ©randes
      RAYON et DA_MAX qu'on va utiliser et h_max est la valeur de la plus
-     grande arête des éléments du maillage ou de la grille auxiliaire
+     grande arÃªte des Ã©lÃ©ments du maillage ou de la grille auxiliaire
      dans la zone de propagation.
   """),
 }

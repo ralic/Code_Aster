@@ -1,4 +1,4 @@
-# -*- coding: iso-8859-1 -*-
+# coding=utf-8
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -17,7 +17,7 @@
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
 # ======================================================================
 
-## \package calc_essai_ops Implémentation de la macro CALC_ESSAI
+## \package calc_essai_ops ImplÃ©mentation de la macro CALC_ESSAI
 #
 # Ce module contient la partie controle de la macro CALC_ESSAI
 # les autres fichiers sources sont situes dans ../Calc_essai
@@ -80,7 +80,7 @@ def calc_essai_ops( self,
         from Calc_essai.ce_test import MessageBox
         from Calc_essai.ce_test import TestCalcEssai
         mess = MessageBox(UNITE_RESU)
-        mess.disp_mess("Mode non intéractif")
+        mess.disp_mess("Mode non intÃ©ractif")
         
         objects = CalcEssaiObjects(self, mess)
 
@@ -104,7 +104,7 @@ def calc_essai_ops( self,
 
 
 def create_tab_mess_widgets(tk,tabskeys):
-    """Construits les objects table et boîte à messages."""
+    """Construits les objects table et boÃ®te Ã  messages."""
     try:
         from Pmw import PanedWidget
     except ImportError:
@@ -130,8 +130,8 @@ def create_tab_mess_widgets(tk,tabskeys):
 
 
 class FermetureCallback:
-    """Opérations à appliquer lors de la fermeture de la
-    fenêtre Tk.
+    """OpÃ©rations Ã  appliquer lors de la fermeture de la
+    fenÃªtre Tk.
     """
 
     def __init__(self, main_tk, turbulent):
@@ -139,7 +139,7 @@ class FermetureCallback:
         self.turbulent = turbulent
 
     def apply(self):
-        """Enlève les fichiers temporaires de Xmgrace"""
+        """EnlÃ¨ve les fichiers temporaires de Xmgrace"""
         if self.turbulent.param_visu.logiciel_courbes is not None:
             self.turbulent.param_visu.logiciel_courbes.fermer()
         self.main_tk.quit()
@@ -149,7 +149,7 @@ def create_interactive_window(macro,
                               out_identification,
                               out_modifstru,
                               ):
-    """Construit la fenêtre interactive comprenant une table pour 
+    """Construit la fenÃªtre interactive comprenant une table pour 
     les 4 domaines de CALC_ESSAI."""
     from Tkinter import Tk
     
@@ -173,7 +173,7 @@ def create_interactive_window(macro,
                 "Modification structurale",
                 "Identification de chargement",
                 "Traitement du signal",
-                u"Paramètres et visualisation"]
+                u"ParamÃ¨tres et visualisation"]
 ##                "Visualisation"]
     
     tabs, mess = create_tab_mess_widgets(tk, tabskeys)

@@ -1,4 +1,4 @@
-# -*- coding: iso-8859-1 -*-
+# coding=utf-8
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -23,12 +23,12 @@ cata_msg={
  Il y a moins de sous-domaines (%(i1)d) que de processeurs participant au calcul (%(i2)d).
 
  Conseils :
-   - augmentez le nombre de sous-domaines de la partition du mot-clé PARTITION
+   - augmentez le nombre de sous-domaines de la partition du mot-clÃ© PARTITION
    - diminuez le nombre de processeurs du calcul
 """),
 
 2: _(u"""
-         Comportement %(k1)s non implanté pour l'élément d'interface
+         Comportement %(k1)s non implantÃ© pour l'Ã©lÃ©ment d'interface
 """),
 
 4: _(u"""
@@ -36,128 +36,128 @@ cata_msg={
 """),
 
 5 : _(u"""
-  Le champ post-traité est un CHAM_ELEM, le calcul de moyenne ne fonctionne que
- sur les CHAM_NO. Pour les CHAM_ELEM utiliser POST_ELEM mot-clé INTEGRALE.
+  Le champ post-traitÃ© est un CHAM_ELEM, le calcul de moyenne ne fonctionne que
+ sur les CHAM_NO. Pour les CHAM_ELEM utiliser POST_ELEM mot-clÃ© INTEGRALE.
 """),
 
 6 : _(u"""
-  Le calcul de la racine numéro %(i1)d par la méthode de la matrice compagnon a échoué.
+  Le calcul de la racine numÃ©ro %(i1)d par la mÃ©thode de la matrice compagnon a Ã©chouÃ©.
 """),
 
 7 : _(u"""
-  Il n'y a qu'un seul MODE_MECA en entrée de DEFI_BASE_MODALE. La numérotation
-  de référence prise est celle associée a celui-ci. Le mot-clé NUME_REF
+  Il n'y a qu'un seul MODE_MECA en entrÃ©e de DEFI_BASE_MODALE. La numÃ©rotation
+  de rÃ©fÃ©rence prise est celle associÃ©e a celui-ci. Le mot-clÃ© NUME_REF
   n'est pas pris en compte
 """),
 
 8 : _(u"""
   Il manque le nume_ddl dans le concept %(k1)s.
   Propositions :
-   - Si ce concept est issu de l'opérateur DEFI_BASE_MODALE, renseigner le mot-clé NUME_REF dans DEFI_BASE_MODALE.
-   - Si ce concept est issu de l'opérateur CREA_RESU, utiliser les mots-clés MATR_RIGI et MATR_MASS dans CREA_RESU.
+   - Si ce concept est issu de l'opÃ©rateur DEFI_BASE_MODALE, renseigner le mot-clÃ© NUME_REF dans DEFI_BASE_MODALE.
+   - Si ce concept est issu de l'opÃ©rateur CREA_RESU, utiliser les mots-clÃ©s MATR_RIGI et MATR_MASS dans CREA_RESU.
 """),
 
 9 : _(u"""
-  Il faut renseigner le mot-clé NUME_REF.
+  Il faut renseigner le mot-clÃ© NUME_REF.
 """),
 
 10 : _(u"""
-  La loi de comportement mécanique %(k1)s n'est pas compatible avec les
-  éléments de joint avec couplage hydro-mécanique.
+  La loi de comportement mÃ©canique %(k1)s n'est pas compatible avec les
+  Ã©lÃ©ments de joint avec couplage hydro-mÃ©canique.
 """),
 11 : _(u"""
   La fermeture du joint sort des bornes [0,fermeture maximale] sur la maille %(k1)s.
   fermeture du joint CLO = %(r1)f
   fermeture maximale UMC = %(r2)f
-  Vérifier la cohérence chargement mécanique, fermeture asymptotique et ouverture
+  VÃ©rifier la cohÃ©rence chargement mÃ©canique, fermeture asymptotique et ouverture
   initiale.
 """),
 
 12 : _(u"""
-  La température de référence (exprimée en Kelvin) doit toujours être strictement supérieure à zéro.
+  La tempÃ©rature de rÃ©fÃ©rence (exprimÃ©e en Kelvin) doit toujours Ãªtre strictement supÃ©rieure Ã  zÃ©ro.
 """),
 
 13 : _(u"""
-  La pression de gaz de référence doit toujours être différente de zéro.
+  La pression de gaz de rÃ©fÃ©rence doit toujours Ãªtre diffÃ©rente de zÃ©ro.
 """),
 
 14 : _(u"""
-  Les mots clés PRES_FLUIDE et PRES_CLAVAGE sont incompatibles avec les modélisations xxx_JOINT_HYME
+  Les mots clÃ©s PRES_FLUIDE et PRES_CLAVAGE sont incompatibles avec les modÃ©lisations xxx_JOINT_HYME
 """),
 
 15 : _(u"""
-  Les données matériau RHO_FLUIDE, VISC_FLUIDE et OUV_MIN sont obligatoires avec les modélisations xxx_JOINT_HYME
+  Les donnÃ©es matÃ©riau RHO_FLUIDE, VISC_FLUIDE et OUV_MIN sont obligatoires avec les modÃ©lisations xxx_JOINT_HYME
 """),
 
 16 : _(u"""
-  Les données matériau RHO_FLUIDE, VISC_FLUIDE et OUV_MIN sont incompatibles avec les modélisations xxx_JOINT
+  Les donnÃ©es matÃ©riau RHO_FLUIDE, VISC_FLUIDE et OUV_MIN sont incompatibles avec les modÃ©lisations xxx_JOINT
 """),
 
 17 : _(u"""
-  La partition %(k1)s que vous utilisez pour partitionner le modèle %(k2)s en sous-domaines a été construite sur un autre modèle (%(k3)s).
+  La partition %(k1)s que vous utilisez pour partitionner le modÃ¨le %(k2)s en sous-domaines a Ã©tÃ© construite sur un autre modÃ¨le (%(k3)s).
 
-  Conseil : vérifiez la cohérence des modèles.
+  Conseil : vÃ©rifiez la cohÃ©rence des modÃ¨les.
 """),
 
 18 : _(u"""
-  La base de modes associée au résultat généralisé sous le mot-clé
-  EXCIT_RESU %(i1)d n'est pas la même que celle utilisée pour la
-  fabrication des matrices généralisées.
+  La base de modes associÃ©e au rÃ©sultat gÃ©nÃ©ralisÃ© sous le mot-clÃ©
+  EXCIT_RESU %(i1)d n'est pas la mÃªme que celle utilisÃ©e pour la
+  fabrication des matrices gÃ©nÃ©ralisÃ©es.
 """),
 
 19 : _(u"""
-  La projection d'un resultat non réel sur une base de mode (de type
-  résultat harmonique) n'est pas possible. Vous pouvez demander
-  l'évolution.
+  La projection d'un resultat non rÃ©el sur une base de mode (de type
+  rÃ©sultat harmonique) n'est pas possible. Vous pouvez demander
+  l'Ã©volution.
 """),
 
 20 : _(u"""
-  La prise en compte d'un amortissement équivalent a un amortissement modal par le mot-clé AMOR_MODAL nécessite 
-  une base de modes pré calculée sur laquelle est décomposé l'amortissement. 
-  Conseil: vérifiez qu'un base de modes est bien renseignée sous le mot-clé MODE_MECA.
+  La prise en compte d'un amortissement Ã©quivalent a un amortissement modal par le mot-clÃ© AMOR_MODAL nÃ©cessite 
+  une base de modes prÃ© calculÃ©e sur laquelle est dÃ©composÃ© l'amortissement. 
+  Conseil: vÃ©rifiez qu'un base de modes est bien renseignÃ©e sous le mot-clÃ© MODE_MECA.
 """),
 21 : _(u"""
-  Aucune valeur d'amortissement modal n'a été trouvée sous le mot-clé AMOR_MODAL. 
-  Cette information est nécessaire pour la prise en compte d'un amortissement de type modal.
+  Aucune valeur d'amortissement modal n'a Ã©tÃ© trouvÃ©e sous le mot-clÃ© AMOR_MODAL. 
+  Cette information est nÃ©cessaire pour la prise en compte d'un amortissement de type modal.
 
 """),
 
 22 : _(u"""
-  Il y a %(i1)d points de Gauss sur l'axe de rotation. En ces points les axes Or et suivant thêta ne sont pas définis. On prend
-   un axe Or quelconque normal à Oz pour continuer le changement de repère mais seules les composantes suivant z ont un sens en ces points.
+  Il y a %(i1)d points de Gauss sur l'axe de rotation. En ces points les axes Or et suivant thÃªta ne sont pas dÃ©finis. On prend
+   un axe Or quelconque normal Ã  Oz pour continuer le changement de repÃ¨re mais seules les composantes suivant z ont un sens en ces points.
 """),
 
 25 : _(u"""
-  Lors de la reprise du calcul, la liste des champs calculés (DEPL, VITE, ACCE) doit être la même 
+  Lors de la reprise du calcul, la liste des champs calculÃ©s (DEPL, VITE, ACCE) doit Ãªtre la mÃªme 
   pour le concept entrant et sortant.
 """),
 26 : _(u"""
-  La structure de données resultat est corrompue. Elle ne contient pas d'objet avec la liste des numéros d'ordre.
+  La structure de donnÃ©es resultat est corrompue. Elle ne contient pas d'objet avec la liste des numÃ©ros d'ordre.
 """),
 27 : _(u"""
-  La structure de données resultat est corrompue. La liste des numéros d'ordres ne correspond pas
-  à la liste des discrétisations temporelles ou fréquentielles.
+  La structure de donnÃ©es resultat est corrompue. La liste des numÃ©ros d'ordres ne correspond pas
+  Ã  la liste des discrÃ©tisations temporelles ou frÃ©quentielles.
 """),
 28 : _(u"""
-  La structure de données en entrée ne contient aucun des champs requis pour la restitution temporelle.
-  Conseil: vérifiez la liste des champs renseignée sous NOM_CHAM, ou bien testez l'option TOUT_CHAM='OUI'.
+  La structure de donnÃ©es en entrÃ©e ne contient aucun des champs requis pour la restitution temporelle.
+  Conseil: vÃ©rifiez la liste des champs renseignÃ©e sous NOM_CHAM, ou bien testez l'option TOUT_CHAM='OUI'.
 """),
 29 : _(u"""
-  Erreur dans l'allocation de la structure de données dynamique. La liste des champs à allouer n'est pas valide.
+  Erreur dans l'allocation de la structure de donnÃ©es dynamique. La liste des champs Ã  allouer n'est pas valide.
 """),
 30 : _(u"""
-  On n'arrive pas à récupérer la température au temps T-.
+  On n'arrive pas Ã  rÃ©cupÃ©rer la tempÃ©rature au temps T-.
 """),
 31 : _(u"""
-  Il faut donner autant de coefficients pour le paramètre %(k1)s 
-  qu'il y a de modes propres dans la base sur laquelle est fabriquée
-  le macro-élément.
+  Il faut donner autant de coefficients pour le paramÃ¨tre %(k1)s 
+  qu'il y a de modes propres dans la base sur laquelle est fabriquÃ©e
+  le macro-Ã©lÃ©ment.
    - Nombre de modes de la base : %(i1)d
-   - Nombre de coefficients donnés : %(i2)d.
+   - Nombre de coefficients donnÃ©s : %(i2)d.
 """),
 32 : _(u"""
-  Le macro-élément est assemblé à partir de données mesurées.
+  Le macro-Ã©lÃ©ment est assemblÃ© Ã  partir de donnÃ©es mesurÃ©es.
   Le calcul des masses effectives est impossible. Ne pas en tenir
-  compte dans les calculs postérieurs.
+  compte dans les calculs postÃ©rieurs.
 """),
 }

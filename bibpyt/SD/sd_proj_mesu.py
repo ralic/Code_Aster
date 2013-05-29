@@ -1,4 +1,4 @@
-# -*- coding: iso-8859-1 -*-
+# coding=utf-8
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -50,7 +50,7 @@ class sd_proj_mesu(AsBase):
         nbutil=self.PJMNO.lonuti
         assert nbutil > 0 , nbutil
 
-        # vérifications communes :
+        # vÃ©rifications communes :
         assert self.PJMRG.lonmax >= nbutil
         n1=self.PJMBP.lonuti
         nbmode=n1/nbutil

@@ -1,4 +1,4 @@
-# -*- coding: iso-8859-1 -*-
+# coding=utf-8
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -21,19 +21,19 @@
 cata_msg = {
 
 1 : _(u"""
-Le type de résultat DYNA_TRANS ne supporte pas les données complexes.
+Le type de rÃ©sultat DYNA_TRANS ne supporte pas les donnÃ©es complexes.
 """),
 
 2 : _(u"""
-Le type de résultat DYNA_HARMO ne supporte pas les données réelles.
+Le type de rÃ©sultat DYNA_HARMO ne supporte pas les donnÃ©es rÃ©elles.
 """),
 
 3 : _(u"""
-On ne traite pas les déformations complexes.
+On ne traite pas les dÃ©formations complexes.
 """),
 
 4 : _(u"""
-Le nombre de DATASET de type 58 est supérieur à NBNOEUD * NBCMP
+Le nombre de DATASET de type 58 est supÃ©rieur Ã  NBNOEUD * NBCMP
 """),
 
 5 : _(u"""
@@ -41,69 +41,69 @@ Erreur lors de la lecture du fichier IDEAS.
 """),
 
 6 : _(u"""
-Seules les données de type déplacement, vitesse, accélération, déformation
- ou contrainte sont traitées.
+Seules les donnÃ©es de type dÃ©placement, vitesse, accÃ©lÃ©ration, dÃ©formation
+ ou contrainte sont traitÃ©es.
 """),
 
 9 : _(u"""
-On ne traite pas la redéfinition des orientations pour les champs de contrainte.
+On ne traite pas la redÃ©finition des orientations pour les champs de contrainte.
 """),
 
 10 : _(u"""
-On ne traite pas la redéfinition des orientations pour les champs de déformation.
+On ne traite pas la redÃ©finition des orientations pour les champs de dÃ©formation.
 """),
 
 11 : _(u"""
-La condition GAMMA/KSI <= 1 n'est pas respectée.
+La condition GAMMA/KSI <= 1 n'est pas respectÃ©e.
 """),
 
 12 : _(u"""
-Incohérence des relations SIGMA_C, SIGMA_P1, M_PIC, A_PIC, A_E et M_E.
+IncohÃ©rence des relations SIGMA_C, SIGMA_P1, M_PIC, A_PIC, A_E et M_E.
 """),
 
 16 : _(u"""
-Le profil de la matrice n'est sûrement pas plein.
-On continue pour vérifier.
+Le profil de la matrice n'est sÃ»rement pas plein.
+On continue pour vÃ©rifier.
 """),
 
 17 : _(u"""
-Le profil de la matrice n'est sûrement pas plein.
-On continue pour vérifier.
+Le profil de la matrice n'est sÃ»rement pas plein.
+On continue pour vÃ©rifier.
 """),
 
 18 : _(u"""
 Le profil de la matrice n'est pas plein.
-On arrête tout.
+On arrÃªte tout.
 """),
 
 19 : _(u"""
-Le déterminant de la matrice à inverser est nul.
+Le dÃ©terminant de la matrice Ã  inverser est nul.
 """),
 
 20 : _(u"""
-L'inversion est possible uniquement en dimension inférieure ou égale à 3.
+L'inversion est possible uniquement en dimension infÃ©rieure ou Ã©gale Ã  3.
 """),
 
 21 : _(u"""
-La prise en compte de LAME FLUIDE n'est pas disponible pour les schémas
-d'intégration de Runge-Kutta. 
+La prise en compte de LAME FLUIDE n'est pas disponible pour les schÃ©mas
+d'intÃ©gration de Runge-Kutta. 
 """),
 
 
 22 : _(u"""
-La matrice masse est singulière.
+La matrice masse est singuliÃ¨re.
 """),
 
 23 : _(u"""
-Le pas de temps minimal a été atteint. Le calcul s'arrête.
+Le pas de temps minimal a Ã©tÃ© atteint. Le calcul s'arrÃªte.
 """),
 
 24 : _(u"""
-Données erronées.
+DonnÃ©es erronÃ©es.
 """),
 
 25 : _(u"""
-Pour l'angle nautique GAMMA, la valeur par défaut est zéro.
+Pour l'angle nautique GAMMA, la valeur par dÃ©faut est zÃ©ro.
 """),
 
 26 : _(u"""
@@ -115,85 +115,85 @@ Le noeud  %(k1)s  n'est pas un noeud du maillage %(k2)s .
 """),
 
 28 : _(u"""
-On n'a pas trouvé le ddl DX pour le noeud  %(k1)s .
+On n'a pas trouvÃ© le ddl DX pour le noeud  %(k1)s .
 """),
 
 29 : _(u"""
-On n'a pas trouvé le ddl DY pour le noeud  %(k1)s .
+On n'a pas trouvÃ© le ddl DY pour le noeud  %(k1)s .
 """),
 
 30 : _(u"""
-On n'a pas trouvé le ddl DZ pour le noeud  %(k1)s .
+On n'a pas trouvÃ© le ddl DZ pour le noeud  %(k1)s .
 """),
 
 31 : _(u"""
- calcul non-linéaire par sous-structuration :
- le mot-clé SOUS_STRUC_1 est obligatoire
+ calcul non-linÃ©aire par sous-structuration :
+ le mot-clÃ© SOUS_STRUC_1 est obligatoire
 """),
 
 32 : _(u"""
- argument du mot-clé "SOUS_STRUC_1" n'est pas un nom de sous-structure
+ argument du mot-clÃ© "SOUS_STRUC_1" n'est pas un nom de sous-structure
 """),
 
 33 : _(u"""
- calcul non-linéaire par sous-structuration entre 2 structures mobiles :
- le mot-clé SOUS_STRUC_2 est obligatoire
+ calcul non-linÃ©aire par sous-structuration entre 2 structures mobiles :
+ le mot-clÃ© SOUS_STRUC_2 est obligatoire
 """),
 
 34 : _(u"""
- l'argument du mot-clé "SOUS_STRUC_2" n'est pas un nom de sous-structure
+ l'argument du mot-clÃ© "SOUS_STRUC_2" n'est pas un nom de sous-structure
 """),
 
 35 : _(u"""
-  obstacle BI_CERC_INT : DIST_2 doit être supérieur ou égal a DIST_1
+  obstacle BI_CERC_INT : DIST_2 doit Ãªtre supÃ©rieur ou Ã©gal a DIST_1
 """),
 
 36 : _(u"""
- calcul non-linéaire par sous-structuration :
+ calcul non-linÃ©aire par sous-structuration :
  pas de dispositif anti-sismique ou de flambage possible
 """),
 
 37 : _(u"""
- La sous-structuration en présence de multiappui n'est pas développée.
+ La sous-structuration en prÃ©sence de multiappui n'est pas dÃ©veloppÃ©e.
 """),
 
 38 : _(u"""
- conflit entre choc et flambage au même lieu de choc :
+ conflit entre choc et flambage au mÃªme lieu de choc :
  le calcul sera de type flambage
 """),
 
 39 : _(u"""
- argument du mot-clé "REPERE" inconnu
+ argument du mot-clÃ© "REPERE" inconnu
 """),
 
 40 : _(u"""
- les rigidités de chocs doivent être strictement positives
+ les rigiditÃ©s de chocs doivent Ãªtre strictement positives
 """),
 
 41 : _(u"""
- incohérence dans les données de la loi de flambage :
- les caractéristiques introduites peuvent conduire à
- un écrasement résiduel négatif
+ incohÃ©rence dans les donnÃ©es de la loi de flambage :
+ les caractÃ©ristiques introduites peuvent conduire Ã 
+ un Ã©crasement rÃ©siduel nÃ©gatif
 """),
 
 42 : _(u"""
- les bases utilisées pour la projection sont différentes.
+ les bases utilisÃ©es pour la projection sont diffÃ©rentes.
 """),
 
 43 : _(u"""
- les bases utilisées n'ont pas le même nombre de vecteurs.
+ les bases utilisÃ©es n'ont pas le mÃªme nombre de vecteurs.
 """),
 
 44 : _(u"""
- les numérotations des matrices sont différentes.
+ les numÃ©rotations des matrices sont diffÃ©rentes.
 """),
 
 45 : _(u"""
- les numérotations des vecteurs d'excitation sont différentes.
+ les numÃ©rotations des vecteurs d'excitation sont diffÃ©rentes.
 """),
 
 46 : _(u"""
- on n'a pas pu trouver les déplacements initiaux
+ on n'a pas pu trouver les dÃ©placements initiaux
 """),
 
 47 : _(u"""
@@ -206,80 +206,80 @@ On n'a pas trouvé le ddl DZ pour le noeud  %(k1)s .
 """),
 
 49 : _(u"""
- absence de terme de forçage externe.
- l'algorithme ITMI n'est pas prévu pour calculer la réponse libre
+ absence de terme de forÃ§age externe.
+ l'algorithme ITMI n'est pas prÃ©vu pour calculer la rÃ©ponse libre
  d'une structure.
 """),
 
 50 : _(u"""
- absence de non-linéarités de choc.
- pour traiter le régime linéaire, préciser une non-linéarité de choc
+ absence de non-linÃ©aritÃ©s de choc.
+ pour traiter le rÃ©gime linÃ©aire, prÃ©ciser une non-linÃ©aritÃ© de choc
  avec un jeu important.
 """),
 
 51 : _(u"""
- impossible de traiter le type d'obstacle choisi avec méthode ITMI
+ impossible de traiter le type d'obstacle choisi avec mÃ©thode ITMI
  (obstacle de type  %(k1)s  au noeud  %(k2)s ).
 """),
 
 52 : _(u"""
- durée de la simulation temporelle après transitoire inférieure à
- la durée demandée (excitation temporelle trop courte)
+ durÃ©e de la simulation temporelle aprÃ¨s transitoire infÃ©rieure Ã 
+ la durÃ©e demandÃ©e (excitation temporelle trop courte)
 """),
 
 53 : _(u"""
- variation du déplacement entre deux instants successifs supérieure à
- la valeur de tolérance proposée
+ variation du dÃ©placement entre deux instants successifs supÃ©rieure Ã 
+ la valeur de tolÃ©rance proposÃ©e
 """),
 
 54 : _(u"""
- le calcul de la réponse temporelle n'est pas possible pour le type
- de structure étudiée.
+ le calcul de la rÃ©ponse temporelle n'est pas possible pour le type
+ de structure Ã©tudiÃ©e.
 """),
 
 55 : _(u"""
- le couplage fluide-structure n'a pas été pris en compte en amont.
+ le couplage fluide-structure n'a pas Ã©tÃ© pris en compte en amont.
 """),
 
 56 : _(u"""
- NB_MODE est supérieur au nombre de modes du concept  %(k1)s .
+ NB_MODE est supÃ©rieur au nombre de modes du concept  %(k1)s .
  on impose donc NB_MODE =  %(k2)s ,
- i.e. égal au nombre de modes du concept  %(k3)s .
+ i.e. Ã©gal au nombre de modes du concept  %(k3)s .
 """),
 
 58 : _(u"""
- le calcul des paramètres du mode no %(k1)s  par l'opérateur <CALC_FLUI_STRU>
- n'a pas convergé pour la vitesse no %(k2)s .
- le calcul de la réponse dynamique de la structure n'est donc pas possible.
+ le calcul des paramÃ¨tres du mode no %(k1)s  par l'opÃ©rateur <CALC_FLUI_STRU>
+ n'a pas convergÃ© pour la vitesse no %(k2)s .
+ le calcul de la rÃ©ponse dynamique de la structure n'est donc pas possible.
 """),
 
 59 : _(u"""
- pas de mot-clé <NB_MODE_FLUI>.
+ pas de mot-clÃ© <NB_MODE_FLUI>.
  les  %(k1)s  modes du concept  %(k2)s  sont pris en compte pour le calcul
- du saut de force fluidélastique d'amortissement au cours des phases de choc.
+ du saut de force fluidÃ©lastique d'amortissement au cours des phases de choc.
 """),
 
 60 : _(u"""
  NB_MODE_FLUI est plus grand que le nombre de modes du concept  %(k1)s .
- %(k2)s  modes sont pris en compte pour le calcul du saut de force fluidélastique
+ %(k2)s  modes sont pris en compte pour le calcul du saut de force fluidÃ©lastique
  d'amortissement au cours des phases de choc.
 """),
 
 61 : _(u"""
- la matrice KTILDA est singulière.
+ la matrice KTILDA est singuliÃ¨re.
 """),
 
 62 : _(u"""
-  instant initial non trouvé
+  instant initial non trouvÃ©
   valeur prise : 0
 """),
 
 63 : _(u"""
- RELA_EFFO_DEPL par sous-structuration, le mot-clé SOUS_STRUC est obligatoire
+ RELA_EFFO_DEPL par sous-structuration, le mot-clÃ© SOUS_STRUC est obligatoire
 """),
 
 64 : _(u"""
- l'argument du mot-clé "SOUS_STRUC" n'est pas un nom de sous-structure
+ l'argument du mot-clÃ© "SOUS_STRUC" n'est pas un nom de sous-structure
 """),
 
 65 : _(u"""
@@ -287,47 +287,47 @@ On n'a pas trouvé le ddl DZ pour le noeud  %(k1)s .
 """),
 
 66 : _(u"""
- le taux de souplesse négligée est supérieur au seuil.
+ le taux de souplesse nÃ©gligÃ©e est supÃ©rieur au seuil.
 """),
 
 67 : _(u"""
- algorithme de DEVOGE: développement "AMOR_GENE" non implanté.
+ algorithme de DEVOGE: dÃ©veloppement "AMOR_GENE" non implantÃ©.
 """),
 
 69 : _(u"""
  algorithme ITMI :
- il faut renseigner obligatoirement les mots-clés
+ il faut renseigner obligatoirement les mots-clÃ©s
  BASE_ELAS_FLUI et NUME_VITE_FLUI
- pour définir une base modale sous écoulement
+ pour dÃ©finir une base modale sous Ã©coulement
 """),
 
 70 : _(u"""
  algorithme ITMI :
- il faut renseigner obligatoirement le mot clé PAS ,
+ il faut renseigner obligatoirement le mot clÃ© PAS ,
  i.e. donner la valeur du pas de temps initial
 """),
 
 71 : _(u"""
- algorithme ITMI : lorsque l'on affecte "OUI" à ETAT_STAT,
+ algorithme ITMI : lorsque l'on affecte "OUI" Ã  ETAT_STAT,
  il faut renseigner TS_REG_ETAB
 """),
 
 72 : _(u"""
- calcul non-linéaire par sous-structuration :
- option SOUS_STRUC_1 non implantée dans la méthode ITMI.
+ calcul non-linÃ©aire par sous-structuration :
+ option SOUS_STRUC_1 non implantÃ©e dans la mÃ©thode ITMI.
 """),
 
 73 : _(u"""
-  l'option NOEUD_2 n'est pas implantée dans la méthode ITMI.
+  l'option NOEUD_2 n'est pas implantÃ©e dans la mÃ©thode ITMI.
 """),
 
 74 : _(u"""
- calcul non-linéaire par sous-structuration :
- option SOUS_STRUC_2 non implantée dans la méthode ITMI.
+ calcul non-linÃ©aire par sous-structuration :
+ option SOUS_STRUC_2 non implantÃ©e dans la mÃ©thode ITMI.
 """),
 
 75 : _(u"""
- algorithme de NEWMARK: développement %(k1)s non implanté.
+ algorithme de NEWMARK: dÃ©veloppement %(k1)s non implantÃ©.
 """),
 
 76 : _(u"""
@@ -335,8 +335,8 @@ On n'a pas trouvé le ddl DZ pour le noeud  %(k1)s .
 """),
 
 78 : _(u"""
- mauvaise définition de l'excitation
- mot clé VECT_GENE non autorisé pour ITMI
+ mauvaise dÃ©finition de l'excitation
+ mot clÃ© VECT_GENE non autorisÃ© pour ITMI
 """),
 
 79 : _(u"""

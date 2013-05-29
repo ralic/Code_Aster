@@ -1,4 +1,4 @@
-# -*- coding: iso-8859-1 -*-
+# coding=utf-8
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -22,15 +22,15 @@ cata_msg = {
 
 
 2 : _(u"""
- Votre modèle contient des variables de commandes (température, irradiation, etc.)
- or on utilise une matrice élastique constante au cours du temps.
- Si vous faites de l'amortissement de Rayleigh, il y a un risque de résultats faux
- si l'amortissement dépend de cette variable de commande (via les coefficients élastiques).
+ Votre modÃ¨le contient des variables de commandes (tempÃ©rature, irradiation, etc.)
+ or on utilise une matrice Ã©lastique constante au cours du temps.
+ Si vous faites de l'amortissement de Rayleigh, il y a un risque de rÃ©sultats faux
+ si l'amortissement dÃ©pend de cette variable de commande (via les coefficients Ã©lastiques).
 
  """),
 
 70 : _(u"""
- macro-élément statique et FETI incompatibles
+ macro-Ã©lÃ©ment statique et FETI incompatibles
 """),
 
 71 : _(u"""
@@ -50,71 +50,71 @@ cata_msg = {
 """),
 
 88 : _(u"""
-  -> Vous utilisez l'algorithme de contact 'GCP' avec un préconditionneur qui n'est pas adapté.
+  -> Vous utilisez l'algorithme de contact 'GCP' avec un prÃ©conditionneur qui n'est pas adaptÃ©.
 
   -> Conseil :
-     Utilisez le préconditionneur 'LDLT_SP' en spécifiant PRE_COND='LDLT_SP' sous le mot-clé SOLVEUR.
+     Utilisez le prÃ©conditionneur 'LDLT_SP' en spÃ©cifiant PRE_COND='LDLT_SP' sous le mot-clÃ© SOLVEUR.
 """),
 
 89 : _(u"""
- contact et recherche linéaire peuvent poser des problèmes de convergence
+ contact et recherche linÃ©aire peuvent poser des problÃ¨mes de convergence
 """),
 
 90 : _(u"""
-  -> Vous utilisez une formulation 'DISCRETE' de contact conjointement avec le solveur linéaire '%(k1)s'.
-     Le solveur '%(k1)s' n'est actuellement autorisé qu'avec les algorithmes de contact 'GCP','VERIF' et 'PENALISATION'.
+  -> Vous utilisez une formulation 'DISCRETE' de contact conjointement avec le solveur linÃ©aire '%(k1)s'.
+     Le solveur '%(k1)s' n'est actuellement autorisÃ© qu'avec les algorithmes de contact 'GCP','VERIF' et 'PENALISATION'.
 
   -> Conseil :
-     Changez d'algorithme de contact en utilisant le mot-clé ALGO_CONT de DEFI_CONTACT ou bien changez de solveur linéaire
-     en utilisant le mot-clé METHODE de SOLVEUR.
+     Changez d'algorithme de contact en utilisant le mot-clÃ© ALGO_CONT de DEFI_CONTACT ou bien changez de solveur linÃ©aire
+     en utilisant le mot-clÃ© METHODE de SOLVEUR.
 """),
 
 91 : _(u"""
-Contact méthode continue et recherche linéaire sont incompatibles
+Contact mÃ©thode continue et recherche linÃ©aire sont incompatibles
 """),
 
 92 : _(u"""
-Contact méthode continue et pilotage sont incompatibles
+Contact mÃ©thode continue et pilotage sont incompatibles
 """),
 
 93 : _(u"""
-  -> Vous utilisez la formulation 'CONTINUE' de contact conjointement avec le solveur linéaire '%(k1)s' et le renuméroteur 'RCMK'.
-     Le renuméroteur 'RCMK' n'est actuellement pas autorisé avec la formulation 'CONTINUE'.
+  -> Vous utilisez la formulation 'CONTINUE' de contact conjointement avec le solveur linÃ©aire '%(k1)s' et le renumÃ©roteur 'RCMK'.
+     Le renumÃ©roteur 'RCMK' n'est actuellement pas autorisÃ© avec la formulation 'CONTINUE'.
 
   -> Conseil :
-     Il ne faut pas utiliser de renuméroteur (renseignez RENUM='SANS' sous le mot-clé facteur SOLVEUR).
+     Il ne faut pas utiliser de renumÃ©roteur (renseignez RENUM='SANS' sous le mot-clÃ© facteur SOLVEUR).
 """),
 
 94 : _(u"""
- Le contact de type liaison unilatérale (sans appariement) et le pilotage sont des fonctionnalités incompatibles
+ Le contact de type liaison unilatÃ©rale (sans appariement) et le pilotage sont des fonctionnalitÃ©s incompatibles
 """),
 
 95 : _(u"""
- Le contact de type liaison unilatérale (sans appariement) et la recherche linéaire peuvent poser des problèmes de convergence
+ Le contact de type liaison unilatÃ©rale (sans appariement) et la recherche linÃ©aire peuvent poser des problÃ¨mes de convergence
 """),
 
 96 : _(u"""
-  -> Vous utilisez la formulation 'LIAISON_UNIL' conjointement avec le solveur linéaire '%(k1)s'.
-     Ce dernier n'est pas compatible avec le traitement de conditions unilatérales.
+  -> Vous utilisez la formulation 'LIAISON_UNIL' conjointement avec le solveur linÃ©aire '%(k1)s'.
+     Ce dernier n'est pas compatible avec le traitement de conditions unilatÃ©rales.
 
   -> Conseil :
-     Changez de solveur linéaire en utilisant le mot-clé METHODE de SOLVEUR.
+     Changez de solveur linÃ©aire en utilisant le mot-clÃ© METHODE de SOLVEUR.
 """),
 
 97 : _(u"""
-  -> Vous utilisez la formulation 'CONTINUE' de contact conjointement avec un solveur itératif et le préconditionneur '%(k1)s'.
-     Le préconditionneur '%(k1)s' ne supporte pas les matrices issues de cette formulation du contact.
+  -> Vous utilisez la formulation 'CONTINUE' de contact conjointement avec un solveur itÃ©ratif et le prÃ©conditionneur '%(k1)s'.
+     Le prÃ©conditionneur '%(k1)s' ne supporte pas les matrices issues de cette formulation du contact.
 
   -> Conseil :
-     Changez de préconditionneur.
+     Changez de prÃ©conditionneur.
 """),
 
 98 : _(u"""
-  -> Vous utilisez la formulation 'CONTINUE' de contact avec le solveur linéaire 'PETSC' et vous demandez la distribution de la matrice (MATR_DISTRIBUEE='OUI').
+  -> Vous utilisez la formulation 'CONTINUE' de contact avec le solveur linÃ©aire 'PETSC' et vous demandez la distribution de la matrice (MATR_DISTRIBUEE='OUI').
      La distribution de la matrice n'est pas possible dans ce cas d'utilisation.
 
   -> Conseil :
-     Désactivez la distribution de la matrice en parallèle.
+     DÃ©sactivez la distribution de la matrice en parallÃ¨le.
 """),
 
 

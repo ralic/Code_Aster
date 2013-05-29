@@ -1,4 +1,4 @@
-# -*- coding: iso-8859-1 -*-
+# coding=utf-8
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -21,11 +21,11 @@
 cata_msg = {
 
 1 : _(u"""
-La limite mémoire demandée de %(r1).0f octets est supérieure
+La limite mÃ©moire demandÃ©e de %(r1).0f octets est supÃ©rieure
 au maximum adressable sur cette plate-forme (%(r2).0f octets).
 
 Conseil :
-    Diminuez la mémoire totale demandée pour le calcul.
+    Diminuez la mÃ©moire totale demandÃ©e pour le calcul.
 """),
 
 2 : _(u"""
@@ -35,7 +35,7 @@ Conseil :
 6 : _(u"""
  Erreur de programmation :
 
-  Appel invalide, la marque devient négative
+  Appel invalide, la marque devient nÃ©gative
 """),
 
 7 : _(u"""
@@ -43,14 +43,14 @@ Conseil :
 """),
 
 8 : _(u"""
- La base  %(k1)s  a été constituée avec la version  %(k2)s
+ La base  %(k1)s  a Ã©tÃ© constituÃ©e avec la version  %(k2)s
  et vous utilisez la version  %(k3)s
 """),
 
 10 : _(u"""
  Erreur de programmation :
 
- Le nom demandé existe déjà dans la base %(k1)s
+ Le nom demandÃ© existe dÃ©jÃ  dans la base %(k1)s
 """),
 
 11 : _(u"""
@@ -58,7 +58,7 @@ Conseil :
 """),
 
 12 : _(u"""
- Fichier associé à la base  %(k1)s  inexistant
+ Fichier associÃ© Ã  la base  %(k1)s  inexistant
 """),
 
 13 : _(u"""
@@ -70,8 +70,8 @@ Conseil :
 """),
 
 18 : _(u"""
- Le segment de valeurs associé à l'objet : %(k1)s, n'existe pas en mémoire et
- l'objet ne possède pas d'image disque.
+ Le segment de valeurs associÃ© Ã  l'objet : %(k1)s, n'existe pas en mÃ©moire et
+ l'objet ne possÃ¨de pas d'image disque.
 """),
 
 19 : _(u"""
@@ -80,16 +80,16 @@ Conseil :
 
 21 : _(u"""
 
-     Réouverture de la base
+     RÃ©ouverture de la base
 
      Nom de la base                          :  %(k1)s
-     Créée avec la version                   :  %(k2)s
-     Nombre d'enregistrements utilisés       :  %(i1)d
+     CrÃ©Ã©e avec la version                   :  %(k2)s
+     Nombre d'enregistrements utilisÃ©s       :  %(i1)d
      Nombre d'enregistrements maximum        :  %(i2)d
      Longueur d'enregistrement (octets)      :  %(i3)d
-     Nombre d'identificateurs utilisés       :  %(i4)d
-     Taille maximum du répertoire            :  %(i5)d
-     Pourcentage d'utilisation du répertoire :  %(i6)d %%
+     Nombre d'identificateurs utilisÃ©s       :  %(i4)d
+     Taille maximum du rÃ©pertoire            :  %(i5)d
+     Pourcentage d'utilisation du rÃ©pertoire :  %(i6)d %%
 """),
 
 22 : _(u"""
@@ -97,81 +97,81 @@ Conseil :
      Fermeture de la base
 
      Nom de la base                          :  %(k1)s
-     Nombre d'enregistrements utilisés       :  %(i1)d
+     Nombre d'enregistrements utilisÃ©s       :  %(i1)d
      Nombre d'enregistrements maximum        :  %(i2)d
      Longueur d'enregistrement (octets)      :  %(i3)d
-     Nombre total d'accès en lecture         :  %(i4)d
-     Volume des accès en lecture             :  %(r1)12.2f Mo.
-     Nombre total d'accès en écriture        :  %(i5)d
-     Volume des accès en écriture            :  %(r2)12.2f Mo.
-     Nombre d'identificateurs utilisés       :  %(i6)d
-     Taille maximum du répertoire            :  %(i7)d
-     Pourcentage d'utilisation du répertoire :  %(i8)d %%
+     Nombre total d'accÃ¨s en lecture         :  %(i4)d
+     Volume des accÃ¨s en lecture             :  %(r1)12.2f Mo.
+     Nombre total d'accÃ¨s en Ã©criture        :  %(i5)d
+     Volume des accÃ¨s en Ã©criture            :  %(r2)12.2f Mo.
+     Nombre d'identificateurs utilisÃ©s       :  %(i6)d
+     Taille maximum du rÃ©pertoire            :  %(i7)d
+     Pourcentage d'utilisation du rÃ©pertoire :  %(i8)d %%
 """),
 
 23 : _(u"""
-     Nom de Collection ou de Répertoire de noms inexistant :  %(k1)s
+     Nom de Collection ou de RÃ©pertoire de noms inexistant :  %(k1)s
 """),
 
 24 : _(u"""
-     JENONU : Collection ou Répertoire de noms  :  %(k1)s
+     JENONU : Collection ou RÃ©pertoire de noms  :  %(k1)s
      Il faut passer par JEXNOM,JEXNUM.
 """),
 
 25 : _(u"""
-     Nom de collection ou de répertoire inexistant : >%(k1)s<
+     Nom de collection ou de rÃ©pertoire inexistant : >%(k1)s<
 """),
 
 26 : _(u"""
      Objet JEVEUX inexistant dans les bases ouvertes : >%(k1)s<
-     l'objet n'a pas été créé ou il a été détruit
+     l'objet n'a pas Ã©tÃ© crÃ©Ã© ou il a Ã©tÃ© dÃ©truit
 """),
 
 27 : _(u"""
-     Objet simple JEVEUX inexistant en mémoire et sur disque : >%(k1)s<
+     Objet simple JEVEUX inexistant en mÃ©moire et sur disque : >%(k1)s<
      le segment de valeurs est introuvable
 """),
 
 28 : _(u"""
-     Collection JEVEUX inexistant en mémoire et sur disque : >%(k1)s<
+     Collection JEVEUX inexistant en mÃ©moire et sur disque : >%(k1)s<
      le segment de valeurs est introuvable
 """),
 
 29 : _(u"""
-     Objet %(i1)d de collection JEVEUX inexistant en mémoire et sur disque : >%(k1)s<
+     Objet %(i1)d de collection JEVEUX inexistant en mÃ©moire et sur disque : >%(k1)s<
 """),
 
 30 : _(u"""
      Objet de collection JEVEUX inexistant : >%(k1)s<
-     l'objet n'a pas été créé ou il a été détruit
+     l'objet n'a pas Ã©tÃ© crÃ©Ã© ou il a Ã©tÃ© dÃ©truit
 """),
 
 31 : _(u"""
      Erreur programmeur :
-     La routine JUVECA n'a pas prévu de redimensionner l'objet :%(k1)s
+     La routine JUVECA n'a pas prÃ©vu de redimensionner l'objet :%(k1)s
      de type :%(k2)s
 """),
 
 36 : _(u"""
-     Le nombre d'enregistrements maximum de la base %(k1)s sera modifié
+     Le nombre d'enregistrements maximum de la base %(k1)s sera modifiÃ©
      de %(i1)d a %(i2)d
 """),
 
 38 : _(u"""
-     Numéro d'objet invalide %(i1)d
+     NumÃ©ro d'objet invalide %(i1)d
 """),
 
 39 : _(u"""
-     Taille de répertoire demandé trop grande.
+     Taille de rÃ©pertoire demandÃ© trop grande.
      Le maximum est de %(i1)d
-     La valeur réclamée est de %(i2)d
+     La valeur rÃ©clamÃ©e est de %(i2)d
 
 """),
 
 40 : _(u"""
-     Erreur écriture de l'enregistrement %(i1)d sur la base : %(k1)s %(i2)d
+     Erreur Ã©criture de l'enregistrement %(i1)d sur la base : %(k1)s %(i2)d
      code retour WRITDR : %(i3)d
-     Erreur probablement provoquée par une taille trop faible du répertoire de travail.
+     Erreur probablement provoquÃ©e par une taille trop faible du rÃ©pertoire de travail.
 """),
 
 41 : _(u"""
@@ -180,7 +180,7 @@ Conseil :
 """),
 
 42 : _(u"""
-     Fichier saturé, le nombre maximum d'enregistrement %(i1)d de la base %(k1)s est atteint
+     Fichier saturÃ©, le nombre maximum d'enregistrement %(i1)d de la base %(k1)s est atteint
      il faut relancer le calcul en passant une taille maximum de base sur la ligne de commande
      argument "-max_base" suivi de la valeur en Mo.
 """),
@@ -190,11 +190,11 @@ Conseil :
 """),
 
 47 : _(u"""
- Erreur lors de la relecture d'un enregistrement sur le fichier d'accès direct.
+ Erreur lors de la relecture d'un enregistrement sur le fichier d'accÃ¨s direct.
 """),
 
 48 : _(u"""
- Erreur lors de l'écriture d'un enregistrement sur le fichier d'accès direct.
+ Erreur lors de l'Ã©criture d'un enregistrement sur le fichier d'accÃ¨s direct.
 """),
 
 51 : _(u"""
@@ -202,7 +202,7 @@ Conseil :
 """),
 
 52 : _(u"""
- Erreur de relecture des paramètres du DATASET HDF.
+ Erreur de relecture des paramÃ¨tres du DATASET HDF.
 """),
 
 53 : _(u"""
@@ -222,34 +222,34 @@ Conseil :
 """),
 
 58 : _(u"""
- Le répertoire est saturé.
+ Le rÃ©pertoire est saturÃ©.
 """),
 
 59 : _(u"""
- Le nom demandé existe déjà dans le répertoire %(k1)s.
+ Le nom demandÃ© existe dÃ©jÃ  dans le rÃ©pertoire %(k1)s.
 
 """),
 
 60 : _(u"""
- Erreur lors de l'allocation dynamique. Il n'a pas été possible d'allouer
- une zone mémoire de longueur %(i1)d (octets).
- La dernière opération de libération mémoire a permis de récupérer %(i2)d (octets).
+ Erreur lors de l'allocation dynamique. Il n'a pas Ã©tÃ© possible d'allouer
+ une zone mÃ©moire de longueur %(i1)d (octets).
+ La derniÃ¨re opÃ©ration de libÃ©ration mÃ©moire a permis de rÃ©cupÃ©rer %(i2)d (octets).
 
 """),
 
 62 : _(u"""
- Erreur lors de l'allocation dynamique. Il n'a pas été possible d'allouer
- une zone mémoire de longueur %(i1)d Mo, on dépasse la limite maximum
- fixée à %(i2)d Mo et on occupe déjà %(i3)d Mo.
- La dernière opération de libération mémoire a permis de récupérer %(i4)d Mo.
+ Erreur lors de l'allocation dynamique. Il n'a pas Ã©tÃ© possible d'allouer
+ une zone mÃ©moire de longueur %(i1)d Mo, on dÃ©passe la limite maximum
+ fixÃ©e Ã  %(i2)d Mo et on occupe dÃ©jÃ  %(i3)d Mo.
+ La derniÃ¨re opÃ©ration de libÃ©ration mÃ©moire a permis de rÃ©cupÃ©rer %(i4)d Mo.
 
 """),
 
 63 : _(u"""
 
- Critère de destruction du fichier (%(r2).2f %%) associé à la base %(k1)s dépassé %(r1).2f %%
- Nombre d'enregistrements utilisés : %(i1)d
- Volume disque occupé              : %(i2)d Mo.
+ CritÃ¨re de destruction du fichier (%(r2).2f %%) associÃ© Ã  la base %(k1)s dÃ©passÃ© %(r1).2f %%
+ Nombre d'enregistrements utilisÃ©s : %(i1)d
+ Volume disque occupÃ©              : %(i2)d Mo.
  Nombre maximum d'enregistrements  : %(i3)d
 
 """),
@@ -257,27 +257,27 @@ Conseil :
 
 64 : _(u"""
 
- ATTENTION la taille de répertoire de noms atteint %(i1)d pour la base %(k1)s.
+ ATTENTION la taille de rÃ©pertoire de noms atteint %(i1)d pour la base %(k1)s.
  Il sera impossible de l'agrandir.
   -> Conseil :
-     Il faut réduire le nombre de concepts sur la base GLOBALE en utilisant
+     Il faut rÃ©duire le nombre de concepts sur la base GLOBALE en utilisant
      la commande DETRUIRE.
 
 """),
 
 65 : _(u"""
 
- ATTENTION la taille de répertoire de noms atteint %(i1)d pour la base %(k1)s.
+ ATTENTION la taille de rÃ©pertoire de noms atteint %(i1)d pour la base %(k1)s.
  Il sera impossible de l'agrandir.
   -> Conseil :
-     Il y a trop d'objets créés sur la base VOLATILE, cela peut provenir d'une
+     Il y a trop d'objets crÃ©Ã©s sur la base VOLATILE, cela peut provenir d'une
      erreur dans la programmation de la commande.
 
 """),
 
 66 : _(u"""
 
- La base au format HDF de nom %(k1)s ne peut être créée.
+ La base au format HDF de nom %(k1)s ne peut Ãªtre crÃ©Ã©e.
  La fonction HDFCRF renvoie un code retour : %(i1)d
 
 """),
@@ -285,26 +285,26 @@ Conseil :
 
 67 : _(u"""
 
- Le nombre d'objets de la collection %(k1)s est inférieur ou égal à 0
+ Le nombre d'objets de la collection %(k1)s est infÃ©rieur ou Ã©gal Ã  0
 
 """),
 
 
 68 : _(u"""
 
- Le fichier associé à la base demandée %(k1)s n'est pas ouvert.
+ Le fichier associÃ© Ã  la base demandÃ©e %(k1)s n'est pas ouvert.
 
 """),
 
 69 : _(u"""
 
- Le nom %(k1)s est déjà utilise pour un objet simple.
+ Le nom %(k1)s est dÃ©jÃ  utilise pour un objet simple.
 
 """),
 
 70 : _(u"""
 
- Le type de stockage %(k1)s de la collection est erroné.
+ Le type de stockage %(k1)s de la collection est erronÃ©.
 
 """),
 
@@ -316,7 +316,7 @@ Conseil :
 
 72 : _(u"""
 
- La longueur du type caractère n'est pas valide pour la collection %(k1)s
+ La longueur du type caractÃ¨re n'est pas valide pour la collection %(k1)s
 
 """),
 
@@ -328,7 +328,7 @@ Conseil :
 
 74 : _(u"""
 
- Le pointeur de longueurs %(k1)s n'a pas été créé dans la bonne base.
+ Le pointeur de longueurs %(k1)s n'a pas Ã©tÃ© crÃ©Ã© dans la bonne base.
 
 """),
 
@@ -340,90 +340,90 @@ Conseil :
 
 76 : _(u"""
 
- Le type du pointeur de longueurs %(k1)s n'est pas correct (différent de I).
+ Le type du pointeur de longueurs %(k1)s n'est pas correct (diffÃ©rent de I).
 
 """),
 
 77 : _(u"""
 
- Le nom du répertoire de noms %(k1)s est invalide.
+ Le nom du rÃ©pertoire de noms %(k1)s est invalide.
 
 """),
 
 78 : _(u"""
 
- Le répertoire de noms %(k1)s n'a pas été créé dans la bonne base.
+ Le rÃ©pertoire de noms %(k1)s n'a pas Ã©tÃ© crÃ©Ã© dans la bonne base.
 
 """),
 
 79 : _(u"""
 
- Le répertoire de noms %(k1)s n'est pas de la bonne taille.
+ Le rÃ©pertoire de noms %(k1)s n'est pas de la bonne taille.
 
 """),
 
 80 : _(u"""
 
- L'objet %(k1)s n'est pas un répertoire de noms.
+ L'objet %(k1)s n'est pas un rÃ©pertoire de noms.
 
 """),
 
 81 : _(u"""
 
- Le type d'accès %(k1)s est inconnu.
+ Le type d'accÃ¨s %(k1)s est inconnu.
 
 """),
 
 82 : _(u"""
 
- Le type d'accès %(k1)s de la collection est erroné.
+ Le type d'accÃ¨s %(k1)s de la collection est erronÃ©.
 
 """),
 
 83 : _(u"""
 
- Le nom du pointeur d'accès %(k1)s est invalide.
+ Le nom du pointeur d'accÃ¨s %(k1)s est invalide.
 
 """),
 
 84 : _(u"""
- La longueur du nom %(k1)s est invalide (> 24 caractères).
+ La longueur du nom %(k1)s est invalide (> 24 caractÃ¨res).
 
 """),
 
 85 : _(u"""
 
- Le nom %(k1)s est déjà utilise pour une collection.
+ Le nom %(k1)s est dÃ©jÃ  utilise pour une collection.
 
 """),
 
 86 : _(u"""
 
- La longueur du type caractère n'est pas définie pour l'objet %(k1)s
+ La longueur du type caractÃ¨re n'est pas dÃ©finie pour l'objet %(k1)s
 
 """),
 
 87 : _(u"""
 
- Un objet de genre répertoire (N) doit être de type caractère (K) %(k1)s
+ Un objet de genre rÃ©pertoire (N) doit Ãªtre de type caractÃ¨re (K) %(k1)s
 
 """),
 
 88 : _(u"""
 
- La longueur du type caractère %(k1)s n'est pas valide.
+ La longueur du type caractÃ¨re %(k1)s n'est pas valide.
 
 """),
 
 89 : _(u"""
 
- Un objet de genre répertoire doit être de type K de longueur multiple de 8 %(k1)s.
+ Un objet de genre rÃ©pertoire doit Ãªtre de type K de longueur multiple de 8 %(k1)s.
 
 """),
 
 90 : _(u"""
 
- Un objet de genre répertoire doit être de type K de longueur inférieure ou égale à 24 %(k1)s.
+ Un objet de genre rÃ©pertoire doit Ãªtre de type K de longueur infÃ©rieure ou Ã©gale Ã  24 %(k1)s.
 
 """),
 
@@ -435,19 +435,19 @@ Conseil :
 
 92 : _(u"""
 
- La longueur ou la position de la sous chaîne %(k1)s est invalide.
+ La longueur ou la position de la sous chaÃ®ne %(k1)s est invalide.
 
 """),
 
 93 : _(u"""
 
- Les longueurs des sous chaînes %(k1)s sont différentes.
+ Les longueurs des sous chaÃ®nes %(k1)s sont diffÃ©rentes.
 
 """),
 
 94 : _(u"""
 
- Les sous chaînes %(k1)s sont identiques.
+ Les sous chaÃ®nes %(k1)s sont identiques.
 
 """),
 
@@ -459,19 +459,19 @@ Conseil :
 
 96 : _(u"""
 
- L'accès par JEXNUM est interdit %(k1)s.
+ L'accÃ¨s par JEXNUM est interdit %(k1)s.
 
 """),
 
 97 : _(u"""
 
- Erreur lors de l'appel à JECROC %(k1)s.
+ Erreur lors de l'appel Ã  JECROC %(k1)s.
 
 """),
 
 98 : _(u"""
 
- L'attribut %(k1)s. est uniquement destiné aux collections contiguës.
+ L'attribut %(k1)s. est uniquement destinÃ© aux collections contiguÃ«s.
 
 """),
 

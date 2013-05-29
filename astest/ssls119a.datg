@@ -1,4 +1,4 @@
-*maillage paramétré d'une coque 20x136
+*maillage paramÃ©trÃ© d'une coque 20x136
 *----------------------------------------------
 opti dime 3 elem seg2 ;
 opti niveau 8 ;
@@ -38,7 +38,7 @@ sauv form tout_elt ;
 
 fin;
 
-*maillage paramétré d'une coque 10x136
+*maillage paramÃ©trÃ© d'une coque 10x136
 *----------------------------------------------
 
 opti dime 3 elem seg2 ;
@@ -79,7 +79,7 @@ sauv form tout_elt ;
 
 fin;
 
-*maillage paramétré d'une coque 5x34
+*maillage paramÃ©trÃ© d'une coque 5x34
 *----------------------------------------------
 opti dime 3 elem seg2 ;
 opti niveau 8 ;

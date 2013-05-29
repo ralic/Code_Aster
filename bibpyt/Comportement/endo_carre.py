@@ -1,4 +1,4 @@
-# -*- coding: iso-8859-1 -*-
+# coding=utf-8
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -21,8 +21,8 @@ from cata_comportement import LoiComportement
 
 loi = LoiComportement(
    nom            = 'ENDO_CARRE',
-   doc = """Comportement élastique-fragile-JJM, à endommagement scalaire et 
-   écrouissage isotrope hyperbolique négatif - R""",
+   doc = """Comportement Ã©lastique-fragile-JJM, Ã  endommagement scalaire et 
+   Ã©crouissage isotrope hyperbolique nÃ©gatif - R""",
    num_lc         = 53,
    nb_vari        = 2,
    nom_vari       = ('ENDO', 'INDIENDO'),

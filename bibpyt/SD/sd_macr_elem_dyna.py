@@ -1,4 +1,4 @@
-# -*- coding: iso-8859-1 -*-
+# coding=utf-8
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -42,7 +42,7 @@ class sd_macr_elem_dyna(AsBase):
 #-------------------------------
     nomj = SDNom(fin=8)
 
-    # description géométrique et topolique :
+    # description gÃ©omÃ©trique et topolique :
     DESM = AsVI(lonmax=10)
     REFM = AsVK8()
     LINO = Facultatif(AsVI())
@@ -52,7 +52,7 @@ class sd_macr_elem_dyna(AsBase):
     LICA = Facultatif(AsColl())
     LICH = Facultatif(AsColl())
 
-    # rigidité, masse, amortissement condensés :
+    # rigiditÃ©, masse, amortissement condensÃ©s :
     nume     = sd_nume_ddl_gd(SDNom(nomj=''))
 
     MAEL_RAID = sd_macr_elem_dyna_m()

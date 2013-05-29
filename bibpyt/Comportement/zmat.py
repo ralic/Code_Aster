@@ -1,4 +1,4 @@
-# -*- coding: iso-8859-1 -*-
+# coding=utf-8
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -25,7 +25,7 @@ loi = LoiComportement(
    doc = """Comportement integre par le logiciel externe Zmat de l'Ecole des Mines de Paris""",
    num_lc         = 39,
    nb_vari        = 0,
-   nom_vari       = None, # données par Zmat dans le fichier messages
+   nom_vari       = None, # donnÃ©es par Zmat dans le fichier messages
    mc_mater       = None,
    modelisation   = ('3D', 'AXIS', 'D_PLAN'),
    deformation    = ('PETIT', 'PETIT_REAC', 'GROT_GDEP','GDEF_HYPO_ELAS'),

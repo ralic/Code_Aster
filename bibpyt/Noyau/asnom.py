@@ -1,4 +1,4 @@
-# -*- coding: iso-8859-1 -*-
+# coding=utf-8
 # person_in_charge: mathieu.courtois at edf.fr
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -21,23 +21,23 @@
 """
 Description des types de base aster
 
-version 2 - réécrite pour essayer de simplifier
-le problème des instances/types et instances/instances
+version 2 - rÃ©Ã©crite pour essayer de simplifier
+le problÃ¨me des instances/types et instances/instances
 
-le type de base ASBase permet de représenter une structure
-de donnée. Une instance de ASBase comme attribut d'une classe
-dérivée de ASBase représente une sous-structure nommée.
+le type de base ASBase permet de reprÃ©senter une structure
+de donnÃ©e. Une instance de ASBase comme attribut d'une classe
+dÃ©rivÃ©e de ASBase reprÃ©sente une sous-structure nommÃ©e.
 
-une instance de ASBase 'libre' représente une instance de la
-structure de donnée complète.
+une instance de ASBase 'libre' reprÃ©sente une instance de la
+structure de donnÃ©e complÃ¨te.
 
-c'est ce comportement qui est capturé dans la classe StructType
+c'est ce comportement qui est capturÃ© dans la classe StructType
 """
 
 from basetype import Type
 
 class SDNom(Type):
-    """Objet représentant une sous-partie de nom
+    """Objet reprÃ©sentant une sous-partie de nom
     d'objet jeveux"""
     nomj = None
     debut = None
@@ -48,15 +48,15 @@ class SDNom(Type):
     def __init__(self, nomj=None, debut=None, fin=None, just='l', **kwargs ):
         """
         Configure un objet nom
-        nomj : la partie du nom fixée (par ex .TITR) ou '' si non précisée
-        debut, fin : la partie du K24 concernée
+        nomj : la partie du nom fixÃ©e (par ex .TITR) ou '' si non prÃ©cisÃ©e
+        debut, fin : la partie du K24 concernÃ©e
         just : la justification a droite ou a gauche ('l' ou 'r')
-        kwargs : inutilisé, juste par simplicité
+        kwargs : inutilisÃ©, juste par simplicitÃ©
 
         Note:
         On utilise cet objet comme attribut d'instance ou de classe.
         En attribut de classe pour les noms de structure, cela permet
-        de définir la position du nom d'objet dans le nom jeveux, l'attribut
+        de dÃ©finir la position du nom d'objet dans le nom jeveux, l'attribut
         nom est alors la valeur du suffixe pour une sous-structure ou None pour
         une structure principale.
         """
@@ -86,8 +86,8 @@ class SDNom(Type):
     def __repr__(self):
         return "<SDNom(%r,%s,%s)>" % (self.nomj,self.debut,self.fin)
 
-    # On utilise pickle pour les copies, et pickle ne sait pas gérer la
-    # sauvegarde de str.ljust ou str.rjust (c'est une méthode non liée)
+    # On utilise pickle pour les copies, et pickle ne sait pas gÃ©rer la
+    # sauvegarde de str.ljust ou str.rjust (c'est une mÃ©thode non liÃ©e)
 
     def __getstate__(self):
         return (self.nomj, self.debut, self.fin, self.justtype )

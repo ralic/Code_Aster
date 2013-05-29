@@ -1,4 +1,4 @@
-# -*- coding: iso-8859-1 -*-
+# coding=utf-8
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -20,7 +20,7 @@
 import os
 
 ########################################################################
-# script PYTHON de creation du rÈsultat local
+# script PYTHON de creation du r√©sultat local
 ########################################################################
 
 ########################################################################
@@ -46,20 +46,20 @@ def crea_grp_matiere(self,groupe,newgrp,iocc,m,__remodr,NOM_CHAM,LIGN_COUPE,__ma
                            NOM_CHAM=NOM_CHAM,
                            GROUP_NO  = groupe,**motscles ))
 
-  # dictb=table initiale (contenant Èventuellement des noeuds hors matiËre)
+  # dictb=table initiale (contenant √©ventuellement des noeuds hors mati√®re)
   dictb=__tab.EXTR_TABLE()
   # listenoe_b=liste ordonnee des noeuds de la ligne de coupe (avec doublons)
   listenoe_b = dictb.NOEUD.values()
-  # lno_b2=liste des noeuds de la ligne de coupe aprËs Èlimination des doublons
+  # lno_b2=liste des noeuds de la ligne de coupe apr√®s √©limination des doublons
   # (attention, on perd l'ordre des noeuds)
   lno_b2 = set(listenoe_b)
 
-  # dictc=table (extraite de dictb) contenant uniquement des noeuds dans la matiËre
+  # dictc=table (extraite de dictb) contenant uniquement des noeuds dans la mati√®re
   if m['NOM_CMP']!=None:
      dictc=getattr(dictb,m['NOM_CMP'][0]).NON_VIDE()
      lno_c2 = set(dictc.NOEUD.values())
   else:# TOUT_CMP='OUI'
-     # on garde uniquement les composantes pour conserver les noeuds o˘ il y a des valeurs
+     # on garde uniquement les composantes pour conserver les noeuds o√π il y a des valeurs
      a_suppr = set(['INTITULE', 'RESU', 'NOM_CHAM', 'NUME_ORDRE', 'INST', 'ABSC_CURV', 'COOR_X', 'COOR_Y', 'COOR_Z'])
      new_para = set(dictb.para)
      new_para.difference_update(a_suppr)
@@ -69,13 +69,13 @@ def crea_grp_matiere(self,groupe,newgrp,iocc,m,__remodr,NOM_CHAM,LIGN_COUPE,__ma
         dictc = getattr(dictb, comp).NON_VIDE()
         lno_c2.update(dictc.NOEUD.values())
 
-  # on rÈordonne la liste des noeuds de lno_c2 (selon leur position dans listenoe_b) => l_matiere
-  # l_horsmat=liste des noeuds hors matiËre
+  # on r√©ordonne la liste des noeuds de lno_c2 (selon leur position dans listenoe_b) => l_matiere
+  # l_horsmat=liste des noeuds hors mati√®re
   l_matiere = [j for j in listenoe_b if j in lno_c2]
   nderm=l_matiere.index(l_matiere[len(l_matiere)-1])
   l_horsmat = [j for j in listenoe_b if j not in lno_c2]
 
-  # si on est en prÈsence de noeuds hors matiËre,
+  # si on est en pr√©sence de noeuds hors mati√®re,
   # on emet une alarme pour informer l'utilisateur
   nbpoin=m['NB_POINTS']
   reste=nbpoin-len(l_matiere)
@@ -251,7 +251,7 @@ def crea_resu_local(self,dime,NOM_CHAM,m,resin,mail,nomgrma):
   if m['TYPE'][:5]=='GROUP' or m['TYPE']=='SEGMENT':
 
     if m['TYPE'][:5]=='GROUP' and m['REPERE'] == 'LOCAL':
-     # determination du repËre local (v1,v2,v3)
+     # determination du rep√®re local (v1,v2,v3)
      # ---------------------------------------
       noma=mail.nom
       collgrma=aster.getcolljev(noma.ljust(8)+'.GROUPEMA')
@@ -439,7 +439,7 @@ def crea_noeu_lig_coup(dimension,pt1,pt2,anglj,dnor):
     z=pt2[2]+c*cos(anglr)+sin(anglr)*(b*d1-a*d2)/d
     return x,y,z
 ########################################################################
-# determination de la distance min entre 2 points consÈcutifs de la ligne de coupe
+# determination de la distance min entre 2 points cons√©cutifs de la ligne de coupe
 
 def dist_min_deux_points(mail):
   from math import sqrt
@@ -665,8 +665,8 @@ def macr_lign_coupe_ops(self,RESULTAT,CHAM_GD,UNITE_MAILLAGE,LIGN_COUPE,
     if n_modele in ('', '#AUCUN'):
        if MODELE == None:
           if (type_resu != 'mode_meca'):  UTMESS('F','POST0_9',valk=nomresu)
-          # si le rÈsultat en entrÈe est un mode_meca et qu'il ne contient pas de modËle (il est obtenu par sous-structuration, par exemple)
-          # on passe le message fatal et on rÈcupÈrera directement le maillage (ou squelette)
+          # si le r√©sultat en entr√©e est un mode_meca et qu'il ne contient pas de mod√®le (il est obtenu par sous-structuration, par exemple)
+          # on passe le message fatal et on r√©cup√©rera directement le maillage (ou squelette)
           else :
              l_mode_meca_sans_modele = True
              UTMESS('I','POST0_23',valk=nomresu)
@@ -678,7 +678,7 @@ def macr_lign_coupe_ops(self,RESULTAT,CHAM_GD,UNITE_MAILLAGE,LIGN_COUPE,
     if MODELE==None:
       UTMESS('F','POST0_10')
     else : n_modele=MODELE.nom
-    # rÈcupÈration de la grandeur du champ
+    # r√©cup√©ration de la grandeur du champ
     n_cham=CHAM_GD.nom
     catagd=aster.getvectjev("&CATA.GD.NOMGD")
     desc=aster.getvectjev('%-19s.DESC' % n_cham)
@@ -687,7 +687,7 @@ def macr_lign_coupe_ops(self,RESULTAT,CHAM_GD,UNITE_MAILLAGE,LIGN_COUPE,
     else:
       celd=aster.getvectjev('%-19s.CELD' % n_cham)
       nomgd=catagd[celd[0]-1]
-    # dÈtermination du type de rÈsultat ‡ crÈer
+    # d√©termination du type de r√©sultat √† cr√©er
     if   nomgd[:6] == 'TEMP_R' : TYPE_RESU='EVOL_THER'
     elif nomgd[:6] == 'DEPL_R' : TYPE_RESU='EVOL_ELAS'
     elif nomgd[:6] == 'EPSI_R' : TYPE_RESU='EVOL_ELAS'
@@ -696,14 +696,14 @@ def macr_lign_coupe_ops(self,RESULTAT,CHAM_GD,UNITE_MAILLAGE,LIGN_COUPE,
     elif nomgd[:6] == 'SIEF_R' :
        if   NOM_CHAM[:4]=='SIGM':TYPE_RESU='EVOL_ELAS'
        elif NOM_CHAM[:4]=='SIEF':TYPE_RESU='EVOL_NOLI'
-    # crÈation d'un concept rÈsultat ‡ partir du champ CHAM_GD
+    # cr√©ation d'un concept r√©sultat √† partir du champ CHAM_GD
     __resuch=CREA_RESU(OPERATION='AFFE',
                        NOM_CHAM=NOM_CHAM, TYPE_RESU=TYPE_RESU,
                        AFFE=_F(CHAM_GD=CHAM_GD,INST=0.),)
     RESULTAT=__resuch
     iret,ibid,l_mailla = aster.dismoi('F','NOM_MAILLA',n_cham,'CHAMP')
 
-  # Maillage sur lequel s'appuie le rÈsultat ‡ projeter
+  # Maillage sur lequel s'appuie le r√©sultat √† projeter
   n_mailla=l_mailla.strip()
   # le maillage est-il 2D ou 3D ?
   iret,dime,kbid = aster.dismoi('F','DIM_GEOM',n_mailla,'MAILLAGE')
@@ -779,10 +779,10 @@ def macr_lign_coupe_ops(self,RESULTAT,CHAM_GD,UNITE_MAILLAGE,LIGN_COUPE,
   if arcs!=[] and (lignes!=[] or groups!=[]) :
     UTMESS('F','POST0_16')
 
-  # CrÈation du maillage des NB_POINTS segments entre COOR_ORIG et COOR_EXTR
-  # ainsi que des segments reliant les noeuds issus des group_no demandÈs
+  # Cr√©ation du maillage des NB_POINTS segments entre COOR_ORIG et COOR_EXTR
+  # ainsi que des segments reliant les noeuds issus des group_no demand√©s
   # par appel au script python crea_mail_lig_coup
-  # le maillage est ensuite recopiÈ dans l unitÈ logique UNITE_MAILLAGE
+  # le maillage est ensuite recopi√© dans l unit√© logique UNITE_MAILLAGE
 
   resu_mail,arcgma,angles,nbno=crea_mail_lig_coup(dime,lignes,groups,arcs)
   UL = UniteAster()
@@ -838,7 +838,7 @@ def macr_lign_coupe_ops(self,RESULTAT,CHAM_GD,UNITE_MAILLAGE,LIGN_COUPE,
 
 
   if ( l_mode_meca_sans_modele == False ) :
-     # on utilise le modËle pour projeter le champ
+     # on utilise le mod√®le pour projeter le champ
      if n_modele in self.get_global_contexte().keys() : MODELE_1=self.get_global_contexte()[n_modele]
      else                                             : MODELE_1=self.jdc.current_context[n_modele]
 
@@ -895,7 +895,7 @@ def macr_lign_coupe_ops(self,RESULTAT,CHAM_GD,UNITE_MAILLAGE,LIGN_COUPE,
      else:
        motscles['TOUT_CMP']='OUI'
 
-     # on dÈfinit le groupe de noeud pour post_releve_t
+     # on d√©finit le groupe de noeud pour post_releve_t
      if m['TYPE'] in ('GROUP_NO','GROUP_MA'):
          groupe=m[m['TYPE']].ljust(8)
          nomgrma=groupe
@@ -907,13 +907,13 @@ def macr_lign_coupe_ops(self,RESULTAT,CHAM_GD,UNITE_MAILLAGE,LIGN_COUPE,
          crea_grp_matiere(self,groupe,newgrp,iocc,m,__remodr,NOM_CHAM,LIGN_COUPE,__macou)
          groupe=newgrp
 
-     # on definit l'intitulÈ
+     # on definit l'intitul√©
      if m['INTITULE'] !=None                    : intitl=m['INTITULE']
      elif  m['TYPE'] in ('GROUP_NO','GROUP_MA') : intitl=groupe
      else                                       : intitl='l.coupe'+str(ioc2)
 
 
-     # Expression des contraintes aux noeuds ou des dÈplacements dans le repere local
+     # Expression des contraintes aux noeuds ou des d√©placements dans le repere local
      if m['REPERE'] != 'GLOBAL':
 
         if  icham==1:
@@ -938,7 +938,7 @@ def macr_lign_coupe_ops(self,RESULTAT,CHAM_GD,UNITE_MAILLAGE,LIGN_COUPE,
                             GROUP_NO  = groupe,
                             NOM_CHAM  = NOM_CHAM,**motscles ),)
 
-     # Expression des contraintes aux noeuds ou des dÈplacements dans le repere global
+     # Expression des contraintes aux noeuds ou des d√©placements dans le repere global
      else:
 
           mcACTION.append( _F(INTITULE  = intitl,
@@ -989,7 +989,7 @@ def macr_lign_coupe_ops(self,RESULTAT,CHAM_GD,UNITE_MAILLAGE,LIGN_COUPE,
 
   __tabitm=POST_RELEVE_T(ACTION=mcACTION,);
 
-  # on repasse par les tables python pour supprimer les paramËtres inutiles
+  # on repasse par les tables python pour supprimer les param√®tres inutiles
   # NOEUD (car il est propre au maillage de la ligne) et RESU
 
   self.DeclareOut('nomres',self.sd)

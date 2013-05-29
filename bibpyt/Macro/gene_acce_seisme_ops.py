@@ -1,4 +1,4 @@
-# -*- coding: iso-8859-1 -*-
+# coding=utf-8
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -47,14 +47,14 @@ def gene_acce_seisme_ops(self,PAS_INST,DSP,MODULATION, NB_POIN,PESANTEUR,  TITRE
    commande='GENE_ACCE_SEISME'
 
    ier = 0
-   # La macro compte pour 1 dans la numérotation des commandes
+   # La macro compte pour 1 dans la numÃ©rotation des commandes
    self.set_icmd(1)
 
    # Le concept sortant (de type table_fonction) est tab
    self.DeclareOut('tab_out', self.sd)
 
-   # On importe les définitions des commandes a utiliser dans la macro
-   # Le nom de la variable doit être obligatoirement le nom de la commande
+   # On importe les dÃ©finitions des commandes a utiliser dans la macro
+   # Le nom de la variable doit Ãªtre obligatoirement le nom de la commande
    CREA_TABLE    = self.get_cmd('CREA_TABLE')
    CALC_TABLE    = self.get_cmd('CALC_TABLE')
    RECU_FONCTION = self.get_cmd('RECU_FONCTION')
@@ -242,7 +242,7 @@ def gene_acce_seisme_ops(self,PAS_INST,DSP,MODULATION, NB_POIN,PESANTEUR,  TITRE
 ##     REMPLISSAGE TAB RESU
 ##     -----------------------------------------------------------------
 #
-   # table résultat
+   # table rÃ©sultat
    tab = Table(titr='GENE_ACCE_SEISME concept : %s' % self.sd.nom)   
 
  #--- construction des fonctions sortie

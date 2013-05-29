@@ -1,5 +1,4 @@
 /*           CONFIGURATION MANAGEMENT OF EDF VERSION                  */
-/* MODIF fetsco renum  DATE 08/10/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE */
 /* ================================================================== */
 /* COPYRIGHT (C) 1991 - 2012  EDF R&D              WWW.CODE-ASTER.ORG */
 /*                                                                    */
@@ -13,7 +12,7 @@
 /* GENERAL PUBLIC LICENSE FOR MORE DETAILS.                           */
 /*                                                                    */
 /* YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE  */
-/* ALONG WITH THIS PROGRAM; IF NOT, WRITE TO : EDF R&D CODE_ASTER,    */
+/* ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,      */
 /*    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.     */
 /* ================================================================== */
 #include "aster.h"
@@ -38,7 +37,7 @@ void DEFPPPPPPPPPP(FETSCO,fetsco, INTEGER *nbmato, INTEGER *nblien,
 
 /* INPUT : NBMATO (NBRE DE NOEUDS DU GRAPHE), NBLIEN (NBRE D'ARETES DU GRAPHE), 
            CONNECT (TABLEAU DE CONNECTIVITE), IDCONNECT (VECTEUR DE POINTEURS DS CONNECT),
-	   NBPART (NBRE DE SOUS-DOMAINES), EDLO/VELO (VECTEURS DE CONTRAINTES).
+       NBPART (NBRE DE SOUS-DOMAINES), EDLO/VELO (VECTEURS DE CONTRAINTES).
    OUTPUT: MPASD (VECTEUR MAILLE NUMERO DE SD), NUMVER (NUMERO DE VERSION),
           IER (CODE RETOUR SCOTCH) */
   err = SCOTCH_graphInit(&grafdat);
@@ -50,7 +49,8 @@ void DEFPPPPPPPPPP(FETSCO,fetsco, INTEGER *nbmato, INTEGER *nblien,
     printf("\n");*/
   }  
   if ( err == 0 )
-    err = SCOTCH_graphBuild(&grafdat, 1, (int)*nbmato, idconnect, NULL, velo, NULL, (int)*nblien, connect, edlo);
+    err = SCOTCH_graphBuild(&grafdat, 1, (int)*nbmato, idconnect, NULL, velo, NULL,
+                            (int)*nblien, connect, edlo);
 
 /* VERIFICATION DE GRAPHE DEBRANCHABLE SUR DE GROS GRAPHES CAR POTENTIELLEMENT COUTEUSE */
   if ( err == 0 ) 

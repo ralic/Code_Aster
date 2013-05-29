@@ -627,4 +627,3 @@ TEST_TABLE(CRITERE='ABSOLU',
            TABLE=T1,)
 
 FIN();
-

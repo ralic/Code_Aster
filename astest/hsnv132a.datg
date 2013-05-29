@@ -4,11 +4,11 @@ dens 1 ;
 
 *----------------------------------------
 *DONNEES
-* dimensions des cotés
+* dimensions des cotÃ©s
 LX = 1.0;
 LY = 1.0;
 
-* nombre d'éléments
+* nombre d'Ã©lÃ©ments
 NX = 100;
 NY = 100; 
 

@@ -1,4 +1,4 @@
-# -*- coding: utf-8 -*-
+# coding=utf-8
 
 # Script de génération d'un maillage béton armé
 # avec des mailles béton en HEXA20
@@ -147,4 +147,3 @@ for i in range(len(listPoiObs)) :
 ObjectList = [ACIER,BETON,SLEFT,SRIGHT,POUTRE]
 NameList   = ["ACIER","BETON","SLEFT","SRIGHT","POUTRE"]
 SetNameList(ObjectList, NameList )
-

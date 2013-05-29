@@ -1,4 +1,4 @@
-# -*- coding: iso-8859-1 -*-
+# coding=utf-8
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -19,7 +19,7 @@
 
 cata_msg={
 1: _(u"""
-Le mot-clé MAILLAGE_N n'est pas utilisé. Le maillage considéré est celui provenant
+Le mot-clÃ© MAILLAGE_N n'est pas utilisÃ©. Le maillage considÃ©rÃ© est celui provenant
 de RESU_INIT.
 """),
 
@@ -32,14 +32,14 @@ Permutation de l\'assemblage %(k1)s en position %(k2)s
 """),
 
 4 : _(u"""
-Récupération des jeux entre les assemblages
+RÃ©cupÃ©ration des jeux entre les assemblages
 """),
 
 5 : _(u"""
-Récupération des jeux entre les assemblages de bord et le cloisonnement
+RÃ©cupÃ©ration des jeux entre les assemblages de bord et le cloisonnement
 """),
 
 6 : _(u"""
-Post-traitement des déformations des assemblages combustibles
+Post-traitement des dÃ©formations des assemblages combustibles
 """),
 }

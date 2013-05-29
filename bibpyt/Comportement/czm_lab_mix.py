@@ -1,4 +1,4 @@
-# -*- coding: iso-8859-1 -*-
+# coding=utf-8
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -21,7 +21,7 @@ from cata_comportement import LoiComportement
 
 loi = LoiComportement(
    nom            = 'CZM_LAB_MIX',
-   doc = """Relation de comportement pour une liaison acier-béton, basée sur une formulation mixte (Cf. [R7.02.11])""",
+   doc = """Relation de comportement pour une liaison acier-bÃ©ton, basÃ©e sur une formulation mixte (Cf. [R7.02.11])""",
    num_lc         = 51,
    nb_vari        = 5,
    nom_vari       = ('SEUILDEP','INDIDISS','SAUT_N','SAUT_T1','SAUT_T2'),

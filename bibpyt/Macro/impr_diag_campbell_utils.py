@@ -1,4 +1,4 @@
-# -*- coding: iso-8859-1 -*-
+# coding=utf-8
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -818,7 +818,7 @@ def save_intersec(L_INTER, FINT):
 # fonctions utilitaires
 def tabMAC2array(tabMAC, nbfreq):
     """Extraire les valeurs de la colonne MAC de la table et retourne
-    un tableau numpy carré."""
+    un tableau numpy carrÃ©."""
     valmac = tabMAC.EXTR_TABLE('MAC')
     macarr = numpy.array(valmac.MAC.values())
     macarr.shape = nbfreq, nbfreq

@@ -1,4 +1,4 @@
-# -*- coding: iso-8859-1 -*-
+# coding=utf-8
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -26,12 +26,12 @@ cata_msg = {
 """),
 
 2 : _(u"""
- ParamËtres diffÈrents.
- fonction %(k1)s de paramËtre %(k2)s au lieu de %(k3)s
+ Param√®tres diff√©rents.
+ fonction %(k1)s de param√®tre %(k2)s au lieu de %(k3)s
 """),
 
 3 : _(u"""
- Le nombre de paramËtres  %(i1)d  est diffÈrent du nombre de fonctions  %(i2)d
+ Le nombre de param√®tres  %(i1)d  est diff√©rent du nombre de fonctions  %(i2)d
 """),
 
 4 : _(u"""
@@ -39,16 +39,16 @@ cata_msg = {
 """),
 
 5 : _(u"""
- Les abscisses de la fonction  %(k1)s ont ÈtÈ rÈordonnÈes.
+ Les abscisses de la fonction  %(k1)s ont √©t√© r√©ordonn√©es.
 """),
 
 6 : _(u"""
- L'ordre des abscisses de la fonction numÈro  %(i1)d a ÈtÈ inversÈ .
+ L'ordre des abscisses de la fonction num√©ro  %(i1)d a √©t√© invers√© .
 """),
 
 7 : _(u"""
- Appel erronÈ
-  archivage numÈro :  %(i1)d
+ Appel erron√©
+  archivage num√©ro :  %(i1)d
   code retour de rsexch :  %(i2)d
 """),
 
@@ -57,14 +57,14 @@ cata_msg = {
 """),
 
 9 : _(u"""
-   NumÈro d'ordre :  %(i1)d             instant :  %(r1)g
+   Num√©ro d'ordre :  %(i1)d             instant :  %(r1)g
 """),
 
 10 : _(u"""
- Le modËle est manquant.
+ Le mod√®le est manquant.
 
  Conseil :
-  Il faut remplir le mot-clÈ MODELE si la commande utilisÈe le permet.
+  Il faut remplir le mot-cl√© MODELE si la commande utilis√©e le permet.
 """),
 
 
@@ -73,7 +73,7 @@ cata_msg = {
 
 
 13 : _(u"""
-  Dans la structure de donnÈes rÈsultat %(k1)s,
+  Dans la structure de donn√©es r√©sultat %(k1)s,
   le champ %(k2)s
 """),
 
@@ -86,73 +86,73 @@ cata_msg = {
 """),
 
 16 : _(u"""
-  Pour le numÈro d'ordre NUME_ORDRE %(i1)d,
-  l'option %(k1)s n'est pas calculÈe.
+  Pour le num√©ro d'ordre NUME_ORDRE %(i1)d,
+  l'option %(k1)s n'est pas calcul√©e.
 
   Conseil :
-    VÈrifiez le nom de la structure de donnÈe et vÈrifiez que les champs existent.
-    Si le concept n'est pas rÈentrant les champs ne sont pas cherchÈs dans %(k2)s.
+    V√©rifiez le nom de la structure de donn√©e et v√©rifiez que les champs existent.
+    Si le concept n'est pas r√©entrant les champs ne sont pas cherch√©s dans %(k2)s.
 """),
 
 17 : _(u"""
- pas de NUME_ORDRE trouvÈ pour le numÈro  %(i1)d
+ pas de NUME_ORDRE trouv√© pour le num√©ro  %(i1)d
 """),
 
 18 : _(u"""
- pas de champs trouvÈ pour l'instant  %(r1)g
+ pas de champs trouv√© pour l'instant  %(r1)g
 """),
 
 19 : _(u"""
- Plusieurs pas de temps trouvÈs  dans l'intervalle de prÈcision
+ Plusieurs pas de temps trouv√©s  dans l'intervalle de pr√©cision
  autour de l'instant  %(r1)g
- nombre de pas de temps trouvÈs  %(i1)d
- Conseil : modifier le paramËtre PRECISION
+ nombre de pas de temps trouv√©s  %(i1)d
+ Conseil : modifier le param√®tre PRECISION
 """),
 
 20 : _(u"""
- Erreur dans les donnÈes :
- Le paramËtre existe dÈj‡:  %(k1)s  dans la table:  %(k2)s
+ Erreur dans les donn√©es :
+ Le param√®tre existe d√©j√†:  %(k1)s  dans la table:  %(k2)s
 """),
 
 21 : _(u"""
- Erreur dans les donnÈes
- Le type du paramËtre:  %(k1)s
-  est diffÈrent pour le paramËtre:  %(k2)s
-  et le paramËtre:  %(k3)s
+ Erreur dans les donn√©es
+ Le type du param√®tre:  %(k1)s
+  est diff√©rent pour le param√®tre:  %(k2)s
+  et le param√®tre:  %(k3)s
 """),
 
 22 : _(u"""
-  Valeur de M maximale atteinte pour rÈsoudre F(M)=0,
-  Conseil : VÈrifiez vos listes d'instants de rupture, M maximal admissible =  %(r1)f
+  Valeur de M maximale atteinte pour r√©soudre F(M)=0,
+  Conseil : V√©rifiez vos listes d'instants de rupture, M maximal admissible =  %(r1)f
 """),
 
 23 : _(u"""
-  Valeur de M minimale atteinte pour rÈsoudre F(M)=0,
-  Conseil : VÈrifiez vos listes d'instants de rupture, valeur de M =  %(r1)f
+  Valeur de M minimale atteinte pour r√©soudre F(M)=0,
+  Conseil : V√©rifiez vos listes d'instants de rupture, valeur de M =  %(r1)f
 """),
 
 24 : _(u"""
- Le champ demandÈ est incompatible avec le type de rÈsultat
-  type de rÈsultat : %(k1)s
+ Le champ demand√© est incompatible avec le type de r√©sultat
+  type de r√©sultat : %(k1)s
       nom du champ : %(k2)s
 """),
 
 25 : _(u"""
- Le nombre d'astÈrisques pour les noms de fichiers ENSIGHT de pression est trop grand.
- Il est limite ‡ 7
- Il y a %(i1)d astÈrisques.
+ Le nombre d'ast√©risques pour les noms de fichiers ENSIGHT de pression est trop grand.
+ Il est limite √† 7
+ Il y a %(i1)d ast√©risques.
 """),
 
 26 : _(u"""
- Appel erronÈ  rÈsultat :  %(k1)s   archivage numÈro :  %(i1)d
+ Appel erron√©  r√©sultat :  %(k1)s   archivage num√©ro :  %(i1)d
    code retour de rsexch :  %(i2)d
-   problËme champ :  %(k2)s
+   probl√®me champ :  %(k2)s
 """),
 
 27 : _(u"""
- Appel erronÈ  rÈsultat :  %(k1)s   archivage numÈro :  %(i1)d
+ Appel erron√©  r√©sultat :  %(k1)s   archivage num√©ro :  %(i1)d
    code retour de rsexch :  %(i2)d
-   problËme champ :  %(k2)s
+   probl√®me champ :  %(k2)s
 """),
 
 28 : _(u"""
@@ -164,29 +164,29 @@ cata_msg = {
 """),
 
 30 : _(u"""
-  problËme pour le fichier:  %(k1)s
+  probl√®me pour le fichier:  %(k1)s
 """),
 
 31 : _(u"""
-  Option dÈj‡ calculÈe:  option  %(k1)s  NUME_ORDRE  %(i1)d
-  On la recalcule car les donnÈes peuvent Ítre diffÈrentes
+  Option d√©j√† calcul√©e:  option  %(k1)s  NUME_ORDRE  %(i1)d
+  On la recalcule car les donn√©es peuvent √™tre diff√©rentes
 
 """),
 
 32 : _(u"""
- L'extrapolation ne peut Ítre faite ‡ gauche (interdit).
+ L'extrapolation ne peut √™tre faite √† gauche (interdit).
 """),
 
 33 : _(u"""
- L'extrapolation ne peut Ítre faite ‡ droite (interdit).
+ L'extrapolation ne peut √™tre faite √† droite (interdit).
 """),
 
 34 : _(u"""
- L'interpolation ne peut Ítre faite car aucun champ de : %(k1)s n'est calcule.
+ L'interpolation ne peut √™tre faite car aucun champ de : %(k1)s n'est calcule.
 """),
 
 35 : _(u"""
- La variable d'accËs %(k1)s est invalide pour une interpolation.
+ La variable d'acc√®s %(k1)s est invalide pour une interpolation.
 """),
 
 36 : _(u"""
@@ -194,24 +194,24 @@ cata_msg = {
 """),
 
 37 : _(u"""
- RÈsultat: %(k1)s NOM_CHAM: %(k2)s  variable d'accËs: %(k3)s valeur: %(r1)g
+ R√©sultat: %(k1)s NOM_CHAM: %(k2)s  variable d'acc√®s: %(k3)s valeur: %(r1)g
 
 """),
 
 38 : _(u"""
- Plusieurs champs correspondant ‡ l'accËs demandÈ pour la SD_RESULTAT  %(k1)s
+ Plusieurs champs correspondant √† l'acc√®s demand√© pour la SD_RESULTAT  %(k1)s
 """),
 
 39 : _(u"""
- accËs %(k1)s : %(i1)d
+ acc√®s %(k1)s : %(i1)d
 """),
 
 40 : _(u"""
- accËs %(k1)s : %(r1)g
+ acc√®s %(k1)s : %(r1)g
 """),
 
 41 : _(u"""
- accËs %(k1)s  : %(k1)s
+ acc√®s %(k1)s  : %(k1)s
 """),
 
 46 : _(u"""
@@ -219,7 +219,7 @@ cata_msg = {
 """),
 
 47 : _(u"""
- Pas de champ correspondant ‡ un accËs demandÈ pour la SD_RESULTAT  %(k1)s
+ Pas de champ correspondant √† un acc√®s demand√© pour la SD_RESULTAT  %(k1)s
 """),
 
 48 : _(u"""
@@ -227,76 +227,76 @@ cata_msg = {
 """),
 
 56 : _(u"""
- pas de champs pour l'accËs  %(k1)s de valeur  %(r1)g
+ pas de champs pour l'acc√®s  %(k1)s de valeur  %(r1)g
 """),
 
 57 : _(u"""
 Erreur utilisateur :
-  Plusieurs champs correspondent ‡ l'accËs demandÈ pour la sd_rÈsultat  %(k1)s
-  - accËs "INST"             : %(r1)19.12e
-  - nombre de champs trouvÈs : %(i1)d
+  Plusieurs champs correspondent √† l'acc√®s demand√© pour la sd_r√©sultat  %(k1)s
+  - acc√®s "INST"             : %(r1)19.12e
+  - nombre de champs trouv√©s : %(i1)d
 Conseil:
-  Resserrer la prÈcision avec le mot clÈ PRECISION
+  Resserrer la pr√©cision avec le mot cl√© PRECISION
 """),
 
 58 : _(u"""
- Pas de champs pour l'accËs  %(k1)s de valeur  %(r1)g
+ Pas de champs pour l'acc√®s  %(k1)s de valeur  %(r1)g
 """),
 
 59 : _(u"""
 Erreur utilisateur :
-  Plusieurs champs correspondent ‡ l'accËs demandÈ pour la sd_rÈsultat  %(k1)s
-  - accËs "FREQ"             : %(r1)19.12e
-  - nombre de champs trouvÈs : %(i1)d
+  Plusieurs champs correspondent √† l'acc√®s demand√© pour la sd_r√©sultat  %(k1)s
+  - acc√®s "FREQ"             : %(r1)19.12e
+  - nombre de champs trouv√©s : %(i1)d
 Conseil:
-  Resserrer la prÈcision avec le mot clÈ PRECISION
+  Resserrer la pr√©cision avec le mot cl√© PRECISION
 """),
 
 60 : _(u"""
- L'intÈgrale d'un champ sur des ÈlÈments de structure
-(poutre, plaque, coque, tuyau, poutre multifibre) n'est pas programmÈe.
- RÈduisez la zone de calcul par le mot-clÈ GROUP_MA/MAILLE.
+ L'int√©grale d'un champ sur des √©l√©ments de structure
+(poutre, plaque, coque, tuyau, poutre multifibre) n'est pas programm√©e.
+ R√©duisez la zone de calcul par le mot-cl√© GROUP_MA/MAILLE.
 """),
 
 61 : _(u"""
- Erreur dans les donnÈes pour le champ  %(k1)s
+ Erreur dans les donn√©es pour le champ  %(k1)s
  Aucun noeud ne supporte les composantes
  %(k2)s, %(k3)s, %(k4)s, %(k5)s, ...
 """),
 
 62 : _(u"""
- Erreur dans les donnÈes pour le champ  %(k1)s
+ Erreur dans les donn√©es pour le champ  %(k1)s
  Aucune maille ne supporte les composantes
  %(k2)s, %(k3)s, %(k4)s, %(k5)s, ...
 """),
 
 63 : _(u"""
  POST_ELEM INTEGRALE : la maille %(i1)d de type %(k1)s ne sait pas
- (ou ne peut pas) calculer le post-traitement demandÈ
+ (ou ne peut pas) calculer le post-traitement demand√©
 Conseil:
-   Limiter le post-traitement ‡ des GROUP_MA contenant des mailles
+   Limiter le post-traitement √† des GROUP_MA contenant des mailles
 de type valide
 """),
 
 64 : _(u"""
-  Vous dÈfinissez une charge thermique sur un modËle mÈcanique !
-  Le MODELE doit Ítre de type thermique.
+  Vous d√©finissez une charge thermique sur un mod√®le m√©canique !
+  Le MODELE doit √™tre de type thermique.
 """),
 
 65 : _(u"""
-  Vous dÈfinissez une charge mÈcanique sur un modËle thermique !
-  Le MODELE doit Ítre de type mÈcanique.
+  Vous d√©finissez une charge m√©canique sur un mod√®le thermique !
+  Le MODELE doit √™tre de type m√©canique.
 """),
 
 66 : _(u"""
-  Le MACR_ELEM_DYNA a ÈtÈ crÈÈ avec une base modale qui entre-temps a ÈtÈ
-  modifiÈe/enrichie. Le nombre d'Èquations dans le MACR_ELEM_DYNA ne 
+  Le MACR_ELEM_DYNA a √©t√© cr√©√© avec une base modale qui entre-temps a √©t√©
+  modifi√©e/enrichie. Le nombre d'√©quations dans le MACR_ELEM_DYNA ne 
   correspond plus au nombre de vecteurs de projection modale.
   
-  -> Conseil: Pour mettre ‡ jour le MACR_ELEM_DYNA, il faut d'abord dÈtruire 
-              le concept associÈ et le rÈcrÈer ensuite avec la nouvelle base modale.
+  -> Conseil: Pour mettre √† jour le MACR_ELEM_DYNA, il faut d'abord d√©truire 
+              le concept associ√© et le r√©cr√©er ensuite avec la nouvelle base modale.
   
-  Nombre d'Èquations dans le MACR_ELEM_DYNA      = %(i1)d
+  Nombre d'√©quations dans le MACR_ELEM_DYNA      = %(i1)d
   Nombre de vecteurs de projection modale        = %(i2)d
 """),
 

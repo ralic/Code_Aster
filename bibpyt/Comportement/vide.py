@@ -1,4 +1,4 @@
-# -*- coding: iso-8859-1 -*-
+# coding=utf-8
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -22,7 +22,7 @@ from cata_comportement import LoiComportement
 
 loi = LoiComportement(
    nom            = 'VIDE',
-   doc = """comportement inopérant, nécessaire pour THM quand absence de comportement mécanique""",
+   doc = """comportement inopÃ©rant, nÃ©cessaire pour THM quand absence de comportement mÃ©canique""",
    num_lc         = 9999,
    nb_vari        = 0,
    nom_vari       = None, 

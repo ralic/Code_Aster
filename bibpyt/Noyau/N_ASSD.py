@@ -1,4 +1,4 @@
-# -*- coding: iso-8859-1 -*-
+# coding=utf-8
 # person_in_charge: mathieu.courtois at edf.fr
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -34,8 +34,8 @@ class ASSD(object):
 
    def __init__(self, etape=None, sd=None, reg='oui'):
       """
-        reg est un paramètre qui vaut oui ou non :
-          - si oui (défaut) : on enregistre la SD auprès du JDC
+        reg est un paramÃ¨tre qui vaut oui ou non :
+          - si oui (dÃ©faut) : on enregistre la SD auprÃ¨s du JDC
           - si non : on ne l'enregistre pas
       """
       self.etape = etape
@@ -56,22 +56,22 @@ class ASSD(object):
         self.id = self.parent.reg_sd(self)
       else :
         self.id = self.parent.o_register(self)
-      # permet de savoir si le concept a été calculé (1) ou non (0)
+      # permet de savoir si le concept a Ã©tÃ© calculÃ© (1) ou non (0)
       self.executed = 0
       if self.parent:
           self.order = self.parent.icmd
       else:
           self.order = 0
-      # attributs pour le Catalogue de Structure de Données Jeveux
+      # attributs pour le Catalogue de Structure de DonnÃ©es Jeveux
       # "self.cata_sdj" est un attribut de classe
       self.ptr_class_sdj = None
       self.ptr_sdj = None
       # construit en tant que CO('...')
-      # 0 : assd normal, 1 : type CO, 2 : type CO typé
+      # 0 : assd normal, 1 : type CO, 2 : type CO typÃ©
       self._as_co = 0
 
    def _get_sdj(self):
-       """Retourne le catalogue de SD associé au concept."""
+       """Retourne le catalogue de SD associÃ© au concept."""
        if self.ptr_sdj is None:
            cata_sdj = getattr(self, 'cata_sdj', None)
            assert cata_sdj, "The attribute 'cata_sdj' must be defined in the class %s" \
@@ -94,8 +94,8 @@ class ASSD(object):
 
    def __getitem__(self,key):
       from strfunc import convert
-      text_error = convert(_(u"ASSD.__getitem__ est déprécié car la référence à "
-                             u"l'objet ETAPE parent sera supprimée."))
+      text_error = convert(_(u"ASSD.__getitem__ est dÃ©prÃ©ciÃ© car la rÃ©fÃ©rence Ã  "
+                             u"l'objet ETAPE parent sera supprimÃ©e."))
       #raise NotImplementedError(text_error)
       from warnings import warn
       warn(text_error, DeprecationWarning, stacklevel=2)
@@ -110,8 +110,8 @@ class ASSD(object):
        """Permet de savoir si l'ASSD est issu d'un type CO.
        Retourne:
           0 : ce n'est pas un type CO
-          1 : c'est un type CO, non encore typé
-          2 : c'est un type CO retypé
+          1 : c'est un type CO, non encore typÃ©
+          2 : c'est un type CO retypÃ©
        """
        return self._as_co
 
@@ -123,7 +123,7 @@ class ASSD(object):
 
    def get_name(self):
       """
-          Retourne le nom de self, éventuellement en le demandant au JDC
+          Retourne le nom de self, Ã©ventuellement en le demandant au JDC
       """
       if not self.nom :
          try:
@@ -136,8 +136,8 @@ class ASSD(object):
 
    def supprime(self, force=False):
       """
-      Cassage des boucles de références pour destruction du JDC.
-      'force' est utilisée pour faire des suppressions complémentaires
+      Cassage des boucles de rÃ©fÃ©rences pour destruction du JDC.
+      'force' est utilisÃ©e pour faire des suppressions complÃ©mentaires
       (voir les formules dans N_FONCTION).
       """
       self.supprime_sd()
@@ -148,7 +148,7 @@ class ASSD(object):
 
    def supprime_sd(self):
       """Supprime la partie du catalogue de SD."""
-      # 'del self.sdj' appellerait la méthode '_get_sdj()'...
+      # 'del self.sdj' appellerait la mÃ©thode '_get_sdj()'...
       self._del_sdj()
 
    def __del__(self):
@@ -166,9 +166,9 @@ class ASSD(object):
       """
           Cette methode permet de pickler les objets ASSD
           Ceci est possible car on coupe les liens avec les objets
-          parent, etape et jdc qui conduiraient à pickler de nombreux
+          parent, etape et jdc qui conduiraient Ã  pickler de nombreux
           objets inutiles ou non picklables.
-          En sortie, l'objet n'est plus tout à fait le même !
+          En sortie, l'objet n'est plus tout Ã  fait le mÃªme !
       """
       d = self.__dict__.copy()
       for key in ('parent', 'etape', 'jdc'):
@@ -220,7 +220,7 @@ class ASSD(object):
 class assd(ASSD):
     def __convert__(cls, valeur):
         # On accepte les vraies ASSD et les objets 'entier' et 'reel'
-        # qui font tout pour se faire passer pour de vrais entiers/réels.
+        # qui font tout pour se faire passer pour de vrais entiers/rÃ©els.
         if isinstance(valeur, ASSD) or type(valeur) in (int, float):
             return valeur
         raise ValueError(_(u"On attend un objet concept."))

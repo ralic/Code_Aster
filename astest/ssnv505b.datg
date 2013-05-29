@@ -10,7 +10,7 @@ opti elem cub8 ;
 *
 *Constantes
 *
-* nombre d'éléments dans la longueur
+* nombre d'Ã©lÃ©ments dans la longueur
 N = 40;
 * demi hauteur de la poutre
 h = 63.5/2. ;
@@ -25,7 +25,7 @@ A  = 0.  h   (   l);
 A1 = lo  h   (   l);
 A3 = 0.  h  (-1.*l) ;
 
-* décalage
+* dÃ©calage
 dd = 914.4 ;
 
 xb = (lo + dd) ;

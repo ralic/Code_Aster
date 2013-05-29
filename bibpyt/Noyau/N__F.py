@@ -1,4 +1,4 @@
-# -*- coding: iso-8859-1 -*-
+# coding=utf-8
 # person_in_charge: mathieu.courtois at edf.fr
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -25,10 +25,10 @@ import UserDict
 
 class _F(UserDict.UserDict):
    """
-       Cette classe a un comportement semblable à un
+       Cette classe a un comportement semblable Ã  un
        dictionnaire Python et permet de donner
-       la valeur d'un mot-clé facteur avec pour les sous
-       mots-clés la syntaxe motcle=valeur
+       la valeur d'un mot-clÃ© facteur avec pour les sous
+       mots-clÃ©s la syntaxe motcle=valeur
    """
 
    def __init__(self, *pos, **args):

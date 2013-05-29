@@ -1,4 +1,4 @@
-# -*- coding: iso-8859-1 -*-
+# coding=utf-8
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -22,7 +22,7 @@ from cata_comportement import LoiComportement
 
 loi = LoiComportement(
    nom            = 'DEBORST',
-   doc = """Algo pour résolution en contraintes planes.""",
+   doc = """Algo pour rÃ©solution en contraintes planes.""",
    num_lc         = 9999,
    nb_vari        = 4,
    nom_vari       = ('DB1', 'DB2', 'DB3', 'DB4'),

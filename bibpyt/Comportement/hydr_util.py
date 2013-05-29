@@ -1,4 +1,4 @@
-# -*- coding: iso-8859-1 -*-
+# coding=utf-8
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -22,15 +22,15 @@ from cata_comportement import LoiComportement
 
 loi = LoiComportement(
    nom            = 'HYDR_UTIL',
-   doc = """Loi de comportement hydraulique, si le comportement mécanique est sans endommagement : 
-   Signifie qu'aucune donnée matériau n'est rentrée en dur. 
-   Concrètement dans le cas saturé, il faudra définir les 6 courbes point par point (par DEFI_FONCTION) suivantes :
+   doc = """Loi de comportement hydraulique, si le comportement mÃ©canique est sans endommagement : 
+   Signifie qu'aucune donnÃ©e matÃ©riau n'est rentrÃ©e en dur. 
+   ConcrÃ¨tement dans le cas saturÃ©, il faudra dÃ©finir les 6 courbes point par point (par DEFI_FONCTION) suivantes :
    - la saturation en fonction de la pression capillaire,
-   - la dérivée de cette courbe,
-   - la perméabilité relative au liquide en fonction de la saturation,
-   - sa dérivée.
-   - la perméabilité relative au gaz en fonction de la saturation,
-   - sa dérivée.""",
+   - la dÃ©rivÃ©e de cette courbe,
+   - la permÃ©abilitÃ© relative au liquide en fonction de la saturation,
+   - sa dÃ©rivÃ©e.
+   - la permÃ©abilitÃ© relative au gaz en fonction de la saturation,
+   - sa dÃ©rivÃ©e.""",
    num_lc         = 9999,
    nb_vari        = 1,
    nom_vari       = ('HYDRUTI1'),

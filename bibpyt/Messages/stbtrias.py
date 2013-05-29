@@ -1,4 +1,4 @@
-# -*- coding: iso-8859-1 -*-
+# coding=utf-8
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -30,40 +30,40 @@ cata_msg={
 """),
 
 3: _(u"""
-  attention le DATASET 2420 apparaît plusieurs fois.
+  attention le DATASET 2420 apparaÃ®t plusieurs fois.
 """),
 
 4: _(u"""
-  attention le DATASET 18 apparaît plusieurs fois.
+  attention le DATASET 18 apparaÃ®t plusieurs fois.
 """),
 
 5: _(u"""
- groupe  %(k1)s  de longueur supérieure à 8 (troncature du nom)
+ groupe  %(k1)s  de longueur supÃ©rieure Ã  8 (troncature du nom)
 """),
 
 6: _(u"""
- le nom du groupe est invalide:  %(k1)s  : non traité
+ le nom du groupe est invalide:  %(k1)s  : non traitÃ©
 """),
 
 7: _(u"""
- le nom du groupe  %(k1)s  est tronqué :  %(k2)s 
+ le nom du groupe  %(k1)s  est tronquÃ© :  %(k2)s 
 """),
 
 8: _(u"""
- le nom du groupe ne peut commencer par COUL_ : non traité
+ le nom du groupe ne peut commencer par COUL_ : non traitÃ©
 """),
 
 9: _(u"""
-  aucun système de coordonnés n'est défini
+  aucun systÃ¨me de coordonnÃ©s n'est dÃ©fini
 """),
 
 10: _(u"""
-  attention système de coordonnées autre que cartésien non relu dans ASTER.
+  attention systÃ¨me de coordonnÃ©es autre que cartÃ©sien non relu dans ASTER.
 """),
 
 11: _(u"""
-  attention votre maillage utilise plusieurs systèmes de coordonnées
-  vérifiez qu'ils sont tous identiques
-  ASTER ne gère qu'un système de coordonnées cartésien unique.
+  attention votre maillage utilise plusieurs systÃ¨mes de coordonnÃ©es
+  vÃ©rifiez qu'ils sont tous identiques
+  ASTER ne gÃ¨re qu'un systÃ¨me de coordonnÃ©es cartÃ©sien unique.
 """),
 }

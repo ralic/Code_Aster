@@ -1,5 +1,4 @@
 /*           CONFIGURATION MANAGEMENT OF EDF VERSION                  */
-/* MODIF ENVIMA UTILITAI  DATE 21/05/2012   AUTEUR COURTOIS M.COURTOIS */
 /* ================================================================== */
 /* COPYRIGHT (C) 1991 - 2012  EDF R&D              WWW.CODE-ASTER.ORG */
 /*                                                                    */
@@ -13,7 +12,7 @@
 /* GENERAL PUBLIC LICENSE FOR MORE DETAILS.                           */
 /*                                                                    */
 /* YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE  */
-/* ALONG WITH THIS PROGRAM; IF NOT, WRITE TO : EDF R&D CODE_ASTER,    */
+/* ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,      */
 /*    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.     */
 /* ================================================================== */
 
@@ -23,9 +22,9 @@
 #include "aster.h"
 
 
-/* Définition des constantes */
+/* DÃ©finition des constantes */
 
-/* undef entier et réel */
+/* undef entier et rÃ©el */
 #ifdef _USE_64_BITS
 static long   ISUND    = 0x7FFFFFFFFFFFFFFF ;
 #else
@@ -42,7 +41,7 @@ static long   R8UND[2] = { 0x00000000 , 0x7ff80000 };
 #endif
 #endif
 
-/* entier max, réel max, réel min, précision en réel simple et double */
+/* entier max, rÃ©el max, rÃ©el min, prÃ©cision en rÃ©el simple et double */
 static long   ISMAX    = LONG_MAX ;
 static DOUBLE R8MAX    = DBL_MAX ;
 static DOUBLE R8MIN    = DBL_MIN ;
@@ -176,8 +175,8 @@ DOUBLE DEF0(R8RDDG,r8rddg) { return (DOUBLE)((DOUBLE)180./(DOUBLE)R8_PI); }
 INTEGER DEF0(LLBLOC,llbloc) { return OPT_TAILLE_BLOC_MULT_FRONT; }
 
 /* ----------------------------------------  Pour tester un NaN */
-/* on fait un chapeau (iisnan) à la fonction C isnan  pour éviter le
- * conflit avec la fonction intrinsèque (logique) isnan de fortran 95 */
+/* on fait un chapeau (iisnan) Ã  la fonction C isnan  pour Ã©viter le
+ * conflit avec la fonction intrinsÃ¨que (logique) isnan de fortran 95 */
 INTEGER DEFP(IISNAN, iisnan, DOUBLE *x) {
     if ( isnan(*x) ) return (INTEGER)1;
     return (INTEGER)0;

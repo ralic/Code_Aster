@@ -2,7 +2,7 @@ POURSUITE(CODE=_F(NOM='ZZZZ256A'),PAR_LOT='NON',DEBUG=_F(SDVERI='OUI'));
 
 
 # Validation de l'extraction des matrices dans l'espace python
-# et de la résolution en python :
+# et de la rÃ©solution en python :
 #--------------------------------------------------------------
 import numpy.linalg as LA
 

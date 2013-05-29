@@ -1,4 +1,4 @@
-# -*- coding: iso-8859-1 -*-
+# coding=utf-8
 # person_in_charge: mathieu.courtois at edf.fr
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -22,7 +22,7 @@
 
 
 """
-   Ce module contient la classe JDC qui sert à interpréter un jeu de commandes
+   Ce module contient la classe JDC qui sert Ã  interprÃ©ter un jeu de commandes
 """
 
 # Modules Python
@@ -39,20 +39,20 @@ from N_info import message, SUPERV
 
 MemoryErrorMsg = """MemoryError :
 
-En général, cette erreur se produit car la mémoire utilisée hors du fortran
+En gÃ©nÃ©ral, cette erreur se produit car la mÃ©moire utilisÃ©e hors du fortran
 (jeveux) est importante.
 
 Causes possibles :
    - le calcul produit de gros objets Python dans une macro-commande ou
-     dans le jeu de commande lui-même,
+     dans le jeu de commande lui-mÃªme,
    - le calcul appelle un solveur (MUMPS par exemple) ou un outil externe
-     qui a besoin de mémoire hors jeveux,
+     qui a besoin de mÃ©moire hors jeveux,
    - utilisation de jeveux dynamique,
    - ...
 
 Solution :
-   - distinguer la mémoire limite du calcul (case "Mémoire totale" de astk)
-     de la mémoire réservée à jeveux (case "dont Aster"), le reste étant
+   - distinguer la mÃ©moire limite du calcul (case "MÃ©moire totale" de astk)
+     de la mÃ©moire rÃ©servÃ©e Ã  jeveux (case "dont Aster"), le reste Ã©tant
      disponible pour les allocations dynamiques.
 """
 
@@ -61,7 +61,7 @@ Solution :
 class JDC(N_OBJECT.OBJECT):
    """
       Cette classe interprete un jeu de commandes fourni sous
-      la forme d'une chaine de caractères
+      la forme d'une chaine de caractÃ¨res
 
       Attributs de classe :
 
@@ -93,11 +93,11 @@ NONE = None
       self.appli=appli
       self.parent=parent
       self.context_ini=context_ini
-      # On conserve les arguments supplémentaires. Il est possible de passer
+      # On conserve les arguments supplÃ©mentaires. Il est possible de passer
       # des informations globales au JDC par ce moyen. Il pourrait etre plus
       # sur de mettre en place le mecanisme des mots-cles pour verifier la
-      # validité des valeurs passées.
-      # Ceci reste à faire
+      # validitÃ© des valeurs passÃ©es.
+      # Ceci reste Ã  faire
       # On initialise avec les parametres de la definition puis on
       # update avec ceux du JDC
       self.args=self.definition.args
@@ -131,13 +131,13 @@ NONE = None
       self.index_etape_courante=0
       self.UserError="UserError"
       self.alea = None
-      # permet transitoirement de conserver la liste des étapes
+      # permet transitoirement de conserver la liste des Ã©tapes
       self.hist_etape = False
 
    def compile(self):
       """
          Cette methode compile la chaine procedure
-         Si des erreurs se produisent, elles sont consignées dans le
+         Si des erreurs se produisent, elles sont consignÃ©es dans le
          compte-rendu self.cr
       """
       try:
@@ -153,7 +153,7 @@ NONE = None
       except SystemError, e:
          erreurs_connues = """
 Causes possibles :
- - offset too large : liste trop longue derrière un mot-clé.
+ - offset too large : liste trop longue derriÃ¨re un mot-clÃ©.
    Solution : liste = (valeurs, ..., )
               MOT_CLE = *liste,
 """
@@ -164,14 +164,14 @@ Causes possibles :
 
    def exec_compile(self):
       """
-         Cette méthode execute le jeu de commandes compilé dans le contexte
+         Cette mÃ©thode execute le jeu de commandes compilÃ© dans le contexte
          self.g_context de l'objet JDC
       """
       CONTEXT.set_current_step(self)
-      # Le module nommage utilise le module linecache pour accéder
+      # Le module nommage utilise le module linecache pour accÃ©der
       # au source des commandes du jeu de commandes.
-      # Dans le cas d'un fichier, on accède au contenu de ce fichier
-      # Dans le cas d'une chaine de caractères il faut accéder
+      # Dans le cas d'un fichier, on accÃ¨de au contenu de ce fichier
+      # Dans le cas d'une chaine de caractÃ¨res il faut accÃ©der
       # aux commandes qui sont dans la chaine
       import linecache
       linecache.cache[self.nom]=0,0,string.split(self.procedure,'\n'),self.nom
@@ -184,12 +184,12 @@ Causes possibles :
                exec init2 in self.g_context
          #message.debug(SUPERV, "JDC.exec_compile_2 - len(g_context) = %d", len(self.g_context.keys()))
 
-         # Initialisation du contexte global pour l'évaluation des conditions de BLOC
+         # Initialisation du contexte global pour l'Ã©valuation des conditions de BLOC
          # On utilise une copie de l'initialisation du contexte du jdc
          self.condition_context=self.g_context.copy()
 
          # Si l'attribut context_ini n'est pas vide, on ajoute au contexte global
-         # le contexte initial (--> permet d'évaluer un JDC en récupérant un contexte
+         # le contexte initial (--> permet d'Ã©valuer un JDC en rÃ©cupÃ©rant un contexte
          # d'un autre par exemple)
          if self.context_ini :
             self.g_context.update(self.context_ini)
@@ -198,10 +198,10 @@ Causes possibles :
                if isinstance(sd,ASSD):self.sds_dict[sdnom]=sd
 
          if self.appli != None :
-            self.appli.affiche_infos('Interprétation du fichier de commandes en cours ...')
+            self.appli.affiche_infos('InterprÃ©tation du fichier de commandes en cours ...')
          # On sauve le contexte pour garder la memoire des constantes
          # En mode edition (EFICAS) ou lors des verifications le contexte
-         # est recalculé
+         # est recalculÃ©
          # mais les constantes sont perdues
          self.const_context=self.g_context
          #message.debug(SUPERV, "pass")
@@ -223,7 +223,7 @@ Causes possibles :
         # une erreur a ete identifiee
         if CONTEXT.debug :
           traceback.print_exc()
-        # l'exception a été récupérée avant (où, comment ?),
+        # l'exception a Ã©tÃ© rÃ©cupÃ©rÃ©e avant (oÃ¹, comment ?),
         # donc on cherche dans le texte
         txt = str(e)
         if txt.find('MemoryError') >= 0:
@@ -250,7 +250,7 @@ Causes possibles :
       except :
         # erreur inattendue
         # sys_exc_typ,sys_exc_value,sys_exc_frame = sys_exc.info()
-        # (tuple de 3 éléments)
+        # (tuple de 3 Ã©lÃ©ments)
         if CONTEXT.debug : traceback.print_exc()
 
         exc_typ,exc_val,exc_fr=sys.exc_info()
@@ -280,15 +280,15 @@ Causes possibles :
 
    def traiter_user_exception(self,exc_val):
        """Cette methode realise un traitement sur les exceptions utilisateur
-          Par defaut il n'y a pas de traitement. La méthode doit etre
-          surchargée pour en introduire un.
+          Par defaut il n'y a pas de traitement. La mÃ©thode doit etre
+          surchargÃ©e pour en introduire un.
        """
        return
 
    def register(self,etape):
       """
-         Cette méthode ajoute etape dans la liste des etapes : self.etapes
-         et retourne un numéro d'enregistrement
+         Cette mÃ©thode ajoute etape dans la liste des etapes : self.etapes
+         et retourne un numÃ©ro d'enregistrement
       """
       self.etapes.append(etape)
       self.index_etapes[etape] = len(self.etapes) - 1
@@ -316,21 +316,21 @@ Causes possibles :
           Cette methode doit fabriquer le concept produit retourne
           par l'etape etape et le nommer.
 
-          Elle est appelée à l'initiative de l'etape
+          Elle est appelÃ©e Ã  l'initiative de l'etape
           pendant le processus de construction de cette etape :
           methode __call__ de la classe CMD (OPER ou MACRO)
 
-          Ce travail est réalisé par le contexte supérieur
+          Ce travail est rÃ©alisÃ© par le contexte supÃ©rieur
           (etape.parent) car dans certains cas, le concept ne doit
-          pas etre fabriqué mais l'etape doit simplement utiliser
-          un concept préexistant.
+          pas etre fabriquÃ© mais l'etape doit simplement utiliser
+          un concept prÃ©existant.
 
           Deux cas possibles :
-                  - Cas 1 : etape.reuse != None : le concept est réutilisé
-                  - Cas 2 : l'étape appartient à une macro qui a déclaré un
+                  - Cas 1 : etape.reuse != None : le concept est rÃ©utilisÃ©
+                  - Cas 2 : l'Ã©tape appartient Ã  une macro qui a dÃ©clarÃ© un
                           concept de sortie qui doit etre produit par cette
                           etape.
-          Dans le cas du JDC, le deuxième cas ne peut pas se produire.
+          Dans le cas du JDC, le deuxiÃ¨me cas ne peut pas se produire.
       """
       sd= etape.get_sd_prod()
       if sd != None and (etape.definition.reentrant == 'n' or etape.reuse is None) :
@@ -344,13 +344,13 @@ Causes possibles :
           Nomme la SD apres avoir verifie que le nommage est possible : nom
           non utilise
           Si le nom est deja utilise, leve une exception
-          Met le concept créé dans le concept global g_context
+          Met le concept crÃ©Ã© dans le concept global g_context
       """
       o=self.sds_dict.get(sdnom,None)
       if isinstance(o,ASSD):
          raise AsException("Nom de concept deja defini : %s" % sdnom)
       if sdnom in self._reserved_kw:
-         raise AsException("Nom de concept invalide. '%s' est un mot-clé réservé." % sdnom)
+         raise AsException("Nom de concept invalide. '%s' est un mot-clÃ© rÃ©servÃ©." % sdnom)
 
       # Ajoute a la creation (appel de reg_sd).
       self.sds_dict[sdnom]=sd
@@ -370,13 +370,13 @@ Causes possibles :
 
    def delete_concept_after_etape(self,etape,sd):
       """
-          Met à jour les étapes du JDC qui sont après etape suite à
+          Met Ã  jour les Ã©tapes du JDC qui sont aprÃ¨s etape suite Ã 
           la disparition du concept sd
       """
-      # Cette methode est définie dans le noyau mais ne sert que pendant
+      # Cette methode est dÃ©finie dans le noyau mais ne sert que pendant
       # la phase de creation des etapes et des concepts. Il n'y a aucun
-      # traitement particulier à réaliser.
-      # Dans d'autres conditions, il faut surcharger cette méthode
+      # traitement particulier Ã  rÃ©aliser.
+      # Dans d'autres conditions, il faut surcharger cette mÃ©thode
       return
 
    def supprime(self):
@@ -385,7 +385,7 @@ Causes possibles :
          etape.supprime()
 
    def clean(self, netapes):
-      """Nettoie les `netapes` dernières étapes de la liste des étapes."""
+      """Nettoie les `netapes` derniÃ¨res Ã©tapes de la liste des Ã©tapes."""
       if self.hist_etape:
           return
       for i in xrange(netapes):
@@ -402,11 +402,11 @@ Causes possibles :
 
    def get_file(self, unite=None, fic_origine='', fname=None):
       """
-          Retourne le nom du fichier correspondant à un numero d'unité
+          Retourne le nom du fichier correspondant Ã  un numero d'unitÃ©
           logique (entier) ainsi que le source contenu dans le fichier
       """
       if self.appli :
-         # Si le JDC est relié à une application maitre, on délègue la recherche
+         # Si le JDC est reliÃ© Ã  une application maitre, on dÃ©lÃ¨gue la recherche
          return self.appli.get_file(unite, fic_origine)
       else:
          if unite != None:
@@ -431,9 +431,9 @@ Causes possibles :
       en fonction de la valeur du mot cle PAR_LOT et
       du contexte : application maitre ou pas
       
-      En PAR_LOT='NON', il n'y a pas d'ambiguité.
-      En PAR_LOT='OUI', E_SUPERV positionne l'attribut à 'NON' après la phase
-      d'analyse et juste avant la phase d'exécution.
+      En PAR_LOT='NON', il n'y a pas d'ambiguitÃ©.
+      En PAR_LOT='OUI', E_SUPERV positionne l'attribut Ã  'NON' aprÃ¨s la phase
+      d'analyse et juste avant la phase d'exÃ©cution.
       `user_value` : permet de stocker la valeur choisie par l'utilisateur
       pour l'interroger plus tard (par exemple dans `get_contexte_avant`).
       """
@@ -461,10 +461,10 @@ Causes possibles :
       """
       CONTEXT.set_current_step(self)
       try:
-         # Le module nommage utilise le module linecache pour accéder
+         # Le module nommage utilise le module linecache pour accÃ©der
          # au source des commandes du jeu de commandes.
-         # Dans le cas d'un fichier, on accède au contenu de ce fichier
-         # Dans le cas de la console interactive, il faut pouvoir accéder
+         # Dans le cas d'un fichier, on accÃ¨de au contenu de ce fichier
+         # Dans le cas de la console interactive, il faut pouvoir accÃ©der
          # aux commandes qui sont dans le buffer de la console
          import linecache,code
          console= code.InteractiveConsole(self.g_context,filename="<console>")
@@ -484,13 +484,13 @@ Causes possibles :
          comme DETRUIRE ou les macros
          Si etape == None, on retourne le contexte en fin de JDC
       """
-      # L'étape courante pour laquelle le contexte a été calculé est
-      # mémorisée dans self.index_etape_courante
+      # L'Ã©tape courante pour laquelle le contexte a Ã©tÃ© calculÃ© est
+      # mÃ©morisÃ©e dans self.index_etape_courante
       # XXX on pourrait faire mieux dans le cas PAR_LOT="NON" : en
-      # mémorisant l'étape
-      # courante pendant le processus de construction des étapes.
-      # Si on insère des commandes (par ex, dans EFICAS), il faut préalablement
-      # remettre ce pointeur à 0
+      # mÃ©morisant l'Ã©tape
+      # courante pendant le processus de construction des Ã©tapes.
+      # Si on insÃ¨re des commandes (par ex, dans EFICAS), il faut prÃ©alablement
+      # remettre ce pointeur Ã  0
       #message.debug(SUPERV, "g_context : %s", [k for k, v in self.g_context.items() if isinstance(v, ASSD)])
       #message.debug(SUPERV, "current_context : %s", [k for k, v in self.current_context.items() if isinstance(v, ASSD)])
       if self.par_lot_user == 'NON':
@@ -535,10 +535,10 @@ Causes possibles :
 
    def get_global_contexte(self):
       """Retourne "un" contexte global ;-)"""
-      # N'est utilisé que par INCLUDE (sauf erreur).
-      # g_context est remis à {} en PAR_LOT='OUI'. const_context permet
-      # de retrouver ce qui y a été mis par exec_compile.
-      # Les concepts n'y sont pas en PAR_LOT='OUI'. Ils sont ajoutés
+      # N'est utilisÃ© que par INCLUDE (sauf erreur).
+      # g_context est remis Ã  {} en PAR_LOT='OUI'. const_context permet
+      # de retrouver ce qui y a Ã©tÃ© mis par exec_compile.
+      # Les concepts n'y sont pas en PAR_LOT='OUI'. Ils sont ajoutÃ©s
       # par get_global_contexte de la MACRO.
       d = self.const_context.copy()
       d.update(self.g_context)
@@ -548,7 +548,7 @@ Causes possibles :
    def get_contexte_courant(self, etape_courante=None):
       """
          Retourne le contexte tel qu'il est (ou 'sera' si on est en phase
-         de construction) au moment de l'exécution de l'étape courante.
+         de construction) au moment de l'exÃ©cution de l'Ã©tape courante.
       """
       if etape_courante is None:
          etape_courante = CONTEXT.get_current_step()
@@ -557,7 +557,7 @@ Causes possibles :
 
    def get_concept(self, nomsd):
       """
-          Méthode pour récuperer un concept à partir de son nom
+          MÃ©thode pour rÃ©cuperer un concept Ã  partir de son nom
       """
       co = self.get_contexte_courant().get(nomsd.strip(), None)
       if not isinstance(co, ASSD):
@@ -566,8 +566,8 @@ Causes possibles :
 
    def get_concept_by_type(self, nomsd, typesd, etape):
       """
-          Méthode pour récuperer un concept à partir de son nom et de son type.
-          Il aura comme père 'etape'.
+          MÃ©thode pour rÃ©cuperer un concept Ã  partir de son nom et de son type.
+          Il aura comme pÃ¨re 'etape'.
       """
       assert issubclass(typesd, ASSD), typesd
       co = typesd(etape=etape)
@@ -577,8 +577,8 @@ Causes possibles :
 
    def del_concept(self, nomsd):
       """
-         Méthode pour supprimer la référence d'un concept dans le sds_dict.
-         Ne détruire pas le concept (différent de supprime).
+         MÃ©thode pour supprimer la rÃ©fÃ©rence d'un concept dans le sds_dict.
+         Ne dÃ©truire pas le concept (diffÃ©rent de supprime).
       """
       try:
          del self.sds_dict[nomsd.strip()]
@@ -588,7 +588,7 @@ Causes possibles :
 
    def get_cmd(self,nomcmd):
       """
-          Méthode pour recuperer la definition d'une commande
+          MÃ©thode pour recuperer la definition d'une commande
           donnee par son nom dans les catalogues declares
           au niveau du jdc
       """
@@ -599,7 +599,7 @@ Causes possibles :
    def append_reset(self,etape):
        """
           Ajoute une etape provenant d'un autre jdc a la liste des etapes
-          et remet à jour la parenté de l'étape et des concepts
+          et remet Ã  jour la parentÃ© de l'Ã©tape et des concepts
        """
        self.etapes.append(etape)
        self.index_etapes[etape] = len(self.etapes) - 1
@@ -614,7 +614,7 @@ Causes possibles :
 
 
    def _build_reserved_kw_list(self):
-       """Construit la liste des mots-clés réservés (interdits pour le
+       """Construit la liste des mots-clÃ©s rÃ©servÃ©s (interdits pour le
        nommage des concepts)."""
        self._reserved_kw = set()
        for cat in self.cata:

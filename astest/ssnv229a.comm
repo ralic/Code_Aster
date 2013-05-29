@@ -45,13 +45,13 @@ DEBUT(CODE=_F(NOM='SSNV229A',NIV_PUB_WEB='INTERNET'),IGNORE_ALARM='CALCULEL3_47'
 ########################################################################################################
 
 # PARAMETRES DES MATERIAUX
-# Béton
+# BÃ©ton
 E_bet = 30000.E6;
 NU_bet   = 0.13;
 ALPHA_b = 0.00001;
 
 
-# Câbles
+# CÃ¢bles
 E_cab    = 191500.E6;
 NU_cab  = 0.3;
 S_cab=3*0.002641;

@@ -1,6 +1,5 @@
 /* ------------------------------------------------------------------ */
 /*           CONFIGURATION MANAGEMENT OF EDF VERSION                  */
-/* MODIF inifpe utilitai  DATE 19/05/2011   AUTEUR SELLENET N.SELLENET */
 /* ================================================================== */
 /* COPYRIGHT (C) 1991 - 2011  EDF R&D              WWW.CODE-ASTER.ORG */
 /*                                                                    */
@@ -14,7 +13,7 @@
 /* GENERAL PUBLIC LICENSE FOR MORE DETAILS.                           */
 /*                                                                    */
 /* YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE  */
-/* ALONG WITH THIS PROGRAM; IF NOT, WRITE TO : EDF R&D CODE_ASTER,    */
+/* ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,      */
 /*    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.     */
 /* ================================================================== */
 /* ------------------------------------------------------------------ */
@@ -49,7 +48,7 @@ if (getenv ("TRAP_FPE") == NULL ) {
  sigfpe_[_INVALID].count   =INT_MAX;
  sigfpe_[_INT_OVERFL].count=INT_MAX;
 
-/* abort provoque a la ième erreur */
+/* abort provoque a la iÃ¨me erreur */
 
 /* sigfpe_[_UNDERFL].abort   =INT_MAX; */
  sigfpe_[_INVALID].abort   =1;
@@ -57,8 +56,8 @@ if (getenv ("TRAP_FPE") == NULL ) {
  sigfpe_[_OVERFL].abort    =1;
  sigfpe_[_INT_OVERFL].abort=1;
 
- handle_sigfpes(_ON,	 _EN_OVERFL|_EN_DIVZERO
-	      |	_EN_INVALID | _EN_INT_OVERFL, 0, _ABORT_ON_ERROR, 0);
+ handle_sigfpes(_ON,     _EN_OVERFL|_EN_DIVZERO
+          | _EN_INVALID | _EN_INT_OVERFL, 0, _ABORT_ON_ERROR, 0);
 
                   
  return(0);

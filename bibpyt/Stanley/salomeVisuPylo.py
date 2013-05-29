@@ -1,4 +1,4 @@
-# -*- coding: iso-8859-1 -*-
+# coding=utf-8
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -46,7 +46,7 @@ class VISU:
         machine_salome_port : port du NS Salome
 
         remarque :
-        le service NS Salome est deduit des 2 paramètres ci-dessus.
+        le service NS Salome est deduit des 2 paramÃ¨tres ci-dessus.
         le service NS Salome peut egalement etre specifie dans les arguments de la ligne de commande ( ORBInitRef )
 
         """
@@ -54,13 +54,13 @@ class VISU:
         self.salomeParam   = ''                 # parametre SALOME pour composant de pylotage
         self.studyName     = None               # nom de l'etude SALOME dans laquelle on fait la visualisation
 
-        # Construction paramètre pour SALOME
+        # Construction paramÃ¨tre pour SALOME
         self.salomeParam = self.__salomeParam( param )
 
         if not self.salomeParam:
             raise _("Erreur VISU Salome")
 
-        # selection de l'étude SALOME ( parmi celles ouvertes )
+        # selection de l'Ã©tude SALOME ( parmi celles ouvertes )
         try:
            studyList = self.__studyList( self.salomeParam )
         except:
@@ -70,7 +70,7 @@ class VISU:
         if studyList:
             if len( studyList ) == 1:   # une seule etude -> on publie ds celle-ci
                 self.studyName = studyList[0]
-            else:                               # plusieurs études -> l'utilisateur doit en sélectionner une
+            else:                               # plusieurs Ã©tudes -> l'utilisateur doit en sÃ©lectionner une
                 self.studyName = SAISIE_MODE( studyList, _("Choix de l'etude SALOME pour visualisation"), vbar=1 )
 
         if self.studyName:
@@ -79,7 +79,7 @@ class VISU:
 
     def __salomeParam( self, param ):
         """
-        Construit les paramètres salome à partir des paramètres Stanley
+        Construit les paramÃ¨tres salome Ã  partir des paramÃ¨tres Stanley
         retourne {} si incorrect
         """
         result = {}
@@ -99,7 +99,7 @@ class VISU:
                amachineName = param[ key ]
                result[ 'machineName']  = amachineName
             else:
-                raise _("Erreur MODE non implémenté, choix possible : LOCAL, DISTANT")
+                raise _("Erreur MODE non implÃ©mentÃ©, choix possible : LOCAL, DISTANT")
 
             # Verifications
             for var in lst:
@@ -107,7 +107,7 @@ class VISU:
                     UTMESS('A','STANLEY_16', valk=[var])
                     return {}
 
-            # Construction du paramètre 'ORBInitRef'
+            # Construction du paramÃ¨tre 'ORBInitRef'
             key = 'machine_salome_port'
             nsPort = param[ key ]
             if not nsPort:
@@ -126,7 +126,7 @@ class VISU:
 
     def __studyList( self, salomeParam ):
         """
-        Retourne la liste des études
+        Retourne la liste des Ã©tudes
         """
         result = []
         stdyMnger = Study.StudyManager( **salomeParam)
@@ -155,7 +155,7 @@ class VISU:
         """
         Lance la visualisation dans SALOME
         """
-        raise NotImplementedError("Non implémentée")
+        raise NotImplementedError("Non implÃ©mentÃ©e")
 
 
 # =========================================================================
@@ -163,20 +163,20 @@ class VISU:
 class ISOVALEURS( VISU ):
     def __init__( self, fichier, param,  selection ) :
         if not os.path.exists( fichier ):
-            raise _("Fichier MED résultat de Stanley non accessible par SALOME : ") + fichier
+            raise _("Fichier MED rÃ©sultat de Stanley non accessible par SALOME : ") + fichier
 
         VISU .__init__( self,  param )
 
-        # Si on n'a pas trouvé de session Salome ouverte on sort
+        # Si on n'a pas trouvÃ© de session Salome ouverte on sort
         if not self.studyName: return
 
 ##        print 'CS_pbruno ISOVALEURS salomeParam ->',self.salomeParam
         self.fichier       = os.path.abspath( fichier )         #chemin absolu du fichier MED fourni par Stanley
         self.visuType      = None                               #type de visualisation
-        self.entityType    = None                               #type d'entité
+        self.entityType    = None                               #type d'entitÃ©
         self.selection     = selection
 
-        # selon mode recopie sur le poste utilisateur de fichiers si nécessaire
+        # selon mode recopie sur le poste utilisateur de fichiers si nÃ©cessaire
         if   self.param['mode'] == 'LOCAL' :
                 self.__init_local( )
         elif self.param['mode'] == 'DISTANT' :
@@ -184,11 +184,11 @@ class ISOVALEURS( VISU ):
         elif self.param['mode'] == 'WINDOWS' :
                 self.__init_windows( )
         else:
-                raise _("Erreur MODE non implémenté, choix possible : LOCAL, DISTANT, WINDOWS")
+                raise _("Erreur MODE non implÃ©mentÃ©, choix possible : LOCAL, DISTANT, WINDOWS")
 
         # parsing fichier MED( nom maillage + nom champ + nb iteration )
         self.medInfo = MEDInfo( selection )
-        self.medInfo.iteration = 1 # CS_pbruno à finir implémenter ( on affiche que le 1er instant )
+        self.medInfo.iteration = 1 # CS_pbruno Ã  finir implÃ©menter ( on affiche que le 1er instant )
 
         if not self.medInfo.name or not self.medInfo.fieldName or not self.medInfo.iteration:
             raise 'Erreur lecture fichier MED : %s \n Nom maillage : %s, Nom champs %s '%( self.fichier,  self.medInfo.name, self.medInfo.fieldName )
@@ -196,7 +196,7 @@ class ISOVALEURS( VISU ):
         # selection d'un type de visualisation ( parmi celles possibles )
         self.visuType = self.__visuType( self.selection )
 
-        # sur quel entité ( VISU.NODE, VISU.EDGE, VISU.FACE,  VISU.CELL )
+        # sur quel entitÃ© ( VISU.NODE, VISU.EDGE, VISU.FACE,  VISU.CELL )
         self.entityType = self.__entityType( self.selection )
 
         # et enfin la visualisation..
@@ -233,7 +233,7 @@ class ISOVALEURS( VISU ):
         UTMESS('I','STANLEY_9',valk=[cmd])
         code, output = commands.getstatusoutput( cmd )
         if code!=0:
-            raise _("Erreur exécution commande : ") + cmd
+            raise _("Erreur exÃ©cution commande : ") + cmd
 
         self.fichier = fdis
 
@@ -264,7 +264,7 @@ class ISOVALEURS( VISU ):
 
     def __visuType( self, selection):
         """
-        selection du type de visualisation selon le nom du champ de la selection donnée en paramètre
+        selection du type de visualisation selon le nom du champ de la selection donnÃ©e en paramÃ¨tre
         ScalarMap
         DeformedShape
         """
@@ -298,7 +298,7 @@ class ISOVALEURS( VISU ):
         @param  medInfo:  informations sur le fichier MED ( meshName, fieldName, iteration )
 
         @type     entity: object ?
-        @param  entity:  type d'entité
+        @param  entity:  type d'entitÃ©
 
         @type     visuType :     integer
         @param  visuType:      type de visualisation
@@ -333,7 +333,7 @@ class ISOVALEURS( VISU ):
         elif visuType== GaussPointsOnField:
             ok = salomeVisu.GaussPointsOnField( medInfo.fieldName, medInfo.iteration, title)
         else:
-            raise _("Erreur type de visualisation non supporté")
+            raise _("Erreur type de visualisation non supportÃ©")
 
         if not ok:
             raise _("Erreur visualisation dans SALOME")
@@ -348,14 +348,14 @@ class COURBES( VISU ):
 
         VISU .__init__( self, param)
 
-        # Si on n'a pas trouvé de session Salome ouverte on sort
+        # Si on n'a pas trouvÃ© de session Salome ouverte on sort
         if not self.studyName: return
 
         self.tables     = {}
         self.l_courbes  = l_courbes
         self.selection  = selection
 
-        # selon mode recopie sur le poste utilisateur de fichiers si nécessaire
+        # selon mode recopie sur le poste utilisateur de fichiers si nÃ©cessaire
         if   self.param['mode'] == 'LOCAL' :
                 self.__init_local( )
         elif self.param['mode'] == 'DISTANT' :
@@ -363,7 +363,7 @@ class COURBES( VISU ):
         elif self.param['mode'] == 'WINDOWS' :
                 self.__init_windows( )
         else:
-                raise _("Erreur MODE non implémenté, choix possible : LOCAL, DISTANT, WINDOWS")
+                raise _("Erreur MODE non implÃ©mentÃ©, choix possible : LOCAL, DISTANT, WINDOWS")
 
         self.Show()
 
@@ -484,7 +484,7 @@ class MEDInfo:
     """
     def __init__( self, selection ):
         """
-        Recupère les informations( nom maillage, champ ) du fichier MED resultat en sortie de Stanley
+        RecupÃ¨re les informations( nom maillage, champ ) du fichier MED resultat en sortie de Stanley
         """
         self.name           = selection.contexte.maillage.nom
         self.fieldName      = selection.contexte.resultat.nom

@@ -1,4 +1,4 @@
-# -*- coding: iso-8859-1 -*-
+# coding=utf-8
 # person_in_charge: aimery.assire at edf.fr
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -38,12 +38,12 @@ class Sim_exp :
    # ------------------------------------------------------------------------------
    def InterpolationLineaire (self, x0, points) :
       """
-          Interpolation Lineaire de x0 sur la fonction discrétisée yi=points(xi) i=1,..,n
+          Interpolation Lineaire de x0 sur la fonction discrÃ©tisÃ©e yi=points(xi) i=1,..,n
       """
       # x0     = Une abscisse        (1 colonne, 1 ligne)
       # points = Tableau de n points (2 colonnes, n lignes)
       # on suppose qu'il existe au moins 2 points, 
-      # et que les points sont classés selon les abscisses croissantes
+      # et que les points sont classÃ©s selon les abscisses croissantes
 
       n = len(points)
       if ( x0 < points[0][0] ) or ( x0 > points[n-1][0] ) :
@@ -63,12 +63,12 @@ class Sim_exp :
    # ------------------------------------------------------------------------------
    def DistVertAdimPointLigneBrisee (self, M, points) :
       """
-          Distance verticale d'un point M à une ligne brisée composée de n points
+          Distance verticale d'un point M Ã  une ligne brisÃ©e composÃ©e de n points
       """
       # M      = Point               (2 colonnes, 1 ligne)
       # points = Tableau de n points (2 colonnes, n lignes)
       # on suppose qu'il existe au moins 2 points, 
-      # et que les points sont classés selon les abscisses croissantes
+      # et que les points sont classÃ©s selon les abscisses croissantes
       n = len(points)
       if ( M[0] < points[0][0] ) or ( M[0] > points[n-1][0] ):
         return 0.
@@ -77,9 +77,9 @@ class Sim_exp :
          i = i+1
       y_proj_vert = (M[0]-points[i-1][0]) * (points[i][1]-points[i-1][1]) / (points[i][0]-points[i-1][0]) + points[i-1][1]  
       d = (M[1] - y_proj_vert)
-           # Attention: la distance n'est pas normalisée
-           # Attention: problème si points[0][0] = points[1][0] = M[0]
-           # Attention: problème si M[1] = 0
+           # Attention: la distance n'est pas normalisÃ©e
+           # Attention: problÃ¨me si points[0][0] = points[1][0] = M[0]
+           # Attention: problÃ¨me si M[1] = 0
       return d
 
 
@@ -90,7 +90,7 @@ class Sim_exp :
       """
       n = 0
       resu_num = F_calc
-      n_exp = len(experience)    # nombre de points sur la courbe expérimentale num.i    
+      n_exp = len(experience)    # nombre de points sur la courbe expÃ©rimentale num.i    
       stockage = NP.ones(n_exp)     # matrice de stockage des erreurs en chaque point
       for j in xrange(n_exp) :
          d = self.DistVertAdimPointLigneBrisee(experience[j], resu_num)
@@ -111,7 +111,7 @@ class Sim_exp :
    def multi_interpole(self, L_F, reponses):
       """
          Cette fonction appelle la fonction interpole et retourne les sous-fonctionnelles J et l'erreur.
-         On interpole toutes les reponses une à une en appelant la methode interpole.
+         On interpole toutes les reponses une Ã  une en appelant la methode interpole.
       """
 
       L_erreur=[]
@@ -140,8 +140,8 @@ class Sim_exp :
    # ------------------------------------------------------------------------------
    def multi_interpole_sensib(self, L_F, reponses):    
       """
-         Cette fonction retourne seulement l'erreur, elle est appelée dans la methode sensibilité.
-         On interpole toutes les reponses une à une en appelant la methode interpole.
+         Cette fonction retourne seulement l'erreur, elle est appelÃ©e dans la methode sensibilitÃ©.
+         On interpole toutes les reponses une Ã  une en appelant la methode interpole.
       """
 
       L_erreur=[]
@@ -166,7 +166,7 @@ class Sim_exp :
    # ------------------------------------------------------------------------------
    def norme_J(self, L_J_init, L_J, unite_resu=None):
       """
-         Cette fonction calcul une valeur normée de J
+         Cette fonction calcul une valeur normÃ©e de J
       """
       for i in range(len(L_J)):
          if NP.all(L_J_init[i] != 0.):

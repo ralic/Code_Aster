@@ -1,4 +1,4 @@
-# -*- coding: iso-8859-1 -*-
+# coding=utf-8
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -18,30 +18,30 @@
 # ======================================================================
 # person_in_charge: josselin.delmas at edf.fr
 
-# Pour la méthode EXTRAPOLATION de DEFI_LIST_INST
+# Pour la mÃ©thode EXTRAPOLATION de DEFI_LIST_INST
 
 cata_msg={
 
 1: _(u"""
-          On tente une extrapolation linéaire sur les résidus.
+          On tente une extrapolation linÃ©aire sur les rÃ©sidus.
 """),
 
 2: _(u"""
-          L'extrapolation sur les résidus n'est pas possible.
-          On utilise un autre résidu que RESI_GLOB_RELA ou RESI_GLOB_MAXI pour l'évaluation de la convergence.
-          Ce n'est pas prévu.
+          L'extrapolation sur les rÃ©sidus n'est pas possible.
+          On utilise un autre rÃ©sidu que RESI_GLOB_RELA ou RESI_GLOB_MAXI pour l'Ã©valuation de la convergence.
+          Ce n'est pas prÃ©vu.
 """),
 
 3: _(u"""
-          L'extrapolation sur les résidus n'est pas possible car il n'y a pas assez de valeurs pour la faire.
+          L'extrapolation sur les rÃ©sidus n'est pas possible car il n'y a pas assez de valeurs pour la faire.
 """),
 
 10: _(u"""
-          L'extrapolation sur les résidus a échoué.
+          L'extrapolation sur les rÃ©sidus a Ã©chouÃ©.
 """),
 
 11: _(u"""
-          L'extrapolation sur les résidus a réussi.
+          L'extrapolation sur les rÃ©sidus a rÃ©ussi.
 """),
 
 }

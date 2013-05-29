@@ -3,8 +3,8 @@ opti dime 3 elem cub8 ;
 
 *  Pour  mailler un cube (bloc)  en 2 sous-domaines (bloc_b et bloc_h)
 *  et avec ses 2 faces  : cote_b et cote_h
-*  3 points sont nommés : A (0,0,0), B(0,0,1) et D(0,0,1)
-*  1 point (PAPPUI) est placé au milieu de la face cote_h
+*  3 points sont nommÃ©s : A (0,0,0), B(0,0,1) et D(0,0,1)
+*  1 point (PAPPUI) est placÃ© au milieu de la face cote_h
 * ------------------------------------------------------------
 
 

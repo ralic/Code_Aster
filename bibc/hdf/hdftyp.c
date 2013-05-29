@@ -1,5 +1,4 @@
 /*           CONFIGURATION MANAGEMENT OF EDF VERSION                  */
-/* MODIF hdftyp hdf  DATE 16/04/2012   AUTEUR COURTOIS M.COURTOIS */
 /* ================================================================== */
 /* COPYRIGHT (C) 1991 - 2012  EDF R&D              WWW.CODE-ASTER.ORG */
 /*                                                                    */
@@ -13,21 +12,21 @@
 /* GENERAL PUBLIC LICENSE FOR MORE DETAILS.                           */
 /*                                                                    */
 /* YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE  */
-/* ALONG WITH THIS PROGRAM; IF NOT, WRITE TO : EDF R&D CODE_ASTER,    */
+/* ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,      */
 /*    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.     */
 /* ================================================================== */
 /* person_in_charge: j-pierre.lefebvre at edf.fr */
 #include "aster.h"
 #include "aster_fort.h"
 /*-----------------------------------------------------------------------------/
-/ Récupération du type associé (dataset,group,etc) de chaque entité d'une liste 
-/ de noms d'un groupe donné au sein d'un fichier HDF 
-/  Paramètres :
+/ RÃ©cupÃ©ration du type associÃ© (dataset,group,etc) de chaque entitÃ© d'une liste 
+/ de noms d'un groupe donnÃ© au sein d'un fichier HDF 
+/  ParamÃ¨tres :
 /   - in  idfic : identificateur du fichier (hid_t)
 /   - in  nomgr : identificateur du fichier (hid_t)
 /   - in  lnom :  liste de noms (char *)
 /   - out ltype : liste des types (char *)
-/  Résultats :
+/  RÃ©sultats :
 /     nombre de datasets et de groups
 /-----------------------------------------------------------------------------*/
 #ifndef _DISABLE_HDF5
@@ -62,7 +61,8 @@ INTEGER DEFPSPS(HDFTYP, hdftyp, INTEGER *idf, char *nomgr, STRING_SIZE ln,
   pt=typ;
   for (j=0;j<*nbnom;j++) {
     ind=(hsize_t)j;
-    indx = H5Literate_by_name (idfic, nomg , H5_INDEX_NAME, H5_ITER_NATIVE, &ind, indiceType, ptype, bidon);
+    indx = H5Literate_by_name(idfic, nomg , H5_INDEX_NAME, H5_ITER_NATIVE, &ind,
+                              indiceType, ptype, bidon);
     ll=strlen(ptype);
     for (k=0;k<ll;k++)
       *(pt+k) = *(ptype+k);
@@ -81,20 +81,27 @@ INTEGER DEFPSPS(HDFTYP, hdftyp, INTEGER *idf, char *nomgr, STRING_SIZE ln,
 /*  
     http://www.hdfgroup.org/HDF5/doc/RM/RM_H5L.html#Link-Visit
     
-    The protoype of the callback function op is as follows (as defined in the source code file H5Lpublic.h):
+    The protoype of the callback function op is as follows (as defined in the source
+    code file H5Lpublic.h):
     herr_t (*H5L_iterate_t)( hid_t g_id, const char *name, const H5L_info_t *info, void *op_data)
 
     The parameters of this callback function have the following values or meanings:
-            g_id    Group that serves as root of the iteration; same value as the H5Lvisit group_id parameter
+            g_id    Group that serves as root of the iteration; same value as the H5Lvisit
+                    group_id parameter
             name    Name of link, relative to g_id, being examined at current step of the iteration
             info    H5L_info_t struct containing information regarding that link
-            op_data         User-defined pointer to data required by the application in processing the link; a pass-through of the op_data pointer provided with the H5Lvisit function call
+            op_data User-defined pointer to data required by the application in processing
+                    the link; a pass-through of the op_data pointer provided with the H5Lvisit
+                    function call
 
     The possible return values from the callback function, and the effect of each, are as follows:
 
-        * Zero causes the visit iterator to continue, returning zero when all group members have been processed.
-        * A positive value causes the visit iterator to immediately return that positive value, indicating short-circuit success. The iterator can be restarted at the next group member.
-        * A negative value causes the visit iterator to immediately return that value, indicating failure. The iterator can be restarted at the next group member. 
+        * Zero causes the visit iterator to continue, returning zero when all group members have
+          been processed.
+        * A positive value causes the visit iterator to immediately return that positive value,
+          indicating short-circuit success. The iterator can be restarted at the next group member.
+        * A negative value causes the visit iterator to immediately return that value, indicating
+          failure. The iterator can be restarted at the next group member. 
 */
 
 #ifndef _DISABLE_HDF5

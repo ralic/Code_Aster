@@ -1,4 +1,4 @@
-# -*- coding: iso-8859-1 -*-
+# coding=utf-8
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -21,69 +21,69 @@
 cata_msg={
 
 1: _(u"""
-  Erreur dans les données
-  le paramètre %(k1)s n'existe pas dans la table %(k2)s
+  Erreur dans les donnÃ©es
+  le paramÃ¨tre %(k1)s n'existe pas dans la table %(k2)s
 """),
 
 2: _(u"""
-  Erreur dans les données
+  Erreur dans les donnÃ©es
   pas de tri sur les complexes
-  paramètre:  %(k1)s
+  paramÃ¨tre:  %(k1)s
 """),
 
 3: _(u"""
-  Erreur dans les données
-  on n'a pas trouvé de ligne dans la table %(k1)s pour le paramètre %(k2)s
+  Erreur dans les donnÃ©es
+  on n'a pas trouvÃ© de ligne dans la table %(k1)s pour le paramÃ¨tre %(k2)s
 """),
 
 4: _(u"""
-  Le numéro d'occurrence est invalide %(i1)d pour le mot clé facteur %(k1)s
+  Le numÃ©ro d'occurrence est invalide %(i1)d pour le mot clÃ© facteur %(k1)s
 """),
 
 5: _(u"""
-  Le numéro de la composante (pour VARI_R) est trop grand.
+  Le numÃ©ro de la composante (pour VARI_R) est trop grand.
     MAILLE           : %(k1)s
     NUME_MAXI        : %(i1)d
-    NUME_CMP demandé : %(i2)d
+    NUME_CMP demandÃ© : %(i2)d
 """),
 
 
 9: _(u"""
- Si on utilise l'option normale pour les changements de repère, il faut donner
- une équation supplémentaire avec le mot-clé VECT_X ou VECT_Y
+ Si on utilise l'option normale pour les changements de repÃ¨re, il faut donner
+ une Ã©quation supplÃ©mentaire avec le mot-clÃ© VECT_X ou VECT_Y
  """),
 
 11: _(u"""
-  Erreur dans les données, problème lors du traitement du mot clé facteur FILTRE
+  Erreur dans les donnÃ©es, problÃ¨me lors du traitement du mot clÃ© facteur FILTRE
 
   -> Risque & Conseil :
-   soit le paramètre n'existe pas
-   soit aucune ligne ne correspond au paramètre donné
+   soit le paramÃ¨tre n'existe pas
+   soit aucune ligne ne correspond au paramÃ¨tre donnÃ©
 """),
 
 12: _(u"""
   Erreur utilisateur dans la commande POST_ELEM/INTEGRALE :
     Pour le champ %(k1)s,
-    Sur les mailles sélectionnées %(k2)s,
-    On n'a pas trouvé la composante %(k3)s
+    Sur les mailles sÃ©lectionnÃ©es %(k2)s,
+    On n'a pas trouvÃ© la composante %(k3)s
 
   Risque & Conseil:
-    Veuillez vérifier que le champ est défini sur les mailles du groupe spécifié et
+    Veuillez vÃ©rifier que le champ est dÃ©fini sur les mailles du groupe spÃ©cifiÃ© et
     que les composantes du champ disposent de valeurs. Vous pouvez effectuer un
-    IMPR_RESU pour imprimer les valeurs du champ %(k1)s sur les mailles sélectionnées.
+    IMPR_RESU pour imprimer les valeurs du champ %(k1)s sur les mailles sÃ©lectionnÃ©es.
 """),
 
 13: _(u"""
   Erreur utilisateur dans la commande POST_ELEM/INTEGRALE :
     Le champ %(k1)s est un CHAM_ELEM ELEM,
-    Il faut renseigner le mot clé INTEGRALE / DEJA_INTEGRE= 'OUI' / 'NON'
+    Il faut renseigner le mot clÃ© INTEGRALE / DEJA_INTEGRE= 'OUI' / 'NON'
 """),
 
 14 : _(u"""
   POST_ELEM VOLUMOGRAMME
-  Numéro d'occurrence du mot-clé VOLUMOGRAMME = %(i1)d
-  Numéro d'ordre                             = %(i2)d
-  Volume total concerné                      = %(r1)g
+  NumÃ©ro d'occurrence du mot-clÃ© VOLUMOGRAMME = %(i1)d
+  NumÃ©ro d'ordre                             = %(i2)d
+  Volume total concernÃ©                      = %(r1)g
 """),
 
 }

@@ -1,4 +1,4 @@
-# -*- coding: iso-8859-1 -*-
+# coding=utf-8
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -46,9 +46,9 @@ tab_footer = """   !------------------------------------------------------------
 
 #-------------------------------------------------------------------------------
 def get_idperf(conf):
-   """Retourne l'identifiant utilisé pour la mesure des performances.
-   Soit on le trouve dans le fichier config.txt de la version utilisée,
-   soit on le détermine à partir de : "kernel name - hardware name"
+   """Retourne l'identifiant utilisÃ© pour la mesure des performances.
+   Soit on le trouve dans le fichier config.txt de la version utilisÃ©e,
+   soit on le dÃ©termine Ã  partir de : "kernel name - hardware name"
    """
    machine = ''
    compiler = 'unknown'
@@ -70,7 +70,7 @@ def as_list(value):
 #-------------------------------------------------------------------------------
 def test_temps_ops(self, RESU, INFO, **args):
    """
-   Macro TEST_TEMPS permettant de vérifier le temps passé dans les commandes.
+   Macro TEST_TEMPS permettant de vÃ©rifier le temps passÃ© dans les commandes.
    """
    import aster
    from Accas import _F
@@ -87,7 +87,7 @@ def test_temps_ops(self, RESU, INFO, **args):
    # La macro compte pour 1 dans la numerotation des commandes
    self.set_icmd(1)
 
-   # ----- récupération du fichier de config
+   # ----- rÃ©cupÃ©ration du fichier de config
    ficconf = '?'
    conf = None
    try:
@@ -105,7 +105,7 @@ def test_temps_ops(self, RESU, INFO, **args):
       if not os.path.isfile(ficconf):         # if as_run.__version__ < 1.6.3
          prof = ASTER_PROFIL(l_export[0])
          if prof.Get('D', typ='conf'):
-            print '<TEST_TEMPS> Surcharge du fichier config.txt non supportée.'
+            print '<TEST_TEMPS> Surcharge du fichier config.txt non supportÃ©e.'
          REPREF  = os.path.join(aster_root, prof['version'][0])
          ficconf = os.path.join(REPREF, 'config.txt')
       conf = ASTER_CONFIG(ficconf)
@@ -182,7 +182,7 @@ def test_temps_ops(self, RESU, INFO, **args):
                'valmax' : vale + precision
             }
          dmach = dref.get(machine.upper())
-         # si on n'a pas de référence pour cette machine, on prend la première
+         # si on n'a pas de rÃ©fÃ©rence pour cette machine, on prend la premiÃ¨re
          if not dmach:
             dmach = dref[l_mach[0].upper()]
             if alarm9:
@@ -225,7 +225,7 @@ def test_temps_ops(self, RESU, INFO, **args):
 #-------------------------------------------------------------------------------
 def get_cmde_timers(jdc):
    """Retourne un objet Table contenant les mesures de temps pour
-   les commandes terminées.
+   les commandes terminÃ©es.
    """
    from Utilitai.Table import Table
    tab = Table()

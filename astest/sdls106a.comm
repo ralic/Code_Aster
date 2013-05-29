@@ -457,7 +457,7 @@ TEST_RESU(RESU=(_F(NUME_MODE=4,
 from math import pi, sqrt
 a = 2.            # longueur de la plaque
 b = 1.5           # largeur
-h = 0.01          # épaisseur
+h = 0.01          # Ã©paisseur
 E = 2.1e11
 nu = 0.3
 gamma = 7800.*h   # masse surfacique
@@ -528,7 +528,7 @@ for np in range(0,nb_points) :
    y = float(np) / (nb_points-1) * b
    val_an = - sin(i*pi*x/a) * sin(j*pi*y/b)
    critere = 'RELATIF'
-   if (val_an < 1.e-12):  # si valeur de référence très petite, il faut tester en absolu
+   if (val_an < 1.e-12):  # si valeur de rÃ©fÃ©rence trÃ¨s petite, il faut tester en absolu
       critere = 'ABSOLU'
 
    TEST_TABLE(
@@ -544,12 +544,12 @@ for np in range(0,nb_points) :
       CRITERE=critere,
       )
 
-   # valeur analytique le long de la ligne milieu parallèle à Y
+   # valeur analytique le long de la ligne milieu parallÃ¨le Ã  Y
    x = a / 2.
    y = float(np) / (nb_points-1) * b
    val_an = - sin(i*pi*x/a) * sin(j*pi*y/b)
    critere = 'RELATIF'
-   if (val_an < 1.e-12):  # si valeur de référence très petite, il faut tester en absolu
+   if (val_an < 1.e-12):  # si valeur de rÃ©fÃ©rence trÃ¨s petite, il faut tester en absolu
       critere = 'ABSOLU'
 
    TEST_TABLE(
@@ -565,7 +565,7 @@ for np in range(0,nb_points) :
       CRITERE=critere,
       )
 
-   # valeur analytique le long de la ligne milieu parallèle à X : 0
+   # valeur analytique le long de la ligne milieu parallÃ¨le Ã  X : 0
 TEST_TABLE(
       TABLE=MLC_X3,
       NOM_PARA='DZ',
@@ -620,7 +620,7 @@ for np in range(0,nb_points) :
    y = float(np) / (nb_points-1) * b
    val_an = sin(i*pi*x/a) * sin(j*pi*y/b)
    critere = 'RELATIF'
-   if (val_an < 1.e-12):  # si valeur de référence très petite, il faut tester en absolu
+   if (val_an < 1.e-12):  # si valeur de rÃ©fÃ©rence trÃ¨s petite, il faut tester en absolu
       critere = 'ABSOLU'
 
    TEST_TABLE(
@@ -636,12 +636,12 @@ for np in range(0,nb_points) :
       CRITERE=critere,
       )
 
-   # valeur analytique le long de la ligne milieu parallèle à X
+   # valeur analytique le long de la ligne milieu parallÃ¨le Ã  X
    x = float(np) / (nb_points-1) * a
    y = b / 2.
    val_an = sin(i*pi*x/a) * sin(j*pi*y/b)
    critere = 'RELATIF'
-   if (val_an < 1.e-12):  # si valeur de référence très petite, il faut tester en absolu
+   if (val_an < 1.e-12):  # si valeur de rÃ©fÃ©rence trÃ¨s petite, il faut tester en absolu
       critere = 'ABSOLU'
 
    TEST_TABLE(
@@ -658,12 +658,12 @@ for np in range(0,nb_points) :
       )
 
 
-   # valeur analytique le long de la ligne milieu parallèle à Y
+   # valeur analytique le long de la ligne milieu parallÃ¨le Ã  Y
    x = a / 2.
    y = float(np) / (nb_points-1) * b
    val_an = sin(i*pi*x/a) * sin(j*pi*y/b)
    critere = 'RELATIF'
-   if (val_an < 1.e-12):  # si valeur de référence très petite, il faut tester en absolu
+   if (val_an < 1.e-12):  # si valeur de rÃ©fÃ©rence trÃ¨s petite, il faut tester en absolu
       critere = 'ABSOLU'
 
    TEST_TABLE(

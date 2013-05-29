@@ -1,4 +1,4 @@
-# encoding: utf-8
+# coding=utf-8
 
 """
 Example of configuration using Intel compilers

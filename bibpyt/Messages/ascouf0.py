@@ -1,4 +1,4 @@
-# -*- coding: iso-8859-1 -*-
+# coding=utf-8
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -20,12 +20,12 @@
 
 cata_msg={
 1: _(u"""
-La condition aux limites sur bol à section conique
-est ignorée pour un coude avec sous-épaisseurs.
+La condition aux limites sur bol Ã  section conique
+est ignorÃ©e pour un coude avec sous-Ã©paisseurs.
 """),
 
 2: _(u"""
-Mot-clé AZIMUT non autorisé dans le cas d'un coude sain"
+Mot-clÃ© AZIMUT non autorisÃ© dans le cas d'un coude sain"
 """),
 
 3: _(u"""
@@ -42,280 +42,280 @@ ANGL_COUDE et ANGL_SOUS_EPAI sont inutiles dans ce cas.
 
 6: _(u"""
  ASCSEP valeur hors domaine
- sous-épaisseur numéro : %(i1)d
- taille axe circonférentiel : %(r1)f
+ sous-Ã©paisseur numÃ©ro : %(i1)d
+ taille axe circonfÃ©rentiel : %(r1)f
  bord plaque : %(r2)f
 """),
 
 7: _(u"""
- ASCSEP cas de symétrie :
- la sous-épaisseur doit être dans la section médiane du coude !
+ ASCSEP cas de symÃ©trie :
+ la sous-Ã©paisseur doit Ãªtre dans la section mÃ©diane du coude !
 """),
 
 
 9: _(u"""
  Valeur hors domaine :
- sous-épaisseur numéro :%(i1)d
- abscisse curviligne circonférentielle :%(r1)f
+ sous-Ã©paisseur numÃ©ro :%(i1)d
+ abscisse curviligne circonfÃ©rentielle :%(r1)f
  bord plaque :%(r2)f
 """),
 
 10: _(u"""
  Valeur hors domaine :
- sous-épaisseur numéro :%(i1)d
+ sous-Ã©paisseur numÃ©ro :%(i1)d
  abscisse curviligne longitudinale  :%(r1)f
  bord plaque :%(r2)f
 """),
 
 11: _(u"""
  valeur hors domaine :
- sous-épaisseur numéro :%(i1)d
- bord inférieur  :%(r1)f
+ sous-Ã©paisseur numÃ©ro :%(i1)d
+ bord infÃ©rieur  :%(r1)f
  bord plaque :%(r2)f
 """),
 
 
 13: _(u"""
- Les quart et demi structure ne peuvent être réalisées
- sur un modèle comportant une transition d'épaisseur.
+ Les quart et demi structure ne peuvent Ãªtre rÃ©alisÃ©es
+ sur un modÃ¨le comportant une transition d'Ã©paisseur.
 """),
 
 14: _(u"""
- Les deux embouts doivent être de même longueur pour les cas de symétrie.
+ Les deux embouts doivent Ãªtre de mÃªme longueur pour les cas de symÃ©trie.
 """),
 
 15: _(u"""
- Longueur d'embout P1 inférieure a la longueur d'amortissement = %(r1)f
+ Longueur d'embout P1 infÃ©rieure a la longueur d'amortissement = %(r1)f
 """),
 
 16: _(u"""
- Longueur d'embout P2 inférieure à la longueur d'amortissement = %(r1)f
+ Longueur d'embout P2 infÃ©rieure Ã  la longueur d'amortissement = %(r1)f
 """),
 
 17: _(u"""
- La condition aux limites raccord 3D-POUTRE appliquée avec la macro-commande de calcul
+ La condition aux limites raccord 3D-POUTRE appliquÃ©e avec la macro-commande de calcul
  ASCOUF n'est pas licite avec un embout de type conique.
 """),
 
 18: _(u"""
- Le nombre d'éléments dans l'épaisseur du coude n'est pas paramétrable pour
+ Le nombre d'Ã©lÃ©ments dans l'Ã©paisseur du coude n'est pas paramÃ©trable pour
  un coude avec fissure.
- Le mot-clé NB_ELEM_EPAIS est ignoré.
+ Le mot-clÃ© NB_ELEM_EPAIS est ignorÃ©.
 """),
 
 19: _(u"""
- Pour les fissures non axisymétriques, la longueur doit être spécifiée.
+ Pour les fissures non axisymÃ©triques, la longueur doit Ãªtre spÃ©cifiÃ©e.
 """),
 
 20: _(u"""
- La fissure est axisymétrique : on ne tient pas compte de la longueur spécifiée.
+ La fissure est axisymÃ©trique : on ne tient pas compte de la longueur spÃ©cifiÃ©e.
 """),
 
 21: _(u"""
- Avec une transition d'épaisseur,la fissure doit obligatoirement être transverse.
+ Avec une transition d'Ã©paisseur,la fissure doit obligatoirement Ãªtre transverse.
 """),
 
 23: _(u"""
- L'orientation de la fissure doit être transverse (orientation : 90.) pour modéliser
+ L'orientation de la fissure doit Ãªtre transverse (orientation : 90.) pour modÃ©liser
  un quart ou une demi structure.
 """),
 
 24: _(u"""
- La fissure est axisymétrique : son orientation doit être transverse (ORIEN : 90.)
+ La fissure est axisymÃ©trique : son orientation doit Ãªtre transverse (ORIEN : 90.)
 """),
 
 25: _(u"""
- Il ne peut pas y avoir plusieurs sous-épaisseurs en même temps
- qu'une transition d'épaisseur:
- si une seule sous-épaisseur, alors utiliser SOUS_EPAIS_COUDE.
+ Il ne peut pas y avoir plusieurs sous-Ã©paisseurs en mÃªme temps
+ qu'une transition d'Ã©paisseur:
+ si une seule sous-Ã©paisseur, alors utiliser SOUS_EPAIS_COUDE.
 """),
 
 26: _(u"""
- Avec une transition d'épaisseur,il doit obligatoirement y avoir un défaut,
- soit une fissure  soit une sous-épaisseur.
+ Avec une transition d'Ã©paisseur,il doit obligatoirement y avoir un dÃ©faut,
+ soit une fissure  soit une sous-Ã©paisseur.
 """),
 
 27: _(u"""
- Ne modéliser qu'une seule sous-épaisseur pour un quart ou demi coude.
+ Ne modÃ©liser qu'une seule sous-Ã©paisseur pour un quart ou demi coude.
 """),
 
 28: _(u"""
- Vous ne pouvez déclarer la sous-épaisseur comme axisymétrique et donner
- une taille d'axe circonférentiel.
+ Vous ne pouvez dÃ©clarer la sous-Ã©paisseur comme axisymÃ©trique et donner
+ une taille d'axe circonfÃ©rentiel.
 """),
 
 29: _(u"""
- Vous devez donner une taille d'axe circonférentiel pour une sous-épaisseur
+ Vous devez donner une taille d'axe circonfÃ©rentiel pour une sous-Ã©paisseur
  de type elliptique.
 """),
 
 30: _(u"""
- Valeur hors domaine de validité :
- sous-épaisseur numéro :%(i1)d
+ Valeur hors domaine de validitÃ© :
+ sous-Ã©paisseur numÃ©ro :%(i1)d
  abscisse curviligne longitudinale :%(r1)f
- valeur maximale autorisée :%(r2)f
+ valeur maximale autorisÃ©e :%(r2)f
 """),
 
 31: _(u"""
- Valeur hors domaine de validité :
- sous-épaisseur numéro :%(i1)d
- position angulaire centre sous-épaisseur :%(r1)f
- valeur limite autorisée :%(r2)f
+ Valeur hors domaine de validitÃ© :
+ sous-Ã©paisseur numÃ©ro :%(i1)d
+ position angulaire centre sous-Ã©paisseur :%(r1)f
+ valeur limite autorisÃ©e :%(r2)f
 """),
 
 32: _(u"""
- Valeur hors domaine de validité :
- sous-épaisseur numéro :%(i1)d
- abscisse curviligne circonférentielle :%(r1)f
- valeur limite autorisée :%(r2)f
+ Valeur hors domaine de validitÃ© :
+ sous-Ã©paisseur numÃ©ro :%(i1)d
+ abscisse curviligne circonfÃ©rentielle :%(r1)f
+ valeur limite autorisÃ©e :%(r2)f
 """),
 
 33: _(u"""
- Le centre d'une sous-épaisseur axisymétrique est imposé en intrados (pi*RM).
+ Le centre d'une sous-Ã©paisseur axisymÃ©trique est imposÃ© en intrados (pi*RM).
 """),
 
 34: _(u"""
- Le centre d'une sous-épaisseur axisymétrique est imposé en intrados.
- L'azimut est fixé à 180 degrés.
+ Le centre d'une sous-Ã©paisseur axisymÃ©trique est imposÃ© en intrados.
+ L'azimut est fixÃ© Ã  180 degrÃ©s.
 """),
 
 35: _(u"""
- Le nombre d'éléments dans l'épaisseur du coude n'est pas paramétrable pour
- la version 2 de la procédure de plaque avec sous-épaisseur :
- mot-clé NB_ELEM_EPAIS ignoré.
+ Le nombre d'Ã©lÃ©ments dans l'Ã©paisseur du coude n'est pas paramÃ©trable pour
+ la version 2 de la procÃ©dure de plaque avec sous-Ã©paisseur :
+ mot-clÃ© NB_ELEM_EPAIS ignorÃ©.
 """),
 
 36: _(u"""
- Valeur hors domaine de validité :
- sur-épaisseur :%(i1)d
- valeur limite autorisée (RM-EP1/2) :%(r1)f
+ Valeur hors domaine de validitÃ© :
+ sur-Ã©paisseur :%(i1)d
+ valeur limite autorisÃ©e (RM-EP1/2) :%(r1)f
 """),
 
 37: _(u"""
- Valeur hors domaine de validité :
+ Valeur hors domaine de validitÃ© :
  le rayon de cintrage : %(r1)f
- doit être supérieur a (RM+EP1/2) :%(r2)f
+ doit Ãªtre supÃ©rieur a (RM+EP1/2) :%(r2)f
 """),
 
 38: _(u"""
- Valeur hors domaine de validité (5,50)
+ Valeur hors domaine de validitÃ© (5,50)
  rapport RM/EP1 : %(r1)f
 """),
 
 39: _(u"""
- Valeur hors domaine de validité :
+ Valeur hors domaine de validitÃ© :
  abscisse curviligne centre fissure :%(r1)f
- valeur limite autorisée :%(r2)f
+ valeur limite autorisÃ©e :%(r2)f
 """),
 
 40: _(u"""
- Valeur hors domaine de validité :
+ Valeur hors domaine de validitÃ© :
  nombre de tranches :%(i1)d
 """),
 
 41: _(u"""
- Valeur hors domaine de validité :
+ Valeur hors domaine de validitÃ© :
  position angulaire  centre fissure : %(r1)f
- POSI_ANGUL doit être >= 0 et <= %(r2)f
+ POSI_ANGUL doit Ãªtre >= 0 et <= %(r2)f
 """),
 
 42: _(u"""
- Valeur hors domaine de validité :
- début transition d'épaisseur :%(r1)f
- valeur minimale autorisée :%(r2)f
- valeur maximale autorisée :%(r3)f
+ Valeur hors domaine de validitÃ© :
+ dÃ©but transition d'Ã©paisseur :%(r1)f
+ valeur minimale autorisÃ©e :%(r2)f
+ valeur maximale autorisÃ©e :%(r3)f
 """),
 
 43: _(u"""
- Valeur hors domaine de validité :
+ Valeur hors domaine de validitÃ© :
  angle de transition TETA1 : %(r1)f
- valeur minimale autorisée : 0.
- valeur maximale autorisée : 30.
+ valeur minimale autorisÃ©e : 0.
+ valeur maximale autorisÃ©e : 30.
 """),
 
 44: _(u"""
- Valeur hors domaine de validité :
- épaisseur avant la transition :%(r1)f
- valeur minimale autorisée : 12
- valeur maximale autorisée : 80
+ Valeur hors domaine de validitÃ© :
+ Ã©paisseur avant la transition :%(r1)f
+ valeur minimale autorisÃ©e : 12
+ valeur maximale autorisÃ©e : 80
 """),
 
 45: _(u"""
- Valeur hors domaine de validité :
- épaisseur après la transition :%(r1)f
- valeur minimale autorisée : 20
- valeur maximale autorisée : 110
+ Valeur hors domaine de validitÃ© :
+ Ã©paisseur aprÃ¨s la transition :%(r1)f
+ valeur minimale autorisÃ©e : 20
+ valeur maximale autorisÃ©e : 110
 """),
 
 46: _(u"""
- L'épaisseur avant la transition doit être inférieure
- à celle après la transition.
+ L'Ã©paisseur avant la transition doit Ãªtre infÃ©rieure
+ Ã  celle aprÃ¨s la transition.
 """),
 
 47: _(u"""
- Valeur hors domaine de validité :
- fin transition d'épaisseur :%(r1)f
- valeur limite autorisée :%(r2)f
+ Valeur hors domaine de validitÃ© :
+ fin transition d'Ã©paisseur :%(r1)f
+ valeur limite autorisÃ©e :%(r2)f
 """),
 
 48: _(u"""
- Valeur hors domaine de validité :
- diamètre extérieur du tube avant transition:%(r1)f
- valeur minimum autorisée : 112.
- valeur maximum autorisée : 880.
+ Valeur hors domaine de validitÃ© :
+ diamÃ¨tre extÃ©rieur du tube avant transition:%(r1)f
+ valeur minimum autorisÃ©e : 112.
+ valeur maximum autorisÃ©e : 880.
 """),
 
 49: _(u"""
- Valeur hors domaine de validité :
+ Valeur hors domaine de validitÃ© :
  angle de transition TETA2: %(r1)f
- valeur minimum autorisée : 0.
- valeur maximum autorisée : 45.
+ valeur minimum autorisÃ©e : 0.
+ valeur maximum autorisÃ©e : 45.
 """),
 
 50: _(u"""
- Valeur hors domaine de validité :
- épaisseur avant 1ère transition:%(r1)f
- valeur minimum autorisée : 7.
- valeur maximum autorisée : 35.
+ Valeur hors domaine de validitÃ© :
+ Ã©paisseur avant 1Ã¨re transition:%(r1)f
+ valeur minimum autorisÃ©e : 7.
+ valeur maximum autorisÃ©e : 35.
 """),
 
 51: _(u"""
- Valeur hors domaine de validité :
- épaisseur avant 2ème transition:%(r1)f
- valeur minimum autorisée : 15.
- valeur maximum autorisée : 40.
+ Valeur hors domaine de validitÃ© :
+ Ã©paisseur avant 2Ã¨me transition:%(r1)f
+ valeur minimum autorisÃ©e : 15.
+ valeur maximum autorisÃ©e : 40.
 """),
 
 52: _(u"""
- Valeur hors domaine de validité :
- épaisseur intermédiaire:%(r1)f
- valeur minimum autorisée : 15.
- valeur maximum autorisée : 40.
+ Valeur hors domaine de validitÃ© :
+ Ã©paisseur intermÃ©diaire:%(r1)f
+ valeur minimum autorisÃ©e : 15.
+ valeur maximum autorisÃ©e : 40.
 """),
 
 53: _(u"""
- Valeur hors domaine de validité.
- L'épaisseur avant la transition doit être inférieure
- à l'épaisseur intermédiaire.
+ Valeur hors domaine de validitÃ©.
+ L'Ã©paisseur avant la transition doit Ãªtre infÃ©rieure
+ Ã  l'Ã©paisseur intermÃ©diaire.
 """),
 
 54: _(u"""
- Valeur hors domaine de validité.
- L'épaisseur après la transition doit être inférieure
- à l'épaisseur intermédiaire.
+ Valeur hors domaine de validitÃ©.
+ L'Ã©paisseur aprÃ¨s la transition doit Ãªtre infÃ©rieure
+ Ã  l'Ã©paisseur intermÃ©diaire.
 """),
 
 55: _(u"""
- Valeur hors domaine de validité :
- fin transition d'épaisseur:%(r1)f
- valeur limite autorisée :%(r2)f
+ Valeur hors domaine de validitÃ© :
+ fin transition d'Ã©paisseur:%(r1)f
+ valeur limite autorisÃ©e :%(r2)f
 """),
 
 56: _(u"""
- Valeur hors domaine de validité :
- diamètre extérieur du tube avant transition:%(r1)f
- valeur minimum autorisée : 77.
- valeur maximum autorisée : 355.
+ Valeur hors domaine de validitÃ© :
+ diamÃ¨tre extÃ©rieur du tube avant transition:%(r1)f
+ valeur minimum autorisÃ©e : 77.
+ valeur maximum autorisÃ©e : 355.
 """),
 
 57: _(u"""
@@ -323,13 +323,13 @@ Seuls GIBI98 et GIBI2000 sont appelables.
 """),
 
 58: _(u"""
-Une interpénétration des lèvres est détectée pour le numéro d'ordre %(i1)d : sur les
-%(i2)d noeuds de chaque lèvre, %(i3)d noeuds s'interpénètrent.
+Une interpÃ©nÃ©tration des lÃ¨vres est dÃ©tectÃ©e pour le numÃ©ro d'ordre %(i1)d : sur les
+%(i2)d noeuds de chaque lÃ¨vre, %(i3)d noeuds s'interpÃ©nÃ¨trent.
 -> Risque et Conseil :
-Le contact n'est pas pris en compte dans le calcul. Le taux de restitution de l'énergie G
-est donc positif y compris là où la fissure tend à se refermer, ce qui peut conduire à
-des résultats trop pénalisants.
-Pour prendre en compte le contact entre les lèvres, il faut lancer le calcul hors macro-commande.
+Le contact n'est pas pris en compte dans le calcul. Le taux de restitution de l'Ã©nergie G
+est donc positif y compris lÃ  oÃ¹ la fissure tend Ã  se refermer, ce qui peut conduire Ã 
+des rÃ©sultats trop pÃ©nalisants.
+Pour prendre en compte le contact entre les lÃ¨vres, il faut lancer le calcul hors macro-commande.
 """),
 
 }

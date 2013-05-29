@@ -1,4 +1,4 @@
-# -*- coding: iso-8859-1 -*-
+# coding=utf-8
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -46,9 +46,9 @@ def macr_ecrevisse_ops(self, reuse,
    INFO,
    **args):
     """
-    Procédure de couplage Code_Aster-Ecrevisse.
-    Exécution pour tous les pas de temps des calculs thermiques, mécaniques puis hydrauliques.
-    Découpage/Génération par Aster du fichier de données d'Ecrevisse et lancement d'Ecrevisse.
+    ProcÃ©dure de couplage Code_Aster-Ecrevisse.
+    ExÃ©cution pour tous les pas de temps des calculs thermiques, mÃ©caniques puis hydrauliques.
+    DÃ©coupage/GÃ©nÃ©ration par Aster du fichier de donnÃ©es d'Ecrevisse et lancement d'Ecrevisse.
     """
     from Utilitai.Utmess import UTMESS, MasquerAlarme, RetablirAlarme
     from Utilitai.Table import Table, merge

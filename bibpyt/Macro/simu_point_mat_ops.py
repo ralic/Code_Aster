@@ -1,4 +1,4 @@
-# -*- coding: iso-8859-1 -*-
+# coding=utf-8
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -55,7 +55,7 @@ def simu_point_mat_ops(self, MATER, INCREMENT,SIGM_IMPOSE,EPSI_IMPOSE,SIGM_INIT,
   # alarme de STAT_NON_LINE si les mot-cles de COMP_INCR sont renseignes a tort
   MasquerAlarme('COMPOR1_70')
 
-# -- Tests de cohérence
+# -- Tests de cohÃ©rence
   __fonczero = DEFI_FONCTION(NOM_PARA = 'INST',
   VALE     = ( 0,0, 10,0 ),PROL_DROITE='CONSTANT',PROL_GAUCHE='CONSTANT')
   EPS={}
@@ -90,7 +90,7 @@ def simu_point_mat_ops(self, MATER, INCREMENT,SIGM_IMPOSE,EPSI_IMPOSE,SIGM_INIT,
            UTMESS('A','COMPOR2_1',valk=lcomp['DEFORMATION'] )
 
 #===============================================================
-# cas ou il n'y a pas d'élement fini : appel à CALC_POINT_MAT
+# cas ou il n'y a pas d'Ã©lement fini : appel Ã  CALC_POINT_MAT
 #===============================================================
   if itetra == 0 :
 
@@ -321,8 +321,8 @@ def simu_point_mat_ops(self, MATER, INCREMENT,SIGM_IMPOSE,EPSI_IMPOSE,SIGM_INIT,
       if MODELISATION=="3D":
          __MO = AFFE_MODELE(  MAILLAGE = __MA,
            AFFE=_F(MAILLE=('VOLUME','F1','F2','F3','F4'),PHENOMENE='MECANIQUE',MODELISATION='3D',))
-##     ANGLE : rotation de ANGLE autour de Z uniquement, et seulement pour les déformations
-##             imposées.
+##     ANGLE : rotation de ANGLE autour de Z uniquement, et seulement pour les dÃ©formations
+##             imposÃ©es.
          if ANGLE != 0. :
             __MA=MODI_MAILLAGE(reuse=__MA ,MAILLAGE=__MA,ROTATION=_F(POIN_1=(0.,0.),ANGLE=ANGLE),)
             c=math.cos(ANGLE*math.pi/180.)
@@ -345,8 +345,8 @@ def simu_point_mat_ops(self, MATER, INCREMENT,SIGM_IMPOSE,EPSI_IMPOSE,SIGM_INIT,
       # MODELISATION 2D
          __MO=AFFE_MODELE(MAILLAGE=__MA,
               AFFE=_F(MAILLE=('VOLUME','S1','S2','S3'),PHENOMENE='MECANIQUE',MODELISATION=MODELISATION))
-##     ANGLE : rotation de ANGLE autour de Z uniquement, et seulement pour les déformations
-##             imposées.
+##     ANGLE : rotation de ANGLE autour de Z uniquement, et seulement pour les dÃ©formations
+##             imposÃ©es.
          if ANGLE != 0. :
             __MA=MODI_MAILLAGE(reuse=__MA ,MAILLAGE=__MA,ROTATION=_F(POIN_1=(0.,0.),ANGLE=ANGLE),)
             c=math.cos(ANGLE*math.pi/180.)

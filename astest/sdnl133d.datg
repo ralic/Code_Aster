@@ -9,8 +9,8 @@
 * DIAM : Diametre de l'arbre
 * LONG : Demi-longueur de l'arbre
 * PROF : Profondeur de la fissure
-* ZON1 : Demi-largeur de la Zone raffinée autour du fond de fissure (coté fissure)
-* ZON2 : Demi-largeur de la Zone raffinée autour du fond de fissure (coté sain)
+* ZON1 : Demi-largeur de la Zone raffinÃ©e autour du fond de fissure (cotÃ© fissure)
+* ZON2 : Demi-largeur de la Zone raffinÃ©e autour du fond de fissure (cotÃ© sain)
 * NDFF : Nombre de noeuds le long du demi-fond de fissure
 * NZO1 : Nombre de noeuds dans la 'demi-zone' autour du front de fissure
 * NTOT : Nombre de noeuds sur le diametre

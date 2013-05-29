@@ -19,7 +19,7 @@ POURSUITE(CODE=_F(NOM='WTNV132B'),PAR_LOT='NON')
 #       ---------------
 
 #    ----------------------------------------------------
-# 1- On cherche d'abord ‡ crÈer une table de la forme:
+# 1- On cherche d'abord √† cr√©er une table de la forme:
 #
 #                    temps noeu_1  noeu_2   ....   noeu_n
 #                t1
@@ -39,7 +39,7 @@ cle                = [ ]
 list_pas_temps     = [ ]
 noeu_tass_0        = [ ]
 
-# -->20: dÈbut boucle for
+# -->20: d√©but boucle for
 for n in range(nbcouche):
 
   cle.append('ELEMEN'+str(n));
@@ -59,7 +59,7 @@ for n in range(nbcouche):
   noeu_depl['TEMPS'] += t[::n+1]
   noeu_tass_0.append(dy[(n+1)*n_pas_temps-1]);
 
-  # -->30: dÈbut boucle for
+  # -->30: d√©but boucle for
   for m in range(n+1):
 
     noeu_depl[cle[m]][n_pas_incr_0:n_pas_incr] = dy[m::n+1]
@@ -71,7 +71,7 @@ for n in range(nbcouche):
 # <--20: fin boucle for
 
 
-# -->50: dÈbut boucle for
+# -->50: d√©but boucle for
 for n in range(nbcouche):
 
   del(noeu_depl[cle[n]][n_pas_incr:]);
@@ -95,7 +95,7 @@ for n in range(nbcouche):
 n_pas_temps = len(noeu_depl['TEMPS']);
 noeu_tass   = dict();
 
-# -->100: dÈbut boucle for
+# -->100: d√©but boucle for
 for n in range(n_pas_temps-1):
 
   noeu_tass['TEMPS'+str(n)] = [ ]
@@ -103,10 +103,10 @@ for n in range(n_pas_temps-1):
 # <--100: fin boucle for
 
 
-# -->300: dÈbut boucle for
+# -->300: d√©but boucle for
 for n in range(n_pas_temps-1):
 
-  # -->40: dÈbut boucle for
+  # -->40: d√©but boucle for
   for m in range(nbcouche):
 
     tass_value = 0.
@@ -128,7 +128,7 @@ tass       = [0.]*n_pas_temps
 COURBE     = []
 n_pas_temps= len(list_pas_temps);
 
-# -->200: dÈbut boucle for
+# -->200: d√©but boucle for
 for n in range(n_pas_temps):
 
   def_courbe={'ABSCISSE': noeu_tass['TEMPS'+str(list_pas_temps[n])]}
@@ -166,11 +166,11 @@ IMPR_FONCTION(FORMAT='XMGRACE',
 
 #              ------------------------------------
 # VALIDATION-  Comparaison des valeurs de tassement
-#              par rapport ‡ GEFDYN (ECP)
+#              par rapport √† GEFDYN (ECP)
 #              ------------------------------------
 
 
-# tassement de la premiËre couche
+# tassement de la premi√®re couche
 TEST_FONCTION(VALEUR=(_F(VALE_CALC=-4.427212E-03,
                          VALE_REFE=-4.6480000000000002E-3,
                          CRITERE='RELATIF',
@@ -237,7 +237,7 @@ TEST_FONCTION(VALEUR=(_F(VALE_CALC=-4.427212E-03,
                       ),
               )
 
-# tassement de la deuxiËme couche
+# tassement de la deuxi√®me couche
 TEST_FONCTION(VALEUR=(_F(VALE_CALC=-8.196546E-03,
                          VALE_REFE=-8.4089999999999998E-3,
                          CRITERE='RELATIF',
@@ -297,7 +297,7 @@ TEST_FONCTION(VALEUR=(_F(VALE_CALC=-8.196546E-03,
                       ),
               )
 
-# tassement de la troixiËme couche
+# tassement de la troixi√®me couche
 TEST_FONCTION(VALEUR=(_F(VALE_CALC=-0.01176763,
                          VALE_REFE=-0.011979999999999999,
                          CRITERE='RELATIF',
@@ -350,7 +350,7 @@ TEST_FONCTION(VALEUR=(_F(VALE_CALC=-0.01176763,
                       ),
               )
 
-# tassement de la quatriËme couche
+# tassement de la quatri√®me couche
 TEST_FONCTION(VALEUR=(_F(VALE_CALC=-0.01530734,
                          VALE_REFE=-0.015469999999999999,
                          CRITERE='RELATIF',
@@ -396,7 +396,7 @@ TEST_FONCTION(VALEUR=(_F(VALE_CALC=-0.01530734,
                       ),
               )
 
-# tassement de la cinquiËme couche
+# tassement de la cinqui√®me couche
 TEST_FONCTION(VALEUR=(_F(VALE_CALC=-0.01886773,
                          VALE_REFE=-0.019019999999999999,
                          CRITERE='RELATIF',
@@ -435,7 +435,7 @@ TEST_FONCTION(VALEUR=(_F(VALE_CALC=-0.01886773,
                       ),
               )
 
-# tassement de la sixiËme couche
+# tassement de la sixi√®me couche
 TEST_FONCTION(VALEUR=(_F(VALE_CALC=-0.02254920,
                          VALE_REFE=-0.022679999999999999,
                          CRITERE='RELATIF',
@@ -467,7 +467,7 @@ TEST_FONCTION(VALEUR=(_F(VALE_CALC=-0.02254920,
                       ),
               )
 
-# tassement de la septiËme couche
+# tassement de la septi√®me couche
 TEST_FONCTION(VALEUR=(_F(VALE_CALC=-0.02635596,
                          VALE_REFE=-0.026499999999999999,
                          CRITERE='RELATIF',
@@ -492,7 +492,7 @@ TEST_FONCTION(VALEUR=(_F(VALE_CALC=-0.02635596,
                       ),
               )
 
-# tassement de la huitiËme couche
+# tassement de la huiti√®me couche
 TEST_FONCTION(VALEUR=(_F(VALE_CALC=-0.03033722,
                          VALE_REFE=-0.030519999999999999,
                          CRITERE='RELATIF',
@@ -510,7 +510,7 @@ TEST_FONCTION(VALEUR=(_F(VALE_CALC=-0.03033722,
                       ),
               )
 
-# tassement de la neuviËme couche
+# tassement de la neuvi√®me couche
 TEST_FONCTION(VALEUR=_F(VALE_CALC=-0.03447572,
                         VALE_REFE=-0.034750000000000003,
                         CRITERE='RELATIF',

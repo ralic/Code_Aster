@@ -1,4 +1,4 @@
-# -*- coding: iso-8859-1 -*-
+# coding=utf-8
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -22,7 +22,7 @@
 #           CORPS DE LA MACRO "DEFI_CABLE_BP"
 #           -------------------------------------
 # USAGE :
-# Entrée :
+# EntrÃ©e :
 #  - MODELE
 #  - CABLE
 #  - CHAM_MATER
@@ -70,7 +70,7 @@ def defi_cable_bp_ops(self,MODELE,CHAM_MATER,CARA_ELEM,GROUP_MA_BETON,
   self.DeclareOut('__DC',self.sd)
 
   # ---------------------------------------------------------------------------- #
-  #                  Début de la Macro :
+  #                  DÃ©but de la Macro :
 
   motscles={}
 

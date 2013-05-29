@@ -1,4 +1,4 @@
-# encoding: utf-8
+# coding=utf-8
 
 import os.path as osp
 from functools import partial
@@ -63,4 +63,3 @@ def check_metis_headers(self):
         raise
     else:
         self.end_msg('yes')
-

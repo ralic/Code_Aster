@@ -1,5 +1,4 @@
 /*           CONFIGURATION MANAGEMENT OF EDF VERSION                  */
-/* MODIF hdfrat hdf  DATE 13/11/2012   AUTEUR COURTOIS M.COURTOIS */
 /* ================================================================== */
 /* COPYRIGHT (C) 1991 - 2012  EDF R&D              WWW.CODE-ASTER.ORG */
 /*                                                                    */
@@ -13,28 +12,29 @@
 /* GENERAL PUBLIC LICENSE FOR MORE DETAILS.                           */
 /*                                                                    */
 /* YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE  */
-/* ALONG WITH THIS PROGRAM; IF NOT, WRITE TO : EDF R&D CODE_ASTER,    */
+/* ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,      */
 /*    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.     */
 /* ================================================================== */
 /* person_in_charge: j-pierre.lefebvre at edf.fr */
 #include "aster.h"
 #include "aster_fort.h"
 /*-----------------------------------------------------------------------------/
-/ Lire un attribut de type chaine de caractères associé à un dataset 
+/ Lire un attribut de type chaine de caractÃ¨res associÃ© Ã  un dataset 
 / au sein d'un fichier HDF 
-/  Paramètres :
+/  ParamÃ¨tres :
 /   - in  iddat : identificateur du dataset (hid_t)
 /   - in  nomat : nom de l'attribut (char *)
-/   - in  nbv   : nombre de valeurs associées à l'attribut (long)
+/   - in  nbv   : nombre de valeurs associÃ©es Ã  l'attribut (long)
 /   - out valat : valeur de l'attribut (char *)
-/  Résultats :
-/     =0 OK, =-1 problème 
+/  RÃ©sultats :
+/     =0 OK, =-1 problÃ¨me 
 /-----------------------------------------------------------------------------*/
 #ifndef _DISABLE_HDF5
 #include <hdf5.h>
 #endif
 
-INTEGER DEFPSPS(HDFRAT, hdfrat, INTEGER *iddat, char *nomat, STRING_SIZE ln, INTEGER *nbv, char *valat, STRING_SIZE lv)
+INTEGER DEFPSPS(HDFRAT, hdfrat, INTEGER *iddat, char *nomat, STRING_SIZE ln, INTEGER *nbv,
+                char *valat, STRING_SIZE lv)
 {
   INTEGER iret=-1;
 #ifndef _DISABLE_HDF5

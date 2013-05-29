@@ -1,4 +1,4 @@
-# -*- coding: iso-8859-1 -*-
+# coding=utf-8
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -23,41 +23,41 @@ cata_msg = {
 
 1 : _(u"""
 Le champ %(k1)s que l'on veut extraire est de type champ aux noeuds. 
-Vous n'avez pas précisé correctement son lieu d'extraction.
+Vous n'avez pas prÃ©cisÃ© correctement son lieu d'extraction.
 Il faut donner une maille, un groupe de mailles, un noeud ou un groupe de noeuds (MAILLE ou GROUP_MA ou NOEUD ou GROUP_NO).
 """),
 
 2 : _(u"""
-Le champ %(k1)s que l'on veut extraire est de type champ aux points d'intégration. 
-Vous n'avez pas précisé correctement son lieu d'extraction.
+Le champ %(k1)s que l'on veut extraire est de type champ aux points d'intÃ©gration. 
+Vous n'avez pas prÃ©cisÃ© correctement son lieu d'extraction.
 Il faut donner une maille ou un groupe de mailles (MAILLE ou GROUP_MA).
 """),
 
 3 : _(u"""
 Le champ %(k1)s que l'on veut extraire est de type champ aux noeuds.
-Les noeuds donnés n'appartiennent pas au modèle.
+Les noeuds donnÃ©s n'appartiennent pas au modÃ¨le.
 """),
 
 4 : _(u"""
-Le champ %(k1)s que l'on veut extraire est de type champ aux points d'intégration. 
-Les mailles donnés n'appartiennent pas au modèle.
+Le champ %(k1)s que l'on veut extraire est de type champ aux points d'intÃ©gration. 
+Les mailles donnÃ©s n'appartiennent pas au modÃ¨le.
 """),
 
 5 : _(u"""
-Vous n'avez pas précisé le type de l'extraction pour le champ %(k1)s.
-On a pris <VALE> par défaut.
+Vous n'avez pas prÃ©cisÃ© le type de l'extraction pour le champ %(k1)s.
+On a pris <VALE> par dÃ©faut.
 """),
 
 6 : _(u"""
-Le champ %(k1)s que l'on veut extraire est de type champ aux points d'intégration. 
-Vous n'avez pas précisé le type de l'extraction.
-On a pris <VALE> par défaut.
+Le champ %(k1)s que l'on veut extraire est de type champ aux points d'intÃ©gration. 
+Vous n'avez pas prÃ©cisÃ© le type de l'extraction.
+On a pris <VALE> par dÃ©faut.
 """),
 
 7 : _(u"""
 Le champ %(k1)s pour la maille %(k2)s est de type <ELGA> et vous voulez extraire sa valeur (EXTR_ELGA='VALE'). 
-Vous n'avez pas précisé l'endroit où il est doit être extrait.
-Il faut donner le point d'intégration et le SOUS_POINT si c'est un élément de structure (POINT/SOUS_POINT).
+Vous n'avez pas prÃ©cisÃ© l'endroit oÃ¹ il est doit Ãªtre extrait.
+Il faut donner le point d'intÃ©gration et le SOUS_POINT si c'est un Ã©lÃ©ment de structure (POINT/SOUS_POINT).
 """),
 
 12 : _(u"""
@@ -69,11 +69,11 @@ Il faut donner le point d'intégration et le SOUS_POINT si c'est un élément de st
 """),
 
 21 : _(u"""
- La composante %(k2)s sur la maille %(k1)s sur le point d'intégration %(i1)d et le SOUS_POINT %(k1)s n'existe pas.
+ La composante %(k2)s sur la maille %(k1)s sur le point d'intÃ©gration %(i1)d et le SOUS_POINT %(k1)s n'existe pas.
 """),
 
 99: _(u"""
- Le champ %(k1)s que l'on veut extraire est incompatible avec la commande ou les fonctionnalités actives.
+ Le champ %(k1)s que l'on veut extraire est incompatible avec la commande ou les fonctionnalitÃ©s actives.
  On l'ignore.
 """),
 

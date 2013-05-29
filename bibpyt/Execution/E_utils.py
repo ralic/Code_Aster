@@ -1,4 +1,4 @@
-# -*- coding: iso-8859-1 -*-
+# coding=utf-8
 # person_in_charge: mathieu.courtois at edf.fr
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -29,10 +29,10 @@ import os,shutil
 
 def repr_float(valeur):
   """ 
-      Cette fonction reprÈsente le rÈel valeur comme une chaine de caractËres
-      sous forme mantisse exposant si nÈcessaire cad si le nombre contient plus de
-      5 caractËres
-      NB : valeur est un rÈel au format Python ou une chaine de caractËres reprÈsentant un rÈel
+      Cette fonction repr√©sente le r√©el valeur comme une chaine de caract√®res
+      sous forme mantisse exposant si n√©cessaire cad si le nombre contient plus de
+      5 caract√®res
+      NB : valeur est un r√©el au format Python ou une chaine de caract√®res repr√©sentant un r√©el
   """
   if type(valeur) == types.StringType : valeur = eval(valeur)
   if valeur == 0. : return '0.0'
@@ -43,10 +43,10 @@ def repr_float(valeur):
   t=repr(valeur)
   if t == 'nan': return t
   if string.find(t,'e') != -1 or string.find(t,'E') != -1 :
-    # le rÈel est dÈj‡ sous forme mantisse exposant !
+    # le r√©el est d√©j√† sous forme mantisse exposant !
     # --> on remplace e par E
     t=string.replace(t,'e','E')
-    # --> on doit encore vÈrifier que la mantisse contient bien un '.'
+    # --> on doit encore v√©rifier que la mantisse contient bien un '.'
     if string.find(t,'.')!= -1:
       return t
     else:
@@ -60,7 +60,7 @@ def repr_float(valeur):
     t=t[1:]
   cpt = 0
   if string.atof(t[0]) == 0.:
-    # rÈel plus petit que 1
+    # r√©el plus petit que 1
     neg = 1
     t=t[2:]
     cpt=1
@@ -71,7 +71,7 @@ def repr_float(valeur):
     for c in t[1:]:
       s=s+c
   else:
-    # rÈel plus grand que 1
+    # r√©el plus grand que 1
     s=s+t[0]+'.'
     if string.atof(t[1:]) == 0.:
       l=string.split(t[1:],'.')
@@ -92,8 +92,8 @@ def repr_float(valeur):
 
 def lierRepertoire(source,destination,exeptions=[]):
   """
-  Cette fonction sert ‡ recopier (sous forme de liens symboliques)
-  un rÈpertoire
+  Cette fonction sert √† recopier (sous forme de liens symboliques)
+  un r√©pertoire
   """
   if os.path.exists(destination):
     try: shutil.rmtree(destination)
@@ -112,7 +112,7 @@ def lierRepertoire(source,destination,exeptions=[]):
 
 def copierBase(source,destination):
   """
-  Fonction servant ‡ recopier une base vers un repertoire
+  Fonction servant √† recopier une base vers un repertoire
   """
   if os.path.exists(destination+"/glob.1"):
     os.remove(destination+"/glob.1")

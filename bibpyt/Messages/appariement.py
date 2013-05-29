@@ -1,4 +1,4 @@
-# -*- coding: iso-8859-1 -*-
+# coding=utf-8
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -20,70 +20,70 @@
 cata_msg = {
 
 1 : _(u"""
-Aucun noeud n'est apparié.
-La définition de vos surfaces ou de vos paramètres d'appariement est incorrecte.
-Vérifier TOLE_PROJ_EXT et/ou la définition de vos surfaces.
-Vérifier les déplacements induits par votre modélisation.
-Cette alarme peut entraîner des résultats faux si elle apparaît dans la résolution du contact en Newton généralisé.
+Aucun noeud n'est appariÃ©.
+La dÃ©finition de vos surfaces ou de vos paramÃ¨tres d'appariement est incorrecte.
+VÃ©rifier TOLE_PROJ_EXT et/ou la dÃ©finition de vos surfaces.
+VÃ©rifier les dÃ©placements induits par votre modÃ©lisation.
+Cette alarme peut entraÃ®ner des rÃ©sultats faux si elle apparaÃ®t dans la rÃ©solution du contact en Newton gÃ©nÃ©ralisÃ©.
 """),
 
 13 : _(u"""
-L'algorithme de Newton a échoué lors de la projection du point de coordonnées
+L'algorithme de Newton a Ã©chouÃ© lors de la projection du point de coordonnÃ©es
   (%(r1)f,%(r2)f,%(r3)f)
 sur la maille %(k1)s.
-Erreur de définition de la maille ou projection difficile.
+Erreur de dÃ©finition de la maille ou projection difficile.
 """),
 
 14 : _(u"""
-Les vecteurs tangents sont nuls au niveau du projeté du noeud %(k2)s sur la maille %(k1)s.
-Erreur de définition de la maille ou projection difficile.
+Les vecteurs tangents sont nuls au niveau du projetÃ© du noeud %(k2)s sur la maille %(k1)s.
+Erreur de dÃ©finition de la maille ou projection difficile.
 """),
 
 15 : _(u"""
 Le vecteur normal est nul au niveau du noeud %(k2)s sur la maille %(k1)s.
-Erreur de définition de la maille ou projection difficile.
+Erreur de dÃ©finition de la maille ou projection difficile.
 """),
 
 16 : _(u"""
-Le vecteur normal résultant est nul au niveau du noeud %(k1)s.
-Erreur de définition de la maille ou projection difficile.
+Le vecteur normal rÃ©sultant est nul au niveau du noeud %(k1)s.
+Erreur de dÃ©finition de la maille ou projection difficile.
 """),
 
 17 : _(u"""
-Les vecteurs tangents résultants sont nuls au niveau du noeud %(k1)s.
-Erreur de définition de la maille ou projection difficile.
+Les vecteurs tangents rÃ©sultants sont nuls au niveau du noeud %(k1)s.
+Erreur de dÃ©finition de la maille ou projection difficile.
 """),
 
 34 : _(u"""
-Échec de l'orthogonalisation du repère tangent construit au niveau du projeté du point de coordonnées
+Ã‰chec de l'orthogonalisation du repÃ¨re tangent construit au niveau du projetÃ© du point de coordonnÃ©es
   (%(r1)f,%(r2)f,%(r3)f)
 sur la maille %(k1)s,
-Erreur de définition de la maille ou projection difficile. Contactez l'assistance dans ce dernier cas.
+Erreur de dÃ©finition de la maille ou projection difficile. Contactez l'assistance dans ce dernier cas.
 """),
 
 36 : _(u"""
-La maille %(k1)s est de type 'POI1', ce n'est pas autorisé sur une maille maître dans le cas d'un appariement MAIT_ESCL.
+La maille %(k1)s est de type 'POI1', ce n'est pas autorisÃ© sur une maille maÃ®tre dans le cas d'un appariement MAIT_ESCL.
 """),
 
 38 : _(u"""
 La maille %(k1)s est de type poutre et sa tangente est nulle.
-Vérifiez votre maillage.
+VÃ©rifiez votre maillage.
 """),
 
 61 : _(u"""
-La maille %(k1)s est de type poutre, elle nécessite la définition d'une base locale.
+La maille %(k1)s est de type poutre, elle nÃ©cessite la dÃ©finition d'une base locale.
 """),
 
 62 : _(u"""
-La maille %(k1)s est de type 'POI1', elle nécessite la définition explicite de sa normale.
+La maille %(k1)s est de type 'POI1', elle nÃ©cessite la dÃ©finition explicite de sa normale.
 """),
 
 63 : _(u"""
-La maille %(k1)s est de type 'POI1', elle nécessite la définition explicite d'une normale non nulle.
+La maille %(k1)s est de type 'POI1', elle nÃ©cessite la dÃ©finition explicite d'une normale non nulle.
 """),
 
 75 : _(u"""
-Un élément de type POI1 ne peut pas être une maille maître.
+Un Ã©lÃ©ment de type POI1 ne peut pas Ãªtre une maille maÃ®tre.
 """),
 
 

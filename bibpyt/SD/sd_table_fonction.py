@@ -1,4 +1,4 @@
-# -*- coding: iso-8859-1 -*-
+# coding=utf-8
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -23,7 +23,7 @@ from SD.sd_table import sd_table, Colonne
 from SD.sd_fonction import sd_fonction
 
 # --------------------------------------------------------------------
-# sd_table dont une colonne nommée "FONCTION[_C]" contient des fonctions
+# sd_table dont une colonne nommÃ©e "FONCTION[_C]" contient des fonctions
 # --------------------------------------------------------------------
 
 

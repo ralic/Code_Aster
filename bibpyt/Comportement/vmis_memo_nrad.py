@@ -1,4 +1,4 @@
-# -*- coding: iso-8859-1 -*-
+# coding=utf-8
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -22,10 +22,10 @@ from cata_comportement import LoiComportement
 
 loi = LoiComportement(
    nom            = 'VMIS_MEMO_NRAD',
-   doc = """Loi élastoplastique de J.L.Chaboche à 2 variables cinématiques qui rend compte du comportement cyclique en élasto-plasticité
-   avec 2 tenseurs d'écrouissage cinématique non linéaire, un écrouissage isotrope non linéaire, un effet d'écrouissage sur les variables
-   tensorielles de rappel, un effet de mémoire du plus grand écrouissage, et prise en compte de la non proportionnalité du chargement.
-   Toutes les constantes du matériau peuvent éventuellement dépendre de la température.""",
+   doc = """Loi Ã©lastoplastique de J.L.Chaboche Ã  2 variables cinÃ©matiques qui rend compte du comportement cyclique en Ã©lasto-plasticitÃ©
+   avec 2 tenseurs d'Ã©crouissage cinÃ©matique non linÃ©aire, un Ã©crouissage isotrope non linÃ©aire, un effet d'Ã©crouissage sur les variables
+   tensorielles de rappel, un effet de mÃ©moire du plus grand Ã©crouissage, et prise en compte de la non proportionnalitÃ© du chargement.
+   Toutes les constantes du matÃ©riau peuvent Ã©ventuellement dÃ©pendre de la tempÃ©rature.""",
    num_lc         = 4,
    nb_vari        = 28,
    nom_vari       = ('EPSPEQ', 'INDIPLAS', 'ALPHAXX', 'ALPHAYY', 'ALPHAZZ', 'ALPHAXY', 'ALPHAXZ', 'ALPHAYZ', 'ALPHA2XX', 'ALPHA2YY', 'ALPHA2ZZ', 'ALPHA2XY', 'ALPHA2XZ', 'ALPHA2YZ','ECROISOT','MEMOECRO','KSIXX','KSIYY','KSIZZ','KSIXY','KSIXZ','KSIYZ','EPSPXX','EPSPYY','EPSPZZ','EPSPXY','EPSPXZ','EPSPYZ'),

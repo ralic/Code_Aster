@@ -1,4 +1,4 @@
-# -*- coding: iso-8859-1 -*-
+# coding=utf-8
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -267,19 +267,19 @@ class ConceptTree(object):
         # key : order, level, value
         self._stats = {
             STAT.NBCMD    : (0, len(commands),    _(u'Nombre de commandes')),
-            STAT.NBRES    : (0, len(all_results), _(u"Nombre de résultats")),
-            STAT.NBDEP    : (0, len(all_deps),    _(u"Nombre de dépendances")),
-            STAT.NBUNUSED : (0, len(never_used),  _(u"Nombre de résultats non utilisés")),
+            STAT.NBRES    : (0, len(all_results), _(u"Nombre de rÃ©sultats")),
+            STAT.NBDEP    : (0, len(all_deps),    _(u"Nombre de dÃ©pendances")),
+            STAT.NBUNUSED : (0, len(never_used),  _(u"Nombre de rÃ©sultats non utilisÃ©s")),
             STAT.NBNODE   : (0, len(all_nodes),   _(u"Nombre de noeuds")),
-            STAT.UNUSED   : (1, s_unused,         _(u"Concepts jamais utilisés")),
-            STAT.CMD      : (2, s_commands,       _(u"Commandes utilisées")),
-            STAT.RESULT   : (2, s_results,        _(u"Résultats")),
-            STAT.DEPEND   : (2, s_deps,           _(u"Dépendances")),
+            STAT.UNUSED   : (1, s_unused,         _(u"Concepts jamais utilisÃ©s")),
+            STAT.CMD      : (2, s_commands,       _(u"Commandes utilisÃ©es")),
+            STAT.RESULT   : (2, s_results,        _(u"RÃ©sultats")),
+            STAT.DEPEND   : (2, s_deps,           _(u"DÃ©pendances")),
         }
 
     def get_stats(self, level=1):
         """Return some statistics."""
-        lines = [_(u"  <I> Dépendance des concepts - statistiques")]
+        lines = [_(u"  <I> DÃ©pendance des concepts - statistiques")]
         self._update_stats()
         lstat = []
         for order, opts in self._stats.items():

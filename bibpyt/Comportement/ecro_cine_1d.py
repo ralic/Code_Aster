@@ -1,4 +1,4 @@
-# -*- coding: iso-8859-1 -*-
+# coding=utf-8
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -22,7 +22,7 @@ from cata_comportement import LoiComportement
 
 loi = LoiComportement(
    nom            = 'ECRO_CINE_1D',
-   doc            = """Loi de Von Mises en 1D - Écrouissage cinématique linéaire""",
+   doc            = """Loi de Von Mises en 1D - Ã‰crouissage cinÃ©matique linÃ©aire""",
    num_lc         = 9999,
    nb_vari        = 6,
    nom_vari       = ('CRITELS','CRITELU','XCINXX','INDIPLAS','DISSIP','DISSTHER'),

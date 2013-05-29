@@ -70,7 +70,7 @@ nssp_neutre = 2*ncou-(int(ncou)/2)
 # sous-point sur fibre sup
 nssp_sup = ncou*3
 #
-# calculs des résultats analytiques
+# calculs des rÃ©sultats analytiques
 #
 # pour une maille pres du bord libre 
 z3 = h/2.          

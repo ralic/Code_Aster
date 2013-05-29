@@ -147,4 +147,3 @@ def EXTR_MATR(matrrr,vall) :
 
         return [vectddl,rig11]
 
-

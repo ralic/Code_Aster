@@ -1,4 +1,4 @@
-# -*- coding: iso-8859-1 -*-
+# coding=utf-8
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -46,14 +46,14 @@ def CHAINAGE_MECA_HYDR(self,args,motscles):
     para = RESU_MECA.LIST_PARA()
     smo = set(para['MODELE'])
 
-# normalement, il ne doit y avoir qu'un modèle ...
+# normalement, il ne doit y avoir qu'un modÃ¨le ...
     if len(smo) <> 1 : UTMESS('F', 'CHAINAGE_10')
     nom_mo_re = list(smo)[0]
 
     __modele = self.get_concept(nom_mo_re)
 
   ############################################################
-  # Nom du modèle obtenu à partir du résultat : nom_modele_1
+  # Nom du modÃ¨le obtenu Ã  partir du rÃ©sultat : nom_modele_1
   ############################################################
 
     iret,ibid,nom_modele_1 = aster.dismoi('F','MODELISATION',__modele.nom,'MODELE')
@@ -62,10 +62,10 @@ def CHAINAGE_MECA_HYDR(self,args,motscles):
     iret,ibid,yathm1 = aster.dismoi('F','EXI_THM',__modele.nom,'MODELE')
   
   #########################################################
-  # A l'heure actuelle, les modélisations autorisées pour
-  # faire du chaînage sont :
+  # A l'heure actuelle, les modÃ©lisations autorisÃ©es pour
+  # faire du chaÃ®nage sont :
   #
-  # Pour la mécanique :
+  # Pour la mÃ©canique :
   #
   #   => D_PLAN, D_PLAN_SI, D_PLAN_GRAD_SIGM
   #   => 3D, 3D_SI
@@ -74,7 +74,7 @@ def CHAINAGE_MECA_HYDR(self,args,motscles):
   #
   #   => D_PLAN_HS
   #   => 3D_HS
-  #   => les modélisations HM saturées à intégration sélective :
+  #   => les modÃ©lisations HM saturÃ©es Ã  intÃ©gration sÃ©lective :
   #      D_PLAN_HMS, 3D_HMS
   #########################################################
   
@@ -82,7 +82,7 @@ def CHAINAGE_MECA_HYDR(self,args,motscles):
     mod_hyd_autorise = ['D_PLAN_HS','D_PLAN_HMS']
     
   #############################################
-  # Nom du modèle 2 fourni en entrée : nom_modele_2
+  # Nom du modÃ¨le 2 fourni en entrÃ©e : nom_modele_2
   #############################################
   
     iret,ibid,nom_modele_2 = aster.dismoi('F','MODELISATION',MODELE_HYDR.nom,'MODELE')
@@ -91,9 +91,9 @@ def CHAINAGE_MECA_HYDR(self,args,motscles):
     linst_resultat = RESU_MECA.LIST_VARI_ACCES()['INST']
 
   ###########################################################
-  # INST est rentré en argument par l'utilisateur
-  # instp et instm sont les 2 derniers instants présents dans
-  # le résultat donné en entrée
+  # INST est rentrÃ© en argument par l'utilisateur
+  # instp et instm sont les 2 derniers instants prÃ©sents dans
+  # le rÃ©sultat donnÃ© en entrÃ©e
   ###########################################################
   
     instp = linst_resultat[-1]
@@ -108,9 +108,9 @@ def CHAINAGE_MECA_HYDR(self,args,motscles):
     else :
 
   # Dans ce cas, on a instp = 0 et instm n'existe pas
-  # On particularise ce cas pour le chaînage HYDR_MECA, mais pas pour le chaînage
-  # MECA_HYDR où le traitement est plus simple. En effet, cette situation correspond
-  # à un chaînage HM au premier pas de temps. Il suffit de ne pas donner de variable de
+  # On particularise ce cas pour le chaÃ®nage HYDR_MECA, mais pas pour le chaÃ®nage
+  # MECA_HYDR oÃ¹ le traitement est plus simple. En effet, cette situation correspond
+  # Ã  un chaÃ®nage HM au premier pas de temps. Il suffit de ne pas donner de variable de
   # commande !
 
       b_inst_initial = True
@@ -123,30 +123,30 @@ def CHAINAGE_MECA_HYDR(self,args,motscles):
         inst_coincident = True
         
   #########################################################
-  # On vérifie que le résultat donné en entrée
-  # (mécanique) est défini
-  # sur un modèle pour lequel on sait faire du chaînage
+  # On vÃ©rifie que le rÃ©sultat donnÃ© en entrÃ©e
+  # (mÃ©canique) est dÃ©fini
+  # sur un modÃ¨le pour lequel on sait faire du chaÃ®nage
   #
-  # A l'heure actuelle, les modélisations autorisées sont :
+  # A l'heure actuelle, les modÃ©lisations autorisÃ©es sont :
   # => D_PLAN, D_PLAN_SI
   # => 3D, 3D_SI
   #########################################################
 
     if not(nom_modele_1 in mod_mec_autorise) and (yathm1=='NON') :
-      UTMESS('F', 'CHAINAGE_4', valk=[nom_modele_1,'de départ'])
+      UTMESS('F', 'CHAINAGE_4', valk=[nom_modele_1,'de dÃ©part'])
 
   #########################################################
-  # On vérifie que le résultat donné en sortie
-  # (hydraulique) est défini
-  # sur un modèle pour lequel on sait faire du chaînage
+  # On vÃ©rifie que le rÃ©sultat donnÃ© en sortie
+  # (hydraulique) est dÃ©fini
+  # sur un modÃ¨le pour lequel on sait faire du chaÃ®nage
   #
-  # A l'heure actuelle, les modélisations autorisées sont :
+  # A l'heure actuelle, les modÃ©lisations autorisÃ©es sont :
   # => D_PLAN_HS
   # => 3D_HS
   #########################################################
 
     if not(nom_modele_2 in mod_hyd_autorise) :
-      UTMESS('F', 'CHAINAGE_3', valk=[nom_modele_2,'d arrivée'])
+      UTMESS('F', 'CHAINAGE_3', valk=[nom_modele_2,'d arrivÃ©e'])
 
     iret,ibid,nom_mail = aster.dismoi('F','NOM_MAILLA',MODELE_HYDR.nom,'MODELE')
     nom_mail=nom_mail.strip()

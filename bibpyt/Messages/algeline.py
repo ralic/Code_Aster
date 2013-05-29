@@ -1,4 +1,4 @@
-# -*- coding: iso-8859-1 -*-
+# coding=utf-8
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -21,82 +21,82 @@
 cata_msg={
 
 1: _(u"""
- Résolution FETI : option invalide
+ RÃ©solution FETI : option invalide
 """),
 
 2: _(u"""
- Résolution FETI : problème objet  %(k1)s .FETG . il est de longueur impaire
+ RÃ©solution FETI : problÃ¨me objet  %(k1)s .FETG . il est de longueur impaire
 """),
 
 3: _(u"""
- Résolution FETI : division par zéro dans la construction du alpha
+ RÃ©solution FETI : division par zÃ©ro dans la construction du alpha
 """),
 
 4: _(u"""
- valeur inférieure à la tolérance
+ valeur infÃ©rieure Ã  la tolÃ©rance
 """),
 
 5: _(u"""
- Combinaison linéaire de matrices :
- pour l'instant, on ne traite que le cas des matrices réelles
+ Combinaison linÃ©aire de matrices :
+ pour l'instant, on ne traite que le cas des matrices rÃ©elles
 """),
 
 6: _(u"""
- La base modale à normer est issue de DEFI_BASE_MODALE.
- Pour pouvoir mettre à jour les paramètres modaux,
+ La base modale Ã  normer est issue de DEFI_BASE_MODALE.
+ Pour pouvoir mettre Ã  jour les paramÃ¨tres modaux,
  il faut donc donner les matrices de raideur et de masse.
 
  Conseil :
-  Renseignez les mots-clés RAIDE et MASSE.
+  Renseignez les mots-clÃ©s RAIDE et MASSE.
 """),
 
 7: _(u"""
- TBLIVA : impossible de récupérer les valeurs dans la table
+ TBLIVA : impossible de rÃ©cupÃ©rer les valeurs dans la table
 """),
 
 8: _(u"""
  La base modale est issue de DEFI_BASE_MODALE et contient des modes complexes.
- Pour normer par rapport à RIGI_GENE ou MASS_GENE,
+ Pour normer par rapport Ã  RIGI_GENE ou MASS_GENE,
  il faut donner une matrice d'amortissement.
 
  Conseil :
-  Renseignez le mot-clé AMOR.
+  Renseignez le mot-clÃ© AMOR.
 """),
 
 9: _(u"""
- l'origine de l'obstacle est mal positionnée par rapport au noeud de choc
- de numéro  %(k1)s , de nom  %(k2)s , par rapport au jeu.
+ l'origine de l'obstacle est mal positionnÃ©e par rapport au noeud de choc
+ de numÃ©ro  %(k1)s , de nom  %(k2)s , par rapport au jeu.
 """),
 
 10: _(u"""
- l'origine de l'obstacle est mal positionnée par rapport au noeud de choc
- de numéro  %(k1)s , de nom  %(k2)s , dans le plan normal au choc.
+ l'origine de l'obstacle est mal positionnÃ©e par rapport au noeud de choc
+ de numÃ©ro  %(k1)s , de nom  %(k2)s , dans le plan normal au choc.
 """),
 
 11: _(u"""
- la normale à l'obstacle fait un angle nul avec le noeud de choc
- de numéro  %(k1)s , avec l'axe du tube.
+ la normale Ã  l'obstacle fait un angle nul avec le noeud de choc
+ de numÃ©ro  %(k1)s , avec l'axe du tube.
 """),
 
 12: _(u"""
- la normale à l'obstacle fait un angle inférieur à 10 degrés au noeud de choc
- de numéro  %(k1)s , avec l'axe du tube.
+ la normale Ã  l'obstacle fait un angle infÃ©rieur Ã  10 degrÃ©s au noeud de choc
+ de numÃ©ro  %(k1)s , avec l'axe du tube.
 """),
 
 13: _(u"""
- la normale à l'obstacle fait un angle inférieur à 45 degrés au noeud de choc
- de numéro  %(k1)s , avec l'axe du tube.
+ la normale Ã  l'obstacle fait un angle infÃ©rieur Ã  45 degrÃ©s au noeud de choc
+ de numÃ©ro  %(k1)s , avec l'axe du tube.
 """),
 
 14: _(u"""
- les mailles doivent être de type QUAD4 ou TRI3 et non de type  %(k1)s
+ les mailles doivent Ãªtre de type QUAD4 ou TRI3 et non de type  %(k1)s
 """),
 
 15: _(u"""
- l'angle au noeud  %(k1)s  formé par :
+ l'angle au noeud  %(k1)s  formÃ© par :
     - le vecteur normal de la maille  %(k2)s
  et - le vecteur normal de la maille  %(k3)s
- est supérieur à 90 degrés et vaut  %(k4)s  degrés.
+ est supÃ©rieur Ã  90 degrÃ©s et vaut  %(k4)s  degrÃ©s.
 """),
 
 16: _(u"""
@@ -108,7 +108,7 @@ cata_msg={
 """),
 
 18: _(u"""
- mot-clé facteur  %(k1)s  non traité
+ mot-clÃ© facteur  %(k1)s  non traitÃ©
 """),
 
 19: _(u"""
@@ -116,7 +116,7 @@ cata_msg={
 """),
 
 20: _(u"""
- le nombre de noeuds n'est pas le même pour les deux GROUP_NO
+ le nombre de noeuds n'est pas le mÃªme pour les deux GROUP_NO
 """),
 
 21: _(u"""
@@ -124,72 +124,72 @@ cata_msg={
 """),
 
 22: _(u"""
- création QUAD4 dégénéré
+ crÃ©ation QUAD4 dÃ©gÃ©nÃ©rÃ©
 """),
 
 23: _(u"""
- le noeud  %(k1)s  n'est pas équidistant des noeuds  %(k2)s  et  %(k3)s  pour la maille : %(k4)s
- Améliorez le  maillage. Le code s'arrête pour éviter des résultats faux.
+ le noeud  %(k1)s  n'est pas Ã©quidistant des noeuds  %(k2)s  et  %(k3)s  pour la maille : %(k4)s
+ AmÃ©liorez le  maillage. Le code s'arrÃªte pour Ã©viter des rÃ©sultats faux.
  - distance n1-n3 = %(r1)g
  - distance n2-n3 = %(r2)g
- - tolérance      = %(r3)g
+ - tolÃ©rance      = %(r3)g
 """),
 
 24: _(u"""
- valeur négative ou nulle pour la puissance quatrième du nombre d'ondes.
- La valeur de l'ordre de coque est mal déterminée.
+ valeur nÃ©gative ou nulle pour la puissance quatriÃ¨me du nombre d'ondes.
+ La valeur de l'ordre de coque est mal dÃ©terminÃ©e.
  Il faut affiner le maillage sur les coques :
- => réduire le pas angulaire pour définir plus de noeuds sur les contours.
+ => rÃ©duire le pas angulaire pour dÃ©finir plus de noeuds sur les contours.
 """),
 
 25: _(u"""
- Nombre de noeuds sur la génératrice inférieur à 4 :
- c'est insuffisant pour déterminer les coefficients de la déformée axiale
+ Nombre de noeuds sur la gÃ©nÃ©ratrice infÃ©rieur Ã  4 :
+ c'est insuffisant pour dÃ©terminer les coefficients de la dÃ©formÃ©e axiale
 """),
 
 26: _(u"""
- déplacement radial maximum nul sur la génératrice
+ dÃ©placement radial maximum nul sur la gÃ©nÃ©ratrice
 """),
 
 27: _(u"""
-  -> Il y a au moins un point d'une zone dont la vitesse réduite locale est
-     extérieure à la zone des vitesses réduites explorées expérimentalement.
+  -> Il y a au moins un point d'une zone dont la vitesse rÃ©duite locale est
+     extÃ©rieure Ã  la zone des vitesses rÃ©duites explorÃ©es expÃ©rimentalement.
   -> Risque & Conseil :
-     Les valeurs sont extrapolées en dehors des données d'essais.
-     Les résultats du calcul seront a prendre avec circonspection.
+     Les valeurs sont extrapolÃ©es en dehors des donnÃ©es d'essais.
+     Les rÃ©sultats du calcul seront a prendre avec circonspection.
 """),
 
 28: _(u"""
- Détermination des coefficients de la déformée axiale,
- erreur relative sur la norme des déplacements radiaux : %(r1)g
+ DÃ©termination des coefficients de la dÃ©formÃ©e axiale,
+ erreur relative sur la norme des dÃ©placements radiaux : %(r1)g
 """),
 
 29: _(u"""
- L'ordre de coque est peut-être mal identifié.
- La base modale est trop riche ou le nombre de noeuds du maillage sur une circonférence
+ L'ordre de coque est peut-Ãªtre mal identifiÃ©.
+ La base modale est trop riche ou le nombre de noeuds du maillage sur une circonfÃ©rence
  est trop faible
 """),
 
 30: _(u"""
- somme des carrés des termes diagonaux nulle
- => critère indéfini
+ somme des carrÃ©s des termes diagonaux nulle
+ => critÃ¨re indÃ©fini
 """),
 
 31: _(u"""
- somme des carrés des termes diagonaux négligeable
- => critère indéfini
+ somme des carrÃ©s des termes diagonaux nÃ©gligeable
+ => critÃ¨re indÃ©fini
 """),
 
 32: _(u"""
- CHAM_CINE différent de zéro sur des DDL non éliminés.
+ CHAM_CINE diffÃ©rent de zÃ©ro sur des DDL non Ã©liminÃ©s.
 """),
 
 33: _(u"""
- la carte des caractéristiques géométriques des éléments de poutre n'existe pas
+ la carte des caractÃ©ristiques gÃ©omÃ©triques des Ã©lÃ©ments de poutre n'existe pas
 """),
 
 34: _(u"""
- caractéristiques géométriques élémentaires de poutre non définies pour la maille  %(k1)s
+ caractÃ©ristiques gÃ©omÃ©triques Ã©lÃ©mentaires de poutre non dÃ©finies pour la maille  %(k1)s
 """),
 
 35: _(u"""
@@ -197,45 +197,45 @@ cata_msg={
 """),
 
 36: _(u"""
- la section de l'élément de poutre considéré n'est pas circulaire
+ la section de l'Ã©lÃ©ment de poutre considÃ©rÃ© n'est pas circulaire
 """),
 
 37: _(u"""
- rayon extérieur nul à l'une ou l'autre des extrémités de l'élément considéré
+ rayon extÃ©rieur nul Ã  l'une ou l'autre des extrÃ©mitÃ©s de l'Ã©lÃ©ment considÃ©rÃ©
 """),
 
 38: _(u"""
- le rayon extérieur n'est pas constant sur l'élément considéré
+ le rayon extÃ©rieur n'est pas constant sur l'Ã©lÃ©ment considÃ©rÃ©
 """),
 
 42: _(u"""
- les vitesses réduites des fichiers .70 et .71 ne sont pas cohérentes
+ les vitesses rÃ©duites des fichiers .70 et .71 ne sont pas cohÃ©rentes
 """),
 
 43: _(u"""
- les vitesses étudiées doivent être strictement positives
- le sens de l'écoulement est défini par le choix de la configuration expérimentale GRAPPE2 de référence
+ les vitesses Ã©tudiÃ©es doivent Ãªtre strictement positives
+ le sens de l'Ã©coulement est dÃ©fini par le choix de la configuration expÃ©rimentale GRAPPE2 de rÃ©fÃ©rence
 """),
 
 44: _(u"""
- seuls les cas d'enceintes circulaires et rectangulaires sont traités.
+ seuls les cas d'enceintes circulaires et rectangulaires sont traitÃ©s.
 """),
 
 45: _(u"""
- le nombre total de tubes ne correspond pas à la somme des tubes des groupes d'équivalence
+ le nombre total de tubes ne correspond pas Ã  la somme des tubes des groupes d'Ã©quivalence
 """),
 
 46: _(u"""
- la direction des tubes n'est pas parallèle à l'un des axes.
+ la direction des tubes n'est pas parallÃ¨le Ã  l'un des axes.
 """),
 
 47: _(u"""
- la direction des tubes n'est la même que celle de l'axe directeur.
+ la direction des tubes n'est la mÃªme que celle de l'axe directeur.
 """),
 
 48: _(u"""
- les vitesses étudiées doivent toutes être du même signe
- sinon il y a ambiguïté sur les positions d entrée/sortie
+ les vitesses Ã©tudiÃ©es doivent toutes Ãªtre du mÃªme signe
+ sinon il y a ambiguÃ¯tÃ© sur les positions d entrÃ©e/sortie
 """),
 
 49: _(u"""
@@ -259,12 +259,12 @@ cata_msg={
 """),
 
 54: _(u"""
- la carte des caractéristiques géométriques des éléments de coque n'existe pas. il faut préalablement affecter ces caractéristiques aux groupes de mailles correspondant aux coques interne et externe, par l opérateur <AFFE_CARA_ELEM>
+ la carte des caractÃ©ristiques gÃ©omÃ©triques des Ã©lÃ©ments de coque n'existe pas. il faut prÃ©alablement affecter ces caractÃ©ristiques aux groupes de mailles correspondant aux coques interne et externe, par l opÃ©rateur <AFFE_CARA_ELEM>
 """),
 
 56: _(u"""
- les caractéristiques des éléments de coque n'ont pas été affectées
- distinctement à l'un ou(et) l'autre des groupes de mailles associés
+ les caractÃ©ristiques des Ã©lÃ©ments de coque n'ont pas Ã©tÃ© affectÃ©es
+ distinctement Ã  l'un ou(et) l'autre des groupes de mailles associÃ©s
  aux coques interne et externe
 """),
 
@@ -273,45 +273,45 @@ cata_msg={
 """),
 
 58: _(u"""
- pas d'épaisseur affectée aux éléments de la coque interne
+ pas d'Ã©paisseur affectÃ©e aux Ã©lÃ©ments de la coque interne
 """),
 
 59: _(u"""
- épaisseur de la coque interne nulle
+ Ã©paisseur de la coque interne nulle
 """),
 
 60: _(u"""
- pas d'épaisseur affectée aux éléments de la coque externe
+ pas d'Ã©paisseur affectÃ©e aux Ã©lÃ©ments de la coque externe
 """),
 
 61: _(u"""
- épaisseur de la coque externe nulle
+ Ã©paisseur de la coque externe nulle
 """),
 
 62: _(u"""
- incohérence dans la définition de la configuration : le rayon d une des coques est nul
+ incohÃ©rence dans la dÃ©finition de la configuration : le rayon d une des coques est nul
 """),
 
 63: _(u"""
- incohérence dans la définition de la configuration :
- jeu annulaire négatif ou nul
+ incohÃ©rence dans la dÃ©finition de la configuration :
+ jeu annulaire nÃ©gatif ou nul
 """),
 
 64: _(u"""
- élément  %(k1)s  non traite
+ Ã©lÃ©ment  %(k1)s  non traite
 """),
 
 65: _(u"""
- on ne peut dépasser  %(k1)s  mailles
+ on ne peut dÃ©passer  %(k1)s  mailles
 """),
 
 66: _(u"""
- coefficient de type non prévu
+ coefficient de type non prÃ©vu
 """),
 
 
 68: _(u"""
- la zone d excitation du fluide, de nom  %(k1)s , est réduite a un point.
+ la zone d excitation du fluide, de nom  %(k1)s , est rÃ©duite a un point.
 """),
 
 69: _(u"""
@@ -319,18 +319,18 @@ cata_msg={
 """),
 
 70: _(u"""
- le noeud d'application de l'excitation doit appartenir à deux mailles
+ le noeud d'application de l'excitation doit appartenir Ã  deux mailles
  ni plus ni moins
 """),
 
 71: _(u"""
- le noeud d'application de l excitation est situe à la jonction
- de deux éléments de diamètres extérieurs différents
- => ambiguïté pour le dimensionnement de l'excitation
+ le noeud d'application de l excitation est situe Ã  la jonction
+ de deux Ã©lÃ©ments de diamÃ¨tres extÃ©rieurs diffÃ©rents
+ => ambiguÃ¯tÃ© pour le dimensionnement de l'excitation
 """),
 
 72: _(u"""
- autres configurations non traitées
+ autres configurations non traitÃ©es
 """),
 
 73: _(u"""
@@ -342,8 +342,8 @@ cata_msg={
 """),
 
 76: _(u"""
- résolution impossible matrice singulière
- peut être à cause des erreurs d'arrondis
+ rÃ©solution impossible matrice singuliÃ¨re
+ peut Ãªtre Ã  cause des erreurs d'arrondis
 """),
 
 77: _(u"""
@@ -356,7 +356,7 @@ cata_msg={
 """),
 
 79: _(u"""
- le nombre de modes résultats:  %(k1)s  n'est pas correct
+ le nombre de modes rÃ©sultats:  %(k1)s  n'est pas correct
 """),
 
 80: _(u"""
@@ -364,19 +364,19 @@ cata_msg={
 """),
 
 81: _(u"""
- le cylindre  %(k1)s déborde de l'enceinte circulaire
+ le cylindre  %(k1)s dÃ©borde de l'enceinte circulaire
 """),
 
 82: _(u"""
- pas de groupes de noeuds à créer
+ pas de groupes de noeuds Ã  crÃ©er
 """),
 
 83: _(u"""
- la grille numéro  %(k1)s  déborde du domaine de définition du faisceau
+ la grille numÃ©ro  %(k1)s  dÃ©borde du domaine de dÃ©finition du faisceau
 """),
 
 84: _(u"""
- les grilles numéro  %(k1)s  et numéro  %(k2)s  se recouvrent
+ les grilles numÃ©ro  %(k1)s  et numÃ©ro  %(k2)s  se recouvrent
 """),
 
 85: _(u"""
@@ -400,42 +400,42 @@ cata_msg={
 """),
 
 90: _(u"""
- le cylindre  %(k1)s  déborde de l'enceinte rectangulaire
+ le cylindre  %(k1)s  dÃ©borde de l'enceinte rectangulaire
 """),
 
 91: _(u"""
-  la renumérotation  %(k1)s est incompatible avec le solveur MULT_FRONT.
+  la renumÃ©rotation  %(k1)s est incompatible avec le solveur MULT_FRONT.
 """),
 
 92: _(u"""
- absence de relation de comportement de type <ELAS> pour le matériau constitutif de la coque interne
+ absence de relation de comportement de type <ELAS> pour le matÃ©riau constitutif de la coque interne
 """),
 
 93: _(u"""
- absence d'un ou de plusieurs paramètres de la relation de comportement <ELAS>
- pour le matériau constitutif de la coque interne
+ absence d'un ou de plusieurs paramÃ¨tres de la relation de comportement <ELAS>
+ pour le matÃ©riau constitutif de la coque interne
 """),
 
 94: _(u"""
- La valeur du module de YOUNG est nulle pour le matériau constitutif de la coque interne
+ La valeur du module de YOUNG est nulle pour le matÃ©riau constitutif de la coque interne
 """),
 
 95: _(u"""
  absence de relation de comportement de type <ELAS>
- pour le matériau constitutif de la coque externe
+ pour le matÃ©riau constitutif de la coque externe
 """),
 
 96: _(u"""
- absence d'un ou de plusieurs paramètres de la relation de comportement <ELAS>
- pour le matériau constitutif de la coque externe
+ absence d'un ou de plusieurs paramÃ¨tres de la relation de comportement <ELAS>
+ pour le matÃ©riau constitutif de la coque externe
 """),
 
 97: _(u"""
- La valeur du module de YOUNG est nulle pour le matériau constitutif de la coque externe
+ La valeur du module de YOUNG est nulle pour le matÃ©riau constitutif de la coque externe
 """),
 
 98: _(u"""
- Les deux coques (interne et externe) sont en mouvement pour le  %(k1)s ème mode.
+ Les deux coques (interne et externe) sont en mouvement pour le  %(k1)s Ã¨me mode.
 """),
 
 99: _(u"""

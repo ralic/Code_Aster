@@ -1,4 +1,4 @@
-# -*- coding: iso-8859-1 -*-
+# coding=utf-8
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -176,7 +176,7 @@ def macr_ascouf_calc_ops(self,TYPE_MAILLAGE,CL_BOL_P2_GV,MAILLAGE,MODELE,CHAM_MA
 #
 #------------------------------------------------------------------
 #
-#     --- commande AFFE_MATERIAU (mécanique)---
+#     --- commande AFFE_MATERIAU (mÃ©canique)---
 #
   if CHAM_MATER!=None :
       self.DeclareOut('_affmth',CHAM_MATER)
@@ -327,7 +327,7 @@ def macr_ascouf_calc_ops(self,TYPE_MAILLAGE,CL_BOL_P2_GV,MAILLAGE,MODELE,CHAM_MA
 #
   motscles={}
 #
-  mcfex=[]  # mot clé facteur EXCIT
+  mcfex=[]  # mot clÃ© facteur EXCIT
   mcfex.append(_F(CHARGE=_conlim,))
   if PRES_REP!=None:
     if PRES_REP['FONC_MULT']!=None :
@@ -348,7 +348,7 @@ def macr_ascouf_calc_ops(self,TYPE_MAILLAGE,CL_BOL_P2_GV,MAILLAGE,MODELE,CHAM_MA
     contact = _chcont
   motscles['EXCIT'] =mcfex
 #
-  mcfci=[]  # mot clé facteur COMP_INCR :obligatoire pour les noeuds discrets dans STAT_NON_LINE
+  mcfci=[]  # mot clÃ© facteur COMP_INCR :obligatoire pour les noeuds discrets dans STAT_NON_LINE
   if COMP_ELAS!=None :
     motscles['COMP_ELAS'] =_F(GROUP_MA='COUDE',RELATION=COMP_ELAS['RELATION'])
     if TORS_P1!=None     : mcfci.append(  _F(GROUP_MA='P1',RELATION='ELAS'))
@@ -673,7 +673,7 @@ def macr_ascouf_calc_ops(self,TYPE_MAILLAGE,CL_BOL_P2_GV,MAILLAGE,MODELE,CHAM_MA
 #
   if TYPE_MAILLAGE in ('FISS_COUDE','FISS_AXIS_DEB'):
 #
-#   --- post traitement fissure :  interpénétration des lèvres ----
+#   --- post traitement fissure :  interpÃ©nÃ©tration des lÃ¨vres ----
 #
     __tcont=POST_RELEVE_T( ACTION=_F(  INTITULE = 'Contact levres',
                                 GROUP_NO = 'FACE2',

@@ -1,4 +1,4 @@
-# -*- coding: iso-8859-1 -*-
+# coding=utf-8
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -22,7 +22,7 @@ from cata_comportement import LoiComportement
 
 loi = LoiComportement(
    nom            = 'VISC_ISOT_LINE',
-   doc = """Loi viscoplastique avec critère de Von Mises, écrouissage isotrope linéaire et viscosité en sinh""",
+   doc = """Loi viscoplastique avec critÃ¨re de Von Mises, Ã©crouissage isotrope linÃ©aire et viscositÃ© en sinh""",
    num_lc         = 2,
    nb_vari        = 2,
    nom_vari       = ('EPSPEQ', 'INDIPLAS'),

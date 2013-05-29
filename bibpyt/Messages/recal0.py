@@ -1,4 +1,4 @@
-# -*- coding: iso-8859-1 -*-
+# coding=utf-8
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -25,57 +25,57 @@ cata_msg = {
 
 """),
 
- 2 : _(u"""Impossible d'importer le module as_profil ! Vérifier la variable
-d'environnement ASTER_ROOT ou mettez à jour ASTK.
+ 2 : _(u"""Impossible d'importer le module as_profil ! VÃ©rifier la variable
+d'environnement ASTER_ROOT ou mettez Ã  jour ASTK.
 """),
 
  3 : _(u"""Le logiciel GNUPLOT ou le module python Gnuplot n'est pas disponible.
-On désactive l'affichage des courbes par Gnuplot.
+On dÃ©sactive l'affichage des courbes par Gnuplot.
 """),
 
- 4 : _(u"""Il n'y a pas de fichier .export dans le répertoire de travail !
+ 4 : _(u"""Il n'y a pas de fichier .export dans le rÃ©pertoire de travail !
 """),
 
- 5 : _(u"""Il y a plus d'un fichier .export dans le répertoire de travail !
+ 5 : _(u"""Il y a plus d'un fichier .export dans le rÃ©pertoire de travail !
 """),
 
- 6 : _(u"""Pour les calculs DISTRIBUES en mode INTERACTIF, il faut spécifier une valeur pour mem_aster
-(menu Option de ASTK) pour limiter la mémoire allouée au calcul maître.
+ 6 : _(u"""Pour les calculs DISTRIBUES en mode INTERACTIF, il faut spÃ©cifier une valeur pour mem_aster
+(menu Option de ASTK) pour limiter la mÃ©moire allouÃ©e au calcul maÃ®tre.
 """),
 
- 7 : _(u"""Pour pouvoir lancer les calculs esclaves en MPI, le calcul maître doit être lancé 
+ 7 : _(u"""Pour pouvoir lancer les calculs esclaves en MPI, le calcul maÃ®tre doit Ãªtre lancÃ© 
 en MPI sur un processeur."""),
 
- 8 : _(u"""Vérifier les valeurs des paramètres mem_aster et memjeveux.
+ 8 : _(u"""VÃ©rifier les valeurs des paramÃ¨tres mem_aster et memjeveux.
 """),
 
 # 9 : _(u""" """),
 
-10 : _(u"""Pour l'algorithme %(k1)s, on ne peut tracer qu'à la dernière itération.
+10 : _(u"""Pour l'algorithme %(k1)s, on ne peut tracer qu'Ã  la derniÃ¨re itÃ©ration.
 """),
 
-11 : _(u"""Pour l'algorithme %(k1)s, on ne tient pas compte des bornes sur les paramètres.
+11 : _(u"""Pour l'algorithme %(k1)s, on ne tient pas compte des bornes sur les paramÃ¨tres.
 """),
 
 12 : _(u"""Recalage :
    %(k1)s
 """),
 
-13 : _(u"""Lancement de l'optimisation avec la méthode : %(k1)s.
+13 : _(u"""Lancement de l'optimisation avec la mÃ©thode : %(k1)s.
 """),
 
-14 : _(u"""Les dérivées sont calculées par Aster.
+14 : _(u"""Les dÃ©rivÃ©es sont calculÃ©es par Aster.
 """),
 
-15 : _(u"""Les dérivées sont calculées par l'algorithme.
+15 : _(u"""Les dÃ©rivÃ©es sont calculÃ©es par l'algorithme.
 """),
 
 16 : _(u"""
---> Calcul du gradient par différences finies <--
+--> Calcul du gradient par diffÃ©rences finies <--
 
 """),
 
-17 : _(u"""Tracé des graphiques
+17 : _(u"""TracÃ© des graphiques
 """),
 
 18 : _(u"""Erreur dans l'algorithme de bornes de MACR_RECAL.
@@ -87,23 +87,23 @@ en MPI sur un processeur."""),
 23 : _(u"""Impossible d'importer le module de lecture des tables !
 """),
 
-24 : _(u"""Impossible de récupérer les résultats de calcul esclave (lecture des tables) !
+24 : _(u"""Impossible de rÃ©cupÃ©rer les rÃ©sultats de calcul esclave (lecture des tables) !
 Message d'erreur :
    %(k1)s
 """),
 
 25 : _(u"""
-Calcul de F avec les paramètres :
+Calcul de F avec les paramÃ¨tres :
      %(k1)s
 """),
 
 26 : _(u"""
-Calcul de F et G avec les paramètres :
+Calcul de F et G avec les paramÃ¨tres :
      %(k1)s
 """),
 
 27 : _(u"""
-Calcul de G avec les paramètres :
+Calcul de G avec les paramÃ¨tres :
    %(k1)s
 """),
 
@@ -122,12 +122,12 @@ Informations de convergence :
 ======================================================================
 """),
 
-31 : _(u"""Itération %(i1)d :
+31 : _(u"""ItÃ©ration %(i1)d :
 
 """),
 
 32 : _(u"""
-=> Paramètres :
+=> ParamÃ¨tres :
      %(k1)s
 
 """),
@@ -135,7 +135,7 @@ Informations de convergence :
 33 : _(u"""=> Fonctionnelle                        = %(r1)f
 """),
 
-34 : _(u"""=> Résidu                               = %(r1)f
+34 : _(u"""=> RÃ©sidu                               = %(r1)f
 """),
 
 35 : _(u"""=> Norme de l'erreur                    = %(r1)f
@@ -144,21 +144,21 @@ Informations de convergence :
 36 : _(u"""=> Erreur                               = %(r1)f
 """),
 
-37 : _(u"""=> Variation des paramètres (norme L2)  = %(r1)f
+37 : _(u"""=> Variation des paramÃ¨tres (norme L2)  = %(r1)f
 """),
 
 38 : _(u"""=> Variation de la fonctionnelle        = %(r1)f
 """),
 
-39 : _(u"""=> Nombre d'évaluation de la fonction   = %(k1)s
+39 : _(u"""=> Nombre d'Ã©valuation de la fonction   = %(k1)s
 """),
 
 #40 : _(u""" """),
 
-41 : _(u"""Tracé des courbes dans le fichier : %(k1)s
+41 : _(u"""TracÃ© des courbes dans le fichier : %(k1)s
 """),
 
-42 : _(u"""Problème lors de l'affichage des courbes. On ignore et on continue.
+42 : _(u"""ProblÃ¨me lors de l'affichage des courbes. On ignore et on continue.
 Erreur :
    %(k1)s
 """),
@@ -167,47 +167,47 @@ Erreur :
    %(k1)s
 """),
 
-44 : _(u"""Problème de division par zéro dans la normalisation de la fonctionnelle.
-Une des valeurs de la fonctionnelle initiale est nulle ou inférieure à la précision machine : %(r1).2f
+44 : _(u"""ProblÃ¨me de division par zÃ©ro dans la normalisation de la fonctionnelle.
+Une des valeurs de la fonctionnelle initiale est nulle ou infÃ©rieure Ã  la prÃ©cision machine : %(r1).2f
 """),
 
-45 : _(u"""Problème de division par zéro dans le calcul de la matrice de sensibilité.
-Le paramètre %(k1)s est nul ou plus petit que la précision machine.
+45 : _(u"""ProblÃ¨me de division par zÃ©ro dans le calcul de la matrice de sensibilitÃ©.
+Le paramÃ¨tre %(k1)s est nul ou plus petit que la prÃ©cision machine.
 """),
 
-46 : _(u"""Le paramètre %(k1)s est en butée sur un bord du domaine admissible.
+46 : _(u"""Le paramÃ¨tre %(k1)s est en butÃ©e sur un bord du domaine admissible.
 """),
 
-47 : _(u"""Les paramètres %(k1)s sont en butée sur un bord du domaine admissible.
+47 : _(u"""Les paramÃ¨tres %(k1)s sont en butÃ©e sur un bord du domaine admissible.
 """),
 
-48 : _(u"""Problème lors de l'interpolation du calcul dérivé sur les données expérimentale !
-Valeur à interpoler              :  %(k1)s
-Domaine couvert par l'expérience : [%(k2)s : %(k3)s]
+48 : _(u"""ProblÃ¨me lors de l'interpolation du calcul dÃ©rivÃ© sur les donnÃ©es expÃ©rimentale !
+Valeur Ã  interpoler              :  %(k1)s
+Domaine couvert par l'expÃ©rience : [%(k2)s : %(k3)s]
 """),
 
 50 : _(u"""
---> Critère d'arrêt sur le résidu atteint, la valeur du résidu est : %(r1)f <--
+--> CritÃ¨re d'arrÃªt sur le rÃ©sidu atteint, la valeur du rÃ©sidu est : %(r1)f <--
 """),
 
 51 : _(u"""
---> Critère d'arrêt TOLE_PARA atteint, la variation des paramètres est : %(r1)f <--
+--> CritÃ¨re d'arrÃªt TOLE_PARA atteint, la variation des paramÃ¨tres est : %(r1)f <--
 """),
 
 52 : _(u"""
---> Critère d'arrêt TOLE_FONC atteint, la variation de la fonctionnelle est : %(r1)f <--
+--> CritÃ¨re d'arrÃªt TOLE_FONC atteint, la variation de la fonctionnelle est : %(r1)f <--
 """),
 
 53 : _(u"""
---> Arrêt par manque de temps CPU <--
+--> ArrÃªt par manque de temps CPU <--
 """),
 
 54 : _(u"""
---> Le nombre maximum d'évaluations de la fonction (ITER_FONC_MAXI) a été atteint <--
+--> Le nombre maximum d'Ã©valuations de la fonction (ITER_FONC_MAXI) a Ã©tÃ© atteint <--
 """),
 
 55 : _(u"""
---> Le nombre maximum d'itérations de l'algorithme (ITER_MAXI) a été atteint <--
+--> Le nombre maximum d'itÃ©rations de l'algorithme (ITER_MAXI) a Ã©tÃ© atteint <--
 """),
 
 56 : _(u"""
@@ -224,7 +224,7 @@ Domaine couvert par l'expérience : [%(k2)s : %(k3)s]
 
 58 : _(u"""
                  ATTENTION : L'OPTIMUM EST ATTEINT AVEC
-                 DES PARAMETRES EN BUTÉE SUR LE BORD
+                 DES PARAMETRES EN BUTÃ‰E SUR LE BORD
                      DU DOMAINE ADMISSIBLE
 """),
 
@@ -234,7 +234,7 @@ Valeurs propres du Hessien:
 """),
 
 61 : _(u"""
-Vecteurs propres associés:
+Vecteurs propres associÃ©s:
 %(k1)s
 """),
 
@@ -245,40 +245,40 @@ Vecteurs propres associés:
 """),
 
 63 : _(u"""
-On peut en déduire que :
+On peut en dÃ©duire que :
 
 """),
 
 64 : _(u"""
-Les combinaisons suivantes de paramètres sont prépondérantes pour votre calcul :
+Les combinaisons suivantes de paramÃ¨tres sont prÃ©pondÃ©rantes pour votre calcul :
 
 """),
 
 65 : _(u"""%(k1)s
-      associée à la valeur propre %(k2)s
+      associÃ©e Ã  la valeur propre %(k2)s
 
 """),
 
 66 : _(u"""
-Les combinaisons suivantes de paramètres sont insensibles pour votre calcul :
+Les combinaisons suivantes de paramÃ¨tres sont insensibles pour votre calcul :
 
 """),
 
 67 : _(u"""
-Calcul avec les paramètres suivants (point courant) :
+Calcul avec les paramÃ¨tres suivants (point courant) :
      %(k1)s
 """),
 
 68 : _(u"""
-Calcul avec les paramètres suivants (perturbation du paramètre %(k2)s pour le gradient) :
+Calcul avec les paramÃ¨tres suivants (perturbation du paramÃ¨tre %(k2)s pour le gradient) :
      %(k1)s
 """),
 
 
 69 : _(u"""
-Information : les calculs esclaves seront lancés en BATCH avec les paramètres suivants :
+Information : les calculs esclaves seront lancÃ©s en BATCH avec les paramÃ¨tres suivants :
      Temps          : %(k1)s sec
-     Mémoire totale : %(k2)s Mo
+     MÃ©moire totale : %(k2)s Mo
      dont Aster     : %(k3)s Mo
      Classe         : %(k4)s
 
@@ -294,24 +294,24 @@ Gradient au point X0:
 """),
 
 74 : _(u"""
-Calcul numéro:  %(k1)s - Diagnostic: %(k2)s
+Calcul numÃ©ro:  %(k1)s - Diagnostic: %(k2)s
 """),
 
 75 : _(u"""
                                     ----------------
                                       Informations
 
-    Lors du calcul du gradient par différences finies, un paramètre perturbé sort de l'intervalle de validité :
-        Paramètre                   : %(k1)s
-        Paramètre perturbée         : %(k2)s
-        Valeur minimale autorisée   : %(k3)s
-        Valeur maximale autorisée   : %(k4)s
+    Lors du calcul du gradient par diffÃ©rences finies, un paramÃ¨tre perturbÃ© sort de l'intervalle de validitÃ© :
+        ParamÃ¨tre                   : %(k1)s
+        ParamÃ¨tre perturbÃ©e         : %(k2)s
+        Valeur minimale autorisÃ©e   : %(k3)s
+        Valeur maximale autorisÃ©e   : %(k4)s
 
-    --> On continue avec ce paramètre, mais l'étude esclave peut avoir des soucis.
+    --> On continue avec ce paramÃ¨tre, mais l'Ã©tude esclave peut avoir des soucis.
 
-    Pour information, voici le paramètre de perturbation (mot-clé PARA_DIFF_FINI), vérifier qu'il est suffisamment petit
-    pour un calcul de gradient par différences finies :
-        Paramètre de perturbation   : %(k5)s
+    Pour information, voici le paramÃ¨tre de perturbation (mot-clÃ© PARA_DIFF_FINI), vÃ©rifier qu'il est suffisamment petit
+    pour un calcul de gradient par diffÃ©rences finies :
+        ParamÃ¨tre de perturbation   : %(k5)s
 
                                     ----------------
 
@@ -319,11 +319,11 @@ Calcul numéro:  %(k1)s - Diagnostic: %(k2)s
 
 
 76 : _(u"""
-Le paramètre de perturbation (mot-clé PARA_DIFF_FINI) a pour valeur : %(k1)s
+Le paramÃ¨tre de perturbation (mot-clÃ© PARA_DIFF_FINI) a pour valeur : %(k1)s
 
-Vérifier qu'il est suffisamment petit pour un calcul de gradient par différences finies
+VÃ©rifier qu'il est suffisamment petit pour un calcul de gradient par diffÃ©rences finies
 
---> On continue avec ce paramètre mais le calcul du gradient pourrait être faux.
+--> On continue avec ce paramÃ¨tre mais le calcul du gradient pourrait Ãªtre faux.
 
 """),
 
@@ -343,28 +343,28 @@ Vérifier qu'il est suffisamment petit pour un calcul de gradient par différences
 
 81 : _(u"""
 
-Répertoire contenant les exécutions Aster :
+RÃ©pertoire contenant les exÃ©cutions Aster :
    %(k1)s
 
 """),
 
-82 : _(u"""Impossible de créer le répertoire temporaire : %(k1)s
+82 : _(u"""Impossible de crÃ©er le rÃ©pertoire temporaire : %(k1)s
 """),
 
 83 : _(u"""
 ======================================================================
 
-Erreur! Le calcul esclave '%(k1)s' ne s'est pas arrêté correctement!
-Les fichiers output et error du job sont recopiés dans l'output du
-maître juste au dessus de ce message.
+Erreur! Le calcul esclave '%(k1)s' ne s'est pas arrÃªtÃ© correctement!
+Les fichiers output et error du job sont recopiÃ©s dans l'output du
+maÃ®tre juste au dessus de ce message.
 
-L'output du job est également dans : %(k2)s
+L'output du job est Ã©galement dans : %(k2)s
 
 ======================================================================
 """),
 
 84 : _(u"""
-Erreur! Au moins un calcul esclave ne s'est pas arrêté correctement! Vérifier le répertoire : %(k1)s
+Erreur! Au moins un calcul esclave ne s'est pas arrÃªtÃ© correctement! VÃ©rifier le rÃ©pertoire : %(k1)s
 """),
 
 85 : _(u""" Erreur dans le calcul esclave:
@@ -372,11 +372,11 @@ Erreur! Au moins un calcul esclave ne s'est pas arrêté correctement! Vérifier le
 """),
 
 86 : _(u"""
-Erreur! Le calcul esclave '%(k1)s' n'a pas pu démarrer !
+Erreur! Le calcul esclave '%(k1)s' n'a pas pu dÃ©marrer !
    Diagnostic : %(k2)s
 
-Il s'agit vraisemblablement d'un problème de configuration du serveur de calcul ou de ressources disponibles.
-Mettre UNITE_SUIVI et INFO=2 permettra d'avoir des messages supplémentaires dans l'output du maître.
+Il s'agit vraisemblablement d'un problÃ¨me de configuration du serveur de calcul ou de ressources disponibles.
+Mettre UNITE_SUIVI et INFO=2 permettra d'avoir des messages supplÃ©mentaires dans l'output du maÃ®tre.
 """),
 
 #87 : _(u""" """),
@@ -403,7 +403,7 @@ Mettre UNITE_SUIVI et INFO=2 permettra d'avoir des messages supplémentaires dans
 
 #98 : _(u""" """),
 
-99 : _(u"""Impossible de déterminer l'emplacement de Code_Aster !
+99 : _(u"""Impossible de dÃ©terminer l'emplacement de Code_Aster !
 Fixer le chemin avec la variable d'environnement ASTER_ROOT.
 """),
 

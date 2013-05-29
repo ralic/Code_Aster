@@ -1,4 +1,4 @@
-# -*- coding: iso-8859-1 -*-
+# coding=utf-8
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -41,7 +41,7 @@ class sd_type_flui_stru(AsBase):
 
 
     def exists(self):
-        # retourne "vrai" si la SD semble exister (et donc qu'elle peut etre vérifiée)
+        # retourne "vrai" si la SD semble exister (et donc qu'elle peut etre vÃ©rifiÃ©e)
         return self.FSIC.exists
 
 
@@ -92,7 +92,7 @@ class sd_type_flui_stru(AsBase):
         if type_faisceau == 3 :  # FAISCEAU_AXIAL
         #-----------------------------------------
             lsimplif=fsvi[0]
-            # lsimplif=1 : faisceau simplifié
+            # lsimplif=1 : faisceau simplifiÃ©
             # lsimplif=0 : faisceau complet
 
             nbtype=fsvi[4] # nombre de types de grille
@@ -112,7 +112,7 @@ class sd_type_flui_stru(AsBase):
                     assert len(fsvi)==5, fsvi
                     assert fsvi[3]  >= 0, fsvi
 
-            else :                # faisceau simplifié
+            else :                # faisceau simplifiÃ©
                 nbzone=fsvi[3]
                 if lgrille :
                     assert len(fsvi)==6+nbtype+nbzone, fsvi
@@ -151,7 +151,7 @@ class sd_type_flui_stru(AsBase):
             if couplage :
                 assert len(fsvk)==4,(fsvk,self)
                 assert fsvk[0] != '',(fsvk,self)
-                # on pourrait vérifier que fsvk[1] est un nom de noeud
+                # on pourrait vÃ©rifier que fsvk[1] est un nom de noeud
                 assert fsvk[1] != '',(fsvk,self)
                 sd2=sd_cara_elem(fsvk[2].strip()); sd2.check(checker)
                 sd2=sd_modele(fsvk[3].strip()); sd2.check(checker)

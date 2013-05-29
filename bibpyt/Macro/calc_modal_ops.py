@@ -1,4 +1,4 @@
-
+# coding=utf-8
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -16,8 +16,6 @@
 # ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
 # ======================================================================
-#-*- coding: iso-8859-1 -*-
-
 
 def calc_modal_ops(self,MODELE,CHAM_MATER,CARA_ELEM,AMORTISSEMENT,
                         CHARGE,INST,METHODE,CALC_FREQ, MODE_RIGIDE,

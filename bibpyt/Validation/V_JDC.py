@@ -1,4 +1,4 @@
-# -*- coding: iso-8859-1 -*-
+# coding=utf-8
 # person_in_charge: mathieu.courtois at edf.fr
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -22,12 +22,12 @@
 
 
 """
-   Ce module contient la classe mixin JDC qui porte les méthodes
-   nécessaires pour réaliser la validation d'un objet de type JDC
-   dérivé de OBJECT.
+   Ce module contient la classe mixin JDC qui porte les mÃ©thodes
+   nÃ©cessaires pour rÃ©aliser la validation d'un objet de type JDC
+   dÃ©rivÃ© de OBJECT.
 
    Une classe mixin porte principalement des traitements et est
-   utilisée par héritage multiple pour composer les traitements.
+   utilisÃ©e par hÃ©ritage multiple pour composer les traitements.
 """
 # Modules EFICAS
 import V_MCCOMPO
@@ -55,10 +55,10 @@ class JDC(V_MCCOMPO.MCCOMPO):
 
    def isvalid(self,cr='non'):
       """
-        Méthode booléenne qui retourne 0 si le JDC est invalide, 1 sinon
+        MÃ©thode boolÃ©enne qui retourne 0 si le JDC est invalide, 1 sinon
       """
-      # FR : on prend en compte l'état du JDC ('unchanged','modified','undetermined')
-      # afin d'accélérer le test de validité du JDC
+      # FR : on prend en compte l'Ã©tat du JDC ('unchanged','modified','undetermined')
+      # afin d'accÃ©lÃ©rer le test de validitÃ© du JDC
       if self.state == 'unchanged':
         return self.valid
       else:
@@ -80,7 +80,7 @@ class JDC(V_MCCOMPO.MCCOMPO):
 
    def verif_regles(self):
       """
-      Effectue la vérification de validité des règles du jeu de commandes
+      Effectue la vÃ©rification de validitÃ© des rÃ¨gles du jeu de commandes
       """
       noms_etapes = [etape.nom for etape in self.etapes]
       texte_global = ''

@@ -1,4 +1,4 @@
-# -*- coding: iso-8859-1 -*-
+# coding=utf-8
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -19,7 +19,7 @@
 # person_in_charge: mathieu.courtois at edf.fr
 
 """
-   Utilitaire sur le catalogue des structures de données.
+   Utilitaire sur le catalogue des structures de donnÃ©es.
 """
 
 __revision__ = "$Id: $"
@@ -72,10 +72,10 @@ if __name__ == '__main__':
          help="affiche une SD sous forme d'arbre")
    parser.add_option('--nom', dest='nom',
          action='store', default='^'*8,
-         help="nom du concept dans les représentations")
+         help="nom du concept dans les reprÃ©sentations")
    parser.add_option('-a', '--all', dest='all',
          action='store_true', default=False,
-         help="construit la liste des SD à partir des fichiers 'sd_*.py' trouvés")
+         help="construit la liste des SD Ã  partir des fichiers 'sd_*.py' trouvÃ©s")
    
    opts, l_sd = parser.parse_args()
    if opts.all:
@@ -83,7 +83,7 @@ if __name__ == '__main__':
       l_sd = [os.path.splitext(os.path.basename(f))[0] for f in l_fich]
    
    if len(l_sd) == 0:
-      parser.error('quelle(s) structure(s) de données ?')
+      parser.error('quelle(s) structure(s) de donnÃ©es ?')
 
    if opts.tree:
       print tree(opts.nom, *l_sd)

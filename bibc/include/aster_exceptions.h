@@ -1,5 +1,4 @@
 /*           CONFIGURATION MANAGEMENT OF EDF VERSION                  */
-/* MODIF aster_exceptions include  DATE 05/02/2013   AUTEUR COURTOIS M.COURTOIS */
 /* ================================================================== */
 /* COPYRIGHT (C) 1991 - 2013  EDF R&D              WWW.CODE-ASTER.ORG */
 /*                                                                    */
@@ -13,7 +12,7 @@
 /* GENERAL PUBLIC LICENSE FOR MORE DETAILS.                           */
 /*                                                                    */
 /* YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE  */
-/* ALONG WITH THIS PROGRAM; IF NOT, WRITE TO : EDF R&D CODE_ASTER,    */
+/* ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,      */
 /*    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.     */
 /* ================================================================== */
 /* person_in_charge: mathieu.courtois at edf.fr */
@@ -32,15 +31,17 @@
 #define NIVMAX     10
 
 #ifdef __DEBUG__
-#   define _printDBG(func)  printf("DEBUG [%s:%d] %s: level=%d\n", __FILE__, __LINE__, func, gExcLvl)
+#   define _printDBG(func) printf("DEBUG [%s:%d] %s: level=%d\n", __FILE__, __LINE__, func, gExcLvl)
 #else
 #   define _printDBG(func)
 #endif
 
 #define try                 _new_try(); _printDBG("try"); \
                             if ((gExcNumb = setjmp(gExcEnv[gExcLvl])) == 0)
-#define interruptTry(val)   if(gExcLvl > 0) { _printDBG("interruptTry"); longjmp(gExcEnv[gExcLvl], val); } \
-                            else { printf("Exception raised out of Code_Aster commands.\n"); _raiseException(val); }
+#define interruptTry(val)   if(gExcLvl > 0) { \
+                                _printDBG("interruptTry"); longjmp(gExcEnv[gExcLvl], val); } \
+                            else { printf("Exception raised out of Code_Aster commands.\n"); \
+                                _raiseException(val); }
 #define except(val)         else if (gExcNumb == val)
 #define exceptAll           else
 #define endTry()            _end_try(); _printDBG("endTry")

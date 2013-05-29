@@ -1,4 +1,4 @@
-# -*- coding: iso-8859-1 -*-
+# coding=utf-8
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -22,9 +22,9 @@ from cata_comportement import LoiComportement
 
 loi = LoiComportement(
    nom            = 'VMIS_CIN1_CHAB',
-   doc = """Loi élastoplastique de J.L.Chaboche à 1 variable cinématique qui rend compte du comportement cyclique en élasto-plasticité
-   avec un tenseur d'écrouissage cinématique non linéaire, un écrouissage isotrope non linéaire, un effet d'écrouissage sur la variable
-   tensorielle de rappel. Toutes les constantes du matériau peuvent éventuellement dépendre de la température.""",
+   doc = """Loi Ã©lastoplastique de J.L.Chaboche Ã  1 variable cinÃ©matique qui rend compte du comportement cyclique en Ã©lasto-plasticitÃ©
+   avec un tenseur d'Ã©crouissage cinÃ©matique non linÃ©aire, un Ã©crouissage isotrope non linÃ©aire, un effet d'Ã©crouissage sur la variable
+   tensorielle de rappel. Toutes les constantes du matÃ©riau peuvent Ã©ventuellement dÃ©pendre de la tempÃ©rature.""",
    num_lc         = 4,
    nb_vari        = 8,
    nom_vari       = ('EPSPEQ', 'INDIPLAS', 'ALPHAXX', 'ALPHAYY', 'ALPHAZZ', 'ALPHAXY', 'ALPHAXZ', 'ALPHAYZ'),

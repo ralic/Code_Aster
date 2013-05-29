@@ -1,4 +1,4 @@
-# -*- coding: iso-8859-1 -*-
+# coding=utf-8
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -21,18 +21,18 @@
 cata_msg = {
 
 1 : _(u"""
-  Sélection d'instants.
-  Quand le critère de sélection est absolu, il faut obligatoirement donner une précision.
+  SÃ©lection d'instants.
+  Quand le critÃ¨re de sÃ©lection est absolu, il faut obligatoirement donner une prÃ©cision.
 """),
 
 2 : _(u"""
-  Sélection d'instants.
-  Vous n'avez pas donné de précision pour votre critère de sélection. On a pris la valeur %(r1)19.12e par défaut.
+  SÃ©lection d'instants.
+  Vous n'avez pas donnÃ© de prÃ©cision pour votre critÃ¨re de sÃ©lection. On a pris la valeur %(r1)19.12e par dÃ©faut.
 """),
 
 3 : _(u"""
-  Sélection d'instants.
-  La précision donnée pour votre critère de sélection est négative ou inférieure à la précision machine.
+  SÃ©lection d'instants.
+  La prÃ©cision donnÃ©e pour votre critÃ¨re de sÃ©lection est nÃ©gative ou infÃ©rieure Ã  la prÃ©cision machine.
 """),
 
 

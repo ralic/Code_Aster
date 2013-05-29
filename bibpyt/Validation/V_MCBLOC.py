@@ -1,4 +1,4 @@
-# -*- coding: iso-8859-1 -*-
+# coding=utf-8
 # person_in_charge: mathieu.courtois at edf.fr
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -22,12 +22,12 @@
 
 
 """
-   Ce module contient la classe mixin MCBLOC qui porte les méthodes
-   nécessaires pour réaliser la validation d'un objet de type MCBLOC
-   dérivé de OBJECT.
+   Ce module contient la classe mixin MCBLOC qui porte les mÃ©thodes
+   nÃ©cessaires pour rÃ©aliser la validation d'un objet de type MCBLOC
+   dÃ©rivÃ© de OBJECT.
 
    Une classe mixin porte principalement des traitements et est
-   utilisée par héritage multiple pour composer les traitements.
+   utilisÃ©e par hÃ©ritage multiple pour composer les traitements.
 """
 # Modules EFICAS
 import V_MCCOMPO
@@ -37,19 +37,19 @@ class MCBLOC(V_MCCOMPO.MCCOMPO):
    """
       Cette classe a un attribut de classe :
 
-      - txt_nat qui sert pour les comptes-rendus liés à cette classe
+      - txt_nat qui sert pour les comptes-rendus liÃ©s Ã  cette classe
    """
 
    txt_nat = u"Bloc :"
 
    def isvalid(self,sd='oui',cr='non'):
       """
-         Methode pour verifier la validité du MCBLOC. Cette méthode
-         peut etre appelée selon plusieurs modes en fonction de la valeur
+         Methode pour verifier la validitÃ© du MCBLOC. Cette mÃ©thode
+         peut etre appelÃ©e selon plusieurs modes en fonction de la valeur
          de sd et de cr.
 
-         Si cr vaut oui elle crée en plus un compte-rendu
-         sd est présent pour compatibilité de l'interface mais ne sert pas
+         Si cr vaut oui elle crÃ©e en plus un compte-rendu
+         sd est prÃ©sent pour compatibilitÃ© de l'interface mais ne sert pas
       """
       if self.state == 'unchanged' :
         return self.valid
@@ -63,12 +63,12 @@ class MCBLOC(V_MCCOMPO.MCCOMPO):
           if not child.isvalid():
             valid = 0
             break
-        # Après avoir vérifié la validité de tous les sous-objets, on vérifie
-        # la validité des règles
+        # AprÃ¨s avoir vÃ©rifiÃ© la validitÃ© de tous les sous-objets, on vÃ©rifie
+        # la validitÃ© des rÃ¨gles
         text_erreurs,test_regles = self.verif_regles()
         if not test_regles :
           if cr == 'oui':
-              self.cr.fatal(_(u"Règle(s) non respectée(s) : %s"), text_erreurs)
+              self.cr.fatal(_(u"RÃ¨gle(s) non respectÃ©e(s) : %s"), text_erreurs)
           valid = 0
         self.valid = valid
         self.state = 'unchanged'

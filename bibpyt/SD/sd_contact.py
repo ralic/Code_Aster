@@ -1,4 +1,4 @@
-# -*- coding: iso-8859-1 -*-
+# coding=utf-8
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -26,7 +26,7 @@ from SD.sd_xfem import sd_modele_xfem
 
 class sd_contact(AsBase):
 
-#   Nom des objets préfixé par le nom du concept (8 premiers caractères)
+#   Nom des objets prÃ©fixÃ© par le nom du concept (8 premiers caractÃ¨res)
     nomj = SDNom(fin=8)
 
 #   Longueurs des vecteurs fixes (voir CFMMVD.F)
@@ -47,7 +47,7 @@ class sd_contact(AsBase):
 
 #--------------------------------------------------------------------------------------------------#
 
-#   Objets présents quelle que soit la formulation
+#   Objets prÃ©sents quelle que soit la formulation
     MODELE = AsVK8(SDNom(nomj='.CHME.MODEL.NOMO'),lonmax=1,    )
     PARACI = AsVI (SDNom(nomj='.CONTACT.PARACI' ),lonmax=zpari,)
     PARACR = AsVR (SDNom(nomj='.CONTACT.PARACR' ),lonmax=zparr,)
@@ -55,7 +55,7 @@ class sd_contact(AsBase):
 
 #--------------------------------------------------------------------------------------------------#
 
-#   Méthodes pour connaître la formulation
+#   MÃ©thodes pour connaÃ®tre la formulation
     def type_form(self):
         iform = self.PARACI.get()[-1+4]
         assert iform in (1,2,3,4,)
@@ -80,7 +80,7 @@ class sd_contact(AsBase):
 
 #--------------------------------------------------------------------------------------------------#
 
-#   Formulation unilatérale
+#   Formulation unilatÃ©rale
     NDIMCU = Facultatif(AsVI (SDNom(nomj='.UNILATE.NDIMCU')))
     CMPGCU = Facultatif(AsVK8(SDNom(nomj='.UNILATE.CMPGCU')))
     COEFD  = Facultatif(AsVK8(SDNom(nomj='.UNILATE.COEFD' )))
@@ -88,7 +88,7 @@ class sd_contact(AsBase):
     LISNOE = Facultatif(AsVI (SDNom(nomj='.UNILATE.LISNOE')))
     POINOE = Facultatif(AsVI (SDNom(nomj='.UNILATE.POINOE')))
 
-#   Infos sur la formulation unilatérale
+#   Infos sur la formulation unilatÃ©rale
     def dimeCU(self):
       if (self.formulation_unil()):
         para = self.NDIMCU.get()
@@ -97,7 +97,7 @@ class sd_contact(AsBase):
         return nnocu,ncmpg
       return
 
-#   Vérification de la formulation unilatérale
+#   VÃ©rification de la formulation unilatÃ©rale
     def check_formulation_unil(self,checker):
       if (self.formulation_unil()):
         nnocu,ncmpg = self.dimeCU()
@@ -137,7 +137,7 @@ class sd_contact(AsBase):
 
 #--------------------------------------------------------------------------------------------------#
 
-#   Formulations maillées (DISCRETE/CONTINUE)
+#   Formulations maillÃ©es (DISCRETE/CONTINUE)
 #   Objets communs
 
 #   Objets par zone
@@ -188,7 +188,7 @@ class sd_contact(AsBase):
         assert self.PZONE.lonmax  == nzoco+1
         assert self.PSURMA.lonmax == nsuco+1
         assert self.PSURNO.lonmax == nsuco+1
-        # On utilise lonuti car on a pu éliminer des noeuds/mailles
+        # On utilise lonuti car on a pu Ã©liminer des noeuds/mailles
         assert self.CONTMA.lonuti == nmaco
         assert self.CONTNO.lonuti == nnoco
 
@@ -210,10 +210,10 @@ class sd_contact(AsBase):
 
 #   Formulation DISCRETE
 
-#   Caractéristisques diverses
+#   CaractÃ©ristisques diverses
     CARADF = Facultatif(AsVR(SDNom(nomj='.CONTACT.CARADF')))
 
-#   Relations linéaires pour QUAD8
+#   Relations linÃ©aires pour QUAD8
     RELLIN = Facultatif(sd_char_chme(SDNom(nomj='.CHME')))
 
     def check_form_disc(self,checker):
@@ -227,7 +227,7 @@ class sd_contact(AsBase):
 
 #   Formulation CONTINUE
 
-#   Caractéristiques diverses
+#   CaractÃ©ristiques diverses
     CARACF = Facultatif(AsVR(SDNom(nomj='.CONTACT.CARACF') ))
 
 #   Objets pour l'exclusion des noeuds du frottement seulement
@@ -235,7 +235,7 @@ class sd_contact(AsBase):
     FROTNO = Facultatif(AsVI(SDNom(nomj='.CONTACT.SANOFR' )))
     EXCLFR = Facultatif(AsVR(SDNom(nomj='.CONTACT.EXCLFR' )))
 
-#   Ligrel tardif pour l'ajout des modélisations du contact continu
+#   Ligrel tardif pour l'ajout des modÃ©lisations du contact continu
     LIGRE  = Facultatif(sd_ligrel(SDNom(nomj='.CHME.LIGRE')))
 
     def check_form_cont(self,checker):
@@ -248,7 +248,7 @@ class sd_contact(AsBase):
         assert self.EXCLFR.lonmax == self.zexcl*nzoco
 
         if self.contact_resolu():
-          # ne pas oublier les () car sd_ligrel.exists est une méthode
+          # ne pas oublier les () car sd_ligrel.exists est une mÃ©thode
           assert self.LIGRE.exists()
       return
 
@@ -261,10 +261,10 @@ class sd_contact(AsBase):
     XFIMAI = Facultatif(AsVK8 (SDNom(nomj='.CONTACT.XFIMAI')))
     XNRELL = Facultatif(AsVK24(SDNom(nomj='.CONTACT.XNRELL')))
 
-#   Objet spécifique grands glissements
+#   Objet spÃ©cifique grands glissements
     MAESCX = Facultatif(AsVI  (SDNom(nomj='.CONTACT.MAESCX')))
 
-#   Glute objets spécifiques petits glissements (2 fissures max dans les tests)
+#   Glute objets spÃ©cifiques petits glissements (2 fissures max dans les tests)
     PRCHNO = Facultatif(sd_prof_chno(SDNom(nomj='.PRCHN00000')))
     PRCHN1 = Facultatif(sd_prof_chno(SDNom(nomj='.PRCHN00001')))
 

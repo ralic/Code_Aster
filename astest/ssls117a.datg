@@ -23,7 +23,7 @@ trac plaq1;
 
 fin;
 
-* modif JMP pour creer  2 maillages superposés
+* modif JMP pour creer  2 maillages superposÃ©s
 b1 = 0. 0. 0. ;
 b2 = 10. 0. 0. ;
 b3 = 10. 5. 0. ;
@@ -91,4 +91,3 @@ sauv format (plaqh1 et plaqh2) ;
 trac (plaqh2 et plaqh1) ;
  
 FIN;
-

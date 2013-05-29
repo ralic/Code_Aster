@@ -1,4 +1,4 @@
-# -*- coding: iso-8859-1 -*-
+# coding=utf-8
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -25,11 +25,11 @@ cata_msg={
 """),
 
 2 : _(u"""
- Le champ %(k1)s n'est pas dÈfini sur la totalitÈ des noeuds prÈcisÈs
- dans le mot-clÈ GROUP_MA_ESCL, GROUP_NO_ESCL, MAILLE_ESCL ou
+ Le champ %(k1)s n'est pas d√©fini sur la totalit√© des noeuds pr√©cis√©s
+ dans le mot-cl√© GROUP_MA_ESCL, GROUP_NO_ESCL, MAILLE_ESCL ou
  NOEUD_ESCL.
  
- Il vous faut complÈter le champ %(k1)s.
+ Il vous faut compl√©ter le champ %(k1)s.
 """),
 
 3: _(u"""
@@ -45,58 +45,58 @@ cata_msg={
 """),
 
 6 : _(u"""
- Le champ %(k1)s n'existe pas au numÈro d'ordre %(i1)d dans
- le concept rÈsultat %(k2)s.
+ Le champ %(k1)s n'existe pas au num√©ro d'ordre %(i1)d dans
+ le concept r√©sultat %(k2)s.
 """),
 
 7 : _(u"""
- On ne sait pas calculer le critËre %(k1)s pour les champs de la grandeur %(k2)s.
+ On ne sait pas calculer le crit√®re %(k1)s pour les champs de la grandeur %(k2)s.
 """),
 
 8 : _(u"""
-    NumÈro d'ordre %(i1)4d : %(i2)d mailles ont ÈtÈ affectÈes (%(i3)d mailles dans le maillage).
+    Num√©ro d'ordre %(i1)4d : %(i2)d mailles ont √©t√© affect√©es (%(i3)d mailles dans le maillage).
 """),
 
 9 : _(u"""
- Le champ %(k1)s n'existe ni dans le concept rÈsultat %(k2)s, ni dans %(k3)s
- au numÈro d'ordre %(i1)d.
+ Le champ %(k1)s n'existe ni dans le concept r√©sultat %(k2)s, ni dans %(k3)s
+ au num√©ro d'ordre %(i1)d.
 """),
 
 10 : _(u"""
-    NumÈro d'ordre %(i1)4d : %(i2)d noeuds ont ÈtÈ affectÈs (%(i3)d noeuds dans le maillage).
+    Num√©ro d'ordre %(i1)4d : %(i2)d noeuds ont √©t√© affect√©s (%(i3)d noeuds dans le maillage).
 """),
 
 11 : _(u"""
- Pour extraire la valeur d'un champ constant par ÈlÈment (type ELEM), il est nÈcessaire de fournir
+ Pour extraire la valeur d'un champ constant par √©l√©ment (type ELEM), il est n√©cessaire de fournir
  un nom de maille ou un groupe de mailles.
 
  Conseil:
-   - Renseignez un des mots-clÈs MAILLE ou GROUP_MA.
+   - Renseignez un des mots-cl√©s MAILLE ou GROUP_MA.
 """),
 
 12 : _(u"""
- Pour extraire la valeur d'un champ par ÈlÈment aux noeuds (type ELNO), il est nÈcessaire de fournir
+ Pour extraire la valeur d'un champ par √©l√©ment aux noeuds (type ELNO), il est n√©cessaire de fournir
  un nom de maille ou un groupe de mailles et un nom de noeud ou un groupe de noeuds.
 
  Conseil:
-   - Renseignez un des mots-clÈs MAILLE ou GROUP_MA et un des mots-clÈs NOEUD, GROUP_NO ou POINT.
+   - Renseignez un des mots-cl√©s MAILLE ou GROUP_MA et un des mots-cl√©s NOEUD, GROUP_NO ou POINT.
 """),
 
 13 : _(u"""
- Pour extraire la valeur d'un champ par ÈlÈment aux points de Gauss (type ELGA), il est nÈcessaire
- de fournir un nom de maille ou un groupe de mailles et le numÈro de point de Gauss.
+ Pour extraire la valeur d'un champ par √©l√©ment aux points de Gauss (type ELGA), il est n√©cessaire
+ de fournir un nom de maille ou un groupe de mailles et le num√©ro de point de Gauss.
 
  Conseil:
-   - Renseignez un des mots-clÈs MAILLE ou GROUP_MA et le mot-clÈ POINT.
+   - Renseignez un des mots-cl√©s MAILLE ou GROUP_MA et le mot-cl√© POINT.
 """),
 
 14 : _(u"""
-Il n'est pas possible de crÈer le champ '%(k1)s' dans la structure
-de donnÈe '%(k2)s'.
+Il n'est pas possible de cr√©er le champ '%(k1)s' dans la structure
+de donn√©e '%(k2)s'.
 
 Conseil:
-    VÈrifiez que le champ n'existe pas dÈj‡.
-    Il est possible que cette structure de donnÈe n'accepte pas ce type de champ.
+    V√©rifiez que le champ n'existe pas d√©j√†.
+    Il est possible que cette structure de donn√©e n'accepte pas ce type de champ.
 
 """),
 

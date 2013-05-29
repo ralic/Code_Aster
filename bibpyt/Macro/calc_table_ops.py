@@ -1,4 +1,4 @@
-# -*- coding: iso-8859-1 -*-
+# coding=utf-8
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -22,7 +22,7 @@ import os
 
 def calc_table_ops(self, TABLE, ACTION, INFO, **args):
     """
-    Macro CALC_TABLE permettant de faire des opérations sur une table
+    Macro CALC_TABLE permettant de faire des opÃ©rations sur une table
     """
     import aster
 
@@ -37,7 +37,7 @@ def calc_table_ops(self, TABLE, ACTION, INFO, **args):
     # La macro compte pour 1 dans la numerotation des commandes
     self.set_icmd(1)
 
-    # Le concept sortant (de type table_sdaster ou dérivé) est tabout
+    # Le concept sortant (de type table_sdaster ou dÃ©rivÃ©) est tabout
     self.DeclareOut('tabout', self.sd)
     if self.sd.__class__ == table_fonction:
         typ_tabout = 'TABLE_FONCTION'
@@ -51,11 +51,11 @@ def calc_table_ops(self, TABLE, ACTION, INFO, **args):
 
     tab = TABLE.EXTR_TABLE()
 
-    # Réinitialiser le titre si on n'est pas réentrant
+    # RÃ©initialiser le titre si on n'est pas rÃ©entrant
     if self.reuse is None:
         tab.titr = get_titre_concept(self.sd)
 
-    # Boucle sur les actions à effectuer
+    # Boucle sur les actions Ã  effectuer
     for fOP in ACTION:
         occ = fOP.cree_dict_valeurs(fOP.mc_liste)
         for mc, val in occ.items():
@@ -66,7 +66,7 @@ def calc_table_ops(self, TABLE, ACTION, INFO, **args):
         # format pour l'impression des filtres
         form_filtre = '\nFILTRE -> NOM_PARA: %-16s CRIT_COMP: %-4s VALE: %s'
         if occ['OPERATION'] == 'FILTRE':
-            # peu importe le type, c'est la meme méthode d'appel
+            # peu importe le type, c'est la meme mÃ©thode d'appel
             opts = [occ[k] for k in ('VALE', 'VALE_I', 'VALE_C', 'VALE_K') if occ.has_key(k)]
             kargs = {}
             for k in ('CRITERE', 'PRECISION'):
@@ -139,7 +139,7 @@ def calc_table_ops(self, TABLE, ACTION, INFO, **args):
             if len(lpar) != len(lval):
                 UTMESS('F', 'TABLE0_14', valk=('NOM_PARA', 'VALE'))
             dnew = dict(zip(lpar, lval))
-            # ajout de la ligne avec vérification des types
+            # ajout de la ligne avec vÃ©rification des types
             tab.append(dnew)
 
         # 9. Traitement de AJOUT_COLONNE
@@ -152,8 +152,8 @@ def calc_table_ops(self, TABLE, ACTION, INFO, **args):
                 nval = [value, ] * len(tab)
                 tab[para] = nval
 
-    # 99. Création de la table_sdaster résultat
-    # cas réentrant : il faut détruire l'ancienne table_sdaster
+    # 99. CrÃ©ation de la table_sdaster rÃ©sultat
+    # cas rÃ©entrant : il faut dÃ©truire l'ancienne table_sdaster
     if self.reuse is not None:
         DETRUIRE(CONCEPT=_F(NOM=TABLE), INFO=1)
 
@@ -173,7 +173,7 @@ def calc_table_ops(self, TABLE, ACTION, INFO, **args):
         if type(tit) not in (list, tuple):
             tit = [tit]
         dprod['TITRE'] = tuple(['%-80s' % lig for lig in tit])
-    # type de la table de sortie à passer à CREA_TABLE
+    # type de la table de sortie Ã  passer Ã  CREA_TABLE
     tabout = CREA_TABLE(TYPE_TABLE=typ_tabout,
                        **dprod)
 

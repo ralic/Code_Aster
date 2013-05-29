@@ -1,12 +1,12 @@
 *======================================================================================
-*      Prototype d'étude simplifiée aéroréfrigérant
+*      Prototype d'Ã©tude simplifiÃ©e aÃ©rorÃ©frigÃ©rant
 *
 *      Juillet 2008
 *
-*      modèle sans armatures
+*      modÃ¨le sans armatures
 *
-*      Cylindre en modélisation 2D_AXIS
-*      Eléments QUA8 pour calcul meca
+*      Cylindre en modÃ©lisation 2D_AXIS
+*      ElÃ©ments QUA8 pour calcul meca
 *
 *     
 *
@@ -29,7 +29,7 @@ Teta = 90.;
 *  parametres de discretisation modifiables par l'utilisateur    
 *************************************************************** 
 
-* Critère de noeud double
+* CritÃ¨re de noeud double
 crit1 = 5.e-5 ;
 * nombre de mailles en axial 
 nmailleR = 5 ;  
@@ -62,8 +62,8 @@ VBETON  = TRAN nmailleH AB (0. H)  ;
 * creation de groupes de mailles pour faciliter les calculs    
 *************************************************************   
 
-*gauche et droite définies par la normale sortante vers 
-*l'extérieur
+*gauche et droite dÃ©finies par la normale sortante vers 
+*l'extÃ©rieur
 
 * surface gauche
 SHAUTE = CD;
@@ -81,7 +81,7 @@ ELIM crit1 SEXTERI VBETON;
 
 
 *************************************************************    
-* génération du fichier mgib    
+* gÃ©nÃ©ration du fichier mgib    
 *************************************************************
 
 opti sauv format 'cylindre_2D_AXI_me.mgib';    

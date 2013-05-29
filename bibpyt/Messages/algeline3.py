@@ -1,4 +1,4 @@
-# -*- coding: iso-8859-1 -*-
+# coding=utf-8
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -21,40 +21,40 @@
 cata_msg={
 
 1: _(u"""
- Le mot-clé MAILLAGE est obligatoire avec le mot-clé CREA_MAILLE.
+ Le mot-clÃ© MAILLAGE est obligatoire avec le mot-clÃ© CREA_MAILLE.
 """),
 
 2: _(u"""
- Le mot-clé MAILLAGE est obligatoire avec le mot-clé CREA_GROUP_MA.
+ Le mot-clÃ© MAILLAGE est obligatoire avec le mot-clÃ© CREA_GROUP_MA.
 """),
 
 3: _(u"""
- Le mot-clé MAILLAGE est obligatoire avec le mot-clé CREA_POI1.
+ Le mot-clÃ© MAILLAGE est obligatoire avec le mot-clÃ© CREA_POI1.
 """),
 
 4: _(u"""
- Le mot-clé MAILLAGE est obligatoire avec le mot-clé REPERE.
+ Le mot-clÃ© MAILLAGE est obligatoire avec le mot-clÃ© REPERE.
 """),
 
 5: _(u"""
- Sous le mot-clé "NOM_ORIG" du mot-clé facteur "REPERE",
+ Sous le mot-clÃ© "NOM_ORIG" du mot-clÃ© facteur "REPERE",
  on ne peut donner que les mots "CDG" ou "TORSION".
 """),
 
 6: _(u"""
- Maille non créée  %(k1)s
+ Maille non crÃ©Ã©e  %(k1)s
 """),
 
 7: _(u"""
- Le groupe de mailles '%(k1)s' existe déjà.
+ Le groupe de mailles '%(k1)s' existe dÃ©jÃ .
 
  Conseil :
     Si vous souhaitez utiliser un nom de groupe existant, il suffit
-    de le détruire avec DEFI_GROUP / DETR_GROUP_MA.
+    de le dÃ©truire avec DEFI_GROUP / DETR_GROUP_MA.
 """),
 
 8: _(u"""
- Le mot-clé MAILLAGE est obligatoire avec le mot-clé DETR_GROUP_MA.
+ Le mot-clÃ© MAILLAGE est obligatoire avec le mot-clÃ© DETR_GROUP_MA.
 """),
 
 9: _(u"""
@@ -62,80 +62,80 @@ cata_msg={
 """),
 
 10: _(u"""
- Masses effectives unitaires non calculées par NORM_MODE
+ Masses effectives unitaires non calculÃ©es par NORM_MODE
 """),
 
 11: _(u"""
- L'extraction des modes a échoué.
- La structure de données MODE_MECA est vide ou aucun mode ne remplit le critère d'extraction.
+ L'extraction des modes a Ã©chouÃ©.
+ La structure de donnÃ©es MODE_MECA est vide ou aucun mode ne remplit le critÃ¨re d'extraction.
  Conseils & solution :
-   Vérifiez le résultat de votre calcul modal et/ou modifiez votre filtre d'extraction"
+   VÃ©rifiez le rÃ©sultat de votre calcul modal et/ou modifiez votre filtre d'extraction"
 """),
 
 12: _(u"""
- Le nombre de noeuds sur le contour est insuffisant pour déterminer correctement
+ Le nombre de noeuds sur le contour est insuffisant pour dÃ©terminer correctement
  les ordres de coque.
 """),
 
 13: _(u"""
- L'azimut n'est pas défini pour un des noeuds de la coque.
+ L'azimut n'est pas dÃ©fini pour un des noeuds de la coque.
 """),
 
 14: _(u"""
  ordre de coque nul pour l'un des modes pris en compte pour le couplage.
- Le modèle de résolution ne supporte pas une telle valeur.
+ Le modÃ¨le de rÃ©solution ne supporte pas une telle valeur.
 """),
 
 15: _(u"""
- détermination du DRMAX et du déphasage pour le mode  %(k1)s  :
- le déterminant du système issu du moindre carré est nul
+ dÃ©termination du DRMAX et du dÃ©phasage pour le mode  %(k1)s  :
+ le dÃ©terminant du systÃ¨me issu du moindre carrÃ© est nul
 """),
 
 16: _(u"""
- détermination du déphasage pour le mode  %(k1)s  :
- THETA0 indéfini
+ dÃ©termination du dÃ©phasage pour le mode  %(k1)s  :
+ THETA0 indÃ©fini
 """),
 
 17: _(u"""
- Pivot nul dans la résolution du système complexe
+ Pivot nul dans la rÃ©solution du systÃ¨me complexe
 """),
 
 18: _(u"""
- Annulation du numérateur dans l'expression d un coefficient donnant
- la solution du problème fluide instationnaire pour UMOY = 0
+ Annulation du numÃ©rateur dans l'expression d un coefficient donnant
+ la solution du problÃ¨me fluide instationnaire pour UMOY = 0
 """),
 
 19: _(u"""
- Détermination des valeurs propres de l'opérateur différentiel :
+ DÃ©termination des valeurs propres de l'opÃ©rateur diffÃ©rentiel :
  existence d'une racine double
 """),
 
 20: _(u"""
- La %(k1)s ème valeur propre est trop petite.
+ La %(k1)s Ã¨me valeur propre est trop petite.
 """),
 
 21: _(u"""
- La MATR_ASSE  %(k1)s  n'est pas stockée "morse" :
+ La MATR_ASSE  %(k1)s  n'est pas stockÃ©e "morse" :
  le GCPC est donc impossible.
 """),
 
 22: _(u"""
- Conflit : une matrice stockée morse ne peut avoir qu'un bloc
+ Conflit : une matrice stockÃ©e morse ne peut avoir qu'un bloc
 """),
 
 23: _(u"""
-Problème :
-  Le préconditionnement LDLT_INC d'une matrice complexe n'est pas implémenté
+ProblÃ¨me :
+  Le prÃ©conditionnement LDLT_INC d'une matrice complexe n'est pas implÃ©mentÃ©
 Conseils & solution :
   Il faut choisir un autre solveur que GCPC
 """),
 
 24: _(u"""
- Résolution LDLT : erreur de programmation.
+ RÃ©solution LDLT : erreur de programmation.
 """),
 
 26: _(u"""
- Problème d'affichage FETI dans PREML1
+ ProblÃ¨me d'affichage FETI dans PREML1
 """),
 
 27: _(u"""
@@ -151,11 +151,11 @@ Conseils & solution :
 """),
 
 30: _(u"""
- Matrices A et B incompatibles pour l'opération *
+ Matrices A et B incompatibles pour l'opÃ©ration *
 """),
 
 31: _(u"""
- La section de la poutre doit être constante.
+ La section de la poutre doit Ãªtre constante.
 """),
 
 32: _(u"""
@@ -163,7 +163,7 @@ Conseils & solution :
 """),
 
 33: _(u"""
- On ne traite pas ce type de CHAM_ELEM, ICOEF différent de 1
+ On ne traite pas ce type de CHAM_ELEM, ICOEF diffÃ©rent de 1
 """),
 
 34: _(u"""
@@ -171,20 +171,20 @@ Conseils & solution :
 """),
 
 35: _(u"""
-MULT_FRONT factorise une Matrice Généralisée.
-On a détecté l'existence d'au moins une liaison entre degré de liberté.
-On ne renumérote pas car les degrés de liberté sont a priori compris entre  Lagrange1 et Lagrange2 .
+MULT_FRONT factorise une Matrice GÃ©nÃ©ralisÃ©e.
+On a dÃ©tectÃ© l'existence d'au moins une liaison entre degrÃ© de libertÃ©.
+On ne renumÃ©rote pas car les degrÃ©s de libertÃ© sont a priori compris entre  Lagrange1 et Lagrange2 .
 
 Conseil :
-  En cas d'arrêt ultérieur avec MATRICE singulière, il faudra changer de SOLVEUR (MUMPS par exemple).
+  En cas d'arrÃªt ultÃ©rieur avec MATRICE singuliÃ¨re, il faudra changer de SOLVEUR (MUMPS par exemple).
  """),
 
 37: _(u"""
-  GCPC n"est pas prévu pour une matrice complexe
+  GCPC n"est pas prÃ©vu pour une matrice complexe
 """),
 
 38: _(u"""
- Pas de matrice de préconditionnement : on s'arrête
+ Pas de matrice de prÃ©conditionnement : on s'arrÃªte
 """),
 
 40: _(u"""
@@ -192,124 +192,124 @@ Conseil :
 """),
 
 41: _(u"""
-La matrice possède des ddls imposés éliminés: il faut un VCINE
+La matrice possÃ¨de des ddls imposÃ©s Ã©liminÃ©s: il faut un VCINE
 """),
 
 42: _(u"""
-La matrice et le vecteur cinématique ne contiennent pas des valeurs de même type
+La matrice et le vecteur cinÃ©matique ne contiennent pas des valeurs de mÃªme type
 """),
 
 43: _(u"""
 Attention :
-  La pile des matrices frontales a une longueur (%(i1)d) qui, en octets, sera supérieure à l'entier maximum pour cette machine (%(i2)d).
-  Vous aurez un problème dans une allocation ultérieure.
+  La pile des matrices frontales a une longueur (%(i1)d) qui, en octets, sera supÃ©rieure Ã  l'entier maximum pour cette machine (%(i2)d).
+  Vous aurez un problÃ¨me dans une allocation ultÃ©rieure.
 Conseil :
-  Utilisez une machine 64 bits. Si vous y êtes déjà votre étude est vraiment trop volumineuse !
+  Utilisez une machine 64 bits. Si vous y Ãªtes dÃ©jÃ  votre Ã©tude est vraiment trop volumineuse !
 """),
 
 
 44: _(u"""
-La méthode de résolution:  %(k1)s  est inconnue. on attend LDLT,GCPC, MULT_FRONT ou FETI
+La mÃ©thode de rÃ©solution:  %(k1)s  est inconnue. on attend LDLT,GCPC, MULT_FRONT ou FETI
 """),
 
 45: _(u"""
- méthode de BATHE et WILSON : convergence non atteinte
+ mÃ©thode de BATHE et WILSON : convergence non atteinte
 """),
 
 46: _(u"""
-La matrice %(k1)s est non symétrique.
-Pour l'instant, la recherche des modes de corps rigide n'a pas été développée
-pour une matrice non symétrique.
+La matrice %(k1)s est non symÃ©trique.
+Pour l'instant, la recherche des modes de corps rigide n'a pas Ã©tÃ© dÃ©veloppÃ©e
+pour une matrice non symÃ©trique.
 """),
 
 47: _(u"""
 La matrice %(k1)s est complexe.
-Pour l'instant, la recherche des modes de corps rigide n'a pas été développée
+Pour l'instant, la recherche des modes de corps rigide n'a pas Ã©tÃ© dÃ©veloppÃ©e
 pour une matrice complexe.
 """),
 
 48: _(u"""
-Cet opérateur a besoin du "procédé de STURM" pour tester la validité de modes propres ou
+Cet opÃ©rateur a besoin du "procÃ©dÃ© de STURM" pour tester la validitÃ© de modes propres ou
 pour nourrir un algorithme de recherche de modes propres (dichotomie...). Or celui-ci
-ne fonctionne, pour l'instant, que sur des matrices réelles et symétriques.
-  --> La matrice utilisée ici, %(k1)s ne répond pas a ces critères !
+ne fonctionne, pour l'instant, que sur des matrices rÃ©elles et symÃ©triques.
+  --> La matrice utilisÃ©e ici, %(k1)s ne rÃ©pond pas a ces critÃ¨res !
 """),
 
 49: _(u"""
-Attention : plus de six modes de corps rigide ont été détectés.
+Attention : plus de six modes de corps rigide ont Ã©tÃ© dÃ©tectÃ©s.
 
 --> Conseil :
-Si vous pensez avoir une seule structure dans le modèle, cela peut provenir de noeud(s) orphelin(s). Dans ce cas, vérifiez le maillage.
+Si vous pensez avoir une seule structure dans le modÃ¨le, cela peut provenir de noeud(s) orphelin(s). Dans ce cas, vÃ©rifiez le maillage.
 """),
 
 50: _(u"""
-Attention  %(k1)s .VALF existe déjà
+Attention  %(k1)s .VALF existe dÃ©jÃ 
 """),
 
 51: _(u"""
-Le tableau B est insuffisamment dimensionné pour l'opération *
+Le tableau B est insuffisamment dimensionnÃ© pour l'opÃ©ration *
 """),
 
 52: _(u"""
 Attention :
-  Le bloc %(i1)d a une longueur (%(i2)d) qui, en octets, sera supérieure à l'entier maximum pour cette machine (%(i3)d).
-  Vous aurez un problème dans une allocation ultérieure.
+  Le bloc %(i1)d a une longueur (%(i2)d) qui, en octets, sera supÃ©rieure Ã  l'entier maximum pour cette machine (%(i3)d).
+  Vous aurez un problÃ¨me dans une allocation ultÃ©rieure.
 Conseil :
-  Utilisez une machine 64 bits. Si vous y êtes déjà votre étude est vraiment trop volumineuse.
+  Utilisez une machine 64 bits. Si vous y Ãªtes dÃ©jÃ  votre Ã©tude est vraiment trop volumineuse.
 """),
 
 53: _(u"""
-Toutes les fréquences sont des fréquences de corps rigide
+Toutes les frÃ©quences sont des frÃ©quences de corps rigide
 """),
 
 54: _(u"""
-Calcul des NUME_MODE : matrice non inversible pour la fréquence considérée
+Calcul des NUME_MODE : matrice non inversible pour la frÃ©quence considÃ©rÃ©e
 """),
 
 55: _(u"""
-Problème à la résolution du système réduit.
+ProblÃ¨me Ã  la rÃ©solution du systÃ¨me rÃ©duit.
 """),
 
 56: _(u"""
-Valeur propre infinie trouvée
+Valeur propre infinie trouvÃ©e
 """),
 
 57: _(u"""
-Méthode QR : problème de convergence
+MÃ©thode QR : problÃ¨me de convergence
 """),
 
 58: _(u"""
-Il y a des valeurs propres très proches
+Il y a des valeurs propres trÃ¨s proches
 """),
 
 60: _(u"""
-La matrice : %(k1)s a une numérotation incohérente avec le NUME_DDL.
+La matrice : %(k1)s a une numÃ©rotation incohÃ©rente avec le NUME_DDL.
 """),
 
 61: _(u"""
-Le concept "%(k1)s" a été créé avec les matrices
+Le concept "%(k1)s" a Ã©tÃ© crÃ©Ã© avec les matrices
  MATR_RIGI (ou MATR_A) :                   %(k2)s
  MATR_MASS (ou MATR_RIGI_GEOM ou MATR_B) : %(k3)s
  MATR_AMOR (ou MATR_C) :                   %(k4)s
- et non avec celles passées en arguments.
+ et non avec celles passÃ©es en arguments.
 """),
 
 62: _(u"""
-Le concept "%(k1)s" a été créé avec les matrices
+Le concept "%(k1)s" a Ã©tÃ© crÃ©Ã© avec les matrices
  MATR_RIGI (ou MATR_A) :                   %(k2)s
  MATR_MASS (ou MATR_RIGI_GEOM ou MATR_B) : %(k3)s
- et non avec celles passées en arguments.
+ et non avec celles passÃ©es en arguments.
 """),
 
 63: _(u"""
-Le système à résoudre n'a pas de DDL actif.
+Le systÃ¨me Ã  rÃ©soudre n'a pas de DDL actif.
 
 Conseil :
-vérifier que les DDL ne sont pas tous encastrés.
+vÃ©rifier que les DDL ne sont pas tous encastrÃ©s.
 """),
 
 64: _(u"""
-On trouve plus de 9999 valeurs propres dans la bande demandée
+On trouve plus de 9999 valeurs propres dans la bande demandÃ©e
 """),
 
 
@@ -322,42 +322,42 @@ Option  %(k1)s non reconnue.
 """),
 
 70: _(u"""
-Le type des valeurs varie d'un mode à l'autre, récupération impossible.
+Le type des valeurs varie d'un mode Ã  l'autre, rÃ©cupÃ©ration impossible.
 """),
 
 71: _(u"""
-Le nombre d'équations est variable d'un mode à l'autre, récupération impossible.
+Le nombre d'Ã©quations est variable d'un mode Ã  l'autre, rÃ©cupÃ©ration impossible.
 """),
 
 72: _(u"""
-Problème interne ARPACK
+ProblÃ¨me interne ARPACK
 """),
 
 73: _(u"""
-Problème taille WORKD/L -> augmenter DIM_SOUS_ESPACE
+ProblÃ¨me taille WORKD/L -> augmenter DIM_SOUS_ESPACE
 """),
 
 74: _(u"""
-Problème interne LAPACK
+ProblÃ¨me interne LAPACK
 """),
 
 75: _(u"""
-Problème de construction du vecteur initial.
+ProblÃ¨me de construction du vecteur initial.
 
 Conseil :
-si possible, diminuer NMAX_FREQ (ou NMAX_CHAR_CRIT selon le type d'étude).
+si possible, diminuer NMAX_FREQ (ou NMAX_CHAR_CRIT selon le type d'Ã©tude).
 """),
 
 76: _(u"""
-Problème interne LAPACK, routine FLAHQR (forme de SCHUR)
+ProblÃ¨me interne LAPACK, routine FLAHQR (forme de SCHUR)
 """),
 
 77: _(u"""
-Problème interne LAPACK, routine FTREVC (vecteurs propres)
+ProblÃ¨me interne LAPACK, routine FTREVC (vecteurs propres)
 """),
 
 78: _(u"""
-Aucune valeur propre à la précision requise.
+Aucune valeur propre Ã  la prÃ©cision requise.
 
 Conseils :
 augmenter PREC_SOREN ou NMAX_ITER_SOREN
@@ -365,45 +365,45 @@ ou augmenter DIM_SOUS_ESPACE.
 """),
 
 79: _(u"""
-La position modale d'une des fréquences est négative ou nulle
-votre système matriciel est sûrement fortement singulier
-(ceci correspond généralement à un problème dans la modélisation).
+La position modale d'une des frÃ©quences est nÃ©gative ou nulle
+votre systÃ¨me matriciel est sÃ»rement fortement singulier
+(ceci correspond gÃ©nÃ©ralement Ã  un problÃ¨me dans la modÃ©lisation).
 """),
 
 80: _(u"""
-MODE à créer avant appel à VPSTOR
+MODE Ã  crÃ©er avant appel Ã  VPSTOR
 """),
 
 81: _(u"""
   Le shift=%(r1)g
-  utilisé pour construire la matrice dynamique coïncide avec une valeur propre !
+  utilisÃ© pour construire la matrice dynamique coÃ¯ncide avec une valeur propre !
   Avec l'option 'CENTRE', ce shift vaut %(k1)s,
-  Avec l'option 'BANDE', c'est le milieu de la bande sélectionnée,
+  Avec l'option 'BANDE', c'est le milieu de la bande sÃ©lectionnÃ©e,
   Avec l'option 'PLUS_PETITE' ou 'TOUT', il prend la valeur 0.
   
-  Malgré la stratégie de décalage du shift, cette matrice dynamique reste
-  numériquement singulière.
+  MalgrÃ© la stratÃ©gie de dÃ©calage du shift, cette matrice dynamique reste
+  numÃ©riquement singuliÃ¨re.
   
   -> Risque :
-  Cette matrice étant abondamment utilisée pour résoudre des systèmes linéaires
-  à chaque itération du processus modal, cette quasi singularité peut fausser les résultats
+  Cette matrice Ã©tant abondamment utilisÃ©e pour rÃ©soudre des systÃ¨mes linÃ©aires
+  Ã  chaque itÃ©ration du processus modal, cette quasi singularitÃ© peut fausser les rÃ©sultats
   (mauvais conditionnement matriciel).
 
   -> Conseils :
-  La structure analysée présente probablement des modes de corps rigide.
+  La structure analysÃ©e prÃ©sente probablement des modes de corps rigide.
   
-    * si aucun mode de corps rigide n'était attendu :
-  Vous pouvez modifier les paramètres du solveur linéaire (par exemple METHODE ou NPREC),
-  ou ceux de l'algorithme de décalage (PREC_SHIFT, NMAX_ITER_SHIFT et %(k2)s)
-  pour vérifier qu'il s'agit bien d'une singularité et non d'un problème numérique ponctuel.
-  Si c'est une singularité, vérifiez la mise en donnée du problème :
-  conditions aux limites, maillage (présence de noeuds / mailles orphelin(e)s), unités, ...
+    * si aucun mode de corps rigide n'Ã©tait attendu :
+  Vous pouvez modifier les paramÃ¨tres du solveur linÃ©aire (par exemple METHODE ou NPREC),
+  ou ceux de l'algorithme de dÃ©calage (PREC_SHIFT, NMAX_ITER_SHIFT et %(k2)s)
+  pour vÃ©rifier qu'il s'agit bien d'une singularitÃ© et non d'un problÃ¨me numÃ©rique ponctuel.
+  Si c'est une singularitÃ©, vÃ©rifiez la mise en donnÃ©e du problÃ¨me :
+  conditions aux limites, maillage (prÃ©sence de noeuds / mailles orphelin(e)s), unitÃ©s, ...
 
-   * si ces modes étaient attendus et que vous ne voulez pas les calculer :
-  Utilisez l'option 'BANDE' avec une borne inférieure suffisamment positive (par exemple 1.e-1).
-   * si ces modes étaient attendus et que vous voulez les calculer :
-  - utilisez l'option 'BANDE' avec une borne inférieure légèrement négative (par exemple -1.e-1).
-  - utilisez la méthode 'TRI_DIAG' avec OPTION='MODE_RIGIDE'.
+   * si ces modes Ã©taient attendus et que vous ne voulez pas les calculer :
+  Utilisez l'option 'BANDE' avec une borne infÃ©rieure suffisamment positive (par exemple 1.e-1).
+   * si ces modes Ã©taient attendus et que vous voulez les calculer :
+  - utilisez l'option 'BANDE' avec une borne infÃ©rieure lÃ©gÃ¨rement nÃ©gative (par exemple -1.e-1).
+  - utilisez la mÃ©thode 'TRI_DIAG' avec OPTION='MODE_RIGIDE'.
 """),
 
 82: _(u"""
@@ -415,31 +415,31 @@ MODE à créer avant appel à VPSTOR
 """),
 
 84: _(u"""
-  Malgré la stratégie de décalage, la matrice dynamique reste numériquement
-  singulière.
+  MalgrÃ© la stratÃ©gie de dÃ©calage, la matrice dynamique reste numÃ©riquement
+  singuliÃ¨re.
   
   -> Risque :
-  Le test de Sturm qui sert à évaluer le nombre de modes présents dans l'intervalle
-  peut être faussé.
+  Le test de Sturm qui sert Ã  Ã©valuer le nombre de modes prÃ©sents dans l'intervalle
+  peut Ãªtre faussÃ©.
 
   -> Conseils :
-  Vous pouvez modifier les paramètres du solveur linéaire (par exemple METHODE ou NPREC),
-  ou ceux de l'algorithme de décalage (PREC_SHIFT, NMAX_ITER_SHIFT et %(k1)s) pour
-  vérifiez qu'il s'agit bien d'une singularité et non d'un problème numérique ponctuel.
+  Vous pouvez modifier les paramÃ¨tres du solveur linÃ©aire (par exemple METHODE ou NPREC),
+  ou ceux de l'algorithme de dÃ©calage (PREC_SHIFT, NMAX_ITER_SHIFT et %(k1)s) pour
+  vÃ©rifiez qu'il s'agit bien d'une singularitÃ© et non d'un problÃ¨me numÃ©rique ponctuel.
   
-  S'il ne s'agit pas d'un test de vérification ('VERIFICATION A POSTERIORI DES MODES'),
-  vous pouvez aussi relancer un autre calcul en décalant les bornes de l'intervalle de
-  recherche pour éviter cette fréquence.
+  S'il ne s'agit pas d'un test de vÃ©rification ('VERIFICATION A POSTERIORI DES MODES'),
+  vous pouvez aussi relancer un autre calcul en dÃ©calant les bornes de l'intervalle de
+  recherche pour Ã©viter cette frÃ©quence.
 """),
 
 85: _(u"""
-  La borne inférieure de l'intervalle a été décalée plusieurs fois car elle est trop proche
-  d'une valeur propre. En raison de ces décalages, elle est devenue plus grande que la borne
-  supérieure !
+  La borne infÃ©rieure de l'intervalle a Ã©tÃ© dÃ©calÃ©e plusieurs fois car elle est trop proche
+  d'une valeur propre. En raison de ces dÃ©calages, elle est devenue plus grande que la borne
+  supÃ©rieure !
 
   -> Conseils :
-  Relancez votre calcul en espaçant suffisamment les bornes de l'intervalle (en tenant compte
-  des valeurs des paramètres de décalage NMAX_ITER_SHIFT et PREC_SHIFT).
+  Relancez votre calcul en espaÃ§ant suffisamment les bornes de l'intervalle (en tenant compte
+  des valeurs des paramÃ¨tres de dÃ©calage NMAX_ITER_SHIFT et PREC_SHIFT).
 """),
 
 
@@ -453,7 +453,7 @@ CHAM_NO non FETI
 """),
 
 92: _(u"""
-Liste de CHAM_NO à concaténer hétérogène
+Liste de CHAM_NO Ã  concatÃ©ner hÃ©tÃ©rogÃ¨ne
 """),
 
 93: _(u"""
@@ -461,11 +461,11 @@ Les CHAM_NO  %(k1)s  et  %(k2)s  sont de type inconnu  %(k3)s
 """),
 
 94: _(u"""
-Le CHAM_NO  %(k1)s  de type  %(k2)s  ne peut être copié dans le CHAM_NO  %(k3)s  de type  %(k4)s
+Le CHAM_NO  %(k1)s  de type  %(k2)s  ne peut Ãªtre copiÃ© dans le CHAM_NO  %(k3)s  de type  %(k4)s
 """),
 
 95: _(u"""
-Champ à représentation constante : cas non traité.
+Champ Ã  reprÃ©sentation constante : cas non traitÃ©.
 """),
 
 96: _(u"""
@@ -477,10 +477,10 @@ Type de tri inconnu
 """),
 
 98: _(u"""
-Problème interne LAPACK, routine DLAHQR (forme de SCHUR)
+ProblÃ¨me interne LAPACK, routine DLAHQR (forme de SCHUR)
 """),
 
 99: _(u"""
-Problème interne LAPACK, routine DTREVC (vecteurs propres)
+ProblÃ¨me interne LAPACK, routine DTREVC (vecteurs propres)
 """),
 }

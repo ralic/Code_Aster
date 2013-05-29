@@ -1,4 +1,4 @@
-# -*- coding: iso-8859-1 -*-
+# coding=utf-8
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -477,7 +477,7 @@ def get_dico_levres(lev,FOND_FISS,ndim,Lnoff,Nnoff):
 #---------------------------------------------------------------------------------------------------------------
 
 def get_coor_regle(self,RESULTAT,ndim,Lnoff,Lnocal,dicoS,syme_char,dicoI):
-      """retourne le dictionnaire des coordonnees des noeuds des lèvres pour les maillages regles"""
+      """retourne le dictionnaire des coordonnees des noeuds des lÃ¨vres pour les maillages regles"""
       import numpy as NP
       import string as S
       import copy
@@ -667,7 +667,7 @@ def get_resxfem(self,xcont,RESULTAT,MODELISATION,MODEL) :
                            MODELE_2=__MODLINE, );
 
 
-#        Rq : on ne peut pas détruire __MODLINE ici car on en a besoin lors du MACR_LIGN_COUP qui suivra
+#        Rq : on ne peut pas dÃ©truire __MODLINE ici car on en a besoin lors du MACR_LIGN_COUP qui suivra
 
       return __RESX
 
@@ -682,7 +682,7 @@ def get_coor_xfem(args,FISSURE,ndim):
       Basefo = FISSURE.sdj.BASEFOND.get()
       NB_POINT_FOND = args['NB_POINT_FOND']
 
-#     Traitement des fonds fermés
+#     Traitement des fonds fermÃ©s
       TypeFond = FISSURE.sdj.INFO.get()[2]
 
 #     Traitement du cas fond multiple
@@ -894,7 +894,7 @@ def get_liste_inst(tabsup,args) :
 #---------------------------------------------------------------------------------------------------------------
 
 def get_liste_freq(tabsup,args) :
-      """retourne la liste des fréquences"""
+      """retourne la liste des frÃ©quences"""
       from Utilitai.Utmess     import  UTMESS
 
       l_freq=None
@@ -980,7 +980,7 @@ def affiche_instant(inst,type_para):
 #---------------------------------------------------------------------------------------------------------------
 
 def get_tab_inst(lev,inst,FISSURE,syme_char,PRECISION,CRITERE,tabsup,tabinf,type_para) :
-      """retourne la table des deplacements des noeuds à l'instant courant"""
+      """retourne la table des deplacements des noeuds Ã  l'instant courant"""
 
       tab = None
       assert( lev == 'sup' or lev == 'inf')
@@ -1011,7 +1011,7 @@ def get_tab_inst(lev,inst,FISSURE,syme_char,PRECISION,CRITERE,tabsup,tabinf,type
 #---------------------------------------------------------------------------------------------------------------
 
 def get_propmat_tempe(MATER,tabtemp,Lnofon,ino,inst,PRECISION) :
-      """retourne les proprietes materiaux en fonction de la temperature à l'instant demandé"""
+      """retourne les proprietes materiaux en fonction de la temperature Ã  l'instant demandÃ©"""
       import numpy as NP
       from math import pi
 
@@ -1032,7 +1032,7 @@ def get_propmat_tempe(MATER,tabtemp,Lnofon,ino,inst,PRECISION) :
 #---------------------------------------------------------------------------------------------------------------
 
 def get_depl_sup(FOND_FISS,tabsupi,ndim,Lnofon,d_coor,ino,TYPE_MAILLAGE) :
-      """retourne les déplacements sup"""
+      """retourne les dÃ©placements sup"""
 
       import numpy as NP
       import copy
@@ -1094,7 +1094,7 @@ def get_depl_sup(FOND_FISS,tabsupi,ndim,Lnofon,d_coor,ino,TYPE_MAILLAGE) :
 #---------------------------------------------------------------------------------------------------------------
 
 def get_depl_inf(FOND_FISS,tabinfi,ndim,Lnofon,syme_char,d_coor,ino,TYPE_MAILLAGE) :
-      """retourne les déplacements inf"""
+      """retourne les dÃ©placements inf"""
       import numpy as NP
       import copy
       from Utilitai.Utmess     import  UTMESS
@@ -1139,7 +1139,7 @@ def get_depl_inf(FOND_FISS,tabinfi,ndim,Lnofon,syme_char,d_coor,ino,TYPE_MAILLAG
 
 def get_pgl(syme_char,FISSURE,ino,VDIR,VNOR,dicVDIR,dicVNOR,Lnofon,ndim) :
 
-      """retourne la matrice du changement de repère"""
+      """retourne la matrice du changement de repÃ¨re"""
       import numpy as NP
 
       # attention en 2d, la base (VDIR, VNOR) issue BASEFOND n'est pas forcement dans le
@@ -1173,7 +1173,7 @@ def get_pgl(syme_char,FISSURE,ino,VDIR,VNOR,dicVDIR,dicVNOR,Lnofon,ndim) :
 
 def get_saut(self,pgl,ds,di,INFO,FISSURE,syme_char,abscs,ndim) :
 
-      """retourne le saut de déplacements dans le nouveau repère"""
+      """retourne le saut de dÃ©placements dans le nouveau repÃ¨re"""
 
       from Accas import _F
       import aster
@@ -1348,8 +1348,8 @@ def get_meth3(self,abscs,coefg,coefg3,kgsig,isig,saut2,INFO,ndim) :
 
 def get_erreur(self,ndim,__tabi,type_para) :
 
-      """retourne l'erreur selon les méthodes.
-      En FEM/X-FEM, on ne retient que le K_MAX de la méthode 1."""
+      """retourne l'erreur selon les mÃ©thodes.
+      En FEM/X-FEM, on ne retient que le K_MAX de la mÃ©thode 1."""
       from Accas import _F
       import aster
       import string
@@ -1536,8 +1536,8 @@ def post_k1_k2_k3_ops(self,MODELISATION,FOND_FISS,FISSURE,MATER,RESULTAT,
                    ABSC_CURV_MAXI,PREC_VIS_A_VIS,INFO,TITRE,**args):
    """
    Macro POST_K1_K2_K3
-   Calcul des facteurs d'intensité de contraintes en 2D et en 3D
-   par extrapolation des sauts de déplacements sur les lèvres de
+   Calcul des facteurs d'intensitÃ© de contraintes en 2D et en 3D
+   par extrapolation des sauts de dÃ©placements sur les lÃ¨vres de
    la fissure. Produit une table.
    """
    import aster
@@ -1557,7 +1557,7 @@ def post_k1_k2_k3_ops(self,MODELISATION,FOND_FISS,FISSURE,MATER,RESULTAT,
    # La macro compte pour 1 dans la numerotation des commandes
    self.set_icmd(1)
 
-   # Le concept sortant (de type table_sdaster ou dérivé) est tab
+   # Le concept sortant (de type table_sdaster ou dÃ©rivÃ©) est tab
    self.DeclareOut('tabout', self.sd)
 
    tabout=[]
@@ -1653,7 +1653,7 @@ def post_k1_k2_k3_ops(self,MODELISATION,FOND_FISS,FISSURE,MATER,RESULTAT,
 
 
    if FOND_FISS and EVOL_THER :
-#      on recupere juste le nom du resultat thermique (la température est variable de commande)
+#      on recupere juste le nom du resultat thermique (la tempÃ©rature est variable de commande)
        ndim   = 3
        Tempe3D=True
        resuth=S.ljust(EVOL_THER.nom,8).rstrip()
@@ -1737,7 +1737,7 @@ def post_k1_k2_k3_ops(self,MODELISATION,FOND_FISS,FISSURE,MATER,RESULTAT,
       Lnocal = get_noeud_a_calculer(Lnoff,ndim,FOND_FISS,MAILLAGE,EnumTypes,args)
       Nnocal = len(Lnocal)
 
-#     Recuperation de la liste des mailles de la lèvre supérieure
+#     Recuperation de la liste des mailles de la lÃ¨vre supÃ©rieure
 #     ------------------------------------------------------------
 
       ListmaS = FOND_FISS.sdj.LEVRESUP_MAIL.get()
@@ -1858,7 +1858,7 @@ def post_k1_k2_k3_ops(self,MODELISATION,FOND_FISS,FISSURE,MATER,RESULTAT,
       dmax  = PREC_VIS_A_VIS * hmax
 
       (xcont,MODEL) = verif_resxfem(self,RESULTAT)
-      # incohérence entre le modèle et X-FEM
+      # incohÃ©rence entre le modÃ¨le et X-FEM
       if not xcont :
          UTMESS('F','RUPTURE0_4')
 
@@ -1889,7 +1889,7 @@ def post_k1_k2_k3_ops(self,MODELISATION,FOND_FISS,FISSURE,MATER,RESULTAT,
 
    #  creation des objets vides s'ils n'existent pas
    #  de maniere a pouvoir les passer en argument des fonctions
-   #  c'est pas terrible : il faudrait harmoniser les noms entre les différents cas
+   #  c'est pas terrible : il faudrait harmoniser les noms entre les diffÃ©rents cas
    if '__TlibS'  not in locals() : __TlibS  = []
    if '__TlibI'  not in locals() : __TlibI  = []
    if 'Lnosup' not in locals() : Lnosup = []
@@ -1950,7 +1950,7 @@ def post_k1_k2_k3_ops(self,MODELISATION,FOND_FISS,FISSURE,MATER,RESULTAT,
       else:
          (l_inst,PRECISION,CRITERE) = get_liste_inst(tabsup,args)
 
-#     récupération de la matrice de changement de repère
+#     rÃ©cupÃ©ration de la matrice de changement de repÃ¨re
       pgl = get_pgl(syme_char,FISSURE,ino,VDIR,VNOR,dicVDIR,dicVNOR,Lnofon,ndim)
 
 #     ------------------------------------------------------------------
@@ -1966,11 +1966,11 @@ def post_k1_k2_k3_ops(self,MODELISATION,FOND_FISS,FISSURE,MATER,RESULTAT,
          tabsupi = get_tab_inst('sup',inst,FISSURE,syme_char,PRECISION,CRITERE,tabsup,tabinf,type_para)
          tabinfi = get_tab_inst('inf',inst,FISSURE,syme_char,PRECISION,CRITERE,tabsup,tabinf,type_para)
 
-#        recupération des déplacements sup et inf : ds et di
+#        recupÃ©ration des dÃ©placements sup et inf : ds et di
          (abscs,ds) = get_depl_sup(FOND_FISS,tabsupi,ndim,Lnofon,d_coor,ino,TYPE_MAILLAGE)
          (absci,di) = get_depl_inf(FOND_FISS,tabinfi,ndim,Lnofon,syme_char,d_coor,ino,TYPE_MAILLAGE)
 
-#        récupération des propriétés materiau avec temperature
+#        rÃ©cupÃ©ration des propriÃ©tÃ©s materiau avec temperature
          if Tempe3D :
             (e,nu,coefd,coefd3,coefg,coefg3) = get_propmat_tempe(MATER,tabtemp,Lnofon,ino,inst,PRECISION)
 
@@ -1994,7 +1994,7 @@ def post_k1_k2_k3_ops(self,MODELISATION,FOND_FISS,FISSURE,MATER,RESULTAT,
 
 #           SI NBVAL >= 3 :
 
-#           calcul du saut de déplacements dans le nouveau repère
+#           calcul du saut de dÃ©placements dans le nouveau repÃ¨re
             saut = get_saut(self,pgl,ds,di,INFO,FISSURE,syme_char,abscs,ndim)
 
 #           CALCUL DES K1, K2, K3
@@ -2023,7 +2023,7 @@ def post_k1_k2_k3_ops(self,MODELISATION,FOND_FISS,FISSURE,MATER,RESULTAT,
        expand_values(self,tabout, liste_noeu_a_extr,TITRE, type_para)
 
 
-#  Tri de la table si nécessaire
+#  Tri de la table si nÃ©cessaire
    if len(l_inst)!=1 and ndim == 3 :
       if type_para == 'FREQ':
          tabout=CALC_TABLE(reuse=tabout,

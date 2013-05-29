@@ -1,4 +1,4 @@
-# -*- coding: iso-8859-1 -*-
+# coding=utf-8
 # person_in_charge: mathieu.courtois at edf.fr
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -25,7 +25,7 @@ import N_MACRO_ETAPE
 
 class FORM_ETAPE(N_MACRO_ETAPE.MACRO_ETAPE):
     """
-       Cette classe sert à construire l'objet ACCAS correspondant à une
+       Cette classe sert Ã  construire l'objet ACCAS correspondant Ã  une
        FORMULE Aster.
-       Il s'agit d'un objet MACRO_ETAPE légèrement modifié
+       Il s'agit d'un objet MACRO_ETAPE lÃ©gÃ¨rement modifiÃ©
     """

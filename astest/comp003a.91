@@ -8,7 +8,7 @@ def ERREUR(X,Xref,coef=1.,prec_zero=0.):
 
 #######################################################################
 def RENOMME(i,N_pas,label_cal,ch_param,RESU,R_SI):
-# On renomme les composantes en fonction de  l'ordre de discrétisation
+# On renomme les composantes en fonction de  l'ordre de discrÃ©tisation
         N = N_pas[i]
         chN=label_cal[i]+str(N)
         for ch in ch_param:
@@ -49,7 +49,7 @@ def TEST_ECART(ch_param2,label_cal,N_pas,Ncal,nbequi,R_SI,prec_ecart,vale_calc,p
         chref1 = ch + label_cal[nbequi] + str(N_pas[nbequi])
         chref2 = ch + label_cal[Ncal-nbequi+1] + str(N_pas[Ncal-nbequi+1])
         chref = [chref1, chref2]
-        # chref1 utilisé pour les calculs équivalents, chref2 pour la discretisation en temps
+        # chref1 utilisÃ© pour les calculs Ã©quivalents, chref2 pour la discretisation en temps
         for j in range(Ncal) :
                 coef = 1.0
                 ch_cal = ch + label_cal[j] + str(N_pas[j])

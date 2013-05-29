@@ -1,4 +1,4 @@
-# -*- coding: iso-8859-1 -*-
+# coding=utf-8
 # person_in_charge: jacques.pellet at edf.fr
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -19,7 +19,7 @@
 # ======================================================================
 
 # --------------------------------------------------------------------------------
-#       impressions du catalogue ‡ diffÈrents formats :   cata /cata_l/ ojb
+#       impressions du catalogue √† diff√©rents formats :   cata /cata_l/ ojb
 # --------------------------------------------------------------------------------
 import string,copy,os ,traceback
 from  Lecture_Cata_Ele import utilit
@@ -40,9 +40,9 @@ def impr_cata(capy,nomfic,format,seq='oui'):
 #==========================================
 
 
-#   imprimer un catalogue python (capy) sur un fichier ‡ un format donnÈ
+#   imprimer un catalogue python (capy) sur un fichier √† un format donn√©
 #       seq='non' permet de demander le "split" en autant de fichiers qu'il y a de catalogues
-#       format='ojb'     : impression des objets jeveux correspondant ‡ la SD &CATA
+#       format='ojb'     : impression des objets jeveux correspondant √† la SD &CATA
 #       format='cata'    : impression au format ".cata" (en texte)
 #       format='cata_l'  : impression au format ".cata" (en texte) avec des lignes "longues" (plus facile pour les grep)
 
@@ -77,7 +77,7 @@ def impr_cata(capy,nomfic,format,seq='oui'):
 
 def txtpad(long,chaine):
 #---------------------------------------
-#   retourne une chaine de longueur "long" en complÈtant chaine par des "blancs"
+#   retourne une chaine de longueur "long" en compl√©tant chaine par des "blancs"
     if len(chaine) > long : return chaine[0:long]
     chaine2=chaine+" "*(long-len(chaine))
     return chaine2
@@ -227,7 +227,7 @@ def imprime_copyright(file):
 #------------------------------------------------------------
     file.write('%            CONFIGURATION MANAGEMENT OF EDF VERSION                        '+"\n")
     file.write('% ======================================================================    '+"\n")
-    # pour dÈjouer un bug de l'agla, on coupe la ligne suivante en 2 :
+    # pour d√©jouer un bug de l'agla, on coupe la ligne suivante en 2 :
     file.write('% COPY')
     file.write(      'RIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG    '+"\n")
     file.write('% THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY      '+"\n")
@@ -252,10 +252,10 @@ def imprime_lk8(format,file,liste,ncol,decal1=0,decaln=0,retour=1):
 #  impression d'une liste de K8 :
 #    format : si format='cata_l' : on ecrit tout sur la meme ligne
 #             sinon : on tient compte de l'argument nbcol
-#    ncol   : nombre de colonnes voulu (aprËs, on revient ‡ la ligne)
-#    decal1 : nombre de " " imprimÈ au dÈbut de la 1ere ligne.
-#    decaln : nombre de " " imprimÈ au dÈbut des lignes suivantes
-#    retour : 1 -> on termine par un \n ; 0 -> on n'Ècrit pas de \n
+#    ncol   : nombre de colonnes voulu (apr√®s, on revient √† la ligne)
+#    decal1 : nombre de " " imprim√© au d√©but de la 1ere ligne.
+#    decaln : nombre de " " imprim√© au d√©but des lignes suivantes
+#    retour : 1 -> on termine par un \n ; 0 -> on n'√©crit pas de \n
 #------------------------------------------------------------
     if format == 'cata_l' :
         nbcol= len(liste)
@@ -383,10 +383,10 @@ def impr_entete(file,entete,l_elref1,lattrib,l_decl_en,l_decl_opt,format):
 #------------------------------------------------------------------------------------
 
 def imprime_ojb(file,capy):
-    ERR.mess('I',"DÈbut de la transformation de l'ENSEMBLE des catalogues en objets jeveux")
+    ERR.mess('I',"D√©but de la transformation de l'ENSEMBLE des catalogues en objets jeveux")
 
 #----------------------------------------------------------
-# Attention : cette fonction "dÈgÈnÈrise" les TYPE_GENE__ !
+# Attention : cette fonction "d√©g√©n√©rise" les TYPE_GENE__ !
 #----------------------------------------------------------
 
     # On transforme le capy pour remplacer les TYPE_GENE__ par des TYPE_ELEM__ :
@@ -404,15 +404,15 @@ def imprime_ojb(file,capy):
 
     #=========================================================================================
     # XXUTIL:
-    # Bouts de code povant servir aux dÈveloppeurs pour gÈnÈrer des fichiers pratiques pour les scripts :
-    # Ces bouts de code sont placÈs ici, aprËs le "degenerise" et avant les "del cata"
+    # Bouts de code povant servir aux d√©veloppeurs pour g√©n√©rer des fichiers pratiques pour les scripts :
+    # Ces bouts de code sont plac√©s ici, apr√®s le "degenerise" et avant les "del cata"
     xxut1=False
     if xxut1 :
         nomfic="/local00/home/lvabhhts/U/liCMP.txt"
         impr_CMP(nomfic,capy) # pour imprimer tous les 6-uplets ( OPTION  TYPELEM  IN/OUT  PARAM   GRANDEUR  CMP )
     if xxut1 :
         nomfic="/local00/home/lvabhhts/U/param_options.txt"
-        # le fichier produit est moins gros que liCMP mais surtout il contient les paramËtres RESL
+        # le fichier produit est moins gros que liCMP mais surtout il contient les param√®tres RESL
         impr_param_options(nomfic,capy) # pour imprimer tous les 5-uplets ( OPTION  TYPELEM  IN/OUT  PARAM  GRANDEUR)
     if xxut1 :
         nomfic="/local00/home/lvabhhts/U/PbOptions.txt"
@@ -447,7 +447,7 @@ def imprime_ojb(file,capy):
         return chaineDependance[1:-1].split("!")
 
     def elrefe_npg(cata_tm,NOFPG,elrf,f):
-    # retourne le nombre de points de la famille f de l'elrefe elrf et le numÈro de la famille
+    # retourne le nombre de points de la famille f de l'elrefe elrf et le num√©ro de la famille
         for tm in cata_tm.ltm :
             for elrefe in tm[4] :
                 if elrefe[0]==elrf :
@@ -512,7 +512,7 @@ def imprime_ojb(file,capy):
     NOMCMP=ut.cree_co(d,nom='&CATA.GD.NOMCMP',tsca='K8',tsca_pn='K8',contig='CONTIG',acces='NO',longv=0)
     DESCRIGD=ut.cree_co(d,nom='&CATA.GD.DESCRIGD',tsca='I',tsca_pn='K8',contig='CONTIG',acces='NU',longv=7)
 
-    # on rÈalise les grandeurs "union" :
+    # on r√©alise les grandeurs "union" :
     x={}
     for gd in cata.l_gdsimp :
         if not gd.union :
@@ -525,7 +525,7 @@ def imprime_ojb(file,capy):
             for nogd in gd.lgd :
                 gd.lcmp.extend(x[nogd].lcmp)
                 if gd.tscal != x[nogd].tscal :
-                    ERR.mess('E'," type scalaire diffÈrent entre: "+gd.nom+" et: "+nogd)
+                    ERR.mess('E'," type scalaire diff√©rent entre: "+gd.nom+" et: "+nogd)
             ERR.veri_pas_doublon('E',gd.lcmp)
     del x
 
@@ -654,7 +654,7 @@ def imprime_ojb(file,capy):
     #-------------------------------------------
 
 
-    # fonction de calcul d'une suite d'entiers codÈs correspondant ‡ une liste de CMPS:
+    # fonction de calcul d'une suite d'entiers cod√©s correspondant √† une liste de CMPS:
     def entiers_codes(note,lcmp,lcmp_gd):
         nbec=(len(lcmp_gd)-1)/30 + 1
         liec=[0]*nbec
@@ -670,8 +670,8 @@ def imprime_ojb(file,capy):
             liec[iec]= liec[iec] | 2**puiss
         return liec
 
-    # retourne le nombre total d'ELREFE rÈfÈrencÈs dans les type_elem :
-    # mais cela ne veut pas dire qu'ils sont tous diffÈrents !
+    # retourne le nombre total d'ELREFE r√©f√©renc√©s dans les type_elem :
+    # mais cela ne veut pas dire qu'ils sont tous diff√©rents !
     def nb_elrefe(capy):
         nb=0
         for cata in capy.te:
@@ -679,7 +679,7 @@ def imprime_ojb(file,capy):
             nb=nb+len(entete[2])
         return nb
 
-    # retourne le nombre total de "familles locales de PG" rÈfÈrencÈes dans les type_elem :
+    # retourne le nombre total de "familles locales de PG" r√©f√©renc√©es dans les type_elem :
     def nb_loc_fpg(capy):
         nb=0
         for cata in capy.te:
@@ -805,7 +805,7 @@ def imprime_ojb(file,capy):
         # ---------------
         MLOCs,MLVEs,MLMAs=modlocs
         ERR.contexte("Examen du catalogue de TYPE_ELEM__: "+note)
-        ERR.contexte("  rubrique: dÈfinition des modes locaux ","AJOUT")
+        ERR.contexte("  rubrique: d√©finition des modes locaux ","AJOUT")
 
 
         for moloc in MLOCs:
@@ -823,13 +823,13 @@ def imprime_ojb(file,capy):
             if typept == "ELGA__"  :
                 nbpt=-999
                 nofpg1=moloc[3]
-                # on cherche les caractÈristiques de la famille nofpg1 : nbpt,ifpg
+                # on cherche les caract√©ristiques de la famille nofpg1 : nbpt,ifpg
 
-                # on cherche d'abord dans les familles "simples" dÈfinies dans capy.tm :
+                # on cherche d'abord dans les familles "simples" d√©finies dans capy.tm :
                 for decl in l_elref1[0][1][0] :
                     if decl[0]== nofpg1 : (nbpt,ifpg)=elrefe_npg(capy.tm,NOFPG,entete[2][0][0],decl[1])
 
-                # si on n'a pas trouvÈ, on cherche dans les familles "liste" :
+                # si on n'a pas trouv√©, on cherche dans les familles "liste" :
                 if nbpt == -999 :
                     if l_elref1[0][1][1] :
                         for decl_l in l_elref1[0][1][1] :
@@ -845,7 +845,7 @@ def imprime_ojb(file,capy):
                                 ifpg= -(lnofpgl.index(note2+nofpg1)+1)
 
             if nbpt == -999 :
-                ERR.mess('E',"Utilisation d'un nombre de points de Gauss indÈfini pour le mode_local: "+nomolo)
+                ERR.mess('E',"Utilisation d'un nombre de points de Gauss ind√©fini pour le mode_local: "+nomolo)
                 assert 0
 
             if diff == "IDEN" :
@@ -882,8 +882,8 @@ def imprime_ojb(file,capy):
                     for (en2,liste2) in l_decl_en:
                         if en2==en : liste=liste2
                     if not liste :
-                        pass # la verif. ci-dessous est trop sÈvËre. Voir fiche REX 18068.
-                        #ERR.mess('E',"L' ensemble de noeuds "+en+" est non-dÈfini pour l'ÈlÈment: "+note)
+                        pass # la verif. ci-dessous est trop s√©v√®re. Voir fiche REX 18068.
+                        #ERR.mess('E',"L' ensemble de noeuds "+en+" est non-d√©fini pour l'√©l√©ment: "+note)
                     else :
                         for ino in liste :
                             for kk in range(len(liec)):
@@ -938,7 +938,7 @@ def imprime_ojb(file,capy):
                 ERR.contexte("  rubrique: OPTION__ : "+noop,"AJOUT")
 
                 if dico_opt_te.has_key(noop) :
-                    ERR.mess('E',"L'option: "+noop+" est dÈfinie plusieurs fois pour le TYPE_ELEMENT: "+note)
+                    ERR.mess('E',"L'option: "+noop+" est d√©finie plusieurs fois pour le TYPE_ELEMENT: "+note)
                 else :
                     dico_opt_te[noop]=1
 
@@ -1011,17 +1011,17 @@ def imprime_ojb(file,capy):
 
 def verif_type_gene(capy):
 #------------------------------------------------------
-#  fait quelques vÈrifications sur les TYPE_GENE__
+#  fait quelques v√©rifications sur les TYPE_GENE__
 #-------------------------------------------------------
-    ERR.contexte('VÈrification des ÈlÈments finis gÈnÈriques (TYPE_GENE__).')
+    ERR.contexte('V√©rification des √©l√©ments finis g√©n√©riques (TYPE_GENE__).')
     for cata in capy.tg:
         nogene,l_entete,modlocs,opts=cata.cata_tg
 
-        # 1. On vÈrifie qu'un catalogue "gÈnÈrique" a bien un nom de la forme GENER_XXXX:
+        # 1. On v√©rifie qu'un catalogue "g√©n√©rique" a bien un nom de la forme GENER_XXXX:
         if nogene[0:6]!="GENER_" :  ERR.mess('E','Le TYPE_GENE__: '+nogene+' doit avoir un nom de la forme : GENER_XXXX')
 
-        # 2. On veut vÈrifier que les ensembles de noeuds utilisÈs dans les modes locaux
-        # sont dÈfinis dans au moins une entete (fiche REX 18068)
+        # 2. On veut v√©rifier que les ensembles de noeuds utilis√©s dans les modes locaux
+        # sont d√©finis dans au moins une entete (fiche REX 18068)
         dico_EN={}
         for entete in l_entete :
             l_decl_en=entete[4] ;
@@ -1035,14 +1035,14 @@ def verif_type_gene(capy):
             if diff == "DIFF" :
                 for (en,point) in moloc[5]:
                     if en not in liste_EN :
-                        ERR.mess('E',"L' ensemble de noeuds "+en+" n'est pas utilisÈ dans le catalogue : "+nogene)
+                        ERR.mess('E',"L' ensemble de noeuds "+en+" n'est pas utilis√© dans le catalogue : "+nogene)
 
 
 def degenerise(capy):
 #------------------------------------------------
 #  remplace les TYPE_GENE__ par des TYPE_ELEM__ :
 #------------------------------------------------
-    ERR.contexte('Eclatement des ÈlÈments finis gÈnÈriques (TYPE_GENE__) en des TYPE_ELEM__ ordinaires.')
+    ERR.contexte('Eclatement des √©l√©ments finis g√©n√©riques (TYPE_GENE__) en des TYPE_ELEM__ ordinaires.')
     verif_type_gene(capy)
 
     nb_te=len(capy.te) ; dicte2={}
@@ -1072,27 +1072,27 @@ def degenerise(capy):
             cata2.cata_te=entete,modlocs,opts2
 
 
-            # on ajoute le TYPE_ELEM__ meme s'il y en a dÈj‡ un de meme nom  (TYPE_GENE__ "plus fort" que TYPE_ELEM__):
+            # on ajoute le TYPE_ELEM__ meme s'il y en a d√©j√† un de meme nom  (TYPE_GENE__ "plus fort" que TYPE_ELEM__):
             #----------------------------------------------------------------------------------------------------
             note=entete[0]
             if capy.dicte.has_key(note) :
                 capy.te[capy.dicte[note]]=cata2
                 if dicte2.has_key(note):
                     if dicte2[note]=='a':
-                        ERR.mess('E','Le TYPE_ELEM__: '+note+' est re-dÈfini en tant que TYPE_GENE__')
+                        ERR.mess('E','Le TYPE_ELEM__: '+note+' est re-d√©fini en tant que TYPE_GENE__')
                         dicte2[note]='b'
                     elif dicte2[note]=='b':
-                        ERR.mess('E','Le TYPE_ELEM__: '+note+' est dÈfini plusieurs fois en tant que TYPE_GENE__')
+                        ERR.mess('E','Le TYPE_ELEM__: '+note+' est d√©fini plusieurs fois en tant que TYPE_GENE__')
                 else:
                     dicte2[note]='b'
-                    ERR.mess('I','Le TYPE_ELEM__: '+note+' est dÈfini en tant que TYPE_GENE__')
+                    ERR.mess('I','Le TYPE_ELEM__: '+note+' est d√©fini en tant que TYPE_GENE__')
             else :
                 capy.dicte[note]=nb_te
                 capy.te.append(cata2)
                 nb_te=nb_te+1
                 dicte2[note]='b'
 
-    # on remet les TYPE_ELEM__   dans l'ordre alphabÈtique:
+    # on remet les TYPE_ELEM__   dans l'ordre alphab√©tique:
     # -----------------------------------------------------------------------------
     likeys= capy.dicte.keys(); likeys.sort(); liste2=[]; dico2={};k=0
     for ke in likeys:
@@ -1104,8 +1104,8 @@ def degenerise(capy):
 #---------------------------------------------------------------------------
 def get_liattr(capy,cata):
 #     retourne la liste des attributs d'un type_element :
-#     (y compris les attributs dÈfinis au niveau des modÈlisations)
-#     (y compris les attributs dÈfinis AUTOMATIQUEMENT)
+#     (y compris les attributs d√©finis au niveau des mod√©lisations)
+#     (y compris les attributs d√©finis AUTOMATIQUEMENT)
 #---------------------------------------------------------------------------
     entete,modlocs,opts=cata.cata_te
     note  = entete[0]
@@ -1120,15 +1120,15 @@ def get_liattr(capy,cata):
 
     dicattr={}
 
-    # attributs dÈfinis pour toute la modÈlisation :
-    # pour les type_element appartenant ‡ plusieurs modÈlisations,
-    # c'est la derniËre modÈlisation qui impose sa loi (dans quel ordre ?).
-    # si cette loi est embetante, il faut redÈfinir l'attribut au niveau du type_element
+    # attributs d√©finis pour toute la mod√©lisation :
+    # pour les type_element appartenant √† plusieurs mod√©lisations,
+    # c'est la derni√®re mod√©lisation qui impose sa loi (dans quel ordre ?).
+    # si cette loi est embetante, il faut red√©finir l'attribut au niveau du type_element
 
     lattr_AUTO=['ALIAS8','DIM_TOPO_MODELI','DIM_COOR_MODELI','DIM_TOPO_MAILLE','PRINCIPAL','BORD','DISCRET']
     for (ph,lmod,codph) in capy.ph.l_pheno:
         for (mod,laffe,codmod,(d1,d2),lattrib) in lmod:
-                # la modÈlisation inclut-elle le type_element note ?
+                # la mod√©lisation inclut-elle le type_element note ?
             trouve=0
             for (tyma,tyel) in laffe:
                 if tyel==note : trouve=1
@@ -1137,13 +1137,13 @@ def get_liattr(capy,cata):
                 d1=int(d1); d2=int(d2)
                 assert d1 in (-1,0,1,2,3) ,d1
                 assert d2 in (0,1,2,3)    ,d2
-                # On ajoute les attributs dÈfinis AUTOMATIQUEMENT (ceux de lattr_AUTO) :
+                # On ajoute les attributs d√©finis AUTOMATIQUEMENT (ceux de lattr_AUTO) :
                 dicattr['ALIAS8']=str(codph)[1:3]+str(codmod)[1:4]+str(codtma)[1:4]
                 dicattr['DIM_TOPO_MAILLE']=str(dimtma)
                 dicattr['DIM_TOPO_MODELI']=str(d1)
                 dicattr['DIM_COOR_MODELI']=str(d2)
 
-                # le cas d1 == -1 est particulier : il est rÈservÈ aux modÈlisations discrËtes DIS_xxx
+                # le cas d1 == -1 est particulier : il est r√©serv√© aux mod√©lisations discr√®tes DIS_xxx
                 if d1 == -1 :
                     dicattr['DISCRET']='OUI'
                     dicattr['PRINCIPAL']='OUI'
@@ -1161,17 +1161,17 @@ def get_liattr(capy,cata):
                 if lattrib :
                     for k in range(len(lattrib)) :
                         no_attr =lattrib[k][0]
-                        if no_attr in lattr_AUTO : ERR.mess('E',"Il est interdit de redÈfinir l'attribut:"+no_attr)
+                        if no_attr in lattr_AUTO : ERR.mess('E',"Il est interdit de red√©finir l'attribut:"+no_attr)
                         val_attr=lattrib[k][1]
                         dicattr[no_attr]=val_attr
 
 
-    # surcharge Èventuelle des attributs dÈfinis pour le type_element:
+    # surcharge √©ventuelle des attributs d√©finis pour le type_element:
     lattrib=entete[3]
     if lattrib :
         for k in range(len(lattrib)) :
             no_attr =lattrib[k][0]
-            if no_attr in lattr_AUTO and dicattr.has_key(no_attr) : ERR.mess('E',"Il est interdit de redÈfinir l'attribut:"+no_attr)
+            if no_attr in lattr_AUTO and dicattr.has_key(no_attr) : ERR.mess('E',"Il est interdit de red√©finir l'attribut:"+no_attr)
             val_attr=lattrib[k][1]
             dicattr[no_attr]=val_attr
 
@@ -1184,7 +1184,7 @@ def get_liattr(capy,cata):
 
 #-------------------------------------------------------------------------------------------
 def get_lifpgl(capy):
-#  retourne un dictionnaire contenant toutes les dÈfinitions des familles "liste" de PG
+#  retourne un dictionnaire contenant toutes les d√©finitions des familles "liste" de PG
 #-------------------------------------------------------------------------------------------
     lifpgl={}
     for cata in capy.te:

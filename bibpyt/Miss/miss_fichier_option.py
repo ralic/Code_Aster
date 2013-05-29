@@ -1,4 +1,4 @@
-# -*- coding: iso-8859-1 -*-
+# coding=utf-8
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -30,9 +30,9 @@ sfmt = dict_format['sR']
 
 
 def fichier_option(param):
-    """Produit le contenu du fichier OPTMIS à partir des paramètres du calcul."""
+    """Produit le contenu du fichier OPTMIS Ã  partir des paramÃ¨tres du calcul."""
     content = []
-    # fréquences
+    # frÃ©quences
     if param['LIST_FREQ']:
         nb = len(param['LIST_FREQ'])
         content.append("LFREQ %d" % nb)

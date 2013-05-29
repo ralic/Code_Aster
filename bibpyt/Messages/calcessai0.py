@@ -1,4 +1,4 @@
-# -*- coding: iso-8859-1 -*-
+# coding=utf-8
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -22,7 +22,7 @@
 cata_msg={
 
 1: _(u"""
-Le modèle mesuré doit être un concept de type DYNA_HARMO ou MODE_MECA.
+Le modÃ¨le mesurÃ© doit Ãªtre un concept de type DYNA_HARMO ou MODE_MECA.
 """),
 
 3: _(u"""
@@ -30,18 +30,18 @@ Calcul de MAC impossible : bases incompatibles.
 """),
 
 4: _(u"""
-Problème inverse impossible : problème de cohérence entre les données.
+ProblÃ¨me inverse impossible : problÃ¨me de cohÃ©rence entre les donnÃ©es.
 """),
 
 5: _(u"""
-Problème de NUME_DDL dans MACRO_EXPANS : il est possible de le préciser
-a l'appel de la macro-commande. Conséquence : erreur fatale possible dans les
-opérations ultérieures (notamment l'opérateur MAC_MODE)
+ProblÃ¨me de NUME_DDL dans MACRO_EXPANS : il est possible de le prÃ©ciser
+a l'appel de la macro-commande. ConsÃ©quence : erreur fatale possible dans les
+opÃ©rations ultÃ©rieures (notamment l'opÃ©rateur MAC_MODE)
 """),
 
 6: _(u"""
-Si vous n'avez pas sélectionné de NUME_ORDRE ou de NUME_MODE dans %(k1)s.
-Il ne faut pas déclarer de concept en sortie de type %(k2)s.
+Si vous n'avez pas sÃ©lectionnÃ© de NUME_ORDRE ou de NUME_MODE dans %(k1)s.
+Il ne faut pas dÃ©clarer de concept en sortie de type %(k2)s.
 Cela risque de causer une erreur fatale par la suite.
 """),
 
@@ -50,31 +50,31 @@ Erreur dans MACRO_EXPANS
 """),
 
 8: _(u"""
-Impossible de trouver le modèle associe a la base de modes %(k1)s.
-Cela peut empêcher certains calculs de se dérouler normalement.
+Impossible de trouver le modÃ¨le associe a la base de modes %(k1)s.
+Cela peut empÃªcher certains calculs de se dÃ©rouler normalement.
 """),
 
 9: _(u"""
-Les mots-clés MATR_RIGI et MATR_MASS n'ont pas été renseignés dans OBSERVATION.
+Les mots-clÃ©s MATR_RIGI et MATR_MASS n'ont pas Ã©tÃ© renseignÃ©s dans OBSERVATION.
 Sans ces matrices, certains calculs (par exemple : calcul d'expansion, de MAC, etc.)
 ne seront pas possibles.
 """),
 
 10: _(u"""
-Le modèle associé aux matrices MATR_RIGI et MATR_MASS doit être le même que MODELE_2.
+Le modÃ¨le associÃ© aux matrices MATR_RIGI et MATR_MASS doit Ãªtre le mÃªme que MODELE_2.
 """),
 
 13: _(u"""
-Le résultat expérimental est un DYNA_HARMO : il n'est pas possible d'en extraire
-des numéros d'ordre avec MACRO_EXPANS. Le mots-clés NUME_MODE et NUME_ORDRE
-sont ignorés.
+Le rÃ©sultat expÃ©rimental est un DYNA_HARMO : il n'est pas possible d'en extraire
+des numÃ©ros d'ordre avec MACRO_EXPANS. Le mots-clÃ©s NUME_MODE et NUME_ORDRE
+sont ignorÃ©s.
 """),
 
 14: _(u"""
-Erreur dans le calcul de MAC : le NUME_DDL associé à la base %(k1)s
-n'existe pas. Si cette base a été créée avec PROJ_CHAMP, ne pas oublier
-de mentionner explicitement le NUME_DDL de la structure de données résultat
-avec le mot-clé NUME_DDL.
+Erreur dans le calcul de MAC : le NUME_DDL associÃ© Ã  la base %(k1)s
+n'existe pas. Si cette base a Ã©tÃ© crÃ©Ã©e avec PROJ_CHAMP, ne pas oublier
+de mentionner explicitement le NUME_DDL de la structure de donnÃ©es rÃ©sultat
+avec le mot-clÃ© NUME_DDL.
 """),
 
 

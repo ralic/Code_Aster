@@ -1,4 +1,4 @@
-# -*- coding: iso-8859-1 -*-
+# coding=utf-8
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -70,10 +70,10 @@ def defi_part_feti_ops(self,NB_PART,METHODE,TRAITER_BORDS,NOM_GROUP_MA,CORRECTIO
     else:
       MAILLAGE=args['MAILLAGE']
 
-  # Nom des GROUP_MA générés
+  # Nom des GROUP_MA gÃ©nÃ©rÃ©s
   NOM_GROUP_MA = string.strip(NOM_GROUP_MA)
 
-  # Test sur le nombre de caractères de NOM_GROUP_MA
+  # Test sur le nombre de caractÃ¨res de NOM_GROUP_MA
   if ( len(NOM_GROUP_MA)+len(str(NB_PART)) > 7 ):
     ln=7-len(str(NB_PART))
     UTMESS('F','FETI0_1',vali=ln)
@@ -97,7 +97,7 @@ def defi_part_feti_ops(self,NB_PART,METHODE,TRAITER_BORDS,NOM_GROUP_MA,CORRECTIO
 
   # Debut :
 
-  # Regeneration des mots-cles GROUPAGE passés en argument de la macro
+  # Regeneration des mots-cles GROUPAGE passÃ©s en argument de la macro
   motscle1= {}
   if args.has_key('GROUPAGE'):
     if args['GROUPAGE'] != None :
@@ -108,7 +108,7 @@ def defi_part_feti_ops(self,NB_PART,METHODE,TRAITER_BORDS,NOM_GROUP_MA,CORRECTIO
           if dGroup[-1][i]==None : del dGroup[-1][i]
         motscle1['GROUPAGE']=dGroup
 
-  # Regeneration des mots-cles POIDS_MAILLES passés en argument de la macro
+  # Regeneration des mots-cles POIDS_MAILLES passÃ©s en argument de la macro
   if args.has_key('POIDS_MAILLES'):
     if args['POIDS_MAILLES'] != None :
       dEval=[]
@@ -118,17 +118,17 @@ def defi_part_feti_ops(self,NB_PART,METHODE,TRAITER_BORDS,NOM_GROUP_MA,CORRECTIO
           if dEval[-1][i]==None : del dEval[-1][i]
         motscle1['POIDS_MAILLES']=dEval
 
-  # Y a t'il présence du mot clé : NOM_GROUP_MA_BORD
+  # Y a t'il prÃ©sence du mot clÃ© : NOM_GROUP_MA_BORD
   if args.has_key('GROUP_MA_BORD'):
     if args['GROUP_MA_BORD'] != None :
       motscle1['GROUP_MA_BORD']=args['GROUP_MA_BORD']
 
-  # Y a t'il présence du mot clé : LOGICIEL
+  # Y a t'il prÃ©sence du mot clÃ© : LOGICIEL
   if args.has_key('LOGICIEL'):
     if args['LOGICIEL'] != None :
       motscle1['LOGICIEL']=args['LOGICIEL']
 
-  # Y a t'il présence du mot clé : MODELE
+  # Y a t'il prÃ©sence du mot clÃ© : MODELE
   if args.has_key('MODELE'):
     if args['MODELE'] != None :
       motscle1['MODELE']=args['MODELE']
@@ -165,7 +165,7 @@ def defi_part_feti_ops(self,NB_PART,METHODE,TRAITER_BORDS,NOM_GROUP_MA,CORRECTIO
 
       motscle2= {'DEFI': _tmp }
 
-      # Regeneration des mots-cles EXCIT passés en argument de la macro
+      # Regeneration des mots-cles EXCIT passÃ©s en argument de la macro
       if args.has_key('EXCIT'):
         if args['EXCIT'] != None :
           dExcit=[]

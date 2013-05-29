@@ -1,4 +1,4 @@
-# -*- coding: iso-8859-1 -*-
+# coding=utf-8
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -22,8 +22,8 @@ from cata_comportement import LoiComportement
 
 loi = LoiComportement(
    nom            = 'CZM_TRA_MIX',
-   doc = """Relation de comportement cohésive (Cohesive Zone Model TRApèze MIXte) pour la rupture ductile (Cf. [R7.02.11]) modélisant l'ouverture et la 
-   propagation d'une fissure. Cette loi est utilisable avec l'élément fini d'interface basé sur une formulation mixte lagrangien augmenté (Cf. [R3.06.13]) """,
+   doc = """Relation de comportement cohÃ©sive (Cohesive Zone Model TRApÃ¨ze MIXte) pour la rupture ductile (Cf. [R7.02.11]) modÃ©lisant l'ouverture et la 
+   propagation d'une fissure. Cette loi est utilisable avec l'Ã©lÃ©ment fini d'interface basÃ© sur une formulation mixte lagrangien augmentÃ© (Cf. [R3.06.13]) """,
    num_lc         = 49,
    nb_vari        = 9,
    nom_vari       = ('SEUILDEP','INDIDISS','INDIENDO','PCENERDI','DISSIP','ENEL_RES','SAUT_N','SAUT_T1','SAUT_T2'),

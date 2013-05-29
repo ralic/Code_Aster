@@ -1,4 +1,4 @@
-# -*- coding: iso-8859-1 -*-
+# coding=utf-8
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -20,7 +20,7 @@
 
 cata_msg={
 1: _(u"""
-Les coupes mécanique et thermique doivent partager les mêmes abscisses.
+Les coupes mÃ©canique et thermique doivent partager les mÃªmes abscisses.
 """),
 
 2: _(u"""
@@ -28,23 +28,23 @@ Erreur d'interpolation: %(k1)s
 """),
 
 3: _(u"""
-Les coupes du revêtement et de la structure doivent partager une abscisse commune.
+Les coupes du revÃªtement et de la structure doivent partager une abscisse commune.
 """),
 
 4: _(u"""
-Erreur d'accès aux données.
+Erreur d'accÃ¨s aux donnÃ©es.
 """),
 
 5: _(u"""
-Fonction non implantée.
+Fonction non implantÃ©e.
 """),
 
 6: _(u"""
-Mot clé facteur inconnu.
+Mot clÃ© facteur inconnu.
 """),
 
 7: _(u"""
-Erreur à l'ouverture du fichier.
+Erreur Ã  l'ouverture du fichier.
 """),
 
 }

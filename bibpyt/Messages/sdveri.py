@@ -1,4 +1,4 @@
-# -*- coding: iso-8859-1 -*-
+# coding=utf-8
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -21,7 +21,7 @@
 cata_msg = {
 
 1 : _(u"""
- Impossible d'importer le catalogue de la structure de données '%(k1)s'
+ Impossible d'importer le catalogue de la structure de donnÃ©es '%(k1)s'
 """),
 
 2 : _(u"""
@@ -29,9 +29,9 @@ cata_msg = {
 """),
 
 4 : _(u"""
- Arguments incohérents :
-      Nom des paramètres : %(k1)s
-   Valeur des paramètres : %(k2)s
+ Arguments incohÃ©rents :
+      Nom des paramÃ¨tres : %(k1)s
+   Valeur des paramÃ¨tres : %(k2)s
 """),
 
 5 : _(u"""
@@ -40,8 +40,8 @@ cata_msg = {
 
 30 : _(u"""
  Erreur de programmation (catalogue des SD) :
-   Vérification de la structure de donnée %(k1)s
-   produite (ou modifiée) par la commande %(k2)s
+   VÃ©rification de la structure de donnÃ©e %(k1)s
+   produite (ou modifiÃ©e) par la commande %(k2)s
 
    Certains objets JEVEUX sont incorrects :
 """),
@@ -52,7 +52,7 @@ cata_msg = {
 
 40 : _(u"""
  Erreur de programmation (catalogue des SD) :
-   Vérification d'une structure de donnée :
+   VÃ©rification d'une structure de donnÃ©e :
    Les objets suivants sont interdits dans les SD de type : %(k1)s
 """),
 

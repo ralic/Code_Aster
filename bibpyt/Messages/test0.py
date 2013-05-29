@@ -1,4 +1,4 @@
-# -*- coding: iso-8859-1 -*-
+# coding=utf-8
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -20,14 +20,14 @@
 
 cata_msg={
 1 : _(u"""
-Expression régulière invalide : %(k2)s
+Expression rÃ©guliÃ¨re invalide : %(k2)s
 
-Exception retournée :
+Exception retournÃ©e :
    %(k1)s
 """),
 
 2 : _(u"""
-Le fichier n'a pas été fermé : %(k1)s
+Le fichier n'a pas Ã©tÃ© fermÃ© : %(k1)s
 """),
 
 3 : _(u"""
@@ -37,15 +37,15 @@ TEST_FICHIER impossible, fichier inexistant : %(k1)s
 4 : _(u"""
     Nom du fichier   : %(k3)s
 
-    Valeurs de références :
+    Valeurs de rÃ©fÃ©rences :
      - Nombre de valeurs : %(i2)d
      - Somme des valeurs : %(k4)s
-     - Somme de contrôle : %(k2)s
+     - Somme de contrÃ´le : %(k2)s
 
     Valeurs du fichier :
      - Nombre de valeurs : %(i1)d
      - Somme des valeurs : %(r1)20.13e
-     - Somme de contrôle : %(k1)s
+     - Somme de contrÃ´le : %(k1)s
 """),
 
 5 : _(u"""
@@ -54,21 +54,21 @@ TEST_FICHIER impossible, fichier inexistant : %(k1)s
 """),
 
 7 : _(u"""
-La commande '%(k1)s' n'a pas été exécutée %(i1)d fois.
+La commande '%(k1)s' n'a pas Ã©tÃ© exÃ©cutÃ©e %(i1)d fois.
 """),
 
 8 : _(u"""
-- soit PRECISION contient une seule valeur, et alors, celle-ci sera utilisée
+- soit PRECISION contient une seule valeur, et alors, celle-ci sera utilisÃ©e
   pour toutes les machines,
 - soit PRECISION contient autant de valeurs qu'il y a de machines.
 """),
 
-9 : _(u"""Les temps de référence ne sont pas connus pour l'identifiant '%(k1)s'.
+9 : _(u"""Les temps de rÃ©fÃ©rence ne sont pas connus pour l'identifiant '%(k1)s'.
 On utilise les valeurs de '%(k2)s'.
 """),
 
 10 : _(u"""
-Les listes fournies aux mots-clés MACHINE et VALE doivent avoir le même cardinal.
+Les listes fournies aux mots-clÃ©s MACHINE et VALE doivent avoir le mÃªme cardinal.
 """),
 
 }

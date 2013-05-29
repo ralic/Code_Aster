@@ -1,4 +1,4 @@
-# -*- coding: iso-8859-1 -*-
+# coding=utf-8
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -41,7 +41,7 @@ def post_k_trans_ops(self,RESU_TRANS,K_MODAL,TOUT_ORDRE, NUME_ORDRE,
   # La macro compte pour 1 dans la numerotation des commandes
   self.set_icmd(1)
   
-  # Le concept sortant (de type table_sdaster ou dérivé) est tab
+  # Le concept sortant (de type table_sdaster ou dÃ©rivÃ©) est tab
   self.DeclareOut('tabout', self.sd)
 
 #------------------------------------------------------------------
@@ -59,7 +59,7 @@ def post_k_trans_ops(self,RESU_TRANS,K_MODAL,TOUT_ORDRE, NUME_ORDRE,
    
 #-----------------------------------------
 #  
-# Verification de cohérence sur le nombre de modes
+# Verification de cohÃ©rence sur le nombre de modes
 #  
 # RESULTAT TRANSITOIRE
   nomresu=RESU_TRANS.nom
@@ -78,7 +78,7 @@ def post_k_trans_ops(self,RESU_TRANS,K_MODAL,TOUT_ORDRE, NUME_ORDRE,
       UTMESS('A','RUPTURE0_50',valk=nomresu,vali=n_mode)
  
 #  
-# Traitement des mots clés ORDRE/INST/LIST_INST et LIST_ORDRE
+# Traitement des mots clÃ©s ORDRE/INST/LIST_INST et LIST_ORDRE
 #  
   l0_inst = aster.getvectjev(nomresu.ljust(19)+'.DISC')
   l0_ord = aster.getvectjev(nomresu.ljust(19)+'.ORDR')

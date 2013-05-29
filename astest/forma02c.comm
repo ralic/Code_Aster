@@ -1,4 +1,4 @@
-# -*- coding: iso-8859-1 -*-
+# coding=utf-8
 # TITRE FORMATION DE BASE A L'UTILISATION D'ASTER - TP MECANIQUE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -17,7 +17,7 @@
 # ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
-# -*- coding: iso-8859-1 -*-
+# coding=utf-8
 #
 #        TUYAUTERIE COMPORTANT UN COUDE
 #     MODELISATION PAR DES ELEMENTS COQUES

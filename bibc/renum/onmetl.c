@@ -1,5 +1,4 @@
 /*           CONFIGURATION MANAGEMENT OF EDF VERSION                  */
-/* MODIF onmetl renum  DATE 14/01/2013   AUTEUR COURTOIS M.COURTOIS */
 /* ================================================================== */
 /* COPYRIGHT (C) 1991 - 2013  EDF R&D              WWW.CODE-ASTER.ORG */
 /*                                                                    */
@@ -13,7 +12,7 @@
 /* GENERAL PUBLIC LICENSE FOR MORE DETAILS.                           */
 /*                                                                    */
 /* YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE  */
-/* ALONG WITH THIS PROGRAM; IF NOT, WRITE TO : EDF R&D CODE_ASTER,    */
+/* ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,      */
 /*    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.     */
 /* ================================================================== */
 
@@ -214,8 +213,6 @@ int ReadGraphL(GraphType *graph, int *nbnd,int *nadj,int *xadjd,int *adjnci, int
   /*  graph->nedges *=2;mis directement a nadj */
   ncon = graph->ncon = (ncon == 0 ? 1 : ncon);
 
-  /*printf("%d %d %d %d %d [%d %d]\n", fmt, fmt%10, (fmt/10)%10, ncon, graph->ncon, readew, readvw);*/
-
   if (graph->nvtxs > MAXIDX) 
     errexit("\nThe matrix is too big: %d [%d %d]\n", graph->nvtxs, MAXIDX, sizeof(idxtype));
 
@@ -319,7 +316,8 @@ int ComputeFillInL(GraphType *graph, idxtype *iperm,idxtype *parent,
     * Call sparspak routine. 
     */ 
    int errs;
-   errs=smbfctl(nvtxs, xadj, adjncy, perm, iperm, xlnz, maxlnz, xnzsub, nzsub, &maxsub,supnd,parent,nbsn,&lgind,opc);
+   errs=smbfctl(nvtxs, xadj, adjncy, perm, iperm, xlnz, maxlnz, xnzsub, nzsub, &maxsub,
+                supnd, parent, nbsn, &lgind, opc);
 /*   printf("errs %d \n",errs);*/
    if (errs) {
      int errs2;
@@ -327,7 +325,8 @@ int ComputeFillInL(GraphType *graph, idxtype *iperm,idxtype *parent,
 
      maxsub = 4*maxsub;  
      nzsub = idxmalloc(maxsub, "ComputeFillIn: nzsub");
-     errs2= smbfctl(nvtxs, xadj, adjncy, perm, iperm, xlnz, maxlnz, xnzsub, nzsub, &maxsub,supnd,parent,nbsn,&lgind,opc);
+     errs2= smbfctl(nvtxs, xadj, adjncy, perm, iperm, xlnz, maxlnz, xnzsub, nzsub, &maxsub,
+                    supnd, parent, nbsn, &lgind, opc);
 /*   printf("errs2 %d \n",errs2);*/
      if (errs2)  
        errexit("MAXSUB is too small!"); 
@@ -378,8 +377,9 @@ int ComputeFillInL(GraphType *graph, idxtype *iperm,idxtype *parent,
  *      MAXLNZ - THE NUMBER OF NONZEROS FOUND.              
  * 
  *******************************************************************/ 
- int smbfctl(int neqns, idxtype *xadj, idxtype *adjncy, idxtype *perm, idxtype *invp, idxtype *xlnz,  
-         int *maxlnz, idxtype *xnzsub, idxtype *nzsub, int *maxsub,idxtype *supnd,idxtype *parsnode,int *nbsn,int *lgin,double *opc)
+ int smbfctl(int neqns, idxtype *xadj, idxtype *adjncy, idxtype *perm, idxtype *invp,
+             idxtype *xlnz, int *maxlnz, idxtype *xnzsub, idxtype *nzsub, int *maxsub,
+             idxtype *supnd, idxtype *parsnode, int *nbsn, int *lgin, double *opc)
  { 
    /* Local variables */ 
    int snode,node, rchm, mrgk, lmax, i, j, k, m, nabor, nzbeg, nzend;

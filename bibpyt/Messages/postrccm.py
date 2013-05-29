@@ -1,4 +1,4 @@
-# -*- coding: iso-8859-1 -*-
+# coding=utf-8
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -21,25 +21,25 @@
 cata_msg={
 
 1: _(u"""
- le paramètre %(k2)s n'existe pas dans la table %(k1)s
+ le paramÃ¨tre %(k2)s n'existe pas dans la table %(k1)s
 """),
 
 2: _(u"""
- problème pour récupérer dans la table %(k1)s la valeur du paramètre %(k2)s
-   pour le paramètre %(k3)s de valeur %(r1)12.5E et
-   pour le paramètre %(k4)s de valeur %(r2)12.5E
+ problÃ¨me pour rÃ©cupÃ©rer dans la table %(k1)s la valeur du paramÃ¨tre %(k2)s
+   pour le paramÃ¨tre %(k3)s de valeur %(r1)12.5E et
+   pour le paramÃ¨tre %(k4)s de valeur %(r2)12.5E
 """),
 
 3: _(u"""
- l'option "AMORCAGE" est traitée seule
+ l'option "AMORCAGE" est traitÃ©e seule
 """),
 
 4: _(u"""
- il manque la donnée de la limite d'élasticité (SY_02 ou SY_MAX) pour le calcul du rochet thermique
+ il manque la donnÃ©e de la limite d'Ã©lasticitÃ© (SY_02 ou SY_MAX) pour le calcul du rochet thermique
 """),
 
 5: _(u"""
- le calcul du critère du rochet thermique pour une variation de température linéaire est impossible
+ le calcul du critÃ¨re du rochet thermique pour une variation de tempÃ©rature linÃ©aire est impossible
         X = SIGM / SY MAX =  %(r1)12.5E
          SIGM =  %(r2)12.5E
         SY MAX =  %(r3)12.5E
@@ -47,7 +47,7 @@ cata_msg={
 """),
 
 6: _(u"""
- le calcul du critère du rochet thermique pour une variation de température parabolique est impossible
+ le calcul du critÃ¨re du rochet thermique pour une variation de tempÃ©rature parabolique est impossible
         X = SIGM / SY MAX =  %(r1)12.5E
          SIGM =  %(r2)12.5E
         SY MAX =  %(r3)12.5E
@@ -55,56 +55,56 @@ cata_msg={
 """),
 
 7: _(u"""
- il faut définir le comportement %(k1)s dans "DEFI_MATERIAU"
+ il faut dÃ©finir le comportement %(k1)s dans "DEFI_MATERIAU"
 """),
 
 8: _(u"""
- erreur données, pour le noeud %(k1)s de la maille %(k2)s
- il manque les caractéristiques élémentaires (le CARA_ELEM)
+ erreur donnÃ©es, pour le noeud %(k1)s de la maille %(k2)s
+ il manque les caractÃ©ristiques Ã©lÃ©mentaires (le CARA_ELEM)
 """),
 
 9: _(u"""
- erreur données, pour le noeud %(k1)s de la maille %(k2)s
+ erreur donnÃ©es, pour le noeud %(k1)s de la maille %(k2)s
  il manque l'indice de contraintes %(k3)s
 """),
 
 10: _(u"""
- matériau non défini, maille %(k1)s
+ matÃ©riau non dÃ©fini, maille %(k1)s
 """),
 
 12: _(u"""
- "NUME_GROUPE" doit être strictement positif
+ "NUME_GROUPE" doit Ãªtre strictement positif
 """),
 
 13: _(u"""
- Problème lors du passage du CH_MATER en CARTE
+ ProblÃ¨me lors du passage du CH_MATER en CARTE
  Contactez le support
 """),
 
 14: _(u"""
- Problème lors du passage du TEMPE_REF en CARTE
+ ProblÃ¨me lors du passage du TEMPE_REF en CARTE
  Contactez le support
 """),
 
 15: _(u"""
- erreur données, pour la situation numéro %(i1)d sur la maille numéro %(i2)d
+ erreur donnÃ©es, pour la situation numÃ©ro %(i1)d sur la maille numÃ©ro %(i2)d
  il manque le %(k1)s
 """),
 
 16: _(u"""
- problème pour récupérer dans la table %(k1)s la valeur du paramètre %(k2)s
-   pour le paramètre %(k3)s de valeur %(k5)s et
-   pour le paramètre %(k4)s de valeur %(r1)12.5E
+ problÃ¨me pour rÃ©cupÃ©rer dans la table %(k1)s la valeur du paramÃ¨tre %(k2)s
+   pour le paramÃ¨tre %(k3)s de valeur %(k5)s et
+   pour le paramÃ¨tre %(k4)s de valeur %(r1)12.5E
 """),
 
 17: _(u"""
- problème pour récupérer dans la table  %(k1)s les valeurs du paramètre %(k4)s
-   pour le paramètre %(k2)s de valeur %(k3)s
+ problÃ¨me pour rÃ©cupÃ©rer dans la table  %(k1)s les valeurs du paramÃ¨tre %(k4)s
+   pour le paramÃ¨tre %(k2)s de valeur %(k3)s
 """),
 
 18: _(u"""
- erreur données, il manque le %(k1)s
-   pour la maille numéro %(i1)d et le noeud numéro %(i2)d
+ erreur donnÃ©es, il manque le %(k1)s
+   pour la maille numÃ©ro %(i1)d et le noeud numÃ©ro %(i2)d
 """),
 
 19: _(u"""
@@ -114,12 +114,12 @@ cata_msg={
 
 20: _(u"""
  champ de nom symbolique %(k1)s inexistant pour le RESULTAT %(k2)s
- défini sous l'occurrence numéro %(i1)d
+ dÃ©fini sous l'occurrence numÃ©ro %(i1)d
 """),
 
 21: _(u"""
  il ne faut qu'un seul champ de nom symbolique %(k1)s pour le RESULTAT %(k2)s
- défini sous l'occurrence numéro %(i1)d
+ dÃ©fini sous l'occurrence numÃ©ro %(i1)d
 """),
 
 
@@ -128,62 +128,62 @@ cata_msg={
 
 
 23: _(u"""
- on n'a pas pu récupérer le résultat thermique correspondant au numéro %(i2)d
- défini par le mot clé "NUME_RESU_THER" sous le mot clé facteur "RESU_THER"
- occurrence numéro %(i1)d
+ on n'a pas pu rÃ©cupÃ©rer le rÃ©sultat thermique correspondant au numÃ©ro %(i2)d
+ dÃ©fini par le mot clÃ© "NUME_RESU_THER" sous le mot clÃ© facteur "RESU_THER"
+ occurrence numÃ©ro %(i1)d
 """),
 
 24: _(u"""
- erreur données, pour la situation numéro %(i1)d sur la maille numéro %(i2)d
-   problème sur le résultat thermique
+ erreur donnÃ©es, pour la situation numÃ©ro %(i1)d sur la maille numÃ©ro %(i2)d
+   problÃ¨me sur le rÃ©sultat thermique
 """),
 
 25: _(u"""
- erreur données, pour la situation numéro %(i1)d sur la maille numéro %(i2)d et le noeud numéro %(i3)d
-   problème sur le résultat thermique
+ erreur donnÃ©es, pour la situation numÃ©ro %(i1)d sur la maille numÃ©ro %(i2)d et le noeud numÃ©ro %(i3)d
+   problÃ¨me sur le rÃ©sultat thermique
 """),
 
 26: _(u"""
- il faut définir qu'un seul séisme dans un groupe
-   groupe numéro %(i1)d
+ il faut dÃ©finir qu'un seul sÃ©isme dans un groupe
+   groupe numÃ©ro %(i1)d
    occurrence situation %(i2)d et %(i3)d
 """),
 
 28: _(u"""
- erreur données, pour la situation numéro %(i1)d
- on n'a pas pu récupérer le "RESU_MECA" correspondant au numéro du cas de charge %(i2)d
+ erreur donnÃ©es, pour la situation numÃ©ro %(i1)d
+ on n'a pas pu rÃ©cupÃ©rer le "RESU_MECA" correspondant au numÃ©ro du cas de charge %(i2)d
 """),
 
 29: _(u"""
- erreur données, pour la situation numéro %(i1)d
- on ne peut pas avoir des charges de type "séisme" et "autre".
+ erreur donnÃ©es, pour la situation numÃ©ro %(i1)d
+ on ne peut pas avoir des charges de type "sÃ©isme" et "autre".
 """),
 
 30: _(u"""
- problème pour récupérer l'occurrence de SEISME.
+ problÃ¨me pour rÃ©cupÃ©rer l'occurrence de SEISME.
  Contactez le support
 """),
 
 31: _(u"""
- problème avec TYPEKE.
+ problÃ¨me avec TYPEKE.
  Contactez le support
 """),
 
 32: _(u"""
- le nombre de cycles admissibles est négatif, vérifiez la courbe de WOHLER
-   contrainte calculée: %(r1)12.5E
+ le nombre de cycles admissibles est nÃ©gatif, vÃ©rifiez la courbe de WOHLER
+   contrainte calculÃ©e: %(r1)12.5E
    Nombre de cycles admissibles: %(r2)12.5E
 """),
 
 33: _(u"""
- la distance calculée à partir des ABSC_CURV de la table fournie %(k1)s
- est supérieure à 1 pour cent à la distance récupérée dans le matériau. Vérifiez vos données.
-   distance calculée: %(r1)12.5E
+ la distance calculÃ©e Ã  partir des ABSC_CURV de la table fournie %(k1)s
+ est supÃ©rieure Ã  1 pour cent Ã  la distance rÃ©cupÃ©rÃ©e dans le matÃ©riau. VÃ©rifiez vos donnÃ©es.
+   distance calculÃ©e: %(r1)12.5E
    D_AMORC          : %(r2)12.5E
 """),
 
 34: _(u"""
- avec une ou des situations de passage, il faut définir au plus 3 groupes
+ avec une ou des situations de passage, il faut dÃ©finir au plus 3 groupes
 """),
 
 36: _(u"""
@@ -191,24 +191,24 @@ cata_msg={
 """),
 
 37: _(u"""
- -> L'ordre des noeuds de la table %(k1)s n'est pas respecté.
-    Les noeuds doivent être rangés d'une des peaux vers l'autre.
+ -> L'ordre des noeuds de la table %(k1)s n'est pas respectÃ©.
+    Les noeuds doivent Ãªtre rangÃ©s d'une des peaux vers l'autre.
  -> Risque & Conseil:
     Veuillez consulter la documentation U2.09.03.
 """),
 
 38: _(u"""
- -> Les noeuds de la ligne de coupe %(k2)s (table %(k1)s) ne sont pas alignés:
-    - distance maximale à la ligne de coupe: %(r1)f
+ -> Les noeuds de la ligne de coupe %(k2)s (table %(k1)s) ne sont pas alignÃ©s:
+    - distance maximale Ã  la ligne de coupe: %(r1)f
     - longueur de la ligne de coupe        : %(r2)f
  -> Risque & Conseil:
-    Les calculs avec POST_RCCM ne sont théoriquement valides que pour des lignes
-    de coupe rectilignes. Vérifier les données d'entrée ou utiliser
-    MACR_LIGN_COUPE pour extraire le résultat sur un segment de droite.
+    Les calculs avec POST_RCCM ne sont thÃ©oriquement valides que pour des lignes
+    de coupe rectilignes. VÃ©rifier les donnÃ©es d'entrÃ©e ou utiliser
+    MACR_LIGN_COUPE pour extraire le rÃ©sultat sur un segment de droite.
 """),
 
 39: _(u"""
- -> Il est préférable de fournir des tables comportant les coordonnées des noeuds.
+ -> Il est prÃ©fÃ©rable de fournir des tables comportant les coordonnÃ©es des noeuds.
 """),
 
 40: _(u"""
@@ -219,8 +219,8 @@ cata_msg={
  """),
 
 41: _(u"""
- -> Les tables %(k1)s et %(k2)s ont des noeuds possédant
-    des coordonnées différentes:
+ -> Les tables %(k1)s et %(k2)s ont des noeuds possÃ©dant
+    des coordonnÃ©es diffÃ©rentes:
     - table %(k1)s : %(k3)s = %(r1)f
     - table %(k2)s : %(k3)s = %(r2)f
  -> Risque & Conseil:
@@ -228,7 +228,7 @@ cata_msg={
 """),
 
  42: _(u"""
- -> Les tables %(k1)s et %(k2)s ne sont pas cohérentes en terme de nombre
+ -> Les tables %(k1)s et %(k2)s ne sont pas cohÃ©rentes en terme de nombre
     de ligaments:
     - table %(k1)s : %(i1)d ligaments
     - table %(k2)s : %(i2)d ligaments
@@ -237,8 +237,8 @@ cata_msg={
 """),
 
 43: _(u"""
- -> Les tables %(k1)s et %(k2)s ne sont pas cohérentes en terme d'instant:
-    Une différence a été observée entre les valeurs d'instant d'un même point
+ -> Les tables %(k1)s et %(k2)s ne sont pas cohÃ©rentes en terme d'instant:
+    Une diffÃ©rence a Ã©tÃ© observÃ©e entre les valeurs d'instant d'un mÃªme point
     - table %(k1)s : INST = %(r1)f
     - table %(k2)s : INST = %(r2)f
  -> Risque & Conseil:
@@ -247,8 +247,8 @@ cata_msg={
 """),
 
 44: _(u"""
- problème pour récupérer dans la table %(k1)s la valeur du paramètre %(k2)s
- pour le paramètre %(k3)s de valeur %(r1)12.5E.
+ problÃ¨me pour rÃ©cupÃ©rer dans la table %(k1)s la valeur du paramÃ¨tre %(k2)s
+ pour le paramÃ¨tre %(k3)s de valeur %(r1)12.5E.
 """),
 
 }

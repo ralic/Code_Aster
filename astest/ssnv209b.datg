@@ -6,12 +6,12 @@ dens 2 ;
 *----------------------------------------
 EPS = 0.000001;
 
-* dimensions des cotés
+* dimensions des cotÃ©s
 LX     = 0.08;
 LYbati = 0.010;
 LYplaq = 0.04;
 
-* nombre d'éléments
+* nombre d'Ã©lÃ©ments
 NX = 64;
 NY = 25; 
 

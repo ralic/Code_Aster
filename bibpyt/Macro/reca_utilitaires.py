@@ -1,4 +1,4 @@
-# -*- coding: iso-8859-1 -*-
+# coding=utf-8
 # person_in_charge: aimery.assire at edf.fr
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -51,7 +51,7 @@ except:
 
 def transforme_list_Num(parametres,res_exp):
    """
-      Transforme les données entrées par l'utilisateur en tableau numpy
+      Transforme les donnÃ©es entrÃ©es par l'utilisateur en tableau numpy
    """
 
    dim_para = len(parametres)  #donne le nb de parametres
@@ -71,7 +71,7 @@ def transforme_list_Num(parametres,res_exp):
 
 def mes_concepts(list_concepts=[],base=None):
    """
-      Fonction qui liste les concepts créés
+      Fonction qui liste les concepts crÃ©Ã©s
    """
    for e in base.etapes:
       if e.nom in ('INCLUDE','MACR_RECAL',) :
@@ -87,7 +87,7 @@ def mes_concepts(list_concepts=[],base=None):
 
 def detr_concepts(self):
    """
-      Fonction qui detruit les concepts créés
+      Fonction qui detruit les concepts crÃ©Ã©s
    """
    liste_concepts=mes_concepts(base=self.parent)
    for e in liste_concepts:
@@ -136,7 +136,7 @@ def temps_CPU(restant_old,temps_iter_old):
       if (restant_old==0.):
          temps_iter=-1.
       else:
-         # Première mesure
+         # PremiÃ¨re mesure
          if (temps_iter_old==-1.):
             temps_iter=(restant_old-restant)
          # Mesure courante
@@ -169,7 +169,7 @@ def graphique(FORMAT, L_F, res_exp, reponses, iter, UL_out, pilote, fichier=None
          for i in range(len(L_F)):
              _tmp = []
              courbe1 = res_exp[i]
-             _tmp.append( { 'ABSCISSE': courbe1[:,0].tolist(), 'ORDONNEE': courbe1[:,1].tolist(), 'COULEUR': 1, 'LEGENDE' : 'Expérience'} )
+             _tmp.append( { 'ABSCISSE': courbe1[:,0].tolist(), 'ORDONNEE': courbe1[:,1].tolist(), 'COULEUR': 1, 'LEGENDE' : 'ExpÃ©rience'} )
              courbe2 = L_F[i]
              _tmp.append( { 'ABSCISSE': courbe2[:,0].tolist(), 'ORDONNEE': courbe2[:,1].tolist(), 'COULEUR': 2, 'LEGENDE' : 'Calcul'} )
 

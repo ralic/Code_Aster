@@ -1,4 +1,4 @@
-# -*- coding: iso-8859-1 -*-
+# coding=utf-8
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -18,9 +18,9 @@
 # ======================================================================
 
 """Module rassemblant des fonctions utilitaires de manipulations
-de chaines de caractères
+de chaines de caractÃ¨res
 """
-# module identique à Execution/strfunc.py pour usage dans Eficas
+# module identique Ã  Execution/strfunc.py pour usage dans Eficas
 
 import locale
 

@@ -1,4 +1,4 @@
-# -*- coding: iso-8859-1 -*-
+# coding=utf-8
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -53,7 +53,7 @@ def stanley_ops(self,RESULTAT,MODELE,CHAM_MATER,CARA_ELEM,DISPLAY,**args):
   else:
      FICHIER_VALID=None
 
-  # On ne lance Stanley que si la variable DISPLAY est définie
+  # On ne lance Stanley que si la variable DISPLAY est dÃ©finie
   if os.environ.has_key('DISPLAY'):
 
     import Stanley

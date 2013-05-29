@@ -1,4 +1,4 @@
-# -*- coding: iso-8859-1 -*-
+# coding=utf-8
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -21,133 +21,133 @@
 cata_msg={
 
 1: _(u"""
-Arrêt du calcul des modes : pas de mode propre dans la bande de fréquence demandée.
+ArrÃªt du calcul des modes : pas de mode propre dans la bande de frÃ©quence demandÃ©e.
 """),
 2: _(u"""
-Opérateur MACRO_MODE_MECA
-Pas de test de Sturm demandé (VERI_MODE=_F(STURM='NON')).
-Donc, à l'issu de chaque calcul modal sur une sous-bande, on vérifie seulement que:
-   - la norme de l'erreur est bien valide (via le paramètre VERI_MODE/SEUIL),
-   - chaque fréquence est bien incluse dans la bande spécifiée (VERI_MODE/PREC_SHIFT).
+OpÃ©rateur MACRO_MODE_MECA
+Pas de test de Sturm demandÃ© (VERI_MODE=_F(STURM='NON')).
+Donc, Ã  l'issu de chaque calcul modal sur une sous-bande, on vÃ©rifie seulement que:
+   - la norme de l'erreur est bien valide (via le paramÃ¨tre VERI_MODE/SEUIL),
+   - chaque frÃ©quence est bien incluse dans la bande spÃ©cifiÃ©e (VERI_MODE/PREC_SHIFT).
 Pas de test de Sturm local ou global.
 """),
 3: _(u"""
-Opérateur MACRO_MODE_MECA
-Test de Sturm local demandé (VERI_MODE=_F(STURM='LOCAL')).
-Donc, à l'issu de chaque calcul modal sur une sous-bande, on vérifie que:
-    - la norme de l'erreur est bien valide (via le paramètre VERI_MODE/SEUIL),
-    - chaque fréquence est bien incluse dans la bande spécifiée (VERI_MODE/PREC_SHIFT),
+OpÃ©rateur MACRO_MODE_MECA
+Test de Sturm local demandÃ© (VERI_MODE=_F(STURM='LOCAL')).
+Donc, Ã  l'issu de chaque calcul modal sur une sous-bande, on vÃ©rifie que:
+    - la norme de l'erreur est bien valide (via le paramÃ¨tre VERI_MODE/SEUIL),
+    - chaque frÃ©quence est bien incluse dans la bande spÃ©cifiÃ©e (VERI_MODE/PREC_SHIFT),
     - le test de Sturm est valide.
 """),
 4: _(u"""
-Opérateur MACRO_MODE_MECA
-Test de Sturm global demandé (VERI_MODE=_F(STURM='GLOBAL')).
-Donc, à l'issu de chaque calcul modal sur une sous-bande, on vérifie que:
-    - la norme de l'erreur est bien valide (via le paramètre VERI_MODE/SEUIL),
-    - chaque fréquence est bien incluse dans la bande spécifiée (VERI_MODE/PREC_SHIFT),
+OpÃ©rateur MACRO_MODE_MECA
+Test de Sturm global demandÃ© (VERI_MODE=_F(STURM='GLOBAL')).
+Donc, Ã  l'issu de chaque calcul modal sur une sous-bande, on vÃ©rifie que:
+    - la norme de l'erreur est bien valide (via le paramÃ¨tre VERI_MODE/SEUIL),
+    - chaque frÃ©quence est bien incluse dans la bande spÃ©cifiÃ©e (VERI_MODE/PREC_SHIFT),
     - pas de test de Sturm local.
-Puis, on réunit les fréquences calculées sur toutes les sous-bandes et on fait un test
+Puis, on rÃ©unit les frÃ©quences calculÃ©es sur toutes les sous-bandes et on fait un test
 de Sturm global:
-  Dans l'intervalle (%(r1)f,%(r2)f), il y a théoriquement %(i1)d fréquence(s) et on
-  en a bien calculé %(i2)d.
+  Dans l'intervalle (%(r1)f,%(r2)f), il y a thÃ©oriquement %(i1)d frÃ©quence(s) et on
+  en a bien calculÃ© %(i2)d.
 """),
 5: _(u"""
-Opérateur MACRO_MODE_MECA, test de Sturm global:
-  Dans l'intervalle (%(r1)f,%(r2)f), il y a théoriquement %(i1)d fréquence(s) et on
-  en a calculé %(i2)d.
-  On a décalé la bande de calcul des modes de PREC_SHIFT=%(r3)f %%.
+OpÃ©rateur MACRO_MODE_MECA, test de Sturm global:
+  Dans l'intervalle (%(r1)f,%(r2)f), il y a thÃ©oriquement %(i1)d frÃ©quence(s) et on
+  en a calculÃ© %(i2)d.
+  On a dÃ©calÃ© la bande de calcul des modes de PREC_SHIFT=%(r3)f %%.
 
   Conseils:
-    * La bande retenue pour le test de Sturm englobe la bande de calcul. Elle est peut-être
-      trop grande et donc elle englobe d'autres modes. Vous pouvez la réduire en diminuant la
+    * La bande retenue pour le test de Sturm englobe la bande de calcul. Elle est peut-Ãªtre
+      trop grande et donc elle englobe d'autres modes. Vous pouvez la rÃ©duire en diminuant la
       valeur de VERI_MODE/PREC_SHIFT.
-    * Vous pouvez relancer le calcul en demandant à faire le test de Sturm de post-vérification
-      sur chaque sous-bande (VERI_MODE=_F(STURM='LOCAL')). Cela peut aider à trouver le problème:
-      mode multiple sauté, borne trop proche d'un mode multiple, mode de corps rigide...
+    * Vous pouvez relancer le calcul en demandant Ã  faire le test de Sturm de post-vÃ©rification
+      sur chaque sous-bande (VERI_MODE=_F(STURM='LOCAL')). Cela peut aider Ã  trouver le problÃ¨me:
+      mode multiple sautÃ©, borne trop proche d'un mode multiple, mode de corps rigide...
     * Vous pouvez aussi relancez un INFO_MODE et/ou des MODE_ITER_SIMULT sur une sous-partie pour
-      corroborer (ou non) les résultats précédent.
+      corroborer (ou non) les rÃ©sultats prÃ©cÃ©dent.
 """),
 6: _(u"""
-Opérateur MACRO_MODE_MECA, la sous-bande n %(i1)d est vide, on passe à la suivante.
+OpÃ©rateur MACRO_MODE_MECA, la sous-bande n %(i1)d est vide, on passe Ã  la suivante.
 """),
 7: _(u"""
-Opérateur MACRO_MODE_MECA: Test de Sturm global.
-  On n'a pas pu faire ce test car la bande de fréquence demandée (%(r1)f,%(r2)f) est vide !
+OpÃ©rateur MACRO_MODE_MECA: Test de Sturm global.
+  On n'a pas pu faire ce test car la bande de frÃ©quence demandÃ©e (%(r1)f,%(r2)f) est vide !
 """),
 8: _(u"""
-Opérateur MACRO_MODE_MECA:
-  Pas de mode propre dans la bande de fréquence demandée (%(r1)f,%(r2)f) !
-  Le concept résultat sera vide.
+OpÃ©rateur MACRO_MODE_MECA:
+  Pas de mode propre dans la bande de frÃ©quence demandÃ©e (%(r1)f,%(r2)f) !
+  Le concept rÃ©sultat sera vide.
 """),
 9: _(u"""
-Opérateur MACRO_MODE_MECA en mode parallèle:
-  Le nombre de processeurs, %(i1)d, et le nombre de sous-bandes fréquentielles non vides, %(i2)d,
+OpÃ©rateur MACRO_MODE_MECA en mode parallÃ¨le:
+  Le nombre de processeurs, %(i1)d, et le nombre de sous-bandes frÃ©quentielles non vides, %(i2)d,
   sont incompatibles !
-  Avec le solveur linéaire MUMPS, ce nombre de processeurs peut être supérieur ou égale
-  (idéalement proportionnel) au nombre de sous-bandes.
-  Avec les autres solveurs linéaires ces deux paramètres doivent être rigoureusement égaux.
-  Ici le solveur linéaire utilisé est %(k1)s.
+  Avec le solveur linÃ©aire MUMPS, ce nombre de processeurs peut Ãªtre supÃ©rieur ou Ã©gale
+  (idÃ©alement proportionnel) au nombre de sous-bandes.
+  Avec les autres solveurs linÃ©aires ces deux paramÃ¨tres doivent Ãªtre rigoureusement Ã©gaux.
+  Ici le solveur linÃ©aire utilisÃ© est %(k1)s.
   
   Conseil:
     * Ajuster le nombre de processeurs et/ou la distribution des sous-bandes et/ou
-      le solveur linéaire en conséquence.
+      le solveur linÃ©aire en consÃ©quence.
 """),
 10: _(u"""
-Opérateurs INFO_MODE ou MACRO_MODE_MECA en mode parallèle:
-  Le nombre de processeurs, %(i1)d, et le nombre de fréquences, %(i2)d, sont incompatibles !
-  Avec le solveur linéaire MUMPS, ce nombre de processeurs peut être supérieur ou égale
-  (idéalement proportionnel) au nombre de fréquences - 1.
-  Avec les autres solveurs linéaires ces deux paramètres doivent être rigoureusement égaux.
-  Ici le solveur linéaire utilisé est %(k1)s.
+OpÃ©rateurs INFO_MODE ou MACRO_MODE_MECA en mode parallÃ¨le:
+  Le nombre de processeurs, %(i1)d, et le nombre de frÃ©quences, %(i2)d, sont incompatibles !
+  Avec le solveur linÃ©aire MUMPS, ce nombre de processeurs peut Ãªtre supÃ©rieur ou Ã©gale
+  (idÃ©alement proportionnel) au nombre de frÃ©quences - 1.
+  Avec les autres solveurs linÃ©aires ces deux paramÃ¨tres doivent Ãªtre rigoureusement Ã©gaux.
+  Ici le solveur linÃ©aire utilisÃ© est %(k1)s.
 
   Conseil:
     * Ajuster le nombre de processeurs et/ou la distribution des sous-bandes et/ou
-      le solveur linéaire en conséquence.
+      le solveur linÃ©aire en consÃ©quence.
 """),
 11: _(u"""
-Opérateurs INFO_MODE ou MACRO_MODE_MECA en mode parallèle:
-  Chacune des %(i1)d fréquences (autre que l'initiale) utilise le solveur linéaire
+OpÃ©rateurs INFO_MODE ou MACRO_MODE_MECA en mode parallÃ¨le:
+  Chacune des %(i1)d frÃ©quences (autre que l'initiale) utilise le solveur linÃ©aire
   MUMPS sur son propre paquet de processeurs.
-  Cependant ces occurrences MUMPS sont parallélisées sur un nombre de processeurs
-  différent, %(i2)d ou %(i3)d, d'où un potentiel déséquilibre de charge.
-  Le temps d'exécution du calcul n'est alors probablement pas optimal !  
+  Cependant ces occurrences MUMPS sont parallÃ©lisÃ©es sur un nombre de processeurs
+  diffÃ©rent, %(i2)d ou %(i3)d, d'oÃ¹ un potentiel dÃ©sÃ©quilibre de charge.
+  Le temps d'exÃ©cution du calcul n'est alors probablement pas optimal !  
   
   Conseil:
     * Ajuster le nombre de processeurs et/ou la distribution des sous-bandes 
-      en conséquence. Par exemple, un nombre de processeurs = %(i1)d  x 2, 4 ou 8.
+      en consÃ©quence. Par exemple, un nombre de processeurs = %(i1)d  x 2, 4 ou 8.
 """),
 12: _(u"""
-Opérateur MACRO_MODE_MECA en mode parallèle:
-  Chacune des %(i1)d sous-bandes fréquentielles non vides utilise, indépendamment des autres,
-  le solveur linéaire parallèle MUMPS.
-  Cependant ces occurrences de solveur linéaires sont parallélisées sur un nombre de processeurs
-  différent, %(i2)d ou %(i3)d, d'où un potentiel déséquilibre de charge.
-  Le temps d'exécution du calcul n'est alors probablement pas optimal !  
+OpÃ©rateur MACRO_MODE_MECA en mode parallÃ¨le:
+  Chacune des %(i1)d sous-bandes frÃ©quentielles non vides utilise, indÃ©pendamment des autres,
+  le solveur linÃ©aire parallÃ¨le MUMPS.
+  Cependant ces occurrences de solveur linÃ©aires sont parallÃ©lisÃ©es sur un nombre de processeurs
+  diffÃ©rent, %(i2)d ou %(i3)d, d'oÃ¹ un potentiel dÃ©sÃ©quilibre de charge.
+  Le temps d'exÃ©cution du calcul n'est alors probablement pas optimal !  
   
   Conseil:
     * Ajuster le nombre de processeurs et/ou la distribution des sous-bandes 
-      en conséquence. Par exemple, un nombre de processeurs = %(i1)d  x 2, 4 ou 8.
+      en consÃ©quence. Par exemple, un nombre de processeurs = %(i1)d  x 2, 4 ou 8.
 """),
 13: _(u"""
-Opérateur MACRO_MODE_MECA en mode parallèle:
-  Chacune des 2 fréquences du test de Sturm de post-vérification utilise le solveur linéaire
+OpÃ©rateur MACRO_MODE_MECA en mode parallÃ¨le:
+  Chacune des 2 frÃ©quences du test de Sturm de post-vÃ©rification utilise le solveur linÃ©aire
   MUMPS sur son propre paquet de processeurs.
-  Cependant ces occurrences MUMPS sont parallélisées sur un nombre de processeurs
-  différent, %(i1)d ou %(i2)d, d'où un potentiel déséquilibre de charge.
-  Le temps d'exécution du calcul n'est alors probablement pas optimal !  
+  Cependant ces occurrences MUMPS sont parallÃ©lisÃ©es sur un nombre de processeurs
+  diffÃ©rent, %(i1)d ou %(i2)d, d'oÃ¹ un potentiel dÃ©sÃ©quilibre de charge.
+  Le temps d'exÃ©cution du calcul n'est alors probablement pas optimal !  
   
   Conseil:
-    * Idéalement, le nombre de processeurs devrait être pair.
+    * IdÃ©alement, le nombre de processeurs devrait Ãªtre pair.
 """),
 14: _(u"""
-Opérateurs INFO_MODE ou MACRO_MODE_MECA en mode parallèle:
-  Vous avez demandé la parallélisation, sur %(i1)d processeurs, de la partie solveur linéaire
-   de votre calcul. Mais vous avez paramétré un solveur linéaire séquentiel: %(k1)s !
+OpÃ©rateurs INFO_MODE ou MACRO_MODE_MECA en mode parallÃ¨le:
+  Vous avez demandÃ© la parallÃ©lisation, sur %(i1)d processeurs, de la partie solveur linÃ©aire
+   de votre calcul. Mais vous avez paramÃ©trÃ© un solveur linÃ©aire sÃ©quentiel: %(k1)s !
   
   Conseils:
-    * Lancez votre calcul en séquentiel,
-    * Changez votre solveur linéaire pour MUMPS (mot-clé facteur SOLVEUR + METHODE='MUMPS' + 
+    * Lancez votre calcul en sÃ©quentiel,
+    * Changez votre solveur linÃ©aire pour MUMPS (mot-clÃ© facteur SOLVEUR + METHODE='MUMPS' + 
        plus pour de meilleures performances en modal GESTION_MEMOIRE='IN_CORE' + RENUM='QAMD'),
-    * Changez le niveau de parallélisme (mot-clé NIVEAU_PARALLELISME='COMPLET').
+    * Changez le niveau de parallÃ©lisme (mot-clÃ© NIVEAU_PARALLELISME='COMPLET').
 """),
 }

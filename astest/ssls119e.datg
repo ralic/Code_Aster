@@ -1,4 +1,4 @@
-*maillage quadratique paramétré d'une coque 20x136x2
+*maillage quadratique paramÃ©trÃ© d'une coque 20x136x2
 *----------------------------------------------
 opti dime 3 elem seg3 ;
 opti niveau 8 ;
@@ -51,7 +51,7 @@ sauv form tout_elt ;
 
 fin;
 
-*maillage quadratique paramétré d'une coque 10x68x1
+*maillage quadratique paramÃ©trÃ© d'une coque 10x68x1
 *----------------------------------------------
 opti dime 3 elem seg3 ;
 opti niveau 8 ;
@@ -104,7 +104,7 @@ sauv form tout_elt ;
 
 fin;
 
-*maillage quadratique paramétré d'une coque 5x34x1
+*maillage quadratique paramÃ©trÃ© d'une coque 5x34x1
 *----------------------------------------------
 opti dime 3 elem seg3 ;
 opti niveau 8 ;

@@ -1,4 +1,4 @@
-# -*- coding: iso-8859-1 -*-
+# coding=utf-8
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -19,74 +19,74 @@
 # person_in_charge: josselin.delmas at edf.fr
 
 cata_msg={
-1 : _(u"""%(i2)4d alarme a été émise sur le processeur #%(i1)d.
+1 : _(u"""%(i2)4d alarme a Ã©tÃ© Ã©mise sur le processeur #%(i1)d.
 """),
 
-2 : _(u"""%(i2)4d alarmes ont été émises sur le processeur #%(i1)d.
+2 : _(u"""%(i2)4d alarmes ont Ã©tÃ© Ã©mises sur le processeur #%(i1)d.
 """),
 
 3: _(u"""
- En parallèle, il faut au moins un sous-domaine par processeur.
+ En parallÃ¨le, il faut au moins un sous-domaine par processeur.
 """),
 
 5: _(u"""
  Erreur MPI: %(k1)s
 """),
 6: _(u"""
- Problème lié a la distribution parallèle de calculs au sein d'une macro-commande.
- Le paramètre %(k1)s=%(i1)d est incohérent.
+ ProblÃ¨me liÃ© a la distribution parallÃ¨le de calculs au sein d'une macro-commande.
+ Le paramÃ¨tre %(k1)s=%(i1)d est incohÃ©rent.
  
  Conseil:
  =======
-   * Contacter l'équipe de développement.
+   * Contacter l'Ã©quipe de dÃ©veloppement.
 """),
 
 8: _(u"""
- Problème lié a la distribution parallèle de calculs au sein d'une macro-commande.
- Parmi les paramètres suivants, au moins un est incohérent. 
+ ProblÃ¨me liÃ© a la distribution parallÃ¨le de calculs au sein d'une macro-commande.
+ Parmi les paramÃ¨tres suivants, au moins un est incohÃ©rent. 
      - %(k1)s=%(i1)d,
      - %(k2)s=%(i2)d,
      - %(k3)s=%(i3)d.
  
  Conseil:
  =======
-   * Contacter l'équipe de développement.
+   * Contacter l'Ã©quipe de dÃ©veloppement.
 """),
 
-80 : _(u"""  Le processeur #0 demande d'interrompre l'exécution."""),
+80 : _(u"""  Le processeur #0 demande d'interrompre l'exÃ©cution."""),
 
-81 : _(u"""  On demande au processeur #%(i1)d de s'arrêter ou de lever une exception."""),
+81 : _(u"""  On demande au processeur #%(i1)d de s'arrÃªter ou de lever une exception."""),
 
 82 : _(u"""  On signale au processeur #0 qu'une erreur s'est produite."""),
 
-83 : _(u"""  Communication de type '%(k1)s' annulée."""),
+83 : _(u"""  Communication de type '%(k1)s' annulÃ©e."""),
 
-84 : _(u"""  Le processeur #%(i1)d a émis un message d'erreur."""),
+84 : _(u"""  Le processeur #%(i1)d a Ã©mis un message d'erreur."""),
 
 
-92 : _(u"""  On signale au processeur #0 qu'une exception a été levée."""),
+92 : _(u"""  On signale au processeur #0 qu'une exception a Ã©tÃ© levÃ©e."""),
 
 
 
 95 : _(u"""
-    Tous les processeurs sont synchronisés.
-    Suite à une erreur sur un processeur, l'exécution est interrompue.
+    Tous les processeurs sont synchronisÃ©s.
+    Suite Ã  une erreur sur un processeur, l'exÃ©cution est interrompue.
 """),
 
 96 : _(u"""
-  Le processeur #%(i1)d n'a pas répondu dans le délai imparti.
+  Le processeur #%(i1)d n'a pas rÃ©pondu dans le dÃ©lai imparti.
 """),
 
 97 : _(u"""
-    Le délai d'expiration de la communication est dépassé.
+    Le dÃ©lai d'expiration de la communication est dÃ©passÃ©.
     Cela signifie que le processeur #0 attend depuis plus de %(r1).0f secondes,
     ce qui n'est pas normal.
 """),
 
 99 : { 'message' : _(u"""
 
-    Au moins un processeur n'est pas en mesure de participer à la communication.
-    L'exécution est donc interrompue.
+    Au moins un processeur n'est pas en mesure de participer Ã  la communication.
+    L'exÃ©cution est donc interrompue.
 
 """), 'flags' : 'DECORATED',
 },

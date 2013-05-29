@@ -1,4 +1,4 @@
-# -*- coding: iso-8859-1 -*-
+# coding=utf-8
 # person_in_charge: mathieu.courtois at edf.fr
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -22,7 +22,7 @@
 
 
 """ Ce module contient la classe de definition SIMP
-    qui permet de spécifier les caractéristiques des mots clés simples
+    qui permet de spÃ©cifier les caractÃ©ristiques des mots clÃ©s simples
 """
 
 import types
@@ -37,11 +37,11 @@ class SIMP(N_ENTITE.ENTITE):
 
     Cette classe a deux attributs de classe
 
-    - class_instance qui indique la classe qui devra etre utilisée
-            pour créer l'objet qui servira à controler la conformité d'un
-            mot-clé simple avec sa définition
+    - class_instance qui indique la classe qui devra etre utilisÃ©e
+            pour crÃ©er l'objet qui servira Ã  controler la conformitÃ© d'un
+            mot-clÃ© simple avec sa dÃ©finition
 
-    - label qui indique la nature de l'objet de définition (ici, SIMP)
+    - label qui indique la nature de l'objet de dÃ©finition (ici, SIMP)
 
    """
    class_instance = N_MCSIMP.MCSIMP
@@ -52,7 +52,7 @@ class SIMP(N_ENTITE.ENTITE):
                      val_min = '**',val_max='**',docu="",validators=None):
 
       """
-          Un mot-clé simple est caractérisé par les attributs suivants :
+          Un mot-clÃ© simple est caractÃ©risÃ© par les attributs suivants :
 
           - type : cet attribut est obligatoire et indique le type de valeur attendue
 
@@ -101,7 +101,7 @@ class SIMP(N_ENTITE.ENTITE):
 
    def verif_cata(self):
       """
-          Cette methode sert à valider les attributs de l'objet de définition
+          Cette methode sert Ã  valider les attributs de l'objet de dÃ©finition
           de la classe SIMP
       """
       self.check_min_max()
