@@ -1,2 +1,2 @@
 ! transitional empty interface
-    real(kind=8)  :: distfo
+real(kind=8) :: distfo

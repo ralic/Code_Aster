@@ -1,2 +1,2 @@
 ! transitional empty interface
-    real(kind=8)  :: spect2
+real(kind=8) :: spect2

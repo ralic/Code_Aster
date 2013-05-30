@@ -1,2 +1,2 @@
 ! transitional empty interface
-    integer :: iorim2
+integer :: iorim2

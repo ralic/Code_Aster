@@ -1,2 +1,2 @@
 ! transitional empty interface
-    character(len=1)  :: typmat
+character(len=1) :: typmat

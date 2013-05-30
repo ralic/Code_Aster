@@ -1,2 +1,2 @@
 ! transitional empty interface
-    real(kind=8)  :: bprime
+real(kind=8) :: bprime

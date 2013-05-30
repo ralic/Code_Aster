@@ -1,2 +1,2 @@
 ! transitional empty interface
-    logical lisico
+logical :: lisico

@@ -1,2 +1,2 @@
 ! transitional empty interface
-    real(kind=8)  :: dcargu
+real(kind=8) :: dcargu

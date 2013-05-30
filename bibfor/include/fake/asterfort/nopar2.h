@@ -1,2 +1,2 @@
 ! transitional empty interface
-    character(len=8)  :: nopar2
+character(len=8) :: nopar2

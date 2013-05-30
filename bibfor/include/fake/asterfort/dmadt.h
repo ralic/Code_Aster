@@ -1,2 +1,2 @@
 ! transitional empty interface
-    real(kind=8)  :: dmadt
+real(kind=8) :: dmadt

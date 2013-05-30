@@ -1,2 +1,2 @@
 ! transitional empty interface
-    real(kind=8)  :: freqom
+real(kind=8) :: freqom

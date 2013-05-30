@@ -1,2 +1,2 @@
 ! transitional empty interface
-    real(kind=8)  :: ftprim
+real(kind=8) :: ftprim

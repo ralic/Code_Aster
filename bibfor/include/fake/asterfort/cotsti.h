@@ -1,2 +1,2 @@
 ! transitional empty interface
-    character(len=16)  :: cotsti
+character(len=16) :: cotsti

@@ -1,2 +1,2 @@
 ! transitional empty interface
-    complex(kind=4)  :: pbflkz
+complex(kind=4) :: pbflkz

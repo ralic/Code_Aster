@@ -1,2 +1,2 @@
 ! transitional empty interface
-    logical compr8
+logical :: compr8

@@ -1,2 +1,2 @@
 ! transitional empty interface
-    character(len=9)  :: xpheop
+character(len=9) :: xpheop

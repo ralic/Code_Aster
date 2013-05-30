@@ -1,2 +1,2 @@
 ! transitional empty interface
-    real(kind=8)  :: dilgaz
+real(kind=8) :: dilgaz

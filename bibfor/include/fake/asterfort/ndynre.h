@@ -1,2 +1,2 @@
 ! transitional empty interface
-    real(kind=8)  :: ndynre
+real(kind=8) :: ndynre

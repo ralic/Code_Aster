@@ -1,2 +1,2 @@
 ! transitional empty interface
-    integer :: cmlqdi
+integer :: cmlqdi

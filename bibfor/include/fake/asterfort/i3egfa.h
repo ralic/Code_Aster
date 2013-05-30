@@ -1,2 +1,2 @@
 ! transitional empty interface
-    logical i3egfa
+logical :: i3egfa

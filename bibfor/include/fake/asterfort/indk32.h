@@ -1,2 +1,2 @@
 ! transitional empty interface
-    integer :: indk32
+integer :: indk32

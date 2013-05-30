@@ -1,2 +1,2 @@
 ! transitional empty interface
-    logical idenob
+logical :: idenob

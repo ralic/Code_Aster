@@ -1,2 +1,2 @@
 ! transitional empty interface
-    integer :: dimge1
+integer :: dimge1

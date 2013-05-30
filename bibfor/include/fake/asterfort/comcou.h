@@ -1,2 +1,2 @@
 ! transitional empty interface
-    integer(kind=4)  :: comcou
+integer(kind=4) :: comcou

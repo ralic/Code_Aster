@@ -1,2 +1,2 @@
 ! transitional empty interface
-    real(kind=8)  :: r8rddg
+real(kind=8) :: r8rddg

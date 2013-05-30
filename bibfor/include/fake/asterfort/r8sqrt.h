@@ -1,2 +1,2 @@
 ! transitional empty interface
-    real(kind=8)  :: r8sqrt
+real(kind=8) :: r8sqrt

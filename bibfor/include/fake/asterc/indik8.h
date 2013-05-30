@@ -1,2 +1,2 @@
 ! transitional empty interface
-    integer :: indik8
+integer :: indik8

@@ -1,2 +1,2 @@
 ! transitional empty interface
-    real(kind=8)  :: entgaz
+real(kind=8) :: entgaz

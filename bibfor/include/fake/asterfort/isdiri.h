@@ -1,2 +1,2 @@
 ! transitional empty interface
-    logical isdiri
+logical :: isdiri

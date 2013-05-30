@@ -1,2 +1,2 @@
 ! transitional empty interface
-    logical mminfl
+logical :: mminfl

@@ -1,2 +1,2 @@
 ! transitional empty interface
-    complex(kind=4)  :: zdotu
+complex(kind=4) :: zdotu

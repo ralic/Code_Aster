@@ -1,2 +1,2 @@
 ! transitional empty interface
-    real(kind=8)  :: nmcri3
+real(kind=8) :: nmcri3

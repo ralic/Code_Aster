@@ -1,2 +1,2 @@
 ! transitional empty interface
-    real(kind=8)  :: schdp1
+real(kind=8) :: schdp1

@@ -1,2 +1,2 @@
 ! transitional empty interface
-    integer :: indk80
+integer :: indk80

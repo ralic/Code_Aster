@@ -1,2 +1,2 @@
 ! transitional empty interface
-    real(kind=8)  :: dmwp1v
+real(kind=8) :: dmwp1v

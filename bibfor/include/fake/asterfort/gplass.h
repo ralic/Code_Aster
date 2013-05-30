@@ -1,2 +1,2 @@
 ! transitional empty interface
-    real(kind=8)  :: gplass
+real(kind=8) :: gplass

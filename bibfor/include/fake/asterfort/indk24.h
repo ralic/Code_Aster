@@ -1,2 +1,2 @@
 ! transitional empty interface
-    integer :: indk24
+integer :: indk24

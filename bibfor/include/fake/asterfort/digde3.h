@@ -1,2 +1,2 @@
 ! transitional empty interface
-    integer :: digde3
+integer :: digde3

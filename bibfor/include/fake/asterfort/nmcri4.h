@@ -1,3 +1,3 @@
 ! transitional empty interface
-    real(kind=8)  :: nmcri4
-    external nmcri4
+real(kind=8) :: nmcri4
+external nmcri4

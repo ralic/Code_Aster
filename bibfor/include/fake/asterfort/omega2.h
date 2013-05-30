@@ -1,2 +1,2 @@
 ! transitional empty interface
-    real(kind=8)  :: omega2
+real(kind=8) :: omega2

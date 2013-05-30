@@ -1,2 +1,2 @@
 ! transitional empty interface
-    real(kind=8)  :: dhw2p1
+real(kind=8) :: dhw2p1

@@ -1,2 +1,2 @@
 ! transitional empty interface
-    real(kind=8)  :: majpas
+real(kind=8) :: majpas

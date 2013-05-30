@@ -1,2 +1,2 @@
 ! transitional empty interface
-    integer :: nomil
+integer :: nomil

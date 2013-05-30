@@ -1,2 +1,2 @@
 ! transitional empty interface
-    real(kind=8)  :: corcos
+real(kind=8) :: corcos

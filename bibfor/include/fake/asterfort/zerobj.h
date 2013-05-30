@@ -1,2 +1,2 @@
 ! transitional empty interface
-    logical zerobj
+logical :: zerobj

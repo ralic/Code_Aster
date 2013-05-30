@@ -1,2 +1,2 @@
 ! transitional empty interface
-    integer :: hdfcrg
+integer :: hdfcrg

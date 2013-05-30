@@ -1,2 +1,2 @@
 ! transitional empty interface
-    logical ischar
+logical :: ischar

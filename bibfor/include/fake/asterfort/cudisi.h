@@ -1,2 +1,2 @@
 ! transitional empty interface
-    integer :: cudisi
+integer :: cudisi

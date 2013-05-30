@@ -1,2 +1,2 @@
 ! transitional empty interface
-    external ldsp2
+external ldsp2

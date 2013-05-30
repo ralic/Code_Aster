@@ -1,2 +1,2 @@
 ! transitional empty interface
-    logical diincl
+logical :: diincl

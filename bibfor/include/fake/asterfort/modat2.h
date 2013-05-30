@@ -1,2 +1,2 @@
 ! transitional empty interface
-    integer :: modat2
+integer :: modat2

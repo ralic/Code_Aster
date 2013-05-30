@@ -1,2 +1,2 @@
 ! transitional empty interface
-    integer :: idamax
+integer :: idamax
