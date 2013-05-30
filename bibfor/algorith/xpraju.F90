@@ -14,7 +14,6 @@ subroutine xpraju(noma, fiss, cnslt, cnsvt, cnsvn,&
     character(len=19) :: cnsvt, cnsvn, cnslt
     real(kind=8) :: deltat, vmax
 !
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

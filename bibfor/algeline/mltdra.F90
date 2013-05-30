@@ -2,7 +2,6 @@ subroutine mltdra(nbloc, lgbloc, ncbloc, decal, seq,&
                   nbsn, nbnd, supnd, adress, global,&
                   lgsn, factol, factou, sm, x,&
                   invp, perm, ad, trav, typsym)
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! person_in_charge: olivier.boiteau at edf.fr
 !     TOLE CRP_4
 ! ======================================================================

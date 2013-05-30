@@ -7,7 +7,6 @@ subroutine sdmail(nomu, nommai, nomnoe, cooval, coodsc,&
     character(len=24) :: nommai, nomnoe, cooval, coodsc, cooref, grpnoe
     character(len=24) :: gpptnn, grpmai, gpptnm, connex, titre, typmai, adapma
 !
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

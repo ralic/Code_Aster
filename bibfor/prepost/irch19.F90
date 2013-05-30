@@ -4,7 +4,6 @@ subroutine irch19(cham19, partie, form, ifi, titre,&
                   lsup, borsup, linf, borinf, lmax,&
                   lmin, lresu, formr, nive)
 !     ------------------------------------------------------------------
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

@@ -10,7 +10,6 @@ subroutine ptma01(kanl, itype, m, ist, rho,&
     real(kind=8) :: e, rho, a1, a2, xl, xiy1, xiy2, xiz1, xiz2, g
     real(kind=8) :: m(*), alfay1, alfay2, alfaz1, alfaz2, ey, ez
 !     ------------------------------------------------------------------
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

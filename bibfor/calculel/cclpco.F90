@@ -16,7 +16,6 @@ subroutine cclpco(option, resuou, numord, nbpaou, lipaou,&
     character(len=8) :: lipaou(*)
     character(len=16) :: option
     character(len=24) :: lichou(*)
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

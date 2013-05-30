@@ -2,7 +2,6 @@ subroutine edgiso(dp, pm, eqsitr, mu, gamma,&
                   m, n, seuil, dseuil)
     implicit none
 !
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 !
     real(kind=8) :: dp, pm, eqsitr
     real(kind=8) :: mu, gamma(3), m(3), n(3)

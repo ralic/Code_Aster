@@ -5,7 +5,6 @@ subroutine xmelin(typma, typint, nnint)
     character(len=8) :: typma
     integer :: typint
     integer :: nnint
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

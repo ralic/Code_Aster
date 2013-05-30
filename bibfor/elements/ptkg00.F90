@@ -5,7 +5,6 @@ subroutine ptkg00(sf, a1, a2, xiz, xiz2,&
     real(kind=8) :: a1, a2, xiz, xiz2, xiy, xiy2, xl, ey, ez
     real(kind=8) :: sf(*), dsm(*)
 !     ------------------------------------------------------------------
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

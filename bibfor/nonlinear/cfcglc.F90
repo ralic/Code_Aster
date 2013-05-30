@@ -2,7 +2,6 @@ subroutine cfcglc(ndim, neq, nesmax, resoco, iliai,&
                   jdecal, nbddl, jdepc, japddl, japcof,&
                   glis)
 !
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

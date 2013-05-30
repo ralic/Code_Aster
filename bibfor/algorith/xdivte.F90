@@ -8,7 +8,6 @@ subroutine xdivte(ndim, elp, cnset, nse, nnose)
     integer :: ndim, cnset(*), nse, nnose
     character(len=8) :: elp
 !     ------------------------------------------------------------------
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

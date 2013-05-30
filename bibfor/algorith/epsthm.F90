@@ -19,7 +19,6 @@ subroutine epsthm(nddls, nddlm, nno, nnos, nnom,&
     real(kind=8) :: geom(ndim, nno), depla(dimuel), epsm(6, npi)
     logical :: axi
 ! ======================================================================
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

@@ -1,7 +1,6 @@
 subroutine majour(neq, lgrot, lendo, sdnume, chaini,&
                   chadel, coef, chamaj, ordre)
 !
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

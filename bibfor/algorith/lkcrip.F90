@@ -10,7 +10,6 @@ subroutine lkcrip(invar, s, vin, nbmat, mater,&
     integer :: nbmat
     real(kind=8) :: invar, s(6), mater(nbmat, 2), vin(7), seuil
 ! =================================================================
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

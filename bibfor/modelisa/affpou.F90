@@ -18,7 +18,6 @@ subroutine affpou(tmp, tmpf, fcx, nom, isec,&
     character(len=8) :: fcx, car(*), tab(*), exp(*)
     character(len=24) :: tmp, tmpf, nom
 !     ------------------------------------------------------------------
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

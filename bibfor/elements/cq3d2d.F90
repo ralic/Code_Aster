@@ -4,7 +4,6 @@ subroutine cq3d2d(nno, coor3d, coteta, siteta, coor2d)
     integer :: nno
     real(kind=8) :: coor3d(*), coteta, siteta, coor2d(*)
 ! ......................................................................
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

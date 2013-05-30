@@ -3,7 +3,6 @@ subroutine massup(option, ndim, dlns, nno, nnos,&
                   geom, vff1, imatuu, icodre, igeom,&
                   ivf)
 !
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

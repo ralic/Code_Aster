@@ -2,7 +2,6 @@ subroutine w155ma(numa, nucou, nicou, nangl, nufib,&
                   motfac, jce2d, jce2l, jce2v, jce5d,&
                   jce5l, jce5v, ksp1, ksp2, c1,&
                   c2, iret)
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

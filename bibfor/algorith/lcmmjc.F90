@@ -6,7 +6,6 @@ subroutine lcmmjc(coeft, ifa, nmat, nbcomm, ir,&
     integer :: ifa, nmat, nbcomm(nmat, 3), ir, is
     real(kind=8) :: coeft(nmat), daldgr, dgamms, alphmr, sgnr
     character(len=16) :: necrci
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

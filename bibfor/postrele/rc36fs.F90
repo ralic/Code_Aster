@@ -12,7 +12,6 @@ subroutine rc36fs(nbsig1, noc1, sit1, nbsig2, noc2,&
     real(kind=8) :: saltij(*), matse(*), mse(*), sn(*), c(*), k(*), cara(*), ug
     character(len=8) :: nommat
 !     ------------------------------------------------------------------
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

@@ -2,7 +2,6 @@ subroutine xadher(p, saut, lamb1, cstafr, cpenfr,&
                   algofr, vitang, pboul, kn, ptknp,&
                   ik, adher)
 !
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

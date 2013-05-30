@@ -2,7 +2,6 @@ subroutine lcejex(fami, kpg, ksp, ndim, mate,&
                   option, am, da, sigma, dsidep,&
                   vim, vip)
 !
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! TOLE CRS_1404
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG

@@ -8,7 +8,6 @@ subroutine gchfus(fonct1, fonct2, fonct3)
     include 'asterfort/jemarq.h'
     include 'asterfort/jeveuo.h'
     character(len=*) :: fonct1, fonct2, fonct3
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

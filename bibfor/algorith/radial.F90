@@ -1,6 +1,5 @@
 subroutine radial(nbsig, sigm, sigp, indm, indp,&
                   icine, xm, xp, normdn)
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

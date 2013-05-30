@@ -18,7 +18,6 @@ subroutine xbarvi(noma, nomo, fiss, faclon, ainter)
     include 'asterfort/xxmmvd.h'
     character(len=8) :: noma, nomo, fiss
     character(len=19) :: faclon, ainter
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

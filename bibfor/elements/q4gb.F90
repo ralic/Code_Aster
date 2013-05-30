@@ -9,7 +9,6 @@ subroutine q4gb(caraq4, xyzl, igau, jacgau, bmat)
     include 'asterfort/q4gbc.h'
     integer :: igau
     real(kind=8) :: xyzl(3, 1), caraq4(*), bmat(8, 1), jacgau
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

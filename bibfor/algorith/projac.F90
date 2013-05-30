@@ -2,7 +2,6 @@ subroutine projac(np1, np2, nbm, ic, phii,&
                   jacob, mtmp1, mtmp6)
     implicit none
 !-----------------------------------------------------------------------
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

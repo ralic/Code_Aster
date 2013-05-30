@@ -25,7 +25,6 @@ subroutine refthm(fnoevo, dt, perman, nno, nnos,&
     real(kind=8) :: dfdi2(nnos, 3)
     real(kind=8) :: r(1:dimdef+1), vectu(dimuel), dt
 ! =====================================================================
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

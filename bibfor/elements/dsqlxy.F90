@@ -3,7 +3,6 @@ subroutine dsqlxy(qsi, eta, hlt2, an, depf,&
     implicit  none
     real(kind=8) :: qsi, eta, codi(*), hlt2(4, 6), an(4, 12), depf(12)
     real(kind=8) :: lambda(4)
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

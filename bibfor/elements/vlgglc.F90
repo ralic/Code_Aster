@@ -2,7 +2,6 @@ subroutine vlgglc(nno, nbrddl, pgl1, pgl2, pgl3,&
                   pgl4, v, code, p, vtemp)
     implicit none
 !
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

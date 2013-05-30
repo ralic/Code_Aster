@@ -14,7 +14,6 @@ subroutine xintar(elp, ndim, ia, tabco, tabls,&
     character(len=8) :: elp
     real(kind=8) :: intar(ndim), tabco(*), tabls(*)
 !
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! TOLE CRS_1404
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG

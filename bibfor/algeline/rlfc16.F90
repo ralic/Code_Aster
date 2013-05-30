@@ -13,7 +13,6 @@ subroutine rlfc16(nommat, neq, cxsol, nbsol, typsym)
     character(len=*) :: nommat
     complex(kind=8) :: cxsol(neq, *)
 !     ------------------------------------------------------------------
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! person_in_charge: olivier.boiteau at edf.fr
 !     TOLE CRP_4
 ! ======================================================================

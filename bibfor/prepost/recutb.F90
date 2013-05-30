@@ -9,7 +9,6 @@ subroutine recutb(ik1d, nomgrn, tabrev, tabmdb, tabthr)
     character(len=8) :: tabrev, tabmdb, tabthr
     character(len=32) :: nomgrn
 ! ======================================================================
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

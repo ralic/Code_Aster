@@ -5,7 +5,6 @@ subroutine mdgep5(neq, nbmode, bmodal, xgene, iddl,&
     real(kind=8) :: bmodal(neq, *)
     complex(kind=8) :: xgene(*), u
 !-----------------------------------------------------------------------
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

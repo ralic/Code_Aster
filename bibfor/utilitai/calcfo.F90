@@ -14,7 +14,6 @@ subroutine calcfo(compl, nomfin, nomfon, nbval, vale,&
     logical :: compl
     character(len=24) :: nopara
     character(len=19) :: nomfin, nomfon
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

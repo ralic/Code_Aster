@@ -9,7 +9,6 @@ subroutine i3egf1(desc, desctm, conek1, conek2, im1,&
     integer :: im2, if2, iao2
     logical :: legfa
 !     ------------------------------------------------------------------
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

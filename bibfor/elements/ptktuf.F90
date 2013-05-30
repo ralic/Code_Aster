@@ -7,7 +7,6 @@ subroutine ptktuf(sk, e, rof, c, a,&
     real(kind=8) :: sk(*)
     real(kind=8) :: e, rof, c, a, ai, xl, xiy, xiz, xjx, g, alfay, alfaz, ey, ez
 !    -------------------------------------------------------------------
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

@@ -7,7 +7,6 @@ subroutine parotr(nomma, iageom, ima, nbno, o,&
     integer :: ima, nbno
     real(kind=8) :: o(3), mrot(3, 3), t(3), coor(*)
 !---------------------------------------------------------------------
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

@@ -32,7 +32,6 @@ subroutine cgnoor(mafour, nomail, motfac, iocc, nbmc,&
     character(len=16) :: motcle(*), typmcl(*)
     character(len=*) :: motfac
     real(kind=8) :: vecori(3)
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

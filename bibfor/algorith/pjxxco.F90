@@ -2,7 +2,6 @@ subroutine pjxxco(typcal, method, lcorre, isole, resuin,&
                   cham1, moa1, moa2, noma1, noma2,&
                   cnref, noca)
 !
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

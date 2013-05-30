@@ -2,7 +2,6 @@ subroutine calfft(np1, np4, nbm, n, dtext,&
                   fext, omegaf, aa, bb)
 !
 !----------------------------------------------------------------------
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! TOLE CRS_1404
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2010  EDF R&D                  WWW.CODE-ASTER.ORG

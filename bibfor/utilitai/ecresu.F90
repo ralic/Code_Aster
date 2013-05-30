@@ -26,7 +26,6 @@ subroutine ecresu(resin, vectot, nbva, grand, resou,&
     character(len=*) :: resin, resou, grand
     character(len=19) :: vectot
 !     ------------------------------------------------------------------
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

@@ -2,7 +2,6 @@ subroutine nmthmc(comp, modelz, moclef, k, comel,&
                   ncomel, nbnvi)
 !
 ! ======================================================================
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG

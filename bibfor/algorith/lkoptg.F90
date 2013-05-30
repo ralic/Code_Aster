@@ -30,7 +30,6 @@ subroutine lkoptg(val, dum, dt, nbmat, mater,&
     real(kind=8) :: dside(6, 6), de(6, 6)
     real(kind=8) :: ucrpm, ucrvm, ucriv, seuilv
 ! =================================================================
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

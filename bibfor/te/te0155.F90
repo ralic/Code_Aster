@@ -21,7 +21,6 @@ subroutine te0155(option, nomte)
     include 'blas/ddot.h'
     character(len=*) :: option, nomte
 ! ----------------------------------------------------------------------
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! TOLE CRP_20
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG

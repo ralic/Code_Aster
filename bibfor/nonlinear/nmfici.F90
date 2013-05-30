@@ -1,9 +1,7 @@
 subroutine nmfici(nno, nddl, wref, vff, dfde,&
                   geom, poids, b)
 !
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! TOLE CRS_1404
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! COPYRIGHT (C) 2007 NECS - BRUNO ZUBER   WWW.NECS.FR
 ! COPYRIGHT (C) 2007 - 2013  EDF R&D                WWW.CODE-ASTER.ORG

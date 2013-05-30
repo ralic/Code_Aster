@@ -4,7 +4,6 @@ subroutine brendo(sige6, bt6, sut, bc1, suc,&
                   mt, mc, siget6, sigec6, nu,&
                   dt66, dc0, sut6, suc1, siga6,&
                   dt6)
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

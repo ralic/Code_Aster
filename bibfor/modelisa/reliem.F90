@@ -25,7 +25,6 @@ subroutine reliem(mo, ma, typem, motfaz, iocc,&
     character(len=*) :: limocl(nbmocl), tymocl(nbmocl), mo
     character(len=*) :: litroz, typem, motfaz
 ! ----------------------------------------------------------------------
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! person_in_charge: jacques.pellet at edf.fr
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG

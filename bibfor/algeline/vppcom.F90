@@ -23,7 +23,6 @@ subroutine vppcom(lcomod, icom1, icom2, resui, resur,&
     real(kind=8) :: vectr(*), resur(*)
     character(len=16) :: typres
     character(len=*) :: resuk(*)
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

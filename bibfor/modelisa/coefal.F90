@@ -1,7 +1,6 @@
 subroutine coefal(nom1, nom2, nom3, ncdmax, ipas,&
                   ires, borncd, nborcd, coefcd, ipas1,&
                   ires1)
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

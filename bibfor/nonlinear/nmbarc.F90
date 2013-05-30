@@ -4,7 +4,6 @@ subroutine nmbarc(ndim, imate, crit, sat, biot,&
                   p2, dp1, dp2, dsidp1, sipm,&
                   sipp, retcom)
 !
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

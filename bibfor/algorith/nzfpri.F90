@@ -2,7 +2,6 @@ subroutine nzfpri(deuxmu, trans, rprim, seuil, phasp,&
                   nz, fmel, eta, unsurn, dt,&
                   dp, fplas, fp, fd, fprim,&
                   fdevi)
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

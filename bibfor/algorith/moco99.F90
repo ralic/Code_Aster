@@ -19,7 +19,6 @@ subroutine moco99(nomres, resul, nbmod, lrang, iorne,&
     character(len=8) :: nomres, resul
     logical :: seul
 ! ----------------------------------------------------------------------
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

@@ -29,7 +29,6 @@ subroutine rcevo2(nbinti, kinti, csigm, cinst, csiex,&
     character(len=16) :: kinti
     character(len=24) :: csigm, cinst, csiex, cnoc, cresu, cpres, cstex, csmex
 !     ------------------------------------------------------------------
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! TOLE CRP_20
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG

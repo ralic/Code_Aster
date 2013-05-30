@@ -8,7 +8,6 @@ subroutine utest3(mclfac, iocc, tbref)
     character(len=16) :: tbref(2)
     character(len=*) :: mclfac
 ! ----------------------------------------------------------------------
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

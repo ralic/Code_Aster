@@ -15,7 +15,6 @@ subroutine calcdr(nbmat, mater, parame, derive, g,&
     real(kind=8) :: mater(nbmat, 2), parame(5), derive(4), g, i
     real(kind=8) :: q(6), devg(6), devgii, traceg, dfdl
 ! ======================================================================
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

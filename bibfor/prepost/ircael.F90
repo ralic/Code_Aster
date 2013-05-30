@@ -7,7 +7,6 @@ subroutine ircael(jcesdi, jcesli, jcesvi, jcesci, nummai,&
     parameter (nmaxfi=10)
     integer :: jcesdi, jcesli, nummai, nbrcou, jcesvi
     integer :: nbrsec, nbrfib, nbrgrf, nugrfi(nmaxfi), jcesci
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

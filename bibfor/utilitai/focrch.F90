@@ -22,7 +22,6 @@ subroutine focrch(nomfon, resu, noeud, parax, paray,&
     character(len=8) :: sst, noeud, intitu
     character(len=19) :: nomfon, resu, listr
 !     ------------------------------------------------------------------
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

@@ -3,7 +3,6 @@ subroutine meca01(optio0, nbordr, jordr, nchar, jcha,&
                   leres1, noma, modele, ligrmo, mate,&
                   cara, chvarc, codret)
 ! ----------------------------------------------------------------------
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

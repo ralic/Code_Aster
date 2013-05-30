@@ -1,7 +1,6 @@
 subroutine op0139( )
     implicit none
 !     ------------------------------------------------------------------
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! MODIF FERMETUR DATE 03/08/95  AUTEUR GIBHHCM C.MASSERET
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG

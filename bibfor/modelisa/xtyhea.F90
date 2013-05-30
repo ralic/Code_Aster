@@ -1,6 +1,5 @@
 subroutine xtyhea(nfiss, ifiss, ima, nno, jconx1,&
                   jconx2, jstnl, jstnv, nbheav)
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! TOLE CRS_1404
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG

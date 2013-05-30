@@ -7,7 +7,6 @@ subroutine ascrep(mailla, ltp1)
     character(len=8) :: mailla
     real(kind=8) :: ltp1
 !-----------------------------------------------------------------------
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

@@ -13,7 +13,6 @@ subroutine propla(nbvec, vectn, vectu, vectv, nbordr,&
     real(kind=8) :: vwork(tdisp), fatsoc, vectra(2*nbvec*nbordr)
     logical :: fordef
     character(len=16) :: nomcri, nomfor
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

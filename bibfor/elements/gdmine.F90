@@ -2,7 +2,6 @@ subroutine gdmine(kp, nno, pjacob, en, grani,&
                   alfnmk, delnmk, pas, rot0, rotm,&
                   rotkm1, rotk, rmkm1, rmk, omgkm,&
                   ompgkm, omgk, ompgk, rigi)
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

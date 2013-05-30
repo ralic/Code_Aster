@@ -4,7 +4,6 @@ subroutine cvmcvg(dy, ddy, nr, itmax, toler,&
 ! TOLE CRS_505 CRS_507
     implicit none
 !       ================================================================
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

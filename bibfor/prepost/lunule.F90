@@ -6,7 +6,6 @@ subroutine lunule(r1, r2, angdeb, angfin, angmax,&
     real(kind=8) :: r1, r2, angdeb, angfin, angmax, ansini, ansfin, profon
     real(kind=8) :: volume, epais
 !-----------------------------------------------------------------------
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

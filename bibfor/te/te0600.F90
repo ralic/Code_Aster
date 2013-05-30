@@ -17,7 +17,6 @@ subroutine te0600(option, nomte)
     include 'asterfort/thmevc.h'
     character(len=16) :: option, nomte
 ! =====================================================================
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! =====================================================================
 ! person_in_charge: sylvie.granet at edf.fr
 ! =====================================================================

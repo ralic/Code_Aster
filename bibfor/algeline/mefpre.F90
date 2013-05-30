@@ -19,7 +19,6 @@ subroutine mefpre(ndim, alpha, z, cf, dh,&
     real(kind=8) :: zg(*), hg(*), axg(*), xig(*), afluid, pm
     real(kind=8) :: cdg(*), cfg(*), vitg(*), rhog(*)
 ! ----------------------------------------------------------------------
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

@@ -29,7 +29,6 @@ subroutine mdfcho(nbmode, depgen, vitgen, accgen, fexgen,&
     character(len=8) :: nofdep(nbexci), nofvit(nbexci), nofacc(nbexci)
     real(kind=8) :: temps, psidel(nbchoc, nbexci, *)
 ! ----------------------------------------------------------------------
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

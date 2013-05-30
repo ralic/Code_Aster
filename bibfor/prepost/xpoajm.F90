@@ -9,7 +9,6 @@ subroutine xpoajm(maxfem, jtypm2, itypse, jcnse, im,&
                   jlsn, jlst, typma, igeom, jfisno,&
                   contac, cmp, nbcmp, nfh, nfe,&
                   ddlc, jcnsv1, jcnsv2, jcnsl2, lmeca)
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

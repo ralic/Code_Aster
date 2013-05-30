@@ -9,7 +9,6 @@ subroutine xneuvi(narz, nar, nbno, tabdir, scorno,&
     integer :: narz, nar, nbno
     integer :: tabdir(narz, 2), scorno(2*narz), noeud(2*narz)
     character(len=19) :: nliseq
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! TOLE CRS_1404
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG

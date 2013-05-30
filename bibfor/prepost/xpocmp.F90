@@ -2,7 +2,6 @@ subroutine xpocmp(elrefp, cns1, ima, n, jconx1,&
                   jconx2, ndim, nfh, nfe, ddlc,&
                   nbcmp, cmp, lmeca)
 !
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! TOLE CRS_1404
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG

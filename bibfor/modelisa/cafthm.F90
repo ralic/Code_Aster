@@ -18,7 +18,6 @@ subroutine cafthm(char, ligrmo, noma, fonree)
     character(len=8) :: char, noma
     character(len=*) :: ligrmo
 ! ======================================================================
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! person_in_charge: sylvie.granet at edf.fr
 ! ======================================================================

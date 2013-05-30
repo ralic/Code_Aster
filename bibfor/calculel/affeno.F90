@@ -10,7 +10,6 @@ subroutine affeno(ioc, ino, nocmp, nbcmp, ncmpgd,&
     character(len=8) :: nocmp(*), kvalgl(*), ncmpgd(*), kval(*)
     character(len=24) :: valk
 !-----------------------------------------------------------------------
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

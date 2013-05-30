@@ -3,7 +3,6 @@ subroutine lceobb(intmax, toler, epsm, deps, bm,&
                   ecrod, rk, rk1, rk2, b,&
                   d, mult, elas, dbloq, iret)
 !
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

@@ -2,7 +2,6 @@ subroutine vardep(nbnl, dep, dep0, tconf2, tconf1,&
                   ivar, dt0, toln, tolc, tolv)
     implicit none
 !-----------------------------------------------------------------------
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

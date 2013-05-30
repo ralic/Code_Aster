@@ -4,7 +4,6 @@ subroutine regini(option, nomte, ivf, ivf2, idfde,&
                   typmod, dimuel, nno, nnom, nnos,&
                   regula, axi)
 ! ======================================================================
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

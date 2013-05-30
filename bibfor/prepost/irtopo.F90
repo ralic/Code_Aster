@@ -19,7 +19,6 @@ subroutine irtopo(ioccur, formaf, ifichi, leresu, lresul,&
     character(len=8) :: formaf, leresu
     character(len=24) :: nonuma, nonuno
     logical :: lresul
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

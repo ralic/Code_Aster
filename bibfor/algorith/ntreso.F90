@@ -4,7 +4,6 @@ subroutine ntreso(modele, mate, carele, fomult, charge,&
                   reasrg, reasms, creas, vec2nd, matass,&
                   maprec, cndirp, cnchci, mediri, compor)
 !
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

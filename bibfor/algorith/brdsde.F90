@@ -2,8 +2,6 @@ subroutine brdsde(e0, nu0, dsidep, vim, sigm)
 !
 !    ROUTINE ANCIENNEMENT NOMMEE DSIDEPRG
 !
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2009  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

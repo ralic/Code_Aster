@@ -16,7 +16,6 @@ subroutine nmaret(nbarvz, nno, ndim, nliseq, nbno,&
     character(len=19) :: nliseq
     character(len=24) :: gro1, gro2, numnod
 !
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

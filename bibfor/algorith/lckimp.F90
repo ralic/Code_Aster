@@ -2,7 +2,6 @@ subroutine lckimp(ndim, typmod, option, mat, epsm,&
                   deps, vim, nonloc, sig, vip,&
                   dsidep)
 !
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

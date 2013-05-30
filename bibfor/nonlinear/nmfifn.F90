@@ -1,8 +1,6 @@
 subroutine nmfifn(nno, nddl, npg, wref, vff,&
                   dfde, geom, sigma, fint)
 !
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! COPYRIGHT (C) 2007 NECS - BRUNO ZUBER   WWW.NECS.FR
 ! COPYRIGHT (C) 2007 - 2013  EDF R&D                WWW.CODE-ASTER.ORG

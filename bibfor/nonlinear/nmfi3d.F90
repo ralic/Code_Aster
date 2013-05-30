@@ -4,7 +4,6 @@ subroutine nmfi3d(nno, nddl, npg, lgpg, wref,&
                   ktan, vim, vip, crit, compor,&
                   matsym, coopg, tm, tp, codret)
 !
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! COPYRIGHT (C) 2007 NECS - BRUNO ZUBER   WWW.NECS.FR
 ! COPYRIGHT (C) 2007 - 2013  EDF R&D                WWW.CODE-ASTER.ORG

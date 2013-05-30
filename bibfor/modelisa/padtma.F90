@@ -6,7 +6,6 @@ subroutine padtma(coor1, coor2, nbnott, icoupl, dmin)
     real(kind=8) :: coor1(*), coor2(*), d
     integer :: icoupl(*), nbnott(3)
 !---------------------------------------------------------------------
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

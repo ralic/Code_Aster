@@ -3,7 +3,6 @@ subroutine ermeb3(noe, ifa, tymvol, nnof, iref1,&
                   inst, nx, ny, nz, sig11,&
                   sig22, sig33, sig12, sig13, sig23,&
                   chx, chy, chz)
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

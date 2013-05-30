@@ -7,7 +7,6 @@ subroutine lglnvi(mod, ndt, ndi, nvi)
     integer :: ndt, ndi, nvi
     character(len=8) :: mod
 ! =================================================================
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

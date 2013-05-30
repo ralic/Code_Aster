@@ -6,7 +6,6 @@ subroutine dervar(gamp, nbmat, mater, parame, derpar)
     integer :: nbmat
     real(kind=8) :: mater(nbmat, 2), gamp, parame(5), derpar(4)
 ! ======================================================================
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

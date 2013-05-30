@@ -3,7 +3,6 @@ subroutine lcmaei(fami, kpg, ksp, poum, nmater,&
                   nmat, itbint, nfs, nsg, hsri,&
                   ifa, nomfam, nbsys)
     implicit none
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! TOLE CRS_1404
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG

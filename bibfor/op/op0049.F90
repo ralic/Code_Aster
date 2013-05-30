@@ -1,5 +1,4 @@
 subroutine op0049()
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! TOLE CRS_513
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG

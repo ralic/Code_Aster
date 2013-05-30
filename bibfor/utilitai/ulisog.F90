@@ -14,7 +14,6 @@ subroutine ulisog(unit, fname, etat)
 ! OUT FNAME  : NOM "LONG"  ASSOCIE AU NUMERO D'UNITE LOGIQUE FORTRAN
 !     ETAT   : (O)UVERT, (F)ERME, (R)ESERVE
 !
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

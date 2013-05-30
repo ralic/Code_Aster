@@ -9,7 +9,6 @@ subroutine lkelas(ndi, ndt, mod, nmat, mater,&
     real(kind=8) :: deps(6), de(6, 6), mu, k
     character(len=8) :: mod
 ! =================================================================
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

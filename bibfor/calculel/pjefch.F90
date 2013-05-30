@@ -1,6 +1,5 @@
 subroutine pjefch(corres, ch1, ch2, tycha2, prfchn,&
                   prol0, ligrel, base, iret)
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

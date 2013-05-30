@@ -4,7 +4,6 @@ subroutine elref4(elrz, famil, ndim, nno, nnos,&
     include 'asterfort/elref5.h'
     character(len=*) :: elrz, famil
     integer :: ndim, nno, nnos, npg, ipoids, ivf, idfde, jgano
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

@@ -10,7 +10,6 @@ subroutine vphqrp(mat, neq, mxeq, icode, w,&
     integer :: neq, mxeq, icode, iz, ier, nitqr
     real(kind=8) :: mat(mxeq, 1), wk(neq, 1), w(1), z(1)
 !     ------------------------------------------------------------------
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

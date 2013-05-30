@@ -20,7 +20,6 @@ subroutine irmfac(ioccur, formaf, ifichi, niveau, versio,&
     integer :: ioccur, ifichi, versio, niveau
     character(len=8) :: formaf, resure, modele, nomare, nomail
     logical :: lgmsh
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

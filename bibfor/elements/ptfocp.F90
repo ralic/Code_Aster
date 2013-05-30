@@ -17,7 +17,6 @@ subroutine ptfocp(itype, option, nomte, xl, rad,&
     real(kind=8) :: fer(12), fei(12), pgl(3, 3), pgl1(3, 3), pgl2(3, 3)
     real(kind=8) :: xl, rad, angs2
 !     ------------------------------------------------------------------
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

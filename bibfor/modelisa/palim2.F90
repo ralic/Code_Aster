@@ -22,7 +22,6 @@ subroutine palim2(mcfact, iocc, nomaz, nomvei, nomvek,&
     integer :: iocc, iadr
     character(len=*) :: mcfact, nomaz, nomvei, nomvek
 !-----------------------------------------------------------------------
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

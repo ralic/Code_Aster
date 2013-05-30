@@ -24,7 +24,6 @@ subroutine dmgmod(nomsym, nomsd, nomsd2, nommat, nbordr,&
     integer :: nbpt, numcmp(*)
     integer :: ntcmp, impr, nbordr, jordr, jcoef
 !       ----------------------------------------------------------------
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! TOLE CRS_1404
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG

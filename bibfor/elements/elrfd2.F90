@@ -6,7 +6,6 @@ subroutine elrfd2(elrefz, x, dimd, dff2, nno,&
     real(kind=8) :: x(*), dff2(3, 3, *)
     character(len=*) :: elrefz
 ! ----------------------------------------------------------------------
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

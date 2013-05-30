@@ -1,8 +1,6 @@
 subroutine gtrevc(side, howmny, select, n, t,&
                   ldt, vl, ldvl, vr, ldvr,&
                   mm, m, work, rwork, info)
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! COPYRIGHT (C) LAPACK
 ! COPYRIGHT (C) 2007 - 2013  EDF R&D                WWW.CODE-ASTER.ORG

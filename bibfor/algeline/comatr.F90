@@ -1,7 +1,6 @@
 subroutine comatr(option, typev, nbproc, rang, vnconv,&
                   dim1i, dim2i, vecti, dim1r, dim2r,&
                   vectr, dim1c, dim2c, vectc)
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

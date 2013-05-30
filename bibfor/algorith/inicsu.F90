@@ -5,7 +5,6 @@ subroutine inicsu(valcen, valcev, valfac, valfav, maxfa)
     real(kind=8) :: valcen(14, 6), valcev(14, 6, maxfa)
     real(kind=8) :: valfac(maxfa, 14, 6), valfav(maxfa, 14, 6, maxfa)
 ! ----------------------------------------------------------------------
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2001 EDF R&D WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

@@ -3,7 +3,6 @@ subroutine mmform(ndim, nommae, nommam, nne, nnm,&
                   dffe, ddffe, ffm, dffm, ddffm,&
                   ffl, dffl, ddffl)
 !
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2009  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

@@ -14,7 +14,6 @@ subroutine elref6(elrz, nomtz, famiz, ndim, nno,&
     include 'asterfort/u2mesk.h'
     character(len=*) :: elrz, nomtz, famiz
     integer :: ndim, nno, nnos, npg, ipoids, jcoopg, ivf, idfde, jdfd2, jgano
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

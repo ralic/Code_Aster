@@ -1,7 +1,6 @@
 subroutine lcumfb(sigi, nstrs, vari, nvari, cmat,&
                   nmat, tdt, hini, hfin, afd,&
                   bfd, cfd)
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

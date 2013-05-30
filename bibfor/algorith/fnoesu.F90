@@ -4,7 +4,6 @@ subroutine fnoesu(option, nno, nnos, nnom, nface,&
                   ipoids, ivf, idfde, ipoid2, ivf2,&
                   idfde2, npi2, jgano, codret)
 ! ======================================================================
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

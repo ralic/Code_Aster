@@ -1,7 +1,6 @@
 subroutine pmathm(dimmat, dimdef, dimcon, dimuel, dsde,&
                   drds, ck, b, poids, matri)
 ! ======================================================================
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! TOLE CRS_1404
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2010  EDF R&D                  WWW.CODE-ASTER.ORG

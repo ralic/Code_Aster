@@ -14,7 +14,6 @@ subroutine irgme2(numold, ima, connex, nbord2, tabd,&
     integer :: listno(*), nbcmp, ifi, ima, nbord2, iadmax, jtype
     character(len=24) :: connex
     character(len=*) :: partie
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

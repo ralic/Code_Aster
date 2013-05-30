@@ -1,7 +1,6 @@
 subroutine pmppr(amat, na1, na2, ka, bmat,&
                  nb1, nb2, kb, cmat, nc1,&
                  nc2)
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

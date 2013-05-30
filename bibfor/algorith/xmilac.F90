@@ -20,7 +20,6 @@ subroutine xmilac(ndim, igeom, ptint, tabco, tabdir,&
     integer :: jgrlsn, tabdir(4)
     real(kind=8) :: milac(ndim), ptint(*), ptmil(*), tabco(*)
 !
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! TOLE CRS_1404
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG

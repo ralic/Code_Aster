@@ -2,7 +2,6 @@ subroutine calfmn(np1, nbm, testc, fmod0, fmod00,&
                   cmod, kmod, vitg0, depg0)
     implicit none
 !-----------------------------------------------------------------------
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

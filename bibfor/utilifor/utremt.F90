@@ -12,7 +12,6 @@ subroutine utremt(mot, liste, nbval, place)
 ! OUT PLACE    : IS     : PLACE DU MOT DANS LA LISTE
 !                         = 0  SI LE MOT EST ABSENT DE LA LISTE
 !     ------------------------------------------------------------------
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

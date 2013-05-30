@@ -5,7 +5,6 @@ subroutine erhmb2(perman, ino, nbs, ndim, theta,&
                   iava2, ncmpm2, iaptm2, iade3, iava3,&
                   ncmpm3, iaptm3, tm2h1b)
 !
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

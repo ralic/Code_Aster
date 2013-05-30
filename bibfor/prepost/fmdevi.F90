@@ -6,7 +6,6 @@ subroutine fmdevi(nbfonc, nbptot, sigm, dev)
     real(kind=8) :: sigm(nbfonc*nbptot)
     real(kind=8) :: dev(nbfonc*nbptot)
 !     ------------------------------------------------------------------
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

@@ -8,7 +8,6 @@ subroutine inmat4(elrefa, nno, nnos, npg, nofpg,&
     integer :: nno, nnos, npg
     real(kind=8) :: mgano(*)
 ! ----------------------------------------------------------------------
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

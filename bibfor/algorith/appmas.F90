@@ -4,7 +4,6 @@ function appmas(apmam, phi, phim, fsat, fsatm,&
     real(kind=8) :: apmam, phi, phim, fsat, fsatm, rho, rhom, epsv, epsvm
     real(kind=8) :: appmas
 ! ======================================================================
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

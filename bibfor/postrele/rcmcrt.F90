@@ -4,7 +4,6 @@ subroutine rcmcrt(symax, sigm, stlin, stpar)
     include 'asterfort/u2mesr.h'
     real(kind=8) :: symax, sigm, stlin, stpar
 !     ------------------------------------------------------------------
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

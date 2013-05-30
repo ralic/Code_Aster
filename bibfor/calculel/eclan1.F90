@@ -1,7 +1,6 @@
 subroutine eclan1(ipoini, mxnbpi, nsomm1, nterm1, i1,&
                   i2, i3, i4, i5, i6,&
                   i7, i8)
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

@@ -1,7 +1,6 @@
 subroutine cmphii(ck, cm, ndim, nbmod, niter,&
                   xcrit, ceigen, cmod, ndimax, cmat1,&
                   cmat2, cvec, ific)
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! TOLE CRS_1404
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG

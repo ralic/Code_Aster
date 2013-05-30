@@ -3,7 +3,6 @@ subroutine cfnors(noma, defico, resoco, posmai, typent,&
                   lliss, itype, vector, tau1, tau2,&
                   lnfixe)
 !
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

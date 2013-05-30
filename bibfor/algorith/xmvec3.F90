@@ -7,7 +7,6 @@ subroutine xmvec3(nnol, pla, ffc, reac, jac,&
     real(kind=8) :: vtmp(400), cstaco
     real(kind=8) :: ffc(8), jac, reac
 !
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

@@ -1,6 +1,5 @@
 subroutine aflrch(lisrez, chargz)
     implicit none
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! person_in_charge: jacques.pellet at edf.fr
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG

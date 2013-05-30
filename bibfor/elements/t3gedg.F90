@@ -9,7 +9,6 @@ subroutine t3gedg(xyzl, option, pgl, depl, edgl)
     include 'asterfort/t3gbc.h'
     real(kind=8) :: xyzl(3, *), pgl(3, *), depl(*), edgl(*)
     character(len=16) :: option
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

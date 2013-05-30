@@ -37,7 +37,6 @@ subroutine chpass(tychr, ma, celmod, nomgd, prol0,&
     character(len=*) :: celmod
     character(len=4) :: tychr, tych2
 !     -----------------------------------------------------------------
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

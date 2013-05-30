@@ -25,7 +25,6 @@ subroutine xside2(elrefp, ndim, coorse, elrese, igeom,&
     real(kind=8) :: lsn(nnop), lst(nnop), sig(4, npg)
 !
 !
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

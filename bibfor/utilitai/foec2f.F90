@@ -5,7 +5,6 @@ subroutine foec2f(iuni, v, nbcoup, n1, n2,&
     real(kind=8) :: v(2*nbcoup)
     character(len=*) :: nompar, nomres
 !     ------------------------------------------------------------------
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

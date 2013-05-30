@@ -6,7 +6,6 @@ subroutine nmflma(typmat, mod45, defo, parmet, modelz,&
                   measse, veelem, nddle, ddlexc, modrig,&
                   ldccvg, matass, matgeo)
 !
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

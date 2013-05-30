@@ -3,7 +3,6 @@ subroutine nmpime(fami, kpg, ksp, imate, option,&
                   cstpm, vim, effnom, vip, effnop,&
                   klv, fono)
 ! ----------------------------------------------------------------------
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

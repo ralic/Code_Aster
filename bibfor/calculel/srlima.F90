@@ -15,7 +15,6 @@ subroutine srlima(mo, mail2d, mail3d, mailto, nbma2d)
     character(len=8) :: mo
     character(len=24) :: mail2d, mail3d, mailto
 ! ----------------------------------------------------------------------
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

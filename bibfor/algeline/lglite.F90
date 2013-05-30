@@ -21,7 +21,6 @@ subroutine lglite(yf, nbmat, mater, f0, devg,&
     real(kind=8) :: yf(10), mater(nbmat, 2), f0
     real(kind=8) :: devg(6), devgii, traceg, dy(10)
 ! ======================================================================
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

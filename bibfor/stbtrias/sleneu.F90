@@ -1,7 +1,6 @@
 subroutine sleneu(iunv, nbnode, ama, bma, cma,&
                   ami, bmi, cmi, mix, man,&
                   ites, datset)
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

@@ -2,7 +2,6 @@ subroutine nm1dpm(fami, kpg, ksp, imate, option,&
                   nvar, ncstpm, cstpm, sigm, vim,&
                   deps, vip, sigp, dsde)
 !
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

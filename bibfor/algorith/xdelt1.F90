@@ -11,7 +11,6 @@ subroutine xdelt1(num, ndim, ksi, tabar, s,&
     real(kind=8) :: delta, s
     integer :: num, ndim
 !
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! TOLE CRS_1404
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG

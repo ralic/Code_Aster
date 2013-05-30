@@ -2,7 +2,6 @@ subroutine cnscre(maz, nomgdz, ncmp, licmp, basez,&
                   cnsz)
 ! person_in_charge: jacques.pellet at edf.fr
 ! A_UTIL
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

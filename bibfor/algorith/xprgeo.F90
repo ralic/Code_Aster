@@ -22,7 +22,6 @@ subroutine xprgeo(noma, cnsln, cnslt, grln, grlt,&
     character(len=19) :: cnsln, cnslt, grln, grlt, cnsbl, nodtor, liggrd, cnsbet
     character(len=19) :: listp, vpoint
 !
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

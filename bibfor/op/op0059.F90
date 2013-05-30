@@ -2,7 +2,6 @@ subroutine op0059()
 !
     implicit none
 !
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 !
 ! person_in_charge: jean-michel.proix at edf.fr
 ! ======================================================================

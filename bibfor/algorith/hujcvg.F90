@@ -2,7 +2,6 @@ subroutine hujcvg(nmat, mater, nvi, vind, vinf,&
                   vins, nr, yd, dy, r,&
                   indi, iter, itmax, intg, toler,&
                   bnews, mtrac, ye, lreli, iret)
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

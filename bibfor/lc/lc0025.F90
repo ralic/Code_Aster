@@ -3,7 +3,6 @@ subroutine lc0025(fami, kpg, ksp, ndim, imate,&
                   epsm, deps, sigm, vim, option,&
                   sigp, vip, tampon, typmod, icomp,&
                   nvi, numlc, dsidep, codret)
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! TOLE CRP_21
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2008  EDF R&D                  WWW.CODE-ASTER.ORG

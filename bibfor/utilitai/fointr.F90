@@ -15,7 +15,6 @@ subroutine fointr(nomfon, chprol, nbvar, var, fon,&
     integer :: nbvar, nbres, ier
     real(kind=8) :: var(*), fon(*), varres(*), fonres(*)
 !     ------------------------------------------------------------------
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

@@ -17,7 +17,6 @@ subroutine pacoa3(noeud1, noeud2, lonli1, lonli2, dmin0,&
     character(len=*) :: nomaz, liso1z, liso2z
     real(kind=8) :: dmin0
 !---------------------------------------------------------------------
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

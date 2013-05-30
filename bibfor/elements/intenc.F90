@@ -5,7 +5,6 @@ subroutine intenc(nbna, jac, vectx, vecty, mat11,&
     real(kind=8) :: jac(3), vectx(3), vecty(3), mat11(3), mat22(3), mat12(3)
     real(kind=8) :: nx(3), ny(3), inte
 ! ----------------------------------------------------------------------
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

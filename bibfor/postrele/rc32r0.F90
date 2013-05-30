@@ -12,7 +12,6 @@ subroutine rc32r0(nomres, pmpb, sn, snet)
     character(len=8) :: nomres
     logical :: pmpb, sn, snet
 !     ------------------------------------------------------------------
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

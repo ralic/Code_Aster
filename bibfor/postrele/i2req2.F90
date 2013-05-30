@@ -2,7 +2,6 @@ subroutine i2req2(epsi, a, b, c, nr,&
                   r1, r2, mult1, mult2)
     implicit none
 !
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

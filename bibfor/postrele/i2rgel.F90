@@ -2,7 +2,6 @@ subroutine i2rgel(epsi, s, r, f, sl,&
                   r1l, r2l, f1l, f2l, adr)
     implicit none
 !
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

@@ -4,7 +4,6 @@ subroutine lkdepp(vin, nbmat, mater, paraep, derpar)
     integer :: nbmat
     real(kind=8) :: vin(7), paraep(3), mater(nbmat, 2), derpar(3)
 ! ===================================================================
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

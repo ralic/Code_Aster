@@ -38,7 +38,6 @@ subroutine ascalc(resu, masse, mome, psmo, stat,&
     character(len=*) :: nomsup(*)
     logical :: monoap, muapde, comdir, tronc, corfre
 !     ------------------------------------------------------------------
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

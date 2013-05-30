@@ -5,7 +5,6 @@ subroutine edgmat(fami, kpg, ksp, imat, c1,&
 !
     implicit none
 !
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 !
     include 'asterfort/rcvalb.h'
     integer :: kpg, ksp, imat

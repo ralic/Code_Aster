@@ -3,7 +3,6 @@ subroutine lc0031(fami, kpg, ksp, ndim, imate,&
                   epsm, deps, sigm, vim, option,&
                   angmas, sigp, vip, tampon, typmod,&
                   icomp, nvi, dsidep, codret)
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

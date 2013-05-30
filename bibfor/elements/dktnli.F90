@@ -30,7 +30,6 @@ subroutine dktnli(nomte, opt, xyzl, ul, dul,&
     real(kind=8) :: ktan(*), btsig(6, *)
     character(len=16) :: nomte, opt
 !
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

@@ -6,7 +6,6 @@ function dmasp1(rho11, rho12, rho21, sat, dsatp1,&
     real(kind=8) :: em, dphip1
     logical :: emmag
 ! ======================================================================
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

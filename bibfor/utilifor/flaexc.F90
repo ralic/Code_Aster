@@ -1,7 +1,6 @@
 subroutine flaexc(wantq, n, t, ldt, q,&
                   ldq, j1, n1, n2, work,&
                   info)
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! COPYRIGHT (C) LAPACK
 ! COPYRIGHT (C) 2007 - 2013  EDF R&D                WWW.CODE-ASTER.ORG

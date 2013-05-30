@@ -22,7 +22,6 @@ subroutine cesqua(nbchs, lichs, lcumul, base, ces3z)
     character(len=*) :: lichs(nbchs), ces3z, base
     logical :: lcumul(nbchs)
 ! ---------------------------------------------------------------------
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

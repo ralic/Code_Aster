@@ -3,7 +3,6 @@ subroutine calcgr(igau, nbsig, nbvari, vip, nu,&
     implicit   none
     integer :: nbsig, igau, nbvari
     real(kind=8) :: nu, epsfl(nbsig), vip(*)
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

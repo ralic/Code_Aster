@@ -4,7 +4,6 @@ subroutine fun2(xi1, xi2, p, xkk, q,&
     integer :: n
     real(kind=8) :: xi1, xi2, p, xkk, q, vt
 !     ------------------------------------------------------------------
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

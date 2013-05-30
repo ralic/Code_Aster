@@ -1,7 +1,6 @@
 subroutine amdbar(n, pe, iw, len, iwlen,&
                   pfree, nv, next, last, head,&
                   elen, degree, ncmpa, w, iovflo)
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! person_in_charge: olivier.boiteau at edf.fr
 ! TOLE CRP_20
     implicit none

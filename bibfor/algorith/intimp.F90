@@ -4,7 +4,6 @@ subroutine intimp(iuni, vect1, vect2, nmatr, nfcod)
     real(kind=8) :: vect1(*)
     character(len=24) :: vect2(*)
 !     ------------------------------------------------------------------
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

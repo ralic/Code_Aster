@@ -37,7 +37,6 @@ subroutine acearp(noma, nomo, lmax, noemaf, nbocc,&
     integer :: ifm, lmax, noemaf, nbocc, ivr(*)
     character(len=8) :: noma, nomo
 ! ----------------------------------------------------------------------
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! TOLE CRP_20
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG

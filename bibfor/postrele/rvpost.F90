@@ -2,7 +2,6 @@ subroutine rvpost(mcf, iocc, dim, i1, i2,&
                   ncheff, xnomcp, nresu, nch19, nlsmac,&
                   nlsnac, nomtab, xnovar)
 !     ------------------------------------------------------------------
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

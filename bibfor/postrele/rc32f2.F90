@@ -4,7 +4,6 @@ subroutine rc32f2(nbsigr, nocc, saltij, isk, isl,&
     integer :: nbsigr, nocc(*), isk, isl, nk, nl, n0
     real(kind=8) :: saltij(*)
 !     ------------------------------------------------------------------
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

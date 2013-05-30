@@ -26,7 +26,6 @@ subroutine xxbsig(option, elrefp, elrese, ndim, coorse,&
     character(len=8) :: elrefp, elrese
     character(len=16) :: option, compor(4)
 !
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

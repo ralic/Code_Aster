@@ -3,7 +3,6 @@ subroutine nmfi2d(npg, lgpg, mate, option, geom,&
                   ktan, vim, vip, tm, tp,&
                   crit, compor, typmod, codret)
 !
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! TOLE CRS_1404
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG

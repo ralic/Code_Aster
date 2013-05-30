@@ -4,7 +4,6 @@ subroutine vpordo(type, iordre, nbpro, valpro, vecpro,&
     integer :: type, nbpro, neq
     real(kind=8) :: valpro(nbpro), vecpro(neq, nbpro)
 !     ------------------------------------------------------------------
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

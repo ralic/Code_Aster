@@ -12,7 +12,6 @@ subroutine rc36zz(noma, nomgd, nbcmp, nocmp, nbma,&
     character(len=16) :: nocmp(*)
     character(len=24) :: chelem
 !     ------------------------------------------------------------------
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

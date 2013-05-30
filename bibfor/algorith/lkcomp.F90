@@ -32,7 +32,6 @@ subroutine lkcomp(mod, imate, instam, instap, tm,&
     real(kind=8) :: sigp(6), vinp(invi)
     real(kind=8) :: dside(6, 6)
 ! ======================================================================
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

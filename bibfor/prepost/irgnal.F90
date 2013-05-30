@@ -17,8 +17,6 @@ subroutine irgnal(ifi, nbordr, coord, connex, point,&
     real(kind=8) :: coord(*)
     character(len=*) :: nobj, partie
     character(len=8) :: nocmp(nbcmp)
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! TOLE CRS_1404
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG

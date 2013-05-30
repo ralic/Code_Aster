@@ -14,7 +14,6 @@ subroutine lglind(nbmat, mater, parame, ge, q,&
     real(kind=8) :: mater(nbmat, 2), parame(5), q(6), vecn(6), ge
     real(kind=8) :: deps(6), devg(6), devgii, traceg, dy(10)
 ! ======================================================================
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

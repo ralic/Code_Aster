@@ -14,7 +14,6 @@ subroutine affori(typ, nomt, cara, val, jad,&
     character(len=*) :: typ, nomt, cara, carori(nco)
     real(kind=8) :: val(6)
 !       ----------------------------------------------------------------
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

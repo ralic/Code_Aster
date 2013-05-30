@@ -9,7 +9,6 @@ subroutine fmpapa(nbfonc, nbptot, sigm, rd0, rtau0,&
     real(kind=8) :: rphmax, rayon, sigm(nbfonc*nbptot)
     real(kind=8) :: rd0, rtau0, rcrit
 !     ------------------------------------------------------------------
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

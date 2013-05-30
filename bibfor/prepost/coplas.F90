@@ -16,7 +16,6 @@ subroutine coplas(tempa, k1a, k1b, matrev, lrev,&
     real(kind=8) :: dkma, dkmb, k1acp, k1bcp, prodef
     character(len=8) :: matrev, oridef
 ! ======================================================================
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

@@ -2,7 +2,6 @@ subroutine copis2(typesd, base, sd1, sd2)
     implicit none
     include 'asterfort/copisd.h'
     character(len=*) :: typesd, base, sd1, sd2
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

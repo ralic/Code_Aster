@@ -17,7 +17,6 @@ subroutine fonbas(noma, basfon, fontyp, fonfis, nbnoff,&
     character(len=8) :: noma
     character(len=19) :: basfon, basloc, fontyp, lnno, ltno
     character(len=24) :: fonfis
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

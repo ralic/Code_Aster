@@ -1,5 +1,4 @@
 subroutine masyns(matas)
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! person_in_charge: jacques.pellet at edf.fr
     implicit none
 ! ======================================================================

@@ -1,7 +1,6 @@
 subroutine irmmfa(fid, nomamd, nbnoeu, nbmail, nomast,&
                   nbgrno, nomgno, nbgrma, nomgma, prefix,&
                   typgeo, nomtyp, nmatyp, infmed)
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

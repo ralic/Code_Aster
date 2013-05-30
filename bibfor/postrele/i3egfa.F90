@@ -7,7 +7,6 @@ function i3egfa(desc, desctm, conex, vlc, im1,&
     integer :: desc(*), desctm(*), conex(*), vlc(*), im1, if1, iao1, iae1, im2
     integer :: if2, iao2
 !     ------------------------------------------------------------------
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

@@ -2,7 +2,6 @@ subroutine nmgrt2(nno, poids, kpg, vff, def,&
                   pff, option, axi, r, resi,&
                   rigi, dsidep, sign, sigma, matsym,&
                   matuu, vectu)
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

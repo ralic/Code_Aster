@@ -11,7 +11,6 @@ subroutine irgnte(ifi, nbordr, coord, connex, point,&
     integer :: ifi, nbordr, connex(*), point(*), cnsv(*), cnsd(*), jtype
     real(kind=8) :: coord(*)
     character(len=*) :: njvmai, partie
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

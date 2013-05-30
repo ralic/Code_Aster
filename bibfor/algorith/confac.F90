@@ -7,7 +7,6 @@ subroutine confac(typma, ft, nbft, f, nbf)
     integer :: ft(12, 3), nbft, f(6, 4), nbf
     character(len=8) :: typma
 !     ------------------------------------------------------------------
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

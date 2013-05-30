@@ -50,7 +50,6 @@ subroutine mefist(melflu, ndim, som, alpha, ru,&
     integer :: itypg(*)
     real(kind=8) :: zg(*), hg(*), dg(*), tg(*), cdg(*), cpg(*), rugg(*)
 ! ----------------------------------------------------------------------
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! TOLE CRP_20
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG

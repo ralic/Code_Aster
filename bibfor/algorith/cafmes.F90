@@ -2,7 +2,6 @@ subroutine cafmes(ifa, cont, tange, maxfa, nface,&
                   fkss, dfks1, dfks2, mobfas, dmob1,&
                   dmob2, dmob1f, dmob2f, fmw, fm1w,&
                   fm2w)
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2010  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

@@ -28,7 +28,6 @@ subroutine sepach(carael, chinz, base, chreel, chimag)
     character(len=19) :: chreel, chimag
     character(len=*) :: chinz
 !
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

@@ -6,7 +6,6 @@ subroutine vpzqrh(h, neq, ih, k, l,&
     integer :: neq, ih, k, l, iz, ier, nitqr
     real(kind=8) :: h(ih, neq), wr(neq), wi(neq), z(iz, neq)
 !     ------------------------------------------------------------------
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

@@ -9,7 +9,6 @@ function dpvpdf(x, n, const, fonc1, fonc2,&
 ! --- LOI DE COMPORTEMENT DE TYPE DRUCKER PRAGER VISCOPLASTIQUE -------
 ! ---- VISC_DRUC_PRAG -------------------------------------------------
 ! --- EQUATION NON LINEAIRE EN DP -------------------------------------
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2009  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

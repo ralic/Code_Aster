@@ -4,7 +4,6 @@ subroutine lcmmin(typess, essai, mod, nmat, materf,&
                   nsg, toutms, timed, timef, vind,&
                   sigd, epstr)
     implicit none
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! TOLE CRP_21
 ! person_in_charge: jean-michel.proix at edf.fr
 ! ======================================================================

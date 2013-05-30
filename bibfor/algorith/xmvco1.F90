@@ -17,7 +17,6 @@ subroutine xmvco1(ndim, nno, nnol, sigma, pla,&
     real(kind=8) :: dtang(3), nd(3), tau1(3), tau2(3)
     real(kind=8) :: rr, ffc(8), cstaco
 !
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

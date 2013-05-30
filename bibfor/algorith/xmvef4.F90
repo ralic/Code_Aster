@@ -11,7 +11,6 @@ subroutine xmvef4(ndim, nnol, pla, ffc, reac12,&
     real(kind=8) :: ffc(8), jac, reac12(3)
     logical :: noeud
 !
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

@@ -25,7 +25,6 @@ subroutine aceatu(noma, nomo, nbepo, ntyele, ivr,&
     integer :: nbepo, ntyele(*), nbocc(*), ivr(3), ifm
     character(len=8) :: noma, nomo
 ! ----------------------------------------------------------------------
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

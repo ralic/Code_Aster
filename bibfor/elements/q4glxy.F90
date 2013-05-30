@@ -1,7 +1,6 @@
 subroutine q4glxy(hlt2, depf, lambda)
     implicit  none
     real(kind=8) :: hlt2(4, 6), depf(12), lambda(4)
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

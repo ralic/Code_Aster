@@ -2,7 +2,6 @@ subroutine lceib1(fami, kpg, ksp, imate, compor,&
                   ndim, epsm, sref, sechm, hydrm,&
                   t, lambda, deuxmu, epsthe, kdess,&
                   bendo, gamma, seuil)
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

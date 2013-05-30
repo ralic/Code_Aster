@@ -18,7 +18,6 @@ subroutine rsexch(kstop, nomsd, nomsy, iordr, chextr,&
     integer :: iordr, icode
     character(len=*) :: kstop, nomsd, nomsy, chextr
 ! ----------------------------------------------------------------------
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

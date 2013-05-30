@@ -10,7 +10,6 @@ subroutine gematg(n, delta, matmoy, mat, mat1,&
     integer :: n
     real(kind=8) :: delta, matmoy(*), mat(*), mat1(*), mat2(*)
 ! ----------------------------------------------------------------------
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

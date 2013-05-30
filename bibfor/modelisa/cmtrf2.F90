@@ -5,7 +5,6 @@ subroutine cmtrf2(codcm1, codtrf, ncm1, lcm1, ntrf,&
     integer :: codcm1, codtrf, codint, ncm1, ntrf, nint, nbma
     integer :: lint(nbma), lcm1(ncm1), ltrf(ntrf)
 ! ----------------------------------------------------------------------
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

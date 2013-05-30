@@ -12,7 +12,6 @@ subroutine speph2(movrep, napexc, nbmode, nbpf, intmod,&
     character(len=8) :: table
     character(len=16) :: movrep
 !-----------------------------------------------------------------------
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

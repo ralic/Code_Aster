@@ -7,7 +7,6 @@ subroutine aceat2(nbtuy, eltuy, notuy, nbpart, noex1,&
     integer :: noex2(nbpart), nbmap(nbpart), elpar(nbpart, nbtuy)
     integer :: nopar(nbpart, nno, nbtuy)
 ! ----------------------------------------------------------------------
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

@@ -17,7 +17,6 @@ subroutine rsnopa(nomsd, icode, nomjv, nbacc, nbpara)
     integer :: icode, nbacc, nbpara
     character(len=*) :: nomsd, nomjv
 ! ----------------------------------------------------------------------
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

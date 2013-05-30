@@ -10,7 +10,6 @@ subroutine rcvalb(fami, kpg, ksp, poum, jmat,&
     integer :: codret(nbres)
     character(len=*) :: nomat, phenom, nompar(nbpar), nomres(nbres)
     character(len=*) :: poum, fami
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! person_in_charge: jacques.pellet at edf.fr
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG

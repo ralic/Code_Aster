@@ -1,6 +1,5 @@
 subroutine fgeqr2(m, n, a, lda, tau,&
                   work, info)
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! COPYRIGHT (C) LAPACK
 ! COPYRIGHT (C) 2007 - 2013  EDF R&D                WWW.CODE-ASTER.ORG

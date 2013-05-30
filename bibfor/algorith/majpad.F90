@@ -8,7 +8,6 @@ subroutine majpad(p2, pvp, r, t, kh,&
     include 'asterfort/u2mesk.h'
     real(kind=8) :: p2, pvp, r, t, kh, dp2, pvpm, dt, padp, padm, dpad
 ! ======================================================================
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

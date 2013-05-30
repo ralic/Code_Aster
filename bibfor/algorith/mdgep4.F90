@@ -5,7 +5,6 @@ subroutine mdgep4(neq, nbexci, psidel, temps, nomfon,&
     include 'asterfort/u2mesg.h'
     real(kind=8) :: psidel(neq, *), temps, rep
     character(len=8) :: nomfon(*)
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

@@ -3,7 +3,6 @@ subroutine cfapma(noma, newgeo, defico, resoco, lctfd,&
                   coorne, posmam, ksipr1, ksipr2, tau1m,&
                   tau2m, iliai)
 !
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

@@ -5,7 +5,6 @@ subroutine lcmmji(coeft, ifa, nmat, nbcomm, necris,&
     integer :: ifa, nmat, nbcomm(nmat, 3), ir, is, nfs, nsg
     real(kind=8) :: coeft(nmat), drdps, hsr(nsg, nsg)
     character(len=16) :: necris
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

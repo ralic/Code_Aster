@@ -1,7 +1,6 @@
 subroutine calcdl(vp, i1e, sigeqe, nbmat, materf,&
                   parame, derive, sig3, vecp, eta,&
                   dg, se, detadg, dgdl, ddlde)
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

@@ -16,7 +16,6 @@ subroutine gchs2f(char1, char2, char3)
     include 'asterfort/nbec.h'
     include 'asterfort/wkvect.h'
     character(len=19) :: char1, char2, char3
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

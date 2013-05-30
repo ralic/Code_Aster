@@ -29,7 +29,6 @@ subroutine xprls0(fispre, noma, noesom, armin, cnsln,&
     character(len=19) :: cnsln, cnslt, isozro, noesom, nodtor, eletor, poifi
     character(len=19) :: trifi
 !
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

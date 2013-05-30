@@ -1,6 +1,5 @@
 subroutine cer3pt(cupn0, cvpn0, cupn1, cvpn1, cupn2,&
                   cvpn2, cuon, cvon, rayon)
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

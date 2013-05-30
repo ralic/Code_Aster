@@ -1,6 +1,5 @@
 subroutine nmgrib(nno, geom, dff, dir11, lexc,&
                   vecn, b, jac, p)
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! TOLE CRS_1404
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2010  EDF R&D                  WWW.CODE-ASTER.ORG

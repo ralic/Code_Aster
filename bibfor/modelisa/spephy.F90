@@ -4,7 +4,6 @@ subroutine spephy(ioptch, intphy, intmod, nomu, table,&
                   imod1, nbpf, nbm, ivitef)
     implicit none
 !-----------------------------------------------------------------------
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

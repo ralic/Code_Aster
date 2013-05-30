@@ -6,7 +6,6 @@ subroutine base3n(x1, mat33)
     real(kind=8) :: x1(3), mat33(3, 3)
     real(kind=8) :: norme
 ! ----------------------------------------------------------------------
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2010  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

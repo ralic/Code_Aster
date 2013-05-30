@@ -2,7 +2,6 @@ subroutine cafvsu(cont, tange, maxfa, nface, fks,&
                   dfks1, dfks2, mobfa, dmob1, dmob2,&
                   dmob1v, dmob2v, flux, dflx1, dflx2,&
                   dflx1v, dflx2v, nbvois, nvoima)
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2010  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

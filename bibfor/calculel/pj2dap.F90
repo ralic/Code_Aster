@@ -14,7 +14,6 @@ subroutine pj2dap(ino2, geom2, ma2, geom1, tria3,&
     integer :: ifm, niv
     character(len=8) :: ma2
 ! ----------------------------------------------------------------------
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

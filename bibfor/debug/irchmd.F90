@@ -9,7 +9,6 @@ subroutine irchmd(ifichi, chanom, partie, nochmd, codret)
     character(len=*) :: partie, nochmd
 !
     integer :: ifichi, codret
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

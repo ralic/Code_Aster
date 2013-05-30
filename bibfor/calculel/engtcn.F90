@@ -14,7 +14,6 @@ subroutine engtcn(ific, chamno, typtes, preci, formr)
     character(len=10) :: preci, formr
     character(len=19) :: chamno
 ! ----------------------------------------------------------------------
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

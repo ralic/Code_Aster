@@ -22,7 +22,6 @@ subroutine avplcr(nbvec, vectn, vectu, vectv, nbordr,&
     real(kind=8) :: vala, coefpa
     real(kind=8) :: cudomx, nxm(2), nym(2), nzm(2)
 !
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

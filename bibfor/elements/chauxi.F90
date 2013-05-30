@@ -2,7 +2,6 @@ subroutine chauxi(ndim, mu, ka, r, t,&
                   invp, lcour, courb, du1dm, du2dm,&
                   du3dm, u1l, u2l, u3l)
 !
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

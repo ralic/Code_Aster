@@ -4,7 +4,6 @@ subroutine foc1ma(nbvar, var, fon, nbmax, varmax,&
     integer :: nbvar, nbmax
     real(kind=8) :: var(*), fon(*), varmax(*), fonmax(*)
 !     ----------------------------------------------------------------
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

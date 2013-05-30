@@ -4,7 +4,6 @@ function domrev(gamcjs, sigc, parame, rgdev, rucpla)
     include 'asterfort/hlode.h'
     real(kind=8) :: gamcjs, sigc, parame(5), rgdev, rucpla, domrev
 ! ======================================================================
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

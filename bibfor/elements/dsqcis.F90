@@ -3,7 +3,6 @@ subroutine dsqcis(qsi, eta, caraq4, hmft2, hft2,&
     implicit  none
     real(kind=8) :: qsi, eta, caraq4(*), hft2(2, 6), hmft2(2, 6)
     real(kind=8) :: bcb(2, 12), bcm(2, 8), bca(2, 4)
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

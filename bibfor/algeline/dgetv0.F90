@@ -2,7 +2,6 @@ subroutine dgetv0(ido, bmat, itry, initv, n,&
                   j, v, ldv, resid, rnorm,&
                   ipntr, workd, ierr, alpha)
 !----------------------------------------------------------------------
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! COPYRIGHT (C) LAPACK
 ! COPYRIGHT (C) 2007 - 2013  EDF R&D                WWW.CODE-ASTER.ORG

@@ -15,7 +15,6 @@ subroutine pjngco(corres, noma1, noma2, method, cnref,&
     include 'asterfort/utnuav.h'
     include 'asterfort/wkvect.h'
     character(len=*) :: corres, noma1, noma2, method, cnref, base
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

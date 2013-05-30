@@ -5,7 +5,6 @@ subroutine lrchme(chanom, nochmd, nomamd, nomaas, typech,&
                   nbpgma, nbpgmm, codret)
 ! TOLE CRP_21
 !
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! person_in_charge: nicolas.sellenet at edf.fr
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG

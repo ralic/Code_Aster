@@ -7,7 +7,6 @@ subroutine kndiff(long, lk1, l1, lk2, l2,&
     integer :: long, l1, l2, l3
     character(len=*) :: lk1(l1), lk2(l2), lk3(l3)
 ! ---------------------------------------------------------------------
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

@@ -5,7 +5,6 @@ subroutine mmtgeo(phasep, ndim, nne, nnm, mprojn,&
                   mprt2n, gene11, gene21, matree, matrmm,&
                   matrem, matrme)
 !
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

@@ -15,7 +15,6 @@ subroutine rltfr8(nommat, neq, xsol, nbsol, typsym)
     character(len=*) :: nommat
     real(kind=8) :: xsol(neq, *)
 !     ------------------------------------------------------------------
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! person_in_charge: olivier.boiteau at edf.fr
 !     TOLE CRP_4
 ! ======================================================================

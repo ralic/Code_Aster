@@ -19,7 +19,6 @@ subroutine pecag3(ndim, nsymx, nsymy, noma, motcle,&
     character(len=*) :: motcle
     logical :: nsymx, nsymy
 !     ------------------------------------------------------------------
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

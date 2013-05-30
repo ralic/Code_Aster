@@ -26,7 +26,6 @@ subroutine rc32ac(lpmpb, lsn, lsnet, lfatig, lrocht,&
     logical :: lpmpb, lsn, lsnet, lfatig, lrocht
     character(len=8) :: mater
 !     ------------------------------------------------------------------
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! TOLE CRP_20
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG

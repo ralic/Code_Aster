@@ -14,7 +14,6 @@ subroutine pdadom(xm0, xm2, xm4, dom)
     include 'asterfort/u2mess.h'
     include 'asterfort/wkvect.h'
     real(kind=8) :: xm0, xm2, xm4, dom
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

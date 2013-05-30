@@ -10,7 +10,6 @@ subroutine dxefgm(nomte, option, xyzl, pgl, depl,&
     include 'asterfort/u2mesk.h'
     real(kind=8) :: xyzl(3, 1), pgl(3, 1), depl(1), effg(1)
     character(len=16) :: nomte, option
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

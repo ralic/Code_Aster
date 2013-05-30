@@ -3,7 +3,6 @@ subroutine xmmab0(ndim, nnc, jnne, nfaes, jpcai,&
                   typmai, cface, tau1, tau2, jddle,&
                   nconta, nfhe, lmulti, heavno, mmat)
 !
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

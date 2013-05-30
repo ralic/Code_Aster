@@ -2,7 +2,6 @@ subroutine cfaddm(resoco, lctfd, lctf3d, posnoe, iliai,&
                   ndimg, nbnom, posnsm, coefno, tau1,&
                   tau2, norm, jeu, coornp)
 !
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

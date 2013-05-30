@@ -2,7 +2,6 @@ subroutine nmop45(matrig, matgeo, defo, option, nfreq,&
                   cdsp, bande, mod45, ddlexc, nddle,&
                   modes, modes2, ddlsta, nsta)
 !
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

@@ -12,7 +12,6 @@ subroutine irgmg1(numold, ima, nbord2, tabd, tabl,&
     logical :: iwri
     character(len=*) :: partie
 !     ------------------------------------------------------------------
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

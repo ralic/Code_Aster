@@ -1,7 +1,6 @@
 subroutine xstami(noma, nmafon, nmaen1, nmaen2, nmaen3,&
                   jmafon, jmaen1, jmaen2, jmaen3)
 !
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

@@ -9,7 +9,6 @@ subroutine memres(limpr, ldyn, titre, prec, tmax)
     character(len=*) :: titre, limpr, ldyn
     real(kind=8) :: tmax, prec
 ! TOLE CRS_505 CRP_4
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

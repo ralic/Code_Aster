@@ -9,7 +9,6 @@ subroutine vfgefa(maxdim, ndim, nbnos, xs, t,&
     real(kind=8) :: xs(maxdim, nbnos), t(maxdim, nbnos)
     real(kind=8) :: xg(ndim), surf, norm(maxdim), xgf(maxdim), d
 ! ----------------------------------------------------------------------
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

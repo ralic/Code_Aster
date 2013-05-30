@@ -2,7 +2,6 @@ subroutine tstbar(nbsom, x3d1, x3d2, x3d3, x3d4,&
                   x3dp, xbar, itest)
     implicit none
 !-----------------------------------------------------------------------
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

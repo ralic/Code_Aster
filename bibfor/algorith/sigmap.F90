@@ -5,7 +5,6 @@ function sigmap(net, bishop, sat, signe, biot,&
     real(kind=8) :: signe, sat, biot, dp2, dp1, sigmap
     logical :: net, bishop
 ! ======================================================================
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

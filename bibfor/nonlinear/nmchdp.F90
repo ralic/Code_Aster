@@ -1,5 +1,4 @@
 subroutine nmchdp(crit, seuil, dp, iret, iter)
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! TOLE CRP_21
 ! TOLE CRP_7
 ! ======================================================================

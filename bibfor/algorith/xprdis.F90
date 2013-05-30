@@ -15,7 +15,6 @@ subroutine xprdis(fisref, fisdis, dist, tol, lcmin)
     character(len=8) :: fisref, fisdis
     real(kind=8) :: dist, tol, lcmin
 !
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

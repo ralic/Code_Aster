@@ -5,7 +5,6 @@ subroutine creso1(solveu, method, preco, renum, syme,&
                   scalin, inumsd, imail, infofe, stogi,&
                   testok, nbreoi, acma, acsm, reacre)
 !-----------------------------------------------------------------------
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

@@ -1,6 +1,5 @@
 subroutine flanv2(a, b, c, d, rt1r,&
                   rt1i, rt2r, rt2i, cs, sn)
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! COPYRIGHT (C) LAPACK
 ! COPYRIGHT (C) 2007 - 2013  EDF R&D                WWW.CODE-ASTER.ORG

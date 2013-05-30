@@ -20,7 +20,6 @@ subroutine rsadpa(nomsd, cel, npara, lpara, iordr,&
     character(len=1) :: cel
     character(len=*) :: nomsd, lpara(*), ctype(*)
 ! ----------------------------------------------------------------------
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

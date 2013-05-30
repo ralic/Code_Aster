@@ -3,7 +3,6 @@ subroutine premlc(n1, diag, col, parent, parend,&
                   ancsn, p, q, lbd1, lbd2,&
                   rl, rl1, rl2, nrl, invp,&
                   perm, lgind, ddlmoy, nbsnd)
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! person_in_charge: olivier.boiteau at edf.fr
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG

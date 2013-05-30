@@ -5,7 +5,6 @@ subroutine wpnorx(nbmode, neq, exclus, vecp, resufk)
     complex(kind=8) :: vecp(neq, nbmode)
     character(len=*) :: resufk(*)
 !     ------------------------------------------------------------------
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

@@ -8,7 +8,6 @@ subroutine dicor2(k0, p1, p2, dur, dryr,&
     real(kind=8) :: si1(12)
     real(kind=8) :: dnsdu, dmsdt, dnsdt, varip1, varip2, si2(12)
 ! ----------------------------------------------------------------------
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

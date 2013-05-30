@@ -9,7 +9,6 @@ subroutine tridia(n, a, lda, d, e,&
     integer :: n, lda
     real(kind=8) :: d(*), e(*)
     complex(kind=8) :: a(lda, *), tau(*), w(*)
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

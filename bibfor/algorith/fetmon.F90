@@ -2,7 +2,6 @@ subroutine fetmon(infofe, nbi2, nbi, nbtot, nbsd,&
                   dimgi, ifm, mamoy, lstogi, ifet1,&
                   rang, itps, lpara, option)
 !-----------------------------------------------------------------------
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

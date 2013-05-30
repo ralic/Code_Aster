@@ -5,7 +5,6 @@ subroutine moinip(nch, ncoef, iich, iisuiv, ilig,&
     integer :: nch, ncoef, ii2, j, ii1
     integer(kind=4) :: ilig2(1)
 !     ------------------------------------------------------------------
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

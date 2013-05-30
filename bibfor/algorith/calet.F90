@@ -1,6 +1,5 @@
 subroutine calet(ndim, fm, fma, fmp, edpn1,&
                  fmam, fta, etdpn1, jm, jp)
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

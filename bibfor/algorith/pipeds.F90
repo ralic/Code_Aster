@@ -2,7 +2,6 @@ subroutine pipeds(ndim, typmod, tau, mate, vim,&
                   epsm, epspc, epsdc, etamin, etamax,&
                   a0, a1, a2, a3, etas)
 !
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

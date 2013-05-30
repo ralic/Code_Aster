@@ -10,7 +10,6 @@ subroutine carelo(modele, carele, base, chrel1, chrel2,&
     character(len=1) :: base
     character(len=8) :: carele, modele
     character(len=19) :: chrel1, chrel2, chrel3
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

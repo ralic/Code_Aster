@@ -3,7 +3,6 @@ subroutine nmchat(matel, mat, nbvar, memo, visc,&
                   ndimsi, dt, rpvp, qp, vim,&
                   idelta, n1, n2, beta1, beta2,&
                   dsidep)
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! TOLE CRP_21
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG

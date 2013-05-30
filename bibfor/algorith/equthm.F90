@@ -5,7 +5,6 @@ subroutine equthm(imate, option, ta, ta1, ndim,&
                   press2, tempe, crit, rinstm, rinstp,&
                   dt, r, drds, dsde, retcom)
 ! ======================================================================
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! person_in_charge: sylvie.granet at edf.fr
 ! ======================================================================

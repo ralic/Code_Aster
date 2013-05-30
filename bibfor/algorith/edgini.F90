@@ -2,7 +2,6 @@ subroutine edgini(itemax, prec, pm, eqsitr, mu,&
                   gamma, m, n, dp, iret)
     implicit none
 !
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 !
     include 'asterfort/edgiso.h'
     integer :: itemax

@@ -13,7 +13,6 @@ subroutine lcmmdd(taus, coeft, ifa, nmat, nbcomm,&
     real(kind=8) :: n, gamma0, rmin, alphar(12)
     real(kind=8) :: tauf, alpham(12), terme, rmax, hs, soms1, soms2, soms3
 ! ----------------------------------------------------------------------
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

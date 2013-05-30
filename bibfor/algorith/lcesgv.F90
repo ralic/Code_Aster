@@ -2,7 +2,6 @@ subroutine lcesgv(fami, kpg, ksp, neps, typmod,&
                   option, mat, epsm, deps, vim,&
                   itemax, precvg, sig, vip, dsidep,&
                   iret)
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

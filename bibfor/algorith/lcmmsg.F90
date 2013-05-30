@@ -1,7 +1,6 @@
 subroutine lcmmsg(nomfam, nbsys, nusys, pgl2, mus,&
                   ng, mg, ir, q)
     implicit none
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! person_in_charge: jean-michel.proix at edf.fr
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG

@@ -20,7 +20,6 @@ subroutine lcedga(fami, kpg, ksp, ndim, imat,&
     real(kind=8) :: sigm2(6), vim(2), sigp(6), vip(2)
     real(kind=8) :: dsidep(6, 6)
 ! ----------------------------------------------------------------------
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

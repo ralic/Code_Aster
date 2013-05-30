@@ -2,7 +2,6 @@ subroutine nmextl(noma, nomo, motfac, iocc, nomcha,&
                   typcha, listno, listma, nbno, nbma,&
                   extrch)
 !
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

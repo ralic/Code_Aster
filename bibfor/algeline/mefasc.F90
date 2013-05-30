@@ -10,7 +10,6 @@ subroutine mefasc(ndim, nbcyl, nbgrp, nbtron, numgrp,&
     real(kind=8) :: d(nbcyl, nbcyl), fi(nbcyl, nbcyl)
     real(kind=8) :: a(2*nbtron*(nbcyl+1), *), b(*)
 ! ----------------------------------------------------------------------
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

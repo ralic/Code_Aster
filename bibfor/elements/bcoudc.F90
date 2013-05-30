@@ -3,7 +3,6 @@ subroutine bcoudc(igau, icou, isect, h, a,&
                   nsect, ff, df1, df2, rayon,&
                   theta, mmt, b)
     implicit none
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

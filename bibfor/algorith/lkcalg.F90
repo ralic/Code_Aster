@@ -6,7 +6,6 @@ subroutine lkcalg(dfdsig, vecn, g, devgii)
     include 'asterfort/r8inir.h'
     real(kind=8) :: dfdsig(6), vecn(6), g(6), devgii
 ! =================================================================
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

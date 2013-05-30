@@ -20,7 +20,6 @@ subroutine xprvir(fiss, covir, bavir, vitvir, angvir,&
     real(kind=8) :: radimp, radtor, damax
     logical :: locdom
 !
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

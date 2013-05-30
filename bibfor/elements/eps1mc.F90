@@ -1,7 +1,6 @@
 subroutine eps1mc(nno, ndim, nbsig, npg, ipoids,&
                   ivf, idfde, xyz, depl, nharm,&
                   eps1)
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

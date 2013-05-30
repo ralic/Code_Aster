@@ -2,7 +2,6 @@ subroutine lcfrge(ndim, typmod, imate, epsm, deps,&
                   vim, option, sig, vip, dsidpt,&
                   proj)
 !
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

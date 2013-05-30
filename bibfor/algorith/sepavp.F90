@@ -1,7 +1,6 @@
 subroutine sepavp(ck, cm, cmat, ndim, alpha,&
                   beta, nbmod, lambd1, lambd2, interv,&
                   ific)
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

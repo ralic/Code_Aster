@@ -4,7 +4,6 @@ subroutine t3gbc(xyzl, qsi, eta, bc)
     real(kind=8) :: qsi, eta
     real(kind=8) :: bc(2, 9), xyzl(3, *)
 !
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

@@ -4,7 +4,6 @@ subroutine vfcfks(cont, tange, maxfa, nface, uk,&
                   xk, xfa, maxdim, ndim, fks,&
                   dfks1, dfks2)
 !
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2010  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

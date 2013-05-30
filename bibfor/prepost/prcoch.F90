@@ -26,7 +26,6 @@ subroutine prcoch(noche8, nochs8, nocmp, ktype, itopo,&
     integer :: itopo, ngroup
     character(len=8) :: noche8, nochs8, nocmp, ktype
     character(len=8) :: group(ngroup)
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

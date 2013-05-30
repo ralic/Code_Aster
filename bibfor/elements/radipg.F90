@@ -14,7 +14,6 @@ subroutine radipg(sig1, sig2, npg, nbsig, radia,&
     real(kind=8) :: vari1(*), vari2(*)
     character(len=16) :: compor
 ! ----------------------------------------------------------------------
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

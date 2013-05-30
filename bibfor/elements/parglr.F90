@@ -8,8 +8,6 @@ subroutine parglr(nlit, elb, ea, nua, liner,&
     real(kind=8) :: ry(*)
     real(kind=8) :: bn11, bn12, bn22, bn33, bm11, bm12, bm22, bc11, bc22, hh
 !.......................................................................
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

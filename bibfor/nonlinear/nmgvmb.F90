@@ -2,7 +2,6 @@ subroutine nmgvmb(ndim, nno1, nno2, npg, axi,&
                   geom, vff1, vff2, idfde1, idfde2,&
                   iw, nddl, neps, b, w,&
                   ni2ldc)
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

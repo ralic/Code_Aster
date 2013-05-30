@@ -2,7 +2,6 @@ subroutine preml0(n1, n2, diag, col, delg,&
                   prno, deeq, nec, p, q,&
                   lbd1, lbd2, rl, rl1, rl2,&
                   nrl, lt, lmat)
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! person_in_charge: olivier.boiteau at edf.fr
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG

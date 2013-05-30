@@ -3,7 +3,6 @@ subroutine nmfgas(fami, npg, icodma, pgl, nno,&
                   tmoins, tplus, xlong0, a, coeffl,&
                   irram, irrap, kls, flc, effnoc,&
                   pp)
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

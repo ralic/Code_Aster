@@ -1,6 +1,5 @@
 subroutine nomgfa(nogr, nbgr, dgf, nogrf, nbgf)
 !     ------------------------------------------------------------------
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! person_in_charge: nicolas.sellenet at edf.fr
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG

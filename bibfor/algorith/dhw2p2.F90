@@ -3,7 +3,6 @@ function dhw2p2(dp11p2, alpliq, t, rho11)
     include 'asterfort/dhwdp2.h'
     real(kind=8) :: dp11p2, alpliq, t, rho11, dhw2p2
 ! ======================================================================
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

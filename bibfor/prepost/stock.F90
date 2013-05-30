@@ -19,7 +19,6 @@ subroutine stock(resu, chs, nocham, ligrel, tychas,&
     real(kind=8) :: iouf, masgen, amrge
     character(len=*) :: resu, chs, nocham, ligrel, tychas
 !
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

@@ -1,7 +1,6 @@
 subroutine ptka21(sk, e, a, xl, xiy,&
                   xiz, xjx, xig, g, alfay,&
                   alfaz, ey, ez)
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

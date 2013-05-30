@@ -1,6 +1,5 @@
 subroutine colni2(col1, col2, n, d1, d2,&
                   coef1, t1, t2, eps, ier)
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! person_in_charge: olivier.boiteau at edf.fr
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG

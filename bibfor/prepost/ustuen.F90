@@ -9,7 +9,6 @@ subroutine ustuen(dimtub, tubuse, rcray, nomt19, ns,&
     real(kind=8) :: tubuse(*), rcray, parusu(20, *)
     character(len=19) :: nomt19
 !-----------------------------------------------------------------------
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

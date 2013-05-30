@@ -1,6 +1,5 @@
 subroutine mltasc(nbloc, lgbloc, adinit, nommat, lonmat,&
                   factol, factou, typsym)
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! person_in_charge: olivier.boiteau at edf.fr
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG

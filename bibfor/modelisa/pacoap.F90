@@ -23,7 +23,6 @@ subroutine pacoap(lisi1z, lisi2z, lonlis, centre, theta,&
     character(len=*) :: lisi1z, lisi2z, nomaz, liso1z, liso2z
     real(kind=8) :: centre(3), theta(3), t(3)
 !---------------------------------------------------------------------
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

@@ -18,7 +18,6 @@ subroutine utcono(mcfac, mocle, iocc, nomail, ndim,&
     character(len=8) :: nomail
     character(len=*) :: mcfac, mocle(3)
 ! ----------------------------------------------------------------------
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

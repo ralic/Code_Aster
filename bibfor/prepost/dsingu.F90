@@ -12,7 +12,6 @@ subroutine dsingu(ndim, nelem, nnoem, nsommx, nelcom,&
     real(kind=8) :: xy(3, nnoem), erreur(nelem), energi(nelem), mesu(nelem)
     real(kind=8) :: alpha(nelem)
 ! ----------------------------------------------------------------------
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! TOLE CRS_1404
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG

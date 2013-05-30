@@ -3,7 +3,6 @@ subroutine nmiclb(fami, kpg, ksp, option, compor,&
                   dlong0, effnom, vim, effnop, vip,&
                   klv, fono, epsm, crildc, codret)
 ! ----------------------------------------------------------------------
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

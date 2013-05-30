@@ -15,7 +15,6 @@ subroutine w039c3(carele, modele, ifi, form, titre)
     character(len=80) :: titre
     character(len=*) :: form
 !
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

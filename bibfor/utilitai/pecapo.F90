@@ -27,7 +27,6 @@ subroutine pecapo(resu, modele, cara, nchar, lchar,&
     integer :: nchar, nh
     character(len=*) :: resu, modele, cara, lchar(*)
 !     ------------------------------------------------------------------
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

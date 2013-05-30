@@ -23,7 +23,6 @@ subroutine pjxxut(dim, mocle, moa1, moa2, nbma1,&
     integer :: nbma1, lima1(*), nbno2, lino2(*), nbtmx, nbtm, nutm(nbtmx)
     character(len=8) :: elrf(nbtmx)
 ! ----------------------------------------------------------------------
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! TOLE CRS_1404
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG

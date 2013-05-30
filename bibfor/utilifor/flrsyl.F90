@@ -1,7 +1,6 @@
 subroutine flrsyl(trana, tranb, isgn, m, n,&
                   a, lda, b, ldb, c,&
                   ldc, scale, info)
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! COPYRIGHT (C) LAPACK
 ! COPYRIGHT (C) 2007 - 2013  EDF R&D                WWW.CODE-ASTER.ORG

@@ -1,7 +1,6 @@
 subroutine mdfdas(dnorm, vnorm, vitloc, cost, sint,&
                   coefk1, coefk2, coefpy, coefc, coefad,&
                   xmax, fdispo, flocal)
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

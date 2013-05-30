@@ -20,7 +20,6 @@ subroutine singue(cherrs, chenes, nomail, ndim, nnoem,&
     character(len=19) :: cherrs, chenes
     character(len=24) :: ligrmo, chelem
 ! ----------------------------------------------------------------------
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! TOLE CRS_1404
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG

@@ -4,7 +4,6 @@ subroutine equthp(imate, option, ndim, compor, typmod,&
                   vintp, mecani, press1, press2, tempe,&
                   crit, rinstm, rinstp, r, drds,&
                   dsde, retcom)
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

@@ -15,7 +15,6 @@ subroutine cmpcha(nomcha, nomcmp, corr1, corr2, ncmp,&
     include 'asterfort/wkvect.h'
     character(len=*) :: nomcha, nomcmp, corr1, corr2
     integer :: ncmp, ncmpmx
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

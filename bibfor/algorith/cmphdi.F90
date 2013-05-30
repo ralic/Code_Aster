@@ -2,7 +2,6 @@ subroutine cmphdi(ck, cm, ndim, nbmod, niter,&
                   xcrit, ceigen, cmod, ndimax, cmat1,&
                   cmat2, cvect, cvect1, alpha, beta,&
                   lambd1, lambd2, interv, ific)
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! TOLE CRS_1404
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG

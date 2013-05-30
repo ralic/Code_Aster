@@ -5,7 +5,6 @@ subroutine tbexp2(nomta, para)
     include 'asterfort/tbexip.h'
     include 'asterfort/u2mesg.h'
     character(len=*) :: nomta, para
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

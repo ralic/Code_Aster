@@ -6,7 +6,6 @@ subroutine preml1(neq, n2, diag, delg, col,&
                   vois, suit, ier, nec, prno,&
                   deeq, noeud, ddl, invpnd, permnd,&
                   spndnd, xadjd, matgen)
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! person_in_charge: olivier.boiteau at edf.fr
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG

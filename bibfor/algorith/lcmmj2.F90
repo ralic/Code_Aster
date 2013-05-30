@@ -5,7 +5,6 @@ subroutine lcmmj2(taur, materf, cpmono, ifa, nmat,&
                   dksdbr, iret)
     implicit none
 ! ----------------------------------------------------------------------
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! TOLE CRP_21
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG

@@ -2,7 +2,6 @@ subroutine lrvcpg(idfimd, nbpgm, nbpga, nomtm, tygeos,&
                   elrefa, elrefm, fapg, nloc, permu,&
                   nutyma, codret)
 !
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! person_in_charge: nicolas.sellenet at edf.fr
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG

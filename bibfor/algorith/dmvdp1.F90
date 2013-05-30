@@ -5,7 +5,6 @@ function dmvdp1(rho11, rho12, sat, dsatp1, biot,&
     real(kind=8) :: em, dphip1
     logical :: emmag
 ! ======================================================================
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

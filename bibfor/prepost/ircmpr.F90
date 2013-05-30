@@ -2,7 +2,6 @@ subroutine ircmpr(nofimd, typech, nbimpr, ncaimi, ncaimk,&
                   ncmprf, ncmpve, ntlcmp, nbvato, nbenec,&
                   lienec, adsd, adsl, nomaas, modele,&
                   typgeo, nomtyp, ntproa, chanom, sdcarm)
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

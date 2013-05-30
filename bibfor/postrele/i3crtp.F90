@@ -5,7 +5,6 @@ subroutine i3crtp(epsi, s, p, cr, iret)
     real(kind=8) :: epsi, s(3, *), p(*), cr(*)
 !
 !     ------------------------------------------------------------------
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

@@ -14,7 +14,6 @@ subroutine xpolsn(elrefp, ino, n, jlsn, jlst,&
     character(len=8) :: elrefp
     real(kind=8) :: co(3), lsn(nfiss), lst(nfiss)
 !
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! TOLE CRS_1404
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG

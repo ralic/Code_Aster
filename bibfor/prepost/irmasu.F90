@@ -3,7 +3,6 @@ subroutine irmasu(ifc, ndim, nno, coordo, nbma,&
                   codphy, codphd, permut, maxnod, lmod,&
                   noma, nbgrn, nogn, nbgrm, nogm,&
                   lmasu, nomai, nonoe, versio)
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

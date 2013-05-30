@@ -17,7 +17,6 @@ subroutine speph1(intphy, intmod, nomu, cham, specmr,&
     real(kind=8) :: cham(nbn, *), specmr(nbpf, *), specmi(nbpf, *)
     character(len=8) :: nomu, nnoe(*), nomcmp(*)
 !-----------------------------------------------------------------------
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

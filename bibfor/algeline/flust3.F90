@@ -30,7 +30,6 @@ subroutine flust3(melflu, typflu, base, nuor, amor,&
     character(len=8) :: typflu, base
     character(len=19) :: melflu
 !-----------------------------------------------------------------------
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! TOLE CRP_20
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG

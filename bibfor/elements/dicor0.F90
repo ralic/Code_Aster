@@ -4,7 +4,6 @@ subroutine dicor0(k0, varim, varip1, varip2, dnsdu,&
     implicit none
     real(kind=8) :: k0(78), varim, varip1, varip2, dnsdu, dmsdt, dnsdt
 ! ----------------------------------------------------------------------
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

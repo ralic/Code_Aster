@@ -7,7 +7,6 @@ subroutine virhol(nbvari, vintm, vintp, advihy, vihrho,&
     real(kind=8) :: vintm(nbvari), vintp(nbvari), rho110, dp1, dp2, dpad, dt
     real(kind=8) :: cliq, signe, alpliq, rho11, rho11m
 ! ======================================================================
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

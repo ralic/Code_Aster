@@ -21,7 +21,6 @@ subroutine ctnotb(nbno, mesnoe, noma, nbval, nkcha,&
     character(len=16) :: nsymb
     character(len=24) :: nkcha, nkcmp, mesnoe, nival, nrval, niord
     logical :: toucmp
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

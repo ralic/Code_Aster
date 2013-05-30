@@ -18,7 +18,6 @@ subroutine rvaffm(mcf, iocc, sdlieu, sdeval, sdmoy,&
     character(len=24) :: sdlieu, sdmoy, xnovar
     character(len=*) :: mcf, rep, option, nomtab, quant
 !     ------------------------------------------------------------------
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

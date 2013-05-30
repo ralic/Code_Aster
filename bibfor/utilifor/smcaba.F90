@@ -8,7 +8,6 @@ subroutine smcaba(ftrc, trc, nbhist, x, dz,&
     integer :: ind(6), nbhist
     real(kind=8) :: ftrc((3*nbhist), 3), trc((3*nbhist), 5), x(5), dz(4)
 !-----------------------------------------------------------------------
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

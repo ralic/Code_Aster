@@ -33,7 +33,6 @@ subroutine mdrecf(nexci, nexcir, idescf, nomfon, coefm,&
     character(len=8) :: basemo, nommot, nomres
     character(len=16) :: typbas
 ! ----------------------------------------------------------------------
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

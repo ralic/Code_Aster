@@ -2,7 +2,6 @@ subroutine cfaca1(ndim, nbliac, ajliai, llf, llf1,&
                   llf2, nesmax, defico, resoco, solveu,&
                   lmat, nbliai)
 !
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

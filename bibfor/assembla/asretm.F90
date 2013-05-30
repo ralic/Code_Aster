@@ -8,7 +8,6 @@ subroutine asretm(lmasym, jtmp2, lgtmp2, nbterm, jsmhc,&
     integer :: jtmp2, lgtmp2, nbterm, jsmhc, jsmdi, i1, i2
     integer :: ideb, ifin, imil
 ! -----------------------------------------------------------------
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

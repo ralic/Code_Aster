@@ -2,7 +2,6 @@ subroutine ermeb2(ino, iref1, iref2, ivois, igeom,&
                   isig, typema, nbcmp, inst, nx,&
                   ny, tx, ty, sig11, sig22,&
                   sig12, chx, chy)
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

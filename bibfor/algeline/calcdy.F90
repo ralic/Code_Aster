@@ -8,7 +8,6 @@ subroutine calcdy(mu, k, f0, devg, devgii,&
     real(kind=8) :: mu, k, f0, devg(6), devgii, traceg
     real(kind=8) :: dfdl, delta, dy(10)
 ! ======================================================================
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

@@ -28,7 +28,6 @@ subroutine raorfi(noma, ligrel, noepou, cara, coorig,&
     character(len=8) :: noepou, noma, cara
     character(len=19) :: ligrel
     real(kind=8) :: coorig(3), eg1(3), eg2(3), eg3(3), r
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

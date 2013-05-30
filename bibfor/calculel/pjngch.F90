@@ -18,7 +18,6 @@ subroutine pjngch(cham1z, cham2z, corres, base)
     include 'asterfort/pronua.h'
     include 'asterfort/wkvect.h'
     character(len=*) :: cham1z, cham2z, corres, base
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

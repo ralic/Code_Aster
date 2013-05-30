@@ -16,7 +16,6 @@ subroutine calir4(noma, lisrel, nono2, ino2, v1,&
     integer :: jconb2, jcocf2, jconu2, ideca2
     real(kind=8) :: v1(3)
 ! ----------------------------------------------------------------------
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

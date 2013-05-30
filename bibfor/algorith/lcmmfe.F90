@@ -20,7 +20,6 @@ subroutine lcmmfe(taus, coeft, materf, ifa, nmat,&
     integer :: irr, decirr, nums, decal, gdef
     common/polycr/irr,decirr,nums,decal,gdef
 !     ----------------------------------------------------------------
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! TOLE CRP_21
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG

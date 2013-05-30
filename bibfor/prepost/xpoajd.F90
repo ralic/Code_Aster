@@ -27,7 +27,6 @@ subroutine xpoajd(elrefp, ino, nnop, lsn, lst,&
     character(len=8) :: elrefp, typma
     real(kind=8) :: co(3), lsn(nfiss), lst(nfiss)
 !
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

@@ -3,7 +3,6 @@ function rminsp(x1, x2, x3, x4, x5)
     include 'asterfort/assert.h'
     real(kind=8) :: rminsp, x1, x2, x3, x4, x5, xmin
 !     ------------------------------------------------------------------
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2008  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

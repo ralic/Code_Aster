@@ -11,7 +11,6 @@ subroutine mefasr(ndim, nbcyl, nbgrp, nbtron, numgrp,&
     real(kind=8) :: xint(*), yint(*), rint(*), beta(*)
     real(kind=8) :: a(2*nbtron*nbcyl, *), b(*)
 ! ----------------------------------------------------------------------
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

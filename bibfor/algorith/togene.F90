@@ -2,7 +2,6 @@ subroutine togene(icho, ia, dplmod, nbchoc, nbmode,&
                   fx, fy, fz, fgene)
     implicit none
 ! ----------------------------------------------------------------------
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

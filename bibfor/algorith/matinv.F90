@@ -7,7 +7,6 @@ subroutine matinv(stop, ndim, mat, inv, det)
     real(kind=8) :: mat(ndim, ndim), inv(ndim, ndim), det
     character(len=1) :: stop
 !
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! TOLE CRS_1404
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2010  EDF R&D                  WWW.CODE-ASTER.ORG

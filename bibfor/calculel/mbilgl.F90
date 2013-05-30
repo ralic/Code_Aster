@@ -46,7 +46,6 @@ subroutine mbilgl(option, result, modele, depla1, depla2,&
     logical :: extim, thlagr, glagr, milieu, pair
     logical :: ufonc, vfonc, epsiu, epsiv, thlag2, lmelas
 ! ......................................................................
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

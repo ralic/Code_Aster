@@ -2,7 +2,6 @@ subroutine fragex(ndim, imate, instam, instap, epsm,&
                   deps, vim, option, sigp, vip,&
                   typmod, dsidep, codret)
 !
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

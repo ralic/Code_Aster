@@ -5,7 +5,6 @@ subroutine rectfr(nbmode, nbvect, omeshi, npivot, nblagr,&
     integer :: resufi(nfreq, *)
     real(kind=8) :: valpro(nvpro), resufr(nfreq, *)
 !     ------------------------------------------------------------------
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

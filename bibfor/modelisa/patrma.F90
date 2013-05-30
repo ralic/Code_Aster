@@ -26,7 +26,6 @@ subroutine patrma(llist1, llist2, t, nbtymx, nomma,&
     real(kind=8) :: t(3)
     integer :: nbtymx, ntypm
 !---------------------------------------------------------------------
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

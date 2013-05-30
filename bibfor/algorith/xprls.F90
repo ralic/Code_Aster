@@ -23,7 +23,6 @@ subroutine xprls(noma, cnsln, cnslt, grln, grlt,&
     character(len=19) :: cnsln, cnslt, grln, grlt, cnsvn, cnsvt, cnsbl, nodtor
     character(len=19) :: eletor, liggrd, delta
 !
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

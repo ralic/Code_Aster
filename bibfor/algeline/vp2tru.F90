@@ -14,7 +14,6 @@ subroutine vp2tru(method, ty, alpha, beta, signes,&
     real(kind=8) :: a(nbvect, *), w(*), z(*), wk(*)
     real(kind=8) :: valr(2)
 !     ------------------------------------------------------------------
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

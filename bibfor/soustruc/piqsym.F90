@@ -4,7 +4,6 @@ subroutine piqsym(x, y, quar1, quar2, quar3,&
     real(kind=8) :: x, y
     logical :: quar1, quar2, quar3, quar4
 !-----------------------------------------------------------------------
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

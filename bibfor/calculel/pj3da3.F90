@@ -4,7 +4,6 @@ subroutine pj3da3(m, a, b, c, ok,&
     real(kind=8) :: m(3), a(3), b(3), c(3), d2, la, lb, lc
     logical :: ok
 ! ----------------------------------------------------------------------
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

@@ -4,7 +4,6 @@ subroutine rc36f5(nbp12, nbp23, nbp13, nbsigr, nbsg1,&
     integer :: nbp12, nbp23, nbp13, nbsigr, nbsg1, nbsg2, nbsg3
     real(kind=8) :: saltij(*)
 !     ------------------------------------------------------------------
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2008  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

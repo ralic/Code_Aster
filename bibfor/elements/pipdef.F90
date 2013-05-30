@@ -3,7 +3,6 @@ subroutine pipdef(ndim, nno, kpg, ipoids, ivf,&
                   ddepl, depl0, depl1, dfdi, fm,&
                   epsm, epsp, epsd)
 !
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

@@ -15,7 +15,6 @@ subroutine noeddl(nume, nbnoe, lnonoe, neq, ivec)
     character(len=14) :: nume
     character(len=*) :: lnonoe(nbnoe)
 ! ----------------------------------------------------------------------
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

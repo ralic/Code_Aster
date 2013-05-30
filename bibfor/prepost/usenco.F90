@@ -5,7 +5,6 @@ subroutine usenco(ai1, bi1, alphad, alphaf, ndim,&
     integer :: ndim
     real(kind=8) :: ai1, bi1, vect(*), alphad, alphaf
 !-----------------------------------------------------------------------
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

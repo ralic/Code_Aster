@@ -2,7 +2,6 @@ subroutine dnapps(n, kev, np, shiftr, shifti,&
                   v, ldv, h, ldh, resid,&
                   q, ldq, workl, workd)
 !---------------------------------------------------------------------
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! COPYRIGHT (C) LAPACK
 ! COPYRIGHT (C) 2007 - 2013  EDF R&D                WWW.CODE-ASTER.ORG

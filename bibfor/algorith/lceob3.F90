@@ -3,7 +3,6 @@ subroutine lceob3(intmax, tole, eps, bm, dm,&
                   seuil, bdim, b, d, mult,&
                   elas, dbloq, iret)
 !
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

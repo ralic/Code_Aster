@@ -6,7 +6,6 @@ subroutine calcft(option, thmc, imate, ndim, dimdef,&
                   dlambp, lambs, dlambs, lambt, dlambt,&
                   mamolv, lambct, rho11, h11, h12)
 ! ======================================================================
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! person_in_charge: sylvie.granet at edf.fr
 ! ======================================================================

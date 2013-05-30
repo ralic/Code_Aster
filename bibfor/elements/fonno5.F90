@@ -14,7 +14,6 @@ subroutine fonno5(noma, indic, nbnoff, noe, na,&
     integer :: indic(4), nbnoff, noe(4, 4), na, nb, ndim, nbnoel, indr(2)
     real(kind=8) :: vnor(2, 3), vdir(2, 3)
 !
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

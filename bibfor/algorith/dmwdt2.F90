@@ -3,7 +3,6 @@ function dmwdt2(rho11, alp11, phids, sat, bmph,&
     implicit      none
     real(kind=8) :: rho11, alp11, phids, sat, bmph, cs, dpvpt, dmwdt2
 ! ======================================================================
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

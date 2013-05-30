@@ -7,7 +7,6 @@ function dmadp1(rho22, sat, dsatp1, biot, phi,&
     real(kind=8) :: dphip1, em
     logical :: emmag
 ! ======================================================================
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

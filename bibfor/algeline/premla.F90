@@ -1,6 +1,5 @@
 subroutine premla(neq, diag, col, lt, nrl,&
                   rl, deb, vois, suit, ier)
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! person_in_charge: olivier.boiteau at edf.fr
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG

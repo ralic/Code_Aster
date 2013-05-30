@@ -34,7 +34,6 @@ subroutine vpstor(ineg, type, modes, nbmode, neq,&
     real(kind=8) :: vecpr8(neq, *), resufr(mxresf, *)
     complex(kind=8) :: vecpc8(neq, *)
 !     ------------------------------------------------------------------
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

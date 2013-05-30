@@ -2,7 +2,6 @@ subroutine xmmsa4(ndim, nno, nnos, ffp, nddl,&
                   nvec, v1, v2, v3, nfh,&
                   singu, rr, ddls, ddlm, saut)
 !
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

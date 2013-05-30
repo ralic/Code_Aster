@@ -27,7 +27,6 @@ subroutine fonno6(resu, noma, ndim, ina, nbnose,&
     real(kind=8) :: vdir(2, 3), vnor(2, 3), vect(3), sens
     character(len=19) :: basseg
 !
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

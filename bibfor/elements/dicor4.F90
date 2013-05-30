@@ -13,7 +13,6 @@ subroutine dicor4(k0, sim, sip, pi, ui,&
     real(kind=8) :: nu1, nu2, mu1, mu2, feq1, c1, dbar2, uu, tt, dur, dryr
     real(kind=8) :: p2, utot, ttot, dnsdu, dmsdt, dnsdt, dnsdu2, dmsdt2, dnsdt2
 ! ----------------------------------------------------------------------
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

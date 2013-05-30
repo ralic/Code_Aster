@@ -18,7 +18,6 @@ subroutine dxmath(fami, epais, df, dm, dmf,&
     real(kind=8) :: pgl(3, 3), t2ev(4), t2ve(4), t1ve(9)
     character(len=4) :: fami
 !     ------------------------------------------------------------------
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

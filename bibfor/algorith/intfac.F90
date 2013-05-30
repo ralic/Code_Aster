@@ -20,7 +20,6 @@ subroutine intfac(noma, nmaabs, ifq, fa, nno,&
     character(len=3) :: grad
     character(len=8) :: noma
 !
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! TOLE CRS_1404
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG

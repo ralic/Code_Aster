@@ -16,7 +16,6 @@ subroutine titre1(st, nomobj, base, nbtitr, titdon,&
     character(len=*) :: nomobj, base, titdon(*), formr
     integer :: nbtitr, lgdon(*)
 !     ------------------------------------------------------------------
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

@@ -7,7 +7,6 @@ subroutine kitdec(kpi, yachai, yamec, yate, yap1,&
                   dp1, dp2, grat, grap1, grap2,&
                   retcom, rinstp)
 ! ======================================================================
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! person_in_charge: sylvie.granet at edf.fr
 ! ======================================================================

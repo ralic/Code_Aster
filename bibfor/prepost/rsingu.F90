@@ -6,7 +6,6 @@ subroutine rsingu(ndim, nelem, nbr, nalpha, degre,&
     real(kind=8) :: prec, erreur(nelem), alpha(nelem), re(nelem)
     character(len=16) :: types
 ! ----------------------------------------------------------------------
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! TOLE CRS_1404
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2010  EDF R&D                  WWW.CODE-ASTER.ORG

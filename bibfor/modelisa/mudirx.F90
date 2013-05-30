@@ -6,7 +6,6 @@ subroutine mudirx(nbsom, geom, idim, al1, al2,&
     include 'asterfort/assert.h'
     real(kind=8) :: geom(idim, nbsom), axe(3, 3), ang(2), al1, al2
 !
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

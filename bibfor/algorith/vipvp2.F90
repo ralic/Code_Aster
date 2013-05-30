@@ -12,7 +12,6 @@ subroutine vipvp2(nbvari, vintm, vintp, advico, vicpvp,&
     real(kind=8) :: vintm(nbvari), vintp(nbvari), pvp0, pvp1, p2, dp2, t, dt
     real(kind=8) :: mamolv, r, rho11m, pvp, pvpm, kh
 ! ======================================================================
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

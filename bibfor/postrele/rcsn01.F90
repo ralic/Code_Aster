@@ -8,7 +8,6 @@ subroutine rcsn01(nbm, adrm, ipt, sn3, sn4,&
     integer :: nbm, adrm(*), ipt, nbth, iocs
     real(kind=8) :: sn3, sn4, alphaa, alphab, sn6
 !     ------------------------------------------------------------------
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

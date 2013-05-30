@@ -3,7 +3,6 @@ subroutine irmhdf(ifi, ndim, nbnoeu, coordo, nbmail,&
                   nbtitr, nbgrno, nomgno, nbgrma, nomgma,&
                   nommai, nomnoe, infmed)
 !     ------------------------------------------------------------------
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! person_in_charge: nicolas.sellenet at edf.fr
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG

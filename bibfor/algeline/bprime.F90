@@ -11,7 +11,6 @@ function bprime(nbmat, mater, parame, invar1, s,&
     integer :: nbmat
     real(kind=8) :: mater(nbmat, 2), parame(5), invar1, s(6), epssig, bprime
 ! ======================================================================
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

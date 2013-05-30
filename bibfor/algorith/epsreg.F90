@@ -3,7 +3,6 @@ subroutine epsreg(npi, ipoids, ipoid2, ivf, ivf2,&
                   ndim, nddls, nddlm, nno, nnos,&
                   nnom, axi, regula, deplp, defgep)
 ! ======================================================================
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! TOLE CRS_1404
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG

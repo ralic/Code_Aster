@@ -58,7 +58,6 @@ subroutine assmam(base, matas, nbmat, tlimat, licoef,&
     real(kind=8) :: licoef(*)
     character(len=4) :: motcle
 !-----------------------------------------------------------------------
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! person_in_charge: jacques.pellet at edf.fr
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG

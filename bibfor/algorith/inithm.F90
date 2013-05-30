@@ -7,7 +7,6 @@ subroutine inithm(imate, yachai, yamec, phi0, em,&
     integer :: imate, yamec
     real(kind=8) :: phi0, em, alpha0, k0, cs, biot, epsvm, epsv, depsv
 ! ======================================================================
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

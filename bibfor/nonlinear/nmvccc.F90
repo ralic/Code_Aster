@@ -2,7 +2,6 @@ subroutine nmvccc(modele, nbin, nbout, lpain, lchin,&
                   lpaout, lchout, exitem, exihyd, exipto,&
                   exisec, exiepa, exipha, vecel)
 !
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

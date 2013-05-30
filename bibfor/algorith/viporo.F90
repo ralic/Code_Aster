@@ -7,7 +7,6 @@ subroutine viporo(nbvari, vintm, vintp, advico, vicphi,&
     real(kind=8) :: vintm(nbvari), vintp(nbvari), phi0
     real(kind=8) :: depsv, alpha0, dt, dp1, dp2, signe, sat, cs, biot, phi, phim
 ! ======================================================================
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

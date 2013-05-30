@@ -1,7 +1,6 @@
 subroutine nmcvec(oper, typvez, optioz, lcalc, lasse,&
                   nbvect, ltypve, loptve, lcalve, lassve)
 !
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2008  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

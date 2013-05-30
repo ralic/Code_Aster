@@ -31,7 +31,6 @@ subroutine rdtres(resu1, resu2, noma1, noma2, corrn,&
     character(len=24) :: corrn, corrm
     integer :: iocc
 !
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

@@ -12,7 +12,6 @@ subroutine xajpin(ndim, list, long, ipt, cpt,&
     integer :: ndim, long, ipt, cpt, ia, in
     real(kind=8) :: newpt(3), longar, al, list(*), ainter(*)
 !     ------------------------------------------------------------------
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

@@ -5,7 +5,6 @@ subroutine nmconv(noma, modele, mate, numedd, sdnume,&
                   conv, eta, parcri, defico, resoco,&
                   valinc, solalg, measse, veasse)
 !
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

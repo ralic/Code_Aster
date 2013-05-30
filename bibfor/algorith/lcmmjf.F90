@@ -11,7 +11,6 @@ subroutine lcmmjf(taus, coeft, materf, ifa, nmat,&
     real(kind=8) :: dgdtau
     real(kind=8) :: dgdal, dfdr, hsr(nsg, nsg), dy(*), vind(*), materf(nmat)
     character(len=16) :: necoul
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! TOLE CRP_21
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG

@@ -15,7 +15,6 @@ subroutine cclord(nuoplo, nbordr, lisord, nobase, optdem,&
     character(len=8) :: resuin, resuou, nobase
     character(len=19) :: lisord
     character(len=24) :: lisout
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

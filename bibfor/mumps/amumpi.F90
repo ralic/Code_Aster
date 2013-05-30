@@ -1,22 +1,22 @@
 subroutine amumpi(option, lquali, ldist, kxmps, type)
-    implicit none
-!           CONFIGURATION MANAGEMENT OF EDF VERSION
-! ==================================================================
-! COPYRIGHT (C) 1991 - 2013  EDF R&D              WWW.CODE-ASTER.ORG
 !
-! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR
-! MODIFY IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS
-! PUBLISHED BY THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE
-! LICENSE, OR (AT YOUR OPTION) ANY LATER VERSION.
-! THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL,
-! BUT WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+! COPYRIGHT (C) 1991 - 2013  EDF R&D                WWW.CODE-ASTER.ORG
+!
+! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+! (AT YOUR OPTION) ANY LATER VERSION.
+!
+! THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+! WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
 ! MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
 ! GENERAL PUBLIC LICENSE FOR MORE DETAILS.
 !
 ! YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
-! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO : EDF R&D CODE_ASTER,
-!    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
-! ==================================================================
+! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
+!
+    implicit none
 !--------------------------------------------------------------
 ! BUT : ROUTINE DE PARAMETRAGE MUMPS POUR AMUMPS/C/D/Z
 !
@@ -43,14 +43,12 @@ subroutine amumpi(option, lquali, ldist, kxmps, type)
 !
 #ifdef _HAVE_MUMPS
 !
-!============================================================
     include 'mpif.h'
     include 'smumps_struc.h'
     include 'cmumps_struc.h'
     include 'dmumps_struc.h'
     include 'zmumps_struc.h'
     include 'jeveux.h'
-!============================================================
     integer :: nicntl, ncntl
     parameter (nicntl=40,ncntl=15)
     integer :: nmxins
@@ -79,7 +77,6 @@ subroutine amumpi(option, lquali, ldist, kxmps, type)
     common /mumpsd/ dmps
     common /mumpsz/ zmps
     common /mumpsh/ nonus,nomats,nosols,etams,roucs,precs
-!=================================================================
     call jemarq()
 ! --- COMMUNICATEUR MPI DE TRAVAIL
     mpicou=comcou(1)

@@ -8,7 +8,6 @@ subroutine lkdphi(nbmat, mater, de, seuilv, dfdsv,&
     real(kind=8) :: mater(nbmat, 2), de(6, 6)
     real(kind=8) :: dphi(6), dfdsv(6), seuilv
 ! =================================================================
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

@@ -4,7 +4,6 @@ subroutine lc0032(fami, kpg, ksp, ndim, imate,&
                   angmas, sigp, vip, tm, tp,&
                   tref, tampon, typmod, icomp, nvi,&
                   dsidep, codret)
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! TOLE CRP_21
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG

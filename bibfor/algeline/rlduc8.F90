@@ -16,7 +16,6 @@ subroutine rlduc8(nommat, hcol, adia, ablo, neq,&
     complex(kind=8) :: xsol (neq, *)
 !
 !     ------------------------------------------------------------------
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

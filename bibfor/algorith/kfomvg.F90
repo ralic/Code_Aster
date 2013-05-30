@@ -2,7 +2,6 @@ subroutine kfomvg(pr, sr, m, n, usm,&
                   usn, s1, krl, krg, dklds,&
                   dkgds)
 ! ======================================================================
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

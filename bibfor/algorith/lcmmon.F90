@@ -25,7 +25,6 @@ subroutine lcmmon(fami, kpg, ksp, comp, nbcomm,&
     real(kind=8) :: hsr(nsg, nsg, 1)
     character(len=*) :: fami
     character(len=16) :: comp(*)
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! person_in_charge: jean-michel.proix at edf.fr
 ! TOLE CRP_21
 ! TOLE CRS_1404

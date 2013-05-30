@@ -10,7 +10,6 @@ subroutine intega(npgf, jac, poidsf, vectx, vecty,&
     real(kind=8) :: nx(9), ny(9), nz(9)
     real(kind=8) :: inte
 ! ----------------------------------------------------------------------
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

@@ -3,7 +3,6 @@ subroutine sstriv(rdiak, rdiam, lprod, ipos, neq)
     include 'jeveux.h'
     real(kind=8) :: rdiak(neq), rdiam(neq)
     integer :: lprod(neq), ipos(neq), neq
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

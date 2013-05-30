@@ -7,7 +7,6 @@ subroutine dilopt(dimdef, dimuel, poids, poids2, b,&
     real(kind=8) :: poids, poids2, drde(dimdef, dimdef), b(dimdef, dimuel)
     real(kind=8) :: matuu(dimuel*dimuel)
 ! ======================================================================
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! TOLE CRS_1404
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2010  EDF R&D                  WWW.CODE-ASTER.ORG

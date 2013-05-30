@@ -6,7 +6,6 @@ subroutine piqpla(x1, y1, z1, xp, yp,&
     real(kind=8) :: x1, y1, z1, xp, yp, zp, l4, l6, epsi
     logical :: zone7, zone8
 !-----------------------------------------------------------------------
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

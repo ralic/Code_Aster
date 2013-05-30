@@ -20,7 +20,6 @@ subroutine pacoa1(noeud1, noeud2, lonlis, nomaz, liso1z,&
     integer :: lonlis, noeud1(*), noeud2(*)
     character(len=*) :: nomaz, liso1z, liso2z
 !-----------------------------------------------------------------------
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

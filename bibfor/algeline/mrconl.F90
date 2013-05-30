@@ -13,7 +13,6 @@ subroutine mrconl(oper, lmat, neq2, typev, rvect,&
     character(len=4) :: oper
     real(kind=8) :: rvect(*)
 !     ------------------------------------------------------------------
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

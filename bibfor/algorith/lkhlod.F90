@@ -3,7 +3,6 @@ function lkhlod(gamcjs, rcos3t)
     implicit none
     real(kind=8) :: gamcjs, rcos3t, lkhlod
 ! =================================================================
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

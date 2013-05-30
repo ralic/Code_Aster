@@ -5,7 +5,6 @@ subroutine wprest(a, x, n, m, y)
     real(kind=8) :: a(n, *), x(*)
     integer :: n, m
 !     --------------------------------------------------------------
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

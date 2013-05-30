@@ -29,7 +29,6 @@ subroutine rsinch(nomsd, nomch, acces, rval, chextr,&
     character(len=*) :: nomsd, nomch, acces, chextr, proldr, prolga
     character(len=*) :: base
 ! ----------------------------------------------------------------------
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

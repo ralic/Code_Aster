@@ -2,7 +2,6 @@ subroutine cccmcr(jcesdd, numma, jrepe, jconx2, jconx1,&
                   jcoord, adcar1, adcar2, ialpha, ibeta,&
                   iepais, jalpha, jbeta, jgamma, ligrmo,&
                   ino, pgl, modeli, codret)
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

@@ -3,7 +3,6 @@ subroutine rc32my(nbabsc, absc, vale, momen0, momen1)
     integer :: nbabsc
     real(kind=8) :: absc(*), vale(*), momen0, momen1
 !     ------------------------------------------------------------------
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

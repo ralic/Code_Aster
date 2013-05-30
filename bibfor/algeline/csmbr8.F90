@@ -12,7 +12,6 @@ subroutine csmbr8(nommat, ccll, ccii, neq, vcine,&
     real(kind=8) :: vsmb(*), vcine(*)
     integer :: ccll(*), ccii(*), neq
 !-----------------------------------------------------------------------
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

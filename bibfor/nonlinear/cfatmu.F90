@@ -1,7 +1,6 @@
 subroutine cfatmu(neq, nesmax, ndim, nbliac, frot,&
                   llf, llf1, llf2, resoco)
 ! ======================================================================
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

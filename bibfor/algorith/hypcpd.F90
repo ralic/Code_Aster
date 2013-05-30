@@ -1,7 +1,6 @@
 subroutine hypcpd(c11, c22, c33, c12, k,&
                   c10, c01, c20, dsidep, codret)
 !
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! COPYRIGHT (C) 2005 UCBL LYON1 - T. BARANGER     WWW.CODE-ASTER.ORG
 ! COPYRIGHT (C) 2007 - 2013  EDF R&D                WWW.CODE-ASTER.ORG

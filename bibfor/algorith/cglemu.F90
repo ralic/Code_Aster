@@ -19,7 +19,6 @@ subroutine cglemu(resu, vecord, lmelas, lncas, melord)
     character(len=24) :: melord
     logical :: lmelas, lncas
 !
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

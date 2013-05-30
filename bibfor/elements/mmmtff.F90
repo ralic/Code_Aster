@@ -2,7 +2,6 @@ subroutine mmmtff(phasep, ndim, nbcps, nnl, wpg,&
                   ffl, jacobi, tau1, tau2, rese,&
                   nrese, lambda, coefaf, coefff, matrff)
 !
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

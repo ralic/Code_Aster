@@ -13,7 +13,6 @@ subroutine xmvep2(ndim, nno, nnos, nnol, pla,&
     real(kind=8) :: vtmp(400), cpenco, saut(3), nd(3)
     real(kind=8) :: ffc(8), ffp(27), jac, reac, rr
 !
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

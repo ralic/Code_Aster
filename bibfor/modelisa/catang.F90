@@ -18,7 +18,6 @@ subroutine catang(noma, nbma, numail, nbno, nunoeu,&
     integer :: nbma, numail(nbma), nbno, nunoeu(nbno)
     real(kind=8) :: tang(3*nbno)
     character(len=8) :: noma
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

@@ -5,7 +5,6 @@ subroutine nifism(ndim, nno1, nno2, nno3, npg,&
                   crit, instm, instp, ddlm, ddld,&
                   angmas, sigm, vim, sigp, vip,&
                   resi, rigi, vect, matr, codret)
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

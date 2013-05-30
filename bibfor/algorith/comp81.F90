@@ -28,7 +28,6 @@ subroutine comp81(nomres, basmod, raidf, noma)
     character(len=8) :: nomres, noma, basmod
     character(len=19) :: raidf
 ! ----------------------------------------------------------------------
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

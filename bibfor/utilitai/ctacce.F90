@@ -20,7 +20,6 @@ subroutine ctacce(nsymb, typac, nbval, nival, nrval,&
     character(len=24) :: nival, nrval, niord, nkcha
     character(len=8) :: typac, resu
     character(len=16) :: nsymb
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

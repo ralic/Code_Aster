@@ -5,7 +5,6 @@ subroutine i3chgr(a, b, t1, t2, n)
     integer :: n
     real(kind=8) :: a(*), b(*), t1(*), t2(*)
 !     ------------------------------------------------------------------
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

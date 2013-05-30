@@ -3,7 +3,6 @@ subroutine reci2d(lirela, mailla, nnoeca, noebe, nbcnx,&
                   excent)
     implicit none
 !-----------------------------------------------------------------------
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! TOLE CRP_20
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG

@@ -15,7 +15,6 @@ subroutine affgen(tmp, nom, nel, ntel, napcis,&
     character(len=19) :: napcis, foncis
     character(len=24) :: tmp, nom
 !     ------------------------------------------------------------------
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

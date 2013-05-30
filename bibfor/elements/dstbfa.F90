@@ -1,7 +1,6 @@
 subroutine dstbfa(qsi, eta, carat3, bfa)
     implicit  none
     real(kind=8) :: qsi, eta, carat3(*), bfa(3, 3)
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

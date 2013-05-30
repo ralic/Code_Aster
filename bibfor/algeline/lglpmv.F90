@@ -5,7 +5,6 @@ subroutine lglpmv(cumul, n, a, x, y)
     integer :: n
     real(kind=8) :: a(6, 6), x(6), y(6)
 ! ======================================================================
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

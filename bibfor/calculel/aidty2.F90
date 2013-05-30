@@ -1,5 +1,4 @@
 subroutine aidty2(impr)
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! person_in_charge: Christophe-mmn.durand at edf.fr
     implicit none
 ! ======================================================================

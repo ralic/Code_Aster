@@ -12,7 +12,6 @@ subroutine xmmbp5(ndim, nnol, pla, ffc, jac,&
     real(kind=8) :: ffc(8), jac, tau1(3), tau2(3)
     real(kind=8) :: seuil, mu, coeffp
 !
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

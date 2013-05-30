@@ -7,7 +7,6 @@ subroutine i3icfp(epsi, fglo, sgt, floc1, floc2,&
     real(kind=8) :: epsi, fglo(3, *), sgt(*), floc1(*), floc2(*), floc3(*)
 !
 !     ------------------------------------------------------------------
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

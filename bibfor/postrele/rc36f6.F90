@@ -10,7 +10,6 @@ subroutine rc36f6(nbp12, nbp23, nbp13, nbsigr, nbsg1,&
     integer :: sigr(*)
     real(kind=8) :: saltij(*)
 !     ------------------------------------------------------------------
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

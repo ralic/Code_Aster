@@ -1,7 +1,6 @@
 subroutine matbsu(nb1, xr, npgsr, intsn, b1mnc,&
                   b2mnc, b1mni, b2mni, b1mri, b2mri,&
                   b1src, b2src, b1su, b2su)
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

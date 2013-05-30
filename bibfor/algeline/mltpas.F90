@@ -3,7 +3,6 @@ subroutine mltpas(nbnd, nbsn, supnd, xadj, adjncy,&
                   nblign, lgsn, nbloc, ncbloc, lgbloc,&
                   diag, col, lmat, place)
 ! ----------------------------------------------------------------------
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

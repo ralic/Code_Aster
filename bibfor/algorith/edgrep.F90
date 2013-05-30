@@ -2,7 +2,6 @@ subroutine edgrep(typmod, coord, anic, ani)
 !
     implicit none
 !
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 !
     include 'asterc/r8prem.h'
     real(kind=8) :: coord(3), anic(6, 6), ani(6, 6)

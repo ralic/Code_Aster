@@ -2,7 +2,6 @@ subroutine dilcge(interp, dimdef, dimcon, regula, ndim,&
                   defgep, sigp, rpena, r)
 ! ======================================================================
 ! person_in_charge: romeo.fernandes at edf.fr
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

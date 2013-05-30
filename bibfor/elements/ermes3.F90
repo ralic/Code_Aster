@@ -2,7 +2,6 @@ subroutine ermes3(noe, ifa, tymvol, nnof, typmav,&
                   iref1, ivois, isig, nbcmp, dsg11,&
                   dsg22, dsg33, dsg12, dsg13, dsg23)
 !-----------------------------------------------------------------------
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

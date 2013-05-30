@@ -10,7 +10,6 @@ subroutine solrei(gamp, s, i1n, parame, nbmat,&
     integer :: nbmat, codret
     real(kind=8) :: s(6), i1n, parame(5), mater(nbmat, 2), q(6), vecn(6), gamp
 ! ======================================================================
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

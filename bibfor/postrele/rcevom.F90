@@ -25,7 +25,6 @@ subroutine rcevom(csigm, cinst, cnoc, sm, lfatig,&
     character(len=24) :: cfae, cspo, cspe, cresu, cpres, cspto, cspte, cspmo
     character(len=24) :: cspme
 !     ------------------------------------------------------------------
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! TOLE CRP_20 CRP_21
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG

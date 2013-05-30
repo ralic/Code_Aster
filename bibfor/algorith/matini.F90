@@ -4,7 +4,6 @@ subroutine matini(nlig, ncol, s, mat)
     integer :: nlig, ncol
     real(kind=8) :: s, mat(nlig, ncol)
 !-----------------------------------------------------------------------
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

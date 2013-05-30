@@ -9,7 +9,6 @@ subroutine dikfin(nbt, dnsdu, dnsdt, dmsdt, dnsdu2,&
     real(kind=8) :: krz
     real(kind=8) :: klv(nbt), klv2(nbt)
 ! ----------------------------------------------------------------------
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

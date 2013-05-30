@@ -5,7 +5,6 @@ subroutine piqrot(x1, y1, tetax, nt, ret,&
     integer :: nt
     real(kind=8) :: x1, y1, tetax, ret, rit, rep, tetaf, epsi
 !-----------------------------------------------------------------------
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

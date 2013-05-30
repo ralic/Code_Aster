@@ -7,7 +7,6 @@ subroutine hmgazp(yachai, option, meca, thmc, ther,&
                   t, dt, phi, rho11, phi0,&
                   sat, retcom, biot, rinstp)
 ! ======================================================================
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! person_in_charge: sylvie.granet at edf.fr
 ! ======================================================================

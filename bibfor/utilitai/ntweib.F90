@@ -9,7 +9,6 @@ subroutine ntweib(nrupt, cals, sk, sigw, nur,&
     real(kind=8) :: sigw(*), x1, x2, xacc, rtsafe, sk(*)
     logical :: cals, impr
 !     ----------------------------------------------------------------
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

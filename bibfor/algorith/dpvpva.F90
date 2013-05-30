@@ -3,7 +3,6 @@ subroutine dpvpva(vin, nbmat, mater, fonecr)
     implicit      none
     integer :: nbmat
     real(kind=8) :: vin(4), fonecr(3), mater(nbmat, 2)
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2009  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

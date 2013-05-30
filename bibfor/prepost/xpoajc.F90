@@ -14,7 +14,6 @@ subroutine xpoajc(nnm, inm, inmtot, nbmac, ise,&
     integer :: jcesd1, jcesd2, ima, ndim, iadc, jcesv1, jcesl2, jcesv2
     integer :: jcvid1, jcvid2, jcviv1, jcvil2, jcviv2, idcalv, iadv
 ! ----------------------------------------------------------------------
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

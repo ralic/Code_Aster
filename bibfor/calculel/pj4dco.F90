@@ -33,7 +33,6 @@ subroutine pj4dco(mocle, moa1, moa2, nbma1, lima1,&
     character(len=*) :: mocle, alarm2
     integer :: nbma1, lima1(*), nbno2, lino2(*), ino2m
 ! ----------------------------------------------------------------------
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

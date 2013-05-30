@@ -33,7 +33,6 @@ subroutine aceinc(noma, nomo, nbmcf, mclf, ntyele,&
     character(len=8) :: noma, nomo
     character(len=16) :: mclf(*)
 ! ----------------------------------------------------------------------
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

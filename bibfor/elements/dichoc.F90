@@ -17,7 +17,6 @@ subroutine dichoc(nbt, neq, nno, nc, icodma,&
     real(kind=8) :: klv(nbt), duly, xg(6), pgl(3, 3)
     real(kind=8) :: varmo(8), varpl(8), force(3)
 ! ----------------------------------------------------------------------
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

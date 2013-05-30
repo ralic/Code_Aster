@@ -27,7 +27,6 @@ subroutine racotu(iprno, lonlis, klisno, noepou, noma,&
     character(len=14) :: numddl
     character(len=19) :: ligrel, lisrel
     real(kind=8) :: coorig(3)
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

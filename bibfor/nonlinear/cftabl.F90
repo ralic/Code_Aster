@@ -2,7 +2,6 @@ subroutine cftabl(indic, nbliac, ajliai, spliai, llf,&
                   llf1, llf2, resoco, typope, posit,&
                   iliai, typlia)
 !
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

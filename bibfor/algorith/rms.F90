@@ -5,7 +5,6 @@ subroutine rms(imatr, vect1, long1, vect2, long2,&
     integer :: imatr, long1, long2, nbpts, nfcod
     real(kind=8) :: vect1(long1), vect2(long2)
 !     ------------------------------------------------------------------
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

@@ -15,7 +15,6 @@ subroutine tbacce(nomta, numeli, para, mode, vi,&
     complex(kind=8) :: vc
     character(len=*) :: nomta, para, mode, vk
 ! ----------------------------------------------------------------------
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! person_in_charge: Christophe-mmn.durand at edf.fr
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG

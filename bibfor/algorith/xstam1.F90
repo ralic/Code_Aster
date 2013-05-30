@@ -2,7 +2,6 @@ subroutine xstam1(nomo, noma, nbma, nmafis, mafis,&
                   stano, mafon, maen1, maen2, maen3,&
                   nmafon, nmaen1, nmaen2, nmaen3)
 !
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

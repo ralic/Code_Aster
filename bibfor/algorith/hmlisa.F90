@@ -9,7 +9,6 @@ subroutine hmlisa(perman, yachai, option, meca, thmc,&
                   biot, rinstp)
 !
 ! ======================================================================
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! person_in_charge: sylvie.granet at edf.fr
 ! ======================================================================

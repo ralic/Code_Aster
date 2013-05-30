@@ -4,7 +4,6 @@ subroutine lc0026(fami, kpg, ksp, ndim, imate,&
                   sigp, vip, tampon, typmod, icomp,&
                   nvi, dsidep, codret)
 ! TOLE CRP_21
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

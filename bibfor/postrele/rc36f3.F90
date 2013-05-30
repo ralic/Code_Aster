@@ -3,7 +3,6 @@ subroutine rc36f3(nbsigr, nocc, saltij, nupass)
     integer :: nbsigr, nocc(*), nupass
     real(kind=8) :: saltij(*)
 !     ------------------------------------------------------------------
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2008  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

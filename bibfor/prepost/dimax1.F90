@@ -6,7 +6,6 @@ subroutine dimax1(jvec1, jvec2, nbp1, nbp2, dismax,&
     include 'asterfort/jemarq.h'
     integer :: jvec1, jvec2, nbp1, nbp2
     real(kind=8) :: dismax, cu1max, cv1max, cu2max, cv2max
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

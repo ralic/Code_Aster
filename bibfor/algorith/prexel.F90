@@ -25,7 +25,6 @@ subroutine prexel(champ, ioc, mamax, nomax, ispmax,&
     character(len=8) :: maamax, noamax, cmamax, maamin, noamin, cmamin
     character(len=*) :: champ
 ! ----------------------------------------------------------------------
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

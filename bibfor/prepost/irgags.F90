@@ -8,7 +8,6 @@ subroutine irgags(ncmpmx, nomcmp, nomsym, nbchs, nomchs,&
     integer :: ncmpmx, nbchs, nbcmps(*), ipcmps(*)
     character(len=*) :: nomcmp(*), nomsym, nomchs(*), nomgds(*)
 !
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

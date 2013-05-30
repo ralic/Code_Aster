@@ -13,7 +13,6 @@ subroutine recupe(noma, ndim, nk1d, lrev, matrev,&
     real(kind=8) :: lrev, deklag, prodef, londef
     character(len=8) :: noma, matrev, oridef
 ! ======================================================================
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

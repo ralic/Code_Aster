@@ -21,7 +21,6 @@ subroutine ecla3d(nomte, elrefa, fapg, npg, npoini,&
     character(len=16) :: nomte
     character(len=8) :: elrefa, fapg
 ! ---------------------------------------------------------------------
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

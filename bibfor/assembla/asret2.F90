@@ -9,7 +9,6 @@ subroutine asret2(lmasym, jtmp2, lgtmp2, nbterm, jsmhc,&
     integer :: ideb, ifin, imil
     integer :: nbi1, ti1(nbi1), ti2(nbi1)
 ! -----------------------------------------------------------------
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

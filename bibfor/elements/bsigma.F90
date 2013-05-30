@@ -3,8 +3,6 @@ subroutine bsigma(ip, xl, phiy, phiz, b,&
     implicit none
     integer :: ip, intpol
     real(kind=8) :: xl, phiy, phiz, b(4, 14)
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

@@ -3,7 +3,6 @@ subroutine connor(melflu, typflu, freq, base, nuor,&
                   vite, rho, abscur)
 !
     implicit none
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! TOLE CRS_1404
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG

@@ -7,7 +7,6 @@ subroutine ptfop1(itype, coef1, coef2, xl, rad,&
     real(kind=8) :: coef1, coef2, xl, rad, angs2, fe(12), qq(12)
     logical :: global
 !     ------------------------------------------------------------------
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

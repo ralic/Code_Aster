@@ -3,7 +3,6 @@ subroutine ceps33(lambda, deuxmu, alfmc, gmt, gmc,&
                   de33d2, ksi2d, dksi1, dksi2, cof1,&
                   q2d, emp, cof2, dq2d)
 !
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

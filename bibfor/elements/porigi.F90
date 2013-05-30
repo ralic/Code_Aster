@@ -11,7 +11,6 @@ subroutine porigi(nomte, e, xnu, klv)
     real(kind=8) :: e, xnu, klv(*)
 ! TOLE CRP_6
 !     ------------------------------------------------------------------
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

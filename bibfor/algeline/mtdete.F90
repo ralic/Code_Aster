@@ -17,7 +17,6 @@ subroutine mtdete(option, method, lmat, mantis, expo,&
     complex(kind=8) :: cmod
     character(len=24) :: method
 !     ------------------------------------------------------------------
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

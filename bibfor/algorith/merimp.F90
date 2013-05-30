@@ -2,7 +2,6 @@ subroutine merimp(modele, carele, mate, comref, compor,&
                   carcri, iterat, sddyna, valinc, solalg,&
                   caco3d, nbin, lpain, lchin)
 !
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

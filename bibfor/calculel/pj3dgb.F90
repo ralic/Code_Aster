@@ -8,7 +8,6 @@ subroutine pj3dgb(ino2, geom2, geom1, tetr4, ndec,&
     integer :: ino2, p1, q1, r1, p2, q2, r2, ndec
     integer :: btdi(*), btnb(*), btlc(*), btco(*), tetr4(*)
 ! ----------------------------------------------------------------------
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

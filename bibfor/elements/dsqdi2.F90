@@ -14,7 +14,6 @@ subroutine dsqdi2(xyzl, df, dci, dmf, dfc,&
     include 'asterfort/mgauss.h'
     real(kind=8) :: xyzl(3, *), df(3, 3), dmc(3, 2), dfc(3, 2), dci(2, 2)
     real(kind=8) :: dmf(3, 3), an(4, 12), am(4, 8)
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

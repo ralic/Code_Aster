@@ -1,7 +1,6 @@
 subroutine nmcb13(eps, sig, esec, e, dd,&
                   d, beta, a, b, y,&
                   y00, z, crit)
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

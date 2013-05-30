@@ -9,7 +9,6 @@ subroutine xpocox(nbmac, ima, inmtot, nbcmpc, jresd1,&
     integer :: nbmac, ima, inmtot, jresd1, jresv1, jresl1, nbcmpc
     integer :: jresd2, jresv2, jresl2
 !
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

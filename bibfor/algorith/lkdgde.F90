@@ -17,7 +17,6 @@ subroutine lkdgde(val, vintr, dt, seuive, ucrim,&
     real(kind=8) :: mater(nbmat, 2), vinm(7), depsv(6), dgamv
     real(kind=8) :: dt
 ! =================================================================
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

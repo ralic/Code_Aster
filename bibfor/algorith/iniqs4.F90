@@ -8,7 +8,6 @@ subroutine iniqs4(nno, sdfde, sdfdk, poipg, coopg)
     integer :: nno
     real(kind=8) :: sdfde(4, 4), sdfdk(4, 4), coopg(8), poipg(4)
 !
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

@@ -8,7 +8,6 @@ subroutine chgrep(type, pgl1, pgl2, matl, matg)
     character(len=2) :: type
     real(kind=8) :: pgl1(3, 3), pgl2(3, 3), matl(*), matg(*)
 !     ------------------------------------------------------------------
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

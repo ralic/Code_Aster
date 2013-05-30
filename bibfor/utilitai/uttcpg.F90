@@ -5,7 +5,6 @@ subroutine uttcpg(action, typimp)
     include 'asterfort/uttcpl.h'
     include 'asterfort/uttcpu.h'
     character(len=*) :: action, typimp
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

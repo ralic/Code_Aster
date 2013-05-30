@@ -15,7 +15,6 @@ subroutine rsutn2(resu, nomcha, motcle, iocc, objveu,&
     integer :: iocc, nbordr
     character(len=*) :: resu, nomcha, motcle, objveu
 !     ------------------------------------------------------------------
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

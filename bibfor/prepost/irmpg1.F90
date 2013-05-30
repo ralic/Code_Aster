@@ -2,7 +2,6 @@ subroutine irmpg1(nofimd, nomfpg, nbnoto, nbrepg, nbsp,&
                   ndim, typgeo, refcoo, gscoo, wg,&
                   raux1, raux2, raux3, nolopg, nomasu,&
                   codret)
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

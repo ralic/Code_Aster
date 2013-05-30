@@ -13,7 +13,6 @@ subroutine rsutch(nomsd, nomsy, iordr, nomcha, lverif)
     character(len=*) :: nomsd, nomsy, nomcha
     logical :: lverif
 ! ----------------------------------------------------------------------
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

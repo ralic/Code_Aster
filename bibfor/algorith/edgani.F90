@@ -3,7 +3,6 @@ subroutine edgani(dim, y, pm, dvsitr, eqsitr,&
                   g, maxg, dgdy)
     implicit none
 !
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! TOLE CRS_1404
 !
     include 'asterfort/edgequ.h'

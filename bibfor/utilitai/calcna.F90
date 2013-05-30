@@ -18,7 +18,6 @@ subroutine calcna(nomfin, nomfon, nbvalp, valep, noparp,&
     real(kind=8) :: valep(*), valef(*)
     character(len=19) :: nomfin, nomfon
     character(len=24) :: noparp, noparf
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

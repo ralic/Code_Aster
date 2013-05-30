@@ -6,7 +6,6 @@ subroutine pj6da2(ino2, geom2, i, geom1, seg2,&
     real(kind=8) :: cobary(2), geom1(*), geom2(*), d2, long
     integer :: ino2, i, seg2(*)
 ! ----------------------------------------------------------------------
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

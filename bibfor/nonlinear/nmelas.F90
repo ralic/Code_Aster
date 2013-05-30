@@ -2,8 +2,6 @@ subroutine nmelas(fami, kpg, ksp, ndim, typmod,&
                   imate, deps, sigm, option, sigp,&
                   vip, dsidep, iret)
 ! ----------------------------------------------------------------------
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! person_in_charge: jean-michel.proix at edf.fr
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG

@@ -9,7 +9,6 @@ subroutine te0466(option, nomte)
     include 'asterfort/u2mesk.h'
     character(len=16) :: option, nomte
 ! =====================================================================
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! =====================================================================
 ! person_in_charge: sylvie.granet at edf.fr
 ! ======================================================================

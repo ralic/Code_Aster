@@ -7,7 +7,6 @@ subroutine caethm(nomte, axi, perman, vf, typvf,&
                   ivf, idfde, ipoid2, ivf2, idfde2,&
                   npi2, jgano)
 ! ======================================================================
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! person_in_charge: sylvie.granet at edf.fr
 ! ======================================================================

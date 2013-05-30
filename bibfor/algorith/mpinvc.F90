@@ -1,7 +1,6 @@
 subroutine mpinvc(nbmesu, nbmode, nbabs, phi, cmesu,&
                   coef, xabs, lfonct, ceta, cetap,&
                   ceta2p)
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

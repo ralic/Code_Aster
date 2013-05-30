@@ -9,7 +9,6 @@ function lkbpri(val, vin, nbmat, mater, para,&
     integer :: val, nbmat
     real(kind=8) :: vin(7), mater(nbmat, 2), para(3), invar, s(6), lkbpri
 ! =====================================================================
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

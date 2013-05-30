@@ -4,7 +4,6 @@ subroutine lcmmdc(coeft, ifa, nmat, nbcomm, alphap,&
     integer :: ifa, nmat, nbcomm(nmat, 3), is
     real(kind=8) :: coeft(*), alphap(12), ceff, dcdals
 ! ----------------------------------------------------------------------
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

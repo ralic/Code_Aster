@@ -6,7 +6,6 @@ subroutine xcninv(nnotot, nse, nnop, nno, jcnset,&
     integer :: nnotot, nse, nnop, nno, jcnset
     integer :: cninv(nnotot, nse+1)
 ! ----------------------------------------------------------------------
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

@@ -22,7 +22,6 @@ subroutine rcevol(typtab, nommat, symax, nbopt, option)
     real(kind=8) :: symax
     character(len=8) :: nommat
     character(len=16) :: typtab, option(*)
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

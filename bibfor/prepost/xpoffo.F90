@@ -17,7 +17,6 @@ subroutine xpoffo(ndim, ndime, elrefp, nnop, igeom,&
     real(kind=8) :: co(ndim), ff(nnop)
     character(len=8) :: elrefp
 !
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! TOLE CRS_1404
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG

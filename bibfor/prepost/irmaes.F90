@@ -21,7 +21,6 @@ subroutine irmaes(idfimd, nomaas, nomamd, nbimpr, caimpi,&
     integer :: nbimpr, caimpi(10, nbimpr), modnum(ntymax)
     integer :: nnotyp(*), nuanom(ntymax, *)
     integer :: idfimd, nvtyge
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

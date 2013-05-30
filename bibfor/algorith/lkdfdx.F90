@@ -9,7 +9,6 @@ subroutine lkdfdx(nbmat, mater, ucrip, invar, s,&
     real(kind=8) :: ucrip, invar, s(6), paraep(3), varpl(4), derpar(3)
     real(kind=8) :: dfdxip
 ! ====================================================================
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

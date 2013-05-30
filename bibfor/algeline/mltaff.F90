@@ -1,6 +1,5 @@
 subroutine mltaff(n, ncol, adper, matper, matfi,&
                   local, p)
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! person_in_charge: olivier.boiteau at edf.fr
 !     TOLE CRP_4
 ! ======================================================================

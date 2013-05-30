@@ -1,5 +1,4 @@
 subroutine mltpre(mat19, renumz)
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! person_in_charge: olivier.boiteau at edf.fr
 ! TOLE CRP_20
 ! ======================================================================

@@ -3,7 +3,6 @@ subroutine num2k8(nomgd, tglok8, tlock8, nblk8, tind)
     integer :: nblk8, tind(*)
     character(len=8) :: nomgd, tglok8(*), tlock8(*)
 ! ----------------------------------------------------------------------
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

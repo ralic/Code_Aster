@@ -6,7 +6,6 @@ subroutine guide1(rcarte, d, thet, rayo)
     real(kind=8) :: theta, pas, alpha1, alpha2, rcarte, d, pi, rho, rad
     real(kind=8) :: thet(801), rayo(801)
 !-----------------------------------------------------------------------
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

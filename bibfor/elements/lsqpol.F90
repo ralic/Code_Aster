@@ -1,8 +1,6 @@
 subroutine lsqpol(ordre, e1, npt, xx, yy,&
                   ordok, poly, sigma)
     implicit none
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! TOLE CRS_1404
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2010  EDF R&D                  WWW.CODE-ASTER.ORG

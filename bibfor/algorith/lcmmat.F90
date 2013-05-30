@@ -4,7 +4,6 @@ subroutine lcmmat(fami, kpg, ksp, comp, mod,&
                   ndi, nr, nvi, hsr, nfs,&
                   nsg, toutms, vind, impexp)
     implicit none
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! person_in_charge: jean-michel.proix at edf.fr
 ! TOLE CRP_21 CRS_1404
 ! ======================================================================

@@ -14,7 +14,6 @@ subroutine wpermo(lmasse, lraide, lamor, nbprop, vecp,&
     complex(kind=8) :: vecp(*)
     real(kind=8) :: fr(*), am(*), omecor, ernorm(*)
 !     ------------------------------------------------------------------
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

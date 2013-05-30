@@ -14,7 +14,6 @@ subroutine dgseui(em, num, ef, nuf, eb,&
 ! PARAMETRES SORTANTS
     real(kind=8) :: syt, dxd, syf, drd, pelast, pelasf
 !
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

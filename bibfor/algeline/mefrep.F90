@@ -13,7 +13,6 @@ subroutine mefrep(nbz, nbmod, nbcyl, nbgrp, numgrp,&
     real(kind=8) :: z(*), freq0(*), rho(*), visc(*), rint(*), phix(*), phiy(*)
     real(kind=8) :: dcent(*), matma(*)
 !-----------------------------------------------------------------------
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

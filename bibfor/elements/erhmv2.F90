@@ -8,7 +8,6 @@ subroutine erhmv2(axi, perman, deltat, dimdep, dimdef,&
                   yamec, addeme, yap1, addep1, yap2,&
                   addep2, yate, addete, tm2h1v)
 !
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

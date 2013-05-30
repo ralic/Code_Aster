@@ -8,7 +8,6 @@ subroutine ndcent(igeom, lsn, x, xlsn)
     integer :: igeom
     real(kind=8) :: x(3), lsn(8), xlsn
 !
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

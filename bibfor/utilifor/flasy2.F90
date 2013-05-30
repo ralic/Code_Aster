@@ -3,7 +3,6 @@ subroutine flasy2(ltranl, ltranr, isgn, n1, n2,&
                   ldb, scale, x, ldx, xnorm,&
                   info)
 ! ----------------------------------------------------------------------
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! COPYRIGHT (C) LAPACK
 ! COPYRIGHT (C) 2007 - 2013  EDF R&D                WWW.CODE-ASTER.ORG

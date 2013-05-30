@@ -18,7 +18,6 @@ subroutine pacoa2(lisi1z, lisi2z, lonli1, lonli2, noma1z,&
     include 'asterfort/wkvect.h'
     character(len=*) :: lisi1z, lisi2z, noma1z, noma2z, liso1z, liso2z
 !---------------------------------------------------------------------
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

@@ -11,7 +11,6 @@ subroutine dxbmat(nomte, cara, xyzl, pgl, igau,&
     integer :: igau
     real(kind=8) :: xyzl(3, 1), pgl(3, 1), bmat(8, 1), jacgau, cara(*)
     character(len=16) :: nomte
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

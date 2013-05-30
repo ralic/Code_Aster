@@ -2,7 +2,6 @@ subroutine calgf(ndim, nno, axi, npg, geomi,&
                  g, iw, vff, idff, deplm,&
                  deplt, grand, alpha, r, w,&
                  dff, fm, fmp, fma)
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

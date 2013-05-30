@@ -2,7 +2,6 @@ subroutine i2isgc(epsi, xa, ya, xb, yb,&
                   x1, y1, x2, y2, x3,&
                   y3, npi, s1, s2, r1,&
                   r2, eli)
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

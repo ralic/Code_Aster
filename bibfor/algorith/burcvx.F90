@@ -1,7 +1,6 @@
 subroutine burcvx(mod, nmat, materd, materf, timed,&
                   timef, nvi, vind, nr, sigd,&
                   deps, yd, yf, toler, seuil)
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

@@ -16,7 +16,6 @@ subroutine ccliop(type, option, nobase, noliop, nopout)
     character(len=8) :: nobase
     character(len=16) :: option
     character(len=24) :: noliop
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

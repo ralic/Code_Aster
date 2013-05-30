@@ -17,7 +17,6 @@ subroutine xnewto(elp, name, num, nno, ndim,&
     character(len=6) :: name
     character(len=8) :: elp
 !
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! TOLE CRS_1404
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG

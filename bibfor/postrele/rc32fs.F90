@@ -5,7 +5,6 @@ subroutine rc32fs(nbsigr, nocc, situ, fuijs, fuij,&
     integer :: nbsigr, nocc(*), situ(*), ns, nscy
     real(kind=8) :: fuijs(*), fuij(*), fuse, ug
 !     ------------------------------------------------------------------
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

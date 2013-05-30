@@ -8,7 +8,6 @@ subroutine te0472(option, nomte)
     include 'asterfort/vff2dn.h'
     character(len=16) :: option, nomte
 ! ======================================================================
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! person_in_charge: sylvie.granet at edf.fr
 ! ======================================================================

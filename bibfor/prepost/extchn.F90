@@ -34,7 +34,6 @@ subroutine extchn(nchmno, nnoeud, numnd, ncmp, nbn,&
     character(len=19) :: nchmno, nsschn
     character(len=*) :: mcf
 !***********************************************************************
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

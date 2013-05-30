@@ -10,7 +10,6 @@ subroutine pjxxch(correz, ch1z, ch2z, tycha2, prfchz,&
     include 'asterfort/pjefch.h'
     include 'asterfort/pjngch.h'
     character(len=*) :: correz, ch1z, ch2z, prfchz, ligrez
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

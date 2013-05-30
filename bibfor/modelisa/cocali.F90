@@ -11,7 +11,6 @@ subroutine cocali(lis1z, lis2z, typz)
     include 'asterfort/wkvect.h'
     character(len=*) :: lis1z, lis2z, typz
 ! ---------------------------------------------------------------------
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

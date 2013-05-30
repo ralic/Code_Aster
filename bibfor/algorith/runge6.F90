@@ -5,7 +5,6 @@ subroutine runge6(ipif, deltat, tpgp, tpgm, hpgm,&
     include 'asterfort/fointa.h'
     integer :: ipif
     real(kind=8) :: deltat, tpgp, tpgm, hpgm, hpgp, err
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

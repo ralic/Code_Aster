@@ -7,7 +7,6 @@ subroutine zmvpy(uplo, n, alpha, a, lda,&
     integer :: n, lda, incx, incy
     complex(kind=8) :: alpha, beta, a(lda, *), x(*), y(*)
     character(len=*) :: uplo
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

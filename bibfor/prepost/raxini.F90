@@ -1,8 +1,6 @@
 subroutine raxini(vsec1, vsec2, vsec3, vsec4, nptsec,&
                   nbordr, umin, umax, vmin, vmax,&
                   axeini)
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

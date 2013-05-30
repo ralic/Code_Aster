@@ -19,7 +19,6 @@ subroutine ccchel(option, modele, resuin, resuou, numord,&
     character(len=16) :: option, typesd
     character(len=19) :: lischa
     character(len=24) :: mateco, ligrel, resout, suropt
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

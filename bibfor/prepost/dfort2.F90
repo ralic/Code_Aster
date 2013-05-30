@@ -1,7 +1,6 @@
 subroutine dfort2(nsommx, icnc, noeu1, tbelzo, nbelt,&
                   tbnozo, nbnozo, nbnoe, xy, aire,&
                   energi, pe)
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

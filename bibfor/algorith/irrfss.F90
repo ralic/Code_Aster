@@ -8,7 +8,6 @@ subroutine irrfss(sig, ddfdds)
     include 'asterfort/lcprsv.h'
     include 'asterfort/lcprte.h'
     real(kind=8) :: sig(6), ddfdds(6, 6)
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

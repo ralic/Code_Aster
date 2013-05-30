@@ -10,7 +10,6 @@ subroutine lkdfds(nbmat, mater, s, para, var,&
     real(kind=8) :: s(6), para(3), var(4), ucri
     real(kind=8) :: ds2hds(6), dfdsig(6)
 ! =================================================================
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

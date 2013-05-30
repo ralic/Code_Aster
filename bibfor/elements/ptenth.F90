@@ -6,7 +6,6 @@ subroutine ptenth(ul, xl, f, n, mat,&
     integer :: itype, n
     real(kind=8) :: ul(12), f, mat(n, n), enerth
 !     ------------------------------------------------------------------
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

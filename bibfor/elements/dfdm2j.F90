@@ -3,7 +3,6 @@ subroutine dfdm2j(nno, ipg, idfde, coor, jac)
     include 'jeveux.h'
     integer :: nno, ipg, idfde
     real(kind=8) :: coor(1), jac
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

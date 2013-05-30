@@ -13,7 +13,6 @@ subroutine lcloca(coeft, e, nu, nmat, nbcomm,&
     character(len=16) :: loca
     real(kind=8) :: mu, dev(6), norme, evpcum, granb(6)
     integer :: ievpg, i
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

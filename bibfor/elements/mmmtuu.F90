@@ -5,7 +5,6 @@ subroutine mmmtuu(phasep, lnewtg, ndim, nne, nnm,&
                   h11t1n, h12t2n, h21t1n, h22t2n, matree,&
                   matrmm, matrem, matrme)
 !
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

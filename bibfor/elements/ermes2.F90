@@ -7,7 +7,6 @@ subroutine ermes2(ino, typema, typmav, iref1, ivois,&
     real(kind=8) :: dsg11(3), dsg22(3), dsg12(3)
     character(len=8) :: typema, typmav
 ! ----------------------------------------------------------------------
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

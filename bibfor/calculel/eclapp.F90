@@ -6,7 +6,6 @@ subroutine eclapp(ndim, nno2, lonmin, coor)
     include 'blas/dnrm2.h'
     integer :: ndim, nno2
     real(kind=8) :: coor(ndim, nno2), lonmin
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

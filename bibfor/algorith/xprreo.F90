@@ -31,7 +31,6 @@ subroutine xprreo(noma, fiss, noesom, noresi, cnsln,&
     character(len=19) :: cnsln, cnslt, cnsgln, cnsglt, noresi, noesom, isozro
     character(len=19) :: cnxinv, nodtor, eletor, liggrd
 !
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

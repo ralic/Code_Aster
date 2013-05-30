@@ -20,7 +20,6 @@ subroutine dicorn(irmetg, nbt, neq, iterat, icodma,&
     real(kind=8) :: sim(neq), varim(7)
     real(kind=8) :: klv(nbt), klv2(nbt), varip(7)
 ! ----------------------------------------------------------------------
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

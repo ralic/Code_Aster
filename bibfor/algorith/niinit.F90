@@ -1,7 +1,6 @@
 subroutine niinit(nomte, typmod, ndim, nno1, nno2,&
                   nno3, nno4, vu, vg, vp,&
                   vpi)
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

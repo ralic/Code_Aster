@@ -2,7 +2,6 @@ subroutine nufnpd(ndim, nno1, nno2, npg, iw,&
                   vff1, vff2, idff1, vu, vp,&
                   typmod, mate, compor, geomi, sig,&
                   ddl, mini, vect)
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

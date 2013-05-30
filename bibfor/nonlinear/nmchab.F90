@@ -2,9 +2,11 @@ subroutine nmchab(fami, kpg, ksp, ndim, typmod,&
                   imate, compor, crit, instam, instap,&
                   deps, sigm, vim, option, sigp,&
                   vip, dsidep, iret)
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
-! ======================================================================
-! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+! person_in_charge: jean-michel.proix at edf.fr
+!.======================================================================
+!
+! COPYRIGHT (C) 1991 - 2013  EDF R&D                WWW.CODE-ASTER.ORG
+!
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -13,14 +15,12 @@ subroutine nmchab(fami, kpg, ksp, ndim, typmod,&
 ! THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
 ! WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
 ! MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
-! GENERAL PUBLIC LICENSE FOR MORE DKVIILS.
+! GENERAL PUBLIC LICENSE FOR MORE DETAILS.
 !
 ! YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
-!    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
-! ======================================================================
-! person_in_charge: jean-michel.proix at edf.fr
-!.======================================================================
+! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
+!
     implicit none
 !
 !     INTEGRATION LOCALE DES LOIS DE COMPORTEMENT DE CHABOCHE
@@ -94,7 +94,6 @@ subroutine nmchab(fami, kpg, ksp, ndim, typmod,&
      &    beta1,beta2,ndimsi,nbvar,visc,memo,idelta
     integer :: ndimsi, i, niter, visc, memo, idelta
     data    kron/1.d0,1.d0,1.d0,0.d0,0.d0,0.d0/
-!=======================================================================
 !
     iret=0
     call nmcham(fami, kpg, ksp, imate, compor,&
@@ -134,7 +133,6 @@ subroutine nmchab(fami, kpg, ksp, ndim, typmod,&
     n2=1.d0
 !
 ! --- INITIALISATIONS :
-!     ===============
 !
     ndimsi = 2*ndim
     dp = 0.d0
@@ -163,7 +161,6 @@ subroutine nmchab(fami, kpg, ksp, ndim, typmod,&
     cm = cinf * (un + (k-un)*exp(-w*pm))
     c2m = c2inf * (un + (k-un)*exp(-w*pm))
 !
-!     ========================================
     call dcopy(ndimsi, vim(3), 1, alfam, 1)
     call dscal(ndimsi-3, rac2, alfam(4), 1)
     if (nbvar .eq. 2) then
@@ -174,7 +171,6 @@ subroutine nmchab(fami, kpg, ksp, ndim, typmod,&
     endif
 !
 ! --- CALCUL DE DEPSMO ET DEPSDV :
-!     ==========================
     depsmo = 0.d0
     call dcopy(ndimsi, deps, 1, depsth, 1)
     call daxpy(3, -coef, kron, 1, depsth,&
@@ -194,7 +190,6 @@ subroutine nmchab(fami, kpg, ksp, ndim, typmod,&
     sigmmo=trace(3,sigmp)/3.d0
 !
 ! --- CALCUL DU SEUIL :
-!     ================================================
     sieleq = 0.d0
     do 90 i = 1, ndimsi
         sigmdv(i) = sigmp(i)- sigmmo*kron(i)
@@ -206,7 +201,6 @@ subroutine nmchab(fami, kpg, ksp, ndim, typmod,&
     seuil = sieleq - rpm
 !
 ! --- CALCUL DE SIGP,VIP
-!     ===============================
     if (option(1:9) .eq. 'RAPH_MECA' .or. option(1:9) .eq. 'FULL_MECA') then
 !
 !       CALCUL DE DP :
@@ -269,7 +263,6 @@ subroutine nmchab(fami, kpg, ksp, ndim, typmod,&
 !
     endif
 !
-!     ========================================
     if (option(1:9) .eq. 'RAPH_MECA' .or. option(1:9) .eq. 'FULL_MECA') then
         vip(1)=pp
         vip(2)=niter

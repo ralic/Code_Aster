@@ -1,6 +1,5 @@
 subroutine pjefmi(elrefp, nnop, coor, xg, ndim,&
                   x1, x2, lext, xmi)
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

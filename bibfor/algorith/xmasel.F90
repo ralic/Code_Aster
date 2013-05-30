@@ -13,7 +13,6 @@ subroutine xmasel(nnop, ddlh, nfe, ddlc, igeom,&
     real(kind=8) :: pintt(3*11), lsn(nnop)
     real(kind=8) :: lst(nnop), matuu(*), basloc(*)
 ! ----------------------------------------------------------------------
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

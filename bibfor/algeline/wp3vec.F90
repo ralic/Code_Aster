@@ -19,8 +19,6 @@ subroutine wp3vec(appr, opt, nbfreq, nbvect, neq,&
     complex(kind=8) :: vecp(neq, *), shift, vauc(2*neq, *)
     real(kind=8) :: resufr(mxresf, *), vpr(*), vpi(*), omecor
 !     -----------------------------------------------------------------
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

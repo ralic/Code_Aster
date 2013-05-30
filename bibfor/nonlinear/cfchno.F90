@@ -3,7 +3,6 @@ subroutine cfchno(noma, defico, ndimg, posnoe, typenm,&
                   tau1m, tau2m, tau1e, tau2e, tau1,&
                   tau2)
 !
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

@@ -9,7 +9,6 @@ subroutine calcg(dfds, vecn, g, devg, traceg,&
     include 'blas/ddot.h'
     real(kind=8) :: dfds(6), vecn(6), g(6), devg(6), traceg, devgii
 ! ======================================================================
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

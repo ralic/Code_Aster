@@ -4,7 +4,6 @@ subroutine ortloc(dsidep, i1, j1, r)
     real(kind=8) :: trav(3, 3), xab(3, 3), dsidep(6, 6), r(9)
     integer :: i, j, i1, j1
 !-----------------------------------------------------------------------
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

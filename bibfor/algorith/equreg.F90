@@ -2,7 +2,6 @@ subroutine equreg(imate, option, compor, regula, dimdef,&
                   dimcon, defgep, ndim, contp, r,&
                   drde)
 ! ======================================================================
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! TOLE CRS_1404
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG

@@ -1,7 +1,6 @@
 subroutine pecap2(chgeoz, iy, iz, s, alpha,&
                   xg, yg, temp1z, temp2z, ay,&
                   az, ey, ez, pctx, pcty)
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

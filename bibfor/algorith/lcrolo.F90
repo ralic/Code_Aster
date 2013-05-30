@@ -2,7 +2,6 @@ subroutine lcrolo(fami, kpg, ksp, mate, option,&
                   carcri, fm, df, vim, vip,&
                   taup, dtaudf, iret)
 !
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

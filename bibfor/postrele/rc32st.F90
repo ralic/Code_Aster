@@ -4,7 +4,6 @@ subroutine rc32st(sijm, nbinst, sth, sn)
     integer :: nbinst
     real(kind=8) :: sijm(6), sth(6*nbinst), sn
 !     ------------------------------------------------------------------
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

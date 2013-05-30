@@ -8,7 +8,6 @@ subroutine t3gb(carat3, xyzl, bmat)
     include 'asterfort/t3gbc.h'
     real(kind=8) :: xyzl(3, 1), carat3(*), bmat(6, 1)
 !
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

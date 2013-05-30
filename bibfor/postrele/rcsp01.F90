@@ -9,7 +9,6 @@ subroutine rcsp01(nbm, adrm, ipt, sp3, sp4,&
     integer :: nbm, adrm(*), ipt, nbth, iocs
     real(kind=8) :: sp3, sp4, sp5, alphaa, alphab, sp6
 !     ------------------------------------------------------------------
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

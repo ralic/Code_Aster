@@ -5,7 +5,6 @@ subroutine crgdm(imate, compor, lambda, deuxmu, lamf,&
                  tgram, alph)
     implicit none
 ! person_in_charge: sebastien.fayolle at edf.fr
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

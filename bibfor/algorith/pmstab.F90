@@ -3,7 +3,6 @@ subroutine pmstab(sigm, sigp, epsm, deps, nbvari,&
                   iter, nbpar, nompar, table, vr,&
                   igrad, valimp, imptgt, dsidep, nomvi,&
                   nbvita)
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

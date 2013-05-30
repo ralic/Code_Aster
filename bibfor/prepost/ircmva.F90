@@ -2,7 +2,6 @@ subroutine ircmva(numcmp, ncmpve, ncmprf, nvalec, nbpg,&
                   nbsp, adsv, adsd, adsl, adsk,&
                   partie, tymast, modnum, nuanom, typech,&
                   val, profas, ideb, ifin, codret)
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

@@ -5,7 +5,6 @@ subroutine vpqlts(diag, surdia, neq, vecpro, mxcmp,&
     integer :: neq, mxcmp, mxiter, ier, nitqr
     real(kind=8) :: diag(1), surdia(1), vecpro(mxcmp, 1)
 !     ------------------------------------------------------------------
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

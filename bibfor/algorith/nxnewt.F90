@@ -5,7 +5,6 @@ subroutine nxnewt(modele, mate, carele, charge, infcha,&
                   vhydrp, tmpchi, tmpchf, compor, cnvabt,&
                   cnresi, parcri, parcrr, reasma, testr,&
                   testm)
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

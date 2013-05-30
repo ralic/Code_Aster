@@ -8,7 +8,6 @@ subroutine dgelas(eb, nub, h, b, a,&
     real(kind=8) :: eb, nub, b, a, h
     real(kind=8) :: em, num, ef, nuf
 !
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

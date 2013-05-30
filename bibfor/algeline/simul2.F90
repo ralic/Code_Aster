@@ -25,7 +25,6 @@ subroutine simul2(resu, nomcmd, masse, modsta, nbdir,&
     character(len=*) :: resu, nomcmd, masse, modsta, nomnoe(*)
     character(len=19) :: mass2
 !     ------------------------------------------------------------------
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

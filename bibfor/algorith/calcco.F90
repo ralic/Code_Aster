@@ -11,7 +11,6 @@ subroutine calcco(option, yachai, perman, meca, thmc,&
                   retcom, crit, biot, vihrho, vicphi,&
                   vicpvp, vicsat, rinstp)
 ! ======================================================================
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! person_in_charge: sylvie.granet at edf.fr
 ! ======================================================================

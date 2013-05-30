@@ -2,7 +2,6 @@ subroutine i2typf(epsi, x1, y1, x2, y2,&
                   x3, y3, tm, droi)
     implicit  none
 !
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

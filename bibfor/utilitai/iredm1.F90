@@ -31,7 +31,6 @@ subroutine iredm1(masse, noma, basemo, nbmode, nbmods,&
     real(kind=8) :: mass(*), rigi(*), smass(*), srigi(*), samor(*), cmass(*)
     real(kind=8) :: crigi(*), camor(*), amored(*), freq(*)
 !     ------------------------------------------------------------------
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

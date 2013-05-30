@@ -9,7 +9,6 @@ subroutine erglhm(perman, jceld, iavale, iord, ligrel,&
     integer :: jceld, iavale, iord, longt, nbgr
     character(len=19) :: ligrel, resuc1
     logical :: perman
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

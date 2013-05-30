@@ -16,7 +16,6 @@ subroutine xmase2(elrefp, ndim, coorse, igeom, he,&
     real(kind=8) :: basloc(6*nnop), he, coorse(*)
     real(kind=8) :: lsn(nnop), lst(nnop), matuu(*)
 ! ----------------------------------------------------------------------
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

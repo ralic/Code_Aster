@@ -19,7 +19,6 @@ subroutine rslesd(result, nuord, modele, materi, carele,&
     character(len=8) :: result, modele, carele, materi
     character(len=19) :: excit
 ! ----------------------------------------------------------------------
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

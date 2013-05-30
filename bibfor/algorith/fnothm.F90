@@ -7,7 +7,6 @@ subroutine fnothm(fnoevo, deltat, perman, nno, nnos,&
                   dimuel, nmec, np1, np2, ndim,&
                   axi)
 ! ======================================================================
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! person_in_charge: sylvie.granet at edf.fr
 ! ======================================================================

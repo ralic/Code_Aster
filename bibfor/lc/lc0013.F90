@@ -17,7 +17,6 @@ subroutine lc0013(fami, kpg, ksp, ndim, imate,&
     real(kind=8) :: sigm(6), vim(7), sigp(6), vip(7), dsidep(6, 6)
 ! TOLE CRP_21
 ! ======================================================================
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2008  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

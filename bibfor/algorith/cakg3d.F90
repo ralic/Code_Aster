@@ -48,7 +48,6 @@ subroutine cakg3d(option, result, modele, depla, thetai,&
     character(len=24) :: depla, chfond, mate, compor, basloc, courb, chpuls
     logical :: extim, thlagr, glagr, thlag2, pair, lmelas, lmoda, milieu, connex
 !
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

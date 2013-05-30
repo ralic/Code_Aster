@@ -2,7 +2,6 @@ function dqdeps(alpha0, k0, t)
     implicit      none
     real(kind=8) :: alpha0, k0, t, dqdeps
 ! ======================================================================
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

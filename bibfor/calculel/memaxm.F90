@@ -19,7 +19,6 @@ subroutine memaxm(typmx, champ, nocmp, nbcmp, lcmp,&
     character(len=*) :: champ, nocmp, lcmp(*)
     integer :: nbcmp, nbmail, numail(*)
     real(kind=8) :: vr(*)
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

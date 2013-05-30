@@ -16,7 +16,6 @@ subroutine i3iqps(epsi, k, f, desc, desctm,&
     real(kind=8) :: epsi, sgt(*), coordo(*)
     logical :: fink
 !     ------------------------------------------------------------------
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! TOLE CRP_20
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG

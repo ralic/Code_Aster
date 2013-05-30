@@ -20,7 +20,6 @@ subroutine nbnlma(noma, nbm, limanu, nbtyp, lityp,&
     integer :: limanu(*), nbm, nbn, nbtyp
     character(len=8) :: lityp(*), noma
 !-----------------------------------------------------------------------
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

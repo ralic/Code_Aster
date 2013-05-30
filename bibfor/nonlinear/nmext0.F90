@@ -2,7 +2,6 @@ subroutine nmext0(typcha, nbma, nbno, nbpi, nbspi,&
                   nbcmp, chnoeu, chgaus, chelga, extrga,&
                   extrch)
 !
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

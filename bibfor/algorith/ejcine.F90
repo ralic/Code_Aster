@@ -1,7 +1,6 @@
 subroutine ejcine(ndim, axi, nno1, nno2, vff1,&
                   vff2, wref, dffr2, geom, wg,&
                   kpg, ipg, idf2, rot, b)
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

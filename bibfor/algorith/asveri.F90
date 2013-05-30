@@ -20,7 +20,6 @@ subroutine asveri(knomsy, nbopt, meca, psmo, stat,&
     character(len=*) :: knomsy(*), meca, psmo, stat, nomsup(nbsup, *)
     logical :: tronc, monoap
 !     ------------------------------------------------------------------
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

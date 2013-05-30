@@ -1,6 +1,5 @@
 subroutine dxdmul(lcalct, icou, iniv, t1ve, t2ve,&
                   h, d1i, d2i, x3i, epi)
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

@@ -25,7 +25,6 @@ subroutine ccvepo(modele, resuin, lischa, nbchar, typesd,&
     character(len=16) :: typesd
     character(len=19) :: lischa
     character(len=24) :: suropt, ligrel
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

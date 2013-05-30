@@ -3,7 +3,6 @@ subroutine pj3da4(m, a, b, la, lb,&
     implicit none
     real(kind=8) :: m(3), a(3), b(3), d2, la, lb
 ! ----------------------------------------------------------------------
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

@@ -2,7 +2,6 @@ subroutine gdstag(stoudy, kp, nno, ajacob, en,&
                   enprim, x0k, tetak, qim, qikm1,&
                   qik, x0pg, tetag, tetapg, rotm,&
                   rotkm1, rotk)
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

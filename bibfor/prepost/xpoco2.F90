@@ -2,7 +2,6 @@ subroutine xpoco2(malini, dirno, nbno, dirma, nbma,&
                   cns1, cns2, ces1, ces2, cesvi1,&
                   cesvi2, resuco, comps1, comps2)
 !
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

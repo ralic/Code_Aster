@@ -6,7 +6,6 @@ subroutine vfimat(maxdim, ndim, a, am1)
     real(kind=8) :: a(maxdim, maxdim)
     real(kind=8) :: am1(maxdim, maxdim)
 ! ----------------------------------------------------------------------
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

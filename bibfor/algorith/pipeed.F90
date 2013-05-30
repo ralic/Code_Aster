@@ -3,7 +3,6 @@ subroutine pipeed(nno, npg, ipoids, ivf, idfde,&
                   vim, ddepl, ddepl0, ddepl1, dfdi,&
                   dtau, copilo)
 !
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

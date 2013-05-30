@@ -4,7 +4,6 @@ function dmvpp1(rho11, rho12, phids, ums, bmph,&
     real(kind=8) :: rho11, rho12, phids, ums, bmph, cs, dpvpl, sat, phi, pvp
     real(kind=8) :: dmvpp1
 ! ======================================================================
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

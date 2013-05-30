@@ -7,7 +7,6 @@ subroutine dfdm2d(nno, ipg, ipoids, idfde, coor,&
     include 'asterfort/u2mesk.h'
     integer :: nno, ipg, ipoids, idfde
     real(kind=8) :: coor(1), dfdx(1), dfdy(1), jac
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

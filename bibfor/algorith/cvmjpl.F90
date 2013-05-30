@@ -3,7 +3,6 @@ subroutine cvmjpl(mod, nmat, mater, timed, timef,&
                   vind, nvi, nr, dsde)
     implicit none
 !       ================================================================
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! TOLE CRS_1404
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG

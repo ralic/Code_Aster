@@ -4,7 +4,6 @@ subroutine nttain(modele, mate, carele, charge, infoch,&
                   vtempm, vtempp, vec2nd, chlapm, chlapp,&
                   ci1, ci2, testi)
 !
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

@@ -11,7 +11,6 @@ subroutine xinvac(elp, ndim, tabar, s, ksi)
     real(kind=8) :: s, ksi(ndim), tabar(*)
     character(len=8) :: elp
 !
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! TOLE CRS_1404
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG

@@ -2,7 +2,6 @@ subroutine lcummd(vari, nvari, cmat, nmat, sigm,&
                   nstrs, isph, tdt, hini, hfin,&
                   an, bn, cn, cfps, cfpd)
 !
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

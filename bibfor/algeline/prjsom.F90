@@ -9,7 +9,6 @@ function prjsom(nbmat, mater, invare, invars, b,&
     real(kind=8) :: invare, invars, mater(nbmat, 2), b, siie
     character(len=9) :: type
 ! ======================================================================
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

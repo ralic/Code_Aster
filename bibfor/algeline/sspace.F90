@@ -25,7 +25,6 @@ subroutine sspace(lraid, lmatra, lmass, neq, nbvec,&
     integer :: lprod(neq), itemax, nperm, nitjac, nitbat
     real(kind=8) :: tol, toldyn, valpro(nbvec), vect(neq, nbvec)
     character(len=19) :: solveu
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

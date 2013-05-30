@@ -2,7 +2,6 @@ subroutine nirmtd(ndim, nno1, nno2, nno3, npg,&
                   iw, vff2, vff3, ivf1, idff1,&
                   vu, vg, vp, igeom, mate,&
                   matr)
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

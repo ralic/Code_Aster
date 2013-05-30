@@ -9,7 +9,6 @@ subroutine elrefv(nomte, famil, ndim, nno, nno2,&
     integer :: ndim, nno, nnos, npg, ipoids, ivf, idfde, jgano
     integer :: nno2, ivf2, idfde2, jgano2
 !
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

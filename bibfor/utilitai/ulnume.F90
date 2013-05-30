@@ -6,7 +6,6 @@ function ulnume()
 !              -1 SI AUCUN DE DISPONIBLE
 !     LA RECHERCHE EST LIMITEE A L'INTERVALLE 70-99
 !     ------------------------------------------------------------------
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

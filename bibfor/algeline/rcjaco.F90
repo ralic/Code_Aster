@@ -2,8 +2,6 @@ subroutine rcjaco(ar, br, valpro)
     implicit   none
     include 'asterfort/u2mess.h'
     real(kind=8) :: ar(*), br(*), valpro(3)
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

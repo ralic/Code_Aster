@@ -3,7 +3,6 @@ subroutine xfovol(elrefp, ndim, coorse, igeom, he,&
                   jlst, iforc, itemps, ivectu, fonc,&
                   fono)
 !
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! TOLE CRS_1404
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG

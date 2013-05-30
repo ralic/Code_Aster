@@ -10,7 +10,6 @@ subroutine hmlvga(yachai, option, meca, ther, hydr,&
                   h12, kh, rho11, phi0, pvp0,&
                   sat, retcom, thmc, biot, rinstp)
 ! ======================================================================
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! person_in_charge: sylvie.granet at edf.fr
 ! ======================================================================

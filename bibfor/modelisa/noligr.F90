@@ -18,7 +18,6 @@ subroutine noligr(ligrz, igrel, numel, nb, li,&
     character(len=8) :: typlag
     character(len=19) :: ligr
     integer :: igrel, numel, nb, li(*), code, irepe, inema, nbno(*)
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

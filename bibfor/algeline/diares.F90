@@ -6,7 +6,6 @@ subroutine diares(n, nevec, a, lda, tau,&
     include 'asterfort/zmult.h'
     integer :: n, nevec, lda, ldevec
     complex(kind=8) :: a(lda, *), tau(*), evec(ldevec, *), work(*)
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

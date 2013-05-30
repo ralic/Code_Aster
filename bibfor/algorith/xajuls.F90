@@ -17,7 +17,6 @@ subroutine xajuls(noma, nbma, cnslt, cnsln, jconx1,&
     character(len=8) :: noma
     character(len=19) :: cnslt, cnsln
 !
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

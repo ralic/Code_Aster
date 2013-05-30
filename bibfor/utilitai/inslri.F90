@@ -5,7 +5,6 @@ subroutine inslri(nbx, nbn, lister, listei, valr,&
     integer :: listei(nbx), vali
     real(kind=8) :: lister(nbx), valr
 !
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

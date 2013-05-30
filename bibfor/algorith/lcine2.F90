@@ -5,7 +5,6 @@ function lcine2(d, gm, pm, c, dgamma,&
     real(kind=8) :: d, gm, pm, c, dgamma, alpham, absdga, lcine2, x, alpha
     real(kind=8) :: signe
 ! person_in_charge: jean-michel.proix at edf.fr
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

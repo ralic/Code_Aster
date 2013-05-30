@@ -9,7 +9,6 @@ subroutine hmliga(yachai, option, meca, ther, hydr,&
                   rho11, phi0, sat, retcom, thmc,&
                   crit, biot, rinstp)
 ! ======================================================================
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! person_in_charge: sylvie.granet at edf.fr
 ! ======================================================================

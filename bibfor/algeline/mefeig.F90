@@ -16,7 +16,6 @@ subroutine mefeig(ndim, nbmod, matm, matr, mata,&
     real(kind=8) :: mavr(2*nbmod, 2*nbmod), alfr(2*nbmod), alfi(2*nbmod)
     real(kind=8) :: w(4*nbmod), z(4*nbmod, 2*nbmod)
 ! ----------------------------------------------------------------------
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

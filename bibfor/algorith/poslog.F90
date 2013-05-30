@@ -3,7 +3,6 @@ subroutine poslog(resi, rigi, tn, tp, fm,&
                   dtde, sigm, cplan, fami, mate,&
                   instp, angmas, gn, lamb, logl,&
                   sigp, dsidep, pk2m, pk2, codret)
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

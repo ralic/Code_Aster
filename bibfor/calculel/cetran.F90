@@ -11,7 +11,6 @@ subroutine cetran(lima1, lima2, nbma, chs1, chs2)
     integer :: lima1(*), lima2(*), nbma
     character(len=*) :: chs1, chs2
 ! ----------------------------------------------------------------------
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

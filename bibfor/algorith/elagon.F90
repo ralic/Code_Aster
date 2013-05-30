@@ -3,7 +3,6 @@ subroutine elagon(ndim, imate, crit, sat, biot,&
                   nu, snetm, option, snetp, dsidep,&
                   p1, p2, dp1, dsidp1, dsidp2)
 ! ======================================================================
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

@@ -3,7 +3,6 @@ function nddl(ili, nunoel, nec, idprn1, idprn2)
     integer :: nddl
     include 'jeveux.h'
     integer :: ili, nunoel
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

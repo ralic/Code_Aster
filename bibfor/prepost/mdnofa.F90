@@ -1,6 +1,5 @@
 subroutine mdnofa(numfam, nogrf, nbgf, nbfaex, nofaex,&
                   nomfam)
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! person_in_charge: nicolas.sellenet at edf.fr
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG

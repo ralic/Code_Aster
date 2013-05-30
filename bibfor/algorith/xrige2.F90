@@ -20,7 +20,6 @@ subroutine xrige2(elrefp, elrese, ndim, coorse, igeom,&
     real(kind=8) :: basloc(6*nnop), he, coorse(*)
     real(kind=8) :: lsn(nnop), lst(nnop), sig(48), matuu(*)
 !
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

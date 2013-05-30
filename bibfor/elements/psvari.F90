@@ -5,7 +5,6 @@ subroutine psvari(compor, nbvari, dimens, ipop1, ipop2)
     character(len=16) :: compor
     integer :: ipop1, ipop2, nbvari
 !
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

@@ -6,7 +6,6 @@ subroutine hmderp(yate, yavp, t, r, kh,&
                   dp1pp1, dp2pp1, dtpp1, dp1pp2, dp2pp2,&
                   dtpp2, dp1pt, dp2pt, dtpt)
 ! ======================================================================
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! person_in_charge: sylvie.granet at edf.fr
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG

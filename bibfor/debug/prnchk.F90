@@ -1,7 +1,6 @@
 subroutine prnchk(nbsn, adress, global, fils, frere,&
                   lgsn, lfront, invsup, seq)
     implicit none
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 !     TOLE CRP_4
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG

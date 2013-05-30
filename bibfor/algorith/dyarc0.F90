@@ -25,7 +25,6 @@ subroutine dyarc0(resuz, nbnosy, nbarch, lisarc, nbchex,&
     integer :: nbarch, nbchex, nbnosy
     character(len=*) :: resuz, lisarc, lichex
 ! ----------------------------------------------------------------------
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

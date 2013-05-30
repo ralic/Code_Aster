@@ -4,7 +4,6 @@ subroutine mlnmin(nu, nomp01, nomp02, nomp03, nomp04,&
                   nomp15, nomp16, nomp17, nomp18, nomp19,&
                   nomp20)
 !     ------------------------------------------------------------------
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! person_in_charge: olivier.boiteau at edf.fr
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG

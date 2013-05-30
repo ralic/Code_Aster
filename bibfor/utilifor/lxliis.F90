@@ -42,7 +42,6 @@ subroutine lxliis(chaine, ival, ier)
 !              = 0  PAS D'ERREUR ON A BIEN LU UN ENTIER (IVAL)
 !              = 1  ON A LU AUTRE CHOSE QU'UN ENTIER
 !     ------------------------------------------------------------------
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

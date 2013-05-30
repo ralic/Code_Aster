@@ -11,7 +11,6 @@ subroutine focstc(nomfon, nomres, rval, ival, base)
     character(len=1) :: base
     character(len=*) :: nomfon, nomres
     real(kind=8) :: rval, ival
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

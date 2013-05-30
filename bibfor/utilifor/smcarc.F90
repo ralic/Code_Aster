@@ -10,7 +10,6 @@ subroutine smcarc(nbhist, ftrc, trc, coef, fmod,&
     real(kind=8) :: ctes(11), ckm(6*nbtrc), coef(*), tempe, tpoint
     real(kind=8) :: zin(7), zout(7)
 !......................................................................C
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

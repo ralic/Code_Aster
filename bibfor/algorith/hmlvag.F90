@@ -10,7 +10,6 @@ subroutine hmlvag(yachai, option, meca, ther, hydr,&
                   rho11, phi0, pvp0, sat, retcom,&
                   thmc, crit, biot, rinstp)
 ! ======================================================================
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

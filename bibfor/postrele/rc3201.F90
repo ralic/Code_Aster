@@ -41,7 +41,6 @@ subroutine rc3201(lpmpb, lsn, lsnet, lfatig, lrocht,&
     character(len=4) :: lieu
     character(len=8) :: mater
 !     ------------------------------------------------------------------
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! TOLE CRP_20 CRP_21
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG

@@ -8,7 +8,6 @@ subroutine elraga(elrefz, fapz, ndim, nbpg, coopg,&
     integer :: nbpg, ndim
     real(kind=8) :: coopg(*), poipg(*)
     character(len=*) :: elrefz, fapz
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

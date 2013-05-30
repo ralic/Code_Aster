@@ -3,7 +3,6 @@ subroutine mmgeom(iresog, ndim, nne, nnm, ffe,&
                   tau2, norm, mprojn, mprojt, geome,&
                   geomm, mprt1n, mprt2n, gene11, gene21)
 !
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

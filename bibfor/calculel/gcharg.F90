@@ -30,7 +30,6 @@ subroutine gcharg(modele, nchar, lchar, chvolu, cf1d2d,&
     logical :: fonc, epsi
     real(kind=8) :: time
 ! ----------------------------------------------------------------------
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

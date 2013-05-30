@@ -2,7 +2,6 @@ subroutine lcgldm(epsm, deps, vim, option, sig,&
                   vip, dsidep, lambda, deuxmu, lamf,&
                   deumuf, gmt, gmc, gf, seuil,&
                   alf, alfmc, crit, codret)
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

@@ -17,7 +17,6 @@ subroutine vptabl(tabmod, typevp, fmin, fmax, precdc,&
     integer :: nfreq
     character(len=9) :: typevp
     character(len=19) :: tabmod
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

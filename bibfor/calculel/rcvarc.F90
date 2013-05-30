@@ -1,7 +1,6 @@
 subroutine rcvarc(arret, novrc, poum, fami, kpg,&
                   ksp, valvrc, iret)
     implicit none
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! person_in_charge: jacques.pellet at edf.fr
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG

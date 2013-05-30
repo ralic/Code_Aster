@@ -1,7 +1,6 @@
 subroutine klgcou(nno, nbrddl, pgl1, pgl2, pgl3,&
                   pgl4, k)
     implicit none
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! TOLE CRS_1404
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG

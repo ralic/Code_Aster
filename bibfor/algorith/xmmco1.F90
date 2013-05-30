@@ -10,7 +10,6 @@ subroutine xmmco1(ndim, nno, dsidep, pp, p,&
     real(kind=8) :: ffp(27), jac, nd(3)
     real(kind=8) :: pp(3, 3), p(3, 3), rr
 ! ----------------------------------------------------------------------
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

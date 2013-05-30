@@ -3,7 +3,6 @@ subroutine dsqnib(qsi, eta, caraq4, an, am,&
     implicit  none
     real(kind=8) :: qsi, eta, caraq4(*)
     real(kind=8) :: an(4, 12), am(4, 8), nfx(12), nfy(12), nmx(8), nmy(8)
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

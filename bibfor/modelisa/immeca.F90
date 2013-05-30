@@ -3,7 +3,6 @@ subroutine immeca(tablca, lirela, mailla, nbnobe, nunobe,&
                   ncncin, nmabet)
     implicit none
 !-----------------------------------------------------------------------
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! TOLE CRP_20
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG

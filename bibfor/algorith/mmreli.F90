@@ -1,6 +1,5 @@
 subroutine mmreli(alias, nno, ndim, coorma, coorpt,&
                   ksi1, ksi2, dksi1, dksi2, alpha)
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

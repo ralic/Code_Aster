@@ -29,7 +29,6 @@ subroutine irelst(nofimd, chanom, typech, nomaas, nomamd,&
     character(len=64) :: nomamd
     character(len=80) :: caimpk(3, nbimpr)
     integer :: nbimpr, caimpi(10, nbimpr)
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

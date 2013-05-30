@@ -6,7 +6,6 @@ subroutine xrmes2(ndim, nbnase, cpt, in, ivois,&
     integer :: ndim, nbnase, cpt, in, ivois, jsigse, nno, nbcmp, jcnset
     real(kind=8) :: dsg11(nbnase), dsg22(nbnase), dsg12(nbnase)
 ! ----------------------------------------------------------------------
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! TOLE CRS_1404
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG

@@ -9,7 +9,6 @@ subroutine dplvga(yate, rho11, rho12, r, t,&
     real(kind=8) :: dp11p1, dp11p2, dp12p1, dp12p2, dp21p1, dp21p2
     real(kind=8) :: dp11t, dp12t, dp21t
 ! ======================================================================
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

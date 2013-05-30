@@ -13,7 +13,6 @@ subroutine vpermo(lmasse, lraide, nbprop, vecp, valp,&
     integer :: lmasse, lraide, nbprop, excl(*)
     real(kind=8) :: vecp(*), valp(*), omecor, ernorm(*)
 !     ------------------------------------------------------------------
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

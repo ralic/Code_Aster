@@ -24,7 +24,6 @@ subroutine dpvpot(mod, vim, vip, nbmat, mater,&
     real(kind=8) :: mater(nbmat, 2), vim(4), vip(4), sig(6), dsidep(6, 6)
     character(len=8) :: mod
 ! =====================================================================
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

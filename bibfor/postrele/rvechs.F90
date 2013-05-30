@@ -22,7 +22,6 @@ subroutine rvechs(ssch19, nbcp, nbco, nbsp, ma,&
     integer :: ma(*), vlc(*), nbndf(6, *), clocf(6, 4, *)
     real(kind=8) :: rsor(*), rsex(*), val(*)
 !     ------------------------------------------------------------------
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

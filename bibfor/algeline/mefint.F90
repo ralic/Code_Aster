@@ -9,7 +9,6 @@ subroutine mefint(nbz, nbgrp, nbmod, nbnoe, nbddl,&
     real(kind=8) :: zint(nbz, nbgrp), defm(6*nbnoe, nbmod), z(*)
     real(kind=8) :: phix(nbz, nbgrp, nbmod), phiy(nbz, nbgrp, nbmod)
 ! ----------------------------------------------------------------------
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

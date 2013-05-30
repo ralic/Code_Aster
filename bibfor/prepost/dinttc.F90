@@ -2,7 +2,6 @@ subroutine dinttc(coord1, coord2, xo1o2, yo1o2, zo1o2,&
                   do1o2, r, norm, nint, nhop,&
                   npir, coord, nbi)
 !
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

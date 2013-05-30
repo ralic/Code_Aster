@@ -13,7 +13,6 @@ subroutine rslipa(nomsd, nopara, nomobj, jadd, nbval)
     integer :: jadd, nbval, n1, j1
     character(len=*) :: nomsd, nopara, nomobj
 ! ----------------------------------------------------------------------
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

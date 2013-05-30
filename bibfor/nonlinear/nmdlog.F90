@@ -4,7 +4,6 @@ subroutine nmdlog(fami, option, typmod, ndim, nno,&
                   crit, angmas, instm, instp, matsym,&
                   deplm, depld, sigm, vim, sigp,&
                   vip, fint, matuu, codret)
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

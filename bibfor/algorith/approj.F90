@@ -3,7 +3,6 @@ subroutine approj(sdappa, noma, newgeo, defico, posnom,&
                   coorpt, posmam, iprojm, ksi1m, ksi2m,&
                   tau1m, tau2m, distm, vecpmm)
 !
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

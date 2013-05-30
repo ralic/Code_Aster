@@ -3,7 +3,6 @@ function edgequ(ndimsi, tens, ani)
     implicit none
     real(kind=8) :: edgequ
 !
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 !
     include 'asterc/r8prem.h'
     include 'asterfort/u2mess.h'

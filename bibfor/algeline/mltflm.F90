@@ -1,6 +1,5 @@
 subroutine mltflm(nb, n, p, front, adper,&
                   t1, ad, eps, ier, c)
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! person_in_charge: olivier.boiteau at edf.fr
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG

@@ -41,8 +41,6 @@ GENE_ACCE_SEISME=MACRO(nom="GENE_ACCE_SEISME",
             ACCE_MAX     = SIMP(statut='f',typ='R',fr="PGA: acceleration max au sol (g)" ),
             ECART_TYPE   = SIMP(statut='f',typ='R',fr="ecart-type" ),
             INTE_ARIAS   = SIMP(statut='f',typ='R',fr="intensite d'Arias" ),
-#            INST_INI     = SIMP(statut='f',typ='R',fr="debut phase forte",defaut= 0.0 ), 
-#           DUREE_PHASE_FORTE=SIMP(statut='o',typ='R',fr="durée phase forte du signal" ),
             a_type_mod = BLOC(condition="TYPE=='CONSTANT' ",
                          DUREE_PHASE_FORTE=SIMP(statut='f',typ='R',fr="durée phase forte du signal" ),),
             b_type_mod = BLOC(condition="TYPE=='JENNINGS_HOUSNER' ",
@@ -52,6 +50,5 @@ GENE_ACCE_SEISME=MACRO(nom="GENE_ACCE_SEISME",
             c_type_mod = BLOC(condition="TYPE=='GAMMA' ",
                          INST_INI     = SIMP(statut='o',typ='R',fr="instant debut phase forte" ),
                          DUREE_PHASE_FORTE=SIMP(statut='o',typ='R',fr="durée phase forte du signal" ),),
-#         NB_TRAJ        =SIMP(statut='f',typ='I',defaut= 1,,fr="nombre accelerogrammes" ),
-),)  ;
+),)
  

@@ -10,7 +10,6 @@ subroutine assma3(lmasym, lmesym, tt, igr, iel,&
                   ligre1, ligre2, infofe, jtmp2, lgtmp2,&
                   jvalm, ilinu, idd, ellagr, exivf,&
                   jdesc, jrepe, jptvoi, jelvoi, codvoi)
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

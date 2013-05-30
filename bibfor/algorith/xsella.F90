@@ -1,7 +1,6 @@
 subroutine xsella(fiss, nbno, narz, tabnoz, pickno,&
                   nbpino)
 !
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! TOLE CRS_1404
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG

@@ -2,7 +2,6 @@ subroutine nmfocc(phase, modele, mate, numedd, fonact,&
                   defico, resoco, sdstat, sdtime, solalg,&
                   valinc, veelem, veasse)
 !
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

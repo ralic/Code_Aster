@@ -3,7 +3,6 @@ subroutine pmfcom(kpg, option, compor, crit, nf,&
                   nbvalc, defam, defap, varim, varimp,&
                   contm, defm, ddefp, epsm, modf,&
                   sigf, varip, isecan, codret)
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! TOLE CRP_21
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG

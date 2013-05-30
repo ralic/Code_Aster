@@ -5,7 +5,6 @@ subroutine uttcpl(dim, nbmesu, nomc, noml, prpal)
     character(len=1) :: prpal(dim)
     character(len=24) :: nomc(dim)
     character(len=80) :: noml(dim)
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

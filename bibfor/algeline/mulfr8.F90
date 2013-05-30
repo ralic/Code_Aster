@@ -30,7 +30,6 @@ subroutine mulfr8(nommat, npivot, neq, typsym, eps,&
     integer :: typsym
 !
 !     ------------------------------------------------------------------
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! person_in_charge: olivier.boiteau at edf.fr
 !     TOLE CRP_4 CRS_512
 ! ======================================================================

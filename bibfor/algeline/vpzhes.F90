@@ -4,7 +4,6 @@ subroutine vpzhes(mat, k, l, neq, mxeq,&
     integer :: k, l, neq, mxeq
     real(kind=8) :: mat(mxeq, neq), d(neq)
 !     ------------------------------------------------------------------
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

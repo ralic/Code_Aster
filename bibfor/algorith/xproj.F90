@@ -10,7 +10,6 @@ subroutine xproj(p, a, b, c, m,&
     real(kind=8) :: p(3), a(3), b(3), c(3), m(3), mp(3), vn(3), eps(3), d
     logical :: in
 !
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

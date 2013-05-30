@@ -29,7 +29,6 @@ subroutine xcfaq2(jlsn, jlst, jgrlsn, igeom, noma,&
     integer :: nptf, nbtot, nmaabs
     real(kind=8) :: ptint(*), ainter(*)
     character(len=8) :: noma
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

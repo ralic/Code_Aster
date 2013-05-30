@@ -1,7 +1,6 @@
 subroutine mlncmj(nb, n, p, frontl, frontu,&
                   frnl, frnu, adper, t1, t2,&
                   cl, cu)
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! person_in_charge: olivier.boiteau at edf.fr
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG

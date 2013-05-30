@@ -31,7 +31,6 @@ subroutine titreb(donnee, iligd, icold, nbtitr, sortie,&
     character(len=*) :: donnee(*), sortie(*), formr
     integer :: iligd, icold, nbtitr, iligs, icols
 !     ------------------------------------------------------------------
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

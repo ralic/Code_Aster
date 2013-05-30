@@ -11,7 +11,6 @@ subroutine rvinfo(ifm, iocc, i1, i2, c,&
     character(len=1) :: c
     character(len=16) :: sdchef
 !     ------------------------------------------------------------------
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

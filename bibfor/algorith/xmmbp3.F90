@@ -13,7 +13,6 @@ subroutine xmmbp3(ndim, nno, nnos, nnol, pla,&
     real(kind=8) :: mmat(216, 216)
     real(kind=8) :: ffc(8), ffp(27), jac, tau1(3), tau2(3)
     real(kind=8) :: rr, seuil, knp(3, 3), mu
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

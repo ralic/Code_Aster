@@ -3,7 +3,6 @@ subroutine dstnib(qsi, eta, carat3, an, am,&
     implicit  none
     real(kind=8) :: qsi, eta, carat3(*), an(3, 9), am(3, 6)
     real(kind=8) :: nfx(9), nfy(9), nmx(6), nmy(6)
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

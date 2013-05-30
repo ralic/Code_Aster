@@ -21,7 +21,6 @@ subroutine afretu(iprno, lonlis, klisno, noepou, noma,&
     character(len=8) :: klisno(lonlis), noepou, noma, nomddl(nbcoef)
     character(len=24) :: vale1
     character(len=19) :: lisrel
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

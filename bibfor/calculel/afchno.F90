@@ -22,7 +22,6 @@ subroutine afchno(chamn, base, gran, noma, nbnoeu,&
     complex(kind=8) :: cval(*)
     character(len=*) :: chamn, gran, noma, base, typval, kval(*)
 !--------------------------------------------------------------------
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

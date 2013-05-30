@@ -2,7 +2,6 @@ subroutine dstcis(dci, carat3, hft2, bca, an)
     implicit  none
     include 'asterfort/mgauss.h'
     real(kind=8) :: dci(2, 2), carat3(*), hft2(2, 6), bca(2, 3), an(3, 9)
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

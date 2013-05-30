@@ -8,7 +8,6 @@ function ulnomf(nomfic, kacc, typef)
 !     RENVOIE LE TYPE D'ACCES AU FICHIER ASSOCIE DANS L'ARGUMENT KACC
 !     RENVOIE LE TYPE DE FICHIER ASSOCIE DANS L'ARGUMENT TYPEF
 !     ------------------------------------------------------------------
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

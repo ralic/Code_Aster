@@ -6,7 +6,6 @@ function dmwdp2(rho11, sat, biot, phi, cs,&
     real(kind=8) :: dphip2
     logical :: emmag
 ! ======================================================================
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

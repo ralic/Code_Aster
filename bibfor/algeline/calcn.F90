@@ -6,7 +6,6 @@ subroutine calcn(s, b, vecn)
     include 'blas/ddot.h'
     real(kind=8) :: b, s(6), vecn(6)
 ! ======================================================================
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

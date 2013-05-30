@@ -3,7 +3,6 @@ function dmvpdt(rho12, sat, phi, h11, h12,&
     implicit      none
     real(kind=8) :: rho12, sat, phi, pvp, h11, h12, alp12, t, dmvpdt
 ! ======================================================================
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

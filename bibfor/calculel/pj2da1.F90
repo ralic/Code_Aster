@@ -5,7 +5,6 @@ subroutine pj2da1(ino2, geom2, i, geom1, tria3,&
     integer :: i, tria3(*), ino2
     logical :: ok
 ! ----------------------------------------------------------------------
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

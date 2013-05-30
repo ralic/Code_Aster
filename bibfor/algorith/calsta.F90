@@ -2,7 +2,6 @@ subroutine calsta(proj, gamma, dh, def, nno,&
                   kpg, sig, tmp, kk, kkd,&
                   matuu, dsidep, jac)
 !
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

@@ -7,7 +7,6 @@ subroutine dilsga(dimdef, dimuel, poids, poids2, b,&
     real(kind=8) :: poids, poids2, r(dimdef), b(dimdef, dimuel)
     real(kind=8) :: vectu(dimuel)
 ! ======================================================================
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

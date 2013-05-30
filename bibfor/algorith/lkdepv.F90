@@ -10,7 +10,6 @@ subroutine lkdepv(nbmat, mater, depsv, ddepsv, dgamv,&
     real(kind=8) :: mater(nbmat, 2), depsv(6), ddepsv(6)
     real(kind=8) :: dgamv, ddgamv(6)
 ! =================================================================
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

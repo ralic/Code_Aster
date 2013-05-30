@@ -2,7 +2,6 @@ subroutine brdefv(e1i, e2i, a, t, b,&
                   k0, k1, eta1, k2, eta2,&
                   pw, e0f, e1f, e2f, e2pc,&
                   e2pt, sige2)
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

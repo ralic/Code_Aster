@@ -22,7 +22,6 @@ subroutine wp2vec(appr, opt, nbfreq, nbvect, neq,&
     real(kind=8) :: resufr(mxresf, *), yh(neq, *), yb(neq, *), vpr(*), vpi(*)
     real(kind=8) :: vr(nlivr, *), omecor
 !     -----------------------------------------------------------------
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

@@ -3,7 +3,6 @@ subroutine rc32ms(meca, sa, sb, cmax)
     real(kind=8) :: sb(2), sa(2)
     logical :: cmax, meca
 !     ------------------------------------------------------------------
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2009  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

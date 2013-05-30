@@ -42,7 +42,6 @@ subroutine mdnewm(nbpas, dt, nbmode, pulsat, pulsa2,&
     integer :: descmm, descmr, descma, liad(*), inumor(*)
     real(kind=8) :: r8b, coefm(*), passto(*)
 !-----------------------------------------------------------------------
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

@@ -1,6 +1,5 @@
 subroutine jm1dn1(indn, indc, nb1, nb2, xr,&
                   epais, ksi3s2, intsx, jm1, j1dn1)
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

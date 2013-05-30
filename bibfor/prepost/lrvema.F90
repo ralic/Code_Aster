@@ -23,7 +23,6 @@ subroutine lrvema(nomail, mfich, nochmd)
     character(len=8) :: nomail
     character(len=64) :: nochmd
 !
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

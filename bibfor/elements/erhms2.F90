@@ -2,7 +2,6 @@ subroutine erhms2(perman, ino, nbs, theta, jac,&
                   nx, ny, sielnp, adsip, sielnm,&
                   nbcmp, typmav, tbref1, tbref2, ivois,&
                   tm2h1s)
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

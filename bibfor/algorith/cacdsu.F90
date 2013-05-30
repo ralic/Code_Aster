@@ -11,7 +11,6 @@ subroutine cacdsu(maxfa, maxdim, alpha, ndim, nno,&
     real(kind=8) :: kdiag(6), yss(maxdim, maxfa, maxfa)
     real(kind=8) :: c(maxfa, maxfa), d(maxfa, maxfa)
 ! ----------------------------------------------------------------------
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

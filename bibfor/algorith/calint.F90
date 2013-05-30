@@ -6,7 +6,6 @@ subroutine calint(i, j, vect1, nbpts, vect2,&
     real(kind=8) :: vect2(nbpts)
     complex(kind=8) :: vect1(long)
 !     ----------------------------------------------------------------
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

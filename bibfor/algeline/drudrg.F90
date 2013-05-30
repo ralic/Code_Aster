@@ -7,7 +7,6 @@ subroutine drudrg(parame, derpar, h0, sigc, rgdev,&
     include 'asterfort/jemarq.h'
     real(kind=8) :: parame(5), derpar(4), h0, sigc, rgdev, invar1, dudg
 ! ======================================================================
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

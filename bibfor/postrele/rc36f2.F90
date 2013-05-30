@@ -4,7 +4,6 @@ subroutine rc36f2(nbsigr, nocc, saltij, i1a4, isk,&
     integer :: nbsigr, nocc(*), i1a4, isk, isl, nk, nl, n0
     real(kind=8) :: saltij(*)
 !     ------------------------------------------------------------------
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2008  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

@@ -8,7 +8,6 @@ subroutine dkqb(caraq4, xyzl, igau, jacgau, bmat)
     include 'asterfort/jquad4.h'
     integer :: igau
     real(kind=8) :: caraq4(*), xyzl(3, 1), bmat(8, 1), jacgau
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

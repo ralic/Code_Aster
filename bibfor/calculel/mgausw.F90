@@ -7,7 +7,6 @@ subroutine mgausw(a, b, dim, nordre, nb,&
     real(kind=8) :: a(dim, dim), b(dim, nb), det
     logical :: iret
 !
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

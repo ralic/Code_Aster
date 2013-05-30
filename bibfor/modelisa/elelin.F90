@@ -7,7 +7,6 @@ subroutine elelin(nconta, elref1, elref2, nnop, nnops)
     character(len=8) :: elref1, elref2
     integer :: nnop, nnops, nconta
 !
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

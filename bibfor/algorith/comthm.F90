@@ -8,7 +8,6 @@ subroutine comthm(option, perman, vf, ifa, valfac,&
                   vintp, dsde, pesa, retcom, kpi,&
                   npg, p10, p20)
 ! ======================================================================
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! person_in_charge: sylvie.granet at edf.fr
 ! ======================================================================

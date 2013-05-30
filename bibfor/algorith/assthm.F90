@@ -11,7 +11,6 @@ subroutine assthm(nno, nnos, nnom, npg, npi,&
                   np2, ndim, compor, typmod, axi,&
                   perman, modint, codret)
 ! ======================================================================
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! person_in_charge: sylvie.granet at edf.fr
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG

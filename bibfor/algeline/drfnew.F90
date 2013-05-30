@@ -7,7 +7,6 @@ subroutine drfnew(devg, devgii, traceg, dfds, dfdg,&
     include 'blas/ddot.h'
     real(kind=8) :: devg(6), devgii, traceg, dfds(6), dfdg, mu, k, dfdl
 ! ======================================================================
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

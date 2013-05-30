@@ -1,5 +1,4 @@
 subroutine jeprsg(cunit, tgr, info)
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! person_in_charge: j-pierre.lefebvre at edf.fr
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG

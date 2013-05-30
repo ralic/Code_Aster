@@ -18,7 +18,6 @@ subroutine clcels(cequi, effm, effn, ht, enrobg,&
 !      O SIGMAB      CONTRAINTE DANS LE BETON
 !      O IERR        CODE RETOUR (0 = OK)
 !______________________________________________________________________
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2010  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

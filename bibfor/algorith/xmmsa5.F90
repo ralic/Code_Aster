@@ -15,7 +15,6 @@ subroutine xmmsa5(ndim, ipgf, imate, saut, lamb,&
     real(kind=8) :: alpha(3), p(3, 3)
     real(kind=8) :: cohes(3), rela, r
     character(len=8) :: job
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

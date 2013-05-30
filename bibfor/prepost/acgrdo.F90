@@ -31,7 +31,6 @@ subroutine acgrdo(jvectn, jvectu, jvectv, nbordr, ordini,&
     character(len=8) :: nommat, grdvie
     real(kind=8) :: vresu(24), valpar(22), vala, coefpa
 !
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

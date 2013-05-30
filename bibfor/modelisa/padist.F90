@@ -4,7 +4,6 @@ function padist(ndim, coor1, coor2)
     integer :: ndim, i
     real(kind=8) :: coor1(*), coor2(*), d, x
 !---------------------------------------------------------------------
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

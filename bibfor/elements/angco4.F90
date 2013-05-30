@@ -3,7 +3,6 @@ subroutine angco4(coor, zk1, izk, icoude, zk2,&
                   angl4, pgl1, pgl2, pgl3, pgl4,&
                   omega, dn1n2, epsi, crit)
     implicit none
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

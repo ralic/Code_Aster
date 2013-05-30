@@ -1,7 +1,5 @@
 subroutine xerbla(srname, info)
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 !----------------------------------------------------------------------
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! COPYRIGHT (C) LAPACK / BLAS
 ! COPYRIGHT (C) 2007 - 2013  EDF R&D                WWW.CODE-ASTER.ORG

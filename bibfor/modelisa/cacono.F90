@@ -16,7 +16,6 @@ subroutine cacono(noma, ndim, llist1, llist2, no1,&
     character(len=24) :: llist1, llist2
     real(kind=8) :: norm1(*), norm2(*)
 ! ----------------------------------------------------------------------
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

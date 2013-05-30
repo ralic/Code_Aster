@@ -34,7 +34,6 @@ subroutine xxnmgr(elrefp, elrese, ndim, coorse, igeom,&
     real(kind=8) :: vi(lgpg, npg), vip(lgpg, npg), sigp(2*ndim, npg), matuu(*)
     real(kind=8) :: instam, instap, sigm(2*ndim, npg), sign(6)
 !
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

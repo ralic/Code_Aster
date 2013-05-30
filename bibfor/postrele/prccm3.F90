@@ -8,7 +8,6 @@ subroutine prccm3(nommat, para, sm, sn, sp,&
     real(kind=8) :: para(*), sm, sn, sp, ke, salt, nadm
     character(len=*) :: nommat
 !     ------------------------------------------------------------------
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

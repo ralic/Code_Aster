@@ -10,7 +10,6 @@ subroutine calcds(hook, devg, devgii, dfds, dfdg,&
     include 'blas/ddot.h'
     real(kind=8) :: hook(6, 6), devg(6), devgii, dfds(6), dfdg, dsde(6, 6)
 ! ======================================================================
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

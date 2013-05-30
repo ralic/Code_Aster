@@ -3,7 +3,6 @@ subroutine irceme(ifi, nochmd, chanom, typech, modele,&
                   instan, numord, nbmaec, limaec, sdcarm,&
                   codret)
 !_______________________________________________________________________
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! person_in_charge: nicolas.sellenet at edf.fr
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG

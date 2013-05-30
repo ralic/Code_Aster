@@ -16,7 +16,6 @@ subroutine irmad1(ifi, versio, nbno, prno, nueq,&
     integer :: versio, itype, nstat
     character(len=*) :: nomcmp(*), nomsym, chamno(*)
 !--------------------------------------------------------------------
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

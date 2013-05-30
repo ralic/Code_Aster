@@ -10,7 +10,6 @@ subroutine capaca(rho0, rho11, rho12, rho21, rho22,&
     real(kind=8) :: rho0, rho11, rho12, rho21, rho22, sat, phi, csigm, alpha0, t
     real(kind=8) :: k0, cp11, cp12, cp21, cp22, coeps
 ! ======================================================================
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

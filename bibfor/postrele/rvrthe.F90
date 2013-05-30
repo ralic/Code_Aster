@@ -4,7 +4,6 @@ subroutine rvrthe(x, y, t1, t2, n1,&
 !
     real(kind=8) :: x, y, t1, t2, n1, n2
 !
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

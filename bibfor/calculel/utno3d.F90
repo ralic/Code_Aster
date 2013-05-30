@@ -3,7 +3,6 @@ subroutine utno3d(ifm, niv, nsomm, ifa, tymvol,&
                   idfdx, idfdy, hf, poids3, npgf,&
                   noe)
 !-----------------------------------------------------------------------
-!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
