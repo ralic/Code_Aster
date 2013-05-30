@@ -84,7 +84,7 @@ subroutine xposep(mo, malini, mailc, mailx, nsetot,&
                 k8b, ibid)
     call jeveuo(malini//'.TYPMAIL', 'L', jtma)
 !
-!     TABLEAU D'ENTIERS DIMENSIONNÉ AU NOMBRE DE MAILLE DU MAILLAGE
+!     TABLEAU D'ENTIERS DIMENSIONNÃ‰ AU NOMBRE DE MAILLE DU MAILLAGE
 !     INITIAL, INDIQUANT L'APPARTENANCE DES MAILLES A UN DES 2 GROUPES :
 !         - 0 SI LA MAILLE N'EST PAS AFFECTEE D'UN MODELE -> MAILC
 !         - 1 SI LA MAILLE N'EST PAS SOUS-DECOUPEE        -> MAILC

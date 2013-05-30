@@ -34,7 +34,7 @@ subroutine brseff(k0, mu0, e0s, e0d, sigeff)
 !
 !       TENSEUR DES CONTRAINTES EFFECTIVES DANS LA PATE (NIVEAU P1)
 !
-!       CONTRAINTE SPHÈRIQUE
+!       CONTRAINTE SPH√©RIQUE
 !-----------------------------------------------------------------------
     real(kind=8) :: e0s, sigs, k0, mu0
 !-----------------------------------------------------------------------

@@ -41,7 +41,7 @@ subroutine xrmes2(ndim, nbnase, cpt, in, ivois,&
 !      ENTREE :
 !-------------
 ! IN   NDIM   : DIMENSION
-! IN   NBNASE : NOMBRE DE NOEUDS PAR ARRÊTE DU SOUS-ELEMENT
+! IN   NBNASE : NOMBRE DE NOEUDS PAR ARRÃŠTE DU SOUS-ELEMENT
 ! IN   CPT    : NUMERO DU SOUS-ELEMENT
 ! IN   IN     : NUMERO DU NOEUD (I.E. DE L'ARETE)
 ! IN   IVOIS  : ADRESSE DANS ZI DES VOISINS DU SOUS-ELEMENT
@@ -73,8 +73,8 @@ subroutine xrmes2(ndim, nbnase, cpt, in, ivois,&
     endif
 !
 ! --- ON ETABLIT LA CORRESPONDANCE ENTRE LA NUMEROTATION DES NOEUDS
-! --- LOCALE À LA MAILLE COURANTE ET LA NUMEROTATION DES NOEUDS LOCALE
-! --- À LA MAILLE VOISINE. POUR CELA ON UTILISE LA NUMEROTATION XFEM
+! --- LOCALE Ã€ LA MAILLE COURANTE ET LA NUMEROTATION DES NOEUDS LOCALE
+! --- Ã€ LA MAILLE VOISINE. POUR CELA ON UTILISE LA NUMEROTATION XFEM
 !
     inx=zi(jcnset-1+(ndim+1)*(cpt-1)+in)
     insux=zi(jcnset-1+(ndim+1)*(cpt-1)+insui)
@@ -89,10 +89,10 @@ subroutine xrmes2(ndim, nbnase, cpt, in, ivois,&
         endif
 100  end do
 !
-! --- LE CAS QUADRATIQUE N'EST PAS PRÉVU CAR LES ELEMENTS SOUS DECOUPE
+! --- LE CAS QUADRATIQUE N'EST PAS PRÃ‰VU CAR LES ELEMENTS SOUS DECOUPE
 ! --- SONT TOUJOURS LINEAIRE !
 !
-! --- RECUPERATION DES CONTRAINTES AUX NOEUDS DE L'ARRÊTE COURANTE
+! --- RECUPERATION DES CONTRAINTES AUX NOEUDS DE L'ARRÃŠTE COURANTE
 ! --- POUR LE SOUS-ELEMENT COURANT
 !
     sig11(1)=zr(jsigse-1+nbcmp*nno*(cpt-1)+nbcmp*(in-1)+1)
@@ -104,8 +104,8 @@ subroutine xrmes2(ndim, nbnase, cpt, in, ivois,&
     sig12(1)=zr(jsigse-1+nbcmp*nno*(cpt-1)+nbcmp*(in-1)+4)
     sig12(2)=zr(jsigse-1+nbcmp*nno*(cpt-1)+nbcmp*(insui-1)+4)
 !
-! --- RECUPERATION DES CONTRAINTES AUX NOEUDS DE L'ARRÊTE COURANTE
-! --- POUR LE SOUS-ELEMENT VOISIN PAR RAPPORT À CETTE ARRÊTE
+! --- RECUPERATION DES CONTRAINTES AUX NOEUDS DE L'ARRÃŠTE COURANTE
+! --- POUR LE SOUS-ELEMENT VOISIN PAR RAPPORT Ã€ CETTE ARRÃŠTE
 !
     sigv11(1)=zr(jsigse-1+nbcmp*nno*(ivois-1)+nbcmp*(inv-1)+1)
     sigv11(2)=zr(jsigse-1+nbcmp*nno*(ivois-1)+nbcmp*(invsui-1)+1)

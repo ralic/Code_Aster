@@ -62,7 +62,7 @@ subroutine xstano(noma, lisno, nmafis, jmafis, cnslt,&
 !         RAYON  : RAYON DE LA ZONE D'ENRICHISSEMENT DES NOEUDS EN FOND
 !                  DE FISSURE
 !         CNXINV : CONNECTIVITE INVERSE
-!         STANO  : VECTEUR STATUT DES NOEUDS INITIALISE À 0
+!         STANO  : VECTEUR STATUT DES NOEUDS INITIALISE Ã€ 0
 !
 !     SORTIE
 !         STANO  : VECTEUR STATUT DES NOEUDS
@@ -153,7 +153,7 @@ subroutine xstano(noma, lisno, nmafis, jmafis, cnslt,&
             isup = 1
 !
 !         MAILLE SUPPORT APPARTENANT A MAFIS :
-!         ON CALCULE LST QUE SUR LES PTS OÙ LSN=0
+!         ON CALCULE LST QUE SUR LES PTS OÃ™ LSN=0
 !         ON CALCULE LSN SUR LES NOEUDS
             nrien=0
 !         BOUCLE SUR LES ARETES DE LA MAILLE RETENUE
@@ -205,7 +205,7 @@ subroutine xstano(noma, lisno, nmafis, jmafis, cnslt,&
                         a(k)=zr(jcoor-1+3*(nunoa-1)+k)
                         b(k)=zr(jcoor-1+3*(nunob-1)+k)
                         ab(k)=b(k)-a(k)
-!               INTERPOLATION DES COORDONNÉES DE C ET DE LST EN C
+!               INTERPOLATION DES COORDONNÃ‰ES DE C ET DE LST EN C
                         c(k)=a(k)-lsna/(lsnb-lsna)*ab(k)
                         ac(k)=c(k)-a(k)
 21                  continue
@@ -247,12 +247,12 @@ subroutine xstano(noma, lisno, nmafis, jmafis, cnslt,&
         enr1=0
         enr2=0
 !
-!       TEST S'IL Y A EU UNE MAILLE SUPPORT TROUVÉE DANS MAFIS
+!       TEST S'IL Y A EU UNE MAILLE SUPPORT TROUVÃ‰E DANS MAFIS
         if (isup .gt. 0) then
             if ((minlsn*maxlsn.lt.0.d0) .and. (maxlst.le.r8prem())) enr1=1
             if ((minlsn*maxlsn.le.r8prem()) .and. (minlst* maxlst.le.r8prem())) enr2=2
             if (ljonc) then
-!       CORRECTION DU STATUT SI ON EST DU MAUVAIS COTÉ DE LA JONCTION
+!       CORRECTION DU STATUT SI ON EST DU MAUVAIS COTÃ‰ DE LA JONCTION
                 do 220 ifiss = 1, nfiss
                     if (minlsj(ifiss,1) .ge. 0 .and. minlsj(ifiss,2) .lt. 0) then
                         enr1=0

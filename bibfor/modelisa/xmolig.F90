@@ -530,7 +530,7 @@ subroutine xmolig(liel1, trav)
 !         NOTONS QUE CETTE ETAPE N'EST UTILE QUE POUR PROPA_FISS, QUI
 !         REPART DU MODELE XFEM PRECEDENT PLUTOT QUE DU MODELE INITIAL.
 !         ON POURRAIT REPARTIR DU MODELE INITIAL DANS PROPA_FISS ET NE
-!         PAS AVOIR A FAIRE CETTE ÉTAPE.
+!         PAS AVOIR A FAIRE CETTE Ã‰TAPE.
                     do 220 i = 1, 6
                         if (itypel .eq. ih8(i)) then
                             call jenonu(jexnom('&CATA.TE.NOMTE', 'MECA_HEXA8'), itypel)

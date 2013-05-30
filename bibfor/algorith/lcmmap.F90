@@ -32,51 +32,51 @@ subroutine lcmmap(fami, kpg, ksp, comp, mod,&
 !           MATER(*,1) = E , NU , ALPHA
 !           MATER(*,2) = Fractions Volumiques et angles de chaque phase
 !                      + COEFFICIENT DE CHAQUE COMPORTEMENT MONOCRSITAL
-!                        pour chaque famille de systèmes de glissement
-!                        à la température actuelle (MATERF)
-!                       et à la température précédente (MATERD)
+!                        pour chaque famille de systÃ¨mes de glissement
+!                        Ã  la tempÃ©rature actuelle (MATERF)
+!                       et Ã  la tempÃ©rature prÃ©cÃ©dente (MATERD)
 !           NBCOMM = indices des coefficents de chaque comportement
 !                    dans MATER(*,2)
-!           CPMONO = noms des différentes "briques" de comportement
+!           CPMONO = noms des diffÃ©rentes "briques" de comportement
 !
 !      STRUCTURE DES OBJETS CREES
 !
 !           MATER(*,2) : NBMONO = Nombre de monocristaux
 !                        indice debut premier monocristal
-!                        indice debut deuxième monocristal
+!                        indice debut deuxiÃ¨me monocristal
 !..............
 !                        indice debut denier monocristal
-!                        indice des paramètes localisation
+!                        indice des paramÃ¨tes localisation
 !                        Fv et 3 angles par phase
-!           pour chaque monocristal différent
-!                 par famille de système de glissement
-!                    nb coef écoulement + coef,
-!                    nb coef écrou isot + coef,
+!           pour chaque monocristal diffÃ©rent
+!                 par famille de systÃ¨me de glissement
+!                    nb coef Ã©coulement + coef,
+!                    nb coef Ã©crou isot + coef,
 !                    nb coef ecou cine + coef
-!                        puis 2 (ou plus) paramètres localisation
+!                        puis 2 (ou plus) paramÃ¨tres localisation
 !
 !           CPMONO(*) : nom de la methode de localisation
-!                 puis, pour chaque matériau différent
+!                 puis, pour chaque matÃ©riau diffÃ©rent
 !                 nom du monocristal, nombre de familles SG, et,
-!                    par famille de système de glissement
+!                    par famille de systÃ¨me de glissement
 !                       Nom de la famille
 !                       Nom du materiau
-!                       Nom de la loi d'écoulement
-!                       Nom de la loi d'écrouissage isotrope
-!                       Nom de la loi d'écrouissage cinématique
-!                       Nom de la loi d'élasticité
+!                       Nom de la loi d'Ã©coulement
+!                       Nom de la loi d'Ã©crouissage isotrope
+!                       Nom de la loi d'Ã©crouissage cinÃ©matique
+!                       Nom de la loi d'Ã©lasticitÃ©
 !           NBCOMM(*,3) :
 !                        Colonne 1      Colonne 2      Colonne3
 !                    _____________________________________________
 !
 !            Ligne 1     Nb phases      Nb var.int.   Nb monocristaux
-!                                                     différents
+!                                                     diffÃ©rents
 !   pour chaque phase g  Num ligne g    Ind CPMONO    ind frac vol MATER
 !   ..................
 !   pour chaque phase
 !   pour la localisation  indice coef   nb param      0
 !   phase g              nb fam g       0            NVIg
-!                ... et pour chaque famille de système de glissement :
+!                ... et pour chaque famille de systÃ¨me de glissement :
 !             famille 1  ind coef       ind coef      ind coef
 !                        ecoulement     ecr iso       ecr cin
 !    .....
@@ -86,9 +86,9 @@ subroutine lcmmap(fami, kpg, ksp, comp, mod,&
 !                    Evp(6)+Norme(Evp)+
 !                       Nphase * (Betag (6) ou Evpg(6))
 !                       Nphase*(Nsyst*(ALPHAsg,GAMMAsg,Psg)
-!                    dernière : indicateur
-!                        ou s désigne le SYSTEME DE GLISSEMENT
-!                        ou g désigne le "grain" ou la phase
+!                    derniÃ¨re : indicateur
+!                        ou s dÃ©signe le SYSTEME DE GLISSEMENT
+!                        ou g dÃ©signe le "grain" ou la phase
 !
 !       ----------------------------------------------------------------
 !       IN  FAMI   : FAMILLE DES POINTS DE GAUSS
@@ -197,15 +197,15 @@ subroutine lcmmap(fami, kpg, ksp, comp, mod,&
 112  end do
 !           MATER(*,2) : Nombre de monocristaux
 !                        indice debut premier monocristal
-!                        indice debut deuxième monocristal
+!                        indice debut deuxiÃ¨me monocristal
 !..............
 !                        indice debut denier monocristal
-!                        indice des paramètes localisation
+!                        indice des paramÃ¨tes localisation
 !                        Fv et 3 angles par phase
-!           pour chaque monocristal différent
-!                 par famille de système de glissement
-!                    coef écoulement, coef écrou isot, coef ecou cine
-!                        puis 2 (ou plus) paramètres localisation
+!           pour chaque monocristal diffÃ©rent
+!                 par famille de systÃ¨me de glissement
+!                    coef Ã©coulement, coef Ã©crou isot, coef ecou cine
+!                        puis 2 (ou plus) paramÃ¨tres localisation
     materd(1,2)=nbmono
     materf(1,2)=nbmono
     indmat=1+nbmono+1
@@ -321,7 +321,7 @@ subroutine lcmmap(fami, kpg, ksp, comp, mod,&
         materd(1+imono+1,2)=indmat +1
         materf(1+imono+1,2)=indmat +1
  6  end do
-!     Paramètres de la loi de localisation
+!     ParamÃ¨tres de la loi de localisation
     indloc=indmat+1
     do 118 i = 1, nvloc
         materd(indmat+i,2)=zr(icompr-1+4*nbphas+i)
@@ -449,18 +449,18 @@ subroutine lcmmap(fami, kpg, ksp, comp, mod,&
     endif
 !
 !     Remplissage de NBCOMM : Boucle sur le nombre de phases
-!     3 : Nombre de familles de systèmes de glissement phase g
+!     3 : Nombre de familles de systÃ¨mes de glissement phase g
 !     Nb phases
     nbcomm(1,1)=zi(icompi-1+2)
 !     Nb var. int. total
     nbcomm(1,2)=zi(icompi-1+3)
-!     Nb materiaux (monocristaux) différents
+!     Nb materiaux (monocristaux) diffÃ©rents
     nbcomm(1,3)=zi(icompi-1+4)
-!     2 : Numéro du matériau phase g
+!     2 : NumÃ©ro du matÃ©riau phase g
 !     3 : indice fraction volumique  dans MATER
-!     Indices de la première phase    dans NBCOMM
+!     Indices de la premiÃ¨re phase    dans NBCOMM
     indcom=nbphas+1
-!     Ligne précisant l'indice des coef localisation
+!     Ligne prÃ©cisant l'indice des coef localisation
     indcom=indcom+1
     nbcomm(indcom,1)=indloc
     nbcomm(indcom,2)=nvloc
@@ -477,7 +477,7 @@ subroutine lcmmap(fami, kpg, ksp, comp, mod,&
 !        Indice du monocristal dans CPMONO
         nbcomm(1+iphas,2)=tabicp(numono)
         nbcomm(indcom,1)=nbfam
-!        Indice début monocristal dans CPMONO
+!        Indice dÃ©but monocristal dans CPMONO
         nbcomm(indcom,3)=nvintg
 !        Debut du monocristal
         idmono=nint(materd((1+numono),2))

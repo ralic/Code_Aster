@@ -128,7 +128,7 @@ subroutine nmvmpo(fami, npg, option, nomte, nc,&
     nomres(1) = 'E'
     nomres(2) = 'NU'
 !
-!     THERMIQUE À T+
+!     THERMIQUE Ã€ T+
     call moytem(fami, npg, 1, '+', temp,&
                 iret)
     call rcvalb(fami, 1, 1, '+', icodma,&
@@ -140,7 +140,7 @@ subroutine nmvmpo(fami, npg, option, nomte, nc,&
     call nmvmpm(compor, icodma, itemp, temp, e,&
                 nu, l346p)
 !
-!     THERMIQUE À T-
+!     THERMIQUE Ã€ T-
     call moytem(fami, npg, 1, '-', temm,&
                 iret)
     call rcvalb(fami, 1, 1, '-', icodma,&

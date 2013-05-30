@@ -42,7 +42,7 @@ subroutine xintar(elp, ndim, ia, tabco, tabls,&
 !       TABLS   : VALEUR DES LSN DES NOEUDS DE L'ELEMENT
 !
 !     SORTIE
-!       INTAR   : COORDONNÉES DES POINTS D'INTERSECTION
+!       INTAR   : COORDONNÃ‰ES DES POINTS D'INTERSECTION
 !     ----------------------------------------------------------------
 !
     real(kind=8) :: c1, c2, c3, a, b, c, d, sol, sol1, sol2, min, max

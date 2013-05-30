@@ -213,26 +213,26 @@ subroutine cfimp1(phase, noma, defico, resoco, ifm)
         endif
 500  end do
 !
-    10 format (' <CONTACT><LIAI> NOMBRE DE LIAISONS '&
+    10 format (' <CONTACT><LIAI> NOMBRE DE LIAISONS ',&
      &        'POSSIBLES           :',&
      &       i8)
 !
     20 format (' <CONTACT><LIAI> LISTE DES LIAISONS')
 !
-    101 format (' <CONTACT><LIAI> NOMBRE DE LIAISONS '&
+    101 format (' <CONTACT><LIAI> NOMBRE DE LIAISONS ',&
      &        'DE CONTACT INITIALES:',i6)
 !
-    102 format (' <CONTACT><LIAI>   DONT ADHERENTES :'&
+    102 format (' <CONTACT><LIAI>   DONT ADHERENTES :',&
      &       i8)
 !
-    202 format (' <CONTACT><LIAI>   DONT ADHERENTES DIR. 1 & 2 :'&
+    202 format (' <CONTACT><LIAI>   DONT ADHERENTES DIR. 1 & 2 :',&
      &       i8)
-    203 format (' <CONTACT><LIAI>   DONT ADHERENTES DIR. 1     :'&
+    203 format (' <CONTACT><LIAI>   DONT ADHERENTES DIR. 1     :',&
      &       i8)
-    204 format (' <CONTACT><LIAI>   DONT ADHERENTES DIR. 2     :'&
+    204 format (' <CONTACT><LIAI>   DONT ADHERENTES DIR. 2     :',&
      &       i8)
 !
-    301 format (' <CONTACT><LIAI> NOMBRE DE LIAISONS '&
+    301 format (' <CONTACT><LIAI> NOMBRE DE LIAISONS ',&
      &        ' DE CONTACT FINALES  :',i6)
 !
 !

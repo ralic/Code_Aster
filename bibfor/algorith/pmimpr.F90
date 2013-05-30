@@ -22,7 +22,7 @@ subroutine pmimpr(ind, inst, indimp, fonimp, valimp,&
 !-----------------------------------------------------------------------
 !     OPERATEUR CALC_POINT_MAT : IMPRESSIONS DE NIVEAU 2
 !-----------------------------------------------------------------------
-! IN  IND    : 0 pour l'état initial
+! IN  IND    : 0 pour l'Ã©tat initial
 !                1 pour l'itaration courante
 !                2 pour la convergence
 !                3 pour l'erreur relative

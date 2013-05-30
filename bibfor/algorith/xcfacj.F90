@@ -50,8 +50,8 @@ subroutine xcfacj(ptint, ptmax, ipt, ainter, lsn,&
 !       IGEOM    : ADRESSE DES COORDONNEES DES NOEUDS DE L'ELT PARENT
 !       NNO      : NOMBRE DE NOEUDS DE L'ELEMENT
 !       NDIM     : DIMENSION DE L'ESPACE
-!       NFISS    : NOMBRE DE FISSURES VUES DANS L'ÉLÉMENT
-!       IFISS    : NUMÉRO DE LA FISSURE EN COURS
+!       NFISS    : NOMBRE DE FISSURES VUES DANS L'Ã‰LÃ‰MENT
+!       IFISS    : NUMÃ‰RO DE LA FISSURE EN COURS
 !       FISCO    : NUM ET COEF DES FISS SUR LESQUELLES IFISS SE BRANCHE
 !       NFISC    : NOMBRE DE FISSURES SUR LESQUELLES IFISS SE BRANCHE
 !       TYPMA    : TYPE DE LA MAILLE ASSOCIEE A L'ELEMENT
@@ -121,14 +121,14 @@ subroutine xcfacj(ptint, ptmax, ipt, ainter, lsn,&
 !           ON ACCEPTE SI LE FRONT EST SUR UN NOEUD OU UN PT DE L'ARETE
                 if (lsna .eq. 0.d0 .and. lsja .eq. 0.d0 .or. lsna .eq. 0.d0 .and. lsnb .eq.&
                     0.d0 .and. (lsja*lsjb) .lt. r8prem()) chgsgn = .true.
-!           ON ACCEPTE SI UNE ARETE DE LA FACETTE EST COUPÉE
+!           ON ACCEPTE SI UNE ARETE DE LA FACETTE EST COUPÃ‰E
                 if (abs(lsna-lsnb) .gt. r8prem() .and. (lsjb-lsnb*(lsja- lsjb)/(lsna-lsnb))&
                     .lt. prec .or. abs(lsna-lsnb) .le. r8prem() .and. (lsja*lsjb) .lt. r8prem()) &
                 chgsgn = .true.
 120          continue
             if (.not. chgsgn) goto 110
 !
-!         ON CHERCHE SUR LA MAILLE LE POINT CORRESPONDANT À LSN=LSJ=0
+!         ON CHERCHE SUR LA MAILLE LE POINT CORRESPONDANT Ã€ LSN=LSJ=0
             mp(1)=0.d0
             mp(2)=0.d0
             call reereg('C', alias, nnof, coorma, mp,&

@@ -184,7 +184,7 @@ subroutine xtyele(noma, trav, nfiss, fiss, contac,&
 ! --- ON DETERMINE S'IL S'AGIT D'UNE MAILLE DE CONTACT OU PAS
                     lcont = .false.
 !
-! --- SI LE CONTACT EST DECLARÉ DANS LE MODELE
+! --- SI LE CONTACT EST DECLARÃ‰ DANS LE MODELE
 !
                     if (contac .ge. 1) then
 ! --- PAS DE CONTACT POUR LES MAILLE DE BORD
@@ -209,7 +209,7 @@ subroutine xtyele(noma, trav, nfiss, fiss, contac,&
                             if (lsnb .lt. minlsn) minlsn=lsnb
                             if (lsna .gt. maxlsn) maxlsn=lsna
                             if (lsnb .gt. maxlsn) maxlsn=lsnb
-! --- ARETE OU NOEUD COUPÉ AVEC STATUT NUL -> MAILLE MULTI-H NON COUPÉE
+! --- ARETE OU NOEUD COUPÃ‰ AVEC STATUT NUL -> MAILLE MULTI-H NON COUPÃ‰E
                             if (lsna*lsnb .le. 0) then
                                 if (lsna*lsnb .lt. 0 .and. ( stna.eq.0.or.stnb.eq.0) .or. lsna&
                                     .eq. 0 .and. stna .eq. 0 .or. lsnb .eq. 0 .and. stnb .eq. 0) &
@@ -225,18 +225,18 @@ subroutine xtyele(noma, trav, nfiss, fiss, contac,&
 ! 100            CONTINUE
 ! --- TRAITEMENT DES DIFFERENTS CAS
                         if (minlsn*maxlsn .lt. 0) then
-!--- LA MAILLE EST COUPÉE, ON ACTIVE LE CONTACT
+!--- LA MAILLE EST COUPÃ‰E, ON ACTIVE LE CONTACT
                             lcont=.true.
                         else if (maxlsn.eq.0) then
-! --- SI LA MAILLE EST ENTIEREMENT DU COTÉ ESCLAVE, MAIS TOUCHE LA LSN
-! --- LE CONTACT EST ACTIVÉ SI TOUT LES NOEUDS D'UNE FACE SONT COUPÉS
+! --- SI LA MAILLE EST ENTIEREMENT DU COTÃ‰ ESCLAVE, MAIS TOUCHE LA LSN
+! --- LE CONTACT EST ACTIVÃ‰ SI TOUT LES NOEUDS D'UNE FACE SONT COUPÃ‰S
                             nbcoup = 0
                             do 200 ino = 1, nno
                                 nngl=zi(jconx1-1+zi(jconx2+ima-1)+ino-&
                                 1)
                                 lsn = zr(jlsn-1+nngl)
                                 if (lsn .eq. 0) then
-! --- LE NOEUD EST COUPÉ SI LE MAX DE LSN DE SA CONNECTIVITÉ
+! --- LE NOEUD EST COUPÃ‰ SI LE MAX DE LSN DE SA CONNECTIVITÃ‰
 ! --- EST STRICTEMENT POSITIF
                                     maxlsn=-1*r8maem()
                                     call jelira(jexnum(cnxinv, nngl), 'LONMAX', nmasup, k8bid)
@@ -256,7 +256,7 @@ subroutine xtyele(noma, trav, nfiss, fiss, contac,&
                                     if (maxlsn .gt. 0) nbcoup=nbcoup+1
                                 endif
 200                          continue
-! --- ON REGARDE SI LE NOMBRE DE NOEUDS COUPÉES NBCOUP DEFINIT UNE FACE
+! --- ON REGARDE SI LE NOMBRE DE NOEUDS COUPÃ‰ES NBCOUP DEFINIT UNE FACE
                             if (ndim .eq. 2) then
                                 if (nbcoup .eq. 2) lcont=.true.
                             else
@@ -289,7 +289,7 @@ subroutine xtyele(noma, trav, nfiss, fiss, contac,&
                     endif
 !
 ! --- CRITERE SUPLEMENTAIRE POUR LE GRP CTIP, ON DESACTIVE LE CONTACT
-! --- SI LE MIN DE LST AUX PTS D'INTERSECTIONS DE L'ÉLÉMENT EST POSITIF
+! --- SI LE MIN DE LST AUX PTS D'INTERSECTIONS DE L'Ã‰LÃ‰MENT EST POSITIF
 !
                     if (kk .eq. 2 .and. lcont) then
                         minlst=r8maem()
@@ -375,8 +375,8 @@ subroutine xtyele(noma, trav, nfiss, fiss, contac,&
 ! --- POUR CHAQUE MAILLE DE CE GRP, REMPLIT LA COLONNE KK
 ! --- -1 -> X-FEM SANS CONTACT
 ! ---  1 -> X-FEM AVEC CONTACT
-! ---  0 -> FEM SI LA COLONE 4 EST À 1,
-!           NON AFFECTÉ SI LA COLONE 4 EST À 0
+! ---  0 -> FEM SI LA COLONE 4 EST Ã€ 1,
+!           NON AFFECTÃ‰ SI LA COLONE 4 EST Ã€ 0
 !
 ! SI MAILLE PAS ENCORE VUE
 !

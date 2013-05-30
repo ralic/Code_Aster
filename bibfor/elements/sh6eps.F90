@@ -126,11 +126,11 @@ subroutine sh6eps(xetemp, xidepp, deploc, dusdx)
         do 390 i = 1, 6
             deps(i) = 0.d0
 390      continue
-! Transformer matrice BLOCAL(3,6) dans le repère local en BLOC(6,18)
-! dans le repère local et en tenant
-! compte également des modifications sur les termes croisés ZY,ZX :
+! Transformer matrice BLOCAL(3,6) dans le repÃ¨re local en BLOC(6,18)
+! dans le repÃ¨re local et en tenant
+! compte Ã©galement des modifications sur les termes croisÃ©s ZY,ZX :
         call assebg(bloc, blocal, xmodif)
-! Transformer les déplacements UE dans le repère global en UELOC local:
+! Transformer les dÃ©placements UE dans le repÃ¨re global en UELOC local:
         call mulmat(3, 3, 6, pppt, ue,&
                     ueloc)
 !

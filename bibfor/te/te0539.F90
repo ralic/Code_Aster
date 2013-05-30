@@ -117,7 +117,7 @@ subroutine te0539(option, nomte)
         lgpg1 = max(jtab(6),1)*jtab(7)
         lgpg = lgpg1
     endif
-!     PARAMETRES PROPRES ¡ X-FEM
+!     PARAMETRES PROPRES √Å X-FEM
     call jevech('PPINTTO', 'L', jpintt)
     call jevech('PCNSETO', 'L', jcnset)
     call jevech('PHEAVTO', 'L', jheavt)

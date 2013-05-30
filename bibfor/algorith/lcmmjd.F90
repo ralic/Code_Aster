@@ -90,14 +90,14 @@ subroutine lcmmjd(taur, materf, ifa, nmat, nbcomm,&
     beta  =materf(iei+2)
     mu    =materf(iei+4)
     k16b=' '
-!     CALCUL de l'écrouissage RR=TAUr_Forest
+!     CALCUL de l'Ã©crouissage RR=TAUr_Forest
     call lcmmfi(materf(nmat+1), ifa, nmat, nbcomm, k16b,&
                 ir, nbsys, vind, decal, dy,&
                 nfs, nsg, hsr, 1, expbp,&
                 rr)
     if (iret .gt. 0) goto 9999
 !
-!     CALCUL de l'écoulement dpr et du critère
+!     CALCUL de l'Ã©coulement dpr et du critÃ¨re
     call lcmmfe(taur, materf(nmat+1), materf(1), ifa, nmat,&
                 nbcomm, k16b, ir, nbsys, vind,&
                 dy, rr, r8b, r8b, dt,&

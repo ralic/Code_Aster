@@ -1623,7 +1623,7 @@ subroutine thmrcp(etape, imate, thmc, meca, hydr,&
                             0)
             endif
 !
-!    RÉCUPÉRATION DES FONCTIONS FICKS ET LEUR DÉRIVÉES AU DESSUS PB
+!    RÃ‰CUPÃ‰RATION DES FONCTIONS FICKS ET LEUR DÃ‰RIVÃ‰ES AU DESSUS PB
 !
             nompar(1) = 'TEMP'
             valpar(1) = t

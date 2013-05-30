@@ -46,7 +46,7 @@ subroutine xmase2(elrefp, ndim, coorse, igeom, he,&
 ! IN  HE      : VALEUR DE LA FONCTION HEAVISIDE SUR LE SOUS-ELT
 ! IN  DDLH    : NOMBRE DE DDL HEAVYSIDE (PAR NOEUD)
 ! IN  DDLC    : NOMBRE DE DDL DE CONTACT (PAR NOEUD)
-! IN  NFE     : NOMBRE DE FONCTIONS SINGULIÈRES D'ENRICHISSEMENT
+! IN  NFE     : NOMBRE DE FONCTIONS SINGULIÃˆRES D'ENRICHISSEMENT
 ! IN  BASLOC  : BASE LOCALE AU FOND DE FISSURE AUX NOEUDS
 ! IN  NNOP    : NOMBRE DE NOEUDS DE L'ELEMENT PARENT
 ! IN  NPG     : NOMBRE DE POINTS DE GAUSS DU SOUS-ELEMENT
@@ -82,10 +82,10 @@ subroutine xmase2(elrefp, ndim, coorse, igeom, he,&
 !
 !--------------------------------------------------------------------
 !
-!     NOMBRE DE DDL DE DEPLACEMENT À CHAQUE NOEUD SOMMET
+!     NOMBRE DE DDL DE DEPLACEMENT Ã€ CHAQUE NOEUD SOMMET
     ddld=ndim+ddlh+ndim*nfe
 !
-!     NOMBRE DE DDL TOTAL (DEPL+CONTACT) À CHAQUE NOEUD SOMMET
+!     NOMBRE DE DDL TOTAL (DEPL+CONTACT) Ã€ CHAQUE NOEUD SOMMET
     ddlt=ddld+ddlc
 !
     call elref5('TR3', 'XINT', ndimb, nno, nnos,&
@@ -141,7 +141,7 @@ subroutine xmase2(elrefp, ndim, coorse, igeom, he,&
 !
         endif
 !
-!       COORDONNÉES DU POINT DE GAUSS DANS L'ELEMENT DE REF PARENT : XE
+!       COORDONNÃ‰ES DU POINT DE GAUSS DANS L'ELEMENT DE REF PARENT : XE
 !       ET CALCUL DE FF, DFDI, ET EPS
 !
         call reere3(elrefp, nnop, igeom, xg, depl0,&
@@ -165,7 +165,7 @@ subroutine xmase2(elrefp, ndim, coorse, igeom, he,&
                 cpt=cpt+1
                 enr(n,cpt) = enr(n,i) * he
 122          continue
-!         ENRICHISSEMENT PAR LES NFE FONTIONS SINGULIÈRES
+!         ENRICHISSEMENT PAR LES NFE FONTIONS SINGULIÃˆRES
             do 124 ig = 1, nfe
                 do 125 i = 1, ndim
                     cpt=cpt+1

@@ -105,7 +105,7 @@ subroutine lcafyd(comp, materd, materf, nbcomm, cpmono,&
 !
 !
         if (gdef .eq. 1) then
-! les 9 variables internes  de 6+3*ns+1 à 6+3*ns+9
+! les 9 variables internes  de 6+3*ns+1 Ã  6+3*ns+9
 ! REPRESENTENT FE - ID
             call dcopy(9, vind(nvi-3-18+10), 1, fe, 1)
             call daxpy(9, +1.d0, id, 1, fe,&

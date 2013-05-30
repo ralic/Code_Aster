@@ -43,14 +43,14 @@ subroutine xmmbca(noma, nomo, mate, resoco, valinc,&
 !
 ! ROUTINE XFEM (METHODE XFEM - ALGORITHME)
 !
-! MISE À JOUR DU STATUT DES POINTS DE CONTACT
+! MISE Ã€ JOUR DU STATUT DES POINTS DE CONTACT
 ! RENVOIE MMCVCA (INDICE DE CONVERGENCE DE LA BOUCLE
 !                         SUR LES CONTRAINTES ACTIVES)
 !
 ! ----------------------------------------------------------------------
 !
 !
-! IN  NOMO   : NOM DE L'OBJET MODÈLE
+! IN  NOMO   : NOM DE L'OBJET MODÃˆLE
 ! IN  NOMA   : NOM DE L'OBJET MAILLAGE
 ! IN  MATE   : SD MATERIAU
 ! IN  RESOCO : SD CONTACT (RESOLUTION)
@@ -117,7 +117,7 @@ subroutine xmmbca(noma, nomo, mate, resoco, valinc,&
     call nmchex(valinc, 'VALINC', 'DEPMOI', depmoi)
     call nmchex(valinc, 'VALINC', 'DEPPLU', depplu)
 !
-! --- SI PAS DE CONTACT ALORS ON ZAPPE LA VÉRIFICATION
+! --- SI PAS DE CONTACT ALORS ON ZAPPE LA VÃ‰RIFICATION
 !
     call jeveuo(nomo(1:8)//'.XFEM_CONT', 'L', jxc)
     lcontx = zi(jxc) .ge. 1
@@ -214,13 +214,13 @@ subroutine xmmbca(noma, nomo, mate, resoco, valinc,&
                     nbout, lpaout, lchout)
     endif
 !
-! --- ON FAIT SINCO = SOMME DES CICOCA SUR LES ÉLTS DU LIGRMO
+! --- ON FAIT SINCO = SOMME DES CICOCA SUR LES Ã‰LTS DU LIGRMO
 !
     call mesomm(cicoca, 1, sinco, rbid, cbid,&
                 0, ibid)
 !
 ! --- SI SINCO EST STRICTEMENT POSITIF, ALORS ON A EU UN CODE RETOUR
-! --- SUPERIEUR A ZERO SUR UN ELEMENT ET DONC ON A PAS CONVERGÉ
+! --- SUPERIEUR A ZERO SUR UN ELEMENT ET DONC ON A PAS CONVERGÃ‰
 !
     if (sinco .gt. 0) then
         mmcvca = .false.

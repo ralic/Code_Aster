@@ -198,7 +198,7 @@ subroutine xmligr(noma, nomo, resoco)
     zi(jad-1+nno(1)+ino) = zi(iacnx1+zi(ilcnx1-1+nummam)-2+ ino)
 40  continue
 !
-! --- TYPE D'ÉLÉMENT TARDIF
+! --- TYPE D'Ã‰LÃ‰MENT TARDIF
 !
     nomte=mode(imod)//mail(ndim-1,imail(1))//attr(iatt(1))
     if (iatt(1) .ne. 3) then

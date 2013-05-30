@@ -88,7 +88,7 @@ subroutine xmfrot(algofr, coeffr, coeffp, ddlm, ddls,&
         endif
     else if (indco.eq.1) then
 !
-! --- CALCUL DES INCREMENTS - DÉPLACEMENTS&
+! --- CALCUL DES INCREMENTS - DÃ‰PLACEMENTS&
 ! --- SEMI-MULTIPLICATEUR DE FROTTEMENT
 !
         call xmmsa1(algofr, ndim, nno, nnos, nnol,&

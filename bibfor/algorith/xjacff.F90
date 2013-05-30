@@ -45,24 +45,24 @@ subroutine xjacff(elrefp, elrefc, elc, ndim, fpg,&
 ! TOLE CRP_21 CRS_1404
 !
 !                   CALCUL DU JACOBIEN DE LA TRANSFORMATION FACETTE
-!                       RÉELLE EN 3D À FACETTE DE RÉFÉRENCE 2D
-!                   ET DES FF DE L'ÉLÉMENT PARENT AU POINT DE GAUSS
-!               ET DE LA NORMALE À LA FACETTE ORIENTÉE DE ESCL -> MAIT
+!                       RÃ‰ELLE EN 3D Ã€ FACETTE DE RÃ‰FÃ‰RENCE 2D
+!                   ET DES FF DE L'Ã‰LÃ‰MENT PARENT AU POINT DE GAUSS
+!               ET DE LA NORMALE Ã€ LA FACETTE ORIENTÃ‰E DE ESCL -> MAIT
 !     ENTREE
 !       ELREFP  : TYPE DE L'ELEMENT DE REF PARENT
 !       FPG     : FAMILLE DE POINTS DE GAUSS (SCHEMA D'INTEGRATION)
-!       PINTER  : COORDONNÉES DES POINTS D'INTERSECTION
+!       PINTER  : COORDONNÃ‰ES DES POINTS D'INTERSECTION
 !       IFA     : INDINCE DE LA FACETTE COURANTE
-!       CFACE   : CONNECTIVITÉ DES NOEUDS DES FACETTES
-!       IPG     : NUMÉRO DU POINTS DE GAUSS
+!       CFACE   : CONNECTIVITÃ‰ DES NOEUDS DES FACETTES
+!       IPG     : NUMÃ‰RO DU POINTS DE GAUSS
 !       NNO     : NOMBRE DE NOEUDS DE L'ELEMENT DE REF PARENT
 !       IGEOM   : COORDONNEES DES NOEUDS DE L'ELEMENT DE REF PARENT
 !
 !     SORTIE
-!       G       : COORDONNÉES RÉELLES 3D DU POINT DE GAUSS
+!       G       : COORDONNÃ‰ES RÃ‰ELLES 3D DU POINT DE GAUSS
 !       JAC     : PRODUIT DU JACOBIEN ET DU POIDS
-!       FF      : FF DE L'ÉLÉMENT PARENT AU POINT DE GAUSS
-!       ND      : NORMALE À LA FACETTE ORIENTÉE DE ESCL -> MAIT
+!       FF      : FF DE L'Ã‰LÃ‰MENT PARENT AU POINT DE GAUSS
+!       ND      : NORMALE Ã€ LA FACETTE ORIENTÃ‰E DE ESCL -> MAIT
 !
 !     ------------------------------------------------------------------
 !
@@ -117,7 +117,7 @@ subroutine xjacff(elrefp, elrefc, elc, ndim, fpg,&
     call normev(ab, nab)
     call provec(nd, ab, y)
 !
-!     COORDONNÉES DES SOMMETS DE LA FACETTE DANS LE REPÈRE LOCAL 2D
+!     COORDONNÃ‰ES DES SOMMETS DE LA FACETTE DANS LE REPÃˆRE LOCAL 2D
     coor2d(1)=0.d0
     coor2d(2)=0.d0
     coor2d(3)=nab
@@ -129,14 +129,14 @@ subroutine xjacff(elrefp, elrefc, elc, ndim, fpg,&
     call dfdm2d(nnof, ipg, ipoidf, idfdef, coor2d,&
                 rbid1, rbid2, jac)
 !
-!     COORDONNÉES RÉELLES 2D DU POINT DE GAUSS IPG
+!     COORDONNÃ‰ES RÃ‰ELLES 2D DU POINT DE GAUSS IPG
     call vecini(2, 0.d0, xg)
     do 30 j = 1, nnof
         xg(1)=xg(1)+zr(ivff-1+nnof*(ipg-1)+j)*coor2d(2*j-1)
         xg(2)=xg(2)+zr(ivff-1+nnof*(ipg-1)+j)*coor2d(2*j)
 30  end do
 !
-!     COORDONNÉES RÉELLES 3D DU POINT DE GAUSS
+!     COORDONNÃ‰ES RÃ‰ELLES 3D DU POINT DE GAUSS
     g(1)=a(1)+ab(1)*xg(1)+y(1)*xg(2)
     g(2)=a(2)+ab(2)*xg(1)+y(2)*xg(2)
     g(3)=a(3)+ab(3)*xg(1)+y(3)*xg(2)
@@ -195,7 +195,7 @@ subroutine xjacff(elrefp, elrefc, elc, ndim, fpg,&
     if (elrefc .eq. elrefp) goto 999
     if (elrefc(1:3) .eq. 'NON') goto 999
 !
-!     CALCUL DES FF DE L'ÉLÉMENT DE CONTACT EN CE POINT DE GAUSS
+!     CALCUL DES FF DE L'Ã‰LÃ‰MENT DE CONTACT EN CE POINT DE GAUSS
     call elelin(3, elrefc, k8bid, nnoc, ibid)
 !
     call reeref(elrefc, axi, nnoc, nnoc, zr(igeom),&

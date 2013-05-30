@@ -34,7 +34,7 @@ function zerobj(obj)
 ! person_in_charge: jacques.pellet at edf.fr
 ! ----------------------------------------------------------------------
 !  BUT : DETERMINER SI UN OBJET JEVEUX EST NUL (OU PAS)
-!       OBJ     : NOM DE L'OBJET JEVEUX à TESTER
+!       OBJ     : NOM DE L'OBJET JEVEUX Ã  TESTER
 !
 !     RESULTAT:
 !       ZEROBJ : .TRUE.    SI LES VALEURS DE OBJ SONT TOUTES NULLES

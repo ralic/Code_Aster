@@ -40,10 +40,10 @@ subroutine xmmsa5(ndim, ipgf, imate, saut, lamb,&
 ! ----------------------------------------------------------------------
 !
 ! IN  NDIM   : DIMENSION DE L'ESPACE
-! IN  IPGF   : NUMÉRO DU POINTS DE GAUSS
+! IN  IPGF   : NUMÃ‰RO DU POINTS DE GAUSS
 ! IN  IMATE  : ADRESSE DE LA SD MATERIAU
 ! IN  SAUT   : SAUT DE DEPLACEMENT
-! IN  ND     : NORMALE À LA FACETTE ORIENTÉE DE ESCL -> MAIT
+! IN  ND     : NORMALE Ã€ LA FACETTE ORIENTÃ‰E DE ESCL -> MAIT
 !                 AU POINT DE GAUSS
 ! IN  TAU1   : TANGENTE A LA FACETTE AU POINT DE GAUSS
 ! IN  TAU2   : TANGENTE A LA FACETTE AU POINT DE GAUSS

@@ -191,7 +191,7 @@ subroutine lcdpeq(vind, vinf, comp, nbcomm, cpmono,&
             call dcopy(9, fp, 1, vinf(nvi-3-18+1 ), 1)
             epseq = lcnrte(devi)
         else
-!           V.I. 1 A 6 REPRÈSENTE LA DEFORMATION VISCOPLASTIQUE MACRO
+!           V.I. 1 A 6 REPR√©SENTE LA DEFORMATION VISCOPLASTIQUE MACRO
             epseq=0.d0
             do 10 i = 1, 6
                 dvin(i)=vinf(i)-vind(i)
@@ -203,7 +203,7 @@ subroutine lcdpeq(vind, vinf, comp, nbcomm, cpmono,&
 !
     else if (loi(1:8).eq.'POLYCRIS') then
 !
-!        V.I. 1 A 6 REPRÈSENTE LA DEFORMATION VISCOPLASTIQUE MACRO
+!        V.I. 1 A 6 REPR√©SENTE LA DEFORMATION VISCOPLASTIQUE MACRO
         epseq=0.d0
         do 20 i = 1, 6
             dvin(i)=vinf(i)-vind(i)

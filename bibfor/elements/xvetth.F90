@@ -162,7 +162,7 @@ subroutine xvetth(ndim, elrefp, nnop, imate, itps,&
 !
         do 1200 kpg = 1, npg
 !
-!         COORDONNÉES DU PT DE GAUSS DANS LE REPÈRE RÉEL : XG
+!         COORDONNÃ‰ES DU PT DE GAUSS DANS LE REPÃˆRE RÃ‰EL : XG
             call vecini(ndim, 0.d0, xg)
             do 1210 j = 1, ndim
                 do 1211 in = 1, nno
@@ -189,7 +189,7 @@ subroutine xvetth(ndim, elrefp, nnop, imate, itps,&
                         baslog(j) = baslog(j) + basloc(3*ndim*(inp-1)+ j) * ff(inp)
 1221                  continue
 1220              continue
-!           FONCTION D'ENRICHISSEMENT (MECA) AU PG ET DÉRIVÉES
+!           FONCTION D'ENRICHISSEMENT (MECA) AU PG ET DÃ‰RIVÃ‰ES
                 if (ndim .eq. 2) then
                     call xcalf2(he, lsng, lstg, baslog, femec,&
                                 dgdmec, iret)

@@ -65,10 +65,8 @@ subroutine engtrs(ific, nomsd, typtes, preci, formr)
 !
     lg1 = lxlgut( formr )
     lg2 = lxlgut( typtes )
-    form1 = '(&
-            '' TYPE_TEST= '''''//typtes(1:lg2)// ''''', VALE_CALC= '', '//formr(1:lg1)//',&
-            '' ), ''&
-            )'
+    form1 = '('' TYPE_TEST= '''''//typtes(1:lg2)// ''''', VALE_CALC= '', '&
+            //formr(1:lg1)//','' ), '')'
     form2 = '( '' TYPE_TEST= '''''//typtes(1:lg2)// ''''', VALE_CALC_I = '', I9, '' ), '' )'
 !
     write(ific,1000)
@@ -92,10 +90,8 @@ subroutine engtrs(ific, nomsd, typtes, preci, formr)
         call jeveuo(jexnum(nomsd//'.TACH', ibid), 'L', iatach)
         lg = lxlgut( nomsym )
 !
-        form3 = '(&
-                '' _F(RESULTAT= '',A8,'', NOM_CHAM= '''''// nomsym(1:lg&
-                )//''''', NUME_ORDRE= '',I6,'',''&
-                )'
+        form3 = '('' _F(RESULTAT= '',A8,'', NOM_CHAM= '''''// nomsym(1:lg)&
+                //''''', NUME_ORDRE= '',I6,'','')'
 !
         do 110 j = 1, nbordt
             iord = zi(jordr+j-1)

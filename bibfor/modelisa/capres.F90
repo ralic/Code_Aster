@@ -129,7 +129,7 @@ subroutine capres(char, ligrmo, noma, ndim, fonree)
 !
         else if (nfiss .ne. 0) then
 !
-!           PAS DE CISA_2D SUR LES LÈVRES DES FISSURES X-FEM
+!           PAS DE CISA_2D SUR LES LÃˆVRES DES FISSURES X-FEM
             if (nc .ne. 0) call u2mess('F', 'XFEM_14')
 !
             nfiss = -nfiss

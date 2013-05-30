@@ -82,7 +82,7 @@ subroutine lccong(nr, itmax, toler, iter, r,&
     endif
 !
 ! === ==================================================================
-! --- SI NON CONVERGENCE: TEST DU N°ITERATION
+! --- SI NON CONVERGENCE: TEST DU NÂ°ITERATION
 ! === ==================================================================
     if (iter .lt. itmax) then
         irtet = 1

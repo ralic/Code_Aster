@@ -41,7 +41,7 @@ subroutine dpvplc(typmod, option, imate, crit, instam,&
 ! IN  VIM     VARIABLES INTERNES EN T-
 !               1   : P
 !               2   : INDICATEUR DE PLASTICITE
-!               3   : POSITION DE PAR RAPPORT A PPIC et à PULT
+!               3   : POSITION DE PAR RAPPORT A PPIC et Ã  PULT
 !               4   : NOMBRE D ITERATIONS POUR LA CONVERGENCE LOCALE
 ! OUT SIG    CONTRAINTES EN T+
 ! VAR VIP     VARIABLES INTERNES EN T+

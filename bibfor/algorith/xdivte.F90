@@ -27,8 +27,8 @@ subroutine xdivte(ndim, elp, cnset, nse, nnose)
 ! ======================================================================
 ! person_in_charge: samuel.geniaut at edf.fr
 !
-!                      CONNECTIVITÉ DES ÉLÉMENTS TETRAS À PARTIR
-!                               D'UN ÉLÉMENT PARENT X-FEM
+!                      CONNECTIVITÃ‰ DES Ã‰LÃ‰MENTS TETRAS Ã€ PARTIR
+!                               D'UN Ã‰LÃ‰MENT PARENT X-FEM
 !                          (VOIR BOOK III 19/04/04)
 !
 !     ENTREE
@@ -36,8 +36,8 @@ subroutine xdivte(ndim, elp, cnset, nse, nnose)
 !       ELP     : TYPE DE MAILLE
 !
 !     SORTIE
-!       CNSET   : CONNECTIVITÉ DES NOEUDS DE LA MAILLE
-!       NSE     : NOMBRE DE SOUS-TÉTRAS (SOUS TRIA)
+!       CNSET   : CONNECTIVITÃ‰ DES NOEUDS DE LA MAILLE
+!       NSE     : NOMBRE DE SOUS-TÃ‰TRAS (SOUS TRIA)
 !       NNOSE   : NOMBRE DE NOEUDS DU SOUS TETRA (SOUS TRIA)
 !     ------------------------------------------------------------------
 !

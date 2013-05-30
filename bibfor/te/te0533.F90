@@ -157,7 +157,7 @@ subroutine te0533(option, nomte)
                 iret)
     ncompc = jtab(2)
 !
-!     STATUT POUR L'ÉLIMINATION DES DDLS DE CONTACT
+!     STATUT POUR L'Ã‰LIMINATION DES DDLS DE CONTACT
     do 30 i = 1, max(1, nfh)*nnos
         vstnc(i) = 1
 30  end do

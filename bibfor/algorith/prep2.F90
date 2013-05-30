@@ -100,7 +100,7 @@ subroutine prep2(ndim, npg, g, rpa, etdpn1,&
                 work, contm)
     call tnsvec(3, ndim, contm, sigmam, rac2)
 !
-! ajout transforùation de EPSM (pour certaines lois comme vendochab)
+! ajout transforÃ¹ation de EPSM (pour certaines lois comme vendochab)
     call tnsvec(6, ndim, epsmt, epsm, 1.d0)
     call utbtab('ZERO', 3, 3, epsmt, rpt,&
                 work, epsmp)

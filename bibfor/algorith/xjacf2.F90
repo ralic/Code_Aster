@@ -47,24 +47,24 @@ subroutine xjacf2(elrefp, elrefc, elc, ndim, fpg,&
 ! TOLE CRP_21
 !
 !                   CALCUL DU JACOBIEN DE LA TRANSFORMATION FACETTE
-!                       RÉELLE EN 2D À FACETTE DE RÉFÉRENCE 1D
-!                   ET DES FF DE L'ÉLÉMENT PARENT AU POINT DE GAUSS
-!               ET DE LA NORMALE À LA FACETTE ORIENTÉE DE ESCL -> MAIT
+!                       RÃ‰ELLE EN 2D Ã€ FACETTE DE RÃ‰FÃ‰RENCE 1D
+!                   ET DES FF DE L'Ã‰LÃ‰MENT PARENT AU POINT DE GAUSS
+!               ET DE LA NORMALE Ã€ LA FACETTE ORIENTÃ‰E DE ESCL -> MAIT
 !     ENTREE
 !       ELREFP  : TYPE DE L'ELEMENT DE REF PARENT
 !       FPG     : FAMILLE DE POINTS DE GAUSS (SCHEMA D'INTEGRATION)
-!       PINTER  : COORDONNÉES DES POINTS D'INTERSECTION
+!       PINTER  : COORDONNÃ‰ES DES POINTS D'INTERSECTION
 !       IFA     : INDINCE DE LA FACETTE COURANTE
-!       CFACE   : CONNECTIVITÉ DES NOEUDS DES FACETTES
-!       IPG     : NUMÉRO DU POINTS DE GAUSS
+!       CFACE   : CONNECTIVITÃ‰ DES NOEUDS DES FACETTES
+!       IPG     : NUMÃ‰RO DU POINTS DE GAUSS
 !       NNO     : NOMBRE DE NOEUDS DE L'ELEMENT DE REF PARENT
 !       IGEOM   : COORDONNEES DES NOEUDS DE L'ELEMENT DE REF PARENT
 !
 !     SORTIE
-!       G       : COORDONNÉES RÉELLES 2D DU POINT DE GAUSS
+!       G       : COORDONNÃ‰ES RÃ‰ELLES 2D DU POINT DE GAUSS
 !       JAC     : PRODUIT DU JACOBIEN ET DU POIDS
-!       FF      : FF DE L'ÉLÉMENT PARENT AU POINT DE GAUSS
-!       ND      : NORMALE À LA FACETTE ORIENTÉE DE ESCL -> MAIT
+!       FF      : FF DE L'Ã‰LÃ‰MENT PARENT AU POINT DE GAUSS
+!       ND      : NORMALE Ã€ LA FACETTE ORIENTÃ‰E DE ESCL -> MAIT
 !                 AU POINT DE GAUSS
 !       TAU1    : TANGENTE A LA FACETTE AU POINT DE GAUSS
 !
@@ -107,7 +107,7 @@ subroutine xjacf2(elrefp, elrefc, elc, ndim, fpg,&
     call vecini(3, 0.d0, tau1)
     call vecini(3, 0.d0, seg)
 !
-! --- COORDONNÉES DES SOMMETS DE LA FACETTE DANS LE REPERE GLOBAL NDIM
+! --- COORDONNÃ‰ES DES SOMMETS DE LA FACETTE DANS LE REPERE GLOBAL NDIM
     nn=3*nptfmx
     do 9 i = 1, nn
         coor2d(i)=0.d0
@@ -124,7 +124,7 @@ subroutine xjacf2(elrefp, elrefc, elc, ndim, fpg,&
         ab(j)=b(j)-a(j)
 20  end do
 !
-! --- COORDONNÉES DES SOMMETS DE LA FACETTE DANS LE REPÈRE
+! --- COORDONNÃ‰ES DES SOMMETS DE LA FACETTE DANS LE REPÃˆRE
 !     LIE A LA FACETTE
     if (iselli(elc)) then
 !     EN LINEAIRE 2D
@@ -206,7 +206,7 @@ subroutine xjacf2(elrefp, elrefc, elc, ndim, fpg,&
         call assert(norm2.gt.1.d-12)
     endif
 !
-!     CALCUL DES FF DE L'ÉLÉMENT PARENT EN CE POINT DE GAUSS
+!     CALCUL DES FF DE L'Ã‰LÃ‰MENT PARENT EN CE POINT DE GAUSS
     call elelin(3, elrefp, k8bid, ibid, nnos)
     call reeref(elrefp, axi, nno, nnos, zr(igeom),&
                 g, 0, .false., ndim, he,&
@@ -218,7 +218,7 @@ subroutine xjacf2(elrefp, elrefc, elc, ndim, fpg,&
     if (elrefc .eq. elrefp) goto 999
     if (elrefc(1:3) .eq. 'NON') goto 999
 !
-!     CALCUL DES FF DE L'ÉLÉMENT DE CONTACT EN CE POINT DE GAUSS
+!     CALCUL DES FF DE L'Ã‰LÃ‰MENT DE CONTACT EN CE POINT DE GAUSS
     call elelin(3, elrefc, k8bid, nnoc, ibid)
 !
     call reeref(elrefc, axi, nnoc, nnoc, zr(igeom),&

@@ -36,8 +36,8 @@ subroutine xthini(nomte, nfh, nfe)
 !
 ! IN   NOMTE  : NOM DU TYPE ELEMENT
 ! OUT  NFH    : NOMBRE DE FONCTIONS HEAVISIDES
-! OUT  NFE    : NOMBRE DE FONCTIONS SINGULIÈRES D'ENRICHISSEMENT
-! OUT  NDDL   : NOMBRE DE DDL TOTAL DE L'ÉLÉMENT
+! OUT  NFE    : NOMBRE DE FONCTIONS SINGULIÃˆRES D'ENRICHISSEMENT
+! OUT  NDDL   : NOMBRE DE DDL TOTAL DE L'Ã‰LÃ‰MENT
 !     ------------------------------------------------------------------
 !
     integer :: nno, ibid, ier, nnos, nfiss

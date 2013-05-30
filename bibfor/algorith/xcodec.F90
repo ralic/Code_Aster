@@ -41,7 +41,7 @@ subroutine xcodec(noma, modelx, ndim, crimax, linter)
 !
 ! ROUTINE XFEM (MODIF. DU MODELE)
 !
-! CALCUL DU DÉCOUPAGE EN SOUS-TETRAS, DES FACETTES DE CONTACT
+! CALCUL DU DÃ‰COUPAGE EN SOUS-TETRAS, DES FACETTES DE CONTACT
 ! ET VERIFICATION DES CRITERES DE CONDITIONNEMENT
 !
 ! ----------------------------------------------------------------------
@@ -91,7 +91,7 @@ subroutine xcodec(noma, modelx, ndim, crimax, linter)
         call xfisco(noma, modelx)
     endif
 !
-! --- CALCUL DES DONNEES UTILES POUR L'INTÉGRATION (SOUS-TETRAS...)
+! --- CALCUL DES DONNEES UTILES POUR L'INTÃ‰GRATION (SOUS-TETRAS...)
 !
     call xtopoi(noma, modelx)
 !

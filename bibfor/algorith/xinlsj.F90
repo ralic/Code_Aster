@@ -79,7 +79,7 @@ subroutine xinlsj(noma, ndim, fiss, nfiss, cnslj)
     call dismoi('F', 'NB_NO_MAILLA', noma, 'MAILLAGE', nbno,&
                 kbid, iret)
 !
-! --- RECHERCHE DU NUMÉRO DU NOEUD NUNO LE PLUS PROCHE DU POINT
+! --- RECHERCHE DU NUMÃ‰RO DU NOEUD NUNO LE PLUS PROCHE DU POINT
 !
     dmin = r8maem()
     do 100 ino = 1, nbno
@@ -90,7 +90,7 @@ subroutine xinlsj(noma, ndim, fiss, nfiss, cnslj)
         endif
 100  end do
 !
-! --- ON AJOUTE LES FISSURES DECLARÉES DANS LE MOT CLÉ JONCTION
+! --- ON AJOUTE LES FISSURES DECLARÃ‰ES DANS LE MOT CLÃ‰ JONCTION
     cpt = 0
     do 50 ifiss = 1, nfiss
         do 110 ifis2 = ifiss+1, nfiss
@@ -100,7 +100,7 @@ subroutine xinlsj(noma, ndim, fiss, nfiss, cnslj)
                 call jelira(zk8(jfiss-1+ifis2)//'.JONFISS', 'LONMAX', nfis3, kbid)
                 do 120 ifis3 = 1, nfis3
 ! --- SI IFISS EST CONTENU DANS LES FISSURES SUIVANTES : ON SORT
-! --- ELLE SERA AJOUTÉ DANS LA BOUCLE 60
+! --- ELLE SERA AJOUTÃ‰ DANS LA BOUCLE 60
                     if (zk8(jjon3-1+ifis3) .eq. zk8(jfiss-1+ifiss)) goto 50
 120              continue
             endif
@@ -116,7 +116,7 @@ subroutine xinlsj(noma, ndim, fiss, nfiss, cnslj)
     nfini = 1
     nfiss = cpt
     nfisd = nfiss
-! --- ON AJOUTE TOUTES LES FISSURES CONNECTÉES PRECEDEMENT
+! --- ON AJOUTE TOUTES LES FISSURES CONNECTÃ‰ES PRECEDEMENT
 ! --- SAUF CELLES QUI CONTIENNENT LA FISSURE FISS EN COURS
 !
 90  continue
@@ -126,7 +126,7 @@ subroutine xinlsj(noma, ndim, fiss, nfiss, cnslj)
             call jeveuo(nomfis(ifiss)//'.JONFISS', 'L', jjonf)
             call jeveuo(nomfis(ifiss)//'.JONCOEF', 'L', jjonc)
             call jelira(nomfis(ifiss)//'.JONFISS', 'LONMAX', nfis2, kbid)
-! --- BOUCLE SUR LES FISSURES CONNECTES À IFISS
+! --- BOUCLE SUR LES FISSURES CONNECTES Ã€ IFISS
             do 70 ifis2 = 1, nfis2
 ! --- ON VERIFIE QUE LA FISSURE CONNECTEE NE CONTIENT PAS CELLE EN COURS
                 call jeexin(zk8(jjonf-1+ifis2)//'.JONFISS', iret)
@@ -137,11 +137,11 @@ subroutine xinlsj(noma, ndim, fiss, nfiss, cnslj)
                         if (zk8(jjon3-1+ifis3) .eq. fiss) goto 70
 75                  continue
                 endif
-! --- ON VERIFIE QU'ON A PAS DEJA STOCKÉ LA FISSURE DANS LA LISTE
+! --- ON VERIFIE QU'ON A PAS DEJA STOCKÃ‰ LA FISSURE DANS LA LISTE
                 do 80 ifis3 = 1, cpt
                     if (zk8(jjonf-1+ifis2) .eq. nomfis(ifis3)) goto 70
 80              continue
-! --- ON AJOUTE LES FISSURES CONNECTÉS À LA LISTE
+! --- ON AJOUTE LES FISSURES CONNECTÃ‰S Ã€ LA LISTE
                 cpt = cpt+1
                 nomfis(cpt) = zk8(jjonf-1+ifis2)
                 coefln(cpt) = zi(jjonc-1+ifis2)
@@ -153,7 +153,7 @@ subroutine xinlsj(noma, ndim, fiss, nfiss, cnslj)
     if (nfini .le. nfiss) goto 90
     call assert(nfiss.le.10)
 !
-! --- CRÉATION DES SD GLOBALES JONFISS ET JONCOEF
+! --- CRÃ‰ATION DES SD GLOBALES JONFISS ET JONCOEF
 !
     jonfis = fiss(1:8)//'.JONFISS'
     joncoe = fiss(1:8)//'.JONCOEF'
@@ -170,7 +170,7 @@ subroutine xinlsj(noma, ndim, fiss, nfiss, cnslj)
         zk8(jncmp-1+ifiss) = 'X'//ch
 10  end do
 !
-! --- CRÉATION DE LA SD CNSLJ : LSJ(IFISS,1) = COEF*LSN(IFISS)
+! --- CRÃ‰ATION DE LA SD CNSLJ : LSJ(IFISS,1) = COEF*LSN(IFISS)
 !                               LSJ(IFISS,2) = LST(IFISS)
 !
     call cnscre(noma, 'NEUT_R', 2*nfiss, zk8(jncmp), 'V',&

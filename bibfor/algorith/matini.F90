@@ -22,7 +22,7 @@ subroutine matini(nlig, ncol, s, mat)
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 !-----------------------------------------------------------------------
-!            INITIALISATION D'UNE MATRICE PAR UN SCALAIRE (RÉEL)
+!            INITIALISATION D'UNE MATRICE PAR UN SCALAIRE (RÃ‰EL)
 !
 !       IN   NLIG    :  NOMBRE DE LIGNES DE LA MATRICE
 !       IN   NCOL    :  NOMBRE DE COLONNES DE LA MATRICE

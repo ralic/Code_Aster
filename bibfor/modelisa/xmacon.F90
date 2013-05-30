@@ -184,7 +184,7 @@ subroutine xmacon(char, noma, nomo)
             call cesexi('C', jcesd, jcesl, ima, 1,&
                         1, 1, iad)
             if (iad .eq. 0) goto 210
-! --- RECUPERATION DU NUMÉRO DE FISSURE LOCAL
+! --- RECUPERATION DU NUMÃ‰RO DE FISSURE LOCAL
             nfiss = zi(jcesd-1+5+4*(ima-1)+2)
             do 220 ifiss = 1, nfiss
                 call cesexi('C', jcesd, jcesl, ima, 1,&

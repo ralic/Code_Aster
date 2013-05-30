@@ -51,7 +51,7 @@ subroutine xcface(elref, lsn, lst, jgrlsn, igeom,&
 ! person_in_charge: samuel.geniaut at edf.fr
 ! TOLE CRS_1404
 !                     TROUVER LES PTS D'INTERSECTION ENTRE LES ARETES
-!                      ET LE PLAN DE FISSURE ET DÉCOUPAGE EN FACETTES
+!                      ET LE PLAN DE FISSURE ET DÃ‰COUPAGE EN FACETTES
 !
 !     ENTREE
 !       ELREF    : ELEMENT DE REFERENCE
@@ -60,8 +60,8 @@ subroutine xcface(elref, lsn, lst, jgrlsn, igeom,&
 !       JGRLSN   : ADRESSE DU GRADIENT DE LA LEVEL SET NORMALE
 !       IGEOM    : ADRESSE DES COORDONNEES DES NOEUDS DE L'ELT PARENT
 !       ENR      : VALEUR DE L'ATTRIBUT DE L'ELEMENT
-!       NFISS    : NOMBRE DE FISSURES VUES DANS L'ÉLÉMENT
-!       IFISS    : NUMÉRO DE LA FISSURE EN COURS
+!       NFISS    : NOMBRE DE FISSURES VUES DANS L'Ã‰LÃ‰MENT
+!       IFISS    : NUMÃ‰RO DE LA FISSURE EN COURS
 !       FISCO    : NUM ET COEF DES FISS SUR LESQUELLES IFISS SE BRANCHE
 !       NFISC    : NOMBRE DE FISSURES SUR LESQUELLES IFISS SE BRANCHE
 !       NOMA     : NOM DU MAILLAGE
@@ -96,7 +96,7 @@ subroutine xcface(elref, lsn, lst, jgrlsn, igeom,&
 !
     eps=-1.0d-10
 !
-!   PREC PERMET D"EVITER LES ERREURS DE PRÉCISION CONDUISANT
+!   PREC PERMET D"EVITER LES ERREURS DE PRÃ‰CISION CONDUISANT
 !   A IA=IN=0 POUR LES MAILLES DU FRONT
     prec = 1000*r8prem()
     minlsn = 1*r8maem()
@@ -118,9 +118,9 @@ subroutine xcface(elref, lsn, lst, jgrlsn, igeom,&
 !     1) RECHERCHE DES POINTS D'INTERSECTION
 !     --------------------------------------
 !
-!     VECTEUR REEL À ZXAIN COMPOSANTES, POUR CHAQUE PT D'INTER :
-!     - NUMÉRO ARETE CORRESPONDANTE         (0 SI C'EST UN NOEUD SOMMET)
-!     - NUMÉRO NOEUD SI NOEUD SOMMET        (0 SINON)
+!     VECTEUR REEL Ã€ ZXAIN COMPOSANTES, POUR CHAQUE PT D'INTER :
+!     - NUMÃ‰RO ARETE CORRESPONDANTE         (0 SI C'EST UN NOEUD SOMMET)
+!     - NUMÃ‰RO NOEUD SI NOEUD SOMMET        (0 SINON)
 !     - LONGUEUR DE L'ARETE
 !     - POSITION DU PT SUR L'ARETE          (0 SI C'EST UN NOEUD SOMMET)
 !     - ARETE VITALE                        (0 SI NON)
@@ -224,7 +224,7 @@ subroutine xcface(elref, lsn, lst, jgrlsn, igeom,&
                     if (lajpc) then
                         lsjc=lsja(1)-beta*(lsjb(1)-lsja(1))
 !             ON RETIENT LE NUM D'ARETE AVEC LE SIGNE -
-!             POUR REPÉRER L'ARETE DANS XAINT2
+!             POUR REPÃ‰RER L'ARETE DANS XAINT2
                         if (abs(lsjc) .lt. 1d-12) nc = -abs(nc)
                     endif
                 endif
@@ -243,7 +243,7 @@ subroutine xcface(elref, lsn, lst, jgrlsn, igeom,&
 !
 100  end do
 !
-!     RECHERCHE SPECIFIQUE POUR LES ELEMENTS INTERSECTÉES
+!     RECHERCHE SPECIFIQUE POUR LES ELEMENTS INTERSECTÃ‰ES
     if (nfisc .gt. 0) then
         call xcfacj(pinter, ptmax, ipt, ainter, lsn,&
                     igeom, nno, ndim, nfiss, ifiss,&

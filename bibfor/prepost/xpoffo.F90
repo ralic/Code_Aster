@@ -42,10 +42,10 @@ subroutine xpoffo(ndim, ndime, elrefp, nnop, igeom,&
 !   IN
 !     NDIM   : DIMENSION DU MAILLAGE
 !     NDIME  : DIMENSION TOPOLOGIQUE DE LA MAILLE PARENT
-!     ELREFP : ÉLÉMENT DE RÉFÉRENCE PARENT
+!     ELREFP : Ã‰LÃ‰MENT DE RÃ‰FÃ‰RENCE PARENT
 !     NNOP   : NOMBRE DE NOEUDS DE L'ELEMENT PARENT
-!     IGEOM  : COORDONNÉES DES NOEUDS DE L'ÉLÉMENT PARENT
-!     CO     : COORDONNÉES DU NOUVEAU NOEUD
+!     IGEOM  : COORDONNÃ‰ES DES NOEUDS DE L'Ã‰LÃ‰MENT PARENT
+!     CO     : COORDONNÃ‰ES DU NOUVEAU NOEUD
 !
 !   OUT
 !     FF    : FONCTIONS DE FORMES DE L'ELEMENT PARENT AU NOUVEAU NOEUD
@@ -67,7 +67,7 @@ subroutine xpoffo(ndim, ndime, elrefp, nnop, igeom,&
                     r0, r0)
 !
 !
-!     CAS DES ELEMENTS DE BORDS : C PLUS COMPLIQUÉ
+!     CAS DES ELEMENTS DE BORDS : C PLUS COMPLIQUÃ‰
 !     ON NE PROCEDE PAS COMME DANS TE0036 CAR ICI, ON N'EST PAS
 !     DANS UNE BOUCLE SUR LES SOUS-ELEMENTS
     else if (ndim.ne.ndime) then
@@ -99,7 +99,7 @@ subroutine xpoffo(ndim, ndime, elrefp, nnop, igeom,&
             nd(2) = -ab(1)
         endif
 !
-!       COORDONNÉES DES NOEUDS DE L'ELREFP DANS LE REPÈRE LOCAL
+!       COORDONNÃ‰ES DES NOEUDS DE L'ELREFP DANS LE REPÃˆRE LOCAL
         geomlo='&&TE0036.GEOMLO'
         call wkvect(geomlo, 'V V R', nnop*ndime, igeolo)
         do 114 ino = 1, nnop
@@ -111,7 +111,7 @@ subroutine xpoffo(ndim, ndime, elrefp, nnop, igeom,&
             if (ndime .eq. 2) zr(igeolo-1+ndime*(ino-1)+2)=ddot(ndim,an, 1,y ,1 )
 114      continue
 !
-!       COORDONNÉES RÉELLES LOCALES DU POINT EN QUESTION : COLOC
+!       COORDONNÃ‰ES RÃ‰ELLES LOCALES DU POINT EN QUESTION : COLOC
         do 116 j = 1, ndim
             an(j)=co(j)-a(j)
 116      continue

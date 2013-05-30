@@ -264,7 +264,7 @@ subroutine te0047(optioz, nomtez)
     endif
 !
 !     Dans les cas *_ELAS, les comportements qui ont une matrice de
-!     décharge sont : ELAS DIS_GRICRA
+!     dÃ©charge sont : ELAS DIS_GRICRA
     if ((option(10:14).eq.'_ELAS') .and. (zk16(icompo).ne.'ELAS') .and.&
         (zk16(icompo).ne.'DIS_GRICRA')) then
         messak(1) = nomte

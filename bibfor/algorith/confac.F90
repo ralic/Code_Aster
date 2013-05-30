@@ -26,7 +26,7 @@ subroutine confac(typma, ft, nbft, f, nbf)
 ! ======================================================================
 ! person_in_charge: samuel.geniaut at edf.fr
 !
-!    RENVOIE LA MATRICE DE CONNECTIVITÉ :
+!    RENVOIE LA MATRICE DE CONNECTIVITÃ‰ :
 !                   1) DES FACES TRIANGULARISEES D'UNE MAILLE
 !                   2) DES FACES (USUELLES) D'UNE MAILLE
 !
@@ -37,9 +37,9 @@ subroutine confac(typma, ft, nbft, f, nbf)
 !              TYPMA : TYPE DE LA MAILLE
 !
 !    SORTIE :
-!              FT   : MATRICE DE CONNECTIVITÉ DES FACES TRIANGULARISEES
+!              FT   : MATRICE DE CONNECTIVITÃ‰ DES FACES TRIANGULARISEES
 !              NBFT : NOMBRE DE FACES TRIANGULARISEES
-!              F    : MATRICE DE CONNECTIVITÉ DES FACES
+!              F    : MATRICE DE CONNECTIVITÃ‰ DES FACES
 !              NBF  : NOMBRE DE FACES
 !     ------------------------------------------------------------------
 !
@@ -55,7 +55,7 @@ subroutine confac(typma, ft, nbft, f, nbf)
 !
     if (typma(1:4) .eq. 'HEXA') then
         nbft=12
-!       CONNECTIVITÉ DES FACES TRIANGLES POUR UNE MAILLE HEXA8 OU HEXA20
+!       CONNECTIVITÃ‰ DES FACES TRIANGLES POUR UNE MAILLE HEXA8 OU HEXA20
         ft(1,1)=1
         ft(1,2)=2
         ft(1,3)=3
@@ -94,7 +94,7 @@ subroutine confac(typma, ft, nbft, f, nbf)
         ft(12,3)=2
 !
         nbf=6
-!       CONNECTIVITÉ DES FACES POUR UNE MAILLE HEXA8 OU HEXA20
+!       CONNECTIVITÃ‰ DES FACES POUR UNE MAILLE HEXA8 OU HEXA20
         f(1,1)=1
         f(1,2)=2
         f(1,3)=3
@@ -122,7 +122,7 @@ subroutine confac(typma, ft, nbft, f, nbf)
 !
     else if (typma(1:5).eq.'PENTA') then
         nbft=8
-!     CONNECTIVITÉ DES FACES TRIANGLES POUR UNE MAILLE PENTA6 OU PENTA15
+!     CONNECTIVITÃ‰ DES FACES TRIANGLES POUR UNE MAILLE PENTA6 OU PENTA15
         ft(1,1)=1
         ft(1,2)=2
         ft(1,3)=3
@@ -149,7 +149,7 @@ subroutine confac(typma, ft, nbft, f, nbf)
         ft(8,3)=1
 !
         nbf=5
-!       CONNECTIVITÉ DES FACES POUR UNE MAILLE PENTA6 OU PENTA15
+!       CONNECTIVITÃ‰ DES FACES POUR UNE MAILLE PENTA6 OU PENTA15
         f(1,1)=1
         f(1,2)=2
         f(1,3)=3
@@ -173,7 +173,7 @@ subroutine confac(typma, ft, nbft, f, nbf)
 !
     else if (typma(1:5).eq.'PYRAM') then
         nbft=6
-!     CONNECTIVITÉ DES FACES TRIANGLES POUR UNE MAILLE TETRA4 OU TETRA10
+!     CONNECTIVITÃ‰ DES FACES TRIANGLES POUR UNE MAILLE TETRA4 OU TETRA10
         ft(1,1)=1
         ft(1,2)=2
         ft(1,3)=5
@@ -194,7 +194,7 @@ subroutine confac(typma, ft, nbft, f, nbf)
         ft(6,3)=4
 !
         nbf=5
-!       CONNECTIVITÉ DES FACES POUR UNE MAILLE PYRAM5 OU PYRAM13
+!       CONNECTIVITÃ‰ DES FACES POUR UNE MAILLE PYRAM5 OU PYRAM13
 !       F : [ 1 2 5
 !             2 3 5
 !             3 4 5
@@ -223,7 +223,7 @@ subroutine confac(typma, ft, nbft, f, nbf)
 !
     else if (typma.eq.'TETRA4'.or.typma.eq.'TETRA10') then
         nbft=4
-!     CONNECTIVITÉ DES FACES TRIANGLES POUR UNE MAILLE TETRA4 OU TETRA10
+!     CONNECTIVITÃ‰ DES FACES TRIANGLES POUR UNE MAILLE TETRA4 OU TETRA10
         ft(1,1)=1
         ft(1,2)=3
         ft(1,3)=2
@@ -238,7 +238,7 @@ subroutine confac(typma, ft, nbft, f, nbf)
         ft(4,3)=4
 !
         nbf=4
-!       CONNECTIVITÉ DES FACES POUR UNE MAILLE TETRA4 OU TETRA10
+!       CONNECTIVITÃ‰ DES FACES POUR UNE MAILLE TETRA4 OU TETRA10
         f(1,1)=1
         f(1,2)=3
         f(1,3)=2

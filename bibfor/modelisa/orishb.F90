@@ -40,7 +40,7 @@ subroutine orishb(noma)
 !                 LES MAILLES DU GROUPES DE MAILLES DONNES POUR
 !                 QUE LES ELEMETNS SHB8 FONCTIONNENT
 !      ETAPE 1 : LA FACE DU BAS (1234) DOIT AVOIR UNE NORMALE
-!                TOURNEE VERS L'INTÈRIEUR
+!                TOURNEE VERS L'INT√©RIEUR
 !   ARGUMENT        E/S  TYPE         ROLE
 !    NOMA         IN/OUT   K*      NOM DU MAILLAGE
 !

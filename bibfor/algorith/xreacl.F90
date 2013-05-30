@@ -40,7 +40,7 @@ subroutine xreacl(noma, nomo, valinc, resoco)
 !
 ! ROUTINE XFEM (METHODE XFEM - ALGORITHME)
 !
-! MISE À JOUR DU SEUIL DE FROTTEMENT
+! MISE Ã€ JOUR DU SEUIL DE FROTTEMENT
 !
 ! ----------------------------------------------------------------------
 !
@@ -93,7 +93,7 @@ subroutine xreacl(noma, nomo, valinc, resoco)
 !
     call nmchex(valinc, 'VALINC', 'DEPPLU', depplu)
 !
-! --- SI PAS DE CONTACT ALORS ON ZAPPE LA VÉRIFICATION
+! --- SI PAS DE CONTACT ALORS ON ZAPPE LA VÃ‰RIFICATION
 !
     call jeveuo(nomo(1:8)//'.XFEM_CONT', 'L', jxc)
     lcontx = zi(jxc) .ge. 1

@@ -172,7 +172,7 @@ subroutine xmele2(noma, modele, defico, ligrel, nfiss,&
             do 120 i = 1, nmaenr
                 ima = zi(jgrp-1+i)
 !
-! --- RECUPERATION DU NUMÉRO DE SOUS POINT ISPT
+! --- RECUPERATION DU NUMÃ‰RO DE SOUS POINT ISPT
 !
                 do 130 ispt = 1, zi(jnbsp-1+ima)
                     call cesexi('S', jcesd, jcesl, ima, 1,&

@@ -66,53 +66,53 @@ subroutine lcmmop(fami, kpg, ksp, comp, nbcomm,&
 !       OBJETS DE STOCKAGE DES COMPORTEMENTS:
 !           COEFT(*) = Fractions Volumiques et angles de chaque phase
 !                      + COEFFICIENT DE CHAQUE COMPORTEMENT MONOCRSITAL
-!                        pour chaque famille de systèmes de glissement
-!                        à la température actuelle (COEFTF)
-!                       et à la température précédente (COEFTD)
+!                        pour chaque famille de systÃ¨mes de glissement
+!                        Ã  la tempÃ©rature actuelle (COEFTF)
+!                       et Ã  la tempÃ©rature prÃ©cÃ©dente (COEFTD)
 !           NBCOMM = indices des coefficents de chaque comportement
 !                    dans COEFT(*,2)
-!           CPMONO = noms des différentes "briques" de comportement
+!           CPMONO = noms des diffÃ©rentes "briques" de comportement
 !
 !      STRUCTURE DES OBJETS CREES
 !
 !           COEFT(*) : Nombre de monocristaux
 !                        indice debut premier monocristal
-!                        indice debut deuxième monocristal
+!                        indice debut deuxiÃ¨me monocristal
 !..............
 !                        indice debut denier monocristal
-!                        indice des paramètes localisation
+!                        indice des paramÃ¨tes localisation
 !                        Fv et 3 angles par phase
-!           pour chaque monocristal différent
-!                 par famille de système de glissement
-!                    nb coef écoulement + coef,
-!                    nb coef écrou isot + coef,
+!           pour chaque monocristal diffÃ©rent
+!                 par famille de systÃ¨me de glissement
+!                    nb coef Ã©coulement + coef,
+!                    nb coef Ã©crou isot + coef,
 !                    nb coef ecou cine + coef
-!                        puis 2 (ou plus) paramètres localisation
+!                        puis 2 (ou plus) paramÃ¨tres localisation
 !
 !
 !           CPMONO(*) : nom de la methode de localisation
-!                 puis, pour chaque matériau différent
+!                 puis, pour chaque matÃ©riau diffÃ©rent
 !                 nom du monocristal, nombre de familles SG, et,
-!                    par famille de système de glissement
+!                    par famille de systÃ¨me de glissement
 !                       Nom de la famille
 !                       Nom du materiau
-!                       Nom de la loi d'écoulement
-!                       Nom de la loi d'écrouissage isotrope
-!                       Nom de la loi d'écrouissage cinématique
+!                       Nom de la loi d'Ã©coulement
+!                       Nom de la loi d'Ã©crouissage isotrope
+!                       Nom de la loi d'Ã©crouissage cinÃ©matique
 !
 !           NBCOMM(*,3) :
 !                        Colonne 1      Colonne 2      Colonne3
 !                    _____________________________________________
 !
 !            Ligne 1     Nb phases      Nb var.int.   Nb monocristaux
-!                                                     différents
+!                                                     diffÃ©rents
 !   pour chaque phase g  Num ligne g    Ind CPMONO    ind frac vol
 !   ..................
 !   ...................
 !   pour chaque phase
 !   pour la localisation  indice coef   nb param      0
 !   phase g              nb fam g       0            NVIg
-!                ... et pour chaque famille de système de glissement :
+!                ... et pour chaque famille de systÃ¨me de glissement :
 !             famille 1  ind coef       ind coef      ind coef
 !                        ecoulement     ecr iso       ecr cin
 !    .....
@@ -177,7 +177,7 @@ subroutine lcmmop(fami, kpg, ksp, comp, nbcomm,&
     nuvi=7+6*nbphas
     decal=nuvi
 !
-!     E et NU  sont utiles pour les règles de localisation
+!     E et NU  sont utiles pour les rÃ¨gles de localisation
     if (coel(nmat) .eq. 0) then
 !        CAS ISOTROPE
         e=coel(1)
@@ -251,7 +251,7 @@ subroutine lcmmop(fami, kpg, ksp, comp, nbcomm,&
 !
 !              ECROUISSAGE ISOTROPE
 !
-!              DECAL est le début des systemes de glissement de la
+!              DECAL est le dÃ©but des systemes de glissement de la
 !              phase en cours
 !              NVIG est le nombre de variables internes dela phase G
 !
@@ -318,7 +318,7 @@ subroutine lcmmop(fami, kpg, ksp, comp, nbcomm,&
 !
         decal = nuvi
 !
-!         "homogenesisation" des déformations viscoplastiques
+!         "homogenesisation" des dÃ©formations viscoplastiques
         do 20 i = 1, 6
             devi(i)=devi(i)+fv*devg(i)
 20      continue
@@ -347,7 +347,7 @@ subroutine lcmmop(fami, kpg, ksp, comp, nbcomm,&
     do 30 itens = 1, 6
         dvin(itens)= devi(itens)
 30  end do
-!     Norme de DEVP cumulée
+!     Norme de DEVP cumulÃ©e
     dvineq = lcnrts( devi ) / 1.5d0
 !
     dvin(7)= dvineq

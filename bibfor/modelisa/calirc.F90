@@ -172,7 +172,7 @@ subroutine calirc(chargz)
 !
     do 310 iocc = 1, nocc
 !
-!       IL FAUT REMETTRE à ZERO CES 2 OBJETS ENTRE 2 OCCURENCES :
+!       IL FAUT REMETTRE Ã  ZERO CES 2 OBJETS ENTRE 2 OCCURENCES :
         do 10,kk=1,idmax
         zi(idimen-1+kk)=0
 10      continue

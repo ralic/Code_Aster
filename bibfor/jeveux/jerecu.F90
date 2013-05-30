@@ -25,8 +25,8 @@ subroutine jerecu(clas)
     include 'asterfort/jxliro.h'
     character(len=1) :: clas
 ! ----------------------------------------------------------------------
-! MARQUE LIBRES LES ENREGISTREMENTS ASSOCIÉS AUX PETITS OBJETS QUAND
-! L'ENSEMBLE DES OBJETS ASSOCIÉS A ETE DETRUIT
+! MARQUE LIBRES LES ENREGISTREMENTS ASSOCIÃ‰S AUX PETITS OBJETS QUAND
+! L'ENSEMBLE DES OBJETS ASSOCIÃ‰S A ETE DETRUIT
 !
 ! IN  CLAS   : NOM DE CLASSE ASSOCIEE
 ! ----------------------------------------------------------------------

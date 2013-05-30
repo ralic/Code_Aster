@@ -92,7 +92,7 @@ subroutine cfgcin(resoco, matass, solveu, neq, nbliai)
     call jeveuo(ddeplc(1:19)//'.VALE', 'E', jddepc)
     call jeveuo(secmbr(1:19)//'.VALE', 'E', jsecmb)
 !
-! --- INITIALISATION A PARTIR DU CHAMP DE MULTIPLICATEURS INITIAL MU
+! --- INITIALISATION AÂ PARTIR DU CHAMP DE MULTIPLICATEURS INITIAL MU
 ! --- S'IL EST NON-NUL
 !
     norme2 = ddot(nbliai,zr(jmu),1,zr(jmu),1)

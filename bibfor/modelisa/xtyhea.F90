@@ -33,7 +33,7 @@ subroutine xtyhea(nfiss, ifiss, ima, nno, jconx1,&
 !
 ! ----------------------------------------------------------------------
 !
-! OUT NBHEAV   : NOMBRE D'ENRICHISSEMENTS HEAVISIDES DANS L'ÉLÉMENT
+! OUT NBHEAV   : NOMBRE D'ENRICHISSEMENTS HEAVISIDES DANS L'Ã‰LÃ‰MENT
 !
 !
 !

@@ -69,7 +69,7 @@ subroutine op5902(nboccp, compor)
 !     1 : TYPE =2 pour POLYCRISTAL
 !     2 : NBPHAS pour POLYCRISTAL
 !     3 : NVITOT pour POLYCRISTAL
-!     4 : NOMBRE DE MONOCRISTAUX différents
+!     4 : NOMBRE DE MONOCRISTAUX diffÃ©rents
 !     5 : NBFAMILLES DE SYS GLIS pour Phase 1
 !     6 : Numero du MONO 1
 !     7 : NVI du Mono 1
@@ -78,7 +78,7 @@ subroutine op5902(nboccp, compor)
 !     10 : NVI du Mono 2
 !      etc...
 !     avant dernier : dimension de CPRK
-!     nombre de paramètres de localisation
+!     nombre de paramÃ¨tres de localisation
 !
     ncpri=4+3*nboccp+1+1+1
     call wkvect(compor//'.CPRI', 'G V I', ncpri, ipi)
@@ -115,7 +115,7 @@ subroutine op5902(nboccp, compor)
 !
 !     organisation de CPRK :
 !     On ne stocke que les monocristaux DIFFERENTS
-!     1   : Nom méthode localisation
+!     1   : Nom mÃ©thode localisation
 !     2   : Nom Monocristal 1 + NBFAM + CPRK du monocristal 1
 !     n+2 : Nom Monocristal 2 + NBFAM + CPRK du monocristal 2
 !     ..: etc...

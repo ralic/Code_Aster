@@ -43,7 +43,7 @@ subroutine te0548(option, nomte)
 !             MISE A JOUR DE LA COHESION DANS LE CAS COHESIF
 !
 !
-!  OPTION : 'XREACL' (X-FEM MISE À JOUR DU SEUIL DE FROTTEMENT)
+!  OPTION : 'XREACL' (X-FEM MISE Ã€ JOUR DU SEUIL DE FROTTEMENT)
 !
 !  ENTREES  ---> OPTION : OPTION DE CALCUL
 !           ---> NOMTE  : NOM DU TYPE ELEMENT
@@ -142,7 +142,7 @@ subroutine te0548(option, nomte)
 !
 !         CALCUL DE JAC (PRODUIT DU JACOBIEN ET DU POIDS)
 !         ET DES FF DE L'ELEMENT PARENT AU POINT DE GAUSS
-!         ET LA NORMALE ND ORIENTÉE DE ESCL -> MAIT
+!         ET LA NORMALE ND ORIENTÃ‰E DE ESCL -> MAIT
             if (ndim .eq. 3) then
                 call xjacff(elref, elrefc, elc, ndim, fpg,&
                             jptint, ifa, cface, ipgf, nno,&

@@ -55,19 +55,19 @@ subroutine xxnmel(poum, elrefp, elrese, ndim, coorse,&
 !           EN HYPER-ELASTICITE AVEC X-FEM EN 2D ET EN 3D
 !.......................................................................
 !
-! IN  ELREFP  : ÉLÉMENT DE RÉFÉRENCE PARENT
+! IN  ELREFP  : Ã‰LÃ‰MENT DE RÃ‰FÃ‰RENCE PARENT
 ! IN  NDIM    : DIMENSION DE L'ESPACE
-! IN  COORSE  : COORDONNÉES DES SOMMETS DU SOUS-ÉLÉMENT
-! IN  IGEOM   : COORDONNÉES DES NOEUDS DE L'ÉLÉMENT PARENT
-! IN  HE      : VALEUR DE LA FONCTION HEAVISIDE SUR LE SOUS-ÉLT
+! IN  COORSE  : COORDONNÃ‰ES DES SOMMETS DU SOUS-Ã‰LÃ‰MENT
+! IN  IGEOM   : COORDONNÃ‰ES DES NOEUDS DE L'Ã‰LÃ‰MENT PARENT
+! IN  HE      : VALEUR DE LA FONCTION HEAVISIDE SUR LE SOUS-Ã‰LT
 ! IN  NFH     : NOMBRE DE DDL HEAVYSIDE (PAR NOEUD)
 ! IN  DDLC    : NOMBRE DE DDL DE CONTACT (PAR NOEUD)
 ! IN  DDLM    : NOMBRE DE DDL PAR NOEUD MILIEU
 ! IN  NNOPS   : NOMBRE DE NOEUDS SOMMET ELEMENTS PARENT
-! IN  NFE     : NOMBRE DE FONCTIONS SINGULIÈRES D'ENRICHISSEMENT
+! IN  NFE     : NOMBRE DE FONCTIONS SINGULIÃˆRES D'ENRICHISSEMENT
 ! IN  BASLOC  : BASE LOCALE AU FOND DE FISSURE
 ! IN  NNOP    : NOMBRE DE NOEUDS DE L'ELEMENT PARENT
-! IN  NPG     : NOMBRE DE POINTS DE GAUSS DU SOUS-ÉLÉMENT
+! IN  NPG     : NOMBRE DE POINTS DE GAUSS DU SOUS-Ã‰LÃ‰MENT
 ! IN  TYPMOD  : TYPE DE MODELISATION
 ! IN  OPTION  : OPTION DE CALCUL
 ! IN  IMATE   : MATERIAU CODE
@@ -111,14 +111,14 @@ subroutine xxnmel(poum, elrefp, elrese, ndim, coorse,&
     data    angmas /0.d0, 0.d0, 0.d0/
 !--------------------------------------------------------------------
 !
-!     ATTENTION, EN 3D, ZR(IDEPL) ET ZR(VECTU) SONT DIMENSIONNÉS DE
+!     ATTENTION, EN 3D, ZR(IDEPL) ET ZR(VECTU) SONT DIMENSIONNÃ‰S DE
 !     TELLE SORTE QU'ILS NE PRENNENT PAS EN COMPTE LES DDL SUR LES
 !     NOEUDS MILIEU
 !
-!     NOMBRE DE DDL DE DEPLACEMENT À CHAQUE NOEUD SOMMET
+!     NOMBRE DE DDL DE DEPLACEMENT Ã€ CHAQUE NOEUD SOMMET
     ddld = ndim*(1+nfh+nfe)
 !
-!     NOMBRE DE DDL TOTAL (DEPL+CONTACT) À CHAQUE NOEUD SOMMET
+!     NOMBRE DE DDL TOTAL (DEPL+CONTACT) Ã€ CHAQUE NOEUD SOMMET
     ddls = ddld+ddlc
 !
 ! - INITIALISATION
@@ -147,7 +147,7 @@ subroutine xxnmel(poum, elrefp, elrese, ndim, coorse,&
 !     BOUCLE SUR LES POINTS DE GAUSS
     do 1000 kpg = 1, npg
 !
-!       COORDONNÉES DU PT DE GAUSS DANS LE REPÈRE RÉEL : XG
+!       COORDONNÃ‰ES DU PT DE GAUSS DANS LE REPÃˆRE RÃ‰EL : XG
         call vecini(ndim, 0.d0, xg)
         do 100 i = 1, ndim
             do 101 n = 1, nno
@@ -178,7 +178,7 @@ subroutine xxnmel(poum, elrefp, elrese, ndim, coorse,&
 111              continue
 110          continue
 !
-!         FONCTION D'ENRICHISSEMENT AU POINT DE GAUSS ET LEURS DÉRIVÉES
+!         FONCTION D'ENRICHISSEMENT AU POINT DE GAUSS ET LEURS DÃ‰RIVÃ‰ES
             if (ndim .eq. 2) then
                 call xcalf2(he(1), lsng, lstg, baslog, fe,&
                             dgdgl, iret)
@@ -216,7 +216,7 @@ subroutine xxnmel(poum, elrefp, elrese, ndim, coorse,&
 !          CE SERA FAIT PLUS TARD AVEC JAC = JAC X R
         endif
 !
-!       COORDONNÉES DU POINT DE GAUSS DANS L'ÉLÉMENT DE RÉF PARENT : XE
+!       COORDONNÃ‰ES DU POINT DE GAUSS DANS L'Ã‰LÃ‰MENT DE RÃ‰F PARENT : XE
 !       ET CALCUL DE FF, DFDI, ET EPS
         if (option(1:10) .eq. 'RIGI_MECA_' .or. option(1: 9) .eq. 'FULL_MECA' .or.&
             option(1: 9) .eq. 'RAPH_MECA') then
@@ -227,7 +227,7 @@ subroutine xxnmel(poum, elrefp, elrese, ndim, coorse,&
                         'OUI', xe, ff, dfdi, f,&
                         eps, rbid33)
 !
-!       SI OPTION 'RIGI_MECA', ON INITIALISE À 0 LES DEPL
+!       SI OPTION 'RIGI_MECA', ON INITIALISE Ã€ 0 LES DEPL
         else if (option .eq. 'RIGI_MECA') then
             call reeref(elrefp, axi, nnop, nnops, zr(igeom),&
                         xg, idepl, .false., ndim, he,&
@@ -281,7 +281,7 @@ subroutine xxnmel(poum, elrefp, elrese, ndim, coorse,&
 !
 142          continue
 !
-!         ENRICHISSEMENT PAR LES NFE FONTIONS SINGULIÈRES
+!         ENRICHISSEMENT PAR LES NFE FONTIONS SINGULIÃˆRES
             do 145 ig = 1, nfe
                 do 146 i = 1, ndim
                     cpt=cpt+1
@@ -422,7 +422,7 @@ subroutine xxnmel(poum, elrefp, elrese, ndim, coorse,&
             goto 9999
         endif
 !
-! - LOI DE COMPORTEMENT : CALCUL DE S(E) ET DS/DE À PARTIR DE EPS
+! - LOI DE COMPORTEMENT : CALCUL DE S(E) ET DS/DE Ã€ PARTIR DE EPS
 !                       {XX YY ZZ SQRT(2)*XY SQRT(2)*XZ SQRT(2)*YZ}
 !
 !       POUR LES VARIABLES DE COMMANDES (TEMP...), IL EST NECESSSAIRE

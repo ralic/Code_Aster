@@ -168,7 +168,7 @@ subroutine gcou2d(base, resu, noma, nomno, noeud,&
         yi = zr(jfond-1+4*(numfon-1)+2)
         if (.not.ldirec) then
             call u2mess('I', 'XFEM_10')
-!         RÉCUPÉRATION DU GRADIENT DE LST
+!         RÃ‰CUPÃ‰RATION DU GRADIENT DE LST
             grlt = fiss//'.GRLTNO'
             chgrs = '&&GCOU2D.GRLT'
             call cnocns(grlt, 'V', chgrs)
@@ -187,13 +187,13 @@ subroutine gcou2d(base, resu, noma, nomno, noeud,&
             d = sqrt((xi-xm)*(xi-xm)+(yi-ym)*(yi-ym))
             alpha = (d-rinf)/(rsup-rinf)
             if (.not.ldirec) then
-!           LE GRANDIENT EST DÉFINI
+!           LE GRANDIENT EST DÃ‰FINI
                 if (zl(jgtl-1+ndim*(i-1)+1)) then
                     dir(1) = zr(jgt-1+ndim*(i-1)+1)
                     dir(2) = zr(jgt-1+ndim*(i-1)+2)
                     norme = sqrt(dir(1)**2+dir(2)**2)
                 else
-!           LE GRANDIENT N'EST PAS DÉFINI
+!           LE GRANDIENT N'EST PAS DÃ‰FINI
                     dir(1) = 0.d0
                     dir(2) = 0.d0
                     norme = 1.d0

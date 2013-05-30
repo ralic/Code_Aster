@@ -51,8 +51,8 @@ subroutine sh6rig(xetemp, para, re)
 !
 !CCCCCCCCCCCCC ENTREES CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
 !    ON CALCULE LA MATRICE DE RAIDEUR
-!    XETEMP : Coordonnées des noeuds de l'élément
-!    PARA   : Paramètres de matériaux et loi de comportement
+!    XETEMP : CoordonnÃ©es des noeuds de l'Ã©lÃ©ment
+!    PARA   : ParamÃ¨tres de matÃ©riaux et loi de comportement
 !              (VOIR te0473.f)
 !CCCCCCCCCCCCC SORTIE CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
 !
@@ -213,7 +213,7 @@ subroutine sh6rig(xetemp, para, re)
      &         0.d0,0.45d0,0.45d0,&
      &         0.45d0,0.d0,0.45d0/
 !
-! Définition des coeficients constants C1---->C36 qui servent à faire
+! DÃ©finition des coeficients constants C1---->C36 qui servent Ã  faire
 ! des projections:
     data xh01/1.d0,1.d0,0.d0,0.d0,0.d0,0.d0,&
      &          0.d0,0.d0,1.d0,1.d0,0.d0,0.d0,&
@@ -333,7 +333,7 @@ subroutine sh6rig(xetemp, para, re)
         xxh(2,2)=xxg5(ip)*uj(2,2)+uns3*uj(2,3)
         xxh(2,3)=xxg5(ip)*uj(3,2)+uns3*uj(3,3)
 !
-! Définition de la matrice B2:
+! DÃ©finition de la matrice B2:
 !
         call r8inir(108, 0.d0, b2, 1)
         do 240 j = 1, 6
@@ -373,7 +373,7 @@ subroutine sh6rig(xetemp, para, re)
 240      continue
 !
 !
-! Définition de la matrice B5:
+! DÃ©finition de la matrice B5:
 !
         call r8inir(108, 0.d0, b5, 1)
         do 250 j = 1, 6

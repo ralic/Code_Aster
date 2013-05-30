@@ -48,7 +48,7 @@ subroutine hypinc(fami, kpg, ksp, poum, ndim,&
 !
 !     LOI DE COMPORTEMENT HYPERELASTIQUE DE SIGNORINI
 !
-!     C10 (I1-3) + C01 (I2-3)+ C20 (I1-3)^2 + K/2(J-1)²
+!     C10 (I1-3) + C01 (I2-3)+ C20 (I1-3)^2 + K/2(J-1)Â²
 !
 !     POUR LES ELEMENTS ISOPARAMETRIQUES 3D, CP, ET DP
 !

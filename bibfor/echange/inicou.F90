@@ -187,7 +187,7 @@ subroutine inicou(nbpas, tinit, tfin, dt, dtsto,&
 ! ! TYPAL(IPAL)   ! ADR+(IPAL-1)!  TYPE DU PALIER CONSIDERE            !
 ! !               !             !                                      !
 ! ! FINPAL(IPAL)  !  ADR+PALMAX !  TERMINAISON POUR LE PALIER CONSIDERE!
-! !               !  +(IPAL-1)  !  PALIER N°I => _I                    !
+! !               !  +(IPAL-1)  !  PALIER NÂ°I => _I                    !
 ! !               !             !                                      !
 ! ! CNPAL(IPAL)   ! ADR+2*PALMAX!  NOM DU NOEUD ASTER POUR LE PALIER   !
 ! !               !  +(IPAL-1)  !  CONSIDERE                           !

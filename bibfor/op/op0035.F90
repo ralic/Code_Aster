@@ -113,7 +113,7 @@ subroutine op0035()
 !       SI LE FICHIER EST RESERVE OU OUVERT LE NOM EST MIS DANS LA TABLE
 !             K*255 = 4*K*80 = (1,80)+(81,160)+(161,240)+(241,255)
 !                                 80      80        80        15
-!           5 COLONNES SONT AJOUTÉES A LA LIGNE K DE LA TABLE
+!           5 COLONNES SONT AJOUTÃ‰ES A LA LIGNE K DE LA TABLE
                 call tbajco(result, 'NOMFIC1', 'K80', 1, ibid,&
                             rbid, cbid, kfic( 1: 80), 'A', k)
                 call tbajco(result, 'NOMFIC2', 'K80', 1, ibid,&

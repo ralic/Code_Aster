@@ -25,7 +25,7 @@ subroutine intenc(nbna, jac, vectx, vecty, mat11,&
 !
 !     BUT:
 !         CALCUL DES TERMES PAR NOEUD POUR UNE INTEGRATION
-!         DE NEWTON-COTES À 2 OU 3 POINTS DU TYPE :
+!         DE NEWTON-COTES Ã€ 2 OU 3 POINTS DU TYPE :
 !              (
 !              |     (VECT-MAT.N)**2 dBORD
 !              )BORD

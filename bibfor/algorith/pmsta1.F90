@@ -84,7 +84,7 @@ subroutine pmsta1(sigm, sigp, deps, vim, vip,&
         call tbajpa(tabinc, nbpar, nompar, typpar)
 !
 !        VR CONTIENT L'ACCROISSEMENT DE VARIABLES INTERNES
-!        ATTENTION, VR EST LIMITE A  9999 VALEURS
+!        ATTENTION, VR EST LIMITE AÂ  9999 VALEURS
         call dcopy(nbvita, vip, 1, vr(1+ncmp+6+3), 1)
         call daxpy(nbvita, -1.d0, vim, 1, vr(1+ncmp+6+3),&
                    1)

@@ -42,7 +42,7 @@ subroutine xmtbca(noma, defico, resoco, valinc, mmcvca)
 !
 ! ROUTINE XFEM (CONTACT - GRANDS GLISSEMENTS)
 !
-! MISE À JOUR DU STATUT DES POINTS DE CONTACT
+! MISE Ã€ JOUR DU STATUT DES POINTS DE CONTACT
 ! ET RENVOIE MMCVCA (INDICE DE CONVERGENCE DE LA BOUCLE
 ! SUR LES CONTRAINTES ACTIVES)
 !
@@ -163,7 +163,7 @@ subroutine xmtbca(noma, defico, resoco, valinc, mmcvca)
                     nbout, lpaout, lchout)
     endif
 !
-! --- ON RECUPÈRE LES VARIABLES CHANGEMENT DE STATUT/STATUT/MEMCO
+! --- ON RECUPÃˆRE LES VARIABLES CHANGEMENT DE STATUT/STATUT/MEMCO
 !
     call jeveuo(cindco//'.CELV', 'L', jvalv)
     call jeveuo(cindco//'.CELD', 'L', jvald)
@@ -181,7 +181,7 @@ subroutine xmtbca(noma, defico, resoco, valinc, mmcvca)
             if (zi(jvalv-1+adiel) .eq. 0) goto 20
             ipc = -zi(jad-1+iel)
             group = zr(jtabf+ztabf*(ipc-1)+4)
-! --- SI LE POINT D'INTEGRATION N'APPARTIENT PAS À UN GROUPE, ON SORT
+! --- SI LE POINT D'INTEGRATION N'APPARTIENT PAS Ã€ UN GROUPE, ON SORT
             if (group .eq. 0.d0) goto 20
 ! --- SI LE POINT EST VITAL OU NON CONTACTANT, ON SORT
             if (zr(jtabf+ztabf*(ipc-1)+27) .eq. 1) goto 20
@@ -224,7 +224,7 @@ subroutine xmtbca(noma, defico, resoco, valinc, mmcvca)
 10  end do
 !
 ! --- MISE A JOUR DU STATUT DE CONTACT ET DE LA MEMOIRE DE CONTACT,
-! --- SINCO = SOMME DES CICOCA SUR LES ÉLTS DU LIGREL
+! --- SINCO = SOMME DES CICOCA SUR LES Ã‰LTS DU LIGREL
 !
     do 60 igr = 1, ngrel
         debgr = zi(jvald-1+4+igr)
@@ -240,7 +240,7 @@ subroutine xmtbca(noma, defico, resoco, valinc, mmcvca)
 60  end do
 !
 !
-! --- SI SINCO EST STRICTEMENT POSITIF, ON A PAS CONVERGÉ
+! --- SI SINCO EST STRICTEMENT POSITIF, ON A PAS CONVERGÃ‰
 !
     if (sinco .gt. 0) mmcvca = .false.
 !

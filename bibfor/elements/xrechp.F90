@@ -190,8 +190,8 @@ subroutine xrechp(ndim, elrefp, nnop, igeom, itps,&
         do 200 ipgf = 1, npgf
 !
 !         CALCUL DE JAC (PRODUIT DU JACOBIEN ET DU POIDS)
-!         ET DES FF DE L'ÉLÉMENT PARENT AU POINT DE GAUSS
-!         ET LA NORMALE ND ORIENTÉE DE ESCL -> MAIT
+!         ET DES FF DE L'Ã‰LÃ‰MENT PARENT AU POINT DE GAUSS
+!         ET LA NORMALE ND ORIENTÃ‰E DE ESCL -> MAIT
 !         ET DE XG : COORDONNEES REELLES DU POINT DE GAUSS
             elrefc='NON'
             if (ndim .eq. 3) then

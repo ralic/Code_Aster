@@ -89,7 +89,7 @@ subroutine xfabor(noma, cnxinv, nunoa, nunob, nunoc,&
 !       NDIME : DIMENSION TOPOLOGIQUE DE LA MAILLE
         ndime= zi(jtmdim-1+itypma)
 !
-!       SI MAILLE NON VOLUMIQUE ON CONTINUE À 100
+!       SI MAILLE NON VOLUMIQUE ON CONTINUE Ã€ 100
         if (ndime .ne. 3) goto 100
 !
 !       BOUCLE SUR LES MAILLES CONTENANT LE NOEUD B
@@ -101,7 +101,7 @@ subroutine xfabor(noma, cnxinv, nunoa, nunob, nunoc,&
 !
             ndime= zi(jtmdim-1+itypma)
 !
-!         SI MAILLE NON VOLUMIQUE ON CONTINUE À 110
+!         SI MAILLE NON VOLUMIQUE ON CONTINUE Ã€ 110
             if (ndime .ne. 3) goto 110
 !
 !         SI LA MAILLE EST EN COMMUN AUX NOEUDS A ET B,
@@ -115,7 +115,7 @@ subroutine xfabor(noma, cnxinv, nunoa, nunob, nunoc,&
 !
                     ndime= zi(jtmdim-1+itypma)
 !
-!             SI MAILLE NON VOLUMIQUE ON CONTINUE À 120
+!             SI MAILLE NON VOLUMIQUE ON CONTINUE Ã€ 120
                     if (ndime .ne. 3) goto 120
 !
 !             SI LA MAILLE EST EN COMMUN AUX NOEUDS B ET C (ET A),

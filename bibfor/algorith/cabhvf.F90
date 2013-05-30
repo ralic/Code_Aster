@@ -32,7 +32,7 @@ subroutine cabhvf(maxfa, maxdim, ndim, nno, nnos,&
 ! NFACE :         NOMBRE DE FACES
 ! KINT  :         PERMEABILITE INTRINSEQUE (DIAGONALE)
 ! MFACE :         MESURE DES FACES
-! DFACE :         DISTANCE DU CENTRE DE GRAVITÉ AUX FACES
+! DFACE :         DISTANCE DU CENTRE DE GRAVITÃ‰ AUX FACES
 ! DFACE :         N EST PAS XG - XFACE
 ! XFACE(1:MAXDIM,1:MAXFA) : COORDONNES DES CENTRES DE FACES
 ! NORMFA(1:MAXDIM,1:MAXFA) :NORMALE SORTANTE
@@ -141,7 +141,7 @@ subroutine cabhvf(maxfa, maxdim, ndim, nno, nnos,&
             normfa(2,ifa)= t(1,ifa)/mface(ifa)
  3      continue
 !  SI ON UTILISE LE CENTRE DU CERCLE CIRCONSCRIT ET QUE NOTRE
-!  MAILLAGE EST COMPOSÉ DE TRIANGLE UNIQUEMENT
+!  MAILLAGE EST COMPOSÃ‰ DE TRIANGLE UNIQUEMENT
 !
         if (uticer) then
             do 4 is = 1, nnos
@@ -153,7 +153,7 @@ subroutine cabhvf(maxfa, maxdim, ndim, nno, nnos,&
                 sa=sa+a(is)
  4          continue
 !
-! CALCUL DES COORDONNÉES DU CERCLE CIRCONSCRIT
+! CALCUL DES COORDONNÃ‰ES DU CERCLE CIRCONSCRIT
             do 31 idim = 1, 2
                 do 32 is = 1, nnos
                     xc(idim)=xc(idim)+geom(idim,is)*a(is)/sa

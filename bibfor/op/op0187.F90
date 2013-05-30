@@ -109,7 +109,7 @@ subroutine op0187()
 !
 !     ------------------------------------------------------------------
 !     4. TRAITEMENT DES MAILLES DE MAILC
-!            LES MAILLES DE MAILC ET LES NOEUDS ASSOCIÉS SONT COPIES
+!            LES MAILLES DE MAILC ET LES NOEUDS ASSOCIÃ‰S SONT COPIES
 !            DANS MAXFEM A L'IDENTIQUE
 !     ------------------------------------------------------------------
 !

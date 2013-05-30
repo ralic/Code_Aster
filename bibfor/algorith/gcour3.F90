@@ -23,7 +23,7 @@ subroutine gcour3(resu, noma, coorn, lnoff, trav1,&
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 !
-! FONCTION REALISÉE:   DANS LE CADRE DE X-FEM
+! FONCTION REALISÃ‰E:   DANS LE CADRE DE X-FEM
 !
 ! 1.  POUR CHAQUE NOEUD DU FOND DE FISSURE GAMM0 ON RECUPERE
 !     LE TRIPLET ( MODULE(THETA), RINF, RSUP )
@@ -117,7 +117,7 @@ subroutine gcour3(resu, noma, coorn, lnoff, trav1,&
 !
 !          -----------------------
 !
-!     RÉCUPÉRATION DES GRADIENTS DE LST
+!     RÃ‰CUPÃ‰RATION DES GRADIENTS DE LST
     cnsgt='&&GCOUR3.CNSGT'
     call cnocns(grlt, 'V', cnsgt)
     call jeveuo(cnsgt//'.CNSV', 'L', jgt)
@@ -175,7 +175,7 @@ subroutine gcour3(resu, noma, coorn, lnoff, trav1,&
         call wkvect(chamno, 'V V R', 3*nbno, itheta)
 !
 !
-!       VOIR RÉFÉRENCE BOOK I (05/01/2004)
+!       VOIR RÃ‰FÃ‰RENCE BOOK I (05/01/2004)
         if (k .ne. (ndimte+1)) then
 !
             if (thlag2) then

@@ -109,7 +109,7 @@ subroutine apksp(kptsc)
     endif
     call assert(ierr.eq.0)
 !
-!     -- paramètres numériques :
+!     -- paramÃ¨tres numÃ©riques :
 !     --------------------------
 !
 !     -- nb iter max :
@@ -127,7 +127,7 @@ subroutine apksp(kptsc)
                           ierr)
     call assert(ierr.eq.0)
 !
-!     - pour suivre les itérations de Krylov
+!     - pour suivre les itÃ©rations de Krylov
 !     --------------------------------------
     if (niv .ge. 2) then
         call KSPMonitorSet(ksp, KSPMonitorTrueResidualNorm, PETSC_NULL_OBJECT,&

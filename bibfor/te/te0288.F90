@@ -36,8 +36,8 @@ subroutine te0288(option, nomte)
 ! ======================================================================
 !
 !    - FONCTION REALISEE:  CALCUL DES OPTIONS DE POST-TRAITEMENT
-!                          EN MÉCANIQUE DE LA RUPTURE
-!                          POUR LES ÉLÉMENTS X-FEM (OPTION CALC_G)
+!                          EN MÃ‰CANIQUE DE LA RUPTURE
+!                          POUR LES Ã‰LÃ‰MENTS X-FEM (OPTION CALC_G)
 !
 !             ATTENTION : PAS D'ETAT INITIAL
 !                         PAS DE GRANDES DEF, GRANDES ROT
@@ -74,7 +74,7 @@ subroutine te0288(option, nomte)
     call elref4(' ', 'RIGI', ndim, nnop, ibid,&
                 ibid, ibid, ibid, ibid, ibid)
 !
-!     SI LA VALEUR DE THETA EST NULLE SUR L'ÉLÉMENT, ON SORT
+!     SI LA VALEUR DE THETA EST NULLE SUR L'Ã‰LÃ‰MENT, ON SORT
     compt = 0
     do 10 i = 1, nnop
         thet = 0.d0
@@ -120,7 +120,7 @@ subroutine te0288(option, nomte)
 !              CALCUL DE G SUR L'ELEMENT MASSIF
 !     ------------------------------------------------------------------
 !
-!     PARAMÈTRES PROPRES À X-FEM
+!     PARAMÃˆTRES PROPRES Ã€ X-FEM
 !
     call jevech('PPINTTO', 'L', jpintt)
     call jevech('PCNSETO', 'L', jcnset)
@@ -140,7 +140,7 @@ subroutine te0288(option, nomte)
 !     CALCUL DES FORCES NODALES CORRESPONDANT AUX CHARGES VOLUMIQUES
     call xcgfvo(option, ndim, nnop, fno, rho)
 !
-!     RÉCUPÉRATION DE LA SUBDIVISION DE L'ÉLÉMENT EN NSE SOUS ELEMENT
+!     RÃ‰CUPÃ‰RATION DE LA SUBDIVISION DE L'Ã‰LÃ‰MENT EN NSE SOUS ELEMENT
     nse=zi(jlonch-1+1)
 !
 !       BOUCLE D'INTEGRATION SUR LES NSE SOUS-ELEMENTS
@@ -200,7 +200,7 @@ subroutine te0288(option, nomte)
 70      continue
     endif
 !
-!     SI LA VALEUR DE LA PRESSION EST NULLE SUR L'ÉLÉMENT, ON SORT
+!     SI LA VALEUR DE LA PRESSION EST NULLE SUR L'Ã‰LÃ‰MENT, ON SORT
     compt = 0
     do 90 i = 1, nnop
         if (option .eq. 'CALC_G') pres = abs(zr(ipres-1+i))
@@ -216,7 +216,7 @@ subroutine te0288(option, nomte)
     call jevech('PLONGCO', 'L', jlongc)
     call jevech('PBASECO', 'L', jbasec)
 !
-!     RÉCUPÉRATIONS DES DONNÉES SUR LA TOPOLOGIE DES FACETTES
+!     RÃ‰CUPÃ‰RATIONS DES DONNÃ‰ES SUR LA TOPOLOGIE DES FACETTES
     ninter=zi(jlongc-1+1)
     nface=zi(jlongc-1+2)
     nptf=zi(jlongc-1+3)
@@ -230,7 +230,7 @@ subroutine te0288(option, nomte)
 !
 !     RECUPERATION DES DONNEES MATERIAU AU 1ER POINT DE GAUSS DE
 !     DE L'ELEMENT PARENT !!
-!     LE MATÉRIAU DOIT ETRE HOMOGENE DANS TOUT L'ELEMENT
+!     LE MATÃ‰RIAU DOIT ETRE HOMOGENE DANS TOUT L'ELEMENT
     call rcvad2('RIGI', 1, 1, '+', zi(imate),&
                 'ELAS', 3, nomres, valres, devres,&
                 icodre)

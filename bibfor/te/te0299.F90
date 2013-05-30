@@ -38,7 +38,7 @@ subroutine te0299(option, nomte)
 ! ======================================================================
 !
 !     BUT:
-!       CALCUL DES FACTEURS D'INTENSITÉ DES CONTRAINTES
+!       CALCUL DES FACTEURS D'INTENSITÃ‰ DES CONTRAINTES
 !       A PARTIR DE LA FORME BILINEAIRE SYMETRIQUE G ET
 !       DES DEPLACEMENTS SINGULIERS EN FOND DE FISSURE
 !      POUR LES ELEMENTS ISOPARAMETRIQUES 2D
@@ -367,8 +367,8 @@ subroutine te0299(option, nomte)
             iret=1
         else
 !         LE POINT EST SUR LE FOND DE FISSURE :
-!         L'ANGLE N'EST PAS DÉFINI, ON LE MET À ZÉRO
-!         ON NE FERA PAS LE CALCUL DES DÉRIVÉES
+!         L'ANGLE N'EST PAS DÃ‰FINI, ON LE MET Ã€ ZÃ‰RO
+!         ON NE FERA PAS LE CALCUL DES DÃ‰RIVÃ‰ES
             phig=0.d0
             iret=0
         endif
@@ -377,7 +377,7 @@ subroutine te0299(option, nomte)
 ! ----- CAR ON SE TROUVE SUR LE FOND DE FISSURE
         call assert(iret.ne.0)
 !
-! ----- BASE LOCALE ASSOCIÉE AU POINT DE GAUSS KP
+! ----- BASE LOCALE ASSOCIÃ‰E AU POINT DE GAUSS KP
 !
         e1(1) = a
         e1(2) = b

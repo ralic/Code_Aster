@@ -21,14 +21,14 @@ subroutine conare(typma, ar, nbar)
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-!                       RENVOIE LA MATRICE DE CONNECTIVITÉ DES
+!                       RENVOIE LA MATRICE DE CONNECTIVITÃ‰ DES
 !                       ARETES D'UNE MAILLE DE TYPE TYPMA
 !
 !    ENTREE :
 !              TYPMA : TYPE DE LA MAILLE (TYPE_MAILLE)
 !
 !    SORTIE :
-!              AR   : MATRICE DE CONNECTIVITÉ DES ARETES
+!              AR   : MATRICE DE CONNECTIVITÃ‰ DES ARETES
 !              NBAR : NOMBRE D'ARETES
 !......................................................................
 !
@@ -43,7 +43,7 @@ subroutine conare(typma, ar, nbar)
 !
     if (typma .eq. 'HEXA8') then
         nbar=12
-!       CONNECTIVITÉ DES ARETES POUR UNE MAILLE HEXA8
+!       CONNECTIVITÃ‰ DES ARETES POUR UNE MAILLE HEXA8
         ar(1,1)=1
         ar(1,2)=2
         ar(2,1)=2
@@ -70,7 +70,7 @@ subroutine conare(typma, ar, nbar)
         ar(12,2)=8
     else if (typma.eq.'HEXA20') then
         nbar=12
-!       CONNECTIVITÉ DES ARETES POUR UNE MAILLE HEXA20
+!       CONNECTIVITÃ‰ DES ARETES POUR UNE MAILLE HEXA20
         ar(1,1)=1
         ar(1,2)=2
         ar(1,3)=9
@@ -109,7 +109,7 @@ subroutine conare(typma, ar, nbar)
         ar(12,3)=16
     else if (typma.eq.'PENTA6') then
         nbar=9
-!       CONNECTIVITÉ DES ARETES POUR UNE MAILLE PENTA6 OU PENTA15
+!       CONNECTIVITÃ‰ DES ARETES POUR UNE MAILLE PENTA6 OU PENTA15
         ar(1,1)=1
         ar(1,2)=2
         ar(2,1)=2
@@ -130,7 +130,7 @@ subroutine conare(typma, ar, nbar)
         ar(9,2)=6
     else if (typma.eq.'PENTA15') then
         nbar=9
-!       CONNECTIVITÉ DES ARETES POUR UNE MAILLE PENTA6 OU PENTA15
+!       CONNECTIVITÃ‰ DES ARETES POUR UNE MAILLE PENTA6 OU PENTA15
         ar(1,1)=1
         ar(1,2)=2
         ar(1,3)=7
@@ -160,7 +160,7 @@ subroutine conare(typma, ar, nbar)
         ar(9,3)=12
     else if (typma.eq.'PYRAM5') then
         nbar=8
-!       CONNECTIVITÉ DES ARETES POUR UNE MAILLE PYRAM5 OU PYRAM13
+!       CONNECTIVITÃ‰ DES ARETES POUR UNE MAILLE PYRAM5 OU PYRAM13
         ar(1,1)=1
         ar(1,2)=2
         ar(2,1)=2
@@ -179,7 +179,7 @@ subroutine conare(typma, ar, nbar)
         ar(8,2)=5
     else if (typma.eq.'PYRAM13') then
         nbar=8
-!       CONNECTIVITÉ DES ARETES POUR UNE MAILLE PYRAM5 OU PYRAM13
+!       CONNECTIVITÃ‰ DES ARETES POUR UNE MAILLE PYRAM5 OU PYRAM13
         ar(1,1)=1
         ar(1,2)=2
         ar(1,3)=6
@@ -206,7 +206,7 @@ subroutine conare(typma, ar, nbar)
         ar(8,3)=13
     else if (typma.eq.'TETRA4') then
         nbar=6
-!       CONNECTIVITÉ DES ARETES POUR UNE MAILLE TETRA4 OU TETRA10
+!       CONNECTIVITÃ‰ DES ARETES POUR UNE MAILLE TETRA4 OU TETRA10
         ar(1,1)=1
         ar(1,2)=2
         ar(2,1)=1
@@ -221,7 +221,7 @@ subroutine conare(typma, ar, nbar)
         ar(6,2)=4
     else if (typma.eq.'TETRA10') then
         nbar=6
-!       CONNECTIVITÉ DES ARETES POUR UNE MAILLE TETRA4 OU TETRA10
+!       CONNECTIVITÃ‰ DES ARETES POUR UNE MAILLE TETRA4 OU TETRA10
         ar(1,1)=1
         ar(1,2)=2
         ar(1,3)=5
@@ -242,7 +242,7 @@ subroutine conare(typma, ar, nbar)
         ar(6,3)=10
     else if (typma.eq.'QUAD4') then
         nbar=4
-!       CONNECTIVITÉ DES ARETES POUR UNE MAILLE QUAD4
+!       CONNECTIVITÃ‰ DES ARETES POUR UNE MAILLE QUAD4
         ar(1,1)=1
         ar(1,2)=2
         ar(2,1)=2
@@ -253,7 +253,7 @@ subroutine conare(typma, ar, nbar)
         ar(4,2)=1
     else if (typma.eq.'QUAD8') then
         nbar=4
-!       CONNECTIVITÉ DES ARETES POUR UNE MAILLE QUAD8
+!       CONNECTIVITÃ‰ DES ARETES POUR UNE MAILLE QUAD8
         ar(1,1)=1
         ar(1,2)=2
         ar(1,3)=5
@@ -268,7 +268,7 @@ subroutine conare(typma, ar, nbar)
         ar(4,3)=8
     else if (typma.eq.'TRIA3') then
         nbar=3
-!       CONNECTIVITÉ DES ARETES POUR UNE MAILLE TRIA3
+!       CONNECTIVITÃ‰ DES ARETES POUR UNE MAILLE TRIA3
         ar(1,1)=1
         ar(1,2)=2
         ar(2,1)=2
@@ -277,7 +277,7 @@ subroutine conare(typma, ar, nbar)
         ar(3,2)=1
     else if (typma.eq.'TRIA6') then
         nbar=3
-!       CONNECTIVITÉ DES ARETES POUR UNE MAILLE TRIA6
+!       CONNECTIVITÃ‰ DES ARETES POUR UNE MAILLE TRIA6
         ar(1,1)=1
         ar(1,2)=2
         ar(1,3)=4
@@ -289,12 +289,12 @@ subroutine conare(typma, ar, nbar)
         ar(3,3)=6
     else if (typma.eq.'SEG2') then
         nbar=1
-!       CONNECTIVITÉ DES ARETES POUR UNE MAILLE SEG2
+!       CONNECTIVITÃ‰ DES ARETES POUR UNE MAILLE SEG2
         ar(1,1)=1
         ar(1,2)=2
     else if (typma.eq.'SEG3') then
         nbar=1
-!       CONNECTIVITÉ DES ARETES POUR UNE MAILLE SEG3
+!       CONNECTIVITÃ‰ DES ARETES POUR UNE MAILLE SEG3
         ar(1,1)=1
         ar(1,2)=2
         ar(1,3)=3

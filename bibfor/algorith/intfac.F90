@@ -89,7 +89,7 @@ subroutine intfac(noma, nmaabs, ifq, fa, nno,&
     prec2= 1.d-4
     codret = 0
 !
-!     INITIALISATION DES COORDONNÈES (LS) DES NOEUDS DE LA FACE
+!     INITIALISATION DES COORDONN√©ES (LS) DES NOEUDS DE LA FACE
     call vecini(8, 0.d0, coorma)
     lsta=0.d0
     lsna=0.d0
@@ -186,7 +186,7 @@ subroutine intfac(noma, nmaabs, ifq, fa, nno,&
 !
     if (.not. chgsgn) goto 999
 !
-!     ON CHERCHE SUR LA MAILLE LE POINT CORRESPONDANT ‡ LSN=LST=0
+!     ON CHERCHE SUR LA MAILLE LE POINT CORRESPONDANT √† LSN=LST=0
     mp(1)=0.d0
     mp(2)=0.d0
     call reereg('C', alias, nnof, coorma, mp,&
@@ -209,7 +209,7 @@ subroutine intfac(noma, nmaabs, ifq, fa, nno,&
     mp(1)=epsi(1)
     mp(2)=epsi(2)
 !     ON DOIT MAINTENANT MULTIPLIER LES COORD. PARAM. DE M PAR CHACUNE
-!     DES FF DES NOEUDS DE L'ÈLÈMENT POUR OBTENIR LES COORD. CART.
+!     DES FF DES NOEUDS DE L'√©L√©MENT POUR OBTENIR LES COORD. CART.
     call elrfvf(alias, mp, nnof, ff, nne)
     do 230 i = 1, ndim
         do 240 j = 1, nnof

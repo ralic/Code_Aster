@@ -37,7 +37,7 @@ subroutine xtopoc(modele)
 !
 ! ROUTINE XFEM (METHODE XFEM - PREPARATION)
 !
-! AJOUTER À LA SD FISS_XFEM LES DONNÉES TOPOLOGIQUES CONCERNANT
+! AJOUTER Ã€ LA SD FISS_XFEM LES DONNÃ‰ES TOPOLOGIQUES CONCERNANT
 ! LES FACETTES DE CONTACT
 !
 ! ----------------------------------------------------------------------
@@ -101,7 +101,7 @@ subroutine xtopoc(modele)
     champ(7) = modele(1:8)//'.TOPOFAC.HE'
 !
 ! --- POUR LE MULTI-HEAVISIDE, TOUS LES CHAMPS DE SORTIE SONT
-! --- DUPLIQUÉS PAR LE NOMBRE DE FISSURES VUES
+! --- DUPLIQUÃ‰S PAR LE NOMBRE DE FISSURES VUES
 !
     call jeveuo('&&XTYELE.NBSP', 'L', jnbsp)
     call dismoi('F', 'NB_MA_MAILLA', noma, 'MAILLAGE', nbma,&

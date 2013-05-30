@@ -179,7 +179,7 @@ subroutine cesred(ces1z, nbma, lima, nbcmp, licmp,&
 !        MAILLES. TOUTES LES MAILLES SONT DONC AFFECTEES ET SE
 !        RETROUVE AVEC LE MEME NOMBRE DE COMPOSANTES. IL SE PEUT
 !        EGALEMENT QUE LE NOMBRE DE COMPOSANTES SUR CERTAINE MAILLES
-!        SOIT SUPÉRIEUR A CE QU'IL ETAIT PRECEDEMMENT, ON NE PEUT DONC
+!        SOIT SUPÃ‰RIEUR A CE QU'IL ETAIT PRECEDEMMENT, ON NE PEUT DONC
 !        PAS UTILISER ZI(JNBCMP) QUI EST LE MIN ==> -NBCMP
         call cescre(base, ces2, typces, ma, nomgd,&
                     ncmp2, licmp, zi(jnbpt), zi(jnbsp), -nbcmp)

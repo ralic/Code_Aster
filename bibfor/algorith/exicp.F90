@@ -42,7 +42,7 @@ function exicp(modele, mesmai, nbma)
 ! IN  MESMAI : LISTE DES MAILLES SUR LESQUELLES ON FAIT LE TEST
 ! IN  NBMA   : NOMBRE DE MAILLES DANS MESMAI
 !              SI NBMA = 0  ON FAIT LE TEST SUR TOUTES LES MAILLES DU
-!              MAILLAGE ASSOCIÉE AU MODELE
+!              MAILLAGE ASSOCIÃ‰E AU MODELE
 ! OUT EXICP : .TRUE. SI C_PLAN TROUVE
 !
 ! ----------------------------------------------------------------------

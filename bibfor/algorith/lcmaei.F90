@@ -161,7 +161,7 @@ subroutine lcmaei(fami, kpg, ksp, poum, nmater,&
     else if (necris(1:10).eq.'MONO_DD_CC') then
         nbval=1
         nomres(1)='TAU_F'
-!         on limite au strict minimum. tout est dans l'écoulement
+!         on limite au strict minimum. tout est dans l'Ã©coulement
         call rcvalb(fami, kpg, ksp, poum, imat,&
                     nmater, necris, 0, ' ', 0.d0,&
                     nbval, nomres, vallue, icodre, 1)

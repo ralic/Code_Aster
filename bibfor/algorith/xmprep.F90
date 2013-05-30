@@ -65,7 +65,7 @@ subroutine xmprep(cface, contac, elref, elrefc, elc,&
 !
 ! --- CALCUL DE JAC (PRODUIT DU JACOBIEN ET DU POIDS)
 ! --- ET DES FF DE L'ELEMENT PARENT AU POINT DE GAUSS
-! --- ET LA NORMALE ND ORIENTÉE DE ESCL -> MAIT
+! --- ET LA NORMALE ND ORIENTÃ‰E DE ESCL -> MAIT
 !
     if (ndim .eq. 3) then
         call xjacff(elref, elrefc, elc, ndim, fpg,&

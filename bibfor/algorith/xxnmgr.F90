@@ -62,18 +62,18 @@ subroutine xxnmgr(elrefp, elrese, ndim, coorse, igeom,&
 !     TRAVAIL EFFECTUE EN COLLABORATION AVEC I.F.P.
 !.......................................................................
 !
-! IN  ELREFP  : ÉLÉMENT DE RÉFÉRENCE PARENT
+! IN  ELREFP  : Ã‰LÃ‰MENT DE RÃ‰FÃ‰RENCE PARENT
 ! IN  NDIM    : DIMENSION DE L'ESPACE
-! IN  COORSE  : COORDONNÉES DES SOMMETS DU SOUS-ÉLÉMENT
-! IN  IGEOM   : COORDONNÉES DES NOEUDS DE L'ÉLÉMENT PARENT
-! IN  HE      : VALEUR DE LA FONCTION HEAVISIDE SUR LE SOUS-ÉLT
+! IN  COORSE  : COORDONNÃ‰ES DES SOMMETS DU SOUS-Ã‰LÃ‰MENT
+! IN  IGEOM   : COORDONNÃ‰ES DES NOEUDS DE L'Ã‰LÃ‰MENT PARENT
+! IN  HE      : VALEUR DE LA FONCTION HEAVISIDE SUR LE SOUS-Ã‰LT
 ! IN  NFH     : NOMBRE DE DDL HEAVYSIDE (PAR NOEUD)
 ! IN  DDLC    : NOMBRE DE DDL DE CONTACT (PAR NOEUD)
 ! IN  DDLM    : NOMBRE DE DDL PAR NOEUD MILIEU (EN 2D)
-! IN  NFE     : NOMBRE DE FONCTIONS SINGULIÈRES D'ENRICHISSEMENT
+! IN  NFE     : NOMBRE DE FONCTIONS SINGULIÃˆRES D'ENRICHISSEMENT
 ! IN  BASLOC  : BASE LOCALE AU FOND DE FISSURE AUX NOEUDS
 ! IN  NNOP    : NOMBRE DE NOEUDS DE L'ELEMENT PARENT
-! IN  NPG     : NOMBRE DE POINTS DE GAUSS DU SOUS-ÉLÉMENT
+! IN  NPG     : NOMBRE DE POINTS DE GAUSS DU SOUS-Ã‰LÃ‰MENT
 ! IN  TYPMOD  : TYPE DE MODELISATION
 ! IN  OPTION  : OPTION DE CALCUL
 ! IN  IMATE   : MATERIAU CODE
@@ -117,11 +117,11 @@ subroutine xxnmgr(elrefp, elrese, ndim, coorse, igeom,&
     data    rind1 / 0.5d0 , 0.5d0 , 0.5d0 , 1.d0, 1.d0, 1.d0 /
 !--------------------------------------------------------------------
 !
-!     NOMBRE DE DDL DE DEPLACEMENT À CHAQUE NOEUD SOMMET
+!     NOMBRE DE DDL DE DEPLACEMENT Ã€ CHAQUE NOEUD SOMMET
     ddld = ndim*(1+nfh+nfe)
     ddldn = ddld/ndim
 !
-!     NOMBRE DE DDL TOTAL (DEPL+CONTACT) À CHAQUE NOEUD SOMMET
+!     NOMBRE DE DDL TOTAL (DEPL+CONTACT) Ã€ CHAQUE NOEUD SOMMET
     ddls = ddld+ddlc
 !
 !     RECUPERATION DU NOMBRE DE NOEUDS SOMMETS DE L'ELEMENT PARENT
@@ -159,7 +159,7 @@ subroutine xxnmgr(elrefp, elrese, ndim, coorse, igeom,&
 ! - CALCUL POUR CHAQUE POINT DE GAUSS DU SOUS-ELEMENT
     do 1000 kpg = 1, npg
 !
-!       COORDONNÉES DU PT DE GAUSS DANS LE REPÈRE RÉEL : XG
+!       COORDONNÃ‰ES DU PT DE GAUSS DANS LE REPÃˆRE RÃ‰EL : XG
         call vecini(ndim, 0.d0, xg)
         do 100 i = 1, ndim
             do 101 n = 1, nno
@@ -188,7 +188,7 @@ subroutine xxnmgr(elrefp, elrese, ndim, coorse, igeom,&
 111              continue
 110          continue
 !
-!         FONCTION D'ENRICHISSEMENT AU POINT DE GAUSS ET LEURS DÉRIVÉES
+!         FONCTION D'ENRICHISSEMENT AU POINT DE GAUSS ET LEURS DÃ‰RIVÃ‰ES
             if (ndim .eq. 2) then
                 call xcalf2(he, lsng, lstg, baslog, fe,&
                             dgdgl, iret)
@@ -201,7 +201,7 @@ subroutine xxnmgr(elrefp, elrese, ndim, coorse, igeom,&
             call assert(iret.ne.0)
         endif
 !
-!       COORDONNÉES DU POINT DE GAUSS DANS L'ÉLÉMENT DE RÉF PARENT : XE
+!       COORDONNÃ‰ES DU POINT DE GAUSS DANS L'Ã‰LÃ‰MENT DE RÃ‰F PARENT : XE
 !       ET CALCUL DE FF, DFDI, EPSM ET EPSP
 !       CALCUL EN T-
         call reeref(elrefp, axi, nnop, nnops, zr(igeom),&
@@ -264,7 +264,7 @@ subroutine xxnmgr(elrefp, elrese, ndim, coorse, igeom,&
                     if (ndim .eq. 2) def(3,n,cpt) = 0.d0
 153              continue
 152          continue
-!         ENRICHISSEMENT PAR LES NFE FONTIONS SINGULIÈRES
+!         ENRICHISSEMENT PAR LES NFE FONTIONS SINGULIÃˆRES
             do 155 ig = 1, nfe
                 do 156 i = 1, ndim
                     cpt = ndim*(1+nfh+ig-1)+i
@@ -361,7 +361,7 @@ subroutine xxnmgr(elrefp, elrese, ndim, coorse, igeom,&
 ! - CALCUL DE LA MATRICE DE RIGIDITE
         if (rigi) then
 !
-!          RIGIDITÉ GEOMETRIQUE
+!          RIGIDITÃ‰ GEOMETRIQUE
             do 190 n = 1, nnop
                 nn=dec(n)
 !

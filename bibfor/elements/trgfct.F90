@@ -3,7 +3,7 @@ subroutine trgfct(fcttab)
 !
 !     TRGFCT
 !
-!      CALCUL DES PARAMETRES TRIGONOMÉTRIQUES POUR LES (36) FACETTES
+!      CALCUL DES PARAMETRES TRIGONOMÃ‰TRIQUES POUR LES (36) FACETTES
 !
 !_____________________________________________________________________
 !            CONFIGURATION MANAGEMENT OF EDF VERSION

@@ -16,7 +16,7 @@
 /*    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.     */
 /* ================================================================== */
 /* disable the message "line too long" because the code is generated  */
-# aslint: disable=C3001
+/* aslint: disable=C3001 */
 
 #ifndef DEFINITION_H
 #define DEFINITION_H

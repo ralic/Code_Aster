@@ -42,17 +42,17 @@ subroutine xrige3(elrefp, ndim, coorse, igeom, he,&
 !         CALCUL  DE L'OPTION RIGI_MECA_GE AVEC X-FEM EN 3D
 !
 !
-! IN  ELREFP  : ÉLÉMENT DE RÉFÉRENCE PARENT
+! IN  ELREFP  : Ã‰LÃ‰MENT DE RÃ‰FÃ‰RENCE PARENT
 ! IN  NDIM    : DIMENSION DE L'ESPACE
-! IN  COORSE  : COORDONNÉES DES SOMMETS DU SOUS-ÉLÉMENT
-! IN  IGEOM   : COORDONNÉES DES NOEUDS DE L'ÉLÉMENT PARENT
-! IN  HE      : VALEUR DE LA FONCTION HEAVISIDE SUR LE SOUS-ÉLT
+! IN  COORSE  : COORDONNÃ‰ES DES SOMMETS DU SOUS-Ã‰LÃ‰MENT
+! IN  IGEOM   : COORDONNÃ‰ES DES NOEUDS DE L'Ã‰LÃ‰MENT PARENT
+! IN  HE      : VALEUR DE LA FONCTION HEAVISIDE SUR LE SOUS-Ã‰LT
 ! IN  DDLH    : NOMBRE DE DDL HEAVYSIDE (PAR NOEUD)
 ! IN  DDLC    : NOMBRE DE DDL DE CONTACT (PAR NOEUD)
-! IN  NFE     : NOMBRE DE FONCTIONS SINGULIÈRES D'ENRICHISSEMENT
+! IN  NFE     : NOMBRE DE FONCTIONS SINGULIÃˆRES D'ENRICHISSEMENT
 ! IN  BASLOC  : BASE LOCALE AU FOND DE FISSURE AUX NOEUDS
 ! IN  NNOP    : NOMBRE DE NOEUDS DE L'ELEMENT PARENT
-! IN  NPG     : NOMBRE DE POINTS DE GAUSS DU SOUS-ÉLÉMENT
+! IN  NPG     : NOMBRE DE POINTS DE GAUSS DU SOUS-Ã‰LÃ‰MENT
 ! IN  TYPMOD  : TYPE DE MODELISATION
 ! IN  LGPG    : "LONGUEUR" DES VARIABLES INTERNES POUR 1 POINT DE GAUSS
 !               CETTE LONGUEUR EST UN MAJORANT DU NBRE REEL DE VAR. INT.
@@ -82,20 +82,20 @@ subroutine xrige3(elrefp, ndim, coorse, igeom, he,&
     data    rac2 / 1.4142135623731D0 /
 !--------------------------------------------------------------------
 !
-!     ATTENTION, DEPL ET VECTU SONT ICI DIMENSIONNÉS DE TELLE SORTE
+!     ATTENTION, DEPL ET VECTU SONT ICI DIMENSIONNÃ‰S DE TELLE SORTE
 !     QU'ILS NE PRENNENT PAS EN COMPTE LES DDL SUR LES NOEUDS MILIEU
 !
-!     NOMBRE DE DDL DE DEPLACEMENT À CHAQUE NOEUD SOMMET
+!     NOMBRE DE DDL DE DEPLACEMENT Ã€ CHAQUE NOEUD SOMMET
     ddld=ndim+ddlh+ndim*nfe
     ddldn = ddld/ndim
 !
-!     NOMBRE DE DDL TOTAL (DEPL+CONTACT) À CHAQUE NOEUD SOMMET
+!     NOMBRE DE DDL TOTAL (DEPL+CONTACT) Ã€ CHAQUE NOEUD SOMMET
     ddls=ddld+ddlc
 !     ELEMENT DE REFERENCE PARENT : RECUP DE NNOPS
     call elref4(' ', 'RIGI', ibid, ibid, nnops,&
                 ibid, ibid, ibid, ibid, ibid)
 !
-!       TE4-'XINT' : SCHÉMAS À 15 POINTS
+!       TE4-'XINT' : SCHÃ‰MAS Ã€ 15 POINTS
     call elref5('TE4', 'XINT', ndimb, nno, nnos,&
                 npgbis, ipoids, jcoopg, ivf, idfde,&
                 jdfd2, jgano)
@@ -103,10 +103,10 @@ subroutine xrige3(elrefp, ndim, coorse, igeom, he,&
     call assert(npg.eq.npgbis.and.ndim.eq.ndimb)
 !
 !-----------------------------------------------------------------------
-!     BOUCLE SUR LES POINTS DE GAUSS DU SOUS-TÉTRA
+!     BOUCLE SUR LES POINTS DE GAUSS DU SOUS-TÃ‰TRA
     do 100 kpg = 1, npg
 !
-!       COORDONNÉES DU PT DE GAUSS DANS LE REPÈRE RÉEL : XG
+!       COORDONNÃ‰ES DU PT DE GAUSS DANS LE REPÃˆRE RÃ‰EL : XG
         call vecini(ndim, 0.d0, xg)
         do 110 i = 1, ndim
             do 111 n = 1, nno
@@ -135,7 +135,7 @@ subroutine xrige3(elrefp, ndim, coorse, igeom, he,&
 114              continue
 113          continue
 !
-!         FONCTION D'ENRICHISSEMENT AU POINT DE GAUSS ET LEURS DÉRIVÉES
+!         FONCTION D'ENRICHISSEMENT AU POINT DE GAUSS ET LEURS DÃ‰RIVÃ‰ES
             call xcalfe(he, lsng, lstg, baslog, fe,&
                         dgdgl, iret)
 !         ON A PAS PU CALCULER LES DERIVEES DES FONCTIONS SINGULIERES
@@ -144,7 +144,7 @@ subroutine xrige3(elrefp, ndim, coorse, igeom, he,&
 !
         endif
 !
-!       COORDONNÉES DU POINT DE GAUSS DANS L'ÉLÉMENT DE RÉF PARENT : XE
+!       COORDONNÃ‰ES DU POINT DE GAUSS DANS L'Ã‰LÃ‰MENT DE RÃ‰F PARENT : XE
 !       ET CALCUL DE FF, DFDI, ET EPS
 !
         call reeref(elrefp, .false., nnop, nnops, zr(igeom),&

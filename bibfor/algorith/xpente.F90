@@ -26,21 +26,21 @@ subroutine xpente(pl, cnse, n1, n2, n3,&
 ! ======================================================================
 ! person_in_charge: samuel.geniaut at edf.fr
 !
-!                      DÉCOUPER LE SOUS-PENTA EN SOUS-TETRAS
+!                      DÃ‰COUPER LE SOUS-PENTA EN SOUS-TETRAS
 !
 !     ENTREE
 !       PL                : PLACE DU 1ER SOUS-TETRA DANS CNSE
 !       N1,N2,N3,N4,N5,N6 : NUMEROS DES NOEUDS DU PENTA
 !
 !     SORTIE
-!       CNSE      : CONNECTIVITE NOMBRE DE SOUS-ÉLÉMENTS (TÉTRAS)
+!       CNSE      : CONNECTIVITE NOMBRE DE SOUS-Ã‰LÃ‰MENTS (TÃ‰TRAS)
 !     ------------------------------------------------------------------
 !
 ! ----------------------------------------------------------------------
 !
     call jemarq()
 !
-!     ON REMPLIT 3 SOUS TETRAS DE CNSE À PARTIR DE LA PLACE PL
+!     ON REMPLIT 3 SOUS TETRAS DE CNSE Ã€ PARTIR DE LA PLACE PL
     cnse(pl,1)=n1
     cnse(pl,2)=n5
     cnse(pl,3)=n2

@@ -228,7 +228,7 @@ subroutine op0113()
     call initel(ligr2)
 !
 !-----------------------------------------------------------------------
-!     6)  CALCUL DU DÉCOUPAGE EN SOUS-TETRAS, DES FACETTES DE CONTACT
+!     6)  CALCUL DU DÃ‰COUPAGE EN SOUS-TETRAS, DES FACETTES DE CONTACT
 !         ET VERIFICATION DES CRITERES DE CONDITIONNEMENT
 !-----------------------------------------------------------------------
 !

@@ -32,7 +32,7 @@ subroutine lc0030(fami, kpg, ksp, ndim, imate,&
     character(len=8) :: typmod(*)
     character(len=*) :: fami
 !
-!      Lois de comportement intégrées en IMPLICITE seulement
+!      Lois de comportement intÃ©grÃ©es en IMPLICITE seulement
     call plasti(fami, kpg, ksp, typmod, imate,&
                 compor, crit, instam, instap, tm,&
                 tp, tref, epsm, deps, sigm,&

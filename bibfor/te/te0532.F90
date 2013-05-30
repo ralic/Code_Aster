@@ -44,7 +44,7 @@ subroutine te0532(option, nomte)
 ! person_in_charge: samuel.geniaut at edf.fr
 !.......................................................................
 !
-!                CONTACT X-FEM MÉTHODE CONTINUE :
+!                CONTACT X-FEM MÃ‰THODE CONTINUE :
 !         CONVERGENCE DE LA BOUCLE SUR LES CONTRAINTES ACTIVES
 !
 !
@@ -110,7 +110,7 @@ subroutine te0532(option, nomte)
 !.
     call elelin(contac, elref, elrefc, ibid, ibid)
 !
-!     RECUPERATION DES ENTRÉES / SORTIE
+!     RECUPERATION DES ENTRÃ‰ES / SORTIE
     call jevech('PGEOMER', 'L', igeom)
 !     DEPLACEMENT TOTAL COURANT (DEPPLU) : 'PDEPL_P'
     call jevech('PDEPL_P', 'L', idepl)
@@ -247,9 +247,9 @@ subroutine te0532(option, nomte)
 !
                     if (indco .eq. 0) then
 !
-!              ON REGARDE LA DISTANCE DN DES POINTS SUPPOSÉS
+!              ON REGARDE LA DISTANCE DN DES POINTS SUPPOSÃ‰S
 !              NON CONTACTANTS :
-!              INTERPÉNÉPRATION EQUIVAUT À DN > 0 (ICI DN > 1E-16 )
+!              INTERPÃ‰NÃ‰PRATION EQUIVAUT Ã€ DN > 0 (ICI DN > 1E-16 )
 !
                         if (dn .gt. prec) then
                             zi(jout2-1+nbspg+isspg) = 1
@@ -280,7 +280,7 @@ subroutine te0532(option, nomte)
                         endif
 !
                     else
-!                SI INDCO N'EST NI ÉGAL À 0 NI ÉGAL À 1:
+!                SI INDCO N'EST NI Ã‰GAL Ã€ 0 NI Ã‰GAL Ã€ 1:
 !                PROBLEME DE STATUT DE CONTACT.
                         call assert(indco.eq.0.or.indco.eq.1)
                     endif

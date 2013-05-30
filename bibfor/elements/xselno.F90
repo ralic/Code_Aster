@@ -74,7 +74,7 @@ subroutine xselno(nno, nnop, nbsig, nse, ndim,&
         nbseco(i)=0
 446  end do
 !
-!       BOUCLE SUR LES NSE SOUS-ÉLÉMENTS
+!       BOUCLE SUR LES NSE SOUS-Ã‰LÃ‰MENTS
     do 210 ise = 1, nse
 !
 !       BOUCLE SUR LES 4/3 SOMMETS DU SOUS-TETRA/TRIA

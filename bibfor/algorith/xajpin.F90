@@ -31,19 +31,19 @@ subroutine xajpin(ndim, list, long, ipt, cpt,&
 ! ======================================================================
 ! person_in_charge: samuel.geniaut at edf.fr
 !         AJOUTER UN POINT D'INTERSECTION DANS UNE LISTE
-!              ET INFORMATIONS COMPLÉMENTAIRES SUR LES ARETES
+!              ET INFORMATIONS COMPLÃ‰MENTAIRES SUR LES ARETES
 !
 !     ENTREE
 !       NDIM   : DIMENSION DU MAILLAGE
 !       LIST   : LA LISTE
 !       LONG   : LONGUEUR MAX DE LA LISTE
 !       IPT    : LONGUEUR DE LA LISTE AVANT AJOUT
-!       CPT    : COMPTEUR SPÉCIFIQUE
+!       CPT    : COMPTEUR SPÃ‰CIFIQUE
 !       NEWPT  : COORDONNES DU POINT A AJOUTER
 !       LONGAR : LONGUEUR DE L'ARETE
 !       AINTER : LISTE DES ARETES
 !       IA     : NUMERO DE L'ARETE (0 SI NOEUD SOMMET)
-!       IN     : NUMÉRO NOEUD SI NOEUD SOMMET        (0 SINON)
+!       IN     : NUMÃ‰RO NOEUD SI NOEUD SOMMET        (0 SINON)
 !       AL     : POSITION DU PT SUR L'ARETE (0.D0 SI NOEUD SOMMET)
 !     SORTIE
 !       LIST,AINTER

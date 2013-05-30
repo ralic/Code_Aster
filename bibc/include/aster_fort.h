@@ -182,11 +182,11 @@ extern void DEFSSPSPPPP(U2MESG, u2mesg, char *, STRING_SIZE, char *, STRING_SIZE
     char *, STRING_SIZE, INTEGER *, INTEGER *, INTEGER *, DOUBLE *);
 #ifdef _STRLEN_AT_END
 #define CALL_U2MESG(cod, idmess, nk, valk, ni, vali, nr, valr) \
-    F_FUNC(U2MESG, u2mesg)(cod, idmess, nk, valk, ni, vali, nr, valr, strlen(cod),
+    F_FUNC(U2MESG, u2mesg)(cod, idmess, nk, valk, ni, vali, nr, valr, strlen(cod), \
                            strlen(idmess), VALK_SIZE)
 #else
 #define CALL_U2MESG(cod, idmess, nk, valk, ni, vali, nr, valr) \
-    F_FUNC(U2MESG, u2mesg)(cod, strlen(cod), idmess, strlen(idmess), nk, valk, VALK_SIZE,
+    F_FUNC(U2MESG, u2mesg)(cod, strlen(cod), idmess, strlen(idmess), nk, valk, VALK_SIZE, \
                            ni, vali, nr, valr)
 #endif
 

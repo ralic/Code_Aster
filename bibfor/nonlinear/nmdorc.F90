@@ -71,7 +71,7 @@ subroutine nmdorc(modelz, compoz, carcri)
     call getres(k8b, k16bid, nomcmd)
 !
 !     MOCLEF= COMP_INCR / COMP_ELAS SUIVANT LES COMMANDES APPELANTES
-!     CRILOC = EXISTENCE DE CRITÈRES LOCAUX DE CONVERGENCE
+!     CRILOC = EXISTENCE DE CRITÃˆRES LOCAUX DE CONVERGENCE
 !     MECA=COMMANDES MECANIQUE
 !
     if (nomcmd(1:13) .eq. 'THER_NON_LINE') then

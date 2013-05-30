@@ -78,7 +78,7 @@ subroutine xajuls(noma, nbma, cnslt, cnsln, jconx1,&
 !
     d2=999.d0
 !
-!     COMPTEUR DES LSN ET LST MODIFIÉES
+!     COMPTEUR DES LSN ET LST MODIFIÃ‰ES
     clsm=0
     mai=noma//'.TYPMAIL'
     call jeveuo(mai, 'L', jma)

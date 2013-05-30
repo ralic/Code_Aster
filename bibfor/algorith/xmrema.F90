@@ -72,7 +72,7 @@ subroutine xmrema(jcesd, jcesv, jcesl, noma, ndim,&
 !
 !
 !  JCES*(1)  : POINTEURS DE LA SD SIMPLE NB DE FACETTES ET DE PT D'INTER
-!  JCES*(4)  : POINTEURS DE LA SD SIMPLE DE CONNECTIVITÉ DES FACETTES
+!  JCES*(4)  : POINTEURS DE LA SD SIMPLE DE CONNECTIVITÃ‰ DES FACETTES
 !  JCES*(6)  : POINTEURS DE LA SD SIMPLE DES COOR DES PT D'INTER MAITRE
 ! IN  NOMA   : NOM DU MAILLAGE
 ! IN  DEFICO : SD POUR LA DEFINITION DE CONTACT
@@ -82,8 +82,8 @@ subroutine xmrema(jcesd, jcesv, jcesl, noma, ndim,&
 ! IN  IZONE  : ZONE DE CONTACT DU POINT D'INTEGRATION ESCLAVE
 ! IN  STATUE : STATUM DE LA MAILLE ESCLAVE
 ! IN  PMAIT  : NUMERO LOCAL DU POINT D'INTERSECTION LE PLUS PROCHE
-! IN  AMAIT  : NUMERO LOCAL DE L'ARETE INTERSECTÉ
-! IN  NMAIT  : NUMERO LOCAL DU NOEUD INTERSECTÉ
+! IN  AMAIT  : NUMERO LOCAL DE L'ARETE INTERSECTÃ‰
+! IN  NMAIT  : NUMERO LOCAL DU NOEUD INTERSECTÃ‰
 ! IN  MMAIT  : NUMERO DE LA MAILLE MAITRE CONTENANT LE PMAIT
 ! IN  GEOM   : COORDONNEES DU POINT DE CONTACT
 ! IN  NUMMAE : NUMERO ABSOLU DANS LE MAILLAGE DE LA MAILLE ESCLAVE
@@ -222,7 +222,7 @@ subroutine xmrema(jcesd, jcesv, jcesl, noma, ndim,&
 !
 200  continue
 !
-! --- BOUCLE SUR LES MAILLES FISSURÉES
+! --- BOUCLE SUR LES MAILLES FISSURÃ‰ES
 !
     do 100 ima = 1, ntmae
 !
@@ -239,7 +239,7 @@ subroutine xmrema(jcesd, jcesv, jcesl, noma, ndim,&
 !
         if (amait .gt. 0) then
 !
-! ----- SI LE POINT DE CONTACT EST SUR UNE ARÊTE
+! ----- SI LE POINT DE CONTACT EST SUR UNE ARÃŠTE
 ! ----- ON BOUCLE SUR LES ARETES DE LA MAILLE COURANTE
 ! ----- ON REGARDE SI L'ARETE APPARTIENT A CETTE MAILLE
 !
@@ -352,7 +352,7 @@ subroutine xmrema(jcesd, jcesv, jcesl, noma, ndim,&
 100  end do
 !
     if (nummin .eq. 0 .and. (.not.lappar)) then
-!       DEUXIÈME CHANCE
+!       DEUXIÃˆME CHANCE
         lappar = .true.
         goto 200
     endif

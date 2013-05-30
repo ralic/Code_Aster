@@ -190,7 +190,7 @@ function nmchcr(dp)
                     dksi(i)=0.d0
                 endif
 124          continue
-!            test partie positive de <n:n*>. Utilité ?
+!            test partie positive de <n:n*>. UtilitÃ© ?
 !            NNE=0.D0
 !            DO I=1,NDIMSI
 !            NNE=NNE+DEPSP(I)*DKSI(I)

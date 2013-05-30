@@ -109,7 +109,7 @@ subroutine xoripe(modele)
     call jeveuo(chlsn//'.CESV', 'L', jlsnv)
 !
 !     ------------------------------------------------------------------
-!     I°) CREATION DE LA LISTE DES NUMEROS DES MAILLES DE PEAU ENRICHIES
+!     IÂ°) CREATION DE LA LISTE DES NUMEROS DES MAILLES DE PEAU ENRICHIES
 !     ------------------------------------------------------------------
 !
     grmape='&&XORIPE.GRMAPE'
@@ -153,7 +153,7 @@ subroutine xoripe(modele)
     if (nbmail .eq. 0) goto 999
 !
 !     ------------------------------------------------------------------
-!     II°) RECHERCHE DES MAILLES SUPPORT
+!     IIÂ°) RECHERCHE DES MAILLES SUPPORT
 !     ------------------------------------------------------------------
     call assert(ndim.eq.2.or.ndim.eq.3)
     if (ndim .eq. 2) kdim='2D'
@@ -166,7 +166,7 @@ subroutine xoripe(modele)
     call jeveuo(nomob, 'L', jm3d)
 !
 !     ------------------------------------------------------------------
-!     III°) CREATION DU VECTEUR DES NORMALES SORTANTES
+!     IIIÂ°) CREATION DU VECTEUR DES NORMALES SORTANTES
 !     ------------------------------------------------------------------
 !
     vecnor='&&XORIPE.VECNOR'
@@ -181,7 +181,7 @@ subroutine xoripe(modele)
         nbnobo=zi(jconx2+numab) - zi(jconx2+numab-1)
         nbnopr=zi(jconx2+numapr) - zi(jconx2+numapr-1)
 !
-!       GBO : CENTRE DE GRAVITÉ DE LA MAILLE DE BORD
+!       GBO : CENTRE DE GRAVITÃ‰ DE LA MAILLE DE BORD
         call vecini(3, 0.d0, gbo)
         do 310 ino = 1, nbnobo
             nuno=zi(jconx1-1+zi(jconx2+numab-1)+ino-1)
@@ -190,7 +190,7 @@ subroutine xoripe(modele)
 311          continue
 310      continue
 !
-!     GPR : CENTRE DE GRAVITÉ DE LA MAILLE PRICIPALE
+!     GPR : CENTRE DE GRAVITÃ‰ DE LA MAILLE PRICIPALE
         call vecini(3, 0.d0, gpr)
         do 320 ino = 1, nbnopr
             nuno=zi(jconx1-1+zi(jconx2+numapr-1)+ino-1)
@@ -214,7 +214,7 @@ subroutine xoripe(modele)
 !
 !
 !     ------------------------------------------------------------------
-!     IV°) ORIENTATION DES SOUS-ELEMENTS
+!     IVÂ°) ORIENTATION DES SOUS-ELEMENTS
 !     ------------------------------------------------------------------
 !
     chs(1) = '&&XORIPE.PINTTO'
@@ -244,7 +244,7 @@ subroutine xoripe(modele)
 401      continue
 !
         numab =zi(jmail-1+ima)
-! --- CA NE SERT A RIEN DE RECUPERER NDIME CAR ON A SELECTIONNÉ NUMAB
+! --- CA NE SERT A RIEN DE RECUPERER NDIME CAR ON A SELECTIONNÃ‰ NUMAB
 ! --- TEL QUE NDIME = NDIM-1 (BOUCLE 120)
         ndime= zi(jtmdim-1+zi(jtypma-1+numab))
         nfiss = zi(jcesd(4)-1+5+4*(numab-1)+2)

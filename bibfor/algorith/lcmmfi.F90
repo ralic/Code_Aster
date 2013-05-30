@@ -73,7 +73,7 @@ subroutine lcmmfi(coeft, ifa, nmat, nbcomm, necris,&
 10          continue
         endif
 !
-!       VIND commence en fait au début de systemes de glissement
+!       VIND commence en fait au dÃ©but de systemes de glissement
 !      de LA famille courante;
         sq=0.d0
         do 11 ir = 1, nbsys
@@ -91,7 +91,7 @@ subroutine lcmmfi(coeft, ifa, nmat, nbcomm, necris,&
         q2=coeft(iei+4)
         b2=coeft(iei+5)
 !
-!        VIND COMMENCE EN FAIT AU DÉBUT DE SYSTEMES DE GLISSEMENT
+!        VIND COMMENCE EN FAIT AU DÃ‰BUT DE SYSTEMES DE GLISSEMENT
 !        DE LA FAMILLE COURANTE;
 !
         sq=0.d0
@@ -115,7 +115,7 @@ subroutine lcmmfi(coeft, ifa, nmat, nbcomm, necris,&
 !           NUMHSR=NINT(COEFT(IEI+2))
         endif
 !
-!        VIND COMMENCE EN FAIT AU DÉBUT DE SYSTEMES DE GLISSEMENT
+!        VIND COMMENCE EN FAIT AU DÃ‰BUT DE SYSTEMES DE GLISSEMENT
 !        DE LA FAMILLE COURANTE;
 !        VARIABLE INTERNE PRINCIPALE : ALPHA=RHO*B**2
 !
@@ -151,7 +151,7 @@ subroutine lcmmfi(coeft, ifa, nmat, nbcomm, necris,&
         alloop =coeft(iei+7)
         mu =coeft(iei+12)
 !
-!        VIND COMMENCE EN FAIT AU DÉBUT DE SYSTEMES DE GLISSEMENT
+!        VIND COMMENCE EN FAIT AU DÃ‰BUT DE SYSTEMES DE GLISSEMENT
 !        DE LA FAMILLE COURANTE;
 !        VARIABLE INTERNE PRINCIPALE : ALPHA=RHO*B**2
         do 56 ir = 1, nbsys

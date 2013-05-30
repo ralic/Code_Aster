@@ -856,7 +856,7 @@ subroutine op0032()
 !-----------------------------------------------------------------------
 !-------------------------- FORTRAN PRINT FORMAT -----------------------
 !-----------------------------------------------------------------------
-    4000 format('(METHODE APM) POUR LES 3 NIVEAUX DE DISCRETISATION '&
+    4000 format('(METHODE APM) POUR LES 3 NIVEAUX DE DISCRETISATION ',&
      &       'SUIVANTS',/,&
      &       ' --- ',i5,' --- ',i5,' --- ',i5,' ---',/,&
      &       ' NOMBRE DE VALEURS PROPRES DETECTEES ',/,&

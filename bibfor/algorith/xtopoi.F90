@@ -37,8 +37,8 @@ subroutine xtopoi(noma, modele)
 !
 ! ROUTINE XFEM (METHODE XFEM - PREPARATION)
 !
-! AJOUTER À LA SD FISS_XFEM LES DONNÉES TOPOLOGIQUES CONCERNANT
-! LA DÉCOUPE DES ÉLÉMENTS POUR L'INTÉGRATION
+! AJOUTER Ã€ LA SD FISS_XFEM LES DONNÃ‰ES TOPOLOGIQUES CONCERNANT
+! LA DÃ‰COUPE DES Ã‰LÃ‰MENTS POUR L'INTÃ‰GRATION
 !
 ! ----------------------------------------------------------------------
 !

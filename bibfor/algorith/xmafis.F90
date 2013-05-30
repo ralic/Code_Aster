@@ -34,7 +34,7 @@ subroutine xmafis(noma, cnsln, nxmafi, mafis, nmafis,&
 ! ======================================================================
 ! person_in_charge: samuel.geniaut at edf.fr
 !
-!                      TROUVER LES MAILLES OÙ LSN CHANGE DE SIGNE
+!                      TROUVER LES MAILLES OÃ™ LSN CHANGE DE SIGNE
 !
 !     ENTREE
 !       NOMA     :  NOM DE L'OBJET MAILLAGE
@@ -67,7 +67,7 @@ subroutine xmafis(noma, cnsln, nxmafi, mafis, nmafis,&
     mai=noma//'.TYPMAIL'
     call jeveuo(mai, 'L', jma)
 !
-!     RÉCUPÉRATION DES LEVEL-SETS
+!     RÃ‰CUPÃ‰RATION DES LEVEL-SETS
     call jeveuo(cnsln//'.CNSV', 'L', jlnsv)
 !
     call jeveuo(mafis, 'E', jmafis)
@@ -88,7 +88,7 @@ subroutine xmafis(noma, cnsln, nxmafi, mafis, nmafis,&
             nuno=zi(jconx1-1+zi(jconx2+nmaabs-1)+in-1)
             lsn=zr(jlnsv-1+(nuno-1)+1)
             if ((lsnp*lsn) .le. 0.d0) then
-!           LSN A CHANGÉ DE SIGNE DONC ON STOCKE LA MAILLE DANS MAFIS
+!           LSN A CHANGÃ‰ DE SIGNE DONC ON STOCKE LA MAILLE DANS MAFIS
                 i=i+1
                 zi(jmafis-1+i)=nmaabs
 !           AUGMENTEZ NXMAFI

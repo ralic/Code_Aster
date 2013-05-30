@@ -93,7 +93,7 @@ subroutine burcvg(nr, itmax, toler, iter, dy,&
         endif
     endif
 ! === =================================================================
-! --- SI NON CONVERGENCE: TEST DU N°ITERATION
+! --- SI NON CONVERGENCE: TEST DU NÂ°ITERATION
 ! === =================================================================
     if (iter .lt. itmax) then
         irtet = 1

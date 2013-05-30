@@ -151,7 +151,7 @@
 ! !             !             !                                        !
 ! !             !             !                                        !
 ! !FINPAL(NBPAL)!  CHARACTER*3!  IN : TERMINAISON POUR LES PALIERS     !
-! !             !             !  PALIER N°I => _I                      !
+! !             !             !  PALIER NÂ°I => _I                      !
 ! !             !             !                                        !
 ! ! PALMAX      !  ENTIER     !  NOMBRE MAXIMUM DE PALIERS             !
 ! !             !             !                                        !
@@ -208,7 +208,7 @@ subroutine envdep(numpas, nbpal, dt, dtsto, temps,&
 ! ! TYPAL(IPAL) ! ADR+(IPAL-1)!  TYPE DU PALIER CONSIDERE             !
 ! !             !             !                                       !
 ! ! FINPAL(IPAL)!  ADR+PALMAX !  TERMINAISON POUR LE PALIER CONSIDERE !
-! !             !  +(IPAL-1)  !  PALIER N°I => _I                     !
+! !             !  +(IPAL-1)  !  PALIER NÂ°I => _I                     !
 ! !             !             !                                       !
 ! ! CNPAL(IPAL) ! ADR+2*PALMAX!  NOM DU NOEUD ASTER POUR LE PALIER    !
 ! !             !  +(IPAL-1)  !  CONSIDERE                            !
@@ -304,7 +304,7 @@ subroutine envdep(numpas, nbpal, dt, dtsto, temps,&
     call jeveuo(ayacs, 'L', iadr)
     icompo=zi(iadr)
 !
-!     RZPR: ROTATION INITIALE (PAS UTILISÉE PAR EDYOS (XAV))
+!     RZPR: ROTATION INITIALE (PAS UTILISÃ‰E PAR EDYOS (XAV))
 !     ------------------------------------------------------
     rzpr =0.d0
 !

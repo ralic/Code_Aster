@@ -50,25 +50,25 @@ subroutine xside3(elrefp, ndim, coorse, elrese, igeom,&
 !     BUT:  CALCUL DES OPTIONS SIEF_ELGA AVEC X-FEM EN 3D
 !.......................................................................
 !
-! IN  ELREFP  : ÉLÉMENT DE RÉFÉRENCE PARENT
+! IN  ELREFP  : Ã‰LÃ‰MENT DE RÃ‰FÃ‰RENCE PARENT
 ! IN  NDIM    : DIMENSION DE L'ESPACE
-! IN  COORSE  : COORDONNÉES DES SOMMETS DU SOUS-ÉLÉMENT
-! IN  IGEOM   : COORDONNÉES DES NOEUDS DE L'ÉLÉMENT PARENT
-! IN  HE      : VALEUR DE LA FONCTION HEAVISIDE SUR LE SOUS-ÉLT
+! IN  COORSE  : COORDONNÃ‰ES DES SOMMETS DU SOUS-Ã‰LÃ‰MENT
+! IN  IGEOM   : COORDONNÃ‰ES DES NOEUDS DE L'Ã‰LÃ‰MENT PARENT
+! IN  HE      : VALEUR DE LA FONCTION HEAVISIDE SUR LE SOUS-Ã‰LT
 ! IN  NFH     : NOMBRE DE FONCTIONS HEAVYSIDE
 ! IN  DDLC    : NOMBRE DE DDL DE CONTACT (PAR NOEUD)
 ! IN  DDLS    : NOMBRE DE DDL PAR NOEUD MILIEU
-! IN  NFE     : NOMBRE DE FONCTIONS SINGULIÈRES D'ENRICHISSEMENT
+! IN  NFE     : NOMBRE DE FONCTIONS SINGULIÃˆRES D'ENRICHISSEMENT
 ! IN  BASLOC  : BASE LOCALE AU FOND DE FISSURE AUX NOEUDS
 ! IN  NNOP    : NOMBRE DE NOEUDS DE L'ELEMENT PARENT
-! IN  NPG     : NOMBRE DE POINTS DE GAUSS DU SOUS-ÉLÉMENT
+! IN  NPG     : NOMBRE DE POINTS DE GAUSS DU SOUS-Ã‰LÃ‰MENT
 ! IN  IMATE   : MATERIAU CODE
 ! IN  COMPOR  : COMPORTEMENT
 ! IN  DEPL    : DEPLACEMENT A PARTIR DE LA CONF DE REF
 ! IN  LSN     : VALEUR DE LA LEVEL SET NORMALE AUX NOEUDS PARENTS
 ! IN  LST     : VALEUR DE LA LEVEL SET TANGENTE AUX NOEUDS PARENTS
-! IN  NFISS   : NOMBRE DE FISSURES "VUES" PAR L'ÉLÉMENT
-! IN  JFISNO  : POINTEUR DE CONNECTIVITÉ FISSURE/HEAVISIDE
+! IN  NFISS   : NOMBRE DE FISSURES "VUES" PAR L'Ã‰LÃ‰MENT
+! IN  JFISNO  : POINTEUR DE CONNECTIVITÃ‰ FISSURE/HEAVISIDE
 !
 ! OUT SIG     : CONTRAINTES (SIEF_ELGA)
 !......................................................................
@@ -90,7 +90,7 @@ subroutine xside3(elrefp, ndim, coorse, elrese, igeom,&
 !
 !--------------------------------------------------------------------
 !
-!     ATTENTION, DEPL ET VECTU SONT ICI DIMENSIONNÉS DE TELLE SORTE
+!     ATTENTION, DEPL ET VECTU SONT ICI DIMENSIONNÃ‰S DE TELLE SORTE
 !     QU'ILS NE PRENNENT PAS EN COMPTE LES DDL SUR LES NOEUDS MILIEU
 !
 !     ON AUTORISE UNIQUEMENT L'ISOTROPIE
@@ -102,10 +102,10 @@ subroutine xside3(elrefp, ndim, coorse, elrese, igeom,&
     call vecini(7, 0.d0, r8bi7)
     call vecini(3, 0.d0, r8bi3)
 !
-!     NOMBRE DE DDL DE DEPLACEMENT À CHAQUE NOEUD SOMMET
+!     NOMBRE DE DDL DE DEPLACEMENT Ã€ CHAQUE NOEUD SOMMET
     ddld=ndim*(1+nfh+nfe)
 !
-!     NOMBRE DE DDL TOTAL (DEPL+CONTACT) À CHAQUE NOEUD SOMMET
+!     NOMBRE DE DDL TOTAL (DEPL+CONTACT) Ã€ CHAQUE NOEUD SOMMET
     ddls=ddld+ddlc
 !
 !
@@ -127,7 +127,7 @@ subroutine xside3(elrefp, ndim, coorse, elrese, igeom,&
 !      --------------------------------------------------
     call jevech('PDEPLAR', 'L', idepl)
 !
-!       TE4-'XINT' : SCHÉMAS À 15 POINTS
+!       TE4-'XINT' : SCHÃ‰MAS Ã€ 15 POINTS
     call elref5(elrese, 'XINT', ndimb, nno, ibid,&
                 npgbis, ipoids, jcoopg, ivf, idfde,&
                 jdfd2, jgano)
@@ -135,12 +135,12 @@ subroutine xside3(elrefp, ndim, coorse, elrese, igeom,&
     call assert(npg.eq.npgbis.and.ndim.eq.ndimb)
 !
 !-----------------------------------------------------------------------
-!     BOUCLE SUR LES POINTS DE GAUSS DU SOUS-TÉTRA
+!     BOUCLE SUR LES POINTS DE GAUSS DU SOUS-TÃ‰TRA
     do 100 kpg = 1, npg
 !
         ipg = idecpg + kpg
 !
-!       COORDONNÉES DU PT DE GAUSS DANS LE REPÈRE RÉEL : XG
+!       COORDONNÃ‰ES DU PT DE GAUSS DANS LE REPÃˆRE RÃ‰EL : XG
         call vecini(ndim, 0.d0, xg)
         do 110 i = 1, ndim
             do 111 n = 1, nno
@@ -169,7 +169,7 @@ subroutine xside3(elrefp, ndim, coorse, elrese, igeom,&
 114              continue
 113          continue
 !
-!         FONCTION D'ENRICHISSEMENT AU POINT DE GAUSS ET LEURS DÉRIVÉES
+!         FONCTION D'ENRICHISSEMENT AU POINT DE GAUSS ET LEURS DÃ‰RIVÃ‰ES
             call xcalfe(he, lsng, lstg, baslog, fe,&
                         dgdgl, iret)
 !         ON A PAS PU CALCULER LES DERIVEES DES FONCTIONS SINGULIERES

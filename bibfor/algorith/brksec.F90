@@ -53,7 +53,7 @@ subroutine brksec(h66, bt3, bc, nu, e,&
         b(i)=exp(bt3(i))
 30  end do
 !
-!     CARRé SUPERIEUR RELIANT LES CONTRAINTES NORMALES DANS
+!     CARRÃ© SUPERIEUR RELIANT LES CONTRAINTES NORMALES DANS
 !       LA MATRICE SECANTE
     t1 = b(2)
     t2 = b(3)

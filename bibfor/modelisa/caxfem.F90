@@ -40,7 +40,7 @@ subroutine caxfem(fonree, char)
 !
 ! ROUTINE XFEM (PREPARATION - AFFE_CHAR_MECA)
 !
-! CREER LES RELATIONS LINÉAIRES QUI ANNULENT LES DDLS EN TROP
+! CREER LES RELATIONS LINÃ‰AIRES QUI ANNULENT LES DDLS EN TROP
 !
 ! ----------------------------------------------------------------------
 !

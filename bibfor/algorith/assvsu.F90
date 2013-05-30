@@ -365,7 +365,7 @@ subroutine assvsu(nno, nnos, nface, geom, crit,&
 !
 !**********************************************************************
 ! JE TRAITE DANS CETTE VERSION DE ASSHVF LES TERMES DE DIFFUSION EN
-! RÉALISANT UNE MOYENNE ENTRE LA MAILLE COURANTE (K) ET LA MAILLE
+! RÃ‰ALISANT UNE MOYENNE ENTRE LA MAILLE COURANTE (K) ET LA MAILLE
 ! VOISINE L.
 !
 ! REMARQUE :

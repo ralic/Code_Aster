@@ -105,7 +105,7 @@ subroutine te0289(option, nomte)
     call jevech('PLONCHA', 'L', jlonch)
     call jevech('PCONTRR', 'L', jsigpg)
 !
-!     RÉCUPÉRATION DE LA SUBDIVISION DE L'ÉLÉMENT EN NSE SOUS ELEMENT
+!     RÃ‰CUPÃ‰RATION DE LA SUBDIVISION DE L'Ã‰LÃ‰MENT EN NSE SOUS ELEMENT
     nse=zi(jlonch-1+1)
 !
 !-----------------------------------------------------------------------

@@ -43,8 +43,8 @@ subroutine xxlag3(ffc, idepl, idepm, idep0, lact,&
     integer :: pla(27), pli, nvec
     real(kind=8) :: ffc(8), ffi, lamb(3)
 !
-! --- RÉACTION CONTACT = SOMME DES FF(I).LAMBDA(I) POUR I=1,NNOL
-! --- RÉACTION FROTT = SOMME DES FF(I).(LAMB1(I).TAU1+LAMB2(I).TAU2)
+! --- RÃ‰ACTION CONTACT = SOMME DES FF(I).LAMBDA(I) POUR I=1,NNOL
+! --- RÃ‰ACTION FROTT = SOMME DES FF(I).(LAMB1(I).TAU1+LAMB2(I).TAU2)
 ! --- (DEPDEL+DEPMOI)
     call vecini(3, 0.d0, lamb)
     do 1 i = 1, nnol

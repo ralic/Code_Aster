@@ -33,9 +33,9 @@ subroutine fglema(nbf, nbpoin, sig, defpla, temp,&
 ! ======================================================================
 !     -----------------------------------------------------------------
 !     CALCUL DU DOMMAGE DE LEMAITRE-SERMAGE
-!     NOTE: Routine identique à "CALCUL DU DOMMAGE DE LEMAITRE"
+!     NOTE: Routine identique Ã  "CALCUL DU DOMMAGE DE LEMAITRE"
 !           avec prise en compte de l'exposant EXP_S dans la loi
-!           d'évolution et VSEUIL dependant de la température.
+!           d'Ã©volution et VSEUIL dependant de la tempÃ©rature.
 !     ------------------------------------------------------------------
 !     ------------------------------------------------------------------
 ! IN  NBF    : I   : NOMBRE DE FONCTIONS DECRIVANT LE CHARGEMENT
@@ -181,7 +181,7 @@ subroutine fglema(nbf, nbpoin, sig, defpla, temp,&
         else
             dom(i+1) = null
         endif
-! La valeur de l'endommagement est bornée à 1
+! La valeur de l'endommagement est bornÃ©e Ã  1
         if (dom(i+1) .gt. un) then
             dom(i+1) = un
         endif

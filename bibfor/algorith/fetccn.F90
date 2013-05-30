@@ -120,7 +120,7 @@ subroutine fetccn(chamn1, chamn2, chamn3, chamn4, typcum,&
                 cham4b=chamn4
                 chamrb=chamnr
             else
-! SOUS-DOMAINE N°IDD
+! SOUS-DOMAINE NÂ°IDD
                 idd1=idd-1
                 if (typcum .gt. 0) cham1b=zk24(i1+idd1)
                 if (typcum .gt. 1) cham2b=zk24(i2+idd1)

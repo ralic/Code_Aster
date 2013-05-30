@@ -247,7 +247,7 @@ subroutine sh2rig(xetemp, para, re)
 60          continue
 70      continue
 !
-! Passer EM du repère d'élément au repère global
+! Passer EM du repÃ¨re d'Ã©lÃ©ment au repÃ¨re global
 !
         call r8inir(81, 0.d0, em3333, 1)
         call tran63(em, em3333, 2)

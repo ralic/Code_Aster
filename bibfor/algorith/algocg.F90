@@ -182,7 +182,7 @@ subroutine algocg(sdstat, defico, resoco, solveu, matass,&
         write (ifm,9010) gcpmax
     endif
 !
-! --- INITIALISATION A PARTIR DU CHAMP DE MULTIPLICATEURS INITIAL
+! --- INITIALISATION AÂ PARTIR DU CHAMP DE MULTIPLICATEURS INITIAL
 !
     call cfgcin(resoco, matass, solveu, neq, nbliai)
 !

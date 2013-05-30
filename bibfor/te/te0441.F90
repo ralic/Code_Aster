@@ -38,7 +38,7 @@ subroutine te0441(option, nomte)
 !
 !    - FONCTION REALISEE:  CALCUL DES VECTEURS ELEMENTAIRES
 !                          OPTIONS  CHAR_MECA_PESA_R ET CHAR_MECA_ROTA_R
-!                          POUR LES ÉLÉMENTS X-FEM
+!                          POUR LES Ã‰LÃ‰MENTS X-FEM
 !
 !    - ARGUMENTS:
 !        DONNEES:      OPTION       -->  OPTION DE CALCUL
@@ -87,7 +87,7 @@ subroutine te0441(option, nomte)
 !     PARAMETRE DU VECTEUR ELEMENTAIRE
     call jevech('PVECTUR', 'E', ivectu)
 !
-!     PARAMÈTRES PROPRES À X-FEM
+!     PARAMÃˆTRES PROPRES Ã€ X-FEM
     call jevech('PPINTTO', 'L', jpintt)
     call jevech('PCNSETO', 'L', jcnset)
     call jevech('PHEAVTO', 'L', jheavt)
@@ -146,7 +146,7 @@ subroutine te0441(option, nomte)
 !
     endif
 !
-!     RÉCUPÉRATION DE LA SUBDIVISION DE L'ÉLÉMENT EN NSE SOUS ELEMENT
+!     RÃ‰CUPÃ‰RATION DE LA SUBDIVISION DE L'Ã‰LÃ‰MENT EN NSE SOUS ELEMENT
     nse=zi(jlonch-1+1)
 !
 !       BOUCLE SUR LES NSE SOUS-ELEMENTS

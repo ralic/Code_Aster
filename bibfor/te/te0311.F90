@@ -249,7 +249,7 @@ subroutine te0311(option, nomte)
             p(i,3) = e3(i)
 124      continue
 !
-!       COORDONNÉES POLAIRES DU POINT
+!       COORDONNÃ‰ES POLAIRES DU POINT
         rg=sqrt(lsng**2+lstg**2)
 !
         if (rg .gt. r8prem()) then
@@ -258,8 +258,8 @@ subroutine te0311(option, nomte)
             iret=1
         else
 !         LE POINT EST SUR LE FOND DE FISSURE :
-!         L'ANGLE N'EST PAS DÉFINI, ON LE MET À ZÉRO
-!         ON NE FERA PAS LE CALCUL DES DÉRIVÉES
+!         L'ANGLE N'EST PAS DÃ‰FINI, ON LE MET Ã€ ZÃ‰RO
+!         ON NE FERA PAS LE CALCUL DES DÃ‰RIVÃ‰ES
             phig=0.d0
             iret=0
         endif

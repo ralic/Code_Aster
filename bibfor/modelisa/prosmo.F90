@@ -142,7 +142,7 @@ subroutine prosmo(matrez, limat, nbmat, basez, numedd,&
 !     7) CONSTRUCTION DE L'OBJET KLISTE QUI CONTIENDRA LES DIFFERENTS
 !        SMHC(MAT_I) MIS BOUT A BOUT (EQUATION PAR EQUATION) :
 !        KLISTE(JEQ)=SMHC(IMAT_1)(JEQ)//SMHC(IMAT_2)(JEQ)//...
-!        KLISTE EST ALLOUé PAR "BLOC" POUR EVITER D'UTILISER
+!        KLISTE EST ALLOUÃ© PAR "BLOC" POUR EVITER D'UTILISER
 !        TROP DE MEMOIRE
 !     =========================================================
     kliste = '&&PROSMO.KLISTE'

@@ -30,7 +30,7 @@ subroutine utlcal(typque, algo, valr)
 !
 ! ROUTINE UTILITAIRE POUR LES LOIS DE COMPORTEMENTS
 !   FAIT LE LIEN ENTRE LE NOM DE L'ALGORIHTME D'INTEGRATION LOCALE
-!   ET SON N° (VALEUR REELLE)
+!   ET SON NÂ° (VALEUR REELLE)
 !
 ! ----------------------------------------------------------------------
 !

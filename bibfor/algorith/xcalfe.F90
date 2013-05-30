@@ -37,18 +37,18 @@ subroutine xcalfe(he, lsng, lstg, baslog, fe,&
 !
 !     BUT:  CALCUL DES FONCTIONS D'ENRICHISSEMENT EN UN POINT DE GAUSS
 !
-! IN  XYZ     : COORDONNÉES DU POINT DE GAUSS CONSIDÉRÉ
-! IN  HE      : VALEUR DE LA FONCTION HEAVYSIDE CSTE LE SS-ÉLT
+! IN  XYZ     : COORDONNÃ‰ES DU POINT DE GAUSS CONSIDÃ‰RÃ‰
+! IN  HE      : VALEUR DE LA FONCTION HEAVYSIDE CSTE LE SS-Ã‰LT
 ! IN  LSNG    : VALEUR DE LA LEVEL SET NORMALE AU POINT DE GAUSS
 ! IN  LSTG    : VALEUR DE LA LEVEL SET TANGENTE AU POINT DE GAUSS
 ! IN  BASLOG  : BASE LOCALE AU FOND DE FISSURE AU POINT DE GAUSS
 !
 ! OUT FE      : VALEURS DES FONCTIONS D'ENRICHISSEMENT
-! OUT DGDGL   : DÉRIVÉES DES FONCTIONS D'ENRICHISSEMENT
+! OUT DGDGL   : DÃ‰RIVÃ‰ES DES FONCTIONS D'ENRICHISSEMENT
 ! OUT IRET    : CODE RETOUR VALANT 0 SI ON SE TROUVE SUR LE FOND DE
 !               FISSURE (RG=0).
-!               LES DÉRIVÉES DES FONCTIONS SINGULIÈRES (DGDGL)
-!               NE SONT ALORS PAS CALCULÉES (CAR EN 1/SQRT(RG)).
+!               LES DÃ‰RIVÃ‰ES DES FONCTIONS SINGULIÃˆRES (DGDGL)
+!               NE SONT ALORS PAS CALCULÃ‰ES (CAR EN 1/SQRT(RG)).
 !
 !----------------------------------------------------------------
 !
@@ -56,7 +56,7 @@ subroutine xcalfe(he, lsng, lstg, baslog, fe,&
     real(kind=8) :: e1(3), e2(3), e3(3), p(3, 3), invp(3, 3), norme
     real(kind=8) :: rg, tg, dgdpo(4, 2), dgdlo(4, 3)
 !
-!     RECUPERATION DE LA BASE LOCALE ASSOCIÉE AU PT
+!     RECUPERATION DE LA BASE LOCALE ASSOCIÃ‰E AU PT
 !     (E1=GRLT,E2=GRLN,E3=E1^E2)
     do 123 i = 1, 3
         e1(i) = baslog(i+3)
@@ -81,7 +81,7 @@ subroutine xcalfe(he, lsng, lstg, baslog, fe,&
 126      continue
 125  end do
 !
-!     COORDONNÉES POLAIRES DU POINT
+!     COORDONNÃ‰ES POLAIRES DU POINT
     rg=sqrt(lsng**2+lstg**2)
 !
     if (rg .gt. r8prem()) then
@@ -90,8 +90,8 @@ subroutine xcalfe(he, lsng, lstg, baslog, fe,&
         iret=1
     else
 !       LE POINT EST SUR LE FOND DE FISSURE :
-!       L'ANGLE N'EST PAS DÉFINI, ON LE MET À ZÉRO
-!       ON NE FERA PAS LE CALCUL DES DÉRIVÉES
+!       L'ANGLE N'EST PAS DÃ‰FINI, ON LE MET Ã€ ZÃ‰RO
+!       ON NE FERA PAS LE CALCUL DES DÃ‰RIVÃ‰ES
         tg=0.d0
         iret=0
     endif
@@ -101,20 +101,20 @@ subroutine xcalfe(he, lsng, lstg, baslog, fe,&
 !
     if (iret .eq. 0) goto 9999
 !
-!     CALCUL DES DÉRIVÉES
+!     CALCUL DES DÃ‰RIVÃ‰ES
 !     -------------------
 !
-!     DÉRIVÉES DES FONCTIONS D'ENRICHISSEMENT DANS LA BASE POLAIRE
+!     DÃ‰RIVÃ‰ES DES FONCTIONS D'ENRICHISSEMENT DANS LA BASE POLAIRE
     call xderfe(rg, tg, dgdpo)
 !
-!     DÉRIVÉES DES FONCTIONS D'ENRICHISSEMENT DANS LA BASE LOCALE
+!     DÃ‰RIVÃ‰ES DES FONCTIONS D'ENRICHISSEMENT DANS LA BASE LOCALE
     do 131 i = 1, 4
         dgdlo(i,1)=dgdpo(i,1)*cos(tg)-dgdpo(i,2)*sin(tg)/rg
         dgdlo(i,2)=dgdpo(i,1)*sin(tg)+dgdpo(i,2)*cos(tg)/rg
         dgdlo(i,3)=0.d0
 131  end do
 !
-!     DÉRIVÉES DES FONCTIONS D'ENRICHISSEMENT DANS LA BASE GLOBALE
+!     DÃ‰RIVÃ‰ES DES FONCTIONS D'ENRICHISSEMENT DANS LA BASE GLOBALE
     do 132 i = 1, 4
         do 133 j = 1, 3
             dgdgl(i,j)=0.d0

@@ -45,8 +45,8 @@ subroutine te0510(option, nomte)
 ! ======================================================================
 !.......................................................................
 !
-!       CALCUL DES DONNÉES TOPOLOGIQUES CONCERNANT LES INTERSECTIONS
-!              DES ÉLÉMENTS ENRICHIS ET DU PLAN DE LA FISSURE
+!       CALCUL DES DONNÃ‰ES TOPOLOGIQUES CONCERNANT LES INTERSECTIONS
+!              DES Ã‰LÃ‰MENTS ENRICHIS ET DU PLAN DE LA FISSURE
 !
 !
 !  OPTION : 'TOPOFA' (X-FEM TOPOLOGIE DES FACETTES DE CONTACT)
@@ -107,7 +107,7 @@ subroutine te0510(option, nomte)
     call elref4(elp, 'RIGI', ndim, nnop, ibid,&
                 ibid, ibid, ibid, ibid, ibid)
 !
-!     RECUPERATION DES ENTRÉES / SORTIE
+!     RECUPERATION DES ENTRÃ‰ES / SORTIE
     call jevech('PGEOMER', 'L', igeom)
     call jevech('PLSN', 'L', jlsn)
     call jevech('PLST', 'L', jlst)
@@ -131,7 +131,7 @@ subroutine te0510(option, nomte)
     call conare(typma, ar, nbar)
     call teattr(nomte, 'S', 'XFEM', enr, ibid)
     if (enr .eq. 'XH1' .or. enr .eq. 'XH2' .or. enr .eq. 'XH3' .or. enr .eq. 'XH4') then
-! --- PAS D'ELEMENTS COUPÉES PLUSIEURS FOIS SANS CONTACT POUR L'INSTANT
+! --- PAS D'ELEMENTS COUPÃ‰ES PLUSIEURS FOIS SANS CONTACT POUR L'INSTANT
         goto 999
     endif
     call tecach('NOO', 'PLST', 'L', 7, jtab,&
@@ -184,7 +184,7 @@ subroutine te0510(option, nomte)
         nptf = 0
 ! ----------------------------------------------------------------------
 !       RECHERCHE DES INTERSECTIONS ARETES-FISSURE
-!       ET DÉCOUPAGE EN FACETTES
+!       ET DÃ‰COUPAGE EN FACETTES
         do 81 i = 1, 2*nfiss
             fisc(i)=0
 81      continue
@@ -239,7 +239,7 @@ subroutine te0510(option, nomte)
                 ptree(j)=pinter(ndim*(i-1)+j)
                 zr(jout6-1+ncompp*(ifiss-1)+ndim*(i-1)+j) = ptree(j)
 111          continue
-!    ON TRANFORME LES COORDONNÉES RÉELES EN COORD. DANS L'ÉLÉMENT DE REF
+!    ON TRANFORME LES COORDONNÃ‰ES RÃ‰ELES EN COORD. DANS L'Ã‰LÃ‰MENT DE REF
             call reeref(elp, lbid, nnop, ibid, zr(igeom),&
                         ptree, 1, lbid, ndim, rbid,&
                         rbid, rbid, ibid, ibid, ibid,&
@@ -256,8 +256,8 @@ subroutine te0510(option, nomte)
 113          continue
 !
 !     CALCUL DE LA BASE COVARIANTE AUX POINTS D'INTERSECTION
-!     ND EST LA NORMALE À LA SURFACE : GRAD(LSN)
-!     TAU1 EST LE PROJETÉ DE GRAD(LST) SUR LA SURFACE
+!     ND EST LA NORMALE Ã€ LA SURFACE : GRAD(LSN)
+!     TAU1 EST LE PROJETÃ‰ DE GRAD(LST) SUR LA SURFACE
 !     TAU2 EST LE PRODUIT VECTORIEL : ND ^ TAU1
 !
 !       INITIALISATION TAU1 POUR CAS 2D
@@ -356,12 +356,12 @@ subroutine te0510(option, nomte)
                             kcoef = fisco(2*(kfiss-1)+2)
                             kfiss = fisco(2*(kfiss-1)+1)
                             if (kfiss .eq. ifiss) then
-!    SI ON SE BRANCHE DU COTÉ MAITRE, MISE À ZÉRO DU COTÉ ESCLAVE
+!    SI ON SE BRANCHE DU COTÃ‰ MAITRE, MISE Ã€ ZÃ‰RO DU COTÃ‰ ESCLAVE
                                 if (kcoef .eq. -1) hescl = 0
-!    SI ON SE BRANCHE DU COTÉ ESCLAVE, MISE À ZÉRO DU COTÉ MAITRE
+!    SI ON SE BRANCHE DU COTÃ‰ ESCLAVE, MISE Ã€ ZÃ‰RO DU COTÃ‰ MAITRE
                                 if (kcoef .eq. 1) hmait = 0
                             else
-!    SI PAS BRANCHÉ ET PAS DU BON CÔTÉ, MISE À ZÉRO DES DEUX CÔTÉS
+!    SI PAS BRANCHÃ‰ ET PAS DU BON CÃ”TÃ‰, MISE Ã€ ZÃ‰RO DES DEUX CÃ”TÃ‰S
                                 he = 0
                                 do 125 j = 1, nptf
                                     if (he .eq. 0) he=pthea( nfiss*( cface(i,j)-1)+kfiss)

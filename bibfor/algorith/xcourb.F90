@@ -35,7 +35,7 @@ subroutine xcourb(basloc, noma, modele, courb)
 ! ======================================================================
 ! person_in_charge: samuel.geniaut at edf.fr
 ! ----------------------------------------------------------------------
-! FONCTION REALISEE:  CALCUL DE LA COURBURE (DERIVÉE DE LA MATRICE
+! FONCTION REALISEE:  CALCUL DE LA COURBURE (DERIVÃ‰E DE LA MATRICE
 !                       DE PASSAGE LOCAL-GLOBAL)
 !
 !    ENTREE
@@ -85,7 +85,7 @@ subroutine xcourb(basloc, noma, modele, courb)
     call jeveuo(cnsr//'.CNSL', 'E', jrsl)
 !
     do 100 ino = 1, nbno
-!       ON VÉRIFIE QUE LE NOEUD A BIEN UNE VALEUR DE GRADLST ASSOCIÉE
+!       ON VÃ‰RIFIE QUE LE NOEUD A BIEN UNE VALEUR DE GRADLST ASSOCIÃ‰E
         if (.not.zl(jgl-1+3*3*(ino-1)+4)) goto 100
         do 110 i = 1, 3
             el1(i) = zr(jgb-1+3*3*(ino-1)+i+3)

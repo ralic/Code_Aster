@@ -115,8 +115,8 @@ subroutine xstam1(nomo, noma, nbma, nmafis, mafis,&
 !
         if (em2 .eq. nno .and. typma(1:3) .ne. 'SEG') then
 !
-!         MAILLE RETENUE POUR MAFOND (TS LS NOEUDS SONT 'CARRÉS')
-!         SOUS RÉSERVE QUE CE SOIT UNE MAILLE DE MAFIS
+!         MAILLE RETENUE POUR MAFOND (TS LS NOEUDS SONT 'CARRÃ‰S')
+!         SOUS RÃ‰SERVE QUE CE SOIT UNE MAILLE DE MAFIS
 !         ET PAS UNE MAILLE SEG
             do 312 imae = 1, nmafis
                 if (nmaabs .eq. mafis(imae)) then
@@ -130,7 +130,7 @@ subroutine xstam1(nomo, noma, nbma, nmafis, mafis,&
 313          continue
         endif
 !
-!       ON RÉCUPÈRE LES NUMEROS DES MAILLES ENRICHIES
+!       ON RÃ‰CUPÃˆRE LES NUMEROS DES MAILLES ENRICHIES
         if (em .eq. 1) then
             im1=im1+1
             call assert(im1.le.nbma)

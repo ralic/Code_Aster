@@ -101,7 +101,7 @@ subroutine dicrgr(fami, option, neq, nc, icodma,&
 !
 !---procedure pour la liaison grille crayon
 !
-! on travaille ici dans le repère local
+! on travaille ici dans le repÃ¨re local
 !
 !
 !  recuperer les deplacements et rotation
@@ -223,7 +223,7 @@ subroutine dicrgr(fami, option, neq, nc, icodma,&
 !  calcul de la force (translation)
 !
 ! on garde -FN0 dans la direction du discret
-! possibilité de frottement dans la direction 2 (verticalement)
+! possibilitÃ© de frottement dans la direction 2 (verticalement)
 ! force nulle dans la 3e direction
 !
         rtm = (sim(2+nc)+sim(2))/2.d0
@@ -267,7 +267,7 @@ subroutine dicrgr(fami, option, neq, nc, icodma,&
 !CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
 !
 !  Calcul des forces et evolution des variables internes
-!   sur chacun des sous éléments du système de liaison
+!   sur chacun des sous Ã©lÃ©ments du systÃ¨me de liaison
 !
 !
 !  angle theta (DRZ): possibilite de decollement
@@ -319,7 +319,7 @@ subroutine dicrgr(fami, option, neq, nc, icodma,&
         fl(4+nc)=mophi
 !
 ! pour le dernier angle, on met quand meme une rigidite, meme si
-!les conditions limites doivent imposer que ça ne tourne pas
+!les conditions limites doivent imposer que Ã§a ne tourne pas
         sip(5)=kphi*(khm+dkh)
         sip(5+nc)=kphi*(khm+dkh)
         fl(5)=-kphi*(khm+dkh)
@@ -374,7 +374,7 @@ subroutine dicrgr(fami, option, neq, nc, icodma,&
 !
     endif
 !
-!---Calcul des forces nodales dans le repère global
+!---Calcul des forces nodales dans le repÃ¨re global
 !
     if (option(1:9) .eq. 'FULL_MECA' .or. option(1:9) .eq. 'RAPH_MECA') then
         nno = 2

@@ -39,8 +39,8 @@ subroutine xlag2c(nomo, nliseq, jnbpt)
 !
 ! ROUTINE XFEM (PREPARATION)
 !
-!    DETERMINATION DES NUMÉROS DE LAGRANGES ASSOCIÉS AUX NOEUDS
-!    POUR LES RELATIONS D'ÉGALITÉES DANS LE CAS MULTI-HEAVISIDE
+!    DETERMINATION DES NUMÃ‰ROS DE LAGRANGES ASSOCIÃ‰S AUX NOEUDS
+!    POUR LES RELATIONS D'Ã‰GALITÃ‰ES DANS LE CAS MULTI-HEAVISIDE
 !
 ! ----------------------------------------------------------------------
 !
@@ -68,14 +68,14 @@ subroutine xlag2c(nomo, nliseq, jnbpt)
     call jeveuo(nliseq, 'L', jliseq)
     call jelira(nliseq, 'LONMAX', neq, k8bid)
 !
-! --- RECUPÉRATION DE NOXFEM
+! --- RECUPÃ‰RATION DE NOXFEM
 !
     noxfem = '&&XLAG2S.NOXFEM'
     call cnocns(nomo//'.NOXFEM', 'V', noxfem)
     call jeveuo(noxfem//'.CNSL', 'L', jcnsl)
     call jeveuo(noxfem//'.CNSV', 'L', jcnsv)
 !
-! --- RECUPÉRATION DE HEAVNO
+! --- RECUPÃ‰RATION DE HEAVNO
 !
     heavno = '&&XLAG2S.HEAVNO'
     call celces(nomo//'.HEAVNO', 'V', heavno)

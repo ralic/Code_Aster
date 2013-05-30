@@ -60,7 +60,7 @@ subroutine disell(pz, az, bz, h)
     p(2)=pz(2)
 !
 !     ON NOTE R ET Z LES COORDONNES DANS LE PLAN POUR ETRE EN
-!     CONFORMITE AVEC LES NOTATIONS DU PAPIER DE RÉFÉRENCE
+!     CONFORMITE AVEC LES NOTATIONS DU PAPIER DE RÃ‰FÃ‰RENCE
 !     QUE L'ON PEUT TROUVER EN PIECE JOINTE DE LA FICHE 10385
 !
 !     CHOIX DU SIGNE DE LA DISTANCE H :
@@ -71,7 +71,7 @@ subroutine disell(pz, az, bz, h)
     call assert(a.gt.0.d0 .and. b.gt.0.d0)
     if (a .lt. b) then
 !       SI A EST PLUS PETIT QUE B, ON INVERSE A ET B
-!       ET AUSSI LES COORDONNÉES DU POINT P
+!       ET AUSSI LES COORDONNÃ‰ES DU POINT P
         temp = a
         a = b
         b = temp
@@ -108,7 +108,7 @@ subroutine disell(pz, az, bz, h)
     t = z/(r+sqrt(r**2+z**2))
 !
 !     DISTANCE A L'ELLIPSE LE LONG DE LA LIGNE COURRANTE :
-!     PLUS PETITE RACINE DU TRINOME A2.K²-2A1.K+A0=0
+!     PLUS PETITE RACINE DU TRINOME A2.KÂ²-2A1.K+A0=0
     a2 = ba**2*cosx**2+sinx**2
     a1 = ba**2*r*cosx+z*sinx
     a0 = ba**2*(r**2-a**2)+z**2

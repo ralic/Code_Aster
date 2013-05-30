@@ -26,12 +26,12 @@ function nomil(typma, ia)
     integer :: nomil, ia
 !
 !-----------------------------------------------------------------------
-!     BUT: RETOURNE LE NUMÉRO LOCAL DU NOEUD MILIEU PORTÉ SUR L'ARETE
+!     BUT: RETOURNE LE NUMÃ‰RO LOCAL DU NOEUD MILIEU PORTÃ‰ SUR L'ARETE
 !                   D'UNE MAILLE QUADRATIQUE
 !
-! ARGUMENTS D'ENTRÉE:
+! ARGUMENTS D'ENTRÃ‰E:
 !      TYPMA     : TYPE DE LA MAILLE
-!      IA        : NUMÉRO LOCAL DE L'ARETE
+!      IA        : NUMÃ‰RO LOCAL DE L'ARETE
 !
 !-----------------------------------------------------------------------
 !

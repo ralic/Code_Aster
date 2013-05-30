@@ -23,7 +23,7 @@ subroutine vfcdet(maxdim, ndim, a, deta)
     integer :: maxdim, ndim
     real(kind=8) :: a(1:maxdim, 1:maxdim), deta
 !
-!    DETERMINANT CALCULÉ PAR LA REGLE DE SARRUS
+!    DETERMINANT CALCULÃ‰ PAR LA REGLE DE SARRUS
 !
     if (ndim .eq. 2) then
         deta=a(1,1)*a(2,2)-a(1,2)*a(2,1)

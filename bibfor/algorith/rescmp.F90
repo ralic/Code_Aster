@@ -38,7 +38,7 @@ subroutine rescmp(cndiri, cnvcfo, cnfext, cnfint, cnfnod,&
 !
 ! ROUTINE MECA_NON_LINE (UTILITAIRE - RESIDU)
 !
-! CALCULE LE MAX DES RESIDUS PAR CMP POUR LE RESIDU RESI_COMP_RELA 
+! CALCULE LE MAX DES RESIDUS PAR CMP POUR LE RESIDU RESI_COMP_RELAÂ 
 !
 ! ----------------------------------------------------------------------
 !

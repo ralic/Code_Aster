@@ -108,7 +108,7 @@ subroutine lcedex(option, imate, npg, lgpg, s,&
 ! VI2 = alpha(2)
 ! VI3 = seuil
 ! VI4 = regime (adoucissant : 1 ou decharge : 0)
-! VI5 = pourcentage d'énergie dissipee
+! VI5 = pourcentage d'Ã©nergie dissipee
 ! VI6 = contrainte normale
 ! VI7 = contrainte tangentielle
 !

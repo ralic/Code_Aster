@@ -51,7 +51,7 @@ subroutine evala1(mod, relcom, sig, vin, imat,&
 ! =====================================================================
 ! DEFINITION DES ELEMENTS NECESSAIRES A L'EVALUATION DU MODULE
 ! =====================================================================
-! --- DISCRETISATION ANGULAIRE DE LA RECHERCHE ENTRE [0° ET 90°[
+! --- DISCRETISATION ANGULAIRE DE LA RECHERCHE ENTRE [0Â° ET 90Â°[
 ! =====================================================================
 ! =====================================================================
 ! --- DEFINITION DE 3 NIVEAUX DE RECHERCHE

@@ -172,9 +172,9 @@ subroutine irrmat(fami, kpg, ksp, model, imat,&
 !            n->infini                 n->0+
     n0 = eu - pe
     f1 = 1.0d0 - coeffa*exp(-n0)
-!     L'équation peut ne pas avoir de solution, pour le vérifier on
-!     calcule sa valeur FE à la 1ère borne de recherche +PE/10000.0
-!     C'est avec FE que l'on vérifie que l'on à des solutions
+!     L'Ã©quation peut ne pas avoir de solution, pour le vÃ©rifier on
+!     calcule sa valeur FE Ã  la 1Ã¨re borne de recherche +PE/10000.0
+!     C'est avec FE que l'on vÃ©rifie que l'on Ã  des solutions
     if (n0 .ge. 0.0d0) then
         n1 = n0 + pe/1000.0d0
     else
@@ -363,9 +363,9 @@ subroutine irrmat(fami, kpg, ksp, model, imat,&
 !            n->infini                 n->0+
     n0 = eu - pe
     f1 = 1.0d0 - coeffa*exp(-n0)
-!     L'équation peut ne pas avoir de solution, pour le vérifier on
-!     calcule sa valeur FE à la 1ère borne de recherche +PE/1000.0
-!     C'est avec FE que l'on vérifie que l'on à des solutions
+!     L'Ã©quation peut ne pas avoir de solution, pour le vÃ©rifier on
+!     calcule sa valeur FE Ã  la 1Ã¨re borne de recherche +PE/1000.0
+!     C'est avec FE que l'on vÃ©rifie que l'on Ã  des solutions
     if (n0 .ge. 0.0d0) then
         n1 = n0 + pe/1000.0d0
     else

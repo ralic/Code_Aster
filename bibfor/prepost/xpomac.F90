@@ -45,9 +45,9 @@ subroutine xpomac(malini, mailc, listno, nbnoc, nbmac,&
 !
 !      TRAITEMENT DES MAILLES DE MAILC
 !       - POUR POST_MAIL_XFEM : LES MAILLES DE MAILC ET LES NOEUDS
-!                               ASSOCIÉS SONT COPIES DANS MAXFEM A
+!                               ASSOCIÃ‰S SONT COPIES DANS MAXFEM A
 !                               L'IDENTIQUE
-!       - POUR POST_CHAM_XFEM : LES NOEUDS ASSOCIÉS A MAILC
+!       - POUR POST_CHAM_XFEM : LES NOEUDS ASSOCIÃ‰S A MAILC
 !                               SONT COPIES DANS RES_XFEM A
 !                               L'IDENTIQUE
 !

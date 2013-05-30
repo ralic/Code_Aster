@@ -31,13 +31,13 @@ subroutine xajpmi(list, long, ipt, cpt, newpt,&
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 !         AJOUTER UN POINT MILIEU DANS UNE LISTE
-!              ET INFORMATIONS COMPLÉMENTAIRES SUR LES ARETES
+!              ET INFORMATIONS COMPLÃ‰MENTAIRES SUR LES ARETES
 !
 !     ENTREE
 !       LIST    : LA LISTE
 !       LONG    : LONGUEUR MAX DE LA LISTE
 !       IPT     : LONGUEUR DE LA LISTE AVANT AJOUT
-!       CPT     : COMPTEUR SPÉCIFIQUE
+!       CPT     : COMPTEUR SPÃ‰CIFIQUE
 !       NEWPT   : COORDONNES DU POINT A AJOUTER
 !       LONGAR  : LONGUEUR DE L'ARETE
 !     SORTIE

@@ -143,13 +143,9 @@ subroutine op0178()
                 if (iret .eq. 0) then
 !             -- TEST_RESU/VALE_CALC_I (OU VALE_CALC) :
                     if ((type.eq.'R') .or. (type.eq.'C')) then
-                        form1 = '(&
-                                ''_F(&
-                                NOM='''''', A24, '''''', VALE_CALC='', ' //formr//', '',&
-                                TOLE_MACHINE=' //preci(1:lxlgut(preci))//'&
-                                ),&
-                                ''&
-                                )'
+                        form1 = '(''_F(NOM='''''', A24, '''''', VALE_CALC='', ' &
+                                //formr//', '',TOLE_MACHINE=' //preci(1:lxlgut(preci))&
+                                //'),'')'
                         write (ific,form1) obj,sommr
                     else if (type.eq.'I') then
                         write (ific,1003) obj,sommi
@@ -184,13 +180,9 @@ subroutine op0178()
                     if (iret .eq. 0) then
 !               -- TEST_RESU/VALE_CALC_I (OU VALE_CALC) :
                         if ((type.eq.'R') .or. (type.eq.'C')) then
-                            form1 = '(&
-                                    ''_F(&
-                                    NOM='''''', A24, '''''', VALE_CALC='', ' //formr// ', '',&
-                                    TOLE_MACHINE=' //preci(1:lxlgut(preci))//'&
-                                    ),&
-                                    ''&
-                                    )'
+                            form1 = '(''_F(NOM='''''', A24, '''''', VALE_CALC='', '&
+                                    //formr// ', '',TOLE_MACHINE='//preci(1:lxlgut(preci))&
+                                    //'),'')'
                             write (ific,form1) obj,sommr
                         else if (type.eq.'I') then
                             write (ific,1003) obj,sommi

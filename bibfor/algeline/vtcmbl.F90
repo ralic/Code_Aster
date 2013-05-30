@@ -278,7 +278,7 @@ subroutine vtcmbl(nbcmb, typcst, const, typech, nomch,&
 ! DOMAINE GLOBAL
                     ch19=nomch(icmb)
                 else
-! SOUS-DOMAINE N°IDD
+! SOUS-DOMAINE NÂ°IDD
                     ch19=zk24(zi(ivfetc+icmb-1)+idd-1)(1:19)
                 endif
 !

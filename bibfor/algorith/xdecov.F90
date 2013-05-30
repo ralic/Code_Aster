@@ -44,16 +44,16 @@ subroutine xdecov(ndim, elp, nnop, nnose, it,&
 ! ======================================================================
 ! person_in_charge: samuel.geniaut at edf.fr
 ! TOLE CRP_20 CRP_21 CRS_1404
-!                      DÉCOUPER LE TETRA EN NSE SOUS-TETRAS
+!                      DÃCOUPER LE TETRA EN NSE SOUS-TETRAS
 !
 !     ENTREE
 !       NNOSE    : NOMBRE DE NOEUDS DU SOUS TETRA
 !       IT       : INDICE DU TETRA EN COURS
-!       CNSET    : CONNECTIVITÉ DES NOEUDS DU TETRA
+!       CNSET    : CONNECTIVITÃ DES NOEUDS DU TETRA
 !       HEAVT    : FONCTION HEAVYSIDE DES TETRAS
 !       LSN      : VALEURS DE LA LEVEL SET NORMALE
-!       IGEOM    : ADRESSE DES COORDONNÉES DES NOEUDS DE L'ELT PARENT
-!       PINTER   : COORDONNÉES DES POINTS D'INTERSECTION
+!       IGEOM    : ADRESSE DES COORDONNÃES DES NOEUDS DE L'ELT PARENT
+!       PINTER   : COORDONNÃES DES POINTS D'INTERSECTION
 !       NINTER   : NB DE POINTS D'INTERSECTION
 !       NPTS     : NB DE PTS D'INTERSECTION COINCIDANT AVEC UN NOEUD
 !       AINTER   : INFOS ARETE CORRESPONDATE AU PT INTERSECTION
@@ -61,7 +61,7 @@ subroutine xdecov(ndim, elp, nnop, nnose, it,&
 !
 !     SORTIE
 !       NSE      : NOMBRE DE SOUS-ELTS (TETRAS)
-!       CNSE     : CONNECTIVITE DES SOUS-ÉLÉMENTS (TETRAS)
+!       CNSE     : CONNECTIVITE DES SOUS-ÃLÃMENTS (TETRAS)
 !       HEAV     : FONCTION HEAVYSIDE CONSTANTE SUR CHAQUE SOUS-ELT
 !     ------------------------------------------------------------------
 !
@@ -107,7 +107,7 @@ subroutine xdecov(ndim, elp, nnop, nnose, it,&
     call conare(typma, ar, nbar)
 !
 !-----------------------------------------------------------------------
-!     REMPLISSAGE DE LA CONNECTIVITÉ DES SOUS-ELEMENTS TÉTRAS
+!     REMPLISSAGE DE LA CONNECTIVITÃ DES SOUS-ELEMENTS TÃTRAS
 !                  ALGO BOOK III (26/04/04)
 !-----------------------------------------------------------------------
 !
@@ -230,7 +230,7 @@ subroutine xdecov(ndim, elp, nnop, nnose, it,&
 !
         if (ninter .lt. 3) then
 !
-!       1°) AVEC MOINS DE TROIS POINTS D'INTERSECTION
+!       1Â°) AVEC MOINS DE TROIS POINTS D'INTERSECTION
 !       ---------------------------------------------
 !
 !         INTER DOUTEUSE
@@ -243,7 +243,7 @@ subroutine xdecov(ndim, elp, nnop, nnose, it,&
 !
         else if (ninter.eq.3) then
 !
-!         2°) AVEC TROIS POINTS D'INTERSECTION
+!         2Â°) AVEC TROIS POINTS D'INTERSECTION
 !         ------------------------------------
             a1=nint(ainter(zxain*(1-1)+1))
             a2=nint(ainter(zxain*(2-1)+1))
@@ -264,7 +264,7 @@ subroutine xdecov(ndim, elp, nnop, nnose, it,&
 !
 !           CONNECTIVITE DES NSE PAR RAPPORT AU NUM DE NOEUDS DU PARENT
 !           AVEC 101, 102 ET 103 LES 3 PTS D'INTERSECTION
-!           ON REMPLACE 101 ET 102 PAR LES NUMEROS DES NOEUDS COUP�S
+!           ON REMPLACE 101 ET 102 PAR LES NUMEROS DES NOEUDS COUPÉS
                 cnse(1,1)=nint(ainter(2))
                 cnse(1,2)=nint(ainter(zxain+2))
                 cnse(1,3)=103
@@ -289,7 +289,7 @@ subroutine xdecov(ndim, elp, nnop, nnose, it,&
                         endif
 40                  continue
 30              continue
-!           ON REMPLACE 101 PAR LE NUMERO DU NOEUD COUP�
+!           ON REMPLACE 101 PAR LE NUMERO DU NOEUD COUPÉ
                 cnse(1,1)=nint(ainter(2))
                 cnse(1,2)=102
                 cnse(1,3)=103
@@ -312,28 +312,28 @@ subroutine xdecov(ndim, elp, nnop, nnose, it,&
 !
 !           ON A 4 CONFIG POSSIBLES :
                 if (a1 .eq. 1 .and. a2 .eq. 2 .and. a3 .eq. 3) then
-!             CONFIGURATION N°1
+!             CONFIGURATION NÂ°1
                     cnse(1,4)=cnset(nnose*(it-1)+1)
                     call xpente(2, cnse, 103, 101, 102,&
                                 cnset(nnose*(it-1)+ 4), cnset(nnose*(it-1)+2),&
                                 cnset(nnose*(it-1)+3))
                 else if (a1.eq.1.and.a2.eq.4.and.a3.eq.5) then
-!             CONFIGURATION N°2
+!             CONFIGURATION NÂ°2
                     cnse(1,4)=cnset(nnose*(it-1)+2)
                     call xpente(2, cnse, cnset(nnose*(it-1)+1), cnset( nnose*(it-1)+3),&
                                 cnset(nnose*(it-1)+4), 101, 102, 103)
                 else if (a1.eq.2.and.a2.eq.4.and.a3.eq.6) then
-!             CONFIGURATION N°3
+!             CONFIGURATION NÂ°3
                     cnse(1,4)=cnset(nnose*(it-1)+3)
                     call xpente(2, cnse, cnset(nnose*(it-1)+4), cnset( nnose*(it-1)+2),&
                                 cnset(nnose*(it-1)+1), 103, 102, 101)
                 else if (a1.eq.3.and.a2.eq.5.and.a3.eq.6) then
-!             CONFIGURATION N°4
+!             CONFIGURATION NÂ°4
                     cnse(1,4)=cnset(nnose*(it-1)+4)
                     call xpente(2, cnse, cnset(nnose*(it-1)+1), cnset( nnose*(it-1)+2),&
                                 cnset(nnose*(it-1)+3), 101, 102, 103)
                 else
-!             PROBLEME DE DECOUPAGE À 3 POINTS
+!             PROBLEME DE DECOUPAGE Ã 3 POINTS
                     call assert(a1.eq.1.and.a2.eq.2.and.a3.eq.3)
                 endif
 !
@@ -341,7 +341,7 @@ subroutine xdecov(ndim, elp, nnop, nnose, it,&
 !
         else if (ninter.eq.4) then
 !
-!         2°) AVEC QUATRE POINTS D'INTERSECTION
+!         2Â°) AVEC QUATRE POINTS D'INTERSECTION
 !          -------------------------------------
             a1=nint(ainter(zxain*(1-1)+1))
             a2=nint(ainter(zxain*(2-1)+1))
@@ -351,19 +351,19 @@ subroutine xdecov(ndim, elp, nnop, nnose, it,&
 !         ON A SIX SOUS-ELEMENTS (DANS TOUS LES CAS ?)
             nse=6
             if (a1 .eq. 1 .and. a2 .eq. 2 .and. a3 .eq. 5 .and. a4 .eq. 6) then
-!          CONFIGURATION N°1
+!          CONFIGURATION NÂ°1
                 call xpente(1, cnse, 104, 102, cnset(nnose*(it-1)+3),&
                             103, 101, cnset(nnose*(it-1)+2))
                 call xpente(4, cnse, cnset(nnose*(it-1)+1), 101, 102,&
                             cnset(nnose*(it-1)+4), 103, 104)
             else if (a1.eq.1.and.a2.eq.3.and.a3.eq.4.and.a4.eq.6) then
-!          CONFIGURATION N°2
+!          CONFIGURATION NÂ°2
                 call xpente(1, cnse, 101, cnset(nnose*(it-1)+2), 103,&
                             102, cnset(nnose*(it-1)+4), 104)
                 call xpente(4, cnse, 102, 101, cnset(nnose*(it-1)+1),&
                             104, 103, cnset(nnose*(it-1)+3))
             else if (a1.eq.2.and.a2.eq.3.and.a3.eq.4.and.a4.eq.5) then
-!          CONFIGURATION N°3
+!          CONFIGURATION NÂ°3
                 call xpente(1, cnse, 101, 103, cnset(nnose*(it-1)+3),&
                             102, 104, cnset(nnose*(it-1)+4))
                 call xpente(4, cnse, cnset(nnose*(it-1)+2), 104, 103,&
@@ -376,7 +376,7 @@ subroutine xdecov(ndim, elp, nnop, nnose, it,&
     endif
 !
 !-----------------------------------------------------------------------
-!     VÉRIFICATION DU SENS DES SOUS-ÉLÉMENTS TETRA
+!     VÃRIFICATION DU SENS DES SOUS-ÃLÃMENTS TETRA
 !                  ALGO BOOK III (28/04/04)
 !-----------------------------------------------------------------------
 !
@@ -422,13 +422,13 @@ subroutine xdecov(ndim, elp, nnop, nnose, it,&
     endif
 !
 !-----------------------------------------------------------------------
-!             MATRICE DES COORDONNÉES ET FONCTION HEAVYSIDE
+!             MATRICE DES COORDONNÃES ET FONCTION HEAVYSIDE
 !             ALGO BOOK III (28/04/04)
 !-----------------------------------------------------------------------
     call assert(nse.le.nsemax)
     do 300 ise = 1, nse
         do 310 i = 1, ifiss-1
-! ----- ON RECOPIE LES VALEURS PR�C�DENTES
+! ----- ON RECOPIE LES VALEURS PRÉCÉDENTES
             heav(ifiss*(ise-1)+i)=heavt(ncomp*(i-1)+it)
 310      continue
 ! ----- ON TRAITE LA FISSURE COURANTE
@@ -441,7 +441,7 @@ subroutine xdecov(ndim, elp, nnop, nnose, it,&
 325              continue
                 somlsn(nfisc+1) = somlsn(nfisc+1)+lsn((inh-1)*nfiss+ ifiss)
             else
-!           RECUP DE LA G�OMETRIE
+!           RECUP DE LA GÉOMETRIE
                 if (inh .gt. 1000) then
                     do 330 j = 1, ndim
                         geom(j) = pintt(ndim*(inh-1001)+j)
@@ -471,7 +471,7 @@ subroutine xdecov(ndim, elp, nnop, nnose, it,&
             endif
 320      continue
 !
-!       MISE � ZERO POUR LA FONCTION JONCTION AU NIVEAU DU BRANCHEMENT
+!       MISE À ZERO POUR LA FONCTION JONCTION AU NIVEAU DU BRANCHEMENT
 !
         do 360 i = 1, nfisc
             if (fisco(2*i)*somlsn(i) .gt. 0.d0) goto 300
@@ -485,7 +485,7 @@ subroutine xdecov(ndim, elp, nnop, nnose, it,&
 !       REMARQUE IMPORTANTE :
 !       SI ON EST SUR UN ELEMENT DE BORD COINCIDANT AVEC L'INTERCE
 !       (NDIME = NDIM - 1 ET NPTS = NINTER = NDIM) ALORS ON NE PEUT PAS
-!       DÉTERMINER DE QUEL COTÉ DE L'INTERFACE ON SE TROUVE, CAR
+!       DÃTERMINER DE QUEL COTÃ DE L'INTERFACE ON SE TROUVE, CAR
 !       ON EST TOUJOURS SUR L'INTERFACE. LA VALEUR DE HEAV(ISE)
 !       EST DONC FAUSSE DANS CE CAS : ON MET 99.
 !       UNE CORRECTION EST FAITE DANS XORIPE LORS DE L'ORIENTATION DES

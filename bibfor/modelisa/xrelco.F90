@@ -49,7 +49,7 @@ subroutine xrelco(noma, nliseq, lisrel, nrel)
 ! IN  NOMA   : NOM DU MAILLAGE
 ! IN  NLISEQ : LISTE REL. LIN. POUR V2 SEULEMENT
 ! IN  NBASCO : CHAM_NO POUR BASE COVARIANTE
-! OUT NREL   : NOMBRE DE RELATIONS À IMPOSER
+! OUT NREL   : NOMBRE DE RELATIONS Ã€ IMPOSER
 !
 !
 !
@@ -81,7 +81,7 @@ subroutine xrelco(noma, nliseq, lisrel, nrel)
         ndime(i) = 0
  5  end do
 !
-! --- DONNÉES RELATIVES AU MAILLAGE
+! --- DONNÃ‰ES RELATIVES AU MAILLAGE
 !
     call dismoi('F', 'DIM_GEOM', noma, 'MAILLAGE', ndim,&
                 k8bid, iret)

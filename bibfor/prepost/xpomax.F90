@@ -362,7 +362,7 @@ subroutine xpomax(mo, malini, mailx, nbnoc, nbmac,&
         call assert(n.eq.nbnoma)
 !
 !       RECUPERATION DU NOMBRE TOTAL DE SOUS ELEMENTS
-!       CORRESPOD AU NOMBRE DE MAILLES À CREER
+!       CORRESPOD AU NOMBRE DE MAILLES Ã€ CREER
         call cesexi('C', jcesd(3), jcesl(3), ima, 1,&
                     1, 1, iad3)
         call assert(iad3.gt.0)
@@ -413,7 +413,7 @@ subroutine xpomax(mo, malini, mailx, nbnoc, nbmac,&
         endif
 !
 !
-!       CREATION DE VECTEUR DES COORDONNÉES DE LA MAILLE IMA
+!       CREATION DE VECTEUR DES COORDONNÃ‰ES DE LA MAILLE IMA
 !       AVEC DES VALEURS CONTIGUES
         geom = '&&XPOAJD.GEOM'
         call wkvect(geom, 'V V R', ndim*n, igeom)
@@ -512,7 +512,7 @@ subroutine xpomax(mo, malini, mailx, nbnoc, nbmac,&
 40          continue
 30      continue
 !
-!       RECUPERATION DE LA CONNECTIVITÉ DES FISSURES
+!       RECUPERATION DE LA CONNECTIVITÃ‰ DES FISSURES
         if (.not.opmail .and. nfh .gt. 0) then
 !         CORRECTION DE NFH SI ON SE TROMPE DANS XPOCMP
             if (nfh .gt. nfiss) nfh = nfiss

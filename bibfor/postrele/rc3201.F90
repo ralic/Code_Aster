@@ -66,7 +66,7 @@ subroutine rc3201(lpmpb, lsn, lsnet, lfatig, lrocht,&
 !     CALCUL DU FACTEUR D'USAGE
 !     ON TRAITE LES SITUATIONS COMBINABLES DANS LEUR GROUPE
 !
-!     Soit 2 états stabilisés I et J appartenant aux situations P et Q
+!     Soit 2 Ã©tats stabilisÃ©s I et J appartenant aux situations P et Q
 !
 !     on calcule le SALT(I,J) = 0,5*(EC/E)*Ke(Sn(P,Q))*Sp(I,J)
 !

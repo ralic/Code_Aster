@@ -112,7 +112,7 @@ subroutine sh6for(xetemp, para, xidepm, sigma, xivect)
                 pppt(j,i) = ppp(i,j)
 70          continue
 80      continue
-! Passer les coordonnées globaux XE dans le repère local :
+! Passer les coordonnÃ©es globaux XE dans le repÃ¨re local :
         do 81 i = 1, 6
             xe1(1,i) = xe(3*(i-1)+1)
             xe1(2,i) = xe(3*(i-1)+2)
@@ -130,9 +130,9 @@ subroutine sh6for(xetemp, para, xidepm, sigma, xivect)
 ! CALCUL DE B : U_GLOBAL ---> EPS_GLOBAL
         call s6calb(bksip(1, 1, ip), xeloc, blocal, ajac)
 !
-! Transformer matrice BLOCAL(3,6) dans le repère local en BLOC(6,18)
-!  dans le repère local et en tenant
-! compte également des modifications sur les termes croisés ZY,ZX :
+! Transformer matrice BLOCAL(3,6) dans le repÃ¨re local en BLOC(6,18)
+!  dans le repÃ¨re local et en tenant
+! compte Ã©galement des modifications sur les termes croisÃ©s ZY,ZX :
         call assebg(bloc, blocal, xmodif)
 !C
 !C CALCUL DE B.SIGMA EN GLOBAL
@@ -150,7 +150,7 @@ subroutine sh6for(xetemp, para, xidepm, sigma, xivect)
             floc(3,i)=ftemp(i+12)
 150      continue
 !
-! Transformer FLOC(3,6) dans le repère global :
+! Transformer FLOC(3,6) dans le repÃ¨re global :
 !
         call mulmat(3, 3, 6, ppp, floc,&
                     fglob)

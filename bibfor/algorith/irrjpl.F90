@@ -76,8 +76,8 @@ subroutine irrjpl(model, nmat, mater, sigf, vind,&
 !
 !     CALCUL DE LA MATRICE JACOBIENNE ==> methode b (plus sure)
 !     a) Faire appel a IRRJAC
-!        certaines des Èquations sont normÈes   ==> prÈcautions
-!        si le jacobien est changÈ              ==> rÈpercutions
+!        certaines des √©quations sont norm√©es   ==> pr√©cautions
+!        si le jacobien est chang√©              ==> r√©percutions
 !        CALL IRRJAC (FAMI,KPG,KSP,MOD,NMAT,MATER,YF,DY,NR,DRDY)
 !     b) Calcul qui ressemble a IRRJAC
 !        independant de IRRJAC

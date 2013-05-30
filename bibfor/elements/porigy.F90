@@ -95,7 +95,7 @@ subroutine porigy(nomte, e, rho, xnu, icdmat,&
         itype = 0
         istruc = 1
         alfinv = zero
-!   ON MET RHO=1, il est utilisé dans PMFITX
+!   ON MET RHO=1, il est utilisÃ© dans PMFITX
         rho = 1.d0
         call pmfitx(icdmat, 2, casect, rbid)
         a = casect(1)

@@ -44,7 +44,7 @@ subroutine xderfe(r, theta, dfedp)
     s2 = sin(theta/2.d0)
     c2 = cos(theta/2.d0)
 !
-!     DÉRIVÉES DES FONCTIONS D'ENRICHISSEMENT DANS LA BASE POLAIRE
+!     DÃ‰RIVÃ‰ES DES FONCTIONS D'ENRICHISSEMENT DANS LA BASE POLAIRE
     dfedp(1,1) = 1.d0/(2.d0*rr) * s2
     dfedp(1,2) = rr/2.d0 * c2
     dfedp(2,1) = 1.d0/(2.d0*rr) * c2

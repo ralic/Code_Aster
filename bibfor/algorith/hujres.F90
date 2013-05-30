@@ -394,7 +394,7 @@ subroutine hujres(mod, crit, mater, imat, nvi,&
             do 60 i = 1, ndt
                 deps(i) = deps0(i)/ndec
 60          continue
-! --- APPLICATION DE L'INCREMENT DE DÉFORMATIONS, SUPPOSE ELASTIQUE
+! --- APPLICATION DE L'INCREMENT DE DÃ‰FORMATIONS, SUPPOSE ELASTIQUE
             call hujpre('ELASTIC', mod, crit, imat, mater,&
                         deps, sigd, sigf, vind, iret)
         endif

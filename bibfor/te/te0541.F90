@@ -33,7 +33,7 @@ subroutine te0541(option, nomte)
     character(len=16) :: option, nomte
 ! ----------------------------------------------------------------------
 ! FONCTION REALISEE:  CALCUL DE L'OPTION CHAR_MECA_TEMP_R POUR LES
-!                     ÉLÉMENTS MECA X-FEM
+!                     Ã‰LÃ‰MENTS MECA X-FEM
 !
 !    - ARGUMENTS:
 !        DONNEES:      OPTION       -->  OPTION DE CALCUL

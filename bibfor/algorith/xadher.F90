@@ -32,20 +32,20 @@ subroutine xadher(p, saut, lamb1, cstafr, cpenfr,&
     logical :: adher
 !
 ! ----------------------------------------------------------------------
-!                      TEST DE L'ADHÉRENCE AVEC X-FEM
+!                      TEST DE L'ADHÃ‰RENCE AVEC X-FEM
 !                ET CALCUL DES MATRICES DE FROTTEMENT UTILES
 !
-! IN    P           : OPÉRATEUR DE PROJECTION
-! IN    SAUT        : SAUT DES INCRÉMENTS DE DÉPLACEMENTS
-!                     DEPUIS L'ÉQUILIBRE PRÉCÉDENT
-! IN    LAMB1       : INCRÉMENTS DU SEMI-MULTIPLICATEUR DE FROTTEMENT
-!                     DEPUIS L'ÉQUILIBRE PRÉCÉDENT DANS LA BASE GLOBALE
+! IN    P           : OPÃ‰RATEUR DE PROJECTION
+! IN    SAUT        : SAUT DES INCRÃ‰MENTS DE DÃ‰PLACEMENTS
+!                     DEPUIS L'Ã‰QUILIBRE PRÃ‰CÃ‰DENT
+! IN    LAMB1       : INCRÃ‰MENTS DU SEMI-MULTIPLICATEUR DE FROTTEMENT
+!                     DEPUIS L'Ã‰QUILIBRE PRÃ‰CÃ‰DENT DANS LA BASE GLOBALE
 ! IN    CSTAFR       : COEFFICIENT DE REGULARISATION DE FROTTEMENT
-!                       DIVISÉ PAR L'INCRÉMENT DE TEMPS
+!                       DIVISÃ‰ PAR L'INCRÃ‰MENT DE TEMPS
 ! IN    CSTAFR      : COEFFICIENT DE STABILISTAION DE FROTTEMENT
-!                       DIVISÉ PAR L'INCRÉMENT DE TEMPS
+!                       DIVISÃ‰ PAR L'INCRÃ‰MENT DE TEMPS
 ! IN    CPENFR      : COEFFICIENT DE PENALISATION DU FROTTEMENT
-!                       DIVISÉ PAR L'INCRÉMENT DE TEMPS
+!                       DIVISÃ‰ PAR L'INCRÃ‰MENT DE TEMPS
 ! IN    ALGOFR      : FORMULATION POUR LE FROTTEMENT
 !
 ! OUT   VITANG      : PROJECTION TANGENTE DU SAUT
@@ -106,7 +106,7 @@ subroutine xadher(p, saut, lamb1, cstafr, cpenfr,&
         norme2=sqrt(gt2(1)*gt2(1)+gt2(2)*gt2(2))
     endif
 !
-!     ADHER : TRUE SI ADHÉRENCE, FALSE SI GLISSEMENT
+!     ADHER : TRUE SI ADHÃ‰RENCE, FALSE SI GLISSEMENT
     if (norme .le. (1.d0+prec)) then
         adher = .true.
         do 21 j = 1, ndim

@@ -46,4 +46,3 @@
     parameter ( st_tag_chk = 123111,&
      &          st_tag_cnt = 123222,&
      &          st_tag_alr = 123333 )
-

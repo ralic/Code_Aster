@@ -52,19 +52,19 @@ subroutine xcninv(nnotot, nse, nnop, nno, jcnset,&
 !
     integer :: ise, in, ino, jno
 !
-! --- RÉCUPÉRATION DE LA SUBDIVISION DE L'ÉLÉMENT PARENT
+! --- RÃ‰CUPÃ‰RATION DE LA SUBDIVISION DE L'Ã‰LÃ‰MENT PARENT
 ! --- EN NSE SIMPLEXES
 !
-! ------------------- BOUCLE SUR LES NSE SOUS-ÉLÉMENTS  ----------------
+! ------------------- BOUCLE SUR LES NSE SOUS-Ã‰LÃ‰MENTS  ----------------
 !
     do 110 ise = 1, nse
 !
-! ------------- BOUCLE SUR LES SOMMETS DU SOUS-ÉLÉMENTS  ---------------
+! ------------- BOUCLE SUR LES SOMMETS DU SOUS-Ã‰LÃ‰MENTS  ---------------
 !
         do 111 in = 1, nno
 !
             ino=zi(jcnset-1+nno*(ise-1)+in)
-! ------- NUMÉROTATION PROPRE A LA CONNECTIVITÉ INVERSE
+! ------- NUMÃ‰ROTATION PROPRE A LA CONNECTIVITÃ‰ INVERSE
             if (ino .lt. 1000) then
                 jno=ino
             else

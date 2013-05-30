@@ -27,16 +27,16 @@ subroutine loncar(ndim, typma, coord, l)
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 !
-!                      LONGUEUR CARACTÉRISTIQUE D'UNE MAILLE
+!                      LONGUEUR CARACTÃ‰RISTIQUE D'UNE MAILLE
 !
 !     ENTREE
 !       NDIM    : DIMENSION TOPOLOGIQUE DU MAILLAGE
 !       TYPMA   : TYPE DE MAILLE (TYPE_MAILLE)
-!       COORD   : COORDONNÉES DES NOEUDS (X Y Z SI NDIM = 3
+!       COORD   : COORDONNÃ‰ES DES NOEUDS (X Y Z SI NDIM = 3
 !                                         X Y   SI NDIM = 2)
 !
 !     SORTIE
-!       L      : LONGUEUR CARACTÉRISTIQUE
+!       L      : LONGUEUR CARACTÃ‰RISTIQUE
 !     ------------------------------------------------------------------
 !
     integer :: i
@@ -53,13 +53,13 @@ subroutine loncar(ndim, typma, coord, l)
 !
     if (typma(1:4) .eq. 'HEXA') then
 !
-!       LA LONGUEUR CARACTÉRISTIQUE EST LA GRANDE DIAGONALE N1-N7
+!       LA LONGUEUR CARACTÃ‰RISTIQUE EST LA GRANDE DIAGONALE N1-N7
         l=sqrt( (coord(1)-coord(19))**2 + (coord(2)-coord(20))**2&
         + (coord(3)-coord(21))**2 )
 !
     else if (typma(1:5).eq.'PENTA') then
 !
-!       LA LONGUEUR CARACTÉRISTIQUE EST ((N3-N1)*(N3-N2)*(N3-N6))^(1/3)
+!       LA LONGUEUR CARACTÃ‰RISTIQUE EST ((N3-N1)*(N3-N2)*(N3-N6))^(1/3)
         ar(1)=sqrt((coord(7)-coord(1))**2 + (coord(8)-coord(2))**2&
         + (coord(9)-coord(3))**2 )
         ar(2)=sqrt((coord(7)-coord(4))**2 + (coord(8)-coord(5))**2&
@@ -76,7 +76,7 @@ subroutine loncar(ndim, typma, coord, l)
                    ) / 4.d0
  5      continue
 !
-!       LA LONGUEUR CARACTÉRISTIQUE EST ((N1-N3)*(M-N5))^(1/2)
+!       LA LONGUEUR CARACTÃ‰RISTIQUE EST ((N1-N3)*(M-N5))^(1/2)
         ar(1)=sqrt( (coord(3*(3-1)+1)-coord(3*(1-1)+1))**2 + (coord(3*&
         (3-1)+2)-coord(3*(1-1)+2))**2 + (coord(3*(3-1)+3)-coord(3*(1-&
         1)+3))**2 )
@@ -86,7 +86,7 @@ subroutine loncar(ndim, typma, coord, l)
 !
     else if (typma(1:5).eq.'TETRA') then
 !
-!       LA LONGUEUR CARACTÉRISTIQUE EST ((N1-N2)*(N1-N3)*(N1-N4))^(1/3)
+!       LA LONGUEUR CARACTÃ‰RISTIQUE EST ((N1-N2)*(N1-N3)*(N1-N4))^(1/3)
         do 10 i = 1, 3
             ar(i)=sqrt((coord(1)-coord(3*i+1))**2 + (coord(2)-coord(3*&
             i+2))**2 + (coord(3)-coord(3*i+3))**2 )
@@ -95,7 +95,7 @@ subroutine loncar(ndim, typma, coord, l)
 !
     else if (typma(1:4).eq.'QUAD') then
 !
-!     LA LONGUEUR CARACTÉRISTIQUE EST ((N1-N2)*(N1-N3))^(1/2)
+!     LA LONGUEUR CARACTÃ‰RISTIQUE EST ((N1-N2)*(N1-N3))^(1/2)
         do 20 i = 1, 2
             ar(i) = (coord(1)-coord(ndim*i+1))**2 + (coord(2)-coord( ndim*i+2) )**2
             if (ndim .eq. 3) ar(i) = ar(i) + (coord(3)-coord(ndim*i+3)) **2
@@ -104,7 +104,7 @@ subroutine loncar(ndim, typma, coord, l)
 !
     else if (typma(1:4).eq.'TRIA') then
 !
-!     LA LONGUEUR CARACTÉRISTIQUE EST ((N1-N2)*(N1-N3))^(1/2)
+!     LA LONGUEUR CARACTÃ‰RISTIQUE EST ((N1-N2)*(N1-N3))^(1/2)
         do 30 i = 1, 2
             ar(i) = (coord(1)-coord(ndim*i+1))**2 + (coord(2)-coord( ndim*i+2) )**2
             if (ndim .eq. 3) ar(i) = ar(i) + (coord(3)-coord(ndim*i+3)) **2
@@ -113,7 +113,7 @@ subroutine loncar(ndim, typma, coord, l)
 !
     else if (typma(1:3).eq.'SEG') then
 !
-!       LA LONGUEUR CARACTÉRISTIQUE EST (N1-N2)^(1/2)
+!       LA LONGUEUR CARACTÃ‰RISTIQUE EST (N1-N2)^(1/2)
         l = (coord(1)-coord(ndim+1))**2 + (coord(2)-coord(ndim+2))**2
         if (ndim .eq. 3) l = l + (coord(3)-coord(ndim+3))**2
         l = sqrt(l)

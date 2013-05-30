@@ -154,7 +154,7 @@ subroutine cgmasp(mofaz, iocc, nomaz, lismaz, nbma)
 !     --------------------------------
     do 10 ima = 1, nbmai
 !
-! ---     RECUPERATION DU NOM DE LA MAILLE à partrir du numero d'ordre:
+! ---     RECUPERATION DU NOM DE LA MAILLE Ã  partrir du numero d'ordre:
 !         --------------------------------
         call jenuno(jexnum(noma//'.NOMMAI', ima), nomail)
 !

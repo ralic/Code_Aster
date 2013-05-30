@@ -35,10 +35,10 @@ subroutine xneuvi(narz, nar, nbno, tabdir, scorno,&
 !      CONNECTEES A UN NOEUD
 !
 ! FISS.CONNECTANT :
-!      CHAQUE NOEUD RELIÉ A PLUS D'UNE ARETE VITALE (SCORE(NOEUD) > 1)
-!      EST STOQUÉ ICI ET DEFINI UN GROUPE D'ARETES
+!      CHAQUE NOEUD RELIÃ‰ A PLUS D'UNE ARETE VITALE (SCORE(NOEUD) > 1)
+!      EST STOQUÃ‰ ICI ET DEFINI UN GROUPE D'ARETES
 ! FISS.CONNECTES :
-!      POUR CHAQUE NOEUD CONNECTANT, ON STOQUE ICI LES NOEUDS RELIÉS
+!      POUR CHAQUE NOEUD CONNECTANT, ON STOQUE ICI LES NOEUDS RELIÃ‰S
 !      QUI FORMENT LES ARETES VITALE
 !
 ! TRAVAIL EFFECTUE EN COLLABORATION AVEC L'I.F.P.
@@ -89,11 +89,11 @@ subroutine xneuvi(narz, nar, nbno, tabdir, scorno,&
             zi(jcntan-1+3*(i-1)+3) = nncone
             nncone = nncone + scorno(novit(i))
 20      continue
-! --- ON CONSTRUIT LE VECTEUR DES NOEUDS CONNECTÉS
+! --- ON CONSTRUIT LE VECTEUR DES NOEUDS CONNECTÃ‰S
         call wkvect(nliseq(1:8)//'.CONNECTES ', 'G V I', nncone, jcntes)
         k=0
         do 30 i = 1, nnovit
-! --- POUR CHAQUE NOEUD VITAL, ON STOQUE SES NOEUDS CONECTÉS
+! --- POUR CHAQUE NOEUD VITAL, ON STOQUE SES NOEUDS CONECTÃ‰S
             do 40 ia = 1, nar
                 if (tabdir(ia,1) .eq. novit(i)) then
                     k = k+1

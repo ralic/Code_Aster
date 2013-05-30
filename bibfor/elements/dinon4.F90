@@ -36,8 +36,8 @@ subroutine dinon4(neq, ul, dul, utl, nno,&
 !    f > FPRE
 !       df = KFIN*dU
 !
-!        KDEB  : raideur au début
-!        KFIN  : raideur à la fin
+!        KDEB  : raideur au dÃ©but
+!        KFIN  : raideur Ã  la fin
 !        FPREC : effort de pre-tension
 !
 !======================================================================

@@ -55,19 +55,19 @@ subroutine xgelem(elrefp, ndim, coorse, igeom, jheavt,&
 !                          PAR LA METHODE ENERGETIQUE G-THETA
 !                          POUR LES ELEMENTS X-FEM (2D ET 3D)
 !
-! IN  ELREFP  : ÉLÉMENT DE RÉFÉRENCE PARENT
+! IN  ELREFP  : Ã‰LÃ‰MENT DE RÃ‰FÃ‰RENCE PARENT
 ! IN  NDIM    : DIMENSION DE L'ESPACE
-! IN  COORSE  : COORDONNÉES DES SOMMETS DU SOUS-ÉLÉMENT
-! IN  IGEOM   : COORDONNÉES DES NOEUDS DE L'ÉLÉMENT PARENT
-! IN  HE      : VALEUR DE LA FONCTION HEAVISIDE SUR LE SOUS-ÉLT
+! IN  COORSE  : COORDONNÃ‰ES DES SOMMETS DU SOUS-Ã‰LÃ‰MENT
+! IN  IGEOM   : COORDONNÃ‰ES DES NOEUDS DE L'Ã‰LÃ‰MENT PARENT
+! IN  HE      : VALEUR DE LA FONCTION HEAVISIDE SUR LE SOUS-Ã‰LT
 ! IN  NFH     : NOMBRE DE FONCTIONS HEAVYSIDE
-! IN  NFISS   : NOMBRE DE FISSURES "VUES" PAR L'ÉLÉMENT
+! IN  NFISS   : NOMBRE DE FISSURES "VUES" PAR L'Ã‰LÃ‰MENT
 ! IN  JFISNO  : CONNECTIVITE DES FISSURES ET DES DDL HEAVISIDES
 ! IN  DDLC    : NOMBRE DE DDL DE CONTACT (PAR NOEUD)
-! IN  NFE     : NOMBRE DE FONCTIONS SINGULIÈRES D'ENRICHISSEMENT
+! IN  NFE     : NOMBRE DE FONCTIONS SINGULIÃˆRES D'ENRICHISSEMENT
 ! IN  BASLOC  : BASE LOCALE AU FOND DE FISSURE AUX NOEUDS
 ! IN  NNOP    : NOMBRE DE NOEUDS DE L'ELEMENT PARENT
-! IN  DEPL    : DÉPLACEMENTS
+! IN  DEPL    : DÃ‰PLACEMENTS
 ! IN  LSN     : VALEUR DE LA LEVEL SET NORMALE AUX NOEUDS PARENTS
 ! IN  LST     : VALEUR DE LA LEVEL SET TANGENTE AUX NOEUDS PARENTS
 ! IN  FNO     : FORCES VOLUMIQUES AUX NOEUDS DE L'ELEMENT PARENT
@@ -133,10 +133,10 @@ subroutine xgelem(elrefp, ndim, coorse, igeom, jheavt,&
         typmod(1) = 'D_PLAN'
     endif
 !
-!     NOMBRE DE DDL DE DEPLACEMENT À CHAQUE NOEUD SOMMET
+!     NOMBRE DE DDL DE DEPLACEMENT Ã€ CHAQUE NOEUD SOMMET
     ddld=ndim*(1+nfh+nfe)
 !
-!     NOMBRE DE DDL TOTAL (DEPL+CONTACT) À CHAQUE NOEUD SOMMET
+!     NOMBRE DE DDL TOTAL (DEPL+CONTACT) Ã€ CHAQUE NOEUD SOMMET
     ddls=ddld+ddlc
 !
 !     NOMBRE DE COMPOSANTES DE PHEAVTO (DANS LE CATALOGUE)
@@ -176,14 +176,14 @@ subroutine xgelem(elrefp, ndim, coorse, igeom, jheavt,&
         if (iret .ne. 0) tpn(ino) = 0.d0
 30  end do
 !
-!     FONCTION HEAVYSIDE CSTE SUR LE SS-ÉLT ET PAR FISSURE
+!     FONCTION HEAVYSIDE CSTE SUR LE SS-Ã‰LT ET PAR FISSURE
 !
     do 70 ifiss = 1, nfiss
         he(ifiss) = zi(jheavt-1+ncomp*(ifiss-1)+ise)
 70  end do
 !
-!     RECUPERATION DE LA CONNECTIVITÉ FISSURE - DDL HEAVISIDES
-!     ATTENTION !!! FISNO PEUT ETRE SURDIMENTIONNÉ
+!     RECUPERATION DE LA CONNECTIVITÃ‰ FISSURE - DDL HEAVISIDES
+!     ATTENTION !!! FISNO PEUT ETRE SURDIMENTIONNÃ‰
     if (nfiss .eq. 1) then
         do 40 ino = 1, nnop
             fisno(ino,1) = 1
@@ -197,7 +197,7 @@ subroutine xgelem(elrefp, ndim, coorse, igeom, jheavt,&
 50      continue
     endif
 !     ------------------------------------------------------------------
-!     BOUCLE SUR LES POINTS DE GAUSS DU SOUS-TÉTRA
+!     BOUCLE SUR LES POINTS DE GAUSS DU SOUS-TÃ‰TRA
 !     ------------------------------------------------------------------
 !
     do 10 kpg = 1, npgbis
@@ -207,7 +207,7 @@ subroutine xgelem(elrefp, ndim, coorse, igeom, jheavt,&
         call vecini(12, 0.d0, dudm)
 !
 !
-!       COORDONNÉES DU PT DE GAUSS DANS LE REPÈRE RÉEL : XG
+!       COORDONNÃ‰ES DU PT DE GAUSS DANS LE REPÃˆRE RÃ‰EL : XG
         call vecini(ndim, 0.d0, xg)
         do 101 i = 1, ndim
             do 102 n = 1, nno
@@ -244,7 +244,7 @@ subroutine xgelem(elrefp, ndim, coorse, igeom, jheavt,&
         endif
 !
 !       --------------------------------------
-!       1) COORDONNÉES POLAIRES ET BASE LOCALE
+!       1) COORDONNÃ‰ES POLAIRES ET BASE LOCALE
 !       --------------------------------------
 !
 !       BASE LOCALE ET LEVEL SETS AU POINT DE GAUSS
@@ -281,7 +281,7 @@ subroutine xgelem(elrefp, ndim, coorse, igeom, jheavt,&
 131          continue
 130      continue
 !
-!       COORDONNÉES POLAIRES DU POINT
+!       COORDONNÃ‰ES POLAIRES DU POINT
         rg=sqrt(lsng**2+lstg**2)
 !
         if (rg .gt. r8prem()) then
@@ -290,8 +290,8 @@ subroutine xgelem(elrefp, ndim, coorse, igeom, jheavt,&
             iret=1
         else
 !         LE POINT EST SUR LE FOND DE FISSURE :
-!         L'ANGLE N'EST PAS DÉFINI, ON LE MET À ZÉRO
-!         ON NE FERA PAS LE CALCUL DES DÉRIVÉES
+!         L'ANGLE N'EST PAS DÃ‰FINI, ON LE MET Ã€ ZÃ‰RO
+!         ON NE FERA PAS LE CALCUL DES DÃ‰RIVÃ‰ES
             tg=0.d0
             iret=0
         endif
@@ -341,17 +341,17 @@ subroutine xgelem(elrefp, ndim, coorse, igeom, jheavt,&
 204          continue
 200      continue
 !
-!       DÉRIVÉES DES FONCTIONS D'ENRICHISSEMENT DANS LA BASE POLAIRE
+!       DÃ‰RIVÃ‰ES DES FONCTIONS D'ENRICHISSEMENT DANS LA BASE POLAIRE
         call xderfe(rg, tg, dgdpo)
 !
-!       DÉRIVÉES DES FONCTIONS D'ENRICHISSEMENT DANS LA BASE LOCALE
+!       DÃ‰RIVÃ‰ES DES FONCTIONS D'ENRICHISSEMENT DANS LA BASE LOCALE
         do 210 i = 1, 4
             dgdlo(i,1)=dgdpo(i,1)*cos(tg)-dgdpo(i,2)*sin(tg)/rg
             dgdlo(i,2)=dgdpo(i,1)*sin(tg)+dgdpo(i,2)*cos(tg)/rg
             dgdlo(i,3)=0.d0
 210      continue
 !
-!       DÉRIVÉES DES FONCTIONS D'ENRICHISSEMENT DANS LA BASE GLOBALE
+!       DÃ‰RIVÃ‰ES DES FONCTIONS D'ENRICHISSEMENT DANS LA BASE GLOBALE
         do 220 i = 1, 4
             do 221 j = 1, 3
                 dgdgl(i,j)=0.d0
@@ -509,7 +509,7 @@ subroutine xgelem(elrefp, ndim, coorse, igeom, jheavt,&
 10  end do
 !
 !     ------------------------------------------------------------------
-!     FIN DE LA BOUCLE SUR LES POINTS DE GAUSS DU SOUS-TÉTRA
+!     FIN DE LA BOUCLE SUR LES POINTS DE GAUSS DU SOUS-TÃ‰TRA
 !     ------------------------------------------------------------------
 !
     zr(igthet) = zr(igthet) + tcla + tthe + tfor

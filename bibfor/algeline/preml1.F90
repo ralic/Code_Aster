@@ -158,7 +158,7 @@ subroutine preml1(neq, n2, diag, delg, col,&
     endif
     ddlmoy = ( ddl(nbnd+1) - 1 )/nbnd
 !--------------------------------------------------------------------
-!     2) CALCUL DE (ADJNCY, XADJ) EN DDL DANS LA NUMEROTATION DE 1 À N2
+!     2) CALCUL DE (ADJNCY, XADJ) EN DDL DANS LA NUMEROTATION DE 1 Ã€ N2
 !     COMME DANS LA VERSION INITIALE
 !     INITIALISATION DE NNZ : NBRE DE TERMES A AJOUTER
 !     POUR CHAQUE LIGNE

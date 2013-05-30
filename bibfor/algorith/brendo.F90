@@ -74,8 +74,8 @@ subroutine brendo(sige6, bt6, sut, bc1, suc,&
 !     ***** ACTIVATION DES CALCULS COMPLEMENTAIRES POUR ASTER ***
     aster=.true.
 !
-!     T33 ET N33 SONT LES TENSEURS CARACTÈRISANT LA TAILLE DES ELEMENTS
-!     MASSIFS UTILISÈS
+!     T33 ET N33 SONT LES TENSEURS CARACT√©RISANT LA TAILLE DES ELEMENTS
+!     MASSIFS UTILIS√©S
 !
 !      SI LOCAL=.TRUE. ON EFFECTUE UNE HOMOTHETIE POUR CONTROLER
 !      L ENERGIE DISSIPEE
@@ -118,7 +118,7 @@ subroutine brendo(sige6, bt6, sut, bc1, suc,&
 !
 !     PRINT*,'INDICE INITIAL EN BASE FIXE'
 !      CALL AFFICHE33(BT33)
-!      PRINT*,'MATRICE DE PASSAGE ‡ LA BASE D ENDO'
+!      PRINT*,'MATRICE DE PASSAGE √† LA BASE D ENDO'
 !      CALL AFFICHE33 (VBT33)
 !
     call matini(3, 3, zz, x33)
@@ -144,7 +144,7 @@ subroutine brendo(sige6, bt6, sut, bc1, suc,&
     endif
 !
 !     CONTRAINTES EFFECTIVES PRINCIPALES ET MATRICE DE
-!       PASSAGE ‡ LA BASE PRINCIPALE
+!       PASSAGE √† LA BASE PRINCIPALE
     do 20 i = 1, 3
         do 30 j = 1, 3
             x33(i,j)=sige33(i,j)
@@ -162,7 +162,7 @@ subroutine brendo(sige6, bt6, sut, bc1, suc,&
 !      CALL AFFICHE33(VSE33)
 !
 !      DECOMPOSITION DES CONTRAINTES
-!        PRINCIPALES EN PARTIE POSITIVE ET NÈGATIVE
+!        PRINCIPALES EN PARTIE POSITIVE ET N√©GATIVE
     do 40 i = 1, 3
         sget3(i)=0.5d0*(sige3(i)+abs(sige3(i)))
         sgec3(i)=0.5d0*(sige3(i)-abs(sige3(i)))
@@ -193,7 +193,7 @@ subroutine brendo(sige6, bt6, sut, bc1, suc,&
     do 70 i = 1, 3
         if (local) then
 !        ON TESTE LA LOCALISATION SUR LES CONTRAINTES EFFECTIVES ISSUES
-!        DU CHARGEMENT EXTÈRIEUR (SEULE CAUSE POSSIBLE DE LOCALISATION)
+!        DU CHARGEMENT EXT√©RIEUR (SEULE CAUSE POSSIBLE DE LOCALISATION)
 !       PRINT*,'SGET3(',I,')',SGET3(I),'BW,PW,BCH,PCH',BW,PW,BCH,PCH
             sget3(i)=sget3(i)-bw*pw-bch*pch
             if (sget3(i) .gt. sut) then
@@ -203,8 +203,8 @@ subroutine brendo(sige6, bt6, sut, bc1, suc,&
                 sget3(i)=(sget3(i)-sut)*l3(i)/lct+sut
 !         SGET3(I)=(SGET3(I)-SUT)*2.D0+SUT
             endif
-!       ON REPASSE EN CONTRAINTE EFFECTIVE INTÈRIEURE POUR
-!       LA CONFORMITÈ AVEC LE CALCUL DES CONTRAINTES APPARENTES
+!       ON REPASSE EN CONTRAINTE EFFECTIVE INT√©RIEURE POUR
+!       LA CONFORMIT√© AVEC LE CALCUL DES CONTRAINTES APPARENTES
             sget3(i)=sget3(i)+bw*pw+bch*pch
         endif
         do 80 j = 1, 3
@@ -284,7 +284,7 @@ subroutine brendo(sige6, bt6, sut, bc1, suc,&
 !     HYPOTHESE DU MATERIAU ORTHOTROPE DANS LES
 !       DIRECTIONS PRINCIPALES DE FISSURATION
 !
-!     CALCUL DE LA MATRICE CARRÈE S33=S0/S1 POUR LES TRACTION EFFECTIVES
+!     CALCUL DE LA MATRICE CARR√©E S33=S0/S1 POUR LES TRACTION EFFECTIVES
     s1=exp(bt3(1))
     s2=exp(bt3(2))
     s3=exp(bt3(3))
@@ -348,7 +348,7 @@ subroutine brendo(sige6, bt6, sut, bc1, suc,&
 !      SEUIL ACTUEL
         xs=suc1
 !      TRAITEMENT DE LA LOCALISATION EN COMPRESSION : TEST SUR
-!      LES CONTRAINTES EFFECTIVES ISSUES DU CHARGEMENT EXTÈRIEUR
+!      LES CONTRAINTES EFFECTIVES ISSUES DU CHARGEMENT EXT√©RIEUR
         if (local .and. lcomp) then
             if (xc .gt. suc) then
 !         LA LOCALISATION EN COMPRESSION EST EN COURS
@@ -445,7 +445,7 @@ subroutine brendo(sige6, bt6, sut, bc1, suc,&
 !        IF((I.LE.3).AND.(J.EQ.I))THEN
 !        ON EST SUR LA DIAGONALE DU TENSEUR DES CONTRAINTES
 !         IF(PW.GT.0.)THEN
-!         CAS DE LA SURPRESSION HYDRIQUE APPLIQUÈE DANS LES FISSURES
+!         CAS DE LA SURPRESSION HYDRIQUE APPLIQU√©E DANS LES FISSURES
 !          SIGA6(I)=SIGA6(I)+(1.-DC0)*
 !     #    ((1.-DT66(I,I))*SIGET6(I)+SIGEC6(I))-BW*PW
 !         ELSE
@@ -482,7 +482,7 @@ subroutine brendo(sige6, bt6, sut, bc1, suc,&
                     endif
 !        CHARGEMENT PAR LES PRESSIONS
                     if (bwpw .lt. 0.d0) then
-!        CAS DE LA DEPRESSION CAPILLAIRE APPLIQUÈE SUR LE SQUELETTE SAIN
+!        CAS DE LA DEPRESSION CAPILLAIRE APPLIQU√©E SUR LE SQUELETTE SAIN
                         sigat6(i)=sigat6(i)+(1.d0-dt66(i,j))* (siget6(&
                         j)-bwpw-bch*pch)
                     else

@@ -332,7 +332,7 @@ subroutine op5901(nboccm, ifm, niv, compor)
 !     1 : TYPE =1 pour MONOCRISTAL
 !     2 : NBPHAS=1 pour MONOCRISTAL
 !     3 : NVI
-!     4 : NOMBRE DE MONOCRISTAUX différents  =1
+!     4 : NOMBRE DE MONOCRISTAUX diffÃ©rents  =1
 !     5 : NBFAMILLES DE SYS GLIS
 !     6 : 1 si ROTA=POST, 2 si CALC, 0 sinon
 !     7 : NVI

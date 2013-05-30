@@ -73,7 +73,7 @@ subroutine te0519(option, nomte)
                 nnom, ddls, nddl, ddlm, nfiss,&
                 ibid)
 !
-! --- RECUPERATION DES ENTRÉES / SORTIE
+! --- RECUPERATION DES ENTRÃ‰ES / SORTIE
 !
     call jevech('PDEPLA', 'L', jdepl)
     call jevech('PPINTER', 'L', jpint)

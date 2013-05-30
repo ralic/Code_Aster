@@ -125,7 +125,7 @@ subroutine op5903(nbocci, compor)
             write(zk24(icp+6),'(I24)') zi(jnfg-1+ig1)
             zi(iaff-1+ig1) = 1
 27      continue
-!        ON MET À JOUR LE NOMBRE DE VARIABLES INTERNES MAXI
+!        ON MET Ã€ JOUR LE NOMBRE DE VARIABLES INTERNES MAXI
         nbvf=max(nbvf,nbv)
 25  end do
 !

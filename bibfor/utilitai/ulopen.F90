@@ -188,7 +188,7 @@ subroutine ulopen(unit, fichie, name, acces, autor)
         accefi(ifile) = k1acce
         etatfi(ifile) = 'O'
         modifi(ifile) = k1aut
-!       POUR UNE RÉSERVATION, ON FERME LE FICHIER, SON ÉTAT PASSE À 'R'
+!       POUR UNE RÃ‰SERVATION, ON FERME LE FICHIER, SON Ã‰TAT PASSE Ã€ 'R'
         if (k1aut .eq. 'R') then
             modifi(ifile) = 'O'
             etatfi(ifile) = 'R'

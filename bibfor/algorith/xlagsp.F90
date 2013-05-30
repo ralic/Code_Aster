@@ -230,7 +230,7 @@ subroutine xlagsp(noma, nomo, fiss, algola, ndim,&
         call cesexi('C', jcesd2, jcesl2, ima, 1,&
                     ifiss, 1, iad2)
         ninter = zi(jcesv2-1+iad2)
-! --- NINTER DOIT D�PENDRE DE LA FISS QUI COUPE SI ELEMENT XH2C,3C OU 4C
+! --- NINTER DOIT DÉPENDRE DE LA FISS QUI COUPE SI ELEMENT XH2C,3C OU 4C
 !          IF (LMULTI) THEN
 !            IF (ENR.EQ.'XH2C'.OR.ENR.EQ.'XH3C'.OR.ENR.EQ.'XH4C') THEN
 !              CALL CESEXI('S',JCESD2,JCESL2,IMA,1,1,4,IAD2)
@@ -313,7 +313,7 @@ subroutine xlagsp(noma, nomo, fiss, algola, ndim,&
 !
 !
 ! --- CRITERE POUR DEPARTAGER LES ARETES HYPERSTATIQUES:
-!     LONGUEUR DE FISSURE CONTROLϿ�E, I.E.
+!     LONGUEUR DE FISSURE CONTROLÏ¿ŒE, I.E.
 !     SOMME DES LONGUEURS DES ARETES DES FACETTES
 !     DE CONTACT CONNECTEES A CHAQUE ARETE
 !
@@ -383,7 +383,7 @@ subroutine xlagsp(noma, nomo, fiss, algola, ndim,&
                 jtabno, jtabin, jtabcr, fiss, nliseq)
 !
 ! --- SI LE MULTI-HEAVISIDE EST ACTIF, ON CREE UNE SD SUPPLEMENTAIRE
-! --- CONTENANT LE NUM�ROS DE LAGRANGIEN CORESPONDANT.
+! --- CONTENANT LE NUMÉROS DE LAGRANGIEN CORESPONDANT.
 !
     if (lmulti) call xlag2c(nomo, nliseq, jnbpt)
 !

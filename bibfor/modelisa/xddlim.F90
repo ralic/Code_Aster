@@ -135,14 +135,14 @@ subroutine xddlim(modele, motcle, nomn, ino, valimr,&
 !
 !
 ! --- IDENTIFICATIOND DES CAS A TRAITER :
-! --- SI NOEUD SUR LES LEVRES ET CONNECTÉ À DES NOEUDS (APPARTENANT AU
-! --- GROUPE AFFECTÉ) DE PART ET D'AUTRE DE LA LEVRE : 2 RELATIONS
-! --- SINON IL FAUT IMPOSER QUE D'UN SEUL COTÉ        : 1 RELATION
+! --- SI NOEUD SUR LES LEVRES ET CONNECTÃ‰ Ã€ DES NOEUDS (APPARTENANT AU
+! --- GROUPE AFFECTÃ‰) DE PART ET D'AUTRE DE LA LEVRE : 2 RELATIONS
+! --- SINON IL FAUT IMPOSER QUE D'UN SEUL COTÃ‰        : 1 RELATION
     if (nfiss .eq. 1) then
         if (lsn(1) .eq. 0.d0 .and. lst(1) .lt. 0.d0) then
             minlsn = r8maem()
             maxlsn = -1*r8maem()
-! ---     RECUPERATION DE LA LISTE DES NOEUDS AFFECTÉS PAR LA CONDITION
+! ---     RECUPERATION DE LA LISTE DES NOEUDS AFFECTÃ‰S PAR LA CONDITION
             call jeexin('&&CADDLI.NUNOTMP', ier)
             if (ier .ne. 0) then
                 call jeveuo('&&CADDLI.NUNOTMP', 'L', ialino)
@@ -167,7 +167,7 @@ subroutine xddlim(modele, motcle, nomn, ino, valimr,&
 ! ---       ATTENTION ON NE PREND EN COMPTE QUE LES MAILLES LINEAIRES !
                 do 110 i = 1, nbnoma
                     nuno = zi(jconx1-1+zi(jconx2+numa-1)+i-1)
-! ---         ON REGARDE SI LE NOEUD APPARTIENT AU GRP DE NOEUD AFFECTÉ
+! ---         ON REGARDE SI LE NOEUD APPARTIENT AU GRP DE NOEUD AFFECTÃ‰
                     do 120 j = 1, nbno
                         nuno2 = zi(ialino-1+j)
                         if (nuno2 .eq. nuno) then
@@ -227,7 +227,7 @@ subroutine xddlim(modele, motcle, nomn, ino, valimr,&
 !     BOUCLE SUR LES RELATIONS
     do 10 irel = 1, nrel
 !
-!       CALCUL DES COORDONNÉES POLAIRES DU NOEUD (R,T)
+!       CALCUL DES COORDONNÃ‰ES POLAIRES DU NOEUD (R,T)
         r = sqrt(lsn(1)**2+lst(1)**2)
         t = theta(irel)
 !

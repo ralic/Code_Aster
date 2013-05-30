@@ -39,7 +39,7 @@ subroutine uttcpi(nommes, ifm, typimp)
 !            = 'INCR' : ON IMPRIME L'INCREMENT DE LA MESURE
 !
 ! ON APPELLE "INCREMENT" LA DIFFERENCE DE TEMPS ENTRE 2 APPELS
-! SUCCESSIFS à UTTCPI(NOMMES,*,'INCR')
+! SUCCESSIFS Ã  UTTCPI(NOMMES,*,'INCR')
 ! ----------------------------------------------------------------------
 ! REMARQUE : LES VALEURS STOCKEES SONT ACCUMUEES VIA UTTCPU
     logical :: ljev

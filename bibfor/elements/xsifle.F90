@@ -56,7 +56,7 @@ subroutine xsifle(ndim, ifa, jptint, jaint, cface,&
 !
 !
 !    - FONCTION REALISEE:  CALCUL DES OPTIONS DE POST-TRAITEMENT
-!                          EN MÉCANIQUE DE LA RUPTURE
+!                          EN MÃ‰CANIQUE DE LA RUPTURE
 !                          SUR LES LEVRES DES FISSURES X-FEM
 !
 !
@@ -90,10 +90,10 @@ subroutine xsifle(ndim, ifa, jptint, jaint, cface,&
     angl(1) = -r8pi()
     angl(2) = r8pi()
 !
-!     NOMBRE DE DDL DE DEPLACEMENT À CHAQUE NOEUD SOMMET
+!     NOMBRE DE DDL DE DEPLACEMENT Ã€ CHAQUE NOEUD SOMMET
     ddld=ndim*(1+nfh+nfe)
 !
-!     NOMBRE DE DDL TOTAL (DEPL+CONTACT) À CHAQUE NOEUD SOMMET
+!     NOMBRE DE DDL TOTAL (DEPL+CONTACT) Ã€ CHAQUE NOEUD SOMMET
     ddls=ddld+ddlc
 !
     call elref1(elref)
@@ -152,7 +152,7 @@ subroutine xsifle(ndim, ifa, jptint, jaint, cface,&
     call elref4(elc, fpg, ibid, nnof, ibid,&
                 npgf, ipoidf, ivff, idfdef, ibid)
 !
-!     MATÉRIAU HOMOGENE
+!     MATÃ‰RIAU HOMOGENE
 !     ON PEUT PAS LE RECUPERER SUR LES POINTS DE GAUSS DES FACETTES
 !     CAR LA FAMILLE CONCATENEE DES PG DES FACETTES N'EXISTE PAS
     e = valres(1)
@@ -167,8 +167,8 @@ subroutine xsifle(ndim, ifa, jptint, jaint, cface,&
     do 900 ipgf = 1, npgf
 !
 !       CALCUL DE JAC (PRODUIT DU JACOBIEN ET DU POIDS)
-!       ET DES FF DE L'ÉLÉMENT PARENT AU POINT DE GAUSS
-!       ET LA NORMALE ND ORIENTÉE DE ESCL -> MAIT
+!       ET DES FF DE L'Ã‰LÃ‰MENT PARENT AU POINT DE GAUSS
+!       ET LA NORMALE ND ORIENTÃ‰E DE ESCL -> MAIT
 !       ET DE XG : COORDONNEES REELLES DU POINT DE GAUSS
 !       ET DE DFDI : DERIVVES DES FF PARENT
         elrefc='NON'

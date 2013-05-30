@@ -154,8 +154,8 @@ subroutine dinon3(neq, ul, dul, utl, nno,&
                 raide(ii) = abs((momp - momm) / dulel)
 !                 CALCUL DE L'ENERGIE DISSIPEE
 !                 Si petits pas : ABS(MEL*DROTX)+MXPLUS*DROTX
-!                 Pour minimiser l'erreur, on utilise une intégration
-!                 de degré 1. Pour un écrouissage cinématique linéaire
+!                 Pour minimiser l'erreur, on utilise une intÃ©gration
+!                 de degrÃ© 1. Pour un Ã©crouissage cinÃ©matique linÃ©aire
 !                 cela donne la solution exacte.
                 varipl(iener) = varimo(iener) + abs(mel*drotx) + (mxplus+mxmoin)*drotx*0.5d0
             endif

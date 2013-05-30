@@ -53,7 +53,7 @@ subroutine xdecou(ndim, elp, nnop, nnose, it,&
 !       LSN      : VALEURS DE LA LEVEL SET NORMALE
 !       FISCO    :
 !       IGEOM    : ADRESSE DES COORDONNEES DES NOEUDS DE L'ELT PARENT
-!       NFIS ???     : NOMBRE DE FISSURES "VUES" PAR L'ÉLÉMENT
+!       NFIS ???     : NOMBRE DE FISSURES "VUES" PAR L'Ã‰LÃ‰MENT
 !       NFISS
 !       IFISS
 !       LONREF   :
@@ -63,7 +63,7 @@ subroutine xdecou(ndim, elp, nnop, nnose, it,&
 !       PINTER   : COORDONNEES DES POINTS D'INTERSECTION
 !       NINTER   : NB DE POINTS D'INTERSECTION
 !       NPTS     : NB DE PTS D'INTERSECTION COINCIDANT AVEC UN NOEUD
-!       AINTER   : INFOS ARETE ASSOCIÃ‰E AU POINTS D'INTERSECTION
+!       AINTER   : INFOS ARETE ASSOCIÃƒÂ‰E AU POINTS D'INTERSECTION
 !     ------------------------------------------------------------------
 !
     real(kind=8) :: a(3), b(3), c(3), lsna, lsnb, tampor(4)
@@ -164,7 +164,7 @@ subroutine xdecou(ndim, elp, nnop, nnose, it,&
 320          continue
         endif
 300  end do
-!  SI ON EST PAS DU COTÉ INTERSECTÉ, ON SORT
+!  SI ON EST PAS DU COTÃ‰ INTERSECTÃ‰, ON SORT
     do 330 i = 1, nfisc
         if (fisco(2*i)*somlsn(i) .gt. 0) goto 999
 330  end do

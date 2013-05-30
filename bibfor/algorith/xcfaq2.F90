@@ -47,7 +47,7 @@ subroutine xcfaq2(jlsn, jlst, jgrlsn, igeom, noma,&
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 !                     TROUVER LES PTS D'INTERSECTION ENTRE LES ARETES,
-!                     ET LE PLAN DE FISSURE, DÉCOUPAGE EN FACETTES,
+!                     ET LE PLAN DE FISSURE, DÃ‰COUPAGE EN FACETTES,
 !                     POINT MILIEU DE FISSURE (UNIQUEMENT 2D)
 !     ENTREE
 !       LSN      : VALEURS DE LA LEVEL SET NORMALE
@@ -97,9 +97,9 @@ subroutine xcfaq2(jlsn, jlst, jgrlsn, igeom, noma,&
 !     1) RECHERCHE DES POINTS D'INTERSECTION
 !     --------------------------------------
 !
-!     VECTEUR REEL À ZXAIN COMPOSANTES, POUR CHAQUE PT D'INTER :
-!     - NUMÉRO ARETE CORRESPONDANTE         (0 SI C'EST UN NOEUD SOMMET)
-!     - NUMÉRO NOEUD SI NOEUD SOMMET        (0 SINON)
+!     VECTEUR REEL Ã€ ZXAIN COMPOSANTES, POUR CHAQUE PT D'INTER :
+!     - NUMÃ‰RO ARETE CORRESPONDANTE         (0 SI C'EST UN NOEUD SOMMET)
+!     - NUMÃ‰RO NOEUD SI NOEUD SOMMET        (0 SINON)
 !     - LONGUEUR DE L'ARETE
 !     - POSITION DU PT SUR L'ARETE          (0 SI C'EST UN NOEUD SOMMET)
 !     - ARETE VITALE                        (0 SI NON)
@@ -205,7 +205,7 @@ subroutine xcfaq2(jlsn, jlst, jgrlsn, igeom, noma,&
             endif
 !
             if (lsna .ne. 0.d0 .and. lsnb .ne. 0.d0 .and. lsnm .ne. 0) then
-!           INTERPOLATION DES COORDONNÉES DE C
+!           INTERPOLATION DES COORDONNÃ‰ES DE C
                 call xintar(elp, ndim, ia, zr(igeom), zr(jlsn),&
                             c)
 !           POSITION DU PT D'INTERSECTION SUR L'ARETE

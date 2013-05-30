@@ -243,7 +243,7 @@ subroutine dgendo(em, ef, h, syt, syc,&
 ! - PARAMETRES D'ENDOMMAGEMENT MENBRANAIRE EN CISAILLEMENT
 !   PUR DANS LE PLAN
     if (icisai .eq. 1) then
-! - On calule SYTXY a partir de GT et GC calculé en traction
+! - On calule SYTXY a partir de GT et GC calculÃ© en traction
         sytxy=syt/(1.d0+num)*sqrt(((1.d0-num)*(1.d0+2.d0*num)*&
         (1.d0-gt)+num**2*(1.d0-gc))/(2.d0-gc-gt))
         syt=sytxy

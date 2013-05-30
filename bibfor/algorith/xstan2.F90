@@ -196,7 +196,7 @@ subroutine xstan2(crimax, noma, modele)
                     nbnoma = nnot(1)
                     if (ino .gt. nbnoma) goto 20
                 endif
-!           RECUP DU NUM DE FISS CORRESPONDANT À IHEAV DE NUNO DS NUMA2
+!           RECUP DU NUM DE FISS CORRESPONDANT Ã€ IHEAV DE NUNO DS NUMA2
 !           ET DU NUMERO LOCALE INOLOC DANS LA MAILLE
                 do 60 ino2 = 1, nbnoma
                     if (zi(jconx1-1+zi(jconx2+numa2-1)+ino2-1) .eq. nuno) then
@@ -213,7 +213,7 @@ subroutine xstan2(crimax, noma, modele)
                                 iheav, 1, iad)
                     ifiss = zi(jcesv(7)-1+iad)
                 endif
-!           CREATION DE VECTEUR DES COORDONNÉES DE LA MAILLE IMA
+!           CREATION DE VECTEUR DES COORDONNÃ‰ES DE LA MAILLE IMA
 !           AVEC DES VALEURS CONTIGUES
                 call wkvect(geom, 'V V R', ndim*nbnoma, igeom)
                 do 210 ino2 = 1, nbnoma
@@ -228,11 +228,11 @@ subroutine xstan2(crimax, noma, modele)
                 call cesexi('S', jcesd(1), jcesl(1), numa2, 1,&
                             1, 1, iad)
                 nse=zi(jcesv(1)-1+iad)
-!           POINTEUR DE CONNECTIVITÉ DU SOUS ELEMENT
+!           POINTEUR DE CONNECTIVITÃ‰ DU SOUS ELEMENT
                 call cesexi('S', jcesd(4), jcesl(4), numa2, 1,&
                             1, 1, iad)
                 jcnse=jcesv(4)-1+iad
-!           POINTEUR DE COORDONNÉES DES POINTS D'INTERSECTIONS
+!           POINTEUR DE COORDONNÃ‰ES DES POINTS D'INTERSECTIONS
                 call cesexi('S', jcesd(5), jcesl(5), numa2, 1,&
                             1, 1, iad)
                 jpint=jcesv(5)-1+iad
@@ -249,7 +249,7 @@ subroutine xstan2(crimax, noma, modele)
 !           BOUCLE SUR LES MAILLES SUPPORT DU NOEUD
                 do 150 ima = 1, nbmano
                     numa2 = zi(adrma-1 + ima)
-!             MISE À ZÉRO DU STATUT DANS TOUS LES ÉLÉMENTS DU SUPPORT
+!             MISE Ã€ ZÃ‰RO DU STATUT DANS TOUS LES Ã‰LÃ‰MENTS DU SUPPORT
                     nbnoma = zi(jconx2+numa2) - zi(jconx2+numa2-1)
                     do 160 ino2 = 1, nbnoma
                         if (zi(jconx1-1+zi(jconx2+numa2-1)+ino2-1) .eq. nuno) then

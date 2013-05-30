@@ -52,10 +52,10 @@ subroutine rc36ac(noma, ncncin, chindi, chcara, nbma,&
 !
 !     Pour chaque noeud de chaque maille:
 !
-!     pour une situation P, on a 2 états stabilisés
-!     pour une situation Q, on a 2 états stabilisés
+!     pour une situation P, on a 2 Ã©tats stabilisÃ©s
+!     pour une situation Q, on a 2 Ã©tats stabilisÃ©s
 !
-!     Soit 2 états stabilisés I et J appartenant respectivement aux
+!     Soit 2 Ã©tats stabilisÃ©s I et J appartenant respectivement aux
 !     situations P et Q :
 !
 !     on calcule le SALT(I,J) = 0,5*(EC/E)*Ke*Sn(P,Q)*Sp(I,J)
@@ -67,8 +67,8 @@ subroutine rc36ac(noma, ncncin, chindi, chcara, nbma,&
 !
 !
 ! Etape 1 : on calcule le SALT qui correspond aux combinaisons de tous
-!           les états stabilisés appartenant aux situations d'un groupe
-!           donné.
+!           les Ã©tats stabilisÃ©s appartenant aux situations d'un groupe
+!           donnÃ©.
 !
 ! Etape 2 : on calcule le SALT pour les situations non combinables
 !

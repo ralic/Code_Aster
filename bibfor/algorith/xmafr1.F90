@@ -24,12 +24,12 @@ subroutine xmafr1(ndim, nd, p)
     real(kind=8) :: nd(3), p(3, 3)
     integer :: ndim
 ! ----------------------------------------------------------------------
-!        CALCUL DE LA MATRICE DE L'OPÉRATEUR DE PROJECTION
+!        CALCUL DE LA MATRICE DE L'OPÃ‰RATEUR DE PROJECTION
 !
 ! IN    NDIM : DIMENSION DU MAILLAGE
 ! IN    ND   : NORMALE
 !
-! OUT   P    : OPÉRATEUR DE PROJECTION
+! OUT   P    : OPÃ‰RATEUR DE PROJECTION
 !
 !
 !
@@ -37,7 +37,7 @@ subroutine xmafr1(ndim, nd, p)
 !
     integer :: i, j
 !
-!     P : OPÉRATEUR DE PROJECTION
+!     P : OPÃ‰RATEUR DE PROJECTION
     do 10 i = 1, ndim
         do 20 j = 1, ndim
             p(i,j) = -1.d0 * nd(i)*nd(j)

@@ -50,7 +50,7 @@ subroutine xpocmp(elrefp, cns1, ima, n, jconx1,&
 !
 !   OUT
 !     NFH    : NOMBRE DE FONCTIONS HEAVISIDE (PAR NOEUD)
-!     NFE    : NOMBRE DE FONCTIONS SINGULIÈRES D'ENRICHISSEMENT (1 A 4)
+!     NFE    : NOMBRE DE FONCTIONS SINGULIÃˆRES D'ENRICHISSEMENT (1 A 4)
 !     CMP    : POSITION DES DDLS DE DEPL X-FEM DANS LE CHAMP_NO DE DEPL1
 !
 !
@@ -67,7 +67,7 @@ subroutine xpocmp(elrefp, cns1, ima, n, jconx1,&
     call jeveuo(cns1//'.CNSL', 'L', jcnsl1)
 !
     do 110 j = 1, n
-!       INO : NUMÉRO DU NOEUD DANS MALINI
+!       INO : NUMÃ‰RO DU NOEUD DANS MALINI
         ino=zi(jconx1-1+zi(jconx2+ima-1)+j-1)
         do 111 icmp = 1, nbcmp
             exist(j,icmp)= zl(jcnsl1-1+(ino-1)*nbcmp + icmp)

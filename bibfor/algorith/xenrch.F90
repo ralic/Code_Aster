@@ -127,7 +127,7 @@ subroutine xenrch(nomo, noma, cnslt, cnsln, cnslj,&
         ncouch = nint(zr(jcaraf+1))
     endif
 !
-!     VOIR ALGORITHME DÉTAILLÉ DANS BOOK II (16/12/03)
+!     VOIR ALGORITHME DÃ‰TAILLÃ‰ DANS BOOK II (16/12/03)
 !
 !-------------------------------------------------------------------
 !    1) ON RESTREINT LA ZONE D'ENRICHISSEMENT AUTOUR DE LA FISSURE
@@ -137,7 +137,7 @@ subroutine xenrch(nomo, noma, cnslt, cnsln, cnslj,&
 !
     mafis='&&XENRCH.MAFIS'
     call wkvect(mafis, 'V V I', nxmafi, jmafis)
-!     ATTENTION, MAFIS EST LIMITÉ À NXMAFI MAILLES
+!     ATTENTION, MAFIS EST LIMITÃ‰ Ã€ NXMAFI MAILLES
     call xmafis(noma, cnsln, nxmafi, mafis, nmafis,&
                 lismae)
 !
@@ -154,7 +154,7 @@ subroutine xenrch(nomo, noma, cnslt, cnsln, cnslj,&
     endif
 !
 !--------------------------------------------------------------------
-!    2°) ON ATTRIBUE LE STATUT DES NOEUDS DE GROUP_ENRI
+!    2Â°) ON ATTRIBUE LE STATUT DES NOEUDS DE GROUP_ENRI
 !--------------------------------------------------------------------
 !
     if (niv .ge. 3) write(ifm,*)'2 ) ATTRIBUTION DU STATUT DES NOEUDS DE GROUPENRI'
@@ -163,7 +163,7 @@ subroutine xenrch(nomo, noma, cnslt, cnsln, cnslj,&
     stano='&&XENRCH.STANO'
     call wkvect(stano, 'V V I', nbno, jstano)
 !
-!     ON INITIALISE POUR TOUS LES NOEUDS DU MAILLAGE ENR À 0
+!     ON INITIALISE POUR TOUS LES NOEUDS DU MAILLAGE ENR Ã€ 0
     call jerazo(stano, nbno, 1)
 !
 !     CALCUL DU STATUT DES NOEUDS
@@ -171,7 +171,7 @@ subroutine xenrch(nomo, noma, cnslt, cnsln, cnslj,&
                 cnsln, cnslj, rayon, cnxinv, stano)
 !
 !--------------------------------------------------------------------
-!    3°) ON ATTRIBUE LE STATUT DES MAILLES DU MAILLAGE
+!    3Â°) ON ATTRIBUE LE STATUT DES MAILLES DU MAILLAGE
 !        (MAILLES PRINCIPALES ET MAILLES DE BORD)
 !        ET ON CONSTRUIT LES MAILLES DE MAFOND (NB MAX = NMAFIS)
 !        + MAJ DU STANO SI ENRICHISSEMENT A NB COUCHES
@@ -196,7 +196,7 @@ subroutine xenrch(nomo, noma, cnslt, cnsln, cnslj,&
                 jmafon, jmaen1, jmaen2, jmaen3)
 !
 !--------------------------------------------------------------------
-!     3.5°) ENREGISTREMENT DES STATUT DES NOEUDS
+!     3.5Â°) ENREGISTREMENT DES STATUT DES NOEUDS
 !--------------------------------------------------------------------
 !
 !     RQ : ON NE PEUT PAS FAIRE CA AVANT CAR STANO EST MODIFIE
@@ -231,7 +231,7 @@ subroutine xenrch(nomo, noma, cnslt, cnsln, cnslj,&
     endif
 !
 !--------------------------------------------------------------------
-!    4°) RECHERCHES DES POINTS DE FONFIS (ALGO BOOK I 18/12/03)
+!    4Â°) RECHERCHES DES POINTS DE FONFIS (ALGO BOOK I 18/12/03)
 !        ET REPERAGE DES POINTS DE BORD
 !--------------------------------------------------------------------
 !
@@ -274,7 +274,7 @@ subroutine xenrch(nomo, noma, cnslt, cnsln, cnslj,&
     endif
 !
 !--------------------------------------------------------------------
-!    5°) ORIENTATION DES POINTS DE FONFIS (ALGO BOOK I 19/12/03)
+!    5Â°) ORIENTATION DES POINTS DE FONFIS (ALGO BOOK I 19/12/03)
 !        ET DETECTION DES FONDS MULTIPLES
 !--------------------------------------------------------------------
 !     VECTEURS TEMPORAIRES DIMENSIONNES A NFON+1 AU CAS OU ON A UN

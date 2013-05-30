@@ -43,11 +43,11 @@ subroutine xbarvi(noma, nomo, fiss, faclon, ainter)
 ! DANS L'ELEMENT DE CONTACT XFEM
 !
 ! CETTE COMPOSANTE VAUT :
-!       1 SI L'ARETE INTERSECTÉE EST VITALE
+!       1 SI L'ARETE INTERSECTÃ‰E EST VITALE
 !       0 SINON
 !
-! ON CRÉE AUSSI LA SD FISS(1:8)//'.CONTACT.CNCTE QUI LISTE ET RENSEIGNE
-! LES ARETES APARTENANTES A UN GROUPE D'ARETES VITALES CONNECTÉES,
+! ON CRÃ‰E AUSSI LA SD FISS(1:8)//'.CONTACT.CNCTE QUI LISTE ET RENSEIGNE
+! LES ARETES APARTENANTES A UN GROUPE D'ARETES VITALES CONNECTÃ‰ES,
 ! IL Y A 4 COMPOSANTES PAR ARETES :
 !      1 : NUMERO D'ARETE DANS LE GROUPE
 !      2 : NUMERO DE GROUPE
@@ -62,8 +62,8 @@ subroutine xbarvi(noma, nomo, fiss, faclon, ainter)
 ! IN  NOMA   : NOM DU MAILLAGE
 ! IN  NOMO   : NOM DU MODELE
 ! IN  FISS   : NOM DE LA FISSURE EN COURS
-! IN FACLON  : TOPOFAC.LO SIMPLIFIÉ
-! IN/OUT AINTER : TOPOFAC.AI SIMPLIFIÉ
+! IN FACLON  : TOPOFAC.LO SIMPLIFIÃ‰
+! IN/OUT AINTER : TOPOFAC.AI SIMPLIFIÃ‰
 !
 !
 !
@@ -100,7 +100,7 @@ subroutine xbarvi(noma, nomo, fiss, faclon, ainter)
         call jeveuo('&&XCONTA.NBSP', 'L', jnbpt)
     endif
 !
-! --- ON RECUPERE LA LISTE DES RELATIONS D'EGALITÉS
+! --- ON RECUPERE LA LISTE DES RELATIONS D'EGALITÃ‰S
 !
     nliseq = fiss(1:8)//'.LISEQ'
     call jeexin(nliseq, ier)
@@ -111,7 +111,7 @@ subroutine xbarvi(noma, nomo, fiss, faclon, ainter)
         call jelira(nliseq, 'LONMAX', neq, k8bid)
     endif
 !
-! --- Y A T-IL DES ARETES CONNECTÉES ?
+! --- Y A T-IL DES ARETES CONNECTÃ‰ES ?
 !
     call jeexin(fiss(1:8)//'.CONNECTANT', ier)
     if (ier .eq. 0) then
@@ -145,7 +145,7 @@ subroutine xbarvi(noma, nomo, fiss, faclon, ainter)
     grp(2) = fiss//'.MAILFISS.CTIP'
     grp(3) = fiss//'.MAILFISS.HECT'
 !
-! --- PREMIÈRE PASSE POUR DIMENSIONER LE VECT DES ARETES CONNECTÉES
+! --- PREMIÃˆRE PASSE POUR DIMENSIONER LE VECT DES ARETES CONNECTÃ‰ES
 !
     if ((.not.lconne)) goto 41
 !
@@ -174,7 +174,7 @@ subroutine xbarvi(noma, nomo, fiss, faclon, ainter)
             call conare(typma, ar, nbar)
             do 21 pin = 1, ninter
 !
-! --- NUMERO DE L'ARETE INTERSECTÉ
+! --- NUMERO DE L'ARETE INTERSECTÃ‰
 !
                 call cesexi('S', jcsd2, jcsl2, ima, 1,&
                             ifiss, zxain*(pin-1)+ 1, iad)
@@ -239,7 +239,7 @@ subroutine xbarvi(noma, nomo, fiss, faclon, ainter)
             call conare(typma, ar, nbar)
             do 20 pin = 1, ninter
 !
-! --- NUMERO DE L'ARETE INTERSECTÉE
+! --- NUMERO DE L'ARETE INTERSECTÃ‰E
 !
                 call cesexi('S', jcsd2, jcsl2, ima, 1,&
                             ifiss, zxain*(pin-1)+ 1, iad)
@@ -269,7 +269,7 @@ subroutine xbarvi(noma, nomo, fiss, faclon, ainter)
                         nglo(i) = zi(jconx1-1+zi(jconx2+ima-1)+nloc(i) -1)
 30                  continue
 !
-! --- COMPARAISON AVEC LES COUPLES DE NO DE LA LISTE DE RELAT D'EGALITÉS
+! --- COMPARAISON AVEC LES COUPLES DE NO DE LA LISTE DE RELAT D'EGALITÃ‰S
 !
                     do 50 i = 1, neq/2
                         nuno(1) = zi(jlis1-1+2*(i-1)+1)
@@ -277,7 +277,7 @@ subroutine xbarvi(noma, nomo, fiss, faclon, ainter)
                         if (nuno(1) .eq. nglo(1) .and. nuno(2) .eq. nglo(2) .or. nuno(1)&
                             .eq. nglo(2) .and. nuno(2) .eq. nglo(1)) then
 !
-! --- SI C EGAL, ON EST SUR UNE ARETE VITALE, ON MET LE STATUT À 1
+! --- SI C EGAL, ON EST SUR UNE ARETE VITALE, ON MET LE STATUT Ã€ 1
 !
                             zr(jcsv2-1+iad)=1
                             zl(jcsl2-1+iad)=.true.
@@ -294,7 +294,7 @@ subroutine xbarvi(noma, nomo, fiss, faclon, ainter)
                                     jcnte2 = zi(jcntan-1+3*(in-1)+3)
                                     do 70 jn = 1, ncte
 !
-! --- ON COMPARE LES NUMEROS DE CETTE LISTE À CELLE DE L'ARETE
+! --- ON COMPARE LES NUMEROS DE CETTE LISTE Ã€ CELLE DE L'ARETE
 !
                                         nuno(2) = zi(jcntes-1 + jcnte2 + jn)
                                         if (nuno(2) .eq. nglo(1) .or. nuno( 2) .eq. nglo(2)) then
@@ -330,7 +330,7 @@ subroutine xbarvi(noma, nomo, fiss, faclon, ainter)
     call assert(iac.eq.narcon)
     if (narcon .gt. 0) then
 !
-! --- ON ECRIT LE VECTEUR DES ARETES CONECTÉES
+! --- ON ECRIT LE VECTEUR DES ARETES CONECTÃ‰ES
 !
         call wkvect(fiss(1:8)//'.CNCTE     ', 'G V I', 4*narcon, jcntes)
         ncte = 0

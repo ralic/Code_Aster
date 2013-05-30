@@ -120,7 +120,7 @@ subroutine te0534(option, nomte)
 !
     call elelin(contac, elref, elrefc, ibid, ibid)
 !
-! --- RECUPERATION DES ENTRÉES / SORTIE
+! --- RECUPERATION DES ENTRÃ‰ES / SORTIE
 !
     call jevech('PGEOMER', 'L', igeom)
 !     DEPLACEMENT A L'EQUILIBRE PRECEDENT  (DEPMOI)       : 'PDEPL_M'
@@ -165,7 +165,7 @@ subroutine te0534(option, nomte)
                 iret)
     ncompc = jtab(2)
 !
-!     STATUT POUR L'ÉLIMINATION DES DDLS DE CONTACT
+!     STATUT POUR L'Ã‰LIMINATION DES DDLS DE CONTACT
     do 30 i = 1, max(1, nfh)*nnos
         vstnc(i) = 1
 30  end do

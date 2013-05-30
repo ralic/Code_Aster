@@ -129,7 +129,7 @@ subroutine xvoise(nnotot, nse, nnop, nno, jcnset,&
                         indma2=imav2+1
                         numav2=cninv(jnosui,indma2)
 !
-! ------------- ON LOCALISE LE VOISIN SITUE EN VIS-À-VIS DE L'ARRETE
+! ------------- ON LOCALISE LE VOISIN SITUE EN VIS-Ã€-VIS DE L'ARRETE
 ! ------------- [JNO,JNOSUI] (S'IL EXISTE), PUIS ON L'ECRIT DANS ZI()
 !
                         if (numav2 .eq. numav1) then

@@ -96,7 +96,7 @@ subroutine xthddl(nfh, nddlno, nno, stano, option,&
             endif
 !
         else if (ielim.eq.2) then
-!         2) CAS DES MAILLES 'CARRÉ'
+!         2) CAS DES MAILLES 'CARRÃ‰'
 !         --------------------------
 !         STATUT DES NOEUDS ENRICHIS
             istatu = stano(ino)
@@ -108,7 +108,7 @@ subroutine xthddl(nfh, nddlno, nno, stano, option,&
             endif
 !
         else if (ielim.eq.3) then
-!         3) CAS DES MAILLES 'ROND-CARRÉ'
+!         3) CAS DES MAILLES 'ROND-CARRÃ‰'
 !         ------------------------------
 !         STATUT DES NOEUDS ENRICHIS
             istatu = stano(ino)

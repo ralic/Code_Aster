@@ -120,13 +120,13 @@ subroutine xbaslo(noma, fiss, grlt, grln, ndim)
     call jelira(xfonfi, 'LONMAX', long, k8bid)
     nfon = long/4
 !
-! --- RÉCUPÉRATION DES GRADIENTS DE LST ET LSN
+! --- RÃ‰CUPÃ‰RATION DES GRADIENTS DE LST ET LSN
 !
     call jeveuo(grlt//'.CNSV', 'L', jgt)
     call jeveuo(grlt//'.CNSL', 'L', jgtl)
     call jeveuo(grln//'.CNSV', 'L', jgn)
 !
-!     CALCUL DES PROJETÉS DES NOEUDS SUR LE FOND DE FISSURE
+!     CALCUL DES PROJETÃ‰S DES NOEUDS SUR LE FOND DE FISSURE
     eps = 1.d-12
     do 100 ino = 1, nbno
         if (.not. zl(jgtl-1+ndim*(ino-1)+1)) goto 100
@@ -183,7 +183,7 @@ subroutine xbaslo(noma, fiss, grlt, grln, ndim)
                 a(3)=zn
             endif
 110      continue
-!       STOCKAGE DU PROJETÉ ET DES GRADIENTS
+!       STOCKAGE DU PROJETÃ‰ ET DES GRADIENTS
         do 120 j = 1, ndim
             zr(jgsv-1+3*ndim*(ino-1)+j)=a(j)
             zl(jgsl-1+3*ndim*(ino-1)+j)=.true.

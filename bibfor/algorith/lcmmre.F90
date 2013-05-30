@@ -154,7 +154,7 @@ subroutine lcmmre(typmod, nmat, materd, materf, comp,&
             endif
 !
             if (nuecou .ge. 4) then
-!           POUR LES LOIS DD_* ALPHA représente la variable principale
+!           POUR LES LOIS DD_* ALPHA reprÃ©sente la variable principale
                 r(nsfa+is)=-(dy(nsfa+is)-dalpha)
             else
                 dgamm1=dy(nsfa+is)

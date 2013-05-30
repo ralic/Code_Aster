@@ -202,9 +202,9 @@ subroutine vpecst(ifm, typres, omgmin, omgmax, nbfre1,&
     910 format(/,72('-'),/,'   VERIFICATION DU SPECTRE EN FREQUENCE ',&
      &  '(METHODE DE L''ARGUMENT PRINCIPAL)',/)
     911 format(1x,'PAS DE FREQUENCE DANS LE DISQUE CENTRE EN (',1pe10.3,&
-     &  ',',1pe10.3')',/,' ET DE RAYON ',1pe10.3)
+     &  ',',1pe10.3,')',/,' ET DE RAYON ',1pe10.3)
     912 format(1x,'LE NOMBRE DE FREQUENCES DANS LE DISQUE CENTRE EN (',&
-     &  1pe10.3,',',1pe10.3')',/,' ET DE RAYON ',1pe10.3,' EST ',i4)
+     &  1pe10.3,',',1pe10.3,')',/,' ET DE RAYON ',1pe10.3,' EST ',i4)
 !
     950 format(72('-'),/)
 !     ------------------------------------------------------------------

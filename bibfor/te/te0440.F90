@@ -37,7 +37,7 @@ subroutine te0440(option, nomte)
 !    - FONCTION REALISEE:  CALCUL DES VECTEURS ELEMENTAIRES
 !                          OPTIONS  CHAR_MECA_FR3D3D ET CHAR_MECA_FF3D3D
 !                                   CHAR_MECA_FR2D2D ET CHAR_MECA_FF2D2D
-!                          POUR LES ÉLÉMENTS X-FEM
+!                          POUR LES Ã‰LÃ‰MENTS X-FEM
 !
 !    - ARGUMENTS:
 !        DONNEES:      OPTION       -->  OPTION DE CALCUL
@@ -85,7 +85,7 @@ subroutine te0440(option, nomte)
 !-------------------------------------
     call jevech('PVECTUR', 'E', ivectu)
 !
-!     PARAMÈTRES PROPRES À X-FEM
+!     PARAMÃˆTRES PROPRES Ã€ X-FEM
 !-------------------------------
     call jevech('PPINTTO', 'L', jpintt)
     call jevech('PCNSETO', 'L', jcnset)
@@ -102,7 +102,7 @@ subroutine te0440(option, nomte)
     call jevech('PPMILTO', 'L', jpmilt)
     if (nfiss .gt. 1) call jevech('PFISNO', 'L', jfisno)
 !
-!     PARAMÈTRES DES FORCES VOLUMIQUES
+!     PARAMÃˆTRES DES FORCES VOLUMIQUES
 !-------------------------------------
 !
     if ((option.eq.'CHAR_MECA_FR3D3D') .or. (option.eq.'CHAR_MECA_FR2D2D')) then
@@ -121,7 +121,7 @@ subroutine te0440(option, nomte)
 !
     endif
 !
-!     RÉCUPÉRATION DE LA SUBDIVISION DE L'ÉLÉMENT EN NSE SOUS ELEMENT
+!     RÃ‰CUPÃ‰RATION DE LA SUBDIVISION DE L'Ã‰LÃ‰MENT EN NSE SOUS ELEMENT
     nse=zi(jlonch-1+1)
 !
 !       BOUCLE SUR LES NSE SOUS-ELEMENTS
@@ -146,7 +146,7 @@ subroutine te0440(option, nomte)
 112          continue
 111      continue
 !
-!       FONCTION HEAVYSIDE CSTE SUR LE SS-ÉLT
+!       FONCTION HEAVYSIDE CSTE SUR LE SS-Ã‰LT
         he = zi(jheavt-1+ise)
 !
         call xfovol(elrefp, ndim, coorse, igeom, he,&

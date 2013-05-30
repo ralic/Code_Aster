@@ -36,7 +36,7 @@ subroutine lc0032(fami, kpg, ksp, ndim, imate,&
     character(len=*) :: fami
     common /meti/   meting
 !
-!     Lois de comportement intégrées en IMPLICITE (NEWTON & CO) et en
+!     Lois de comportement intÃ©grÃ©es en IMPLICITE (NEWTON & CO) et en
 !                                       EXPLICITE (RUNGE_KUTTA)
 !
 !     RECUP DU NOM DE L'ALGORITHME D'INTEGRATION LOCAL

@@ -52,7 +52,7 @@ subroutine te0512(option, nomte)
 !
 !        LOI D'ENDOMMAGEMENT DE LEMAITRE-SERMAGE: DOMLE
 !        ----------------------------------------------
-!           D° = PUISSANCE([Y/VAR_S];EXP_S)*p°
+!           DÂ° = PUISSANCE([Y/VAR_S];EXP_S)*pÂ°
 !
 !        LOI D'ENDOMMAGEMENT DE LEMAITRE-SERMAGE INTEGREE: DOMLE
 !        -------------------------------------------------------

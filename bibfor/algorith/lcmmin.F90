@@ -110,7 +110,7 @@ subroutine lcmmin(typess, essai, mod, nmat, materf,&
         if (mod(1:6) .eq. 'C_PLAN') then
             deps(3) = 0.d0
         endif
-! Les autres intitialisations ci-dessous ne sont pas utilisées
+! Les autres intitialisations ci-dessous ne sont pas utilisÃ©es
 ! actuellement pour la loi MONOCRISTAL
 !
 ! - SOLUTION INITIALE = ELASTIQUE

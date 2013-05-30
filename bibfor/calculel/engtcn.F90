@@ -52,10 +52,8 @@ subroutine engtcn(ific, chamno, typtes, preci, formr)
 !
     lg1 = lxlgut( formr )
     lg2 = lxlgut( typtes )
-    form1 = '(&
-            '' TYPE_TEST= '''''//typtes(1:lg2)// ''''', VALE_CALC= '', '//formr(1:lg1)//',&
-            '' ), ''&
-            )'
+    form1 = '('' TYPE_TEST= '''''//typtes(1:lg2)// ''''', VALE_CALC= '', '&
+            //formr(1:lg1)//','' ), '')'
     form2 = '( '' TYPE_TEST= '''''//typtes(1:lg2)// ''''', VALE_CALC_I = '', I9, '' ), '' )'
 !
     write(ific,1000)

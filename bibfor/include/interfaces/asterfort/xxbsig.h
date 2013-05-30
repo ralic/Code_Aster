@@ -18,8 +18,7 @@
             integer :: ddlc
             integer :: ddlm
             real(kind=8) :: basloc(3*ndim*nnop)
-            real(kind=8) :: sigma(codopt*(2*ndim-1)+1,codopt*(npg-1)+1&
-     &)
+            real(kind=8) :: sigma(codopt*(2*ndim-1)+1,codopt*(npg-1)+1)
             character(len=16) :: compor(4)
             integer :: idepl
             real(kind=8) :: lsn(nnop)

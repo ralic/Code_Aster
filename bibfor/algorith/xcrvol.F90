@@ -64,7 +64,7 @@ subroutine xcrvol(nse, ndim, jcnse, nnose, jpint,&
 120          continue
 110      continue
 !
-!       CALCUL DU VOLUME DU SOUS ELEMENTS (DÉTERMINANT)
+!       CALCUL DU VOLUME DU SOUS ELEMENTS (DÃ‰TERMINANT)
 !
         vse = 0.d0
         if (ndim .eq. 2) then

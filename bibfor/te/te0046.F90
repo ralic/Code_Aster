@@ -36,7 +36,7 @@ subroutine te0046(option, nomte)
 !.......................................................................
 !
 !     BUT: CALCUL DES COORDONNEES DES POINTS DE GAUSS
-!          DE LA FAMILLE X-FEM (POINTS DE GAUSS DES SOUS-ÉLÉMENTS)
+!          DE LA FAMILLE X-FEM (POINTS DE GAUSS DES SOUS-Ã‰LÃ‰MENTS)
 !          DANS L'ESPACE DE L'ELEMENT PARENT DE REFERENCE
 !
 !          OPTIONS : 'XFEM_XPG'
@@ -114,7 +114,7 @@ subroutine te0046(option, nomte)
 !
     call jevech('PXFGEOM', 'E', jout)
 !
-!     RÉCUPÉRATION DE LA SUBDIVISION DE L'ÉLÉMENT EN NSE SOUS ELEMENT
+!     RÃ‰CUPÃ‰RATION DE LA SUBDIVISION DE L'Ã‰LÃ‰MENT EN NSE SOUS ELEMENT
     nse=zi(jlonch-1+1)
 !
 !       BOUCLE D'INTEGRATION SUR LES NSE SOUS-ELEMENTS
@@ -146,7 +146,7 @@ subroutine te0046(option, nomte)
 !
         do 200 kpg = 1, npg
 !
-!         COORDONNÉES DU PT DE GAUSS DANS LE REPÈRE RÉEL : XG
+!         COORDONNÃ‰ES DU PT DE GAUSS DANS LE REPÃˆRE RÃ‰EL : XG
             call vecini(ndim, 0.d0, xg)
             do 210 i = 1, ndim
                 do 211 in = 1, nno

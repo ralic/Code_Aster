@@ -51,27 +51,27 @@ subroutine xpoajd(elrefp, ino, nnop, lsn, lst,&
 !           ET REPORT DES LAGRANGES SI CONTACT
 !
 !   IN
-!     ELREFP : ÉLÉMENT DE RÉFÉRENCE PARENT
-!     INO   : NUMÉRO DU NOEUD OU DU POINT D'INTERSECTION
+!     ELREFP : Ã‰LÃ‰MENT DE RÃ‰FÃ‰RENCE PARENT
+!     INO   : NUMÃ‰RO DU NOEUD OU DU POINT D'INTERSECTION
 !     NNOP   : NOMBRE DE NOEUDS DE L'ELEMENT PARENT
 !     LSN    : LEVEL SETS NORMALES EN INO
 !     LST    : LEVEL SET TANGENTE EN INO
-!     NINTER : NOMBRE D'ARETES INTERSECTÉS DE L'ELEMENT PARENT
+!     NINTER : NOMBRE D'ARETES INTERSECTÃ‰S DE L'ELEMENT PARENT
 !     IAINC  : ADRESSE DE TOPOFAC.AI DE L'ELEMENT PARENT
 !     TYPMA  : TYPE DE LA MAILLE PARENTE
-!     CO     : COORDONNÉES INITIALES DE INO
-!     IGEOM  : COORDONNÉES DES NOEUDS DE L'ÉLÉMENT PARENT
+!     CO     : COORDONNÃ‰ES INITIALES DE INO
+!     IGEOM  : COORDONNÃ‰ES DES NOEUDS DE L'Ã‰LÃ‰MENT PARENT
 !     JDIRNO : ADRESSE DU TABLEAU DIRNO LOCAL
-!     NFISS  : NOMBRE DE FISSURES "VUES" PAR L'ÉLÉMENT PARENT
-!     JFISNO : POINTEUR DE FISSNO DANS L'ÉLÉMENT PARENT
-!     HE     : VALEURS DE(S) FONCTION(S) HEAVISIDE SUR LE SOUS ÉLÉMENT
+!     NFISS  : NOMBRE DE FISSURES "VUES" PAR L'Ã‰LÃ‰MENT PARENT
+!     JFISNO : POINTEUR DE FISSNO DANS L'Ã‰LÃ‰MENT PARENT
+!     HE     : VALEURS DE(S) FONCTION(S) HEAVISIDE SUR LE SOUS Ã‰LÃ‰MENT
 !     NDIME  : DIMENSION TOPOLOGIQUE DE LA MAILLE PARENT
 !     NDIM   : DIMENSION DU MAILLAGE
 !     CMP    : POSITION DES DDLS DE DEPL X-FEM DANS LE CHAMP_NO DE DEPL1
 !     NBCMP  : NOMBRE DE COMPOSANTES DU CHAMP_NO DE DEPL1
 !     NFH    : NOMBRE DE FONCTIONS HEAVISIDE (PAR NOEUD)
-!     NFE    : NOMBRE DE FONCTIONS SINGULIÈRES D'ENRICHISSEMENT (1 A 4)
-!     DDLC   : NOMBRE DE DDL DE CONTACT DE L'ÉLÉMENT PARENT
+!     NFE    : NOMBRE DE FONCTIONS SINGULIÃˆRES D'ENRICHISSEMENT (1 A 4)
+!     DDLC   : NOMBRE DE DDL DE CONTACT DE L'Ã‰LÃ‰MENT PARENT
 !     IMA    : NUMERO DE MAILLE COURANTE PARENT
 !     JCONX1 : ADRESSE DE LA CONNECTIVITE DU MAILLAGE SAIN
 !              (CONNECTIVITE QUADRATIQUE SI LAGRANGES DE CONTACT
@@ -109,7 +109,7 @@ subroutine xpoajd(elrefp, ino, nnop, lsn, lst,&
 ! --- LPINT EST VRAI SI LE NOEUD DU MAILLAGE X-FEM EST SUR LA FISSURE
 ! --- SI LA MAILLE PARENTE POSSEDE DES DDLS DE CONTACT, ON CALCULERA
 ! --- ALORS LES LAGRANGES DE CONTACT FROTTEMENT POUR CE NOEUDS
-! --- ATTENTION, IL SERA VRAI SEULEMENT SI ON EST DU COTÉ ESCAVE.
+! --- ATTENTION, IL SERA VRAI SEULEMENT SI ON EST DU COTÃ‰ ESCAVE.
     if (ino .lt. 1000) then
         lpint = .false.
         do 10 ifiss = 1, nfiss
@@ -172,7 +172,7 @@ subroutine xpoajd(elrefp, ino, nnop, lsn, lst,&
             theta = he(1)*abs(atan2(lsn(1),lst(1)))
         else
 !         LE POINT EST SUR LE FOND DE FISSURE :
-!         L'ANGLE N'EST PAS DÉFINI, ON LE MET À ZÉRO
+!         L'ANGLE N'EST PAS DÃ‰FINI, ON LE MET Ã€ ZÃ‰RO
             theta=0.d0
         endif
 !
@@ -229,14 +229,14 @@ subroutine xpoajd(elrefp, ino, nnop, lsn, lst,&
             call xpoffo(ndim, ndime, elrefc, nnol, igeom,&
                         co, ff)
         endif
-! --- FONCTIONS DE FORMES MODIFIÉES
+! --- FONCTIONS DE FORMES MODIFIÃ‰ES
         call xmoffc(lact, nlact, nnol, ff, ffc)
         do 200 j = 1, nnol
             ngl(j)=zi(jconx1-1+zi(jconx2+ima-1)+j-1)
 200      continue
 !
         do 310 i = 1, ddlc
-! --- CALCUL AVEC LES FF DE CONTACT FFC, LINÉAIRES ET MODIFIÉES
+! --- CALCUL AVEC LES FF DE CONTACT FFC, LINÃ‰AIRES ET MODIFIÃ‰ES
             do 330 j = 1, nnol
                 lagrs(i)=lagrs(i)+zr(jcnsv1-1+nbcmp*(ngl(j)-1)&
                 +cmp((1+nfh+nfe)*ndim+i))*ffc(j)

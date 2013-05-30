@@ -49,14 +49,14 @@ subroutine xaint2(noma, modele)
 ! ON MODIFIE DE TOPOAC.AI
 !
 ! LORS DU TRAITEMENT DU CONTACT SUR LES BRANCHEMENTS DE FISSURES,
-! SI LES FACETTES DU SUPPORT D'UN NOEUD D'UNE ARETE COUPÉE SONT
-! ASSOCIÉES À DES FONCTIONS HEAVISIDE DIFFÉRENTES: IL Y A CONFLIT :
-! ON DÉSACTIVE CE NOEUD :
+! SI LES FACETTES DU SUPPORT D'UN NOEUD D'UNE ARETE COUPÃ‰E SONT
+! ASSOCIÃ‰ES Ã€ DES FONCTIONS HEAVISIDE DIFFÃ‰RENTES: IL Y A CONFLIT :
+! ON DÃ‰SACTIVE CE NOEUD :
 !       +-----/
 !       |    /|
 !       |   / |
 !       |  /  |
-! +-----*-/---+           *NOEUD DÉSACTIVÉ
+! +-----*-/---+           *NOEUD DÃ‰SACTIVÃ‰
 ! |     |/    |
 ! |     / \   |
 ! |    /|  \  |
@@ -64,7 +64,7 @@ subroutine xaint2(noma, modele)
 !    /       \
 !   FISS1     FISS2
 !
-! ON FAIT CETTE OPÉRATION EN DEHORS DU TE0510 CAR IL FAUT COMPARER LES
+! ON FAIT CETTE OPÃ‰RATION EN DEHORS DU TE0510 CAR IL FAUT COMPARER LES
 ! FACETTES DU SUPPORT DU NOEUD.
 !
 ! ----------------------------------------------------------------------
@@ -139,7 +139,7 @@ subroutine xaint2(noma, modele)
         call jeveuo(ces(i)//'.CESV', 'E', jcesv(i))
 10  end do
 !
-! --- COMPTEUR LOCAL DES FISSURES DANS LES ÉLÉMENTS
+! --- COMPTEUR LOCAL DES FISSURES DANS LES Ã‰LÃ‰MENTS
 !
     call wkvect('&&XAIN2.NBSP', 'V V I', nbma, jnbsp2)
 !
@@ -162,7 +162,7 @@ subroutine xaint2(noma, modele)
 !           BOUCLE SUR LES MAILLES DU GROUPE
                 do 120 i = 1, nmaenr
                     ima = zi(jg-1+i)
-!             ON INCRÉMENTE LE COMPTEUR LOCAL
+!             ON INCRÃ‰MENTE LE COMPTEUR LOCAL
                     zi(jnbsp2-1+ima) = zi(jnbsp2-1+ima)+1
 120              continue
             endif
@@ -187,26 +187,26 @@ subroutine xaint2(noma, modele)
                                 ifiss, 1, iad)
                     ninter = zi(jcesv(1)-1+iad)
                     nfiss = zi(jnbsp-1+ima)
-!             ON NE TRAITE QUE LES ELEMENTS MULTI-HEAVISIDE COUPÉS
+!             ON NE TRAITE QUE LES ELEMENTS MULTI-HEAVISIDE COUPÃ‰S
                     if (nfiss .le. 1 .or. ninter .eq. 0) goto 220
                     if (nface .eq. 0) then
 !               SI PAS DE FACETTES, ON VERIFIE TOUTES LES ARETES
                         verif = .false.
                     else
-!               SINON ON VERIFIE UNIQUEMENT LES ARETES NÉGATIVE
+!               SINON ON VERIFIE UNIQUEMENT LES ARETES NÃ‰GATIVE
                         verif = .true.
                     endif
 !
                     call jenuno(jexnum('&CATA.TM.NOMTM', itypma), typma)
                     call conare(typma, ar, nbar)
                     do 230 inter = 1, ninter
-!               BOUCLE SUR LES ARETES DE L'ÉLÉMENT CONTENANT LA JONCTION
+!               BOUCLE SUR LES ARETES DE L'Ã‰LÃ‰MENT CONTENANT LA JONCTION
                         call cesexi('S', jcesd(2), jcesl(2), ima, 1,&
                                     ifiss, (inter-1)*zxain+1, iad)
                         ia = nint(zr(jcesv(2)-1+iad))
                         if (ia .eq. 0 .or. ia .gt. 0 .and. verif) goto 230
                         ia = abs(ia)
-!               RÉCUP DES NOEUDS J DE L'ARETE
+!               RÃ‰CUP DES NOEUDS J DE L'ARETE
                         do 232 j = 1, 2
                             ino(j) = ar(ia,j)
                             nuno(j) = zi(jconx1-1+zi(jconx2+ima-1)+ ino(j)-1)
@@ -223,7 +223,7 @@ subroutine xaint2(noma, modele)
 240                          continue
                             call assert(nfh.gt.1)
 !
-!     RECUPÉRATION DE LA CONNECTIVITÉ DU NOEUD J
+!     RECUPÃ‰RATION DE LA CONNECTIVITÃ‰ DU NOEUD J
 !
                             call jelira(jexnum(cnxinv, nuno(j)), 'LONMAX', nmasup, k8bid)
                             call jeveuo(jexnum(cnxinv, nuno(j)), 'L', jmasup)
@@ -239,7 +239,7 @@ subroutine xaint2(noma, modele)
                                             ifis2, 2, iad)
 !      SI PAS DE FACETTE DANS CETTE MAILLE POUR CETTE FISSURE, ON SORT
                                 if (zi(jcesv(1)-1+iad) .eq. 0) goto 250
-!      RECUPÉRATION DU NUMÉRO DE NOEUD INO2 CORRESPONDANT À J DANS IMA2
+!      RECUPÃ‰RATION DU NUMÃ‰RO DE NOEUD INO2 CORRESPONDANT Ã€ J DANS IMA2
                                 call jelira(jexnum(noma//'.CONNEX', ima2), 'LONMAX', nno2, k8bid)
                                 do 260 ino2 = 1, nno2
                                     nngl=zi(jconx1-1+zi(jconx2+ima2-1)&
@@ -253,11 +253,11 @@ subroutine xaint2(noma, modele)
 !
                                 he = 0
                                 do 280 ifh = 1, nfh
-!     NUMÉRO DE FISSURE ASSOCIÉ À NUNO(J) ET IFH DANS IMA2
+!     NUMÃ‰RO DE FISSURE ASSOCIÃ‰ Ã€ NUNO(J) ET IFH DANS IMA2
                                     call cesexi('S', jcesd(4), jcesl(4), ima2, ino2,&
                                                 ifh, 1, iad)
                                     ifis3 = zi(jcesv(4)-1+iad)
-!     RECUPÉRATION DE LA FONCTION HEAVISIDE (ESCLAVE ET MAITRE)
+!     RECUPÃ‰RATION DE LA FONCTION HEAVISIDE (ESCLAVE ET MAITRE)
                                     call cesexi('S', jcesd(5), jcesl(5), ima2, 1,&
                                                 nfis2*(ifis2-1)+ifis3, 1, iad)
                                     he = he + (1+zi(jcesv(5)-1+iad))* 3**(ifh-1 )
@@ -267,18 +267,18 @@ subroutine xaint2(noma, modele)
                                     he = he + ( 1+zi(jcesv(5)-1+iad))* 3**(nfh+ifh-1)
 280                              continue
                                 if (heav .eq. 0) heav = he
-!     SI LA FONC HEAV EST DIFF D'UN ELEM À L'AUTRE, ON DÉSATCTIVE LE NO
+!     SI LA FONC HEAV EST DIFF D'UN ELEM Ã€ L'AUTRE, ON DÃ‰SATCTIVE LE NO
                                 if (heav .ne. he) elim(j) = .true.
 250                          continue
 !
 235                      continue
-!     ELIM = TT <=> L'ARETE DOIT ÊTRE ENTIÈREMENT ÉLIMINÉE
-!     SINON IL FAUDRA RECONSIDÉRER PROPREMENT L'ELIM COMPLÈTE DE L'ARETE
+!     ELIM = TT <=> L'ARETE DOIT ÃŠTRE ENTIÃˆREMENT Ã‰LIMINÃ‰E
+!     SINON IL FAUDRA RECONSIDÃ‰RER PROPREMENT L'ELIM COMPLÃˆTE DE L'ARETE
                         call assert(verif.eqv.(elim(1).and.elim(2)))
                         do 300 j = 1, 2
                             if (.not.elim(j)) goto 300
 !
-!     RECUPÉRATION DE LA CONNECTIVITÉ DU NOEUD J
+!     RECUPÃ‰RATION DE LA CONNECTIVITÃ‰ DU NOEUD J
 !
                             call jelira(jexnum(cnxinv, nuno(j)), 'LONMAX', nmasup, k8bid)
                             call jeveuo(jexnum(cnxinv, nuno(j)), 'L', jmasup)
@@ -307,10 +307,10 @@ subroutine xaint2(noma, modele)
                                     ima2-1)+ar(ia,1)-1)
                                     nuno2(2)=zi(jconx1-1+zi(jconx2+&
                                     ima2-1)+ar(ia,2)-1)
-!         SI LE NOEUD J N'APPARTIENT PAS À L'ARETE, ON SORT
+!         SI LE NOEUD J N'APPARTIENT PAS Ã€ L'ARETE, ON SORT
                                     if (nuno(j) .ne. nuno2(1) .and. nuno( j) .ne. nuno2(2)) &
                                     goto 360
-!         MISE À ZÉRO DE L'ARETE
+!         MISE Ã€ ZÃ‰RO DE L'ARETE
                                     zr(jcesv(2)-1+iad) = 0
                                     if (nuno(3-j) .ne. nuno2(1) .and. nuno( 3-j) .ne.&
                                         nuno2(2) .or. (.not.verif)) then

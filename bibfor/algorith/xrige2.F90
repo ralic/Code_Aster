@@ -51,7 +51,7 @@ subroutine xrige2(elrefp, elrese, ndim, coorse, igeom,&
 ! IN  HE      : VALEUR DE LA FONCTION HEAVISIDE SUR LE SOUS-ELT
 ! IN  DDLH    : NOMBRE DE DDL HEAVYSIDE (PAR NOEUD)
 ! IN  DDLC    : NOMBRE DE DDL DE CONTACT (PAR NOEUD)
-! IN  NFE     : NOMBRE DE FONCTIONS SINGULIÈRES D'ENRICHISSEMENT
+! IN  NFE     : NOMBRE DE FONCTIONS SINGULIÃˆRES D'ENRICHISSEMENT
 ! IN  BASLOC  : BASE LOCALE AU FOND DE FISSURE AUX NOEUDS
 ! IN  NNOP    : NOMBRE DE NOEUDS DE L'ELEMENT PARENT
 ! IN  NPG     : NOMBRE DE POINTS DE GAUSS DU SOUS-ELEMENT
@@ -87,11 +87,11 @@ subroutine xrige2(elrefp, elrese, ndim, coorse, igeom,&
 !
 !--------------------------------------------------------------------
 !
-!     NOMBRE DE DDL DE DEPLACEMENT À CHAQUE NOEUD SOMMET
+!     NOMBRE DE DDL DE DEPLACEMENT Ã€ CHAQUE NOEUD SOMMET
     ddld=ndim+ddlh+ndim*nfe
     ddldn = ddld/ndim
 !
-!     NOMBRE DE DDL TOTAL (DEPL+CONTACT) À CHAQUE NOEUD SOMMET
+!     NOMBRE DE DDL TOTAL (DEPL+CONTACT) Ã€ CHAQUE NOEUD SOMMET
     ddls=ddld+ddlc
 !
 !     ELEMENT DE REFERENCE PARENT : RECUP DE NNOPS
@@ -106,7 +106,7 @@ subroutine xrige2(elrefp, elrese, ndim, coorse, igeom,&
     call assert(npg.eq.npgbis.and.ndim.eq.ndimb)
 !
 !-----------------------------------------------------------------------
-!     BOUCLE SUR LES POINTS DE GAUSS DU SOUS-TÉTRA
+!     BOUCLE SUR LES POINTS DE GAUSS DU SOUS-TÃ‰TRA
     do 100 kpg = 1, npg
 !
 !       COORDONNEES DU PT DE GAUSS DANS LE REPERE REEL : XG
@@ -148,7 +148,7 @@ subroutine xrige2(elrefp, elrese, ndim, coorse, igeom,&
 !
         endif
 !
-!       COORDONNÉES DU POINT DE GAUSS DANS L'ELEMENT DE REF PARENT : XE
+!       COORDONNÃ‰ES DU POINT DE GAUSS DANS L'ELEMENT DE REF PARENT : XE
 !       ET CALCUL DE FF, DFDI, ET EPS
 !
         call reeref(elrefp, axi, nnop, nnops, zr(igeom),&

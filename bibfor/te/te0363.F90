@@ -43,7 +43,7 @@ subroutine te0363(option, nomte)
 !  CONTACT XFEM GRANDS GLISSEMENTS
 !  REACTUALISATION DU STATUT DE CONTACT
 !
-!  OPTION : 'XCVBCA' (X-FEM MISE À JOUR DU STATUT DE CONTACT)
+!  OPTION : 'XCVBCA' (X-FEM MISE Ã€ JOUR DU STATUT DE CONTACT)
 !
 !  ENTREES  ---> OPTION : OPTION DE CALCUL
 !           ---> NOMTE  : NOM DU TYPE ELEMENT
@@ -155,7 +155,7 @@ subroutine te0363(option, nomte)
                 nnm(1), nnc, coore, coorm, coorc,&
                 ffe, ffm, dffc)
 !
-! --- ON CONSTRUIT LA MATRICE DE CONNECTIVITÉ CFACE (MAILLE ESCLAVE), CE
+! --- ON CONSTRUIT LA MATRICE DE CONNECTIVITÃ‰ CFACE (MAILLE ESCLAVE), CE
 ! --- QUI SUIT N'EST VALABLE QU'EN 2D POUR LA FORMULATION QUADRATIQUE,
 ! --- EN 3D ON UTILISE SEULEMENT LA FORMULATION AUX NOEUDS SOMMETS,
 ! --- CETTE MATRICE EST DONC INUTILE, ON NE LA CONSTRUIT PAS !!!
@@ -235,7 +235,7 @@ subroutine te0363(option, nomte)
             zi(jout-1+3) = 1
         endif
 !
-! --- SI LE NON-CONTACT A ETE POSTULÉ, ON TESTE LA VALEUR DU JEU
+! --- SI LE NON-CONTACT A ETE POSTULÃ‰, ON TESTE LA VALEUR DU JEU
 !
     else if (indco .eq. 0) then
         if (jeuca .gt. prec) then

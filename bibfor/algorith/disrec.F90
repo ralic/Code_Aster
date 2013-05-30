@@ -53,7 +53,7 @@ subroutine disrec(pz, az, bz, r, h)
     call assert(a.gt.0.d0 .and. b.gt.0.d0)
     if (a .lt. b) then
 !       SI A EST PLUS PETIT QUE B, ON INVERSE A ET B
-!       ET AUSSI LES COORDONNÉES DU POINT P
+!       ET AUSSI LES COORDONNÃ‰ES DU POINT P
         temp = a
         a = b
         b = temp

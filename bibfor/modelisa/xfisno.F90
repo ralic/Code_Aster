@@ -35,7 +35,7 @@ subroutine xfisno(noma, modelx)
 !
 !----------------------------------------------------------------------
 !  BUT: CREATION D'UN CHAMPS ELNO QUI ASSOCIE POUR CHAQUE NOEUD LE
-!       NUMÉRO DE FISSURE LOCALE AU DDL HEAVISIDE
+!       NUMÃ‰RO DE FISSURE LOCALE AU DDL HEAVISIDE
 !
 !----------------------------------------------------------------------
 !
@@ -65,7 +65,7 @@ subroutine xfisno(noma, modelx)
     ces = '&&XFISNO.FISSNO'
     cesf = '&&XFISNO.STNO'
 !
-! --- LE CONTACT EST-IL DÉCLARÉ
+! --- LE CONTACT EST-IL DÃ‰CLARÃ‰
 !
     call jeveuo(modelx(1:8)//'.XFEM_CONT', 'L', jxc)
     call assert(zi(jxc).le.1)

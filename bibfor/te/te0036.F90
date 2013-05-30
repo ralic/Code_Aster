@@ -193,7 +193,7 @@ subroutine te0036(option, nomte)
 !
     call jevech('PVECTUR', 'E', ires)
 !
-!     RÉCUPÉRATION DE LA SUBDIVISION DE L'ÉLÉMENT EN NSE SOUS ELEMENT
+!     RÃ‰CUPÃ‰RATION DE LA SUBDIVISION DE L'Ã‰LÃ‰MENT EN NSE SOUS ELEMENT
     nse=zi(jlonch-1+1)
 !
 !       BOUCLE D'INTEGRATION SUR LES NSE SOUS-ELEMENTS
@@ -241,7 +241,7 @@ subroutine te0036(option, nomte)
             call provec(nd, ab, y)
         endif
 !
-!       COORDONNÉES DES SOMMETS DE LA FACETTE DANS LE REPÈRE LOCAL
+!       COORDONNÃ‰ES DES SOMMETS DE LA FACETTE DANS LE REPÃˆRE LOCAL
         if (ndime .eq. 2) then
             coorlo(1)=0.d0
             coorlo(2)=0.d0
@@ -279,7 +279,7 @@ subroutine te0036(option, nomte)
             endif
         endif
 !
-!       COORDONNÉES DES NOEUDS DE L'ELREFP DANS LE REPÈRE LOCAL
+!       COORDONNÃ‰ES DES NOEUDS DE L'ELREFP DANS LE REPÃˆRE LOCAL
         do 116 ino = 1, nnop*ndime
             geomlo(ino)=0.d0
 116      continue
@@ -319,7 +319,7 @@ subroutine te0036(option, nomte)
                             rb2, poids, rb3, rb4)
             endif
 !
-!         COORDONNÉES RÉELLES LOCALES DU POINT DE GAUSS
+!         COORDONNÃ‰ES RÃ‰ELLES LOCALES DU POINT DE GAUSS
             call vecini(ndime, 0.d0, gloc)
             do 210 j = 1, nno
                 vf=zr(ivf-1+nno*(kpg-1)+j)
@@ -376,7 +376,7 @@ subroutine te0036(option, nomte)
 221              continue
 220          continue
 !
-!           2EME METHODE POUR CALCULER LES COORDONNÉES RÉELLES
+!           2EME METHODE POUR CALCULER LES COORDONNÃ‰ES RÃ‰ELLES
 !           DU POINT DE GAUSS
 !            G(1)=A(1)+AB(1)*GLOC(1)+Y(1)*GLOC(2)
 !            G(2)=A(2)+AB(2)*GLOC(1)+Y(2)*GLOC(2)
@@ -394,7 +394,7 @@ subroutine te0036(option, nomte)
                     lstg = lstg + zr(jlst-1+ino) * ff(ino)
 230              continue
 !
-!           COORDONNÉES POLAIRES DU POINT
+!           COORDONNÃ‰ES POLAIRES DU POINT
                 rg=sqrt(lsng**2+lstg**2)
                 tg = zi(jheavt-1+ise) * abs(atan2(lsng,lstg))
 !

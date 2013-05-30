@@ -161,7 +161,7 @@ subroutine xappar(loptin, noma, modele, defico, resoco)
 !
     do 100 imae = 1, ntmae
 !
-! --- ZONE DE CONTACT ET FISSURE LOCALE ASSOCIÉE
+! --- ZONE DE CONTACT ET FISSURE LOCALE ASSOCIÃ‰E
 !
         izone = zi(jmaesx+zmesx*(imae-1)+2-1)
         ifiss = zi(jmaesx+zmesx*(imae-1)+5-1)
@@ -221,7 +221,7 @@ subroutine xappar(loptin, noma, modele, defico, resoco)
 !
 ! --- COORDONNEES DANS ELEMENT DE REFERENCE ET POIDS DU POINT DE CONTACT
 !
-! --- FAUX POINT D'INTEGRATION (POUR L'ÉLIMINATION DES DDL EN TROP)
+! --- FAUX POINT D'INTEGRATION (POUR L'Ã‰LIMINATION DES DDL EN TROP)
                 if (statue .lt. 0) then
                     do 120 ipc2 = 1, npte
                         call cesexi('S', jcesd(4), jcesl(4), nummae, 1,&
@@ -249,7 +249,7 @@ subroutine xappar(loptin, noma, modele, defico, resoco)
                             ndim, nummae, iface, ksipc1, ksipc2,&
                             npte, geom)
 !
-! --- RECHERCHE DU PT D'INTERSECTION SUR LE COTE MAÎTRE LE PLUS PROCHE
+! --- RECHERCHE DU PT D'INTERSECTION SUR LE COTE MAÃŽTRE LE PLUS PROCHE
 ! --- DU POINT DE CONTACT
 !
                 if (statue .gt. 0 .and. statue .ne. 2) then
@@ -297,7 +297,7 @@ subroutine xappar(loptin, noma, modele, defico, resoco)
                         t1min(2) = 1-norm(2)**2
                         t1min(3) = -norm(2)*norm(3)
                     endif
-! --- DEUXIÈME DIRECTION TANGENTE
+! --- DEUXIÃˆME DIRECTION TANGENTE
                     call provec(norm, t1min, t2min)
 !
 ! --- NORMALISATION DES VECTEURS TANGENTS
@@ -353,13 +353,13 @@ subroutine xappar(loptin, noma, modele, defico, resoco)
                             coor, rrm)
                 zr(jtabf+ztabf*ntpc+ztabf*(ipc-1)+31) = rrm
 !
-! --- NUMÉRO LOCALE DE FISSURE MAITRE
+! --- NUMÃ‰RO LOCALE DE FISSURE MAITRE
 !
                 zr(jtabf+ztabf*ntpc+ztabf*(ipc-1)+34) = ifism
 !
                 if (loptin) then
 !
-! --- NUMÉRO LOCALE DE FISSURE ESCLAVE
+! --- NUMÃ‰RO LOCALE DE FISSURE ESCLAVE
 !
                     zr(jtabf+ztabf*ntpc+ztabf*(ipc-1)+33) = ifiss
 !
@@ -379,7 +379,7 @@ subroutine xappar(loptin, noma, modele, defico, resoco)
                     zr(jtabf+ztabf*ntpc+ztabf*(ipc-1)+30) = rre
 !
 ! --- POINT D'INTEGRATION VITAL OU PAS
-! --- NUMERO DE GROUPE ET D'ARETE (SI LE PT EST SUR UNE ARETE CONNECTÉE)
+! --- NUMERO DE GROUPE ET D'ARETE (SI LE PT EST SUR UNE ARETE CONNECTÃ‰E)
 !
 !
                     if (mod(tyco,10) .eq. 2) then

@@ -33,7 +33,7 @@ subroutine xfisco(noma, modelx)
     include 'asterfort/u2mesk.h'
     character(len=8) :: noma, modelx
 !
-! CREATION D'UN CHAMP ÉLÉMENTAIRE DE CONNECTIVITÉ DES FISSURES BRANCHÉES
+! CREATION D'UN CHAMP Ã‰LÃ‰MENTAIRE DE CONNECTIVITÃ‰ DES FISSURES BRANCHÃ‰ES
 !
 !
 !
@@ -105,7 +105,7 @@ subroutine xfisco(noma, modelx)
                                 ifis3, 1, iad)
                     nomfi3 = zk8(jcesv2-1+iad)
 !
-! --- ON REGARDE SI LA FISSURE NOMFI3 EST CONNECTÉ À NOMFIS
+! --- ON REGARDE SI LA FISSURE NOMFI3 EST CONNECTÃ‰ Ã€ NOMFIS
 !
                     do 120 ifis2 = 1, nfis2
                         if (zk8(jjonf-1+ifis2) .eq. nomfi3) then

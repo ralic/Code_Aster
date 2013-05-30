@@ -35,23 +35,23 @@ subroutine xdecqv(nnose, it, cnset, lsn, igeom,&
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-!                      DÉCOUPER LE TETRA EN NSE SOUS-TETRAS
+!                      DÃ‰COUPER LE TETRA EN NSE SOUS-TETRAS
 !
 !     ENTREE
 !       NNOSE    : NOMBRE DE NOEUDS DU SOUS TETRA
 !       IT       : INDICE DU TETRA EN COURS
-!       CNSET    : CONNECTIVITÉ DES NOEUDS DU TETRA
+!       CNSET    : CONNECTIVITÃ‰ DES NOEUDS DU TETRA
 !       LSN      : VALEURS DE LA LEVEL SET NORMALE
-!       IGEOM    : ADRESSE DES COORDONNÉES DES NOEUDS DE L'ELT PARENT
+!       IGEOM    : ADRESSE DES COORDONNÃ‰ES DES NOEUDS DE L'ELT PARENT
 !       NINTER   : NB DE POINTS D'INTERSECTION
 !       NPTS     : NB DE PTS D'INTERSECTION COINCIDANT AVEC UN NOEUD
 !                  SOMMET
 !       AINTER   : INFOS ARETE CORRESPONDATE AU PT INTERSECTION
 !
 !     SORTIE
-!       NSE      : NOMBRE DE SOUS-ÉLÉMENTS (TÉTRAS)
-!       CNSE     : CONNECTIVITÉ DES SOUS-ÉLÉMENTS (TÉTRAS)
-!       HEAV     : FONCTION HEAVYSIDE CONSTANTE SUR CHAQUE SOUS-ÉLÉMENT
+!       NSE      : NOMBRE DE SOUS-Ã‰LÃ‰MENTS (TÃ‰TRAS)
+!       CNSE     : CONNECTIVITÃ‰ DES SOUS-Ã‰LÃ‰MENTS (TÃ‰TRAS)
+!       HEAV     : FONCTION HEAVYSIDE CONSTANTE SUR CHAQUE SOUS-Ã‰LÃ‰MENT
 !     ----------------------------------------------------------------
 !
     real(kind=8) :: x(3), xlsn, lsnk
@@ -136,7 +136,7 @@ subroutine xdecqv(nnose, it, cnset, lsn, igeom,&
     endif
 !
 ! --------------------------------------------------------------------
-!     REMPLISSAGE DE LA CONNECTIVITÉ DES SOUS-ELEMENTS TÉTRAS
+!     REMPLISSAGE DE LA CONNECTIVITÃ‰ DES SOUS-ELEMENTS TÃ‰TRAS
 !                  ALGO BOOK III (26/04/04)
 ! --------------------------------------------------------------------
     if (ndime .eq. 2 .and. cut) then
@@ -337,7 +337,7 @@ subroutine xdecqv(nnose, it, cnset, lsn, igeom,&
     endif
 !
 ! --------------------------------------------------------------------
-!             MATRICE DES COORDONNÉES ET FONCTION HEAVYSIDE
+!             MATRICE DES COORDONNÃ‰ES ET FONCTION HEAVYSIDE
 !             ALGO BOOK III (28/04/04)
 ! --------------------------------------------------------------------
 !
@@ -355,7 +355,7 @@ subroutine xdecqv(nnose, it, cnset, lsn, igeom,&
 !     REMARQUE IMPORTANTE :
 !     SI ON EST SUR UN ELEMENT DE BORD COINCIDANT AVEC L'INTERCE
 !     (NDIME = NDIM - 1 ET NPTS = NDIM) ALORS ON NE PEUT PAS
-!     DÉTERMINER DE QUEL COTE DE L'INTERFACE ON SE TROUVE, CAR ON
+!     DÃ‰TERMINER DE QUEL COTE DE L'INTERFACE ON SE TROUVE, CAR ON
 !     EST TOUJOURS SUR L'INTERFACE. LA VALEUR DE HEAV(ISE)
 !     EST DONC FAUSSE DANS CE CAS : ON MET 99.
 !     UNE CORRECTION EST FAITE DANS XORIPE LORS DE L'ORIENTATION

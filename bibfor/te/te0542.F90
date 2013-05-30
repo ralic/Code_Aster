@@ -35,7 +35,7 @@ subroutine te0542(option, nomte)
     character(len=16) :: option, nomte
 ! ----------------------------------------------------------------------
 ! FONCTION REALISEE:  CALCUL DES OPTION FORC_NODA ET REFE_FORC_NODA
-!                     POUR LES ÉLÉMENTS MECA X-FEM
+!                     POUR LES Ã‰LÃ‰MENTS MECA X-FEM
 !
 !    - ARGUMENTS:
 !        DONNEES:      OPTION       -->  OPTION DE CALCUL
@@ -72,7 +72,7 @@ subroutine te0542(option, nomte)
     call jevech('PCOMPOR', 'L', icompo)
     call jevech('PVECTUR', 'E', ivectu)
 !
-!     PARAMÈTRES PROPRES À X-FEM
+!     PARAMÃˆTRES PROPRES Ã€ X-FEM
     call jevech('PPINTTO', 'L', jpintt)
     call jevech('PCNSETO', 'L', jcnset)
     call jevech('PHEAVTO', 'L', jheavt)

@@ -51,14 +51,14 @@ subroutine xfovol(elrefp, ndim, coorse, igeom, he,&
 !                                CHAR_MECA_FF3D3D
 !                                CHAR_MECA_FF2D2D
 !
-! IN  ELREFP  : ÉLÉMENT DE RÉFÉRENCE PARENT
+! IN  ELREFP  : Ã‰LÃ‰MENT DE RÃ‰FÃ‰RENCE PARENT
 ! IN  NDIM    : DIMENSION DE L'ESPACE
-! IN  COORSE  : COORDONNÉES DES SOMMETS DU SOUS-ÉLÉMENT
-! IN  IGEOM   : COORDONNÉES DES NOEUDS DE L'ÉLÉMENT PARENT
-! IN  HE      : VALEUR DE LA FONCTION HEAVISIDE SUR LE SOUS-ÉLT
+! IN  COORSE  : COORDONNÃ‰ES DES SOMMETS DU SOUS-Ã‰LÃ‰MENT
+! IN  IGEOM   : COORDONNÃ‰ES DES NOEUDS DE L'Ã‰LÃ‰MENT PARENT
+! IN  HE      : VALEUR DE LA FONCTION HEAVISIDE SUR LE SOUS-Ã‰LT
 ! IN  DDLH    : NOMBRE DE DDL HEAVYSIDE (PAR NOEUD)
 ! IN  DDLC    : NOMBRE DE DDL DE CONTACT (PAR NOEUD)
-! IN  NFE     : NOMBRE DE FONCTIONS SINGULIÈRES D'ENRICHISSEMENT
+! IN  NFE     : NOMBRE DE FONCTIONS SINGULIÃˆRES D'ENRICHISSEMENT
 ! IN  NNOP    : NOMBRE DE NOEUDS DE L'ELEMENT PARENT
 ! IN  JLSN    : INDICE DE LA LEVEL SET NORMALE AUX NOEUDS PARENTS
 ! IN  JLST    : INDICE DE LA LEVEL SET TANGENTE AUX NOEUDS PARENTS
@@ -115,7 +115,7 @@ subroutine xfovol(elrefp, ndim, coorse, igeom, he,&
 !
     do 10 kpg = 1, npgbis
 !
-!       COORDONNÉES DU PT DE GAUSS DANS LA CONFIG RÉELLE DU SE : XG
+!       COORDONNÃ‰ES DU PT DE GAUSS DANS LA CONFIG RÃ‰ELLE DU SE : XG
         call vecini(ndim, 0.d0, xg)
         do 101 i = 1, ndim
             do 102 n = 1, nno
@@ -151,7 +151,7 @@ subroutine xfovol(elrefp, ndim, coorse, igeom, he,&
                 lstg = lstg + zr(jlst-1+ino) * ff(ino)
 103          continue
 !
-!         COORDONNÉES POLAIRES DU POINT
+!         COORDONNÃ‰ES POLAIRES DU POINT
             rg=sqrt(lsng**2+lstg**2)
             tg = he * abs(atan2(lsng,lstg))
 !

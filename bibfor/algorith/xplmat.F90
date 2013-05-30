@@ -31,11 +31,11 @@ subroutine xplmat(ndim, nfh, nfe, ddlc, ddlm,&
 !
 ! IN  NDIM    : DIMENSION (=3)
 ! IN  NFH     : NOMBRE DE FONCTIONS HEAVYSIDE
-! IN  NFE     : NOMBRE DE FONCTIONS SINGULIÈRES
+! IN  NFE     : NOMBRE DE FONCTIONS SINGULIÃˆRES
 ! IN  DDLC    : NOMBRE DE DDL DE CONTACT (PAR NOEUD)
 ! IN  NNO     : NOMBRE DE NOEUDS SOMMET
 ! IN  NNOM    : NOMBRE DE NOEUDS MILIEU
-! IN  N       : NUMÉRO DU NOEUD PORTANT LE LAMBDA
+! IN  N       : NUMÃ‰RO DU NOEUD PORTANT LE LAMBDA
 !
 ! OUT PL      : PLACE DU LMBDA DANS LA MATRICE
 !     ------------------------------------------------------------------

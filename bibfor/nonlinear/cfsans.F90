@@ -117,7 +117,7 @@ subroutine cfsans(defico, npt, jeux, enti, zone)
     endif
 !
     2001 format (' <CONTACT>   * INTERPENETRATION DE <',a16,'> AVEC <',&
-     &        a16,'> * JEU:'1pe12.5)
+     &        a16,'> * JEU:',1pe12.5)
     3000 format (' <CONTACT>   * IL Y A ',i6,&
      &        ' NOEUDS INTERPENETRES (JEU REF.: ',1pe12.5,')')
 !

@@ -39,13 +39,13 @@ subroutine xmelel(ndim, jmail, jtymai, numae, numam,&
 ! DEUX ELEMENTS DE SURFACE
 !
 ! IN  NDIM   : DIMENSSION DU MAILLAGE
-! IN JMAIL   : POINTEUR DES TYPES D'ÉLÉMENTS
+! IN JMAIL   : POINTEUR DES TYPES D'Ã‰LÃ‰MENTS
 ! IN JTYMAI  : POINTEUR DES TYPES DE MAILLES
-! IN NUMAE   : NUMÉRO DE MAILLE ESCLAVE
-! IN NUMAM   : NUMÉRO DE MAILLE MAITRE
-! OUT IMOD   : NUMÉRO DE MODÉLISATION
-! OUT IATT   : NUMÉRO D'ATTRIBUT ESCLAVE ET MAITRE
-! OUT IMAIL  : NUMÉRO DE MAILLE ESCLAVE ET MAITRE
+! IN NUMAE   : NUMÃ‰RO DE MAILLE ESCLAVE
+! IN NUMAM   : NUMÃ‰RO DE MAILLE MAITRE
+! OUT IMOD   : NUMÃ‰RO DE MODÃ‰LISATION
+! OUT IATT   : NUMÃ‰RO D'ATTRIBUT ESCLAVE ET MAITRE
+! OUT IMAIL  : NUMÃ‰RO DE MAILLE ESCLAVE ET MAITRE
 ! OUT NNO    : NOMBRE DE NOEUDS ESCLAVE ET MAITRE
 !
 !
@@ -80,7 +80,7 @@ subroutine xmelel(ndim, jmail, jtymai, numae, numam,&
 !
     call jenuno(jexnum('&CATA.TM.NOMTM', zi(jtymai-1+numae)), typma)
     call jenuno(jexnum('&CATA.TE.NOMTE', zi(jmail-1+numae)), typel)
-! --- RECUPERATION DE LA MODÉLISATION POUR L'ESCALVE
+! --- RECUPERATION DE LA MODÃ‰LISATION POUR L'ESCALVE
     call dismte('MODELISATION', typel, ibid, mod, ier)
     do 10 k = 1, 3
         if (mode(k) .eq. mod(1:2)) imod = k
@@ -104,7 +104,7 @@ subroutine xmelel(ndim, jmail, jtymai, numae, numam,&
 !
     call jenuno(jexnum('&CATA.TM.NOMTM', zi(jtymai-1+numam)), typma)
     call jenuno(jexnum('&CATA.TE.NOMTE', zi(jmail-1+numam)), typel)
-! --- RECUPERATION DE LA MODÉLISATION POUR LE MAITRE
+! --- RECUPERATION DE LA MODÃ‰LISATION POUR LE MAITRE
     call dismte('MODELISATION', typel, ibid, mod, ier)
     call assert(mod(1:2).eq.mode(imod))
 ! --- RECUPERATION DES L'ATTRIBUT POUR LE MAITRE
