@@ -316,13 +316,13 @@ subroutine ircerl(ifi, nbel, ligrel, nbgrel, longr,&
                 fmt = ' '
                 fmv = ' '
                 if (ires .ne. 0) then
-                    fmt = '( 1X, A8, 6(1X, '//forcmp//'), 30(/, 9X, 6(1X, '// forcmp//')) )'
+                    fmt = '(1X,A8,6(1X,'//forcmp//'),30(/,9X,6(1X,'// forcmp//')))'
                     if (loc .eq. 'ELNO') then
-                        fmv = '( 1X, A8, 6(1X, '//format//'), 30(/, 9X, 6(1X, '// format//')) )'
+                        fmv = '(1X,A8,6(1X,'//format//'),30(/,9X,6(1X,'// format//')))'
                     else if (loc.eq.'ELGA') then
-                        fmv = '( 2X, I7, 6(1X, '//format//'), 30(/, 9X, 6(1X, '// format//')) )'
+                        fmv = '(2X,I7,6(1X,'//format//'),30(/,9X,6(1X,'// format//')))'
                     else if (loc.eq.'ELEM') then
-                        fmv = '( 9X, 6(1X, '//format//'), 30(/, 9X, 6(1X, '// format//')) )'
+                        fmv = '(9X,6(1X,'//format//'),30(/,9X,6(1X,'// format//')))'
                     endif
                 else if (ires.eq.0.and.ilig.eq.1) then
                     fmt = '(1X,A8,6(1X,'//forcmp//'))'
@@ -408,10 +408,10 @@ subroutine ircerl(ifi, nbel, ligrel, nbgrel, longr,&
                 if (lsup .or. linf) then
                     do 35 iva = 1, icoef2*ncmp2
                         if (lsup) then
-                            if ((zr(ival-1+iva)-borsup) .gt. 0.d0) zi( icoe-1+iva )=0
+                            if ((zr(ival-1+iva)-borsup) .gt. 0.d0) zi(icoe-1+iva)=0
                         endif
                         if (linf) then
-                            if ((zr(ival-1+iva)-borinf) .lt. 0.d0) zi( icoe-1+iva )=0
+                            if ((zr(ival-1+iva)-borinf) .lt. 0.d0) zi(icoe-1+iva)=0
                         endif
 35                  continue
 !
@@ -438,9 +438,8 @@ subroutine ircerl(ifi, nbel, ligrel, nbgrel, longr,&
                         fmt2 = ' '
                         if (loc .eq. 'ELGA') then
                             if (ires .ne. 0) then
-                                fmt1 = '(9X, 6(1X, '//forcmp//'), 30(/, 9X, 6(1X, ' //forcmp//')))'
-                                fmt2 = '(2X, I7, 6(1X, '//format// '),30(/, 9X, 6(1X, '&
-                                       //format//')))'
+                                fmt1 = '(9X,6(1X,'//forcmp//'),30(/,9X,6(1X,' //forcmp//')))'
+                                fmt2 = '(2X,I7,6(1X,'//format// '),30(/,9X,6(1X,'//format//')))'
                             else if (ires.eq.0.and.ilig.eq.1) then
                                 fmt1 = '(9X,6(1X,'//forcmp//'))'
                                 fmt2 = '(2X,I7,6(1X,'//format//'))'
@@ -452,8 +451,8 @@ subroutine ircerl(ifi, nbel, ligrel, nbgrel, longr,&
                             endif
                         else
                             if (ires .ne. 0) then
-                                fmt1 = '(9X, 6(1X, '//forcmp//'), 30(/, 9X, 6(1X, ' //forcmp//')))'
-                                fmt2 = '(9X, 6(1X, '//format//'), 30(/, 9X, 6(1X, ' //format//')))'
+                                fmt1 = '(9X,6(1X,'//forcmp//'),30(/,9X,6(1X,' //forcmp//')))'
+                                fmt2 = '(9X,6(1X,'//format//'),30(/,9X,6(1X,' //format//')))'
                             else if (ires.eq.0.and.ilig.eq.1) then
                                 fmt1 = '(9X,6(1X,'//forcmp//'))'
                                 fmt2 = '(9X,6(1X,'//format//'))'
@@ -640,9 +639,8 @@ subroutine ircerl(ifi, nbel, ligrel, nbgrel, longr,&
                             fmt1 = ' '
                             fmt2 = ' '
                             if (ires .ne. 0) then
-                                fmt1 = '(9X, 6(1X, '//forcmp// '), 30(/, 9X, 6(1X, '//forcmp//')))'
-                                fmt2 = '(1X, A8, 6(1X, '//format// '),30(/, 9X, 6(1X, '&
-                                       //format//')))'
+                                fmt1 = '(9X,6(1X,'//forcmp// '),30(/,9X,6(1X,'//forcmp//')))'
+                                fmt2 = '(1X,A8,6(1X,'//format// '),30(/,9X,6(1X,'//format//')))'
                             else if (ires.eq.0.and.ilig.eq.1) then
                                 fmt1 = '(9X,6(1X,'//forcmp//'))'
                                 fmt2 = '(1X,A8,6(1X,'//format//'))'
