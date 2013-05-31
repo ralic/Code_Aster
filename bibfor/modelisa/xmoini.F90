@@ -7,6 +7,7 @@ subroutine xmoini(nh8, nh20, np6, np15, np5,&
                   ntp5, ntt4, ntpq4, ntpt3, ntaq4,&
                   ntat3, ntf4, ntf3, ntpf2, ntax2)
 !
+! aslint: disable=W1504
     implicit none
 !
     include 'jeveux.h'
@@ -38,7 +39,6 @@ subroutine xmoini(nh8, nh20, np6, np15, np5,&
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 ! person_in_charge: samuel.geniaut at edf.fr
-! TOLE CRP_21
 !
 !
 ! ----------------------------------------------------------------------

@@ -3,6 +3,7 @@ subroutine xmmco2(ndim, nno, nnos, nnol, ddls,&
                   jac, ffp, ffc, pla, singu,&
                   nfiss, jheafa, jfisno, ifa, ncomph,&
                   ifiss, rr, mmat)
+! aslint: disable=W1504
     implicit none
     include 'jeveux.h'
     include 'asterfort/indent.h'
@@ -29,7 +30,6 @@ subroutine xmmco2(ndim, nno, nnos, nnol, ddls,&
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-! TOLE CRP_21
 !
 ! ROUTINE CONTACT (METHODE XFEM HPP - CALCUL ELEM.)
 !

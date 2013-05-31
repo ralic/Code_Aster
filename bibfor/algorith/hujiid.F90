@@ -1,6 +1,7 @@
 subroutine hujiid(mod, mater, indi, deps, i1e,&
                   yd, vind, dy, loop, dsig,&
                   bnews, mtrac, iret)
+! aslint: disable=W1501
     implicit none
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -18,7 +19,6 @@ subroutine hujiid(mod, mater, indi, deps, i1e,&
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-! TOLE CRP_20
 !     ----------------------------------------------------------------
 !     LOI HUJEUX :  MECANISMES ISOTROPE ET DEVIATOIRE
 !     CALCUL DE LA SOLUTION D ESSAI EXPLICITE

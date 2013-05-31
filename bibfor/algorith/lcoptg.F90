@@ -16,7 +16,6 @@ subroutine lcoptg(nmat, mater, nr, nvi, drdy,&
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-! TOLE CRS_1404
 !     ----------------------------------------------------------------
 !     CALCUL DU JACOBIEN DU SYSTEME NL A RESOUDRE = DRDY(DY)
 !     POUR LE MODELE BETON_BURGER_FP
@@ -28,6 +27,7 @@ subroutine lcoptg(nmat, mater, nr, nvi, drdy,&
 !         SIGEPS :  =1 si DY=(DSIG, DZ) et =0 si DY=(DEPSE, DZ)
 !     OUT DSDE   :  MATRICE TANGENTE EN VITESSE
 !     ----------------------------------------------------------------
+! aslint: disable=W1306
     implicit none
 !     ----------------------------------------------------------------
     include 'asterc/r8prem.h'

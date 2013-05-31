@@ -8,6 +8,7 @@ subroutine coeihm(option, perman, resi, rigi, imate,&
                   kpi, npg, npi, sigm, sigp,&
                   varim, varip, res, drde, retcom)
 !
+! aslint: disable=W1306,W1504
     implicit none
 !
 !
@@ -29,7 +30,6 @@ subroutine coeihm(option, perman, resi, rigi, imate,&
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 ! ======================================================================
-! TOLE CRP_21 CRS_1404
 ! ======================================================================
 !
 ! - VARIABLES ENTREE

@@ -3,6 +3,7 @@ subroutine ptktfv(itype, sk, e, rof, ce,&
                   xiy1, xiy2, xiz1, xiz2, xjx1,&
                   xjx2, g, alfay1, alfay2, alfaz1,&
                   alfaz2, ey, ez)
+! aslint: disable=W1504
     implicit none
     include 'asterc/r8gaem.h'
     include 'asterfort/fun1.h'
@@ -30,7 +31,6 @@ subroutine ptktfv(itype, sk, e, rof, ce,&
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-! TOLE CRP_21
 !    * CE SOUS PROGRAMME CALCULERA LA MATRICE DE RAIDEUR DES ELEMENTS
 !      DE TUYAU DROIT A SECTION VARIABLE .
 !

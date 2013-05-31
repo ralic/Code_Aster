@@ -3,6 +3,7 @@ subroutine calres(np3, ic, typch, nbseg, choc,&
                   xloc0, excloc, tetaj, jacobc, jacobk,&
                   floc, flres, old, oldia, iforn,&
                   toln)
+! aslint: disable=W1504
     implicit none
 !-----------------------------------------------------------------------
 ! ======================================================================
@@ -21,7 +22,6 @@ subroutine calres(np3, ic, typch, nbseg, choc,&
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-! TOLE  CRP_21
 !-----------------------------------------------------------------------
 ! DESCRIPTION : CALCUL DES FORCES NON-LINEAIRES RESIDUELLES
 ! -----------

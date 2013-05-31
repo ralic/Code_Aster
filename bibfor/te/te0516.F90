@@ -1,4 +1,5 @@
 subroutine te0516(option, nomte)
+! aslint: disable=W1501
     implicit none
     include 'jeveux.h'
     include 'asterfort/bsigma.h'
@@ -51,7 +52,6 @@ subroutine te0516(option, nomte)
 !
 !
 ! ======================================================================
-! TOLE CRP_20
 !-----------------------------------------------------------------------
 !     ELEMENTS DE POUTRE MULTI-FIBRES DE TIMOSHENKO AVEC GAUCHISSEMENT.
 !

@@ -3,6 +3,7 @@ subroutine testch(np1, np2, np3, nbmcd, nbnl,&
                   phii, alpha, beta, gamma, orig,&
                   rc, theta, tconf1, depg, nbch,&
                   nbchex, iconf, ftest, iconfb, tconf2)
+! aslint: disable=W1504
     implicit none
 !-----------------------------------------------------------------------
 ! ======================================================================
@@ -21,7 +22,6 @@ subroutine testch(np1, np2, np3, nbmcd, nbnl,&
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-! TOLE  CRP_21
 !-----------------------------------------------------------------------
 ! DESCRIPTION : TESTE LE CHANGEMENT DE CONFIGURATION ENTRE N ET N+1
 ! -----------

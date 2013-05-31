@@ -1,4 +1,5 @@
 subroutine penorm(resu, modele)
+! aslint: disable=,W1501
     implicit   none
     include 'jeveux.h'
     include 'asterc/getvid.h'
@@ -65,8 +66,6 @@ subroutine penorm(resu, modele)
 !     TRAITEMENT DU MOT CLE-FACTEUR : "NORME"
 !     ------------------------------------------------------------------
 !
-! TOLE CRS_512
-! TOLE CRP_20
     integer :: ibid, iret, nbmato, nr, nd, np, nc, ni, no, nli, nlo, nco
     integer :: jno, jin, jcoef, jco
     integer :: nbpar, nbpmax, inum, numo, iresma, nbordr, jlicmp, jlicm1, jma

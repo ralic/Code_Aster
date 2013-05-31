@@ -30,9 +30,9 @@ subroutine exlim2(sdfeti, nomsd, lligrs, ligrsd, nbchat,&
 ! IN  : NBPROC : NOMBRE DE PROCESSEURS
 ! IN  : LIGRCF : NOM DU LIGREL DE CHARGE DE CONTACT CONTINUE
 !-----------------------------------------------------------------------
-! TOLE CRP_20
 ! person_in_charge: olivier.boiteau at edf.fr
 ! CORPS DU PROGRAMME
+! aslint: disable=W1501
     implicit none
 !
 ! DECLARATION PARAMETRES D'APPELS

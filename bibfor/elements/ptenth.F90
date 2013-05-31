@@ -1,5 +1,6 @@
 subroutine ptenth(ul, xl, f, n, mat,&
                   itype, enerth)
+! aslint: disable=
     implicit  none
     include 'jeveux.h'
     include 'asterfort/jevech.h'
@@ -22,7 +23,6 @@ subroutine ptenth(ul, xl, f, n, mat,&
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-! TOLE CRP_6
 !     CALCUL DE L'ENERGIE DE DEFORMATION THERMIQUE POUR LES
 !          ELEMENTS POUTRE (POU_D_T, POU_D_E, POU_C_T)
 !     ------------------------------------------------------------------

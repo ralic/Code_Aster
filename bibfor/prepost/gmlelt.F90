@@ -1,5 +1,6 @@
 subroutine gmlelt(igmsh, maxnod, nbtyma, nbmail, nbnoma,&
                   nuconn, versio)
+! aslint: disable=
     implicit none
     include 'jeveux.h'
 !
@@ -33,7 +34,6 @@ subroutine gmlelt(igmsh, maxnod, nbtyma, nbmail, nbnoma,&
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-! TOLE CRS_512
 !
 !      GMLELT --   LECTURE DES NUMEROS DES ELEMENTS, DE LEUR TYPE,
 !                  DE LEUR NUMERO DE GROUPE, DU NOMBRE DE LEURS

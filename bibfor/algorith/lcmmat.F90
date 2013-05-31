@@ -3,9 +3,9 @@ subroutine lcmmat(fami, kpg, ksp, comp, mod,&
                   materf, matcst, nbcomm, cpmono, ndt,&
                   ndi, nr, nvi, hsr, nfs,&
                   nsg, toutms, vind, impexp)
+! aslint: disable=W1306,W1504
     implicit none
 ! person_in_charge: jean-michel.proix at edf.fr
-! TOLE CRP_21 CRS_1404
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

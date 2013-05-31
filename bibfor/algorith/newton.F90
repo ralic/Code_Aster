@@ -24,6 +24,7 @@ subroutine newton(np1, np2, np3, np4, nbm,&
                   tconf2, toln, tolc, tolv, testc,&
                   itforn)
 !
+! aslint: disable=W1501,W1504
     implicit none
 !-----------------------------------------------------------------------
 ! ======================================================================
@@ -42,7 +43,6 @@ subroutine newton(np1, np2, np3, np4, nbm,&
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-! TOLE  CRP_20 CRP_21
 !-----------------------------------------------------------------------
 ! DESCRIPTION : PROCEDURE D'ATTEINTE DE L'INSTANT DE CHANGEMENT DE
 ! -----------   CONFIGURATION PAR UNE METHODE DE NEWTON.

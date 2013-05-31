@@ -3,6 +3,7 @@ subroutine lkcomp(mod, imate, instam, instap, tm,&
                   option, sigp, vinp, dside, retcom,&
                   invi)
 !
+! aslint: disable=W1501
     implicit  none
     include 'asterc/iisnan.h'
     include 'asterc/r8prem.h'
@@ -81,7 +82,6 @@ subroutine lkcomp(mod, imate, instam, instap, tm,&
 ! ----COMPRESSION LA CONTRAINTE EST POSITIVE ET EN CONTRACTANCE :
 ! ----DEFORMATION VOLUMIQUE POSITIVE
 !=======================================================================
-! TOLE CRP_20
 !=======================================================================
     integer :: nbmat, ndt, ndi, nvi, val, varv, i, k, matr
     integer :: iret

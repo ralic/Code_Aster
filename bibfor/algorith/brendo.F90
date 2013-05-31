@@ -25,9 +25,8 @@ subroutine brendo(sige6, bt6, sut, bc1, suc,&
 !
 !      ATTENTION : UTILISATION DES SUBROUTINES
 !     ZERO,MATMAT...
-! TOLE CRP_20
-! TOLE CRP_21
 !
+! aslint: disable=W1501,W1504
     implicit none
     include 'asterfort/brindz.h'
     include 'asterfort/brtail.h'

@@ -4,6 +4,7 @@ subroutine lc0006(fami, kpg, ksp, ndim, imate,&
                   option, angmas, sigp, vip, nwkin,&
                   wkin, typmod, icomp, nvi, ndsde,&
                   dsidep, nwkout, wkout, codret)
+! aslint: disable=W1504
     implicit none
     include 'asterfort/eibex.h'
     include 'asterfort/lcdsbe.h'
@@ -26,7 +27,6 @@ subroutine lc0006(fami, kpg, ksp, ndim, imate,&
     character(len=*) :: fami
 !
 !
-! TOLE CRP_21
 ! ======================================================================
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG

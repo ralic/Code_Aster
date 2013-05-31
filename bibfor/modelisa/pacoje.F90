@@ -1,5 +1,6 @@
 subroutine pacoje(coniz, iocc, motfaz, nomaz, conrz,&
                   ndim)
+! aslint: disable=
     implicit none
     include 'jeveux.h'
 !
@@ -37,7 +38,6 @@ subroutine pacoje(coniz, iocc, motfaz, nomaz, conrz,&
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-! TOLE CRP_6
 !
 !     BUT : CREATION ET AFFECTATION DE LA .S.D. CONR
 !           CONTENANT LES COMPOSANTES DU VECTEUR NORMAL

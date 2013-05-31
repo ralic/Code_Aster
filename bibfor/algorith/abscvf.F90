@@ -1,4 +1,5 @@
 subroutine abscvf(ndim, tabar, xe, s)
+! aslint: disable=W1306
     implicit none
 !
     include 'jeveux.h'
@@ -27,7 +28,6 @@ subroutine abscvf(ndim, tabar, xe, s)
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-! TOLE CRS_1404
 !
 !                      TROUVER L'ABSCISSE CURVILIGNE D'UN POINT
 !                      SUR UNE ARETE QUADRATIQUE A PARTIR DE SES

@@ -1,5 +1,6 @@
 subroutine asretm(lmasym, jtmp2, lgtmp2, nbterm, jsmhc,&
                   jsmdi, i1, i2)
+! aslint: disable=W1304
     implicit none
     include 'jeveux.h'
     include 'asterfort/jeveut.h'
@@ -24,7 +25,6 @@ subroutine asretm(lmasym, jtmp2, lgtmp2, nbterm, jsmhc,&
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-! TOLE CRP_4
 !     ROUTINE SERVANT A RETENIR OU S'ACCUMULENT LES TERMES ELEMENTAIRES:
 !     DANS LE CAS D'UN STOCKAGE MORSE SYMETRIQUE
 ! -----------------------------------------------------------------

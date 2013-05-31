@@ -6,6 +6,7 @@ subroutine rk21co(fami, kpg, ksp, comp, mod,&
                   coel, x, pas, neps, epsd,&
                   detot, nhsr, numhsr, hsr, itmax,&
                   toler, iret)
+! aslint: disable=W1306,W1504
     implicit none
 !     ================================================================
 ! ======================================================================
@@ -24,7 +25,6 @@ subroutine rk21co(fami, kpg, ksp, comp, mod,&
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-! TOLE CRP_21 CRS_1404
 !     ----------------------------------------------------------------
 !     INTEGRATION DE LOIS DE COMPORTEMENT ELASTO-VISCOPLASTIQUE
 !     PAR UNE METHODE DE RUNGE KUTTA D'ORDRE 2 A 2 PAS EMBOITES

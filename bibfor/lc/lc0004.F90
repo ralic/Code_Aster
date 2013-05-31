@@ -3,6 +3,7 @@ subroutine lc0004(fami, kpg, ksp, ndim, imate,&
                   deps, sigm, vim, option, angmas,&
                   sigp, vip, tampon, typmod, icomp,&
                   nvi, dsidep, codret)
+! aslint: disable=W1504
     implicit none
     include 'asterfort/nmchab.h'
     integer :: kpg, ksp, ndim, imate, codret, icomp, nvi
@@ -14,7 +15,6 @@ subroutine lc0004(fami, kpg, ksp, ndim, imate,&
     real(kind=8) :: sigm(6), vim(*), sigp(6), vip(*), dsidep(6, 6)
 !
 !
-! TOLE CRP_21
 ! ======================================================================
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG

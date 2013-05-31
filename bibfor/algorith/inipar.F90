@@ -4,6 +4,7 @@ subroutine inipar(np1, nbm, nbnl, testc, cmod0,&
                   acc0, vit0, dep0, accg, vitg,&
                   depg, accg0, vitg0, depg0, tconf1,&
                   ftest0, tconf2, ftest)
+! aslint: disable=W1504
     implicit none
 !-----------------------------------------------------------------------
 ! ======================================================================
@@ -22,7 +23,6 @@ subroutine inipar(np1, nbm, nbnl, testc, cmod0,&
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-! TOLE  CRP_21
 !-----------------------------------------------------------------------
 ! DESCRIPTION : INITIALISATION DES PARAMETRES POUR PAS DE TEMPS SUIVANT
 ! -----------

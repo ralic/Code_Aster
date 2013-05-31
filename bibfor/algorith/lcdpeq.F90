@@ -2,8 +2,8 @@ subroutine lcdpeq(vind, vinf, comp, nbcomm, cpmono,&
                   nmat, nvi, sig, detot, epsd,&
                   materf, pgl)
 !
+! aslint: disable=W1306
     implicit none
-! TOLE CRS_1404
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

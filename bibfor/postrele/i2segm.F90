@@ -1,4 +1,5 @@
 subroutine i2segm(nomail, nbpars, nbpara)
+! aslint: disable=W1501
     implicit  none
     include 'jeveux.h'
 !
@@ -45,7 +46,6 @@ subroutine i2segm(nomail, nbpars, nbpara)
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-! TOLE  CRP_20
 !
 !     OPERATEUR INTE_MAIL_2D,
 !               MOTS CLES FACTEURS  "DEFI_SEGMENT"  ET  "DEFI_ARC"

@@ -3,6 +3,7 @@ subroutine lcmmfe(taus, coeft, materf, ifa, nmat,&
                   dy, rp, alphap, gammap, dt,&
                   dalpha, dgamma, dp, crit, sgns,&
                   nfs, nsg, hsr, iret)
+! aslint: disable=W1504
     implicit none
     include 'asterc/r8miem.h'
     include 'asterfort/lcddcc.h'
@@ -20,7 +21,6 @@ subroutine lcmmfe(taus, coeft, materf, ifa, nmat,&
     integer :: irr, decirr, nums, decal, gdef
     common/polycr/irr,decirr,nums,decal,gdef
 !     ----------------------------------------------------------------
-! TOLE CRP_21
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

@@ -3,6 +3,7 @@ subroutine crgdm(imate, compor, lambda, deuxmu, lamf,&
                  alpha, alfmc, ep, lrgm, ipg,&
                  ther, tref, dtmoy, dtgra, tmoym,&
                  tgram, alph)
+! aslint: disable=W1504
     implicit none
 ! person_in_charge: sebastien.fayolle at edf.fr
 ! ======================================================================
@@ -21,7 +22,6 @@ subroutine crgdm(imate, compor, lambda, deuxmu, lamf,&
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-! TOLE  CRP_21
 !
 !     CHARACTER*32 JEXNUM,JEXNOM,JEXR8,JEXATR
 !

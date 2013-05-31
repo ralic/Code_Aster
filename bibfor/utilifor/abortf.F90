@@ -15,9 +15,9 @@ subroutine abortf()
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-! TOLE CRP_6 CRS_745
 !     PERMET D'APPELER LA ROUTINE ABORT FORTRAN DEPUIS LE C
 !     LES UNITES LOGIQUES SERONT DONC "FLUSHEES" ET FERMEES
+! aslint: disable=,
     implicit none
     call abort()
 end subroutine

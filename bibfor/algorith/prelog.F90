@@ -17,7 +17,6 @@ subroutine prelog(ndim, lgpg, vim, gn, lamb,&
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-! TOLE CRP_21
 ! ----------------------------------------------------------------------
 !  BUT:  CALCUL DES GRANDES DEFORMATIONS  LOG 2D (D_PLAN ET AXI) ET 3D
 !     SUIVANT ARTICLE MIEHE APEL LAMBRECHT CMAME 2002
@@ -35,6 +34,7 @@ subroutine prelog(ndim, lgpg, vim, gn, lamb,&
 ! OUT TN      : CONTRAINTES ASSOCIEES AUX DEF. LOGARITHMIQUES EN T-
 ! IN  RESI    : .TRUE. SI FULL_MECA/RAPH_MECA .FALSE. SI RIGI_MECA_TANG
 !
+! aslint: disable=W1504
     implicit none
     include 'asterfort/deflog.h'
     include 'asterfort/r8inir.h'

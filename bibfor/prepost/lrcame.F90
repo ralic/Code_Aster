@@ -22,8 +22,6 @@ subroutine lrcame(nrofic, nochmd, nomamd, nomaas, ligrel,&
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-! TOLE CRP_20
-! TOLE CRP_21
 !-----------------------------------------------------------------------
 !     LECTURE D'UN CHAMP - FORMAT MED
 !     -    -       - -            --
@@ -59,6 +57,7 @@ subroutine lrcame(nrofic, nochmd, nomamd, nomaas, ligrel,&
 !         CODRET : CODE DE RETOUR (0 : PAS DE PB, NON NUL SI PB)
 !_____________________________________________________________________
 !
+! aslint: disable=W1501,W1504
     implicit none
 !
 ! 0.1. ==> ARGUMENTS

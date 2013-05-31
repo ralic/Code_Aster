@@ -20,8 +20,6 @@ subroutine fetprj(nbi, vi, vo, nomggt, lrigid,&
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-! TOLE CRP_4
-! TOLE CRP_21
 !-----------------------------------------------------------------------
 !    - FONCTION REALISEE:  CALCUL AU SENS FETI DE:
 !          * LA PROJECTION COMPLETE P=I-GI.(GIT.GI)-1.GIT SI OPTION=1
@@ -57,6 +55,7 @@ subroutine fetprj(nbi, vi, vo, nomggt, lrigid,&
 !----------------------------------------------------------------------
 ! person_in_charge: olivier.boiteau at edf.fr
 ! CORPS DU PROGRAMME
+! aslint: disable=W1304,W1504
     implicit none
 !
 ! DECLARATION PARAMETRES D'APPELS

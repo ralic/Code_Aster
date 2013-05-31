@@ -23,7 +23,6 @@ subroutine mecalc(option, modele, chdepl, chgeom, chmate,&
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-! TOLE CRP_21
 !
 !     - FONCTION REALISEE : APPEL A "CALCUL"
 !                           CALCUL DES CONTRAINTES ELEMENTAIRES
@@ -50,6 +49,7 @@ subroutine mecalc(option, modele, chdepl, chgeom, chmate,&
 ! OUT : CODRET : CODE DE RETOUR (0 SI TOUT VA BIEN)
 !----------------------------------------------------------------------
 ! CORPS DU PROGRAMME
+! aslint: disable=W1504
     implicit none
 !
 ! PARAMETRES D'APPELS

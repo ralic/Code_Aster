@@ -1,4 +1,5 @@
 subroutine gmsast(nfie, nfis)
+! aslint: disable=
     implicit none
     include 'asterfort/pregms.h'
     include 'asterfort/ulisop.h'
@@ -21,7 +22,6 @@ subroutine gmsast(nfie, nfis)
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-! TOLE CRS_513
 !
 !      GMSAST --   INTERFACE GMSH-->ASTER
 !                  OUVERTURE ET LECTURE DU FICHIER GMSH

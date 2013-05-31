@@ -5,6 +5,7 @@ subroutine xnmel(poum, nnop, nfh, nfe, ddlc,&
                  lst, sig, vi, matuu, ivectu,&
                  codret, jpmilt, nfiss, jfisno)
 !
+! aslint: disable=W1306,W1504
     implicit none
     include 'jeveux.h'
     include 'asterfort/assert.h'
@@ -43,7 +44,6 @@ subroutine xnmel(poum, nnop, nfh, nfe, ddlc,&
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 ! person_in_charge: samuel.geniaut at edf.fr
-! TOLE CRP_21 CRS_1404
 !
 !
 !

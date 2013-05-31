@@ -1,5 +1,6 @@
 subroutine apm012(nk, k24rc, ltest, itest, rayonc,&
                   centrc, lraide, lmasse, solveu)
+! aslint: disable=W1304
     implicit none
     include 'jeveux.h'
 !
@@ -56,7 +57,6 @@ subroutine apm012(nk, k24rc, ltest, itest, rayonc,&
 ! IN SOLVEU : K19: JEVEUX SD OF THE LINEAR SOLVER
 !     ------------------------------------------------------------------
 ! person_in_charge: olivier.boiteau at edf.fr
-! TOLE CRP_4
 !
 !
     integer(kind=4) :: nk4, ilo, ihi, lwork4, info4

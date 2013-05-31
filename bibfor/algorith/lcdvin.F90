@@ -2,6 +2,7 @@ subroutine lcdvin(fami, kpg, ksp, comp, mod,&
                   imat, matcst, nvi, nmat, vini,&
                   coeft, x, dtime, sigi, dvin,&
                   iret)
+! aslint: disable=W1306,W1504
     implicit none
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -20,7 +21,6 @@ subroutine lcdvin(fami, kpg, ksp, comp, mod,&
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 ! ======================================================================
-! TOLE CRP_21 CRS_1404
 !     ----------------------------------------------------------------
 !     ROUTINE D AIGUILLAGE
 !     ----------------------------------------------------------------

@@ -3,6 +3,7 @@ subroutine lcmmjd(taur, materf, ifa, nmat, nbcomm,&
                   nsg, hsr, vind, dy, dpdtau,&
                   dprdas, dhrdas, hr, dpr, sgnr,&
                   iret)
+! aslint: disable=W1306,W1504
     implicit none
     include 'asterfort/assert.h'
     include 'asterfort/lcmmdc.h'
@@ -12,7 +13,6 @@ subroutine lcmmjd(taur, materf, ifa, nmat, nbcomm,&
     integer :: ifa, nmat, nbcomm(nmat, 3), nfs, nsg
     real(kind=8) :: taur, materf(nmat*2), rr, dt, vind(36), dy(12)
     real(kind=8) :: dpdtau, dprdas, hsr(nsg, nsg), hr
-! TOLE CRP_21 CRS_1404
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

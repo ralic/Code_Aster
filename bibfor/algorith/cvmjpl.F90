@@ -1,9 +1,9 @@
 subroutine cvmjpl(mod, nmat, mater, timed, timef,&
                   epsd, deps, sigf, vinf, sigd,&
                   vind, nvi, nr, dsde)
+! aslint: disable=W1306
     implicit none
 !       ================================================================
-! TOLE CRS_1404
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

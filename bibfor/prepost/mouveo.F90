@@ -1,5 +1,6 @@
 subroutine mouveo(arete, rcarte, angdeb, angfin, angare,&
                   angmax, profon, volume, epais)
+! aslint: disable=
     implicit   none
     include 'asterc/r8dgrd.h'
     include 'asterc/r8rddg.h'
@@ -24,7 +25,6 @@ subroutine mouveo(arete, rcarte, angdeb, angfin, angare,&
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-! TOLE CRP_6
 !-----------------------------------------------------------------------
     real(kind=8) :: ang1, ang2, auxi, ancien, theta0, coteta
     real(kind=8) :: bangf, xandeb, yandeb, tateta, xhaut, yhaut, dishx, dishy

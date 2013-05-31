@@ -1,5 +1,6 @@
 subroutine poefgr(nomte, klc, mater, e, xnu,&
                   rho, effo)
+! aslint: disable=
     implicit none
     include 'jeveux.h'
     include 'asterfort/jevech.h'
@@ -16,7 +17,6 @@ subroutine poefgr(nomte, klc, mater, e, xnu,&
     include 'asterfort/verifm.h'
     character(len=*) :: nomte
     real(kind=8) :: klc(12, 12), e, xnu, rho, effo(*)
-! TOLE CRP_6
 !     ------------------------------------------------------------------
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG

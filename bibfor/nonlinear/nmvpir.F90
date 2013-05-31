@@ -19,7 +19,7 @@ subroutine nmvpir(fami, kpg, ksp, ndim, typmod,&
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-! TOLE CRP_7 TOLE CRP_20
+! aslint: disable=
     implicit none
     include 'asterc/r8t0.h'
     include 'asterfort/ggplem.h'

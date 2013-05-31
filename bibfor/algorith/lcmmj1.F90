@@ -4,9 +4,8 @@ subroutine lcmmj1(taur, materf, cpmono, ifa, nmat,&
                   vind, dy, iexp, expbp, itmax,&
                   toler, dgsdts, dksdts, dgrdbs, dkrdbs,&
                   iret)
+! aslint: disable=W1306,W1504
     implicit none
-! TOLE CRP_21
-! TOLE CRS_1404
 ! ----------------------------------------------------------------------
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG

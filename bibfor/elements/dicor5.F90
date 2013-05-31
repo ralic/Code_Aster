@@ -5,6 +5,7 @@ subroutine dicor5(k0, sim, p1, pi, ui,&
                   dnsdu, dmsdt, dnsdt, dnsdu2, dmsdt2,&
                   dnsdt2, si, varip2, varip3)
 ! ----------------------------------------------------------------------
+! aslint: disable=W1504
     implicit none
     include 'asterfort/dicor3.h'
     include 'asterfort/u2mess.h'
@@ -29,7 +30,6 @@ subroutine dicor5(k0, sim, p1, pi, ui,&
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-! TOLE CRP_21
 !
 !     UTILITAIRE POUR LE COMPORTEMENT CORNIERE.
 !

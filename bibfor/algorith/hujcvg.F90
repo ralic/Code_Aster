@@ -19,7 +19,7 @@ subroutine hujcvg(nmat, mater, nvi, vind, vinf,&
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 ! person_in_charge: alexandre.foucault at edf.fr
-! TOLE CRP_20 CRS_1404
+! aslint: disable=W1306,W1501
     implicit none
 !     ----------------------------------------------------------------
 !     CRITERE DE CONVERGENCE SUR SOLUTION PROPOSEE PAR NEWTON

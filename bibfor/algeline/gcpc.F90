@@ -19,7 +19,6 @@ subroutine gcpc(m, in, ip, ac, inpc,&
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-! TOLE CRP_4 CRP_21
 !    -------------------------------------------------------------------
 !     RESOLUTION D'UN SYSTEME LINEAIRE SYMETRIQUE PAR UNE METHODE DE
 !     GRADIENT CONJUGUE PRECONDITIONNE
@@ -54,6 +53,7 @@ subroutine gcpc(m, in, ip, ac, inpc,&
 !                              AVEC BF SI MEME ARGUMENT
 !     ------------------------------------------------------------------
 ! CORPS DU PROGRAMME
+! aslint: disable=W1304,W1504
     implicit none
 !
 ! DECLARATION PARAMETRES D'APPELS

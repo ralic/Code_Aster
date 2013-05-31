@@ -1,6 +1,5 @@
 subroutine zeropn(kstop, degre, ai, racine, ier)
 ! =====================================================================
-! TOLE CRS_1404
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -18,6 +17,7 @@ subroutine zeropn(kstop, degre, ai, racine, ier)
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 ! =====================================================================
+! aslint: disable=W1306
     implicit none
     include 'jeveux.h'
     include 'asterfort/assert.h'

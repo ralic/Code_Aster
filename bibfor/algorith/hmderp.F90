@@ -23,7 +23,6 @@ subroutine hmderp(yate, yavp, t, r, kh,&
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-! TOLE CRP_21
 !
 ! *********************************************************************
 ! ROUTINE HMDERP
@@ -34,6 +33,7 @@ subroutine hmderp(yate, yavp, t, r, kh,&
 ! OUT RETCOM : RETOUR LOI DE COMPORTEMENT
 !  VARIABLES IN / OUT
 !
+! aslint: disable=W1504
     implicit none
     integer :: yate
     logical :: yavp

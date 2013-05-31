@@ -4,6 +4,7 @@ subroutine ascalc(resu, masse, mome, psmo, stat,&
                   typcmo, temps, comdir, typcdi, tronc,&
                   amort, spectr, asspec, nomsup, reasup,&
                   depsup, tcosup, corfre, f1gup, f2gup)
+! aslint: disable=W1306,W1504
     implicit  none
     include 'jeveux.h'
 !
@@ -54,7 +55,6 @@ subroutine ascalc(resu, masse, mome, psmo, stat,&
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-! TOLE CRP_21 CRS_1404
 !     ------------------------------------------------------------------
 !
 !     UTILISE PAR LA COMMANDE : COMB_SISM_MODAL

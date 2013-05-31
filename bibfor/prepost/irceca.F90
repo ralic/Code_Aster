@@ -2,6 +2,7 @@ subroutine irceca(ifi, ligrel, nbgrel, longr, ncmpmx,&
                   vale, nomgd, ncmpgd, celd, nbnoma,&
                   typma, nomsym, nbmat, lresu, nbcput,&
                   ncmput, imodl, ncmpv, nucmpv, nive)
+! aslint: disable=W1501
     implicit none
 !
     include 'jeveux.h'
@@ -51,7 +52,6 @@ subroutine irceca(ifi, ligrel, nbgrel, longr, ncmpmx,&
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-! TOLE CRP_20
 !
 !        ECRITURE D'UN CHAMELEM SUR FICHIER CASTEM
 !        A VALEURS REELLES

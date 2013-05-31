@@ -18,7 +18,7 @@ subroutine ejcine(ndim, axi, nno1, nno2, vff1,&
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 ! person_in_charge: jerome.laverne at edf.fr
-! TOLE CRS_1404
+! aslint: disable=W1306
     implicit none
     include 'asterfort/dfdm1d.h'
     include 'asterfort/dfdm2d.h'

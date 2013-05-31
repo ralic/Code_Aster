@@ -4,6 +4,7 @@ subroutine mefmat(ndim, numgrp, nbz, nbgrp, nbmod,&
                   phiy, z, matm, matr, mata,&
                   itypg, axg, zg, rhog, vitg,&
                   cdg, cpg)
+! aslint: disable=W1504
     implicit none
 !
     include 'jeveux.h'
@@ -44,7 +45,6 @@ subroutine mefmat(ndim, numgrp, nbz, nbgrp, nbmod,&
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-! TOLE CRP_21
 ! ----------------------------------------------------------------------
 !     CALCUL DES MATRICES DE MASSE, DE RAIDEUR, D AMORTISSEMENT SOUS
 !     ECOULEMENT

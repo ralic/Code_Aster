@@ -4,6 +4,7 @@ subroutine xprvit(noma, fiss, ndim, nvit, nbeta,&
                   locdom, rdimp, rdtor, delta, ucnslt,&
                   ucnsln)
 !
+! aslint: disable=,W1501,W1504
     implicit none
     include 'jeveux.h'
     include 'asterc/getvtx.h'
@@ -96,7 +97,6 @@ subroutine xprvit(noma, fiss, ndim, nvit, nbeta,&
 !       UCNLSN   : CHAM_NO_S  LEVEL SET TANGENTE AU NOEUDS
 !
 !     ------------------------------------------------------------------
-! TOLE CRP_20 CRP_6 CRP_21
 !
 !
     integer :: i, j, jcoor, iret, nbno, jmin, nbptff, ibid, jdelta, lsn, lst

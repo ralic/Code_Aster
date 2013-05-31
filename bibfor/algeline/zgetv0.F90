@@ -132,8 +132,8 @@ subroutine zgetv0(ido, bmat, initv, n, j,&
 !\ENDLIB
 !
 !-----------------------------------------------------------------------
-! TOLE CRP_4
 ! CORPS DU PROGRAMME
+! aslint: disable=W1304
     implicit none
 !
 !     %-----------------------------%

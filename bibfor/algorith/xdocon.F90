@@ -4,6 +4,7 @@ subroutine xdocon(algocr, algofr, cface, contac, coefcp,&
                   mu, nspfis, ncompd, ndim, nface,&
                   ninter, nnof, nomte, npgf, nptf,&
                   rela)
+! aslint: disable=W1504
     implicit   none
     include 'jeveux.h'
 ! ======================================================================
@@ -22,7 +23,6 @@ subroutine xdocon(algocr, algofr, cface, contac, coefcp,&
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-! TOLE CRP_21
 ! RECUPERATION DIVERSES INFOS LIEES AU CONTACT XFEM DANS UN TE
 !
 ! OUT ALGOCR : ALGO DE CONTACT (1:LAG, 2:PENA, 3:COHESIF)

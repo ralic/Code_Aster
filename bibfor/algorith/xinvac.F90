@@ -1,4 +1,5 @@
 subroutine xinvac(elp, ndim, tabar, s, ksi)
+! aslint: disable=W1306
     implicit none
 !
     include 'jeveux.h'
@@ -11,7 +12,6 @@ subroutine xinvac(elp, ndim, tabar, s, ksi)
     real(kind=8) :: s, ksi(ndim), tabar(*)
     character(len=8) :: elp
 !
-! TOLE CRS_1404
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

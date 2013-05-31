@@ -1,5 +1,6 @@
 subroutine tbimex(table, ifr, nparim, lipaim, formaz,&
                   formar)
+! aslint: disable=,W1303
     implicit   none
     include 'jeveux.h'
 !
@@ -31,7 +32,6 @@ subroutine tbimex(table, ifr, nparim, lipaim, formaz,&
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-! TOLE CRP_6 CRS_602
 !      IMPRESSION D'UNE TABLE AU FORMAT "EXCEL" OU "AGRAF"
 ! ----------------------------------------------------------------------
 ! IN  : TABLE  : NOM D'UNE STRUCTURE "TABLE"

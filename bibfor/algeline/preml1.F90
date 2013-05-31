@@ -23,7 +23,7 @@ subroutine preml1(neq, n2, diag, delg, col,&
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-!     TOLE CRP_21 CRS_602 CRS_505
+! aslint: disable=W1303,W1307,W1504
     implicit none
 !
     include 'jeveux.h'

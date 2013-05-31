@@ -22,8 +22,8 @@ subroutine nmgvno(fami, ndim, nno1, nno2, npg,&
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 !
-! TOLE CRP_21
 !
+! aslint: disable=W1504
     implicit none
 !
     include 'jeveux.h'

@@ -1,6 +1,7 @@
 subroutine mecalr(newcal, tysd, knum, kcha, resuco,&
                   resuc1, nbordr, modele, mate, cara,&
                   nchar, ctyp)
+! aslint: disable=W1501
     implicit none
 ! ----------------------------------------------------------------------
 ! ======================================================================
@@ -20,7 +21,6 @@ subroutine mecalr(newcal, tysd, knum, kcha, resuco,&
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 ! person_in_charge: josselin.delmas at edf.fr
-! TOLE CRP_20
 ! ----------------------------------------------------------------------
 ! IN  NEWCAL : TRUE POUR UN NOUVEAU CONCEPT RESULTAT, FALSE SINON
 ! IN  TYSD   : TYPE DU CONCEPT ATTACHE A RESUCO

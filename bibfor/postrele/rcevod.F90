@@ -4,6 +4,7 @@ subroutine rcevod(csigm, cinst, cnoc, sm, lfatig,&
                   cspe, cresu, kinti, it, jt,&
                   lrocht, symax, cpres, kemixt, cspto,&
                   cspte, cspmo, cspme)
+! aslint: disable=W1501,W1504
     implicit   none
     include 'jeveux.h'
     include 'asterc/getres.h'
@@ -26,7 +27,6 @@ subroutine rcevod(csigm, cinst, cnoc, sm, lfatig,&
     character(len=24) :: cfae, cspo, cspe, cresu, cpres, cspto, cspte, cspmo
     character(len=24) :: cspme
 !     ------------------------------------------------------------------
-! TOLE CRP_20 CRP_21
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

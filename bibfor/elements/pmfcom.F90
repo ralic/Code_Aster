@@ -3,7 +3,6 @@ subroutine pmfcom(kpg, option, compor, crit, nf,&
                   nbvalc, defam, defap, varim, varimp,&
                   contm, defm, ddefp, epsm, modf,&
                   sigf, varip, isecan, codret)
-! TOLE CRP_21
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -20,6 +19,7 @@ subroutine pmfcom(kpg, option, compor, crit, nf,&
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
+! aslint: disable=W1504
     implicit none
     include 'asterfort/comp1d.h'
     include 'asterfort/mazu1d.h'

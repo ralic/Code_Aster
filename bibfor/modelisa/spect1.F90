@@ -1,6 +1,7 @@
 subroutine spect1(casint, nomu, spectr, ispect, base,&
                   vite, nuor, imodi, imodf, nbm,&
                   nbpf, nomzon, vmoyzi, vmoyto)
+! aslint: disable=,
     implicit none
 !-----------------------------------------------------------------------
 ! ======================================================================
@@ -19,8 +20,6 @@ subroutine spect1(casint, nomu, spectr, ispect, base,&
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-! TOLE CRP_7
-! TOLE CRS_513
 !-----------------------------------------------------------------------
 !     PROJECTION D UN SPECTRE DE TURBULENCE DE TYPE "LONGUEUR DE
 !     CORRELATION" SUR UNE BASE MODALE PERTURBEE PAR PRISE EN COMPTE

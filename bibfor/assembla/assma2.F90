@@ -17,8 +17,8 @@ subroutine assma2(lmasym, tt, nu14, ncmp, matel,&
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 ! person_in_charge: jacques.pellet at edf.fr
-! TOLE CRP_6
 !
+! aslint: disable=
     implicit none
 !-----------------------------------------------------------------------
 ! BUT : ASSEMBLER LES MACRO-ELEMENTS DANS UNE MATR_ASSE

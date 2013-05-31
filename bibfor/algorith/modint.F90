@@ -1,6 +1,7 @@
 subroutine modint(ssami, raiint, nddlin, nbmod, shift,&
                   matmod, masse, raide, neq, coint,&
                   noddli, nnoint, vefreq, switch)
+! aslint: disable=W1304,W1501
     implicit none
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -18,7 +19,6 @@ subroutine modint(ssami, raiint, nddlin, nbmod, shift,&
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-! TOLE CRP_4 CRP_20
 !-----------------------------------------------------------------------
 !    M. CORUS     DATE 05/02/10
 !-----------------------------------------------------------------------

@@ -187,10 +187,10 @@ subroutine recfor(numpas, nbpal, force, typal, finpal,&
 !
 !***********************************************************************
 !%W% %D% %T%
-! TOLE CRS_512 CRP_4
 !
 !
 !
+! aslint: disable=,W1304
     implicit none
 !
 !     ARGUMENTS

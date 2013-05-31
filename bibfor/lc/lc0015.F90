@@ -3,6 +3,7 @@ subroutine lc0015(fami, kpg, ksp, ndim, imate,&
                   deps, sigm, vim, option, angmas,&
                   sigp, vip, tampon, typmod, icomp,&
                   nvi, dsidep, codret)
+! aslint: disable=W1504
     implicit none
     include 'asterfort/lcedga.h'
     include 'asterfort/lcgdpm.h'
@@ -40,7 +41,6 @@ subroutine lc0015(fami, kpg, ksp, ndim, imate,&
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 ! person_in_charge: jean-michel.proix at edf.fr
-! TOLE CRP_21
 ! ======================================================================
 !.......................................................................
 !

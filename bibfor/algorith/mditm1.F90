@@ -6,6 +6,7 @@ subroutine mditm1(nbm, nbmcd, nbmp, nbnl, indic,&
                   parcho, noecho, intitu, vecr5, vecr1,&
                   vecr2, vgap, vecr4, nbchoc, depg0,&
                   vitg0, xsi0, nbsauv)
+! aslint: disable=W1504
     implicit none
 !-----------------------------------------------------------------------
 ! ======================================================================
@@ -24,7 +25,6 @@ subroutine mditm1(nbm, nbmcd, nbmp, nbnl, indic,&
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-! TOLE  CRP_21
 !-----------------------------------------------------------------------
 ! DESCRIPTION : CALCUL DE LA REPONSE DYNAMIQUE NON-LINEAIRE D'UNE
 ! -----------   STRUCTURE PAR UNE METHODE INTEGRALE

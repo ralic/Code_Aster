@@ -17,8 +17,8 @@ subroutine invjax(stop, nno, ndim, nderiv, dff,&
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 ! person_in_charge: sebastien.meunier at edf.fr
-! TOLE CRS_1404
 !
+! aslint: disable=W1306
     implicit   none
     include 'asterfort/assert.h'
     include 'asterfort/matinv.h'

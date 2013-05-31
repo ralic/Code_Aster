@@ -3,6 +3,7 @@ subroutine xpoajc(nnm, inm, inmtot, nbmac, ise,&
                   ima, ndim, ndime, iadc, iadv,&
                   jcesv1, jcesl2, jcesv2, jcviv1, jcvil2,&
                   jcviv2)
+! aslint: disable=W1504
     implicit none
     include 'jeveux.h'
     include 'asterfort/assert.h'
@@ -31,7 +32,6 @@ subroutine xpoajc(nnm, inm, inmtot, nbmac, ise,&
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 ! person_in_charge: samuel.geniaut at edf.fr
-! TOLE  CRP_21
 !
 !   ON AJOUTE UN CHAMP DE CONTRAINTES AU NOUVEAU RESU X-FEM
 !

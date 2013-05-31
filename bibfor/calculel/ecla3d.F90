@@ -2,6 +2,7 @@ subroutine ecla3d(nomte, elrefa, fapg, npg, npoini,&
                   nterm1, nsomm1, csomm1, tyma, nbno2,&
                   connx, mxnbn2, mxnbpi, mxnbte, mxnbse,&
                   nbsel, corsel)
+! aslint: disable=W1501
     implicit   none
     include 'jeveux.h'
 !
@@ -37,7 +38,6 @@ subroutine ecla3d(nomte, elrefa, fapg, npg, npoini,&
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-! TOLE CRP_20
 ! ---------------------------------------------------------------------
 ! BUT : DECOMPOSER LES TYPE_ELEM 3D EN AUTANT DE SOUS-ELEMENTS QUE
 !       DE POINTS DE GAUSS.

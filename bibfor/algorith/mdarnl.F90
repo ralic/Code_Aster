@@ -5,6 +5,7 @@ subroutine mdarnl(isto1, ipas, t, dt, nbmode,&
                   depsto, vitsto, accsto, passto, iorsto,&
                   temsto, fchost, dchost, vchost, ichost,&
                   vint, iredst, dredst, irevst, drevst)
+! aslint: disable=W1504
     implicit none
     include 'asterfort/mdarch.h'
     integer :: iorsto(*), iredst(*), saredi(*), irevst(*), sarevi(*)
@@ -31,7 +32,6 @@ subroutine mdarnl(isto1, ipas, t, dt, nbmode,&
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-! TOLE CRP_21
 !
 !     ARCHIVAGE DES DES CHAMPS GENERALISES OBLIGATOIRES ET OPTIONELS
 !     POUR LA SD_DYNA_GENE DANS LE CADRE D'UN CALCUL TRANSITOIRE

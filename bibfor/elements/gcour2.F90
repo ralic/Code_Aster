@@ -2,6 +2,7 @@ subroutine gcour2(resu, noma, nomo, nomno, coorn,&
                   nbnoeu, trav1, trav2, trav3, chfond,&
                   fond, connex, stok4, thlagr, thlag2,&
                   nbre, milieu, ndimte, pair)
+! aslint: disable=W1501
     implicit none
 !     ------------------------------------------------------------------
 ! ======================================================================
@@ -20,7 +21,6 @@ subroutine gcour2(resu, noma, nomo, nomno, coorn,&
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-! TOLE CRP_20
 !
 ! FONCTION REALISEE:
 !

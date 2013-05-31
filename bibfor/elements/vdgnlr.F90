@@ -1,4 +1,5 @@
 subroutine vdgnlr(option, nomte)
+! aslint: disable=W1501
     implicit none
     include 'jeveux.h'
     include 'asterfort/antisy.h'
@@ -48,7 +49,6 @@ subroutine vdgnlr(option, nomte)
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-! TOLE CRP_20
 ! ......................................................................
 !     FONCTION  :  CALCUL DES OBJETS ELEMENTS FINIS EN NON LINEAIRE
 !                  GEOMETRIQUE AVEC GRANDES ROTATIONS

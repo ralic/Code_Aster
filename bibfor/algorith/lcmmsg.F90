@@ -1,5 +1,6 @@
 subroutine lcmmsg(nomfam, nbsys, nusys, pgl2, mus,&
                   ng, mg, ir, q)
+! aslint: disable=W1501
     implicit none
 ! person_in_charge: jean-michel.proix at edf.fr
 ! ======================================================================
@@ -41,7 +42,6 @@ subroutine lcmmsg(nomfam, nbsys, nusys, pgl2, mus,&
     real(kind=8) :: norm
     integer :: nbsys, nusys, k, i, j, ir
 !     ----------------------------------------------------------------
-! TOLE CRP_20
 !
     if (nomfam(1:4) .eq. 'UTIL') then
         call lcmmjs(nomfam, nbsys, tbsys)

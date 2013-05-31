@@ -2,6 +2,7 @@ subroutine mdfedy(nbpal, nbmode, numpas, dt, dtsto,&
                   tcf, vrotat, dplmod, depgen, vitgen,&
                   fexgen, typal, finpal, cnpal, prdeff,&
                   conv, fsauv)
+! aslint: disable=W1306
     implicit none
     include 'asterfort/envdep.h'
     include 'asterfort/recfor.h'
@@ -29,7 +30,6 @@ subroutine mdfedy(nbpal, nbmode, numpas, dt, dtsto,&
 ! ======================================================================
 ! person_in_charge: nicolas.greffet at edf.fr
 ! ======================================================================
-! TOLE CRS_1404
 !
 !              RECUPERATION DES FORCES VENANT D'EDYOS
 !                 ET ENVOI DES CHAMPS CINEMATIQUES

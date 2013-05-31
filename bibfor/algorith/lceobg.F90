@@ -19,6 +19,7 @@ subroutine lceobg(ndim, typmod, imate, crit, epstm,&
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 !
+! aslint: disable=W1501
     implicit none
     include 'asterc/r8prem.h'
     include 'asterfort/dfmdf.h'
@@ -64,7 +65,6 @@ subroutine lceobg(ndim, typmod, imate, crit, epstm,&
 ! OUT PROJ    : PROJECTEUR DE COUPURE DU TERME DE REGULARISATION
 ! OUT IRET    : CODE RETOUR
 ! ----------------------------------------------------------------------
-! TOLE CRP_20
 !
     logical :: rigi, resi, elas, reinit
     logical :: total, tot1, tot2, tot3, dbloq

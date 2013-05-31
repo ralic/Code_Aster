@@ -1,6 +1,7 @@
 subroutine rkdvec(fami, kpg, ksp, imat, matcst,&
                   nvi, vini, coeft, x, dtime,&
                   nmat, sigi, dvin)
+! aslint: disable=,W1307
     implicit none
 !       ================================================================
 ! ======================================================================
@@ -19,8 +20,6 @@ subroutine rkdvec(fami, kpg, ksp, imat, matcst,&
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-! TOLE CRS_505
-! TOLE CRS_506
 ! ==================================================================
 !      MODELE VISCOPLASTIQUE A ECROUISSAGE ISOTRROPE COUPLE A DE
 !      L ENDOMMAGEMENT ISOTROPE

@@ -3,9 +3,9 @@ subroutine lcmmj2(taur, materf, cpmono, ifa, nmat,&
                   is, nbsys, nfs, nsg, hsr,&
                   vind, dy, dgsdts, dksdts, dgrdbs,&
                   dksdbr, iret)
+! aslint: disable=W1306,W1504
     implicit none
 ! ----------------------------------------------------------------------
-! TOLE CRP_21
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -23,7 +23,6 @@ subroutine lcmmj2(taur, materf, cpmono, ifa, nmat,&
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 ! person_in_charge: jean-michel.proix at edf.fr
-! TOLE CRS_1404
 !       MONOCRISTAL : DERIVEES DES TERMES UTILES POUR LE CALCUL
 !                    DU JACOBIEN DU SYSTEME NL A RESOUDRE = DRDY
 !                    cf. R5.03.11, COMPO DD_KR

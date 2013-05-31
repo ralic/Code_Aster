@@ -1,5 +1,6 @@
 subroutine gimpte(resu, rayinf, raysup, theta, nomnoe,&
                   dir, absc, nbno, format, unit)
+! aslint: disable=
     implicit   none
     integer :: nbno, unit
     real(kind=8) :: rayinf(*), raysup(*), theta(*), dir(*), absc(*)
@@ -22,7 +23,6 @@ subroutine gimpte(resu, rayinf, raysup, theta, nomnoe,&
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-! TOLE CRP_6
 !
 !     IMPRESSION DES OBJETS DECRIVANT LE CHAMP THETA
 !

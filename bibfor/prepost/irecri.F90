@@ -5,6 +5,7 @@ subroutine irecri(nomcon, form, ifi, titre, lgmsh,&
                   nbmat, nummai, nbcmp, nomcmp, lsup,&
                   borsup, linf, borinf, lmax, lmin,&
                   formr, nive, versio)
+! aslint: disable=W1504
     implicit none
 !
     include 'jeveux.h'
@@ -56,7 +57,6 @@ subroutine irecri(nomcon, form, ifi, titre, lgmsh,&
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-! TOLE CRP_21
 !
 !-----------------------------------------------------------------------
 !     ECRITURE D'UN CONCEPT SUR FICHIER RESULTAT

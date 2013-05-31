@@ -16,7 +16,7 @@ subroutine tstvec(perm, iad, nlong, type, sommi,&
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-! TOLE CRP_18 CRS_508
+! aslint: disable=C1002,W0405
     implicit none
 !
 ! BUT : RECUPERER 2 NOMBRES RESUMANT UN VECTEUR JEVEUX

@@ -21,10 +21,9 @@ subroutine nmfihm(ndim, nddl, nno1, nno2, npg,&
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-! TOLE CRP_21
-! TOLE CRS_1404
 ! person_in_charge: jerome.laverne at edf.fr
 !
+! aslint: disable=W1306,W1504
     implicit none
     include 'asterfort/ejcine.h'
     include 'asterfort/gedisc.h'

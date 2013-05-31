@@ -1,7 +1,6 @@
 subroutine xlagsp(noma, nomo, fiss, algola, ndim,&
                   nliseq)
 !
-! TOLE CRS_1404
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -20,6 +19,7 @@ subroutine xlagsp(noma, nomo, fiss, algola, ndim,&
 ! ======================================================================
 ! person_in_charge: samuel.geniaut at edf.fr
 !
+! aslint: disable=W1306
     implicit none
     include 'jeveux.h'
 !

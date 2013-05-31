@@ -27,7 +27,6 @@ subroutine hmliga(yachai, option, meca, ther, hydr,&
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-! TOLE CRP_21
 ! ======================================================================
 ! ROUTINE HMLIGA : CETTE ROUTINE CALCULE LES CONTRAINTES GENERALISEES
 !   ET LA MATRICE TANGENTE DES GRANDEURS COUPLEES, A SAVOIR CELLES QUI
@@ -40,6 +39,7 @@ subroutine hmliga(yachai, option, meca, ther, hydr,&
 !                       = 1 ECHEC DANS L'INTEGRATION : PAS DE RESULTATS
 !                       = 3 SIZZ NON NUL (DEBORST) ON CONTINUE A ITERER
 ! ======================================================================
+! aslint: disable=W1504
     implicit none
     include 'asterfort/appmas.h'
     include 'asterfort/calor.h'

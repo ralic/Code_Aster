@@ -6,6 +6,7 @@ subroutine lcplas(fami, kpg, ksp, loi, toler,&
                   nfs, nsg, toutms, hsr, icomp,&
                   codret, theta, vp, vecp, seuil,&
                   devg, devgii, drdy, tampon, crit)
+! aslint: disable=W1504
     implicit   none
 !     ================================================================
 ! ======================================================================
@@ -24,7 +25,6 @@ subroutine lcplas(fami, kpg, ksp, loi, toler,&
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-! TOLE CRP_21
 !     ----------------------------------------------------------------
 !     INTEGRATION IMPLICITE DES COMPORTEMENTS. CALCUL DE SIGF,VINF,DSDE
 !     ----------------------------------------------------------------

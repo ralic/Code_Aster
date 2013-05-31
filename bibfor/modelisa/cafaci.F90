@@ -1,4 +1,5 @@
 subroutine cafaci(fonree, char)
+! aslint: disable=W1501
     implicit none
     include 'jeveux.h'
 !
@@ -64,7 +65,6 @@ subroutine cafaci(fonree, char)
 !                REEL OU FONC OU COMP
 !      CHAR  : NOM UTILISATEUR DU RESULTAT DE CHARGE
 !
-! TOLE CRP_20
 !
     integer :: nmocl
     integer :: vali(2)

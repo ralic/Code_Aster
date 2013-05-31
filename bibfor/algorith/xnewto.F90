@@ -1,6 +1,7 @@
 subroutine xnewto(elp, name, num, nno, ndim,&
                   ptint, tabco, jtabls, ipp, ip,&
                   s, itemax, epsmax, ksi)
+! aslint: disable=W1306
     implicit none
 !
     include 'asterc/r8gaem.h'
@@ -17,7 +18,6 @@ subroutine xnewto(elp, name, num, nno, ndim,&
     character(len=6) :: name
     character(len=8) :: elp
 !
-! TOLE CRS_1404
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

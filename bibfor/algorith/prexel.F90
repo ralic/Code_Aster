@@ -3,6 +3,7 @@ subroutine prexel(champ, ioc, mamax, nomax, ispmax,&
                   cmpmin, valmin, maamax, noamax, isamax,&
                   cmamax, vaamax, maamin, noamin, isamin,&
                   cmamin, vaamin)
+! aslint: disable=W1504
     implicit   none
     include 'jeveux.h'
 !
@@ -41,7 +42,6 @@ subroutine prexel(champ, ioc, mamax, nomax, ispmax,&
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-! TOLE CRP_21
 !
 !     COMMANDE : POST_RELEVE_T
 !                DETERMINE LES EXTREMA POUR UN CHAM_ELNO

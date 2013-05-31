@@ -27,10 +27,10 @@ subroutine thmlec(imate, thmc, meca, hydr, ther,&
 ! ======================================================================
 ! person_in_charge: sylvie.granet at edf.fr
 ! =====================================================================
-! TOLE CRP_21
 ! =====================================================================
 ! --- BUT : RECUPERER LES DONNEES MATERIAUX THM -----------------------
 ! =====================================================================
+! aslint: disable=W1504
     implicit none
     include 'asterfort/thmrcp.h'
     integer :: imate, retcom

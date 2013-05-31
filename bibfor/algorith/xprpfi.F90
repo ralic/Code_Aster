@@ -1,5 +1,6 @@
 subroutine xprpfi(p, lsnp, lcmin, poifis, trifis,&
                   fiss, ndim, lsn, lst)
+! aslint: disable=W1501
     implicit none
     include 'jeveux.h'
     include 'asterc/r8maem.h'
@@ -35,7 +36,6 @@ subroutine xprpfi(p, lsnp, lcmin, poifis, trifis,&
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 ! person_in_charge: daniele.colombo at ifpen.fr
-! TOLE CRP_20
 !
 !     ------------------------------------------------------------------
 !

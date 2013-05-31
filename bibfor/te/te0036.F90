@@ -1,4 +1,5 @@
 subroutine te0036(option, nomte)
+! aslint: disable=W1501
     implicit none
 !
 ! ======================================================================
@@ -18,7 +19,6 @@ subroutine te0036(option, nomte)
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 !
-! TOLE CRP_20
 !
 !
 !     BUT: CALCUL DES VECTEURS ELEMENTAIRES EN MECANIQUE

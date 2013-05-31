@@ -1,5 +1,6 @@
 subroutine elraga(elrefz, fapz, ndim, nbpg, coopg,&
                   poipg)
+! aslint: disable=W1501
     implicit  none
     include 'asterc/indik8.h'
     include 'asterfort/assert.h'
@@ -25,7 +26,6 @@ subroutine elraga(elrefz, fapz, ndim, nbpg, coopg,&
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 ! person_in_charge: jacques.pellet at edf.fr
-! TOLE CRP_20
 ! ----------------------------------------------------------------------
 ! BUT: CALCUL DES POIDS ET POINTS DE GAUSS
 ! ----------------------------------------------------------------------

@@ -21,7 +21,6 @@ subroutine lc0050(fami, kpg, ksp, ndim, typmod,&
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-! TOLE CRP_21
 ! ======================================================================
 !     BUT: INTERFACE POUR ROUTINE D'INTEGRATION LOI DE COMPORTEMENT UMAT
 !       IN   FAMI    FAMILLE DE POINT DE GAUSS (RIGI,MASS,...)
@@ -58,6 +57,7 @@ subroutine lc0050(fami, kpg, ksp, ndim, typmod,&
 !       OUT  DSIDEP  MATRICE DE COMPORTEMENT TANGENT A T+DT OU T
 !       OUT  CODRET  CODE-RETOUR = 0 SI OK, =1 SINON
 ! ======================================================================
+! aslint: disable=W1504
     implicit none
     include 'jeveux.h'
 !

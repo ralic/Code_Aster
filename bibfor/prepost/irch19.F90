@@ -21,7 +21,6 @@ subroutine irch19(cham19, partie, form, ifi, titre,&
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 ! person_in_charge: nicolas.sellenet at edf.fr
-! TOLE CRP_21 CRS_1404
 ! ----------------------------------------------------------------------
 !     IMPRIMER UN CHAMP (CHAM_NO OU CHAM_ELEM)
 !
@@ -54,6 +53,7 @@ subroutine irch19(cham19, partie, form, ifi, titre,&
 ! IN  NIVE  : NIVEAU IMPRESSION CASTEM 3 OU 10
 ! ----------------------------------------------------------------------
 !
+! aslint: disable=W1306,W1504
     implicit none
 !
 ! 0.1. ==> ARGUMENTS

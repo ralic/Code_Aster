@@ -3,7 +3,6 @@ subroutine lrmmf3(fid, nomamd, rangfa, carafa, nbnoeu,&
                   nogrfa, tabaux, nomgro, numgro, nument,&
                   infmed, nivinf, ifm, vecgrm, nbcgrm,&
                   nbgrlo)
-! TOLE CRP_21
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -77,6 +76,7 @@ subroutine lrmmf3(fid, nomamd, rangfa, carafa, nbnoeu,&
 !     CARAFA(3,I) = NOMBRE D'ENTITES
 !-----------------------------------------------------------------------
 !
+! aslint: disable=W1504
     implicit none
 !
     include 'jeveux.h'

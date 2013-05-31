@@ -34,7 +34,6 @@ subroutine dlnew0(result, force0, force1, iinteg, neq,&
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-! TOLE CRP_21
 ! ----------------------------------------------------------------------
 !     CALCUL MECANIQUE TRANSITOIRE PAR INTEGRATION DIRECTE
 !     AVEC METHODES IMPLICITES :                  - THETA-WILSON
@@ -76,6 +75,7 @@ subroutine dlnew0(result, force0, force1, iinteg, neq,&
 ! IN  NUMREP : NUMERO DE REUSE POUR LA TABLE PARA_CALC
 !
 ! CORPS DU PROGRAMME
+! aslint: disable=W1504
     implicit none
 ! DECLARATION PARAMETRES D'APPELS
 !

@@ -5,6 +5,7 @@ subroutine xmmaa1(ndim, jnne, ndeple, nnc, jnnm,&
                   rre, rrm, nconta, jddle, jddlm,&
                   nfhe, nfhm, lmulti, heavno, heavfa,&
                   mmat)
+! aslint: disable=W1504
     implicit none
     include 'asterfort/indent.h'
     include 'asterfort/xplma2.h'
@@ -34,7 +35,6 @@ subroutine xmmaa1(ndim, jnne, ndeple, nnc, jnnm,&
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-! TOLE CRP_21
 !
 !
 ! ----------------------------------------------------------------------

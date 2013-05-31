@@ -1,5 +1,6 @@
 subroutine moinip(nch, ncoef, iich, iisuiv, ilig,&
                   ilig2)
+! aslint: disable=W1304
     implicit none
     integer :: iich(*), iisuiv(*), ilig(*)
     integer :: nch, ncoef, ii2, j, ii1
@@ -21,7 +22,6 @@ subroutine moinip(nch, ncoef, iich, iisuiv, ilig,&
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-! TOLE CRP_4
 !     DESIMBRICATION DES CHAINES DE LA STRUCTURE (IICH, IISUIV,ILIG) :
 !     ------------------------------------------------------------------
 ! IN  NCH       DIMENSION DU TABLEAU IICH = NOMBRE DE CHAINES

@@ -1,4 +1,5 @@
 subroutine matinv(stop, ndim, mat, inv, det)
+! aslint: disable=W1306
     implicit none
     include 'asterc/r8gaem.h'
     include 'asterfort/assert.h'
@@ -7,7 +8,6 @@ subroutine matinv(stop, ndim, mat, inv, det)
     real(kind=8) :: mat(ndim, ndim), inv(ndim, ndim), det
     character(len=1) :: stop
 !
-! TOLE CRS_1404
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2010  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

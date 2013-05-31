@@ -2,6 +2,7 @@ subroutine irgmce(chamsy, partie, ifi, nomcon, ordr,&
                   nbordr, coord, connx, point, nobj,&
                   nbel, nbcmpi, nomcmp, lresu, para,&
                   nomaou, nomain, versio, tycha)
+! aslint: disable=W1504
     implicit none
     include 'jeveux.h'
     include 'asterc/indik8.h'
@@ -59,7 +60,6 @@ subroutine irgmce(chamsy, partie, ifi, nomcon, ordr,&
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-! TOLE CRP_21
 !
 !        IMPRESSION D'UN CHAM_ELEM AU FORMAT GMSH
 !

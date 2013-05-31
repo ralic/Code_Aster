@@ -19,8 +19,8 @@ subroutine comcq1(fami, kpg, ksp, mod, imate,&
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-! TOLE CRP_21
 !  VARIABLE ENTREE/SORTIE
+! aslint: disable=W1504
     implicit none
     include 'asterfort/nm1dci.h'
     include 'asterfort/nm1dis.h'

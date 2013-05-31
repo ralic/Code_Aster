@@ -1,11 +1,11 @@
 subroutine ordon1(vale, nb)
+! aslint: disable=W1306
     implicit none
     include 'asterfort/ordr8.h'
     include 'blas/dcopy.h'
     integer :: nb
     real(kind=8) :: vale(*)
 ! ----------------------------------------------------------------------
-! TOLE CRS_1404
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2010  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

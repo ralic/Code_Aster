@@ -16,7 +16,7 @@ subroutine jxlir1(ic, caralu)
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-! TOLE CRP_6
+! aslint: disable=
     implicit none
     include 'asterc/closdr.h'
     include 'asterc/opendr.h'

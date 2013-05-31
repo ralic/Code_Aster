@@ -1,4 +1,5 @@
 subroutine te0583(option, nomte)
+! aslint: disable=W1501
     implicit none
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -16,7 +17,6 @@ subroutine te0583(option, nomte)
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-! TOLE CRP_20
     include 'jeveux.h'
     include 'asterc/r8pi.h'
     include 'asterfort/carcou.h'

@@ -21,8 +21,8 @@ subroutine xsifle(ndim, ifa, jptint, jaint, cface,&
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 ! person_in_charge: samuel.geniaut at edf.fr
-! TOLE CRP_21 CRS_1404
 !
+! aslint: disable=W1306,W1504
     implicit none
     include 'jeveux.h'
 !

@@ -4,6 +4,7 @@ subroutine lcmmjf(taus, coeft, materf, ifa, nmat,&
                   hsr, rp, alphap, dalpha, gammap,&
                   dgamma, sgns, dgdtau, dgdal, dfdr,&
                   petith, iret)
+! aslint: disable=W1504
     implicit none
     include 'asterc/r8miem.h'
     integer :: ifa, nmat, nbcomm(nmat, 3), nfs, nsg
@@ -11,7 +12,6 @@ subroutine lcmmjf(taus, coeft, materf, ifa, nmat,&
     real(kind=8) :: dgdtau
     real(kind=8) :: dgdal, dfdr, hsr(nsg, nsg), dy(*), vind(*), materf(nmat)
     character(len=16) :: necoul
-! TOLE CRP_21
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

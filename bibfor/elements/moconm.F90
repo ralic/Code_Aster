@@ -1,8 +1,8 @@
 subroutine moconm(dir, sigb, siga, hh, nlit,&
                   om, rr, nufsup, nufinf, nufsd1,&
                   nufid1, nufsd2, nufid2, prec)
+! aslint: disable=W1306
     implicit none
-! TOLE CRS_1404
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

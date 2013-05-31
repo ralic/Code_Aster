@@ -2,6 +2,7 @@ subroutine irgnal(ifi, nbordr, coord, connex, point,&
                   nocmp, nbcmp, numel, nobj, nbel,&
                   cnsc, cnsl, cnsv, partie, jtype,&
                   cnsd)
+! aslint: disable=W1306
     implicit none
 !
     include 'jeveux.h'
@@ -17,7 +18,6 @@ subroutine irgnal(ifi, nbordr, coord, connex, point,&
     real(kind=8) :: coord(*)
     character(len=*) :: nobj, partie
     character(len=8) :: nocmp(nbcmp)
-! TOLE CRS_1404
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

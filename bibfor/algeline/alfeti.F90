@@ -19,8 +19,6 @@ subroutine alfeti(opt, sdfeti, matas, chsecm, chsol,&
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-! TOLE CRP_20
-! TOLE CRP_4
 !-----------------------------------------------------------------------
 !    - FONCTION REALISEE:  RESOLUTION FETI EN REEL SYMETRIQUE
 !                          CF. ALGO. 9 DE LA NOTE HI-23/03/009
@@ -48,6 +46,7 @@ subroutine alfeti(opt, sdfeti, matas, chsecm, chsol,&
 !----------------------------------------------------------------------
 ! person_in_charge: olivier.boiteau at edf.fr
 ! CORPS DU PROGRAMME
+! aslint: disable=W1304,W1501
     implicit none
 !
 ! DECLARATION PARAMETRES D'APPELS

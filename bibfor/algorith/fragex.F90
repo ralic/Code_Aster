@@ -18,9 +18,9 @@ subroutine fragex(ndim, imate, instam, instap, epsm,&
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-! TOLE CRP_7 TOLE CRP_21
 !
 ! VARIABLES ENTREE SORTIE NECESSAIRES A LA ROUTINE
+! aslint: disable=
     implicit none
     include 'asterfort/assert.h'
     include 'asterfort/r8inir.h'

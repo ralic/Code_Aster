@@ -2,6 +2,7 @@ subroutine lc0001(fami, kpg, ksp, ndim, imate,&
                   neps, deps, nsig, sigm, option,&
                   angmas, sigp, vip, typmod, ndsde,&
                   dsidep, codret)
+! aslint: disable=W1504
     implicit none
     include 'asterfort/assert.h'
     include 'asterfort/nmelas.h'
@@ -34,7 +35,6 @@ subroutine lc0001(fami, kpg, ksp, ndim, imate,&
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 ! person_in_charge: jean-michel.proix at edf.fr
-! TOLE CRP_21
 ! ======================================================================
 !.......................................................................
 !

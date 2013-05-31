@@ -6,6 +6,7 @@ subroutine refthm(fnoevo, dt, perman, nno, nnos,&
                   dimdef, dimcon, dimuel, nddls, nddlm,&
                   nmec, np1, np2, ndim, axi)
 !
+! aslint: disable=W1504
     implicit  none
     include 'asterc/r8miem.h'
     include 'asterc/r8vide.h'
@@ -41,7 +42,6 @@ subroutine refthm(fnoevo, dt, perman, nno, nnos,&
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-! TOLE CRP_21
 ! =====================================================================
     integer :: indice, i, j, k, parsig, partmp, parbsi
     parameter (parsig = 837 ,partmp = 162 ,parbsi = 162 )

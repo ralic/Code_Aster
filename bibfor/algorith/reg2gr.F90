@@ -1,7 +1,6 @@
 subroutine reg2gr(imate, compor, ndim, regula, dimdef,&
                   defgep, sigp, dsde2g)
 ! ======================================================================
-! TOLE CRS_1404
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -22,6 +21,7 @@ subroutine reg2gr(imate, compor, ndim, regula, dimdef,&
 ! --- BUT : CALCUL DE LA LOI DE COMPORTEMENT ELASTIQUE POUR LA PARTIE --
 ! ---       SECOND GRADIENT --------------------------------------------
 ! ======================================================================
+! aslint: disable=W1306
     implicit      none
     include 'asterfort/rcvalb.h'
     include 'asterfort/u2mesk.h'

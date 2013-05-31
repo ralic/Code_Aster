@@ -106,8 +106,8 @@ subroutine errcou(nomprg, numpas, nomvar, info, nprog,&
 !
 !***********************************************************************
 !%W% %D% %T%
-! TOLE CRP_4
 !
+! aslint: disable=W1304
     implicit none
 !
 !     ARGUMENTS

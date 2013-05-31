@@ -5,6 +5,7 @@ subroutine redece(fami, kpg, ksp, ndim, typmod,&
                   cp, numlc, tempd, tempf, tref,&
                   sigf, vinf, ndsde, dsde, nwkout,&
                   wkout, codret)
+! aslint: disable=W1306,W1504
     implicit none
 !       ================================================================
 ! ======================================================================
@@ -23,8 +24,6 @@ subroutine redece(fami, kpg, ksp, ndim, typmod,&
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-! TOLE CRP_21
-! TOLE CRS_1404
 ! person_in_charge: jean-michel.proix at edf.fr
 !
 ! ======================================================================

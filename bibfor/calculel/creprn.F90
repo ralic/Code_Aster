@@ -16,8 +16,8 @@ subroutine creprn(ligrez, molocz, basez, prnmz, prnsz)
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 ! person_in_charge: jacques.pellet at edf.fr
-! TOLE CRP_6
 !
+! aslint: disable=
     implicit none
 !-----------------------------------------------------------------
 !  BUT : CREATION :

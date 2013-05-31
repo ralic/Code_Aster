@@ -1,5 +1,6 @@
 subroutine mcmult(cumul, lmat, vect, xsol, nbvect,&
                   prepos)
+! aslint: disable=W1304
     implicit none
     include 'jeveux.h'
     include 'asterfort/dismoi.h'
@@ -34,7 +35,6 @@ subroutine mcmult(cumul, lmat, vect, xsol, nbvect,&
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-! TOLE CRP_4
 !     ------------------------------------------------------------------
 !     EFFECTUE LE PRODUIT D'UNE MATRICE PAR N VECTEURS COMPLEXES.
 !     LE RESULTAT EST STOCKE DANS N VECTEURS COMPLEXES

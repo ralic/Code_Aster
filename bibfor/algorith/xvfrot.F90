@@ -5,6 +5,7 @@ subroutine xvfrot(algofr, coeffp, coeffr, ddlm, ddls,&
                   ndim, nfh, nfiss, nno, nnol,&
                   nnos, nvit, pla, reac12, rr,&
                   seuil, singu, tau1, tau2, vtmp)
+! aslint: disable=W1504
     implicit none
     include 'jeveux.h'
 ! ======================================================================
@@ -23,7 +24,6 @@ subroutine xvfrot(algofr, coeffp, coeffr, ddlm, ddls,&
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-! TOLE CRP_21
 ! IN ALGOFR : ALGO FROTTEMENT (1:LAG, 2:PENA, 0:RIEN)
 ! IN CFACE  : CONNECTIVITE FACETTES DE CONTACT
 ! IN COEFFR : COEF AUGMENTATION FROT

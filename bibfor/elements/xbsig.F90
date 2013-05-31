@@ -4,6 +4,7 @@ subroutine xbsig(option, ndim, nnop, nfh, nfe,&
                  nbsig, idepl, lsn, lst, ivectu,&
                  jpmilt, nfiss, jfisno)
 !
+! aslint: disable=W1306,W1504
     implicit none
 !
     include 'jeveux.h'
@@ -37,7 +38,6 @@ subroutine xbsig(option, ndim, nnop, nfh, nfe,&
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 ! person_in_charge: samuel.geniaut at edf.fr
-! TOLE CRP_21 CRS_1404
 !
 !      BSIGMC  -- CALCUL DES FORCES INTERNES B*SIGMA AUX NOEUDS
 !                 DE L'ELEMENT DUES AU CHAMP DE CONTRAINTES SIGMA

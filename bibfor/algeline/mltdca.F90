@@ -3,7 +3,6 @@ subroutine mltdca(nbloc, lgbloc, ncbloc, decal, seq,&
                   lgsn, factol, factou, sm, x,&
                   invp, perm, ad, trav, typsym)
 ! person_in_charge: olivier.boiteau at edf.fr
-!     TOLE CRP_4
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -21,6 +20,7 @@ subroutine mltdca(nbloc, lgbloc, ncbloc, decal, seq,&
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 !     VERSION COMPLEXE DE MLTDRA
+! aslint: disable=W1304
     implicit none
     include 'jeveux.h'
 !

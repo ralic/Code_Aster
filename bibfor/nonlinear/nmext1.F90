@@ -21,8 +21,8 @@ subroutine nmext1(noma, champ, typcha, nomcha, nomchs,&
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
-! TOLE CRP_21
 !
+! aslint: disable=W1504
     implicit      none
     include 'asterfort/nmext2.h'
     include 'asterfort/nmext3.h'

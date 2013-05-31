@@ -1,5 +1,6 @@
 subroutine cordd2(jprn1, jprn2, ili, ecodl, nec,&
                   ncmp, n, nddloc, pos)
+! aslint: disable=
     implicit none
 !
 ! ======================================================================
@@ -18,7 +19,6 @@ subroutine cordd2(jprn1, jprn2, ili, ecodl, nec,&
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-! TOLE CRP_6
 ! ----------------------------------------------------------------------
 !     BUT:
 !     ----

@@ -19,7 +19,7 @@ subroutine cacina(ndim, nno, npg, lgpg, axi,&
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-! TOLE CRP_21 CRS_1404
+! aslint: disable=W1306,W1504
     implicit none
     include 'asterc/r8miem.h'
     include 'asterfort/dfdmip.h'

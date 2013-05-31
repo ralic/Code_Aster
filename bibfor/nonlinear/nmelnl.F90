@@ -18,7 +18,6 @@ subroutine nmelnl(fami, kpg, ksp, poum, ndim,&
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-! TOLE CRP_7
 !-----------------------------------------------------------------------
 !
 !     REALISE LA LOI DE HENCKY POUR LES ELEMENTS ISOPARAMETRIQUES
@@ -42,6 +41,7 @@ subroutine nmelnl(fami, kpg, ksp, poum, ndim,&
 ! OUT ENERGI(2)  : DERIVEE DE L'ENERGIE LIBRE / TEMPERATURE
 ! ----------------------------------------------------------------------
 ! CORPS DU PROGRAMME
+! aslint: disable=
     implicit none
 !
 ! DECLARATION PARAMETRES D'APPELS

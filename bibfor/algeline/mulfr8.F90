@@ -1,5 +1,6 @@
 subroutine mulfr8(nommat, npivot, neq, typsym, eps,&
                   renumz)
+! aslint: disable=,W1304
     implicit none
     include 'jeveux.h'
     include 'asterc/ismaem.h'
@@ -31,7 +32,6 @@ subroutine mulfr8(nommat, npivot, neq, typsym, eps,&
 !
 !     ------------------------------------------------------------------
 ! person_in_charge: olivier.boiteau at edf.fr
-!     TOLE CRP_4 CRS_512
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

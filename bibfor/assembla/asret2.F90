@@ -1,5 +1,6 @@
 subroutine asret2(lmasym, jtmp2, lgtmp2, nbterm, jsmhc,&
                   jsmdi, nbi1, ti1, ti2)
+! aslint: disable=W1304
     implicit none
     include 'jeveux.h'
     include 'asterfort/jeveut.h'
@@ -26,7 +27,6 @@ subroutine asret2(lmasym, jtmp2, lgtmp2, nbterm, jsmhc,&
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 ! ======================================================================
-! TOLE CRP_4
 !     ROUTINE SERVANT A RETENIR OU S'ACCUMULENT LES TERMES ELEMENTAIRES:
 !     DANS LE CAS D'UN STOCKAGE MORSE SYMETRIQUE
 ! -----------------------------------------------------------------

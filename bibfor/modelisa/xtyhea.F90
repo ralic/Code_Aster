@@ -1,6 +1,5 @@
 subroutine xtyhea(nfiss, ifiss, ima, nno, jconx1,&
                   jconx2, jstnl, jstnv, nbheav)
-! TOLE CRS_1404
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -18,6 +17,7 @@ subroutine xtyhea(nfiss, ifiss, ima, nno, jconx1,&
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 ! person_in_charge: patrick.massin at edf.fr
+! aslint: disable=W1306
     implicit none
     include 'jeveux.h'
     include 'asterfort/jedema.h'

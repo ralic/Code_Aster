@@ -2,7 +2,6 @@ subroutine calfft(np1, np4, nbm, n, dtext,&
                   fext, omegaf, aa, bb)
 !
 !----------------------------------------------------------------------
-! TOLE CRS_1404
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2010  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -26,6 +25,7 @@ subroutine calfft(np1, np4, nbm, n, dtext,&
 !
 ! ******************   DECLARATION DES VARIABLES   *********************
 !
+! aslint: disable=W1306
     implicit none
 !
 ! ARGUMENTS

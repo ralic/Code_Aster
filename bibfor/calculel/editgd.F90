@@ -1,4 +1,5 @@
 subroutine editgd(chinz, ncmp, gd, nedit, dg)
+! aslint: disable=
     implicit none
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -16,7 +17,6 @@ subroutine editgd(chinz, ncmp, gd, nedit, dg)
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-! TOLE CRP_6
 !
 !     ARGUMENTS:
 !     ----------

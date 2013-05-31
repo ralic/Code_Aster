@@ -4,6 +4,7 @@ subroutine xmvec2(ndim, nno, nnos, nnol, pla,&
                   ddls, ddlm, jfisno, nfiss, ifiss,&
                   jheafa, ncomph, ifa, vtmp)
 !
+! aslint: disable=W1504
     implicit none
     include 'jeveux.h'
     include 'asterfort/indent.h'
@@ -30,7 +31,6 @@ subroutine xmvec2(ndim, nno, nnos, nnol, pla,&
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 !
-! TOLE CRP_21
 !
 ! ROUTINE CONTACT (METHODE XFEM HPP - CALCUL ELEM.)
 !

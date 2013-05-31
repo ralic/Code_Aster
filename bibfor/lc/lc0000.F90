@@ -5,6 +5,7 @@ subroutine lc0000(fami, kpg, ksp, ndim, typmod,&
                   cp, numlc, tempd, tempf, tref,&
                   sigp, vip, ndsde, dsidep, icomp,&
                   nvi, nwkout, wkout, codret)
+! aslint: disable=W1501,W1504
     implicit none
 !       ================================================================
 ! ======================================================================
@@ -23,8 +24,6 @@ subroutine lc0000(fami, kpg, ksp, ndim, typmod,&
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-! TOLE CRP_20
-! TOLE CRP_21
 ! person_in_charge: jean-michel.proix at edf.fr
 ! ======================================================================
 !     INTEGRATION DES LOIS DE COMPORTEMENT NON LINEAIRE POUR LES

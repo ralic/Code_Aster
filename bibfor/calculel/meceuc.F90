@@ -2,6 +2,7 @@ subroutine meceuc(stop, poux, option, caraez, ligrel,&
                   nin, lchin, lpain, nou, lchou,&
                   lpaou, base)
 !
+! aslint: disable=W1306
     implicit none
 !
     include 'jeveux.h'
@@ -69,7 +70,6 @@ subroutine meceuc(stop, poux, option, caraez, ligrel,&
 !     CETTE ROUTINE MET EN FORME LES CHAMPS EVENTUELLEMENT COMPLEXE
 !     POUR L APPEL A CALCUL
 !-----------------------------------------------------------------------
-! TOLE CRS_1404
 !
 !
     character(len=19) :: chdecr(nin), chdeci(nin), ch19, chr, chi, ch1, ch2

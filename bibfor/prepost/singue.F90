@@ -1,6 +1,7 @@
 subroutine singue(cherrs, chenes, nomail, ndim, nnoem,&
                   nelem, xy, prec, ligrmo, chelem,&
                   types)
+! aslint: disable=W1306
     implicit none
     include 'jeveux.h'
 !
@@ -20,7 +21,6 @@ subroutine singue(cherrs, chenes, nomail, ndim, nnoem,&
     character(len=19) :: cherrs, chenes
     character(len=24) :: ligrmo, chelem
 ! ----------------------------------------------------------------------
-! TOLE CRS_1404
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

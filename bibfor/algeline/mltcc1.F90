@@ -22,11 +22,11 @@ subroutine mltcc1(nbloc, ncbloc, decal, supnd, fils,&
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-!     TOLE CRP_21 CRP_4
 !     VERSION MODIFIEE POUR L' APPEL A DGEMV (PRODUITS MATRICE-VECTEUR)
 !     LE STOCKAGE DES COLONNES DE LA FACTORISEE EST MODIFIE, ET AINSI
 !      ADPER LES COLONNES FORMENT UN BLOC RECTANGULAIRE
 !
+! aslint: disable=W1304,W1504
     implicit none
     include 'jeveux.h'
 !

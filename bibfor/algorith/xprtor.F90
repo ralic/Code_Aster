@@ -3,6 +3,7 @@ subroutine xprtor(method, model, noma, cnxinv, fispre,&
                   cnslt, grlt, tore, radtor, radimp,&
                   cnsdis, disfr, cnsbl, nodcal, elecal,&
                   liggrd, vcnt, grlrt)
+! aslint: disable=W1501,W1504
     implicit none
 !
     include 'jeveux.h'
@@ -52,7 +53,6 @@ subroutine xprtor(method, model, noma, cnxinv, fispre,&
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 ! person_in_charge: daniele.colombo at ifpen.fr
-! TOLE CRP_20 CRP_21
 !
 !     ------------------------------------------------------------------
 !

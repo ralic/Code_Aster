@@ -3,6 +3,7 @@ subroutine lcmmap(fami, kpg, ksp, comp, mod,&
                   materf, matcst, nbcomm, cpmono, ndt,&
                   ndi, nr, nvi, nfs, nsg,&
                   nhsr, numhsr, hsr)
+! aslint: disable=W1306,W1501,W1504
     implicit none
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -21,8 +22,6 @@ subroutine lcmmap(fami, kpg, ksp, comp, mod,&
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 ! person_in_charge: jean-michel.proix at edf.fr
-! TOLE CRS_1404
-! TOLE CRP_21 CRP_20
 !       ----------------------------------------------------------------
 !       POLYCRISTAL : RECUPERATION DU MATERIAU A T(TEMPD) ET T+DT(TEMPF)
 !                    NB DE CMP DIRECTES/CISAILLEMENT , NB VAR. INTERNES

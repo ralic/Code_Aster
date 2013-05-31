@@ -41,10 +41,9 @@ subroutine fetacc(option, rang, dimtet, imsmi, imsmk,&
 !   IN NOMGGT/LRIGID/DIMGI/SDFETI/IPIV/NBSD/VSDF/VDDL/MATAS/NOMGI
 !      LSTOGI/INFOFE/IREX/IPRJ/NBPROC
 !----------------------------------------------------------------------
-! TOLE CRP_21
-! TOLE CRP_4
 ! person_in_charge: olivier.boiteau at edf.fr
 ! CORPS DU PROGRAMME
+! aslint: disable=W1304,W1504
     implicit none
 !
 ! DECLARATION PARAMETRES D'APPELS

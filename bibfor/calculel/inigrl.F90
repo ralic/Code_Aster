@@ -1,5 +1,6 @@
 subroutine inigrl(ligrel, igrel, nmax, adtabl, k24tab,&
                   nval)
+! aslint: disable=
     implicit none
 !
 ! ======================================================================
@@ -19,7 +20,6 @@ subroutine inigrl(ligrel, igrel, nmax, adtabl, k24tab,&
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 ! person_in_charge: jacques.pellet at edf.fr
-! TOLE CRS_513
 !
 !     ARGUMENTS:
 !     ----------

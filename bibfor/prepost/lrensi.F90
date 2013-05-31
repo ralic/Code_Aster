@@ -1,5 +1,6 @@
 subroutine lrensi(fich, long, linoch, ndim, nomo,&
                   noma, resu)
+! aslint: disable=
     implicit  none
     include 'jeveux.h'
 !
@@ -49,7 +50,6 @@ subroutine lrensi(fich, long, linoch, ndim, nomo,&
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-! TOLE CRS_512
 !
 !     BUT:
 !       LECTURE DES RESULTATS PRESENTS DANS LES FICHIERS ENSIGHT

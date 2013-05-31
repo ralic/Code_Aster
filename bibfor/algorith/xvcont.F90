@@ -6,6 +6,7 @@ subroutine xvcont(algocr, cohes, coefcp, coefcr, ddlm,&
                   nno, nnol, nnos, nvit, pla,&
                   rela, reac, rr, singu, tau1,&
                   tau2, vtmp)
+! aslint: disable=W1504
     implicit none
     include 'jeveux.h'
 ! ======================================================================
@@ -24,7 +25,6 @@ subroutine xvcont(algocr, cohes, coefcp, coefcr, ddlm,&
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-! TOLE CRP_21
 ! IN ALGOCR : ALGO CONTACT (1:LAG, 2:PENA, 3:COHESIF)
 ! IN CFACE  : CONNECTIVITE FACETTES DE CONTACT
 ! IN COEFCR : COEF AUGMENTATION CONTACT

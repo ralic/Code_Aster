@@ -3,6 +3,7 @@ subroutine acgrdo(jvectn, jvectu, jvectv, nbordr, ordini,&
                   jvecpg, jdtaum, jresun, nommet, nommat,&
                   nomcri, vala, coefpa, nomfor, grdvie,&
                   forvie, valpar, vresu)
+! aslint: disable=,W1306,W1501,W1504
     implicit none
     include 'jeveux.h'
 !
@@ -47,7 +48,6 @@ subroutine acgrdo(jvectn, jvectu, jvectv, nbordr, ordini,&
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-! TOLE CRP_20 CRP_21 CRS_512 CRS_1404
 ! ---------------------------------------------------------------------
 ! BUT: POUR LA FATIGUE A AMPLITUDE CONSTANTE
 !      CALCULER DES GRANDEURS SERVANT A EVALUER LES CRITERES D'AMORCAGE

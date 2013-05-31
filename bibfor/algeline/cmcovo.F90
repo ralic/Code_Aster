@@ -1,5 +1,6 @@
 subroutine cmcovo(main, maout, nbma, lima, prefno,&
                   prefma, inima, epais, plan, trans)
+! aslint: disable=W1501
     implicit   none
     include 'jeveux.h'
 !
@@ -53,7 +54,6 @@ subroutine cmcovo(main, maout, nbma, lima, prefno,&
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-! TOLE CRP_20
 ! ----------------------------------------------------------------------
 !         EXTRUSION DU GROUP_MA SURF EN GROUP_MA VOL
 ! ----------------------------------------------------------------------

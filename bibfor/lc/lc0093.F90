@@ -18,7 +18,7 @@ subroutine lc0093(fami,kpg,ksp,ndim,imate,compor,crit,instam,&
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
-! TOLE CRP_21
+! aslint: disable=W1504
     implicit none
     integer :: imate,ndim,kpg,ksp,codret,icomp,nvi
     real(kind=8)           :: crit(*), angmas(3)

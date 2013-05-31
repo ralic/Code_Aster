@@ -1,4 +1,5 @@
 subroutine sscgno(ma, nbgnin)
+! aslint: disable=W1501
     implicit none
 ! ----------------------------------------------------------------------
 ! ======================================================================
@@ -17,7 +18,6 @@ subroutine sscgno(ma, nbgnin)
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-! TOLE  CRP_20
 ! ----------------------------------------------------------------------
 !     BUT: TRAITER LE MOT CLEF CREA_GROUP_NO
 !          DE L'OPERATEUR: DEFI_GROUP

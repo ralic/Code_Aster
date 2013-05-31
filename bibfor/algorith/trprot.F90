@@ -2,6 +2,7 @@ subroutine trprot(model, bamo, tgeom, imodg, iadx,&
                   iady, iadz, isst, iadrp, norm1,&
                   norm2, ndble, num, nu, ma,&
                   mate, moint, ilires, k, icor)
+! aslint: disable=W1501
     implicit none
 !---------------------------------------------------------------------
 ! ======================================================================
@@ -20,7 +21,6 @@ subroutine trprot(model, bamo, tgeom, imodg, iadx,&
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-! TOLE CRP_20
 !---------------------------------------------------------------------
 !     AUTEUR : G.ROUSSEAU
 !     ROUTINE REALISANT ,

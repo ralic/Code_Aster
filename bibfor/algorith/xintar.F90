@@ -1,5 +1,6 @@
 subroutine xintar(elp, ndim, ia, tabco, tabls,&
                   intar)
+! aslint: disable=W1306
     implicit none
 !
     include 'jeveux.h'
@@ -14,7 +15,6 @@ subroutine xintar(elp, ndim, ia, tabco, tabls,&
     character(len=8) :: elp
     real(kind=8) :: intar(ndim), tabco(*), tabls(*)
 !
-! TOLE CRS_1404
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

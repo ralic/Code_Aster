@@ -1,4 +1,5 @@
 subroutine memres(limpr, ldyn, titre, prec, tmax)
+! aslint: disable=W1304,W1307
     implicit none
     include 'asterc/hpalloc.h'
     include 'asterc/hpdeallc.h'
@@ -8,7 +9,6 @@ subroutine memres(limpr, ldyn, titre, prec, tmax)
     include 'asterfort/utgtme.h'
     character(len=*) :: titre, limpr, ldyn
     real(kind=8) :: tmax, prec
-! TOLE CRS_505 CRP_4
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

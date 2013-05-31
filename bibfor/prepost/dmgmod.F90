@@ -1,6 +1,7 @@
 subroutine dmgmod(nomsym, nomsd, nomsd2, nommat, nbordr,&
                   jordr, jcoef, nbpt, ntcmp, numcmp,&
                   impr, vdomag)
+! aslint: disable=W1306
     implicit none
     include 'jeveux.h'
 !
@@ -24,7 +25,6 @@ subroutine dmgmod(nomsym, nomsd, nomsd2, nommat, nbordr,&
     integer :: nbpt, numcmp(*)
     integer :: ntcmp, impr, nbordr, jordr, jcoef
 !       ----------------------------------------------------------------
-! TOLE CRS_1404
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

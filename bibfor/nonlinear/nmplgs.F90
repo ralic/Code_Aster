@@ -22,7 +22,6 @@ subroutine nmplgs(ndim, nno1, vff1, idfde1, nno2,&
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 ! ======================================================================
-! TOLE CRP_20 CRS_1404  CRP_21
 ! ======================================================================
 !
 ! CALCUL  RAPH_MECA, RIGI_MECA_* ET FULL_MECA_* POUR GRAD_SIGM(2D ET 3D)
@@ -57,6 +56,7 @@ subroutine nmplgs(ndim, nno1, vff1, idfde1, nno2,&
 ! OUT CODRET  : CODE RETOUR
 ! ----------------------------------------------------------------------
 !
+! aslint: disable=W1306,W1501,W1504
     implicit none
 !
     include 'jeveux.h'

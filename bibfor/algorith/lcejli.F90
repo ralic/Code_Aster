@@ -2,7 +2,6 @@ subroutine lcejli(fami, kpg, ksp, ndim, mate,&
                   option, am, da, sigma, dsidep,&
                   vim, vip)
 !
-! TOLE CRS_1404
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -21,6 +20,7 @@ subroutine lcejli(fami, kpg, ksp, ndim, mate,&
 ! ======================================================================
 ! person_in_charge: jerome.laverne at edf.fr
 !
+! aslint: disable=W1306
     implicit none
     include 'asterfort/r8inir.h'
     include 'asterfort/rcvalb.h'

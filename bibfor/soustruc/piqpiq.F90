@@ -3,6 +3,7 @@ subroutine piqpiq(xp, yp, zp, x, y,&
                   eso, hso, h2, h3, l4,&
                   l5, zone1, zone2, zone3, zone4,&
                   zone5, zone6, zone7, zone8, typsou)
+! aslint: disable=,W1504
     implicit   none
     include 'asterc/r8pi.h'
     include 'asterfort/piqsou.h'
@@ -27,8 +28,6 @@ subroutine piqpiq(xp, yp, zp, x, y,&
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-! TOLE  CRP_21
-! TOLE  CRP_6
 !     OPERATEUR: "DEFI_GROUP" , MOTCLE FACTEUR "EQUE_PIQUA"
 !     AUTEUR Y. WADIER
 !

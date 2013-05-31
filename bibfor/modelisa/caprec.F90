@@ -1,4 +1,5 @@
 subroutine caprec(charge, mailla)
+! aslint: disable=W1501
     implicit none
 ! ----------------------------------------------------------------------
 ! ======================================================================
@@ -17,7 +18,6 @@ subroutine caprec(charge, mailla)
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-! TOLE CRP_20
 ! ----------------------------------------------------------------------
 !  DESCRIPTION : OPERATEUR AFFE_CHAR_MECA
 !  -----------   TRAITEMENT DU MOT-CLE FACTEUR RELA_CINE_BP

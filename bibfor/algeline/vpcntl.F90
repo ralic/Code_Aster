@@ -20,7 +20,6 @@ subroutine vpcntl(cty, mode, option, omemin, omemax,&
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-! TOLE CRP_21
 !     CONTROLE DE VALIDITE DES MODES TROUVES
 !-----------------------------------------------------------------------
 ! IN CTY   : K1 : COMPORTEMENT EN CAS D'ERREUR ('A' OU 'F')
@@ -49,6 +48,7 @@ subroutine vpcntl(cty, mode, option, omemin, omemax,&
 ! IN PRECSH  : R8 : POURCENTAGE DE DECALAGE (CALC_FREQ/PREC_SHIFT)
 !-----------------------------------------------------------------------
 !
+! aslint: disable=W1504
     implicit none
 !
     include 'jeveux.h'

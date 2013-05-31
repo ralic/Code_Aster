@@ -23,10 +23,10 @@ subroutine calcva(kpi, yachai, yamec, yate, yap1,&
 ! ======================================================================
 ! person_in_charge: sylvie.granet at edf.fr
 ! ======================================================================
-! TOLE CRP_21
 ! ======================================================================
 ! --- CALCUL DE VARIABLES (MECANIQUES, HYDRAULIQUES, THERMIQUES) -------
 ! ======================================================================
+! aslint: disable=W1504
     implicit      none
     include 'jeveux.h'
     include 'asterfort/rcvarc.h'

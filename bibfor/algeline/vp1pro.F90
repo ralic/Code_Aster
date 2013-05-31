@@ -20,7 +20,6 @@ subroutine vp1pro(optiom, lraide, lmasse, ldynam, neq,&
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-! TOLE CRP_21
 !     CALCUL DES VECTEURS ET VALEURS PROPRES PAR LA METHODE D'ITERATION
 !     INVERSE.
 !     ------------------------------------------------------------------
@@ -28,6 +27,7 @@ subroutine vp1pro(optiom, lraide, lmasse, ldynam, neq,&
 ! IN  SOLVEU : K19 : SD SOLVEUR POUR PARAMETRER LE SOLVEUR LINEAIRE
 ! ----------------------------------------------------------------------
 !
+! aslint: disable=W1504
     implicit none
 !
 ! PARAMETRES D'APPEL

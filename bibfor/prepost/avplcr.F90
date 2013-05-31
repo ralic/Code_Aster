@@ -4,6 +4,7 @@ subroutine avplcr(nbvec, vectn, vectu, vectv, nbordr,&
                   fordef, fatsoc, proaxe, nommat, vala,&
                   coefpa, post, cudomx, nxm, nym,&
                   nzm)
+! aslint: disable=W1306,W1501,W1504
     implicit      none
     include 'jeveux.h'
     include 'asterc/getvr8.h'
@@ -38,7 +39,6 @@ subroutine avplcr(nbvec, vectn, vectu, vectv, nbordr,&
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-! TOLE CRS_1404 CRP_21 CRP_20
 !----------------------------------------------------------------------
 ! BUT:  POUR LA FATIGUE A AMPLITUDE VARIABLE
 !       DETERMINER LE PLAN CRITIQUE OU DOMMAGE EST MAX

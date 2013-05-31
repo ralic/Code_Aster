@@ -30,6 +30,7 @@ subroutine mddp54(neqgen, depl, vite, acce, fext,&
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
+! aslint: disable=W1504
     implicit none
     include 'jeveux.h'
 !
@@ -63,7 +64,6 @@ subroutine mddp54(neqgen, depl, vite, acce, fext,&
     real(kind=8) :: vite(*), acce(*), fext(*), depli(*), vitei(*), erde(*)
     real(kind=8) :: ervi(*), kde(*), kvi(*), atol
 ! ======================================================================
-! TOLE CRP_21
     zero = 0.d0
 !     ON UTILISE ATOL POUR EVENTUELLEMENT DONNER UNE TOLERANCE ABSOLUE
 !     DONNEE PAR L'UTILISATEUR. ICI ON LA FORCE A ZERO

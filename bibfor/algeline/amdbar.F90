@@ -2,7 +2,7 @@ subroutine amdbar(n, pe, iw, len, iwlen,&
                   pfree, nv, next, last, head,&
                   elen, degree, ncmpa, w, iovflo)
 ! person_in_charge: olivier.boiteau at edf.fr
-! TOLE CRP_20
+! aslint: disable=W1501
     implicit none
 !
 !---------------------------------------------------------------

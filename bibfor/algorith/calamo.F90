@@ -1,4 +1,5 @@
 subroutine calamo(nomres, classe, basmod)
+! aslint: disable=
     implicit none
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -31,7 +32,6 @@ subroutine calamo(nomres, classe, basmod)
 ! CLASSE /I/ : CLASSE DE LA BASE JEVEUX DE L'OBJET RESULTAT
 ! BASMOD /I/ : NOM UT DE LA BASE MODALE DE PROJECTION
 !
-! TOLE CRP_6
 !
 !
     include 'jeveux.h'

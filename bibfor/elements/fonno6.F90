@@ -1,6 +1,7 @@
 subroutine fonno6(resu, noma, ndim, ina, nbnose,&
                   iseg, nseg, noe, indr, nbnoel,&
                   vnor, vdir, basseg, vect, sens)
+! aslint: disable=W1306
     implicit none
     include 'jeveux.h'
 !
@@ -43,7 +44,6 @@ subroutine fonno6(resu, noma, ndim, ina, nbnose,&
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-! TOLE CRS_1404
 !     ----------------------------------------------------------------
 !     BUTS :
 !        - VERIFIER LA COHERENCE DES 2 VECTEURS DIRECTION

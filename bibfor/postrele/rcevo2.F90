@@ -1,6 +1,7 @@
 subroutine rcevo2(nbinti, kinti, csigm, cinst, csiex,&
                   kemixt, cstex, csmex, lfatig, flexio,&
                   lrocht, cnoc, cresu, cpres)
+! aslint: disable=W1501
     implicit      none
     include 'jeveux.h'
 !
@@ -29,7 +30,6 @@ subroutine rcevo2(nbinti, kinti, csigm, cinst, csiex,&
     character(len=16) :: kinti
     character(len=24) :: csigm, cinst, csiex, cnoc, cresu, cpres, cstex, csmex
 !     ------------------------------------------------------------------
-! TOLE CRP_20
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

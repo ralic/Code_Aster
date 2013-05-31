@@ -4,8 +4,8 @@ subroutine lcresa(fami, kpg, ksp, typmod, imat,&
                   yf, dy, r, iret, yd,&
                   crit)
 !
+! aslint: disable=W1306,W1504
     implicit   none
-! TOLE CRP_21 CRS_1404
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

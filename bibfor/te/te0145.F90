@@ -1,4 +1,5 @@
 subroutine te0145(option, nomte)
+! aslint: disable=
     implicit none
     include 'jeveux.h'
 !
@@ -7,7 +8,6 @@ subroutine te0145(option, nomte)
     include 'asterfort/u2mesk.h'
     include 'asterfort/u2mess.h'
     character(len=*) :: option, nomte
-! TOLE CRP_6
 !     ------------------------------------------------------------------
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG

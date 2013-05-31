@@ -1,4 +1,5 @@
 subroutine fointa(ipif, nbpu, nompu, valpu, resu)
+! aslint: disable=W1303
     implicit none
     include 'jeveux.h'
 !
@@ -32,7 +33,6 @@ subroutine fointa(ipif, nbpu, nompu, valpu, resu)
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-! TOLE CRS_602
 !     INTERPOLATION POUR CALCULER RESU = F(X,Y,Z,...)
 ! ----------------------------------------------------------------------
 ! IN  IPIF  : POINTEUR DANS LE MATERIAU CODE (FONCTION OU NAPPE)

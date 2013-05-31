@@ -4,6 +4,7 @@ subroutine xbsir2(elref, contac, ddlc, ddlm, ddls,&
                   nno, nnom, nnos, depref, sigref,&
                   nomte)
 !
+! aslint: disable=W1504
     implicit   none
     include 'jeveux.h'
 ! ======================================================================
@@ -22,7 +23,6 @@ subroutine xbsir2(elref, contac, ddlc, ddlm, ddls,&
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-! TOLE CRP_21
 ! IN ELREF  : ELEMENT DE REF PARENT
 ! IN CONTAC : DISCRETISATION, 1 POUR P1P1, 3 POUR P2P1
 ! IN DDLC   : NB DDL DE CONTACT PAR NOEUD SOMMET

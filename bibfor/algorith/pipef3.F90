@@ -3,7 +3,6 @@ subroutine pipef3(ndim, nno, nddl, npg, lgpg,&
                   vim, ddepl, deplm, ddepl0, ddepl1,&
                   dtau, copilo, typmod)
 !
-! TOLE CRS_1404
 ! ======================================================================
 ! COPYRIGHT (C) 2007 NECS - BRUNO ZUBER   WWW.NECS.FR
 ! COPYRIGHT (C) 2007 - 2013  EDF R&D                WWW.CODE-ASTER.ORG
@@ -22,6 +21,7 @@ subroutine pipef3(ndim, nno, nddl, npg, lgpg,&
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 !
+! aslint: disable=W1306
     implicit none
     include 'asterc/r8vide.h'
     include 'asterfort/nmfici.h'

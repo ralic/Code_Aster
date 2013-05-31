@@ -37,9 +37,9 @@ subroutine fetfiv(nbsd, nbi, vd1, vd2, vdo,&
 !     IN K24IRZ : K24 : NOM DE L'OBJET JEVEUX VDO POUR LE PARALLELISME
 !     IN SDFETI: CH19 : SD DECRIVANT LE PARTIONNEMENT FETI
 !----------------------------------------------------------------------
-! TOLE CRP_4
 ! person_in_charge: olivier.boiteau at edf.fr
 ! CORPS DU PROGRAMME
+! aslint: disable=W1304
     implicit none
 !
 ! DECLARATION PARAMETRES D'APPELS

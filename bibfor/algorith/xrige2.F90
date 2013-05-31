@@ -3,6 +3,7 @@ subroutine xrige2(elrefp, elrese, ndim, coorse, igeom,&
                   basloc, nnop, npg, lsn, lst,&
                   sig, matuu)
 !
+! aslint: disable=W1306,W1504
     implicit none
     include 'jeveux.h'
     include 'asterfort/assert.h'
@@ -37,7 +38,6 @@ subroutine xrige2(elrefp, elrese, ndim, coorse, igeom,&
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 ! person_in_charge: samuel.geniaut at edf.fr
-! TOLE CRP_21 CRS_1404
 !
 !.......................................................................
 !

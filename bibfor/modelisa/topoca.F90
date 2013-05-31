@@ -1,5 +1,6 @@
 subroutine topoca(tablca, mailla, icabl, nbf0, nbnoca,&
                   numaca)
+! aslint: disable=W1501
     implicit none
 !-----------------------------------------------------------------------
 ! ======================================================================
@@ -45,7 +46,6 @@ subroutine topoca(tablca, mailla, icabl, nbf0, nbnoca,&
 !                    REMPLISSAGE DU DERNIER SOUS-BLOC ALLOUE
 !
 !-------------------   DECLARATION DES VARIABLES   ---------------------
-!  TOLE CRP_20
     include 'jeveux.h'
 !
     include 'asterc/getvtx.h'

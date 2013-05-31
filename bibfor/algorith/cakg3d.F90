@@ -5,6 +5,7 @@ subroutine cakg3d(option, result, modele, depla, thetai,&
                   ndimte, extim, time, nbprup, noprup,&
                   fiss, lmelas, nomcas, lmoda, puls,&
                   milieu, connex)
+! aslint: disable=W1504
     implicit  none
 !
     include 'jeveux.h'
@@ -64,7 +65,6 @@ subroutine cakg3d(option, result, modele, depla, thetai,&
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-!     TOLE CRP_21
 !
 !  FONCTION REALISEE:   CALCUL DU TAUX DE RESTITUTION LOCAL D'ENERGIE ET
 !                       DES FACTEURS D'INTENSITE DE CONTRAINTES EN 3D

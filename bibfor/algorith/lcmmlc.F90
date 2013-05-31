@@ -4,6 +4,7 @@ subroutine lcmmlc(nmat, nbcomm, cpmono, nfs, nsg,&
                   dy, itmax, toler, materf, expbp,&
                   taus, dalpha, dgamma, dp, crit,&
                   sgns, rp, iret)
+! aslint: disable=W1504
     implicit none
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -21,7 +22,6 @@ subroutine lcmmlc(nmat, nbcomm, cpmono, nfs, nsg,&
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-! TOLE CRP_21
 !       ----------------------------------------------------------------
 !     MONOCRISTAL  : CALCUL DE L'ECOULEMENT VISCOPLASTIQUE
 !     IN  NMAT   :  DIMENSION MATER

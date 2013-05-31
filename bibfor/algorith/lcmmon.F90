@@ -4,6 +4,7 @@ subroutine lcmmon(fami, kpg, ksp, comp, nbcomm,&
                   epsd, detot, coel, dvin, nfs,&
                   nsg, toutms, hsr, itmax, toler,&
                   iret)
+! aslint: disable=W1306,W1504,W1504
     implicit none
     include 'asterfort/assert.h'
     include 'asterfort/calsig.h'
@@ -26,8 +27,6 @@ subroutine lcmmon(fami, kpg, ksp, comp, nbcomm,&
     character(len=*) :: fami
     character(len=16) :: comp(*)
 ! person_in_charge: jean-michel.proix at edf.fr
-! TOLE CRP_21
-! TOLE CRS_1404
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -44,7 +43,6 @@ subroutine lcmmon(fami, kpg, ksp, comp, nbcomm,&
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-! TOLE CRP_21
 ! ======================================================================
 !       IN FAMI     :  FAMILLE DE POINT DE GAUSS (RIGI,MASS,...)
 !         KPG,KSP   :  NUMERO DU (SOUS)POINT DE GAUSS

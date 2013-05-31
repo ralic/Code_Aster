@@ -1,5 +1,6 @@
 subroutine irpara(resu, form, ifi, nbordr, ordr,&
                   nbpa, nompar, cecr)
+! aslint: disable=W1303
     implicit none
     include 'jeveux.h'
     include 'asterc/isnnem.h'
@@ -32,7 +33,6 @@ subroutine irpara(resu, form, ifi, nbordr, ordr,&
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-! TOLE CRS_602
 !     IMPRESSION DES PARAMETRES
 !     ------------------------------------------------------------------
 ! IN  RESU   : K8  : NOM DU CONCEPT

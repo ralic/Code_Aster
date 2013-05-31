@@ -6,6 +6,7 @@ subroutine xxnmgr(elrefp, elrese, ndim, coorse, igeom,&
                   idepl, lsn, lst, nfiss, fisno,&
                   sigp, vi, matuu, ivectu, codret)
 !
+! aslint: disable=W1306,W1504
     implicit none
     include 'jeveux.h'
     include 'asterfort/assert.h'
@@ -51,7 +52,6 @@ subroutine xxnmgr(elrefp, elrese, ndim, coorse, igeom,&
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 ! person_in_charge: patrick.massin at edf.fr
-! TOLE CRP_21 CRS_1404
 !
 !.......................................................................
 !

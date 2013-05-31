@@ -23,8 +23,8 @@ subroutine nmprde(modele, numedd, numfix, mate, carele,&
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
-! TOLE CRP_21
 !
+! aslint: disable=W1504
     implicit none
     include 'jeveux.h'
     include 'asterfort/assert.h'

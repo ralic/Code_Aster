@@ -4,6 +4,7 @@ subroutine xmvco1(ndim, nno, nnol, sigma, pla,&
                   nd, tau1, tau2, vtmp)
 !
 !
+! aslint: disable=W1504
     implicit none
     include 'asterc/r8prem.h'
     include 'asterfort/vecini.h'
@@ -34,7 +35,6 @@ subroutine xmvco1(ndim, nno, nnol, sigma, pla,&
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 !
-! TOLE CRP_21
 !
 ! ROUTINE CONTACT (METHODE XFEM HPP - CALCUL ELEM.)
 !

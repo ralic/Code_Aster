@@ -23,7 +23,6 @@ subroutine lcjacp(fami, kpg, ksp, loi, toler,&
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-! TOLE CRP_21 CRS_1404
 !     CONSTRUCTION DE LA MATRICE JACOBIENNE PAR PERTURBATION
 !     IN  FAMI   :  FAMILLE DE POINT DE GAUSS
 !         KPG    :  NUMERO DU POINT DE GAUSS
@@ -58,6 +57,7 @@ subroutine lcjacp(fami, kpg, ksp, loi, toler,&
 !                COMME MATRICE JACOBIENNE A LA PLACE DE LCJACB
 !     OUT DRDYB  : MATRICE JACOBIENNE PAR PERTURBATION
 ! ----------------------------------------------------------------------
+! aslint: disable=W1306,W1504
     implicit none
 !
     include 'asterc/r8miem.h'

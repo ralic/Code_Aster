@@ -1,13 +1,13 @@
 subroutine dilopt(dimdef, dimuel, poids, poids2, b,&
                   drde, matuu)
 ! ======================================================================
+! aslint: disable=W1306
     implicit none
     include 'blas/dgemm.h'
     integer :: dimdef, dimuel
     real(kind=8) :: poids, poids2, drde(dimdef, dimdef), b(dimdef, dimuel)
     real(kind=8) :: matuu(dimuel*dimuel)
 ! ======================================================================
-! TOLE CRS_1404
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2010  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

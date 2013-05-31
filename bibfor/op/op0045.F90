@@ -16,7 +16,6 @@ subroutine op0045()
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-! TOLE CRP_20
 !        MODE_ITER_SIMULT
 !        RECHERCHE DE MODES PAR ITERATION SIMULTANEE EN SOUS-ESPACE
 !        (LANCZOS, JACOBI OU IRA-ARPACK) OU METHODE DE TYPE QR (LAPACK)
@@ -39,6 +38,7 @@ subroutine op0045()
 !          COMPLEXES CONJUGUEES OU NON
 !-----------------------------------------------------------------------
 ! person_in_charge: olivier.boiteau at edf.fr
+! aslint: disable=W1501
     implicit none
 !
 ! VARIABLES LOCALES

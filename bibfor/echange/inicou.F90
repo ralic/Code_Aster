@@ -200,11 +200,11 @@ subroutine inicou(nbpas, tinit, tfin, dt, dtsto,&
 !
 !-----------------------------------------------------------------------
 !  SOUS PROGRAMME(S) APPELANT(S) :  OP0115.F
+! aslint: disable=,W1304
     implicit none
 !
 !***********************************************************************
 !%W% %D% %T%
-! TOLE CRS_512 CRP_4
 !
 !
 !     ARGUMENTS

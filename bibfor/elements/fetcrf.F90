@@ -16,7 +16,6 @@ subroutine fetcrf(sdfet1)
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-! TOLE CRP_20
 ! person_in_charge: aimery.assire at edf.fr
 !-----------------------------------------------------------------------
 !    - FONCTION REALISEE:  CREATION DE LA STRUCTURE DE DONNEES FETI.
@@ -40,6 +39,7 @@ subroutine fetcrf(sdfet1)
 !       NIV>4  AFFICHAGES DETAILLES
 !----------------------------------------------------------------------
 ! CORPS DU PROGRAMME
+! aslint: disable=W1501
     implicit none
 !
 ! DECLARATION PARAMETRES D'APPELS

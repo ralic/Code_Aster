@@ -18,8 +18,8 @@ function spect2(a, b, xlc, vitn, rhoe,&
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-! TOLE CRP_7
 !-------------------------------------------------------------------
+! aslint: disable=
     implicit none
 !                                 B  F2(X)
 ! DESCRIPTION : CALCULE DINTEG = S  S F(X,Y) DY   DX

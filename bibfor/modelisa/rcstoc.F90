@@ -1,5 +1,6 @@
 subroutine rcstoc(nommat, nomrc, nbobj, valr, valc,&
                   valk, nbr, nbc, nbk)
+! aslint: disable=
     implicit   none
     include 'jeveux.h'
 !
@@ -52,7 +53,6 @@ subroutine rcstoc(nommat, nomrc, nbobj, valr, valc,&
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-! TOLE CRS_513
 ! ----------------------------------------------------------------------
 !     BUT: STOCKER DANS LES DEUX TABLEAUX VALR ET VALK LES REELS
 !          ET LES K8 CARACTERISANT LA LOI DE COMPORTEMENT DE NOM NOMRC

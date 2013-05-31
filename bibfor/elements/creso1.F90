@@ -21,7 +21,6 @@ subroutine creso1(solveu, method, preco, renum, syme,&
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-! TOLE CRP_21
 !-----------------------------------------------------------------------
 !    BUT :  REMPLISSAGE DE LA SD SOLVEUR FETI (NIVEAU 2)
 !-----------------------------------------------------------------------
@@ -49,6 +48,7 @@ subroutine creso1(solveu, method, preco, renum, syme,&
 !----------------------------------------------------------------------
 ! person_in_charge: olivier.boiteau at edf.fr
 ! CORPS DU PROGRAMME
+! aslint: disable=W1504
     implicit none
 !
 ! DECLARATION PARAMETRES D'APPELS

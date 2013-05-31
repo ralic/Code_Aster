@@ -1,6 +1,7 @@
 subroutine nmaret(nbarvz, nno, ndim, nliseq, nbno,&
                   numnod, gro1, gro2)
 !
+! aslint: disable=W1306
     implicit none
     include 'jeveux.h'
     include 'asterfort/assert.h'
@@ -55,7 +56,6 @@ subroutine nmaret(nbarvz, nno, ndim, nliseq, nbno,&
 ! OUT  GRO1  : LISTE DES NOEUDS EXTREMITES 1 DES ARETES PILOTEES
 ! OUT  GRO1  : LISTE DES NOEUDS EXTREMITES 2 DES ARETES PILOTEES
 !
-! TOLE CRS_1404
 !
 !
 !

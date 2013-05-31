@@ -22,7 +22,6 @@ subroutine stapu2(nbobst, nbpt, nbpair, temps, fcho,&
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-! TOLE CRP_21
 !-----------------------------------------------------------------------
 !     CALCUL DE LA PUISSANCE D'USURE AU SENS D'ARCHARD
 !
@@ -35,6 +34,7 @@ subroutine stapu2(nbobst, nbpt, nbpair, temps, fcho,&
 ! IN  : INOE   : NUMERO DE NOEUD TRAITE
 ! OUT : PUSURN : PUISSANCE D'USURE MOYENNEE
 !-----------------------------------------------------------------------
+! aslint: disable=W1504
     implicit none
     include 'asterc/r8rddg.h'
     include 'asterfort/pusur2.h'

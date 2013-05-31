@@ -1,4 +1,5 @@
 subroutine mefver(ndim, som, xint, yint, rint)
+! aslint: disable=
     implicit none
 !
     include 'asterc/r8pi.h'
@@ -6,7 +7,6 @@ subroutine mefver(ndim, som, xint, yint, rint)
     include 'asterfort/u2mess.h'
     integer :: ndim(14)
     real(kind=8) :: som(9), xint(*), yint(*), rint(*)
-! TOLE CRP_6
 ! ----------------------------------------------------------------------
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG

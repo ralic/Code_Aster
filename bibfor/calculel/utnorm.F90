@@ -21,7 +21,6 @@ subroutine utnorm(igeom, nsomm, naret, ino, poinc1,&
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 ! person_in_charge: olivier.boiteau at edf.fr
-! TOLE CRP_21
 !-----------------------------------------------------------------------
 !    - FONCTION REALISEE:  UTILITAIRE DE CALCUL DE LA NORMALE A UN
 !                          SEGMENT EN SES NOEUDS. POUR AERER TE0003
@@ -54,6 +53,7 @@ subroutine utnorm(igeom, nsomm, naret, ino, poinc1,&
 !       03/07/01 (OB): CREATION POUR SIMPLIFIER TE0003.F.
 !----------------------------------------------------------------------
 ! CORPS DU PROGRAMME
+! aslint: disable=W1504
     implicit none
 !
 ! DECLARATION PARAMETRES D'APPELS

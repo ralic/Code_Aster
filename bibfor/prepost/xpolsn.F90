@@ -2,6 +2,7 @@ subroutine xpolsn(elrefp, ino, n, jlsn, jlst,&
                   ima, iad, igeom, nfiss, ndime,&
                   ndim, jconx1, jconx2, co, lsn,&
                   lst)
+! aslint: disable=W1306
     implicit none
 !
     include 'jeveux.h'
@@ -14,7 +15,6 @@ subroutine xpolsn(elrefp, ino, n, jlsn, jlst,&
     character(len=8) :: elrefp
     real(kind=8) :: co(3), lsn(nfiss), lst(nfiss)
 !
-! TOLE CRS_1404
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

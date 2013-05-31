@@ -3,7 +3,6 @@ subroutine lrchme(chanom, nochmd, nomamd, nomaas, typech,&
                   prolz, iinst, numpt, numord, inst,&
                   crit, prec, nrofic, option, param,&
                   nbpgma, nbpgmm, codret)
-! TOLE CRP_21
 !
 ! person_in_charge: nicolas.sellenet at edf.fr
 ! ======================================================================
@@ -54,6 +53,7 @@ subroutine lrchme(chanom, nochmd, nomamd, nomaas, typech,&
 !        CODRET : CODE DE RETOUR (0 : PAS DE PB, NON NUL SI PB)
 !_____________________________________________________________________
 !
+! aslint: disable=W1504
     implicit none
 !
 ! 0.1. ==> ARGUMENTS

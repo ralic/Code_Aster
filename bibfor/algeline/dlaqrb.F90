@@ -18,7 +18,6 @@ subroutine dlaqrb(wantt, n, ilo, ihi, h,&
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-! TOLE CRP_20
 !
 !     SUBROUTINE ARPACK CALCULANT LES VALEURS PROPRES ET LA DECOMPOSI
 !     TION DE SCHUR D'UNE MATRICE DE HESSENBERG.
@@ -125,6 +124,7 @@ subroutine dlaqrb(wantt, n, ilo, ihi, h,&
 ! ENDLIB
 !-----------------------------------------------------------------------
 ! CORPS DU PROGRAMME
+! aslint: disable=W1501
     implicit none
 !
 !     %------------------%

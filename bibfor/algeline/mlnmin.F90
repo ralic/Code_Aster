@@ -21,7 +21,7 @@ subroutine mlnmin(nu, nomp01, nomp02, nomp03, nomp04,&
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-! TOLE CRP_21
+! aslint: disable=W1504
     implicit none
     character(len=14) :: nu
     character(len=24) :: nomp01, nomp02, nomp03, nomp04, nomp05, nomp06, nomp07

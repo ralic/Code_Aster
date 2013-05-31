@@ -3,6 +3,7 @@ subroutine lc0012(fami, kpg, ksp, ndim, imate,&
                   deps, sigm, vim, option, angmas,&
                   sigp, vip, tampon, typmod, icomp,&
                   nvi, dsidep, codret)
+! aslint: disable=W1504
     implicit none
     include 'asterfort/u2mess.h'
     integer :: kpg, ksp, ndim, imate
@@ -15,7 +16,6 @@ subroutine lc0012(fami, kpg, ksp, ndim, imate,&
     real(kind=8) :: crit(1), instam, instap
     real(kind=8) :: epsm(6), deps(6)
     real(kind=8) :: sigm(6), vim(7), sigp(6), vip(7), dsidep(6, 6)
-! TOLE CRP_21
 ! ======================================================================
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG

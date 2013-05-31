@@ -1,5 +1,6 @@
 subroutine rdtmai(noma, nomare, base, corrn, corrm,&
                   bascor, nbmal, lima)
+! aslint: disable=W1501
     implicit none
     include 'jeveux.h'
 !
@@ -31,7 +32,6 @@ subroutine rdtmai(noma, nomare, base, corrn, corrm,&
     character(len=*) :: corrn, corrm
     character(len=1) :: base, bascor
     integer :: nbmal, lima(*)
-! TOLE CRP_20
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG

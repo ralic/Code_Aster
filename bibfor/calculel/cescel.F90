@@ -18,7 +18,7 @@ subroutine cescel(cesz, ligrez, optini, nompaz, prolz,&
 ! ======================================================================
 !
 ! person_in_charge: jacques.pellet at edf.fr
-! TOLE CRP_20
+! aslint: disable=W1501
     implicit none
     include 'jeveux.h'
 !

@@ -1,4 +1,5 @@
 function exisdg(dg, cmp)
+! aslint: disable=
     implicit none
     logical :: exisdg
     integer :: dg(*), cmp
@@ -20,7 +21,6 @@ function exisdg(dg, cmp)
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 ! person_in_charge: jacques.pellet at edf.fr
-! TOLE CRP_6
 !
 !     INDIQUE L'EXISTENCE D'1 CMP DANS UN DESCRIPTEUR-GRANDEUR DG
 !     ------------------------------------------------------------------

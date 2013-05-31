@@ -19,8 +19,8 @@ subroutine nmtevp(fami, kpg, ksp, ndim, typmod,&
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-! TOLE CRP_7
 ! person_in_charge: sebastien.fayolle at edf.fr
+! aslint: disable=
     implicit none
     include 'asterfort/eccook.h'
     include 'asterfort/nmcri9.h'

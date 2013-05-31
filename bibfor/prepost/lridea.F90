@@ -1,6 +1,7 @@
 subroutine lridea(resu, typres, linoch, nbnoch, nomcmd,&
                   listrz, listiz, precis, crit, epsi,&
                   acces, mfich, noma, ligrez, nbvari)
+! aslint: disable=,W1501
     implicit  none
     include 'jeveux.h'
 !
@@ -59,7 +60,6 @@ subroutine lridea(resu, typres, linoch, nbnoch, nomcmd,&
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 !
-! TOLE CRS_512 CRP_20
 !----------------------------------------------------------------------
 !  LECTURE DES RESULTATS PRESENTS DANS LE FICHIER UNIVERSEL ET STOCKAGE
 !  DANS LA SD RESULTAT

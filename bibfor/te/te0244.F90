@@ -27,7 +27,7 @@ subroutine te0244(option, nomte)
 ! THERMIQUE NON LINEAIRE LUMPE SANS HYDRATATION, NI SECHAGE
 !----------------------------------------------------------------------
 ! CORPS DU PROGRAMME
-! TOLE CRP_20
+! aslint: disable=W1501
     implicit none
 !
 ! PARAMETRES D'APPEL

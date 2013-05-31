@@ -5,8 +5,8 @@ subroutine lcresi(fami, kpg, ksp, loi, typmod,&
                   vinf, itmax, toler, timed, timef,&
                   yd, yf, deps, epsd, dy,&
                   r, iret, crit, indi)
+! aslint: disable=W1504
     implicit   none
-! TOLE CRP_21
 !       ================================================================
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG

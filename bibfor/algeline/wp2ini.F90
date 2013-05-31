@@ -3,6 +3,7 @@ subroutine wp2ini(appr, lmasse, lamor, lraide, lmatra,&
                   prorto, nborto, nbvect, neq, lbloq,&
                   lddl, alpha, beta, signe, yh,&
                   yb, solveu)
+! aslint: disable=W1504
     implicit none
     include 'jeveux.h'
     include 'asterfort/codent.h'
@@ -45,7 +46,6 @@ subroutine wp2ini(appr, lmasse, lamor, lraide, lmatra,&
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-! TOLE CRP_21
 !     GENERATION DES VECTEURS DE LANCZOS ET DE LA TRIADIAGONALE
 !     ASSOCIEE POUR LE PROBLEME QUADRATIQUE AUX VALEURS PROPRES
 !     ------------------------------------------------------------------

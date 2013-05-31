@@ -2,6 +2,7 @@ subroutine nmhuj(typmod, imat, comp, crit, instam,&
                  instap, tempm, tempf, tref, angmas,&
                  epsd, deps, sigd, vind, opt,&
                  sigf, vinf, dsde, iret)
+! aslint: disable=W1501
     implicit none
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -19,7 +20,6 @@ subroutine nmhuj(typmod, imat, comp, crit, instam,&
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-! TOLE CRP_20
 !  ================================================================
 !  INTEGRATION DE LA LOI DE COMPORTEMENT ELASTO PLASTIQUE DE HUJEUX
 !  AVEC    . 50 VARIABLES INTERNES

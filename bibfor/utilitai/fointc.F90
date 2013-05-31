@@ -1,5 +1,6 @@
 subroutine fointc(codmes, nomf, nbpu, nompu, valpu,&
                   resure, resuim, ier)
+! aslint: disable=W1303
     implicit  none
     include 'jeveux.h'
 !
@@ -33,7 +34,6 @@ subroutine fointc(codmes, nomf, nbpu, nompu, valpu,&
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-! TOLE CRS_602
 !     INTERPOLATION POUR FONCTION COMPLEXE A VARIABLE REELLE
 !
 !     CETTE ROUTINE EST DUPLIQUEE,AVEC QUELQUES LIGNES EN MOINS

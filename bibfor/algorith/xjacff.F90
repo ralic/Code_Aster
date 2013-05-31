@@ -2,6 +2,7 @@ subroutine xjacff(elrefp, elrefc, elc, ndim, fpg,&
                   jinter, ifa, cface, ipg, nno,&
                   igeom, jbasec, g, jac, ffp,&
                   ffpc, dfdi, nd1, tau1, tau2)
+! aslint: disable=W1306,W1504
     implicit none
 !
     include 'jeveux.h'
@@ -41,7 +42,6 @@ subroutine xjacff(elrefp, elrefc, elc, ndim, fpg,&
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-! TOLE CRP_21 CRS_1404
 !
 !                   CALCUL DU JACOBIEN DE LA TRANSFORMATION FACETTE
 !                       RÉELLE EN 3D À FACETTE DE RÉFÉRENCE 2D

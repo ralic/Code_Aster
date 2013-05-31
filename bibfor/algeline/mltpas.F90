@@ -20,8 +20,8 @@ subroutine mltpas(nbnd, nbsn, supnd, xadj, adjncy,&
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 ! person_in_charge: olivier.boiteau at edf.fr
-! TOLE CRP_4
 !
+! aslint: disable=W1304
     implicit none
     integer :: nbnd, nbsn, nbloc, ncbloc(*), lgbloc(*)
     integer :: supnd(nbsn+1), diag(0:nbnd), seq(nbsn)

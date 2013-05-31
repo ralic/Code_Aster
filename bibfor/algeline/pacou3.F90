@@ -3,6 +3,7 @@ subroutine pacou3(xold, fold, g, p, x,&
                   vecr1, vecr2, typflu, vecr3, amor,&
                   masg, vecr4, vecr5, veci1, vg,&
                   indic, nbm, nmode, n)
+! aslint: disable=W1504
     implicit none
 !-----------------------------------------------------------------------
 ! ======================================================================
@@ -21,7 +22,6 @@ subroutine pacou3(xold, fold, g, p, x,&
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-! TOLE CRP_21
 !
 ! ARGUMENTS
 ! ---------

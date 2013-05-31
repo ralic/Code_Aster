@@ -4,6 +4,7 @@ subroutine lcmmop(fami, kpg, ksp, comp, nbcomm,&
                   coel, nbphas, nfs, nsg, toutms,&
                   dvin, nhsr, numhsr, hsr, itmax,&
                   toler, iret)
+! aslint: disable=W1306,W1504
     implicit none
     include 'asterfort/calsig.h'
     include 'asterfort/lcloca.h'
@@ -38,7 +39,6 @@ subroutine lcmmop(fami, kpg, ksp, comp, nbcomm,&
 ! ======================================================================
 ! person_in_charge: jean-michel.proix at edf.fr
 ! ======================================================================
-! TOLE CRP_21 CRS_1404
 ! ======================================================================
 !       IN   FAMI   : FAMILLE DE POINT DE GAUSS (RIGI,MASS,...)
 !            KPG,KSP NUMERO DU (SOUS)POINT DE GAUSS

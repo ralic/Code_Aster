@@ -136,8 +136,8 @@ subroutine dgetv0(ido, bmat, itry, initv, n,&
 !            IMPLICIT NONE.
 ! ENDLIB
 !-----------------------------------------------------------------------
-! TOLE CRP_4
 ! CORPS DU PROGRAMME
+! aslint: disable=W1304
     implicit none
 !
 !     %-----------------------------%

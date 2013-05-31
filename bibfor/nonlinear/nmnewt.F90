@@ -24,9 +24,9 @@ subroutine nmnewt(noma, modele, numins, numedd, numfix,&
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-! TOLE CRP_21
 ! person_in_charge: mickael.abbas at edf.fr
 !
+! aslint: disable=W1504
     implicit     none
     include 'asterfort/isfonc.h'
     include 'asterfort/nmactf.h'

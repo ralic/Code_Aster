@@ -4,6 +4,7 @@ subroutine rcevom(csigm, cinst, cnoc, sm, lfatig,&
                   cspe, cresu, kinti, it, jt,&
                   lrocht, symax, cpres, kemixt, cspto,&
                   cspte, cspmo, cspme)
+! aslint: disable=W1501,W1501,W1504
     implicit   none
     include 'jeveux.h'
     include 'asterc/getres.h'
@@ -25,7 +26,6 @@ subroutine rcevom(csigm, cinst, cnoc, sm, lfatig,&
     character(len=24) :: cfae, cspo, cspe, cresu, cpres, cspto, cspte, cspmo
     character(len=24) :: cspme
 !     ------------------------------------------------------------------
-! TOLE CRP_20 CRP_21
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -42,7 +42,6 @@ subroutine rcevom(csigm, cinst, cnoc, sm, lfatig,&
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-! TOLE CRP_20
 !     ------------------------------------------------------------------
 !     OPERATEUR POST_RCCM, TYPE_RESU_MECA='EVOLUTION'
 !     TYPE_RESU = 'VALE_MAX'

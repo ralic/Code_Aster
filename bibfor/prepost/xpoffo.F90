@@ -1,5 +1,6 @@
 subroutine xpoffo(ndim, ndime, elrefp, nnop, igeom,&
                   co, ff)
+! aslint: disable=W1306
     implicit none
 !
     include 'jeveux.h'
@@ -17,7 +18,6 @@ subroutine xpoffo(ndim, ndime, elrefp, nnop, igeom,&
     real(kind=8) :: co(ndim), ff(nnop)
     character(len=8) :: elrefp
 !
-! TOLE CRS_1404
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

@@ -1,6 +1,7 @@
 subroutine dsingu(ndim, nelem, nnoem, nsommx, nelcom,&
                   degre, icnc, numeli, xy, erreur,&
                   energi, mesu, alpha, nalpha)
+! aslint: disable=W1306
     implicit none
     include 'jeveux.h'
 !
@@ -12,7 +13,6 @@ subroutine dsingu(ndim, nelem, nnoem, nsommx, nelcom,&
     real(kind=8) :: xy(3, nnoem), erreur(nelem), energi(nelem), mesu(nelem)
     real(kind=8) :: alpha(nelem)
 ! ----------------------------------------------------------------------
-! TOLE CRS_1404
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

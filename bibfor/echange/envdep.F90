@@ -223,8 +223,8 @@ subroutine envdep(numpas, nbpal, dt, dtsto, temps,&
 !
 !***********************************************************************
 !%W% %D% %T%
-! TOLE CRP_4 CRP_6  CRS_512
 !
+! aslint: disable=,,W1304
     implicit none
 !
 !

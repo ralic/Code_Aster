@@ -15,6 +15,7 @@ subroutine te0151(option, nomte)
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
+! aslint: disable=
     implicit none
     include 'jeveux.h'
     include 'asterfort/jevech.h'
@@ -41,7 +42,6 @@ subroutine te0151(option, nomte)
     include 'asterfort/verifm.h'
     character(len=*) :: option, nomte
 !     ------------------------------------------------------------------
-! TOLE CRP_6
 !     CALCUL
 !       - ENERGIE DE DEFORMATION
 !       - ENERGIE CINETIQUE

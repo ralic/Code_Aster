@@ -1,4 +1,5 @@
 subroutine rapoco(numdlz, iocc, fonrez, lisrez, chargz)
+! aslint: disable=W1501
     implicit none
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -16,7 +17,6 @@ subroutine rapoco(numdlz, iocc, fonrez, lisrez, chargz)
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-! TOLE CRP_20
 !
 !    ATTENTION CETTE PROGRAMMATION SUPPOSE QUE L'OBJET NUEQ EST UN
 !    VECTEUR IDENTITE. A MODIFIER

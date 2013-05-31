@@ -4,6 +4,7 @@ subroutine glrcad(zimat, mp1, mp2, delas, rpara,&
                   df, ddiss, dsidep, normm, normn,&
                   crit, codret)
 !
+! aslint: disable=W1504
     implicit none
 !-----------------------------------------------------------------------
 ! ======================================================================
@@ -49,7 +50,6 @@ subroutine glrcad(zimat, mp1, mp2, delas, rpara,&
 ! OUT DDISS : INCREMENT DE DISSIPATION
 ! OUT DSIDEP : MATRICE TANGENTE
 ! person_in_charge: sebastien.fayolle at edf.fr
-! TOLE CRP_21
 !
     include 'asterfort/assert.h'
     include 'asterfort/brbagl.h'

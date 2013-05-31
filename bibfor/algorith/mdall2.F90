@@ -1,5 +1,6 @@
 subroutine mdall2(nomres, basemo, numgen, res, nbo,&
                   nbmode)
+! aslint: disable=W1504
     implicit none
     include 'jeveux.h'
     include 'asterfort/jedema.h'
@@ -27,7 +28,6 @@ subroutine mdall2(nomres, basemo, numgen, res, nbo,&
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 !
-! TOLE CRP_21
 !
 !     ALLOCATION DES VECTEURS DE SORTIE POUR PROJ_RESU_BASE
 !     ------------------------------------------------------------------

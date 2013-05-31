@@ -3,6 +3,7 @@ subroutine ptmtfv(m, rho, e, rof, ce,&
                   xiy1, xiy2, xiz1, xiz2, g,&
                   alfay1, alfay2, alfaz1, alfaz2, ey,&
                   ez, itype, isect)
+! aslint: disable=W1504
     implicit none
     include 'asterc/r8gaem.h'
     include 'asterc/r8pi.h'
@@ -30,7 +31,6 @@ subroutine ptmtfv(m, rho, e, rof, ce,&
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-! TOLE CRP_21
 !    * CE SOUS PROGRAMME CALCULERA LA MATRICE DE MASSE DES ELEMENTS
 !      DE TUYAU DROIT A SECTION VARIABLE .
 !

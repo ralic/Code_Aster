@@ -18,7 +18,6 @@ subroutine fettor(option, infofe, rang, nbi, irg1,&
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 ! person_in_charge: olivier.boiteau at edf.fr
-! TOLE CRP_4
 !-----------------------------------------------------------------------
 !    - FONCTION REALISEE:  TEST ORTHOGONALITE DU GCPPC DE ALGO FETI
 !                          POUR SOULAGER ALFETI.F
@@ -34,6 +33,7 @@ subroutine fettor(option, infofe, rang, nbi, irg1,&
 !     IN  IFM    : IN   : UNITE LOGIQUE D'AFFICHAGE
 !----------------------------------------------------------------------
 ! CORPS DU PROGRAMME
+! aslint: disable=W1304
     implicit none
 !
 ! DECLARATION PARAMETRES D'APPELS

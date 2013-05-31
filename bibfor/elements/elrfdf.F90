@@ -1,5 +1,6 @@
 subroutine elrfdf(elrefz, x, dimd, dff, nno,&
                   ndim)
+! aslint: disable=W1501
     implicit none
     include 'asterfort/assert.h'
     integer :: dimd, nno, ndim
@@ -25,7 +26,6 @@ subroutine elrfdf(elrefz, x, dimd, dff, nno,&
 !
 !
 ! ======================================================================
-! TOLE CRP_20
 !
 ! BUT:   CALCUL DES FONCTIONS DE FORMES ET DE LEURS DERIVEES
 !        AU POINT DE COORDONNEES XI,YI,ZI

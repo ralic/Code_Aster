@@ -21,7 +21,6 @@ subroutine ircam1(nofimd, nochmd, existc, ncmprf, numpt,&
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 ! person_in_charge: nicolas.sellenet at edf.fr
-! TOLE CRP_21
 !     ECRITURE D'UN CHAMP - FORMAT MED - PHASE 1
 !        -  -       - -            -           -
 !-----------------------------------------------------------------------
@@ -67,6 +66,7 @@ subroutine ircam1(nofimd, nochmd, existc, ncmprf, numpt,&
 !       CODRET : CODE DE RETOUR (0 : PAS DE PB, NON NUL SI PB)
 !_______________________________________________________________________
 !
+! aslint: disable=W1504
     implicit none
 !
     include 'jeveux.h'

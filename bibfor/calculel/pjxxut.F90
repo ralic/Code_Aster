@@ -1,6 +1,7 @@
 subroutine pjxxut(dim, mocle, moa1, moa2, nbma1,&
                   lima1, nbno2, lino2, ma1, ma2,&
                   nbtmx, nbtm, nutm, elrf)
+! aslint: disable=W1306
     implicit none
     include 'jeveux.h'
 !
@@ -23,7 +24,6 @@ subroutine pjxxut(dim, mocle, moa1, moa2, nbma1,&
     integer :: nbma1, lima1(*), nbno2, lino2(*), nbtmx, nbtm, nutm(nbtmx)
     character(len=8) :: elrf(nbtmx)
 ! ----------------------------------------------------------------------
-! TOLE CRS_1404
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

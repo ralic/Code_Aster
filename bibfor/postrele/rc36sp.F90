@@ -3,6 +3,7 @@ subroutine rc36sp(nbm, ima, ipt, c, k,&
                   pj, mj, mse, nbthp, nbthq,&
                   ioc1, ioc2, spij, typeke, spmeca,&
                   spther)
+! aslint: disable=W1504
     implicit   none
     include 'asterfort/rcsp01.h'
     include 'asterfort/u2mess.h'
@@ -10,7 +11,6 @@ subroutine rc36sp(nbm, ima, ipt, c, k,&
     real(kind=8) :: c(*), k(*), cara(*), mati(*), matj(*), pi, mi(*), pj, mj(*)
     real(kind=8) :: mse(*), spij, typeke, spmeca, spther
 !     ------------------------------------------------------------------
-! TOLE CRP_21
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

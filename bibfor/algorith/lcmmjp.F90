@@ -3,6 +3,7 @@ subroutine lcmmjp(mod, nmat, mater, timed, timef,&
                   nsg, toutms, hsr, nr, nvi,&
                   itmax, toler, vinf, vind, dsde,&
                   drdy, option, iret)
+! aslint: disable=W1306,W1504
     implicit none
 ! ----------------------------------------------------------------------
 ! ======================================================================
@@ -22,7 +23,6 @@ subroutine lcmmjp(mod, nmat, mater, timed, timef,&
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 ! person_in_charge: jean-michel.proix at edf.fr
-! TOLE CRP_21 CRS_1404
 !     ----------------------------------------------------------------
 !     COMPORTEMENT MONOCRISTALLIN
 !                :  MATRICE SYMETRIQUE DE COMPORTEMENT TANGENT

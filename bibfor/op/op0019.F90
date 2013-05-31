@@ -16,12 +16,12 @@ subroutine op0019()
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-! TOLE CRP_20
 ! ----------------------------------------------------------------------
 !
 !                O P E R A T E U R    AFFE_CARA_ELEM
 !
 ! ----------------------------------------------------------------------
+! aslint: disable=W1501
     implicit  none
 !     NBEPO  13 : NOMBRE D'ELEMENTS DE TYPE "POUTRE"
 !     NBEDI   8 : NOMBRE D'ELEMENTS DE TYPE "DISCRET"

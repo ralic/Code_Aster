@@ -2,6 +2,7 @@ subroutine xprvir(fiss, covir, bavir, vitvir, angvir,&
                   numvir, numfon, nvit, nbeta, nbptff,&
                   radimp, radtor, damax, noma, locdom)
 !
+! aslint: disable=W1501
     implicit none
     include 'jeveux.h'
     include 'asterfort/dismoi.h'
@@ -37,7 +38,6 @@ subroutine xprvir(fiss, covir, bavir, vitvir, angvir,&
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 ! person_in_charge: daniele.colombo at ifpen.fr
-! TOLE CRP_20
 !
 !
 !      XPRVIR   : X-FEM PROPAGATION :CREATION DU FOND DE FISSURE VIRTUEL

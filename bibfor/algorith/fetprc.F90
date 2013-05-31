@@ -37,9 +37,9 @@ subroutine fetprc(nbsd, nbi, vd1, vd2, vdo,&
 !     IN NBPROC: IN  : NOMBRE DE PROCESSEURS
 !     IN K24IR2: K24 : NOM DE L'OBJET JEVEUX VDO POUR LE PARALLELISME
 !----------------------------------------------------------------------
-! TOLE CRP_4
 ! person_in_charge: olivier.boiteau at edf.fr
 ! CORPS DU PROGRAMME
+! aslint: disable=W1304
     implicit none
 !
 ! DECLARATION PARAMETRES D'APPELS

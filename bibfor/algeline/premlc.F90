@@ -20,11 +20,11 @@ subroutine premlc(n1, diag, col, parent, parend,&
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-! TOLE CRP_21
 !     VERSION O2000 AVEC CREATION D'UN NOUVEAU SN POUR
 !     CHAQUE LAMBDA1 DE LAGRANGE
 !     11/12/98
 !
+! aslint: disable=W1504
     implicit none
     include 'asterfort/infbav.h'
     include 'asterfort/infmue.h'

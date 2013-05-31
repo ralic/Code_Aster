@@ -3,6 +3,7 @@ subroutine ircrrl(ifi, nbno, desc, nec, dg,&
                   ndim, coor, numnoe, nbcmpt, nucmpu,&
                   lsup, borsup, linf, borinf, lmax,&
                   lmin, formr)
+! aslint: disable=W1504
     implicit none
 !
     include 'jeveux.h'
@@ -36,7 +37,6 @@ subroutine ircrrl(ifi, nbno, desc, nec, dg,&
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-! TOLE CRP_21
 !        ECRITURE D'UN CHAM_NO A REPRESENTATION CONSTANTE
 !        SUR FICHIER IFI AU FORMAT 'RESULTAT' A VALEURS REELLES
 !      ENTREE:

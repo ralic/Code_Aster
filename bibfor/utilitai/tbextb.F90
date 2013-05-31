@@ -1,6 +1,7 @@
 subroutine tbextb(tabin, basout, tabout, npacri, lipacr,&
                   lcrpa, vi, vr, vc, vk,&
                   lprec, lcrit, iret)
+! aslint: disable=W1501
     implicit   none
     include 'jeveux.h'
 !
@@ -39,7 +40,6 @@ subroutine tbextb(tabin, basout, tabout, npacri, lipacr,&
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-! TOLE CRP_20
 !     FILTRAGE ET EXTRACTION D'UNE NOUVELLE TABLE.
 ! ----------------------------------------------------------------------
 ! IN  : TABIN  : NOM DE LA TABLE DONT ON VEUT EXTRAIRE DES LIGNES

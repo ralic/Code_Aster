@@ -1,4 +1,5 @@
 subroutine te0375(option, nomte)
+! aslint: disable=W1501
     implicit none
     include 'jeveux.h'
 !
@@ -44,7 +45,6 @@ subroutine te0375(option, nomte)
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 ! person_in_charge: josselin.delmas at edf.fr
-! TOLE CRP_20
 !
 !     BUT:
 !       CALCUL DE L'INDICATEUR D'ERREUR EN MECANIQUE 3D AVEC LA

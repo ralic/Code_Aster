@@ -1,5 +1,6 @@
 subroutine fointe(codmes, nomf, nbpu, nompu, valpu,&
                   resu, ier)
+! aslint: disable=W1303
     implicit   none
     include 'jeveux.h'
     include 'asterc/fiintf.h'
@@ -39,7 +40,6 @@ subroutine fointe(codmes, nomf, nbpu, nompu, valpu,&
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-! TOLE CRS_602
 !     INTERPOLATION POUR CALCULER RESU = F(X,Y,Z,...)
 !     ------------------------------------------------------------------
 ! IN  CODMES : 'F','E','A','I',... PARAMETRE TRANSMIT A U2MESS, U2MESK

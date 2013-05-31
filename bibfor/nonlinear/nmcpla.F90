@@ -4,8 +4,8 @@ subroutine nmcpla(fami, kpg, ksp, ndim, typmod,&
                   vind, opt, nwkin, wkin, sigf,&
                   vinf, ndsde, dsde, nwkout, wkout,&
                   iret)
+! aslint: disable=W1504
     implicit none
-! TOLE CRP_21
 ! ----------------------------------------------------------------------
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG

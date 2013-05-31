@@ -4,6 +4,7 @@ subroutine nmcoup(fami, kpg, ksp, ndim, typmod,&
                   sigd, vind, opt, nwkin, wkin,&
                   sigf, vinf, ndsde, dsde, nwkout,&
                   wkout, iret)
+! aslint: disable=W1504
     implicit none
 ! ----------------------------------------------------------------------
 ! ======================================================================
@@ -23,7 +24,6 @@ subroutine nmcoup(fami, kpg, ksp, ndim, typmod,&
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 ! person_in_charge: jean-michel.proix at edf.fr
-! TOLE CRP_21
 !       ----------------------------------------------------------------
     include 'jeveux.h'
     include 'asterfort/lcumfe.h'

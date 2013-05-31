@@ -20,7 +20,6 @@ subroutine lrceme(chanom, nochmd, typech, nomamd, nomaas,&
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 ! person_in_charge: nicolas.sellenet at edf.fr
-! TOLE CRP_21
 !     LECTURE D'UN CHAMP AUX ELEMENTS - FORMAT MED
 !     -    -       -         -               --
 !-----------------------------------------------------------------------
@@ -52,6 +51,7 @@ subroutine lrceme(chanom, nochmd, typech, nomamd, nomaas,&
 !        CODRET : CODE DE RETOUR (0 : PAS DE PB, NON NUL SI PB)
 !_____________________________________________________________________
 !
+! aslint: disable=W1504
     implicit none
 !
 ! 0.1. ==> ARGUMENTS

@@ -15,6 +15,7 @@ function nmfend(dr)
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
+! aslint: disable=W1304
     implicit none
 !
 !     ARGUMENTS:
@@ -31,7 +32,6 @@ function nmfend(dr)
 ! ----------------------------------------------------------------------
 !     VARIABLES LOCALES:
 !     ------------------
-! TOLE CRP_4
 !----- COMMONS NECESSAIRES A VENDOCHAB
     common   /fvendo/mu,syvp,kvp,rm,dm,seqe,ad,dt,rd,ir,unsurn,unsurm
     real(kind=8) :: mu, syvp, kvp, rm, dm, seqe, ad, dt, unsurn, unsurm

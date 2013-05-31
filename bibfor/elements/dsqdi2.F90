@@ -1,5 +1,6 @@
 subroutine dsqdi2(xyzl, df, dci, dmf, dfc,&
                   dmc, an, am)
+! aslint: disable=W1501
     implicit  none
     include 'jeveux.h'
     include 'asterfort/dsqbfa.h'
@@ -30,7 +31,6 @@ subroutine dsqdi2(xyzl, df, dci, dmf, dfc,&
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-! TOLE CRP_20
 !.======================================================================
 !
 !  DSQDI2 -- DETERMINATION DES MATRICES AN ET AM QUI SONT TELLES QUE

@@ -15,13 +15,13 @@ subroutine convi4(vari, vari4, nb)
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-! TOLE CRP_4
 !
 !     UTILITAIRE DE CONVERSION DE TABLEAUX INTEGER <---> INTEGER*4
 !
 !     SI NB > 0, REMPLIT VARI4 AVEC LES VALEURS DE VARI
 !     SI NB < 0, REMPLIT VARI AVEC LES VALEURS DE VARI4
 !
+! aslint: disable=W1304
     implicit none
     integer :: nb
     integer :: vari(nb)

@@ -1,4 +1,5 @@
 subroutine fclose(unit)
+! aslint: disable=
     implicit   none
     include 'asterfort/u2mesk.h'
     integer :: unit
@@ -18,7 +19,6 @@ subroutine fclose(unit)
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-! TOLE CRP_6
 !
 !     FERMETURE DE L'UNITE LOGIQUE fort.UNIT
 !     UTILE POUR APPEL DEPUIS PYTHON UNE FOIS LES BASES JEVEUX FERMEES

@@ -22,8 +22,8 @@ subroutine fneihm(fnoevo, deltat, perman, nno1, nno2,&
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 ! ======================================================================
-! TOLE CRP_21 CRS_1404
 ! ======================================================================
+! aslint: disable=W1306,W1504
     implicit none
     include 'asterfort/fonoei.h'
     include 'asterfort/matthm.h'

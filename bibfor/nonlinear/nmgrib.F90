@@ -1,6 +1,5 @@
 subroutine nmgrib(nno, geom, dff, dir11, lexc,&
                   vecn, b, jac, p)
-! TOLE CRS_1404
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2010  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -20,6 +19,7 @@ subroutine nmgrib(nno, geom, dff, dir11, lexc,&
 ! ----------------------------------------------------------------------
 ! CALCUL DE LA MATRICE B ET JACOBIEN POUR LES GRILLES SECONDE GENERATION
 ! ----------------------------------------------------------------------
+! aslint: disable=W1306
     implicit none
     include 'asterc/r8prem.h'
     include 'asterfort/r8inir.h'

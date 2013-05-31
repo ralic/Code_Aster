@@ -1,4 +1,5 @@
 subroutine debut()
+! aslint: disable=
     implicit none
 !     ------------------------------------------------------------------
 ! ======================================================================
@@ -17,7 +18,6 @@ subroutine debut()
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-! TOLE CRP_7
 !    DECODAGE DE LA COMMANDE DEBUT OU POURSUITE
 !     ------------------------------------------------------------------
 !     ROUTINE(S) UTILISEE(S) :

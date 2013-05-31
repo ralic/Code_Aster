@@ -1,6 +1,7 @@
 subroutine corddl(admodl, lcmodl, idprn1, idprn2, ili,&
                   mode, nec, ncmp, n, k,&
                   nddloc, pos)
+! aslint: disable=
     implicit none
 !
 ! ======================================================================
@@ -19,7 +20,6 @@ subroutine corddl(admodl, lcmodl, idprn1, idprn2, ili,&
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-! TOLE CRP_6
 !
 !     IN
 !     --

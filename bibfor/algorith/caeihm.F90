@@ -23,7 +23,6 @@ subroutine caeihm(nomte, axi, perman, mecani, press1,&
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 ! ======================================================================
-! TOLE CRP_21
 ! ======================================================================
 !
 !
@@ -60,6 +59,7 @@ subroutine caeihm(nomte, axi, perman, mecani, press1,&
 ! OUT MODINT : MODE D'INTEGRATION
 !
 ! CORPS DU PROGRAMME
+! aslint: disable=W1504
     implicit none
 !
 ! DECLARATION PARAMETRES D'APPELS

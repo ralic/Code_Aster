@@ -1,7 +1,6 @@
 subroutine dalp3d(nelem, nnoem, degre, nsommx, icnc,&
                   nelcom, numeli, xy, erreur, energi,&
                   volume, alpha, nalpha)
-! TOLE CRS_1404
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -77,6 +76,7 @@ subroutine dalp3d(nelem, nnoem, degre, nsommx, icnc,&
 ! OUT NALPHA                 : NOMBRE DE CPE PAR ELEMENT DIFFERENTS
 !                              1 PAR DEFAUT SI PAS DE SINGULARITE
 !
+! aslint: disable=W1306
     implicit none
 !
 ! DECLARATION GLOBALE

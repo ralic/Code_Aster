@@ -4,6 +4,7 @@ subroutine avgrdo(nbvec, nbordr, vectn, vwork, tdisp,&
                   coefpa, ncycl, vmin, vmax, omin,&
                   omax, post, cudomx, vnormx, nbplan)
 !
+! aslint: disable=W1306,W1504
     implicit      none
     include 'jeveux.h'
 !
@@ -39,7 +40,6 @@ subroutine avgrdo(nbvec, nbordr, vectn, vwork, tdisp,&
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-! TOLE CRS_1404 CRP_21
 !---------------------------------------------------------------------
 ! BUT:    POUR LA FATIGUE A AMPLITUDE VARIABLE
 !         A PARTIR DES PICS PAR LE COMPTAGE DE RAINFLOW,DETERMINER

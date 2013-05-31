@@ -1,5 +1,6 @@
 subroutine singum(nomail, ndim, nnoem, nelem, itype,&
                   xy)
+! aslint: disable=W1306,W1501
     implicit none
     include 'jeveux.h'
 !
@@ -33,7 +34,6 @@ subroutine singum(nomail, ndim, nnoem, nelem, itype,&
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-! TOLE CRP_20 CRS_1404
 !
 !     BUT:
 !         CREATION D'OBJETS TEMPORAIRES NECESSAIRES POUR LE CALCUL

@@ -3,6 +3,7 @@ subroutine piquag(epsi, rip, rep, rit, ret,&
                   l3, l4, l5, l6, tetaf,&
                   xmax, ymax, lmax, nt, mailla,&
                   nogrno, typsou)
+! aslint: disable=W1504
     implicit   none
     include 'jeveux.h'
 !
@@ -40,7 +41,6 @@ subroutine piquag(epsi, rip, rep, rit, ret,&
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-! TOLE  CRP_21
 !     OPERATEUR: "DEFI_GROUP" , MOTCLE FACTEUR "EQUE_PIQUA"
 !     AUTEUR Y. WADIER
 !

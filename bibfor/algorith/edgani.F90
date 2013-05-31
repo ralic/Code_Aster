@@ -1,9 +1,9 @@
 subroutine edgani(dim, y, pm, dvsitr, eqsitr,&
                   mu, ani, gamma, m, n,&
                   g, maxg, dgdy)
+! aslint: disable=W1306
     implicit none
 !
-! TOLE CRS_1404
 !
     include 'asterfort/edgequ.h'
     integer :: dim

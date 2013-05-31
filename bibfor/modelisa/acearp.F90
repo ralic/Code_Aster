@@ -1,5 +1,6 @@
 subroutine acearp(noma, nomo, lmax, noemaf, nbocc,&
                   ivr, ifm)
+! aslint: disable=W1501
     implicit      none
     include 'jeveux.h'
 !
@@ -37,7 +38,6 @@ subroutine acearp(noma, nomo, lmax, noemaf, nbocc,&
     integer :: ifm, lmax, noemaf, nbocc, ivr(*)
     character(len=8) :: noma, nomo
 ! ----------------------------------------------------------------------
-! TOLE CRP_20
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

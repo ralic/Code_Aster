@@ -16,9 +16,9 @@ subroutine retrgl(nomres, resgen, mailsk, profno)
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 !***********************************************************************
+! aslint: disable=W1501
     implicit none
 !  C. VARE     DATE 16/11/94
-! TOLE CRP_20
 !-----------------------------------------------------------------------
 !
 !  BUT : < RESTITUTION TRANSITOIRE GLOBALE >

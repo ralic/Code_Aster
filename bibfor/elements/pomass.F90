@@ -1,5 +1,6 @@
 subroutine pomass(nomte, e, xnu, rho, kanl,&
                   mlv)
+! aslint: disable=
     implicit none
     include 'jeveux.h'
     include 'asterfort/jevech.h'
@@ -9,7 +10,6 @@ subroutine pomass(nomte, e, xnu, rho, kanl,&
     include 'asterfort/u2mesk.h'
     character(len=*) :: nomte
     real(kind=8) :: mlv(*)
-! TOLE CRP_6
 !     ------------------------------------------------------------------
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG

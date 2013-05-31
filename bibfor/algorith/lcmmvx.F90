@@ -2,6 +2,7 @@ subroutine lcmmvx(sigf, vin, nmat, materf, nbcomm,&
                   cpmono, pgl, nvi, hsr, nfs,&
                   nsg, toutms, timed, timef, deps,&
                   seuil)
+! aslint: disable=W1306
     implicit none
 ! ----------------------------------------------------------------------
 ! ======================================================================
@@ -20,7 +21,6 @@ subroutine lcmmvx(sigf, vin, nmat, materf, nbcomm,&
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-! TOLE CRS_1404
 !     ----------------------------------------------------------------
 !     MONOCRISTAL  :  CALCUL DU SEUIL POUR MONOCRISTAL
 !     ----------------------------------------------------------------

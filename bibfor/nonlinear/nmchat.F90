@@ -3,7 +3,6 @@ subroutine nmchat(matel, mat, nbvar, memo, visc,&
                   ndimsi, dt, rpvp, qp, vim,&
                   idelta, n1, n2, beta1, beta2,&
                   dsidep)
-! TOLE CRP_21
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -22,6 +21,7 @@ subroutine nmchat(matel, mat, nbvar, memo, visc,&
 ! ======================================================================
 ! person_in_charge: jean-michel.proix at edf.fr
 !.======================================================================
+! aslint: disable=W1504
     implicit none
 ! ----ARGUMENTS
     include 'asterc/r8prem.h'

@@ -20,14 +20,13 @@ subroutine fetarp(infofe, ifm, niter, nbi, nbreor,&
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-! TOLE CRP_21
-! TOLE CRP_4
 !-----------------------------------------------------------------------
 !    - FONCTION REALISEE:  TEST DEFINIE POSITIVITE DE P*FI*P VIA UN
 !      CALCUL DE LA PARTIE BASSE DE SON SPECTRE AVEC ARPACK
 !----------------------------------------------------------------------
 ! person_in_charge: olivier.boiteau at edf.fr
 ! CORPS DU PROGRAMME
+! aslint: disable=W1304,W1504
     implicit none
 !
 ! DECLARATION PARAMETRES D'APPELS

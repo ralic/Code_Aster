@@ -27,7 +27,6 @@ subroutine hmlvag(yachai, option, meca, ther, hydr,&
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 ! person_in_charge: sylvie.granet at edf.fr
-! TOLE CRP_21
 ! ======================================================================
 ! ROUTINE HMLVAG : CETTE ROUTINE CALCULE LES CONTRAINTES GENERALISE
 !   ET LA MATRICE TANGENTE DES GRANDEURS COUPLEES, A SAVOIR CELLES QUI
@@ -40,6 +39,7 @@ subroutine hmlvag(yachai, option, meca, ther, hydr,&
 !                       = 1 ECHEC DANS L'INTEGRATION : PAS DE RESULTATS
 !                       = 3 SIZZ NON NUL (DEBORST) ON CONTINUE A ITERER
 ! ======================================================================
+! aslint: disable=W1504
     implicit none
     include 'asterfort/appmas.h'
     include 'asterfort/calor.h'

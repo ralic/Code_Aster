@@ -21,6 +21,7 @@ subroutine lc0045(fami, kpg, ksp, ndim, imate,&
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 ! person_in_charge: jerome.laverne at edf.fr
+! aslint: disable=W1504
     implicit none
     include 'asterfort/lcejmr.h'
     integer :: kpg, ksp, ndim, imate, codret, icomp, nvi
@@ -31,7 +32,6 @@ subroutine lc0045(fami, kpg, ksp, ndim, imate,&
     real(kind=8) :: crit(1), instam, instap
     real(kind=8) :: epsm(6), deps(6)
     real(kind=8) :: sigm(6), vim(*), sigp(6), vip(*), dsidep(6, 6)
-! TOLE CRP_21
 ! ======================================================================
 !       IN      FAMI    FAMILLE DE POINT DE GAUSS (RIGI,MASS,...)
 !       IN      KPG,KSP NUMERO DU (SOUS)POINT DE GAUSS

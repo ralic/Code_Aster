@@ -4,6 +4,7 @@ subroutine rslphi(fami, kpg, ksp, loi, imat,&
                   acc, f, df, sig0, eps0,&
                   mexpo, dt, phi, phip, rigeq,&
                   rigm, p, overfl)
+! aslint: disable=W1504
     implicit none
 !       ======================================================
 ! ======================================================================
@@ -22,7 +23,6 @@ subroutine rslphi(fami, kpg, ksp, loi, imat,&
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-! TOLE CRP_21
 !       ======================================================
 !       CALCUL DE LA FONCTION A ANNULER ET SA DERIVE POUR
 !          CALCULER L'INCREMENT DF POUR LA LOI DE ROUSSELIER

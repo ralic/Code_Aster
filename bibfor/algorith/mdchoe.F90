@@ -5,6 +5,7 @@ subroutine mdchoe(np1, np2, np3, nbm, nbmcd,&
                   vitg0, depg0, old, oldia, fmod,&
                   fmres, ftmp, mtmp1, mtmp6, testc,&
                   itforn, inewto, toln)
+! aslint: disable=W1504
     implicit none
 !-----------------------------------------------------------------------
 ! ======================================================================
@@ -23,7 +24,6 @@ subroutine mdchoe(np1, np2, np3, nbm, nbmcd,&
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-! TOLE  CRP_21
 !-----------------------------------------------------------------------
 ! DESCRIPTION : ESTIMATION ET "LINEARISATION" DE LA FORCE NON-LINEAIRE
 ! -----------   (NON-LINEARITE DE TYPE CHOC)

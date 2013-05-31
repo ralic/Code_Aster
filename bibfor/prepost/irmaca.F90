@@ -1,6 +1,7 @@
 subroutine irmaca(ifc, ndim, nno, coordo, nbma,&
                   connex, point, noma, typma, lmod,&
                   nbgrn, nogn, nbgrm, nogm, nive)
+! aslint: disable=W1501
     implicit none
     include 'jeveux.h'
 !
@@ -44,7 +45,6 @@ subroutine irmaca(ifc, ndim, nno, coordo, nbma,&
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-! TOLE CRP_20
 !
 !     BUT :   ECRITURE DU MAILLAGE AU FORMAT CASTEM2000
 !     ENTREE:

@@ -25,6 +25,7 @@ subroutine alitmi(np1, np2, np3, np4, n2,&
                   s0, z0, sr0, za1, za2,&
                   za3, zin)
 !
+! aslint: disable=W1504
     implicit none
 !-----------------------------------------------------------------------
 ! ======================================================================
@@ -43,7 +44,6 @@ subroutine alitmi(np1, np2, np3, np4, n2,&
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-! TOLE  CRP_21
 !-----------------------------------------------------------------------
 ! DESCRIPTION : PROCEDURE DE CALCUL DU VECTEUR D'ETAT A L'INSTANT N+1
 ! -----------   EN FONCTION DU VECTEUR D'ETAT A L'INSTANT N

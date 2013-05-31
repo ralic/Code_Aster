@@ -1,4 +1,5 @@
 subroutine jni080(elrefe, nmaxob, liobj, nbobj)
+! aslint: disable=W1501
     implicit none
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -32,7 +33,6 @@ subroutine jni080(elrefe, nmaxob, liobj, nbobj)
     character(len=8) :: elrefe
     integer :: nmaxob, nbobj
 !
-! TOLE CRP_20
 !.......................................................................
 !
 ! BUT :  ROUTINE D'INITIALISATION DES ELEMENTS COQUE (MEC3QU9H,MEC3TR7H)

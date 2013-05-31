@@ -1,5 +1,6 @@
 subroutine vetube(r1, r2, angdeb, angfin, angare,&
                   angmax, angva, profon, volume, epais)
+! aslint: disable=
     implicit   none
     include 'asterc/r8dgrd.h'
     include 'asterc/r8pi.h'
@@ -24,7 +25,6 @@ subroutine vetube(r1, r2, angdeb, angfin, angare,&
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-! TOLE CRP_6
 !-----------------------------------------------------------------------
     real(kind=8) :: delta, tau, deno1, xval, xnume1, xnume2, deltag
     real(kind=8) :: pi, rad, deg

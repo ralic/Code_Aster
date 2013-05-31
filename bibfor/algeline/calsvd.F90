@@ -1,5 +1,6 @@
 subroutine calsvd(nm, m, n, a, w,&
                   matu, u, matv, v, ierr)
+! aslint: disable=W1304
     implicit none
 !-----------------------------------------------------------------------
 ! ======================================================================
@@ -18,7 +19,6 @@ subroutine calsvd(nm, m, n, a, w,&
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-! TOLE  CRP_4
 !-----------------------------------------------------------------------
 !
 ! DESCRIPTION :   CALCUL DE LA DECOMPOSITION AUX VALEURS SINGULIERES

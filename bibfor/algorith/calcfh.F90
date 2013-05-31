@@ -28,8 +28,6 @@ subroutine calcfh(option, perman, thmc, ndim, dimdef,&
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 ! person_in_charge: sylvie.granet at edf.fr
-! TOLE CRP_20
-! TOLE CRP_21
 ! ======================================================================
 ! ROUTINE CALC_FLUX_HYDRO
 ! CALCULE LES CONTRAINTES GENERALISEES ET LA MATRICE TANGENTE DES FLUX
@@ -57,6 +55,7 @@ subroutine calcfh(option, perman, thmc, ndim, dimdef,&
 !          =>DES VALEURS AU CENTRE
 !
 !
+! aslint: disable=W1501,W1504
     implicit none
 !
 !

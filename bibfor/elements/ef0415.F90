@@ -17,7 +17,7 @@ subroutine ef0415(nomte)
 ! ======================================================================
 !     CALCUL DE EFGE_ELNO
 !     ------------------------------------------------------------------
-! TOLE CRP_20
+! aslint: disable=W1501
     implicit none
     include 'jeveux.h'
 !

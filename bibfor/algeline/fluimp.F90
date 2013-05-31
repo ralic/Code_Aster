@@ -1,6 +1,7 @@
 subroutine fluimp(itypfl, nivpar, nivdef, melflu, typflu,&
                   nuor, freq, freqi, nbm, vite,&
                   npv, carac, calcul, amoc)
+! aslint: disable=W1501
     implicit none
 !-----------------------------------------------------------------------
 ! ======================================================================
@@ -23,7 +24,6 @@ subroutine fluimp(itypfl, nivpar, nivdef, melflu, typflu,&
 ! IMPRESSION DANS LE FICHIER RESULTAT DES PARAMETRES DE COUPLAGE
 ! FLUIDE-STRUCTURE (FREQ,AMOR) ET/OU DES DEFORMEES MODALES
 ! APPELANT : FLUST1, FLUST2, FLUST3, FLUST4
-! TOLE  CRP_20
 !-----------------------------------------------------------------------
 !  IN : ITYPLF : INDICE CARACTERISANT LE TYPE DE LA CONFIGURATION
 !                ETUDIEE

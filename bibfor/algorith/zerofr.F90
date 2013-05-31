@@ -16,6 +16,7 @@ subroutine zerofr(intini, algo, func, x1, x2,&
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
+! aslint: disable=
     implicit none
 !
     include 'asterfort/assert.h'
@@ -30,7 +31,6 @@ subroutine zerofr(intini, algo, func, x1, x2,&
     external      func
 !
 ! ----------------------------------------------------------------------
-! TOLE CRP_7
 !     BUT : TROUVER LE ZERO D'UNE FONCTION SCALAIRE REELLE
 !
 !

@@ -1,4 +1,5 @@
 subroutine ulopen(unit, fichie, name, acces, autor)
+! aslint: disable=
     implicit   none
     include 'asterfort/codent.h'
     include 'asterfort/u2mesi.h'
@@ -25,7 +26,6 @@ subroutine ulopen(unit, fichie, name, acces, autor)
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 ! person_in_charge: j-pierre.lefebvre at edf.fr
-! TOLE CRP_6
 !
 !     OUVERTURE DE L'UNITE LOGIQUE ASSOCIE AU FICHIER DE NOM FICHIE DE
 !     TYPE ASCII, SI LE NOM EST VIDE, IL EST AFFECTE A fort.UNIT

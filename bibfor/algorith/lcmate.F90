@@ -5,6 +5,7 @@ subroutine lcmate(fami, kpg, ksp, comp, mod,&
                   toler, ndt, ndi, nr, crit,&
                   nvi, vind, nfs, nsg, toutms,&
                   nhsr, numhsr, sigd)
+! aslint: disable=W1504
     implicit   none
 ! ======================================================================
 ! ======================================================================
@@ -23,7 +24,6 @@ subroutine lcmate(fami, kpg, ksp, comp, mod,&
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-! TOLE CRP_21
 ! person_in_charge: jean-michel.proix at edf.fr
 !       ----------------------------------------------------------------
 !       RECUPERATION DU MATERIAU A TEMPF ET TEMPD

@@ -5,6 +5,7 @@ subroutine lcinit(fami, kpg, ksp, loi, typess,&
                   nbcomm, cpmono, pgl, nfs, nsg,&
                   toutms, vind, sigd, sigf, epstr,&
                   bnews, mtrac, indi, iret)
+! aslint: disable=W1504
     implicit   none
 !       ================================================================
 ! ======================================================================
@@ -54,7 +55,6 @@ subroutine lcinit(fami, kpg, ksp, loi, typess,&
 !       OUT DY     :  SOLUTION ESSAI  = ( DSIG DVIN (DEPS3) )
 !           INDI   :  INDICATEURS DES MECANISMES POT. ACTIFS (HUJEUX)
 !       ----------------------------------------------------------------
-! TOLE CRP_21
     include 'asterfort/burini.h'
     include 'asterfort/cvmini.h'
     include 'asterfort/hujini.h'

@@ -1,4 +1,5 @@
 subroutine i3sl3r(a, b, ez, cs)
+! aslint: disable=
     implicit none
     include 'asterfort/provec.h'
     real(kind=8) :: a(*), b(*), ez(*), cs(3, *)
@@ -19,7 +20,6 @@ subroutine i3sl3r(a, b, ez, cs)
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-! TOLE CRP_6
 !     CALCUL D'UNE MATRICE DE PASSAGE EN 3D PLUS TRANSLATION
 !     ------------------------------------------------------------------
     integer :: i, j

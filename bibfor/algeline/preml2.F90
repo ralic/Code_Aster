@@ -23,7 +23,7 @@ subroutine preml2(n1, diag, col, delg, xadj1,&
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-!     TOLE CRP_21 CRP_4
+! aslint: disable=W1304,W1504
     implicit none
     include 'asterfort/facsmb.h'
     include 'asterfort/infniv.h'

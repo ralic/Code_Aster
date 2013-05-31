@@ -1,4 +1,5 @@
 subroutine prcycb(nomres, soumat, repmat)
+! aslint: disable=W1501
     implicit none
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -16,7 +17,6 @@ subroutine prcycb(nomres, soumat, repmat)
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-! TOLE CRP_20
 !***********************************************************************
 !  P. RICHARD     DATE 11/03/91
 !-----------------------------------------------------------------------

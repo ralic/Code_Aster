@@ -1,5 +1,6 @@
 subroutine xmilac(ndim, igeom, ptint, tabco, tabdir,&
                   jgrlsn, p, r, ptmil, milac)
+! aslint: disable=W1306
     implicit none
 !
     include 'jeveux.h'
@@ -20,7 +21,6 @@ subroutine xmilac(ndim, igeom, ptint, tabco, tabdir,&
     integer :: jgrlsn, tabdir(4)
     real(kind=8) :: milac(ndim), ptint(*), ptmil(*), tabco(*)
 !
-! TOLE CRS_1404
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

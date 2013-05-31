@@ -16,7 +16,6 @@
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 ! =====================================================================
-! TOLE CRP_20
 !
 !     SUBROUTINE ARPACK CALCULANT LES VALEURS PROPRES DE (OP), ELLE
 !     APPELLE LA ROUTINE DE TRAVAIL ZNAUPD2.
@@ -413,6 +412,7 @@ subroutine znaupd(ido, bmat, n, which, nev,&
 !
 !-----------------------------------------------------------------------
 ! CORPS DU PROGRAMME
+! aslint: disable=W1501
     implicit none
 !     %--------------------------------------%
 !     | INCLUDE FILES FOR DEBUGGING AND INFO |

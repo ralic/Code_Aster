@@ -1,5 +1,6 @@
 subroutine cbvalc(rouc, neq, smhc, smdi, idlexc,&
                   coefr, coefc, valmi, valmr, valmc)
+! aslint: disable=W1304
     implicit none
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -17,7 +18,6 @@ subroutine cbvalc(rouc, neq, smhc, smdi, idlexc,&
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-! TOLE CRP_4
 !-------------------------------------------------------------------
 !     BUT : ACCUMULTATION DANS VALMR (OU VALMC) DE COEF*VALMI
 !     ROUC=

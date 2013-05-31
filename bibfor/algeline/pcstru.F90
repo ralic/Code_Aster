@@ -17,7 +17,7 @@ subroutine pcstru(n, in, ip, icpl, icpc,&
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-! TOLE CRP_4
+! aslint: disable=W1304
     implicit none
 !
 !----------------------------------------------------------------------

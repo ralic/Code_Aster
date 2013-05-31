@@ -1,6 +1,7 @@
 subroutine i3iqps(epsi, k, f, desc, desctm,&
                   conexk, coordo, sgt, nbpt, lstpt,&
                   fink)
+! aslint: disable=W1501
     implicit none
     include 'jeveux.h'
     include 'asterfort/i3crqp.h'
@@ -16,7 +17,6 @@ subroutine i3iqps(epsi, k, f, desc, desctm,&
     real(kind=8) :: epsi, sgt(*), coordo(*)
     logical :: fink
 !     ------------------------------------------------------------------
-! TOLE CRP_20
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

@@ -3,7 +3,6 @@ subroutine nmfi2d(npg, lgpg, mate, option, geom,&
                   ktan, vim, vip, tm, tp,&
                   crit, compor, typmod, codret)
 !
-! TOLE CRS_1404
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -23,6 +22,7 @@ subroutine nmfi2d(npg, lgpg, mate, option, geom,&
 !
 ! ======================================================================
 !
+! aslint: disable=W1306
     implicit none
     include 'jeveux.h'
     include 'asterc/r8vide.h'

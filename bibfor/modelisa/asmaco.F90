@@ -1,4 +1,5 @@
 subroutine asmaco(ma1, ma2, mag)
+! aslint: disable=W1501
     implicit none
     include 'jeveux.h'
 !
@@ -42,7 +43,6 @@ subroutine asmaco(ma1, ma2, mag)
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-! TOLE CRP_20
 !     OPERATEUR: ASSE_MAILLAGE / CAS DE L ASSEMBLAGE DE MAILLAGES
 !     AVEC COLLAGE DE DEUX GROUPES DE MAILLES
 !

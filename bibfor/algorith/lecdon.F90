@@ -1,4 +1,5 @@
 subroutine lecdon(ficext, unitpa, prdeff)
+! aslint: disable=,W1304
     implicit          none
     include 'jeveux.h'
     include 'asterc/getfac.h'
@@ -105,7 +106,6 @@ subroutine lecdon(ficext, unitpa, prdeff)
 ! !              !  +(IPAL-1)  !  CONSIDERE                            !
 ! !______________!_____________!_______________________________________!
 !
-! TOLE CRS_512 CRP_4
 !
 !
 !

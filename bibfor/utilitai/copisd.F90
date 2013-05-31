@@ -1,4 +1,5 @@
 subroutine copisd(typesd, base, sd1, sd2)
+! aslint: disable=W1501
     implicit none
     include 'jeveux.h'
     include 'asterfort/assert.h'
@@ -18,7 +19,6 @@ subroutine copisd(typesd, base, sd1, sd2)
     include 'asterfort/tbcopi.h'
     include 'asterfort/u2mesk.h'
     character(len=*) :: typesd, base, sd1, sd2
-! TOLE CRP_20
 ! ----------------------------------------------------------------------
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG

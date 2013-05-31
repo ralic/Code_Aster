@@ -19,7 +19,7 @@ subroutine slecor(iunv, datset)
 !  LE DATASET 18 EST OBSOLETE DEPUIS 1987
 !  DATSET : IN :DATASET DES SYSTEMES DE COORDONNEES
 ! ======================================================================
-! TOLE CRS_512
+! aslint: disable=
     implicit none
 !     =================
 !

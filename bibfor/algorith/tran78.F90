@@ -1,4 +1,5 @@
 subroutine tran78(nomres, typres, nomin)
+! aslint: disable=W1501
     implicit none
     include 'asterc/getvid.h'
     include 'asterfort/bamo78.h'
@@ -26,7 +27,6 @@ subroutine tran78(nomres, typres, nomin)
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 !
-! TOLE CRP_20
 ! IN  : NOMRES : NOM UTILISATEUR POUR LA COMMANDE REST_COND_TRAN
 ! IN  : NOMIN  : NOM UTILISATEUR DU CONCEPT TRAN_GENE AMONT
 ! IN  : TYPRES : TYPE DE RESULTAT : 'DYNA_TRANS'

@@ -4,6 +4,7 @@ subroutine mmaxkl(latabl, modele, thetai, mate, compor,&
                   pair, ndimte, nbprup, noprup, fiss,&
                   lonvec, ivec, vchar, resuco, lmelas,&
                   lncas, lord, milieu, connex)
+! aslint: disable=,W1504
     implicit none
 !
     include 'jeveux.h'
@@ -54,8 +55,6 @@ subroutine mmaxkl(latabl, modele, thetai, mate, compor,&
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-! TOLE CRP_21
-! TOLE CRS_512
 !      OPERATEUR :     CALC_G
 !
 !     ----------------------------------------------------------------

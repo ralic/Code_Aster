@@ -17,6 +17,7 @@ subroutine peingl(resu, modele, mate, cara, nchar,&
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+! aslint: disable=W1501
     implicit   none
     include 'jeveux.h'
 !
@@ -59,7 +60,6 @@ subroutine peingl(resu, modele, mate, cara, nchar,&
     integer :: nchar, nh, nbocc
     character(len=*) :: resu, modele, mate, cara, lchar(1), motfaz
 !.======================================================================
-! TOLE CRP_20
 !
 !      PEINGL  --  OPERATEUR POST_ELEM
 !                  TRAITEMENT DU MOT-FACTEUR "INDIC_ENER"

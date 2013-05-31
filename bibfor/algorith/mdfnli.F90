@@ -8,6 +8,7 @@ subroutine mdfnli(nbmode, depgen, vitgen, accgen, fexgen,&
                   foncp, numpas, nbpal, dt, dtsto,&
                   vrotat, typal, finpal, cnpal, prdeff,&
                   conv, fsauv)
+! aslint: disable=,W1504
     implicit none
     include 'asterfort/mdfcho.h'
     include 'asterfort/mdfedy.h'
@@ -55,7 +56,6 @@ subroutine mdfnli(nbmode, depgen, vitgen, accgen, fexgen,&
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-! TOLE CRP_21 CRS_512
 !
 !     AJOUTE AU SECOND MEMBRE LA CONTRIBUTION DES FORCES NON LINEAIRES
 !     ------------------------------------------------------------------

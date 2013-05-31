@@ -5,6 +5,7 @@ subroutine lcplnl(fami, kpg, ksp, loi, toler,&
                   nbcomm, cpmono, pgl, nfs, nsg,&
                   toutms, hsr, sigf, vinf, icomp,&
                   codret, drdy, tampon, crit)
+! aslint: disable=W1306,W1504
     implicit none
 ! ----------------------------------------------------------------------
 ! ======================================================================
@@ -24,7 +25,6 @@ subroutine lcplnl(fami, kpg, ksp, loi, toler,&
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 ! person_in_charge: jean-michel.proix at edf.fr
-! TOLE CRP_21 CRS_1404
 !
 !     INTEGRATION ELASTO-PLASTIQUE ET VISCO-PLASTICITE
 !           SUR DT DE Y = ( SIG , VIN )

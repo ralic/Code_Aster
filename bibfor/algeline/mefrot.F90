@@ -4,6 +4,7 @@ subroutine mefrot(ndim, som, vit0, promas, provis,&
                   itypg, zg, tg, dg, rugg,&
                   axg, xig, afluid, pm, cfg,&
                   vitg, rhog, viscg)
+! aslint: disable=W1504
     implicit   none
 !
     include 'jeveux.h'
@@ -39,7 +40,6 @@ subroutine mefrot(ndim, som, vit0, promas, provis,&
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-! TOLE CRP_21
 ! ----------------------------------------------------------------------
 !     CALCUL DU DIAMETRE HYDRAULIQUE, ET DES NOMBRES DE REYNOLDS
 !     OPERATEUR APPELANT : OP0144 , FLUST3, MEFIST

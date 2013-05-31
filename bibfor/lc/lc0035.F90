@@ -3,6 +3,7 @@ subroutine lc0035(fami, kpg, ksp, ndim, imate,&
                   deps, sigm, vim, option, angmas,&
                   sigp, vip, tampon, typmod, icomp,&
                   nvi, dsidep, codret)
+! aslint: disable=W1504
     implicit none
     include 'asterfort/lkcomp.h'
     include 'asterfort/lkpost.h'
@@ -33,7 +34,6 @@ subroutine lc0035(fami, kpg, ksp, ndim, imate,&
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-! TOLE CRP_21
 !
 ! APPEL DE RCVARC POUR LE CALCUL DE LA TEMPERATURE
 ! RAISON: CETTE ROUTINE EST APPELEE EN THM AUSSI... (CALCME)

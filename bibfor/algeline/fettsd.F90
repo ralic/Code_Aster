@@ -18,7 +18,6 @@ subroutine fettsd(infofe, nbi, nbsd, vddl, sdfeti,&
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-! TOLE CRP_4
 !-----------------------------------------------------------------------
 !    - FONCTION REALISEE:  TEST VALIDITE DE SD_FETI OU SORTIES FICHIER
 !                          POUR SOULAGER ALFETI.F
@@ -57,10 +56,9 @@ subroutine fettsd(infofe, nbi, nbsd, vddl, sdfeti,&
 !                  10   --> ECRITURE NUME_DDL/MODES RIGIDES LOC DS 18
 !     IN LTEST   :  LOG  : .TRUE. SI TEST ACTIVE
 !----------------------------------------------------------------------
-! TOLE CRP_4
-! TOLE CRP_20
 ! person_in_charge: mickael.abbas at edf.fr
 ! CORPS DU PROGRAMME
+! aslint: disable=W1304,W1304,W1501
     implicit none
 !
 ! DECLARATION PARAMETRES D'APPELS

@@ -3,6 +3,7 @@ subroutine avcipr(nbvec, vectn, vectu, vectv, nbordr,&
                   ipgn, nomcri, nomfor, fordef, fatsoc,&
                   proaxe, pseuil, method, ncycl, vmin,&
                   vmax, omin, omax)
+! aslint: disable=W1306,W1504
     implicit none
     include 'jeveux.h'
 !
@@ -41,7 +42,6 @@ subroutine avcipr(nbvec, vectn, vectu, vectv, nbordr,&
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-! TOLE CRP_21 CRS_1404
 !---------------------------------------------------------------------
 ! BUT:  POUR LA FATIGUE A AMPLITUDE VARIABLE
 !       A PARTIR DE l'HISTOIRE DE CISSAILLEMENT, PROJETER SUR UN OU

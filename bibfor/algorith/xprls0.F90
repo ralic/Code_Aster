@@ -1,6 +1,7 @@
 subroutine xprls0(fispre, noma, noesom, armin, cnsln,&
                   cnslt, isozro, levset, nodtor, eletor,&
                   poifi, trifi)
+! aslint: disable=W1501
     implicit none
     include 'jeveux.h'
 !
@@ -46,7 +47,6 @@ subroutine xprls0(fispre, noma, noesom, armin, cnsln,&
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 ! person_in_charge: patrick.massin at edf.fr
-! TOLE CRP_20
 !     ------------------------------------------------------------------
 !
 !       XPRLS0   : X-FEM PROPAGATION : CALCUL DES LS PROCHE DES ISO-0

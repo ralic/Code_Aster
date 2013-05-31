@@ -1,5 +1,6 @@
 subroutine xmilar(ndim, pinter, tabar, areint, milara,&
                   milarb)
+! aslint: disable=W1306
     implicit none
 !
     include 'jeveux.h'
@@ -13,7 +14,6 @@ subroutine xmilar(ndim, pinter, tabar, areint, milara,&
     integer :: ndim, areint
     real(kind=8) :: milara(ndim), milarb(ndim), pinter(*), tabar(*)
 !
-! TOLE CRS_1404
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

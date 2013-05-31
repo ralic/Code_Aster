@@ -1,7 +1,6 @@
 subroutine pmathm(dimmat, dimdef, dimcon, dimuel, dsde,&
                   drds, ck, b, poids, matri)
 ! ======================================================================
-! TOLE CRS_1404
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2010  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -19,6 +18,7 @@ subroutine pmathm(dimmat, dimdef, dimcon, dimuel, dsde,&
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 ! ======================================================================
+! aslint: disable=W1306
     implicit   none
     integer :: dimdef, dimcon, dimuel, dimmat
     real(kind=8) :: dsde(dimcon, dimdef), drds(dimdef, dimcon), poids

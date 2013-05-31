@@ -28,6 +28,7 @@ subroutine mditm2(np2, np3, np4, n2, nbm,&
                   za3, za4, za5, zin, zitr,&
                   nbchoc, parcho, noecho)
 !
+! aslint: disable=W1501,W1504
     implicit none
 !-----------------------------------------------------------------------
 ! ======================================================================
@@ -46,8 +47,6 @@ subroutine mditm2(np2, np3, np4, n2, nbm,&
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-! TOLE  CRP_21
-! TOLE  CRP_20
 !-----------------------------------------------------------------------
 ! DESCRIPTION : CALCUL DE LA REPONSE DYNAMIQUE NON-LINEAIRE D'UNE
 ! -----------   STRUCTURE PAR UNE METHODE INTEGRALE

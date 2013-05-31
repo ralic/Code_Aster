@@ -1,5 +1,4 @@
 subroutine op0049()
-! TOLE CRS_513
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -17,6 +16,7 @@ subroutine op0049()
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 ! ......................................................................
+! aslint: disable=
     implicit none
 !   - FONCTION REALISEE:
 !       COMMANDE PRE_GIBI

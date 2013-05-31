@@ -18,9 +18,9 @@ subroutine lcejfr(fami, kpg, ksp, ndim, mate,&
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-! TOLE CRS_1404
 ! person_in_charge: kyrylo.kazymyrenko at edf.fr
 !
+! aslint: disable=W1306
     implicit none
     include 'asterfort/matinv.h'
     include 'asterfort/pmavec.h'

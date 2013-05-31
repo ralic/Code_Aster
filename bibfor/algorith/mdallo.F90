@@ -5,6 +5,7 @@ subroutine mdallo(nomres, basemo, masgen, riggen, amogen,&
                   jdisc, jfcho, jdcho, jvcho, jadcho,&
                   jredc, jredd, jrevc, jrevd, method,&
                   nbsym, nomsym, typcal, sauve)
+! aslint: disable=W1504
     implicit none
     include 'jeveux.h'
 !
@@ -40,7 +41,6 @@ subroutine mdallo(nomres, basemo, masgen, riggen, amogen,&
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-! TOLE CRP_21
 !
 !     ALLOCATION DES VECTEURS DE SORTIE POUR UN CALCUL TRANSITOIRE
 !     SUR BASE GENERALISEE (SD_DYNA_GENE)

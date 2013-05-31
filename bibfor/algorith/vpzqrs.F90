@@ -18,7 +18,6 @@ subroutine vpzqrs(n, m, hh, ih, loc,&
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-! TOLE  CRP_20
 !-----------------------------------------------------------------------
 !
 !     PROCEDURE INVIT
@@ -38,6 +37,7 @@ subroutine vpzqrs(n, m, hh, ih, loc,&
 !
 ! --- DECLARATIONS
 !
+! aslint: disable=W1501
     implicit none
 !
 ! ARGUMENTS

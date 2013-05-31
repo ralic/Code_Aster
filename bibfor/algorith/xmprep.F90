@@ -4,6 +4,7 @@ subroutine xmprep(cface, contac, elref, elrefc, elc,&
                   jlst, lact, nd, ndim, ninter,&
                   nlact, nno, nnos, nptf, nvit,&
                   rr, singu, tau1, tau2)
+! aslint: disable=W1504
     implicit none
     include 'jeveux.h'
 ! ======================================================================
@@ -22,7 +23,6 @@ subroutine xmprep(cface, contac, elref, elrefc, elc,&
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-! TOLE CRP_21
 ! PREPARATION MATRICE OU VECTEUR EL DE CONTACT DANS UN TE
 ! IN CFACE  : TABLEAU CONNECTIVITE FACETTES DE CONTACT
 ! IN CONTAC : TYPE DE CONTACT (1: P1P1, 3: P2P1)

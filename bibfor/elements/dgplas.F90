@@ -5,6 +5,7 @@ subroutine dgplas(ea, sya, eb, nub, sytb,&
                   rx, ry, np, dxp, pendt,&
                   drp, mp, pendf)
 !
+! aslint: disable=W1504
     implicit none
 !
 ! PARAMETRES ENTRANTS
@@ -38,7 +39,6 @@ subroutine dgplas(ea, sya, eb, nub, sytb,&
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 ! person_in_charge: sebastien.fayolle at edf.fr
-! TOLE CRP_21
 ! ----------------------------------------------------------------------
 !
 ! BUT : DETERMINATION DES PENTES POST ENDOMMAGEMENT

@@ -1,4 +1,5 @@
 function nddl(ili, nunoel, nec, idprn1, idprn2)
+! aslint: disable=
     implicit none
     integer :: nddl
     include 'jeveux.h'
@@ -19,7 +20,6 @@ function nddl(ili, nunoel, nec, idprn1, idprn2)
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-! TOLE CRP_6
 !----------------------------------------------------------------------
 ! IN  ILI    I : NUMERO DU GROUPE DANS LE LIGREL
 ! IN  NUNOEL I : NUMERO DU NOEUD

@@ -2,6 +2,7 @@ subroutine mdchst(numddl, typnum, imode, iamor, pulsat,&
                   masgen, amogen, lflu, nbnli, nbpal,&
                   noecho, nbrfis, logcho, parcho, intitu,&
                   ddlcho, ier)
+! aslint: disable=W1501
     implicit none
     include 'jeveux.h'
 !
@@ -75,7 +76,6 @@ subroutine mdchst(numddl, typnum, imode, iamor, pulsat,&
 ! OUT : DDLCHO : TABLEAU DES NUMEROTATIONS DES NOEUDS DE CHOC
 ! OUT : IER    : NIVEAU D'ERREUR
 !     ------------------------------------------------------------------
-! TOLE CRP_20
 !
     integer :: nbchoc, nbsism, nbflam, nbocc, i, j, ioc, ibid, il, jcoor, jmama
     integer :: nbnma, kma, nn1, nn2, ino1, ino2, ig, n1, namtan, iret, nmliai

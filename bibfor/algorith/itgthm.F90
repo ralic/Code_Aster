@@ -4,6 +4,7 @@ subroutine itgthm(vf, typvf, modint, mecani, press1,&
                   nddlk, nddlm, nddlfa, dimuel, ipoids,&
                   ivf, idfde, ipoid2, ivf2, idfde2,&
                   npi2, jgano)
+! aslint: disable=W1504
     implicit     none
     include 'asterfort/assert.h'
     include 'asterfort/elref1.h'
@@ -36,7 +37,6 @@ subroutine itgthm(vf, typvf, modint, mecani, press1,&
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 ! ======================================================================
-! TOLE CRP_21
 ! ======================================================================
 ! --- ADAPTATION AU MODE D'INTEGRATION ---------------------------------
 ! --- DEFINITION DE L'ELEMENT (NOEUDS, SOMMETS, POINTS DE GAUSS) -------

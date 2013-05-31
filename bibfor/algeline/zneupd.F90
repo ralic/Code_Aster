@@ -16,7 +16,6 @@
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 ! ======================================================================
-! TOLE CRP_20 CRP_21 CRP_4
 !
 !     SUBROUTINE ARPACK CALCULANT LES MODES PROPRES DU PROBLEME
 !     INITIAL.
@@ -295,6 +294,7 @@ subroutine zneupd(rvec, howmny, select, d, z,&
 !
 !-----------------------------------------------------------------------
 ! CORPS DU PROGRAMME
+! aslint: disable=W1304,W1501,W1504
     implicit none
 !
 !     %-----------------------------%

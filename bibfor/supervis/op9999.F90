@@ -1,6 +1,6 @@
 subroutine op9999()
+! aslint: disable=
     implicit none
-! TOLE  CRS_513
 !     ------------------------------------------------------------------
 ! person_in_charge: j-pierre.lefebvre at edf.fr
 ! ======================================================================

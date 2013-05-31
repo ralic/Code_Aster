@@ -1,7 +1,6 @@
 subroutine mltaff(n, ncol, adper, matper, matfi,&
                   local, p)
 ! person_in_charge: olivier.boiteau at edf.fr
-!     TOLE CRP_4
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -21,6 +20,7 @@ subroutine mltaff(n, ncol, adper, matper, matfi,&
 ! ASSEMBLAGE DES MATRICES FRONTALES VERSION SIMPLIFIEE
 !  LA VERSION PRECEDENTE ASSEMBLAIT PAR 2 COLONES
 ! POUR UNE MEILLEURE UTILISATION DES REGISTRES SUR CRAY
+! aslint: disable=W1304
     implicit none
     integer(kind=4) :: local(*)
     integer :: n, ncol, adper(*), p

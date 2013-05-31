@@ -1,6 +1,7 @@
 subroutine iremed(nomcon, ifichi, nocham, novcmp, partie,&
                   liordr, lresu, nbnoec, linoec, nbmaec,&
                   limaec, nomcmp, lvarie, carael)
+! aslint: disable=W1306
     implicit none
 !
     include 'jeveux.h'
@@ -65,7 +66,6 @@ subroutine iremed(nomcon, ifichi, nocham, novcmp, partie,&
 ! IN  NOMCMP : K*  : NOMS DES COMPOSANTES A IMPRIMER
 ! IN  CARAEL : K*  : NOM DU CARA_ELEM
 !     ------------------------------------------------------------------
-! TOLE CRS_1404
 !
 !     ------------------------------------------------------------------
     character(len=1) :: k1bid

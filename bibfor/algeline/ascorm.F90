@@ -4,6 +4,7 @@ subroutine ascorm(monoap, typcmo, nbsup, nsupp, neq,&
                   nomsy, vecmod, reasup, spectr, corfre,&
                   muapde, tcosup, nintra, nbdis, f1gup,&
                   f2gup)
+! aslint: disable=W1504
     implicit  none
     include 'asterc/r8pi.h'
     include 'asterfort/ascarm.h'
@@ -38,7 +39,6 @@ subroutine ascorm(monoap, typcmo, nbsup, nsupp, neq,&
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-! TOLE CRP_21
 !     ------------------------------------------------------------------
 !     COMMANDE : COMB_SISM_MODAL
 !        RECOMBINAISON DES REPONSES MODALES

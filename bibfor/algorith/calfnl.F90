@@ -8,6 +8,7 @@ subroutine calfnl(np1, np2, np3, np4, nbm,&
                   fexmod, fnlmod, fmres, fmoda, ftmp,&
                   mtmp1, mtmp6, old, oldia, testc,&
                   itforn, inewto, toln)
+! aslint: disable=W1504
     implicit none
 !-----------------------------------------------------------------------
 ! ======================================================================
@@ -26,7 +27,6 @@ subroutine calfnl(np1, np2, np3, np4, nbm,&
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-! TOLE  CRP_21
 !-----------------------------------------------------------------------
 ! DESCRIPTION : ESTIMATION ET "LINEARISATION" DE LA FORCE NON-LINEAIRE
 ! -----------   CALCUL DE LA FORCE EXTERIEURE

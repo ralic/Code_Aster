@@ -5,6 +5,7 @@ subroutine xpoajd(elrefp, ino, nnop, lsn, lst,&
                   ddlc, ima, jconx1, jconx2, jcnsv1,&
                   jcnsv2, jcnsl2, nbnoc, inntot, inn,&
                   nnn, contac, lmeca)
+! aslint: disable=W1306,W1504
     implicit none
 !
     include 'jeveux.h'
@@ -44,7 +45,6 @@ subroutine xpoajd(elrefp, ino, nnop, lsn, lst,&
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 ! person_in_charge: samuel.geniaut at edf.fr
-! TOLE CRP_21 CRS_1404
 !
 !     BUT:  CALCUL DES DEPLACEMENTS AUX SOMMENTS DES SOUS-ELEMENTS
 !           ET REPORT DES LAGRANGES SI CONTACT

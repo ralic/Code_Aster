@@ -2,7 +2,6 @@ subroutine equdil(imate, option, compor, regula, dimdef,&
                   dimcon, defgep, interp, ndim, contp,&
                   rpena, r, drde)
 ! ======================================================================
-! TOLE CRS_1404
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -20,6 +19,7 @@ subroutine equdil(imate, option, compor, regula, dimdef,&
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 ! ======================================================================
+! aslint: disable=W1306
     implicit      none
     include 'asterfort/dil2gr.h'
     include 'asterfort/dilcge.h'

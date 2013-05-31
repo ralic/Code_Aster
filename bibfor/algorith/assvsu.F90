@@ -7,6 +7,7 @@ subroutine assvsu(nno, nnos, nface, geom, crit,&
                   typmod, typvf, axi, perman, nvoima,&
                   nscoma, nbvois, livois, nbnovo, nbsoco,&
                   lisoco)
+! aslint: disable=W1501,W1504
     implicit none
 !
     include 'jeveux.h'
@@ -65,7 +66,6 @@ subroutine assvsu(nno, nnos, nface, geom, crit,&
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-! TOLE CRP_20 CRP_21
 !
 !      BUT :
 !           CALCUL DES OPTIONS RIGI_MECA_TANG, RAPH_MECA ET FULL_MECA

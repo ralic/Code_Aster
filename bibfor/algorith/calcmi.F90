@@ -3,6 +3,7 @@ subroutine calcmi(np1, nbm, dt0, dt, vitg,&
                   amor, amor0, puls, puls0, trans,&
                   pulsd, s0, z0, sr0, za1,&
                   za2, za3, zin)
+! aslint: disable=W1504
     implicit none
 !-----------------------------------------------------------------------
 ! ======================================================================
@@ -21,7 +22,6 @@ subroutine calcmi(np1, nbm, dt0, dt, vitg,&
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-! TOLE  CRP_21
 !-----------------------------------------------------------------------
 ! DESCRIPTION : CALCUL DES DDLS GENERALISES A L'INSTANT N+1 PAR
 ! -----------   METHODE INTEGRALE (VERSION MULTI-MODALE)

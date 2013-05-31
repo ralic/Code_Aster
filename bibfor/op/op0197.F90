@@ -1,4 +1,5 @@
 subroutine op0197()
+! aslint: disable=W1501
     implicit none
 !     ------------------------------------------------------------------
 ! ======================================================================
@@ -17,7 +18,6 @@ subroutine op0197()
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-! TOLE CRP_20
 !     RECA_WEIBULL        ---------
 !                         COMMANDE OPTIMISATION WEIBULL : RECALAGE DES
 !                         PARAMETRES DE LA METHODE.

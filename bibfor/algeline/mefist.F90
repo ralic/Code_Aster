@@ -5,6 +5,7 @@ subroutine mefist(melflu, ndim, som, alpha, ru,&
                   phiy, defm, itypg, zg, hg,&
                   dg, tg, cdg, cpg, rugg,&
                   base)
+! aslint: disable=W1501,W1504
     implicit none
 !
     include 'jeveux.h'
@@ -50,7 +51,6 @@ subroutine mefist(melflu, ndim, som, alpha, ru,&
     integer :: itypg(*)
     real(kind=8) :: zg(*), hg(*), dg(*), tg(*), cdg(*), cpg(*), rugg(*)
 ! ----------------------------------------------------------------------
-! TOLE CRP_20
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -67,7 +67,6 @@ subroutine mefist(melflu, ndim, som, alpha, ru,&
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-! TOLE CRP_21
 ! ----------------------------------------------------------------------
 !     AFFECTATION
 !     OPERATEUR APPELANT : OP0144 , FLUST3

@@ -19,7 +19,7 @@ subroutine hujjac(mod, nmat, mater, indi, deps,&
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 ! person_in_charge: alexandre.foucault at edf.fr
-! TOLE CRS_1404
+! aslint: disable=W1306
     implicit none
 !     ----------------------------------------------------------------
 !     CALCUL DU JACOBIEN DU SYSTEME NL POUR MODELE DE HUJEUX

@@ -16,7 +16,6 @@ subroutine op0044()
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-! TOLE CRP_20
 !        MODE_ITER_INV
 !     RECHERCHE DE MODES PROPRES PAR LA METHODE D'ITERATION INVERSE
 !     ------------------------------------------------------------------
@@ -41,6 +40,7 @@ subroutine op0044()
 ! LOC NFREQB : IS : NB DE FREQUENCES EFFECTIVES DANS LA BANDE DONNEE
 !-----------------------------------------------------------------------
 ! person_in_charge: olivier.boiteau at edf.fr
+! aslint: disable=W1501
     implicit none
 !
 ! VARIABLES LOCALES

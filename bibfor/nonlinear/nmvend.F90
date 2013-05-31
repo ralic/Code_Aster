@@ -19,10 +19,8 @@ subroutine nmvend(fami, kpg, ksp, materd, materf,&
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-! TOLE CRP_4
-! TOLE CRP_7
-! TOLE CRP_21
 !-----------------------------------------------------------------------
+! aslint: disable=,W1304,W1504
     implicit none
 !
     include 'asterc/r8miem.h'

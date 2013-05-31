@@ -15,11 +15,11 @@ subroutine lxnoac(chin, chout)
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
+! aslint: disable=
     implicit none
     include 'asterfort/lxlgut.h'
     character(len=*) :: chin, chout
 !
-! TOLE CRP_6
 ! ----------------------------------------------------------------------
 ! --- REMPLACE TOUS LES CARACTERES NON AUTORISES D'UNE CHAINE
 !     DE CARACTERES PAR DES '_' (UNDERSCORE).

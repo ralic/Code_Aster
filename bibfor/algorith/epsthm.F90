@@ -5,6 +5,7 @@ subroutine epsthm(nddls, nddlm, nno, nnos, nnom,&
                   depla, mecani, press1, press2, tempe,&
                   np1, np2, axi, epsm)
 !
+! aslint: disable=W1504
     implicit none
 !
 ! DECLARATION PARAMETRES D'APPEL
@@ -35,7 +36,6 @@ subroutine epsthm(nddls, nddlm, nno, nnos, nnom,&
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-! TOLE  CRP_21
 ! ======================================================================
 !     BUT : CALCUL DES DEFORMATIONS MECANIQUES AU POINT DE GAUSS
 !           EN MECANIQUE DES MILIEUX POREUX AVEC COUPLAGE THM

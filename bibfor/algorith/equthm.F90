@@ -23,9 +23,8 @@ subroutine equthm(imate, option, ta, ta1, ndim,&
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-! TOLE CRP_20
-! TOLE CRP_21
 ! ======================================================================
+! aslint: disable=W1501,W1504
     implicit none
 ! ======================================================================
 !     BUT:  CALCUL  DES OPTIONS RIGI_MECA_TANG, RAPH_MECA ET FULL_MECA

@@ -15,6 +15,7 @@ subroutine tbimta(table, ifr, nparim, lipaim, formar)
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
+! aslint: disable=W1303
     implicit   none
     include 'jeveux.h'
 !
@@ -31,7 +32,6 @@ subroutine tbimta(table, ifr, nparim, lipaim, formar)
     integer :: ifr, nparim
     character(len=*) :: table, formar, lipaim(*)
 ! ----------------------------------------------------------------------
-! TOLE CRS_602
 !      IMPRESSION DE LA TABLE AU FORMAT "TABLEAU"
 ! ----------------------------------------------------------------------
 ! IN  : TABLE  : NOM D'UNE STRUCTURE "TABLE"

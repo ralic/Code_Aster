@@ -1,4 +1,5 @@
 subroutine rlfc16(nommat, neq, cxsol, nbsol, typsym)
+! aslint: disable=W1304
     implicit none
     include 'jeveux.h'
     include 'asterfort/dismoi.h'
@@ -14,7 +15,6 @@ subroutine rlfc16(nommat, neq, cxsol, nbsol, typsym)
     complex(kind=8) :: cxsol(neq, *)
 !     ------------------------------------------------------------------
 ! person_in_charge: olivier.boiteau at edf.fr
-!     TOLE CRP_4
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

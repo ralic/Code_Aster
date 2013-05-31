@@ -1,6 +1,7 @@
 subroutine xprreo(noma, fiss, noesom, noresi, cnsln,&
                   cnslt, cnsgln, cnsglt, deltat, isozro,&
                   cnxinv, nodtor, eletor, liggrd)
+! aslint: disable=W1501
     implicit none
     include 'jeveux.h'
 !
@@ -48,7 +49,6 @@ subroutine xprreo(noma, fiss, noesom, noresi, cnsln,&
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 ! person_in_charge: patrick.massin at edf.fr
-! TOLE CRP_20
 !     ------------------------------------------------------------------
 !
 !       XPRREO   : X-FEM PROPAGATION : REORTHOGONALISATION DE LEVEL SET

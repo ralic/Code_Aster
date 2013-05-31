@@ -1,12 +1,12 @@
 subroutine xrmes2(ndim, nbnase, cpt, in, ivois,&
                   jsigse, nno, nbcmp, jcnset, dsg11,&
                   dsg22, dsg12)
+! aslint: disable=W1306
     implicit none
     include 'jeveux.h'
     integer :: ndim, nbnase, cpt, in, ivois, jsigse, nno, nbcmp, jcnset
     real(kind=8) :: dsg11(nbnase), dsg22(nbnase), dsg12(nbnase)
 ! ----------------------------------------------------------------------
-! TOLE CRS_1404
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

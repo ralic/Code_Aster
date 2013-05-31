@@ -21,7 +21,6 @@ subroutine lrcmve(ntvale, nmatyp, nbnoma, ntproa, lgproa,&
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 ! person_in_charge: nicolas.sellenet at edf.fr
-! TOLE CRP_21
 !-----------------------------------------------------------------------
 !     LECTURE D'UN CHAMP - FORMAT MED - CREATION DES VALEURS AUX ELTS
 !     -    -       -              -                  -           -
@@ -65,6 +64,7 @@ subroutine lrcmve(ntvale, nmatyp, nbnoma, ntproa, lgproa,&
 !    C'EST CE QUE MED APPELLE LE MODE ENTRELACE
 !_____________________________________________________________________
 !
+! aslint: disable=W1504
     implicit none
 !
 ! 0.1. ==> ARGUMENTS

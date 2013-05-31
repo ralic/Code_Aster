@@ -1,6 +1,7 @@
 subroutine xdecqu(nnose, it, ndim, cnset, jlsn,&
                   jgrlsn, igeom, pinter, ninter, npts,&
                   ainter, pmilie, nmilie, mfis)
+! aslint: disable=W1306
     implicit none
 !
     include 'jeveux.h'
@@ -44,7 +45,6 @@ subroutine xdecqu(nnose, it, ndim, cnset, jlsn,&
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-! TOLE CRS_1404
 !                      TROUVER LES PTS D'INTERSECTION ENTRE LES ARETES
 !                      ET LE PLAN DE FISSURE
 !

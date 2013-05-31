@@ -1,6 +1,7 @@
 subroutine flust3(melflu, typflu, base, nuor, amor,&
                   freq, masg, fact, vite, nbm,&
                   npv, nivpar, nivdef)
+! aslint: disable=W1501
     implicit none
     include 'jeveux.h'
 !
@@ -30,7 +31,6 @@ subroutine flust3(melflu, typflu, base, nuor, amor,&
     character(len=8) :: typflu, base
     character(len=19) :: melflu
 !-----------------------------------------------------------------------
-! TOLE CRP_20
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

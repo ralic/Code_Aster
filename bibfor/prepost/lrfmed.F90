@@ -3,6 +3,7 @@ subroutine lrfmed(resu, i, mfich, nomgd, typcha,&
                   nnu, nis, nto, jnume, jlist,&
                   noma, nbcmpv, ncmpva, ncmpvm, prolz,&
                   iinst, crit, epsi, linoch, acce)
+! aslint: disable=W1504
     implicit  none
 ! ----------------------------------------------------------------------
 ! person_in_charge: nicolas.sellenet at edf.fr
@@ -22,7 +23,6 @@ subroutine lrfmed(resu, i, mfich, nomgd, typcha,&
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-! TOLE CRP_21
 !
 !     BUT:
 !       LECTURE DES RESULTATS PRESENTS DANS LES FICHIERS MED

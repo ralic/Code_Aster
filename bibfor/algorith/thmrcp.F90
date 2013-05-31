@@ -31,12 +31,11 @@ subroutine thmrcp(etape, imate, thmc, meca, hydr,&
 ! ======================================================================
 ! person_in_charge: sylvie.granet at edf.fr
 ! =====================================================================
-! TOLE CRP_20
-! TOLE CRP_21
 ! =====================================================================
 ! --- BUT : RECUPERER LES DONNEES MATERIAUX THM -----------------------
 ! =====================================================================
 ! OUT RETCOM : RETOUR LOI DE COMPORTEMENT
+! aslint: disable=W1501,W1504
     implicit none
     include 'asterc/r8prem.h'
     include 'asterc/r8vide.h'

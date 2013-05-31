@@ -17,6 +17,7 @@ subroutine zerofb(f, x1, x2, tol, itmax,&
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 !
+! aslint: disable=
     implicit none
 !
     include 'asterc/r8prem.h'
@@ -29,7 +30,6 @@ subroutine zerofb(f, x1, x2, tol, itmax,&
     real(kind=8) :: zbrent, tol, x1, x2, eps
     real(kind=8) :: a, b, c, d, e, fa, fb, fc, p, q, r, s, tol1, xm
 ! ----------------------------------------------------------------------
-! TOLE CRP_7
 !     BUT : TROUVER LE ZERO D'UNE FONCTION SCALAIRE REELLE
 !     AVEC LA METHODE DE BRENT
 !

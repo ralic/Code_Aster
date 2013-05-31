@@ -47,7 +47,7 @@ subroutine ircame(ifi, nochmd, chanom, typech, modele,&
 !       CODRET : CODE DE RETOUR (0 : PAS DE PB, NON NUL SI PB)
 !_______________________________________________________________________
 !
-! TOLE CRP_21
+! aslint: disable=W1504
     implicit none
 !
 ! 0.1. ==> ARGUMENTS

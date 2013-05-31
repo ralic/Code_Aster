@@ -1,5 +1,6 @@
 subroutine lunule(r1, r2, angdeb, angfin, angmax,&
                   ansini, ansfin, profon, volume, epais)
+! aslint: disable=
     implicit   none
     include 'asterc/r8rddg.h'
     include 'asterfort/usubis.h'
@@ -22,7 +23,6 @@ subroutine lunule(r1, r2, angdeb, angfin, angmax,&
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-! TOLE CRP_6
 !-----------------------------------------------------------------------
     integer :: iret
     real(kind=8) :: deno1, deg, para(7), epsi, x1, x2, resu

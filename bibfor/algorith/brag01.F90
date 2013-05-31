@@ -89,9 +89,8 @@ subroutine brag01(fami, kpg, ksp, ndim, typmod,&
 !     CORREC BW=SR 26/09/05
 !          COMPORTEMENT VISCO-ELASTIQUE ENDOMMAGEABLE ANISOTROPE
 !          TRIDIM DU BETON (MODELE SIMPLIFIE TOTALEMENT EXPLICITE)
-! TOLE CRP_21
-! TOLE CRP_20
 !
+! aslint: disable=W1501,W1504
     implicit none
 !      IMPLICIT REAL*8(A-Z)
     include 'asterc/r8pi.h'

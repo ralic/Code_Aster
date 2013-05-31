@@ -19,8 +19,8 @@ subroutine pmstab(sigm, sigp, epsm, deps, nbvari,&
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-! TOLE CRP_21
 !
+! aslint: disable=W1504
     implicit none
 !-----------------------------------------------------------------------
 !           OPERATEUR    CALC_POINT_MAT STOCKAGE DANS LA TBLE RESULTAT

@@ -46,10 +46,9 @@ subroutine fetreo(reorth, alphan, nbi, irg, iter,&
 !                         2-> IDEM + REORTHO AU SEIN DU MEME PAS
 !     IN  LACSM : LOG : TRUE SI ACCELERATION_SM='OUI'
 !----------------------------------------------------------------------
-! TOLE CRP_4
-! TOLE CRP_21
 ! person_in_charge: olivier.boiteau at edf.fr
 ! CORPS DU PROGRAMME
+! aslint: disable=W1304,W1504
     implicit none
 !
 ! DECLARATION PARAMETRES D'APPELS

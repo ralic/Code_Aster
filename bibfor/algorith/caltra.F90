@@ -5,6 +5,7 @@ subroutine caltra(np1, np4, nbm, nfour, ttrans,&
                   za3, za4, za5, zitr, zin,&
                   fextt0, fexttr, dttr, omegaf, aa,&
                   bb, ntrans)
+! aslint: disable=W1504
     implicit none
 !-----------------------------------------------------------------------
 ! ======================================================================
@@ -23,7 +24,6 @@ subroutine caltra(np1, np4, nbm, nfour, ttrans,&
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-! TOLE  CRP_21
 !-----------------------------------------------------------------------
 ! DESCRIPTION : CALCUL DES DDLS GENERALISES A L'INSTANT TTRANS PAR
 ! ------------  METHODE INTEGRALE (VERSION MULTI-MODALE) PERMETTANT

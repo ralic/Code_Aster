@@ -3,6 +3,7 @@ subroutine calvol(np1, nbm, icoupl, indic, kmod00,&
                   masgi, tpfl, veci1, vecr1, vecr2,&
                   vecr5, vecr3, vgap, vecr4, locfl0,&
                   amflu0, xsi0)
+! aslint: disable=W1504
     implicit none
 !-----------------------------------------------------------------------
 ! ======================================================================
@@ -21,7 +22,6 @@ subroutine calvol(np1, nbm, icoupl, indic, kmod00,&
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-! TOLE  CRP_21
 !-----------------------------------------------------------------------
 ! DESCRIPTION : CALCUL DES CARACTERISTIQUES EN VOL
 ! -----------

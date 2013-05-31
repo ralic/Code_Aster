@@ -20,7 +20,6 @@ subroutine vfcfks(cont, tange, maxfa, nface, uk,&
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-! TOLE CRP_21 CRS_1404
 !
 !
 !     CETTE SUBROUTINE PERMET DE CALCULER LES FLUX SURFACIQUES
@@ -48,6 +47,7 @@ subroutine vfcfks(cont, tange, maxfa, nface, uk,&
 !                       INCONNUE AU CENTRE
 !     DFKS2(JFA+1,IFA): DERIVEE DE FKS(IFA) PAR RAP A LA DEUXIEME
 !                      INCONNUE FACE
+! aslint: disable=W1306,W1504
     implicit none
 !
     logical :: cont, tange

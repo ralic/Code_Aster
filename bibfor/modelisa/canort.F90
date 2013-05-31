@@ -18,6 +18,7 @@ subroutine canort(noma, nbma, listi, listk, ndim,&
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 !
+! aslint: disable=W1501
     implicit none
     include 'jeveux.h'
 !
@@ -65,7 +66,6 @@ subroutine canort(noma, nbma, listi, listk, ndim,&
 !     &&CANORT.TANGENT : TANGENTES AUX NOEUDS (2 EN 2D)
 !
 ! ROUTINES APPELEES:
-! TOLE CRP_20
 !
 !
 !

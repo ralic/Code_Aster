@@ -16,7 +16,6 @@ subroutine pccoef(n, in, ip, ac, icpl,&
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-! TOLE CRP_4
 !
 !   ENTREE
 !   N          : TAILLE DE A
@@ -28,6 +27,7 @@ subroutine pccoef(n, in, ip, ac, icpl,&
 !   SORTIE
 !   ACPC       : COEFS DE LA MATRICE DE PRECOND.
 !--------------------------------------------------------
+! aslint: disable=W1304
     implicit none
     include 'jeveux.h'
     include 'asterfort/jedetr.h'

@@ -12,6 +12,7 @@ subroutine mdadap(dti, dtmax, neqgen, pulsat, pulsa2,&
                   monmot, nbpal, dtsto, vrotat, prdeff,&
                   method, nomres, nbexci, irevst, drevst)
 !
+! aslint: disable=,W1304,W1501,W1504
     implicit none
 !
     include 'jeveux.h'
@@ -80,7 +81,6 @@ subroutine mdadap(dti, dtmax, neqgen, pulsat, pulsa2,&
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-! TOLE CRP_4 CRP_20 CRP_21 CRS_512
 !
 !     DIFFERENCES CENTREES AVEC PAS ADAPTATIF
 !     ------------------------------------------------------------------

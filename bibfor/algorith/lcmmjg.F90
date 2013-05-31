@@ -3,8 +3,8 @@ subroutine lcmmjg(comp, nmat, nbcomm, cpmono, hsr,&
                   itmax, toler, materf, sigf, fkooh,&
                   nfs, nsg, toutms, pgl, msnst,&
                   gamsns, dfpdga, iret)
+! aslint: disable=W1306,W1504
     implicit none
-! TOLE CRP_21 CRS_1404
 ! ----------------------------------------------------------------------
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG

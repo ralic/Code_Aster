@@ -59,7 +59,7 @@ subroutine pcinfe(n, icpl, icpc, icpd, icplp,&
 !   NZA        : NOMBRE DE COEFFICIENTS DE LA MATRICE FACTORISEE
 !
 !+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-! TOLE CRP_4
+! aslint: disable=W1304
     implicit none
     include 'asterfort/pctrii.h'
     integer(kind=4) :: icpc(*)

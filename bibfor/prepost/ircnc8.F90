@@ -3,6 +3,7 @@ subroutine ircnc8(ifi, nbno, prno, nueq, nec,&
                   lcor, ndim, coor, numnoe, nbcmpt,&
                   nucmpu, lsup, borsup, linf, borinf,&
                   lmax, lmin, formr)
+! aslint: disable=W1504
     implicit none
 !
     include 'jeveux.h'
@@ -35,7 +36,6 @@ subroutine ircnc8(ifi, nbno, prno, nueq, nec,&
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-! TOLE CRP_21
 !     ------------------------------------------------------------------
 !     ECRITURE D'UN CHAM_NO SUR FICHIER IFI AU FORMAT 'RESULTAT' A
 !     VALEURS COMPLEXES

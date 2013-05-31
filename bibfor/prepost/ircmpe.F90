@@ -3,6 +3,7 @@ subroutine ircmpe(nofimd, ncmpve, numcmp, exicmp, nbvato,&
                   ncaimi, ncaimk, tyefma, typmai, typgeo,&
                   nomtyp, typech, profas, promed, prorec,&
                   nroimp, chanom, sdcarm)
+! aslint: disable=W1504
     implicit none
     include 'asterfort/celfpg.h'
     include 'asterfort/cesexi.h'
@@ -39,7 +40,6 @@ subroutine ircmpe(nofimd, ncmpve, numcmp, exicmp, nbvato,&
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 ! person_in_charge: nicolas.sellenet at edf.fr
-! TOLE CRP_21
 !_______________________________________________________________________
 !     ECRITURE D'UN CHAMP - MAILLES ET PROFIL SUR LES ELEMENTS
 !        -  -       -       -          -              -

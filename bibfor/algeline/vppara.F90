@@ -5,6 +5,7 @@ subroutine vppara(modes, typcon, knega, lraide, lmasse,&
                   resur, resuk, ktyp, lcomod, icom1,&
                   icom2, typres, nfreqg)
 !
+! aslint: disable=W1504
     implicit none
     include 'jeveux.h'
     include 'asterfort/assert.h'
@@ -52,7 +53,6 @@ subroutine vppara(modes, typcon, knega, lraide, lmasse,&
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-! TOLE CRP_21
 !
 !     CALCUL DES PARAMETRES MODAUX, DES NORMES D'ERREUR ET STOCKAGE DES
 !     INFORMATIONS

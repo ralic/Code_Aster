@@ -17,7 +17,6 @@ subroutine te0378(option, nomte)
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 ! person_in_charge: josselin.delmas at edf.fr
-! TOLE CRP_20
 !
 !     BUT:
 !       CALCUL DE L'INDICATEUR D'ERREUR EN MECANIQUE 2D AVEC LA
@@ -29,6 +28,7 @@ subroutine te0378(option, nomte)
 !
 ! ----------------------------------------------------------------------
 ! CORPS DU PROGRAMME
+! aslint: disable=W1501
     implicit none
 !
 ! DECLARATION PARAMETRES D'APPELS

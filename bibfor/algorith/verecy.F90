@@ -16,11 +16,11 @@ subroutine verecy(intf, numd, numg, nbsec, prec,&
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-! TOLE CRP_6
 !***********************************************************************
 !    P. RICHARD     DATE 13/12/91
 !-----------------------------------------------------------------------
 !  BUT:       < VERIFICATION REPETITIVITE CYCLIQUE>
+! aslint: disable=
     implicit none
 !
 !  VERIFICATION DE LA REPETITIVITE CYCLIQUE SUR LE MAILLAGE ET LA

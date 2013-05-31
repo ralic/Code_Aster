@@ -4,6 +4,7 @@ subroutine irchml(chamel, partie, ifi, form, titre,&
                   nomcmp, lsup, borsup, linf, borinf,&
                   lmax, lmin, lresu, formr, ncmp,&
                   nucmp, nive)
+! aslint: disable=W1504
     implicit none
 !
     include 'jeveux.h'
@@ -63,7 +64,6 @@ subroutine irchml(chamel, partie, ifi, form, titre,&
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-! TOLE  CRP_21
 !        IMPRESSION D'UN CHAM_ELEM A COMPOSANTES REELLES OU COMPLEXES
 !         AU FORMAT IDEAS, RESULTAT, CASTEM
 !  ENTREES:

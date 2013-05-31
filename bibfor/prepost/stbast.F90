@@ -1,4 +1,5 @@
 subroutine stbast(nfie, nfis, lgrcou)
+! aslint: disable=
     implicit  none
     include 'asterfort/presup.h'
     include 'asterfort/uldefi.h'
@@ -6,7 +7,6 @@ subroutine stbast(nfie, nfis, lgrcou)
     include 'asterfort/ulopen.h'
     integer :: nfie, nfis
     logical :: lgrcou
-! TOLE CRS_513
 ! ======================================================================
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG

@@ -4,6 +4,7 @@ subroutine mdchoc(nbnli, nbchoc, nbflam, nbsism, nbrfis,&
                   pulsat, masgen, lamor, amogen, bmodal,&
                   neq, nexcit, info, lflu, monmot,&
                   ier)
+! aslint: disable=W1504
     implicit  none
     include 'jeveux.h'
     include 'asterc/gettco.h'
@@ -44,7 +45,6 @@ subroutine mdchoc(nbnli, nbchoc, nbflam, nbsism, nbrfis,&
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-! TOLE CRP_21
 !
 !     STOCKAGE DES INFORMATIONS DE CHOC DANS DES TABLEAUX
 !     ------------------------------------------------------------------

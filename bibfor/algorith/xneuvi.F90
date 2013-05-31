@@ -1,6 +1,7 @@
 subroutine xneuvi(narz, nar, nbno, tabdir, scorno,&
                   noeud, nliseq)
 !
+! aslint: disable=W1306
     implicit none
     include 'jeveux.h'
     include 'asterfort/jedema.h'
@@ -9,7 +10,6 @@ subroutine xneuvi(narz, nar, nbno, tabdir, scorno,&
     integer :: narz, nar, nbno
     integer :: tabdir(narz, 2), scorno(2*narz), noeud(2*narz)
     character(len=19) :: nliseq
-! TOLE CRS_1404
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

@@ -22,7 +22,6 @@ subroutine nxacmv(modele, mate, carele, fomult, charge,&
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 ! person_in_charge: Christophe-mmn.durand at edf.fr
-! TOLE CRP_21
 ! ----------------------------------------------------------------------
 !
 ! COMMANDE THER_LINEAIRE : ACTUALISATION EVENTUELLE
@@ -53,6 +52,7 @@ subroutine nxacmv(modele, mate, carele, fomult, charge,&
 !       AUCUNE.
 !----------------------------------------------------------------------
 ! CORPS DU PROGRAMME
+! aslint: disable=W1504
     implicit none
 !
 ! 0.1. ==> ARGUMENTS

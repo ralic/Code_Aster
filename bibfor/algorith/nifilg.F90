@@ -21,10 +21,8 @@ subroutine nifilg(ndim, nno1, nno2, nno3, npg,&
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-! TOLE CRP_21
-! TOLE CRP_20
-! TOLE CRS_1404
 ! person_in_charge: sebastien.fayolle at edf.fr
+! aslint: disable=W1306,W1501,W1504
     implicit none
 !
     include 'asterfort/codere.h'

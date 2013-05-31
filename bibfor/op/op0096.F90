@@ -1,4 +1,5 @@
 subroutine op0096()
+! aslint: disable=W1501
     implicit   none
 !     ------------------------------------------------------------------
 ! ======================================================================
@@ -17,7 +18,6 @@ subroutine op0096()
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-! TOLE CRP_20
 !     ------------------------------------------------------------------
 !     OPERATEUR DE REPERAGE DANS UN MAILLAGE 3D
 !     MAILLAGE 3D <=> MAILLES DE TYPE HEXA TETRA PENTA

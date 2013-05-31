@@ -4,6 +4,7 @@ subroutine calcmd(np1, a, a0, n, m,&
                   ier, ichoc, premac, prerel, mtmp1,&
                   mtmp2, ttr, u, w, d,&
                   intge1, intge2, indx, indxf, loc)
+! aslint: disable=W1504
     implicit none
 !-----------------------------------------------------------------------
 ! ======================================================================
@@ -22,7 +23,6 @@ subroutine calcmd(np1, a, a0, n, m,&
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-! TOLE  CRP_21
 !-----------------------------------------------------------------------
 ! DESCRIPTION : DIAGONALISATION DE LA MATRICE DE RAIDEUR DU SYSTEME
 ! -----------   A L'INSTANT N+1

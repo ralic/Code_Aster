@@ -1,5 +1,6 @@
 subroutine lxscan(chin, ideb, iclass, ival, rval,&
                   cval)
+! aslint: disable=,
     implicit none
     include 'asterc/ismaem.h'
     character(len=*) :: chin, cval
@@ -22,7 +23,6 @@ subroutine lxscan(chin, ideb, iclass, ival, rval,&
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-! TOLE CRP_6 CRS_1322
 !                          ANALYSEUR LEXICAL
 !     ------------------------------------------------------------------
 ! IN  CHIN   CHAINE A DECODER

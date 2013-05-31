@@ -3,6 +3,7 @@ subroutine mdarch(isto1, ipas, disc, dt, nbmode,&
                   accger, depstr, vitstr, accstr, depgec,&
                   vitgec, accgec, depstc, vitstc, accstc,&
                   passto, iorsto, discst)
+! aslint: disable=W1504
     implicit none
     include 'asterfort/assert.h'
     integer :: iorsto(*)
@@ -29,7 +30,6 @@ subroutine mdarch(isto1, ipas, disc, dt, nbmode,&
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-! TOLE CRP_21
 !
 !-----------------------------------------------------------------------
 !

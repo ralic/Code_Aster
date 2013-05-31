@@ -1,4 +1,5 @@
 subroutine jxdate(idate)
+! aslint: disable=,
     implicit none
     include 'asterc/date.h'
     integer :: idate
@@ -18,7 +19,6 @@ subroutine jxdate(idate)
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-! TOLE CRP_6 CRP_7
 !                            31 / 01 / 90
 !     ------------------------------------------------------------------
 !             ROUTINE AVEC ADHERENCE SYSTEME    CRAY

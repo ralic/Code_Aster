@@ -19,13 +19,13 @@ subroutine rsinfo(nomcon, ifi)
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-! TOLE CRS_602
 !
 !     ECRITURE DE LA STRUCTURE D'UN CONCEPT RESULTAT
 !
 ! IN  NOMCON : NOM DU CONCEPT A IMPRIMER
 ! IN  IFI    : UNITE LOGIQUE D'IMPRESSION
 !     ------------------------------------------------------------------
+! aslint: disable=W1303
     implicit   none
 !
 ! 0.1. ==> ARGUMENTS

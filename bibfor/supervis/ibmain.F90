@@ -1,4 +1,5 @@
 subroutine ibmain(lldbg)
+! aslint: disable=
     implicit none
     include 'asterc/faster.h'
     include 'asterc/gtopti.h'
@@ -23,7 +24,6 @@ subroutine ibmain(lldbg)
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-! TOLE CRP_7
 !     ENSEMBLE DES INITIALISATIONS POUR L'EXECUTION D'UN JOB
 !     ------------------------------------------------------------------
 !     ------- COMMUN DEBUG SUPERVISEUR ---------------------------------

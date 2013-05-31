@@ -1,5 +1,4 @@
 subroutine lect82(iunv, node, nbnode, inum)
-! TOLE CRS_1404
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -17,6 +16,7 @@ subroutine lect82(iunv, node, nbnode, inum)
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 ! ======================================================================
+! aslint: disable=W1306
     implicit none
 !     ================================================================
 !A PRESUPER

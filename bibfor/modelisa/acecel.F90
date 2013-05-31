@@ -4,6 +4,7 @@ subroutine acecel(noma, nomo, nbocc, nbepo, nbedi,&
                   ncable, nbarre, nmassi, ngrill, ngribt,&
                   nmembr, jdlm, jdln, ier)
 !
+! aslint: disable=W1504
     implicit none
 !
     include 'jeveux.h'
@@ -37,7 +38,6 @@ subroutine acecel(noma, nomo, nbocc, nbepo, nbedi,&
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-! TOLE CRP_21
 ! ----------------------------------------------------------------------
 !     AFFE_CARA_ELEM
 !     COMPTEUR D'ELEMENTS

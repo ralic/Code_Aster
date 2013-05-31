@@ -4,7 +4,6 @@ subroutine lc0033(fami, kpg, ksp, ndim, imate,&
                   sigp, vip, tm, tp, tref,&
                   tampon, typmod, icomp, nvi, dsidep,&
                   codret)
-! TOLE CRP_21
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2008  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -21,6 +20,7 @@ subroutine lc0033(fami, kpg, ksp, ndim, imate,&
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
+! aslint: disable=W1504
     implicit none
     include 'asterc/iisnan.h'
     include 'asterc/r8vide.h'

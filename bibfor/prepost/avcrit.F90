@@ -19,8 +19,8 @@ subroutine avcrit(nbvec, nbordr, vectn, vwork, tdisp,&
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-! TOLE CRP_21 CRS_1404
 ! person_in_charge: jean.angles at edf.fr
+! aslint: disable=W1306,W1504
     implicit      none
     include 'jeveux.h'
 !

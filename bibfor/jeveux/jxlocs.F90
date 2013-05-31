@@ -17,7 +17,7 @@ subroutine jxlocs(itab, gen1, lty1, lon1, jadm,&
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 ! person_in_charge: j-pierre.lefebvre at edf.fr
-! TOLE CRP_6
+! aslint: disable=
     implicit none
     include 'jeveux_private.h'
     include 'asterfort/jxdeps.h'

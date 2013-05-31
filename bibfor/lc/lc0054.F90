@@ -3,6 +3,7 @@ subroutine lc0054(fami, kpg, ksp, ndim, imate,&
                   deps, sigm, vim, option, angmas,&
                   sigp, vip, tampon, typmod, icomp,&
                   nvi, dsidep, codret)
+! aslint: disable=W1504
     implicit none
     include 'asterfort/nmtevp.h'
     include 'asterfort/rccoma.h'
@@ -89,7 +90,6 @@ subroutine lc0054(fami, kpg, ksp, ndim, imate,&
 !.......................................................................
 !               CODRET
 !
-! TOLE CRP_21
 ! person_in_charge: sebastien.fayolle at edf.fr
     character(len=16) :: mcmate
     integer :: iret

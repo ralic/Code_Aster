@@ -21,6 +21,7 @@ subroutine lc0053(fami, kpg, ksp, ndim, imate,&
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 !
+! aslint: disable=W1504
     implicit none
     include 'asterfort/assert.h'
     include 'asterfort/lckimp.h'
@@ -32,7 +33,6 @@ subroutine lc0053(fami, kpg, ksp, ndim, imate,&
     character(len=*) :: fami
     character(len=8) :: typmod(*)
     character(len=16) :: option, compor(*)
-! TOLE CRP_21
 ! ---------------------------------------------------------------------
 !        BUT: LOI D'ENDOMMAGEMENT D'UN MATERIAU ELASTIQUE FRAGILE :
 !                    RELATION : 'ENDO_CARRE'

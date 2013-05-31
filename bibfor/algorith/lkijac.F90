@@ -18,7 +18,7 @@ subroutine lkijac(mod, nmat, materf, timed, timef,&
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 ! person_in_charge: alexandre.foucault at edf.fr
-! TOLE CRS_1404 CRP_20
+! aslint: disable=W1306,W1501
     implicit   none
 !     --------------------------------------------------------------
 !     CALCUL DU JACOBIEN DE LETK = DRDY(DY)

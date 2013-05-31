@@ -3,7 +3,6 @@ subroutine epsreg(npi, ipoids, ipoid2, ivf, ivf2,&
                   ndim, nddls, nddlm, nno, nnos,&
                   nnom, axi, regula, deplp, defgep)
 ! ======================================================================
-! TOLE CRS_1404
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -21,6 +20,7 @@ subroutine epsreg(npi, ipoids, ipoid2, ivf, ivf2,&
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 ! ======================================================================
+! aslint: disable=W1306
     implicit     none
     include 'asterfort/cabr2g.h'
     logical :: axi

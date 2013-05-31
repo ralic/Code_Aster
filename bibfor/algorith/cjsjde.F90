@@ -1,5 +1,6 @@
 subroutine cjsjde(mod, mater, epsd, deps, yd,&
                   yf, gd, r, signe, drdy)
+! aslint: disable=W1501
     implicit none
 ! ======================================================================
 ! ======================================================================
@@ -18,7 +19,6 @@ subroutine cjsjde(mod, mater, epsd, deps, yd,&
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-! TOLE CRP_20
 !     ------------------------------------------------------------------
 !     INTEGRATION PLASTIQUE (MECANISME DEVIATOIRE SEUL) DE LA LOI CJS
 !

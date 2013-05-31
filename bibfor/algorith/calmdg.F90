@@ -2,6 +2,7 @@ subroutine calmdg(model, modgen, nugene, num, nu,&
                   ma, mate, moint, moflui, ndble,&
                   itxsto, itysto, itzsto, iprsto, nbmo,&
                   iadirg)
+! aslint: disable=
     implicit none
     include 'jeveux.h'
 !
@@ -43,7 +44,6 @@ subroutine calmdg(model, modgen, nugene, num, nu,&
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-! TOLE CRP_6
 !---------------------------------------------------------------------
 ! AUTEUR : G. ROUSSEAU
 ! ROUTINE CALCULANT :

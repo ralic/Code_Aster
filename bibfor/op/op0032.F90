@@ -1,4 +1,5 @@
 subroutine op0032()
+! aslint: disable=W1501
     implicit none
 !     ------------------------------------------------------------------
 ! ======================================================================
@@ -20,7 +21,6 @@ subroutine op0032()
 !     EIGENVALUE-COUNTING METHODS FOR GEP OR QEP
 !     ------------------------------------------------------------------
 ! person_in_charge: olivier.boiteau at edf.fr
-! TOLE CRP_20
 !
 !
     include 'jeveux.h'

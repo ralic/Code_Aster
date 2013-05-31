@@ -22,7 +22,6 @@ subroutine vpsor1(ldynfa, nbeq, nbvect, nfreq, tolsor,&
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-! TOLE CRP_21
 !
 !     SUBROUTINE ASTER ORCHESTRANT LA METHODE DE SORENSEN: UN ARNOLDI
 !     AVEC REDEMARRAGE IMPLICITE VIA QR (VERSION ARPACK 2.4).
@@ -106,6 +105,7 @@ subroutine vpsor1(ldynfa, nbeq, nbvect, nfreq, tolsor,&
 !
 !----------------------------------------------------------------------
 ! CORPS DU PROGRAMME
+! aslint: disable=W1504
     implicit none
 !
 !

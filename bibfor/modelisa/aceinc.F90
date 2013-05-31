@@ -3,6 +3,7 @@ subroutine aceinc(noma, nomo, nbmcf, mclf, ntyele,&
                   nbeca, nbeba, nbema, nbegb, nbemb,&
                   nbtel, locaco, locagb, locamb, jdlm,&
                   jdln, lmax, ier)
+! aslint: disable=W1504
     implicit none
     include 'jeveux.h'
 !
@@ -49,7 +50,6 @@ subroutine aceinc(noma, nomo, nbmcf, mclf, ntyele,&
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-! TOLE CRP_21
 ! ----------------------------------------------------------------------
 !     AFFE_CARA_ELEM
 !     INCREMENTATION DES COMPTEURS D'APPELS A NOCART

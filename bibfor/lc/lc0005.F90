@@ -3,6 +3,7 @@ subroutine lc0005(fami, kpg, ksp, ndim, imate,&
                   deps, sigm, vim, option, angmas,&
                   sigp, vip, tampon, typmod, icomp,&
                   nvi, dsidep, codret)
+! aslint: disable=W1504
     implicit none
     include 'asterfort/fragex.h'
     include 'asterfort/lcfrge.h'
@@ -21,7 +22,6 @@ subroutine lc0005(fami, kpg, ksp, ndim, imate,&
     real(kind=8) :: dsidep(6, 6)
 !
 !
-! TOLE CRP_21
 ! ======================================================================
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG

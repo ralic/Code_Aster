@@ -4,6 +4,7 @@ subroutine vipvpt(nbvari, vintm, vintp, advico, vicpvp,&
                   dt, mamolv, r, rho11, kh,&
                   signe, cp11, cp12, yate, pvp,&
                   pvpm, retcom)
+! aslint: disable=W1504
     implicit      none
     include 'jeveux.h'
     include 'asterc/r8prem.h'
@@ -32,7 +33,6 @@ subroutine vipvpt(nbvari, vintm, vintp, advico, vicpvp,&
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-! TOLE CRP_21
 ! ======================================================================
 ! --- BUT : CALCUL ET STOCKAGE DES PRESSIONS DE VAPEUR INTER PTILDE-----
 ! -------   DANS LES CAS AVEC AIR DISSOUS ------------------------------

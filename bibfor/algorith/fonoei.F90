@@ -22,7 +22,6 @@ subroutine fonoei(ndim, dt, fnoevo, dimdef, dimcon,&
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 ! ======================================================================
-! TOLE CRP_21
 ! ======================================================================
 !
 !    BUT : CALCUL DU TERME DE CHARGEMENT EXTERIEUR AUX POINTS
@@ -57,6 +56,7 @@ subroutine fonoei(ndim, dt, fnoevo, dimdef, dimcon,&
 ! ======================================================================
 ! OUT R : VECTEUR FORCES EXTERIEURES
 ! ======================================================================
+! aslint: disable=W1504
     implicit     none
     logical :: fnoevo
     integer :: dimdef, dimcon

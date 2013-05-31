@@ -1,5 +1,6 @@
 subroutine zerofo(f, x0, xap, epsi, nitmax,&
                   solu, iret, n)
+! aslint: disable=
     implicit none
 !
     interface
@@ -27,7 +28,6 @@ subroutine zerofo(f, x0, xap, epsi, nitmax,&
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 !
-! TOLE CRP_7
 ! ----------------------------------------------------------------------
 !     BUT:
 !         TROUVER UNE RACINE DE L'EQUATION F(X)=0

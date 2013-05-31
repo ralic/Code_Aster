@@ -1,4 +1,5 @@
 subroutine porigi(nomte, e, xnu, klv)
+! aslint: disable=
     implicit none
     include 'jeveux.h'
     include 'asterfort/jevech.h'
@@ -9,7 +10,6 @@ subroutine porigi(nomte, e, xnu, klv)
     include 'asterfort/u2mesk.h'
     character(len=*) :: nomte
     real(kind=8) :: e, xnu, klv(*)
-! TOLE CRP_6
 !     ------------------------------------------------------------------
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG

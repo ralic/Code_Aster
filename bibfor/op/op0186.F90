@@ -16,13 +16,13 @@ subroutine op0186()
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 ! person_in_charge: Christophe-mmn.durand at edf.fr
-! TOLE CRP_20
 ! ----------------------------------------------------------------------
 !
 !     COMMANDE:  THER_NON_LINE
 !
 !----------------------------------------------------------------------
 ! CORPS DU PROGRAMME
+! aslint: disable=W1501
     implicit none
 !
 ! 0.2  ==> ARGUMENTS

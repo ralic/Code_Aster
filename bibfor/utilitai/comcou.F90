@@ -15,7 +15,6 @@ function comcou(iarg)
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-! TOLE CRP_4
 ! ----------------------------------------------------------------------
 !
 ! ROUTINE PERMETTANT DE RECUPERE SOIT LE COMMUNICATEUR ORIGINEL (IRET=0)
@@ -26,6 +25,7 @@ function comcou(iarg)
 ! L'OBJET)
 ! ----------------------------------------------------------------------
 ! person_in_charge: olivier.boiteau at edf.fr
+! aslint: disable=W1304
     implicit none
     integer(kind=4) :: comcou
     include 'jeveux.h'

@@ -22,8 +22,8 @@ subroutine crmeri(promes, iakpee)
 !   IN  : IAKPEE : ADRESSE DE LA MATRICE MACR_ELEM RAIDEUR
 !
 !
-! TOLE CRP_20
 !
+! aslint: disable=W1501
     implicit none
 !
     include 'jeveux.h'

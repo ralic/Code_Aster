@@ -3,9 +3,9 @@ subroutine nmvprk(fami, kpg, ksp, ndim, typmod,&
                   neps, epsdt, depst, sigd, vind,&
                   opt, angmas, sigf, vinf, dsde,&
                   iret)
+! aslint: disable=W1504
     implicit none
 ! ----------------------------------------------------------------------
-! TOLE CRP_21
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

@@ -1,4 +1,5 @@
 subroutine detrsd(typesd, nomsd)
+! aslint: disable=W1501
     implicit   none
     include 'jeveux.h'
     include 'asterfort/amumph.h'
@@ -33,7 +34,6 @@ subroutine detrsd(typesd, nomsd)
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-! TOLE CRP_20
 ! person_in_charge: jacques.pellet at edf.fr
 ! ----------------------------------------------------------------------
 !  BUT : DETRUIRE UNE STRUCTURE DE DONNEE DONT ON CONNAIT LE TYPE

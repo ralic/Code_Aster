@@ -17,7 +17,6 @@ subroutine te0003(option, nomte)
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 ! person_in_charge: olivier.boiteau at edf.fr
-! TOLE CRP_20
 !-----------------------------------------------------------------------
 !    - FONCTION REALISEE:  CALCUL DE L'ESTIMATEUR D'ERREUR EN RESIDU
 !      SUR UN ELEMENT ISOPARAMETRIQUE 2D/3D, LUMPE OU NON, VIA L'OPTION
@@ -51,6 +50,7 @@ subroutine te0003(option, nomte)
 !                POUR CONSTRUIRE ERTREL + AFFICHAGES SUPL. SI INFO=2.
 !----------------------------------------------------------------------
 ! CORPS DU PROGRAMME
+! aslint: disable=W1501
     implicit none
 !
 ! DECLARATION PARAMETRES D'APPELS

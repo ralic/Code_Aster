@@ -16,13 +16,13 @@ subroutine op0111()
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 ! person_in_charge: nicolas.greffet at edf.fr
-! TOLE CRP_4
 ! =====================================================================
 !
 !     COMMANDE:  ENV_CINE_YACS
 !  ENVOI DES CHAMPS CINEMATIQUES A SATURNE VIA YACS
 !
 ! =====================================================================
+! aslint: disable=W1304
     implicit   none
 !     ------------------------------------------------------------------
     include 'jeveux.h'

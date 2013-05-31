@@ -1,4 +1,5 @@
 subroutine utpar1(typsd, nbpamx, lipara, nbpara)
+! aslint: disable=W1501
     implicit none
     include 'asterfort/assert.h'
     character(len=*) :: typsd
@@ -22,7 +23,6 @@ subroutine utpar1(typsd, nbpamx, lipara, nbpara)
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 ! person_in_charge: jacques.pellet at edf.fr
-! TOLE CRP_20
 ! ----------------------------------------------------------------------
 ! BUT : CHOISIR LA LISTE DES PARAMETRES SUPPORTES PAR UN TYPE DE
 !       SD_RESULTAT

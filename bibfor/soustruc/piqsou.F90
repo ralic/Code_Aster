@@ -1,6 +1,7 @@
 subroutine piqsou(alp, xc, yc, zc, zd,&
                   rep, ret, rit, bet, iso,&
                   typsou)
+! aslint: disable=
     implicit   none
     include 'asterc/r8pi.h'
     real(kind=8) :: alp, xc, yc, zc, zd, rep, ret, rit, bet, iso
@@ -22,7 +23,6 @@ subroutine piqsou(alp, xc, yc, zc, zd,&
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-! TOLE  CRP_6
 !     OPERATEUR: "DEFI_GROUP" , MOTCLE FACTEUR "EQUE_PIQUA"
 !     AUTEUR Y. WADIER
 !

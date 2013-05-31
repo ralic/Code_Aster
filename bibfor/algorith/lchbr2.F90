@@ -20,8 +20,8 @@ subroutine lchbr2(typmod, option, imate, crit, sigm,&
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 ! ======================================================================
-! TOLE CRP_21
 ! ======================================================================
+! aslint: disable=W1504
     implicit      none
     include 'asterc/r8pi.h'
     include 'asterfort/assert.h'

@@ -2,6 +2,7 @@ subroutine lcedga(fami, kpg, ksp, ndim, imat,&
                   crit, typmod, instam, instap, coord,&
                   deps2, sigm2, vim, option, sigp,&
                   vip, dsidep, iret)
+! aslint: disable=W1306
     implicit none
     include 'asterc/r8prem.h'
     include 'asterfort/edgani.h'
@@ -36,7 +37,6 @@ subroutine lcedga(fami, kpg, ksp, ndim, imat,&
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-! TOLE CRS_1404
 !
 ! ----------------------------------------------------------------------
 !     MODELE VISCOPLASTIQUE SANS SEUIL DE EDGAR

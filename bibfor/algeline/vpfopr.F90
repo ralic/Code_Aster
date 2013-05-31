@@ -19,7 +19,6 @@ subroutine vpfopr(option, typres, lmasse, lraide, ldynam,&
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-! TOLE CRP_20
 !     DETERMINATION DE SHIFT(S), D'UNE MATRICE SHIFTEE, DE SA FACTORISEE
 !     DU NBRE DE PIVOTS NEGATIFS (POUR TEST DE STURM) VOIRE DU NBRE
 !     DE FREQ DANS UNE BANDE.
@@ -97,6 +96,7 @@ subroutine vpfopr(option, typres, lmasse, lraide, ldynam,&
 ! OUT  IDET  : IS  : IDEM SUR LES EXPOSANTS
 !----------------------------------------------------------------------
 !
+! aslint: disable=W1501
     implicit none
 !
 ! PARAMETRES D'APPEL

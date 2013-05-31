@@ -3,6 +3,7 @@ subroutine ecrbas(nbsauv, nbnl, nbmode, depgen, vitgen,&
                   vitbut, forbut, redepg, revitg, reaccg,&
                   retemp, reordr, reptem, redepb, revitb,&
                   reforb)
+! aslint: disable=W1504
     implicit none
 !-----------------------------------------------------------------------
 ! ======================================================================
@@ -21,7 +22,6 @@ subroutine ecrbas(nbsauv, nbnl, nbmode, depgen, vitgen,&
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-! TOLE  CRP_21
 !-----------------------------------------------------------------------
 ! DESCRIPTION : ARCHIVAGE DES RESULTATS
 ! -----------

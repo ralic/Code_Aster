@@ -20,7 +20,7 @@ subroutine nmccam(ndim, typmod, imate, compor, crit,&
 !
 !
 ! ======================================================================
-!  TOLE CRP_20
+! aslint: disable=W1501
     implicit none
     include 'jeveux.h'
 !

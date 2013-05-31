@@ -1,6 +1,7 @@
 subroutine calcul(stop, optio, ligrlz, nin, lchin,&
                   lpain, nou, lchou, lpaou, base,&
                   mpic)
+! aslint: disable=W1306,W1501
     implicit none
 !
 ! ======================================================================
@@ -20,7 +21,6 @@ subroutine calcul(stop, optio, ligrlz, nin, lchin,&
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 ! person_in_charge: jacques.pellet at edf.fr
-! TOLE CRP_20 CRS_1404
 !     ARGUMENTS:
 !     ----------
     include 'jeveux.h'

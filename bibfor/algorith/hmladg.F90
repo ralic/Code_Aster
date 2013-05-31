@@ -26,8 +26,6 @@ subroutine hmladg(yachai, option, meca, ther, hydr,&
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-! TOLE CRP_21
-! TOLE CRP_21
 ! ======================================================================
 ! **********************************************************************
 ! ROUTINE HMLADG : CETTE ROUTINE CALCULE LES CONTRAINTES GENERALISE
@@ -42,6 +40,7 @@ subroutine hmladg(yachai, option, meca, ther, hydr,&
 !                       = 3 SIZZ NON NUL (DEBORST) ON CONTINUE A ITERER
 !  VARIABLES IN / OUT
 ! ======================================================================
+! aslint: disable=W1504,W1504
     implicit none
     include 'asterfort/appmas.h'
     include 'asterfort/calor.h'

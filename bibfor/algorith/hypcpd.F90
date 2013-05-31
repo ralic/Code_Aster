@@ -19,8 +19,8 @@ subroutine hypcpd(c11, c22, c33, c12, k,&
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
-! TOLE CRP_20
 !
+! aslint: disable=W1501
     implicit none
     real(kind=8) :: c11, c22, c33, c12
     real(kind=8) :: k

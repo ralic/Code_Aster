@@ -1,4 +1,5 @@
 subroutine te0099(option, nomte)
+! aslint: disable=W1502
     implicit none
     character(len=16) :: option, nomte
 ! ======================================================================
@@ -17,5 +18,4 @@ subroutine te0099(option, nomte)
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-! TOLE CRS_230
 end subroutine

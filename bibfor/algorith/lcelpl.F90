@@ -2,6 +2,7 @@ subroutine lcelpl(mod, loi, nmat, materd, materf,&
                   timed, timef, deps, nvi, vind,&
                   vinf, nr, yd, yf, sigd,&
                   sigf, drdy)
+! aslint: disable=W1306
     implicit none
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -19,7 +20,6 @@ subroutine lcelpl(mod, loi, nmat, materd, materf,&
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-! TOLE CRS_1404
 !
 ! ----------------------------------------------------------------
 !   MISE A JOUR DES VARIABLES INTERNES EN ELASTICITE

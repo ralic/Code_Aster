@@ -4,6 +4,7 @@ subroutine mdnewm(nbpas, dt, nbmode, pulsat, pulsa2,&
                   tinit, iparch, depsto, vitsto, accsto,&
                   iorsto, temsto, nomres, nbexci, idescf,&
                   nomfon, coefm, liad, inumor, passto)
+! aslint: disable=W1504
     implicit none
     include 'jeveux.h'
     include 'asterc/etausr.h'
@@ -59,7 +60,6 @@ subroutine mdnewm(nbpas, dt, nbmode, pulsat, pulsa2,&
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 !
-! TOLE CRP_21
 !
 !     ALGORITHME DE NEWMARK
 !     ------------------------------------------------------------------

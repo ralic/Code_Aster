@@ -16,7 +16,6 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-! TOLE CRP_20
 !
 !     SUBROUTINE ARPACK OPERANT NP ETAPE D'ARNOLDI A PARTIR D'UNE
 !     FACTORISATION D'ORDRE K.
@@ -225,8 +224,8 @@ subroutine dnaitr(ido, bmat, n, k, np,&
 !            IMPLICIT NONE.
 ! ENDLIB
 !-----------------------------------------------------------------------
-! TOLE CRP_4
 ! CORPS DU PROGRAMME
+! aslint: disable=W1304,W1501
     implicit none
 !
 !     %-----------------------------%

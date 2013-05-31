@@ -2,6 +2,7 @@ subroutine xcface(elref, lsn, lst, jgrlsn, igeom,&
                   enr, nfiss, ifiss, fisco, nfisc,&
                   noma, nmaabs, pinter, ninter, ainter,&
                   nface, nptf, cface)
+! aslint: disable=W1306
     implicit none
 !
     include 'jeveux.h'
@@ -48,7 +49,6 @@ subroutine xcface(elref, lsn, lst, jgrlsn, igeom,&
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 ! person_in_charge: samuel.geniaut at edf.fr
-! TOLE CRS_1404
 !                     TROUVER LES PTS D'INTERSECTION ENTRE LES ARETES
 !                      ET LE PLAN DE FISSURE ET DÉCOUPAGE EN FACETTES
 !

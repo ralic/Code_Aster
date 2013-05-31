@@ -22,8 +22,6 @@ subroutine dlnewi(result, force0, force1, lcrea, lamort,&
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-! TOLE CRP_21
-! TOLE CRP_20
 !     ------------------------------------------------------------------
 !     CALCUL MECANIQUE TRANSITOIRE PAR INTEGRATION DIRECTE
 !     AVEC METHODES IMPLICITES :                  - THETA-WILSON
@@ -67,6 +65,7 @@ subroutine dlnewi(result, force0, force1, lcrea, lamort,&
 ! IN  NUMREP : NUMERO DE REUSE POUR LA TABLE PARA_CALC
 !
 ! CORPS DU PROGRAMME
+! aslint: disable=W1501,W1504
     implicit none
 !
 ! DECLARATION PARAMETRES D'APPELS

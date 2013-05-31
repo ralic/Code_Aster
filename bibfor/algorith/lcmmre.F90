@@ -3,6 +3,7 @@ subroutine lcmmre(typmod, nmat, materd, materf, comp,&
                   toutms, hsr, nr, nvi, vind,&
                   itmax, toler, timed, timef, yd,&
                   yf, deps, dy, r, iret)
+! aslint: disable=W1306,W1504
     implicit none
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -21,7 +22,6 @@ subroutine lcmmre(typmod, nmat, materd, materf, comp,&
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 ! person_in_charge: jean-michel.proix at edf.fr
-! TOLE CRP_21 CRS_1404
 !       ----------------------------------------------------------------
 !     MONOCRISTAL  : CALCUL DES RESIDUS DU SYSTEME NL A RESOUDRE = R(DY)
 !                    CF. R5.03.11

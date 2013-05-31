@@ -1,7 +1,6 @@
 subroutine mltacf(n, ncol, adper, matper, matfi,&
                   local, p)
 ! person_in_charge: olivier.boiteau at edf.fr
-!     TOLE CRP_4
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -19,6 +18,7 @@ subroutine mltacf(n, ncol, adper, matper, matfi,&
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 ! VERSION COMPLEXE DE MLTAFF
+! aslint: disable=W1304
     implicit none
     integer(kind=4) :: local(*)
     integer :: n, ncol, adper(*), p

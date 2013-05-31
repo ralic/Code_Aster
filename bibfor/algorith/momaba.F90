@@ -1,4 +1,5 @@
 subroutine momaba(mailla)
+! aslint: disable=W1501
     implicit   none
     include 'jeveux.h'
 !
@@ -39,7 +40,6 @@ subroutine momaba(mailla)
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 !-----------------------------------------------------------------------
-! TOLE CRP_20
 !
     integer :: jtyma, nbmc, nbma, jnuma, i, j, ityp, jcoor, n1, n2, i1, i2, nbno
     integer :: nbmat, jpoin, ier, ifm, niv, jcon, jconm, ndim, nn, jnbma, ncount

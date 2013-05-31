@@ -4,6 +4,7 @@ subroutine mecagl(option, result, modele, depla, thetai,&
                   glagr, thlag2, milieu, ndimte, pair,&
                   extim, time, nbprup, noprup, chvite,&
                   chacce, lmelas, nomcas, kcalc, fonoeu)
+! aslint: disable=W1504
     implicit  none
 !
     include 'jeveux.h'
@@ -69,7 +70,6 @@ subroutine mecagl(option, result, modele, depla, thetai,&
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-!     TOLE CRP_21
 !
 !  - FONCTION REALISEE:   CALCUL DU TAUX DE RESTITUTION LOCAL D'ENERGIE
 !

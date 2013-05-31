@@ -3,6 +3,7 @@ subroutine lcjpla(fami, kpg, ksp, loi, mod,&
                   deps, sigf, vin, dsde, sigd,&
                   vind, vp, vecp, theta, dt,&
                   devg, devgii, codret)
+! aslint: disable=W1504
     implicit   none
 !       ================================================================
 ! ======================================================================
@@ -49,7 +50,6 @@ subroutine lcjpla(fami, kpg, ksp, loi, mod,&
 !                    = 0, TOUT VA BIEN PAS DE REDECOUPAGE
 !                    = 1 ou 2, CORRESPOND AU CODE RETOUR DE PLASTI.F
 !       ----------------------------------------------------------------
-! TOLE CRP_21
     include 'asterfort/hbrjpl.h'
     include 'asterfort/irrjpl.h'
     include 'asterfort/lgljpl.h'

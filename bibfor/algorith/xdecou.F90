@@ -2,6 +2,7 @@ subroutine xdecou(ndim, elp, nnop, nnose, it,&
                   pintt, cnset, lsn, fisco, igeom,&
                   nfiss, ifiss, pinter, ninter, npts,&
                   ainter, lonref, nfisc)
+! aslint: disable=W1306
     implicit none
 !
     include 'jeveux.h'
@@ -37,7 +38,6 @@ subroutine xdecou(ndim, elp, nnop, nnose, it,&
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 ! person_in_charge: samuel.geniaut at edf.fr
-! TOLE CRS_1404
 !                      TROUVER LES PTS D'INTERSECTION ENTRE LES ARETES
 !                      ET LE PLAN DE FISSURE
 !

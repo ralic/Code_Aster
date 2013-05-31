@@ -2,7 +2,6 @@ subroutine lcejex(fami, kpg, ksp, ndim, mate,&
                   option, am, da, sigma, dsidep,&
                   vim, vip)
 !
-! TOLE CRS_1404
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -20,6 +19,7 @@ subroutine lcejex(fami, kpg, ksp, ndim, mate,&
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 !
+! aslint: disable=W1306
     implicit none
     include 'asterfort/r8inir.h'
     include 'asterfort/rcvalb.h'

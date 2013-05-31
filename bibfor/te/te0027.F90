@@ -16,7 +16,6 @@ subroutine te0027(option, nomte)
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-! TOLE CRP_20
 !-----------------------------------------------------------------------
 ! FONCTION REALISEE:
 !
@@ -34,6 +33,7 @@ subroutine te0027(option, nomte)
 !
 ! ----------------------------------------------------------------------
 ! CORPS DU PROGRAMME
+! aslint: disable=W1501
     implicit none
 !
 ! DECLARATION PARAMETRES D'APPELS

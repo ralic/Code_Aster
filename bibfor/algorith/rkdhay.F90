@@ -1,5 +1,6 @@
 subroutine rkdhay(mod, nvi, vini, coeft, nmat,&
                   sigi, dvin, iret)
+! aslint: disable=W1504
     implicit none
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -17,7 +18,6 @@ subroutine rkdhay(mod, nvi, vini, coeft, nmat,&
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-! TOLE CRP_21
 ! ==================================================================
 !      MODELE VISCOPLASTIQUE A ECROUISSAGE ISOTROPE COUPLE A DE
 !      L ENDOMMAGEMENT ISOTROPE

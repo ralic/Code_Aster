@@ -21,7 +21,6 @@ subroutine dldiff(result, force1, lcrea, lamort, neq,&
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-! TOLE CRP_21
 !     ------------------------------------------------------------------
 !     CALCUL MECANIQUE TRANSITOIRE PAR INTEGRATION DIRECTE
 !     AVEC  METHODE EXPLICITE :  DIFFERENCES CENTREES
@@ -59,6 +58,7 @@ subroutine dldiff(result, force1, lcrea, lamort, neq,&
 !  VAR : ACC0      : TABLEAU DES ACCELERATIONS A L'INSTANT N
 ! IN  NUMREP : NUMERO DE REUSE POUR LA TABLE PARA_CALC
 ! CORPS DU PROGRAMME
+! aslint: disable=W1504
     implicit none
 !
 ! DECLARATION PARAMETRES D'APPELS

@@ -1,6 +1,7 @@
 subroutine rvcpnc(mcf, iocc, nch19, gd, typegd,&
                   nbcpc, nlscpc, nomojb, repere, option,&
                   quant, codir, dir, iret)
+! aslint: disable=W1501
     implicit   none
 !
     include 'jeveux.h'
@@ -51,7 +52,6 @@ subroutine rvcpnc(mcf, iocc, nch19, gd, typegd,&
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-! TOLE CRP_20
 !     ------------------------------------------------------------------
 !     SAISIE DES CMP NECESSAIRES AU POST-TRAITEMENT
 !     ------------------------------------------------------------------

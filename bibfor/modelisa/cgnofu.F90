@@ -1,4 +1,5 @@
 subroutine cgnofu(mofaz, iocc, nomaz, lisnoz, nbno)
+! aslint: disable=
     implicit  none
     include 'jeveux.h'
     include 'asterc/getvr8.h'
@@ -34,7 +35,6 @@ subroutine cgnofu(mofaz, iocc, nomaz, lisnoz, nbno)
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-! TOLE CRP_6
 ! -------------------------------------------------------
 !
 !       CGNOFU -- TRAITEMENT DE L'OPTION "TUNNEL"

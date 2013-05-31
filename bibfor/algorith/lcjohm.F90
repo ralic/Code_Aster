@@ -4,6 +4,7 @@ subroutine lcjohm(imate, resi, rigi, kpi, npg,&
                   varip, sigm, sigp, drde, ouvh,&
                   retcom)
 !
+! aslint: disable=W1504
     implicit none
 !
 ! ======================================================================
@@ -24,7 +25,6 @@ subroutine lcjohm(imate, resi, rigi, kpi, npg,&
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 ! ======================================================================
-! TOLE CRP_21
 ! ======================================================================
 ! - VARIABLES D'ENTREE
 !

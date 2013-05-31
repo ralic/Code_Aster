@@ -25,7 +25,6 @@ subroutine caethm(nomte, axi, perman, vf, typvf,&
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-! TOLE CRP_21
 ! ======================================================================
 ! ======================================================================
 ! --- BUT : PREPARATION DU CALCUL SUR UN ELEMENT THM -------------------
@@ -73,6 +72,7 @@ subroutine caethm(nomte, axi, perman, vf, typvf,&
 !                          3  = SUSHI AVEC VOISIN DECENTRE ARETE (SUDA)
 !                          4  = SUSHI AVEC VOISIN CENTRE  (SUC)
 ! CORPS DU PROGRAMME
+! aslint: disable=W1504
     implicit none
 !
 ! DECLARATION PARAMETRES D'APPELS

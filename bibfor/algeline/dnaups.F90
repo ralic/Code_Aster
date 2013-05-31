@@ -14,10 +14,8 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-! TOLE CRP_21
 !
 ! ======================================================================
-! TOLE CRP_20
 !
 !     SUBROUTINE ARPACK CALCULANT LES VALEURS PROPRES DE (OP), ELLE
 !     APPELLE LA ROUTINE DE TRAVAIL DNAUPD2.
@@ -433,6 +431,7 @@ subroutine dnaups(ido, bmat, n, which, nev,&
 ! ENDLIB
 !-----------------------------------------------------------------------
 ! CORPS DU PROGRAMME
+! aslint: disable=W1501,W1504
     implicit none
 !
 !     %--------------------------------------%

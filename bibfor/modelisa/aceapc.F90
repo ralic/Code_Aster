@@ -1,4 +1,5 @@
 subroutine aceapc(nomu, noma, lmax, nbocc)
+! aslint: disable=
     implicit none
     include 'jeveux.h'
 !
@@ -46,7 +47,6 @@ subroutine aceapc(nomu, noma, lmax, nbocc)
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-! TOLE  CRP_6
 ! ----------------------------------------------------------------------
 !     AFFE_CARA_ELEM
 !     AFFECTATION DES CARACTERISTIQUES POUR L'ELEMENT DEFI_ARC

@@ -3,8 +3,8 @@ subroutine lcmmja(comp, typmod, nmat, materf, timed,&
                   pgl, nfs, nsg, toutms, hsr,&
                   nr, nvi, vind, df, yf,&
                   yd, dy, drdy, iret)
+! aslint: disable=W1306,W1504
     implicit none
-! TOLE CRP_21
 ! ----------------------------------------------------------------------
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -23,7 +23,6 @@ subroutine lcmmja(comp, typmod, nmat, materf, timed,&
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 ! person_in_charge: jean-michel.proix at edf.fr
-! TOLE CRS_1404
 !       ----------------------------------------------------------------
 !       MONOCRISTAL : CALCUL DU JACOBIEN DU SYSTEME NL A RESOUDRE = DRDY
 !                    DY    = ( DSIG + DGAMMA PAR SYST )

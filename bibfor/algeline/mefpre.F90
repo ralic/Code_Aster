@@ -3,6 +3,7 @@ subroutine mefpre(ndim, alpha, z, cf, dh,&
                   itypg, zg, hg, axg, pm,&
                   xig, afluid, cdg, cfg, vitg,&
                   rhog)
+! aslint: disable=W1504
     implicit   none
 !
     include 'jeveux.h'
@@ -35,7 +36,6 @@ subroutine mefpre(ndim, alpha, z, cf, dh,&
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-! TOLE CRP_21
 ! ----------------------------------------------------------------------
 !     CALCUL DE LA PRESSION ET DU GRADIENT DE PRESSION STATIONNAIRE
 !     OPERATEUR APPELANT : OP0144 , FLUST3, MEFIST

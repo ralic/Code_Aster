@@ -20,7 +20,7 @@ subroutine lcmaza(fami, kpg, ksp, ndim, typmod,&
 !
 !
 ! ======================================================================
-! TOLE CRP_20
+! aslint: disable=W1501
     implicit none
     include 'asterc/iisnan.h'
     include 'asterc/r8nnem.h'

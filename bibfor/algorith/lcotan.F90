@@ -7,6 +7,7 @@ subroutine lcotan(opt, angmas, etatd, etatf, fami,&
                   nbcomm, cpmono, pgl, nfs, nsg,&
                   toutms, hsr, nr, itmax, toler,&
                   typma, dsde, codret)
+! aslint: disable=W1504
     implicit none
 ! ----------------------------------------------------------------------
 ! ======================================================================
@@ -26,7 +27,6 @@ subroutine lcotan(opt, angmas, etatd, etatf, fami,&
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 ! person_in_charge: jean-michel.proix at edf.fr
-! TOLE CRP_21
 ! ======================================================================
 !
 !     CALCUL DE L'OPERATEUR TANGENT = DS/DE(T+DT) OU DS/DE(T)

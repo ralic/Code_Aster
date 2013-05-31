@@ -2,6 +2,7 @@ subroutine intfac(noma, nmaabs, ifq, fa, nno,&
                   lst, lsn, ndim, grad, jglsn,&
                   jglst, igeom, m, indptf, gln,&
                   glt, codret)
+! aslint: disable=W1306
     implicit none
 !
     include 'jeveux.h'
@@ -20,7 +21,6 @@ subroutine intfac(noma, nmaabs, ifq, fa, nno,&
     character(len=3) :: grad
     character(len=8) :: noma
 !
-! TOLE CRS_1404
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

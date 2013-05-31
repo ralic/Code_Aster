@@ -3,6 +3,7 @@ subroutine plasti(fami, kpg, ksp, typmod, imat,&
                   tempf, tref, epsdt, depst, sigd,&
                   vind, opt, angmas, sigf, vinf,&
                   dsde, icomp, nvi, tampon, irteti)
+! aslint: disable=W1504
     implicit none
 ! ----------------------------------------------------------------------
 ! ======================================================================
@@ -22,7 +23,6 @@ subroutine plasti(fami, kpg, ksp, typmod, imat,&
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 ! person_in_charge: jean-michel.proix at edf.fr
-! TOLE CRP_21
 ! ======================================================================
 !     INTEGRATION DE LOIS DE COMPORTEMENT ELASTO PLASTIQUE ET VISCO
 !     PLASTIQUE PAR UNE MATHODE DE NEWTON (DISCRETISATION IMPLICITE)

@@ -3,8 +3,8 @@ subroutine lcmmin(typess, essai, mod, nmat, materf,&
                   comp, nbcomm, cpmono, pgl, nfs,&
                   nsg, toutms, timed, timef, vind,&
                   sigd, epstr)
+! aslint: disable=W1504
     implicit none
-! TOLE CRP_21
 ! person_in_charge: jean-michel.proix at edf.fr
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG

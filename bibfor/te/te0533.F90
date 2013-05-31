@@ -1,4 +1,5 @@
 subroutine te0533(option, nomte)
+! aslint: disable=W1501
     implicit   none
     include 'jeveux.h'
 !
@@ -40,7 +41,6 @@ subroutine te0533(option, nomte)
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 ! person_in_charge: samuel.geniaut at edf.fr
-! TOLE CRP_20
 !
 !
 !         CALCUL DES MATRICES DE CONTACT FROTTEMENT POUR X-FEM

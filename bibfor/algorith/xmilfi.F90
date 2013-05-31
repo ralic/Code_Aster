@@ -1,5 +1,6 @@
 subroutine xmilfi(elp, ndim, nno, ptint, jtabco,&
                   jtabls, ipp, ip, milfi)
+! aslint: disable=W1306
     implicit none
 !
     include 'jeveux.h'
@@ -12,7 +13,6 @@ subroutine xmilfi(elp, ndim, nno, ptint, jtabco,&
     character(len=8) :: elp
     real(kind=8) :: milfi(ndim), ptint(*)
 !
-! TOLE CRS_1404
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

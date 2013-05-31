@@ -6,6 +6,7 @@ subroutine cabthm(nddls, nddlm, nno, nnos, nnom,&
                   addep1, yap2, addep2, yate, addete,&
                   np1, np2, axi)
 !
+! aslint: disable=W1504
     implicit none
 ! ======================================================================
 ! person_in_charge: sylvie.granet at edf.fr
@@ -25,7 +26,6 @@ subroutine cabthm(nddls, nddlm, nno, nnos, nnom,&
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-! TOLE CRP_21
 ! ======================================================================
 !     BUT:  CALCUL  DE LA MATRICE B EN MODE D'INTEGRATION MIXTE
 !              AVEC ELEMENTS P2P1

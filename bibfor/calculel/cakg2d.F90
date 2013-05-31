@@ -2,6 +2,7 @@ subroutine cakg2d(optioz, result, modele, depla, theta,&
                   mate, nchar, lchar, symech, fondf,&
                   noeud, time, iord, nbprup, noprup,&
                   lmelas, nomcas, lmoda, puls, compor)
+! aslint: disable=W1504
     implicit none
 !
     include 'jeveux.h'
@@ -59,7 +60,6 @@ subroutine cakg2d(optioz, result, modele, depla, theta,&
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-! TOLE CRP_21
 !
 !     - FONCTION REALISEE:   CALCUL DES COEFFICIENTS D'INTENSITE DE
 !                            CONTRAINTES K1 ET K2 EN 2D

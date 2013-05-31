@@ -25,7 +25,6 @@ subroutine calcme(option, compor, thmc, meca, imate,&
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 ! person_in_charge: sylvie.granet at edf.fr
-! TOLE CRP_20 CRP_21
 ! **********************************************************************
 ! ROUTINE CALC_MECA
 ! CALCULE LES CONTRAINTES GENERALISEES ET LA MATRICE TANGENTE MECANIQUES
@@ -46,6 +45,7 @@ subroutine calcme(option, compor, thmc, meca, imate,&
 !                                 N = NOMBRE DE PALIERS
 !                OUT RETCOM
 ! ======================================================================
+! aslint: disable=W1501,W1504
     implicit      none
     include 'asterfort/dpvplc.h'
     include 'asterfort/dsipdp.h'

@@ -19,9 +19,8 @@ subroutine nmfgas(fami, npg, icodma, pgl, nno,&
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-! TOLE CRP_21
-! TOLE CRP_7
 ! ----------------------------------------------------------------------
+! aslint: disable=,W1504
     implicit none
     include 'asterc/r8t0.h'
     include 'asterfort/assert.h'

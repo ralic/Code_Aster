@@ -22,8 +22,8 @@ subroutine op0100()
 !          CALCUL DES FACTEURS D'INTENSITE DE CONTRAINTES
 ! ======================================================================
 ! person_in_charge: samuel.geniaut at edf.fr
-! TOLE CRP_20
 !
+! aslint: disable=W1501
     implicit none
 !
     include 'jeveux.h'

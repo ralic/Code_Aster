@@ -2,6 +2,7 @@ subroutine hujmid(mod, crit, mater, nvi, deps,&
                   sigd, sigf, vind, vinf, noconv,&
                   aredec, stopnc, negmul, iret, subd,&
                   loop, ndec0, indi, mectra)
+! aslint: disable=W1501
     implicit none
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -19,7 +20,6 @@ subroutine hujmid(mod, crit, mater, nvi, deps,&
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-! TOLE CRP_20
 ! ---------------------------------------------------------------------
 ! INTEGRATION PLASTIQUE (MECANISMES ISOTROPE ET DEVIATOIRE) DE HUJEUX
 ! IN   MOD     :  MODELISATION

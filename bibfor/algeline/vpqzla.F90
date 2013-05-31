@@ -21,9 +21,6 @@ subroutine vpqzla(typeqz, qrn, iqrn, lqrn, qrar,&
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-! TOLE CRP_20
-! TOLE CRP_21
-! TOLE CRP_4
 !     SUBROUTINE ASTER ORCHESTRANT LA METHODE QZ (VERSION LAPACK).
 !     EN GENERALISEE OU EN QUADRATIQUE AVEC MATRICES K, M  ET C
 !     SYMETRIQUES OU NON. K E R/C, M E R, C E R.
@@ -83,6 +80,7 @@ subroutine vpqzla(typeqz, qrn, iqrn, lqrn, qrar,&
 ! OUT FLAGE  : LO : FLAG PERMETTANT DE GERER LES IMPRESSIONS
 !-----------------------------------------------------------------------
 ! CORPS DU PROGRAMME
+! aslint: disable=W1304,W1501,W1504
     implicit none
 !
 ! DECLARATION PARAMETRES D'APPELS

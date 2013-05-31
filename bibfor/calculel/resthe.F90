@@ -22,7 +22,6 @@ subroutine resthe(ligrel, evol, chtemm, chtemp, chflum,&
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 ! person_in_charge: olivier.boiteau at edf.fr
-! TOLE CRP_21
 !-----------------------------------------------------------------------
 !    - FONCTION REALISEE:  CALCUL DE L'ESTIMATEUR D'ERREUR EN RESIDU
 !                          SUR LE PROBLEME THERMIQUE
@@ -71,6 +70,7 @@ subroutine resthe(ligrel, evol, chtemm, chtemp, chflum,&
 !          PERFORMANCES DE RESTHE/CALCUL/TE0003.
 !----------------------------------------------------------------------
 ! CORPS DU PROGRAMME
+! aslint: disable=W1504
     implicit none
 !
 ! DECLARATION PARAMETRES D'APPELS

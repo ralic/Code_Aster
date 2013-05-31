@@ -20,8 +20,6 @@ subroutine nmdlog(fami, option, typmod, ndim, nno,&
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-! TOLE CRP_21
-! TOLE CRS_1404
 ! ----------------------------------------------------------------------
 !     BUT:  CALCUL  DES OPTIONS RIGI_MECA_*, RAPH_MECA ET FULL_MECA_*
 !           EN GRANDES DEFORMATIONS 2D (D_PLAN ET AXI) ET 3D LOG
@@ -57,6 +55,7 @@ subroutine nmdlog(fami, option, typmod, ndim, nno,&
 ! OUT MATUU   : MATR. DE RIGIDITE NON SYM. (RIGI_MECA_* ET FULL_MECA_*)
 ! OUT CODRET  : CODE RETOUR DE L'INTEGRATION DE LA LDC
 !
+! aslint: disable=W1306,W1504
     implicit none
     include 'asterfort/assert.h'
     include 'asterfort/codere.h'

@@ -1,5 +1,6 @@
 subroutine elraca(elrefz, ndim, nno, nnos, nbfpg,&
                   fapg, nbpg, x, vol)
+! aslint: disable=W1501
     implicit none
     include 'asterfort/u2mesk.h'
     integer :: nbfamx
@@ -25,7 +26,6 @@ subroutine elraca(elrefz, ndim, nno, nnos, nbfpg,&
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 ! person_in_charge: jacques.pellet at edf.fr
-! TOLE CRP_20
 ! BUT :  RETOURNE LES CARACTERISTIQUES DE L'ELREFA
 ! ----------------------------------------------------------------------
 !   IN   ELREFZ : NOM DE L'ELREFA (K8)

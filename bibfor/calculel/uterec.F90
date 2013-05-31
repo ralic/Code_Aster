@@ -22,7 +22,6 @@ subroutine uterec(ndim, iflup, iflum, ino, mno,&
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 ! person_in_charge: olivier.boiteau at edf.fr
-! TOLE CRP_21
 !-----------------------------------------------------------------------
 !    - FONCTION REALISEE: UTILITAIRE DE CALCUL DE L'ERREUR DUE A LA
 !                         CONDITION D'ECHANGE. POUR AERER TE0003.
@@ -53,6 +52,7 @@ subroutine uterec(ndim, iflup, iflum, ino, mno,&
 !       11/09/01 (OB): MODIF. REPARTITION ERREUR/NORMALISATION
 !----------------------------------------------------------------------
 ! CORPS DU PROGRAMME
+! aslint: disable=W1504
     implicit none
 !
 ! DECLARATION PARAMETRES D'APPELS

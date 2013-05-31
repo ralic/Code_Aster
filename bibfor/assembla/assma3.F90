@@ -27,7 +27,7 @@ subroutine assma3(lmasym, lmesym, tt, igr, iel,&
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 ! person_in_charge: jacques.pellet at edf.fr
-! TOLE CRP_21
+! aslint: disable=W1504
     implicit none
 !-----------------------------------------------------------------------
 ! BUT : ASSEMBLER UN ELEMENT FINI

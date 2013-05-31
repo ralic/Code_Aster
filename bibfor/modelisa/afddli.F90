@@ -4,6 +4,7 @@ subroutine afddli(valr, valk, valc, prnm, nddla,&
                   mod, lisrel, nomcmp, nbcmp, icompt,&
                   lxfem, jnoxfl, jnoxfv, ch1, ch2,&
                   ch3, cnxinv)
+! aslint: disable=W1504
     implicit none
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -21,7 +22,6 @@ subroutine afddli(valr, valk, valc, prnm, nddla,&
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-! TOLE CRP_21
     include 'jeveux.h'
     include 'asterc/getres.h'
     include 'asterc/indik8.h'

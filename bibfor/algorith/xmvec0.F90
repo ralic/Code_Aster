@@ -19,8 +19,8 @@ subroutine xmvec0(ndim, jnne, nnc, nfaes, dlagrc,&
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-! TOLE CRP_21
 !
+! aslint: disable=W1504
     implicit none
     include 'asterfort/xplma2.h'
     integer :: ndim, jnne(3), nnc, nfaes, cface(3, 5), jpcai, jddle(2), nconta

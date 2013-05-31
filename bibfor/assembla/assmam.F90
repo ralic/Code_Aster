@@ -4,6 +4,7 @@ subroutine assmam(base, matas, nbmat, tlimat, licoef,&
 !  ATTENTION : CETTE ROUTINE NE DOIT PAS ETRE APPELLEE DIRECTEMENT :
 !              IL FAUT APPELER SON "CHAPEAU" : ASMATR.
 !
+! aslint: disable=W1501
     implicit none
 !
     include 'jeveux.h'
@@ -75,7 +76,6 @@ subroutine assmam(base, matas, nbmat, tlimat, licoef,&
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-! TOLE CRP_20
 !     ASSEMBLAGE MORSE AVEC PRECONDITIONNEMENT DES MATR_ELEM DE MAILLES
 !     "LAGRANGE" PAR -(MAX(!A(I,I)!)+MIN(!A(I,I)!))/2
 !-----------------------------------------------------------------------

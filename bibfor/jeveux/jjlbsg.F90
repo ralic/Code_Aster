@@ -32,7 +32,7 @@ subroutine jjlbsg(ic, id, ioc, ibacol, iadmi,&
 !
 ! ----------------------------------------------------------------------
 ! person_in_charge: j-pierre.lefebvre at edf.fr
-! TOLE CRS_505
+! aslint: disable=W1307
     implicit none
     include 'jeveux_private.h'
     include 'asterc/hpdeallc.h'

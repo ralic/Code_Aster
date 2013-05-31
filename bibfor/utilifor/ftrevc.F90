@@ -18,7 +18,6 @@ subroutine ftrevc(side, howmny, select, n, t,&
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-! TOLE CRP_20
 !
 !     SUBROUTINE LAPACK CALCULANT DES VECTEUR PROPRES.
 !-----------------------------------------------------------------------
@@ -170,6 +169,7 @@ subroutine ftrevc(side, howmny, select, n, t,&
 !            ABS, MAX, SQRT.
 !-----------------------------------------------------------------------
 ! CORPS DU PROGRAMME
+! aslint: disable=W1501
     implicit none
 !
 !     .. SCALAR ARGUMENTS ..

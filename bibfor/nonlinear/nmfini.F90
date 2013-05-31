@@ -19,9 +19,9 @@ subroutine nmfini(sddyna, valinc, measse, modele, mate,&
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-! TOLE CRP_21
 ! person_in_charge: ludovic.idoux at edf.fr
 !
+! aslint: disable=W1504
     implicit none
     include 'jeveux.h'
     include 'asterfort/dismoi.h'

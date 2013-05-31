@@ -1,7 +1,6 @@
 subroutine nmfici(nno, nddl, wref, vff, dfde,&
                   geom, poids, b)
 !
-! TOLE CRS_1404
 ! ======================================================================
 ! COPYRIGHT (C) 2007 NECS - BRUNO ZUBER   WWW.NECS.FR
 ! COPYRIGHT (C) 2007 - 2013  EDF R&D                WWW.CODE-ASTER.ORG
@@ -20,6 +19,7 @@ subroutine nmfici(nno, nddl, wref, vff, dfde,&
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 !
+! aslint: disable=W1306
     implicit none
     include 'asterfort/subaco.h'
     include 'asterfort/sumetr.h'

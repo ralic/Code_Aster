@@ -5,6 +5,7 @@ subroutine lcreli(fami, kpg, ksp, loi, mod,&
                   vinf, itmax, toler, timed, timef,&
                   yd, yf, deps, epsd, dy,&
                   r, ddy, iret, crit, indi)
+! aslint: disable=W1306,W1504
     implicit none
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -72,7 +73,6 @@ subroutine lcreli(fami, kpg, ksp, loi, mod,&
 !     OUT YF     :  VARIABLES A T+DT
 !     IN /OUT IRET : CODE RETOUR D'ERREUR (DIFFERENT DE 0 SI PB)
 !
-! TOLE CRP_21 CRS_1404
 !     ----------------------------------------------------------------
     integer :: i, iret, itrho, imxrho
     real(kind=8) :: f, df, w, rhomin, rhomax

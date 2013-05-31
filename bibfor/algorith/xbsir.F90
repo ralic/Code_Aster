@@ -4,6 +4,7 @@ subroutine xbsir(ndim, nnop, nfh, nfe, ddlc,&
                  idepl, lsn, lst, ivectu, jpmilt,&
                  nfiss, jfisno)
 !
+! aslint: disable=W1306,W1504
     implicit none
     include 'jeveux.h'
 !
@@ -36,7 +37,6 @@ subroutine xbsir(ndim, nnop, nfh, nfe, ddlc,&
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-! TOLE CRS_1404 CRP_21
 !
 !      BSIGMC  -- CALCUL DES FORCES INTERNES B*SIGMA AUX NOEUDS
 !                 DE L'ELEMENT DUES AU CHAMP DE CONTRAINTES SIGMA

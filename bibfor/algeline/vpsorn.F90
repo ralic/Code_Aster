@@ -21,7 +21,6 @@ subroutine vpsorn(lmasse, ldynfa, nbeq, nbvect, nfreq,&
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-! TOLE CRP_21
 !
 !     SUBROUTINE ASTER ORCHESTRANT LA METHODE DE SORENSEN: UN ARNOLDI
 !     AVEC REDEMARRAGE IMPLICITE VIA QR (VERSION ARPACK 2.4).
@@ -95,6 +94,7 @@ subroutine vpsorn(lmasse, ldynfa, nbeq, nbvect, nfreq,&
 ! IN  SOLVEU : K19 : SD SOLVEUR POUR PARAMETRER LE SOLVEUR LINEAIRE
 !----------------------------------------------------------------------
 ! CORPS DU PROGRAMME
+! aslint: disable=W1504
     implicit none
 !
 ! DECLARATION PARAMETRES D'APPELS

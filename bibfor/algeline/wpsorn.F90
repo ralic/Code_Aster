@@ -23,7 +23,6 @@ subroutine wpsorn(appr, lmasse, lamor, lmatra, nbeq,&
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 ! ======================================================================
-! TOLE CRP_21
 !
 !---------------------------------------------------------------------
 !
@@ -98,6 +97,7 @@ subroutine wpsorn(appr, lmasse, lamor, lmatra, nbeq,&
 ! IN  SOLVEU : K19 : SD SOLVEUR POUR PARAMETRER LE SOLVEUR LINEAIRE
 !----------------------------------------------------------------------
 ! CORPS DU PROGRAMME
+! aslint: disable=W1504
     implicit none
 !
 !

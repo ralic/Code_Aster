@@ -1,7 +1,7 @@
 subroutine mecoel(iacti2)
+! aslint: disable=W1502
     implicit none
     integer :: iacti2
-! TOLE CRS_230
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

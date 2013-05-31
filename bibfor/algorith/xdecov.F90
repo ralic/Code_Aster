@@ -3,6 +3,7 @@ subroutine xdecov(ndim, elp, nnop, nnose, it,&
                   fisco, igeom, nfiss, ifiss, pinter,&
                   ninter, npts, ainter, nse, cnse,&
                   heav, nfisc, nsemax)
+! aslint: disable=W1306,W1501,W1504
     implicit none
 !
     include 'jeveux.h'
@@ -42,7 +43,6 @@ subroutine xdecov(ndim, elp, nnop, nnose, it,&
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 ! person_in_charge: samuel.geniaut at edf.fr
-! TOLE CRP_20 CRP_21 CRS_1404
 !                      DÃCOUPER LE TETRA EN NSE SOUS-TETRAS
 !
 !     ENTREE

@@ -5,6 +5,7 @@ subroutine lccnvx(fami, kpg, ksp, loi, mod,&
                   hsr, nfs, nsg, toutms, timed,&
                   timef, nr, yd, yf, toler,&
                   seuil, iret)
+! aslint: disable=W1504
     implicit  none
 ! ----------------------------------------------------------------------
 ! ======================================================================
@@ -23,7 +24,6 @@ subroutine lccnvx(fami, kpg, ksp, loi, mod,&
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-! TOLE CRP_21
 ! ----------------------------------------------------------------------
 ! --- BUT : CONVEXE ELASTO PLASTIQUE A T+DT POUR (SIGF , VIND) DONNES --
 ! ----------------------------------------------------------------------

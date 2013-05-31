@@ -3,6 +3,7 @@ subroutine xmulco(contac, ddlc, ddlm, iaint, ifiss,&
                   ndim, nfe, nfh, nfiss, ninter,&
                   nlact, nno, nnol, nnom, nnos,&
                   pla, typma)
+! aslint: disable=W1504
     implicit   none
     include 'jeveux.h'
 ! ======================================================================
@@ -21,7 +22,6 @@ subroutine xmulco(contac, ddlc, ddlm, iaint, ifiss,&
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-! TOLE CRP_21
 ! IN TYPMA : TYPE DE MAILLE
 ! IN NINTER : NOMBRE DE POINTS D'INTERSECTION
 ! IN IAINT : ADRESSE TOPOFAC.AI POUR LA FISSURE COURANTE

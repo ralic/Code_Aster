@@ -4,6 +4,7 @@ subroutine lcdpec(vind, nbcomm, nmat, ndt, cpmono,&
                   dt, dy, yd, vinf, tampon,&
                   comp, sigf, df, nr, mod,&
                   codret)
+! aslint: disable=W1306,W1504
     implicit none
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -21,7 +22,6 @@ subroutine lcdpec(vind, nbcomm, nmat, ndt, cpmono,&
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-! TOLE CRP_21 CRS_1404
 !     POST-TRAITEMENTS POUR LE MONOCRISTAL
 !     DEFORMATION PLASTIQUE EQUIVALENTE CUMULEE MACROSCOPIQUE
 !     RECALCUL DES 3 VARIABLES INTERNES PAR SYSTEME

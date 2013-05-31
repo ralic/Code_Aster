@@ -17,7 +17,6 @@ subroutine te0497(option, nomte)
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 ! person_in_charge: sebastien.meunier at edf.fr
-! TOLE CRP_20
 !-----------------------------------------------------------------------
 !    - FONCTION REALISEE:  CALCUL DE L'ESTIMATEUR D'ERREUR EN RESIDU
 !      SUR UN ELEMENT ISOPARAMETRIQUE 2D, VIA L'OPTION 'ERME_ELEM'
@@ -36,6 +35,7 @@ subroutine te0497(option, nomte)
 !                      STATIONNAIRE .
 !----------------------------------------------------------------------
 ! CORPS DU PROGRAMME
+! aslint: disable=W1501
     implicit none
 ! DECLARATION PARAMETRES D'APPELS
     include 'jeveux.h'

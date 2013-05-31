@@ -1,6 +1,7 @@
 subroutine ordcoq(imod, nbm, icoq, nbno, numno,&
                   inomax, nbnoto, coordo, iaxe, defm,&
                   nunoe0, drmax, torco)
+! aslint: disable=
     implicit none
 !-----------------------------------------------------------------------
 ! ======================================================================
@@ -19,7 +20,6 @@ subroutine ordcoq(imod, nbm, icoq, nbno, numno,&
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-! TOLE CRP_6
 !-----------------------------------------------------------------------
 ! CARACTERISATION DES DEFORMEES DES MODES PRIS EN COMPTE POUR LE
 ! COUPLAGE : DETERMINATION DE L'ORDRE DE COQUE

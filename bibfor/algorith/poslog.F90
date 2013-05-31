@@ -19,8 +19,6 @@ subroutine poslog(resi, rigi, tn, tp, fm,&
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-! TOLE CRP_21
-! TOLE CRS_1404
 ! ----------------------------------------------------------------------
 !     BUT:  POST TRAITEMENT GRANDES DEFORMATIONS 2D ET 3D LOG
 !     SUIVANT ARTICLE MIEHE APEL LAMBRECHT CMAME 2002
@@ -45,6 +43,7 @@ subroutine poslog(resi, rigi, tn, tp, fm,&
 ! IN  ME      : TERMES UTILES AU CALCUL DE TL DANS POSLOG
 ! OUT SIGP    : CONTRAINTES DE CAUCHY EN T+
 !
+! aslint: disable=W1306,W1504
     implicit none
     include 'asterfort/d1macp.h'
     include 'asterfort/deflg2.h'

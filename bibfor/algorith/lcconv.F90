@@ -4,6 +4,7 @@ subroutine lcconv(loi, yd, dy, ddy, ye,&
                   typess, essai, icomp, nvi, vind,&
                   vinf, vind1, indi, bnews, mtrac,&
                   lreli, iret)
+! aslint: disable=W1504
     implicit   none
 !       ================================================================
 ! ======================================================================
@@ -22,7 +23,6 @@ subroutine lcconv(loi, yd, dy, ddy, ye,&
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-! TOLE CRP_21
 !     ----------------------------------------------------------------
 !     ROUTINE D AIGUILLAGE
 !     ----------------------------------------------------------------

@@ -32,9 +32,9 @@ subroutine fetsca(nbi, vi, vo, scalin, infofe,&
 !     ASTER INFORMATIONS:
 !       28/01/04 (OB): CREATION.
 !----------------------------------------------------------------------
-! TOLE CRP_4
 ! person_in_charge: olivier.boiteau at edf.fr
 ! CORPS DU PROGRAMME
+! aslint: disable=W1304
     implicit none
 !
 ! DECLARATION PARAMETRES D'APPELS

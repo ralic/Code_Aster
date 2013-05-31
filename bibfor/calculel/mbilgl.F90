@@ -4,6 +4,7 @@ subroutine mbilgl(option, result, modele, depla1, depla2,&
                   thlag2, milieu, ndimte, pair, extim,&
                   timeu, timev, indi, indj, nbprup,&
                   noprup, lmelas, nomcas, fonoeu)
+! aslint: disable=W1504
     implicit  none
 !
     include 'jeveux.h'
@@ -62,7 +63,6 @@ subroutine mbilgl(option, result, modele, depla1, depla2,&
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-!     TOLE CRP_21
 !
 !  - FONCTION REALISEE:   CALCUL DU TAUX DE RESTITUTION LOCAL D'ENERGIE
 !

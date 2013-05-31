@@ -4,6 +4,7 @@ subroutine xmmsa3(ndim, nno, nnos, ffp, nddl,&
                   nfiss, ifiss, jheafa, ncomph, ifa,&
                   saut)
 !
+! aslint: disable=W1504
     implicit none
     include 'jeveux.h'
     include 'asterfort/assert.h'
@@ -31,7 +32,6 @@ subroutine xmmsa3(ndim, nno, nnos, ffp, nddl,&
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-! TOLE CRP_21
 !
 !
 ! ROUTINE CONTACT (METHODE XFEM HPP - CALCUL ELEM.)

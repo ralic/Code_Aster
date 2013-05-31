@@ -3,6 +3,7 @@ subroutine lc0007(fami, kpg, ksp, ndim, imate,&
                   deps, sigm, vim, option, angmas,&
                   sigp, vip, tampon, typmod, icomp,&
                   nvi, dsidep, codret)
+! aslint: disable=W1504
     implicit none
     include 'asterfort/lceobg.h'
     include 'asterfort/lceobl.h'
@@ -19,7 +20,6 @@ subroutine lc0007(fami, kpg, ksp, ndim, imate,&
     character(len=8) :: typmod(*)
     character(len=*) :: fami
 !
-! TOLE CRP_21
 ! ======================================================================
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2008  EDF R&D                  WWW.CODE-ASTER.ORG

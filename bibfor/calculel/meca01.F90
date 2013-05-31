@@ -19,7 +19,6 @@ subroutine meca01(optio0, nbordr, jordr, nchar, jcha,&
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-! TOLE CRP_20
 ! person_in_charge: josselin.delmas at edf.fr
 ! ----------------------------------------------------------------------
 ! COMMANDE DE CALC_ERREUR SPECIFIQUE AUX INDICATEURS D'ERREUR
@@ -45,6 +44,7 @@ subroutine meca01(optio0, nbordr, jordr, nchar, jcha,&
 !              2 : PROBLEMES DE RESULTATS
 ! ----------------------------------------------------------------------
 !
+! aslint: disable=W1501
     implicit none
 !
 !     --- ARGUMENTS ---

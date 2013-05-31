@@ -1,6 +1,7 @@
 subroutine acmata(jvectn, jvectu, jvectv, nbordr, kwork,&
                   sompgw, jrwork, tspaq, ipg, jvecpg,&
                   jdtaum, jresun, nommet, vrespc)
+! aslint: disable=W1501,W1504
     implicit   none
     include 'jeveux.h'
 !
@@ -31,7 +32,6 @@ subroutine acmata(jvectn, jvectu, jvectv, nbordr, kwork,&
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-! TOLE CRP_20 CRP_21
 ! ---------------------------------------------------------------------
 ! BUT: POUR LA FATIGUE A AMPLITUDE CONSTANTE
 !      DETERMINER LE PLAN DES MAX DES TAU_MAX ET CALCULER DES GRANDEURS

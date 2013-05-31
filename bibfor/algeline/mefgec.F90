@@ -1,5 +1,6 @@
 subroutine mefgec(ndim, nbcyl, som, xint, yint,&
                   rint, dcent, ficent, d, fi)
+! aslint: disable=
     implicit none
 !
     include 'asterc/r8pi.h'
@@ -7,7 +8,6 @@ subroutine mefgec(ndim, nbcyl, som, xint, yint,&
     integer :: ndim(14), nbcyl
     real(kind=8) :: som(9), xint(*), yint(*), rint(*), dcent(*), ficent(*)
     real(kind=8) :: d(nbcyl, nbcyl), fi(nbcyl, nbcyl)
-! TOLE CRP_6
 ! ----------------------------------------------------------------------
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG

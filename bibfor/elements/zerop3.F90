@@ -16,8 +16,8 @@ subroutine zerop3(a, b, c, x, n)
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-! TOLE CRP_6
 !
+! aslint: disable=
     implicit none
     include 'asterc/r8pi.h'
     real(kind=8) :: a, b, c, x(3)

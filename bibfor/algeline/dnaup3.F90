@@ -18,8 +18,6 @@
 ! ======================================================================
 !
 ! ======================================================================
-! TOLE CRP_20
-! TOLE CRP_21
 !
 !     SUBROUTINE ARPACK CALCULANT LES VALEURS PROPRES DE (OP) VIA
 !     IRAM.
@@ -215,6 +213,7 @@ subroutine dnaup3(ido, bmat, n, which, nev,&
 ! ENDLIB
 !-----------------------------------------------------------------------
 ! CORPS DU PROGRAMME
+! aslint: disable=W1501,W1504
     implicit none
 !
 !     %-----------------------------%

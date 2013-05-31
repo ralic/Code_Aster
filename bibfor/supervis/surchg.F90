@@ -1,4 +1,5 @@
 subroutine surchg(ifm)
+! aslint: disable=W1502
     implicit none
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -17,6 +18,5 @@ subroutine surchg(ifm)
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 !     AFFICHAGE DE LA SURCHARGE EVENTUELLE DU CODE
-! TOLE CRS_230
     integer :: ifm
 end subroutine

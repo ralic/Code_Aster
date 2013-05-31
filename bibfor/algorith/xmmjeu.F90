@@ -3,6 +3,7 @@ subroutine xmmjeu(ndim, jnnm, jnne, ndeple, nsinge,&
                   jdepde, jdepm, rre, rrm, jddle,&
                   jddlm, nfhe, nfhm, lmulti, heavfa,&
                   jeu)
+! aslint: disable=W1504
     implicit none
     include 'jeveux.h'
 !
@@ -34,7 +35,6 @@ subroutine xmmjeu(ndim, jnnm, jnne, ndeple, nsinge,&
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-! TOLE CRP_21
 !
 ! ROUTINE XFEM (METHODE XFEM-GG - TE)
 !

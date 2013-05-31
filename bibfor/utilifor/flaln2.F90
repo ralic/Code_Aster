@@ -20,7 +20,6 @@ subroutine flaln2(ltrans, na, nw, smin, ca,&
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-! TOLE CRP_20
 !
 !     SUBROUTINE LAPACK RESOLVANT UN SYSTEME LINEAIRE PERTURBE
 !     PARTICULIER (DU TYPE MENTIONNE CI DESSOUS).
@@ -156,6 +155,7 @@ subroutine flaln2(ltrans, na, nw, smin, ca,&
 ! ENDLIB
 !-----------------------------------------------------------------------
 ! CORPS DU PROGRAMME
+! aslint: disable=W1501
     implicit none
 !
 !     .. SCALAR ARGUMENTS ..

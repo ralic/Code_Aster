@@ -20,7 +20,6 @@ subroutine ermeb3(noe, ifa, tymvol, nnof, iref1,&
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 ! person_in_charge: josselin.delmas at edf.fr
-! TOLE CRP_21
 ! =====================================================================
 !  ERREUR EN MECANIQUE - TERME DE BORD - DIMENSION 3
 !  **        **                   *                *
@@ -67,6 +66,7 @@ subroutine ermeb3(noe, ifa, tymvol, nnof, iref1,&
 !
 ! ......................................................................
 !
+! aslint: disable=W1504
     implicit none
 !
 ! DECLARATION PARAMETRES D'APPEL

@@ -6,6 +6,7 @@ subroutine lcjacb(fami, kpg, ksp, loi, mod,&
                   vinf, epsd, yd, dy, ye,&
                   crit, indi, vind1, bnews, mtrac,&
                   drdy, iret)
+! aslint: disable=W1504
     implicit   none
 ! ----------------------------------------------------------------------
 ! ======================================================================
@@ -24,7 +25,6 @@ subroutine lcjacb(fami, kpg, ksp, loi, mod,&
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-! TOLE CRP_21
 !       ----------------------------------------------------------------
 !       CALCUL DU JACOBIEN DU SYSTEME NL A RESOUDRE = DRDY(DY)
 !       IN  FAMI   :  FAMILLE DES POINTS DE GAUSS

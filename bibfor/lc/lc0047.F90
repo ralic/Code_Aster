@@ -23,7 +23,6 @@ subroutine lc0047(fami, kpg, ksp, ndim, imate,&
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 ! ======================================================================
-! TOLE CRP_21
 ! ======================================================================
 !
 !    LOI D'ENDOMMAGEMENT D'UN MATERIAU ELASTIQUE HETEROGENE
@@ -46,6 +45,7 @@ subroutine lc0047(fami, kpg, ksp, ndim, imate,&
 !               DSIDEP    MATRICE DE COMPORTEMENT TANGENT A T+DT OU T
 !
 ! ----------------------------------------------------------------------
+! aslint: disable=W1504
     implicit none
     include 'asterfort/lcbrgm.h'
     include 'asterfort/u2mess.h'

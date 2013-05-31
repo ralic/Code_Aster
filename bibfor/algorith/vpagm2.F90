@@ -15,7 +15,7 @@ function vpagm2(x)
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-! TOLE CRP_7
+! aslint: disable=
     implicit none
     real(kind=8) :: x
     real(kind=8) :: vpagm2

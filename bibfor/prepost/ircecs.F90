@@ -3,6 +3,7 @@ subroutine ircecs(ifi, ligrel, nbgrel, longr, ncmpmx,&
                   celd, nbnoma, permut, maxnod, typma,&
                   nomsd, nomsym, ir, nbmat, nummai,&
                   lmasu, ncmpu, nucmp)
+! aslint: disable=W1504
     implicit none
 !
     include 'jeveux.h'
@@ -50,7 +51,6 @@ subroutine ircecs(ifi, ligrel, nbgrel, longr, ncmpmx,&
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-! TOLE CRP_21
 !        ECRITURE D'UN CHAMELEM SUR FICHIER UNIVERSEL, DATASET TYPE 56
 !                                                                OU 57
 !        A VALEURS COMPLEXES

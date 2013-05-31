@@ -1,5 +1,6 @@
 subroutine nueffe(lligr, base, nuz, renum, moloc,&
                   solveu, nequa)
+! aslint: disable=W1501
     implicit none
     include 'jeveux.h'
 !
@@ -53,7 +54,6 @@ subroutine nueffe(lligr, base, nuz, renum, moloc,&
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 ! person_in_charge: jacques.pellet at edf.fr
-! TOLE CRP_20
 !
 ! ----------------------------------------------------------------------
 ! BUT : CONSTRUCTION DU NUME_EQUA D'UN NUME_DDL

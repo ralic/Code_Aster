@@ -1,6 +1,7 @@
 subroutine pemaxn(resu, nomcha, lieu, nomlie, modele,&
                   chpost, nbcmp, nomcmp, nuord, inst)
 !
+! aslint: disable=W1306
     implicit none
 !
     include 'jeveux.h'
@@ -28,7 +29,6 @@ subroutine pemaxn(resu, nomcha, lieu, nomlie, modele,&
     character(len=19) :: chpost, resu
     character(len=24) :: nomcha
 !
-! TOLE CRS_1404
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

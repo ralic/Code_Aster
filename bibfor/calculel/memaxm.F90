@@ -1,5 +1,6 @@
 subroutine memaxm(typmx, champ, nocmp, nbcmp, lcmp,&
                   vr, nbmail, numail)
+! aslint: disable=W1306
     implicit none
     include 'jeveux.h'
     include 'asterc/r8maem.h'
@@ -36,7 +37,6 @@ subroutine memaxm(typmx, champ, nocmp, nbcmp, lcmp,&
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 ! person_in_charge: jacques.pellet at edf.fr
-! TOLE CRS_1404
 ! ----------------------------------------------------------------------
 ! BUT :  EXTRAIRE LE "MIN/MAX" DE COMPOSANTES
 !        D'UN CHAMP (CHAM_ELEM OU CARTE) SUIVANT LA COMPOSANTE NOCMP

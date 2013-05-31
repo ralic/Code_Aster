@@ -1,5 +1,4 @@
 function jxhcod(chain, lrep)
-! TOLE CRP_4
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -16,6 +15,7 @@ function jxhcod(chain, lrep)
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
+! aslint: disable=W1304
     implicit none
     include 'asterc/strmov.h'
     integer :: jxhcod, lrep

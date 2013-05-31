@@ -1,4 +1,5 @@
 subroutine te0155(option, nomte)
+! aslint: disable=W1501
     implicit none
     include 'jeveux.h'
     include 'asterc/r8miem.h'
@@ -21,7 +22,6 @@ subroutine te0155(option, nomte)
     include 'blas/ddot.h'
     character(len=*) :: option, nomte
 ! ----------------------------------------------------------------------
-! TOLE CRP_20
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

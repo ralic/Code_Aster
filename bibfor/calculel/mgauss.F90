@@ -17,8 +17,8 @@ subroutine mgauss(cara, a, b, dim, nordre,&
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-! TOLE CRP_4 CRS_1404
 !
+! aslint: disable=W1304,W1306
     implicit none
 !
     include 'asterc/matfpe.h'

@@ -1,6 +1,5 @@
 subroutine mltpre(mat19, renumz)
 ! person_in_charge: olivier.boiteau at edf.fr
-! TOLE CRP_20
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -17,7 +16,7 @@ subroutine mltpre(mat19, renumz)
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-! TOLE CRP_4
+! aslint: disable=W1304,W1501
     implicit none
     include 'jeveux.h'
 !
