@@ -1,2 +1,2 @@
 ! transitional empty interface
-real(kind=4) :: r4maem
+real(kind=8) :: r4maem

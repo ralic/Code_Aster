@@ -1,2 +1,2 @@
 ! transitional empty interface
-complex(kind=4) :: zdotc
+complex(kind=8) :: zdotc
