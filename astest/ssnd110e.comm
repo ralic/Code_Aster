@@ -2,19 +2,19 @@
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
-# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-# (AT YOUR OPTION) ANY LATER VERSION.                                                    
-#                                                                       
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-#                                                                       
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 
 DEBUT(CODE=_F(NOM='SSND110E',NIV_PUB_WEB='INTERNET',VISU_EFICAS='NON'),DEBUG=_F(SDVERI='OUI'));
@@ -68,7 +68,7 @@ ACIERDD=DEFI_MATERIAU(ELAS=_F(E=E,
                                      H2      = 0.625,
                                      H3      = 0.137,
                                      H4      = 0.122,
-                                     H5      = 0.07,                                       
+                                     H5      = 0.07,
                                    ),
                       );
 
@@ -88,7 +88,7 @@ ACIERDDI=DEFI_MATERIAU(ELAS=_F(E=E,
                                      H2      = 0.625,
                                      H3      = 0.137,
                                      H4      = 0.122,
-                                     H5      = 0.07,                                       
+                                     H5      = 0.07,
                                      RHO_VOID =1.E3,
                                      PHI_LOOP =5.9E-6,
                                      ALP_VOID =0.,
@@ -96,7 +96,7 @@ ACIERDDI=DEFI_MATERIAU(ELAS=_F(E=E,
                                      RHO_SAT  =RHO_LOOPS*0.,
                                      PHI_SAT  =4.E-2,
                                      XI_IRRA  =10.,
-                                     DZ_IRRA  =1.e7,  
+                                     DZ_IRRA  =1.e7,
                                    ),
                       );
 # DD_CFC
@@ -108,7 +108,7 @@ COMPODD=DEFI_COMPOR(MONOCRISTAL=_F(MATER=ACIERDD,
                                     ),
                                     ROTA_RESEAU='CALC',
                                     );
-                                    
+
 COMPODDI=DEFI_COMPOR(MONOCRISTAL=_F(MATER=ACIERDDI,
                                     ECOULEMENT='MONO_DD_CFC_IRRA',
                                     ELAS='ELAS',
@@ -116,7 +116,7 @@ COMPODDI=DEFI_COMPOR(MONOCRISTAL=_F(MATER=ACIERDDI,
                                     ),
                                     ROTA_RESEAU='CALC',
                                     );
-# LOI DE COMPORTEMENT DD_CFC 
+# LOI DE COMPORTEMENT DD_CFC
 LISTARCH=DEFI_LIST_REEL(DEBUT=0.0,
                        INTERVALLE=(
                                    _F(JUSQU_A=0.2,
@@ -177,28 +177,28 @@ S6=DEFI_FONCTION(NOM_PARA='INST',
                    PROL_DROITE='LINEAIRE',
                    PROL_GAUCHE='LINEAIRE',);
 
-# deformation imposee                   
+# deformation imposee
 E3=DEFI_FONCTION(NOM_PARA='INST',
                    VALE=(0.0,0.0,1.0,0.05),
                    PROL_DROITE='LINEAIRE',
                    PROL_GAUCHE='LINEAIRE',);
 
 
-# densites de dislocation initiales : variables internes 
+# densites de dislocation initiales : variables internes
 avari = zeros(6 + 3 * 12 + (12 + 12) + 12 + 16 + 3)
 
 for i in range(12):
   avari[6+i*3]=RHO_0
-  
+
 for i in range(12):
   avari[6+12*3+i]=RHO_LOOPS
-  
+
 for i in range(12):
   avari[6+12*4+i]=PHI_VOIDS
 
 lvari=list(avari)
 
-#rotation du repere 
+#rotation du repere
 h=1
 k=5
 l=9
@@ -224,18 +224,18 @@ IMPLDDI=SIMU_POINT_MAT(INFO=1,
                                   ),
                       EPSI_IMPOSE=_F(EPZZ=E3,),
                       ARCHIVAGE=_F(LIST_INST=LISTARCH),
-                       );      
-                       
+                       );
+
 IMPR_TABLE(TABLE=IMPLDDI)
 
 # sans irradiation
 
-# densites de dislocation initiales : variables internes 
+# densites de dislocation initiales : variables internes
 avari = zeros(6 + 3 * 12 +  12 + 16 + 3)
 
 for i in range(12):
   avari[6+i*3]=RHO_0
-  
+
 lvari=list(avari)
 
 IMPLDD=SIMU_POINT_MAT(INFO=1,
@@ -253,8 +253,8 @@ IMPLDD=SIMU_POINT_MAT(INFO=1,
                                   ),
                       EPSI_IMPOSE=_F(EPZZ=E3,),
                       ARCHIVAGE=_F(LIST_INST=LISTARCH),
-                       );      
-                       
+                       );
+
 IMPR_TABLE(TABLE=IMPLDDI)
 
 epsXXi=RECU_FONCTION(TABLE=IMPLDDI,PARA_X='INST',PARA_Y='EPXX',INTERPOL='LIN');
@@ -272,11 +272,11 @@ sigXZi=RECU_FONCTION(TABLE=IMPLDDI,PARA_X='INST',PARA_Y='SIXZ',INTERPOL='LIN');
 sigYZi=RECU_FONCTION(TABLE=IMPLDDI,PARA_X='INST',PARA_Y='SIYZ',INTERPOL='LIN');
 
 # deformation viscoplastique globale
-EVIXXi=RECU_FONCTION(TABLE=IMPLDDI,PARA_X='INST',PARA_Y='V1',INTERPOL='LIN');                   
-EVIZZi=RECU_FONCTION(TABLE=IMPLDDI,PARA_X='INST',PARA_Y='V3',INTERPOL='LIN');                   
-EVIXYi=RECU_FONCTION(TABLE=IMPLDDI,PARA_X='INST',PARA_Y='V4',INTERPOL='LIN');                   
+EVIXXi=RECU_FONCTION(TABLE=IMPLDDI,PARA_X='INST',PARA_Y='V1',INTERPOL='LIN');
+EVIZZi=RECU_FONCTION(TABLE=IMPLDDI,PARA_X='INST',PARA_Y='V3',INTERPOL='LIN');
+EVIXYi=RECU_FONCTION(TABLE=IMPLDDI,PARA_X='INST',PARA_Y='V4',INTERPOL='LIN');
 EVIYZi=RECU_FONCTION(TABLE=IMPLDDI,PARA_X='INST',PARA_Y='V6',INTERPOL='LIN');
-                                      
+
 epsDIRi=CALC_FONCTION(COMB=(_F(FONCTION = epsXXi,COEF= l_norm[ori][0]*l_norm[ori][0],),
                            _F(FONCTION = epsYYi,COEF= l_norm[ori][1]*l_norm[ori][1],),
                            _F(FONCTION = epsZZi,COEF= l_norm[ori][2]*l_norm[ori][2],),
@@ -309,11 +309,11 @@ sigXZ=RECU_FONCTION(TABLE=IMPLDD,PARA_X='INST',PARA_Y='SIXZ',INTERPOL='LIN');
 sigYZ=RECU_FONCTION(TABLE=IMPLDD,PARA_X='INST',PARA_Y='SIYZ',INTERPOL='LIN');
 
 # deformation viscoplastique globale
-EVIXX=RECU_FONCTION(TABLE=IMPLDD,PARA_X='INST',PARA_Y='V1',INTERPOL='LIN');                   
-EVIZZ=RECU_FONCTION(TABLE=IMPLDD,PARA_X='INST',PARA_Y='V3',INTERPOL='LIN');                   
-EVIXY=RECU_FONCTION(TABLE=IMPLDD,PARA_X='INST',PARA_Y='V4',INTERPOL='LIN');                   
+EVIXX=RECU_FONCTION(TABLE=IMPLDD,PARA_X='INST',PARA_Y='V1',INTERPOL='LIN');
+EVIZZ=RECU_FONCTION(TABLE=IMPLDD,PARA_X='INST',PARA_Y='V3',INTERPOL='LIN');
+EVIXY=RECU_FONCTION(TABLE=IMPLDD,PARA_X='INST',PARA_Y='V4',INTERPOL='LIN');
 EVIYZ=RECU_FONCTION(TABLE=IMPLDD,PARA_X='INST',PARA_Y='V6',INTERPOL='LIN');
-                                      
+
 epsDIR=CALC_FONCTION(COMB=(_F(FONCTION = epsXX,COEF= l_norm[ori][0]*l_norm[ori][0],),
                            _F(FONCTION = epsYY,COEF= l_norm[ori][1]*l_norm[ori][1],),
                            _F(FONCTION = epsZZ,COEF= l_norm[ori][2]*l_norm[ori][2],),
@@ -337,7 +337,7 @@ IMPR_FONCTION(
             COURBE=(
             _F(FONC_X=epsDIR,FONC_Y=sigDIR, ),
             _F(FONC_X=epsDIRi,FONC_Y=sigDIRi, ),
-            ),           
+            ),
             );
 
 
@@ -390,4 +390,3 @@ TEST_FONCTION(VALEUR=_F(VALE_CALC=-5.691284E-03,
               )
 
 FIN()
-                   

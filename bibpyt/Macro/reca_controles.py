@@ -3,19 +3,19 @@
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
-# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-# (AT YOUR OPTION) ANY LATER VERSION.                                                  
-#                                                                       
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-#                                                                       
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 
 import string
@@ -56,7 +56,7 @@ def erreur_de_type(code_erreur,X):
       if not is_float(X):
          txt="\nCette entrée:  " +str(X)+" n'est pas une valeur float valide ; Veuillez la ressaisir en lui appliquant le type float de python"
    return txt
-   
+
 
 # ------------------------------------------------------------------------------
 def erreur_dimension(PARAMETRES,REPONSES):
@@ -104,7 +104,7 @@ def compare__dim_poids__dim_RESU_EXP(POIDS,RESU_EXP):
 # ------------------------------------------------------------------------------
 def verif_fichier(UL,PARAMETRES,REPONSES):
    """
-   On verifie les occurences des noms des PARAMETRES et REPONSES 
+   On verifie les occurences des noms des PARAMETRES et REPONSES
    dans le fichier de commande ASTER
    """
 
@@ -131,10 +131,10 @@ def verif_valeurs_des_PARAMETRES(PARAMETRES):
    On verifie que pour chaque PARAMETRES de l'optimisation
    les valeurs entrées par l'utilisateur sont telles que :
               val_inf<val_sup
-              val_init appartient à [borne_inf, borne_sup] 
-              val_init!=0         
-              borne_sup!=0         
-              borne_inf!=0         
+              val_init appartient à [borne_inf, borne_sup]
+              val_init!=0
+              borne_sup!=0
+              borne_inf!=0
    """
 
    txt = ""
@@ -142,7 +142,7 @@ def verif_valeurs_des_PARAMETRES(PARAMETRES):
    for i in range(len(PARAMETRES)):
       if( PARAMETRES[i][2] >PARAMETRES[i][3]):
          txt=txt + "\nLa borne inférieure "+str(PARAMETRES[i][2])+" de  "+PARAMETRES[i][0]+ "est plus grande que sa borne supérieure"+str(PARAMETRES[i][3])
-   # verification de l'encadrement de val_init 
+   # verification de l'encadrement de val_init
    for i in range(len(PARAMETRES)):
       if( (PARAMETRES[i][1] < PARAMETRES[i][2]) or (PARAMETRES[i][1] > PARAMETRES[i][3])):
          txt=txt + "\nLa valeur initiale "+str(PARAMETRES[i][1])+" de "+PARAMETRES[i][0]+ " n'est pas dans l'intervalle [borne_inf,born_inf]=["+str(PARAMETRES[i][2])+" , "+str(PARAMETRES[i][3])+"]"
@@ -164,7 +164,7 @@ def verif_valeurs_des_PARAMETRES(PARAMETRES):
 # ------------------------------------------------------------------------------
 def verif_UNITE(GRAPHIQUE,UNITE_RESU):
    """
-   On vérifie que les unités de résultat et 
+   On vérifie que les unités de résultat et
    de graphique sont différentes
    """
    txt=""
@@ -195,12 +195,12 @@ def gestion(UL,PARAMETRES,REPONSES,RESU_EXP,POIDS,GRAPHIQUE,UNITE_RESU,METHODE):
    # test de REPONSES
    texte = texte + erreur_de_type(0,REPONSES)
    # test de RESU_EXP
-   texte = texte + erreur_de_type(0,RESU_EXP) 
-   
+   texte = texte + erreur_de_type(0,RESU_EXP)
+
    # On vérifie si chaque sous liste de PARAMETRES, REPONSES,  possède le type adéquat
    # test des sous_listes de PARAMETRES
    for i in range(len(PARAMETRES)):
-      texte = texte +  erreur_de_type(0,PARAMETRES[i]) 
+      texte = texte +  erreur_de_type(0,PARAMETRES[i])
    # test des sous_listes de REPONSES
    for i in range(len(REPONSES)):
       texte = texte + erreur_de_type(0,REPONSES[i])
@@ -226,7 +226,7 @@ def gestion(UL,PARAMETRES,REPONSES,RESU_EXP,POIDS,GRAPHIQUE,UNITE_RESU,METHODE):
    for i in range(len(REPONSES)):
       for j in range(len(REPONSES[i])):
          texte = texte + erreur_de_type(1,REPONSES[i][j])
-   
+
    # verification du fichier de commandes Esclave ASTER
    if METHODE != 'EXTERNE': # pour celui-ci le fort.UL n'est pas l'esclave... voir comment faire
       texte_fatal, texte_alarme = verif_fichier(UL,PARAMETRES,REPONSES)
@@ -241,4 +241,3 @@ def gestion(UL,PARAMETRES,REPONSES,RESU_EXP,POIDS,GRAPHIQUE,UNITE_RESU,METHODE):
       texte = texte + verif_UNITE(GRAPHIQUE,UNITE_RESU)
 
    return texte, texte_alarme
-   

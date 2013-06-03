@@ -1,20 +1,20 @@
-# TITRE VALIDATION MONOCRISTAL LOI DD_CFC 
+# TITRE VALIDATION MONOCRISTAL LOI DD_CFC
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
-# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-# (AT YOUR OPTION) ANY LATER VERSION.                                                    
-#                                                                       
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-#                                                                       
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 
 DEBUT(CODE=_F(NOM='SSND110A',NIV_PUB_WEB='INTERNET',VISU_EFICAS='NON'),DEBUG=_F(SDVERI='OUI'));
@@ -287,19 +287,19 @@ rho=[None]*13
 system=['', 'B4', 'B2', 'B5', 'D4', 'D1', 'D6', 'A2', 'A6', 'A3', 'C5', 'C3', 'C1']
 
 for i in range(1,13):
-    
-    
+
+
     gamma[i]=RECU_FONCTION(TABLE=EXPLDD,
                          PARA_X='INST',
                         PARA_Y='V'+str(8+3*(i-1)),
                         INTERPOL='LIN');
-    
+
     rho[i]=RECU_FONCTION(TABLE=EXPLDD,
                          PARA_X='INST',
                         PARA_Y='V'+str(7+3*(i-1)),
                         INTERPOL='LIN');
 
-              
+
     IMPR_FONCTION(
                 FORMAT='XMGRACE',
                 PILOTE='',
@@ -312,7 +312,7 @@ for i in range(1,13):
                            MARQUEUR = 0,
                            LEGENDE= unicode(system[i],'iso-8859-1').encode('utf-8'),),),
                 UNITE=30,);
-              
+
     IMPR_FONCTION(
                 FORMAT='XMGRACE',
                 PILOTE='',
@@ -369,7 +369,7 @@ EVIXX=RECU_FONCTION(TABLE=EXPLDD,
                    PARA_X='INST',
                    PARA_Y='V1',
                    INTERPOL='LIN');
-                   
+
 TEST_FONCTION(VALEUR=_F(VALE_CALC=-3.97001688044e-05,
                         VALE_REFE=-3.97022317E-05,
                         VALE_PARA=1.0,
@@ -382,7 +382,7 @@ EVIZZ=RECU_FONCTION(TABLE=EXPLDD,
                    PARA_X='INST',
                    PARA_Y='V3',
                    INTERPOL='LIN');
-                   
+
 TEST_FONCTION(VALEUR=_F(VALE_CALC=3.97001688044e-05,
                         VALE_REFE=3.97022317E-05,
                         VALE_PARA=1.0,
@@ -395,7 +395,7 @@ EVIXY=RECU_FONCTION(TABLE=EXPLDD,
                    PARA_X='INST',
                    PARA_Y='V4',
                    INTERPOL='LIN');
-                   
+
 TEST_FONCTION(VALEUR=_F(VALE_CALC=1.81363174213e-05,
                         VALE_REFE=1.8136977500000001E-05,
                         VALE_PARA=1.0,
@@ -408,7 +408,7 @@ EVIYZ=RECU_FONCTION(TABLE=EXPLDD,
                    PARA_X='INST',
                    PARA_Y='V6',
                    INTERPOL='LIN');
-                   
+
 TEST_FONCTION(VALEUR=_F(VALE_CALC=2.80722585758e-05,
                         VALE_REFE=2.80737173E-05,
                         VALE_PARA=1.0,
@@ -458,19 +458,19 @@ rhoi=[None]*13
 system=['', 'B4', 'B2', 'B5', 'D4', 'D1', 'D6', 'A2', 'A6', 'A3', 'C5', 'C3', 'C1']
 
 for i in range(1,13):
-    
-    
+
+
     gammi[i]=RECU_FONCTION(TABLE=IMPLDD,
                          PARA_X='INST',
                         PARA_Y='V'+str(8+3*(i-1)),
                         INTERPOL='LIN');
-    
+
     rhoi[i]=RECU_FONCTION(TABLE=IMPLDD,
                          PARA_X='INST',
                         PARA_Y='V'+str(7+3*(i-1)),
                         INTERPOL='LIN');
 
-              
+
     IMPR_FONCTION(
                 FORMAT='XMGRACE',
                 PILOTE='',
@@ -483,7 +483,7 @@ for i in range(1,13):
                            MARQUEUR = 0,
                            LEGENDE= unicode(system[i],'iso-8859-1').encode('utf-8'),),),
                 UNITE=30,);
-              
+
     IMPR_FONCTION(
                 FORMAT='XMGRACE',
                 PILOTE='',
@@ -542,7 +542,7 @@ EVIiXX=RECU_FONCTION(TABLE=IMPLDD,
                    PARA_X='INST',
                    PARA_Y='V1',
                    INTERPOL='LIN');
-                   
+
 TEST_FONCTION(VALEUR=_F(VALE_CALC=-4.00309653626e-05,
                         VALE_REFE=-3.97022317E-05,
                         VALE_PARA=1.0,
@@ -556,7 +556,7 @@ EVIiZZ=RECU_FONCTION(TABLE=IMPLDD,
                    PARA_X='INST',
                    PARA_Y='V3',
                    INTERPOL='LIN');
-                   
+
 TEST_FONCTION(VALEUR=_F(VALE_CALC=4.00309653626e-05,
                         VALE_REFE=3.97022317E-05,
                         VALE_PARA=1.0,
@@ -570,7 +570,7 @@ EVIiXY=RECU_FONCTION(TABLE=IMPLDD,
                    PARA_X='INST',
                    PARA_Y='V4',
                    INTERPOL='LIN');
-                   
+
 TEST_FONCTION(VALEUR=_F(VALE_CALC=1.82388627769e-05,
                         VALE_REFE=1.8136977500000001E-05,
                         VALE_PARA=1.0,
@@ -584,7 +584,7 @@ EVIiYZ=RECU_FONCTION(TABLE=IMPLDD,
                    PARA_X='INST',
                    PARA_Y='V6',
                    INTERPOL='LIN');
-                   
+
 TEST_FONCTION(VALEUR=_F(VALE_CALC=2.83061670654e-05,
                         VALE_REFE=2.80737173E-05,
                         VALE_PARA=1.0,
@@ -597,8 +597,8 @@ TEST_FONCTION(VALEUR=_F(VALE_CALC=2.83061670654e-05,
 # DD_CFC  en EXPLICITE + POLYCRISTAL
 
 COMPODDP=DEFI_COMPOR(POLYCRISTAL=(
-                        _F(MONOCRISTAL=COMPORDD,FRAC_VOL=1,ANGL_EULER=(0.,0.,0.),),   
-                        ),  
+                        _F(MONOCRISTAL=COMPORDD,FRAC_VOL=1,ANGL_EULER=(0.,0.,0.),),
+                        ),
                     LOCALISATION='BETA',DL=0.,DA=0.,
                     );
 
@@ -634,19 +634,19 @@ rhop=[None]*13
 system=['', 'B4', 'B2', 'B5', 'D4', 'D1', 'D6', 'A2', 'A6', 'A3', 'C5', 'C3', 'C1']
 
 for i in range(1,13):
-    
-    
+
+
     gammp[i]=RECU_FONCTION(TABLE=POLYDD,
                          PARA_X='INST',
                         PARA_Y='V'+str(15+3*(i-1)),
                         INTERPOL='LIN');
-    
+
     rhop[i]=RECU_FONCTION(TABLE=POLYDD,
                          PARA_X='INST',
                         PARA_Y='V'+str(14+3*(i-1)),
                         INTERPOL='LIN');
 
-              
+
 # densites de dislocation
 
 TEST_FONCTION(VALEUR=_F(VALE_CALC=7.17406381861e-09,
@@ -692,7 +692,7 @@ EVIpXX=RECU_FONCTION(TABLE=IMPLDD,
                    PARA_X='INST',
                    PARA_Y='V1',
                    INTERPOL='LIN');
-                   
+
 TEST_FONCTION(VALEUR=_F(VALE_CALC=-4.00309653626e-05,
                         VALE_REFE=-3.97022317E-05,
                         VALE_PARA=1.0,
@@ -706,7 +706,7 @@ EVIpZZ=RECU_FONCTION(TABLE=IMPLDD,
                    PARA_X='INST',
                    PARA_Y='V3',
                    INTERPOL='LIN');
-                   
+
 TEST_FONCTION(VALEUR=_F(VALE_CALC=4.00309653626e-05,
                         VALE_REFE=3.97022317E-05,
                         VALE_PARA=1.0,
@@ -720,7 +720,7 @@ EVIpXY=RECU_FONCTION(TABLE=POLYDD,
                    PARA_X='INST',
                    PARA_Y='V4',
                    INTERPOL='LIN');
-                   
+
 TEST_FONCTION(VALEUR=_F(VALE_CALC=1.81363174213e-05,
                         VALE_REFE=1.8136977500000001E-05,
                         VALE_PARA=1.0,
@@ -734,7 +734,7 @@ EVIpYZ=RECU_FONCTION(TABLE=POLYDD,
                    PARA_X='INST',
                    PARA_Y='V6',
                    INTERPOL='LIN');
-                   
+
 TEST_FONCTION(VALEUR=_F(VALE_CALC=2.80722585758e-05,
                         VALE_REFE=2.80737173E-05,
                         VALE_PARA=1.0,
@@ -750,7 +750,7 @@ OMP1=RECU_FONCTION(TABLE=IMPLDD,
                    PARA_X='INST',
                    PARA_Y='V64',
                    INTERPOL='LIN');
-                   
+
 TEST_FONCTION(VALEUR=_F(VALE_CALC=3.39820276751e-07,
                         VALE_REFE=3.3981999999999998E-07,
                         VALE_PARA=1.0,
@@ -765,7 +765,7 @@ OMP2=RECU_FONCTION(TABLE=IMPLDD,
                    PARA_X='INST',
                    PARA_Y='V65',
                    INTERPOL='LIN');
-                   
+
 TEST_FONCTION(VALEUR=_F(VALE_CALC=2.95455453269e-07,
                         VALE_REFE=2.9545499999999999E-07,
                         VALE_PARA=1.0,
@@ -780,7 +780,7 @@ OMP3=RECU_FONCTION(TABLE=IMPLDD,
                    PARA_X='INST',
                    PARA_Y='V66',
                    INTERPOL='LIN');
-                   
+
 TEST_FONCTION(VALEUR=_F(VALE_CALC=-1.47724162198e-07,
                         VALE_REFE=-1.4772400000000001E-07,
                         VALE_PARA=1.0,
@@ -795,7 +795,7 @@ OME1=RECU_FONCTION(TABLE=IMPLDD,
                    PARA_X='INST',
                    PARA_Y='V67',
                    INTERPOL='LIN');
-                   
+
 TEST_FONCTION(VALEUR=_F(VALE_CALC=-3.39820276751e-07,
                         VALE_REFE=-3.3981999999999998E-07,
                         VALE_PARA=1.0,
@@ -810,7 +810,7 @@ OME2=RECU_FONCTION(TABLE=IMPLDD,
                    PARA_X='INST',
                    PARA_Y='V68',
                    INTERPOL='LIN');
-                   
+
 TEST_FONCTION(VALEUR=_F(VALE_CALC=-2.95455453269e-07,
                         VALE_REFE=-2.9545499999999999E-07,
                         VALE_PARA=1.0,
@@ -825,7 +825,7 @@ OME3=RECU_FONCTION(TABLE=IMPLDD,
                    PARA_X='INST',
                    PARA_Y='V69',
                    INTERPOL='LIN');
-                   
+
 TEST_FONCTION(VALEUR=_F(VALE_CALC=1.47724162198e-07,
                         VALE_REFE=1.4772400000000001E-07,
                         VALE_PARA=1.0,
@@ -837,4 +837,3 @@ TEST_FONCTION(VALEUR=_F(VALE_CALC=1.47724162198e-07,
               )
 
 FIN()
-                   

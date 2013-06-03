@@ -2,19 +2,19 @@
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2010  EDF R&D                  WWW.CODE-ASTER.ORG
-# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-# (AT YOUR OPTION) ANY LATER VERSION.                                                  
-#                                                                       
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-#                                                                       
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 
 # person_in_charge: charles.bodel at edf.fr
@@ -39,7 +39,7 @@ def TestCalcEssai(macro,
                   IDENTIFICATION,
                   MODIFSTRUCT,
                   GROUP_NO_CAPTEURS,
-                  GROUP_NO_EXTERIEUR,               
+                  GROUP_NO_EXTERIEUR,
                   ):
 
     #####################################################
@@ -51,8 +51,8 @@ def TestCalcEssai(macro,
     # La classe MO recupere tous les concepts aster disponibles et
     # les range dans des classes python telles que Resultat, InterSpectre
     # Modele, CaraElem...
-    
-    
+
+
     ########################################
     # 1) Test des fonctions de correlation #
     ########################################
@@ -64,7 +64,7 @@ def TestCalcEssai(macro,
         # Transformation des objets Aster en classes Python
         resu_num = objects.resultats[EXPANSION['CALCUL'].nom]
         resu_exp = objects.resultats[EXPANSION['MESURE'].nom]
-       
+
         # Set default indices for the modes
         if EXPANSION['NUME_MODE_CALCUL'] != 0:
             nume_mode_calcul = list(EXPANSION['NUME_MODE_CALCUL'])
@@ -81,7 +81,7 @@ def TestCalcEssai(macro,
         elif EXPANSION['RESOLUTION'] == 'SVD':
             parametres['METHODE'] = 'SVD'
             parametres['EPS'] = EXPANSION['EPS']
-                
+
         calc_essai.setup(resu_num, nume_mode_calcul, resu_exp,
                          nume_mode_mesure,parametres)
         # Les concepts resultats sont srockes sous le nom RESU_+type de resu
@@ -115,7 +115,7 @@ def TestCalcEssai(macro,
         calcturb.set_alpha(IDENTIFICATION['ALPHA'])
         calcturb.set_epsilon(IDENTIFICATION['EPS'])
         calcturb.set_mcoeff(0.0)
-        
+
         calcturb.calculate_force()
 
         calcturb.Sff.make_inte_spec(titre="Resultat identification : efforts",
@@ -172,7 +172,7 @@ def lance_modif_struct_calcul(macro, ce_objects,
                               GROUP_NO_EXTERIEUR,
                               out_modifstru):
     """Démarre le calcul CALC_ESSAI sur la structure modifiée.
-       
+
        :param macro: la macro étape CALC_ESSAI.
 
        :param ce_objects: les objects, utilisés par le module CALC_ESSAI,
@@ -180,7 +180,7 @@ def lance_modif_struct_calcul(macro, ce_objects,
                               de la macro étape.
 
        :param MODIFSTRUCT: la macro étape permettant le calcul de la structure
-                           modifiée depuis le fichier de commande Aster. 
+                           modifiée depuis le fichier de commande Aster.
 
        :param CAPTEURS: dictionaire (ou FACT) contenant les choix
                         de groupes de noeuds et leurs degrés de liberté
@@ -189,10 +189,10 @@ def lance_modif_struct_calcul(macro, ce_objects,
        :param EXTERIEUR: dictionaire (ou FACT) contenant les choix
                           de groupes de noeuds et leurs degrés de liberté
                           pour les ddl exterieurs.
-                          
+
        :param out_modifstru: dictionaire (ou FACT) utilisé pour les résultats."""
 
-    from Accas import _F       
+    from Accas import _F
     from Calc_essai.ce_calcul_modifstruct import CalcEssaiModifStruct
     modif_struct = CalcEssaiModifStruct(macro, ce_objects,
                                ce_objects.mess, out_modifstru)
@@ -201,7 +201,7 @@ def lance_modif_struct_calcul(macro, ce_objects,
     modif_struct.find_support_modele_from(MODIFSTRUCT["MODELE_SUP"].nom)
     modif_struct.set_stiffness_matrix(MODIFSTRUCT["MATR_RIGI"])
     modif_struct.set_method_name(MODIFSTRUCT["RESOLUTION"])
-    
+
     modif_struct.set_sensor_groups(to_dict_lst(GROUP_NO_CAPTEURS))
     modif_struct.set_interface_groups(to_dict_lst(GROUP_NO_EXTERIEUR))
 
@@ -221,12 +221,12 @@ def lance_modif_struct_calcul(macro, ce_objects,
     mode_simult = 1  # methode utilisee : MODE_ITER_SIMULT
     calc_freq = _F(OPTION='PLUS_PETITE',
                    NMAX_FREQ=20,
-                   SEUIL_FREQ=1.E-4,) 
+                   SEUIL_FREQ=1.E-4,)
     calc_freq['SEUIL_FREQ'] = 1e-4
 
     modif_struct.calc_modes_modele_couple(mode_simult, calc_freq)
-        
-    
+
+
 def get_ddl_extract(nom_resu):
     """ resu est le resultat de l'operateur OBSERVATION. On va y chercher les
     ddl filtres"""
@@ -247,8 +247,7 @@ def get_ddl_extract(nom_resu):
                 for ind1,ind2 in dico.items():
                     if type(ind2) != list and type(ind2) != tuple :
                         dico[ind1] = [ind2]
-                        
+
             return grp_no_ma
 
 
-         

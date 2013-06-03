@@ -3,19 +3,19 @@
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
-# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-# (AT YOUR OPTION) ANY LATER VERSION.                                                  
-#                                                                       
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-#                                                                       
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 
 
@@ -23,7 +23,7 @@
 # Based on tensor.py written by Konrad Hinsen <hinsen@cnrs-orleans.fr>
 # =====================================================================
 
-import sympy 
+import sympy
 
 import numpy as N
 
@@ -153,7 +153,7 @@ class Tensor:
     def transpose(self):
         return Tensor(N.transpose(self.array))
 
-            
+
     def determinant(self):
          if N.shape(self.array) == (3,3) :
             M=self
@@ -162,20 +162,20 @@ class Tensor:
             return Determinant
          else :
             raise ValueError ('Tenseur must of rank 2 and shape 3 by 3')
-        
-         
+
+
     def inverse(self):
          if N.shape(self.array) == (3,3) :
             M=self
             a=M[0,0]; b=M[0,1]; c=M[0,2]; d=M[1,0]; e=M[1,1]; f=M[1,2]; g=M[2,0]; h=M[2,1]; i=M[2,2];
-            Mprime =  N.array([[  e*i - f*h,   c*h - b*i,  b*f - c*e  ],[  f*g - d*i,   a*i - c*g,  c*d - a*f  ],[  d*h - e*g,   b*g - a*h,  a*e - b*d  ]]) 
+            Mprime =  N.array([[  e*i - f*h,   c*h - b*i,  b*f - c*e  ],[  f*g - d*i,   a*i - c*g,  c*d - a*f  ],[  d*h - e*g,   b*g - a*h,  a*e - b*d  ]])
             det = M.determinant()
             Inverse = Mprime*(1/det)
             return Tensor(Inverse)
          else :
             raise ValueError ('Tenseur must of rank 2 and shape 3 by 3')
-         
-         
+
+
     def symmetricalPart(self):
         if self.rank == 2:
             return Tensor(0.5*(self.array + \
@@ -234,7 +234,7 @@ class Tensor:
        if self.rank>=2 and other.rank>=2:
             resultat=N.resize(0,[3]*(self.rank+other.rank-4))
             for j in range(3):
-                  resultat=resultat+N.inner(N.transpose(self.array[j]),other.array[j]) 
+                  resultat=resultat+N.inner(N.transpose(self.array[j]),other.array[j])
        else :
           raise ValueError('range of each Tensor must be at least 2')
        return  Tensor(resultat)
@@ -332,29 +332,29 @@ import TensorModule
 
 
 class TensorUnitTest(unittest.TestCase):
-   
+
    def setUp(self):
       self.U=TensorModule.Tensor(N.array(([X**3,sympy.sin(X),sympy.exp(X)],[Y**3,sympy.sin(Y),sympy.exp(Y)],[Z**3,sympy.sin(Z),sympy.exp(Z)])))
-      
+
    def testType(self):
       self.assertEqual(isTensor(self.U),1)
-      
+
    def testRank(self):
       self.assertEqual(self.U.rank,2)
       self.assertEqual(TensorModule.grad(self.U).rank,3)
-      
+
    def testGrad(self):
       self.assertEqual(TensorModule.grad(self.U), Tensor(N.array([[[3*X**2,0,0 ],[0,3*Y**2,0 ],[0,0,3*Z**2 ]], [[sympy.cos(X),0,0 ],[0,sympy.cos(Y),0 ],[0,0,sympy.cos(Z) ]], [[sympy.exp(X),0,0 ],[0,sympy.exp(Y),0 ], [0,0,sympy.exp(Z) ]]])))
-      
+
    def testGradSym(self):
       self.assertEqual(TensorModule.gradsym(self.U),Tensor(N.array([[[3*X**2,0.5*sympy.cos(X),0.5*sympy.exp(X)],[0,1.5*Y**2,0],[0,0,1.5*Z**2]],[[0.5*sympy.cos(X),0,0],[1.5*Y**2,sympy.cos(Y),0.5*sympy.exp(Y)],[0,0,0.5*sympy.cos(Z)]],[[0.5*sympy.exp(X),0,0],[0,0.5*sympy.exp(Y),0],[1.5*Z**2,0.5*sympy.cos(Z),sympy.exp(Z)]]])))
 
    def testLaplacien(self):
       self.assertEqual(TensorModule.laplacien(self.U), Tensor(N.array([[6*X,6*Y,6*Z ], [-sympy.sin(X),-sympy.sin(Y),-sympy.sin(Z) ], [sympy.exp(X),sympy.exp(Y),sympy.exp(Z) ]])  ))
-   
+
    def testDivergence(self):
       self.assertEqual(TensorModule.div(TensorModule.grad(self.U)),Tensor(N.array([[6*X,6*Y,6*Z ], [-sympy.sin(X),-sympy.sin(Y),-sympy.sin(Z) ], [sympy.exp(X),sympy.exp(Y),sympy.exp(Z) ]])  ))
-   
+
    def testProduitDoubleContracte(self):
       TensO4Sym=Tensor(N.array([[[[ 400.,           0.,           0.,       ],
                                   [   0.,         200.,           0.,       ],
@@ -383,13 +383,12 @@ class TensorUnitTest(unittest.TestCase):
                                  [[ 200.,           0.,           0.,       ],
                                   [   0.,         166.66666667,   0.,       ],
                                   [   0.,           0.,         233.33333333]]]])  )
-                                  
-      self.assertEqual(TensO4Sym.produitDoubleContracte(self.U), Tensor(N.array([[200.000000000000*sympy.sin(Y) + 400.000000000000*X**3 + 200.000000000000*sympy.exp(Z), 66.6666666700000*sympy.sin(X) + 66.6666666700000*Y**3,133.333333330000*Z**3 + 133.333333330000*sympy.exp(X) ], [66.6666666700000*sympy.sin(X) + 66.6666666700000*Y**3,233.333333330000*sympy.sin(Y) + 200.000000000000*X**3 + 166.666666670000*sympy.exp(Z),       66.6666666700000*sympy.sin(Z) + 66.6666666700000*sympy.exp(Y) ], [133.333333330000*Z**3 + 133.333333330000*sympy.exp(X),       66.6666666700000*sympy.sin(Z) + 66.6666666700000*sympy.exp(Y),       166.666666670000*sympy.sin(Y) + 200.000000000000*X**3 + 233.333333330000*sympy.exp(Z) ]])  )) 
-         
+
+      self.assertEqual(TensO4Sym.produitDoubleContracte(self.U), Tensor(N.array([[200.000000000000*sympy.sin(Y) + 400.000000000000*X**3 + 200.000000000000*sympy.exp(Z), 66.6666666700000*sympy.sin(X) + 66.6666666700000*Y**3,133.333333330000*Z**3 + 133.333333330000*sympy.exp(X) ], [66.6666666700000*sympy.sin(X) + 66.6666666700000*Y**3,233.333333330000*sympy.sin(Y) + 200.000000000000*X**3 + 166.666666670000*sympy.exp(Z),       66.6666666700000*sympy.sin(Z) + 66.6666666700000*sympy.exp(Y) ], [133.333333330000*Z**3 + 133.333333330000*sympy.exp(X),       66.6666666700000*sympy.sin(Z) + 66.6666666700000*sympy.exp(Y),       166.666666670000*sympy.sin(Y) + 200.000000000000*X**3 + 233.333333330000*sympy.exp(Z) ]])  ))
+
    def testproduitSimpleContracte(self):
-      self.assertEqual(self.U.produitSimpleContracte(Tensor(N.array([-1,0,0]))), Tensor(N.array([-X**3,-Y**3,-Z**3]))) 
+      self.assertEqual(self.U.produitSimpleContracte(Tensor(N.array([-1,0,0]))), Tensor(N.array([-X**3,-Y**3,-Z**3])))
 
 
 if __name__ == '__main__':
    unittest.main()
-   

@@ -2,19 +2,19 @@
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
-# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-# (AT YOUR OPTION) ANY LATER VERSION.                                                  
-#                                                                       
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-#                                                                       
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 
 # person_in_charge: charles.bodel at edf.fr
@@ -76,7 +76,7 @@ class InterfaceParametres(Frame):
 
     """!Interface principale de l'outil de projection des modes
     expérimentaux sur les modes numériques
-    
+
     permet la sélection et de calcul des modes en air et écoulement"""
 
     def __init__(self,
@@ -90,7 +90,7 @@ class InterfaceParametres(Frame):
 
 
         Frame.__init__(self, root, relief='sunken', borderwidth=1) # Première frame
-        
+
         self.mess = mess
         self.root = root
         self.logiciel = StringVar()
@@ -106,8 +106,8 @@ class InterfaceParametres(Frame):
         self.logiciel_courbes = None
 
         self.macro = macro
-        self.objects = objects 
-        self.param_visu = self      
+        self.objects = objects
+        self.param_visu = self
         self.is_resu1 = IntVar()
         self.is_resu2 = IntVar()
         self.use_nume_mass = IntVar()
@@ -133,7 +133,7 @@ class InterfaceParametres(Frame):
         self.menu_resu1.update( mdo.get_resultats_name(), self.var_resu1, self.visu1_changed )
         self.menu_resu2.update( mdo.get_resultats_name(), self.var_resu2, self.visu2_changed )
         pass
-        
+
     def teardown(self):
         """!Appelée par le gestionnaire de tab lors
            du masquage (passage à un autre tab)"""
@@ -153,7 +153,7 @@ class InterfaceParametres(Frame):
 
     def interface_param(self):
         """!Fonction principale de création de l'interface"""
-        
+
         self.columnconfigure(0, weight=1)
         self.rowconfigure(2, weight=1)
         l = Label(self,text=u" CALC_ESSAI : Paramètres de visualisation",
@@ -170,7 +170,7 @@ class InterfaceParametres(Frame):
 
 
     def interface_selection(self, root):
-       
+
         self.var_resu_num = StringVar()
         self.menu_resu_num = MyMenu( f, options = self.objects.get_mode_meca_name(),
                                      var = self.var_resu_num, cmd = self.num_changed )
@@ -179,10 +179,10 @@ class InterfaceParametres(Frame):
         self.var_resu_exp = StringVar()
         self.menu_resu_exp = MyMenu( f, options = self.objects.get_resultats_name(),
                                      var = self.var_resu_exp, cmd = self.exp_changed )
-     
+
         return f
 
-        
+
 
     def interface_visu(self,root):
         """!Création de l'interface de visualisation
@@ -193,7 +193,7 @@ class InterfaceParametres(Frame):
         """
 
         mdo = self.objects
-        
+
         f = Frame(root,relief='sunken', borderwidth=1 )
         Label(f, text="   ").grid(row=0, column=1,columnspan = 3,sticky='w'+'e' )
         Label(f, text="   ").grid(row=2, column=1,columnspan = 3,sticky='w'+'e' )
@@ -205,7 +205,7 @@ class InterfaceParametres(Frame):
         f1.columnconfigure(1,weight=4)
         f1.columnconfigure(2,weight=4)
 
-        
+
         bir1 = Checkbutton(f1,variable=self.is_resu1, command=self.cb_changed)
         bir1.grid(row=0, column = 0,sticky='e',padx=20)
         bir2 = Checkbutton(f1,variable=self.is_resu2,command=self.cb_changed)
@@ -223,9 +223,9 @@ class InterfaceParametres(Frame):
                                   var = self.var_resu2, cmd = self.visu2_changed )
         self.menu_resu2.grid(row=1, column=2, sticky='ew',padx=20)
 
-        f2 = Frame(f)        
+        f2 = Frame(f)
         f2.grid(row=1,column=1)
-    
+
 
         self.mac_button = Button(f2,text="    MAC    ",command=self.view_macs,state='disabled')
         self.mac_button.grid(row=1,column=2, sticky='ew' )
@@ -237,13 +237,13 @@ class InterfaceParametres(Frame):
         self.frf_button.grid(row=0,column=3, sticky='ew' )
         self.frf_button = Button(f1,text=" Observation ",command=self.view_obs_2)
         self.frf_button.grid(row=1,column=3, sticky='ew' )
- 
-        return f  
+
+        return f
 
     def visu1_changed(self):
         """ desactivation du bouton concernant le visu1"""
         self.is_resu1.set(1)
-        self.check_state()        
+        self.check_state()
 
     def visu2_changed(self):
         """ desactivation du bouton concernant le visu1"""
@@ -258,7 +258,7 @@ class InterfaceParametres(Frame):
         """Verifie la compatibilite des bases pour le MAC et l'existence
            des donnees necessaires pour la visu des deformees et des FRF"""
         mdo = self.objects
-   
+
         # Y a-t-il un MAC a calculer ?
         if (self.is_resu1.get() and not self.is_resu2.get()) or (self.is_resu2.get() and not self.is_resu1.get()):
             self.mac_button.configure(state='normal')
@@ -277,7 +277,7 @@ class InterfaceParametres(Frame):
             self.phi_button.configure(state='normal')
         else:
             self.phi_button.configure(state='disabled')
-            
+
     def view_frf(self):
         """lancement d'une fenetre de visualisation des frf"""
         mdo = self.objects
@@ -288,20 +288,20 @@ class InterfaceParametres(Frame):
         if self.is_resu2.get():
             resu2 = mdo.get_resultats(self.var_resu2.get())
         fenetre = DispFRFDialogue(self.mess, self.objects, self.param_visu, resu1, resu2)
-            
+
     def  view_obs_1(self):
         if self.is_resu1.get():
             self.view_obs(self.var_resu1)
-        else : 
+        else :
             self.mess.disp_mess(u"Choisir un résultat")
             return
         self.setup()
 
-        
+
     def  view_obs_2(self):
         if self.is_resu2.get():
             self.view_obs(self.var_resu2)
-        else : 
+        else :
             self.mess.disp_mess(u"Choisir un résultat")
             return
         self.setup()
@@ -313,23 +313,23 @@ class InterfaceParametres(Frame):
         resu = mdo.get_resultats(var_resu.get())
         fenetre = DispObs(self,self.mess,self.objects,resu)
         fenetre.set_resu(resu.nom)
-                
+
 
     def view_modes(self, *args):
         """!Visualisation des modes par GMSH ou Salome"""
-          
+
         mdo = self.objects
         l_resultat = []
         l_modele = []
         if self.is_resu1.get():
             resu1 = mdo.get_resultats(self.var_resu1.get())
-            
+
             l_resultat.append(resu1.obj)
         if self.is_resu2.get():
             resu2 = mdo.get_resultats(self.var_resu2.get())
             l_resultat.append(resu2.obj)
         term = self.param_visu.visu_resu(resultat=l_resultat)
-        
+
         self.term.append(term)
         return
 
@@ -356,31 +356,31 @@ class InterfaceParametres(Frame):
 
     def activate_salome_widgets(self):
         StateActivate(self.salome_widgets)
-    
+
     def desactivate_salome_widgets(self):
         StateDesactivate(self.salome_widgets)
-    
+
     def interface_parametres(self, root):
         """!Création de l'interface de choix des logiciels de visualisation
         On permet à l'utilisateur de choisir Gmsh/Xmgrace ou Salome
         """
-        
+
         main_param = Frame(root)
         main_param.rowconfigure(1,weight=1)
         main_param.columnconfigure(0,weight=1)
-        
+
         f = Frame(main_param, relief='sunken', borderwidth=1 )
         # les parametres vont dans 'f'
         logiciels_frame = Frame(f, borderwidth=4)
-        
+
         label_parametres_salome = Label(logiciels_frame, text=u"Paramètres Salome")
         label_parametres_salome.grid(row=2, column=1, columnspan=2)
         self.salome_widgets.append(label_parametres_salome)
-        
+
         label_port = Label(logiciels_frame, text=u"Port")
         label_port.grid(row=3, column=1, sticky='w')
         self.salome_widgets.append(label_port)
-        
+
         entry_salome_port = Entry(logiciels_frame, textvariable=self.salome_port)
         entry_salome_port.grid(row=3, column=2)
         self.salome_widgets.append(entry_salome_port)
@@ -399,33 +399,33 @@ class InterfaceParametres(Frame):
         button_gmsh = Radiobutton(logiciels_frame, text=u"Gmsh/Xmgrace", value="Gmsh/Xmgrace", variable=self.logiciel,
                                   command = self.desactivate_salome_widgets  )
         button_gmsh.grid(row=1, column=0, sticky='w')
-        
+
         button_salome = Radiobutton(logiciels_frame, text=u"Salomé", value="Salome", variable=self.logiciel,
                                     command = self.activate_salome_widgets )
         button_salome.grid(row=2, column=0, rowspan=3, sticky='w')
 
-            
+
         self.logiciel.set("Salome")
-        
+
         logiciels_frame.grid(row=1)
-        
+
         f.grid(row=1, sticky='w'+'e'+'s'+'n')
         return main_param
 
-    
+
     def get_user(self):
         import getpass
         user = getpass.getuser()
         return user
 
-    
+
     def get_machine_name(self):
         """! Recupere le nom de la machine distance pour les parametres corba"""
         # on retourne le nom de la machine locale
         import socket
         machine_name = socket.gethostname()
         return machine_name
-    
+
     def is_salome_launched(self):
         """! Determine si Salome est lance"""
         ok = False
@@ -434,7 +434,7 @@ class InterfaceParametres(Frame):
             # Salome est lance
             ok = True
         return ok
-    
+
     def get_runnig_salome_port(self):
         """! Recupere le port CORBA sur lequel est lance Salome pour les parametres corba"""
         salome_port = 2810
@@ -447,7 +447,7 @@ class InterfaceParametres(Frame):
                 l_data = data.split("\n")
                 last_line = l_data[-2]
                 omniNames_params = last_line.split(" ")
-                idx = omniNames_params.index("-start") + 1 
+                idx = omniNames_params.index("-start") + 1
                 salome_port = int(omniNames_params[idx])
             except:
                 msg =  u"Problème lors de la détermination du port Salome.\n"
@@ -456,13 +456,13 @@ class InterfaceParametres(Frame):
                 msg += u"NSparam.getNSparams()"
                 self.mess.disp_mess(msg)
         return salome_port
-    
+
 
     def save_parameters(self, do_check_protocole=True):
         """! Sauvegarde les parametres dans une classe parente pour qu'ils soient communs a tous les onglets """
         self.machine_name = self.machine_locale_name
 
-    
+
     def get_logiciel(self):
         self.save_parameters()
         if self.logiciel.get() == "Gmsh/Xmgrace":
@@ -472,8 +472,8 @@ class InterfaceParametres(Frame):
             else: return CalcEssaiSalome(self.mess, self.machine_name, self.salome_port.get(),
                                          self.user.get(), self.protocole.get(),
                                          self.protocole_ok, self)
-        pass 
-    
+        pass
+
     def get_logiciel_courbes(self):
         # Les courbes sont transferees par CORBA
         # => Pas besoin de verifier le protocole rcp/scp
@@ -499,7 +499,7 @@ class InterfaceParametres(Frame):
         self.ce_salome.study_name = study
         self.ce_salome_courbes.study_name = study
         self.mess.disp_mess(u"Les courbes et vues seront affichées dans l'étude Salomé "+study)
-    
+
     # fonction proxy vers le bon logiciel
     def visu_resu(self,resultat, nume_mode=None):
         logiciel = self.get_logiciel()
@@ -511,7 +511,7 @@ class InterfaceParametres(Frame):
         logiciel = self.get_logiciel()
         term = logiciel.visu_mac(mac,resu1,resu2)
         return term
-    
+
     def visu_courbe(self, l_x, ll_y, couleur=None, titre='Courbe', l_legende=None,
                     legende_x="Abscisses",legende_y="Ordonnées",
                     unite_x="ua",unite_y="ua"):
@@ -540,56 +540,56 @@ from Cata.cata import INFO_EXEC_ASTER, DEFI_FICHIER, DETRUIRE, IMPR_RESU
 
 # Classe abstraite
 class CalcEssaiLogiciel(object):
-    
+
     def __init__(self, mess):
         self.mess = mess
         self.impr_resu_format = None
         self.impr_resu_params = None
         self.unite_logique = None
-    
+
     def get_impr_resu_format(self):
         return self.impr_resu_format
-    
+
     def get_impr_resu_params(self):
         return self.impr_resu_params
-    
+
     def get_unite_logique(self):
         _TUL = INFO_EXEC_ASTER(LISTE_INFO='UNITE_LIBRE')
         self.unite_logique = _TUL['UNITE_LIBRE',1]
         DETRUIRE(CONCEPT = _F(NOM = (_TUL)), INFO=1)
         pass
-        
+
     def defi_fichier(self):
         self.get_unite_logique()
-        
+
         # On efface le fichier si il existe deja
         if os.path.exists('fort.'+str(self.unite_logique)):
             try:
                 os.remove('fort.'+str(self.unite_logique))
             except:
                 pass
-        
+
         DEFI_FICHIER(UNITE = self.unite_logique,
                      TYPE  = 'LIBRE',)
         pass
-        
+
     def libere_fichier(self):
         DEFI_FICHIER(ACTION='LIBERER', UNITE=self.unite_logique)
         pass
-    
+
     def get_nom_fichier(self):
         filename = "fort.%d" % self.unite_logique
         return filename
-    
+
     # @param resultat (multitype): on peut imprimer un ou plusieurs resultats dans le meme fichier:
     # resultat est soit une sd resultat soit une liste ou un tuple de sd resultat
     def impr_resu(self,resultat, nume_mode = None):
-        
+
         d_resu = self.get_impr_resu_params()
-        
+
         #if nume_mode is not None:
         #    d_resu['NUME_MODE'] = nume_mode
-        
+
         if nume_mode is not None:
             if isinstance(nume_mode[0],str):
                 d_resu = {}
@@ -599,7 +599,7 @@ class CalcEssaiLogiciel(object):
                 d_resu['NUME_MODE'] = nume_mode
 
         l_resultat = []
-        
+
         if isinstance(resultat, tuple) or isinstance(resultat, list):
             for resultat_i in resultat:
                 l_resultat.append(_F(RESULTAT=resultat_i,
@@ -607,16 +607,16 @@ class CalcEssaiLogiciel(object):
         else:
             l_resultat.append(_F(RESULTAT=resultat,
                                      **d_resu))
-        
+
         IMPR_RESU( UNITE   = self.unite_logique,
                    FORMAT  = self.impr_resu_format,
                    RESU    = l_resultat
                    )
         pass
-    
+
     # @param resultat (multitype): on peut imprimer un ou plusieurs resultats dans le meme fichier:
     # resultat est soit une sd resultat soit une liste ou un tuple de sd resultat.
-    # 
+    #
     # @warning Si une liste de modeles est fournie, il faut une liste de resultats.
     # On peut avoir plusieurs resultats sur la meme modele
 
@@ -630,43 +630,43 @@ class CalcEssaiLogiciel(object):
         else:
             self.impr_resu(resultat, nume_mode)
         term = self.affiche()
-        
+
         return term
- 
-    
+
+
 # Classe specifique pour la gestion de la visu GSMH
 class CalcEssaiGmsh(CalcEssaiLogiciel):
     def __init__(self, mess):
         CalcEssaiLogiciel.__init__(self, mess)
         self.impr_resu_format = "GMSH"
-        self.impr_resu_params = {"TYPE_CHAM": 'VECT_3D', 
+        self.impr_resu_params = {"TYPE_CHAM": 'VECT_3D',
                                  "NOM_CMP"  : ['DX','DY','DZ']}
         self.term  = None
         self.param = None
         self.get_gmsh_params()
 
-    
-    def get_gmsh_params(self):        
+
+    def get_gmsh_params(self):
         GMSH_CANDIDATES = [ os.path.join( pth, "gmsh" ) for pth in os.environ['PATH'].split(":") ]
         GMSH_CANDIDATES += ["./gmsh"] # custom paths
         GMSH_CANDIDATES += ["/logiciels/Aster/outils/gmsh"]
         GMSH_CANDIDATES += ["/aster/outils/gmsh"]
-        
+
         for pth in GMSH_CANDIDATES:
             if os.access( pth, os.X_OK ):
                 GMSH_PATH = pth
                 break
         else:
             GMSH_PATH = 'gmsh'
-        
+
         self.param = { 'mode' : 'LOCAL',
             'SKIN' : 'NON',
             'gmsh' : GMSH_PATH}
-        
+
         pass
-    
+
     def affiche(self, fichier=None):
-        #param: 
+        #param:
         #gmsh: /aster/outils/gmsh
         #mode: LOCAL
         #SKIN: NON
@@ -697,7 +697,7 @@ class CalcEssaiGmsh(CalcEssaiLogiciel):
             if afreq2[ind_ordr]==None:afreq2[ind_ordr]=noeud_cmp2[ind_ordr]
         mac_win.set_modes(afreq1, afreq2, mac)
 
-  
+
 
 
 # Classe specifique pour la gestion de la visu Salome
@@ -723,7 +723,7 @@ class CalcEssaiSalome(CalcEssaiLogiciel):
         ok = None
         working_dir     = os.getcwd()
         self.theMedFile = os.path.join(working_dir, fichier)
-        
+
         self.Show( './fort.%s'%self.unite_logique)
         self.libere_fichier()
 
@@ -757,7 +757,7 @@ class CalcEssaiSalome(CalcEssaiLogiciel):
         return result
 
     def visu_mac(self,mac,resu1,resu2):
-        
+
         param_visu=self.param_visu
         param_visu.type_visu.set('mac')
 
@@ -805,14 +805,14 @@ class CalcEssaiSalome(CalcEssaiLogiciel):
 
 
 class CalcEssaiSalomeCourbes(CalcEssaiSalome):
-    
+
     def __init__(self, mess, machine_name, salome_port, param_visu):
         self.mess = mess
         self.machine_name = machine_name
         self.salome_port = salome_port
         self.param_visu = param_visu
         self.study_name = None
-    
+
     # l_x: liste des abscisses
     # ll_y: liste de liste des ordonnees (une liste par courbe)
     # l_legende: liste de legendes (une legende par courbe)
@@ -831,7 +831,7 @@ class CalcEssaiSalomeCourbes(CalcEssaiSalome):
         legende_y=legende_y.strip()
         legende_y=legende_y.replace(' ','')
 
-        # Liste des noms des courbes, et titre des axes       
+        # Liste des noms des courbes, et titre des axes
         l_colonnes = [legende_x]
         titre2 = 'COLUMN_TITLES:'+legende_x+' | '
         for legende in l_legende:
@@ -907,18 +907,18 @@ class CalcEssaiSalomeCourbes(CalcEssaiSalome):
 
 ##class CalcEssaiXmgrace(CalcEssaiLogicielCourbes):
 class CalcEssaiXmgrace():
-    
+
     def __init__(self):
         self.xmgr_manager = None
         pass
-    
+
     # l_x: liste des abscisses
     # ll_y: liste de liste des ordonnees (une liste par courbe)
     def affiche(self, l_x, ll_y, couleur=None, titre='Courbes', l_legende=None,
                 legende_x=' ', legende_y=' ',
                 unite_x=' ',unite_y=' '):
         if couleur is None:
-            # XXX color n'est plus uilisé mais est-ce important? 
+            # XXX color n'est plus uilisé mais est-ce important?
             # Xmgrace applique automatiquement une nouvelle couleur
             # à chaque courbe.
             couleur = range(1, 15)
@@ -927,11 +927,10 @@ class CalcEssaiXmgrace():
             elif len(couleur) < len(l_x):
                 for k in range(len(l_x) - len(couleur)):
                     couleur.append(',1')
-        
+
         self.xmgr_manager = XmgrManager()
         self.xmgr_manager.affiche(l_x, ll_y, couleur, l_legende, legende_x, legende_y)
         pass
-    
+
     def fermer(self):
         pass
-    

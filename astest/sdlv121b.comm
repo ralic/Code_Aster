@@ -4,17 +4,17 @@
 # COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
-# (AT YOUR OPTION) ANY LATER VERSION.                                 
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
 #
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
 #
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 # CAS_TEST__: SDLV121B
 #
@@ -65,7 +65,7 @@ CHAMPMAT=AFFE_MATERIAU(    MAILLAGE=MAIL,AFFE=(
                           MATER = MAT1))
                            )
 
-LIAISON=AFFE_CHAR_MECA( 
+LIAISON=AFFE_CHAR_MECA(
                MODELE=MODELE,LIAISON_UNIF=(
               _F( GROUP_NO = 'FACE1', DDL = 'DX'),
               _F( GROUP_NO = 'FACE1', DDL = 'DY'),
@@ -92,8 +92,8 @@ LIAISON=AFFE_CHAR_MECA(
                            )
 
 ONDE=AFFE_CHAR_MECA_F(  MODELE=MODELE,
-                           
-                ONDE_PLANE=_F( DIRECTION = (0., 1.,), TYPE_ONDE = 'S', 
+
+                ONDE_PLANE=_F( DIRECTION = (0., 1.,), TYPE_ONDE = 'S',
                  FONC_SIGNAL = FONCT,GROUP_MA='ABSO'
                  ),
                          )
@@ -109,7 +109,7 @@ MASS_ELE=CALC_MATR_ELEM(    MODELE=MODELE,
                               CHAM_MATER=CHAMPMAT,
                               CHARGE=LIAISON
                             )
-                            
+
 AMOR_ELE=CALC_MATR_ELEM(    MODELE=MODELE,
                               OPTION='AMOR_MECA',
                               CHAM_MATER=CHAMPMAT,
@@ -120,7 +120,7 @@ AMOR_ELE=CALC_MATR_ELEM(    MODELE=MODELE,
 
 VECT_ELE=CALC_VECT_ELEM(     OPTION='CHAR_MECA',
                              CHAM_MATER=CHAMPMAT,
-                             CHARGE=LIAISON 
+                             CHARGE=LIAISON
                            )
 
 NUMEDDL=NUME_DDL(    MATR_RIGI=RIGI_ELE,   METHODE='LDLT')
@@ -128,11 +128,11 @@ NUMEDDL=NUME_DDL(    MATR_RIGI=RIGI_ELE,   METHODE='LDLT')
 RIGIDITE=ASSE_MATRICE(    MATR_ELEM=RIGI_ELE,
                             NUME_DDL=NUMEDDL
                           )
-                          
+
 AMORT=ASSE_MATRICE(    MATR_ELEM=AMOR_ELE,
                             NUME_DDL=NUMEDDL
                           )
-                          
+
 MASSE=ASSE_MATRICE(    MATR_ELEM=MASS_ELE,
                          NUME_DDL=NUMEDDL
                        )
@@ -153,7 +153,7 @@ DYNA=DYNA_VIBRA(TYPE_CALCUL='TRAN',BASE_CALCUL='PHYS',
                         EXCIT=(
                           _F(  VECT_ASSE = VECAS,
                                COEF_MULT = 1.),
-                          _F(  CHARGE = ONDE)), 
+                          _F(  CHARGE = ONDE)),
 ####CDURAND####         ETAT_INIT=_F(  INST_INIT = 0.),
                         INCREMENT=_F( LIST_INST = TEMPLI),
 #                        ARCHIVAGE=_F(  LIST_ARCH = INTLI),
@@ -216,7 +216,7 @@ TEST_FONCTION(VALEUR=(_F(VALE_CALC=-0.00100347696438,
 
 TEMLI=DEFI_LIST_REEL(DEBUT=0., INTERVALLE=_F( JUSQU_A = 0.8, NOMBRE = 500))
 
-TEMLI2=DEFI_LIST_REEL(DEBUT=0.0016, 
+TEMLI2=DEFI_LIST_REEL(DEBUT=0.0016,
         INTERVALLE=_F( JUSQU_A = 0.8, NOMBRE = 499))
 
 INLI=DEFI_LIST_ENTI( DEBUT=1, INTERVALLE=_F( JUSQU_A = 4001, PAS = 1))
@@ -225,14 +225,14 @@ DYNB=DYNA_NON_LINE(     MODELE=MODELE,
                         CHAM_MATER=CHAMPMAT,
                         EXCIT=(
                           _F(  CHARGE = LIAISON),
-                          _F(  CHARGE = ONDE)), 
+                          _F(  CHARGE = ONDE)),
 #                       ETAT_INIT=_F( INST_INIT = 0.),
                         COMP_INCR=_F( RELATION = 'ELAS',
                                       TOUT = 'OUI'),
                         CONVERGENCE=_F( RESI_GLOB_RELA = 1.E-8),
-                        SOLVEUR=_F(  METHODE = 'LDLT', 
+                        SOLVEUR=_F(  METHODE = 'LDLT',
                                      STOP_SINGULIER = 'NON'),
-                        NEWTON=_F(  MATRICE = 'ELASTIQUE', 
+                        NEWTON=_F(  MATRICE = 'ELASTIQUE',
                                     REAC_INCR = 0,
                                     REAC_ITER = 0),
                         INCREMENT=_F( LIST_INST = TEMLI),
@@ -300,135 +300,3 @@ TEST_FONCTION(VALEUR=(_F(VALE_CALC=-0.0010024138817,
               )
 
 FIN();
-#
-#     POST-TRAITEMENT
-#
-
-
-# def Defi_Xmcourbe(X,Y,courbe=None,legend='X',color=0,mark=0,):
-# 
-#   def_co={'ABSCISSE': X}
-#   def_co['ORDONNEE'] = Y
-#   def_co['LEGENDE' ] = legend
-#   def_co['COULEUR' ] = color
-#   def_co['MARQUEUR'] = mark
-#   
-#   try:
-#     courbe.append(def_co);
-#   except:
-#     courbe=[def_co,];
-#       
-#   return courbe;
-# # ---
-# 
-# 
-#   
-# Noeud = ['N22']+['N%d' %(n) for n in range(19,0,-2)];
-# 
-# NB_Noe = len(Noeud);
-# 
-# co_acce,co_vite,co_depl,=None,None,None,;
-# 
-# Comp = 'DX';
-# 
-# RESU =(DYNA,DYNB);
-# 
-# for r in RESU:
-# 
-#  for i in range(NB_Noe):
-# 
-#    cte_acce = i*5.e-1;
-#    cte_vite = i*1.5e-2;
-#    cte_depl = i*5.e-4;
-# 
-#    DEPL=RECU_FONCTION(RESULTAT=r,
-#                       TITRE='ACCE',
-#                       NOM_CHAM='DEPL',
-#                       NOM_CMP=Comp,
-#                       NOEUD=Noeud[i],
-#                       PROL_DROITE='CONSTANT',
-#                       PROL_GAUCHE='CONSTANT',
-#                       INTERPOL='LIN',);
-#                       
-#    VITE=RECU_FONCTION(RESULTAT=r,
-#                       TITRE='VITE',
-#                       NOM_CHAM='VITE',
-#                       NOM_CMP=Comp,
-#                       NOEUD=Noeud[i],
-#                       PROL_DROITE='CONSTANT',
-#                       PROL_GAUCHE='CONSTANT',
-#                       INTERPOL='LIN',);
-#                       
-#    ACCE=RECU_FONCTION(RESULTAT=r,
-#                       TITRE='ACCE',
-#                       NOM_CHAM='ACCE',
-#                       NOM_CMP=Comp,
-#                       NOEUD=Noeud[i],
-#                       PROL_DROITE='CONSTANT',
-#                       PROL_GAUCHE='CONSTANT',
-#                       INTERPOL='LIN',);
-#    
-#    
-#    # ---- Acceleration
-#    #      ------------------------                
-#    time, acce = ACCE.Valeurs();
-#    
-#    acce =N.array(acce);
-#    
-#    acce +=cte_acce;
-#    
-#    co_acce =Defi_Xmcourbe(courbe=co_acce,
-#         X=tuple(time),
-#         Y=tuple(acce),
-#         legend=Noeud[i],
-#         color=0,);
-#         
-#    # ---- Vitesse
-#    #      ------------------------
-#    
-#    time, vite = VITE.Valeurs();
-#    
-#    vite =N.array(vite);
-#    
-#    vite +=cte_vite;
-#    
-#    co_vite =Defi_Xmcourbe(courbe=co_vite,
-#         X=tuple(time),
-#         Y=tuple(vite),
-#         legend=Noeud[i],
-#         color=0,);
-#    
-#    # ---- Deplacement
-#    #      ------------------------
-#    
-#    time, depl = DEPL.Valeurs();
-#    
-#    depl =N.array(depl);
-#    
-#    depl +=cte_depl;
-#    
-#    co_depl =Defi_Xmcourbe(courbe=co_depl,
-#         X=tuple(time),
-#         Y=tuple(depl),
-#         legend=Noeud[i],
-#         color=0,);
-#    
-#    DETRUIRE(CONCEPT=_F(NOM=(ACCE,DEPL,VITE,),),);
-# 
-# Courbes = [co_acce,co_depl,co_vite,];
-# Nom_Fichier= ['co_acce.agr','co_depl.agr','co_vite.agr',];
-# 
-# unit=38
-# for c in range(len(Nom_Fichier)):
-# 
-#   DEFI_FICHIER(ACTION='ASSOCIER',
-#                FICHIER='./REPE_OUT/'+Nom_Fichier[c],
-#                UNITE=unit,);
-#                   
-#   IMPR_FONCTION(FORMAT='XMGRACE',
-#               UNITE=unit,
-#               COURBE=Courbes[c]);
-#                   
-#   DEFI_FICHIER(ACTION='LIBERER',
-#                UNITE=unit,);
-               
