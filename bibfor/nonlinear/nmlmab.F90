@@ -20,7 +20,7 @@ subroutine nmlmab(pgl, nno, npg, nc, ugl,&
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 ! ----------------------------------------------------------------------
-! aslint: disable=,W1504
+! aslint: disable=W1504
     implicit none
     include 'asterfort/granac.h'
     include 'asterfort/nmcri3.h'

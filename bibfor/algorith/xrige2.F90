@@ -3,7 +3,7 @@ subroutine xrige2(elrefp, elrese, ndim, coorse, igeom,&
                   basloc, nnop, npg, lsn, lst,&
                   sig, matuu)
 !
-! aslint: disable=W1306,W1504
+! aslint: disable=W1306
     implicit none
     include 'jeveux.h'
     include 'asterfort/assert.h'

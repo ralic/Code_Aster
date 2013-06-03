@@ -1,7 +1,6 @@
 subroutine spect1(casint, nomu, spectr, ispect, base,&
                   vite, nuor, imodi, imodf, nbm,&
                   nbpf, nomzon, vmoyzi, vmoyto)
-! aslint: disable=,
     implicit none
 !-----------------------------------------------------------------------
 ! ======================================================================

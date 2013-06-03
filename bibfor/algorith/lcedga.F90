@@ -2,7 +2,6 @@ subroutine lcedga(fami, kpg, ksp, ndim, imat,&
                   crit, typmod, instam, instap, coord,&
                   deps2, sigm2, vim, option, sigp,&
                   vip, dsidep, iret)
-! aslint: disable=W1306
     implicit none
     include 'asterc/r8prem.h'
     include 'asterfort/edgani.h'

@@ -224,7 +224,7 @@ subroutine envdep(numpas, nbpal, dt, dtsto, temps,&
 !***********************************************************************
 !%W% %D% %T%
 !
-! aslint: disable=,,W1304
+! aslint: disable=W1304
     implicit none
 !
 !
@@ -263,7 +263,7 @@ subroutine envdep(numpas, nbpal, dt, dtsto, temps,&
 !     ===========================
     integer(kind=4) :: lenvar
     parameter (lenvar = 144)
-    character*(lenvar) :: nomvar
+    character(len=lenvar) :: nomvar
     integer(kind=4) :: cpiter
     parameter (cpiter= 41)
 !

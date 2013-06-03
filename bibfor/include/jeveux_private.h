@@ -14,7 +14,7 @@
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 ! --------- DEBUT COMMONS INTERNES JEVEUX
-! TOLE CRP_4 CRP_18 CRS_508
+! aslint: disable=W1304,C1002
     volatile         iacce
     volatile         ltyp,    long,    date,    iadd,    iadm
     volatile         lono,    hcod,    cara,    luti,    imarq

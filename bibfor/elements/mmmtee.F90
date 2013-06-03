@@ -20,7 +20,6 @@ subroutine mmmtee(phasep, ndim, nne, mprojn, mprojt,&
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-! aslint: disable=W1504
     implicit none
     include 'asterfort/matini.h'
     include 'asterfort/mmmmpb.h'

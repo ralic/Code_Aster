@@ -2,7 +2,6 @@ subroutine xmmab5(ndim, nnol, pla, ffc, jac,&
                   coeffr, seuil, tau1, tau2, mu,&
                   ik, lact, mmat)
 !
-! aslint: disable=W1504
     implicit none
     include 'asterfort/xmafr2.h'
     integer :: ndim, nnol

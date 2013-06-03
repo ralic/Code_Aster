@@ -20,7 +20,6 @@ subroutine nmdoet(modele, compor, fonact, numedd, sdpilo,&
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-! aslint: disable=W1501
     implicit     none
     include 'jeveux.h'
     include 'asterc/getfac.h'

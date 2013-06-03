@@ -12,7 +12,7 @@ subroutine mdadap(dti, dtmax, neqgen, pulsat, pulsa2,&
                   monmot, nbpal, dtsto, vrotat, prdeff,&
                   method, nomres, nbexci, irevst, drevst)
 !
-! aslint: disable=,W1304,W1501,W1504
+! aslint: disable=W1501,W1504
     implicit none
 !
     include 'jeveux.h'

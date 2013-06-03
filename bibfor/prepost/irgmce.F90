@@ -2,7 +2,6 @@ subroutine irgmce(chamsy, partie, ifi, nomcon, ordr,&
                   nbordr, coord, connx, point, nobj,&
                   nbel, nbcmpi, nomcmp, lresu, para,&
                   nomaou, nomain, versio, tycha)
-! aslint: disable=W1504
     implicit none
     include 'jeveux.h'
     include 'asterc/indik8.h'

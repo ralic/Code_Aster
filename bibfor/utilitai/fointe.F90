@@ -1,6 +1,5 @@
 subroutine fointe(codmes, nomf, nbpu, nompu, valpu,&
                   resu, ier)
-! aslint: disable=W1303
     implicit   none
     include 'jeveux.h'
     include 'asterc/fiintf.h'

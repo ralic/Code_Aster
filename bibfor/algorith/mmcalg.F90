@@ -20,7 +20,6 @@ subroutine mmcalg(ndim, nnm, ddffm, geomam, tau1,&
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-! aslint: disable=W1504
     implicit     none
     include 'asterfort/matini.h'
     integer :: ndim, nnm

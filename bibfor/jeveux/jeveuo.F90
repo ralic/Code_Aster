@@ -16,6 +16,7 @@ subroutine jeveuo(nomlu, cel, jctab)
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 ! person_in_charge: j-pierre.lefebvre at edf.fr
+! aslint: disable=C1002
     implicit none
 !
     include 'jeveux.h'

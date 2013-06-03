@@ -8,7 +8,7 @@ subroutine mdfnli(nbmode, depgen, vitgen, accgen, fexgen,&
                   foncp, numpas, nbpal, dt, dtsto,&
                   vrotat, typal, finpal, cnpal, prdeff,&
                   conv, fsauv)
-! aslint: disable=,W1504
+! aslint: disable=W1504
     implicit none
     include 'asterfort/mdfcho.h'
     include 'asterfort/mdfedy.h'

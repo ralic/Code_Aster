@@ -1,5 +1,4 @@
 subroutine slismo(stolcz, stomoz, basz)
-! aslint: disable=W1304
     implicit none
     include 'jeveux.h'
     include 'asterfort/assert.h'

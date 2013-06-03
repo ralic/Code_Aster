@@ -19,7 +19,6 @@ subroutine nmvpgm(fami, kpg, ksp, ndim, imate,&
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-! aslint: disable=,W1307
     implicit none
     include 'asterfort/ggpgmo.h'
     include 'asterfort/iunifi.h'

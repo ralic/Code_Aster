@@ -34,7 +34,6 @@ subroutine prelog(ndim, lgpg, vim, gn, lamb,&
 ! OUT TN      : CONTRAINTES ASSOCIEES AUX DEF. LOGARITHMIQUES EN T-
 ! IN  RESI    : .TRUE. SI FULL_MECA/RAPH_MECA .FALSE. SI RIGI_MECA_TANG
 !
-! aslint: disable=W1504
     implicit none
     include 'asterfort/deflog.h'
     include 'asterfort/r8inir.h'

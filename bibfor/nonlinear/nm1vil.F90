@@ -21,7 +21,7 @@ subroutine nm1vil(fami, kpg, ksp, icdmat, materi,&
 ! ======================================================================
 ! ----------------------------------------------------------------------
 !
-! aslint: disable=,W1504
+! aslint: disable=W1504
     implicit none
     include 'jeveux.h'
 !

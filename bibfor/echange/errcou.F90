@@ -121,7 +121,7 @@ subroutine errcou(nomprg, numpas, nomvar, info, nprog,&
     character(len=8) :: nomprg
     integer(kind=4) :: numpas, info, nprog, nlu, lenvar
     parameter (lenvar = 144)
-    character*(lenvar) :: nomvar
+    character(len=lenvar) :: nomvar
 !
 !
 !
@@ -130,7 +130,7 @@ subroutine errcou(nomprg, numpas, nomvar, info, nprog,&
 !     VARIABLES INTERNES
 !     ==================
 !
-    character*(lenvar) :: valk(2)
+    character(len=lenvar) :: valk(2)
     integer :: vali(1)
 !
     call jemarq()

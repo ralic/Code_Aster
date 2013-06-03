@@ -2,7 +2,6 @@ subroutine xjacf2(elrefp, elrefc, elc, ndim, fpg,&
                   jinter, ifa, cface, nptf, ipg,&
                   nno, igeom, jbasec, g, jac,&
                   ffp, ffpc, dfdi, nd, tau1)
-! aslint: disable=W1504
     implicit none
 !
     include 'jeveux.h'

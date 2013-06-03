@@ -1,7 +1,6 @@
 subroutine cvmcvg(dy, ddy, nr, itmax, toler,&
                   iter, intg, typess, essai, icomp,&
                   irteti)
-! aslint: disable=,W1307
     implicit none
 !       ================================================================
 ! ======================================================================

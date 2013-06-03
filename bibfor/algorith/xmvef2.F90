@@ -3,7 +3,6 @@ subroutine xmvef2(ndim, nno, nnos, ffp, jac,&
                   coeffp, coeffr, mu, algofr, nd,&
                   ddls, ddlm, idepl, pb, vtmp)
 !
-! aslint: disable=W1504
     implicit none
     include 'jeveux.h'
     include 'asterfort/indent.h'

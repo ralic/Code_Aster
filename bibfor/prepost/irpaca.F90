@@ -60,7 +60,7 @@ subroutine irpaca(nomcom, ifi, nbordr, iocc, ordr,&
 !
 !-----------------------------------------------------------------------
     parameter ( maxlen = 255)
-    character*(maxlen) :: chaine
+    character(len=maxlen) :: chaine
     character(len=72) :: ctmp
     integer :: nbcara, iob, il
 !     ------------------------------------------------------------------

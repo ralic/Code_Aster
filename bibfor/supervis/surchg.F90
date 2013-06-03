@@ -1,5 +1,4 @@
 subroutine surchg(ifm)
-! aslint: disable=W1502
     implicit none
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG

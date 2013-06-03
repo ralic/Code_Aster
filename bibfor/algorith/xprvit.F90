@@ -4,7 +4,7 @@ subroutine xprvit(noma, fiss, ndim, nvit, nbeta,&
                   locdom, rdimp, rdtor, delta, ucnslt,&
                   ucnsln)
 !
-! aslint: disable=,W1501,W1504
+! aslint: disable=W1501,W1504
     implicit none
     include 'jeveux.h'
     include 'asterc/getvtx.h'

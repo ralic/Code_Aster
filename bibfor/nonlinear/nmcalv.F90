@@ -21,7 +21,6 @@ subroutine nmcalv(typvec, modelz, lischa, mate, carele,&
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-! aslint: disable=W1504
     implicit none
     include 'jeveux.h'
     include 'asterfort/assert.h'

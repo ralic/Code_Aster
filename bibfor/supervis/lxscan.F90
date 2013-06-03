@@ -1,6 +1,5 @@
 subroutine lxscan(chin, ideb, iclass, ival, rval,&
                   cval)
-! aslint: disable=,
     implicit none
     include 'asterc/ismaem.h'
     character(len=*) :: chin, cval

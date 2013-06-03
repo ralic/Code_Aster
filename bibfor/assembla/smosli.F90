@@ -1,5 +1,4 @@
 subroutine smosli(stomoz, stolcz, basz, rtbloc)
-! aslint: disable=W1304
     implicit none
     include 'jeveux.h'
     include 'asterfort/assert.h'

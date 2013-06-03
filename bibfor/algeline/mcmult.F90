@@ -1,6 +1,5 @@
 subroutine mcmult(cumul, lmat, vect, xsol, nbvect,&
                   prepos)
-! aslint: disable=W1304
     implicit none
     include 'jeveux.h'
     include 'asterfort/dismoi.h'

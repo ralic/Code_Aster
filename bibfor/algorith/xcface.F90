@@ -2,7 +2,6 @@ subroutine xcface(elref, lsn, lst, jgrlsn, igeom,&
                   enr, nfiss, ifiss, fisco, nfisc,&
                   noma, nmaabs, pinter, ninter, ainter,&
                   nface, nptf, cface)
-! aslint: disable=W1306
     implicit none
 !
     include 'jeveux.h'

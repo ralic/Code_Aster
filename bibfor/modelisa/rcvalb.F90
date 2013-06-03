@@ -38,7 +38,7 @@ subroutine rcvalb(fami, kpg, ksp, poum, jmat,&
     integer :: nbpamx, nbpar2, ipar, nbpart, ier
     parameter (nbpamx=10)
     real(kind=8) :: valpa2(nbpamx), valvrc
-    character*(8) :: nompa2(nbpamx), novrc
+    character(len=8) :: nompa2(nbpamx), novrc
 ! DEB ------------------------------------------------------------------
 !
 !     -- S'IL N'Y A PAS DE VARC, IL N'Y A QU'A APPELER  RCVALA :

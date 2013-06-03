@@ -14,7 +14,7 @@ subroutine mdeul1(nbpas, dt, neqgen, pulsat, pulsa2,&
                   nbpal, dtsto, vrotat, prdeff, nomres,&
                   nbexci, passto)
 !
-! aslint: disable=,W1304,W1501,W1504
+! aslint: disable=W1501,W1504
     implicit none
 !
     include 'jeveux.h'

@@ -21,7 +21,6 @@ subroutine mmmtfu(phasep, ndim, nnl, nne, nnm,&
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-! aslint: disable=W1504
     implicit none
     include 'asterfort/mmmtfe.h'
     include 'asterfort/mmmtfm.h'

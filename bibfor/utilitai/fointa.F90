@@ -1,5 +1,4 @@
 subroutine fointa(ipif, nbpu, nompu, valpu, resu)
-! aslint: disable=W1303
     implicit none
     include 'jeveux.h'
 !

@@ -20,7 +20,6 @@ subroutine xmmab3(ndim, nno, nnos, nnol, pla,&
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 !
-! aslint: disable=W1504
     implicit none
     include 'asterfort/indent.h'
     include 'asterfort/matini.h'

@@ -1,7 +1,6 @@
 subroutine iremed(nomcon, ifichi, nocham, novcmp, partie,&
                   liordr, lresu, nbnoec, linoec, nbmaec,&
                   limaec, nomcmp, lvarie, carael)
-! aslint: disable=W1306
     implicit none
 !
     include 'jeveux.h'

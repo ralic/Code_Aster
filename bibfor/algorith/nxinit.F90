@@ -21,7 +21,6 @@ subroutine nxinit(result, modele, mate, carele, compor,&
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-! aslint: disable=W1504
     implicit none
     include 'jeveux.h'
     include 'asterc/gcucon.h'

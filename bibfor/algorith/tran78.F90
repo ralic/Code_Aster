@@ -1,5 +1,4 @@
 subroutine tran78(nomres, typres, nomin)
-! aslint: disable=W1501
     implicit none
     include 'asterc/getvid.h'
     include 'asterfort/bamo78.h'

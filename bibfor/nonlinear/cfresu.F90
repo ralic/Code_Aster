@@ -20,7 +20,6 @@ subroutine cfresu(noma, numins, inst, sddisc, defico,&
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-! aslint: disable=W1501
     implicit     none
     include 'jeveux.h'
     include 'asterc/r8miem.h'

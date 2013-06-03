@@ -2,7 +2,6 @@ subroutine xmmbp5(ndim, nnol, pla, ffc, jac,&
                   coeffp, seuil, tau1, tau2, mu,&
                   lact, mmat)
 !
-! aslint: disable=W1504
     implicit none
     include 'jeveux.h'
     include 'asterfort/matini.h'

@@ -3,7 +3,7 @@ subroutine acgrdo(jvectn, jvectu, jvectv, nbordr, ordini,&
                   jvecpg, jdtaum, jresun, nommet, nommat,&
                   nomcri, vala, coefpa, nomfor, grdvie,&
                   forvie, valpar, vresu)
-! aslint: disable=,W1306,W1501,W1504
+! aslint: disable=W1501,W1504
     implicit none
     include 'jeveux.h'
 !

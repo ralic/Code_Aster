@@ -21,7 +21,6 @@ subroutine nxlect(result, modele, mate, carele, matcst,&
 ! ======================================================================
 ! person_in_charge: Christophe-mmn.durand at edf.fr
 !
-! aslint: disable=W1504
     implicit none
     include 'asterc/getres.h'
     include 'asterfort/cresol.h'

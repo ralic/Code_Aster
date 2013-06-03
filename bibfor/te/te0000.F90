@@ -1,5 +1,5 @@
 subroutine te0000(numc, opt, te)
-! aslint: disable=W1307,W1501
+! aslint: disable=W1501
     implicit none
 !
 ! ======================================================================

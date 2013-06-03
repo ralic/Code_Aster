@@ -3,7 +3,7 @@ subroutine piqpiq(xp, yp, zp, x, y,&
                   eso, hso, h2, h3, l4,&
                   l5, zone1, zone2, zone3, zone4,&
                   zone5, zone6, zone7, zone8, typsou)
-! aslint: disable=,W1504
+! aslint: disable=W1504
     implicit   none
     include 'asterc/r8pi.h'
     include 'asterfort/piqsou.h'

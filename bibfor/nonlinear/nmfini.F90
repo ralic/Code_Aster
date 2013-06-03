@@ -21,7 +21,6 @@ subroutine nmfini(sddyna, valinc, measse, modele, mate,&
 ! ======================================================================
 ! person_in_charge: ludovic.idoux at edf.fr
 !
-! aslint: disable=W1504
     implicit none
     include 'jeveux.h'
     include 'asterfort/dismoi.h'

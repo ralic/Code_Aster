@@ -21,7 +21,6 @@ subroutine nminvc(modelz, mate, carele, compor, carcri,&
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-! aslint: disable=W1504
     implicit      none
     include 'asterfort/infdbg.h'
     include 'asterfort/isfonc.h'

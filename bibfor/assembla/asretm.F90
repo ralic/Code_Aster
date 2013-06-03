@@ -1,6 +1,5 @@
 subroutine asretm(lmasym, jtmp2, lgtmp2, nbterm, jsmhc,&
                   jsmdi, i1, i2)
-! aslint: disable=W1304
     implicit none
     include 'jeveux.h'
     include 'asterfort/jeveut.h'

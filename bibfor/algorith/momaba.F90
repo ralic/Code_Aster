@@ -1,5 +1,4 @@
 subroutine momaba(mailla)
-! aslint: disable=W1501
     implicit   none
     include 'jeveux.h'
 !

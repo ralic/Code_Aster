@@ -4,7 +4,6 @@ subroutine xmvco1(ndim, nno, nnol, sigma, pla,&
                   nd, tau1, tau2, vtmp)
 !
 !
-! aslint: disable=W1504
     implicit none
     include 'asterc/r8prem.h'
     include 'asterfort/vecini.h'

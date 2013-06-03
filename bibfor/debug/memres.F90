@@ -1,5 +1,4 @@
 subroutine memres(limpr, ldyn, titre, prec, tmax)
-! aslint: disable=W1304,W1307
     implicit none
     include 'asterc/hpalloc.h'
     include 'asterc/hpdeallc.h'

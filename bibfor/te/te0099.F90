@@ -1,5 +1,4 @@
 subroutine te0099(option, nomte)
-! aslint: disable=W1502
     implicit none
     character(len=16) :: option, nomte
 ! ======================================================================

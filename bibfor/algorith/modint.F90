@@ -1,7 +1,7 @@
 subroutine modint(ssami, raiint, nddlin, nbmod, shift,&
                   matmod, masse, raide, neq, coint,&
                   noddli, nnoint, vefreq, switch)
-! aslint: disable=W1304,W1501
+! aslint: disable=W1501
     implicit none
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG

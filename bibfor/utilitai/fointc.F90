@@ -1,6 +1,5 @@
 subroutine fointc(codmes, nomf, nbpu, nompu, valpu,&
                   resure, resuim, ier)
-! aslint: disable=W1303
     implicit  none
     include 'jeveux.h'
 !

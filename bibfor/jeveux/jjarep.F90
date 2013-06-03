@@ -1,5 +1,6 @@
 subroutine jjarep(iclas, nrmax)
 ! person_in_charge: j-pierre.lefebvre at edf.fr
+! aslint: disable=C1002
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

@@ -51,7 +51,7 @@ subroutine op0114()
     real(kind=8) :: dt, ryacs, ti, tf
     character(len=16) :: option, valk(3)
     character(len=24) :: ayacs
-    character*(lenvar) :: nomvar
+    character(len=lenvar) :: nomvar
     integer :: iarg
 !     COUPLAGE <=
 !

@@ -1,7 +1,6 @@
 subroutine rkdvec(fami, kpg, ksp, imat, matcst,&
                   nvi, vini, coeft, x, dtime,&
                   nmat, sigi, dvin)
-! aslint: disable=,W1307
     implicit none
 !       ================================================================
 ! ======================================================================

@@ -1,6 +1,5 @@
 subroutine rkdhay(mod, nvi, vini, coeft, nmat,&
                   sigi, dvin, iret)
-! aslint: disable=W1504
     implicit none
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG

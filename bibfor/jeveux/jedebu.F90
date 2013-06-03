@@ -136,7 +136,7 @@ subroutine jedebu(nbfi, mxzon, idb)
     real(kind=8) :: r8bid, rval(6)
     character(len=8) :: k8tab(6)
     parameter      ( mxlici = 67 )
-    character*(mxlici) :: clicit
+    character(len=mxlici) :: clicit
     data clicit/' ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789.$&_abcdefghijkl&
      &mnopqrstuvwxyz'/
 ! DEB ------------------------------------------------------------------

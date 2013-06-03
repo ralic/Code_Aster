@@ -30,7 +30,6 @@ subroutine tabchs(tabin, typchs, base, nomgd, ma,&
 !     IN : MA     : NOM DU MAILLAGE
 !     IN/JXOUT : CHS: NOM DU CHAMP SIMPLE A CREER
 !
-! aslint: disable=W1501
     implicit   none
 !
 !     ------------------------------------------------------------------

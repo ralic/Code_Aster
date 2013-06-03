@@ -1,5 +1,4 @@
 subroutine te0534(option, nomte)
-! aslint: disable=W1501
     implicit   none
     include 'jeveux.h'
 !

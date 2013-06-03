@@ -68,7 +68,7 @@ subroutine op0112()
 !     COUPLAGE =>
     integer(kind=4) :: lenvar, cpiter, numpa4, nbno4, taille, ibid4
     parameter (lenvar = 144)
-    character*(lenvar) :: nomvar
+    character(len=lenvar) :: nomvar
     parameter (cpiter= 41)
     integer :: icompo, numpas, iadr, ifm, niv
     real(kind=8) :: ti, tf, dt

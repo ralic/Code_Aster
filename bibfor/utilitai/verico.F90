@@ -32,7 +32,6 @@ subroutine verico(nbmato, nbpart, val)
 ! person_in_charge: aimery.assire at edf.fr
 !
 ! CORPS DU PROGRAMME
-! aslint: disable=W1304
     implicit none
 !
 !

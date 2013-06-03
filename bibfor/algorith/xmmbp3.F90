@@ -3,7 +3,6 @@ subroutine xmmbp3(ndim, nno, nnos, nnol, pla,&
                   seuil, tau1, tau2, mu, singu,&
                   rr, lact, ddls, ddlm, mmat)
 !
-! aslint: disable=W1504
     implicit none
     include 'jeveux.h'
     include 'asterfort/indent.h'

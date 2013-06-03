@@ -1,5 +1,4 @@
 subroutine jxdate(idate)
-! aslint: disable=,
     implicit none
     include 'asterc/date.h'
     integer :: idate

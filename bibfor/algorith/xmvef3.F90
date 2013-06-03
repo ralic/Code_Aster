@@ -2,7 +2,6 @@ subroutine xmvef3(ndim, nnol, pla, ffc, reac12,&
                   pb, jac, seuil, tau1, tau2,&
                   lact, cstafr, mu, vtmp)
 !
-! aslint: disable=W1504
     implicit none
     include 'blas/ddot.h'
     integer :: ndim, nnol, pla(27)

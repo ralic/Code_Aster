@@ -3,7 +3,7 @@ subroutine xdecov(ndim, elp, nnop, nnose, it,&
                   fisco, igeom, nfiss, ifiss, pinter,&
                   ninter, npts, ainter, nse, cnse,&
                   heav, nfisc, nsemax)
-! aslint: disable=W1306,W1501,W1504
+! aslint: disable=W1306,W1504
     implicit none
 !
     include 'jeveux.h'

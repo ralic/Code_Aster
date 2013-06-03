@@ -23,7 +23,7 @@ subroutine xmrema(jcesd, jcesv, jcesl, noma, ndim,&
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-! aslint: disable=W1306,W1504
+! aslint: disable=W1504
     implicit none
     include 'jeveux.h'
 !

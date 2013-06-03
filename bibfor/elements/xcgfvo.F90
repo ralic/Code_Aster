@@ -1,6 +1,5 @@
 subroutine xcgfvo(option, ndim, nnop, fno, rho)
 !
-! aslint: disable=W1306
     implicit none
 !
     include 'jeveux.h'

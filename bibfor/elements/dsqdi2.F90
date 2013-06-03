@@ -1,6 +1,5 @@
 subroutine dsqdi2(xyzl, df, dci, dmf, dfc,&
                   dmc, an, am)
-! aslint: disable=W1501
     implicit  none
     include 'jeveux.h'
     include 'asterfort/dsqbfa.h'

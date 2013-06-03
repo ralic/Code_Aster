@@ -20,7 +20,7 @@ subroutine nmvend(fami, kpg, ksp, materd, materf,&
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 !-----------------------------------------------------------------------
-! aslint: disable=,W1304,W1504
+! aslint: disable=W1304,W1504
     implicit none
 !
     include 'asterc/r8miem.h'

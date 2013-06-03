@@ -4,7 +4,7 @@ subroutine mmaxkl(latabl, modele, thetai, mate, compor,&
                   pair, ndimte, nbprup, noprup, fiss,&
                   lonvec, ivec, vchar, resuco, lmelas,&
                   lncas, lord, milieu, connex)
-! aslint: disable=,W1504
+! aslint: disable=W1504
     implicit none
 !
     include 'jeveux.h'

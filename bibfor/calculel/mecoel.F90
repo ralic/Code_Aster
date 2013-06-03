@@ -1,5 +1,4 @@
 subroutine mecoel(iacti2)
-! aslint: disable=W1502
     implicit none
     integer :: iacti2
 ! ======================================================================

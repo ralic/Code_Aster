@@ -63,7 +63,7 @@ subroutine colneu(nbnode, typema)
     real(kind=4) :: tr4
     character(len=8) :: typema, valk(3)
     character(len=24) :: ayacs
-    character*(lenvar) :: nomvar
+    character(len=lenvar) :: nomvar
 !     COUPLAGE <=
 !
 !.========================= DEBUT DU CODE EXECUTABLE ==================

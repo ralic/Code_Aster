@@ -1,7 +1,7 @@
 subroutine lridea(resu, typres, linoch, nbnoch, nomcmd,&
                   listrz, listiz, precis, crit, epsi,&
                   acces, mfich, noma, ligrez, nbvari)
-! aslint: disable=,W1501
+! aslint: disable=W1501
     implicit  none
     include 'jeveux.h'
 !

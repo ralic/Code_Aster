@@ -1,7 +1,7 @@
 subroutine acmata(jvectn, jvectu, jvectv, nbordr, kwork,&
                   sompgw, jrwork, tspaq, ipg, jvecpg,&
                   jdtaum, jresun, nommet, vrespc)
-! aslint: disable=W1501,W1504
+! aslint: disable=W1501
     implicit   none
     include 'jeveux.h'
 !

@@ -9,7 +9,7 @@ subroutine spdfft(nsens, nomfon, nbvin, nomfs, nbvout,&
     include 'asterfort/jemarq.h'
     include 'asterfort/jeveuo.h'
     include 'asterfort/wkvect.h'
-    character*(1) :: base
+    character(len=1) :: base
     integer :: nsens
 !     ----------------------------------------------------------------
 ! ======================================================================

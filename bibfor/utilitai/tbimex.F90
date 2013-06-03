@@ -1,6 +1,6 @@
 subroutine tbimex(table, ifr, nparim, lipaim, formaz,&
                   formar)
-! aslint: disable=,W1303
+! aslint: disable=W1303
     implicit   none
     include 'jeveux.h'
 !

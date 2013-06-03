@@ -20,7 +20,7 @@ subroutine nmfgas(fami, npg, icodma, pgl, nno,&
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 ! ----------------------------------------------------------------------
-! aslint: disable=,W1504
+! aslint: disable=W1504
     implicit none
     include 'asterc/r8t0.h'
     include 'asterfort/assert.h'

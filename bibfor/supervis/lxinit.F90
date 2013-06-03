@@ -45,7 +45,7 @@ subroutine lxinit()
 !
 !     ------------------------------------------------------------------
     parameter  ( mxcols = 80 )
-    character*(mxcols) :: chaine
+    character(len=mxcols) :: chaine
     character(len=1) :: kclass
 !     ------------------------------------------------------------------
 !

@@ -1,5 +1,4 @@
 subroutine rltfr8(nommat, neq, xsol, nbsol, typsym)
-! aslint: disable=W1304
     implicit none
     include 'jeveux.h'
     include 'asterfort/dismoi.h'

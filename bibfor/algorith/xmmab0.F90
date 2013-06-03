@@ -20,7 +20,6 @@ subroutine xmmab0(ndim, nnc, jnne, nfaes, jpcai,&
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 !
-! aslint: disable=W1504
     implicit none
     include 'asterfort/xplma2.h'
     integer :: ndim, nnc, jnne(3), nfaes, jpcai, cface(5, 3), jddle(2)

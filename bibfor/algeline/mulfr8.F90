@@ -1,6 +1,5 @@
 subroutine mulfr8(nommat, npivot, neq, typsym, eps,&
                   renumz)
-! aslint: disable=,W1304
     implicit none
     include 'jeveux.h'
     include 'asterc/ismaem.h'

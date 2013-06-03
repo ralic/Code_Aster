@@ -1,5 +1,4 @@
 subroutine lecdon(ficext, unitpa, prdeff)
-! aslint: disable=,W1304
     implicit          none
     include 'jeveux.h'
     include 'asterc/getfac.h'

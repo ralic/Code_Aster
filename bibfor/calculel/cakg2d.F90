@@ -2,7 +2,6 @@ subroutine cakg2d(optioz, result, modele, depla, theta,&
                   mate, nchar, lchar, symech, fondf,&
                   noeud, time, iord, nbprup, noprup,&
                   lmelas, nomcas, lmoda, puls, compor)
-! aslint: disable=W1504
     implicit none
 !
     include 'jeveux.h'

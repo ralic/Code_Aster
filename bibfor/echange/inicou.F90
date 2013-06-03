@@ -200,7 +200,7 @@ subroutine inicou(nbpas, tinit, tfin, dt, dtsto,&
 !
 !-----------------------------------------------------------------------
 !  SOUS PROGRAMME(S) APPELANT(S) :  OP0115.F
-! aslint: disable=,W1304
+! aslint: disable=W1304
     implicit none
 !
 !***********************************************************************
@@ -252,7 +252,7 @@ subroutine inicou(nbpas, tinit, tfin, dt, dtsto,&
 !     ===========================
     integer(kind=4) :: lenvar
     parameter (lenvar = 144)
-    character*(lenvar) :: nomvar
+    character(len=lenvar) :: nomvar
     integer(kind=4) :: cpiter
     parameter (cpiter= 41)
 !

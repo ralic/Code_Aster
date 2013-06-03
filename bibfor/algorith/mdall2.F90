@@ -1,6 +1,5 @@
 subroutine mdall2(nomres, basemo, numgen, res, nbo,&
                   nbmode)
-! aslint: disable=W1504
     implicit none
     include 'jeveux.h'
     include 'asterfort/jedema.h'
