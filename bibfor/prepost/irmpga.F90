@@ -18,6 +18,7 @@ subroutine irmpga(nofimd, chanom, typech, nomtyp, nbimpr,&
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 ! person_in_charge: nicolas.sellenet at edf.fr
+! aslint: disable=W1306
 !_______________________________________________________________________
 !     ECRITURE AU FORMAT MED - LOCALISATION POINTS DE GAUSS
 !        -  -            -                  -         --
@@ -294,7 +295,10 @@ subroutine irmpga(nofimd, chanom, typech, nomtyp, nbimpr,&
 !
 ! 2.2. ==> ON ECRIT LA LOCALISATION
 !
-        if (ndim .gt. 0) then
+        if (typech(1:4) .eq. 'ELEM' .and. nbpg .eq. 1) then
+            caimpk(1,nrimpr) = ' '
+            caimpk(3,nrimpr) = ' '
+        else if (ndim.gt.0) then
             call irmpg1(nofimd, nomfpg, nbnoto, nbrepg, nbsp,&
                         ndim, tygeom, refcoo, gscoo, wg,&
                         raux1, raux2, raux3, nolopg, nomasu,&
