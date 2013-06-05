@@ -516,7 +516,7 @@ def calc_gp_ops(self,**args):
       tabenel= [mult*x for x in enerel.TOTALE.values()]
       tabinst= enerel.INST.values()
       tablcop= mesure*nb_inst
-      tabgp  = [mult*tabenel[x]/tablcop[x] for x in range(len(tabenel))]
+      tabgp  = [tabenel[x]/tablcop[x] for x in range(len(tabenel))]
 
       tabmax=[0]*nbcoptot*nb_inst
       for i in range(nb_inst):
