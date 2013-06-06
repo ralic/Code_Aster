@@ -114,15 +114,15 @@ subroutine op0005()
 !
     call wkvect(matout//'.MATERIAU.NOMRC', 'G V K16', nbrcme+nbmati, jnomrc)
 !
-    do 20 irc = 1, nbmati
+    do irc = 1, nbmati
         zk16(jnomrc+irc-1) = zk16(jnorci+irc-1)
-20  end do
+    end do
 !
     call wkvect('&&OP0005.NBOBJE', 'V V I', nbrcme, jnbobj)
     call wkvect('&&OP0005.TYPFON', 'V V L', nbrcme, jtypfo)
 !
     krc = nbmati
-    do 100 irc = 1, nbrcme
+    do irc = 1, nbrcme
         nomrc = motcle(irc)
         ind = index(nomrc,'_FO')
         if (ind .gt. 0) then
@@ -142,6 +142,9 @@ subroutine op0005()
         call getmjm(nomrc, 1, 0, k16bid, k16bid,&
                     nbobm)
         nbobm = - nbobm
+        if ( nbobm .eq. 0 ) then
+          call u2mesk('F','MODELISA9_80',1,nomrc)
+        endif
 !
         if (nomrc .eq. 'THER_NL') nbobm = nbobm + 1
         call wkvect(noobrc//'.VALR', 'G V R', nbobm, jvalrm)
@@ -153,7 +156,7 @@ subroutine op0005()
         call jeecra(noobrc//'.VALR', 'LONUTI', nbr, ' ')
         call jeecra(noobrc//'.VALC', 'LONUTI', nbc, ' ')
         call jeecra(noobrc//'.VALK', 'LONUTI', nbr+nbc+2*nbk, ' ')
-100  end do
+    end do
 !
     call infmaj()
     call infniv(ifm, niv)
