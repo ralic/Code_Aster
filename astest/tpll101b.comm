@@ -65,8 +65,7 @@ TEST_RESU(RESU=_F(NUME_ORDRE=0,
                   RESULTAT=POT_ELRE,
                   NOM_CHAM='SOUR_ELGA',
                   NOM_CMP='SOUR',
-                  VALE_CALC=41.709299999999999,
-                  TOLE_MACHINE=1.E-3,
+                  VALE_CALC=41.709292287557,
                   MAILLE='M834',),
           )
 
@@ -120,13 +119,13 @@ LIGN=MACR_LIGN_COUPE(RESULTAT=TEMPRESU,
                                    COOR_EXTR=(x,0.1,y,),),);
 
 TEST_TABLE(PRECISION=1.E-2,
-           VALE_CALC=585.902714547,
-           VALE_REFE=588.93129999999996,
-           REFERENCE='NON_DEFINI',
+           VALE_CALC=585.90271454742,
+           VALE_REFE=588.9313,
+           REFERENCE='ANALYTIQUE',
            NOM_PARA='TEMP',
            TABLE=LIGN,
            FILTRE=_F(NOM_PARA='ABSC_CURV',
-                     VALE=0.025000000000000001,),
+                     VALE=0.025,),
            )
 
 FIN();

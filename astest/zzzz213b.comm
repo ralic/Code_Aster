@@ -77,7 +77,6 @@ TEST_RESU(RESU=_F(GROUP_NO='G_11',
                   NOM_CHAM='DEPL',
                   NOM_CMP='DZ',
                   VALE_CALC=-5.0335779463534998,
-                  TOLE_MACHINE=1.E-3,
                   CRITERE='RELATIF',),
           )
 
@@ -120,10 +119,8 @@ TEST_RESU(RESU=_F(GROUP_NO='G_11',
                   NOM_CHAM='DEPL',
                   NOM_CMP='DZ',
                   VALE_CALC=-5.0283711767339003,
-                  TOLE_MACHINE=1.E-3,
                   CRITERE='RELATIF',),
           )
 
 #
 FIN( )
-#

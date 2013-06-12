@@ -195,9 +195,11 @@ NBPR = 4
 FATN = [None]*(NBPR-1)
 FATNW = [None]*(NBPR-1)
 FATNF = [None]*(NBPR-1)
-RESU = [3.26558685783619E-5, 3.26558685783619E-5, 3.21404432462201E-5 ]
+RESU  = [3.26558685783619E-5, 3.26558685783619E-5, 3.21404432462201E-5 ]
+RESUC = [3.2655868578362E-5, 3.2655868578362E-5, 3.2140443246219E-5 ]
 
-RESUF = [1.08363973045249E-5, 1.08363973045249E-5, 1.0633842276096E-5 ]
+RESUF  = [1.08363973045249E-5, 1.08363973045249E-5, 1.0633842276096E-5 ]
+RESUFC = [1.0836397494616E-5, 1.0836397494616E-5, 1.0633842276096E-5 ]
 
 for i in range(NBPR-1) :
 
@@ -229,8 +231,10 @@ for i in range(NBPR-1) :
 
     TEST_TABLE( TABLE=FATN[i],
                 NOM_PARA = 'DOMMAGE',
-                VALE_CALC=RESU[i],
-                TOLE_MACHINE=1.E-4                
+                VALE_REFE=RESU[i],
+                VALE_CALC=RESUC[i],
+                PRECISION=1.E-4,
+                REFERENCE='ANALYTIQUE',
                 )
                 
 for i in range(NBPR-2) :
@@ -264,8 +268,10 @@ for i in range(NBPR-2) :
 
     TEST_TABLE( TABLE=FATNW[i],
                 NOM_PARA = 'DOMMAGE',
-                VALE_CALC=RESU[i],
-                TOLE_MACHINE=2.5E-3                )
+                VALE_REFE=RESU[i],
+                VALE_CALC=RESUC[i],
+                REFERENCE='ANALYTIQUE',
+                PRECISION=2.5E-3                )
 
 for i in range(NBPR-2) :
 
@@ -297,8 +303,10 @@ for i in range(NBPR-2) :
 
     TEST_TABLE( TABLE=FATNF[i],
                 NOM_PARA = 'DOMMAGE',
-                VALE_CALC=RESUF[i],
-                TOLE_MACHINE=1.E-5                )
+                VALE_REFE=RESUF[i],
+                VALE_CALC=RESUFC[i],
+                REFERENCE='ANALYTIQUE',
+                PRECISION=1.E-5                )
                 
 
                 
@@ -586,9 +594,11 @@ FATN2 = [None]*(NBPR-1)
 FATNW2 = [None]*(NBPR-1)
 FATNF2 = [None]*(NBPR-1)
 
-RESU2 = [2.408735E-4, 2.408735E-4,1.322816E-4  ]
+RESU2  = [2.408735E-4, 2.408735E-4,1.322816E-4  ]
+RESU2C = [2.4087352144764E-4, 2.4087352146645E-4,1.322816E-4  ]
 
-RESUF2 = [1.449229E-4, 1.449229E-4, 6.53204991059937E-5  ]
+RESUF2  = [1.449229E-4, 1.449229E-4, 6.53204991059937E-5  ]
+RESUF2C = [1.4492289002336E-4, 1.4492289003382E-4, 6.53204991059937E-5  ]
 
 for i in range(NBPR-2) :
 
@@ -619,8 +629,10 @@ for i in range(NBPR-2) :
 
     TEST_TABLE( TABLE=FATN2[i],
                 NOM_PARA = 'DOMMAGE',
-                VALE_CALC=RESU2[i],
-                TOLE_MACHINE=1.E-4                
+                VALE_REFE=RESU2[i],
+                VALE_CALC=RESU2C[i],
+                REFERENCE='ANALYTIQUE',
+                PRECISION=1.E-4                
                 )
                 
 for i in range(NBPR-2) :
@@ -653,8 +665,10 @@ for i in range(NBPR-2) :
 
     TEST_TABLE( TABLE=FATNW2[i],
                 NOM_PARA = 'DOMMAGE',
-                VALE_CALC=RESU2[i],
-                TOLE_MACHINE=2.5E-3                )
+                VALE_REFE=RESU2[i],
+                VALE_CALC=RESU2C[i],
+                REFERENCE='ANALYTIQUE',
+                PRECISION=2.5E-3                )
 
 for i in range(NBPR-2) :
 
@@ -674,13 +688,6 @@ for i in range(NBPR-2) :
                                      EPS_XZ  = ZERO2,
                                      EPS_YZ  = ZERO2,
                                      
-#                                      EPSP_XX  = EPSPXX2,
-#                                      EPSP_YY  = EPSPYY2,
-#                                      EPSP_ZZ  = EPSPZZ2,
-#                                      EPSP_XY  = ZERO2,
-#                                      EPSP_XZ  = ZERO2,
-#                                      EPSP_YZ  = ZERO2,
-                                     
                                      ),
                        TYPE_CHARGE = 'NON_PERIODIQUE',
                        CRITERE='FORMULE_CRITERE',
@@ -694,8 +701,10 @@ for i in range(NBPR-2) :
 
     TEST_TABLE( TABLE=FATNF2[i],
                 NOM_PARA = 'DOMMAGE',
-                VALE_CALC=RESUF2[i],
-                TOLE_MACHINE=1.E-5                )
+                VALE_REFE=RESUF2[i],
+                VALE_CALC=RESUF2C[i],
+                REFERENCE='ANALYTIQUE',
+                PRECISION=1.E-5                )
                 
 #######################################################
 # ASSOCIE AVEC LA SOLUTION SOL_NL3 de SSLV135f
@@ -1105,8 +1114,10 @@ IMPR_TABLE(TABLE = FATN3)
 
 TEST_TABLE( TABLE=FATN3,
             NOM_PARA = 'DOMMAGE',
-            VALE_CALC=2.1858445E-3,
-            TOLE_MACHINE=1.E-4                
+            VALE_REFE=2.1858445E-3,
+            VALE_CALC=2.1858444715591E-3,
+            REFERENCE='ANALYTIQUE',
+            PRECISION=1.E-4                
             )
 
 FATNW3=POST_FATIGUE(    CHARGEMENT='MULTIAXIAL',
@@ -1145,8 +1156,10 @@ IMPR_TABLE(TABLE = FATNW3)
 
 TEST_TABLE( TABLE=FATNW3,
             NOM_PARA = 'DOMMAGE',
-            VALE_CALC=2.1858445E-3,
-            TOLE_MACHINE=2.5E-3                )
+            VALE_REFE=2.1858445E-3,
+            VALE_CALC=2.1858444715591E-3,
+            REFERENCE='ANALYTIQUE',
+            PRECISION=2.5E-3                )
 
 
 FATNF3=POST_FATIGUE(    CHARGEMENT='MULTIAXIAL',
@@ -1185,7 +1198,9 @@ IMPR_TABLE(TABLE = FATNF3)
 
 TEST_TABLE( TABLE=FATNF3,
             NOM_PARA = 'DOMMAGE',
+            VALE_REFE=1.377855E-2,
             VALE_CALC=1.37785513E-2,
-            TOLE_MACHINE=1.E-5                )                           
+            REFERENCE='ANALYTIQUE',
+            PRECISION=1.E-5                )                           
 FIN()
 #

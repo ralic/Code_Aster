@@ -75,7 +75,6 @@ N1=INFO_FONCTION(  NOCI_SEISME=_F(
 #
 TEST_TABLE(
            VALE_CALC=0.056859082634040999,
-           TOLE_MACHINE=1.E-4,
            NOM_PARA='INTE_ARIAS',
            TABLE=N1,
            )
@@ -142,15 +141,13 @@ RMS3=INFO_FONCTION( ECART_TYPE=_F(  FONCTION = FONCT3))
 #                     _F(FONCTION=FONCT3 ,)))
 
 TEST_TABLE(
-           VALE_CALC=0.050175176284678998,
-           TOLE_MACHINE=1.E-4,
+           VALE_CALC=0.050175408329392,
            NOM_PARA='INTE_ARIAS',
            TABLE=N3,
            )
 
 TEST_TABLE(
            VALE_CALC=8.25,
-           TOLE_MACHINE=1.E-4,
            NOM_PARA='DUREE_PHAS_FORT',
            TABLE=N3,
            )
@@ -175,7 +172,6 @@ IMPR_FONCTION(   FORMAT='XMGRACE', UNITE=25, COURBE= (
 
 TEST_TABLE(
            VALE_CALC=1.0070159976669,
-           TOLE_MACHINE=1.E-4,
            NOM_PARA='ECART_TYPE',
            TABLE=RMS3b,
            )
@@ -245,7 +241,6 @@ IMPR_TABLE (TABLE=RMS2,  UNITE=8,);
 #IMPR_FONCTION(   FORMAT='XMGRACE', UNITE=25, COURBE= ( _F(FONCTION=FONCT2 ,)))
 TEST_TABLE(
            VALE_CALC=0.046655817603433999,
-           TOLE_MACHINE=1.E-4,
            NOM_PARA='INTE_ARIAS',
            TABLE=N2,
            )

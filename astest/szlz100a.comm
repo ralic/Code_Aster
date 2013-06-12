@@ -87,7 +87,9 @@ TAB_1=POST_FATIGUE(    CHARGEMENT='UNIAXIAL',
 
 TEST_TABLE(
            VALE_CALC=600.0,
-           TOLE_MACHINE=1.0000000000000001E-05,
+           VALE_REFE=600.0,
+           PRECISION=1.E-05,
+           REFERENCE='ANALYTIQUE',
            NOM_PARA='VALE_MAX',
            TABLE=TAB_1,
            FILTRE=_F(NOM_PARA='CYCLE',
@@ -96,7 +98,9 @@ TEST_TABLE(
 
 TEST_TABLE(
            VALE_CALC=-500.0,
-           TOLE_MACHINE=1.0000000000000001E-05,
+           VALE_REFE=-500.0,
+           PRECISION=1.E-05,
+           REFERENCE='ANALYTIQUE',
            NOM_PARA='VALE_MIN',
            TABLE=TAB_1,
            FILTRE=_F(NOM_PARA='CYCLE',
@@ -104,8 +108,10 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=1.0532569999999999E-3,
-           TOLE_MACHINE=1.0000000000000001E-05,
+           VALE_CALC=1.0532566522679E-3,
+           VALE_REFE=1.0532567E-3,
+           PRECISION=1.E-05,
+           REFERENCE='ANALYTIQUE',
            NOM_PARA='DOMMAGE',
            TABLE=TAB_1,
            FILTRE=_F(NOM_PARA='CYCLE',
@@ -114,7 +120,9 @@ TEST_TABLE(
 
 TEST_TABLE(
            VALE_CALC=50.0,
-           TOLE_MACHINE=1.0000000000000001E-05,
+           VALE_REFE=50.0,
+           PRECISION=1.E-05,
+           REFERENCE='ANALYTIQUE',
            NOM_PARA='VALE_MAX',
            TABLE=TAB_1,
            FILTRE=_F(NOM_PARA='CYCLE',
@@ -123,7 +131,9 @@ TEST_TABLE(
 
 TEST_TABLE(
            VALE_CALC=50.0,
-           TOLE_MACHINE=1.0000000000000001E-05,
+           VALE_REFE=50.0,
+           PRECISION=1.E-05,
+           REFERENCE='ANALYTIQUE',
            NOM_PARA='VALE_MIN',
            TABLE=TAB_1,
            FILTRE=_F(NOM_PARA='CYCLE',
@@ -132,7 +142,9 @@ TEST_TABLE(
 
 TEST_TABLE(CRITERE='ABSOLU',
            VALE_CALC=0.0,
-           TOLE_MACHINE=1.0000000000000001E-05,
+           VALE_REFE=0.0,
+           PRECISION=1.E-05,
+           REFERENCE='ANALYTIQUE',
            NOM_PARA='DOMMAGE',
            TABLE=TAB_1,
            FILTRE=_F(NOM_PARA='CYCLE',
@@ -140,8 +152,10 @@ TEST_TABLE(CRITERE='ABSOLU',
            )
 
 TEST_TABLE(
-           VALE_CALC=1.0532569999999999E-3,
-           TOLE_MACHINE=1.7000000000000001E-4,
+           VALE_CALC=1.0534253269667E-3,
+           VALE_REFE=1.0532567E-3,
+           PRECISION=1.7E-4,
+           REFERENCE='ANALYTIQUE',
            NOM_PARA='DOMM_CUMU',
            TABLE=TAB_1,)
 
@@ -157,7 +171,9 @@ TAB_2=POST_FATIGUE(     CHARGEMENT='UNIAXIAL',
 
 TEST_TABLE(
            VALE_CALC=600.0,
-           TOLE_MACHINE=1.0000000000000001E-05,
+           VALE_REFE=600.0,
+           PRECISION=1.E-05,
+           REFERENCE='ANALYTIQUE',
            NOM_PARA='VALE_MAX',
            TABLE=TAB_2,
            FILTRE=_F(NOM_PARA='CYCLE',
@@ -166,7 +182,9 @@ TEST_TABLE(
 
 TEST_TABLE(
            VALE_CALC=-500.0,
-           TOLE_MACHINE=1.0000000000000001E-05,
+           VALE_REFE=-500.0,
+           PRECISION=1.E-05,
+           REFERENCE='ANALYTIQUE',
            NOM_PARA='VALE_MIN',
            TABLE=TAB_2,
            FILTRE=_F(NOM_PARA='CYCLE',
@@ -174,8 +192,10 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=1.0532569999999999E-3,
-           TOLE_MACHINE=1.0000000000000001E-05,
+           VALE_CALC=1.0532566522679E-3,
+           VALE_REFE=1.053257E-3,
+           PRECISION=1.E-05,
+           REFERENCE='ANALYTIQUE',
            NOM_PARA='DOMMAGE',
            TABLE=TAB_2,
            FILTRE=_F(NOM_PARA='CYCLE',
@@ -184,7 +204,9 @@ TEST_TABLE(
 
 TEST_TABLE(
            VALE_CALC=50.0,
-           TOLE_MACHINE=1.0000000000000001E-05,
+           VALE_REFE=50.0,
+           PRECISION=1.E-05,
+           REFERENCE='ANALYTIQUE',
            NOM_PARA='VALE_MAX',
            TABLE=TAB_2,
            FILTRE=_F(NOM_PARA='CYCLE',
@@ -193,7 +215,9 @@ TEST_TABLE(
 
 TEST_TABLE(
            VALE_CALC=50.0,
-           TOLE_MACHINE=1.0000000000000001E-05,
+           VALE_REFE=50.0,
+           PRECISION=1.E-05,
+           REFERENCE='ANALYTIQUE',
            NOM_PARA='VALE_MIN',
            TABLE=TAB_2,
            FILTRE=_F(NOM_PARA='CYCLE',
@@ -202,7 +226,9 @@ TEST_TABLE(
 
 TEST_TABLE(CRITERE='ABSOLU',
            VALE_CALC=0.0,
-           TOLE_MACHINE=1.0000000000000001E-05,
+           VALE_REFE=0.0,
+           PRECISION=1.E-05,
+           REFERENCE='ANALYTIQUE',
            NOM_PARA='DOMMAGE',
            TABLE=TAB_2,
            FILTRE=_F(NOM_PARA='CYCLE',
@@ -210,8 +236,10 @@ TEST_TABLE(CRITERE='ABSOLU',
            )
 
 TEST_TABLE(
-           VALE_CALC=1.0532569999999999E-3,
-           TOLE_MACHINE=1.7000000000000001E-4,
+           VALE_CALC=1.0534253269667E-3,
+           VALE_REFE=1.053257E-3,
+           PRECISION=1.7E-4,
+           REFERENCE='ANALYTIQUE',
            NOM_PARA='DOMM_CUMU',
            TABLE=TAB_2,)
 
@@ -227,8 +255,10 @@ TAB_3=POST_FATIGUE(          CHARGEMENT='UNIAXIAL',
                                     INFO=2               )
 
 TEST_TABLE(
+           VALE_REFE=600.0,
            VALE_CALC=600.0,
-           TOLE_MACHINE=1.0000000000000001E-05,
+           PRECISION=1.E-05,
+           REFERENCE='ANALYTIQUE',
            NOM_PARA='VALE_MAX',
            TABLE=TAB_3,
            FILTRE=_F(NOM_PARA='CYCLE',
@@ -236,8 +266,10 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
+           VALE_REFE=-500.0,
            VALE_CALC=-500.0,
-           TOLE_MACHINE=1.0000000000000001E-05,
+           PRECISION=1.E-05,
+           REFERENCE='ANALYTIQUE',
            NOM_PARA='VALE_MIN',
            TABLE=TAB_3,
            FILTRE=_F(NOM_PARA='CYCLE',
@@ -245,8 +277,10 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=1.063631E-3,
-           TOLE_MACHINE=1.0000000000000001E-05,
+           VALE_REFE=1.063631E-3,
+           VALE_CALC=1.0636310122843E-3,
+           PRECISION=1.E-05,
+           REFERENCE='ANALYTIQUE',
            NOM_PARA='DOMMAGE',
            TABLE=TAB_3,
            FILTRE=_F(NOM_PARA='CYCLE',
@@ -254,8 +288,10 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
+           VALE_REFE=50.0,
            VALE_CALC=50.0,
-           TOLE_MACHINE=1.0000000000000001E-05,
+           PRECISION=1.E-05,
+           REFERENCE='ANALYTIQUE',
            NOM_PARA='VALE_MAX',
            TABLE=TAB_3,
            FILTRE=_F(NOM_PARA='CYCLE',
@@ -263,8 +299,10 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
+           VALE_REFE=50.0,
            VALE_CALC=50.0,
-           TOLE_MACHINE=1.0000000000000001E-05,
+           PRECISION=1.E-05,
+           REFERENCE='ANALYTIQUE',
            NOM_PARA='VALE_MIN',
            TABLE=TAB_3,
            FILTRE=_F(NOM_PARA='CYCLE',
@@ -272,8 +310,10 @@ TEST_TABLE(
            )
 
 TEST_TABLE(CRITERE='ABSOLU',
+           VALE_REFE=0.0,
            VALE_CALC=0.0,
-           TOLE_MACHINE=1.0000000000000001E-05,
+           PRECISION=1.E-05,
+           REFERENCE='ANALYTIQUE',
            NOM_PARA='DOMMAGE',
            TABLE=TAB_3,
            FILTRE=_F(NOM_PARA='CYCLE',
@@ -281,8 +321,10 @@ TEST_TABLE(CRITERE='ABSOLU',
            )
 
 TEST_TABLE(
-           VALE_CALC=1.063631E-3,
-           TOLE_MACHINE=1.7000000000000001E-4,
+           VALE_REFE=1.063631E-3,
+           VALE_CALC=1.0637996869831E-3,
+           PRECISION=1.7E-4,
+           REFERENCE='ANALYTIQUE',
            NOM_PARA='DOMM_CUMU',
            TABLE=TAB_3,)
 
@@ -298,8 +340,10 @@ TAB_4=POST_FATIGUE(          CHARGEMENT='UNIAXIAL',
                                    INFO=2                 )
 
 TEST_TABLE(
+           VALE_REFE=600.0,
            VALE_CALC=600.0,
-           TOLE_MACHINE=1.0000000000000001E-05,
+           PRECISION=1.E-05,
+           REFERENCE='ANALYTIQUE',
            NOM_PARA='VALE_MAX',
            TABLE=TAB_4,
            FILTRE=_F(NOM_PARA='CYCLE',
@@ -307,8 +351,10 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
+           VALE_REFE=-500.0,
            VALE_CALC=-500.0,
-           TOLE_MACHINE=1.0000000000000001E-05,
+           PRECISION=1.E-05,
+           REFERENCE='ANALYTIQUE',
            NOM_PARA='VALE_MIN',
            TABLE=TAB_4,
            FILTRE=_F(NOM_PARA='CYCLE',
@@ -316,8 +362,10 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=1.2502189999999999E-3,
-           TOLE_MACHINE=1.0000000000000001E-05,
+           VALE_REFE=1.250219E-3,
+           VALE_CALC=1.2502190098576E-3,
+           PRECISION=1.E-05,
+           REFERENCE='ANALYTIQUE',
            NOM_PARA='DOMMAGE',
            TABLE=TAB_4,
            FILTRE=_F(NOM_PARA='CYCLE',
@@ -325,8 +373,10 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
+           VALE_REFE=50.0,
            VALE_CALC=50.0,
-           TOLE_MACHINE=1.0000000000000001E-05,
+           PRECISION=1.E-05,
+           REFERENCE='ANALYTIQUE',
            NOM_PARA='VALE_MAX',
            TABLE=TAB_4,
            FILTRE=_F(NOM_PARA='CYCLE',
@@ -334,8 +384,10 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
+           VALE_REFE=50.0,
            VALE_CALC=50.0,
-           TOLE_MACHINE=1.0000000000000001E-05,
+           PRECISION=1.E-05,
+           REFERENCE='ANALYTIQUE',
            NOM_PARA='VALE_MIN',
            TABLE=TAB_4,
            FILTRE=_F(NOM_PARA='CYCLE',
@@ -343,8 +395,10 @@ TEST_TABLE(
            )
 
 TEST_TABLE(CRITERE='ABSOLU',
+           VALE_REFE=0.0,
            VALE_CALC=0.0,
-           TOLE_MACHINE=1.0000000000000001E-05,
+           PRECISION=1.E-05,
+           REFERENCE='ANALYTIQUE',
            NOM_PARA='DOMMAGE',
            TABLE=TAB_4,
            FILTRE=_F(NOM_PARA='CYCLE',
@@ -352,8 +406,10 @@ TEST_TABLE(CRITERE='ABSOLU',
            )
 
 TEST_TABLE(
-           VALE_CALC=1.2502189999999999E-3,
-           TOLE_MACHINE=1.7000000000000001E-4,
+           VALE_CALC=1.2503876845564E-3,
+           VALE_REFE=1.250219E-3,
+           PRECISION=1.7E-4,
+           REFERENCE='ANALYTIQUE',
            NOM_PARA='DOMM_CUMU',
            TABLE=TAB_4,)
 

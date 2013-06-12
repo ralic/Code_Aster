@@ -83,8 +83,7 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=1,
                    NOM_CMP='DY',
                    VALE_CALC=1.4153582447720,
                    VALE_REFE=1.4153582447719999,
-                   TOLE_MACHINE=9.9999999999999998E-13,
-                   PRECISION=9.9999999999999998E-13,),
+                   PRECISION=1.E-12,),
                 ),
           )
 
@@ -136,8 +135,7 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=1,
                    NOM_CMP='DY',
                    VALE_CALC=1.0561898652983,
                    VALE_REFE=1.0561898652982999,
-                   TOLE_MACHINE=9.9999999999999998E-13,
-                   PRECISION=9.9999999999999998E-13,),
+                   PRECISION=1.E-12,),
                 ),
           )
 
@@ -215,8 +213,7 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=0,
                    NOM_CMP='TEMP',
                    VALE_CALC=2.5000000000000,
                    VALE_REFE=2.5,
-                   TOLE_MACHINE=9.9999999999999998E-13,
-                   PRECISION=9.9999999999999998E-13,),
+                   PRECISION=1.E-12,),
                 ),
           )
 

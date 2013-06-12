@@ -140,8 +140,9 @@ DFR5=CALC_FONCTION(   EXTRACTION=_F( FONCTION = DFC1,
                                      PARTIE = 'IMAG') )
 
 TEST_FONCTION(VALEUR=(_F(VALE_CALC=2.0,
-                         TOLE_MACHINE=1.E-3,
+                         VALE_REFE=2.0,
                          VALE_PARA=0.0,
+                         REFERENCE='ANALYTIQUE',
                          FONCTION=DFR5,),
                       _F(VALE_CALC=4.0,
                          VALE_REFE=4.0,
@@ -206,11 +207,9 @@ DFC0=DEFI_FONCTION(  NOM_PARA='INST',  NOM_RESU='DEPL',
                           TITRE=' TEST D''UNE FONCTION COMPLEXE'   )
 
 TEST_FONCTION(VALEUR=(_F(VALE_CALC_C=(1+1j),
-                         TOLE_MACHINE=1.E-3,
                          VALE_PARA=1.0,
                          FONCTION=DFC0,),
-                      _F(VALE_CALC_C=('MP', 2.82843, 45.0),
-                         TOLE_MACHINE=1.E-3,
+                      _F(VALE_CALC_C=2.000+2.000j,
                          VALE_PARA=2.0,
                          FONCTION=DFC0,),
                       ),
@@ -300,7 +299,8 @@ DNC1=CALC_FONCTION(COMB=_F(FONCTION=DN1,
                    LIST_PARA=l_int,)
 
 TEST_FONCTION(VALEUR=_F(VALE_CALC=2.0,
-                        TOLE_MACHINE=1.E-3,
+                        VALE_REFE=2.0,
+                        REFERENCE='ANALYTIQUE',
                         VALE_PARA=(1.E-2, 1.0),
                         NOM_PARA=('AMOR', 'INST'),
                         FONCTION=DN1,),
@@ -339,7 +339,8 @@ DN2=DEFI_NAPPE(  NOM_PARA='AMOR',  NOM_RESU='ACCE',
                       PARA=( 0.01,  0.02, ),   FONCTION=( DF1,  DF2, ) )
 
 TEST_FONCTION(VALEUR=_F(VALE_CALC=2.0,
-                        TOLE_MACHINE=1.E-3,
+                        VALE_REFE=2.0,
+                        REFERENCE='ANALYTIQUE',
                         VALE_PARA=(1.E-2, 1.0),
                         NOM_PARA=('AMOR', 'INST'),
                         FONCTION=DN2,),
@@ -380,7 +381,8 @@ DN3=DEFI_NAPPE(  NOM_PARA='PULS',  NOM_RESU='ACCE',
                                      VALE = ( 3., 3., 4., 4.,  5., 5., )))  )
 
 TEST_FONCTION(VALEUR=_F(VALE_CALC=3.0,
-                        TOLE_MACHINE=1.E-3,
+                        VALE_REFE=3.0,
+                        REFERENCE='ANALYTIQUE',
                         VALE_PARA=(0.02, 4.0),
                         NOM_PARA=('PULS', 'INST'),
                         FONCTION=DN3,),
@@ -480,7 +482,6 @@ IMPR_FONCTION(     COURBE=_F(  FONCTION = SIi),
 
 val=sin(INST9)
 TEST_FONCTION(VALEUR=_F(VALE_CALC=-2.4492935982947064E-16,
-                        TOLE_MACHINE=1.E-3,
                         VALE_PARA=7.0,
                         FONCTION=SIi,),
               ATTRIBUT=(_F(ATTR_REFE='INST',
@@ -521,7 +522,6 @@ X0=7.
 Y0=COa(X1)+(X0-X1)*(COa(X2)-COa(X1))/(X2-X1)
 
 TEST_FONCTION(VALEUR=_F(VALE_CALC=1.0112587728221021,
-                        TOLE_MACHINE=1.E-3,
                         VALE_PARA=7.0,
                         FONCTION=COi,),
               ATTRIBUT=(_F(ATTR_REFE='INST',
@@ -635,12 +635,10 @@ DN03=DEFI_NAPPE(  NOM_PARA='AMOR',  NOM_RESU='DEPL',
                        FONCTION=( DFN0,  DFN1, ) )
 
 TEST_FONCTION(VALEUR=(_F(VALE_CALC=2.25,
-                         TOLE_MACHINE=1.E-3,
                          VALE_PARA=(0.02, 1.5),
                          NOM_PARA=('AMOR', 'INST'),
                          FONCTION=DN00,),
                       _F(VALE_CALC=2.0,
-                         TOLE_MACHINE=1.E-3,
                          VALE_PARA=(0.02, 0.0),
                          NOM_PARA=('AMOR', 'INST'),
                          FONCTION=DN00,),
@@ -648,12 +646,10 @@ TEST_FONCTION(VALEUR=(_F(VALE_CALC=2.25,
               )
 
 TEST_FONCTION(VALEUR=(_F(VALE_CALC=2.3228439999999999,
-                         TOLE_MACHINE=1.E-3,
                          VALE_PARA=(0.02, 1.5),
                          NOM_PARA=('AMOR', 'INST'),
                          FONCTION=DN01,),
                       _F(VALE_CALC=2.0,
-                         TOLE_MACHINE=1.E-3,
                          VALE_PARA=(0.02, 0.0),
                          NOM_PARA=('AMOR', 'INST'),
                          FONCTION=DN01,),
@@ -661,12 +657,10 @@ TEST_FONCTION(VALEUR=(_F(VALE_CALC=2.3228439999999999,
               )
 
 TEST_FONCTION(VALEUR=(_F(VALE_CALC=2.1213199999999999,
-                         TOLE_MACHINE=1.E-3,
                          VALE_PARA=(0.02, 1.5),
                          NOM_PARA=('AMOR', 'INST'),
                          FONCTION=DN02,),
                       _F(VALE_CALC=1.732051,
-                         TOLE_MACHINE=1.E-3,
                          VALE_PARA=(0.02, 0.0),
                          NOM_PARA=('AMOR', 'INST'),
                          FONCTION=DN02,),
@@ -674,12 +668,10 @@ TEST_FONCTION(VALEUR=(_F(VALE_CALC=2.1213199999999999,
               )
 
 TEST_FONCTION(VALEUR=(_F(VALE_CALC=2.4463949999999999,
-                         TOLE_MACHINE=1.E-3,
                          VALE_PARA=(0.02, 1.5),
                          NOM_PARA=('AMOR', 'INST'),
                          FONCTION=DN03,),
                       _F(VALE_CALC=2.26186,
-                         TOLE_MACHINE=1.E-3,
                          VALE_PARA=(0.02, 0.0),
                          NOM_PARA=('AMOR', 'INST'),
                          FONCTION=DN03,),
@@ -767,7 +759,6 @@ RMS_SI=INFO_FONCTION( RMS=_F(  FONCTION = SIi)
                          )
 
 TEST_TABLE(VALE_CALC=0.70710700000000004,
-           TOLE_MACHINE=1.E-3,
            NOM_PARA='RMS',
            TABLE=RMS_SI,
            FILTRE=_F(NOM_PARA='FONCTION',
@@ -777,7 +768,6 @@ TEST_TABLE(VALE_CALC=0.70710700000000004,
 RMS_CO=INFO_FONCTION( RMS=_F(  FONCTION = COi)  )
 
 TEST_TABLE(VALE_CALC=0.70710700000000004,
-           TOLE_MACHINE=1.E-3,
            NOM_PARA='RMS',
            TABLE=RMS_CO,
            FILTRE=_F(NOM_PARA='FONCTION',
@@ -807,8 +797,7 @@ IMPR_CO(CONCEPT=_F(NOM=TABS));
 
 SIGMA=pi/3.**0.5
 
-TEST_TABLE(VALE_CALC=1.8137993642342178,
-           TOLE_MACHINE=1.E-3,
+TEST_TABLE(VALE_CALC=1.8138447086515,
            NOM_PARA='ECART_TYPE',
            TABLE=TABS,
            FILTRE=_F(NOM_PARA='FONCTION',
@@ -816,7 +805,6 @@ TEST_TABLE(VALE_CALC=1.8137993642342178,
            )
 
 TEST_TABLE(VALE_CALC=3.1415926535897931,
-           TOLE_MACHINE=1.E-3,
            NOM_PARA='MOYENNE',
            TABLE=TABS,
            FILTRE=_F(NOM_PARA='FONCTION',
@@ -933,7 +921,6 @@ TEST_FONCTION(VALEUR=_F(VALE_CALC=0.00195715908182,
               )
 
 TEST_TABLE(VALE_CALC=1.9573681372588546E-3,
-           TOLE_MACHINE=1.E-3,
            NOM_PARA='TOUTRESU',
            TABLE=DE11M,
            FILTRE=(_F(NOM_PARA='FONCTION',
@@ -961,7 +948,6 @@ TEST_FONCTION(VALEUR=_F(VALE_CALC=0.0614859659337,
               )
 
 TEST_TABLE(VALE_CALC=0.061492533603831556,
-           TOLE_MACHINE=1.E-3,
            NOM_PARA='TOUTRESU',
            TABLE=VI11M,
            FILTRE=(_F(NOM_PARA='FONCTION',
@@ -989,7 +975,6 @@ TEST_FONCTION(VALEUR=_F(VALE_CALC=1.93163858876,
               )
 
 TEST_TABLE(VALE_CALC=1.931844918204207,
-           TOLE_MACHINE=1.E-3,
            NOM_PARA='TOUTRESU',
            TABLE=AC11M,
            FILTRE=(_F(NOM_PARA='FONCTION',
@@ -1017,7 +1002,6 @@ TEST_FONCTION(VALEUR=_F(VALE_CALC=1.070723E-04,
               )
 
 TEST_TABLE(VALE_CALC=1.0708882193279175E-4,
-           TOLE_MACHINE=1.E-3,
            NOM_PARA='TOUTRESU',
            TABLE=DE21M,
            FILTRE=(_F(NOM_PARA='FONCTION',
@@ -1045,7 +1029,6 @@ TEST_FONCTION(VALEUR=_F(VALE_CALC=0.01412786,
               )
 
 TEST_TABLE(VALE_CALC=0.014130037163157052,
-           TOLE_MACHINE=1.E-3,
            NOM_PARA='TOUTRESU',
            TABLE=VI21M,
            FILTRE=(_F(NOM_PARA='FONCTION',
@@ -1073,7 +1056,6 @@ TEST_FONCTION(VALEUR=_F(VALE_CALC=1.864128,
               )
 
 TEST_TABLE(VALE_CALC=1.8644144797624482,
-           TOLE_MACHINE=1.E-3,
            NOM_PARA='TOUTRESU',
            TABLE=AC21M,
            FILTRE=(_F(NOM_PARA='FONCTION',
@@ -1101,7 +1083,6 @@ TEST_FONCTION(VALEUR=_F(VALE_CALC=3.383826E-06,
               )
 
 TEST_TABLE(VALE_CALC=3.3831793123558589E-06,
-           TOLE_MACHINE=1.E-3,
            NOM_PARA='TOUTRESU',
            TABLE=DE31M,
            FILTRE=(_F(NOM_PARA='FONCTION',
@@ -1129,7 +1110,6 @@ TEST_FONCTION(VALEUR=_F(VALE_CALC=2.232427E-03,
               )
 
 TEST_TABLE(VALE_CALC=2.2319999674295684E-3,
-           TOLE_MACHINE=1.E-3,
            NOM_PARA='TOUTRESU',
            TABLE=VI31M,
            FILTRE=(_F(NOM_PARA='FONCTION',
@@ -1157,7 +1137,6 @@ TEST_FONCTION(VALEUR=_F(VALE_CALC=1.472809,
               )
 
 TEST_TABLE(VALE_CALC=1.4725272871027717,
-           TOLE_MACHINE=1.E-3,
            NOM_PARA='TOUTRESU',
            TABLE=AC31M,
            FILTRE=(_F(NOM_PARA='FONCTION',
@@ -1185,7 +1164,6 @@ TEST_FONCTION(VALEUR=_F(VALE_CALC=1.898118E-03 ,
               )
 
 TEST_TABLE(VALE_CALC=1.89836090072791E-3,
-           TOLE_MACHINE=1.E-3,
            NOM_PARA='TOUTRESU',
            TABLE=DE12M,
            FILTRE=(_F(NOM_PARA='FONCTION',
@@ -1213,7 +1191,6 @@ TEST_FONCTION(VALEUR=_F(VALE_CALC=0.05963113,
               )
 
 TEST_TABLE(VALE_CALC=0.059638766595889042,
-           TOLE_MACHINE=1.E-3,
            NOM_PARA='TOUTRESU',
            TABLE=VI12M,
            FILTRE=(_F(NOM_PARA='FONCTION',
@@ -1241,7 +1218,6 @@ TEST_FONCTION(VALEUR=_F(VALE_CALC=1.873367,
               )
 
 TEST_TABLE(VALE_CALC=1.8736071100680138,
-           TOLE_MACHINE=1.E-3,
            NOM_PARA='TOUTRESU',
            TABLE=AC12M,
            FILTRE=(_F(NOM_PARA='FONCTION',
@@ -1269,7 +1245,6 @@ TEST_FONCTION(VALEUR=_F(VALE_CALC=1.030646E-04,
               )
 
 TEST_TABLE(VALE_CALC=1.0310832170747277E-4,
-           TOLE_MACHINE=1.E-3,
            NOM_PARA='TOUTRESU',
            TABLE=DE22M,
            FILTRE=(_F(NOM_PARA='FONCTION',
@@ -1297,7 +1272,6 @@ TEST_FONCTION(VALEUR=_F(VALE_CALC=0.01359906,
               )
 
 TEST_TABLE(VALE_CALC=0.013604822532007118,
-           TOLE_MACHINE=1.E-3,
            NOM_PARA='TOUTRESU',
            TABLE=VI22M,
            FILTRE=(_F(NOM_PARA='FONCTION',
@@ -1325,7 +1299,6 @@ TEST_FONCTION(VALEUR=_F(VALE_CALC=1.794353,
               )
 
 TEST_TABLE(VALE_CALC=1.7951140418377509,
-           TOLE_MACHINE=1.E-3,
            NOM_PARA='TOUTRESU',
            TABLE=AC22M,
            FILTRE=(_F(NOM_PARA='FONCTION',
@@ -1345,7 +1318,6 @@ DE32=CALC_FONC_INTERP(   FONCTION=DE32a,
 DE32M=INFO_FONCTION( MAX=_F(  FONCTION = DE32)    )
 
 TEST_TABLE(VALE_CALC=2.5782098411699E-06,
-           TOLE_MACHINE=1.E-3,
            NOM_PARA='TOUTRESU',
            TABLE=DE32M,
            FILTRE=(_F(NOM_PARA='FONCTION',
@@ -1381,7 +1353,6 @@ TEST_FONCTION(VALEUR=_F(VALE_CALC=1.696960E-03,PRECISION=3.E-3,
               )
 
 TEST_TABLE(VALE_CALC=1.7009338702507768E-3,
-           TOLE_MACHINE=1.E-3,
            NOM_PARA='TOUTRESU',
            TABLE=VI32M,
            FILTRE=(_F(NOM_PARA='FONCTION',
@@ -1409,7 +1380,6 @@ TEST_FONCTION(VALEUR=_F(VALE_CALC=1.119543,PRECISION=3.E-3,
               )
 
 TEST_TABLE(VALE_CALC=1.122164683714598,
-           TOLE_MACHINE=1.E-3,
            NOM_PARA='TOUTRESU',
            TABLE=AC32M,
            FILTRE=(_F(NOM_PARA='FONCTION',
@@ -2352,7 +2322,6 @@ IMPR_FONCTION(   COURBE=_F( FONCTION = COMP1) )
 
 TEST_FONCTION(VALEUR=(_F(VALE_CALC=0.0,
                          VALE_REFE=0.0,
-                         TOLE_MACHINE=0.0,
                          CRITERE='ABSOLU',
                          VALE_PARA=0.0,
                          REFERENCE='ANALYTIQUE',
@@ -2405,7 +2374,6 @@ TEST_FONCTION(VALEUR=(_F(VALE_CALC=0.0,
                          FONCTION=COMP1,),
                       _F(VALE_CALC=0.0,
                          VALE_REFE=0.0,
-                         TOLE_MACHINE=0.0,
                          CRITERE='ABSOLU',
                          VALE_PARA=1.0,
                          REFERENCE='ANALYTIQUE',

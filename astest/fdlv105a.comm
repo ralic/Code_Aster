@@ -172,9 +172,9 @@ TEST_RESU(RESU=_F(NUME_ORDRE=1,
                   RESULTAT=MODHUMI,
                   VALE_CALC=27.380409260,
                   VALE_REFE=27.25,
-                  REFERENCE='NON_DEFINI',
+                  REFERENCE='ANALYTIQUE',
                   CRITERE='RELATIF',
-                  PRECISION=0.014999999999999999,),
+                  PRECISION=0.015,),
           )
 
 FIN()

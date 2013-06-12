@@ -32,9 +32,11 @@ LBEWA=LIRE_FONCTION(     UNITE=19,
              INTERPOL='LIN',
                PROL_DROITE='CONSTANT',    PROL_GAUCHE='EXCLU' )
 
-TEST_FONCTION(VALEUR=_F(VALE_CALC=-0.63800000000000001,
-                        TOLE_MACHINE=1.E-3,
-                        VALE_PARA=7.9349999999999996,
+TEST_FONCTION(VALEUR=_F(VALE_REFE=-0.638,
+                        VALE_CALC=-0.638,
+                        PRECISION=1.E-3,
+                        REFERENCE='ANALYTIQUE',
+                        VALE_PARA=7.935,
                         NOM_PARA='INST',
                         FONCTION=LBEWA,),
               ATTRIBUT=(_F(ATTR_REFE='INST',
@@ -57,14 +59,16 @@ TEST_FONCTION(VALEUR=_F(VALE_CALC=-0.63800000000000001,
 
 MAXLBEWA=INFO_FONCTION(    MAX=_F(  FONCTION = LBEWA)  )
 
-TEST_TABLE(VALE_CALC=-0.63800000000000001,
-           TOLE_MACHINE=1.E-3,
+TEST_TABLE(VALE_REFE=-0.638,
+           VALE_CALC=-0.638,
+           PRECISION=1.E-3,
+           REFERENCE='ANALYTIQUE',
            NOM_PARA='DX',
            TABLE=MAXLBEWA,
            FILTRE=(_F(NOM_PARA='FONCTION',
                       VALE_K='LBEWA',),
                    _F(NOM_PARA='INST',
-                      VALE=7.9349999999999996,),
+                      VALE=7.935,),
                    _F(NOM_PARA='TYPE',
                       VALE_K='MINI',),
                    ),
@@ -85,8 +89,7 @@ SLBEWA=CALC_FONCTION(
 
 MSLBEWA=INFO_FONCTION(    MAX=_F(  FONCTION = SLBEWA)  )
 
-TEST_TABLE(VALE_CALC=35.6676,
-           TOLE_MACHINE=1.E-3,
+TEST_TABLE(VALE_CALC=35.655740052613,
            NOM_PARA='ACCE',
            TABLE=MSLBEWA,
            FILTRE=(_F(NOM_PARA='FONCTION',
@@ -101,8 +104,10 @@ TEST_TABLE(VALE_CALC=35.6676,
            )
 
 VAL=6.38000E-01 * G
-TEST_FONCTION(VALEUR=_F(VALE_CALC=6.2587800000000007,
-                        TOLE_MACHINE=1.E-3,
+TEST_FONCTION(VALEUR=_F(VALE_REFE=6.258778,
+                        VALE_CALC=6.259178,
+                        PRECISION=1.E-3,
+                        REFERENCE='ANALYTIQUE',
                         VALE_PARA=(1.E-2, 100.0),
                         NOM_PARA=('AMOR', 'FREQ'),
                         FONCTION=SLBEWA,),
@@ -145,8 +150,10 @@ SLBEWD=CALC_FONCTION(
 OMEGA2=4. * pi * pi * FMAX * FMAX
 VAL= 6.38000E-01 / OMEGA2
 
-TEST_FONCTION(VALEUR=_F(VALE_CALC=1.6160728790952875E-06,
-                        TOLE_MACHINE=1.E-3,
+TEST_FONCTION(VALEUR=_F(VALE_REFE=1.61607288E-06,
+                        VALE_CALC=1.616176E-06,
+                        PRECISION=1.E-3,
+                        REFERENCE='ANALYTIQUE',
                         VALE_PARA=(1.E-2, 100.0),
                         NOM_PARA=('AMOR', 'FREQ'),
                         FONCTION=SLBEWD,),
@@ -165,9 +172,11 @@ LBEWS=LIRE_FONCTION(     UNITE=18,
              INTERPOL='NON',
                PROL_DROITE='EXCLU',    PROL_GAUCHE='EXCLU'  )
 
-TEST_FONCTION(VALEUR=_F(VALE_CALC=1.0,
-                        TOLE_MACHINE=1.E-3,
-                        VALE_PARA=3.1000000000000001,
+TEST_FONCTION(VALEUR=_F(VALE_REFE=1.0,
+                        VALE_CALC=1.0,
+                        PRECISION=1.E-3,
+                        REFERENCE='ANALYTIQUE',
+                        VALE_PARA=3.1,
                         NOM_PARA='INST',
                         FONCTION=LBEWS,),
               ATTRIBUT=(_F(ATTR_REFE='INST',
@@ -190,14 +199,16 @@ TEST_FONCTION(VALEUR=_F(VALE_CALC=1.0,
 
 MAXLBEWS=INFO_FONCTION(   MAX=_F(  FONCTION = LBEWS)  )
 
-TEST_TABLE(VALE_CALC=1.0,
-           TOLE_MACHINE=1.E-3,
+TEST_TABLE(VALE_REFE=1.0,
+           VALE_CALC=1.0,
+           PRECISION=1.E-3,
+           REFERENCE='ANALYTIQUE',
            NOM_PARA='ACCE_SOL',
            TABLE=MAXLBEWS,
            FILTRE=(_F(NOM_PARA='FONCTION',
                       VALE_K='LBEWS',),
                    _F(NOM_PARA='INST',
-                      VALE=3.1000000000000001,),
+                      VALE=3.1,),
                    _F(NOM_PARA='TYPE',
                       VALE_K='MAXI',),
                    ),
@@ -222,8 +233,10 @@ SLBEWS=CALC_FONCTION(
 #
 # ---------------------------------------------------------------
 
-TEST_FONCTION(VALEUR=_F(VALE_CALC=1.0,
-                        TOLE_MACHINE=1.E-3,
+TEST_FONCTION(VALEUR=_F(VALE_REFE=1.0,
+                        VALE_CALC=0.99985961,
+                        PRECISION=1.E-3,
+                        REFERENCE='ANALYTIQUE',
                         VALE_PARA=(1.E-2, 100.0),
                         NOM_PARA=('AMOR', 'FREQ'),
                         FONCTION=SLBEWS,),
@@ -261,45 +274,43 @@ TEST_FONCTION(VALEUR=_F(VALE_CALC=1.0,
 # ---------------------------------------------------------------
 #
 #
-LBEWA2=LIRE_FONCTION(          UNITE=19,
-                             NOM_PARA='INST',
-                             NOM_RESU='DX',
-                                TITRE='ACCELEROGRAMME',
-                             INTERPOL='LIN',
-                           PROL_DROITE='EXCLU',
-                          PROL_GAUCHE='CONSTANT'
-#                        PROL_DROITE  : 'CONSTANT'
-#                        PROL_GAUCHE : 'EXCLU'
+LBEWA2=LIRE_FONCTION(    UNITE=19,
+                         NOM_PARA='INST',
+                         NOM_RESU='DX',
+                         TITRE='ACCELEROGRAMME',
+                         INTERPOL='LIN',
+                         PROL_DROITE='EXCLU',
+                         PROL_GAUCHE='CONSTANT'
                      )
 
 SPECT1=CALC_FONCTION(    SPEC_OSCI=_F(  FONCTION = LBEWA,
                                         NATURE = 'DEPL',
-                                 AMOR_REDUIT = (0.01, 0.03, 0.05,),
+                                        AMOR_REDUIT = (0.01, 0.03, 0.05,),
                                         NORME = 1.,
-                                         LIST_FREQ = LFREQ1,)
+                                        LIST_FREQ = LFREQ1,)
                         )
 
 #
 SPECT2=CALC_FONCTION(    SPEC_OSCI=_F(  FONCTION = LBEWA,
                                         NATURE = 'DEPL',
-                                 AMOR_REDUIT = (0.01, 0.05,),
+                                        AMOR_REDUIT = (0.01, 0.05,),
                                         NORME = 1.,
-                                         LIST_FREQ = LFREQ1,)
+                                        LIST_FREQ = LFREQ1,)
                         )
 
 #
 SPECT3=CALC_FONCTION(    SPEC_OSCI=_F(  FONCTION = LBEWA2,
                                         NATURE = 'DEPL',
-                                 AMOR_REDUIT = (0.01, 0.05,),
+                                        AMOR_REDUIT = (0.01, 0.05,),
                                         NORME = 1.,
-                                         LIST_FREQ = LFREQ1,)
+                                        LIST_FREQ = LFREQ1,)
                         )
 
 #
 A_0_1=DEFI_FONCTION(      NOM_PARA='FREQ',
-                             INTERPOL='LOG',
+                          INTERPOL='LOG',
                           PROL_GAUCHE='CONSTANT',
-                                 VALE=(
+                          VALE=(
   2.00000E-01,  9.23433E-02,
   2.50000E-01,  7.55943E-02,
   3.00000E-01,  6.63399E-02,
@@ -616,57 +627,46 @@ A_0_5=DEFI_FONCTION(      NOM_PARA='FREQ',
 SPECT_X=DEFI_NAPPE(   NOM_PARA='AMOR',
                         INTERPOL=( 'LIN',  'LOG', ),
                             PARA=(0.01,
-                                  0.05,
-                                 ),
+                                  0.05, ),
                         FONCTION=(A_0_1,
-                                  A_0_5,
-                                 )
+                                  A_0_5,)
                    )
 
 #
 #
-TEST_FONCTION(VALEUR=(_F(VALE_CALC=0.084051,
-                         TOLE_MACHINE=1.E-4,
+TEST_FONCTION(VALEUR=(_F(VALE_CALC=0.08405133,
                          VALE_PARA=(0.20000000000000001, 0.029999999999999999),
                          NOM_PARA=('FREQ', 'AMOR'),
                          FONCTION=SPECT2,),
-                      _F(VALE_CALC=0.044764,
-                         TOLE_MACHINE=1.E-4,
+                      _F(VALE_CALC=0.04476387,
                          VALE_PARA=(1.0, 0.029999999999999999),
                          NOM_PARA=('FREQ', 'AMOR'),
                          FONCTION=SPECT2,),
-                      _F(VALE_CALC=1.8332E-03,
-                         TOLE_MACHINE=1.E-4,
+                      _F(VALE_CALC=1.833227E-03,
                          VALE_PARA=(5.0, 0.029999999999999999),
                          NOM_PARA=('FREQ', 'AMOR'),
                          FONCTION=SPECT2,),
-                      _F(VALE_CALC=2.7429E-04,
-                         TOLE_MACHINE=1.E-4,
+                      _F(VALE_CALC=2.742857E-04,
                          VALE_PARA=(10.0, 0.029999999999999999),
                          NOM_PARA=('FREQ', 'AMOR'),
                          FONCTION=SPECT2,),
-                      _F(VALE_CALC=8.6097E-05,
-                         TOLE_MACHINE=1.E-4,
+                      _F(VALE_CALC=8.609706E-05,
                          VALE_PARA=(15.0, 0.029999999999999999),
                          NOM_PARA=('FREQ', 'AMOR'),
                          FONCTION=SPECT2,),
-                      _F(VALE_CALC=4.3111E-05,
-                         TOLE_MACHINE=1.E-4,
+                      _F(VALE_CALC=4.311124E-05,
                          VALE_PARA=(20.0, 0.029999999999999999),
                          NOM_PARA=('FREQ', 'AMOR'),
                          FONCTION=SPECT2,),
-                      _F(VALE_CALC=2.6866999999999999E-05,
-                         TOLE_MACHINE=1.E-4,
+                      _F(VALE_CALC=2.686936E-05,
                          VALE_PARA=(25.0, 0.029999999999999999),
                          NOM_PARA=('FREQ', 'AMOR'),
                          FONCTION=SPECT2,),
-                      _F(VALE_CALC=1.9343000000000001E-05,
-                         TOLE_MACHINE=1.E-4,
+                      _F(VALE_CALC=1.934132E-05,
                          VALE_PARA=(29.5, 0.029999999999999999),
                          NOM_PARA=('FREQ', 'AMOR'),
                          FONCTION=SPECT2,),
-                      _F(VALE_CALC=1.3349999999999999E-05,
-                         TOLE_MACHINE=1.E-4,
+                      _F(VALE_CALC=1.334950E-05,
                          VALE_PARA=(35.5, 0.029999999999999999),
                          NOM_PARA=('FREQ', 'AMOR'),
                          FONCTION=SPECT2,),
@@ -1342,11 +1342,8 @@ NOM_CHAM='DEPL', RESULTAT=SISM02,
 #
 TEST_RESU(CHAM_NO=_F(NOEUD='P2',
                      NOM_CMP='DX',
-                     PRECISION=1.E-2,
                      CHAM_GD=DEPLX02,
-                     VALE_CALC=0.084356701,
-                     VALE_REFE=0.084279999999999994,
-                     REFERENCE='NON_DEFINI',),
+                     VALE_CALC=0.084356701,),
           )
 
 #
@@ -1358,7 +1355,6 @@ SISM1=COMB_SISM_MODAL(   MODE_MECA=MODE1,
                          MASS_INER=TABMAS1,
                          MONO_APPUI = 'OUI',
                          EXCIT=_F(  AXE = ( 1.,  0.,  0., ),
-#                                    SPEC_OSCI  : SPECT_X
                                     SPEC_OSCI = SPECT3,
                                     NATURE = 'DEPL'),
                          COMB_MODE=_F( TYPE = 'ABS'),
@@ -1376,11 +1372,8 @@ NOM_CHAM='DEPL', RESULTAT=SISM1,
 #
 TEST_RESU(CHAM_NO=_F(NOEUD='P2',
                      NOM_CMP='DX',
-                     PRECISION=1.E-2,
                      CHAM_GD=DEPLX1,
-                     VALE_CALC=0.044744011345237,
-                     VALE_REFE=0.044745,
-                     REFERENCE='NON_DEFINI',),
+                     VALE_CALC=0.044744011345237,),
           )
 
 #
@@ -1393,7 +1386,6 @@ SISM5=COMB_SISM_MODAL(   MODE_MECA=MODE5,
                          MONO_APPUI = 'OUI',
                          EXCIT=_F( AXE = ( 1.,  0.,  0., ),
                                    SPEC_OSCI = SPECT3,
-#                                   SPEC_OSCI  : SPECT_X
                                    NATURE = 'DEPL'),
                                    COMB_MODE=_F( TYPE = 'ABS'),
                                    OPTION=('DEPL',
@@ -1410,11 +1402,8 @@ NOM_CHAM='DEPL', RESULTAT=SISM5,
 #
 TEST_RESU(CHAM_NO=_F(NOEUD='P2',
                      NOM_CMP='DX',
-                     PRECISION=1.E-2,
                      CHAM_GD=DEPLX5,
-                     VALE_CALC= 1.8359792090449E-03,
-                     VALE_REFE=1.8309000000000001E-3,
-                     REFERENCE='NON_DEFINI',),
+                     VALE_CALC= 1.8359792090449E-03,),
           )
 
 #
@@ -1427,7 +1416,6 @@ SISM10=COMB_SISM_MODAL(   MODE_MECA=MODE10,
                           MONO_APPUI = 'OUI',
                           EXCIT=_F( AXE = ( 1.,  0.,  0., ),
                                     SPEC_OSCI = SPECT3,
-#                                    SPEC_OSCI  : SPECT_X
                                     NATURE = 'DEPL'),
                           COMB_MODE=_F( TYPE = 'ABS'),
                           OPTION=('DEPL',
@@ -1444,11 +1432,8 @@ NOM_CHAM='DEPL', RESULTAT=SISM10,
 #
 TEST_RESU(CHAM_NO=_F(NOEUD='P2',
                      NOM_CMP='DX',
-                     PRECISION=1.E-2,
                      CHAM_GD=DEPLX10,
-                     VALE_CALC= 2.7410890794057E-04,
-                     VALE_REFE=2.7425000000000003E-4,
-                     REFERENCE='NON_DEFINI',),
+                     VALE_CALC= 2.7410890794057E-04,),
           )
 
 #
@@ -1461,7 +1446,6 @@ SISM15=COMB_SISM_MODAL(   MODE_MECA=MODE15,
                           MONO_APPUI = 'OUI',
                           EXCIT=_F( AXE = ( 1.,  0.,  0., ),
                                     SPEC_OSCI = SPECT3,
-#                                    SPEC_OSCI  : SPECT_X
                                     NATURE = 'DEPL'),
                           COMB_MODE=_F( TYPE = 'ABS'),
                           OPTION=('DEPL',
@@ -1478,11 +1462,8 @@ NOM_CHAM='DEPL', RESULTAT=SISM15,
 #
 TEST_RESU(CHAM_NO=_F(NOEUD='P2',
                      NOM_CMP='DX',
-                     PRECISION=1.E-2,
                      CHAM_GD=DEPLX15,
-                     VALE_CALC= 8.63191793955E-05,
-                     VALE_REFE=8.6071999999999999E-05,
-                     REFERENCE='NON_DEFINI',),
+                     VALE_CALC= 8.63191793955E-05,),
           )
 
 #
@@ -1495,7 +1476,6 @@ SISM20=COMB_SISM_MODAL(   MODE_MECA=MODE20,
                           MONO_APPUI = 'OUI',
                           EXCIT=_F( AXE = ( 1.,  0.,  0., ),
                                     SPEC_OSCI = SPECT3,
-#                                    SPEC_OSCI  : SPECT_X
                                     NATURE = 'DEPL'),
                           COMB_MODE=_F( TYPE = 'ABS'),
                           OPTION=('DEPL',
@@ -1512,11 +1492,8 @@ NOM_CHAM='DEPL', RESULTAT=SISM20,
 #
 TEST_RESU(CHAM_NO=_F(NOEUD='P2',
                      NOM_CMP='DX',
-                     PRECISION=1.E-2,
                      CHAM_GD=DEPLX20,
-                     VALE_CALC= 4.3195361169053E-05,
-                     VALE_REFE=4.3102000000000002E-05,
-                     REFERENCE='NON_DEFINI',),
+                     VALE_CALC= 4.3195361169053E-05,),
           )
 
 #
@@ -1529,7 +1506,6 @@ SISM25=COMB_SISM_MODAL(   MODE_MECA=MODE25,
                           MONO_APPUI = 'OUI',
                           EXCIT=_F( AXE = ( 1.,  0.,  0., ),
                                     SPEC_OSCI = SPECT3,
-#                                    SPEC_OSCI  : SPECT_X
                                     NATURE = 'DEPL'),
                           COMB_MODE=_F( TYPE = 'ABS'),
                           OPTION=('DEPL',
@@ -1546,11 +1522,8 @@ NOM_CHAM='DEPL', RESULTAT=SISM25,
 #
 TEST_RESU(CHAM_NO=_F(NOEUD='P2',
                      NOM_CMP='DX',
-                     PRECISION=1.E-2,
                      CHAM_GD=DEPLX25,
-                     VALE_CALC= 2.692262055671E-05,
-                     VALE_REFE=2.6866999999999999E-05,
-                     REFERENCE='NON_DEFINI',),
+                     VALE_CALC= 2.692262055671E-05,),
           )
 
 #
@@ -1563,7 +1536,6 @@ SISM29=COMB_SISM_MODAL(   MODE_MECA=MODE29,
                           MONO_APPUI = 'OUI',
                           EXCIT=_F( AXE = ( 1.,  0.,  0., ),
                                     SPEC_OSCI = SPECT3,
-#                                    SPEC_OSCI  : SPECT_X
                                     NATURE = 'DEPL'),
                           COMB_MODE=_F( TYPE = 'ABS'),
                           OPTION=('DEPL',
@@ -1580,11 +1552,8 @@ NOM_CHAM='DEPL', RESULTAT=SISM29,
 #
 TEST_RESU(CHAM_NO=_F(NOEUD='P2',
                      NOM_CMP='DX',
-                     PRECISION=1.E-2,
                      CHAM_GD=DEPLX29,
-                     VALE_CALC= 1.9378298493322E-05,
-                     VALE_REFE=1.9343000000000001E-05,
-                     REFERENCE='NON_DEFINI',),
+                     VALE_CALC= 1.9378298493322E-05,),
           )
 
 #
@@ -1614,15 +1583,13 @@ NOM_CHAM='DEPL', RESULTAT=SISM35,
 #
 TEST_RESU(CHAM_NO=_F(NOEUD='P2',
                      NOM_CMP='DX',
-                     PRECISION=1.E-2,
                      CHAM_GD=DEPLX35,
-                     VALE_CALC= 1.3368863021884E-05,
-                     VALE_REFE=1.3349999999999999E-05,
-                     REFERENCE='NON_DEFINI',),
+                     VALE_CALC= 1.3368863021884E-05,),
           )
 
-#
+
 #
 #----------------------------------------------------------------------
 FIN()
 #
+

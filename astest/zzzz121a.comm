@@ -230,7 +230,6 @@ for k in range(1,10):
   IMPR_TABLE(TABLE=TUL);
 
   TEST_TABLE(VALE_CALC_I=99,
-             TOLE_MACHINE=1.E-3,
              NOM_PARA='UNITE_LIBRE',
              TABLE=TUL,
              )

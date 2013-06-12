@@ -79,8 +79,10 @@ TAB1=POST_FATI_ALEA(    MOMENT_SPEC_0=182.5984664,
                                   MATER=MAT0          )
 
 TEST_TABLE(
-           VALE_CALC=3.8518270000000001E-07,
-           TOLE_MACHINE=1.5E-05,
+           VALE_REFE=3.851827E-07,
+           VALE_CALC=3.8517772476578E-07,
+           PRECISION=1.5E-05,
+           REFERENCE='SOURCE_EXTERNE',
            NOM_PARA='DOMMAGE',
            TABLE=TAB1,)
 
@@ -94,8 +96,10 @@ TAB2=POST_FATI_ALEA(    MOMENT_SPEC_0=182.5984664,
                                   MATER=MAT0            )
 
 TEST_TABLE(
-           VALE_CALC=3.8530370000000002E-07,
-           TOLE_MACHINE=1.5E-05,
+           VALE_REFE=3.853037E-07,
+           VALE_CALC=3.852987364321E-07,
+           PRECISION=1.5E-05,
+           REFERENCE='SOURCE_EXTERNE',
            NOM_PARA='DOMMAGE',
            TABLE=TAB2,)
 
@@ -111,8 +115,10 @@ TAB3=POST_FATI_ALEA(    MOMENT_SPEC_0=182.5984664,
                                   MATER=MAT1            )
 
 TEST_TABLE(
-           VALE_CALC=3.1295310000000001E-3,
-           TOLE_MACHINE=1.E-4,
+           VALE_REFE=3.129527E-3,
+           VALE_CALC=3.1294843887024E-3,
+           PRECISION=1.E-4,
+           REFERENCE='SOURCE_EXTERNE',
            NOM_PARA='DOMMAGE',
            TABLE=TAB3,)
 
@@ -126,8 +132,10 @@ TAB4=POST_FATI_ALEA(    MOMENT_SPEC_0=182.5984664,
                                   MATER=MAT1            )
 
 TEST_TABLE(
-           VALE_CALC=3.1299029999999999E-3,
-           TOLE_MACHINE=1.5E-05,
+           VALE_REFE=3.129848E-3,
+           VALE_CALC=3.1298562854626E-3,
+           PRECISION=1.5E-05,
+           REFERENCE='SOURCE_EXTERNE',
            NOM_PARA='DOMMAGE',
            TABLE=TAB4,)
 
@@ -152,8 +160,10 @@ TAB5=POST_FATI_ALEA(    MOMENT_SPEC_0=182.5984664,
                                   MATER=MAT2            )
 
 TEST_TABLE(
-           VALE_CALC=2.2989199999999999E-3,
-           TOLE_MACHINE=2.5000000000000001E-05,
+           VALE_REFE=2.29892E-3,
+           VALE_CALC=2.298872418451E-3,
+           PRECISION=2.5E-05,
+           REFERENCE='SOURCE_EXTERNE',
            NOM_PARA='DOMMAGE',
            TABLE=TAB5,)
 
@@ -167,8 +177,10 @@ TAB6=POST_FATI_ALEA(    MOMENT_SPEC_0=182.5984664,
                                   MATER=MAT2           )
 
 TEST_TABLE(
-           VALE_CALC=2.2992820000000001E-3,
-           TOLE_MACHINE=2.5000000000000001E-05,
+           VALE_REFE=2.299282E-3,
+           VALE_CALC=2.2992315896271E-3,
+           PRECISION=2.5E-05,
+           REFERENCE='SOURCE_EXTERNE',
            NOM_PARA='DOMMAGE',
            TABLE=TAB6,)
 
@@ -182,8 +194,10 @@ TAB7=POST_FATI_ALEA(    MOMENT_SPEC_0=182.5984664,
                                   MATER=MAT2           )
 
 TEST_TABLE(
-           VALE_CALC=2.2989199999999999E-3,
-           TOLE_MACHINE=2.5000000000000001E-05,
+           VALE_REFE=2.298920E-3,
+           VALE_CALC=2.298872418451E-3,
+           PRECISION=2.5E-05,
+           REFERENCE='SOURCE_EXTERNE',
            NOM_PARA='DOMMAGE',
            TABLE=TAB7,)
 
@@ -198,8 +212,10 @@ TAB8=POST_FATI_ALEA(    MOMENT_SPEC_0=182.5984664,
                                   MATER=MAT2             )
 
 TEST_TABLE(
-           VALE_CALC=2.2992820000000001E-3,
-           TOLE_MACHINE=2.5000000000000001E-05,
+           VALE_REFE=2.299282E-3,
+           VALE_CALC=2.2992315896271E-3,
+           PRECISION=2.5E-05,
+           REFERENCE='SOURCE_EXTERNE',
            NOM_PARA='DOMMAGE',
            TABLE=TAB8,)
 
@@ -214,8 +230,10 @@ TAB9=POST_FATI_ALEA(    MOMENT_SPEC_0=182.5984664,
                                   MATER=MAT3             )
 
 TEST_TABLE(
-           VALE_CALC=3.1295310000000001E-3,
-           TOLE_MACHINE=2.5000000000000001E-05,
+           VALE_REFE=3.129531E-3,
+           VALE_CALC=3.1294837411484E-3,
+           PRECISION=2.5E-05,
+           REFERENCE='SOURCE_EXTERNE',
            NOM_PARA='DOMMAGE',
            TABLE=TAB9,)
 
@@ -229,8 +247,10 @@ TAB10=POST_FATI_ALEA(    MOMENT_SPEC_0=182.5984664,
                                    MATER=MAT3             )
 
 TEST_TABLE(
-           VALE_CALC=3.1299029999999999E-3,
-           TOLE_MACHINE=2.5000000000000001E-05,
+           VALE_REFE=3.129903E-3,
+           VALE_CALC=3.129855640649E-3,
+           PRECISION=2.5E-05,
+           REFERENCE='SOURCE_EXTERNE',
            NOM_PARA='DOMMAGE',
            TABLE=TAB10,)
 

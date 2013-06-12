@@ -641,7 +641,7 @@ TEST_TABLE(REFERENCE='ANALYTIQUE',
 
 TEST_TABLE(REFERENCE='ANALYTIQUE',
            VALE_CALC=0.840028435,
-           VALE_REFE=0.84002843500000002,
+           VALE_REFE=0.840028435,
            NOM_PARA='COOR_Y',
            TABLE=TB,
            FILTRE=(_F(NOM_PARA='POINT',
@@ -652,8 +652,8 @@ TEST_TABLE(REFERENCE='ANALYTIQUE',
            )
 
 TEST_TABLE(REFERENCE='ANALYTIQUE',
-           VALE_CALC=0.790028435,
-           VALE_REFE=0.79002843499999997,
+           VALE_CALC=0.79002843462272,
+           VALE_REFE=0.790028435,
            NOM_PARA='COOR_Y',
            TABLE=TB,
            FILTRE=(_F(NOM_PARA='POINT',
@@ -664,8 +664,10 @@ TEST_TABLE(REFERENCE='ANALYTIQUE',
            )
 
 TEST_TABLE(
-           VALE_CALC=-10.432,
-           TOLE_MACHINE=1.E-3,
+           VALE_CALC=-10.431960775265,
+           VALE_REFE=-10.432,
+           PRECISION=1.E-3,
+           REFERENCE='ANALYTIQUE',
            NOM_PARA='SIXX',
            TABLE=TB,
            FILTRE=(_F(NOM_PARA='POINT',
@@ -676,8 +678,10 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=-10.432,
-           TOLE_MACHINE=1.E-3,
+           VALE_CALC=-10.431960775265,
+           VALE_REFE=-10.432,
+           PRECISION=1.E-3,
+           REFERENCE='ANALYTIQUE',
            NOM_PARA='SIXX',
            TABLE=TB2,
            FILTRE=(_F(NOM_PARA='POINT',

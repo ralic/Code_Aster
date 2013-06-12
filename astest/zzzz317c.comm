@@ -69,7 +69,6 @@ IMPR_FONCTION(   FORMAT='XMGRACE', UNITE=25, COURBE= (
 #
 TEST_TABLE(
            VALE_CALC=1.8484072526069999,
-           TOLE_MACHINE=1.E-4,
            NOM_PARA='ACCE_MAX',
            TABLE=N1,
            )
@@ -108,7 +107,6 @@ IMPR_FONCTION(   FORMAT='XMGRACE', UNITE=25, COURBE= (
 
 TEST_TABLE(
            VALE_CALC=2.0435963124221002,
-           TOLE_MACHINE=1.E-4,
            NOM_PARA='ACCE_MAX',
            TABLE=N3,
            )
@@ -141,14 +139,12 @@ IMPR_TABLE (TABLE=N2b,  UNITE=8,);
 
 TEST_TABLE(
            VALE_CALC=2.0937320352323998,
-           TOLE_MACHINE=1.E-4,
            NOM_PARA='ACCE_MAX',
            TABLE=N2b,
            )
 
 TEST_TABLE(
            VALE_CALC=0.65130966480152996,
-           TOLE_MACHINE=1.E-4,
            NOM_PARA='ECART_TYPE',
            TABLE=RMS2b,
            )
@@ -256,21 +252,18 @@ tabres=CREA_TABLE(LISTE = (
 
 TEST_TABLE(
            VALE_CALC=0.21915400236872001,
-           TOLE_MACHINE=1.E-4,
            NOM_PARA='GAMMA',
            TABLE=tabres,
            )
 
 TEST_TABLE(
            VALE_CALC=0.18842071892000001,
-           TOLE_MACHINE=1.E-4,
            NOM_PARA='JH',
            TABLE=tabres,
            )
 
 TEST_TABLE(
            VALE_CALC=0.191238783735,
-           TOLE_MACHINE=1.E-4,
            NOM_PARA='CONSTANT',
            TABLE=tabres,
            )

@@ -1,3 +1,4 @@
+# RESPONSABLE : BARGELLINI R. (EDF/RETD/AMA)
 # TITRE VALIDATION DE CALC_G EN 3D AVEC CONTRAINTES INITIALES
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -16,8 +17,7 @@
 # ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
 # ======================================================================
-# person_in_charge: renaud.bargellini at edf.fr
-#
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
 DEBUT(CODE=_F(NOM='ZZZZ339A',NIV_PUB_WEB='INTERNET'),PAR_LOT='OUI',DEBUG=_F(SDVERI='OUI'))
 
 MA=LIRE_MAILLAGE(FORMAT='MED');
@@ -114,7 +114,6 @@ G_INIT=CALC_G(THETA=_F(FOND_FISS=FOND,
 
 TEST_TABLE(CRITERE='RELATIF',
            VALE_CALC=8.8168765863428E-06,
-           TOLE_MACHINE=1E-06,
            NOM_PARA='G',
            TABLE=G_INIT,
            FILTRE=(_F(NOM_PARA='NOEUD',

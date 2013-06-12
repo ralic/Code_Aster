@@ -160,7 +160,7 @@ TEST_TABLE(TABLE=RESRN,
            VALE_REFE=0.0,
            REFERENCE='ANALYTIQUE',
            VALE_CALC=-2.7755575615629E-07,
-           TOLE_MACHINE=1.0E-5,
+           PRECISION=1.0E-5,
            CRITERE='ABSOLU',
            )
 

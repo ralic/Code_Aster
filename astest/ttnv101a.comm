@@ -101,7 +101,7 @@ CMoy=POST_ELEM(INTEGRALE=_F(GROUP_MA='MAILVOL',
                                NOM_CMP='TEMP',NOM_CHAM='TEMP'),
                   RESULTAT=RESUSECH,MODELE=MODTHER,CHAM_MATER=CHMASECH,LIST_INST=lisarch2);
 IMPR_TABLE(TABLE=CMoy,);
-listtmp=[48.0,144.0,192.0,360.0,528.0];
+
 ## calcul de la perte de masse en % a chaque instant
 Dmasse = FORMULE(VALE='100*(C0-MOYE_TEMP)/2410',
              NOM_PARA='MOYE_TEMP',);
@@ -110,14 +110,42 @@ TPERTE0=CALC_TABLE(TABLE=CMoy,
                                            FORMULE=Dmasse,
                                              NOM_PARA='DP_P',),),);                                          
 IMPR_TABLE(TABLE=TPERTE0,);
-# Valeurs de references de l'essai
-Val_Ref = [0.9,1.2,1.3,1.5,1.7];
-# Valeurs de non-regression
-Val_reg = [9.72148E-01,1.32039E+00,1.41454E+00,1.62195E+00,1.74863E+00];
-for i,valr in enumerate(Val_Ref) :
-        TEST_TABLE(TABLE=TPERTE0, NOM_PARA='DP_P',
-                FILTRE=( _F(  NOM_PARA = 'INST', VALE = listtmp[i],),),
-                VALE_REFE=valr, PRECISION=0.11,
-                VALE_CALC=Val_reg[i], TOLE_MACHINE=1.e-3,
-                REFERENCE='SOURCE_EXTERNE',)
+
+TEST_TABLE(TABLE=TPERTE0,
+           NOM_PARA='DP_P',
+           FILTRE=( _F(  NOM_PARA = 'INST', VALE = 48.0,),),
+           PRECISION=0.11,
+           VALE_REFE=0.9,
+           VALE_CALC=0.97214834254926,
+           REFERENCE='SOURCE_EXTERNE',)
+TEST_TABLE(TABLE=TPERTE0,
+           NOM_PARA='DP_P',
+           FILTRE=( _F(  NOM_PARA = 'INST', VALE = 144.0,),),
+           PRECISION=0.11,
+           VALE_REFE=1.2,
+           VALE_CALC=1.3203906461635,
+           REFERENCE='SOURCE_EXTERNE',)
+TEST_TABLE(TABLE=TPERTE0,
+           NOM_PARA='DP_P',
+           FILTRE=( _F(  NOM_PARA = 'INST', VALE = 192.0,),),
+           PRECISION=0.11,
+           VALE_REFE=1.3,
+           VALE_CALC=1.4145398904722,
+           REFERENCE='SOURCE_EXTERNE',)
+TEST_TABLE(TABLE=TPERTE0,
+           NOM_PARA='DP_P',
+           FILTRE=( _F(  NOM_PARA = 'INST', VALE = 360.0,),),
+           PRECISION=0.11,
+           VALE_REFE=1.5,
+           VALE_CALC=1.6219523324549,
+           REFERENCE='SOURCE_EXTERNE',)
+TEST_TABLE(TABLE=TPERTE0,
+           NOM_PARA='DP_P',
+           FILTRE=( _F(  NOM_PARA = 'INST', VALE = 528.0,),),
+           PRECISION=0.11,
+           VALE_REFE=1.7,
+           VALE_CALC=1.7486312879432,
+           REFERENCE='SOURCE_EXTERNE',)
+
+
 FIN();

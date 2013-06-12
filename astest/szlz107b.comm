@@ -370,7 +370,8 @@ for i in range(NBPR) :
     IMPR_TABLE(TABLE = FATN[i]) 
 
     TEST_TABLE(VALE_CALC=RESU[i],
-#               TOLE_MACHINE=1.0000000000000001E-05,
+               VALE_REFE=RESU[i],
+               REFERENCE='ANALYTIQUE',
                NOM_PARA=NPAR[i],
                TABLE=FATN[i],)
 
@@ -530,7 +531,9 @@ for i in range(2) :
     for j in range(11) :     
         crit = 'RELATIF' if RESU[j + 11*i] != 0. else 'ABSOLU'
         TEST_TABLE(CRITERE=crit,
+                   VALE_REFE=RESU[j+ 11*i],
                    VALE_CALC=RESU[j+ 11*i],
+                   REFERENCE='ANALYTIQUE',
                    NOM_PARA=NPAR[j],
                    TABLE=FATN2[i],)
 
@@ -569,7 +572,9 @@ for i in range(2) :
     for j in range(11) :     
         crit = 'RELATIF' if RESU[j + 11*i] != 0. else 'ABSOLU'
         TEST_TABLE(CRITERE=crit,
+                   VALE_REFE=RESU[j + 11*i],
                    VALE_CALC=RESU[j + 11*i],
+                   REFERENCE='ANALYTIQUE',
                    NOM_PARA=NPAR[j],
                    TABLE=FATNW2[i],)
 
@@ -621,7 +626,9 @@ for i in range(2) :
     for j in range(11) :     
         crit = 'RELATIF' if RESU[j + 11*i] != 0. else 'ABSOLU'
         TEST_TABLE(CRITERE=crit,
+                   VALE_REFE=RESU[j+ 11*i],
                    VALE_CALC=RESU[j+ 11*i],
+                   REFERENCE='ANALYTIQUE',
                    NOM_PARA=NPAR[j],
                    TABLE=FATN2[i],)
 

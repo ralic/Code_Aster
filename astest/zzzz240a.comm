@@ -164,7 +164,6 @@ POST2=POST_ELEM(MODELE=MO2, INST=3., RESULTAT=U2,
 
 TEST_TABLE(
            VALE_CALC=0.93118648682586,
-           TOLE_MACHINE=1.E-3,
            NOM_PARA='INTE_SIYY',
            TABLE=POST1,
            )
@@ -188,7 +187,6 @@ TEST_RESU(RESU=(_F(INST=5,
                    NOM_CHAM='ENEL_ELGA',
                    NOM_CMP='TOTALE',
                    VALE_CALC=14.3256,
-                   TOLE_MACHINE=1.E-4,
                    CRITERE='RELATIF',
                    MAILLE='M16',),
                 _F(INST=5,

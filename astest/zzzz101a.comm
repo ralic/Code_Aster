@@ -1435,7 +1435,6 @@ TEST_TABLE(REFERENCE='ANALYTIQUE',
            )
 
 TEST_TABLE(VALE_CALC=2.0,
-           TOLE_MACHINE=1.E-3,
            NOM_PARA='CDG_Y',
            TABLE=MA_Q4G1,
            FILTRE=_F(NOM_PARA='LIEU',

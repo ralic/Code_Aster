@@ -119,32 +119,26 @@ MARASUPL=ASSE_MATRICE(MATR_ELEM=MATRUPL,
 #Test de non regression sur la matrice de masse
 
 TEST_RESU(OBJET=_F(VALE_CALC=6278.2285714285999,
-                   TOLE_MACHINE=1.E-3,
                    NOM='MATMUPG        .M01.RESL',),
           )
 
 TEST_RESU(OBJET=_F(VALE_CALC=6278.2285714285999,
-                   TOLE_MACHINE=1.E-3,
                    NOM='MATMUPQ        .M01.RESL',),
           )
 
-TEST_RESU(OBJET=_F(VALE_CALC=5804.3999999999996,
-                   TOLE_MACHINE=1.E-3,
+TEST_RESU(OBJET=_F(VALE_CALC=5804.4,
                    NOM='MATMUPL        .M01.RESL',),
           )
 
 TEST_RESU(OBJET=_F(VALE_CALC=1.1616979894023E+06,
-                   TOLE_MACHINE=1.E-3,
                    NOM='MATRUPG .ME001     .RESL',),
           )
 
 TEST_RESU(OBJET=_F(VALE_CALC=1.5333753473997E+06,
-                   TOLE_MACHINE=1.E-3,
                    NOM='MATRUPQ .ME001     .RESL',),
           )
 
 TEST_RESU(OBJET=_F(VALE_CALC=3.3334246679193E+05,
-                   TOLE_MACHINE=1.E-3,
                    NOM='MATRUPL .ME001     .RESL',),
           )
 

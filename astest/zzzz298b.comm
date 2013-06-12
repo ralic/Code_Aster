@@ -127,7 +127,6 @@ k1_fin = 1.45592e6
 
 TEST_TABLE(
            VALE_CALC=9.35585E5,
-           TOLE_MACHINE=1.E-3,
            NOM_PARA='K1',
            TABLE=TABK,
            FILTRE=_F(NOM_PARA='NUM_PT',
@@ -136,7 +135,6 @@ TEST_TABLE(
 
 TEST_TABLE(
            VALE_CALC=9.35585E5,
-           TOLE_MACHINE=1.E-3,
            NOM_PARA='K1',
            TABLE=TABK,
            FILTRE=_F(NOM_PARA='NUM_PT',
@@ -145,7 +143,6 @@ TEST_TABLE(
 
 TEST_TABLE(
            VALE_CALC=9.35585E5,
-           TOLE_MACHINE=1.E-3,
            NOM_PARA='K1',
            TABLE=TABK,
            FILTRE=_F(NOM_PARA='NUM_PT',
@@ -153,8 +150,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=1.455920E6,
-           TOLE_MACHINE=1.E-3,
+           VALE_CALC=1.4559178114059E6,
            NOM_PARA='K1',
            TABLE=TABK,
            FILTRE=_F(NOM_PARA='NUM_PT',

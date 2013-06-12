@@ -146,19 +146,15 @@ TEST_RESU(RESU=(_F(INST=1.0,
 
 TEST_RESU(OBJET=(_F(
                     VALE_CALC=90.250001545811003,
-                    TOLE_MACHINE=1.E-3,
                     NOM='MAINI   .COORDO    .VALE',),
                  _F(
                     VALE_CALC=90.250001545811003,
-                    TOLE_MACHINE=1.E-3,
                     NOM='MAIN2   .COORDO    .VALE',),
                  _F(
                     VALE_CALC=10.500000141560999,
-                    TOLE_MACHINE=1.E-3,
                     NOM='MAILPLE .COORDO    .VALE',),
                  _F(
                     VALE_CALC=10.500000141560999,
-                    TOLE_MACHINE=1.E-3,
                     NOM='MAILPLEX.COORDO    .VALE',),
                  ),
           )

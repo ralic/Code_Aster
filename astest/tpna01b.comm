@@ -260,8 +260,7 @@ TEST_TABLE(REFERENCE='ANALYTIQUE',
 # TEST DU FLUX
 
 TEST_TABLE(
-           VALE_CALC=1.11206E4,
-           TOLE_MACHINE=1.E-3,
+           VALE_CALC=11120.600184375,
            NOM_PARA='FLUX',
            TABLE=resu2,
            FILTRE=_F(NOM_PARA='ABSC_CURV',
@@ -269,8 +268,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=9121.3099999999995,
-           TOLE_MACHINE=1.E-3,
+           VALE_CALC=9121.308876944,
            NOM_PARA='FLUX',
            TABLE=resu2,
            FILTRE=_F(NOM_PARA='ABSC_CURV',

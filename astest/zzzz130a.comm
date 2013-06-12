@@ -374,8 +374,7 @@ TEST_RESU(CHAM_ELEM=_F(NOEUD='N1',
                        NOM_CMP='V1',
                        MAILLE='MASSIF',
                        CHAM_GD=CHX5_2,
-                       VALE_CALC=-0.033333333333333333,
-                       TOLE_MACHINE=1.E-3,),
+                       VALE_CALC=-0.033333333333333333,),
           )
 
 TEST_RESU(CHAM_ELEM=_F(NOEUD='N1',
@@ -401,8 +400,7 @@ TEST_RESU(CHAM_NO=_F(NOEUD='N1',
                      CRITERE='ABSOLU',
                      NOM_CMP='SIXX',
                      CHAM_GD=CHX6_2,
-                     VALE_CALC=0.0,
-                     TOLE_MACHINE=1.E-3,),
+                     VALE_CALC=0.0,),
           )
 
 TEST_RESU(CHAM_NO=_F(NOEUD='N1',

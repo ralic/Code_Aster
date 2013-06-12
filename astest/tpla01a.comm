@@ -205,8 +205,7 @@ TABTE1=MACR_LIGN_COUPE(   RESULTAT    = TEMPE,
                                    ) )
 
 TEST_TABLE(
-           VALE_CALC=20.0045,
-           TOLE_MACHINE=1.E-3,
+           VALE_CALC=20.004468051992,
            NOM_PARA='TEMP',
            TABLE=TABTE1,
            FILTRE=(_F(NOM_PARA='INTITULE',
@@ -221,8 +220,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=54.840000000000003,
-           TOLE_MACHINE=1.E-3,
+           VALE_CALC=54.83987228211,
            NOM_PARA='TEMP',
            TABLE=TABTE1,
            FILTRE=(_F(NOM_PARA='INTITULE',
@@ -285,8 +283,7 @@ TEST_RESU(CHAM_ELEM=_F(NOEUD='N1',
                   NOM_CHAM='TEMP',
                   NOEUD='N17',
                   NOM_CMP='TEMP',
-                  VALE_CALC=66.506,
-                  TOLE_MACHINE=1.E-3,),
+                  VALE_CALC=66.50637393169,),
           )
 
 # =====================================================================
@@ -313,8 +310,7 @@ TEST_RESU(RESU=_F(NUME_ORDRE=2,
                   NOM_CHAM='TEMP',
                   NOEUD='N17',
                   NOM_CMP='TEMP',
-                  VALE_CALC=66.506,
-                  TOLE_MACHINE=1.E-3,),
+                  VALE_CALC=66.50637393169,),
           )
 
 FIN()

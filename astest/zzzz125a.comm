@@ -88,7 +88,6 @@ IMPR_TABLE(   TABLE=T4 )
 
 TEST_TABLE(
            VALE_CALC=100.0,
-           TOLE_MACHINE=1.E-3,
            NOM_PARA='TEMP',
            TABLE=T2,
            FILTRE=_F(NOM_PARA='QUANTITE',
@@ -97,7 +96,6 @@ TEST_TABLE(
 
 TEST_TABLE(
            VALE_CALC=100.0,
-           TOLE_MACHINE=1.E-3,
            NOM_PARA='TEMP',
            TABLE=T4,
            FILTRE=(_F(NOM_PARA='QUANTITE',

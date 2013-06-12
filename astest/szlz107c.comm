@@ -390,9 +390,11 @@ CRIT[3] =   FORMULE(
            VALE= '''abs(SIGEQ_1-SIGEQ_2)/2'''
            )
 
-RESU = [1.92125E-3, 1.92125E-3, 1.92125E-3, 5.8175699E-3]
+RESU  = [1.92125E-3, 1.92125E-3, 1.92125E-3, 5.8175699E-3]
+RESUC = [1.9212572355848E-3, 1.9212572355848E-3, 1.9212572355848E-3, 5.8175698966268E-3]
 
-RESUF = [1.0707149E-3, 1.0707149E-3, 1.0707149E-3, 4.287285E-3]
+RESUF  = [1.0707149E-3, 1.0707149E-3, 1.0707149E-3, 4.287285E-3]
+RESUFC = [1.0707148698338E-3, 1.0707148698338E-3, 1.0707148698338E-3, 4.2872850446974E-3]
 
 for i in range(NBPR) :
 #
@@ -433,8 +435,10 @@ for i in range(NBPR) :
 
     TEST_TABLE( TABLE=FATN[i],
                 NOM_PARA = 'DOMMAGE',
-                VALE_CALC=RESU[i],
-                TOLE_MACHINE=1.E-4                
+                VALE_REFE=RESU[i],
+                VALE_CALC=RESUC[i],
+                PRECISION=1.E-4,
+                REFERENCE='ANALYTIQUE',
                 )
                 
 for i in range(NBPR) :
@@ -475,8 +479,10 @@ for i in range(NBPR) :
 
     TEST_TABLE( TABLE=FATNW[i],
                 NOM_PARA = 'DOMMAGE',
-                VALE_CALC=RESU[i],
-                TOLE_MACHINE=2.5E-3                )
+                VALE_REFE=RESU[i],
+                VALE_CALC=RESUC[i],
+                REFERENCE='ANALYTIQUE',
+                PRECISION=2.5E-3                )
 
 for i in range(NBPR) :
 
@@ -516,7 +522,9 @@ for i in range(NBPR) :
 
     TEST_TABLE( TABLE=FATNF[i],
                 NOM_PARA = 'DOMMAGE',
-                VALE_CALC=RESUF[i],
-                TOLE_MACHINE=1.E-5                )
+                VALE_REFE=RESUF[i],
+                VALE_CALC=RESUFC[i],
+                REFERENCE='ANALYTIQUE',
+                PRECISION=1.E-5                )
 FIN()
 #

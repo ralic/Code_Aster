@@ -95,7 +95,6 @@ MATASS=ASSE_MATRICE(MATR_ELEM=MAT,
 #Test de non regression sur la matrice de masse
 
 TEST_RESU(OBJET=_F(VALE_CALC=7954.1777777776997,
-                   TOLE_MACHINE=1.E-3,
                    NOM='MAT            .M01.RESL',),
           )
 

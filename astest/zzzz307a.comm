@@ -74,17 +74,17 @@ for partit in ('CENTRALISE','MAIL_DISPERSE','MAIL_CONTIGU','GROUP_ELEM') :
 
               TEST_RESU(RESU=( _F( RESULTAT = RESU1, NOM_CHAM = 'DEPL', REFERENCE = 'ANALYTIQUE',
                        CRITERE = 'ABSOLU',PRECISION = 1.E-10, NUME_ORDRE = 1, GROUP_NO = 'C', NOM_CMP='DX',
-                       VALE_CALC = 2.0, VALE_REFE=2.0, TOLE_MACHINE = 1.E-10)))
+                       VALE_CALC = 2.0, VALE_REFE=2.0, )))
 
               if typ_CL=="dualise" :
                   TEST_RESU(OBJET=_F(NOM='RESU1   .001.000000.VALE',
-                             VALE_CALC=47.492727537032, TOLE_MACHINE = 1.E-10))
+                             VALE_CALC=47.492727537032, ))
               elif typ_CL=="elimine":
                   TEST_RESU(OBJET=_F(NOM='RESU1   .001.000000.VALE',
-                             VALE_CALC=43.992727537032, TOLE_MACHINE = 1.E-10))
+                             VALE_CALC=43.992727537032, ))
               elif typ_CL=="transverse":
                   TEST_RESU(OBJET=_F(NOM='RESU1   .001.000000.VALE',
-                             VALE_CALC=194.49272753703, TOLE_MACHINE = 1.E-10))
+                             VALE_CALC=194.49272753703, ))
 
               DETRUIRE(CONCEPT=_F(NOM=(RESU1)))
         DETRUIRE(CONCEPT=_F(NOM=(CL1)))

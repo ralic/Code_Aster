@@ -149,18 +149,15 @@ MACRO_MATR_AJOU(MAILLAGE=MAYA,
                 MATR_AMOR_AJOU=CO('AMORAJ'),
                 INFO=2,);
 
-TEST_RESU(OBJET=_F(VALE_CALC=1.608230000E9,
-                   TOLE_MACHINE=1.E-3,
+TEST_RESU(OBJET=_F(VALE_CALC=1.6082276230835E+09,
                    NOM='MASSAJ             .VALM',),
           )
 
-TEST_RESU(OBJET=_F(VALE_CALC=-3.93555000E8,
-                   TOLE_MACHINE=1.E-3,
+TEST_RESU(OBJET=_F(VALE_CALC=-3.935551356804E+08,
                    NOM='AMORAJ             .VALM',),
           )
 
-TEST_RESU(OBJET=_F(VALE_CALC=3.496300E6,
-                   TOLE_MACHINE=1.E-3,
+TEST_RESU(OBJET=_F(VALE_CALC=3.4963008885108E+06,
                    NOM='RIGIAJ             .VALM',),
           )
 

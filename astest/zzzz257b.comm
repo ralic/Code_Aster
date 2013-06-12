@@ -223,7 +223,6 @@ TEST_TABLE(CRITERE='RELATIF',
 
 TEST_TABLE(CRITERE='RELATIF',
            VALE_CALC=4.6467332648066,
-           TOLE_MACHINE=1.5E-06,
            NOM_PARA='K2',
            TABLE=POST_K,
            )

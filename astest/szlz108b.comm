@@ -81,8 +81,10 @@ TAB_1=POST_FATIGUE(        CHARGEMENT='UNIAXIAL',
                                  INFO=2                   )
 
 TEST_TABLE(
-           VALE_CALC=5.0000000000000004E-06,
-           TOLE_MACHINE=1.0000000000000001E-05,
+           VALE_REFE=5.E-06,
+           VALE_CALC=5.E-06,
+           REFERENCE='ANALYTIQUE',
+           PRECISION=1.E-05,
            NOM_PARA='DOMMAGE',
            TABLE=TAB_1,
            FILTRE=_F(NOM_PARA='CYCLE',
@@ -101,8 +103,10 @@ TAB_2=POST_FATIGUE(        CHARGEMENT='UNIAXIAL',
                                  INFO=2                )
 
 TEST_TABLE(
-           VALE_CALC=5.0000000000000004E-06,
-           TOLE_MACHINE=1.0000000000000001E-05,
+           VALE_REFE=5.E-06,
+           VALE_CALC=5.E-06,
+           REFERENCE='ANALYTIQUE',
+           PRECISION=1.E-05,
            NOM_PARA='DOMMAGE',
            TABLE=TAB_2,
            FILTRE=_F(NOM_PARA='CYCLE',
@@ -122,8 +126,10 @@ TAB_3=POST_FATIGUE(        CHARGEMENT='UNIAXIAL',
                                  INFO=2                )
 
 TEST_TABLE(
-           VALE_CALC=5.0000000000000004E-06,
-           TOLE_MACHINE=1.0000000000000001E-05,
+           VALE_REFE=5.E-06,
+           VALE_CALC=5.E-06,
+           REFERENCE='ANALYTIQUE',
+           PRECISION=1.E-05,
            NOM_PARA='DOMMAGE',
            TABLE=TAB_3,
            FILTRE=_F(NOM_PARA='CYCLE',
@@ -142,8 +148,10 @@ TAB_4=POST_FATIGUE(        CHARGEMENT='UNIAXIAL',
                                  INFO=2                  )
 
 TEST_TABLE(
-           VALE_CALC=5.0000000000000004E-06,
-           TOLE_MACHINE=1.0000000000000001E-05,
+           VALE_REFE=5.E-06,
+           VALE_CALC=5.E-06,
+           REFERENCE='ANALYTIQUE',
+           PRECISION=1.E-05,
            NOM_PARA='DOMMAGE',
            TABLE=TAB_4,
            FILTRE=_F(NOM_PARA='CYCLE',
@@ -162,8 +170,10 @@ TAB_5=POST_FATIGUE(    CHARGEMENT='UNIAXIAL',
                              INFO=2                )
 
 TEST_TABLE(
-           VALE_CALC=5.0000000000000004E-06,
-           TOLE_MACHINE=1.0000000000000001E-05,
+           VALE_REFE=5.E-06,
+           VALE_CALC=5.E-06,
+           REFERENCE='ANALYTIQUE',
+           PRECISION=1.E-05,
            NOM_PARA='DOMMAGE',
            TABLE=TAB_5,
            FILTRE=_F(NOM_PARA='CYCLE',

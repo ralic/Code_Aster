@@ -111,7 +111,6 @@ MARASUPL=ASSE_MATRICE(MATR_ELEM=MATRUPL,
 #Test de non regression sur la matrice de masse (pour INCO_LOG et INCO_GD)
 
 TEST_RESU(OBJET=_F(VALE_CALC=4514.5330000000004,
-                   TOLE_MACHINE=1.E-3,
                    NOM='MATMUPG        .M01.RESL',),
           )
 
@@ -121,24 +120,20 @@ TEST_RESU(OBJET=_F(VALE_CALC=4514.5330000000004,
           )
 
 TEST_RESU(OBJET=_F(VALE_CALC=4514.5330000000004,
-                   TOLE_MACHINE=1.E-3,
                    NOM='MATMUPL        .M01.RESL',),
           )
 
 #Test de non regression sur la matrice de rigidite (pour INCO_LOG, INCO_GD et INCO_LUP)
 
 TEST_RESU(OBJET=_F(VALE_CALC=6.7916566666667E+05,
-                   TOLE_MACHINE=1.E-3,
                    NOM='MATRUPG .ME001     .RESL',),
           )
 
 TEST_RESU(OBJET=_F(VALE_CALC=6.7916566666667E+05,
-                   TOLE_MACHINE=1.E-3,
                    NOM='MATRUPQ .ME001     .RESL',),
           )
 
 TEST_RESU(OBJET=_F(VALE_CALC=4.1666666662167E+05,
-                   TOLE_MACHINE=1.E-3,
                    NOM='MATRUPL .ME001     .RESL',),
           )
 

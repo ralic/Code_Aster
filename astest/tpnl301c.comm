@@ -432,8 +432,7 @@ TEST_RESU(CHAM_NO=(_F(
                       NOM_CMP='HYDR',
                       GROUP_NO='X205',
                       CHAM_GD=H49h,
-                      VALE_CALC=0.49167447825994842,
-                      TOLE_MACHINE=1.E-3,),
+                      VALE_CALC=0.49167447825994842,),
                    _F(
                       NOM_CMP='HYDR',
                       GROUP_NO='X205',

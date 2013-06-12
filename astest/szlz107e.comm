@@ -258,9 +258,10 @@ for i in range(2) :
 
         TEST_TABLE( TABLE=FATN[i],
                 NOM_PARA = NPAR[j],
+                VALE_REFE=RESU[j+ i*7],
                 VALE_CALC=RESU[j+ i*7],
                 CRITERE = CTEST[j],
-                TOLE_MACHINE=1.0E-10                
+                REFERENCE='AUTRE_ASTER'
                 )
 
 FATNW = [None]*2
@@ -298,9 +299,10 @@ for i in range(2) :
 
         TEST_TABLE( TABLE=FATNW[i],
                 NOM_PARA = NPAR[j],
+                VALE_REFE=RESU[j+ i*7],
                 VALE_CALC=RESU[j+ i*7],
                 CRITERE = CTEST[j],
-                TOLE_MACHINE=1.0E-10                
+                REFERENCE='AUTRE_ASTER'
                 )
                   
 ### FORMULE_VIE = WHOL_F,
@@ -344,9 +346,10 @@ for i in range(2) :
 
         TEST_TABLE( TABLE=FATNF[i],
                 NOM_PARA = NPAR[j],
+                VALE_REFE=RESUF[j+ i*7],
                 VALE_CALC=RESUF[j+ i*7],
                 CRITERE = CTEST[j],
-                TOLE_MACHINE=1.0E-10                
+                REFERENCE='AUTRE_ASTER'
                 ) 
                 
 ## POUR RETROUVER LES CRITERES EN NOM                             
@@ -381,9 +384,10 @@ for i in range(2) :
 
         TEST_TABLE( TABLE=FATN[i+2],
                 NOM_PARA = NPAR[j],
+                VALE_REFE=RESU[j+ i*7],
                 VALE_CALC=RESU[j+ i*7],
                 CRITERE = CTEST[j],
-                TOLE_MACHINE=1.0E-10                
+                REFERENCE='AUTRE_ASTER'
                 )                
                 
 
@@ -457,9 +461,10 @@ for j in range(7) :
 
     TEST_TABLE( TABLE=FATN2,
             NOM_PARA = NPAR[j],
+            VALE_REFE=RESU2[j],
             VALE_CALC=RESU2[j],
             CRITERE = CTEST[j],
-            TOLE_MACHINE=1.0E-10                
+            REFERENCE='AUTRE_ASTER'
             ) 
 
 # POUR FORMULE_VIE = MANCOF,                      
@@ -493,9 +498,10 @@ for j in range(7) :
 
     TEST_TABLE( TABLE=FATN2M,
             NOM_PARA = NPAR[j],
+            VALE_REFE=RESU2[j],
             VALE_CALC=RESU2[j],
             CRITERE = CTEST[j],
-            TOLE_MACHINE=1.0E-10                
+            REFERENCE='AUTRE_ASTER'
             )
 # POUR FORMULE_VIE = MANCO1,
 RESU2F = [(-0.43051109680829,0.43051109680830), 0.90258528434986, 0, 0.61539334669937,
@@ -530,9 +536,10 @@ for j in range(7) :
 
     TEST_TABLE( TABLE=FATN2F,
             NOM_PARA = NPAR[j],
+            VALE_REFE=RESU2F[j],
             VALE_CALC=RESU2F[j],
             CRITERE = CTEST[j],
-            TOLE_MACHINE=1.0E-10                
+            REFERENCE='AUTRE_ASTER'
             )  
              
 ## POUR RETROUVER LES CRITERES EN NOM  
@@ -564,9 +571,10 @@ for j in range(7) :
 
     TEST_TABLE( TABLE=FATN2SF,
             NOM_PARA = NPAR[j],
+            VALE_REFE=RESU2[j],
             VALE_CALC=RESU2[j],
             CRITERE = CTEST[j],
-            TOLE_MACHINE=1.0E-10                
+            REFERENCE='AUTRE_ASTER'
             )
 
 ## POUR RETROUVER LES CRITERES EN NOM AVEC PROJECTION = DEUX_AXES  
@@ -597,9 +605,10 @@ for j in range(7) :
 
     TEST_TABLE( TABLE=FATN2SF2,
             NOM_PARA = NPAR[j],
+            VALE_REFE=RESU2[j],
             VALE_CALC=RESU2[j],
             CRITERE = CTEST[j],
-            TOLE_MACHINE=1.0E-10                
+            REFERENCE='AUTRE_ASTER'
             )                               
 FIN()
 #

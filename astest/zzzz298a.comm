@@ -109,8 +109,7 @@ IMPR_TABLE(TABLE=TABK)
 Kpt3 = 2.33861E+05
 
 TEST_TABLE(
-           VALE_CALC=2.33861E5,
-           TOLE_MACHINE=1.E-3,
+           VALE_CALC=2.338614037309E5,
            NOM_PARA='K1',
            TABLE=TABK,
            FILTRE=_F(NOM_PARA='NUM_PT',

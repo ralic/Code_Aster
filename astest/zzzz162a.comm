@@ -369,7 +369,6 @@ for numordre,noeud,X,Y,VTEMP in PourTest:
          _F(NOM_PARA = 'NOEUD',      VALE_K = noeud),
       ),
       NOM_PARA='TEMP', VALE_CALC=VTEMP,
-      TOLE_MACHINE=1.e-3,
    )
    TEST_TABLE(
       TABLE=TB01,
@@ -378,7 +377,6 @@ for numordre,noeud,X,Y,VTEMP in PourTest:
          _F(NOM_PARA = 'NOEUD',      VALE_K = noeud),
       ),
       NOM_PARA='COOR_X', VALE_CALC=X,
-      TOLE_MACHINE=1.e-3,
    )
    TEST_TABLE(
       TABLE=TB01,
@@ -387,7 +385,6 @@ for numordre,noeud,X,Y,VTEMP in PourTest:
          _F(NOM_PARA = 'NOEUD',      VALE_K = noeud),
       ),
       NOM_PARA='COOR_Y', VALE_CALC=Y,
-      TOLE_MACHINE=1.e-3,
    )
 
 
@@ -401,8 +398,7 @@ TB02=CREA_TABLE(
    RESU=_F(CHAM_GD=CH01, NOEUD='N1', NOM_CMP='TEMP',),
 )
 
-TEST_TABLE(VALE_CALC=73.329999999999998,
-           TOLE_MACHINE=1.E-3,
+TEST_TABLE(VALE_CALC=73.333,
            NOM_PARA='TEMP',
            TABLE=TB02,)
 
@@ -500,16 +496,14 @@ TEST_RESU(RESU=(_F(INST=90.0,
                    RESULTAT=UUU,
                    NOM_CHAM='VARI_ELGA',
                    NOM_CMP='V1',
-                   VALE_CALC=5.2500099999999998E-4,
-                   TOLE_MACHINE=1.E-3,
+                   VALE_CALC=5.25E-4,
                    MAILLE='M1',),
                 _F(INST=90.0,
                    RESULTAT=UUU,
                    NOM_CHAM='VARI_NOEU',
                    NOEUD='N3',
                    NOM_CMP='V1',
-                   VALE_CALC=5.2500099999999998E-4,
-                   TOLE_MACHINE=1.E-3,
+                   VALE_CALC=5.25E-4,
                    MAILLE='M1',),
                 ),
           )
@@ -605,7 +599,6 @@ for numordre,noeud,X,Y, SIYY in PourTest:
          _F(NOM_PARA = 'NOEUD',      VALE_K = noeud),
       ),
       NOM_PARA='COOR_X', VALE_CALC=X,
-      TOLE_MACHINE=1.e-3,
    )
    TEST_TABLE(
       TABLE=TB11,
@@ -614,7 +607,6 @@ for numordre,noeud,X,Y, SIYY in PourTest:
          _F(NOM_PARA = 'NOEUD',      VALE_K = noeud),
       ),
       NOM_PARA='COOR_Y', VALE_CALC=Y,
-      TOLE_MACHINE=1.e-3,
    )
    TEST_TABLE(
       TABLE=TB11,
@@ -623,7 +615,6 @@ for numordre,noeud,X,Y, SIYY in PourTest:
          _F(NOM_PARA = 'NOEUD',      VALE_K = noeud),
       ),
       NOM_PARA='SIYY', VALE_CALC=SIYY,
-      TOLE_MACHINE=1.e-3,
    )
 
 
@@ -647,17 +638,14 @@ for point,X,Y,SIYY in PourTest:
    TEST_TABLE(TABLE=TB12,
       FILTRE=_F(NOM_PARA = 'POINT', VALE_I = point),
       NOM_PARA='SIYY', VALE_CALC=SIYY,
-      TOLE_MACHINE=1.e-3,
    )
    TEST_TABLE(TABLE=TB12,
       FILTRE=_F(NOM_PARA = 'POINT', VALE_I = point),
       NOM_PARA='COOR_X', VALE_CALC=X,
-      TOLE_MACHINE=1.e-3,
    )
    TEST_TABLE(TABLE=TB12,
       FILTRE=_F(NOM_PARA = 'POINT', VALE_I = point),
       NOM_PARA='COOR_Y', VALE_CALC=Y,
-      TOLE_MACHINE=1.e-3,
    )
 
 TB13=CREA_TABLE(
@@ -679,7 +667,6 @@ for numordre,maille,point,X,Y,V1 in PourTest:
          _F(NOM_PARA = 'POINT',  VALE_I = point),
       ),
       NOM_PARA='V1', VALE_CALC=V1,
-      TOLE_MACHINE=1.e-3,
    )
    TEST_TABLE(
       TABLE=TB13,
@@ -689,7 +676,6 @@ for numordre,maille,point,X,Y,V1 in PourTest:
          _F(NOM_PARA = 'POINT',  VALE_I = point),
       ),
       NOM_PARA='COOR_X', VALE_CALC=X,
-      TOLE_MACHINE=1.e-3,
    )
    TEST_TABLE(
       TABLE=TB13,
@@ -699,7 +685,6 @@ for numordre,maille,point,X,Y,V1 in PourTest:
          _F(NOM_PARA = 'POINT',  VALE_I = point),
       ),
       NOM_PARA='COOR_Y', VALE_CALC=Y,
-      TOLE_MACHINE=1.e-3,
    )
 
 
@@ -813,31 +798,27 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=1,
                    NOM_CHAM='SIGM_ELNO',
                    NOEUD='N1',
                    NOM_CMP='SIYY',
-                   VALE_CALC=-133.33199999999999,
-                   TOLE_MACHINE=1.E-3,
+                   VALE_CALC=-133.332,
                    MAILLE='M1',),
                 _F(NUME_ORDRE=2,
                    POINT=1,
                    RESULTAT=UUU3,
                    NOM_CHAM='SIEF_ELGA',
                    NOM_CMP='SIYY',
-                   VALE_CALC=-116.66800000000001,
-                   TOLE_MACHINE=1.E-3,
+                   VALE_CALC=-116.66750118034,
                    MAILLE='M1',),
                 _F(NUME_ORDRE=2,
                    RESULTAT=UUU3,
                    NOM_CHAM='DEPL',
                    NOEUD='N3',
                    NOM_CMP='DX',
-                   VALE_CALC=1.9666499999999999E-3,
-                   TOLE_MACHINE=1.E-3,),
+                   VALE_CALC=1.9666549923934E-3,),
                 _F(NUME_ORDRE=2,
                    RESULTAT=UUU3,
                    NOM_CHAM='VARI_ELNO',
                    NOEUD='N1',
                    NOM_CMP='V1',
-                   VALE_CALC=1.49992E-4,
-                   TOLE_MACHINE=1.E-3,
+                   VALE_CALC=1.4999249803277E-4,
                    MAILLE='M1',),
                 ),
           )
@@ -1015,30 +996,26 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=1,
                    NOEUD='N1',
                    NOM_CMP='HYDR',
                    VALE_CALC=0,
-                   TOLE_MACHINE=1.E-3,
                    MAILLE='M1',),
                 _F(NUME_ORDRE=1,
                    RESULTAT=LUHYD,
                    NOM_CHAM='HYDR_NOEU',
                    NOEUD='N1',
                    NOM_CMP='HYDR',
-                   VALE_CALC=0,
-                   TOLE_MACHINE=1.E-3,),
+                   VALE_CALC=0,),
                 _F(INST=90,
                    RESULTAT=LUHYD,
                    NOM_CHAM='HYDR_ELNO',
                    NOEUD='N1',
                    NOM_CMP='HYDR',
                    VALE_CALC=1.0,
-                   TOLE_MACHINE=1.E-3,
                    MAILLE='M1',),
                 _F(INST=90,
                    RESULTAT=LUHYD,
                    NOM_CHAM='HYDR_NOEU',
                    NOEUD='N1',
                    NOM_CMP='HYDR',
-                   VALE_CALC=1.0,
-                   TOLE_MACHINE=1.E-3,),
+                   VALE_CALC=1.0,),
                 ),
           )
 

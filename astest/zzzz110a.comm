@@ -424,16 +424,20 @@ TEST_RESU(CHAM_ELEM=_F(NOEUD='N92',
                        NOM_CMP='SIXX',
                        MAILLE='M1',
                        CHAM_GD=XX8,
+                       VALE_REFE=1.5,
                        VALE_CALC=1.5,
-                       TOLE_MACHINE=1.E-3,),
+                       PRECISION=1.E-3,
+                       REFERENCE='ANALYTIQUE',),
           )
 
 TEST_RESU(CHAM_ELEM=_F(NOEUD='N92',
                        NOM_CMP='SIYY',
                        MAILLE='M1',
                        CHAM_GD=XX8,
+                       VALE_REFE=1.5,
                        VALE_CALC=1.5,
-                       TOLE_MACHINE=1.E-3,),
+                       PRECISION=1.E-3,
+                       REFERENCE='ANALYTIQUE',),
           )
 
 TEST_RESU(CHAM_ELEM=_F(NOEUD='N92',

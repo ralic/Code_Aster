@@ -182,7 +182,7 @@ TEST_RESU(RESU=_F(GROUP_NO='A',
                   NOM_CHAM='DEPL',
                   NOM_CMP='DX',
                   VALE_CALC=-4.285714318,
-                  VALE_REFE=-4.2857099999999999,),
+                  VALE_REFE=-4.28571,),
           )
 
 TEST_RESU(RESU=_F(GROUP_NO='B',
@@ -223,8 +223,10 @@ TEST_RESU(RESU=_F(GROUP_NO='A',
                   RESULTAT=RESU,
                   NOM_CHAM='DEPL',
                   NOM_CMP='DX',
-                  VALE_CALC=-4.2857099999999999,
-                  TOLE_MACHINE=1.E-3,
+                  VALE_REFE=-4.28571,
+                  VALE_CALC=-4.2857143183057,
+                  PRECISION=1.E-3,
+                  REFERENCE='AUTRE_ASTER',
                   ),
           )
 
@@ -233,8 +235,10 @@ TEST_RESU(RESU=_F(GROUP_NO='B',
                   RESULTAT=RESU,
                   NOM_CHAM='DEPL',
                   NOM_CMP='DX',
-                  VALE_CALC=4.2857099999999999,
-                  TOLE_MACHINE=1.E-3,
+                  VALE_REFE=4.28571,
+                  VALE_CALC=4.2857142743473,
+                  PRECISION=1.E-3,
+                  REFERENCE='AUTRE_ASTER',
                   ),
           )
 
@@ -243,8 +247,10 @@ TEST_RESU(RESU=_F(GROUP_NO='A',
                   RESULTAT=RESU,
                   NOM_CHAM='FORC_NODA',
                   NOM_CMP='DY',
-                  VALE_CALC=2.1978000000E10,
-                  TOLE_MACHINE=1.E-3,
+                  VALE_REFE=2.1978000000E10,
+                  VALE_CALC=2.1978021987206E10,
+                  PRECISION=1.E-3,
+                  REFERENCE='AUTRE_ASTER',
                   ),
           )
 
@@ -253,17 +259,14 @@ TEST_RESU(RESU=_F(GROUP_NO='B',
                   RESULTAT=RESU,
                   NOM_CHAM='FORC_NODA',
                   NOM_CMP='DY',
-                  VALE_CALC=2.1978000000E10,
-                  TOLE_MACHINE=1.E-3,
+                  VALE_REFE=2.1978000000E10,
+                  VALE_CALC=2.1978021987206E10,
+                  PRECISION=1.E-3,
+                  REFERENCE='AUTRE_ASTER',
                   ),
           )
 
 #--------------------------
-
-
-# IMPR_RESU(FORMAT='RESULTAT',
-#           RESU=_F(RESULTAT=RESU,
-#                   NOM_CHAM='VALE_CONT',),);
 
 IMPR_RESU(FORMAT='MED',
           RESU=_F(MAILLAGE=MA,

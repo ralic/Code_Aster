@@ -102,8 +102,7 @@ TEST_RESU(RESU=_F(NUME_ORDRE=1,
                   RESULTAT=RESU2,
                   NOM_CHAM='DEPL',
                   NOM_CMP='DZ',
-                  VALE_CALC=-0.38209964322068002,
-                  TOLE_MACHINE=1.E-3,),
+                  VALE_CALC=-0.38209964322068002,),
           )
 
 # CALCUL 2: CALCUL AVEC PLUSIEURS MATERIAUX PAR MAILLE:

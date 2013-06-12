@@ -147,15 +147,12 @@ MA24=LIRE_MAILLAGE(UNITE=24)
 
 TEST_RESU(OBJET=(_F(
                     VALE_CALC=353.25,
-                    TOLE_MACHINE=1.E-3,
                     NOM='MA22    .COORDO    .VALE',),
                  _F(
                     VALE_CALC=554.25,
-                    TOLE_MACHINE=1.E-3,
                     NOM='MA23    .COORDO    .VALE',),
                  _F(
                     VALE_CALC=554.25,
-                    TOLE_MACHINE=1.E-3,
                     NOM='MA24    .COORDO    .VALE',),
                  ),
           )

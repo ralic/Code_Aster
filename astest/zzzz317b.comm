@@ -66,21 +66,18 @@ IMPR_FONCTION(   FORMAT='XMGRACE', UNITE=25, COURBE= (
 
 TEST_TABLE(
            VALE_CALC=0.047017906405587999,
-           TOLE_MACHINE=1.E-4,
            NOM_PARA='INTE_ARIAS',
            TABLE=N4,
            )
 
 TEST_TABLE(
            VALE_CALC=6.3300000000000001,
-           TOLE_MACHINE=1.E-4,
            NOM_PARA='DUREE_PHAS_FORT',
            TABLE=N4,
            )
 
 TEST_TABLE(
            VALE_CALC=0.11965290779866,
-           TOLE_MACHINE=1.E-4,
            NOM_PARA='ECART_TYPE',
            TABLE=RMS4,
            )
@@ -107,21 +104,18 @@ N5=INFO_FONCTION(  NOCI_SEISME=_F(
 RMS5=INFO_FONCTION( ECART_TYPE=_F(  FONCTION = FONCT5))
 TEST_TABLE(
            VALE_CALC=0.047152842646925,
-           TOLE_MACHINE=1.E-4,
            NOM_PARA='INTE_ARIAS',
            TABLE=N5,
            )
 
 TEST_TABLE(
            VALE_CALC=4.8600000000000003,
-           TOLE_MACHINE=1.E-3,
            NOM_PARA='DUREE_PHAS_FORT',
            TABLE=N5,
            )
 
 TEST_TABLE(
            VALE_CALC=0.11982350812707999,
-           TOLE_MACHINE=1.E-4,
            NOM_PARA='ECART_TYPE',
            TABLE=RMS5,
            )
