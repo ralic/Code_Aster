@@ -47,7 +47,7 @@ decal   = FORMULE(VALE='0.002*Z', NOM_PARA=('X','Y','Z',),)
 section = FORMULE(VALE='0.001*Z+0.001*X*Y', NOM_PARA=('X','Y','Z',),)
 excent  = FORMULE(VALE='0.002*(Z+X+Y)',  NOM_PARA=('X','Y','Z',),)
 
-# Pour vérifier que cela fonctionne sur les COQUE et/ou GRILLE
+# Pour vÃ©rifier que cela fonctionne sur les COQUE et/ou GRILLE
 caraco=AFFE_CARA_ELEM(MODELE=modelco,
    COQUE=_F(GROUP_MA='surfco', EPAIS_FO=epais, EXCENTREMENT_FO=decal, INER_ROTA='OUI',),
 )
@@ -58,7 +58,7 @@ carael=AFFE_CARA_ELEM(MODELE=model,
    COQUE= _F(GROUP_MA='surfco', EPAIS_FO  =epais,   EXCENTREMENT_FO=decal, INER_ROTA='OUI',),
    GRILLE=_F(GROUP_MA='surfgr', SECTION_FO=section, EXCENTREMENT_FO=excent,),
 )
-# Pour vérifier qu'en croisant les _FO cela fonctionne sur les COQUE et/ou GRILLE
+# Pour vÃ©rifier qu'en croisant les _FO cela fonctionne sur les COQUE et/ou GRILLE
 CQext = 0.123 ; CQep  = 0.222 ; GRext = 0.456 ; GRsec = 0.325
 #
 caco01=AFFE_CARA_ELEM(MODELE=modelco,
@@ -94,7 +94,7 @@ cael05=AFFE_CARA_ELEM(MODELE=model,
    GRILLE=_F(GROUP_MA='surfgr', SECTION=GRsec,  EXCENTREMENT=GRext,),
 )
 
-# Création des champs et des tables
+# CrÃ©ation des champs et des tables
 Ccaraco  = CREA_CHAMP(TYPE_CHAM='CART_CACOQU',  OPERATION='EXTR',  CARA_ELEM=caraco,  NOM_CHAM='.CARCOQUE',)
 Tcaraco  = CREA_TABLE(RESU=_F(CHAM_GD=Ccaraco,  GROUP_MA='surfco', NOM_CMP=('EP',    'EXCENT',),),)
 

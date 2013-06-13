@@ -183,8 +183,9 @@ TEST_RESU(CHAM_ELEM=_F(NOEUD='N291',
                        CHAM_GD=SIELNO,
                        VALE_CALC=-2.97129287E+03,
                        VALE_REFE=-2971.3699999999999,
-                       REFERENCE='NON_DEFINI',),
-          RESU=(_F(NUME_ORDRE=10,
+                       REFERENCE='NON_DEFINI',),)
+
+TEST_RESU(RESU=(_F(NUME_ORDRE=10,
                    RESULTAT=RESU,
                    NOM_CHAM='DEPL',
                    NOEUD='N291',

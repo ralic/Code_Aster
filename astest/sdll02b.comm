@@ -188,8 +188,9 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=1,
                    REFERENCE='NON_DEFINI',
                    CRITERE='RELATIF',
                    PRECISION=1.E-2,),
-                ),
-          CHAM_NO=(_F(NOEUD='B',
+                ),)
+
+TEST_RESU(CHAM_NO=(_F(NOEUD='B',
                       CRITERE='RELATIF',
                       NOM_CMP='DY',
                       TOLE_MACHINE=5.e-4,   #TODO variabilite

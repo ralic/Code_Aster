@@ -127,8 +127,9 @@ TEST_RESU(RESU=_F(PARA='CHAR_CRIT',
                   VALE_CALC=8.69429895E+05,
                   VALE_REFE=8.4935093960000004E5,
                   TOLE_MACHINE=1.E-5,
-                  PRECISION=0.025,),
-          CHAM_NO=_F(NOEUD='N4',
+                  PRECISION=0.025,),)
+
+TEST_RESU(CHAM_NO=_F(NOEUD='N4',
                      REFERENCE='ANALYTIQUE',
                      NOM_CMP='DY',
                      CHAM_GD=MODE_1,

@@ -277,8 +277,9 @@ TEST_RESU(CHAM_ELEM=_F(NOEUD='N1',
                        CHAM_GD=F2,
                        VALE_CALC= 1.72264499E+03,
                        VALE_REFE=1729.9100000000001,
-                       REFERENCE='NON_DEFINI',),
-          RESU=_F(NUME_ORDRE=2,
+                       REFERENCE='NON_DEFINI',),)
+
+TEST_RESU(RESU=_F(NUME_ORDRE=2,
                   RESULTAT=TEMP2,
                   NOM_CHAM='TEMP',
                   NOEUD='N17',

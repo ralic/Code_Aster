@@ -337,8 +337,9 @@ TEST_RESU(CHAM_ELEM=(_F(NOEUD='NO1',
                         REFERENCE='ANALYTIQUE',
                         VALE_CALC=4.6704838877098E-3,
                         PRECISION=1.E-3,),
-                     ),
-          RESU=(_F(NUME_ORDRE=8,
+                     ),)
+
+TEST_RESU(RESU=(_F(NUME_ORDRE=8,
                    REFERENCE='ANALYTIQUE',
                    RESULTAT=DEPL,
                    NOM_CHAM='SIEQ_ELNO',

@@ -429,10 +429,9 @@ Risques et conseils :
   Type de la valeur de référence incompatible avec le type des valeurs du champ.
 """),
 
-
-
-
-
+96: _(u"""
+  Un seul type de test dans la commande TEST_RESU. Merci de dissocier les mots clés facteurs (RESU, CHAM_NO ...) en autant d'appels différents à la commande.
+"""),
 
 97: _(u"""
   Mot-clé POINT interdit pour le champ au noeud issu de %(k1)s à l'ordre %(i1)d:

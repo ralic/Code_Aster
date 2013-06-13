@@ -278,8 +278,9 @@ TEST_RESU(CHAM_ELEM=(_F(CRITERE='RELATIF',
                         CHAM_GD=SIELNO,
                         VALE_CALC=-3179.3316449943,
                         VALE_REFE=-3176.3351314503998,),
-                     ),
-          RESU=(_F(GROUP_NO='G1',
+                     ),)
+
+TEST_RESU(RESU=(_F(GROUP_NO='G1',
                    INST=1.0,
                    REFERENCE='ANALYTIQUE',
                    RESULTAT=RESU,

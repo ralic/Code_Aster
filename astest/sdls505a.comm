@@ -198,8 +198,9 @@ TEST_RESU(RESU=_F(PARA='CHAR_CRIT',
                   VALE_REFE=-1.523000E6,
                   REFERENCE='NON_DEFINI',
                   CRITERE='RELATIF',
-                  PRECISION=0.108,),
-          CHAM_NO=(_F(NOEUD='NO6',
+                  PRECISION=0.108,),)
+
+TEST_RESU(CHAM_NO=(_F(NOEUD='NO6',
                       CRITERE='RELATIF',
                       NOM_CMP='DX',
                       PRECISION=1.E-2,

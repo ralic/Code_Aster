@@ -177,8 +177,9 @@ TEST_RESU(
                       CHAM_GD=DEP1,
                       VALE_CALC=-0.180831473,
                       VALE_REFE=-0.17999999999999999,),
-                   ),
-          RESU=(_F(NUME_ORDRE=1,
+                   ),)
+
+TEST_RESU(RESU=(_F(NUME_ORDRE=1,
                    REFERENCE='ANALYTIQUE',
                    RESULTAT=DEP,
                    NOM_CHAM='EFGE_ELNO',

@@ -338,8 +338,9 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=0,
                    REFERENCE='ANALYTIQUE',
                    PRECISION=0.034,
                    MAILLE='M337',),
-                ),
-          CHAM_NO=(_F(NOEUD='N201',
+                ),)
+
+TEST_RESU(CHAM_NO=(_F(NOEUD='N201',
                       NOM_CMP='TEMP_SUP',
                       CHAM_GD=TEMPA3,
                       REFERENCE='ANALYTIQUE',

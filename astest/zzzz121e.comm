@@ -359,8 +359,9 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=1,
                    
                    CRITERE='RELATIF',
                    ),
-                ),
-          CHAM_NO=(_F(CRITERE='RELATIF',
+                ),)
+
+TEST_RESU(CHAM_NO=(_F(CRITERE='RELATIF',
                       NOM_CMP='DX',
                       GROUP_NO='N55',
                       CHAM_GD=DEPL2,

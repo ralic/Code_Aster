@@ -78,8 +78,9 @@ NVCHAM=LIRE_CHAMP(FORMAT='MED',
 # LES DEUX CHAMPS DOIVENT ETRE LES MEMES
 TEST_RESU(CHAM_ELEM=_F(CHAM_GD=NVCHAM,
                        TYPE_TEST='SOMM_ABS',
-                       VALE_CALC=2000.0,),
-          RESU=_F(RESULTAT=RE_DISTL,
+                       VALE_CALC=2000.0,),)
+
+TEST_RESU(RESU=_F(RESULTAT=RE_DISTL,
                   INST=1.0,
                   NOM_CHAM='SIEF_ELGA',
                   TYPE_TEST='SOMM_ABS',

@@ -387,8 +387,9 @@ TEST_RESU(CHAM_ELEM=(_F(NOEUD='N76',
                         VALE_CALC=2.000091976,
                         VALE_REFE=2.0,
                         REFERENCE='NON_DEFINI',),
-                     ),
-          CHAM_NO=(_F(NOEUD='N76',
+                     ),)
+
+TEST_RESU(CHAM_NO=(_F(NOEUD='N76',
                       CRITERE='RELATIF',
                       NOM_CMP='TEMP',
                       PRECISION=1.E-2,

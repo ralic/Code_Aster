@@ -199,8 +199,9 @@ TEST_RESU(RESU=_F(NUME_ORDRE=1,
                   NOM_CMP='DZ',
                   VALE_CALC=-0.074450065,
                   VALE_REFE=-0.07417,
-                  PRECISION=4.0000000000000001E-3,),
-          CHAM_NO=(_F(REFERENCE='SOURCE_EXTERNE',
+                  PRECISION=4.0000000000000001E-3,),)
+
+TEST_RESU(CHAM_NO=(_F(REFERENCE='SOURCE_EXTERNE',
                       NOM_CMP='SIXZ',
                       GROUP_NO='D',
                       PRECISION=0.02,

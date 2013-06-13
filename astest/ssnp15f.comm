@@ -191,8 +191,9 @@ TEST_RESU(CHAM_ELEM=_F(NOEUD='NO2',
                        MAILLE='CUBE',
                        CHAM_GD=VARI,
                        VALE_CALC=0.020547300000000001,
-                       TOLE_MACHINE=1.E-3,),
-          RESU=(_F(INST=1.0,
+                       TOLE_MACHINE=1.E-3,))
+
+TEST_RESU(RESU=(_F(INST=1.0,
                    REFERENCE='AUTRE_ASTER',
                    RESULTAT=U,
                    NOM_CHAM='SIGM_ELNO',

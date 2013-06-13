@@ -203,8 +203,9 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=1,
                    VALE_REFE=31.3474,
                    CRITERE='RELATIF',
                    PRECISION=1.E-4,),
-                ),
-          CHAM_NO=(_F(CRITERE='RELATIF',
+                ),)
+
+TEST_RESU(CHAM_NO=(_F(CRITERE='RELATIF',
                       REFERENCE='ANALYTIQUE',
                       NOM_CMP='DY',
                       GROUP_NO='GP1',

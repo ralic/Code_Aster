@@ -151,8 +151,9 @@ TEST_RESU(CHAM_ELEM=_F(NOEUD='N37',
                        MAILLE='M96',
                        CHAM_GD=SIELNO,
                        VALE_CALC=-6.02712145E+05,
-                       VALE_REFE=-5.97000E5,),
-          RESU=(_F(NUME_ORDRE=1,
+                       VALE_REFE=-5.97000E5,),)
+
+TEST_RESU(RESU=(_F(NUME_ORDRE=1,
                    REFERENCE='ANALYTIQUE',
                    RESULTAT=RESU,
                    NOM_CHAM='DEPL',

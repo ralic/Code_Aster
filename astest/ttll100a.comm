@@ -220,8 +220,9 @@ TEST_RESU(CHAM_NO=(_F(NOEUD='N16',
                       VALE_CALC=6.888519471,
                       VALE_REFE=6.7948000000000004,
                       REFERENCE='NON_DEFINI',),
-                   ),
-        CHAM_ELEM=(_F(MAILLE='M17',
+                   ),)
+
+TEST_RESU(CHAM_ELEM=(_F(MAILLE='M17',
                       NOM_CMP='ERTABS',
                       CHAM_GD=ERREUR,
                       VALE_CALC=14.313868719316,),

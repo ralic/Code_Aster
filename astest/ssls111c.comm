@@ -496,8 +496,9 @@ TEST_RESU(
                       CHAM_GD=EFF1,
                       VALE_CALC=1781.9334033386,
                       VALE_REFE=1764.3682622700001,),
-                   ),
-          RESU=(_F(NUME_ORDRE=1,
+                   ),)
+
+TEST_RESU(RESU=(_F(NUME_ORDRE=1,
                    PARA='FREQ',
                    RESULTAT=MODE1,
                    VALE_CALC=1.0118185315727,
@@ -666,8 +667,9 @@ TEST_RESU(
                       CHAM_GD=EFF,
                       VALE_CALC=1805.5035588448,
                       VALE_REFE=1764.3682622700001,),
-                   ),
-          RESU=(_F(NUME_ORDRE=1,
+                   ),)
+
+TEST_RESU(RESU=(_F(NUME_ORDRE=1,
                    PARA='FREQ',
                    REFERENCE='AUTRE_ASTER',
                    RESULTAT=MODES,

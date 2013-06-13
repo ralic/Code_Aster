@@ -168,8 +168,9 @@ TEST_RESU(CHAM_ELEM=_F(CHAM_GD=VARI,
                        NOEUD='NO2',
                        NOM_CMP='V1',
                        TOLE_MACHINE=0.001,
-                       VALE_CALC=0.0205473,),
-          RESU=(_F(RESULTAT=U,
+                       VALE_CALC=0.0205473,),)
+
+TEST_RESU(RESU=(_F(RESULTAT=U,
                    INST=1.0,
                    NOM_CHAM='SIGM_ELNO',
                    NOM_CMP='SIXX',

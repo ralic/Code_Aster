@@ -208,8 +208,9 @@ TEST_RESU(
                       VALE_CALC=1.2092668585351E-19,
                       VALE_REFE=0.0,
                       REFERENCE='NON_DEFINI',),
-                   ),
-          RESU=(_F(GROUP_NO='A',
+                   ),)
+
+TEST_RESU(RESU=(_F(GROUP_NO='A',
                    INST=0.0,
                    RESULTAT=CAL1,
                    NOM_CHAM='SIGM_ELNO',

@@ -42,6 +42,7 @@ subroutine op0023()
     include 'asterfort/ulopen.h'
     real(kind=8) :: tstnan, resnan
     integer :: ific, nocc, n
+    logical :: nfac
     character(len=8) :: repons
     character(len=16) :: nomfi
     integer :: iarg
@@ -63,36 +64,80 @@ subroutine op0023()
         call ulopen(ific, ' ', nomfi, 'NEW', 'O')
     endif
     write (ific,1000)
+    nfac=.false.
 !
 !     --- TRAITEMENT D'UN OBJET JEVEUX  ---
 !
     call getfac('OBJET', nocc)
-    if (nocc .ne. 0) call trjeve(ific, nocc)
+    if (nocc .ne. 0) then
+                     call trjeve(ific, nocc)
+                     if (nfac) then
+                        call u2mess('F', 'CALCULEL6_96')
+                     else
+                        nfac=.true.
+                     endif
+    endif
+
 !
 !     --- TRAITEMENT D'UN CHAM_NO ---
 !
     call getfac('CHAM_NO', nocc)
-    if (nocc .ne. 0) call trchno(ific, nocc)
+    if (nocc .ne. 0) then
+                     call trchno(ific, nocc)
+                     if (nfac) then
+                        call u2mess('F', 'CALCULEL6_96')
+                     else
+                        nfac=.true.
+                     endif
+    endif
 !
 !     --- TRAITEMENT D'UN CHAM_ELEM ---
 !
     call getfac('CHAM_ELEM', nocc)
-    if (nocc .ne. 0) call trchel(ific, nocc)
+    if (nocc .ne. 0) then
+                     call trchel(ific, nocc)
+                     if (nfac) then
+                        call u2mess('F', 'CALCULEL6_96')
+                     else
+                        nfac=.true.
+                     endif
+    endif
 !
 !     --- TRAITEMENT D'UNE CARTE ---
 !
     call getfac('CARTE', nocc)
-    if (nocc .ne. 0) call trcart(ific, nocc)
+    if (nocc .ne. 0) then
+                     call trcart(ific, nocc)
+                     if (nfac) then
+                        call u2mess('F', 'CALCULEL6_96')
+                     else
+                        nfac=.true.
+                     endif
+    endif
 !
 !     --- TRAITEMENT D'UN CONCEPT RESULTAT ---
 !
     call getfac('RESU', nocc)
-    if (nocc .ne. 0) call trresu(ific, nocc)
+    if (nocc .ne. 0) then
+                     call trresu(ific, nocc)
+                     if (nfac) then
+                        call u2mess('F', 'CALCULEL6_96')
+                     else
+                        nfac=.true.
+                     endif
+    endif
 !
 !     --- TRAITEMENT D'UN CONCEPT GENE ---
 !
     call getfac('GENE', nocc)
-    if (nocc .ne. 0) call trgene(ific, nocc)
+    if (nocc .ne. 0) then
+                     call trgene(ific, nocc)
+                     if (nfac) then
+                        call u2mess('F', 'CALCULEL6_96')
+                     else
+                        nfac=.true.
+                     endif
+    endif
 !
     1000 format (/,80 ('-'))
 end subroutine

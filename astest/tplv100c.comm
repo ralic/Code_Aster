@@ -190,8 +190,9 @@ TEST_RESU(CHAM_ELEM=(_F(NOEUD='N7',
                         CHAM_GD=FLUXNO,
                         VALE_CALC=3.0,
                         ),
-                     ),
-          CHAM_NO=(_F(NOEUD='N4',
+                     ),)
+
+TEST_RESU(CHAM_NO=(_F(NOEUD='N4',
                       CRITERE='RELATIF',
                       NOM_CMP='TEMP',
                       CHAM_GD=TEMP,

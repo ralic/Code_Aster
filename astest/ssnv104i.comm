@@ -290,8 +290,9 @@ TEST_RESU(CHAM_ELEM=(_F(CRITERE='RELATIF',
                         VALE_CALC=-3127.4065589806,
                         VALE_REFE=-3176.3351314503998,
                         PRECISION=0.02),
-                     ),
-          RESU=(_F(GROUP_NO='G1',
+                     ),)
+
+TEST_RESU(RESU=(_F(GROUP_NO='G1',
                    INST=1.0,
                    REFERENCE='ANALYTIQUE',
                    RESULTAT=RESU,

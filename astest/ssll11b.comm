@@ -566,8 +566,9 @@ TEST_RESU(RESU=(_F(INST=0.0,
                    VALE_REFE=0.0,
                    CRITERE='ABSOLU',
                    MAILLE='BD',),
-                ),
-          CHAM_NO=(_F(NOEUD='D4',
+                ),)
+
+TEST_RESU(CHAM_NO=(_F(NOEUD='D4',
                       REFERENCE='AUTRE_ASTER',
                       NOM_CMP='DX',
                       CHAM_GD=DEPL1,

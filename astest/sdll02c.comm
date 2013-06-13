@@ -231,8 +231,9 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=1,
                    REFERENCE='NON_DEFINI',
                    CRITERE='RELATIF',
                    PRECISION=0.065000000000000002,),
-                ),
-          CHAM_NO=(_F(NOEUD='NO2',
+                ),)
+
+TEST_RESU(CHAM_NO=(_F(NOEUD='NO2',
                       CRITERE='RELATIF',
                       NOM_CMP='DY',
                       PRECISION=0.02,
