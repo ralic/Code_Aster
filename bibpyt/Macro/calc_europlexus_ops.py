@@ -436,24 +436,6 @@ class EUROPLEXUS:
         else :
             concept_maillage = copy.copy(self.NEW_MA)
 
-
-        # On crée des groupes de noeuds de mêmes noms que les groupes de mailles présents dans le modèle
-        # car EPX ne sait pas faire la correspondance comme en CASTEM
-        # Cela pourra être supprimer quand le problème sera résolu dans EPX.
-        liste_gma=[]
-
-        # groupes de mailles du modele
-        for model in ['T3GS','Q4GS','BR3D','POUT'] :
-            if model in self.modelisations :
-                liste_gma.extend(self.dic_gma[model])
-        # le risque est que le groupe existe deja
-        MasquerAlarme('MODELISA7_9')
-        DEFI_GROUP(reuse=concept_maillage,
-                        MAILLAGE=concept_maillage,
-                        CREA_GROUP_NO=_F(GROUP_MA=liste_gma))
-        RetablirAlarme('MODELISA7_9')
-
-
         DEFI_FICHIER(UNITE=unite, FICHIER=fichier_maillage, ACTION='ASSOCIER')
 
         if self.ETAT_INIT is not None:
@@ -731,12 +713,6 @@ class EUROPLEXUS:
                     for group in group_ma:
                         epx[MODULE].append(11*' '+group)
                     epx[MODULE].append(7*' ' + 'TERM')
-                    MasquerAlarme('MODELISA7_9')
-                    DEFI_GROUP(reuse = concept_maillage,
-                               MAILLAGE = concept_maillage,
-                               CREA_GROUP_NO = _F(GROUP_MA=group_ma)
-                              )
-                    RetablirAlarme('MODELISA7_9')
 
                 if elem['CARA'] == 'K_TR_D_N' :
                     group_ma = self.get_group_ma(elem)
