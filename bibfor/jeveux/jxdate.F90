@@ -1,6 +1,6 @@
 subroutine jxdate(idate)
     implicit none
-    include 'asterc/date.h'
+    include 'asterc/datetoi.h'
     integer :: idate
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -26,7 +26,7 @@ subroutine jxdate(idate)
 !
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
-    call date(ival)
+    call datetoi(ival)
     idate = 100000000 * ival(3) + 1000000 * ival(2) + 10000 * ival(1) + 100 * ival(4) + ival(5)
 !
 end subroutine

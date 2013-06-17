@@ -16,7 +16,7 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine date(dt)
+    subroutine datetoi(dt)
         integer :: dt(6)
-    end subroutine date
+    end subroutine datetoi
 end interface

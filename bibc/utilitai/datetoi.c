@@ -18,7 +18,7 @@
 /* ================================================================== */
 #include "aster.h"
 
-void DEFP(DATE, date, INTEGER itab[6])
+void DEFP(DATETOI, datetoi, INTEGER itab[6])
 {
     time_t ltime;
     struct tm *today;
