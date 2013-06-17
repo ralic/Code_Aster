@@ -51,4 +51,4 @@ OPTION__
                               OUT__  MMATTTR  PMATTTR
     TOPOSE              514   IN__   NGEOMER  PGEOMER  N1NEUT_R PLEVSET
                               OUT__  E6NEUTR  PPINTTO  E6NEUTI  PCNSETO   E2NEUTI  PHEAVTO  E8NEUTI  PLONCHA
-                                     E10NEUTR PAINTER  E4NEUTR  PPMILTO
+                                     E4NEUTR  PPMILTO

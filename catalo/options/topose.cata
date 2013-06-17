@@ -32,5 +32,4 @@ OPTION__
         PCNSETO  NEUT_I ELEM__
         PHEAVTO  NEUT_I ELEM__
         PLONCHA  NEUT_I ELEM__
-        PAINTER  NEUT_R ELEM__
         PPMILTO  NEUT_R ELEM__ 

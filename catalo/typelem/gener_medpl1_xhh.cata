@@ -94,7 +94,7 @@ OPTION__
                               OUT__  MVECTUR  PVECTUR
     TOPOSE              514   IN__   NGEOMER  PGEOMER  N1NEUT_R PLEVSET  FISCO_I PFISCO
                               OUT__  E16NEUTR PPINTTO  E24NEUI  PCNSETO   E4NEUTI  PHEAVTO  E8NEUTI  PLONCHA
-                                     E10NEUTR PAINTER  E16NEUTR PPMILTO
+                                     E16NEUTR PPMILTO
     TOU_INI_ELNO        99    IN__
                               OUT__  EPRESNO  PPRES_R  ENNEUT_F PNEUT_F  ENNEUT_R PNEUT_R
     TOU_INI_ELEM        99    IN__

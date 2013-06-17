@@ -112,7 +112,3 @@ OPTION__
                                      E63NEUTR PBASECO  E21NEUTR PGESCLA  E21NEUTR PGMAITR  E21NEUTR PGESCLO
     TOPOSE              514   IN__   NGEOMER  PGEOMER  N1NEUT_R PLEVSET
                               OUT__  E33NEUTR PPINTTO  E128NEUI PCNSETO  E32NEUTI PHEAVTO  E10NEUTI  PLONCHA
-                                     E35NEUTR PAINTER
-
-
-

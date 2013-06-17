@@ -303,7 +303,6 @@ OPTION__
                                      E63NEUTR PBASECO  E21NEUTR PGESCLA  E21NEUTR PGMAITR  E21NEUTR PGESCLO
     TOPOSE              514   IN__   NGEOMER  PGEOMER  N1NEUT_R PLEVSET
                               OUT__  E33NEUTR PPINTTO  E128NEUI PCNSETO  E32NEUTI PHEAVTO  E10NEUTI  PLONCHA
-                                     E35NEUTR PAINTER
     TOU_INI_ELGA        99    IN__
                               OUT__  EDOMGGA  PDOMMAG  EFACY_R  PFACY_R  EGGEOM_R PGEOM_R  EGINST_R PINST_R
                                      EGNEUT_F PNEUT_F  EGNEUT_R PNEUT_R  ECONTPG  PSIEF_R
