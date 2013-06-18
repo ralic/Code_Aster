@@ -29,7 +29,7 @@ loi = LoiComportement(
    Pour faciliter l'intégration de ce modèle, il est conseillé d'utiliser le redécoupage automatique local du pas de temps (mot clé ITER_INTE_PAS)""",
    num_lc         = 30,
    nb_vari        = 5,
-   nom_vari       = ('EPSPEQ','POROSITE','INDIPLAS','DISSIP','EBLOC'),
+   nom_vari       = ('EPSPEQ','POROSITE','DISSIP','EBLOC','INDIPLAS'),
    mc_mater       = ('ELAS','ROUSSELIER'),
    modelisation   = ('3D', 'AXIS', 'D_PLAN'),
    deformation    = ('PETIT', 'PETIT_REAC', 'GROT_GDEP'),

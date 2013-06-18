@@ -56,11 +56,11 @@ subroutine lcrolo(fami, kpg, ksp, mate, option,&
 ! IN  VIM     : VARIABLES INTERNES A L INSTANT DU CALCUL PRECEDENT
 !         VIM(1)   = P (DEFORMATION PLASTIQUE CUMULEE)
 !         VIM(2)   = POROSITE
-!         VIM(3:8) = DEFORMATION ELASTIQUE EULERIENNE EE = (ID-BE)/2)
-!         VIM(9)   = INDICATEUR DE PLASTICITE
+!         VIM(3)   = INDICATEUR DE PLASTICITE
 !                  = 0 SOLUTION ELASTIQUE
 !                  = 1 SOLUTION PLASTIQUE
 !                  = 2 SOLUTION PLASTIQUE SINGULIERE
+!         VIM(4:9) = DEFORMATION ELASTIQUE EULERIENNE EE = (ID-BE)/2)
 ! OUT VIP     : VARIABLES INTERNES A L'INSTANT ACTUEL
 ! OUT TAUP    : CONTRAINTE A L INSTANT ACTUEL
 ! OUT DTAUDF  : DERIVEE DE TAU PAR RAPPORT A DF  * TRANSPOSE(DF)
@@ -122,7 +122,7 @@ subroutine lcrolo(fami, kpg, ksp, mate, option,&
 !    LECTURE DES VARIABLES INTERNES
     pm = vim(1)
     porom = vim(2)
-    call dcopy(6, vim(3), 1, em, 1)
+    call dcopy(6, vim(4), 1, em, 1)
 !
 !    INITIALISATION SPECIFIQUE A RIGI_MECA_*
     if (resi) then
@@ -130,7 +130,7 @@ subroutine lcrolo(fami, kpg, ksp, mate, option,&
     else
         poum = '-'
         dp = 0.d0
-        indice = nint(vim(9))
+        indice = nint(vim(3))
         call dcopy(6, em, 1, ep, 1)
     endif
 !
@@ -284,13 +284,13 @@ subroutine lcrolo(fami, kpg, ksp, mate, option,&
 !
         vip(1) = pm+dp
         vip(2) = poro
-        call dcopy(6, ep, 1, vip(3), 1)
-        vip(9) = indice
+        vip(3) = indice
+        call dcopy(6, ep, 1, vip(4), 1)
 !
 ! 8 - CORRECTION DE LA LOI D'ECOULEMENT A POSTERIORI
 !
         if (indice .ge. 1) then
-            call lcrohy(x, dp, em, vip(3))
+            call lcrohy(x, dp, em, vip(4))
         endif
 !
     endif

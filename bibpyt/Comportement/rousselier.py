@@ -27,7 +27,7 @@ loi = LoiComportement(
    Pour faciliter l'intégration de ce modèle, il est conseillé d'utiliser systématiquement le redécoupage global du pas de temps (SUBD_PAS).""",
    num_lc         = 36,
    nb_vari        = 9,
-   nom_vari       = ('EPSPEQ','POROSITE','EPSEXX','EPSEYY','EPSEZZ','EPSEXY','EPSEXZ','EPSEYZ','INDIPLAS'),
+   nom_vari       = ('EPSPEQ','POROSITE','INDIPLAS','EPSEXX','EPSEYY','EPSEZZ','EPSEXY','EPSEXZ','EPSEYZ'),
    mc_mater       = ('ELAS','ROUSSELIER'),
    modelisation   = ('3D', 'AXIS', 'D_PLAN'),
    deformation    = ('SIMO_MIEHE'),

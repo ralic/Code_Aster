@@ -28,6 +28,7 @@ compor.append(['VISC_ENDO_LEMA','GDEF_HYPO_ELAS'])
 compor.append(['VISC_CIN2_CHAB','GDEF_HYPO_ELAS'])
 compor.append(['VISC_CIN1_CHAB','GDEF_HYPO_ELAS'])
 compor.append(['VISC_CIN2_MEMO','GDEF_HYPO_ELAS'])
+compor.append(['LEMAITRE','GDEF_LOG'])
 angle_degres=[45.0]*len(compor)
 angle_degres[0]=0.
 
@@ -236,6 +237,7 @@ IMPR_FONCTION(FORMAT='XMGRACE',UNITE=38,
                    _F(FONCTION=vmis[3],LEGENDE=compor[3][0]+'_'+compor[3][1]),
                    _F(FONCTION=vmis[4],LEGENDE=compor[4][0]+'_'+compor[4][1]),
                    _F(FONCTION=vmis[5],LEGENDE=compor[5][0]+'_'+compor[5][1]),
+                   _F(FONCTION=vmis[6],LEGENDE=compor[6][0]+'_'+compor[6][1]),
                    ),
                   TITRE='courbes_vmis_viscoplastique');
 DEFI_FICHIER(ACTION='LIBERER',UNITE=38)
@@ -250,8 +252,9 @@ IMPR_FONCTION(FORMAT='XMGRACE',UNITE=38,
                    _F(FONCTION=epsg[3],LEGENDE=compor[3][0]+'_'+compor[3][1]),
                    _F(FONCTION=epsg[4],LEGENDE=compor[4][0]+'_'+compor[4][1]),
                    _F(FONCTION=epsg[5],LEGENDE=compor[5][0]+'_'+compor[5][1]),
+                   _F(FONCTION=epsg[6],LEGENDE=compor[6][0]+'_'+compor[6][1]),
                    ),
-                  TITRE='courbes_epsg_viscplastique');
+                  TITRE='courbes_epsg_viscoplastique');
 DEFI_FICHIER(ACTION='LIBERER',UNITE=38)
 
 

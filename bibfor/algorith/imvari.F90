@@ -37,7 +37,7 @@ subroutine imvari(moclef, iocc, ncomel, lcomel, comcod,&
     include 'asterfort/u2mess.h'
     include 'asterfort/wkvect.h'
     integer :: nbvari, ncomel, iocc, ii, nums(2), lvari, icom, icomm
-    integer :: nbvarm, nbvarl, numlc, numv, lvar2, indi
+    integer :: nbvarm, nbvarl, numlc, numv
     character(len=16) :: comcod, lcomel(5), noms(2), moclef, comcom
     character(len=8) :: tavari
 !-----------------------------------------------------------------------
@@ -47,32 +47,6 @@ subroutine imvari(moclef, iocc, ncomel, lcomel, comcod,&
     if ((lcomel(1)(5:11).eq.'CRISTAL') .and. (lcomel(2).eq.'SIMO_MIEHE')) then
         call u2mess('I', 'COMPOR2_25')
         call u2mess('I', 'COMPOR2_26')
-        elseif ((lcomel(2).eq.'SIMO_MIEHE').and. (lcomel(1)(5:10)&
-    .eq.'_ISOT_')) then
-        call wkvect('&&PMDORC.LVARI', 'V V K16', nbvari, lvari)
-        call wkvect('&&PMDORC.LVAR2', 'V V K16', nbvari, lvar2)
-        call lcvari(comcod, nbvari, zk16(lvari))
-        noms(1)=moclef
-        noms(2)=lcomel(1)
-        nums(1)=iocc
-        nums(2)=nbvari
-        call u2mesg('I', 'COMPOR2_23', 2, noms, 2,&
-                    nums, 0, 0.d0)
-!        PLACER INDIPLAS  A LA FIN
-        indi = indk16( zk16(lvari), 'INDIPLAS', 1, nbvari )
-        do 561 ii = 1, indi-1
-            zk16(lvar2-1+ii)=zk16(lvari-1+ii)
-561      continue
-        do 562 ii = indi, nbvari-1
-            zk16(lvar2-1+ii)=zk16(lvari-1+ii+1)
-562      continue
-        zk16(lvar2-1+nbvari)=zk16(lvari-1+indi)
-        do 563 ii = 1, nbvari
-            call u2mesg('I', 'COMPOR2_24', 1, zk16(lvar2-1+ii), 1,&
-                        ii, 0, 0.d0)
-563      continue
-        call jedetr('&&PMDORC.LVAR2')
-        call jedetr('&&PMDORC.LVARI')
 !
         elseif ((lcomel(2).eq.'SIMO_MIEHE').and. (lcomel(1)(1:4)&
     .eq.'META')) then
@@ -122,7 +96,8 @@ subroutine imvari(moclef, iocc, ncomel, lcomel, comcod,&
         call jedetr('&&PMDORC.LVARI')
 !
 !
-    else if (nbvari.gt.0) then
+        elseif ((nbvari.gt.0) .or.((lcomel(2).eq.'SIMO_MIEHE').and.&
+    (lcomel(1)(5:10).eq.'_ISOT_'))) then
 !
         call wkvect('&&PMDORC.LVARI', 'V V K16', nbvari, lvari)
         call lcvari(comcod, nbvari, zk16(lvari))

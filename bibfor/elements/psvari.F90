@@ -26,7 +26,7 @@ subroutine psvari(compor, nbvari, dimens, ipop1, ipop2)
 !     FONCTION REALISEE :
 !
 !     PERMET DE CONNAITRE EN FONCTION DE LA RELATION DE COMPORTEMENT
-!     PARMIT LES VARIABLES INTERNES LA POSITION DE :
+!     PARMI LES VARIABLES INTERNES LA POSITION DE :
 !
 !         - LA DEFORMATION PLASTIQUE CUMULEE
 !         - L'INDICATEUR DE PLASTICITE
@@ -45,19 +45,18 @@ subroutine psvari(compor, nbvari, dimens, ipop1, ipop2)
     if ((compor.eq.'LEMAITRE' ) .or. (compor.eq.'VMIS_ECMI_TRAC') .or.&
         (compor.eq.'VMIS_ECMI_LINE') .or. (compor.eq.'VMIS_CIN1_CHAB') .or.&
         (compor.eq.'VMIS_CIN2_CHAB') .or. (compor.eq.'VISC_CIN1_CHAB') .or.&
-        (compor.eq.'VISC_CIN2_CHAB')) then
+        (compor.eq.'VISC_CIN2_CHAB') .or. (compor.eq.'VMIS_ISOT_TRAC') .or.&
+        (compor.eq.'VMIS_ISOT_LINE') .or. (compor.eq.'VISC_ISOT_TRAC') .or.&
+        (compor.eq.'VISC_ISOT_LINE')) then
+        ipop1=1
+        ipop2=2
+    else if ((compor.eq.'ROUSSELIER')) then
         ipop1 = 1
-        ipop2 = 2
-!
-        else if ( (compor.eq.'VMIS_ISOT_TRAC') .or.(&
-    compor.eq.'VMIS_ISOT_LINE') .or.(compor.eq.'VISC_ISOT_TRAC')&
-    .or.(compor.eq.'VISC_ISOT_LINE') .or.(compor.eq.'ROUSS_PR')&
-    .or.(compor.eq.'ROUSS_VISC') ) then
+        ipop2 = 3
+        else if ( (compor.eq.'ROUSS_PR') .or.(compor.eq.'ROUSS_VISC') )&
+    then
         ipop1=1
         ipop2=nbvari
-    else if (compor.eq.'ROUSSELIER') then
-        ipop1 = 1
-        ipop2 = 9
     else if (compor.eq.'MONOCRISTAL') then
         ipop1 = nbvari-1
         ipop2 = nbvari

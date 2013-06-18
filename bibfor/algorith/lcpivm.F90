@@ -122,10 +122,10 @@ subroutine lcpivm(fami, kpg, ksp, mate, compor,&
     elas = option(11:14).eq.'ELAS'
     call gdsmin()
 !
-!    LECTURE DES VARIABLES INTERNES (DEFORMATION PLASITQUE CUMULEE ET
+!    LECTURE DES VARIABLES INTERNES (DEFORMATION PLASTIQUE CUMULEE ET
 !                                   -DEFORMATION ELASTIQUE)
     pm=vim(1)
-    call dcopy(6, vim(2), 1, em, 1)
+    call dcopy(6, vim(3), 1, em, 1)
     call dscal(3, rac2, em(4), 1)
 !
 !    CALCUL DES ELEMENTS CINEMATIQUES
@@ -225,9 +225,9 @@ subroutine lcpivm(fami, kpg, ksp, mate, compor,&
 ! 4.3 - P, DEFORMATION ELASTIQUE ET INDICE DE PLASTICITE
 !
         vip(1) = pm+dp
-        vip(8) = line
-        call dcopy(6, ep, 1, vip(2), 1)
-        call dscal(3, 1.d0/rac2, vip(5), 1)
+        vip(2) = line
+        call dcopy(6, ep, 1, vip(3), 1)
+        call dscal(3, 1.d0/rac2, vip(6), 1)
     endif
 !
 ! 5 - CALCUL DE LA MATRICE TANGENTE
@@ -235,7 +235,7 @@ subroutine lcpivm(fami, kpg, ksp, mate, compor,&
     if (rigi) then
         if (.not. resi) then
             dp = 0.d0
-            line = nint(vim(8))
+            line = nint(vim(2))
             call dcopy(6, dvbetr, 1, dvbe, 1)
         endif
 !

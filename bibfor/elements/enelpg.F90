@@ -127,7 +127,7 @@ subroutine enelpg(fami, iadmat, instan, igau, repere,&
 !
 ! ---    CALCUL DE LA TRACE DES DEFORMATIONS ELASTIQUES BE
 !
-        call dcopy(6, vari(2), 1, be, 1)
+        call dcopy(6, vari(3), 1, be, 1)
         trbe=be(1)+be(2)+be(3)
         trbe=jac**(-2.d0/3.d0)*(3.d0-2.d0*trbe)
 !

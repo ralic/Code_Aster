@@ -450,6 +450,13 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=21,
                    VALE_CALC=586.39499999999998,
                    TOLE_MACHINE=1.E-4,
                    MAILLE='M1',),
+                _F(NUME_ORDRE=21,
+                   POINT=1,
+                   RESULTAT=REPONSE,
+                   NOM_CHAM='VARI_ELGA',
+                   NOM_CMP='V3',
+                   VALE_CALC=0.,
+                   MAILLE='M1',),
                 ),
           )
 
