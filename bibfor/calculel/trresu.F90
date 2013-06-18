@@ -94,7 +94,7 @@ subroutine trresu(ific, nocc)
     irefir=1
     irefcr=1
     irefrr=1
-    do 70 iocc = 1, nocc
+    do iocc = 1, nocc
         noddl = ' '
         testok = 'NOOK'
 !
@@ -233,17 +233,17 @@ subroutine trresu(ific, nocc)
             if (nl11 .lt. 80) then
                 write (ific,*) lign1(1:nl11)
             else if (nl11.lt.160) then
-                write (ific,1160) lign1(1:80), lign1(81:nl11)
+                write (ific,116) lign1(1:80), lign1(81:nl11)
             else
-                write (ific,1200) lign1(1:80), lign1(81:160), lign1(&
+                write (ific,120) lign1(1:80), lign1(81:160), lign1(&
                 161:nl11)
             endif
             if (nl22 .lt. 80) then
                 write (ific,*) lign2(1:nl22)
             else if (nl22.lt.160) then
-                write (ific,1160) lign2(1:80), lign2(81:nl22)
+                write (ific,116) lign2(1:80), lign2(81:nl22)
             else
-                write (ific,1200) lign2(1:80), lign2(81:160), lign2(&
+                write (ific,120) lign2(1:80), lign2(81:160), lign2(&
                 161:nl22)
             endif
 !
@@ -304,17 +304,17 @@ subroutine trresu(ific, nocc)
                     if (nl11 .lt. 80) then
                         write (ific,*) lign1(1:nl11)
                     else if (nl11.lt.160) then
-                        write (ific,1160) lign1(1:80),lign1(81:nl11)
+                        write (ific,116) lign1(1:80),lign1(81:nl11)
                     else
-                        write (ific,1200) lign1(1:80),lign1(81:160),&
+                        write (ific,120) lign1(1:80),lign1(81:160),&
                         lign1(161:nl11)
                     endif
                     if (nl22 .lt. 80) then
                         write (ific,*) lign2(1:nl22)
                     else if (nl22.lt.160) then
-                        write (ific,1160) lign2(1:80),lign2(81:nl22)
+                        write (ific,116) lign2(1:80),lign2(81:nl22)
                     else
-                        write (ific,1200) lign2(1:80),lign2(81:160),&
+                        write (ific,120) lign2(1:80),lign2(81:160),&
                         lign2(161:nl22)
                     endif
 !
@@ -328,7 +328,7 @@ subroutine trresu(ific, nocc)
                                 ific, .true., ssigne)
                     if (lref) then
                         call utest1(cham19, typtes, typres, nref, tbref,&
-                                    zi(irefir), zr(irefrr), zc(irefcr), epsi, crit,&
+                                    zi(irefir), zr(irefrr), zc(irefcr), epsir, crit,&
                                     ific, .false., ssigne)
                     endif
                 else
@@ -432,17 +432,17 @@ subroutine trresu(ific, nocc)
                     if (nl11 .lt. 80) then
                         write (ific,*) lign1(1:nl11)
                     else if (nl11.lt.160) then
-                        write (ific,1160) lign1(1:80), lign1(81:nl11)
+                        write (ific,116) lign1(1:80), lign1(81:nl11)
                     else
-                        write (ific,1200) lign1(1:80), lign1(81:160),&
+                        write (ific,120) lign1(1:80), lign1(81:160),&
                         lign1(161:nl11)
                     endif
                     if (nl22 .lt. 80) then
                         write (ific,*) lign2(1:nl22)
                     else if (nl22.lt.160) then
-                        write (ific,1160) lign2(1:80), lign2(81:nl22)
+                        write (ific,116) lign2(1:80), lign2(81:nl22)
                     else
-                        write (ific,1200) lign2(1:80), lign2(81:160),&
+                        write (ific,120) lign2(1:80), lign2(81:160),&
                         lign2(161:nl22)
                     endif
 !
@@ -499,17 +499,17 @@ subroutine trresu(ific, nocc)
                     if (nl11 .lt. 80) then
                         write (ific,*) lign1(1:nl11)
                     else if (nl11.lt.160) then
-                        write (ific,1160) lign1(1:80), lign1(81:nl11)
+                        write (ific,116) lign1(1:80), lign1(81:nl11)
                     else
-                        write (ific,1200) lign1(1:80), lign1(81:160),&
+                        write (ific,120) lign1(1:80), lign1(81:160),&
                         lign1(161:nl11)
                     endif
                     if (nl22 .lt. 80) then
                         write (ific,*) lign2(1:nl22)
                     else if (nl22.lt.160) then
-                        write (ific,1160) lign2(1:80), lign2(81:nl22)
+                        write (ific,116) lign2(1:80), lign2(81:nl22)
                     else
-                        write (ific,1200) lign2(1:80), lign2(81:160),&
+                        write (ific,120) lign2(1:80), lign2(81:160),&
                         lign2(161:nl22)
                     endif
 !
@@ -534,10 +534,10 @@ subroutine trresu(ific, nocc)
 50      continue
         call jedetr(knum)
         write (ific,*)' '
-70  end do
+    end do
 !
-    1160 format(1x,a80,a)
-    1200 format(1x,2(a80),a)
+116 format(1x,a80,a)
+120 format(1x,2(a80),a)
 !
     call jedetr(travr)
     call jedetr(travc)
