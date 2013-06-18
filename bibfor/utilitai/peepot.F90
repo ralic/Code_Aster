@@ -1,17 +1,16 @@
-subroutine peepot(resu, modele, mate, cara, nchar,&
-                  lchar, nh, nbocc)
+subroutine peepot(resu, modele, mate, cara, nh,&
+                  nbocc)
     implicit   none
     include 'jeveux.h'
 !
-    include 'asterc/gettco.h'
-    include 'asterc/getvid.h'
-    include 'asterc/getvr8.h'
-    include 'asterc/getvtx.h'
-    include 'asterc/r8vide.h'
     include 'asterfort/chpve2.h'
     include 'asterfort/dismoi.h'
     include 'asterfort/exlim3.h'
+    include 'asterc/gettco.h'
     include 'asterfort/getvem.h'
+    include 'asterc/getvid.h'
+    include 'asterc/getvr8.h'
+    include 'asterc/getvtx.h'
     include 'asterfort/infniv.h'
     include 'asterfort/jedema.h'
     include 'asterfort/jedetr.h'
@@ -28,6 +27,7 @@ subroutine peepot(resu, modele, mate, cara, nchar,&
     include 'asterfort/mechti.h'
     include 'asterfort/meharm.h'
     include 'asterfort/peenca.h'
+    include 'asterc/r8vide.h'
     include 'asterfort/rsadpa.h'
     include 'asterfort/rsexch.h'
     include 'asterfort/rsutnu.h'
@@ -39,10 +39,11 @@ subroutine peepot(resu, modele, mate, cara, nchar,&
     include 'asterfort/vrcins.h'
     include 'asterfort/vrcref.h'
     include 'asterfort/wkvect.h'
-    integer :: nchar, nh, nbocc
-    character(len=*) :: resu, modele, mate, cara, lchar(*)
+    integer :: nh, nbocc
+    character(len=*) :: resu, modele, mate, cara
 !     ------------------------------------------------------------------
 ! ======================================================================
+!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
@@ -63,22 +64,19 @@ subroutine peepot(resu, modele, mate, cara, nchar,&
 !     ------------------------------------------------------------------
 !
 !
-    integer :: nd, nr, ni, iret, np, nc, jord, jins, jad, nbordr, iord, numord
-    integer :: iainst, jnmo, ibid, ie, ire1, ire2, nt, nm, ng, nbgrma, ig, jgr
-    integer :: nbma, nume, im, nbparr, nbpard, nbpaep, iocc, jma, icheml, ifm
-    integer :: niv, ier
+    integer :: nd, nr, ni, iret, np, nc, jord, jins, jad, nbordr, iord, numord, iainst, jnmo, ibid
+    integer :: ie, ire1, ire2, nt, nm, ng, nbgrma, ig, jgr, nbma, nume, im, nbparr, nbpard, nbpaep
+    integer :: iocc, jma, icheml, ifm, niv, ier
     parameter (nbpaep=2,nbparr=6,nbpard=4)
     real(kind=8) :: prec, varpep(nbpaep), alpha, inst, valer(3), rundf
     character(len=1) :: base
     character(len=2) :: codret
-    character(len=8) :: k8b, noma, resul, crit, nommai, typarr(nbparr)
-    character(len=8) :: typard(nbpard), valk(2), nomgd
+    character(len=8) :: k8b, noma, resul, crit, nommai, typarr(nbparr), typard(nbpard), valk(2)
+    character(len=8) :: nomgd
     character(len=16) :: typres, option, optio2, noparr(nbparr), nopard(nbpard)
-    character(len=19) :: chelem, knum, kins, depla, ligrel, tabtyp(3), chvarc
-    character(len=19) :: chvref
-    character(len=24) :: chtime, chnumc, chamgd, typcha, chgeom, chcara(18)
-    character(len=24) :: chtemp, chharm, compor, mlggma, mlgnma, k24b, nomgrm
-    character(len=24) :: valk2(2)
+    character(len=19) :: chelem, knum, kins, depla, ligrel, tabtyp(3), chvarc, chvref
+    character(len=24) :: chtime, chnumc, chamgd, typcha, chgeom, chcara(18), chtemp, chharm
+    character(len=24) :: compor, mlggma, mlgnma, k24b, nomgrm, valk2(2)
 !
     logical :: exitim
     complex(kind=8) :: c16b, calpha
@@ -348,7 +346,7 @@ subroutine peepot(resu, modele, mate, cara, nchar,&
         if (icheml .ne. 0) call jedetr(chelem)
 72      continue
         call jedema()
-70  end do
+70  continue
 !
 80  continue
     call jedetr(knum)

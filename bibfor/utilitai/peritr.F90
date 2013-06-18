@@ -1,17 +1,16 @@
-subroutine peritr(resu, modele, cara, nchar, lchar,&
-                  nh, nbocc)
+subroutine peritr(resu, modele, cara, nh, nbocc)
     implicit none
     include 'jeveux.h'
 !
-    include 'asterc/gettco.h'
-    include 'asterc/getvid.h'
-    include 'asterc/getvr8.h'
-    include 'asterc/getvtx.h'
     include 'asterfort/calcul.h'
     include 'asterfort/chpve2.h'
     include 'asterfort/copisd.h'
     include 'asterfort/detrsd.h'
+    include 'asterc/gettco.h'
     include 'asterfort/getvem.h'
+    include 'asterc/getvid.h'
+    include 'asterc/getvr8.h'
+    include 'asterc/getvtx.h'
     include 'asterfort/infniv.h'
     include 'asterfort/jedema.h'
     include 'asterfort/jedetr.h'
@@ -38,9 +37,10 @@ subroutine peritr(resu, modele, cara, nchar, lchar,&
     include 'asterfort/u2mesk.h'
     include 'asterfort/u2mess.h'
     include 'asterfort/wkvect.h'
-    integer :: nchar, nh, nbocc
-    character(len=*) :: resu, modele, cara, lchar(*)
+    integer :: nh, nbocc
+    character(len=*) :: resu, modele, cara
 !     ------------------------------------------------------------------
+!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -69,11 +69,10 @@ subroutine peritr(resu, modele, cara, nchar, lchar,&
     parameter (mxvale=5,nbparr=6,nbpard=4)
     real(kind=8) :: r8b, prec, inst, rsr0, volu, numema, triax, lnrsr0
     real(kind=8) :: vr(5), rtval(2), valer(3)
-    character(len=8) :: k8b, noma, resul, crit, nomail, nommai, lpain(7)
-    character(len=8) :: lpaout(2), typarr(nbparr), typard(nbpard), valek(2)
-    character(len=8) :: tabcmp(5)
-    character(len=16) :: typres, option, optio2, optcal(2), toptca(2)
-    character(len=16) :: noparr(nbparr), nopard(nbpard), tabtyp(3)
+    character(len=8) :: k8b, noma, resul, crit, nomail, nommai, lpain(7), lpaout(2)
+    character(len=8) :: typarr(nbparr), typard(nbpard), valek(2), tabcmp(5)
+    character(len=16) :: typres, option, optio2, optcal(2), toptca(2), noparr(nbparr)
+    character(len=16) :: nopard(nbpard), tabtyp(3)
     character(len=19) :: chelem, knum, kins, varnul
     character(len=24) :: chgeom, chcara(18), chharm, ligrel, lchin(7)
     character(len=24) :: mlggma, mlgnma, compor, nomma2
@@ -430,7 +429,7 @@ subroutine peritr(resu, modele, cara, nchar, lchar,&
         call detrsd('CARTE', '&&PERITR.CH.SOUSOP')
         call detrsd('CHAM_ELEM', chelem)
         call jedema()
-90  end do
+90  continue
 !
 100  continue
 !

@@ -16,16 +16,11 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine peweib(resu, modele, mate, cara, chmat,&
-                      nh, nbocc, iresu,nomcmd)
-        character(*) :: resu
-        character(*) :: modele
-        character(*) :: mate
-        character(*) :: cara
-        character(len=8) :: chmat
+    subroutine medomp(result,modele,mate,carele,nh)
+        character(len=8) :: result
+        character(len=8) :: modele
+        character(len=24) :: mate
+        character(len=8) :: carele
         integer :: nh
-        integer :: nbocc
-        integer :: iresu
-        character(*) :: nomcmd
-    end subroutine peweib
+    end subroutine medomp
 end interface

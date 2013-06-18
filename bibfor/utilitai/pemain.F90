@@ -1,14 +1,14 @@
-subroutine pemain(resu, modele, mate, cara, nchar,&
-                  lchar, nh, nbocc, deform)
+subroutine pemain(resu, modele, mate, cara, nh,&
+                  nbocc, deform)
     implicit   none
     include 'jeveux.h'
 !
-    include 'asterc/getvr8.h'
-    include 'asterc/getvtx.h'
     include 'asterfort/calcul.h'
     include 'asterfort/detrsd.h'
     include 'asterfort/exlim3.h'
     include 'asterfort/getvem.h'
+    include 'asterc/getvr8.h'
+    include 'asterc/getvtx.h'
     include 'asterfort/infniv.h'
     include 'asterfort/jedema.h'
     include 'asterfort/jedetr.h'
@@ -26,9 +26,10 @@ subroutine pemain(resu, modele, mate, cara, nchar,&
     include 'asterfort/u2mesk.h'
     include 'asterfort/vtgpld.h'
     include 'asterfort/wkvect.h'
-    integer :: nchar, nh, nbocc
-    character(len=*) :: resu, modele, mate, cara, lchar(*), deform
+    integer :: nh, nbocc
+    character(len=*) :: resu, modele, mate, cara, deform
 !     ------------------------------------------------------------------
+!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -49,9 +50,9 @@ subroutine pemain(resu, modele, mate, cara, nchar,&
 !     TRAITEMENT DU MOT CLE-FACTEUR "MASS_INER"
 !     ------------------------------------------------------------------
 !
-    integer :: mxvale, nbparr, ibid, iret, lvale, iocc, nt, ng, nr, nm, nbgrma
-    integer :: jgr, ig, nbma, jad, nbmail, jma, im, nume, nb, ifm, niv, mxval1
-    integer :: nbpar1, mxval2, nbpar2, iorig, nre, icage
+    integer :: mxvale, nbparr, ibid, iret, lvale, iocc, nt, ng, nr, nm, nbgrma, jgr, ig, nbma, jad
+    integer :: nbmail, jma, im, nume, nb, ifm, niv, mxval1, nbpar1, mxval2, nbpar2, iorig, nre
+    integer :: icage
     parameter (mxval1=16,nbpar1=18)
     parameter (mxval2=25,nbpar2=27)
     real(kind=8) :: zero, orig(3), r8b
@@ -146,7 +147,7 @@ subroutine pemain(resu, modele, mate, cara, nchar,&
             nbparr = nbpar2
             goto 20
         endif
-10  end do
+10  continue
 20  continue
 !
 !     --- CREATION DE LA TABLE ---
@@ -228,7 +229,7 @@ subroutine pemain(resu, modele, mate, cara, nchar,&
 40          continue
             call jedetr('&&PEMAIN_MAILLE')
         endif
-50  end do
+50  continue
 !
 ! --- MENAGE
     call detrsd('CHAM_ELEM', '&&PEMAIN.MASS_INER')

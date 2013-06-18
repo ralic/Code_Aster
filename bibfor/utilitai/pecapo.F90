@@ -1,12 +1,10 @@
-subroutine pecapo(resu, modele, cara, nchar, lchar,&
-                  nh)
+subroutine pecapo(resu, modele, cara, nh)
     implicit   none
     include 'jeveux.h'
+    include 'asterfort/assert.h'
     include 'asterc/getvid.h'
     include 'asterc/getvr8.h'
     include 'asterc/getvtx.h'
-    include 'asterc/r8dgrd.h'
-    include 'asterfort/assert.h'
     include 'asterfort/jedema.h'
     include 'asterfort/jedetr.h'
     include 'asterfort/jemarq.h'
@@ -14,6 +12,7 @@ subroutine pecapo(resu, modele, cara, nchar, lchar,&
     include 'asterfort/pecap1.h'
     include 'asterfort/pecap2.h'
     include 'asterfort/pecap3.h'
+    include 'asterc/r8dgrd.h'
     include 'asterfort/rcvale.h'
     include 'asterfort/tbajli.h'
     include 'asterfort/tbajpa.h'
@@ -24,9 +23,10 @@ subroutine pecapo(resu, modele, cara, nchar, lchar,&
     include 'asterfort/u2mesk.h'
     include 'asterfort/u2mess.h'
     include 'asterfort/wkvect.h'
-    integer :: nchar, nh
-    character(len=*) :: resu, modele, cara, lchar(*)
+    integer :: nh
+    character(len=*) :: resu, modele, cara
 !     ------------------------------------------------------------------
+!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -47,19 +47,18 @@ subroutine pecapo(resu, modele, cara, nchar, lchar,&
 !     TRAITEMENT DU MOT CLE-FACTEUR "CARA_POUTRE"
 !     ------------------------------------------------------------------
 !
-    integer :: nbtors, nbgauc, nbcisa, iret, nt, ibid, nopt, ntab, nct, ilign
-    integer :: ncty, nctz, ngm, ngi, ngri, idgrmi, nrt, nbrt
+    integer :: nbtors, nbgauc, nbcisa, iret, nt, ibid, nopt, ntab, nct, ilign, ncty, nctz, ngm
+    integer :: ngi, ngri, idgrmi, nrt, nbrt
     parameter    ( nbtors = 1 , nbgauc = 1 , nbcisa = 8 , nbrt = 1 )
-    real(kind=8) :: valpar(nbcisa), ay, az, ey, ez, pcty, pctz, r8b, rt, jx, s
-    real(kind=8) :: yg, zg, iy, iz, alpha, iomega
-    character(len=8) :: k8b, temper, tempe1, tempe2, ptors(nbtors)
-    character(len=8) :: pgauc(nbgauc), pcisa(nbcisa), prt(nbrt)
+    real(kind=8) :: valpar(nbcisa), ay, az, ey, ez, pcty, pctz, r8b, rt, jx, s, yg, zg, iy, iz
+    real(kind=8) :: alpha, iomega
+    character(len=8) :: k8b, temper, tempe1, tempe2, ptors(nbtors), pgauc(nbgauc), pcisa(nbcisa)
+    character(len=8) :: prt(nbrt)
     character(len=16) :: option
     character(len=19) :: nomtab
     character(len=24) :: chgeom, chcara(18), chharm, nogrma, noma, nomail
     complex(kind=8) :: c16b
-    real(kind=8) :: k1, k2, ky, kz, kyeq, kzeq, iyeq, izeq, seq, ee, gg, hh, ksi
-    real(kind=8) :: nu
+    real(kind=8) :: k1, k2, ky, kz, kyeq, kzeq, iyeq, izeq, seq, ee, gg, hh, ksi, nu
     real(kind=8) :: c1, c2, phi1, phi2, alphar, cos2, sin2, alpheq, ygeq, zgeq
     character(len=16) :: ll
     character(len=8) :: mater

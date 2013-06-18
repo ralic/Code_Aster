@@ -1,20 +1,19 @@
 subroutine peweib(resu, modele, mate, cara, chmat,&
-                  nchar, lchar, nh, nbocc, iresu,&
-                  nomcmd)
+                  nh, nbocc, iresu, nomcmd)
     implicit none
     include 'jeveux.h'
 !
-    include 'asterc/gettco.h'
-    include 'asterc/getvid.h'
-    include 'asterc/getvr8.h'
-    include 'asterc/getvtx.h'
     include 'asterfort/calcul.h'
     include 'asterfort/chmrck.h'
     include 'asterfort/chpve2.h'
     include 'asterfort/copisd.h'
     include 'asterfort/detrsd.h'
     include 'asterfort/exlim3.h'
+    include 'asterc/gettco.h'
     include 'asterfort/getvem.h'
+    include 'asterc/getvid.h'
+    include 'asterc/getvr8.h'
+    include 'asterc/getvtx.h'
     include 'asterfort/infniv.h'
     include 'asterfort/jedema.h'
     include 'asterfort/jedetr.h'
@@ -39,9 +38,10 @@ subroutine peweib(resu, modele, mate, cara, chmat,&
     include 'asterfort/u2mess.h'
     include 'asterfort/vrcins.h'
     include 'asterfort/wkvect.h'
-    integer :: iresu, nchar, nh, nbocc
-    character(len=*) :: resu, modele, mate, cara, nomcmd, lchar(*)
+    integer :: iresu, nh, nbocc
+    character(len=*) :: resu, modele, mate, cara, nomcmd
 !     ------------------------------------------------------------------
+!            CONFIGURATION MANAGEMENT OF EDF VERSION
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -73,14 +73,14 @@ subroutine peweib(resu, modele, mate, cara, chmat,&
     integer :: nbmail, jma, im, nume, imc, ier
     integer :: numord, iainst, iord, nbmtrc, lvale, nbin, iocc
     parameter (mxvale=3,nbparr=7,nbpard=5)
-    real(kind=8) :: r8b, rtval(mxvale), prec, inst, valer(4), vref, coesym, mref
-    real(kind=8) :: sref, probaw, sigmaw
+    real(kind=8) :: r8b, rtval(mxvale), prec, inst, valer(4), vref, coesym, mref, sref, probaw
+    real(kind=8) :: sigmaw
     character(len=1) :: base
     character(len=2) :: codret
-    character(len=8) :: k8b, noma, resul, crit, chmat, nommai, typarr(nbparr)
-    character(len=8) :: typard(nbpard), lpain(9), lpaout(2), valek(2)
-    character(len=16) :: typres, option, optio2, optcal(2), toptca(2), nomrc
-    character(len=16) :: noparr(nbparr), nopard(nbpard), motcl1, motcl2, motcl3
+    character(len=8) :: k8b, noma, resul, crit, chmat, nommai, typarr(nbparr), typard(nbpard)
+    character(len=8) :: lpain(9), lpaout(2), valek(2)
+    character(len=16) :: typres, option, optio2, optcal(2), toptca(2), nomrc, noparr(nbparr)
+    character(len=16) :: nopard(nbpard), motcl1, motcl2, motcl3
     character(len=19) :: chelem, knum, kins, tabtyp(3), chvarc
     character(len=24) :: chgeom, chcara(18), chharm
     character(len=24) :: valk(2), nomgrm
@@ -249,7 +249,7 @@ subroutine peweib(resu, modele, mate, cara, chmat,&
         if (zk8(ibik+i-1) .eq. 'SIGM_CNV') sref = zr(ibid+i-1)
         if (zk8(ibik+i-1) .eq. 'M       ') mref = zr(ibid+i-1)
         if (zk8(ibik+i-1) .eq. 'VOLU_REF') vref = zr(ibid+i-1)
-30  end do
+30  continue
 ! CAS WEIBULL_FO
     if (sref .eq. 0.d0) then
         do 40 i = 1, imc
@@ -467,7 +467,7 @@ subroutine peweib(resu, modele, mate, cara, chmat,&
         call detrsd('CHAMP_GD', '&&PEWEIB.EPSG')
         call detrsd('CARTE', '&&PEWEIB.CH.SOUSOP')
         call jedema()
-80  end do
+80  continue
 ! FIN BOUCLE SUR LES NUMEROS D ORDRE
 90  continue
 !

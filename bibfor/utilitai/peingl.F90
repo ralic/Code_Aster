@@ -1,31 +1,8 @@
-subroutine peingl(resu, modele, mate, cara, nchar,&
-                  lchar, nh, nbocc, motfaz)
-!
-! COPYRIGHT (C) 1991 - 2013  EDF R&D                WWW.CODE-ASTER.ORG
-!
-! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
-! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
-! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
-! (AT YOUR OPTION) ANY LATER VERSION.
-!
-! THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
-! WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
-! MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
-! GENERAL PUBLIC LICENSE FOR MORE DETAILS.
-!
-! YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
-! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
-! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
-!
-! aslint: disable=W1501
+subroutine peingl(resu, modele, mate, cara, nh,&
+                  nbocc, motfaz)
     implicit   none
     include 'jeveux.h'
 !
-    include 'asterc/gettco.h'
-    include 'asterc/getvid.h'
-    include 'asterc/getvr8.h'
-    include 'asterc/getvtx.h'
-    include 'asterc/r8prem.h'
     include 'asterfort/calcul.h'
     include 'asterfort/codent.h'
     include 'asterfort/detrsd.h'
@@ -33,7 +10,11 @@ subroutine peingl(resu, modele, mate, cara, nchar,&
     include 'asterfort/etenca.h'
     include 'asterfort/exisdg.h'
     include 'asterfort/exlim3.h'
+    include 'asterc/gettco.h'
     include 'asterfort/getvem.h'
+    include 'asterc/getvid.h'
+    include 'asterc/getvr8.h'
+    include 'asterc/getvtx.h'
     include 'asterfort/jedema.h'
     include 'asterfort/jedetr.h'
     include 'asterfort/jeexin.h'
@@ -46,6 +27,7 @@ subroutine peingl(resu, modele, mate, cara, nchar,&
     include 'asterfort/jexnum.h'
     include 'asterfort/mecham.h'
     include 'asterfort/mesomm.h'
+    include 'asterc/r8prem.h'
     include 'asterfort/rsadpa.h'
     include 'asterfort/rsexch.h'
     include 'asterfort/rsutnu.h'
@@ -57,9 +39,26 @@ subroutine peingl(resu, modele, mate, cara, nchar,&
     include 'asterfort/vrcins.h'
     include 'asterfort/vrcref.h'
     include 'asterfort/wkvect.h'
-    integer :: nchar, nh, nbocc
-    character(len=*) :: resu, modele, mate, cara, lchar(1), motfaz
-!.======================================================================
+    integer :: nh, nbocc
+    character(len=*) :: resu, modele, mate, cara, motfaz
+! ======================================================================
+!            CONFIGURATION MANAGEMENT OF EDF VERSION
+! COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
+! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+! (AT YOUR OPTION) ANY LATER VERSION.
+!
+! THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+! WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+! MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+! GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+!
+! YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+!    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
+! ======================================================================
+! aslint: disable=W1501
 !
 !      PEINGL  --  OPERATEUR POST_ELEM
 !                  TRAITEMENT DU MOT-FACTEUR "INDIC_ENER"
@@ -142,8 +141,6 @@ subroutine peingl(resu, modele, mate, cara, nchar,&
 !                                  LE CALCUL
 !    MATE           IN     K*      NOM DU CHAMP MATERIAU
 !    CARA           IN     K*      NOM DU CHAMP DES CARA_ELEM
-!    NCHAR          IN     I       NOMBRE DE  CHARGES
-!    LCHAR(1)       IN     K*      LISTE  DES CHARGES
 !    NH             IN     I       NUMERO D'HARMONIQUE DE FOURIER
 !    NBOCC          IN     I       NOMBRE D'OCCURENCES DU MOT-FACTEUR
 !                                  INDIC_ENER
@@ -155,10 +152,10 @@ subroutine peingl(resu, modele, mate, cara, nchar,&
 !
 !.========================= DEBUT DES DECLARATIONS ====================
 ! -----  VARIABLES LOCALES
-    integer :: nbparr, nr, np, nc, iret, jord, nbordr, jins, iord, iainst
-    integer :: numord, nbin, nt, nm, ng, ibid, nbgrma, jgr, ig, nbma, jad
-    integer :: nbmail, jma, im, iocc, nume, nbout, numorm, idesc, ngdmax, ncmpmx
-    integer :: ivale, iptma, igd, idebgd, dg, ima, iconex, nbno, nec, ivari, i
+    integer :: nbparr, nr, np, nc, iret, jord, nbordr, jins, iord, iainst, numord, nbin, nt, nm
+    integer :: ng, ibid, nbgrma, jgr, ig, nbma, jad, nbmail, jma, im, iocc, nume, nbout, numorm
+    integer :: idesc, ngdmax, ncmpmx, ivale, iptma, igd, idebgd, dg, ima, iconex, nbno, nec, ivari
+    integer :: i
     real(kind=8) :: work(5), indic1, volume, inst, valr(6), zero, prec, energi
     complex(kind=8) :: c16b
     character(len=2) :: codret
@@ -222,10 +219,10 @@ subroutine peingl(resu, modele, mate, cara, nchar,&
     energi = zero
     do 8 i = 1, 5
         work(i)=0.d0
- 8  end do
+ 8  continue
     do 9 i = 1, 6
         valr(i)=0.d0
- 9  end do
+ 9  continue
 !
 ! --- RECUPERATION DU RESULTAT A TRAITER :
 !     ----------------------------------
@@ -815,7 +812,7 @@ subroutine peingl(resu, modele, mate, cara, nchar,&
         call detrsd('CHAM_ELEM', chvref)
         call jedetr(compor//'.PTMA')
         call jedema()
-60  end do
+60  continue
 70  continue
     call jedetr(knum)
     call jedetr(kins)

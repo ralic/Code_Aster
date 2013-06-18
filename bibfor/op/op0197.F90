@@ -460,8 +460,7 @@ subroutine op0197()
 !
         cara = '        '
         call peweib(zk16(itabw-1+iresu), zk8(imod-1+iresu), mate, cara, chcop1,&
-                    nchar, zk8(jcha), 0, 1, iresu,&
-                    nomcmd)
+                    0, 1, iresu,nomcmd)
         call jedetr('&&TE0331')
         call jedetr('&&OP0197.CHARGES')
 !
