@@ -130,19 +130,13 @@ subroutine rvpara(nomtab, mcf, nbpost)
 !
 ! 2.1. ==> ON CHERCHE SI C'EST LA BONNE TABLE
 !
-    call getvid(mcf, 'RESULTAT', iocc, iarg, 0,&
-                k8b, n3)
-!
-!
-!
-    call getvid(mcf, 'CHEMIN', iocc, iarg, 0,&
-                k8b, n1)
+    call getvid(mcf, 'CHEMIN', iocc, iarg, 0, k8b, n1)
     if (n1 .ne. 0) jchem = jchem + 1
 !
-    call getvid(mcf, 'CHAM_GD', iocc, iarg, 0,&
-                k8b, n2)
+    call getvid(mcf, 'CHAM_GD', iocc, iarg, 0, k8b, n2)
     if (n2 .ne. 0) jcham = jcham + 1
 !
+    call getvid(mcf, 'RESULTAT', iocc, iarg, 0, k8b, n3)
     if (n3 .ne. 0) then
         jresu = jresu + 1
         call getvid(mcf, 'RESULTAT', iocc, iarg, 1,&
@@ -168,36 +162,28 @@ subroutine rvpara(nomtab, mcf, nbpost)
         endif
     endif
 !
-    call getvid(mcf, 'LIST_ORDRE', iocc, iarg, 0,&
-                k8b, n11)
+    call getvid(mcf, 'LIST_ORDRE', iocc, iarg, 0, k8b, n11)
     if (n11 .ne. 0) jordr = jordr + 1
 !
-    call getvis(mcf, 'NUME_ORDRE', iocc, iarg, 0,&
-                ibid, n12)
+    call getvis(mcf, 'NUME_ORDRE', iocc, iarg, 0, ibid, n12)
     if (n12 .ne. 0) jordr = jordr + 1
 !
-    call getvid(mcf, 'LIST_MODE', iocc, iarg, 0,&
-                k8b, n13)
+    call getvid(mcf, 'LIST_MODE', iocc, iarg, 0, k8b, n13)
     if (n13 .ne. 0) jmode = jmode + 1
 !
-    call getvis(mcf, 'NUME_MODE', iocc, iarg, 0,&
-                ibid, n14)
+    call getvis(mcf, 'NUME_MODE', iocc, iarg, 0, ibid, n14)
     if (n14 .ne. 0) jmode = jmode + 1
 !
-    call getvid(mcf, 'LIST_INST', iocc, iarg, 0,&
-                k8b, n15)
+    call getvid(mcf, 'LIST_INST', iocc, iarg, 0, k8b, n15)
     if (n15 .ne. 0) jinst = jinst + 1
 !
-    call getvr8(mcf, 'INST', iocc, iarg, 0,&
-                r8b, n16)
+    call getvr8(mcf, 'INST', iocc, iarg, 0, r8b, n16)
     if (n16 .ne. 0) jinst = jinst + 1
 !
-    call getvid(mcf, 'LIST_FREQ', iocc, iarg, 0,&
-                k8b, n17)
+    call getvid(mcf, 'LIST_FREQ', iocc, iarg, 0, k8b, n17)
     if (n17 .ne. 0) jfreq = jfreq + 1
 !
-    call getvr8(mcf, 'FREQ', iocc, iarg, 0,&
-                r8b, n18)
+    call getvr8(mcf, 'FREQ', iocc, iarg, 0, r8b, n18)
     if (n18 .ne. 0) jfreq = jfreq + 1
 !
     if ((n2+n11+n12+n13+n14+n15+n16+n17+n18) .eq. 0) jordr = jordr+ 1
@@ -208,27 +194,21 @@ subroutine rvpara(nomtab, mcf, nbpost)
         jncmp = jncmp + 1
         nomobj = '&&'//nompro//'.NCMP'
         if (n2 .ne. 0) then
-            call getvid(mcf, 'CHAM_GD', iocc, iarg, 1,&
-                        nomsy, n2)
+            call getvid(mcf, 'CHAM_GD', iocc, iarg, 1, nomsy, n2)
             call utncmp(nomsy, nbc, nomobj)
         else
-            call getvid(mcf, 'RESULTAT', iocc, iarg, 1,&
-                        resu, n3)
-            call getvtx(mcf, 'NOM_CHAM', iocc, iarg, 1,&
-                        nomsy, n1)
+            call getvid(mcf, 'RESULTAT', iocc, iarg, 1, resu, n3)
+            call getvtx(mcf, 'NOM_CHAM', iocc, iarg, 1, nomsy, n1)
 !
             call rsorac(resu, 'LONUTI', ibid, r8b, k8b,&
-                        c16b, r8b, k8b, nbordr, 1,&
-                        ibid)
+                        c16b, r8b, k8b, nbordr, 1, ibid)
             knume = '&&'//nompro//'.NUME_ORDRE'
             call wkvect(knume, 'V V I', nbordr, jnume)
             call rsorac(resu, 'TOUT_ORDRE', ibid, r8b, k8b,&
-                        c16b, r8b, k8b, zi(jnume), nbordr,&
-                        ibid)
+                        c16b, r8b, k8b, zi(jnume), nbordr, ibid)
             do 14 i = 1, nbordr
                 nume = zi(jnume+i-1)
-                call rsexch(' ', resu, nomsy, nume, chextr,&
-                            iret)
+                call rsexch(' ', resu, nomsy, nume, chextr, iret)
                 if (iret .eq. 0) goto 16
 14          continue
             call u2mesk('F', 'POSTRELE_9', 1, nomsy)
@@ -253,16 +233,13 @@ subroutine rvpara(nomtab, mcf, nbpost)
         call jedetr(nomobj)
     endif
 !
-    call getvtx(mcf, 'NOM_CMP', iocc, iarg, 0,&
-                k8b, n1)
+    call getvtx(mcf, 'NOM_CMP', iocc, iarg, 0, k8b, n1)
     if (n1 .ne. 0) then
 !
-        call getvtx(mcf, 'TRAC_NOR', iocc, iarg, 0,&
-                    k8b, n12)
+        call getvtx(mcf, 'TRAC_NOR', iocc, iarg, 0, k8b, n12)
         if (n12 .ne. 0) jtran = jtran + 1
 !
-        call getvtx(mcf, 'TRAC_DIR', iocc, iarg, 0,&
-                    k8b, n14)
+        call getvtx(mcf, 'TRAC_DIR', iocc, iarg, 0, k8b, n14)
         if (n14 .ne. 0) jtrad = jtrad + 1
 !
         if ((n12+n14) .ne. 0) goto 24
@@ -327,14 +304,11 @@ subroutine rvpara(nomtab, mcf, nbpost)
     endif
 24  continue
 !
-    call getvtx(mcf, 'ELEM_PRINCIPAUX', iocc, iarg, 0,&
-                k8b, n1)
+    call getvtx(mcf, 'ELEM_PRINCIPAUX', iocc, iarg, 0, k8b, n1)
     if (n1 .ne. 0) jprin = jprin + 1
 !
-    call getvtx(mcf, 'RESULTANTE', iocc, iarg, 0,&
-                k8b, n1)
-    call getvtx(mcf, 'MOMENT', iocc, iarg, 0,&
-                k8b, n2)
+    call getvtx(mcf, 'RESULTANTE', iocc, iarg, 0, k8b, n1)
+    call getvtx(mcf, 'MOMENT', iocc, iarg, 0, k8b, n2)
     if ((n1 .ne. 0) .and. (n2 .ne. 0)) jmome = jmome + 1
     if ((n1 .ne. 0) .and. (n2 .eq. 0)) then
         jncmp = jncmp + 1
@@ -372,26 +346,21 @@ subroutine rvpara(nomtab, mcf, nbpost)
     if (k16b .eq. 'EXTRACTION') then
         lextr = .true.
 !
-        call getvtx(mcf, 'INVARIANT', iocc, iarg, 0,&
-                    k8b, n2)
+        call getvtx(mcf, 'INVARIANT', iocc, iarg, 0, k8b, n2)
         if (n2 .ne. 0) jinva = jinva + 1
 !
         if (n1 .eq. 0) jabsc = jabsc + 1
 !
-        call getvtx(mcf, 'NOEUD', iocc, iarg, 0,&
-                    k8b, n2)
+        call getvtx(mcf, 'NOEUD', iocc, iarg, 0, k8b, n2)
         if ((n1 .eq. 0) .and. (n2 .ne. 0)) jnoeu = jnoeu + 1
 !
-        call getvtx(mcf, 'GROUP_NO', iocc, iarg, 0,&
-                    k8b, n2)
+        call getvtx(mcf, 'GROUP_NO', iocc, iarg, 0, k8b, n2)
         if ((n1 .eq. 0) .and. (n2 .ne. 0)) jnoeu = jnoeu + 1
     endif
 !
-    call getvtx(mcf, 'MOYE_NOEUD', iocc, iarg, 0,&
-                k8b, n1)
+    call getvtx(mcf, 'MOYE_NOEUD', iocc, iarg, 0, k8b, n1)
     if (n1 .ne. 0) then
-        call getvtx(mcf, 'MOYE_NOEUD', iocc, iarg, 1,&
-                    k8b, n1)
+        call getvtx(mcf, 'MOYE_NOEUD', iocc, iarg, 1, k8b, n1)
         if (k8b(1:3) .eq. 'NON') jmail = jmail + 1
     endif
 !
@@ -435,22 +404,23 @@ subroutine rvpara(nomtab, mcf, nbpost)
         nopara(nbp) = 'NOM_CHAM'
         typara(nbp) = 'K16'
     endif
-    if (jordr .ne. 0) then
+!
+    if ((jresu.ne.0.and.jordr.eq.0) .or. (jordr.ne.0)) then
         nbp = nbp + 1
         nopara(nbp) = 'NUME_ORDRE'
         typara(nbp) = 'I'
     endif
-    if ((lextr .or. lmoye) .and. jmode .ne. 0) then
+    if (jmode .ne. 0) then
         nbp = nbp + 1
         nopara(nbp) = 'NUME_MODE'
         typara(nbp) = 'I'
     endif
-    if ((lextr .or. lmoye) .and. jinst .ne. 0) then
+    if (jinst .ne. 0) then
         nbp = nbp + 1
         nopara(nbp) = 'INST'
         typara(nbp) = 'R'
     endif
-    if ((lextr .or. lmoye) .and. jfreq .ne. 0) then
+    if (jfreq .ne. 0) then
         nbp = nbp + 1
         nopara(nbp) = 'FREQ'
         typara(nbp) = 'R'
@@ -602,11 +572,6 @@ subroutine rvpara(nomtab, mcf, nbpost)
         typara(nbp) = 'K16'
     endif
     if (lmima) then
-        if (jresu .ne. 0 .and. jordr .eq. 0) then
-            nbp = nbp + 1
-            nopara(nbp) = 'NUME_ORDRE'
-            typara(nbp) = 'I'
-        endif
         nbp = nbp + 1
         nopara(nbp) = 'EXTREMA'
         typara(nbp) = 'K8'
@@ -625,11 +590,6 @@ subroutine rvpara(nomtab, mcf, nbpost)
     endif
 !
     if (lmoygr) then
-        if (jresu .ne. 0 .and. jordr .eq. 0) then
-            nbp = nbp + 1
-            nopara(nbp) = 'NUME_ORDRE'
-            typara(nbp) = 'I'
-        endif
         nbp = nbp + 1
         nopara(nbp) = 'CMP'
         typara(nbp) = 'K8'

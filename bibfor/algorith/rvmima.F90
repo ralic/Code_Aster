@@ -12,9 +12,13 @@ subroutine rvmima(nomres, iocc)
     include 'asterfort/jeveuo.h'
     include 'asterfort/prexel.h'
     include 'asterfort/prexno.h'
+    include 'asterfort/rsadpa.h'
     include 'asterfort/rsexch.h'
+    include 'asterfort/rsnopa.h'
     include 'asterfort/rsutnu.h'
     include 'asterfort/tbajli.h'
+    include 'asterfort/tbajpa.h'
+    include 'asterfort/tbexip.h'
     include 'asterfort/u2mesk.h'
     include 'asterfort/u2mess.h'
     integer :: iocc
@@ -41,30 +45,30 @@ subroutine rvmima(nomres, iocc)
 !
 ! ----------------------------------------------------------------------
 !
-    integer :: nbpano, nbpan2, nbpael, nbpae2
-    parameter  ( nbpano=8 , nbpan2=6 , nbpael=9 , nbpae2=7 )
-    character(len=16) :: nopano(nbpano), nopael(nbpael)
-    character(len=16) :: nopan2(nbpan2), nopae2(nbpae2)
+    integer :: nbpano, nbpael
+    parameter  ( nbpano=6 , nbpael=7 )
+    character(len=16) :: nopano(nbpano), nopael(nbpael), nopara(200)
 !
     integer :: ibid, n1, np, nc, iret
-    integer :: jordr, i100, nbordr, iord, vali(2), nbc
+    integer :: jordr, i100, nbordr, iord, vali(20), nbc, nbpar
     integer :: ispmax, ispmin, isamax, isamin
-    real(kind=8) :: prec, valr(2), valmax, valmin, vaamax, vaamin
+    integer :: iadr, iac, ii, ik, ir, jaces, nbacc
+    real(kind=8) :: prec, valr(200), valmax, valmin, vaamax, vaamin
     complex(kind=8) :: c16b
-    character(len=8) :: crit, resu, mamax, nomax, mamin, nomin, tych
+    character(len=3) :: typpar
+    character(len=8) :: crit, resu, mamax, nomax, mamin, nomin, tych, ctype
     character(len=8) :: maamax, noamax, maamin, noamin
     character(len=8) :: cpmax, cpmin, cpamax, cpamin
-    character(len=16) :: nomcha, valk(9), intitu
+    character(len=16) :: nomcha, intitu
     character(len=19) :: knum, champ
+    character(len=24) :: nomjv
+    character(len=80) :: valk(200)
     integer :: iarg
+    logical :: exist
 !
-    data nopano / 'INTITULE', 'RESU', 'NOM_CHAM', 'NUME_ORDRE',&
+    data nopano / 'INTITULE', 'CHAM_GD',&
      &              'EXTREMA', 'NOEUD', 'CMP', 'VALE' /
-    data nopan2 / 'INTITULE', 'CHAM_GD',&
-     &              'EXTREMA', 'NOEUD', 'CMP', 'VALE' /
-    data nopael / 'INTITULE', 'RESU', 'NOM_CHAM', 'NUME_ORDRE',&
-     &              'EXTREMA', 'MAILLE', 'NOEUD', 'CMP', 'VALE' /
-    data nopae2 / 'INTITULE', 'CHAM_GD',&
+    data nopael / 'INTITULE', 'CHAM_GD',&
      &              'EXTREMA', 'MAILLE', 'NOEUD', 'CMP', 'VALE' /
 ! ---------------------------------------------------------------------
 !
@@ -74,6 +78,7 @@ subroutine rvmima(nomres, iocc)
 !
     call getvtx('ACTION', 'INTITULE', iocc, iarg, 1,&
                 intitu, n1)
+    nopara(1) = 'INTITULE'
     valk(1) = intitu
 !
 ! ----- TRAITEMENT DU CHAMP_GD  -----
@@ -92,25 +97,25 @@ subroutine rvmima(nomres, iocc)
             valk(3) = 'MAX'
             valk(4) = nomax
             valk(5) = cpmax
-            call tbajli(nomres, nbpan2, nopan2, vali, valr,&
+            call tbajli(nomres, nbpano, nopano, vali, valr,&
                         c16b, valk, 0)
             valr(1) = valmin
             valk(3) = 'MIN'
             valk(4) = nomin
             valk(5) = cpmin
-            call tbajli(nomres, nbpan2, nopan2, vali, valr,&
+            call tbajli(nomres, nbpano, nopano, vali, valr,&
                         c16b, valk, 0)
             valr(1) = vaamax
             valk(3) = 'MAXI_ABS'
             valk(4) = noamax
             valk(5) = cpamax
-            call tbajli(nomres, nbpan2, nopan2, vali, valr,&
+            call tbajli(nomres, nbpano, nopano, vali, valr,&
                         c16b, valk, 0)
             valr(1) = vaamin
             valk(3) = 'MINI_ABS'
             valk(4) = noamin
             valk(5) = cpamin
-            call tbajli(nomres, nbpan2, nopan2, vali, valr,&
+            call tbajli(nomres, nbpano, nopano, vali, valr,&
                         c16b, valk, 0)
         else if (tych(1:4).eq.'ELNO') then
             call prexel(champ, iocc, mamax, nomax, ispmax,&
@@ -124,28 +129,28 @@ subroutine rvmima(nomres, iocc)
             valk(4) = mamax
             valk(5) = nomax
             valk(6) = cpmax
-            call tbajli(nomres, nbpae2, nopae2, vali, valr,&
+            call tbajli(nomres, nbpael, nopael, vali, valr,&
                         c16b, valk, 0)
             valr(1) = valmin
             valk(3) = 'MIN'
             valk(4) = mamin
             valk(5) = nomin
             valk(6) = cpmin
-            call tbajli(nomres, nbpae2, nopae2, vali, valr,&
+            call tbajli(nomres, nbpael, nopael, vali, valr,&
                         c16b, valk, 0)
             valr(1) = vaamax
             valk(3) = 'MAXI_ABS'
             valk(4) = maamax
             valk(5) = noamax
             valk(6) = cpamax
-            call tbajli(nomres, nbpae2, nopae2, vali, valr,&
+            call tbajli(nomres, nbpael, nopael, vali, valr,&
                         c16b, valk, 0)
             valr(1) = vaamin
             valk(3) = 'MINI_ABS'
             valk(4) = maamin
             valk(5) = noamin
             valk(6) = cpamin
-            call tbajli(nomres, nbpae2, nopae2, vali, valr,&
+            call tbajli(nomres, nbpael, nopael, vali, valr,&
                         c16b, valk, 0)
 !
         else
@@ -158,6 +163,7 @@ subroutine rvmima(nomres, iocc)
 !
     call getvid('ACTION', 'RESULTAT', iocc, iarg, 1,&
                 resu, n1)
+    nopara(2) = 'RESU'
     valk(2) = resu
 !
     call getvr8('ACTION', 'PRECISION', iocc, iarg, 1,&
@@ -176,11 +182,62 @@ subroutine rvmima(nomres, iocc)
 !
     call getvtx('ACTION', 'NOM_CHAM', iocc, iarg, 1,&
                 nomcha, nbc)
+    nopara(3) = 'NOM_CHAM'
     valk(3) = nomcha
 !
     do 100 i100 = 1, nbordr
         iord = zi(jordr+i100-1)
-        vali(1) = iord
+!
+        ik = 3
+        ii = 0
+        ir = 0
+        nbpar = 3
+!
+        nbpar = nbpar + 1
+        nopara(nbpar) = 'NUME_ORDRE'
+        ii = ii + 1
+        vali(ii) = iord
+        nomjv = '&&RVMIMA.NOMS_ACCES'
+        call rsnopa(resu, 0, nomjv, nbacc, ibid)
+        if (nbacc .ne. 0) then
+            call jeveuo(nomjv, 'L', jaces)
+            do 1001 iac = 1, nbacc
+                call rsadpa(resu, 'L', 1, zk16(jaces-1+iac), iord,&
+                            1, iadr, ctype)
+                call tbexip(nomres, zk16(jaces-1+iac), exist, typpar)
+                if (.not. exist) then
+                    call tbajpa(nomres, 1, zk16(jaces-1+iac), ctype)
+                endif
+                nbpar = nbpar + 1
+                nopara(nbpar) = zk16(jaces-1+iac)
+                if (ctype(1:1) .eq. 'I') then
+                    ii = ii + 1
+                    vali(ii) = zi(iadr)
+                else if (ctype(1:1) .eq. 'R') then
+                    ir = ir + 1
+                    valr(ir) = zr(iadr)
+                else if (ctype(1:3) .eq. 'K80') then
+                    ik = ik + 1
+                    valk(ik) = zk80(iadr)
+                else if (ctype(1:3) .eq. 'K32') then
+                    ik = ik + 1
+                    valk(ik) = zk32(iadr)
+                else if (ctype(1:3) .eq. 'K24') then
+                    ik = ik + 1
+                    valk(ik) = zk24(iadr)
+                else if (ctype(1:3) .eq. 'K16') then
+                    ik = ik + 1
+                    valk(ik) = zk16(iadr)
+                else if (ctype(1:2) .eq. 'K8') then
+                    ik = ik + 1
+                    valk(ik) = zk8(iadr)
+                endif
+1001          continue
+            call jedetr(nomjv)
+        endif
+!
+        nbpar = nbpar + 1
+        nopara(nbpar) = 'EXTREMA'
 !
         call rsexch(' ', resu, nomcha, iord, champ,&
                     iret)
@@ -189,68 +246,84 @@ subroutine rvmima(nomres, iocc)
                     tych, iret)
 !
         if (tych(1:4) .eq. 'NOEU') then
+            nbpar = nbpar + 1
+            nopara(nbpar) = 'NOEUD'
+            nbpar = nbpar + 1
+            nopara(nbpar) = 'CMP'
+            nbpar = nbpar + 1
+            nopara(nbpar) = 'VALE'
+!
             call prexno(champ, iocc, nomax, cpmax, valmax,&
                         nomin, cpmin, valmin, noamax, cpamax,&
                         vaamax, noamin, cpamin, vaamin)
-            valr(1) = valmax
-            valk(4) = 'MAX'
-            valk(5) = nomax
-            valk(6) = cpmax
-            call tbajli(nomres, nbpano, nopano, vali, valr,&
+            valr(ir+1) = valmax
+            valk(ik+1) = 'MAX'
+            valk(ik+2) = nomax
+            valk(ik+3) = cpmax
+            call tbajli(nomres, nbpar, nopara, vali, valr,&
                         c16b, valk, 0)
-            valr(1) = valmin
-            valk(4) = 'MIN'
-            valk(5) = nomin
-            valk(6) = cpmin
-            call tbajli(nomres, nbpano, nopano, vali, valr,&
+            valr(ir+1) = valmin
+            valk(ik+1) = 'MIN'
+            valk(ik+2) = nomin
+            valk(ik+3) = cpmin
+            call tbajli(nomres, nbpar, nopara, vali, valr,&
                         c16b, valk, 0)
-            valr(1) = vaamax
-            valk(4) = 'MAXI_ABS'
-            valk(5) = noamax
-            valk(6) = cpamax
-            call tbajli(nomres, nbpano, nopano, vali, valr,&
+            valr(ir+1) = vaamax
+            valk(ik+1) = 'MAXI_ABS'
+            valk(ik+2) = noamax
+            valk(ik+3) = cpamax
+            call tbajli(nomres, nbpar, nopara, vali, valr,&
                         c16b, valk, 0)
-            valr(1) = vaamin
-            valk(4) = 'MINI_ABS'
-            valk(5) = noamin
-            valk(6) = cpamin
-            call tbajli(nomres, nbpano, nopano, vali, valr,&
+            valr(ir+1) = vaamin
+            valk(ik+1) = 'MINI_ABS'
+            valk(ik+2) = noamin
+            valk(ik+3) = cpamin
+            call tbajli(nomres, nbpar, nopara, vali, valr,&
                         c16b, valk, 0)
 !
         else if (tych(1:4).eq.'ELNO') then
+            nbpar = nbpar + 1
+            nopara(nbpar) = 'MAILLE'
+            nbpar = nbpar + 1
+            nopara(nbpar) = 'NOEUD'
+            nbpar = nbpar + 1
+            nopara(nbpar) = 'CMP'
+            nbpar = nbpar + 1
+            nopara(nbpar) = 'VALE'
+!
             call prexel(champ, iocc, mamax, nomax, ispmax,&
                         cpmax, valmax, mamin, nomin, ispmin,&
                         cpmin, valmin, maamax, noamax, isamax,&
                         cpamax, vaamax, maamin, noamin, isamin,&
                         cpamin, vaamin)
 !
-            valr(1) = valmax
-            valk(4) = 'MAX'
-            valk(5) = mamax
-            valk(6) = nomax
-            valk(7) = cpmax
-            call tbajli(nomres, nbpael, nopael, vali, valr,&
+            valr(ir+1) = valmax
+            valk(ik+1) = 'MAX'
+            valk(ik+2) = mamax
+            valk(ik+3) = nomax
+            valk(ik+4) = cpmax
+            call tbajli(nomres, nbpar, nopara, vali, valr,&
                         c16b, valk, 0)
-            valr(1) = valmin
-            valk(4) = 'MIN'
-            valk(5) = mamin
-            valk(6) = nomin
-            valk(7) = cpmin
-            call tbajli(nomres, nbpael, nopael, vali, valr,&
+            valr(ir+1) = valmin
+            valk(ik+1) = 'MIN'
+            valk(ik+2) = mamin
+            valk(ik+3) = nomin
+            valk(ik+4) = cpmin
+            call tbajli(nomres, nbpar, nopara, vali, valr,&
                         c16b, valk, 0)
-            valr(1) = vaamax
-            valk(4) = 'MAXI_ABS'
-            valk(5) = maamax
-            valk(6) = noamax
-            valk(7) = cpamax
-            call tbajli(nomres, nbpael, nopael, vali, valr,&
+            valr(ir+1) = vaamax
+            valk(ik+1) = 'MAXI_ABS'
+            valk(ik+2) = maamax
+            valk(ik+3) = noamax
+            valk(ik+4) = cpamax
+            call tbajli(nomres, nbpar, nopara, vali, valr,&
                         c16b, valk, 0)
-            valr(1) = vaamin
-            valk(4) = 'MINI_ABS'
-            valk(5) = maamin
-            valk(6) = noamin
-            valk(7) = cpamin
-            call tbajli(nomres, nbpael, nopael, vali, valr,&
+            valr(ir+1) = vaamin
+            valk(ik+1) = 'MINI_ABS'
+            valk(ik+2) = maamin
+            valk(ik+3) = noamin
+            valk(ik+4) = cpamin
+            call tbajli(nomres, nbpar, nopara, vali, valr,&
                         c16b, valk, 0)
 !
         else

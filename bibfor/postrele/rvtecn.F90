@@ -7,6 +7,7 @@ subroutine rvtecn(releve, absc, itcopt, itsppt, coor,&
 !
     include 'asterc/getvid.h'
     include 'asterc/getvtx.h'
+    include 'asterc/getvr8.h'
     include 'asterfort/assert.h'
     include 'asterfort/jedema.h'
     include 'asterfort/jedetr.h'
@@ -16,6 +17,7 @@ subroutine rvtecn(releve, absc, itcopt, itsppt, coor,&
     include 'asterfort/jexnum.h'
     include 'asterfort/rsadpa.h'
     include 'asterfort/rsnopa.h'
+    include 'asterfort/rsorac.h'
     include 'asterfort/rvtec2.h'
     include 'asterfort/tbajli.h'
     include 'asterfort/tbajpa.h'
@@ -48,8 +50,8 @@ subroutine rvtecn(releve, absc, itcopt, itsppt, coor,&
 !     ------------------------------------------------------------------
 !     MISE EN TABLEAU POUR UN EXTRACTION SUR UN CHAM_NO
 !     ------------------------------------------------------------------
-! IN  : RELEVE : TABLE DES RELEVE DE VALEURS
-! IN  : ABSC   : TABLE DES ABSCISES DES POINTS
+! IN  : RELEVE : TABLE DES RELEVES DE VALEURS
+! IN  : ABSC   : TABLE DES ABSCISSES DES POINTS
 ! IN  : ITCOPT : TABLE DES NOMBRES DE COUCHES PAR POINT
 ! IN  : ITSPPT : TABLE DES NOMBRES DE SOUS-PT PAR POINT
 ! IN  : COOR   : TABLE DES COORDONNEES DES POINTS
@@ -59,12 +61,13 @@ subroutine rvtecn(releve, absc, itcopt, itsppt, coor,&
 ! IN  : NBPOIN : NOMBRE DE POINT D'EVALUATION
 ! IN  : DOCU   : 'LSTN'/'CHMM'/'SGTD'/'ARCC'
 !     ------------------------------------------------------------------
-    integer :: nbvari, nbpar, jval1, jvalk, ilign, ipt, nbsp, nbco, lc, ln, is
-    integer :: ic, i2, valei(12), n1, adrval, adracc, jacc, ik, ir, ii, lcr, lck
-    integer :: nc, nbacc, nbpr, jaces, iac, iadr
+    integer :: nbvari, nbpar, jval1, jvalk, ilign, ipt, nbsp, nbco, lc, ln, is, ic, i2, valei(12)
+    integer :: n1, adrval, adracc, jacc, ik, ir, ii, lcr, lck, nc, nbacc, nbpr, jaces, iac, iadr
+    integer :: iord
     logical :: exist
+    real(kind=8) :: prec
     character(len=3) :: typpar
-    character(len=8) :: k8b, acces, nomres, ctype, nopase, courbe
+    character(len=8) :: k8b, acces, nomres, ctype, courbe, crit
     character(len=16) :: intitu
     character(len=24) :: nomval, nomacc, nnores, nomjv
     complex(kind=8) :: c16b
@@ -80,15 +83,15 @@ subroutine rvtecn(releve, absc, itcopt, itsppt, coor,&
     if (nbvari .ne. 0) then
         call rvtec2(releve, absc, itcopt, itsppt, coor,&
                     nomnoe, nbcmp, nbpoin, docu, nomtab,&
-                    iocc, xnovar, ncheff, i1, ioc,&
-                    isd)
+                    iocc, xnovar, ncheff, i1, ioc, isd)
         goto 9999
     endif
 !
-    call getvtx('ACTION', 'INTITULE', iocc, iarg, 1,&
-                intitu, n1)
-    call getvid('ACTION', 'CHEMIN', iocc, iarg, 1,&
-                courbe, nc)
+    call getvtx('ACTION', 'INTITULE', iocc, iarg, 1, intitu, n1)
+    call getvid('ACTION', 'CHEMIN', iocc, iarg, 1, courbe, nc)
+!
+    call getvr8('ACTION', 'PRECISION', iocc, iarg, 1, prec, n1)
+    call getvtx('ACTION', 'CRITERE', iocc, iarg, 1, crit, n1)
 !
     nomval = ncheff//'.VALACCE'
     nomacc = ncheff//'.TYPACCE'
@@ -131,16 +134,10 @@ subroutine rvtecn(releve, absc, itcopt, itsppt, coor,&
     else
         call jeveuo(nnores, 'L', jacc)
         nomres = zk16(jacc)(1:8)
-        nopase = zk16(jacc+3)(1:8)
-        if (nopase .eq. '        ') then
-            k8b = nomres
-        else
-            k8b = zk16(jacc+2)(1:8)
-        endif
         nbpar = nbpar + 1
         zk24(jvalk-1+nbpar) = 'RESU'
         ik = ik + 1
-        valek(ik) = k8b
+        valek(ik) = nomres
         nbpar = nbpar + 1
         zk24(jvalk-1+nbpar) = 'NOM_CHAM'
         ik = ik + 1
@@ -193,10 +190,22 @@ subroutine rvtecn(releve, absc, itcopt, itsppt, coor,&
             endif
         else if (acces(1:1) .eq. 'M') then
             nbpar = nbpar + 1
+            zk24(jvalk-1+nbpar) = 'NUME_ORDRE'
+            call rsorac(nomres, 'NUME_MODE', zi(adrval+i1-1), 0.d0, k8b,&
+                        c16b, prec, crit, iord, 1, n1)
+            ii = ii + 1
+            valei(ii) = iord
+            nbpar = nbpar + 1
             zk24(jvalk-1+nbpar) = 'NUME_MODE'
             ii = ii + 1
             valei(ii) = zi(adrval + i1-1)
         else if (acces(1:1) .eq. 'I') then
+            nbpar = nbpar + 1
+            zk24(jvalk-1+nbpar) = 'NUME_ORDRE'
+            call rsorac(nomres, 'INST', 0, zr(adrval + i1-1), k8b,&
+                        c16b, prec, crit, iord, 1, n1)
+            ii = ii + 1
+            valei(ii) = iord
             nbpar = nbpar + 1
             zk24(jvalk-1+nbpar) = 'INST'
             ir = ir + 1

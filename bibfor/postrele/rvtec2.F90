@@ -7,6 +7,7 @@ subroutine rvtec2(releve, absc, itcopt, itsppt, coor,&
 !
     include 'asterc/getvid.h'
     include 'asterc/getvtx.h'
+    include 'asterc/getvr8.h'
     include 'asterfort/assert.h'
     include 'asterfort/codent.h'
     include 'asterfort/jedema.h'
@@ -17,6 +18,7 @@ subroutine rvtec2(releve, absc, itcopt, itsppt, coor,&
     include 'asterfort/jexnum.h'
     include 'asterfort/rsadpa.h'
     include 'asterfort/rsnopa.h'
+    include 'asterfort/rsorac.h'
     include 'asterfort/tbajli.h'
     include 'asterfort/tbajpa.h'
     include 'asterfort/tbexip.h'
@@ -59,14 +61,14 @@ subroutine rvtec2(releve, absc, itcopt, itsppt, coor,&
 ! IN  : NBPOIN : NOMBRE DE POINT D'EVALUATION
 ! IN  : DOCU   : 'LSTN'/'CHMM'/'SGTD'/'ARCC'
 !     ------------------------------------------------------------------
-    integer :: nbvari, nbpar, jval1, jvalk, ilign, ipt, nbsp, i, nbco, lc, ln
-    integer :: ic, i2, valei(12), n1, adrval, ind, lck, adracc, jacc, ik, ir, ii
-    integer :: ivari(3000), nbcmp2, jvari, jnpar, jtpar, nbacc, nbpr, jaces, iac
-    integer :: iadr, lcr, nc
+    integer :: nbvari, nbpar, jval1, jvalk, ilign, ipt, nbsp, i, nbco, lc, ln, ic, i2, valei(12)
+    integer :: n1, adrval, ind, lck, adracc, jacc, ik, ir, ii, ivari(3000), nbcmp2, jvari, jnpar
+    integer :: jtpar, nbacc, nbpr, jaces, iac, iadr, lcr, nc, iord
+    real(kind=8) :: prec
     logical :: exist
     character(len=3) :: typpar
     character(len=7) :: kii
-    character(len=8) :: k8b, acces, nomres, ctype, nopase, courbe
+    character(len=8) :: k8b, acces, nomres, ctype, courbe, crit
     character(len=16) :: intitu
     character(len=24) :: nomval, nomacc, nnores, nomjv
     complex(kind=8) :: c16b
@@ -85,10 +87,11 @@ subroutine rvtec2(releve, absc, itcopt, itsppt, coor,&
     endif
     if (nbcmp2 .gt. 3000) call u2mess('F', 'POSTRELE_13')
 !
-    call getvtx('ACTION', 'INTITULE', iocc, iarg, 1,&
-                intitu, n1)
-    call getvid('ACTION', 'CHEMIN', iocc, iarg, 1,&
-                courbe, nc)
+    call getvtx('ACTION', 'INTITULE', iocc, iarg, 1, intitu, n1)
+    call getvid('ACTION', 'CHEMIN', iocc, iarg, 1, courbe, nc)
+!
+    call getvr8('ACTION', 'PRECISION', iocc, iarg, 1, prec, n1)
+    call getvtx('ACTION', 'CRITERE', iocc, iarg, 1, crit, n1)
 !
     nomval = ncheff//'.VALACCE'
     nomacc = ncheff//'.TYPACCE'
@@ -133,16 +136,10 @@ subroutine rvtec2(releve, absc, itcopt, itsppt, coor,&
     else
         call jeveuo(nnores, 'L', jacc)
         nomres = zk16(jacc)(1:8)
-        nopase = zk16(jacc+3)(1:8)
-        if (nopase .eq. '        ') then
-            k8b = nomres
-        else
-            k8b = zk16(jacc+2)(1:8)
-        endif
         nbpar = nbpar + 1
         zk24(jvalk-1+nbpar) = 'RESU'
         ik = ik + 1
-        valek(ik) = k8b
+        valek(ik) = nomres
         nbpar = nbpar + 1
         zk24(jvalk-1+nbpar) = 'NOM_CHAM'
         ik = ik + 1
@@ -195,10 +192,22 @@ subroutine rvtec2(releve, absc, itcopt, itsppt, coor,&
             endif
         else if (acces(1:1) .eq. 'M') then
             nbpar = nbpar + 1
+            zk24(jvalk-1+nbpar) = 'NUME_ORDRE'
+            call rsorac(nomres, 'NUME_MODE', zi(adrval+i1-1), 0.d0, k8b,&
+                        c16b, prec, crit, iord, 1, n1)
+            ii = ii + 1
+            valei(ii) = iord
+            nbpar = nbpar + 1
             zk24(jvalk-1+nbpar) = 'NUME_MODE'
             ii = ii + 1
             valei(ii) = zi(adrval + i1-1)
         else if (acces(1:1) .eq. 'I') then
+            nbpar = nbpar + 1
+            zk24(jvalk-1+nbpar) = 'NUME_ORDRE'
+            call rsorac(nomres, 'INST', 0, zr(adrval + i1-1), k8b,&
+                        c16b, prec, crit, iord, 1, n1)
+            ii = ii + 1
+            valei(ii) = iord
             nbpar = nbpar + 1
             zk24(jvalk-1+nbpar) = 'INST'
             ir = ir + 1
