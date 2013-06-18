@@ -66,7 +66,7 @@ subroutine op0191()
     real(kind=8) :: lcoer(2)
     complex(kind=8) :: lcoec(2)
     character(len=8) :: crit, k8b, tych, nomma, modele
-    character(len=8) :: carele, k8bid
+    character(len=8) :: carele, k8bid, exipla, exicoq
     character(len=16) :: concep, nomcmd, option, tysd, type, repere
     character(len=19) :: knum, resuou, kbid, resuin
     character(len=19) :: chams1, chams0, chafus, chs(2), ligrel
@@ -88,8 +88,7 @@ subroutine op0191()
     call infniv(ifm, niv)
 !
     call getres(resuou, concep, nomcmd)
-    call getvid(' ', 'RESULTAT', 1, iarg, 1,&
-                resuin, n0)
+    call getvid(' ', 'RESULTAT', 1, iarg, 1, resuin, n0)
 !
     call jelira(resuin//'.DESC', 'NOMMAX', nbnosy, k8b)
     if (nbnosy .eq. 0) goto 9999
@@ -142,12 +141,9 @@ subroutine op0191()
 !
     do 10 ioc = 1, nocc
 !
-        call getvtx('MODI_CHAM', 'NOM_CHAM', ioc, iarg, 1,&
-                    option, n0)
-        call getvtx('MODI_CHAM', 'TYPE_CHAM', ioc, iarg, 1,&
-                    type, n0)
-        call getvtx('MODI_CHAM', 'NOM_CMP', ioc, iarg, 0,&
-                    k8b, n1)
+        call getvtx('MODI_CHAM', 'NOM_CHAM', ioc, iarg, 1, option, n0)
+        call getvtx('MODI_CHAM', 'TYPE_CHAM', ioc, iarg, 1, type, n0)
+        call getvtx('MODI_CHAM', 'NOM_CMP', ioc, iarg, 0, k8b, n1)
         nbcmp = - n1
 !
         do 12 iord = 1, nbordr
@@ -155,21 +151,24 @@ subroutine op0191()
             call jerecu('V')
             iordr = zi(jordr-1+iord)
 !
-            call rsexch('F', resuin, option, iordr, champ0,&
-                        iret)
+            call rsexch('F', resuin, option, iordr, champ0, iret)
             call dismoi('F', 'NOM_MAILLA', champ0(1:19), 'CHAMP', ibid,&
                         nomma, iret)
             call dismoi('C', 'TYPE_CHAMP', champ0, 'CHAMP', ibid,&
                         tych, iret)
 !
-            call rsexch(' ', resuou, option, iordr, champ1,&
-                        iret)
+            call rsexch(' ', resuou, option, iordr, champ1, iret)
 !           CHAMP1 SERA ENSUITE RECREE SUR LA BASE GLOBALE
             call copisd('CHAMP_GD', 'V', champ0, champ1)
 !
 ! ----- RECUPERATION DU MODELE ASSOCIE AU CHAMP
-            call rslesd(resuin(1:8), iordr, modele, k8bid, carele,&
-                        kbid, ibid)
+            call rslesd(resuin(1:8), iordr, modele, k8bid, carele, kbid, ibid)
+            call dismoi('F', 'EXI_PLAQUE', modele, 'MODELE', ibid, exipla, iret)
+            call dismoi('F', 'EXI_COQUE', modele, 'MODELE', ibid, exicoq, iret)
+            if (((exipla(1:3).eq.'OUI').or.(exicoq(1:3).eq.'OUI')) .and.&
+                ((type.eq.'TENS_2D').or.(type.eq.'TENS_3D').or. (type.eq.'TORS_3D')) .and.&
+                ((repere.eq.'CYLINDRIQUE').or.( repere.eq.'UTILISATEUR'))) &
+                    call u2mess('F', 'ALGORITH3_7')
 !
 ! ----- RECUPERATION DE LA NATURE DES CHAMPS
 ! ----- (CHAM_NO OU CHAM_ELEM)
@@ -249,10 +248,8 @@ subroutine op0191()
                 call jerecu('V')
                 iordr = zi(jordr-1+iord)
 !
-                call rsexch('F', resuin, option, iordr, champ0,&
-                            iret)
-                call rsexch(' ', resuou, option, iordr, champ1,&
-                            iret)
+                call rsexch('F', resuin, option, iordr, champ0, iret)
+                call rsexch(' ', resuou, option, iordr, champ1, iret)
 !
                 chams0='&&CHRPEL.CHAMS0'
                 chams1='&&CHRPEL.CHAMS1'

@@ -21,6 +21,12 @@
 cata_msg = {
 
 
+7 : _(u"""
+ Il n'est pas possible d'utiliser les repères 'UTILISATEUR' et
+ 'CYLINDRIQUE' quand TYPE_CHAM vaut 'TENS_2D' ou 'TENS_3D' ou 'TORS_3D' et
+ que le modèle contient des éléments plaques ou coques.
+"""),
+
 8 : _(u"""
  élément non traité
 """),
