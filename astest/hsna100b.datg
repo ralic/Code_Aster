@@ -1,39 +1,165 @@
-Point(1) = {22.5, 0, 0, 0.5};
-Point(2) = {23.4, 0, 0, 0.5};
-Point(3) = {22.15817444, 3.907083998, 0, 0.5};
-Point(4) = {23.04450142, 4.063367357, 0, 0.5};
-Point(5) = {0, 0, 0, 0.5};
-Point(6) = {22.95, 0, 0, 0.5};
-Point(7) = {22.60133793, 3.985225678, 0, 0.5};
-Line (1) = {1, 6};
-Circle (2) = {1, 5, 3} Plane{0, 0, 1};
-Circle (3) = {6, 5, 7} Plane{0, 0, 1};
-Line (4) = {3, 7};
-Line Loop (16) = {3, -4, -2, 1};
-Plane Surface (20) = {16};
-Line (7) = {6, 2};
-Circle (8) = {2, 5, 4} Plane{0, 0, 1};
-Line (9) = {7, 4};
-Line Loop (17) = {8, -9, -3, 7};
-Plane Surface (21) = {17};
-LG=2;
+# -*- coding: utf-8 -*-
 
-v1[]=Extrude {0,0,LG}{
-              Surface {20};Layers{10,1};
-              };                
+###
+### This file is generated automatically by SALOME v6.6.0 with dump python functionality
+###
 
-v2[]=Extrude {0,0,LG}{
-              Surface {21};Layers{10,1};
-              };  
+import sys
+import salome
+
+salome.salome_init()
+theStudy = salome.myStudy
+
+import salome_notebook
+notebook = salome_notebook.notebook
+sys.path.insert( 0, r'/local00/home/I87854/Documents/GC/hsna100/A_RESTITUER')
 
 
-Physical Point(66) = {6};
-Physical Point(68) = {7};
-Physical Surface(69) = {v1[0]-5};
-Physical Surface(70) = {v2[0]-13};
-Physical Surface(71) = {20,21};
-Physical Surface(72) = {v1[0]-1,v2[0]-1};
-Physical Surface(73) = {v1[0]-9,v2[0]-9};
-Physical Line(74) = {3};
-Physical Volume(75) = {v1[1]};
-Physical Volume(76) = {v2[1]};
+
+###
+### GEOM component
+###
+
+import GEOM
+import geompy
+import math
+import SALOMEDS
+
+
+geompy.init_geom(theStudy)
+
+O = geompy.MakeVertex(0, 0, 0)
+OX = geompy.MakeVectorDXDYDZ(1, 0, 0)
+OY = geompy.MakeVectorDXDYDZ(0, 1, 0)
+OZ = geompy.MakeVectorDXDYDZ(0, 0, 1)
+Face_1 = geompy.MakeFaceHW(1, 1, 1)
+geomObj_1 = geompy.MakeMarker(0, 0, 0, 1, 0, 0, 0, 1, 0)
+geomObj_2 = geompy.MakeMarker(0, 0, 0, 1, 0, 0, 0, 1, 0)
+Sketch_1 = geompy.MakeSketcherOnPlane("Sketcher:F 22.500000 0.000000:R 90:C 22.500000 10.000000", geomObj_2 )
+Rotation_1 = geompy.MakeRotation(Sketch_1, OX, -90*math.pi/180.0)
+Plane_1 = geompy.MakePlane(O, OX, 2000)
+Plane_2 = geompy.MakePlane(O, OY, 2000)
+Partition_1 = geompy.MakePartition([Face_1], [Plane_1, Plane_2], [], [], geompy.ShapeType["FACE"], 0, [], 0)
+geompy.TranslateDXDYDZ(Partition_1, 23, 0.5, 0)
+Pipe_1 = geompy.MakePipe(Partition_1, Rotation_1)
+listSubShapeIDs = geompy.SubShapeAllIDs(Pipe_1, geompy.ShapeType["VERTEX"])
+L_INT = geompy.CreateGroup(Pipe_1, geompy.ShapeType["FACE"])
+geompy.UnionIDs(L_INT, [14, 45])
+L_EXT = geompy.CreateGroup(Pipe_1, geompy.ShapeType["FACE"])
+geompy.UnionIDs(L_EXT, [74, 91])
+A1 = geompy.CreateGroup(Pipe_1, geompy.ShapeType["VERTEX"])
+geompy.UnionIDs(A1, [7])
+A2 = geompy.CreateGroup(Pipe_1, geompy.ShapeType["VERTEX"])
+geompy.UnionIDs(A2, [12])
+A3 = geompy.CreateGroup(Pipe_1, geompy.ShapeType["VERTEX"])
+geompy.UnionIDs(A3, [67])
+RGENEF = geompy.CreateGroup(Pipe_1, geompy.ShapeType["EDGE"])
+geompy.UnionIDs(RGENEF, [68, 13])
+COTE1 = geompy.CreateGroup(Pipe_1, geompy.ShapeType["EDGE"])
+geompy.UnionIDs(COTE1, [68])
+COTE2 = geompy.CreateGroup(Pipe_1, geompy.ShapeType["EDGE"])
+geompy.UnionIDs(COTE2, [13])
+geomObj_3 = geompy.GetSubShape(Pipe_1, [14])
+geomObj_4 = geompy.GetSubShape(Pipe_1, [74])
+geomObj_5 = geompy.GetSubShape(Pipe_1, [68])
+BAS = geompy.CreateGroup(Pipe_1, geompy.ShapeType["FACE"])
+geompy.UnionIDs(BAS, [21, 69])
+DEVANT = geompy.CreateGroup(Pipe_1, geompy.ShapeType["FACE"])
+geompy.UnionIDs(DEVANT, [4, 86, 62, 38])
+DERRIERE = geompy.CreateGroup(Pipe_1, geompy.ShapeType["FACE"])
+geompy.UnionIDs(DERRIERE, [58, 82, 99, 34])
+HAUT = geompy.CreateGroup(Pipe_1, geompy.ShapeType["FACE"])
+geompy.UnionIDs(HAUT, [55, 96])
+geomObj_6 = geompy.GetSubShape(Pipe_1, [21])
+geomObj_7 = geompy.GetSubShape(Pipe_1, [4])
+geomObj_8 = geompy.GetSubShape(Pipe_1, [58])
+geomObj_9 = geompy.GetSubShape(Pipe_1, [55])
+geompy.addToStudy( O, 'O' )
+geompy.addToStudy( OX, 'OX' )
+geompy.addToStudy( OY, 'OY' )
+geompy.addToStudy( OZ, 'OZ' )
+geompy.addToStudy( Face_1, 'Face_1' )
+geompy.addToStudy( Sketch_1, 'Sketch_1' )
+geompy.addToStudy( Rotation_1, 'Rotation_1' )
+geompy.addToStudy( Plane_1, 'Plane_1' )
+geompy.addToStudy( Plane_2, 'Plane_2' )
+geompy.addToStudy( Partition_1, 'Partition_1' )
+geompy.addToStudy( Pipe_1, 'Pipe_1' )
+geompy.addToStudyInFather( Pipe_1, L_INT, 'L_INT' )
+geompy.addToStudyInFather( Pipe_1, L_EXT, 'L_EXT' )
+geompy.addToStudyInFather( Pipe_1, A1, 'A1' )
+geompy.addToStudyInFather( Pipe_1, A2, 'A2' )
+geompy.addToStudyInFather( Pipe_1, A3, 'A3' )
+geompy.addToStudyInFather( Pipe_1, RGENEF, 'RGENEF' )
+geompy.addToStudyInFather( Pipe_1, COTE1, 'COTE1' )
+geompy.addToStudyInFather( Pipe_1, COTE2, 'COTE2' )
+geompy.addToStudyInFather( Pipe_1, BAS, 'BAS' )
+geompy.addToStudyInFather( Pipe_1, DEVANT, 'DEVANT' )
+geompy.addToStudyInFather( Pipe_1, DERRIERE, 'DERRIERE' )
+geompy.addToStudyInFather( Pipe_1, HAUT, 'HAUT' )
+
+###
+### SMESH component
+###
+
+import smesh, SMESH, SALOMEDS
+
+smesh.SetCurrentStudy(theStudy)
+import StdMeshers
+Mesh_1 = smesh.Mesh(Pipe_1)
+Regular_1D = Mesh_1.Segment()
+Nb_Segments_1 = Regular_1D.NumberOfSegments(2)
+Quadrangle_2D = Mesh_1.Quadrangle(algo=smesh.QUADRANGLE)
+Hexa_3D = Mesh_1.Hexahedron(algo=smesh.Hexa)
+Regular_1D_1 = Mesh_1.Segment(geom=COTE1)
+Nb_Segments_2 = Regular_1D_1.NumberOfSegments(5,5,[  ])
+Propagation_of_1D_Hyp = Regular_1D_1.Propagation()
+Regular_1D_2 = Mesh_1.Segment(geom=COTE2)
+status = Mesh_1.AddHypothesis(Nb_Segments_2,COTE2)
+status = Mesh_1.AddHypothesis(Propagation_of_1D_Hyp,COTE2)
+Nb_Segments_2.SetNumberOfSegments( 5 )
+Nb_Segments_2.SetDistrType( 1 )
+Nb_Segments_2.SetScaleFactor( 5 )
+Nb_Segments_2.SetReversedEdges( [ 68 ] )
+Nb_Segments_1.SetNumberOfSegments( 5 )
+Nb_Segments_1.SetDistrType( 0 )
+isDone = Mesh_1.Compute()
+L_INT_1 = Mesh_1.GroupOnGeom(L_INT,'L_INT',SMESH.FACE)
+L_EXT_1 = Mesh_1.GroupOnGeom(L_EXT,'L_EXT',SMESH.FACE)
+RGENEF_1 = Mesh_1.GroupOnGeom(RGENEF,'RGENEF',SMESH.EDGE)
+A1_1 = Mesh_1.GroupOnGeom(A1,'A1',SMESH.NODE)
+A2_1 = Mesh_1.GroupOnGeom(A2,'A2',SMESH.NODE)
+A3_1 = Mesh_1.GroupOnGeom(A3,'A3',SMESH.NODE)
+smesh.SetName(Mesh_1, 'Mesh_1')
+BAS_1 = Mesh_1.GroupOnGeom(BAS,'BAS',SMESH.FACE)
+DEVANT_1 = Mesh_1.GroupOnGeom(DEVANT,'DEVANT',SMESH.FACE)
+DERRIERE_1 = Mesh_1.GroupOnGeom(DERRIERE,'DERRIERE',SMESH.FACE)
+HAUT_1 = Mesh_1.GroupOnGeom(HAUT,'HAUT',SMESH.FACE)
+smesh.SetName(Mesh_1, 'Mesh_1')
+SubMesh_1 = Regular_1D_1.GetSubMesh()
+SubMesh_2 = Regular_1D_2.GetSubMesh()
+
+## set object names
+smesh.SetName(Mesh_1.GetMesh(), 'Mesh_1')
+smesh.SetName(Regular_1D.GetAlgorithm(), 'Regular_1D')
+smesh.SetName(Nb_Segments_1, 'Nb. Segments_1')
+smesh.SetName(Quadrangle_2D.GetAlgorithm(), 'Quadrangle_2D')
+smesh.SetName(Hexa_3D.GetAlgorithm(), 'Hexa_3D')
+smesh.SetName(Nb_Segments_2, 'Nb. Segments_2')
+smesh.SetName(Propagation_of_1D_Hyp, 'Propagation of 1D Hyp. on Opposite Edges_1')
+smesh.SetName(L_INT_1, 'L_INT')
+smesh.SetName(L_EXT_1, 'L_EXT')
+smesh.SetName(RGENEF_1, 'RGENEF')
+smesh.SetName(A1_1, 'A1')
+smesh.SetName(A2_1, 'A2')
+smesh.SetName(A3_1, 'A3')
+smesh.SetName(BAS_1, 'BAS')
+smesh.SetName(DEVANT_1, 'DEVANT')
+smesh.SetName(DERRIERE_1, 'DERRIERE')
+smesh.SetName(HAUT_1, 'HAUT')
+smesh.SetName(SubMesh_1, 'SubMesh_1')
+smesh.SetName(SubMesh_2, 'SubMesh_2')
+
+if salome.sg.hasDesktop():
+  salome.sg.updateObjBrowser(1)
+  iparameters.getSession().restoreVisualState(1)

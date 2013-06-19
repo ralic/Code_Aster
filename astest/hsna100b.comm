@@ -17,42 +17,27 @@
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 
-# DEVANT = GM72
-# DERRIERE = GM73
-# SURFACE EXTERIEURE = GM70
-# SURFACE INTERIEURE = GM69
-# BASE = GM71
-# POINT 6 = GM66
-# POINT 7 = GM68
-
 DEBUT(CODE=_F(NOM='HSNA100B',NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
-PRE_GMSH () ;
-MAIL=LIRE_MAILLAGE(FORMAT='ASTER',
+MAIL=LIRE_MAILLAGE(FORMAT='MED',
                          UNITE=20,
                          VERI_MAIL=_F(VERIF='OUI',
                                       APLAT=1.E-3),
                          INFO=2,
                          );
-
 MAIL=DEFI_GROUP( reuse=MAIL,        MAILLAGE=MAIL,CREA_GROUP_NO=(
-                        _F( GROUP_MA = 'GM72',
-                                       NOM = 'GM72',        ),
-                        _F( GROUP_MA = 'GM73',
-                                       NOM = 'GM73',        ),
-                        _F( GROUP_MA = 'GM71',
-                                       NOM = 'GM71',        ),
-                        _F( GROUP_MA = 'GM70',
-                                       NOM = 'GM70',        ),
-                        _F( GROUP_MA = 'GM69',
-                                       NOM = 'GM69',        ),
-                   ))
-
+                        _F( GROUP_MA = 'RGENEF',
+                                       NOM = 'RGENEF',        ),
+                        _F( GROUP_MA = 'L_EXT',
+                                       NOM = 'L_EXT',        ),
+                        _F( GROUP_MA = 'L_INT',
+                                       NOM = 'L_INT',        ))
+                    )
 
 BETON=DEFI_MATERIAU(    SECH_GRANGER=_F(  A = 3.8E-13,
                                           B = 0.05,
                                           QSR_K = 4700.,
                                           TEMP_0_C = 0.0,  ),
-                                   THER=_F(  LAMBDA = 8000.,
+                                   THER=_F(  LAMBDA = 2.22,
                                           RHO_CP = 2.400E+6,      )
                        )
 
@@ -71,58 +56,43 @@ MOTH=AFFE_MODELE(   MAILLAGE=MAIL,
                                    MODELISATION = '3D',
                                    PHENOMENE = 'THERMIQUE',    )
                         )
-MAIL=MODI_MAILLAGE( reuse=MAIL,  MAILLAGE=MAIL,
-                        ORIE_PEAU_3D=_F( GROUP_MA = ('GM70','GM72','GM73','GM71','GM69')))
-
-CHARTH05=AFFE_CHAR_THER(       MODELE=MOTH,TEMP_IMPO=(
-                              _F(  GROUP_NO = 'GM69',
-                                          TEMP = 15.,       ),
-                              _F(  GROUP_NO = 'GM70',
-                                          TEMP = 15.,       ))
-                            )
-
-CHARTH10=AFFE_CHAR_THER(       MODELE=MOTH,TEMP_IMPO=(
-                              _F(  GROUP_NO = 'GM69',
-                                          TEMP = 15.,       ),
-                              _F(  GROUP_NO = 'GM70',
-                                          TEMP = 35.,       ))
-                            )
-
+T_INT = DEFI_FONCTION(NOM_PARA='INST',
+                      VALE=(0,15,
+                            1.57670E+08,15,#5ans-1j
+                            1.57680E+08,35,#5ans 
+                            1.70294E+09,35,
+                            ),);
+T_EXT=DEFI_CONSTANTE(VALE=15,);
+HEXT=DEFI_CONSTANTE(VALE=6,);
+HINT=DEFI_CONSTANTE(VALE=4,);
+CHARTH=AFFE_CHAR_THER_F(       MODELE=MOTH,
+                               ECHANGE=(
+			       _F(GROUP_MA='L_INT',
+                                   COEF_H=HINT,
+                                   TEMP_EXT=T_INT,),
+				_F(GROUP_MA='L_EXT',
+                                   COEF_H=HEXT,
+                                   TEMP_EXT=T_EXT,),),
+				   );
 LISTTHER=DEFI_LIST_REEL(
              DEBUT=0.,INTERVALLE=(
         _F( JUSQU_A = 3.15360E+05,       NOMBRE = 1,  ), #   0.1 AN
         _F( JUSQU_A = 3.15360E+07,       NOMBRE = 1,  ), #   1   AN
-        _F( JUSQU_A = 1.57680E+08,       NOMBRE = 4,  ), #   5   ANS
-        _F( JUSQU_A = 1.60834E+08,       NOMBRE = 2,  ), #   5.1 ANS
+        _F( JUSQU_A = 1.57670E+08,       NOMBRE = 4,  ), #   5 -1  ANS
+        _F( JUSQU_A = 1.57680E+08,       NOMBRE = 2,  ), #   5 ANS
         _F( JUSQU_A = 1.89216E+08,       NOMBRE = 1,  ), #   6   ANS
         _F( JUSQU_A = 3.15360E+08,       NOMBRE = 4,  ), #  10   ANS
+        _F( JUSQU_A = 4.73040E+08,       NOMBRE = 4,  ), #  15   ANS
         _F( JUSQU_A = 1.70294E+09,       NOMBRE = 1,  )) #  54   ANS
                           )
 
-RESUTHER=THER_LINEAIRE(          MODELE=MOTH,
-                                     EXCIT=_F( CHARGE = CHARTH05,   ),
-                                CHAM_MATER=CHMAT,
-                                   SOLVEUR=_F(  METHODE = 'MULT_FRONT',   ),
-                                 PARM_THETA=0.57,
-                                 ETAT_INIT=_F( VALE = 15.,   ),
-                                 INCREMENT=_F( LIST_INST = LISTTHER,
-                                            NUME_INST_INIT = 0,
-                                            NUME_INST_FIN = 6,       ),
-                                      INFO=1
-                         )
+DEFLISTH =DEFI_LIST_INST(DEFI_LIST=_F(LIST_INST = LISTTHER),)
 
-RESUTHER=THER_LINEAIRE(reuse=RESUTHER,          MODELE=MOTH,
-                                     EXCIT=_F( CHARGE = CHARTH10,   ),
+RESUTHER=THER_LINEAIRE(          MODELE=MOTH,
+                                     EXCIT=_F( CHARGE = CHARTH,   ),
                                 CHAM_MATER=CHMAT,
-                                   SOLVEUR=_F(  METHODE = 'MULT_FRONT',   ),
-                                 PARM_THETA=0.57,
-                                 ETAT_INIT=_F( EVOL_THER = RESUTHER,
-                                            NUME_ORDRE = 6,   ),
-                                 INCREMENT=_F( LIST_INST = LISTTHER,
-                                            NUME_INST_INIT = 6,
-                                            NUME_INST_FIN = 14,      ),
-                                      INFO=1
-                         )
+                                 ETAT_INIT=_F( VALE = 15.,   ),
+                                 INCREMENT=_F( LIST_INST = DEFLISTH,),);
 
 #####################
 # CALCUL DU SECHAGE
@@ -130,10 +100,10 @@ RESUTHER=THER_LINEAIRE(reuse=RESUTHER,          MODELE=MOTH,
 
 # FLUX D HUMIDITE SUR LES PAROIS EXTERNES
 
-BETA=3.41557E-08
+BETA=3.41557E-06
 
 C_0=105.7
-
+C_50=57.5
 C_EQ_I05=69.1
 
 C_EQ_E05=69.1
@@ -143,19 +113,19 @@ C_EQ_I10=51.6
 C_EQ_E10=69.1
 
 FL_INT05 = FORMULE(NOM_PARA='TEMP',
-                   VALE='''(0.5*BETA / ((C_0 - C_EQ_I05 )**2)
+                   VALE='''(0.5*BETA / ((C_0 - C_50 )**2)
   * (TEMP - (2.*C_0 - C_EQ_I05 ))*(TEMP - C_EQ_I05 ))''')
 
 FL_EXT05 = FORMULE(NOM_PARA='TEMP',
-                   VALE='''(0.5*BETA / ((C_0 - C_EQ_E05 )**2)
+                   VALE='''(0.5*BETA / ((C_0 - C_50 )**2)
   * (TEMP - (2.*C_0 - C_EQ_E05 ))*(TEMP - C_EQ_E05 ))''')
 
 FL_INT10 = FORMULE(NOM_PARA='TEMP',
-                   VALE='''(0.5*BETA / ((C_0 - C_EQ_I10 )**2)
+                   VALE='''(0.5*BETA / ((C_0 - C_50 )**2)
   * (TEMP - (2.*C_0 - C_EQ_I10 ))*(TEMP - C_EQ_I10 ))''')
 
 FL_EXT10 = FORMULE(NOM_PARA='TEMP',
-                   VALE='''(0.5*BETA / ((C_0 - C_EQ_E10 )**2)
+                   VALE='''(0.5*BETA / ((C_0 - C_50 )**2)
   * (TEMP - (2.*C_0 - C_EQ_E10 ))*(TEMP - C_EQ_E10 ))''')
 
 LIST0=DEFI_LIST_REEL(  DEBUT=0.,INTERVALLE=(
@@ -209,48 +179,48 @@ HU_EXT10=CALC_FONC_INTERP(     FONCTION=FL_EXT10,
                             )
 
 CHARSE05=AFFE_CHAR_THER_F(     MODELE=MOTH,FLUX_NL=(
-                                _F(  GROUP_MA = 'GM70',
+                                _F(  GROUP_MA = 'L_INT',
                                           FLUN = HU_INT05,       ),
-                                _F(  GROUP_MA = 'GM69',
-                                          FLUN = HU_EXT05,       )
-                               )
+                                _F(  GROUP_MA = 'L_EXT',
+                                          FLUN = HU_EXT05,       ))
                             )
 
 CHARSE10=AFFE_CHAR_THER_F(     MODELE=MOTH,FLUX_NL=(
-                                _F(  GROUP_MA = 'GM70',
+                                _F(  GROUP_MA = 'L_INT',
                                           FLUN = HU_INT10,       ),
-                                _F(  GROUP_MA = 'GM69',
+                                _F(  GROUP_MA = 'L_EXT',
                                           FLUN = HU_EXT10,       ))
                             )
+
 
 LISTSECH=DEFI_LIST_REEL(
              DEBUT=0.,INTERVALLE=(
         _F( JUSQU_A = 3.15360E+04,       NOMBRE = 1,  ), #   0.001 A
-        _F( JUSQU_A = 3.15360E+06,       NOMBRE = 2,  ), #   0.1 AN
+        _F( JUSQU_A = 3.15360E+06,       NOMBRE = 10,  ), #   0.1 AN
         _F( JUSQU_A = 3.15360E+07,       NOMBRE = 9,  ), #   1   AN
         _F( JUSQU_A = 1.50000E+08,       NOMBRE = 16, ), #   4.9 ANS
         _F( JUSQU_A = 1.57680E+08,       NOMBRE = 16, ), #   5   ANS
         _F( JUSQU_A = 1.57712E+08,       NOMBRE = 1,  ), #   5.001 A
-        _F( JUSQU_A = 1.60834E+08,       NOMBRE = 2,  ), #   5.1 ANS
+        _F( JUSQU_A = 1.60834E+08,       NOMBRE = 4,  ), #   5.1 ANS
         _F( JUSQU_A = 1.89216E+08,       NOMBRE = 9,  ), #   6   ANS
-        _F( JUSQU_A = 3.15360E+08,       NOMBRE = 4,  ), #  10   ANS
-        _F( JUSQU_A = 1.57680E+09,       NOMBRE = 8,  ), #  50   ANS
-        _F( JUSQU_A = 1.70294E+09,       NOMBRE = 4,  )) #  54   ANS
+        _F( JUSQU_A = 3.15360E+08,       NOMBRE = 8,  ), #  10   ANS
+        _F( JUSQU_A = 4.73040E+08,       NOMBRE = 10,  ), #  15   ANS
+        _F( JUSQU_A = 1.57680E+09,       NOMBRE = 70,  ), #  50   ANS
+        _F( JUSQU_A = 1.70294E+09,       NOMBRE = 8,  )) #  54   ANS
                           )
+
+DEFLISTS =DEFI_LIST_INST(DEFI_LIST=_F(LIST_INST = LISTSECH),)
 
 RESUSECH=THER_NON_LINE(          MODELE=MOTH,
                                      EXCIT=_F( CHARGE = CHARSE05,   ),
                                 CHAM_MATER=CHMAT,
-                                   SOLVEUR=_F( METHODE = 'MULT_FRONT',   ),
-                                 PARM_THETA=0.57,
                                  ETAT_INIT=_F( VALE = 105.7,   ),
-                                 INCREMENT=_F( LIST_INST = LISTSECH,
-                                            NUME_INST_INIT = 0,
-                                            NUME_INST_FIN = 44,       ),
+                                 INCREMENT=_F( LIST_INST = DEFLISTS,
+                                               INST_FIN = 1.57680E+08,       ),
                               COMP_THER_NL=_F( RELATION = 'SECH_GRANGER',
                                             TOUT = 'OUI',            ),
-                            EVOL_THER_SECH=RESUTHER,
-
+                            CONVERGENCE=_F(ITER_GLOB_MAXI=20),
+			    EVOL_THER_SECH=RESUTHER,
                              TITRE=( ' CAS TEST &CODE',
                                      '&RL COMMANDE &COMMANDE', )
                          )
@@ -258,387 +228,73 @@ RESUSECH=THER_NON_LINE(          MODELE=MOTH,
 RESUSECH=THER_NON_LINE(reuse=RESUSECH,          MODELE=MOTH,
                                      EXCIT=_F( CHARGE = CHARSE10,   ),
                                 CHAM_MATER=CHMAT,
-                                   SOLVEUR=_F( METHODE = 'MULT_FRONT',   ),
-                                 PARM_THETA=0.57,
                                  ETAT_INIT=_F( EVOL_THER = RESUSECH,
-                                            NUME_ORDRE = 32,   ),
-                                 INCREMENT=_F( LIST_INST = LISTSECH,
-                                            NUME_INST_INIT = 32,
-                                            NUME_INST_FIN = 72,       ),
+                                            INST = 1.57680E+08,   ),
+                                 INCREMENT=_F( LIST_INST = DEFLISTS,
+                                            INST_INIT = 1.57680E+08,),
                               COMP_THER_NL=_F( RELATION = 'SECH_GRANGER',
                                             TOUT = 'OUI',            ),
-                            EVOL_THER_SECH=RESUTHER,
-
+                            CONVERGENCE=_F(ITER_GLOB_MAXI=20),
+			    EVOL_THER_SECH=RESUTHER,
                              TITRE=( ' CAS TEST &CODE',
                                      '&RL COMMANDE &COMMANDE', )
                          )
+
 
 ##############################
 # TESTS DES RESULTATS
 ##############################
 
-
-TEST_RESU(RESU=(_F(NUME_ORDRE=44,
-                   GROUP_NO='GM66',
-                   REFERENCE='AUTRE_ASTER',
-                   RESULTAT=RESUSECH,
-                   NOM_CHAM='TEMP',
-                   NOM_CMP='TEMP',
-                   VALE_CALC=106.027140724,
-                   VALE_REFE=104.81805,
-                   PRECISION=0.050000000000000003,),
-                _F(NUME_ORDRE=61,
-                   GROUP_NO='GM66',
-                   REFERENCE='AUTRE_ASTER',
-                   RESULTAT=RESUSECH,
-                   NOM_CHAM='TEMP',
-                   NOM_CMP='TEMP',
-                   VALE_CALC=95.762745770,
-                   VALE_REFE=96.161709999999999,
-                   PRECISION=0.050000000000000003,),
-                _F(NUME_ORDRE=72,
-                   GROUP_NO='GM66',
-                   REFERENCE='AUTRE_ASTER',
-                   RESULTAT=RESUSECH,
-                   NOM_CHAM='TEMP',
-                   NOM_CMP='TEMP',
-                   VALE_CALC=76.037609100,
-                   VALE_REFE=78.276650000000004,
-                   PRECISION=0.050000000000000003,),
-                ),
-          )
-
-TEST_RESU(RESU=(_F(NUME_ORDRE=60,
-                   GROUP_NO='GM66',
-                   REFERENCE='AUTRE_ASTER',
-                   RESULTAT=RESUSECH,
-                   NOM_CHAM='TEMP',
-                   NOM_CMP='TEMP',
-                   VALE_CALC=99.983312246,
-                   VALE_REFE=100.071213,
-                   PRECISION=0.050000000000000003,),
-                _F(NUME_ORDRE=62,
-                   GROUP_NO='GM66',
-                   REFERENCE='AUTRE_ASTER',
-                   RESULTAT=RESUSECH,
-                   NOM_CHAM='TEMP',
-                   NOM_CMP='TEMP',
-                   VALE_CALC=92.098030851,
-                   VALE_REFE=92.787963000000005,
-                   PRECISION=0.050000000000000003,),
-                _F(NUME_ORDRE=64,
-                   GROUP_NO='GM66',
-                   REFERENCE='AUTRE_ASTER',
-                   RESULTAT=RESUSECH,
-                   NOM_CHAM='TEMP',
-                   NOM_CMP='TEMP',
-                   VALE_CALC=85.937242812,
-                   VALE_REFE=87.224813999999995,
-                   PRECISION=0.050000000000000003,),
-                _F(NUME_ORDRE=66,
-                   GROUP_NO='GM66',
-                   REFERENCE='AUTRE_ASTER',
-                   RESULTAT=RESUSECH,
-                   NOM_CHAM='TEMP',
-                   NOM_CMP='TEMP',
-                   VALE_CALC=81.108609776,
-                   VALE_REFE=82.893484000000001,
-                   PRECISION=0.050000000000000003,),
-                _F(NUME_ORDRE=68,
-                   GROUP_NO='GM66',
-                   REFERENCE='AUTRE_ASTER',
-                   RESULTAT=RESUSECH,
-                   NOM_CHAM='TEMP',
-                   NOM_CMP='TEMP',
-                   VALE_CALC=77.322809405,
-                   VALE_REFE=79.460121999999998,
-                   PRECISION=0.050000000000000003,),
-                ),
-          )
-
-TEST_RESU(RESU=(_F(NUME_ORDRE=44,
-                   GROUP_NO='GM68',
-                   REFERENCE='NON_DEFINI',
-                   RESULTAT=RESUSECH,
-                   NOM_CHAM='TEMP',
-                   NOM_CMP='TEMP',
-                   VALE_CALC=105.099745247,
-                   VALE_REFE=104.81805,
-                   PRECISION=0.050000000000000003,),
-                _F(NUME_ORDRE=61,
-                   GROUP_NO='GM68',
-                   REFERENCE='NON_DEFINI',
-                   RESULTAT=RESUSECH,
-                   NOM_CHAM='TEMP',
-                   NOM_CMP='TEMP',
-                   VALE_CALC=95.154911726,
-                   VALE_REFE=96.161709999999999,
-                   PRECISION=0.050000000000000003,),
-                _F(NUME_ORDRE=72,
-                   GROUP_NO='GM68',
-                   REFERENCE='NON_DEFINI',
-                   RESULTAT=RESUSECH,
-                   NOM_CHAM='TEMP',
-                   NOM_CMP='TEMP',
-                   VALE_CALC=75.880571638,
-                   VALE_REFE=78.276650000000004,
-                   PRECISION=0.050000000000000003,),
-                ),
-          )
-
-TEST_RESU(RESU=(_F(NUME_ORDRE=60,
-                   GROUP_NO='GM68',
-                   REFERENCE='NON_DEFINI',
-                   RESULTAT=RESUSECH,
-                   NOM_CHAM='TEMP',
-                   NOM_CMP='TEMP',
-                   VALE_CALC=99.458742309,
-                   VALE_REFE=100.071213,
-                   PRECISION=0.050000000000000003,),
-                _F(NUME_ORDRE=62,
-                   GROUP_NO='GM68',
-                   REFERENCE='NON_DEFINI',
-                   RESULTAT=RESUSECH,
-                   NOM_CHAM='TEMP',
-                   NOM_CMP='TEMP',
-                   VALE_CALC=91.472956620,
-                   VALE_REFE=92.787963000000005,
-                   PRECISION=0.050000000000000003,),
-                _F(NUME_ORDRE=64,
-                   GROUP_NO='GM68',
-                   REFERENCE='NON_DEFINI',
-                   RESULTAT=RESUSECH,
-                   NOM_CHAM='TEMP',
-                   NOM_CMP='TEMP',
-                   VALE_CALC=85.387756355,
-                   VALE_REFE=87.224813999999995,
-                   PRECISION=0.050000000000000003,),
-                _F(NUME_ORDRE=66,
-                   GROUP_NO='GM68',
-                   REFERENCE='NON_DEFINI',
-                   RESULTAT=RESUSECH,
-                   NOM_CHAM='TEMP',
-                   NOM_CMP='TEMP',
-                   VALE_CALC=80.718779553,
-                   VALE_REFE=82.893484000000001,
-                   PRECISION=0.050000000000000003,),
-                _F(NUME_ORDRE=68,
-                   GROUP_NO='GM68',
-                   REFERENCE='NON_DEFINI',
-                   RESULTAT=RESUSECH,
-                   NOM_CHAM='TEMP',
-                   NOM_CMP='TEMP',
-                   VALE_CALC=77.103807576,
-                   VALE_REFE=79.460121999999998,
-                   PRECISION=0.050000000000000003,),
-                ),
-          )
-
-###################
-# CALCUL MACANIQUE
-###################
-
-#
-# DONNEES DE MODELISATION
-#
-
-MOMECA=AFFE_MODELE(   MAILLAGE=MAIL,
-                            AFFE=_F( TOUT = 'OUI',
-                                  MODELISATION = '3D',
-                                  PHENOMENE = 'MECANIQUE',    )
-                        )
-
-FCT1=DEFI_FONCTION(   NOM_PARA='EPSI',  PROL_DROITE='LINEAIRE',
-                                          PROL_GAUCHE='LINEAIRE',
-                       VALE=(0.200E-2,      400.,
-                             0.400E-2,      500.,)
-                                                    )
-
-#
-
-FCT2=DEFI_FONCTION(   NOM_PARA='EPSI',  PROL_DROITE='LINEAIRE',
-                                          PROL_GAUCHE='LINEAIRE',
-                       VALE=(0.100E-2,      200.,
-                             0.300E-2,      300.,)
-                                                    )
-
-#
-
-E=DEFI_FONCTION(       NOM_PARA='SECH',
-                            PROL_DROITE='CONSTANT',
-                           PROL_GAUCHE='CONSTANT',
-                                 VALE=(
-                                            0.0,   32.E+3,
-                                         1000.0,   32.E+3,
-                                     )    )
-
-#
-
-NU=DEFI_FONCTION(       NOM_PARA='SECH',
-                            PROL_DROITE='CONSTANT',
-                           PROL_GAUCHE='CONSTANT',
-                                 VALE=(
-                                            0.0,  0.3E0,
-                                         1000.0,  0.3E0,
-                                     )    )
-
-#
-
-ALPHA=DEFI_FONCTION(       NOM_PARA='TEMP',
-                            PROL_DROITE='CONSTANT',
-                           PROL_GAUCHE='CONSTANT',
-                                 VALE=(
-                                            0.0,  10.0E-6,
-                                         1000.0,  10.0E-6,
-                                     )    )
-
-#
-
-CTRACB=DEFI_NAPPE(   NOM_PARA='SECH',  PROL_DROITE='LINEAIRE',
-                                        PROL_GAUCHE='LINEAIRE',
-                          PARA=(0.,50.,),
-                          FONCTION=(FCT1,FCT2,)            )
-
-#
-
-MAT=DEFI_MATERIAU(             THER=_F( RHO_CP = 0.0E-3,
-                                        LAMBDA = 1.0E-3,        ),
-                               ELAS_FO=_F( E = E,
-                                        NU = NU,
-                                        ALPHA = ALPHA,
-                                        RHO = 2400.,
-                                        TEMP_DEF_ALPHA=0.0,
-                                        K_DESSIC = 1.25E-6,     ),
-                              TRACTION=_F( SIGM = CTRACB,          )
-                                )
-
-#
-
-CM=AFFE_MATERIAU(    MAILLAGE=MAIL,
-                            AFFE=_F( TOUT = 'OUI',
-                                  MATER = MAT ),
-                            AFFE_VARC=(_F(TOUT='OUI',
-                                         EVOL=RESUSECH,
-                                         NOM_VARC="SECH",
-                                         NOM_CHAM='TEMP',
-                                         VALE_REF=C_0),
-                                       _F(TOUT='OUI',
-                                         EVOL=RESUTHER,
-                                         NOM_VARC="TEMP",
-                                         NOM_CHAM='TEMP',
-                                         VALE_REF=15),),);
-#
-CLMECA =AFFE_CHAR_MECA(  MODELE=MOMECA,
-                         FACE_IMPO=(_F( GROUP_MA = ('GM72'),
-                                    DNOR = 0.,),
-                                   _F( GROUP_MA = ('GM71'),
-                                    DNOR = 0.,         ),
-                                   _F( GROUP_MA = ('GM73'),
-                                    DNOR = 0.,),),
-                                    INFO = 2);
-
-NUM=NUME_DDL(MODELE=MOMECA,METHODE='LDLT',RENUM='RCMK',)
-
-#
-
-CHME=AFFE_CHAR_MECA(
-                            MODELE=MOMECA,
-                          PRES_REP=_F(  GROUP_MA = ('GM69'),
-                                     PRES = -15.50,),     )
-
-
-#
-LISTMECA=DEFI_LIST_REEL(
+LISTSEC2=DEFI_LIST_REEL(
              DEBUT=0.,INTERVALLE=(
-        _F( JUSQU_A = 3.15360E+04,       NOMBRE = 1,  ), #  0.0001 A
-        _F( JUSQU_A = 3.15360E+05,       NOMBRE = 1,  ), #   0.001 A
-        _F( JUSQU_A = 3.15360E+07,       NOMBRE = 10, ), #   0.001 A
-        _F( JUSQU_A = 1.70294E+09,       NOMBRE = 20, )) #  54   ANS
+        _F( JUSQU_A = 1.57680E+08,       NOMBRE = 1, ), #   5   ANS
+	_F( JUSQU_A = 4.73040E+08,       NOMBRE = 1,  ), #  15   ANS
+        _F( JUSQU_A = 1.70294E+09,       NOMBRE = 1,  )) #  54   ANS
                           )
-
-#
-RESUMECA=STAT_NON_LINE(
-                            MODELE=MOMECA,
-                        CHAM_MATER=CM,EXCIT=(
-                             _F(
-                CHARGE = CHME,
-                ),
-                             _F(
-                CHARGE = CLMECA,
-                ),
-                ),
-                         COMP_INCR=_F(
-                RELATION = 'VMIS_ISOT_TRAC',
-                ),
-                            NEWTON=_F(
-                MATRICE = 'TANGENTE',
-                REAC_ITER = 3,
-                ),
-                         INCREMENT=_F(
-                LIST_INST = LISTMECA,
-                ),
-                           SOLVEUR=_F(
-                METHODE = 'LDLT',
-                RENUM = 'RCMK',
-                ),
-              )
-
-#
-TEST_RESU(RESU=_F(NUME_ORDRE=32,
-                  GROUP_NO='GM66',
-                  REFERENCE='AUTRE_ASTER',
-                  RESULTAT=RESUMECA,
-                  NOM_CHAM='DEPL',
-                  NOM_CMP='DX',
-                  VALE_CALC=-0.185949119,
-                  VALE_REFE=-0.184,
-                  PRECISION=0.02,),
-          )
-
-TEST_RESU(RESU=_F(NUME_ORDRE=32,
-                  GROUP_NO='GM68',
-                  RESULTAT=RESUMECA,
-                  NOM_CHAM='DEPL',
-                  NOM_CMP='DX',
-                  VALE_CALC=-0.18284,
-                  TOLE_MACHINE=1.E-3,
-                  ),
-          )
-
-#
-
-RESUSTAT=MECA_STATIQUE(
-                          MODELE=MOMECA,
-                      CHAM_MATER=CM,EXCIT=(
-                           _F(  CHARGE = CLMECA,                   ),
-                           _F(  CHARGE = CHME,                     )),
-                       LIST_INST=LISTMECA,
-                         SOLVEUR=_F(  METHODE = 'LDLT',
-                                   RENUM = 'RCMK',                    )
-                       )
-
-#
-
-TEST_RESU(RESU=_F(NUME_ORDRE=32,
-                  GROUP_NO='GM66',
-                  REFERENCE='AUTRE_ASTER',
-                  RESULTAT=RESUSTAT,
-                  NOM_CHAM='DEPL',
-                  NOM_CMP='DX',
-                  VALE_CALC=-0.277971335,
-                  VALE_REFE=-0.27459020000000001,
-                  PRECISION=0.02,),
-          )
-
-TEST_RESU(RESU=_F(NUME_ORDRE=32,
-                  GROUP_NO='GM68',
-                  RESULTAT=RESUSTAT,
-                  NOM_CHAM='DEPL',
-                  NOM_CMP='DX',
-                  VALE_CALC=-0.2736305,
-                  TOLE_MACHINE=1.E-3,
-                  ),
-          )
-
+COUP=MACR_LIGN_COUPE(RESULTAT=RESUSECH,
+                         LIST_INST=LISTSEC2,
+                         NOM_CHAM='TEMP',
+                         LIGN_COUPE=_F(NOM_CMP=('TEMP'),
+			               TYPE='GROUP_NO',
+                                       GROUP_NO='RGENEF',),);
+IMPR_TABLE(TABLE=COUP,FORMAT='TABLEAU_CROISE', FORMAT_R='F3.12',NOM_PARA=('INST','COOR_X','TEMP'),);
+#-----------------------------------------------------
+# Tests 
+#-----------------------------------------------------
+C_ref = [[67.6838,54.2257,51.6],
+         [80.9129,65.2,56.8903],
+         [89.6936,75.4576,62.4],
+         [97.8,84.9649,69.1059],
+         [102.207,91.4,74.4781],
+         [104,95.2,78.3688],
+         [102,93.55,77.8487],
+         [97.8,89.3776,75.9533],
+         [90.1783,82.8,73.1186],
+         [81,76.3516,70.815],
+         [71.2,70.0603,68.8035],];
+# valeurs de non-regression DNSXI,DNSXS,DNSYI,DNSYS	  
+C_reg = [[69.395183802054,51.783611449759,51.655511103301],
+         [81.145990523968,64.545619765794,56.461128140514],
+         [90.607964813497,74.955713791528,61.974271985498],
+         [97.953309148535,83.710367142148,67.831693675067],
+         [102.989045882498,90.725926967126,73.399941881500],
+         [105.018285655124,94.883436767059,77.447169678959],
+         [102.952700919123,93.729136069366,77.708229206106],
+         [97.888144074453,89.217982420161,75.727860396727],
+         [90.528261929232,83.128098638855,73.238419865076],
+         [81.097356527841,76.297063327263,70.962681975733],
+         [69.361292246812,69.278013651120,69.149603178720],];
+x_test = [22.5,22.5382,22.5954,22.6809,22.8088,23,23.1912,23.3191,23.4046,23.4618,23.5];
+inst_test = [1.57680E+08,4.73040E+08,1.70294E+09,];	 
+for j,t in enumerate(inst_test) :
+    for i,x in enumerate(x_test) :
+        TEST_TABLE(REFERENCE='SOURCE_EXTERNE',
+                   PRECISION=0.05,
+                   VALE_CALC= C_reg[i][j],
+                   VALE_REFE=C_ref[i][j],
+                   NOM_PARA='TEMP',
+                   TABLE=COUP,
+                   FILTRE=(_F(NOM_PARA='COOR_X',VALE=x,),
+		           _F(NOM_PARA='INST',VALE=t,),),);
 #
 FIN () ;

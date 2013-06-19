@@ -1,0 +1,134 @@
+# -*- coding: utf-8 -*-
+
+import sys
+import salome
+
+salome.salome_init()
+theStudy = salome.myStudy
+
+import salome_notebook
+notebook = salome_notebook.notebook
+#FONCTIONS
+def addToStudyList(ObjectList, NameList) :
+    class LengthError(Exception):
+        pass
+    if len(ObjectList) != len(NameList) :
+        raise LengthError
+    for idxObj in range(len(ObjectList)) :
+        geompy.addToStudy(ObjectList[idxObj], NameList[idxObj])
+
+def addToStudyInFatherList(MainObject, ObjectList, NameList) :
+    class LengthError(Exception):
+        pass
+    if len(ObjectList) != len(NameList) :
+        raise LengthError
+    for idxObj in range(len(ObjectList)) :
+        geompy.addToStudyInFather(MainObject, ObjectList[idxObj], NameList[idxObj])
+
+###
+### GEOM component
+###
+
+import GEOM
+import geompy
+import math
+import SALOMEDS
+
+Rm=22.5
+geompy.init_geom(theStudy)
+chain = "/home/I87854/Documents/GC/hsna100/A_RESTITUER/hsna100axis2.med" 
+O = geompy.MakeVertex(0, 0, 0)
+VX = geompy.MakeVectorDXDYDZ(1, 0, 0)
+VY = geompy.MakeVectorDXDYDZ(0, 1, 0)
+VZ = geompy.MakeVectorDXDYDZ(0, 0, 1)
+Face_1 = geompy.MakeFaceHW(1, 1, 1)
+Plane_1 = geompy.MakePlane(O, VX, 2000)
+Plane_2 = geompy.MakePlane(O, VY, 2000)
+AXIS = geompy.MakePartition([Face_1], [Plane_1, Plane_2], [], [], geompy.ShapeType["FACE"], 0, [], 0)
+geompy.TranslateDXDYDZ(AXIS, Rm+0.5, 0.5, 0)
+
+
+# Creation des groupes
+# lint 
+L_INT = geompy.CreateGroup(AXIS, geompy.ShapeType["EDGE"])
+A1=geompy.GetShapesOnPlaneWithLocation(AXIS,geompy.ShapeType["EDGE"],VX,geompy.MakeVertex(Rm, 0, 0), geompy.GEOM.ST_ON)
+geompy.UnionList(L_INT ,A1)
+# lext 
+L_EXT = geompy.CreateGroup(AXIS, geompy.ShapeType["EDGE"])
+A1=geompy.GetShapesOnPlaneWithLocation(AXIS,geompy.ShapeType["EDGE"],VX,geompy.MakeVertex(Rm+1.0, 0, 0), geompy.GEOM.ST_ON)
+geompy.UnionList(L_EXT ,A1)
+# rgenef 
+RGENEF = geompy.CreateGroup(AXIS, geompy.ShapeType["EDGE"])
+A1=geompy.GetShapesOnPlaneWithLocation(AXIS,geompy.ShapeType["EDGE"],VY,geompy.MakeVertex(0, 0, 0), geompy.GEOM.ST_ON)
+geompy.UnionList(RGENEF ,A1)
+# inf
+COTE1 = geompy.CreateGroup(AXIS, geompy.ShapeType["EDGE"])
+COTE2 = geompy.CreateGroup(AXIS, geompy.ShapeType["EDGE"])
+A2=geompy.GetShapesOnPlaneWithLocation(AXIS,geompy.ShapeType["EDGE"],VX,geompy.MakeVertex(Rm+0.5, 0, 0), geompy.GEOM.ST_IN)
+A3=geompy.GetShapesOnPlaneWithLocation(AXIS,geompy.ShapeType["EDGE"],VX,geompy.MakeVertex(Rm+0.5, 0, 0), geompy.GEOM.ST_OUT)
+geompy.UnionList(COTE1,A1)
+geompy.DifferenceList(COTE1 ,A2)
+geompy.UnionList(COTE2,A1)
+geompy.DifferenceList(COTE2 ,A3)
+#Add to study
+ObjectList = [AXIS]
+NameList   = ["AXIS"]
+addToStudyList(ObjectList, NameList )
+
+ObjectList = [L_INT,L_EXT,COTE1,COTE2,RGENEF]
+NameList   = ["L_INT","L_EXT","COTE1","COTE2","RGENEF"]
+addToStudyInFatherList(AXIS,ObjectList, NameList )
+#---------------------------------------
+#  MAILLAGE
+#---------------------------------------
+import SMESH, smesh
+import StdMeshers
+aFilterManager = smesh.smesh.CreateFilterManager()
+smesh.smesh.SetCurrentStudy(salome.myStudy)
+import numpy as NP
+import GHS3DPlugin
+
+Nb_Segments_1 = smesh.CreateHypothesis('NumberOfSegments')
+Nb_Segments_1.SetNumberOfSegments( 2)
+Nb_Segments_1.SetDistrType( 0 )
+Regular_1D = smesh.CreateHypothesis('Regular_1D')
+Quadrangle_2D = smesh.CreateHypothesis('Quadrangle_2D')
+MAXIS = smesh.Mesh(AXIS)
+status = MAXIS.AddHypothesis(Nb_Segments_1)
+status = MAXIS.AddHypothesis(Regular_1D)
+status = MAXIS.AddHypothesis(Quadrangle_2D)
+#SUBMESH
+Regular_1D_1 = MAXIS.Segment(geom=COTE1)
+Nb_Segments_2 = Regular_1D_1.NumberOfSegments(5,5,[COTE1])
+Propagation_of_1D_Hyp = Regular_1D_1.Propagation()
+#SUBMESH
+Regular_1D_2 = MAXIS.Segment(geom=COTE2)
+Nb_Segments_3 = Regular_1D_2.NumberOfSegments(5,5,[])
+Propagation_of_1D_H = Regular_1D_2.Propagation()
+
+isDone = MAXIS.Compute()
+
+## création des groupes
+RGENEF_1 = MAXIS.GroupOnGeom(RGENEF,'RGENEF',SMESH.EDGE)
+L_INT_1 = MAXIS.GroupOnGeom(L_INT,'L_INT',SMESH.EDGE)
+L_EXT_1 = MAXIS.GroupOnGeom(L_EXT,'L_EXT',SMESH.EDGE)
+
+
+#creation groupes de noeuds
+A1 = geompy.MakeVertex(Rm, 0, 0)
+A2 = geompy.MakeVertex(Rm+0.5, 0, 0)
+A3 = geompy.MakeVertex(Rm+1.0, 0, 0)
+listPoiObs = [A1,A2,A3]
+nomsPoiObs = ["A1","A2","A3"]
+for i in range(len(listPoiObs)) :
+    poi = listPoiObs[i]
+    coordsPoint = geompy.PointCoordinates(poi)
+    poiId       = MAXIS.FindNodeClosestTo(coordsPoint[0],coordsPoint[1],coordsPoint[2])
+    nGroup      = MAXIS.CreateEmptyGroup( smesh.NODE, nomsPoiObs[i] )
+    nGroup.Add([poiId])
+
+#EXPORT du maillage en .med
+MAXIS.ExportMED(chain)
+
+if salome.sg.hasDesktop():
+  salome.sg.updateObjBrowser(1)
