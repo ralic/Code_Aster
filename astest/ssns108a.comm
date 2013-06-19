@@ -393,7 +393,7 @@ RESU=CALC_CHAMP(reuse =RESU,RESULTAT=RESU,GROUP_MA=GROUPES,
              FORCE=('FORC_NODA','REAC_NODA',),);
              
 
-IMPR_RESU(FORMAT='MED',
+IMPR_RESU(FORMAT='ASTER',
           RESU=_F(MAILLAGE=MA,
                   RESULTAT=RESU,
                   NOM_CHAM=('DEPL',),),);
