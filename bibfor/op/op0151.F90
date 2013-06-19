@@ -329,8 +329,9 @@ subroutine op0151()
             call rcpare(nommat, pheno, cara, icodba)
             cara = 'A0'
             call rcpare(nommat, pheno, cara, icodhs)
-            if (icodwo .ne. 0 .and. icodba .ne. 0 .and. icodhs .ne. 0) call u2mess('F',&
-                                                                                   'FATIGUE1_30')
+            if (icodwo .ne. 0 .and. icodba .ne. 0 .and. icodhs .ne. 0) then
+                call u2mess('F', 'FATIGUE1_30')
+            endif
 !
         else if (mdomag.eq.'MANSON_COFFIN') then
             if (nomopt(11:14) .ne. 'EPSI' .and. nomopt(11:14) .ne. 'EPME') then
@@ -380,8 +381,9 @@ subroutine op0151()
             call rcpare(nommat, pheno, cara, icodba)
             cara = 'A0'
             call rcpare(nommat, pheno, cara, icodhs)
-            if (icodwo .ne. 0 .and. icodba .ne. 0 .and. icodhs .ne. 0) call u2mess('F',&
-                                                                                   'FATIGUE1_30')
+            if (icodwo .ne. 0 .and. icodba .ne. 0 .and. icodhs .ne. 0) then
+                call u2mess('F', 'FATIGUE1_30')
+            endif
             call getvid(' ', 'TAHERI_NAPPE', 1, iarg, 1,&
                         nomnap, nval)
             if (nval .eq. 0) then

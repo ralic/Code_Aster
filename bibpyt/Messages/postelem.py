@@ -39,17 +39,18 @@ cata_msg={
  Avec le mot-clé RESULTAT, il faut renseigner NOM_CHAM pour identifier le champ sur lequel réaliser le post-traitement.
 """),
 
+10: _(u"""Ce message manque, cf. issue20997"""),
+
 11: _(u"""
  Un instant demandé dans POST_ELEM, option TRAV_EXT n'est pas présent dans le résultat <%(k1)s>.
 """),
 
+20: _(u"""Ce message manque, cf. issue20997"""),
 
+21: _(u"""Ce message manque, cf. issue20997"""),
 
+22: _(u"""Ce message manque, cf. issue20997"""),
 
-
-
-
-
-
+23: _(u"""Ce message manque, cf. issue20997"""),
 
 }

@@ -464,9 +464,9 @@ subroutine op0045()
         valk(2) = matrc
         if (lpg) call u2mess('F', 'ALGELINE5_82')
         if (optiof .eq. 'BANDE') call u2mesk('F', 'ALGELINE2_66', 2, valk)
-        if (((appr.eq.'I').or.(appr.eq.'C')) .and. (zr(lborvp).eq.0.d0)) call u2mess('F',&
-                                                                                     'ALGELINE2_&
-                                                                                     &67')
+        if (((appr.eq.'I').or.(appr.eq.'C')) .and. (zr(lborvp).eq.0.d0)) then
+            call u2mess('F', 'ALGELINE2_67')
+        endif
         if (modrig .eq. 'MODE_RIGIDE') call u2mesk('F', 'ALGELINE2_68', 2, valk)
         if ((method.eq.'SORENSEN') .and. (zr(lborvp).eq.0.d0)) call u2mess('F', 'ALGELINE2_71')
         if (method(1:6) .eq. 'JACOBI') call u2mesk('F', 'ALGELINE5_64', 1, matrc)

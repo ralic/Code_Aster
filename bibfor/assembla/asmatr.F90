@@ -141,9 +141,9 @@ subroutine asmatr(nbmat, tlimat, licoef, nu, solveu,&
 !     -- VERIFICATIONS :
 !     ------------------
     metres = zk24(jslvk)
-    if ((metres.eq.'GCPC'.or.metres.eq.'FETI') .and. (matsym.eq.'N')) call u2mesk('F',&
-                                                                                  'ASSEMBLA_1',&
-                                                                                  1, matsym)
+    if ((metres.eq.'GCPC'.or.metres.eq.'FETI') .and. (matsym.eq.'N')) then
+        call u2mesk('F', 'ASSEMBLA_1', 1, matsym)
+    endif
 !
 !
 !

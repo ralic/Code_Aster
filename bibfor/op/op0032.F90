@@ -172,8 +172,9 @@ subroutine op0032()
                 masse, l)
     amor=' '
     lamor=0
-    if ((typmod.eq.'GENERAL') .or. (typmod.eq.'MODE_COMPLEXE')) call getvid(' ', matrc, 1, iarg,&
-                                                                            1, amor, lamor)
+    if ((typmod.eq.'GENERAL') .or. (typmod.eq.'MODE_COMPLEXE')) then
+        call getvid(' ', matrc, 1, iarg, 1, amor, lamor)
+    endif
     if (lamor .eq. 0) then
         lc=.false.
     else
@@ -369,9 +370,9 @@ subroutine op0032()
 !     --- CURRENT SCOPE OF USE OF THE OPTION TYPCHA='ROMBOUT'   ---
     if ((typmet(1:3).eq.'APM') .and. (typcha(1:7).eq.'ROMBOUT')) then
         if (lc .or. (zk24(jrefa+9)(1:4).eq.'GENE') .or.&
-            (zi(lmasse+3)*zi( lmasse+4)*zi(lraide+3)*zi(lraide+4).ne.1)) call u2mess('F',&
-                                                                                     'ALGELINE4_&
-                                                                                     &17')
+            (zi(lmasse+3)*zi( lmasse+4)*zi(lraide+3)*zi(lraide+4).ne.1)) then
+            call u2mess('F', 'ALGELINE4_17')
+        endif
     endif
 !
 !      --- SCHEMAS PARALLELES

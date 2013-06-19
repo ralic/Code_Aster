@@ -105,10 +105,9 @@ subroutine nmdome(modele, mate, carele, lischa, result,&
 !
         call jeexin(modele(1:8)//'.MODELE    .NEMA', iret)
         if (iret .gt. 0) then
-            if ((nomcmd.eq.'STAT_NON_LINE') .or. ( nomcmd.eq.'DYNA_NON_LINE')) call u2mesk(&
-                                                                               'F',&
-                                                                               'CALCULEL3_51', 1,&
-                                                                               nomcmd)
+            if ((nomcmd.eq.'STAT_NON_LINE') .or. ( nomcmd.eq.'DYNA_NON_LINE')) then
+                call u2mesk('F', 'CALCULEL3_51', 1, nomcmd)
+            endif
         endif
 !
 ! ------ LE MATERIAU

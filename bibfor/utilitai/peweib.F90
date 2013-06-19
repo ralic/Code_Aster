@@ -148,9 +148,9 @@ subroutine peweib(resu, modele, mate, cara, chmat,&
                         toptca(1), n1)
             call getvtx(motcl1, 'CORR_PLAST', i, iarg, 1,&
                         toptca(2), n2)
-            if ((toptca(1).ne.optcal(1)) .or. (toptca(2).ne.optcal(2))) call u2mess('F',&
-                                                                                    'UTILITAI3_8&
-                                                                                    &3')
+            if ((toptca(1).ne.optcal(1)) .or. (toptca(2).ne.optcal(2))) then
+                call u2mess('F', 'UTILITAI3_83')
+            endif
 10      continue
     endif
 !

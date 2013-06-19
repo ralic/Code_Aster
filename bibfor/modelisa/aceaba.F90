@@ -160,9 +160,9 @@ subroutine aceaba(noma, nomo, lmax, nbarre, nbocc,&
 !            ON RECHERCHE NOMSEC DANS LA 1ER COLONNE
             call jeveuo(tabcar//'.TBLP', 'L', itblp)
             typca=zk24(itblp+1)
-            if (typca(1:2) .ne. 'K8' .and. typca(1:3) .ne. 'K24') call u2mesk('F',&
-                                                                              'MODELISA8_17', 1,&
-                                                                              tabcar)
+            if (typca(1:2) .ne. 'K8' .and. typca(1:3) .ne. 'K24') then
+                call u2mesk('F', 'MODELISA8_17', 1, tabcar)
+            endif
             call jeveuo(zk24(itblp+2), 'L', itabl)
             nblign = zi(itbnp+1)
             if (typca .eq. 'K8') then

@@ -209,10 +209,6 @@ Les noms de paramètres doivent être différents
  les noms de chaque paramètre doivent être différents
 """),
 
-80 : _(u"""
- un seul NUME_ORDRE !!!
-"""),
-
 83 : _(u"""
  les noeuds DEBUT et fin n appartiennent pas au maillage.
 """),

@@ -131,9 +131,9 @@ subroutine op0174()
         nom = zk16(inom + i)
         call rsadpa(concpt, 'L', 1, nom, numord,&
                     1, ipara, typ)
-        if (typ(1:1) .ne. 'R' .and. typ(1:1) .ne. 'I' .and. typ(1:1) .ne. 'C') call u2mess(&
-                                                                               'F',&
-                                                                               'UTILITAI3_6')
+        if (typ(1:1) .ne. 'R' .and. typ(1:1) .ne. 'I' .and. typ(1:1) .ne. 'C') then
+            call u2mess('F', 'UTILITAI3_6')
+        endif
         zk8(ityp+i) = typ(1:1)
 30  end do
 !

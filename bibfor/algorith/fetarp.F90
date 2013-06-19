@@ -125,8 +125,9 @@ subroutine fetarp(infofe, ifm, niter, nbi, nbreor,&
             call dcopy(nbi4, zr(itest2+ipntr(1)-1), 1, zr(itest2+ipntr(2) -1), 1)
             goto 31
         endif
-        if ((info.ne.0) .or. ((ido.eq.99).and.(iparam(5).lt.nfreq))) call u2mess('A',&
-                                                                                 'ALGORITH3_62')
+        if ((info.ne.0) .or. ((ido.eq.99).and.(iparam(5).lt.nfreq))) then
+            call u2mess('A', 'ALGORITH3_62')
+        endif
         info=0
         call dneupd(.false., 'A', zl(itest4), zr(itest5), zr(itest5+nfreq),&
                     zr(itest1), nbi, 0.d0, 0.d0, zr(itest6),&

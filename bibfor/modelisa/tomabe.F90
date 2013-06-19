@@ -357,10 +357,9 @@ subroutine tomabe(chmat, nmabet, nbmabe, mailla, nbnoma,&
         endif
 !
         if (.not. ( trouv1 .and. trouv2 )) call u2mess('F', 'MODELISA7_52')
-        if (( xflu.lt.0.0d0 ) .or. ( xret.lt.0.0d0 ) .or. ( xflu+ xret.gt.1.0d0 )) call u2mess(&
-                                                                                   'F',&
-                                                                                   'MODELISA7_53&
-                                                                                   &')
+        if (( xflu.lt.0.0d0 ) .or. ( xret.lt.0.0d0 ) .or. ( xflu+ xret.gt.1.0d0 )) then
+            call u2mess('F', 'MODELISA7_53')
+        endif
 !
 !        CALL JELIRA(RCVALR,'LONMAX',NBCSTE,K1B)
 !        write(6,*)'tomabe',RCVALK,RCVALR,NBCSTE
