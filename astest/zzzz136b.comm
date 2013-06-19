@@ -102,10 +102,8 @@ RESU=MECA_STATIQUE(        MODELE=MO,
                            CHAM_MATER=CH_MAT,
                                 EXCIT=_F(  CHARGE = CHARGE),
                           )
-CALC_CHAMP(reuse=RESU,RESULTAT=RESU,CONTRAINTE=('SIGM_ELNO'))
 
-
-CALC_CHAMP( reuse=RESU, RESULTAT=RESU, CONTRAINTE='SIGM_NOEU' )
+CALC_CHAMP( reuse=RESU, RESULTAT=RESU, CONTRAINTE=('SIGM_ELNO','SIGM_NOEU'))
 
 
 #######################################################################
@@ -910,7 +908,7 @@ INVA_EL = POST_RELEVE_T(  ACTION=_F( GROUP_NO = 'GXXXXXX_LIST1',
                                      INVARIANT = 'OUI',
                                   ),
              TITRE=( 'INVA_EL: LISTE DE NOEUDS P1 P2, INVARIANT, ',
-                     'A PARTIR DE SIGM_ELNO', )
+                     'A PARTIR DE SIGM_NOEU', )
                          )
 
 IMPR_TABLE(   TABLE=INVA_EL,
@@ -920,7 +918,7 @@ IMPR_TABLE(   TABLE=INVA_EL,
 INVA_NO = POST_RELEVE_T(  ACTION=_F( GROUP_NO = 'GXXXXXX_LIST1',
                                      INTITULE = 'INVARIANT',
                                      RESULTAT = RESU,
-                                     NOM_CHAM = 'SIGM_NOEU',
+                                     NOM_CHAM = 'SIGM_ELNO',
                                      OPERATION = 'EXTRACTION',
                                      INVARIANT = 'OUI',
                                   ),
@@ -948,7 +946,7 @@ PRIN_EL = POST_RELEVE_T(  ACTION=_F( GROUP_NO = 'GXXXXXX_LIST1',
                                      ELEM_PRINCIPAUX = 'OUI',
                                   ),
              TITRE=( 'PRIN_EL: LISTE DE NOEUDS P1 P2, ELEM_PRINCIPAUX, ',
-                     'A PARTIR DE SIGM_ELNO', )
+                     'A PARTIR DE SIGM_NOEU', )
                          )
 
 IMPR_TABLE(   TABLE=PRIN_EL,
@@ -958,7 +956,7 @@ IMPR_TABLE(   TABLE=PRIN_EL,
 PRIN_NO = POST_RELEVE_T(  ACTION=_F( GROUP_NO = 'GXXXXXX_LIST1',
                                      INTITULE = 'INVARIANT',
                                      RESULTAT = RESU,
-                                     NOM_CHAM = 'SIGM_NOEU',
+                                     NOM_CHAM = 'SIGM_ELNO',
                                      OPERATION = 'EXTRACTION',
                                      ELEM_PRINCIPAUX = 'OUI',
                                   ),
@@ -983,7 +981,7 @@ IMPR_TABLE(   TABLE=PRIN_NO,
 # ==> TENSEUR
 
 
-M1L_G=MACR_LIGN_COUPE( RESULTAT= RESU,NOM_CHAM = 'SIGM_ELNO',
+M1L_G=MACR_LIGN_COUPE( RESULTAT= RESU,NOM_CHAM = 'SIGM_NOEU',
                       LIGN_COUPE = _F(TYPE='GROUP_NO', REPERE='GLOBAL',
                                       OPERATION='EXTRACTION',
                                       GROUP_NO='GXXXXXX_LIST1',
@@ -1008,7 +1006,7 @@ IMPR_TABLE(   TABLE=P1L_G,
              )
 # ---------
 
-M1_L=MACR_LIGN_COUPE( RESULTAT= RESU,NOM_CHAM = 'SIGM_ELNO',
+M1_L=MACR_LIGN_COUPE( RESULTAT= RESU,NOM_CHAM = 'SIGM_NOEU',
                       LIGN_COUPE = _F(TYPE='GROUP_NO', REPERE='LOCAL',
                                       VECT_Y = ( 1., 1.,),
                                       OPERATION='EXTRACTION',
@@ -1037,7 +1035,7 @@ IMPR_TABLE(   TABLE=P1_L,
 
 # ---------
 
-M1_U=MACR_LIGN_COUPE( RESULTAT= RESU,NOM_CHAM = 'SIGM_ELNO',
+M1_U=MACR_LIGN_COUPE( RESULTAT= RESU,NOM_CHAM = 'SIGM_NOEU',
                       LIGN_COUPE = _F(TYPE='GROUP_NO', REPERE='UTILISATEUR',
                                       ANGL_NAUT = ( 0., 0., 0., ),
                                       OPERATION='EXTRACTION',
@@ -1067,7 +1065,7 @@ IMPR_TABLE(   TABLE=P1_U,
 
 # ---------
 
-M2_G=MACR_LIGN_COUPE( RESULTAT= RESU,NOM_CHAM = 'SIGM_ELNO',
+M2_G=MACR_LIGN_COUPE( RESULTAT= RESU,NOM_CHAM = 'SIGM_NOEU',
                       LIGN_COUPE = _F(TYPE='GROUP_NO', REPERE='GLOBAL',
                                       OPERATION='EXTRACTION',
                                       GROUP_NO='GXXXXXX_LIST2',
@@ -1091,7 +1089,7 @@ IMPR_TABLE(   TABLE=P2L_G,
                 NOM_PARA=( 'ABSC_CURV', 'SIXX', 'SIYY', 'SIZZ', 'SIXY', )
              )
 # ---------
-M2_L=MACR_LIGN_COUPE( RESULTAT= RESU,NOM_CHAM = 'SIGM_ELNO',
+M2_L=MACR_LIGN_COUPE( RESULTAT= RESU,NOM_CHAM = 'SIGM_NOEU',
                       LIGN_COUPE = _F(TYPE='GROUP_NO', REPERE='LOCAL',
                                       VECT_Y = ( 1., 1.,),
                                       OPERATION='EXTRACTION',
@@ -1116,7 +1114,7 @@ IMPR_TABLE(   TABLE=P2_L,
                 NOM_PARA=( 'ABSC_CURV', 'SIXX', 'SIYY', 'SIZZ', 'SIXY', )
              )
 # ---------
-M2_C=MACR_LIGN_COUPE( RESULTAT= RESU,NOM_CHAM = 'SIGM_ELNO',
+M2_C=MACR_LIGN_COUPE( RESULTAT= RESU,NOM_CHAM = 'SIGM_NOEU',
                       LIGN_COUPE = _F(TYPE='GROUP_NO', REPERE = 'CYLINDRIQUE',
                                       ORIGINE = ( 0., 0.,),
                                       OPERATION='EXTRACTION',
@@ -1146,7 +1144,7 @@ IMPR_TABLE(   TABLE=P2L_C,
              )
 # ---------
 
-M2_P=MACR_LIGN_COUPE( RESULTAT= RESU,NOM_CHAM = 'SIGM_ELNO',
+M2_P=MACR_LIGN_COUPE( RESULTAT= RESU,NOM_CHAM = 'SIGM_NOEU',
                       LIGN_COUPE = _F(TYPE='GROUP_NO', REPERE = 'POLAIRE',
                                       OPERATION='EXTRACTION',
                                       GROUP_NO='GXXXXXX_LIST2',
@@ -1174,7 +1172,7 @@ IMPR_TABLE(   TABLE=P2L_P,
              )
 
 # ---------
-M3_G=MACR_LIGN_COUPE( RESULTAT= RESU,NOM_CHAM = 'SIGM_ELNO',
+M3_G=MACR_LIGN_COUPE( RESULTAT= RESU,NOM_CHAM = 'SIGM_NOEU',
                       LIGN_COUPE = _F(TYPE='GROUP_NO', REPERE='GLOBAL',
                                       OPERATION='EXTRACTION',
                                       GROUP_NO='GXXXXXX_LIST3',
@@ -1200,7 +1198,7 @@ IMPR_TABLE(   TABLE=P3L_G,
              )
 # ---------
 
-M3_L=MACR_LIGN_COUPE( RESULTAT= RESU,NOM_CHAM = 'SIGM_ELNO',
+M3_L=MACR_LIGN_COUPE( RESULTAT= RESU,NOM_CHAM = 'SIGM_NOEU',
                       LIGN_COUPE = _F(TYPE='GROUP_NO', REPERE='LOCAL',
                                       VECT_Y = ( 1., 1., ),
                                       OPERATION='EXTRACTION',
@@ -1227,7 +1225,7 @@ IMPR_TABLE(   TABLE=P3_L,
 
 # ---------
 
-M3_U=MACR_LIGN_COUPE( RESULTAT= RESU,NOM_CHAM = 'SIGM_ELNO',
+M3_U=MACR_LIGN_COUPE( RESULTAT= RESU,NOM_CHAM = 'SIGM_NOEU',
                       LIGN_COUPE = _F(TYPE='GROUP_NO', REPERE = 'UTILISATEUR',
                                       ANGL_NAUT = ( 45., 0., 0., ),
                                       OPERATION='EXTRACTION',
@@ -1714,7 +1712,7 @@ IMPR_TABLE(   TABLE=INVA_M,
 INVA_P = POST_RELEVE_T(  ACTION=_F( GROUP_NO = 'GXXXXXX_LIST1',
                                      INTITULE = 'INVARIANT',
                                      RESULTAT = RESU,
-                                     NOM_CHAM = 'SIGM_NOEU',
+                                     NOM_CHAM = 'SIGM_ELNO',
                                      OPERATION = 'EXTRACTION',
                                      INVARIANT = 'OUI',
                                   ),
@@ -1748,7 +1746,7 @@ IMPR_TABLE(   TABLE=PRIN_M,
 PRIN_P = POST_RELEVE_T(  ACTION=_F( GROUP_NO = 'GXXXXXX_LIST1',
                                      INTITULE = 'INVARIANT',
                                      RESULTAT = RESU,
-                                     NOM_CHAM = 'SIGM_NOEU',
+                                     NOM_CHAM = 'SIGM_ELNO',
                                      OPERATION = 'EXTRACTION',
                                      ELEM_PRINCIPAUX = 'OUI',
                                   ),

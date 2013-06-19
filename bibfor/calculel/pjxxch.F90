@@ -1,4 +1,4 @@
-subroutine pjxxch(correz, ch1z, ch2z, tycha2, prfchz,&
+subroutine pjxxch(correz, ch1z, ch2z, tychv, prfchz,&
                   prol0, ligrez, base, iret)
     implicit none
     include 'jeveux.h'
@@ -38,8 +38,8 @@ subroutine pjxxch(correz, ch1z, ch2z, tycha2, prfchz,&
     character(len=19) :: ch1, ch2, prfchn, ligrel
     character(len=16) :: corres, method
     character(len=1) :: base
-!     TYCHA2 = NOEU OU ' ', SI TYCHA2 = NOEU CH2Z SERA UN CHAM_NO
-    character(len=4) :: tycha2, tychv
+!     TYCHV = NOEU OU ' ', SI TYCHV = NOEU CH2Z SERA UN CHAM_NO
+    character(len=4) :: tychv
     character(len=*) :: prol0
     integer :: iret, jxxk1
 !
@@ -62,11 +62,6 @@ subroutine pjxxch(correz, ch1z, ch2z, tycha2, prfchz,&
 !
 !
     if (method .eq. 'COLLOCATION') then
-        tychv = tycha2
-        if (corres .eq. ' ') then
-            tychv = 'NOEU'
-        endif
-!
         call assert(tychv.eq.' ' .or. tychv.eq.'NOEU')
         call pjefch(corres, ch1, ch2, tychv, prfchn,&
                     prol0, ligrel, base, iret)

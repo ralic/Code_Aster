@@ -34,13 +34,13 @@ AX = 7.854E-4;     # Taux de ferraillage
 AY = 7.854E-4;     # Taux de ferraillage
 EZ = 0.038;        # Distance grille/surface moyenne de la dalle
 EZ = 0.5*EP - EZ   # Enrobage
-R0 = EZ/(0.5*EP)   # Distance normalisee du ferraillage par rapport 
-                   # au feuillet moyen 
+R0 = EZ/(0.5*EP)   # Distance normalisee du ferraillage par rapport
+                   # au feuillet moyen
 
 # Caracteristiques du beton
 
 EB  = 35700.E6;    # Module d'Young
-NUB = 0.22         
+NUB = 0.22
 
 # Caracteristiques de l'acier (armatures)
 
@@ -78,25 +78,25 @@ QP     = 0.15E0
 
 MAT_B=DEFI_MATERIAU(
                            ELAS = _F(
-                                      E    =  EB,   
-                                      NU   =  0.22,              
+                                      E    =  EB,
+                                      NU   =  0.22,
                                       RHO    = 2500.0,
                                      ),
                            BETON_ECRO_LINE = _F(
                                       D_SIGM_EPSI = 0.0,
-                                      SYT   =  4.4E6,              
+                                      SYT   =  4.4E6,
                                       SYC    = -52.5E6,
                                      ),
                           );
-                       
+
 MAT_A=DEFI_MATERIAU(
                            ELAS = _F(
-                                      E    =  E,   
-                                      NU   =  NU,              
+                                      E    =  E,
+                                      NU   =  NU,
                                      ),
                            ECRO_LINE = _F(
                                       D_SIGM_EPSI = 0.0,
-                                      SY   =  5.E8,              
+                                      SY   =  5.E8,
                                      ),
                           );
 MAT = DEFI_GLRC(RELATION='GLRC_DAMAGE',
@@ -106,27 +106,27 @@ MAT = DEFI_GLRC(RELATION='GLRC_DAMAGE',
                           GAMMA = GAM,
                           QP1 = QP,
                           QP2 = QP,
-                                 
-                          C1N1 = CPRG,C1N2 = CPRG,C1N3 = CPRG, 
-                          C2N1 = CPRG,C2N2 = CPRG,C2N3 = CPRG, 
-                          C1M1 = CPRG,C1M2 = CPRG,C1M3 = CPRG, 
-                          C2M1 = CPRG,C2M2 = CPRG,C2M3 = CPRG,                                    
+
+                          C1N1 = CPRG,C1N2 = CPRG,C1N3 = CPRG,
+                          C2N1 = CPRG,C2N2 = CPRG,C2N3 = CPRG,
+                          C1M1 = CPRG,C1M2 = CPRG,C1M3 = CPRG,
+                          C2M1 = CPRG,C2M2 = CPRG,C2M3 = CPRG,
                          ),
                         NAPPE = (_F(
                           MATER = MAT_A,
-                          OMX = AX,   
+                          OMX = AX,
                           OMY = AY,
-                          RX = R0,   
-                          RY = R0,                         
+                          RX = R0,
+                          RY = R0,
                          ),_F(
                           MATER = MAT_A,
-                          OMX = AX,   
+                          OMX = AX,
                           OMY = AY,
-                          RX = -R0,   
-                          RY = -R0,                         
+                          RX = -R0,
+                          RY = -R0,
                          )),
                          INFO=2,
-                                             );    
+                                             );
 
 CHMAT=AFFE_MATERIAU(MAILLAGE=MAIL,
                     AFFE=_F(TOUT='OUI',
@@ -186,7 +186,7 @@ TEST_RESU(RESU=_F(NUME_ORDRE=2,
                   RESULTAT=RESU,
                   NOM_CHAM='DEPL',
                   NOM_CMP='DZ',
-                  VALE_CALC= 2.44197370E-04,
+               VALE_CALC=   2.4419737037428E-04,
                   VALE_REFE=2.433E-4,
                   CRITERE='RELATIF',
                   PRECISION=5.0000000000000001E-3,),
@@ -198,7 +198,7 @@ TEST_RESU(RESU=_F(NUME_ORDRE=2,
                   RESULTAT=RESU,
                   NOM_CHAM='EFGE_ELNO',
                   NOM_CMP='MXX',
-                  VALE_CALC= 3.98362993E+03,
+               VALE_CALC=   3983.6299281764,
                   VALE_REFE=4050.0,
                   CRITERE='RELATIF',
                   PRECISION=0.02,
@@ -211,7 +211,7 @@ TEST_RESU(RESU=_F(NUME_ORDRE=2,
                   RESULTAT=RESU,
                   NOM_CHAM='DEGE_ELNO',
                   NOM_CMP='KXX',
-                  VALE_CALC= 7.24543491E-04,
+               VALE_CALC=   7.2454349063739E-04,
                   VALE_REFE=7.2099999999999996E-4,
                   CRITERE='RELATIF',
                   PRECISION=1.E-2,
@@ -223,7 +223,7 @@ TEST_RESU(RESU=_F(NUME_ORDRE=2,
                   RESULTAT=RESU,
                   NOM_CHAM='EFGE_ELGA',
                   NOM_CMP='MXX',
-                  VALE_CALC= 3978.0207447062,
+               VALE_CALC=   3978.0207447063,
                   VALE_REFE=3978.0207447062,
                   CRITERE='RELATIF',
                   PRECISION=1.E-10,
@@ -235,7 +235,7 @@ TEST_RESU(RESU=_F(NUME_ORDRE=2,
                   RESULTAT=RESU,
                   NOM_CHAM='DEGE_ELGA',
                   NOM_CMP='KXX',
-                  VALE_CALC= 7.2355140186729E-04,
+               VALE_CALC=   7.2355140186732E-04,
                   VALE_REFE=7.2355140186729E-04,
                   CRITERE='RELATIF',
                   PRECISION=1.E-10,
@@ -253,7 +253,7 @@ tab2=POST_COQUE(RESULTAT=RESU,CHAM='EFFORT',
                             ))
 
 TEST_TABLE(
-           VALE_CALC=1392.25,
+               VALE_CALC=   1392.2469345057,
            TOLE_MACHINE=1.E-3,
            NOM_PARA='MXX',
            TABLE=tab2,
@@ -262,7 +262,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=2.6382599999999998,
+               VALE_CALC=   2.9637096384611,
            TOLE_MACHINE=1.E-3,
            NOM_PARA='MXY',
            TABLE=tab2,
@@ -280,7 +280,7 @@ tab3=POST_COQUE(RESULTAT=RESU,CHAM='DEFORMATION',
                             ))
 
 TEST_TABLE(
-           VALE_CALC=5.1074499999999995E-4,
+               VALE_CALC=   5.1074648761975E-04,
            TOLE_MACHINE=1.E-3,
            NOM_PARA='EPXX',
            TABLE=tab3,
@@ -289,7 +289,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=1.207319E-06,
+               VALE_CALC=   1.3563673765152E-06,
            TOLE_MACHINE=1.E-3,
            NOM_PARA='EPXY',
            TABLE=tab3,
@@ -334,7 +334,7 @@ TEST_RESU(RESU=(
                PRECISION = 0.005,
                GROUP_NO = 'A1',
                NOM_CMP = 'DZ',
-               VALE_CALC = 2.4419737037445E-04,
+               VALE_CALC=   2.4419737037445E-04,
                VALE_REFE = 2.433E-4,
                REFERENCE = 'ANALYTIQUE'),
              ),
@@ -348,7 +348,7 @@ TEST_RESU(RESU=(
                GROUP_NO = 'A1',
                MAILLE='M133',
                NOM_CMP = 'MXX',
-               VALE_CALC = 2993.2223909066,
+               VALE_CALC=   2993.2223909064,
                VALE_REFE = 2993.2223909066,
                REFERENCE = 'NON_DEFINI'),
            _F( RESULTAT = RESU1,
@@ -359,7 +359,7 @@ TEST_RESU(RESU=(
                GROUP_NO = 'A1',
                MAILLE='M133',
                NOM_CMP = 'MYY',
-               VALE_CALC = 1635.1928748903,
+               VALE_CALC=   1635.1928748901,
                VALE_REFE = 1635.1928748903,
                REFERENCE = 'NON_DEFINI'),
            _F( RESULTAT = RESU1,
@@ -370,7 +370,7 @@ TEST_RESU(RESU=(
                GROUP_NO = 'A1',
                MAILLE='M133',
                NOM_CMP = 'MXY',
-               VALE_CALC = -1525.0933605474,
+               VALE_CALC=   -1525.0933605474,
                VALE_REFE = -1525.0933605474,
                REFERENCE = 'NON_DEFINI'),
              ),
@@ -384,7 +384,7 @@ TEST_RESU(RESU=(
                GROUP_NO = 'A1',
                MAILLE='M133',
                NOM_CMP = 'KXX',
-               VALE_CALC = 4.9808328797651E-04,
+               VALE_CALC=   4.980832879764E-04,
                VALE_REFE = 4.9808328797651E-04,
                REFERENCE = 'NON_DEFINI'),
            _F( RESULTAT = RESU1,
@@ -395,7 +395,7 @@ TEST_RESU(RESU=(
                GROUP_NO = 'A1',
                MAILLE='M133',
                NOM_CMP = 'KYY',
-               VALE_CALC = 1.8756465726822E-04,
+               VALE_CALC=   1.8756465726811E-04,
                VALE_REFE = 1.8756465726822E-04,
                REFERENCE = 'NON_DEFINI'),
            _F( RESULTAT = RESU1,
@@ -406,7 +406,7 @@ TEST_RESU(RESU=(
                GROUP_NO = 'A1',
                MAILLE='M133',
                NOM_CMP = 'KXY',
-               VALE_CALC = -3.487181317766E-04,
+               VALE_CALC=   -3.487181317766E-04,
                VALE_REFE = -3.487181317766E-04,
                REFERENCE = 'NON_DEFINI'),
              ),
@@ -421,7 +421,7 @@ TEST_RESU(RESU=(
                POINT = 4,
                MAILLE='M133',
                NOM_CMP = 'MXX',
-               VALE_CALC = 2989.0855608489,
+               VALE_CALC=   2989.0855608488,
                VALE_REFE = 2989.0855608489,
                REFERENCE = 'NON_DEFINI'),
            _F( RESULTAT = RESU1,
@@ -432,7 +432,7 @@ TEST_RESU(RESU=(
                POINT = 4,
                MAILLE='M133',
                NOM_CMP = 'MYY',
-               VALE_CALC = 1632.1143509538,
+               VALE_CALC=   1632.1143509538,
                VALE_REFE = 1632.1143509538,
                REFERENCE = 'NON_DEFINI'),
            _F( RESULTAT = RESU1,
@@ -443,7 +443,7 @@ TEST_RESU(RESU=(
                POINT = 4,
                MAILLE='M133',
                NOM_CMP = 'MXY',
-               VALE_CALC = -1523.1380330719,
+               VALE_CALC=   -1523.1380330719,
                VALE_REFE = -1523.1380330719,
                REFERENCE = 'NON_DEFINI'),
              ),
@@ -457,7 +457,7 @@ TEST_RESU(RESU=(
                POINT = 4,
                MAILLE='M133',
                NOM_CMP = 'KXX',
-               VALE_CALC = 4.9742775250793E-04,
+               VALE_CALC=   4.9742775250788E-04,
                VALE_REFE = 4.9742775250793E-04,
                REFERENCE = 'NON_DEFINI'),
            _F( RESULTAT = RESU1,
@@ -468,7 +468,7 @@ TEST_RESU(RESU=(
                POINT = 4,
                MAILLE='M133',
                NOM_CMP = 'KYY',
-               VALE_CALC = 1.87151318758E-04,
+               VALE_CALC=   1.8715131875795E-04,
                VALE_REFE = 1.87151318758E-04,
                REFERENCE = 'NON_DEFINI'),
             _F( RESULTAT = RESU1,
@@ -479,7 +479,7 @@ TEST_RESU(RESU=(
                POINT = 4,
                MAILLE='M133',
                NOM_CMP = 'KXY',
-               VALE_CALC = -3.4827108605123E-04,
+               VALE_CALC=   -3.4827108605122E-04,
                VALE_REFE = -3.4827108605123E-04,
                REFERENCE = 'NON_DEFINI'),
               ),
@@ -494,7 +494,7 @@ TEST_RESU(RESU=(
                POINT = 4,
                MAILLE='M133',
                NOM_CMP = 'MXX',
-               VALE_CALC = 2989.0855608489,
+               VALE_CALC=   2989.0855608488,
                VALE_REFE = 2989.0855608489,
                REFERENCE = 'NON_DEFINI'),
            _F( RESULTAT = RESU1,
@@ -505,7 +505,7 @@ TEST_RESU(RESU=(
                POINT = 4,
                MAILLE='M133',
                NOM_CMP = 'MYY',
-               VALE_CALC = 1632.1143509538,
+               VALE_CALC=   1632.1143509538,
                VALE_REFE = 1632.1143509538,
                REFERENCE = 'NON_DEFINI'),
            _F( RESULTAT = RESU1,
@@ -516,7 +516,7 @@ TEST_RESU(RESU=(
                POINT = 4,
                MAILLE='M133',
                NOM_CMP = 'MXY',
-               VALE_CALC = -1523.1380330719,
+               VALE_CALC=   -1523.1380330719,
                VALE_REFE = -1523.1380330719,
                REFERENCE = 'NON_DEFINI'),
              ),

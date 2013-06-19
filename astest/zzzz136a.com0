@@ -1,11 +1,11 @@
-# TITRE VALIDATION POST_RELEVE_T 3D EN DIFFERENTS REPERES 
-#                  INDICE _G     REPERE: 'GLOBAL' 
+# TITRE VALIDATION POST_RELEVE_T 3D EN DIFFERENTS REPERES
+#                  INDICE _G     REPERE: 'GLOBAL'
 #                  INDICE _L     REPERE: 'LOCAL'        AVEC  VECT_Y
 #                  INDICE _U     REPERE: 'UTILISATEUR'  AVEC  ANGL_NAUT
 #                  INDICE _C     REPERE: 'CYLINDRIQUE'
 #
 #       VALIDATION POST_RELEVE_T 3D ET MACR_LIGN_COUPE EN 3D,
-#                                    OPERANDE TRAC_DIR 
+#                                    OPERANDE TRAC_DIR
 #                                    OPERANDE INVARIANT
 #                                    OPERANDE ELEM_PRINCIPAUX
 #
@@ -19,13 +19,13 @@ POURSUITE(CODE=_F(  NOM = 'ZZZZ136A'))
 
 #######################################################################
 #            I -  VALIDATION POST_RELEVE_T  EN 3D                     #
-#######################################################################   
+#######################################################################
 
 # ---------------------------------------------------------------------
 #  s1_g: CHEMIN P7 P8, REPERE GLOBAL
 
 TEST_TABLE(
-           VALE_CALC=0.24809600000000001,
+           VALE_CALC=   0.24809578347109,
            TOLE_MACHINE=1.E-3,
            NOM_PARA='SIXX',
            TABLE=s1_g,
@@ -34,7 +34,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=-0.074258400000000002,
+           VALE_CALC=   -0.074258409532129,
            TOLE_MACHINE=1.E-3,
            NOM_PARA='SIYY',
            TABLE=s1_g,
@@ -43,7 +43,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=-0.162408,
+           VALE_CALC=   -0.16240837189743,
            TOLE_MACHINE=1.E-3,
            NOM_PARA='SIZZ',
            TABLE=s1_g,
@@ -52,7 +52,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=0.23860600000000001,
+           VALE_CALC=   0.23860611445314,
            TOLE_MACHINE=1.E-3,
            NOM_PARA='SIXY',
            TABLE=s1_g,
@@ -61,7 +61,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=-0.040604000000000001,
+           VALE_CALC=   -0.040604037250899,
            TOLE_MACHINE=1.E-3,
            NOM_PARA='SIXZ',
            TABLE=s1_g,
@@ -70,7 +70,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=-0.12715899999999999,
+           VALE_CALC=   -0.12715939612545,
            TOLE_MACHINE=1.E-3,
            NOM_PARA='SIYZ',
            TABLE=s1_g,
@@ -83,7 +83,7 @@ TEST_TABLE(
 
 
 TEST_TABLE(
-           VALE_CALC=0.24809600000000001,
+           VALE_CALC=   0.24809578347109,
            TOLE_MACHINE=1.E-3,
            NOM_PARA='SIXX',
            TABLE=S1L_G,
@@ -92,7 +92,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=-0.074258400000000002,
+           VALE_CALC=   -0.074258409532129,
            TOLE_MACHINE=1.E-3,
            NOM_PARA='SIYY',
            TABLE=S1L_G,
@@ -101,7 +101,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=-0.162408,
+           VALE_CALC=   -0.16240837189743,
            TOLE_MACHINE=1.E-3,
            NOM_PARA='SIZZ',
            TABLE=S1L_G,
@@ -110,7 +110,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=0.23860600000000001,
+           VALE_CALC=   0.23860611445314,
            TOLE_MACHINE=1.E-3,
            NOM_PARA='SIXY',
            TABLE=S1L_G,
@@ -119,7 +119,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=-0.040604000000000001,
+           VALE_CALC=   -0.040604037250899,
            TOLE_MACHINE=1.E-3,
            NOM_PARA='SIXZ',
            TABLE=S1L_G,
@@ -128,7 +128,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=-0.12715899999999999,
+           VALE_CALC=   -0.12715939612545,
            TOLE_MACHINE=1.E-3,
            NOM_PARA='SIYZ',
            TABLE=S1L_G,
@@ -141,7 +141,7 @@ TEST_TABLE(
 
 
 TEST_TABLE(
-           VALE_CALC=0.24809600000000001,
+           VALE_CALC=   0.24809578347109,
            TOLE_MACHINE=1.E-3,
            NOM_PARA='SIXX',
            TABLE=S1_L,
@@ -150,7 +150,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=-0.074258400000000002,
+           VALE_CALC=   -0.074258409532129,
            TOLE_MACHINE=1.E-3,
            NOM_PARA='SIYY',
            TABLE=S1_L,
@@ -159,7 +159,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=-0.162408,
+           VALE_CALC=   -0.16240837189743,
            TOLE_MACHINE=1.E-3,
            NOM_PARA='SIZZ',
            TABLE=S1_L,
@@ -168,7 +168,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=0.23860600000000001,
+           VALE_CALC=   0.23860611445314,
            TOLE_MACHINE=1.E-3,
            NOM_PARA='SIXY',
            TABLE=S1_L,
@@ -177,7 +177,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=-0.040604000000000001,
+           VALE_CALC=   -0.040604037250899,
            TOLE_MACHINE=1.E-3,
            NOM_PARA='SIXZ',
            TABLE=S1_L,
@@ -186,7 +186,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=-0.12715899999999999,
+           VALE_CALC=   -0.12715939612545,
            TOLE_MACHINE=1.E-3,
            NOM_PARA='SIYZ',
            TABLE=S1_L,
@@ -199,7 +199,7 @@ TEST_TABLE(
 
 
 TEST_TABLE(
-           VALE_CALC=0.24809600000000001,
+           VALE_CALC=   0.24809578347109,
            TOLE_MACHINE=1.E-3,
            NOM_PARA='SIXX',
            TABLE=S1L_L,
@@ -208,7 +208,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=-0.074258400000000002,
+           VALE_CALC=   -0.074258409532129,
            TOLE_MACHINE=1.E-3,
            NOM_PARA='SIYY',
            TABLE=S1L_L,
@@ -217,7 +217,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=-0.162408,
+           VALE_CALC=   -0.16240837189743,
            TOLE_MACHINE=1.E-3,
            NOM_PARA='SIZZ',
            TABLE=S1L_L,
@@ -226,7 +226,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=0.23860600000000001,
+           VALE_CALC=   0.23860611445314,
            TOLE_MACHINE=1.E-3,
            NOM_PARA='SIXY',
            TABLE=S1L_L,
@@ -235,7 +235,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=-0.040604000000000001,
+           VALE_CALC=   -0.040604037250899,
            TOLE_MACHINE=1.E-3,
            NOM_PARA='SIXZ',
            TABLE=S1L_L,
@@ -244,7 +244,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=-0.12715899999999999,
+           VALE_CALC=   -0.12715939612545,
            TOLE_MACHINE=1.E-3,
            NOM_PARA='SIYZ',
            TABLE=S1L_L,
@@ -257,7 +257,7 @@ TEST_TABLE(
 
 
 TEST_TABLE(
-           VALE_CALC=0.24809600000000001,
+           VALE_CALC=   0.24809578347109,
            TOLE_MACHINE=1.E-3,
            NOM_PARA='SIXX',
            TABLE=S1_U,
@@ -266,7 +266,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=-0.074258400000000002,
+           VALE_CALC=   -0.074258409532129,
            TOLE_MACHINE=1.E-3,
            NOM_PARA='SIYY',
            TABLE=S1_U,
@@ -275,7 +275,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=-0.162408,
+           VALE_CALC=   -0.16240837189743,
            TOLE_MACHINE=1.E-3,
            NOM_PARA='SIZZ',
            TABLE=S1_U,
@@ -284,7 +284,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=0.23860600000000001,
+           VALE_CALC=   0.23860611445314,
            TOLE_MACHINE=1.E-3,
            NOM_PARA='SIXY',
            TABLE=S1_U,
@@ -293,7 +293,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=-0.040604000000000001,
+           VALE_CALC=   -0.040604037250899,
            TOLE_MACHINE=1.E-3,
            NOM_PARA='SIXZ',
            TABLE=S1_U,
@@ -302,7 +302,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=-0.12715899999999999,
+           VALE_CALC=   -0.12715939612545,
            TOLE_MACHINE=1.E-3,
            NOM_PARA='SIYZ',
            TABLE=S1_U,
@@ -315,7 +315,7 @@ TEST_TABLE(
 
 
 TEST_TABLE(
-           VALE_CALC=0.24809600000000001,
+           VALE_CALC=   0.24809578347109,
            TOLE_MACHINE=1.E-3,
            NOM_PARA='SIXX',
            TABLE=S1L_U,
@@ -324,7 +324,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=-0.074258400000000002,
+           VALE_CALC=   -0.074258409532129,
            TOLE_MACHINE=1.E-3,
            NOM_PARA='SIYY',
            TABLE=S1L_U,
@@ -333,7 +333,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=-0.162408,
+           VALE_CALC=   -0.16240837189743,
            TOLE_MACHINE=1.E-3,
            NOM_PARA='SIZZ',
            TABLE=S1L_U,
@@ -342,7 +342,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=0.23860600000000001,
+           VALE_CALC=   0.23860611445314,
            TOLE_MACHINE=1.E-3,
            NOM_PARA='SIXY',
            TABLE=S1L_U,
@@ -351,7 +351,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=-0.040604000000000001,
+           VALE_CALC=   -0.040604037250899,
            TOLE_MACHINE=1.E-3,
            NOM_PARA='SIXZ',
            TABLE=S1L_U,
@@ -360,7 +360,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=-0.12715899999999999,
+           VALE_CALC=   -0.12715939612545,
            TOLE_MACHINE=1.E-3,
            NOM_PARA='SIYZ',
            TABLE=S1L_U,
@@ -373,7 +373,7 @@ TEST_TABLE(
 
 
 TEST_TABLE(
-           VALE_CALC=0.089219999999999994,
+           VALE_CALC=   0.089220331584459,
            TOLE_MACHINE=1.E-3,
            NOM_PARA='SIXX',
            TABLE=S2_G,
@@ -382,7 +382,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=0.089219999999999994,
+           VALE_CALC=   0.089220331584455,
            TOLE_MACHINE=1.E-3,
            NOM_PARA='SIYY',
            TABLE=S2_G,
@@ -391,7 +391,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=0.42864099999999999,
+           VALE_CALC=   0.42864071042752,
            TOLE_MACHINE=1.E-3,
            NOM_PARA='SIZZ',
            TABLE=S2_G,
@@ -400,7 +400,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=0.26761800000000002,
+           VALE_CALC=   0.26761768635569,
            TOLE_MACHINE=1.E-3,
            NOM_PARA='SIXY',
            TABLE=S2_G,
@@ -409,7 +409,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=-0.1124,
+           VALE_CALC=   -0.11240718369833,
            TOLE_MACHINE=1.E-3,
            NOM_PARA='SIXZ',
            TABLE=S2_G,
@@ -418,7 +418,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=-0.1124,
+           VALE_CALC=   -0.11240718369833,
            TOLE_MACHINE=1.E-3,
            NOM_PARA='SIYZ',
            TABLE=S2_G,
@@ -431,7 +431,7 @@ TEST_TABLE(
 
 
 TEST_TABLE(
-           VALE_CALC=0.089220300000000002,
+           VALE_CALC=   0.089220331584459,
            TOLE_MACHINE=1.E-3,
            NOM_PARA='SIXX',
            TABLE=S2L_G,
@@ -440,7 +440,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=0.089220300000000002,
+           VALE_CALC=   0.089220331584455,
            TOLE_MACHINE=1.E-3,
            NOM_PARA='SIYY',
            TABLE=S2L_G,
@@ -449,7 +449,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=0.42864099999999999,
+           VALE_CALC=   0.42864071042752,
            TOLE_MACHINE=1.E-3,
            NOM_PARA='SIZZ',
            TABLE=S2L_G,
@@ -458,7 +458,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=0.26761800000000002,
+           VALE_CALC=   0.26761768635569,
            TOLE_MACHINE=1.E-3,
            NOM_PARA='SIXY',
            TABLE=S2L_G,
@@ -467,7 +467,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=-0.11240700000000001,
+           VALE_CALC=   -0.11240718369833,
            TOLE_MACHINE=1.E-3,
            NOM_PARA='SIXZ',
            TABLE=S2L_G,
@@ -476,7 +476,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=-0.11240700000000001,
+           VALE_CALC=   -0.11240718369833,
            TOLE_MACHINE=1.E-3,
            NOM_PARA='SIYZ',
            TABLE=S2L_G,
@@ -489,7 +489,7 @@ TEST_TABLE(
 
 
 TEST_TABLE(
-           VALE_CALC=0.35683799999999999,
+           VALE_CALC=   0.35683801794015,
            TOLE_MACHINE=1.E-3,
            NOM_PARA='SIXX',
            TABLE=S2_L,
@@ -498,7 +498,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=-0.178397,
+           VALE_CALC=   -0.17839735477123,
            TOLE_MACHINE=1.E-3,
            NOM_PARA='SIYY',
            TABLE=S2_L,
@@ -507,7 +507,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=0.42864099999999999,
+           VALE_CALC=   0.42864071042752,
            TOLE_MACHINE=1.E-3,
            NOM_PARA='SIZZ',
            TABLE=S2_L,
@@ -516,7 +516,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(CRITERE='ABSOLU',
-           VALE_CALC=0.0,
+           VALE_CALC=   -1.8041124150159E-15,
            TOLE_MACHINE=1.E-3,
            NOM_PARA='SIXY',
            TABLE=S2_L,
@@ -525,7 +525,7 @@ TEST_TABLE(CRITERE='ABSOLU',
            )
 
 TEST_TABLE(
-           VALE_CALC=-0.158968,
+           VALE_CALC=   -0.15896776369434,
            TOLE_MACHINE=1.E-3,
            NOM_PARA='SIXZ',
            TABLE=S2_L,
@@ -534,7 +534,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(CRITERE='ABSOLU',
-           VALE_CALC=0.0,
+           VALE_CALC=   -2.4910629115027E-15,
            TOLE_MACHINE=1.E-3,
            NOM_PARA='SIYZ',
            TABLE=S2_L,
@@ -547,7 +547,7 @@ TEST_TABLE(CRITERE='ABSOLU',
 
 
 TEST_TABLE(
-           VALE_CALC=0.35683799999999999,
+           VALE_CALC=   0.35683801794015,
            TOLE_MACHINE=1.E-3,
            NOM_PARA='SIXX',
            TABLE=S2L_L,
@@ -556,7 +556,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=-0.178397,
+           VALE_CALC=   -0.17839735477123,
            TOLE_MACHINE=1.E-3,
            NOM_PARA='SIYY',
            TABLE=S2L_L,
@@ -565,7 +565,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=0.42864099999999999,
+           VALE_CALC=   0.42864071042752,
            TOLE_MACHINE=1.E-3,
            NOM_PARA='SIZZ',
            TABLE=S2L_L,
@@ -574,7 +574,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(CRITERE='ABSOLU',
-           VALE_CALC=0.0,
+           VALE_CALC=   -1.7902346272081E-15,
            NOM_PARA='SIXY',
            TABLE=S2L_L,
            FILTRE=_F(NOM_PARA='ABSC_CURV',
@@ -582,7 +582,7 @@ TEST_TABLE(CRITERE='ABSOLU',
            )
 
 TEST_TABLE(
-           VALE_CALC=-0.158968,
+           VALE_CALC=   -0.15896776369434,
            TOLE_MACHINE=1.E-3,
            NOM_PARA='SIXZ',
            TABLE=S2L_L,
@@ -591,7 +591,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(CRITERE='ABSOLU',
-           VALE_CALC=0.0,
+           VALE_CALC=   -2.4841240175988E-15,
            NOM_PARA='SIYZ',
            TABLE=S2L_L,
            FILTRE=_F(NOM_PARA='ABSC_CURV',
@@ -603,7 +603,7 @@ TEST_TABLE(CRITERE='ABSOLU',
 
 
 TEST_TABLE(
-           VALE_CALC=0.35683799999999999,
+           VALE_CALC=   0.35683801794015,
            TOLE_MACHINE=1.E-3,
            NOM_PARA='SIXX',
            TABLE=S2_U,
@@ -612,7 +612,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=-0.178397,
+           VALE_CALC=   -0.17839735477123,
            TOLE_MACHINE=1.E-3,
            NOM_PARA='SIYY',
            TABLE=S2_U,
@@ -621,7 +621,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=0.42864099999999999,
+           VALE_CALC=   0.42864071042752,
            TOLE_MACHINE=1.E-3,
            NOM_PARA='SIZZ',
            TABLE=S2_U,
@@ -630,7 +630,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(CRITERE='ABSOLU',
-           VALE_CALC=0.0,
+           VALE_CALC=   -1.8457457784393E-15,
            TOLE_MACHINE=1.E-3,
            NOM_PARA='SIXY',
            TABLE=S2_U,
@@ -639,7 +639,7 @@ TEST_TABLE(CRITERE='ABSOLU',
            )
 
 TEST_TABLE(
-           VALE_CALC=-0.158968,
+           VALE_CALC=   -0.15896776369434,
            TOLE_MACHINE=1.E-3,
            NOM_PARA='SIXZ',
            TABLE=S2_U,
@@ -648,7 +648,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(CRITERE='ABSOLU',
-           VALE_CALC=0.0,
+           VALE_CALC=   -2.466776782839E-15,
            TOLE_MACHINE=1.E-3,
            NOM_PARA='SIYZ',
            TABLE=S2_U,
@@ -661,7 +661,7 @@ TEST_TABLE(CRITERE='ABSOLU',
 
 
 TEST_TABLE(
-           VALE_CALC=0.35683799999999999,
+           VALE_CALC=   0.35683801794015,
            TOLE_MACHINE=1.E-3,
            NOM_PARA='SIXX',
            TABLE=S2L_U,
@@ -670,7 +670,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=-0.178397,
+           VALE_CALC=   -0.17839735477123,
            TOLE_MACHINE=1.E-3,
            NOM_PARA='SIYY',
            TABLE=S2L_U,
@@ -679,7 +679,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=0.42864099999999999,
+           VALE_CALC=   0.42864071042752,
            TOLE_MACHINE=1.E-3,
            NOM_PARA='SIZZ',
            TABLE=S2L_U,
@@ -688,7 +688,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(CRITERE='ABSOLU',
-           VALE_CALC=0.0,
+           VALE_CALC=   -1.8457457784393E-15,
            NOM_PARA='SIXY',
            TABLE=S2L_U,
            FILTRE=_F(NOM_PARA='ABSC_CURV',
@@ -696,7 +696,7 @@ TEST_TABLE(CRITERE='ABSOLU',
            )
 
 TEST_TABLE(
-           VALE_CALC=-0.158968,
+           VALE_CALC=   -0.15896776369434,
            TOLE_MACHINE=1.E-3,
            NOM_PARA='SIXZ',
            TABLE=S2L_U,
@@ -705,7 +705,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(CRITERE='ABSOLU',
-           VALE_CALC=0.0,
+           VALE_CALC=   -2.466776782839E-15,
            NOM_PARA='SIYZ',
            TABLE=S2L_U,
            FILTRE=_F(NOM_PARA='ABSC_CURV',
@@ -717,7 +717,7 @@ TEST_TABLE(CRITERE='ABSOLU',
 
 
 TEST_TABLE(
-           VALE_CALC=-0.074258400000000002,
+           VALE_CALC=   -0.074258409532126,
            TOLE_MACHINE=1.E-3,
            NOM_PARA='SIXX',
            TABLE=S3_G,
@@ -726,7 +726,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=0.24809600000000001,
+           VALE_CALC=   0.24809578347109,
            TOLE_MACHINE=1.E-3,
            NOM_PARA='SIYY',
            TABLE=S3_G,
@@ -735,7 +735,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=-0.162408,
+           VALE_CALC=   -0.16240837189743,
            TOLE_MACHINE=1.E-3,
            NOM_PARA='SIZZ',
            TABLE=S3_G,
@@ -744,7 +744,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=0.23860600000000001,
+           VALE_CALC=   0.23860611445314,
            TOLE_MACHINE=1.E-3,
            NOM_PARA='SIXY',
            TABLE=S3_G,
@@ -753,7 +753,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=-0.12715899999999999,
+           VALE_CALC=   -0.12715939612545,
            TOLE_MACHINE=1.E-3,
            NOM_PARA='SIXZ',
            TABLE=S3_G,
@@ -762,7 +762,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=-0.040604000000000001,
+           VALE_CALC=   -0.040604037250897,
            TOLE_MACHINE=1.E-3,
            NOM_PARA='SIYZ',
            TABLE=S3_G,
@@ -775,7 +775,7 @@ TEST_TABLE(
 
 
 TEST_TABLE(
-           VALE_CALC=-0.074258400000000002,
+           VALE_CALC=   -0.074258409532126,
            TOLE_MACHINE=1.E-3,
            NOM_PARA='SIXX',
            TABLE=S3L_G,
@@ -784,7 +784,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=0.24809600000000001,
+           VALE_CALC=   0.24809578347109,
            TOLE_MACHINE=1.E-3,
            NOM_PARA='SIYY',
            TABLE=S3L_G,
@@ -793,7 +793,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=-0.162408,
+           VALE_CALC=   -0.16240837189743,
            TOLE_MACHINE=1.E-3,
            NOM_PARA='SIZZ',
            TABLE=S3L_G,
@@ -802,7 +802,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=0.23860600000000001,
+           VALE_CALC=   0.23860611445314,
            TOLE_MACHINE=1.E-3,
            NOM_PARA='SIXY',
            TABLE=S3L_G,
@@ -811,7 +811,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=-0.12715899999999999,
+           VALE_CALC=   -0.12715939612545,
            TOLE_MACHINE=1.E-3,
            NOM_PARA='SIXZ',
            TABLE=S3L_G,
@@ -820,7 +820,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=-0.040604000000000001,
+           VALE_CALC=   -0.040604037250897,
            TOLE_MACHINE=1.E-3,
            NOM_PARA='SIYZ',
            TABLE=S3L_G,
@@ -833,7 +833,7 @@ TEST_TABLE(
 
 
 TEST_TABLE(
-           VALE_CALC=0.24809600000000001,
+           VALE_CALC=   0.24809578347109,
            TOLE_MACHINE=1.E-3,
            NOM_PARA='SIXX',
            TABLE=S3_L,
@@ -842,7 +842,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=-0.074258400000000002,
+           VALE_CALC=   -0.074258409532126,
            TOLE_MACHINE=1.E-3,
            NOM_PARA='SIYY',
            TABLE=S3_L,
@@ -851,7 +851,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=-0.162408,
+           VALE_CALC=   -0.16240837189743,
            TOLE_MACHINE=1.E-3,
            NOM_PARA='SIZZ',
            TABLE=S3_L,
@@ -860,7 +860,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=-0.23860600000000001,
+           VALE_CALC=   -0.23860611445314,
            TOLE_MACHINE=1.E-3,
            NOM_PARA='SIXY',
            TABLE=S3_L,
@@ -869,7 +869,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=-0.040604000000000001,
+           VALE_CALC=   -0.040604037250897,
            TOLE_MACHINE=1.E-3,
            NOM_PARA='SIXZ',
            TABLE=S3_L,
@@ -878,7 +878,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=0.12715899999999999,
+           VALE_CALC=   0.12715939612545,
            TOLE_MACHINE=1.E-3,
            NOM_PARA='SIYZ',
            TABLE=S3_L,
@@ -891,7 +891,7 @@ TEST_TABLE(
 
 
 TEST_TABLE(
-           VALE_CALC=0.24809600000000001,
+           VALE_CALC=   0.24809578347109,
            TOLE_MACHINE=1.E-3,
            NOM_PARA='SIXX',
            TABLE=S3L_L,
@@ -900,7 +900,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=-0.074258400000000002,
+           VALE_CALC=   -0.074258409532126,
            TOLE_MACHINE=1.E-3,
            NOM_PARA='SIYY',
            TABLE=S3L_L,
@@ -909,7 +909,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=-0.162408,
+           VALE_CALC=   -0.16240837189743,
            TOLE_MACHINE=1.E-3,
            NOM_PARA='SIZZ',
            TABLE=S3L_L,
@@ -918,7 +918,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=-0.23860600000000001,
+           VALE_CALC=   -0.23860611445314,
            TOLE_MACHINE=1.E-3,
            NOM_PARA='SIXY',
            TABLE=S3L_L,
@@ -927,7 +927,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=-0.040604000000000001,
+           VALE_CALC=   -0.040604037250897,
            TOLE_MACHINE=1.E-3,
            NOM_PARA='SIXZ',
            TABLE=S3L_L,
@@ -936,7 +936,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=0.12715899999999999,
+           VALE_CALC=   0.12715939612545,
            TOLE_MACHINE=1.E-3,
            NOM_PARA='SIYZ',
            TABLE=S3L_L,
@@ -949,7 +949,7 @@ TEST_TABLE(
 
 
 TEST_TABLE(
-           VALE_CALC=0.24809600000000001,
+           VALE_CALC=   0.24809578347109,
            TOLE_MACHINE=1.E-3,
            NOM_PARA='SIXX',
            TABLE=S3_U,
@@ -958,7 +958,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=-0.074258400000000002,
+           VALE_CALC=   -0.074258409532126,
            TOLE_MACHINE=1.E-3,
            NOM_PARA='SIYY',
            TABLE=S3_U,
@@ -967,7 +967,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=-0.162408,
+           VALE_CALC=   -0.16240837189743,
            TOLE_MACHINE=1.E-3,
            NOM_PARA='SIZZ',
            TABLE=S3_U,
@@ -976,7 +976,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=-0.23860600000000001,
+           VALE_CALC=   -0.23860611445314,
            TOLE_MACHINE=1.E-3,
            NOM_PARA='SIXY',
            TABLE=S3_U,
@@ -985,7 +985,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=-0.040604000000000001,
+           VALE_CALC=   -0.040604037250897,
            TOLE_MACHINE=1.E-3,
            NOM_PARA='SIXZ',
            TABLE=S3_U,
@@ -994,7 +994,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=0.12715899999999999,
+           VALE_CALC=   0.12715939612545,
            TOLE_MACHINE=1.E-3,
            NOM_PARA='SIYZ',
            TABLE=S3_U,
@@ -1003,12 +1003,12 @@ TEST_TABLE(
            )
 
 # ---------------------------------------------------------------------
-# S3L_U: LISTE DE NOEUDS P11 P12, REPERE UTILISATEUR, 
+# S3L_U: LISTE DE NOEUDS P11 P12, REPERE UTILISATEUR,
 #                                 ANGL_NAUT: (90. 0. 0.)
 
 
 TEST_TABLE(
-           VALE_CALC=0.24809600000000001,
+           VALE_CALC=   0.24809578347109,
            TOLE_MACHINE=1.E-3,
            NOM_PARA='SIXX',
            TABLE=S3L_U,
@@ -1017,7 +1017,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=-0.074258400000000002,
+           VALE_CALC=   -0.074258409532126,
            TOLE_MACHINE=1.E-3,
            NOM_PARA='SIYY',
            TABLE=S3L_U,
@@ -1026,7 +1026,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=-0.162408,
+           VALE_CALC=   -0.16240837189743,
            TOLE_MACHINE=1.E-3,
            NOM_PARA='SIZZ',
            TABLE=S3L_U,
@@ -1035,7 +1035,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=-0.23860600000000001,
+           VALE_CALC=   -0.23860611445314,
            TOLE_MACHINE=1.E-3,
            NOM_PARA='SIXY',
            TABLE=S3L_U,
@@ -1044,7 +1044,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=-0.040604000000000001,
+           VALE_CALC=   -0.040604037250897,
            TOLE_MACHINE=1.E-3,
            NOM_PARA='SIXZ',
            TABLE=S3L_U,
@@ -1053,7 +1053,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=0.12715899999999999,
+           VALE_CALC=   0.12715939612545,
            TOLE_MACHINE=1.E-3,
            NOM_PARA='SIYZ',
            TABLE=S3L_U,
@@ -1062,12 +1062,12 @@ TEST_TABLE(
            )
 
 # ---------------------------------------------------------------------
-# S4L_C: LISTE DE NOEUDS P7 P11, REPERE CYLINDRIQUE, 
+# S4L_C: LISTE DE NOEUDS P7 P11, REPERE CYLINDRIQUE,
 #        ORIGINE:(0. 0. 0.), AXE_Z: (0. 0. 1.)
 
 
 TEST_TABLE(
-           VALE_CALC=0.33250099999999999,
+           VALE_CALC=   0.33250093042141,
            TOLE_MACHINE=1.E-3,
            NOM_PARA='SIXX',
            TABLE=S4L_C,
@@ -1076,7 +1076,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=-0.46140500000000001,
+           VALE_CALC=   -0.46140514142841,
            TOLE_MACHINE=1.E-3,
            NOM_PARA='SIYY',
            TABLE=S4L_C,
@@ -1085,7 +1085,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=-0.379967,
+           VALE_CALC=   -0.37996662890831,
            TOLE_MACHINE=1.E-3,
            NOM_PARA='SIZZ',
            TABLE=S4L_C,
@@ -1094,7 +1094,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=-0.098127000000000006,
+           VALE_CALC=   -0.098127002868082,
            TOLE_MACHINE=1.E-3,
            NOM_PARA='SIXY',
            TABLE=S4L_C,
@@ -1103,7 +1103,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=0.42080800000000002,
+           VALE_CALC=   0.42080820176757,
            TOLE_MACHINE=1.E-3,
            NOM_PARA='SIXZ',
            TABLE=S4L_C,
@@ -1112,7 +1112,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=6.0398300000000004E-3,
+           VALE_CALC=   6.0398293897706E-03,
            TOLE_MACHINE=1.E-3,
            NOM_PARA='SIYZ',
            TABLE=S4L_C,
@@ -1121,7 +1121,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=0.51191600000000004,
+           VALE_CALC=   0.51191638042200,
            TOLE_MACHINE=1.E-3,
            NOM_PARA='SIXX',
            TABLE=S4L_C,
@@ -1130,7 +1130,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=-0.348136,
+           VALE_CALC=   -0.34813582130353,
            TOLE_MACHINE=1.E-3,
            NOM_PARA='SIYY',
            TABLE=S4L_C,
@@ -1139,7 +1139,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=-0.62166299999999997,
+           VALE_CALC=   -0.62166344679278,
            TOLE_MACHINE=1.E-3,
            NOM_PARA='SIZZ',
            TABLE=S4L_C,
@@ -1148,7 +1148,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=-0.0444552,
+           VALE_CALC=   -0.044455208172757,
            TOLE_MACHINE=1.E-3,
            NOM_PARA='SIXY',
            TABLE=S4L_C,
@@ -1157,7 +1157,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=-0.17122499999999999,
+           VALE_CALC=   -0.17122485927218,
            TOLE_MACHINE=1.E-3,
            NOM_PARA='SIXZ',
            TABLE=S4L_C,
@@ -1166,7 +1166,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=0.0152287,
+           VALE_CALC=   0.015228659645237,
            TOLE_MACHINE=1.E-3,
            NOM_PARA='SIYZ',
            TABLE=S4L_C,
@@ -1178,7 +1178,7 @@ TEST_TABLE(
 
 
 TEST_TABLE(
-           VALE_CALC=0.33250099999999999,
+           VALE_CALC=   0.33250093042141,
            TOLE_MACHINE=1.E-3,
            NOM_PARA='SIXX',
            TABLE=S4_N31,
@@ -1187,7 +1187,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=-0.46140500000000001,
+           VALE_CALC=   -0.46140514142841,
            TOLE_MACHINE=1.E-3,
            NOM_PARA='SIZZ',
            TABLE=S4_N31,
@@ -1196,7 +1196,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=-0.379967,
+           VALE_CALC=   -0.37996662890831,
            TOLE_MACHINE=1.E-3,
            NOM_PARA='SIYY',
            TABLE=S4_N31,
@@ -1205,7 +1205,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=-0.098127000000000006,
+           VALE_CALC=   -0.098127002868082,
            TOLE_MACHINE=1.E-3,
            NOM_PARA='SIXZ',
            TABLE=S4_N31,
@@ -1214,7 +1214,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=0.42080800000000002,
+           VALE_CALC=   0.42080820176757,
            TOLE_MACHINE=1.E-3,
            NOM_PARA='SIXY',
            TABLE=S4_N31,
@@ -1223,7 +1223,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=6.0398300000000004E-3,
+           VALE_CALC=   6.0398293897706E-03,
            TOLE_MACHINE=1.E-3,
            NOM_PARA='SIYZ',
            TABLE=S4_N31,
@@ -1235,7 +1235,7 @@ TEST_TABLE(
 
 
 TEST_TABLE(
-           VALE_CALC=-0.379967,
+           VALE_CALC=   -0.37996662890832,
            TOLE_MACHINE=1.E-3,
            NOM_PARA='SIXX',
            TABLE=S4_N1,
@@ -1244,7 +1244,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=-0.46140500000000001,
+           VALE_CALC=   -0.46140514142841,
            TOLE_MACHINE=1.E-3,
            NOM_PARA='SIZZ',
            TABLE=S4_N1,
@@ -1253,7 +1253,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=0.33250099999999999,
+           VALE_CALC=   0.33250093042140,
            TOLE_MACHINE=1.E-3,
            NOM_PARA='SIYY',
            TABLE=S4_N1,
@@ -1262,7 +1262,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=6.0398300000000004E-3,
+           VALE_CALC=   6.0398293897725E-03,
            TOLE_MACHINE=1.E-3,
            NOM_PARA='SIXZ',
            TABLE=S4_N1,
@@ -1271,7 +1271,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=0.42080800000000002,
+           VALE_CALC=   0.42080820176757,
            TOLE_MACHINE=1.E-3,
            NOM_PARA='SIXY',
            TABLE=S4_N1,
@@ -1280,7 +1280,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=-0.098127000000000006,
+           VALE_CALC=   -0.098127002868082,
            TOLE_MACHINE=1.E-3,
            NOM_PARA='SIYZ',
            TABLE=S4_N1,
@@ -1293,7 +1293,7 @@ TEST_TABLE(
 
 
 TEST_TABLE(
-           VALE_CALC=-2.35049E-07,
+           VALE_CALC=   -2.3504907016788E-07,
            TOLE_MACHINE=1.E-3,
            NOM_PARA='DX',
            TABLE=D1_G,
@@ -1303,7 +1303,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=-1.9700800000000001E-07,
+           VALE_CALC=   -1.9700797599399E-07,
            TOLE_MACHINE=1.E-3,
            NOM_PARA='DY',
            TABLE=D1_G,
@@ -1313,7 +1313,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=-1.2776900000000001E-07,
+           VALE_CALC=   -1.277687241494E-07,
            TOLE_MACHINE=1.E-3,
            NOM_PARA='DZ',
            TABLE=D1_G,
@@ -1323,7 +1323,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=-2.1909399999999999E-07,
+           VALE_CALC=   -2.1909427927289E-07,
            TOLE_MACHINE=1.E-3,
            NOM_PARA='DX',
            TABLE=D1_G,
@@ -1332,7 +1332,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=-1.90295E-07,
+           VALE_CALC=   -1.9029499057604E-07,
            TOLE_MACHINE=1.E-3,
            NOM_PARA='DY',
            TABLE=D1_G,
@@ -1341,7 +1341,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=-1.29749E-08,
+           VALE_CALC=   -1.2974924641964E-08,
            TOLE_MACHINE=1.E-3,
            NOM_PARA='DZ',
            TABLE=D1_G,
@@ -1354,7 +1354,7 @@ TEST_TABLE(
 
 
 TEST_TABLE(
-           VALE_CALC=-2.35049E-07,
+           VALE_CALC=   -2.3504907016788E-07,
            TOLE_MACHINE=1.E-3,
            NOM_PARA='DX',
            TABLE=D1L_G,
@@ -1364,7 +1364,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=-1.9700800000000001E-07,
+           VALE_CALC=   -1.9700797599399E-07,
            TOLE_MACHINE=1.E-3,
            NOM_PARA='DY',
            TABLE=D1L_G,
@@ -1374,7 +1374,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=-1.2776900000000001E-07,
+           VALE_CALC=   -1.277687241494E-07,
            TOLE_MACHINE=1.E-3,
            NOM_PARA='DZ',
            TABLE=D1L_G,
@@ -1384,7 +1384,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=-2.1909399999999999E-07,
+           VALE_CALC=   -2.1909427927289E-07,
            TOLE_MACHINE=1.E-3,
            NOM_PARA='DX',
            TABLE=D1L_G,
@@ -1393,7 +1393,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=-1.90295E-07,
+           VALE_CALC=   -1.9029499057604E-07,
            TOLE_MACHINE=1.E-3,
            NOM_PARA='DY',
            TABLE=D1L_G,
@@ -1402,7 +1402,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=-1.29749E-08,
+           VALE_CALC=   -1.2974924641964E-08,
            TOLE_MACHINE=1.E-3,
            NOM_PARA='DZ',
            TABLE=D1L_G,
@@ -1415,7 +1415,7 @@ TEST_TABLE(
 
 
 TEST_TABLE(
-           VALE_CALC=-2.35049E-07,
+           VALE_CALC=   -2.3504907016788E-07,
            TOLE_MACHINE=1.E-3,
            NOM_PARA='DX',
            TABLE=D1_L,
@@ -1425,7 +1425,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=-1.9700800000000001E-07,
+           VALE_CALC=   -1.9700797599399E-07,
            TOLE_MACHINE=1.E-3,
            NOM_PARA='DY',
            TABLE=D1_L,
@@ -1435,7 +1435,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=-1.2776900000000001E-07,
+           VALE_CALC=   -1.277687241494E-07,
            TOLE_MACHINE=1.E-3,
            NOM_PARA='DZ',
            TABLE=D1_L,
@@ -1445,7 +1445,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=-2.1909399999999999E-07,
+           VALE_CALC=   -2.1909427927289E-07,
            TOLE_MACHINE=1.E-3,
            NOM_PARA='DX',
            TABLE=D1_L,
@@ -1454,7 +1454,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=-1.90295E-07,
+           VALE_CALC=   -1.9029499057604E-07,
            TOLE_MACHINE=1.E-3,
            NOM_PARA='DY',
            TABLE=D1_L,
@@ -1463,7 +1463,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=-1.29749E-08,
+           VALE_CALC=   -1.2974924641964E-08,
            TOLE_MACHINE=1.E-3,
            NOM_PARA='DZ',
            TABLE=D1_L,
@@ -1476,7 +1476,7 @@ TEST_TABLE(
 
 
 TEST_TABLE(
-           VALE_CALC=-2.35049E-07,
+           VALE_CALC=   -2.3504907016788E-07,
            TOLE_MACHINE=1.E-3,
            NOM_PARA='DX',
            TABLE=D1L_L,
@@ -1486,7 +1486,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=-1.9700800000000001E-07,
+           VALE_CALC=   -1.9700797599399E-07,
            TOLE_MACHINE=1.E-3,
            NOM_PARA='DY',
            TABLE=D1L_L,
@@ -1496,7 +1496,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=-1.2776900000000001E-07,
+           VALE_CALC=   -1.277687241494E-07,
            TOLE_MACHINE=1.E-3,
            NOM_PARA='DZ',
            TABLE=D1L_L,
@@ -1506,7 +1506,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=-2.1909399999999999E-07,
+           VALE_CALC=   -2.1909427927289E-07,
            TOLE_MACHINE=1.E-3,
            NOM_PARA='DX',
            TABLE=D1L_L,
@@ -1515,7 +1515,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=-1.90295E-07,
+           VALE_CALC=   -1.9029499057604E-07,
            TOLE_MACHINE=1.E-3,
            NOM_PARA='DY',
            TABLE=D1L_L,
@@ -1524,7 +1524,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=-1.29749E-08,
+           VALE_CALC=   -1.2974924641964E-08,
            TOLE_MACHINE=1.E-3,
            NOM_PARA='DZ',
            TABLE=D1L_L,
@@ -1537,7 +1537,7 @@ TEST_TABLE(
 
 
 TEST_TABLE(
-           VALE_CALC=-2.35049E-07,
+           VALE_CALC=   -2.3504907016788E-07,
            TOLE_MACHINE=1.E-3,
            NOM_PARA='DX',
            TABLE=D1_U,
@@ -1547,7 +1547,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=-1.9700800000000001E-07,
+           VALE_CALC=   -1.9700797599399E-07,
            TOLE_MACHINE=1.E-3,
            NOM_PARA='DY',
            TABLE=D1_U,
@@ -1557,7 +1557,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=-1.2776900000000001E-07,
+           VALE_CALC=   -1.277687241494E-07,
            TOLE_MACHINE=1.E-3,
            NOM_PARA='DZ',
            TABLE=D1_U,
@@ -1567,7 +1567,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=-2.1909399999999999E-07,
+           VALE_CALC=   -2.1909427927289E-07,
            TOLE_MACHINE=1.E-3,
            NOM_PARA='DX',
            TABLE=D1_U,
@@ -1576,7 +1576,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=-1.90295E-07,
+           VALE_CALC=   -1.9029499057604E-07,
            TOLE_MACHINE=1.E-3,
            NOM_PARA='DY',
            TABLE=D1_U,
@@ -1585,7 +1585,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=-1.29749E-08,
+           VALE_CALC=   -1.2974924641964E-08,
            TOLE_MACHINE=1.E-3,
            NOM_PARA='DZ',
            TABLE=D1_U,
@@ -1598,7 +1598,7 @@ TEST_TABLE(
 
 
 TEST_TABLE(
-           VALE_CALC=-2.35049E-07,
+           VALE_CALC=   -2.3504907016788E-07,
            TOLE_MACHINE=1.E-3,
            NOM_PARA='DX',
            TABLE=D1L_U,
@@ -1608,7 +1608,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=-1.9700800000000001E-07,
+           VALE_CALC=   -1.9700797599399E-07,
            TOLE_MACHINE=1.E-3,
            NOM_PARA='DY',
            TABLE=D1L_U,
@@ -1618,7 +1618,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=-1.2776900000000001E-07,
+           VALE_CALC=   -1.277687241494E-07,
            TOLE_MACHINE=1.E-3,
            NOM_PARA='DZ',
            TABLE=D1L_U,
@@ -1628,7 +1628,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=-2.1909399999999999E-07,
+           VALE_CALC=   -2.1909427927289E-07,
            TOLE_MACHINE=1.E-3,
            NOM_PARA='DX',
            TABLE=D1L_U,
@@ -1637,7 +1637,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=-1.90295E-07,
+           VALE_CALC=   -1.9029499057604E-07,
            TOLE_MACHINE=1.E-3,
            NOM_PARA='DY',
            TABLE=D1L_U,
@@ -1646,7 +1646,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=-1.29749E-08,
+           VALE_CALC=   -1.2974924641964E-08,
            TOLE_MACHINE=1.E-3,
            NOM_PARA='DZ',
            TABLE=D1L_U,
@@ -1659,7 +1659,7 @@ TEST_TABLE(
 
 
 TEST_TABLE(
-           VALE_CALC=-2.17656E-07,
+           VALE_CALC=   -2.1765645481805E-07,
            TOLE_MACHINE=1.E-3,
            NOM_PARA='DX',
            TABLE=D2_G,
@@ -1669,7 +1669,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=-2.17656E-07,
+           VALE_CALC=   -2.1765645481805E-07,
            TOLE_MACHINE=1.E-3,
            NOM_PARA='DY',
            TABLE=D2_G,
@@ -1679,7 +1679,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=-9.0730799999999996E-08,
+           VALE_CALC=   -9.0730840212336E-08,
            TOLE_MACHINE=1.E-3,
            NOM_PARA='DZ',
            TABLE=D2_G,
@@ -1689,7 +1689,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=-1.94172E-07,
+           VALE_CALC=   -1.9417200740312E-07,
            TOLE_MACHINE=1.E-3,
            NOM_PARA='DX',
            TABLE=D2_G,
@@ -1698,7 +1698,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=-1.94172E-07,
+           VALE_CALC=   -1.9417200740312E-07,
            TOLE_MACHINE=1.E-3,
            NOM_PARA='DY',
            TABLE=D2_G,
@@ -1707,7 +1707,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=6.6555099999999995E-08,
+           VALE_CALC=   6.6555071485016E-08,
            TOLE_MACHINE=1.E-3,
            NOM_PARA='DZ',
            TABLE=D2_G,
@@ -1720,7 +1720,7 @@ TEST_TABLE(
 
 
 TEST_TABLE(
-           VALE_CALC=-2.17656E-07,
+           VALE_CALC=   -2.1765645481805E-07,
            TOLE_MACHINE=1.E-3,
            NOM_PARA='DX',
            TABLE=D2L_G,
@@ -1730,7 +1730,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=-2.17656E-07,
+           VALE_CALC=   -2.1765645481805E-07,
            TOLE_MACHINE=1.E-3,
            NOM_PARA='DY',
            TABLE=D2L_G,
@@ -1740,7 +1740,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=-9.0730799999999996E-08,
+           VALE_CALC=   -9.0730840212336E-08,
            TOLE_MACHINE=1.E-3,
            NOM_PARA='DZ',
            TABLE=D2L_G,
@@ -1750,7 +1750,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=-1.94172E-07,
+           VALE_CALC=   -1.9417200740312E-07,
            TOLE_MACHINE=1.E-3,
            NOM_PARA='DX',
            TABLE=D2L_G,
@@ -1759,7 +1759,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=-1.94172E-07,
+           VALE_CALC=   -1.9417200740312E-07,
            TOLE_MACHINE=1.E-3,
            NOM_PARA='DY',
            TABLE=D2L_G,
@@ -1768,7 +1768,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=6.6555099999999995E-08,
+           VALE_CALC=   6.6555071485016E-08,
            TOLE_MACHINE=1.E-3,
            NOM_PARA='DZ',
            TABLE=D2L_G,
@@ -1781,7 +1781,7 @@ TEST_TABLE(
 
 
 TEST_TABLE(
-           VALE_CALC=-3.0781299999999998E-07,
+           VALE_CALC=   -3.0781271034173E-07,
            TOLE_MACHINE=1.E-3,
            NOM_PARA='DX',
            TABLE=D2_L,
@@ -1791,7 +1791,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(CRITERE='ABSOLU',
-           VALE_CALC=0.0,
+           VALE_CALC=   -4.2351647362715E-22,
            NOM_PARA='DY',
            TABLE=D2_L,
            FILTRE=_F(CRITERE='ABSOLU',
@@ -1800,7 +1800,7 @@ TEST_TABLE(CRITERE='ABSOLU',
            )
 
 TEST_TABLE(
-           VALE_CALC=-9.0730799999999996E-08,
+           VALE_CALC=   -9.0730840212336E-08,
            TOLE_MACHINE=1.E-3,
            NOM_PARA='DZ',
            TABLE=D2_L,
@@ -1810,7 +1810,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=-2.7460100000000001E-07,
+           VALE_CALC=   -2.746006863027E-07,
            TOLE_MACHINE=1.E-3,
            NOM_PARA='DX',
            TABLE=D2_L,
@@ -1819,7 +1819,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(CRITERE='ABSOLU',
-           VALE_CALC=0.0,
+           VALE_CALC=   -5.8233515123733E-22,
            NOM_PARA='DY',
            TABLE=D2_L,
            FILTRE=_F(NOM_PARA='ABSC_CURV',
@@ -1827,7 +1827,7 @@ TEST_TABLE(CRITERE='ABSOLU',
            )
 
 TEST_TABLE(
-           VALE_CALC=6.6555099999999995E-08,
+           VALE_CALC=   6.6555071485016E-08,
            TOLE_MACHINE=1.E-3,
            NOM_PARA='DZ',
            TABLE=D2_L,
@@ -1841,7 +1841,7 @@ TEST_TABLE(
 
 
 TEST_TABLE(
-           VALE_CALC=-3.0781299999999998E-07,
+           VALE_CALC=   -3.0781271034173E-07,
            TOLE_MACHINE=1.E-3,
            NOM_PARA='DX',
            TABLE=D2L_L,
@@ -1851,7 +1851,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(CRITERE='ABSOLU',
-           VALE_CALC=0.0,
+           VALE_CALC=   -3.9704669402545E-22,
            NOM_PARA='DY',
            TABLE=D2L_L,
            FILTRE=_F(CRITERE='ABSOLU',
@@ -1860,7 +1860,7 @@ TEST_TABLE(CRITERE='ABSOLU',
            )
 
 TEST_TABLE(
-           VALE_CALC=-9.0730799999999996E-08,
+           VALE_CALC=   -9.0730840212336E-08,
            TOLE_MACHINE=1.E-3,
            NOM_PARA='DZ',
            TABLE=D2L_L,
@@ -1870,7 +1870,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=-2.7460100000000001E-07,
+           VALE_CALC=   -2.746006863027E-07,
            TOLE_MACHINE=1.E-3,
            NOM_PARA='DX',
            TABLE=D2L_L,
@@ -1879,7 +1879,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(CRITERE='ABSOLU',
-           VALE_CALC=0.0,
+           VALE_CALC=   -5.8233515123733E-22,
            NOM_PARA='DY',
            TABLE=D2L_L,
            FILTRE=_F(NOM_PARA='ABSC_CURV',
@@ -1887,7 +1887,7 @@ TEST_TABLE(CRITERE='ABSOLU',
            )
 
 TEST_TABLE(
-           VALE_CALC=6.6555099999999995E-08,
+           VALE_CALC=   6.6555071485016E-08,
            TOLE_MACHINE=1.E-3,
            NOM_PARA='DZ',
            TABLE=D2L_L,
@@ -1901,7 +1901,7 @@ TEST_TABLE(
 
 
 TEST_TABLE(
-           VALE_CALC=-3.0781299999999998E-07,
+           VALE_CALC=   -3.0781271034173E-07,
            TOLE_MACHINE=1.E-3,
            NOM_PARA='DX',
            TABLE=D2_U,
@@ -1911,7 +1911,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(CRITERE='ABSOLU',
-           VALE_CALC=0.0,
+           VALE_CALC=   -3.4410713482206E-22,
            TOLE_MACHINE=1.E-3,
            NOM_PARA='DY',
            TABLE=D2_U,
@@ -1921,7 +1921,7 @@ TEST_TABLE(CRITERE='ABSOLU',
            )
 
 TEST_TABLE(
-           VALE_CALC=-9.0730799999999996E-08,
+           VALE_CALC=   -9.0730840212336E-08,
            TOLE_MACHINE=1.E-3,
            NOM_PARA='DZ',
            TABLE=D2_U,
@@ -1931,7 +1931,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=-2.7460100000000001E-07,
+           VALE_CALC=   -2.746006863027E-07,
            TOLE_MACHINE=1.E-3,
            NOM_PARA='DX',
            TABLE=D2_U,
@@ -1940,7 +1940,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(CRITERE='ABSOLU',
-           VALE_CALC=0.0,
+           VALE_CALC=   -5.2939559203394E-22,
            NOM_PARA='DY',
            TABLE=D2_U,
            FILTRE=_F(NOM_PARA='ABSC_CURV',
@@ -1948,7 +1948,7 @@ TEST_TABLE(CRITERE='ABSOLU',
            )
 
 TEST_TABLE(
-           VALE_CALC=6.6555099999999995E-08,
+           VALE_CALC=   6.6555071485016E-08,
            TOLE_MACHINE=1.E-3,
            NOM_PARA='DZ',
            TABLE=D2_U,
@@ -1962,7 +1962,7 @@ TEST_TABLE(
 
 
 TEST_TABLE(
-           VALE_CALC=-3.0781299999999998E-07,
+           VALE_CALC=   -3.0781271034173E-07,
            TOLE_MACHINE=1.E-3,
            NOM_PARA='DX',
            TABLE=D2L_U,
@@ -1972,7 +1972,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(CRITERE='ABSOLU',
-           VALE_CALC=0.0,
+           VALE_CALC=   -3.4410713482206E-22,
            NOM_PARA='DY',
            TABLE=D2L_U,
            FILTRE=_F(CRITERE='ABSOLU',
@@ -1981,7 +1981,7 @@ TEST_TABLE(CRITERE='ABSOLU',
            )
 
 TEST_TABLE(
-           VALE_CALC=-9.0730799999999996E-08,
+           VALE_CALC=   -9.0730840212336E-08,
            TOLE_MACHINE=1.E-3,
            NOM_PARA='DZ',
            TABLE=D2L_U,
@@ -1991,7 +1991,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=-2.7460100000000001E-07,
+           VALE_CALC=   -2.746006863027E-07,
            TOLE_MACHINE=1.E-3,
            NOM_PARA='DX',
            TABLE=D2L_U,
@@ -2000,7 +2000,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(CRITERE='ABSOLU',
-           VALE_CALC=0.0,
+           VALE_CALC=   -5.2939559203394E-22,
            NOM_PARA='DY',
            TABLE=D2L_U,
            FILTRE=_F(NOM_PARA='ABSC_CURV',
@@ -2008,7 +2008,7 @@ TEST_TABLE(CRITERE='ABSOLU',
            )
 
 TEST_TABLE(
-           VALE_CALC=6.6555099999999995E-08,
+           VALE_CALC=   6.6555071485016E-08,
            TOLE_MACHINE=1.E-3,
            NOM_PARA='DZ',
            TABLE=D2L_U,
@@ -2021,7 +2021,7 @@ TEST_TABLE(
 
 
 TEST_TABLE(
-           VALE_CALC=-1.9700800000000001E-07,
+           VALE_CALC=   -1.9700797599399E-07,
            TOLE_MACHINE=1.E-3,
            NOM_PARA='DX',
            TABLE=D3_G,
@@ -2031,7 +2031,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=-2.35049E-07,
+           VALE_CALC=   -2.3504907016788E-07,
            TOLE_MACHINE=1.E-3,
            NOM_PARA='DY',
            TABLE=D3_G,
@@ -2041,7 +2041,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=-1.2776900000000001E-07,
+           VALE_CALC=   -1.277687241494E-07,
            TOLE_MACHINE=1.E-3,
            NOM_PARA='DZ',
            TABLE=D3_G,
@@ -2051,7 +2051,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=-1.90295E-07,
+           VALE_CALC=   -1.9029499057604E-07,
            TOLE_MACHINE=1.E-3,
            NOM_PARA='DX',
            TABLE=D3_G,
@@ -2060,7 +2060,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=-2.1909399999999999E-07,
+           VALE_CALC=   -2.1909427927289E-07,
            TOLE_MACHINE=1.E-3,
            NOM_PARA='DY',
            TABLE=D3_G,
@@ -2069,7 +2069,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=-1.29749E-08,
+           VALE_CALC=   -1.2974924641963E-08,
            TOLE_MACHINE=1.E-3,
            NOM_PARA='DZ',
            TABLE=D3_G,
@@ -2082,7 +2082,7 @@ TEST_TABLE(
 
 
 TEST_TABLE(
-           VALE_CALC=-1.9700800000000001E-07,
+           VALE_CALC=   -1.9700797599399E-07,
            TOLE_MACHINE=1.E-3,
            NOM_PARA='DX',
            TABLE=D3L_G,
@@ -2092,7 +2092,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=-2.35049E-07,
+           VALE_CALC=   -2.3504907016788E-07,
            TOLE_MACHINE=1.E-3,
            NOM_PARA='DY',
            TABLE=D3L_G,
@@ -2102,7 +2102,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=-1.2776900000000001E-07,
+           VALE_CALC=   -1.277687241494E-07,
            TOLE_MACHINE=1.E-3,
            NOM_PARA='DZ',
            TABLE=D3L_G,
@@ -2112,7 +2112,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=-1.90295E-07,
+           VALE_CALC=   -1.9029499057604E-07,
            TOLE_MACHINE=1.E-3,
            NOM_PARA='DX',
            TABLE=D3L_G,
@@ -2121,7 +2121,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=-2.1909399999999999E-07,
+           VALE_CALC=   -2.1909427927289E-07,
            TOLE_MACHINE=1.E-3,
            NOM_PARA='DY',
            TABLE=D3L_G,
@@ -2130,7 +2130,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=-1.29749E-08,
+           VALE_CALC=   -1.2974924641963E-08,
            TOLE_MACHINE=1.E-3,
            NOM_PARA='DZ',
            TABLE=D3L_G,
@@ -2143,7 +2143,7 @@ TEST_TABLE(
 
 
 TEST_TABLE(
-           VALE_CALC=-2.35049E-07,
+           VALE_CALC=   -2.3504907016788E-07,
            TOLE_MACHINE=1.E-3,
            NOM_PARA='DX',
            TABLE=D3_L,
@@ -2153,7 +2153,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=1.9700800000000001E-07,
+           VALE_CALC=   1.9700797599399E-07,
            TOLE_MACHINE=1.E-3,
            NOM_PARA='DY',
            TABLE=D3_L,
@@ -2163,7 +2163,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=-1.2776900000000001E-07,
+           VALE_CALC=   -1.277687241494E-07,
            TOLE_MACHINE=1.E-3,
            NOM_PARA='DZ',
            TABLE=D3_L,
@@ -2173,7 +2173,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=-2.1909399999999999E-07,
+           VALE_CALC=   -2.1909427927289E-07,
            TOLE_MACHINE=1.E-3,
            NOM_PARA='DX',
            TABLE=D3_L,
@@ -2182,7 +2182,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=1.90295E-07,
+           VALE_CALC=   1.9029499057604E-07,
            TOLE_MACHINE=1.E-3,
            NOM_PARA='DY',
            TABLE=D3_L,
@@ -2191,7 +2191,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=-1.29749E-08,
+           VALE_CALC=   -1.2974924641963E-08,
            TOLE_MACHINE=1.E-3,
            NOM_PARA='DZ',
            TABLE=D3_L,
@@ -2204,7 +2204,7 @@ TEST_TABLE(
 
 
 TEST_TABLE(
-           VALE_CALC=-2.35049E-07,
+           VALE_CALC=   -2.3504907016788E-07,
            TOLE_MACHINE=1.E-3,
            NOM_PARA='DX',
            TABLE=D3L_L,
@@ -2214,7 +2214,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=1.9700800000000001E-07,
+           VALE_CALC=   1.9700797599399E-07,
            TOLE_MACHINE=1.E-3,
            NOM_PARA='DY',
            TABLE=D3L_L,
@@ -2224,7 +2224,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=-1.2776900000000001E-07,
+           VALE_CALC=   -1.277687241494E-07,
            TOLE_MACHINE=1.E-3,
            NOM_PARA='DZ',
            TABLE=D3L_L,
@@ -2234,7 +2234,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=-2.1909399999999999E-07,
+           VALE_CALC=   -2.1909427927289E-07,
            TOLE_MACHINE=1.E-3,
            NOM_PARA='DX',
            TABLE=D3L_L,
@@ -2243,7 +2243,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=1.90295E-07,
+           VALE_CALC=   1.9029499057604E-07,
            TOLE_MACHINE=1.E-3,
            NOM_PARA='DY',
            TABLE=D3L_L,
@@ -2252,7 +2252,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=-1.29749E-08,
+           VALE_CALC=   -1.2974924641963E-08,
            TOLE_MACHINE=1.E-3,
            NOM_PARA='DZ',
            TABLE=D3L_L,
@@ -2265,7 +2265,7 @@ TEST_TABLE(
 
 
 TEST_TABLE(
-           VALE_CALC=-2.35049E-07,
+           VALE_CALC=   -2.3504907016788E-07,
            TOLE_MACHINE=1.E-3,
            NOM_PARA='DX',
            TABLE=D3_U,
@@ -2275,7 +2275,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=1.9700800000000001E-07,
+           VALE_CALC=   1.9700797599399E-07,
            TOLE_MACHINE=1.E-3,
            NOM_PARA='DY',
            TABLE=D3_U,
@@ -2285,7 +2285,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=-1.2776900000000001E-07,
+           VALE_CALC=   -1.277687241494E-07,
            TOLE_MACHINE=1.E-3,
            NOM_PARA='DZ',
            TABLE=D3_U,
@@ -2295,7 +2295,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=-2.1909399999999999E-07,
+           VALE_CALC=   -2.1909427927289E-07,
            TOLE_MACHINE=1.E-3,
            NOM_PARA='DX',
            TABLE=D3_U,
@@ -2304,7 +2304,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=1.90295E-07,
+           VALE_CALC=   1.9029499057604E-07,
            TOLE_MACHINE=1.E-3,
            NOM_PARA='DY',
            TABLE=D3_U,
@@ -2313,7 +2313,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=-1.29749E-08,
+           VALE_CALC=   -1.2974924641963E-08,
            TOLE_MACHINE=1.E-3,
            NOM_PARA='DZ',
            TABLE=D3_U,
@@ -2322,12 +2322,12 @@ TEST_TABLE(
            )
 
 # ---------------------------------------------------------------------
-# D3L_U: LISTE DE NOEUDS P11 P12, REPERE UTILISATEUR, 
+# D3L_U: LISTE DE NOEUDS P11 P12, REPERE UTILISATEUR,
 #                                 ANGL_NAUT: (90. 0. 0.)
 
 
 TEST_TABLE(
-           VALE_CALC=-2.35049E-07,
+           VALE_CALC=   -2.3504907016788E-07,
            TOLE_MACHINE=1.E-3,
            NOM_PARA='DX',
            TABLE=D3L_U,
@@ -2337,7 +2337,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=1.9700800000000001E-07,
+           VALE_CALC=   1.9700797599399E-07,
            TOLE_MACHINE=1.E-3,
            NOM_PARA='DY',
            TABLE=D3L_U,
@@ -2347,7 +2347,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=-1.2776900000000001E-07,
+           VALE_CALC=   -1.277687241494E-07,
            TOLE_MACHINE=1.E-3,
            NOM_PARA='DZ',
            TABLE=D3L_U,
@@ -2357,7 +2357,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=-2.1909399999999999E-07,
+           VALE_CALC=   -2.1909427927289E-07,
            TOLE_MACHINE=1.E-3,
            NOM_PARA='DX',
            TABLE=D3L_U,
@@ -2366,7 +2366,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=1.90295E-07,
+           VALE_CALC=   1.9029499057604E-07,
            TOLE_MACHINE=1.E-3,
            NOM_PARA='DY',
            TABLE=D3L_U,
@@ -2375,7 +2375,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=-1.29749E-08,
+           VALE_CALC=   -1.2974924641963E-08,
            TOLE_MACHINE=1.E-3,
            NOM_PARA='DZ',
            TABLE=D3L_U,
@@ -2388,7 +2388,7 @@ TEST_TABLE(
 
 
 TEST_TABLE(
-           VALE_CALC=0.1139,
+           VALE_CALC=   0.11390010204615,
            TOLE_MACHINE=1.E-3,
            NOM_PARA='TR_DIR_1',
            TABLE=S1_TDX,
@@ -2398,7 +2398,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=0.23860600000000001,
+           VALE_CALC=   0.23860611445314,
            TOLE_MACHINE=1.E-3,
            NOM_PARA='TR_DIR_2',
            TABLE=S1_TDX,
@@ -2408,7 +2408,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=0.029926399999999999,
+           VALE_CALC=   0.029926440375790,
            TOLE_MACHINE=1.E-3,
            NOM_PARA='TR_DIR_3',
            TABLE=S1_TDX,
@@ -2422,7 +2422,7 @@ TEST_TABLE(
 
 
 TEST_TABLE(
-           VALE_CALC=0.1139,
+           VALE_CALC=   0.11390010204615,
            TOLE_MACHINE=1.E-3,
            NOM_PARA='TR_DIR_1',
            TABLE=S1L_TDX,
@@ -2432,7 +2432,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=0.23860600000000001,
+           VALE_CALC=   0.23860611445314,
            TOLE_MACHINE=1.E-3,
            NOM_PARA='TR_DIR_2',
            TABLE=S1L_TDX,
@@ -2442,7 +2442,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=0.029926399999999999,
+           VALE_CALC=   0.029926440375790,
            TOLE_MACHINE=1.E-3,
            NOM_PARA='TR_DIR_3',
            TABLE=S1L_TDX,
@@ -2456,7 +2456,7 @@ TEST_TABLE(
 
 
 TEST_TABLE(
-           VALE_CALC=0.23860600000000001,
+           VALE_CALC=   0.23860611445314,
            TOLE_MACHINE=1.E-3,
            NOM_PARA='TR_DIR_1',
            TABLE=S1_TDY,
@@ -2466,7 +2466,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=-0.208454,
+           VALE_CALC=   -0.20845409095706,
            TOLE_MACHINE=1.E-3,
            NOM_PARA='TR_DIR_2',
            TABLE=S1_TDY,
@@ -2476,7 +2476,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=-0.046909399999999997,
+           VALE_CALC=   -0.046909409130759,
            TOLE_MACHINE=1.E-3,
            NOM_PARA='TR_DIR_3',
            TABLE=S1_TDY,
@@ -2490,7 +2490,7 @@ TEST_TABLE(
 
 
 TEST_TABLE(
-           VALE_CALC=0.23860600000000001,
+           VALE_CALC=   0.23860611445314,
            TOLE_MACHINE=1.E-3,
            NOM_PARA='TR_DIR_1',
            TABLE=S1L_TDY,
@@ -2500,7 +2500,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=-0.208454,
+           VALE_CALC=   -0.20845409095706,
            TOLE_MACHINE=1.E-3,
            NOM_PARA='TR_DIR_2',
            TABLE=S1L_TDY,
@@ -2510,7 +2510,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=-0.046909399999999997,
+           VALE_CALC=   -0.046909409130759,
            TOLE_MACHINE=1.E-3,
            NOM_PARA='TR_DIR_3',
            TABLE=S1L_TDY,
@@ -2524,7 +2524,7 @@ TEST_TABLE(
 
 
 TEST_TABLE(
-           VALE_CALC=0.029926399999999999,
+           VALE_CALC=   0.029926440375790,
            TOLE_MACHINE=1.E-3,
            NOM_PARA='TR_DIR_1',
            TABLE=S1_TDZ,
@@ -2534,7 +2534,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=-0.046909399999999997,
+           VALE_CALC=   -0.046909409130759,
            TOLE_MACHINE=1.E-3,
            NOM_PARA='TR_DIR_2',
            TABLE=S1_TDZ,
@@ -2544,7 +2544,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=-0.47553200000000001,
+           VALE_CALC=   -0.47553162855561,
            TOLE_MACHINE=1.E-3,
            NOM_PARA='TR_DIR_3',
            TABLE=S1_TDZ,
@@ -2558,7 +2558,7 @@ TEST_TABLE(
 
 
 TEST_TABLE(
-           VALE_CALC=0.029926399999999999,
+           VALE_CALC=   0.029926440375790,
            TOLE_MACHINE=1.E-3,
            NOM_PARA='TR_DIR_1',
            TABLE=S1L_TDZ,
@@ -2568,7 +2568,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=-0.046909399999999997,
+           VALE_CALC=   -0.046909409130759,
            TOLE_MACHINE=1.E-3,
            NOM_PARA='TR_DIR_2',
            TABLE=S1L_TDZ,
@@ -2578,7 +2578,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=-0.47553200000000001,
+           VALE_CALC=   -0.47553162855561,
            TOLE_MACHINE=1.E-3,
            NOM_PARA='TR_DIR_3',
            TABLE=S1L_TDZ,
@@ -2592,7 +2592,7 @@ TEST_TABLE(
 
 
 TEST_TABLE(
-           VALE_CALC=-2.35049E-07,
+           VALE_CALC=   -2.3504907016788E-07,
            TOLE_MACHINE=1.E-3,
            NOM_PARA='TRAC_DIR',
            TABLE=D1_TDX,
@@ -2606,7 +2606,7 @@ TEST_TABLE(
 
 
 TEST_TABLE(
-           VALE_CALC=-2.35049E-07,
+           VALE_CALC=   -2.3504907016788E-07,
            TOLE_MACHINE=1.E-3,
            NOM_PARA='TRAC_DIR',
            TABLE=D1L_TDX,
@@ -2620,7 +2620,7 @@ TEST_TABLE(
 
 
 TEST_TABLE(CRITERE='ABSOLU',
-           VALE_CALC=0.0,
+           VALE_CALC=   -5.0292581243224E-22,
            NOM_PARA='TRAC_DIR',
            TABLE=D2_TDX,
            FILTRE=_F(CRITERE='ABSOLU',
@@ -2629,7 +2629,7 @@ TEST_TABLE(CRITERE='ABSOLU',
            )
 
 TEST_TABLE(CRITERE='ABSOLU',
-           VALE_CALC=0.0,
+           VALE_CALC=   -7.4115382884751E-22,
            NOM_PARA='TRAC_DIR',
            TABLE=D2_TDX,
            FILTRE=_F(NOM_PARA='ABSC_CURV',
@@ -2641,7 +2641,7 @@ TEST_TABLE(CRITERE='ABSOLU',
 
 
 TEST_TABLE(CRITERE='ABSOLU',
-           VALE_CALC=0.0,
+           VALE_CALC=   -4.7645603283054E-22,
            NOM_PARA='TRAC_DIR',
            TABLE=D2L_TDX,
            FILTRE=_F(CRITERE='ABSOLU',
@@ -2650,7 +2650,7 @@ TEST_TABLE(CRITERE='ABSOLU',
            )
 
 TEST_TABLE(CRITERE='ABSOLU',
-           VALE_CALC=0.0,
+           VALE_CALC=   -7.4115382884751E-22,
            NOM_PARA='TRAC_DIR',
            TABLE=D2L_TDX,
            FILTRE=_F(NOM_PARA='ABSC_CURV',
@@ -2662,7 +2662,7 @@ TEST_TABLE(CRITERE='ABSOLU',
 #
 
 TEST_TABLE(REFERENCE='ANALYTIQUE',
-           VALE_CALC=0.848000313,
+           VALE_CALC=   0.84800031325459,
            VALE_REFE=0.84799999999999998,
            NOM_PARA='VMIS',
            TABLE=INVA_EL,
@@ -2671,7 +2671,7 @@ TEST_TABLE(REFERENCE='ANALYTIQUE',
            )
 
 TEST_TABLE(REFERENCE='ANALYTIQUE',
-           VALE_CALC=0.856452286,
+           VALE_CALC=   0.85645228640100,
            VALE_REFE=0.85645199999999999,
            NOM_PARA='TRESCA',
            TABLE=INVA_EL,
@@ -2680,7 +2680,7 @@ TEST_TABLE(REFERENCE='ANALYTIQUE',
            )
 
 TEST_TABLE(REFERENCE='ANALYTIQUE',
-           VALE_CALC=-0.539478229,
+           VALE_CALC=   -0.53947822869092,
            VALE_REFE=-0.53947800000000001,
            NOM_PARA='TRACE',
            TABLE=INVA_EL,
@@ -2689,7 +2689,7 @@ TEST_TABLE(REFERENCE='ANALYTIQUE',
            )
 
 TEST_TABLE(REFERENCE='ANALYTIQUE',
-           VALE_CALC=0.082397454,
+           VALE_CALC=   0.082397454033328,
            VALE_REFE=0.082397499999999999,
            NOM_PARA='DETER',
            TABLE=INVA_EL,
@@ -2698,7 +2698,7 @@ TEST_TABLE(REFERENCE='ANALYTIQUE',
            )
 
 TEST_TABLE(REFERENCE='ANALYTIQUE',
-           VALE_CALC=0.848000313,
+           VALE_CALC=   0.84800031325459,
            VALE_REFE=0.84799999999999998,
            NOM_PARA='VMIS',
            TABLE=INVA_NO,
@@ -2707,7 +2707,7 @@ TEST_TABLE(REFERENCE='ANALYTIQUE',
            )
 
 TEST_TABLE(REFERENCE='ANALYTIQUE',
-           VALE_CALC=0.856452286,
+           VALE_CALC=   0.85645228640100,
            VALE_REFE=0.85645199999999999,
            NOM_PARA='TRESCA',
            TABLE=INVA_NO,
@@ -2716,7 +2716,7 @@ TEST_TABLE(REFERENCE='ANALYTIQUE',
            )
 
 TEST_TABLE(REFERENCE='ANALYTIQUE',
-           VALE_CALC=-0.539478229,
+           VALE_CALC=   -0.53947822869092,
            VALE_REFE=-0.53947800000000001,
            NOM_PARA='TRACE',
            TABLE=INVA_NO,
@@ -2725,7 +2725,7 @@ TEST_TABLE(REFERENCE='ANALYTIQUE',
            )
 
 TEST_TABLE(REFERENCE='ANALYTIQUE',
-           VALE_CALC=0.082397454,
+           VALE_CALC=   0.082397454033328,
            VALE_REFE=0.082397499999999999,
            NOM_PARA='DETER',
            TABLE=INVA_NO,
@@ -2738,7 +2738,7 @@ TEST_TABLE(REFERENCE='ANALYTIQUE',
 #
 
 TEST_TABLE(REFERENCE='ANALYTIQUE',
-           VALE_CALC=-0.301800627,
+           VALE_CALC=   -0.30180062673521,
            VALE_REFE=-0.30180099999999999,
            NOM_PARA='PRIN_1',
            TABLE=PRIN_EL,
@@ -2747,7 +2747,7 @@ TEST_TABLE(REFERENCE='ANALYTIQUE',
            )
 
 TEST_TABLE(REFERENCE='ANALYTIQUE',
-           VALE_CALC=-0.123610759,
+           VALE_CALC=   -0.12361075915741,
            VALE_REFE=-0.123611,
            NOM_PARA='PRIN_2',
            TABLE=PRIN_EL,
@@ -2756,7 +2756,7 @@ TEST_TABLE(REFERENCE='ANALYTIQUE',
            )
 
 TEST_TABLE(REFERENCE='ANALYTIQUE',
-           VALE_CALC=0.340889584,
+           VALE_CALC=   0.34088958447760,
            VALE_REFE=0.34089000000000003,
            NOM_PARA='PRIN_3',
            TABLE=PRIN_EL,
@@ -2765,7 +2765,7 @@ TEST_TABLE(REFERENCE='ANALYTIQUE',
            )
 
 TEST_TABLE(REFERENCE='ANALYTIQUE',
-           VALE_CALC=-0.301800627,
+           VALE_CALC=   -0.30180062673521,
            VALE_REFE=-0.30180099999999999,
            NOM_PARA='PRIN_1',
            TABLE=PRIN_NO,
@@ -2774,7 +2774,7 @@ TEST_TABLE(REFERENCE='ANALYTIQUE',
            )
 
 TEST_TABLE(REFERENCE='ANALYTIQUE',
-           VALE_CALC=-0.123610759,
+           VALE_CALC=   -0.12361075915741,
            VALE_REFE=-0.123611,
            NOM_PARA='PRIN_2',
            TABLE=PRIN_NO,
@@ -2783,7 +2783,7 @@ TEST_TABLE(REFERENCE='ANALYTIQUE',
            )
 
 TEST_TABLE(REFERENCE='ANALYTIQUE',
-           VALE_CALC=0.340889584,
+           VALE_CALC=   0.34088958447760,
            VALE_REFE=0.34089000000000003,
            NOM_PARA='PRIN_3',
            TABLE=PRIN_NO,
@@ -2793,14 +2793,14 @@ TEST_TABLE(REFERENCE='ANALYTIQUE',
 
 #######################################################################
 #            II -  VALIDATION MACR_LIGN_COUPE  EN 3D                  #
-####################################################################### 
+#######################################################################
 
 # ---------------------------------------------------------------------
 # M1L_G: LISTE DE NOEUDS P7 P8, REPERE GLOBAL
 
 
 TEST_TABLE(
-           VALE_CALC=0.128413,
+           VALE_CALC=   0.12841285356815,
            TOLE_MACHINE=1.E-3,
            NOM_PARA='SIXX',
            TABLE=M1L_G,
@@ -2809,7 +2809,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=-0.028383800000000001,
+           VALE_CALC=   -0.028383789980382,
            TOLE_MACHINE=1.E-3,
            NOM_PARA='SIYY',
            TABLE=M1L_G,
@@ -2818,7 +2818,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=-0.18455099999999999,
+           VALE_CALC=   -0.18455086500279,
            TOLE_MACHINE=1.E-3,
            NOM_PARA='SIZZ',
            TABLE=M1L_G,
@@ -2827,7 +2827,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=0.21609300000000001,
+           VALE_CALC=   0.21609286284325,
            TOLE_MACHINE=1.E-3,
            NOM_PARA='SIXY',
            TABLE=M1L_G,
@@ -2836,7 +2836,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=-0.093909999999999993,
+           VALE_CALC=   -0.093910022750173,
            TOLE_MACHINE=1.E-3,
            NOM_PARA='SIXZ',
            TABLE=M1L_G,
@@ -2845,7 +2845,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=-0.17347000000000001,
+           VALE_CALC=   -0.17347044290691,
            TOLE_MACHINE=1.E-3,
            NOM_PARA='SIYZ',
            TABLE=M1L_G,
@@ -2858,7 +2858,7 @@ TEST_TABLE(
 
 
 TEST_TABLE(
-           VALE_CALC=0.128413,
+           VALE_CALC=   0.12841285356815,
            TOLE_MACHINE=1.E-3,
            NOM_PARA='SIXX',
            TABLE=M1_L,
@@ -2867,7 +2867,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=-0.028383800000000001,
+           VALE_CALC=   -0.028383789980382,
            TOLE_MACHINE=1.E-3,
            NOM_PARA='SIYY',
            TABLE=M1_L,
@@ -2876,7 +2876,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=-0.18455099999999999,
+           VALE_CALC=   -0.18455086500279,
            TOLE_MACHINE=1.E-3,
            NOM_PARA='SIZZ',
            TABLE=M1_L,
@@ -2885,7 +2885,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=0.21609300000000001,
+           VALE_CALC=   0.21609286284325,
            TOLE_MACHINE=1.E-3,
            NOM_PARA='SIXY',
            TABLE=M1_L,
@@ -2894,7 +2894,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=-0.093909999999999993,
+           VALE_CALC=   -0.093910022750173,
            TOLE_MACHINE=1.E-3,
            NOM_PARA='SIXZ',
            TABLE=M1_L,
@@ -2903,7 +2903,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=-0.17347000000000001,
+           VALE_CALC=   -0.17347044290691,
            TOLE_MACHINE=1.E-3,
            NOM_PARA='SIYZ',
            TABLE=M1_L,
@@ -2916,7 +2916,7 @@ TEST_TABLE(
 
 
 TEST_TABLE(
-           VALE_CALC=0.128413,
+           VALE_CALC=   0.12841285356815,
            TOLE_MACHINE=1.E-3,
            NOM_PARA='SIXX',
            TABLE=M1_U,
@@ -2925,7 +2925,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=-0.028383800000000001,
+           VALE_CALC=   -0.028383789980382,
            TOLE_MACHINE=1.E-3,
            NOM_PARA='SIYY',
            TABLE=M1_U,
@@ -2934,7 +2934,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=-0.18455099999999999,
+           VALE_CALC=   -0.18455086500279,
            TOLE_MACHINE=1.E-3,
            NOM_PARA='SIZZ',
            TABLE=M1_U,
@@ -2943,7 +2943,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=0.21609300000000001,
+           VALE_CALC=   0.21609286284325,
            TOLE_MACHINE=1.E-3,
            NOM_PARA='SIXY',
            TABLE=M1_U,
@@ -2952,7 +2952,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=-0.093909999999999993,
+           VALE_CALC=   -0.093910022750173,
            TOLE_MACHINE=1.E-3,
            NOM_PARA='SIXZ',
            TABLE=M1_U,
@@ -2961,7 +2961,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=-0.17347000000000001,
+           VALE_CALC=   -0.17347044290691,
            TOLE_MACHINE=1.E-3,
            NOM_PARA='SIYZ',
            TABLE=M1_U,
@@ -2974,7 +2974,7 @@ TEST_TABLE(
 
 
 TEST_TABLE(
-           VALE_CALC=0.089220300000000002,
+           VALE_CALC=   0.089220331584459,
            TOLE_MACHINE=1.E-3,
            NOM_PARA='SIXX',
            TABLE=M2L_G,
@@ -2983,7 +2983,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=0.089220300000000002,
+           VALE_CALC=   0.089220331584455,
            TOLE_MACHINE=1.E-3,
            NOM_PARA='SIYY',
            TABLE=M2L_G,
@@ -2992,7 +2992,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=0.42864099999999999,
+           VALE_CALC=   0.42864071042752,
            TOLE_MACHINE=1.E-3,
            NOM_PARA='SIZZ',
            TABLE=M2L_G,
@@ -3001,7 +3001,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=0.26761800000000002,
+           VALE_CALC=   0.26761768635569,
            TOLE_MACHINE=1.E-3,
            NOM_PARA='SIXY',
            TABLE=M2L_G,
@@ -3010,7 +3010,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=-0.11240700000000001,
+           VALE_CALC=   -0.11240718369833,
            TOLE_MACHINE=1.E-3,
            NOM_PARA='SIXZ',
            TABLE=M2L_G,
@@ -3019,7 +3019,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=-0.11240700000000001,
+           VALE_CALC=   -0.11240718369833,
            TOLE_MACHINE=1.E-3,
            NOM_PARA='SIYZ',
            TABLE=M2L_G,
@@ -3032,7 +3032,7 @@ TEST_TABLE(
 
 
 TEST_TABLE(
-           VALE_CALC=0.35683799999999999,
+           VALE_CALC=   0.35683801794015,
            TOLE_MACHINE=1.E-3,
            NOM_PARA='SIXX',
            TABLE=M2L_L,
@@ -3041,7 +3041,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=-0.178397,
+           VALE_CALC=   -0.17839735477123,
            TOLE_MACHINE=1.E-3,
            NOM_PARA='SIYY',
            TABLE=M2L_L,
@@ -3050,7 +3050,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=0.42864099999999999,
+           VALE_CALC=   0.42864071042752,
            TOLE_MACHINE=1.E-3,
            NOM_PARA='SIZZ',
            TABLE=M2L_L,
@@ -3059,7 +3059,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(CRITERE='ABSOLU',
-           VALE_CALC=0.0,
+           VALE_CALC=   -1.8596235662471E-15,
            NOM_PARA='SIXY',
            TABLE=M2L_L,
            FILTRE=_F(NOM_PARA='ABSC_CURV',
@@ -3067,7 +3067,7 @@ TEST_TABLE(CRITERE='ABSOLU',
            )
 
 TEST_TABLE(
-           VALE_CALC=-0.158968,
+           VALE_CALC=   -0.15896776369434,
            TOLE_MACHINE=1.E-3,
            NOM_PARA='SIXZ',
            TABLE=M2L_L,
@@ -3076,7 +3076,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(CRITERE='ABSOLU',
-           VALE_CALC=0.0,
+           VALE_CALC=   -2.4563684419832E-15,
            NOM_PARA='SIYZ',
            TABLE=M2L_L,
            FILTRE=_F(NOM_PARA='ABSC_CURV',
@@ -3088,7 +3088,7 @@ TEST_TABLE(CRITERE='ABSOLU',
 
 
 TEST_TABLE(
-           VALE_CALC=0.35683799999999999,
+           VALE_CALC=   0.35683801794015,
            TOLE_MACHINE=1.E-3,
            NOM_PARA='SIXX',
            TABLE=M2_U,
@@ -3097,7 +3097,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=-0.178397,
+           VALE_CALC=   -0.17839735477123,
            TOLE_MACHINE=1.E-3,
            NOM_PARA='SIYY',
            TABLE=M2_U,
@@ -3106,7 +3106,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=0.42864099999999999,
+           VALE_CALC=   0.42864071042752,
            TOLE_MACHINE=1.E-3,
            NOM_PARA='SIZZ',
            TABLE=M2_U,
@@ -3115,7 +3115,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(CRITERE='ABSOLU',
-           VALE_CALC=0.0,
+           VALE_CALC=   -1.8596235662471E-15,
            NOM_PARA='SIXY',
            TABLE=M2_U,
            FILTRE=_F(NOM_PARA='ABSC_CURV',
@@ -3123,7 +3123,7 @@ TEST_TABLE(CRITERE='ABSOLU',
            )
 
 TEST_TABLE(
-           VALE_CALC=-0.158968,
+           VALE_CALC=   -0.15896776369434,
            TOLE_MACHINE=1.E-3,
            NOM_PARA='SIXZ',
            TABLE=M2_U,
@@ -3132,7 +3132,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(CRITERE='ABSOLU',
-           VALE_CALC=0.0,
+           VALE_CALC=   -2.4563684419832E-15,
            NOM_PARA='SIYZ',
            TABLE=M2_U,
            FILTRE=_F(NOM_PARA='ABSC_CURV',
@@ -3144,7 +3144,7 @@ TEST_TABLE(CRITERE='ABSOLU',
 
 
 TEST_TABLE(
-           VALE_CALC=-0.028383800000000001,
+           VALE_CALC=   -0.028383789980377,
            TOLE_MACHINE=1.E-3,
            NOM_PARA='SIXX',
            TABLE=M3L_G,
@@ -3153,7 +3153,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=0.128413,
+           VALE_CALC=   0.12841285356815,
            TOLE_MACHINE=1.E-3,
            NOM_PARA='SIYY',
            TABLE=M3L_G,
@@ -3162,7 +3162,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=-0.18455099999999999,
+           VALE_CALC=   -0.18455086500279,
            TOLE_MACHINE=1.E-3,
            NOM_PARA='SIZZ',
            TABLE=M3L_G,
@@ -3171,7 +3171,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=0.21609300000000001,
+           VALE_CALC=   0.21609286284325,
            TOLE_MACHINE=1.E-3,
            NOM_PARA='SIXY',
            TABLE=M3L_G,
@@ -3180,7 +3180,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=-0.17347000000000001,
+           VALE_CALC=   -0.17347044290691,
            TOLE_MACHINE=1.E-3,
            NOM_PARA='SIXZ',
            TABLE=M3L_G,
@@ -3189,7 +3189,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=-0.093909999999999993,
+           VALE_CALC=   -0.093910022750170,
            TOLE_MACHINE=1.E-3,
            NOM_PARA='SIYZ',
            TABLE=M3L_G,
@@ -3202,7 +3202,7 @@ TEST_TABLE(
 
 
 TEST_TABLE(
-           VALE_CALC=0.128413,
+           VALE_CALC=   0.12841285356815,
            TOLE_MACHINE=1.E-3,
            NOM_PARA='SIXX',
            TABLE=M3_L,
@@ -3211,7 +3211,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=-0.028383800000000001,
+           VALE_CALC=   -0.028383789980377,
            TOLE_MACHINE=1.E-3,
            NOM_PARA='SIYY',
            TABLE=M3_L,
@@ -3220,7 +3220,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=-0.18455099999999999,
+           VALE_CALC=   -0.18455086500279,
            TOLE_MACHINE=1.E-3,
            NOM_PARA='SIZZ',
            TABLE=M3_L,
@@ -3229,7 +3229,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=-0.21609300000000001,
+           VALE_CALC=   -0.21609286284325,
            TOLE_MACHINE=1.E-3,
            NOM_PARA='SIXY',
            TABLE=M3_L,
@@ -3238,7 +3238,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=-0.093909999999999993,
+           VALE_CALC=   -0.093910022750170,
            TOLE_MACHINE=1.E-3,
            NOM_PARA='SIXZ',
            TABLE=M3_L,
@@ -3247,7 +3247,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=0.17347000000000001,
+           VALE_CALC=   0.17347044290691,
            TOLE_MACHINE=1.E-3,
            NOM_PARA='SIYZ',
            TABLE=M3_L,
@@ -3260,7 +3260,7 @@ TEST_TABLE(
 
 
 TEST_TABLE(
-           VALE_CALC=0.128413,
+           VALE_CALC=   0.12841285356815,
            TOLE_MACHINE=1.E-3,
            NOM_PARA='SIXX',
            TABLE=M3_U,
@@ -3269,7 +3269,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=-0.028383800000000001,
+           VALE_CALC=   -0.028383789980377,
            TOLE_MACHINE=1.E-3,
            NOM_PARA='SIYY',
            TABLE=M3_U,
@@ -3278,7 +3278,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=-0.18455099999999999,
+           VALE_CALC=   -0.18455086500279,
            TOLE_MACHINE=1.E-3,
            NOM_PARA='SIZZ',
            TABLE=M3_U,
@@ -3287,7 +3287,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=-0.21609300000000001,
+           VALE_CALC=   -0.21609286284325,
            TOLE_MACHINE=1.E-3,
            NOM_PARA='SIXY',
            TABLE=M3_U,
@@ -3296,7 +3296,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=-0.093909999999999993,
+           VALE_CALC=   -0.093910022750170,
            TOLE_MACHINE=1.E-3,
            NOM_PARA='SIXZ',
            TABLE=M3_U,
@@ -3305,7 +3305,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=0.17347000000000001,
+           VALE_CALC=   0.17347044290691,
            TOLE_MACHINE=1.E-3,
            NOM_PARA='SIYZ',
            TABLE=M3_U,
@@ -3314,12 +3314,12 @@ TEST_TABLE(
            )
 
 # ---------------------------------------------------------------------
-# M4L_C: LISTE DE NOEUDS P7 P11, REPERE CYLINDRIQUE, 
+# M4L_C: LISTE DE NOEUDS P7 P11, REPERE CYLINDRIQUE,
 #        ORIGINE:(0. 0. 0.), AXE_Z: (0. 0. 1.)
 
 
 TEST_TABLE(
-           VALE_CALC=0.22320100000000001,
+           VALE_CALC=   0.11390010204615,
            TOLE_MACHINE=1.E-3,
            NOM_PARA='SIXX',
            TABLE=M4L_C,
@@ -3328,7 +3328,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=-0.468468,
+           VALE_CALC=   -0.47553162855561,
            TOLE_MACHINE=1.E-3,
            NOM_PARA='SIYY',
            TABLE=M4L_C,
@@ -3337,7 +3337,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=-0.29421000000000003,
+           VALE_CALC=   -0.20845409095706,
            TOLE_MACHINE=1.E-3,
            NOM_PARA='SIZZ',
            TABLE=M4L_C,
@@ -3346,7 +3346,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=0.32970699999999997,
+           VALE_CALC=   0.23860611445314,
            TOLE_MACHINE=1.E-3,
            NOM_PARA='SIXY',
            TABLE=M4L_C,
@@ -3355,7 +3355,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=0.32970699999999997,
+           VALE_CALC=   0.23860611445314,
            TOLE_MACHINE=1.E-3,
            NOM_PARA='SIXZ',
            TABLE=M4L_C,
@@ -3364,7 +3364,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=-0.020434799999999999,
+           VALE_CALC=   -0.046909409130759,
            TOLE_MACHINE=1.E-3,
            NOM_PARA='SIYZ',
            TABLE=M4L_C,
@@ -3373,7 +3373,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=0.51191600000000004,
+           VALE_CALC=   0.42198680388702,
            TOLE_MACHINE=1.E-3,
            NOM_PARA='SIXX',
            TABLE=M4L_C,
@@ -3382,7 +3382,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=-0.348136,
+           VALE_CALC=   -0.41249652299217,
            TOLE_MACHINE=1.E-3,
            NOM_PARA='SIYY',
            TABLE=M4L_C,
@@ -3391,7 +3391,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=-0.62166299999999997,
+           VALE_CALC=   -0.74626954255325,
            TOLE_MACHINE=1.E-3,
            NOM_PARA='SIZZ',
            TABLE=M4L_C,
@@ -3400,7 +3400,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=-0.17122499999999999,
+           VALE_CALC=   -0.29678870265864,
            TOLE_MACHINE=1.E-3,
            NOM_PARA='SIXY',
            TABLE=M4L_C,
@@ -3409,7 +3409,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=-0.17122499999999999,
+           VALE_CALC=   -0.29678870265864,
            TOLE_MACHINE=1.E-3,
            NOM_PARA='SIXZ',
            TABLE=M4L_C,
@@ -3418,7 +3418,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=0.0152287,
+           VALE_CALC=   0.023657471575675,
            TOLE_MACHINE=1.E-3,
            NOM_PARA='SIYZ',
            TABLE=M4L_C,
@@ -3431,7 +3431,7 @@ TEST_TABLE(
 
 
 TEST_TABLE(
-           VALE_CALC=-2.35049E-07,
+           VALE_CALC=   -2.3504907016788E-07,
            TOLE_MACHINE=1.E-3,
            NOM_PARA='DX',
            TABLE=N1_G,
@@ -3441,7 +3441,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=-1.9700800000000001E-07,
+           VALE_CALC=   -1.9700797599399E-07,
            TOLE_MACHINE=1.E-3,
            NOM_PARA='DY',
            TABLE=N1_G,
@@ -3451,7 +3451,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=-1.2776900000000001E-07,
+           VALE_CALC=   -1.277687241494E-07,
            TOLE_MACHINE=1.E-3,
            NOM_PARA='DZ',
            TABLE=N1_G,
@@ -3461,7 +3461,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=-2.1909399999999999E-07,
+           VALE_CALC=   -2.1909427927289E-07,
            TOLE_MACHINE=1.E-3,
            NOM_PARA='DX',
            TABLE=N1_G,
@@ -3470,7 +3470,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=-1.90295E-07,
+           VALE_CALC=   -1.9029499057604E-07,
            TOLE_MACHINE=1.E-3,
            NOM_PARA='DY',
            TABLE=N1_G,
@@ -3479,7 +3479,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=-1.29749E-08,
+           VALE_CALC=   -1.2974924641964E-08,
            TOLE_MACHINE=1.E-3,
            NOM_PARA='DZ',
            TABLE=N1_G,
@@ -3492,7 +3492,7 @@ TEST_TABLE(
 
 
 TEST_TABLE(
-           VALE_CALC=-2.35049E-07,
+           VALE_CALC=   -2.3504907016788E-07,
            TOLE_MACHINE=1.E-3,
            NOM_PARA='DX',
            TABLE=N1_L,
@@ -3502,7 +3502,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=-1.9700800000000001E-07,
+           VALE_CALC=   -1.9700797599399E-07,
            TOLE_MACHINE=1.E-3,
            NOM_PARA='DY',
            TABLE=N1_L,
@@ -3512,7 +3512,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=-1.2776900000000001E-07,
+           VALE_CALC=   -1.277687241494E-07,
            TOLE_MACHINE=1.E-3,
            NOM_PARA='DZ',
            TABLE=N1_L,
@@ -3522,7 +3522,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=-2.1909399999999999E-07,
+           VALE_CALC=   -2.1909427927289E-07,
            TOLE_MACHINE=1.E-3,
            NOM_PARA='DX',
            TABLE=N1_L,
@@ -3531,7 +3531,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=-1.90295E-07,
+           VALE_CALC=   -1.9029499057604E-07,
            TOLE_MACHINE=1.E-3,
            NOM_PARA='DY',
            TABLE=N1_L,
@@ -3540,7 +3540,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=-1.29749E-08,
+           VALE_CALC=   -1.2974924641964E-08,
            TOLE_MACHINE=1.E-3,
            NOM_PARA='DZ',
            TABLE=N1_L,
@@ -3553,7 +3553,7 @@ TEST_TABLE(
 
 
 TEST_TABLE(
-           VALE_CALC=-2.35049E-07,
+           VALE_CALC=   -2.3504907016788E-07,
            TOLE_MACHINE=1.E-3,
            NOM_PARA='DX',
            TABLE=N1_U,
@@ -3563,7 +3563,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=-1.9700800000000001E-07,
+           VALE_CALC=   -1.9700797599399E-07,
            TOLE_MACHINE=1.E-3,
            NOM_PARA='DY',
            TABLE=N1_U,
@@ -3573,7 +3573,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=-1.2776900000000001E-07,
+           VALE_CALC=   -1.277687241494E-07,
            TOLE_MACHINE=1.E-3,
            NOM_PARA='DZ',
            TABLE=N1_U,
@@ -3583,7 +3583,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=-2.1909399999999999E-07,
+           VALE_CALC=   -2.1909427927289E-07,
            TOLE_MACHINE=1.E-3,
            NOM_PARA='DX',
            TABLE=N1_U,
@@ -3592,7 +3592,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=-1.90295E-07,
+           VALE_CALC=   -1.9029499057604E-07,
            TOLE_MACHINE=1.E-3,
            NOM_PARA='DY',
            TABLE=N1_U,
@@ -3601,7 +3601,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=-1.29749E-08,
+           VALE_CALC=   -1.2974924641964E-08,
            TOLE_MACHINE=1.E-3,
            NOM_PARA='DZ',
            TABLE=N1_U,
@@ -3614,7 +3614,7 @@ TEST_TABLE(
 
 
 TEST_TABLE(
-           VALE_CALC=-2.17656E-07,
+           VALE_CALC=   -2.1765645481805E-07,
            TOLE_MACHINE=1.E-3,
            NOM_PARA='DX',
            TABLE=N2_G,
@@ -3624,7 +3624,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=-2.17656E-07,
+           VALE_CALC=   -2.1765645481805E-07,
            TOLE_MACHINE=1.E-3,
            NOM_PARA='DY',
            TABLE=N2_G,
@@ -3634,7 +3634,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=-9.0730799999999996E-08,
+           VALE_CALC=   -9.0730840212336E-08,
            TOLE_MACHINE=1.E-3,
            NOM_PARA='DZ',
            TABLE=N2_G,
@@ -3644,7 +3644,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=-1.94172E-07,
+           VALE_CALC=   -1.9417200740312E-07,
            TOLE_MACHINE=1.E-3,
            NOM_PARA='DX',
            TABLE=N2_G,
@@ -3653,7 +3653,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=-1.94172E-07,
+           VALE_CALC=   -1.9417200740312E-07,
            TOLE_MACHINE=1.E-3,
            NOM_PARA='DY',
            TABLE=N2_G,
@@ -3662,7 +3662,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=6.6555099999999995E-08,
+           VALE_CALC=   6.6555071485016E-08,
            TOLE_MACHINE=1.E-3,
            NOM_PARA='DZ',
            TABLE=N2_G,
@@ -3675,7 +3675,7 @@ TEST_TABLE(
 
 
 TEST_TABLE(
-           VALE_CALC=-3.0781299999999998E-07,
+           VALE_CALC=   -3.0781271034173E-07,
            TOLE_MACHINE=1.E-3,
            NOM_PARA='DX',
            TABLE=N2_L,
@@ -3685,7 +3685,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(CRITERE='ABSOLU',
-           VALE_CALC=0.0,
+           VALE_CALC=   -3.4410713482206E-22,
            NOM_PARA='DY',
            TABLE=N2_L,
            FILTRE=_F(CRITERE='ABSOLU',
@@ -3694,7 +3694,7 @@ TEST_TABLE(CRITERE='ABSOLU',
            )
 
 TEST_TABLE(
-           VALE_CALC=-9.0730799999999996E-08,
+           VALE_CALC=   -9.0730840212336E-08,
            TOLE_MACHINE=1.E-3,
            NOM_PARA='DZ',
            TABLE=N2_L,
@@ -3704,7 +3704,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=-2.7460100000000001E-07,
+           VALE_CALC=   -2.746006863027E-07,
            TOLE_MACHINE=1.E-3,
            NOM_PARA='DX',
            TABLE=N2_L,
@@ -3713,7 +3713,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(CRITERE='ABSOLU',
-           VALE_CALC=0.0,
+           VALE_CALC=   -5.2939559203394E-22,
            NOM_PARA='DY',
            TABLE=N2_L,
            FILTRE=_F(NOM_PARA='ABSC_CURV',
@@ -3721,7 +3721,7 @@ TEST_TABLE(CRITERE='ABSOLU',
            )
 
 TEST_TABLE(
-           VALE_CALC=6.6555099999999995E-08,
+           VALE_CALC=   6.6555071485016E-08,
            TOLE_MACHINE=1.E-3,
            NOM_PARA='DZ',
            TABLE=N2_L,
@@ -3735,7 +3735,7 @@ TEST_TABLE(
 
 
 TEST_TABLE(
-           VALE_CALC=-3.0781299999999998E-07,
+           VALE_CALC=   -3.0781271034173E-07,
            TOLE_MACHINE=1.E-3,
            NOM_PARA='DX',
            TABLE=N2_U,
@@ -3745,7 +3745,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(CRITERE='ABSOLU',
-           VALE_CALC=0.0,
+           VALE_CALC=   -3.4410713482206E-22,
            TOLE_MACHINE=1.E-3,
            NOM_PARA='DY',
            TABLE=N2_U,
@@ -3755,7 +3755,7 @@ TEST_TABLE(CRITERE='ABSOLU',
            )
 
 TEST_TABLE(
-           VALE_CALC=-9.0730799999999996E-08,
+           VALE_CALC=   -9.0730840212336E-08,
            TOLE_MACHINE=1.E-3,
            NOM_PARA='DZ',
            TABLE=N2_U,
@@ -3765,7 +3765,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=-2.7460100000000001E-07,
+           VALE_CALC=   -2.746006863027E-07,
            TOLE_MACHINE=1.E-3,
            NOM_PARA='DX',
            TABLE=N2_U,
@@ -3774,7 +3774,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(CRITERE='ABSOLU',
-           VALE_CALC=0.0,
+           VALE_CALC=   -5.2939559203394E-22,
            NOM_PARA='DY',
            TABLE=N2_U,
            FILTRE=_F(NOM_PARA='ABSC_CURV',
@@ -3782,7 +3782,7 @@ TEST_TABLE(CRITERE='ABSOLU',
            )
 
 TEST_TABLE(
-           VALE_CALC=6.6555099999999995E-08,
+           VALE_CALC=   6.6555071485016E-08,
            TOLE_MACHINE=1.E-3,
            NOM_PARA='DZ',
            TABLE=N2_U,
@@ -3795,7 +3795,7 @@ TEST_TABLE(
 
 
 TEST_TABLE(
-           VALE_CALC=-1.9700800000000001E-07,
+           VALE_CALC=   -1.9700797599399E-07,
            TOLE_MACHINE=1.E-3,
            NOM_PARA='DX',
            TABLE=N3_G,
@@ -3805,7 +3805,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=-2.35049E-07,
+           VALE_CALC=   -2.3504907016788E-07,
            TOLE_MACHINE=1.E-3,
            NOM_PARA='DY',
            TABLE=N3_G,
@@ -3815,7 +3815,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=-1.2776900000000001E-07,
+           VALE_CALC=   -1.277687241494E-07,
            TOLE_MACHINE=1.E-3,
            NOM_PARA='DZ',
            TABLE=N3_G,
@@ -3825,7 +3825,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=-1.90295E-07,
+           VALE_CALC=   -1.9029499057604E-07,
            TOLE_MACHINE=1.E-3,
            NOM_PARA='DX',
            TABLE=N3_G,
@@ -3834,7 +3834,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=-2.1909399999999999E-07,
+           VALE_CALC=   -2.1909427927289E-07,
            TOLE_MACHINE=1.E-3,
            NOM_PARA='DY',
            TABLE=N3_G,
@@ -3843,7 +3843,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=-1.29749E-08,
+           VALE_CALC=   -1.2974924641963E-08,
            TOLE_MACHINE=1.E-3,
            NOM_PARA='DZ',
            TABLE=N3_G,
@@ -3856,7 +3856,7 @@ TEST_TABLE(
 
 
 TEST_TABLE(
-           VALE_CALC=-2.35049E-07,
+           VALE_CALC=   -2.3504907016788E-07,
            TOLE_MACHINE=1.E-3,
            NOM_PARA='DX',
            TABLE=N3_L,
@@ -3866,7 +3866,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=1.9700800000000001E-07,
+           VALE_CALC=   1.9700797599399E-07,
            TOLE_MACHINE=1.E-3,
            NOM_PARA='DY',
            TABLE=N3_L,
@@ -3876,7 +3876,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=-1.2776900000000001E-07,
+           VALE_CALC=   -1.277687241494E-07,
            TOLE_MACHINE=1.E-3,
            NOM_PARA='DZ',
            TABLE=N3_L,
@@ -3886,7 +3886,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=-2.1909399999999999E-07,
+           VALE_CALC=   -2.1909427927289E-07,
            TOLE_MACHINE=1.E-3,
            NOM_PARA='DX',
            TABLE=N3_L,
@@ -3895,7 +3895,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=1.90295E-07,
+           VALE_CALC=   1.9029499057604E-07,
            TOLE_MACHINE=1.E-3,
            NOM_PARA='DY',
            TABLE=N3_L,
@@ -3904,7 +3904,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=-1.29749E-08,
+           VALE_CALC=   -1.2974924641963E-08,
            TOLE_MACHINE=1.E-3,
            NOM_PARA='DZ',
            TABLE=N3_L,
@@ -3917,7 +3917,7 @@ TEST_TABLE(
 
 
 TEST_TABLE(
-           VALE_CALC=-2.35049E-07,
+           VALE_CALC=   -2.3504907016788E-07,
            TOLE_MACHINE=1.E-3,
            NOM_PARA='DX',
            TABLE=N3_U,
@@ -3927,7 +3927,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=1.9700800000000001E-07,
+           VALE_CALC=   1.9700797599399E-07,
            TOLE_MACHINE=1.E-3,
            NOM_PARA='DY',
            TABLE=N3_U,
@@ -3937,7 +3937,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=-1.2776900000000001E-07,
+           VALE_CALC=   -1.277687241494E-07,
            TOLE_MACHINE=1.E-3,
            NOM_PARA='DZ',
            TABLE=N3_U,
@@ -3947,7 +3947,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=-2.1909399999999999E-07,
+           VALE_CALC=   -2.1909427927289E-07,
            TOLE_MACHINE=1.E-3,
            NOM_PARA='DX',
            TABLE=N3_U,
@@ -3956,7 +3956,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=1.90295E-07,
+           VALE_CALC=   1.9029499057604E-07,
            TOLE_MACHINE=1.E-3,
            NOM_PARA='DY',
            TABLE=N3_U,
@@ -3965,7 +3965,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=-1.29749E-08,
+           VALE_CALC=   -1.2974924641963E-08,
            TOLE_MACHINE=1.E-3,
            NOM_PARA='DZ',
            TABLE=N3_U,
@@ -3978,7 +3978,7 @@ TEST_TABLE(
 
 
 TEST_TABLE(
-           VALE_CALC=0.22320100000000001,
+           VALE_CALC=   0.22320051623378,
            TOLE_MACHINE=1.E-3,
            NOM_PARA='TR_DIR_1',
            TABLE=O1_TDX,
@@ -3988,7 +3988,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=0.32970699999999997,
+           VALE_CALC=   0.32970715811035,
            TOLE_MACHINE=1.E-3,
            NOM_PARA='TR_DIR_2',
            TABLE=O1_TDX,
@@ -3998,7 +3998,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=-0.0341003,
+           VALE_CALC=   -0.034100281246146,
            TOLE_MACHINE=1.E-3,
            NOM_PARA='TR_DIR_3',
            TABLE=O1_TDX,
@@ -4012,7 +4012,7 @@ TEST_TABLE(
 
 
 TEST_TABLE(
-           VALE_CALC=0.32970699999999997,
+           VALE_CALC=   0.32970715811035,
            TOLE_MACHINE=1.E-3,
            NOM_PARA='TR_DIR_1',
            TABLE=O1_TDY,
@@ -4022,7 +4022,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=-0.29421000000000003,
+           VALE_CALC=   -0.29421035993269,
            TOLE_MACHINE=1.E-3,
            NOM_PARA='TR_DIR_2',
            TABLE=O1_TDY,
@@ -4032,7 +4032,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=-0.020434799999999999,
+           VALE_CALC=   -0.020434789870494,
            TOLE_MACHINE=1.E-3,
            NOM_PARA='TR_DIR_3',
            TABLE=O1_TDY,
@@ -4046,7 +4046,7 @@ TEST_TABLE(
 
 
 TEST_TABLE(
-           VALE_CALC=-0.0341003,
+           VALE_CALC=   -0.034100281246146,
            TOLE_MACHINE=1.E-3,
            NOM_PARA='TR_DIR_1',
            TABLE=O1_TDZ,
@@ -4056,7 +4056,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=-0.020434799999999999,
+           VALE_CALC=   -0.020434789870494,
            TOLE_MACHINE=1.E-3,
            NOM_PARA='TR_DIR_2',
            TABLE=O1_TDZ,
@@ -4066,7 +4066,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=-0.468468,
+           VALE_CALC=   -0.46846838499201,
            TOLE_MACHINE=1.E-3,
            NOM_PARA='TR_DIR_3',
            TABLE=O1_TDZ,
@@ -4080,7 +4080,7 @@ TEST_TABLE(
 
 
 TEST_TABLE(
-           VALE_CALC=-2.35049E-07,
+           VALE_CALC=   -2.3504907016788E-07,
            TOLE_MACHINE=1.E-3,
            NOM_PARA='TRAC_DIR',
            TABLE=P1_TDX,
@@ -4094,7 +4094,7 @@ TEST_TABLE(
 
 
 TEST_TABLE(CRITERE='ABSOLU',
-           VALE_CALC=0.0,
+           VALE_CALC=   -4.7645603283054E-22,
            NOM_PARA='TRAC_DIR',
            TABLE=P2_TDX,
            FILTRE=_F(CRITERE='ABSOLU',
@@ -4103,7 +4103,7 @@ TEST_TABLE(CRITERE='ABSOLU',
            )
 
 TEST_TABLE(CRITERE='ABSOLU',
-           VALE_CALC=0.0,
+           VALE_CALC=   -7.4115382884751E-22,
            NOM_PARA='TRAC_DIR',
            TABLE=P2_TDX,
            FILTRE=_F(NOM_PARA='ABSC_CURV',
@@ -4115,7 +4115,7 @@ TEST_TABLE(CRITERE='ABSOLU',
 #
 
 TEST_TABLE(REFERENCE='ANALYTIQUE',
-           VALE_CALC=0.848000313,
+           VALE_CALC=   0.84800031325459,
            VALE_REFE=0.84799999999999998,
            NOM_PARA='VMIS',
            TABLE=INVA_M,
@@ -4124,7 +4124,7 @@ TEST_TABLE(REFERENCE='ANALYTIQUE',
            )
 
 TEST_TABLE(REFERENCE='ANALYTIQUE',
-           VALE_CALC=0.856452286,
+           VALE_CALC=   0.85645228640100,
            VALE_REFE=0.85645199999999999,
            NOM_PARA='TRESCA',
            TABLE=INVA_M,
@@ -4133,7 +4133,7 @@ TEST_TABLE(REFERENCE='ANALYTIQUE',
            )
 
 TEST_TABLE(REFERENCE='ANALYTIQUE',
-           VALE_CALC=-0.539478229,
+           VALE_CALC=   -0.53947822869092,
            VALE_REFE=-0.53947800000000001,
            NOM_PARA='TRACE',
            TABLE=INVA_M,
@@ -4142,7 +4142,7 @@ TEST_TABLE(REFERENCE='ANALYTIQUE',
            )
 
 TEST_TABLE(REFERENCE='ANALYTIQUE',
-           VALE_CALC=0.082397454,
+           VALE_CALC=   0.082397454033328,
            VALE_REFE=0.082397499999999999,
            NOM_PARA='DETER',
            TABLE=INVA_M,
@@ -4155,7 +4155,7 @@ TEST_TABLE(REFERENCE='ANALYTIQUE',
 #
 
 TEST_TABLE(REFERENCE='ANALYTIQUE',
-           VALE_CALC=-0.301800627,
+           VALE_CALC=   -0.30180062673521,
            VALE_REFE=-0.30180099999999999,
            NOM_PARA='PRIN_1',
            TABLE=PRIN_M,
@@ -4164,7 +4164,7 @@ TEST_TABLE(REFERENCE='ANALYTIQUE',
            )
 
 TEST_TABLE(REFERENCE='ANALYTIQUE',
-           VALE_CALC=-0.123610759,
+           VALE_CALC=   -0.12361075915741,
            VALE_REFE=-0.123611,
            NOM_PARA='PRIN_2',
            TABLE=PRIN_M,
@@ -4173,7 +4173,7 @@ TEST_TABLE(REFERENCE='ANALYTIQUE',
            )
 
 TEST_TABLE(REFERENCE='ANALYTIQUE',
-           VALE_CALC=0.340889584,
+           VALE_CALC=   0.34088958447760,
            VALE_REFE=0.34089000000000003,
            NOM_PARA='PRIN_3',
            TABLE=PRIN_M,
@@ -4190,7 +4190,7 @@ TEST_TABLE(REFERENCE='ANALYTIQUE',
 
 
 TEST_TABLE(
-           VALE_CALC=-1.52941E-01,
+           VALE_CALC=   -0.15294114015997,
            TOLE_MACHINE=1.E-3,
            NOM_PARA='SIXX',
            TABLE=S5_G,
@@ -4199,7 +4199,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=1.69413E-01,
+           VALE_CALC=   0.16941305284325,
            TOLE_MACHINE=1.E-3,
            NOM_PARA='SIYY',
            TABLE=S5_G,
@@ -4208,7 +4208,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=-3.46001E-01,
+           VALE_CALC=   -0.34600141002907,
            TOLE_MACHINE=1.E-3,
            NOM_PARA='SIZZ',
            TABLE=S5_G,
@@ -4217,7 +4217,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=2.38606E-01,
+           VALE_CALC=   0.23860611445314,
            TOLE_MACHINE=1.E-3,
            NOM_PARA='SIXY',
            TABLE=S5_G,
@@ -4226,7 +4226,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=-9.66706E-02,
+           VALE_CALC=   -0.096670560431839,
            TOLE_MACHINE=1.E-3,
            NOM_PARA='SIXZ',
            TABLE=S5_G,
@@ -4235,7 +4235,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=3.35238E-03,
+           VALE_CALC=   3.352383146774E-03,
            TOLE_MACHINE=1.E-3,
            NOM_PARA='SIYZ',
            TABLE=S5_G,

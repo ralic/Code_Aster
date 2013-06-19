@@ -39,14 +39,14 @@ subroutine pjxxpr(resu1, resu2, moa1, moa2, corres,&
 !
     include 'jeveux.h'
 !
+    include 'asterfort/ajrefd.h'
+    include 'asterfort/assert.h'
+    include 'asterfort/dismoi.h'
     include 'asterc/getres.h'
     include 'asterc/gettco.h'
     include 'asterc/getvid.h'
     include 'asterc/getvr8.h'
     include 'asterc/getvtx.h'
-    include 'asterfort/ajrefd.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/dismoi.h'
     include 'asterfort/gnomsd.h'
     include 'asterfort/jedema.h'
     include 'asterfort/jedetr.h'
@@ -106,6 +106,7 @@ subroutine pjxxpr(resu1, resu2, moa1, moa2, corres,&
 ! DEB -----------------------------------------------------------------
     call jemarq()
     k8b = ' '
+    tychv = ' '
     call getres(k8b, k16b, nomcmd)
 !
 !
@@ -167,7 +168,6 @@ subroutine pjxxpr(resu1, resu2, moa1, moa2, corres,&
                     prol0, ier)
         call getvtx(' ', 'TYPE_CHAM', 1, iarg, 1,&
                     tychv, ibid)
-        if (ibid .eq. 0) tychv = ' '
 !
 !
 !     1- CREATION DE LA SD RESULTAT : RESU2
