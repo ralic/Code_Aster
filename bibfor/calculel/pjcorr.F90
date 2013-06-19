@@ -21,6 +21,7 @@ subroutine pjcorr(nomo2, chbid, cns1z, ces2z, ligrel,&
 !
     implicit none
     include 'jeveux.h'
+    include 'asterc/indik8.h'
     include 'asterfort/alchml.h'
     include 'asterfort/assert.h'
     include 'asterfort/celces.h'
@@ -55,13 +56,13 @@ subroutine pjcorr(nomo2, chbid, cns1z, ces2z, ligrel,&
     character(len=19) :: cham1s, dcel
     character(len=24) :: valk(5)
     integer :: jpo, ipo, nbma
-    integer :: jce2c, jce2l, jce2v, jce2d, jce2k
+    integer :: jce2c, jce2l, jce2v, jce2d, jce2k, icmp2
 !
     integer :: jcesk, jcesd, jcesv, jcesl
 !
     integer :: jcns1c, jcns1l, jcns1v, jcns1k, jcns1d
-    integer :: nbno1, nbmax, ncmp1
-    integer :: iad2, ier
+    integer :: nbno1, nbmax, ncmp1,ncmp2
+    integer :: iad2, ier, nval
     integer :: icmp, iad, nbpt, nbsp, icmp1
 !
     integer :: ima, ipt, isp, jcesc, jlgrf
@@ -183,32 +184,37 @@ subroutine pjcorr(nomo2, chbid, cns1z, ces2z, ligrel,&
     call jeveuo(ces2//'.CESV', 'E', jce2v)
     call jeveuo(ces2//'.CESL', 'E', jce2l)
     call jeveuo(ces2//'.CESK', 'L', jce2k)
+    call jelira(ces2//'.CESC', 'LONMAX', ncmp2, kbid)
+!   -- on met les booleens a .false. :
+    call jelira(ces2//'.CESL', 'LONMAX', nval, kbid)
+    zl(jce2l-1+1:jce2l-1+nval)=.false.
 !
 !
 !
 !------------------------------------------------------------------
 !     3- REMPLISSAGE DES VALEURS DE CES2 :
 !     -------------------------------
-!
-!
     call jeveuo(corres//'.PJEF_EL', 'L', jpo)
-!
-! NBNO1 EST LE NOMBRE DE PSEUDO-NOEUDS DU MAILLAGE 2
-!
+
     do 92 icmp1 = 1, ncmp1
-        icmp=icmp1
-        call assert(zk8(jce2c-1+icmp).eq.zk8(jcns1c-1+icmp1))
+        icmp2 = indik8( zk8(jce2c),zk8(jcns1c-1+icmp1), 1, ncmp2 )
+        if (icmp2.eq.0) goto 92
+        call assert(zk8(jce2c-1+icmp2).eq.zk8(jcns1c-1+icmp1))
+!       -- nbno1 est le nombre de pseudo-noeuds du maillage 2
         do 98 ipo = 1, nbno1
             ima=zi(jpo-1+2*ipo-1)
             ipt= zi(jpo-1+2*ipo)
             call cesexi('C', jce2d, jce2l, ima, ipt,&
-                        1, icmp, iad2)
-            if (iad2 .le. 0) goto 98
-!
-            zr(jce2v-1+iad2)=zr(jcns1v+(ipo-1)*ncmp1+icmp-1)
+                        1, icmp2, iad2)
+            call assert(iad2.le.0)
+            iad2=-iad2
+            if (iad2 .eq. 0) goto 98
+
+            zr(jce2v-1+iad2)=zr(jcns1v+(ipo-1)*ncmp1+icmp1-1)
+            zl(jce2l-1+iad2)=.true.
 98      continue
 92  end do
-!
-!
+
+
     call jedema()
 end subroutine

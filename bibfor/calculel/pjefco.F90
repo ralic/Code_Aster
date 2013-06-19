@@ -65,7 +65,7 @@ subroutine pjefco(moa1, moa2, corres, base)
     integer :: n1, nbocc, iocc, ie, ibid, nbno2, nbma1
     integer :: iagno2, iagma1, iexi
 !
-    logical :: ldmax
+    logical :: ldmax,dbg
     real(kind=8) :: distma
     integer :: iarg
 !----------------------------------------------------------------------
@@ -116,7 +116,28 @@ subroutine pjefco(moa1, moa2, corres, base)
 !        --------------------------------------------
         call pjeftg(1, geom1, noma1, ' ', 1)
         call pjeftg(2, geom2, noma2, ' ', 1)
-!
+
+
+
+        dbg=.false.
+        if (dbg) then
+!          -- pour debug : on copie les 2 maillages sous les noms
+!          'XXXMA1' et 'XXXMA2' sur la base globale
+!          ce qui permet de les visualiser avec Salome.
+!          Il faut faire :
+!             XXXMA1=LIRE_MAILLAGE() # bidon
+!             XXXMA2=LIRE_MAILLAGE() # bidon
+!             U2=PROJ_CHAMP(...)
+!             IMPR_RRESU(RESU=_F(MAILLAGE=XXXMA1))
+!             IMPR_RRESU(RESU=_F(MAILLAGE=XXXMA2))
+
+           call detrsd('MAILLAGE','XXXMA1')
+           call detrsd('MAILLAGE','XXXMA2')
+           call copisd('MAILLAGE', 'G', noma1, 'XXXMA1')
+           call copisd('MAILLAGE', 'G', noma2, 'XXXMA2')
+        endif
+
+
         if (ncas .eq. '2D') then
             call pj2dco('TOUT', moa1, moa2, 0, 0,&
                         0, 0, geom1, geom2, corres,&
@@ -136,9 +157,9 @@ subroutine pjefco(moa1, moa2, corres, base)
         else
             call assert(.false.)
         endif
-!
+
     else
-!
+
 !        -- CAS : VIS_A_VIS
 !        ------------------------
 
