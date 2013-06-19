@@ -494,7 +494,7 @@ subroutine mdconf(typflu, base, noma, nbm, lnoe,&
 !
     else
 !
-        call u2mess('S', 'ALGELINE_72')
+        call u2mess('F', 'ALGELINE_72')
 !
     endif
 !

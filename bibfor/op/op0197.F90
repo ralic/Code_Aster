@@ -242,13 +242,13 @@ subroutine op0197()
         if (zr(iinst) .lt. tpsmin) then
             valrr (1) = zr(iinst)
             valrr (2) = tpsmin
-            call u2mesg('S', 'UTILITAI6_53', 0, ' ', 0,&
+            call u2mesg('F', 'UTILITAI6_53', 0, ' ', 0,&
                         0, 2, valrr)
         endif
         if (zr(iinst+nbins-1) .gt. tpsmax) then
             valrr (1) = zr(iinst+nbins-1)
             valrr (2) = tpsmax
-            call u2mesg('S', 'UTILITAI6_54', 0, ' ', 0,&
+            call u2mesg('F', 'UTILITAI6_54', 0, ' ', 0,&
                         0, 2, valrr)
         endif
 !

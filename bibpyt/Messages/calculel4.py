@@ -151,6 +151,12 @@ Risques et conseils :
    Vous devez d'abord extraire %(k1)s sur un sous-point avec la commande POST_CHAMP.
 """),
 
+17 : _(u"""
+ Erreur d'utilisation :
+   Le mot-clé VIS_A_VIS de la commande PROJ_CHAMP est interdit si
+   la méthode de projection est 'ECLA_PG'.
+"""),
+
 
 
 

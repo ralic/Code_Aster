@@ -361,7 +361,7 @@ subroutine optimw(method, nrupt, x, y, prob,&
     endif
 !
     if (mkp .lt. 1.d0) then
-        call u2mess('S', 'UTILITAI3_36')
+        call u2mess('F', 'UTILITAI3_36')
     endif
 !
 end subroutine

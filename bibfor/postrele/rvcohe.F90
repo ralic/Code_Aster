@@ -90,7 +90,7 @@ subroutine rvcohe(xdicmp, xdncmp, vcheff, i, ier)
         valk(1) = nchsym
         valk(2) = nresu
         valk(3) = tresu
-        call u2mesg('S', 'POSTRELE_46', 3, valk, 1,&
+        call u2mesg('F', 'POSTRELE_46', 3, valk, 1,&
                     i, 0, 0.d0)
 !
     else
@@ -123,7 +123,7 @@ subroutine rvcohe(xdicmp, xdncmp, vcheff, i, ier)
                 endif
                 goto 10
             endif
-            if (.not. chelok) call u2mesi('S', 'POSTRELE_47', 1, i)
+            if (.not. chelok) call u2mesi('F', 'POSTRELE_47', 1, i)
         endif
 !
 !        --- VERIFICATION SUR LES CMPS ---
@@ -133,7 +133,7 @@ subroutine rvcohe(xdicmp, xdncmp, vcheff, i, ier)
         if (zi(anumcp + j-1) .eq. 0) then
             call jeveuo(jexnum(xdncmp, i), 'L', anomcp)
             nomcmp = zk8(anomcp + j-1)
-            call u2mesg('S', 'POSTRELE_48', 1, nomcmp, 1,&
+            call u2mesg('F', 'POSTRELE_48', 1, nomcmp, 1,&
                         i, 0, 0.d0)
         endif
 110      continue
@@ -158,7 +158,7 @@ subroutine rvcohe(xdicmp, xdncmp, vcheff, i, ier)
             if (nmaich .ne. nmaili) then
                 valk(1) = nmaili
                 valk(2) = nmaich
-                call u2mesg('S', 'POSTRELE_49', 2, valk, 1,&
+                call u2mesg('F', 'POSTRELE_49', 2, valk, 1,&
                             i, 0, 0.d0)
             endif
         else
@@ -180,7 +180,7 @@ subroutine rvcohe(xdicmp, xdncmp, vcheff, i, ier)
                 nomgrn = zk24(agrpnd + k-1)
                 call jenonu(jexnom(nmaich//'.GROUPENO', nomgrn), n1)
                 if (n1 .eq. 0) then
-                    call u2mesg('S', 'POSTRELE_50', 1, nomgrn, 1,&
+                    call u2mesg('F', 'POSTRELE_50', 1, nomgrn, 1,&
                                 i, 0, 0.d0)
                 endif
 120              continue
@@ -195,7 +195,7 @@ subroutine rvcohe(xdicmp, xdncmp, vcheff, i, ier)
                 nomnd = zk8(alneud + k-1)
                 call jenonu(jexnom(nrepnd, nomnd), n1)
                 if (n1 .eq. 0) then
-                    call u2mesg('S', 'POSTRELE_51', 1, nomnd, 1,&
+                    call u2mesg('F', 'POSTRELE_51', 1, nomnd, 1,&
                                 i, 0, 0.d0)
                 endif
 130              continue

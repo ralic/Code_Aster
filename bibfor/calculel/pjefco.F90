@@ -141,6 +141,10 @@ subroutine pjefco(moa1, moa2, corres, base)
 !
 !        -- CAS : VIS_A_VIS
 !        ------------------------
+
+!       -- le mot cle VIS_A_VIS ne peut pas fonctionner avec la methode ECLA_PG :
+        if (noma1(1:2).eq.'&&') call u2mess('F','CALCULEL4_17')
+
         do 30 iocc = 1, nbocc
 !
 !           -- RECUPERATION DE LA LISTE DE MAILLES LMA1 :
@@ -151,6 +155,9 @@ subroutine pjefco(moa1, moa2, corres, base)
             tymocl(2) = 'GROUP_MA'
             motcle(3) = 'TOUT_1'
             tymocl(3) = 'TOUT'
+
+
+
             call reliem(nomo1, noma1, 'NU_MAILLE', 'VIS_A_VIS', iocc,&
                         3, motcle, tymocl, '&&PJEFCO.LIMANU1', nbma1)
             call jeveuo('&&PJEFCO.LIMANU1', 'L', iagma1)

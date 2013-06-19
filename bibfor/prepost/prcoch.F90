@@ -139,7 +139,7 @@ subroutine prcoch(noche8, nochs8, nocmp, ktype, itopo,&
                 if (zi(itrma-1+ima) .ne. 0) nbtrou = nbtrou + 1
 100          continue
             if (nbtrou .eq. 0) then
-                call u2mess('S', 'CHAMPS_4')
+                call u2mess('F', 'CHAMPS_4')
             endif
 !
 !
@@ -197,7 +197,7 @@ subroutine prcoch(noche8, nochs8, nocmp, ktype, itopo,&
 !
 !
         if (nbval .eq. 0) then
-            call u2mess('S', 'CHAMPS_1')
+            call u2mess('F', 'CHAMPS_1')
         endif
         if (tsca .eq. 'R') then
             call wkvect(cesz // '.V', 'G V R', nbval, jval)
@@ -286,7 +286,7 @@ subroutine prcoch(noche8, nochs8, nocmp, ktype, itopo,&
                 if (zi(itrno-1+ino) .ne. 0) nbtrou = nbtrou + 1
 1000          continue
             if (nbtrou .eq. 0) then
-                call u2mess('S', 'CHAMPS_5')
+                call u2mess('F', 'CHAMPS_5')
             endif
 !
 !
@@ -352,7 +352,7 @@ subroutine prcoch(noche8, nochs8, nocmp, ktype, itopo,&
 !
 !
         if (nbval .eq. 0) then
-            call u2mess('S', 'CHAMPS_1')
+            call u2mess('F', 'CHAMPS_1')
         endif
 !
         if (tsca .eq. 'R') then

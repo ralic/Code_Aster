@@ -78,7 +78,7 @@ subroutine ircmcc(idfimd, nomamd, nochmd, existc, ncmpve,&
     call infniv(ifm, nivinf)
 !
     if (existc .eq. 1) then
-        call u2mesk('S', 'MED_31', 1, nochmd)
+        call u2mesk('F', 'MED_31', 1, nochmd)
     endif
 !
 !====

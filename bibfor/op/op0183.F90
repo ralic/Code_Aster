@@ -134,12 +134,12 @@ subroutine op0183()
     call rsutnu(resuco, ' ', 0, knum, nbordr,&
                 prec, crit, iret)
     if (iret .eq. 10) then
-        call u2mesk('S', 'CALCULEL4_8', 1, resuco)
+        call u2mesk('F', 'CALCULEL4_8', 1, resuco)
         goto 60
 !
     endif
     if (iret .ne. 0) then
-        call u2mess('S', 'ALGORITH3_41')
+        call u2mess('F', 'ALGORITH3_41')
         goto 60
 !
     endif

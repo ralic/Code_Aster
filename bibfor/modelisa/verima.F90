@@ -69,7 +69,7 @@ subroutine verima(nomz, limanz, lonlim, typz)
             if (iret .eq. 0) then
                 valk(1) = limano
                 valk(2) = noma
-                call u2mesk('S', 'MODELISA7_75', 2, valk)
+                call u2mesk('F', 'MODELISA7_75', 2, valk)
             endif
 10      continue
 !
@@ -90,7 +90,7 @@ subroutine verima(nomz, limanz, lonlim, typz)
             if (iret .eq. 0) then
                 valk(1) = limano
                 valk(2) = noma
-                call u2mesk('S', 'MODELISA7_76', 2, valk)
+                call u2mesk('F', 'MODELISA7_76', 2, valk)
             endif
 20      continue
 !
@@ -132,11 +132,11 @@ subroutine verima(nomz, limanz, lonlim, typz)
             if (iret .eq. 0) then
                 valk(1) = limano
                 valk(2) = noma
-                call u2mesk('S', 'MODELISA6_10', 2, valk)
+                call u2mesk('F', 'MODELISA6_10', 2, valk)
             endif
 40      continue
 !
     else
-        call u2mesk('S', 'MODELISA7_79', 1, type)
+        call u2mesk('F', 'MODELISA7_79', 1, type)
     endif
 end subroutine

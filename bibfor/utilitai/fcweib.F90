@@ -64,12 +64,12 @@ subroutine fcweib(nrupt, cals, sk, sigw, nur,&
     maxm = log (maxr) / log ( nrupt*sigw(nrupt) )
     if (m .ge. maxm) then
         valr = maxm
-        call u2mesg('S', 'UTILITAI8_22', 0, ' ', 0,&
+        call u2mesg('F', 'UTILITAI8_22', 0, ' ', 0,&
                     0, 1, valr)
     endif
     if (m .le. 0.d0) then
         valr = m
-        call u2mesg('S', 'UTILITAI8_23', 0, ' ', 0,&
+        call u2mesg('F', 'UTILITAI8_23', 0, ' ', 0,&
                     0, 1, valr)
     endif
 !
