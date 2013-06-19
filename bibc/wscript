@@ -146,6 +146,7 @@ def build_as_embeded(self, uses, stenv):
 
 @Configure.conf
 def check_cflags(self):
+    self.start_msg('Getting C compiler flags')
     def safe_remove(var, value):
         try:
             self.env[var].remove(value)
@@ -156,6 +157,7 @@ def check_cflags(self):
         safe_remove('CFLAGS_PYEMBED', '-fwrapv')
         safe_remove('CXXFLAGS_PYEXT', '-fwrapv')
         safe_remove('CXXFLAGS_PYEMBED', '-fwrapv')
+    self.end_msg(self.env['CFLAGS'])
 
 
 @Configure.conf

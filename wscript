@@ -32,7 +32,7 @@ def options(self):
         '  OPTLIB_FLAGS : extra linker flags inserted after static libs '
         '(for example when -Wl,start-group options are necessary)',
         '  CFLAGS    : extra C compilation options',
-        '  FCFLAGS   : extra Fortrant compilation optins',
+        '  FCFLAGS   : extra Fortrant compilation options',
         '  PREFIX    : default installation prefix to be used, '
         'if no --prefix option is given.',
         '',))

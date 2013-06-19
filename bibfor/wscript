@@ -65,7 +65,7 @@ def check_fortran_compiler_flags(self):
         if self.env.DEST_CPU == 'x86_64':
             flags += ['-%s%i' % (name, 8) for name in 'ir']
     self.env.append_unique('FCFLAGS', flags)
-    self.end_msg(flags)
+    self.end_msg(self.env['FCFLAGS'])
 
 @Configure.conf
 def check_optimization_fcflags(self):
