@@ -162,7 +162,7 @@ subroutine te0347(option, nomte)
             call jevech('PVECTUR', 'E', ivectu)
             call jevech('PGEOMER', 'L', igeom)
 !
-            call tecach('ONN', 'PCOMPOR', 'L', 3, icompo,&
+            call tecach('ONN', 'PCOMPOR', 'L', 1, icompo,&
                         iretc)
             reactu = .false.
             if (iretc .eq. 0) reactu = (zk16(icompo+2).eq.'GROT_GDEP')
