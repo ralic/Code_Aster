@@ -1,0 +1,272 @@
+# TITRE : VALIDATION DU COMPORTEMENT DES ACIERS 300 SOUS CHARGEMENTS THERMIQUE ET D'IRRADIATION
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
+# ======================================================================
+#
+# FLUAGE DE LA STRUCTURE SOUMISE A UNE PRESSION
+#
+
+DEBUT(CODE=_F(NOM='SSNA123B', NIV_PUB_WEB='INTERNET'), DEBUG=_F(SDVERI='OUI'));
+
+MAIL=LIRE_MAILLAGE();
+
+MODEL=AFFE_MODELE(MAILLAGE=MAIL,
+                  AFFE=_F(TOUT='OUI',
+                          PHENOMENE='MECANIQUE',
+                          MODELISATION='AXIS'));
+
+# DEFINITION DU MATERIAU
+YOUNG1 = FORMULE(NOM_PARA='TEMP', VALE='210000.0 - 30.0*TEMP', );
+NU1    = FORMULE(NOM_PARA='TEMP', VALE='0.30 + 5.0E-05*TEMP', );
+ALPHA1 = FORMULE(NOM_PARA='TEMP', VALE='1.0E-06*(15.0+2.0E-03*TEMP)',);
+
+
+TEM=DEFI_LIST_REEL(
+    DEBUT=360.0,
+    INTERVALLE=_F(JUSQU_A=440.0, PAS=2));
+
+YOUNG=CALC_FONC_INTERP(
+    FONCTION=YOUNG1, LIST_PARA=TEM, PROL_DROITE='CONSTANT', PROL_GAUCHE='CONSTANT');
+
+NU=CALC_FONC_INTERP(
+    FONCTION=NU1, LIST_PARA=TEM, PROL_DROITE='CONSTANT', PROL_GAUCHE='CONSTANT');
+
+ALPHA=CALC_FONC_INTERP(
+    FONCTION=ALPHA1, LIST_PARA=TEM, PROL_DROITE='CONSTANT', PROL_GAUCHE='CONSTANT');
+
+R02=DEFI_CONSTANTE(VALE=5000000000);
+RM=DEFI_CONSTANTE(VALE=5000000000);
+EU=DEFI_CONSTANTE(VALE=0.);
+
+# ON NE VALIDE DANS CE CAST TEST QUE LA PARTIE IRRADIATION
+# D OU LE CHOIX DES PARAMETRES MATERIAUX
+UN=DEFI_CONSTANTE(VALE=1.0);
+ZERO=DEFI_CONSTANTE(VALE=0.0);
+ACIER=DEFI_MATERIAU(
+    ELAS_FO=_F(E=YOUNG, NU=NU, TEMP_DEF_ALPHA=0., ALPHA=ALPHA),
+    IRRAD3M=_F(R02=R02, EPSI_U=EU, RM=RM, AI0=2.E-6, ZETA_F=UN,
+               ETAI_S=1000.0, RG0=0., ALPHA=0., PHI0=0., ZETA_G=ZERO));
+
+TEMPSF = 2000.0;
+
+LISTE=DEFI_LIST_REEL(DEBUT=0.0,
+                     INTERVALLE=(_F(JUSQU_A=1.0,
+                                    NOMBRE=1),
+                                 _F(JUSQU_A=TEMPSF,
+                                    NOMBRE=3)),
+                     INFO=2);
+
+DEFLIST=DEFI_LIST_INST(DEFI_LIST=_F(METHODE='MANUEL',
+                                    LIST_INST=LISTE),
+                       ECHEC=_F(ACTION='DECOUPE',
+                                 SUBD_METHODE='MANUEL',
+                                SUBD_NIVEAU=6));
+
+# calcul avec SIMU_POINT_MAT
+
+IRRA2=DEFI_FONCTION(NOM_PARA='INST',NOM_RESU='IRRA',VALE=(0.,0,
+                          1.,0.,
+                          TEMPSF,10.,
+                          ));
+
+TEMP2=DEFI_CONSTANTE(VALE=400.);
+
+SYY=DEFI_FONCTION(NOM_PARA='INST',VALE=(0.,0.,
+                        1.,200.,
+                        TEMPSF,200.,
+                        ));
+
+U=SIMU_POINT_MAT(COMP_INCR=_F(RELATION='IRRAD3M',
+                              DEFORMATION='PETIT',
+                              RESI_INTE_RELA=1.0E-09,
+                              ITER_INTE_MAXI=120,
+                              TOUT='OUI'),
+                 MATER=ACIER,
+                 INCREMENT=_F(LIST_INST=DEFLIST),
+                 NEWTON=_F(PREDICTION='ELASTIQUE',
+                           MATRICE='TANGENTE',
+                           REAC_ITER=1),
+                 SUPPORT='POINT',
+                 AFFE_VARC=(
+                 _F(NOM_VARC='TEMP',
+                    VALE_FONC=TEMP2,
+                    VALE_REF=400.),
+                 _F(NOM_VARC='IRRA',
+                    VALE_FONC=IRRA2)),
+                 SIGM_IMPOSE=_F(SIYY=SYY),
+                 INFO=1);
+
+TEST_TABLE(
+VALE_CALC= 3.0101031133706E-03,
+NOM_PARA='EPYY',
+TABLE=U,
+FILTRE=_F(CRIT_COMP='EQ',
+            NOM_PARA='INST',
+            VALE=2000.0,),
+)
+
+TEST_TABLE(
+VALE_CALC= 2000.0007082438,
+NOM_PARA='V2',
+TABLE=U,
+FILTRE=_F(CRIT_COMP='EQ',
+        NOM_PARA='INST',
+        VALE=2000.0,),
+)
+
+TEST_TABLE(
+VALE_CALC= 3.0101031133706E-03,
+NOM_PARA='EPYY',
+TABLE=U,
+FILTRE=_F(CRIT_COMP='EQ',
+            NOM_PARA='INST',
+            VALE=2000.0,),
+)
+
+##calcul avec STAT_NON_LINE
+
+
+IRRA_0=CREA_CHAMP(TYPE_CHAM='NOEU_IRRA_R',
+                  OPERATION='AFFE',
+                  MAILLAGE=MAIL,
+                  AFFE=_F(TOUT='OUI',
+                          NOM_CMP='IRRA',
+                          VALE=0.0));
+
+IRRA_1=CREA_CHAMP(TYPE_CHAM='NOEU_IRRA_R',
+                  OPERATION='AFFE',
+                  MAILLAGE=MAIL,
+                  AFFE=_F(TOUT='OUI',
+                          NOM_CMP='IRRA',
+                          VALE=10.0));
+
+CL=AFFE_CHAR_MECA(MODELE=MODEL,
+                  DDL_IMPO=(_F(GROUP_MA='AD',
+                               DX=0.),
+                            _F(GROUP_MA='AB',
+                               DY=0.)));
+
+TEMP_0=CREA_CHAMP(TYPE_CHAM='NOEU_TEMP_R',
+                  OPERATION='AFFE',
+                  MAILLAGE=MAIL,
+                  AFFE=_F(TOUT='OUI',
+                          NOM_CMP='TEMP',
+                          VALE=0.0));
+
+TEMP_1=CREA_CHAMP(TYPE_CHAM='NOEU_TEMP_R',
+                  OPERATION='AFFE',
+                  MAILLAGE=MAIL,
+                  AFFE=_F(TOUT='OUI',
+                          NOM_CMP='TEMP',
+                          VALE=400.0));
+
+# RAMPE D IRRADIATION A TEMPERATURE CONSTANTE
+
+TEMPE=CREA_RESU(OPERATION='AFFE',
+                TYPE_RESU='EVOL_THER',
+                NOM_CHAM='TEMP',
+                AFFE=(
+                _F(CHAM_GD=TEMP_1,
+                   INST=0.),
+                _F(CHAM_GD=TEMP_1,
+                   INST=TEMPSF)));
+
+IRRAD=CREA_RESU(OPERATION='AFFE',
+                TYPE_RESU='EVOL_VARC',
+                NOM_CHAM='IRRA',
+                AFFE=(
+                _F(CHAM_GD=IRRA_0,
+                   INST=0.),
+                _F(CHAM_GD=IRRA_0,
+                   INST=1.),
+                _F(CHAM_GD=IRRA_1,
+                   INST=TEMPSF)));
+
+CHMAT=AFFE_MATERIAU(MAILLAGE=MAIL,
+                    AFFE=_F(TOUT='OUI',
+                            MATER=ACIER),
+                    AFFE_VARC=(_F(TOUT='OUI',
+                                  NOM_VARC='IRRA',
+                                  EVOL=IRRAD),
+                               _F(TOUT='OUI',
+                                  NOM_VARC='TEMP',
+                                  EVOL=TEMPE,
+                                  VALE_REF=400.0)));
+
+CS=AFFE_CHAR_MECA(MODELE=MODEL,
+                  FORCE_CONTOUR=_F(GROUP_MA='DC',
+                                   FY=200.));
+
+RAMPE=DEFI_FONCTION(NOM_PARA='INST',VALE=(0.,0.,
+                          1.,1.,
+                          TEMPSF,1.,
+                          ),PROL_DROITE='EXCLU',PROL_GAUCHE='EXCLU',VERIF='CROISSANT');
+
+STAT=STAT_NON_LINE(MODELE=MODEL,
+                   CHAM_MATER=CHMAT,
+                   EXCIT=(_F(CHARGE=CL),
+                          _F(CHARGE=CS,
+                             FONC_MULT=RAMPE)),
+                   COMP_INCR=_F(RELATION='IRRAD3M',
+                                DEFORMATION='PETIT',
+                                RESI_INTE_RELA=1.0E-09,
+                                ITER_INTE_MAXI=120,
+                                TOUT='OUI'),
+                   INCREMENT=_F(LIST_INST=DEFLIST),
+                   NEWTON=_F(REAC_INCR=1,
+                             PREDICTION='ELASTIQUE',
+                             MATRICE='TANGENTE',
+                             REAC_ITER=1),
+                   CONVERGENCE=_F(ITER_GLOB_MAXI=20),
+                   SOLVEUR=_F(METHODE='MUMPS',
+   ));
+
+STAT=CALC_CHAMP(reuse =STAT,
+               RESULTAT=STAT,
+                DEFORMATION=('EPSI_ELNO'));
+
+# DEFORMATIONS, DEPLACEMENT ET VARIABLES INTERNES
+TEST_RESU(RESU=_F(INST=2000.0,
+                  RESULTAT=STAT,
+                  NOM_CHAM='DEPL',
+                  NOEUD='N4',
+                  NOM_CMP='DY',
+                  VALE_CALC= 3.0100997619024E-03,
+                  ),
+          )
+
+TEST_RESU(RESU=_F(INST=2000.0,
+                  POINT=1,
+                  RESULTAT=STAT,
+                  NOM_CHAM='VARI_ELGA',
+                  NOM_CMP='V2',
+                  VALE_CALC= 1999.9998693497,
+                  MAILLE='M1',
+                  ),
+          )
+
+TEST_RESU(RESU=_F(INST=2000.0,
+                  RESULTAT=STAT,
+                  NOM_CHAM='EPSI_ELNO',
+                  NOEUD='N2',
+                  NOM_CMP='EPYY',
+                  VALE_CALC= 3.0100997619024E-03,
+                  MAILLE='M1',
+                  ),
+          )
+
+FIN();

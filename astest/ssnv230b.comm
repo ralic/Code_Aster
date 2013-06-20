@@ -1,0 +1,354 @@
+# TITRE : VALIDATION DU COMPORTEMENT DES ACIERS 300 SOUS CHARGEMENTS THERMIQUE ET D'IRRADIATION
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
+# ======================================================================
+#
+#       VALIDATION ELEMENTAIRE SUR UN ELEMENT 3D DE LA LOI IRRAD3M
+
+DEBUT(CODE=_F(NOM='SSNV230B',NIV_PUB_WEB='INTERNET',VISU_EFICAS='NON'),DEBUG=_F(SDVERI='OUI'))
+
+
+
+# DEFINITION DU MATERIAU : ACIER 304
+YOUNG1 = FORMULE(NOM_PARA='TEMP', VALE='210000.0 - 30.0*TEMP', );
+NU1    = FORMULE(NOM_PARA='TEMP', VALE='0.30 + 5.0E-05*TEMP', );
+ALPHA1 = FORMULE(NOM_PARA='TEMP', VALE='1.0E-06*(15.0+2.0E-03*TEMP)',);
+R021   = FORMULE(NOM_PARA=('TEMP','IRRA',),
+    VALE='(270.0-0.65*TEMP+0.001*TEMP**2)*(4.0-3.0*exp(-IRRA/3.0))', );
+
+RM1 = FORMULE(NOM_PARA=('TEMP','IRRA',),
+    VALE='''R021(TEMP,IRRA)+( (600.0-1.5*TEMP+0.010*TEMP**2)
+            -(270.00-0.65*TEMP+0.001*TEMP**2) )*0.50*
+            (0.005-0.0020*(1.0-exp(-IRRA/4.0))+exp(-IRRA/1.8))''', );
+
+EU1 = FORMULE(NOM_PARA=('TEMP','IRRA',),
+    VALE='''log(1.0+((50.0-0.15*TEMP+0.0007*TEMP**2)*exp(-IRRA))*1.0E-02)''', );
+
+
+# Liste de temperature pour la definition des nappes
+LTEM=DEFI_LIST_REEL(
+   DEBUT=0.0,
+   INTERVALLE=_F(JUSQU_A=500.0, PAS=2.0,),
+)
+# Liste d'irradiation pour la definition des nappes
+LIRR = DEFI_LIST_REEL(DEBUT=0.0,
+   INTERVALLE=(
+      _F(JUSQU_A =   5.0, PAS =   0.10,),
+      _F(JUSQU_A =  10.0, PAS =   0.25,),
+   ),
+)
+
+# POUR VALIDER LES DEUX METHODES ON INTERPOLE SEULEMENT UNE PARTIE
+# DES PARAMETRES MATERIAUX
+
+YOUNG=CALC_FONC_INTERP(FONCTION=YOUNG1, LIST_PARA=LTEM,
+   PROL_GAUCHE='CONSTANT',
+   PROL_DROITE='CONSTANT',
+);
+NU   =CALC_FONC_INTERP(FONCTION=NU1,    LIST_PARA=LTEM,
+   PROL_GAUCHE='CONSTANT',
+   PROL_DROITE='CONSTANT',
+);
+ALPHA=CALC_FONC_INTERP(FONCTION=ALPHA1, LIST_PARA=LTEM,
+   PROL_GAUCHE='CONSTANT',
+   PROL_DROITE='CONSTANT',
+);
+
+UN    =DEFI_CONSTANTE(VALE = 1.0)
+ZERO  =DEFI_CONSTANTE(VALE = 0.0)
+
+# [][][][][][][][] Maillage et Modele [][][][][][][][]
+mail = LIRE_MAILLAGE();
+
+mode = AFFE_MODELE( MAILLAGE=mail,
+   AFFE = ( _F(PHENOMENE='MECANIQUE',MODELISATION='3D', TOUT='OUI' ,), ), )
+
+# [][][][][][][][] Champ de Temperature [][][][][][][][]
+ChTref = CREA_CHAMP(TYPE_CHAM='NOEU_TEMP_R', OPERATION='AFFE', MAILLAGE=mail,
+   AFFE = _F(TOUT='OUI', NOM_CMP='TEMP', VALE=25.0, ),
+)
+ChT400 = CREA_CHAMP(TYPE_CHAM='NOEU_TEMP_R', OPERATION='AFFE', MAILLAGE=mail,
+   AFFE = _F(TOUT='OUI', NOM_CMP='TEMP', VALE=400.0, ),
+)
+ChT060 = CREA_CHAMP(TYPE_CHAM='NOEU_TEMP_R', OPERATION='AFFE', MAILLAGE=mail,
+   AFFE = _F(TOUT='OUI', NOM_CMP='TEMP', VALE=60.0, ),
+)
+
+Temper = CREA_RESU(OPERATION = 'AFFE', TYPE_RESU = 'EVOL_THER', NOM_CHAM = 'TEMP',
+   AFFE = (
+     _F(CHAM_GD= ChTref, INST= 0.0),
+     _F(CHAM_GD= ChTref, INST=10.0),
+     _F(CHAM_GD= ChT400, INST=20.0),
+     _F(CHAM_GD= ChT400, INST=30.0),
+     _F(CHAM_GD= ChT060, INST=40.0),
+     _F(CHAM_GD= ChT400, INST=50.0),
+     _F(CHAM_GD= ChT400, INST=60.0),
+     _F(CHAM_GD= ChT060, INST=70.0),
+     _F(CHAM_GD= ChT400, INST=80.0),
+     _F(CHAM_GD= ChT400, INST=90.0),
+   )
+)
+
+# [][][][][][][][] Champ d'Irradiation [][][][][[][]][]
+ChIr000 = CREA_CHAMP(TYPE_CHAM='NOEU_IRRA_R', OPERATION='AFFE', MAILLAGE=mail,
+   AFFE = _F(TOUT='OUI',NOM_CMP='IRRA', VALE= 0.0, ),
+)
+ChIr002 = CREA_CHAMP(TYPE_CHAM='NOEU_IRRA_R', OPERATION='AFFE', MAILLAGE=mail,
+   AFFE = _F(TOUT='OUI',NOM_CMP='IRRA', VALE= 2.0, ),
+)
+ChIr004 = CREA_CHAMP(TYPE_CHAM='NOEU_IRRA_R', OPERATION='AFFE', MAILLAGE=mail,
+   AFFE = _F(TOUT='OUI',NOM_CMP='IRRA', VALE= 4.0, ),
+)
+ChIr006 = CREA_CHAMP(TYPE_CHAM='NOEU_IRRA_R', OPERATION='AFFE', MAILLAGE=mail,
+   AFFE = _F(TOUT='OUI',NOM_CMP='IRRA', VALE= 6.0, ),
+)
+Irrad = CREA_RESU( OPERATION = 'AFFE', TYPE_RESU = 'EVOL_VARC', NOM_CHAM = 'IRRA',
+   AFFE = (
+     _F(CHAM_GD= ChIr000, INST= 0.0),
+     _F(CHAM_GD= ChIr000, INST=20.0),
+     _F(CHAM_GD= ChIr002, INST=30.0),
+     _F(CHAM_GD= ChIr002, INST=50.0),
+     _F(CHAM_GD= ChIr004, INST=60.0),
+     _F(CHAM_GD= ChIr004, INST=80.0),
+     _F(CHAM_GD= ChIr006, INST=90.0),
+   )
+)
+
+# [][][][][][][][] Deplacement Impose [][][][][[][]][]
+FDepla=DEFI_FONCTION(
+   NOM_PARA ='INST',
+   VALE=(   0.0,   0.0,
+           10.0,   3.0E-03,),
+   PROL_GAUCHE='CONSTANT',
+   PROL_DROITE='CONSTANT',
+)
+
+CDepl=AFFE_CHAR_MECA_F(
+   MODELE=mode,
+   DDL_IMPO=(
+      _F(NOEUD='N1',DX=ZERO,DY=ZERO,DZ=ZERO),
+      _F(NOEUD='N4',DX=ZERO,        DZ=ZERO),
+      _F(NOEUD='N8',DX=ZERO,),
+      _F(NOEUD='N5',DX=ZERO,DY=ZERO),
+
+      _F(NOEUD='N2',DX=FDepla,DY=ZERO,DZ=ZERO),
+      _F(NOEUD='N3',DX=FDepla,        DZ=ZERO),
+      _F(NOEUD='N7',DX=FDepla,),
+      _F(NOEUD='N6',DX=FDepla,DY=ZERO),
+   )
+)
+
+# [][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][]
+# Borne superieure
+ACIERS=DEFI_MATERIAU(
+   ELAS_FO=_F(E=YOUNG, NU=NU, ALPHA=ALPHA, TEMP_DEF_ALPHA=25.0, ),
+   IRRAD3M=_F(R02=R021, RM=RM1, EPSI_U=EU1, AI0=3.00E-6, ETAI_S=1000.0,
+              RG0=0.0020, ZETA_F=UN, ALPHA=1.0, PHI0=45.0, KAPPA=0.80, ZETA_G=UN,
+              TOLER_ET=0.1E-02),
+);
+
+materS=AFFE_MATERIAU(
+   MAILLAGE=mail,
+   AFFE      = _F(TOUT='OUI', MATER=ACIERS,),
+   AFFE_VARC = (_F(TOUT='OUI', EVOL =Irrad,   NOM_VARC='IRRA'),
+                _F(TOUT='OUI', EVOL =Temper,  NOM_VARC='TEMP', VALE_REF=25.0),),
+)
+
+linstS = DEFI_LIST_REEL(DEBUT=0.0,
+   INTERVALLE=(
+      _F(JUSQU_A = 90.0, PAS = 2.5,),
+   ),
+)
+
+DEFLISTS =DEFI_LIST_INST(DEFI_LIST=_F(LIST_INST =linstS ,),
+                                ECHEC=_F(ACTION        = 'DECOUPE',
+                                         SUBD_METHODE  = 'MANUEL',
+                                         SUBD_NIVEAU=6,),)
+
+STATS=STAT_NON_LINE(
+   MODELE    =mode,
+   CHAM_MATER=materS,
+   INCREMENT= _F(LIST_INST=DEFLISTS, INST_FIN =90.0),
+   EXCIT=_F(CHARGE=CDepl,),
+   NEWTON= _F(
+      REAC_INCR =1,
+      REAC_ITER =1,
+   ),
+   CONVERGENCE=_F(
+      ITER_GLOB_MAXI=20,
+      RESI_GLOB_RELA=1.0E-10,
+      RESI_GLOB_MAXI=5.0E-03,
+      ARRET='OUI',
+   ),
+   COMP_INCR = ( _F(DEFORMATION='PETIT', TOUT='OUI',
+      RELATION='IRRAD3M',ITER_INTE_PAS = 0, ITER_INTE_MAXI = 120,
+      RESI_INTE_RELA=1.0E-09,), ),
+)
+
+
+# VARIABLES INTERNES
+#   PLASTICITE, ETAI, PI,  GONFLEMENT
+#   V1          V2    V3   V4
+itps  = 0; icha  = 1; icmp  = 2; irefe = 3; icrit = 4; iprec = 5
+REFER= [
+#   INST   NOM_CHAM      NOM_CMP  VALE
+   ( 10.0 , 'SIEF_ELGA' , 'SIXX' ,  253.99307396162 ,),
+   ( 20.0 , 'SIEF_ELGA' , 'SIXX' , -185.04758761685 ,),
+   ( 30.0 , 'SIEF_ELGA' , 'SIXX' , -185.04758761381 ,),
+   ( 40.0 , 'SIEF_ELGA' , 'SIXX' ,  599.75975048512 ,),
+   ( 50.0 , 'SIEF_ELGA' , 'SIXX' , -497.99169203378 ,),
+   ( 60.0 , 'SIEF_ELGA' , 'SIXX' , -321.07666019321 ,),
+   ( 70.0 , 'SIEF_ELGA' , 'SIXX' ,  775.8546127551  ,),
+   ( 80.0 , 'SIEF_ELGA' , 'SIXX' , -330.52395557294 ,),
+   ( 90.0 , 'SIEF_ELGA' , 'SIXX' , -99.865976427157 ,),
+
+   ( 10.0 , 'VARI_ELGA' , 'V1' , 1.7861740790364E-03  ,),
+   ( 20.0 , 'VARI_ELGA' , 'V1' , 5.5627643822472E-03  ,),
+   ( 30.0 , 'VARI_ELGA' , 'V1' , 5.5627643822472E-03  ,),
+   ( 40.0 , 'VARI_ELGA' , 'V1' , 7.1432901621404E-03  ,),
+   ( 50.0 , 'VARI_ELGA' , 'V1' , 7.1432901621404E-03  ,),
+   ( 60.0 , 'VARI_ELGA' , 'V1' , 7.1432901621404E-03  ,),
+   ( 70.0 , 'VARI_ELGA' , 'V1' , 7.1910037751116E-03  ,),
+   ( 80.0 , 'VARI_ELGA' , 'V1' , 7.1910037751116E-03  ,),
+   ( 90.0 , 'VARI_ELGA' , 'V1' , 7.1910037751116E-03  ,),
+
+   ( 30.0 , 'VARI_ELGA' , 'V2' , 370.09517522625  ,),
+   ( 40.0 , 'VARI_ELGA' , 'V2' , 370.09517522625  ,),
+   ( 50.0 , 'VARI_ELGA' , 'V2' , 370.09517522625  ,),
+   ( 60.0 , 'VARI_ELGA' , 'V2' , 1297.8367539219  ,),
+   ( 70.0 , 'VARI_ELGA' , 'V2' , 1297.8367539219  ,),
+   ( 80.0 , 'VARI_ELGA' , 'V2' , 1297.8367539219  ,),
+   ( 90.0 , 'VARI_ELGA' , 'V2' , 1686.1498501201  ,),
+
+   ( 60.0 , 'VARI_ELGA' , 'V3' , 8.9351026176583E-04  ,),
+   ( 70.0 , 'VARI_ELGA' , 'V3' , 8.9351026176583E-04  ,),
+   ( 80.0 , 'VARI_ELGA' , 'V3' , 8.9351026176583E-04  ,),
+   ( 90.0 , 'VARI_ELGA' , 'V3' , 2.0584495503603E-03  ,),
+]
+
+for ii in range(len(REFER)):
+   TEST_RESU(
+      RESU= _F(RESULTAT=STATS, INST=REFER[ii][itps], MAILLE='CUBE', POINT=1,
+               NOM_CHAM=REFER[ii][icha], NOM_CMP=REFER[ii][icmp],
+               VALE_CALC=REFER[ii][irefe]),
+   )
+
+# [][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][]
+# Borne inferieure
+
+ACIERI=DEFI_MATERIAU(
+   ELAS_FO=_F(E=YOUNG, NU=NU, ALPHA=ALPHA, TEMP_DEF_ALPHA=25.0, ),
+   IRRAD3M=_F(R02=R021, RM=RM1, EPSI_U=EU1, AI0=3.00E-6, ETAI_S=1000.0,
+              RG0=0.0020, ZETA_F=UN, ALPHA=1.0, PHI0=1.0, KAPPA=0.80, ZETA_G=UN,
+              TOLER_ET=0.1E-02),
+)
+
+materI=AFFE_MATERIAU(
+   MAILLAGE=mail,
+   AFFE      = _F(TOUT='OUI', MATER=ACIERI,),
+   AFFE_VARC = (_F(TOUT='OUI', EVOL =Irrad,   NOM_VARC='IRRA'),
+                _F(TOUT='OUI', EVOL =Temper,  NOM_VARC='TEMP', VALE_REF=25.0),),
+)
+
+linstI = DEFI_LIST_REEL(DEBUT=0.0,
+   INTERVALLE=(
+      _F(JUSQU_A = 90.0, PAS = 1.0,),
+   ),
+)
+
+DEFLISTI =DEFI_LIST_INST(DEFI_LIST=_F(LIST_INST =linstI ),
+                        ECHEC=_F(ACTION        = 'DECOUPE',
+                                 SUBD_METHODE  = 'MANUEL',
+                                 SUBD_NIVEAU=6,),)
+
+STATI=STAT_NON_LINE(
+   MODELE    =mode,
+   CHAM_MATER=materI,
+   INCREMENT= _F(LIST_INST=DEFLISTI, INST_FIN =90.0),
+   EXCIT=_F(CHARGE=CDepl,),
+   NEWTON= _F(
+      REAC_INCR =1,
+      REAC_ITER =1,
+   ),
+   CONVERGENCE=_F(
+      ITER_GLOB_MAXI=20,
+      RESI_GLOB_RELA=1.0E-10,
+      RESI_GLOB_MAXI=5.0E-03,
+      ARRET='OUI',
+   ),
+   COMP_INCR = ( _F(DEFORMATION='PETIT', TOUT='OUI',
+      RELATION='IRRAD3M',ITER_INTE_PAS = 0, ITER_INTE_MAXI = 120,
+      RESI_INTE_RELA=1.0E-09,), ),
+)
+
+
+# VARIABLES INTERNES
+#   PLASTICITE, ETAI, PI,  GONFLEMENT
+#   V1          V2    V3,  V4
+itps  = 0; icha  = 1; icmp  = 2; irefe = 3; icrit = 4; iprec = 5
+REFER= [
+#   INST   NOM_CHAM      NOM_CMP  VALE
+   ( 10.0 , 'SIEF_ELGA' , 'SIXX' ,  253.99307396162 ,),
+   ( 20.0 , 'SIEF_ELGA' , 'SIXX' , -185.04758760095 ,),
+   ( 30.0 , 'SIEF_ELGA' , 'SIXX' , -317.04758760536 ,),
+   ( 40.0 , 'SIEF_ELGA' , 'SIXX' ,  597.50827101104 ,),
+   ( 50.0 , 'SIEF_ELGA' , 'SIXX' , -500.13286849105 ,),
+   ( 60.0 , 'SIEF_ELGA' , 'SIXX' , -410.81341599337 ,),
+   ( 70.0 , 'SIEF_ELGA' , 'SIXX' ,  691.42902863619 ,),
+   ( 80.0 , 'SIEF_ELGA' , 'SIXX' , -410.81341599417 ,),
+   ( 90.0 , 'SIEF_ELGA' , 'SIXX' , -276.94495767372 ,),
+
+   ( 10.0 , 'VARI_ELGA' , 'V1' , 1.7861740790364E-03  ,),
+   ( 20.0 , 'VARI_ELGA' , 'V1' , 5.5627643822757E-03  ,),
+   ( 30.0 , 'VARI_ELGA' , 'V1' , 5.5627643822757E-03  ,),
+   ( 40.0 , 'VARI_ELGA' , 'V1' , 6.487437518061E-03   ,),
+   ( 50.0 , 'VARI_ELGA' , 'V1' , 6.487437518061E-03  ,),
+   ( 60.0 , 'VARI_ELGA' , 'V1' , 6.5459431930594E-03  ,),
+   ( 70.0 , 'VARI_ELGA' , 'V1' , 6.5459431930594E-03  ,),
+   ( 80.0 , 'VARI_ELGA' , 'V1' , 6.5459431930594E-03  ,),
+   ( 90.0 , 'VARI_ELGA' , 'V1' , 6.5459431930594E-03  ,),
+
+   ( 30.0 , 'VARI_ELGA' , 'V2' , 481.32570040893  ,),
+   ( 40.0 , 'VARI_ELGA' , 'V2' , 481.32570040893  ,),
+   ( 50.0 , 'VARI_ELGA' , 'V2' , 481.32570040893  ,),
+   ( 60.0 , 'VARI_ELGA' , 'V2' , 1516.4954823281  ,),
+   ( 70.0 , 'VARI_ELGA' , 'V2' , 1516.4954823281  ,),
+   ( 80.0 , 'VARI_ELGA' , 'V2' , 1516.4954823281  ,),
+   ( 90.0 , 'VARI_ELGA' , 'V2' , 2177.0028121478  ,),
+
+   ( 60.0 , 'VARI_ELGA' , 'V3' , 1.5494864469842E-03  ,),
+   ( 70.0 , 'VARI_ELGA' , 'V3' , 1.5494864469842E-03  ,),
+   ( 80.0 , 'VARI_ELGA' , 'V3' , 1.5494864469842E-03  ,),
+   ( 90.0 , 'VARI_ELGA' , 'V3' , 3.5310084364435E-03  ,),
+
+   ( 30.0 , 'VARI_ELGA' , 'V4' , 6.6666666666667E-04  ,),
+   ( 40.0 , 'VARI_ELGA' , 'V4' , 6.6666666666667E-04  ,),
+   ( 50.0 , 'VARI_ELGA' , 'V4' , 6.6666666666667E-04  ,),
+   ( 60.0 , 'VARI_ELGA' , 'V4' , 1.8235504427037E-03  ,),
+   ( 70.0 , 'VARI_ELGA' , 'V4' , 1.8235504427037E-03  ,),
+   ( 80.0 , 'VARI_ELGA' , 'V4' , 1.8235504427037E-03  ,),
+   ( 90.0 , 'VARI_ELGA' , 'V4' , 3.1289691073139E-03  ,),
+]
+
+for ii in range(len(REFER)):
+   TEST_RESU(
+      RESU= _F(RESULTAT=STATI, INST=REFER[ii][itps], MAILLE='CUBE', POINT=1,
+               NOM_CHAM=REFER[ii][icha], NOM_CMP=REFER[ii][icmp],
+               VALE_CALC=REFER[ii][irefe]),
+   )
+
+FIN()

@@ -1,0 +1,57 @@
+DEBPROC MAILLAGE ;
+
+OPTI DIME 2 ELEM QUA4 ;
+
+crit = 1.E-6 ;
+nb=10 ;
+A = 0. 0. ;
+B = 1. 0. ;
+F = 1. 0.5 ;
+G = 0. 0.5 ;
+C = 1.5 1. ;
+D = 1.5 1.5 ;
+E = 0. 1.5 ;
+
+O = 1.5 0.5 ;
+
+AB = DROIT nb A B ;
+GF = DROIT nb G F ;
+
+SURF1 = REGL (nb/2) AB GF ;
+
+FC = CERC (2*nb) F O C ;
+
+H = FC POINT (nb+1) ;
+
+
+FH = FC ELEM COMPRIS F H ;
+HC = FC ELEM COMPRIS H C ;
+
+GE = DROIT nb G E ;
+ED = DROIT nb E D ;
+EBIS = ED POINT 2;
+
+SURF2 = REGL nb GE FH ;
+
+SURF3 = REGL nb HC ED ;
+
+TOT = SURF1 ET SURF2 ET SURF3 ;
+ELIM crit TOT ;
+
+chpo = ( CONT TOT ) POINT DROIT A E crit ;
+AE =( CONT TOT ) ELEM APPUYE STRICTEMENT chpo ;
+
+chpo = ( CONT TOT ) POINT DROIT C D crit ;
+CD =( CONT TOT ) ELEM APPUYE STRICTEMENT chpo ;
+GR1 = E ET EBIS ;
+GR2 = E ET D ;
+
+FINPROC TOT AB ED AE CD E D GR1 GR2 ;
+
+
+TOT AB ED AE CD E D GR1 GR2 = MAILLAGE ;
+trace tot;
+opti donn 5 ;
+OPTI SAUV FORM 'ssna118a.mgib' ;
+SAUV FORM ;
+
