@@ -1,0 +1,293 @@
+# -*- coding: iso-8859-1 -*-
+
+###
+### This file is generated automatically by SALOME v6.4.0 with dump python functionality
+###
+
+import sys
+import salome
+
+salome.salome_init()
+theStudy = salome.myStudy
+
+import salome_notebook
+notebook = salome_notebook.notebook
+sys.path.insert( 0, r'/home/aster')
+
+import iparameters
+ipar = iparameters.IParameters(salome.myStudy.GetCommonParameters("Interface Applicative", 1))
+
+#Set up visual properties:
+ipar.setProperty("AP_ACTIVE_VIEW", "VTKViewer_0_0")
+ipar.setProperty("AP_WORKSTACK_INFO", "000000010000000000000002010000000100000588000000040000000200000002000000080000001a004f00430043005600690065007700650072005f0030005f00300000000102000000080000001a00560054004b005600690065007700650072005f0030005f00300000000202")
+ipar.setProperty("AP_ACTIVE_MODULE", "Mesh")
+ipar.setProperty("AP_SAVEPOINT_NAME", "GUI state: 1")
+#Set up lists:
+# fill list AP_VIEWERS_LIST
+ipar.append("AP_VIEWERS_LIST", "OCCViewer_1")
+ipar.append("AP_VIEWERS_LIST", "VTKViewer_2")
+# fill list OCCViewer_1
+ipar.append("OCCViewer_1", "OCC scene:1 - viewer:1")
+ipar.append("OCCViewer_1", "scale=6.039737409311e+02*centerX=0.000000000000e+00*centerY=0.000000000000e+00*projX=5.046082139015e-01*projY=-8.427468538284e-01*projZ=1.874784976244e-01*twist=1.459946186652e-01*atX=9.979455731809e-03*atY=-4.040207341313e-02*atZ=3.991301357746e-02*eyeX=1.405860565782e-02*eyeY=-4.721466716753e-02*eyeZ=4.142855153076e-02*scaleX=1.000000000000e+00*scaleY=1.000000000000e+00*scaleZ=1.000000000000e+00*isVisible=1*size=1.00*gtIsVisible=0*gtDrawNameX=1*gtDrawNameY=1*gtDrawNameZ=1*gtNameX=X*gtNameY=Y*gtNameZ=Z*gtNameColorRX=255*gtNameColorGX=0*gtNameColorBX=0*gtNameColorRY=0*gtNameColorGY=255*gtNameColorBY=0*gtNameColorRZ=0*gtNameColorGZ=0*gtNameColorBZ=255*gtDrawValuesX=1*gtDrawValuesY=1*gtDrawValuesZ=1*gtNbValuesX=3*gtNbValuesY=3*gtNbValuesZ=3*gtOffsetX=2*gtOffsetY=2*gtOffsetZ=2*gtColorRX=255*gtColorGX=0*gtColorBX=0*gtColorRY=0*gtColorGY=255*gtColorBY=0*gtColorRZ=0*gtColorGZ=0*gtColorBZ=255*gtDrawTickmarksX=1*gtDrawTickmarksY=1*gtDrawTickmarksZ=1*gtTickmarkLengthX=5*gtTickmarkLengthY=5*gtTickmarkLengthZ=5")
+# fill list VTKViewer_2
+ipar.append("VTKViewer_2", "VTK scene:1 - viewer:1")
+ipar.append("VTKViewer_2", """<?xml version="1.0"?>
+<ViewState>
+    <Position X="-7.63937" Y="0.257484" Z="-0.204257"/>
+    <FocalPoint X="0.5" Y="0" Z="0.000611112"/>
+    <ViewUp X="-0.0257159" Y="-0.0176423" Z="0.999514"/>
+    <ViewScale Parallel="0.54568" X="1" Y="1" Z="1"/>
+    <DisplayCubeAxis Show="0"/>
+    <GraduatedAxis Axis="X">
+        <Title isVisible="1" Text="X" Font="0" Bold="0" Italic="0" Shadow="0">
+            <Color R="1" G="0" B="0"/>
+        </Title>
+        <Labels isVisible="1" Number="3" Offset="2" Font="0" Bold="0" Italic="0" Shadow="0">
+            <Color R="1" G="0" B="0"/>
+        </Labels>
+        <TickMarks isVisible="1" Length="5"/>
+    </GraduatedAxis>
+    <GraduatedAxis Axis="Y">
+        <Title isVisible="1" Text="Y" Font="0" Bold="0" Italic="0" Shadow="0">
+            <Color R="0" G="1" B="0"/>
+        </Title>
+        <Labels isVisible="1" Number="3" Offset="2" Font="0" Bold="0" Italic="0" Shadow="0">
+            <Color R="0" G="1" B="0"/>
+        </Labels>
+        <TickMarks isVisible="1" Length="5"/>
+    </GraduatedAxis>
+    <GraduatedAxis Axis="Z">
+        <Title isVisible="1" Text="Z" Font="0" Bold="0" Italic="0" Shadow="0">
+            <Color R="0" G="0" B="1"/>
+        </Title>
+        <Labels isVisible="1" Number="3" Offset="2" Font="0" Bold="0" Italic="0" Shadow="0">
+            <Color R="0" G="0" B="1"/>
+        </Labels>
+        <TickMarks isVisible="1" Length="5"/>
+    </GraduatedAxis>
+    <Trihedron isShown="1" Size="25"/>
+</ViewState>
+""")
+# fill list AP_MODULES_LIST
+ipar.append("AP_MODULES_LIST", "Geometry")
+ipar.append("AP_MODULES_LIST", "Mesh")
+
+
+###
+### GEOM component
+###
+
+import GEOM
+import geompy
+import math
+import SALOMEDS
+
+
+geompy.init_geom(theStudy)
+
+O = geompy.MakeVertex(0, 0, 0)
+OX = geompy.MakeVectorDXDYDZ(1, 0, 0)
+OY = geompy.MakeVectorDXDYDZ(0, 1, 0)
+OZ = geompy.MakeVectorDXDYDZ(0, 0, 1)
+A = geompy.MakeVertex(0, 0, 0)
+Circle_1 = geompy.MakeCircle(A, OX, 0.155)
+Tuyau = geompy.MakePrismVecH(Circle_1, OX, 1)
+[Encas] = geompy.SubShapes(Tuyau, [6])
+[Libre] = geompy.SubShapes(Tuyau, [7])
+Auto_group_for_SubMesh_1 = geompy.CreateGroup(Tuyau, geompy.ShapeType["EDGE"])
+geompy.UnionList(Auto_group_for_SubMesh_1, [Encas, Libre])
+Auto_group_for_SubMesh_2 = geompy.CreateGroup(Tuyau, geompy.ShapeType["EDGE"])
+geompy.UnionList(Auto_group_for_SubMesh_2, [Encas, Libre])
+geompy.addToStudy( O, 'O' )
+geompy.addToStudy( OX, 'OX' )
+geompy.addToStudy( OY, 'OY' )
+geompy.addToStudy( OZ, 'OZ' )
+geompy.addToStudy( A, 'A' )
+geompy.addToStudy( Circle_1, 'Circle_1' )
+geompy.addToStudy( Tuyau, 'Tuyau' )
+geompy.addToStudyInFather( Tuyau, Encas, 'Encas' )
+geompy.addToStudyInFather( Tuyau, Libre, 'Libre' )
+geompy.addToStudyInFather( Tuyau, Auto_group_for_SubMesh_1, 'Auto_group_for_SubMesh_1' )
+geompy.addToStudyInFather( Tuyau, Auto_group_for_SubMesh_2, 'Auto_group_for_SubMesh_2' )
+
+### Store presentation parameters of displayed objects
+import iparameters
+ipar = iparameters.IParameters(theStudy.GetModuleParameters("Interface Applicative", "GEOM", 1))
+
+#Set up entries:
+# set up entry GEOM_5 (A) parameters
+objId = geompy.getObjectID(A)
+ipar.setParameter(objId, "OCCViewer_0_Visibility", "On")
+ipar.setParameter(objId, "OCCViewer_0_Color", "1:1:0")
+# set up entry GEOM_6 (Circle_1) parameters
+objId = geompy.getObjectID(Circle_1)
+ipar.setParameter(objId, "OCCViewer_0_Visibility", "On")
+ipar.setParameter(objId, "OCCViewer_0_Color", "1:1:0")
+# set up entry GEOM_7 (Tuyau) parameters
+objId = geompy.getObjectID(Tuyau)
+ipar.setParameter(objId, "OCCViewer_0_Visibility", "On")
+ipar.setParameter(objId, "OCCViewer_0_Color", "1:1:0")
+# set up entry GEOM_7:3 (Encas) parameters
+objId = geompy.getObjectID(Encas)
+ipar.setParameter(objId, "OCCViewer_0_Visibility", "On")
+ipar.setParameter(objId, "OCCViewer_0_Color", "1:1:0")
+# set up entry GEOM_7:4 (Libre) parameters
+objId = geompy.getObjectID(Libre)
+ipar.setParameter(objId, "OCCViewer_0_Visibility", "On")
+ipar.setParameter(objId, "OCCViewer_0_Color", "1:1:0")
+
+###
+### SMESH component
+###
+
+import smesh, SMESH, SALOMEDS
+
+smesh.SetCurrentStudy(theStudy)
+import StdMeshers
+smeshObj_1 = smesh.Mesh(Tuyau)
+Regular_1D = smeshObj_1.Segment()
+Nb_Seg_500 = Regular_1D.NumberOfSegments(500)
+Nb_Seg_500.SetDistrType( 0 )
+Quadrangle_2D = smeshObj_1.Quadrangle()
+Regular_1D_1 = smeshObj_1.Segment(geom=Auto_group_for_SubMesh_1)
+Nb_Seg_25 = Regular_1D_1.NumberOfSegments(25)
+Nb_Seg_25.SetDistrType( 0 )
+isDone = smeshObj_1.Compute()
+smeshObj_2 = smeshObj_1.GroupOnGeom(Tuyau,'Tuyau',SMESH.FACE)
+smeshObj_3 = smeshObj_1.GroupOnGeom(Encas,'Encas',SMESH.EDGE)
+smeshObj_4 = smeshObj_1.GroupOnGeom(Libre,'Libre',SMESH.EDGE)
+[ smeshObj_2, smeshObj_3, smeshObj_4 ] = smeshObj_1.GetGroups()
+nodeID = smeshObj_1.AddNode( 0, 0, 0 )
+smeshObj_5 = smeshObj_1.CreateEmptyGroup( SMESH.NODE, 'Point_A' )
+nbAdd = smeshObj_5.Add( [ 12526 ] )
+smeshObj_5.SetColor( SALOMEDS.Color( 0.333333, 1, 1 ))
+smesh.SetName(smeshObj_1, 'Tuyau')
+smeshObj_1.ExportMED( r'/home/aster/Tuyau_mmed.med', 0, SMESH.MED_V2_2, 1 )
+[ smeshObj_2, smeshObj_3, smeshObj_4, smeshObj_5 ] = smeshObj_1.GetGroups()
+[ smeshObj_2, smeshObj_3, smeshObj_4, smeshObj_5 ] = smeshObj_1.GetGroups()
+elem0d = smeshObj_1.Add0DElement( 12526 )
+smeshObj_6 = smeshObj_1.CreateEmptyGroup( SMESH.NODE, 'POI_A' )
+nbAdd = smeshObj_6.Add( [ 12526 ] )
+smeshObj_1.RemoveGroup( smeshObj_6 )
+[ smeshObj_2, smeshObj_3, smeshObj_4, smeshObj_5 ] = smeshObj_1.GetGroups()
+[ smeshObj_2, smeshObj_3, smeshObj_4, smeshObj_5 ] = smeshObj_1.GetGroups()
+[ smeshObj_7 ] = smeshObj_1.GetMesh().GetSubMeshes()
+[ smeshObj_2, smeshObj_3, smeshObj_4, smeshObj_5 ] = smeshObj_1.GetGroups()
+[ smeshObj_7 ] = smeshObj_1.GetMesh().GetSubMeshes()
+[ smeshObj_2, smeshObj_3, smeshObj_4, smeshObj_5 ] = smeshObj_1.GetGroups()
+coincident_nodes_on_part = smeshObj_1.FindCoincidentNodesOnPart( smeshObj_1, 1e-05, [  ] )
+[ smeshObj_2, smeshObj_3, smeshObj_4, smeshObj_5 ] = smeshObj_1.GetGroups()
+[ smeshObj_2, smeshObj_3, smeshObj_4, smeshObj_5 ] = smeshObj_1.GetGroups()
+[ smeshObj_2, smeshObj_3, smeshObj_4, smeshObj_5 ] = smeshObj_1.GetGroups()
+[ smeshObj_7 ] = smeshObj_1.GetMesh().GetSubMeshes()
+[ smeshObj_2, smeshObj_3, smeshObj_4, smeshObj_5 ] = smeshObj_1.GetGroups()
+[ smeshObj_7 ] = smeshObj_1.GetMesh().GetSubMeshes()
+smesh.SetName(smeshObj_1, 'Tuyau')
+smeshObj_1.ExportMED( r'/home/aster/Tuyau.mmed.med', 0, SMESH.MED_V2_2, 1 )
+smesh.SetName(smeshObj_1, 'Tuyau')
+smeshObj_1.ExportMED( r'/home/aster/Tuyau.med', 0, SMESH.MED_V2_2, 1 )
+[ smeshObj_2, smeshObj_3, smeshObj_4, smeshObj_5 ] = smeshObj_1.GetGroups()
+elem0d = smeshObj_1.Add0DElement( 12526 )
+smesh.SetName(smeshObj_1, 'Tuyau')
+smeshObj_1.ExportMED( r'/home/aster/Tuyau.med', 0, SMESH.MED_V2_2, 1 )
+[ smeshObj_2, smeshObj_3, smeshObj_4, smeshObj_5 ] = smeshObj_1.GetGroups()
+[ smeshObj_7 ] = smeshObj_1.GetMesh().GetSubMeshes()
+[ smeshObj_2, smeshObj_3, smeshObj_4, smeshObj_5 ] = smeshObj_1.GetGroups()
+[ smeshObj_7 ] = smeshObj_1.GetMesh().GetSubMeshes()
+[ smeshObj_2, smeshObj_3, smeshObj_4, smeshObj_5 ] = smeshObj_1.GetGroups()
+[ smeshObj_7 ] = smeshObj_1.GetMesh().GetSubMeshes()
+[ smeshObj_2, smeshObj_3, smeshObj_4, smeshObj_5 ] = smeshObj_1.GetGroups()
+[ smeshObj_7 ] = smeshObj_1.GetMesh().GetSubMeshes()
+isDone = smeshObj_1.Compute()
+[ smeshObj_2, smeshObj_3, smeshObj_4, smeshObj_5 ] = smeshObj_1.GetGroups()
+[ smeshObj_7 ] = smeshObj_1.GetMesh().GetSubMeshes()
+[ smeshObj_2, smeshObj_3, smeshObj_4, smeshObj_5 ] = smeshObj_1.GetGroups()
+[ smeshObj_7 ] = smeshObj_1.GetMesh().GetSubMeshes()
+[ smeshObj_2, smeshObj_3, smeshObj_4, smeshObj_5 ] = smeshObj_1.GetGroups()
+[ smeshObj_7 ] = smeshObj_1.GetMesh().GetSubMeshes()
+[ smeshObj_2, smeshObj_3, smeshObj_4, smeshObj_5 ] = smeshObj_1.GetGroups()
+coincident_nodes_on_part = smeshObj_1.FindCoincidentNodesOnPart( smeshObj_1, 1e-05, [  ] )
+coincident_nodes_on_part = smeshObj_1.FindCoincidentNodesOnPart( smeshObj_1, 1e-05, [  ] )
+Tuyau_1 = smesh.Mesh(Tuyau)
+status = Tuyau_1.AddHypothesis(Nb_Seg_500)
+Regular_1D_2 = Tuyau_1.Segment()
+Quadrangle_2D_1 = Tuyau_1.Quadrangle()
+Regular_1D_3 = Tuyau_1.Segment(geom=Auto_group_for_SubMesh_2)
+status = Tuyau_1.AddHypothesis(Nb_Seg_25,Auto_group_for_SubMesh_2)
+status = smeshObj_1.RemoveHypothesis(Regular_1D,Auto_group_for_SubMesh_1)
+status = smeshObj_1.RemoveHypothesis(Nb_Seg_25,Auto_group_for_SubMesh_1)
+smeshObj_1.RemoveGroup( smeshObj_2 )
+smeshObj_1.RemoveGroup( smeshObj_4 )
+smeshObj_1.RemoveGroup( smeshObj_3 )
+smeshObj_1.RemoveGroup( smeshObj_5 )
+smeshObj_1.GetMesh().RemoveSubMesh( smeshObj_7 )
+status = smeshObj_1.RemoveHypothesis(Quadrangle_2D)
+status = smeshObj_1.RemoveHypothesis(Regular_1D)
+status = smeshObj_1.RemoveHypothesis(Nb_Seg_500)
+isDone = Tuyau_1.Compute()
+Tuyau_2 = Tuyau_1.GroupOnGeom(Tuyau,'Tuyau',SMESH.FACE)
+Encas_1 = Tuyau_1.GroupOnGeom(Encas,'Encas',SMESH.EDGE)
+Libre_1 = Tuyau_1.GroupOnGeom(Libre,'Libre',SMESH.EDGE)
+[ Tuyau_2, Encas_1, Libre_1 ] = Tuyau_1.GetGroups()
+nodeID = Tuyau_1.AddNode( 0, 0, 0 )
+Point_A = Tuyau_1.CreateEmptyGroup( SMESH.NODE, 'Point_A' )
+nbAdd = Point_A.Add( [ 12526 ] )
+[ Tuyau_2, Encas_1, Libre_1, Point_A ] = Tuyau_1.GetGroups()
+elem0d = Tuyau_1.Add0DElement( 12526 )
+[ Tuyau_2, Encas_1, Libre_1, Point_A ] = Tuyau_1.GetGroups()
+[ SubMesh_2 ] = Tuyau_1.GetMesh().GetSubMeshes()
+[ Tuyau_2, Encas_1, Libre_1, Point_A ] = Tuyau_1.GetGroups()
+[ SubMesh_2 ] = Tuyau_1.GetMesh().GetSubMeshes()
+smesh.SetName(Tuyau_1, 'Tuyau')
+Tuyau_1.ExportMED( r'/home/aster/Tuyau.med', 0, SMESH.MED_V2_2, 1 )
+smeshObj_7 = Regular_1D_1.GetSubMesh()
+SubMesh_2 = Regular_1D_3.GetSubMesh()
+
+## some objects were removed
+aStudyBuilder = theStudy.NewBuilder()
+SO = theStudy.FindObjectIOR(theStudy.ConvertObjectToIOR(smeshObj_1.GetMesh()))
+if SO is not None: aStudyBuilder.RemoveObjectWithChildren(SO)
+SO = theStudy.FindObjectIOR(theStudy.ConvertObjectToIOR(smeshObj_2))
+if SO is not None: aStudyBuilder.RemoveObjectWithChildren(SO)
+SO = theStudy.FindObjectIOR(theStudy.ConvertObjectToIOR(smeshObj_3))
+if SO is not None: aStudyBuilder.RemoveObjectWithChildren(SO)
+SO = theStudy.FindObjectIOR(theStudy.ConvertObjectToIOR(smeshObj_4))
+if SO is not None: aStudyBuilder.RemoveObjectWithChildren(SO)
+SO = theStudy.FindObjectIOR(theStudy.ConvertObjectToIOR(smeshObj_5))
+if SO is not None: aStudyBuilder.RemoveObjectWithChildren(SO)
+SO = theStudy.FindObjectIOR(theStudy.ConvertObjectToIOR(smeshObj_6))
+if SO is not None: aStudyBuilder.RemoveObjectWithChildren(SO)
+SO = theStudy.FindObjectIOR(theStudy.ConvertObjectToIOR(smeshObj_7))
+if SO is not None: aStudyBuilder.RemoveObjectWithChildren(SO)
+## set object names
+smesh.SetName(Regular_1D.GetAlgorithm(), 'Regular_1D')
+smesh.SetName(Nb_Seg_500, 'Nb. Seg=500')
+smesh.SetName(Quadrangle_2D.GetAlgorithm(), 'Quadrangle_2D')
+smesh.SetName(Nb_Seg_25, 'Nb. Seg=25')
+smesh.SetName(Tuyau_1.GetMesh(), 'Tuyau')
+smesh.SetName(Tuyau_2, 'Tuyau')
+smesh.SetName(Encas_1, 'Encas')
+smesh.SetName(Libre_1, 'Libre')
+smesh.SetName(Point_A, 'Point_A')
+smesh.SetName(SubMesh_2, 'SubMesh_2')
+
+### Store presentation parameters of displayed objects
+import iparameters
+ipar = iparameters.IParameters(theStudy.GetModuleParameters("Interface Applicative", "SMESH", 1))
+
+#Set up entries:
+# set up entry SMESH_4 (Tuyau) parameters
+ipar.setParameter("SMESH_4", "VTKViewer_0_Visibility", "On")
+ipar.setParameter("SMESH_4", "VTKViewer_0_Representation", "2")
+ipar.setParameter("SMESH_4", "VTKViewer_0_IsShrunk", "0")
+ipar.setParameter("SMESH_4", "VTKViewer_0_Entities", "e:1:f:1:v:0")
+ipar.setParameter("SMESH_4", "VTKViewer_0_Colors", "surface:0.333333:1:1:backsurface:-9:edge:0:0.666667:1:node:1:0:0:outline:0:0.27451:0")
+ipar.setParameter("SMESH_4", "VTKViewer_0_Sizes", "line:1:shrink:0.75")
+ipar.setParameter("SMESH_4", "VTKViewer_0_PointMarker", "std:1:9")
+ipar.setParameter("SMESH_4", "VTKViewer_0_Opacity", "1")
+ipar.setParameter("SMESH_4", "VTKViewer_0_ClippingPlane", "Off")
+
+
+if salome.sg.hasDesktop():
+  salome.sg.updateObjBrowser(1)
+  iparameters.getSession().restoreVisualState(1)
