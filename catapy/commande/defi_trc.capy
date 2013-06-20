@@ -17,9 +17,9 @@
 # ======================================================================
 # person_in_charge: valerie.cano at edf.fr
 DEFI_TRC=OPER(nom="DEFI_TRC",op=94,sd_prod=table_sdaster,reentrant='n',
-            UIinfo={"groupes":("Modélisation","Thermique",)},
-              fr="Définir d'un diagramme de transformations en refroidissement continu (TRC) de référence d'un acier"
-                +" pour les calculs métallurgiques.",
+            UIinfo={"groupes":("ModÃ©lisation","Thermique",)},
+              fr="DÃ©finir d'un diagramme de transformations en refroidissement continu (TRC) de rÃ©fÃ©rence d'un acier"
+                +" pour les calculs mÃ©tallurgiques.",
          HIST_EXP        =FACT(statut='o',max='**',
            VALE            =SIMP(statut='o',typ='R',max='**'),
          ),

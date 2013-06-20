@@ -22,7 +22,7 @@ POST_RUPTURE=MACRO(nom="POST_RUPTURE",
                    sd_prod=table_sdaster,
                    fr="post-traitements en Rupture",
                    reentrant='f',
-                   UIinfo={"groupes":("Résultats et champs","Rupture",)},
+                   UIinfo={"groupes":("RÃ©sultats et champs","Rupture",)},
 
       TABLE     = SIMP(statut='o',typ=table_sdaster,max='**'),
 
@@ -99,7 +99,7 @@ POST_RUPTURE=MACRO(nom="POST_RUPTURE",
       b_Comptage = BLOC(condition="OPERATION == 'COMPTAGE_CYCLES'  ",fr="Comptage des cycles",
 
                    NOM_PARA   = SIMP(statut='o',typ='TXM',validators=NoRepeat(),max='**',
-                                     fr="Nom des quantités sur lesquelles s'effectuent le comptage"),
+                                     fr="Nom des quantitÃ©s sur lesquelles s'effectuent le comptage"),
                    COMPTAGE   = SIMP(statut='o',typ='TXM',into=("RAINFLOW","RCCM","NATUREL","UNITAIRE")),
                    DELTA_OSCI = SIMP(statut='f',typ='R',defaut= 0.0E+0),
 
@@ -117,11 +117,11 @@ POST_RUPTURE=MACRO(nom="POST_RUPTURE",
 #                 'LOI_PROPA'
 #-----------------------------------------------------------------------------------------------------------------------------------
 
-      b_Loi_Propa   = BLOC(condition="OPERATION == 'LOI_PROPA'  ",fr="calcul de l'incrément d'avancée de fissure par cycle",
+      b_Loi_Propa   = BLOC(condition="OPERATION == 'LOI_PROPA'  ",fr="calcul de l'incrÃ©ment d'avancÃ©e de fissure par cycle",
 
                    NOM_PARA       = SIMP(statut='f',typ='TXM',defaut="DELTA_A"   ,max=1,fr="Nom de la nouvelle colonne"),
                    NOM_DELTA_K_EQ = SIMP(statut='f',typ='TXM',defaut="DELTA_K_EQ",max=1,
-                                                                              fr="Nom de la quantité correspondant au Delta_K_eq"),
+                                                                              fr="Nom de la quantitÃ© correspondant au Delta_K_eq"),
                    LOI            = SIMP(statut='o',typ='TXM',into=("PARIS",)),
 
                      b_paris = BLOC(condition = "LOI=='PARIS'",
@@ -137,7 +137,7 @@ POST_RUPTURE=MACRO(nom="POST_RUPTURE",
 
       b_cumul = BLOC(condition="OPERATION == 'CUMUL_CYCLES'  ",fr="Cumul sur les cycles",
 
-                   NOM_PARA = SIMP(statut='f',typ='TXM',max=1,defaut="DELTA_A",fr="Nom de la colonne à traiter"),
+                   NOM_PARA = SIMP(statut='f',typ='TXM',max=1,defaut="DELTA_A",fr="Nom de la colonne Ã  traiter"),
                    CUMUL    = SIMP(statut='f',typ='TXM',max=1,defaut="LINEAIRE",into=('LINEAIRE',)),
 
                    ),
@@ -149,8 +149,8 @@ POST_RUPTURE=MACRO(nom="POST_RUPTURE",
       b_pilo_propa = BLOC(condition="OPERATION == 'PILO_PROPA'  ",fr="Pilotage de la propagation",
 
                    regles      = UN_PARMI('DELTA_A_MAX','DELTA_N'),
-                   DELTA_A_MAX = SIMP(statut='f',typ='R',max=1,val_min=0.,fr="Pilotage en incrément d'avancée max"),
-                   DELTA_N     = SIMP(statut='f',typ='R',max=1,val_min=1 ,fr="Pilotage en incrément de nombre de blocs"),
+                   DELTA_A_MAX = SIMP(statut='f',typ='R',max=1,val_min=0.,fr="Pilotage en incrÃ©ment d'avancÃ©e max"),
+                   DELTA_N     = SIMP(statut='f',typ='R',max=1,val_min=1 ,fr="Pilotage en incrÃ©ment de nombre de blocs"),
                   
                    ),
 

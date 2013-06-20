@@ -29,9 +29,9 @@ def macr_aspic_calc_prod(self,MODELE,CHAM_MATER,CARA_ELEM,FOND_FISS_1,FOND_FISS_
 MACR_ASPIC_CALC=MACRO(nom="MACR_ASPIC_CALC",
                       op=OPS('Macro.macr_aspic_calc_ops.macr_aspic_calc_ops'),
                       sd_prod=macr_aspic_calc_prod,
-                      fr="Réalise un calcul prédéfini de piquages sains ou fissurés " \
-                         "ainsi que les post-traitements associés ",
-                      UIinfo={"groupes":("Résolution","Outils-métier",)},
+                      fr="RÃ©alise un calcul prÃ©dÃ©fini de piquages sains ou fissurÃ©s " \
+                         "ainsi que les post-traitements associÃ©s ",
+                      UIinfo={"groupes":("RÃ©solution","Outils-mÃ©tier",)},
                       reentrant='n',
 
          TYPE_MAILLAGE   =SIMP(statut='o',typ='TXM',

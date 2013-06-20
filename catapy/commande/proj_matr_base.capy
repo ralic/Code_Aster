@@ -24,7 +24,7 @@ def matr_asse_gene_prod(MATR_ASSE,MATR_ASSE_GENE,**args):
   raise AsException("type de concept resultat non prevu")
 
 PROJ_MATR_BASE=OPER(nom="PROJ_MATR_BASE",op=  71,sd_prod=matr_asse_gene_prod,
-                    fr="Projection d'une matrice assemblée sur une base (modale ou de RITZ)",
+                    fr="Projection d'une matrice assemblÃ©e sur une base (modale ou de RITZ)",
                     reentrant='n',
             UIinfo={"groupes":("Matrices et vecteurs",)},
          regles=(UN_PARMI('MATR_ASSE','MATR_ASSE_GENE'),),            

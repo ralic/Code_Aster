@@ -27,6 +27,6 @@ OPTION__
         PGEOMER  GEOM_R
         PFFCO3D  FORC_F
         PTEMPSR  INST_R
-        PCACOQU  CACOQU   << Champ de caractéristiques pour les coques. Concept CARA_ELEM >>
+        PCACOQU  CACOQU   << Champ de caracteristiques pour les coques. Concept CARA_ELEM >>
    OUT__
 PVECTUR VDEP_R RESL__

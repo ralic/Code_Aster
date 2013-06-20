@@ -17,7 +17,7 @@
 # ======================================================================
 # person_in_charge: nicolas.sellenet at edf.fr
 def lire_champ_prod(TYPE_CHAM=None,**args):
-# Remarque : si cette liste évolue, il faut penser à mettre à jour son
+# Remarque : si cette liste Ã©volue, il faut penser Ã  mettre Ã  jour son
 #            homologue dans macr_adap_mail
   if TYPE_CHAM[0:5] == "NOEU_" : return cham_no_sdaster
   if TYPE_CHAM[0:5] == "CART_" : return carte_sdaster
@@ -25,7 +25,7 @@ def lire_champ_prod(TYPE_CHAM=None,**args):
   raise AsException("type de concept resultat non prevu")
 
 LIRE_CHAMP=OPER(nom="LIRE_CHAMP",op= 192,sd_prod=lire_champ_prod,
-                UIinfo={"groupes":("Lecture","Résultats et champs",)},
+                UIinfo={"groupes":("Lecture","RÃ©sultats et champs",)},
                 fr="Lire un champ dans un fichier au format MED et le stocker dans un concept.",
                 reentrant='n',
          MAILLAGE        =SIMP(statut='o',typ=maillage_sdaster,),
@@ -44,23 +44,23 @@ LIRE_CHAMP=OPER(nom="LIRE_CHAMP",op= 192,sd_prod=lire_champ_prod,
                fr="Affecte des valeurs nulles la ou le champ n'est pas defini (sinon il y a NaN)"),
             NUME_PT      =SIMP(statut='f',typ='I'  ,validators=NoRepeat(),max='**',),
             NUME_ORDRE   =SIMP(statut='f',typ='I'  ,validators=NoRepeat(),max='**',
-                           fr="Numero d ordre du champ à lire",ang="Rank of the field to be read" ),
-            INST         =SIMP(statut='f',typ='R',fr="Instant associé",ang="Instant" ),
+                           fr="Numero d ordre du champ Ã  lire",ang="Rank of the field to be read" ),
+            INST         =SIMP(statut='f',typ='R',fr="Instant associÃ©",ang="Instant" ),
 #
             b_precision     =BLOC(condition="(INST != None)",
                   CRITERE         =SIMP(statut='f',typ='TXM',defaut="RELATIF",into=("RELATIF","ABSOLU",),
-                  fr="Critère de précision sur le choix de l'instant associé",
+                  fr="CritÃ¨re de prÃ©cision sur le choix de l'instant associÃ©",
                   ang="Accuracy criterium over instant choice" ),
                   b_prec_rela=BLOC(condition="(CRITERE=='RELATIF')",
                       PRECISION       =SIMP(statut='f',typ='R',defaut= 1.E-6,
-                      fr="Précision sur le choix de l'instant associé",ang="Accuracy over instant choice" ),),
+                      fr="PrÃ©cision sur le choix de l'instant associÃ©",ang="Accuracy over instant choice" ),),
                   b_prec_abso=BLOC(condition="(CRITERE=='ABSOLU')",
                       PRECISION       =SIMP(statut='o',typ='R',
-                      fr="Précision sur le choix de l'instant associé",ang="Accuracy over instant choice" ),),),
+                      fr="PrÃ©cision sur le choix de l'instant associÃ©",ang="Accuracy over instant choice" ),),),
 #
             NOM_MAIL_MED =SIMP(statut='f',typ='TXM',),
                   ),
-#        Remarque : si cette liste évolue, il faut penser à mettre à jour son
+#        Remarque : si cette liste Ã©volue, il faut penser Ã  mettre Ã  jour son
 #                   homologue dans macr_adap_mail
          TYPE_CHAM       =SIMP(statut='o',typ='TXM',into=C_TYPE_CHAM_INTO()),
          b_modele =BLOC(condition = "TYPE_CHAM!=None and (TYPE_CHAM[0:2] == 'EL')",

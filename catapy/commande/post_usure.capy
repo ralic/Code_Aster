@@ -18,7 +18,7 @@
 # person_in_charge: irmela.zentner at edf.fr
 POST_USURE=OPER(nom="POST_USURE",op=153,sd_prod=table_sdaster,reentrant='f',
             UIinfo={"groupes":("Post-traitements",)},
-                fr="Calcul des volumes d'usure et des profondeurs d'usure d'après la puissance d'usure",
+                fr="Calcul des volumes d'usure et des profondeurs d'usure d'aprÃ¨s la puissance d'usure",
          regles=(UN_PARMI('TUBE_NEUF','RESU_GENE','PUIS_USURE'),
                  PRESENT_PRESENT('RESU_GENE','NOEUD','LOI_USURE'),
                  PRESENT_PRESENT('PUIS_USURE','LOI_USURE'),),

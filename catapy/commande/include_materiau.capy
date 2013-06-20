@@ -20,8 +20,8 @@
 INCLUDE_MATERIAU = MACRO(nom="INCLUDE_MATERIAU",
                          op=OPS("Macro.include_materiau_ops.include_materiau_ops"),
                          sd_prod=mater_sdaster,
-            UIinfo={"groupes":("Modélisation", "Gestion du travail", )},
-            fr="Récupérer les caractéristiques d'un matériau dans le Catalogue Materiaux d'Aster ",
+            UIinfo={"groupes":("ModÃ©lisation", "Gestion du travail", )},
+            fr="RÃ©cupÃ©rer les caractÃ©ristiques d'un matÃ©riau dans le Catalogue Materiaux d'Aster ",
 
          NOM_AFNOR      = SIMP(statut='o', typ='TXM',),
          TYPE_MODELE    = SIMP(statut='o', typ='TXM', into=("REF", "PAR"),),

@@ -27,7 +27,7 @@ def post_cham_xfem_prod(RESULTAT,**args ):
 
 POST_CHAM_XFEM=OPER(nom="POST_CHAM_XFEM",op= 196,sd_prod=post_cham_xfem_prod,
                     reentrant='n',UIinfo={"groupes":("Post-traitements","Rupture",)},
-            fr="Calcul des champs DEPL, SIEF_ELGA et VARI_ELGA sur le maillage de visualisation (fissuré)",
+            fr="Calcul des champs DEPL, SIEF_ELGA et VARI_ELGA sur le maillage de visualisation (fissurÃ©)",
     RESULTAT      = SIMP(statut='o',typ=resultat_sdaster),
     MODELE_VISU   = SIMP(statut='o',typ=modele_sdaster,),
     INFO          = SIMP(statut='f',typ='I',defaut= 1,into=(1,2,) ),

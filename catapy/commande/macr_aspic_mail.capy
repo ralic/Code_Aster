@@ -23,7 +23,7 @@ MACR_ASPIC_MAIL=MACRO(nom="MACR_ASPIC_MAIL",
                       sd_prod=maillage_sdaster,
                       reentrant='n',
                       fr="Engendre le maillage d'un piquage sain ou avec fissure (longue ou courte)",
-                      UIinfo={"groupes":("Maillage","Outils-métier",)},
+                      UIinfo={"groupes":("Maillage","Outils-mÃ©tier",)},
 
          EXEC_MAILLAGE   =FACT(statut='o',
            LOGICIEL        =SIMP(statut='o',typ='TXM',defaut="GIBI2000",into=("GIBI98","GIBI2000")),

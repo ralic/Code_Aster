@@ -20,7 +20,7 @@
 DEFI_PART_OPS=OPER(nom="DEFI_PART_OPS",op=21,sd_prod=sd_feti_sdaster,
                     fr="Creation partitionnement en sous-domaines pour FETI",
                     docu="U4.23.05",reentrant='n',
-                    UIinfo={"groupes":("Modélisation",)},
+                    UIinfo={"groupes":("ModÃ©lisation",)},
          MODELE          =SIMP(statut='o',typ=(modele_sdaster) ),
          MAILLAGE        =SIMP(statut='f',typ=(maillage_sdaster) ),
          NOM             =SIMP(statut='f',typ='TXM',defaut='SD'),

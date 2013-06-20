@@ -44,7 +44,7 @@ ENTETE__ ELEMENT__ MECA_XTC_TETRA4       MAILLE__ TETRA4
    ELREFE__  TR3       GAUSS__  FPG4=FPG4    NOEU=NOEU   FPG6=FPG6   FPG7=FPG7   XCON=FPG12 GAUSS=FPG12 SIMP=SIMP
    ATTRIBUT__  XFEM=XTC XLAG=NOEUD
    ENS_NOEUD__  EN1     =     1   2   3   4
-% ici l ancienne formulation a été résorbée
+% ici l ancienne formulation a ete resorbee
 % ajout des elements quadratiques
 % sur les lignes volumiques on met les caracteristiques pour la rigidite
 % sur les lignes surfaciques celles pour le contact

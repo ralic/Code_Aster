@@ -1,4 +1,4 @@
-# -*- coding: iso-8859-1 -*-
+# coding: utf-8
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -34,13 +34,13 @@ except ImportError:
     aster = None
     aster_exists = False
 
-# Le catalogue est constitué par concaténation des fichiers .capy
+# Le catalogue est constituÃ© par concatÃ©nation des fichiers .capy
 # de catapy/{entete,commun,commande}.
 
-# Tous les imports globaux devraient être faits ici dans accas.capy.
-# Veillez à limiter les imports dans la définition des concepts (co_*.capy)
-# au strict nécessaire et les faire sous les méthodes qui en ont
-# expressément besoin.
+# Tous les imports globaux devraient Ãªtre faits ici dans accas.capy.
+# Veillez Ã  limiter les imports dans la dÃ©finition des concepts (co_*.capy)
+# au strict nÃ©cessaire et les faire sous les mÃ©thodes qui en ont
+# expressÃ©ment besoin.
 
 JdC = JDC_CATA(code='ASTER',
                execmodul=None,
@@ -48,17 +48,17 @@ JdC = JDC_CATA(code='ASTER',
                        AU_MOINS_UN('FIN'),
                        A_CLASSER(('DEBUT', 'POURSUITE'), 'FIN')))
 
-# Types géométriques
+# Types gÃ©omÃ©triques
 class no(GEOM):
     """
-    Classe servant à définir le nom d'un noeud dans le fichier de commande
+    Classe servant Ã  dÃ©finir le nom d'un noeud dans le fichier de commande
     En clair : un chaine de longueur 8.
     """
     pass
 
 class grno(GEOM):
     """
-    Classe servant à définir le nom d'un groupe de noeuds dans le fichier de commande
+    Classe servant Ã  dÃ©finir le nom d'un groupe de noeuds dans le fichier de commande
     En clair : un chaine de longueur 24.
     """
     def __convert__(cls,valeur):
@@ -67,19 +67,19 @@ class grno(GEOM):
         """
         if isinstance(valeur, (str,unicode)) and len(valeur.strip()) <= 24:
             return valeur.strip()
-        raise ValueError(_(u'On attend une chaine de caractères (de longueur <= 24).'))
+        raise ValueError(_(u'On attend une chaine de caractÃ¨res (de longueur <= 24).'))
     __convert__ = classmethod(__convert__)
 
 class ma(GEOM):
     """
-    Classe servant à définir le nom d'une maille dans le fichier de commande
+    Classe servant Ã  dÃ©finir le nom d'une maille dans le fichier de commande
     En clair : un chaine de longueur 8.
     """
     pass
 
 class grma(GEOM):
     """
-    Classe servant à définir le nom d'un groupe de mailles dans le fichier de commande
+    Classe servant Ã  dÃ©finir le nom d'un groupe de mailles dans le fichier de commande
     En clair : un chaine de longueur 24.
     """
     def __convert__(cls,valeur):
@@ -88,5 +88,5 @@ class grma(GEOM):
         """
         if isinstance(valeur, (str,unicode)) and len(valeur.strip()) <= 24:
             return valeur.strip()
-        raise ValueError(_(u'On attend une chaine de caractères (de longueur <= 24).'))
+        raise ValueError(_(u'On attend une chaine de caractÃ¨res (de longueur <= 24).'))
     __convert__ = classmethod(__convert__)

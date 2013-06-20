@@ -1,4 +1,3 @@
-# -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -35,7 +34,7 @@ def macr_adap_mail_prod(self, MAJ_CHAM, ADD_CHAM, ADAPTATION, **args):
 #
   #print "MAJ_CHAM =", MAJ_CHAM
   if MAJ_CHAM is not None :
-# Remarque : la liste qui suit doit etre conforme à son homologue de LIRE_CHAMP
+# Remarque : la liste qui suit doit etre conforme Ã  son homologue de LIRE_CHAMP
     for ch in MAJ_CHAM:
       t=ch['TYPE_CHAM']
       if t[0:5] == "NOEU_":self.type_sdprod(ch['CHAM_MAJ'],cham_no_sdaster)
@@ -75,14 +74,14 @@ MACR_ADAP_MAIL=MACRO(nom="MACR_ADAP_MAIL",
 # 2.2.1. Le concept du maillage final (sortie)
 #
     MAILLAGE_NP1 = SIMP(statut='o',typ=CO,
-                        fr="Maillage après adaptation",
+                        fr="Maillage aprÃ¨s adaptation",
                         ang="Mesh after adaptation" ),
 #
 # 2.2.2. Eventuellement, on peut produire un maillage annexe
-#      Actuellement, c'est le maillage n+1, mais de degré différent.
+#      Actuellement, c'est le maillage n+1, mais de degrÃ© diffÃ©rent.
 #
     MAILLAGE_NP1_ANNEXE = SIMP(statut='f',typ=CO,
-                              fr="Maillage annexe après adaptation",
+                              fr="Maillage annexe aprÃ¨s adaptation",
                               ang="Additional mesh after adaptation" ),
 #
   ) ,
@@ -92,8 +91,8 @@ MACR_ADAP_MAIL=MACRO(nom="MACR_ADAP_MAIL",
 #  . Raffinement seul, selon un champ
 #  . Deraffinement seul, selon un champ
 #  . Raffinement et deraffinement, selon des zones geometriques
-#  . Raffinement uniforme : toutes les mailles sont divisées
-#  . Deraffinement uniforme : toutes les mailles sont regroupées
+#  . Raffinement uniforme : toutes les mailles sont divisÃ©es
+#  . Deraffinement uniforme : toutes les mailles sont regroupÃ©es
 #  . Modification : le maillage subit des transformations specifiques
 #  . Rien : le maillage est le meme a la sortie et a l'entree
 #
@@ -109,12 +108,12 @@ MACR_ADAP_MAIL=MACRO(nom="MACR_ADAP_MAIL",
   b_champ = BLOC( condition = " (ADAPTATION == 'RAFF_DERA') or \
                                 (ADAPTATION == 'RAFFINEMENT') or \
                                 (ADAPTATION == 'DERAFFINEMENT') " ,
-                  fr="Pour une adaptation libre, choix du champ définissant la région à raffiner/déraffiner",
+                  fr="Pour une adaptation libre, choix du champ dÃ©finissant la rÃ©gion Ã  raffiner/dÃ©raffiner",
                   ang="For a free adaptation, selection of the field that defines the area for refinment/unrefinement",
 #
     regles=(UN_PARMI('CHAM_GD','RESULTAT_N')),
 #
-# 4.1. Reperage de la région a raffiner a l'aide d'un champ
+# 4.1. Reperage de la rÃ©gion a raffiner a l'aide d'un champ
 #
 # 4.1.1. Sous forme de champ de grandeur
 #
@@ -125,12 +124,12 @@ MACR_ADAP_MAIL=MACRO(nom="MACR_ADAP_MAIL",
 # 4.1.2. Sous forme de concept resultat_sdaster
 #
     RESULTAT_N = SIMP(statut='f',typ=(evol_elas,evol_noli,evol_ther) ,
-                      fr="Concept résultat Code_Aster contenant le champ",
+                      fr="Concept rÃ©sultat Code_Aster contenant le champ",
                       ang="The Code_Aster result with the field" ),
 #
     b_champ_adaptation = BLOC(condition="(RESULTAT_N != None)",
       NOM_CHAM = SIMP(statut='o',typ='TXM',validators=NoRepeat(),into=C_NOM_CHAM_INTO(),
-                        fr="Champ dans le résultat",
+                        fr="Champ dans le rÃ©sultat",
                         ang="The field in the result structure" ),
     ),
 #
@@ -140,10 +139,10 @@ MACR_ADAP_MAIL=MACRO(nom="MACR_ADAP_MAIL",
                           fr="Liste des composante(s) retenue(s) pour le champ.",
                           ang="List of the selected component(s) for the field." ),
 #
-# 4.1.5. Le paramètre temporel pour le champ
+# 4.1.5. Le paramÃ¨tre temporel pour le champ
 #
     b_parametre_temporel = BLOC(condition="(RESULTAT_N != None)",
-                                fr="Choix éventuel du paramètre temporel pour le champ",
+                                fr="Choix Ã©ventuel du paramÃ¨tre temporel pour le champ",
                                 ang="Time selection for the field (option)",
 #
       regles=(EXCLUS('NUME_ORDRE','INST'),),
@@ -151,31 +150,31 @@ MACR_ADAP_MAIL=MACRO(nom="MACR_ADAP_MAIL",
 # 4.1.5.1. Soit le numero d'ordre
 #
       NUME_ORDRE = SIMP(statut='f',typ='I',
-                        fr="Numéro d ordre",
+                        fr="NumÃ©ro d ordre",
                         ang="Rank" ),
 #
 # 4.1.5.2. Soit l'instant
 # 4.1.5.2.1. Sa valeur
 #
       INST       = SIMP(statut='f',typ='R',
-                        fr="Instant associé",
+                        fr="Instant associÃ©",
                         ang="Instant" ),
 #
-# 4.1.5.2.2. La précision du choix de l'instant
+# 4.1.5.2.2. La prÃ©cision du choix de l'instant
 #
       b_precision = BLOC(condition="(INST != None)",
-                         fr="Choix de la précision du choix de l'instant",
+                         fr="Choix de la prÃ©cision du choix de l'instant",
                          ang="Precision for the choice of the instant",
         CRITERE         =SIMP(statut='f',typ='TXM',defaut="RELATIF",into=("RELATIF", "ABSOLU",),
-                         fr="Critère de précision sur le choix de l'instant associé",
+                         fr="CritÃ¨re de prÃ©cision sur le choix de l'instant associÃ©",
                          ang="Accuracy criterium over the choice of the instant"),
         b_prec_rela=BLOC(condition="(CRITERE=='RELATIF')",
             PRECISION       =SIMP(statut='f',typ='R',defaut= 1.E-6,
-                             fr="Précision relative sur le choix de l'instant associé",
+                             fr="PrÃ©cision relative sur le choix de l'instant associÃ©",
                              ang="Relative accuracy over the choice of the instant"),),
         b_prec_abso=BLOC(condition="(CRITERE=='ABSOLU')",
             PRECISION       =SIMP(statut='o',typ='R',
-                             fr="Précision absolue sur le choix de l'instant associé",
+                             fr="PrÃ©cision absolue sur le choix de l'instant associÃ©",
                              ang="Absolute accuracy over the choice of the instant"),),
       ),
 #
@@ -194,10 +193,10 @@ MACR_ADAP_MAIL=MACRO(nom="MACR_ADAP_MAIL",
                         fr="Usage du champ : la valeur par maille ou le saut entre mailles voisines",
                         ang="Use of the field: value over every mesh or jump between the neighbours" ),
 #
-# 4.1.8. Initialisation de l'adaptation : raffinement ou déraffinement
+# 4.1.8. Initialisation de l'adaptation : raffinement ou dÃ©raffinement
 #
     ADAP_INIT = SIMP(statut='f',typ='TXM',defaut="GARDER",into=("GARDER", "RAFFINER", "DERAFFINER"),
-                        fr="Initialisation de l'adaptation dans les régions sans indicateur : garder, raffiner ou déraffiner",
+                        fr="Initialisation de l'adaptation dans les rÃ©gions sans indicateur : garder, raffiner ou dÃ©raffiner",
                         ang="Initialization of the adaptation in the areas without indicator: keep, refine or unrefine" ),
 #
   ) ,
@@ -208,22 +207,22 @@ MACR_ADAP_MAIL=MACRO(nom="MACR_ADAP_MAIL",
 #
   b_critere_de_raffinement = BLOC( condition = " (ADAPTATION == 'RAFF_DERA') or \
                                                  (ADAPTATION == 'RAFFINEMENT') " ,
-                                fr="Critère de raffinement.",
+                                fr="CritÃ¨re de raffinement.",
                                 ang="Refinement threshold.",
 #
     regles=(UN_PARMI ( 'CRIT_RAFF_ABS', 'CRIT_RAFF_REL', 'CRIT_RAFF_PE', 'CRIT_RAFF_MS' ),),
 #
     CRIT_RAFF_ABS = SIMP(statut='f',typ='R',
-                         fr="Critère absolu",
+                         fr="CritÃ¨re absolu",
                          ang="Absolute threshold" ),
     CRIT_RAFF_REL = SIMP(statut='f',typ='R',
-                         fr="Critère relatif : fraction réelle entre 0. et 1.",
+                         fr="CritÃ¨re relatif : fraction rÃ©elle entre 0. et 1.",
                          ang="Relative threshold : ratio between 0. and 1." ),
     CRIT_RAFF_PE  = SIMP(statut='f',typ='R',
-                         fr="Pourcentage de mailles : fraction réelle entre 0. et 1.",
+                         fr="Pourcentage de mailles : fraction rÃ©elle entre 0. et 1.",
                          ang="Percentage of meshes: ratio between 0. and 1." ),
     CRIT_RAFF_MS  = SIMP(statut='f',typ='R',
-                         fr="Critère absolu valant moyenne + n*sigma, n étant > 0",
+                         fr="CritÃ¨re absolu valant moyenne + n*sigma, n Ã©tant > 0",
                          ang="Absolute threshold: mean + n*sigma, with n > 0" ),
   ) ,
 #
@@ -231,33 +230,33 @@ MACR_ADAP_MAIL=MACRO(nom="MACR_ADAP_MAIL",
 #
   b_critere_de_deraffinement = BLOC( condition = " (ADAPTATION == 'RAFF_DERA') or \
                                                    (ADAPTATION == 'DERAFFINEMENT') " ,
-                                     fr="Critère de déraffinement.",
+                                     fr="CritÃ¨re de dÃ©raffinement.",
                                      ang="Unrefinement threshold.",
 #
     regles=(UN_PARMI ( 'CRIT_DERA_ABS', 'CRIT_DERA_REL', 'CRIT_DERA_PE', 'CRIT_DERA_MS' ),),
 #
     CRIT_DERA_ABS = SIMP(statut='f',typ='R' ,
-                         fr="Critère absolu",
+                         fr="CritÃ¨re absolu",
                          ang="Absolute threshold" ),
     CRIT_DERA_REL = SIMP(statut='f',typ='R',
-                         fr="Critère relatif : fraction réelle entre 0. et 1.",
+                         fr="CritÃ¨re relatif : fraction rÃ©elle entre 0. et 1.",
                          ang="Relative threshold: ratio between 0. and 1." ),
     CRIT_DERA_PE  = SIMP(statut='f',typ='R',
-                         fr="Pourcentage de mailles : fraction réelle entre 0. et 1.",
+                         fr="Pourcentage de mailles : fraction rÃ©elle entre 0. et 1.",
                          ang="Percentage of meshes: ratio between 0. and 1." ),
     CRIT_DERA_MS  = SIMP(statut='f',typ='R',
-                         fr="Critère absolu valant moyenne - n*sigma, n étant > 0",
+                         fr="CritÃ¨re absolu valant moyenne - n*sigma, n Ã©tant > 0",
                          ang="Absolute threshold: mean - n*sigma, with n > 0" ),
   ) ,
 #
-# 6. Pour de l'adaptation par zone, définitions des zones
+# 6. Pour de l'adaptation par zone, dÃ©finitions des zones
 #
   b_zone = BLOC( condition = " (ADAPTATION == 'RAFF_DERA_ZONE') " ,
-                 fr="Pour une adaptation selon une zone à raffiner",
+                 fr="Pour une adaptation selon une zone Ã  raffiner",
                  ang="For adaptation among a zone",
 #
     ZONE = FACT(statut='o',min=1,max='**',
-                fr="Définition de zones à raffiner.",
+                fr="DÃ©finition de zones Ã  raffiner.",
                 ang="Refined zone definition.",
 #
 # 6.1. Type de la zone
@@ -269,7 +268,7 @@ MACR_ADAP_MAIL=MACRO(nom="MACR_ADAP_MAIL",
 # 6.2. Usage de la zone
 #
       USAGE = SIMP(statut='f',typ='TXM',into=("RAFFINEMENT", "DERAFFINEMENT"),defaut="RAFFINEMENT",
-                   fr="Zone pour raffiner ou déraffiner",
+                   fr="Zone pour raffiner ou dÃ©raffiner",
                    ang="Zone: refinement or unrefinement" ),
 #
 # Ne sachant pas exploiter les blocs, je mets des regles
@@ -296,7 +295,7 @@ MACR_ADAP_MAIL=MACRO(nom="MACR_ADAP_MAIL",
                     fr="Abscisse maximum de la boite",
                     ang="Maximum X for the box"),
       Y_MINI = SIMP(statut='f',typ='R',
-                    fr="Ordonnée minimum de la boite",
+                    fr="OrdonnÃ©e minimum de la boite",
                     ang="Minimum Y for the box"),
       Y_MAXI = SIMP(statut='f',typ='R',
                       fr="Abscisse maximum de la boite",
@@ -333,10 +332,10 @@ MACR_ADAP_MAIL=MACRO(nom="MACR_ADAP_MAIL",
 ##gn                           fr="X et Y du centre d'un disque plein ou perce, d'une sphere.",
 ##gn                           ang="X and Y of the centre of a disk or of a sphere.",
       X_CENTRE = SIMP(statut='f',typ='R',
-                      fr="Abscisse du centre du disque ou de la sphère",
+                      fr="Abscisse du centre du disque ou de la sphÃ¨re",
                       ang="X for the center of the disk or of the sphere"),
       Y_CENTRE = SIMP(statut='f',typ='R',
-                      fr="Ordonnée du centre du disque ou de la sphère",
+                      fr="OrdonnÃ©e du centre du disque ou de la sphÃ¨re",
                       ang="Y for the center of the disk or of the sphere"),
 ##gn      ) ,
 #
@@ -346,7 +345,7 @@ MACR_ADAP_MAIL=MACRO(nom="MACR_ADAP_MAIL",
 ##gn                       fr="Cote du centre de la sphere.",
 ##gn                       ang="Z for the center of the sphere.",
        Z_CENTRE = SIMP(statut='f',typ='R',
-                       fr="Cote du centre de la sphère",
+                       fr="Cote du centre de la sphÃ¨re",
                        ang="Z for the center of the sphere"),
 ##gn      ) ,
 #
@@ -356,10 +355,10 @@ MACR_ADAP_MAIL=MACRO(nom="MACR_ADAP_MAIL",
 ##gn                                fr="Le rayon d'un disque perce ou d'un tuyau.",
 ##gn                                ang="The radius of a holed disk or of a pipe.",
       RAYON_INT = SIMP(statut='f',typ='R',
-                       fr="Rayon intérieur",
+                       fr="Rayon intÃ©rieur",
                        ang="Internal radius"),
       RAYON_EXT = SIMP(statut='f',typ='R',
-                       fr="Rayon extérieur",
+                       fr="Rayon extÃ©rieur",
                        ang="External radius"),
 ##gn      ) ,
 #
@@ -372,7 +371,7 @@ MACR_ADAP_MAIL=MACRO(nom="MACR_ADAP_MAIL",
                    fr="Abscisse du vecteur directeur de l'axe",
                    ang="X for the axial vector"),
       Y_AXE = SIMP(statut='f',typ='R',
-                   fr="Ordonnée du vecteur directeur de l'axe",
+                   fr="OrdonnÃ©e du vecteur directeur de l'axe",
                    ang="Y for the axial vector"),
       Z_AXE = SIMP(statut='f',typ='R',
                    fr="Cote du vecteur directeur de l'axe",
@@ -381,7 +380,7 @@ MACR_ADAP_MAIL=MACRO(nom="MACR_ADAP_MAIL",
                     fr="Abscisse d'un point de la base, sur l'axe",
                     ang="X for the basis, on the axis"),
       Y_BASE = SIMP(statut='f',typ='R',
-                    fr="Ordonnée d'un point de la base, sur l'axe",
+                    fr="OrdonnÃ©e d'un point de la base, sur l'axe",
                     ang="Y for the basis, on the axis"),
       Z_BASE = SIMP(statut='f',typ='R',
                     fr="Cote d'un point de la base, sur l'axe",
@@ -410,7 +409,7 @@ MACR_ADAP_MAIL=MACRO(nom="MACR_ADAP_MAIL",
                     ang="Maximum level for the refinement"),
 #
     DIAM_MIN = SIMP(statut='f',typ='R',
-                    fr="Diamètre minimal des mailles",
+                    fr="DiamÃ¨tre minimal des mailles",
                     ang="Minimal diameter for the meshes" ),
 #
   ) ,
@@ -420,10 +419,10 @@ MACR_ADAP_MAIL=MACRO(nom="MACR_ADAP_MAIL",
   b_niveau_minimum = BLOC( condition = " (ADAPTATION == 'RAFF_DERA') or \
                                          (ADAPTATION == 'DERAFFINEMENT') or \
                                          (ADAPTATION == 'DERAFFINEMENT_UNIFORME') " ,
-                           fr="Niveau minimum de profondeur de déraffinement",
+                           fr="Niveau minimum de profondeur de dÃ©raffinement",
                            ang="Minimum level for the unrefinement",
     NIVE_MIN = SIMP(statut='f',typ='I',
-                    fr="Niveau minimum de profondeur de déraffinement",
+                    fr="Niveau minimum de profondeur de dÃ©raffinement",
                     ang="Minimum level for the unrefinement"),
   ) ,
 #
@@ -447,46 +446,46 @@ MACR_ADAP_MAIL=MACRO(nom="MACR_ADAP_MAIL",
                     ang="List of the groups of nodes for filtering of the adaptation." ),
   ) ,
 #
-# 9. Suivi d'une frontière
+# 9. Suivi d'une frontiÃ¨re
 #
-# 9.1. Definition d'une frontière par un maillage (valable seulement pour des frontières 1D)
+# 9.1. Definition d'une frontiÃ¨re par un maillage (valable seulement pour des frontiÃ¨res 1D)
 #
   MAILLAGE_FRONTIERE = SIMP(statut='f',typ=maillage_sdaster,
-                           fr="Maillage de la frontière discrète à suivre",
+                           fr="Maillage de la frontiÃ¨re discrÃ¨te Ã  suivre",
                            ang="Discrete boundary mesh" ),
 #
   b_FRONTIERE = BLOC( condition = " MAILLAGE_FRONTIERE != None " ,
-                      fr="Information complémentaire sur la frontière discrète",
+                      fr="Information complÃ©mentaire sur la frontiÃ¨re discrÃ¨te",
                       ang="Further information about discrete boundary",
 #
     GROUP_MA_FRONT = SIMP(statut='f',typ=grma,validators=NoRepeat(),max='**',
-                          fr="Liste des groupes de mailles définissant la frontière discrète",
+                          fr="Liste des groupes de mailles dÃ©finissant la frontiÃ¨re discrÃ¨te",
                           ang="Mesh groups which define the discrete boundary" ),
 #
   ) ,
 #
-# 9.2. Definition analytique d'une frontière
+# 9.2. Definition analytique d'une frontiÃ¨re
 #
   FRONTIERE_ANALYTIQUE = FACT(statut='f',max='**',
-                              fr="Definition analytique de frontières a suivre.",
+                              fr="Definition analytique de frontiÃ¨res a suivre.",
                               ang="Analytical definition of a boundary.",
 #
-# 9.2.1. Nom de la frontière
+# 9.2.1. Nom de la frontiÃ¨re
 #
     NOM = SIMP(statut='o',typ='TXM',validators=NoRepeat(),max=1,
-               fr="Nom de la frontière analytique",
+               fr="Nom de la frontiÃ¨re analytique",
                ang="Name of the analytic boundary" ),
 #
-# 9.2.2. Type de la frontière
+# 9.2.2. Type de la frontiÃ¨re
 #
     TYPE = SIMP(statut='o',typ='TXM',into=("SPHERE", "CYLINDRE", "CONE_A", "CONE_R"),
-                fr="Type de la frontière analytique",
+                fr="Type de la frontiÃ¨re analytique",
                 ang="Type of the analytic boundary" ),
 #
 # 9.2.3. Pour une sphere, un cylindre ou un cone defini par ses rayons : rayon et centre
 #
     b_fr_rayon = BLOC( condition = " (TYPE == 'SPHERE') or (TYPE == 'CYLINDRE') or (TYPE == 'CONE_R') " ,
-                       fr="Le rayon et le centre d'une sphère, d'un cylindre ou d'un cone.",
+                       fr="Le rayon et le centre d'une sphÃ¨re, d'un cylindre ou d'un cone.",
                        ang="The radius and the centre of a sphere, of a cylinder or of a cone.",
       RAYON = SIMP(statut='o',typ='R',
                    fr="Rayon",
@@ -495,7 +494,7 @@ MACR_ADAP_MAIL=MACRO(nom="MACR_ADAP_MAIL",
                       fr="Abscisse du centre",
                       ang="X for the center"),
       Y_CENTRE = SIMP(statut='o',typ='R',
-                      fr="Ordonnée du centre",
+                      fr="OrdonnÃ©e du centre",
                       ang="Y for the center"),
       Z_CENTRE = SIMP(statut='o',typ='R',
                       fr="Cote du centre",
@@ -511,7 +510,7 @@ MACR_ADAP_MAIL=MACRO(nom="MACR_ADAP_MAIL",
                    fr="Abscisse du vecteur directeur de l'axe",
                    ang="X for the axial vector"),
       Y_AXE = SIMP(statut='o',typ='R',
-                   fr="Ordonnée du vecteur directeur de l'axe",
+                   fr="OrdonnÃ©e du vecteur directeur de l'axe",
                    ang="Y for the axial vector"),
       Z_AXE = SIMP(statut='o',typ='R',
                    fr="Cote du vecteur directeur de l'axe",
@@ -530,7 +529,7 @@ MACR_ADAP_MAIL=MACRO(nom="MACR_ADAP_MAIL",
                       fr="Abscisse du centre",
                       ang="X for the center"),
       Y_CENTRE2 = SIMP(statut='o',typ='R',
-                      fr="Ordonnée du centre",
+                      fr="OrdonnÃ©e du centre",
                       ang="Y for the center"),
       Z_CENTRE2 = SIMP(statut='o',typ='R',
                       fr="Cote du centre",
@@ -543,43 +542,43 @@ MACR_ADAP_MAIL=MACRO(nom="MACR_ADAP_MAIL",
                        fr="L'angle et le centre d'un cone.",
                        ang="The angle and the centre of a cone.",
       ANGLE = SIMP(statut='o',typ='R',
-                   fr="Angle en degré",
+                   fr="Angle en degrÃ©",
                    ang="Angle (degree)"),
       X_CENTRE = SIMP(statut='o',typ='R',
                       fr="Abscisse du centre",
                       ang="X for the center"),
       Y_CENTRE = SIMP(statut='o',typ='R',
-                      fr="Ordonnée du centre",
+                      fr="OrdonnÃ©e du centre",
                       ang="Y for the center"),
       Z_CENTRE = SIMP(statut='o',typ='R',
                       fr="Cote du centre",
                       ang="Z for the center"),
     ) ,
 #
-# 9.2.7. Groupe(s) lie(s) a la frontière
+# 9.2.7. Groupe(s) lie(s) a la frontiÃ¨re
 #
     GROUP_MA = SIMP(statut='o',typ=grma,validators=NoRepeat(),max='**',
-                    fr="Liste des groupes de mailles placées sur la frontière",
+                    fr="Liste des groupes de mailles placÃ©es sur la frontiÃ¨re",
                     ang="Groups of meshes which are located on the boundary" ),
 #
   ) ,
 #
-# 10. mise à jour de champs sur le nouveau maillage
+# 10. mise Ã  jour de champs sur le nouveau maillage
 #
   MAJ_CHAM = FACT(statut='f',max='**',
-                  fr="Mise à jour de champs sur le nouveau maillage.",
+                  fr="Mise Ã  jour de champs sur le nouveau maillage.",
                   ang="Updating of the fields over the new mesh.",
 #
 # 10.1. Le nom du champ de grandeur qui contiendra le resultat de la mise a jour
 #
     CHAM_MAJ = SIMP(statut='o',typ=CO,
-                    fr="Nom du champ de grandeur qui contiendra le champ mis à jour",
+                    fr="Nom du champ de grandeur qui contiendra le champ mis Ã  jour",
                     ang="Name of the field for the updated field"),
 #
 # 10.2. Le type du champ qui contiendra le resultat de la mise a jour
 #
     TYPE_CHAM = SIMP(statut='o',typ='TXM',into=C_TYPE_CHAM_INTO( ('NOEU', 'ELEM', 'ELNO', 'ELGA') ),
-                     fr="Type du champ qui contiendra le champ mis à jour",
+                     fr="Type du champ qui contiendra le champ mis Ã  jour",
                      ang="Type of the field for the updated field" ),
 #
 # 10.3. Le champ a interpoler
@@ -589,21 +588,21 @@ MACR_ADAP_MAIL=MACRO(nom="MACR_ADAP_MAIL",
 # 10.3.1. Sous forme de champ de grandeur
 #
     CHAM_GD = SIMP(statut='f',typ=cham_gd_sdaster,
-                   fr="Champ de grandeur Code_Aster contenant le champ à mettre à jour",
+                   fr="Champ de grandeur Code_Aster contenant le champ Ã  mettre Ã  jour",
                    ang="Champ de grandeur with the field to be updated" ),
 #
 # 10.3.2. Sous forme de champ dans un resultat
 #
     RESULTAT = SIMP(statut='f',typ=(evol_elas,evol_noli,evol_ther),
-                    fr="Résultat contenant le champ à mettre à jour",
+                    fr="RÃ©sultat contenant le champ Ã  mettre Ã  jour",
                     ang="Result with the field to be updated" ),
 #
     b_nom_du_champ = BLOC(condition="(RESULTAT != None)",
-                          fr="Choix éventuel du nom du champ à interpoler",
+                          fr="Choix Ã©ventuel du nom du champ Ã  interpoler",
                           ang="Selection for the name of the field (option)",
 #
       NOM_CHAM = SIMP(statut='o',typ='TXM',validators=NoRepeat(),into=C_NOM_CHAM_INTO(),
-                      fr="Nom du champ à mettre à jour",
+                      fr="Nom du champ Ã  mettre Ã  jour",
                       ang="Name of the field to be updated" ),
 #
     ),
@@ -614,10 +613,10 @@ MACR_ADAP_MAIL=MACRO(nom="MACR_ADAP_MAIL",
                    fr="Liste des composante(s) retenue(s) pour le champ.",
                    ang="List of the selected component(s) for the field." ),
 #
-# 10.5. Le paramètre temporel pour le champ a interpoler
+# 10.5. Le paramÃ¨tre temporel pour le champ a interpoler
 #
     b_parametre_temporel = BLOC(condition="(RESULTAT != None)",
-                                fr="Choix éventuel du paramètre temporel pour le champ à interpoler",
+                                fr="Choix Ã©ventuel du paramÃ¨tre temporel pour le champ Ã  interpoler",
                                 ang="Time selection for the field (option)",
 #
       regles=(EXCLUS('NUME_ORDRE','INST'),),
@@ -625,32 +624,32 @@ MACR_ADAP_MAIL=MACRO(nom="MACR_ADAP_MAIL",
 # 10.5.1. Soit le numero d'ordre
 #
       NUME_ORDRE = SIMP(statut='f',typ='I',
-                        fr="Numéro d ordre du champ à mettre à jour",
+                        fr="NumÃ©ro d ordre du champ Ã  mettre Ã  jour",
                         ang="Rank of the field to be updated" ),
 #
 # 10.5.2. Soit l'instant
 # 10.5.2.1. Sa valeur
 #
       INST = SIMP(statut='f',typ='R',
-                  fr="Instant associé",
+                  fr="Instant associÃ©",
                   ang="Instant" ),
 #
-# 10.5.2.2. La précision du choix de l'instant
+# 10.5.2.2. La prÃ©cision du choix de l'instant
 #
       b_precision = BLOC(condition="(INST != None)",
-                         fr="Choix de la précision du choix de l'instant",
+                         fr="Choix de la prÃ©cision du choix de l'instant",
                          ang="Selection for the choice of the instant",
 #
         CRITERE         =SIMP(statut='f',typ='TXM',defaut="RELATIF",into=("RELATIF", "ABSOLU",),
-                         fr="Critère de précision sur le choix de l'instant associé",
+                         fr="CritÃ¨re de prÃ©cision sur le choix de l'instant associÃ©",
                          ang="Accuracy criterium over the choice of the instant"),
         b_prec_rela=BLOC(condition="(CRITERE=='RELATIF')",
             PRECISION       =SIMP(statut='f',typ='R',defaut= 1.E-6,
-                             fr="Précision relative sur le choix de l'instant associé",
+                             fr="PrÃ©cision relative sur le choix de l'instant associÃ©",
                              ang="Relative accuracy over the choice of the instant"),),
         b_prec_abso=BLOC(condition="(CRITERE=='ABSOLU')",
             PRECISION       =SIMP(statut='o',typ='R',
-                             fr="Précision absolue sur le choix de l'instant associé",
+                             fr="PrÃ©cision absolue sur le choix de l'instant associÃ©",
                              ang="Absolute accuracy over the choice of the instant"),),
 #
       ),
@@ -661,7 +660,7 @@ MACR_ADAP_MAIL=MACRO(nom="MACR_ADAP_MAIL",
 #
     TYPE_MAJ = SIMP(statut='f',typ='TXM',defaut="AUTO",
                     into=("AUTO", "ISOP2"),
-                    fr="Type de mise à jour : automatique ou iso-P2",
+                    fr="Type de mise Ã  jour : automatique ou iso-P2",
                     ang="Type of the updating" ),
   ),
 #
@@ -676,10 +675,10 @@ MACR_ADAP_MAIL=MACRO(nom="MACR_ADAP_MAIL",
 # 11.1. Changement de degre
 #
       DEGRE         = SIMP(statut='o',typ='TXM',defaut="NON",into=("OUI", "NON"),
-                          fr="Changement de degré du maillage",
+                          fr="Changement de degrÃ© du maillage",
                           ang="Modification of the degree of the mesh" ),
 #
-# 11.2. Création des joints
+# 11.2. CrÃ©ation des joints
 #
       #JOINT         = SIMP(statut='f',typ='TXM',defaut="NON",into=("OUI", "NON"),
                           #fr="Creations des joints",
@@ -694,7 +693,7 @@ MACR_ADAP_MAIL=MACRO(nom="MACR_ADAP_MAIL",
                           ang="Readings of the fields over the Gauss points.",
 #
       MODELE        = SIMP(statut='o',typ=modele_sdaster,
-                          fr="Modèle",
+                          fr="ModÃ¨le",
                           ang="Model" ),
 #
   ) ,
@@ -711,16 +710,16 @@ MACR_ADAP_MAIL=MACRO(nom="MACR_ADAP_MAIL",
                           fr="Nombre de noeuds et de mailles du maillage",
                           ang="Number of nodes and meshes in the mesh" ),
 #
-# 13.2. Determination de la qualité des mailles du maillage
+# 13.2. Determination de la qualitÃ© des mailles du maillage
 #
     QUALITE        = SIMP(statut='f',typ='TXM',defaut="NON",into=("OUI", "NON"),
-                          fr="Qualité du maillage",
+                          fr="QualitÃ© du maillage",
                           ang="Quality of the mesh" ),
 #
 # 13.3. Connexite du maillage
 #
     CONNEXITE      = SIMP(statut='f',typ='TXM',defaut="NON",into=("OUI", "NON"),
-                          fr="Connexité du maillage.",
+                          fr="ConnexitÃ© du maillage.",
                           ang="Connexity of the mesh." ),
 #
 # 13.4. Taille des sous-domaines du maillage
@@ -732,19 +731,19 @@ MACR_ADAP_MAIL=MACRO(nom="MACR_ADAP_MAIL",
 # 13.5. Controle de la non-interpenetration des mailles
 #
     INTERPENETRATION=SIMP(statut='f',typ='TXM',defaut="NON",into=("OUI", "NON"),
-                          fr="Controle de la non interpénétration des mailles.",
+                          fr="Controle de la non interpÃ©nÃ©tration des mailles.",
                           ang="Overlapping checking." ),
 #
-# 13.6. Propriétés du maillage de calcul
+# 13.6. PropriÃ©tÃ©s du maillage de calcul
 #
     PROP_CALCUL    = SIMP(statut='f',typ='TXM',defaut="NON",into=("OUI", "NON"),
-                          fr="Propriétés du maillage de calcul.",
+                          fr="PropriÃ©tÃ©s du maillage de calcul.",
                           ang="Properties of the calculation mesh." ),
 #
 # 13.7. Determination des diametres des mailles du maillage
 #
     DIAMETRE       = SIMP(statut='f',typ='TXM',defaut="NON",into=("OUI", "NON"),
-                          fr="Diamètre du maillage",
+                          fr="DiamÃ¨tre du maillage",
                           ang="Diameters of the mesh" ),
 #
   ) ,
@@ -769,7 +768,7 @@ MACR_ADAP_MAIL=MACRO(nom="MACR_ADAP_MAIL",
 #
   ) ,
 #
-# 15. Les options avancées
+# 15. Les options avancÃ©es
 # 15.1. Langue des messages issus de HOMARD
 #
   LANGUE = SIMP(statut='f',typ='TXM',defaut="FRANCAIS",
@@ -779,7 +778,7 @@ MACR_ADAP_MAIL=MACRO(nom="MACR_ADAP_MAIL",
 #
 # 15.2. Gestion des mailles acceptees dans le maillage initial
 #       "HOMARD" : exclusivement les mailles pouvant etre decoupees (defaut)
-#       "IGNORE_PYRA" : elles sont ignorées
+#       "IGNORE_PYRA" : elles sont ignorÃ©es
 #
   b_autres_mailles = BLOC( condition = " (ADAPTATION != 'LECTURE') " ,
                            fr="Gestion des pyramides.",
@@ -798,13 +797,13 @@ MACR_ADAP_MAIL=MACRO(nom="MACR_ADAP_MAIL",
                         fr="Version de HOMARD",
                         ang="HOMARD release"),
 #
-# 15.4. Exécutable pilotant HOMARD
+# 15.4. ExÃ©cutable pilotant HOMARD
 #
   LOGICIEL = SIMP(statut='f',typ='TXM',
                   fr="Logiciel pilotant HOMARD",
                   ang="HOMARD software"),
 #
-# 15.5. Unite logique d'un fichier à ajouter a HOMARD.Configuration
+# 15.5. Unite logique d'un fichier Ã  ajouter a HOMARD.Configuration
 #
   b_unite = BLOC( condition = " (VERSION_HOMARD == 'V10_N') or \
                                 (VERSION_HOMARD == 'V10_N_PERSO') " ,

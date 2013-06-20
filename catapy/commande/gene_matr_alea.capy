@@ -24,7 +24,7 @@ def gene_matr_alea_prod(MATR_MOYEN,**args ):
 GENE_MATR_ALEA=OPER(nom="GENE_MATR_ALEA",op=  27,
 #sd_prod=matr_asse_gene_r,
 sd_prod=gene_matr_alea_prod,
-               fr="Générer une réalisation d'une matrice aléatoire réelle sym. déf. positive ou d'un macro élément dynamique",
+               fr="GÃ©nÃ©rer une rÃ©alisation d'une matrice alÃ©atoire rÃ©elle sym. dÃ©f. positive ou d'un macro Ã©lÃ©ment dynamique",
                reentrant='n',
             UIinfo={"groupes":("Matrices et vecteurs",)},
    MATR_MOYEN   = SIMP(statut='o', typ=(matr_asse_gene_r,macr_elem_dyna)),

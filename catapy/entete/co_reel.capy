@@ -29,7 +29,7 @@ class reel(ASSD):
 
     def __adapt__(self, validator):
         if validator.name == "list":
-            # validateur liste,cardinalité
+            # validateur liste,cardinalitÃ©
             return (self, )
         elif validator.name == "type":
             # validateur type

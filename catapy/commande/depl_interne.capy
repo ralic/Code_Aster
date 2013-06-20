@@ -27,7 +27,7 @@ def depl_interne_prod(DEPL_GLOBAL,**args ):
 
 DEPL_INTERNE=OPER(nom="DEPL_INTERNE",op=89,sd_prod=depl_interne_prod,reentrant='n',
             UIinfo={"groupes":("Matrices et vecteurs",)},
-                  fr="Calculer le champ de déplacement à l'intérieur d'une sous-structure statique",
+                  fr="Calculer le champ de dÃ©placement Ã  l'intÃ©rieur d'une sous-structure statique",
          DEPL_GLOBAL     =SIMP(statut='o',typ=(cham_no_sdaster,mode_meca,mode_meca_c,evol_elas,dyna_trans,dyna_harmo),),
          SUPER_MAILLE    =SIMP(statut='o',typ=ma,),
          NOM_CAS         =SIMP(statut='f',typ='TXM',defaut=" "),

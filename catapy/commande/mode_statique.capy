@@ -18,9 +18,9 @@
 # person_in_charge: ionel.nistor at edf.fr
 
 MODE_STATIQUE=OPER(nom="MODE_STATIQUE",op= 93,sd_prod=mode_meca,
-                   fr="Calcul de déformées statiques pour un déplacement, une force ou une accélération unitaire imposé",
+                   fr="Calcul de dÃ©formÃ©es statiques pour un dÃ©placement, une force ou une accÃ©lÃ©ration unitaire imposÃ©",
                    reentrant='n',
-            UIinfo={"groupes":("Résolution","Dynamique",)},
+            UIinfo={"groupes":("RÃ©solution","Dynamique",)},
 
          regles=(UN_PARMI('MODE_STAT','FORCE_NODALE','PSEUDO_MODE','MODE_INTERF'),
                  PRESENT_PRESENT('MODE_INTERF','MATR_MASS'),

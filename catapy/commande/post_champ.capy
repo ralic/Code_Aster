@@ -22,7 +22,7 @@ def post_champ_prod(RESULTAT,**args):
    raise AsException("type de concept resultat non prevu")
 
 
-# liste des options possibles pour les 4 mots clés EXTR_COQUE, EXTR_TUYAY, EXTR_PMF et MIN_MAX_SP :
+# liste des options possibles pour les 4 mots clÃ©s EXTR_COQUE, EXTR_TUYAY, EXTR_PMF et MIN_MAX_SP :
 liste_option_extr=("EPEQ_ELGA","EPEQ_ELNO","EPSI_ELGA","EPSI_ELNO",
                    "SIEF_ELGA","SIEF_ELNO",
                    "SIEQ_ELGA","SIEQ_ELNO","SIGM_ELGA","SIGM_ELNO",
@@ -30,7 +30,7 @@ liste_option_extr=("EPEQ_ELGA","EPEQ_ELNO","EPSI_ELGA","EPSI_ELNO",
 
 
 POST_CHAMP=OPER(nom="POST_CHAMP",op=155,sd_prod=post_champ_prod, reentrant='n',
-            UIinfo={"groupes":("Post-traitements","Eléments de structure",)},
+            UIinfo={"groupes":("Post-traitements","ElÃ©ments de structure",)},
                  fr="extraction de champs sur un sous-point. ",
 
          regles=(UN_PARMI('EXTR_COQUE','EXTR_TUYAU','EXTR_PMF','MIN_MAX_SP','COQU_EXCENT'),
@@ -43,7 +43,7 @@ POST_CHAMP=OPER(nom="POST_CHAMP",op=155,sd_prod=post_champ_prod, reentrant='n',
 
 
 #====
-# Sélection des numéros d'ordre pour lesquels on fait le calcul :
+# SÃ©lection des numÃ©ros d'ordre pour lesquels on fait le calcul :
 #====
          TOUT_ORDRE      =SIMP(statut='f',typ='TXM',into=("OUI",) ),
          NUME_ORDRE      =SIMP(statut='f',typ='I',validators=NoRepeat(),max='**' ),
@@ -66,7 +66,7 @@ POST_CHAMP=OPER(nom="POST_CHAMP",op=155,sd_prod=post_champ_prod, reentrant='n',
 
 
 #====
-# Sélection de la zone géométrique:
+# SÃ©lection de la zone gÃ©omÃ©trique:
 #====
          TOUT       =SIMP(statut='f',typ='TXM',into=("OUI",) ),
          GROUP_MA   =SIMP(statut='f',typ=grma,validators=NoRepeat(),max='**'),
@@ -81,9 +81,9 @@ POST_CHAMP=OPER(nom="POST_CHAMP",op=155,sd_prod=post_champ_prod, reentrant='n',
            NOM_CHAM     =SIMP(statut='o',typ='TXM',validators=NoRepeat(),max='**',
                               into=liste_option_extr,),
            NUME_COUCHE  =SIMP(statut='o',typ='I',val_min=1,
-                             fr="numero de couche dans l'épaisseur de la coque" ),
+                             fr="numero de couche dans l'Ã©paisseur de la coque" ),
            NIVE_COUCHE  =SIMP(statut='o',typ='TXM',into=("SUP","INF","MOY"),
-                             fr="position dans l'épaisseur de la couche" ),
+                             fr="position dans l'Ã©paisseur de la couche" ),
            ),
 
 
@@ -94,11 +94,11 @@ POST_CHAMP=OPER(nom="POST_CHAMP",op=155,sd_prod=post_champ_prod, reentrant='n',
            NOM_CHAM     =SIMP(statut='o',typ='TXM',validators=NoRepeat(),max='**',
                               into=liste_option_extr ,),
            NUME_COUCHE  =SIMP(statut='o',typ='I',val_min=1,
-                             fr="numero de couche dans l'épaisseur du tuyau" ),
+                             fr="numero de couche dans l'Ã©paisseur du tuyau" ),
            NIVE_COUCHE  =SIMP(statut='o',typ='TXM',into=("SUP","INF","MOY"),
-                             fr="position dans l'épaisseur de la couche" ),
+                             fr="position dans l'Ã©paisseur de la couche" ),
            ANGLE        =SIMP(statut='o',typ='I',val_min=0,val_max=360,
-                             fr="angle de dépouillement pour les tuyaux, en degrés à partir de la génératrice" ),
+                             fr="angle de dÃ©pouillement pour les tuyaux, en degrÃ©s Ã  partir de la gÃ©nÃ©ratrice" ),
            ),
 
 
@@ -109,7 +109,7 @@ POST_CHAMP=OPER(nom="POST_CHAMP",op=155,sd_prod=post_champ_prod, reentrant='n',
            NOM_CHAM     =SIMP(statut='o',typ='TXM',validators=NoRepeat(),max='**',
                               into=liste_option_extr,),
            NUME_FIBRE  =SIMP(statut='o',typ='I',val_min=1,
-                             fr="numéro de la fibre dans la poutre multifibre" ),
+                             fr="numÃ©ro de la fibre dans la poutre multifibre" ),
            ),
 
 
@@ -122,14 +122,14 @@ POST_CHAMP=OPER(nom="POST_CHAMP",op=155,sd_prod=post_champ_prod, reentrant='n',
            NOM_CMP        =SIMP(statut='o',typ='TXM',fr="nom de la composante",  ),
            TYPE_MAXI      =SIMP(statut='o',typ='TXM',into=("MAXI","MINI","MAXI_ABS","MINI_ABS",) ),
            NUME_CHAM_RESU = SIMP(statut='o', typ='I', val_min=1, val_max=20,
-                          fr="Numéro du champ produit. Exemple: 6 produit le champ UT06",),
+                          fr="NumÃ©ro du champ produit. Exemple: 6 produit le champ UT06",),
            ),
 
 
 #====
-# Calcul des efforts des coques "excentrées" sur le feuillet moyen de la coque :
+# Calcul des efforts des coques "excentrÃ©es" sur le feuillet moyen de la coque :
 #====
-         COQU_EXCENT  =FACT(statut='f', max=2, fr="Calcul des efforts d'une coque 'excentrée' sur le feuillet moyen de la coque",
+         COQU_EXCENT  =FACT(statut='f', max=2, fr="Calcul des efforts d'une coque 'excentrÃ©e' sur le feuillet moyen de la coque",
            NOM_CHAM     =SIMP(statut='o',typ='TXM',into=("EFGE_ELNO","EFGE_ELGA",),),
            MODI_PLAN    =SIMP(statut='o',typ='TXM',into=("OUI",),),
            ),

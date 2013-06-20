@@ -18,9 +18,9 @@
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # person_in_charge: xavier.desroches at edf.fr
 DEFI_COMPOSITE=OPER(nom="DEFI_COMPOSITE",op=56,sd_prod=mater_sdaster,reentrant='n',
-            UIinfo={"groupes":("Modélisation",)},
-                    fr="Déterminer les caractéristiques matériaux homogénéisées d'une coque multicouche à partir"
-                        +" des caractéristiques de chaque couche",
+            UIinfo={"groupes":("ModÃ©lisation",)},
+                    fr="DÃ©terminer les caractÃ©ristiques matÃ©riaux homogÃ©nÃ©isÃ©es d'une coque multicouche Ã  partir"
+                        +" des caractÃ©ristiques de chaque couche",
          COUCHE          =FACT(statut='o',max='**',
            EPAIS           =SIMP(statut='o',typ='R',val_min=0.E+0 ),
            MATER           =SIMP(statut='o',typ=(mater_sdaster) ),

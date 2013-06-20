@@ -20,8 +20,8 @@
 
 IMPR_DIAG_CAMPBELL=MACRO(nom="IMPR_DIAG_CAMPBELL",
                          op=OPS('Macro.impr_diag_campbell_ops.impr_diag_campbell_ops'),
-                         fr="Tracé du Diagramme de Campbell",
-                         UIinfo={"groupes":("Impression","Outils-métier",)},
+                         fr="TracÃ© du Diagramme de Campbell",
+                         UIinfo={"groupes":("Impression","Outils-mÃ©tier",)},
             MAILLAGE        =SIMP(statut='o',typ=maillage_sdaster),
             MODES           =SIMP(statut='o',typ=table_container),
             NFREQ_CAMP      =SIMP(statut='o',typ='I' ),

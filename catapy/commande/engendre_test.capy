@@ -18,7 +18,7 @@
 # person_in_charge: jacques.pellet at edf.fr
 ENGENDRE_TEST=PROC(nom="ENGENDRE_TEST",op=178,
                    UIinfo={"groupes":("Impression","Utilitaires",)},
-                   fr="Engendre des tests pour la non régression du code (pour développeurs)",
+                   fr="Engendre des tests pour la non rÃ©gression du code (pour dÃ©veloppeurs)",
          UNITE           =SIMP(statut='f',typ='I',defaut=8),
          FORMAT          =SIMP(statut='f',typ='TXM',into=("OBJET",) ),
          FORMAT_R        =SIMP(statut='f',typ='TXM',defaut="1PE20.13"),

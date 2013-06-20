@@ -18,8 +18,8 @@
 # person_in_charge: mickael.abbas at edf.fr
 
 CALCUL=OPER(nom="CALCUL",op=26,sd_prod=table_container,reentrant='f',
-            UIinfo={"groupes":("Résolution",)},
-            fr="Calculer des objets élémentaires comme une matrice tangente, intégrer une loi de comportement, etc...",
+            UIinfo={"groupes":("RÃ©solution",)},
+            fr="Calculer des objets Ã©lÃ©mentaires comme une matrice tangente, intÃ©grer une loi de comportement, etc...",
      OPTION          =SIMP(statut='o',typ='TXM',validators=NoRepeat(),max='**',defaut="COMPORTEMENT",
                            into=( "COMPORTEMENT","MATR_TANG_ELEM","FORC_INT_ELEM"),),
      MODELE          =SIMP(statut='o',typ=modele_sdaster),

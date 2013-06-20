@@ -20,8 +20,8 @@ def modi_repere_prod(RESULTAT,**args):
   if AsType(RESULTAT) != None : return AsType(RESULTAT)
 
 MODI_REPERE=OPER(nom="MODI_REPERE",op=191,sd_prod=modi_repere_prod,reentrant='f',
-            UIinfo={"groupes":("Post-traitements","Résultats et champs",)},
-                    fr="Calcule des résultats dans le repère cylindrique",
+            UIinfo={"groupes":("Post-traitements","RÃ©sultats et champs",)},
+                    fr="Calcule des rÃ©sultats dans le repÃ¨re cylindrique",
          RESULTAT        =SIMP(statut='o',typ=resultat_sdaster),
 
          regles=(EXCLUS('TOUT_ORDRE','NUME_ORDRE','INST','FREQ','NUME_MODE',

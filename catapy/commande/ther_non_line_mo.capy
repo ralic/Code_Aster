@@ -17,10 +17,10 @@
 # ======================================================================
 # person_in_charge: Christophe-mmn.durand at edf.fr
 THER_NON_LINE_MO=OPER(nom="THER_NON_LINE_MO",op= 171,sd_prod=evol_ther,
-                     fr="Résoudre un problème thermique non linéaire (conditions limites ou comportement matériau)"
+                     fr="RÃ©soudre un problÃ¨me thermique non linÃ©aire (conditions limites ou comportement matÃ©riau)"
                         +" stationnaire avec chargement mobile",
                      reentrant='n',
-            UIinfo={"groupes":("Résolution","Thermique",)},
+            UIinfo={"groupes":("RÃ©solution","Thermique",)},
          MODELE          =SIMP(statut='o',typ=modele_sdaster ),
          CHAM_MATER      =SIMP(statut='o',typ=cham_mater ),
          CARA_ELEM       =SIMP(statut='c',typ=cara_elem ),

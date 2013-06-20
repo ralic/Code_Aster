@@ -17,15 +17,15 @@
 # ======================================================================
 # person_in_charge: olivier.boiteau at edf.fr
 INFO_MODE=OPER(nom="INFO_MODE",op=32,sd_prod=table_sdaster,
-                fr="Calculer, imprimer, et sauvegarder le nombre de valeurs propres dans un contour donné",
-            UIinfo={"groupes":("Résolution","Dynamique",)},
+                fr="Calculer, imprimer, et sauvegarder le nombre de valeurs propres dans un contour donnÃ©",
+            UIinfo={"groupes":("RÃ©solution","Dynamique",)},
 
          TYPE_MODE       =SIMP(statut='f',typ='TXM',defaut="DYNAMIQUE",into=("MODE_COMPLEXE","DYNAMIQUE",
                                                                              "MODE_FLAMB",   "GENERAL"),
                                fr="Type d analyse" ),
          INFO            =SIMP(statut='f',typ='I',defaut= 1,into=( 1 , 2) ),
 
-         b_dynamique =BLOC(condition = "TYPE_MODE == 'DYNAMIQUE'",fr="Recherche du nombre de fréquences propres",
+         b_dynamique =BLOC(condition = "TYPE_MODE == 'DYNAMIQUE'",fr="Recherche du nombre de frÃ©quences propres",
            MATR_RIGI       =SIMP(statut='o',typ=(matr_asse_depl_r,matr_asse_temp_r,matr_asse_pres_r,matr_asse_gene_r,
                                                  matr_asse_depl_c,matr_asse_gene_c) ),
            MATR_MASS       =SIMP(statut='o',typ=(matr_asse_depl_r,matr_asse_temp_r,matr_asse_pres_r,matr_asse_gene_r) ),
@@ -55,7 +55,7 @@ INFO_MODE=OPER(nom="INFO_MODE",op=32,sd_prod=table_sdaster,
                                 ),
          ),         
 
-         b_complexe  =BLOC(condition = "TYPE_MODE == 'MODE_COMPLEXE'",fr="Recherche du nombre de fréquences propres",
+         b_complexe  =BLOC(condition = "TYPE_MODE == 'MODE_COMPLEXE'",fr="Recherche du nombre de frÃ©quences propres",
            MATR_RIGI       =SIMP(statut='o',typ=(matr_asse_depl_r,matr_asse_temp_r,matr_asse_pres_r,matr_asse_gene_r,
                                                  matr_asse_depl_c,matr_asse_gene_c) ),
            MATR_MASS       =SIMP(statut='o',typ=(matr_asse_depl_r,matr_asse_temp_r,matr_asse_pres_r,matr_asse_gene_r) ),

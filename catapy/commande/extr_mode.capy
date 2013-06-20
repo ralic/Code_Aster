@@ -25,8 +25,8 @@ def extr_mode_prod(FILTRE_MODE,**args):
   raise AsException("type de concept resultat non prevu")
 
 EXTR_MODE=OPER(nom="EXTR_MODE",op= 168,sd_prod=extr_mode_prod,
-               reentrant='n',fr="Extraire séléctivement des modes des structures de données modales",
-            UIinfo={"groupes":("Résolution","Dynamique",)},
+               reentrant='n',fr="Extraire sÃ©lÃ©ctivement des modes des structures de donnÃ©es modales",
+            UIinfo={"groupes":("RÃ©solution","Dynamique",)},
          FILTRE_MODE     =FACT(statut='o',max='**',
            regles=(UN_PARMI('TOUT_ORDRE','NUME_ORDRE','NUME_MODE','NUME_MODE_EXCLU','FREQ_MIN','CRIT_EXTR',),),
            MODE            =SIMP(statut='o',typ=(mode_meca,mode_meca_c,mode_gene ) ),

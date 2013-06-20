@@ -20,7 +20,7 @@
 DEFI_INTERF_DYNA=OPER(nom="DEFI_INTERF_DYNA",op=  98,sd_prod=interf_dyna_clas,
                       reentrant='n',
             UIinfo={"groupes":("Matrices et vecteurs","Dynamique",)},
-            fr="Définir les interfaces d'une structure et leur affecter un type",
+            fr="DÃ©finir les interfaces d'une structure et leur affecter un type",
          NUME_DDL        =SIMP(statut='o',typ=nume_ddl_sdaster ),
          INTERFACE       =FACT(statut='o',max='**',
            regles=(ENSEMBLE('NOM','TYPE'),

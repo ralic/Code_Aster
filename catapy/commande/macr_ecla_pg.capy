@@ -28,29 +28,29 @@ MACR_ECLA_PG=MACRO(nom="MACR_ECLA_PG",
                    op=OPS('Macro.macr_ecla_pg_ops.macr_ecla_pg_ops'),
                    sd_prod=macr_ecla_pg_prod,
                    reentrant='n',
-                   UIinfo={"groupes":("Post-traitements","Résultats et champs",)},
+                   UIinfo={"groupes":("Post-traitements","RÃ©sultats et champs",)},
                    fr="Permettre la visualisation des champs aux points de Gauss d'une " \
                       "SD_RESULTAT sans lissage ni interpolation",
 
-             # SD résultat ,modèle et champs à "éclater" :
-             RESU_INIT       =SIMP(statut='o',typ=resultat_sdaster,fr="RESULTAT à éclater",),
-             MODELE_INIT     =SIMP(statut='o',typ=modele_sdaster,fr="MODELE à éclater"),
+             # SD rÃ©sultat ,modÃ¨le et champs Ã  "Ã©clater" :
+             RESU_INIT       =SIMP(statut='o',typ=resultat_sdaster,fr="RESULTAT Ã  Ã©clater",),
+             MODELE_INIT     =SIMP(statut='o',typ=modele_sdaster,fr="MODELE Ã  Ã©clater"),
              NOM_CHAM        =SIMP(statut='o',typ='TXM',validators=NoRepeat(),max='**',into=C_NOM_CHAM_INTO('ELGA'),),
 
-             # paramètres numériques de la commande :
-             SHRINK          =SIMP(statut='f',typ='R',defaut= 0.9, fr="Facteur de réduction" ),
-             TAILLE_MIN      =SIMP(statut='f',typ='R',defaut= 0.0, fr="Taille minimale d'un coté" ),
+             # paramÃ¨tres numÃ©riques de la commande :
+             SHRINK          =SIMP(statut='f',typ='R',defaut= 0.9, fr="Facteur de rÃ©duction" ),
+             TAILLE_MIN      =SIMP(statut='f',typ='R',defaut= 0.0, fr="Taille minimale d'un cotÃ©" ),
 
              # concepts produits par la commande :
-             RESULTAT        =SIMP(statut='o',typ=CO,fr="SD_RESULTAT résultat de la commande"),
-             MAILLAGE        =SIMP(statut='o',typ=CO,fr="MAILLAGE associé aux cham_no de la SD_RESULTAT"),
+             RESULTAT        =SIMP(statut='o',typ=CO,fr="SD_RESULTAT rÃ©sultat de la commande"),
+             MAILLAGE        =SIMP(statut='o',typ=CO,fr="MAILLAGE associÃ© aux cham_no de la SD_RESULTAT"),
 
-             # Sélection éventuelle d'un sous-ensemble des éléments à visualiser :
+             # SÃ©lection Ã©ventuelle d'un sous-ensemble des Ã©lÃ©ments Ã  visualiser :
              TOUT            =SIMP(statut='f',typ='TXM',into=("OUI",) ),
              MAILLE          =SIMP(statut='f',typ=ma  ,validators=NoRepeat(),max='**'),
              GROUP_MA        =SIMP(statut='f',typ=grma,validators=NoRepeat(),max='**'),
 
-             # Sélection des numéros d'ordre :
+             # SÃ©lection des numÃ©ros d'ordre :
              regles=(EXCLUS('TOUT_ORDRE','NUME_ORDRE','INST','LIST_INST','LIST_ORDRE'),),
              TOUT_ORDRE      =SIMP(statut='f',typ='TXM',into=("OUI",) ),
              NUME_ORDRE      =SIMP(statut='f',typ='I',validators=NoRepeat(),max='**'),

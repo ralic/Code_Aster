@@ -1,4 +1,3 @@
-# -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -22,7 +21,7 @@ class cham_mater(ASSD):
     cata_sdj = "SD.sd_cham_mater.sd_cham_mater"
 
     def get_vale_ref(self, nom_varc):
-        """Retourne la valeur de référence de `nom_varc`."""
+        """Retourne la valeur de rÃ©fÃ©rence de `nom_varc`."""
         from SD.sd_carte import sd_carte
         nom_varc = nom_varc.strip()
         varc = self.sdj.varc
@@ -32,7 +31,7 @@ class cham_mater(ASSD):
         novarc = [sv for sv in varc.CVRCVARC.get()]
         assert len(novarc) > idx, novarc
         nomch = novarc[idx]
-        # accès à la carte
+        # accÃ¨s Ã  la carte
         cartref = sd_carte("%-8s.%-8s.1" % (self.nom, nomch))
         valref = cartref.VALE.get()[0]
         return valref

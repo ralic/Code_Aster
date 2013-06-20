@@ -28,7 +28,7 @@ def rest_sous_struc_prod(RESU_GENE,RESULTAT,**args ):
   raise AsException("type de concept resultat non prevu")
 
 REST_SOUS_STRUC=OPER(nom="REST_SOUS_STRUC",op=  77,sd_prod=rest_sous_struc_prod,
-          fr="Restituer dans la base physique des résultats obtenus par sous-structuration",
+          fr="Restituer dans la base physique des rÃ©sultats obtenus par sous-structuration",
                     reentrant='n',
             UIinfo={"groupes":("Matrices et vecteurs",)},
         regles=(UN_PARMI('RESU_GENE','RESULTAT'),
@@ -37,7 +37,7 @@ REST_SOUS_STRUC=OPER(nom="REST_SOUS_STRUC",op=  77,sd_prod=rest_sous_struc_prod,
 #
               EXCLUS('TOUT_ORDRE','NUME_ORDRE','INST','LIST_INST','TOUT_INST','NUME_MODE',
                      'FREQ', 'LIST_FREQ'),
-#  Doc U à revoir
+#  Doc U Ã  revoir
               EXCLUS('NOEUD','GROUP_NO'),
               EXCLUS('MAILLE','GROUP_MA'),
               PRESENT_PRESENT('RESULTAT','SQUELETTE'),

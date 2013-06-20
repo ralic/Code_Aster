@@ -25,7 +25,7 @@ CALC_CHAR_SEISME=OPER(nom="CALC_CHAR_SEISME",op=  92,sd_prod=calc_char_seisme_pr
             UIinfo={"groupes":("Matrices et vecteurs",)},
          regles=(UN_PARMI('MONO_APPUI','MODE_STAT' ),),
          MATR_MASS       =SIMP(statut='o',typ=matr_asse_depl_r,fr="Matrice de masse" ),
-         DIRECTION       =SIMP(statut='o',typ='R',max=6,fr="Directions du séisme imposé"),
+         DIRECTION       =SIMP(statut='o',typ='R',max=6,fr="Directions du sÃ©isme imposÃ©"),
          MONO_APPUI      =SIMP(statut='f',typ='TXM',into=("OUI",) ),
          MODE_STAT       =SIMP(statut='f',typ=(mode_meca,) ),
          b_mode_stat     =BLOC ( condition = "MODE_STAT != None",

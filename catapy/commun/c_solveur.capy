@@ -59,8 +59,8 @@ def C_SOLVEUR( COMMAND, BASE=None ) :  #COMMUN#
 #
 # CLASSIFICATION EN 3 CATEGORIES :
 #  - solveurs directs uniquement
-#  - solveurs pour le linéaire
-#  - solveurs pour le non-linéaire
+#  - solveurs pour le linÃ©aire
+#  - solveurs pour le non-linÃ©aire
 #
 # GESTION DES EXCEPTIONS
 #
@@ -125,12 +125,12 @@ def C_SOLVEUR( COMMAND, BASE=None ) :  #COMMUN#
    _gene   = False
    _ldlt   = False
 
-#  Avec des matrices généralisées, MULT_FRONT n'est pas permis, LDLT est donc par défaut
+#  Avec des matrices gÃ©nÃ©ralisÃ©es, MULT_FRONT n'est pas permis, LDLT est donc par dÃ©faut
    if BASE == 'GENE':
       _gene = True
       _ldlt = True
 
-#  LDLT est le solveur par défaut dans DYNA_TRAN_MODAL (systèmes linéaires petits)
+#  LDLT est le solveur par dÃ©faut dans DYNA_TRAN_MODAL (systÃ¨mes linÃ©aires petits)
    if COMMAND == 'DYNA_TRAN_MODAL':
       _ldlt = True
 
@@ -138,7 +138,7 @@ def C_SOLVEUR( COMMAND, BASE=None ) :  #COMMUN#
 
    _syme   = False
 
-#  Seuls les opérateurs non-linéaires produisent des matrices non-symétriques
+#  Seuls les opÃ©rateurs non-linÃ©aires produisent des matrices non-symÃ©triques
    if _type == 'NL':
       _syme = True
    if COMMAND == 'THER_NON_LINE_MO':
@@ -162,7 +162,7 @@ def C_SOLVEUR( COMMAND, BASE=None ) :  #COMMUN#
 
    _singu_non = False
 
-#  Dans DEFI_BASE_MODALE, NON est le défaut de STOP_SINGULIER
+#  Dans DEFI_BASE_MODALE, NON est le dÃ©faut de STOP_SINGULIER
    if COMMAND == 'DEFI_BASE_MODALE':
       _singu_non = True
 
@@ -172,7 +172,7 @@ def C_SOLVEUR( COMMAND, BASE=None ) :  #COMMUN#
 #
 # ----------------------------------------------------------------------------------------------------------------------------------
 
-#  Mot-clés simples
+#  Mot-clÃ©s simples
    _MotCleSimples={}
 
 #  Solveurs
@@ -183,7 +183,7 @@ def C_SOLVEUR( COMMAND, BASE=None ) :  #COMMUN#
    _BlocPE={}
    _BlocFE={}
 
-#  Préconditionneurs
+#  PrÃ©conditionneurs
    _BlocGC_INC={}
    _BlocPE_INC={}
    _BlocXX_SP={}
@@ -408,45 +408,45 @@ def C_SOLVEUR( COMMAND, BASE=None ) :  #COMMUN#
 
    mcfact = FACT(statut='d',
                  b_mult_front = BLOC(condition = "METHODE == 'MULT_FRONT' ",
-                                     fr="Paramètres de la méthode multi frontale",
+                                     fr="ParamÃ¨tres de la mÃ©thode multi frontale",
                                      **_BlocMF
                                      ),
                  b_ldlt       = BLOC(condition = "METHODE == 'LDLT' ",
-                                     fr="Paramètres de la méthode LDLT",
+                                     fr="ParamÃ¨tres de la mÃ©thode LDLT",
                                      **_BlocLD
                                      ),
                  b_mumps      = BLOC(condition = "METHODE == 'MUMPS' ",
-                                     fr="Paramètres de la méthode MUMPS",
+                                     fr="ParamÃ¨tres de la mÃ©thode MUMPS",
                                      **_BlocMU
                                      ),
                  b_gcpc       = BLOC(condition = "METHODE == 'GCPC' ",
-                                      fr="Paramètres de la méthode du gradient conjugué",
+                                      fr="ParamÃ¨tres de la mÃ©thode du gradient conjuguÃ©",
                                      b_ldltinc    = BLOC(condition = "PRE_COND == 'LDLT_INC' ",
-                                                         fr="Paramètres de la factorisation incomplète",
+                                                         fr="ParamÃ¨tres de la factorisation incomplÃ¨te",
                                                          **_BlocGC_INC
                                                          ),
                                      b_simple     = BLOC(condition = "PRE_COND == 'LDLT_SP' ",
-                                                         fr="Paramètres de la factorisation simple précision",
+                                                         fr="ParamÃ¨tres de la factorisation simple prÃ©cision",
                                                          **_BlocXX_SP
                                                          ),
                                      **_BlocGC
                                      ),
                  b_petsc      = BLOC(condition = "METHODE == 'PETSC' ",
-                                     fr="Paramètres de la méthode PETSC",
+                                     fr="ParamÃ¨tres de la mÃ©thode PETSC",
                                      b_ldltinc    = BLOC(condition = "PRE_COND == 'LDLT_INC' ",
-                                                         fr="Paramètres de la factorisation incomplète",
+                                                         fr="ParamÃ¨tres de la factorisation incomplÃ¨te",
                                                          **_BlocPE_INC
                                                          ),
                                      b_simple     = BLOC(condition = "PRE_COND == 'LDLT_SP' ",
-                                                         fr="Paramètres de la factorisation simple précision",
+                                                         fr="ParamÃ¨tres de la factorisation simple prÃ©cision",
                                                          **_BlocXX_SP
                                                          ),
                                      b_ml         = BLOC(condition = "PRE_COND == 'ML' ",
-                                                         fr="Paramètres du multigrille algébrique ML",
+                                                         fr="ParamÃ¨tres du multigrille algÃ©brique ML",
                                                          **_BlocPE_ML
                                                          ),
                                      b_boomer        = BLOC(condition = "PRE_COND == 'BOOMER' ",
-                                                         fr="Paramètres du multigrille algébrique HYPRE",
+                                                         fr="ParamÃ¨tres du multigrille algÃ©brique HYPRE",
                                                          **_BlocPE_BOOMER
                                                          ),
                                      b_autres     = BLOC(condition = "PRE_COND == 'JACOBI' or \
@@ -457,7 +457,7 @@ def C_SOLVEUR( COMMAND, BASE=None ) :  #COMMUN#
                                      **_BlocPE
                                      ),
                  b_feti       = BLOC(condition = "METHODE == 'FETI' ",
-                                     fr="Paramètres de la méthode FETI 1",
+                                     fr="ParamÃ¨tres de la mÃ©thode FETI 1",
                                      **_BlocFE
                                      ),
                  **_MotCleSimples

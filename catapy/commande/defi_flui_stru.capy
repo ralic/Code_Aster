@@ -17,8 +17,8 @@
 # ======================================================================
 # person_in_charge: andre.adobes at edf.fr
 DEFI_FLUI_STRU=OPER(nom="DEFI_FLUI_STRU",op= 143,sd_prod=type_flui_stru,
-                    reentrant='n',fr="Définit les caractéristiques nécessaires à l'étude dynamique d'une structure sous écoulement",
-            UIinfo={"groupes":("Modélisation",)},
+                    reentrant='n',fr="DÃ©finit les caractÃ©ristiques nÃ©cessaires Ã  l'Ã©tude dynamique d'une structure sous Ã©coulement",
+            UIinfo={"groupes":("ModÃ©lisation",)},
          regles=(  UN_PARMI('FAISCEAU_TRANS','GRAPPE','FAISCEAU_AXIAL','COQUE_COAX',),),
          FAISCEAU_TRANS  =FACT(statut='f',max='**',
            regles=(  ENSEMBLE('CSTE_CONNORS','NB_CONNORS','RHO_TUBE'),),
@@ -41,7 +41,7 @@ DEFI_FLUI_STRU=OPER(nom="DEFI_FLUI_STRU",op= 143,sd_prod=type_flui_stru,
          GRAPPE          =FACT(statut='f',
            regles=(ENSEMBLE('GRAPPE_2','NOEUD','CARA_ELEM','MODELE','RHO_FLUI',),
                    PRESENT_PRESENT('COEF_MASS_AJOU','GRAPPE_2', ),),
-#  peut on créer un bloc a partir de la valeur de couplage
+#  peut on crÃ©er un bloc a partir de la valeur de couplage
            COUPLAGE        =SIMP(statut='o',typ='TXM',into=("OUI","NON") ),
            GRAPPE_2        =SIMP(statut='f',typ='TXM',
                                  into=("ASC_CEN","ASC_EXC","DES_CEN","DES_EXC") ),

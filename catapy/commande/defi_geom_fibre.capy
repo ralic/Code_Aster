@@ -20,7 +20,7 @@
 DEFI_GEOM_FIBRE=OPER(nom="DEFI_GEOM_FIBRE",op=  119, sd_prod=gfibre_sdaster,
                     fr="Definition des groupes de fibres pour les elements multifibres",
                     reentrant='n',
-            UIinfo={"groupes":("Modélisation",)},
+            UIinfo={"groupes":("ModÃ©lisation",)},
          regles=(AU_MOINS_UN('SECTION','FIBRE'),),
 
          INFO       =SIMP(statut='f',typ='I', defaut= 1 ,into=(1,2) ),

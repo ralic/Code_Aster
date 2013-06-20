@@ -17,13 +17,13 @@
 # ======================================================================
 # person_in_charge: jacques.pellet at edf.fr
 AFFE_MATERIAU=OPER(nom="AFFE_MATERIAU",op=6,sd_prod=cham_mater,
-                   fr="Affecter des matériaux à des zones géométriques d'un maillage",
+                   fr="Affecter des matÃ©riaux Ã  des zones gÃ©omÃ©triques d'un maillage",
                          reentrant='n',
-            UIinfo={"groupes":("Modélisation",)},
+            UIinfo={"groupes":("ModÃ©lisation",)},
          MAILLAGE        =SIMP(statut='o',typ=maillage_sdaster),
          MODELE          =SIMP(statut='f',typ=modele_sdaster),
 
-         #  affectation du nom du matériau (par mailles):
+         #  affectation du nom du matÃ©riau (par mailles):
          #  ----------------------------------------------
          AFFE            =FACT(statut='o',max='**',
            regles=(UN_PARMI('TOUT','GROUP_MA','MAILLE'),),
@@ -45,7 +45,7 @@ AFFE_MATERIAU=OPER(nom="AFFE_MATERIAU",op=6,sd_prod=cham_mater,
 
          #  affectation des variables de commande :
          #  --------------------------------------------------
-         # un mot clé caché qui ne sert qu'à boucler sur les VARC possibles :
+         # un mot clÃ© cachÃ© qui ne sert qu'Ã  boucler sur les VARC possibles :
          LIST_NOM_VARC =SIMP(statut='c',typ='TXM', defaut=("TEMP","GEOM","CORR","IRRA","HYDR","SECH","EPSA",
                                                            "M_ACIER","M_ZIRC","NEUT1","NEUT2","PTOT","DIVU",)),
 
@@ -53,14 +53,14 @@ AFFE_MATERIAU=OPER(nom="AFFE_MATERIAU",op=6,sd_prod=cham_mater,
           regles=(PRESENT_ABSENT('TOUT','GROUP_MA','MAILLE'),
                   PRESENT_ABSENT('GROUP_MA','TOUT'),
                   PRESENT_ABSENT('MAILLE','TOUT'),
-                # La règle suivante permet de donner VALE_REF sans donner EVOL ni CHAM_GD
-                # Elle est nécessaire pour la THM (voir doc U4.43.03)
-                # Mais on ne peut plus l'écrire depuis de VALE_REF est dans un bloc
+                # La rÃ¨gle suivante permet de donner VALE_REF sans donner EVOL ni CHAM_GD
+                # Elle est nÃ©cessaire pour la THM (voir doc U4.43.03)
+                # Mais on ne peut plus l'Ã©crire depuis de VALE_REF est dans un bloc
                 # AU_MOINS_UN('EVOL','CHAM_GD','VALE_REF'),
                   EXCLUS('EVOL','CHAM_GD'),
                   ),
 
-          TOUT            =SIMP(statut='f',typ='TXM',into=("OUI",) ), # [défaut]
+          TOUT            =SIMP(statut='f',typ='TXM',into=("OUI",) ), # [dÃ©faut]
           GROUP_MA        =SIMP(statut='f',typ=grma,validators=NoRepeat(),max='**'),
           MAILLE          =SIMP(statut='f',typ=ma  ,validators=NoRepeat(),max='**'),
 
@@ -79,14 +79,14 @@ AFFE_MATERIAU=OPER(nom="AFFE_MATERIAU",op=6,sd_prod=cham_mater,
               FONC_INST     =SIMP(statut='f',typ=(fonction_sdaster,formule)),
           ),
 
-          # VALE_REF est nécessaire pour certaines VARC :
+          # VALE_REF est nÃ©cessaire pour certaines VARC :
           B_VALE_REF          =BLOC(condition="NOM_VARC in ('TEMP','SECH')",
                VALE_REF          =SIMP(statut='o',typ='R'),
           ),
 
          ),
 
-         #  mots clés cachés pour les variables de commande NEUT1/NEUT2 :
+         #  mots clÃ©s cachÃ©s pour les variables de commande NEUT1/NEUT2 :
          #  --------------------------------------------------------------
          VARC_NEUT1   =FACT(statut='d',
            NOM_VARC        =SIMP(statut='c',typ='TXM',defaut="NEUT1"),
@@ -101,7 +101,7 @@ AFFE_MATERIAU=OPER(nom="AFFE_MATERIAU",op=6,sd_prod=cham_mater,
            CMP_VARC        =SIMP(statut='c',typ='TXM',max=1,min=1,defaut=("NEUT2")),
          ),
 
-         #  mots clés cachés pour variable de commande TEMP :
+         #  mots clÃ©s cachÃ©s pour variable de commande TEMP :
          #  --------------------------------------------------
          VARC_TEMP    =FACT(statut='d',
            NOM_VARC        =SIMP(statut='c',typ='TXM',defaut="TEMP"),
@@ -110,7 +110,7 @@ AFFE_MATERIAU=OPER(nom="AFFE_MATERIAU",op=6,sd_prod=cham_mater,
            CMP_VARC        =SIMP(statut='c',typ='TXM',max=4,min=4,defaut=("TEMP","TEMP_MIL","TEMP_INF","TEMP_SUP",)),
          ),
 
-         #  mots clés cachés pour variable de commande GEOM :
+         #  mots clÃ©s cachÃ©s pour variable de commande GEOM :
          #  --------------------------------------------------
          VARC_GEOM    =FACT(statut='d',
            NOM_VARC        =SIMP(statut='c',typ='TXM',defaut="GEOM"),
@@ -119,7 +119,7 @@ AFFE_MATERIAU=OPER(nom="AFFE_MATERIAU",op=6,sd_prod=cham_mater,
            CMP_VARC        =SIMP(statut='c',typ='TXM',max=3,min=3,defaut=("X","Y","Z",)),
          ),
 
-         #  mots clés cachés pour variable de commande PTOT :
+         #  mots clÃ©s cachÃ©s pour variable de commande PTOT :
          #  -------------------------------------------------
          VARC_PTOT    =FACT(statut='d',
            NOM_VARC         =SIMP(statut='c',typ='TXM',defaut="PTOT"),
@@ -128,7 +128,7 @@ AFFE_MATERIAU=OPER(nom="AFFE_MATERIAU",op=6,sd_prod=cham_mater,
            CMP_VARC         =SIMP(statut='c',typ='TXM',max=1,min=1,defaut=("PTOT",)),
          ),
 
-         #  mots clés cachés pour variable de commande SECH :
+         #  mots clÃ©s cachÃ©s pour variable de commande SECH :
          #  --------------------------------------------------
          VARC_SECH    =FACT(statut='d',
            NOM_VARC        =SIMP(statut='c',typ='TXM',defaut="SECH"),
@@ -137,7 +137,7 @@ AFFE_MATERIAU=OPER(nom="AFFE_MATERIAU",op=6,sd_prod=cham_mater,
            CMP_VARC        =SIMP(statut='c',typ='TXM',max=1,min=1,defaut=("SECH",)),
          ),
 
-         #  mots clés cachés pour variable de commande HYDR :
+         #  mots clÃ©s cachÃ©s pour variable de commande HYDR :
          #  --------------------------------------------------
          VARC_HYDR    =FACT(statut='d',
            NOM_VARC        =SIMP(statut='c',typ='TXM',defaut="HYDR"),
@@ -146,7 +146,7 @@ AFFE_MATERIAU=OPER(nom="AFFE_MATERIAU",op=6,sd_prod=cham_mater,
            CMP_VARC        =SIMP(statut='c',typ='TXM',max=1,min=1,defaut=("HYDR",)),
          ),
 
-         #  mots clés cachés pour variable de commande CORR :
+         #  mots clÃ©s cachÃ©s pour variable de commande CORR :
          #  --------------------------------------------------
          VARC_CORR    =FACT(statut='d',
            NOM_VARC        =SIMP(statut='c',typ='TXM',defaut="CORR"),
@@ -155,7 +155,7 @@ AFFE_MATERIAU=OPER(nom="AFFE_MATERIAU",op=6,sd_prod=cham_mater,
            CMP_VARC        =SIMP(statut='c',typ='TXM',max=1,min=1,defaut=("CORR",)),
          ),
 
-         #  mots clés cachés pour variable de commande IRRA :
+         #  mots clÃ©s cachÃ©s pour variable de commande IRRA :
          #  --------------------------------------------------
          VARC_IRRA    =FACT(statut='d',
            NOM_VARC        =SIMP(statut='c',typ='TXM',defaut="IRRA"),
@@ -164,7 +164,7 @@ AFFE_MATERIAU=OPER(nom="AFFE_MATERIAU",op=6,sd_prod=cham_mater,
            CMP_VARC        =SIMP(statut='c',typ='TXM',max=1,min=1,defaut=("IRRA",)),
          ),
 
-         #  mots clés cachés pour variable de commande DIVU :
+         #  mots clÃ©s cachÃ©s pour variable de commande DIVU :
          #  --------------------------------------------------
          VARC_DIVU    =FACT(statut='d',
            NOM_VARC        =SIMP(statut='c',typ='TXM',defaut="DIVU"),
@@ -173,7 +173,7 @@ AFFE_MATERIAU=OPER(nom="AFFE_MATERIAU",op=6,sd_prod=cham_mater,
            CMP_VARC        =SIMP(statut='c',typ='TXM',max=1,min=1,defaut=("DIVU",)),
          ),
 
-         #  mots clés cachés pour variable de commande EPSA :
+         #  mots clÃ©s cachÃ©s pour variable de commande EPSA :
          #  --------------------------------------------------
          VARC_EPSA    =FACT(statut='d',
            NOM_VARC        =SIMP(statut='c',typ='TXM',defaut="EPSA"),
@@ -181,7 +181,7 @@ AFFE_MATERIAU=OPER(nom="AFFE_MATERIAU",op=6,sd_prod=cham_mater,
            CMP_GD          =SIMP(statut='c',typ='TXM',max=6,min=6,defaut=("EPXX","EPYY","EPZZ","EPXY","EPXZ","EPYZ",)),
            CMP_VARC        =SIMP(statut='c',typ='TXM',max=6,min=6,defaut=("EPSAXX","EPSAYY","EPSAZZ","EPSAXY","EPSAXZ","EPSAYZ",)),
          ),
-         #  mots clés cachés pour variable de commande metallurgique ACIER :
+         #  mots clÃ©s cachÃ©s pour variable de commande metallurgique ACIER :
          #  -----------------------------------------------------------------
          VARC_M_ACIER  =FACT(statut='d',
            NOM_VARC        =SIMP(statut='c',typ='TXM',defaut="M_ACIER"),
@@ -190,7 +190,7 @@ AFFE_MATERIAU=OPER(nom="AFFE_MATERIAU",op=6,sd_prod=cham_mater,
            CMP_VARC        =SIMP(statut='c',typ='TXM',max=7,min=7,defaut=("PFERRITE","PPERLITE","PBAINITE",
                                                                           "PMARTENS","TAUSTE","TRANSF","TACIER",)),
          ),
-         #  mots clés cachés pour variable de commande metallurgique ZIRCALOY :
+         #  mots clÃ©s cachÃ©s pour variable de commande metallurgique ZIRCALOY :
          #  --------------------------------------------------------------------
          VARC_M_ZIRC  =FACT(statut='d',
            NOM_VARC        =SIMP(statut='c',typ='TXM',defaut="M_ZIRC"),

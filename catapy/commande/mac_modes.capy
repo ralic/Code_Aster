@@ -20,7 +20,7 @@
 MAC_MODES=OPER(nom="MAC_MODES",op=  141,sd_prod=table_sdaster,
                fr="Critere orthogonalite de modes propres",
                reentrant='n',
-               UIinfo={"groupes":("Résolution","Dynamique",)},
+               UIinfo={"groupes":("RÃ©solution","Dynamique",)},
                regles=(PRESENT_PRESENT('IERI','MATR_ASSE'),),
          BASE_1     =SIMP(statut='o',typ=(mode_meca,mode_meca_c,mode_flamb) ),
          BASE_2     =SIMP(statut='o',typ=(mode_meca,mode_meca_c,mode_flamb) ),

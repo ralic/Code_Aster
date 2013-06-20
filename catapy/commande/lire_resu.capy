@@ -29,7 +29,7 @@ def lire_resu_prod(TYPE_RESU,**args):
   if TYPE_RESU == "EVOL_VARC" :  return evol_varc
   raise AsException("type de concept resultat non prevu")
 
-# pour éviter d'écrire 3 fois cette liste :
+# pour Ã©viter d'Ã©crire 3 fois cette liste :
 def l_nom_cham_pas_elga(): return (
      "ACCE",
      "ACCE_ABSOLU",
@@ -127,7 +127,7 @@ def l_nom_cham_pas_elga(): return (
 LIRE_RESU=OPER(nom="LIRE_RESU",op=150,sd_prod=lire_resu_prod,reentrant='n',
             UIinfo={"groupes":("Lecture","Resultats et champs",)},
                fr="Lire dans un fichier, soit format IDEAS, soit au format ENSIGHT soit au format MED,"
-                 +" des champs et les stocker dans une SD résultat",
+                 +" des champs et les stocker dans une SD rÃ©sultat",
 
 
 # 0) mots cles generaux :

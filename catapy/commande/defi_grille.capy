@@ -17,8 +17,8 @@
 # ======================================================================
 # person_in_charge: samuel.geniaut at edf.fr
 DEFI_GRILLE=OPER(nom="DEFI_GRILLE",op=82,sd_prod=grille_sdaster,reentrant='n',
-                UIinfo={"groupes":("Modélisation",)},
-                fr="Définition d'une grille",
+                UIinfo={"groupes":("ModÃ©lisation",)},
+                fr="DÃ©finition d'une grille",
     
     MAILLAGE       = SIMP(statut='o',typ=maillage_sdaster),
 

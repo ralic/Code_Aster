@@ -27,19 +27,19 @@ def calc_fonction_prod(self, DERIVE, EXTRACTION, INTEGRE, INVERSE, COMB, COMB_C,
       type_vale=AsType(COMB[0]['FONCTION'])
       for mcfact in COMB :
           if(AsType(mcfact['FONCTION'])!=type_vale):
-             raise AsException("CALC_FONCTION/COMB : pas de types hétérogènes nappe/fonction")
+             raise AsException("CALC_FONCTION/COMB : pas de types hÃ©tÃ©rogÃ¨nes nappe/fonction")
       return type_vale
    if (COMB_C      != None):
       vale=COMB_C[0]['FONCTION']
       if(AsType(vale) == nappe_sdaster):
          for mcfact in COMB_C[1:] :
              if(AsType(mcfact['FONCTION'])!=nappe_sdaster):
-                raise AsException("CALC_FONCTION/COMB_C : pas de types hétérogènes nappe/fonction")
+                raise AsException("CALC_FONCTION/COMB_C : pas de types hÃ©tÃ©rogÃ¨nes nappe/fonction")
          return nappe_sdaster
       else:
          for mcfact in COMB_C :
              if(AsType(mcfact['FONCTION'])==nappe_sdaster):
-                raise AsException("CALC_FONCTION/COMB_C : pas de types hétérogènes nappe/fonction")
+                raise AsException("CALC_FONCTION/COMB_C : pas de types hÃ©tÃ©rogÃ¨nes nappe/fonction")
          return fonction_c
    if (ENVELOPPE   != None): return AsType(ENVELOPPE[0]['FONCTION'])
    if (FRACTILE    != None): return AsType(FRACTILE[0] ['FONCTION'])
@@ -52,7 +52,7 @@ def calc_fonction_prod(self, DERIVE, EXTRACTION, INTEGRE, INVERSE, COMB, COMB_C,
       type_vale = AsType(MULT[0]['FONCTION'])
       for mcfact in MULT:
           if(AsType(mcfact['FONCTION']) != type_vale):
-             raise AsException("CALC_FONCTION/MULT : pas de types hétérogènes nappe/fonction")
+             raise AsException("CALC_FONCTION/MULT : pas de types hÃ©tÃ©rogÃ¨nes nappe/fonction")
       return type_vale
    if (FFT         != None):
       vale=FFT[0]['FONCTION']
@@ -69,28 +69,28 @@ def calc_fonction_prod(self, DERIVE, EXTRACTION, INTEGRE, INVERSE, COMB, COMB_C,
 CALC_FONCTION=MACRO(nom="CALC_FONCTION",
                     op=OPS('Macro.calc_fonction_ops.calc_fonction_ops'),
                     sd_prod=calc_fonction_prod,
-                    fr="Effectue des opérations mathématiques sur des concepts de type fonction",
+                    fr="Effectue des opÃ©rations mathÃ©matiques sur des concepts de type fonction",
                     reentrant='n',
                     UIinfo={"groupes":("Fonctions",)},
          regles=(UN_PARMI('DERIVE', 'INTEGRE', 'SPEC_OSCI', 'DSP', 'FFT', 'CORR_ACCE',
                           'COMB', 'COMB_C', 'MULT', 'ASSE', 'INVERSE', 'ABS',
                           'ENVELOPPE', 'COMPOSE', 'EXTRACTION', 'PUISSANCE', 
                           'LISS_ENVELOP', 'FRACTILE', 'REGR_POLYNOMIALE'),),
-         FFT             =FACT(statut='f',fr="Transformée de Fourier ou de son inverse",
+         FFT             =FACT(statut='f',fr="TransformÃ©e de Fourier ou de son inverse",
            FONCTION        =SIMP(statut='o',typ=(fonction_sdaster,fonction_c) ),
            METHODE         =SIMP(statut='f',typ='TXM',defaut="PROL_ZERO",into=("PROL_ZERO","TRONCATURE","COMPLET") ),
            b_syme          =BLOC ( condition = " AsType(FONCTION)==fonction_c ",
              SYME           =SIMP(statut='f',typ='TXM',into=('OUI','NON'),defaut='OUI' ),
            ),
          ),
-         DERIVE          =FACT(statut='f',fr="Dérivée d une fonction",
+         DERIVE          =FACT(statut='f',fr="DÃ©rivÃ©e d une fonction",
            METHODE         =SIMP(statut='f',typ='TXM',defaut="DIFF_CENTREE",into=("DIFF_CENTREE",) ),
            FONCTION        =SIMP(statut='o',typ=fonction_sdaster ),
          ),
-         INTEGRE         =FACT(statut='f',fr="Intégrale d'une fonction",
+         INTEGRE         =FACT(statut='f',fr="IntÃ©grale d'une fonction",
            METHODE         =SIMP(statut='f',typ='TXM',defaut="TRAPEZE",into=("SIMPSON","TRAPEZE") ),
            FONCTION        =SIMP(statut='o',typ=fonction_sdaster),
-           COEF            =SIMP(statut='f',typ='R',defaut= 0.E+0,fr="Valeur de la constante d intégration" ),
+           COEF            =SIMP(statut='f',typ='R',defaut= 0.E+0,fr="Valeur de la constante d intÃ©gration" ),
          ),
          LISS_ENVELOP    = FACT(statut='f',fr="Lissage d une enveloppe",
            NAPPE           =SIMP(statut='o',typ=nappe_sdaster ),
@@ -99,7 +99,7 @@ CALC_FONCTION=MACRO(nom="CALC_FONCTION",
            ELARG           =SIMP(statut='f',typ='R',defaut =0.1 ),
            TOLE_LISS       =SIMP(statut='f',typ='R',defaut =0.25 ),
          ),
-         REGR_POLYNOMIALE = FACT(statut='f',fr="Régression polynomiale d'une fonction",
+         REGR_POLYNOMIALE = FACT(statut='f',fr="RÃ©gression polynomiale d'une fonction",
            FONCTION        =SIMP(statut='o',typ=fonction_sdaster),
            DEGRE           =SIMP(statut='o',typ='I'),
          ),
@@ -113,31 +113,31 @@ CALC_FONCTION=MACRO(nom="CALC_FONCTION",
            NATURE          =SIMP(statut='f',typ='TXM',defaut="ACCE",into=("DEPL","VITE","ACCE") ),
            NATURE_FONC     =SIMP(statut='f',typ='TXM',defaut="ACCE",into=("DEPL","VITE","ACCE") ),
          ),
-         DSP             =FACT(statut='f', fr="Densité spectrale",
+         DSP             =FACT(statut='f', fr="DensitÃ© spectrale",
            FONCTION        =SIMP(statut='o', typ=fonction_sdaster ),
            AMOR_REDUIT     =SIMP(statut='o', typ='R', val_min=0., val_max=1.),
            NORME           =SIMP(statut='o', typ='R'),
            LIST_FREQ       =SIMP(statut='f', typ=listr8_sdaster ),
            FREQ            =SIMP(statut='f', typ='R', max='**'),
-           FREQ_COUP       =SIMP(statut='o', typ='R', fr="fréquence de coupure" ),
+           FREQ_COUP       =SIMP(statut='o', typ='R', fr="frÃ©quence de coupure" ),
            DUREE           =SIMP(statut='o', typ='R', val_min=0.,
-                                 fr="durée de la phase forte pour facteur de peak"),
+                                 fr="durÃ©e de la phase forte pour facteur de peak"),
            FRACT           =SIMP(statut='o', typ='R', defaut=0.5, val_min=0., val_max=1., fr="fractile" ),
          ),
          ABS             =FACT(statut='f',fr="Valeur absolue d'une fonction",
            FONCTION        =SIMP(statut='o',typ=fonction_sdaster,),
          ),
-         COMB            =FACT(statut='f',max='**',fr="Combinaison linéaire réelle de fonctions",
+         COMB            =FACT(statut='f',max='**',fr="Combinaison linÃ©aire rÃ©elle de fonctions",
            FONCTION        =SIMP(statut='o',typ=(fonction_sdaster,nappe_sdaster) ),
-           COEF            =SIMP(statut='o',typ='R',fr="Coefficient réel de la combinaison linéaire associée à la fonction" ),
+           COEF            =SIMP(statut='o',typ='R',fr="Coefficient rÃ©el de la combinaison linÃ©aire associÃ©e Ã  la fonction" ),
          ),
-         COMB_C          =FACT(statut='f',max='**',fr="Combinaison linéaire complexe de fonctions",
+         COMB_C          =FACT(statut='f',max='**',fr="Combinaison linÃ©aire complexe de fonctions",
            regles=(UN_PARMI('COEF_R','COEF_C'),),
            FONCTION        =SIMP(statut='o',typ=(fonction_sdaster,fonction_c,nappe_sdaster) ),
-           COEF_R          =SIMP(statut='f',typ='R',fr="Coefficient réel de la combinaison linéaire associée à la fonction" ),
-           COEF_C          =SIMP(statut='f',typ='C',fr="Coefficient complexe de la combinaison linéaire associée à la fonction" ),
+           COEF_R          =SIMP(statut='f',typ='R',fr="Coefficient rÃ©el de la combinaison linÃ©aire associÃ©e Ã  la fonction" ),
+           COEF_C          =SIMP(statut='f',typ='C',fr="Coefficient complexe de la combinaison linÃ©aire associÃ©e Ã  la fonction" ),
          ),
-         MULT            =FACT(statut='f',max='**',fr="Produit de fonctions réelles",
+         MULT            =FACT(statut='f',max='**',fr="Produit de fonctions rÃ©elles",
            FONCTION        =SIMP(statut='o',typ=(fonction_sdaster,fonction_c,nappe_sdaster) ),
          ),
          b_comb          =BLOC ( condition = "COMB != None or COMB_C != None " \
@@ -150,7 +150,7 @@ CALC_FONCTION=MACRO(nom="CALC_FONCTION",
          ),
          EXTRACTION      =FACT(statut='f',fr="Extraction sur une fonction complexe",
            FONCTION        =SIMP(statut='o',typ=fonction_c),
-           PARTIE          =SIMP(statut='o',typ='TXM',into=("REEL","IMAG","MODULE","PHASE"),fr="Partie à extraire"),
+           PARTIE          =SIMP(statut='o',typ='TXM',into=("REEL","IMAG","MODULE","PHASE"),fr="Partie Ã  extraire"),
          ),
          ENVELOPPE       =FACT(statut='f',fr="Enveloppe d une famille de fonctions",
            FONCTION        =SIMP(statut='o',typ=(fonction_sdaster,nappe_sdaster),max='**' ),
@@ -168,7 +168,7 @@ CALC_FONCTION=MACRO(nom="CALC_FONCTION",
             CORR_DEPL       =SIMP(statut='f',typ='TXM',defaut="NON",into=("OUI","NON")),
             FONCTION        =SIMP(statut='o',typ=fonction_sdaster ),
          ),
-         PUISSANCE       =FACT(statut='f',fr="Fonction élevée à une puissance",
+         PUISSANCE       =FACT(statut='f',fr="Fonction Ã©levÃ©e Ã  une puissance",
             FONCTION      =SIMP(statut='o', typ=(fonction_sdaster,nappe_sdaster) ),
             EXPOSANT      =SIMP(statut='f', typ='I', defaut=1 ),
          ),
@@ -178,13 +178,13 @@ CALC_FONCTION=MACRO(nom="CALC_FONCTION",
          NOM_PARA        =SIMP(statut='f',typ='TXM',into=C_PARA_FONCTION() ),
          NOM_RESU        =SIMP(statut='f',typ='TXM' ),
          INTERPOL        =SIMP(statut='f',typ='TXM',max=2,into=("NON","LIN","LOG"),
-                               fr="Type d'interpolation pour les abscisses et les ordonnées de la " \
-                                  "fonction ou bien pour le paramètre de la nappe."),
+                               fr="Type d'interpolation pour les abscisses et les ordonnÃ©es de la " \
+                                  "fonction ou bien pour le paramÃ¨tre de la nappe."),
          PROL_DROITE     =SIMP(statut='f',typ='TXM',into=("CONSTANT","LINEAIRE","EXCLU") ),
          PROL_GAUCHE     =SIMP(statut='f',typ='TXM',into=("CONSTANT","LINEAIRE","EXCLU") ),
          NOM_PARA_FONC   =SIMP(statut='f',typ='TXM',into=C_PARA_FONCTION() ),
          INTERPOL_FONC   =SIMP(statut='f',typ='TXM',max=2,into=("NON","LIN","LOG"),
-                                 fr="Type d'interpolation pour les abscisses et les ordonnées de la fonction"),
+                                 fr="Type d'interpolation pour les abscisses et les ordonnÃ©es de la fonction"),
          PROL_DROITE_FONC=SIMP(statut='f',typ='TXM',into=("CONSTANT","LINEAIRE","EXCLU") ),
          PROL_GAUCHE_FONC=SIMP(statut='f',typ='TXM',into=("CONSTANT","LINEAIRE","EXCLU") ),
          INFO            =SIMP(statut='f',typ='I',defaut=1,into=(1,2) ),

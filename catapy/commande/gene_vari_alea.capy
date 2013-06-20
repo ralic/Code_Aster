@@ -22,8 +22,8 @@ GENE_VARI_ALEA=MACRO(nom="GENE_VARI_ALEA",
                      op=EMPTY_OPS,
                      sd_prod=reel,
                      reentrant='n',
-                     fr="Générer une réalisation d'une variable aléatoire réelle " \
-                        "de loi de probabilité donnée (Gamma ou Exponentielle)",
+                     fr="GÃ©nÃ©rer une rÃ©alisation d'une variable alÃ©atoire rÃ©elle " \
+                        "de loi de probabilitÃ© donnÃ©e (Gamma ou Exponentielle)",
                      UIinfo={"groupes":("Fonctions",)},
    TYPE       = SIMP(statut='f', typ='TXM', into=("EXP_TRONQUEE", "EXPONENTIELLE", "GAMMA"), defaut="GAMMA"),
    b_gamma    =BLOC(condition = "TYPE == 'GAMMA' ",fr="Parametres loi gamma",

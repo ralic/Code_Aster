@@ -23,8 +23,8 @@ CHAR_MECA_SR1D1D
 OPTION__
    IN__
         PGEOMER  GEOM_R
-        PCAGNPO  CAGNPO   << Champ de caractéristiques générales pour les poutres. Concept CARA_ELEM >>
-        PCAORIE  CAORIE   << Champ de caractéristiques d'orientation. Concept CARA_ELEM >>
+        PCAGNPO  CAGNPO   << Champ de caracteristiques generales pour les poutres. Concept CARA_ELEM >>
+        PCAORIE  CAORIE   << Champ de caracteristiques d'orientation. Concept CARA_ELEM >>
         
         PDEPLMR  DEPL_R
         PDEPLPR  DEPL_R

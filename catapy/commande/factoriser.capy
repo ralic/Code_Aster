@@ -27,42 +27,42 @@ def factoriser_prod(MATR_ASSE,**args):
   raise AsException("type de concept resultat non prevu")
 
 FACTORISER=OPER(nom="FACTORISER",op=14,sd_prod=factoriser_prod,
-               fr="Factoriser une matrice assemblée en un produit de deux matrices triangulaires"+
-                  "ou construire une matrice de préconditionnement pour une résolution par gradient conjugué",
-               reentrant='f', UIinfo={"groupes":("Résolution",)},
+               fr="Factoriser une matrice assemblÃ©e en un produit de deux matrices triangulaires"+
+                  "ou construire une matrice de prÃ©conditionnement pour une rÃ©solution par gradient conjuguÃ©",
+               reentrant='f', UIinfo={"groupes":("RÃ©solution",)},
          regles=(EXCLUS('BLOC_DEBUT','DDL_DEBUT'),
                  EXCLUS('BLOC_FIN','DDL_FIN'),),
          MATR_ASSE       =SIMP(statut='o',typ=(matr_asse_depl_r,matr_asse_depl_c,matr_asse_temp_r,
                                                matr_asse_temp_c,matr_asse_pres_r,matr_asse_pres_c) ),
 
-         # mots clés pour solveur LDLT et MULT_FRONT et MUMPS:
+         # mots clÃ©s pour solveur LDLT et MULT_FRONT et MUMPS:
          STOP_SINGULIER  =SIMP(statut='f',typ='TXM',defaut="OUI",into=("OUI","NON") ),
          NPREC           =SIMP(statut='f',typ='I',defaut=8),
 
-         # mots clés pour solveur LDLT :
+         # mots clÃ©s pour solveur LDLT :
          BLOC_DEBUT      =SIMP(statut='f',typ='I',val_min=1,),
          DDL_DEBUT       =SIMP(statut='f',typ='I',val_min=1,),
          BLOC_FIN        =SIMP(statut='f',typ='I',val_min=1,),
          DDL_FIN         =SIMP(statut='f',typ='I',val_min=1,),
 
-         # mots clés pour solveur MUMPS :
+         # mots clÃ©s pour solveur MUMPS :
          TYPE_RESOL      =SIMP(statut='f',typ='TXM',defaut='AUTO',into=('NONSYM','SYMGEN','SYMDEF','AUTO')),
          PRETRAITEMENTS  =SIMP(statut='f',typ='TXM',defaut="AUTO",into=("SANS","AUTO")),
          PCENT_PIVOT     =SIMP(statut='f',typ='I',defaut=20,),
          ELIM_LAGR2      =SIMP(statut='f',typ='TXM',defaut="OUI",into=("OUI","NON")),
          GESTION_MEMOIRE =SIMP(statut='f',typ='TXM',defaut="IN_CORE",into=("IN_CORE","OUT_OF_CORE","EVAL")),
 
-         # mots clés pour solveur GCPC et PETSc :
+         # mots clÃ©s pour solveur GCPC et PETSc :
          PRE_COND        =SIMP(statut='f',typ='TXM',into=("LDLT_INC","JACOBI","SOR","LDLT_SP"),defaut="LDLT_INC" ),
          b_ldlt_inc     =BLOC(condition = "PRE_COND == 'LDLT_INC' ",
            NIVE_REMPLISSAGE = SIMP(statut='f',typ='I',defaut= 0 ),
            REMPLISSAGE      = SIMP(statut='f',typ='R',defaut= 1.0),
          ),
-         b_ldlt_sp      =BLOC(condition = "PRE_COND == 'LDLT_SP' ", fr="Paramètres de la factorisation simple précision",
+         b_ldlt_sp      =BLOC(condition = "PRE_COND == 'LDLT_SP' ", fr="ParamÃ¨tres de la factorisation simple prÃ©cision",
            REAC_PRECOND        =SIMP(statut='f',typ='I',defaut=30, ),
          ),
          b_jacobi_sor   =BLOC(condition = "PRE_COND == 'JACOBI' or PRE_COND == 'SOR'",
-                                                                         fr="Paramètres des préconditionneurs JACOBI et SOR",
+                                                                         fr="ParamÃ¨tres des prÃ©conditionneurs JACOBI et SOR",
            RENUM               =SIMP(statut='f',typ='TXM',defaut="SANS",into=("SANS","RCMK") ),
          ),
 

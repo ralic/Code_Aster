@@ -21,7 +21,7 @@
 DEFI_PART_FETI=MACRO(nom="DEFI_PART_FETI",
                      op=OPS('Macro.defi_part_feti_ops.defi_part_feti_ops'),
                      sd_prod=sd_feti_sdaster,
-                     reentrant='n',UIinfo={"groupes":("Modélisation",)},
+                     reentrant='n',UIinfo={"groupes":("ModÃ©lisation",)},
                      fr="Creation partitionnement en sous-domaines pour FETI",
          regles=(UN_PARMI('MAILLAGE','MODELE'),PRESENT_PRESENT('MODELE','EXCIT'),),
 
@@ -54,9 +54,9 @@ DEFI_PART_FETI=MACRO(nom="DEFI_PART_FETI",
          # Traiter les mailles de bords (elles sont enlevees du graphe puis reinjectees)
          TRAITER_BORDS   =SIMP(statut='f',typ='TXM',defaut='OUI',into=('OUI','NON') ),
 
-         # Si le mot-clé suivant est renseigné, crée de nouveau group_ma a partir des bords
+         # Si le mot-clÃ© suivant est renseignÃ©, crÃ©e de nouveau group_ma a partir des bords
          # Note : le calcul FETI sera impossible
-         b_traiter_bords =BLOC(condition="TRAITER_BORDS == 'OUI'", fr="Crée t on des nouveaux group_ma",
+         b_traiter_bords =BLOC(condition="TRAITER_BORDS == 'OUI'", fr="CrÃ©e t on des nouveaux group_ma",
            NOM_GROUP_MA_BORD  =SIMP(statut='f',typ='TXM'),
              ),
 

@@ -26,15 +26,15 @@ def affe_char_cine_prod(MECA_IMPO,THER_IMPO,ACOU_IMPO,EVOL_IMPO,**args):
       elif AsType(EVOL_IMPO) in (evol_ther,) :
           return char_cine_ther
       else :
-          raise AsException("Extension à faire ...")
+          raise AsException("Extension Ã  faire ...")
 
   raise AsException("type de concept resultat non prevu")
 
 
 AFFE_CHAR_CINE=OPER(nom="AFFE_CHAR_CINE",op= 101,sd_prod=affe_char_cine_prod
-                    ,fr="Affectation de conditions aux limites cinématiques (U=U0) pour un traitement sans dualisation",
+                    ,fr="Affectation de conditions aux limites cinÃ©matiques (U=U0) pour un traitement sans dualisation",
                      reentrant='n',
-            UIinfo={"groupes":("Chargements","Mécanique",)},
+            UIinfo={"groupes":("Chargements","MÃ©canique",)},
          regles=(UN_PARMI('MECA_IMPO','THER_IMPO','ACOU_IMPO','EVOL_IMPO'),
                  ),
          MODELE          =SIMP(statut='o',typ=modele_sdaster ),
@@ -163,7 +163,7 @@ AFFE_CHAR_CINE=OPER(nom="AFFE_CHAR_CINE",op= 101,sd_prod=affe_char_cine_prod
 
          EVOL_IMPO  =SIMP(statut='f',typ=(evol_noli,evol_elas,evol_ther),fr="Pour imposer les ddls d'un evol_xxx"),
          b_evol_impo = BLOC ( condition = "EVOL_IMPO != None",
-           NOM_CMP         =SIMP(statut='f',typ='TXM',max='**',), # pour n'imposer que certaines CMPS (par défaut : toutes)
+           NOM_CMP         =SIMP(statut='f',typ='TXM',max='**',), # pour n'imposer que certaines CMPS (par dÃ©faut : toutes)
          ),
 
          INFO            =SIMP(statut='f',typ='I',defaut= 1,into=( 1 , 2) ),

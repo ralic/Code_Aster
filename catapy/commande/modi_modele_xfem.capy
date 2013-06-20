@@ -18,7 +18,7 @@
 # person_in_charge: samuel.geniaut at edf.fr
 
 MODI_MODELE_XFEM=OPER(nom="MODI_MODELE_XFEM",op= 113,sd_prod=modele_sdaster,docu="U4.44.12-e",reentrant='f',
-            UIinfo={"groupes":("Modélisation","Rupture",)},
+            UIinfo={"groupes":("ModÃ©lisation","Rupture",)},
                            fr="Engendrer ou enrichir une structure de donnees en affectant les cham_gd associes",
                            
     MODELE_IN       =SIMP(statut='o',typ=modele_sdaster,min=1,max=1,),

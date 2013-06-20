@@ -17,9 +17,9 @@
 # ======================================================================
 # person_in_charge: emmanuel.boyere at edf.fr
 DYNA_LINE_TRAN=OPER(nom="DYNA_LINE_TRAN",op=  48,sd_prod=dyna_trans,
-                    fr="Calcul de la réponse dynamique transitoire à une excitation temporelle quelconque",
+                    fr="Calcul de la rÃ©ponse dynamique transitoire Ã  une excitation temporelle quelconque",
                     reentrant='f',
-            UIinfo={"groupes":("Résolution","Dynamique",)},
+            UIinfo={"groupes":("RÃ©solution","Dynamique",)},
          MODELE          =SIMP(statut='f',typ=modele_sdaster ),
          CHAM_MATER      =SIMP(statut='f',typ=cham_mater ),
          CARA_ELEM       =SIMP(statut='f',typ=cara_elem ),

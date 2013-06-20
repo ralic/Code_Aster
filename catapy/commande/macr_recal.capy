@@ -24,9 +24,9 @@ def macr_recal_prod(self,**args ):
 MACR_RECAL = MACRO(nom="MACR_RECAL",
                    op=OPS('Macro.macr_recal_ops.macr_recal_ops'),
                    sd_prod=macr_recal_prod,
-                   UIinfo={"groupes":("Résolution","Résultats et champs",)},
-                   fr="Réalise le recalage des calculs Aster sur des résultats expérimentaux" \
-                      " ou sur d'autres résultats de calculs",
+                   UIinfo={"groupes":("RÃ©solution","RÃ©sultats et champs",)},
+                   fr="RÃ©alise le recalage des calculs Aster sur des rÃ©sultats expÃ©rimentaux" \
+                      " ou sur d'autres rÃ©sultats de calculs",
             regles=(UN_PARMI('PARA_OPTI','LIST_PARA'),
                     PRESENT_PRESENT('PARA_OPTI','COURBE'),
                     PRESENT_PRESENT('LIST_PARA','RESU_EXP'),
@@ -60,8 +60,8 @@ MACR_RECAL = MACRO(nom="MACR_RECAL",
              AFFICHAGE       =SIMP(statut='f',typ='TXM',defaut='TOUTE_ITERATION',into=("TOUTE_ITERATION","ITERATION_FINALE"),),
 
              UNITE           =SIMP(statut='f',typ='I',val_min=10,val_max=90,defaut=29,
-                            fr="Unité logique définissant le fichier (fort.N) dans lequel on écrit"),
-             b_pilote = BLOC(condition = "FORMAT == 'XMGRACE'", fr="Mots-clés propres à XMGRACE",
+                            fr="UnitÃ© logique dÃ©finissant le fichier (fort.N) dans lequel on Ã©crit"),
+             b_pilote = BLOC(condition = "FORMAT == 'XMGRACE'", fr="Mots-clÃ©s propres Ã  XMGRACE",
                  PILOTE          =SIMP(statut='f',typ='TXM',defaut='',
                                        into=('','POSTSCRIPT','EPS','MIF','SVG','PNM','PNG','JPEG','PDF','INTERACTIF'),
                             fr="Pilote de sortie, PNG/JPEG/PDF ne sont pas disponibles sur toutes les installations de xmgrace"),

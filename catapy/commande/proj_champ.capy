@@ -29,13 +29,13 @@ def proj_champ_prod(RESULTAT=None,CHAM_GD=None,METHODE=None,**args ):
 
 
 PROJ_CHAMP=OPER(nom="PROJ_CHAMP",op= 166,sd_prod=proj_champ_prod,reentrant='f',
-        UIinfo={"groupes":("Résultats et champs",)},
+        UIinfo={"groupes":("RÃ©sultats et champs",)},
             fr="Projeter des champs d'un maillage sur un autre",
 
      # faut-il projeter les champs ?
      PROJECTION      =SIMP(statut='f',typ='TXM',defaut="OUI",into=("OUI","NON",),),
 
-     # pour projeter avec une sd_corresp_2_mailla deja calculée :
+     # pour projeter avec une sd_corresp_2_mailla deja calculÃ©e :
      MATR_PROJECTION   =SIMP(statut='f',typ=corresp_2_mailla,),
 
 
@@ -72,24 +72,24 @@ PROJ_CHAMP=OPER(nom="PROJ_CHAMP",op= 166,sd_prod=proj_champ_prod,reentrant='f',
          #--------------------------------------------
          b_elem          =BLOC(condition="METHODE in ('COLLOCATION','ECLA_PG','AUTO')",
              CAS_FIGURE      =SIMP(statut='f',typ='TXM',into=("2D","3D","2.5D","1.5D",),
-                  fr="Pour indiquer au programme le type de projection souhaité"),
+                  fr="Pour indiquer au programme le type de projection souhaitÃ©"),
              DISTANCE_MAX    =SIMP(statut='f',typ='R',
-                  fr="Distance maximale entre le noeud et l'élément le plus proche, lorsque le noeud n'est dans aucun élément."),
+                  fr="Distance maximale entre le noeud et l'Ã©lÃ©ment le plus proche, lorsque le noeud n'est dans aucun Ã©lÃ©ment."),
 
              TRANSF_GEOM_1   =SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule),min=2,max=3,
-                  fr="2 (ou 3) fonctions fx,fy,fz définissant la transformation géométrique à appliquer"+
+                  fr="2 (ou 3) fonctions fx,fy,fz dÃ©finissant la transformation gÃ©omÃ©trique Ã  appliquer"+
                      " aux noeuds du MODELE_1 avant la projection."),
              TRANSF_GEOM_2   =SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule),min=2,max=3,
-                  fr="2 (ou 3) fonctions fx,fy,fz définissant la transformation géométrique à appliquer"+
+                  fr="2 (ou 3) fonctions fx,fy,fz dÃ©finissant la transformation gÃ©omÃ©trique Ã  appliquer"+
                      " aux noeuds du MODELE_2 avant la projection."),
 
              ALARME          =SIMP(statut='f',typ='TXM',defaut="OUI",into=("OUI","NON") ),
 
              TYPE_CHAM       =SIMP(statut='f',typ='TXM',into=("NOEU",),
-                  fr="Pour forcer le type des champs projetés. NOEU -> cham_no"),
+                  fr="Pour forcer le type des champs projetÃ©s. NOEU -> cham_no"),
 
              PROL_ZERO       =SIMP(statut='f',typ='TXM',into=("OUI","NON"),defaut="NON",
-                  fr="Pour prolonger les champs par zéro là ou la projection ne donne pas de valeurs."),
+                  fr="Pour prolonger les champs par zÃ©ro lÃ  ou la projection ne donne pas de valeurs."),
          ),
 
          # Cas de la projection SOUS_POINT :
@@ -97,12 +97,12 @@ PROJ_CHAMP=OPER(nom="PROJ_CHAMP",op= 166,sd_prod=proj_champ_prod,reentrant='f',
          b_sous_point         =BLOC(condition="METHODE == 'SOUS_POINT'" ,
              CARA_ELEM    =SIMP(statut='o',typ=cara_elem),
              PROL_ZERO       =SIMP(statut='f',typ='TXM',into=("OUI","NON"),defaut="NON",
-                  fr="Pour prolonger les champs par zéro là ou la projection ne donne pas de valeurs."),
+                  fr="Pour prolonger les champs par zÃ©ro lÃ  ou la projection ne donne pas de valeurs."),
              TRANSF_GEOM_1   =SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule),min=2,max=3,
-                  fr="2 (ou 3) fonctions fx,fy,fz définissant la transformation géométrique à appliquer"+
+                  fr="2 (ou 3) fonctions fx,fy,fz dÃ©finissant la transformation gÃ©omÃ©trique Ã  appliquer"+
                      " aux noeuds du MODELE_1 avant la projection."),
              TRANSF_GEOM_2   =SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule),min=2,max=3,
-                  fr="2 (ou 3) fonctions fx,fy,fz définissant la transformation géométrique à appliquer"+
+                  fr="2 (ou 3) fonctions fx,fy,fz dÃ©finissant la transformation gÃ©omÃ©trique Ã  appliquer"+
                      " aux noeuds du MODELE_2 avant la projection."),
          ),
 
@@ -117,7 +117,7 @@ PROJ_CHAMP=OPER(nom="PROJ_CHAMP",op= 166,sd_prod=proj_champ_prod,reentrant='f',
            NOM_CHAM        =SIMP(statut='f',typ='TXM',validators=NoRepeat(),max='**',into=C_NOM_CHAM_INTO(),),
 
            NUME_DDL        =SIMP(statut='f',typ=(nume_ddl_sdaster),
-                fr="Utile en dynamique pour pouvoir imoser la numérotation des cham_no."),
+                fr="Utile en dynamique pour pouvoir imoser la numÃ©rotation des cham_no."),
 
            TOUT_ORDRE      =SIMP(statut='f',typ='TXM',into=("OUI",) ),
            NUME_ORDRE      =SIMP(statut='f',typ='I',validators=NoRepeat(),max='**' ),
@@ -153,13 +153,13 @@ PROJ_CHAMP=OPER(nom="PROJ_CHAMP",op= 166,sd_prod=proj_champ_prod,reentrant='f',
            GROUP_NO_2      =SIMP(statut='f',typ=grno,validators=NoRepeat(),max='**'),
            NOEUD_2         =SIMP(statut='f',typ=no  ,validators=NoRepeat(),max='**'),
 
-           # les mots clés suivants ne sont actifs que si METHODE='COLLOCATION' mais on ne peut pas le vérifier:
+           # les mots clÃ©s suivants ne sont actifs que si METHODE='COLLOCATION' mais on ne peut pas le vÃ©rifier:
                CAS_FIGURE      =SIMP(statut='f',typ='TXM',into=("2D","3D","2.5D","1.5D",) ),
                TRANSF_GEOM_1   =SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule),min=2,max=3,
-                    fr="2 (ou 3) fonctions fx,fy,fz définissant la transformation géométrique à appliquer"+
+                    fr="2 (ou 3) fonctions fx,fy,fz dÃ©finissant la transformation gÃ©omÃ©trique Ã  appliquer"+
                        " aux noeuds du MODELE_1 avant la projection."),
                TRANSF_GEOM_2   =SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule),min=2,max=3,
-                    fr="2 (ou 3) fonctions fx,fy,fz définissant la transformation géométrique à appliquer"+
+                    fr="2 (ou 3) fonctions fx,fy,fz dÃ©finissant la transformation gÃ©omÃ©trique Ã  appliquer"+
                        " aux noeuds du MODELE_2 avant la projection."),
          ),
      ), # fin bloc b_1_et_2
@@ -188,15 +188,15 @@ PROJ_CHAMP=OPER(nom="PROJ_CHAMP",op= 166,sd_prod=proj_champ_prod,reentrant='f',
          #--------------------------------------------
          b_elem          =BLOC(condition="METHODE in ('COLLOCATION',)",
              CAS_FIGURE      =SIMP(statut='f',typ='TXM',into=("2D","3D","2.5D","1.5D",),
-                  fr="Pour indiquer au programme le type de projection souhaité"),
+                  fr="Pour indiquer au programme le type de projection souhaitÃ©"),
              DISTANCE_MAX    =SIMP(statut='f',typ='R',
-                  fr="Distance maximale entre le noeud et l'élément le plus proche, lorsque le noeud n'est dans aucun élément."),
+                  fr="Distance maximale entre le noeud et l'Ã©lÃ©ment le plus proche, lorsque le noeud n'est dans aucun Ã©lÃ©ment."),
 
              TRANSF_GEOM_1   =SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule),min=2,max=3,
-                  fr="2 (ou 3) fonctions fx,fy,fz définissant la transformation géométrique à appliquer"+
+                  fr="2 (ou 3) fonctions fx,fy,fz dÃ©finissant la transformation gÃ©omÃ©trique Ã  appliquer"+
                      " aux noeuds du MODELE_1 avant la projection."),
              TRANSF_GEOM_2   =SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule),min=2,max=3,
-                  fr="2 (ou 3) fonctions fx,fy,fz définissant la transformation géométrique à appliquer"+
+                  fr="2 (ou 3) fonctions fx,fy,fz dÃ©finissant la transformation gÃ©omÃ©trique Ã  appliquer"+
                      " aux noeuds du MODELE_2 avant la projection."),
 
              ALARME          =SIMP(statut='f',typ='TXM',defaut="OUI",into=("OUI","NON") ),
@@ -217,13 +217,13 @@ PROJ_CHAMP=OPER(nom="PROJ_CHAMP",op= 166,sd_prod=proj_champ_prod,reentrant='f',
            GROUP_NO_2      =SIMP(statut='f',typ=grno,validators=NoRepeat(),max='**'),
            NOEUD_2         =SIMP(statut='f',typ=no  ,validators=NoRepeat(),max='**'),
 
-           # les mots clés suivants ne sont actifs que si METHODE='COLLOCATION' mais on ne peut pas le vérifier:
+           # les mots clÃ©s suivants ne sont actifs que si METHODE='COLLOCATION' mais on ne peut pas le vÃ©rifier:
                CAS_FIGURE      =SIMP(statut='f',typ='TXM',into=("2D","3D","2.5D","1.5D",) ),
                TRANSF_GEOM_1   =SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule),min=2,max=3,
-                    fr="2 (ou 3) fonctions fx,fy,fz définissant la transformation géométrique à appliquer"+
+                    fr="2 (ou 3) fonctions fx,fy,fz dÃ©finissant la transformation gÃ©omÃ©trique Ã  appliquer"+
                        " aux noeuds du MODELE_1 avant la projection."),
                TRANSF_GEOM_2   =SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule),min=2,max=3,
-                    fr="2 (ou 3) fonctions fx,fy,fz définissant la transformation géométrique à appliquer"+
+                    fr="2 (ou 3) fonctions fx,fy,fz dÃ©finissant la transformation gÃ©omÃ©trique Ã  appliquer"+
                        " aux noeuds du MODELE_2 avant la projection."),
          ),
      ), # fin bloc b_1
@@ -231,7 +231,7 @@ PROJ_CHAMP=OPER(nom="PROJ_CHAMP",op= 166,sd_prod=proj_champ_prod,reentrant='f',
 
 
      #-----------------------------------------------------------------------------------------------------------
-     # 3eme cas : on projette les champs avec une sd_corresp_2_mailla déjé calculée
+     # 3eme cas : on projette les champs avec une sd_corresp_2_mailla dÃ©jÃ© calculÃ©e
      #-----------------------------------------------------------------------------------------------
      b_2   =BLOC(condition="MATR_PROJECTION != None",
          regles=(UN_PARMI('RESULTAT','CHAM_GD'),),
@@ -239,16 +239,16 @@ PROJ_CHAMP=OPER(nom="PROJ_CHAMP",op= 166,sd_prod=proj_champ_prod,reentrant='f',
          CHAM_GD         =SIMP(statut='f',typ=(cham_no_sdaster,cham_elem)),
 
          TYPE_CHAM       =SIMP(statut='f',typ='TXM',into=("NOEU",),
-              fr="Pour forcer le type des champs projetés. NOEU -> cham_no"),
+              fr="Pour forcer le type des champs projetÃ©s. NOEU -> cham_no"),
 
          NUME_DDL        =SIMP(statut='f',typ=(nume_ddl_sdaster),
-              fr="Parfois utile en dynamique pour pouvoir imposer la numérotation des cham_no."),
+              fr="Parfois utile en dynamique pour pouvoir imposer la numÃ©rotation des cham_no."),
 
-         # nécessaire si l'on projette des cham_elem :
+         # nÃ©cessaire si l'on projette des cham_elem :
          MODELE_2        =SIMP(statut='f',typ=modele_sdaster),
 
          PROL_ZERO       =SIMP(statut='f',typ='TXM',into=("OUI","NON"),defaut="NON",
-              fr="Pour prolonger les champs par zéro là où la projection ne donne pas de valeurs."),
+              fr="Pour prolonger les champs par zÃ©ro lÃ  oÃ¹ la projection ne donne pas de valeurs."),
 
 
 

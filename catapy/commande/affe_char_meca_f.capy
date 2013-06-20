@@ -17,9 +17,9 @@
 # ======================================================================
 # person_in_charge: xavier.desroches at edf.fr
 AFFE_CHAR_MECA_F=OPER(nom="AFFE_CHAR_MECA_F",op=7,sd_prod=char_meca,
-                      fr="Affectation de charges et conditions aux limites mécaniques fonction d'un (ou plusieurs) paramètres",
+                      fr="Affectation de charges et conditions aux limites mÃ©caniques fonction d'un (ou plusieurs) paramÃ¨tres",
                       reentrant='n',
-            UIinfo={"groupes":("Chargements","Mécanique",)},
+            UIinfo={"groupes":("Chargements","MÃ©canique",)},
         regles=(AU_MOINS_UN('DDL_IMPO','FACE_IMPO','LIAISON_DDL','FORCE_NODALE',
                             'FORCE_FACE','FORCE_ARETE','FORCE_CONTOUR','FORCE_INTERNE',
                             'PRES_REP','FORCE_POUTRE','VITE_FACE','IMPE_FACE','ONDE_PLANE',
@@ -29,13 +29,13 @@ AFFE_CHAR_MECA_F=OPER(nom="AFFE_CHAR_MECA_F",op=7,sd_prod=char_meca,
          VERI_DDL        =SIMP(statut='f',typ='TXM',defaut="OUI",into=("OUI","NON") ),
          VERI_NORM       =SIMP(statut='f',typ='TXM',defaut="OUI",into=("OUI","NON") ),
          MODELE          =SIMP(statut='o',typ=modele_sdaster),
-         METHODE         =SIMP(statut='c',typ='TXM',fr="Stratégie de résolution pour les déplacements imposés",
+         METHODE         =SIMP(statut='c',typ='TXM',fr="StratÃ©gie de rÃ©solution pour les dÃ©placements imposÃ©s",
                                into=('DUALISATION',),defaut='DUALISATION',),
-                               # METHODE='ELIMINATION' est traité dans le fortran mais dangereux actuellement
+                               # METHODE='ELIMINATION' est traitÃ© dans le fortran mais dangereux actuellement
 
          DDL_IMPO        =FACT(statut='f',max='**',
-           fr="Impose à des noeuds une ou plusieurs valeurs de déplacement (ou de certaines grandeurs asscociées) fournies"
-               +" par l'intermédiaire d'un concept fonction ",
+           fr="Impose Ã  des noeuds une ou plusieurs valeurs de dÃ©placement (ou de certaines grandeurs asscociÃ©es) fournies"
+               +" par l'intermÃ©diaire d'un concept fonction ",
            regles=(AU_MOINS_UN('TOUT','GROUP_MA','MAILLE','GROUP_NO','NOEUD'),
                    AU_MOINS_UN('DX','DY','DZ','DRX','DRY','DRZ','GRX','PRES','PHI',
                                'TEMP','PRE1','PRE2','GONF','LIAISON','H1X',
@@ -79,8 +79,8 @@ AFFE_CHAR_MECA_F=OPER(nom="AFFE_CHAR_MECA_F",op=7,sd_prod=char_meca,
          ),
 
          FACE_IMPO       =FACT(statut='f',max='**',
-           fr="Impose à tous les noeuds d'une face une ou plusieurs valeurs de déplacement (ou de certaines grandeurs associées)"
-              +" fournies par l'intérmédiaire d'un concept fonction",
+           fr="Impose Ã  tous les noeuds d'une face une ou plusieurs valeurs de dÃ©placement (ou de certaines grandeurs associÃ©es)"
+              +" fournies par l'intÃ©rmÃ©diaire d'un concept fonction",
            regles=(UN_PARMI('GROUP_MA','MAILLE'),
                    AU_MOINS_UN('DX','DY','DZ','DRX','DRY','DRZ','GRX','PRES','PHI','TEMP','PRE1','PRE2','DNOR','DTAN'),
                    EXCLUS('DNOR','DX'),
@@ -119,7 +119,7 @@ AFFE_CHAR_MECA_F=OPER(nom="AFFE_CHAR_MECA_F",op=7,sd_prod=char_meca,
          ),
 
          LIAISON_DDL     =FACT(statut='f',max='**',
-           fr="Définit une relation linéaire entre des DDLs de deux ou plusieurs noeuds, les valeurs sont fournies par"
+           fr="DÃ©finit une relation linÃ©aire entre des DDLs de deux ou plusieurs noeuds, les valeurs sont fournies par"
                +" l'intermediaire d'un concept de type fonction",
            regles=(UN_PARMI('GROUP_NO','NOEUD'),UN_PARMI('COEF_MULT','COEF_MULT_FONC'),),
            GROUP_NO        =SIMP(statut='f',typ=grno,max='**'),
@@ -131,8 +131,8 @@ AFFE_CHAR_MECA_F=OPER(nom="AFFE_CHAR_MECA_F",op=7,sd_prod=char_meca,
          ),
 
          LIAISON_OBLIQUE =FACT(statut='f',max='**',
-           fr="Applique à des noeuds la meme valeur de déplacement définie composante par composante dans un repère oblique"
-              +" quelconque, les valeurs sont fournis par l'intermédiaire d'un concept fonction",
+           fr="Applique Ã  des noeuds la meme valeur de dÃ©placement dÃ©finie composante par composante dans un repÃ¨re oblique"
+              +" quelconque, les valeurs sont fournis par l'intermÃ©diaire d'un concept fonction",
            regles=(UN_PARMI('GROUP_NO','NOEUD'),
                    UN_PARMI('DX','DY','DZ','DRX','DRY','DRZ'),),
            GROUP_NO        =SIMP(statut='f',typ=grno,max='**'),
@@ -147,8 +147,8 @@ AFFE_CHAR_MECA_F=OPER(nom="AFFE_CHAR_MECA_F",op=7,sd_prod=char_meca,
          ),
 
          LIAISON_GROUP   =FACT(statut='f',max='**',
-           fr="Définit la meme relation linéaire entre certains DDLs de couples de noeuds, les valeurs sont fournies par"
-               +" l'intermédiaire de concept fonction",
+           fr="DÃ©finit la meme relation linÃ©aire entre certains DDLs de couples de noeuds, les valeurs sont fournies par"
+               +" l'intermÃ©diaire de concept fonction",
            regles=(UN_PARMI('GROUP_MA_1','MAILLE_1','GROUP_NO_1','NOEUD_1'),
                    UN_PARMI('GROUP_MA_2','MAILLE_2','GROUP_NO_2','NOEUD_2'),
                    EXCLUS('GROUP_MA_1','GROUP_NO_2'),
@@ -182,7 +182,7 @@ AFFE_CHAR_MECA_F=OPER(nom="AFFE_CHAR_MECA_F",op=7,sd_prod=char_meca,
          ),
 
           LIAISON_UNIF    =FACT(statut='f',max='**',
-           fr="Impose une meme valeur (inconnue) à des DDLs d'un ensemble de noeuds",
+           fr="Impose une meme valeur (inconnue) Ã  des DDLs d'un ensemble de noeuds",
            regles=(UN_PARMI('GROUP_NO','NOEUD','GROUP_MA','MAILLE'),),
            GROUP_MA        =SIMP(statut='f',typ=grma,validators=NoRepeat(),max='**'),
            MAILLE          =SIMP(statut='f',typ=ma  ,validators=NoRepeat(),max='**'),
@@ -193,8 +193,8 @@ AFFE_CHAR_MECA_F=OPER(nom="AFFE_CHAR_MECA_F",op=7,sd_prod=char_meca,
 
 
          LIAISON_SOLIDE  =FACT(statut='f',max='**',
-           fr="Modélise une partie indéformable d'une structure."
-            +" Les mots clés TRAN et ANGL_NAUT permettent d'imposer le déplacement de la partie indéformable.",
+           fr="ModÃ©lise une partie indÃ©formable d'une structure."
+            +" Les mots clÃ©s TRAN et ANGL_NAUT permettent d'imposer le dÃ©placement de la partie indÃ©formable.",
            regles=(UN_PARMI('GROUP_NO','NOEUD','GROUP_MA','MAILLE'),
                    ENSEMBLE('CENTRE','ANGL_NAUT'),),
            GROUP_NO        =SIMP(statut='f',typ=grno,validators=NoRepeat(),max='**'),
@@ -211,7 +211,7 @@ AFFE_CHAR_MECA_F=OPER(nom="AFFE_CHAR_MECA_F",op=7,sd_prod=char_meca,
 
 
          FORCE_NODALE    =FACT(statut='f',max='**',
-           fr="Applique à des noeuds des forces nodales dont les valeurs des composantes sont fournies par l'intermédiaire"
+           fr="Applique Ã  des noeuds des forces nodales dont les valeurs des composantes sont fournies par l'intermÃ©diaire"
                +" d'un concept fonction",
            regles=(UN_PARMI('GROUP_NO','NOEUD'),
                    AU_MOINS_UN('FX','FY','FZ','MX','MY','MZ'),),
@@ -227,8 +227,8 @@ AFFE_CHAR_MECA_F=OPER(nom="AFFE_CHAR_MECA_F",op=7,sd_prod=char_meca,
          ),
 
          FORCE_FACE      =FACT(statut='f',max='**',
-           fr="Applique des forces surfaciques sur une face d'élément volumique dont les valeurs des composantes sont fournies"
-               +" par l'intermédiaire d'un concept fonction",
+           fr="Applique des forces surfaciques sur une face d'Ã©lÃ©ment volumique dont les valeurs des composantes sont fournies"
+               +" par l'intermÃ©diaire d'un concept fonction",
            regles=(AU_MOINS_UN('GROUP_MA','MAILLE'),
                    AU_MOINS_UN('FX','FY','FZ'),),
            GROUP_MA        =SIMP(statut='f',typ=grma,validators=NoRepeat(),max='**'),
@@ -238,8 +238,8 @@ AFFE_CHAR_MECA_F=OPER(nom="AFFE_CHAR_MECA_F",op=7,sd_prod=char_meca,
            FZ              =SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule) ),
          ),
          FORCE_ARETE     =FACT(statut='f',max='**',
-           fr="Applique des forces linéiques à une arete d'élément volumique ou de coque dont les valeurs des composantes sont"
-               +" fournies par l'intermédiaire d'un concept fonction",
+           fr="Applique des forces linÃ©iques Ã  une arete d'Ã©lÃ©ment volumique ou de coque dont les valeurs des composantes sont"
+               +" fournies par l'intermÃ©diaire d'un concept fonction",
            regles=(AU_MOINS_UN('GROUP_MA','MAILLE'),
                    AU_MOINS_UN('FX','FY','FZ','MX','MY','MZ'),),
            GROUP_MA        =SIMP(statut='f',typ=grma,validators=NoRepeat(),max='**'),
@@ -252,8 +252,8 @@ AFFE_CHAR_MECA_F=OPER(nom="AFFE_CHAR_MECA_F",op=7,sd_prod=char_meca,
            MZ              =SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule) ),
          ),
          FORCE_CONTOUR   =FACT(statut='f',max='**',
-           fr="Applique des forces linéiques au bord d'un domaine 2D ou AXIS ou AXIS_FOURIER, dont les valeurs des composantes"
-               +" sont fournies par l'intermédiaire d'un concept fonction",
+           fr="Applique des forces linÃ©iques au bord d'un domaine 2D ou AXIS ou AXIS_FOURIER, dont les valeurs des composantes"
+               +" sont fournies par l'intermÃ©diaire d'un concept fonction",
            regles=(AU_MOINS_UN('GROUP_MA','MAILLE'),
                    AU_MOINS_UN('FX','FY','FZ','MX','MY','MZ'),),
            GROUP_MA        =SIMP(statut='f',typ=grma,validators=NoRepeat(),max='**'),
@@ -267,8 +267,8 @@ AFFE_CHAR_MECA_F=OPER(nom="AFFE_CHAR_MECA_F",op=7,sd_prod=char_meca,
          ),
 
          FORCE_INTERNE   =FACT(statut='f',max='**',
-           fr="Applique des forces volumiques (2D ou 3D) à un domaine volumique, dont les valeurs des composantes sont fournies"
-               +" par l'intermédiaire d'un concept fonction",
+           fr="Applique des forces volumiques (2D ou 3D) Ã  un domaine volumique, dont les valeurs des composantes sont fournies"
+               +" par l'intermÃ©diaire d'un concept fonction",
            regles=(AU_MOINS_UN('TOUT','GROUP_MA','MAILLE'),
                    PRESENT_ABSENT('TOUT','GROUP_MA','MAILLE'),
                    AU_MOINS_UN('FX','FY','FZ'),),
@@ -281,8 +281,8 @@ AFFE_CHAR_MECA_F=OPER(nom="AFFE_CHAR_MECA_F",op=7,sd_prod=char_meca,
          ),
 
          PRES_REP        =FACT(statut='f',max='**',
-           fr="Applique une pression à un domaine de milieu continu 2D ou 3D ou à un domaine de coques et tuyaux, dont les"
-               +" valeurs imposées (pression et/ou cisaillement) sont fournies par l'intermédiaire d'un concept fonction",
+           fr="Applique une pression Ã  un domaine de milieu continu 2D ou 3D ou Ã  un domaine de coques et tuyaux, dont les"
+               +" valeurs imposÃ©es (pression et/ou cisaillement) sont fournies par l'intermÃ©diaire d'un concept fonction",
            regles=(AU_MOINS_UN('TOUT','GROUP_MA','MAILLE','FISSURE'),
                    PRESENT_ABSENT('TOUT','GROUP_MA','MAILLE','FISSURE'),
                    AU_MOINS_UN('PRES','CISA_2D'),),
@@ -295,8 +295,8 @@ AFFE_CHAR_MECA_F=OPER(nom="AFFE_CHAR_MECA_F",op=7,sd_prod=char_meca,
          ),
 
          EFFE_FOND       =FACT(statut='f',max='**',
-           fr="Calcul l'effet de fond sur une branche de tuyauterie (modélisation 3D) soumise"
-               +" à une pression dont la valeur est fournie par l'intermédiaire d'un concept fonction",
+           fr="Calcul l'effet de fond sur une branche de tuyauterie (modÃ©lisation 3D) soumise"
+               +" Ã  une pression dont la valeur est fournie par l'intermÃ©diaire d'un concept fonction",
            regles=(AU_MOINS_UN('GROUP_MA','MAILLE'),),
            GROUP_MA_INT    =SIMP(statut='o',typ=grma,validators=NoRepeat(),max='**'),
            GROUP_MA        =SIMP(statut='f',typ=grma,validators=NoRepeat(),max='**'),
@@ -305,8 +305,8 @@ AFFE_CHAR_MECA_F=OPER(nom="AFFE_CHAR_MECA_F",op=7,sd_prod=char_meca,
          ),
 
          PRE_EPSI       =FACT(statut='f',max='**',
-           fr="Applique un chargement de déformation initiale à un élément 2D, 3D ou de structure dont les composantes"
-               +" du tenseur de déformation sont fournies par l'intermédiaire d'un concept fonction",
+           fr="Applique un chargement de dÃ©formation initiale Ã  un Ã©lÃ©ment 2D, 3D ou de structure dont les composantes"
+               +" du tenseur de dÃ©formation sont fournies par l'intermÃ©diaire d'un concept fonction",
            regles=(AU_MOINS_UN('TOUT','GROUP_MA','MAILLE'),
                    PRESENT_ABSENT('TOUT','GROUP_MA','MAILLE'),
                    AU_MOINS_UN('EPXX','EPYY','EPZZ','EPXY','EPXZ','EPYZ'),),
@@ -322,8 +322,8 @@ AFFE_CHAR_MECA_F=OPER(nom="AFFE_CHAR_MECA_F",op=7,sd_prod=char_meca,
          ),
 
          FORCE_POUTRE    =FACT(statut='f',max='**',
-           fr="Applique des forces linéiques sur des éléments de type poutre dont les valeurs sont fournies par"
-               +" l'intermédiaire d'un concept fonction",
+           fr="Applique des forces linÃ©iques sur des Ã©lÃ©ments de type poutre dont les valeurs sont fournies par"
+               +" l'intermÃ©diaire d'un concept fonction",
            regles=(AU_MOINS_UN('TOUT','GROUP_MA','MAILLE'),
                    PRESENT_ABSENT('TOUT','GROUP_MA','MAILLE'),
 
@@ -381,7 +381,7 @@ AFFE_CHAR_MECA_F=OPER(nom="AFFE_CHAR_MECA_F",op=7,sd_prod=char_meca,
          ),
 
          FORCE_TUYAU     =FACT(statut='f',max='**',
-           fr="Applique une pression sur des éléments TUYAU, la valeur est fournie par l'intermédiaire d'un concept fonction",
+           fr="Applique une pression sur des Ã©lÃ©ments TUYAU, la valeur est fournie par l'intermÃ©diaire d'un concept fonction",
            regles=(AU_MOINS_UN('TOUT','GROUP_MA','MAILLE'),
                    PRESENT_ABSENT('TOUT','GROUP_MA','MAILLE'),),
            TOUT            =SIMP(statut='f',typ='TXM',into=("OUI",) ),
@@ -391,8 +391,8 @@ AFFE_CHAR_MECA_F=OPER(nom="AFFE_CHAR_MECA_F",op=7,sd_prod=char_meca,
          ),
 
          FORCE_COQUE     =FACT(statut='f',max='**',
-           fr="Applique des forces surfaciques sur des éléments de types coques dont les valeurs sont fournies par"
-               +" l'intermédiaires d'un concept fonction",
+           fr="Applique des forces surfaciques sur des Ã©lÃ©ments de types coques dont les valeurs sont fournies par"
+               +" l'intermÃ©diaires d'un concept fonction",
            regles=(AU_MOINS_UN('TOUT','GROUP_MA','MAILLE'),
                    PRESENT_ABSENT('TOUT','GROUP_MA','MAILLE'),
                    AU_MOINS_UN('FX','FY','FZ','MX','MY','MZ','PRES','F1','F2','F3','MF1','MF2'),
@@ -429,7 +429,7 @@ AFFE_CHAR_MECA_F=OPER(nom="AFFE_CHAR_MECA_F",op=7,sd_prod=char_meca,
          ),
 
          LIAISON_COQUE   =FACT(statut='f',max='**',
-           fr="Permet de représenter le raccord entre des éléments de coques au moyen des relations linéaires",
+           fr="Permet de reprÃ©senter le raccord entre des Ã©lÃ©ments de coques au moyen des relations linÃ©aires",
            regles=(AU_MOINS_UN('GROUP_MA_1','MAILLE_1','GROUP_MA_2','MAILLE_2',
                                'GROUP_NO_1','NOEUD_1','GROUP_NO_2','NOEUD_2',),),
            GROUP_MA_1      =SIMP(statut='f',typ=grma,validators=NoRepeat(),max='**'),
@@ -445,8 +445,8 @@ AFFE_CHAR_MECA_F=OPER(nom="AFFE_CHAR_MECA_F",op=7,sd_prod=char_meca,
 
 
          VITE_FACE       =FACT(statut='f',max='**',
-           fr="Impose des vitesses normales à une face (phénomène ACOUSTIQUE) dont les valeurs sont fournies par"
-               +" l'intermédiaire d'un concept fonction",
+           fr="Impose des vitesses normales Ã  une face (phÃ©nomÃ¨ne ACOUSTIQUE) dont les valeurs sont fournies par"
+               +" l'intermÃ©diaire d'un concept fonction",
            regles=(AU_MOINS_UN('GROUP_MA','MAILLE'),
                    PRESENT_ABSENT('GROUP_MA','MAILLE'),),
            GROUP_MA        =SIMP(statut='f',typ=grma,validators=NoRepeat(),max='**'),
@@ -454,7 +454,7 @@ AFFE_CHAR_MECA_F=OPER(nom="AFFE_CHAR_MECA_F",op=7,sd_prod=char_meca,
            VNOR            =SIMP(statut='o',typ=(fonction_sdaster,nappe_sdaster,formule) ),
          ),
          IMPE_FACE       =FACT(statut='f',max='**',
-           fr="Applique à une face une impédance acoustique dont la valeur est fournie par l'intermédiaire"
+           fr="Applique Ã  une face une impÃ©dance acoustique dont la valeur est fournie par l'intermÃ©diaire"
                +" d'un concept fonction",
            regles=(AU_MOINS_UN('GROUP_MA','MAILLE'),
                    PRESENT_ABSENT('GROUP_MA','MAILLE'),),
@@ -463,7 +463,7 @@ AFFE_CHAR_MECA_F=OPER(nom="AFFE_CHAR_MECA_F",op=7,sd_prod=char_meca,
            IMPE            =SIMP(statut='o',typ=(fonction_sdaster,nappe_sdaster,formule) ),
          ),
          ONDE_PLANE      =FACT(statut='f',max='**',
-           fr="Impose un chargement sismique par onde plane dont la valeur est fournie par l'intermédiaire"
+           fr="Impose un chargement sismique par onde plane dont la valeur est fournie par l'intermÃ©diaire"
                +" d'un concept fonction",
            regles=(AU_MOINS_UN('GROUP_MA','MAILLE'),
                    PRESENT_ABSENT('GROUP_MA','MAILLE'),),
@@ -477,8 +477,8 @@ AFFE_CHAR_MECA_F=OPER(nom="AFFE_CHAR_MECA_F",op=7,sd_prod=char_meca,
 
 
          FLUX_THM_REP    =FACT(statut='f',max='**',
-           fr="Applique à un domaine continue 2D ou 3D un flux de chaleur et/ou un apport de masse fluide (flux hydraulique)"
-               +" dont les valeurs des flux sont fournies par l'intermédiaire d'un concept fonction",
+           fr="Applique Ã  un domaine continue 2D ou 3D un flux de chaleur et/ou un apport de masse fluide (flux hydraulique)"
+               +" dont les valeurs des flux sont fournies par l'intermÃ©diaire d'un concept fonction",
            regles=(AU_MOINS_UN('TOUT','GROUP_MA','MAILLE'),
                    PRESENT_ABSENT('TOUT','GROUP_MA','MAILLE'),
                    AU_MOINS_UN('FLUN','FLUN_HYDR1','FLUN_HYDR2'),),

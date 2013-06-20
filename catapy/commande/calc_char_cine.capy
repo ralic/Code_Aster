@@ -18,7 +18,7 @@
 # person_in_charge: jacques.pellet at edf.fr
 
 CALC_CHAR_CINE=OPER(nom="CALC_CHAR_CINE",op= 102,sd_prod=cham_no_sdaster,
-                    fr="Calcul des seconds membres associés à des charges cinématiques (conditions aux limites non dualisées)",
+                    fr="Calcul des seconds membres associÃ©s Ã  des charges cinÃ©matiques (conditions aux limites non dualisÃ©es)",
                     reentrant='n',
             UIinfo={"groupes":("Matrices et vecteurs",)},
          NUME_DDL        =SIMP(statut='o',typ=nume_ddl_sdaster ),

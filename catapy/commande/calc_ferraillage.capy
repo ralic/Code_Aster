@@ -23,14 +23,14 @@ def calc_ferraillage_prod(RESULTAT,**args):
 
 
 CALC_FERRAILLAGE=OPER(nom="CALC_FERRAILLAGE",op=175,sd_prod=calc_ferraillage_prod, reentrant='o',
-            UIinfo={"groupes":("Post-traitements","Outils-métier",)},
-                 fr="calcul de cartes de densité de ferraillage ",
+            UIinfo={"groupes":("Post-traitements","Outils-mÃ©tier",)},
+                 fr="calcul de cartes de densitÃ© de ferraillage ",
 
          RESULTAT        =SIMP(statut='o',typ=(evol_elas,evol_noli,dyna_trans,) ),
 
 
 #====
-# Sélection des numéros d'ordre pour lesquels on fait le calcul :
+# SÃ©lection des numÃ©ros d'ordre pour lesquels on fait le calcul :
 #====
          TOUT_ORDRE      =SIMP(statut='f',typ='TXM',into=("OUI",) ),
          NUME_ORDRE      =SIMP(statut='f',typ='I',validators=NoRepeat(),max='**' ),
@@ -51,21 +51,21 @@ CALC_FERRAILLAGE=OPER(nom="CALC_FERRAILLAGE",op=175,sd_prod=calc_ferraillage_pro
 
 #
 #====
-# Définition des grandeurs caractéristiques
+# DÃ©finition des grandeurs caractÃ©ristiques
 #====
 #
          TYPE_COMB    =SIMP(statut='o',typ='TXM',into=('ELU','ELS')),
 
-#        mot clé facteur répétable pour assigner les caractéristiques locales par zones topologiques (GROUP_MA)
+#        mot clÃ© facteur rÃ©pÃ©table pour assigner les caractÃ©ristiques locales par zones topologiques (GROUP_MA)
          AFFE  =FACT(statut='o',max='**',
            regles=(UN_PARMI('TOUT','GROUP_MA','MAILLE'),),
            TOUT       =SIMP(statut='f',typ='TXM',into=("OUI",) ),
            GROUP_MA   =SIMP(statut='f',typ=grma,validators=NoRepeat(),max='**'),
            MAILLE     =SIMP(statut='f',typ=ma,validators=NoRepeat(),max='**'),
            ENROBG     =SIMP(statut='o',typ='R'), # enrobage
-           CEQUI      =SIMP(statut='f',typ='R'), # coefficient d'équivalence acier/béton  (pour ELS)
+           CEQUI      =SIMP(statut='f',typ='R'), # coefficient d'Ã©quivalence acier/bÃ©ton  (pour ELS)
            SIGM_ACIER =SIMP(statut='o',typ='R'), # contrainte admissible dans l'acier
-           SIGM_BETON =SIMP(statut='o',typ='R'), # contrainte admissible dans le béton
+           SIGM_BETON =SIMP(statut='o',typ='R'), # contrainte admissible dans le bÃ©ton
            PIVA       =SIMP(statut='f',typ='R'), # valeur du pivot a  (pour ELU)
            PIVB       =SIMP(statut='f',typ='R'), # valeur du pivot b  (pour ELU)
            ),
@@ -75,20 +75,20 @@ CALC_FERRAILLAGE=OPER(nom="CALC_FERRAILLAGE",op=175,sd_prod=calc_ferraillage_pro
 ##############################################################################################################
 # Remarques :
 #-----------
-#        l'épaisseur des coques sera récupérée automatiquement
-#        via le cara_elem sous-jacent au résultat
+#        l'Ã©paisseur des coques sera rÃ©cupÃ©rÃ©e automatiquement
+#        via le cara_elem sous-jacent au rÃ©sultat
 
-# Le résultat produit est un champ constant par éléments associé à la grandeur FER2_R
+# Le rÃ©sultat produit est un champ constant par Ã©lÃ©ments associÃ© Ã  la grandeur FER2_R
 # qui comporte les composantes :
 #
-#     DNSXI  densité d'acier longitudinal suivant X, peau inf
-#     DNSXS  densité d'acier longitudinal suivant X, peau sup
-#     DNSYI  densité d'acier longitudinal suivant Y, peau inf
-#     DNSYS  densité d'acier longitudinal suivant Y, peau sup
-#     DNST   densité d'acier transversal
+#     DNSXI  densitÃ© d'acier longitudinal suivant X, peau inf
+#     DNSXS  densitÃ© d'acier longitudinal suivant X, peau sup
+#     DNSYI  densitÃ© d'acier longitudinal suivant Y, peau inf
+#     DNSYS  densitÃ© d'acier longitudinal suivant Y, peau sup
+#     DNST   densitÃ© d'acier transversal
 #     SIGMBE contrainte beton
-#     EPSIBE deformation béton
+#     EPSIBE deformation bÃ©ton
 
-# arrêt en erreur si:
-# - EFGE_ELNO n'a pas été précédemment calculé et n'est donc pas présent dans la structure de données RESULTAT
-# - si aucun CARA_ELEM n'est récupérable via la structure de données RESULTAT
+# arrÃªt en erreur si:
+# - EFGE_ELNO n'a pas Ã©tÃ© prÃ©cÃ©demment calculÃ© et n'est donc pas prÃ©sent dans la structure de donnÃ©es RESULTAT
+# - si aucun CARA_ELEM n'est rÃ©cupÃ©rable via la structure de donnÃ©es RESULTAT

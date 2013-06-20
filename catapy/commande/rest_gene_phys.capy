@@ -26,7 +26,7 @@ def rest_gene_phys_prod(RESU_GENE,**args ):
   raise AsException("type de concept resultat non prevu")
 
 REST_GENE_PHYS=OPER(nom="REST_GENE_PHYS",op=  75,sd_prod=rest_gene_phys_prod,
-                    fr="Restituer dans la base physique des résultats en coordonnées généralisées",
+                    fr="Restituer dans la base physique des rÃ©sultats en coordonnÃ©es gÃ©nÃ©ralisÃ©es",
                     reentrant='n',
             UIinfo={"groupes":("Matrices et vecteurs",)},
         regles=(

@@ -32,10 +32,10 @@ class cara_elem(ASSD):
            lenEPXval   = len(EPXval)
            lenEPXnoeud = len(EPXnoeud)*6
         except:
-           # s'il y a un problème sur la structure de données ==> <F>
+           # s'il y a un problÃ¨me sur la structure de donnÃ©es ==> <F>
            from Utilitai.Utmess import UTMESS
            UTMESS('F','MODELISA9_98')
-        # Vérification de la déclaration qui est faite dans 'acearp'
+        # VÃ©rification de la dÃ©claration qui est faite dans 'acearp'
         if ( lenEPXval != lenEPXnoeud ):
            from Utilitai.Utmess import UTMESS
            UTMESS('F','MODELISA9_97')
@@ -53,10 +53,10 @@ class cara_elem(ASSD):
            lenEPXval   = len(EPXval)
            lenEPXnoeud = len(EPXnoeud)*6
         except:
-           # s'il y a un problème sur la structure de données ==> <F>
+           # s'il y a un problÃ¨me sur la structure de donnÃ©es ==> <F>
            from Utilitai.Utmess import UTMESS
            UTMESS('F','MODELISA9_98')
-        # Vérification de la déclaration qui est faite dans 'acearp'
+        # VÃ©rification de la dÃ©claration qui est faite dans 'acearp'
         if ( lenEPXval != lenEPXnoeud ):
            from Utilitai.Utmess import UTMESS
            UTMESS('F','MODELISA9_97')

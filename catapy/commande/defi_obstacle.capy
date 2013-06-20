@@ -17,9 +17,9 @@
 # ======================================================================
 # person_in_charge: marc.kham at edf.fr
 DEFI_OBSTACLE=OPER(nom="DEFI_OBSTACLE",op=  73,sd_prod=table_fonction,
-                   fr="Définition d'un obstacle plan perpendiculaire à une structure filaire",
+                   fr="DÃ©finition d'un obstacle plan perpendiculaire Ã  une structure filaire",
                    reentrant='n',
-         UIinfo={"groupes":("Modélisation",)},
+         UIinfo={"groupes":("ModÃ©lisation",)},
          TYPE            =SIMP(statut='o',typ='TXM',defaut="CERCLE",
                              into=("CERCLE","PLAN_Y","PLAN_Z","DISCRET",
                              "BI_CERCLE","BI_PLAN_Y","BI_PLAN_Z","BI_CERC_INT",

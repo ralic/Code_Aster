@@ -18,7 +18,7 @@
 # person_in_charge: emmanuel.boyere at edf.fr
 
 PROJ_VECT_BASE=OPER(nom="PROJ_VECT_BASE",op=  72,sd_prod=vect_asse_gene,
-                    fr="Projection d'un vecteur assemblé sur une base (modale ou de RITZ)",
+                    fr="Projection d'un vecteur assemblÃ© sur une base (modale ou de RITZ)",
                     reentrant='n',
             UIinfo={"groupes":("Matrices et vecteurs",)},
          regles=(UN_PARMI('VECT_ASSE','VECT_ASSE_GENE'),),              

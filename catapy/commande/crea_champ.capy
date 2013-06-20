@@ -29,11 +29,11 @@ def crea_champ_prod(TYPE_CHAM,**args):
 
 
 CREA_CHAMP=OPER(nom="CREA_CHAMP",op= 195,sd_prod=crea_champ_prod,
-                fr="Création d'un champ ",reentrant='f',
-            UIinfo={"groupes":("Résultats et champs",)},
+                fr="CrÃ©ation d'un champ ",reentrant='f',
+            UIinfo={"groupes":("RÃ©sultats et champs",)},
 
        # TYPE_CHAM doit etre de la forme : CART_xx, NOEU_xx, ELEM_xx, ELGA_xx ou ELNO_xx
-       # ou xx est le nom d'une grandeur définie dans le catalogue des grandeurs
+       # ou xx est le nom d'une grandeur dÃ©finie dans le catalogue des grandeurs
          TYPE_CHAM       =SIMP(statut='o',typ='TXM',into=C_TYPE_CHAM_INTO()),
 
 #        SI CREATION D'UN CHAM_NO, POUR IMPOSER LA NUMEROTATION DES DDLS :
@@ -112,7 +112,7 @@ CREA_CHAMP=OPER(nom="CREA_CHAMP",op= 195,sd_prod=crea_champ_prod,
                              ),
 #        ------------------------------------------------------------------
          b_comb          =BLOC(condition = "OPERATION == 'COMB'",
-                               fr="Pour faire une combinaison linéaire de cham_no ayant meme profil",
+                               fr="Pour faire une combinaison linÃ©aire de cham_no ayant meme profil",
              COMB            =FACT(statut='o',max='**',
                 CHAM_GD         =SIMP(statut='o',typ=cham_no_sdaster),
                 COEF_R          =SIMP(statut='o',typ='R'),
@@ -187,7 +187,7 @@ CREA_CHAMP=OPER(nom="CREA_CHAMP",op= 195,sd_prod=crea_champ_prod,
                  NOM_CHAM        =SIMP(statut='o',typ='TXM',validators=NoRepeat(),into=C_NOM_CHAM_INTO()),
                  TYPE_MAXI       =SIMP(statut='f',typ='TXM',into=("MAXI","MINI","MAXI_ABS","MINI_ABS","NORM_TRAN",) ),
 
-                 # si TYPE_MAXI, on spécifie en général plusieurs numéros d'ordre :
+                 # si TYPE_MAXI, on spÃ©cifie en gÃ©nÃ©ral plusieurs numÃ©ros d'ordre :
                  b_type_maxi =BLOC(condition = "TYPE_MAXI != None",
                       TYPE_RESU       =SIMP(statut='o',typ='TXM',defaut="VALE",into=("VALE","INST",) ),
 
@@ -205,7 +205,7 @@ CREA_CHAMP=OPER(nom="CREA_CHAMP",op= 195,sd_prod=crea_champ_prod,
                       ANGLE           =SIMP(statut='f',typ='R',max='**'),
                  ),
 
-                 # si .not. TYPE_MAXI, on ne doit spécifier qu'un seul numéro d'ordre :
+                 # si .not. TYPE_MAXI, on ne doit spÃ©cifier qu'un seul numÃ©ro d'ordre :
                  b_non_type_maxi =BLOC(condition = "TYPE_MAXI == None",
                       regles=(EXCLUS('NUME_ORDRE','INST','FREQ','NUME_MODE','NOEUD_CMP','NOM_CAS','ANGLE'),),
                       NUME_ORDRE      =SIMP(statut='f',typ='I'),

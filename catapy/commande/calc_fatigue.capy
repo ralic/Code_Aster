@@ -24,7 +24,7 @@ def calc_fatigue_prod(TYPE_CALCUL,OPTION,**args):
   raise AsException("type de calcul non prevu")
 
 CALC_FATIGUE=OPER(nom="CALC_FATIGUE",op= 151,sd_prod=calc_fatigue_prod,reentrant='n',
-                  fr="Calculer un champ de dommage de fatigue subit par une structure et déterminer le plan critique"
+                  fr="Calculer un champ de dommage de fatigue subit par une structure et dÃ©terminer le plan critique"
                       +" dans lequel le cisaillement est maximal.",
             UIinfo={"groupes":("Post-traitements","Rupture",)},
 
@@ -49,7 +49,7 @@ CALC_FATIGUE=OPER(nom="CALC_FATIGUE",op= 151,sd_prod=calc_fatigue_prod,reentrant
                                    ),
                            ),
              b_epsi   =BLOC(condition = "OPTION != 'DOMA_ELNO_SIGM' and OPTION != 'DOMA_ELGA_SIGM'",
-                               fr="Calcul a partir d un champ de déformations.",
+                               fr="Calcul a partir d un champ de dÃ©formations.",
                HISTOIRE        =FACT(statut='o',
                RESULTAT        =SIMP(statut='o',typ=(evol_elas,dyna_trans,
                                                    evol_noli) ),
@@ -85,7 +85,7 @@ CALC_FATIGUE=OPER(nom="CALC_FATIGUE",op= 151,sd_prod=calc_fatigue_prod,reentrant
          ),
 
          b_fatigue_multi   =BLOC(condition = "TYPE_CALCUL == 'FATIGUE_MULTI'",
-                                 fr="Plan critique dans le cas de la fatigue multiaxiale à grand nombre de cycles.",
+                                 fr="Plan critique dans le cas de la fatigue multiaxiale Ã  grand nombre de cycles.",
            TYPE_CHARGE   =SIMP(statut='o',typ='TXM',into=("PERIODIQUE","NON_PERIODIQUE") ),
            OPTION        =SIMP(statut='o',typ='TXM',into=("DOMA_ELGA","DOMA_NOEUD") ),
            RESULTAT      =SIMP(statut='o',typ=(evol_elas, evol_noli) ),

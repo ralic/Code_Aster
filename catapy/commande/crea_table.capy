@@ -18,7 +18,7 @@
 # person_in_charge: mathieu.courtois at edf.fr
 
 def crea_table_prod(TYPE_TABLE, **args):
-   """Typage du concept résultat
+   """Typage du concept rÃ©sultat
    """
    if TYPE_TABLE == 'TABLE_FONCTION':
       return table_fonction
@@ -28,7 +28,7 @@ def crea_table_prod(TYPE_TABLE, **args):
       return table_sdaster
 
 CREA_TABLE=OPER(nom="CREA_TABLE",op=36,sd_prod=crea_table_prod,
-                fr="Création d'une table à partir d'une fonction ou de deux listes",
+                fr="CrÃ©ation d'une table Ã  partir d'une fonction ou de deux listes",
                 reentrant='f',
                 UIinfo={"groupes":("Tables",)},
 

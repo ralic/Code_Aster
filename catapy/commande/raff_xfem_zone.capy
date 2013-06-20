@@ -25,7 +25,7 @@ RAFF_XFEM_ZONE=OPER(nom="RAFF_XFEM_ZONE",
                     sd_prod=carte_sdaster,
                     fr="Calcul d'un indicateur binaire pour le raffinement",
                     reentrant='n',
-                    UIinfo={"groupes":("Résultats et champs","Rupture",)},
+                    UIinfo={"groupes":("RÃ©sultats et champs","Rupture",)},
 
                     FISSURE=SIMP(statut='o',typ=fiss_xfem,min=1,max=1),
                     RAYON  =SIMP(statut='o',typ='R',val_min=0.),                

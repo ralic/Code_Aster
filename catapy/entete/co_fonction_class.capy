@@ -63,7 +63,7 @@ class fonction_class(ASSD):
       return dico
 
    def Trace(self,FORMAT='TABLEAU',**kargs):
-      """Tracé d'une fonction"""
+      """TracÃ© d'une fonction"""
       if not self.accessible() :
          raise Accas.AsException("Erreur dans fonction.Trace en PAR_LOT='OUI'")
       from Utilitai.Graph import Graph
@@ -78,7 +78,7 @@ class fonction_sdaster(fonction_class):
    def convert(self, arg='real'):
       """
       Retourne un objet de la classe t_fonction
-      représentation python de la fonction
+      reprÃ©sentation python de la fonction
       """
       from Cata_Utils.t_fonction import t_fonction, t_fonction_c
       class_fonction = t_fonction
@@ -128,7 +128,7 @@ class fonction_sdaster(fonction_class):
       return self.Valeurs()[0]
 
    def Ordo(self):
-      """Retourne la liste des ordonnées"""
+      """Retourne la liste des ordonnÃ©es"""
       return self.Valeurs()[1]
 
    def __call__(self,val):
@@ -146,7 +146,7 @@ class fonction_c(fonction_class):
    def convert(self,arg='real'):
       """
       Retourne un objet de la classe t_fonction ou t_fonction_c,
-      représentation python de la fonction complexe
+      reprÃ©sentation python de la fonction complexe
       """
       import numpy
       from Cata_Utils.t_fonction import t_fonction, t_fonction_c
@@ -205,15 +205,15 @@ class fonction_c(fonction_class):
       return self.Valeurs()[0]
 
    def Ordo(self):
-      """Retourne la liste des parties réelles des ordonnées"""
+      """Retourne la liste des parties rÃ©elles des ordonnÃ©es"""
       return self.Valeurs()[1]
 
    def OrdoImg(self):
-      """Retourne la liste des parties imaginaires des ordonnées"""
+      """Retourne la liste des parties imaginaires des ordonnÃ©es"""
       return self.Valeurs()[2]
 
    def Trace(self,FORMAT='TABLEAU',**kargs):
-      """Tracé d'une fonction complexe"""
+      """TracÃ© d'une fonction complexe"""
       if not self.accessible():
          raise Accas.AsException("Erreur dans fonction_c.Trace en PAR_LOT='OUI'")
       from Utilitai.Graph import Graph
@@ -238,7 +238,7 @@ class nappe_sdaster(fonction_class):
 
    def convert(self):
       """
-      Retourne un objet de la classe t_nappe, représentation python de la nappe
+      Retourne un objet de la classe t_nappe, reprÃ©sentation python de la nappe
       """
       from Cata_Utils.t_fonction import t_fonction, t_nappe
       para = self.Parametres()
@@ -316,7 +316,7 @@ class nappe_sdaster(fonction_class):
       return self.Valeurs()[0]
 
    def Trace(self,FORMAT='TABLEAU',**kargs):
-      """Tracé d'une nappe"""
+      """TracÃ© d'une nappe"""
       if not self.accessible():
          raise Accas.AsException("Erreur dans nappe.Trace en PAR_LOT='OUI'")
       from Utilitai.Graph import Graph

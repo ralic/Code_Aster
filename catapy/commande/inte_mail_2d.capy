@@ -18,7 +18,7 @@
 # person_in_charge: xavier.desroches at edf.fr
 INTE_MAIL_2D=OPER(nom="INTE_MAIL_2D",op=50,sd_prod=courbe_sdaster,
             UIinfo={"groupes":("Post-traitements",)},
-                  fr="Définition d'une courbe dans un maillage 2D",reentrant='n',
+                  fr="DÃ©finition d'une courbe dans un maillage 2D",reentrant='n',
 
          MAILLAGE        =SIMP(statut='o',typ=(maillage_sdaster) ),
 

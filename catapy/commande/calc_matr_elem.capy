@@ -39,7 +39,7 @@ def calc_matr_elem_prod(OPTION,**args):
   raise AsException("type de concept resultat non prevu")
 
 CALC_MATR_ELEM=OPER(nom="CALC_MATR_ELEM",op=   9,sd_prod=calc_matr_elem_prod
-                    ,fr="Calcul des matrices élémentaires",reentrant='n',
+                    ,fr="Calcul des matrices Ã©lÃ©mentaires",reentrant='n',
             UIinfo={"groupes":("Matrices et vecteurs",)},
 
          OPTION          =SIMP(statut='o',typ='TXM',
@@ -50,7 +50,7 @@ CALC_MATR_ELEM=OPER(nom="CALC_MATR_ELEM",op=   9,sd_prod=calc_matr_elem_prod
                                      "MASS_ACOU","AMOR_ACOU","RIGI_MECA_HYST") ),
          MODELE            =SIMP(statut='o',typ=modele_sdaster ),
 
-         # mots clés facultatifs que l'on a du mal à mettre dans les blocs
+         # mots clÃ©s facultatifs que l'on a du mal Ã  mettre dans les blocs
          # sans gener MACRO_MATR_ASSE :
          #------------------------------------------------------------------
          INST=SIMP(statut='f',typ='R',defaut= 0.E+0 ),

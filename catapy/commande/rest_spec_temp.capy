@@ -25,7 +25,7 @@ def rest_spec_temp_prod(RESU_GENE,RESULTAT,**args):
 
 
 REST_SPEC_TEMP=OPER(nom="REST_SPEC_TEMP",op=181,sd_prod=rest_spec_temp_prod,
-              fr="Transformée de Fourier d'un résultat",
+              fr="TransformÃ©e de Fourier d'un rÃ©sultat",
               reentrant='n',
             UIinfo={"groupes":("Matrices et vecteurs",)},
          regles=UN_PARMI('RESU_GENE','RESULTAT'),

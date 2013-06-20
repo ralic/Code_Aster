@@ -18,25 +18,25 @@
 # person_in_charge: jacques.pellet at edf.fr
 
 RESOUDRE=OPER(nom="RESOUDRE",op=15,sd_prod=cham_no_sdaster,reentrant='f',
-               fr="Résolution par méthode directe un système d'équations linéaires préalablement factorisé par FACT_LDLT"+
-                  "ou Résolution d'un système linéaire par la méthode du gradient conjugué préconditionné",
-               UIinfo={"groupes":("Résolution",)},
+               fr="RÃ©solution par mÃ©thode directe un systÃ¨me d'Ã©quations linÃ©aires prÃ©alablement factorisÃ© par FACT_LDLT"+
+                  "ou RÃ©solution d'un systÃ¨me linÃ©aire par la mÃ©thode du gradient conjuguÃ© prÃ©conditionnÃ©",
+               UIinfo={"groupes":("RÃ©solution",)},
          MATR           =SIMP(statut='o',typ=(matr_asse_depl_r,matr_asse_depl_c,matr_asse_temp_r,
                                                matr_asse_temp_c,matr_asse_pres_r,matr_asse_pres_c) ),
          CHAM_NO         =SIMP(statut='o',typ=cham_no_sdaster),
          CHAM_CINE       =SIMP(statut='f',typ=cham_no_sdaster),
 
-         # mot-clé commun aux solveurs MUMPS, GCPC et PETSc:
+         # mot-clÃ© commun aux solveurs MUMPS, GCPC et PETSc:
          RESI_RELA       =SIMP(statut='f',typ='R',defaut=1.E-6),
 
-         # mot-clé pour les posttraitements de la phase de solve de MUMPS
+         # mot-clÃ© pour les posttraitements de la phase de solve de MUMPS
          POSTTRAITEMENTS =SIMP(statut='f',typ='TXM',defaut="AUTO",into=("SANS","AUTO","FORCE")),
 
-         # mot-clé commun aux solveurs GCPC et PETSc:
+         # mot-clÃ© commun aux solveurs GCPC et PETSc:
          NMAX_ITER       =SIMP(statut='f',typ='I',defaut= 0 ),
          MATR_PREC       =SIMP(statut='f',typ=(matr_asse_depl_r,matr_asse_temp_r,matr_asse_pres_r ) ),
 
-         # mots-clés pour solveur PETSc:
+         # mots-clÃ©s pour solveur PETSc:
          ALGORITHME      =SIMP(statut='f',typ='TXM',into=("CG", "CR", "GMRES", "GCR", ),defaut="GMRES" ),
 
          TITRE           =SIMP(statut='f',typ='TXM',max='**'),

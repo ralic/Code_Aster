@@ -28,7 +28,7 @@ MACR_ECRE_CALC=MACRO(nom="MACR_ECRE_CALC",
                      op=OPS('Macro.macr_ecre_calc_ops.macr_ecre_calc_ops'),
                      sd_prod=macr_ecre_calc_prod,
                      reentrant='n',
-                     UIinfo={"groupes":("Résolution","Outils-métier",)},
+                     UIinfo={"groupes":("RÃ©solution","Outils-mÃ©tier",)},
                      fr="Procedure de couplage avec Ecrevisse",
 
                      regles = (UN_PARMI('LOGICIEL','VERSION'),),

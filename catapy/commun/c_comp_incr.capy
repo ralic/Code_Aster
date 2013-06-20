@@ -36,16 +36,16 @@ def C_COMP_INCR(COMMAND=None) :  #COMMUN#
                                  fr="Comportement utilisateur de type UMAT",
                    NB_VARI =SIMP(statut='o',typ='I',max=1,fr="Nombre de variables internes"),
                    LIBRAIRIE = SIMP(statut='o', typ='TXM',validators=LongStr(1,128),
-                        fr="Chemin vers la bibliothèque dynamique définissant le comportement UMAT"),
+                        fr="Chemin vers la bibliothÃ¨que dynamique dÃ©finissant le comportement UMAT"),
                    NOM_ROUTINE = SIMP(statut='o', typ='TXM',
-                        fr="Nom de la routine UMAT dans la bibliothèque"),),
+                        fr="Nom de la routine UMAT dans la bibliothÃ¨que"),),
            b_mfront      = BLOC(condition = "RELATION == 'MFRONT' ",
                                  fr="Comportement utilisateur de type MFRONT",
                    NB_VARI =SIMP(statut='o',typ='I',max=1,fr="Nombre de variables internes"),
                    LIBRAIRIE = SIMP(statut='o', typ='TXM',validators=LongStr(1,128),
-                        fr="Chemin vers la bibliothèque dynamique définissant le comportement MFRONT"),
+                        fr="Chemin vers la bibliothÃ¨que dynamique dÃ©finissant le comportement MFRONT"),
                    NOM_ROUTINE = SIMP(statut='o', typ='TXM',
-                        fr="Nom de la routine MFRONT dans la bibliothèque"),),
+                        fr="Nom de la routine MFRONT dans la bibliothÃ¨que"),),
 
 # KITs
            b_kit_ddi = BLOC(condition = "RELATION == 'KIT_DDI' ",
@@ -120,25 +120,25 @@ def C_COMP_INCR(COMMAND=None) :  #COMMUN#
            DEFORMATION       =SIMP(statut='f',typ='TXM',defaut="PETIT",
                                    into=("PETIT","PETIT_REAC","GROT_GDEP","SIMO_MIEHE","GDEF_HYPO_ELAS","GDEF_LOG")),
 
-           # gestion des contraintes planes par la méthode itérative
+           # gestion des contraintes planes par la mÃ©thode itÃ©rative
 
               RESI_CPLAN_MAXI    =SIMP(statut='f',typ='R',
-                                      fr="Critère d'arret absolu pour assurer la condition de contraintes planes"),
+                                      fr="CritÃ¨re d'arret absolu pour assurer la condition de contraintes planes"),
 
                    b_resi_cplan  =BLOC(condition = " RESI_CPLAN_MAXI == None ",
 
               RESI_CPLAN_RELA   =SIMP(statut='f',typ='R',defaut= 1.0E-6,
-                                      fr="Critère d'arret relatif pour assurer la condition de contraintes planes"),
+                                      fr="CritÃ¨re d'arret relatif pour assurer la condition de contraintes planes"),
                                   ),
 
               ITER_CPLAN_MAXI =SIMP(statut='f',typ='I',defaut= 1,
-                                      fr="Nombre d'itérations maxi pour assurer la condition de contraintes planes"),
+                                      fr="Nombre d'itÃ©rations maxi pour assurer la condition de contraintes planes"),
            #
            RESI_INTE_RELA    =SIMP(statut='f',typ='R',defaut= 1.0E-6),
            ITER_INTE_MAXI    =SIMP(statut='f',typ='I',defaut= 20 ),
 
            b_redec_local      = BLOC(condition = "DEFORMATION in ('PETIT','PETIT_REAC','GROT_GDEP')",
-                                     fr="Nombre de redécoupages internes du pas de temps",
+                                     fr="Nombre de redÃ©coupages internes du pas de temps",
                ITER_INTE_PAS   =SIMP(statut='f',typ='I',defaut= 0 ),
                                      ),
 

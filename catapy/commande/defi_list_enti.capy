@@ -17,14 +17,14 @@
 # ======================================================================
 # person_in_charge: mathieu.courtois at edf.fr
 DEFI_LIST_ENTI=OPER(nom="DEFI_LIST_ENTI",op=22,sd_prod=listis_sdaster,
-                    fr="Définir une liste d'entiers strictement croissante",
+                    fr="DÃ©finir une liste d'entiers strictement croissante",
                     reentrant='n',
             UIinfo={"groupes":("Fonctions",)},
 
          OPERATION    =SIMP(statut='o',typ='TXM',defaut='DEFI',into=('DEFI','NUME_ORDRE',)),
 
 
-         # définition d'une liste d'entiers
+         # dÃ©finition d'une liste d'entiers
          #----------------------------------
          b_defi       =BLOC(condition = "OPERATION == 'DEFI'",
              regles=(UN_PARMI('VALE','DEBUT'),

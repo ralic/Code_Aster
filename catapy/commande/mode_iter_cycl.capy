@@ -17,10 +17,10 @@
 # ======================================================================
 # person_in_charge: charles.bodel at edf.fr
 MODE_ITER_CYCL=OPER(nom="MODE_ITER_CYCL",op=  80,sd_prod=mode_cycl,
-                    fr="Calcul des modes propres d'une structure à répétitivité cyclique à partir"
-                        +" d'une base de modes propres réels",
+                    fr="Calcul des modes propres d'une structure Ã  rÃ©pÃ©titivitÃ© cyclique Ã  partir"
+                        +" d'une base de modes propres rÃ©els",
                     reentrant='n',
-            UIinfo={"groupes":("Résolution","Dynamique",)},
+            UIinfo={"groupes":("RÃ©solution","Dynamique",)},
          BASE_MODALE     =SIMP(statut='o',typ=mode_meca ),
          NB_MODE         =SIMP(statut='f',typ='I',defaut= 999 ),
          NB_SECTEUR      =SIMP(statut='o',typ='I' ),

@@ -18,7 +18,7 @@
 # person_in_charge: jacques.pellet at edf.fr
 
 ASSE_VECTEUR=OPER(nom="ASSE_VECTEUR",op=13,sd_prod=cham_no_sdaster,
-                  fr="Construire un champ aux noeuds par assemblage de vecteurs élémentaires",reentrant='n',
+                  fr="Construire un champ aux noeuds par assemblage de vecteurs Ã©lÃ©mentaires",reentrant='n',
             UIinfo={"groupes":("Matrices et vecteurs",)},
          VECT_ELEM       =SIMP(statut='o',typ=vect_elem,max='**'),
          NUME_DDL        =SIMP(statut='o',typ=nume_ddl_sdaster ),

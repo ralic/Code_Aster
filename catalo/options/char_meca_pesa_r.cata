@@ -19,7 +19,7 @@
 % ======================================================================
 CHAR_MECA_PESA_R
 << CHAR_MECA_PESA_R  : calcul du second membre
-   correspondant aux forces de gravité (MOT-CLE: PESANTEUR) >>
+   correspondant aux forces de gravite (MOT-CLE: PESANTEUR) >>
 OPTION__
    IN__
         PNBSP_I  NBSP_I 'CARA!.CANBSP' <<  PNBSP_I :  NOMBRE DE SOUS_POINTS  >>

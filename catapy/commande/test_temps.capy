@@ -15,14 +15,13 @@
 # ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
-# -*- coding: iso-8859-1 -*-
 # person_in_charge: mathieu.courtois at edf.fr
 
 TEST_TEMPS=MACRO(nom="TEST_TEMPS",
                  op=OPS('Macro.test_temps_ops.test_temps_ops'),
                  sd_prod=None,
                  UIinfo={"groupes":("Utilitaires",)},
-                 fr="Permet de vérifier le temps passé dans les commandes",
+                 fr="Permet de vÃ©rifier le temps passÃ© dans les commandes",
                  reentrant='n',
 
    RESU = FACT(statut='o',max='**',
@@ -31,7 +30,7 @@ TEST_TEMPS=MACRO(nom="TEST_TEMPS",
       NUME_ORDRE = SIMP(statut='f', typ='I', defaut=1, val_min=1,
             fr="Numero de l'occurrence de la commande testee"),
       MACHINE    = SIMP(statut='o', typ='TXM', max='**',
-            fr="Liste des machines dont on a la référence"),
+            fr="Liste des machines dont on a la rÃ©fÃ©rence"),
       VALE       = SIMP(statut='o', typ='R', max='**',
             fr="Temps CPU sur les machines listees en secondes"),
       CRITERE    = SIMP(statut='f', typ='TXM', defaut='RELATIF', into=('ABSOLU', 'RELATIF')),

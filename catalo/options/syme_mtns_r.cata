@@ -20,8 +20,8 @@
 SYME_MTNS_R
 << SYMETRISATION DES MATRICES DE TEMP_R
    Remarque :
-     Il ne faut ajouter cette option que dans le catalogue des éléments
-     qui calculent des matrices non-symétriques.
+     Il ne faut ajouter cette option que dans le catalogue des elements
+     qui calculent des matrices non-symetriques.
 >>
 OPTION__
    IN__

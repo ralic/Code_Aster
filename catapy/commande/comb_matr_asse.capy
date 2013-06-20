@@ -33,7 +33,7 @@ def comb_matr_asse_prod(COMB_R,COMB_C,CALC_AMOR_GENE,**args):
   raise AsException("type de concept resultat non prevu")
 
 COMB_MATR_ASSE=OPER(nom="COMB_MATR_ASSE",op=  31,sd_prod=comb_matr_asse_prod,
-                    fr="Effectuer la combinaison linéaire de matrices assemblées",
+                    fr="Effectuer la combinaison linÃ©aire de matrices assemblÃ©es",
                     reentrant='f',
             UIinfo={"groupes":("Matrices et vecteurs",)},
          regles=(UN_PARMI('COMB_R','COMB_C','CALC_AMOR_GENE' ),),

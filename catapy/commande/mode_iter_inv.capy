@@ -29,9 +29,9 @@ def mode_iter_inv_prod(TYPE_RESU,**args ):
   raise AsException("type de concept resultat non prevu")
 
 MODE_ITER_INV=OPER(nom="MODE_ITER_INV",op=  44,sd_prod=mode_iter_inv_prod
-                    ,fr="Calcul des modes propres par itérations inverses ; valeurs propres et modes réels ou complexes",
+                    ,fr="Calcul des modes propres par itÃ©rations inverses ; valeurs propres et modes rÃ©els ou complexes",
                      reentrant='n',
-            UIinfo={"groupes":("Résolution","Dynamique",)},
+            UIinfo={"groupes":("RÃ©solution","Dynamique",)},
 
          TYPE_RESU       =SIMP(statut='f',typ='TXM',defaut="DYNAMIQUE",
                                into=("MODE_FLAMB","DYNAMIQUE","GENERAL"),
@@ -41,7 +41,7 @@ MODE_ITER_INV=OPER(nom="MODE_ITER_INV",op=  44,sd_prod=mode_iter_inv_prod
            MATR_RIGI       =SIMP(statut='o',typ=(matr_asse_depl_r,matr_asse_gene_r,matr_asse_pres_r ) ),
            MATR_MASS       =SIMP(statut='o',typ=(matr_asse_depl_r,matr_asse_gene_r,matr_asse_pres_r ) ),
            MATR_AMOR       =SIMP(statut='f',typ=matr_asse_depl_r ),
-           CALC_FREQ       =FACT(statut='o',fr="Choix des paramètres pour le calcul des valeurs propres",
+           CALC_FREQ       =FACT(statut='o',fr="Choix des paramÃ¨tres pour le calcul des valeurs propres",
 
              OPTION          =SIMP(statut='f',typ='TXM',defaut="AJUSTE",into=("SEPARE","AJUSTE","PROCHE"),
                                    fr="Choix de l option pour estimer les valeurs propres"  ),
@@ -70,7 +70,7 @@ MODE_ITER_INV=OPER(nom="MODE_ITER_INV",op=  44,sd_prod=mode_iter_inv_prod
            ),
 
          b_flamb_general =BLOC(condition = "(TYPE_RESU == 'MODE_FLAMB') or (TYPE_RESU == 'GENERAL')",
-           CALC_CHAR_CRIT  =FACT(statut='o',fr="Choix des paramètres pour le calcul des valeurs propres",
+           CALC_CHAR_CRIT  =FACT(statut='o',fr="Choix des paramÃ¨tres pour le calcul des valeurs propres",
 
              OPTION          =SIMP(statut='f',typ='TXM',defaut="AJUSTE",into=("SEPARE","AJUSTE","PROCHE"),
                                  fr="Choix de l option pour estimer les valeurs propres"  ),
@@ -93,9 +93,9 @@ MODE_ITER_INV=OPER(nom="MODE_ITER_INV",op=  44,sd_prod=mode_iter_inv_prod
          SOLVEUR         =C_SOLVEUR('MODE_ITER_INV'),
 #-------------------------------------------------------------------
 
-         CALC_MODE       =FACT(statut='d',min=0,fr="Choix des paramètres pour le calcul des vecteurs propres",
+         CALC_MODE       =FACT(statut='d',min=0,fr="Choix des paramÃ¨tres pour le calcul des vecteurs propres",
            OPTION          =SIMP(statut='f',typ='TXM',defaut="DIRECT",into=("DIRECT","RAYLEIGH") ),
-           PREC            =SIMP(statut='f',typ='R',defaut= 1.E-5,val_min=1.E-70,fr="Précision de convergence" ),
+           PREC            =SIMP(statut='f',typ='R',defaut= 1.E-5,val_min=1.E-70,fr="PrÃ©cision de convergence" ),
            NMAX_ITER       =SIMP(statut='f',typ='I',defaut= 30,val_min=1 ),
          ),
          VERI_MODE       =FACT(statut='d',min=0,

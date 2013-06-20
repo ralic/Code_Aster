@@ -22,15 +22,15 @@ MACR_LIGN_COUPE=MACRO(nom="MACR_LIGN_COUPE",
                       op=OPS('Macro.macr_lign_coupe_ops.macr_lign_coupe_ops'),
                       sd_prod=table_sdaster,
                       reentrant='n',
-                      UIinfo={"groupes":("Post-traitements","RÈsultats et champs",)},
-                      fr="Extraction des valeurs d'un rÈsultat dans une ou plusieurs tables sur " \
-                         "des lignes de coupe dÈfinies par deux points et un intervalle",
+                      UIinfo={"groupes":("Post-traitements","R√©sultats et champs",)},
+                      fr="Extraction des valeurs d'un r√©sultat dans une ou plusieurs tables sur " \
+                         "des lignes de coupe d√©finies par deux points et un intervalle",
             regles=(UN_PARMI("RESULTAT","CHAM_GD"),),
 
          RESULTAT        =SIMP(statut='f',typ=(evol_elas,evol_noli,evol_ther,mode_meca) ),
          CHAM_GD         =SIMP(statut='f',typ=(cham_gd_sdaster)),
 
-         b_extrac        =BLOC(condition = "RESULTAT != None",fr="extraction des rÈsultats",
+         b_extrac        =BLOC(condition = "RESULTAT != None",fr="extraction des r√©sultats",
                                  regles=(EXCLUS('NUME_ORDRE','NUME_MODE','LIST_ORDRE','INST','LIST_INST',), ),
              NUME_ORDRE      =SIMP(statut='f',typ='I',validators=NoRepeat(),max='**'),
              NUME_MODE       =SIMP(statut='f',typ='I',validators=NoRepeat(),max='**'),
@@ -44,11 +44,11 @@ MACR_LIGN_COUPE=MACRO(nom="MACR_LIGN_COUPE",
                  PRECISION       =SIMP(statut='o',typ='R',),),
            ),
 
-# extraction des rÈsultats
-         b_meca        =BLOC(condition = "AsType(RESULTAT) in (evol_elas,evol_noli,mode_meca)",fr="rÈsultat mÈcanique",
+# extraction des r√©sultats
+         b_meca        =BLOC(condition = "AsType(RESULTAT) in (evol_elas,evol_noli,mode_meca)",fr="r√©sultat m√©canique",
            NOM_CHAM        =SIMP(statut='f',typ='TXM',validators=NoRepeat(),defaut='SIGM_NOEU',into=C_NOM_CHAM_INTO(),),
          ),
-         b_ther        =BLOC(condition = "AsType(RESULTAT) in (evol_ther,)",fr="rÈsultat thermique",
+         b_ther        =BLOC(condition = "AsType(RESULTAT) in (evol_ther,)",fr="r√©sultat thermique",
            NOM_CHAM        =SIMP(statut='f',typ='TXM',validators=NoRepeat(),defaut='TEMP',into=("TEMP",
                                  "FLUX_ELGA","FLUX_ELNO","FLUX_NOEU",
                                  "META_ELNO","META_NOEU",
@@ -106,13 +106,13 @@ MACR_LIGN_COUPE=MACRO(nom="MACR_LIGN_COUPE",
              GROUP_MA        =SIMP(statut='o',typ=grma, max=1),
              MAILLAGE        =SIMP(statut='o',typ=maillage_sdaster),
              # si le groupe de mailles forme une ligne ouverte, on peut choisir le sens de parcours en choissant l'origine:
-             # si le groupe de mailles forme une ligne fermÈe, il FAUT choisir l'origine et l'extrÈmitÈ (= origine):
+             # si le groupe de mailles forme une ligne ferm√©e, il FAUT choisir l'origine et l'extr√©mit√© (= origine):
              NOEUD_ORIG      =SIMP(statut='f',typ=no),
              GROUP_NO_ORIG   =SIMP(statut='f',typ=grno),
              NOEUD_EXTR      =SIMP(statut='f',typ=no),
              GROUP_NO_EXTR   =SIMP(statut='f',typ=grno),
-             # si le groupe de mailles forme une ligne fermÈe, on peut choisir le sens de parcours
-             VECT_ORIE       =SIMP(statut='f',typ='R',max=3),  # utilisÈ seulement si NOEUD_ORIG=NOEUD_EXTR
+             # si le groupe de mailles forme une ligne ferm√©e, on peut choisir le sens de parcours
+             VECT_ORIE       =SIMP(statut='f',typ='R',max=3),  # utilis√© seulement si NOEUD_ORIG=NOEUD_EXTR
              ),
 
            b_segment       =BLOC(condition = "TYPE=='SEGMENT'",
@@ -132,8 +132,8 @@ MACR_LIGN_COUPE=MACRO(nom="MACR_LIGN_COUPE",
              AXE_Z           =SIMP(statut='f',typ='R',min=3,max=3),),
 
            DISTANCE_MAX    =SIMP(statut='f',typ='R',defaut=0.,
-                fr="Si la distance entre un noeud de la ligne de coupe et le maillage coupÈ "
-                +"est > DISTANCE_MAX, ce noeud sera ignorÈ."),
+                fr="Si la distance entre un noeud de la ligne de coupe et le maillage coup√© "
+                +"est > DISTANCE_MAX, ce noeud sera ignor√©."),
 
          ),
 )  ;

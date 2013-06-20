@@ -17,7 +17,7 @@
 # ======================================================================
 # person_in_charge: emmanuel.boyere at edf.fr
 IMPR_GENE=PROC(nom="IMPR_GENE",op= 157,
-            fr="Imprimer le résultat d'un calcul dynamique en variables généralisées au format RESULTAT",
+            fr="Imprimer le rÃ©sultat d'un calcul dynamique en variables gÃ©nÃ©ralisÃ©es au format RESULTAT",
             UIinfo={"groupes":("Impression","Dynamique",)},
          FORMAT          =SIMP(statut='f',typ='TXM',defaut="RESULTAT",into=("RESULTAT",) ),
          UNITE           =SIMP(statut='f',typ='I',defaut=8),  

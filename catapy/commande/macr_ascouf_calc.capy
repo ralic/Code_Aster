@@ -28,10 +28,10 @@ def macr_ascouf_calc_prod(self,MODELE,CHAM_MATER,CARA_ELEM,FOND_FISS,RESU_THER,*
 MACR_ASCOUF_CALC=MACRO(nom="MACR_ASCOUF_CALC",
                        op=OPS('Macro.macr_ascouf_calc_ops.macr_ascouf_calc_ops'),
                        sd_prod=macr_ascouf_calc_prod,
-                       fr="Réalise l'analyse thermomécanique du coude dont le maillage a " \
-                          "été concu par MACR_ASCOUF_MAIL",
+                       fr="RÃ©alise l'analyse thermomÃ©canique du coude dont le maillage a " \
+                          "Ã©tÃ© concu par MACR_ASCOUF_MAIL",
                        reentrant='n',
-                       UIinfo={"groupes":("Résolution","Outils-métier",)},
+                       UIinfo={"groupes":("RÃ©solution","Outils-mÃ©tier",)},
 
          TYPE_MAILLAGE   =SIMP(statut='o',typ='TXM',
                                into=("SAIN",

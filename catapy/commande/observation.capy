@@ -59,15 +59,15 @@ OBSERVATION=MACRO(nom="OBSERVATION",
          PROJECTION     =SIMP(statut='f',max=1,typ='TXM',into=("OUI","NON"),defaut="OUI"),
          CAS_FIGURE      =SIMP(statut='f',typ='TXM',into=("2D","3D","2.5D","1.5D",) ),
          DISTANCE_MAX    =SIMP(statut='f',typ='R',
-                fr="Distance maximale entre le noeud et l'élément le plus proche, lorsque le noeud n'est dans aucun élément."),
+                fr="Distance maximale entre le noeud et l'Ã©lÃ©ment le plus proche, lorsque le noeud n'est dans aucun Ã©lÃ©ment."),
          ALARME          =SIMP(statut='f',typ='TXM',defaut="OUI",into=("OUI","NON") ),
 
          TYPE_CHAM       =SIMP(statut='f',typ='TXM',into=("NOEU",),
-                fr="Pour forcer le type des champs projetés. NOEU -> cham_no"),
+                fr="Pour forcer le type des champs projetÃ©s. NOEU -> cham_no"),
 
 #           PROL_ZERO       =SIMP(statut='f',typ='TXM',into=("OUI","NON"),defaut="NON",
-#                fr="Si le résultat est un mode_xxx ou une base_xxx, on peut prolonger"
-#                   +" les champs par zéro la ou la projection ne donne pas de valeurs."),
+#                fr="Si le rÃ©sultat est un mode_xxx ou une base_xxx, on peut prolonger"
+#                   +" les champs par zÃ©ro la ou la projection ne donne pas de valeurs."),
 
          MATR_RIGI       =SIMP(statut='f',typ=(matr_asse_depl_r) ),
          MATR_MASS       =SIMP(statut='f',typ=(matr_asse_depl_r) ),

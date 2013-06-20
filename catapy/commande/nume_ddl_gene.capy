@@ -17,7 +17,7 @@
 # ======================================================================
 # person_in_charge: charles.bodel at edf.fr
 NUME_DDL_GENE=OPER(nom="NUME_DDL_GENE",op= 127,sd_prod=nume_ddl_gene,
-                   fr="Etablissement de la numérotation des ddl d'un modèle etabli en coordonnées généralisees",
+                   fr="Etablissement de la numÃ©rotation des ddl d'un modÃ¨le etabli en coordonnÃ©es gÃ©nÃ©ralisees",
                     reentrant='n',
             UIinfo={"groupes":("Matrices et vecteurs",)},
          regles=UN_PARMI('MODELE_GENE','BASE'),

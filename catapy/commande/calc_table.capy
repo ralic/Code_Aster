@@ -15,7 +15,6 @@
 # ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
-# -*- coding: iso-8859-1 -*-
 # person_in_charge: mathieu.courtois at edf.fr
 
 def calc_table_prod(self, TABLE, ACTION, **kargs):
@@ -26,7 +25,7 @@ def calc_table_prod(self, TABLE, ACTION, **kargs):
       dmc = mcf.cree_dict_valeurs(mcf.mc_liste)
       if dmc.get('TABLE') != None:
          l_typ.append(AsType(dmc['TABLE']))
-   # une table_fonction étant une table
+   # une table_fonction Ã©tant une table
    if table_fonction in l_typ:
       return table_fonction
    else:
@@ -37,18 +36,18 @@ def calc_table_prod(self, TABLE, ACTION, **kargs):
 CALC_TABLE=MACRO(nom="CALC_TABLE",
                  op=OPS('Macro.calc_table_ops.calc_table_ops'),
                  sd_prod=calc_table_prod,
-                 fr="Opérations sur une table",
+                 fr="OpÃ©rations sur une table",
                  UIinfo={"groupes":("Tables",)},
                  reentrant='f',
    TABLE  = SIMP(statut='o',typ=table_sdaster),
    ACTION = FACT(statut='o', max='**',
-                    fr = "Suite des opérations à effectuer sur la table",
+                    fr = "Suite des opÃ©rations Ã  effectuer sur la table",
       OPERATION = SIMP(statut='o', typ='TXM',
                   into=('FILTRE', 'EXTR', 'RENOMME', 'TRI', 'COMB', 'AJOUT_LIGNE',
                         'OPER', 'SUPPRIME', 'AJOUT_COLONNE')),
 
       b_filtre = BLOC(condition="OPERATION == 'FILTRE'",
-                      fr="Sélectionne les lignes de la table vérifiant un critère",
+                      fr="SÃ©lectionne les lignes de la table vÃ©rifiant un critÃ¨re",
          NOM_PARA  = SIMP(statut='o',typ='TXM'),
          CRIT_COMP = SIMP(statut='f',typ='TXM',defaut="EQ",
                           into=('EQ','NE','GT','LT','GE','LE','REGEXP',
@@ -72,58 +71,58 @@ CALC_TABLE=MACRO(nom="CALC_TABLE",
       b_extr = BLOC(condition="OPERATION ==  'EXTR'",
                     fr="Extrait une ou plusieurs colonnes de la table",
          NOM_PARA = SIMP(statut='o',typ='TXM',validators=NoRepeat(),max='**',
-                         fr="Noms des colonnes à extraire"),
+                         fr="Noms des colonnes Ã  extraire"),
       ),
 
       b_suppr = BLOC(condition="OPERATION ==  'SUPPRIME'",
                     fr="Supprime une ou plusieurs colonnes de la table",
          NOM_PARA = SIMP(statut='o',typ='TXM',validators=NoRepeat(),max='**',
-                         fr="Noms des colonnes à supprimer"),
+                         fr="Noms des colonnes Ã  supprimer"),
       ),
 
       b_renomme = BLOC(condition="OPERATION == 'RENOMME'",
-                       fr="Renomme un ou plusieurs paramètres de la table",
+                       fr="Renomme un ou plusieurs paramÃ¨tres de la table",
          NOM_PARA = SIMP(statut='o', typ='TXM', validators=NoRepeat(), min=2, max=2,
-                         fr="Couple (ancien nom du paramètre, nouveau nom du paramètre)",),
+                         fr="Couple (ancien nom du paramÃ¨tre, nouveau nom du paramÃ¨tre)",),
       ),
 
       b_tri = BLOC(condition="OPERATION == 'TRI'",
-                   fr="Ordonne les lignes de la table selon les valeurs d'un ou plusieurs paramètres",
+                   fr="Ordonne les lignes de la table selon les valeurs d'un ou plusieurs paramÃ¨tres",
          NOM_PARA = SIMP(statut='o',typ='TXM',validators=NoRepeat(),max='**'),
          ORDRE    = SIMP(statut='f',typ='TXM',defaut="CROISSANT",
                          into=("CROISSANT","DECROISSANT") ),
       ),
 
       b_comb = BLOC(condition="OPERATION == 'COMB'",
-                    fr="Combine deux tables ayant éventuellement des paramètres communs",
+                    fr="Combine deux tables ayant Ã©ventuellement des paramÃ¨tres communs",
          TABLE    = SIMP(statut='o',typ=table_sdaster,
                          fr="Table dont les colonnes vont venir surcharger la table initiale"),
          NOM_PARA = SIMP(statut='f',typ='TXM',max='**',
-                         fr="Noms des paramètres dont les valeurs doivent etre identiques dans les deux tables "\
-                            "pour que les colonnes soient combinées"),
+                         fr="Noms des paramÃ¨tres dont les valeurs doivent etre identiques dans les deux tables "\
+                            "pour que les colonnes soient combinÃ©es"),
          RESTREINT = SIMP(statut='f', typ='TXM', into=('OUI', 'NON'), defaut='NON',
-                          fr="Restreint la fusion uniquement aux lignes où les NOM_PARA sont communs"),
+                          fr="Restreint la fusion uniquement aux lignes oÃ¹ les NOM_PARA sont communs"),
       ),
 
       b_ajout_lig = BLOC(condition="OPERATION == 'AJOUT_LIGNE'",
-                    fr="Ajoute une ligne à la table initiale",
+                    fr="Ajoute une ligne Ã  la table initiale",
          NOM_PARA = SIMP(statut='o',typ='TXM',max='**',
-                         fr="Noms des paramètres dont les valeurs sont fournies sous VALE"),
-         VALE     = SIMP(statut='o',typ=not_checked,max='**', fr='Valeurs des paramètres'),
+                         fr="Noms des paramÃ¨tres dont les valeurs sont fournies sous VALE"),
+         VALE     = SIMP(statut='o',typ=not_checked,max='**', fr='Valeurs des paramÃ¨tres'),
       ),
 
       b_ajout_col = BLOC(condition="OPERATION == 'AJOUT_COLONNE'",
-                    fr="Ajoute une colonne constante à la table initiale",
+                    fr="Ajoute une colonne constante Ã  la table initiale",
          NOM_PARA = SIMP(statut='o',typ='TXM',max='**',
-                         fr="Noms des paramètres des colonnes à ajouter"),
+                         fr="Noms des paramÃ¨tres des colonnes Ã  ajouter"),
          VALE   = SIMP(statut='o', typ=not_checked, max='**',
                        fr="Valeur constante pour chaque colonne"),
       ),
 
       b_oper = BLOC(condition="OPERATION == 'OPER'",
-                    fr="Applique une formule dans laquelle les variables sont les paramètres de la table",
+                    fr="Applique une formule dans laquelle les variables sont les paramÃ¨tres de la table",
          FORMULE  = SIMP(statut='o',typ=formule,
-                         fr="Formule à appliquer aux colonnes de la table"),
+                         fr="Formule Ã  appliquer aux colonnes de la table"),
          NOM_PARA = SIMP(statut='o',typ='TXM',
                          fr="Nom de la nouvelle colonne"),
       ),

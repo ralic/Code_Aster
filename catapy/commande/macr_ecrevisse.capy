@@ -31,7 +31,7 @@ MACR_ECREVISSE=MACRO(nom="MACR_ECREVISSE",
                      op=OPS('Macro.macr_ecrevisse_ops.macr_ecrevisse_ops'),
                      sd_prod=macr_ecrevisse_prod,
                      reentrant='f',
-                     UIinfo={"groupes":("Résolution","Outils-métier",)},
+                     UIinfo={"groupes":("RÃ©solution","Outils-mÃ©tier",)},
                      fr="Procedure de couplage avec Ecrevisse",
 
        reuse  = SIMP(statut='f',typ='evol_noli'),

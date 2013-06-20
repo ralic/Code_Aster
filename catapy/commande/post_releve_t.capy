@@ -18,8 +18,8 @@
 # person_in_charge: xavier.desroches at edf.fr
 POST_RELEVE_T=OPER(nom="POST_RELEVE_T",op=51,sd_prod=table_sdaster,reentrant='f',
             fr="Extraire des valeurs de composantes de champs de grandeurs pour y effectuer des calculs (moyenne,invariants,..)"
-               +" ou pour les exprimer dans d'autres repères",
-            docu="U4.81.21",UIinfo={"groupes":("Post-traitements","Résultats et champs",)},
+               +" ou pour les exprimer dans d'autres repÃ¨res",
+            docu="U4.81.21",UIinfo={"groupes":("Post-traitements","RÃ©sultats et champs",)},
 
          ACTION          =FACT(statut='o',max='**',
                                regles=(UN_PARMI('RESULTAT','CHAM_GD'),),
@@ -32,7 +32,7 @@ POST_RELEVE_T=OPER(nom="POST_RELEVE_T",op=51,sd_prod=table_sdaster,reentrant='f'
                                                  cham_elem,),),
            RESULTAT        =SIMP(statut='f',typ=resultat_sdaster),
 
-           b_extrac        =BLOC(condition = "RESULTAT != None",fr="extraction des résultats",
+           b_extrac        =BLOC(condition = "RESULTAT != None",fr="extraction des rÃ©sultats",
                                  regles=(EXCLUS('TOUT_ORDRE','NUME_ORDRE','LIST_ORDRE','NUME_MODE','LIST_MODE',
                                                 'INST','LIST_INST','FREQ','LIST_FREQ','NOEUD_CMP','NOM_CAS'), ),
              NOM_CHAM        =SIMP(statut='o',typ='TXM',validators=NoRepeat(),into=C_NOM_CHAM_INTO(),),

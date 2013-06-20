@@ -15,14 +15,13 @@
 # ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
-# -*- coding: iso-8859-1 -*-
 # person_in_charge: jean-michel.proix at edf.fr
 
 
 #              MACRO "TEST_THERMOPLASTIQUE"
 #           ----------------------------
 def test_compor_sdprod(self, COMP_INCR, **kwargs):
-    """Ne produit une table qu'en présence de COMP_INCR."""
+    """Ne produit une table qu'en prÃ©sence de COMP_INCR."""
     if COMP_INCR:
         return table_sdaster
     return None
@@ -50,14 +49,14 @@ TEST_COMPOR =MACRO(nom="TEST_COMPOR",
             YOUNG           =SIMP(statut='o',typ=fonction_sdaster,
                                   fr="module d'Young fonction de la temperature"),
             LIST_MATER      =SIMP(statut='o',typ=mater_sdaster,max='**',
-                                          fr="liste des materiaux constants interpolés à chaque température"),
+                                          fr="liste des materiaux constants interpolÃ©s Ã  chaque tempÃ©rature"),
             TEMP_INIT       =SIMP(statut='o',typ='R', fr="temperature initiale et de reference"),
             TEMP_FIN        =SIMP(statut='o',typ='R', fr="temperature finale"),
             INST_FIN        =SIMP(statut='f',typ='R',defaut=1.,fr="instant final"),
             SUPPORT         =SIMP(statut='f',typ='TXM',max=1,into=("POINT","ELEMENT",),defaut=("POINT"),),
-            NB_VARI         =SIMP(statut='o',typ='I', fr="nombre de variables internes - 0 en elasticité"),
+            NB_VARI         =SIMP(statut='o',typ='I', fr="nombre de variables internes - 0 en elasticitÃ©"),
             VARI_TEST       =SIMP(statut='f',typ='TXM',max='**',
-                                  fr="liste de variables internes à tester - par defaut, toutes"),
+                                  fr="liste de variables internes Ã  tester - par defaut, toutes"),
 
 #           special ecrouissage cinematique
             D_SIGM_EPSI     =SIMP(statut='f',typ=fonction_sdaster,
@@ -75,11 +74,11 @@ TEST_COMPOR =MACRO(nom="TEST_COMPOR",
             LIST_TOLE       =SIMP(statut='f',typ='R',max='**',),
             PREC_ZERO       =SIMP(statut='f',typ='R',max='**',),
             VARI_TEST       =SIMP(statut='f',typ='TXM',max='**',defaut=('V1','VMIS','TRACE'),
-                                  fr="liste des CMP à tester "),
+                                  fr="liste des CMP Ã  tester "),
             SUPPORT         =SIMP(statut='f',typ='TXM',max=1,into=("POINT","ELEMENT",)),
             MODELISATION    =SIMP(statut='f',typ='TXM',max=1,into=("3D","C_PLAN"),defaut="3D",),
             ANGLE           =SIMP(statut='f',typ='R',max=1, defaut=0.,
-             fr='Rotation de ANGLE autour de Z uniquement, et seulement pour les déformations imposées',),
+             fr='Rotation de ANGLE autour de Z uniquement, et seulement pour les dÃ©formations imposÃ©es',),
             MASSIF          =FACT(statut='f',max='**',fr='orientation du materiau (monocristal, orthotropie)',
               regles=(UN_PARMI('ANGL_REP','ANGL_EULER'),),
               ANGL_REP        =SIMP(statut='f',typ='R',min=1,max=3),

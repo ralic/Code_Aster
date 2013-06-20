@@ -16,20 +16,19 @@
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 # person_in_charge: jean-michel.proix at edf.fr
-# -*- coding: iso-8859-1 -*-
 
 
 SIMU_POINT_MAT=MACRO(nom="SIMU_POINT_MAT",
                      op=OPS('Macro.simu_point_mat_ops.simu_point_mat_ops'),
                      sd_prod=table_sdaster,
-                     UIinfo={"groupes":("Résolution",)},
-                     fr="Calcul de l'évolution mécanique, en quasi-statique," \
-                        " d'un point matériel en non linéaire",
+                     UIinfo={"groupes":("RÃ©solution",)},
+                     fr="Calcul de l'Ã©volution mÃ©canique, en quasi-statique," \
+                        " d'un point matÃ©riel en non linÃ©aire",
    COMP_INCR       =C_COMP_INCR(),
    COMP_ELAS       =C_COMP_ELAS('SIMU_POINT_MAT'),
    MATER           =SIMP(statut='o',typ=mater_sdaster,max=30),
 
-## ANGLE : rotation de ANGLE autour de Z uniquement, et seulement pour les déformations imposées.
+## ANGLE : rotation de ANGLE autour de Z uniquement, et seulement pour les dÃ©formations imposÃ©es.
    ANGLE      =SIMP(statut='f',typ='R',max=1, defaut=0.),
 # --MASSIF : orientation du materiau (monocristal, orthotropie)
    MASSIF          =FACT(statut='f',max='**',
@@ -43,7 +42,7 @@ SIMU_POINT_MAT=MACRO(nom="SIMU_POINT_MAT",
 
    SUPPORT= SIMP(statut='f',typ='TXM',max=1,into=("POINT","ELEMENT",),defaut=("POINT"),),
 
-   b_PM = BLOC(condition="SUPPORT ==  'POINT'",fr="Simulation sans élément fini",
+   b_PM = BLOC(condition="SUPPORT ==  'POINT'",fr="Simulation sans Ã©lÃ©ment fini",
       FORMAT_TABLE  =SIMP(statut='f',typ='TXM',max=1,into=("CMP_COLONNE","CMP_LIGNE",),defaut=("CMP_COLONNE"),),
       NB_VARI_TABLE  =SIMP(statut='f',typ='I',max=1,),
       OPER_TANGENT  =SIMP(statut='f',typ='TXM',max=1,into=("OUI","NON",),defaut="NON",),
@@ -53,28 +52,28 @@ SIMU_POINT_MAT=MACRO(nom="SIMU_POINT_MAT",
        PAS_ARCH        =SIMP(statut='f',typ='I' ),
        PRECISION       =SIMP(statut='f',typ='R',defaut= 1.0E-6),
                            ),
-     # on permet certaines variables de commandes scalaires, définies par une fonction du temps
+     # on permet certaines variables de commandes scalaires, dÃ©finies par une fonction du temps
      # on permet ici seulementn celles qui sont validees
       AFFE_VARC    = FACT(statut='f',max='**',
          NOM_VARC    =SIMP(statut='o',typ='TXM', into=("TEMP","IRRA","SECH")),
          VALE_FONC   = SIMP(statut='f',typ=(fonction_sdaster,formule) ),
 
-         # VALE_REF est nécessaire pour certaines VARC :
+         # VALE_REF est nÃ©cessaire pour certaines VARC :
          B_VALE_REF          =BLOC(condition="NOM_VARC in ('TEMP', 'SECH')",
             VALE_REF         =SIMP(statut='o',typ='R'),
                                   ),
                          ),
-        # un mot clé caché qui ne sert qu'à boucler sur les VARC possibles :
+        # un mot clÃ© cachÃ© qui ne sert qu'Ã  boucler sur les VARC possibles :
       LIST_NOM_VARC =SIMP(statut='c',typ='TXM', defaut=("TEMP","IRRA","SECH")),
 
                ),
-   b_EF = BLOC(condition="SUPPORT ==  'ELEMENT'",fr="Simulation sur un élément fini",
+   b_EF = BLOC(condition="SUPPORT ==  'ELEMENT'",fr="Simulation sur un Ã©lÃ©ment fini",
       MODELISATION  =SIMP(statut='f',typ='TXM',max=1,into=("3D","C_PLAN","D_PLAN",)),
       RECH_LINEAIRE   =C_RECH_LINEAIRE(),
       ARCHIVAGE       =C_ARCHIVAGE(),
       SUIVI_DDL       =C_SUIVI_DDL(),
 
-     # on permet certaines variables de commandes scalaires, définies par une fonction du temps
+     # on permet certaines variables de commandes scalaires, dÃ©finies par une fonction du temps
      # a priori toutes doivent fonctionner
       AFFE_VARC    = FACT(statut='f',max='**',
          NOM_VARC        =SIMP(statut='o',typ='TXM', into=("TEMP","CORR","IRRA","HYDR","SECH","M_ACIER","M_ZIRC",
@@ -99,7 +98,7 @@ SIMU_POINT_MAT=MACRO(nom="SIMU_POINT_MAT",
               V7   = SIMP(statut='o',typ=(fonction_sdaster,formule) ),
                           ),
                          ),
-        # un mot clé caché qui ne sert qu'à boucler sur les VARC possibles :
+        # un mot clÃ© cachÃ© qui ne sert qu'Ã  boucler sur les VARC possibles :
       LIST_NOM_VARC =SIMP(statut='c',typ='TXM', defaut=("TEMP","CORR","IRRA","HYDR","SECH","EPSA",
                                                               "M_ACIER","M_ZIRC","NEUT1","NEUT2")),
 

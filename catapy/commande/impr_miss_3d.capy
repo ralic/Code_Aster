@@ -17,8 +17,8 @@
 # ======================================================================
 # person_in_charge: Georges-cc.devesa at edf.fr
 IMPR_MISS_3D=PROC(nom="IMPR_MISS_3D",op= 162,
-            UIinfo={"groupes":("Impression","Outils-métier",)},
-         fr="Impression des données d'entrée pour une étude sismique avec MISS3D",
+            UIinfo={"groupes":("Impression","Outils-mÃ©tier",)},
+         fr="Impression des donnÃ©es d'entrÃ©e pour une Ã©tude sismique avec MISS3D",
          regles=(UN_PARMI('INST_INIT','FREQ_INIT'),
                  PRESENT_PRESENT('INST_INIT','INST_FIN'),
                  PRESENT_PRESENT('FREQ_INIT','FREQ_FIN'),),

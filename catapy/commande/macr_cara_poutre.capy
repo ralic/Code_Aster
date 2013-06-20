@@ -22,9 +22,9 @@ MACR_CARA_POUTRE=MACRO(nom="MACR_CARA_POUTRE",
                        op=OPS('Macro.macr_cara_poutre_ops.macr_cara_poutre_ops'),
                        sd_prod=table_sdaster,
                        reentrant='n',
-                       UIinfo={"groupes":("Modélisation",)},
-                       fr="Calculer les caractéristiques d'une section transversale de " \
-                          "poutre à partir d'un maillage 2D de la section",
+                       UIinfo={"groupes":("ModÃ©lisation",)},
+                       fr="Calculer les caractÃ©ristiques d'une section transversale de " \
+                          "poutre Ã  partir d'un maillage 2D de la section",
          regles=(
             EXCLUS('SYME_Y','GROUP_MA_BORD'),
             EXCLUS('SYME_Z','GROUP_MA_BORD'),
@@ -41,7 +41,7 @@ MACR_CARA_POUTRE=MACRO(nom="MACR_CARA_POUTRE",
          ),
 
          ORIG_INER      =SIMP(statut='f',typ='R',max=3,defaut=(0.E+0,0.E+0),
-                              fr="Point par rapport auquel sont calculées les inerties"),
+                              fr="Point par rapport auquel sont calculÃ©es les inerties"),
          INFO           =SIMP(statut='f',typ='I',defaut=1,into=(1,2)),
 
          TABLE_CARA     =SIMP(statut='f',typ='TXM',into=("OUI","NON"),defaut="NON",),
@@ -50,15 +50,15 @@ MACR_CARA_POUTRE=MACRO(nom="MACR_CARA_POUTRE",
          SYME_Z         =SIMP(statut='f',typ='TXM',into=("OUI",), fr="demi maillage par rapport a z=0"),
 
          GROUP_MA       =SIMP(statut='f',typ=grma,validators=NoRepeat(),max='**',
-                              fr="Calcul des caractéristiques équivalentes à plusieurs sections disjointes"),
+                              fr="Calcul des caractÃ©ristiques Ã©quivalentes Ã  plusieurs sections disjointes"),
 
          GROUP_MA_BORD  =SIMP(statut='f',typ=grma,validators=NoRepeat(),max='**',
-                              fr="Groupe(s) de mailles linéiques, bord(s) de(s) section(s)"),
+                              fr="Groupe(s) de mailles linÃ©iques, bord(s) de(s) section(s)"),
 
          b_nom =BLOC(
             condition = """(TABLE_CARA == 'OUI') and (GROUP_MA == None)""",
             NOM   =SIMP(statut='f',typ='TXM',max=1,validators=LongStr(1,8),
-                        fr="Nom de la section, 8 caractères maximum.")
+                        fr="Nom de la section, 8 caractÃ¨res maximum.")
          ),
 
          b_gma_bord  =BLOC(
@@ -72,18 +72,18 @@ MACR_CARA_POUTRE=MACRO(nom="MACR_CARA_POUTRE",
                                  fr="Simplement pour empecher des pivots nuls le cas echeant. "
                                     "Fournir un noeud quelconque par GROUP_MA"),
             GROUP_MA_INTE  =SIMP(statut='f',typ=grma,validators=NoRepeat(),max='**',
-                                 fr="groupes de mailles linéiques bordant des trous dans la section"),
+                                 fr="groupes de mailles linÃ©iques bordant des trous dans la section"),
           ),
 
          b_reseau = BLOC(
             condition ="""(GROUP_MA_BORD != None) and (GROUP_MA != None)""",
-            fr=" calcul des coef de cisaillement équivalents a un reseau de poutres",
+            fr=" calcul des coef de cisaillement Ã©quivalents a un reseau de poutres",
             regles=(ENSEMBLE('LONGUEUR','LIAISON','MATERIAU') ,),
             LONGUEUR =SIMP(statut='f',typ='R',
-                           fr="Longueur du réseau de poutres"),
+                           fr="Longueur du rÃ©seau de poutres"),
             MATERIAU =SIMP(statut='f',typ=mater_sdaster,
                            fr="Materiau elastique lineaire du reseau"),
             LIAISON  =SIMP(statut='f',typ='TXM',into=("ROTULE","ENCASTREMENT"),
-                           fr="type de conditions aux limites sur le plancher supérieur" ),
+                           fr="type de conditions aux limites sur le plancher supÃ©rieur" ),
          ),
 )

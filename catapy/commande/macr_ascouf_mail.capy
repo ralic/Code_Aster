@@ -20,8 +20,8 @@
 MACR_ASCOUF_MAIL=MACRO(nom="MACR_ASCOUF_MAIL",
                        op=OPS('Macro.macr_ascouf_mail_ops.macr_ascouf_mail_ops'),
                        sd_prod=maillage_sdaster,
-                       fr="Engendre le maillage d'un coude sain ou comportant une fissure ou une (ou plusieurs) sous-épaisseur(s)",
-                       UIinfo={"groupes":("Maillage","Outils-métier",)},
+                       fr="Engendre le maillage d'un coude sain ou comportant une fissure ou une (ou plusieurs) sous-Ã©paisseur(s)",
+                       UIinfo={"groupes":("Maillage","Outils-mÃ©tier",)},
                        reentrant='n',
 
          regles=(EXCLUS('SOUS_EPAIS_COUDE','FISS_COUDE','SOUS_EPAIS_MULTI'),),

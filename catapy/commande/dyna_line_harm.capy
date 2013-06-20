@@ -25,9 +25,9 @@ def dyna_line_harm_prod(MATR_RIGI,**args):
    raise AsException("type de concept resultat non prevu")
 
 DYNA_LINE_HARM=OPER(nom="DYNA_LINE_HARM",op=  60,sd_prod=dyna_line_harm_prod,
-                    fr="Calcul de la réponse dynamique complexe d'un système à une excitation harmonique",
+                    fr="Calcul de la rÃ©ponse dynamique complexe d'un systÃ¨me Ã  une excitation harmonique",
                     reentrant='f',
-            UIinfo={"groupes":("Résolution","Dynamique",)},
+            UIinfo={"groupes":("RÃ©solution","Dynamique",)},
          regles=(PRESENT_ABSENT('MATR_AMOR','AMOR_MODAL'),
                  UN_PARMI('FREQ','LIST_FREQ'),),
          CHAM_MATER      =SIMP(statut='f',typ=cham_mater ),

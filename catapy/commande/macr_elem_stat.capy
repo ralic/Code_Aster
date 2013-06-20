@@ -18,7 +18,7 @@
 # person_in_charge: jacques.pellet at edf.fr
 MACR_ELEM_STAT=OPER(nom="MACR_ELEM_STAT",op=86,sd_prod=macr_elem_stat,reentrant='f',
             UIinfo={"groupes":("Matrices et vecteurs",)},
-                    fr="Définition d'un macro-élément pour l'analyse statique par sous-structuration",
+                    fr="DÃ©finition d'un macro-Ã©lÃ©ment pour l'analyse statique par sous-structuration",
         regles=(AU_MOINS_UN('DEFINITION','RIGI_MECA','MASS_MECA','CAS_CHARGE'),
                 ENSEMBLE('DEFINITION','EXTERIEUR'),),
          DEFINITION      =FACT(statut='f',

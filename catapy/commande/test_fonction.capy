@@ -1,4 +1,3 @@
-# -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -21,7 +20,7 @@
 TEST_FONCTION=MACRO(nom="TEST_FONCTION",
                     op=OPS('Macro.test_fonction_ops.test_fonction_ops'),
                     sd_prod=None,
-            fr="Extraction d'une valeur numérique ou d'un attribut de fonction pour comparaison à une valeur de référence",
+            fr="Extraction d'une valeur numÃ©rique ou d'un attribut de fonction pour comparaison Ã  une valeur de rÃ©fÃ©rence",
             UIinfo={"groupes":("Fonctions","Utilitaires",)},
          TEST_NOOK       =SIMP(statut='f',typ='TXM',defaut="NON",into=("OUI","NON") ),
          VALEUR          =FACT(statut='f',max='**',

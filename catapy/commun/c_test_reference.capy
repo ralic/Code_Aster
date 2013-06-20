@@ -17,8 +17,8 @@
 # ======================================================================
 # person_in_charge: mathieu.courtois at edf.fr
 def C_TEST_REFERENCE(keyword, max=1):       #COMMUN#
-    """Mots-clés communs pour TEST_RESU, TEST_TABLE, TEST_FONCTION.
-    On retourne un bloc pour ajouter la règle UN_PARMI."""
+    """Mots-clÃ©s communs pour TEST_RESU, TEST_TABLE, TEST_FONCTION.
+    On retourne un bloc pour ajouter la rÃ¨gle UN_PARMI."""
     assert keyword in ('CHAM_NO', 'CHAM_ELEM', 'CARTE', 'RESU', 'GENE', 'OBJET',
                        'TABLE', 'FONCTION', 'FICHIER')
     with_int     = keyword not in ('FONCTION', 'FICHIER')

@@ -18,7 +18,7 @@
 # person_in_charge: andre.adobes at edf.fr
 REST_SPEC_PHYS=OPER(nom="REST_SPEC_PHYS",op= 148,sd_prod=interspectre,
                     reentrant='n',
-            fr="Calculer la réponse d'une structure dans la base physique",
+            fr="Calculer la rÃ©ponse d'une structure dans la base physique",
             UIinfo={"groupes":("Matrices et vecteurs",)},
          regles=(AU_MOINS_UN('BASE_ELAS_FLUI','MODE_MECA'),),        
          BASE_ELAS_FLUI  =SIMP(statut='f',typ=melasflu_sdaster ),

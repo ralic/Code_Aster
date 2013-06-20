@@ -30,6 +30,6 @@ STANLEY=MACRO(nom="STANLEY",
          CARA_ELEM       =SIMP(statut='f',typ=cara_elem),
          DISPLAY         =SIMP(statut='f',typ='TXM'),
          UNITE_VALIDATION=SIMP(statut='f',typ='I',val_min=10,val_max=90,
-                               fr="Unité logique définissant le fichier (fort.N) dans lequel on écrit les md5"),
+                               fr="UnitÃ© logique dÃ©finissant le fichier (fort.N) dans lequel on Ã©crit les md5"),
 
 )  ;

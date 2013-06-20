@@ -32,12 +32,12 @@ RAFF_XFEM=MACRO(nom="RAFF_XFEM",
                 sd_prod=raff_xfem_prod,
                 fr="Calcul d'un indicateur pour le raffinement",
                 reentrant='n',
-                UIinfo={"groupes":("Résultats et champs","Rupture",)},
+                UIinfo={"groupes":("RÃ©sultats et champs","Rupture",)},
 
                 TYPE   =SIMP(statut='f',typ='TXM',into=('DISTANCE','ZONE'),defaut='DISTANCE'),
                 FISSURE=SIMP(statut='o',typ=fiss_xfem,min=1,max='**',),
 
-                b_zone =BLOC(condition = "TYPE == 'ZONE' ",fr="Paramètres de la zone",
+                b_zone =BLOC(condition = "TYPE == 'ZONE' ",fr="ParamÃ¨tres de la zone",
                    RAYON =SIMP(statut='o',typ='R',val_min=0.),
                             ),
                 

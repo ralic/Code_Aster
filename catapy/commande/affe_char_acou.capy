@@ -23,9 +23,9 @@ AFFE_CHAR_ACOU=OPER(nom="AFFE_CHAR_ACOU",op=  68,sd_prod=char_acou,
          regles=(AU_MOINS_UN('PRES_IMPO','VITE_FACE','IMPE_FACE','LIAISON_UNIF' ),),
          MODELE          =SIMP(statut='o',typ=modele_sdaster ),
          VERI_DDL        =SIMP(statut='f',typ='TXM',defaut="OUI",into=("OUI","NON") ),
-         METHODE         =SIMP(statut='c',typ='TXM',fr="Stratégie de résolution pour les pressions imposées",
+         METHODE         =SIMP(statut='c',typ='TXM',fr="StratÃ©gie de rÃ©solution pour les pressions imposÃ©es",
                                into=('DUALISATION',),defaut='DUALISATION',),
-                               # METHODE='ELIMINATION' est traité dans le fortran mais dangereux actuellement
+                               # METHODE='ELIMINATION' est traitÃ© dans le fortran mais dangereux actuellement
          PRES_IMPO       =FACT(statut='f',max='**',
            regles=(AU_MOINS_UN('TOUT','GROUP_MA','MAILLE','GROUP_NO','NOEUD'),),
            TOUT            =SIMP(statut='f',typ='TXM',into=("OUI",) ),

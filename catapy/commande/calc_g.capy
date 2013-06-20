@@ -17,8 +17,8 @@
 # ======================================================================
 # person_in_charge: samuel.geniaut at edf.fr
 CALC_G=OPER(nom="CALC_G",op=100,sd_prod=table_sdaster,
-            fr="Calcul du taux de restitution d'énergie par la méthode theta en thermo-élasticité"
-                        +" et les facteurs d'intensité de contraintes.",
+            fr="Calcul du taux de restitution d'Ã©nergie par la mÃ©thode theta en thermo-Ã©lasticitÃ©"
+                        +" et les facteurs d'intensitÃ© de contraintes.",
                     reentrant='f',
             UIinfo={"groupes":("Post-traitements","Rupture",)},
          regles=(EXCLUS('COMP_ELAS','COMP_INCR'),),

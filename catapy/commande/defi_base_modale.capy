@@ -18,7 +18,7 @@
 # person_in_charge: ionel.nistor at edf.fr
 DEFI_BASE_MODALE=OPER(nom="DEFI_BASE_MODALE",op=  99,sd_prod=mode_meca,
                      reentrant='f',
-                     fr="Définit la base d'une sous-structuration dynamique ou d'une recombinaison modale",
+                     fr="DÃ©finit la base d'une sous-structuration dynamique ou d'une recombinaison modale",
             UIinfo={"groupes":("Matrices et vecteurs","Dynamique",)},
          regles=(UN_PARMI('CLASSIQUE','RITZ','DIAG_MASS','ORTHO_BASE'),),
          CLASSIQUE       =FACT(statut='f',

@@ -18,7 +18,7 @@
 # person_in_charge: j-pierre.lefebvre at edf.fr
 IMPR_CO=PROC(nom="IMPR_CO",op=17,
             UIinfo={"groupes":("Impression","Utilitaires",)},
-             fr="Imprimer tous les objets JEVEUX qui constituent un concept utilisateur existant (pour les développeurs)",
+             fr="Imprimer tous les objets JEVEUX qui constituent un concept utilisateur existant (pour les dÃ©veloppeurs)",
          regles=(UN_PARMI('CONCEPT','CHAINE','TOUT' ),),
 
          UNITE           =SIMP(statut='f',typ='I',defaut=8),

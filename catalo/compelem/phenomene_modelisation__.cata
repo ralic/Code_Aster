@@ -21,149 +21,149 @@ PHENOMENE_MODELISATION__
 
 
 % =====================================================================================
-% Définition des ATTRIBUTS :
+% Definition des ATTRIBUTS :
 % --------------------------
 %
 %  1) Les 7 attributs suivants sont AUTOMATIQUES
-%     (et donc il ne faut pas les re-définir dans les catalogues) :
+%     (et donc il ne faut pas les re-definir dans les catalogues) :
 %  --------------------------------------------------------------------------------------------
-%  ALIAS8 : chaine formée par concaténation de 3 codes  :
-%           ALIAS(1:2) : code du phénomène
-%           ALIAS(3:5) : code de la modélisation
+%  ALIAS8 : chaine formee par concatenation de 3 codes  :
+%           ALIAS(1:2) : code du phenomene
+%           ALIAS(3:5) : code de la modelisation
 %           ALIAS(6:8) : code du type_maille
 %
 %           exemple :   MEFL_HEXA8 => ALIAS8=ME3FLHE8
 %
-%  DIM_TOPO_MODELI : dimension "topologique" de la modélisation a laquelle appartient
-%                    l'élément.
-%                      - 3 pour les éléments isoparamétrques 3D
-%                      - 2 pour les éléments isoparamétrques 2D
+%  DIM_TOPO_MODELI : dimension "topologique" de la modelisation a laquelle appartient
+%                    l'element.
+%                      - 3 pour les elements isoparametrques 3D
+%                      - 2 pour les elements isoparametrques 2D
 %                      - 2 pour plaques et coques en 3D
 %                      - 1 pour les poutres ou pour les coques en 2D
 %                      - ...
-%       Cet attribut est obtenu a partir du paramètre DIM__(1) de la modélisation
-%       Convention importante : Pour les modélisations "discrètes" ([2D_]DIS_xxx), on choisit DIM_TOPO_MODELI=-1
+%       Cet attribut est obtenu a partir du parametre DIM__(1) de la modelisation
+%       Convention importante : Pour les modelisations "discretes" ([2D_]DIS_xxx), on choisit DIM_TOPO_MODELI=-1
 %
 %  DIM_COOR_MODELI : dimension de l'espace du maillage
-%                    (nombre de coordonnées des points de l'espace) : 2 ou 3
-%           Cet attribut est obtenu a partir du paramètre DIM__(2) de la modélisation
+%                    (nombre de coordonnees des points de l'espace) : 2 ou 3
+%           Cet attribut est obtenu a partir du parametre DIM__(2) de la modelisation
 %        remarque : DIM_COOR_MODELI >=  DIM_TOPO_MODELI
 %
 %  DIM_TOPO_MAILLE : dimension topologique de la maille.
 %                     POI1 : X0 ; SEG: X1 ; TRIA/QUAD : X2 ; HEXA:X3 ; ...
-%        remarque : on est obligé de mettre une lettre (j'ai choisi "X" sans raison particulière)
+%        remarque : on est oblige de mettre une lettre (j'ai choisi "X" sans raison particuliere)
 %                   pour que le lecteur de catalogue ne prenne pas cette valeur pour un entier.
-%           Cet attribut est obtenu a partir du paramètre DIM__ du catalogue des types de mailles
+%           Cet attribut est obtenu a partir du parametre DIM__ du catalogue des types de mailles
 %
 %  DISCRET = 'OUI'
-%       La modélisation de l'élément est "discrète" ([2D_]DIS_xxx)
-%       On reconnait les modélisations "discrètes" au fait que DIM__(1)=-1
-%       Les éléments d'une modélisations discrète sont TOUS "principaux" (voir PRINCIPAL).
+%       La modelisation de l'element est "discrete" ([2D_]DIS_xxx)
+%       On reconnait les modelisations "discretes" au fait que DIM__(1)=-1
+%       Les elements d'une modelisations discrete sont TOUS "principaux" (voir PRINCIPAL).
 %
 %  PRINCIPAL = 'OUI' :
-%       L'élément est "principal" pour la modélisation (i.e. ce n'est pas un élément de "bord").
+%       L'element est "principal" pour la modelisation (i.e. ce n'est pas un element de "bord").
 %       La dimension toplogique de sa maille (DIM_TOPO_MAILLE) est identique a celle de sa
-%       modélisation (DIM_TOPO_MODELI)
-%       Pour les modélisations "discrètes" ([2D_]DIS_xxx), TOUS les éléments sont principaux.
+%       modelisation (DIM_TOPO_MODELI)
+%       Pour les modelisations "discretes" ([2D_]DIS_xxx), TOUS les elements sont principaux.
 %
 %
 %  BORD = 'OUI' :
-%       L'élément "borde" un élément "principal" (de dimension topologique supérieure)
-%       La dimension toplogique de sa maille (DIM_TOPO_MAILLE) est strictement inférieure a
-%       celle de sa modélisation (DIM_TOPO_MODELI).
-%       Un élément de "bord" sert a en général a appliquer des efforts sur l'élément principal qu'il
-%       borde. Il fait partie de la meme modélisation que l'élément principal.
-%       Il n'a pas de sens sans un élément principal a coté de lui.
-%       Ses noeuds sont en principe ceux d'une face (ou d'une arrete) de son élément principal.
-%       Il ne calcule pas de "rigidité".
+%       L'element "borde" un element "principal" (de dimension topologique superieure)
+%       La dimension toplogique de sa maille (DIM_TOPO_MAILLE) est strictement inferieure a
+%       celle de sa modelisation (DIM_TOPO_MODELI).
+%       Un element de "bord" sert a en general a appliquer des efforts sur l'element principal qu'il
+%       borde. Il fait partie de la meme modelisation que l'element principal.
+%       Il n'a pas de sens sans un element principal a cote de lui.
+%       Ses noeuds sont en principe ceux d'une face (ou d'une arrete) de son element principal.
+%       Il ne calcule pas de "rigidite".
 %
-%       Un élément de coque "plaqué" sur un élément de volume n'est pas un élément de bord.
+%       Un element de coque "plaque" sur un element de volume n'est pas un element de bord.
 %
 
 %
-%  2) Les attributs définis par les responsables d'éléments finis :
+%  2) Les attributs definis par les responsables d'elements finis :
 %  --------------------------------------------------------------------------------------------
 %
-%  AXIS =  'OUI' : l'élément est axisymétrique.
-%          C'est a dire qu'il est maillé en 2D mais qu'il représente en réalité un "anneau" de
-%          révolution autour de l'axe OY.
-%          Le champ de déplacement dans un plan radial est indépendant de l'azimut (theta).
+%  AXIS =  'OUI' : l'element est axisymetrique.
+%          C'est a dire qu'il est maille en 2D mais qu'il represente en realite un "anneau" de
+%          revolution autour de l'axe OY.
+%          Le champ de deplacement dans un plan radial est independant de l'azimut (theta).
 %
 %
-%  D_PLAN =  'OUI' : l'élément est en "déformations planes".
-%          Le maillage est 2D (OXY). Le déplacement est indépendant de Z et le déplacement suivant OZ est nul.
-%          Un élément 2D représente en réalité un solide cylindrique infini selon OZ.
+%  D_PLAN =  'OUI' : l'element est en "deformations planes".
+%          Le maillage est 2D (OXY). Le deplacement est independant de Z et le deplacement suivant OZ est nul.
+%          Un element 2D represente en realite un solide cylindrique infini selon OZ.
 %
-%  C_PLAN =  'OUI' : l'élément est en "contraintes planes".
-%          Le maillage est 2D (OXY). L'état de contraintes est "plan" (SIZZ=SIZX=SIYZ=0)
-%          L'hypothèse des contraintes planes est a priori vérifiée pour les structure minces selon OZ (plaque).
+%  C_PLAN =  'OUI' : l'element est en "contraintes planes".
+%          Le maillage est 2D (OXY). L'etat de contraintes est "plan" (SIZZ=SIZX=SIYZ=0)
+%          L'hypothese des contraintes planes est a priori verifiee pour les structure minces selon OZ (plaque).
 %
-%  FOURIER =  'OUI' : l'élément est destiné a une étude par décomposition en modes de fourier.
+%  FOURIER =  'OUI' : l'element est destine a une etude par decomposition en modes de fourier.
 %          Le maillage est 2D (OXY) (comme pour AXIS='OUI').
 %
-%  INCO   : Type d'éléments "incompressibles" (R3.06.08)
-%           - Le volume de l'élément reste constant (trace(epsilon)=0)
-%           - Il existe des ddls qui "dualisent" la condition précédente (PRES,GONF)
+%  INCO   : Type d'elements "incompressibles" (R3.06.08)
+%           - Le volume de l'element reste constant (trace(epsilon)=0)
+%           - Il existe des ddls qui "dualisent" la condition precedente (PRES,GONF)
 %  INCO =  Cxijk
 %          x  = nombre de champ : 3 champs UPG ou 2 champs UP
-%          ij = PD (petites déformations), SM (Simo_Miehe) et LG (GDEF_LOG)
-%          k  = stabilisation de l'élément : O (OSGS)
+%          ij = PD (petites deformations), SM (Simo_Miehe) et LG (GDEF_LOG)
+%          k  = stabilisation de l'element : O (OSGS)
 %
-%  LUMPE = 'OUI' : éléments "lumpés" (R3.06.07):
-%           - Ce sont des éléments de thermique
+%  LUMPE = 'OUI' : elements "lumpes" (R3.06.07):
+%           - Ce sont des elements de thermique
 %           - Leur matrice de "masse" (MASS_THER) est diagonale
 %
-%  TYPMOD : Type de  modélisation utilisé pour intégrer les lois de comportement (utilisé dans NMCOMP)
-%           Les valeurs possibles de cet attribut sont définies dans le catalogue de chaque comportement
+%  TYPMOD : Type de  modelisation utilise pour integrer les lois de comportement (utilise dans NMCOMP)
+%           Les valeurs possibles de cet attribut sont definies dans le catalogue de chaque comportement
 %           (bibpyt/Comportement/*.py)
-%  TYPMOD = C_PLAN   l'élément fait appel a des comportements C_PLAN
-%           D_PLAN   l'élément fait appel a des comportements D_PLAN
-%           AXIS     l'élément fait appel a des comportements AXIS
-%           COMP1D   l'élément fait appel a des comportements COMP1D (HPP) + DEBORST EVENTUELLEMENT
-%           COMP3D   l'élément fait appel a des comportements 3D
-%           PLAN     l'élément fait appel a des comportements PLAN
+%  TYPMOD = C_PLAN   l'element fait appel a des comportements C_PLAN
+%           D_PLAN   l'element fait appel a des comportements D_PLAN
+%           AXIS     l'element fait appel a des comportements AXIS
+%           COMP1D   l'element fait appel a des comportements COMP1D (HPP) + DEBORST EVENTUELLEMENT
+%           COMP3D   l'element fait appel a des comportements 3D
+%           PLAN     l'element fait appel a des comportements PLAN
 %
-%  TYPMOD2 : Complément au type de  modélisation utilisé pour intégrer les lois de comportement TYPMOD
-%            (TYPMOD2 est utilisé dans NMCOMP et certaines routines LCxxxx)
+%  TYPMOD2 : Complement au type de  modelisation utilise pour integrer les lois de comportement TYPMOD
+%            (TYPMOD2 est utilise dans NMCOMP et certaines routines LCxxxx)
 %           Les valeurs possibles de cet attribut sont :%
-%  TYPMOD2= GRADEPSI l'élément utilise des comportements non locaux (TYPMOD(2)='GRADEPSI' pour NMCOMP)
-%           GRADVARI l'élément utilise des comportements non locaux (TYPMOD(2)='GRADVARI' pour NMCOMP)
-%           ELEMJOIN l'élément utilise des comportements d'éléments de joints (CZM sur des modélisations *_JOINT)
-%           INTERFAC l'élément utilise des comportements d'éléments d'interface (CZM sur des modélisations *_INTERFACE)
-%           ELEMDISC l'élément utilise des comportements d'éléments a discontinuité interne
-%           PMF      l'élément fait appel a des comportements 1D PMF (GROT_GDEP PERMIS)
+%  TYPMOD2= GRADEPSI l'element utilise des comportements non locaux (TYPMOD(2)='GRADEPSI' pour NMCOMP)
+%           GRADVARI l'element utilise des comportements non locaux (TYPMOD(2)='GRADVARI' pour NMCOMP)
+%           ELEMJOIN l'element utilise des comportements d'elements de joints (CZM sur des modelisations *_JOINT)
+%           INTERFAC l'element utilise des comportements d'elements d'interface (CZM sur des modelisations *_INTERFACE)
+%           ELEMDISC l'element utilise des comportements d'elements a discontinuite interne
+%           PMF      l'element fait appel a des comportements 1D PMF (GROT_GDEP PERMIS)
 %
-%  TUYAU  =  'OUI' :  l'élément est un élément de "tuyau".
-%  GRILLE =  'OUI' :  l'élément est un élément de "grille".
-%  THM    =  'OUI' :  l'élément est un élément de "THM" ce qui veut dire :
+%  TUYAU  =  'OUI' :  l'element est un element de "tuyau".
+%  GRILLE =  'OUI' :  l'element est un element de "grille".
+%  THM    =  'OUI' :  l'element est un element de "THM" ce qui veut dire :
 %                     - la responsable est S. Granet
-%                     - il relève de r7.01.10
-%                     - Il peut définir un coefficient de dilation =f(TEMP) bien que la
-%                       température ne soit pas une variable de commande (mais un ddl)
-%                       (d'ou le problème de la définition de TEMP_REF)
+%                     - il releve de r7.01.10
+%                     - Il peut definir un coefficient de dilation =f(TEMP) bien que la
+%                       temperature ne soit pas une variable de commande (mais un ddl)
+%                       (d'ou le probleme de la definition de TEMP_REF)
 %
-%  XFEM = 'XH','XT','XHT'     : élément XFEM de type Heaviside, cracktip, ou mixte
-%         'XHC',XTC','XHTC'   : élément XFEM de type Heaviside, cracktip, ou mixte, avec du contact
+%  XFEM = 'XH','XT','XHT'     : element XFEM de type Heaviside, cracktip, ou mixte
+%         'XHC',XTC','XHTC'   : element XFEM de type Heaviside, cracktip, ou mixte, avec du contact
 %
-%  XFEM_E = 'H','T','CT'      : élément XFEM maille esclave de type Heaviside, cracktip, ou mixte
+%  XFEM_E = 'H','T','CT'      : element XFEM maille esclave de type Heaviside, cracktip, ou mixte
 %
-%  XFEM_M = 'XH','XT','XHT'   : élément XFEM maille maitre de type Heaviside, cracktip, ou mixte
+%  XFEM_M = 'XH','XT','XHT'   : element XFEM maille maitre de type Heaviside, cracktip, ou mixte
 %
 %
 %  NBSIGM =  /X4/X6/...
-%        remarque : on est obligé de mettre une lettre (j'ai choisi "X" sans raison particulière)
+%        remarque : on est oblige de mettre une lettre (j'ai choisi "X" sans raison particuliere)
 %                   pour que le lecteur de catalogue ne prenne pas cette valeur pour un entier.
-%        Pour les éléments de mécanique, c'est le nombre de composantes du tenseur des contraintes.
-%        En général : 6 (X6) pour les éléments 3D, 4 (X4) pour certains éléments 2D
+%        Pour les elements de mecanique, c'est le nombre de composantes du tenseur des contraintes.
+%        En general : 6 (X6) pour les elements 3D, 4 (X4) pour certains elements 2D
 %
 %
-%  VF_AVEC_VOISIN = 'OUI' : l'élément est de type "volume fini". Cela implique :
-%               - les matrices élémentaires sont de type "VOISIN_VF"
-%               - les calculs élémentaires utilisent les voisins (routine tecac2.f)
+%  VF_AVEC_VOISIN = 'OUI' : l'element est de type "volume fini". Cela implique :
+%               - les matrices elementaires sont de type "VOISIN_VF"
+%               - les calculs elementaires utilisent les voisins (routine tecac2.f)
 %
 %
-%  TYPE_VOISIN = typvoi : type du voisinage des éléments de type "volume_fini"
-%                la chaine de caractères typvoi est formée d'une suite de K2 tels que :
+%  TYPE_VOISIN = typvoi : type du voisinage des elements de type "volume_fini"
+%                la chaine de caracteres typvoi est formee d'une suite de K2 tels que :
 %                  'F3' : voisin 3D par une face
 %                  'A2' : voisin 2D par une arrete
 %                   ...   (voir routine voiuti.f)

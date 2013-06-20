@@ -20,10 +20,10 @@
 DEFI_CONTACT=OPER(nom       = "DEFI_CONTACT",
                   op        = 30,
                   sd_prod   = char_contact,
-                  fr        = "Définit les zones soumises à des conditions de contact unilatéral avec ou sans frottement",
+                  fr        = "DÃ©finit les zones soumises Ã  des conditions de contact unilatÃ©ral avec ou sans frottement",
                   #en        = "Allows the definition of contact surfaces as well as unilateral conditions",
                   reentrant = 'n',
-                  UIinfo    = {"groupes":("Modélisation",)},
+                  UIinfo    = {"groupes":("ModÃ©lisation",)},
 
 # MODELE
 
@@ -35,7 +35,7 @@ DEFI_CONTACT=OPER(nom       = "DEFI_CONTACT",
          FORMULATION     =SIMP(statut='o',
                                position='global',
                                typ='TXM',
-                               fr="Choix d'une formulation de contact ou de liaisons unilatérales",
+                               fr="Choix d'une formulation de contact ou de liaisons unilatÃ©rales",
                                defaut="DISCRETE",
                                into=("DISCRETE","CONTINUE","XFEM","LIAISON_UNIL",),),
 
@@ -44,7 +44,7 @@ DEFI_CONTACT=OPER(nom       = "DEFI_CONTACT",
          FROTTEMENT      =SIMP(statut='f',
                                position='global',
                                typ='TXM',
-                               fr="Choix d'un modèle de frottement (uniquement pour les formulations de contact)",
+                               fr="Choix d'un modÃ¨le de frottement (uniquement pour les formulations de contact)",
                                defaut="SANS",
                                into=("COULOMB","SANS",)),
 
@@ -54,7 +54,7 @@ DEFI_CONTACT=OPER(nom       = "DEFI_CONTACT",
 #          ARRET DU CALCUL POUR LE MODE SANS RESOLUTION DU CONTACT
            STOP_INTERP   = SIMP(statut='f',
                                 typ='TXM',
-                                fr="Arrête le calcul dès qu'une interpénétration est détectée en mode RESOLUTION='NON'",
+                                fr="ArrÃªte le calcul dÃ¨s qu'une interpÃ©nÃ©tration est dÃ©tectÃ©e en mode RESOLUTION='NON'",
                                 defaut="NON",
                                 into=("OUI","NON")),
 #          LISSAGE DES NORMALES PAR MOYENNATION AUX NOEUDS
@@ -66,7 +66,7 @@ DEFI_CONTACT=OPER(nom       = "DEFI_CONTACT",
 #          VERIFICATION DE L'ORIENTATION ET DE LA COHERENCE DES NORMALES
            VERI_NORM       =SIMP(statut='f',
                                  typ='TXM',
-                                 fr="Vérification de l'orientation (sortante) des normales aux surfaces",
+                                 fr="VÃ©rification de l'orientation (sortante) des normales aux surfaces",
                                  defaut="OUI",
                                  into=("OUI","NON"),),
            ),
@@ -200,39 +200,39 @@ DEFI_CONTACT=OPER(nom       = "DEFI_CONTACT",
 #                                 ## METHODES DE DUALISATION ##
                                   STOP_SINGULIER= SIMP(statut='f',
                                                        typ='TXM',
-                                                       fr="Tient compte de la singularité de la matrice de contact",
+                                                       fr="Tient compte de la singularitÃ© de la matrice de contact",
                                                        defaut="OUI",
                                                        into=("OUI","NON"),),
                                   NB_RESOL      = SIMP(statut='f',
                                                        typ='I',
-                                                fr="Nombre de résolutions simultanées pour la construction du complément de Schur",
+                                                fr="Nombre de rÃ©solutions simultanÃ©es pour la construction du complÃ©ment de Schur",
                                                        defaut=10,),
 #                                 ## GCP ##
                                   RESI_ABSO     = SIMP(statut='f',
                                                        typ='R',
-                                                  fr="Critère de convergence (niveau d'interpénétration autorisé pour 'GCP')",),
+                                                  fr="CritÃ¨re de convergence (niveau d'interpÃ©nÃ©tration autorisÃ© pour 'GCP')",),
                                   ITER_GCP_MAXI = SIMP(statut='f',
                                                        typ='I',
-                                                       fr="Nombre d'itérations maximal ('GCP')",
+                                                       fr="Nombre d'itÃ©rations maximal ('GCP')",
                                                        defaut=0,),
                                   RECH_LINEAIRE = SIMP(statut='f',
                                                        typ='TXM',
-                                                  fr="Autorisation de sortie du domaine admissible lors de la recherche linéaire",
+                                                  fr="Autorisation de sortie du domaine admissible lors de la recherche linÃ©aire",
                                                        defaut="ADMISSIBLE",
                                                        into=("ADMISSIBLE","NON_ADMISSIBLE"),),
                                   PRE_COND      = SIMP(statut='f',
                                                        typ='TXM',
-                                                       fr="Choix d'un préconditionneur (accélère la convergence de 'GCP')",
+                                                       fr="Choix d'un prÃ©conditionneur (accÃ©lÃ¨re la convergence de 'GCP')",
                                                        defaut="SANS",
                                                        into=("DIRICHLET","SANS"),),
                                   b_dirichlet   = BLOC (condition = "PRE_COND == 'DIRICHLET'",
                                      COEF_RESI     = SIMP(statut='f',
                                                           typ='R',
-                                                   fr="Activation du préconditionneur quand le résidu a été divisé par COEF_RESI",
+                                                   fr="Activation du prÃ©conditionneur quand le rÃ©sidu a Ã©tÃ© divisÃ© par COEF_RESI",
                                                           defaut = -1.0,),
                                      ITER_PRE_MAXI = SIMP(statut='f',
                                                           typ='I',
-                                                          fr="Nombre d'itérations maximal pour le préconditionneur ('GCP')",
+                                                          fr="Nombre d'itÃ©rations maximal pour le prÃ©conditionneur ('GCP')",
                                                           defaut=0,),
                                   ),
                                   ),
@@ -244,7 +244,7 @@ DEFI_CONTACT=OPER(nom       = "DEFI_CONTACT",
          b_affe_unil     = BLOC(condition = "FORMULATION == 'LIAISON_UNIL'",
                                 ZONE=FACT(statut='o',
                                           max='**',
-# -- Liaison unilatérale
+# -- Liaison unilatÃ©rale
                                           regles=(UN_PARMI('GROUP_MA','MAILLE','GROUP_NO','NOEUD'),),
                                           GROUP_MA        =SIMP(statut='f',typ=grma ,validators=NoRepeat(),max='**'),
                                           MAILLE          =SIMP(statut='f',typ=ma   ,validators=NoRepeat(),max='**'),
@@ -254,7 +254,7 @@ DEFI_CONTACT=OPER(nom       = "DEFI_CONTACT",
                                           NOM_CMP         =SIMP(statut='o',typ='TXM',max='**'),
                                           COEF_IMPO       =SIMP(statut='o',typ=(fonction_sdaster,nappe_sdaster,formule),),
                                           COEF_MULT       =SIMP(statut='o',typ=(fonction_sdaster,nappe_sdaster,formule),max='**'),
-# -- Incompatibilité avec CL
+# -- IncompatibilitÃ© avec CL
                                           SANS_NOEUD      =SIMP(statut='f',typ=no   ,validators=NoRepeat(),max='**'),
                                           SANS_GROUP_NO   =SIMP(statut='f',typ=grno ,validators=NoRepeat(),max='**'),
 
@@ -321,7 +321,7 @@ DEFI_CONTACT=OPER(nom       = "DEFI_CONTACT",
 #
                                           TOLE_APPA       =SIMP(statut='f',typ='R'  ,defaut=-1.0),
                                           TOLE_PROJ_EXT   =SIMP(statut='f',typ='R'  ,defaut=0.50),
-# -- Incompatibilité avec CL
+# -- IncompatibilitÃ© avec CL
                                           SANS_NOEUD      =SIMP(statut='f',typ=no   ,validators=NoRepeat(),max='**'),
                                           SANS_GROUP_NO   =SIMP(statut='f',typ=grno ,validators=NoRepeat(),max='**'),
                                           SANS_MAILLE     =SIMP(statut='f',typ=ma   ,validators=NoRepeat(),max='**'),
@@ -331,12 +331,12 @@ DEFI_CONTACT=OPER(nom       = "DEFI_CONTACT",
                                           b_verif=BLOC(condition = "RESOLUTION == 'NON' ",
                                             TOLE_INTERP   = SIMP(statut='f',typ='R',defaut = 0.),
                                             ),
-# -- Résolution
+# -- RÃ©solution
                                           ALGO_CONT       =SIMP(statut='o',typ='TXM',defaut="CONTRAINTE",
                                                                 into=("CONTRAINTE","LAGRANGIEN","PENALISATION","GCP"),),
 
                                           b_active=BLOC(condition = "ALGO_CONT == 'CONTRAINTE' ",
-                                                        fr="Paramètres de la méthode des contraintes actives (contact uniquement)",
+                                                        fr="ParamÃ¨tres de la mÃ©thode des contraintes actives (contact uniquement)",
                                                         GLISSIERE=SIMP(statut='f',typ='TXM',defaut="NON",into=("OUI","NON")),
                                                         b_glissiere=BLOC(condition = "GLISSIERE == 'OUI' ",
                                                                          ALARME_JEU  =SIMP(statut='f',typ='R',defaut=0.),
@@ -344,23 +344,23 @@ DEFI_CONTACT=OPER(nom       = "DEFI_CONTACT",
                                                         ),
 #
                                           b_penal_contact=BLOC(condition = "ALGO_CONT == 'PENALISATION' ",
-                                                               fr="Paramètres de la méthode pénalisée (contact)",
+                                                               fr="ParamÃ¨tres de la mÃ©thode pÃ©nalisÃ©e (contact)",
                                                                E_N=SIMP(statut='o',typ='R'),
                                                                ),
 #
                                           b_frottement=BLOC(condition = "FROTTEMENT == 'COULOMB' ",
-                                                            fr="Paramètres du frottement de Coulomb",
+                                                            fr="ParamÃ¨tres du frottement de Coulomb",
                                                             COULOMB       =SIMP(statut='o',typ='R',),
                                                             COEF_MATR_FROT=SIMP(statut='f',typ='R',defaut=0.E+0),
                                                             ALGO_FROT     =SIMP(statut='o',typ='TXM',defaut="PENALISATION",
                                                                                 into=("PENALISATION","LAGRANGIEN"),),
 #
                                                             b_penal_frot=BLOC(condition = "ALGO_FROT == 'PENALISATION' ",
-                                                                              fr="Paramètres de la méthode pénalisée (frottement)",
+                                                                              fr="ParamÃ¨tres de la mÃ©thode pÃ©nalisÃ©e (frottement)",
                                                                               E_T=SIMP(statut='o',typ='R'),
                                                                               ),
                                                            ),
-                                          ), #fin mot-clé facteur ZONE
+                                          ), #fin mot-clÃ© facteur ZONE
                                 ), #fin bloc b_affe_discret
 
 # AFFECTATION - CAS CONTINUE
@@ -424,7 +424,7 @@ DEFI_CONTACT=OPER(nom       = "DEFI_CONTACT",
 #
                                           TOLE_APPA       =SIMP(statut='f',typ='R'  ,defaut=-1.0),
                                           TOLE_PROJ_EXT   =SIMP(statut='f',typ='R'  ,defaut=0.50),
-# -- Incompatibilité avec CL
+# -- IncompatibilitÃ© avec CL
                                           SANS_NOEUD      =SIMP(statut='f',typ=no   ,validators=NoRepeat(),max='**'),
                                           SANS_GROUP_NO   =SIMP(statut='f',typ=grno ,validators=NoRepeat(),max='**'),
                                           SANS_MAILLE     =SIMP(statut='f',typ=ma   ,validators=NoRepeat(),max='**'),
@@ -434,12 +434,12 @@ DEFI_CONTACT=OPER(nom       = "DEFI_CONTACT",
                                           b_verif=BLOC(condition = "RESOLUTION == 'NON' ",
                                                        TOLE_INTERP   = SIMP(statut='f',typ='R',defaut = 0.),
                                                        ),
-# -- Fonctionnalités spécifiques 'CONTINUE'
+# -- FonctionnalitÃ©s spÃ©cifiques 'CONTINUE'
 
                                           INTEGRATION     =SIMP(statut='f',typ='TXM',defaut="AUTO",
                                           into=("AUTO","GAUSS","SIMPSON","NCOTES",),),
                                           b_gauss   =BLOC(condition = "INTEGRATION == 'GAUSS' ",
-                                                          fr="Degré du polynôme de Legendre donnant les points de Gauss",
+                                                          fr="DegrÃ© du polynÃ´me de Legendre donnant les points de Gauss",
                                                           ORDRE_INT = SIMP(statut='f',typ='I',defaut=3,val_min=1,val_max=6),
                                             ),
                                           b_simpson =BLOC(condition = "INTEGRATION == 'SIMPSON' ",
@@ -447,7 +447,7 @@ DEFI_CONTACT=OPER(nom       = "DEFI_CONTACT",
                                                           ORDRE_INT = SIMP(statut='f',typ='I',defaut=1,val_min=1,val_max=4),
                                             ),
                                           b_ncotes  =BLOC(condition = "INTEGRATION == 'NCOTES' ",
-                                                          fr="Degré du polynôme interpolateur",
+                                                          fr="DegrÃ© du polynÃ´me interpolateur",
                                                           ORDRE_INT = SIMP(statut='f',typ='I',defaut=3,val_min=3,val_max=8),
                                             ),
 #
@@ -460,16 +460,16 @@ DEFI_CONTACT=OPER(nom       = "DEFI_CONTACT",
                                                                 into=("STANDARD","PENALISATION"),),
 
                                           b_cont_std=BLOC(condition = "ALGO_CONT == 'STANDARD' ",
-                                                          fr="Paramètres de la formulation Lagrangienne",
+                                                          fr="ParamÃ¨tres de la formulation Lagrangienne",
                                                           COEF_CONT = SIMP(statut='f',typ='R',defaut=100.E+0),
                                                           ),
                                           b_cont_pena=BLOC(condition = "ALGO_CONT == 'PENALISATION' ",
-                                                            fr="Paramètres de la méthode pénalisée",
+                                                            fr="ParamÃ¨tres de la mÃ©thode pÃ©nalisÃ©e",
                                                             COEF_PENA_CONT  =SIMP(statut='o',typ='R'),
                                                             ),
 #
                                           b_frottement=BLOC(condition = "FROTTEMENT == 'COULOMB' ",
-                                                            fr="Paramètres du frottement de Coulomb",
+                                                            fr="ParamÃ¨tres du frottement de Coulomb",
                                                             COULOMB    = SIMP(statut='o',typ='R',),
                                                             SEUIL_INIT = SIMP(statut='f',typ='R',defaut=0.E+0),
 #
@@ -478,24 +478,24 @@ DEFI_CONTACT=OPER(nom       = "DEFI_CONTACT",
                                                   SANS_GROUP_NO_FR =SIMP(statut='f',typ=grno,validators=NoRepeat(),max='**'),
                                                             b_sans_group_no_frot=BLOC(condition = " SANS_GROUP_NO_FR != None or \
                                                                                                     SANS_NOEUD_FR != None ",
-                                                            fr="Direction de frottement à exclure (uniquement dans le cas 3D)",
+                                                            fr="Direction de frottement Ã  exclure (uniquement dans le cas 3D)",
                                                             DIRE_EXCL_FROT=SIMP(statut='f',typ='R',min=3,max=3),
                                                             ),
 
                                             ALGO_FROT       =SIMP(statut='f',typ='TXM',defaut="STANDARD",
                                                                   into=("STANDARD","PENALISATION"),),
                                             b_frot_std      =BLOC(condition = "ALGO_FROT == 'STANDARD' ",
-                                                                  fr="Paramètres de la formulation Lagrangienne",
+                                                                  fr="ParamÃ¨tres de la formulation Lagrangienne",
                                                                   COEF_FROT  =SIMP(statut='f',typ='R',defaut=100.E+0),
                                                                   ),
 
                                             b_frot_pena     =BLOC(condition = "ALGO_FROT == 'PENALISATION' ",
-                                                                  fr="Paramètres de la méthode pénalisée",
+                                                                  fr="ParamÃ¨tres de la mÃ©thode pÃ©nalisÃ©e",
                                                                   COEF_PENA_FROT  =SIMP(statut='o',typ='R'),
                                                                   ),
 
                                             ), #fin bloc b_frottement
-                                          ), #fin mot-clé facteur ZONE
+                                          ), #fin mot-clÃ© facteur ZONE
                                 ), #fin bloc b_affe_continue
 
 
@@ -508,14 +508,14 @@ DEFI_CONTACT=OPER(nom       = "DEFI_CONTACT",
                                        FISS_MAIT      = SIMP(statut='o',typ=fiss_xfem,max=1),
                                        TOLE_PROJ_EXT   =SIMP(statut='f',typ='R'  ,defaut=0.50),
 
-# -- Fonctionnalités spécifiques 'XFEM'
+# -- FonctionnalitÃ©s spÃ©cifiques 'XFEM'
                                        INTEGRATION    = SIMP(statut='f',
                                                              typ='TXM',
                                                              defaut="GAUSS",
 
                                           into=("NOEUD","GAUSS","SIMPSON","NCOTES",),),
                                           b_gauss   =BLOC(condition = "INTEGRATION == 'GAUSS' ",
-                                                          fr="Dégré du polynôme de Legendre donnant les points de Gauss",
+                                                          fr="DÃ©grÃ© du polynÃ´me de Legendre donnant les points de Gauss",
                                                           ORDRE_INT = SIMP(statut='f',typ='I',defaut=6,val_min=1,val_max=6),
                                             ),
                                           b_simpson =BLOC(condition = "INTEGRATION == 'SIMPSON' ",
@@ -523,7 +523,7 @@ DEFI_CONTACT=OPER(nom       = "DEFI_CONTACT",
                                                           ORDRE_INT = SIMP(statut='f',typ='I',defaut=1,val_min=1,val_max=4),
                                             ),
                                           b_ncotes  =BLOC(condition = "INTEGRATION == 'NCOTES' ",
-                                                          fr="Dégré du polynôme interpolateur",
+                                                          fr="DÃ©grÃ© du polynÃ´me interpolateur",
                                                           ORDRE_INT = SIMP(statut='f',typ='I',defaut=3,val_min=3,val_max=8),
                                             ),
 
@@ -544,7 +544,7 @@ DEFI_CONTACT=OPER(nom       = "DEFI_CONTACT",
                                                 ),
 
                                        b_cont_pen=BLOC(condition = "ALGO_CONT == 'PENALISATION' ",
-                                                 fr="Paramètre de la méthode pénalisée",
+                                                 fr="ParamÃ¨tre de la mÃ©thode pÃ©nalisÃ©e",
                                                  COEF_PENA_CONT =SIMP(statut='o',typ='R'),
                                                  ),
 
@@ -555,7 +555,7 @@ DEFI_CONTACT=OPER(nom       = "DEFI_CONTACT",
                                                 ),
 
                                        b_frottement=BLOC(condition = "FROTTEMENT == 'COULOMB' and  ALGO_CONT != 'CZM' ",
-                                                 fr="Paramètres du frottement",
+                                                 fr="ParamÃ¨tres du frottement",
                                                  COULOMB      =SIMP(statut='o',typ='R',),
                                                  SEUIL_INIT   =SIMP(statut='f',typ='R',defaut=0.E+0),
                                                  ALGO_FROT    =SIMP(statut='f',typ='TXM',defaut="STANDARD",
@@ -566,11 +566,11 @@ DEFI_CONTACT=OPER(nom       = "DEFI_CONTACT",
                                                                   COEF_FROT  =SIMP(statut='f',typ='R',defaut=100.E+0),
                                                                   ),
                                                  b_frot_pen=BLOC(condition = "ALGO_FROT == 'PENALISATION' ",
-                                                                  fr="Paramètre de la méthode pénalisée",
+                                                                  fr="ParamÃ¨tre de la mÃ©thode pÃ©nalisÃ©e",
                                                                   COEF_PENA_FROT  =SIMP(statut='o',typ='R'),
                                                                   ),
                                                         ), #fin bloc b_frottement
-                                       ), #fin mot-clé facteur ZONE
+                                       ), #fin mot-clÃ© facteur ZONE
                              ), #fin bloc b_affe_xfem
 
                   ) #fin OPER

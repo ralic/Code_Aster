@@ -22,13 +22,13 @@ class mater_sdaster(ASSD):
    cata_sdj = "SD.sd_mater.sd_mater"
 
    def RCVALE(self, phenomene, nompar=(), valpar=(), nomres=(), stop=1):
-      """Appel à la routine fortran RCVALE pour récupérer les valeurs des
-      propriétés du matériau.
+      """Appel Ã  la routine fortran RCVALE pour rÃ©cupÃ©rer les valeurs des
+      propriÃ©tÃ©s du matÃ©riau.
       """
       if not self.accessible():
          raise Accas.AsException("Erreur dans mater.RCVALE en PAR_LOT='OUI'")
       from Utilitai.Utmess import UTMESS
-      # vérification des arguments
+      # vÃ©rification des arguments
       if not type(nompar) in (list, tuple):
          nompar = [nompar,]
       if not type(valpar) in (list, tuple):
@@ -44,5 +44,5 @@ class mater_sdaster(ASSD):
          UTMESS('F','SDVERI_4',valk=[vk1,vk2])
       if len(nomres) < 1:
          UTMESS('F', 'SDVERI_5')
-      # appel à l'interface Python/C
+      # appel Ã  l'interface Python/C
       return aster.rcvale(self.nom, phenomene, nompar, valpar, nomres, stop)

@@ -44,12 +44,12 @@ CALC_MAC3COEUR = MACRO(nom="CALC_MAC3COEUR",
                     TYPE_MAINTIEN = SIMP(statut='o',typ='TXM',into=("FORCE","DEPL_PSC"), ),
                     
                     b_maintien_mono_force = BLOC(condition = "TYPE_MAINTIEN == 'FORCE'",
-                                 fr="valeur de l'effort de maintien imposée",
+                                 fr="valeur de l'effort de maintien imposÃ©e",
                                  FORCE_MAINTIEN           =SIMP(statut='o',typ='R', max=1),),
                      
                                        ),
                 
-               # choix du maintien dans le cas d'un coeur à plusieurs assemblages
+               # choix du maintien dans le cas d'un coeur Ã  plusieurs assemblages
                b_maintien_coeur = BLOC(condition = "TYPE_COEUR != 'MONO'",
 
                     TYPE_MAINTIEN = SIMP(statut='f',typ='TXM',into=("DEPL_PSC",),defaut="DEPL_PSC" ),

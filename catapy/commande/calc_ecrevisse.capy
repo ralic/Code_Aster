@@ -33,7 +33,7 @@ CALC_ECREVISSE=MACRO(nom="CALC_ECREVISSE",
                      op=OPS('Macro.calc_ecrevisse_ops.calc_ecrevisse_ops'),
                      sd_prod=calc_ecrevisse_prod,
                      reentrant='n',
-                     UIinfo={"groupes":("Outils-métier",)},fr="Procedure de couplage avec Ecrevisse",
+                     UIinfo={"groupes":("Outils-mÃ©tier",)},fr="Procedure de couplage avec Ecrevisse",
                      regles   = (UN_PARMI('LOGICIEL','VERSION'),),
 
 #      CONCEPTS SORTANTS : 2 CHARGEMENTS THERMIQUE + 1 MECANIQUE + 2 TABLES POUR LE POST-TRAITEMENT

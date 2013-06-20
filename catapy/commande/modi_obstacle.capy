@@ -17,9 +17,9 @@
 # ======================================================================
 # person_in_charge: marc.kham at edf.fr
 MODI_OBSTACLE=OPER(nom="MODI_OBSTACLE",op=182,sd_prod=table_fonction,
-            fr="Calculer les obstacles dans les systèmes guidage-tube après usure",
+            fr="Calculer les obstacles dans les systÃ¨mes guidage-tube aprÃ¨s usure",
             reentrant='f',
-            UIinfo={"groupes":("Modélisation",)},
+            UIinfo={"groupes":("ModÃ©lisation",)},
       regles=(PRESENT_ABSENT('R_MOBILE','CRAYON'),
               PRESENT_PRESENT('V_USUR_TUBE','V_USUR_OBST'),),
          OBSTACLE        =SIMP(statut='f',typ=table_fonction),

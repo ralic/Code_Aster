@@ -42,8 +42,8 @@ class resultat_sdaster(ASSD):
       return aster.GetResu(self.get_name(), "PARAMETRES")
 
 class resultat_jeveux(resultat_sdaster):
-   """Classe permettant d'accéder à un resultat jeveux qui n'a pas d'ASSD associée,
-   c'est le cas des concepts résultats (table, evol_xxxx) dérivés."""
+   """Classe permettant d'accÃ©der Ã  un resultat jeveux qui n'a pas d'ASSD associÃ©e,
+   c'est le cas des concepts rÃ©sultats (table, evol_xxxx) dÃ©rivÃ©s."""
    def __init__(self, nom_jeveux):
       resultat_sdaster.__init__(self)
       self.set_name(nom_jeveux)

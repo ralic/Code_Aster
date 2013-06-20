@@ -17,7 +17,7 @@
 # ======================================================================
 # person_in_charge: mathieu.courtois at edf.fr
 
-# Vérification des imports et définitions non autorisés dans le catalogue
+# VÃ©rification des imports et dÃ©finitions non autorisÃ©s dans le catalogue
 UNAUTHORIZED = ("numpy", "UTMESS", "Table", "Graph")
 
 for _name in UNAUTHORIZED:

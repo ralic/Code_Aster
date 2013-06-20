@@ -16,19 +16,19 @@
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
 # ======================================================================
 # person_in_charge: j-pierre.lefebvre at edf.fr
-FIN=PROC(nom="FIN",op=9999,repetable='n',fr="Fin d'une étude, fin du travail engagé par une des commandes DEBUT ou POURSUITE",
+FIN=PROC(nom="FIN",op=9999,repetable='n',fr="Fin d'une Ã©tude, fin du travail engagÃ© par une des commandes DEBUT ou POURSUITE",
             UIinfo={"groupes":("Gestion du travail",)},
 #
-# FIN est appelé prématurément en cas d'exception ("SIGUSR1", ArretCPUError,
-# NonConvergenceError..., erreurs <S> ou erreurs <F> récupérées).
-# En cas d'ArretCPUError, on limite au maximum le travail à faire dans FIN.
-# Pour cela, on force certains mots-clés dans Execution/E_JDC.py.
+# FIN est appelÃ© prÃ©maturÃ©ment en cas d'exception ("SIGUSR1", ArretCPUError,
+# NonConvergenceError..., erreurs <S> ou erreurs <F> rÃ©cupÃ©rÃ©es).
+# En cas d'ArretCPUError, on limite au maximum le travail Ã  faire dans FIN.
+# Pour cela, on force certains mots-clÃ©s dans Execution/E_JDC.py.
 # 
          FORMAT_HDF      =SIMP(fr="sauvegarde de la base GLOBALE au format HDF",statut='f',
                                typ='TXM',defaut="NON",into=("OUI","NON",) ), 
          RETASSAGE       =SIMP(fr="provoque le retassage de la base GLOBALE",
                                statut='f',typ='TXM',defaut="NON",into=("OUI","NON",) ),
-         INFO_RESU       =SIMP(fr="provoque l'impression des informations sur les structures de données",
+         INFO_RESU       =SIMP(fr="provoque l'impression des informations sur les structures de donnÃ©es",
                                statut='f',typ='TXM',defaut="OUI",into=("OUI","NON",) ),
          UNITE           =SIMP(statut='f',typ='I',defaut=6),  
 )  ;

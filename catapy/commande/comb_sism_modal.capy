@@ -17,7 +17,7 @@
 # ======================================================================
 # person_in_charge: sylvie.audebert at edf.fr
 COMB_SISM_MODAL=OPER(nom="COMB_SISM_MODAL",op= 109,sd_prod=mode_meca,
-                     fr="Réponse sismique par recombinaison modale par une méthode spectrale",
+                     fr="RÃ©ponse sismique par recombinaison modale par une mÃ©thode spectrale",
                      reentrant='n',
             UIinfo={"groupes":("Post-traitements","Dynamique",)},
          regles=(EXCLUS('TOUT_ORDRE','NUME_ORDRE','FREQ','NUME_MODE','LIST_FREQ','LIST_ORDRE'),
@@ -68,9 +68,9 @@ COMB_SISM_MODAL=OPER(nom="COMB_SISM_MODAL",op= 109,sd_prod=mode_meca,
            GROUP_NO        =SIMP(statut='f',typ=grno,validators=NoRepeat(),max='**'),)
          ),
          MONO_APPUI      =SIMP(statut='f',typ='TXM',into=("OUI",),
-                                 fr="excitation imposée unique" ),
+                                 fr="excitation imposÃ©e unique" ),
          MULTI_APPUI      =SIMP(statut='f',typ='TXM',position='global',into=("DECORRELE","CORRELE"),
-                                 fr="excitation imposée unique" ),
+                                 fr="excitation imposÃ©e unique" ),
          b_decorrele     =BLOC(condition = "MULTI_APPUI == 'DECORRELE' ",
            GROUP_APPUI     =FACT(statut='f',max='**',
            regles=(UN_PARMI('NOEUD','GROUP_NO' ),),

@@ -17,8 +17,8 @@
 # ======================================================================
 # person_in_charge: Christophe-mmn.durand at edf.fr
 THER_LINEAIRE=OPER(nom="THER_LINEAIRE",op=25,sd_prod=evol_ther,reentrant='f',
-            UIinfo={"groupes":("Résolution","Thermique",)},
-                   fr="Résoudre un problème thermique linéaire stationnaire ou transitoire",
+            UIinfo={"groupes":("RÃ©solution","Thermique",)},
+                   fr="RÃ©soudre un problÃ¨me thermique linÃ©aire stationnaire ou transitoire",
          MODELE          =SIMP(statut='o',typ=modele_sdaster),
          CHAM_MATER      =SIMP(statut='o',typ=cham_mater),
          CARA_ELEM       =SIMP(statut='f',typ=cara_elem),

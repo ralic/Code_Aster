@@ -19,7 +19,7 @@
 TEST_TABLE=PROC(nom="TEST_TABLE",op= 177,
                 UIinfo={"groupes":("Tables","Utilitaires",)},
                 fr="Tester une cellule ou une colonne d'une table",
-#  concept table_sdaster à tester
+#  concept table_sdaster Ã  tester
          TABLE           =SIMP(statut='o',typ=table_sdaster),
          FILTRE          =FACT(statut='f',max='**',
            NOM_PARA        =SIMP(statut='o',typ='TXM' ),

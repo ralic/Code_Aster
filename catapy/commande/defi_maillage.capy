@@ -17,7 +17,7 @@
 # ======================================================================
 # person_in_charge: jacques.pellet at edf.fr
 DEFI_MAILLAGE=OPER(nom="DEFI_MAILLAGE",op=  88,sd_prod=maillage_sdaster,
-                   fr="Définition d'un nouveau maillage à partir de macro-éléments",
+                   fr="DÃ©finition d'un nouveau maillage Ã  partir de macro-Ã©lÃ©ments",
                    reentrant='n',
             UIinfo={"groupes":("Maillage",)},
          DEFI_SUPER_MAILLE =FACT(statut='o',max='**',
@@ -66,11 +66,11 @@ DEFI_MAILLAGE=OPER(nom="DEFI_MAILLAGE",op=  88,sd_prod=maillage_sdaster,
                    ENSEMBLE('GROUP_NO_INIT','GROUP_NO_FIN'),),
 #  la regle ancien catalogue AU_MOINS_UN__: ( INDEX , GROUP_NO_FIN ) incoherente avec doc U
            TOUT            =SIMP(statut='f',typ='TXM',into=("OUI",),
-                                 fr="Création de plusieurs groupes de noeuds" ),
+                                 fr="CrÃ©ation de plusieurs groupes de noeuds" ),
            SUPER_MAILLE    =SIMP(statut='f',typ=ma,
-                                 fr="Création de plusieurs groupes de noeuds"),
+                                 fr="CrÃ©ation de plusieurs groupes de noeuds"),
            GROUP_NO_INIT   =SIMP(statut='f',typ=grno,
-                                 fr="Création d un seul groupe de noeuds"),
+                                 fr="CrÃ©ation d un seul groupe de noeuds"),
            PREFIXE         =SIMP(statut='f',typ='TXM' ),
            INDEX           =SIMP(statut='f',typ='I',max='**'),
            GROUP_NO_FIN    =SIMP(statut='f',typ=grno),

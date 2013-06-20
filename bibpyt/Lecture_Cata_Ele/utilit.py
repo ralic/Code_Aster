@@ -147,7 +147,8 @@ class ERREUR:
 
     def veri_long_chaine(self,code,chaine,n):
         if len(chaine) > n :
-            self.mess(code,chaine +'est une chaine de caractères trop longue (>'+str(n)+').')
+            self.mess(code,chaine +' est une chaine de caractères trop longue (>'+str(n)+').\n' 
+                      'Stockés en utf-8, certains caractères accentués peuvent compter double.')
 
     def veri_new_key(self,code,nom,dico):
         if dico.has_key(nom):

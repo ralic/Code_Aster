@@ -20,7 +20,7 @@
 POURSUITE=MACRO(nom="POURSUITE",
                 op=OPS("Cata.ops.build_poursuite"),
                 repetable='n',
-                fr="Poursuite d'une étude à partir de la sauvegarde au format JEVEUX " \
+                fr="Poursuite d'une Ã©tude Ã  partir de la sauvegarde au format JEVEUX " \
                    "ou HDF de sa base globale",
                 sd_prod = ops.POURSUITE,
                 UIinfo={"groupes":("Gestion du travail",)},
@@ -33,14 +33,14 @@ POURSUITE=MACRO(nom="POURSUITE",
          IMPR_MACRO      =SIMP(fr="affichage des sous-commandes produites par les macros dans le fichier mess",
                            statut='f',typ='TXM',into=("OUI","NON"),defaut="NON"),
 
-         BASE            =FACT(fr="définition des paramètres associés aux bases JEVEUX",
+         BASE            =FACT(fr="dÃ©finition des paramÃ¨tres associÃ©s aux bases JEVEUX",
                                statut='f',min=1,max=2,
            FICHIER         =SIMP(fr="nom de la base",statut='o',typ='TXM'),
            TITRE           =SIMP(statut='f',typ='TXM'),
            CAS             =SIMP(statut='f',typ='TXM'),
            NMAX_ENRE       =SIMP(fr="nombre maximum d enregistrements",statut='f',typ='I'),
            LONG_ENRE       =SIMP(fr="longueur des enregistrements",statut='f',typ='I'),
-           LONG_REPE       =SIMP(fr="longueur du répertoire",statut='f',typ='I'),
+           LONG_REPE       =SIMP(fr="longueur du rÃ©pertoire",statut='f',typ='I'),
          ),
 
 # Le mot cle CATALOGUE n'est jamais utilise en POURSUITE mais sa presence est necessaire au bon fonctionnement
@@ -55,33 +55,33 @@ POURSUITE=MACRO(nom="POURSUITE",
            ERREUR_F        =SIMP(statut='f',typ='TXM',into=('ABORT','EXCEPTION'),defaut='ABORT'),
          ),
 
-         DEBUG           =FACT(fr="option de déboggage reservée aux développeurs",
+         DEBUG           =FACT(fr="option de dÃ©boggage reservÃ©e aux dÃ©veloppeurs",
                                statut='f',min=1,max=1,
-           JXVERI          =SIMP(fr="vérifie l intégrité de la segmentation mémoire",
+           JXVERI          =SIMP(fr="vÃ©rifie l intÃ©gritÃ© de la segmentation mÃ©moire",
                                  statut='f',typ='TXM',into=('OUI','NON'),defaut='NON'),
-           SDVERI          =SIMP(fr="vérifie la conformité des SD produites par les commandes",
+           SDVERI          =SIMP(fr="vÃ©rifie la conformitÃ© des SD produites par les commandes",
                                  statut='f',typ='TXM',into=('OUI','NON')),
-           JEVEUX          =SIMP(fr="force les déchargement sur disque",
+           JEVEUX          =SIMP(fr="force les dÃ©chargement sur disque",
                                  statut='f',typ='TXM',into=('OUI','NON'),defaut='NON'),
-           ENVIMA          =SIMP(fr="imprime les valeurs définies dans ENVIMA",
+           ENVIMA          =SIMP(fr="imprime les valeurs dÃ©finies dans ENVIMA",
                                  statut='f',typ='TXM',into=('TEST',)),
-           HIST_ETAPE = SIMP(fr="permet de conserver toutes les étapes du jeu de commandes",
+           HIST_ETAPE = SIMP(fr="permet de conserver toutes les Ã©tapes du jeu de commandes",
                              statut='f', typ='TXM', into=('OUI', 'NON'), defaut='NON'),
          ),
 
-         MESURE_TEMPS     =FACT(fr="Pour choisir les mesures de temps consommé dans les commandes",
+         MESURE_TEMPS     =FACT(fr="Pour choisir les mesures de temps consommÃ© dans les commandes",
                                statut='d',min=1,max=1,
-           NIVE_DETAIL      =SIMP(fr="niveau de détail des impressions",
+           NIVE_DETAIL      =SIMP(fr="niveau de dÃ©tail des impressions",
                                  statut='f',typ='I',into=(0,1,2,3),defaut=1),
                                  # 0 : rien
                                  # 1 : impression en fin de commande des mesures principales
                                  # 2 : impression en fin de commande des mesures principales et secondaires
                                  # 3 : impression des mesures principales et secondaires pour chaque pas de temps
-           MOYENNE     =SIMP(fr="affichage des moyennes et écart-types en parallèle",
+           MOYENNE     =SIMP(fr="affichage des moyennes et Ã©cart-types en parallÃ¨le",
                                   statut='f',typ='TXM',into=('OUI','NON',),defaut='OUI'),
          ),
 
-         MEMOIRE         =FACT(fr="mode de gestion mémoire utilisé",statut='d',min=1,max=1,
+         MEMOIRE         =FACT(fr="mode de gestion mÃ©moire utilisÃ©",statut='d',min=1,max=1,
            TAILLE_BLOC       =SIMP(statut='f',typ='R',defaut=800.),
            TAILLE_GROUP_ELEM =SIMP(statut='f',typ='I',defaut=1000),
          ),
@@ -89,22 +89,22 @@ POURSUITE=MACRO(nom="POURSUITE",
          RESERVE_CPU     =FACT(fr="reserve de temps pour terminer une execution",statut='d',max=1,
            regles=(EXCLUS('VALE','POURCENTAGE'),),
            VALE            =SIMP(statut='f',typ='I',val_min=0),
-#                            valeur par défaut fixée à 10. dans le FORTRAN si CODE présent
+#                            valeur par dÃ©faut fixÃ©e Ã  10. dans le FORTRAN si CODE prÃ©sent
            POURCENTAGE     =SIMP(statut='f',typ='R',val_min=0.,val_max=1.0),
-#                           valeur par défaut fixée à 10% dans le FORTRAN
+#                           valeur par dÃ©faut fixÃ©e Ã  10% dans le FORTRAN
            BORNE           =SIMP(statut='f',typ='I',val_min=0,defaut=900) ),
-#          valeur en pourcentage du temps maximum bornée à 900 secondes
+#          valeur en pourcentage du temps maximum bornÃ©e Ã  900 secondes
 
-         CODE            =FACT("définition d'un nom pour l'ensemble d'une étude",
+         CODE            =FACT("dÃ©finition d'un nom pour l'ensemble d'une Ã©tude",
                                statut='f',min=1,max=1,
            NOM             =SIMP(statut='o',typ='TXM'),
          ),
 
 
-         IGNORE_ALARM = SIMP(statut='f', typ='TXM', max='**', fr="Alarmes que l'utilisateur souhaite délibérément ignorer"),
+         IGNORE_ALARM = SIMP(statut='f', typ='TXM', max='**', fr="Alarmes que l'utilisateur souhaite dÃ©libÃ©rÃ©ment ignorer"),
 
          LANG = SIMP(statut='f', typ='TXM',
-                     fr="Permet de choisir la langue utilisée pour les messages (si disponible)",
+                     fr="Permet de choisir la langue utilisÃ©e pour les messages (si disponible)",
                      ang="Allows to choose the language used for messages (if available)"),
 
          INFO     = SIMP(statut='f', typ='I', defaut=1, into=(1,2),),

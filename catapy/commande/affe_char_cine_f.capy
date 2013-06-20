@@ -22,10 +22,10 @@ def affe_char_cine_f_prod(MECA_IMPO,THER_IMPO,**args):
   raise AsException("type de concept resultat non prevu")
 
 AFFE_CHAR_CINE_F=OPER(nom="AFFE_CHAR_CINE_F",op= 101,sd_prod=affe_char_cine_f_prod,
-                      fr="Affectation de conditions aux limites cinématiques fonction d'un (ou plusieurs) paramètres"
+                      fr="Affectation de conditions aux limites cinÃ©matiques fonction d'un (ou plusieurs) paramÃ¨tres"
                         +" pour un traitement sans dualisation",
                      reentrant='n',
-            UIinfo={"groupes":("Chargements","Mécanique",)},
+            UIinfo={"groupes":("Chargements","MÃ©canique",)},
          regles=(UN_PARMI('MECA_IMPO','THER_IMPO')),
          MODELE          =SIMP(statut='o',typ=modele_sdaster ),
          MECA_IMPO       =FACT(statut='f',max='**',

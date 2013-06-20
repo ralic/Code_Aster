@@ -27,10 +27,10 @@ def dyna_iss_vari_prod(self, FONC_SIGNAL,**args):
 DYNA_ISS_VARI=MACRO(nom="DYNA_ISS_VARI",
                     op=OPS('Macro.dyna_iss_vari_ops.dyna_iss_vari_ops'),
                     sd_prod=dyna_iss_vari_prod,
-                    fr="Calcul du spectre de réponse ou de la reponse temporelle " \
+                    fr="Calcul du spectre de rÃ©ponse ou de la reponse temporelle " \
                        "sismique incoherente par decomposition spectrale",
                     reentrant='n',
-                    UIinfo={"groupes":("Outils métier",)},
+                    UIinfo={"groupes":("Outils mÃ©tier",)},
          regles=(UN_PARMI('FONC_SIGNAL','NB_FREQ'),),
          FONC_SIGNAL     =SIMP(statut='f',typ=(fonction_sdaster) ),
          NB_FREQ       =SIMP(statut='f',typ='I' ),

@@ -18,9 +18,9 @@
 # person_in_charge: josselin.delmas at edf.fr
 
 CALC_CHAM_ELEM=OPER(nom="CALC_CHAM_ELEM",op=38,sd_prod=cham_elem,
-                    fr="Calculer un champ ÈlÈmentaire en thermique et en accoustique ‡ partir de champs dÈj‡ calculÈs",
+                    fr="Calculer un champ √©l√©mentaire en thermique et en accoustique √† partir de champs d√©j√† calcul√©s",
                     reentrant='n',
-            UIinfo={"groupes":("RÈsultats et champs","Post-traitements",)},
+            UIinfo={"groupes":("R√©sultats et champs","Post-traitements",)},
          MODELE          =SIMP(statut='o',typ=modele_sdaster),
          CARA_ELEM       =SIMP(statut='f',typ=cara_elem),
 

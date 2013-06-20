@@ -18,9 +18,9 @@
 # person_in_charge: serguei.potapov at edf.fr
 
 LIRE_PLEXUS=OPER(nom="LIRE_PLEXUS",op= 184,sd_prod=evol_char,
-                 fr="Lire le fichier de résultats au format IDEAS produit par le logiciel EUROPLEXUS",
+                 fr="Lire le fichier de rÃ©sultats au format IDEAS produit par le logiciel EUROPLEXUS",
                  reentrant='n',
-            UIinfo={"groupes":("Lecture","Outils-métier",)},
+            UIinfo={"groupes":("Lecture","Outils-mÃ©tier",)},
          regles=(UN_PARMI('TOUT_ORDRE','NUME_ORDRE','INST','LIST_INST','LIST_ORDRE'),),
          UNITE           =SIMP(statut='f',typ='I',defaut= 19 ),
          FORMAT          =SIMP(statut='f',typ='TXM',defaut="IDEAS",into=("IDEAS",)),

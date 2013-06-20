@@ -18,8 +18,8 @@
 # person_in_charge: jacques.pellet at edf.fr
 
 APPL_CINE_SCMB=OPER(nom="APPL_CINE_SCMB",op=159,sd_prod=cham_no_sdaster,reentrant='f',
-               fr="Application des C.L. cinématiques au second membre",
-               UIinfo={"groupes":("Résolution",)},
+               fr="Application des C.L. cinÃ©matiques au second membre",
+               UIinfo={"groupes":("RÃ©solution",)},
          CHAM_NO        =SIMP(statut='o',typ=cham_no_sdaster),
          MATR           =SIMP(statut='o',typ=(matr_asse_depl_r,matr_asse_depl_c,matr_asse_temp_r,
                                                matr_asse_temp_c,matr_asse_pres_r,matr_asse_pres_c) ),

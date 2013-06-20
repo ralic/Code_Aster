@@ -39,7 +39,7 @@ POST_MAC3COEUR = MACRO(nom="POST_MAC3COEUR",
                  UNITE        = SIMP(statut='o',typ='I', max=1),   
                  FORMAT       = SIMP(statut='o',typ='TXM',into=("GRACE","TABLE")),
                  
-                 b_def_grace  = BLOC(condition = "FORMAT == 'GRACE' ",fr="Paramètres pour le format GRACE",
+                 b_def_grace  = BLOC(condition = "FORMAT == 'GRACE' ",fr="ParamÃ¨tres pour le format GRACE",
                        regles=UN_PARMI('NUME_GRILLE','TYPE_RESU','POSITION'),
                        TYPE_VISU    = SIMP(statut='o',typ='TXM',into=("AMPLITUDE","MODULE","VECTEUR","DEFORME")),
                        TYPE_RESU    = SIMP(statut='f',typ='TXM',into=("MINI","MAXI")),
@@ -48,7 +48,7 @@ POST_MAC3COEUR = MACRO(nom="POST_MAC3COEUR",
                        CONCEPTION   = SIMP(statut='f',typ='TXM', max=1),
                                    ),
                  
-                 b_def_table  = BLOC(condition = "FORMAT == 'TABLE' ",fr="Paramètres pour le format TABLE",
+                 b_def_table  = BLOC(condition = "FORMAT == 'TABLE' ",fr="ParamÃ¨tres pour le format TABLE",
                        NOM_CMP      = SIMP(statut='o',typ='TXM',into=("DY","DZ","NORME")),
                                    ),
                  

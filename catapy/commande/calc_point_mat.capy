@@ -17,8 +17,8 @@
 # ======================================================================
 # person_in_charge: jean-michel.proix at edf.fr
 CALC_POINT_MAT=OPER(nom="CALC_POINT_MAT",op=33,sd_prod=table_sdaster,reentrant='f',
-            UIinfo={"groupes":("Résolution",)},
-            fr="Intégrer une loi de comportement",
+            UIinfo={"groupes":("RÃ©solution",)},
+            fr="IntÃ©grer une loi de comportement",
      MATER           =SIMP(statut='o',typ=mater_sdaster,max=1),
      COMP_INCR       =C_COMP_INCR(),
      COMP_ELAS       =C_COMP_ELAS('CALC_POINT_MAT'),
@@ -32,7 +32,7 @@ CALC_POINT_MAT=OPER(nom="CALC_POINT_MAT",op=33,sd_prod=table_sdaster,reentrant='
          ANGL_REP        =SIMP(statut='f',typ='R',min=1,max=3),
          ANGL_EULER      =SIMP(statut='f',typ='R',min=1,max=3),
       ),
-    ## ANGLE : rotation de ANGLE autour de Z uniquement, et seulement pour les déformations imposées.
+    ## ANGLE : rotation de ANGLE autour de Z uniquement, et seulement pour les dÃ©formations imposÃ©es.
      ANGLE      =SIMP(statut='f',typ='R',max=1, defaut=0.),
      INFO            =SIMP(statut='f',typ='I',defaut= 1,into=( 1 , 2)),
 
@@ -117,8 +117,8 @@ CALC_POINT_MAT=OPER(nom="CALC_POINT_MAT",op=33,sd_prod=table_sdaster,reentrant='
                            ),
 
 
-     # on permet certaines variables de commandes scalaires, définies par une fonction du temps
-     # un mot clé caché qui ne sert qu'à boucler sur les VARC possibles :
+     # on permet certaines variables de commandes scalaires, dÃ©finies par une fonction du temps
+     # un mot clÃ© cachÃ© qui ne sert qu'Ã  boucler sur les VARC possibles :
      LIST_NOM_VARC =SIMP(statut='c',typ='TXM', defaut=("TEMP","CORR","IRRA","HYDR","SECH","EPSA",
                                                            "M_ACIER","M_ZIRC","NEUT1","NEUT2")),
 
@@ -127,7 +127,7 @@ CALC_POINT_MAT=OPER(nom="CALC_POINT_MAT",op=33,sd_prod=table_sdaster,reentrant='
                                                         "EPSA","NEUT1","NEUT2")),
       VALE_FONC   = SIMP(statut='o',typ=(fonction_sdaster,formule) ),
 
-      # VALE_REF est nécessaire pour certaines VARC :
+      # VALE_REF est nÃ©cessaire pour certaines VARC :
       B_VALE_REF          =BLOC(condition="NOM_VARC in ('TEMP', 'SECH')",
            VALE_REF          =SIMP(statut='o',typ='R'),
       ),

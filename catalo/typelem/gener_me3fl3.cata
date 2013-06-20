@@ -20,7 +20,7 @@ GENER_ME3FL3
 
 % Ce catalogue correspondant aux elements fluides lineaires massifs 3D
 % pour le couplage fluide-structure n'ont que des DDL de :
-%  pression PRES et potentiel de déplacement PHI.
+%  pression PRES et potentiel de deplacement PHI.
 %
 % La contrainte n'existe pas, ni la deformation.
 % Les options FULL_MECA et RAPH_MECA sont disponibles mais correspondent
