@@ -339,22 +339,26 @@ TEST_RESU(RESU=_F(NUME_ORDRE=50,
 # TEST FH11X NS2117 A 7,5 ANS ET 20 ANS
 
 TEST_RESU(RESU=_F(NUME_ORDRE=25,
+                  REFERENCE='SOURCE_EXTERNE',
                   RESULTAT=U_1,
                   NOM_CHAM='SIEF_ELNO',
                   NOEUD='NS2273',
                   NOM_CMP='FH11X',
+                  VALE_REFE=-7.0189E-3,
                   VALE_CALC=-7.0189349999999996E-3,
-                  TOLE_MACHINE=1.E-3,
+                  PRECISION=1.E-2,
                   MAILLE='M1211',),
           )
 
 TEST_RESU(RESU=_F(NUME_ORDRE=50,
+                  REFERENCE='SOURCE_EXTERNE',
                   RESULTAT=U_1,
                   NOM_CHAM='SIEF_ELNO',
                   NOEUD='NS2273',
                   NOM_CMP='FH11X',
+                  VALE_REFE=-5.3847E-3,
                   VALE_CALC=-5.3847130000000002E-3,
-                  TOLE_MACHINE=1.E-3,
+                  PRECISION=1.E-2,
                   MAILLE='M1211',),
           )
 

@@ -291,7 +291,7 @@ TEST_RESU(RESU=_F(NUME_ORDRE=100,
                 NOEUD='N103',
                 NOM_CMP='PRE1',
                 VALE_CALC=-893.106954993,
-                VALE_REFE=-889.32000000000005,
+                VALE_REFE=-889.32,
                 CRITERE='RELATIF',
                 PRECISION=1.E-2,),
         )
@@ -310,16 +310,5 @@ TEST_RESU(RESU=_F(NUME_ORDRE=100,
                 ),
         )
 
-#NOEUD DU HAUT
-TEST_RESU(RESU=_F(NUME_ORDRE=100,
-                RESULTAT=cal1,
-                NOM_CHAM='DEPL',
-                NOEUD='N103',
-                NOM_CMP='PRE1',
-                VALE_CALC=-893.10699999999997,
-                TOLE_MACHINE=1.E-4,
-                CRITERE='RELATIF',
-                ),
-        )
 
 FIN();

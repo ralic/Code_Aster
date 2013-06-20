@@ -268,7 +268,7 @@ TEST_RESU(RESU=_F(NUME_ORDRE=1,
                   NOM_CMP='DX',
                   VALE_CALC= 6.73946923E-06,
                   VALE_REFE=6.7394999999999996E-06,
-                  PRECISION=5.0000000000000001E-3,),
+                  PRECISION=5.E-3,),
           )
 
 TEST_RESU(RESU=_F(NUME_ORDRE=2,
@@ -279,7 +279,7 @@ TEST_RESU(RESU=_F(NUME_ORDRE=2,
                   NOM_CMP='DX',
                   VALE_CALC= 1.10189975E-05,
                   VALE_REFE=1.1019000000000001E-05,
-                  PRECISION=7.0000000000000001E-3,),
+                  PRECISION=7.E-3,),
           )
 
 TEST_RESU(RESU=_F(NUME_ORDRE=3,
@@ -290,7 +290,7 @@ TEST_RESU(RESU=_F(NUME_ORDRE=3,
                   NOM_CMP='DX',
                   VALE_CALC= 3.66818757E-05,
                   VALE_REFE=3.6683000000000001E-05,
-                  PRECISION=8.0000000000000002E-3,),
+                  PRECISION=8.E-3,),
           )
 
 TEST_RESU(RESU=_F(NUME_ORDRE=4,
@@ -301,7 +301,7 @@ TEST_RESU(RESU=_F(NUME_ORDRE=4,
                   NOM_CMP='DX',
                   VALE_CALC= 1.66144642E-04,
                   VALE_REFE=1.6615E-4,
-                  PRECISION=7.0000000000000001E-3,),
+                  PRECISION=7.E-3,),
           )
 
 TEST_RESU(RESU=_F(NUME_ORDRE=1,
@@ -312,7 +312,7 @@ TEST_RESU(RESU=_F(NUME_ORDRE=1,
                   NOM_CMP='DX',
                   VALE_CALC= 1.34249766E-04,
                   VALE_REFE=1.3425000000000001E-4,
-                  PRECISION=5.0000000000000001E-3,),
+                  PRECISION=5.E-3,),
           )
 
 TEST_RESU(RESU=_F(NUME_ORDRE=2,
@@ -323,7 +323,7 @@ TEST_RESU(RESU=_F(NUME_ORDRE=2,
                   NOM_CMP='DX',
                   VALE_CALC=-6.41076850E-05,
                   VALE_REFE=-6.4110999999999997E-05,
-                  PRECISION=5.0000000000000001E-3,),
+                  PRECISION=5.E-3,),
           )
 
 TEST_RESU(RESU=_F(NUME_ORDRE=3,
@@ -345,7 +345,7 @@ TEST_RESU(RESU=_F(NUME_ORDRE=4,
                   NOM_CMP='DX',
                   VALE_CALC= 4.42397083E-05,
                   VALE_REFE=4.4261999999999997E-05,
-                  PRECISION=7.0000000000000001E-3,),
+                  PRECISION=7.E-3,),
           )
 
 TEST_RESU(RESU=_F(NUME_ORDRE=1,
@@ -356,7 +356,7 @@ TEST_RESU(RESU=_F(NUME_ORDRE=1,
                   NOM_CMP='DX',
                   VALE_CALC=-3.56915374E-03,
                   VALE_REFE=-3.5693999999999999E-3,
-                  PRECISION=5.0000000000000001E-3,),
+                  PRECISION=5.E-3,),
           )
 
 TEST_RESU(RESU=_F(NUME_ORDRE=2,
@@ -367,7 +367,7 @@ TEST_RESU(RESU=_F(NUME_ORDRE=2,
                   NOM_CMP='DX',
                   VALE_CALC=-4.39249770E-03,
                   VALE_REFE=-4.3924000000000003E-3,
-                  PRECISION=5.0000000000000001E-3,),
+                  PRECISION=5.E-3,),
           )
 
 TEST_RESU(RESU=_F(NUME_ORDRE=3,
@@ -412,7 +412,7 @@ TEST_RESU(RESU=_F(INST=0.089999999999999997,
                   VALE_CALC= 6.73946923E-06,
                   VALE_REFE=6.7394999999999996E-06,
                   CRITERE=('RELATIF', 'ABSOLU'),
-                  PRECISION=1.E-4, TOLE_MACHINE=(1.E-4, 1.E-4),),
+                  PRECISION=1.E-4,),
           )
 
 TEST_RESU(RESU=_F(INST=0.32000000000000001,
@@ -424,7 +424,7 @@ TEST_RESU(RESU=_F(INST=0.32000000000000001,
                   VALE_CALC= 1.10189975E-05,
                   VALE_REFE=1.1019000000000001E-05,
                   CRITERE=('RELATIF', 'ABSOLU'),
-                  PRECISION=1.E-4, TOLE_MACHINE=(1.E-4, 1.E-4),),
+                  PRECISION=1.E-4, ),
           )
 
 TEST_RESU(RESU=_F(INST=1.1799999999999999,
@@ -436,7 +436,7 @@ TEST_RESU(RESU=_F(INST=1.1799999999999999,
                   VALE_CALC= 3.66818757E-05,
                   VALE_REFE=3.6683000000000001E-05,
                   CRITERE=('RELATIF', 'ABSOLU'),
-                  PRECISION=1.E-4, TOLE_MACHINE=(1.E-4, 1.E-4),),
+                  PRECISION=1.E-4, ),
           )
 
 TEST_RESU(RESU=_F(INST=4.9199999999999999,
@@ -448,7 +448,7 @@ TEST_RESU(RESU=_F(INST=4.9199999999999999,
                   VALE_CALC= 1.66144642E-04,
                   VALE_REFE=1.6615E-4,
                   CRITERE=('RELATIF', 'ABSOLU'),
-                  PRECISION=1.E-4, TOLE_MACHINE=(1.E-4, 1.E-4),),
+                  PRECISION=1.E-4, ),
           )
 
 TEST_FONCTION(VALEUR=(_F(VALE_CALC=8.09845694437e-06,
@@ -460,7 +460,7 @@ TEST_FONCTION(VALEUR=(_F(VALE_CALC=8.09845694437e-06,
                       _F(VALE_CALC=-6.22442451734e-06,
                          VALE_REFE=-6.2245999999999997E-06,
                          REFERENCE='NON_DEFINI',
-                         VALE_PARA=0.55000000000000004,
+                         VALE_PARA=0.55,
                          PRECISION=1.E-2,
                          FONCTION=P3MP1,),
                       _F(VALE_CALC=5.30625353981e-06,

@@ -328,8 +328,7 @@ TEST_RESU(RESU=_F(NUME_ORDRE=9,
                   NOM_CHAM='DEPL',
                   NOEUD='N1037',
                   NOM_CMP='PRE1',
-                  VALE_CALC=1.11590E5,
-                  TOLE_MACHINE=1.E-3,),
+                  VALE_CALC=1.11592575013E5,),
           )
 
 TEST_RESU(RESU=_F(NUME_ORDRE=9,
@@ -337,8 +336,7 @@ TEST_RESU(RESU=_F(NUME_ORDRE=9,
                   NOM_CHAM='DEPL',
                   NOEUD='N1331',
                   NOM_CMP='PRE1',
-                  VALE_CALC=1.01350E5,
-                  TOLE_MACHINE=1.E-3,),
+                  VALE_CALC=1.0135298027519E5,),
           )
 
 TEST_RESU(RESU=_F(NUME_ORDRE=9,
@@ -346,8 +344,7 @@ TEST_RESU(RESU=_F(NUME_ORDRE=9,
                   NOM_CHAM='DEPL',
                   NOEUD='NS5193',
                   NOM_CMP='PRE1',
-                  VALE_CALC=1.14700E5,
-                  TOLE_MACHINE=1.E-3,),
+                  VALE_CALC=1.1470024703009E5,),
           )
 
 TEST_RESU(RESU=_F(NUME_ORDRE=24,
@@ -355,8 +352,7 @@ TEST_RESU(RESU=_F(NUME_ORDRE=24,
                   NOM_CHAM='DEPL',
                   NOEUD='N1037',
                   NOM_CMP='PRE1',
-                  VALE_CALC=1.14470E5,
-                  TOLE_MACHINE=1.E-3,),
+                  VALE_CALC=1.1446702187244E5,),
           )
 
 TEST_RESU(RESU=_F(NUME_ORDRE=24,
@@ -364,8 +360,7 @@ TEST_RESU(RESU=_F(NUME_ORDRE=24,
                   NOM_CHAM='DEPL',
                   NOEUD='N1331',
                   NOM_CMP='PRE1',
-                  VALE_CALC=1.09290E5,
-                  TOLE_MACHINE=1.E-3,),
+                  VALE_CALC=1.092939323934E5,),
           )
 
 TEST_RESU(RESU=_F(NUME_ORDRE=24,
@@ -373,8 +368,7 @@ TEST_RESU(RESU=_F(NUME_ORDRE=24,
                   NOM_CHAM='DEPL',
                   NOEUD='NS5193',
                   NOM_CMP='PRE1',
-                  VALE_CALC=1.14780E5,
-                  TOLE_MACHINE=1.E-3,),
+                  VALE_CALC=1.1477524698866E5,),
           )
 
 ####################################

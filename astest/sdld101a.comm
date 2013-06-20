@@ -223,94 +223,124 @@ REP3=RECU_FONCTION(    INTE_SPEC=INTER3,
                             NOM_CMP_I = 'DX',
                       )
 
-TEST_FONCTION(VALEUR=_F(VALE_CALC=1.2306999999999999,
-                        TOLE_MACHINE=1.E-3,
+TEST_FONCTION(VALEUR=_F(VALE_CALC=1.230718,
+                        VALE_REFE=1.2306999999999999,
+                        REFERENCE = 'ANALYTIQUE',
+                        PRECISION=1.E-3,
                         VALE_PARA=5.0,
                         FONCTION=REP1,),
               )
 
-TEST_FONCTION(VALEUR=_F(VALE_CALC=2.7115999999999998,
-                        TOLE_MACHINE=1.E-3,
+TEST_FONCTION(VALEUR=_F(VALE_CALC=2.711657,
+                        VALE_REFE=2.7115999999999998,
+                        REFERENCE = 'ANALYTIQUE',
+                        PRECISION=1.E-3,
                         VALE_PARA=10.0,
                         FONCTION=REP1,),
               )
 
-TEST_FONCTION(VALEUR=_F(VALE_CALC=47.215400000000002,
-                        TOLE_MACHINE=1.E-3,
+TEST_FONCTION(VALEUR=_F(VALE_CALC=47.21578,
+                        VALE_REFE=47.215400000000002,
+                        REFERENCE = 'ANALYTIQUE',
+                        PRECISION=1.E-3,
                         VALE_PARA=15.0,
                         FONCTION=REP1,),
               )
 
-TEST_FONCTION(VALEUR=_F(VALE_CALC=2.8923999999999999,
-                        TOLE_MACHINE=1.E-3,
+TEST_FONCTION(VALEUR=_F(VALE_CALC=2.892421,
+                        VALE_REFE=2.8923999999999999,
+                        REFERENCE = 'ANALYTIQUE',
+                        PRECISION=1.E-3,
                         VALE_PARA=20.0,
                         FONCTION=REP1,),
               )
 
-TEST_FONCTION(VALEUR=_F(VALE_CALC=0.47047,
-                        TOLE_MACHINE=1.E-3,
+TEST_FONCTION(VALEUR=_F(VALE_CALC=0.47047853,
+                        VALE_REFE=0.47047,
+                        REFERENCE = 'ANALYTIQUE',
+                        PRECISION=1.E-3,
                         VALE_PARA=25.0,
                         FONCTION=REP1,),
               )
 
 #*********************************************************************#
-TEST_FONCTION(VALEUR=_F(VALE_CALC=0.011976000000000001,
-                        TOLE_MACHINE=1.E-3,
+TEST_FONCTION(VALEUR=_F(VALE_CALC=0.01197649,
+                        VALE_REFE=0.011976000000000001,
+                        REFERENCE = 'ANALYTIQUE',
+                        PRECISION=1.E-3,
                         VALE_PARA=5.0,
                         FONCTION=REP2,),
               )
 
-TEST_FONCTION(VALEUR=_F(VALE_CALC=0.42096,
-                        TOLE_MACHINE=1.E-3,
+TEST_FONCTION(VALEUR=_F(VALE_CALC=0.42096223,
+                        VALE_REFE=0.42096,
+                        REFERENCE = 'ANALYTIQUE',
+                        PRECISION=1.E-3,
                         VALE_PARA=10.0,
                         FONCTION=REP2,),
               )
 
-TEST_FONCTION(VALEUR=_F(VALE_CALC=36.922499999999999,
-                        TOLE_MACHINE=1.E-3,
+TEST_FONCTION(VALEUR=_F(VALE_CALC=36.92589,
+                        VALE_REFE=36.922499999999999,
+                        REFERENCE = 'ANALYTIQUE',
+                        PRECISION=1.E-3,
                         VALE_PARA=15.0,
                         FONCTION=REP2,),
               )
 
-TEST_FONCTION(VALEUR=_F(VALE_CALC=7.1006,
-                        TOLE_MACHINE=1.E-3,
+TEST_FONCTION(VALEUR=_F(VALE_CALC=7.100623,
+                        VALE_REFE=7.1006,
+                        REFERENCE = 'ANALYTIQUE',
+                        PRECISION=1.E-3,
                         VALE_PARA=20.0,
                         FONCTION=REP2,),
               )
 
-TEST_FONCTION(VALEUR=_F(VALE_CALC=2.7953000000000001,
-                        TOLE_MACHINE=1.E-3,
+TEST_FONCTION(VALEUR=_F(VALE_CALC=2.795333,
+                        VALE_REFE=2.7953000000000001,
+                        REFERENCE = 'ANALYTIQUE',
+                        PRECISION=1.E-3,
                         VALE_PARA=25.0,
                         FONCTION=REP2,),
               )
 
 #*********************************************************************#
-TEST_FONCTION(VALEUR=_F(VALE_CALC=1.0,
-                        TOLE_MACHINE=1.E-3,
+TEST_FONCTION(VALEUR=_F(VALE_CALC=1.000,
+                        VALE_REFE=1.0,
+                        REFERENCE = 'ANALYTIQUE',
+                        PRECISION=1.E-3,
                         VALE_PARA=5.0,
                         FONCTION=REP3,),
               )
 
-TEST_FONCTION(VALEUR=_F(VALE_CALC=1.0,
-                        TOLE_MACHINE=1.E-3,
+TEST_FONCTION(VALEUR=_F(VALE_CALC=1.000,
+                        VALE_REFE=1.0,
+                        REFERENCE = 'ANALYTIQUE',
+                        PRECISION=1.E-3,
                         VALE_PARA=10.0,
                         FONCTION=REP3,),
               )
 
-TEST_FONCTION(VALEUR=_F(VALE_CALC=1.0,
-                        TOLE_MACHINE=1.E-3,
+TEST_FONCTION(VALEUR=_F(VALE_CALC=1.000,
+                        VALE_REFE=1.0,
+                        REFERENCE = 'ANALYTIQUE',
+                        PRECISION=1.E-3,
                         VALE_PARA=15.0,
                         FONCTION=REP3,),
               )
 
-TEST_FONCTION(VALEUR=_F(VALE_CALC=1.0,
-                        TOLE_MACHINE=1.E-3,
+TEST_FONCTION(VALEUR=_F(VALE_CALC=1.000,
+                        VALE_REFE=1.0,
+                        REFERENCE = 'ANALYTIQUE',
+                        PRECISION=1.E-3,
                         VALE_PARA=20.0,
                         FONCTION=REP3,),
               )
 
-TEST_FONCTION(VALEUR=_F(VALE_CALC=1.0,
-                        TOLE_MACHINE=1.E-3,
+TEST_FONCTION(VALEUR=_F(VALE_CALC=1.000,
+                        VALE_REFE=1.0,
+                        REFERENCE = 'ANALYTIQUE',
+                        PRECISION=1.E-3,
                         VALE_PARA=25.0,
                         FONCTION=REP3,),
               )
@@ -336,8 +366,10 @@ STADEF=POST_DYNA_ALEA(  INTE_SPEC=INTERRE1,
                       )
 
 TEST_TABLE(
-           VALE_CALC=505.70832000000001,
-           TOLE_MACHINE=1.E-3,
+           VALE_CALC=505.87578073776,
+           VALE_REFE=505.70832000000001,
+           REFERENCE = 'ANALYTIQUE',
+           PRECISION=1.E-3,
            NOM_PARA='LAMBDA_00',
            TABLE=STADEF,
            FILTRE=(_F(NOM_PARA='NOEUD_I',
@@ -348,8 +380,10 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=4.9047800000000003E4,
-           TOLE_MACHINE=1.E-3,
+           VALE_CALC=49053.607563044,
+           VALE_REFE=4.9047800000000003E4,
+           REFERENCE = 'ANALYTIQUE',
+           PRECISION=1.E-3,
            NOM_PARA='LAMBDA_01',
            TABLE=STADEF,
            FILTRE=(_F(NOM_PARA='NOEUD_I',
@@ -360,8 +394,10 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=5.025066E6,
-           TOLE_MACHINE=1.E-3,
+           VALE_CALC=5.0245598913453E+06,
+           VALE_REFE=5.025066E6,
+           REFERENCE = 'ANALYTIQUE',
+           PRECISION=1.E-3,
            NOM_PARA='LAMBDA_02',
            TABLE=STADEF,
            FILTRE=(_F(NOM_PARA='NOEUD_I',
@@ -372,8 +408,10 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=5.52943000E8,
-           TOLE_MACHINE=1.E-3,
+           VALE_CALC=5.5278352232258E+08,
+           VALE_REFE=5.52943000E8,
+           REFERENCE = 'ANALYTIQUE',
+           PRECISION=1.E-3,
            NOM_PARA='LAMBDA_03',
            TABLE=STADEF,
            FILTRE=(_F(NOM_PARA='NOEUD_I',
@@ -384,8 +422,10 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=7.2046000000E10,
-           TOLE_MACHINE=1.E-3,
+           VALE_CALC=7.203315273698E+10,
+           VALE_REFE=7.2046000000E10,
+           REFERENCE = 'ANALYTIQUE',
+           PRECISION=1.E-3,
            NOM_PARA='LAMBDA_04',
            TABLE=STADEF,
            FILTRE=(_F(NOM_PARA='NOEUD_I',
@@ -396,8 +436,10 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=22.487959499999999,
-           TOLE_MACHINE=1.E-3,
+           VALE_CALC=22.491682479036,
+           VALE_REFE=22.487959499999999,
+           REFERENCE = 'ANALYTIQUE',
+           PRECISION=1.E-3,
            NOM_PARA='ECART',
            TABLE=STADEF,
            FILTRE=(_F(NOM_PARA='NOEUD_I',
@@ -408,8 +450,10 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=38.117660000000001,
-           TOLE_MACHINE=1.E-3,
+           VALE_CALC=38.112490168437,
+           VALE_REFE=38.117660000000001,
+           REFERENCE = 'ANALYTIQUE',
+           PRECISION=1.E-3,
            NOM_PARA='NB_EXTREMA_P_S',
            TABLE=STADEF,
            FILTRE=(_F(NOM_PARA='NOEUD_I',
@@ -420,8 +464,10 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=31.730060000000002,
-           TOLE_MACHINE=1.E-3,
+           VALE_CALC=31.723215183086,
+           VALE_REFE=31.730060000000002,
+           REFERENCE = 'ANALYTIQUE',
+           PRECISION=1.E-3,
            NOM_PARA='NB_PASS_ZERO_P_S',
            TABLE=STADEF,
            FILTRE=(_F(NOM_PARA='NOEUD_I',
@@ -432,8 +478,10 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=15.865031,
-           TOLE_MACHINE=1.E-3,
+           VALE_CALC=15.861607591543,
+           VALE_REFE=15.865031,
+           REFERENCE = 'ANALYTIQUE',
+           PRECISION=1.E-3,
            NOM_PARA='FREQ_APPAR',
            TABLE=STADEF,
            FILTRE=(_F(NOM_PARA='NOEUD_I',
@@ -444,8 +492,10 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=0.83242413999999998,
-           TOLE_MACHINE=1.E-3,
+           VALE_CALC=0.83235745139943,
+           VALE_REFE=0.83242413999999998,
+           REFERENCE = 'ANALYTIQUE',
+           PRECISION=1.E-3,
            NOM_PARA='FACT_IRRE',
            TABLE=STADEF,
            FILTRE=(_F(NOM_PARA='NOEUD_I',
@@ -456,8 +506,10 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=4.186992000000000E15,
-           TOLE_MACHINE=1.E-3,
+           VALE_CALC=4.1865119983101E+15,
+           VALE_REFE=4.186992000000000E15,
+           REFERENCE = 'ANALYTIQUE',
+           PRECISION=1.E-3,
            NOM_PARA='LAMBDA_06',
            TABLE=STADEF,
            FILTRE=(_F(NOM_PARA='NOEUD_I',
@@ -468,8 +520,10 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=1.7826555E+18,
-           TOLE_MACHINE=1.E-3,
+           VALE_CALC=1.7825975757353E+18,
+           VALE_REFE=1.7826555E+18,
+           REFERENCE = 'ANALYTIQUE',
+           PRECISION=1.E-3,
            NOM_PARA='LAMBDA_07',
            TABLE=STADEF,
            FILTRE=(_F(NOM_PARA='NOEUD_I',
@@ -480,8 +534,10 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=2.4687339999999999E+26,
-           TOLE_MACHINE=1.E-3,
+           VALE_CALC=2.4687334061992E+26,
+           VALE_REFE=2.4687339999999999E+26,
+           REFERENCE = 'ANALYTIQUE',
+           PRECISION=1.E-3,
            NOM_PARA='LAMBDA_10',
            TABLE=STADEF,
            FILTRE=(_F(NOM_PARA='NOEUD_I',

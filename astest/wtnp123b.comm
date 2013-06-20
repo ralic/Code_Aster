@@ -550,7 +550,6 @@ TEST_RESU(RESU=_F(INST=2.628000E6,
                 VALE_CALC= 1.633E-13,
                 VALE_REFE= 0.,
                 CRITERE='ABSOLU',
-                TOLE_MACHINE=1.E-3,
                 PRECISION=1.E-2,),
         )
 
@@ -564,7 +563,6 @@ TEST_RESU(RESU=_F(INST=2.628000E6,
                 VALE_CALC= 3.64E-15,
                 VALE_REFE= 0.,
                 CRITERE='ABSOLU',
-                TOLE_MACHINE=1.E-3,
                 PRECISION=1.E-2,
                 ),
         )

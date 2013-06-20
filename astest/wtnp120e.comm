@@ -491,7 +491,6 @@ TEST_RESU(RESU=_F(INST=3.1536000E7,
                VALE_CALC= 4.95840169E-11,
                VALE_REFE=4.9584E-11,
                CRITERE='RELATIF',
-               TOLE_MACHINE=1.E-3,
                PRECISION=1.E-2,
                ),
        )

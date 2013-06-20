@@ -331,8 +331,7 @@ TEST_RESU(RESU=_F(NUME_ORDRE=9,
                   NOM_CHAM='DEPL',
                   NOEUD='N1037',
                   NOM_CMP='PRE1',
-                  VALE_CALC=1.07300E5,
-                  TOLE_MACHINE=1.E-3,),
+                  VALE_CALC=1.0732786086128E5,),
           )
 
 TEST_RESU(RESU=_F(NUME_ORDRE=9,
@@ -340,8 +339,7 @@ TEST_RESU(RESU=_F(NUME_ORDRE=9,
                   NOM_CHAM='DEPL',
                   NOEUD='N1331',
                   NOM_CMP='PRE1',
-                  VALE_CALC=1.00410E5,
-                  TOLE_MACHINE=1.E-3,),
+                  VALE_CALC=1.0041123470217E5,),
           )
 
 TEST_RESU(RESU=_F(NUME_ORDRE=9,
@@ -349,8 +347,7 @@ TEST_RESU(RESU=_F(NUME_ORDRE=9,
                   NOM_CHAM='DEPL',
                   NOEUD='NS5193',
                   NOM_CMP='PRE1',
-                  VALE_CALC=1.14730E5,
-                  TOLE_MACHINE=1.E-3,),
+                  VALE_CALC=1.1472755118204E5,),
           )
 
 TEST_RESU(RESU=_F(NUME_ORDRE=24,
@@ -358,8 +355,7 @@ TEST_RESU(RESU=_F(NUME_ORDRE=24,
                   NOM_CHAM='DEPL',
                   NOEUD='N1037',
                   NOM_CMP='PRE1',
-                  VALE_CALC=1.13000E5,
-                  TOLE_MACHINE=1.E-3,),
+                  VALE_CALC=1.1300264629287E5,),
           )
 
 TEST_RESU(RESU=_F(NUME_ORDRE=24,
@@ -367,8 +363,7 @@ TEST_RESU(RESU=_F(NUME_ORDRE=24,
                   NOM_CHAM='DEPL',
                   NOEUD='N1331',
                   NOM_CMP='PRE1',
-                  VALE_CALC=1.05390E5,
-                  TOLE_MACHINE=1.E-3,),
+                  VALE_CALC=1.0539466087396E5,),
           )
 
 TEST_RESU(RESU=_F(NUME_ORDRE=24,
@@ -376,8 +371,7 @@ TEST_RESU(RESU=_F(NUME_ORDRE=24,
                   NOM_CHAM='DEPL',
                   NOEUD='NS5193',
                   NOM_CMP='PRE1',
-                  VALE_CALC=1.14770E5,
-                  TOLE_MACHINE=1.E-3,),
+                  VALE_CALC=1.1477179518102E5,),
           )
 
 #-----------------------------------------------------------------------------------

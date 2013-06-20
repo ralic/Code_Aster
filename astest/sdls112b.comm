@@ -295,13 +295,11 @@ MAC_RDEX=MAC_MODES(BASE_1=RED_MODE,
 # et modes experimentaux doit valoir 1. La resultat est ici normalement
 # aussi bon que dans la modelisation a.
 for ind in range(1,22):
-    TEST_TABLE(CRITERE='ABSOLU',
-               REFERENCE='ANALYTIQUE',
-               TOLE_MACHINE=1.E-3,
-               PRECISION=1.E-2,
-               VALE_CALC=1.000000000,
+    TEST_TABLE(REFERENCE='ANALYTIQUE',
+               VALE_CALC=1.0,
                VALE_REFE=1.0,
                NOM_PARA='MAC',
+               TOLE_MACHINE=1.E-3,
                TABLE=MAC_RDEX,
                FILTRE=(_F(NOM_PARA='NUME_MODE_1',
                           VALE_I=ind,),

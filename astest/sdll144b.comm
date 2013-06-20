@@ -308,8 +308,7 @@ TEST_FONCTION(VALEUR=_F(VALE_CALC=2.02638987341e-09,
                         FONCTION=MOD_GED2,),
               )
 
-TEST_FONCTION(VALEUR=_F(VALE_CALC=2.0264E-09,
-                        TOLE_MACHINE=1.0000000000000001E-05,
+TEST_FONCTION(VALEUR=_F(VALE_CALC=2.026390E-09,
                         VALE_PARA=3.1967500000000002,
                         FONCTION=MOD_GED2,
                         ),

@@ -273,7 +273,6 @@ TEST_FONCTION(VALEUR=_F(VALE_CALC=5.10425856186,
 #
 
 TEST_FONCTION(VALEUR=_F(VALE_CALC=4.8417309519999998,
-                        TOLE_MACHINE=9.9999999999999995E-08,
                         VALE_PARA=4.0,
                         FONCTION=FREQ_1,
                         ),
@@ -299,7 +298,6 @@ TEST_FONCTION(VALEUR=_F(VALE_CALC=0.21937147763,
 #
 
 TEST_FONCTION(VALEUR=_F(VALE_CALC=0.21937148000000001,
-                        TOLE_MACHINE=9.9999999999999995E-08,
                         VALE_PARA=4.0,
                         FONCTION=AMOR_1,
                         ),
@@ -328,7 +326,6 @@ TEST_FONCTION(VALEUR=_F(VALE_CALC=5.10425856195,
 #
 
 TEST_FONCTION(VALEUR=_F(VALE_CALC=4.8417309529999999,
-                        TOLE_MACHINE=9.9999999999999995E-08,
                         VALE_PARA=4.0,
                         FONCTION=FREQ_2,
                         ),
@@ -354,7 +351,6 @@ TEST_FONCTION(VALEUR=_F(VALE_CALC=0.219371477626,
 #
 
 TEST_FONCTION(VALEUR=_F(VALE_CALC=0.21937148000000001,
-                        TOLE_MACHINE=9.9999999999999995E-08,
                         VALE_PARA=4.0,
                         FONCTION=AMOR_2,
                         ),

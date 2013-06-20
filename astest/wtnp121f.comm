@@ -284,7 +284,7 @@ TEST_RESU(RESU=_F(NUME_ORDRE=100,
                 VALE_CALC=-1.36143539E+03,
                 VALE_REFE=-1330.51641,
                 CRITERE='RELATIF',
-                PRECISION=0.029999999999999999,),
+                PRECISION=0.03,),
         )
 
 # NOEUD MILIEU
@@ -297,17 +297,19 @@ TEST_RESU(RESU=_F(NUME_ORDRE=100,
                 VALE_CALC=-1.36023000E+03,
                 VALE_REFE=-1330.51641,
                 CRITERE='RELATIF',
-                PRECISION=0.029999999999999999,),
+                PRECISION=0.03,),
         )
 
 # NOEUD CENTRE
 TEST_RESU(RESU=_F(NUME_ORDRE=100,
+                REFERENCE='ANALYTIQUE',
                 RESULTAT=cal1,
                 NOM_CHAM='DEPL',
                 NOEUD='NT70',
                 NOM_CMP='PRE1',
+                VALE_REFE=-313.,
                 VALE_CALC=-313.818151,
-                TOLE_MACHINE=1.E-4,
+                PRECISION=0.03,
                 CRITERE='RELATIF',
                 ),
         )

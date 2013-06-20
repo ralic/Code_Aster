@@ -178,8 +178,10 @@ REP0=RECU_FONCTION(    INTE_SPEC=INTERRE0,
                   NOM_CMP_I = 'DX',
                       )
 
-TEST_FONCTION(VALEUR=_F(VALE_CALC=1.0589999999999999E-06,
-                        TOLE_MACHINE=1.E-3,
+TEST_FONCTION(VALEUR=_F(VALE_CALC=1.059245E-06,
+                        VALE_REFE=1.0589999999999999E-06,
+                        REFERENCE = 'SOURCE_EXTERNE',
+                        PRECISION=1.E-3,
                         VALE_PARA=5.5259,
                         FONCTION=REP0,),
               )
@@ -217,8 +219,10 @@ REPZ=RECU_FONCTION(    INTE_SPEC=INTERREZ,
                   NOM_CMP_I = 'DX',
                       )
 
-TEST_FONCTION(VALEUR=_F(VALE_CALC=1.0589999999999999E-06,
-                        TOLE_MACHINE=1.E-3,
+TEST_FONCTION(VALEUR=_F(VALE_CALC=1.059245E-06,
+                        VALE_REFE=1.0589999999999999E-06,
+                        REFERENCE = 'SOURCE_EXTERNE',
+                        PRECISION=1.E-3,
                         VALE_PARA=5.5259,
                         FONCTION=REPZ,),
               )
@@ -310,8 +314,10 @@ TABREP4=POST_DYNA_ALEA(    INTE_SPEC=INTERRE4,
 #
 
 TEST_TABLE(
-           VALE_CALC=4.6779059999999999E-07,
-           TOLE_MACHINE=1.E-3,
+           VALE_CALC=4.6779083198853E-07,
+           VALE_REFE=4.6779059999999999E-07,
+           REFERENCE = 'SOURCE_EXTERNE',
+           PRECISION=1.E-3,
            NOM_PARA='LAMBDA_00',
            TABLE=TABREP2,
            FILTRE=(_F(NOM_PARA='NOEUD_I',
@@ -322,8 +328,10 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=1.6136538000000001E-05,
-           TOLE_MACHINE=1.E-3,
+           VALE_CALC=1.6136539991913E-05,
+           VALE_REFE=1.6136538000000001E-05,
+           REFERENCE = 'SOURCE_EXTERNE',
+           PRECISION=1.E-3,
            NOM_PARA='LAMBDA_01',
            TABLE=TABREP2,
            FILTRE=(_F(NOM_PARA='NOEUD_I',
@@ -334,8 +342,10 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=5.5802759999999999E-4,
-           TOLE_MACHINE=1.E-3,
+           VALE_CALC=5.5802766405876E-04,
+           VALE_REFE=5.5802759999999999E-4,
+           REFERENCE = 'SOURCE_EXTERNE',
+           PRECISION=1.E-3,
            NOM_PARA='LAMBDA_02',
            TABLE=TABREP2,
            FILTRE=(_F(NOM_PARA='NOEUD_I',
@@ -346,8 +356,10 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=0.0193515218,
-           TOLE_MACHINE=1.E-3,
+           VALE_CALC=0.019351521690199,
+           VALE_REFE=0.0193515218,
+           REFERENCE = 'SOURCE_EXTERNE',
+           PRECISION=1.E-3,
            NOM_PARA='LAMBDA_03',
            TABLE=TABREP2,
            FILTRE=(_F(NOM_PARA='NOEUD_I',
@@ -358,8 +370,10 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=0.67363079999999997,
-           TOLE_MACHINE=1.E-3,
+           VALE_CALC=0.67363090810110,
+           VALE_REFE=0.67363079999999997,
+           REFERENCE = 'SOURCE_EXTERNE',
+           PRECISION=1.E-3,
            NOM_PARA='LAMBDA_04',
            TABLE=TABREP2,
            FILTRE=(_F(NOM_PARA='NOEUD_I',
@@ -370,8 +384,10 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=6.8395230000000003E-4,
-           TOLE_MACHINE=1.E-3,
+           VALE_CALC=6.8395236090573E-04,
+           VALE_REFE=6.8395230000000003E-4,
+           REFERENCE = 'SOURCE_EXTERNE',
+           PRECISION=1.E-3,
            NOM_PARA='ECART',
            TABLE=TABREP2,
            FILTRE=(_F(NOM_PARA='NOEUD_I',
@@ -382,8 +398,10 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=11.0594439,
-           TOLE_MACHINE=1.E-3,
+           VALE_CALC=11.05944327352,
+           VALE_REFE=11.0594439,
+           REFERENCE = 'SOURCE_EXTERNE',
+           PRECISION=1.E-3,
            NOM_PARA='NB_EXTREMA_P_S',
            TABLE=TABREP2,
            FILTRE=(_F(NOM_PARA='NOEUD_I',
@@ -394,8 +412,10 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=10.9939097,
-           TOLE_MACHINE=1.E-3,
+           VALE_CALC=10.993909030031,
+           VALE_REFE=10.9939097,
+           REFERENCE = 'SOURCE_EXTERNE',
+           PRECISION=1.E-3,
            NOM_PARA='NB_PASS_ZERO_P_S',
            TABLE=TABREP2,
            FILTRE=(_F(NOM_PARA='NOEUD_I',
@@ -406,8 +426,10 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=5.4969548399999999,
-           TOLE_MACHINE=1.E-3,
+           VALE_CALC=5.4969545150154,
+           VALE_REFE=5.4969548399999999,
+           REFERENCE = 'SOURCE_EXTERNE',
+           PRECISION=1.E-3,
            NOM_PARA='FREQ_APPAR',
            TABLE=TABREP2,
            FILTRE=(_F(NOM_PARA='NOEUD_I',
@@ -418,8 +440,10 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=0.99407436299999996,
-           TOLE_MACHINE=1.E-3,
+           VALE_CALC=0.99407436325061,
+           VALE_REFE=0.99407436299999996,
+           REFERENCE = 'SOURCE_EXTERNE',
+           PRECISION=1.E-3,
            NOM_PARA='FACT_IRRE',
            TABLE=TABREP2,
            FILTRE=(_F(NOM_PARA='NOEUD_I',
@@ -430,8 +454,10 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=834.63139999999999,
-           TOLE_MACHINE=1.E-3,
+           VALE_CALC=834.63139886184,
+           VALE_REFE=834.63139999999999,
+           REFERENCE = 'SOURCE_EXTERNE',
+           PRECISION=1.E-3,
            NOM_PARA='LAMBDA_06',
            TABLE=TABREP2,
            FILTRE=(_F(NOM_PARA='NOEUD_I',
@@ -442,8 +468,10 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=1.1200226000000001E6,
-           TOLE_MACHINE=1.E-3,
+           VALE_CALC=1.120023054267E+06,
+           VALE_REFE=1.1200226000000001E6,
+           REFERENCE = 'SOURCE_EXTERNE',
+           PRECISION=1.E-3,
            NOM_PARA='LAMBDA_08',
            TABLE=TABREP2,
            FILTRE=(_F(NOM_PARA='NOEUD_I',
@@ -454,8 +482,10 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=3.1700819999999999E-07,
-           TOLE_MACHINE=1.E-3,
+           VALE_CALC=3.1700827089164E-07,
+           VALE_REFE=3.1700819999999999E-07,
+           REFERENCE = 'SOURCE_EXTERNE',
+           PRECISION=1.E-3,
            NOM_PARA='LAMBDA_00',
            TABLE=TABREP4,
            FILTRE=(_F(NOM_PARA='NOEUD_I',
@@ -466,8 +496,10 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=1.0960802000000001E-05,
-           TOLE_MACHINE=1.E-3,
+           VALE_CALC=1.0960801813775E-05,
+           VALE_REFE=1.0960802000000001E-05,
+           REFERENCE = 'SOURCE_EXTERNE',
+           PRECISION=1.E-3,
            NOM_PARA='LAMBDA_01',
            TABLE=TABREP4,
            FILTRE=(_F(NOM_PARA='NOEUD_I',
@@ -478,8 +510,10 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=3.8035519999999999E-4,
-           TOLE_MACHINE=1.E-3,
+           VALE_CALC=3.8035521960945E-04,
+           VALE_REFE=3.8035519999999999E-4,
+           REFERENCE = 'SOURCE_EXTERNE',
+           PRECISION=1.E-3,
            NOM_PARA='LAMBDA_02',
            TABLE=TABREP4,
            FILTRE=(_F(NOM_PARA='NOEUD_I',
@@ -490,8 +524,10 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=0.013252837999999999,
-           TOLE_MACHINE=1.E-3,
+           VALE_CALC=0.013252834977827,
+           VALE_REFE=0.013252837999999999,
+           REFERENCE = 'SOURCE_EXTERNE',
+           PRECISION=1.E-3,
            NOM_PARA='LAMBDA_03',
            TABLE=TABREP4,
            FILTRE=(_F(NOM_PARA='NOEUD_I',
@@ -502,8 +538,10 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=0.46431973999999998,
-           TOLE_MACHINE=1.E-3,
+           VALE_CALC=0.46431959474253,
+           VALE_REFE=0.46431973999999998,
+           REFERENCE = 'SOURCE_EXTERNE',
+           PRECISION=1.E-3,
            NOM_PARA='LAMBDA_04',
            TABLE=TABREP4,
            FILTRE=(_F(NOM_PARA='NOEUD_I',
@@ -514,8 +552,10 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=5.6303500000000003E-4,
-           TOLE_MACHINE=1.E-3,
+           VALE_CALC=5.6303487537775E-04,
+           VALE_REFE=5.6303500000000003E-4,
+           REFERENCE = 'SOURCE_EXTERNE',
+           PRECISION=1.E-3,
            NOM_PARA='ECART',
            TABLE=TABREP4,
            FILTRE=(_F(NOM_PARA='NOEUD_I',
@@ -526,8 +566,10 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=11.121516,
-           TOLE_MACHINE=1.E-3,
+           VALE_CALC=11.121514769551,
+           VALE_REFE=11.121516,
+           REFERENCE = 'SOURCE_EXTERNE',
+           PRECISION=1.E-3,
            NOM_PARA='NB_EXTREMA_P_S',
            TABLE=TABREP4,
            FILTRE=(_F(NOM_PARA='NOEUD_I',
@@ -538,8 +580,10 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=11.025786,
-           TOLE_MACHINE=1.E-3,
+           VALE_CALC=11.025785032553,
+           VALE_REFE=11.025786,
+           REFERENCE = 'SOURCE_EXTERNE',
+           PRECISION=1.E-3,
            NOM_PARA='NB_PASS_ZERO_P_S',
            TABLE=TABREP4,
            FILTRE=(_F(NOM_PARA='NOEUD_I',
@@ -550,8 +594,10 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=5.512893,
-           TOLE_MACHINE=1.E-3,
+           VALE_CALC=5.5128925162764,
+           VALE_REFE=5.512893,
+           REFERENCE = 'SOURCE_EXTERNE',
+           PRECISION=1.E-3,
            NOM_PARA='FREQ_APPAR',
            TABLE=TABREP4,
            FILTRE=(_F(NOM_PARA='NOEUD_I',
@@ -562,8 +608,10 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=0.99139237999999996,
-           TOLE_MACHINE=1.E-3,
+           VALE_CALC=0.99139238323364,
+           VALE_REFE=0.99139237999999996,
+           REFERENCE = 'SOURCE_EXTERNE',
+           PRECISION=1.E-3,
            NOM_PARA='FACT_IRRE',
            TABLE=TABREP4,
            FILTRE=(_F(NOM_PARA='NOEUD_I',
@@ -574,8 +622,10 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=588.14035999999999,
-           TOLE_MACHINE=1.E-3,
+           VALE_CALC=588.14007488717,
+           VALE_REFE=588.14035999999999,
+           REFERENCE = 'SOURCE_EXTERNE',
+           PRECISION=1.E-3,
            NOM_PARA='LAMBDA_06',
            TABLE=TABREP4,
            FILTRE=(_F(NOM_PARA='NOEUD_I',
@@ -586,8 +636,10 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=8.2881638E5,
-           TOLE_MACHINE=1.E-3,
+           VALE_CALC=8.2881614798982E+05,
+           VALE_REFE=8.2881638E5,
+           REFERENCE = 'SOURCE_EXTERNE',
+           PRECISION=1.E-3,
            NOM_PARA='LAMBDA_08',
            TABLE=TABREP4,
            FILTRE=(_F(NOM_PARA='NOEUD_I',

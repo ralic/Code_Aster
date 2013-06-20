@@ -275,18 +275,7 @@ TEST_RESU(RESU=_F(NUME_ORDRE=20,
                   VALE_CALC=0.459441101,
                   VALE_REFE=0.44,
                   CRITERE='RELATIF',
-                  PRECISION=0.10000000000000001,),
-          )
-
-TEST_RESU(RESU=_F(NUME_ORDRE=20,
-                  RESULTAT=RESU0,
-                  NOM_CHAM='DEPL',
-                  NOEUD='N270',
-                  NOM_CMP='PRE1',
-                  VALE_CALC=0.45939999999999998,
-                  TOLE_MACHINE=1.E-4,
-                  CRITERE='RELATIF',
-                  ),
+                  PRECISION=0.1,),
           )
 
 FIN()

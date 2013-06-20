@@ -456,7 +456,7 @@ TEST_RESU(RESU=_F(NUME_ORDRE=3,
                   VALE_CALC= 2.87023048E+07,
                   VALE_REFE=2.9000000E7,
                   CRITERE='RELATIF',
-                  PRECISION=0.20000000000000001,),
+                  PRECISION=0.2,),
           )
 
 TEST_RESU(RESU=_F(NUME_ORDRE=34,
@@ -468,7 +468,7 @@ TEST_RESU(RESU=_F(NUME_ORDRE=34,
                   VALE_CALC= 4.17521229E+06,
                   VALE_REFE=4.350000E6,
                   CRITERE='RELATIF',
-                  PRECISION=0.20000000000000001,),
+                  PRECISION=0.2,),
           )
 
 TEST_RESU(RESU=_F(NUME_ORDRE=3,
@@ -480,7 +480,7 @@ TEST_RESU(RESU=_F(NUME_ORDRE=3,
                   VALE_CALC= 2.93060830E+06,
                   VALE_REFE=3.600000E6,
                   CRITERE='RELATIF',
-                  PRECISION=0.20000000000000001,),
+                  PRECISION=0.2,),
           )
 
 TEST_RESU(RESU=_F(NUME_ORDRE=34,
@@ -492,7 +492,7 @@ TEST_RESU(RESU=_F(NUME_ORDRE=34,
                   VALE_CALC= 4.17095013E+06,
                   VALE_REFE=4.340000E6,
                   CRITERE='RELATIF',
-                  PRECISION=0.20000000000000001,),
+                  PRECISION=0.2,),
           )
 
 TEST_RESU(RESU=_F(NUME_ORDRE=3,
@@ -502,20 +502,9 @@ TEST_RESU(RESU=_F(NUME_ORDRE=3,
                   NOEUD='NO1496',
                   NOM_CMP='V3',
                   VALE_CALC=0.709786089,
-                  VALE_REFE=0.69999999999999996,
+                  VALE_REFE=0.7,
                   CRITERE='RELATIF',
-                  PRECISION=0.20000000000000001,),
-          )
-
-TEST_RESU(RESU=_F(NUME_ORDRE=3,
-                  RESULTAT=RESU0,
-                  NOM_CHAM='DEPL',
-                  NOEUD='NO823',
-                  NOM_CMP='PRE1',
-                  VALE_CALC=2.930608E6,
-                  TOLE_MACHINE=1.E-3,
-                  CRITERE='RELATIF',
-                  ),
+                  PRECISION=0.2,),
           )
 
 FIN();

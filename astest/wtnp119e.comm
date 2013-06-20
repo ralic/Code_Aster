@@ -411,19 +411,17 @@ TEST_RESU(RESU=_F(INST=2.E-3,
                   NOM_CHAM='DEPL',
                   NOEUD='N3',
                   NOM_CMP='PRE1',
-                  VALE_CALC=3.0838000000E10,
-                  TOLE_MACHINE=1.E-3,
+                  VALE_CALC=3.0838468557769E+10,
                   CRITERE='RELATIF',
                   ),
           )
 
-TEST_RESU(RESU=_F(INST=0.80000000000000004,
+TEST_RESU(RESU=_F(INST=0.8,
                   RESULTAT=U2,
                   NOM_CHAM='SIEF_NOEU',
                   NOEUD='N3',
                   NOM_CMP='SIXX',
-                  VALE_CALC=0.0,
-                  TOLE_MACHINE=1.E-3,
+                  VALE_CALC=-1.6670261903639E-11,
                   CRITERE='ABSOLU',
                   ),
           )
@@ -433,14 +431,10 @@ TEST_RESU(RESU=_F(INST=1.0,
                   NOM_CHAM='SIEF_NOEU',
                   NOEUD='N3',
                   NOM_CMP='SIXX',
-                  VALE_CALC=-1.7000000E7,
-                  TOLE_MACHINE=1.E-3,
+                  VALE_CALC=-1.7000761925031E+07,
                   CRITERE='RELATIF',
                   ),
           )
 
 FIN()
-#
-#
-#
-#
+

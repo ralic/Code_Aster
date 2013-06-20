@@ -241,9 +241,9 @@ TEST_RESU(RESU=_F(NUME_ORDRE=20,
                   NOEUD='N32',
                   NOM_CMP='PRE1',
                   VALE_CALC=0.529753234,
-                  VALE_REFE=0.56000000000000005,
+                  VALE_REFE=0.56,
                   CRITERE='RELATIF',
-                  PRECISION=0.10000000000000001,),
+                  PRECISION=0.1,),
           )
 
 FIN()

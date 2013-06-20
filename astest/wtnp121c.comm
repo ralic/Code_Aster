@@ -292,7 +292,7 @@ TEST_RESU(RESU=_F(NUME_ORDRE=100,
                 VALE_CALC=-1.33823454E+03,
                 VALE_REFE=-1330.51641,
                 CRITERE='RELATIF',
-                PRECISION=0.070000000000000007,),
+                PRECISION=0.07,),
         )
 
 # NOEUD DU HAUT
@@ -305,7 +305,7 @@ TEST_RESU(RESU=_F(NUME_ORDRE=100,
                 VALE_CALC=-1.33823454E+03,
                 VALE_REFE=-1330.51641,
                 CRITERE='RELATIF',
-                PRECISION=0.070000000000000007,),
+                PRECISION=0.07,),
         )
 
 # NOEUD MILIEU
@@ -318,7 +318,7 @@ TEST_RESU(RESU=_F(NUME_ORDRE=100,
                 VALE_CALC=-893.106954993,
                 VALE_REFE=-889.31760999999995,
                 CRITERE='RELATIF',
-                PRECISION=0.074999999999999997,),
+                PRECISION=0.075,),
         )
 
 TEST_RESU(RESU=_F(NUME_ORDRE=100,
@@ -330,19 +330,7 @@ TEST_RESU(RESU=_F(NUME_ORDRE=100,
                 VALE_CALC=-1.33823454E+03,
                 VALE_REFE=-1330.51641,
                 CRITERE='RELATIF',
-                PRECISION=0.089999999999999997,),
-        )
-
-# NON REGRESSION
-TEST_RESU(RESU=_F(NUME_ORDRE=100,
-                RESULTAT=cal1,
-                NOM_CHAM='DEPL',
-                NOEUD='N304',
-                NOM_CMP='PRE1',
-                VALE_CALC=-1338.2345390047999,
-                TOLE_MACHINE=1.E-4,
-                CRITERE='RELATIF',
-                ),
+                PRECISION=0.09,),
         )
 
 

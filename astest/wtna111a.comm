@@ -292,8 +292,7 @@ TEST_RESU(RESU=_F(NUME_ORDRE=25,
                   NOM_CHAM='DEPL',
                   NOEUD='NS749',
                   NOM_CMP='PRE1',
-                  VALE_CALC=9.48000E5,
-                  TOLE_MACHINE=1.E-3,),
+                  VALE_CALC=9.4763131675963E+05,)
           )
 
 TEST_RESU(RESU=_F(NUME_ORDRE=50,
@@ -301,8 +300,7 @@ TEST_RESU(RESU=_F(NUME_ORDRE=50,
                   NOM_CHAM='DEPL',
                   NOEUD='NS749',
                   NOM_CMP='PRE1',
-                  VALE_CALC=9.68000E5,
-                  TOLE_MACHINE=1.E-3,),
+                  VALE_CALC=9.6844171265784E+05,)
           )
 
 TEST_RESU(RESU=_F(NUME_ORDRE=25,
@@ -310,8 +308,7 @@ TEST_RESU(RESU=_F(NUME_ORDRE=25,
                   NOM_CHAM='DEPL',
                   NOEUD='NS761',
                   NOM_CMP='PRE1',
-                  VALE_CALC=8.22000E5,
-                  TOLE_MACHINE=1.E-3,),
+                  VALE_CALC=8.2236864577301E+05,)
           )
 
 TEST_RESU(RESU=_F(NUME_ORDRE=50,
@@ -319,8 +316,7 @@ TEST_RESU(RESU=_F(NUME_ORDRE=50,
                   NOM_CHAM='DEPL',
                   NOEUD='NS761',
                   NOM_CMP='PRE1',
-                  VALE_CALC=8.89000E5,
-                  TOLE_MACHINE=1.E-3,),
+                  VALE_CALC=8.8930350209485E+05,)
           )
 
 # TEST DX N25 ET N66 A 1000 SEC ET 3000 SEC
@@ -330,8 +326,7 @@ TEST_RESU(RESU=_F(NUME_ORDRE=25,
                   NOM_CHAM='DEPL',
                   NOEUD='N25',
                   NOM_CMP='DX',
-                  VALE_CALC=2.9250579999999998E-4,
-                  TOLE_MACHINE=1.E-3,),
+                  VALE_CALC=2.9250681241318E-04,)
           )
 
 TEST_RESU(RESU=_F(NUME_ORDRE=50,
@@ -339,8 +334,7 @@ TEST_RESU(RESU=_F(NUME_ORDRE=50,
                   NOM_CHAM='DEPL',
                   NOEUD='N25',
                   NOM_CMP='DX',
-                  VALE_CALC=4.7861909999999999E-4,
-                  TOLE_MACHINE=1.E-3,),
+                  VALE_CALC=4.7861972503557E-04,)
           )
 
 TEST_RESU(RESU=_F(NUME_ORDRE=25,
@@ -348,8 +342,7 @@ TEST_RESU(RESU=_F(NUME_ORDRE=25,
                   NOM_CHAM='DEPL',
                   NOEUD='N66',
                   NOM_CMP='DX',
-                  VALE_CALC=2.925197E-4,
-                  TOLE_MACHINE=1.E-3,),
+                  VALE_CALC=2.9252068901988E-04,)
           )
 
 TEST_RESU(RESU=_F(NUME_ORDRE=50,
@@ -357,8 +350,7 @@ TEST_RESU(RESU=_F(NUME_ORDRE=50,
                   NOM_CHAM='DEPL',
                   NOEUD='N66',
                   NOM_CMP='DX',
-                  VALE_CALC=4.7863309999999999E-4,
-                  TOLE_MACHINE=1.E-3,),
+                  VALE_CALC=4.7863366082016E-04,)
           )
 
 FIN();

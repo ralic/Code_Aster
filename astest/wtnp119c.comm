@@ -415,30 +415,25 @@ IMPR_TABLE(TABLE=SAT,
            NOM_PARA=('INST','V4',),);
 
 
-TEST_RESU(RESU=_F(INST=0.69999999999999996,
+TEST_RESU(RESU=_F(INST=0.7,
                   RESULTAT=U2,
                   NOM_CHAM='SIEF_NOEU',
                   NOEUD='N3',
                   NOM_CMP='SIXX',
-                  VALE_CALC=-4.5600E4,
-                  TOLE_MACHINE=1.E-3,
+                  VALE_CALC=-45635.827065448,
                   CRITERE='RELATIF',
                   ),
           )
 
-TEST_RESU(RESU=_F(INST=0.80000000000000004,
+TEST_RESU(RESU=_F(INST=0.8,
                   RESULTAT=U2,
                   NOM_CHAM='SIEF_NOEU',
                   NOEUD='N3',
                   NOM_CMP='SIXX',
-                  VALE_CALC=-5.670000E6,
-                  TOLE_MACHINE=1.E-3,
+                  VALE_CALC=-5.667167128196E+06,
                   CRITERE='RELATIF',
                   ),
           )
 
 FIN()
-#
-#
-#
-#
+

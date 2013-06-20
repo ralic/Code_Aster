@@ -277,7 +277,7 @@ TEST_RESU(RESU=_F(NUME_ORDRE=5,
                   NOM_CHAM='DEPL',
                   NOEUD='N5',
                   NOM_CMP='PRE1',
-                  VALE_CALC=-5.00204844E+03,
+                  VALE_CALC=-5002.0484421539,
                   VALE_REFE=-5000.0,
                   CRITERE='RELATIF',
                   PRECISION=1.E-2,),
@@ -323,16 +323,20 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=5,
                    RESULTAT=cal1,
                    NOM_CHAM='FLHN_ELGA',
                    NOM_CMP='FH11',
-                   VALE_CALC=2.0013600000000001E-10,
-                   TOLE_MACHINE=1.E-3,
+                   VALE_REFE=2.0E-10,
+                   VALE_CALC=2.0013556124832E-10,
+                   PRECISION=1.E-3,
+                   REFERENCE='ANALYTIQUE',
                    MAILLE='M401',),
                 _F(NUME_ORDRE=5,
                    POINT=1,
                    RESULTAT=cal1,
                    NOM_CHAM='FLHN_ELGA',
                    NOM_CMP='FH22',
-                   VALE_CALC=1.99935E-21,
-                   TOLE_MACHINE=1.E-3,
+                   VALE_REFE=2.E-21,
+                   VALE_CALC=1.9993542568715E-21,
+                   PRECISION=1.E-3,
+                   REFERENCE='ANALYTIQUE',
                    MAILLE='M401',),
                 ),
           )
@@ -345,8 +349,10 @@ FLUXND = POST_ELEM(RESULTAT   = cal1,
               NOM_CMP=('FH11','FH12','FH21','FH22')))
 
 
-TEST_TABLE(VALE_CALC=-1.E-10,
-           TOLE_MACHINE=1.E-3,
+TEST_TABLE(VALE_REFE=-1.E-10,
+           VALE_CALC=-9.9930912359978E-11,
+           PRECISION=1.E-3,
+           REFERENCE='ANALYTIQUE',
            NOM_PARA='INTE_FH11',
            TABLE=FLUXND,)
 
@@ -357,8 +363,10 @@ FLUXNM = POST_ELEM(RESULTAT   = cal1,
               NOM_CHAM='FLHN_ELGA',
               NOM_CMP=('FH11','FH12','FH21','FH22')))
 
-TEST_TABLE(VALE_CALC=1.E-10,
-           TOLE_MACHINE=1.E-3,
+TEST_TABLE(VALE_REFE=1.E-10,
+           VALE_CALC=9.9998842362084E-11,
+           PRECISION=1.E-3,
+           REFERENCE='ANALYTIQUE',
            NOM_PARA='INTE_FH11',
            TABLE=FLUXNM,)
 
@@ -369,8 +377,10 @@ FLUXNG = POST_ELEM(RESULTAT   = cal1,
               NOM_CHAM='FLHN_ELGA',
               NOM_CMP=('FH11','FH12','FH21','FH22')))
 
-TEST_TABLE(VALE_CALC=1.E-10,
-           TOLE_MACHINE=1.E-3,
+TEST_TABLE(VALE_REFE=1.E-10,
+           VALE_CALC=1.0006740380085E-10,
+           PRECISION=1.E-3,
+           REFERENCE='ANALYTIQUE',
            NOM_PARA='INTE_FH11',
            TABLE=FLUXNG,)
 
@@ -389,24 +399,30 @@ INT_SIEF=POST_ELEM(MODELE=MODELT,
                                 NOM_CMP=('M11'),
                                 TOUT='OUI')))
 
-TEST_TABLE(VALE_CALC=-2.4992799999999998E-06,
-           TOLE_MACHINE=1.E-3,
+TEST_TABLE(VALE_REFE=-2.5E-06,
+           VALE_CALC=-2.4992822556852E-06,
+           PRECISION=1.E-3,
+           REFERENCE='ANALYTIQUE',
            NOM_PARA='INTE_M11',
            TABLE=INT_SIEF,
            FILTRE=_F(NOM_PARA='NOM_CHAM',
                      VALE_K='SIEF_ELGA',),
            )
 
-TEST_TABLE(VALE_CALC=-2.4992799999999998E-06,
-           TOLE_MACHINE=1.E-3,
+TEST_TABLE(VALE_REFE=-2.5E-06,
+           VALE_CALC=-2.499284745619E-06,
+           PRECISION=1.E-3,
+           REFERENCE='ANALYTIQUE',
            NOM_PARA='INTE_M11',
            TABLE=INT_SIEF,
            FILTRE=_F(NOM_PARA='NOM_CHAM',
                      VALE_K='SIEF_ELNO',),
            )
 
-TEST_TABLE(VALE_CALC=-2.4992799999999998E-06,
-           TOLE_MACHINE=1.E-3,
+TEST_TABLE(VALE_REFE=-2.5E-06,
+           VALE_CALC=-2.4992822556774E-06,
+           PRECISION=1.E-3,
+           REFERENCE='ANALYTIQUE',
            NOM_PARA='INTE_M11',
            TABLE=INT_SIEF,
            FILTRE=_F(NOM_PARA='NOM_CHAM',
@@ -440,7 +456,7 @@ INTM11=POST_ELEM(  CHAM_GD=CH4,
 
 TEST_TABLE(REFERENCE='AUTRE_ASTER',
            PRECISION=2.E-3,
-           VALE_CALC=-2.49479470E-06,
+           VALE_CALC=-2.4947946972866E-06,
            VALE_REFE=-2.4992799999999998E-06,
            NOM_PARA='INTE_M11',
            TABLE=INTM11,)
@@ -461,8 +477,10 @@ VM11=POST_ELEM(MODELE=MODELT,
                                  GROUP_MA='GAUCHE')))
 
 TEST_TABLE(
+           VALE_REFE=20.0,
            VALE_CALC=20.0,
-           TOLE_MACHINE=1.E-3,
+           PRECISION=1.E-3,
+           REFERENCE='ANALYTIQUE',
            NOM_PARA='DISTRIBUTION',
            TABLE=VM11,
            FILTRE=(_F(NOM_PARA='NOM_CHAM',
@@ -473,8 +491,10 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
+           VALE_REFE=20.0,
            VALE_CALC=20.0,
-           TOLE_MACHINE=1.E-3,
+           PRECISION=1.E-3,
+           REFERENCE='ANALYTIQUE',
            NOM_PARA='DISTRIBUTION',
            TABLE=VM11,
            FILTRE=(_F(NOM_PARA='NOM_CHAM',
@@ -485,8 +505,10 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
+           VALE_REFE=20.0,
            VALE_CALC=20.0,
-           TOLE_MACHINE=1.E-3,
+           PRECISION=1.E-3,
+           REFERENCE='ANALYTIQUE',
            NOM_PARA='DISTRIBUTION',
            TABLE=VM11,
            FILTRE=(_F(NOM_PARA='NOM_CHAM',
@@ -532,7 +554,7 @@ INTVOL=POST_ELEM( CHAM_GD=CHEVA,
                   INTEGRALE=_F( NOM_CMP='X1',GROUP_MA='GAUCHE'))
 
 TEST_TABLE(REFERENCE='AUTRE_ASTER',
-           VALE_CALC=20.000000000,
+           VALE_CALC=20.0,
            VALE_REFE=20.0,
            NOM_PARA='INTE_X1',
            TABLE=INTVOL,)

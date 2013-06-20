@@ -497,15 +497,5 @@ TEST_RESU(RESU=_F(NUME_ORDRE=3,
                   PRECISION=0.20000000000000001,),
           )
 
-TEST_RESU(RESU=_F(NUME_ORDRE=34,
-                  RESULTAT=RESU0,
-                  NOM_CHAM='DEPL',
-                  NOEUD='NO823',
-                  NOM_CMP='PRE1',
-                  VALE_CALC=4.311300E6,
-                  TOLE_MACHINE=1.E-3,
-                  CRITERE='RELATIF',
-                  ),
-          )
 
 FIN();

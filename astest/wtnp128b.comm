@@ -313,10 +313,10 @@ TEST_RESU(RESU=_F(NUME_ORDRE=5,
                   RESULTAT=U_1,
                   NOM_CHAM='FORC_NODA',
                   NOM_CMP='DY',
-                  VALE_CALC=-14.156030677,
+                  VALE_CALC=-14.156030677438,
                   VALE_REFE=-15.06,
                   CRITERE='RELATIF',
-                  PRECISION=0.10000000000000001,),
+                  PRECISION=0.1,),
           )
 
 TEST_RESU(RESU=_F(NUME_ORDRE=10,
@@ -325,10 +325,10 @@ TEST_RESU(RESU=_F(NUME_ORDRE=10,
                   RESULTAT=U_1,
                   NOM_CHAM='FORC_NODA',
                   NOM_CMP='DY',
-                  VALE_CALC=-4.716934896,
+                  VALE_CALC=-4.7169348956783,
                   VALE_REFE=-5.4100000000000001,
                   CRITERE='RELATIF',
-                  PRECISION=0.14000000000000001,),
+                  PRECISION=0.14,),
           )
 
 TEST_RESU(RESU=_F(NUME_ORDRE=19,
@@ -337,10 +337,10 @@ TEST_RESU(RESU=_F(NUME_ORDRE=19,
                   RESULTAT=U_1,
                   NOM_CHAM='FORC_NODA',
                   NOM_CMP='DY',
-                  VALE_CALC=-0.824362418,
-                  VALE_REFE=-0.88200000000000001,
+                  VALE_CALC=-0.82436241748972,
+                  VALE_REFE=-0.882,
                   CRITERE='RELATIF',
-                  PRECISION=0.10000000000000001,),
+                  PRECISION=0.1,),
           )
 
 # TEST PRE1  NS5787 A 2.7S, 3.2S ET 4.2S
@@ -350,8 +350,8 @@ TEST_RESU(RESU=_F(NUME_ORDRE=16,
                   NOM_CHAM='DEPL',
                   NOEUD='NS5787',
                   NOM_CMP='PRE1',
-                  VALE_CALC=0.017579999999999998,
-                  TOLE_MACHINE=1.E-3,),
+                  VALE_CALC=0.017581825373103,
+                  ),
           )
 
 TEST_RESU(RESU=_F(NUME_ORDRE=21,
@@ -359,8 +359,8 @@ TEST_RESU(RESU=_F(NUME_ORDRE=21,
                   NOM_CHAM='DEPL',
                   NOEUD='NS5787',
                   NOM_CMP='PRE1',
-                  VALE_CALC=0.081180000000000002,
-                  TOLE_MACHINE=1.E-3,),
+                  VALE_CALC=0.081182345433913,
+                  ),
           )
 
 ####################################

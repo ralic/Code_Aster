@@ -370,8 +370,7 @@ TEST_FICHIER(
    FICHIER='fort.81',
    EXPR_IGNORE=('ASTER'),
    NB_VALE=36,
-   VALE_CALC=1.7791289E+02,
-   TOLE_MACHINE=1.E-5)
+   VALE_CALC=177.91268055081,)
 #----------------------------------------------------------------------------------------
 
 FIN();

@@ -287,17 +287,6 @@ TEST_RESU(RESU=_F(NUME_ORDRE=100,
         )
 
 TEST_RESU(RESU=_F(NUME_ORDRE=100,
-                RESULTAT=cal1,
-                NOM_CHAM='DEPL',
-                NOEUD='N6',
-                NOM_CMP='PRE1',
-                VALE_CALC=-9090.0,
-                TOLE_MACHINE=1.E-4,
-                CRITERE='RELATIF',
-                ),
-        )
-
-TEST_RESU(RESU=_F(NUME_ORDRE=100,
                 REFERENCE='ANALYTIQUE',
                 RESULTAT=cal1,
                 NOM_CHAM='DEPL',

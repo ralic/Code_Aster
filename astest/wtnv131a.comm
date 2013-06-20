@@ -240,7 +240,6 @@ U0=CALC_CHAMP(  reuse=U0,
              CONTRAINTE='SIGM_NOEU',CRITERES='SIEQ_NOEU'
           )
 
-IMPR_RESU(RESU=_F(RESULTAT=U0,NOM_CHAM='SIEQ_ELNO'))
 
 # X = 0.2
 TEST_RESU(RESU=_F(NUME_ORDRE=60,
@@ -252,7 +251,6 @@ TEST_RESU(RESU=_F(NUME_ORDRE=60,
                   VALE_CALC= 1.12787592E+04,
                   VALE_REFE=1.1200E4,
                   CRITERE='RELATIF',
-                  TOLE_MACHINE=1.E-4,      #TODO variabilite
                   PRECISION=1.E-2,),
           )
 
@@ -265,7 +263,6 @@ TEST_RESU(RESU=_F(NUME_ORDRE=100,
                   VALE_CALC= 1.22676339E+04,
                   VALE_REFE=1.2230E4,
                   CRITERE='RELATIF',
-                  TOLE_MACHINE=1.E-4,      #TODO variabilite
                   PRECISION=1.E-2,),
           )
 
@@ -279,7 +276,6 @@ TEST_RESU(RESU=_F(NUME_ORDRE=60,
                   VALE_CALC= 6.61579492E+03,
                   VALE_REFE=6570.0,
                   CRITERE='RELATIF',
-                  TOLE_MACHINE=1.E-4,      #TODO variabilite
                   PRECISION=1.E-2,),
           )
 
@@ -292,7 +288,6 @@ TEST_RESU(RESU=_F(NUME_ORDRE=100,
                   VALE_CALC= 8.74165162E+03,
                   VALE_REFE=8685.0,
                   CRITERE='RELATIF',
-                  TOLE_MACHINE=1.E-4,      #TODO variabilite
                   PRECISION=1.E-2,),
           )
 
@@ -301,8 +296,7 @@ TEST_RESU(RESU=_F(NUME_ORDRE=100,
                   NOM_CHAM='DEPL',
                   NOEUD='N28',
                   NOM_CMP='PRE2',
-                  VALE_CALC=8743.0,
-                  TOLE_MACHINE=1.E-3,
+                  VALE_CALC=8741.6516172606,
                   CRITERE='RELATIF',
                   ),
           )
@@ -312,8 +306,7 @@ TEST_RESU(RESU=_F(NUME_ORDRE=58,
                   NOM_CHAM='SIEQ_ELNO',
                   NOEUD='N88',
                   NOM_CMP='VMIS',
-                  VALE_CALC=180.32400000000001,
-                  TOLE_MACHINE=1.E-3,
+                  VALE_CALC=180.32385802109,
                   CRITERE='RELATIF',
                   MAILLE='M1',
                   ),
@@ -324,8 +317,7 @@ TEST_RESU(RESU=_F(NUME_ORDRE=58,
                   NOM_CHAM='SIEQ_ELNO',
                   NOEUD='N88',
                   NOM_CMP='TRESCA',
-                  VALE_CALC=188.00399999999999,
-                  TOLE_MACHINE=1.E-3,
+                  VALE_CALC=188.00378228398,
                   CRITERE='RELATIF',
                   MAILLE='M1',
                   ),
@@ -336,8 +328,7 @@ TEST_RESU(RESU=_F(NUME_ORDRE=58,
                   NOM_CHAM='SIEQ_NOEU',
                   NOEUD='N88',
                   NOM_CMP='VMIS',
-                  VALE_CALC=131.91499999999999,
-                  TOLE_MACHINE=1.E-3,
+                  VALE_CALC=131.91507418621,
                   CRITERE='RELATIF',
                   ),
           )
@@ -347,8 +338,7 @@ TEST_RESU(RESU=_F(NUME_ORDRE=58,
                   NOM_CHAM='SIEQ_NOEU',
                   NOEUD='N88',
                   NOM_CMP='TRESCA',
-                  VALE_CALC=141.00299999999999,
-                  TOLE_MACHINE=1.E-3,
+                  VALE_CALC=141.00282340598,
                   CRITERE='RELATIF',
                   ),
           )

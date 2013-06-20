@@ -229,7 +229,7 @@ TEST_RESU(RESU=_F(NUME_ORDRE=20,
                   VALE_CALC=0.459441135,
                   VALE_REFE=0.44,
                   CRITERE='RELATIF',
-                  PRECISION=0.10000000000000001,),
+                  PRECISION=0.1,),
           )
 
 FIN()

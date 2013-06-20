@@ -113,7 +113,7 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=1,
                    RESULTAT=U1,
                    NOM_CHAM='DEPL',
                    NOM_CMP='DZ',
-                   VALE_CALC=2.2280400000000001E-3,
+                   VALE_CALC=2.2280411471271E-3,
                    
                    ),
                 _F(NUME_ORDRE=1,
@@ -121,8 +121,7 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=1,
                    RESULTAT=U1,
                    NOM_CHAM='DEPL',
                    NOM_CMP='DRY',
-                   VALE_CALC=-1.3377E-3,
-                   TOLE_MACHINE=1.9999999999999999E-06,
+                   VALE_CALC=-1.3377015259747E-3,
                    ),
                 _F(NUME_ORDRE=1,
                    GROUP_NO='A',
@@ -145,7 +144,7 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=1,
                    NOM_CHAM='DEPL',
                    NOEUD='N1',
                    NOM_CMP='DRY',
-                   VALE_CALC=-1.3377015259746999E-3,
+                   VALE_CALC=-1.3377015259747E-3,
                    
                    ),
                 _F(NUME_ORDRE=1,
@@ -325,9 +324,8 @@ DEFI_FICHIER(UNITE=82, ACTION='LIBERER')
 
 
 TEST_FICHIER(FICHIER='./fort.82',
-             NB_VALE=3025,
-             VALE_CALC=4.220584199956E+05,
-             TOLE_MACHINE=1.e-3,
+             NB_VALE=3017,EXPR_IGNORE = ('ASTER'),
+             VALE_CALC=4.199464199956E+05,
              )
 
 

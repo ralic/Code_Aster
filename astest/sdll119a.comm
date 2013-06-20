@@ -391,7 +391,7 @@ FREQ_1=RECU_FONCTION(
 
 #
 
-TEST_FONCTION(VALEUR=_F(VALE_CALC=4.73495559866,
+TEST_FONCTION(VALEUR=_F(VALE_CALC=4.734956,
                         VALE_REFE=4.4699999999999998,
                         VALE_PARA=4.0,
                         REFERENCE='SOURCE_EXTERNE',
@@ -401,8 +401,7 @@ TEST_FONCTION(VALEUR=_F(VALE_CALC=4.73495559866,
 
 #
 
-TEST_FONCTION(VALEUR=_F(VALE_CALC=4.7349556000000002,
-                        TOLE_MACHINE=9.9999999999999995E-08,
+TEST_FONCTION(VALEUR=_F(VALE_CALC=4.734956,
                         VALE_PARA=4.0,
                         FONCTION=FREQ_1,
                         ),
@@ -420,19 +419,17 @@ AMOR_1=RECU_FONCTION(
 
 #
 
-TEST_FONCTION(VALEUR=_F(VALE_CALC=0.226474024564,
+TEST_FONCTION(VALEUR=_F(VALE_CALC=0.22647420,
                         VALE_REFE=0.19,
                         VALE_PARA=4.0,
                         REFERENCE='SOURCE_EXTERNE',
-                        TOLE_MACHINE=2.E-5,
                         PRECISION=0.2,
                         FONCTION=AMOR_1,),
               )
 
 #
 
-TEST_FONCTION(VALEUR=_F(VALE_CALC=0.2264758,
-                        TOLE_MACHINE=1.5E-05,
+TEST_FONCTION(VALEUR=_F(VALE_CALC=0.22647420,
                         VALE_PARA=4.0,
                         FONCTION=AMOR_1,
                         ),
@@ -454,8 +451,7 @@ FREQ_2=RECU_FONCTION(
 
 #
 
-TEST_FONCTION(VALEUR=_F(VALE_CALC=5.0038530000000003,
-                        TOLE_MACHINE=9.9999999999999995E-08,
+TEST_FONCTION(VALEUR=_F(VALE_CALC=5.003853,
                         VALE_PARA=4.0,
                         FONCTION=FREQ_2,
                         ),
@@ -473,8 +469,7 @@ AMOR_2=RECU_FONCTION(
 
 #
 
-TEST_FONCTION(VALEUR=_F(VALE_CALC=0.21415300000000001,
-                        TOLE_MACHINE=1.5E-05,
+TEST_FONCTION(VALEUR=_F(VALE_CALC=0.21415296,
                         VALE_PARA=4.0,
                         FONCTION=AMOR_2,
                         ),

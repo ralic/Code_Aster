@@ -308,10 +308,10 @@ TEST_RESU(RESU=_F(NUME_ORDRE=10,
                   RESULTAT=U_1,
                   NOM_CHAM='FORC_NODA',
                   NOM_CMP='DY',
-                  VALE_CALC=-13.084151397,
+                  VALE_CALC=-13.084151397366,
                   VALE_REFE=-12.65,
                   CRITERE='RELATIF',
-                  PRECISION=0.10000000000000001,),
+                  PRECISION=0.1,),
           )
 
 TEST_RESU(RESU=_F(NUME_ORDRE=15,
@@ -320,10 +320,10 @@ TEST_RESU(RESU=_F(NUME_ORDRE=15,
                   RESULTAT=U_1,
                   NOM_CHAM='FORC_NODA',
                   NOM_CMP='DY',
-                  VALE_CALC=-6.459033126,
-                  VALE_REFE=-6.4100000000000001,
+                  VALE_CALC=-6.4590331257922,
+                  VALE_REFE=-6.41,
                   CRITERE='RELATIF',
-                  PRECISION=0.14000000000000001,),
+                  PRECISION=0.14,),
           )
 
 TEST_RESU(RESU=_F(NUME_ORDRE=25,
@@ -332,10 +332,10 @@ TEST_RESU(RESU=_F(NUME_ORDRE=25,
                   RESULTAT=U_1,
                   NOM_CHAM='FORC_NODA',
                   NOM_CMP='DY',
-                  VALE_CALC=-0.791636503,
+                  VALE_CALC=-0.79163650279983,
                   VALE_REFE=-0.76500000000000001,
                   CRITERE='RELATIF',
-                  PRECISION=0.10000000000000001,),
+                  PRECISION=0.1,),
           )
 
 # TEST PRE1  NS5768 A 100S, 150S ET 200S
@@ -346,10 +346,10 @@ TEST_RESU(RESU=_F(NUME_ORDRE=19,
                   NOM_CHAM='DEPL',
                   NOEUD='NS5768',
                   NOM_CMP='PRE1',
-                  VALE_CALC=0.149093949,
+                  VALE_CALC=0.14909394936104,
                   VALE_REFE=0.155,
                   CRITERE='RELATIF',
-                  PRECISION=0.050000000000000003,),
+                  PRECISION=0.05,),
           )
 
 TEST_RESU(RESU=_F(NUME_ORDRE=24,
@@ -358,10 +358,10 @@ TEST_RESU(RESU=_F(NUME_ORDRE=24,
                   NOM_CHAM='DEPL',
                   NOEUD='NS5768',
                   NOM_CMP='PRE1',
-                  VALE_CALC=0.188369151,
+                  VALE_CALC=0.18836915146392,
                   VALE_REFE=0.19,
                   CRITERE='RELATIF',
-                  PRECISION=0.050000000000000003,),
+                  PRECISION=0.05,),
           )
 
 TEST_RESU(RESU=_F(NUME_ORDRE=29,
@@ -370,10 +370,10 @@ TEST_RESU(RESU=_F(NUME_ORDRE=29,
                   NOM_CHAM='DEPL',
                   NOEUD='NS5768',
                   NOM_CMP='PRE1',
-                  VALE_CALC=0.201617096,
-                  VALE_REFE=0.20000000000000001,
+                  VALE_CALC=0.20161709560127,
+                  VALE_REFE=0.2,
                   CRITERE='RELATIF',
-                  PRECISION=0.050000000000000003,),
+                  PRECISION=0.05,),
           )
 
 TEST_RESU(RESU=_F(NUME_ORDRE=19,
@@ -381,8 +381,7 @@ TEST_RESU(RESU=_F(NUME_ORDRE=19,
                   NOM_CHAM='DEPL',
                   NOEUD='NS5768',
                   NOM_CMP='PRE1',
-                  VALE_CALC=0.14910000000000001,
-                  TOLE_MACHINE=1.E-3,),
+                  VALE_CALC=0.14909394936104,)
           )
 
 TEST_RESU(RESU=_F(NUME_ORDRE=24,
@@ -390,8 +389,7 @@ TEST_RESU(RESU=_F(NUME_ORDRE=24,
                   NOM_CHAM='DEPL',
                   NOEUD='NS5768',
                   NOM_CMP='PRE1',
-                  VALE_CALC=0.18840000000000001,
-                  TOLE_MACHINE=1.E-3,),
+                  VALE_CALC=0.18836915146392,)
           )
 
 TEST_RESU(RESU=_F(NUME_ORDRE=29,
@@ -399,8 +397,7 @@ TEST_RESU(RESU=_F(NUME_ORDRE=29,
                   NOM_CHAM='DEPL',
                   NOEUD='NS5768',
                   NOM_CMP='PRE1',
-                  VALE_CALC=0.2016,
-                  TOLE_MACHINE=1.E-3,),
+                  VALE_CALC=0.20161709560127,)
           )
 
 ####################################

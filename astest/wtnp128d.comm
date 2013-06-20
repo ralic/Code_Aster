@@ -322,8 +322,8 @@ TEST_RESU(RESU=_F(NUME_ORDRE=5,
                   RESULTAT=U_1,
                   NOM_CHAM='FORC_NODA',
                   NOM_CMP='DY',
-                  VALE_CALC=-11.869999999999999,
-                  TOLE_MACHINE=1.E-3,),
+                  VALE_CALC=-11.864745396066,
+                  ),
           )
 
 TEST_RESU(RESU=_F(NUME_ORDRE=10,
@@ -331,8 +331,8 @@ TEST_RESU(RESU=_F(NUME_ORDRE=10,
                   RESULTAT=U_1,
                   NOM_CHAM='FORC_NODA',
                   NOM_CMP='DY',
-                  VALE_CALC=-2.1000000000000001,
-                  TOLE_MACHINE=1.E-3,),
+                  VALE_CALC=-2.1004046111322,
+                  ),
           )
 
 # TEST PRE1  NS5768 A 140S ET 190S
@@ -342,8 +342,8 @@ TEST_RESU(RESU=_F(NUME_ORDRE=7,
                   NOM_CHAM='DEPL',
                   NOEUD='NS5768',
                   NOM_CMP='PRE1',
-                  VALE_CALC=0.073700000000000002,
-                  TOLE_MACHINE=1.E-3,),
+                  VALE_CALC=0.073701877958239,
+                  ),
           )
 
 TEST_RESU(RESU=_F(NUME_ORDRE=10,
@@ -351,8 +351,8 @@ TEST_RESU(RESU=_F(NUME_ORDRE=10,
                   NOM_CHAM='DEPL',
                   NOEUD='NS5768',
                   NOM_CMP='PRE1',
-                  VALE_CALC=0.16789999999999999,
-                  TOLE_MACHINE=1.E-3,),
+                  VALE_CALC=0.16785844413280,
+                  ),
           )
 
 FIN();

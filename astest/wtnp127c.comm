@@ -298,16 +298,20 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=5,
                    RESULTAT=cal1,
                    NOM_CHAM='FLHN_ELGA',
                    NOM_CMP='FH11',
-                   VALE_CALC=2.0013300000000001E-10,
-                   TOLE_MACHINE=1.E-3,
+                   VALE_REFE=2.0E-10,
+                   VALE_CALC=2.0013320640943E-10,
+                   PRECISION=1.E-3,
+                   REFERENCE='ANALYTIQUE',
                    MAILLE='M401',),
                 _F(NUME_ORDRE=5,
                    POINT=1,
                    RESULTAT=cal1,
                    NOM_CHAM='FLHN_ELGA',
                    NOM_CMP='FH22',
-                   VALE_CALC=1.9993299999999999E-11,
-                   TOLE_MACHINE=1.E-3,
+                   VALE_REFE=2.0E-11,
+                   VALE_CALC=1.999330732031E-11,
+                   PRECISION=1.E-3,
+                   REFERENCE='ANALYTIQUE',
                    MAILLE='M401',),
                 ),
           )
@@ -319,8 +323,10 @@ FLUXND = POST_ELEM(RESULTAT   = cal1,
               NOM_CHAM='FLHN_ELGA',
               NOM_CMP=('FH11','FH12','FH21','FH22')))
 
-TEST_TABLE(VALE_CALC=-2.0000000000000001E-10,
-           TOLE_MACHINE=1.E-3,
+TEST_TABLE(VALE_REFE=-2.0E-10,
+           VALE_CALC=-1.9986339399315E-10,
+           PRECISION=1.E-3,
+           REFERENCE='ANALYTIQUE',
            NOM_PARA='INTE_FH11',
            TABLE=FLUXND,)
 
@@ -331,8 +337,10 @@ FLUXNM = POST_ELEM(RESULTAT   = cal1,
               NOM_CHAM='FLHN_ELGA',
               NOM_CMP=('FH11','FH12','FH21','FH22')))
 
-TEST_TABLE(VALE_CALC=2.0000000000000001E-10,
-           TOLE_MACHINE=1.E-3,
+TEST_TABLE(VALE_REFE=2.0E-10,
+           VALE_CALC=1.9999770053685E-10,
+           PRECISION=1.E-3,
+           REFERENCE='ANALYTIQUE',
            NOM_PARA='INTE_FH11',
            TABLE=FLUXNM,)
 
@@ -343,8 +351,10 @@ FLUXNG = POST_ELEM(RESULTAT   = cal1,
               NOM_CHAM='FLHN_ELGA',
               NOM_CMP=('FH11','FH12','FH21','FH22')))
 
-TEST_TABLE(VALE_CALC=2.0000000000000001E-10,
-           TOLE_MACHINE=1.E-3,
+TEST_TABLE(VALE_REFE=2.0E-10,
+           VALE_CALC=2.0013320640943E-10,
+           PRECISION=1.E-3,
+           REFERENCE='ANALYTIQUE',
            NOM_PARA='INTE_FH11',
            TABLE=FLUXNG,)
 

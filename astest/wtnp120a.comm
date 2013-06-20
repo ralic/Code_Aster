@@ -445,8 +445,7 @@ TEST_RESU(RESU=_F(INST=3.1536000E7,
                NOEUD='N678',
                NOM_CMP='PRE1',
                VALE_CALC=-9.97840106E+05,
-               CRITERE='RELATIF',
-               TOLE_MACHINE=1.e-4,),
+               CRITERE='RELATIF',),
        )
 
 TEST_RESU(RESU=_F(INST=3.1536000000E10,
@@ -455,8 +454,7 @@ TEST_RESU(RESU=_F(INST=3.1536000000E10,
                NOEUD='N678',
                NOM_CMP='PRE1',
                VALE_CALC=-7.34411665E+05,
-               CRITERE='RELATIF',
-               TOLE_MACHINE=1.e-4,),
+               CRITERE='RELATIF',),
        )
 
 #=================PG======================
@@ -467,8 +465,7 @@ TEST_RESU(RESU=_F(INST=3.1536000E7,
                NOEUD='N678',
                NOM_CMP='PRE2',
                VALE_CALC= 2.30612830E+03,
-               CRITERE='RELATIF',
-               TOLE_MACHINE=1.e-4,),
+               CRITERE='RELATIF',),
        )
 
 TEST_RESU(RESU=_F(INST=3.1536000000E10,
@@ -477,8 +474,7 @@ TEST_RESU(RESU=_F(INST=3.1536000000E10,
                NOEUD='N678',
                NOM_CMP='PRE2',
                VALE_CALC= 2.67411367E+05,
-               CRITERE='RELATIF',
-               TOLE_MACHINE=1.e-4,),
+               CRITERE='RELATIF',),
        )
 
 #=================PC======================
@@ -489,8 +485,7 @@ TEST_RESU(RESU=_F(INST=3.1536000E7,
                NOEUD='NQ182',
                NOM_CMP='PRE1',
                VALE_CALC=-9.97840106E+05,
-               CRITERE='RELATIF',
-               TOLE_MACHINE=1.e-4,),
+               CRITERE='RELATIF',),
        )
 
 TEST_RESU(RESU=_F(INST=3.1536000000E10,
@@ -499,8 +494,7 @@ TEST_RESU(RESU=_F(INST=3.1536000000E10,
                NOEUD='NQ182',
                NOM_CMP='PRE1',
                VALE_CALC=-7.34411665E+05,
-               CRITERE='RELATIF',
-               TOLE_MACHINE=1.e-4,),
+               CRITERE='RELATIF',),
        )
 
 #=================PG======================
@@ -511,8 +505,7 @@ TEST_RESU(RESU=_F(INST=3.1536000E7,
                NOEUD='NQ182',
                NOM_CMP='PRE2',
                VALE_CALC= 2.30612830E+03,
-               CRITERE='RELATIF',
-               TOLE_MACHINE=1.e-4,),
+               CRITERE='RELATIF',),
        )
 
 TEST_RESU(RESU=_F(INST=3.1536000000E10,
@@ -521,8 +514,7 @@ TEST_RESU(RESU=_F(INST=3.1536000000E10,
                NOEUD='NQ182',
                NOM_CMP='PRE2',
                VALE_CALC= 2.67411367E+05,
-               CRITERE='RELATIF',
-               TOLE_MACHINE=1.e-4,),
+               CRITERE='RELATIF',),
        )
 
 #=================PC======================
@@ -533,8 +525,7 @@ TEST_RESU(RESU=_F(INST=3.1536000E7,
                NOEUD='N783',
                NOM_CMP='PRE1',
                VALE_CALC=-9.99999022E+05,
-               CRITERE='RELATIF',
-               TOLE_MACHINE=1.e-4,),
+               CRITERE='RELATIF',),
        )
 
 TEST_RESU(RESU=_F(INST=3.1536000000E10,
@@ -543,8 +534,7 @@ TEST_RESU(RESU=_F(INST=3.1536000000E10,
                NOEUD='N783',
                NOM_CMP='PRE1',
                VALE_CALC=-1.00096042E+06,
-               CRITERE='RELATIF',
-               TOLE_MACHINE=1.e-4,),
+               CRITERE='RELATIF',),
        )
 
 #=================PG======================
@@ -555,8 +545,7 @@ TEST_RESU(RESU=_F(INST=3.1536000E7,
                NOEUD='N783',
                NOM_CMP='PRE2',
                VALE_CALC=3.63673159E-11,
-               CRITERE='ABSOLU',
-               TOLE_MACHINE=1.e-8,),
+               CRITERE='ABSOLU',),
        )
 
 TEST_RESU(RESU=_F(INST=3.1536000000E10,
@@ -565,8 +554,7 @@ TEST_RESU(RESU=_F(INST=3.1536000000E10,
                NOEUD='N783',
                NOM_CMP='PRE2',
                VALE_CALC= 3.07514235E-06,
-               CRITERE='RELATIF',
-               TOLE_MACHINE=1.e-4,),
+               CRITERE='RELATIF',),
        )
 
 #=================PC======================     
@@ -577,8 +565,7 @@ TEST_RESU(RESU=_F(INST=3.1536000E7,
                NOEUD='NQ21',
                NOM_CMP='PRE1',
                VALE_CALC=-9.99999022E+05,
-               CRITERE='RELATIF',
-               TOLE_MACHINE=1.e-4,),
+               CRITERE='RELATIF',),
        )
 
 TEST_RESU(RESU=_F(INST=3.1536000000E10,
@@ -587,8 +574,7 @@ TEST_RESU(RESU=_F(INST=3.1536000000E10,
                NOEUD='NQ21',
                NOM_CMP='PRE1',
                VALE_CALC=-1.00096042E+06,
-               CRITERE='RELATIF',
-               TOLE_MACHINE=1.e-4,),
+               CRITERE='RELATIF',),
        )
 
 #=================PG======================
@@ -599,8 +585,7 @@ TEST_RESU(RESU=_F(INST=3.1536000E7,
                NOEUD='NQ21',
                NOM_CMP='PRE2',
                VALE_CALC= 3.63673159E-11,
-               CRITERE='ABSOLU',
-               TOLE_MACHINE=1.e-8,),
+               CRITERE='ABSOLU',),
        )
 
 TEST_RESU(RESU=_F(INST=3.1536000000E10,
@@ -609,8 +594,7 @@ TEST_RESU(RESU=_F(INST=3.1536000000E10,
                NOEUD='NQ21',
                NOM_CMP='PRE2',
                VALE_CALC= 3.07514235E-06,
-               CRITERE='RELATIF',
-               TOLE_MACHINE=1.e-4,),
+               CRITERE='RELATIF',),
        )
 
 #=================PC====================== 
@@ -621,8 +605,7 @@ TEST_RESU(RESU=_F(INST=3.1536000E7,
                NOEUD='N727',
                NOM_CMP='PRE1',
                VALE_CALC=-9.99999000E+05,
-               CRITERE='RELATIF',
-               TOLE_MACHINE=1.e-4,),
+               CRITERE='RELATIF',),
        )
 
 TEST_RESU(RESU=_F(INST=3.1536000000E10,
@@ -631,8 +614,7 @@ TEST_RESU(RESU=_F(INST=3.1536000000E10,
                NOEUD='N727',
                NOM_CMP='PRE1',
                VALE_CALC=-1.00008981E+06,
-               CRITERE='RELATIF',
-               TOLE_MACHINE=1.e-4,),
+               CRITERE='RELATIF',),
        )
 
 #=================PG======================
@@ -643,8 +625,7 @@ TEST_RESU(RESU=_F(INST=3.1536000E7,
                NOEUD='N727',
                NOM_CMP='PRE2',
                VALE_CALC=-6.33418429E-15,
-               CRITERE='ABSOLU',
-               TOLE_MACHINE=1.e-8,),
+               CRITERE='ABSOLU',),
        )
 
 TEST_RESU(RESU=_F(INST=3.1536000000E10,
@@ -653,8 +634,7 @@ TEST_RESU(RESU=_F(INST=3.1536000000E10,
                NOEUD='N727',
                NOM_CMP='PRE2',
                VALE_CALC= 1.52130616E-07,
-               CRITERE='RELATIF',
-               TOLE_MACHINE=1.e-4,),
+               CRITERE='RELATIF',),
        )
 
 #=================PC======================
@@ -665,8 +645,7 @@ TEST_RESU(RESU=_F(INST=3.1536000E7,
                NOEUD='NQ25',
                NOM_CMP='PRE1',
                VALE_CALC=-9.99999000E+05,
-               CRITERE='RELATIF',
-               TOLE_MACHINE=1.e-4,),
+               CRITERE='RELATIF',),
        )
 
 TEST_RESU(RESU=_F(INST=3.1536000000E10,
@@ -675,8 +654,7 @@ TEST_RESU(RESU=_F(INST=3.1536000000E10,
                NOEUD='NQ25',
                NOM_CMP='PRE1',
                VALE_CALC=-1.00008981E+06,
-               CRITERE='RELATIF',
-               TOLE_MACHINE=1.e-4,),
+               CRITERE='RELATIF',),
        )
 
 #=================PG======================
@@ -687,8 +665,7 @@ TEST_RESU(RESU=_F(INST=3.1536000E7,
                NOEUD='NQ25',
                NOM_CMP='PRE2',
                VALE_CALC=-6.33418430E-15,
-               CRITERE='ABSOLU',
-               TOLE_MACHINE=1.e-8,),
+               CRITERE='ABSOLU',),
        )
 
 TEST_RESU(RESU=_F(INST=3.1536000000E10,
@@ -697,8 +674,7 @@ TEST_RESU(RESU=_F(INST=3.1536000000E10,
                NOEUD='NQ25',
                NOM_CMP='PRE2',
                VALE_CALC= 1.52130616E-07,
-               CRITERE='RELATIF',
-               TOLE_MACHINE=1.e-4,),
+               CRITERE='RELATIF',),
        )
 
 FIN()

@@ -1872,7 +1872,6 @@ IMPR_TABLE(  TABLE=TT,
           )
 
 TEST_TABLE(VALE_CALC=0.5,
-           TOLE_MACHINE=1.E-3,
            NOM_PARA='MOYEN',
            TABLE=TT,
            FILTRE=(_F(NOM_PARA='CALCUL',
@@ -1885,8 +1884,7 @@ TEST_TABLE(VALE_CALC=0.5,
 # attention : le comportement du generateur de nombres aleatoires
 # (module random) a change entre la version 2.2 de python et la
 # version 2.3. Les resultats s en trouvent un peu affectes.
-TEST_TABLE(VALE_CALC=2.4559999999999999E-05,
-         TOLE_MACHINE=1.E-3,
+TEST_TABLE(VALE_CALC=2.4560788330548E-05,
          NOM_PARA='ECART_TYPE',
          TABLE=TT,
          FILTRE=(_F(NOM_PARA='CALCUL',
@@ -1896,8 +1894,7 @@ TEST_TABLE(VALE_CALC=2.4559999999999999E-05,
                  ),
          )
 
-TEST_TABLE(VALE_CALC=2.4559999999999999E-05,
-         TOLE_MACHINE=1.E-3,
+TEST_TABLE(VALE_CALC=2.4565001926244E-05,
          NOM_PARA='RMS',
          TABLE=TT,
          FILTRE=(_F(NOM_PARA='CALCUL',
@@ -1907,8 +1904,7 @@ TEST_TABLE(VALE_CALC=2.4559999999999999E-05,
                  ),
          )
 
-TEST_TABLE(VALE_CALC=24.559999999999999,
-         TOLE_MACHINE=1.E-3,
+TEST_TABLE(VALE_CALC=24.565001926244,
          NOM_PARA='RMS_T_TOTAL',
          TABLE=TT,
          FILTRE=(_F(NOM_PARA='CALCUL',
@@ -1919,7 +1915,6 @@ TEST_TABLE(VALE_CALC=24.559999999999999,
          )
 
 TEST_TABLE(VALE_CALC=180.0,
-           TOLE_MACHINE=1.E-3,
            NOM_PARA='MAXI',
            TABLE=TT,
            FILTRE=(_F(NOM_PARA='CALCUL',
@@ -1931,7 +1926,6 @@ TEST_TABLE(VALE_CALC=180.0,
 
 TEST_TABLE(CRITERE='ABSOLU',
            VALE_CALC=0.0,
-           TOLE_MACHINE=1.E-3,
            NOM_PARA='MOYEN',
            TABLE=TT,
            FILTRE=(_F(NOM_PARA='CALCUL',
@@ -1943,7 +1937,6 @@ TEST_TABLE(CRITERE='ABSOLU',
 
 TEST_TABLE(CRITERE='ABSOLU',
            VALE_CALC=0.0,
-           TOLE_MACHINE=1.E-3,
            NOM_PARA='ECART_TYPE',
            TABLE=TT,
            FILTRE=(_F(NOM_PARA='CALCUL',
@@ -1955,7 +1948,6 @@ TEST_TABLE(CRITERE='ABSOLU',
 
 TEST_TABLE(CRITERE='ABSOLU',
            VALE_CALC=0.0,
-           TOLE_MACHINE=1.E-3,
            NOM_PARA='T_CHOC_MOYEN',
            TABLE=TT,
            FILTRE=(_F(NOM_PARA='CALCUL',
@@ -1967,7 +1959,6 @@ TEST_TABLE(CRITERE='ABSOLU',
 
 TEST_TABLE(CRITERE='ABSOLU',
            VALE_CALC=0.0,
-           TOLE_MACHINE=1.E-3,
            NOM_PARA='PUIS_USURE',
            TABLE=TT,
            FILTRE=(_F(NOM_PARA='CALCUL',

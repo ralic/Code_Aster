@@ -543,7 +543,6 @@ if METHODE == 'EF' :
                    VALE_CALC= 3.42484668E-11,
                    VALE_REFE=3.4244299999999997E-11,
                    CRITERE='RELATIF',
-                   TOLE_MACHINE=1.E-3,
                    PRECISION=1.E-2,),
            )
 

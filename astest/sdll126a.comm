@@ -174,9 +174,11 @@ TEST_FONCTION(VALEUR=_F(VALE_CALC=0.000566724403068,
                         FONCTION=DY_DIS2,),
               )
 
-TEST_FONCTION(VALEUR=_F(VALE_CALC=5.6680000000000001E-4,
-                        TOLE_MACHINE=1.E-3,
-                        VALE_PARA=4.9979100000000001,
+TEST_FONCTION(VALEUR=_F(VALE_REFE=5.668E-4,
+                        VALE_CALC=5.667244E-4,
+                        PRECISION=1.E-3,
+                        REFERENCE='AUTRE_ASTER',
+                        VALE_PARA=4.99791,
                         FONCTION=DY_DIS2,
                         ),
               )
@@ -189,8 +191,10 @@ TEST_FONCTION(VALEUR=_F(VALE_CALC=0.000693973337188,
                         FONCTION=DZ_DIS2,),
               )
 
-TEST_FONCTION(VALEUR=_F(VALE_CALC=6.9450000000000002E-4,
-                        TOLE_MACHINE=1.E-3,
+TEST_FONCTION(VALEUR=_F(VALE_REFE=6.945E-4,
+                        VALE_CALC=6.939733E-4,
+                        PRECISION=1.E-3,
+                        REFERENCE='AUTRE_ASTER',
                         VALE_PARA=4.9989299999999997,
                         FONCTION=DZ_DIS2,
                         ),
