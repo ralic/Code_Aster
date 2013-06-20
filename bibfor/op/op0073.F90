@@ -27,8 +27,6 @@ subroutine op0073()
     include 'asterc/getvtx.h'
     include 'asterc/r8dgrd.h'
     include 'asterfort/assert.h'
-    include 'asterfort/guide1.h'
-    include 'asterfort/guide2.h'
     include 'asterfort/infmaj.h'
     include 'asterfort/infniv.h'
     include 'asterfort/jedema.h'
@@ -49,7 +47,7 @@ subroutine op0073()
     integer :: lval, lpro, lfon, nbval, nbpair
     integer :: ibid, idtemp, i
     integer :: ifm, niv
-    real(kind=8) :: r8bid, denc, rad, rcarte
+    real(kind=8) :: r8bid, rad
     complex(kind=8) :: cbid
     logical :: crprol
     integer :: iarg
@@ -110,87 +108,6 @@ subroutine op0073()
                 zr(lfon-1+i) = zr(idtemp+2*(i-1)+1)
 10          continue
         endif
-!
-    else if (type(1:5).eq.'GUID_') then
-        nbpair = 801
-        nbval = nbpair * 2
-        call wkvect(nomfon//'.VALE', 'G V R', nbval, lval)
-        lfon = lval + nbpair
-!
-        if (type(8:12) .eq. 'CARTE') then
-            if (type(14:17) .eq. '1300') then
-                rcarte = 5.34d-3
-                denc = 3.05d-3
-            else if (type(14:16).eq.'900') then
-                rcarte = 5.325d-3
-                denc = 3.05d-3
-            endif
-            if (type(6:6) .eq. 'A' .or. type(6:6) .eq. 'B' .or. type(6:6) .eq. 'C' .or.&
-                type(6:6) .eq. 'D') then
-                call guide1(rcarte, denc, zr(lval), zr(lfon))
-            else if (type(6:6).eq.'E'.or.type(6:6).eq.'F') then
-                call guide2(rcarte, denc, zr(lval), zr(lfon))
-            endif
-        else if (type(8:12).eq.'CARSP') then
-            if (type(14:17) .eq. '1300') then
-                rcarte = 5.59d-3
-                denc = 3.05d-3
-            else if (type(14:16).eq.'900') then
-                rcarte = 5.59d-3
-                denc = 3.05d-3
-            endif
-            if (type(6:6) .eq. 'A' .or. type(6:6) .eq. 'B' .or. type(6:6) .eq. 'C' .or.&
-                type(6:6) .eq. 'D') then
-                call guide1(rcarte, denc, zr(lval), zr(lfon))
-            else if (type(6:6).eq.'E'.or.type(6:6).eq.'F') then
-                call guide2(rcarte, denc, zr(lval), zr(lfon))
-            endif
-        else if (type(8:12).eq.'GCONT') then
-            if (type(14:17) .eq. '1300') then
-                rcarte=5.44d-3
-            else if (type(14:16).eq.'900') then
-                rcarte=5.425d-3
-            endif
-            if (type(6:6) .eq. 'A' .or. type(6:6) .eq. 'C' .or. type(6:6) .eq. 'E' .or.&
-                type(6:6) .eq. 'F') then
-                denc=3.05d-3
-                if (type(6:6) .eq. 'A' .or. type(6:6) .eq. 'C') then
-                    call guide1(rcarte, denc, zr(lval), zr(lfon))
-                else if (type(6:6).eq.'E'.or.type(6:6).eq.'F') then
-                    call guide2(rcarte, denc, zr(lval), zr(lfon))
-                endif
-            else if (type(6:6).eq.'B'.or.type(6:6).eq.'D') then
-                denc=3.175d-3
-                call guide1(rcarte, denc, zr(lval), zr(lfon))
-            endif
-        else if (type(8:12).eq.'GCOMB') then
-            if (type(14:17) .eq. '1300') then
-                rcarte = 5.49d-3
-            else if (type(14:16).eq.'900') then
-                rcarte = 5.665d-3
-            endif
-            do 20 i = 1, nbpair
-                zr(lval+i-1) = (i-1) * rad * 4.5d-1
-                zr(lfon+i-1) = rcarte
-20          continue
-        endif
-!
-! --- CAS CRAYON_xxx
-    else if (type(1:7).eq.'CRAYON_') then
-        nbpair = 801
-        nbval = nbpair * 2
-        call wkvect(nomfon//'.VALE', 'G V R', nbval, lval)
-        lfon = lval + nbpair
-!
-        if (type(8:11) .eq. '1300') then
-            rcarte = 4.84d-3
-        else if (type(8:10).eq.'900') then
-            rcarte = 4.825d-3
-        endif
-        do 21 i = 1, nbpair
-            zr(lval+i-1) = (i-1) * rad * 4.5d-1
-            zr(lfon+i-1) = rcarte
-21      continue
 !
 ! --- CAS CERCLE, PLAN... SEUL LE .REFO ETAIT PRODUIT DANS L'ANCIENNE SD
     else
