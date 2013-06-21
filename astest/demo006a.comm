@@ -219,7 +219,6 @@ for k in range(1,10):
 
 TEST_TABLE(
            VALE_CALC=1.9669824189084001E9,
-           TOLE_MACHINE=1.E-3,
            NOM_PARA='VMIS',
            TABLE=RELV_5,
            FILTRE=_F(NOM_PARA='QUANTITE',

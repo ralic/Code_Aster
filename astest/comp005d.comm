@@ -261,8 +261,9 @@ for j in range(0,len(comportement)):
   IMPR_TABLE(TABLE=DIFF[j]);
 
   TEST_TABLE(CRITERE='ABSOLU',
-             VALE_CALC=0.0,
-             TOLE_MACHINE=1.E-3,
+             REFERENCE='NON_DEFINI',
+             VALE_REFE=0.0,
+             VALE_CALC=2.1449177384617E-05,
              NOM_PARA='DIFF',
              TABLE=DIFF_0,
              FILTRE=_F(CRIT_COMP='MAXI_ABS',

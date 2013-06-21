@@ -176,7 +176,6 @@ NB_MODES = INFO_MODE( MATR_RIGI=RIGAS,
                             
 TEST_TABLE(
            VALE_CALC_I=10,
-           TOLE_MACHINE=1.E-3,
            NOM_PARA='NB_MODE',
            TABLE=NB_MODES,
            )

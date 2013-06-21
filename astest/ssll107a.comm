@@ -26,15 +26,17 @@ TCARA=MACR_CARA_POUTRE(   FORMAT='MED',GROUP_MA_BORD='LSURF',
 IMPR_TABLE(     TABLE=TCARA, )
 
 TEST_TABLE(
-           VALE_CALC=7.3899999999999997E-4,
-           TOLE_MACHINE=1.E-3,
+           REFERENCE='ANALYTIQUE',
+           VALE_REFE=7.39E-4,
+           VALE_CALC=7.3868164385135E-4,
+           PRECISION=1.E-3,
            NOM_PARA='A_M',
            TABLE=TCARA,
            FILTRE=_F(NOM_PARA='LIEU',
                      VALE_K='.9000002',),
            )
 
-TEST_TABLE(REFERENCE='NON_DEFINI',
+TEST_TABLE(REFERENCE='ANALYTIQUE',
            PRECISION=1.5E-3,
            VALE_CALC=0.015319970,
            VALE_REFE=0.015299999999999999,
@@ -44,7 +46,7 @@ TEST_TABLE(REFERENCE='NON_DEFINI',
                      VALE_K='.9000002',),
            )
 
-TEST_TABLE(REFERENCE='NON_DEFINI',
+TEST_TABLE(REFERENCE='ANALYTIQUE',
            PRECISION=1.5E-3,
            VALE_CALC=0.015319970,
            VALE_REFE=0.015299999999999999,
@@ -54,7 +56,7 @@ TEST_TABLE(REFERENCE='NON_DEFINI',
                      VALE_K='.9000002',),
            )
 
-TEST_TABLE(REFERENCE='NON_DEFINI',
+TEST_TABLE(REFERENCE='ANALYTIQUE',
            PRECISION=4.0000000000000001E-3,
            VALE_CALC= 1.64226950E-07,
            VALE_REFE=1.6400000000000001E-07,
@@ -64,7 +66,7 @@ TEST_TABLE(REFERENCE='NON_DEFINI',
                      VALE_K='.9000002',),
            )
 
-TEST_TABLE(REFERENCE='NON_DEFINI',
+TEST_TABLE(REFERENCE='ANALYTIQUE',
            PRECISION=4.0000000000000001E-3,
            VALE_CALC= 1.64226950E-07,
            VALE_REFE=1.6400000000000001E-07,
@@ -75,8 +77,10 @@ TEST_TABLE(REFERENCE='NON_DEFINI',
            )
 
 TEST_TABLE(
-           VALE_CALC=-9.5000000000000004E-08,
-           TOLE_MACHINE=1.E-3,
+           REFERENCE='ANALYTIQUE',
+           VALE_REFE=-9.5E-08,
+           VALE_CALC=-9.493760793492E-08,
+           PRECISION=1.E-3,
            NOM_PARA='IYZ_G_M',
            TABLE=TCARA,
            FILTRE=_F(NOM_PARA='LIEU',
@@ -84,15 +88,17 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=7.3899999999999997E-4,
-           TOLE_MACHINE=1.E-3,
+           REFERENCE='ANALYTIQUE',
+           VALE_REFE=7.39E-4,
+           VALE_CALC=7.3868164385135E-4,
+           PRECISION=1.E-3,
            NOM_PARA='A',
            TABLE=TCARA,
            FILTRE=_F(NOM_PARA='LIEU',
                      VALE_K='.9000002',),
            )
 
-TEST_TABLE(REFERENCE='NON_DEFINI',
+TEST_TABLE(REFERENCE='ANALYTIQUE',
            PRECISION=1.5E-3,
            VALE_CALC=0.015319970,
            VALE_REFE=0.015299999999999999,
@@ -102,7 +108,7 @@ TEST_TABLE(REFERENCE='NON_DEFINI',
                      VALE_K='.9000002',),
            )
 
-TEST_TABLE(REFERENCE='NON_DEFINI',
+TEST_TABLE(REFERENCE='ANALYTIQUE',
            PRECISION=1.5E-3,
            VALE_CALC=0.015319970,
            VALE_REFE=0.015299999999999999,
@@ -112,7 +118,7 @@ TEST_TABLE(REFERENCE='NON_DEFINI',
                      VALE_K='.9000002',),
            )
 
-TEST_TABLE(REFERENCE='NON_DEFINI',
+TEST_TABLE(REFERENCE='ANALYTIQUE',
            PRECISION=4.0000000000000001E-3,
            VALE_CALC= 1.64226950E-07,
            VALE_REFE=1.6400000000000001E-07,
@@ -122,10 +128,10 @@ TEST_TABLE(REFERENCE='NON_DEFINI',
                      VALE_K='.9000002',),
            )
 
-TEST_TABLE(REFERENCE='NON_DEFINI',
-           PRECISION=4.0000000000000001E-3,
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           PRECISION=4.0E-3,
            VALE_CALC= 1.64226950E-07,
-           VALE_REFE=1.6400000000000001E-07,
+           VALE_REFE=1.64E-07,
            NOM_PARA='IZ_G',
            TABLE=TCARA,
            FILTRE=_F(NOM_PARA='LIEU',
@@ -133,15 +139,17 @@ TEST_TABLE(REFERENCE='NON_DEFINI',
            )
 
 TEST_TABLE(
-           VALE_CALC=-9.5000000000000004E-08,
-           TOLE_MACHINE=1.E-3,
+           REFERENCE='ANALYTIQUE',
+           VALE_REFE=-9.5E-08,
+           VALE_CALC=-9.493760793492E-08,
+           PRECISION=1.E-3,
            NOM_PARA='IYZ_G',
            TABLE=TCARA,
            FILTRE=_F(NOM_PARA='LIEU',
                      VALE_K='.9000002',),
            )
 
-TEST_TABLE(REFERENCE='NON_DEFINI',
+TEST_TABLE(REFERENCE='ANALYTIQUE',
            PRECISION=4.0000000000000001E-3,
            VALE_CALC= 6.92893417E-08,
            VALE_REFE=6.9499999999999994E-08,
@@ -151,7 +159,7 @@ TEST_TABLE(REFERENCE='NON_DEFINI',
                      VALE_K='.9000002',),
            )
 
-TEST_TABLE(REFERENCE='NON_DEFINI',
+TEST_TABLE(REFERENCE='ANALYTIQUE',
            PRECISION=4.0000000000000001E-3,
            VALE_CALC= 2.59164558E-07,
            VALE_REFE=2.6E-07,
@@ -162,8 +170,10 @@ TEST_TABLE(REFERENCE='NON_DEFINI',
            )
 
 TEST_TABLE(
+           REFERENCE='ANALYTIQUE',
+           VALE_REFE=135.0,
            VALE_CALC=135.0,
-           TOLE_MACHINE=1.E-3,
+           PRECISION=1.E-3,
            NOM_PARA='ALPHA',
            TABLE=TCARA,
            FILTRE=_F(NOM_PARA='LIEU',
@@ -171,8 +181,10 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=-0.035360000000000003,
-           TOLE_MACHINE=1.E-3,
+           REFERENCE='ANALYTIQUE',
+           VALE_REFE=-0.03536,
+           VALE_CALC=-0.035355339059325,
+           PRECISION=1.E-3,
            NOM_PARA='Y_MIN',
            TABLE=TCARA,
            FILTRE=_F(NOM_PARA='LIEU',
@@ -180,8 +192,10 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=0.035360000000000003,
-           TOLE_MACHINE=1.E-3,
+           REFERENCE='ANALYTIQUE',
+           VALE_REFE=0.03536,
+           VALE_CALC=0.035355339059329,
+           PRECISION=1.E-3,
            NOM_PARA='Y_MAX',
            TABLE=TCARA,
            FILTRE=_F(NOM_PARA='LIEU',
@@ -189,8 +203,10 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=-0.01831,
-           TOLE_MACHINE=1.E-3,
+           REFERENCE='ANALYTIQUE',
+           VALE_REFE=-0.01831,
+           VALE_CALC=-0.018310950192204,
+           PRECISION=1.E-3,
            NOM_PARA='Z_MIN',
            TABLE=TCARA,
            FILTRE=_F(NOM_PARA='LIEU',
@@ -198,8 +214,10 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=0.021659999999999999,
-           TOLE_MACHINE=1.E-3,
+           REFERENCE='ANALYTIQUE',
+           VALE_REFE=0.02166,
+           VALE_CALC=0.021665709210692,
+           PRECISION=1.E-3,
            NOM_PARA='Z_MAX',
            TABLE=TCARA,
            FILTRE=_F(NOM_PARA='LIEU',
@@ -207,15 +225,17 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=0.037920000000000002,
-           TOLE_MACHINE=1.E-3,
+           REFERENCE='ANALYTIQUE',
+           VALE_REFE=0.03792,
+           VALE_CALC=0.037913137108301,
+           PRECISION=1.E-3,
            NOM_PARA='R_MAX',
            TABLE=TCARA,
            FILTRE=_F(NOM_PARA='LIEU',
                      VALE_K='.9000002',),
            )
 
-TEST_TABLE(REFERENCE='NON_DEFINI',
+TEST_TABLE(REFERENCE='ANALYTIQUE',
            PRECISION=0.12,
            VALE_CALC= 1.59641420E-08,
            VALE_REFE=1.4336E-08,
@@ -225,36 +245,44 @@ TEST_TABLE(REFERENCE='NON_DEFINI',
                      VALE_K='.9000002',),
            )
 
-TEST_TABLE(CRITERE='ABSOLU',
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           CRITERE='ABSOLU',
+           VALE_REFE=0.0,
            VALE_CALC=0.0,
-           TOLE_MACHINE=1.E-3,
+           PRECISION=1.E-3,
            NOM_PARA='EY',
            TABLE=TCARA,
            FILTRE=_F(NOM_PARA='LIEU',
                      VALE_K='.9000002',),
            )
 
-TEST_TABLE(CRITERE='ABSOLU',
-           VALE_CALC=-0.016003,
-           TOLE_MACHINE=1.E-3,
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           CRITERE='ABSOLU',
+           VALE_REFE=-0.016003,
+           VALE_CALC=-0.015067376087075,
+           PRECISION=1.E-3,
            NOM_PARA='EZ',
            TABLE=TCARA,
            FILTRE=_F(NOM_PARA='LIEU',
                      VALE_K='.9000002',),
            )
 
-TEST_TABLE(CRITERE='ABSOLU',
-           VALE_CALC=-4.0000000000000001E-3,
-           TOLE_MACHINE=1.E-3,
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           CRITERE='ABSOLU',
+           VALE_REFE=-4.0E-3,
+           VALE_CALC=-4.6657798895979E-3,
+           PRECISION=1.E-3,
            NOM_PARA='PCTY',
            TABLE=TCARA,
            FILTRE=_F(NOM_PARA='LIEU',
                      VALE_K='.9000002',),
            )
 
-TEST_TABLE(CRITERE='ABSOLU',
-           VALE_CALC=-4.0000000000000001E-3,
-           TOLE_MACHINE=1.E-3,
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           CRITERE='ABSOLU',
+           VALE_REFE=-4.0E-3,
+           VALE_CALC=-4.6656723028778E-3,
+           PRECISION=1.E-3,
            NOM_PARA='PCTZ',
            TABLE=TCARA,
            FILTRE=_F(NOM_PARA='LIEU',
@@ -264,7 +292,7 @@ TEST_TABLE(CRITERE='ABSOLU',
 TEST_TABLE(REFERENCE='ANALYTIQUE',
            PRECISION=0.014,
            VALE_CALC= 1.39015912E-08,
-           VALE_REFE=1.4084000000000001E-08,
+           VALE_REFE=1.4084E-08,
            NOM_PARA='IYR2_P',
            TABLE=TCARA,
            FILTRE=_F(NOM_PARA='LIEU',
@@ -282,8 +310,10 @@ TEST_TABLE(REFERENCE='ANALYTIQUE',
            )
 
 TEST_TABLE(
-           VALE_CALC=0.035360000000000003,
-           TOLE_MACHINE=1.E-3,
+           REFERENCE='ANALYTIQUE',
+           VALE_REFE=0.03536,
+           VALE_CALC=0.035355339059329,
+           PRECISION=1.E-3,
            NOM_PARA='RY',
            TABLE=TCARA,
            FILTRE=_F(NOM_PARA='LIEU',
@@ -291,8 +321,10 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=0.021659999999999999,
-           TOLE_MACHINE=1.E-3,
+           REFERENCE='ANALYTIQUE',
+           VALE_REFE=0.0216,
+           VALE_CALC=0.021665709210692,
+           PRECISION=5.E-3,
            NOM_PARA='RZ',
            TABLE=TCARA,
            FILTRE=_F(NOM_PARA='LIEU',

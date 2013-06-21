@@ -149,8 +149,8 @@ TEST_RESU(RESU=_F(NUME_ORDRE=1,
                   RESULTAT=res1,
                   NOM_CHAM='DEPL',
                   NOM_CMP='DX',
-                  VALE_CALC=9.9559999999999992E-06,
-                  TOLE_MACHINE=1.E-3,),
+                  VALE_CALC=9.9560546394016E-06,
+                  ),
           )
 
 # Verification du deplacement suivant y au point C
@@ -160,8 +160,8 @@ TEST_RESU(RESU=_F(NUME_ORDRE=1,
                   RESULTAT=res1,
                   NOM_CHAM='DEPL',
                   NOM_CMP='DY',
-                  VALE_CALC=-5.3179999999999997E-06,
-                  TOLE_MACHINE=1.E-3,),
+                  VALE_CALC=-5.3178382739945E-06,
+                  ),
           )
 
 # Commande obligatoire pour clore une execution

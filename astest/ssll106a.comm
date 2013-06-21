@@ -60,7 +60,6 @@ MASSIN=POST_ELEM(  MODELE=MO,
                     )
 
 TEST_TABLE(VALE_CALC=70.572699999999998,
-           TOLE_MACHINE=1.E-3,
            NOM_PARA='MASSE',
            TABLE=MASSIN,
            FILTRE=_F(NOM_PARA='LIEU',
@@ -68,7 +67,6 @@ TEST_TABLE(VALE_CALC=70.572699999999998,
            )
 
 TEST_TABLE(VALE_CALC=2.0,
-           TOLE_MACHINE=1.E-3,
            NOM_PARA='CDG_X',
            TABLE=MASSIN,
            FILTRE=_F(NOM_PARA='LIEU',
@@ -76,7 +74,6 @@ TEST_TABLE(VALE_CALC=2.0,
            )
 
 TEST_TABLE(VALE_CALC=1.5,
-           TOLE_MACHINE=1.E-3,
            NOM_PARA='CDG_Y',
            TABLE=MASSIN,
            FILTRE=_F(NOM_PARA='LIEU',
@@ -85,7 +82,6 @@ TEST_TABLE(VALE_CALC=1.5,
 
 TEST_TABLE(CRITERE='ABSOLU',
            VALE_CALC=0.0,
-           TOLE_MACHINE=1.E-3,
            NOM_PARA='CDG_Z',
            TABLE=MASSIN,
            FILTRE=_F(NOM_PARA='LIEU',

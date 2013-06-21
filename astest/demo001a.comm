@@ -288,9 +288,8 @@ ETA_PILO=RECU_FONCTION(RESULTAT=RESUPILO,
                        NOM_PARA_RESU='ETA_PILOTAGE',
                        );
 
-TEST_FONCTION(VALEUR=_F(VALE_CALC=5.6699999999999999,
-                        TOLE_MACHINE=1.E-3,
-                        VALE_PARA=1.6000000000000001,
+TEST_FONCTION(VALEUR=_F(VALE_CALC=5.668197,
+                        VALE_PARA=1.60,
                         NOM_PARA='INST',
                         FONCTION=ETA_PILO,
                         ),

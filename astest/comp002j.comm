@@ -225,7 +225,6 @@ TEST_ECART(ch_param2,label_cal,N_pas,Ncal,nbequi,R_SI,prec_ecart,prec_zero,coef_
 
 TEST_TABLE(
            VALE_CALC=3.31336000E8,
-           TOLE_MACHINE=1.E-3,
            NOM_PARA='VMIS_Pa_1',
            TABLE=R_SI_1,
            FILTRE=_F(NOM_PARA='INST',
@@ -233,8 +232,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=2.0794900E7,
-           TOLE_MACHINE=1.E-3,
+           VALE_CALC=2.079485379201E7,
            NOM_PARA='SIXX_Pa_1',
            TABLE=R_SI_3,
            FILTRE=_F(NOM_PARA='INST',
@@ -302,7 +300,6 @@ TEST_TABLE(CRITERE='ABSOLU',
            REFERENCE='ANALYTIQUE',
            PRECISION=0.02,
            VALE_CALC=0.0,
-           TOLE_MACHINE=1.E-3,
            VALE_REFE=0.0,
            NOM_PARA='MAT_DIFF',
            TYPE_TEST='MAX',
