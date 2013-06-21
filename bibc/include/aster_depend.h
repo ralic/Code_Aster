@@ -48,32 +48,32 @@ Compatibilité ascendantes :
 
 /* XXX backward compatibility layer */
 #if defined _WIN32
-#ifndef _WINDOWS
-#define _WINDOWS
-#endif
+#   ifndef _WINDOWS
+#       define _WINDOWS
+#   endif
 #endif
 
 #if defined P_LINUX || LINUX || LINUX64 || HPUX || IRIX || IRIX64 || SOLARIS || SOLARIS64 || TRU64
-#define _POSIX
+#   define _POSIX
 #endif
 
 #if defined LINUX64 || IRIX64 || SOLARIS64 || TRU64
-#define _USE_64_BITS
+#   define _USE_64_BITS
 #endif
 
 #if defined IRIX64
-#define IRIX
-#define _NOT_GNU
+#   define IRIX
+#   define _NOT_GNU
 #endif
 
 #if defined SOLARIS64
-#define SOLARIS
-#define _NOT_GNU
+#   define SOLARIS
+#   define _NOT_GNU
 #endif
 
 #ifdef HPUX
-#define _NO_UNDERSCORE
-#define _NOT_GNU
+#   define _NO_UNDERSCORE
+#   define _NOT_GNU
 #endif
 
 /* XXX end backward compatibility */
@@ -82,30 +82,29 @@ Compatibilité ascendantes :
 
 /* MS Windows platforms */
 #if defined _WINDOWS
-#define _IGNORE_RLIMIT
+#   define _IGNORE_RLIMIT
 
 /* win64 - use LLP64 model */
-#ifdef _USE_64_BITS
-#define _STRLEN_AT_END
-#define _USE_LONG_LONG_INT
-#endif
+#   ifdef _USE_64_BITS
+#       define _STRLEN_AT_END
+#       define _USE_LONG_LONG_INT
+#   endif
 
 /* stdcall must be defined explicitly because it does not seem required anywhere */
 //#define _USE_STDCALL
-#define _STRLEN_AT_END
+#   define _STRLEN_AT_END
 
 #else
 /* Linux & Unix platforms */
-#ifndef _POSIX
-#define _POSIX
-#endif
-#define _STRLEN_AT_END
+#   ifndef _POSIX
+#       define _POSIX
+#   endif
+#   define _STRLEN_AT_END
 
 /* Linux but not Unix - see inisig.c */
-#ifndef _NOT_GNU
-#define GNU_LINUX
-#endif
-
+#   ifndef _NOT_GNU
+#       define GNU_LINUX
+#   endif
 
 /* end platforms type */
 #endif
@@ -114,109 +113,112 @@ Compatibilité ascendantes :
 /* plates-formes 64 bits */
 #if defined _USE_64_BITS || LINUX64 || TRU64 || SOLARIS64 || IRIX64
 /* pour compatibilité si on arrive avec LINUX64 */
-#ifndef _USE_64_BITS
-#define _USE_64_BITS
-#endif
+#   ifndef _USE_64_BITS
+#      define _USE_64_BITS
+#   endif
 
 /* define INTEGER type */
-#ifdef _USE_LONG_LONG_INT
-#define INTEGER long long
-#else
-#define INTEGER long
-#endif
+#   ifdef _USE_LONG_LONG_INT
+#      define INTEGER long long
+#   else
+#      define INTEGER long
+#   endif
 
 /* define STRING_SIZE type : may be previously defined */
-#ifndef STRING_SIZE
+#   ifndef STRING_SIZE
+#      ifdef _USE_LONG_LONG_INT
+#         define STRING_SIZE size_t
+#      else
+#         ifdef _USE_INTEL_IFORT
+#             define STRING_SIZE size_t
+#         else
+#             define STRING_SIZE unsigned int
+#         endif
+#      endif
+#   endif
 
-#ifdef _USE_LONG_LONG_INT
- #define STRING_SIZE size_t
-#else
- #ifdef _USE_INTEL_IFORT
-  #define STRING_SIZE size_t
- #else
-  #define STRING_SIZE unsigned int
- #endif
-#endif
-
-#endif
-
-#define INTEGER4 int
-#define LONG_INTEGER_BITS 64
-#define LONG_INTEGER_MOTS 8
-#define DOUBLE double
-#define REAL4 float
-#define LONG_REAL_MOTS 8
-#define LONG_COMPLEX_MOTS 16
-#define OFF_INIT  8
-#define INTEGER_NB_CHIFFRES_SIGNIFICATIFS 19
-#define REAL_NB_CHIFFRES_SIGNIFICATIFS    16
+#   define INTEGER4 int
+#   define LONG_INTEGER_BITS 64
+#   define LONG_INTEGER_MOTS 8
+#   define DOUBLE double
+#   define REAL4 float
+#   define LONG_REAL_MOTS 8
+#   define LONG_COMPLEX_MOTS 16
+#   define OFF_INIT  8
+#   define INTEGER_NB_CHIFFRES_SIGNIFICATIFS 19
+#   define REAL_NB_CHIFFRES_SIGNIFICATIFS    16
 
 /* plates-formes 32 bits */
 #else
-#define INTEGER long
-#define INTEGER4 int
-#define LONG_INTEGER_BITS 32
-#define LONG_INTEGER_MOTS 4
-#ifndef STRING_SIZE
-#define STRING_SIZE size_t
-#endif
-#define DOUBLE double
-#define REAL4 float
-#define LONG_REAL_MOTS 8
-#define LONG_COMPLEX_MOTS 16
-#define OFF_INIT  4
-#define INTEGER_NB_CHIFFRES_SIGNIFICATIFS  9
-#define REAL_NB_CHIFFRES_SIGNIFICATIFS    16
-
+#   define INTEGER long
+#   define INTEGER4 int
+#   define LONG_INTEGER_BITS 32
+#   define LONG_INTEGER_MOTS 4
+#   ifndef STRING_SIZE
+#       define STRING_SIZE size_t
+#   endif
+#   define DOUBLE double
+#   define REAL4 float
+#   define LONG_REAL_MOTS 8
+#   define LONG_COMPLEX_MOTS 16
+#   define OFF_INIT  4
+#   define INTEGER_NB_CHIFFRES_SIGNIFICATIFS  9
+    #define REAL_NB_CHIFFRES_SIGNIFICATIFS    16
 #endif
 
 /* Utilisation de getrlimit :
    _IGNORE_RLIMIT permet de ne pas utiliser getrlimit */
 #ifndef _IGNORE_RLIMIT
-#define _USE_RLIMIT
+#   define _USE_RLIMIT
 #endif
 
 /* flags d'optimisation */
 /* taille de bloc dans MULT_FRONT */
 #ifdef _USE_64_BITS
-#define __OPT_TAILLE_BLOC_MULT_FRONT__ 96
+#   define __OPT_TAILLE_BLOC_MULT_FRONT__ 96
 #else
-#define __OPT_TAILLE_BLOC_MULT_FRONT__ 32
+#   define __OPT_TAILLE_BLOC_MULT_FRONT__ 32
 #endif
 
 #ifndef OPT_TAILLE_BLOC_MULT_FRONT
-#define OPT_TAILLE_BLOC_MULT_FRONT __OPT_TAILLE_BLOC_MULT_FRONT__
+#   define OPT_TAILLE_BLOC_MULT_FRONT __OPT_TAILLE_BLOC_MULT_FRONT__
+#endif
+
+/* Comportement par défaut des FPE dans les blas/lapack */
+#ifndef _ENABLE_MATHLIB_FPE
+#   define _DISABLE_MATHLIB_FPE
+#else
+#   undef _DISABLE_MATHLIB_FPE
 #endif
 
 /* Valeurs par défaut pour les répertoires */
 #ifndef REP_MAT
-#define REP_MAT "/aster/materiau/"
+#   define REP_MAT "/aster/materiau/"
 #endif
 
 #ifndef REP_OUT
-#define REP_OUT "/aster/outils/"
+#   define REP_OUT "/aster/outils/"
 #endif
 
 #ifndef REP_DON
-#define REP_DON "/aster/donnees/"
+#   define REP_DON "/aster/donnees/"
 #endif
 
 /* --- TODO COMPTABILITY (remove _WIN32) --- */
 #if defined _WINDOWS
-#ifndef _WIN32
-#define _WIN32
+#   ifndef _WIN32
+#       define _WIN32
+#   endif
 #endif
-#endif
-
 
 /* --------------------------------------------
    --      TEST DES VALEURS OBLIGATOIRES     --
    -------------------------------------------- */
 #if ! defined _POSIX && ! defined _WINDOWS
-#error ERREUR au moins un parmi _POSIX or _WINDOWS !!
+#   error ERREUR au moins un parmi _POSIX or _WINDOWS !!
 #endif
 #if defined _POSIX && defined _WINDOWS
-#error ERREUR seulement un parmi _POSIX or _WINDOWS !!
+#   error ERREUR seulement un parmi _POSIX or _WINDOWS !!
 #endif
 
 /* --------------------------------------------

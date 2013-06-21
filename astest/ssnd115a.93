@@ -39,7 +39,7 @@ def epsgamma(deltagamma,nbcycle1,nbcycle2,npas0,pas,eps0,gamma0):
    ltime=[0.]
    lt=pas*NP.arange(1,npas0+1)
    for j in range(nbcycle2):
-       for i in range(nbcycle1) :
+       for i in range(int(nbcycle1)):
            angle=i*deltagamma*pi/180.
            epsmax=eps0*cos(angle)
            gammax=gamma0*sin(angle)

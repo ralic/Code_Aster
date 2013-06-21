@@ -29,8 +29,7 @@ def configure(self):
 
     self.check_fortran_clib()
     if self.env.FC_NAME == 'IFORT':
-        defines = ['_USE_INTEL_IFORT', '_DISABLE_MATHLIB_FPE']
-        self.env.append_unique('DEFINES', defines)
+        self.env.append_unique('DEFINES', '_USE_INTEL_IFORT')
 
 ###############################################################################
 

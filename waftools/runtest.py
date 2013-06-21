@@ -18,6 +18,9 @@ def options(self):
 def runtest(self):
     """Run a testcase by calling as_run"""
     from Options import options as opts
+    if not _has_asrun():
+        Logs.error("'as_run' not found, please check your $PATH")
+        return
     dtmp = tempfile.mkdtemp(prefix='runtest_')
     Logs.info("destination of output files: %s" % dtmp)
     versdir = osp.join(self.env['PREFIX'], 'share', 'aster')
@@ -45,3 +48,12 @@ def runtest(self):
         else:
             func = Logs.error
         func('`- exit %s' % retcode)
+
+
+def _has_asrun():
+    """check that as_run is available"""
+    try:
+        iret = Popen(['as_run', '--version'], stdout=PIPE, stderr=PIPE).wait()
+    except OSError:
+        iret = 127
+    return iret == 0
