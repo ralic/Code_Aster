@@ -220,7 +220,7 @@ subroutine facsmb(nbnd, nbsn, supnd, invsup, parent,&
                 endif
                 goto 999
             endif
-            global(k+adress(sni)) = ind
+            global(k+adress(sni)) = int(ind, 4)
             place(global(k+adress(sni))) = k + 1
             k = k + 1
             ind = chaine(ind)

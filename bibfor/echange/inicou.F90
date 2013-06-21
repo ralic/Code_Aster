@@ -17,10 +17,6 @@ subroutine inicou(nbpas, tinit, tfin, dt, dtsto,&
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 ! person_in_charge: nicolas.greffet at edf.fr
-! **********************************************************************
-! *   LOGICIEL CODE_ASTER - COUPLAGE ASTER/EDYOS - COPYRIGHT EDF 2009  *
-! **********************************************************************
-!
 !
 !  INICOU : FONCTION
 !
@@ -44,32 +40,6 @@ subroutine inicou(nbpas, tinit, tfin, dt, dtsto,&
 !
 !     INICOU ECHANGE UNIQUEMENT AVEC INITCO (EDYOS)
 !
-!
-!=======================================================================
-!
-!  REFERENCES BIBLIOGRAPHIQUES
-!  ---------------------------
-!
-!  NOTE HI-26/03/007A
-!  "DEVELOPPEMENT D'UN MODE PRODUCTION POUR CALCIUM: MANUEL UTILISATEUR"
-!  FAYOLLE ERIC, DEMKO BERTRAND (CS SI)  JUILLET 2003
-!
-!  LES APPELS YACS SONT STRICTEMENTS IDENTIQUES A CEUX DE CALCIUM A
-!  L'EXCEPTION DU RAJOUT D'UN PREMIER ARGUMENT (ICOMPO) CORRESPONDANT
-!  A UNE ADRESSE NECESSAIRE A L'EXECUTION DE YACS
-!
-! ======================================================================
-!
-!  DEVELOPPEMENTS ET CORRECTIONS D'ANOMALIES
-!  -----------------------------------------
-!
-!  DATE: 13/02/09   AUTEUR: P. VAUGRANTE    ANOMALIE: DEVELOPPEMENT
-!  DATE:            AUTEUR:                 ANOMALIE:
-!  DATE:            AUTEUR:                 ANOMALIE:
-!  DATE:            AUTEUR:                 ANOMALIE:
-!
-!
-! ======================================================================
 !
 !  VARIABLES UTILISEES
 !  -------------------
@@ -193,19 +163,8 @@ subroutine inicou(nbpas, tinit, tfin, dt, dtsto,&
 ! !_______________!_____________!______________________________________!
 !
 !
-!
-!
-!=======================================================================
-!  SOUS PROGRAMME(S) APPELE(S) : CP* (YACS), ERRCOU.F
-!
-!-----------------------------------------------------------------------
-!  SOUS PROGRAMME(S) APPELANT(S) :  OP0115.F
-! aslint: disable=W1304
+! aslint: disable=W1304,W1305
     implicit none
-!
-!***********************************************************************
-!%W% %D% %T%
-!
 !
 !     ARGUMENTS
 !     =========
@@ -223,9 +182,6 @@ subroutine inicou(nbpas, tinit, tfin, dt, dtsto,&
     real(kind=8) :: vrotat, tinit, tfin, dt, dtsto, tmin
     integer :: nbpas
 !
-!
-!
-!
 !     COMMON
 !     ======
     integer :: icompo
@@ -239,8 +195,8 @@ subroutine inicou(nbpas, tinit, tfin, dt, dtsto,&
     character(len=8) :: nomprg
     parameter(nomprg='INICOU')
 !
-    integer :: ifm, niv
-    integer(kind=4) :: iapp, numpas, info, nlu, parami(2)
+    integer :: ifm, niv, iapp
+    integer(kind=4) :: numpas, info, nlu, parami(2)
     integer(kind=4) :: un, deux, six
     parameter (un = 1, deux=2, six=6)
     real(kind=4) :: tr4
@@ -298,7 +254,7 @@ subroutine inicou(nbpas, tinit, tfin, dt, dtsto,&
 !     RECUPERATION DES DONNEES ENTIERES SUR LES PALIERS
     call jeveuo(cpal, 'L', iadrk)
     do 20 iapp = 1, nbpal
-        finpal(iapp)=zk8(iadrk+(iapp-1)+palmax)
+        finpal(iapp) = zk8(iadrk+(iapp-1)+palmax)(1:3)
 20  end do
 !
 !
@@ -402,7 +358,7 @@ subroutine inicou(nbpas, tinit, tfin, dt, dtsto,&
 !
         nomvar='PARAMENTI'//finpal(iapp)
 !
-        parami(1)=nbpas
+        parami(1)=int(nbpas,4)
 !         CALCUL NORMAL (PAS DE REPRISE) => PARAMI(2) = 0
         parami(2)=0
 !

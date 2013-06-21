@@ -247,10 +247,10 @@ subroutine dgetv0(ido, bmat, itry, initv, n,&
 !
         if (.not.initv) then
             idist = 2
-            iseed4(1)=iseed(1)
-            iseed4(2)=iseed(2)
-            iseed4(3)=iseed(3)
-            iseed4(4)=iseed(4)
+            iseed4(1)=int(iseed(1), 4)
+            iseed4(2)=int(iseed(2), 4)
+            iseed4(3)=int(iseed(3), 4)
+            iseed4(4)=int(iseed(4), 4)
             call dlarnv(idist, iseed4, n, resid)
             iseed(1)=iseed4(1)
             iseed(2)=iseed4(2)

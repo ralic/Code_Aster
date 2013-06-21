@@ -413,7 +413,7 @@ subroutine op0151()
             call u2mesk('F', 'PREPOST4_6', 3, valk)
         endif
         call jeveuo(chelrs//'.CELK', 'L', jcelk)
-        ligrel=zk24(jcelk-1+1)
+        ligrel=zk24(jcelk-1+1)(1:19)
         call jelira(chelrs//'.CELV', 'LONMAX', nval, k8b)
 !
 !  -      IL Y A NTCMP COMPOSANTES DANS L OPTION XXXX_EQUI_YYYY
@@ -507,7 +507,7 @@ subroutine op0151()
             call u2mesk('F', 'PREPOST4_6', 3, valk)
         endif
         call jeveuo(chelrs//'.CELK', 'L', jcelk)
-        ligrel=zk24(jcelk-1+1)
+        ligrel=zk24(jcelk-1+1)(1:19)
         call jelira(chelrs//'.CELV', 'LONMAX', nval, k8b)
 !
 !  -      IL Y A NTCMP COMPOSANTES DANS L OPTION XXXX_EQUI_YYYY
@@ -530,7 +530,7 @@ subroutine op0151()
             call u2mesk('F', 'PREPOST4_6', 3, valk)
         endif
         call jeveuo(chelrs//'.CELK', 'L', jcelk)
-        ligrel=zk24(jcelk-1+1)
+        ligrel=zk24(jcelk-1+1)(1:19)
         call jelira(chelrs//'.CELV', 'LONMAX', nval, k8b)
 !
 !  -      IL Y A NTCMP COMPOSANTES DANS L OPTION XXXX_EQUI_YYYY

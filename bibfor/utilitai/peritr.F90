@@ -213,7 +213,7 @@ subroutine peritr(resu, modele, cara, nh, nbocc)
 !        --- AFFECTATION D'UNE CARTE CONSTANTE SUR LE MAILLAGE :
 !            OPTION DE CALCUL RICE_TRACEY ---
 !
-        ssoup = optcal(1)//optcal(2)
+        ssoup = optcal(1)//optcal(2)(1:8)
         call mecact('V', '&&PERITR.CH.SOUSOP', 'MAILLA', noma, 'NEUT_K24',&
                     1, 'Z1', ibid, r8b, c16b,&
                     ssoup)

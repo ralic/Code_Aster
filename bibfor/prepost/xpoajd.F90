@@ -243,8 +243,6 @@ subroutine xpoajd(elrefp, ino, nnop, lsn, lst,&
 310      continue
     endif
 !
-999  continue
-!
 !       ECRITURE DANS LE .VALE2 POUR LE NOEUD INO2
     ino2 = nbnoc + inntot
     if (lmeca) then

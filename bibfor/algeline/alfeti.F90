@@ -260,7 +260,7 @@ subroutine alfeti(opt, sdfeti, matas, chsecm, chsol,&
     nbi2=zi(idime+1)
 !  NOMBRE DE DDLS D'INTERFACE
     nbi=zi(idime+3)
-    nbi4=nbi
+    nbi4=int(nbi,4)
 !  NOMBRE DE DDLS TOTAL
     nbtot=zi(idime+4)
 !

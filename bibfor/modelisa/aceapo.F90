@@ -3,6 +3,7 @@ subroutine aceapo(noma, nomo, lmax, npoutr, nbocc,&
                   jdlm)
     implicit none
     include 'jeveux.h'
+! aslint: disable=W1501
 !
     include 'asterc/getres.h'
     include 'asterc/getvid.h'

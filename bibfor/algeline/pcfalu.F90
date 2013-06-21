@@ -18,6 +18,7 @@ subroutine pcfalu(n, inc, ipc, inx, ipx,&
 ! ======================================================================
 ! aslint: disable=W1304
     implicit none
+    integer :: n
     integer :: inc(n), index(*)
     integer(kind=4) :: ipc(*), ipx(*)
     integer :: inx(0:n)
@@ -33,7 +34,6 @@ subroutine pcfalu(n, inc, ipc, inx, ipx,&
 !  DEMI-LIGNE
 !-----------------------------------------------------------------------
     integer :: i, ii, ii1, ii2, imp, j, kkk
-    integer :: n
 !-----------------------------------------------------------------------
     index(1) = 0
     do 10 i = 2, n
@@ -93,7 +93,7 @@ subroutine pcfalu(n, inc, ipc, inx, ipx,&
 !  SYMETRIQUES
             j = ipc(ii)
             index(j) = index(j) + 1
-            ipx(index(j)) = i
+            ipx(index(j)) = int(i, 4)
 60      continue
         index(i) = kkk
 70  end do

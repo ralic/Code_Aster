@@ -46,7 +46,7 @@ subroutine pcstru(n, in, ip, icpl, icpc,&
     include 'asterfort/pcfull.h'
     include 'asterfort/pcinfe.h'
     include 'asterfort/wkvect.h'
-    integer :: in(n)
+    integer :: n, in(n)
     integer(kind=4) :: ip(*), icpc(*)
     integer :: icpl(0:n), icpd(n)
     integer :: icplx(0:n), icpcx(*)
@@ -63,7 +63,7 @@ subroutine pcstru(n, in, ip, icpl, icpc,&
 ! =================
 !-----------------------------------------------------------------------
     integer :: i, ier, imp, jind, k, k1, k2
-    integer :: kk, lca, n, niv, niveau, nz
+    integer :: kk, lca, niv, niveau, nz
 !-----------------------------------------------------------------------
     call wkvect('&&PCSTRU.IND', 'V V I', n, jind)
     call pcfalu(n, in, ip, icpl, icpc,&
@@ -114,7 +114,7 @@ subroutine pcstru(n, in, ip, icpl, icpc,&
 30      continue
 !   TERME DIAG
         kk = kk + 1
-        icpc(kk) = i
+        icpc(kk) = int(i, 4)
 40  end do
     icpl(n-1) = kk
 !

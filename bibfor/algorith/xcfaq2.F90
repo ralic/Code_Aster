@@ -333,7 +333,5 @@ subroutine xcfaq2(jlsn, jlst, jgrlsn, igeom, noma,&
 300      continue
     endif
 !
-999  continue
-!
     call jedema()
 end subroutine

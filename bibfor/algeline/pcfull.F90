@@ -61,6 +61,7 @@ subroutine pcfull(n, icpl, icpc, icpd, icplp,&
 ! aslint: disable=W1304
     implicit none
     include 'asterfort/pctrii.h'
+    integer :: n
     integer(kind=4) :: icpc(*)
     integer :: icpl(0:n), icpd(n)
     integer :: icplp(0:n), icpcp(*), ind(n)
@@ -107,7 +108,7 @@ subroutine pcfull(n, icpl, icpc, icpd, icplp,&
 !-----------------------------------------------------------------------
     integer :: i, ic1, ic2, ier, istop, j, jj
     integer :: k, k1, k2, kp1, kp2, l, lca
-    integer :: n, ncremx, nzero
+    integer :: ncremx, nzero
 !-----------------------------------------------------------------------
     do 10 i = 1, n
         ind(i)=0
@@ -197,7 +198,7 @@ subroutine pcfull(n, icpl, icpc, icpd, icplp,&
             if (kp1 .gt. kp2) then
 !           LIGNE DE COEF EN COURS
                 if (icpc(k1) .lt. icpcp(kp1)) then
-                    icpc(k)=icpcp(kp1)
+                    icpc(k)=int(icpcp(kp1), 4)
                     kp1=kp1-1
                 else
                     icpc(k)=icpc(k1)
@@ -214,7 +215,7 @@ subroutine pcfull(n, icpl, icpc, icpd, icplp,&
 !         LIGNE DE L FINIE
             if (kp1 .gt. kp2) then
 !           LIGNE DE COEF EN COURS
-                icpc(k)=icpcp(kp1)
+                icpc(k)=int(icpcp(kp1), 4)
                 kp1=kp1-1
             else
                 goto 70

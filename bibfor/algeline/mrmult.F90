@@ -85,7 +85,7 @@ subroutine mrmult(cumul, lmat, vect, xsol, nbvect,&
     if (kmpic .eq. 'NON') then
         if (cumul .eq. 'CUMU') then
             call wkvect('&&MRMULT.XTEMP', 'V V R', nbvect*neq, jtemp)
-            neq4=nbvect*neq
+            neq4=int(nbvect*neq, 4)
             call dcopy(neq4, xsol, 1, zr(jtemp), 1)
         endif
 !

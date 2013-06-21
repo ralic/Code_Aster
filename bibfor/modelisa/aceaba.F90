@@ -180,8 +180,8 @@ subroutine aceaba(noma, nomo, lmax, nbarre, nbocc,&
                     endif
 94              continue
             endif
-            vmessk(1)=tabcar
-            vmessk(2)=nomsec
+            vmessk(1)=tabcar(1:16)
+            vmessk(2)=nomsec(1:16)
             call u2mesk('F', 'MODELISA8_18', 2, vmessk)
 97          continue
 !
@@ -190,7 +190,7 @@ subroutine aceaba(noma, nomo, lmax, nbarre, nbocc,&
                 if (zk24(itblp+4*i) .ne. 'A') then
                     goto 96
                 else
-                    zk8(jcara) = zk24(itblp+4*i)
+                    zk8(jcara) = zk24(itblp+4*i)(1:8)
                     call jeveuo(zk24(itblp+4*i+2), 'L', ivect)
                     zr(jvale)=zr(ivect-1+iisec)
                     goto 98

@@ -152,7 +152,6 @@ subroutine op0045()
     character(len=19) :: vecrig, numedd, solveu, tabmod
     character(len=24) :: cborvp, valk(5), nopara(nbpara), metres, kzero
     logical :: flage, lqz, lkr, lc, lns, lnsc, lnsk, lnsm, ltabmo, lpg, lcomod
-    logical :: lbid
 !    &             ,LCPU
 !     ------------------------------------------------------------------
     data cborvp / '&&OP0045.BORNE.VALP.USR ' /

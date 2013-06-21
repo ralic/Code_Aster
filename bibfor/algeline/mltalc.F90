@@ -30,7 +30,7 @@ subroutine mltalc(local, global, adress, sn, lgsn,&
         local(k) = 0
 110  end do
     do 120 k = adress(sn) + longsn, adress(sn+1) - 1
-        local(k) = place(global(k))
+        local(k) = int(place(global(k)), 4)
 120  end do
     nbass = 0
     is = supnd(sni+1)

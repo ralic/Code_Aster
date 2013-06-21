@@ -143,6 +143,5 @@ subroutine xtempc(nfiss, fiss, fonree, char)
     call assert(nrel.gt.0)
     call aflrch(lisrel, char)
 !
-9999  continue
     call jedema()
 end subroutine

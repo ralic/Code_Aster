@@ -127,7 +127,7 @@ subroutine fettsd(infofe, nbi, nbsd, vddl, sdfeti,&
 !
 ! INIT
         call jeveuo('&FETI.LISTE.SD.MPI', 'L', ilimpi)
-        nbi4=nbi
+        nbi4=int(nbi, 4)
         sdfeth=sdfeti//'.FETH'
         sdfetl=sdfeti//'.FLII'
         sdfett=sdfeti//'.FETI'

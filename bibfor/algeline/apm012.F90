@@ -77,7 +77,7 @@ subroutine apm012(nk, k24rc, ltest, itest, rayonc,&
     niv=2
 !
 !   --- STEP 0: INITIALIZATIONS AND BUILDING OF THE WORKING MATRIX ---
-    nk4=nk
+    nk4=int(nk,4)
     nk2=nk*nk
     nkm1=nk-1
 !
@@ -224,8 +224,8 @@ subroutine apm012(nk, k24rc, ltest, itest, rayonc,&
     call zgehrd(nk4, ilo, ihi, zc(imata), nk4,&
                 zc(ivect), zc(iwork), -1, info4)
     if (info4 .eq. 0) then
-        lwork4=int(dble(zc(iwork)))
         lwork =int(dble(zc(iwork)))
+        lwork4=int(lwork,4)
         call jedetr('&&APM012.ZGEHRD.WORK')
         call wkvect('&&APM012.ZGEHRD.WORK', 'V V C', lwork, iwork)
         call zgehrd(nk4, ilo, ihi, zc(imata), nk4,&

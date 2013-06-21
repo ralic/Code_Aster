@@ -53,7 +53,7 @@ subroutine fettor(option, infofe, rang, nbi, irg1,&
     call jemarq()
 !
     if ((infofe(8:8).eq.'T') .and. (rang.eq.0)) then
-        nbi4=nbi
+        nbi4=int(nbi, 4)
         if (option .eq. 1) then
 ! TEST 1 ORTHOGONALITE DU GCPPC
             raux=ddot(nbi4,zr(irg),1,zr(irg1),1)

@@ -27,12 +27,10 @@ subroutine op0001()
 !                                                      2 / 90
 !-----------------------------------------------------------------------
 !
-!       COOVAL          NOM DE L OBJET CHAMP DE GEOMETRIE (VALEURS)
 !       COODSC          NOM DE L OBJET CHAMP DE GEOMETRIE (DESCRIPTEUR)
 !       COOREF          NOM DE L OBJET CHAMP DE GEOMETRIE (NOM MAILLAGE)
 !       GRPNOE          NOM DE L OBJET GROUPE NOEUDS
 !       GRPMAI          NOM DE L OBJET GROUPE MAILLES
-!       CONNEX          NOM DE L OBJET CONNECTIVITES
 !       NOMMAI          NOM DE L OBJET REPERTOIRE DES MAILLES
 !       NOMNOE          NOM DE L OBJET REPERTOIRE DES NOEUDS
 !       TITRE           NOM DE L OBJET TITRE
@@ -75,8 +73,7 @@ subroutine op0001()
     integer :: nbval, iret, infmed
     character(len=8) :: nomu, totm, fmt, veri
     character(len=16) :: concep
-    character(len=24) :: cooval, connex, typmai
-    character(len=24) :: adapma, vecgrm
+    character(len=24) :: vecgrm
     character(len=64) :: nomamd
     real(kind=8) :: dtol
     integer :: ilng

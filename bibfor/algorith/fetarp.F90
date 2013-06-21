@@ -62,7 +62,7 @@ subroutine fetarp(infofe, ifm, niter, nbi, nbreor,&
      &  mnaupd,mnaup2,mnaitr,mneigh,mnapps,mngets,mneupd
 !
 ! INITS DIVERSES
-    nbi4=nbi
+    nbi4=int(nbi,4)
     if (nbproc .eq. 1) then
         lpara=.false.
     else
