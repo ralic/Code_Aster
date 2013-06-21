@@ -206,11 +206,15 @@ DFC0=DEFI_FONCTION(  NOM_PARA='INST',  NOM_RESU='DEPL',
                           VALE_C=( 1., 1., 1., 2., 2., 2., ),
                           TITRE=' TEST D''UNE FONCTION COMPLEXE'   )
 
-TEST_FONCTION(VALEUR=(_F(VALE_CALC_C=(1+1j),
+TEST_FONCTION(VALEUR=(_F(VALE_REFE_C=(1+1j),
+                         VALE_CALC_C=(1+1j),
                          VALE_PARA=1.0,
+                         REFERENCE='ANALYTIQUE',
                          FONCTION=DFC0,),
-                      _F(VALE_CALC_C=2.000+2.000j,
+                      _F(VALE_REFE_C=2.000+2.000j,
+                         VALE_CALC_C=2.000+2.000j,
                          VALE_PARA=2.0,
+                         REFERENCE='ANALYTIQUE',
                          FONCTION=DFC0,),
                       ),
               ATTRIBUT=(_F(ATTR_REFE='INST',
@@ -481,8 +485,11 @@ IMPR_FONCTION(     COURBE=_F(  FONCTION = SIi),
                              )
 
 val=sin(INST9)
-TEST_FONCTION(VALEUR=_F(VALE_CALC=-2.4492935982947064E-16,
+TEST_FONCTION(VALEUR=_F(VALE_REFE=0.,
+                        VALE_CALC=0.,
                         VALE_PARA=7.0,
+                        CRITERE='ABSOLU',
+                        REFERENCE='ANALYTIQUE',
                         FONCTION=SIi,),
               ATTRIBUT=(_F(ATTR_REFE='INST',
                            FONCTION=SIi,
@@ -521,8 +528,10 @@ X0=7.
 
 Y0=COa(X1)+(X0-X1)*(COa(X2)-COa(X1))/(X2-X1)
 
-TEST_FONCTION(VALEUR=_F(VALE_CALC=1.0112587728221021,
+TEST_FONCTION(VALEUR=_F(VALE_REFE=Y0,
+                        VALE_CALC=1.0112587728221021,
                         VALE_PARA=7.0,
+                        REFERENCE='ANALYTIQUE',
                         FONCTION=COi,),
               ATTRIBUT=(_F(ATTR_REFE='INST',
                            FONCTION=COi,
@@ -634,13 +643,17 @@ DN03=DEFI_NAPPE(  NOM_PARA='AMOR',  NOM_RESU='DEPL',
                        PARA=( 0.01,  0.03, ),
                        FONCTION=( DFN0,  DFN1, ) )
 
-TEST_FONCTION(VALEUR=(_F(VALE_CALC=2.25,
+TEST_FONCTION(VALEUR=(_F(VALE_REFE=2.25,
+                         VALE_CALC=2.25,
                          VALE_PARA=(0.02, 1.5),
                          NOM_PARA=('AMOR', 'INST'),
+                         REFERENCE='ANALYTIQUE',
                          FONCTION=DN00,),
-                      _F(VALE_CALC=2.0,
+                      _F(VALE_REFE=2.0,
+                         VALE_CALC=2.0,
                          VALE_PARA=(0.02, 0.0),
                          NOM_PARA=('AMOR', 'INST'),
+                         REFERENCE='ANALYTIQUE',
                          FONCTION=DN00,),
                       ),
               )
@@ -758,7 +771,9 @@ TEST_FONCTION(VALEUR=(_F(VALE_CALC=0.0,
 RMS_SI=INFO_FONCTION( RMS=_F(  FONCTION = SIi)
                          )
 
-TEST_TABLE(VALE_CALC=0.70710700000000004,
+TEST_TABLE(VALE_REFE=1./sqrt(2.),
+           VALE_CALC=0.70710700000000004,
+           REFERENCE='ANALYTIQUE',
            NOM_PARA='RMS',
            TABLE=RMS_SI,
            FILTRE=_F(NOM_PARA='FONCTION',
@@ -767,7 +782,9 @@ TEST_TABLE(VALE_CALC=0.70710700000000004,
 
 RMS_CO=INFO_FONCTION( RMS=_F(  FONCTION = COi)  )
 
-TEST_TABLE(VALE_CALC=0.70710700000000004,
+TEST_TABLE(VALE_REFE=1./sqrt(2.),
+           VALE_CALC=0.70710700000000004,
+           REFERENCE='ANALYTIQUE',
            NOM_PARA='RMS',
            TABLE=RMS_CO,
            FILTRE=_F(NOM_PARA='FONCTION',
@@ -797,14 +814,18 @@ IMPR_CO(CONCEPT=_F(NOM=TABS));
 
 SIGMA=pi/3.**0.5
 
-TEST_TABLE(VALE_CALC=1.8138447086515,
+TEST_TABLE(VALE_REFE=SIGMA,
+           VALE_CALC=1.8138447086515,
+           REFERENCE='ANALYTIQUE',
            NOM_PARA='ECART_TYPE',
            TABLE=TABS,
            FILTRE=_F(NOM_PARA='FONCTION',
                      VALE_K='F5',),
            )
 
-TEST_TABLE(VALE_CALC=3.1415926535897931,
+TEST_TABLE(VALE_REFE=pi,
+           VALE_CALC=3.1415926535897931,
+           REFERENCE='ANALYTIQUE',
            NOM_PARA='MOYENNE',
            TABLE=TABS,
            FILTRE=_F(NOM_PARA='FONCTION',
