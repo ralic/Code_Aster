@@ -275,16 +275,10 @@ def _print_header():
     lang_settings = '%s (%s)' % localization.get_current_settings()
 
     date_build = aster_core.get_option('date')
-    changes = aster_core.get_option('changes')
-    uncommitted = aster_core.get_option('uncommitted')
     UTMESS('I', 'SUPERVIS2_4', valk=typvers)
-    if not changes and not uncommitted:
-        UTMESS('I', 'SUPERVIS2_9',
-            valk=(aster_core.get_option('version'), date_build,),)
-    else:
-        UTMESS('I', 'SUPERVIS2_23',
-            valk=(aster_core.get_option('version'), date_build,
-                  aster_core.get_option('parentid'), aster_core.get_option('branch')),)
+    UTMESS('I', 'SUPERVIS2_23',
+        valk=(aster_core.get_option('version'), date_build,
+              aster_core.get_option('parentid'), aster_core.get_option('branch')),)
     UTMESS('I', 'SUPERVIS2_10',
         valk=("1991", time.strftime('%Y'),
               time.strftime('%c'),

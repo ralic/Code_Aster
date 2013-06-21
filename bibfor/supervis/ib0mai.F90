@@ -24,14 +24,12 @@ subroutine ib0mai()
     include 'asterc/gtoptr.h'
     include 'asterc/ismaem.h'
     include 'asterc/loisem.h'
-    include 'asterc/prhead.h'
     include 'asterfort/entete.h'
     include 'asterfort/ib1mai.h'
     include 'asterfort/ibimpr.h'
     include 'asterfort/jedebu.h'
     include 'asterfort/jeinif.h'
     include 'asterfort/r8inir.h'
-    include 'asterfort/surchg.h'
     include 'asterfort/u2mesr.h'
     include 'asterfort/u2mess.h'
     include 'asterfort/utgtme.h'
@@ -92,12 +90,7 @@ subroutine ib0mai()
     sizf = mfic/(1024*1024.0d0)
     call u2mesr('I', 'SUPERVIS2_24', 1, sizf)
 !
-! --- INFORMATIONS SURCHARGE
-    call prhead(3)
-!
     if (idebug .eq. 1) then
         call u2mess('I', 'SUPERVIS_12')
     endif
-! --- VERSION SURCHARGEE OU NON ?
-    call surchg(ibid)
 end subroutine

@@ -63,17 +63,11 @@ dans la commande FIN) est inutile lorsque l'on sauvegarde cette
 dernière au format HDF (mot clé FORMAT_HDF="OUI" dans la commande FIN).
 """),
 
-#9 plus bas avec 10
-
 # Lignes d'entete
 4 : {  'message' : _(u"""
 
                 -- CODE_ASTER -- VERSION : %(k1)s --
 """),
-       'flags' : 'CENTER | ALL_UNIT',
-},
-
-9 : {  'message' : _(u"""Version %(k1)s du %(k2)s"""),
        'flags' : 'CENTER | ALL_UNIT',
 },
 

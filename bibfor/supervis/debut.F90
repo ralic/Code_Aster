@@ -27,6 +27,7 @@ subroutine debut()
     include 'asterc/getfac.h'
     include 'asterc/getres.h'
     include 'asterc/getvtx.h'
+    include 'asterc/prhead.h'
     include 'asterfort/foint0.h'
     include 'asterfort/fozero.h'
     include 'asterfort/gcncon.h'
@@ -53,6 +54,7 @@ subroutine debut()
     if (ncode .ne. 0) then
         cmpdef = 'ABORT'
     else
+        call prhead(3)
         cmpdef = 'EXCEPTION'
 !        FERMETURE DU .CODE (OUVERT PAR IB0MAI)
         call ulopen(-15, ' ', ' ', ' ', ' ')
