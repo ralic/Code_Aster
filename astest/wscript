@@ -7,5 +7,6 @@ def build(self):
     env = self.env_of_name('default')
     self.install_files(
         osp.join(*list(env.ASTERDATADIR + ['tests'])),
-        get_srcs('*', excl='wscript')
+        get_srcs('**/*', excl='wscript'),
+        relative_trick=True,
     )
