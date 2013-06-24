@@ -1,5 +1,4 @@
 # coding=utf-8
-#            CONFIGURATION MANAGEMENT OF EDF VERSION
 #  Copyright (c) 1998-2000 John Aycock
 #  Copyright (c) 2008-2013 EDF R&D      www.code-aster.org
 #

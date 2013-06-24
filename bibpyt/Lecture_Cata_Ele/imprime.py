@@ -1,6 +1,5 @@
 # coding=utf-8
 # person_in_charge: jacques.pellet at edf.fr
-#            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -225,7 +224,6 @@ def imprime_copyright(file):
 #------------------------------------------------------------
 #  impression des 17 lignes de copyright EDF sur le fichier file
 #------------------------------------------------------------
-    file.write('%            CONFIGURATION MANAGEMENT OF EDF VERSION                        '+"\n")
     file.write('% ======================================================================    '+"\n")
     # pour déjouer un bug de l'agla, on coupe la ligne suivante en 2 :
     file.write('% COPY')

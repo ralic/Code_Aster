@@ -2,7 +2,6 @@ subroutine te0465(nomopt,nomte)
 ! aslint: disable=W0104
     implicit none
 !     ------------------------------------------------------------------
-! MODIF FERMETUR DATE 03/08/95  AUTEUR GIBHHCM C.MASSERET
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
