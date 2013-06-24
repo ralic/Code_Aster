@@ -1,0 +1,202 @@
+from numpy import array, add, sqrt, dot, ones, linspace, outer, eye, reshape, sin, cos
+from numpy.linalg import norm
+from scipy.integrate import odeint
+
+MU=80000. # MPa
+NU=0.3
+E=MU*2.*(1.+NU)
+k=E/(3.*(1.-2.*NU))
+TAU_F  = 20.
+RHO_0  = 1.E5    # en mm**-2
+RHOREF = 1.E6    # en mm**-2
+Y      = 2.5E-7  # 2.5 Angstrom
+N      = 5.
+GAMMA0 = 1.E-3
+A      = 0.13
+B      = 0.005
+ALPHA=0.35
+BETA=2.54E-7     # 2.54 Angstrom
+
+a=1.0
+
+rho = 12*[RHO_0]
+rho = array(rho)
+#orientation consideree 159
+#sch=107.*sqrt(6)
+#schmid0 = array([120., 60., 60., 40., 70., 30., 52., 78., 130., 12., 30., 42.])
+#schmid0 = schmid0/sch
+
+list_cfc=[['B4',((1,1,1),(-1,0,1))],\
+          ['B2',((1,1,1),(0,-1,1))],\
+          ['B5',((1,1,1),(-1,1,0))],\
+          ['D4',((1,-1,1),(-1,0,1))],\
+          ['D1',((1,-1,1),(0,1,1))],\
+          ['D6',((1,-1,1),(1,1,0))],\
+          ['A2',((-1,1,1),(0,-1,1))],\
+          ['A6',((-1,1,1),(1,1,0))],\
+          ['A3',((-1,1,1),(1,0,1))],\
+          ['C5',((-1,-1,1),(-1,1,0))],\
+          ['C3',((-1,-1,1),(1,0,1))],\
+          ['C1',((-1,-1,1),(0,1,1))]]
+
+l0=array([1,5,9], dtype=float)
+
+#tenseurs d'orientation pour les systemes de glissements
+tens=[]
+tens_mu=[]
+tens_w=[]
+#vect_mu=[]
+#vect_w=[]
+
+for i in xrange(0,len(list_cfc)):
+    tens.append(outer(list_cfc[i][1][1]/norm(list_cfc[i][1][1], 2), list_cfc[i][1][0]/norm(list_cfc[i][1][0], 2)))
+    tens_mu.append(1./2.*(tens[i]+tens[i].transpose()))
+    tens_w.append(1./2.*(tens[i]-tens[i].transpose()))
+
+tens_mu=array(tens_mu)
+tens_w=array(tens_w)
+    #print tens[i],'\n'
+    #print tens_mu[i],'\n'
+    #print tens_w[i],'\n'
+vect_mu=array([tens_mu[:,0,0], tens_mu[:,1,1], tens_mu[:,2,2], sqrt(2)*tens_mu[:,0,1], sqrt(2)*tens_mu[:,0,2], sqrt(2)*tens_mu[:,1,2]]).transpose()
+vect_w=array([tens_w[:,0,0], tens_w[:,1,1], tens_w[:,2,2], sqrt(2)*tens_w[:,0,1], sqrt(2)*tens_w[:,0,2], sqrt(2)*tens_w[:,1,2]]).transpose()
+
+def facteur_schmid(l=l0, list_orient=list_cfc):
+    """
+    Cette fonction calcul les facteurs de schmid a partir d'une direction de sollicitation l et de la liste des systemes de glissement nommes suivant
+    la convention de Schmid et Boas (normal puis direction de glissement)
+    Elle retourne une liste contenant les facteurs de Schmid pour un systeme donne (ainsi qu'une valeur qui multipliee par sqrt(6) donne le denominateur et le numerateur)
+    """
+    schmid=[]
+    for i in xrange(0,len(list_orient)):
+        schmid.append([])
+        schmid[i].append(list_orient[i][0])
+        schmid[i].append([dot(list_orient[i][1][0]/norm(list_orient[i][1][0], 2), l/norm(l,2)) * dot(list_orient[i][1][1]/norm(list_orient[i][1][1], 2), l/norm(l,2)), norm(l,2)**2, dot(list_orient[i][1][0], l) * dot(list_orient[i][1][1], l)])
+        #print schmid[i]
+    return schmid
+
+schmid=facteur_schmid()
+schmid=array([schmid[i][1][0] for i in xrange(0,len(schmid))])
+#print "test",schmid
+#print "test",schmid0
+#print schmid-schmid0
+
+#systemes coplanaires et forets pour l'evolution de rho
+copla=array([[1.,1.,1.,0.,0.,0.,0.,0.,0.,0.,0.,0.],[1.,1.,1.,0.,0.,0.,0.,0.,0.,0.,0.,0.],[1.,1.,1.,0.,0.,0.,0.,0.,0.,0.,0.,0.],\
+             [0.,0.,0.,1.,1.,1.,0.,0.,0.,0.,0.,0.],[0.,0.,0.,1.,1.,1.,0.,0.,0.,0.,0.,0.],[0.,0.,0.,1.,1.,1.,0.,0.,0.,0.,0.,0.],\
+             [0.,0.,0.,0.,0.,0.,1.,1.,1.,0.,0.,0.],[0.,0.,0.,0.,0.,0.,1.,1.,1.,0.,0.,0.],[0.,0.,0.,0.,0.,0.,1.,1.,1.,0.,0.,0.],\
+             [0.,0.,0.,0.,0.,0.,0.,0.,0.,1.,1.,1.],[0.,0.,0.,0.,0.,0.,0.,0.,0.,1.,1.,1.],[0.,0.,0.,0.,0.,0.,0.,0.,0.,1.,1.,1.]])
+
+forest=ones(12)-copla
+
+print "copla=",copla
+print "forest=",forest
+
+#elasticite isotrope
+J=1./3.*array([[1.,1.,1.,0.,0.,0.],[1.,1.,1.,0.,0.,0.],[1.,1.,1.,0.,0.,0.],\
+         [0.,0.,0.,0.,0.,0.],[0.,0.,0.,0.,0.,0.],[0.,0.,0.,0.,0.,0.]])
+I=eye(6)
+K=I-J
+sigma=100.
+contr=sigma*outer(l0/norm(l0,2),l0/norm(l0,2))
+vect_contr=array([contr[0,0], contr[1,1], contr[2,2], sqrt(2)*contr[0,1], sqrt(2)*contr[0,2], sqrt(2)*contr[1,2]])
+vect_eps_el=dot(1./(3*k)*J+1/(2*MU)*K, vect_contr)
+
+def taumu(rho):
+    a=1.
+    Srho=add.reduce(rho)
+    return MU*BETA*sqrt(a)*sqrt(Srho)
+
+
+def gammap(rho,t):
+    test=(schmid*sigma*t)//(TAU_F+taumu(rho))
+    #print t, test
+    return GAMMA0*((schmid*sigma*t/(TAU_F+taumu(rho)))**N-1.)*test
+
+def rhopoint(rho,t):
+    tmp = A*dot(forest,rho)/add.reduce(sqrt(rho)) + dot(copla,sqrt(rho))*B*sqrt(a) - Y*rho
+    return tmp*gammap(rho,t)/BETA
+
+discretis=100000
+t = linspace(0., 1., discretis)
+
+# pas robuste si N > 5 !
+print "attention solution par odeint valable pour n<5"
+# verifie pour B=Y=0 : equa dif simple : gamma=gamma0/(n+1) * (coef/40.32)**n*t**(n+1)
+# avec (a contrainte imposee) SIGM=coef*t pour RHO==RHO_0==RHO_REF
+# et taumu(RHO_REF)=40.32
+
+#gam1 = odeint(gammap2, 0., t)
+
+#print 'GAMMA=',gam1.tolist()
+
+
+rho_sol = odeint(rhopoint, rho, t)
+#print 'RHO=',rho_sol.tolist()
+#print 'RHO=',rho_sol
+rho_solb2 = rho_sol*BETA**2
+print 'rho final', rho_solb2[-1]
+
+
+#tot_t=outer(t, array(12*[1]))
+#tot_schm=outer(array(discretis*[1]),schmid)
+tot_taumu=outer(taumu(rho_sol.transpose()), array(12*[1]))
+
+#test=(tot_schm*sigma*tot_t)//(TAU_F+tot_taumu)
+test=(sigma*outer(t,schmid))//(TAU_F+tot_taumu)
+
+#GAM_P=GAMMA0*((tot_schm*sigma*tot_t/(TAU_F+tot_taumu))**N-1.)*test
+GAM_P=GAMMA0*((sigma*outer(t,schmid)/(TAU_F+tot_taumu))**N-1.)*test
+
+EPSP_P=dot(GAM_P,vect_mu)
+OMEGAP_P=dot(GAM_P,vect_w[:,3:])
+
+GAM=add.accumulate(GAM_P)*1./discretis
+EPSP=add.accumulate(EPSP_P)*1./discretis
+OMEGA_P=add.accumulate(OMEGAP_P)*1./discretis
+
+print 'gamma final'
+print GAM[-1]
+print 'deformation plastique finale *sqrt(2) !'
+print EPSP[-1]
+print 'increment de rotation plastique finale *sqrt(2) !'
+print OMEGAP_P[-1]
+
+EPSE=outer(t,vect_eps_el)
+EPS=EPSP+EPSE
+
+#le /2. vire la notation en sqrt(2) des vect#
+theta=sqrt(add.reduce((OMEGAP_P**2.).transpose())/2.)
+#theta=sqrt(add.reduce((OMEGAP_P**2.).transpose()))
+
+vtheta=[]
+for i in list(theta):
+    if i == 0.:
+        value=1.
+    else:
+        value=i
+    vtheta.append(value)
+vtheta=array(vtheta)
+
+mtheta=outer(vtheta,array(3*[1.]))
+n_rot=OMEGAP_P/mtheta
+
+vect2mat=array([[[0.,0.,0.],[0.,0.,-1.],[0.,1.,0.]],[[0.,0.,1.],[0.,0.,0.],[-1.,0.,0.]],[[0.,-1.,0.],[1.,0.,0.],[0.,0.,0.]]])
+
+N_rot = dot(n_rot,vect2mat)
+N2_rot = array([[-n_rot[:,1]**2-n_rot[:,2]**2,n_rot[:,0]*n_rot[:,1],n_rot[:,0]*n_rot[:,2]], [n_rot[:,0]*n_rot[:,1], -n_rot[:,0]**2-n_rot[:,2]**2,n_rot[:,2]*n_rot[:,1]], [n_rot[:,2]*n_rot[:,0], n_rot[:,2]*n_rot[:,1], -n_rot[:,0]**2-n_rot[:,1]**2]])
+
+QP= reshape(outer(array(discretis*[1.]),eye(3)),(discretis,3,3))+\
+    reshape(outer(sin(vtheta),ones((3,3))),(discretis,3,3))*N_rot+\
+    reshape(outer(1.-cos(vtheta),ones((3,3))),(discretis,3,3))*N2_rot.transpose((2,0,1))
+
+Q=add.accumulate(QP)*1./discretis
+
+#sol=[]
+#for i in rho.tolist():
+  #sol.append(i[0])
+  
+#gaml=[]
+#for i in gam1.tolist():
+  #gaml.append(i[0])
+

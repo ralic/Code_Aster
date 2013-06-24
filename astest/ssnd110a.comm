@@ -19,15 +19,32 @@
 
 DEBUT(CODE=_F(NOM='SSND110A',NIV_PUB_WEB='INTERNET',VISU_EFICAS='NON'),DEBUG=_F(SDVERI='OUI'));
 
+# solution analytique python dans ssnd110a.22
 
-from numpy.linalg import norm
+import os
 from numpy import *
+from numpy.linalg import norm
+
+# il faut scipy
+# os.rename("fort.22", "soluce.py")
+
+# from soluce import *
+# print 'rho final', rho_solb2[-1]
+# print 'gamma final'
+# print GAM[-1]
+# print 'deformation plastique finale *sqrt(2) !'
+# print EPSP[-1]
+# print 'increment de rotation plastique finale *sqrt(2) !'
+# print OMEGAP_P[-1]
+
+
 
 # MATERIAU DEFINI POUR LE COMPORTEMENT  DD_CFC. Unites : MPa, mm, N
 
 MU=80000. # MPa
 NU=0.3
 E=MU*2*(1.+NU)
+k=E/(3.*(1.-2.*NU))
 TAU_F  = 20.
 RHO_0  = 1.E5    # en mm**-2
 RHOREF = 1.E6    # en mm**-2
@@ -45,7 +62,6 @@ Y      = 2.5E-7  # 2.5 Angstrom
 RHO_0=RHO_0*BETA*BETA
 
 ALPHA=0.0
-
 
 ACIERDD=DEFI_MATERIAU(ELAS=_F(E=E,
                             NU=NU,
@@ -329,7 +345,8 @@ for i in range(1,13):
 # densites de dislocation
 
 TEST_FONCTION(VALEUR=_F(VALE_CALC=7.17406381861e-09,
-                        VALE_REFE=7.1740499999999996E-09,
+                        VALE_REFE=7.17405E-09,
+                       # VALE_REFE=rho_solb2[-1][8],
                         VALE_PARA=1.0,
                         REFERENCE='ANALYTIQUE',
                         NOM_PARA='INST',
@@ -337,6 +354,7 @@ TEST_FONCTION(VALEUR=_F(VALE_CALC=7.17406381861e-09,
               )
 
 TEST_FONCTION(VALEUR=_F(VALE_CALC=6.60769788699e-09,
+                      #  VALE_REFE=rho_solb2[-1][0],
                         VALE_REFE=6.60769E-09,
                         VALE_PARA=1.0,
                         REFERENCE='ANALYTIQUE',
