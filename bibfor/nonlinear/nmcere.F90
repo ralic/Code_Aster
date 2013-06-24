@@ -108,7 +108,7 @@ subroutine nmcere(modele, numedd, mate, carele, comref,&
     character(len=19) :: vefint, vediri, vebudi
     character(len=19) :: cnfint, cndiri, cnfext, cnbudi
     character(len=24) :: codere
-    character(len=19) :: valint(zsolal)
+    character(len=19) :: valint(zvalin)
     character(len=19) :: solalt(zvalin)
     character(len=19) :: depdet, depdel, deppr1, deppr2
     integer :: jdepdt, jdepdl, jdu0, jdu1
@@ -203,6 +203,7 @@ subroutine nmcere(modele, numedd, mate, carele, comref,&
 !
 ! --- REACTUALISATION DES FORCES INTERIEURES
 !
+
     call nmfint(modele, mate, carele, comref, compor,&
                 carcri, fonact, iterat, k19bla, sdstat,&
                 sdtime, valint, solalt, ldccvg, codere,&
