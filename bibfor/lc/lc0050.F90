@@ -57,7 +57,7 @@ subroutine lc0050(fami, kpg, ksp, ndim, typmod,&
 !       OUT  DSIDEP  MATRICE DE COMPORTEMENT TANGENT A T+DT OU T
 !       OUT  CODRET  CODE-RETOUR = 0 SI OK, =1 SINON
 ! ======================================================================
-! aslint: disable=W1504
+! aslint: disable=W1504,W0104,W1306
     implicit none
     include 'jeveux.h'
 !
@@ -90,9 +90,9 @@ subroutine lc0050(fami, kpg, ksp, ndim, typmod,&
     real(kind=8) :: vim(*), statev(nvi), bendom, kdessm, bendop, kdessp
     real(kind=8) :: predef(npred), dpred(npred), vrcm, vrcp, valreb(2)
     real(kind=8) :: hydrm, hydrp, sechm, sechp, sref, epsbp, epsbm, epsthp
-    real(kind=8) :: ddsdde(36), dfgrd0(3, 3), dfgrd1(3, 3), xyz(3)
+    real(kind=8) :: ddsdde(36), dfgrd0(3, 3), dfgrd1(3, 3)
     real(kind=8) :: ddsddt(6), drplde(6), celent, stran(9), dsidep(6, 6)
-    real(kind=8) :: dtime, temp, dtemp, coords(3), rpl, pnewdt, drpldt, rep(4)
+    real(kind=8) :: dtime, temp, dtemp, coords(3), rpl, pnewdt, drpldt
     real(kind=8) :: depst1, epsth1, epsth(6), rac2, usrac2, drott(3, 3)
     character(len=16) :: compor(*), option
     character(len=8) :: typmod(*), nomres(nprops), nomreb(2), lvarc(npred)
@@ -102,7 +102,6 @@ subroutine lc0050(fami, kpg, ksp, ndim, typmod,&
 !     POUR TECAEL
     character(len=128) :: nomlib
     character(len=16) :: nomsub
-    character(len=2) :: k2
     integer :: ii, dimaki, nbcoef, icodrb(2)
 !     DIMAKI = DIMENSION MAX DE LA LISTE DES RELATIONS KIT
     parameter (dimaki=9)
@@ -154,7 +153,7 @@ subroutine lc0050(fami, kpg, ksp, ndim, typmod,&
 !     PARAMETRES UMAT STOCKES DANS 'KIT1-KIT9'
     do 10 ii = 1, dimaki-1
         nomlib(16*(ii-1)+1:16*ii) = compor(7+ii)
-10  end do
+10  continue
     nomsub = compor(7+dimaki)
 !
 !     LECTURE DES PROPRIETES MATERIAU (MOT-CLE UMAT DE DEFI_MATERIAU)
@@ -188,7 +187,7 @@ subroutine lc0050(fami, kpg, ksp, ndim, typmod,&
                 write(ifm,*) nomres(i),props(nprop2)
             endif
         endif
-20  end do
+20  continue
 !
 ! APPEL DE RCVARC POUR LE CALCUL DE LA TEMPERATURE
 ! RAISON: PASSAGE A UMAT DE LA TEMPERATURE
@@ -278,7 +277,7 @@ subroutine lc0050(fami, kpg, ksp, ndim, typmod,&
                         ksp, vrcp, iret2)
             dpred(i)=vrcp-vrcm
         endif
-30  end do
+30  continue
 !
 !
 ! CAS DES GRANDES DEFORMATIONS : ON VEUT F- ET F+
@@ -342,7 +341,7 @@ subroutine lc0050(fami, kpg, ksp, ndim, typmod,&
     do 90,j = 1,3
     drot(j,i) = drott(i,j)
 90  continue
-    100 end do
+100 continue
 !
     celent=wkin(1)
     npt=kpg
@@ -385,10 +384,31 @@ subroutine lc0050(fami, kpg, ksp, ndim, typmod,&
     endif
 !
     pnewdt=1.d0
-    ddsdde=0.d0
-    if (option(1:9) .eq. 'RIGI_MECA' .or. option(1:9) .eq. 'FULL_MECA') then
-        ddsdde(1)=1.d0
+
+!   pour MFRONT ddsdde(1)= type de matrice tangente
+!   ddsdde(1) <0 : matrice de prédiction
+!   -1, matrice elastique initiale (sans endommagement) 
+!   -2, matrice secante (avec endommagement)
+!   -3, matrice tangente.
+!   ddsdde(1) >0 : matrice tangente (FULL_MECA, FULL_MECA_ELAS)
+!    1 matrice elastique initiale (sans endommagement)
+!    2 matrice secante (avec endommagement)
+!    3 matrice tangente
+!    4 matrice tangente cohérente
+    
+    ddsdde=1.d0
+    if (option .eq. 'RIGI_MECA_TANG') then
+        ddsdde(1)=-3.d0
+    else if (option .eq. 'RIGI_MECA_ELAS' ) then
+        ddsdde(1)=-2.d0
+    else if (option .eq. 'FULL_MECA_ELAS' ) then
+        ddsdde(1)= 2.d0
+    else if (option .eq. 'FULL_MECA' ) then
+        ddsdde(1)= 4.d0
+    else if (option .eq. 'RAPH_MECA' ) then
+        ddsdde(1)= 0.d0
     endif
+
     if (option(1:9) .eq. 'RAPH_MECA' .or. option(1:9) .eq. 'FULL_MECA') then
 !
         call dcopy(nsig, sigm, 1, stress, 1)
