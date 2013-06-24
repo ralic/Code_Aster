@@ -17,19 +17,43 @@ subroutine fin999()
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 ! person_in_charge: mathieu.courtois at edf.fr
+!-----------------------------------------------------------------------
+!
+!     MENAGE DANS :
+!        * LES BIBLIOTHEQUES
+!        * LES ALARMES/ERREURS
+!        * LES COMMUNICATEURS MPI
+!
+!-----------------------------------------------------------------------
     include 'asterc/chkmsg.h'
     include 'asterc/dllcls.h'
-    include 'asterfort/ap9999.h'
+    include 'asterfort/apetsc.h'
     include 'asterfort/mpialr.h'
-    integer :: ichk
-!     ------------------------------------------------------------------
-!     FERMETURE DE PETSC
-    call ap9999()
-!     LIBERE TOUS LES COMPOSANTS CHARGES DYNAMIQUEMENT
+    include 'asterfort/mpiexe.h'
+    integer :: iret, ichk, ibid
+    real(kind=8) :: r8b
+!-----------------------------------------------------------------------
+!
+! --- FERMETURE DE PETSC
+!
+#ifdef _HAVE_PETSC
+    call apetsc('FIN', ' ', ' ', r8b, ' ',0, 0, iret)
+#endif
+!
+! --- LIBERATION DE TOUS LES COMPOSANTS CHARGES DYNAMIQUEMENT
+!
     call dllcls()
-!     VERIFICATION DES ALARMES EN PARALLELE
+!
+! --- VERIFICATION DES ALARMES EN PARALLELE
+!
     call mpialr()
-!     TEST ERREUR E SANS ERREUR F
+!
+! --- TEST ERREUR E SANS ERREUR F
+!
     call chkmsg(1, ichk)
+!
+! --- DESTRUCTION DE L'OBJET DE STOCKAGE DES COMMUNICATEURS MPI
+!
+    call mpiexe('DEL_COMM_REFE', ibid, ibid, ibid, ibid)
 !
 end subroutine

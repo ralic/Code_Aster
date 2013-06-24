@@ -20,9 +20,9 @@ subroutine op9999()
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 !     OPERATEUR DE CLOTURE
-!     ------------------------------------------------------------------
+!-----------------------------------------------------------------------
 !     FIN OP9999
-!     ------------------------------------------------------------------
+!-----------------------------------------------------------------------
     include 'jeveux.h'
     include 'asterc/gettyp.h'
     include 'asterc/getvis.h'
@@ -53,16 +53,16 @@ subroutine op9999()
     character(len=8) :: k8b, ouinon
     character(len=16) :: fchier, fhdf, typres
     character(len=80) :: fich
-!     ------------------------------------------------------------------
+!-----------------------------------------------------------------------
 !
     call jemarq()
     info = 1
 !
-! --- FERMETURE DES BIBLIOTHEQUES / VERIFICATION DES ALARMES ET ERREURS
+! --- MENAGE DANS LES BIBLIOTHEQUES, ALARMES, ERREURS, MPI
 !
     call fin999()
 !
-!
+! --- ECRITURE DU CONTENU DE CHAQUE SD RESULTAT
 !
     ifm = 0
     fchier = ' '
@@ -79,7 +79,7 @@ subroutine op9999()
         call wkvect('&&OP9999.NOM', 'V V K8', nbco, jco)
         call gettyp(typres, nbco, zk8(jco))
         do 10 i = 1, nbco
-            write(ifm,1000)
+            write(ifm,100)
             call rsinfo(zk8(jco-1+i), ifm)
 10      continue
     endif
@@ -88,18 +88,22 @@ subroutine op9999()
     iunmes = iunifi('MESSAGE')
     iunres = iunifi('RESULTAT')
 !
-!     --- SUPPRESSION DES CONCEPTS TEMPORAIRES DES MACRO
+! --- SUPPRESSION DES CONCEPTS TEMPORAIRES DES MACRO
+!
     call jedetc('G', '.', 1)
 !
-!     -- IMPRESSION DE LA TAILLE DES CONCEPTS DE LA BASE GLOBALE:
+! --- IMPRESSION DE LA TAILLE DES CONCEPTS DE LA BASE GLOBALE
+!
     call uimpba('G', iunmes)
 !
-!     --- RETASSAGE EVENTUEL DE LA GLOBALE
+! --- RETASSAGE EVENTUEL DE LA GLOBALE
+!
     call getvtx(' ', 'RETASSAGE', 1, iarg, 1,&
                 ouinon, l)
     if (ouinon .eq. 'OUI') call jetass('G')
 !
-!     --- SAUVEGARDE DE LA GLOBALE AU FORMAT HDF
+! --- SAUVEGARDE DE LA GLOBALE AU FORMAT HDF
+!
     fhdf = 'NON'
     call getvtx(' ', 'FORMAT_HDF', 1, iarg, 1,&
                 fhdf, nfhdf)
@@ -113,21 +117,25 @@ subroutine op9999()
         endif
     endif
 !
-!     RECUPERE LA POSITION D'UN ENREGISTREMENT SYSTEME CARACTERISTIQUE
+! --- RECUPERE LA POSITION D'UN ENREGISTREMENT SYSTEME CARACTERISTIQUE
+!
     call jeliad('G', nbenre, nboct)
     call jdcset('jeveux_sysaddr', nboct)
 !
-!     --- APPEL JXVERI POUR VERIFIER LA BONNE FIN D'EXECUTION
+! --- APPEL JXVERI POUR VERIFIER LA BONNE FIN D'EXECUTION
+!
     call jxveri()
 !
-!     --- CLOTURE DES FICHIERS ---
+! --- CLOTURE DES FICHIERS
+!
     call jelibf('SAUVE', 'G', info)
     if (iunerr .gt. 0) write(iunerr,* ) '<I> <FIN> FERMETURE DE LA BASE "GLOBALE" EFFECTUEE.'
     if (iunres .gt. 0) write(iunres,* ) '<I> <FIN> FERMETURE DE LA BASE "GLOBALE" EFFECTUEE.'
 !
     call jelibf('DETRUIT', 'V', info)
 !
-!     --- RETASSAGE EFFECTIF ----
+! --- RETASSAGE EFFECTIF
+!
     if (ouinon .eq. 'OUI') then
         call jxcopy('G', 'GLOBALE', 'V', 'VOLATILE', nbext)
         if (iunerr .gt. 0) write(iunerr, '(A,I2,A)'&
@@ -138,16 +146,19 @@ subroutine op9999()
                            nbext, ' FICHIER(S) UTILISE(S).'
     endif
 !
-!     --- IMPRESSION DES STATISTIQUES ( AVANT CLOTURE DE JEVEUX ) ---
+! --- IMPRESSION DES STATISTIQUES ( AVANT CLOTURE DE JEVEUX )
+!
     call u2mess('I', 'SUPERVIS2_97')
     if (iunerr .gt. 0) write(iunerr, *) '<I> <FIN> ARRET NORMAL DANS "FIN" PAR APPEL A "JEFINI".'
     if (iunres .gt. 0) write(iunres, *) '<I> <FIN> ARRET NORMAL DANS "FIN" PAR APPEL A "JEFINI".'
 !
-!     --- LA CLOTURE DE JEVEUX ---
+! --- CLOTURE DE JEVEUX
 !
     call jefini('NORMAL')
 !
-    1000 format(/,1x,'======>')
+!-----------------------------------------------------------------------
+!
+    100 format(/,1x,'======>')
 !
     call jedema()
 end subroutine

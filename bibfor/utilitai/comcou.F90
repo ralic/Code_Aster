@@ -33,13 +33,12 @@ function comcou(iarg)
     include 'asterfort/jemarq.h'
     include 'asterfort/jeveuo.h'
     include 'asterfort/mpiexe.h'
-    integer :: jco, ibid, iarg
+    integer :: jco, iarg
     character(len=24) :: k24bid
 !
     call jemarq()
     comcou=-9999
     k24bid='COMMUNICATEUR_MPI.REFE'
-    call mpiexe('SET_COMM_REFE', ibid, ibid, ibid, ibid)
     call jeveuo(k24bid, 'L', jco)
     comcou=zi(jco+iarg)
     call jedema()

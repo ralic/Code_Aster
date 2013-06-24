@@ -37,6 +37,7 @@ subroutine mpiexe(optmpi, mpico8, mpicou, intcou, intkey)
 ! OUT MPICOU        : COMMUNICATEUR
 !----------------------------------------------------------------------
 ! person_in_charge: olivier.boiteau at edf.fr
+! aslint: disable=W1304
 !
 ! COPYRIGHT (C) 1991 - 2013  EDF R&D                WWW.CODE-ASTER.ORG
 !
@@ -125,6 +126,11 @@ subroutine mpiexe(optmpi, mpico8, mpicou, intcou, intkey)
         endif
         if (dbg) write(ifm,*)'AFFE_COMM_FREE :',intcou,mpico8
 !
+    else if (optmpi.eq.'DEL_COMM_REFE') then
+!     -------------------------------------
+        k24bid='COMMUNICATEUR_MPI.REFE'
+        call jedetr(k24bid)
+!
     else if (optmpi.eq.'MPI_RANG_SIZE') then
 !     --------------------------------------
         i41=mpico8
@@ -202,6 +208,11 @@ subroutine mpiexe(optmpi, mpico8, mpicou, intcou, intkey)
             call jeveuo(k24bid, 'E', jco)
             zi(jco+intcou)=mpico8
         endif
+!
+    else if (optmpi.eq.'DEL_COMM_REFE') then
+!     -------------------------------------
+        k24bid='COMMUNICATEUR_MPI.REFE'
+        call jedetr(k24bid)
 !
     else if (optmpi.eq.'MPI_RANG_SIZE') then
 !     --------------------------------------
