@@ -1,7 +1,7 @@
 subroutine cmphdi(ck, cm, ndim, nbmod, niter,&
                   xcrit, ceigen, cmod, ndimax, cmat1,&
                   cmat2, cvect, cvect1, alpha, beta,&
-                  lambd1, lambd2, interv, ific)
+                  lambd1, lambd2, interv)
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -54,7 +54,6 @@ subroutine cmphdi(ck, cm, ndim, nbmod, niter,&
 ! LAMBD1   /I/: BORNE INFERIEURE DE L'INTERVALLE DE RECHERCHE
 ! LAMBD2   /I/: BORNE SUPERIEURE DE L'INTERVALLE DE RECHERCHE
 ! INTERV   /I/: LONGUEUR MAXIMALE D'UN INTERVALLE CONTENANT UNE VP
-! IFIC     /I/: NUMERO D'UNITE LOGIQUE
 !
 !-----------------------------------------------------------------------
 !
@@ -71,7 +70,7 @@ subroutine cmphdi(ck, cm, ndim, nbmod, niter,&
     include 'asterfort/u2mesk.h'
     include 'asterfort/u2mess.h'
     include 'blas/zcopy.h'
-    integer :: ndim, nbmod, niter, ific
+    integer :: ndim, nbmod, niter, ndimax
     complex(kind=8) :: ck(*), cm(*)
     complex(kind=8) :: ceigen(nbmod), cmod(ndimax, nbmod), cmod0(ndim)
     complex(kind=8) :: cmat1(*), cmat2(ndim, ndim)
@@ -83,7 +82,7 @@ subroutine cmphdi(ck, cm, ndim, nbmod, niter,&
     complex(kind=8) :: cshift
     real(kind=8) :: ecart, valr(3)
     logical :: sortie
-    integer :: idiag, iretou, iv, ivdiag, ndimax
+    integer :: idiag, iretou, iv, ivdiag
     character(len=6) :: valk
 !-----------------------------------------------------------------------
 !
@@ -174,18 +173,13 @@ subroutine cmphdi(ck, cm, ndim, nbmod, niter,&
 !
         call sesqui(ck, cmod(1, j), ndim, ceigen(j))
 !
-!         IMPRESSION DES RESULTATS
-!
-!
-!       WRITE(IFIC,*)' ',J,'       ',CT,'       ',ECART,
-!    &  '      ',CEIGEN(J)
-!
         vali(1)=j
         vali(2)=ct
         valr(1)=ecart
         valr(2)=dble(ceigen(j))
         valr(3)=dimag(ceigen(j))
-        call u2mesg('I', 'ALGELINE7_4', 0, ' ', 2, vali, 3, valr)
+        call u2mesg('I', 'ALGELINE7_4', 0, ' ', 2,&
+                    vali, 3, valr)
 10  end do
 !
 end subroutine

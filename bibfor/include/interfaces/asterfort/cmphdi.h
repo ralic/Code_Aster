@@ -1,4 +1,3 @@
-!
 ! COPYRIGHT (C) 1991 - 2013  EDF R&D                WWW.CODE-ASTER.ORG
 !
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -19,7 +18,7 @@ interface
     subroutine cmphdi(ck, cm, ndim, nbmod, niter,&
                       xcrit, ceigen, cmod, ndimax, cmat1,&
                       cmat2, cvect, cvect1, alpha, beta,&
-                      lambd1, lambd2, interv, ific)
+                      lambd1, lambd2, interv)
         integer :: ndimax
         integer :: nbmod
         integer :: ndim
@@ -38,6 +37,5 @@ interface
         real(kind=8) :: lambd1
         real(kind=8) :: lambd2
         real(kind=8) :: interv
-        integer :: ific
     end subroutine cmphdi
 end interface

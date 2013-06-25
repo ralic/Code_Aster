@@ -1137,10 +1137,10 @@ subroutine op0045()
             call vpqzla(typeqz, qrn, iqrn, lqrn, qrar,&
                         qrai, qrba, qrvl, lvec, kqrn,&
                         lvalpr, nconv, omecor, ktyp, kqrnr,&
-                        neqact, ilscal, irscal, optiof, typres,&
-                        omemin, omemax, omeshi, zi(lprod), nfreq,&
-                        lmasse, lraide, lamor, numedd, sigma,&
-                        icscal, ivscal, iiscal, ibscal, flage)
+                        neqact, ilscal, irscal, optiof, omemin,&
+                        omemax, omeshi, zi(lprod), nfreq, lmasse,&
+                        lraide, lamor, numedd, sigma, icscal,&
+                        ivscal, iiscal, ibscal, flage)
             call rectfr(nconv, nconv, omeshi, npivot, nblagr,&
                         zr(lvalpr), nfreq, zi(lresui), zr(lresur), mxresf)
             call vpbost(typres, nconv, nconv, omeshi, zr(lvalpr),&
@@ -1173,10 +1173,10 @@ subroutine op0045()
             call vpqzla(typeqz, qrn, iqrn, lqrn, qrar,&
                         qrai, qrba, qrvl, lvec, kqrn,&
                         lvalpr, nconv, omecor, ktyp, kqrnr,&
-                        neqact, ilscal, irscal, optiof, typres,&
-                        omemin, omemax, omeshi, zi(lprod), nfreq,&
-                        lmasse, lraide, lamor, numedd, sigma,&
-                        icscal, ivscal, iiscal, ibscal, flage)
+                        neqact, ilscal, irscal, optiof, omemin,&
+                        omemax, omeshi, zi(lprod), nfreq, lmasse,&
+                        lraide, lamor, numedd, sigma, icscal,&
+                        ivscal, iiscal, ibscal, flage)
             npivot = nblagr
 !
             call rectfc(nconv, nconv, sigma, npivot, nblagr,&
@@ -1310,10 +1310,10 @@ subroutine op0045()
             call vpqzla(typeqz, qrn, iqrn, lqrn, qrar,&
                         qrai, qrba, qrvl, lvec, kqrn,&
                         lvalpr, nconv, omecor, ktyp, kqrnr,&
-                        neqact, ilscal, irscal, optiof, typres,&
-                        omemin, omemax, omeshi, zi(lprod), nfreq,&
-                        lmasse, lraide, lamor, numedd, sigma,&
-                        icscal, ivscal, iiscal, ibscal, flage)
+                        neqact, ilscal, irscal, optiof, omemin,&
+                        omemax, omeshi, zi(lprod), nfreq, lmasse,&
+                        lraide, lamor, numedd, sigma, icscal,&
+                        ivscal, iiscal, ibscal, flage)
             nfreq=nfreq/2
             call wp4vec(nfreq, nconv, neq, sigma, zc(lvalpr),&
                         zc(lvec), mxresf, zi(lresui), zr(lresur), zi(lprod),&

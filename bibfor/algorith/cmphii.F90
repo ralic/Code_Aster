@@ -63,13 +63,13 @@ subroutine cmphii(ck, cm, ndim, nbmod, niter,&
     include 'asterfort/u2mesk.h'
     include 'asterfort/u2mess.h'
     include 'blas/zcopy.h'
-    integer :: vali(2)
+    integer :: vali(2), nbmod, ndim, ndimax
     complex(kind=8) :: ck(*), cm(*), ceigen(nbmod)
     complex(kind=8) :: cmod(ndimax, nbmod), cprod, cmod0(ndim)
     complex(kind=8) :: cmat1(*), cmat2(ndim, ndim), cvec(ndim), cvec0(ndim)
     logical :: convok
     integer :: i, idiag, ific, ipivo, iv, ivdiag, j
-    integer :: k, nbmod, ndim, ndimax, niter
+    integer :: k, niter
     real(kind=8) :: valr(3), xcrit, xer
     character(len=6) :: valk
 !-----------------------------------------------------------------------

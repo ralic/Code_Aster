@@ -75,9 +75,9 @@ subroutine immocy(nomres, ifm)
 !
 !
     call jeveuo(refe, 'L', llref)
-    mailla=zk24(llref)
-    intf=zk24(llref+1)
-    basmod=zk24(llref+2)
+    mailla=zk24(llref)(1:8)
+    intf=zk24(llref+1)(1:8)
+    basmod=zk24(llref+2)(1:8)
     call jeveuo(nosec, 'L', llnosc)
 !
 !

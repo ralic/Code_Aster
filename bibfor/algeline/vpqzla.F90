@@ -1,10 +1,10 @@
 subroutine vpqzla(typeqz, qrn, iqrn, lqrn, qrar,&
                   qrai, qrba, qrvl, lvec, kqrn,&
                   lvalpr, nconv, omecor, ktyp, kqrnr,&
-                  neqact, ilscal, irscal, optiof, typres,&
-                  omemin, omemax, omeshi, ddlexc, nfreq,&
-                  lmasse, lraide, lamor, numedd, sigma,&
-                  icscal, ivscal, iiscal, ibscal, flage)
+                  neqact, ilscal, irscal, optiof, omemin,&
+                  omemax, omeshi, ddlexc, nfreq, lmasse,&
+                  lraide, lamor, numedd, sigma, icscal,&
+                  ivscal, iiscal, ibscal, flage)
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -63,7 +63,6 @@ subroutine vpqzla(typeqz, qrn, iqrn, lqrn, qrar,&
 ! IN  NEQACT : IS : NOMBRE DE DDL ACTIFS
 ! IN  ILSCAL/IRSCAL : IS : ADRESSE JEVEUX VECTEURS AUX POUR QZ_EQUI
 ! IN  OPTIOF : K16: OPTION DEMANDEE (BANDE, PLUS_PETITE,CENTRE,TOUT)
-! IN  TYPRES : K16: TYPE DE SD_RESULTAT
 ! IN  OMEMIN/OMEMAX: R8 : FREQS MIN ET MAX DE LA BANDE RECHERCHEE
 ! IN  OMESHI : R8 : VALEUR  RETENUE DU SHIFT PAR VPFOPR EN GENE REEL
 ! IN  DDLEXC : IS : DDLEXC(1..QRN) VECTEUR POSITION DES DDLS BLOQUES.
@@ -126,7 +125,7 @@ subroutine vpqzla(typeqz, qrn, iqrn, lqrn, qrar,&
     integer :: qrvl, lvec, kqrn, lvalpr, nconv, kqrnr, neqact, ilscal, irscal
     integer :: ddlexc(*), nfreq, lmasse, lraide, lamor
     character(len=1) :: ktyp, kmsg
-    character(len=16) :: typeqz, optiof, typres
+    character(len=16) :: typeqz, optiof
     character(len=19) :: numedd
     real(kind=8) :: omecor, omemin, omemax, omeshi
     complex(kind=8) :: sigma
@@ -170,11 +169,11 @@ subroutine vpqzla(typeqz, qrn, iqrn, lqrn, qrar,&
     alpha = 0.717d0
     depi=r8depi()
 ! ---- PARAMETRES POUR LAPACK
-    qrn4 = qrn
+    qrn4 = int(qrn, 4)
     qrlwo4 = -1
 ! ---- ON CHERCHE LES VECTEURS PROPRES A DROITE
     ldvl4 = 1
-    ldvr4 = qrn
+    ldvr4 = int(qrn, 4)
 ! ---- METTRE LTEST=.TRUE. SI ON VEUX FAIRE DES TESTS UNITAIRES SUR LES
 ! ---- SOLVEURS LAPACK.
 ! ---- IDEM AVEC LDEBUG POUR DIAGNOSTIQUER UN BUG
@@ -634,11 +633,11 @@ subroutine vpqzla(typeqz, qrn, iqrn, lqrn, qrar,&
 ! CREATION DU VECTEUR DE TRAVAIL OPTIMALE, DESTRUCTION DU PRECEDENT
 ! ET RESOLUTION
             if (qrinfo .eq. 0) then
-                qrlwo4 = int(zr(kqrn))
+                qrlwo4 = int(zr(kqrn), 4)
                 qrlwor = int(zr(kqrn))
 ! PATCH POUR MKL INTEL 11.1 : MKL DIT 10*N, NETLIB DIT 12*N
                 if (qrlwo4 .lt. (12*qrn4)) then
-                    qrlwo4 = 12*qrn4
+                    qrlwo4 = int(12*qrn4, 4)
                     qrlwor = 12*qrn4
                 endif
 ! FIN PATCH
@@ -659,11 +658,11 @@ subroutine vpqzla(typeqz, qrn, iqrn, lqrn, qrar,&
                         bbnrm, zr( icscal), zr(ivscal), zc(kqrn), qrlwo4,&
                         zr(kqrnr), zi(iiscal), zl(ibscal), qrinfo)
             if (qrinfo .eq. 0) then
-                qrlwo4 = int(dble(zc(kqrn)))
+                qrlwo4 = int(dble(zc(kqrn)), 4)
                 qrlwor = int(dble(zc(kqrn)))
 ! PATCH POUR MKL INTEL 11.1 : MKL DIT 4*N, NETLIB DIT 2*N
                 if (qrlwo4 .lt. (4*qrn4)) then
-                    qrlwo4 = 4*qrn4
+                    qrlwo4 = int(4*qrn4, 4)
                     qrlwor = 4*qrn4
                 endif
 ! FIN PATCH
@@ -697,7 +696,7 @@ subroutine vpqzla(typeqz, qrn, iqrn, lqrn, qrar,&
                        zr(qrvl), ldvl4, zr(lvec3), ldvr4, zr(kqrn),&
                        qrlwo4, qrinfo)
             if (qrinfo .eq. 0) then
-                qrlwo4 = int(zr(kqrn))
+                qrlwo4 = int(zr(kqrn), 4)
                 qrlwor = int(zr(kqrn))
                 call jedetr('&&VPQZLA.QR.WORK')
                 call wkvect('&&VPQZLA.QR.WORK', 'V V R', qrlwor, kqrn2)
@@ -712,7 +711,7 @@ subroutine vpqzla(typeqz, qrn, iqrn, lqrn, qrar,&
                        ldvl4, zc(lvec3), ldvr4, zc(kqrn), qrlwo4,&
                        zr(kqrnr), qrinfo)
             if (qrinfo .eq. 0) then
-                qrlwo4 = int(dble(zc(kqrn)))
+                qrlwo4 = int(dble(zc(kqrn)), 4)
                 qrlwor = int(dble(zc(kqrn)))
                 call jedetr('&&VPQZLA.QR.WORK')
                 call wkvect('&&VPQZLA.QR.WORK', 'V V C', qrlwor, kqrn2)
@@ -731,7 +730,7 @@ subroutine vpqzla(typeqz, qrn, iqrn, lqrn, qrar,&
                    qrn4, zr(lqrn), qrn4, zr(lvalpr), zr(kqrn),&
                    qrlwo4, qrinfo)
         if (qrinfo .eq. 0) then
-            qrlwo4 = int(zr(kqrn))
+            qrlwo4 = int(zr(kqrn), 4)
             qrlwor = int(zr(kqrn))
             call jedetr('&&VPQZLA.QR.WORK')
             call wkvect('&&VPQZLA.QR.WORK', 'V V R', qrlwor, kqrn2)
@@ -1114,7 +1113,7 @@ subroutine vpqzla(typeqz, qrn, iqrn, lqrn, qrar,&
             call wkvect('&&VPQZLA.TAMPON.PROV_1', 'V V C', iauxh, iaux1)
             call wkvect('&&VPQZLA.TAMPON.PROV_2', 'V V C', iauxh, iaux2)
         endif
-        iauxh4=iauxh
+        iauxh4 = int(iauxh, 4)
         do 91 i = 1, nconv
             call jerazo('&&VPQZLA.TAMPON.PROV_1', iauxh, 1)
             call jerazo('&&VPQZLA.TAMPON.PROV_2', iauxh, 1)

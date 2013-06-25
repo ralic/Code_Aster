@@ -305,16 +305,16 @@ subroutine anacri(nomcri, nomfor, typcha, impgrd, paract,&
         write(6,*) ' '
 !
         if (crepse) then
-            write(6,*) 'ON NOTE: DEFORMATION ELASTIQUE = DEFORMATION&
-     &      TOTALE - DEFORMATION PLASTIQUE'
+            write(6,*) 'ON NOTE: DEFORMATION ELASTIQUE = DEFORMATION'//&
+                &'TOTALE - DEFORMATION PLASTIQUE'
             if (.not. crepst) then
-                write(6,*) 'LE CHARGEMENT DOIT CONSISTER EN PLUS:&
-     &      DEFORMATION TOTALE (OBLIGATOIRE)'
+                write(6,*) 'LE CHARGEMENT DOIT CONSISTER EN PLUS:'//&
+                    &'DEFORMATION TOTALE (OBLIGATOIRE)'
             endif
 !
             if (.not. crepsp) then
-                write(6,*) 'LE CHARGEMENT DOIT CONSISTER EN PLUS:&
-     &      DEFORMATION PLASTIQUE (OPTIONEL)'
+                write(6,*) 'LE CHARGEMENT DOIT CONSISTER EN PLUS:'//&
+                    &'DEFORMATION PLASTIQUE (OPTIONEL)'
             endif
 !
         endif

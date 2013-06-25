@@ -1,4 +1,3 @@
-!
 ! COPYRIGHT (C) 1991 - 2013  EDF R&D                WWW.CODE-ASTER.ORG
 !
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -19,10 +18,10 @@ interface
     subroutine vpqzla(typeqz, qrn, iqrn, lqrn, qrar,&
                       qrai, qrba, qrvl, lvec, kqrn,&
                       lvalpr, nconv, omecor, ktyp, kqrnr,&
-                      neqact, ilscal, irscal, optiof, typres,&
-                      omemin, omemax, omeshi, ddlexc, nfreq,&
-                      lmasse, lraide, lamor, numedd, sigma,&
-                      icscal, ivscal, iiscal, ibscal, flage)
+                      neqact, ilscal, irscal, optiof, omemin,&
+                      omemax, omeshi, ddlexc, nfreq, lmasse,&
+                      lraide, lamor, numedd, sigma, icscal,&
+                      ivscal, iiscal, ibscal, flage)
         character(len=16) :: typeqz
         integer :: qrn
         integer :: iqrn
@@ -42,7 +41,6 @@ interface
         integer :: ilscal
         integer :: irscal
         character(len=16) :: optiof
-        character(len=16) :: typres
         real(kind=8) :: omemin
         real(kind=8) :: omemax
         real(kind=8) :: omeshi

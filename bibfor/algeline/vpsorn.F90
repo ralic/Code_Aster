@@ -168,7 +168,7 @@ subroutine vpsorn(lmasse, ldynfa, nbeq, nbvect, nfreq,&
     iparam(7) = mode
 !
 ! INIT. OBJETS ASTER
-    matass=zk24(zi(ldynfa+1))
+    matass=zk24(zi(ldynfa+1))(1:19)
     chcine=' '
     criter=' '
     k19bid=' '

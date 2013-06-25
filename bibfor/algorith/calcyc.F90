@@ -15,16 +15,10 @@ subroutine calcyc(nomres)
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-! aslint: disable=
     implicit none
 !
-!***********************************************************************
-!    P. RICHARD     DATE 14/03/91
-!-----------------------------------------------------------------------
 !  BUT:  CALCUL DES MODES CYCLIC OU RECOPIE DE CEUX DEJA EXISTANT
 !   DANS UN EVENTUEL CALCUL DE MODES CYCLIQUES PRECEDANT
-!
-!-----------------------------------------------------------------------
 !
 ! NOMRES  /I/: NOM UTILISATEUR DU CONCEPT RESULTAT
 !
@@ -237,7 +231,7 @@ subroutine calcyc(nomres)
         call jeveuo(nomres//'.CYCL_NUIN', 'L', llnum)
         numa=zi(llnum+2)
         call jeveuo(nomres//'.CYCL_REFE', 'L', llref)
-        basmod=zk24(llref+2)
+        basmod=zk24(llref+2)(1:8)
 !
         call axacti(basmod, numa, 0, ibid, 0,&
                     nbdax0)
@@ -390,7 +384,7 @@ subroutine calcyc(nomres)
             call cmphdi(zc(ltkcom), zc(ltmcom), nbddef, nbmobt, nmaxit,&
                         precaj, zc(lteig), zc(iad), nbddg, zc(ltzm1),&
                         zc(ltzm2), zc(ltzv1), zc(ltzv2), zr(ltrv1), zr(ltrv2),&
-                        rlome2(1), rlome2( 2), precse, imes)
+                        rlome2(1), rlome2( 2), precse)
 !
         endif
 !

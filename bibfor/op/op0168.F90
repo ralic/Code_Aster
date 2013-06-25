@@ -19,6 +19,7 @@ subroutine op0168()
 ! ======================================================================
 !     OPERATEUR  EXTR_MODE
 !     ------------------------------------------------------------------
+! aslint: disable=W1501
 !
     include 'jeveux.h'
 !
@@ -127,7 +128,7 @@ subroutine op0168()
                 raide = zk24(lmode)
                 masse = zk24(lmode+1)
                 amor = zk24(lmode+2)
-                numedd = zk24(lmode+3)
+                numedd = zk24(lmode+3)(1:19)
                 call vpcrea(0, modeou, masse, amor, raide,&
                             numedd, ibid)
             endif

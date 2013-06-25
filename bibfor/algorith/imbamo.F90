@@ -67,11 +67,11 @@ subroutine imbamo(nomres)
 !------------------RECUPERATION DES CONCEPT AMONT-----------------------
 !
     call jeveuo(nomres//'           .REFD', 'L', llref)
-    raid=zk24(llref)
-    mass=zk24(llref+1)
-    numref=zk24(llref+3)
-    intf=zk24(llref+4)
-    typeba=zk24(llref+6)
+    raid=zk24(llref)(1:19)
+    mass=zk24(llref+1)(1:19)
+    numref=zk24(llref+3)(1:14)
+    intf=zk24(llref+4)(1:8)
+    typeba=zk24(llref+6)(1:19)
 !
 !--------------------------------ECRITURES------------------------------
 !
