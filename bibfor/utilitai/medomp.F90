@@ -94,12 +94,12 @@ subroutine medomp(result, modele, mate, carele, nh)
 ! ----- RECUPERATION DU CARA_ELEM DANS LA COMMANDE
 !
         call getvid(' ', 'CARA_ELEM', 0, iarg, 1,carele, n2)
-        if ((n2.eq.0) .and. lrdm) call u2mess('A', 'POSTELEM_21')
+        if ((n2.eq.0) .and. lrdm) call u2mess('A', 'CALCULEL3_39')
 !
 ! ----- RECUPERATION DU CHAM_MATER DANS LA COMMANDE
 !
         call getvid(' ', 'CHAM_MATER', 0, iarg, 1,materi, n3)
-        if ((n3.eq.0) .and. lmater) call u2mess('A', 'POSTELEM_22')
+        if ((n3.eq.0) .and. lmater) call u2mess('A', 'CALCULEL3_40')
 !
     else
 !
