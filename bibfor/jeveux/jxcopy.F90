@@ -168,6 +168,12 @@ subroutine jxcopy(clsinz, nominz, clsouz, nmoutz, nbext)
     call jjlidy(iadyn, iaditp)
     classe(ico:ico) = ' '
     classe(ici:ici) = ' '
+!
+! Destruction de tous les receptacles avant recopie.
+!
+    noml1(l2+6:l2+7)='.*'
+    call rmfile (noml1, info)
+
     do 300 k = 1, nbext
         call codent(k, 'G', noml2(l2+6:l2+7))
         call codent(k, 'G', noml1(l1+6:l1+7))
