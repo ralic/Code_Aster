@@ -1,4 +1,4 @@
-subroutine imbamo(nomres, ifm)
+subroutine imbamo(nomres)
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -24,10 +24,6 @@ subroutine imbamo(nomres, ifm)
 !-----------------------------------------------------------------------
 !
 ! NOMRES   /I/: NOM DU CONCEPT RESULTAT
-! MAILLAGE /I/: NOM DU MAILLAGE
-! IFM    /I/: UNITE DU FICHIER MESSAGE
-!
-!
 !
 !
     include 'jeveux.h'
@@ -38,19 +34,22 @@ subroutine imbamo(nomres, ifm)
     include 'asterfort/jemarq.h'
     include 'asterfort/jeveuo.h'
     include 'asterfort/rsadpa.h'
+    include 'asterfort/u2mesg.h'
+    include 'asterfort/u2mesk.h'
+    include 'asterfort/u2mess.h'
     integer :: i, ibid, iret, nbdef, nbmod, nbpabm, nbtot
 !
     real(kind=8) :: freq, genek, genem
 !-----------------------------------------------------------------------
     parameter    (nbpabm=8)
     character(len=8) :: nomres, intf, nomnoe, nomcmp
-    character(len=19) :: raid, mass, typeba
+    character(len=19) :: raid, mass, typeba, valk(4)
     character(len=14) :: numref
-    integer :: ldpar(nbpabm), ifm, llref, ier
+    integer :: ldpar(nbpabm), llref, ier, vali(2)
     character(len=16) :: bmpara(nbpabm), typdef
     character(len=8) :: rescyc
     character(len=8) :: k8bid
-!
+    real(kind=8) :: valr(3)
 !
 !-----------------------------------------------------------------------
 !
@@ -76,19 +75,7 @@ subroutine imbamo(nomres, ifm)
 !
 !--------------------------------ECRITURES------------------------------
 !
-    write(ifm,*)' '
-    write(ifm,*)'----------------------------------------------------'
-    write(ifm,*)' '
-    write(ifm,*)'                DEF_BASE_MODALE '
-    write(ifm,*)' '
-    write(ifm,*)'  IMPRESSIONS NIVEAU: 2'
-    write(ifm,*)' '
-    write(ifm,*) ' '
-    write(ifm,*) ' NOM DE LA BASE MODALE: ',nomres
-    write(ifm,*) '---------------------- '
-!
-    write(ifm,*) ' '
-    write(ifm,*) ' '
+    call u2mesk('I', 'ALGELINE6_1', 1, nomres)
 !
 !    CAS D'UNE BASE DE TYPE CONNUE
 !
@@ -102,15 +89,14 @@ subroutine imbamo(nomres, ifm)
                     k8bid, ier)
 !
 !
-        write(ifm,*) '                TYPE BASE MODALE: CLASSIQUE'
-        write(ifm,*) '                ----------------- '
-        write(ifm,*) ' '
-        write(ifm,*) '                INTERF_DYNA: ',intf
-        write(ifm,*) '                NUMEROTATION: ',numref
-        write(ifm,*) '                MATRICE RAIDEUR: ',raid
-        write(ifm,*) '                MATRICE MASSE: ',mass
-        write(ifm,*) '                NOMBRE DE MODE PROPRES: ',nbmod
-        write(ifm,*) '                NOMBRE DE MODE STATIQUES: ',nbdef
+        valk(1)=intf
+        valk(2)=numref
+        valk(3)=raid
+        valk(4)=mass
+        vali(1)=nbmod
+        vali(2)=nbdef
+        call u2mesg('I', 'ALGELINE6_2', 4, valk, 2,&
+                    vali, 0, 0.d0)
 !
 !
     endif
@@ -123,13 +109,9 @@ subroutine imbamo(nomres, ifm)
         call dismoi('F', 'NOM_MODE_CYCL', intf, 'INTERF_DYNA', ibid,&
                     rescyc, iret)
 !
-!
-        write(ifm,*) '                TYPE BASE MODALE: CYCLIQUE'
-        write(ifm,*) '                ----------------- '
-        write(ifm,*) ' '
-        write(ifm,*) '                INTERF_DYNA: ',intf
-        write(ifm,*) '                NUMEROTATION: ',numref
-!
+        valk(1)=intf
+        valk(2)=numref
+        call u2mesk('I', 'ALGELINE6_3', 2, valk)
 !
     endif
 !
@@ -140,45 +122,43 @@ subroutine imbamo(nomres, ifm)
         call dismoi('F', 'NB_MODES_TOT', nomres, 'RESULTAT', nbtot,&
                     k8bid, ier)
 !
-        write(ifm,*) '                TYPE BASE MODALE: RITZ'
-        write(ifm,*) '                ----------------- '
-        write(ifm,*) ' '
-        write(ifm,*) '                NUMEROTATION: ',numref
-        write(ifm,*) '                DIMENSION BASE: ',nbtot
+        valk(1)=numref
+        vali(1)=nbtot
+        call u2mesg('I', 'ALGELINE6_4', 1, valk, 1,&
+                    vali, 0, 0.d0)
 !
     endif
 !
-!
-!
-    write(ifm,*)' '
-    write(ifm,*)'         DEFINITION DES DEFORMEES DE LA BASE MODALE'
-    write(ifm,*)'         ------------------------------------------'
+    call u2mess('I', 'ALGELINE6_5')
 !
     do 10 i = 1, nbtot
 !
-        write(ifm,*)' '
         call rsadpa(nomres, 'L', nbpabm, bmpara, i,&
                     0, ldpar, k8bid)
 !
         typdef=zk16(ldpar(5))
 !
+        vali(1)=i
         if (typdef .eq. 'PROPRE') then
+!
             freq=zr(ldpar(2))
             genek=zr(ldpar(8))
             genem=zr(ldpar(7))
-            write(ifm,*)'NUME_ORDRE: ',i
-            write(ifm,*)'              ','MODE PROPRE     FREQUENCE: ',&
-     &                 freq,' HZ'
-            write(ifm,*)'              ','MASS_GENE: ',genem,&
-     &                ' RIGI_GENE: ',genek
+            valr(1)=freq
+            valr(2)=genem
+            valr(3)=genek
+            call u2mesg('I', 'ALGELINE6_6', 0, ' ', 1,&
+                        vali, 3, valr)
 !
         else
+!
             nomnoe=zk16(ldpar(4))(1:8)
             nomcmp=zk16(ldpar(4))(9:16)
-            write(ifm,*)'NUME_ORDRE: ',i
-            write(ifm,*)'              ','MODE ',typdef
-            write(ifm,*)'              ','NOEUD: ',nomnoe,&
-     &                ' COMPOSANTE: ',nomcmp
+            valk(1)=typdef
+            valk(2)=nomnoe
+            valk(3)=nomcmp
+            call u2mesg('I', 'ALGELINE6_7', 3, valk, 1,&
+                        vali, 0, 0.d0)
 !
         endif
 10  end do

@@ -27,6 +27,10 @@ subroutine vpwecf(option, typres, nfreq, mxfreq, resufi,&
     include 'asterc/r8vide.h'
     include 'asterfort/assert.h'
     include 'asterfort/infniv.h'
+    include 'asterfort/u2mesg.h'
+    include 'asterfort/u2mesk.h'
+    include 'asterfort/u2mesr.h'
+    include 'asterfort/u2mess.h'
     integer :: nfreq, mxfreq, resufi(mxfreq, *), lamor
     real(kind=8) :: resufr(mxfreq, *)
     character(len=*) :: option, resufk(mxfreq, *), typres
@@ -34,91 +38,93 @@ subroutine vpwecf(option, typres, nfreq, mxfreq, resufi,&
     logical :: lns
 !
 ! VARIABLES LOCALES
-    integer :: ifm, ifreq, ireso, iterb, iterj, iterq, itera, indf, niv
-    real(kind=8) :: fff, am, err, prec, undf, cha, am2, erc, errmoy
-    character(len=27) :: straux
+    integer :: ifm, ifreq, indf, niv, vali(4)
+    real(kind=8) :: am, undf, erc, errmoy
+    real(kind=8) :: valr(5)
+    character(len=27) :: valk(4)
 !     ------------------------------------------------------------------
     call infniv(ifm, niv)
     undf = r8vide()
     indf = isnnem()
-    cha = undf
     errmoy = 0.d0
     if (nfreq .eq. 0) call assert(.false.)
     if (resufk(nfreq,2) .eq. 'BATHE_WILSON') then
         if (typres .eq. 'DYNAMIQUE') then
-            write(ifm,1000)
+            call u2mess('I', 'ALGELINE6_59')
         else
-            write(ifm,1001)
+            call u2mess('I', 'ALGELINE6_60')
         endif
         do 10 ifreq = 1, nfreq
-            ireso = resufi(ifreq,1)
-            fff = resufr(ifreq,1)
-            cha = resufr(ifreq,2)
             am = resufr(ifreq,4)
-            iterb = resufi(ifreq,3)
-            iterj = resufi(ifreq,5)
             errmoy = errmoy + abs(am)
+            valr(1)= am
+            vali(1)= resufi(ifreq,1)
+            vali(2)= resufi(ifreq,3)
+            vali(3)= resufi(ifreq,5)
             if (typres .eq. 'DYNAMIQUE') then
-                write(ifm,1010) ireso,fff,am,iterb,iterj
+                valr(2)=resufr(ifreq,1)
             else
-                write(ifm,1010) ireso,cha,am,iterb,iterj
+                valr(2)=resufr(ifreq,2)
             endif
+            call u2mesg('I', 'ALGELINE6_61', 0, ' ', 3,&
+                        vali, 2, valr)
 10      continue
-        write(ifm,7776)errmoy/nfreq
-        write(ifm,7777)
+        valr(1)= errmoy/nfreq
+        call u2mesr('I', 'ALGELINE6_58', 1, valr)
 !
     else if (resufk(nfreq,2) .eq. 'LANCZOS') then
         if (lamor .eq. 0) then
             if (typres .eq. 'DYNAMIQUE') then
-                write(ifm,2000)
+                call u2mess('I', 'ALGELINE6_62')
             else
-                write(ifm,2001)
+                call u2mess('I', 'ALGELINE6_63')
             endif
         else
             if (typres .eq. 'DYNAMIQUE') then
-                write(ifm,2100)
+                call u2mess('I', 'ALGELINE6_64')
             else
-                write(ifm,2101)
+                call u2mess('I', 'ALGELINE6_65')
             endif
         endif
         do 20 ifreq = 1, nfreq
-            ireso = resufi(ifreq,1)
-            fff = resufr(ifreq,1)
-            cha = resufr(ifreq,2)
+            vali(1)= resufi(ifreq,1)
+            vali(2)= resufi(ifreq,2)
             if (lamor .eq. 0) then
                 am = resufr(ifreq,4)
             else
                 am = resufr(ifreq,3)
             endif
-            iterq = resufi(ifreq,2)
             errmoy = errmoy + abs(am)
+            valr(1)= am
             if (typres .eq. 'DYNAMIQUE') then
-                write(ifm,2010) ireso,fff,am,iterq
+                valr(2)=resufr(ifreq,1)
             else
-                write(ifm,2010) ireso,cha,am,iterq
+                valr(2)=resufr(ifreq,2)
             endif
+            call u2mesg('I', 'ALGELINE6_66', 0, ' ', 2,&
+                        vali, 2, valr)
 20      continue
-        if (lamor .eq. 0) write(ifm,7776)errmoy/nfreq
-        write(ifm,7777)
+        if (lamor .eq. 0) then
+            valr(1)= errmoy/nfreq
+            call u2mesr('I', 'ALGELINE6_58', 1, valr)
+        endif
 !
     else if (resufk(nfreq,2) .eq. 'SORENSEN') then
         if ((lamor.eq.0) .and. (ktyp.eq.'R') .and. (.not.lns)) then
             if (typres .eq. 'DYNAMIQUE') then
-                write(ifm,2200)
+                call u2mess('I', 'ALGELINE6_67')
             else
-                write(ifm,2201)
+                call u2mess('I', 'ALGELINE6_68')
             endif
         else
             if (typres .eq. 'DYNAMIQUE') then
-                write(ifm,2202)
+                call u2mess('I', 'ALGELINE6_70')
             else
-                write(ifm,2203)
+                call u2mess('I', 'ALGELINE6_71')
             endif
         endif
         do 35 ifreq = 1, nfreq
-            ireso = resufi(ifreq,1)
-            fff = resufr(ifreq,1)
-            cha = resufr(ifreq,2)
+            vali(1) = resufi(ifreq,1)
             if ((lamor.eq.0) .and. (ktyp.eq.'R') .and. (.not.lns)) then
                 am = resufr(ifreq,4)
                 errmoy = errmoy + abs(am)
@@ -127,42 +133,46 @@ subroutine vpwecf(option, typres, nfreq, mxfreq, resufi,&
                 erc = resufr(ifreq,4)
                 errmoy = errmoy + abs(erc)
             endif
+            valr(1)= am
             if ((lamor.eq.0) .and. (ktyp.eq.'R') .and. (.not.lns)) then
                 if (typres .eq. 'DYNAMIQUE') then
-                    write(ifm,2210) ireso,fff,am
+                    valr(2)=resufr(ifreq,1)
                 else
-                    write(ifm,2210) ireso,cha,am
+                    valr(2)=resufr(ifreq,2)
                 endif
+                call u2mesg('I', 'ALGELINE6_69', 0, ' ', 1,&
+                            vali, 2, valr)
             else
                 if (typres .eq. 'DYNAMIQUE') then
-                    write(ifm,2211) ireso,fff,am,erc
+                    valr(2)=resufr(ifreq,1)
                 else
-                    write(ifm,2211) ireso,cha,am,erc
+                    valr(2)=resufr(ifreq,2)
                 endif
+                valr(3)=erc
+                call u2mesg('I', 'ALGELINE6_72', 0, ' ', 1,&
+                            vali, 3, valr)
             endif
 35      continue
-        write(ifm,7776)errmoy/nfreq
-        write(ifm,7777)
+        valr(1)= errmoy/nfreq
+        call u2mesr('I', 'ALGELINE6_58', 1, valr)
 !
     else if (resufk(nfreq,2)(1:2) .eq. 'QZ') then
-        straux='ALGORITHME '//resufk(nfreq,2)(1:16)
+        valk(1)=resufk(nfreq,2)(1:16)
         if ((lamor.eq.0) .and. (ktyp.eq.'R') .and. (.not.lns)) then
             if (typres .eq. 'DYNAMIQUE') then
-                write(ifm,3200)straux
+                call u2mesk('I', 'ALGELINE6_73', 1, valk)
             else
-                write(ifm,3201)straux
+                call u2mesk('I', 'ALGELINE6_74', 1, valk)
             endif
         else
             if (typres .eq. 'DYNAMIQUE') then
-                write(ifm,3202)straux
+                call u2mesk('I', 'ALGELINE6_75', 1, valk)
             else
-                write(ifm,3203)straux
+                call u2mesk('I', 'ALGELINE6_76', 1, valk)
             endif
         endif
         do 36 ifreq = 1, nfreq
-            ireso = resufi(ifreq,1)
-            fff = resufr(ifreq,1)
-            cha = resufr(ifreq,2)
+            vali(1) = resufi(ifreq,1)
             if ((lamor.eq.0) .and. (ktyp.eq.'R') .and. (.not.lns)) then
                 am = resufr(ifreq,4)
                 errmoy = errmoy + abs(am)
@@ -171,261 +181,157 @@ subroutine vpwecf(option, typres, nfreq, mxfreq, resufi,&
                 erc = resufr(ifreq,4)
                 errmoy = errmoy + abs(erc)
             endif
+            valr(1)= am
             if ((lamor.eq.0) .and. (ktyp.eq.'R') .and. (.not.lns)) then
                 if (typres .eq. 'DYNAMIQUE') then
-                    write(ifm,3210) ireso,fff,am
+                    valr(2)=resufr(ifreq,1)
                 else
-                    write(ifm,3210) ireso,cha,am
+                    valr(2)=resufr(ifreq,2)
                 endif
+                call u2mesg('I', 'ALGELINE6_69', 0, ' ', 1,&
+                            vali, 2, valr)
             else
                 if (typres .eq. 'DYNAMIQUE') then
-                    write(ifm,3211) ireso,fff,am,erc
+                    valr(2)=resufr(ifreq,1)
                 else
-                    write(ifm,3211) ireso,cha,am,erc
+                    valr(2)=resufr(ifreq,2)
                 endif
+                valr(3)=erc
+                call u2mesg('I', 'ALGELINE6_72', 0, ' ', 1,&
+                            vali, 3, valr)
             endif
 36      continue
-        write(ifm,7776)errmoy/nfreq
-        write(ifm,7777)
+        valr(1)= errmoy/nfreq
+        call u2mesr('I', 'ALGELINE6_58', 1, valr)
 !
         elseif ((resufk(nfreq,2) .eq. 'INVERSE_R' .or. resufk(nfreq,2)&
     .eq. 'INVERSE_C') .and. ( option(1:6) .eq. 'PROCHE') ) then
         if (typres .eq. 'DYNAMIQUE') then
-            write(ifm,4000)
+            call u2mess('I', 'ALGELINE6_77')
         else
-            write(ifm,4001)
+            call u2mess('I', 'ALGELINE6_78')
         endif
         do 40 ifreq = 1, nfreq
-            ireso = resufi(ifreq,1)
-            fff = resufr(ifreq,1)
-            cha = resufr(ifreq,2)
-            am = resufr(ifreq,3)
-            iterq = resufi(ifreq,4)
-            err = resufr(ifreq,15)
-            am2 = resufr(ifreq,4)
             if (typres .eq. 'DYNAMIQUE') then
-                write(ifm,4010) ireso,fff,am,iterq,err,am2
+                valr(1)=resufr(ifreq,1)
             else
-                write(ifm,4010) ireso,cha,am,iterq,err,am2
+                valr(1)=resufr(ifreq,2)
             endif
+            vali(1) = resufi(ifreq,1)
+            valr(2) = resufr(ifreq,3)
+            vali(2) = resufi(ifreq,4)
+            valr(3) = resufr(ifreq,15)
+            valr(4) = resufr(ifreq,4)
+!
+            call u2mesg('I', 'ALGELINE6_79', 0, ' ', 2,&
+                        vali, 4, valr)
             resufr(ifreq,14) = undf
             resufr(ifreq,15) = undf
             resufi(ifreq,2) = indf
             resufi(ifreq,3) = indf
             resufi(ifreq,4) = indf
-            resufi(ifreq,8) = iterq
+            resufi(ifreq,8) = resufi(ifreq,4)
 40      continue
         write(ifm,7777)
 !
         elseif ( resufk(nfreq,2) .eq. 'INVERSE_R' .and. option(1:6) .eq.&
     'AJUSTE' ) then
         if (typres .eq. 'DYNAMIQUE') then
-            write(ifm,5000)
+            call u2mess('I', 'ALGELINE6_80')
         else
-            write(ifm,5001)
+            call u2mess('I', 'ALGELINE6_81')
         endif
         do 50 ifreq = 1, nfreq
-            ireso = resufi(ifreq,1)
-            fff = resufr(ifreq,1)
-            cha = resufr(ifreq,2)
-            am = resufr(ifreq,3)
-            itera = resufi(ifreq,2)
-            iterb = resufi(ifreq,3)
-            prec = resufr(ifreq,14)
-            iterq = resufi(ifreq,4)
-            err = resufr(ifreq,15)
-            am2 = resufr(ifreq,4)
             if (typres .eq. 'DYNAMIQUE') then
-                write(ifm,5010) ireso,fff,am,itera,iterb,prec,iterq,&
-                err,am2
+                valr(1)=resufr(ifreq,1)
             else
-                write(ifm,5010) ireso,cha,am,itera,iterb,prec,iterq,&
-                err,am2
+                valr(1)=resufr(ifreq,2)
             endif
+            vali(1) = resufi(ifreq,1)
+            valr(2) = resufr(ifreq,3)
+            vali(2) = resufi(ifreq,2)
+            vali(3) = resufi(ifreq,3)
+            valr(3) = resufr(ifreq,14)
+            vali(4) = resufi(ifreq,4)
+            valr(4) = resufr(ifreq,15)
+            valr(5) = resufr(ifreq,4)
+            call u2mesg('I', 'ALGELINE6_82', 0, ' ', 4,&
+                        vali, 5, valr)
+!
             resufr(ifreq,14) = undf
             resufr(ifreq,15) = undf
             resufi(ifreq,2) = indf
             resufi(ifreq,3) = indf
             resufi(ifreq,4) = indf
-            resufi(ifreq,7) = iterq
+            resufi(ifreq,7) = resufi(ifreq,4)
 50      continue
         write(ifm,7777)
 !
         elseif ( resufk(nfreq,2) .eq. 'INVERSE_R' .and. option(1:6) .eq.&
     'SEPARE' ) then
         if (typres .eq. 'DYNAMIQUE') then
-            write(ifm,6000)
+            call u2mess('I', 'ALGELINE6_83')
         else
-            write(ifm,6001)
+            call u2mess('I', 'ALGELINE6_84')
         endif
         do 60 ifreq = 1, nfreq
-            ireso = resufi(ifreq,1)
-            fff = resufr(ifreq,1)
-            am = resufr(ifreq,3)
-            cha = resufr(ifreq,2)
-            itera = resufi(ifreq,2)
-            iterq = resufi(ifreq,4)
-            err = resufr(ifreq,15)
-            am2 = resufr(ifreq,4)
             if (typres .eq. 'DYNAMIQUE') then
-                write(ifm,6010) ireso,fff,am,itera,iterq,err,am2
+                valr(1)=resufr(ifreq,1)
             else
-                write(ifm,6010) ireso,cha,am,itera,iterq,err,am2
+                valr(1)=resufr(ifreq,2)
             endif
+            vali(1) = resufi(ifreq,1)
+            valr(2) = resufr(ifreq,3)
+            vali(2) = resufi(ifreq,2)
+            vali(3) = resufi(ifreq,4)
+            valr(3) = resufr(ifreq,15)
+            valr(4) = resufr(ifreq,4)
+            call u2mesg('I', 'ALGELINE6_85', 0, ' ', 3,&
+                        vali, 4, valr)
+!
             resufr(ifreq,14) = undf
             resufr(ifreq,15) = undf
             resufi(ifreq,2) = indf
             resufi(ifreq,3) = indf
             resufi(ifreq,4) = indf
-            resufi(ifreq,6) = iterq
+            resufi(ifreq,6) = resufi(ifreq,4)
 60      continue
         write(ifm,7777)
 !
         elseif ( resufk(nfreq,2) .eq. 'INVERSE_C' .and. ( option(1:6)&
     .eq. 'AJUSTE' .or. option(1:6) .eq. 'SEPARE' ) ) then
         if (typres .eq. 'DYNAMIQUE') then
-            write(ifm,7000)
+            call u2mess('I', 'ALGELINE6_86')
         else
-            write(ifm,7001)
+            call u2mess('I', 'ALGELINE6_87')
         endif
         do 70 ifreq = 1, nfreq
-            ireso = resufi(ifreq,1)
-            fff = resufr(ifreq,1)
-            am = resufr(ifreq,3)
-            iterb = resufi(ifreq,2)
-            prec = resufr(ifreq,14)
-            iterq = resufi(ifreq,4)
-            err = resufr(ifreq,15)
-            am2 = resufr(ifreq,4)
             if (typres .eq. 'DYNAMIQUE') then
-                write(ifm,7010) ireso,fff,am,iterb,prec,iterq,err,am2
+                valr(1)=resufr(ifreq,1)
             else
-                write(ifm,7010) ireso,cha,am,iterb,prec,iterq,err,am2
+                valr(1)=resufr(ifreq,2)
             endif
+            vali(1) = resufi(ifreq,1)
+            valr(2) = resufr(ifreq,3)
+            vali(2) = resufi(ifreq,2)
+            valr(3) = resufr(ifreq,14)
+            vali(3) = resufi(ifreq,4)
+            valr(4) = resufr(ifreq,15)
+            valr(5) = resufr(ifreq,4)
+            call u2mesg('I', 'ALGELINE6_88', 0, ' ', 3,&
+                        vali, 5, valr)
+!
             resufr(ifreq,14) = undf
             resufr(ifreq,15) = undf
             resufi(ifreq,2) = indf
             resufi(ifreq,3) = indf
             resufi(ifreq,4) = indf
-            resufi(ifreq,8) = iterq
+            resufi(ifreq,8) = resufi(ifreq,4)
 70      continue
         write(ifm,7777)
 !
     endif
 !
-    1000 format ( 7x,'CALCUL MODAL:  METHODE D''ITERATION SIMULTANEE',/,&
-     &        22x,'METHODE DE BATHE ET WILSON',/,/,&
-     &       4x,'NUMERO',4x,'FREQUENCE (HZ)',4x,'NORME D''ERREUR',4x,&
-     &            'ITER_BATHE',4x,'ITER_JACOBI' )
-    1001 format ( 7x,'CALCUL MODAL:  METHODE D''ITERATION SIMULTANEE',/,&
-     &        22x,'METHODE DE BATHE ET WILSON',/,/,&
-     &      4x,'NUMERO',4x,'CHARGE CRITIQUE',4x,'NORME D''ERREUR',4x,&
-     &            'ITER_BATHE',4x,'ITER_JACOBI' )
-    1010 format (1p,6x,i4,5x,e12.5,6x,e12.5,7x,i4,10x,i4)
-!
-    2000 format ( 7x,'CALCUL MODAL:  METHODE D''ITERATION SIMULTANEE',/,&
-     &        22x,'METHODE DE LANCZOS',/,/,&
-     &       4x,'NUMERO',4x,'FREQUENCE (HZ)',4x,'NORME D''ERREUR',4x,&
-     &            'ITER_QR' )
-    2001 format ( 7x,'CALCUL MODAL:  METHODE D''ITERATION SIMULTANEE',/,&
-     &        22x,'METHODE DE LANCZOS',/,/,&
-     &       4x,'NUMERO',4x,'CHARGE CRITIQUE',4x,'NORME D''ERREUR',4x,&
-     &            'ITER_QR' )
-    2010 format (1p,6x,i4,5x,e12.5,6x,e12.5,7x,i4)
-    2100 format ( 7x,'CALCUL MODAL:  METHODE D''ITERATION SIMULTANEE',/,&
-     &        22x,'METHODE DE LANCZOS',/,/,&
-     &        4x,'NUMERO',4x,'FREQUENCE (HZ)',4x,'AMORTISSEMENT',4x,&
-     &            'ITER_QR' )
-    2101 format ( 7x,'CALCUL MODAL:  METHODE D''ITERATION SIMULTANEE',/,&
-     &        22x,'METHODE DE LANCZOS',/,/,&
-     &        4x,'NUMERO',4x,'CHARGE CRITIQUE',4x,'AMORTISSEMENT',4x,&
-     &            'ITER_QR' )
-!
-    2200 format ( 7x,'CALCUL MODAL:  METHODE D''ITERATION SIMULTANEE',/,&
-     &        22x,'METHODE DE SORENSEN',/,/,&
-     &        4x,'NUMERO',4x,'FREQUENCE (HZ)',4x,'NORME D''ERREUR')
-    2201 format ( 7x,'CALCUL MODAL:  METHODE D''ITERATION SIMULTANEE',/,&
-     &        22x,'METHODE DE SORENSEN',/,/,&
-     &        4x,'NUMERO',4x,'CHARGE CRITIQUE',4x,'NORME D''ERREUR')
-    2202 format ( 7x,'CALCUL MODAL:  METHODE D''ITERATION SIMULTANEE',/,&
-     &        22x,'METHODE DE SORENSEN',/,/,&
-     &        4x,'NUMERO',4x,'FREQUENCE (HZ)',4x,'AMORTISSEMENT',4x,&
-     &        'NORME D''ERREUR')
-    2203 format ( 7x,'CALCUL MODAL:  METHODE D''ITERATION SIMULTANEE',/,&
-     &        22x,'METHODE DE SORENSEN',/,/,&
-     &        4x,'NUMERO',4x,'CHARGE CRITIQUE',4x,'AMORTISSEMENT',4x,&
-     &        'NORME D''ERREUR')
-    2210 format (1p,6x,i4,5x,e12.5,6x,e12.5)
-    2211 format (1p,6x,i4,5x,e12.5,6x,e12.5,6x,e12.5)
-!
-!
-    3200 format ( 7x,'CALCUL MODAL:  METHODE GLOBALE DE TYPE QR',/,&
-     &        22x,a27,/,/,&
-     &        4x,'NUMERO',4x,'FREQUENCE (HZ)',4x,'NORME D''ERREUR')
-    3201 format ( 7x,'CALCUL MODAL:  METHODE GLOBALE DE TYPE QR',/,&
-     &        22x,a27,/,/,&
-     &        4x,'NUMERO',4x,'CHARGE CRITIQUE',4x,'NORME D''ERREUR')
-    3202 format ( 7x,'CALCUL MODAL:  METHODE GLOBALE DE TYPE QR',/,&
-     &        22x,a27,/,/,&
-     &        4x,'NUMERO',4x,'FREQUENCE (HZ)',4x,'AMORTISSEMENT',4x,&
-     &        'NORME D''ERREUR')
-    3203 format ( 7x,'CALCUL MODAL:  METHODE GLOBALE DE TYPE QR',/,&
-     &        22x,a27,/,/,&
-     &        4x,'NUMERO',4x,'CHARGE CRITIQUE',4x,'AMORTISSEMENT',4x,&
-     &        'NORME D''ERREUR')
-    3210 format (1p,6x,i4,5x,e12.5,6x,e12.5)
-    3211 format (1p,6x,i4,5x,e12.5,6x,e12.5,6x,e12.5)
-!
-!
-!
-    4000 format ( 7x,'CALCUL MODAL:  METHODE D''ITERATION INVERSE',/,&
-     &        54x,'INVERSE',/,&
-     &        4x,'NUMERO',4x,'FREQUENCE (HZ)',4x,'AMORTISSEMENT',4x,&
-     &        'NB_ITER',4x,'PRECISION',4x,'NORME D''ERREUR' )
-    4001 format ( 7x,'CALCUL MODAL:  METHODE D''ITERATION INVERSE',/,&
-     &        54x,'INVERSE',/,&
-     &        4x,'NUMERO',4x,'CHARGE CRITIQUE',4x,'AMORTISSEMENT',4x,&
-     &        'NB_ITER',4x,'PRECISION',4x,'NORME D''ERREUR' )
-    4010 format (1p,6x,i4,5x,e12.5,6x,e12.5,5x,i4,4x,e12.5,6x,e12.5)
-!
-    5000 format ( 7x,'CALCUL MODAL:  METHODE D''ITERATION INVERSE',/,&
-     &        48x,'DICHOTOMIE',7x,'SECANTE',17x,'INVERSE',/,&
-     &        4x,'NUMERO',4x,'FREQUENCE (HZ)',4x,'AMORTISSEMENT',4x,&
-     &        'NB_ITER',2(4x,'NB_ITER',4x,'PRECISION'),&
-     &        4x,'NORME D''ERREUR')
-    5001 format ( 7x,'CALCUL MODAL:  METHODE D''ITERATION INVERSE',/,&
-     &        48x,'DICHOTOMIE',7x,'SECANTE',17x,'INVERSE',/,&
-     &        4x,'NUMERO',4x,'CHARGE CRITIQUE',4x,'AMORTISSEMENT',4x,&
-     &        'NB_ITER',2(4x,'NB_ITER',4x,'PRECISION'),&
-     &        4x,'NORME D''ERREUR')
-    5010 format (1p,6x,i4,5x,e12.5,6x,e12.5,5x,i4,7x,i4,4x,e12.5,4x,i4,&
-     &        4x,e12.5,6x,e12.5)
-!
-    6000 format ( 7x,'CALCUL MODAL:  METHODE D''ITERATION INVERSE',/,&
-     &        48x,'DICHOTOMIE',8x,'INVERSE',/,&
-     &        4x,'NUMERO',4x,'FREQUENCE (HZ)',4x,'AMORTISSEMENT',4x,&
-     &        'NB_ITER',4x,'NB_ITER',4x,'PRECISION',&
-     &        4x,'NORME D''ERREUR')
-    6001 format ( 7x,'CALCUL MODAL:  METHODE D''ITERATION INVERSE',/,&
-     &        48x,'DICHOTOMIE',8x,'INVERSE',/,&
-     &        4x,'NUMERO',4x,'CHARGE_CRITIQUE',4x,'AMORTISSEMENT',4x,&
-     &        'NB_ITER',4x,'NB_ITER',4x,'PRECISION',&
-     &        4x,'NORME D''ERREUR')
-    6010 format (1p,6x,i4,5x,e12.5,6x,e12.5,5x,i4,7x,i4,4x,e12.5,&
-     &        6x,e12.5)
-!
-    7000 format ( 7x,'CALCUL MODAL:  METHODE D''ITERATION INVERSE',/,&
-     &        55x,'MULLER',17x,'INVERSE',/,&
-     &        4x,'NUMERO',4x,'FREQUENCE (HZ)',4x,'AMORTISSEMENT',&
-     &        2(4x,'NB_ITER',4x,'PRECISION'),4x,'NORME D''ERREUR')
-    7001 format ( 7x,'CALCUL MODAL:  METHODE D''ITERATION INVERSE',/,&
-     &        55x,'MULLER',17x,'INVERSE',/,&
-     &        4x,'NUMERO',4x,'CHARGE_CRITIQUE',4x,'AMORTISSEMENT',&
-     &        2(4x,'NB_ITER',4x,'PRECISION'),4x,'NORME D''ERREUR')
-    7010 format (1p,6x,i4,5x,e12.5,6x,e12.5,5x,i4,4x,e12.5,4x,i4,4x,e12.5,&
-     &        6x,e12.5)
-!
-    7776 format(' NORME D''ERREUR MOYENNE: ',e12.5)
     7777 format ( / )
 !
 !     ------------------------------------------------------------------

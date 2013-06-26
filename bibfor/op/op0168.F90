@@ -68,14 +68,14 @@ subroutine op0168()
     parameter   ( nbpari=1 , nbparr=15 , nbpark=3, nbpara=19 )
     integer :: lpar(3)
     integer :: vali(2)
-    real(kind=8) :: r8b, prec, zero, mastot
+    real(kind=8) :: r8b, prec, zero, mastot, valr(7)
     character(len=1) :: k1b, typmod
     character(len=3) :: ouinon
     character(len=8) :: k8b, modeou, modein
     character(len=16) :: typcon, nomcmd, critfi, nompar(3), nomsy, nompav
     character(len=19) :: numedd
     character(len=24) :: masse, amor, raide, refd, massi, amori, raidi, kmode
-    character(len=24) :: valk
+    character(len=24) :: valk(3)
     character(len=24) :: kvec, kvali, kvalr, kvalk, nopara(nbpara)
     complex(kind=8) :: c16b
     integer :: iarg
@@ -182,8 +182,8 @@ subroutine op0168()
                             goto 20
                         endif
 22                  continue
-                    valk = modein
-                    vali (1) = zi(jme+j-1)
+                    valk(1) = modein
+                    vali(1) = zi(jme+j-1)
                     call u2mesg('A', 'ALGELINE4_55', 1, valk, 1,&
                                 vali, 0, 0.d0)
 20              continue
@@ -365,7 +365,7 @@ subroutine op0168()
         modein = zk8(jnom+i-1)
         call jelira(jexnum(kmode, i), 'LONUTI', nbmode, k1b)
         if (nbmode .eq. 0) then
-            valk = modein
+            valk(1) = modein
             call u2mesg('A', 'ALGELINE4_56', 1, valk, 0,&
                         0, 0, 0.d0)
             goto 102
@@ -424,8 +424,8 @@ subroutine op0168()
                         0, jadr, k8b)
             nume2 = zi(jadr)
             if (nume1 .eq. nume2) then
-                vali (1) = ibid
-                vali (2) = iord
+                vali(1) = ibid
+                vali(2) = iord
                 call u2mesg('A', 'ALGELINE4_57', 0, ' ', 2,&
                             vali, 0, 0.d0)
             endif
@@ -436,8 +436,10 @@ subroutine op0168()
 !
     call getfac('IMPRESSION', impr)
     if (impr .ne. 0) then
-        write(ifr,800)
-        write(ifr,900) modeou, typcon, nomcmd
+        valk(1)=modeou
+        valk(2)=typcon
+        valk(3)=nomcmd
+        call u2mesk('I', 'ALGELINE6_8', 3, valk)
         call getvtx('IMPRESSION', 'CUMUL', 1, iarg, 1,&
                     ouinon, n1)
         call getvtx('IMPRESSION', 'CRIT_EXTR', 1, iarg, 1,&
@@ -451,11 +453,9 @@ subroutine op0168()
         if (iret .ne. 100 .and. critfi .eq. 'MASS_EFFE_UN' .and. typcon(1:9) .eq.&
             'MODE_MECA') then
             if (ouinon .eq. 'OUI') then
-                write(ifr,1000)
-                write(ifr,1010)
+                call u2mess('I', 'ALGELINE6_50')
             else
-                write(ifr,1100)
-                write(ifr,1110)
+                call u2mess('I', 'ALGELINE6_52')
             endif
             cumulx = 0.d0
             cumuly = 0.d0
@@ -479,21 +479,29 @@ subroutine op0168()
                 cumulx = cumulx + dx
                 cumuly = cumuly + dy
                 cumulz = cumulz + dz
+                vali(1) = iord
+                vali(2) = nume
+                valr(1) = freq
+                valr(2) = dx
+                valr(3) = dy
+                valr(4) = dz
+                valr(5) = cumulx
+                valr(6) = cumuly
+                valr(7) = cumulz
                 if (ouinon .eq. 'OUI') then
-                    write(ifr,1020) iord, nume, freq, dx, cumulx,&
-                    dy, cumuly, dz, cumulz
+                    call u2mesg('I', 'ALGELINE6_51', 0, '', 2,&
+                                vali, 7, valr)
                 else
-                    write(ifr,1120) iord, nume, freq, dx, dy, dz
+                    call u2mesg('I', 'ALGELINE6_53', 0, '', 2,&
+                                vali, 4, valr)
                 endif
 300          continue
         endif
         if (critfi .eq. 'MASS_GENE') then
             if (ouinon .eq. 'OUI') then
-                write(ifr,1200)
-                write(ifr,1210)
+                call u2mess('I', 'ALGELINE6_54')
             else
-                write(ifr,1300)
-                write(ifr,1310)
+                call u2mess('I', 'ALGELINE6_56')
             endif
             cumulx = 0.d0
             do 301 j = 1, nbmode
@@ -509,41 +517,23 @@ subroutine op0168()
                             0, lpar, k8b)
                 dx = zr(lpar(1))
                 cumulx = cumulx + dx
+                vali(1) = iord
+                vali(2) = nume
+                valr(1) = freq
+                valr(2) = dx
+                valr(3) = cumulx
                 if (ouinon .eq. 'OUI') then
-                    write(ifr,1220) iord, nume, freq, dx, cumulx
+                    call u2mesg('I', 'ALGELINE6_55', 0, '', 2,&
+                                vali, 3, valr)
                 else
-                    write(ifr,1320) iord, nume, freq, dx
+                    call u2mesg('I', 'ALGELINE6_57', 0, '', 2,&
+                                vali, 2, valr)
                 endif
 301          continue
         endif
-        write(ifr,800)
     endif
 !
     call titre()
-!
-    800 format('----------------------------------------------------------&
-     &------------------------------------------------------------------&
-     &--')
-    900 format('CONCEPT ', a8, ' DE TYPE ', a11,&
-     &       ' ISSU DE L OPERATEUR ', a16)
-    1000 format(/,50x,'M A S S E      E F F E C T I V E      ',&
-     &              'U N I T A I R E')
-    1010 format('NUME_ORDRE  NUME_MODE     FREQUENCE   ',&
-     &'MASS_EFFE_UN_DX   CUMUL_DX    MASS_EFFE_UN_DY   CUMUL_DY',&
-     &'    MASS_EFFE_UN_DZ   CUMUL_DZ')
-    1020 format(1p,4x,i6,5x,i6,7(3x,d12.5))
-    1100 format(/,45x,'MASSE  EFFECTIVE  UNITAIRE')
-    1110 format('NUME_ORDRE  NUME_MODE     FREQUENCE',&
-     &       '  MASS_EFFE_UN_DX  MASS_EFFE_UN_DY  MASS_EFFE_UN_DZ')
-    1120 format(1p,4x,i6,5x,i6,3x,d12.5,3(3x,d12.5,2x))
-    1200 format(/,18x,'MASSE  GENERALISEE')
-    1210 format('NUME_ORDRE  NUME_MODE     FREQUENCE',&
-     &       '      MASS_GENE  CUMUL_MASS_GENE')
-    1220 format(1p,4x,i6,5x,i6,3x,d12.5,2(3x,d12.5))
-    1300 format(/,18x,'MASSE  GENERALISEE')
-    1310 format('NUME_ORDRE  NUME_MODE     FREQUENCE',&
-     &       '      MASS_GENE  ')
-    1320 format(1p,4x,i6,5x,i6,3x,d12.5,3x,d12.5)
 !
     call jedema()
 end subroutine

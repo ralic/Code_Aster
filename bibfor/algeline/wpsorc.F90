@@ -111,19 +111,20 @@ subroutine wpsorc(lmasse, lamor, lmatra, nbeq, nbvect,&
     include 'asterfort/jedetr.h'
     include 'asterfort/jemarq.h'
     include 'asterfort/u2mesg.h'
+    include 'asterfort/u2mesi.h'
     include 'asterfort/u2mess.h'
     include 'asterfort/vpordc.h'
     include 'asterfort/wkvect.h'
     include 'asterfort/wp2ayc.h'
     include 'asterfort/znaupd.h'
     include 'asterfort/zneupd.h'
-    integer :: lmasse, lmatra, nbeq, nbvect, nfreq, lonwl, ddlexc(*), ddllag(*)
-    integer :: neqact, maxitr, ifm, niv, priram(8), nconv, lamor
+    integer :: lmasse, lmatra, nbeq, nbvect, nfreq, lonwl, ddlexc(*), ddllag(*), neqact, maxitr
+    integer :: ifm, niv, priram(8), nconv, lamor
     real(kind=8) :: tolsor, alpha, rwork(*)
     real(kind=8) :: valr
     logical :: selec(*), flage
-    complex(kind=8) :: sigma, vect(nbeq, *), dsor(*), resid(*), workd(*)
-    complex(kind=8) :: workl(*), vaux(*), vauc(2*nbeq, *), workv(*)
+    complex(kind=8) :: sigma, vect(nbeq, *), dsor(*), resid(*), workd(*), workl(*), vaux(*)
+    complex(kind=8) :: vauc(2*nbeq, *), workv(*)
     character(len=19) :: solveu
 !--------------------------------------------------------------------
 ! DECLARATION VARIABLES LOCALES
@@ -139,8 +140,7 @@ subroutine wpsorc(lmasse, lamor, lmatra, nbeq, nbvect,&
     character(len=1) :: bmat
     character(len=2) :: which
 !
-    integer :: logfil, ndigit, mgetv0, mnaupd, mnaup2, mnaitr, mneigh, mnapps
-    integer :: mngets, mneupd
+    integer :: logfil, ndigit, mgetv0, mnaupd, mnaup2, mnaitr, mneigh, mnapps, mngets, mneupd
     common /debug/&
      &  logfil, ndigit, mgetv0,&
      &  mnaupd, mnaup2, mnaitr, mneigh, mnapps, mngets, mneupd
@@ -195,17 +195,12 @@ subroutine wpsorc(lmasse, lamor, lmatra, nbeq, nbvect,&
 !
 ! GESTION DES FLAGS D'ERREURS
     if ((info.eq.1) .and. (niv.ge.1)) then
-        write(ifm,*)
-        write(ifm,*)'<WPSORC/ZNAUPD 1> NOMBRE MAXIMAL D''ITERATIONS'
-        write(ifm,*)' NMAX_ITER_SOREN = ',maxitr,' A ETE ATTEINT !'
-        write(ifm,*)
+        vali (1) = maxitr
+        call u2mesi('I', 'ALGELINE6_89', 1, vali)
     else if (info.eq.2) then
         call u2mess('F', 'ALGELINE3_72')
     else if ((info.eq.3).and.(niv.ge.1)) then
-        write(ifm,*)
-        write(ifm,*)'<WPSORC/ZNAUPD 3> AUCUN SHIFT NE PEUT ETRE'//&
-        ' APPLIQUE'
-        write(ifm,*)
+        call u2mess('I', 'ALGELINE6_90')
     else if (info.eq.-7) then
         call u2mess('F', 'ALGELINE3_73')
     else if (info.eq.-8) then
@@ -213,14 +208,10 @@ subroutine wpsorc(lmasse, lamor, lmatra, nbeq, nbvect,&
     else if (info.eq.-9) then
         call u2mess('F', 'ALGELINE3_75')
     else if ((info.eq.-9999).and.(niv.ge.1)) then
-        write(ifm,*)
-        write(ifm,*)'<WPSORC/ZNAUPD -9999> PROBLEME FACTORISATION'//&
-        ' D''ARNOLDI'
-        write(ifm,*)
+        call u2mess('I', 'ALGELINE6_91')
     else if (info.lt.0) then
         vali (1) = info
-        call u2mesg('F', 'ALGELINE4_82', 0, ' ', 1,&
-                    vali, 0, 0.d0)
+        call u2mesi('F', 'ALGELINE4_82', 1, vali)
     endif
 !
 ! GESTION DES MODES CONVERGES
@@ -317,8 +308,7 @@ subroutine wpsorc(lmasse, lamor, lmatra, nbeq, nbvect,&
         call u2mess('F', 'ALGELINE3_78')
     else if (info.lt.0) then
         vali (1) = info
-        call u2mesg('F', 'ALGELINE4_82', 0, ' ', 1,&
-                    vali, 0, 0.d0)
+        call u2mesi('F', 'ALGELINE4_82', 1, vali)
     endif
 !--------------------------------------------------------------------
 ! TESTS ET POST-TRAITEMENTS

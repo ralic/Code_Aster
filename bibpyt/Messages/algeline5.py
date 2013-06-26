@@ -241,8 +241,8 @@ cata_msg={
 
 51: _(u"""
  La valeur propre numéro  %(i1)d a une partie imaginaire non nulle.
- partie réelle     = %(r1)f
- partie imaginaire = %(r2)f
+ Partie réelle     = %(r1)12.5E
+ Partie imaginaire = %(r2)12.5E
 
  Ce phénomène numérique est fréquent sur les premières valeurs propres
  lorsque le spectre recherché est très étendu.

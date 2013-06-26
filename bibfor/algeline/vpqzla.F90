@@ -105,6 +105,8 @@ subroutine vpqzla(typeqz, qrn, iqrn, lqrn, qrar,&
     include 'asterfort/mrmult.h'
     include 'asterfort/u2mesg.h'
     include 'asterfort/u2mesi.h'
+    include 'asterfort/u2mesr.h'
+    include 'asterfort/u2mess.h'
     include 'asterfort/vpgskp.h'
     include 'asterfort/vpordc.h'
     include 'asterfort/vpordo.h'
@@ -132,18 +134,17 @@ subroutine vpqzla(typeqz, qrn, iqrn, lqrn, qrar,&
 !-----------------------------------------------------------------------
 ! DECLARATION VARIABLES LOCALES
 !
-    integer :: i, j, decal, ideb, ifin, qrlwor, kqrn2, iauxh, vali(5), ifm, niv
-    integer :: iret, ivalr, ivalm, iadia, ihcol, ivp1, ivp2, ivala, j2, iauxh2
-    integer :: qrns2, lvec2, lvec3, lvec4, imult, typlin, iaux1, iaux2, iaux3
-    integer :: ivala1, ivalr1, ivalm1, lvecn, jm1, iauxh1, im1, j2m1, iaux21
-    integer :: ics1
+    integer :: i, j, decal, ideb, ifin, qrlwor, kqrn2, iauxh, vali(5), ifm, niv, iret, ivalr
+    integer :: ivalm, iadia, ihcol, ivp1, ivp2, ivala, j2, iauxh2, qrns2, lvec2, lvec3, lvec4
+    integer :: imult, typlin, iaux1, iaux2, iaux3, ivala1, ivalr1, ivalm1, lvecn, jm1, iauxh1, im1
+    integer :: j2m1, iaux21, ics1
     integer(kind=4) :: qrn4, ldvl4, ldvr4, qrlwo4, qrinfo, ilo, ihi, iauxh4
-    real(kind=8) :: abnrm, bbnrm, baux, rauxi, aaux, valr(4), raux, anorm, bnorm
-    real(kind=8) :: prec2, vpinf, prec, vpmax, vpcour, alpha, prec3, run, rzero
-    real(kind=8) :: rauxr, rauxm, cnorm, caux, coefn, anorm1, bnorm1, f1, f2, fr
-    real(kind=8) :: anorm2, anorm3, depi, aaux1, baux1, caux1, abnorm, prec1
-    complex(kind=8) :: cun, czero, cauxm, cauxr, cauxa, cauxm2, freq, freq2
-    complex(kind=8) :: cauxa1, cauxm1, cauxr1
+    real(kind=8) :: abnrm, bbnrm, baux, rauxi, aaux, valr(4), raux, anorm, bnorm, prec2, vpinf
+    real(kind=8) :: prec, vpmax, vpcour, alpha, prec3, run, rzero, rauxr, rauxm, cnorm, caux
+    real(kind=8) :: coefn, anorm1, bnorm1, f1, f2, fr, anorm2, anorm3, depi, aaux1, baux1, caux1
+    real(kind=8) :: abnorm, prec1
+    complex(kind=8) :: cun, czero, cauxm, cauxr, cauxa, cauxm2, freq, freq2, cauxa1, cauxm1
+    complex(kind=8) :: cauxr1
     character(len=1) :: kbal, ksens, valk
     character(len=24) :: nomrai, nommas, nomamo
     logical :: lkr, ltest, lc, ldebug, lnsa, lnsr, lnsm, lqze
@@ -379,12 +380,11 @@ subroutine vpqzla(typeqz, qrn, iqrn, lqrn, qrar,&
         coefn=(anorm+bnorm+cnorm)/(3*qrns2)
 !
         if (niv .ge. 2) then
-            write(ifm,140)anorm,bnorm,cnorm
-            write(ifm,141)coefn
-            write(ifm,*)
-            140     format('METHODE QZ, NORME L1 DE K/M/C: ',1pd12.4,' / ',&
-     &          1pd12.4,' / ',1pd12.4)
-            141     format('COEF MULTIPLICATEUR DU PB LINEARISE: ',1pd12.4)
+            valr(1)=anorm
+            valr(2)=bnorm
+            valr(3)=cnorm
+            valr(4)=coefn
+            call u2mesr('I', 'ALGELINE6_25', 4, valr)
         endif
 ! ---- ON PASSE EN COMPLEXE MEME SI K EST REELLE, POUR PLUS DE
 !      ROBUSTESSE. ON PROPOSE DEUX TYPES DE LINEARISATION. ON PREND LA
@@ -581,11 +581,11 @@ subroutine vpqzla(typeqz, qrn, iqrn, lqrn, qrar,&
 ! ---- ERREUR DONNEES OU CALCUL
     if (anorm*bnorm*anorm1*bnorm1 .eq. 0.d0) call assert(.false.)
     if (niv .ge. 2) then
-        write(ifm,45)anorm,bnorm
-        write(ifm,*)
-        45   format('METHODE QZ, NORME LINF DE A/B: ',1pd10.2,' / ',1pd10.2)
-        write(ifm,450)anorm1,bnorm1
-        450   format('METHODE QZ, NORME L1   DE A/B: ',1pd10.2,' / ',1pd10.2)
+        valr(1)=anorm
+        valr(2)=bnorm
+        valr(3)=anorm1
+        valr(4)=bnorm1
+        call u2mesr('I', 'ALGELINE6_26', 4, valr)
     endif
 !
 ! --- POUR SORTIE FICHIER FORT.17
@@ -775,7 +775,7 @@ subroutine vpqzla(typeqz, qrn, iqrn, lqrn, qrar,&
                 f1=freqom(f1)
                 f2=freqom(f2)
                 if (i .eq. 1) write(ifm,*)'I / (ALPHAR,ALPHAI) / BETA / (FREQR,FREQI)'
-                if (lqze) write(ifm,911)zr(icscal+im1)
+                if (lqze) call u2mesr('I', 'ALGELINE7_13', 1, zr(icscal+ im1))
                 write(ifm,910)i,zr(qrar+im1),zr(qrai+im1),zr(qrba+im1)&
                 ,f1,f2
             else
@@ -794,7 +794,7 @@ subroutine vpqzla(typeqz, qrn, iqrn, lqrn, qrar,&
      &                      '(FREQR, FREQI/(2*FREQR))'
                     endif
                 endif
-                if (lqze) write(ifm,911)zr(icscal+im1)
+                if (lqze) call u2mesr('I', 'ALGELINE7_13', 1, zr(icscal+ im1))
                 if (lc) then
                     write(ifm,912)i,dble(zc(qrar+im1)),dimag(zc(qrar+&
                     im1)), dble(zc(qrba+im1)),dimag(zc(qrba+im1)),&
@@ -807,7 +807,6 @@ subroutine vpqzla(typeqz, qrn, iqrn, lqrn, qrar,&
             endif
 900      continue
         910   format(i4,1x,e12.5,e12.5,e12.5,1x,e12.5,e12.5)
-        911   format('ERREUR DIRECTE LAPACK',e12.5)
         912   format(i4,1x,e12.5,e12.5,1x,e12.5,e12.5,1x,e12.5,e12.5)
     endif
 ! FIN DEBUG
@@ -834,14 +833,12 @@ subroutine vpqzla(typeqz, qrn, iqrn, lqrn, qrar,&
                             vali, 2, valr)
             endif
             if ((raux.ne.0.d0) .and. (niv.ge.2)) then
-                write(ifm,*)'<VPQZLA> LA VALEUR PROPRE NUMERO ',i
-                write(ifm,*)'A UNE PARTIE IMAGINAIRE NON NULLE'
-                write(ifm,*)'RE(VP) = ',zr(qrar+im1)
-                write(ifm,*)'IM(VP) = ',zr(qrai+im1)
-                write(ifm,*)'--> CE PHENOMENE NUMERIQUE EST FREQUENT'
-                write(ifm,*)'--> SUR LES PREMIERES VALEURS PROPRES'
-                write(ifm,*)'--> LORSQUE LE SPECTRE RECHERCHE EST'
-                write(ifm,*)'--> TRES ETENDU (EN PULSATION) '
+                vali(1)=i
+                valr(1)=zr(qrar+im1)
+                valr(2)=zr(qrai+im1)
+                kmsg='I'
+                call u2mesg(kmsg, 'ALGELINE5_51', 0, ' ', 1,&
+                            vali, 2, valr)
             endif
 50      continue
     endif
@@ -875,13 +872,13 @@ subroutine vpqzla(typeqz, qrn, iqrn, lqrn, qrar,&
             else
                 decal = decal+1
                 if (niv .ge. 2) then
-                    write(ifm,*)'<VPQZLA> ON SAUTE LA VALEUR PROPRE N ',i
-                    write(ifm,950)zr(qrar+im1),zr(qrba+im1)
-                    if (lqze) write(ifm,911)zr(icscal+im1)
-                    write(ifm,*)'--> ELLE CORRESPOND SOIT A UN LAGRANGE,'&
-     &                        //'SOIT A UN DDL PHYSIQUE BLOQUE'
+                    call u2mesi('I', 'ALGELINE7_11', 1, i)
+                    valr(1)=zr(qrar+im1)
+                    valr(2)=zr(qrba+im1)
+                    call u2mesr('I', 'ALGELINE7_12', 2, valr)
+                    if (lqze) call u2mesr('I', 'ALGELINE7_13', 1, zr( icscal+im1))
+                    call u2mess('I', 'ALGELINE7_14')
                 endif
-                950       format('ALPHA/BETA = ',e12.5,1x,e12.5)
             endif
 55      continue
         else if ((typeqz(1:5).ne.'QZ_QR').and.((.not.lkr).or.(lc).or.&
@@ -919,18 +916,18 @@ subroutine vpqzla(typeqz, qrn, iqrn, lqrn, qrar,&
                     else
                         freq=1.d+70*cun
                     endif
-                    write(ifm,*)'<VPQZLA> ON SAUTE LA VALEUR PROPRE N ',i
+                    call u2mesi('I', 'ALGELINE7_11', 1, i)
                     if (abs(freq) .gt. prec) then
-                        write(ifm,952)dimag(freq)/depi,-dble(freq)/&
-                        abs(freq)
+                        valr(1)=dimag(freq)/depi
+                        valr(2)=-dble(freq)/abs(freq)
                     else
-                        write(ifm,952)0.d0,1.d0
+                        valr(1)=0.d0
+                        valr(2)=1.d0
                     endif
-                    if (lqze) write(ifm,911)zr(icscal+im1)
-                    write(ifm,*)'--> ELLE CORRESPOND SOIT A UN LAGRANGE,'&
-     &                        //'SOIT A UN DDL PHYSIQUE BLOQUE'
+                    call u2mesr('I', 'ALGELINE7_15', 2, valr)
+                    if (lqze) call u2mesr('I', 'ALGELINE7_13', 1, zr( icscal+im1))
+                    call u2mess('I', 'ALGELINE7_14')
                 endif
-                952       format('FREQ/AMORTISSEMENT = ',e12.5,1x,e12.5)
             endif
 155      continue
         if (lc) call jedetr('&&VPQZLA.VP2')
@@ -942,12 +939,10 @@ subroutine vpqzla(typeqz, qrn, iqrn, lqrn, qrar,&
             if ((zr(lvalpr+im1).lt.prec3) .or. (zr(lvalpr+im1).gt.prec2)) then
                 decal = decal+1
                 if (niv .ge. 2) then
-                    write(ifm,*)'<VPQZLA> ON SAUTE LA VALEUR PROPRE N ',i
-                    write(ifm,953)zr(lvalpr+im1)
-                    write(ifm,*)'--> ELLE CORRESPOND SOIT A UN LAGRANGE,'&
-     &                        //'SOIT A UN DDL PHYSIQUE BLOQUE'
+                    call u2mesi('I', 'ALGELINE7_11', 1, i)
+                    call u2mesr('I', 'ALGELINE7_16', 1, zr(lvalpr+im1))
+                    call u2mess('I', 'ALGELINE7_14')
                 endif
-                953        format('LAMBDA = ',e12.5)
             else
                 zr(lvalpr+im1-decal) = zr(lvalpr+im1)
                 call dcopy(qrn4, zr(iqrn+im1*qrn), 1, zr(lvec+(im1- decal)*qrn), 1)

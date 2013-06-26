@@ -105,14 +105,14 @@ subroutine vpsorn(lmasse, ldynfa, nbeq, nbvect, nfreq,&
     include 'asterfort/mrmult.h'
     include 'asterfort/resoud.h'
     include 'asterfort/u2mesg.h'
+    include 'asterfort/u2mesi.h'
     include 'asterfort/u2mess.h'
     include 'asterfort/vpgskp.h'
     include 'asterfort/vpordo.h'
-    integer :: lmasse, ldynfa, nbeq, nbvect, nfreq, lonwl, ddlexc(nbeq)
-    integer :: ddllag(nbeq), neqact, maxitr, ifm, niv, priram(8), nconv
-    real(kind=8) :: tolsor, vect(nbeq, nbvect), resid(nbeq), workd(3*nbeq)
-    real(kind=8) :: workl(lonwl), dsor(nfreq+1, 2), fshift, vaux(nbeq)
-    real(kind=8) :: workv(3*nbvect), alpha, omecor
+    integer :: lmasse, ldynfa, nbeq, nbvect, nfreq, lonwl, ddlexc(nbeq), ddllag(nbeq), neqact
+    integer :: maxitr, ifm, niv, priram(8), nconv
+    real(kind=8) :: tolsor, vect(nbeq, nbvect), resid(nbeq), workd(3*nbeq), workl(lonwl)
+    real(kind=8) :: dsor(nfreq+1, 2), fshift, vaux(nbeq), workv(3*nbvect), alpha, omecor
     logical :: selec(nbvect), flage
     character(len=19) :: solveu
 !
@@ -133,8 +133,7 @@ subroutine vpsorn(lmasse, ldynfa, nbeq, nbvect, nfreq,&
     character(len=2) :: which
     character(len=19) :: k19bid, matass, chcine, criter
 !
-    integer :: logfil, ndigit, mgetv0, mnaupd, mnaup2, mnaitr, mneigh, mnapps
-    integer :: mngets, mneupd
+    integer :: logfil, ndigit, mgetv0, mnaupd, mnaup2, mnaitr, mneigh, mnapps, mngets, mneupd
     common /debug/&
      &  logfil, ndigit, mgetv0,&
      &  mnaupd, mnaup2, mnaitr, mneigh, mnapps, mngets, mneupd
@@ -189,17 +188,12 @@ subroutine vpsorn(lmasse, ldynfa, nbeq, nbvect, nfreq,&
 !
 ! GESTION DES FLAGS D'ERREURS
     if ((info.eq.1) .and. (niv.ge.1)) then
-        write(ifm,*)
-        write(ifm,*)'<VPSORN/DNAUPD 1> NOMBRE MAXIMAL D''ITERATIONS'
-        write(ifm,*)' NMAX_ITER_SOREN = ',maxitr,' A ETE ATTEINT !'
-        write(ifm,*)
+        vali (1) = maxitr
+        call u2mesi('I', 'ALGELINE6_89', 1, vali)
     else if (info.eq.2) then
         call u2mess('F', 'ALGELINE3_72')
     else if ((info.eq.3).and.(niv.ge.1)) then
-        write(ifm,*)
-        write(ifm,*)'<VPSORN/DNAUPD 3> AUCUN SHIFT NE PEUT ETRE'//&
-        ' APPLIQUE'
-        write(ifm,*)
+        call u2mess('I', 'ALGELINE6_90')
     else if (info.eq.-7) then
         call u2mess('F', 'ALGELINE3_73')
     else if (info.eq.-8) then
@@ -207,14 +201,10 @@ subroutine vpsorn(lmasse, ldynfa, nbeq, nbvect, nfreq,&
     else if (info.eq.-9) then
         call u2mess('F', 'ALGELINE3_75')
     else if ((info.eq.-9999).and.(niv.ge.1)) then
-        write(ifm,*)
-        write(ifm,*)'<VPSORN/DNAUPD -9999> PROBLEME FACTORISATION'//&
-        ' D''ARNOLDI'
-        write(ifm,*)
+        call u2mess('I', 'ALGELINE6_91')
     else if (info.lt.0) then
         vali (1) = info
-        call u2mesg('F', 'ALGELINE5_48', 0, ' ', 1,&
-                    vali, 0, 0.d0)
+        call u2mesi('F', 'ALGELINE5_48', 1, vali)
     endif
 !
 ! GESTION DES MODES CONVERGES
@@ -316,8 +306,7 @@ subroutine vpsorn(lmasse, ldynfa, nbeq, nbvect, nfreq,&
         call u2mess('F', 'ALGELINE3_78')
     else if (info.lt.0) then
         vali (1) = info
-        call u2mesg('F', 'ALGELINE5_48', 0, ' ', 1,&
-                    vali, 0, 0.d0)
+        call u2mesi('F', 'ALGELINE5_48', 1, vali)
     endif
 !--------------------------------------------------------------------
 ! TESTS ET POST-TRAITEMENTS
@@ -341,16 +330,13 @@ subroutine vpsorn(lmasse, ldynfa, nbeq, nbvect, nfreq,&
             valr (2) = dsor(j,2)
             call u2mesg('A', 'ALGELINE5_51', 0, ' ', 1,&
                         vali, 2, valr)
-        else if ((varaux.ne.0.d0).and.(niv.ge.1)) then
-            write(ifm,*)'<VPSORN/DNEUPD 0> LA VALEUR PROPRE NUMERO ',&
-            j
-            write(ifm,*)'A UNE PARTIE IMAGINAIRE NON NULLE'
-            write(ifm,*)'RE(VP) = ',dsor(j,1)
-            write(ifm,*)'IM(VP) = ',dsor(j,2)
-            write(ifm,*)'--> CE PHENOMENE NUMERIQUE EST FREQUENT'
-            write(ifm,*)'--> SUR LES PREMIERES VALEURS PROPRES'
-            write(ifm,*)'--> LORSQUE LE SPECTRE RECHERCHE EST'
-            write(ifm,*)'--> TRES ETENDU (EN PULSATION) '
+        endif
+        if ((varaux.ne.0.d0) .and. (niv.ge.1)) then
+            vali(1) = j
+            valr(1) = dsor(j,1)
+            valr(2) = dsor(j,2)
+            call u2mesg('I', 'ALGELINE5_51', 0, ' ', 1,&
+                        vali, 2, valr)
         endif
 60  end do
 !

@@ -63,8 +63,8 @@ subroutine vpcntl(cty, mode, option, omemin, omemax,&
     include 'asterfort/u2mess.h'
     include 'asterfort/vpfopr.h'
     integer :: nfreq, ipos(*), lmat(3), ier, nblagr, nbrssa, ibid2(2)
-    real(kind=8) :: vpinf, vpmax, omemin, omemax, seuil, precdc, omecor
-    real(kind=8) :: charge(nfreq), freq(nfreq), err(nfreq), precsh
+    real(kind=8) :: vpinf, vpmax, omemin, omemax, seuil, precdc, omecor, charge(nfreq)
+    real(kind=8) :: freq(nfreq), err(nfreq), precsh
     character(len=1) :: cty
     character(len=16) :: k16b, nomcmd
     character(len=19) :: solveu
@@ -81,10 +81,8 @@ subroutine vpcntl(cty, mode, option, omemin, omemax,&
     call infniv(ifm, niv)
     if (niv .ge. 1) then
         write(ifm,1000)
-        write(ifm,1100)
-        write(ifm,1200)
+        call u2mess('I', 'ALGELINE6_22')
     endif
-!
 !     ------------------------------------------------------------------
 !     ------------------ CONTROLE DES NORMES D'ERREURS -----------------
 !     ------------------------------------------------------------------
@@ -201,11 +199,15 @@ subroutine vpcntl(cty, mode, option, omemin, omemax,&
         else
             if (niv .ge. 1) then
                 if (typres .eq. 'DYNAMIQUE') then
-                    write(ifm,1300) freqom(vpinf), freqom(vpmax)
-                    write(ifm,1400) nfreqt
+                    valr (1) = freqom(vpinf)
+                    valr (2) = freqom(vpmax)
+                    call u2mesg('I', 'ALGELINE6_23', 0, ' ', 1,&
+                                nfreqt, 2, valr)
                 else
-                    write(ifm,1300) vpinf, vpmax
-                    write(ifm,1401) nfreqt
+                    valr (1) = vpinf
+                    valr (2) = vpmax
+                    call u2mesg('I', 'ALGELINE6_24', 0, ' ', 1,&
+                                nfreqt, 2, valr)
                 endif
             endif
         endif
@@ -213,10 +215,5 @@ subroutine vpcntl(cty, mode, option, omemin, omemax,&
     if (niv .ge. 1) write(ifm,1000)
 !
     1000 format (72('-'),/)
-    1100 format (10x,'VERIFICATION A POSTERIORI DES MODES')
-    1200 format (3x)
-    1300 format (3x,'DANS L''INTERVALLE (',1pe12.5,',',1pe12.5,') ')
-    1400 format (3x,'IL Y A BIEN ',i4,' FREQUENCE(S) ')
-    1401 format (3x,'IL Y A BIEN ',i4,' CHARGE(S) CRITIQUE(S) ')
 !
 end subroutine

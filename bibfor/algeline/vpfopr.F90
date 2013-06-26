@@ -111,6 +111,7 @@ subroutine vpfopr(option, typres, lmasse, lraide, ldynam,&
     include 'asterfort/mpiexe.h'
     include 'asterfort/u2mesg.h'
     include 'asterfort/u2mesk.h'
+    include 'asterfort/u2mesr.h'
     include 'asterfort/u2mess.h'
     include 'asterfort/vecint.h'
     include 'asterfort/vpecst.h'
@@ -129,9 +130,9 @@ subroutine vpfopr(option, typres, lmasse, lraide, ldynam,&
     character(len=8) :: k8bid
     character(len=16) :: ch16, valk(3)
     character(len=24) :: k24c, k24par
-    integer :: niv, ifm, nbessa, ier, nbfmin, nbfmax, ibid, ibande, mpicou
-    integer :: mpicow, rang, nbproc, jk24c, jkpar, nbrow, frecou, rangl
-    real(kind=8) :: valr, omgmin, omgmax, omgshi, rbid, prec, omgdec
+    integer :: niv, ifm, nbessa, ier, nbfmin, nbfmax, ibid, ibande, mpicou, mpicow, rang, nbproc
+    integer :: jk24c, jkpar, nbrow, frecou, rangl
+    real(kind=8) :: valr(2), omgmin, omgmax, omgshi, rbid, prec, omgdec
     complex(kind=8) :: cbid
     logical :: caldet, ldyna
 !
@@ -173,9 +174,9 @@ subroutine vpfopr(option, typres, lmasse, lraide, ldynam,&
     endif
     if (option(1:5) .ne. 'STURM') then
         if (option(1:5) .eq. 'BANDE') then
-            write(ifm,900)'BANDE'
+            call u2mesk('I', 'ALGELINE6_41', 1, 'BANDE')
         else
-            write(ifm,900)option
+            call u2mesk('I', 'ALGELINE6_41', 1, option)
         endif
     endif
 !     ------------------------------------------------------------------
@@ -198,33 +199,33 @@ subroutine vpfopr(option, typres, lmasse, lraide, ldynam,&
                 if (abs(omgshi) .lt. omecor) then
                     omgshi=omecor
                     if (ldyna) then
-                        valr=freqom(omgshi)
+                        valr(1)=freqom(omgshi)
                     else
-                        valr=omgshi
+                        valr(1)=omgshi
                     endif
-                    if (niv .ge. 1) write(ifm,1300)valr
+                    if (niv .ge. 1) call u2mesr('I', 'ALGELINE6_44', 1, valr)
 ! --- CE N'EST PLUS LA PEINE DE DECALER, C'EST INUTILE
                     nbessa=nbrssa
                 else
                     omgdec=max(omecor,prec*abs(omgshi))
                     omgshi=omgshi+omgdec
                     if (ldyna) then
-                        valr=freqom(omgshi)
+                        valr(1)=freqom(omgshi)
                     else
-                        valr=omgshi
+                        valr(1)=omgshi
                     endif
                     if (niv .ge. 1) then
-                        write(ifm,1400)(prec*100.d0)
-                        write(ifm,1500)valr
+                        valr(2)=prec*100.d0
+                        call u2mesr('I', 'ALGELINE6_45', 2, valr)
                     endif
                     prec=2.d0*prec
                 endif
                 goto 10
             else
                 if (ldyna) then
-                    valr=freqom(omgshi)
+                    valr(1)=freqom(omgshi)
                 else
-                    valr=omgshi
+                    valr(1)=omgshi
                 endif
                 call u2mesg('F', 'ALGELINE3_81', 3, valk, 0,&
                             0, 1, valr)
@@ -234,9 +235,9 @@ subroutine vpfopr(option, typres, lmasse, lraide, ldynam,&
         omeshi=omgshi
         if (niv .ge. 1) then
             if (ldyna) then
-                write (ifm,1000)freqom(omeshi)
+                call u2mesr('I', 'ALGELINE6_42', 1, freqom(omeshi))
             else
-                write (ifm,1001)omeshi
+                call u2mesr('I', 'ALGELINE6_43', 1, omeshi)
             endif
         endif
 !
@@ -266,22 +267,25 @@ subroutine vpfopr(option, typres, lmasse, lraide, ldynam,&
                     if (abs(omgmin) .lt. omecor) then
                         omgmin=-omecor
                         if (ldyna) then
-                            valr=freqom(omgmin)
+                            valr(1)=freqom(omgmin)
                         else
-                            valr=omgmin
+                            valr(1)=omgmin
                         endif
-                        if (niv .ge. 1) write(ifm,1600)valr
+                        if (niv .ge. 1) call u2mesr('I', 'ALGELINE6_46', 1, valr)
 ! --- CE N'EST PLUS LA PEINE DE DECALER, C'EST INUTILE
                         nbessa=nbrssa
                     else
                         omgdec=max(omecor,prec*abs(omgmin))
                         omgmin=omgmin-omgdec
                         if (ldyna) then
-                            valr=freqom(omgmin)
+                            valr(1)=freqom(omgmin)
                         else
-                            valr=omgmin
+                            valr(1)=omgmin
                         endif
-                        if (niv .ge. 1) write(ifm,1700)(prec*100.d0), valr
+                        if (niv .ge. 1) then
+                            valr(2)=prec*100.d0
+                            call u2mesr('I', 'ALGELINE6_47', 2, valr)
+                        endif
                         prec=2.d0*prec
                     endif
                     goto 21
@@ -310,22 +314,25 @@ subroutine vpfopr(option, typres, lmasse, lraide, ldynam,&
                     if (abs(omgmax) .lt. omecor) then
                         omgmax=omecor
                         if (ldyna) then
-                            valr=freqom(omgmax)
+                            valr(1)=freqom(omgmax)
                         else
-                            valr=omgmax
+                            valr(1)=omgmax
                         endif
-                        if (niv .ge. 1) write(ifm,1800)valr
+                        if (niv .ge. 1) call u2mesr('I', 'ALGELINE6_48', 1, valr)
 ! --- CE N'EST PLUS LA PEINE DE DECALER, C'EST INUTILE
                         nbessa=nbrssa
                     else
                         omgdec=max(omecor,prec*abs(omgmax))
                         omgmax=omgmax+omgdec
                         if (ldyna) then
-                            valr=freqom(omgmax)
+                            valr(1)=freqom(omgmax)
                         else
-                            valr=omgmax
+                            valr(1)=omgmax
                         endif
-                        if (niv .ge. 1) write(ifm,1900)(prec*100.d0), valr
+                        if (niv .ge. 1) then
+                            valr(2)=prec*100.d0
+                            call u2mesr('I', 'ALGELINE6_49', 2, valr)
+                        endif
                         prec=2.d0*prec
                     endif
                     goto 22
@@ -444,30 +451,33 @@ subroutine vpfopr(option, typres, lmasse, lraide, ldynam,&
                     if (abs(omgshi) .lt. omecor) then
                         omgshi=omecor
                         if (ldyna) then
-                            valr=freqom(omgshi)
+                            valr(1)=freqom(omgshi)
                         else
-                            valr=omgshi
+                            valr(1)=omgshi
                         endif
-                        if (niv .ge. 1) write(ifm,2000)omgshi
+                        if (niv .ge. 1) call u2mesr('I', 'ALGELINE6_44', 1, valr)
 ! --- CE N'EST PLUS LA PEINE DE DECALER, C'EST INUTILE
                         nbessa=nbrssa
                     else
                         omgdec=max(omecor,prec*abs(omgshi))
                         omgshi=omgshi-omgdec
                         if (ldyna) then
-                            valr=freqom(omgshi)
+                            valr(1)=freqom(omgshi)
                         else
-                            valr=omgshi
+                            valr(1)=omgshi
                         endif
-                        if (niv .ge. 1) write(ifm,2100)(prec*100.d0), valr
+                        if (niv .ge. 1) then
+                            valr(2)=prec*100.d0
+                            call u2mesr('I', 'ALGELINE6_92', 2, valr)
+                        endif
                         prec=2.d0*prec
                     endif
                     goto 23
                 else
                     if (ldyna) then
-                        valr=freqom(omgshi)
+                        valr(1)=freqom(omgshi)
                     else
-                        valr=omgshi
+                        valr(1)=omgshi
                     endif
                     call u2mesg('F', 'ALGELINE3_81', 3, valk, 0,&
                                 0, 1, valr)
@@ -479,13 +489,15 @@ subroutine vpfopr(option, typres, lmasse, lraide, ldynam,&
 !          --- AFFICHAGE COMMUN ---
         if ((niv.ge.1) .and. (option(1:5).eq.'BANDE')) then
             if (ldyna) then
-                write(ifm,2200)freqom(omgmin)
-                write(ifm,2300)freqom(omgmax)
-                if (option(1:5) .eq. 'BANDE') write(ifm,1000)freqom( omeshi)
+                valr(1)=freqom(omgmin)
+                valr(2)=freqom(omgmax)
+                call u2mesr('I', 'ALGELINE6_93', 2, valr)
+                if (option(1:5) .eq. 'BANDE') call u2mesr('I', 'ALGELINE6_42', 1, freqom(omeshi))
             else
-                write(ifm,2201)omgmin
-                write(ifm,2301)omgmax
-                if (option(1:5) .eq. 'BANDE') write(ifm,1001)omeshi
+                valr(1)=omgmin
+                valr(2)=omgmax
+                call u2mesr('I', 'ALGELINE6_94', 2, valr)
+                if (option(1:5) .eq. 'BANDE') call u2mesr('I', 'ALGELINE6_43', 1, omeshi)
             endif
         endif
 !
@@ -510,30 +522,33 @@ subroutine vpfopr(option, typres, lmasse, lraide, ldynam,&
                 if (abs(omgshi) .lt. omecor) then
                     omgshi=-omecor
                     if (ldyna) then
-                        valr=freqom(omgshi)
+                        valr(1)=freqom(omgshi)
                     else
-                        valr=omgshi
+                        valr(1)=omgshi
                     endif
-                    if (niv .ge. 1) write(ifm,1800)valr
+                    if (niv .ge. 1) call u2mesr('I', 'ALGELINE6_48', 1, valr)
 ! --- CE N'EST PLUS LA PEINE DE DECALER, C'EST INUTILE
                     nbessa=nbrssa
                 else
                     omgdec=max(omecor,prec*abs(omgshi))
                     omgshi=omgshi-omgdec
                     if (ldyna) then
-                        valr=freqom(omgshi)
+                        valr(1)=freqom(omgshi)
                     else
-                        valr=omgshi
+                        valr(1)=omgshi
                     endif
-                    if (niv .ge. 1) write(ifm,2400)(prec*100.d0),valr
+                    if (niv .ge. 1) then
+                        valr(2)=prec*100.d0
+                        call u2mesr('I', 'ALGELINE6_92', 2, valr)
+                    endif
                     prec=2.d0*prec
                 endif
                 goto 30
             else
                 if (ldyna) then
-                    valr=freqom(omgshi)
+                    valr(1)=freqom(omgshi)
                 else
-                    valr=omgshi
+                    valr(1)=omgshi
                 endif
                 call u2mesg('F', 'ALGELINE3_81', 3, valk, 0,&
                             0, 1, valr)
@@ -542,9 +557,9 @@ subroutine vpfopr(option, typres, lmasse, lraide, ldynam,&
         omeshi=omgshi
         if (niv .ge. 1) then
             if (ldyna) then
-                write(ifm,1000)freqom(omeshi)
+                call u2mesr('I', 'ALGELINE6_42', 1, freqom(omeshi))
             else
-                write(ifm,1001)omeshi
+                call u2mesr('I', 'ALGELINE6_43', 1, omeshi)
             endif
         endif
 !
@@ -560,34 +575,8 @@ subroutine vpfopr(option, typres, lmasse, lraide, ldynam,&
     if ((niv.ge.1) .and. (option(1:5).ne.'STURM')) write(ifm,1200)
 !
 !     -----------------------------FORMAT------------------------------
-    900 format('L''OPTION CHOISIE EST:',1x,a,/)
-    1000 format('LA VALEUR DE DECALAGE EN FREQUENCE EST : ',1pe12.5)
-    1001 format('LA VALEUR DE DECALAGE CHARGE CRITIQUE EST : ',1pe12.5)
-    1200 format (72('-'),/)
-    1300 format('LA VALEUR DE DECALAGE (OMEGA2)EST INFERIEURE A LA VALEUR '&
-     &      ,'DE CORPS RIGIDE ON LA MODIFIE, ELLE DEVIENT:',1x,1pe12.5)
-    1400 format('ON AUGMENTE LA VALEUR DE DECALAGE DE: ',1pe12.5,&
-     &       'POUR CENT')
-    1500 format('LA VALEUR CENTRALE DEVIENT: ',1pe12.5)
-    1600 format('LA VALEUR MINIMALE EST INFERIEURE A LA VALEUR ',&
-     &       'DE CORPS RIGIDE ON LA MODIFIE, ELLE DEVIENT: ',1pe12.5)
-    1700 format('ON DIMINUE LA VALEUR MINIMALE DE: ',1pe12.5,' POURCENT',/,&
-     &        'LA VALEUR MINIMALE DEVIENT: ',6x,1pe12.5)
-    1800 format('LA VALEUR MAXIMALE EST INFERIEURE A LA VALEUR ',&
-     &       'DE CORPS RIGIDE ON LA MODIFIE, ELLE DEVIENT: ',1pe12.5)
-    1900 format('ON AUGMENTE LA VALEUR MAXIMALE DE: ',1pe12.5,' POURCENT',/&
-     &       ,'LA VALEUR MAXIMALE DEVIENT:',8x,1pe12.5)
-    2000 format('LA VALEUR DE DECALAGE EST INFERIEURE A LA VALEUR ',&
-     &       ' DE CORPS RIGIDE ON LA MODIFIE, ELLE DEVIENT: ',1pe12.5)
-    2100 format('ON MODIFIE LA VALEUR DE DECALAGE DE: ',1pe12.5,&
-     &      'POURCENT',/,'LA VALEUR DE DECALAGE DEVIENT: ',1pe12.5)
-    2200 format('VALEUR_MIN EN FREQUENCE EST :   ',1pe12.5)
-    2300 format('VALEUR_MAX EN FREQUENCE EST :   ',1pe12.5)
 !
-    2201 format('VALEUR_MIN EN CHARGE CRITIQUE EST :   ',1pe12.5)
-    2301 format('VALEUR_MAX EN CHARGE CRITIQUE EST :   ',1pe12.5)
-    2400 format('ON DIMINUE LA VALEUR DE DECALAGE DE: ',1pe12.5,&
-     &       ' POURCENT',/, 'ELLE DEVIENT: ',26x,1pe12.5)
+    1200 format (72('-'),/)
 !     ------------------------------------------------------------------
 !
 end subroutine

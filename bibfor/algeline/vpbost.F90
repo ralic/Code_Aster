@@ -46,7 +46,7 @@ subroutine vpbost(typres, nbmode, nbvect, omeshi, valpro,&
     character(len=16) :: typres
 !     ------------------------------------------------------------------
     real(kind=8) :: vpinf2, vpmax2, tole
-    real(kind=8) :: valr
+    real(kind=8) :: valr(2)
     logical :: loginf, logmax
     integer :: niv, ifm, i
 !     ------------------------------------------------------------------
@@ -75,20 +75,15 @@ subroutine vpbost(typres, nbmode, nbvect, omeshi, valpro,&
         endif
 10  end do
     if (niv .ge. 1) then
+        write(ifm,1600)
         if (typres .eq. 'DYNAMIQUE') then
-            write(ifm,1600)
-            write(ifm,1000)
-            write(ifm,1100)
-            write(ifm,1200) freqom(vpinf)
-            write(ifm,1300) freqom(vpmax)
-            write(ifm,1000)
+            valr(1) = freqom(vpinf)
+            valr(2) = freqom(vpmax)
+            call u2mesr('I', 'ALGELINE6_16', 2, valr)
         else
-            write(ifm,1600)
-            write(ifm,1000)
-            write(ifm,1101)
-            write(ifm,1201) vpinf
-            write(ifm,1301) vpmax
-            write(ifm,1000)
+            valr(1) = vpinf
+            valr(2) = vpmax
+            call u2mesr('I', 'ALGELINE6_17', 2, valr)
         endif
     endif
 !
@@ -132,7 +127,7 @@ subroutine vpbost(typres, nbmode, nbvect, omeshi, valpro,&
                     tole=(abs(vpinf2-vpinf)/vpinf)
                     if (tole .lt. precdc) then
                         call u2mess('A', 'ALGELINE3_58')
-                        valr = freqom(vpinf2)
+                        valr(1) = freqom(vpinf2)
                         call u2mesr('A', 'ALGELINE4_66', 1, valr)
                         vpinf = vpinf * (1.d0 - sign(precdc,vpinf))
                     endif
@@ -140,7 +135,7 @@ subroutine vpbost(typres, nbmode, nbvect, omeshi, valpro,&
                     tole=abs(vpinf2-vpinf)
                     if (tole .lt. precdc) then
                         call u2mess('A', 'ALGELINE3_58')
-                        valr = freqom(vpinf2)
+                        valr(1) = freqom(vpinf2)
                         call u2mesr('A', 'ALGELINE4_66', 1, valr)
                         vpinf = vpinf * (1.d0 - sign(precdc,vpinf))
                     endif
@@ -161,7 +156,7 @@ subroutine vpbost(typres, nbmode, nbvect, omeshi, valpro,&
                     tole=(abs(vpmax2-vpmax)/vpmax)
                     if (tole .lt. precdc) then
                         call u2mess('A', 'ALGELINE3_58')
-                        valr = freqom(vpmax2)
+                        valr(1) = freqom(vpmax2)
                         call u2mesr('A', 'ALGELINE4_66', 1, valr)
                         vpmax = vpmax * (1.d0 + sign(precdc,vpmax))
                     endif
@@ -169,7 +164,7 @@ subroutine vpbost(typres, nbmode, nbvect, omeshi, valpro,&
                     tole=abs(vpmax2-vpmax)
                     if (tole .lt. precdc) then
                         call u2mess('A', 'ALGELINE3_58')
-                        valr = freqom(vpmax2)
+                        valr(1) = freqom(vpmax2)
                         call u2mesr('A', 'ALGELINE4_66', 1, valr)
                         vpmax = vpmax * (1.d0 + sign(precdc,vpmax))
                     endif
@@ -197,9 +192,9 @@ subroutine vpbost(typres, nbmode, nbvect, omeshi, valpro,&
     if (loginf) then
         if (niv .ge. 1) then
             if (typres .eq. 'DYNAMIQUE') then
-                write(ifm,1400) freqom(vpinf2)
+                call u2mesr('I', 'ALGELINE6_18', 1, freqom(vpinf2))
             else
-                write(ifm,1401) vpinf2
+                call u2mesr('I', 'ALGELINE6_20', 1, vpinf2)
             endif
         endif
 !
@@ -207,33 +202,17 @@ subroutine vpbost(typres, nbmode, nbvect, omeshi, valpro,&
     if (logmax) then
         if (niv .ge. 1) then
             if (typres .eq. 'DYNAMIQUE') then
-                write(ifm,1500) freqom(vpmax2)
+                call u2mesr('I', 'ALGELINE6_19', 1, freqom(vpmax2))
             else
-                write(ifm,1501) vpmax2
+                call u2mesr('I', 'ALGELINE6_21', 1, vpmax2)
             endif
         endif
     endif
+!
     if (niv .ge. 1) then
-        write(ifm,1000)
         write(ifm,1600)
     endif
 !
-!
-    1000 format (7x)
-    1100 format (3x,'LES FREQUENCES CALCULEES INF. ET SUP. SONT: ')
-    1200 format (6x,'FREQ_INF : ',1pe12.5)
-    1300 format (6x,'FREQ_SUP : ',1pe12.5)
-    1400 format (3x,'LA PREMIERE FREQUENCE INFERIEURE NON RETENUE EST: ',&
-     &        1pe12.5)
-    1500 format (3x,'LA PREMIERE FREQUENCE SUPERIEURE NON RETENUE EST: ',&
-     &        1pe12.5)
     1600 format (72('-'))
-    1101 format (3x,'LES CHARGES CRITIQUES CALCULEES INF. ET SUP. SONT: ')
-    1201 format (6x,'CHARGE_CRITIQUE_INF : ',1pe12.5)
-    1301 format (6x,'CHARGE_CRITIQUE_SUP : ',1pe12.5)
-    1401 format (3x,'LA PREMIERE CHARGE CRITIQUE INFERIEURE NON RETENUE'//&
-     &         'EST: ',1pe12.5)
-    1501 format (3x,'LA PREMIERE CHARGE CRITIQUE SUPERIEURE NON RETENUE'//&
-     &        'EST: ',1pe12.5)
 !
 end subroutine

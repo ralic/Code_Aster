@@ -4,6 +4,9 @@ subroutine vpecst(ifm, typres, omgmin, omgmax, nbfre1,&
     implicit none
     include 'asterfort/assert.h'
     include 'asterfort/freqom.h'
+    include 'asterfort/u2mesg.h'
+    include 'asterfort/u2mesi.h'
+    include 'asterfort/u2mesr.h'
     include 'asterfort/u2mess.h'
     integer :: ifm, nbfre1, nbfre2, nbfreq, nblagr
     real(kind=8) :: omgmin, omgmax, dimc1
@@ -56,8 +59,8 @@ subroutine vpecst(ifm, typres, omgmin, omgmax, nbfre1,&
 !     ------------------------------------------------------------------
 !     REMARQUE:  NBFRE1 ET NBFRE2  SONT CALCULES PAR VPSTUR
 !     ------------------------------------------------------------------
-    real(kind=8) :: fmin, fmax
-    integer :: ibande
+    real(kind=8) :: fmin, fmax, valr(3)
+    integer :: ibande, vali(2)
 !     ------------------------------------------------------------------
 !
 !   --- ON RECUPERE LE NUMERO DE LA BANDE SI NECESSAIRE
@@ -78,10 +81,7 @@ subroutine vpecst(ifm, typres, omgmin, omgmax, nbfre1,&
                 endif
             endif
         endif
-        if (nbfreq .gt. 9999) then
-            call u2mess('A', 'ALGELINE3_64')
-            write(ifm,*)' NOMBRE DE VALEURS PROPRES : ',nbfreq
-        endif
+        if (nbfreq .gt. 9999) call u2mesi('A', 'ALGELINE3_64', 1, nbfreq)
 !
 !   --- AFFICHAGE SI MODE_ITER_SIMULT+BANDE OU MODE_ITER_INV+
 !   --- SEPARE/AJUSTE OU INFO_MODE+MIN/MAX
@@ -89,30 +89,55 @@ subroutine vpecst(ifm, typres, omgmin, omgmax, nbfre1,&
             if (typres .eq. 'DYNAMIQUE') then
                 fmin=freqom(omgmin)
                 fmax=freqom(omgmax)
+                write(ifm,950)
                 if (typep .eq. 'R') then
-                    write(ifm,900)
+                    call u2mess('I', 'ALGELINE6_33')
                 else if (typep.eq.'F') then
-                    write(ifm,1900)
+                    call u2mess('I', 'ALGELINE6_34')
                 endif
                 if (nbfreq .eq. 0) then
-                    write(ifm,901)fmin,fmax
+                    valr(1)=fmin
+                    valr(2)=fmax
+                    vali(1)=1
+                    call u2mesg('I', 'ALGELINE6_35', 0, ' ', 1,&
+                                vali, 2, valr)
                 else if (fmin.eq.0.d0) then
-                    write(ifm,902)nbfreq,fmax
+                    valr(1)=fmax
+                    vali(1)=nbfreq
+                    call u2mesg('I', 'ALGELINE6_36', 0, ' ', 1,&
+                                vali, 1, valr)
                 else
-                    write(ifm,903)fmin,fmax,nbfreq
+                    valr(1)=fmin
+                    valr(2)=fmax
+                    vali(1)=1
+                    vali(2)=nbfreq
+                    call u2mesg('I', 'ALGELINE6_37', 0, ' ', 2,&
+                                vali, 2, valr)
                 endif
             else
                 if (typep .eq. 'R') then
-                    write(ifm,800)
+                    call u2mess('I', 'ALGELINE6_28')
                 else if (typep.eq.'F') then
-                    write(ifm,1800)
+                    call u2mess('I', 'ALGELINE6_29')
                 endif
                 if (nbfreq .eq. 0) then
-                    write(ifm,801) omgmin, omgmax
+                    valr(1)=omgmin
+                    valr(2)=omgmax
+                    vali(1)=1
+                    call u2mesg('I', 'ALGELINE6_30', 0, ' ', 1,&
+                                vali, 2, valr)
                 else if (omgmin .eq. 0.d0) then
-                    write(ifm,802)nbfreq,omgmax
+                    valr(1)=omgmax
+                    vali(1)=nbfreq
+                    call u2mesg('I', 'ALGELINE6_31', 0, ' ', 1,&
+                                vali, 1, valr)
                 else
-                    write(ifm,803)omgmin,omgmax,nbfreq
+                    valr(1)=omgmin
+                    valr(2)=omgmax
+                    vali(1)=1
+                    vali(2)=nbfreq
+                    call u2mesg('I', 'ALGELINE6_32', 0, ' ', 2,&
+                                vali, 2, valr)
                 endif
             endif
 !
@@ -121,18 +146,36 @@ subroutine vpecst(ifm, typres, omgmin, omgmax, nbfre1,&
             if (typres .eq. 'DYNAMIQUE') then
                 fmin=freqom(omgmin)
                 fmax=freqom(omgmax)
-                if (ibande .eq. 1) write(ifm,900)
+                if (ibande .eq. 1) then
+                    write(ifm,950)
+                    call u2mess('I', 'ALGELINE6_33')
+                endif
+                valr(1)=fmin
+                valr(2)=fmax
+                vali(1)=ibande
                 if (nbfreq .eq. 0) then
-                    write(ifm,1901)ibande,fmin,fmax
+                    call u2mesg('I', 'ALGELINE6_35', 0, ' ', 1,&
+                                vali, 2, valr)
                 else
-                    write(ifm,1903)ibande,fmin,fmax,nbfreq
+                    vali(2)=nbfreq
+                    call u2mesg('I', 'ALGELINE6_37', 0, ' ', 2,&
+                                vali, 2, valr)
                 endif
             else
-                if (ibande .eq. 1) write(ifm,800)
+                if (ibande .eq. 1) then
+                    write(ifm,950)
+                    call u2mess('I', 'ALGELINE6_28')
+                endif
+                valr(1)=omgmin
+                valr(2)=omgmax
+                vali(1)=ibande
                 if (nbfreq .eq. 0) then
-                    write(ifm,1801)ibande,omgmin,omgmax
+                    call u2mesg('I', 'ALGELINE6_30', 0, ' ', 1,&
+                                vali, 2, valr)
                 else
-                    write(ifm,1803)ibande,omgmin,omgmax,nbfreq
+                    vali(2)=nbfreq
+                    call u2mesg('I', 'ALGELINE6_32', 0, ' ', 2,&
+                                vali, 2, valr)
                 endif
             endif
 !
@@ -145,66 +188,33 @@ subroutine vpecst(ifm, typres, omgmin, omgmax, nbfre1,&
         nbfreq=nbfre2
         if (nbfreq .gt. 9999) then
             call u2mess('A', 'ALGELINE3_64')
-            write(ifm,*)' NOMBRE DE VALEURS PROPRES : ',nbfreq
+            call u2mesi('I', 'ALGELINE7_19', 1, nbfreq)
         endif
-        write(ifm,910)
+        write(ifm,950)
+        call u2mess('I', 'ALGELINE6_38')
         if (nbfreq .eq. 0) then
-            if (typcon(1:6) .eq. 'CERCLE') write(ifm, 911)dble(zimc1), dimag(zimc1), dimc1
+            if (typcon(1:6) .eq. 'CERCLE') then
+                valr(1)=dble(zimc1)
+                valr(2)=dimag(zimc1)
+                valr(3)=dimc1
+                call u2mesr('I', 'ALGELINE6_39', 3, valr)
+            endif
         else
-            if (typcon(1:6) .eq. 'CERCLE') write(ifm, 912)dble(zimc1), dimag(zimc1), dimc1,&
-                                           nbfreq
+            if (typcon(1:6) .eq. 'CERCLE') then
+                valr(1)=dble(zimc1)
+                valr(2)=dimag(zimc1)
+                valr(3)=dimc1
+                vali(1)=nbfreq
+                call u2mesg('I', 'ALGELINE6_40', 0, ' ', 1,&
+                            vali, 3, valr)
+            endif
         endif
 !
 !   --- ILLEGAL OPTION
     else
         call assert(.false.)
     endif
-!
     if (typep .ne. 'S') write(ifm,950)
-!     ------------------------------------------------------------------
-    800 format(/,72('-'),/,'   VERIFICATION DU SPECTRE DE CHARGES ',&
-     &'CRITIQUES (METHODE DE STURM)',/)
-    1800 format(/,72('-'),/,'   VERIFICATION DU SPECTRE DE CHARGES ',&
-     &'CRITIQUES (METHODE DE STURM - '/&
-     &'RESULTAT ISSU D''UN INFO_MODE PRECEDENT)',/)
-!
-    801 format(1x,'PAS DE CHARGE CRITIQUE DANS LA BANDE (',1pe10.3,',',&
-     &                                                 1pe10.3,') ')
-    1801 format(1x,'PAS DE CHARGE CRITIQUE DANS LA BANDE N ',i3,' DE '/&
-     &       ' BORNES (',1pe10.3,',',1pe10.3,') ')
-!
-    802 format(1x,i4,' CHARGES CRITIQUES INFERIEURES A ',1pe10.3,' HZ')
-!
-    803 format(1x,'LE NOMBRE DE CHARGES CRITIQUES DANS LA BANDE (',&
-     &                               1pe10.3,',',1pe10.3,') EST ',i4)
-    1803 format(1x,'LE NOMBRE DE CHARGES CRITIQUES DANS LA BANDE N ',i3,&
-     &       ' DE BORNES (',1pe10.3,',',1pe10.3,') EST ',i4)
-!
-    900 format(/,72('-'),/,'   VERIFICATION DU SPECTRE DE FREQUENCES ',&
-     &'(METHODE DE STURM)',/)
-    1900 format(/,72('-'),/,'   VERIFICATION DU SPECTRE DE FREQUENCES ',&
-     &'(METHODE DE STURM - '/&
-     &'RESULTAT ISSU D''UN INFO_MODE PRECEDENT)',/)
-!
-    901 format(1x,'PAS DE FREQUENCE DANS LA BANDE (',1pe10.3,',',&
-     &                                                 1pe10.3,') ')
-    1901 format(1x,'PAS DE FREQUENCE DANS LA BANDE N ',i3,' DE BORNES '/&
-     &       '(',1pe10.3,',',1pe10.3,')')
-!
-    902 format(1x,i4,' FREQUENCES PROPRES INFERIEURES A ',1pe10.3,' HZ')
-!
-    903 format(1x,'LE NOMBRE DE FREQUENCES DANS LA BANDE (',1pe10.3,&
-     &                                         ',',1pe10.3,') EST ',i4)
-    1903 format(1x,'LE NOMBRE DE FREQUENCES DANS LA BANDE N ',i3,' DE '/&
-     &       'BORNES (',1pe10.3,',',1pe10.3,') EST ',i4)
-!
-    910 format(/,72('-'),/,'   VERIFICATION DU SPECTRE EN FREQUENCE ',&
-     &  '(METHODE DE L''ARGUMENT PRINCIPAL)',/)
-    911 format(1x,'PAS DE FREQUENCE DANS LE DISQUE CENTRE EN (',1pe10.3,&
-     &  ',',1pe10.3,')',/,' ET DE RAYON ',1pe10.3)
-    912 format(1x,'LE NOMBRE DE FREQUENCES DANS LE DISQUE CENTRE EN (',&
-     &  1pe10.3,',',1pe10.3,')',/,' ET DE RAYON ',1pe10.3,' EST ',i4)
 !
     950 format(72('-'),/)
-!     ------------------------------------------------------------------
 end subroutine

@@ -115,7 +115,7 @@ subroutine op0099()
 !
 !
 ! --- IMPRESSION SUR FICHIER
-    if (niv .gt. 1) call imbamo(nomres, ifm)
+    if (niv .gt. 1) call imbamo(nomres)
 !
 !
 end subroutine

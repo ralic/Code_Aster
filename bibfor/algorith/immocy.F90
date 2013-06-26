@@ -38,8 +38,11 @@ subroutine immocy(nomres, ifm)
     include 'asterfort/jenuno.h'
     include 'asterfort/jeveuo.h'
     include 'asterfort/jexnum.h'
+    include 'asterfort/u2mesg.h'
+    include 'asterfort/u2mesi.h'
+    include 'asterfort/u2mesk.h'
     character(len=8) :: nomres, nomcou, basmod, mailla, intf
-    character(len=8) :: droite, gauche, axe
+    character(len=8) :: droite, gauche, axe, valk(4)
     character(len=24) :: refe, typint, nosec, numint, diamod, freq
     character(len=24) :: cmode, desc
     character(len=1) :: k1bid
@@ -78,26 +81,10 @@ subroutine immocy(nomres, ifm)
     call jeveuo(nosec, 'L', llnosc)
 !
 !
-    write(ifm,*)' '
-    write(ifm,*)'----------------------------------------------------'
-    write(ifm,*)' '
-    write(ifm,*)'                CALC_MODE_CYCL '
-    write(ifm,*)' '
-    write(ifm,*)'  IMPRESSIONS NIVEAU:  2 '
-    write(ifm,*)' '
-!
-    write(ifm,*) ' '
-    write(ifm,*) ' DEFINITION DU SECTEUR'
-    write(ifm,*) '----------------------- '
-    write(ifm,*) ' '
-    write(ifm,*) ' '
-    write(ifm,*)'   MAILLAGE: ',mailla
-    write(ifm,*) ' '
-    write(ifm,*)'   BASE_MODALE: ',basmod
-    write(ifm,*)'   INTERF_DYNA: ',intf
-    write(ifm,*) ' '
-    write(ifm,*) ' '
-    write(ifm,*) ' '
+    valk(1)=mailla
+    valk(2)=basmod
+    valk(3)=intf
+    call u2mesk('I', 'ALGELINE6_95', 3, valk)
 !
     call jeveuo(numint, 'L', llnin)
     call jeveuo(typint, 'L', lltyp)
@@ -112,23 +99,15 @@ subroutine immocy(nomres, ifm)
     endif
 !
 !
-!
-!
-    write(ifm,*) ' DEFINITION DE LA LIAISON'
-    write(ifm,*) '-------------------------- '
-    write(ifm,*) ' '
-    write(ifm,*) ' '
-    write(ifm,*) '  TYPE DE BASE MODALE: ',nomcou
-    write(ifm,*) ' '
-    write(ifm,*) '  INTERFACE DROITE: ',droite
-    write(ifm,*) '  INTERFACE GAUCHE: ',gauche
-    if (numa .ne. 0) then
-        write(ifm,*) '  INTERFACE AXE: ',axe
+    valk(1)=nomcou
+    valk(2)=droite
+    valk(3)=gauche
+    if (numa .eq. 0) then
+        call u2mesk('I', 'ALGELINE6_96', 3, valk)
+    else
+        valk(4)=axe
+        call u2mesk('I', 'ALGELINE6_97', 4, valk)
     endif
-    write(ifm,*) ' '
-    write(ifm,*) ' '
-    write(ifm,*) ' '
-!
 !
 !
     call jeveuo(desc, 'L', lldesc)
@@ -145,28 +124,16 @@ subroutine immocy(nomres, ifm)
     call jeveuo(cmode, 'L', llmoc)
 !
 !
-    write(ifm,*) '                           RESULTATS MODAUX'
-    write(ifm,*) '                          ------------------ '
-    write(ifm,*) ' '
-    write(ifm,*) ' '
-!
     iad=0
 !
     do 10 i = 1, nbdiam
         idiam=zi(lldiam+i-1)
         nbmobt=zi(lldiam+nbdiam+i-1)
-        write(ifm,*) ' '
-        write(ifm,*) ' '
-        write(ifm,*) '  MODES A ',idiam,' DIAMETRES NODAUX'
-        write(ifm,*) '------------------------------------- '
-        write(ifm,*) ' '
-        write(ifm,*) ' NUMERO    FREQUENCE(HZ)    '
-        write(ifm,*) ' '
+        call u2mesi('I', 'ALGELINE6_98', 1, idiam)
         do 20 j = 1, nbmobt
             x1=zr(llfre+iad)
-            write(ifm,*)'  ',j,'       ',x1
-!
-            write(ifm,*)'  '
+            call u2mesg('I', 'ALGELINE6_99', 0, ' ', 1,&
+                        j, 1, x1)
             iam=(iad*nbddge)+llmoc
             xmodu=0.d0
             do 30 k = 1, nbmod
@@ -175,8 +142,8 @@ subroutine immocy(nomres, ifm)
             xmodu=xmodu
             do 40 k = 1, nbmod
                 xpar=100.d0*(abs(zc(iam+k-1))**2)/xmodu
-                write(ifm,*)'                             ',&
-     &'PARTICIPATION MODE:',k,' --> ',xpar,' %'
+                call u2mesg('I', 'ALGELINE7_1', 0, ' ', 1,&
+                            k, 1, xpar)
 40          continue
             write(ifm,*) ' '
             iad=iad+1

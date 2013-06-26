@@ -51,9 +51,9 @@ subroutine cmphdi(ck, cm, ndim, nbmod, niter,&
 ! CVECT1   /M/: VECTEUR COMPLEXE DE TRAVAIL
 ! ALPHA    /M/: VECTEUR REEL DE TRAVAIL
 ! BETA     /M/: VECTEUR REEL DE TRAVAIL
-! LAMBD1   /I/: BORNE INFERIEURE DE L'INTERVALE DE RECHERCHE
-! LAMBD2   /I/: BORNE SUPERIEURE DE L'INTERVALE DE RECHERCHE
-! INTERV   /I/: LONGUEUR MAXIMALE D'UN INTERVALE CONTENANT UNE VP
+! LAMBD1   /I/: BORNE INFERIEURE DE L'INTERVALLE DE RECHERCHE
+! LAMBD2   /I/: BORNE SUPERIEURE DE L'INTERVALLE DE RECHERCHE
+! INTERV   /I/: LONGUEUR MAXIMALE D'UN INTERVALLE CONTENANT UNE VP
 ! IFIC     /I/: NUMERO D'UNITE LOGIQUE
 !
 !-----------------------------------------------------------------------
@@ -67,6 +67,8 @@ subroutine cmphdi(ck, cm, ndim, nbmod, niter,&
     include 'asterfort/sesqui.h'
     include 'asterfort/trldc.h'
     include 'asterfort/u2mesg.h'
+    include 'asterfort/u2mesi.h'
+    include 'asterfort/u2mesk.h'
     include 'asterfort/u2mess.h'
     include 'blas/zcopy.h'
     integer :: ndim, nbmod, niter, ific
@@ -77,31 +79,24 @@ subroutine cmphdi(ck, cm, ndim, nbmod, niter,&
     real(kind=8) :: alpha(ndim+1), beta(ndim+1), interv
     real(kind=8) :: lambd1, lambd2, xcrit
     integer :: i, j, ct, ipivo
-    integer :: vali
+    integer :: vali(2)
     complex(kind=8) :: cshift
-    real(kind=8) :: ecart
+    real(kind=8) :: ecart, valr(3)
     logical :: sortie
     integer :: idiag, iretou, iv, ivdiag, ndimax
+    character(len=6) :: valk
 !-----------------------------------------------------------------------
 !
-    write(ific,*)'     '
-    write(ific,*)'     '
-    write(ific,*)'     '
-    write(ific,*)'****************************************************&
-     &*******************'
-    write(ific,*)'         '
-    write(ific,*)'               CALCUL MODAL PAR CMPHDI'
-    write(ific,*)'         '
+    valk = 'CMPHDI'
+    call u2mesk('I', 'ALGELINE7_2', 1, valk)
 !
 !
 !        SEPARATION DES VALEURS PROPRES
 !
     call sepavp(ck, cm, cmat1, ndim, alpha,&
-                beta, nbmod, lambd1, lambd2, interv,&
-                ific)
+                beta, nbmod, lambd1, lambd2, interv)
 !
-    write(ific,*)'     '
-    write(ific,100)
+    call u2mess('I', 'ALGELINE7_3')
 !
 !        INITIALISATION DES VECTEURS POUR LES ITERATIONS
 !
@@ -129,9 +124,8 @@ subroutine cmphdi(ck, cm, ndim, nbmod, niter,&
 !
         call trldc(cmat1, ndim, ipivo)
         if (ipivo .ne. 0) then
-            vali = ipivo
-            call u2mesg('F', 'ALGORITH12_53', 0, ' ', 1,&
-                        vali, 0, 0.d0)
+            vali(1) = ipivo
+            call u2mesi('F', 'ALGORITH12_53', 1, vali)
         endif
 !
 !
@@ -186,11 +180,12 @@ subroutine cmphdi(ck, cm, ndim, nbmod, niter,&
 !       WRITE(IFIC,*)' ',J,'       ',CT,'       ',ECART,
 !    &  '      ',CEIGEN(J)
 !
-        write(ific,110) j,ct,ecart,dble(ceigen(j)),dimag(ceigen(j))
+        vali(1)=j
+        vali(2)=ct
+        valr(1)=ecart
+        valr(2)=dble(ceigen(j))
+        valr(3)=dimag(ceigen(j))
+        call u2mesg('I', 'ALGELINE7_4', 0, ' ', 2, vali, 3, valr)
 10  end do
-!
-    100 format('NUMERO       ', 'ITERATION         ',&
-     &       'ERREUR           ', 'VALEUR PROPRE')
-    110 format(i4,11x,i4,10x,d10.3,5x,'  (',1pd9.2,', ',1pd9.2,' )')
 !
 end subroutine

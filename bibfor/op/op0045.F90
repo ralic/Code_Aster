@@ -81,6 +81,7 @@ subroutine op0045()
     include 'asterfort/titre.h'
     include 'asterfort/tldlg2.h'
     include 'asterfort/u2mesg.h'
+    include 'asterfort/u2mesi.h'
     include 'asterfort/u2mesk.h'
     include 'asterfort/u2mess.h'
     include 'asterfort/utexcp.h'
@@ -120,36 +121,31 @@ subroutine op0045()
     integer :: nbpari, nbparr, nbpark, nbpara, mxddl
     parameter    ( nbpari=8 , nbparr=16 , nbpark=3, nbpara=27 )
     parameter    ( mxddl=1 )
-    integer :: iadx, imet, i, iady, ierx, iret, iadrb, iadz, ier1, ifm, itemax
-    integer :: iadrh, ibid, ierd, ifreq
-    integer :: lmat(3), lselec, lresid, ldsor, lamor, lbrss, lmasse, iauxk
-    integer :: lmtpsc, lresur, ltypri, lworkd, laux, lraide, lsign, lvalpr
-    integer :: lworkl, ldiagr, lresui, lsurdr, lvec, lworkv, iauxi, iauxr
-    integer :: lborvp, lmf, lprod, lresuk, ltypre, lxrig, kqrnr, lddl, lmatra
-    integer :: lonwl, lmet, nbvec2, icoef, npiv2(2)
-    integer :: npivot, nbvect, priram(8), maxitr, neqact, mfreq, idet(2), nborto
-    integer :: nfreq, nitv, nparr, nbcine, neq, nitqrm, izero, nbrss, nitbat
-    integer :: niv, mxresf, nblagr, nperm, nitjac, n1, nstoc, nconv, iexin
-    integer :: lworkr, laur, mpicou, qrn, qrlwor, iqrn, lqrn, qrar, qrai, qrba
-    integer :: qrvl, kqrn, qrn2, ilscal, irscal, lauc, laul, icscal, ivscal
-    integer :: iiscal, ibscal, jrefa, islvi, nprec, islvk, krefa, nnvalp, iarg
-    integer :: mpicow, rang, nbproc, typeco, vali(5), nbvecg, nfreqg, rangl
-    integer :: icom1, icom2, l, l1, l2, l3, indf
+    integer :: iadx, imet, i, iady, ierx, iret, iadrb, iadz, ier1, ifm, itemax, iadrh, ibid, ierd
+    integer :: ifreq
+    integer :: lmat(3), lselec, lresid, ldsor, lamor, lbrss, lmasse, iauxk, lmtpsc, lresur, ltypri
+    integer :: lworkd, laux, lraide, lsign, lvalpr, lworkl, ldiagr, lresui, lsurdr, lvec, lworkv
+    integer :: iauxi, iauxr, lborvp, lmf, lprod, lresuk, ltypre, lxrig, kqrnr, lddl, lmatra, lonwl
+    integer :: lmet, nbvec2, icoef, npiv2(2)
+    integer :: npivot, nbvect, priram(8), maxitr, neqact, mfreq, idet(2), nborto, nfreq, nitv
+    integer :: nparr, nbcine, neq, nitqrm, izero, nbrss, nitbat, niv, mxresf, nblagr, nperm
+    integer :: nitjac, n1, nstoc, nconv, iexin, lworkr, laur, mpicou, qrn, qrlwor, iqrn, lqrn
+    integer :: qrar, qrai, qrba, qrvl, kqrn, qrn2, ilscal, irscal, lauc, laul, icscal, ivscal
+    integer :: iiscal, ibscal, jrefa, islvi, nprec, islvk, krefa, nnvalp, iarg, mpicow, rang
+    integer :: nbproc, typeco, vali(5), nbvecg, nfreqg, rangl, icom1, icom2, l, l1, l2, l3, indf
 !     &             ,IETFIN,IETDEB,IETRAT,IETMAX
-    real(kind=8) :: prorto, fmin, fmax, alpha, tolsor, det(2), rzero, omemin
-    real(kind=8) :: omemax, omeshi, undf, rtest, omecor, fcorig, precdc, seuil
-    real(kind=8) :: vpinf, precsh, tol, vpmax, prsudg, rbid, toldyn, effmin
-    real(kind=8) :: effmax, eps, quapi2
+    real(kind=8) :: prorto, fmin, fmax, alpha, tolsor, det(2), rzero, omemin, omemax, omeshi, undf
+    real(kind=8) :: omecor, fcorig, precdc, seuil, vpinf, precsh, tol, vpmax, prsudg, rbid, toldyn
+    real(kind=8) :: effmin, effmax, eps, quapi2, rtest
 !     &             RETFIN
     complex(kind=8) :: sigma, cbid, czero, dcmplx
     character(len=1) :: ctyp, appr, ktyp, k1bid
     character(len=8) :: modes, knega, method, arret
     character(len=9) :: typevp
     character(len=14) :: matra, matrb, matrc
-    character(len=16) :: modrig, typcon, nomcmd, optiof, optiov, typres, typeqz
-    character(len=16) :: k16bid
-    character(len=19) :: masse0, masse, raide0, raide, amor, matpsc, matopa
-    character(len=19) :: vecrig, numedd, solveu, tabmod
+    character(len=16) :: modrig, typcon, nomcmd, optiof, optiov, typres, typeqz, k16bid
+    character(len=19) :: masse0, masse, raide0, raide, amor, matpsc, matopa, vecrig, numedd
+    character(len=19) :: solveu, tabmod
     character(len=24) :: cborvp, valk(5), nopara(nbpara), metres, kzero
     logical :: flage, lqz, lkr, lc, lns, lnsc, lnsk, lnsm, ltabmo, lpg, lcomod
 !    &             ,LCPU
@@ -614,13 +610,7 @@ subroutine op0045()
         if (nnvalp .gt. 1) fmax = zr(lborvp+1)
         if (lc .and. (fmin.lt.0.d0)) then
             fmin = -fmin
-            if (niv .ge. 1) then
-                write(ifm,*)'PROBLEME QUADRATIQUE'
-                write(ifm,*)'FREQUENCE DE DECALAGE EST NEGATIVE',&
-                'LES VALEURS PROPRES ETANT CONJUGUEES 2 A 2 '//&
-                'ON PEUT LA PRENDRE POSITIVE. ON LE FAIT !!!'
-                write(ifm,*)
-            endif
+            if (niv .ge. 1) call u2mess('I', 'ALGELINE6_10')
         endif
         omemin = omega2(fmin)
         omemax = omega2(fmax)
@@ -798,27 +788,17 @@ subroutine op0045()
 !     ----  DETERMINATION DE LA DIMENSION DU SOUS ESPACE NBVECT   ------
 !     ------------------------------------------------------------------
 !
-!
-    if (niv .ge. 1) then
-        write(ifm,*)'INFORMATIONS SUR LE CALCUL DEMANDE:'
-        write(ifm,*)'NOMBRE DE MODES RECHERCHES     : ',nfreq
-        write(ifm,*)
-    endif
+    if (niv .ge. 1) call u2mesi('I', 'ALGELINE6_11', 1, nfreq)
 !
 !     --- CORRECTION DU NOMBRE DE FREQUENCES DEMANDEES
     if (nfreq .gt. neqact) then
         nfreq = neqact
-        if (niv .ge. 1) then
-            write(ifm,*)'INFORMATIONS SUR LE CALCUL DEMANDE:'
-            write(ifm,*)'TROP DE MODES DEMANDES POUR LE NOMBRE '//&
-     &               'DE DDL ACTIFS, ON EN CALCULERA LE MAXIMUM '//&
-     &               'A SAVOIR: ',nfreq
-        endif
+        if (niv .ge. 1) call u2mesi('I', 'ALGELINE6_12', 1, nfreq)
     endif
 !
 !     --- DETERMINATION DE NBVECT (DIMENSION DU SOUS ESPACE) ---
     if (.not.lqz) then
-        if (niv .ge. 1) write(ifm, *)'LA DIMENSION DE L''ESPACE REDUIT EST : ', nbvect
+        if (niv .ge. 1) call u2mesi('I', 'ALGELINE6_13', 1, nbvect)
         if (nbvec2 .ne. 0) then
             icoef = nbvec2
         else
@@ -838,19 +818,11 @@ subroutine op0045()
             else if (method.eq.'SORENSEN') then
                 nbvect = min(max(3+nfreq,icoef*nfreq),neqact)
             endif
-            if (niv .ge. 1) then
-                write(ifm,*)'ELLE EST INFERIEURE AU NOMBRE '//&
-                'DE MODES, ON LA PREND EGALE A ',nbvect
-                write(ifm,*)
-            endif
+            if (niv .ge. 1) call u2mesi('I', 'ALGELINE6_14', 1, nbvect)
         else
             if (nbvect .gt. neqact) then
                 nbvect = neqact
-                if (niv .ge. 1) then
-                    write(ifm,*) 'ELLE EST SUPERIEURE AU'//&
-     &       ' NOMBRE DE DDL ACTIFS, ON LA RAMENE A CE NOMBRE ',nbvect
-                    write(ifm,*)
-                endif
+                if (niv .ge. 1) call u2mesi('I', 'ALGELINE6_15', 1, nbvect)
             endif
         endif
     endif
@@ -1122,7 +1094,7 @@ subroutine op0045()
                 zi(lresui-1+ mxresf+imet) = izero
                 zr(lresur-1+imet) = freqom(zr(lresur-1+mxresf+imet))
 !           SI OPTION 'PLUS_GRANDE' : CONVERSION EN VALEUR PHYSIQUE
-                if (lpg) zr(lresur-1+imet) = +1.d0 / ( quapi2 * zr( lresur-1+imet))
+                if (lpg) zr(lresur-1+imet) = +1.d0 / (quapi2 * zr( lresur-1+imet))
                 zr(lresur-1+2*mxresf+imet) = rzero
                 zk24(lresuk-1+ mxresf+imet) = 'SORENSEN'
 37          continue
@@ -1180,7 +1152,7 @@ subroutine op0045()
                 zi(lresui-1+ mxresf+imet) = izero
                 zr(lresur-1+imet) = freqom(zr(lresur-1+mxresf+imet))
 !           SI OPTION 'PLUS_GRANDE' : CONVERSION EN VALEUR PHYSIQUE
-                if (lpg) zr(lresur-1+imet) = +1.d0 / ( quapi2 * zr( lresur-1+imet))
+                if (lpg) zr(lresur-1+imet) = +1.d0 / (quapi2 * zr( lresur-1+imet))
                 zr(lresur-1+2*mxresf+imet) = rzero
                 zk24(lresuk-1+ mxresf+imet) = typeqz
 125          continue
@@ -1242,7 +1214,7 @@ subroutine op0045()
                 zi(lresui-1+4*mxresf+imet) = nitjac
                 zr(lresur-1+imet) = freqom(zr(lresur-1+mxresf+imet))
 !           SI OPTION 'PLUS_GRANDE' : CONVERSION EN VALEUR PHYSIQUE
-                if (lpg) zr(lresur-1+imet) = +1.d0 / ( quapi2 * zr( lresur-1+imet))
+                if (lpg) zr(lresur-1+imet) = +1.d0 / (quapi2 * zr( lresur-1+imet))
                 zr(lresur-1+2*mxresf+imet) = rzero
                 zk24(lresuk-1+ mxresf+imet) = 'BATHE_WILSON'
 30          continue
@@ -1284,7 +1256,7 @@ subroutine op0045()
                 zi(lresui-1+ mxresf+imet) = nitqrm
                 zr(lresur-1+imet) = freqom(zr(lresur-1+mxresf+imet))
 !           SI OPTION 'PLUS_GRANDE' : CONVERSION EN VALEUR PHYSIQUE
-                if (lpg) zr(lresur-1+imet) = +1.d0 / ( quapi2 * zr( lresur-1+imet))
+                if (lpg) zr(lresur-1+imet) = +1.d0 / (quapi2 * zr( lresur-1+imet))
                 zr(lresur-1+2*mxresf+imet) = rzero
                 zk24(lresuk-1+ mxresf+imet) = 'LANCZOS'
 32          continue

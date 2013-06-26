@@ -59,25 +59,24 @@ subroutine cmphii(ck, cm, ndim, nbmod, niter,&
     include 'asterfort/sesqui.h'
     include 'asterfort/trldc.h'
     include 'asterfort/u2mesg.h'
+    include 'asterfort/u2mesi.h'
+    include 'asterfort/u2mesk.h'
+    include 'asterfort/u2mess.h'
     include 'blas/zcopy.h'
-    integer :: vali
+    integer :: vali(2)
     complex(kind=8) :: ck(*), cm(*), ceigen(nbmod)
     complex(kind=8) :: cmod(ndimax, nbmod), cprod, cmod0(ndim)
     complex(kind=8) :: cmat1(*), cmat2(ndim, ndim), cvec(ndim), cvec0(ndim)
     logical :: convok
     integer :: i, idiag, ific, ipivo, iv, ivdiag, j
     integer :: k, nbmod, ndim, ndimax, niter
-    real(kind=8) :: xcrit, xer
+    real(kind=8) :: valr(3), xcrit, xer
+    character(len=6) :: valk
 !-----------------------------------------------------------------------
 !
-    write(ific,*)'     '
-    write(ific,*)'     '
-    write(ific,*)'     '
-    write(ific,*)'****************************************************&
-     &*******************'
-    write(ific,*)'               CALCUL MODAL PAR CMPHII'
-    write(ific,*)'         '
-    write(ific,1000)
+    valk = 'CMPHII'
+    call u2mesk('I', 'ALGELINE7_2', 1, valk)
+    call u2mess('I', 'ALGELINE7_3')
 !
 !      RECOPIE DE LA MATRICE DE RAIDEUR
     call zcopy(ndim*(ndim+1)/2, ck, 1, cmat1, 1)
@@ -86,9 +85,8 @@ subroutine cmphii(ck, cm, ndim, nbmod, niter,&
     call trldc(cmat1, ndim, ipivo)
 !    GESTION DU PIVOT NUL
     if (ipivo .ne. 0) then
-        vali = ipivo
-        call u2mesg('F', 'ALGORITH12_53', 0, ' ', 1,&
-                    vali, 0, 0.d0)
+        vali(1) = ipivo
+        call u2mesi('F', 'ALGORITH12_53', 1, vali)
     endif
 !
 !
@@ -160,10 +158,13 @@ subroutine cmphii(ck, cm, ndim, nbmod, niter,&
 !
 !
 !     IMPRESSION DES FREQUENCES PROPRES
-        write(ific,1100) j,k,xer,dble(ceigen(j)),dimag(ceigen(j))
-        1000 format('NUMERO       ', 'ITERATION         ',&
-     &       'ERREUR           ', 'VALEUR PROPRE')
-        1100 format(i4,11x,i4,10x,1pd10.3,5x,'  (',1pd9.2,', ',1pd9.2,' )')
+        vali(1)=j
+        vali(2)=k
+        valr(1)=xer
+        valr(2)=dble(ceigen(j))
+        valr(3)=dimag(ceigen(j))
+        call u2mesg('I', 'ALGELINE7_4', 0, ' ', 2,&
+                    vali, 3, valr)
 !
 50  end do
 !

@@ -420,10 +420,10 @@ subroutine znaupd(ido, bmat, n, which, nev,&
 !
     include 'asterc/r8prem.h'
     include 'asterfort/ivout.h'
+    include 'asterfort/u2mesi.h'
     include 'asterfort/znaup2.h'
     include 'asterfort/zvout.h'
-    integer :: logfil, ndigit, mgetv0, mnaupd, mnaup2, mnaitr, mneigh, mnapps
-    integer :: mngets, mneupd
+    integer :: logfil, ndigit, mgetv0, mnaupd, mnaup2, mnaitr, mneigh, mnapps, mngets, mneupd
     common /debug/&
      &  logfil, ndigit, mgetv0,&
      &  mnaupd, mnaup2, mnaitr, mneigh, mnapps, mngets, mneupd
@@ -445,7 +445,7 @@ subroutine znaupd(ido, bmat, n, which, nev,&
 !     | ARRAY ARGUMENTS |
 !     %-----------------%
 !
-    integer :: iparam(11), ipntr(14)
+    integer :: iparam(11), ipntr(14), vali(6)
     complex(kind=8) :: resid(n), v(ldv, ncv), workd(3*n), workl(lworkl)
     real(kind=8) :: rwork(ncv)
 !
@@ -460,8 +460,8 @@ subroutine znaupd(ido, bmat, n, which, nev,&
 !     | LOCAL SCALARS |
 !     %---------------%
 !
-    integer :: bounds, ierr, ih, iq, ishift, iw, ldh, ldq, mode, msglvl, mxiter
-    integer :: nb, nev0, next, np, ritz, j
+    integer :: bounds, ierr, ih, iq, ishift, iw, ldh, ldq, mode, msglvl, mxiter, nb, nev0, next
+    integer :: np, ritz, j
     save       bounds, ih, iq, ishift, iw,&
      &           ldh, ldq, mode, msglvl, mxiter, nb,&
      &           nev0, next, np, ritz
@@ -633,28 +633,20 @@ subroutine znaupd(ido, bmat, n, which, nev,&
 !        %--------------------------------%
 !        | VERSION NUMBER & VERSION DATE  |
 !        %--------------------------------%
-    write(logfil,1000)
-    write(logfil,1100) mxiter, nopx, nbx, nrorth, nitref, nrstrt
+    vali(1) = mxiter
+    vali(2) = nopx
+    vali(3) = nbx
+    vali(4) = nrorth
+    vali(5) = nitref
+    vali(6) = nrstrt
+    call u2mesi('I', 'ALGELINE6_27', 6, vali)
+!
     mxiter=0
     nopx=0
     nbx=0
     nrorth=0
     nitref=0
     nrstrt=0
-    write(logfil,*)
-    1000 format (//,&
-     &      5x, '=============================================',/&
-     &      5x, '=       METHODE DE SORENSEN (CODE ARPACK)   =',/&
-     &      5x, '=       VERSION : ', ' 2.4', 21x, ' =',/&
-     &      5x, '=          DATE : ', ' 07/31/96', 16x,   ' =',/&
-     &      5x, '=============================================')
-    1100 format (&
-     &      5x, 'NOMBRE DE REDEMARRAGES                     = ', i5,/&
-     &      5x, 'NOMBRE DE PRODUITS OP*X                    = ', i5,/&
-     &      5x, 'NOMBRE DE PRODUITS B*X                     = ', i5,/&
-     &      5x, 'NOMBRE DE REORTHOGONALISATIONS  (ETAPE 1)  = ', i5,/&
-     &      5x, 'NOMBRE DE REORTHOGONALISATIONS  (ETAPE 2)  = ', i5,/&
-     &      5x, 'NOMBRE DE REDEMARRAGES DU A UN V0 NUL      = ', i5)
 !
 9000  continue
 !

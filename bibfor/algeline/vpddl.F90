@@ -30,6 +30,7 @@ subroutine vpddl(raide, masse, neq, nblagr, nbcine,&
     include 'asterfort/jexnom.h'
     include 'asterfort/pteddl.h'
     include 'asterfort/typddl.h'
+    include 'asterfort/u2mesi.h'
     include 'asterfort/u2mess.h'
     character(len=19) :: masse, raide
     integer :: neq, nblagr, nbcine, neqact, dlagr(neq), dbloq(neq), ier
@@ -49,8 +50,8 @@ subroutine vpddl(raide, masse, neq, nblagr, nbcine,&
 !
 !
 !
-    integer :: ibid, ierd, jccid, iercon, nbprno, ieq, mxddl, nba, nbb, nbl
-    integer :: nbliai, ifm, niv
+    integer :: ibid, ierd, jccid, iercon, nbprno, ieq, mxddl, nba, nbb, nbl, nbliai, ifm, niv
+    integer :: vali(4)
     character(len=14) :: nume
     parameter (mxddl=1)
     character(len=8) :: nomddl(mxddl)
@@ -126,13 +127,17 @@ subroutine vpddl(raide, masse, neq, nblagr, nbcine,&
 !
     if (niv .ge. 1) then
         write (ifm,9000)
-        write (ifm,9010) neq
-        write (ifm,9020) nblagr
-        if (nbcine .ne. 0) then
-            write (ifm,9030) nbcine
+        vali(1) = neq
+        vali(2) = nblagr
+        if (nbcine .eq. 0) then
+            vali(3) = neqact
+            call u2mesi('I', 'ALGELINE7_17', 3, vali)
+        else
+            vali(3) = nbcine
+            vali(4) = neqact
+            call u2mesi('I', 'ALGELINE7_18', 4, vali)
         endif
-!
-        write (ifm,9040) neqact
+        write (ifm,9010)
     endif
 !     -----------------------------------------------------------------
 !     -----------------------------------------------------------------
@@ -140,9 +145,7 @@ subroutine vpddl(raide, masse, neq, nblagr, nbcine,&
     ier = 0
     call jedema()
 !
-    9000 format (//,72 ('-'),/,'LE NOMBRE DE DDL',/)
-    9010 format (3x,'TOTAL EST:',18x,i7,/)
-    9020 format (3x,'DE LAGRANGE EST:',12x,i7,/)
-    9030 format (3x,'BLOQUES CINEMATIQUEMENT:',4x,i7,//)
-    9040 format ('LE NOMBRE DE DDL ACTIFS EST:',3x,i7,/,72 ('-'))
+    9000 format (//,72 ('-'))
+    9010 format (72 ('-'))
+!
 end subroutine

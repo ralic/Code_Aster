@@ -81,19 +81,13 @@ subroutine op0036()
         dimmax=0
 !
         do 50 iocc = 1, nocc
-            call getvtx('LISTE', 'PARA', iocc, iarg, 1,&
-                        nmpar, jp)
+            call getvtx('LISTE', 'PARA', iocc, iarg, 1,nmpar, jp)
             zk16(jd+iocc-1)=nmpar
-            call getvis('LISTE', 'LISTE_I', iocc, iarg, 0,&
-                        ibid, ni)
-            call getvis('LISTE', 'NUME_LIGN', iocc, iarg, 0,&
-                        ibid, nindi)
-            call getvr8('LISTE', 'LISTE_R', iocc, iarg, 0,&
-                        rbid, nr)
-            call getvtx('LISTE', 'LISTE_K', iocc, iarg, 0,&
-                        kbid, nk)
-            call getvtx('LISTE', 'TYPE_K', iocc, iarg, 1,&
-                        ntyp, jt)
+            call getvis('LISTE', 'LISTE_I', iocc, iarg, 0, ibid, ni)
+            call getvis('LISTE', 'NUME_LIGN', iocc, iarg, 0, ibid, nindi)
+            call getvr8('LISTE', 'LISTE_R', iocc, iarg, 0, rbid, nr)
+            call getvtx('LISTE', 'LISTE_K', iocc, iarg, 0, kbid, nk)
+            call getvtx('LISTE', 'TYPE_K', iocc, iarg, 1, ntyp, jt)
 !
             if (nindi .ne. 0) then
                 if ((-ni-nr-nk) .ne. (-nindi)) then
@@ -134,16 +128,11 @@ subroutine op0036()
                     dimmax)
 !
         do 200 iocc = 1, nocc
-            call getvis('LISTE', 'LISTE_I', iocc, iarg, 0,&
-                        ibid, ni)
-            call getvis('LISTE', 'NUME_LIGN', iocc, iarg, 0,&
-                        ibid, nindi)
-            call getvr8('LISTE', 'LISTE_R', iocc, iarg, 0,&
-                        rbid, nr)
-            call getvtx('LISTE', 'LISTE_K', iocc, iarg, 0,&
-                        kbid, nk)
-            call getvtx('LISTE', 'PARA', iocc, iarg, 1,&
-                        nmpar, jp)
+            call getvis('LISTE', 'LISTE_I', iocc, iarg, 0, ibid, ni)
+            call getvis('LISTE', 'NUME_LIGN', iocc, iarg, 0, ibid, nindi)
+            call getvr8('LISTE', 'LISTE_R', iocc, iarg, 0, rbid, nr)
+            call getvtx('LISTE', 'LISTE_K', iocc, iarg, 0, kbid, nk)
+            call getvtx('LISTE', 'PARA', iocc, iarg, 1, nmpar, jp)
             do 150 j = 1, nocc
                 nmpar1=zk16(jd+j-1)
                 if ((nmpar.eq.nmpar1) .and. (j.ne.iocc)) then
@@ -224,9 +213,7 @@ subroutine op0036()
 ! --- CAS : FONCTION
 !     ==============
     else if (nocc2.ne.0) then
-        call getvid('FONCTION', 'FONCTION', 1, iarg, 1,&
-                    nfct, ir)
-!
+        call getvid('FONCTION', 'FONCTION', 1, iarg, 1, nfct, ir)
 !
         call jelira(nfct//'.VALE', 'LONMAX', ndim, kbid)
         call jeveuo(nfct//'.VALE', 'L', jvale)
@@ -250,8 +237,7 @@ subroutine op0036()
             nmparc(2)=nmparf(2)(1:npar)//'_R'
             nmparc(3)=nmparf(2)(1:npar)//'_I'
 !
-            call tbcrsv(resu, 'G', 3, nmparc, typarc,&
-                        ndim/3)
+            call tbcrsv(resu, 'G', 3, nmparc, typarc, ndim/3)
             call tbajpa(resu, 3, nmparc, typarc)
             vectcr='&&OP0036.VCR'
             vectci='&&OP0036.VCI'
@@ -270,8 +256,7 @@ subroutine op0036()
             call jedetr(vectcr)
             call jedetr(vectci)
         else
-            call tbcrsv(resu, 'G', 2, nmparf, typarr,&
-                        ndim/2)
+            call tbcrsv(resu, 'G', 2, nmparf, typarr, ndim/2)
             call tbajpa(resu, 2, nmparf, typarr)
             call tbajco(resu, nmparf(1), 'R', ndim/2, ibid,&
                         zr(jvale), cbid, kbid, 'R', -1)

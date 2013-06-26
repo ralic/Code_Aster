@@ -1,6 +1,5 @@
 subroutine sepavp(ck, cm, cmat, ndim, alpha,&
-                  beta, nbmod, lambd1, lambd2, interv,&
-                  ific)
+                  beta, nbmod, lambd1, lambd2, interv)
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -38,16 +37,16 @@ subroutine sepavp(ck, cm, cmat, ndim, alpha,&
 ! LAMBD1   /I/: BORNE INFERIEURE DE L'INTERVE DE RECHERCHE
 ! LAMBD2   /I/: BORNE SUPERIEURE DE L'INTERVE DE RECHERCHE
 ! INTERV   /I/: LONGUEUR MAXIMAL D'UN INTERVE CONTENANT UNE VP
-! IFIC     /I/: NUMERO D'UNITE LOGIQUE
 !
 !-----------------------------------------------------------------------
 !
     include 'asterfort/assert.h'
     include 'asterfort/nbval.h'
-    integer :: ndim, nbmod, ific
+    include 'asterfort/u2mesg.h'
+    integer :: ndim, nbmod
     complex(kind=8) :: ck(*), cm(*), cmat(*)
     real(kind=8) :: alpha(ndim+1), beta(ndim+1)
-    real(kind=8) :: lambd1, lambd2
+    real(kind=8) :: lambd1, lambd2, valr(2)
     real(kind=8) :: interv
     integer :: i, n1, n2, nb, ct
     real(kind=8) :: a, b, c
@@ -68,7 +67,10 @@ subroutine sepavp(ck, cm, cmat, ndim, alpha,&
                n2)
     nbmod=min(n2-n1,nbmod)
     beta(nbmod)=lambd2
-    write(ific,100) nbmod,lambd1,lambd2
+    valr(1)=lambd1
+    valr(2)=lambd2
+    call u2mesg('I', 'ALGELINE6_9', 0, ' ', 1,&
+                nbmod, 2, valr)
     do 20 i = 1, nbmod
         if (alpha(i) .ge. 0.d0) then
             a=alpha(i)
@@ -136,6 +138,4 @@ subroutine sepavp(ck, cm, cmat, ndim, alpha,&
         goto 30
 40      continue
 20  end do
-    100 format('IL Y A ',i4,'  VALEURS PROPRES DANS LA BANDE',d14.6,&
-     &       ',',d14.6)
 end subroutine
