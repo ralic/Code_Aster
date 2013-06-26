@@ -119,7 +119,7 @@ subroutine nmdcae(sddisc, iterat, typdec, nbrpas, ratio,&
                     else
                         ratio = exp( -10.0d0 )
                     endif
-                    ratio = 0.48485D0*ratio
+                    ratio = 0.48485d0*ratio
                     xxbb = ( -un + (un+24.0d0/ratio)**0.5d0 )/3.0d0
                     if (xxbb .lt. 2.0d0) then
                         nbrpas = 2

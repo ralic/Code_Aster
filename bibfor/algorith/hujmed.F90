@@ -39,7 +39,7 @@ subroutine hujmed(k, mater, vin, sig)
     common /tdim/   ndt, ndi
     common /meshuj/ debug
 ! ----------------------------------------------------------------------
-    parameter     (degr = 0.0174532925199D0)
+    parameter     (degr = 0.0174532925199d0)
     parameter     (d12  = 0.5d0  )
     parameter     (zero = 0.0d0  )
     parameter     (un   = 1.0d0  )

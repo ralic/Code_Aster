@@ -76,7 +76,7 @@ subroutine lcbrgm(ndim, typmod, imate, epsm, deps,&
     real(kind=8) :: valres(2)
 !
     real(kind=8) :: dmax
-    parameter  (dmax = 0.999999D0)
+    parameter  (dmax = 0.999999d0)
     data  kron/1.d0,1.d0,1.d0,0.d0,0.d0,0.d0/
 !
 !

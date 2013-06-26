@@ -47,9 +47,9 @@ subroutine jni091(elrefe, nmaxob, liobj, nbobj)
 !           (EPAISSEUR)
     npg1 = 3
 !
-    x3(1) = -0.774596669241483D0
+    x3(1) = -0.774596669241483d0
     x3(2) = 0.d0
-    x3(3) = 0.774596669241483D0
+    x3(3) = 0.774596669241483d0
 !
 ! --------- 16 PLACES MEMOIRES RESERVEES AU CAS OU ON PREND 4 PTS DE
 !             GAUSS (AVEC 3 PTS 9 PLACES AURAIENT SUFFI)
@@ -70,9 +70,9 @@ subroutine jni091(elrefe, nmaxob, liobj, nbobj)
 10      continue
 20  end do
 !
-    zr(mzr-1+13) = 0.555555555555556D0
-    zr(mzr-1+14) = 0.888888888888889D0
-    zr(mzr-1+15) = 0.555555555555556D0
+    zr(mzr-1+13) = 0.555555555555556d0
+    zr(mzr-1+14) = 0.888888888888889d0
+    zr(mzr-1+15) = 0.555555555555556d0
 !
 !
 30  continue

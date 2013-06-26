@@ -153,7 +153,7 @@ subroutine amogen(mat19)
         zr(iamat-1+i)=0d0
 180  end do
     kmin=0.d0
-    kmax=0.00001D0
+    kmax=0.00001d0
     valmin=1.d-4
     do 190 i = 1, n
         if (m .eq. n*(n+1)/2) then

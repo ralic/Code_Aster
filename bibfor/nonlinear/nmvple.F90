@@ -80,7 +80,7 @@ subroutine nmvple(fami, kpg, ksp, ndim, imate,&
     real(kind=8) :: em, num, troikm, deumum, sigmp(6)
     real(kind=8) :: deltkl, deltp2
     real(kind=8) :: degran(6)
-    integer :: iulmes, k, l, iret1, ibid
+    integer :: k, l, iret1, ibid
     integer :: ndimsi, iret2
     real(kind=8) :: a0, xap, x, tm, tp
     real(kind=8) :: fg, fdgdst, fdgdev, defam(6), defap(6)
@@ -106,9 +106,6 @@ subroutine nmvple(fami, kpg, ksp, ndim, imate,&
     endif
 !
     if (typmod(1) .eq. 'C_PLAN') then
-        iulmes = iunifi('MESSAGE')
-        write (iulmes,*) 'COMPORTEMENT ',compor(1)(1:10),' NON PROGRAMME&
-     & POUR DES ELEMENTS DE CONTRAINTES PLANES'
         call u2mess('F', 'ALGORITH6_92')
         goto 299
     endif
@@ -262,7 +259,7 @@ subroutine nmvple(fami, kpg, ksp, ndim, imate,&
     if (x .ne. 0.d0) then
         coef1 = 1.d0/(1.d0+1.5d0*deuxmu*deltat*fg/x)
     else
-!       COEF1 = 1.D0/(1.D0+1.5D0*DEUXMU*DELTAT*FDGDST)
+!       COEF1 = 1.d0/(1.d0+1.5d0*DEUXMU*DELTAT*FDGDST)
         coef1 = 1.d0
     endif
 !

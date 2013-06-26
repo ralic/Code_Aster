@@ -67,7 +67,7 @@ subroutine sfifj(nomres)
     character(len=24) :: chnumi, chnumj, chfreq, chvale
     logical :: yang
 !
-    data         deuxpi/6.28318530718D0/,yang/.false./
+    data         deuxpi/6.28318530718d0/,yang/.false./
 !
 !-----------------------------------------------------------------------
     call jemarq()

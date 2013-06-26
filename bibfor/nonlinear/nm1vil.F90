@@ -103,7 +103,7 @@ subroutine nm1vil(fami, kpg, ksp, icdmat, materi,&
     theta = crit(4)
     t1 = abs(theta-0.5d0)
     t2 = abs(theta-1.d0)
-    prec = 0.000001D0
+    prec = 0.000001d0
     if ((t1.gt.prec) .and. (t2.gt.prec)) then
         call u2mess('F', 'ALGORITH6_55')
     endif

@@ -69,7 +69,7 @@ subroutine mpicm1(optmpi, typsca, nbv, bcrank, vi,&
     integer :: vi2(1000)
     real(kind=8) :: vr2(1000)
     complex(kind=8) :: vc2(1000)
-    integer :: k, jtrav, iret, SIZBMPI, nbcast, imain, irest
+    integer :: k, jtrav, iret, sizbmpi, nbcast, imain, irest
     integer(kind=4) :: iermpi, lr8, lint, nbv4, lopmpi, nbpro4, mpicou, lc8
 ! ---------------------------------------------------------------------
     call jemarq()
@@ -82,7 +82,7 @@ subroutine mpicm1(optmpi, typsca, nbv, bcrank, vi,&
 !     -- INITIALISATIONS :
 !     --------------------
 !     TAILLE MAX DES PAQUETS SI OPTMPI='BCASTP'
-    SIZBMPI=1d+6
+    sizbmpi=1d+6
     if (loisem() .eq. 8) then
         lint=MPI_INTEGER8
     else
@@ -193,19 +193,19 @@ subroutine mpicm1(optmpi, typsca, nbv, bcrank, vi,&
 !
     else if (optmpi.eq.'BCASTP') then
 !     ---------------------------------
-!       --- ON COMMUNIQUE EN SOUS-PAQUETS DE TAILLE =< SIZBMPI
+!       --- ON COMMUNIQUE EN SOUS-PAQUETS DE TAILLE =< sizbmpi
 !       --- POUR EVITER LES PBS DE CONTENTIONS MEMOIRE ET LES LIMITES
 !       --- DE REPRESENTATIONS DES ENTIERS DS LA BIBLI MPI.
-        nbcast=nbv/SIZBMPI
-        imain=nbcast*SIZBMPI
+        nbcast=nbv/sizbmpi
+        imain=nbcast*sizbmpi
         irest=nbv-imain
 !       IF (NBCAST.GT.0)
-!     &    WRITE(6,*)'<MPICM1 + BCASTP> TYPSC1/NBV/NBCAST/SIZBMPI: ',
-!     &    TYPSC1,NBV,NBCAST,SIZBMPI
+!     &    WRITE(6,*)'<MPICM1 + BCASTP> TYPSC1/NBV/NBCAST/sizbmpi: ',
+!     &    TYPSC1,NBV,NBCAST,sizbmpi
         if (typsc1 .eq. 'R') then
-            nbv4=SIZBMPI
+            nbv4=sizbmpi
             do 11 k = 1, nbcast
-                call MPI_BCAST(vr(1+(k-1)*SIZBMPI), nbv4, lr8, bcrank, mpicou,&
+                call MPI_BCAST(vr(1+(k-1)*sizbmpi), nbv4, lr8, bcrank, mpicou,&
                                iermpi)
 11          continue
             nbv4=irest
@@ -213,9 +213,9 @@ subroutine mpicm1(optmpi, typsca, nbv, bcrank, vi,&
                                              iermpi)
 !
         else if (typsc1.eq.'I') then
-            nbv4=SIZBMPI
+            nbv4=sizbmpi
             do 12 k = 1, nbcast
-                call MPI_BCAST(vi(1+(k-1)*SIZBMPI), nbv4, lint, bcrank, mpicou,&
+                call MPI_BCAST(vi(1+(k-1)*sizbmpi), nbv4, lint, bcrank, mpicou,&
                                iermpi)
 12          continue
             nbv4=irest
@@ -223,9 +223,9 @@ subroutine mpicm1(optmpi, typsca, nbv, bcrank, vi,&
                                              iermpi)
 !
         else if (typsc1.eq.'C') then
-            nbv4=SIZBMPI
+            nbv4=sizbmpi
             do 13 k = 1, nbcast
-                call MPI_BCAST(vc(1+(k-1)*SIZBMPI), nbv4, lc8, bcrank, mpicou,&
+                call MPI_BCAST(vc(1+(k-1)*sizbmpi), nbv4, lc8, bcrank, mpicou,&
                                iermpi)
 13          continue
             nbv4=irest

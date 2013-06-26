@@ -96,12 +96,12 @@ subroutine hujjid(mod, mater, indi, deps, prox,&
     logical :: debug, prox(4), proxc(4), dila
 ! =====================================================================
     parameter   ( d12    = 0.5d0  )
-    parameter   ( d13    = 0.333333333334D0  )
+    parameter   ( d13    = 0.333333333334d0  )
     parameter   ( un     = 1.d0   )
     parameter   ( zero   = 0.d0   )
     parameter   ( deux   = 2.d0   )
     parameter   ( tole1   = 1.d-7 )
-    parameter   ( degr = 0.0174532925199D0 )
+    parameter   ( degr = 0.0174532925199d0 )
 !
 ! =====================================================================
     common /tdim/   ndt, ndi

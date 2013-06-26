@@ -373,11 +373,11 @@ subroutine mdconf(typflu, base, noma, nbm, lnoe,&
 !
             cocaj = -0.5d0*rhof*phie*lp
             vecr2(1) = cocaj
-            vecr2(2) = cocaj*lp*lp*0.12849663D0
+            vecr2(2) = cocaj*lp*lp*0.12849663d0
 !
             cokaj = -0.5d0*rhof*lp
             vecr2(3) = cokaj
-            vecr2(4) = cokaj*lp*lp*0.12849663D0
+            vecr2(4) = cokaj*lp*lp*0.12849663d0
 !
 !------- DETERMINATION DE L'AXE DIRECTEUR DE LA POUTRE
 !        DEDUCTION DES DDLS A EXTRAIRE

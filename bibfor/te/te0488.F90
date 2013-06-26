@@ -51,8 +51,8 @@ subroutine te0488(option, nomte)
     parameter(zero=0.0d0)
     logical :: coq3d, grille
     data gm1 / 0.d0,0.d0,1.d0/
-    data poidc / 0.16666666666666666D0,0.66666666666666663D0,&
-     &             0.16666666666666666D0/
+    data poidc / 0.16666666666666666d0,0.66666666666666663d0,&
+     &             0.16666666666666666d0/
 ! DEB ------------------------------------------------------------------
     coq3d=nomte(1:4).eq.'MEC3'
     grille= nomte(1:4).eq.'MEGC'

@@ -44,7 +44,7 @@ subroutine matint(kr, mr, direc, vtest, rayon)
     integer :: i1, j1, k1, l1
     real(kind=8) :: e, i, s, g, rho, pi, l, t(12, 12), v1(3), v2(3), v3(3), temp
     real(kind=8) :: kini(12, 12), mini(12, 12), fact
-    parameter    (pi=3.141592653589793238462643D0)
+    parameter    (pi=3.141592653589793238462643d0)
 !
     fact=(20*rayon/5.d-2)
 !

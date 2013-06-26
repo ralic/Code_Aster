@@ -68,7 +68,7 @@ subroutine rslphi(fami, kpg, ksp, loi, imat,&
     parameter       ( un     = 1.d0  )
     parameter       ( zero   = 0.d0  )
     parameter       ( deux   = 2.d0  )
-    parameter       ( d13    = .33333333333333D0 )
+    parameter       ( d13    = .33333333333333d0 )
 !
 !      -------------------------------------------------------------
 !

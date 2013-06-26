@@ -60,10 +60,10 @@ subroutine hujtid(mod, imat, sigr, vin, dsde,&
 ! ======================================================================
     parameter   ( tole1 = 1.d-7 )
     parameter   ( zero = 0.d0 )
-    parameter   ( d13  = 0.333333333334D0 )
+    parameter   ( d13  = 0.333333333334d0 )
     parameter   ( un   = 1.d0 )
     parameter   ( deux = 2.d0 )
-    parameter   ( degr = 0.0174532925199D0 )
+    parameter   ( degr = 0.0174532925199d0 )
 ! ======================================================================
     tempf = 0.d0
     call hujmat(mod, imat, tempf, mater, ndt,&
@@ -102,7 +102,7 @@ subroutine hujtid(mod, imat, sigr, vin, dsde,&
     mdil = sin(degr*angdil)
     coef = mater(20,2)
     ptrac = mater(21,2)
-!        PISO   = 1.5D0*MATER(21,2)
+!        PISO   = 1.5d0*MATER(21,2)
     piso = zero
 !
 !

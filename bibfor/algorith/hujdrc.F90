@@ -37,7 +37,7 @@ subroutine hujdrc(k, mater, sig, vin, pst)
     real(kind=8) :: p, q, m, phi, degr, sigd(3)
     real(kind=8) :: posf(3), ref(2), norm(2), pst, tole1
 !
-    parameter     ( degr  = 0.0174532925199D0 )
+    parameter     ( degr  = 0.0174532925199d0 )
 !
     common /tdim/   ndt , ndi
 !

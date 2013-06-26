@@ -24,6 +24,6 @@ subroutine random(graine)
     implicit none
     real(kind=8) :: graine
 !
-    call RANDOM_NUMBER(graine)
+    call random_number(graine)
 !
 end subroutine

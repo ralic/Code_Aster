@@ -62,7 +62,7 @@ subroutine hujma2(mod, imat, nmat, tempf, angmas,&
     parameter   ( zero  = 0.d0 )
     parameter   ( un    = 1.d0 )
     parameter   ( trois = 3.d0 )
-    parameter   ( degr  = 0.0174532925199D0 )
+    parameter   ( degr  = 0.0174532925199d0 )
 !     ------------------------------------------------------------------
 ! ----------------------------------------------------------------------
 ! ---  NR     :  NB DE COMPOSANTES MAXIMUM DU SYSTEME NL

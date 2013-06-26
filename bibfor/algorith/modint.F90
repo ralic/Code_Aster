@@ -94,7 +94,7 @@ subroutine modint(ssami, raiint, nddlin, nbmod, shift,&
     integer :: lintrf, info
     real(kind=8) :: temp, pi, rbid, norm, lambda, comlin(2), swork(1), rand, max
     real(kind=8) :: abs
-    parameter    (pi=3.141592653589793238462643D0)
+    parameter    (pi=3.141592653589793238462643d0)
     complex(kind=8) :: cbid
     character(len=1) :: listyp(2)
     character(len=19) :: lismat(2), imped, solveu, nume91, nume, prno

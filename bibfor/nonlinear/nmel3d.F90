@@ -75,9 +75,9 @@ subroutine nmel3d(fami, poum, nno, npg, ipoids,&
     real(kind=8) :: rind(6), rac2
     data    indi / 1 , 2 , 3 , 1 , 1 , 2 /
     data    indj / 1 , 2 , 3 , 2 , 3 , 3 /
-    data    rind / 0.5d0,0.5d0,0.5d0,0.70710678118655D0,&
-     &               0.70710678118655D0,0.70710678118655D0 /
-    data    rac2 / 1.4142135623731D0 /
+    data    rind / 0.5d0,0.5d0,0.5d0,0.70710678118655d0,&
+     &               0.70710678118655d0,0.70710678118655d0 /
+    data    rac2 / 1.4142135623731d0 /
 !
 !
 ! - INITIALISATION

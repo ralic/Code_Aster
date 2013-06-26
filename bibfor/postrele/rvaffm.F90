@@ -100,7 +100,7 @@ subroutine rvaffm(mcf, iocc, sdlieu, sdeval, sdmoy,&
             xa = zr(anomnd + 1-1)
             ya = zr(anomnd + 2-1)
             xb = zr(anomnd + 3-1)
-            ax = 57.29577951D0/xb
+            ax = 57.29577951d0/xb
             write(ifm,*)'ARC DE CERCLE'
             write(ifm,'(A26,1PD14.6,A1,1PD14.6,A1)')&
      &                   ' CENTRE                : (',xa,',',ya,')'

@@ -30,8 +30,11 @@ subroutine fin999()
     include 'asterfort/apetsc.h'
     include 'asterfort/mpialr.h'
     include 'asterfort/mpiexe.h'
-    integer :: iret, ichk, ibid
+    integer :: ichk, ibid
+#ifdef _HAVE_PETSC
+    integer :: iret
     real(kind=8) :: r8b
+#endif
 !-----------------------------------------------------------------------
 !
 ! --- FERMETURE DE PETSC

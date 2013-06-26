@@ -67,12 +67,12 @@ subroutine hujddd(carac, k, mater, ind, yf,&
 ! =====================================================================
     parameter     ( d12   = 0.5d0  )
     parameter     ( d14   = 0.25d0 )
-    parameter     ( d13   = 0.3333333333334D0 )
+    parameter     ( d13   = 0.3333333333334d0 )
     parameter     ( un    = 1.d0   )
     parameter     ( zero  = 0.d0   )
     parameter     ( deux  = 2.d0   )
     parameter     ( tole1 = 1.d-7  )
-    parameter     ( degr  = 0.0174532925199D0 )
+    parameter     ( degr  = 0.0174532925199d0 )
     parameter     ( d40   = 40.0d0 )
 ! =====================================================================
     common /tdim/   ndt, ndi

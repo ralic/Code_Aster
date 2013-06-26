@@ -168,7 +168,7 @@ subroutine modexp(modgen, sst1, indin1, lino1, nbmod,&
 !-- CALCUL DES MODES DU MODELE D'INTERFACE
     call getvr8(' ', 'SHIFT', 1, iarg, 1,&
                 shift, ibid)
-    shift=-((shift*2.d0*3.1415927D0)**2)
+    shift=-((shift*2.d0*3.1415927d0)**2)
     matmod='&&MODEXP.MATRICE_MODES'
     vefreq='&&MODEXP.VECTEUR_FREQ'
 !

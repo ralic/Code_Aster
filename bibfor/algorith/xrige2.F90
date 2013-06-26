@@ -81,7 +81,7 @@ subroutine xrige2(elrefp, elrese, ndim, coorse, igeom,&
 !
     integer :: ibid
     real(kind=8) :: rbid
-    data     rac2 / 1.4142135623731D0 /
+    data     rac2 / 1.4142135623731d0 /
 !
 !
 !--------------------------------------------------------------------

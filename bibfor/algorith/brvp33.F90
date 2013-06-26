@@ -79,7 +79,7 @@ subroutine brvp33(x33, x3, v33)
             xv(4) = x33(2,2)
             xv(5) = x33(2,3)
             xv(6) = x33(3,3)
-            call jacobi(3, 50, 0.000001D0, 0.000001D0, xv,&
+            call jacobi(3, 50, 0.000001d0, 0.000001d0, xv,&
                         xid, v33, x3, valaux, niter,&
                         0, 1)
         endif

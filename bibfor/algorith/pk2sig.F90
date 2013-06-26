@@ -42,8 +42,8 @@ subroutine pk2sig(ndim, f, jac, pk2, sig,&
     real(kind=8) :: r8bid, rind(6)
     data    indi / 1 , 2 , 3 , 1, 1, 2 /
     data    indj / 1 , 2 , 3 , 2, 3, 3 /
-    data    rind / 0.5d0,0.5d0,0.5d0,0.70710678118655D0,&
-     &               0.70710678118655D0,0.70710678118655D0 /
+    data    rind / 0.5d0,0.5d0,0.5d0,0.70710678118655d0,&
+     &               0.70710678118655d0,0.70710678118655d0 /
     data    rind1 / 0.5d0 , 0.5d0 , 0.5d0 , 1.d0, 1.d0, 1.d0 /
 !
 !     SEPARATION DIM 2 ET DIM 3 POUR GAGNER DU TEMPS CPU

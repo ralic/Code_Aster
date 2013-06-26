@@ -35,7 +35,7 @@ subroutine hujtel(mod, mater, sig, hook)
 !
     common /tdim/     ndt, ndi
 !
-    data   d13   / .333333333334D0 /
+    data   d13   / .333333333334d0 /
     data   un    / 1.d0 /
     data   zero  / 0.d0 /
     data   deux  / 2.d0 /

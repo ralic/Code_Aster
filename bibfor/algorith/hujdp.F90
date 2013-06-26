@@ -54,17 +54,17 @@ subroutine hujdp(mod, deps, sigd, sigf, mater,&
     common /tdim/ ndt, ndi
     common /meshuj/ debug
 !
-    parameter   ( degr = 0.0174532925199D0 )
+    parameter   ( degr = 0.0174532925199d0 )
 !
     data zero, d13, un, deux, tol&
-     &/ 0.d0, 0.33333333333334D0, 1.d0, 2.d0, 1.d-7 /
+     &/ 0.d0, 0.33333333333334d0, 1.d0, 2.d0, 1.d-7 /
 !
     if (ndec .gt. 1) then
         iret =1
         goto 500
     endif
 !
-!      PISO  = 1.5D0*MATER(21,2)
+!      PISO  = 1.5d0*MATER(21,2)
     piso = zero
     pref = mater(8,2)
     n = mater(1,2)

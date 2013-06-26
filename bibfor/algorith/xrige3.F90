@@ -78,7 +78,7 @@ subroutine xrige3(elrefp, ndim, coorse, igeom, he,&
     real(kind=8) :: dfdi(nnop, ndim), pff(6, nnop, ndim), dgdgl(4, 3)
     real(kind=8) :: grad(3, 3), rbid
     real(kind=8) :: rac2
-    data    rac2 / 1.4142135623731D0 /
+    data    rac2 / 1.4142135623731d0 /
 !--------------------------------------------------------------------
 !
 !     ATTENTION, DEPL ET VECTU SONT ICI DIMENSIONNÉS DE TELLE SORTE

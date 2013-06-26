@@ -328,7 +328,7 @@ subroutine usupru(vusurt, vusuro, nbinst, prust)
             para(3) = -0.5d0 * 0.88d-03 / 11.d0
         endif
         x11 = zero
-        x2 = 0.00144D0
+        x2 = 0.00144d0
         para(5) = zero
         call usufon(type, para, x2, vulim, df)
         do 60 i = 1, nbinst

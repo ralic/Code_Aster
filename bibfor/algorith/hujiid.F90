@@ -83,12 +83,12 @@ subroutine hujiid(mod, mater, indi, deps, i1e,&
     character(len=8) :: mod, nomail
     logical :: debug, loop, bnews(3), mtrac
 ! ====================================================================
-    parameter   ( d13  = .3333333333334D0 )
+    parameter   ( d13  = .3333333333334d0 )
     parameter   ( un   = 1.d0 )
     parameter   ( zero = 0.d0 )
     parameter   ( deux = 2.d0 )
     parameter   ( tole1 = 1.d-7 )
-    parameter   ( degr = 0.0174532925199D0 )
+    parameter   ( degr = 0.0174532925199d0 )
 !
 !
 ! ====================================================================

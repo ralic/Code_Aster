@@ -316,7 +316,7 @@ subroutine irrmat(fami, kpg, ksp, model, imat,&
     call rcvarc('F', 'IRRA', '+', fami, kpg,&
                 ksp, irraf, iret)
 !     L'IRRADIATION NE PEUT PAS DECROITRE
-    if (irrad .gt. irraf*1.00001D0) then
+    if (irrad .gt. irraf*1.00001d0) then
         valrm(1) = tempd
         valrm(2) = tempf
         call u2mesr('I', 'COMPOR1_57', 2, valrm)

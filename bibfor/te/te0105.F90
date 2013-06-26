@@ -153,16 +153,16 @@ subroutine te0105(option, nomte)
                &eom+2)&
                )**2
         long = sqrt(long)/2.d0
-!       EP  =EP/2.D0
+!       EP  =EP/2.d0
 !
         nompar(1) = 'X'
         nompar(2) = 'Y'
         nompar(3) = 'Z'
         nompar(4) = 'INST'
 !
-        rp1 = 1.33333333333333D0
-        rp2 = 0.33333333333333D0
-        rp3 = 0.33333333333333D0
+        rp1 = 1.33333333333333d0
+        rp2 = 0.33333333333333d0
+        rp3 = 0.33333333333333d0
 !
         do 110 kp = 1, npg1
             k = (kp-1)*nno

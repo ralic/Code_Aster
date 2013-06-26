@@ -135,7 +135,7 @@ subroutine nmhuj(typmod, imat, comp, crit, instam,&
     real(kind=8) :: neps, nsig, ptrac, rtrac
     logical :: debug, conv, reorie, tract
 !
-    parameter     ( degr  = 0.0174532925199D0 )
+    parameter     ( degr  = 0.0174532925199d0 )
 !
 !     ----------------------------------------------------------------
     common /tdim/   ndt, ndi
@@ -204,10 +204,9 @@ subroutine nmhuj(typmod, imat, comp, crit, instam,&
         alpha(2) = materf(11,1)
         alpha(3) = materf(12,1)
         if (((iisnan(tempm).gt.0) .or. (iisnan(tref).gt.0)) .and.&
-            ( (alpha(1).ne.zero) .or. (alpha(2).ne.zero) .or. (alpha(3) .ne.zero) )) call u2mess(&
-                                                                                     'F',&
-                                                                                     'CALCULEL_1&
-                                                                                     &5')
+            ( (alpha(1).ne.zero) .or. (alpha(2).ne.zero) .or. (alpha(3) .ne.zero) )) then
+            call u2mess('F', 'CALCULEL_15')
+        endif
 !
     else
         call u2mess('F', 'COMPOR1_33')

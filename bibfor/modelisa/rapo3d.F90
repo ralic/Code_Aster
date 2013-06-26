@@ -443,7 +443,7 @@ subroutine rapo3d(numdlz, iocc, fonrez, lisrez, chargz)
 !     VERIFICATION DE L'IDENTITE GEOMETRIQUE DE G AVEC LE
 !     NOEUD POUTRE A RACCORDER :
     dnorme = sqrt(&
-             (xpou-xg)*(xpou-xg)+ (ypou-yg)*(ypou-yg)+ (zpou-zg)*(zpou-zg))/sqrt(s/3.14159265D0)
+             (xpou-xg)*(xpou-xg)+ (ypou-yg)*(ypou-yg)+ (zpou-zg)*(zpou-zg))/sqrt(s/3.14159265d0)
     if (dnorme .gt. eps) then
         valr(1) = xg
         valr(2) = yg
@@ -452,7 +452,7 @@ subroutine rapo3d(numdlz, iocc, fonrez, lisrez, chargz)
         valr(5) = ypou
         valr(6) = zpou
         valr(7) = eps*100.0d0
-        valr(8) = sqrt(s/3.14159265D0)
+        valr(8) = sqrt(s/3.14159265d0)
         valr(9) = dnorme
         valk(1) = option
         vali(1) = iocc

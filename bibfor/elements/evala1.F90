@@ -44,8 +44,8 @@ subroutine evala1(mod, relcom, sig, vin, imat,&
     integer :: imat, icode, iangmx(3)
     character(len=8) :: mod
     character(len=16) :: relcom
-    parameter   ( degr = 0.0174532925199D0 )
-    parameter   ( pi = 3.14159265358979D0 )
+    parameter   ( degr = 0.0174532925199d0 )
+    parameter   ( pi = 3.14159265358979d0 )
 !
 ! =====================================================================
 ! DEFINITION DES ELEMENTS NECESSAIRES A L'EVALUATION DU MODULE

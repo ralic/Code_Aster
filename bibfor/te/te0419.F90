@@ -59,7 +59,7 @@ subroutine te0419(option, nomte)
 !-----------------------------------------------------------------------
     parameter (npge=2)
     real(kind=8) :: epsval(npge), ksi3s2, ksi3
-    data epsval / -0.577350269189626D0,  0.577350269189626D0 /
+    data epsval / -0.577350269189626d0,  0.577350269189626d0 /
 !
     call jevech('PGEOMER', 'L', jgeom)
     call jevech('PVECTUR', 'E', jvecg)

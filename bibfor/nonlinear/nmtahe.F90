@@ -74,7 +74,7 @@ subroutine nmtahe(fami, kpg, ksp, ndim, imate,&
     real(kind=8) :: tang(6, 6)
     real(kind=8) :: det, dirdp, dirsp, dirxi, ener, min, rho, rhomax, interi
 !
-    parameter (rhomax = 2.d0, interi = 0.99999D0)
+    parameter (rhomax = 2.d0, interi = 0.99999d0)
 !
 !
 !

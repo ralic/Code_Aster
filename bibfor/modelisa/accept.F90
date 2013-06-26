@@ -47,7 +47,7 @@ subroutine accept(f, nbm, method, imode, jmode,&
     character(len=1) :: k1bid
     character(len=8) :: method
 !
-    parameter (pi=3.14159265D0)
+    parameter (pi=3.14159265d0)
     data     (local(i),i=1,3) /3*0.d0/
 !
 !

@@ -56,8 +56,8 @@ subroutine ptkg20(sf, a, xiz, xiy, iyr,&
 !     ----------------------------
 !     --- TRIANGULAIRE SUPERIEURE DE LA MATRICE ---
 !
-    un2 = 1.20000D0
-    zp1 = 0.10000D0
+    un2 = 1.20000d0
+    zp1 = 0.10000d0
     yrsiz = -iyr/xiz +2.d0*ey
     zrsiy = izr/xiy -2.d0*ez
     usez = un2*fxb*ez/l

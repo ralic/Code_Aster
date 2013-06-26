@@ -67,7 +67,7 @@ subroutine irrcvx(fami, kpg, ksp, nmat, mater,&
     if (irraf .gt. irrad) then
         seuil = 1.d0
         goto 9999
-    else if (irrad .gt. irraf*1.00001D0) then
+    else if (irrad .gt. irraf*1.00001d0) then
         valrm(1) = irrad
         valrm(2) = irraf
         call u2mesr('I', 'COMPOR1_56', 2, valrm)

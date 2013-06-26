@@ -103,7 +103,7 @@ subroutine trasst(modgen, numsst, isst1, lisint, nbeq1,&
     call getvr8(' ', 'SHIFT', 1, iarg, 1,&
                 shift, ibid)
     comlin(1)=1.d0
-    comlin(2)=-((shift*2.d0*3.1415927D0)**2)
+    comlin(2)=-((shift*2.d0*3.1415927d0)**2)
     listyp(1)='R'
     listyp(2)='R'
     call mtcmbl(2, listyp, comlin, lismat, imped,&

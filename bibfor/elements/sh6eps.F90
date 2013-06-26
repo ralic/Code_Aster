@@ -63,11 +63,11 @@ subroutine sh6eps(xetemp, xidepp, deploc, dusdx)
 !
 ! ON DEFINI LES POINTS GAUSS ET LES POIDS
 !
-    xxg5(1) = -0.906179845938664D0
-    xxg5(2) = -0.538469310105683D0
+    xxg5(1) = -0.906179845938664d0
+    xxg5(2) = -0.538469310105683d0
     xxg5(3) = 0.d0
-    xxg5(4) = 0.538469310105683D0
-    xxg5(5) = 0.906179845938664D0
+    xxg5(4) = 0.538469310105683d0
+    xxg5(5) = 0.906179845938664d0
 !
 ! -----------------------------------------------------
 ! ON VERIFIE QUE LA CONNECTIVITE DONNE UN REPERE DIRECT

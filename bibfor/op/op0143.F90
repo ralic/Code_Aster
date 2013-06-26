@@ -296,7 +296,7 @@ subroutine op0143()
                 call getvr8(nommcf, 'COEF_MASS_AJOU', 1, iarg, 1,&
                             zr( lfsvr), ibid)
             else
-                zr(lfsvr) = pi * 1.078014D0
+                zr(lfsvr) = pi * 1.078014d0
             endif
             call getvr8(nommcf, 'RHO_FLUI', 1, iarg, 1,&
                         zr(lfsvr+1), ibid)

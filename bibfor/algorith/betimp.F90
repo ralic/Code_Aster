@@ -75,7 +75,7 @@ subroutine betimp(nmat, mater, sig, vind, vinf,&
     common /tdim/   ndt , ndi
 !       ----------------------------------------------------------------
 !
-    data   d13      /.33333333333333D0 /
+    data   d13      /.33333333333333d0 /
     data   zero     / 0.d0 /
     data   un       / 1.d0 /
     data   deux     / 2.d0 /

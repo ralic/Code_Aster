@@ -48,7 +48,7 @@ subroutine quavro(quater, theta)
     zero = 0.d0
     epsil = r8prem( )**2
     deux = 2.d0
-    pi = 3.14159265D0
+    pi = 3.14159265d0
 !
     prosca = ddot(3,quater,1,quater,1)
     anorx = sqrt(prosca)

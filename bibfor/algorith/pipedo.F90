@@ -97,7 +97,7 @@ subroutine pipedo(ndim, typmod, tau, mate, vim,&
     un = 1.d0
     nitmax = 50
     epstol = 1.d-1
-    r = 0.61803399D0
+    r = 0.61803399d0
     c = 1.d0-r
     nsol = 0
 !
@@ -373,7 +373,7 @@ subroutine pipedo(ndim, typmod, tau, mate, vim,&
     endif
     dcoefd=2.d0*(1.d0-d)
     ene=lambda/2*treps**2+mu*trem
-!      FDP=DCOEFD*ENE-2.D0*ECROD*D
+!      FDP=DCOEFD*ENE-2.d0*ECROD*D
     fdp=dcoefd*ene
     if (fdp .lt. 0.d0) then
         fdp=0.d0
@@ -391,7 +391,7 @@ subroutine pipedo(ndim, typmod, tau, mate, vim,&
         treps=0.d0
     endif
     ene=lambda/2*treps**2+mu*trem
-!      FDM=DCOEFD*ENE-2.D0*ECROD*D
+!      FDM=DCOEFD*ENE-2.d0*ECROD*D
     fdm=dcoefd*ene
     if (fdm .lt. 0.d0) then
         fdm=0.d0

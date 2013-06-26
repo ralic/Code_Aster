@@ -29,20 +29,20 @@
 ! ST_ER_OTH : error on another processor
 ! ST_UN_OTH : undefined status for another processor
 ! ST_EXCEPT : not a fatal error, an exception
-    integer :: st_ok, st_er
-    integer :: st_er_pr0, st_er_oth, st_un_oth
-    integer :: st_except
-    parameter ( st_er     =  1,&
-     &          st_ok     =  0,&
-     &          st_er_pr0 =  4,&
-     &          st_er_oth =  8,&
-     &          st_un_oth = 16,&
-     &          st_except = 32 )
+    integer :: ST_OK, ST_ER
+    integer :: ST_ER_PR0, ST_ER_OTH, ST_UN_OTH
+    integer :: ST_EXCEPT
+    parameter ( ST_ER     =  1,&
+     &          ST_OK     =  0,&
+     &          ST_ER_PR0 =  4,&
+     &          ST_ER_OTH =  8,&
+     &          ST_UN_OTH = 16,&
+     &          ST_EXCEPT = 32 )
 !
 ! ST_TAG_CHK : mpi communication tag for the check step of the status
 ! ST_TAG_CNT : mpi communication tag for the continue or stop
 ! ST_TAG_ALR : mpi communication tag for the alarm check
-    integer :: st_tag_chk, st_tag_cnt, st_tag_alr
-    parameter ( st_tag_chk = 123111,&
-     &          st_tag_cnt = 123222,&
-     &          st_tag_alr = 123333 )
+    integer :: ST_TAG_CHK, ST_TAG_CNT, ST_TAG_ALR
+    parameter ( ST_TAG_CHK = 123111,&
+     &          ST_TAG_CNT = 123222,&
+     &          ST_TAG_ALR = 123333 )

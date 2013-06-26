@@ -88,7 +88,7 @@ subroutine xside2(elrefp, ndim, coorse, elrese, igeom,&
     integer :: nnops, ibid
 !
     data    zero / 0d0 /
-    data    rac2 / 1.4142135623731D0 /
+    data    rac2 / 1.4142135623731d0 /
 !--------------------------------------------------------------------
 !
 !     ON AUTORISE UNIQUEMENT L'ISOTROPIE

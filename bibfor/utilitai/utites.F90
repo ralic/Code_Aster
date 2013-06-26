@@ -101,7 +101,7 @@ subroutine utites(label1, label2, type, nbref, refi,&
                 if (lok) then
                     err = 0.d0
                 else
-                    err = 999.999999D0
+                    err = 999.999999d0
                 endif
             endif
             if (lok) testok = ' OK '
@@ -180,7 +180,7 @@ subroutine utites(label1, label2, type, nbref, refi,&
                 if (lok) then
                     err = 0.d0
                 else
-                    err = 999.999999D0
+                    err = 999.999999d0
                 endif
             endif
             if (lok) testok = ' OK '
@@ -264,7 +264,7 @@ subroutine utites(label1, label2, type, nbref, refi,&
                 if (lok) then
                     err = 0.d0
                 else
-                    err = 999.999999D0
+                    err = 999.999999d0
                 endif
             endif
             if (lok) testok = ' OK '

@@ -87,7 +87,7 @@ subroutine xxbsig(option, elrefp, elrese, ndim, coorse,&
     character(len=3) :: cinem
 !
     real(kind=8) :: rac2
-    data     rac2 / 1.4142135623731D0 /
+    data     rac2 / 1.4142135623731d0 /
 !--------------------------------------------------------------------
 !
 !     ATTENTION, EN 3D, ZR(IDEPL) ET ZR(VECTU) SONT DIMENSIONNÉS DE

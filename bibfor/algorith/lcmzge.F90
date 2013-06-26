@@ -379,15 +379,15 @@ subroutine lcmzge(fami, kpg, ksp, ndim, typmod,&
         vala=abs(sigelp(1))+abs(sigelp(2))+abs(sigelp(3))
         r=0.d0
         do 81 i = 1, 3
-            r = r + max(0.00000000D0,sigelp(i))
+            r = r + max(0.00000000d0,sigelp(i))
 81      end do
         if (vala .gt. 1.d-10) then
             r=(r/ vala)
         else
             r=1.d0
         endif
-        if (r .lt. 0.00001D0) r=0.d0
-        if (r .gt. 0.99999D0) r=1.d0
+        if (r .lt. 0.00001d0) r=0.d0
+        if (r .gt. 0.99999d0) r=1.d0
         gama=0.d0
         rap=0.d0
         do 69 i = 1, 3
@@ -409,7 +409,7 @@ subroutine lcmzge(fami, kpg, ksp, ndim, typmod,&
             ac)+ac
             b=r**2.d0*bt+(1.d0-r**2.d0)*bc
             d=1.d0-epsd0*(1.d0-a)/y -a*exp(-b*(y-epsd0))
-            d = min(d , 0.99999D0)
+            d = min(d , 0.99999d0)
             d = max ( vim(1), d)
             if (d .gt. vim(1)) prog = .true.
             if (d .gt. 0.d0) elas = .false.
@@ -457,7 +457,7 @@ subroutine lcmzge(fami, kpg, ksp, ndim, typmod,&
         do 130 j = 1, ndimsi
             dsidpt(j,j,1) = dsidpt(j,j,1) + (1-d)*deuxmu
 130      continue
-        if ((.not.elas) .and. prog .and. (.not.rela) .and. (d.lt.0.99999D0)) then
+        if ((.not.elas) .and. prog .and. (.not.rela) .and. (d.lt.0.99999d0)) then
             if (epseq .lt. 1.d-10) then
                 coef=0.d0
             else

@@ -40,7 +40,7 @@ function comcou(iarg)
     comcou=-9999
     k24bid='COMMUNICATEUR_MPI.REFE'
     call jeveuo(k24bid, 'L', jco)
-    comcou=zi(jco+iarg)
+    comcou = int(zi(jco+iarg), 4)
     call jedema()
 !
 end function

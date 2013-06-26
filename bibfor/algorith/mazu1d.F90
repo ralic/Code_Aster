@@ -66,7 +66,7 @@ subroutine mazu1d(ee, mazars, sigm, varm, epsm,&
 !
     integer :: indxvp
     real(kind=8) :: grdexp, rac2
-    parameter (grdexp=200.0d0,rac2=1.4142135623731D+00)
+    parameter (grdexp=200.0d0,rac2=1.4142135623731d+00)
 !
     real(kind=8) :: epsela, dommag, ddmdeq, dommt, dommc, dommtc
     real(kind=8) :: epsd0, ac, bc, at, bt, nu, sgels, epelu, xx1
@@ -100,7 +100,7 @@ subroutine mazu1d(ee, mazars, sigm, varm, epsm,&
 !        IL FAUT EVITER QUE LE CALCUL PLANTE DANS EXP(RTEMP)
         rtemp = bt*(epsqt-epsd0)
         if (rtemp .le. grdexp) dommag = dommag - at*exp(-rtemp)
-        dommt = min(max(dommag,0.0d0),0.99999D0 )
+        dommt = min(max(dommag,0.0d0),0.99999d0 )
     else
         dommt = 0.0d0
     endif
@@ -111,7 +111,7 @@ subroutine mazu1d(ee, mazars, sigm, varm, epsm,&
 !        IL FAUT EVITER QUE LE CALCUL PLANTE DANS EXP(RTEMP)
         rtemp = bc*(epsqc-epsd0)
         if (rtemp .le. grdexp) dommag = dommag - ac*exp(-rtemp)
-        dommc = min(max(dommag,0.0d0),0.99999D0 )
+        dommc = min(max(dommag,0.0d0),0.99999d0 )
     else
         dommc = 0.0d0
     endif
@@ -169,8 +169,8 @@ subroutine mazu1d(ee, mazars, sigm, varm, epsm,&
                 dommag = dommtc
                 ddmdeq = 0.0d0
             endif
-            if (dommag .gt. 0.99999D0) then
-                dommag = 0.99999D0
+            if (dommag .gt. 0.99999d0) then
+                dommag = 0.99999d0
                 ddmdeq = 0.0d0
             endif
         endif

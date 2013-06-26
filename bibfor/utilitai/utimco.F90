@@ -56,7 +56,7 @@ subroutine utimco(unit, obin, nivo, lattr, lcont)
     call jeexin(ob1, iret)
     if (iret .le. 0) then
         call u2mesk('A', 'UTILITAI_99', 1, ob1)
-        goto 9999
+        goto 999
     endif
 !
     call jelira(ob1, 'NMAXOC', nmaxoc, kbid)
@@ -66,22 +66,23 @@ subroutine utimco(unit, obin, nivo, lattr, lcont)
 !
     if (lattr) call jeimpa(unit, ob1, ' ')
     if ((lcont) .and. (acces(1:2).eq.'NO')) call jeprat(unit, ob1, '$$NOM',&
-                                                        'REPERTOIRE DE NOMS' //' DE LA COLLECTIO&
-                                                        &N :'//ob1)
+                                                        'REPERTOIRE DE NOMS' //&
+                                                       &' DE LA COLLECTION :'//ob1)
 !
 !     -- BOUCLE SUR LES ELEMENTS DE LA COLLECTION :
 !     ---------------------------------------------
-    do 1, ioc =1,nmaxoc
-    if ((nivo.eq.1) .and. (ioc.gt.10)) goto 9999
-    call jeexin(jexnum(ob1, ioc), iret)
-    if (iret .eq. 0) goto 1
-    if (lattr) then
-        call jeimpa(unit, jexnum(ob1, ioc), ' ')
-    endif
-    if (lcont) then
-        call jeimpo(unit, jexnum(ob1, ioc), ' ')
-    endif
-    1 end do
+    do ioc=1,nmaxoc
+        if ((nivo.eq.1) .and. (ioc.gt.10)) goto 999
+        call jeexin(jexnum(ob1, ioc), iret)
+        if (iret .eq. 0) goto 1
+        if (lattr) then
+            call jeimpa(unit, jexnum(ob1, ioc), ' ')
+        endif
+        if (lcont) then
+            call jeimpo(unit, jexnum(ob1, ioc), ' ')
+        endif
+  1     continue
+    end do
 !
-9999  continue
+999 continue
 end subroutine

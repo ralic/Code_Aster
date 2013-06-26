@@ -273,7 +273,7 @@ subroutine coefam(ipas, ires, x, xsi0, cd)
             else if (x .lt. borncd(6)) then
                 cd = coefcd(5,8) + coefcd(5,7)/x
             else
-                cd = coefcd(6,8) * (x ** 0.66146D0)
+                cd = coefcd(6,8) * (x ** 0.66146d0)
             endif
 !
 ! --- COEFFICIENT VISCACHE 2 CFD 90 %
@@ -553,7 +553,7 @@ subroutine coefam(ipas, ires, x, xsi0, cd)
             else if (x .lt. borncd(8)) then
                 cd = coefcd(7,8) + coefcd(7,9)*x
             else
-                cd = coefcd(8,8) + (0.00375D0*(x**2.76251D0))
+                cd = coefcd(8,8) + (0.00375d0*(x**2.76251d0))
             endif
 !
         endif

@@ -377,15 +377,15 @@ subroutine lcmaza(fami, kpg, ksp, ndim, typmod,&
      &+abs(sigelp(3))
     r=0.d0
     do 80 i = 1, 3
-        r = r + max(0.00000000D0,sigelp(i))
+        r = r + max(0.00000000d0,sigelp(i))
 80  end do
     if (vala .gt. 1.d-10) then
         r=r/(vala)
     else
         r=1.d0
     endif
-    if (r .lt. 0.00001D0) r=0.d0
-    if (r .gt. 0.99999D0) r=1.d0
+    if (r .lt. 0.00001d0) r=0.d0
+    if (r .gt. 0.99999d0) r=1.d0
     gama=0.d0
     rap=0.d0
     do 69 i = 1, 3
@@ -425,7 +425,7 @@ subroutine lcmaza(fami, kpg, ksp, ndim, typmod,&
                 d=1.d0-epsd0*(1.d0-a)/y
             endif
             d = max ( vim(1), d)
-            d = min(d , 0.99999D0)
+            d = min(d , 0.99999d0)
             if (d .gt. vim(1)) prog = .true.
             if (d .gt. 0.d0) elas = .false.
         endif
@@ -480,8 +480,8 @@ subroutine lcmaza(fami, kpg, ksp, ndim, typmod,&
 !   2 -  CONTRIBUTION DUE A  L'ENDOMMAGEMENT
 !             ON SYMETRISE LA MATRICE (J + Kt )/2
 ! ------------------------------------------------------------
-        if ((.not.elas) .and. prog .and. (d.lt.0.99999D0)) then
-            if (epseq .lt. 0.0000001D0) then
+        if ((.not.elas) .and. prog .and. (d.lt.0.99999d0)) then
+            if (epseq .lt. 0.0000001d0) then
                 coef=0.d0
             else
                 rtemp = b*((gama*epseq) - epsd0)

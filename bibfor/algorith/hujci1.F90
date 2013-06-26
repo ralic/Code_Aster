@@ -33,7 +33,7 @@ subroutine hujci1(crit, mater, deps, sigd, i1f,&
 ! IN  DEPS  : INCREMENT DE DEFORMATION
 ! IN  SIGD  : CONTRAINTE A T
 ! OUT I1    : 1/3*TRACE DE SIG A T+DT
-!     TRACT : VARIABLE LOGIQUE INDIQUANT LA TRACTION (I1F > 0.D0)
+!     TRACT : VARIABLE LOGIQUE INDIQUANT LA TRACTION (I1F > 0.d0)
 ! OUT IRET  : CODE RETOUR DE LORS DE LA RESOLUTION DE L'EQUATION
 !             SCALAIRE
 !                 IRET=0 => PAS DE PROBLEME
@@ -58,7 +58,7 @@ subroutine hujci1(crit, mater, deps, sigd, i1f,&
     data zero /0.d0/
     data un   /1.d0/
     data deux /2.d0/
-    data d13  /0.33333333333334D0/
+    data d13  /0.33333333333334d0/
 !
     call infniv(ifm, niv)
 !

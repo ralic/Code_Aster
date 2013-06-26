@@ -89,7 +89,7 @@ subroutine lcrous(fami, kpg, ksp, toler, itmax,&
     parameter       ( zero = 0.d0 )
     parameter       ( un   = 1.d0 )
     parameter       ( deux = 2.d0 )
-    parameter       ( d13 = .3333333333D0 )
+    parameter       ( d13 = .3333333333d0 )
     parameter       ( trois = 3.d0 )
 !
     character(len=*) :: fami

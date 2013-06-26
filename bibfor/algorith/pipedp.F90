@@ -74,8 +74,8 @@ subroutine pipedp(kpg, ksp, ndim, typmod, mate,&
     parameter   ( deux =  2.d0   )
     parameter   ( trois = 3.d0   )
     parameter   ( neuf = 9.d0   )
-    parameter   ( d23  =  .66666666666666D0 )
-    parameter   ( d13  =  .33333333333333D0 )
+    parameter   ( d23  =  .66666666666666d0 )
+    parameter   ( d13  =  .33333333333333d0 )
 !
 !
     integer :: ndt, ndi, nr, nvi, nmat

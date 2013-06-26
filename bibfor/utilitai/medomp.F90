@@ -141,7 +141,7 @@ subroutine medomp(result, modele, mate, carele, nh)
 ! --- MODE FOURIER SI NECESSAIRE
 !
     lfour = getexm(' ','MODE_FOURIER')
-    if (lfour.EQ.1) call getvis(' ', 'MODE_FOURIER', 1, iarg, 1,nh, n1)
+    if (lfour.eq.1) call getvis(' ', 'MODE_FOURIER', 1, iarg, 1,nh, n1)
 !
     call jedema()
 end subroutine

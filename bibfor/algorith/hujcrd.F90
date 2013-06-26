@@ -36,7 +36,7 @@ subroutine hujcrd(k, mater, sig, vin, seuild)
     logical :: debug
     parameter    (un = 1.d0)
     parameter    (tole = 1.d-7)
-    parameter    (degr = 0.0174532925199D0)
+    parameter    (degr = 0.0174532925199d0)
 !
 !       ------------------------------------------------------------
     common /tdim/   ndt, ndi

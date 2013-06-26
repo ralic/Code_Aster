@@ -31,7 +31,7 @@ subroutine pmfpti(num, xl, xi, wi, b,&
     real(kind=8) :: un, deux, quatre, six, douze
     parameter (un=1.d0,deux=2.d0,quatre=4.d0,six=6.d0,douze=12.d0)
     real(kind=8) :: xg(2), wg(2), xp(2)
-    data xg /-.57735026918963D0,.57735026918963D0/
+    data xg /-.57735026918963d0,.57735026918963d0/
     data wg /1.d0 , 1.d0/
     data xp /0.d0 , 1.d0/
 !

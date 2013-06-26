@@ -50,7 +50,7 @@ subroutine hujela(mod, crit, mater, deps, sigd,&
 !
     data      zero  / 0.d0 /
     data      un    / 1.d0 /
-    data      d13   / 0.33333333333334D0 /
+    data      d13   / 0.33333333333334d0 /
     data      deux  / 2.d0 /
     data      tole  / 1.d-7 /
 !

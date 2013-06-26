@@ -78,7 +78,7 @@ subroutine mazacp(option, ndimsi, epsm, deps, epsane,&
 !
     real(kind=8) :: kron(6)
     data       kron/1.0d0,1.0d0,1.0d0,0.0d0,0.0d0,0.0d0/
-    data       grdexp,rac2/200.0d0,1.4142135623731D0/
+    data       grdexp,rac2/200.0d0,1.4142135623731d0/
 !
 ! --- ------------------------------------------------------------------
 !
@@ -199,8 +199,8 @@ subroutine mazacp(option, ndimsi, epsm, deps, epsane,&
     else
         rr = 1.0d0
     endif
-    if (rr .lt. 0.00001D0) rr = 0.0d0
-    if (rr .gt. 0.99999D0) rr = 1.0d0
+    if (rr .lt. 0.00001d0) rr = 0.0d0
+    if (rr .gt. 0.99999d0) rr = 1.0d0
 ! --- ------------------------------------------------------------------
 !     VARIABLES INTERNES PRECEDENTES
     dommag = varm(idomm)
@@ -223,7 +223,7 @@ subroutine mazacp(option, ndimsi, epsm, deps, epsane,&
             rtemp = bb*(yy-epsd0)
             dommag = 1.0d0 - epsd0*(1.0d0-aa)/yy
             if (rtemp .le. grdexp) dommag = dommag - (aa/exp(rtemp))
-            dommag = min( max( varm(idomm), dommag ) , 0.99999D0 )
+            dommag = min( max( varm(idomm), dommag ) , 0.99999d0 )
 !
             prog = ( dommag .gt. varm(idomm) )
             elas = ( dommag .le. 0.0d0 )

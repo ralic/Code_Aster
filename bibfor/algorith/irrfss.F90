@@ -38,8 +38,8 @@ subroutine irrfss(sig, ddfdds)
 !                     D      = SIG - 1/3 TR(SIG) I
 !       ----------------------------------------------------------------
     real(kind=8) :: id(6, 6), d23, d13, zero, un, s
-    parameter       ( d23  =  .66666666666666D0 )
-    parameter       ( d13  = -.33333333333333D0 )
+    parameter       ( d23  =  .66666666666666d0 )
+    parameter       ( d13  = -.33333333333333d0 )
     parameter       ( zero =  0.d0              )
     parameter       ( un   =  1.d0              )
     real(kind=8) :: dev(6), dfds(6), dfds2(6, 6)

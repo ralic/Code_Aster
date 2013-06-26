@@ -89,9 +89,9 @@ subroutine lcegeo(nno, npg, ipoids, ivf, idfde,&
                 volume = volume + poids
 10          continue
             if (npg .ge. 9) then
-                lc = volume ** 0.33333333333333D0
+                lc = volume ** 0.33333333333333d0
             else
-                lc = rac2 * volume ** 0.33333333333333D0
+                lc = rac2 * volume ** 0.33333333333333d0
             endif
             elseif(typmod(1)(1:6).eq.'D_PLAN' .or.typmod(1)(1:4)&
         .eq.'AXIS')then

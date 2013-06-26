@@ -31,7 +31,7 @@ subroutine hujrmo(mater, sig, vin, riso)
 !
     common /tdim/   ndt , ndi
 !
-    data      d13, zero  /0.333333333334D0, 0.d0/
+    data      d13, zero  /0.333333333334d0, 0.d0/
 !
     d = mater(3,2)
     pco = mater(7,2)

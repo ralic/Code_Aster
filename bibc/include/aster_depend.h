@@ -185,7 +185,9 @@ Compatibilité ascendantes :
 
 /* Comportement par défaut des FPE dans les blas/lapack */
 #ifndef _ENABLE_MATHLIB_FPE
-#   define _DISABLE_MATHLIB_FPE
+#   ifndef _DISABLE_MATHLIB_FPE
+#       define _DISABLE_MATHLIB_FPE
+#   endif    
 #else
 #   undef _DISABLE_MATHLIB_FPE
 #endif

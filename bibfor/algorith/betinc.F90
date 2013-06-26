@@ -48,7 +48,7 @@ subroutine betinc(materf, nmat, sige, nseuil, dpc,&
     parameter       ( un   = 1.d0   )
     parameter       ( deux = 2.d0   )
     parameter       ( trois = 3.d0   )
-    parameter       ( d23  =  .66666666666666D0 )
+    parameter       ( d23  =  .66666666666666d0 )
     real(kind=8) :: dev(6), sigeq, sigh, p, sighf
     real(kind=8) :: k, lambda, mu, e, nu, coef, beta
     real(kind=8) :: a, b, c, d

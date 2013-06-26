@@ -53,8 +53,8 @@ subroutine hujori(sens, nmat, reorie, angl, vec,&
 !
     data   zero  / 0.d0 /
     data   deux  / 2.d0 /
-    data   dsqr  / 1.41421356237D0 /
-    data   isqr  / .707106781187D0 /
+    data   dsqr  / 1.41421356237d0 /
+    data   isqr  / .707106781187d0 /
 !
     if (.not.reorie) goto 9999
 !

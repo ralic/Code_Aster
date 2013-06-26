@@ -135,9 +135,9 @@ subroutine te0402(option, nomte)
 !
 !       POIDS DES POINTS DE GAUSS DANS LA TRANCHE
 !
-    poids ( 1 ) = 0.33333333333333D0
-    poids ( 2 ) = 1.33333333333333D0
-    poids ( 3 ) = 0.33333333333333D0
+    poids ( 1 ) = 0.33333333333333d0
+    poids ( 2 ) = 1.33333333333333d0
+    poids ( 3 ) = 0.33333333333333d0
 !
 !---- RECUPERATION DES POINTEURS ( L : LECTURE, E : ECRITURE )
 !
@@ -193,9 +193,9 @@ subroutine te0402(option, nomte)
 !
 !       POIDS DES POINTS DE GAUSS DANS LA TRANCHE
 !
-    poids ( 1 ) = 0.33333333333333D0
-    poids ( 2 ) = 1.33333333333333D0
-    poids ( 3 ) = 0.33333333333333D0
+    poids ( 1 ) = 0.33333333333333d0
+    poids ( 2 ) = 1.33333333333333d0
+    poids ( 3 ) = 0.33333333333333d0
 !
 !
 !

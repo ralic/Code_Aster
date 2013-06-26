@@ -50,7 +50,7 @@ subroutine betfpp(materf, nmat, elgeom, pc, pt,&
     parameter       ( un    = 1.d0   )
     parameter       ( deux  = 2.d0   )
     parameter       ( zero  = 0.d0   )
-    parameter       ( d13   =  .33333333333333D0 )
+    parameter       ( d13   =  .33333333333333d0 )
 !
     integer :: nmat, nseuil
     real(kind=8) :: materf(nmat, 2), elgeom(*)
@@ -145,9 +145,6 @@ subroutine betfpp(materf, nmat, elgeom, pc, pt,&
                 endif
             endif
             if (pc .lt. ke) then
-!               FC = FCP / TROIS
-!     1            * (UN +  4.D0*PC/KE - DEUX*PC*PC/(KE*KE))
-!               DFCDLC =  (4.D0* FCP)/(TROIS*KE) * (UN - PC/KE)
                 fc = fcp * ( celas + deux*(un - celas)*pc/ke + (celas - un)*pc*pc/(ke*ke) )
                 dfcdlc = fcp * deux * (un - celas) * (un - pc/ke) / ke
             else if (pc.lt.ku) then
@@ -185,7 +182,6 @@ subroutine betfpp(materf, nmat, elgeom, pc, pt,&
                 dftdlt = - ftp / ku
             else
                 ft = ftp * epsi
-!               FT = ZERO
                 dftdlt = zero
             endif
 !

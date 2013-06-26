@@ -187,11 +187,11 @@ subroutine chveri(np1, np2, np3, nbm, nbmcd,&
             write(inum,'(I3.3)') ic
             call u2mesk('A', 'ALGELINE_11', 1, inum)
 !
-        else if (dble(abs(xloc(1))).lt.0.17364818D0) then
+        else if (dble(abs(xloc(1))).lt.0.17364818d0) then
             write(inum,'(I3.3)') ic
             call u2mesk('A', 'ALGELINE_12', 1, inum)
 !
-        else if (dble(abs(xloc(1))).lt.0.70710678D0) then
+        else if (dble(abs(xloc(1))).lt.0.70710678d0) then
             write(inum,'(I3.3)') ic
             call u2mesk('A', 'ALGELINE_13', 1, inum)
         endif

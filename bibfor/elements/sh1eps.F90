@@ -65,11 +65,11 @@ subroutine sh1eps(xetemp, xidepp, deploc, propel)
 10  end do
 !
     do 20 ip = 1, 3
-        xxg5(5*(ip-1)+1) = -0.906179845938664D0
-        xxg5(5*(ip-1)+2) = -0.538469310105683D0
+        xxg5(5*(ip-1)+1) = -0.906179845938664d0
+        xxg5(5*(ip-1)+2) = -0.538469310105683d0
         xxg5(5*(ip-1)+3) = 0.d0
-        xxg5(5*(ip-1)+4) = 0.538469310105683D0
-        xxg5(5*(ip-1)+5) = 0.906179845938664D0
+        xxg5(5*(ip-1)+4) = 0.538469310105683d0
+        xxg5(5*(ip-1)+5) = 0.906179845938664d0
 20  end do
 !
 !     ON FAIT UNE COPIE DE XETEMP DANS XE

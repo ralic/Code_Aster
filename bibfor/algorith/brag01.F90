@@ -277,7 +277,7 @@ subroutine brag01(fami, kpg, ksp, ndim, typmod,&
         fluage=.false.
     endif
 ! PLUS DE LOI DE CONSOLIDATION
-!      IF (VALRES(2).EQ.1.0D0) THEN
+!      IF (VALRES(2).EQ.1.0d0) THEN
 !      CONSO=.TRUE.
 !      ELSE
 !      CONSO=.FALSE.
@@ -527,11 +527,11 @@ subroutine brag01(fami, kpg, ksp, ndim, typmod,&
 !     PCH=AVRAG*MCH*XX
     pch=avrag*mch
 !      XX=WCH-BCH*YYF
-!      XX=0.5D0*(XX+ABS(XX))
+!      XX=0.5d0*(XX+ABS(XX))
 !      IF (ARAGM.GT.A0) THEN
 !       PCH=MCH*XX
 !      ELSE
-!       PCH=0.0D0
+!       PCH=0.0d0
 !      ENDIF
 !
 !  CALCUL DE TR EPS RAG MAXIMUM
@@ -549,7 +549,7 @@ subroutine brag01(fami, kpg, ksp, ndim, typmod,&
 !     A LA FIN DU PAS DE TEMPS (PW2) ET AU MILIEU (PW1)
 !     POUR AVOIR UNE MEILLEURE PRECISION SUR LE RETRAIT
     bw=sr*bwmax
-    if (sr .gt. 0.99999D0) then
+    if (sr .gt. 0.99999d0) then
         xx=(ww-bw*0.5d0*(yyf+yyi))
         xx=0.5d0*(xx+abs(xx))
 !       PW1=MW*XX
@@ -568,7 +568,7 @@ subroutine brag01(fami, kpg, ksp, ndim, typmod,&
 !   MAIS UNIQUEMENT PAR DEPRESSION CAPILLAIRE SUR LES ETAGES VISQUEUX
 !   SPHERIQUES
         pw2=-pc
-!       PW1=0.5D0*(PW2+VIM(29))
+!       PW1=0.5d0*(PW2+VIM(29))
 !      ENDOMMAGEMENT MICRO PAR DEPRESSION CAPILLAIRE
 !      IL SERA FONCTION DE L ETAT DE CONTRAINTE EFFECTIVE SPHERIQUE
     endif

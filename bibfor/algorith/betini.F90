@@ -55,8 +55,8 @@ subroutine betini(materf, nmat, sig, sigeq, sigh,&
     parameter       ( un   =  1.d0   )
     parameter       ( deux =  2.d0   )
     parameter       ( trois = 3.d0   )
-    parameter       ( d23  =  .66666666666666D0 )
-    parameter       ( d13  =  .33333333333333D0 )
+    parameter       ( d23  =  .66666666666666d0 )
+    parameter       ( d13  =  .33333333333333d0 )
     real(kind=8) :: dev(6), sig(6)
     real(kind=8) :: sigeq, sigh, p, conetr, coneco
     real(kind=8) :: k, lambda, mu, e, nu, beta

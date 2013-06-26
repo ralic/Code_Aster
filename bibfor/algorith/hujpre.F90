@@ -72,7 +72,7 @@ subroutine hujpre(etat, mod, crit, imat, mater,&
     common /meshuj/ debug
 !
     data   un, zero / 1.d0, 0.d0/
-    data   d13, tole1 /0.33333333334D0, 1.0d-7/
+    data   d13, tole1 /0.33333333334d0, 1.0d-7/
 !
 !
     pref = mater(8,2)

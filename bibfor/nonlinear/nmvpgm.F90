@@ -84,7 +84,7 @@ subroutine nmvpgm(fami, kpg, ksp, ndim, imate,&
     real(kind=8) :: em, num, troikm, deumum, sigmp(6), sigmo
     real(kind=8) :: deltkl, deltp2
     real(kind=8) :: degran(6)
-    integer :: iulmes, k, l, iret1, iret2, iret4, ibid
+    integer :: k, l, iret1, iret2, iret4, ibid
     integer :: ndimsi
     real(kind=8) :: a0, xap, tm, tp
     real(kind=8) :: fg, fdgdst, fdgdev
@@ -94,7 +94,7 @@ subroutine nmvpgm(fami, kpg, ksp, ndim, imate,&
     character(len=8) :: nomres(5), nompar(2)
 ! RMS
     real(kind=8) :: grain, tk, xr, xq1, xq2, dporo, poro, xm1, xm2, xe01, xe02
-    real(kind=8) :: FDEVPKK, grain0
+    real(kind=8) :: fdevpkk, grain0
 ! DEB ------------------------------------------------------------------
     data              kron/1.d0,1.d0,1.d0,0.d0,0.d0,0.d0/
     data epsa   / 'EPSAXX','EPSAYY','EPSAZZ','EPSAXY','EPSAXZ',&
@@ -120,9 +120,6 @@ subroutine nmvpgm(fami, kpg, ksp, ndim, imate,&
     endif
 !
     if (typmod(1) .eq. 'C_PLAN') then
-        iulmes = iunifi('MESSAGE')
-        write (iulmes,*) 'COMPORTEMENT ',compor(1)(1:10),' NON PROGRAMME&
-     & POUR DES ELEMENTS DE CONTRAINTES PLANES'
         call u2mess('F', 'ALGORITH6_92')
         goto 299
     endif
@@ -210,7 +207,7 @@ subroutine nmvpgm(fami, kpg, ksp, ndim, imate,&
 ! --- CONSTANTE DES GAZS PARFAITS (J/(K*MOL))
     xr = 8.31d0
 !     POTENTIELS DE DISSIPATIONS
-!     CONTRAINTES EN MPA, SIG0I = 1 MPA -> XE01*(1.D6**XNI)
+!     CONTRAINTES EN MPA, SIG0I = 1 MPA -> XE01*(1.d6**XNI)
 !     (ASSURE LA COHERENCE POUR PSII ET SES DERIVEES)
     ak1=xe01*(1.d6**xn1)*(grain**xm1)*exp(-xq1/(xr*tk))
     grain0 = 15.0d-6
@@ -228,7 +225,7 @@ subroutine nmvpgm(fami, kpg, ksp, ndim, imate,&
     b2 = (1.d0+((2.d0/3.d0)*porom))/((1.d0-porom)**expab2)
 !     FCT COUPLAGE
 !     CONTRAINTES EN MPA -> REFORMULATION W*SIGI**Q -> W*(SIGI/SIG0)**Q
-!     SIG0 = 1 MPA, W -> W*(1.D6**XQ)
+!     SIG0 = 1 MPA, W -> W*(1.d6**XQ)
 !     (ASSURE LA COHERENCE POUR THETA ET SES DERIVEES)
     xq = -0.189d0
     xw = 47350.4d0*(1.d6**xq)
@@ -311,8 +308,8 @@ subroutine nmvpgm(fami, kpg, ksp, ndim, imate,&
     dporo = poro - porom
     sigh = sigh0 - (troisk/3.d0)*dporo/(1.d0-porom-dporo)
     call ggpgmo(sige, sigh, theta, deuxmu, fg,&
-                FDEVPKK, fdgdst, fdgdev, tschem)
-    epsmo = epsmo - FDEVPKK*deltat
+                fdevpkk, fdgdst, fdgdev, tschem)
+    epsmo = epsmo - fdevpkk*deltat
 !
 !-----------------------------------------
     if (sige .ne. 0.d0) then

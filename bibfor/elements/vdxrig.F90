@@ -54,7 +54,7 @@ subroutine vdxrig(nomte, xi, rig, nb1, indm,&
 !-----------------------------------------------------------------------
     parameter (npge=2)
     real(kind=8) :: epsval(npge), ksi3s2
-    data epsval / -0.577350269189626D0,  0.577350269189626D0 /
+    data epsval / -0.577350269189626d0,  0.577350269189626d0 /
 !
 !     RECUPERATION DES OBJETS
 !

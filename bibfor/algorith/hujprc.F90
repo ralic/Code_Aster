@@ -46,7 +46,7 @@ subroutine hujprc(kk, k, tin, vin, mater,&
     logical :: debug
     character(len=8) :: nomail
 !
-    parameter (degr = 0.0174532925199D0)
+    parameter (degr = 0.0174532925199d0)
     parameter (tole = 1.d-7)
 !
     common /tdim/ ndt  , ndi

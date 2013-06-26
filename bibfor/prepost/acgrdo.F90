@@ -729,7 +729,7 @@ subroutine acgrdo(jvectn, jvectu, jvectv, nbordr, ordini,&
             valpar(19) = (etrema -etremi)/4.d0
             valpar(20) = epspac
             valpar(21) = raysph
-            valpar(22) = vsige/(2.d0*1.732051D0)
+            valpar(22) = vsige/(2.d0*1.732051d0)
 !
 !  RECUPERER LES NOMS DE PARAMETRES FOURNIS PAR L'UTILISATEUR
             chnom(20:24) = '.PROL'

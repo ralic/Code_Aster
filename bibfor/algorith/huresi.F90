@@ -70,7 +70,7 @@ subroutine huresi(mod, nmat, mater, indi, deps,&
     parameter    (un    = 1.d0              )
     parameter    (deux  = 2.d0              )
     parameter    (trois = 3.d0              )
-    parameter    (degr  = 0.0174532925199D0 )
+    parameter    (degr  = 0.0174532925199d0 )
     parameter    (tole1 = 1.d-6             )
 !     ----------------------------------------------------------------
 ! --- REDIMENSIONNEMENT DE YD ET YF POUR S'ADAPTER A HUJJID

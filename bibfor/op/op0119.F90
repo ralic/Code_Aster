@@ -66,7 +66,7 @@ subroutine op0119()
     integer :: ibid, ipoint, ig, numf, jngfma
 !
     real(kind=8) :: pi4, dtrois, zero
-    parameter  (pi4=0.785398163397D+0,dtrois=3.d+0,zero=0.d+0)
+    parameter  (pi4=0.785398163397d+0,dtrois=3.d+0,zero=0.d+0)
     real(kind=8) :: x(4), y(4), centre(2), axep(2), surf, val(nbval)
 !
     character(len=8) :: sdgf, nomas, ktyma, ksudi, nommai, nogfma

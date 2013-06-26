@@ -97,6 +97,6 @@ subroutine cjsc3q(sig, x, pa, qinit, q,&
         devnul = .true.
     endif
 !
-    if (cos3tq .ge. 1.d0) cos3tq = 0.999999999999999D0
-    if (cos3tq .le. -1.d0) cos3tq = -0.999999999999999D0
+    if (cos3tq .ge. 1.d0) cos3tq = 0.999999999999999d0
+    if (cos3tq .le. -1.d0) cos3tq = -0.999999999999999d0
 end subroutine

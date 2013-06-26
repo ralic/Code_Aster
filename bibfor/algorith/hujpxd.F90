@@ -42,7 +42,7 @@ subroutine hujpxd(k, mater, sig, vin, prox,&
     parameter    (un = 1.d0)
     parameter    (tole1 = 1.d-6)
     parameter    (tole2 = 1.d-7)
-    parameter    (degr = 0.0174532925199D0)
+    parameter    (degr = 0.0174532925199d0)
 !
     common /tdim/   ndt, ndi
     common /meshuj/ debug

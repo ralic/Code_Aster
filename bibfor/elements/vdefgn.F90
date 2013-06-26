@@ -42,9 +42,9 @@ subroutine vdefgn(nomte, nb2, epais, zic, sigma,&
 !
     demiep=epais/2.d0
 !
-    wnc1 = 0.33333333333333D0
-    wnc2 = 1.33333333333333D0
-    wnc3 = 0.33333333333333D0
+    wnc1 = 0.33333333333333d0
+    wnc2 = 1.33333333333333d0
+    wnc3 = 0.33333333333333d0
 !
     zic1 = zic
     zic2 = zic1 + demiep

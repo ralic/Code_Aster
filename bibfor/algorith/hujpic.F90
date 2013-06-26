@@ -39,7 +39,7 @@ subroutine hujpic(kk, k, tin, vin, mater,&
 !
     common /tdim/ ndt  , ndi
 !
-    data   d13, zero /0.333333333334D0, 0.d0/
+    data   d13, zero /0.333333333334d0, 0.d0/
 !
 ! ==================================================================
 ! --- VARIABLES INTERNES -------------------------------------------

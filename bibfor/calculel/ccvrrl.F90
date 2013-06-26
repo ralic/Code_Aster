@@ -87,8 +87,8 @@ subroutine ccvrrl(nommai, modele, carael, mesmai, chames,&
     character(len=24) :: carori, carcoq
 !
     logical :: llimai, lprobm
-    parameter    (maxtol = 8.7266463D-2)
-    parameter    (pi = 3.14159265358979D0)
+    parameter    (maxtol = 8.7266463d-2)
+    parameter    (pi = 3.14159265358979d0)
 !
     call jemarq()
     codret = 0
