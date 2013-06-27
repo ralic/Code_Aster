@@ -90,7 +90,7 @@ subroutine lgljpl(mod, nbmat, mater, sig, devg,&
     sigc = mater ( 9,2)
     gamcjs = mater (12,2)
     pref = mater (15,2)
-    call lceqvn(1, vin(1), gampn)
+    gampn=vin(1)
 ! ======================================================================
 ! --- RECUPERATION DE LA MATRICE DE HOOK -------------------------------
 ! ======================================================================

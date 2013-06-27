@@ -28,10 +28,10 @@ subroutine lc0053(fami, kpg, ksp, ndim, imate,&
     integer :: imate, ndim, codret, kpg, ksp
     integer :: icomp, nvi
     real(kind=8) :: tampon(*), crit(*)
-    real(kind=8) :: epsm(6), deps(6), sigp(6), vim(*), vip(*), dsidep(6, 6)
-    real(kind=8) :: instam, instap, sigm(6), angmas(3)
+    real(kind=8) :: epsm(*), deps(*), sigp(*), vim(*), vip(*), dsidep(*)
+    real(kind=8) :: instam, instap, sigm(*), angmas(*)
     character(len=*) :: fami
-    character(len=8) :: typmod(*)
+    character(len=8) :: typmod(*),mod
     character(len=16) :: option, compor(*)
 ! ---------------------------------------------------------------------
 !        BUT: LOI D'ENDOMMAGEMENT D'UN MATERIAU ELASTIQUE FRAGILE :
@@ -57,8 +57,8 @@ subroutine lc0053(fami, kpg, ksp, ndim, imate,&
 !
 !     FORMULATION NON-LOCALE A GRADIENT D'ENDOMMAGEMENT AUX NOEUDS
     if (typmod(2) .eq. 'GDVARINO') then
-!
-        call lckimp(ndim, typmod, option, imate, epsm,&
+        mod=typmod(1)
+        call lckimp(ndim, mod, option, imate, epsm,&
                     deps, vim, tampon, sigp, vip,&
                     dsidep)
 !

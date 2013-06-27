@@ -81,10 +81,10 @@ subroutine lglite(yf, nbmat, mater, f0, devg,&
     gamcjs = mater (12,2)
     pref = mater (15,2)
     call lceqvn(ndt, yf(1), sn(1))
-    call lceqvn(1, yf(ndt+1), invn)
-    call lceqvn(1, yf(ndt+2), gampn)
-    call lceqvn(1, yf(ndt+3), evpn)
-    call lceqvn(1, yf(ndt+4), deltan)
+    invn  =yf(ndt+1) 
+    gampn =yf(ndt+2)
+    evpn  =yf(ndt+3)
+    deltan=yf(ndt+4)
 ! ======================================================================
 ! --- CALCUL DES VARIABLES D'ECROUISSAGES ET DE SES DERIVEES -----------
 ! ======================================================================

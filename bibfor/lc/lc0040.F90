@@ -24,7 +24,7 @@ subroutine lc0040(fami, kpg, ksp, ndim, imate,&
     include 'asterfort/lceiou.h'
     integer :: imate, ndim, kpg, ksp, codret, icomp, nvi
     real(kind=8) :: crit(*), angmas(3)
-    real(kind=8) :: instam, instap, tampon(*)
+    real(kind=8) :: instam, instap, tampon(*),r
     real(kind=8) :: epsm(6), deps(6)
     real(kind=8) :: sigm(6), sigp(6)
     real(kind=8) :: vim(*), vip(*)
@@ -48,8 +48,10 @@ subroutine lc0040(fami, kpg, ksp, ndim, imate,&
 !               DSIDEP  MATRICE DE COMPORTEMENT TANGENT A T+DT OU T
 ! ======================================================================
 !
+    r=tampon(1)
     call lceiou(fami, kpg, ksp, imate, option,&
                 epsm, deps, sigp, dsidep, vim,&
-                vip, tampon)
+                vip, r)
+    tampon(1)=r
 !
 end subroutine

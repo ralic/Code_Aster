@@ -86,9 +86,9 @@ subroutine lglini(yd, nbmat, mater, f0, sigd,&
     gamcjs = mater(12,2)
     pref = mater(15,2)
     call lceqvn(ndt, yd(1), se(1))
-    call lceqvn(1, yd(ndt+1), ie)
-    call lceqvn(1, yd(ndt+2), gamp)
-    call lceqvn(1, yd(ndt+4), delta)
+    ie=   yd(ndt+1)
+    gamp= yd(ndt+2)
+    delta=yd(ndt+4)
 ! ======================================================================
 ! --- CALCUL DES VARIABLES D'ECROUISSAGES ------------------------------
 ! ======================================================================

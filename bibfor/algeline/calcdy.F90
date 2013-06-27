@@ -68,10 +68,12 @@ subroutine calcdy(mu, k, f0, devg, devgii,&
 ! --- STOCKAGE ---------------------------------------------------------
 ! ======================================================================
     call lceqvn(ndt, dsn(1), dy(1))
-    call lceqvn(1, dinv, dy(ndt+1))
-    call lceqvn(1, dgamp, dy(ndt+2))
-    call lceqvn(1, devp, dy(ndt+3))
-    call lceqvn(1, ddelta, dy(ndt+4))
+    dy(ndt+1)=dinv
+    dy(ndt+2)=dgamp
+    dy(ndt+3)=devp
+    dy(ndt+4)=ddelta
+    
+    
 ! ======================================================================
     call jedema()
 ! ======================================================================

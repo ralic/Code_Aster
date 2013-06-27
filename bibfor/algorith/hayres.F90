@@ -65,12 +65,12 @@ subroutine hayres(mod, nmat, materd, materf, timed,&
     common /tdim/   ndt,    ndi
 !-----------------------------------------------------------------------
     theta=crit(4)
-    call lceqvn(1, yd(8), gh1)
-    call lceqvn(1, yd(9), gh2)
-    call lceqvn(1, dy(7), dp)
-    call lceqvn(1, dy(8), dh1)
-    call lceqvn(1, dy(9), dh2)
-    call lceqvn(1, dy(10), dddmg)
+    gh1=  yd(8)
+    gh2=  yd(9)
+    dp=   dy(7)
+    dh1=  dy(8)
+    dh2=  dy(9)
+    dddmg=dy(10)
     do 11 itens = 1, ndt
         epsef(itens)=yd(itens)+theta*dy(itens)
 11  end do

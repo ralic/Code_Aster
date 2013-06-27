@@ -16,10 +16,10 @@ subroutine lc0005(fami, kpg, ksp, ndim, imate,&
     character(len=16) :: compor(*), option
     character(len=8) :: typmod(*)
     character(len=*) :: fami
-    real(kind=8) :: epsm(6), deps(6), crit(*)
-    real(kind=8) :: sigp(6), sigm(*), instam, instap
+    real(kind=8) :: epsm(*), deps(*), crit(*)
+    real(kind=8) :: sigp(*), sigm(*), instam, instap
     real(kind=8) :: vim(*), vip(*)
-    real(kind=8) :: dsidep(6, 6)
+    real(kind=8) :: dsidep(*)
 !
 !
 ! ======================================================================

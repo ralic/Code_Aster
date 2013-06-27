@@ -24,7 +24,7 @@ interface
         character(*) :: fami
         integer :: kpg
         integer :: ksp
-        character(len=8) :: typmod
+        character(len=8) :: typmod(*)
         character(len=16) :: option
         integer :: mat
         real(kind=8) :: epsm(neps)

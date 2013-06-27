@@ -27,7 +27,7 @@ subroutine lcesgv(fami, kpg, ksp, neps, typmod,&
     include 'asterfort/r8inir.h'
     include 'blas/daxpy.h'
     include 'blas/dcopy.h'
-    character(len=8) :: typmod
+    character(len=8) :: typmod(*)
     character(len=16) :: option
     character(len=*) :: fami
     integer :: neps, mat, iret, kpg, ksp, itemax
@@ -84,7 +84,7 @@ subroutine lcesgv(fami, kpg, ksp, neps, typmod,&
 !
 ! -- OPTIONS DE CALCUL
 !
-    cplan = typmod.eq.'C_PLAN  '
+    cplan = typmod(1).eq.'C_PLAN  '
     elas = option(11:14).eq.'ELAS'
     rigi = option(1:4).eq.'RIGI' .or. option(1:4).eq.'FULL'
     resi = option(1:4).eq.'FULL' .or. option(1:4).eq.'RAPH'

@@ -23,8 +23,8 @@ subroutine lc0036(fami, kpg, ksp, ndim, imate,&
     include 'asterfort/lcrolo.h'
     integer :: imate, ndim, kpg, ksp, codret, icomp, nvi
     real(kind=8) :: crit(*), angmas(*), instam, instap, tampon(*)
-    real(kind=8) :: epsm(6), deps(6), sigm(6), sigp(6), vim(*), vip(*)
-    real(kind=8) :: dsidep(6, 6)
+    real(kind=8) :: epsm(*), deps(*), sigm(*), sigp(*), vim(*), vip(*)
+    real(kind=8) :: dsidep(*)
     character(len=16) :: compor(*), option
     character(len=8) :: typmod(*)
     character(len=*) :: fami

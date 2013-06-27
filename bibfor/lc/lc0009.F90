@@ -13,9 +13,9 @@ subroutine lc0009(fami, kpg, ksp, ndim, imate,&
     character(len=16) :: compor(*), option
     integer :: icomp, nvi
     real(kind=8) :: angmas(*), tampon(*)
-    real(kind=8) :: crit(1), instam, instap
-    real(kind=8) :: epsm(6), deps(6)
-    real(kind=8) :: sigm(6), vim(7), sigp(6), vip(7), dsidep(6, 6)
+    real(kind=8) :: crit(*), instam, instap
+    real(kind=8) :: epsm(*), deps(*)
+    real(kind=8) :: sigm(*), vim(*), sigp(*), vip(*), dsidep(*)
 ! ======================================================================
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG

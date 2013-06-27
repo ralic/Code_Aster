@@ -74,7 +74,7 @@ subroutine lcjacb(fami, kpg, ksp, loi, mod,&
     include 'asterfort/lkijac.h'
     integer :: nr, nmat, kpg, ksp, itmax, iret, nvi, nfs, nsg
     integer :: indi(7)
-    real(kind=8) :: deps(6), epsd(6), toler, crit(*)
+    real(kind=8) :: deps(*), epsd(*), toler, crit(*)
     real(kind=8) :: drdy(nr, nr), yf(nr), dy(nr), yd(nr), vind1(nvi)
     real(kind=8) :: ye(nr)
 !

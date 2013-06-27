@@ -79,7 +79,7 @@ subroutine calcme(option, compor, thmc, meca, imate,&
     real(kind=8) :: elas(nelas)
     character(len=8) :: ncra1(nelas), fami, poum
     integer :: icodre(nresma)
-    real(kind=8) :: dsdeme(6, 6)
+    real(kind=8) :: dsdeme(6, 6),dsdeme12 (6,12)
     real(kind=8) :: r8bid, angma1(3), angmas(7)
     character(len=16) :: complg(3)
     logical :: cp, yapre2
@@ -490,14 +490,20 @@ subroutine calcme(option, compor, thmc, meca, imate,&
 ! ======================================================================
     if (meca .eq. 'ENDO_ISOT_BETON') then
         tini = t - dt
+        if (option(6:9).eq.'COUP') then
+!           on interdit le couplage fluage-eib car dans ce cas dsdeme(6,12)
+            call u2mess('F', 'ALGORITH_74')           
+        endif
+!       dsdeme12(i,j) ne sert qu'a la compatibilite de l'interface
+!       tous les termess i,6+j doive,t etre nuls
         call lcldsb('RIGI', 1, 1, ndim, typmod,&
                     imate, compor, defgem( addeme+ndim), deps, vintm,&
                     tini, t, tref, option, congep(adcome),&
-                    vintp, dsdeme, crit)
+                    vintp, dsdeme12, crit)
         if ((option(1:16).eq.'RIGI_MECA_TANG') .or. (option(1:9) .eq.'FULL_MECA')) then
             do 602 i = 1, 2*ndim
                 do 601 j = 1, 2*ndim
-                    dsde(adcome+i-1,addeme+ndim+j-1)=dsdeme(i,j)
+                    dsde(adcome+i-1,addeme+ndim+j-1)=dsdeme12(i,j)
 601              continue
 602          continue
 ! ======================================================================

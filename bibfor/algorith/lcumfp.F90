@@ -42,11 +42,11 @@ subroutine lcumfp(fami, kpg, ksp, ndim, typmod,&
     include 'blas/dcopy.h'
     integer :: ndim, imate, kpg, ksp
     character(len=8) :: typmod(*)
-    character(len=16) :: compor(3), option(2)
+    character(len=16) :: compor(3), option(2),option2
     character(len=*) :: fami
     real(kind=8) :: tinstm, tinstp
-    real(kind=8) :: epsm(6), deps(6), sigm(6), sigp(6), vim(*), vip(*)
-    real(kind=8) :: dsidep(6, 6), crit(*)
+    real(kind=8) :: epsm(*), deps(*), sigm(*), sigp(*), vim(*), vip(*)
+    real(kind=8) :: dsidep(6, 6), crit(*), tbid(36)
 !
 !---&s---1---------2---------3---------4---------5---------6---------7--
 ! IN  NDIM    : DIMENSION DE L'ESPACE
@@ -582,7 +582,7 @@ subroutine lcumfp(fami, kpg, ksp, ndim, typmod,&
 !    MATRICE ELASTO-ENDOMMAGEE ET MISE A JOUR DE L ENDOMMAGEMENT
             call lcldsb(fami, kpg, ksp, ndim, typmod,&
                         imate, compoz, epsm, deps, vim(22),&
-                        tm, tp, tref, 'RAPH_COUP       ', rbid,&
+                        tm, tp, tref, 'RAPH_COUP       ', tbid,&
                         vip(22), dep, crit)
         else
 !    MATRICE D ELASTICITE DE HOOKE POUR MAZARS ET UMLV SANS COUPLAGE
@@ -651,11 +651,11 @@ subroutine lcumfp(fami, kpg, ksp, ndim, typmod,&
 !
 !
         if (option(2) .eq. 'MAZARS') then
-!
+            option2='RAPH_COUP       '
             call lcmaza(fami, kpg, ksp, ndim, typmod,&
                         imate, compor, epsm, deps, vim(22),&
-                        tm, tp, tref, 'RAPH_COUP       ', sigp,&
-                        vip, rbid)
+                        tm, tp, tref, option2, sigp,&
+                        vip, tbid)
         endif
 !
 ! FIN DE (IF RAPH_MECA ET FULL_MECA)
@@ -679,19 +679,21 @@ subroutine lcumfp(fami, kpg, ksp, ndim, typmod,&
         if (option(2) .eq. 'MAZARS') then
 !
             if (option(1)(1:9) .eq. 'FULL_MECA') option(1) = 'RIGI_COUP       '
+            option2=option(1)
             call lcmaza(fami, kpg, ksp, ndim, typmod,&
                         imate, compor, epsm, deps, vim(22),&
-                        tm, tp, tref, option, rbid,&
+                        tm, tp, tref, option2, tbid,&
                         vip, dsidep)
         else
 !
+            option2='RIGI_COUP       '
             if (option(1)(1:9) .eq. 'RIGI_MECA') then
                 if (option(2) .eq. 'ENDO_ISOT_BETON') then
                     compoz(1)='ENDO_ISOT_BETON'
                     call lcldsb(fami, kpg, ksp, ndim, typmod,&
-                                imate, compoz, epsm, rbid, vim(22),&
-                                tm, tp, tref, 'RIGI_COUP       ', rbid,&
-                                rbid, dep, crit)
+                                imate, compoz, epsm, tbid, vim(22),&
+                                tm, tp, tref, option2, tbid,&
+                                tbid, dep, crit)
 !          ELSE IF (OPTION(2).EQ.'MAZARS') THEN
 !            CALL LCMAZA()
                 else

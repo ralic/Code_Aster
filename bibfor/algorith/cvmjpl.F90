@@ -219,18 +219,20 @@ subroutine cvmjpl(mod, nmat, mater, timed, timef,&
     call lcicma(drdy, nr, nr, 1, ndt,&
                 n4, n2, dkdx1, 1, 6,&
                 1, 1)
+                
     call lcicma(drdy, nr, nr, 1, ndt,&
                 n4, n3, dkdx2, 1, 6,&
                 1, 1)
-    call lcicma(drdy, nr, nr, 1, 1,&
-                n4, n4, dkdp, 1, 1,&
-                1, 1)
-    call lcicma(drdy, nr, nr, 1, 1,&
-                n4, n5, dkdr, 1, 1,&
-                1, 1)
-    call lcicma(drdy, nr, nr, 1, 1,&
-                n4, n6, dkdq, 1, 1,&
-                1, 1)
+
+    dkdp=drdy(n4,n4)
+
+    dkdr=drdy(n4,n5)
+
+    dkdq=drdy(n4,n6)
+
+    dkdr=drdy(n4,n5)
+
+    dkdq=drdy(n4,n6)
 !
     call lcicma(drdy, nr, nr, 1, ndt,&
                 n5, n1, drds, 1, 6,&
@@ -241,15 +243,12 @@ subroutine cvmjpl(mod, nmat, mater, timed, timef,&
     call lcicma(drdy, nr, nr, 1, ndt,&
                 n5, n3, drdx2, 1, 6,&
                 1, 1)
-    call lcicma(drdy, nr, nr, 1, 1,&
-                n5, n4, drdp, 1, 1,&
-                1, 1)
-    call lcicma(drdy, nr, nr, 1, 1,&
-                n5, n5, drdr, 1, 1,&
-                1, 1)
-    call lcicma(drdy, nr, nr, 1, 1,&
-                n5, n6, drdq, 1, 1,&
-                1, 1)
+
+    drdp=drdy(n5,n4)
+                
+    drdr=drdy(n5,n5)
+                
+    drdq=drdy(n5,n6)
 !
     call lcicma(drdy, nr, nr, 1, ndt,&
                 n6, n1, dtds, 1, 6,&
@@ -260,15 +259,13 @@ subroutine cvmjpl(mod, nmat, mater, timed, timef,&
     call lcicma(drdy, nr, nr, 1, ndt,&
                 n6, n3, dtdx2, 1, 6,&
                 1, 1)
-    call lcicma(drdy, nr, nr, 1, 1,&
-                n6, n4, dtdp, 1, 1,&
-                1, 1)
-    call lcicma(drdy, nr, nr, 1, 1,&
-                n6, n5, dtdr, 1, 1,&
-                1, 1)
-    call lcicma(drdy, nr, nr, 1, 1,&
-                n6, n6, dtdq, 1, 1,&
-                1, 1)
+                
+    dtdp=drdy(n6,n4)
+    
+    dtdr=drdy(n6,n5)
+    
+    dtdq=drdy(n6,n6)
+
 !
     if (mod(1:6) .eq. 'C_PLAN') then
         call lcicma(drdy, nr, nr, ndt, 1,&
@@ -280,15 +277,13 @@ subroutine cvmjpl(mod, nmat, mater, timed, timef,&
         call lcicma(drdy, nr, nr, ndt, 1,&
                     n3, n8, djde3, 6, 1,&
                     1, 1)
-        call lcicma(drdy, nr, nr, 1, 1,&
-                    n4, n8, dkde3, 1, 1,&
-                    1, 1)
-        call lcicma(drdy, nr, nr, 1, 1,&
-                    n5, n8, drde3, 1, 1,&
-                    1, 1)
-        call lcicma(drdy, nr, nr, 1, 1,&
-                    n6, n8, dtde3, 1, 1,&
-                    1, 1)
+                    
+        dkde3=drdy(n4,n8)
+
+        drde3=drdy(n5,n8)
+
+        dtde3=drdy(n6,n8)
+
 !
         call lcicma(drdy, nr, nr, 1, ndt,&
                     n8, n1, dqds, 1, 6,&
@@ -299,18 +294,18 @@ subroutine cvmjpl(mod, nmat, mater, timed, timef,&
         call lcicma(drdy, nr, nr, 1, ndt,&
                     n8, n3, dqdx2, 1, 6,&
                     1, 1)
-        call lcicma(drdy, nr, nr, 1, 1,&
-                    n8, n4, dqdp, 1, 1,&
-                    1, 1)
-        call lcicma(drdy, nr, nr, 1, 1,&
-                    n8, n5, dqdr, 1, 1,&
-                    1, 1)
-        call lcicma(drdy, nr, nr, 1, 1,&
-                    n8, n6, dqdq, 1, 1,&
-                    1, 1)
-        call lcicma(drdy, nr, nr, 1, 1,&
-                    n8, n8, dqde3, 1, 1,&
-                    1, 1)
+                    
+        dqdp = drdy(n8, n4)
+        
+                    
+        dqdr = drdy(n8, n5)
+        
+                    
+        dqdq = drdy(n8, n6)
+        
+                    
+        dqde3 = drdy(n8, n8)
+        
     endif
 !
     if (ioptio .eq. 2) then
@@ -356,18 +351,17 @@ subroutine cvmjpl(mod, nmat, mater, timed, timef,&
                     1, 1)
 !
         if (mod(1:6) .eq. 'C_PLAN') then
-            call lcicma(drdy, nr, nr, 1, 1,&
-                        n8, n6, dqdq, 1, 1,&
-                        1, 1)
+            
+            dqdq=drdy(n8, n6)
+
             call lcicma(drdy, nr, nr, 1, ndt,&
                         n8, n7, dqdxxi, 1, 6,&
                         1, 1)
             call lcicma(drdy, nr, nr, ndt, 1,&
                         n7, n8, dxide3, 6, 1,&
                         1, 1)
-            call lcicma(drdy, nr, nr, 1, 1,&
-                        n6, n8, dtde3, 1, 1,&
-                        1, 1)
+            
+            dtde3=drdy(n6, n8)
         endif
     endif
 !

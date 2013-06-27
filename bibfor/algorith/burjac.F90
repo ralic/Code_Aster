@@ -68,7 +68,7 @@ subroutine burjac(mod, nmat, materd, materf, nvi,&
     real(kind=8) :: kappa, etas, etad, epsfif(6), depsfi(6), epsfid(6)
     real(kind=8) :: nfif, nfid, coef, cepsfi(6), ndfi, normal(6)
     real(kind=8) :: dr2dy2(6, 6), drdyt(6, 6), youm1
-    real(kind=8) :: dr2dy3(6), dr3dy1(6), dr3dy2(6), dr3dy3
+    real(kind=8) :: dr2dy3(6), dr3dy1(6), dr3dy2(6), dr3dy3(1)
     real(kind=8) :: d2fi1(6, 6), d2fi2(6, 6), mident(6, 6)
     character(len=8) :: mod
 !
@@ -270,7 +270,7 @@ subroutine burjac(mod, nmat, materd, materf, nvi,&
 ! === =================================================================
 ! --- CALCUL DE DR(NR)/DY(NR)= HOOK(3,3)
 ! === =================================================================
-        dr3dy3 = hook(3,3)
+        dr3dy3(1) = hook(3,3)
 !
 ! === =================================================================
 ! --- COMPLEMENT DU JACOBIEN

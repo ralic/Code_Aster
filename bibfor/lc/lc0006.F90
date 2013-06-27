@@ -18,10 +18,10 @@ subroutine lc0006(fami, kpg, ksp, ndim, imate,&
     real(kind=8) :: angmas(*), wkin(nwkin), wkout(nwkout)
     real(kind=8) :: crit(*), sigm(*)
     real(kind=8) :: instam, instap
-    real(kind=8) :: epsm(6), deps(6)
-    real(kind=8) :: sigp(6)
+    real(kind=8) :: epsm(*), deps(*)
+    real(kind=8) :: sigp(*)
     real(kind=8) :: vim(*), vip(*)
-    real(kind=8) :: dsidep(6, 6)
+    real(kind=8) :: dsidep(*)
     character(len=16) :: compor(*), option
     character(len=8) :: typmod(2)
     character(len=*) :: fami

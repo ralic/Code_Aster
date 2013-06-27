@@ -101,10 +101,10 @@ subroutine lcpllg(toler, itmax, mod, nbmat, mater,&
 ! --- INITIALISATION YD = (SIG, INVAR, GAMP, EVP, DELTA) ---------------
 ! ======================================================================
     call lceqvn(ndt, se, yd)
-    call lceqvn(1, invare, yd(ndt+1))
-    call lceqvn(1, gamp, yd(ndt+2))
-    call lceqvn(1, evp, yd(ndt+3))
-    call lceqvn(1, delta, yd(ndt+4))
+    yd(ndt+1)=invare
+    yd(ndt+2)=gamp 
+    yd(ndt+3)=evp 
+    yd(ndt+4)=delta 
 ! ======================================================================
 ! --- CALCUL A PRIORI DE LA PROJECTION AU SOMMET -----------------------
 ! ======================================================================
@@ -130,8 +130,8 @@ subroutine lcpllg(toler, itmax, mod, nbmat, mater,&
             sigf(3) = 0.0d0
             epsf(3) = dkooh(3,1) * sigf(1) + dkooh(3,2) * sigf(2) + dkooh(3,4) * sigf(4)
         endif
-        call lceqvn(1, gamps, vinf(1))
-        call lceqvn(1, evps, vinf(2))
+        vinf(1)=gamps
+        vinf(2)=evps
         vinf(nvi) = 1.0d0
         irteti = 0
     else
@@ -176,7 +176,7 @@ subroutine lcpllg(toler, itmax, mod, nbmat, mater,&
         endif
 ! ======================================================================
         delta = delta + dy(nr)
-        call lceqvn(1, delta, yf(nr))
+        yf(nr)=delta
 ! ======================================================================
 ! --- CALCUL DE F A L'ITERATION ITER + 1 -------------------------------
 ! ======================================================================
@@ -191,9 +191,9 @@ subroutine lcpllg(toler, itmax, mod, nbmat, mater,&
 ! --- MISE A JOUR DES VARIABLES INTERNES -------------------------------
 ! ======================================================================
             call lceqvn(ndt, yf(1), s(1))
-            call lceqvn(1, yf(ndt+1), i1)
-            call lceqvn(1, yf(ndt+2), gamp)
-            call lceqvn(1, yf(ndt+3), evp)
+            i1  =yf(ndt+1)
+            gamp=yf(ndt+2)
+            evp =yf(ndt+3)
             do 30 ii = 1, ndt
                 sigf(ii) = s(ii)
 30          continue
@@ -206,8 +206,8 @@ subroutine lcpllg(toler, itmax, mod, nbmat, mater,&
                 sigf(3) = 0.0d0
                 epsf(3) = dkooh(3,1) * sigf(1) + dkooh(3,2) * sigf(2) + dkooh(3,4) * sigf(4)
             endif
-            call lceqvn(1, gamp, vinf(1))
-            call lceqvn(1, evp, vinf(2))
+            vinf(1)=gamp
+            vinf(2)=evp
             vinf(nvi) = 1.0d0
             irteti = 0
         else
@@ -267,8 +267,8 @@ subroutine lcpllg(toler, itmax, mod, nbmat, mater,&
                         epsf(3) = dkooh(3,1) * sigf(1) + dkooh(3,2) * sigf(2) + dkooh(3,4) * sigf&
                                   &(4)
                     endif
-                    call lceqvn(1, gamps, vinf(1))
-                    call lceqvn(1, evp, vinf(2))
+                    vinf(1)=gamps
+                    vinf(2)=evp 
                     vinf(nvi) = 1.0d0
                     irteti = 0
                 else

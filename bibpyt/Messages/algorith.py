@@ -202,6 +202,10 @@ cata_msg = {
  obstacle de type discret mal défini (un angle est supérieur à pi).
 """),
 
+74 : _(u"""
+ Le couplage FLUAGE/ENDO_ISOT_BETON n'est pas valide en THM.
+"""),
+
 96 : _(u"""
  ce mot clé de MODI_MAILLAGE attend un vecteur de norme non nulle.
 """),

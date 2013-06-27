@@ -270,7 +270,7 @@ subroutine nmcpla(fami, kpg, ksp, ndim, typmod,&
 30          continue
 40      continue
 !
-        call lcopil('ISOTROPE', typmod, materd, kooh)
+        call lcopil('ISOTROPE', mod, materd, kooh)
         call lcprmv(kooh, epsfl, epsfld)
 !
         do 60 k = 1, ndt
@@ -280,7 +280,7 @@ subroutine nmcpla(fami, kpg, ksp, ndim, typmod,&
 50          continue
 60      continue
 !
-        call lcopil('ISOTROPE', typmod, materf, kooh)
+        call lcopil('ISOTROPE', mod, materf, kooh)
         call lcprmv(kooh, epsfl, epsflf)
 !
         do 70 k = 1, ndt
@@ -351,9 +351,9 @@ subroutine nmcpla(fami, kpg, ksp, ndim, typmod,&
 ! --- CALCUL DE L'INCREMENT DE DEFORMATION ELASTIQUE
 ! --- + RETRAIT ENDOGENNE + RETRAIT DESSICCATION + RETRAIT THERMIQUE
 !
-        call lcopil('ISOTROPE', typmod, materd, kooh)
+        call lcopil('ISOTROPE', mod, materd, kooh)
         call lcprmv(kooh, sigd, epseld)
-        call lcopil('ISOTROPE', typmod, materf, kooh)
+        call lcopil('ISOTROPE', mod, materf, kooh)
         call lcprmv(kooh, sigf, epself)
 !
         do 100 k = 1, ndt

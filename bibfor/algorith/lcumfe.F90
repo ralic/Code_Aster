@@ -35,11 +35,11 @@ subroutine lcumfe(fami, kpg, ksp, ndim, typmod,&
     include 'asterfort/u2mess.h'
     integer :: ndim, imate, kpg, ksp
     character(len=8) :: typmod(*)
-    character(len=16) :: option(2)
+    character(len=16) :: option(2),option2
     character(len=*) :: fami
     real(kind=8) :: tinstm, tinstp, epstm(12), depst(12)
     real(kind=8) :: sigm(6), sigp(6), vim(25), vip(25)
-    real(kind=8) :: dsidpt(6, 6, 2), proj(6, 6)
+    real(kind=8) :: dsidpt(6, 6, 2), proj(6, 6), tbid(6)
 !
 ! COUPLAGE UMLV MAZARS EN NON LOCAL
 !---&s---1---------2---------3---------4---------5---------6---------7--
@@ -615,10 +615,10 @@ subroutine lcumfe(fami, kpg, ksp, ndim, typmod,&
     if ((option(1)(1:9).eq.'FULL_MECA') .or. (option(1)(1:9).eq.'RIGI_MECA')) then
 !
         if (option(1)(1:9) .eq. 'FULL_MECA') option(1) = 'RIGI_COUP       '
-!
+        option2=option(1)
         call lcmzge(fami, kpg, ksp, ndim, typmod,&
-                    imate, epstm, depst, vim(22), option,&
-                    rbid, vip, dsidpt, proj)
+                    imate, epstm, depst, vim(22), option2,&
+                    tbid, vip, dsidpt, proj)
     endif
 !      ENDIF
 end subroutine

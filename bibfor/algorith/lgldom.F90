@@ -70,8 +70,8 @@ subroutine lgldom(nbmat, mater, yf, fiter)
     gamcjs = mater(12,2)
     pref = mater(15,2)
     call lceqvn(ndt, yf(1), sn(1))
-    call lceqvn(1, yf(ndt+1), i1n)
-    call lceqvn(1, yf(ndt+2), gampn)
+    i1n  =yf(ndt+1)
+    gampn=yf(ndt+2)
 ! =================================================================
 ! --- CALCUL DE G(S) ----------------------------------------------
 ! =================================================================
