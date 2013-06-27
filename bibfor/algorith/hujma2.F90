@@ -149,6 +149,9 @@ subroutine hujma2(mod, imat, nmat, tempf, angmas,&
             d = materf(3,2)
             pc0 = materf(7,2)
             vind(4) = piso/(d*pc0)
+            if (vind(4) .gt. 1.d0) then
+                call u2mess('F', 'COMPOR1_83')
+            endif
             vind(27)= un
         endif
     endif

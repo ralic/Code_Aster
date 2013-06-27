@@ -413,4 +413,9 @@ DELTA2 = %(r1)f doit toujours rester entre 0 et 1.
 82 : _(u"""
 La température est obligatoire pour le comportement cristallin %(k1)s.
 """),
+
+83 : _(u"""
+L'état initial des contraintes n'est pas compatible avec le mécanisme isotrope du modèle de HUJEUX.
+Conseils: Vérifier l'état des contraintes initiales ou modifier les paramètres matériaux PC0 et/ou D du modèle de HUJEUX.
+"""),
 }
