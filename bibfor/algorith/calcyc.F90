@@ -233,14 +233,14 @@ subroutine calcyc(nomres)
         call jeveuo(nomres//'.CYCL_REFE', 'L', llref)
         basmod=zk24(llref+2)(1:8)
 !
-        call axacti(basmod, numa, 0, ibid, 0,&
+        call axacti(basmod, numa, 0, [ibid], 0,&
                     nbdax0)
         if (nbdax0 .gt. 0) then
             call wkvect('&&'//pgc//'.LISTE.AXE0', 'V V I', nbdax0, ltlax0)
             call axacti(basmod, numa, 0, zi(ltlax0), nbdax0,&
                         ibid)
         endif
-        call axacti(basmod, numa, 1, ibid, 0,&
+        call axacti(basmod, numa, 1, [ibid], 0,&
                     nbdax1)
         if (nbdax1 .gt. 0) then
             call wkvect('&&'//pgc//'.LISTE.AXE1', 'V V I', nbdax1, ltlax1)

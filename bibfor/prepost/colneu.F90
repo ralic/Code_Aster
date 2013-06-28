@@ -140,7 +140,7 @@ subroutine colneu(nbnode, typema)
         call u2mesk('I+', 'COUPLAGEIFS_11', 3, valk)
     endif
     call cplen(icompo, cpiter, tr4, tr4, i4,&
-               nomvar, nbnod4, taille, int4, ibid4)
+               nomvar, nbnod4, taille, int4(1), ibid4)
     if (niv .eq. 2) then
         valk(1) = 'COLNEU'
         valk(2) = 'IBID'

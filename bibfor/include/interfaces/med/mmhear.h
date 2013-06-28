@@ -16,15 +16,16 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
+#include "types/med_types.h"
     subroutine mmhear(fid, mname, numdt, numit, entype,&
                       GEOTYPE, ename, cret)
-        integer :: fid
+        med_int :: fid
         character(*) :: mname
-        integer :: numdt
-        integer :: numit
-        integer :: entype
-        integer :: GEOTYPE
-        character(*) :: ename
-        integer :: cret
+        med_int :: numdt
+        med_int :: numit
+        med_int :: entype
+        med_int :: GEOTYPE
+        character(*) :: ename(*)
+        med_int :: cret
     end subroutine mmhear
 end interface

@@ -46,35 +46,35 @@ subroutine lrfmed(resu, i, mfich, nomgd, typcha,&
 !
 !
 !
-    include 'jeveux.h'
-    include 'asterfort/codent.h'
-    include 'asterfort/copisd.h'
-    include 'asterfort/detrsd.h'
-    include 'asterfort/dismoi.h'
-    include 'asterfort/gnomsd.h'
-    include 'asterfort/idensd.h'
-    include 'asterfort/indiis.h'
-    include 'asterfort/infmaj.h'
-    include 'asterfort/infniv.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/lrchme.h'
-    include 'asterfort/lrmtyp.h'
-    include 'asterfort/mdchin.h'
-    include 'asterfort/mdexpm.h'
-    include 'asterfort/mfferm.h'
-    include 'asterfort/mfouvr.h'
-    include 'asterfort/mfveli.h'
-    include 'asterfort/rsadpa.h'
-    include 'asterfort/rsagsd.h'
-    include 'asterfort/rsexch.h'
-    include 'asterfort/rsnoch.h'
-    include 'asterfort/u2mesg.h'
-    include 'asterfort/u2mesk.h'
-    include 'asterfort/ulisog.h'
-    include 'asterfort/wkvect.h'
+#   include "jeveux.h"
+#   include "asterfort/codent.h"
+#   include "asterfort/copisd.h"
+#   include "asterfort/detrsd.h"
+#   include "asterfort/dismoi.h"
+#   include "asterfort/gnomsd.h"
+#   include "asterfort/idensd.h"
+#   include "asterfort/indiis.h"
+#   include "asterfort/infmaj.h"
+#   include "asterfort/infniv.h"
+#   include "asterfort/jedema.h"
+#   include "asterfort/jedetr.h"
+#   include "asterfort/jemarq.h"
+#   include "asterfort/jeveuo.h"
+#   include "asterfort/lrchme.h"
+#   include "asterfort/lrmtyp.h"
+#   include "asterfort/mdchin.h"
+#   include "asterfort/mdexpm.h"
+#   include "asterfort/as_mficlo.h"
+#   include "asterfort/as_mfiope.h"
+#   include "asterfort/as_mfinvr.h"
+#   include "asterfort/rsadpa.h"
+#   include "asterfort/rsagsd.h"
+#   include "asterfort/rsexch.h"
+#   include "asterfort/rsnoch.h"
+#   include "asterfort/u2mesg.h"
+#   include "asterfort/u2mesk.h"
+#   include "asterfort/ulisog.h"
+#   include "asterfort/wkvect.h"
     character(len=6) :: nompro
     parameter (nompro='LRFMED')
     integer :: ntymax
@@ -160,12 +160,12 @@ subroutine lrfmed(resu, i, mfich, nomgd, typcha,&
         nofimd = kfic(1:200)
     endif
 !
-    call mfouvr(fid, nofimd, edlect, iret)
-    call mfveli(fid, major, minor, rel, iret)
+    call as_mfiope(fid, nofimd, edlect, iret)
+    call as_mfinvr(fid, major, minor, rel, iret)
     if (major .lt. 3) then
         nochmd(33:64) = '                                '
     endif
-    call mfferm(fid, iret)
+    call as_mficlo(fid, iret)
 !
     if (nivinf .gt. 1) then
         write(ifm,*) '<',nompro,'> NOM DU FICHIER MED : ',nofimd

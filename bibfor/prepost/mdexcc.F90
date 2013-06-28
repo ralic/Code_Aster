@@ -49,22 +49,22 @@ subroutine mdexcc(nofimd, idfimd, nochmd, nbcmpc, nomcmc,&
 !
 ! 0.1. ==> ARGUMENTS
 !
-    include 'jeveux.h'
+#   include "jeveux.h"
 !
-    include 'asterfort/codent.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jeexin.h'
-    include 'asterfort/jelira.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/lxlgut.h'
-    include 'asterfort/mfchai.h'
-    include 'asterfort/mfferm.h'
-    include 'asterfort/mfncha.h'
-    include 'asterfort/mfncom.h'
-    include 'asterfort/mfouvr.h'
-    include 'asterfort/u2mesg.h'
-    include 'asterfort/u2mess.h'
-    include 'asterfort/wkvect.h'
+#   include "asterfort/codent.h"
+#   include "asterfort/jedetr.h"
+#   include "asterfort/jeexin.h"
+#   include "asterfort/jelira.h"
+#   include "asterfort/jeveuo.h"
+#   include "asterfort/lxlgut.h"
+#   include "asterfort/as_mfdfdi.h"
+#   include "asterfort/as_mficlo.h"
+#   include "asterfort/as_mfdnfd.h"
+#   include "asterfort/as_mfdnfc.h"
+#   include "asterfort/as_mfiope.h"
+#   include "asterfort/u2mesg.h"
+#   include "asterfort/u2mess.h"
+#   include "asterfort/wkvect.h"
     character(len=*) :: nofimd, nochmd
     character(len=*) :: nomcmc, nmcmfi
 !
@@ -122,7 +122,7 @@ subroutine mdexcc(nofimd, idfimd, nochmd, nbcmpc, nomcmc,&
     if (.not.ficexi) goto 9999
 !
     if (idfimd .eq. 0) then
-        call mfouvr(idfimd, nofimd, edlect, iouv)
+        call as_mfiope(idfimd, nofimd, edlect, iouv)
         dejouv = .false.
     else
         dejouv = .true.
@@ -135,9 +135,9 @@ subroutine mdexcc(nofimd, idfimd, nochmd, nbcmpc, nomcmc,&
 !
 ! 1.3 ==> LECTURE DU NOMBRE DE CHAMPS
 !
-        call mfncha(idfimd, nbcham, codret)
+        call as_mfdnfd(idfimd, nbcham, codret)
         if (codret .ne. 0) then
-            saux08='MFNCHA  '
+            saux08='mfdnfd'
             call u2mesg('F', 'DVP_97', 1, saux08, 1,&
                         codret, 0, 0.d0)
         endif
@@ -178,9 +178,9 @@ subroutine mdexcc(nofimd, idfimd, nochmd, nbcmpc, nomcmc,&
 ! 1.5 ==> POUR CHAQUE CHAMP ON CHERCHE SON NOM ET SES COMPOSANTES
 !
             do 10 , iaux = 1 , nbcham
-            call mfncom(idfimd, iaux, nbcmfi, codret)
+            call as_mfdnfc(idfimd, iaux, nbcmfi, codret)
             if (codret .ne. 0) then
-                saux08='MFNCOM  '
+                saux08='mfdnfc'
                 call u2mesg('F', 'DVP_97', 1, saux08, 1,&
                             codret, 0, 0.d0)
             endif
@@ -192,12 +192,12 @@ subroutine mdexcc(nofimd, idfimd, nochmd, nbcmpc, nomcmc,&
 !
 ! 1.5.1 ==> LECTURE DU NOM DU CHAMP MED ET DE SES COMPOSANTES
 !
-            call mfchai(idfimd, iaux, saux64, jaux, zk16(adncmp),&
+            call as_mfdfdi(idfimd, iaux, saux64, jaux, zk16(adncmp),&
                         zk16(aducmp), nseqca, codret)
             if (codret .ne. 0 .or. jaux .ne. mfloat) then
                 vali (1) = iaux
                 if (codret .ne. 0) then
-                    saux08='MFCHAI  '
+                    saux08='mfdfdi'
                     call u2mesg('F', 'DVP_97', 1, saux08, 1,&
                                 codret, 0, 0.d0)
                 endif
@@ -310,9 +310,9 @@ subroutine mdexcc(nofimd, idfimd, nochmd, nbcmpc, nomcmc,&
 !====
 !
         if (.not.dejouv) then
-            call mfferm(idfimd, codret)
+            call as_mficlo(idfimd, codret)
             if (codret .ne. 0) then
-                saux08='MFFERM  '
+                saux08='mficlo'
                 call u2mesg('F', 'DVP_97', 1, saux08, 1,&
                             codret, 0, 0.d0)
             endif

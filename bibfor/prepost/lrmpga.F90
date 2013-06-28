@@ -50,33 +50,33 @@ subroutine lrmpga(nrofic, ligrel, nochmd, nbma, pgmail,&
 !
     implicit none
 !
-    include 'jeveux.h'
+#   include "jeveux.h"
 !
-    include 'asterfort/assert.h'
-    include 'asterfort/codent.h'
-    include 'asterfort/dismoi.h'
-    include 'asterfort/infniv.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jelira.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jenonu.h'
-    include 'asterfort/jenuno.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/jexnom.h'
-    include 'asterfort/jexnum.h'
-    include 'asterfort/lrvcpg.h'
-    include 'asterfort/mfnco2.h'
-    include 'asterfort/mfngau.h'
-    include 'asterfort/mfnnop.h'
-    include 'asterfort/mfnpdt.h'
-    include 'asterfort/mfouvr.h'
-    include 'asterfort/modat2.h'
-    include 'asterfort/typele.h'
-    include 'asterfort/u2mesg.h'
-    include 'asterfort/u2mess.h'
-    include 'asterfort/ulisog.h'
-    include 'asterfort/wkvect.h'
+#   include "asterfort/assert.h"
+#   include "asterfort/codent.h"
+#   include "asterfort/dismoi.h"
+#   include "asterfort/infniv.h"
+#   include "asterfort/jedema.h"
+#   include "asterfort/jedetr.h"
+#   include "asterfort/jelira.h"
+#   include "asterfort/jemarq.h"
+#   include "asterfort/jenonu.h"
+#   include "asterfort/jenuno.h"
+#   include "asterfort/jeveuo.h"
+#   include "asterfort/jexnom.h"
+#   include "asterfort/jexnum.h"
+#   include "asterfort/lrvcpg.h"
+#   include "asterfort/as_mfdncn.h"
+#   include "asterfort/as_mlcnlc.h"
+#   include "asterfort/as_mfdonv.h"
+#   include "asterfort/as_mfdfin.h"
+#   include "asterfort/as_mfiope.h"
+#   include "asterfort/modat2.h"
+#   include "asterfort/typele.h"
+#   include "asterfort/u2mesg.h"
+#   include "asterfort/u2mess.h"
+#   include "asterfort/ulisog.h"
+#   include "asterfort/wkvect.h"
     integer :: nrofic, nbma, ntypel, npgmax, numpt, numord
     integer :: pgmail(nbma), pgmmil(nbma), indpg(ntypel, npgmax)
     character(len=8) :: param
@@ -164,7 +164,7 @@ subroutine lrmpga(nrofic, ligrel, nochmd, nbma, pgmail,&
     endif
 !
 !     OUVERTURE DU FICHIER MED
-    call mfouvr(idfimd, nofimd, edlect, codret)
+    call as_mfiope(idfimd, nofimd, edlect, codret)
 !
 !  == 1.3. A PARTIR DU NOM DU CHAMP MED ET DE L'INDICE DU PAS DE TEMPS,
 !      ON RECUPERE POUR CHAQUE TYPE DE MAILLE PRESENT:
@@ -183,15 +183,15 @@ subroutine lrmpga(nrofic, ligrel, nochmd, nbma, pgmail,&
         write(ifm, 2001) nochmd
     endif
 !
-    call mfnco2(idfimd, nochmd, ncmp, iret)
+    call as_mfdncn(idfimd, nochmd, ncmp, iret)
     call wkvect('&&LRMPGA.CNAME', 'V V K16', ncmp, jcomp)
     call wkvect('&&LRMPGA.CUNIT', 'V V K16', ncmp, junit)
-    call mfnpdt(idfimd, nochmd, nomam2, npdt, zk16(junit),&
+    call as_mfdfin(idfimd, nochmd, nomam2, npdt, zk16(junit),&
                 zk16(jcomp), iret)
     if (npdt .gt. 0) then
 !
         do 13 , ityg=1,ntygeo
-        call mfnnop(idfimd, nochmd, edmail, tygeo(ityg), nomam2,&
+        call as_mfdonv(idfimd, nochmd, edmail, tygeo(ityg), nomam2,&
                     numpt, numord, 1, nomprf, edcomp,&
                     npr, nomloc, ngaulu, n, iret)
         call assert(iret.eq.0)
@@ -231,7 +231,7 @@ subroutine lrmpga(nrofic, ligrel, nochmd, nbma, pgmail,&
 !  == 1.4. LECTURE DU NOMBRE DE LOCALISATIONS PRESENTES DANS LE FICHIER
 !     NOMBRE DE LOCALISATION(S) : NLOC
     nloc=0
-    call mfngau(idfimd, nloc, iret)
+    call as_mlcnlc(idfimd, nloc, iret)
     if (nivinf .gt. 1) then
         write(ifm,*) 'NOMBRE DE LOCALISATIONS DANS LE FICHIER MED =',&
         nloc

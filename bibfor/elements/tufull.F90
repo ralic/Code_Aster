@@ -62,7 +62,7 @@ subroutine tufull(option, nomte, nbrddl, deplm, deplp,&
     real(kind=8) :: valres(nbres), xpg(4)
     parameter (nbsecm=32,nbcoum=10)
     real(kind=8) :: poicou(2*nbcoum+1), poisec(2*nbsecm+1)
-    real(kind=8) :: h, a, l, fi, gxz, rac2, sinfi, x, pi, deuxpi
+    real(kind=8) :: h, a, l, fi, gxz, rac2, sinfi, rbid(4), pi, deuxpi
     real(kind=8) :: deplm(nbrddl), deplp(nbrddl), b(4, nbrddl), pgl4(3, 3)
     real(kind=8) :: epsi(4), depsi(4), eps2d(6), deps2d(6)
     real(kind=8) :: sign(4), sigma(4), sgmtd(4)
@@ -72,7 +72,7 @@ subroutine tufull(option, nomte, nbrddl, deplm, deplp,&
     real(kind=8) :: pass(nbrddl, nbrddl)
     real(kind=8) :: pgl(3, 3), omega, vtemp(nbrddl)
     real(kind=8) :: pgl1(3, 3), pgl2(3, 3), pgl3(3, 3), rayon, theta
-    real(kind=8) :: lc, angmas(3), rbid
+    real(kind=8) :: lc, angmas(3)
     integer :: nno, npg, nbcou, nbsec, m, icompo, ndimv, ivarix
     integer :: ipoids, ivf, nbvari, lgpg, jtab(7)
     integer :: imate, imatuu, icagep, igeom
@@ -286,15 +286,15 @@ subroutine tufull(option, nomte, nbrddl, deplm, deplp,&
 !
 ! ======= CALCUL DES DEFORMATIONS ET INCREMENTS DE DEFORMATION
 !
-                call epsett('DEFORM', nbrddl, deplm, b, x,&
-                            epsi, wgt, x)
+                call epsett('DEFORM', nbrddl, deplm, b, rbid,&
+                            epsi, wgt, rbid)
                 eps2d(1) = epsi(1)
                 eps2d(2) = epsi(2)
                 eps2d(3) = 0.d0
                 eps2d(4) = epsi(3)/rac2
 !
-                call epsett('DEFORM', nbrddl, deplp, b, x,&
-                            depsi, wgt, x)
+                call epsett('DEFORM', nbrddl, deplp, b, rbid,&
+                            depsi, wgt, rbid)
                 deps2d(1) = depsi(1)
                 deps2d(2) = depsi(2)
                 deps2d(3) = 0.d0
@@ -317,7 +317,7 @@ subroutine tufull(option, nomte, nbrddl, deplm, deplp,&
                             6, eps2d, deps2d, 6, sign,&
                             zr(ivarim+k2), option, angmas, 1, lc,&
                             sigma, zr( ivarip+k2), 36, dsidep, 1,&
-                            rbid, cod)
+                            rbid(1), cod)
 !
                 if (phenom .eq. 'ELAS') then
                     nbv = 2
@@ -385,8 +385,8 @@ subroutine tufull(option, nomte, nbrddl, deplm, deplp,&
                     sgmtd(3) = zr(icontp-1+k1+4)
                     sgmtd(4) = cisail*gxz/2.d0
 !
-                    call epsett('EFFORI', nbrddl, x, b, sgmtd,&
-                                x, wgt, effint)
+                    call epsett('EFFORI', nbrddl, rbid, b, sgmtd,&
+                                rbid, wgt, effint)
 !
                 endif
 !

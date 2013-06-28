@@ -16,14 +16,15 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
+#include "types/med_types.h"
     subroutine mlclor(fid, lname, swm, ecoo, ipcoo,&
                       wght, cret)
-        integer :: fid
+        med_int :: fid
         character(*) :: lname
-        integer :: swm
+        med_int :: swm
         real(kind=8) :: ecoo(*)
         real(kind=8) :: ipcoo(*)
         real(kind=8) :: wght(*)
-        integer :: cret
+        med_int :: cret
     end subroutine mlclor
 end interface

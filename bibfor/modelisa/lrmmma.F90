@@ -52,26 +52,26 @@ subroutine lrmmma(fid, nomamd, nbmail, nbnoma, nbtyp,&
 !
     implicit none
 !
-    include 'jeveux.h'
+#   include "jeveux.h"
 !
-    include 'asterfort/codent.h'
-    include 'asterfort/codlet.h'
-    include 'asterfort/infniv.h'
-    include 'asterfort/jecrec.h'
-    include 'asterfort/jecreo.h'
-    include 'asterfort/jecroc.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jeecra.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/jexnom.h'
-    include 'asterfort/jexnum.h'
-    include 'asterfort/mfconl.h'
-    include 'asterfort/mfnoml.h'
-    include 'asterfort/u2mesg.h'
-    include 'asterfort/u2mesk.h'
-    include 'asterfort/wkvect.h'
+#   include "asterfort/codent.h"
+#   include "asterfort/codlet.h"
+#   include "asterfort/infniv.h"
+#   include "asterfort/jecrec.h"
+#   include "asterfort/jecreo.h"
+#   include "asterfort/jecroc.h"
+#   include "asterfort/jedema.h"
+#   include "asterfort/jedetr.h"
+#   include "asterfort/jeecra.h"
+#   include "asterfort/jemarq.h"
+#   include "asterfort/jeveuo.h"
+#   include "asterfort/jexnom.h"
+#   include "asterfort/jexnum.h"
+#   include "asterfort/as_mmhcyr.h"
+#   include "asterfort/as_mmhear.h"
+#   include "asterfort/u2mesg.h"
+#   include "asterfort/u2mesk.h"
+#   include "asterfort/wkvect.h"
     integer :: ntymax
     parameter (ntymax = 69)
 !
@@ -195,7 +195,7 @@ subroutine lrmmma(fid, nomamd, nbmail, nbnoma, nbtyp,&
 !          DONNE UN NOM PAR DEFAUT FORME AVEC LE PREFIXE 'M' SUIVI DE
 !          LEUR NUMERO
 !
-        call mfnoml(fid, nomamd, zk16(jnomty(ityp)), edmail, typgeo(ityp),&
+        call as_mmhear(fid, nomamd, zk16(jnomty(ityp)), edmail, typgeo(ityp),&
                     codret)
 !
         if (codret .ne. 0) then
@@ -225,10 +225,10 @@ subroutine lrmmma(fid, nomamd, nbmail, nbnoma, nbtyp,&
 !          LA SUITE POUR UNE MAILLE DONNEE.
 !          C'EST CE QUE MED APPELLE LE MODE ENTRELACE
 !
-        call mfconl(fid, nomamd, zi(jcxtyp(ityp)), nmatyp(ityp) * nnotyp(ityp), edfuin,&
+        call as_mmhcyr(fid, nomamd, zi(jcxtyp(ityp)), nmatyp(ityp) * nnotyp(ityp), edfuin,&
                     edmail, typgeo(ityp), ednoda, codret)
         if (codret .ne. 0) then
-            saux08='MFCONL  '
+            saux08='mmhcyr'
             call u2mesg('F', 'DVP_97', 1, saux08, 1,&
                         codret, 0, 0.d0)
         endif

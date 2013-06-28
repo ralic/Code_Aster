@@ -53,17 +53,17 @@ subroutine irmpg1(nofimd, nomfpg, nbnoto, nbrepg, nbsp,&
 !
 ! 0.1. ==> ARGUMENTS
 !
-    include 'asterfort/codent.h'
-    include 'asterfort/infniv.h'
-    include 'asterfort/lxlgut.h'
-    include 'asterfort/mfferm.h'
-    include 'asterfort/mfgaue.h'
-    include 'asterfort/mfgaui.h'
-    include 'asterfort/mfgaul.h'
-    include 'asterfort/mfngau.h'
-    include 'asterfort/mfouvr.h'
-    include 'asterfort/u2mesg.h'
-    include 'asterfort/u2mess.h'
+#   include "asterfort/codent.h"
+#   include "asterfort/infniv.h"
+#   include "asterfort/lxlgut.h"
+#   include "asterfort/as_mficlo.h"
+#   include "asterfort/as_mlclow.h"
+#   include "asterfort/as_mlclci.h"
+#   include "asterfort/as_mlclor.h"
+#   include "asterfort/as_mlcnlc.h"
+#   include "asterfort/as_mfiope.h"
+#   include "asterfort/u2mesg.h"
+#   include "asterfort/u2mess.h"
     integer :: nbnoto, nbrepg, nbsp, ndim, typgeo
 !
     real(kind=8) :: refcoo(*), gscoo(*), wg(*)
@@ -126,9 +126,9 @@ subroutine irmpg1(nofimd, nomfpg, nbnoto, nbrepg, nbsp,&
     if (.not. ficexi) then
         call u2mess('F', 'MED2_3')
     endif
-    call mfouvr(idfimd, nofimd, edleaj, codret)
+    call as_mfiope(idfimd, nofimd, edleaj, codret)
     if (codret .ne. 0) then
-        saux08='MFOUVR  '
+        saux08='mfiope'
         call u2mesg('F', 'DVP_97', 1, saux08, 1,&
                     codret, 0, 0.d0)
     endif
@@ -154,10 +154,10 @@ subroutine irmpg1(nofimd, nomfpg, nbnoto, nbrepg, nbsp,&
 !
 ! 2.1. ==> COMBIEN DE LOCALISATIONS SONT PRESENTES DANS LE FICHIER
 !
-    call mfngau(idfimd, nblopg, codret)
+    call as_mlcnlc(idfimd, nblopg, codret)
 !
     if (codret .ne. 0) then
-        saux08='MFNGAU  '
+        saux08='mlcnlc'
         call u2mesg('F', 'DVP_97', 1, saux08, 1,&
                     codret, 0, 0.d0)
     endif
@@ -185,11 +185,11 @@ subroutine irmpg1(nofimd, nomfpg, nbnoto, nbrepg, nbsp,&
 !              TYPGEL = TYPGEO
 !              NBREPL = NOMBRE DE POINTS DE GAUSS
 !
-    call mfgaui(idfimd, iaux, saux64, typgel, nbrepl,&
+    call as_mlclci(idfimd, iaux, saux64, typgel, nbrepl,&
                 ndim2, nomas2, codret)
 !
     if (codret .ne. 0) then
-        saux08='MFGAUI  '
+        saux08='mlclci'
         call u2mesg('F', 'DVP_97', 1, saux08, 1,&
                     codret, 0, 0.d0)
     endif
@@ -217,11 +217,11 @@ subroutine irmpg1(nofimd, nomfpg, nbnoto, nbrepg, nbsp,&
 !
         if (typgel .eq. typgeo .and. nbrepl .eq. nbrepg) then
 !
-            call mfgaul(idfimd, raux1, raux2, raux3, edfuin,&
+            call as_mlclor(idfimd, raux1, raux2, raux3, edfuin,&
                         saux64, codret)
 !
             if (codret .ne. 0) then
-                saux08='MFGAUL  '
+                saux08='mlclor'
                 call u2mesg('F', 'DVP_97', 1, saux08, 1,&
                             codret, 0, 0.d0)
             endif
@@ -432,11 +432,11 @@ subroutine irmpg1(nofimd, nomfpg, nbnoto, nbrepg, nbsp,&
 !
     do 32 , iaux = 1 , nblopg
 !
-    call mfgaui(idfimd, iaux, saux64, typgel, nbrepl,&
+    call as_mlclci(idfimd, iaux, saux64, typgel, nbrepl,&
                 ndim2, nomas2, codret)
 !
     if (codret .ne. 0) then
-        saux08='MFGAUI  '
+        saux08='mlclci'
         call u2mesg('F', 'DVP_97', 1, saux08, 1,&
                     codret, 0, 0.d0)
     endif
@@ -465,12 +465,12 @@ subroutine irmpg1(nofimd, nomfpg, nbnoto, nbrepg, nbsp,&
         nolopg(32:64)=nomasu(1:32)
     endif
 !
-    call mfgaue(idfimd, typgeo, refcoo, edfuin, nbrepg,&
+    call as_mlclow(idfimd, typgeo, refcoo, edfuin, nbrepg,&
                 gscoo, wg, nolopg, ndim, nomasu,&
                 codret)
 !
     if (codret .ne. 0) then
-        saux08='MFGAUE  '
+        saux08='mlclow'
         call u2mesg('F', 'DVP_97', 1, saux08, 1,&
                     codret, 0, 0.d0)
     endif
@@ -483,9 +483,9 @@ subroutine irmpg1(nofimd, nomfpg, nbnoto, nbrepg, nbsp,&
 !
 ! 4.1. ==> FERMETURE DU FICHIER MED
 !
-    call mfferm(idfimd, codret)
+    call as_mficlo(idfimd, codret)
     if (codret .ne. 0) then
-        saux08='MFFERM  '
+        saux08='mficlo'
         call u2mesg('F', 'DVP_97', 1, saux08, 1,&
                     codret, 0, 0.d0)
     endif

@@ -79,26 +79,26 @@ subroutine lrmmf3(fid, nomamd, rangfa, carafa, nbnoeu,&
 ! aslint: disable=W1504
     implicit none
 !
-    include 'jeveux.h'
-    include 'asterc/indik8.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/codent.h'
-    include 'asterfort/desgfa.h'
-    include 'asterfort/initch.h'
-    include 'asterfort/jelira.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/jucroc.h'
-    include 'asterfort/juveca.h'
-    include 'asterfort/lxlgut.h'
-    include 'asterfort/lxnoac.h'
-    include 'asterfort/mffam3.h'
-    include 'asterfort/mffami.h'
-    include 'asterfort/mfnatt.h'
-    include 'asterfort/mfngro.h'
-    include 'asterfort/mfveli.h'
-    include 'asterfort/u2mesg.h'
-    include 'asterfort/u2mesk.h'
-    include 'asterfort/u2mess.h'
+#   include "jeveux.h"
+#   include "asterc/indik8.h"
+#   include "asterfort/assert.h"
+#   include "asterfort/codent.h"
+#   include "asterfort/desgfa.h"
+#   include "asterfort/initch.h"
+#   include "asterfort/jelira.h"
+#   include "asterfort/jeveuo.h"
+#   include "asterfort/jucroc.h"
+#   include "asterfort/juveca.h"
+#   include "asterfort/lxlgut.h"
+#   include "asterfort/lxnoac.h"
+#   include "asterfort/as_mfafai.h"
+#   include "asterfort/as_mfaofi.h"
+#   include "asterfort/as_mfaona.h"
+#   include "asterfort/as_mfanfg.h"
+#   include "asterfort/as_mfinvr.h"
+#   include "asterfort/u2mesg.h"
+#   include "asterfort/u2mesk.h"
+#   include "asterfort/u2mess.h"
     integer :: ntymax
     parameter (ntymax = 69)
 !
@@ -170,23 +170,23 @@ subroutine lrmmf3(fid, nomamd, rangfa, carafa, nbnoeu,&
     nbattr = 200
     nomfam = ' '
     call initch(descat, nbattr)
-    call mfveli(fid, major, minor, rel, cret)
+    call as_mfinvr(fid, major, minor, rel, cret)
     if (major .eq. 3) then
-        call mffam3(fid, nomamd, rangfa, nomfam, numfam,&
+        call as_mfafai(fid, nomamd, rangfa, nomfam, numfam,&
                     nogrfa, codret)
         nbattr = 0
     else
-        call mfnatt(fid, nomamd, rangfa, nbattr, codre2)
-        call mffami(fid, nomamd, rangfa, nomfam, numfam,&
+        call as_mfaona(fid, nomamd, rangfa, nbattr, codre2)
+        call as_mfaofi(fid, nomamd, rangfa, nomfam, numfam,&
                     idatfa, vaatfa, descat, nbattr, nogrfa,&
                     codret)
     endif
     if (codret .ne. 0) then
-        saux08='MFFAMI  '
+        saux08='mfaofi'
         call u2mesg('F', 'DVP_97', 1, saux08, 1,&
                     codret, 0, 0.d0)
     endif
-    call mfngro(fid, nomamd, rangfa, nbgrou, codret)
+    call as_mfanfg(fid, nomamd, rangfa, nbgrou, codret)
 !
     call jeveuo('&&LRMMF1.NOM_GR_LONG', 'E', jnogrl)
     call jelira('&&LRMMF1.NOM_GR_LONG', 'LONMAX', nogrlo, kbid)

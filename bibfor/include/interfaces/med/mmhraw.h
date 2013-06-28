@@ -16,16 +16,17 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
+#include "types/med_types.h"
     subroutine mmhraw(fid, name, numdt, numit, GEOTYPE,&
                       aname, n, val, cret)
-        integer :: fid
+        med_int :: fid
         character(*) :: name
-        integer :: numdt
-        integer :: numit
-        integer :: GEOTYPE
+        med_int :: numdt
+        med_int :: numit
+        med_int :: GEOTYPE
         character(*) :: aname
-        integer :: n
+        med_int :: n
         real(kind=8) :: val(*)
-        integer :: cret
+        med_int :: cret
     end subroutine mmhraw
 end interface

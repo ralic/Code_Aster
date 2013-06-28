@@ -165,11 +165,11 @@ subroutine vppcom(lcomod, icom1, icom2, resui, resur,&
             call jedetr(k24buf)
 !
             call comatr('T', 'R', icom2, icom1-1, zi(jlcom),&
-                        0, 0, ibid, mxresf, nbparr,&
-                        resur, 0, 0, cbid)
+                        0, 0, [ibid], mxresf, nbparr,&
+                        resur, 0, 0, [cbid])
             call comatr('T', 'I', icom2, icom1-1, zi(jlcom),&
                         mxresf, nbpari, resui, 0, 0,&
-                        rbid, 0, 0, cbid)
+                        [rbid], 0, 0, [cbid])
         endif
 !
 !       ----------------------------------------------------------------

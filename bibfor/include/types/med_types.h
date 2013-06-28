@@ -11,4 +11,3 @@
 #define to_med_int(a)   int(a, MED_INT_SIZE)
 !
 #endif
-

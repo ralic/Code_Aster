@@ -16,10 +16,11 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
+#include "types/med_types.h"
     subroutine mfdncn(fid, fname, n, cret)
-        integer :: fid
+        med_int :: fid
         character(*) :: fname
-        integer :: n
-        integer :: cret
+        med_int :: n
+        med_int :: cret
     end subroutine mfdncn
 end interface

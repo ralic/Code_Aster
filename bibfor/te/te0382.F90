@@ -73,31 +73,21 @@ subroutine te0382(option, nomte)
 !     (CAS D'1 ELEMENT PARENT QUADRATIQUE) => NBNAMX=3
     parameter (nbnamx=3)
 !
-    integer :: ifm, niv
-    integer :: iadzi, iazk24
+    integer :: ifm, niv,iadzi, iazk24
     integer :: ibid, iaux, iret, itab(7), itabid(9, 6, 4)
-    integer :: igeom, jtime
-    integer :: ierr, ivois
-    integer :: imate
-    integer :: iref1, iref2
-    integer :: ndim
-    integer :: nno, npg, idfde, jgano
-    integer :: nbcmp
-    integer :: tyv
-    integer :: npgp, nnop, nnosp, ipoidp, ivfp
-    integer :: isigno
-    integer :: nbs, idfse
-    integer :: inp
-    integer :: ino, nbnapa
+    integer :: igeom, jtime,ierr, ivois
+    integer :: imate,iref1, iref2,ndim
+    integer :: nno, npg, idfde, jgano,nbcmp,tyv
+    integer :: npgp, nnop, nnosp, ipoidp, ivfp,isigno
+    integer :: nbs, idfse,inp,ino, nbnapa
     integer :: jpintt, jcnset, jlonch, jvoxse, jsigse, jpmilt
-    integer :: nse, ise, in, j, ipg
-    integer :: levois
-    integer :: irese, kpg, spt
+    integer :: nse, ise, in, j, ipg,levois
+    integer :: irese, kpg, spt, noe(9,6,4)
 !
     real(kind=8) :: r8bid, rtbid3(3)
     real(kind=8) :: dfdxp(9), dfdyp(9), poidp, he, hse, hf, coeff
-    real(kind=8) :: sg11(nbnamx), sg22(nbnamx), sg12(nbnamx), jaco(nbnamx)
-    real(kind=8) :: nx(nbnamx), ny(nbnamx), tx(nbnamx), ty(nbnamx)
+    real(kind=8) :: sg11(nbnamx), sg22(nbnamx), sg12(nbnamx), jaco(9)
+    real(kind=8) :: nx(9), ny(9), nz(9), tx(nbnamx), ty(nbnamx)
     real(kind=8) :: chx(nbnamx), chy(nbnamx)
     real(kind=8) :: inst, inte, orien
     real(kind=8) :: sig11(nbnamx), sig22(nbnamx), sig12(nbnamx)
@@ -282,9 +272,9 @@ subroutine te0382(option, nomte)
 !
         iaux = inp
         call calnor('2D', zr(igeom), iaux, nbs, nbnapa,&
-                    orien, ibid, ibid, itabid, ibid,&
+                    orien, ibid, ibid, noe, ibid,&
                     ibid, ibid, jaco, nx, ny,&
-                    rtbid3, tx, ty, hf)
+                    nz, tx, ty, hf)
 !
 ! ------- SI L'ARETE N'EST PAS SUR LA FRONTIERE DE LA STRUCTURE...
 ! ------- ON CALCULE LE TERME DE SAUT POUR LES ELEMENTS PARENTS
@@ -424,9 +414,9 @@ subroutine te0382(option, nomte)
 !
                 iaux = in
                 call calnor('2D', coorse, iaux, nno, nbnase,&
-                            orien, ibid, ibid, itabid, ibid,&
+                            orien, ibid, ibid, noe, ibid,&
                             ibid, ibid, jaco, nx, ny,&
-                            rtbid3, tx, ty, hf)
+                            nz, tx, ty, hf)
 !
 ! --------- CALCUL DU SAUT DE CONTRAINTES AUX NOEUDS S-E/VOISIN
 ! --------- (EQUIVALENT XFEM DE ERMES2)

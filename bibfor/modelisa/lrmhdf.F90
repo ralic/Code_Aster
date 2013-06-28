@@ -38,31 +38,31 @@ subroutine lrmhdf(nomamd, nomu, ifm, nrofic, nivinf,&
 !
 !     IN
 !
-    include 'asterc/utflsh.h'
-    include 'asterfort/codent.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jedetc.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/lrmdes.h'
-    include 'asterfort/lrmmdi.h'
-    include 'asterfort/lrmmeq.h'
-    include 'asterfort/lrmmfa.h'
-    include 'asterfort/lrmmma.h'
-    include 'asterfort/lrmmno.h'
-    include 'asterfort/lrmtyp.h'
-    include 'asterfort/mdexma.h'
-    include 'asterfort/mdexpm.h'
-    include 'asterfort/mfferm.h'
-    include 'asterfort/mffoco.h'
-    include 'asterfort/mfouvr.h'
-    include 'asterfort/mfvedo.h'
-    include 'asterfort/mfveli.h'
-    include 'asterfort/sdmail.h'
-    include 'asterfort/u2mesg.h'
-    include 'asterfort/u2mesi.h'
-    include 'asterfort/u2mesk.h'
-    include 'asterfort/u2mess.h'
-    include 'asterfort/ulisog.h'
+#   include "asterc/utflsh.h"
+#   include "asterfort/codent.h"
+#   include "asterfort/jedema.h"
+#   include "asterfort/jedetc.h"
+#   include "asterfort/jemarq.h"
+#   include "asterfort/lrmdes.h"
+#   include "asterfort/lrmmdi.h"
+#   include "asterfort/lrmmeq.h"
+#   include "asterfort/lrmmfa.h"
+#   include "asterfort/lrmmma.h"
+#   include "asterfort/lrmmno.h"
+#   include "asterfort/lrmtyp.h"
+#   include "asterfort/mdexma.h"
+#   include "asterfort/mdexpm.h"
+#   include "asterfort/as_mficlo.h"
+#   include "asterfort/as_mficom.h"
+#   include "asterfort/as_mfiope.h"
+#   include "asterfort/as_mlbnuv.h"
+#   include "asterfort/as_mfinvr.h"
+#   include "asterfort/sdmail.h"
+#   include "asterfort/u2mesg.h"
+#   include "asterfort/u2mesi.h"
+#   include "asterfort/u2mesk.h"
+#   include "asterfort/u2mess.h"
+#   include "asterfort/ulisog.h"
     integer :: ifm, nivinf
     integer :: nrofic, infmed, nbcgrm
     character(len=*) :: nomamd
@@ -148,7 +148,7 @@ subroutine lrmhdf(nomamd, nomu, ifm, nrofic, nivinf,&
 !
 ! 1.2.1. ==> VERIFICATION DE LA VERSION HDF
 !
-    call mffoco(nofimd, hdfok, medok, codret)
+    call as_mficom(nofimd, hdfok, medok, codret)
     if (hdfok .eq. 0) then
         valk (1) = nofimd(1:32)
         valk (2) = nomamd
@@ -163,15 +163,15 @@ subroutine lrmhdf(nomamd, nomu, ifm, nrofic, nivinf,&
     if (medok .eq. 0) then
         vali (1) = codret
         call u2mesi('A+', 'MED_24', 1, vali)
-        call mfvedo(vlib(1), vlib(2), vlib(3), iret)
+        call as_mlbnuv(vlib(1), vlib(2), vlib(3), iret)
         if (iret .eq. 0) then
             vali (1) = vlib(1)
             vali (2) = vlib(2)
             vali (3) = vlib(3)
             call u2mesi('A+', 'MED_25', 3, vali)
         endif
-        call mfouvr(fid, nofimd, edlect, codret)
-        call mfveli(fid, vfic(1), vfic(2), vfic(3), iret)
+        call as_mfiope(fid, nofimd, edlect, codret)
+        call as_mfinvr(fid, vfic(1), vfic(2), vfic(3), iret)
         if (iret .eq. 0) then
             if (vfic(2) .eq. -1 .or. vfic(3) .eq. -1) then
                 call u2mess('A+', 'MED_26')
@@ -189,7 +189,7 @@ subroutine lrmhdf(nomamd, nomu, ifm, nrofic, nivinf,&
                 call u2mess('A+', 'MED_28')
             endif
         endif
-        call mfferm(fid, codret)
+        call as_mficlo(fid, codret)
         call u2mess('A', 'MED_41')
     endif
 !
@@ -233,7 +233,7 @@ subroutine lrmhdf(nomamd, nomu, ifm, nrofic, nivinf,&
 !
 ! 2.1. ==> OUVERTURE FICHIER MED EN LECTURE
 !
-    call mfouvr(fid, nofimd, edlect, codret)
+    call as_mfiope(fid, nofimd, edlect, codret)
     if (codret .ne. 0) then
         valk (1) = nofimd(1:32)
         valk (2) = nomamd
@@ -308,7 +308,7 @@ subroutine lrmhdf(nomamd, nomu, ifm, nrofic, nivinf,&
 !
 ! 9.1. ==> FERMETURE FICHIER
 !
-    call mfferm(fid, codret)
+    call as_mficlo(fid, codret)
     if (codret .ne. 0) then
         valk (1) = nofimd(1:32)
         valk (2) = nomamd

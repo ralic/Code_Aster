@@ -34,15 +34,15 @@ subroutine irmmno(idfimd, nomamd, ndim, nbnoeu, coordo,&
 !
 ! 0.1. ==> ARGUMENTS
 !
-    include 'jeveux.h'
-    include 'asterfort/infniv.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/mfcooe.h'
-    include 'asterfort/mfnome.h'
-    include 'asterfort/u2mesg.h'
-    include 'asterfort/wkvect.h'
+#   include "jeveux.h"
+#   include "asterfort/infniv.h"
+#   include "asterfort/jedema.h"
+#   include "asterfort/jedetr.h"
+#   include "asterfort/jemarq.h"
+#   include "asterfort/as_mmhcow.h"
+#   include "asterfort/as_mmheaw.h"
+#   include "asterfort/u2mesg.h"
+#   include "asterfort/wkvect.h"
     integer :: idfimd
     integer :: ndim, nbnoeu
 !
@@ -100,7 +100,7 @@ subroutine irmmno(idfimd, nomamd, ndim, nbnoeu, coordo,&
 !
     if (ndim .eq. 3) then
 !
-        call mfcooe(idfimd, nomamd, coordo, edfuin, nbnoeu,&
+        call as_mmhcow(idfimd, nomamd, coordo, edfuin, nbnoeu,&
                     codret)
 !
     else
@@ -122,7 +122,7 @@ subroutine irmmno(idfimd, nomamd, ndim, nbnoeu, coordo,&
 222          continue
         endif
 !
-        call mfcooe(idfimd, nomamd, zr(jcoord), edfuin, nbnoeu,&
+        call as_mmhcow(idfimd, nomamd, zr(jcoord), edfuin, nbnoeu,&
                     codret)
 !
         call jedetr('&&'//nompro//'.COORDO')
@@ -130,7 +130,7 @@ subroutine irmmno(idfimd, nomamd, ndim, nbnoeu, coordo,&
     endif
 !
     if (codret .ne. 0) then
-        saux08='MFCOOE  '
+        saux08='mmhcow'
         call u2mesg('F', 'DVP_97', 1, saux08, 1,&
                     codret, 0, 0.d0)
     endif
@@ -146,11 +146,11 @@ subroutine irmmno(idfimd, nomamd, ndim, nbnoeu, coordo,&
 !                                          12345678
  3  end do
 !
-    call mfnome(idfimd, nomamd, zk16(adnomn), nbnoeu, ednoeu,&
+    call as_mmheaw(idfimd, nomamd, zk16(adnomn), nbnoeu, ednoeu,&
                 tygeno, codret)
 !
     if (codret .ne. 0) then
-        saux08='MFNOME  '
+        saux08='mmheaw'
         call u2mesg('F', 'DVP_97', 1, saux08, 1,&
                     codret, 0, 0.d0)
     endif

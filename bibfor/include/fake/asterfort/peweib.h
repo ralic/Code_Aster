@@ -15,20 +15,17 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
-interface
-    subroutine peweib(resu, modele, mate, cara, chmat,&
-                      nchar, lchar, nh, nbocc, iresu,&
-                      nomcmd)
-        character(*) :: resu
-        character(*) :: modele
-        character(*) :: mate
-        character(*) :: cara
-        character(len=8) :: chmat
-        integer :: nchar
-        character(*) :: lchar(*)
-        integer :: nh
-        integer :: nbocc
-        integer :: iresu
-        character(*) :: nomcmd
-    end subroutine peweib
-end interface
+          interface 
+            subroutine peweib(resu,modele,mate,cara,chmat,nh,nbocc,iresu&
+     &,nomcmd)
+              character(*) :: resu
+              character(*) :: modele
+              character(*) :: mate
+              character(*) :: cara
+              character(len=8) :: chmat
+              integer :: nh
+              integer :: nbocc
+              integer :: iresu
+              character(*) :: nomcmd
+            end subroutine peweib
+          end interface 

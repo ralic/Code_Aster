@@ -45,20 +45,20 @@ subroutine lrmmfa(fid, nomamd, nbnoeu, nbmail, grpnoe,&
 !
     implicit none
 !
-    include 'jeveux.h'
-    include 'asterfort/infniv.h'
-    include 'asterfort/jecrec.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/lrmmf1.h'
-    include 'asterfort/lrmmf4.h'
-    include 'asterfort/mffaml.h'
-    include 'asterfort/mfnfam.h'
-    include 'asterfort/u2mesg.h'
-    include 'asterfort/u2mess.h'
-    include 'asterfort/wkvect.h'
+#   include "jeveux.h"
+#   include "asterfort/infniv.h"
+#   include "asterfort/jecrec.h"
+#   include "asterfort/jedema.h"
+#   include "asterfort/jedetr.h"
+#   include "asterfort/jemarq.h"
+#   include "asterfort/jeveuo.h"
+#   include "asterfort/lrmmf1.h"
+#   include "asterfort/lrmmf4.h"
+#   include "asterfort/as_mmhfnr.h"
+#   include "asterfort/as_mfanfa.h"
+#   include "asterfort/u2mesg.h"
+#   include "asterfort/u2mess.h"
+#   include "asterfort/wkvect.h"
     integer :: ntymax
     parameter (ntymax = 69)
 !
@@ -127,9 +127,9 @@ subroutine lrmmfa(fid, nomamd, nbnoeu, nbmail, grpnoe,&
 !
 ! 2.1. ==> RECHERCHE DU NOMBRE DE FAMILLES ENREGISTREES
 !
-    call mfnfam(fid, nomamd, nbrfam, codret)
+    call as_mfanfa(fid, nomamd, nbrfam, codret)
     if (codret .ne. 0) then
-        saux08='MFNFAM  '
+        saux08='mfanfa'
         call u2mesg('F', 'DVP_97', 1, saux08, 1,&
                     codret, 0, 0.d0)
     endif
@@ -159,12 +159,12 @@ subroutine lrmmfa(fid, nomamd, nbnoeu, nbmail, grpnoe,&
         famnoe = '&&'//nompro//'.FAMILLE_NO     '
         call wkvect(famnoe, 'V V I', nbnoeu, adfano)
 !
-        call mffaml(fid, nomamd, zi(adfano), nbnoeu, ednoeu,&
+        call as_mmhfnr(fid, nomamd, zi(adfano), nbnoeu, ednoeu,&
                     typnoe, codret)
 !      DANS MED3.0, LE CODE RETOUR PEUT ETRE NEGATIF SANS POUR
 !      AUTANT QU'IL Y AIT UN PROBLEME...
 !      IF ( CODRET.NE.0 ) THEN
-!        SAUX08='MFFAML  '
+!        SAUX08='mmhfnr'
 !        CALL U2MESG('F','DVP_97',1,SAUX08,1,CODRET,0,0.D0)
 !      ENDIF
 !
@@ -178,12 +178,12 @@ subroutine lrmmfa(fid, nomamd, nbnoeu, nbmail, grpnoe,&
 !
             call wkvect('&&'//nompro//'.FAMMA.'//nomtyp(ityp), 'V V I', nmatyp(ityp),&
                         jfamma(ityp))
-            call mffaml(fid, nomamd, zi(jfamma(ityp)), nmatyp( ityp), edmail,&
+            call as_mmhfnr(fid, nomamd, zi(jfamma(ityp)), nmatyp( ityp), edmail,&
                         typgeo(ityp), codret)
 !         DANS MED3.0, LE CODE RETOUR PEUT ETRE NEGATIF SANS POUR
 !         AUTANT QU'IL Y AIT UN PROBLEME...
 !          IF ( CODRET.NE.0 ) THEN
-!            SAUX08='MFFAML  '
+!            SAUX08='mmhfnr'
 !            CALL U2MESG('F','DVP_97',1,SAUX08,1,CODRET,0,0.D0)
 !          ENDIF
 !

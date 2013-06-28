@@ -11,4 +11,3 @@
 #define to_aster_int(a) int(a, ASTER_INT_SIZE)
 !
 #endif
-

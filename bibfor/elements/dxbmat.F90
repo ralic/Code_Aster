@@ -9,7 +9,7 @@ subroutine dxbmat(nomte, cara, xyzl, pgl, igau,&
     include 'asterfort/t3gb.h'
     include 'asterfort/u2mesk.h'
     integer :: igau
-    real(kind=8) :: xyzl(3, 1), pgl(3, 1), bmat(8, 1), jacgau, cara(*)
+    real(kind=8) :: xyzl(3, *), pgl(3, *), bmat(8, *), jacgau, cara(*)
     character(len=16) :: nomte
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG

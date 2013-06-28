@@ -42,13 +42,13 @@ subroutine lrcmle(idfimd, nochmd, nbcmfi, nbvato, numpt,&
 !
 ! 0.1. ==> ARGUMENTS
 !
-    include 'jeveux.h'
-    include 'asterfort/infniv.h'
-    include 'asterfort/mfchrl.h'
-    include 'asterfort/mfnnop.h'
-    include 'asterfort/mfprlo.h'
-    include 'asterfort/u2mesg.h'
-    include 'asterfort/wkvect.h'
+#   include "jeveux.h"
+#   include "asterfort/infniv.h"
+#   include "asterfort/as_mfdrpr.h"
+#   include "asterfort/as_mfdonv.h"
+#   include "asterfort/as_mfdonp.h"
+#   include "asterfort/u2mesg.h"
+#   include "asterfort/wkvect.h"
     integer :: idfimd
     integer :: nbcmfi, nbvato, numpt, numord
     integer :: typent, typgeo
@@ -95,11 +95,11 @@ subroutine lrcmle(idfimd, nochmd, nbcmfi, nbvato, numpt,&
 ! 2. LECTURE DU NOM DU PROFIL
 !====
 !
-    call mfprlo(idfimd, nochmd, numpt, numord, typent,&
+    call as_mfdonp(idfimd, nochmd, numpt, numord, typent,&
                 typgeo, iterma, nomamd, nomprf, nomloc,&
                 nbprof, codret)
     do 10, iprof = 1, nbprof
-    call mfnnop(idfimd, nochmd, typent, typgeo, nomamd,&
+    call as_mfdonv(idfimd, nochmd, typent, typgeo, nomamd,&
                 numpt, numord, iprof, nomprf, edcomp,&
                 taipro, nomloc, nip, n, codret)
     10 end do
@@ -110,12 +110,12 @@ subroutine lrcmle(idfimd, nochmd, nbcmfi, nbvato, numpt,&
 !
     call wkvect(ntvale, 'V V R', nbcmfi*nbvato, advale)
 !
-    call mfchrl(idfimd, nochmd, zr(advale), edfuin, edall,&
+    call as_mfdrpr(idfimd, nochmd, zr(advale), edfuin, edall,&
                 nomprf, edcomp, typent, typgeo, numpt,&
                 numord, codret)
 !
     if (codret .ne. 0) then
-        saux08='MFCHRL  '
+        saux08='mfdrpr'
         call u2mesg('F', 'DVP_97', 1, saux08, 1,&
                     codret, 0, 0.d0)
     endif

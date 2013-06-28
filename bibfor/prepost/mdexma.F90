@@ -45,14 +45,14 @@ subroutine mdexma(nofimd, idfimd, nomamd, option, existm,&
 !
 ! 0.1. ==> ARGUMENTS
 !
-    include 'asterfort/lxlgut.h'
-    include 'asterfort/mfferm.h'
-    include 'asterfort/mfmaai.h'
-    include 'asterfort/mfnmaa.h'
-    include 'asterfort/mfouvr.h'
-    include 'asterfort/u2mesg.h'
-    include 'asterfort/u2mesk.h'
-    include 'asterfort/u2mess.h'
+#   include "asterfort/lxlgut.h"
+#   include "asterfort/as_mficlo.h"
+#   include "asterfort/as_mmhmii.h"
+#   include "asterfort/as_mmhnmh.h"
+#   include "asterfort/as_mfiope.h"
+#   include "asterfort/u2mesg.h"
+#   include "asterfort/u2mesk.h"
+#   include "asterfort/u2mess.h"
     character(len=*) :: nofimd, nomamd
 !
     logical :: existm, ficexi, dejouv
@@ -98,7 +98,7 @@ subroutine mdexma(nofimd, idfimd, nomamd, option, existm,&
 !
     else
         if (idfimd .eq. 0) then
-            call mfouvr(idfimd, nofimd, edlect, iaux)
+            call as_mfiope(idfimd, nofimd, edlect, iaux)
             dejouv = .false.
         else
             dejouv = .true.
@@ -112,9 +112,9 @@ subroutine mdexma(nofimd, idfimd, nomamd, option, existm,&
 !
 ! 2.1. ==> COMBIEN DE MAILLAGES DANS LE FICHIER
 !
-            call mfnmaa(idfimd, nbmaie, codret)
+            call as_mmhnmh(idfimd, nbmaie, codret)
             if (codret .ne. 0) then
-                saux08='MFNMAA  '
+                saux08='mmhnmh'
                 call u2mesg('F', 'DVP_97', 1, saux08, 1,&
                             codret, 0, 0.d0)
             endif
@@ -131,10 +131,10 @@ subroutine mdexma(nofimd, idfimd, nomamd, option, existm,&
 !
 !               12345678901234567890123456789012
             saux64 = '                                '//'                      '
-            call mfmaai(idfimd, iaux, saux64, kaux, tyaux,&
+            call as_mmhmii(idfimd, iaux, saux64, kaux, tyaux,&
                         daux, codret)
             if (codret .ne. 0) then
-                saux08='MFMAAI  '
+                saux08='mmhmii'
                 call u2mesg('F', 'DVP_97', 1, saux08, 1,&
                             codret, 0, 0.d0)
             endif
@@ -167,7 +167,7 @@ subroutine mdexma(nofimd, idfimd, nomamd, option, existm,&
                 do 23 , iaux = 1 , nbmaie
 !                   12345678901234567890123456789012
                 saux64 = '                                '//'                  '
-                call mfmaai(idfimd, iaux, saux64, kaux, tyaux,&
+                call as_mmhmii(idfimd, iaux, saux64, kaux, tyaux,&
                             daux, codret)
                 jaux = lxlgut(saux64)
                 valk = saux64(1:jaux)
@@ -186,9 +186,9 @@ subroutine mdexma(nofimd, idfimd, nomamd, option, existm,&
 ! 2.3. ==> FERMETURE DU FICHIER
 !
             if (.not.dejouv) then
-                call mfferm(idfimd, codret)
+                call as_mficlo(idfimd, codret)
                 if (codret .ne. 0) then
-                    saux08='MFFERM  '
+                    saux08='mficlo'
                     call u2mesg('F', 'DVP_97', 1, saux08, 1,&
                                 codret, 0, 0.d0)
                 endif

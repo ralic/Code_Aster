@@ -26,8 +26,8 @@ interface
         integer :: iliai
         integer :: ndimg
         integer :: nbnom
-        integer :: posnsm(9)
-        real(kind=8) :: coefno(9)
+        integer :: posnsm(*)
+        real(kind=8) :: coefno(*)
         real(kind=8) :: tau1(3)
         real(kind=8) :: tau2(3)
         real(kind=8) :: norm(3)

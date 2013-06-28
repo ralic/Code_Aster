@@ -111,7 +111,6 @@ subroutine fluimp(itypfl, nivpar, nivdef, melflu, typflu,&
     nive = 3
 !
     npasv = npv
-    nbno = 0
 !
     lcor = .false.
     lsup = .false.
@@ -563,8 +562,8 @@ subroutine fluimp(itypfl, nivpar, nivdef, melflu, typflu,&
                 write(ifr,*)
                 write(cham19(17:19),'(I3.3)') iv
                 call irdepl(cham19, ' ', ifr, 'RESULTAT', k8bid,&
-                            k8bid, nomsym, ibid, lcor, nbno,&
-                            ibid, 6, nomcmp, lsup, rbid,&
+                            k8bid, nomsym, ibid, lcor, 0,&
+                            [0], 6, nomcmp, lsup, rbid,&
                             linf, rbid, lmax, lmin, lresu,&
                             formar, nive)
                 write(ifr,*)

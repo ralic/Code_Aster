@@ -98,8 +98,8 @@ subroutine xcfacf(ptint, ptmax, ipt, ainter, lsn,&
 !       RECHERCHE DES INTERSECTION ENTRE LE FOND DE FISSURE ET LA FACE
         call intfac(noma, nmaabs, ifq, fa, nno,&
                     lst, lsn, ndim, 'NON', ibid,&
-                    ibid, igeom, m, indptf, rbid,&
-                    rbid, codret)
+                    ibid, igeom, m, indptf, [rbid],&
+                    [rbid], codret)
         if (codret .eq. 0) goto 200
 !
 !       POUR IGNORER LES POINTS CONFONDUS AVEC CEUX

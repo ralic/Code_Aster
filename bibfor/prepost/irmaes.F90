@@ -2,17 +2,17 @@ subroutine irmaes(idfimd, nomaas, nomamd, nbimpr, caimpi,&
                   modnum, nuanom, nomtyp, nnotyp, sdcarm)
     implicit none
 !
-    include 'asterc/indik8.h'
-    include 'asterfort/cesexi.h'
-    include 'asterfort/exisd.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jelira.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/jexatr.h'
-    include 'asterfort/mfcone.h'
-    include 'asterfort/mfesar.h'
-    include 'asterfort/u2mesg.h'
-    include 'asterfort/wkvect.h'
+#   include "asterc/indik8.h"
+#   include "asterfort/cesexi.h"
+#   include "asterfort/exisd.h"
+#   include "asterfort/jedetr.h"
+#   include "asterfort/jelira.h"
+#   include "asterfort/jeveuo.h"
+#   include "asterfort/jexatr.h"
+#   include "asterfort/as_mmhcyw.h"
+#   include "asterfort/as_mmhraw.h"
+#   include "asterfort/u2mesg.h"
+#   include "asterfort/wkvect.h"
     integer :: ntymax
     parameter (ntymax = 69)
 !
@@ -59,7 +59,7 @@ subroutine irmaes(idfimd, nomaas, nomamd, nbimpr, caimpi,&
 !   SDCARM  K*   SD_CARA_ELEM EN CHAM_ELEM_S
 !
 !
-    include 'jeveux.h'
+#   include "jeveux.h"
 !
 !
     integer :: codret, ipoin, ityp, letype, ino, iret, nbcmp, iad
@@ -245,20 +245,20 @@ subroutine irmaes(idfimd, nomaas, nomamd, nbimpr, caimpi,&
 !          LA CONNECTIVITE EST FOURNIE EN STOCKANT TOUS LES NOEUDS A
 !          LA SUITE POUR UNE MAILLE DONNEE.
 !          C'EST CE QUE MED APPELLE LE MODE ENTRELACE
-        call mfcone(idfimd, nomamd, zi(jcnxma(ityp)), nnotyp(ityp)* nmatyp(ityp), edfuin,&
+        call as_mmhcyw(idfimd, nomamd, zi(jcnxma(ityp)), nnotyp(ityp)* nmatyp(ityp), edfuin,&
                     nmatyp(ityp), edelst, nvtyge, ednoda, codret)
         if (codret .ne. 0) then
-            saux08='MFCONE  '
+            saux08='mmhcyw'
             call u2mesg('F', 'DVP_97', 1, saux08, 1,&
                         codret, 0, 0.d0)
         endif
 !
 !         -- ATTRIBUTS VARIABLE, ICI L'EPAISSEUR
         if (nbcouc .ne. 0 .and. nbsect .eq. 0) then
-            call mfesar(idfimd, nomamd, nvtyge, atepai, nmatyp(ityp),&
+            call as_mmhraw(idfimd, nomamd, nvtyge, atepai, nmatyp(ityp),&
                         zr(jattma(ityp)), codret)
             if (codret .ne. 0) then
-                saux08='MFESAR'
+                saux08='mmhraw'
                 call u2mesg('F', 'DVP_97', 1, saux08, 1,&
                             codret, 0, 0.d0)
             endif
@@ -266,10 +266,10 @@ subroutine irmaes(idfimd, nomaas, nomamd, nbimpr, caimpi,&
 !
 !         -- ATTRIBUTS VARIABLE, ICI GAMMA
         if (nbfibr .ne. 0 .or. nbsect .ne. 0) then
-            call mfesar(idfimd, nomamd, nvtyge, atangv, nmatyp(ityp),&
+            call as_mmhraw(idfimd, nomamd, nvtyge, atangv, nmatyp(ityp),&
                         zr(jorima(ityp)), codret)
             if (codret .ne. 0) then
-                saux08='MFESAR'
+                saux08='mmhraw'
                 call u2mesg('F', 'DVP_97', 1, saux08, 1,&
                             codret, 0, 0.d0)
             endif
@@ -277,17 +277,17 @@ subroutine irmaes(idfimd, nomaas, nomamd, nbimpr, caimpi,&
 !
 !         -- ATTRIBUTS VARIABLE, ICI RMIN ET RMAX
         if (nbsect .ne. 0) then
-            call mfesar(idfimd, nomamd, nvtyge, atrmin, nmatyp(ityp),&
+            call as_mmhraw(idfimd, nomamd, nvtyge, atrmin, nmatyp(ityp),&
                         zr(jrmin(ityp)), codret)
             if (codret .ne. 0) then
-                saux08='MFESAR'
+                saux08='mmhraw'
                 call u2mesg('F', 'DVP_97', 1, saux08, 1,&
                             codret, 0, 0.d0)
             endif
-            call mfesar(idfimd, nomamd, nvtyge, atrmax, nmatyp(ityp),&
+            call as_mmhraw(idfimd, nomamd, nvtyge, atrmax, nmatyp(ityp),&
                         zr(jrmax(ityp)), codret)
             if (codret .ne. 0) then
-                saux08='MFESAR'
+                saux08='mmhraw'
                 call u2mesg('F', 'DVP_97', 1, saux08, 1,&
                             codret, 0, 0.d0)
             endif

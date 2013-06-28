@@ -16,13 +16,14 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
+#include "types/med_types.h"
     subroutine msevac(fid, mname, aname, atype, anc,&
                       cret)
-        integer :: fid
+        med_int :: fid
         character(*) :: mname
         character(*) :: aname
-        integer :: atype
-        integer :: anc
-        integer :: cret
+        med_int :: atype
+        med_int :: anc
+        med_int :: cret
     end subroutine msevac
 end interface

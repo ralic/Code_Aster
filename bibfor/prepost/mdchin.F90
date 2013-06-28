@@ -50,10 +50,10 @@ subroutine mdchin(nofimd, idfimd, nochmd, typent, typgeo,&
 !
 ! 0.1. ==> ARGUMENTS
 !
-    include 'asterfort/mdchii.h'
-    include 'asterfort/mfferm.h'
-    include 'asterfort/mfouvr.h'
-    include 'asterfort/u2mesg.h'
+#   include "asterfort/mdchii.h"
+#   include "asterfort/as_mficlo.h"
+#   include "asterfort/as_mfiope.h"
+#   include "asterfort/u2mesg.h"
     integer :: nbtv
     integer :: typent, typgeo
     integer :: codret
@@ -76,14 +76,14 @@ subroutine mdchin(nofimd, idfimd, nochmd, typent, typgeo,&
 !====
 !
     if (idfimd .eq. 0) then
-        call mfouvr(idfimd, nofimd, edlect, codret)
+        call as_mfiope(idfimd, nofimd, edlect, codret)
         dejouv = .false.
     else
         dejouv = .true.
         codret = 0
     endif
     if (codret .ne. 0) then
-        saux08='MFOUVR  '
+        saux08='mfiope'
         call u2mesg('F', 'DVP_97', 1, saux08, 1,&
                     codret, 0, 0.d0)
     endif
@@ -100,9 +100,9 @@ subroutine mdchin(nofimd, idfimd, nochmd, typent, typgeo,&
 !====
 !
     if (.not.dejouv) then
-        call mfferm(idfimd, codret)
+        call as_mficlo(idfimd, codret)
         if (codret .ne. 0) then
-            saux08='MFFERM  '
+            saux08='mficlo'
             call u2mesg('F', 'DVP_97', 1, saux08, 1,&
                         codret, 0, 0.d0)
         endif

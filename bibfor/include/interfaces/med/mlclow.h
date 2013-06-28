@@ -16,20 +16,21 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
+#include "types/med_types.h"
     subroutine mlclow(fid, lname, gtype, sdim, ecoo,&
                       swm, nip, ipcoo, wght, giname,&
                       isname, cret)
-        integer :: fid
+        med_int :: fid
         character(*) :: lname
-        integer :: gtype
-        integer :: sdim
+        med_int :: gtype
+        med_int :: sdim
         real(kind=8) :: ecoo(*)
-        integer :: swm
-        integer :: nip
+        med_int :: swm
+        med_int :: nip
         real(kind=8) :: ipcoo(*)
         real(kind=8) :: wght(*)
         character(*) :: giname
         character(*) :: isname
-        integer :: cret
+        med_int :: cret
     end subroutine mlclow
 end interface

@@ -47,24 +47,24 @@ subroutine irmhdf(ifi, ndim, nbnoeu, coordo, nbmail,&
 !
 ! 0.1. ==> ARGUMENTS
 !
-    include 'asterfort/codent.h'
-    include 'asterfort/infniv.h'
-    include 'asterfort/irmdes.h'
-    include 'asterfort/irmmfa.h'
-    include 'asterfort/irmmma.h'
-    include 'asterfort/irmmno.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jedetc.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/lrmtyp.h'
-    include 'asterfort/mdexma.h'
-    include 'asterfort/mdnoma.h'
-    include 'asterfort/mfferm.h'
-    include 'asterfort/mfmaac.h'
-    include 'asterfort/mfouvr.h'
-    include 'asterfort/u2mesg.h'
-    include 'asterfort/u2mesk.h'
-    include 'asterfort/ulisog.h'
+#   include "asterfort/codent.h"
+#   include "asterfort/infniv.h"
+#   include "asterfort/irmdes.h"
+#   include "asterfort/irmmfa.h"
+#   include "asterfort/irmmma.h"
+#   include "asterfort/irmmno.h"
+#   include "asterfort/jedema.h"
+#   include "asterfort/jedetc.h"
+#   include "asterfort/jemarq.h"
+#   include "asterfort/lrmtyp.h"
+#   include "asterfort/mdexma.h"
+#   include "asterfort/mdnoma.h"
+#   include "asterfort/as_mficlo.h"
+#   include "asterfort/as_mmhcre.h"
+#   include "asterfort/as_mfiope.h"
+#   include "asterfort/u2mesg.h"
+#   include "asterfort/u2mesk.h"
+#   include "asterfort/ulisog.h"
     integer :: connex(*), typma(*), point(*)
     integer :: ifi, ndim, nbnoeu, nbmail, nbgrno, nbgrma
     integer :: infmed, nbtitr
@@ -193,14 +193,14 @@ subroutine irmhdf(ifi, ndim, nbnoeu, coordo, nbmail,&
         inquire(file=nofimd,exist=ficexi)
         if (ficexi) then
             edmode = edlect
-            call mfouvr(fid, nofimd, edmode, codret)
+            call as_mfiope(fid, nofimd, edmode, codret)
             if (codret .ne. 0) then
                 edmode = edcrea
             else
                 edmode = edleaj
-                call mfferm(fid, codret)
+                call as_mficlo(fid, codret)
                 if (codret .ne. 0) then
-                    saux08='MFFERM  '
+                    saux08='mficlo'
                     call u2mesg('F', 'DVP_97', 1, saux08, 1,&
                                 codret, 0, 0.d0)
                 endif
@@ -208,9 +208,9 @@ subroutine irmhdf(ifi, ndim, nbnoeu, coordo, nbmail,&
         else
             edmode = edcrea
         endif
-        call mfouvr(fid, nofimd, edmode, codret)
+        call as_mfiope(fid, nofimd, edmode, codret)
         if (codret .ne. 0) then
-            saux08='MFOUVR  '
+            saux08='mfiope'
             call u2mesg('F', 'DVP_97', 1, saux08, 1,&
                         codret, 0, 0.d0)
         endif
@@ -228,16 +228,16 @@ subroutine irmhdf(ifi, ndim, nbnoeu, coordo, nbmail,&
 !
 ! 2.2. ==> CREATION DU MAILLAGE AU SENS MED (TYPE MED_NON_STRUCTURE)
 !
-!GN      PRINT *,'APPEL DE MFMAAC AVEC :'
+!GN      PRINT *,'APPEL DE as_mmhcre AVEC :'
 !GN      PRINT *,NOMAMD
 !GN      PRINT *,NDIM
 !GN      PRINT *,EDNSTR
         desc = 'CREE PAR CODE_ASTER'
         descdt = 'SANS UNITES'
-        call mfmaac(fid, nomamd, ndim, ednstr, desc,&
+        call as_mmhcre(fid, nomamd, ndim, ednstr, desc,&
                     descdt, edcart, nomcoo, unicoo, codret)
         if (codret .ne. 0) then
-            saux08='MFMAAC  '
+            saux08='mmhcre'
             call u2mesg('F', 'DVP_97', 1, saux08, 1,&
                         codret, 0, 0.d0)
         endif
@@ -298,9 +298,9 @@ subroutine irmhdf(ifi, ndim, nbnoeu, coordo, nbmail,&
 ! 8. FERMETURE DU FICHIER MED
 !====
 !
-        call mfferm(fid, codret)
+        call as_mficlo(fid, codret)
         if (codret .ne. 0) then
-            saux08='MFFERM  '
+            saux08='mficlo'
             call u2mesg('F', 'DVP_97', 1, saux08, 1,&
                         codret, 0, 0.d0)
         endif

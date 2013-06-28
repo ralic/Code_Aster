@@ -66,7 +66,7 @@ subroutine te0377(option, nomte)
 !
     integer :: ifm, niv
     integer :: iadzi, iazk24
-    integer :: ibid, iaux, iret, itab(7)
+    integer :: ibid, iaux, iret, itab(7), noe(9,6,4)
     integer :: igeom, jtime
     integer :: ierr, ivois
     integer :: imate
@@ -91,7 +91,7 @@ subroutine te0377(option, nomte)
     real(kind=8) :: dsx, dsy
     real(kind=8) :: errest, nor, norsig, sigcal, nuest, coeff
     real(kind=8) :: ter1, ter2, ter3, hf, inte, inst
-    real(kind=8) :: nx(3), ny(3), jaco(3), orien
+    real(kind=8) :: nx(9), ny(9), nz(9), jaco(9), orien
     real(kind=8) :: chx(3), chy(3)
     real(kind=8) :: sg11(3), sg22(3), sg12(3)
     real(kind=8) :: tx(3), ty(3)
@@ -411,9 +411,9 @@ subroutine te0377(option, nomte)
 !
         iaux = ifa
         call calnor('2D', zr(igeom), iaux, nnos, nnof,&
-                    orien, ibid, ibid, itab, ibid,&
+                    orien, ibid, ibid, noe, ibid,&
                     ibid, ibid, jaco, nx, ny,&
-                    r8bid3, tx, ty, hf)
+                    nz, tx, ty, hf)
 !
 ! ----------------------------------------------------------------------
 ! --------------- CALCUL DU DEUXIEME TERME DE L'ERREUR -----------------

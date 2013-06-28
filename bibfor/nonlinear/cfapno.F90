@@ -128,12 +128,11 @@ subroutine cfapno(noma, newgeo, defico, resoco, lctfd,&
 ! --- COEFFICIENT DE LA RELATION LINEAIRE SUR NOEUD MAITRE
 !
     coefno(1) = - 1.d0
-    nbnom = 1
 !
 ! --- AJOUT DE LA LIAISON NODALE
 !
     call cfaddm(resoco, lctfd, lctf3d, posnoe, iliai,&
-                ndimg, nbnom, posnom, coefno, tau1,&
+                ndimg, 1, [posnom], coefno, tau1,&
                 tau2, norm, jeu, coornm)
 !
     call jedema()

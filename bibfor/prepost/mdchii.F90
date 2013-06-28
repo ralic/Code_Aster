@@ -44,27 +44,27 @@ subroutine mdchii(idfimd, nochmd, typent, typgeo, prefix,&
 !
 ! 0.1. ==> ARGUMENTS
 !
-    include 'jeveux.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/codent.h'
-    include 'asterfort/infniv.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jeexin.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/lxlgut.h'
-    include 'asterfort/mfchai.h'
-    include 'asterfort/mfncha.h'
-    include 'asterfort/mfnco2.h'
-    include 'asterfort/mfncom.h'
-    include 'asterfort/mfnpdt.h'
-    include 'asterfort/mfpdti.h'
-    include 'asterfort/mfprlo.h'
-    include 'asterfort/u2mesg.h'
-    include 'asterfort/u2mesk.h'
-    include 'asterfort/u2mess.h'
-    include 'asterfort/wkvect.h'
+#   include "jeveux.h"
+#   include "asterfort/assert.h"
+#   include "asterfort/codent.h"
+#   include "asterfort/infniv.h"
+#   include "asterfort/jedema.h"
+#   include "asterfort/jedetr.h"
+#   include "asterfort/jeexin.h"
+#   include "asterfort/jemarq.h"
+#   include "asterfort/jeveuo.h"
+#   include "asterfort/lxlgut.h"
+#   include "asterfort/as_mfdfdi.h"
+#   include "asterfort/as_mfdnfd.h"
+#   include "asterfort/as_mfdncn.h"
+#   include "asterfort/as_mfdnfc.h"
+#   include "asterfort/as_mfdfin.h"
+#   include "asterfort/as_mfdcsi.h"
+#   include "asterfort/as_mfdonp.h"
+#   include "asterfort/u2mesg.h"
+#   include "asterfort/u2mesk.h"
+#   include "asterfort/u2mess.h"
+#   include "asterfort/wkvect.h"
     integer :: idfimd
     integer :: nbtv
     integer :: typent, typgeo
@@ -111,9 +111,9 @@ subroutine mdchii(idfimd, nochmd, typent, typgeo, prefix,&
 !
 ! 1.1. ==> NBCHAM : NOMBRE DE CHAMPS DANS LE FICHIER
 !
-    call mfncha(idfimd, nbcham, codret)
+    call as_mfdnfd(idfimd, nbcham, codret)
     if (codret .ne. 0) then
-        saux08='MFNCHA  '
+        saux08='mfdnfd'
         call u2mesg('F', 'DVP_97', 1, saux08, 1,&
                     codret, 0, 0.d0)
     endif
@@ -130,9 +130,9 @@ subroutine mdchii(idfimd, nochmd, typent, typgeo, prefix,&
 ! 1.2.1. ==> NBCMFI : NOMBRE DE COMPOSANTES DANS LE FICHIER POUR
 !                     LE CHAMP NUMERO IAUX
 !
-    call mfncom(idfimd, iaux, nbcmfi, codret)
+    call as_mfdnfc(idfimd, iaux, nbcmfi, codret)
     if (codret .ne. 0) then
-        saux08='MFNCOM  '
+        saux08='mfdnfc'
         call u2mesg('F', 'DVP_97', 1, saux08, 1,&
                     codret, 0, 0.d0)
     endif
@@ -147,11 +147,11 @@ subroutine mdchii(idfimd, nochmd, typent, typgeo, prefix,&
     call wkvect('&&'//nompro//'U'//saux08, 'V V K16', nbcmfi, aducmp)
 !                 12345678901234567890123456789012
     saux64 = '                                        '//'                      '
-    call mfchai(idfimd, iaux, saux64, jaux, zk16(adncmp),&
+    call as_mfdfdi(idfimd, iaux, saux64, jaux, zk16(adncmp),&
                 zk16(aducmp), nseqca, codret)
     if (codret .ne. 0 .or. jaux .ne. mfloat) then
         if (codret .ne. 0) then
-            saux08='MFCHAI  '
+            saux08='mfdfdi'
             call u2mesg('F', 'DVP_97', 1, saux08, 1,&
                         codret, 0, 0.d0)
         endif
@@ -179,13 +179,13 @@ subroutine mdchii(idfimd, nochmd, typent, typgeo, prefix,&
     call assert(numsau.ne.0)
 !
     if (existc .ne. 1) then
-        call mfncha(idfimd, nchmed, codret)
+        call as_mfdnfd(idfimd, nchmed, codret)
         call u2mesk('F+', 'MED_57', 1, nochmd(1:lnochm))
         do 50, iaux = 1, nchmed
-        call mfncom(idfimd, iaux, nbcmp, codret)
+        call as_mfdnfc(idfimd, iaux, nbcmp, codret)
         call wkvect('&&MDCHII.NOMCMP_K16', 'V V K16', nbcmp, jcmp)
         call wkvect('&&MDCHII.UNITCMP', 'V V K16', nbcmp, junit)
-        call mfchai(idfimd, iaux, nomcha, typech, zk16(jcmp),&
+        call as_mfdfdi(idfimd, iaux, nomcha, typech, zk16(jcmp),&
                     zk16(junit), nseqca, codret)
         call u2mesk('F+', 'MED2_2', 1, nomcha)
         call jedetr('&&MDCHII.NOMCMP_K16')
@@ -198,15 +198,15 @@ subroutine mdchii(idfimd, nochmd, typent, typgeo, prefix,&
 ! 2. NOMBRE DE TABLEAUX DE VALEURS ASSOCIES AU CHAMP
 !====
 !
-    call mfnco2(idfimd, nochmd, ncmp, codret)
+    call as_mfdncn(idfimd, nochmd, ncmp, codret)
     call wkvect('&&MDCHII.CNAME', 'V V K16', ncmp, jcmp)
     call wkvect('&&MDCHII.CUNIT', 'V V K16', ncmp, junit)
 !
-    call mfnpdt(idfimd, nochmd, nomam2, nbtv, zk16(junit),&
+    call as_mfdfin(idfimd, nochmd, nomam2, nbtv, zk16(junit),&
                 zk16(jcmp), codret)
 !
     if (codret .ne. 0) then
-        saux08='MFNPDT  '
+        saux08='mfdfin'
         call u2mesg('F', 'DVP_97', 1, saux08, 1,&
                     codret, 0, 0.d0)
     endif
@@ -245,11 +245,11 @@ subroutine mdchii(idfimd, nochmd, typent, typgeo, prefix,&
 !    . NUMERO, UNITE ET VALEUR DU PAS DE TEMPS : FINUPT, FIINST
 !    . NUMERO D'ORDRE : FINUNO
 !
-        call mfpdti(idfimd, nochmd, iaux, finupt, finuno,&
+        call as_mfdcsi(idfimd, nochmd, iaux, finupt, finuno,&
                     fiinst, codret)
 !
         if (codret .ne. 0) then
-            saux08='MFPDTI  '
+            saux08='mfdcsi'
             call u2mesg('F', 'DVP_97', 1, saux08, 1,&
                         codret, 0, 0.d0)
         endif
@@ -276,7 +276,7 @@ subroutine mdchii(idfimd, nochmd, typent, typgeo, prefix,&
 !       ON REGARDE DANS LE FICHIER MED SI DES VALEURS SONT REFERENCEES
 !       POUR TYPENT ET TYPGEO, SI CE N'EST PAS LE CAS, ON RETIRE
 !       CET INSTANT DE LA LISTE
-    call mfprlo(idfimd, nochmd, finupt, finuno, typent,&
+    call as_mfdonp(idfimd, nochmd, finupt, finuno, typent,&
                 typgeo, iterma, nomamd, nomprf, nomloc,&
                 npro, codret)
 !

@@ -50,23 +50,23 @@ subroutine lrvcpg(idfimd, nbpgm, nbpga, nomtm, tygeos,&
 !
     implicit none
 !
-    include 'jeveux.h'
+#   include "jeveux.h"
 !
-    include 'asterfort/assert.h'
-    include 'asterfort/elraga.h'
-    include 'asterfort/infniv.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jenonu.h'
-    include 'asterfort/jexnom.h'
-    include 'asterfort/mfgaui.h'
-    include 'asterfort/mfgaul.h'
-    include 'asterfort/u2mesg.h'
-    include 'asterfort/u2mesi.h'
-    include 'asterfort/u2mesk.h'
-    include 'asterfort/u2mess.h'
-    include 'asterfort/wkvect.h'
+#   include "asterfort/assert.h"
+#   include "asterfort/elraga.h"
+#   include "asterfort/infniv.h"
+#   include "asterfort/jedema.h"
+#   include "asterfort/jedetr.h"
+#   include "asterfort/jemarq.h"
+#   include "asterfort/jenonu.h"
+#   include "asterfort/jexnom.h"
+#   include "asterfort/as_mlclci.h"
+#   include "asterfort/as_mlclor.h"
+#   include "asterfort/u2mesg.h"
+#   include "asterfort/u2mesi.h"
+#   include "asterfort/u2mesk.h"
+#   include "asterfort/u2mess.h"
+#   include "asterfort/wkvect.h"
     integer :: tygeos, nbpgm, nbpga, nloc, nutyma, idfimd
     integer :: permu(nbpgm), codret
     character(len=8) :: elrefa, elrefm, fapg, nomtm
@@ -127,7 +127,7 @@ subroutine lrvcpg(idfimd, nbpgm, nbpga, nomtm, tygeos,&
     endif
 !
     do 130 iloc = 1, nloc
-        call mfgaui(idfimd, iloc, locnam, typgeo, ibid,&
+        call as_mlclci(idfimd, iloc, locnam, typgeo, ibid,&
                     ndim, nomasu, iret)
         if (tygeos .eq. typgeo) goto 140
 130  end do
@@ -150,7 +150,7 @@ subroutine lrvcpg(idfimd, nbpgm, nbpga, nomtm, tygeos,&
     call wkvect('&&LRVCPG_COORD_NO_MED', 'V V R', nnoref, jrefco)
     call wkvect('&&LRVCPG_COORD_PG_MED', 'V V R', npgref, jgscoo)
     call wkvect('&&LRVCPG_POIDS_PG_MED', 'V V R', nbpgm, jwg)
-    call mfgaul(idfimd, zr(jrefco), zr(jgscoo), zr(jwg), edfuin,&
+    call as_mlclor(idfimd, zr(jrefco), zr(jgscoo), zr(jwg), edfuin,&
                 locnam, iret)
     call assert(typgeo/100.eq.dime)
 !

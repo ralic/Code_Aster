@@ -69,37 +69,26 @@ subroutine te0497(option, nomte)
     integer :: ibid, iaux, iret, itab(7)
     integer :: igeom
     integer :: ierr, ivois
-    integer :: ierrm
-    integer :: imate
-    integer :: ifovr, ifovf
-    integer :: ipes, irot
-    integer :: iref1, iref2
-    integer :: ndim
+    integer :: ierrm,imate,ifovr, ifovf
+    integer :: ipes, irot,iref1, iref2,ndim
     integer :: nno, nnos, npg, ipoids, ivf, idfde, jgano
     integer :: ipoid2, ivf2, idfde2
-    integer :: nbcmp
-    integer :: ipg
-    integer :: ifa, tyv
-    integer :: nbs, kpg, spt
+    integer :: nbcmp,ipg,ifa, tyv,nbs, kpg, spt
     integer :: isienp, isienm, ideplp, ideplm, jkp, nbna
-    integer :: iagd, iatyma, typ
-    integer :: iacmp
+    integer :: iagd, iatyma, typ,iacmp
     integer :: iade2, iava2, iaptm2, igd2, ncmpm2
     integer :: iade3, iava3, iaptm3, igd3, ncmpm3
-    integer :: igrdca
-    integer :: dimdep, dimdef, dimcon
+    integer :: igrdca,dimdep, dimdef, dimcon
     integer :: nmec, npi, np1, np2, nnom, nddls, nddlm
     integer :: mecani(5), press1(7), press2(7), tempe(5), dimuel
-    integer :: adsip
-    integer :: yamec, addeme, adcome, yate, addete
+    integer :: adsip,yamec, addeme, adcome, yate, addete
     integer :: yap1, addep1, adcp11
-    integer :: yap2, addep2
-    integer :: ii
+    integer :: yap2, addep2, ii , noe(9,6,4)
 !
     real(kind=8) :: ovfl
     real(kind=8) :: r8bid3(2)
     real(kind=8) :: valres(1)
-    real(kind=8) :: orien, nx(3), ny(3), tx(3), ty(3), hf
+    real(kind=8) :: orien, nx(9), ny(9), nz(9), tx(3), ty(3), hf
     real(kind=8) :: fpx, fpy
     real(kind=8) :: frx(9), fry(9)
     real(kind=8) :: fovo(2)
@@ -611,9 +600,9 @@ subroutine te0497(option, nomte)
 !
         iaux = ifa
         call calnor('2D', zr(igeom), iaux, nbs, nbna,&
-                    orien, ibid, ibid, itab, ibid,&
+                    orien, ibid, ibid, noe, ibid,&
                     ibid, ibid, jaco, nx, ny,&
-                    r8bid3, tx, ty, hf)
+                    nz, tx, ty, hf)
 !
 ! ------- SI L'ARRETE N'EST PAS SUR LA FRONTIERE DE LA STRUCTURE...
 !         CALCUL DES TERMES DE SAUT A TRAVERS LES FACES INTERIEURES

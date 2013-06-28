@@ -173,7 +173,7 @@ subroutine xjacf2(elrefp, elrefc, elc, ndim, fpg,&
 !
 ! --- CONSTRUCTION DE LA BASE AU POINT DE GAUSS
 !     CALCUL DES FF DE LA FACETTE EN CE POINT DE GAUSS
-    call elrfvf(elc, ksig1, nbnomx, ff, ibid)
+    call elrfvf(elc, [ksig1], nbnomx, ff, ibid)
 !
     do 40 j = 1, ndim
         do 41 k = 1, nnof

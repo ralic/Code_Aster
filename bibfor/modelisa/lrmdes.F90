@@ -34,12 +34,12 @@ subroutine lrmdes(fid, nbltit, descfi, titre)
 !
 ! 0.1. ==> ARGUMENTS
 !
-    include 'jeveux.h'
-    include 'asterfort/enlird.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/mffien.h'
-    include 'asterfort/wkvect.h'
+#   include "jeveux.h"
+#   include "asterfort/enlird.h"
+#   include "asterfort/jedema.h"
+#   include "asterfort/jemarq.h"
+#   include "asterfort/as_mficor.h"
+#   include "asterfort/wkvect.h"
     integer :: fid
     integer :: nbltit
 !
@@ -65,10 +65,10 @@ subroutine lrmdes(fid, nbltit, descfi, titre)
 !
     descfi=' '
 !
-    call mffien(fid, descfi, codret)
+    call as_mficor(fid, descfi, codret)
 !     POUR CERTAINES ROUTINES MED CODRET = -1 N'EST PAS UN PROBLEME
 !      IF ( CODRET.NE.0 ) THEN
-!        SAUX08='MFFIEN  '
+!        SAUX08='mficor'
 !        CALL U2MESG('F','DVP_97',1,SAUX08,1,CODRET,0,0.D0)
 !      ENDIF
 !

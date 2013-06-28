@@ -69,21 +69,21 @@ subroutine ircam1(nofimd, nochmd, existc, ncmprf, numpt,&
 ! aslint: disable=W1504
     implicit none
 !
-    include 'jeveux.h'
-    include 'asterc/utflsh.h'
-    include 'asterfort/infniv.h'
-    include 'asterfort/ircmcc.h'
-    include 'asterfort/ircmec.h'
-    include 'asterfort/ircmva.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/mfferm.h'
-    include 'asterfort/mfnpdt.h'
-    include 'asterfort/mfouvr.h'
-    include 'asterfort/u2mesg.h'
-    include 'asterfort/u2mesk.h'
-    include 'asterfort/u2mess.h'
-    include 'asterfort/wkvect.h'
+#   include "jeveux.h"
+#   include "asterc/utflsh.h"
+#   include "asterfort/infniv.h"
+#   include "asterfort/ircmcc.h"
+#   include "asterfort/ircmec.h"
+#   include "asterfort/ircmva.h"
+#   include "asterfort/jedetr.h"
+#   include "asterfort/jeveuo.h"
+#   include "asterfort/as_mficlo.h"
+#   include "asterfort/as_mfdfin.h"
+#   include "asterfort/as_mfiope.h"
+#   include "asterfort/u2mesg.h"
+#   include "asterfort/u2mesk.h"
+#   include "asterfort/u2mess.h"
+#   include "asterfort/wkvect.h"
     integer :: ntymax
     parameter (ntymax = 69)
 !
@@ -184,17 +184,17 @@ subroutine ircam1(nofimd, nochmd, existc, ncmprf, numpt,&
     inquire(file=nofimd,exist=ficexi)
     if (ficexi) then
         edleaj = 1
-        call mfouvr(idfimd, nofimd, edleaj, codret)
+        call as_mfiope(idfimd, nofimd, edleaj, codret)
         if (codret .ne. 0) then
             edleaj = 3
-            call mfouvr(idfimd, nofimd, edleaj, codret)
+            call as_mfiope(idfimd, nofimd, edleaj, codret)
         endif
     else
         edleaj = 3
-        call mfouvr(idfimd, nofimd, edleaj, codret)
+        call as_mfiope(idfimd, nofimd, edleaj, codret)
     endif
     if (codret .ne. 0) then
-        saux08='MFOUVR  '
+        saux08='mfiope'
         call u2mesg('F', 'DVP_97', 1, saux08, 1,&
                     codret, 0, 0.d0)
     endif
@@ -210,7 +210,7 @@ subroutine ircam1(nofimd, nochmd, existc, ncmprf, numpt,&
     call wkvect('&&IRCAM1.CUNIT', 'V V K16', ncmprf, junit)
     nomam2 = ' '
     iret=0
-    call mfnpdt(idfimd, nochmd, nomam2, nbpt, zk16(junit),&
+    call as_mfdfin(idfimd, nochmd, nomam2, nbpt, zk16(junit),&
                 zk16(jcomp), iret)
     if (iret .eq. 0 .and. nbpt .ne. 0 .and. nomam2 .ne. nomamd) then
         call u2mess('F', 'MED_94')
@@ -352,9 +352,9 @@ subroutine ircam1(nofimd, nochmd, existc, ncmprf, numpt,&
 ! 5. FERMETURE DU FICHIER MED
 !====
 !
-    call mfferm(idfimd, codret)
+    call as_mficlo(idfimd, codret)
     if (codret .ne. 0) then
-        saux08='MFFERM  '
+        saux08='mficlo'
         call u2mesg('F', 'DVP_97', 1, saux08, 1,&
                     codret, 0, 0.d0)
     endif

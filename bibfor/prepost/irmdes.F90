@@ -30,14 +30,14 @@ subroutine irmdes(idfimd, titre, nbtitr, infmed)
 !
 ! 0.1. ==> ARGUMENTS
 !
-    include 'asterc/gtoptk.h'
-    include 'asterfort/enlird.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/lxlgut.h'
-    include 'asterfort/mffide.h'
-    include 'asterfort/u2mesg.h'
-    include 'asterfort/u2mesk.h'
+#   include "asterc/gtoptk.h"
+#   include "asterfort/enlird.h"
+#   include "asterfort/jedema.h"
+#   include "asterfort/jemarq.h"
+#   include "asterfort/lxlgut.h"
+#   include "asterfort/as_mficow.h"
+#   include "asterfort/u2mesg.h"
+#   include "asterfort/u2mesk.h"
     integer :: idfimd
     integer :: infmed, nbtitr
 !
@@ -122,9 +122,9 @@ subroutine irmdes(idfimd, titre, nbtitr, infmed)
         call u2mesk('I', 'MED_38', 1, descri)
     endif
 !
-    call mffide(idfimd, descri, codret)
+    call as_mficow(idfimd, descri, codret)
     if (codret .ne. 0) then
-        saux08='MFFIDE  '
+        saux08='mficow'
         call u2mesg('F', 'DVP_97', 1, saux08, 1,&
                     codret, 0, 0.d0)
     endif

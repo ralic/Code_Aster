@@ -33,18 +33,18 @@ subroutine ircmpf(nofimd, nvalty, profil, noprof)
 !
 ! 0.1. ==> ARGUMENTS
 !
-    include 'jeveux.h'
-    include 'asterfort/codent.h'
-    include 'asterfort/infniv.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/mfferm.h'
-    include 'asterfort/mfnpro.h'
-    include 'asterfort/mfouvr.h'
-    include 'asterfort/mfpfle.h'
-    include 'asterfort/mfpfll.h'
-    include 'asterfort/mfproi.h'
-    include 'asterfort/u2mesg.h'
-    include 'asterfort/wkvect.h'
+#   include "jeveux.h"
+#   include "asterfort/codent.h"
+#   include "asterfort/infniv.h"
+#   include "asterfort/jedetr.h"
+#   include "asterfort/as_mficlo.h"
+#   include "asterfort/as_mpfnpf.h"
+#   include "asterfort/as_mfiope.h"
+#   include "asterfort/as_mpfprw.h"
+#   include "asterfort/as_mpfprr.h"
+#   include "asterfort/as_mpfpfi.h"
+#   include "asterfort/u2mesg.h"
+#   include "asterfort/wkvect.h"
     integer :: nvalty, profil(nvalty)
 !
     character(len=*) :: nofimd
@@ -98,9 +98,9 @@ subroutine ircmpf(nofimd, nvalty, profil, noprof)
 ! 2. ON OUVRE LE FICHIER EN LECTURE
 !====
 !
-    call mfouvr(idfimd, nofimd, edlect, codret)
+    call as_mfiope(idfimd, nofimd, edlect, codret)
     if (codret .ne. 0) then
-        saux08='MFOUVR  '
+        saux08='mfiope'
         call u2mesg('F', 'DVP_97', 1, saux08, 1,&
                     codret, 0, 0.d0)
     endif
@@ -110,9 +110,9 @@ subroutine ircmpf(nofimd, nvalty, profil, noprof)
 !    S'IL Y EN A, ON ALLOUE UN TABLEAU POUR STOCKER LEURS NOMS
 !====
 !
-    call mfnpro(idfimd, nbprof, codret)
+    call as_mpfnpf(idfimd, nbprof, codret)
     if (codret .ne. 0) then
-        saux08='MFNPRO  '
+        saux08='mpfnpf'
         call u2mesg('F', 'DVP_97', 1, saux08, 1,&
                     codret, 0, 0.d0)
     endif
@@ -134,10 +134,10 @@ subroutine ircmpf(nofimd, nvalty, profil, noprof)
 !
 ! 4.1. ==> NOM ET NOMBRE DE VALEURS DU IAUX-EME PROFIL
 !
-    call mfproi(idfimd, iaux, nopr64, lgprof, codret)
+    call as_mpfpfi(idfimd, iaux, nopr64, lgprof, codret)
     noprof = nopr64
     if (codret .ne. 0) then
-        saux08='MFPROI  '
+        saux08='mpfpfi'
         call u2mesg('F', 'DVP_97', 1, saux08, 1,&
                     codret, 0, 0.d0)
     endif
@@ -160,9 +160,9 @@ subroutine ircmpf(nofimd, nvalty, profil, noprof)
 !
         call wkvect(ntprof, 'V V I', lgprof, adprof)
 !
-        call mfpfll(idfimd, zi(adprof), lgprof, noprof, codret)
+        call as_mpfprr(idfimd, zi(adprof), lgprof, noprof, codret)
         if (codret .ne. 0) then
-            saux08='MFPFLL  '
+            saux08='mpfprr'
             call u2mesg('F', 'DVP_97', 1, saux08, 1,&
                         codret, 0, 0.d0)
         endif
@@ -208,9 +208,9 @@ subroutine ircmpf(nofimd, nvalty, profil, noprof)
 !
 51  continue
 !
-    call mfferm(idfimd, codret)
+    call as_mficlo(idfimd, codret)
     if (codret .ne. 0) then
-        saux08='MFFERM  '
+        saux08='mficlo'
         call u2mesg('F', 'DVP_97', 1, saux08, 1,&
                     codret, 0, 0.d0)
     endif
@@ -225,9 +225,9 @@ subroutine ircmpf(nofimd, nvalty, profil, noprof)
 !    CELA SIGNIFIE QUE LE FICHIER EST ENRICHI MAIS ON NE PEUT PAS
 !    ECRASER UNE DONNEE EXISTANTE
 !
-        call mfouvr(idfimd, nofimd, edleaj, codret)
+        call as_mfiope(idfimd, nofimd, edleaj, codret)
         if (codret .ne. 0) then
-            saux08='MFOUVR  '
+            saux08='mfiope'
             call u2mesg('F', 'DVP_97', 1, saux08, 1,&
                         codret, 0, 0.d0)
         endif
@@ -270,18 +270,18 @@ subroutine ircmpf(nofimd, nvalty, profil, noprof)
      &         /,4x,'. LONGUEUR                 = ',i8,&
      &         /,4x,'. 1ERE ET DERNIERE VALEURS = ',2i8)
         endif
-        call mfpfle(idfimd, profil, nvalty, noprof, codret)
+        call as_mpfprw(idfimd, profil, nvalty, noprof, codret)
         if (codret .ne. 0) then
-            saux08='MFPFLE  '
+            saux08='mpfprw'
             call u2mesg('F', 'DVP_97', 1, saux08, 1,&
                         codret, 0, 0.d0)
         endif
 !
 ! 6.4. ==> FERMETURE FICHIER MED
 !
-        call mfferm(idfimd, codret)
+        call as_mficlo(idfimd, codret)
         if (codret .ne. 0) then
-            saux08='MFFERM  '
+            saux08='mficlo'
             call u2mesg('F', 'DVP_97', 1, saux08, 1,&
                         codret, 0, 0.d0)
         endif

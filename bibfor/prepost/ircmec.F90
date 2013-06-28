@@ -46,11 +46,11 @@ subroutine ircmec(idfimd, nochmd, nomprf, nolopg, numpt,&
 !
 ! 0.1. ==> ARGUMENTS
 !
-    include 'jeveux.h'
-    include 'asterfort/infniv.h'
-    include 'asterfort/mfchre.h'
-    include 'asterfort/u2mesg.h'
-    include 'asterfort/u2mess.h'
+#   include "jeveux.h"
+#   include "asterfort/infniv.h"
+#   include "asterfort/as_mfdrpw.h"
+#   include "asterfort/u2mesg.h"
+#   include "asterfort/u2mess.h"
     character(len=*) :: nochmd, nomprf, nolopg
 !
     integer :: idfimd
@@ -129,7 +129,7 @@ subroutine ircmec(idfimd, nochmd, nomprf, nolopg, numpt,&
 !    TV(1,NBSP,NBPG,NVALEC), TV(2,NBSP,NBPG,NVALEC), ... ,
 !                                      TV(NCMPVE,NBSP,NBPG,NVALEC)
 !    C'EST CE QUE MED APPELLE LE MODE ENTRELACE
-!    REMARQUE : LE 6-EME ARGUMENT DE MFCHRE EST LE NOMBRE DE VALEURS
+!    REMARQUE : LE 6-EME ARGUMENT DE as_mfdrpw EST LE NOMBRE DE VALEURS
 !               C'EST LE PRODUIT DU NOMBRE TOTAL D'ENTITES DU TYPE EN
 !               COURS PAR LE PRODUIT DES NOMBRES DE POINTS DE GAUSS
 !               ET DE SOUS-POINT.
@@ -186,12 +186,12 @@ subroutine ircmec(idfimd, nochmd, nomprf, nolopg, numpt,&
 !
 ! 2.3. ==> ECRITURE VRAIE
 !
-    call mfchre(idfimd, nochmd, val, edfuin, iaux,&
+    call as_mfdrpw(idfimd, nochmd, val, edfuin, iaux,&
                 nolopg, edall, nomprf, edcomp, typent,&
                 typgeo, numpt, instan, numord, codret)
 !
     if (codret .ne. 0) then
-        saux08='MFCHRE  '
+        saux08='mfdrpw'
         call u2mesg('F', 'DVP_97', 1, saux08, 1,&
                     codret, 0, 0.d0)
     endif

@@ -274,7 +274,7 @@ subroutine calcop(option, lisopt, resuin, resuou, lisord,&
 !
                 if (ligres .ne. ligrel) ligmod = .true.
 !
-                call ccchno(optio2, numord, resuin, resuou, chaout,&
+                call ccchno(optio2, numord, resuin, resuou, chaout(1:19),&
                             mesmai, nomail, modele, carael, basopt,&
                             ligrel, ligmod, codre2)
 !

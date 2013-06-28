@@ -58,7 +58,7 @@ subroutine dpvplc(typmod, option, imate, crit, instam,&
 ! =====================================================================
 ! --- RECUPERATION DU TYPE DE LOI DE COMPORTEMENT DP ------------------
 ! =====================================================================
-    call dpvpma(typmod, imate, nbmat, td, materd,&
+    call dpvpma(typmod(1), imate, nbmat, td, materd,&
                 materf, matcst, ndt, ndi, nvi,&
                 indal)
 ! =====================================================================
@@ -70,7 +70,7 @@ subroutine dpvplc(typmod, option, imate, crit, instam,&
 ! =====================================================================
 ! --- RESOLTUTION DE LA LOI DRUCKER PRAGER VISCOPLASTIQUE -------------
 ! =====================================================================
-    call dpvpre(typmod, nvi, option, crit, instam,&
+    call dpvpre(typmod(1), nvi, option, crit, instam,&
                 instap, nbmat, materf, sigm, deps,&
                 vim, vip, sig, nbre, dsidep,&
                 iret)

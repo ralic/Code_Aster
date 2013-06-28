@@ -56,33 +56,33 @@ subroutine lrceme(chanom, nochmd, typech, nomamd, nomaas,&
 !
 ! 0.1. ==> ARGUMENTS
 !
-    include 'jeveux.h'
+#   include "jeveux.h"
 !
-    include 'asterc/getvis.h'
-    include 'asterfort/cescar.h'
-    include 'asterfort/cescel.h'
-    include 'asterfort/codent.h'
-    include 'asterfort/detrsd.h'
-    include 'asterfort/infniv.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jeexin.h'
-    include 'asterfort/jelira.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jenonu.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/jexnom.h'
-    include 'asterfort/lrcame.h'
-    include 'asterfort/mfchai.h'
-    include 'asterfort/mfferm.h'
-    include 'asterfort/mfncha.h'
-    include 'asterfort/mfncom.h'
-    include 'asterfort/mfouvr.h'
-    include 'asterfort/u2mesg.h'
-    include 'asterfort/u2mesk.h'
-    include 'asterfort/u2mess.h'
-    include 'asterfort/ulisog.h'
-    include 'asterfort/wkvect.h'
+#   include "asterc/getvis.h"
+#   include "asterfort/cescar.h"
+#   include "asterfort/cescel.h"
+#   include "asterfort/codent.h"
+#   include "asterfort/detrsd.h"
+#   include "asterfort/infniv.h"
+#   include "asterfort/jedema.h"
+#   include "asterfort/jedetr.h"
+#   include "asterfort/jeexin.h"
+#   include "asterfort/jelira.h"
+#   include "asterfort/jemarq.h"
+#   include "asterfort/jenonu.h"
+#   include "asterfort/jeveuo.h"
+#   include "asterfort/jexnom.h"
+#   include "asterfort/lrcame.h"
+#   include "asterfort/as_mfdfdi.h"
+#   include "asterfort/as_mficlo.h"
+#   include "asterfort/as_mfdnfd.h"
+#   include "asterfort/as_mfdnfc.h"
+#   include "asterfort/as_mfiope.h"
+#   include "asterfort/u2mesg.h"
+#   include "asterfort/u2mesk.h"
+#   include "asterfort/u2mess.h"
+#   include "asterfort/ulisog.h"
+#   include "asterfort/wkvect.h"
     character(len=19) :: chanom
     character(len=*) :: ncmpva, ncmpvm
     character(len=8) :: nommod, nomaas, nomgd
@@ -192,13 +192,13 @@ subroutine lrceme(chanom, nochmd, typech, nomamd, nomaas,&
         else
             nofimd = kfic(1:200)
         endif
-        call mfouvr(idfimd, nofimd, edlect, iret)
-        call mfncha(idfimd, nbcham, iret)
+        call as_mfiope(idfimd, nofimd, edlect, iret)
+        call as_mfdnfd(idfimd, nbcham, iret)
         do 777 i = 1, nbcham
-            call mfncom(idfimd, i, nbcmp, iret)
+            call as_mfdnfc(idfimd, i, nbcmp, iret)
             call wkvect('&&LRCEME.NOMCMP_K16', 'V V K16', nbcmp, jcmp)
             call wkvect('&&LRCEME.UNITCMP', 'V V K16', nbcmp, junit)
-            call mfchai(idfimd, i, nomcha, tycha, zk16(jcmp),&
+            call as_mfdfdi(idfimd, i, nomcha, tycha, zk16(jcmp),&
                         zk16(junit), nseqca, iret)
             if (nomcha .eq. nochmd) then
                 ncmprf=nbcmp
@@ -213,7 +213,7 @@ subroutine lrceme(chanom, nochmd, typech, nomamd, nomaas,&
             call jedetr('&&LRCEME.NOMCMP_K16')
             call jedetr('&&LRCEME.UNITCMP')
 777      continue
-        call mfferm(idfimd, iret)
+        call as_mficlo(idfimd, iret)
     endif
 !
 780  continue

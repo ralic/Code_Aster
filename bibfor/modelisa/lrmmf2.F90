@@ -48,9 +48,9 @@ subroutine lrmmf2(fid, nomamd, nbrfam, carafa, nbgrmx,&
 !
 ! 0.1. ==> ARGUMENTS
 !
-    include 'asterfort/mfnatt.h'
-    include 'asterfort/mfngro.h'
-    include 'asterfort/u2mesg.h'
+#   include "asterfort/as_mfaona.h"
+#   include "asterfort/as_mfanfg.h"
+#   include "asterfort/u2mesg.h"
     integer :: fid
     integer :: nbrfam
     integer :: carafa(3, nbrfam)
@@ -90,9 +90,9 @@ subroutine lrmmf2(fid, nomamd, nbrfam, carafa, nbgrmx,&
 !
 ! 1.1. ==> NOMBRE DE GROUPES
 !
-    call mfngro(fid, nomamd, iaux, nbgr, codret)
+    call as_mfanfg(fid, nomamd, iaux, nbgr, codret)
     if (codret .ne. 0) then
-        saux08='MFNGRO  '
+        saux08='mfanfg'
         call u2mesg('F', 'DVP_97', 1, saux08, 1,&
                     codret, 0, 0.d0)
     endif
@@ -101,9 +101,9 @@ subroutine lrmmf2(fid, nomamd, nbrfam, carafa, nbgrmx,&
 !
 ! 1.2. ==> NOMBRE D'ATTRIBUTS
 !
-    call mfnatt(fid, nomamd, iaux, nbat, codret)
+    call as_mfaona(fid, nomamd, iaux, nbat, codret)
     if (codret .ne. 0) then
-        saux08='MFNATT  '
+        saux08='mfaona'
         call u2mesg('F', 'DVP_97', 1, saux08, 1,&
                     codret, 0, 0.d0)
     endif

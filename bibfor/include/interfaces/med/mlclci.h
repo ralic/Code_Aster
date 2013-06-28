@@ -16,19 +16,20 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
+#include "types/med_types.h"
     subroutine mlclci(fid, it, lname, gtype, sdim,&
                       nip, giname, isname, nsmc, sgtype,&
                       cret)
-        integer :: fid
-        integer :: it
+        med_int :: fid
+        med_int :: it
         character(*) :: lname
-        integer :: gtype
-        integer :: sdim
-        integer :: nip
+        med_int :: gtype
+        med_int :: sdim
+        med_int :: nip
         character(*) :: giname
         character(*) :: isname
-        integer :: nsmc
-        integer :: sgtype
-        integer :: cret
+        med_int :: nsmc
+        med_int :: sgtype
+        med_int :: cret
     end subroutine mlclci
 end interface

@@ -39,7 +39,7 @@ subroutine pjecou(ma1, ma2, nomgma, nomgno, corres)
     character(len=16) :: nomgma, nomgno, corres
 ! ======================================================================
 ! ======================================================================
-    integer :: iret, itypma, ndim, nbpg, ib, flag, ibt(15)
+    integer :: iret, itypma, ndim, nbpg, ib, flag, ibt(20)
     integer :: nodegl, inol, ino2, mailrf, nbpgrf
     integer :: inog2, ii, ima1, ima, inom1, inom2, inom3
     integer :: nbmag1, nbnog2, nbnog

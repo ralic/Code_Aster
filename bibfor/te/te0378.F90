@@ -84,7 +84,7 @@ subroutine te0378(option, nomte)
     integer :: nbcmp
     integer :: ipg, in
     integer :: nbf
-    integer :: tymvol, ndegre, ifa, tyv
+    integer :: tymvol, ndegre, ifa, tyv, noe(9,6,4)
 !
     real(kind=8) :: r8bid, r8bid3(2), r8bid4(2)
     real(kind=8) :: dfdx(9), dfdy(9), hk, poids
@@ -97,7 +97,7 @@ subroutine te0378(option, nomte)
     real(kind=8) :: dspx, dspy
     real(kind=8) :: dsdx, dsdy
     real(kind=8) :: s, unsurs
-    real(kind=8) :: nx(3), ny(3), tx(3), ty(3), jaco(3)
+    real(kind=8) :: nx(9), ny(9), nz(9), tx(3), ty(3), jaco(9)
     real(kind=8) :: chpx(3), chpy(3), chdx(3), chdy(3)
     real(kind=8) :: sgp11(3), sgp22(3), sgp12(3)
     real(kind=8) :: sgd11(3), sgd22(3), sgd12(3)
@@ -516,9 +516,9 @@ subroutine te0378(option, nomte)
 !
         iaux = ifa
         call calnor('2D', zr(igeom), iaux, nnos, nnof,&
-                    orien, ibid, ibid, itab, ibid,&
+                    orien, ibid, ibid, noe, ibid,&
                     ibid, ibid, jaco, nx, ny,&
-                    r8bid3, tx, ty, hf)
+                    nz, tx, ty, hf)
 !
 ! ----------------------------------------------------------------------
 ! --------------- CALCUL DU DEUXIEME TERME DE L'ERREUR -----------------

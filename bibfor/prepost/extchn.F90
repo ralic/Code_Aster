@@ -378,7 +378,7 @@ subroutine extchn(nchmno, nnoeud, numnd, ncmp, nbn,&
         ind = numnd(i)
 !
         call exchnn(zi(adesch+1-1), ind, zi(anumcp), nbc, zr(avalch),&
-                    ibid, .false., zr(apval+nbc* (i-1)+1-1), zi(aperr))
+                    [ibid], .false., zr(apval+nbc* (i-1)+1-1), zi(aperr))
 !
 300      continue
 !

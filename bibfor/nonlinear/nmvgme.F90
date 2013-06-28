@@ -180,8 +180,8 @@ subroutine nmvgme(modele, ligrel, carele, charge, icha,&
 !         ==> CHAMP DE VITESSES AVEC MISE A ZERO
 !         ==> MAILLAGE DEFORME DE LA STRUCTURE
         nblic = 3
-        call cnocre(madef, 'DEPL_R', 0, ibid, nblic,&
-                    licmp, ibid, 'V', ' ', resu)
+        call cnocre(madef, 'DEPL_R', 0, [ibid], nblic,&
+                    licmp, [ibid], 'V', ' ', resu)
 !
         nuage1 = '&&NUAGE1'
         nuage2 = '&&NUAGE2'

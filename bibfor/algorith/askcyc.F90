@@ -105,7 +105,7 @@ subroutine askcyc(craid, ndim, soumat, beta, ni,&
                 id, id, 1.d0)
 !
     call acyel4(soumat, 'KPLUSJJ', nj, nj, faux,&
-                ibid, 0, ibid, 0, craid,&
+                [ibid], 0, [ibid], 0, craid,&
                 ndim, id, id, beta)
 !
 !
@@ -113,22 +113,22 @@ subroutine askcyc(craid, ndim, soumat, beta, ni,&
 !  POUR CRAIG-BAMPTON ET CRAIG-BAMPTON HARMONIQUE
 !
     call acyel2(soumat, 'K0IJ', ni, nj, faux,&
-                ibid, 0, ibid, 0, craid,&
+                [ibid], 0, [ibid], 0, craid,&
                 ndim, 1, id, 1.d0)
 !
     call acyel4(soumat, 'KPLUSIJ', ni, nj, faux,&
-                ibid, 0, ibid, 0, craid,&
+                [ibid], 0, [ibid], 0, craid,&
                 ndim, 1, id, beta)
 !
 !
 !  POUR MAC-NEAL
 !
     call acyel2(soumat, 'K0JI', nj, ni, faux,&
-                ibid, 0, ibid, 0, craid,&
+                [ibid], 0, [ibid], 0, craid,&
                 ndim, id, 1, 1.d0)
 !
     call acyel4(soumat, 'KPLUSJI', nj, ni, faux,&
-                ibid, 0, ibid, 0, craid,&
+                [ibid], 0, [ibid], 0, craid,&
                 ndim, id, 1, beta)
 !
 !

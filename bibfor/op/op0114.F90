@@ -109,40 +109,40 @@ subroutine op0114()
 !  RECEPTION NOMBRE DE PAS DE TEMPS
         nomvar = 'NBPDTM'
         call cplen(icompo, cpiter, ti4, tf4, numpa4,&
-                   nomvar, 1, taille, eyacs, ibid4)
+                   nomvar, int(1,4), taille, eyacs, ibid4)
         zr(jbor) = eyacs
         zr(jval) = eyacs
 !  RECEPTION NOMBRE DE SOUS-ITERATIONS
         nomvar = 'NBSSIT'
         call cplen(icompo, cpiter, ti4, tf4, numpa4,&
-                   nomvar, 1, taille, eyacs, ibid4)
+                   nomvar, int(1,4), taille, eyacs, ibid4)
         zr(jbor+1) = eyacs
         zr(jval+1) = eyacs
 !  RECEPTION EPSILON
         nomvar = 'EPSILO'
         call cpldb(icompo, cpiter, ti, tf, numpa4,&
-                   nomvar, 1, taille, ryacs, ibid4)
+                   nomvar, int(1,4), taille, ryacs, ibid4)
         zr(jbor+2) = ryacs
         zr(jval+2) = ryacs
         nomvar = 'ISYNCP'
         call cplen(icompo, cpiter, ti4, tf4, numpa4,&
-                   nomvar, 1, taille, eyacs, ibid4)
+                   nomvar, int(1,4), taille, eyacs, ibid4)
         zr(jbor+3) = eyacs
         zr(jval+3) = eyacs
         nomvar = 'NTCHRO'
         call cplen(icompo, cpiter, ti4, tf4, numpa4,&
-                   nomvar, 1, taille, eyacs, ibid4)
+                   nomvar, int(1,4), taille, eyacs, ibid4)
         zr(jbor+4) = eyacs
         zr(jval+4) = eyacs
         nomvar = 'TTINIT'
         call cpldb(icompo, cpiter, ti, tf, numpa4,&
-                   nomvar, 1, taille, ryacs, ibid4)
+                   nomvar, int(1,4), taille, ryacs, ibid4)
         zr(jbor+5) = ryacs
         zr(jval+5) = ryacs
 !  RECEPTION PAS DE TEMPS DE REFERENCE
         nomvar = 'PDTREF'
         call cpldb(icompo, cpiter, ti, tf, numpa4,&
-                   nomvar, 1, taille, ryacs, ibid4)
+                   nomvar, int(1,4), taille, ryacs, ibid4)
         zr(jbor+6) = ryacs
         zr(jval+6) = ryacs
     else
@@ -161,7 +161,7 @@ subroutine op0114()
             if (option(1:4) .eq. 'CONV') then
                 nomvar = 'ICVAST'
                 call cplen(icompo, cpiter, ti4, tf4, numpa4,&
-                           nomvar, 1, taille, eyacs, ibid4)
+                           nomvar, int(1,4), taille, eyacs, ibid4)
                 ryacs = eyacs
             else
                 nomvar = 'DTAST'
@@ -169,7 +169,7 @@ subroutine op0114()
                            1, dt, ibid4)
                 nomvar = 'DTCALC'
                 call cpldb(icompo, cpiter, ti, tf, numpa4,&
-                           nomvar, 1, taille, ryacs, ibid4)
+                           nomvar, int(1,4), taille, ryacs, ibid4)
             endif
         endif
         zr(jbor) = ryacs

@@ -1,28 +1,28 @@
 subroutine irelst(nofimd, chanom, typech, nomaas, nomamd,&
                   nbimpr, caimpi, caimpk, sdcarm)
     implicit none
-    include 'asterfort/assert.h'
-    include 'asterfort/elref2.h'
-    include 'asterfort/irmaes.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jenuno.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/jexnum.h'
-    include 'asterfort/juveca.h'
-    include 'asterfort/lrmtyp.h'
-    include 'asterfort/mfcone.h'
-    include 'asterfort/mfcooe.h'
-    include 'asterfort/mfesav.h'
-    include 'asterfort/mfescr.h'
-    include 'asterfort/mfeslr.h'
-    include 'asterfort/mfesnb.h'
-    include 'asterfort/mfferm.h'
-    include 'asterfort/mfmscr.h'
-    include 'asterfort/mfmsle.h'
-    include 'asterfort/mfouvr.h'
-    include 'asterfort/u2mesg.h'
-    include 'asterfort/uteref.h'
-    include 'asterfort/wkvect.h'
+#   include "asterfort/assert.h"
+#   include "asterfort/elref2.h"
+#   include "asterfort/irmaes.h"
+#   include "asterfort/jedetr.h"
+#   include "asterfort/jenuno.h"
+#   include "asterfort/jeveuo.h"
+#   include "asterfort/jexnum.h"
+#   include "asterfort/juveca.h"
+#   include "asterfort/lrmtyp.h"
+#   include "asterfort/as_mmhcyw.h"
+#   include "asterfort/as_mmhcow.h"
+#   include "asterfort/as_msevac.h"
+#   include "asterfort/as_msecre.h"
+#   include "asterfort/as_msesei.h"
+#   include "asterfort/as_msense.h"
+#   include "asterfort/as_mficlo.h"
+#   include "asterfort/as_msmcre.h"
+#   include "asterfort/as_msmsmi.h"
+#   include "asterfort/as_mfiope.h"
+#   include "asterfort/u2mesg.h"
+#   include "asterfort/uteref.h"
+#   include "asterfort/wkvect.h"
     character(len=8) :: nomaas, typech, sdcarm
     character(len=*) :: nofimd
     character(len=19) :: chanom
@@ -62,7 +62,7 @@ subroutine irelst(nofimd, chanom, typech, nomaas, nomamd,&
 !   CAIMPK  K80* CARACTERES POUR CHAQUE IMPRESSION
 !   SDCARM  K*   SD_CARA_ELEM EN CHAM_ELEM_S
 !
-    include 'jeveux.h'
+#   include "jeveux.h"
 !
 !
     integer :: inimpr, nbcouc, nbsect, nummai, lgmax, ntypef, codret
@@ -106,18 +106,18 @@ subroutine irelst(nofimd, chanom, typech, nomaas, nomamd,&
      &              'INCONNU         ',&
      &              'INCONNU         '/
 !
-    call mfouvr(idfimd, nofimd, edleaj, codret)
+    call as_mfiope(idfimd, nofimd, edleaj, codret)
     if (codret .ne. 0) then
-        saux08='MFOUVR  '
+        saux08='mfiope'
         call u2mesg('F', 'DVP_97', 1, saux08, 1,&
                     codret, 0, 0.d0)
     endif
 !
 !     -- RELECTURE DES ELEMENTS DE STRUCTURES DEJA PRESENTS
     nbmasu = 0
-    call mfesnb(idfimd, nbmasu, codret)
+    call as_msense(idfimd, nbmasu, codret)
     if (codret .ne. 0) then
-        saux08='MFMSNB'
+        saux08='msmnsm'
         call u2mesg('F', 'DVP_97', 1, saux08, 1,&
                     codret, 0, 0.d0)
     endif
@@ -126,20 +126,20 @@ subroutine irelst(nofimd, chanom, typech, nomaas, nomamd,&
     call wkvect('&&IRELST.NV_TYPE_MED', 'V V I', nbmsmx, jnvtym)
     if (nbmasu .ne. 0) then
         do 40, imasup = 1, nbmasu
-        call mfmsle(idfimd, imasup, nomasu, ndim, desmed,&
+        call as_msmsmi(idfimd, imasup, nomasu, ndim, desmed,&
                     edcar2, nocoo2, uncoo2, codret)
         if (codret .ne. 0) then
-            saux08='MFMSLE'
+            saux08='msmsmi'
             call u2mesg('F', 'DVP_97', 1, saux08, 1,&
                         codret, 0, 0.d0)
         endif
         zk80(jmasup+imasup-1) = nomasu
 !
-        call mfeslr(idfimd, imasup, nomaes, nvtymd, dimest,&
+        call as_msesei(idfimd, imasup, nomaes, nvtymd, dimest,&
                     nomasu, medcel, nbnosu, nbmssu, tygems,&
                     nbattc, prespr, nbattv, codret)
         if (codret .ne. 0) then
-            saux08='MFESLR'
+            saux08='msesei'
             call u2mesg('F', 'DVP_97', 1, saux08, 1,&
                         codret, 0, 0.d0)
         endif
@@ -205,19 +205,19 @@ subroutine irelst(nofimd, chanom, typech, nomaas, nomamd,&
 60  continue
 !
 !       -- DEFINITION DU MAILLAGE SUPPORT MED
-    call mfmscr(idfimd, nomasu, ndim, desmed, edcart,&
+    call as_msmcre(idfimd, nomasu, ndim, desmed, edcart,&
                 nocoor, uncoor, codret)
     if (codret .ne. 0) then
-        saux08='MFMSCR'
+        saux08='msmcre'
         call u2mesg('F', 'DVP_97', 1, saux08, 1,&
                     codret, 0, 0.d0)
     endif
 !
 !       -- DEFINITION DES NOEUDS DU MAILLAGE SUPPORT MED
-    call mfcooe(idfimd, nomasu, refcoo, edfuin, nbnoto,&
+    call as_mmhcow(idfimd, nomasu, refcoo, edfuin, nbnoto,&
                 codret)
     if (codret .ne. 0) then
-        saux08='MFCOOE'
+        saux08='mmhcow'
         call u2mesg('F', 'DVP_97', 1, saux08, 1,&
                     codret, 0, 0.d0)
     endif
@@ -235,10 +235,10 @@ subroutine irelst(nofimd, chanom, typech, nomaas, nomamd,&
     endif
 !
 !       -- DEFINITION DE LA MAILLE DU MAILLAGE SUPPORT
-    call mfcone(idfimd, nomasu, connex, nbnoto, edfuin,&
+    call as_mmhcyw(idfimd, nomasu, connex, nbnoto, edfuin,&
                 1, edmail, tymamd, ednoda, codret)
     if (codret .ne. 0) then
-        saux08='MFCONE'
+        saux08='mmhcyw'
         call u2mesg('F', 'DVP_97', 1, saux08, 1,&
                     codret, 0, 0.d0)
     endif
@@ -253,55 +253,55 @@ subroutine irelst(nofimd, chanom, typech, nomaas, nomamd,&
     zk80(jmasup+nbmasu-1) = nomasu
 !
     nvtymd = -9999
-    call mfescr(idfimd, nomasu, ndim, nomasu, edmail,&
+    call as_msecre(idfimd, nomasu, ndim, nomasu, edmail,&
                 tymamd, nvtymd, codret)
     call assert(nvtymd.ne.-9999)
     if (codret .ne. 0) then
-        saux08='MFESCR'
+        saux08='msecre'
         call u2mesg('F', 'DVP_97', 1, saux08, 1,&
                     codret, 0, 0.d0)
     endif
 !
     if (nomasu(1:5) .eq. 'COQUE') then
 !         -- ATTRIBUT VARIABLE EPAISSEUR
-        call mfesav(idfimd, nomasu, atepai, edtyre, 1,&
+        call as_msevac(idfimd, nomasu, atepai, edtyre, 1,&
                     codret)
         if (codret .ne. 0) then
-            saux08='MFESAV'
+            saux08='msevac'
             call u2mesg('F', 'DVP_97', 1, saux08, 1,&
                         codret, 0, 0.d0)
         endif
     else if (nomasu(1:5).eq.'TUYAU') then
 !         -- ATTRIBUT VARIABLE RAYON MIN
-        call mfesav(idfimd, nomasu, atrmin, edtyre, 1,&
+        call as_msevac(idfimd, nomasu, atrmin, edtyre, 1,&
                     codret)
         if (codret .ne. 0) then
-            saux08='MFESAV'
+            saux08='msevac'
             call u2mesg('F', 'DVP_97', 1, saux08, 1,&
                         codret, 0, 0.d0)
         endif
 !         -- ATTRIBUT VARIABLE RAYON MAX
-        call mfesav(idfimd, nomasu, atrmax, edtyre, 1,&
+        call as_msevac(idfimd, nomasu, atrmax, edtyre, 1,&
                     codret)
         if (codret .ne. 0) then
-            saux08='MFESAV'
+            saux08='msevac'
             call u2mesg('F', 'DVP_97', 1, saux08, 1,&
                         codret, 0, 0.d0)
         endif
 !         -- ATTRIBUT VARIABLE ANGLE DE VRILLE
-        call mfesav(idfimd, nomasu, atangv, edtyre, 1,&
+        call as_msevac(idfimd, nomasu, atangv, edtyre, 1,&
                     codret)
         if (codret .ne. 0) then
-            saux08='MFESAV'
+            saux08='msevac'
             call u2mesg('F', 'DVP_97', 1, saux08, 1,&
                         codret, 0, 0.d0)
         endif
     else if (nomasu(1:3).eq.'PMF') then
 !         -- ATTRIBUT VARIABLE ANGLE DE VRILLE
-        call mfesav(idfimd, nomasu, atangv, edtyre, 1,&
+        call as_msevac(idfimd, nomasu, atangv, edtyre, 1,&
                     codret)
         if (codret .ne. 0) then
-            saux08='MFESAV'
+            saux08='msevac'
             call u2mesg('F', 'DVP_97', 1, saux08, 1,&
                         codret, 0, 0.d0)
         endif
@@ -324,9 +324,9 @@ subroutine irelst(nofimd, chanom, typech, nomaas, nomamd,&
                     modnum, nuanom, nomtyp, nnotyp, sdcarm)
     endif
 !
-    call mfferm(idfimd, codret)
+    call as_mficlo(idfimd, codret)
     if (codret .ne. 0) then
-        saux08='MFFERM  '
+        saux08='mficlo'
         call u2mesg('F', 'DVP_97', 1, saux08, 1,&
                     codret, 0, 0.d0)
     endif

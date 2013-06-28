@@ -16,22 +16,23 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
+#include "types/med_types.h"
     subroutine msesei(fid, it, mname, mgtype, mdim,&
                       smname, setype, snnode, sncell, sgtype,&
                       ncatt, ap, nvatt, cret)
-        integer :: fid
-        integer :: it
+        med_int :: fid
+        med_int :: it
         character(*) :: mname
-        integer :: mgtype
-        integer :: mdim
+        med_int :: mgtype
+        med_int :: mdim
         character(*) :: smname
-        integer :: setype
-        integer :: snnode
-        integer :: sncell
-        integer :: sgtype
-        integer :: ncatt
-        integer :: ap
-        integer :: nvatt
-        integer :: cret
+        med_int :: setype
+        med_int :: snnode
+        med_int :: sncell
+        med_int :: sgtype
+        med_int :: ncatt
+        med_int :: ap
+        med_int :: nvatt
+        med_int :: cret
     end subroutine msesei
 end interface

@@ -119,7 +119,7 @@ subroutine d1cro2(zimat, nmnbn, nmplas, nmdpla, nmddpl,&
     a2(1) = 0.5d0 * cp0(1)
 !
 !     RESOLUTION DE L EQUATION DU SECOND DEGRE
-    call draac2(a2, a1, a0, xx(1), xx(2),&
+    call draac2(a2(1),a1(1),a0(1),xx(1),xx(2),&
                 nbxx)
 !
     do 54, i = 1, nbxx

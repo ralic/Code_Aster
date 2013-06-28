@@ -135,7 +135,7 @@ subroutine u2mesg(typ, idmess, nk, valk, ni,&
 !
 !     --- REMONTEE D'ERREUR SI DISPO
     if (ltrb) then
-        call trabck('Traceback printed by Intel compiler', -1)
+        call trabck('Traceback printed by Intel compiler', int(-1,4))
     endif
 ! --- EN CAS DE MESSAGE AVEC SUITE, PAS D'ARRET, PAS D'EXCEPTION
     if (.not. suite) then

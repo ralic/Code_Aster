@@ -363,7 +363,7 @@ subroutine inicou(nbpas, tinit, tfin, dt, dtsto,&
         parami(2)=0
 !
         call cpeen(icompo, cpiter, tr4, numpas, nomvar,&
-                   deux, parami, info)
+                   deux, parami(1), info)
         call errcou(nomprg, numpas, nomvar, info, deux,&
                     deux)
 !

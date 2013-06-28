@@ -35,22 +35,22 @@ subroutine lrmmno(fid, nomam2, ndim, nbnoeu, nomu,&
 !
 ! 0.1. ==> ARGUMENTS
 !
-    include 'jeveux.h'
+#   include "jeveux.h"
 !
-    include 'asterfort/codent.h'
-    include 'asterfort/codlet.h'
-    include 'asterfort/jecreo.h'
-    include 'asterfort/jecroc.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jeecra.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jenonu.h'
-    include 'asterfort/jexnom.h'
-    include 'asterfort/mfcool.h'
-    include 'asterfort/mfnoml.h'
-    include 'asterfort/u2mesg.h'
-    include 'asterfort/wkvect.h'
+#   include "asterfort/codent.h"
+#   include "asterfort/codlet.h"
+#   include "asterfort/jecreo.h"
+#   include "asterfort/jecroc.h"
+#   include "asterfort/jedema.h"
+#   include "asterfort/jedetr.h"
+#   include "asterfort/jeecra.h"
+#   include "asterfort/jemarq.h"
+#   include "asterfort/jenonu.h"
+#   include "asterfort/jexnom.h"
+#   include "asterfort/as_mmhcor.h"
+#   include "asterfort/as_mmhear.h"
+#   include "asterfort/u2mesg.h"
+#   include "asterfort/wkvect.h"
     integer :: fid
     integer :: ndim, nbnoeu
     integer :: ifm, infmed
@@ -107,7 +107,7 @@ subroutine lrmmno(fid, nomam2, ndim, nbnoeu, nomu,&
 !          LEUR NUMERO
 !
     call wkvect('&&'//nompro//'.NOMNOE', 'V V K16', nbnoeu, jnomno)
-    call mfnoml(fid, nomamd, zk16(jnomno), ednoeu, typnoe,&
+    call as_mmhear(fid, nomamd, zk16(jnomno), ednoeu, typnoe,&
                 codret)
 !
     if (codret .ne. 0) then
@@ -158,9 +158,9 @@ subroutine lrmmno(fid, nomam2, ndim, nbnoeu, nomu,&
 !
     if (ndim .eq. 3) then
 !
-        call mfcool(fid, nomamd, zr(jcoord), edfuin, codret)
+        call as_mmhcor(fid, nomamd, zr(jcoord), edfuin, codret)
         if (codret .ne. 0) then
-            saux08='MFCOOL  '
+            saux08='mmhcor'
             call u2mesg('F', 'DVP_97', 1, saux08, 1,&
                         codret, 0, 0.d0)
         endif
@@ -173,9 +173,9 @@ subroutine lrmmno(fid, nomam2, ndim, nbnoeu, nomu,&
 !
         call wkvect('&&'//nompro//'.COORL', 'V V R', nbnoeu*ndim, jcoorl)
 !
-        call mfcool(fid, nomamd, zr(jcoorl), edfuin, codret)
+        call as_mmhcor(fid, nomamd, zr(jcoorl), edfuin, codret)
         if (codret .ne. 0) then
-            saux08='MFCOOL  '
+            saux08='mmhcor'
             call u2mesg('F', 'DVP_97', 1, saux08, 1,&
                         codret, 0, 0.d0)
         endif

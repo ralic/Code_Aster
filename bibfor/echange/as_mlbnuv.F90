@@ -1,0 +1,43 @@
+subroutine as_mlbnuv(maj, mini, rel, cret)
+! person_in_charge: nicolas.sellenet at edf.fr
+!
+! COPYRIGHT (C) 1991 - 2013  EDF R&D                WWW.CODE-ASTER.ORG
+!
+! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+! (AT YOUR OPTION) ANY LATER VERSION.
+!
+! THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+! WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+! MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+! GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+!
+! YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
+!
+    implicit none
+#   include "types/aster_types.h"
+#   include "types/med_types.h"
+#   include "med/mlbnuv.h"
+    ast_int :: maj, mini, rel
+    ast_int :: cret
+#ifdef _DISABLE_MED
+    call u2mess('F', 'FERMETUR_2')
+#else
+
+#if med_int_kind != ast_int_kind
+    med_int :: maj4, min4, rel4
+    med_int :: cret4
+    call mlbnuv(maj4, min4, rel4, cret4)
+    maj = maj4
+    mini = min4
+    rel = rel4
+    cret = cret4
+#else
+    call mlbnuv(maj, mini, rel, cret)
+#endif
+
+#endif
+end subroutine

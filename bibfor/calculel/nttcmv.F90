@@ -112,7 +112,7 @@ subroutine nttcmv(modele, mate, carele, fomult, charge,&
 !
         call vedith(modele, charge, infoch, time, vediri)
         call asasve(vediri, numedd, typres, vadirp)
-        call ascova('D', vadirp, fomult, 'INST', tpsthe,&
+        call ascova('D', vadirp, fomult, 'INST', tpsthe(1),&
                     typres, cndirp)
         call jeveuo(cndirp(1:19)//'.VALE', 'E', jdirp)
 !
@@ -129,7 +129,7 @@ subroutine nttcmv(modele, mate, carele, fomult, charge,&
         call vechth(modele, charge, infoch, carele, mate,&
                     time, vtemp, vechtp)
         call asasve(vechtp, numedd, typres, vachtp)
-        call ascova('D', vachtp, fomult, 'INST', tpsthe,&
+        call ascova('D', vachtp, fomult, 'INST', tpsthe(1),&
                     typres, cnchtp)
         call jeveuo(cnchtp(1:19)//'.VALE', 'E', jchtp)
         call jelira(cnchtp(1:19)//'.VALE', 'LONMAX', lonch, k8bid)

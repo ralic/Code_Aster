@@ -128,7 +128,7 @@ subroutine irmgms(ifc, ndim, nno, noma, nbgrm,&
     nobj(typpri) = nomaou//'_PRI'
     nobj(typhex) = nomaou//'_HEX'
 !
-    call irgmm3(noma, nomaou, 0, ibid, 'V',&
+    call irgmm3(noma, nomaou, 0, [ibid], 'V',&
                 nobj, nbel, versio)
 !
     call jeveuo(nomaou//'.COORDO    .VALE', 'L', jcoor)

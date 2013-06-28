@@ -1,24 +1,24 @@
 subroutine lrvema(nomail, mfich, nochmd)
     implicit none
 !
-    include 'jeveux.h'
-    include 'asterfort/codent.h'
-    include 'asterfort/dismoi.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/lxlgut.h'
-    include 'asterfort/mfferm.h'
-    include 'asterfort/mfnco2.h'
-    include 'asterfort/mfnema.h'
-    include 'asterfort/mfnpdt.h'
-    include 'asterfort/mfouvr.h'
-    include 'asterfort/u2mesg.h'
-    include 'asterfort/u2mesk.h'
-    include 'asterfort/u2mess.h'
-    include 'asterfort/ulisog.h'
-    include 'asterfort/wkvect.h'
+#   include "jeveux.h"
+#   include "asterfort/codent.h"
+#   include "asterfort/dismoi.h"
+#   include "asterfort/jedema.h"
+#   include "asterfort/jedetr.h"
+#   include "asterfort/jemarq.h"
+#   include "asterfort/jeveuo.h"
+#   include "asterfort/lxlgut.h"
+#   include "asterfort/as_mficlo.h"
+#   include "asterfort/as_mfdncn.h"
+#   include "asterfort/as_mmhnme.h"
+#   include "asterfort/as_mfdfin.h"
+#   include "asterfort/as_mfiope.h"
+#   include "asterfort/u2mesg.h"
+#   include "asterfort/u2mesk.h"
+#   include "asterfort/u2mess.h"
+#   include "asterfort/ulisog.h"
+#   include "asterfort/wkvect.h"
     integer :: mfich
     character(len=8) :: nomail
     character(len=64) :: nochmd
@@ -130,20 +130,20 @@ subroutine lrvema(nomail, mfich, nochmd)
     endif
 !
     nomamd=' '
-    call mfouvr(idfimd, nofimd, edlect, iaux)
+    call as_mfiope(idfimd, nofimd, edlect, iaux)
     if (iaux .ne. 0) then
         lnomam = lxlgut(saux08)
         call u2mesk('F', 'MED_78', 1, saux08(1:lnomam))
     endif
 !
-    call mfnco2(idfimd, nochmd, ncmp, codret)
+    call as_mfdncn(idfimd, nochmd, ncmp, codret)
     if (codret .ne. 0) then
         call u2mesk('F', 'MED_32', 1, nochmd)
     endif
     call wkvect('&&LRVEMA.CNAME', 'V V K16', ncmp, jcmp)
     call wkvect('&&LRVEMA.CUNIT', 'V V K16', ncmp, junit)
 !
-    call mfnpdt(idfimd, nochmd, nomamd, nbtv, zk16(junit),&
+    call as_mfdfin(idfimd, nochmd, nomamd, nbtv, zk16(junit),&
                 zk16(jcmp), codret)
 !
     call wkvect('&&LRVERIMO_NBETYP1', 'V V I', ntymax, jnbtyp)
@@ -151,13 +151,13 @@ subroutine lrvema(nomail, mfich, nochmd)
     do 10 i = 1, ntymax
         zi(jnbtyp+i-1)=0
         if (nummed(i) .ne. 0) then
-            call mfnema(idfimd, nomamd, edconn, edmail, nummed(i),&
+            call as_mmhnme(idfimd, nomamd, edconn, edmail, nummed(i),&
                         ednoda, nmatyp, iret)
             zi(jnbtyp+i-1)=nmatyp
         endif
 10  end do
 !
-    call mfferm(idfimd, iret)
+    call as_mficlo(idfimd, iret)
     call dismoi('F', 'NB_MA_MAILLA', nomail, 'MAILLAGE', nbma,&
                 k8b, iret)
     call wkvect('&&LRVERIMO_NBMA_TYP', 'V V I', nbma, jmatyp)

@@ -16,23 +16,24 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
+#include "types/med_types.h"
     subroutine mfdrpw(fid, fname, numdt, numit, dt,&
                       etype, gtype, stm, pname, lname,&
                       swm, cs, n, val, cret)
-        integer :: fid
+        med_int :: fid
         character(*) :: fname
-        integer :: numdt
-        integer :: numit
+        med_int :: numdt
+        med_int :: numit
         real(kind=8) :: dt
-        integer :: etype
-        integer :: gtype
-        integer :: stm
+        med_int :: etype
+        med_int :: gtype
+        med_int :: stm
         character(*) :: pname
         character(*) :: lname
-        integer :: swm
-        integer :: cs
-        integer :: n
+        med_int :: swm
+        med_int :: cs
+        med_int :: n
         real(kind=8) :: val(*)
-        integer :: cret
+        med_int :: cret
     end subroutine mfdrpw
 end interface

@@ -143,7 +143,7 @@ subroutine op0046()
             temps = 0.d0
         endif
         listps = result
-        call allir8('V', listps, 1, temps)
+        call allir8('V', listps, 1, [temps])
     endif
 !
 ! ---- CALCUL MECANIQUE

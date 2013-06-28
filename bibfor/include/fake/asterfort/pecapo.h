@@ -15,14 +15,11 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
-interface
-    subroutine pecapo(resu, modele, cara, nchar, lchar,&
-                      nh)
-        character(*) :: resu
-        character(*) :: modele
-        character(*) :: cara
-        integer :: nchar
-        character(*) :: lchar(*)
-        integer :: nh
-    end subroutine pecapo
-end interface
+          interface 
+            subroutine pecapo(resu,modele,cara,nh)
+              character(*) :: resu
+              character(*) :: modele
+              character(*) :: cara
+              integer :: nh
+            end subroutine pecapo
+          end interface 

@@ -69,7 +69,7 @@ subroutine coeihm(option, perman, resi, rigi, imate,&
     real(kind=8) :: permfh, permli, dperml, permgz, dperms, dpermp, fick, dfickt
     real(kind=8) :: lambp, dlambp, unsurk, alpha, lambs, dlambs, viscl, dfickg
     real(kind=8) :: dviscl, mamolg, lambt, dlambt, viscg, dviscg
-    real(kind=8) :: mamovg, fickad, dfadt, lambct, isot(3)
+    real(kind=8) :: mamovg, fickad, dfadt, lambct, isot(6)
     real(kind=8) :: dficks
     real(kind=8) :: dsde(dimcon, dimdef)
     real(kind=8) :: tlint, ouvh, deltat, unsurn

@@ -6,7 +6,7 @@ subroutine t3gb(carat3, xyzl, bmat)
     include 'asterfort/dxtbm.h'
     include 'asterfort/elref5.h'
     include 'asterfort/t3gbc.h'
-    real(kind=8) :: xyzl(3, 1), carat3(*), bmat(6, 1)
+    real(kind=8) :: xyzl(3, 1), carat3(*), bmat(8, 1)
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG

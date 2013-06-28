@@ -30,8 +30,8 @@ subroutine cfaddm(resoco, lctfd, lctf3d, posnoe, iliai,&
     character(len=24) :: resoco
     integer :: posnoe, iliai
     integer :: nbnom, ndimg
-    integer :: posnsm(9)
-    real(kind=8) :: coefno(9)
+    integer :: posnsm(*)
+    real(kind=8) :: coefno(*)
     real(kind=8) :: jeu, coornp(3)
     real(kind=8) :: norm(3), tau1(3), tau2(3)
     logical :: lctfd, lctf3d

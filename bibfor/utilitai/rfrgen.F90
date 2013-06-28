@@ -82,7 +82,7 @@ subroutine rfrgen(trange)
     integer :: lvar, mxmode, n1, n2, n3, nbexci, nbinsg
     integer :: nbmode, nbordr, nbpari, nbpark, nbparr, nbpas, neq
     integer :: nfonct, ngn, numcmp
-    real(kind=8) :: alpha, epsi, rep
+    real(kind=8) :: alpha, epsi, rep,rep1(1)
     complex(kind=8) :: cbid
 !-----------------------------------------------------------------------
     call jemarq()
@@ -189,9 +189,9 @@ subroutine rfrgen(trange)
             call jelira(resu//'.DISC', 'LONMAX', nbinsg, k8b)
             do 54 iordr = 0, nbordr-1
                 call extrac(intres, epsi, crit, nbinsg-2, zr(idinsg),&
-                            zr(jinst+iordr), zr(lpas), 1, rep, ierd)
+                            zr(jinst+iordr), zr(lpas), 1, rep1, ierd)
                 zr(lvar+iordr) = zr(jinst+iordr)
-                zr(lfon+iordr) = rep
+                zr(lfon+iordr) = rep1(1)
 54          continue
         else
             do 56 iordr = 0, nbordr-1

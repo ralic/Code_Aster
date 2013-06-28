@@ -159,7 +159,7 @@ subroutine fettsd(infofe, nbi, nbsd, vddl, sdfeti,&
                            1)
             endif
 10      continue
-        if (lpara) call fetmpi(71, nbi4, ifm, nivmpi, ibid,&
+        if (lpara) call fetmpi(71, nbi, ifm, nivmpi, ibid,&
                                ibid, k24b, k24b, k24b, rbid)
         raux=0.d0
         do 12 i = 1, nbi

@@ -43,12 +43,12 @@ subroutine mdexcv(nofimd, idfimd, nochmd, numpt, numord,&
 !
 ! 0.1. ==> ARGUMENTS
 !
-    include 'jeveux.h'
-    include 'asterfort/mfferm.h'
-    include 'asterfort/mfnnop.h'
-    include 'asterfort/mfouvr.h'
-    include 'asterfort/mfprlo.h'
-    include 'asterfort/u2mesg.h'
+#   include "jeveux.h"
+#   include "asterfort/as_mficlo.h"
+#   include "asterfort/as_mfdonv.h"
+#   include "asterfort/as_mfiope.h"
+#   include "asterfort/as_mfdonp.h"
+#   include "asterfort/u2mesg.h"
     character(len=*) :: nofimd, nochmd
 !
     integer :: numpt, numord, typent, typgeo, nbval
@@ -92,7 +92,7 @@ subroutine mdexcv(nofimd, idfimd, nochmd, numpt, numord,&
 !
     else
         if (idfimd .eq. 0) then
-            call mfouvr(idfimd, nofimd, edlect, iaux)
+            call as_mfiope(idfimd, nofimd, edlect, iaux)
             dejouv = .false.
         else
             dejouv = .true.
@@ -104,11 +104,11 @@ subroutine mdexcv(nofimd, idfimd, nochmd, numpt, numord,&
 ! 2. COMBIEN DE VALEURS ?
 !====
 !
-            call mfprlo(idfimd, nochmd, numpt, numord, typent,&
+            call as_mfdonp(idfimd, nochmd, numpt, numord, typent,&
                         typgeo, iterma, nomamd, nompro, nomloc,&
                         nbprof, codret)
             do 10, iprof = 1, nbprof
-            call mfnnop(idfimd, nochmd, typent, typgeo, nomamd,&
+            call as_mfdonv(idfimd, nochmd, typent, typgeo, nomamd,&
                         numpt, numord, iprof, nompro, edcomp,&
                         npr, nomloc, nip, ntmp, codret)
             if (codret .eq. 0) then
@@ -121,9 +121,9 @@ subroutine mdexcv(nofimd, idfimd, nochmd, numpt, numord,&
 !====
 !
             if (.not.dejouv) then
-                call mfferm(idfimd, codret)
+                call as_mficlo(idfimd, codret)
                 if (codret .ne. 0) then
-                    saux08='MFFERM  '
+                    saux08='mficlo'
                     call u2mesg('F', 'DVP_97', 1, saux08, 1,&
                                 codret, 0, 0.d0)
                 endif

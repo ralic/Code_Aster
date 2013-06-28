@@ -69,7 +69,7 @@ subroutine xsifle(ndim, ifa, jptint, jaint, cface,&
     integer :: ipgf, ier, ilev, k, j, zxain
     integer :: indi, ddld, ddls, nnops
     real(kind=8) :: mult, xg(4), jac, ff(27), nd(3), lst, lsn, rr(2), rb9(3, 3)
-    real(kind=8) :: rb
+    real(kind=8) :: rb(3,3,3)
     real(kind=8) :: forrep(3, 2), pres, cisa, depla(3), angl(2), r3bid(3)
     real(kind=8) :: e, nu, mu, ka, coeff, coeff3, r27bid(27)
     real(kind=8) :: u1l(3), u2l(3), u3l(3), u1(3), u2(3), u3(3)

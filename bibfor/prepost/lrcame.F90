@@ -62,41 +62,41 @@ subroutine lrcame(nrofic, nochmd, nomamd, nomaas, ligrel,&
 !
 ! 0.1. ==> ARGUMENTS
 !
-    include 'jeveux.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/cescre.h'
-    include 'asterfort/cnscre.h'
-    include 'asterfort/codent.h'
-    include 'asterfort/dismoi.h'
-    include 'asterfort/infniv.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jeexin.h'
-    include 'asterfort/jelira.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/lrcmle.h'
-    include 'asterfort/lrcmpr.h'
-    include 'asterfort/lrcmva.h'
-    include 'asterfort/lrcmve.h'
-    include 'asterfort/lrmpga.h'
-    include 'asterfort/lrmtyp.h'
-    include 'asterfort/mdchin.h'
-    include 'asterfort/mdexch.h'
-    include 'asterfort/mdexma.h'
-    include 'asterfort/mdexpm.h'
-    include 'asterfort/mfferm.h'
-    include 'asterfort/mffoco.h'
-    include 'asterfort/mfnema.h'
-    include 'asterfort/mfouvr.h'
-    include 'asterfort/mfvedo.h'
-    include 'asterfort/mfveli.h'
-    include 'asterfort/u2mesg.h'
-    include 'asterfort/u2mesk.h'
-    include 'asterfort/u2mess.h'
-    include 'asterfort/ulisog.h'
-    include 'asterfort/utlicm.h'
-    include 'asterfort/wkvect.h'
+#   include "jeveux.h"
+#   include "asterfort/assert.h"
+#   include "asterfort/cescre.h"
+#   include "asterfort/cnscre.h"
+#   include "asterfort/codent.h"
+#   include "asterfort/dismoi.h"
+#   include "asterfort/infniv.h"
+#   include "asterfort/jedema.h"
+#   include "asterfort/jedetr.h"
+#   include "asterfort/jeexin.h"
+#   include "asterfort/jelira.h"
+#   include "asterfort/jemarq.h"
+#   include "asterfort/jeveuo.h"
+#   include "asterfort/lrcmle.h"
+#   include "asterfort/lrcmpr.h"
+#   include "asterfort/lrcmva.h"
+#   include "asterfort/lrcmve.h"
+#   include "asterfort/lrmpga.h"
+#   include "asterfort/lrmtyp.h"
+#   include "asterfort/mdchin.h"
+#   include "asterfort/mdexch.h"
+#   include "asterfort/mdexma.h"
+#   include "asterfort/mdexpm.h"
+#   include "asterfort/as_mficlo.h"
+#   include "asterfort/as_mficom.h"
+#   include "asterfort/as_mmhnme.h"
+#   include "asterfort/as_mfiope.h"
+#   include "asterfort/as_mlbnuv.h"
+#   include "asterfort/as_mfinvr.h"
+#   include "asterfort/u2mesg.h"
+#   include "asterfort/u2mesk.h"
+#   include "asterfort/u2mess.h"
+#   include "asterfort/ulisog.h"
+#   include "asterfort/utlicm.h"
+#   include "asterfort/wkvect.h"
     integer :: nrofic, typen
     integer :: ncmprf, jnocmp
     integer :: nbcmpv
@@ -223,9 +223,9 @@ subroutine lrcame(nrofic, nochmd, nomamd, nomaas, ligrel,&
 !
 ! 1.4.1. ==> VERIFICATION DE LA VERSION HDF
 !
-    call mffoco(nofimd, hdfok, medok, codret)
+    call as_mficom(nofimd, hdfok, medok, codret)
     if (hdfok .eq. 0) then
-        saux08='MFFOCO  '
+        saux08='mficom'
         call u2mesg('F', 'DVP_97', 1, saux08, 1,&
                     codret, 0, 0.d0)
     endif
@@ -235,7 +235,7 @@ subroutine lrcame(nrofic, nochmd, nomamd, nomaas, ligrel,&
     if (medok .eq. 0) then
         vali (1) = codret
         call u2mess('F+', 'MED_24')
-        call mfvedo(vlib(1), vlib(2), vlib(3), iret)
+        call as_mlbnuv(vlib(1), vlib(2), vlib(3), iret)
         if (iret .eq. 0) then
             vali (1) = vlib(1)
             vali (2) = vlib(2)
@@ -243,8 +243,8 @@ subroutine lrcame(nrofic, nochmd, nomamd, nomaas, ligrel,&
             call u2mesg('F+', 'MED_25', 0, ' ', 3,&
                         vali, 0, 0.d0)
         endif
-        call mfouvr(idfimd, nofimd, edlect, codret)
-        call mfveli(idfimd, vfic(1), vfic(2), vfic(3), iret)
+        call as_mfiope(idfimd, nofimd, edlect, codret)
+        call as_mfinvr(idfimd, vfic(1), vfic(2), vfic(3), iret)
         if (iret .eq. 0) then
             if (vfic(2) .eq. -1 .or. vfic(3) .eq. -1) then
                 call u2mesg('F+', 'MED_26', 0, ' ', 0,&
@@ -265,7 +265,7 @@ subroutine lrcame(nrofic, nochmd, nomamd, nomaas, ligrel,&
                             0, 0, 0.d0)
             endif
         endif
-        call mfferm(idfimd, codret)
+        call as_mficlo(idfimd, codret)
     endif
 !
 ! 1.5. ==> VERIFICATION DE L'EXISTENCE DU MAILLAGE CONCERNE
@@ -334,9 +334,9 @@ subroutine lrcame(nrofic, nochmd, nomamd, nomaas, ligrel,&
 ! 2. OUVERTURE DU FICHIER EN LECTURE
 !====
 !
-    call mfouvr(idfimd, nofimd, edlect, codret)
+    call as_mfiope(idfimd, nofimd, edlect, codret)
     if (codret .ne. 0) then
-        saux08='MFOUVR  '
+        saux08='mfiope'
         call u2mesg('F', 'DVP_97', 1, saux08, 1,&
                     codret, 0, 0.d0)
     endif
@@ -392,7 +392,7 @@ subroutine lrcame(nrofic, nochmd, nomamd, nomaas, ligrel,&
     endif
 !
 !       RECUPERE LE NOMBRE DE MAILLES DE TYPE TYGEOM
-    call mfnema(idfimd, nomamd, edconn, edmail, tygeom,&
+    call as_mmhnme(idfimd, nomamd, edconn, edmail, tygeom,&
                 ednoda, nmatyp, codre2)
 !
     if (codre2 .eq. 0) then
@@ -720,9 +720,9 @@ subroutine lrcame(nrofic, nochmd, nomamd, nomaas, ligrel,&
 !
 ! 5.1. ==> FERMETURE FICHIER
 !
-    call mfferm(idfimd, codret)
+    call as_mficlo(idfimd, codret)
     if (codret .ne. 0) then
-        saux08='MFFERM  '
+        saux08='mficlo'
         call u2mesg('F', 'DVP_97', 1, saux08, 1,&
                     codret, 0, 0.d0)
     endif

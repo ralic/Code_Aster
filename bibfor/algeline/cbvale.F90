@@ -167,28 +167,28 @@ subroutine cbvale(nbcomb, typcst, const, lmat, typres,&
             if (typmat .eq. 'R') then
 !         --------------------------
                 call cbvalr(rouc, neq, zi4(jsmhc), zi(jsmdi), zi(lddl),&
-                            r8cst, c8cst, zr(jvami1), zr(jvamr1), cbid)
+                            r8cst, c8cst, zr(jvami1), zr(jvamr1), [cbid])
                 if (.not.symr) then
                     if (symi) then
                         call cbvalr(rouc, neq, zi4(jsmhc), zi(jsmdi), zi( lddl),&
-                                    r8cst, c8cst, zr(jvami1), zr(jvamr2), cbid)
+                                    r8cst, c8cst, zr(jvami1), zr(jvamr2), [cbid])
                     else
                         call cbvalr(rouc, neq, zi4(jsmhc), zi(jsmdi), zi( lddl),&
-                                    r8cst, c8cst, zr(jvami2), zr(jvamr2), cbid)
+                                    r8cst, c8cst, zr(jvami2), zr(jvamr2), [cbid])
                     endif
                 endif
 !
             else if (typmat.eq.'C') then
 !         --------------------------
                 call cbvalc(rouc, neq, zi4(jsmhc), zi(jsmdi), zi(lddl),&
-                            r8cst, c8cst, zc(jvami1), zr(jvamr1), cbid)
+                            r8cst, c8cst, zc(jvami1), zr(jvamr1), [cbid])
                 if (.not.symr) then
                     if (symi) then
                         call cbvalc(rouc, neq, zi4(jsmhc), zi(jsmdi), zi( lddl),&
-                                    r8cst, c8cst, zc(jvami1), zr(jvamr2), cbid)
+                                    r8cst, c8cst, zc(jvami1), zr(jvamr2), [cbid])
                     else
                         call cbvalc(rouc, neq, zi4(jsmhc), zi(jsmdi), zi( lddl),&
-                                    r8cst, c8cst, zc(jvami2), zr(jvamr2), cbid)
+                                    r8cst, c8cst, zc(jvami2), zr(jvamr2), [cbid])
                     endif
                 endif
             endif
@@ -199,28 +199,28 @@ subroutine cbvale(nbcomb, typcst, const, lmat, typres,&
             if (typmat .eq. 'R') then
 !         --------------------------
                 call cbvalr(rouc, neq, zi4(jsmhc), zi(jsmdi), zi(lddl),&
-                            r8cst, c8cst, zr(jvami1), rbid, zc(jvamr1))
+                            r8cst, c8cst, zr(jvami1), [rbid], zc(jvamr1))
                 if (.not.symr) then
                     if (symi) then
                         call cbvalr(rouc, neq, zi4(jsmhc), zi(jsmdi), zi( lddl),&
-                                    r8cst, c8cst, zr(jvami1), rbid, zc(jvamr2))
+                                    r8cst, c8cst, zr(jvami1), [rbid], zc(jvamr2))
                     else
                         call cbvalr(rouc, neq, zi4(jsmhc), zi(jsmdi), zi( lddl),&
-                                    r8cst, c8cst, zr(jvami2), rbid, zc(jvamr2))
+                                    r8cst, c8cst, zr(jvami2), [rbid], zc(jvamr2))
                     endif
                 endif
 !
             else if (typmat.eq.'C') then
 !         --------------------------
                 call cbvalc(rouc, neq, zi4(jsmhc), zi(jsmdi), zi(lddl),&
-                            r8cst, c8cst, zc(jvami1), rbid, zc(jvamr1))
+                            r8cst, c8cst, zc(jvami1), [rbid], zc(jvamr1))
                 if (.not.symr) then
                     if (symi) then
                         call cbvalc(rouc, neq, zi4(jsmhc), zi(jsmdi), zi( lddl),&
-                                    r8cst, c8cst, zc(jvami1), rbid, zc(jvamr2))
+                                    r8cst, c8cst, zc(jvami1), [rbid], zc(jvamr2))
                     else
                         call cbvalc(rouc, neq, zi4(jsmhc), zi(jsmdi), zi( lddl),&
-                                    r8cst, c8cst, zc(jvami2), rbid, zc(jvamr2))
+                                    r8cst, c8cst, zc(jvami2), [rbid], zc(jvamr2))
                     endif
                 endif
             endif

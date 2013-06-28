@@ -53,21 +53,21 @@ subroutine irmmma(fid, nomamd, nbmail, connex, point,&
 !
     implicit none
 !
-    include 'jeveux.h'
+#   include "jeveux.h"
 !
-    include 'asterfort/infniv.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jenonu.h'
-    include 'asterfort/jexnom.h'
-    include 'asterfort/mfcone.h'
-    include 'asterfort/mfnome.h'
-    include 'asterfort/mfnume.h'
-    include 'asterfort/u2mesg.h'
-    include 'asterfort/u2mesk.h'
-    include 'asterfort/u2mess.h'
-    include 'asterfort/wkvect.h'
+#   include "asterfort/infniv.h"
+#   include "asterfort/jedema.h"
+#   include "asterfort/jedetr.h"
+#   include "asterfort/jemarq.h"
+#   include "asterfort/jenonu.h"
+#   include "asterfort/jexnom.h"
+#   include "asterfort/as_mmhcyw.h"
+#   include "asterfort/as_mmheaw.h"
+#   include "asterfort/as_mmhenw.h"
+#   include "asterfort/u2mesg.h"
+#   include "asterfort/u2mesk.h"
+#   include "asterfort/u2mess.h"
+#   include "asterfort/wkvect.h"
     integer :: ntymax
     parameter (ntymax = 69)
 !
@@ -255,30 +255,30 @@ subroutine irmmma(fid, nomamd, nbmail, connex, point,&
 !          LA SUITE POUR UNE MAILLE DONNEE.
 !          C'EST CE QUE MED APPELLE LE MODE ENTRELACE
 !
-        call mfcone(fid, nomamd, zi(jcnxma(ityp)), nnotyp(ityp)* nmatyp(ityp), edfuin,&
+        call as_mmhcyw(fid, nomamd, zi(jcnxma(ityp)), nnotyp(ityp)* nmatyp(ityp), edfuin,&
                     nmatyp(ityp), edmail, typgeo(ityp), ednoda, codret)
         if (codret .ne. 0) then
-            saux08='MFCONE  '
+            saux08='mmhcyw'
             call u2mesg('F', 'DVP_97', 1, saux08, 1,&
                         codret, 0, 0.d0)
         endif
 !
 ! 3.2. ==> LE NOM DES MAILLES
 !
-        call mfnome(fid, nomamd, zk16(jnomma(ityp)), nmatyp( ityp), edmail,&
+        call as_mmheaw(fid, nomamd, zk16(jnomma(ityp)), nmatyp( ityp), edmail,&
                     typgeo(ityp), codret)
         if (codret .ne. 0) then
-            saux08='MFNOME  '
+            saux08='mmheaw'
             call u2mesg('F', 'DVP_97', 1, saux08, 1,&
                         codret, 0, 0.d0)
         endif
 !
 ! 3.3. ==> LE NUMERO DES MAILLES
 !
-        call mfnume(fid, nomamd, zi(jnumma(ityp)), nmatyp(ityp), edmail,&
+        call as_mmhenw(fid, nomamd, zi(jnumma(ityp)), nmatyp(ityp), edmail,&
                     typgeo(ityp), codret)
         if (codret .ne. 0) then
-            saux08='MFNUME  '
+            saux08='mmhenw'
             call u2mesg('F', 'DVP_97', 1, saux08, 1,&
                         codret, 0, 0.d0)
         endif

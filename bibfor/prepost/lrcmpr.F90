@@ -34,13 +34,13 @@ subroutine lrcmpr(idfimd, nomprf, ntproa, lgproa, codret)
 !
 ! 0.1. ==> ARGUMENTS
 !
-    include 'jeveux.h'
-    include 'asterfort/infniv.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/mfnpfl.h'
-    include 'asterfort/mfpfll.h'
-    include 'asterfort/u2mesg.h'
-    include 'asterfort/wkvect.h'
+#   include "jeveux.h"
+#   include "asterfort/infniv.h"
+#   include "asterfort/jedetr.h"
+#   include "asterfort/as_mpfpsn.h"
+#   include "asterfort/as_mpfprr.h"
+#   include "asterfort/u2mesg.h"
+#   include "asterfort/wkvect.h"
     integer :: idfimd
     integer :: lgproa
     integer :: codret
@@ -85,9 +85,9 @@ subroutine lrcmpr(idfimd, nomprf, ntproa, lgproa, codret)
 ! 2. NOMBRE DE VALEURS LIEES AU PROFIL
 !====
 !
-    call mfnpfl(idfimd, nomprf, lgprom, codret)
+    call as_mpfpsn(idfimd, nomprf, lgprom, codret)
     if (codret .ne. 0) then
-        saux08='MFNPFL  '
+        saux08='mpfpsn'
         call u2mesg('F', 'DVP_97', 1, saux08, 1,&
                     codret, 0, 0.d0)
     endif
@@ -104,9 +104,9 @@ subroutine lrcmpr(idfimd, nomprf, ntproa, lgproa, codret)
 !
     call wkvect(ntprom, 'V V I', lgprom, adprom)
 !
-    call mfpfll(idfimd, zi(adprom), lgprom, nomprf, codret)
+    call as_mpfprr(idfimd, zi(adprom), lgprom, nomprf, codret)
     if (codret .ne. 0) then
-        saux08='MFPFLL  '
+        saux08='mpfprr'
         call u2mesg('F', 'DVP_97', 1, saux08, 1,&
                     codret, 0, 0.d0)
     endif

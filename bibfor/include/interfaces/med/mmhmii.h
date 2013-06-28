@@ -16,22 +16,23 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
+#include "types/med_types.h"
     subroutine mmhmii(fid, it, name, sdim, mdim,&
                       mtype, desc, dtunit, stype, nstep,&
                       atype, aname, aunit, cret)
-        integer :: fid
-        integer :: it
+        med_int :: fid
+        med_int :: it
         character(*) :: name
-        integer :: sdim
-        integer :: mdim
-        integer :: mtype
+        med_int :: sdim
+        med_int :: mdim
+        med_int :: mtype
         character(*) :: desc
         character(*) :: dtunit
-        integer :: stype
-        integer :: nstep
-        integer :: atype
+        med_int :: stype
+        med_int :: nstep
+        med_int :: atype
         character(*) :: aname
         character(*) :: aunit
-        integer :: cret
+        med_int :: cret
     end subroutine mmhmii
 end interface

@@ -61,18 +61,18 @@ subroutine irmmf2(fid, nomamd, typent, nbrent, nbgrou,&
 !
 ! 0.1. ==> ARGUMENTS
 !
-    include 'jeveux.h'
+#   include "jeveux.h"
 !
-    include 'asterfort/desgfa.h'
-    include 'asterfort/jelira.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/jexnum.h'
-    include 'asterfort/mdnofa.h'
-    include 'asterfort/mffamc.h'
-    include 'asterfort/mffame.h'
-    include 'asterfort/nomgfa.h'
-    include 'asterfort/setgfa.h'
-    include 'asterfort/u2mesg.h'
+#   include "asterfort/desgfa.h"
+#   include "asterfort/jelira.h"
+#   include "asterfort/jeveuo.h"
+#   include "asterfort/jexnum.h"
+#   include "asterfort/mdnofa.h"
+#   include "asterfort/as_mfacre.h"
+#   include "asterfort/as_mmhfnw.h"
+#   include "asterfort/nomgfa.h"
+#   include "asterfort/setgfa.h"
+#   include "asterfort/u2mesg.h"
     integer :: fid
     integer :: typgeo(*), nmatyp(*)
     integer :: typent, nbrent, nbgrou
@@ -309,10 +309,10 @@ subroutine irmmf2(fid, nomamd, typent, nbrent, nbgrou,&
 !
 ! 2.3.3. ==> ECRITURE DES CARACTERISTIQUES DE LA FAMILLE
 !
-        call mffamc(fid, nomamd, nomfam, numfam, nbgnof,&
-                    nogrfa, codret)
+        call as_mfacre(fid, nomamd, nomfam, numfam, nbgnof,&
+                       nogrfa, codret)
         if (codret .ne. 0) then
-            saux08='MFFAMC  '
+            saux08='mfacre'
             call u2mesg('F', 'DVP_97', 1, saux08, 1,&
                         codret, 0, 0.d0)
         endif
@@ -331,11 +331,11 @@ subroutine irmmf2(fid, nomamd, typent, nbrent, nbgrou,&
 !
     if (typent .eq. tygeno) then
 !
-        call mffame(fid, nomamd, nufaen, nbrent, ednoeu,&
+        call as_mmhfnw(fid, nomamd, nufaen, nbrent, ednoeu,&
                     tygeno, codret)
 !
         if (codret .ne. 0) then
-            saux08='MFFAME  '
+            saux08='mmhfnw'
             call u2mesg('F', 'DVP_97', 1, saux08, 1,&
                         codret, 0, 0.d0)
         endif
@@ -359,11 +359,11 @@ subroutine irmmf2(fid, nomamd, typent, nbrent, nbgrou,&
             tabaux(iaux) = nufaen(zi(kaux-1+iaux))
 321          continue
 !
-            call mffame(fid, nomamd, tabaux, nmatyp(ityp), edmail,&
+            call as_mmhfnw(fid, nomamd, tabaux, nmatyp(ityp), edmail,&
                         typgeo(ityp), codret)
 !
             if (codret .ne. 0) then
-                saux08='MFFAME  '
+                saux08='mmhfnw'
                 call u2mesg('F', 'DVP_97', 1, saux08, 1,&
                             codret, 0, 0.d0)
             endif

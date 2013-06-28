@@ -71,7 +71,7 @@ subroutine xgrals(mode, noma, ln, lt, grlt,&
                 'OUI')
 !
 !     PASSAGE D'UN CHAM_ELNO EN UN CHAM_NO
-    call celces(lchout, 'V', chams)
+    call celces(lchout(1), 'V', chams)
     call cescns(chams, ' ', 'V', grlt, ' ',&
                 ier)
 !
@@ -92,7 +92,7 @@ subroutine xgrals(mode, noma, ln, lt, grlt,&
                 'OUI')
 !
 !     PASSAGE D'UN CHAM_ELNO EN UN CHAM_NO
-    call celces(lchout, 'V', chams)
+    call celces(lchout(1), 'V', chams)
     call cescns(chams, ' ', 'V', grln, ' ',&
                 ier)
 !

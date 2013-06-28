@@ -16,11 +16,12 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
+#include "types/med_types.h"
     subroutine mfinvr(fid, major, minor, rel, cret)
-        integer :: fid
-        integer :: major
-        integer :: minor
-        integer :: rel
-        integer :: cret
+        med_int :: fid
+        med_int :: major
+        med_int :: minor
+        med_int :: rel
+        med_int :: cret
     end subroutine mfinvr
 end interface

@@ -2,19 +2,19 @@ subroutine irmase(nofimd, typsec, nbrcou, nbsect, nummai,&
                   sdcarm, nomase)
     implicit none
 !
-    include 'asterc/r8pi.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/cesexi.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/mfcooe.h'
-    include 'asterfort/mfferm.h'
-    include 'asterfort/mfmscr.h'
-    include 'asterfort/mfmsle.h'
-    include 'asterfort/mfmsnb.h'
-    include 'asterfort/mfouvr.h'
-    include 'asterfort/u2mesg.h'
-    include 'asterfort/wkvect.h'
+#   include "asterc/r8pi.h"
+#   include "asterfort/assert.h"
+#   include "asterfort/cesexi.h"
+#   include "asterfort/jedetr.h"
+#   include "asterfort/jeveuo.h"
+#   include "asterfort/as_mmhcow.h"
+#   include "asterfort/as_mficlo.h"
+#   include "asterfort/as_msmcre.h"
+#   include "asterfort/as_msmsmi.h"
+#   include "asterfort/as_msmnsm.h"
+#   include "asterfort/as_mfiope.h"
+#   include "asterfort/u2mesg.h"
+#   include "asterfort/wkvect.h"
     character(len=8) :: sdcarm
     character(len=*) :: nofimd, typsec, nomase
     integer :: nbrcou, nbsect, nummai
@@ -49,7 +49,7 @@ subroutine irmase(nofimd, typsec, nbrcou, nbsect, nummai,&
 !   SDCARM  K8   CARA_ELEM CONVERTIT EN CHAM_ELEM_S
 !   NOMASE  K*   NOM MED DU MAILLAGE SECTION
 !
-    include 'jeveux.h'
+#   include "jeveux.h"
 !
     integer :: idfimd, nbpoin, ipoint, jcoopt, nbrayo, icouch, irayon
     integer :: edleaj, postmp, codret, edcart, jmasup, jcesc, jcesd
@@ -78,18 +78,18 @@ subroutine irmase(nofimd, typsec, nbrcou, nbsect, nummai,&
     desmed = ' '
     if (nbrcou .eq. 0 .and. nbsect .eq. 0 .and. nummai .eq. 0) goto 9999
 !
-    call mfouvr(idfimd, nofimd, edleaj, codret)
+    call as_mfiope(idfimd, nofimd, edleaj, codret)
     if (codret .ne. 0) then
-        saux08='MFOUVR'
+        saux08='mfiope'
         call u2mesg('F', 'DVP_97', 1, saux08, 1,&
                     codret, 0, 0.d0)
     endif
 !
 !     -- RELECTURE DES ELEMENTS DE STRUCTURES DEJA PRESENTS
     nbmasu = 0
-    call mfmsnb(idfimd, nbmasu, codret)
+    call as_msmnsm(idfimd, nbmasu, codret)
     if (codret .ne. 0) then
-        saux08='MFMSNB'
+        saux08='msmnsm'
         call u2mesg('F', 'DVP_97', 1, saux08, 1,&
                     codret, 0, 0.d0)
     endif
@@ -97,10 +97,10 @@ subroutine irmase(nofimd, typsec, nbrcou, nbsect, nummai,&
     if (nbmasu .ne. 0) then
         call wkvect('&&IRMASE.MAIL_SUPP', 'V V K80', nbmasu, jmasup)
         do 40, imasup = 1, nbmasu
-        call mfmsle(idfimd, imasup, nomasu, ndim, desmed,&
+        call as_msmsmi(idfimd, imasup, nomasu, ndim, desmed,&
                     edcar2, nocoo2, uncoo2, codret)
         if (codret .ne. 0) then
-            saux08='MFMSLE'
+            saux08='msmsmi'
             call u2mesg('F', 'DVP_97', 1, saux08, 1,&
                         codret, 0, 0.d0)
         endif
@@ -187,26 +187,26 @@ subroutine irmase(nofimd, typsec, nbrcou, nbsect, nummai,&
     endif
 !
 !     -- DEFINITION DU MAILLAGE SUPPORT MED
-    call mfmscr(idfimd, nomase, ndim, desmed, edcart,&
+    call as_msmcre(idfimd, nomase, ndim, desmed, edcart,&
                 nocoor, uncoor, codret)
     if (codret .ne. 0) then
-        saux08='MFMSCR'
+        saux08='msmcre'
         call u2mesg('F', 'DVP_97', 1, saux08, 1,&
                     codret, 0, 0.d0)
     endif
 !
 !     -- DEFINITION DES NOEUDS DU MAILLAGE SUPPORT MED
-    call mfcooe(idfimd, nomase, zr(jcoopt), edfuin, nbpoin,&
+    call as_mmhcow(idfimd, nomase, zr(jcoopt), edfuin, nbpoin,&
                 codret)
     if (codret .ne. 0) then
-        saux08='MFCOOE'
+        saux08='mmhcow'
         call u2mesg('F', 'DVP_97', 1, saux08, 1,&
                     codret, 0, 0.d0)
     endif
 !
-    call mfferm(idfimd, codret)
+    call as_mficlo(idfimd, codret)
     if (codret .ne. 0) then
-        saux08='MFFERM'
+        saux08='mficlo'
         call u2mesg('F', 'DVP_97', 1, saux08, 1,&
                     codret, 0, 0.d0)
     endif

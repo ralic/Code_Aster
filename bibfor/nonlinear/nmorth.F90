@@ -54,7 +54,7 @@ subroutine nmorth(fami, kpg, ksp, ndim, phenom,&
 !  OUT   DSIDEP : MATRICE DE RIGIDITE TANGENTE
 !
 !     VARIABLE LOCALE
-    real(kind=8) :: rbid, repere(4), hookf(36), mkooh(36), xyzgau(3)
+    real(kind=8) :: rbid, repere(7), hookf(36), mkooh(36), xyzgau(3)
     real(kind=8) :: valres(3), deplth(6), depgth(6), depstr(6)
     real(kind=8) :: depsme(6), rac2, vepst1(6), vepst2(6), epsm2(6)
     integer :: iret, nbsigm, i, j

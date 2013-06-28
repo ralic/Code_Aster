@@ -65,7 +65,7 @@ subroutine wp1dft(lmat, imode, zeropo, z, detnor,&
         dist = sqrt(dble(zc(i)*dconjg(zc(i))))
         detnor = detnor * zc(i) / dist
         if (dble(zc(i)) .lt. zero) isturm = isturm + 1
-        call almulr('CUMUL', dist, 1, det, idet)
+        call almulr('CUMUL', [dist], 1, det, idet)
 33  end do
     call jedetr(nomdia)
     call jedema()
