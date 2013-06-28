@@ -26,7 +26,7 @@ subroutine as_mmhmii(fid, indice, maa, dim, type,&
     character(len=*) :: maa
     character(len=*) :: desc
     character(len=80) :: descdt
-    character(len=16) :: nom, unit
+    character(len=16) :: nom(3), unit(3)
 #ifdef _DISABLE_MED
     call u2mess('F', 'FERMETUR_2')
 #else
