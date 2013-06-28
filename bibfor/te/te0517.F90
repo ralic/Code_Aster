@@ -47,12 +47,9 @@ subroutine te0517(option, nomte)
 ! ----------------------------------------------------------------------
 !
     integer :: nc, nno
-    integer :: codres(2)
-    character(len=2) :: nomres(2)
     character(len=24) :: mator
 !
     real(kind=8) :: pgl(3, 3), fl(14), xiy, xiz
-    real(kind=8) :: nx, ty, tz, mx, my, mz
 !
     integer :: nbfib, kp, ncomp, i, jacf
     integer :: icompo, iorien, ivectu
@@ -61,7 +58,7 @@ subroutine te0517(option, nomte)
 !
     integer :: igeom, iret, isect, imate, k, npg, ifgm, iretc
     real(kind=8) :: xd(3), ey, ez, temp
-    real(kind=8) :: xl, xl2, gamma, valres(2)
+    real(kind=8) :: xl, xl2, gamma
     real(kind=8) :: xls2, d1b(7, 14), co(3), aa, e, nu, g, alfay, alfaz, phiy
     real(kind=8) :: phiz
     real(kind=8) :: forref, momref, carsec(6)
@@ -69,14 +66,15 @@ subroutine te0517(option, nomte)
 !
 ! ----------------------------------------------------------------------
     nno = 2
-!
-!     NOMBRE DE COMPOSANTES DES CHAMPS PSTRX? PAR POINTS DE GAUSS
-    ncomp = 18
+
     if (nomte .eq. 'MECA_POU_D_EM') then
         nc = 6
+        npg = 2
+        ncomp = 15
     else if (nomte.eq.'MECA_POU_D_TGM') then
         nc = 7
         npg = 3
+        ncomp = 18
     endif
 !
     if (option .eq. 'REFE_FORC_NODA  ') then
@@ -135,29 +133,13 @@ subroutine te0517(option, nomte)
         endif
 !
         if (nomte .eq. 'MECA_POU_D_EM') then
-!
-            xls2 = xl/2.d0
-!
-            nx=zr(istrxm-1+1)
-            ty=zr(istrxm-1+2)
-            tz=zr(istrxm-1+3)
-            mx=zr(istrxm-1+4)
-            my=zr(istrxm-1+5)
-            mz=zr(istrxm-1+6)
-!
-! ---       ET ENFIN LE VECTEUR NODAL
-!
-            fl(7) = nx
-            fl(8) = ty
-            fl(9) = tz
-            fl(10) = mx
-            do 10 i = 1, 4
-                fl(i) = -fl(i+6)
-10          continue
-            fl(5) = -my + tz*xls2
-            fl(6) = -mz - ty*xls2
-            fl(11) = my + tz*xls2
-            fl(12) = mz - ty*xls2
+!        
+            do kp = 1,npg
+                do k = 1,nc
+                    fl(nc*(kp-1)+k) = zr(istrxm-1+ncomp*(kp-1)+k)
+                end do
+            end do
+
 !
         else if (nomte.eq.'MECA_POU_D_TGM') then
 !

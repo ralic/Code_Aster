@@ -67,16 +67,19 @@ subroutine te0535(option, nomte)
     integer :: jtab(7), ivarmp, istrxp, istrxm
     integer :: ip, inbf, jcret, codret, codrep
     integer :: iposcp, iposig, ipomod, iinstp, iinstm
-    integer :: icomax, ico, nbgf, isdcom, nbgfmx, npg
+    integer :: icomax, ico, nbgf, isdcom, nbgfmx, npg, ncomp
     real(kind=8) :: xi, wi, b(4), gg, vs(3), ve(12)
     real(kind=8) :: defam(6), defap(6)
-    real(kind=8) :: alicom, dalico, ss1, hv, he, minus
-    real(kind=8) :: vv(12), fv(12), sv(78), ksg(3)
+    real(kind=8) :: alicom, dalico, ss1, hv, he, minus, xls2
+    real(kind=8) :: vv(12), fv(12), sv(78), ksg(3),sign, my, mz
     logical :: vecteu, matric
     character(len=8) :: mator
     parameter  (zero=0.0d+0,deux=2.d+0)
 !
 ! --- ------------------------------------------------------------------
+!   NOMBRE DE COMPOSANTES DES CHAMPS PSTRX? PAR POINTS DE GAUSS
+    ncomp = 15
+
     call jevech('PNBSP_I', 'L', inbf)
 !     NOMBRE DE FIBRES TOTAL DE L'ELEMENT
     nbfib = zi(inbf)
@@ -194,7 +197,7 @@ subroutine te0535(option, nomte)
     call utpvgl(nno, nc, pgl, zr(ideplp), deplp)
     epsm = (deplm(7)-deplm(1))/xl
 ! --- ON RECUPERE ALPHA MODE INCOMPATIBLE=ALICO
-    alicom=zr(istrxm+15)
+    alicom=zr(istrxm-1+15)
 !
 ! --- MISES A ZERO
     call r8inir(nk, zero, klv, 1)
@@ -207,7 +210,7 @@ subroutine te0535(option, nomte)
     minus=1.d-6
     ss1=zero
     dalico=zero
-    do 700 ico = 1, icomax
+    do ico = 1, icomax
         he=zero
         hv=zero
 ! ---    BOUCLE SUR LES POINTS DE GAUSS
@@ -262,12 +265,12 @@ subroutine te0535(option, nomte)
         if (abs(he) .le. (ss1*minus)) then
             goto 710
         endif
-700  end do
+    end do
 ! --- FIN BOUCLE CALCUL ALICO
-710  continue
+710 continue
 !
 ! --- QUAND ON A CONVERGE SUR ALICO, ON PEUT INTEGRER SUR L'ELEMENT
-    do 800 ip = 1, npg
+    do ip = 1, npg
         call pmfpti(ip, xl, xi, wi, b,&
                     gg)
 ! ---    CALCUL LA MATRICE ELEMENTAIRE (SAUF POUR RAPH_MECA)
@@ -299,7 +302,7 @@ subroutine te0535(option, nomte)
                 fl(i) = fl(i)+ve(i)
 360          continue
         endif
-800  end do
+    end do
 ! --  ON MODIFIE LA MATRICE DE RAIDEUR PAR CONDENSATION STATIQUE
     if (option .ne. 'RAPH_MECA') then
         call pmffft(fv, sv)
@@ -317,6 +320,9 @@ subroutine te0535(option, nomte)
         call utpslg(nno, nc, pgl, klv, zr(imatuu))
     endif
     if (vecteu) then
+         xls2 = xl/2.d0
+         my = (fl(11)-fl(5))/deux
+         mz = (fl(12)-fl(6))/deux
 ! ---    ON SORT LES CONTRAINTES SUR CHAQUE FIBRE
         do 310 ip = 1, 2
             iposcp=icontp + nbfib*(ip-1)
@@ -324,20 +330,24 @@ subroutine te0535(option, nomte)
             do 300 i = 0, nbfib-1
                 zr(iposcp+i) = zr(iposig+i)
 300          continue
+!           STOCKAGE DES FORCES INTEGREES
+!           attention le point de gauss 2 est proche du noeud 1
+            if (ip .eq. 1) then
+                sign = - 1.d0
+            else
+                sign = 1.d0
+            endif
+            zr(istrxp-1+ncomp*(ip-1)+1) = fl(6*(ip-1)+1)
+            zr(istrxp-1+ncomp*(ip-1)+2) = fl(6*(ip-1)+2)
+            zr(istrxp-1+ncomp*(ip-1)+3) = fl(6*(ip-1)+3)
+            zr(istrxp-1+ncomp*(ip-1)+4) = fl(6*(ip-1)+4)
+            zr(istrxp-1+ncomp*(ip-1)+5) = sign *( my + fl(6*(ip-1)+3)*xls2)
+            zr(istrxp-1+ncomp*(ip-1)+6) = sign *( mz - fl(6*(ip-1)+2)*xls2)
 310      continue
         call utpvlg(nno, nc, pgl, fl, zr(ivectu))
-!
-! ---    STOCKE LES FORCES INTEGREES POUR EVITER DES CALCULS PLUS TARD
-!        NX=FL(7), TY=FL(8), TZ=FL(9), MX=FL(10)
-!        MY=(FL(11)-FL(5))/DEUX, MZ=(FL(12)-FL(6))/DEUX
-        zr(istrxp-1+1) = fl(7)
-        zr(istrxp-1+2) = fl(8)
-        zr(istrxp-1+3) = fl(9)
-        zr(istrxp-1+4) = fl(10)
-        zr(istrxp-1+5) = (fl(11)-fl(5))/deux
-        zr(istrxp-1+6) = (fl(12)-fl(6))/deux
-!        ON STOCKE LE ALPHA MODE INCOMPATIBLE
-        zr(istrxp+15)=alicom+dalico
+
+        zr(istrxp-1+15)=alicom+dalico
+        zr(istrxp-1+ncomp+15)=alicom+dalico
     endif
 !
 900  continue

@@ -54,11 +54,11 @@ subroutine te0537(option, nomte)
     real(kind=8) :: dep1, dep2, dep3, dep4, co6, co12
     real(kind=8) :: zero, un, deux, six
     parameter (zero=0.0d+0,un=1.0d+0,deux=2.d+0,six=6.d+0)
-    real(kind=8) :: b(4), gg, xi, wi, valres(2)
+    real(kind=8) :: b(4), gg, xi, wi, valres(2), sign
     integer :: ip, ipos, nbgfmx, iadzi, iazk24, isicom, istrxr
     integer :: ipos1, ipos2, nbfig, nbgf, ig, nugf, ifb, icp, isdcom, icompo
     character(len=8) :: materi, nomres(2), nomail
-    integer :: codres(2)
+    integer :: codres(2), npg, ncomp
 !     ------------------------------------------------------------------
 ! ----------------------------------------------------------------------
 !
@@ -68,6 +68,11 @@ subroutine te0537(option, nomte)
     nbgf=zi(ifb+1)
     call jevech('PFIBRES', 'L', jacf)
     ncarfi = 3
+
+!   NOMBRE DE COMPOSANTES DES CHAMPS PSTRX? PAR POINTS DE GAUSS
+    ncomp = 15
+
+    npg = 2
 !
     if (option .eq. 'EPSI_ELGA') then
         call tecach('OON', 'PDEFOPG', 'E', 7, jtab,&
@@ -109,7 +114,7 @@ subroutine te0537(option, nomte)
 !
 ! --- BOUCLE SUR LES POINTS DE GAUSS
     if (option .ne. 'STRX_ELGA') then
-        do 20 ip = 1, 2
+        do 20 ip = 1, npg
 !        ---  MATRICE B PUIS DEGE PUIS DEFORMATIONS SUR LES FIBRES
             call pmfpti(ip, xl, xi, wi, b,&
                         gg)
@@ -169,7 +174,7 @@ subroutine te0537(option, nomte)
 !
         call jeveuo(zk16(icompo-1+7)(1:8)//'.CPRI', 'L', isicom)
         nbgfmx=zi(isicom+2)
-        materi=zk24(isdcom-1+6*nbgfmx+1)
+        materi=zk24(isdcom-1+6*nbgfmx+1)(1:8)
         call matela(zi(imate), materi, 0, 0.d0, e,&
                     nu)
         g = e/ (deux* (un+nu))
@@ -232,15 +237,20 @@ subroutine te0537(option, nomte)
 ! --- TORSION
         mx = gxjx* (ul(10)-ul(4))/xl
 !
-        zr(istrxr-1+1)=nx
-        zr(istrxr-1+2)=ty
-        zr(istrxr-1+3)=tz
-        zr(istrxr-1+4)=mx
-        zr(istrxr-1+5)=my
-        zr(istrxr-1+6)=mz
-!
-!     RAPPEL : LES EFFORTS SONT CALCULES AU MILIEU DES DEUX POINTS DE
-!     GAUSS ET STOQUES DANS LE PREMIER POINT, IL FAUDRA CHANGER CELA
-!
+        do ip = 1, npg
+            if (ip .eq. 1 ) then
+                sign = -1.d0
+            else
+                sign = 1.d0
+            endif
+            zr(istrxr-1+ncomp*(ip-1)+1)= sign * nx
+            zr(istrxr-1+ncomp*(ip-1)+2)= sign * ty
+            zr(istrxr-1+ncomp*(ip-1)+3)= sign * tz
+            zr(istrxr-1+ncomp*(ip-1)+4)= sign * mx
+            zr(istrxr-1+ncomp*(ip-1)+5)= sign * my + tz*xl2
+            zr(istrxr-1+ncomp*(ip-1)+6)= sign * mz - ty*xl2
+
+        end do
+
     endif
 end subroutine
