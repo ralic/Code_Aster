@@ -46,7 +46,7 @@ def build(self):
             name = 'asterbibfor',
           source = get_srcs('**/*.F90'),
              env = buildenv,
-             use = ['MPI', 'OPENMP', 'MED', 'MUMPS', 'SCOTCH', 'PETSC'],
+             use = ['MED', 'HDF5', 'MUMPS', 'SCOTCH', 'PETSC', 'MPI', 'OPENMP'],
     )
 
 ###############################################################################

@@ -22,6 +22,8 @@ def options(self):
 def configure(self):
     from Options import options as opts
 
+    # always check for libm
+    self.check_cc(uselib_store='MATH', lib='m')
     if opts.maths_libs is None:
         self.detect_math_lib()
     elif opts.maths_libs:
@@ -48,8 +50,7 @@ def check_libm_after_files(self):
     self.start_msg('Setting libm after files')
     if '-lm' in self.env.LINKFLAGS_CLIB:
         self.env.LINKFLAGS_CLIB.remove('-lm')
-        self.env.append_value('LIB_MATH', 'm')
-        self.end_msg('ok ("-lm" moved from LINKFLAGS_CLIB to LIB_MATH)')
+        self.end_msg('ok ("-lm" moved from LINKFLAGS_CLIB)')
     else:
         self.end_msg('nothing done')
 

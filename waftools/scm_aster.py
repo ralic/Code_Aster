@@ -10,7 +10,7 @@ from waflib import TaskGen, Utils
 
 def configure(self):
     self.start_msg('Getting Code_Aster version')
-    values = check_aster_version()
+    values = check_aster_version(self)
     self.env.append_value('ASTER_VERSION', values)
     self.end_msg(self.env.ASTER_VERSION[:-1])
 
@@ -29,14 +29,14 @@ def build(self):
 def build_pkginfo(self):
     """Create 'pkginfo.py' containing the parent revision."""
     target = self.bld.bldnode.make_node(self.target)
-    txt = "#@ MODIF pkginfo Accas\npkginfo = %s\n" % check_aster_version()
+    txt = "pkginfo = %s\n" % check_aster_version(self)
     with open(target.abspath(), 'w') as fid:
         fid.write(txt)
     target.sig = Utils.h_file(target.abspath())
     self.process_py(target)
 
 
-def check_aster_version():
+def check_aster_version(self):
     """Set ASTER_VERSION to the tuple = (
         version_as_tuple : last tag found in parents,
         revision_id      : hex identifier of the parent (join by '+' if
@@ -48,7 +48,14 @@ def check_aster_version():
                            no change since the tag was set)
     )
     """
-    properties = osp.join('bibpyt', 'Accas', 'properties.py')
+    get_srcs = self.path.get_src().ant_glob
+    # just use the file if it is already in the source tree
+    pkginfo = get_srcs('bibpyt/*/pkginfo.py')
+    if pkginfo:
+        d = {}
+        execfile(pkginfo[0].abspath(), d)
+        return d['pkginfo']
+    properties = get_srcs('bibpyt/*/properties.py')[0].abspath()
     d = {}
     vers, ids, br, date, frbr, chg, loc = ['?'] * 7
     try:
@@ -58,7 +65,7 @@ def check_aster_version():
         pass
     def revid(ctx):
         """how to show the revision id"""
-        return '%s:%s' % (ctx.rev(), ctx.hex()[:8])
+        return ctx.hex()[:8]
     # add revision id if hg is available
     try:
         from mercurial import hg, ui as UI
@@ -74,7 +81,7 @@ def check_aster_version():
         loc = local_changes(ui, repo)
         if tag and version2tuple(tag) > vers:
             vers = version2tuple(tag)
-    except ImportError:
+    except:
         pass
     return [vers, ids, br, date, frbr, chg, loc]
 

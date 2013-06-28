@@ -24,10 +24,6 @@ def configure(self):
 
     # preserve symbols in the dyn table for stdcalls
     self.env.append_unique('LINKFLAGS', ['-Wl,--export-dynamic'])
-
-    # -Wl,--allow-multiple-definition is used to prevent compilers to
-    # complain about symbols that are defined multiple times
-    #XXX fermetur removed but may occur with _WITHOUT_PYMOD
     self.load('python_cfg', tooldir='waftools')
 
     self.env.append_unique('INCLUDES', ['include/'])
@@ -55,10 +51,11 @@ def build(self):
     buildenv = env.copy()
 
     # order is important
-    uses = ['MATH', 'MPI', 'OPENMP', 'CLIB']
-    for deps in ('PETSC', 'SCOTCH', 'MUMPS', 'METIS', 'MED'):
+    adds = []
+    for deps in ('MED', 'HDF5', 'MUMPS', 'METIS', 'SCOTCH', 'PETSC'):
         if buildenv['HAVE_' + deps]:
-            uses.insert(0, deps)
+            adds.append(deps)
+    uses = adds + ['MATH', 'MPI', 'OPENMP', 'CLIB']
 
     if env.ASTER_EMBEDS and 'bibc' in env.ASTER_EMBEDS:
         build_as_embeded(self, uses, env)
@@ -121,7 +118,7 @@ def build_as_shared(self, uses, shenv):
                 name = 'med_aster',
               source = get_srcs('**/med_aster_module.c'),
                  env = shenv.copy(),
-                 use = ['asterlib', 'MPI', 'OPENMP', 'MED'],
+                 use = ['asterlib', 'MPI', 'OPENMP', 'MED', 'HDF5', 'MATH'],
         )
 
 def build_as_embeded(self, uses, stenv):

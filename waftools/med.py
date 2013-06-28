@@ -73,7 +73,7 @@ def check_hdf5(self):
 @Configure.conf
 def check_hdf5_libs(self):
     from Options import options as opts
-    check_hdf5 = partial(self.check_cc, mandatory=True, uselib_store='MED', use='MED')
+    check_hdf5 = partial(self.check_cc, mandatory=True, uselib_store='HDF5', use='HDF5 MATH')
     if opts.embed_all or opts.embed_hdf5:
         check_lib = lambda lib: check_hdf5(stlib=lib)
     else:
@@ -82,7 +82,7 @@ def check_hdf5_libs(self):
 
 @Configure.conf
 def check_hdf5_headers(self):
-    check = partial(self.check_cc, header_name='hdf5.h', uselib_store='MED', use='MED')
+    check = partial(self.check_cc, header_name='hdf5.h', uselib_store='HDF5', use='HDF5 MATH')
     self.start_msg('Checking for header hdf5.h')
     try:
         if not check(mandatory=False):
@@ -108,7 +108,7 @@ int main(void){
 }'''
     self.start_msg('Checking hdf5 version')
     try:
-        ret = self.check_cc(fragment=fragment, use='MED', uselib_store='MED',
+        ret = self.check_cc(fragment=fragment, use='HDF5 MATH', uselib_store='HDF5',
                             mandatory=True, execute=True, define_ret=True)
     except:
         self.end_msg('no', 'YELLOW')
@@ -124,10 +124,10 @@ def check_hdf5_api(self):
     self.start_msg('Checking for API hdf5 v18')
     try:
         self.to_log('check the v18 api and set H5_NO_DEPRECATED_SYMBOLS if it fails')
-        check = partial(self.check_cc, execute=True, uselib_store='MED', use='MED')
+        check = partial(self.check_cc, execute=True, uselib_store='HDF5', use='HDF5 MATH')
         v18 = check(fragment=fragv18, mandatory=False)
         if not v18:
-            self.env.append_unique('DEFINES_MED', ['H5_NO_DEPRECATED_SYMBOLS'])
+            self.env.append_unique('DEFINES_HDF5', ['H5_NO_DEPRECATED_SYMBOLS'])
         self.to_log('try again by using H5_NO_DEPRECATED_SYMBOLS')
         check(fragment=fragv18, mandatory=True)
     except:
@@ -155,7 +155,7 @@ def check_med(self):
 def check_med_libs(self):
     from Options import options as opts
     check_med = partial(self.check_cc, features='cxx cxxprogram',
-                        mandatory=True, uselib_store='MED', use='MED')
+                        mandatory=True, uselib_store='MED', use='MED HDF5')
     if opts.embed_all or opts.embed_med:
         check_lib = lambda lib: check_med(stlib=lib)
     else:
@@ -164,7 +164,7 @@ def check_med_libs(self):
 
 @Configure.conf
 def check_med_headers(self):
-    check = partial(self.check_cc, header_name='med.h', uselib_store='MED', use='MED')
+    check = partial(self.check_cc, header_name='med.h', uselib_store='MED', use='MED HDF5')
     self.start_msg('Checking for header med.h')
     try:
         if not check(mandatory=False):
@@ -192,7 +192,7 @@ int main(void){
 }'''
     self.start_msg('Checking med version')
     try:
-        ret = self.check_cc(fragment=fragment, use='MED', uselib_store='MED',
+        ret = self.check_cc(fragment=fragment, use='MED HDF5', uselib_store='MED',
                             mandatory=True, execute=True, define_ret=True)
     except:
         self.end_msg('no', 'YELLOW')
@@ -214,7 +214,7 @@ int main(void){
     self.start_msg('Checking size of med_int integers')
     use_short = False
     try:
-        ret = self.check_cc(fragment=fragment, use='MED', uselib_store='MED',
+        ret = self.check_cc(fragment=fragment, use='MED HDF5', uselib_store='MED',
                             mandatory=True, execute=True,
                             define_ret=True)
         if int(ret) == 4 and self.env.HAVE_64_BITS:
