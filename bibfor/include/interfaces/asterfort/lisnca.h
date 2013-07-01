@@ -15,9 +15,11 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
-interface
-    subroutine lisgen(prefob, codcha)
-        character(len=13) :: prefob
-        integer :: codcha
-    end subroutine lisgen
-end interface
+interface 
+    subroutine lisnca(phenoz, charge, genchz, carte)
+        character(*) :: phenoz
+        character(len=8) :: charge
+        character(*) :: genchz
+        character(len=19) :: carte
+    end subroutine lisnca
+end interface 

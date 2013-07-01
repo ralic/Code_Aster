@@ -16,12 +16,11 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine gcharg(modele, nchar, lchar, chvolu, cf1d2d,&
-                      cf2d3d, chpres, chepsi, chpesa, chrota,&
-                      fonc, epsi, time, iord)
+    subroutine gcharg(modele, lischa, chvolu, cf1d2d,cf2d3d,&
+                      chpres, chepsi, chpesa, chrota,lfonc,&
+                      time, iord)
         character(len=8) :: modele
-        integer :: nchar
-        character(len=8) :: lchar(*)
+        character(len=19) :: lischa
         character(len=19) :: chvolu
         character(len=19) :: cf1d2d
         character(len=19) :: cf2d3d
@@ -29,8 +28,7 @@ interface
         character(len=19) :: chepsi
         character(len=19) :: chpesa
         character(len=19) :: chrota
-        logical :: fonc
-        logical :: epsi
+        logical :: lfonc
         real(kind=8) :: time
         integer :: iord
     end subroutine gcharg

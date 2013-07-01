@@ -1,51 +1,52 @@
 subroutine mbilgl(option, result, modele, depla1, depla2,&
-                  thetai, mate, nchar, lchar, symech,&
-                  chfond, nnoff, ndeg, thlagr, glagr,&
-                  thlag2, milieu, ndimte, pair, extim,&
-                  timeu, timev, indi, indj, nbprup,&
-                  noprup, lmelas, nomcas, fonoeu)
+                  thetai, mate, lischa, symech,chfond,&
+                  nnoff , ndeg, thlagr, glagr,thlag2,&
+                  milieu, ndimte, pair, extim,timeu,&
+                  timev , indi, indj, nbprup,noprup,&
+                  lmelas, nomcas, fonoeu)
 ! aslint: disable=W1504
     implicit  none
 !
-#include "jeveux.h"
+    include 'jeveux.h'
 !
-#include "asterc/getvid.h"
-#include "asterfort/calcul.h"
-#include "asterfort/codent.h"
-#include "asterfort/detrsd.h"
-#include "asterfort/gcharg.h"
-#include "asterfort/gimpgs.h"
-#include "asterfort/gmeth1.h"
-#include "asterfort/gmeth3.h"
-#include "asterfort/gmeth4.h"
-#include "asterfort/infniv.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jedetr.h"
-#include "asterfort/jemarq.h"
-#include "asterfort/jeveuo.h"
-#include "asterfort/mecact.h"
-#include "asterfort/megeom.h"
-#include "asterfort/mesomm.h"
-#include "asterfort/tbajli.h"
-#include "asterfort/tbajvi.h"
-#include "asterfort/tbajvk.h"
-#include "asterfort/tbajvr.h"
-#include "asterfort/u2mesk.h"
-#include "asterfort/vrcins.h"
-#include "asterfort/vrcref.h"
-#include "asterfort/wkvect.h"
-    integer :: nchar, nnoff, indi, indj, ndeg
+    include 'asterc/getvid.h'
+    include 'asterfort/calcul.h'
+    include 'asterfort/codent.h'
+    include 'asterfort/detrsd.h'
+    include 'asterfort/gcharg.h'
+    include 'asterfort/gimpgs.h'
+    include 'asterfort/gmeth1.h'
+    include 'asterfort/gmeth3.h'
+    include 'asterfort/gmeth4.h'
+    include 'asterfort/infniv.h'
+    include 'asterfort/jedema.h'
+    include 'asterfort/jedetr.h'
+    include 'asterfort/jemarq.h'
+    include 'asterfort/jeveuo.h'
+    include 'asterfort/mecact.h'
+    include 'asterfort/megeom.h'
+    include 'asterfort/mesomm.h'
+    include 'asterfort/tbajli.h'
+    include 'asterfort/tbajvi.h'
+    include 'asterfort/tbajvk.h'
+    include 'asterfort/tbajvr.h'
+    include 'asterfort/u2mesk.h'
+    include 'asterfort/vrcins.h'
+    include 'asterfort/vrcref.h'
+    include 'asterfort/wkvect.h'
+    integer ::  nnoff, indi, indj, ndeg
     integer :: nbprup, ndimte
 !
     real(kind=8) :: timeu, timev
 !
-    character(len=8) :: modele, thetai, lchar(*)
+    character(len=19) :: lischa
+    character(len=8) :: modele, thetai
     character(len=8) :: result, symech
     character(len=16) :: option, noprup(*), nomcas
     character(len=24) :: depla1, depla2, chfond, mate, fonoeu
 !
     logical :: extim, thlagr, glagr, milieu, pair
-    logical :: ufonc, vfonc, epsiu, epsiv, thlag2, lmelas
+    logical :: ufonc, vfonc, thlag2, lmelas
 ! ......................................................................
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -173,9 +174,9 @@ subroutine mbilgl(option, result, modele, depla1, depla2,&
 ! - TRAITEMENT DES CHARGES U
 !
 !
-    call gcharg(modele, nchar, lchar, uchvol, ucf12d,&
-                ucf23d, uchpre, ucheps, uchpes, uchrot,&
-                ufonc, epsiv, timeu, indi)
+    call gcharg(modele, lischa, uchvol, ucf12d,ucf23d,&
+                uchpre, ucheps, uchpes, uchrot,ufonc,&
+                timeu, indi)
 !
     if (ufonc) then
         upavol = 'UPFFVOL'
@@ -193,9 +194,9 @@ subroutine mbilgl(option, result, modele, depla1, depla2,&
 !
 ! - TRAITEMENT DES CHARGES V
 !
-    call gcharg(modele, nchar, lchar, vchvol, vcf12d,&
-                vcf23d, vchpre, vcheps, vchpes, vchrot,&
-                vfonc, epsiu, timev, indj)
+    call gcharg(modele, lischa, vchvol, vcf12d,vcf23d,&
+                vchpre, vcheps, vchpes, vchrot,vfonc,&
+                timev, indj)
 !
     if (vfonc) then
         vpavol = 'VPFFVOL'
@@ -294,7 +295,7 @@ subroutine mbilgl(option, result, modele, depla1, depla2,&
         call mesomm(chgthi, 1, ibid, gthi, cbid,&
                     0, ibid)
         zr(iadrg+i-1) = gthi
-20  end do
+20  continue
 !
 ! ABSCISSE CURVILIGNE
     call jeveuo(chfond, 'L', ifon)
@@ -302,7 +303,7 @@ subroutine mbilgl(option, result, modele, depla1, depla2,&
     call wkvect(objcur, 'V V R', nnoff, iadabs)
     do 11 i = 1, nnoff
         zr(iadabs-1+(i-1)+1)=zr(ifon-1+4*(i-1)+4)
-11  end do
+11  continue
     xl=zr(iadabs-1+(nnoff-1)+1)
 !
 !- CALCUL DE G(S) SUR LE FOND DE FISSURE PAR 2 METHODES
@@ -361,7 +362,7 @@ subroutine mbilgl(option, result, modele, depla1, depla2,&
         call tbajvr(result, nbprup, 'G_BILI_LOCAL', zr(iadrgs+i-1), livr)
         call tbajli(result, nbprup, noprup, livi, livr,&
                     livc, livk, 0)
-40  end do
+40  continue
 !
 !- DESTRUCTION D'OBJETS DE TRAVAIL
 !

@@ -19,8 +19,6 @@ subroutine lischk(nomo, phenoz, nomcmz, lischa)
 !
     implicit      none
 #include "jeveux.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jemarq.h"
 #include "asterfort/lisccm.h"
 #include "asterfort/lisccp.h"
 #include "asterfort/liscom.h"
@@ -44,21 +42,20 @@ subroutine lischk(nomo, phenoz, nomcmz, lischa)
 ! IN  NOMCMD : NOM DE LA COMMANDE
 ! IN  LISCHA : SD LISTE DES CHARGES
 !
-!
-!
+! ----------------------------------------------------------------------
 !
     character(len=16) :: nomcmd, phenom
+    character(len=1) :: codarr
 !
 ! ----------------------------------------------------------------------
 !
-    call jemarq()
-!
     nomcmd = nomcmz
     phenom = phenoz
+    codarr = 'F'
 !
 ! --- VERIFICATION DE LA COHERENCE DES MODELES
 !
-    call liscom(nomo, lischa)
+    call liscom(nomo, codarr, lischa)
 !
 ! --- VERIFICATION COMPATIBILITE CHARGE/PHENOMENE
 !
@@ -66,7 +63,7 @@ subroutine lischk(nomo, phenoz, nomcmz, lischa)
 !
 ! --- VERIFICATION COMPATIBILITE CHARGE/COMMANDE
 !
-    call lisccm(nomcmd, lischa)
+    call lisccm(nomcmd, codarr, lischa)
 !
 ! --- VERIFICATIONS DES DOUBLONS
 !
@@ -75,6 +72,5 @@ subroutine lischk(nomo, phenoz, nomcmz, lischa)
 ! --- VERIFICATIONS DIVERSES SUR LES TYPES DE CHARGES
 !
     call lisver(lischa)
-!
-    call jedema()
+
 end subroutine

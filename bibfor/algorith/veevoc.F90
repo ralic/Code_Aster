@@ -70,7 +70,7 @@ subroutine veevoc(nomo, mate, carele, varplu, lischa,&
     integer :: nbevoc, lastin
     integer :: ichar, nbchar, itypob
     logical :: levoc, lxfem
-    integer :: codcha
+    integer :: genrec
     character(len=8) :: k8bid
     integer :: ibid, iposit, ier
     character(len=8) :: fnocal
@@ -107,8 +107,8 @@ subroutine veevoc(nomo, mate, carele, varplu, lischa,&
 !
 ! ----- CODE DU GENRE DE LA CHARGE
 !
-        call lislco(lischa, ichar, codcha)
-        levoc = lisico('EVOL_CHAR',codcha)
+        call lislco(lischa, ichar, genrec)
+        levoc = lisico('EVOL_CHAR',genrec)
         if (levoc) then
 !
 ! ------- PREFIXE DE L'OBJET DE LA CHARGE
@@ -117,7 +117,7 @@ subroutine veevoc(nomo, mate, carele, varplu, lischa,&
 !
 ! ------- NOM OBJET
 !
-            call lisdef('POEC', 'EVOL_CHAR', ibid, k8bid, iposit)
+            call lisdef('POSG', 'EVOL_CHAR', ibid, k8bid, iposit)
             call lisdef('OBJE', prefob, iposit, nomobj, itypob)
 !
 ! ------- ON N'ATTEND PAS UNE CARTE !
@@ -143,7 +143,7 @@ subroutine veevoc(nomo, mate, carele, varplu, lischa,&
 !
             call jedetr(lisch2)
         endif
-10  end do
+10  continue
 !
 99  continue
 !

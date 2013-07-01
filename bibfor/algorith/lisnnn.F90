@@ -42,6 +42,8 @@ subroutine lisnnn(motfac, iexci, charge)
 ! IN  IEXCI  : OCCURRENCE DE L'EXCITATION
 ! OUT CHARGE : NOM DE LA CHARGE (OU DU VECT_ASSE[_GENE])
 !
+! ----------------------------------------------------------------------
+!
     integer :: nval, iarg
     integer :: eximve, eximvg
 !
@@ -49,9 +51,11 @@ subroutine lisnnn(motfac, iexci, charge)
 !
     call jemarq()
 !
+! --- INITIALISATIONS
+!
     charge = ' '
 !
-! --- CHARGE SPECIFIQUE VECT_ASSE OU VECT_ASSE_GENE
+! --- CHARGE SPECIFIQUE VECT_ASSE
 !
     eximve = getexm(motfac,'VECT_ASSE')
     if (eximve .eq. 1) then
@@ -59,6 +63,8 @@ subroutine lisnnn(motfac, iexci, charge)
                     charge, nval)
         call assert(nval.ge.0)
     endif
+!
+! --- CHARGE SPECIFIQUE VECT_ASSE_GENE
 !
     eximvg = getexm(motfac,'VECT_ASSE_GENE')
     if (eximvg .eq. 1) then

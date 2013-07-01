@@ -42,8 +42,7 @@ subroutine lisnol(lischa, genchz, nomlis, nbch)
 ! OUT NOMLIS : LISTE DES INDEX DES CHARGES
 ! OUT NBCH   : LONGUEUR DE NOMLIS
 !
-!
-!
+! ----------------------------------------------------------------------
 !
     integer :: nbchar
     integer :: ibid, iposit
@@ -60,7 +59,7 @@ subroutine lisnol(lischa, genchz, nomlis, nbch)
 !
 ! ----- POSITION DE L'ENTIER CODE POUR CE GENRE DE CHARGE
 !
-        call lisdef('POEC', genchz, ibid, k8bid, iposit)
+        call lisdef('POSG', genchz, ibid, k8bid, iposit)
 !
 ! ----- LISTE DES INDEX DE CHARGE POUR CE GENRE
 !

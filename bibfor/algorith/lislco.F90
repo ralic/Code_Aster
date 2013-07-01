@@ -1,4 +1,4 @@
-subroutine lislco(lischa, ichar, codcha)
+subroutine lislco(lischa, ichar, genrec)
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -25,7 +25,7 @@ subroutine lislco(lischa, ichar, codcha)
 #include "asterfort/lisnnb.h"
     character(len=19) :: lischa
     integer :: ichar
-    integer :: codcha
+    integer :: genrec
 !
 ! ----------------------------------------------------------------------
 !
@@ -38,26 +38,25 @@ subroutine lislco(lischa, ichar, codcha)
 !
 ! IN  LISCHA : SD LISTE DES CHARGES
 ! IN  ICHAR  : INDICE DE LA CHARGE
-! OUT CODCHA : CODE POUR LE GENRE DE LA CHARGE
+! OUT GENREC : CODE POUR LE GENRE DE LA CHARGE
 !
+! ----------------------------------------------------------------------
 !
-!
-!
-    character(len=24) :: codech
-    integer :: jcodc
+    character(len=24) :: genrch
+    integer :: jgenc
     integer :: nbchar
 !
 ! ----------------------------------------------------------------------
 !
     call jemarq()
 !
-    codcha = 0
+    genrec = 0
     call lisnnb(lischa, nbchar)
 !
     if (nbchar .ne. 0) then
-        codech = lischa(1:19)//'.CODC'
-        call jeveuo(codech, 'L', jcodc)
-        codcha = zi(jcodc-1+ichar)
+        genrch = lischa(1:19)//'.GENC'
+        call jeveuo(genrch, 'L', jgenc)
+        genrec = zi(jgenc-1+ichar)
     endif
 !
     call jedema()

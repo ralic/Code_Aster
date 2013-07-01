@@ -77,7 +77,7 @@ subroutine vedimd(nomo, lischa, instan, vecele)
     character(len=19) :: carte
     character(len=8) :: parain, paraou, typech
     integer :: ibid, iret
-    integer :: ichar, nbchar, codcha
+    integer :: ichar, nbchar, genrec
     logical :: ldual
     character(len=24) :: nomlis
     integer :: jlisci, nbch, indxch
@@ -147,8 +147,8 @@ subroutine vedimd(nomo, lischa, instan, vecele)
 ! --- CALCUL
 !
     do 30 ichar = 1, nbchar
-        call lislco(lischa, ichar, codcha)
-        ldual = lisico('DIRI_DUAL',codcha)
+        call lislco(lischa, ichar, genrec)
+        ldual = lisico('DIRI_DUAL',genrec)
         if (ldual) then
 !
 ! ------- PREFIXE DE L'OBJET DE LA CHARGE
@@ -192,7 +192,7 @@ subroutine vedimd(nomo, lischa, instan, vecele)
             call assert(iret.gt.0)
             call reajre(vecele, lchout(1), 'V')
         endif
-30  end do
+30  continue
 !
 99  continue
 !

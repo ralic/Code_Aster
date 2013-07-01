@@ -1,6 +1,6 @@
-subroutine lissav(lischa, ichar, charge, typech, codcha,&
-                  prefob, typapp, nomfct, typfct, phase,&
-                  npuis)
+subroutine lissav(lischa, ichar , charge, typech, genrec,&
+                  motclc, prefob, typapp, nomfct, typfct,&
+                  phase , npuis )
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -29,7 +29,7 @@ subroutine lissav(lischa, ichar, charge, typech, codcha,&
     integer :: ichar
     character(len=8) :: charge
     character(len=16) :: typapp, typfct
-    integer :: codcha
+    integer :: genrec, motclc(2)
     character(len=8) :: typech, nomfct
     real(kind=8) :: phase
     integer :: npuis
@@ -51,7 +51,8 @@ subroutine lissav(lischa, ichar, charge, typech, codcha,&
 !               'COMP'    - CHARGE CONSTANTE COMPLEXE
 !               'FONC_F0' - CHARGE FONCTION QUELCONQUE
 !               'FONC_FT' - CHARGE FONCTION DU TEMPS
-! IN  CODCHA : CODE (ENTIER CODE) CONTENANT LES GENRES
+! IN  GENREC : CODE (ENTIER CODE) CONTENANT LES GENRES
+! IN  MOTCLC : CODE (ENTIER CODE) CONTENANT LES MOTS-CLEFS
 ! IN  PREFOB : PREFIXE DE L'OBJET DE LA CHARGE
 ! IN  TYPAPP : TYPE D'APPLICATION DE LA CHARGE
 !              FIXE_CSTE
@@ -67,11 +68,10 @@ subroutine lissav(lischa, ichar, charge, typech, codcha,&
 ! IN  PHASE  : PHASE POUR LES FONCTIONS MULTIPLICATRICES COMPLEXES
 ! IN  NPUIS  : PUISSANCE POUR LES FONCTIONS MULTIPLICATRICES COMPLEXES
 !
+! ----------------------------------------------------------------------
 !
-!
-!
-    character(len=24) :: nomcha, codech, typcha, typeap, precha
-    integer :: jncha, jcodc, jtypc, jtypa, jprec
+    character(len=24) :: nomcha, genrch, typcha, typeap, precha, mocfch
+    integer :: jncha, jgenc, jtypc, jtypa, jprec, jmcfc
     character(len=24) :: nomfon, typfon, valfon
     integer :: jnfon, jtfon, jvfon
 !
@@ -79,10 +79,9 @@ subroutine lissav(lischa, ichar, charge, typech, codcha,&
 !
     call jemarq()
 !
-! --- INITIALISATIONS
-!
     nomcha = lischa(1:19)//'.NCHA'
-    codech = lischa(1:19)//'.CODC'
+    genrch = lischa(1:19)//'.GENC'
+    mocfch = lischa(1:19)//'.MCFC'
     typcha = lischa(1:19)//'.TYPC'
     typeap = lischa(1:19)//'.TYPA'
     precha = lischa(1:19)//'.PREO'
@@ -91,7 +90,8 @@ subroutine lissav(lischa, ichar, charge, typech, codcha,&
     valfon = lischa(1:19)//'.VFON'
 !
     call jeveuo(nomcha, 'E', jncha)
-    call jeveuo(codech, 'E', jcodc)
+    call jeveuo(genrch, 'E', jgenc)
+    call jeveuo(mocfch, 'E', jmcfc)
     call jeveuo(typcha, 'E', jtypc)
     call jeveuo(typeap, 'E', jtypa)
     call jeveuo(precha, 'E', jprec)
@@ -100,7 +100,9 @@ subroutine lissav(lischa, ichar, charge, typech, codcha,&
     call jeveuo(valfon, 'E', jvfon)
 !
     zk8 (jncha-1+ichar) = charge
-    zi  (jcodc-1+ichar) = codcha
+    zi  (jgenc-1+ichar) = genrec
+    zi  (jmcfc-1+2*(ichar-1)+1) = motclc(1)
+    zi  (jmcfc-1+2*(ichar-1)+2) = motclc(2)
     zk8 (jtypc-1+ichar) = typech
     zk16(jtypa-1+ichar) = typapp
     zk24(jprec-1+ichar) = prefob

@@ -1,40 +1,40 @@
 subroutine mmaxkl(latabl, modele, thetai, mate, compor,&
-                  ncha, symech, chfond, nnoff, basloc,&
-                  courb, ndeg, thlagr, glagr, thlag2,&
-                  pair, ndimte, nbprup, noprup, fiss,&
-                  lonvec, ivec, vchar, resuco, lmelas,&
-                  lncas, lord, milieu, connex)
+                 symech, chfond, nnoff, basloc,courb,&
+                   ndeg, thlagr, glagr, thlag2,pair,&
+                   ndimte, nbprup, noprup, fiss,lonvec,&
+                   ivec, resuco, lmelas,lncas,lord,&
+                    milieu, connex, lischa)
 ! aslint: disable=W1504
     implicit none
 !
 #include "jeveux.h"
 !
-#include "asterc/getfac.h"
-#include "asterc/getvid.h"
-#include "asterc/getvis.h"
-#include "asterfort/cakg3d.h"
-#include "asterfort/codent.h"
-#include "asterfort/copisd.h"
-#include "asterfort/detrsd.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jedetr.h"
-#include "asterfort/jemarq.h"
-#include "asterfort/jeveuo.h"
-#include "asterfort/medom1.h"
-#include "asterfort/rsadpa.h"
-#include "asterfort/rsexch.h"
-#include "asterfort/tbajli.h"
-#include "asterfort/tbajpa.h"
-#include "asterfort/tbcrsd.h"
-#include "asterfort/tbexve.h"
-#include "asterfort/u2mesk.h"
-#include "asterfort/vtcmbl.h"
-#include "asterfort/wkvect.h"
-    integer :: ncha, nbprup, lonvec, ivec, nnoff, ndeg, ndimte
+    include 'asterc/getfac.h'
+    include 'asterc/getvid.h'
+    include 'asterc/getvis.h'
+    include 'asterfort/cakg3d.h'
+    include 'asterfort/codent.h'
+    include 'asterfort/copisd.h'
+    include 'asterfort/detrsd.h'
+    include 'asterfort/jedema.h'
+    include 'asterfort/jedetr.h'
+    include 'asterfort/jemarq.h'
+    include 'asterfort/jeveuo.h'
+    include 'asterfort/medom1.h'
+    include 'asterfort/rsadpa.h'
+    include 'asterfort/rsexch.h'
+    include 'asterfort/tbajli.h'
+    include 'asterfort/tbajpa.h'
+    include 'asterfort/tbcrsd.h'
+    include 'asterfort/tbexve.h'
+    include 'asterfort/u2mesk.h'
+    include 'asterfort/vtcmbl.h'
+    include 'asterfort/wkvect.h'
+    integer :: nbprup, lonvec, ivec, nnoff, ndeg, ndimte
     character(len=8) :: modele, thetai, fiss, latabl
     character(len=8) :: symech, resuco
     character(len=16) :: noprup(*)
-    character(len=19) :: vchar
+    character(len=19) :: lischa
     character(len=24) :: chfond, mate, compor, basloc, courb
     logical :: thlagr, glagr, pair, thlag2, lmelas, lncas, lord(lonvec)
     logical :: milieu, connex
@@ -68,7 +68,6 @@ subroutine mmaxkl(latabl, modele, thetai, mate, compor,&
 !  IN    THETAI --> BASE DE I CHAMPS THETA
 !  IN    MATE   --> CHAMP DE MATERIAUX
 !  IN    COMPOR --> COMPORTEMENT
-!  IN    NCHA   --> NOMBRE DE CHARGES
 !  IN    SYMECH --> SYMETRIE DU CHARGEMENT
 !  IN    CHFOND --> ABSCISSES CURVILIGNES DU FOND DE FISSURE
 !  IN    NNOFF  --> NOMBRE DE POINTS DU FOND DE FISSURE
@@ -91,13 +90,12 @@ subroutine mmaxkl(latabl, modele, thetai, mate, compor,&
     integer :: i, j, k, icoef, ikm1, ikm2, ikm3, nbcol, inopr, itypr
     integer :: iad, init
     integer :: ipr, ipi, iret, iord, jinst, nborn, itypc, nbval
-    integer :: ik1, ik2, ik3, labscu, igl, icha, ibid, iglm
+    integer :: ik1, ik2, ik3, labscu, igl, ibid, iglm
     integer :: inom, ityp, mxval, nbv, itmp
     real(kind=8) :: kmoy, time, puls
     complex(kind=8) :: cbid
 !
     character(len=3) :: chnu
-    character(len=4) :: k4b
     character(len=8) :: k8b
     character(len=16) :: k16bid, optio2, nomcas
     character(len=24) :: depla, depmax, chsigi
@@ -140,9 +138,7 @@ subroutine mmaxkl(latabl, modele, thetai, mate, compor,&
             exitim = .true.
         endif
 !
-        call medom1(modele, mate, k8b, vchar, ncha,&
-                    k4b, resuco, iord)
-        call jeveuo(vchar//'.LCHA', 'L', icha)
+        call medomg(resuco, iord, modele, mate, lischa)
         call rsexch('F', resuco, 'DEPL', iord, depla,&
                     iret)
 !
@@ -150,13 +146,13 @@ subroutine mmaxkl(latabl, modele, thetai, mate, compor,&
         lmoda = .false.
         puls = 0.d0
         call cakg3d(optio2, latabl, modele, depla, thetai,&
-                    mate, compor, ncha, zk8(icha), symech,&
-                    chfond, nnoff, basloc, courb, iord,&
-                    ndeg, thlagr, glagr, thlag2, pair,&
-                    ndimte, exitim, time, nbprup, noprup,&
-                    fiss, lmelas, nomcas, lmoda, puls,&
-                    milieu, connex)
- 1  end do
+                    mate, compor, lischa, symech,chfond,&
+                    nnoff, basloc, courb, iord, ndeg,&
+                    thlagr, glagr, thlag2, pair,ndimte,&
+                    exitim, time, nbprup, noprup,fiss,&
+                    lmelas, nomcas, lmoda, puls,milieu,&
+                    connex)
+ 1  continue
 !
 ! EXTRACTION DES RESULTATS DE LA TABLE
 !
@@ -190,7 +186,7 @@ subroutine mmaxkl(latabl, modele, thetai, mate, compor,&
         call getvis('SIGNES', 'CHARGE_NS', 1, iarg, mxval,&
                     zi(itmp), nbv)
         do 2 i = 1, mxval
-            zk8(itypc+zi(itmp+i-1)-1) = 'NON_SIGNE'
+            zk8(itypc+zi(itmp+i-1)-1) = 'NON_SIGN'
  2      continue
         call jedetr('&&MMAXKL.TMP')
         mxval = 0
@@ -221,7 +217,7 @@ subroutine mmaxkl(latabl, modele, thetai, mate, compor,&
         else
             zr(icoef+i-1) = 1
         endif
-10  end do
+10  continue
 !
     call wkvect('&&MMAXKL.KMAX1', 'V V R8', nnoff, ikm1)
     call wkvect('&&MMAXKL.KMAX2', 'V V R8', nnoff, ikm2)
@@ -238,7 +234,7 @@ subroutine mmaxkl(latabl, modele, thetai, mate, compor,&
             zr(ikm3+j-1)=zr(ikm3+j-1)+zr(icoef+i-1)*zr(ik3+j-1+(i-1)*&
             nnoff)
 21      continue
-20  end do
+20  continue
 !
 !
 !
@@ -252,7 +248,7 @@ subroutine mmaxkl(latabl, modele, thetai, mate, compor,&
                     iret)
         zk24(inom+i-1) = depla
         zk8(ityp+i-1) = 'R'
-60  end do
+60  continue
 !
     depmax = 'MMAXKL.DEPMAX'
     call vtcmbl(lonvec, zk8(ityp), zr(icoef), zk8(ityp), zk24(inom),&
@@ -261,12 +257,12 @@ subroutine mmaxkl(latabl, modele, thetai, mate, compor,&
     lmoda = .false.
     puls = 0.d0
     call cakg3d(optio2, latabl, modele, depmax, thetai,&
-                mate, compor, 0, zk8(icha), symech,&
-                chfond, nnoff, basloc, courb, 1,&
-                ndeg, thlagr, glagr, thlag2, pair,&
-                ndimte, exitim, time, nbprup, noprup,&
-                fiss, lmelas, k16bid, lmoda, puls,&
-                milieu, connex)
+                mate, compor, lischa, symech,chfond,&
+                 nnoff, basloc, courb, 1,ndeg,&
+                 thlagr, glagr, thlag2, pair,ndimte,&
+                 exitim, time, nbprup, noprup,fiss,&
+                 lmelas, k16bid, lmoda, puls,milieu,&
+                 connex)
 !
     call tbexve(latabl, 'G', '&&MMAXKL.GMAX', 'V', nbval,&
                 k8b)
@@ -283,7 +279,7 @@ subroutine mmaxkl(latabl, modele, thetai, mate, compor,&
         call codent(i, 'G', chnu)
         zk16(inopr+i-1) = 'Q_'//chnu
         zk8 (itypr+i-1) = 'I'
-30  end do
+30  continue
     zk16(inopr+lonvec) = 'NUM_PT'
     zk8 (itypr+lonvec) = 'I'
     zk16(inopr+lonvec+1) = 'ABSC_CURV'
@@ -319,7 +315,7 @@ subroutine mmaxkl(latabl, modele, thetai, mate, compor,&
             call tbajli('T4', nbcol, zk16(inopr), zi(ipi), zr(ipr),&
                         cbid, k8b, 0)
 42      continue
-40  end do
+40  continue
 !
     do 50 j = 1, nnoff
         do 51 k = 1, lonvec
@@ -333,7 +329,7 @@ subroutine mmaxkl(latabl, modele, thetai, mate, compor,&
         zr(ipr+4) = zr(iglm+j-1+nnoff*lonvec)
         call tbajli('T4', nbcol, zk16(inopr), zi(ipi), zr(ipr),&
                     cbid, k8b, 0)
-50  end do
+50  continue
 !
     call copisd('TABLE', 'G', 'T4', latabl)
 !

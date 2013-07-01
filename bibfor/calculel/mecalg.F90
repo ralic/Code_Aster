@@ -1,7 +1,7 @@
 subroutine mecalg(optioz, result, modele, depla, theta,&
-                  mate, nchar, lchar, symech, compor,&
-                  incr, time, iord, nbprup, noprup,&
-                  chvite, chacce, lmelas, nomcas, kcalc)
+                  mate, lischa, symech, compor,incr,&
+                  time, iord, nbprup, noprup,chvite,&
+                  chacce, lmelas, nomcas, kcalc)
 !-----------------------------------------------------------------------
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -32,8 +32,6 @@ subroutine mecalg(optioz, result, modele, depla, theta,&
 ! IN    DEPLA        --> CHAMP DES DEPLACEMENTS
 ! IN    THETA        --> CHAMP THETA (DE TYPE CHAM_NO)
 ! IN    MATE         --> CHAMP DU MATERIAU
-! IN    NCHAR        --> NOMBRE DE CHARGES
-! IN    LCHAR        --> LISTE DES CHARGES
 ! IN    SYMECH       --> SYMETRIE DU CHARGEMENT
 ! IN    TIME         --> INSTANT DE CALCUL
 ! IN    IORD         --> NUMERO D'ORDRE DE LA SD
@@ -51,34 +49,36 @@ subroutine mecalg(optioz, result, modele, depla, theta,&
 ! DECLARATION PARAMETRES D'APPELS
 #include "jeveux.h"
 !
-#include "asterc/getvid.h"
-#include "asterc/getvis.h"
-#include "asterfort/alchml.h"
-#include "asterfort/calcul.h"
-#include "asterfort/chpchd.h"
-#include "asterfort/chpver.h"
-#include "asterfort/detrsd.h"
-#include "asterfort/gcharg.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jemarq.h"
-#include "asterfort/mecact.h"
-#include "asterfort/megeom.h"
-#include "asterfort/mesomm.h"
-#include "asterfort/rsexch.h"
-#include "asterfort/tbajli.h"
-#include "asterfort/tbajvi.h"
-#include "asterfort/tbajvk.h"
-#include "asterfort/tbajvr.h"
-#include "asterfort/u2mess.h"
-#include "asterfort/vrcins.h"
-#include "asterfort/vrcref.h"
-    character(len=8) :: modele, lchar(*), result, symech
+    include 'asterc/getvid.h'
+    include 'asterc/getvis.h'
+    include 'asterfort/assert.h'
+    include 'asterfort/alchml.h'
+    include 'asterfort/calcul.h'
+    include 'asterfort/chpchd.h'
+    include 'asterfort/chpver.h'
+    include 'asterfort/detrsd.h'
+    include 'asterfort/gcharg.h'
+    include 'asterfort/jedema.h'
+    include 'asterfort/jemarq.h'
+    include 'asterfort/mecact.h'
+    include 'asterfort/megeom.h'
+    include 'asterfort/mesomm.h'
+    include 'asterfort/rsexch.h'
+    include 'asterfort/tbajli.h'
+    include 'asterfort/tbajvi.h'
+    include 'asterfort/tbajvk.h'
+    include 'asterfort/tbajvr.h'
+    include 'asterfort/u2mess.h'
+    include 'asterfort/vrcins.h'
+    include 'asterfort/vrcref.h'
+    character(len=8) :: modele, result, symech
     character(len=8) :: kcalc
+    character(len=19) :: lischa
     character(len=16) :: optioz, noprup(*), nomcas
     character(len=24) :: depla, mate, compor, theta
     character(len=24) :: chvite, chacce
     real(kind=8) :: time
-    integer :: iord, nchar, nbprup
+    integer :: iord, nbprup
     logical :: lmelas, incr
 !
 !
@@ -95,11 +95,11 @@ subroutine mecalg(optioz, result, modele, depla, theta,&
     integer :: nchin, nsig, ino1, ino2, inga
     real(kind=8) :: g, livr(nbmxpa)
     complex(kind=8) :: cbid, livc(nbmxpa)
-    logical :: fonc, epsi, lxfem
+    logical :: lfonc, lxfem
     character(len=8) :: resu, lpain(50), lpaout(2), k8b, resuco
     character(len=8) :: fiss
     character(len=16) :: option
-    character(len=19) :: cf1d2d, cf2d3d, chpres, chrota, chpesa, chvolu, chepsi
+    character(len=19) :: ch1d2d, ch2d3d, chpres, chrota, chpesa, chvolu, chepsi
     character(len=19) :: chvref, chvarc
     character(len=19) :: basloc, pintto, cnseto, heavto, loncha, lnno, ltno
     character(len=19) :: pmilto
@@ -121,8 +121,8 @@ subroutine mecalg(optioz, result, modele, depla, theta,&
     g = 0.d0
     nsig=0
     inga=0
-    cf1d2d = '&&MECALG.1D2D'
-    cf2d3d = '&&MECALG.2D3D'
+    ch1d2d = '&&MECALG.1D2D'
+    ch2d3d = '&&MECALG.2D3D'
     chepsi = '&&MECALG.EPSI'
     chpesa = '&&MECALG.PESA'
     chpres = '&&MECALG.PRES'
@@ -188,10 +188,11 @@ subroutine mecalg(optioz, result, modele, depla, theta,&
 !
 ! - TRAITEMENT DES CHARGES
 !
-    call gcharg(modele, nchar, lchar, chvolu, cf1d2d,&
-                cf2d3d, chpres, chepsi, chpesa, chrota,&
-                fonc, epsi, time, iord)
-    if (fonc) then
+    call gcharg(modele, lischa, chvolu, ch1d2d, ch2d3d,&
+                chpres, chepsi, chpesa, chrota, lfonc,&
+                time  , iord)
+!
+    if (lfonc) then
         pavolu = 'PFFVOLU'
         pa1d2d = 'PFF1D2D'
         pa2d3d = 'PFF2D3D'
@@ -257,9 +258,9 @@ subroutine mecalg(optioz, result, modele, depla, theta,&
     lpain(7) = pavolu(1:8)
     lchin(7) = chvolu
     lpain(8) = pa1d2d(1:8)
-    lchin(8) = cf1d2d
+    lchin(8) = ch1d2d
     lpain(9) = pa2d3d(1:8)
-    lchin(9) = cf2d3d
+    lchin(9) = ch2d3d
     lpain(10) = papres(1:8)
     lchin(10) = chpres
     lpain(11) = 'PPESANR'
@@ -389,8 +390,8 @@ subroutine mecalg(optioz, result, modele, depla, theta,&
     call tbajli(result, nbprup, noprup, livi, livr,&
                 livc, livk, 0)
 !
-    call detrsd('CHAMP_GD', cf1d2d)
-    call detrsd('CHAMP_GD', cf2d3d)
+    call detrsd('CHAMP_GD', ch1d2d)
+    call detrsd('CHAMP_GD', ch2d3d)
     call detrsd('CHAMP_GD', chepsi)
     call detrsd('CHAMP_GD', chpesa)
     call detrsd('CHAMP_GD', chpres)

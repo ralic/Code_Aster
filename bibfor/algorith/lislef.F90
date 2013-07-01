@@ -58,8 +58,7 @@ subroutine lislef(motfac, iexci, nomfct, typfct, phase,&
 ! OUT PHASE  : PHASE POUR LES FONCTIONS MULTIPLICATRICES COMPLEXES
 ! OUT NPUIS  : PUISSANCE POUR LES FONCTIONS MULTIPLICATRICES COMPLEXES
 !
-!
-!
+! ----------------------------------------------------------------------
 !
     character(len=24) :: k24bid
     integer :: nccplx, ncreel
@@ -87,6 +86,7 @@ subroutine lislef(motfac, iexci, nomfct, typfct, phase,&
     lcrfcc = .false.
     phase = 0.d0
     npuis = 0
+    typfct = ' '
 !
 ! --- TYPE DE FONCTION MULTIPLICATRICE PRESENTE: REELLE OU COMPLEXE ?
 !

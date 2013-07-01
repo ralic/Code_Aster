@@ -46,7 +46,7 @@ subroutine lisver(lischa)
 !
     integer :: ichar, nbchar
     character(len=8) :: charge
-    integer :: codcha
+    integer :: genrec
     character(len=16) :: typapp
     logical :: lelim, ldual, levoc
     logical :: lfont
@@ -70,13 +70,13 @@ subroutine lisver(lischa)
 !
 ! ----- CODE DU GENRE DE LA CHARGE
 !
-        call lislco(lischa, ichar, codcha)
+        call lislco(lischa, ichar, genrec)
 !
 ! ----- IDENTIFICATION DES GENRES ACTIFS DANS LA CHARGE
 !
-        lelim = lisico('DIRI_ELIM',codcha)
-        ldual = lisico('DIRI_DUAL',codcha)
-        levoc = lisico('EVOL_CHAR',codcha)
+        lelim = lisico('DIRI_ELIM',genrec)
+        ldual = lisico('DIRI_DUAL',genrec)
+        levoc = lisico('EVOL_CHAR',genrec)
 !
 ! ----- TYPE D'APPLICATION DE LA CHARGE
 !
@@ -121,9 +121,9 @@ subroutine lisver(lischa)
             endif
         endif
 !
-10  end do
+10  continue
 !
-999  continue
+999 continue
 !
     call jedema()
 end subroutine

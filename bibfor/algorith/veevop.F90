@@ -27,7 +27,6 @@ subroutine veevop(nomo, fnocal, instan, lisch2)
 #include "asterfort/lischk.h"
 #include "asterfort/liscrs.h"
 #include "asterfort/lisdef.h"
-#include "asterfort/lisgen.h"
 #include "asterfort/lisnnl.h"
 #include "asterfort/lissav.h"
 #include "asterfort/rsinch.h"
@@ -51,8 +50,7 @@ subroutine veevop(nomo, fnocal, instan, lisch2)
 ! IN  INSTAN : INSTANT COURANT
 ! OUT LISCH2 : SD LISTE DES CHARGES
 !
-!
-!
+! ----------------------------------------------------------------------
 !
     integer :: nmxech
     parameter    (nmxech=8)
@@ -216,7 +214,7 @@ subroutine veevop(nomo, fnocal, instan, lisch2)
 !
 ! ----- GENRE DE LA CHARGE
 !
-        call lisgen(prefob, codcha)
+        call lisdef('IDGE', prefob, ibid, k8bid, codcha)
 !
 ! ----- TYPE DE LA CHARGE
 !
@@ -236,7 +234,7 @@ subroutine veevop(nomo, fnocal, instan, lisch2)
                     prefob, typapp, nomfct, typfct, r8bid,&
                     ibid)
 !
-100  end do
+100 continue
 !
 ! --- VERIFICATION DE LA LISTE DES CHARGES
 !

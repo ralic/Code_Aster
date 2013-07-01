@@ -50,8 +50,7 @@ subroutine dylech(nomo, lischa, nbexre, exreco, exresu)
 ! OUT EXRECO : LISTE DES COEFFICIENTS DANS EXCIT_RESU
 ! OUT EXRESU : LISTE DES RESULTATS DANS EXCIT_RESU
 !
-!
-!
+! ----------------------------------------------------------------------
 !
     character(len=16) :: motfac, nomcmd
     integer :: iresu, jlccre, jlresu, iarg, n

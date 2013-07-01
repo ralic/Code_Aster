@@ -1,33 +1,32 @@
 subroutine mebilg(optioz, result, modele, depla1, depla2,&
-                  theta, mate, nchar, lchar, symech,&
-                  extim, timeu, timev, indi, indj,&
-                  nbprup, noprup)
+                  theta, mate, lischa,symech,timeu,&
+                  timev, indi, indj,nbprup, noprup)
     implicit none
 !
-#include "jeveux.h"
+    include 'jeveux.h'
 !
-#include "asterc/getvid.h"
-#include "asterfort/calcul.h"
-#include "asterfort/detrsd.h"
-#include "asterfort/gcharg.h"
-#include "asterfort/infniv.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jedetr.h"
-#include "asterfort/jemarq.h"
-#include "asterfort/megeom.h"
-#include "asterfort/mesomm.h"
-#include "asterfort/tbajli.h"
-#include "asterfort/tbajvi.h"
-#include "asterfort/tbajvr.h"
-#include "asterfort/u2mesk.h"
-#include "asterfort/vrcins.h"
-#include "asterfort/vrcref.h"
-    character(len=8) :: modele, lchar(*), result, symech
+    include 'asterc/getvid.h'
+    include 'asterfort/calcul.h'
+    include 'asterfort/detrsd.h'
+    include 'asterfort/gcharg.h'
+    include 'asterfort/infniv.h'
+    include 'asterfort/jedema.h'
+    include 'asterfort/jedetr.h'
+    include 'asterfort/jemarq.h'
+    include 'asterfort/megeom.h'
+    include 'asterfort/mesomm.h'
+    include 'asterfort/tbajli.h'
+    include 'asterfort/tbajvi.h'
+    include 'asterfort/tbajvr.h'
+    include 'asterfort/u2mesk.h'
+    include 'asterfort/vrcins.h'
+    include 'asterfort/vrcref.h'
+    character(len=19) :: lischa
+    character(len=8) :: modele,  result, symech
     character(len=16) :: optioz, noprup(*)
     character(len=24) :: depla1, depla2, mate, theta
     real(kind=8) :: timeu, timev
-    integer :: indi, indj, nchar, nbprup
-    logical :: extim
+    integer :: indi, indj, nbprup
 ! ......................................................................
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -71,7 +70,7 @@ subroutine mebilg(optioz, result, modele, depla1, depla2,&
 !
     complex(kind=8) :: cbid, livc(nbmxpa)
 !
-    logical :: ufonc, vfonc, epsiu, epsiv
+    logical :: ufonc, vfonc
 !
     character(len=2) :: codret
     character(len=8) :: lpain(20), lpaout(1)
@@ -125,9 +124,9 @@ subroutine mebilg(optioz, result, modele, depla1, depla2,&
     ucheps = '&&MBILGL.EPSI'
     uchpes = '&&MBILGL.PESA'
     uchrot = '&&MBILGL.ROTA'
-    call gcharg(modele, nchar, lchar, uchvol, ucf12d,&
-                ucf23d, uchpre, ucheps, uchpes, uchrot,&
-                ufonc, epsiv, timeu, indi)
+    call gcharg(modele, lischa, uchvol, ucf12d,ucf23d,&
+                uchpre, ucheps, uchpes, uchrot,ufonc,&
+                timeu, indi)
 !
     if (ufonc) then
         upavol = 'UPFFVOL'
@@ -152,9 +151,9 @@ subroutine mebilg(optioz, result, modele, depla1, depla2,&
     vcheps = '&&MBILGL.EPSI'
     vchpes = '&&MBILGL.PESA'
     vchrot = '&&MBILGL.ROTA'
-    call gcharg(modele, nchar, lchar, vchvol, vcf12d,&
-                vcf23d, vchpre, vcheps, vchpes, vchrot,&
-                vfonc, epsiu, timev, indj)
+    call gcharg(modele,lischa, vchvol, vcf12d,vcf23d,&
+                vchpre, vcheps, vchpes, vchrot,vfonc,&
+                timev, indj)
 !
     if (vfonc) then
         vpavol = 'VPFFVOL'

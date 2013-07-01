@@ -18,23 +18,22 @@ subroutine lisimp(lischa, ifm)
 ! ======================================================================
 !
     implicit     none
-#include "jeveux.h"
-#include "asterfort/isdeco.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jedetr.h"
-#include "asterfort/jemarq.h"
-#include "asterfort/jeveuo.h"
-#include "asterfort/liscpp.h"
-#include "asterfort/lisdef.h"
-#include "asterfort/lisexi.h"
-#include "asterfort/lislch.h"
-#include "asterfort/lislco.h"
-#include "asterfort/lisllc.h"
-#include "asterfort/lislnf.h"
-#include "asterfort/lislta.h"
-#include "asterfort/lisltc.h"
-#include "asterfort/lisltf.h"
-#include "asterfort/lisnnb.h"
+    include 'jeveux.h'
+    include 'asterfort/isdeco.h'
+    include 'asterfort/jedema.h'
+    include 'asterfort/jedetr.h'
+    include 'asterfort/jemarq.h'
+    include 'asterfort/jeveuo.h'
+    include 'asterfort/liscpp.h'
+    include 'asterfort/lisdef.h'
+    include 'asterfort/lislch.h'
+    include 'asterfort/lislco.h'
+    include 'asterfort/lisllc.h'
+    include 'asterfort/lislnf.h'
+    include 'asterfort/lislta.h'
+    include 'asterfort/lisltc.h'
+    include 'asterfort/lisltf.h'
+    include 'asterfort/lisnnb.h'
     character(len=19) :: lischa
     integer :: ifm
 !
@@ -50,19 +49,17 @@ subroutine lisimp(lischa, ifm)
 ! IN  LISCHA : NOM DE LA SD LISTE_CHARGES
 ! IN  IFM    : NUMERO UNITE LOGIQUE IMPRESSION
 !
-!
-!
+! ----------------------------------------------------------------------
 !
     integer :: ichar, nbchar, ibid
     character(len=8) :: charge, typech, nomfct, k8bid
     character(len=16) :: typapp, typfct
-    integer :: codcha, tabcod(30)
-    character(len=24) :: lisgen, nomlis, gencha, motcle, k24bid
-    integer :: jlisg, jlisci, nbgenr, igenr, iposit, ich, indxch, nbch
+    integer :: genrec, tabcod(30)
+    character(len=24) :: lisgen, nomlis, gencha
+    integer :: jlisg, nbgenr, igenr, iposit
     character(len=13) :: prefob
     real(kind=8) :: phase
     integer :: npuis
-    logical :: lexis
 !
 ! ----------------------------------------------------------------------
 !
@@ -93,14 +90,14 @@ subroutine lisimp(lischa, ifm)
         call lislch(lischa, ichar, charge)
         call lisltc(lischa, ichar, typech)
         call lislta(lischa, ichar, typapp)
-        call lislco(lischa, ichar, codcha)
+        call lislco(lischa, ichar, genrec)
         call lisltf(lischa, ichar, typfct)
         call lisllc(lischa, ichar, prefob)
         write(6,*) 'CHARGE NUMERO : ',ichar
         write(6,*) '  * NOM DE LA CHARGE                  : ',charge
         write(6,*) '  * TYPE DE LA CHARGE                 : ',typech
         write(6,*) '  * TYPE D APPLICATION                : ',typapp
-        write(6,*) '  * CODE DE LA CHARGE                 : ',codcha
+        write(6,*) '  * CODE DE LA CHARGE                 : ',genrec
         write(6,*) '  * PREFIXE DE L''OBJET DE LA CHARGE   : ',prefob
         write(6,*) '  * FONCTION MULTIPLICATRICE:'
         write(6,*) '  ** TYPE                : ',typfct
@@ -127,31 +124,16 @@ subroutine lisimp(lischa, ifm)
 !
 ! ------- POSITION ENTIER CODE POUR CE GENRE
 !
-            call lisdef('POEC', gencha, ibid, k8bid, iposit)
-            call isdeco(codcha, tabcod, 30)
+            call lisdef('POSG', gencha, ibid, k8bid, iposit)
+            call isdeco(genrec, tabcod, 30)
             if (tabcod(iposit) .eq. 1) then
 !
 ! --------- GENRE PRESENT DANS CETTE CHARGE
 !
                 write(6,*) '  ** GENRE        : ',gencha
-!
-! --------- LISTE DES CHARGES DISPO POUR CE GENRE
-!
-                call lisdef('IDNS', nomlis, iposit, k8bid, nbch)
-!
-                call jeveuo(nomlis, 'L', jlisci)
-                do 20 ich = 1, nbch
-                    indxch = zi(jlisci-1+ich)
-                    lexis = lisexi(prefob,indxch)
-                    call lisdef('MOTC', k24bid, indxch, motcle, ibid)
-                    if (lexis) then
-                        write(6,*) '  ** MOT-CLEF     : ',motcle
-                    endif
-20              continue
-                call jedetr(nomlis)
             endif
 15      continue
-10  end do
+10  continue
 !
     call jedetr(lisgen)
 !

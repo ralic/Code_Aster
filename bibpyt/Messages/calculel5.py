@@ -241,33 +241,6 @@ PROJ_CHAMP (ou LIAISON_MAILLE) :
  de peau dans votre modèle ; il faut revoir le maillage.
 """),
 
-56 : _(u"""
- La combinaison 'fonction multiplicatrice' et 'chargement de type fonction' n'est pas autorisée car
- votre chargement %(k1)s contient une charge exprimée par une formule.
- Pour réaliser cette combinaison, vous devez transformer votre charge 'formule' en charge 'fonction'
- (via l'opérateur DEFI_FONCTION ou CALC_FONC_INTERP).
- On poursuit sans tenir compte de la fonction multiplicatrice.
-"""),
-
-57 : _(u"""
- La combinaison de chargements de même type n'est pas autorisée car l'un des chargements
- contient une charge exprimée par une formule.
- Pour réaliser cette combinaison, vous devez transformer votre charge 'formule' en charge 'fonction'
- (via l'opérateur DEFI_FONCTION ou CALC_FONC_INTERP)
-"""),
-
-58 : _(u"""
- La combinaison de chargements de type 'déformation initiale' n'a aucun sens physique.'
-"""),
-
-59 : _(u"""
- La combinaison de chargements de type 'pesanteur' n'a aucun sens physique.'
-"""),
-
-60 : _(u"""
- La combinaison de chargements de type 'rotation' est déconseillée.
- Veuillez plutôt utiliser un chargement de type 'force interne'.
-"""),
 
 65 : _(u"""
  composante non définie dans  la grandeur.  composante:  %(k1)s

@@ -58,12 +58,11 @@ subroutine cnvesl(lischa, typres, neq, nompar, valpar,&
 ! IN  NEQ    : NOMBRE D'EQUATIONS DU SYSTEME
 ! OUT CNVASS : NOM DU CHAMP
 !
-!
-!
+! ----------------------------------------------------------------------
 !
     integer :: ichar, nbchar
     integer :: nbveas, nbveag, nbtot, iret, ieq
-    integer :: codcha
+    integer :: genrec
     integer :: jresu, jvale
     character(len=16) :: typfct
     character(len=8) :: nomfct, charge, typech
@@ -85,7 +84,7 @@ subroutine cnvesl(lischa, typres, neq, nompar, valpar,&
     call jeveuo(cnvass(1:19)//'.VALE', 'E', jresu)
     do 5 ieq = 1, neq
         zc(jresu-1+ieq) = dcmplx(0.d0,0.d0)
- 5  end do
+ 5  continue
 !
 ! --- NOMBRE DE CHARGEMENTS
 !
@@ -104,7 +103,7 @@ subroutine cnvesl(lischa, typres, neq, nompar, valpar,&
 !
 ! ----- CODE DU GENRE DE LA CHARGE
 !
-        call lislco(lischa, ichar, codcha)
+        call lislco(lischa, ichar, genrec)
 !
 ! ----- FONCTION MULTIPLICATRICE
 !
@@ -115,8 +114,8 @@ subroutine cnvesl(lischa, typres, neq, nompar, valpar,&
 !
         call liscpp(lischa, ichar, phase, npuis)
 !
-        lveas = lisico('VECT_ASSE' ,codcha)
-        lveag = lisico('VECT_ASSE_GENE',codcha)
+        lveas = lisico('VECT_ASSE' ,genrec)
+        lveag = lisico('VECT_ASSE_GENE',genrec)
         if (lveas .or. lveag) then
             call lislch(lischa, ichar, charge)
             call lisltc(lischa, ichar, typech)
@@ -152,9 +151,9 @@ subroutine cnvesl(lischa, typres, neq, nompar, valpar,&
 123              continue
             endif
         endif
-10  end do
+10  continue
 !
-999  continue
+999 continue
 !
     call jedema()
 end subroutine

@@ -26,70 +26,66 @@ subroutine op0100()
 ! aslint: disable=W1501
     implicit none
 !
-#include "jeveux.h"
-#include "asterc/getfac.h"
-#include "asterc/getres.h"
-#include "asterc/gettco.h"
-#include "asterc/getvis.h"
-#include "asterc/getvr8.h"
-#include "asterc/getvtx.h"
-#include "asterfort/assert.h"
-#include "asterfort/cakg2d.h"
-#include "asterfort/cakg3d.h"
-#include "asterfort/ccbcop.h"
-#include "asterfort/cgcrio.h"
-#include "asterfort/cgcrtb.h"
-#include "asterfort/cglecc.h"
-#include "asterfort/cgleco.h"
-#include "asterfort/cglect.h"
-#include "asterfort/cglemu.h"
-#include "asterfort/detrsd.h"
-#include "asterfort/dismoi.h"
-#include "asterfort/gcou2d.h"
-#include "asterfort/gcour2.h"
-#include "asterfort/gcour3.h"
-#include "asterfort/gcouro.h"
-#include "asterfort/gver2d.h"
-#include "asterfort/gveri3.h"
-#include "asterfort/gverig.h"
-#include "asterfort/infmaj.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jedetr.h"
-#include "asterfort/jeexin.h"
-#include "asterfort/jelira.h"
-#include "asterfort/jemarq.h"
-#include "asterfort/jerecu.h"
-#include "asterfort/jeveuo.h"
-#include "asterfort/mbilgl.h"
-#include "asterfort/mebilg.h"
-#include "asterfort/mecagl.h"
-#include "asterfort/mecalg.h"
-#include "asterfort/medom1.h"
-#include "asterfort/memaxg.h"
-#include "asterfort/mmaxgl.h"
-#include "asterfort/mmaxkl.h"
-#include "asterfort/rsadpa.h"
-#include "asterfort/rsexch.h"
-#include "asterfort/rsmena.h"
-#include "asterfort/rsrusd.h"
-#include "asterfort/tbexve.h"
-#include "asterfort/titre.h"
-#include "asterfort/u2mesk.h"
-#include "asterfort/u2mess.h"
-#include "asterfort/wkvect.h"
-#include "asterfort/xcourb.h"
-    integer :: nbord, iord, ibid, i, iad, jnord, ivec, iret, icha, nbpara
-    integer :: lnoff, jinst, ndeg, iadnum, nbropt, iadrco, iadrno, j, ipuls
-    integer :: iord0
-    integer :: iord1, iord2, nborn, nbco, ibor, ig, lnoeu, labscu, nbval, ncha
+    include 'jeveux.h'
+    include 'asterc/getfac.h'
+    include 'asterc/getres.h'
+    include 'asterc/gettco.h'
+    include 'asterc/getvis.h'
+    include 'asterc/getvr8.h'
+    include 'asterc/getvtx.h'
+    include 'asterfort/assert.h'
+    include 'asterfort/cakg2d.h'
+    include 'asterfort/cakg3d.h'
+    include 'asterfort/ccbcop.h'
+    include 'asterfort/cgcrio.h'
+    include 'asterfort/cgcrtb.h'
+    include 'asterfort/cglecc.h'
+    include 'asterfort/cgleco.h'
+    include 'asterfort/cglect.h'
+    include 'asterfort/cglemu.h'
+    include 'asterfort/detrsd.h'
+    include 'asterfort/dismoi.h'
+    include 'asterfort/gcou2d.h'
+    include 'asterfort/gcour2.h'
+    include 'asterfort/gcour3.h'
+    include 'asterfort/gcouro.h'
+    include 'asterfort/gver2d.h'
+    include 'asterfort/gveri3.h'
+    include 'asterfort/gverig.h'
+    include 'asterfort/infmaj.h'
+    include 'asterfort/jedema.h'
+    include 'asterfort/jedetr.h'
+    include 'asterfort/jeexin.h'
+    include 'asterfort/jelira.h'
+    include 'asterfort/jemarq.h'
+    include 'asterfort/jerecu.h'
+    include 'asterfort/jeveuo.h'
+    include 'asterfort/mbilgl.h'
+    include 'asterfort/mebilg.h'
+    include 'asterfort/mecagl.h'
+    include 'asterfort/mecalg.h'
+    include 'asterfort/medomg.h'
+    include 'asterfort/memaxg.h'
+    include 'asterfort/mmaxgl.h'
+    include 'asterfort/mmaxkl.h'
+    include 'asterfort/rsadpa.h'
+    include 'asterfort/rsexch.h'
+    include 'asterfort/rsmena.h'
+    include 'asterfort/rsrusd.h'
+    include 'asterfort/tbexve.h'
+    include 'asterfort/titre.h'
+    include 'asterfort/u2mesk.h'
+    include 'asterfort/u2mess.h'
+    include 'asterfort/wkvect.h'
+    include 'asterfort/xcourb.h'
+    integer :: nbord, iord, ibid, i, iad, jnord, ivec, iret, nbpara
+    integer :: lnoff, jinst, ndeg, nbropt, iadrco, iadrno, j, ipuls, iord0
+    integer :: iord1, iord2, nborn, nbco, ibor, ig, lnoeu, labscu, nbval
     integer :: ndimte, ier, ndim, jordr, jopt
     integer :: nxpara, iarg
     parameter (nxpara = 11)
 !
     real(kind=8) :: time, timeu, timev, dir(3), rinf, rsup, module, puls
-!
-!
-    character(len=4) :: k4b
     character(len=6) :: nompro
     parameter  ( nompro = 'OP0100' )
     character(len=8) :: modele, resu, k8bid, calsig, resuc2
@@ -97,7 +93,7 @@ subroutine op0100()
     character(len=8) :: table, noma, thetai, noeud, typfis, typfon
     character(len=16) :: option, typsd, linopa(nxpara), cas, typco
     character(len=16) :: optio2, nomcas, k16bid
-    character(len=19) :: vchar, lisopt, vecord, grlt
+    character(len=19) :: lischa, lisopt, vecord, grlt
     character(len=24) :: depla, mate, compor, chvite, chacce
     character(len=24) :: basfon, fonoeu, liss, taillr
     character(len=24) :: chfond, basloc, theta
@@ -116,7 +112,7 @@ subroutine op0100()
     call jemarq()
     call infmaj()
 !
-    vchar = '&&'//nompro//'.CHARGES'
+    lischa = '&&'//nompro//'.CHARGES'
     courb = '&&'//nompro//'.COURB'
     trav1 = '&&'//nompro//'.TRAV1'
     trav2 = '&&'//nompro//'.TRAV2'
@@ -169,10 +165,8 @@ subroutine op0100()
 !     PREMIER NUME_ORDRE
     iord0 = zi(ivec)
 !
-!     APPEL A MEDOM1 POUR RECUPERE MODELE, MATE, CARA, NCHA, VCHA
-    call medom1(modele, mate, k8bid, vchar, ncha,&
-                k4b, resu, iord0)
-    call jeveuo(vchar//'.LCHA', 'L', icha)
+!     RECUPERATION MODELE, MATE ET LISCHA
+    call medomg(resu, iord0, modele, mate, lischa)
 !
 !     RECUPERATION DE LA CARTE DE COMPORTEMENT UTILISEE DANS LE CALCUL
 !     -> COMPOR, INCR
@@ -352,18 +346,16 @@ subroutine op0100()
 !       3.1. ==> CALCUL DE LA FORME BILINEAIRE DU TAUX DE RESTITUTION
 !       --------------------------------------------------------------
 !
-        do 3111 i = 1, nbord
+        do 311 i = 1, nbord
 !
             iord1 = zi(ivec-1+i)
-            call medom1(modele, mate, k8bid, vchar, ncha,&
-                        k4b, resu, iord1)
-            call jeveuo(vchar//'.LCHA', 'L', icha)
+            call medomg(resu, iord1, modele, mate, lischa)
             call rsexch(' ', resu, 'DEPL', iord1, depla1,&
                         iret)
 !
             if (lmelas) then
                 if (lncas) then
-                    if (.not.zl(jnord+i-1)) goto 3111
+                    if (.not.zl(jnord+i-1)) goto 311
                 endif
                 exitim = .false.
                 timeu=0.d0
@@ -373,7 +365,7 @@ subroutine op0100()
                 nomcas=zk16(iad)
             endif
 !
-            do 3112 j = 1, i
+            do 312 j = 1, i
                 call jemarq()
                 call jerecu('V')
                 if (nbord .eq. 1) then
@@ -398,23 +390,22 @@ subroutine op0100()
                 optio2 = 'G_BILI'
                 if (cas .eq. '3D_LOCAL') then
                     call mbilgl(optio2, table, modele, depla1, depla2,&
-                                thetai, mate, ncha, zk8(icha), symech,&
-                                chfond, lnoff, ndeg, thlagr, glagr,&
-                                thlag2, milieu, ndimte, pair, exitim,&
-                                timeu, timev, i, j, nbpara,&
-                                linopa, lmelas, nomcas, fonoeu)
+                                thetai, mate, lischa, symech, chfond, &
+                                lnoff,ndeg, thlagr, glagr, thlag2,&
+                                milieu,ndimte, pair, exitim, timeu, &
+                                timev,i, j, nbpara, linopa, &
+                                lmelas,nomcas, fonoeu)
                 else
                     call mebilg(optio2, table, modele, depla1, depla2,&
-                                theta, mate, ncha, zk8(icha), symech,&
-                                exitim, timeu, timev, i, j,&
-                                nbpara, linopa)
+                                theta, mate, lischa, symech,  timeu, &
+                                timev, i, j, nbpara, linopa)
                 endif
 !
                 call jedema()
 !
-3112          continue
+312          continue
 !
-3111      continue
+311      continue
 !
 !
         if (option(1:5) .eq. 'G_MAX') then
@@ -427,14 +418,14 @@ subroutine op0100()
             if (nborn .ne. 0) then
                 nbco = 2*nborn
                 call wkvect('&&'//nompro//'.COUPLES_BORNES', 'V V R8', nbco, ibor)
-                do 3213 i = 1, nborn
+                do 313 i = 1, nborn
                     call getvis('BORNES', 'NUME_ORDRE', i, iarg, 1,&
                                 iord0, ier)
                     call getvr8('BORNES', 'VALE_MIN', i, iarg, 1,&
                                 zr(ibor+ 2*(iord0-1)), ier)
                     call getvr8('BORNES', 'VALE_MAX', i, iarg, 1,&
                                 zr(ibor+ 2*(iord0-1)+1), ier)
-3213              continue
+313              continue
 !
                 if (cas .eq. '3D_LOCAL') then
                     call tbexve(table, 'G_BILI_LOCAL', '&&'//nompro// '.GBILIN', 'V', nbval,&
@@ -475,10 +466,7 @@ subroutine op0100()
 !
         do 33 i = 1, nbord
             iord = zi(ivec-1+i)
-!
-            call medom1(modele, mate, k8bid, vchar, ncha,&
-                        k4b, resu, iord)
-            call jeveuo(vchar//'.LCHA', 'L', icha)
+            call medomg(resu, iord, modele, mate, lischa)
             call rsexch('F', resu, 'DEPL', iord, depla,&
                         iret)
 !
@@ -506,12 +494,12 @@ subroutine op0100()
 !
 !
             call cakg3d(option, table, modele, depla, thetai,&
-                        mate, compor, ncha, zk8(icha), symech,&
-                        chfond, lnoff, basloc, courb, iord,&
-                        ndeg, thlagr, glagr, thlag2, pair,&
-                        ndimte, exitim, time, nbpara, linopa,&
-                        nomfis, lmelas, nomcas, lmoda, puls,&
-                        milieu, connex)
+                        mate, compor, lischa, symech, chfond,&
+                        lnoff, basloc, courb, iord, ndeg,&
+                        thlagr, glagr, thlag2, pair, ndimte,&
+                        exitim, time, nbpara, linopa, nomfis,&
+                        lmelas, nomcas, lmoda, puls, milieu,&
+                        connex)
 !
 33      continue
 !
@@ -526,11 +514,11 @@ subroutine op0100()
         call xcourb(basloc, noma, modele, courb)
 !
         call mmaxkl(table, modele, thetai, mate, compor,&
-                    ncha, symech, chfond, lnoff, basloc,&
-                    courb, ndeg, thlagr, glagr, thlag2,&
-                    pair, ndimte, nbpara, linopa, nomfis,&
-                    nbord, ivec, vchar, resu, lmelas,&
-                    lncas, zl(jnord), milieu, connex)
+                    symech, chfond, lnoff, basloc, courb,&
+                    ndeg, thlagr, glagr, thlag2, pair,&
+                    ndimte, nbpara, linopa, nomfis, nbord,&
+                    ivec, resu, lmelas, lncas,zl( jnord),&
+                     milieu, connex, lischa)
 !
 !     -------------------------------
 !     3.5. ==> CALCUL DE G, K_G (2D)
@@ -554,10 +542,8 @@ subroutine op0100()
             call jemarq()
             call jerecu('V')
             iord = zi(ivec-1+i)
+            call medomg(resu, iord, modele, mate, lischa)
 !
-            call medom1(modele, mate, k8bid, vchar, ncha,&
-                        k4b, resu, iord)
-            call jeveuo(vchar//'.LCHA', 'L', icha)
             call rsexch('F', resu, 'DEPL', iord, depla,&
                         iret)
             call rsexch(' ', resu, 'VITE', iord, chvite,&
@@ -594,25 +580,25 @@ subroutine op0100()
             if ((option(1:6).eq.'CALC_G'.and.cas.eq.'2D') .or. option .eq. 'CALC_G_GLOB') then
 !
                 call mecalg(option, table, modele, depla, theta,&
-                            mate, ncha, zk8(icha), symech, compor,&
-                            incr, time, iord, nbpara, linopa,&
-                            chvite, chacce, lmelas, nomcas, calsig)
+                            mate, lischa,symech, compor, incr, &
+                            time,iord, nbpara, linopa, chvite, &
+                            chacce,lmelas, nomcas, calsig)
 !
             else if (option(1:6).eq.'CALC_G'.and.cas.eq.'3D_LOCAL') then
 !
                 call mecagl(option, table, modele, depla, thetai,&
-                            mate, compor, ncha, zk8(icha), symech,&
-                            chfond, lnoff, iord, ndeg, thlagr,&
-                            glagr, thlag2, milieu, ndimte, pair,&
-                            exitim, time, nbpara, linopa, chvite,&
-                            chacce, lmelas, nomcas, calsig, fonoeu)
+                            mate, compor, lischa,symech, chfond, &
+                            lnoff,iord, ndeg, thlagr, glagr, &
+                            thlag2,milieu, ndimte, pair, exitim, &
+                            time,nbpara, linopa, chvite, chacce, &
+                            lmelas,nomcas, calsig, fonoeu)
 !
             else if (option(1:6).eq.'CALC_K'.and.cas.eq.'2D') then
 !
                 call cakg2d(option, table, modele, depla, theta,&
-                            mate, ncha, zk8(icha), symech, nomfis,&
-                            noeud, time, iord, nbpara, linopa,&
-                            lmelas, nomcas, lmoda, puls, compor)
+                            mate, lischa, symech, nomfis, noeud,&
+                            time, iord, nbpara, linopa, lmelas,&
+                            nomcas, lmoda, puls, compor)
 !
             else
                 call assert(.false.)

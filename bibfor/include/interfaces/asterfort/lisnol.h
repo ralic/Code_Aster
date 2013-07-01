@@ -15,11 +15,11 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
-interface
+interface 
     subroutine lisnol(lischa, genchz, nomlis, nbch)
         character(len=19) :: lischa
         character(*) :: genchz
         character(len=24) :: nomlis
         integer :: nbch
     end subroutine lisnol
-end interface
+end interface 

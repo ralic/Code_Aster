@@ -22,8 +22,6 @@ subroutine listap(motfac, iexci, typapp)
 #include "asterc/getexm.h"
 #include "asterc/getvtx.h"
 #include "asterfort/assert.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jemarq.h"
     character(len=16) :: motfac
     integer :: iexci
     character(len=16) :: typapp
@@ -45,24 +43,21 @@ subroutine listap(motfac, iexci, typapp)
 !              SUIV
 !              DIDI
 !
-!
-!
+! ----------------------------------------------------------------------
 !
     integer :: eximc
-    integer :: n
+    integer :: n,iarg
 !
 ! ----------------------------------------------------------------------
 !
-    call jemarq()
-!
     eximc = getexm(motfac,'TYPE_CHARGE')
+
     if (eximc .eq. 1) then
-        call getvtx(motfac, 'TYPE_CHARGE', iexci, 1, 1,&
+        call getvtx(motfac, 'TYPE_CHARGE', iexci, iarg, 1,&
                     typapp, n)
         call assert(n.eq.1)
     else
         typapp = 'FIXE_CSTE'
     endif
 !
-    call jedema()
 end subroutine

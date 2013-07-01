@@ -1,10 +1,10 @@
 subroutine cakg3d(option, result, modele, depla, thetai,&
-                  mate, compor, nchar, lchar, symech,&
-                  chfond, nnoff, basloc, courb, iord,&
-                  ndeg, thlagr, glagr, thlag2, pair,&
-                  ndimte, extim, time, nbprup, noprup,&
-                  fiss, lmelas, nomcas, lmoda, puls,&
-                  milieu, connex)
+                  mate, compor, lischa, symech,chfond,&
+                  nnoff, basloc, courb, iord,ndeg,&
+                  thlagr, glagr, thlag2, pair,ndimte,&
+                  extim, time, nbprup, noprup,fiss,&
+                  lmelas, nomcas, lmoda, puls,milieu,&
+                  connex)
 ! aslint: disable=W1504
     implicit  none
 !
@@ -41,11 +41,12 @@ subroutine cakg3d(option, result, modele, depla, thetai,&
 #include "asterfort/vrcins.h"
 #include "asterfort/vrcref.h"
 #include "asterfort/wkvect.h"
-    integer :: iord, nchar, nbprup, ndimte
+    integer :: iord,  nbprup, ndimte
     real(kind=8) :: puls
-    character(len=8) :: modele, thetai, lchar(*), fiss
+    character(len=8) :: modele, thetai,  fiss
     character(len=8) :: result, symech
     character(len=16) :: option, noprup(*), nomcas
+    character(len=19) :: lischa
     character(len=24) :: depla, chfond, mate, compor, basloc, courb, chpuls
     logical :: extim, thlagr, glagr, thlag2, pair, lmelas, lmoda, milieu, connex
 !
@@ -76,8 +77,6 @@ subroutine cakg3d(option, result, modele, depla, thetai,&
 !  IN    THETAI --> BASE DE I CHAMPS THETA
 !  IN    MATE   --> CHAMP DE MATERIAUX
 !  IN    COMPOR --> COMPORTEMENT
-!  IN    NCHAR  --> NOMBRE DE CHARGES
-!  IN    LCHAR  --> LISTE DES CHARGES
 !  IN    SYMECH --> SYMETRIE DU CHARGEMENT
 !  IN    CHFOND --> POINTS DU FOND DE FISSURE
 !  IN    NNOFF  --> NOMBRE DE POINTS DU FOND DE FISSURE
@@ -112,11 +111,11 @@ subroutine cakg3d(option, result, modele, depla, thetai,&
     integer :: iadgki, iadabs, ifm, niv
     real(kind=8) :: gkthi(8), time, livr(nbmxpa)
     complex(kind=8) :: cbid, livc(nbmxpa)
-    logical :: fonc, epsi
+    logical :: lfonc
     character(len=2) :: codret
     character(len=8) :: k8bid, resu
     character(len=16) :: opti, valk
-    character(len=19) :: chrota, chpesa, chvolu, cf1d2d, chepsi, cf2d3d, chpres
+    character(len=19) :: chrota, chpesa, chvolu, ch1d2d, chepsi, ch2d3d, chpres
     character(len=19) :: chvarc, chvref
     character(len=24) :: ligrmo, chgeom, chgthi
     character(len=24) :: chsigi
@@ -175,16 +174,16 @@ subroutine cakg3d(option, result, modele, depla, thetai,&
 !
 !     TRAITEMENT DES CHARGES
     chvolu = '&&CAKG3D.VOLU'
-    cf1d2d = '&&CAKG3D.1D2D'
-    cf2d3d = '&&CAKG3D.2D3D'
+    ch1d2d = '&&CAKG3D.1D2D'
+    ch2d3d = '&&CAKG3D.2D3D'
     chpres = '&&CAKG3D.PRES'
     chepsi = '&&CAKG3D.EPSI'
     chpesa = '&&CAKG3D.PESA'
     chrota = '&&CAKG3D.ROTA'
-    call gcharg(modele, nchar, lchar, chvolu, cf1d2d,&
-                cf2d3d, chpres, chepsi, chpesa, chrota,&
-                fonc, epsi, time, iord)
-    if (fonc) then
+    call gcharg(modele, lischa, chvolu, ch1d2d, ch2d3d,&
+                chpres, chepsi, chpesa, chrota, lfonc ,&
+                time  , iord)
+    if (lfonc) then
         pavolu = 'PFFVOLU'
         pa2d3d = 'PFF2D3D'
         papres = 'PPRESSF'
@@ -274,7 +273,7 @@ subroutine cakg3d(option, result, modele, depla, thetai,&
         lpain(17) = 'PLONCHA'
         lchin(17) = loncha
         lpain(18) = pa2d3d(1:8)
-        lchin(18) = cf2d3d
+        lchin(18) = ch2d3d
         lpain(19) = papres(1:8)
         lchin(19) = chpres
         lpain(20) = 'PLSN'
@@ -344,7 +343,7 @@ subroutine cakg3d(option, result, modele, depla, thetai,&
             zr(iadrgk-1+(i-1)*8+7) = 0.d0
         endif
 !
-20  end do
+20  continue
 !
 !     ------------------------------------------------------------------
 !     3) CALCUL DE G(S), K1(S), K2(S) ET K3(S) LE LONG DU FOND
@@ -425,7 +424,7 @@ subroutine cakg3d(option, result, modele, depla, thetai,&
         call tbajvr(result, nbprup, 'G_IRWIN', zr(iadgks-1+6*(i-1)+5), livr)
         call tbajli(result, nbprup, noprup, livi, livr,&
                     livc, livk, 0)
-40  end do
+40  continue
 !
 !- DESTRUCTION D'OBJETS DE TRAVAIL
 !
@@ -435,8 +434,8 @@ subroutine cakg3d(option, result, modele, depla, thetai,&
     call detrsd('CHAMP_GD', chvarc)
     call detrsd('CHAMP_GD', chvref)
     call detrsd('CHAMP_GD', chvolu)
-    call detrsd('CHAMP_GD', cf1d2d)
-    call detrsd('CHAMP_GD', cf2d3d)
+    call detrsd('CHAMP_GD', ch1d2d)
+    call detrsd('CHAMP_GD', ch2d3d)
     call detrsd('CHAMP_GD', chpres)
     call detrsd('CHAMP_GD', chepsi)
     call detrsd('CHAMP_GD', chpesa)

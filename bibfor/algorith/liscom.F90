@@ -1,4 +1,4 @@
-subroutine liscom(nomo, lischa)
+subroutine liscom(nomo, codarr, lischa)
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -30,6 +30,7 @@ subroutine liscom(nomo, lischa)
 #include "asterfort/u2mess.h"
     character(len=19) :: lischa
     character(len=8) :: nomo
+    character(len=1) :: codarr
 !
 ! ----------------------------------------------------------------------
 !
@@ -41,14 +42,14 @@ subroutine liscom(nomo, lischa)
 !
 !
 ! IN  NOMO   : NOM DU MODELE
+! IN  CODARR : TYPE DE MESSAGE INFO/ALARME/ERREUR SI PAS COMPATIBLE
 ! IN  LISCHA : SD LISTE DES CHARGES
 !
-!
-!
+! ----------------------------------------------------------------------
 !
     integer :: ichar, nbchar
     character(len=8) :: modch2, charge, modch1
-    integer :: ibid, iret, codcha
+    integer :: ibid, iret, genrec
     logical :: lveag, lveas
 !
 ! ----------------------------------------------------------------------
@@ -64,14 +65,14 @@ subroutine liscom(nomo, lischa)
 !
     ichar = 1
     call lislch(lischa, ichar, charge)
-    call lislco(lischa, ichar, codcha)
-    lveag = lisico('VECT_ASSE_GENE',codcha)
-    lveas = lisico('VECT_ASSE' ,codcha)
+    call lislco(lischa, ichar, genrec)
+    lveag = lisico('VECT_ASSE_GENE',genrec)
+    lveas = lisico('VECT_ASSE' ,genrec)
     if (nomo .ne. ' ') then
         if (.not.lveag .and. .not.lveas) then
             call dismoi('F', 'NOM_MODELE', charge, 'CHARGE', ibid,&
                         modch1, iret)
-            if (modch1 .ne. nomo) call u2mesk('F', 'CHARGES5_5', 1, charge)
+            if (modch1 .ne. nomo) call u2mesk(codarr, 'CHARGES5_5', 1, charge)
         endif
     endif
 !
@@ -79,19 +80,19 @@ subroutine liscom(nomo, lischa)
 !
     do 10 ichar = 2, nbchar
         call lislch(lischa, ichar, charge)
-        call lislco(lischa, ichar, codcha)
-        lveag = lisico('VECT_ASSE_GENE',codcha)
-        lveas = lisico('VECT_ASSE' ,codcha)
+        call lislco(lischa, ichar, genrec)
+        lveag = lisico('VECT_ASSE_GENE',genrec)
+        lveas = lisico('VECT_ASSE' ,genrec)
         if (nomo .ne. ' ') then
             if (.not.lveag .and. .not.lveas) then
                 call dismoi('F', 'NOM_MODELE', charge, 'CHARGE', ibid,&
                             modch2, iret)
-                if (modch1 .ne. modch2) call u2mess('F', 'CHARGES5_6')
+                if (modch1 .ne. modch2) call u2mess(codarr, 'CHARGES5_6')
             endif
         endif
-10  end do
+10  continue
 !
-999  continue
+999 continue
 !
     call jedema()
 end subroutine

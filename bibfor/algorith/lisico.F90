@@ -1,4 +1,4 @@
-function lisico(genchz, codcha)
+function lisico(genchz, genrec)
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -25,7 +25,7 @@ function lisico(genchz, codcha)
 #include "asterfort/jemarq.h"
 #include "asterfort/lisdef.h"
     character(len=*) :: genchz
-    integer :: codcha
+    integer :: genrec
 !
 ! ----------------------------------------------------------------------
 !
@@ -36,10 +36,9 @@ function lisico(genchz, codcha)
 ! ----------------------------------------------------------------------
 !
 ! IN  GENCHA : GENRE DE LA CHARGE (VOIR LISDEF)
-! IN  CODCHA : CODE POUR LE GENRE DE LA CHARGE
+! IN  GENREC : CODE POUR LE GENRE DE LA CHARGE
 !
-!
-!
+! ----------------------------------------------------------------------
 !
     integer :: tabcod(30), iposit, ibid
     character(len=8) :: k8bid
@@ -49,8 +48,8 @@ function lisico(genchz, codcha)
     call jemarq()
 !
     lisico = .false.
-    call lisdef('POEC', genchz, ibid, k8bid, iposit)
-    call isdeco(codcha, tabcod, 30)
+    call lisdef('POSG', genchz, ibid, k8bid, iposit)
+    call isdeco(genrec, tabcod, 30)
     if (tabcod(iposit) .eq. 1) lisico = .true.
 !
     call jedema()

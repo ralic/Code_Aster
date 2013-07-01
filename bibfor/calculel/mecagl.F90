@@ -1,52 +1,53 @@
 subroutine mecagl(option, result, modele, depla, thetai,&
-                  mate, compor, nchar, lchar, symech,&
-                  chfond, nnoff, iord, ndeg, thlagr,&
-                  glagr, thlag2, milieu, ndimte, pair,&
-                  extim, time, nbprup, noprup, chvite,&
-                  chacce, lmelas, nomcas, kcalc, fonoeu)
+                  mate, compor, lischa, symech,chfond,&
+                  nnoff, iord, ndeg, thlagr,glagr,&
+                  thlag2, milieu, ndimte, pair,extim,&
+                  time, nbprup, noprup, chvite,chacce,&
+                  lmelas, nomcas, kcalc, fonoeu)
 ! aslint: disable=W1504
     implicit  none
 !
-#include "jeveux.h"
+    include 'jeveux.h'
 !
-#include "asterc/getfac.h"
-#include "asterc/getvid.h"
-#include "asterc/getvis.h"
-#include "asterfort/alchml.h"
-#include "asterfort/calcul.h"
-#include "asterfort/chpchd.h"
-#include "asterfort/chpver.h"
-#include "asterfort/codent.h"
-#include "asterfort/detrsd.h"
-#include "asterfort/dismoi.h"
-#include "asterfort/gcharg.h"
-#include "asterfort/gimpgs.h"
-#include "asterfort/gmeth1.h"
-#include "asterfort/gmeth2.h"
-#include "asterfort/gmeth3.h"
-#include "asterfort/gmeth4.h"
-#include "asterfort/infniv.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jedetr.h"
-#include "asterfort/jemarq.h"
-#include "asterfort/jeveuo.h"
-#include "asterfort/mecact.h"
-#include "asterfort/megeom.h"
-#include "asterfort/mesomm.h"
-#include "asterfort/rsexch.h"
-#include "asterfort/tbajli.h"
-#include "asterfort/tbajvi.h"
-#include "asterfort/tbajvk.h"
-#include "asterfort/tbajvr.h"
-#include "asterfort/u2mess.h"
-#include "asterfort/vrcins.h"
-#include "asterfort/vrcref.h"
-#include "asterfort/wkvect.h"
-    integer :: iord, nchar, nbprup, ndimte
+    include 'asterc/getfac.h'
+    include 'asterc/getvid.h'
+    include 'asterc/getvis.h'
+    include 'asterfort/alchml.h'
+    include 'asterfort/calcul.h'
+    include 'asterfort/chpchd.h'
+    include 'asterfort/chpver.h'
+    include 'asterfort/codent.h'
+    include 'asterfort/detrsd.h'
+    include 'asterfort/dismoi.h'
+    include 'asterfort/gcharg.h'
+    include 'asterfort/gimpgs.h'
+    include 'asterfort/gmeth1.h'
+    include 'asterfort/gmeth2.h'
+    include 'asterfort/gmeth3.h'
+    include 'asterfort/gmeth4.h'
+    include 'asterfort/infniv.h'
+    include 'asterfort/jedema.h'
+    include 'asterfort/jedetr.h'
+    include 'asterfort/jemarq.h'
+    include 'asterfort/jeveuo.h'
+    include 'asterfort/mecact.h'
+    include 'asterfort/megeom.h'
+    include 'asterfort/mesomm.h'
+    include 'asterfort/rsexch.h'
+    include 'asterfort/tbajli.h'
+    include 'asterfort/tbajvi.h'
+    include 'asterfort/tbajvk.h'
+    include 'asterfort/tbajvr.h'
+    include 'asterfort/u2mess.h'
+    include 'asterfort/vrcins.h'
+    include 'asterfort/vrcref.h'
+    include 'asterfort/wkvect.h'
+    integer :: iord,  nbprup, ndimte
 !
     real(kind=8) :: time
 !
-    character(len=8) :: modele, thetai, lchar(*)
+    character(len=19) :: lischa
+    character(len=8) :: modele, thetai
     character(len=8) :: result, symech, kcalc
     character(len=16) :: option, noprup(*), nomcas
     character(len=24) :: depla, chfond, mate, compor
@@ -109,13 +110,9 @@ subroutine mecagl(option, result, modele, depla, thetai,&
     integer :: nnoff, num, incr, nres, nsig, ino1, ino2, inga
     integer :: ndeg, ierd, livi(nbmxpa), numfon
     integer :: iadrno, iadgi, iadabs, ifm, niv, ifon
-!
     real(kind=8) :: gthi, livr(nbmxpa), xl
-!
     complex(kind=8) :: cbid, livc(nbmxpa)
-!
-    logical :: fonc, epsi, lxfem
-!
+    logical :: fonc, lxfem
     character(len=2) :: codret
     character(len=8) :: k8bid, resu, fiss
     character(len=8) :: lpain(30), lpaout(1)
@@ -213,9 +210,9 @@ subroutine mecagl(option, result, modele, depla, thetai,&
     chepsi = '&&MECAGL.EPSI'
     chpesa = '&&MECAGL.PESA'
     chrota = '&&MECAGL.ROTA'
-    call gcharg(modele, nchar, lchar, chvolu, cf1d2d,&
-                cf2d3d, chpres, chepsi, chpesa, chrota,&
-                fonc, epsi, time, iord)
+    call gcharg(modele, lischa, chvolu, cf1d2d,cf2d3d,&
+                chpres, chepsi, chpesa, chrota,fonc,&
+                time, iord)
     if (fonc) then
         pavolu = 'PFFVOLU'
         pa2d3d = 'PFF2D3D'
@@ -388,7 +385,7 @@ subroutine mecagl(option, result, modele, depla, thetai,&
         call mesomm(chgthi, 1, ibid, gthi, cbid,&
                     0, ibid)
         zr(iadrg+i-1) = gthi
-20  end do
+20  continue
 !
 !- CALCUL DE G(S) SUR LE FOND DE FISSURE PAR 4 METHODES
 !- PREMIERE METHODE : G_LEGENDRE ET THETA_LEGENDRE
@@ -409,7 +406,7 @@ subroutine mecagl(option, result, modele, depla, thetai,&
     call wkvect(objcur, 'V V R', nnoff, iadabs)
     do 11 i = 1, nnoff
         zr(iadabs-1+(i-1)+1)=zr(ifon-1+4*(i-1)+4)
-11  end do
+11  continue
     xl=zr(iadabs-1+(nnoff-1)+1)
 !
 ! NOM DES NOEUDS DU FOND
@@ -478,7 +475,7 @@ subroutine mecagl(option, result, modele, depla, thetai,&
         call tbajvr(result, nbprup, 'G', zr(iadrgs+i-1), livr)
         call tbajli(result, nbprup, noprup, livi, livr,&
                     livc, livk, 0)
-40  end do
+40  continue
 !
 !- DESTRUCTION D'OBJETS DE TRAVAIL
 !

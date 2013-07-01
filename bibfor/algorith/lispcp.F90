@@ -22,8 +22,6 @@ subroutine lispcp(motfac, iexci, phase, npuis)
 #include "asterc/getexm.h"
 #include "asterc/getvis.h"
 #include "asterc/getvr8.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jemarq.h"
     character(len=16) :: motfac
     integer :: iexci
     real(kind=8) :: phase
@@ -43,15 +41,12 @@ subroutine lispcp(motfac, iexci, phase, npuis)
 ! OUT PHASE  : PHASE POUR LES FONCTIONS MULTIPLICATRICES COMPLEXES
 ! OUT NPUIS  : PUISSANCE POUR LES FONCTIONS MULTIPLICATRICES COMPLEXES
 !
-!
-!
+! ----------------------------------------------------------------------
 !
     integer :: iarg, n
     integer :: eximcp
 !
 ! ----------------------------------------------------------------------
-!
-    call jemarq()
 !
     phase = 0.d0
     npuis = 0
@@ -63,5 +58,4 @@ subroutine lispcp(motfac, iexci, phase, npuis)
                     npuis, n)
     endif
 !
-    call jedema()
 end subroutine

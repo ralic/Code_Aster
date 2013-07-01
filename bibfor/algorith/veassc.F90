@@ -48,14 +48,13 @@ subroutine veassc(lischa, vecele)
 ! IN  LISCHA : SD LISTE DES CHARGES
 ! OUT VECELE : VECT_ELEM RESULTAT
 !
-!
-!
+! ----------------------------------------------------------------------
 !
     integer :: ichar, nbchar, ibid
     character(len=8) :: newnom
     character(len=19) :: chamno, lchout
     character(len=13) :: prefob
-    integer :: codcha
+    integer :: genrec
     logical :: lveac
     integer :: nbveac, iexis
 !
@@ -82,8 +81,8 @@ subroutine veassc(lischa, vecele)
 !
 ! ----- CODE DU GENRE DE LA CHARGE
 !
-        call lislco(lischa, ichar, codcha)
-        lveac = lisico('VECT_ASSE_CHAR',codcha)
+        call lislco(lischa, ichar, genrec)
+        lveac = lisico('VECT_ASSE_CHAR',genrec)
         if (lveac) then
 !
 ! ------- NOM DU CHAM_NO
@@ -104,7 +103,7 @@ subroutine veassc(lischa, vecele)
             call copisd('CHAMP_GD', 'V', chamno, lchout)
             call reajre(vecele, lchout, 'V')
         endif
-10  end do
+10  continue
 !
 99  continue
 !

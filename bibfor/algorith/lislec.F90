@@ -24,7 +24,6 @@ subroutine lislec(motfac, phenoz, base, lischa)
 #include "asterfort/jemarq.h"
 #include "asterfort/liscrs.h"
 #include "asterfort/lisdef.h"
-#include "asterfort/lisgen.h"
 #include "asterfort/lislef.h"
 #include "asterfort/lisnnl.h"
 #include "asterfort/lisnnn.h"
@@ -49,13 +48,12 @@ subroutine lislec(motfac, phenoz, base, lischa)
 ! IN  BASE   : BASE DE CREATION DE LA SD LISCHA
 ! OUT LISCHA : SD LISTE DES CHARGES
 !
-!
-!
+! ----------------------------------------------------------------------
 !
     integer :: iexci, nbexci, ibid
-    character(len=8) :: charge
+    character(len=8) :: charge, k8bid
     character(len=16) :: typapp, typfct
-    integer :: codcha
+    integer :: genrec, motclc(2)
     character(len=8) :: typech, nomfct
     character(len=13) :: prefob
     real(kind=8) :: phase
@@ -71,7 +69,7 @@ subroutine lislec(motfac, phenoz, base, lischa)
 !
 ! --- CREATION SD CHARGEMENT
 !
-    call liscrs(lischa, nbexci, base)
+    if (nbexci.ne.0) call liscrs(lischa, nbexci, base)
 !
 ! --- LECTURE OCCURRENCES EXCIT
 !
@@ -87,11 +85,15 @@ subroutine lislec(motfac, phenoz, base, lischa)
 !
 ! ----- GENRES DE LA CHARGE
 !
-        call lisgen(prefob, codcha)
+        call lisdef('IDGE', prefob, ibid, k8bid, genrec)
+!
+! ----- MOT-CLEFS DE LA CHARGE
+!
+        call lisdef('IDMC', prefob, ibid, k8bid, motclc)
 !
 ! ----- TYPE DE LA CHARGE (COMPLEXE, FONCTION, REELLE)
 !
-        call lisdef('TYPC', prefob, codcha, typech, ibid)
+        call lisdef('TYPC', prefob, genrec, typech, ibid)
 !
 ! ----- TYPE D'APPLICATION DE LA CHARGE
 !
@@ -104,11 +106,11 @@ subroutine lislec(motfac, phenoz, base, lischa)
 !
 ! ----- SAUVEGARDE DES INFORMATIONS
 !
-        call lissav(lischa, iexci, charge, typech, codcha,&
-                    prefob, typapp, nomfct, typfct, phase,&
-                    npuis)
+        call lissav(lischa, iexci, charge, typech, genrec,&
+                    motclc, prefob, typapp, nomfct, typfct,&
+                    phase, npuis)
 !
-100  end do
+100 continue
 !
     call jedema()
 end subroutine

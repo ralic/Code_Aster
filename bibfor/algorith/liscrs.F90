@@ -18,9 +18,6 @@ subroutine liscrs(lischa, nbchar, base)
 ! ======================================================================
 !
     implicit      none
-#include "jeveux.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jemarq.h"
 #include "asterfort/wkvect.h"
     character(len=19) :: lischa
     integer :: nbchar
@@ -39,22 +36,18 @@ subroutine liscrs(lischa, nbchar, base)
 ! IN  NBCHAR : NOMBRE DE CHARGEMENTS DANS LA LISTE
 ! IN  BASE   : BASE POUR CREER LA SD
 !
+! ----------------------------------------------------------------------
 !
-!
-!
-    character(len=24) :: nomcha, codech, typcha, typeap, precha
-    integer :: jncha, jcodc, jtypc, jtypa, jprec
+    character(len=24) :: nomcha, genrch, typcha, typeap, precha, mocfch
+    integer :: jncha, jgenc, jtypc, jtypa, jprec, jmcfc
     character(len=24) :: nomfon, typfon, valfon
     integer :: jnfon, jtfon, jvfon
 !
 ! ----------------------------------------------------------------------
 !
-    call jemarq()
-!
-! --- INITIALISATIONS
-!
     nomcha = lischa(1:19)//'.NCHA'
-    codech = lischa(1:19)//'.CODC'
+    genrch = lischa(1:19)//'.GENC'
+    mocfch = lischa(1:19)//'.MCFC'
     typcha = lischa(1:19)//'.TYPC'
     typeap = lischa(1:19)//'.TYPA'
     precha = lischa(1:19)//'.PREO'
@@ -63,7 +56,8 @@ subroutine liscrs(lischa, nbchar, base)
     valfon = lischa(1:19)//'.VFON'
 !
     call wkvect(nomcha, base//' V K8', nbchar, jncha)
-    call wkvect(codech, base//' V I', nbchar, jcodc)
+    call wkvect(genrch, base//' V I', nbchar, jgenc)
+    call wkvect(mocfch, base//' V I', 2*nbchar, jmcfc)
     call wkvect(typcha, base//' V K8', nbchar, jtypc)
     call wkvect(typeap, base//' V K16', nbchar, jtypa)
     call wkvect(precha, base//' V K24', nbchar, jprec)
@@ -71,5 +65,4 @@ subroutine liscrs(lischa, nbchar, base)
     call wkvect(typfon, base//' V K16', nbchar, jtfon)
     call wkvect(valfon, base//' V R', 2*nbchar, jvfon)
 !
-    call jedema()
 end subroutine

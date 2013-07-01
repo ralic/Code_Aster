@@ -40,11 +40,10 @@ function lisnbg(lischa, genchz)
 ! IN  LISCHA : SD LISTE DES CHARGES
 ! IN  GENCHA : GENRE DE LA CHARGE (VOIR LISDEF)
 !
-!
-!
+! ----------------------------------------------------------------------
 !
     integer :: ichar, nbchar
-    integer :: codcha
+    integer :: genrec
     logical :: lok
 !
 ! ----------------------------------------------------------------------
@@ -61,12 +60,12 @@ function lisnbg(lischa, genchz)
 ! --- BOUCLE SUR LES CHARGES
 !
     do 10 ichar = 1, nbchar
-        call lislco(lischa, ichar, codcha)
-        lok = lisico(genchz,codcha)
+        call lislco(lischa, ichar, genrec)
+        lok = lisico(genchz,genrec)
         if (lok) lisnbg = lisnbg + 1
-10  end do
+10  continue
 !
-999  continue
+999 continue
 !
     call jedema()
 end function

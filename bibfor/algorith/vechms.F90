@@ -72,7 +72,7 @@ subroutine vechms(nomo, mate, carele, varplu, lischa,&
     integer :: ichar, nbchar, lastin
     character(len=8) :: nomch0
     character(len=24) :: nomlis
-    integer :: codcha, ier
+    integer :: genrec, ier
     logical :: lneum, lxfem
     integer :: nbch, nbneum
 !
@@ -109,8 +109,8 @@ subroutine vechms(nomo, mate, carele, varplu, lischa,&
 ! --- CALCUL
 !
     do 80 ichar = 1, nbchar
-        call lislco(lischa, ichar, codcha)
-        lneum = lisico('NEUM_MECA',codcha)
+        call lislco(lischa, ichar, genrec)
+        lneum = lisico('NEUM_MECA',genrec)
         if (lneum) then
 !
 ! ------- CALCUL DE LA CHARGE ?
@@ -122,7 +122,7 @@ subroutine vechms(nomo, mate, carele, varplu, lischa,&
             call vechmx(nomo, lischa, ichar, nbch, nomlis,&
                         nbin, lpain, lchin, lastin, vecele)
         endif
-80  end do
+80  continue
 !
 99  continue
 !

@@ -15,11 +15,11 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
-interface
+interface 
     subroutine veevop(nomo, fnocal, instan, lisch2)
         character(len=8) :: nomo
         character(len=8) :: fnocal
         real(kind=8) :: instan
         character(len=19) :: lisch2
     end subroutine veevop
-end interface
+end interface 

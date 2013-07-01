@@ -1,11 +1,11 @@
-subroutine gverfo(charg, ier)
+subroutine gverfo(cartei, ier)
     implicit none
-#include "jeveux.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jelira.h"
-#include "asterfort/jemarq.h"
-#include "asterfort/jeveuo.h"
-    character(len=19) :: charg
+    include 'jeveux.h'
+    include 'asterfort/jedema.h'
+    include 'asterfort/jelira.h'
+    include 'asterfort/jemarq.h'
+    include 'asterfort/jeveuo.h'
+    character(len=19) :: cartei
     integer :: ier
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -28,7 +28,7 @@ subroutine gverfo(charg, ier)
 !           ROUTINE APPELEE PAR GCHARG (OPERATEUR CALC_G)
 !
 !
-!     IN :    CHARG   : NOM DE LA CHARGE (ex: NOMCHA//'.CHME.F3D3D')
+!     IN :    cartei   : NOM DE LA CHARGE (ex: NOMCHA//'.CHME.F3D3D')
 !
 !     OUT:    IER     : =1 : PRESENCE D'UN CHARGMENT 'FORMULE'
 !                       =0 : SINON
@@ -41,23 +41,24 @@ subroutine gverfo(charg, ier)
 !
     call jemarq()
 !
-    call jeveuo(charg//'.VALE', 'L', ival)
-    call jelira(charg//'.VALE', 'LONMAX', nbvale, k8b)
+    call jeveuo(cartei//'.VALE', 'L', ival)
+    call jelira(cartei//'.VALE', 'LONMAX', nbvale, k8b)
 !
     ier=0
     do 10 in = 1, nbvale
         if (zk8(ival+in-1)(1:7) .ne. '&FOZERO' .and. zk8(ival+in-1)(1:7) .ne. '       '&
             .and. zk8(ival+in-1)(1:6) .ne. 'GLOBAL') then
             nch19=zk8(ival+in-1)
+            
             call jeveuo(nch19//'.PROL', 'L', iprol)
             if (zk24(iprol)(1:8) .eq. 'INTERPRE') then
                 ier=1
-                goto 9999
+                goto 999
             endif
         endif
-10  end do
+10  continue
 !
-9999  continue
+999 continue
 !
     call jedema()
 !

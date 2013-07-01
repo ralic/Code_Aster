@@ -1,7 +1,7 @@
 subroutine cakg2d(optioz, result, modele, depla, theta,&
-                  mate, nchar, lchar, symech, fondf,&
-                  noeud, time, iord, nbprup, noprup,&
-                  lmelas, nomcas, lmoda, puls, compor)
+                  mate, lischa, symech, fondf, noeud,&
+                  time, iord, nbprup, noprup, lmelas,&
+                  nomcas, lmoda, puls, compor)
     implicit none
 !
 #include "jeveux.h"
@@ -35,12 +35,13 @@ subroutine cakg2d(optioz, result, modele, depla, theta,&
 #include "asterfort/vrcins.h"
 #include "asterfort/vrcref.h"
 #include "asterfort/wkvect.h"
-    character(len=8) :: modele, lchar(*), fondf, result, symech
+    character(len=8) :: modele, fondf, result, symech
     character(len=8) :: noeud
     character(len=16) :: optioz, noprup(*), nomcas
     character(len=24) :: depla, mate, theta, compor
+    character(len=19) :: lischa
     real(kind=8) :: time, puls
-    integer :: iord, nchar, nbprup
+    integer :: iord, nbprup
     logical :: lmelas, lmoda
 ! ......................................................................
 ! ======================================================================
@@ -71,8 +72,7 @@ subroutine cakg2d(optioz, result, modele, depla, theta,&
 ! IN   DEPLA   --> CHAMPS DE DEPLACEMENT
 ! IN   THETA   --> CHAMP THETA
 ! IN   MATE    --> CHAMP DE MATERIAUX
-! IN   NCHAR   --> NOMBRE DE CHARGES
-! IN   LCHAR   --> LISTE DES CHARGES
+! IN  LISCHA : LISTE DES CHARGES
 ! IN   SYMECH  --> SYMETRIE DU CHARGEMENT
 ! IN   FONDF   --> FOND DE FISSURE
 ! IN   NOEUD   --> NOM DU NOEUD DU FOND
@@ -95,21 +95,20 @@ subroutine cakg2d(optioz, result, modele, depla, theta,&
     parameter   (nbinmx=50,nboumx=1)
     character(len=8) :: lpain(nbinmx), lpaout(nboumx)
     character(len=24) :: lchin(nbinmx), lchout(nboumx)
-!
     integer :: i, ibid, ific, inorma, init, ifm, niv, jnor, jbasfo
     integer :: iadrma, iadrff, icoode, iadrco, iadrno
     integer :: lobj2, ndimte, nunoff, ndim, nchin, ier, ixfem, jfond, numfon
-    integer :: iret, livi(nbmxpa)
+    integer :: iret, livi(nbmxpa),nbchar
     real(kind=8) :: fic(5), rcmp(4), livr(nbmxpa), girwin
     integer :: mxstac
     complex(kind=8) :: cbid, livc(nbmxpa)
-    logical :: fonc, epsi
+    logical :: lfonc
     parameter   (mxstac=1000)
     character(len=2) :: codret
     character(len=8) :: noma, fond, licmp(4), typmo, fiss, mosain
     character(len=8) :: k8bid
     character(len=16) :: option, optio2, valk
-    character(len=19) :: cf1d2d, chpres, chrota, chpesa, chvolu, cf2d3d, chepsi
+    character(len=19) :: ch1d2d, chpres, chrota, chpesa, chvolu, ch2d3d, chepsi
     character(len=19) :: chvref, chvarc
     character(len=19) :: basefo
     character(len=19) :: basloc, pintto, cnseto, heavto, loncha, lnno, ltno
@@ -131,8 +130,9 @@ subroutine cakg2d(optioz, result, modele, depla, theta,&
 !
 !     VERIF QUE LES TABLEAUX LOCAUX DYNAMIQUES NE SONT PAS TROP GRANDS
 !     (VOIR CRS 1404)
-    call assert(nchar.le.mxstac)
 !
+    call lisnnb(lischa,nbchar)
+    call assert(nbchar.le.mxstac)
     call infniv(ifm, niv)
     option = optioz
     if (optioz .eq. 'CALC_K_X') option = 'CALC_K_G'
@@ -160,16 +160,16 @@ subroutine cakg2d(optioz, result, modele, depla, theta,&
 ! - TRAITEMENT DES CHARGES
 !
     chvolu = '&&CAKG2D.VOLU'
-    cf1d2d = '&&CAKG2D.1D2D'
-    cf2d3d = '&&CAKG2D.2D3D'
+    ch1d2d = '&&CAKG2D.1D2D'
+    ch2d3d = '&&CAKG2D.2D3D'
     chpres = '&&CAKG2D.PRES'
     chepsi = '&&CAKG2D.EPSI'
     chpesa = '&&CAKG2D.PESA'
     chrota = '&&CAKG2D.ROTA'
-    call gcharg(modele, nchar, lchar, chvolu, cf1d2d,&
-                cf2d3d, chpres, chepsi, chpesa, chrota,&
-                fonc, epsi, time, iord)
-    if (fonc) then
+    call gcharg(modele, lischa, chvolu, ch1d2d, ch2d3d,&
+                chpres, chepsi, chpesa, chrota, lfonc,&
+                time, iord)
+    if (lfonc) then
         pavolu = 'PFFVOLU'
         pa1d2d = 'PFF1D2D'
         papres = 'PPRESSF'
@@ -318,7 +318,7 @@ subroutine cakg2d(optioz, result, modele, depla, theta,&
     lpain(7) = pavolu(1:8)
     lchin(7) = chvolu
     lpain(8) = pa1d2d(1:8)
-    lchin(8) = cf1d2d
+    lchin(8) = ch1d2d
     lpain(9) = papres(1:8)
     lchin(9) = chpres
     lpain(10) = 'PPESANR'
@@ -395,7 +395,7 @@ subroutine cakg2d(optioz, result, modele, depla, theta,&
 !
     do 20 i = 1, 5
         zr(ific+i-1) = fic(i)
-20  end do
+20  continue
 !
     if (typmo(1:4) .eq. 'AXIS') then
         do 21 i = 1, 5
@@ -442,8 +442,8 @@ subroutine cakg2d(optioz, result, modele, depla, theta,&
 !
     call detrsd('CHAMP_GD', chtime)
     call detrsd('CHAMP_GD', chvolu)
-    call detrsd('CHAMP_GD', cf1d2d)
-    call detrsd('CHAMP_GD', cf2d3d)
+    call detrsd('CHAMP_GD', ch1d2d)
+    call detrsd('CHAMP_GD', ch2d3d)
     call detrsd('CHAMP_GD', chpres)
     call detrsd('CHAMP_GD', chepsi)
     call detrsd('CHAMP_GD', chpesa)

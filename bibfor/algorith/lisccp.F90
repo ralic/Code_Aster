@@ -43,11 +43,10 @@ subroutine lisccp(phenom, lischa)
 ! IN  PHENOM : TYPE DE PHENOMENE (MECANIQUE, THERMIQUE, ACOUSTIQUE)
 ! IN  LISCHA : SD LISTE DES CHARGES
 !
-!
-!
+! ----------------------------------------------------------------------
 !
     integer :: ichar, nbchar
-    integer :: ibid, iret, codcha
+    integer :: ibid, iret, genrec
     character(len=8) :: phecha, charge
     logical :: lok
     logical :: lveac, lveag, lveas
@@ -56,22 +55,22 @@ subroutine lisccp(phenom, lischa)
 !
     call jemarq()
 !
-! --- NOMBRE DE CHARGES
+! - NOMBRE DE CHARGES
 !
     call lisnnb(lischa, nbchar)
     if (nbchar .eq. 0) goto 999
 !
-! --- BOUCLE SUR LES CHARGES
+! - BOUCLE SUR LES CHARGES
 !
     do 10 ichar = 1, nbchar
         lok = .false.
 !
 ! ----- CODE DU GENRE DE LA CHARGE
 !
-        call lislco(lischa, ichar, codcha)
-        lveac = lisico('VECT_ASSE_CHAR',codcha)
-        lveag = lisico('VECT_ASSE_GENE',codcha)
-        lveas = lisico('VECT_ASSE' ,codcha)
+        call lislco(lischa, ichar, genrec)
+        lveac = lisico('VECT_ASSE_CHAR',genrec)
+        lveag = lisico('VECT_ASSE_GENE',genrec)
+        lveas = lisico('VECT_ASSE' ,genrec)
 !
 ! ----- PHENOMENE DE LA CHARGE
 !
@@ -103,9 +102,9 @@ subroutine lisccp(phenom, lischa)
         if (.not.lok) then
             call u2mesk('F', 'CHARGES5_4', 1, charge)
         endif
-10  end do
+10  continue
 !
-999  continue
+999 continue
 !
     call jedema()
 end subroutine

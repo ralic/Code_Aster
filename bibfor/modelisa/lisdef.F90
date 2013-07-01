@@ -16,8 +16,8 @@ subroutine lisdef(oper, optkz, opti, valkz, vali)
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-!
 ! aslint: disable=W1501
+!
     implicit      none
 #include "jeveux.h"
 #include "asterc/gettco.h"
@@ -34,7 +34,7 @@ subroutine lisdef(oper, optkz, opti, valkz, vali)
 #include "asterfort/wkvect.h"
     character(len=*) :: valkz, optkz
     character(len=4) :: oper
-    integer :: vali, opti
+    integer :: vali(2), opti
 !
 ! ----------------------------------------------------------------------
 !
@@ -48,86 +48,106 @@ subroutine lisdef(oper, optkz, opti, valkz, vali)
 !
 ! IN  OPER   : TYPE DE DEMANDE
 !              'IDGE' - IDENTIFICATION DES GENRES D'UNE CHARGE
+!              'IDMC' - IDENTIFICATION DES MOTS-CLEFS D'UNE CHARGE
+!              'TYPC' - RETOURNE LE TYPE DE LA CHARGE (REEL, COMP, FONC)
 !              'OBJE' - NOM DE L'OBJET DEFINI DANS AFFE_CHAR_*
 !                       (EN GENERAL, C'EST UNE CARTE)
-!              'TYPC' - RETOURNE LE TYPE DE LA CHARGE (REEL, COMP, FONC)
-!              'POEC' - POSITION DANS L'ENTIER CODE
+!              'POSG' - POSITION DANS L'ENTIER CODE POUR UN GENRE DONNE
+!              'POSM' - POSITION DANS L'ENTIER CODE POUR UN MOT-CLEF DONNE
+!              'CART' - NOM DE LA CARTE POUR UN GENRE DONNE
 !              'OPTI' - NOM DE L'OPTION DE CALCUL
 !              'PARA' - NOM DU PARAMETRE POUR LE CALCUL
 !              'IDNS' - LISTE DES INDXCH DES CHARGES
 !              'LIGC' - RETOURNE LE TYPE DU LIGREL DE CALCUL
-!              'MOTC' - RETOURNE L'INDXCH DU MOT-CLEF DONNE
+!              'MOTC' - RETOURNE LE MOT-CLEF DE L'INDEX DONNE
+!              'GENR' - RETOURNE LE GENRE DE LA POSITION DANS L'ENTIER
+!                       CODE DONNE
 !              'LISG' - LISTE DES GENRES DISPONIBLES
 ! IN  OPTI   : OPTION (ENTIER)
 !              'IDGE' - INUTILISE
+!              'IDMC' - INUTILISE
 !              'OBJE' - INDEX DE LA CHARGE
 !              'TYPC' - CODE (ENTIER CODE) CONTENANT LES GENRES
-!              'POEC' - INUTILISE
+!              'POSG' - INUTILISE
+!              'POSM' - INUTILISE
+!              'CART' - INUTILISE
 !              'OPTI' - INDEX DE LA CHARGE
 !              'PARA' - INDEX DE LA CHARGE
 !              'IDNS' - POSITION DANS L'ENTIER CODE
 !              'LIGC' - INDEX DE LA CHARGE
 !              'MOTC' - INUTILISE
+!              'GENR' - POSITION DANS L'ENTIER CODE
 !              'LISG' - INUTILISE
 ! IN  OPTK   : OPTION (CHAINE)
 !              'IDGE' - PREFIXE DE L'OBJET
+!              'IDMC' - PREFIXE DE L'OBJET
 !              'OBJE' - PREFIXE DE L'OBJET
 !              'TYPC' - PREFIXE DE L'OBJET
-!              'POEC' - GENRE DE LA CHARGE
+!              'POSG' - GENRE DE LA CHARGE
+!              'POSM' - MOT-CLEF
+!              'CART' - GENRE DE LA CHARGE
 !              'OPTI' - TYPE DE LA CHARGE (REEL/COMP/FONC)
 !              'PARA' - TYPE DE LA CHARGE (REEL/COMP/FONC)
 !              'IDNS' - NOM DE L'OBJET JEVEUX A CREER
 !              'LIGC' - INUTILISE
 !              'MOTC' - MOT-CLEF A REPERER
+!              'GENR' - INUTILISE
 !              'LISG' - NOM DE L'OBJET JEVEUX A CREER
 ! OUT VALI   : REPONSE (ENTIER)
 !              'IDGE' - CODE (ENTIER CODE) CONTENANT LES GENRES
-!              'OBJE' - 1 SI L'OBJET UNE CARTE
+!              'IDMC' - CODE (ENTIER CODE) CONTENANT LES MOTS-CLEFS
+!              'OBJE' - 1 SI L'OBJET EST UNE CARTE
 !              'TYPC' - INUTILISE
-!              'POEC' - POSITION DANS L'ENTIER CODE
+!              'POSG' - POSITION DANS L'ENTIER CODE
+!              'POSM' - POSITION DANS L'ENTIER CODE
+!              'CART' - 1 SI L'OBJET EST UNE CARTE, 0 SINON
 !              'OPTI' - INUTILISE
 !              'PARA' - INUTILISE
 !              'IDNS' - NOMBRE DE CHARGES
 !              'LIGC' - INUTILISE
 !              'MOTC' - INDXCH DE LA CHARGE
+!              'GENR' - INUTILISE
 !              'LISG' - NOMBRE DE GENRES DISPONIBLES
 ! OUT VALK   : REPONSE (CHAINE)
 !              'IDGE' - INUTILISE
+!              'IDMC' - INUTILISE
 !              'OBJE' - NOM DE L'OBJET
 !              'TYPC' - TYPE DE LA CHARGE
 !                     'REEL'    - CHARGE CONSTANTE REELLE
 !                     'COMP'    - CHARGE CONSTANTE COMPLEXE
 !                     'FONC_F0' - CHARGE FONCTION QUELCONQUE
 !                     'FONC_FT' - CHARGE FONCTION DU TEMPS
-!              'POEC' - INUTILISE
+!              'POSG' - INUTILISE
+!              'POSM' - INUTILISE
+!              'CART' - NOM DE LA CARTE DE l'OBJET
 !              'OPTI' - NOM DE L'OPTION DE CALCUL
 !              'PARA' - NOM DU PARAMETRE POUR LE CALCUL
 !              'IDNS' - INUTILISE
 !              'LIGC' - TYPE DU LIGREL DE CALCUL: LIGRCH OU LIGRMO
 !              'MOTC' - INUTILISE
+!              'GENR' - NOM DU GENRE
 !              'LISG' - INUTILISE
 !
-!
-!
+! ----------------------------------------------------------------------
 !
     integer :: nbtyth
     parameter   (nbtyth = 28)
     character(len=6) :: nomob(nbtyth)
     character(len=24) :: motcl(nbtyth)
     character(len=24) :: genre(nbtyth)
-    integer :: indcod(nbtyth)
+    integer :: gencod(nbtyth), mcfcod(nbtyth)
     character(len=16) :: optiof(nbtyth), optior(nbtyth), optioc(nbtyth)
     character(len=8) :: paraf(nbtyth), parar(nbtyth), parac(nbtyth)
     character(len=6) :: typlig(nbtyth)
 !
-    integer :: indxch, iret, codcha, ibid, iposit, nbch, i, itypob
+    integer :: indxch, iret, genrec, ibid, iposit, nbch, i, itypob
     character(len=16) :: option, typeco
     character(len=24) :: typcha, gencha, nomobj, parcha, genold, motcle
     character(len=8) :: charge, typech, lpain, nomgd
-    integer :: tabcod(30), idd, index2, iexi
+    integer :: tabcod(30), tabcox(60), idd, index2, iexi, motclc(2)
     character(len=19) :: carte, chamno
     character(len=24) :: liscns
-    character(len=6) :: ligcal
+    character(len=6) :: ligcal, nomcar
     integer :: jlisci, jlisck
     logical :: lfirst, ldoub
     logical :: lveas, lveac, lveag
@@ -149,7 +169,6 @@ subroutine lisdef(oper, optkz, opti, valkz, vali)
      &     '__VEAS'          ,'__VEAG'          /
 !
 ! --- MOT_CLEF DEFINISSANT LE CHARGEMENT DANS AFFE_CHAR_*
-! --- (SAUF DIRICHLET)
 !
     data motcl /&
      &     'DIRI_DUAL'       ,'DIRI_ELIM'       ,&
@@ -158,10 +177,26 @@ subroutine lisdef(oper, optkz, opti, valkz, vali)
      &     'IMPE_FACE'       ,'EVOL_CHAR'       ,'PESANTEUR'       ,&
      &     'ROTATION'        ,'RELA_CINE_BP'    ,'FORCE_ELEC'      ,&
      &     'INTE_ELEC'       ,'ONDE_FLUI'       ,'ONDE_PLANE'      ,&
-     &     'VECT_ASSE'       ,'FORCE_CONTOUR'   ,'FORCE_INTERNE#3D',&
+     &     'VECT_ASSE_CHAR'  ,'FORCE_CONTOUR'   ,'FORCE_INTERNE#3D',&
      &     'FORCE_INTERNE#2D','FORCE_ARETE'     ,'FORCE_FACE'      ,&
      &     'FORCE_POUTRE'    ,'FORCE_COQUE#3D'  ,'FORCE_COQUE#2D'  ,&
      &     'VECT_ASSE'       ,'VECT_ASSE_GENE'  /
+!
+! --- POSITION DANS L'ENTIER CODE POUR LE MOT_CLEF DE LA CHARGE
+!
+    data mcfcod /&
+     &     01                ,02                ,&
+     &     03                ,04                ,05                ,&
+     &     06                ,07                ,08                ,&
+     &     09                ,10                ,11                ,&
+     &     12                ,13                ,14                ,&
+     &     15                ,16                ,17                ,&
+     &     18                ,19                ,20                ,&
+     &     21                ,22                ,23                ,&
+     &     24                ,25                ,26                ,&
+     &     27                ,28                /
+!
+! --- GENRE DE LA CHARGE
 !
     data genre /&
      &     'DIRI_DUAL'       ,'DIRI_ELIM'       ,&
@@ -175,6 +210,20 @@ subroutine lisdef(oper, optkz, opti, valkz, vali)
      &     'NEUM_MECA'       ,'NEUM_MECA'       ,'NEUM_MECA'       ,&
      &     'VECT_ASSE'       ,'VECT_ASSE_GENE'  /
 !
+! --- POSITION DANS L'ENTIER CODE POUR LE GENRE DE LA CHARGE
+!
+    data gencod /&
+     &     02                ,01                ,&
+     &     03                ,03                ,05                ,&
+     &     03                ,03                ,06                ,&
+     &     07                ,08                ,03                ,&
+     &     03                ,09                ,14                ,&
+     &     10                ,11                ,12                ,&
+     &     13                ,03                ,03                ,&
+     &     03                ,03                ,03                ,&
+     &     03                ,03                ,03                ,&
+     &     04                ,15                /
+!
     data typlig /&
      &     'LIGRCH'          ,'LIGRCH'          ,&
      &     'LIGRCH'          ,'LIGRMO'          ,'LIGRMO'          ,&
@@ -187,17 +236,6 @@ subroutine lisdef(oper, optkz, opti, valkz, vali)
      &     'LIGRMO'          ,'LIGRMO'          ,'LIGRMO'          ,&
      &     ' '               ,' '               /
 !
-    data indcod /&
-     &     02                ,01                ,&
-     &     03                ,03                ,05                ,&
-     &     03                ,03                ,06                ,&
-     &     07                ,08                ,03                ,&
-     &     03                ,09                ,14                ,&
-     &     10                ,11                ,12                ,&
-     &     13                ,03                ,03                ,&
-     &     03                ,03                ,03                ,&
-     &     03                ,03                ,03                ,&
-     &     04                ,15                /
 !
 ! --- NOM DE L'OPTION - CAS REEL
 !
@@ -287,9 +325,11 @@ subroutine lisdef(oper, optkz, opti, valkz, vali)
 !
     call jemarq()
 ! ----------------------------------------------------------------------
+! --- IDENTIFICATION DES GENRES D'UNE CHARGE
+! ----------------------------------------------------------------------
     if (oper .eq. 'IDGE') then
-        codcha = 0
-        call isdeco(codcha, tabcod, 30)
+        genrec = 0
+        call isdeco(genrec, tabcod, 30)
         prefob = optkz
         charge = prefob(1:8)
 !
@@ -298,120 +338,180 @@ subroutine lisdef(oper, optkz, opti, valkz, vali)
         do 10 indxch = 1, nbtyth
             nomobj = nomob(indxch)
             iposit = 0
-            if (nomobj(1:2) .eq. '__') then
-                if (nomobj .eq. '__ELIM') then
-                    call dismoi('C', 'TYPE_CHARGE', charge, 'CHARGE', ibid,&
-                                typcha, iret)
-                    if ((typcha(1:4).eq.'CIME') .or. (typcha(1:4) .eq.'CITH') .or.&
-                        (typcha(1:4).eq.'CIAC')) then
-                        iposit = indcod(indxch)
-                    endif
-                else if (nomobj.eq.'__EVOC') then
-                    nomobj = charge(1:8)//'.CHME.EVOL.CHAR'
-                    call jeexin(nomobj, iret)
-                    if (iret .ne. 0) iposit = indcod(indxch)
-                else if (nomobj.eq.'__VEAS') then
-                    chamno = charge
-                    call jeexin(chamno(1:19)//'.VALE', iret)
-                    if (iret .ne. 0) then
-                        call gettco(charge, typeco)
-                        if (typeco .eq. 'CHAM_NO_SDASTER') iposit = indcod( indxch)
-                    endif
-                else if (nomobj.eq.'__VEAG') then
-                    chamno = charge
-                    call jeexin(chamno(1:19)//'.VALE', iret)
-                    if (iret .ne. 0) then
-                        call gettco(charge, typeco)
-                        if (typeco .eq. 'VECT_ASSE_GENE') iposit = indcod( indxch)
-                    endif
-                else
-                    call assert(.false.)
+            if (nomobj .eq. '__ELIM') then
+!
+! --------- CHARGEMENT CINEMATIQUE (AFFE_CHAR_CINE)
+!
+                call dismoi('C', 'TYPE_CHARGE', charge, 'CHARGE', ibid,&
+                            typcha, iret)
+                if ((typcha(1:4).eq.'CIME') .or. (typcha(1:4) .eq.'CITH') .or.&
+                    (typcha(1:4).eq.'CIAC')) then
+                    iposit = gencod(indxch)
                 endif
+            else if (nomobj.eq.'__EVOC') then
+!
+! --------- CHARGEMENT EVOL_CHAR
+!
+                nomobj = charge(1:8)//'.CHME.EVOL.CHAR'
+                call jeexin(nomobj, iret)
+                if (iret .ne. 0) iposit = gencod(indxch)
+            else if (nomobj.eq.'__VEAS') then
+!
+! --------- CHARGEMENT VECT_ASSE
+!
+                chamno = charge
+                call jeexin(chamno(1:19)//'.VALE', iret)
+                if (iret .ne. 0) then
+                    call gettco(charge, typeco)
+                    if (typeco .eq. 'CHAM_NO_SDASTER') iposit = gencod( indxch)
+                endif
+            else if (nomobj.eq.'__VEAG') then
+!
+! --------- CHARGEMENT VECT_ASSE_GENE
+!
+                chamno = charge
+                call jeexin(chamno(1:19)//'.VALE', iret)
+                if (iret .ne. 0) then
+                    call gettco(charge, typeco)
+                    if (typeco .eq. 'VECT_ASSE_GENE') iposit = gencod( indxch)
+                endif
+            else if (nomobj.eq.'.VEASS') then
+!
+! --------- CHARGEMENT VECT_ASSE_CHAR
+!
+                call jeexin(prefob(1:13)//nomobj, iexi)
+                if (iexi .gt. 0) iposit = gencod(indxch)
             else
+!
+! --------- CHARGEMENTS DEFINIS PAR UNE CARTE
+!
                 carte = prefob(1:13)//nomobj
-                call exisd('CARTE', carte, iret)
-                if (iret .eq. 1) then
-                    iposit = indcod(indxch)
-                else
-!             -- CAS .VEAS :
-                    call jeexin(prefob(1:13)//nomobj, iexi)
-                    if (iexi .gt. 0) iposit = indcod(indxch)
-                endif
+                call exisd('CARTE', carte, iexi)
+                if (iexi .eq. 1) iposit = gencod(indxch)
             endif
-            if (iposit .gt. 30) call assert(.false.)
-            if (iposit .ne. 0) tabcod(iposit) = 1
+!
+! ------- CHARGEMENT IDENTIFIE: ACTIVATION DANS LA TABLE D'ENCODAGE
+!
+            if ((iposit.ge.1).and.(iposit.le.30)) then
+                tabcod(iposit) = 1
+            endif
 10      continue
 !
 ! ----- CODAGE DE L'ENTIER
 !
-        call iscode(tabcod, codcha, 30)
-        vali = codcha
+        call iscode(tabcod, genrec, 30)
+        vali(1) = genrec
 ! ----------------------------------------------------------------------
-    else if (oper.eq.'OBJE') then
-        indxch = opti
+! --- IDENTIFICATION DES MOTS-CLEFS D'UNE CHARGE
+! ----------------------------------------------------------------------
+    else if (oper.eq.'IDMC') then
+        motclc = 0
+        call isdeco(motclc, tabcox, 60)
         prefob = optkz
-        itypob = -1
-        nomobj = ' '
-        if ((indxch.gt.0) .and. (indxch.le.nbtyth)) then
-            nomobj = prefob(1:13)//nomob(indxch)
-            if (nomob(indxch)(1:2) .eq. '__') then
-                if (genre(indxch) .eq. 'EVOL_CHAR') then
-                    itypob = 0
-                    nomobj = prefob(1:13)//'.EVOL.CHAR'
-                else if (genre(indxch).eq.'DIRI_ELIM') then
-                    itypob = 0
-                    charge = prefob(1:8)
-                    nomobj = charge(1:8)//'.TYPE'
-                else if (genre(indxch).eq.'VECT_ASSE') then
-                    itypob = 0
-                    chamno = prefob(1:8)
-                    nomobj = chamno(1:19)//'.VALE'
-                else if (genre(indxch).eq.'VECT_ASSE_GENE') then
-                    itypob = 0
-                    chamno = prefob(1:8)
-                    nomobj = chamno(1:19)//'.VALE'
-                else
-                    call assert(.false.)
+        charge = prefob(1:8)
+!
+! ----- REPERAGE DES CHARGEMENTS
+!
+        do 11 indxch = 1, nbtyth
+            nomobj = nomob(indxch)
+            iposit = 0
+            if (nomobj .eq. '__ELIM') then
+!
+! --------- CHARGEMENT CINEMATIQUE (AFFE_CHAR_CINE)
+!
+                call dismoi('C', 'TYPE_CHARGE', charge, 'CHARGE', ibid,&
+                            typcha, iret)
+                if ((typcha(1:4).eq.'CIME') .or. (typcha(1:4) .eq.'CITH') .or.&
+                    (typcha(1:4).eq.'CIAC')) then
+                    iposit = mcfcod(indxch)
                 endif
+            else if (nomobj.eq.'__EVOC') then
+!
+! --------- CHARGEMENT EVOL_CHAR
+!
+                nomobj = charge(1:8)//'.CHME.EVOL.CHAR'
+                call jeexin(nomobj, iret)
+                if (iret .ne. 0) iposit = mcfcod(indxch)
+            else if (nomobj.eq.'__VEAS') then
+!
+! --------- CHARGEMENT VECT_ASSE
+!
+                chamno = charge
+                call jeexin(chamno(1:19)//'.VALE', iret)
+                if (iret .ne. 0) then
+                    call gettco(charge, typeco)
+                    if (typeco .eq. 'CHAM_NO_SDASTER') iposit = mcfcod( indxch)
+                endif
+            else if (nomobj.eq.'__VEAG') then
+!
+! --------- CHARGEMENT VECT_ASSE_GENE
+!
+                chamno = charge
+                call jeexin(chamno(1:19)//'.VALE', iret)
+                if (iret .ne. 0) then
+                    call gettco(charge, typeco)
+                    if (typeco .eq. 'VECT_ASSE_GENE') iposit = mcfcod( indxch)
+                endif
+            else if (nomobj.eq.'.VEASS') then
+!
+! --------- CHARGEMENT VECT_ASSE_CHAR
+!
+                call jeexin(prefob(1:13)//nomobj, iexi)
+                if (iexi .gt. 0) iposit = mcfcod(indxch)
             else
-                carte = prefob(1:13)//nomob(indxch)
-                itypob = 1
-                nomobj = carte
+!
+! --------- CHARGEMENTS DEFINIS PAR UNE CARTE
+!
+                carte = prefob(1:13)//nomobj
+                call exisd('CARTE', carte, iexi)
+                if (iexi .eq. 1) iposit = mcfcod(indxch)
             endif
-        else
-            call assert(.false.)
-        endif
-        call assert(itypob.ge.0)
-        valkz = nomobj
-        vali = itypob
+!
+! ------- CHARGEMENT IDENTIFIE: ACTIVATION DANS LA TABLE D'ENCODAGE
+!
+            if ((iposit.ge.1).and.(iposit.le.60)) then
+                tabcox(iposit) = 1
+            endif
+11      continue
+!
+! ----- CODAGE DE L'ENTIER
+!
+        call iscode(tabcox, motclc, 60)
+        vali(1) = motclc(1)
+        vali(2) = motclc(2)
+! ----------------------------------------------------------------------
+! --- RETOURNE LE TYPE DE LA CHARGE (REEL, COMP, FONC)
 ! ----------------------------------------------------------------------
     else if (oper.eq.'TYPC') then
         prefob = optkz
         typech = ' '
-        codcha = opti
         lveas = .false.
         lveac = .false.
         lveag = .false.
-        call isdeco(codcha, tabcod, 30)
+!
+! ----- DECODAGE DES GENRES
+!
+        genrec = opti
+        call isdeco(genrec, tabcod, 30)
 !
 ! ----- DETECTION VECT_ASSE_CHAR
 !
         do 20 indxch = 1, nbtyth
-            if (genre(indxch) .eq. 'VECT_ASSE_CHAR') iposit = indcod( indxch)
+            if (genre(indxch) .eq. 'VECT_ASSE_CHAR') iposit = gencod( indxch)
 20      continue
         if (tabcod(iposit) .eq. 1) lveac = .true.
 !
 ! ----- DETECTION VECT_ASSE
 !
         do 21 indxch = 1, nbtyth
-            if (genre(indxch) .eq. 'VECT_ASSE') iposit = indcod(indxch)
+            if (genre(indxch) .eq. 'VECT_ASSE') iposit = gencod(indxch)
 21      continue
         if (tabcod(iposit) .eq. 1) lveas = .true.
 !
 ! ----- DETECTION VECT_ASSE_GENE
 !
         do 22 indxch = 1, nbtyth
-            if (genre(indxch) .eq. 'VECT_ASSE_GENE') iposit = indcod( indxch)
+            if (genre(indxch) .eq. 'VECT_ASSE_GENE') iposit = gencod( indxch)
 22      continue
         if (tabcod(iposit) .eq. 1) lveag = .true.
 !
@@ -449,39 +549,90 @@ subroutine lisdef(oper, optkz, opti, valkz, vali)
             lfirst = .false.
             do 103 indxch = 1, nbtyth
                 carte = prefob(1:13)//nomob(indxch)
-                if (nomob(indxch) .ne. ' ') then
-                    call exisd('CARTE', carte, iret)
-                    if (iret .eq. 1) then
-                        call dismoi('F', 'PARA_INST', carte, 'CARTE', ibid,&
-                                    parcha, iret)
-!
-! ----- PROTECTION: POUR UNE CHARGE, TOUT DOIT ETRE DU MEME TYPE
-!
-                        if (lfirst) then
-                            if ((parcha.eq.'OUI') .and. ( typech.eq.'FONC_F0')) call assert(&
-                                                                                .false.)
-                            if ((parcha.eq.'NON') .and. ( typech.eq.'FONC_FT')) call assert(&
-                                                                                .false.)
-                        endif
-                        if (parcha(1:3) .eq. 'OUI') then
-                            typech = 'FONC_FT'
-                            lfirst = .true.
-                        endif
-                    endif
+                call exisd('CARTE', carte, iexi)
+                if (iexi .eq. 1) then
+                    call dismoi('F', 'PARA_INST', carte, 'CARTE', ibid,&
+                                parcha, iret)
+                    if (parcha .eq. 'OUI') typech = 'FONC_FT'
                 endif
 103          continue
         endif
-        call assert(typech.ne.' ')
         valkz = typech
 ! ----------------------------------------------------------------------
-    else if (oper.eq.'POEC') then
+! --- NOM DE L'OBJET DEFINI DANS AFFE_CHAR_*
+! ----------------------------------------------------------------------
+    else if (oper.eq.'OBJE') then
+        indxch = opti
+        prefob = optkz
+        itypob = -1
+        nomobj = ' '
+        if ((indxch.gt.0) .and. (indxch.le.nbtyth)) then
+            nomobj = prefob(1:13)//nomob(indxch)
+            if (nomob(indxch)(1:2) .eq. '__') then
+                if (genre(indxch) .eq. 'EVOL_CHAR') then
+                    itypob = 0
+                    nomobj = prefob(1:13)//'.EVOL.CHAR'
+                else if (genre(indxch).eq.'DIRI_ELIM') then
+                    itypob = 0
+                    charge = prefob(1:8)
+                    nomobj = charge(1:8)//'.TYPE'
+                else if (genre(indxch).eq.'VECT_ASSE') then
+                    itypob = 0
+                    chamno = prefob(1:8)
+                    nomobj = chamno(1:19)//'.VALE'
+                else if (genre(indxch).eq.'VECT_ASSE_GENE') then
+                    itypob = 0
+                    chamno = prefob(1:8)
+                    nomobj = chamno(1:19)//'.VALE'
+                else
+                    call assert(.false.)
+                endif
+            else
+                carte = prefob(1:13)//nomob(indxch)
+                itypob = 1
+                nomobj = carte
+            endif
+        else
+            call assert(.false.)
+        endif
+        call assert(itypob.ge.0)
+        valkz = nomobj
+        vali(1) = itypob
+! ----------------------------------------------------------------------
+! --- POSITION DANS L'ENTIER CODE POUR UN GENRE DONNE
+! ----------------------------------------------------------------------
+    else if (oper.eq.'POSG') then
         gencha = optkz
         iposit = 0
         do 15 indxch = 1, nbtyth
-            if (genre(indxch) .eq. gencha) iposit = indcod(indxch)
+            if (genre(indxch) .eq. gencha) iposit = gencod(indxch)
 15      continue
         if ((iposit.le.0) .or. (iposit.gt.30)) call assert(.false.)
-        vali = iposit
+        vali(1) = iposit
+! ----------------------------------------------------------------------
+! --- POSITION DANS L'ENTIER CODE POUR UN MOT-CLEF DONNE
+! ----------------------------------------------------------------------
+    else if (oper.eq.'POSM') then
+        motcle = optkz
+        iposit = 0
+        do 17 indxch = 1, nbtyth
+            if (motcl(indxch) .eq. motcle) iposit = mcfcod(indxch)
+17      continue
+        if ((iposit.le.0) .or. (iposit.gt.60)) call assert(.false.)
+        vali(1) = iposit
+! ----------------------------------------------------------------------
+! --- NOM DE LA CARTE A PARTIR DU MOT-CLEF
+! ----------------------------------------------------------------------
+    else if (oper.eq.'CART') then
+        motcle = optkz
+        nomcar = ' '
+        itypob = 1
+        do 16 indxch = 1, nbtyth
+            if (motcl(indxch) .eq. motcle) nomcar = nomob(indxch)
+16      continue
+        if (nomcar(1:2) .eq. '__') itypob = 0
+        valkz = nomcar
+        vali(1) = itypob
 ! ----------------------------------------------------------------------
     else if (oper.eq.'OPTI') then
         indxch = opti
@@ -521,6 +672,23 @@ subroutine lisdef(oper, optkz, opti, valkz, vali)
         endif
         valkz = lpain
 ! ----------------------------------------------------------------------
+! --- GENRE A PARTIR DE LA POSITION DANS L'ENTIER CODE
+! ----------------------------------------------------------------------
+    else if (oper.eq.'GENR') then
+        iposit = opti
+        do 80 indxch = 1, nbtyth
+            if (iposit .eq. gencod(indxch)) gencha = genre(indxch)
+80      continue
+        valkz = gencha
+! ----------------------------------------------------------------------
+! --- MOT-CLEF A PARTIR DE LA POSITION DANS L'ENTIER CODE
+! ----------------------------------------------------------------------
+    else if (oper.eq.'MOTC') then
+        indxch = opti
+        motcle = motcl(indxch)
+        valkz  = motcle
+!
+! ----------------------------------------------------------------------
     else if (oper.eq.'IDNS') then
         liscns = optkz
         iposit = opti
@@ -528,7 +696,7 @@ subroutine lisdef(oper, optkz, opti, valkz, vali)
 ! ----- GENRE DU CHARGEMENT
 !
         do 40 indxch = 1, nbtyth
-            if (iposit .eq. indcod(indxch)) gencha = genre(indxch)
+            if (iposit .eq. gencod(indxch)) gencha = genre(indxch)
 40      continue
 !
 ! ----- NOMBRE DE CHARGEMENTS DE CE GENRE
@@ -553,7 +721,7 @@ subroutine lisdef(oper, optkz, opti, valkz, vali)
             endif
 50      continue
         call assert(i.eq.nbch)
-        vali = nbch
+        vali(1) = nbch
 ! ----------------------------------------------------------------------
     else if (oper.eq.'LIGC') then
         indxch = opti
@@ -564,11 +732,6 @@ subroutine lisdef(oper, optkz, opti, valkz, vali)
             call assert(.false.)
         endif
         valkz = ligcal
-! ----------------------------------------------------------------------
-    else if (oper.eq.'MOTC') then
-        indxch = opti
-        motcle = motcl(indxch)
-        valkz = motcle
 ! ----------------------------------------------------------------------
     else if (oper.eq.'LISG') then
         liscns = optkz
@@ -597,7 +760,7 @@ subroutine lisdef(oper, optkz, opti, valkz, vali)
             endif
 70      continue
         call assert(idd.le.nbtyth)
-        vali = idd
+        vali(1) = idd
 !
     else
         call assert(.false.)
