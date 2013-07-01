@@ -70,51 +70,49 @@ subroutine jerazo(nomlu, ni, i1)
     call jjvern(noml32, icre, iret)
     inat = iret
     inatb = iret
-    goto ( 1010 , 1020 , 1030 ) ,iret+1
-! ----     IRET = 0
-1010  continue
-    call u2mesk('F', 'JEVEUX_26', 1, noml32(1:24))
-    goto 100
-! ----     IRET = 1
-1020  continue
-    genri = genr( jgenr(iclaos) + idatos )
-    typei = type( jtype(iclaos) + idatos )
-    ltypi = ltyp( jltyp(iclaos) + idatos )
-    if (genri .eq. 'N') then
-        call u2mesk('F', 'JEVEUX1_20', 1, noml32)
-    endif
-    goto 100
-! ----     IRET = 2
-1030  continue
-    call jjallc(iclaco, idatco, 'E', ibacol)
-    ixiadd = iszon ( jiszon + ibacol + idiadd )
-    ixdeso = iszon ( jiszon + ibacol + iddeso )
-    if (noml8 .eq. '$$XATR  ') then
-        ixlono = numatr
-        iblono = iadm ( jiadm(iclaco) + 2*ixlono-1 )
-        genri = genr ( jgenr(iclaco) + ixlono )
-        ltypi = ltyp ( jltyp(iclaco) + ixlono )
-        lonoi = lono ( jlono(iclaco) + ixlono ) * ltypi
-        call jxlocs(zi, genri, ltypi, lonoi, iblono,&
-                    .false., jctab)
-        goto 1000
-    else
-        if (noml8 .ne. '        ') then
-            inat = 3
-            call jjcroc(noml8, icre)
-!            ------ CAS D'UN OBJET DE COLLECTION  ------
-            if (ixiadd .ne. 0) inatb = 3
-        else
-            if (ixiadd .ne. 0) then
-!            ----------- COLLECTION DISPERSEE
-                call u2mesk('F', 'JEVEUX1_21', 1, noml32)
-            endif
+    if ( iret .eq. 0) then
+        call u2mesk('F', 'JEVEUX_26', 1, noml32(1:24))
+        goto 100
+    else if (iret .eq. 1) then
+        genri = genr( jgenr(iclaos) + idatos )
+        typei = type( jtype(iclaos) + idatos )
+        ltypi = ltyp( jltyp(iclaos) + idatos )
+        if (genri .eq. 'N') then
+           call u2mesk('F', 'JEVEUX1_20', 1, noml32)
         endif
-        genri = genr( jgenr(iclaco) + ixdeso )
-        typei = type( jtype(iclaco) + ixdeso )
-        ltypi = ltyp( jltyp(iclaco) + ixdeso )
+        goto 100
+    else if (iret .eq. 2) then
+        call jjallc(iclaco, idatco, 'E', ibacol)
+        ixiadd = iszon ( jiszon + ibacol + idiadd )
+        ixdeso = iszon ( jiszon + ibacol + iddeso )
+        if (noml8 .eq. '$$XATR  ') then
+            ixlono = numatr
+            iblono = iadm ( jiadm(iclaco) + 2*ixlono-1 )
+            genri = genr ( jgenr(iclaco) + ixlono )
+            ltypi = ltyp ( jltyp(iclaco) + ixlono )
+            lonoi = lono ( jlono(iclaco) + ixlono ) * ltypi
+            call jxlocs(zi, genri, ltypi, lonoi, iblono, .false., jctab)
+            goto 1000
+        else
+            if (noml8 .ne. '        ') then
+                inat = 3
+                call jjcroc(noml8, icre)
+!            ------ CAS D'UN OBJET DE COLLECTION  ------
+                if (ixiadd .ne. 0) inatb = 3
+            else
+                if (ixiadd .ne. 0) then
+!            ----------- COLLECTION DISPERSEE
+                   call u2mesk('F', 'JEVEUX1_21', 1, noml32)
+                endif
+            endif
+            genri = genr( jgenr(iclaco) + ixdeso )
+            typei = type( jtype(iclaco) + ixdeso )
+            ltypi = ltyp( jltyp(iclaco) + ixdeso )
+        endif
+    else 
+         call assert (.false.)
     endif
-100  continue
+100 continue
     call jjalty(typei, ltypi, 'E', inatb, jctab)
     if (inat .eq. 3 .and. ixiadd .eq. 0) then
         ixlono = iszon ( jiszon + ibacol + idlono )
@@ -136,42 +134,46 @@ subroutine jerazo(nomlu, ni, i1)
     j1 = 0
     j2 = ni - 1
     if (typei .eq. 'I') then
-        do 20 i = j1, j2
+        do  i = j1, j2
             zi(jini+i) = 0
-20      continue
+        end do
+    else if ( typei .eq. 'S' ) THEN
+        do  i = j1, j2
+             zi4(jini+i) = 0
+        end do
     else if (typei .eq. 'R') then
-        do 30 i = j1, j2
+        do i = j1, j2
             zr(jini+i) = 0.d0
-30      continue
+        end do
     else if (typei .eq. 'C') then
-        do 40 i = j1, j2
+        do i = j1, j2
             zc(jini+i) = (0.d0,0.d0)
-40      continue
+        end do    
     else if (typei .eq. 'L') then
-        do 50 i = j1, j2
+        do i = j1, j2
             zl(jini+i) = .false.
-50      continue
+        end do    
     else if (typei .eq. 'K') then
         if (ltypi .eq. 8) then
-            do 60 i = j1, j2
+            do i = j1, j2
                 zk8(jini+i) = ' '
-60          continue
+            end do
         else if (ltypi .eq. 16) then
-            do 61 i = j1, j2
+            do i = j1, j2
                 zk16(jini+i) = ' '
-61          continue
+            end do
         else if (ltypi .eq. 24) then
-            do 62 i = j1, j2
+            do i = j1, j2
                 zk24(jini+i) = ' '
-62          continue
+            end do
         else if (ltypi .eq. 32) then
-            do 63 i = j1, j2
+            do i = j1, j2
                 zk32(jini+i) = ' '
-63          continue
+            end do
         else if (ltypi .eq. 80) then
-            do 64 i = j1, j2
+            do i = j1, j2
                 zk80(jini+i) = ' '
-64          continue
+            end do
         endif
     endif
 !
