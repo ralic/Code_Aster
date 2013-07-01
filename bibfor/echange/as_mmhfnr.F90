@@ -32,7 +32,7 @@ subroutine as_mmhfnr(fid, maa, fam, n, typent,&
 #if med_int_kind != ast_int_kind
     med_int :: fid4, n4, typen4, typge4, cret4
     med_int :: mdnon4, mdnoi4
-    med_int, ALLOCATABLE :: fam4(:)
+    med_int, allocatable :: fam4(:)
     ast_int :: ic
     mdnont = -1
     mdnoit = -1

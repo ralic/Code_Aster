@@ -31,8 +31,8 @@ interface
         med_int :: stype
         med_int :: nstep
         med_int :: atype
-        character(*) :: aname
-        character(*) :: aunit
+        character(*) :: aname(3)
+        character(*) :: aunit(3)
         med_int :: cret
     end subroutine mmhmii
 end interface

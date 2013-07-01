@@ -51,40 +51,22 @@ subroutine amumpt(option, kmonit, temps, rang, nbproc,&
     logical :: lquali, ldist
 !
 #ifdef _HAVE_MUMPS
-!
+#   include "aster_mumps.h"
     include 'mpif.h'
-    include 'smumps_struc.h'
-    include 'cmumps_struc.h'
-    include 'dmumps_struc.h'
-    include 'zmumps_struc.h'
     include 'jeveux.h'
-    integer :: nmxins
-    parameter (nmxins=5)
-    type (SMUMPS_STRUC) , target :: smps(nmxins)
-    type (CMUMPS_STRUC) , target :: cmps(nmxins)
     type (SMUMPS_STRUC) , pointer :: smpsk
     type (CMUMPS_STRUC) , pointer :: cmpsk
-    type (DMUMPS_STRUC) , target :: dmps(nmxins)
-    type (ZMUMPS_STRUC) , target :: zmps(nmxins)
     type (DMUMPS_STRUC) , pointer :: dmpsk
     type (ZMUMPS_STRUC) , pointer :: zmpsk
     integer :: ifm, niv, ibid, iaux1, iaux2, iaux3, k, i, n, info(100), iret
     integer :: monit(12), ietfin, ietmax, ISIZEMU, execmu
-    character(len=1) :: roucs(nmxins), precs(nmxins)
-    character(len=4) :: etams(nmxins)
     character(len=8) :: k8bid
-    character(len=14) :: nonus(nmxins)
     character(len=16) :: k16bid, nomcmd
-    character(len=19) :: nomats(nmxins), nosols(nmxins), ktemp
+    character(len=19) :: ktemp
     character(len=24) :: KSIZEMU
     character(len=80) :: nvers
     real(kind=8) :: rmonit(18), rinfog(100), rctfin, retfin
     logical :: ldebug, lcmde
-    common /mumpss/ smps
-    common /mumpsc/ cmps
-    common /mumpsd/ dmps
-    common /mumpsz/ zmps
-    common /mumpsh/ nonus,nomats,nosols,etams,roucs,precs
 !
     call jemarq()
     call infniv(ifm, niv)

@@ -18,13 +18,13 @@
 interface
 #include "types/med_types.h"
     subroutine mmhcyr(fid, name, numdt, numit, entype,&
-                      GEOTYPE, cmode, swm, con, cret)
+                      geotype, cmode, swm, con, cret)
         med_int :: fid
         character(*) :: name
         med_int :: numdt
         med_int :: numit
         med_int :: entype
-        med_int :: GEOTYPE
+        med_int :: geotype
         med_int :: cmode
         med_int :: swm
         med_int :: con(*)

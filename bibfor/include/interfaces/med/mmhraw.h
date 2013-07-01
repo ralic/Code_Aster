@@ -17,13 +17,13 @@
 !
 interface
 #include "types/med_types.h"
-    subroutine mmhraw(fid, name, numdt, numit, GEOTYPE,&
+    subroutine mmhraw(fid, name, numdt, numit, geotype,&
                       aname, n, val, cret)
         med_int :: fid
         character(*) :: name
         med_int :: numdt
         med_int :: numit
-        med_int :: GEOTYPE
+        med_int :: geotype
         character(*) :: aname
         med_int :: n
         real(kind=8) :: val(*)

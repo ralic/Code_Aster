@@ -18,14 +18,14 @@
 interface
 #include "types/med_types.h"
     subroutine mmhnme(fid, name, numdt, numit, entype,&
-                      GEOTYPE, datype, cmode, chgt, tsf,&
+                      geotype, datype, cmode, chgt, tsf,&
                       n, cret)
         med_int :: fid
         character(*) :: name
         med_int :: numdt
         med_int :: numit
         med_int :: entype
-        med_int :: GEOTYPE
+        med_int :: geotype
         med_int :: datype
         med_int :: cmode
         med_int :: chgt

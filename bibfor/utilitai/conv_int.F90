@@ -23,7 +23,6 @@ subroutine conv_int(sens, nb, vi_ast, vi_med)
 !           / 'med->ast'
 !     nb : nombre de valeurs dans les tableaux vi_ast et vi_med
 !
-! aslint: disable=W1304
 #   include "types/aster_types.h"
 #   include "types/med_types.h"
 

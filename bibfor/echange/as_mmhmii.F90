@@ -1,5 +1,4 @@
-subroutine as_mmhmii(fid, indice, maa, dim, type,&
-                  desc, cret)
+subroutine as_mmhmii(fid, indice, maa, dim, type, desc, cret)
 ! person_in_charge: nicolas.sellenet at edf.fr
 !
 ! COPYRIGHT (C) 1991 - 2013  EDF R&D                WWW.CODE-ASTER.ORG
@@ -23,9 +22,9 @@ subroutine as_mmhmii(fid, indice, maa, dim, type,&
 #   include "types/med_types.h"
 #   include "med/mmhmii.h"
     ast_int :: fid, dim, dimb, cret, indice, type, typtri, nbseq, typrep
-    character(len=*) :: maa
-    character(len=*) :: desc
-    character(len=80) :: descdt
+    character(len=64) :: maa
+    character(len=200) :: desc
+    character(len=16) :: descdt
     character(len=16) :: nom(3), unit(3)
 #ifdef _DISABLE_MED
     call u2mess('F', 'FERMETUR_2')
@@ -36,6 +35,12 @@ subroutine as_mmhmii(fid, indice, maa, dim, type,&
     med_int :: nbseq4, typre4
     fid4 = fid
     indic4 = indice
+!   -- initialisation des chaines (prudent car appel C ensuite):
+    maa=' '
+    desc=' '
+    descdt=' '
+    nom(:)=' '
+    unit(:)=' '
     call mmhmii(fid4, indic4, maa, dim4, dimb4,&
                 type4, desc, descdt, typtr4, nbseq4,&
                 typre4, nom, unit, cret4)

@@ -82,21 +82,11 @@ subroutine amumpu(option, type, kxmps, usersm, nprec,&
     logical :: lresol
 !
 #ifdef _HAVE_MUMPS
-!
+#   include "aster_mumps.h"
     include 'mpif.h'
-    include 'smumps_struc.h'
-    include 'cmumps_struc.h'
-    include 'dmumps_struc.h'
-    include 'zmumps_struc.h'
     include 'jeveux.h'
-    integer :: nmxins
-    parameter (nmxins=5)
-    type (SMUMPS_STRUC) , target :: smps(nmxins)
-    type (CMUMPS_STRUC) , target :: cmps(nmxins)
     type (SMUMPS_STRUC) , pointer :: smpsk
     type (CMUMPS_STRUC) , pointer :: cmpsk
-    type (DMUMPS_STRUC) , target :: dmps(nmxins)
-    type (ZMUMPS_STRUC) , target :: zmps(nmxins)
     type (DMUMPS_STRUC) , pointer :: dmpsk
     type (ZMUMPS_STRUC) , pointer :: zmpsk
     real(kind=8) :: rval(3), rval1, rval2, rval3, rval1b, rval2b, rval3b, rinf12
@@ -108,22 +98,13 @@ subroutine amumpu(option, type, kxmps, usersm, nprec,&
 !      INTEGER*4     getpid
     integer(kind=4) :: pid, mpicou
     logical :: lpara, lpeak, lpb1
-    character(len=1) :: roucs(nmxins), precs(nmxins)
     character(len=2) :: FSTRING
-    character(len=4) :: etams(nmxins)
     character(len=8) :: k8tab(3)
     character(len=10) :: strpid
-    character(len=14) :: nonus(nmxins)
-    character(len=19) :: nomats(nmxins), nosols(nmxins)
     character(len=24) :: kpiv, valk(2), KSIZEMU
     character(len=50) :: str, buffer
     character(len=80) :: nvers
     character(len=256) :: jnom(2)
-    common /mumpss/ smps
-    common /mumpsc/ cmps
-    common /mumpsd/ dmps
-    common /mumpsz/ zmps
-    common /mumpsh/ nonus,nomats,nosols,etams,roucs,precs
 !
     call jemarq()
 ! --- COMMUNICATEUR MPI DE TRAVAIL

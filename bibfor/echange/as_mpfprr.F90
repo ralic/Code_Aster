@@ -32,7 +32,7 @@ subroutine as_mpfprr(fid, pflval, n, pro, cret)
 
 #if med_int_kind != ast_int_kind
     med_int :: fid4, cret4
-    med_int, ALLOCATABLE :: pflva4(:)
+    med_int, allocatable :: pflva4(:)
     fid4 = fid
     allocate ( pflva4(n) )
     call mpfprr(fid4, pro, pflva4, cret4)

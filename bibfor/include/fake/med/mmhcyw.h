@@ -18,7 +18,7 @@
 interface
 #include "types/med_types.h"
     subroutine mmhcyw(fid, name, numdt, numit, dt,&
-                      entype, GEOTYPE, cmode, swm, n,&
+                      entype, geotype, cmode, swm, n,&
                       con, cret)
         med_int :: fid
         character(*) :: name
@@ -26,7 +26,7 @@ interface
         med_int :: numit
         real(kind=8) :: dt
         med_int :: entype
-        med_int :: GEOTYPE
+        med_int :: geotype
         med_int :: cmode
         med_int :: swm
         med_int :: n

@@ -36,14 +36,7 @@ subroutine apsolu(kptsc, lmd, rsolu)
 !----------------------------------------------------------------
 #ifdef _HAVE_PETSC
 !
-# include "finclude/petscsys.h"
-# include "finclude/petscvec.h"
-# include "finclude/petscmat.h"
-# include "finclude/petscksp.h"
-# include "finclude/petscpc.h"
-!     AU PLUS 5 MATRICES PETSC SONT GEREES A LA FOIS
-    integer :: nmxins
-    parameter   (nmxins=5)
+#   include "aster_petsc.h"
 !
 !     VARIABLES LOCALES
     integer :: jnequ, jnequl, jnuglp, jnugl, jprddl, nloc, nglo, rang
@@ -53,13 +46,6 @@ subroutine apsolu(kptsc, lmd, rsolu)
     character(len=19) :: nomat
     complex(kind=8) :: cbid
 !
-!     COMMUN DE SAUVEGARDE DES INSTANCES
-    character(len=19) :: nomats(nmxins), nosols(nmxins)
-    character(len=14) :: nonus(nmxins)
-    Mat :: ap(nmxins)
-    KSP :: kp(nmxins)
-    Vec :: b, x
-    common /spetsc/ ap,kp,b,x,nomats,nosols,nonus
 !----------------------------------------------------------------
 !     Variables PETSc
     PetscInt :: i, neqg, neql, nuglpe, high, low, ierr

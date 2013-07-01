@@ -32,7 +32,7 @@ subroutine as_mmhenw(fid, maa, num, n, typent,&
 #else
 
 #if med_int_kind != ast_int_kind
-    med_int, ALLOCATABLE :: num4(:)
+    med_int, allocatable :: num4(:)
     med_int :: fid4, typen4, typge4, cret4
     med_int :: n4, mdnon4, mdnoi4
     mdnont = -1

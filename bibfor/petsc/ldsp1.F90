@@ -29,20 +29,10 @@ subroutine ldsp1(pc, ierr)
     include 'asterfort/jeveuo.h'
     include 'asterfort/pcmump.h'
 #ifdef _HAVE_PETSC
-!
-# include "finclude/petscsys.h"
-# include "finclude/petscvec.h"
-# include "finclude/petscmat.h"
-# include "finclude/petscksp.h"
-# include "finclude/petscpc.h"
+#   include "aster_petsc.h"
 !----------------------------------------------------------------
 !     VARIABLES LOCALES
     integer :: jrefa, iret
-!     COMMUN POUR LE PRECONDITIONNEUR SIMPLE PRECISION LDLT_SP
-    character(len=19) :: spsomu, spmat, spsolv
-    Vec :: xlocal, xglobal
-    VecScatter :: xscatt
-    common /ldltsp/xlocal,xscatt,xglobal,spsomu,spmat,spsolv
 !----------------------------------------------------------------
 !     Variables PETSc
     PetscInt :: ierr

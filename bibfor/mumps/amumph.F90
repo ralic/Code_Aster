@@ -93,39 +93,24 @@ subroutine amumph(action, solvez, matasz, rsolu, csolu,&
     logical :: prepos
 !
 #ifdef _HAVE_MUMPS
-!
+#   include "aster_mumps.h"
     include 'mpif.h'
-    include 'smumps_struc.h'
-    include 'cmumps_struc.h'
-    include 'dmumps_struc.h'
-    include 'zmumps_struc.h'
     include 'jeveux.h'
 !
-    integer :: nmxins, iprem
-    parameter (nmxins=5)
-    type (SMUMPS_STRUC) , target :: smps(nmxins)
-    type (CMUMPS_STRUC) , target :: cmps(nmxins)
+    integer :: iprem
     type (SMUMPS_STRUC) , pointer :: smpsk
     type (CMUMPS_STRUC) , pointer :: cmpsk
-    type (DMUMPS_STRUC) , target :: dmps(nmxins)
-    type (ZMUMPS_STRUC) , target :: zmps(nmxins)
     type (DMUMPS_STRUC) , pointer :: dmpsk
     type (ZMUMPS_STRUC) , pointer :: zmpsk
     integer :: k, ierd, ibid, kxmps, jrefa, n, nsmdi, ifm, niv, ifmump, imd
     integer :: jslvk, jslvi, nprec, iretz, pcentp(2)
     logical :: lbid, lpreco
-    character(len=1) :: roucs(nmxins), rouc, prec, precs(nmxins)
-    character(len=4) :: etamat, kbid, etams(nmxins), etam
+    character(len=1) ::  rouc, prec
+    character(len=4) :: etamat, kbid, etam
     character(len=12) :: k12bid
-    character(len=14) :: nonus(nmxins), nonu, nu, impr
-    character(len=19) :: matas, nomats(nmxins), vcine, nomat, nosolv, solveu
-    character(len=19) :: nosols(nmxins)
+    character(len=14) :: nonu, nu, impr
+    character(len=19) :: matas, vcine, nomat, nosolv, solveu
     character(len=24) :: kvers
-    common /mumpss/ smps
-    common /mumpsc/ cmps
-    common /mumpsd/ dmps
-    common /mumpsz/ zmps
-    common /mumpsh/ nonus,nomats,nosols,etams,roucs,precs
 !----------------------------------------------------------------
     save iprem
     data  iprem /0/

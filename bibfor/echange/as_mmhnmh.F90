@@ -23,12 +23,13 @@ subroutine as_mmhnmh(fid, n, cret)
 #   include "med/mmhnmh.h"
 
 ast_int :: fid, n, cret
-med_int :: cretm
+med_int :: nm,cretm
 
 #ifdef _DISABLE_MED
     call u2mess('F', 'FERMETUR_2')
 #else
-    call mmhnmh(to_med_int(fid),to_med_int(n),cretm)
+    call mmhnmh(to_med_int(fid),nm,cretm)
+    n=to_ast_int(nm)
     cret=to_ast_int(cretm)
 #endif
 end subroutine

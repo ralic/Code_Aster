@@ -70,16 +70,8 @@ subroutine apmain(action, kptsc, rsolu, vcine, istop,&
 !---------------------------------------------------------------
 !
 #ifdef _HAVE_PETSC
-!
-# include "finclude/petscsys.h"
-# include "finclude/petscvec.h"
-# include "finclude/petscmat.h"
-# include "finclude/petscksp.h"
-# include "finclude/petscpc.h"
+#   include "aster_petsc.h"
 !----------------------------------------------------------------
-!     AU PLUS 5 MATRICES PETSC SONT GEREES A LA FOIS
-    integer :: nmxins
-    parameter   (nmxins=5)
 !
 !     VARIABLES LOCALES
     integer :: ifm, niv, ierd, ibid, nmaxit, ptserr, jnequ
@@ -96,19 +88,7 @@ subroutine apmain(action, kptsc, rsolu, vcine, istop,&
 !
     logical :: lmd
 !
-!     COMMUN DE SAUVEGARDE DES INSTANCES
-    character(len=19) :: nomats(nmxins), nosols(nmxins)
-    character(len=14) :: nonus(nmxins)
-    Mat :: ap(nmxins)
-    KSP :: kp(nmxins)
-    Vec :: b, x
-    common /spetsc/ ap,kp,b,x,nomats,nosols,nonus
 !
-!     COMMUN POUR LE PRECONDITIONNEUR SIMPLE PRECISION LDLT_SP
-    character(len=19) :: spsomu, spmat, spsolv
-    Vec :: xlocal, xglobal
-    VecScatter :: xscatt
-    common /ldltsp/xlocal,xscatt,xglobal,spsomu,spmat,spsolv
 !----------------------------------------------------------------
 !     Variables PETSc
 !

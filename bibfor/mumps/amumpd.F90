@@ -75,29 +75,23 @@ subroutine amumpd(action, kxmps, rsolu, vcine, nbsol,&
     logical :: prepos
 !
 #ifdef _HAVE_MUMPS
-!
+#   include "aster_mumps.h"
     include 'mpif.h'
-    include 'dmumps_struc.h'
     include 'jeveux.h'
-    integer :: nmxins
-    parameter (nmxins=5)
-    type (DMUMPS_STRUC) , target :: dmps(nmxins)
     type (DMUMPS_STRUC) , pointer :: dmpsk
     integer :: jslvk, jslvr, rang, nbproc, niv, ifm, ibid, ietdeb, ifactm
     integer :: ietrat, jrefa, nprec, jslvi, ifact, iaux, vali(4), pcpi
-    character(len=1) :: roucs(nmxins), rouc, type, prec, precs(nmxins)
-    character(len=4) :: etams(nmxins), etam, klag2
+    character(len=1) ::  rouc, type, prec
+    character(len=4) :: etam, klag2
     character(len=8) :: ktypr, k8bid
     character(len=12) :: usersm, k12bid
-    character(len=14) :: nonus(nmxins), nonu
-    character(len=19) :: nomats(nmxins), nomat, nosols(nmxins)
+    character(len=14) :: nonu
+    character(len=19) :: nomat
     character(len=24) :: kmonit(12), k24aux, kvers
     real(kind=8) :: epsmax, valr(2), rctdeb, temps(6), epsmat
     complex(kind=8) :: cbid(1)
     logical :: lquali, ldist, lresol, lmd, lbid, lpreco, lbis, lpb13, ldet
     logical :: lopfac
-    common /mumpsd/ dmps
-    common /mumpsh/ nonus,nomats,nosols,etams,roucs,precs
     call jemarq()
 !
 !       ------------------------------------------------

@@ -42,23 +42,13 @@ subroutine amumpi(option, lquali, ldist, kxmps, type)
     character(len=1) :: type
 !
 #ifdef _HAVE_MUMPS
-!
+#   include "aster_mumps.h"
     include 'mpif.h'
-    include 'smumps_struc.h'
-    include 'cmumps_struc.h'
-    include 'dmumps_struc.h'
-    include 'zmumps_struc.h'
     include 'jeveux.h'
     integer :: nicntl, ncntl
     parameter (nicntl=40,ncntl=15)
-    integer :: nmxins
-    parameter (nmxins=5)
-    type (SMUMPS_STRUC) , target :: smps(nmxins)
-    type (CMUMPS_STRUC) , target :: cmps(nmxins)
     type (SMUMPS_STRUC) , pointer :: smpsk
     type (CMUMPS_STRUC) , pointer :: cmpsk
-    type (DMUMPS_STRUC) , target :: dmps(nmxins)
-    type (ZMUMPS_STRUC) , target :: zmps(nmxins)
     type (DMUMPS_STRUC) , pointer :: dmpsk
     type (ZMUMPS_STRUC) , pointer :: zmpsk
     integer :: ifm, niv, icntl(nicntl), i, jrefa, isymm, jslvk, isymv, isym
@@ -66,17 +56,12 @@ subroutine amumpi(option, lquali, ldist, kxmps, type)
     integer(kind=4) :: i4, mpicou, mpimum
     real(kind=8) :: rvers, cntl(ncntl), rr4max, tmax
     logical :: lbid
-    character(len=1) :: roucs(nmxins), precs(nmxins), kbuff
-    character(len=4) :: etams(nmxins), typm, etam
+    character(len=1) ::  kbuff
+    character(len=4) :: typm, etam
     character(len=12) :: k12bid
-    character(len=14) :: nonus(nmxins), nonu
-    character(len=19) :: nomats(nmxins), nosols(nmxins), nomat, nosolv
+    character(len=14) :: nonu
+    character(len=19) :: nomat, nosolv
     character(len=24) :: kvers
-    common /mumpss/ smps
-    common /mumpsc/ cmps
-    common /mumpsd/ dmps
-    common /mumpsz/ zmps
-    common /mumpsh/ nonus,nomats,nosols,etams,roucs,precs
     call jemarq()
 ! --- COMMUNICATEUR MPI DE TRAVAIL
     mpicou=comcou(1)

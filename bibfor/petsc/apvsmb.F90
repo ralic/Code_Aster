@@ -39,14 +39,7 @@ subroutine apvsmb(kptsc, lmd, rsolu)
 !----------------------------------------------------------------
 #ifdef _HAVE_PETSC
 !
-# include "finclude/petscsys.h"
-# include "finclude/petscvec.h"
-# include "finclude/petscmat.h"
-# include "finclude/petscksp.h"
-# include "finclude/petscpc.h"
-!     AU PLUS 5 MATRICES PETSC SONT GEREES A LA FOIS
-    integer :: nmxins
-    parameter   (nmxins=5)
+#   include "aster_petsc.h"
 !
 !     VARIABLES LOCALES
     integer :: nsmdi, tbloc, rang, nbproc, jnequ, jnequl, jnugl, jnuglp
@@ -57,13 +50,6 @@ subroutine apvsmb(kptsc, lmd, rsolu)
     character(len=14) :: nonu
     character(len=19) :: nomat, nosolv
 !
-!     COMMUN DE SAUVEGARDE DES INSTANCES
-    character(len=19) :: nomats(nmxins), nosols(nmxins)
-    character(len=14) :: nonus(nmxins)
-    Mat :: ap(nmxins)
-    KSP :: kp(nmxins)
-    Vec :: b, x
-    common /spetsc/ ap,kp,b,x,nomats,nosols,nonus
 !----------------------------------------------------------------
 !     Variables PETSc
     PetscInt :: low, high, bs, i, neq, ierr

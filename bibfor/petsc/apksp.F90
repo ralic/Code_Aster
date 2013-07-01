@@ -33,15 +33,8 @@ subroutine apksp(kptsc)
 !
 #ifdef _HAVE_PETSC
 !
-# include "finclude/petscsys.h"
-# include "finclude/petscvec.h"
-# include "finclude/petscmat.h"
-# include "finclude/petscksp.h"
-# include "finclude/petscpc.h"
+#   include "aster_petsc.h"
 !----------------------------------------------------------------
-!     AU PLUS 5 MATRICES PETSC SONT GEREES A LA FOIS
-    integer :: nmxins
-    parameter   (nmxins=5)
 !
 !     VARIABLES LOCALES
     integer :: jslvk, jslvr, jslvi
@@ -53,13 +46,6 @@ subroutine apksp(kptsc)
 !
     real(kind=8) :: resire
 !
-!     COMMUN DE SAUVEGARDE DES INSTANCES
-    character(len=19) :: nomats(nmxins), nosols(nmxins)
-    character(len=14) :: nonus(nmxins)
-    Mat :: ap(nmxins)
-    KSP :: kp(nmxins)
-    Vec :: b, x
-    common /spetsc/ ap,kp,b,x,nomats,nosols,nonus
 !     Variables PETSc
     PetscInt :: maxits, ierr
     PetscReal :: rtol, atol, dtol

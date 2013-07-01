@@ -122,37 +122,30 @@ subroutine mdexma(nofimd, idfimd, nomamd, option, existm,&
 ! 2.2. ==> RECHERCHE DU NUMERO ET DE LA DIMENSION DU MAILLAGE VOULU
 !
 !
-!               12345678901234567890123456789012
             noma64 = '                                  '//'                    '
             lnomam = lxlgut(nomamd)
             noma64(1:lnomam) = nomamd(1:lnomam)
 !
-            do 22 , iaux = 1 , nbmaie
-!
-!               12345678901234567890123456789012
-            saux64 = '                                '//'                      '
-            call as_mmhmii(idfimd, iaux, saux64, kaux, tyaux,&
-                        daux, codret)
-            if (codret .ne. 0) then
-                saux08='mmhmii'
-                call u2mesg('F', 'DVP_97', 1, saux08, 1,&
-                            codret, 0, 0.d0)
-            endif
-            if (tyaux .ne. ednstr) then
-                call u2mess('A', 'MED_79')
-            endif
-!
-            jaux = lxlgut(saux64)
-!
-            if (jaux .eq. lnomam) then
-                if (saux64 .eq. noma64) then
-                    ndim = kaux
-                    existm = .true.
-                    goto 221
+            do iaux = 1 , nbmaie
+                saux64 = ' '
+                call as_mmhmii(idfimd, iaux, saux64, kaux, tyaux, daux, codret)
+                if (codret .ne. 0) then
+                    saux08='mmhmii'
+                    call u2mesg('F', 'DVP_97', 1, saux08, 1,&
+                                codret, 0, 0.d0)
                 endif
-            endif
-!
-            22         end do
+                if (tyaux .ne. ednstr) then
+                    call u2mess('A', 'MED_79')
+                endif
+                jaux = lxlgut(saux64)
+                if (jaux .eq. lnomam) then
+                    if (saux64 .eq. noma64) then
+                        ndim = kaux
+                        existm = .true.
+                        goto 221
+                    endif
+                endif
+            end do
 !
             existm = .false.
 !
@@ -164,19 +157,17 @@ subroutine mdexma(nofimd, idfimd, nomamd, option, existm,&
                 vali (1) = nbmaie
                 call u2mesg('A+', 'MED_88', 1, valk, 1,&
                             vali, 0, 0.d0)
-                do 23 , iaux = 1 , nbmaie
-!                   12345678901234567890123456789012
-                saux64 = '                                '//'                  '
-                call as_mmhmii(idfimd, iaux, saux64, kaux, tyaux,&
-                            daux, codret)
-                jaux = lxlgut(saux64)
-                valk = saux64(1:jaux)
-                call u2mesg('A+', 'MED_85', 1, valk, 0,&
-                            0, 0, 0.d0)
-                if (tyaux .ne. ednstr) then
-                    call u2mess('A', 'MED_79')
-                endif
-23              continue
+                do iaux = 1 , nbmaie
+                    saux64 = ' '
+                    call as_mmhmii(idfimd, iaux, saux64, kaux, tyaux, daux, codret)
+                    jaux = lxlgut(saux64)
+                    valk = saux64(1:jaux)
+                    call u2mesg('A+', 'MED_85', 1, valk, 0,&
+                                0, 0, 0.d0)
+                    if (tyaux .ne. ednstr) then
+                        call u2mess('A', 'MED_79')
+                    endif
+                end do
                 call u2mesk('A', 'MED_80', 1, noma64(1:lnomam))
 !
             endif

@@ -18,13 +18,13 @@
 interface
 #include "types/med_types.h"
     subroutine mmhenw(fid, name, numdt, numit, entype,&
-                      GEOTYPE, n, num, cret)
+                      geotype, n, num, cret)
         med_int :: fid
         character(*) :: name
         med_int :: numdt
         med_int :: numit
         med_int :: entype
-        med_int :: GEOTYPE
+        med_int :: geotype
         med_int :: n
         med_int :: num(*)
         med_int :: cret

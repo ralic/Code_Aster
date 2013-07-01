@@ -35,7 +35,7 @@ character(len=*) :: maa, fam, attdes(*) , gro(*)
 #else
 
 #if med_int_kind != ast_int_kind
-    med_int, ALLOCATABLE :: attid4(:), attva4(:)
+    med_int, allocatable :: attid4(:), attva4(:)
     med_int :: cret4,num4
 
     allocate ( attid4(natt) )

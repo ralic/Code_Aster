@@ -67,44 +67,28 @@ subroutine amumpm(ldist, kxmps, kmonit, impr, ifmump,&
     character(len=24) :: kmonit(12)
 !
 #ifdef _HAVE_MUMPS
-!
+#   include "aster_mumps.h"
     include 'mpif.h'
-    include 'smumps_struc.h'
-    include 'cmumps_struc.h'
-    include 'dmumps_struc.h'
-    include 'zmumps_struc.h'
     include 'jeveux.h'
 !
     character(len=32) :: jexnom, jexatr
 !
-    integer :: nmxins
-    parameter (nmxins=5)
-    type (SMUMPS_STRUC) , target :: smps(nmxins)
-    type (CMUMPS_STRUC) , target :: cmps(nmxins)
-    type (SMUMPS_STRUC) , pointer :: smpsk
-    type (CMUMPS_STRUC) , pointer :: cmpsk
-    type (DMUMPS_STRUC) , target :: dmps(nmxins)
-    type (ZMUMPS_STRUC) , target :: zmps(nmxins)
-    type (DMUMPS_STRUC) , pointer :: dmpsk
-    type (ZMUMPS_STRUC) , pointer :: zmpsk
+    type (smumps_struc) , pointer :: smpsk
+    type (cmumps_struc) , pointer :: cmpsk
+    type (dmumps_struc) , pointer :: dmpsk
+    type (zmumps_struc) , pointer :: zmpsk
     integer :: jsmdi, nsmdi, jsmhc, nsmhc, jdelg, n1, n, nz, nz2, nvale, jvale
     integer :: nlong, jvale2, nzloc, jcolg, kterm, iligg, iterm, ifm, niv, k
-    integer :: sym, iret, jcoll, iligl, JNULOGL, ltot, iok, iok2, coltmp, nbeq
+    integer :: sym, iret, jcoll, iligl, jnulogl, ltot, iok, iok2, coltmp, nbeq
     integer :: jnequ, kzero, ibid, ifiltr, vali(2), nbproc, nfilt1, nfilt2
-    integer :: nfilt3, ISIZEMU, NSIZEMU, rang, esizemu
-    character(len=1) :: roucs(nmxins), precs(nmxins)
-    character(len=4) :: kbid, etams(nmxins), etam
-    character(len=14) :: nonus(nmxins), nonu
-    character(len=19) :: nomats(nmxins), nosols(nmxins), nomat, nosolv
-    character(len=24) :: kfiltr, kpiv, kpiv2, KSIZEMU
+    integer :: nfilt3, isizemu, nsizemu, rang, esizemu
+    character(len=4) :: kbid, etam
+    character(len=14) :: nonu
+    character(len=19) :: nomat, nosolv
+    character(len=24) :: kfiltr, kpiv, kpiv2, ksizemu
     real(kind=8) :: raux, rfiltr, epsmac, rmax, rmin, rtest
     complex(kind=8) :: caux
     logical :: lmnsy, ltypr, lnn, lfiltr, lspd, eli2lg, lsimpl
-    common /mumpss/ smps
-    common /mumpsc/ cmps
-    common /mumpsd/ dmps
-    common /mumpsz/ zmps
-    common /mumpsh/ nonus,nomats,nosols,etams,roucs,precs
 !
 !-----------------------------------------------------------------------
     call jemarq()
@@ -163,12 +147,12 @@ subroutine amumpm(ldist, kxmps, kmonit, impr, ifmump,&
 !
     if (lmd) then
         if (lpreco) then
-            call jeveuo(nonu//'.NUML.NLGP', 'L', JNULOGL)
+            call jeveuo(nonu//'.NUML.NLGP', 'L', jnulogl)
         else
-            call jeveuo(nonu//'.NUML.NULG', 'L', JNULOGL)
+            call jeveuo(nonu//'.NUML.NULG', 'L', jnulogl)
         endif
     else
-        JNULOGL=1
+        jnulogl=1
     endif
     if (ktypr(1:6) .eq. 'SYMDEF') then
         if ((type.eq.'C') .or. (type.eq.'Z')) call u2mess('F', 'FACTOR_80')
@@ -195,7 +179,7 @@ subroutine amumpm(ldist, kxmps, kmonit, impr, ifmump,&
 !
 !
 !       ------------------------------------------------
-!        LECTURE D'ADRESSES ET DE PARAMETRES PRELIMINAIRES
+!        lecture d'adresses et de parametres preliminaires
 !       ------------------------------------------------
     if (((rang.eq.0).and.(.not.ldist)) .or. (ldist)) then
         call jeveuo(nonu//'.SMOS.SMDI', 'L', jsmdi)
@@ -216,11 +200,11 @@ subroutine amumpm(ldist, kxmps, kmonit, impr, ifmump,&
         n=nsmdi
 !
 ! --- GESTION ELIM_LAGR2
-! --- ON A ESSAYE UNE BASULE AUTOMATIQUE ELIM_LAGR2='OUI'/'NON'
-! --- EN FONCTION DE LA PROPORTION DE LAGRANGES. EN FAIT, 'OUI'
+! --- on a essaye une basule automatique elim_lagr2='oui'/'non'
+! --- en fonction de la proportion de lagranges. en fait, 'oui'
 ! --- OFFRE LA PLUPART DU TEMPS LE MEILLEUR COMPROMIS:
 ! ---     CPU x MEMOIRE x QUALITE --> ON NE PROGRAMME PAS DE
-! --- BASCULE, ON LAISSE 'OUI' PAR DEFAUT (POUR L'INSTANT)
+! --- bascule, on laisse 'oui' par defaut (pour l'instant)
         select case(klag2(1:3))
         case('OUI')
         eli2lg=.true.
@@ -442,17 +426,17 @@ subroutine amumpm(ldist, kxmps, kmonit, impr, ifmump,&
 ! ---   POUR MUMPS. UTILE A AMUMPU. ON SUPPOSE UN SEUL RHS.
 ! ---   EN FIN DE ROUTINE, TOUS LES PROCS CONNAISSENT CE VECTEUR
 ! ----  VIA UN MPI_ALLREDUCE + SUM.
-    KSIZEMU='&&TAILLE_OBJ_MUMPS'
-    call jeexin(KSIZEMU, iret)
+    ksizemu='&&TAILLE_OBJ_MUMPS'
+    call jeexin(ksizemu, iret)
     if (iret .eq. 0) then
-        call wkvect(KSIZEMU, 'V V I', nbproc, ISIZEMU)
+        call wkvect(ksizemu, 'V V I', nbproc, isizemu)
     else
-        call jeveuo(KSIZEMU, 'E', ISIZEMU)
+        call jeveuo(ksizemu, 'E', isizemu)
     endif
     do k = 1, nbproc
-        zi(ISIZEMU+k-1)=0
+        zi(isizemu+k-1)=0
     enddo
-    NSIZEMU=0
+    nsizemu=0
     if ((( rang.eq.0).and.(.not.ldist)) .or. (ldist)) then
         if (ldist) then
             if (type .eq. 'S') then
@@ -462,14 +446,14 @@ subroutine amumpm(ldist, kxmps, kmonit, impr, ifmump,&
                     smpsk%n=n
                 endif
                 smpsk%nz_loc=nz2
-                allocate(smpsk%IRN_loc(nz2))
-                allocate(smpsk%JCN_loc(nz2))
+                allocate(smpsk%irn_loc(nz2))
+                allocate(smpsk%jcn_loc(nz2))
                 allocate(smpsk%a_loc(nz2))
             else if (type.eq.'C') then
                 cmpsk%n=n
                 cmpsk%nz_loc=nz2
-                allocate(cmpsk%IRN_loc(nz2))
-                allocate(cmpsk%JCN_loc(nz2))
+                allocate(cmpsk%irn_loc(nz2))
+                allocate(cmpsk%jcn_loc(nz2))
                 allocate(cmpsk%a_loc(nz2))
             else if (type.eq.'D') then
                 if (lmd) then
@@ -478,22 +462,22 @@ subroutine amumpm(ldist, kxmps, kmonit, impr, ifmump,&
                     dmpsk%n=n
                 endif
                 dmpsk%nz_loc=nz2
-                allocate(dmpsk%IRN_loc(nz2))
-                allocate(dmpsk%JCN_loc(nz2))
+                allocate(dmpsk%irn_loc(nz2))
+                allocate(dmpsk%jcn_loc(nz2))
                 allocate(dmpsk%a_loc(nz2))
             else if (type.eq.'Z') then
                 zmpsk%n=n
                 zmpsk%nz_loc=nz2
-                allocate(zmpsk%IRN_loc(nz2))
-                allocate(zmpsk%JCN_loc(nz2))
+                allocate(zmpsk%irn_loc(nz2))
+                allocate(zmpsk%jcn_loc(nz2))
                 allocate(zmpsk%a_loc(nz2))
             else
                 call assert(.false.)
             endif
             if (lmd) then
-                NSIZEMU=nz2*(4+4+esizemu)+esizemu*nbeq
+                nsizemu=nz2*(4+4+esizemu)+esizemu*nbeq
             else
-                NSIZEMU=nz2*(4+4+esizemu)+esizemu*n
+                nsizemu=nz2*(4+4+esizemu)+esizemu*n
             endif
         else
             if (type .eq. 'S') then
@@ -523,9 +507,9 @@ subroutine amumpm(ldist, kxmps, kmonit, impr, ifmump,&
             else
                 call assert(.false.)
             endif
-            NSIZEMU=nz2*(4+4+esizemu)+esizemu*n
+            nsizemu=nz2*(4+4+esizemu)+esizemu*n
         endif
-        zi(ISIZEMU+rang)=1+(NSIZEMU/(1024*1024))
+        zi(isizemu+rang)=1+(nsizemu/(1024*1024))
 !
 !       ------------------------------------------------
 !       INTERPRETATION DES PBS RENCONTRES LORS DU FILTRAGE
@@ -581,8 +565,8 @@ subroutine amumpm(ldist, kxmps, kmonit, impr, ifmump,&
                 endif
             endif
             if (lmd) then
-                iligg=zi(JNULOGL+iligl-1)
-                jcolg=zi(JNULOGL+jcoll-1)
+                iligg=zi(jnulogl+iligl-1)
+                jcolg=zi(jnulogl+jcoll-1)
             else
                 iligg=iligl
                 jcolg=jcoll
@@ -598,20 +582,20 @@ subroutine amumpm(ldist, kxmps, kmonit, impr, ifmump,&
                 iterm=iterm+1
                 if (ldist) then
                     if (type .eq. 'S') then
-                        smpsk%IRN_loc(iterm)=iligg
-                        smpsk%JCN_loc(iterm)=jcolg
+                        smpsk%irn_loc(iterm)=iligg
+                        smpsk%jcn_loc(iterm)=jcolg
                         smpsk%a_loc(iterm)=raux
                     else if (type.eq.'C') then
-                        cmpsk%IRN_loc(iterm)=iligg
-                        cmpsk%JCN_loc(iterm)=jcolg
+                        cmpsk%irn_loc(iterm)=iligg
+                        cmpsk%jcn_loc(iterm)=jcolg
                         cmpsk%a_loc(iterm)=caux
                     else if (type.eq.'D') then
-                        dmpsk%IRN_loc(iterm)=iligg
-                        dmpsk%JCN_loc(iterm)=jcolg
+                        dmpsk%irn_loc(iterm)=iligg
+                        dmpsk%jcn_loc(iterm)=jcolg
                         dmpsk%a_loc(iterm)=raux
                     else if (type.eq.'Z') then
-                        zmpsk%IRN_loc(iterm)=iligg
-                        zmpsk%JCN_loc(iterm)=jcolg
+                        zmpsk%irn_loc(iterm)=iligg
+                        zmpsk%jcn_loc(iterm)=jcolg
                         zmpsk%a_loc(iterm)=caux
                     else
                         call assert(.false.)
@@ -688,28 +672,28 @@ subroutine amumpm(ldist, kxmps, kmonit, impr, ifmump,&
                 if (lnn) then
                     iterm=iterm+1
                     if (lmd) then
-                        iligg=zi(JNULOGL+iligl-1)
-                        jcolg=zi(JNULOGL+jcoll-1)
+                        iligg=zi(jnulogl+iligl-1)
+                        jcolg=zi(jnulogl+jcoll-1)
                     else
                         iligg=iligl
                         jcolg=jcoll
                     endif
                     if (ldist) then
                         if (type .eq. 'S') then
-                            smpsk%IRN_loc(iterm)=jcolg
-                            smpsk%JCN_loc(iterm)=iligg
+                            smpsk%irn_loc(iterm)=jcolg
+                            smpsk%jcn_loc(iterm)=iligg
                             smpsk%a_loc(iterm)=raux
                         else if (type.eq.'C') then
-                            cmpsk%IRN_loc(iterm)=jcolg
-                            cmpsk%JCN_loc(iterm)=iligg
+                            cmpsk%irn_loc(iterm)=jcolg
+                            cmpsk%jcn_loc(iterm)=iligg
                             cmpsk%a_loc(iterm)=caux
                         else if (type.eq.'D') then
-                            dmpsk%IRN_loc(iterm)=jcolg
-                            dmpsk%JCN_loc(iterm)=iligg
+                            dmpsk%irn_loc(iterm)=jcolg
+                            dmpsk%jcn_loc(iterm)=iligg
                             dmpsk%a_loc(iterm)=raux
                         else if (type.eq.'Z') then
-                            zmpsk%IRN_loc(iterm)=jcolg
-                            zmpsk%JCN_loc(iterm)=iligg
+                            zmpsk%irn_loc(iterm)=jcolg
+                            zmpsk%jcn_loc(iterm)=iligg
                             zmpsk%a_loc(iterm)=caux
                         else
                             call assert(.false.)
@@ -812,7 +796,7 @@ subroutine amumpm(ldist, kxmps, kmonit, impr, ifmump,&
             if (type .eq. 'S') then
                 do k = 1, nz2
                     if (ldist) then
-                        write(ifmump,*)smpsk%IRN_loc(k),smpsk%JCN_loc(k),&
+                        write(ifmump,*)smpsk%irn_loc(k),smpsk%jcn_loc(k),&
                     smpsk%a_loc(k)
                     else
                         write(ifmump,*)smpsk%irn(k),smpsk%jcn(k),smpsk%a(&
@@ -822,7 +806,7 @@ subroutine amumpm(ldist, kxmps, kmonit, impr, ifmump,&
             else if (type.eq.'C') then
                 do k = 1, nz2
                     if (ldist) then
-                        write(ifmump,*)cmpsk%IRN_loc(k),cmpsk%JCN_loc(k),&
+                        write(ifmump,*)cmpsk%irn_loc(k),cmpsk%jcn_loc(k),&
                     cmpsk%a_loc(k)
                     else
                         write(ifmump,*)cmpsk%irn(k),cmpsk%jcn(k),cmpsk%a(&
@@ -832,7 +816,7 @@ subroutine amumpm(ldist, kxmps, kmonit, impr, ifmump,&
             else if (type.eq.'D') then
                 do k = 1, nz2
                     if (ldist) then
-                        write(ifmump,*)dmpsk%IRN_loc(k),dmpsk%JCN_loc(k),&
+                        write(ifmump,*)dmpsk%irn_loc(k),dmpsk%jcn_loc(k),&
                     dmpsk%a_loc(k)
                     else
                         write(ifmump,*)dmpsk%irn(k),dmpsk%jcn(k),dmpsk%a(&
@@ -842,7 +826,7 @@ subroutine amumpm(ldist, kxmps, kmonit, impr, ifmump,&
             else if (type.eq.'Z') then
                 do k = 1, nz2
                     if (ldist) then
-                        write(ifmump,*)zmpsk%IRN_loc(k),zmpsk%JCN_loc(k),&
+                        write(ifmump,*)zmpsk%irn_loc(k),zmpsk%jcn_loc(k),&
                     zmpsk%a_loc(k)
                     else
                         write(ifmump,*)zmpsk%irn(k),zmpsk%jcn(k),zmpsk%a(&
@@ -862,7 +846,7 @@ subroutine amumpm(ldist, kxmps, kmonit, impr, ifmump,&
     endif
 !
 ! --- COMMUNICATION DU VECTEUR KSIZEMU A TOUS LES PROCS
-    call mpicm2('MPI_SUM', KSIZEMU)
+    call mpicm2('MPI_SUM', ksizemu)
 !
 ! --- NETTOYAGE VECTEURS TEMPORAIRES LOCAUX
     if (((rang.eq.0).and.(.not.ldist)) .or. (ldist)) then

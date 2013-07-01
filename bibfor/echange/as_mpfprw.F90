@@ -31,7 +31,7 @@ subroutine as_mpfprw(fid, pflval, nbval, pro, cret)
 
 #if med_int_kind != ast_int_kind
     med_int :: fid4, nbval4, cret4
-    med_int, ALLOCATABLE :: pflva4(:)
+    med_int, allocatable :: pflva4(:)
     fid4 = fid
     nbval4 = nbval
     allocate ( pflva4(nbval) )

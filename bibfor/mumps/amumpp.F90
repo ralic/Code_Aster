@@ -74,42 +74,27 @@ subroutine amumpp(option, nbsol, kxmps, ldist, type,&
     complex(kind=8) :: csolu(*)
 !
 #ifdef _HAVE_MUMPS
-!
+#   include "aster_mumps.h"
     include 'mpif.h'
-    include 'smumps_struc.h'
-    include 'cmumps_struc.h'
-    include 'dmumps_struc.h'
-    include 'zmumps_struc.h'
     include 'jeveux.h'
     integer :: nicntl
     parameter (nicntl=26)
-    integer :: nmxins
-    parameter (nmxins=5)
-    type (SMUMPS_STRUC) , target :: smps(nmxins)
-    type (CMUMPS_STRUC) , target :: cmps(nmxins)
     type (SMUMPS_STRUC) , pointer :: smpsk
     type (CMUMPS_STRUC) , pointer :: cmpsk
-    type (DMUMPS_STRUC) , target :: dmps(nmxins)
-    type (ZMUMPS_STRUC) , target :: zmps(nmxins)
     type (DMUMPS_STRUC) , pointer :: dmpsk
     type (ZMUMPS_STRUC) , pointer :: zmpsk
     integer :: n, nnbsol, rang, lmat, i, ierd, idvalc, ibid, jdelg, k, ifm, niv
     integer :: jdlg2, jj
     integer(kind=4) :: n4
-    character(len=1) :: roucs(nmxins), rouc, precs(nmxins)
-    character(len=4) :: etams(nmxins), etam
+    character(len=1) ::  rouc
+    character(len=4) :: etam
     character(len=8) :: kbid
-    character(len=14) :: nonus(nmxins), nonu
-    character(len=19) :: nomats(nmxins), nosols(nmxins), nomat, nosolv
+    character(len=14) :: nonu
+    character(len=19) :: nomat, nosolv
     character(len=24) :: vcival
     logical :: ltypr
     real(kind=8) :: rbid, rr4max, raux, rmin, rmax, rtest, valr(2)
     complex(kind=8) :: cbid, caux
-    common /mumpss/ smps
-    common /mumpsc/ cmps
-    common /mumpsd/ dmps
-    common /mumpsz/ zmps
-    common /mumpsh/ nonus,nomats,nosols,etams,roucs,precs
 !
 !-----------------------------------------------------------------------
     call jemarq()

@@ -47,23 +47,18 @@ subroutine askcyc(craid, ndim, soumat, beta, ni,&
 ! NBLIAX   /I/: NOMBRE DES DDL AXE A ASSEMBLER (<=NA)
 ! LIBID    /I/: LISTE BIDON LIBID(I)=I DE DIM >=MAX(NI,NJ)
 !
-!
-!
-!
-!
+!-----------------------------------------------------------------------
     include 'jeveux.h'
     include 'asterfort/acyel1.h'
     include 'asterfort/acyel2.h'
     include 'asterfort/acyel4.h'
     include 'asterfort/acyelt.h'
+
     character(len=24) :: soumat
     complex(kind=8) :: craid(*)
-    integer :: libid(*), liax(nbliax)
+    integer :: nbliax, libid(*), liax(nbliax)
     logical :: axok, vrai, faux
-!
-!-----------------------------------------------------------------------
-!-----------------------------------------------------------------------
-    integer :: i, ia, ibid, id, na, nbliax, ndim
+    integer :: i, ia, ibid, id, na, ndim
     integer :: ni, nj
     real(kind=8) :: beta
 !-----------------------------------------------------------------------

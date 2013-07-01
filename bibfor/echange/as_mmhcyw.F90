@@ -33,7 +33,7 @@ subroutine as_mmhcyw(fid, maa, conn, csize, switch,&
 #else
 
 #if med_int_kind != ast_int_kind
-    med_int, ALLOCATABLE :: conn4(:)
+    med_int, allocatable :: conn4(:)
     med_int :: fid4, typen4, typge4, typco4, cret4
     med_int :: n4, switc4, mdnon4, mdnoi4
     ast_int :: ic

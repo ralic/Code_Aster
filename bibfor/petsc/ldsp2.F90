@@ -1,4 +1,4 @@
-subroutine ldsp2(pc, x, y, ierr)
+subroutine ldsp2(pc, x1, y, ierr)
 !
 ! COPYRIGHT (C) 1991 - 2013  EDF R&D                WWW.CODE-ASTER.ORG
 !
@@ -22,30 +22,20 @@ subroutine ldsp2(pc, x, y, ierr)
     include 'asterfort/amumph.h'
     include 'asterfort/assert.h'
 #ifdef _HAVE_PETSC
-!
-# include "finclude/petscsys.h"
-# include "finclude/petscvec.h"
-# include "finclude/petscmat.h"
-# include "finclude/petscksp.h"
-# include "finclude/petscpc.h"
+#   include "aster_petsc.h"
     complex(kind=8) :: cbid
     integer :: iret
-!     COMMUN POUR LE PRECONDITIONNEUR SIMPLE PRECISION LDLT_SP
-    character(len=19) :: spsomu, spmat, spsolv
-    Vec :: xlocal, xglobal
-    VecScatter :: xscatt
-    common /ldltsp/xlocal,xscatt,xglobal,spsomu,spmat,spsolv
 !----------------------------------------------------------------
 !     Variables PETSc
     PetscInt :: ierr
     PC :: pc
-    Vec :: x, y
+    Vec :: x1, y
     PetscScalar :: xx(1)
     PetscOffset :: xidx
 !----------------------------------------------------------------
 !
 ! --  COPIE DU VECTEUR D'ENTREE, CAR ERREUR S'IL EST TRANSFORME
-    call VecCopy(x, xlocal, ierr)
+    call VecCopy(x1, xlocal, ierr)
     call assert(ierr.eq.0)
 !
 ! --  RECUPERATION DES VALEURS DU VECTEUR SUR LES DIFFERENTS PROCS
@@ -78,7 +68,7 @@ subroutine ldsp2(pc, x, y, ierr)
 #else
 !
 !     DECLARATION BIDON POUR ASSURER LA COMPILATION
-    integer :: pc, x, y, ierr
+    integer :: pc, x1, y, ierr
 !
 #endif
 !
