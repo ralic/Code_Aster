@@ -27,8 +27,9 @@ subroutine extrma(amatst, nlig, ncol, nmat, amat)
 !     OUT : AMAT      : MATRICE DIMENSIONNEE NLIG,NCOL
 ! ------------------------------------------------------------------
     implicit none
+    integer :: ncol, nlig
     real(kind=8) :: amatst(9, 6, 6), amat(nlig, ncol)
-    integer :: i, j, ncol, nlig, nmat
+    integer :: i, j, nmat
 !-----------------------------------------------------------------------
 !
     do 2 j = 1, ncol

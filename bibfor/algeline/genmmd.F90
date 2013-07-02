@@ -74,13 +74,14 @@ subroutine genmmd(neqns, neqp1, nadj, xadj, adjncy,&
     include 'asterfort/mmdnum.h'
     include 'asterfort/mmdpar.h'
     include 'asterfort/mmdupd.h'
+    integer :: neqns, neqp1, nadj
     integer :: adjncy(nadj), dhead(neqns), invp(neqns), llist(neqns)
     integer :: marker(neqns), perm(neqns), qsize(neqns)
     integer :: xadj(neqp1), supnd(neqp1), adress(neqp1)
-    integer :: delta, ehead, i, maxint, mdeg, mdlmt, mdnode, neqns, nextmd
+    integer :: delta, ehead, i, maxint, mdeg, mdlmt, mdnode, nextmd
     integer :: nofsub, num, tag
     integer :: nbsn, parent(neqns)
-    integer :: neqp1, nadj, gssubs, fctnzs
+    integer :: gssubs, fctnzs
     real(kind=8) :: fctops
     integer :: il, is, j, jdeb, jfin, nabor, nbsn1
     integer :: ncol, nlig

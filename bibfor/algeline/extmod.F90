@@ -38,7 +38,7 @@ subroutine extmod(basemo, numddl, nume, nbnumo, dmode,&
     include 'asterfort/jemarq.h'
     include 'asterfort/jeveuo.h'
     include 'asterfort/rsexch.h'
-    integer :: nume(nbnumo), iddl(nbddl)
+    integer :: nbddl, nbnumo, nbnoe, nume(nbnumo), iddl(nbddl)
     real(kind=8) :: dmode(nbddl*nbnoe*nbnumo)
     character(len=8) :: basemo
     character(len=14) :: numddl
@@ -47,7 +47,7 @@ subroutine extmod(basemo, numddl, nume, nbnumo, dmode,&
 !
 !-----------------------------------------------------------------------
     integer :: i, iadmod, icm, ideeq, inumo, ipm, iret
-    integer :: j, k, nbddl, nbeq, nbnoe, nbnumo
+    integer :: j, k, nbeq
 !-----------------------------------------------------------------------
     call jemarq()
     deeq = numddl//'.NUME.DEEQ'

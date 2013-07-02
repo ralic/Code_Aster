@@ -1,7 +1,7 @@
 subroutine ggubs(dseed, nr, r)
     implicit none
-    real(kind=8) :: dseed, r(nr)
     integer :: nr
+    real(kind=8) :: dseed, r(nr)
 !     ------------------------------------------------------------------
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
