@@ -1,5 +1,4 @@
 # TITRE POUTRE ELANCEE, ENCASTREE-LIBRE, REPLIEE SUR ELLE-MEME
-#            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -245,6 +244,7 @@ TEST_RESU(CHAM_NO=(_F(NOEUD='B',
                       NOM_CMP='DY',
                       PRECISION=0.02,
                       CHAM_GD=MODE42,
+                      TOLE_MACHINE=5.E-6,       # ajustement pour clap0f0q
                       VALE_CALC=-0.370146882,
                       VALE_REFE=-0.37,
                       REFERENCE='ANALYTIQUE',),
@@ -253,6 +253,7 @@ TEST_RESU(CHAM_NO=(_F(NOEUD='B',
                       NOM_CMP='DY',
                       PRECISION=0.02,
                       CHAM_GD=MODE42,
+                      TOLE_MACHINE=5.E-6,       # ajustement pour clap0f0q
                       VALE_CALC=0.523468389,
                       VALE_REFE=0.52300000000000002,
                       REFERENCE='ANALYTIQUE',),

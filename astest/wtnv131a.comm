@@ -1,5 +1,4 @@
 # TITRE MODELISATION DE LA DIFFUSION DE L AIR DISSOUS DANS L EAU
-#            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -250,6 +249,7 @@ TEST_RESU(RESU=_F(NUME_ORDRE=60,
                   NOM_CMP='PRE2',
                   VALE_CALC= 1.12787592E+04,
                   VALE_REFE=1.1200E4,
+                  TOLE_MACHINE=1E-4,            # ajustement pour clap0f0q
                   CRITERE='RELATIF',
                   PRECISION=1.E-2,),
           )
@@ -262,6 +262,7 @@ TEST_RESU(RESU=_F(NUME_ORDRE=100,
                   NOM_CMP='PRE2',
                   VALE_CALC= 1.22676339E+04,
                   VALE_REFE=1.2230E4,
+                  TOLE_MACHINE=1E-4,            # ajustement pour clap0f0q
                   CRITERE='RELATIF',
                   PRECISION=1.E-2,),
           )
@@ -275,6 +276,7 @@ TEST_RESU(RESU=_F(NUME_ORDRE=60,
                   NOM_CMP='PRE2',
                   VALE_CALC= 6.61579492E+03,
                   VALE_REFE=6570.0,
+                  TOLE_MACHINE=1E-4,            # ajustement pour clap0f0q
                   CRITERE='RELATIF',
                   PRECISION=1.E-2,),
           )
@@ -287,6 +289,7 @@ TEST_RESU(RESU=_F(NUME_ORDRE=100,
                   NOM_CMP='PRE2',
                   VALE_CALC= 8.74165162E+03,
                   VALE_REFE=8685.0,
+                  TOLE_MACHINE=1E-4,            # ajustement pour clap0f0q
                   CRITERE='RELATIF',
                   PRECISION=1.E-2,),
           )
@@ -297,6 +300,7 @@ TEST_RESU(RESU=_F(NUME_ORDRE=100,
                   NOEUD='N28',
                   NOM_CMP='PRE2',
                   VALE_CALC=8741.6516172606,
+                  TOLE_MACHINE=1E-4,            # ajustement pour clap0f0q
                   CRITERE='RELATIF',
                   ),
           )
@@ -308,6 +312,7 @@ TEST_RESU(RESU=_F(NUME_ORDRE=58,
                   NOM_CMP='VMIS',
                   VALE_CALC=180.32385802109,
                   CRITERE='RELATIF',
+                  TOLE_MACHINE=1E-4,            # ajustement pour clap0f0q
                   MAILLE='M1',
                   ),
           )
@@ -318,6 +323,7 @@ TEST_RESU(RESU=_F(NUME_ORDRE=58,
                   NOEUD='N88',
                   NOM_CMP='TRESCA',
                   VALE_CALC=188.00378228398,
+                  TOLE_MACHINE=1E-4,            # ajustement pour clap0f0q
                   CRITERE='RELATIF',
                   MAILLE='M1',
                   ),
@@ -329,6 +335,7 @@ TEST_RESU(RESU=_F(NUME_ORDRE=58,
                   NOEUD='N88',
                   NOM_CMP='VMIS',
                   VALE_CALC=131.91507418621,
+                  TOLE_MACHINE=1E-4,            # ajustement pour clap0f0q
                   CRITERE='RELATIF',
                   ),
           )
@@ -339,6 +346,7 @@ TEST_RESU(RESU=_F(NUME_ORDRE=58,
                   NOEUD='N88',
                   NOM_CMP='TRESCA',
                   VALE_CALC=141.00282340598,
+                  TOLE_MACHINE=1E-4,            # ajustement pour clap0f0q
                   CRITERE='RELATIF',
                   ),
           )

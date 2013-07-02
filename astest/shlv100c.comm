@@ -1,5 +1,4 @@
 # TITRE REPONSE HARMONIQUE CYLINDRE EN D.P. (TETRA4)
-#            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -104,8 +103,7 @@ DYNAH=CALC_CHAMP(reuse=DYNAH,RESULTAT=DYNAH,CONTRAINTE=('SIGM_ELNO'))
 
 TEST_RESU(RESU=(_F(NUME_ORDRE=1,
                    GROUP_NO='A',
-                   VALE_CALC_C=(0.0073397999999999996+0j),
-                   TOLE_MACHINE=1.E-3,
+                   VALE_CALC_C=(7.3331306209167E-03+0j),
                    RESULTAT=DYNAH,
                    NOM_CHAM='DEPL',
                    NOM_CMP='DX',

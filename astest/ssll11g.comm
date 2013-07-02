@@ -1,5 +1,4 @@
 # TITRE TREILLIS DE BARRES ARTICULEES SOUS CHARGE PONCTUELLE
-#            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -295,7 +294,6 @@ IMPR_TABLE( TABLE = T2 )  ;
 
 TEST_TABLE(
            VALE_CALC=6.9364100E7,
-           TOLE_MACHINE=1.E-3,
            NOM_PARA='VALE',
            TABLE=T0,
            FILTRE=_F(NOM_PARA='EXTREMA',
@@ -304,7 +302,6 @@ TEST_TABLE(
 
 TEST_TABLE(
            VALE_CALC=-1.21374000E8,
-           TOLE_MACHINE=1.E-3,
            NOM_PARA='VALE',
            TABLE=T0,
            FILTRE=_F(NOM_PARA='EXTREMA',
@@ -313,7 +310,6 @@ TEST_TABLE(
 
 TEST_TABLE(
            VALE_CALC=1.21374000E8,
-           TOLE_MACHINE=1.E-3,
            NOM_PARA='VALE',
            TABLE=T0,
            FILTRE=_F(NOM_PARA='EXTREMA',
@@ -321,8 +317,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=3.4783800000000001E-3,
-           TOLE_MACHINE=1.E-3,
+           VALE_CALC=3.4783794180564E-3,
            NOM_PARA='VALE',
            TABLE=T1,
            FILTRE=_F(NOM_PARA='EXTREMA',
@@ -330,8 +325,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=-6.1891999999999997E-3,
-           TOLE_MACHINE=1.E-3,
+           VALE_CALC=-6.1891853034882E-3,
            NOM_PARA='VALE',
            TABLE=T1,
            FILTRE=_F(NOM_PARA='EXTREMA',
@@ -339,8 +333,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=6.1891999999999997E-3,
-           TOLE_MACHINE=1.E-3,
+           VALE_CALC=6.1891853034882E-3,
            NOM_PARA='VALE',
            TABLE=T1,
            FILTRE=_F(NOM_PARA='EXTREMA',
@@ -348,8 +341,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=1.62542000E8,
-           TOLE_MACHINE=1.E-3,
+           VALE_CALC=1.6254173676341E8,
            NOM_PARA='VALE',
            TABLE=T2,
            FILTRE=_F(NOM_PARA='EXTREMA',
@@ -357,8 +349,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=-2.17437000E8,
-           TOLE_MACHINE=1.E-3,
+           VALE_CALC=-2.1743714416843E8,
            NOM_PARA='VALE',
            TABLE=T2,
            FILTRE=_F(NOM_PARA='EXTREMA',
@@ -366,8 +357,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=2.17437000E8,
-           TOLE_MACHINE=1.E-3,
+           VALE_CALC=2.1743714416843E8,
            NOM_PARA='VALE',
            TABLE=T2,
            FILTRE=_F(NOM_PARA='EXTREMA',

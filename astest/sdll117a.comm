@@ -1,5 +1,4 @@
 # TITRE POUTRE SOUMISE A UNE EXCITATION ALEATOIRE REPARTIE
-#            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -502,6 +501,7 @@ TEST_FONCTION(VALEUR=(_F(VALE_REFE=31.40,
                          VALE_CALC=9.156839E-3,
                          REFERENCE = 'NON_DEFINI',
                          PRECISION=1.E-3,
+                         TOLE_MACHINE=5.E-6,        # ajustement pour clap0f0q
                          VALE_PARA=1.5,
                          FONCTION=AMOR3_1,
                          ),
@@ -637,6 +637,7 @@ TEST_FONCTION(VALEUR=(_F(VALE_REFE=31.40,
                          REFERENCE = 'NON_DEFINI',
                          PRECISION=1.E-3,
                          VALE_PARA=1.5,
+                         TOLE_MACHINE=5.E-6,        # ajustement pour clap0f0q
                          FONCTION=AMOR4_1,
                          ),
                       _F(VALE_REFE=9.157E-03,

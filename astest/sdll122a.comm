@@ -1,5 +1,4 @@
 # TITRE  POUTRE EULER_BERNOULLI MULTIFIBRES (STATIQUE LINEAIRE)
-#            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -310,8 +309,6 @@ for numordre,maille,point,spoint,npara,lavale in PourTest:
       VALE_CALC=lavale,
    )
 
-IMPR_TABLE(TABLE=TU2_1)
-
 
 # Test du maillage des sections de poutres multifibres
 DEFI_FICHIER(UNITE=82, FICHIER='./fort.82')
@@ -326,6 +323,7 @@ DEFI_FICHIER(UNITE=82, ACTION='LIBERER')
 TEST_FICHIER(FICHIER='./fort.82',
              NB_VALE=3017,EXPR_IGNORE = ('ASTER'),
              VALE_CALC=4.199464199956E+05,
+             TOLE_MACHINE=1.E-5            # ajustement pour clap0f0q
              )
 
 

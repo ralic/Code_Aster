@@ -1,5 +1,4 @@
 # TITRE COQUES COAXIALES SOUS ECOULEMENT ANNULAIRE
-#            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -183,7 +182,7 @@ TEST_FONCTION(VALEUR=_F(VALE_CALC=5.29595072444,
                         VALE_REFE=5.6474200000000003,
                         VALE_PARA=0.0,
                         REFERENCE='AUTRE_ASTER',
-                        PRECISION=0.074999999999999997,
+                        PRECISION=0.075,
                         FONCTION=F_FREQ1,),
               )
 
@@ -202,6 +201,7 @@ TEST_FONCTION(VALEUR=_F(VALE_CALC=5.29630195528,
                         VALE_REFE=5.6484699999999997,
                         VALE_PARA=0.0,
                         REFERENCE='AUTRE_ASTER',
+                        TOLE_MACHINE=1.E-5,      # ajustement pour clap0f0q
                         PRECISION=0.075,
                         FONCTION=F_FREQ2,),
               )
@@ -222,6 +222,7 @@ TEST_FONCTION(VALEUR=_F(VALE_CALC=6.12090458841,
                         VALE_PARA=0.0,
                         REFERENCE='AUTRE_ASTER',
                         PRECISION=0.075,
+                        TOLE_MACHINE=1.E-4,      # ajustement pour clap0f0q
                         FONCTION=F_FREQ3,),
               )
 
@@ -241,6 +242,7 @@ TEST_FONCTION(VALEUR=_F(VALE_CALC=6.12114340928,
                         VALE_PARA=0.0,
                         REFERENCE='AUTRE_ASTER',
                         PRECISION=0.075,
+                        TOLE_MACHINE=1.E-3,      # ajustement pour clap0f0q
                         FONCTION=F_FREQ4,),
               )
 
@@ -278,7 +280,8 @@ TEST_FONCTION(VALEUR=_F(VALE_CALC=8.69285628879,
                         VALE_REFE=9.3439599999999992,
                         VALE_PARA=0.0,
                         REFERENCE='AUTRE_ASTER',
-                        PRECISION=0.074999999999999997,
+                        PRECISION=0.075,
+                        TOLE_MACHINE=1.E-4,      # ajustement pour clap0f0q
                         FONCTION=F_FREQ6,),
               )
 
@@ -316,7 +319,8 @@ TEST_FONCTION(VALEUR=_F(VALE_CALC=21.9593697422,
                         VALE_REFE=20.820599999999999,
                         VALE_PARA=0.0,
                         REFERENCE='AUTRE_ASTER',
-                        PRECISION=0.074999999999999997,
+                        PRECISION=0.075,
+                        TOLE_MACHINE=1.E-5,      # ajustement pour clap0f0q
                         FONCTION=F_FREQ8,),
               )
 
@@ -392,7 +396,8 @@ TEST_FONCTION(VALEUR=_F(VALE_CALC=33.7496889132,
                         VALE_REFE=31.4772,
                         VALE_PARA=0.0,
                         REFERENCE='AUTRE_ASTER',
-                        PRECISION=0.074999999999999997,
+                        PRECISION=0.075,
+                        TOLE_MACHINE=1.E-4,      # ajustement pour clap0f0q
                         FONCTION=F_FREQ12,),
               )
 

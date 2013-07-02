@@ -1,5 +1,4 @@
 # TITRE VALIDATION DE CALCUL HARMONIQUE POUR DISCRET NON SYMETRIQUE
-#            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -246,8 +245,8 @@ IMPR_TABLE(TABLE=TABMODX)
 IMPR_TABLE(TABLE=TABMODZ)
 
 TEST_TABLE(REFERENCE='SOURCE_EXTERNE',
-           PRECISION=0.050000000000000003,
-           VALE_CALC= 1.03312867E-07,
+           PRECISION=0.05,
+           VALE_CALC= 1.0331286700753E-07,
            VALE_REFE=1.032E-07,
            NOM_PARA='DEPL',
            TABLE=TABMODX,
@@ -255,18 +254,9 @@ TEST_TABLE(REFERENCE='SOURCE_EXTERNE',
                      VALE=1.0,),
            )
 
-TEST_TABLE(
-           VALE_CALC=1.0331286700753E-07,
-           TOLE_MACHINE=1.0000000000000001E-05,
-           NOM_PARA='DEPL',
-           TABLE=TABMODX,
-           FILTRE=_F(NOM_PARA='FREQ',
-                     VALE=1.0,),
-           )
-
 TEST_TABLE(REFERENCE='SOURCE_EXTERNE',
-           PRECISION=0.050000000000000003,
-           VALE_CALC= 1.04570177E-07,
+           PRECISION=0.05,
+           VALE_CALC= 1.0457017674068E-07,
            VALE_REFE=1.044E-07,
            NOM_PARA='DEPL',
            TABLE=TABMODX,
@@ -274,28 +264,10 @@ TEST_TABLE(REFERENCE='SOURCE_EXTERNE',
                      VALE=25.0,),
            )
 
-TEST_TABLE(
-           VALE_CALC=1.0457017674068E-07,
-           TOLE_MACHINE=1.0000000000000001E-05,
-           NOM_PARA='DEPL',
-           TABLE=TABMODX,
-           FILTRE=_F(NOM_PARA='FREQ',
-                     VALE=25.0,),
-           )
-
 TEST_TABLE(REFERENCE='SOURCE_EXTERNE',
-           PRECISION=0.050000000000000003,
-           VALE_CALC= 1.93808388E-07,
-           VALE_REFE=1.9040000000000001E-07,
-           NOM_PARA='DEPL',
-           TABLE=TABMODX,
-           FILTRE=_F(NOM_PARA='FREQ',
-                     VALE=250.0,),
-           )
-
-TEST_TABLE(
-           VALE_CALC=1.9380838825984E-07,
-           TOLE_MACHINE=1.0000000000000001E-05,
+           PRECISION=0.05,
+           VALE_CALC= 1.9380838825984E-07,
+           VALE_REFE=1.904E-07,
            NOM_PARA='DEPL',
            TABLE=TABMODX,
            FILTRE=_F(NOM_PARA='FREQ',
@@ -303,18 +275,9 @@ TEST_TABLE(
            )
 
 TEST_TABLE(REFERENCE='SOURCE_EXTERNE',
-           PRECISION=0.050000000000000003,
-           VALE_CALC=-0.026394524,
-           VALE_REFE=-0.026499999999999999,
-           NOM_PARA='PHAS',
-           TABLE=TABMODX,
-           FILTRE=_F(NOM_PARA='FREQ',
-                     VALE=1.0,),
-           )
-
-TEST_TABLE(
+           PRECISION=0.05,
            VALE_CALC=-0.026394523531871002,
-           TOLE_MACHINE=1.0000000000000001E-05,
+           VALE_REFE=-0.0265,
            NOM_PARA='PHAS',
            TABLE=TABMODX,
            FILTRE=_F(NOM_PARA='FREQ',
@@ -322,8 +285,8 @@ TEST_TABLE(
            )
 
 TEST_TABLE(REFERENCE='SOURCE_EXTERNE',
-           PRECISION=0.050000000000000003,
-           VALE_CALC=-0.668402523,
+           PRECISION=0.05,
+           VALE_CALC=-0.66840252286433999,
            VALE_REFE=-0.67049999999999998,
            NOM_PARA='PHAS',
            TABLE=TABMODX,
@@ -331,18 +294,10 @@ TEST_TABLE(REFERENCE='SOURCE_EXTERNE',
                      VALE=25.0,),
            )
 
-TEST_TABLE(
-           VALE_CALC=-0.66840252286433999,
-           TOLE_MACHINE=1.0000000000000001E-05,
-           NOM_PARA='PHAS',
-           TABLE=TABMODX,
-           FILTRE=_F(NOM_PARA='FREQ',
-                     VALE=25.0,),
-           )
 
 TEST_TABLE(REFERENCE='SOURCE_EXTERNE',
-           PRECISION=0.050000000000000003,
-           VALE_CALC=-137.776065865,
+           PRECISION=0.05,
+           VALE_CALC=-137.77606586524001,
            VALE_REFE=-137.10300000000001,
            NOM_PARA='PHAS',
            TABLE=TABMODX,
@@ -350,18 +305,10 @@ TEST_TABLE(REFERENCE='SOURCE_EXTERNE',
                      VALE=250.0,),
            )
 
-TEST_TABLE(
-           VALE_CALC=-137.77606586524001,
-           TOLE_MACHINE=1.0000000000000001E-05,
-           NOM_PARA='PHAS',
-           TABLE=TABMODX,
-           FILTRE=_F(NOM_PARA='FREQ',
-                     VALE=250.0,),
-           )
 
 TEST_TABLE(REFERENCE='SOURCE_EXTERNE',
-           PRECISION=0.050000000000000003,
-           VALE_CALC= 4.14094609E-08,
+           PRECISION=0.05,
+           VALE_CALC= 4.1409459E-08,
            VALE_REFE=4.1439999999999999E-08,
            NOM_PARA='DEPL',
            TABLE=TABMODZ,
@@ -369,18 +316,9 @@ TEST_TABLE(REFERENCE='SOURCE_EXTERNE',
                      VALE=1.0,),
            )
 
-TEST_TABLE(
-           VALE_CALC=4.1409459000000001E-08,
-           TOLE_MACHINE=1.0000000000000001E-05,
-           NOM_PARA='DEPL',
-           TABLE=TABMODZ,
-           FILTRE=_F(NOM_PARA='FREQ',
-                     VALE=1.0,),
-           )
-
 TEST_TABLE(REFERENCE='SOURCE_EXTERNE',
-           PRECISION=0.050000000000000003,
-           VALE_CALC= 4.23618729E-08,
+           PRECISION=0.05,
+           VALE_CALC= 4.2361872865766998E-08,
            VALE_REFE=4.2340000000000001E-08,
            NOM_PARA='DEPL',
            TABLE=TABMODZ,
@@ -388,18 +326,9 @@ TEST_TABLE(REFERENCE='SOURCE_EXTERNE',
                      VALE=25.0,),
            )
 
-TEST_TABLE(
-           VALE_CALC=4.2361872865766998E-08,
-           TOLE_MACHINE=1.0000000000000001E-05,
-           NOM_PARA='DEPL',
-           TABLE=TABMODZ,
-           FILTRE=_F(NOM_PARA='FREQ',
-                     VALE=25.0,),
-           )
-
 TEST_TABLE(REFERENCE='SOURCE_EXTERNE',
-           PRECISION=0.050000000000000003,
-           VALE_CALC= 7.13957961E-07,
+           PRECISION=0.05,
+           VALE_CALC= 7.1395796102877999E-07,
            VALE_REFE=7.0699999999999996E-07,
            NOM_PARA='DEPL',
            TABLE=TABMODZ,
@@ -407,17 +336,9 @@ TEST_TABLE(REFERENCE='SOURCE_EXTERNE',
                      VALE=250.0,),
            )
 
-TEST_TABLE(
-           VALE_CALC=7.1395796102877999E-07,
-           TOLE_MACHINE=1.0000000000000001E-05,
-           NOM_PARA='DEPL',
-           TABLE=TABMODZ,
-           FILTRE=_F(NOM_PARA='FREQ',
-                     VALE=250.0,),
-           )
 
 TEST_TABLE(REFERENCE='SOURCE_EXTERNE',
-           PRECISION=0.050000000000000003,
+           PRECISION=0.05,
            VALE_CALC=-0.065168056,
            VALE_REFE=-0.064399999999999999,
            NOM_PARA='PHAS',
@@ -426,18 +347,10 @@ TEST_TABLE(REFERENCE='SOURCE_EXTERNE',
                      VALE=1.0,),
            )
 
-TEST_TABLE(
-           VALE_CALC=-0.065168000000000004,
-           TOLE_MACHINE=1.0000000000000001E-05,
-           NOM_PARA='PHAS',
-           TABLE=TABMODZ,
-           FILTRE=_F(NOM_PARA='FREQ',
-                     VALE=1.0,),
-           )
 
 TEST_TABLE(REFERENCE='SOURCE_EXTERNE',
-           PRECISION=0.050000000000000003,
-           VALE_CALC=-1.644893887,
+           PRECISION=0.05,
+           VALE_CALC=-1.6448940000000001,
            VALE_REFE=-1.6253,
            NOM_PARA='PHAS',
            TABLE=TABMODZ,
@@ -445,18 +358,10 @@ TEST_TABLE(REFERENCE='SOURCE_EXTERNE',
                      VALE=25.0,),
            )
 
-TEST_TABLE(
-           VALE_CALC=-1.6448940000000001,
-           TOLE_MACHINE=1.0000000000000001E-05,
-           NOM_PARA='PHAS',
-           TABLE=TABMODZ,
-           FILTRE=_F(NOM_PARA='FREQ',
-                     VALE=25.0,),
-           )
 
 TEST_TABLE(REFERENCE='SOURCE_EXTERNE',
-           PRECISION=0.050000000000000003,
-           VALE_CALC=141.645767682,
+           PRECISION=0.05,
+           VALE_CALC=141.64576768220999,
            VALE_REFE=139.52799999999999,
            NOM_PARA='PHAS',
            TABLE=TABMODZ,
@@ -464,14 +369,6 @@ TEST_TABLE(REFERENCE='SOURCE_EXTERNE',
                      VALE=250.0,),
            )
 
-TEST_TABLE(
-           VALE_CALC=141.64576768220999,
-           TOLE_MACHINE=1.0000000000000001E-05,
-           NOM_PARA='PHAS',
-           TABLE=TABMODZ,
-           FILTRE=_F(NOM_PARA='FREQ',
-                     VALE=250.0,),
-           )
 
 DETRUIRE(CONCEPT=_F(NOM=TABMODX))
 DETRUIRE(CONCEPT=_F(NOM=TABMODZ))
@@ -542,7 +439,7 @@ IMPR_TABLE(TABLE=TABMODZ, UNITE=6)
 
 
 TEST_TABLE(REFERENCE='SOURCE_EXTERNE',
-           PRECISION=0.050000000000000003,
+           PRECISION=0.05,
            VALE_CALC= 2.63025068E-09,
            VALE_REFE=2.628E-09,
            NOM_PARA='DEPL',
@@ -551,18 +448,10 @@ TEST_TABLE(REFERENCE='SOURCE_EXTERNE',
                      VALE=1.0,),
            )
 
-TEST_TABLE(
-           VALE_CALC=2.6302505999999999E-09,
-           TOLE_MACHINE=1.0000000000000001E-05,
-           NOM_PARA='DEPL',
-           TABLE=TABMODX,
-           FILTRE=_F(NOM_PARA='FREQ',
-                     VALE=1.0,),
-           )
 
 TEST_TABLE(REFERENCE='SOURCE_EXTERNE',
-           PRECISION=0.050000000000000003,
-           VALE_CALC= 2.70733235E-09,
+           PRECISION=0.05,
+           VALE_CALC= 2.7073323547496999E-09,
            VALE_REFE=2.7040000000000002E-09,
            NOM_PARA='DEPL',
            TABLE=TABMODX,
@@ -570,17 +459,8 @@ TEST_TABLE(REFERENCE='SOURCE_EXTERNE',
                      VALE=25.0,),
            )
 
-TEST_TABLE(
-           VALE_CALC=2.7073323547496999E-09,
-           TOLE_MACHINE=1.0000000000000001E-05,
-           NOM_PARA='DEPL',
-           TABLE=TABMODX,
-           FILTRE=_F(NOM_PARA='FREQ',
-                     VALE=25.0,),
-           )
-
 TEST_TABLE(REFERENCE='SOURCE_EXTERNE',
-           PRECISION=0.050000000000000003,
+           PRECISION=0.05,
            VALE_CALC= 7.26349808E-08,
            VALE_REFE=7.2300000000000006E-08,
            NOM_PARA='DEPL',
@@ -589,14 +469,6 @@ TEST_TABLE(REFERENCE='SOURCE_EXTERNE',
                      VALE=250.0,),
            )
 
-TEST_TABLE(
-           VALE_CALC=7.2634980830114995E-08,
-           TOLE_MACHINE=1.0000000000000001E-05,
-           NOM_PARA='DEPL',
-           TABLE=TABMODX,
-           FILTRE=_F(NOM_PARA='FREQ',
-                     VALE=250.0,),
-           )
 
 TEST_TABLE(REFERENCE='SOURCE_EXTERNE',
            PRECISION=0.050000000000000003,
@@ -608,14 +480,6 @@ TEST_TABLE(REFERENCE='SOURCE_EXTERNE',
                      VALE=1.0,),
            )
 
-TEST_TABLE(
-           VALE_CALC=8.3407787772478996E-08,
-           TOLE_MACHINE=1.0000000000000001E-05,
-           NOM_PARA='DEPL',
-           TABLE=TABMODZ,
-           FILTRE=_F(NOM_PARA='FREQ',
-                     VALE=1.0,),
-           )
 
 TEST_TABLE(REFERENCE='SOURCE_EXTERNE',
            PRECISION=0.050000000000000003,
@@ -627,14 +491,6 @@ TEST_TABLE(REFERENCE='SOURCE_EXTERNE',
                      VALE=25.0,),
            )
 
-TEST_TABLE(
-           VALE_CALC=8.4211184109064999E-08,
-           TOLE_MACHINE=1.0000000000000001E-05,
-           NOM_PARA='DEPL',
-           TABLE=TABMODZ,
-           FILTRE=_F(NOM_PARA='FREQ',
-                     VALE=25.0,),
-           )
 
 TEST_TABLE(REFERENCE='SOURCE_EXTERNE',
            PRECISION=0.050000000000000003,
@@ -646,14 +502,6 @@ TEST_TABLE(REFERENCE='SOURCE_EXTERNE',
                      VALE=250.0,),
            )
 
-TEST_TABLE(
-           VALE_CALC=3.3019124549655002E-07,
-           TOLE_MACHINE=1.0000000000000001E-05,
-           NOM_PARA='DEPL',
-           TABLE=TABMODZ,
-           FILTRE=_F(NOM_PARA='FREQ',
-                     VALE=250.0,),
-           )
 
 TEST_TABLE(REFERENCE='SOURCE_EXTERNE',
            PRECISION=0.050000000000000003,
@@ -665,14 +513,6 @@ TEST_TABLE(REFERENCE='SOURCE_EXTERNE',
                      VALE=1.0,),
            )
 
-TEST_TABLE(
-           VALE_CALC=-179.85763700000001,
-           TOLE_MACHINE=1.0000000000000001E-05,
-           NOM_PARA='PHAS',
-           TABLE=TABMODX,
-           FILTRE=_F(NOM_PARA='FREQ',
-                     VALE=1.0,),
-           )
 
 TEST_TABLE(REFERENCE='SOURCE_EXTERNE',
            PRECISION=0.050000000000000003,
@@ -684,14 +524,6 @@ TEST_TABLE(REFERENCE='SOURCE_EXTERNE',
                      VALE=25.0,),
            )
 
-TEST_TABLE(
-           VALE_CALC=-176.48231999999999,
-           TOLE_MACHINE=1.0000000000000001E-05,
-           NOM_PARA='PHAS',
-           TABLE=TABMODX,
-           FILTRE=_F(NOM_PARA='FREQ',
-                     VALE=25.0,),
-           )
 
 TEST_TABLE(REFERENCE='SOURCE_EXTERNE',
            PRECISION=0.070000000000000007,
@@ -703,14 +535,6 @@ TEST_TABLE(REFERENCE='SOURCE_EXTERNE',
                      VALE=250.0,),
            )
 
-TEST_TABLE(
-           VALE_CALC=-6.2622232857259998,
-           TOLE_MACHINE=1.0000000000000001E-05,
-           NOM_PARA='PHAS',
-           TABLE=TABMODX,
-           FILTRE=_F(NOM_PARA='FREQ',
-                     VALE=250.0,),
-           )
 
 TEST_TABLE(REFERENCE='SOURCE_EXTERNE',
            PRECISION=0.050000000000000003,
@@ -722,14 +546,6 @@ TEST_TABLE(REFERENCE='SOURCE_EXTERNE',
                      VALE=1.0,),
            )
 
-TEST_TABLE(
-           VALE_CALC=179.97694000000001,
-           TOLE_MACHINE=1.0000000000000001E-05,
-           NOM_PARA='PHAS',
-           TABLE=TABMODZ,
-           FILTRE=_F(NOM_PARA='FREQ',
-                     VALE=1.0,),
-           )
 
 TEST_TABLE(REFERENCE='SOURCE_EXTERNE',
            PRECISION=0.050000000000000003,
@@ -741,14 +557,6 @@ TEST_TABLE(REFERENCE='SOURCE_EXTERNE',
                      VALE=25.0,),
            )
 
-TEST_TABLE(
-           VALE_CALC=179.41764499999999,
-           TOLE_MACHINE=1.0000000000000001E-05,
-           NOM_PARA='PHAS',
-           TABLE=TABMODZ,
-           FILTRE=_F(NOM_PARA='FREQ',
-                     VALE=25.0,),
-           )
 
 TEST_TABLE(REFERENCE='SOURCE_EXTERNE',
            PRECISION=0.050000000000000003,
@@ -760,14 +568,6 @@ TEST_TABLE(REFERENCE='SOURCE_EXTERNE',
                      VALE=250.0,),
            )
 
-TEST_TABLE(
-           VALE_CALC=115.33619073892,
-           TOLE_MACHINE=1.0000000000000001E-05,
-           NOM_PARA='PHAS',
-           TABLE=TABMODZ,
-           FILTRE=_F(NOM_PARA='FREQ',
-                     VALE=250.0,),
-           )
 
 DETRUIRE(CONCEPT=_F(NOM=TABMODX))
 DETRUIRE(CONCEPT=_F(NOM=TABMODZ))
@@ -1621,28 +1421,11 @@ TEST_TABLE(REFERENCE='SOURCE_EXTERNE',
                      VALE=1.0,),
            )
 
-TEST_TABLE(
-           VALE_CALC=1.0331319008275E-07,
-           TOLE_MACHINE=1.0000000000000001E-05,
-           NOM_PARA='DEPL',
-           TABLE=TABMODX,
-           FILTRE=_F(NOM_PARA='FREQ',
-                     VALE=1.0,),
-           )
 
 TEST_TABLE(REFERENCE='SOURCE_EXTERNE',
            PRECISION=0.050000000000000003,
            VALE_CALC= 1.04779884E-07,
            VALE_REFE=1.047E-07,
-           NOM_PARA='DEPL',
-           TABLE=TABMODX,
-           FILTRE=_F(NOM_PARA='FREQ',
-                     VALE=25.0,),
-           )
-
-TEST_TABLE(
-           VALE_CALC=1.0477988372278001E-07,
-           TOLE_MACHINE=1.0000000000000001E-05,
            NOM_PARA='DEPL',
            TABLE=TABMODX,
            FILTRE=_F(NOM_PARA='FREQ',
@@ -1659,14 +1442,6 @@ TEST_TABLE(REFERENCE='SOURCE_EXTERNE',
                      VALE=250.0,),
            )
 
-TEST_TABLE(
-           VALE_CALC=3.0507489464776001E-08,
-           TOLE_MACHINE=1.0000000000000001E-05,
-           NOM_PARA='DEPL',
-           TABLE=TABMODX,
-           FILTRE=_F(NOM_PARA='FREQ',
-                     VALE=250.0,),
-           )
 
 TEST_TABLE(REFERENCE='SOURCE_EXTERNE',
            PRECISION=0.050000000000000003,
@@ -1678,14 +1453,6 @@ TEST_TABLE(REFERENCE='SOURCE_EXTERNE',
                      VALE=1.0,),
            )
 
-TEST_TABLE(
-           VALE_CALC=4.1409851999999997E-08,
-           TOLE_MACHINE=1.0000000000000001E-05,
-           NOM_PARA='DEPL',
-           TABLE=TABMODZ,
-           FILTRE=_F(NOM_PARA='FREQ',
-                     VALE=1.0,),
-           )
 
 TEST_TABLE(REFERENCE='SOURCE_EXTERNE',
            PRECISION=0.050000000000000003,
@@ -1697,28 +1464,11 @@ TEST_TABLE(REFERENCE='SOURCE_EXTERNE',
                      VALE=25.0,),
            )
 
-TEST_TABLE(
-           VALE_CALC=4.2615667282005001E-08,
-           TOLE_MACHINE=1.0000000000000001E-05,
-           NOM_PARA='DEPL',
-           TABLE=TABMODZ,
-           FILTRE=_F(NOM_PARA='FREQ',
-                     VALE=25.0,),
-           )
 
 TEST_TABLE(REFERENCE='SOURCE_EXTERNE',
            PRECISION=0.050000000000000003,
            VALE_CALC= 1.64793470E-07,
            VALE_REFE=1.6479999999999999E-07,
-           NOM_PARA='DEPL',
-           TABLE=TABMODZ,
-           FILTRE=_F(NOM_PARA='FREQ',
-                     VALE=250.0,),
-           )
-
-TEST_TABLE(
-           VALE_CALC=1.647934702024E-07,
-           TOLE_MACHINE=1.0000000000000001E-05,
            NOM_PARA='DEPL',
            TABLE=TABMODZ,
            FILTRE=_F(NOM_PARA='FREQ',
@@ -1735,15 +1485,6 @@ TEST_TABLE(REFERENCE='SOURCE_EXTERNE',
                      VALE=1.0,),
            )
 
-TEST_TABLE(
-           VALE_CALC=3.1349798865995E-3,
-           TOLE_MACHINE=1.0000000000000001E-05,
-           NOM_PARA='PHAS',
-           TABLE=TABMODX,
-           FILTRE=_F(NOM_PARA='FREQ',
-                     VALE=1.0,),
-           )
-
 TEST_TABLE(REFERENCE='SOURCE_EXTERNE',
            PRECISION=0.050000000000000003,
            VALE_CALC=0.089963039,
@@ -1754,14 +1495,6 @@ TEST_TABLE(REFERENCE='SOURCE_EXTERNE',
                      VALE=25.0,),
            )
 
-TEST_TABLE(
-           VALE_CALC=0.089963038638989995,
-           TOLE_MACHINE=1.0000000000000001E-05,
-           NOM_PARA='PHAS',
-           TABLE=TABMODX,
-           FILTRE=_F(NOM_PARA='FREQ',
-                     VALE=25.0,),
-           )
 
 TEST_TABLE(REFERENCE='SOURCE_EXTERNE',
            PRECISION=0.050000000000000003,
@@ -1773,14 +1506,6 @@ TEST_TABLE(REFERENCE='SOURCE_EXTERNE',
                      VALE=250.0,),
            )
 
-TEST_TABLE(
-           VALE_CALC=-110.53342609147001,
-           TOLE_MACHINE=1.0000000000000001E-05,
-           NOM_PARA='PHAS',
-           TABLE=TABMODX,
-           FILTRE=_F(NOM_PARA='FREQ',
-                     VALE=250.0,),
-           )
 
 TEST_TABLE(REFERENCE='SOURCE_EXTERNE',
            PRECISION=0.050000000000000003,
@@ -1792,14 +1517,6 @@ TEST_TABLE(REFERENCE='SOURCE_EXTERNE',
                      VALE=1.0,),
            )
 
-TEST_TABLE(
-           VALE_CALC=-0.21443579569721,
-           TOLE_MACHINE=1.0000000000000001E-05,
-           NOM_PARA='PHAS',
-           TABLE=TABMODZ,
-           FILTRE=_F(NOM_PARA='FREQ',
-                     VALE=1.0,),
-           )
 
 TEST_TABLE(REFERENCE='SOURCE_EXTERNE',
            PRECISION=0.050000000000000003,
@@ -1811,14 +1528,6 @@ TEST_TABLE(REFERENCE='SOURCE_EXTERNE',
                      VALE=25.0,),
            )
 
-TEST_TABLE(
-           VALE_CALC=-5.3416396513322999,
-           TOLE_MACHINE=1.0000000000000001E-05,
-           NOM_PARA='PHAS',
-           TABLE=TABMODZ,
-           FILTRE=_F(NOM_PARA='FREQ',
-                     VALE=25.0,),
-           )
 
 TEST_TABLE(REFERENCE='SOURCE_EXTERNE',
            PRECISION=0.050000000000000003,
@@ -1830,14 +1539,6 @@ TEST_TABLE(REFERENCE='SOURCE_EXTERNE',
                      VALE=250.0,),
            )
 
-TEST_TABLE(
-           VALE_CALC=91.966945252822001,
-           TOLE_MACHINE=1.0000000000000001E-05,
-           NOM_PARA='PHAS',
-           TABLE=TABMODZ,
-           FILTRE=_F(NOM_PARA='FREQ',
-                     VALE=250.0,),
-           )
 
 DETRUIRE(CONCEPT=_F(NOM=TABMODX))
 DETRUIRE(CONCEPT=_F(NOM=TABMODZ))
@@ -1917,14 +1618,6 @@ TEST_TABLE(REFERENCE='SOURCE_EXTERNE',
                      VALE=1.0,),
            )
 
-TEST_TABLE(
-           VALE_CALC=2.6339428000000002E-09,
-           TOLE_MACHINE=1.0000000000000001E-05,
-           NOM_PARA='DEPL',
-           TABLE=TABMODX,
-           FILTRE=_F(NOM_PARA='FREQ',
-                     VALE=1.0,),
-           )
 
 TEST_TABLE(REFERENCE='SOURCE_EXTERNE',
            PRECISION=0.050000000000000003,
@@ -1936,14 +1629,6 @@ TEST_TABLE(REFERENCE='SOURCE_EXTERNE',
                      VALE=25.0,),
            )
 
-TEST_TABLE(
-           VALE_CALC=4.4860031846612001E-09,
-           TOLE_MACHINE=1.0000000000000001E-05,
-           NOM_PARA='DEPL',
-           TABLE=TABMODX,
-           FILTRE=_F(NOM_PARA='FREQ',
-                     VALE=25.0,),
-           )
 
 TEST_TABLE(REFERENCE='SOURCE_EXTERNE',
            PRECISION=0.050000000000000003,
@@ -1955,14 +1640,6 @@ TEST_TABLE(REFERENCE='SOURCE_EXTERNE',
                      VALE=250.0,),
            )
 
-TEST_TABLE(
-           VALE_CALC=1.0486507262596E-07,
-           TOLE_MACHINE=1.0000000000000001E-05,
-           NOM_PARA='DEPL',
-           TABLE=TABMODX,
-           FILTRE=_F(NOM_PARA='FREQ',
-                     VALE=250.0,),
-           )
 
 TEST_TABLE(REFERENCE='SOURCE_EXTERNE',
            PRECISION=0.050000000000000003,
@@ -1974,14 +1651,6 @@ TEST_TABLE(REFERENCE='SOURCE_EXTERNE',
                      VALE=1.0,),
            )
 
-TEST_TABLE(
-           VALE_CALC=8.3408041468143005E-08,
-           TOLE_MACHINE=1.0000000000000001E-05,
-           NOM_PARA='DEPL',
-           TABLE=TABMODZ,
-           FILTRE=_F(NOM_PARA='FREQ',
-                     VALE=1.0,),
-           )
 
 TEST_TABLE(REFERENCE='SOURCE_EXTERNE',
            PRECISION=0.050000000000000003,
@@ -1993,14 +1662,6 @@ TEST_TABLE(REFERENCE='SOURCE_EXTERNE',
                      VALE=25.0,),
            )
 
-TEST_TABLE(
-           VALE_CALC=8.4375350452977999E-08,
-           TOLE_MACHINE=1.0000000000000001E-05,
-           NOM_PARA='DEPL',
-           TABLE=TABMODZ,
-           FILTRE=_F(NOM_PARA='FREQ',
-                     VALE=25.0,),
-           )
 
 TEST_TABLE(REFERENCE='SOURCE_EXTERNE',
            PRECISION=0.050000000000000003,
@@ -2012,14 +1673,6 @@ TEST_TABLE(REFERENCE='SOURCE_EXTERNE',
                      VALE=250.0,),
            )
 
-TEST_TABLE(
-           VALE_CALC=7.8776761415404E-08,
-           TOLE_MACHINE=1.0000000000000001E-05,
-           NOM_PARA='DEPL',
-           TABLE=TABMODZ,
-           FILTRE=_F(NOM_PARA='FREQ',
-                     VALE=250.0,),
-           )
 
 TEST_TABLE(REFERENCE='SOURCE_EXTERNE',
            PRECISION=0.050000000000000003,
@@ -2031,14 +1684,6 @@ TEST_TABLE(REFERENCE='SOURCE_EXTERNE',
                      VALE=1.0,),
            )
 
-TEST_TABLE(
-           VALE_CALC=-176.97587269138,
-           TOLE_MACHINE=1.0000000000000001E-05,
-           NOM_PARA='PHAS',
-           TABLE=TABMODX,
-           FILTRE=_F(NOM_PARA='FREQ',
-                     VALE=1.0,),
-           )
 
 TEST_TABLE(REFERENCE='SOURCE_EXTERNE',
            PRECISION=0.050000000000000003,
@@ -2050,14 +1695,6 @@ TEST_TABLE(REFERENCE='SOURCE_EXTERNE',
                      VALE=25.0,),
            )
 
-TEST_TABLE(
-           VALE_CALC=-127.47420342023,
-           TOLE_MACHINE=1.0000000000000001E-05,
-           NOM_PARA='PHAS',
-           TABLE=TABMODX,
-           FILTRE=_F(NOM_PARA='FREQ',
-                     VALE=25.0,),
-           )
 
 TEST_TABLE(REFERENCE='SOURCE_EXTERNE',
            PRECISION=0.050000000000000003,
@@ -2069,14 +1706,6 @@ TEST_TABLE(REFERENCE='SOURCE_EXTERNE',
                      VALE=250.0,),
            )
 
-TEST_TABLE(
-           VALE_CALC=30.343782729276999,
-           TOLE_MACHINE=1.0000000000000001E-05,
-           NOM_PARA='PHAS',
-           TABLE=TABMODX,
-           FILTRE=_F(NOM_PARA='FREQ',
-                     VALE=250.0,),
-           )
 
 TEST_TABLE(REFERENCE='SOURCE_EXTERNE',
            PRECISION=0.050000000000000003,
@@ -2088,14 +1717,6 @@ TEST_TABLE(REFERENCE='SOURCE_EXTERNE',
                      VALE=1.0,),
            )
 
-TEST_TABLE(
-           VALE_CALC=-179.99370999999999,
-           TOLE_MACHINE=1.0000000000000001E-05,
-           NOM_PARA='PHAS',
-           TABLE=TABMODZ,
-           FILTRE=_F(NOM_PARA='FREQ',
-                     VALE=1.0,),
-           )
 
 TEST_TABLE(REFERENCE='SOURCE_EXTERNE',
            PRECISION=0.050000000000000003,
@@ -2107,14 +1728,6 @@ TEST_TABLE(REFERENCE='SOURCE_EXTERNE',
                      VALE=25.0,),
            )
 
-TEST_TABLE(
-           VALE_CALC=-179.82855000000001,
-           TOLE_MACHINE=1.0000000000000001E-05,
-           NOM_PARA='PHAS',
-           TABLE=TABMODZ,
-           FILTRE=_F(NOM_PARA='FREQ',
-                     VALE=25.0,),
-           )
 
 TEST_TABLE(REFERENCE='SOURCE_EXTERNE',
            PRECISION=0.050000000000000003,
@@ -2126,14 +1739,6 @@ TEST_TABLE(REFERENCE='SOURCE_EXTERNE',
                      VALE=250.0,),
            )
 
-TEST_TABLE(
-           VALE_CALC=114.25922806648001,
-           TOLE_MACHINE=1.0000000000000001E-05,
-           NOM_PARA='PHAS',
-           TABLE=TABMODZ,
-           FILTRE=_F(NOM_PARA='FREQ',
-                     VALE=250.0,),
-           )
 
 DETRUIRE(CONCEPT=_F(NOM=TABMODX))
 DETRUIRE(CONCEPT=_F(NOM=TABMODZ))

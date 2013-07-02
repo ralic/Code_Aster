@@ -1,5 +1,4 @@
 # TITRE -    APPARITION/DISPARITION DE PHASE DANS UN ECOULEMENT DIPHASIQUE
-#            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -490,8 +489,7 @@ TEST_RESU(RESU=_F(INST=3.1536000E7,
                NOM_CMP='PRE2',
                VALE_CALC= 4.95840169E-11,
                VALE_REFE=4.9584E-11,
-               CRITERE='RELATIF',
-               PRECISION=1.E-2,
+               CRITERE='ABSOLU',
                ),
        )
 
@@ -542,7 +540,7 @@ TEST_RESU(RESU=_F(INST=3.1536000000E10,
                NOEUD='NH4',
                NOM_CMP='PRE2',
                VALE_CALC= 2.55284303E+05,
-               VALE_REFE=2.5528429999999999E5,
+               VALE_REFE=2.552843E5,
                CRITERE='RELATIF',
                PRECISION=1.E-2,
                ),
@@ -568,7 +566,7 @@ TEST_RESU(RESU=_F(INST=3.1536000000E10,
                NOEUD='NH195',
                NOM_CMP='PRE2',
                VALE_CALC= 9.40096931E-06,
-               VALE_REFE=9.4009690000000005E-06,
+               VALE_REFE=9.400969E-06,
                CRITERE='RELATIF',
                PRECISION=1.E-2,
                ),

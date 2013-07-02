@@ -1,5 +1,4 @@
 # TITRE SYSTEME 1 MASSE 1 RESSORT  A 3 DDL (+ 1 AMORTISSEUR DISCRET)
-#            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -16,8 +15,6 @@
 # ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
-#CAS_TEST__:SDLD321B
-# IRCN   DATE 28/08/96   AUTEUR G.BECHEPAY - T.QUESNEL
 ########################################################################
 # DYNAMIQUE TRANSITOIRE SUR BASE MODALE SYSTEME MASSE ET RESSORT
 # INTEGRATION SUR BASE MODALE : 1- SCHEMA FU-DEVOGELAERE
@@ -607,6 +604,7 @@ TEST_RESU(RESU=_F(INST=4.96,
                   VALE_CALC=9.0047908426862E-03,
                   VALE_REFE=9.0084699999999993E-3,
                   REFERENCE='ANALYTIQUE',
+                  TOLE_MACHINE=1.E-3,             # ajustement pour clap0f0q
                   PRECISION=5.E-3,),
           )
 

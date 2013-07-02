@@ -1,5 +1,4 @@
 # TITRE ABSORPTION D'UNE ONDE DE PRESSION DANS UNE COLONNE FLUIDE
-#            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -135,8 +134,6 @@ DYN=DYNA_VIBRA(TYPE_CALCUL='TRAN',BASE_CALCUL='PHYS',
 
 ENER1=RECU_TABLE(CO=DYN,NOM_TABLE='PARA_CALC',);
 
-IMPR_TABLE(TABLE=ENER1);
-
 PRECREL1 = 1.E-7 
 PRECREL2 = 2.E-5
 PRECABS1 = 3.E-3
@@ -184,6 +181,7 @@ TEST_TABLE(
 
 TEST_TABLE(CRITERE='ABSOLU',
            VALE_CALC=3.3802837680473E-04,
+           TOLE_MACHINE=1.E-3,                 # ajustement pour clap0f0q
            NOM_PARA='DISS_SCH',
            TABLE=ENER1,
            FILTRE=_F(NOM_PARA='INST',
@@ -202,6 +200,7 @@ TEST_TABLE(
            VALE_CALC=2.1890298685735,
            NOM_PARA='ENER_CIN',
            TABLE=ENER1,
+           TOLE_MACHINE=1.E-5,                 # ajustement pour clap0f0q
            FILTRE=_F(NOM_PARA='INST',
                      VALE=1.2,),
            )
@@ -210,6 +209,7 @@ TEST_TABLE(
            VALE_CALC=0.13511580972602,
            NOM_PARA='ENER_TOT',
            TABLE=ENER1,
+           TOLE_MACHINE=1.E-5,                 # ajustement pour clap0f0q
            FILTRE=_F(NOM_PARA='INST',
                      VALE=1.2,),
            )
@@ -234,6 +234,7 @@ TEST_TABLE(CRITERE='ABSOLU',
            VALE_CALC=-2.7238870110589E-04,
            NOM_PARA='DISS_SCH',
            TABLE=ENER1,
+           TOLE_MACHINE=5.E-3,                 # ajustement pour clap0f0q
            FILTRE=_F(NOM_PARA='INST',
                      VALE=1.2,),
            )
@@ -261,6 +262,7 @@ TRAVAIL = POST_ELEM(
 
 TEST_TABLE(
            VALE_CALC=0.13511580961060,
+           TOLE_MACHINE=1.E-5,                 # ajustement pour clap0f0q
            NOM_PARA='TRAV_REEL',
            TABLE=TRAVAIL,
            FILTRE=_F(NOM_PARA='INST',
@@ -365,7 +367,6 @@ DYNA=DYNA_NON_LINE(     MODELE=MODELE,   CHAM_MATER=CHAMPMAT,
 
 ENER=RECU_TABLE(CO=DYNA,NOM_TABLE='PARA_CALC',);
 
-IMPR_TABLE(TABLE=ENER);
 
 TEST_TABLE(
            VALE_CALC=16182.45409801,

@@ -1,5 +1,4 @@
 # TITRE SIMULATION DES ESSAIS ANL (TUBES LONGS) : POUTRE SOUMISE
-#            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -16,7 +15,6 @@
 # ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
-#            CONFIGURATION MANAGEMENT OF EDF VERSION
 #       A UN ECOULEMENT MONOPHASIQUE AVEC UN AMORTISSEMENT EN
 #       FLUIDE AU REPOS DE 1,3#.
 #-------------------------------------------------------------------
@@ -440,6 +438,7 @@ TEST_TABLE(
 
 TEST_TABLE(
            VALE_CALC=6.4034223669809E-4,
+           TOLE_MACHINE=5.E-4,               # ajustement pour clap0f0q
            NOM_PARA='ECART',
            TABLE=DYN0_150,
            FILTRE=(_F(NOM_PARA='NOEUD_I',
@@ -451,6 +450,7 @@ TEST_TABLE(
 
 TEST_TABLE(
            VALE_CALC=7.8693192431264E-4,
+           TOLE_MACHINE=5.E-4,               # ajustement pour clap0f0q
            NOM_PARA='ECART',
            TABLE=DYN0_175,
            FILTRE=(_F(NOM_PARA='NOEUD_I',
@@ -462,6 +462,7 @@ TEST_TABLE(
 
 TEST_TABLE(
            VALE_CALC=9.4626637442493E-4,
+           TOLE_MACHINE=5.E-4,               # ajustement pour clap0f0q
            NOM_PARA='ECART',
            TABLE=DYN0_200,
            FILTRE=(_F(NOM_PARA='NOEUD_I',

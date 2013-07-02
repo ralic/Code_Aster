@@ -1,5 +1,4 @@
 # TITRE ETUDE ESSAI TRIAXIAL DRAINE AVEC LE MODELE VISCOPLASTIQUE DU CIH : LETK
-#            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -212,11 +211,6 @@ U1=STAT_NON_LINE(
 
 U1=CALC_CHAMP(reuse=U1,CONTRAINTE=('SIGM_ELNO'),VARI_INTERNE=('VARI_ELNO'),RESULTAT=U1)
 
-
-IMPR_RESU(MODELE=MODELE,
-          RESU=(_F(RESULTAT=U1,INST=(7000.)),
-                   ),);
-
 TEMPS2=DEFI_LIST_REEL(   DEBUT=7000.,
                          INTERVALLE=(_F(  JUSQU_A = 8000.00,    NOMBRE = 100, ),
                                      _F(  JUSQU_A = 9000.00,    NOMBRE = 100, ),
@@ -323,6 +317,7 @@ TEST_RESU(RESU=_F(INST=1.3000E4,
                   NOEUD='NO8',
                   NOM_CMP='DX',
                   VALE_CALC=0.030197531960783,
+                  TOLE_MACHINE=1.E-5            # ajustement pour clap0f0q
                   ),
           )
 
@@ -332,6 +327,7 @@ TEST_RESU(RESU=_F(INST=1.3000E4,
                   NOEUD='NO8',
                   NOM_CMP='SIZZ',
                   VALE_CALC=-1.1940997655806E+07,
+                  TOLE_MACHINE=1.E-4            # ajustement pour clap0f0q
                   ),
           )
 

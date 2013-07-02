@@ -1,5 +1,4 @@
 # TITRE CALCUL MODAL POUTRE MULTIFIBRE AVEC GYROSCOPIE
-#            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -288,12 +287,14 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=1,
                    PARA='FREQ',
                    RESULTAT=MODEQ,
                    VALE_CALC=1.077180332855E5,
+                   TOLE_MACHINE=1.E-5,      # ajustement pour clap0f0q
                    CRITERE='RELATIF',
                    ),
                 _F(NUME_ORDRE=106,
                    PARA='AMOR_REDUIT',
                    RESULTAT=MODEQ,
-                   VALE_CALC=-1.2310741511631E-06,
+                   VALE_CALC=0.,
+                   TOLE_MACHINE=1.E-5,      # ajustement pour clap0f0q
                    CRITERE='ABSOLU',
                    ),
                 ),

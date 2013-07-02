@@ -1,5 +1,4 @@
 # TITRE SYSTEME 2 MASSES 2 RESSORTS  A 6 DDL (+ 2 AMORTISSEURS DISCRETS)
-#            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -16,8 +15,6 @@
 # ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
-#CAS_TEST__:SDLD325A
-# IRCN   DATE 28/08/96   AUTEUR G.BECHEPAY - T.QUESNEL
 # DYNAMIQUE TRANSITOIRE SUR BASE MODALE SYSTEME MASSE ET RESSORT
 #                       PAR INTEGRATION DIRECTE MASSE ET RESSORT
 ########################################################################
@@ -1210,14 +1207,15 @@ TEST_RESU(RESU=_F(INST=0.93000000000000005,
                   PRECISION=5.E-3,),
           )
 
-TEST_RESU(RESU=_F(INST=1.1100000000000001,
+TEST_RESU(RESU=_F(INST=1.11,
                   RESULTAT=DYTR_54V,
                   NOM_CHAM='VITE',
                   NOEUD='N3',
                   NOM_CMP='DX',
                   VALE_CALC=-0.01586384745865,
-                  VALE_REFE=-0.015862999999999999,
+                  VALE_REFE=-0.015863,
                   REFERENCE='SOURCE_EXTERNE',
+                  TOLE_MACHINE=5.E-5,           # ajustement pour clap0f0q
                   PRECISION=5.E-3,),
           )
 
@@ -1229,6 +1227,7 @@ TEST_RESU(RESU=_F(INST=1.3700000000000001,
                   VALE_CALC=0.011156763532925,
                   VALE_REFE=0.011157,
                   REFERENCE='SOURCE_EXTERNE',
+                  TOLE_MACHINE=1.E-4,           # ajustement pour clap0f0q
                   PRECISION=5.E-3,),
           )
 

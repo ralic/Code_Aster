@@ -1,5 +1,4 @@
 # TITRE  - CONSOLIDATION TERZAGHI 2D Q8
-#            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -178,12 +177,6 @@ DEPLA2=POST_RELEVE_T(ACTION=_F(OPERATION='EXTRACTION',
                                GROUP_NO='BORDVERT',
                                TOUT_CMP='OUI'));
 
-IMPR_TABLE(TABLE=SIGMA2);
-
-IMPR_TABLE(TABLE=VARIN2);
-
-IMPR_TABLE(TABLE=DEPLA2);
-
 MODHYD=AFFE_MODELE(MAILLAGE=MAIL,
                    AFFE=_F(TOUT='OUI',
                            PHENOMENE='MECANIQUE',
@@ -265,6 +258,7 @@ TEST_RESU(RESU=(_F(INST=1.E-4,
                    NOM_CMP='PRE1',
                    VALE_CALC=0.999940871,
                    VALE_REFE=1.0,
+                   TOLE_MACHINE=1.E-5,          # ajustement pour clap0f0q
                    PRECISION=2.0E-03,),
                 _F(INST=1.E-4,
                    REFERENCE='AUTRE_ASTER',
@@ -274,6 +268,7 @@ TEST_RESU(RESU=(_F(INST=1.E-4,
                    NOM_CMP='PRE1',
                    VALE_CALC=0.999940871,
                    VALE_REFE=1.0,
+                   TOLE_MACHINE=1.E-5,          # ajustement pour clap0f0q
                    PRECISION=2.0E-03,),
                 _F(INST=250.0,
                    REFERENCE='AUTRE_ASTER',

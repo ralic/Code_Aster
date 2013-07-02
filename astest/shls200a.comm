@@ -1,5 +1,4 @@
 # TITRE MODELE PROBABILISTE NONPARAMETRIQUE EN HARMONIQUE SOUS-STRUCTURE
-#            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -16,7 +15,6 @@
 # ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
-#            CONFIGURATION MANAGEMENT OF EDF VERSION
 ##############################################################################
 #                                                                            #
 # PLAQUE RECTANGULAIRE EN APPPUI  SIMPLE SUR QUATRE BORDS, AVEC MASSES ET    #
@@ -504,49 +502,41 @@ for i in range(n_obs):
 # UTILISEE (I.E. CELLE DE PYTHON v2.3).
 
 TEST_FONCTION(VALEUR=(_F(VALE_CALC=6.0802671417374997E-05,
-                         TOLE_MACHINE=9.9999999999999995E-08,
                          VALE_PARA=30.0,
                          NOM_PARA='FREQ',
                          FONCTION=M1OBS_0,
                          ),
                       _F(VALE_CALC=3.7457833680155997E-09,
-                         TOLE_MACHINE=9.9999999999999995E-08,
                          VALE_PARA=30.0,
                          NOM_PARA='FREQ',
                          FONCTION=M2OBS_0,
                          ),
                       _F(VALE_CALC=5.1116761251424998E-05,
-                         TOLE_MACHINE=9.9999999999999995E-08,
                          VALE_PARA=30.0,
                          NOM_PARA='FREQ',
                          FONCTION=INFOBS_0,
                          ),
                       _F(VALE_CALC=6.7338296870617998E-05,
-                         TOLE_MACHINE=9.9999999999999995E-08,
                          VALE_PARA=30.0,
                          NOM_PARA='FREQ',
                          FONCTION=SUPOBS_0,
                          ),
                       _F(VALE_CALC=3.5186242151806003E-4,
-                         TOLE_MACHINE=9.9999999999999995E-08,
                          VALE_PARA=50.0,
                          NOM_PARA='FREQ',
                          FONCTION=M1OBS_1,
                          ),
                       _F(VALE_CALC=1.2765909447885E-07,
-                         TOLE_MACHINE=9.9999999999999995E-08,
                          VALE_PARA=50.0,
                          NOM_PARA='FREQ',
                          FONCTION=M2OBS_1,
                          ),
                       _F(VALE_CALC=2.8511128677169E-4,
-                         TOLE_MACHINE=9.9999999999999995E-08,
                          VALE_PARA=50.0,
                          NOM_PARA='FREQ',
                          FONCTION=INFOBS_1,
                          ),
                       _F(VALE_CALC=4.3459496115461001E-4,
-                         TOLE_MACHINE=9.9999999999999995E-08,
                          VALE_PARA=50.0,
                          NOM_PARA='FREQ',
                          FONCTION=SUPOBS_1,

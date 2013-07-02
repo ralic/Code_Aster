@@ -1,6 +1,4 @@
-
 # TITRE  :  REPONSE DYNAMIQUE D UNE POUTRE-TUYAU ENCASTREE LIBRE
-#            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -275,6 +273,7 @@ TEST_RESU(RESU=_F(NUME_ORDRE=1,
                   RESULTAT=MODE_FZ,
                   VALE_CALC=310.137886846,
                   VALE_REFE=310.13299999999998,
+                  TOLE_MACHINE=5.E-5,           # ajustement pour clap0f0q
                   CRITERE='RELATIF',),
           )
 

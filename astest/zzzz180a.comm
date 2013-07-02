@@ -1,5 +1,4 @@
 # TITRE TEST ANALYTIQUE DE LA GENERATION DE FONCTIONS ALEATOIRES
-#            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -20,7 +19,6 @@
 #
 # GENERATION DE DEUX FONCTIONS ALEATOIRES, LA DEUXIEME EST CORRELEE A LA
 # PREMIER AVEX UN DECALAGE DE T=0.015s ET COEF. DE CORRE. DE RHO=0.8
-# Responsable : S.Cambier
 
 import numpy as NP
 from math import atan
@@ -706,6 +704,7 @@ TEST_TABLE(REFERENCE='ANALYTIQUE',
            PRECISION=1.E-3,
            VALE_CALC=24.541437554,
            VALE_REFE=ecart1,
+           TOLE_MACHINE=5.E-6,          # ajustement pour clap0f0q
            NOM_PARA='ECART_TYPE',
            TABLE=RMS1,)
 
@@ -715,6 +714,7 @@ TEST_TABLE(REFERENCE='ANALYTIQUE',
            PRECISION=1.E-3,
            VALE_CALC=24.501368431,
            VALE_REFE=ecart2,
+           TOLE_MACHINE=5.E-4,          # ajustement pour clap0f0q
            NOM_PARA='ECART_TYPE',
            TABLE=RMS2,)
 

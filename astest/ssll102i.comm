@@ -1,5 +1,4 @@
 # TITRE POUTRE DROITE APPUYEE EN SES DEUX EXTREMITES SOUMISE A UN
-#            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -365,10 +364,11 @@ TEST_RESU(RESU=_F(NUME_ORDRE=1,
                   RESULTAT=SITU0,
                   NOM_CHAM='SIGM_ELNO',
                   NOM_CMP='SIXX',
-                  VALE_CALC=-1.3585290167048E-05,
+                  VALE_CALC=0.0,       # valeur calculée de l'ordre de 1.E-5
                   VALE_REFE=0.0,
                   CRITERE='ABSOLU',
-                  PRECISION=1.E-2,
+                  TOLE_MACHINE=1.E-2,  # ajustement pour tester en absolu la valeur nulle
+                  PRECISION   =1.E-2,
                   MAILLE='M12',),
           )
 
