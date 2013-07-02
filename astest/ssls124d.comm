@@ -1,5 +1,4 @@
 # TITRE PLAQUE EN FLEXION AVEC DIVERS ELANCEMENTS. MODELISATION SHB20 MAILLAGE REGULIER
-#            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -82,25 +81,25 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=1,
                    TYPE_TEST='SOMM_ABS',
                    RESULTAT=RESU31,
                    NOM_CHAM='DEPL',
-                   VALE_CALC=23.155870208820001,
+                   VALE_CALC=23.15587020882,
                    ),
                 _F(NUME_ORDRE=1,
                    TYPE_TEST='SOMM_ABS',
                    RESULTAT=RESU31,
                    NOM_CHAM='SIEF_ELGA',
-                   VALE_CALC=37.760971212950999,
+                   VALE_CALC=37.760971212951,
                    ),
                 _F(NUME_ORDRE=1,
                    TYPE_TEST='SOMM_ABS',
                    RESULTAT=RESU31,
                    NOM_CHAM='SIEF_ELNO',
-                   VALE_CALC=52.241240639693999,
+                   VALE_CALC=52.241240639694,
                    ),
                 _F(NUME_ORDRE=1,
                    TYPE_TEST='SOMM_ABS',
                    RESULTAT=RESU31,
                    NOM_CHAM='SIGM_ELNO',
-                   VALE_CALC=52.241240639693999,
+                   VALE_CALC=52.241240639694,
                    ),
                 _F(NUME_ORDRE=1,
                    TYPE_TEST='SOMM_ABS',
@@ -112,7 +111,7 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=1,
                    TYPE_TEST='SOMM_ABS',
                    RESULTAT=RESU31,
                    NOM_CHAM='SIEQ_ELNO',
-                   VALE_CALC=1.0691060711210E+03,
+                   VALE_CALC=1069.106071121,
                    ),
                 ),
           )
@@ -141,7 +140,7 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=1,
                    RESULTAT=RESU31,
                    NOM_CHAM='DEPL',
                    NOM_CMP='DZ',
-                   VALE_CALC= 2.00917578E-09,
+                   VALE_CALC=2.0091757833185E-09,
                    VALE_REFE=Uz,
                    PRECISION=1.E-2,),
                 _F(NUME_ORDRE=1,
@@ -150,9 +149,9 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=1,
                    RESULTAT=RESU31,
                    NOM_CHAM='DEPL',
                    NOM_CMP='DZ',
-                   VALE_CALC= 2.01351027E-09,
+                   VALE_CALC=2.0135102681564E-09,
                    VALE_REFE=Uz,
-                   PRECISION=0.012,),
+                   PRECISION=0.01,),
                 ),
           )
 
@@ -207,7 +206,7 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=1,
                    RESULTAT=RESU32,
                    NOM_CHAM='DEPL',
                    NOM_CMP='DZ',
-                   VALE_CALC= 1.98462630E-06,
+                   VALE_CALC=1.9846262952754E-06,
                    VALE_REFE=Uz,
                    PRECISION=1.E-2,),
                 _F(NUME_ORDRE=1,
@@ -216,7 +215,7 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=1,
                    RESULTAT=RESU32,
                    NOM_CHAM='DEPL',
                    NOM_CMP='DZ',
-                   VALE_CALC= 1.98455999E-06,
+                   VALE_CALC=1.9845599858738E-06,
                    VALE_REFE=Uz,
                    PRECISION=1.E-2,),
                 ),
@@ -258,25 +257,32 @@ CHARG33=AFFE_CHAR_MECA(MODELE=MODMEC33,
                                       FZ=F/b,),),
                            );
 
+# DANS CETTE CONFIGURATION LE PROBLEME DEVIENT TRES MAL CONDITIONNE (1.0E+13 DEJA)
+# L/h=1000 ET MAILLAGE DISTORDU
+# ON UTILISE MUMPS ET ON DESACTIVE LA DETECTION DE SINGULARITE AINSI QUE LA VERIFICATION DE QUALITE
 RESU33=MECA_STATIQUE(MODELE=MODMEC33,
                     CHAM_MATER=CHMAT33,
                     EXCIT=_F(CHARGE=CHARG33,),
-                    SOLVEUR=_F(METHODE ='MULT_FRONT',NPREC=11 ),
+                    SOLVEUR=_F(METHODE='MUMPS',
+                               NPREC=-1,
+                               RESI_RELA=-1.0,
+                               ),
                     );
 
 Iy=b*h*h*h/12
 Uz=F*L*L*L/3/YG/Iy
 
-
+# LA SOLUTION OBTENUE PRESENTE UNE FAIBLE VARIABILITE ENTRE MACHINES QUI DECOULE
+# DU MAUVAIS CONDITIONNEMENT
 TEST_RESU(RESU=(_F(NUME_ORDRE=1,
                    GROUP_NO='P7',
                    REFERENCE='ANALYTIQUE',
                    RESULTAT=RESU33,
                    NOM_CHAM='DEPL',
                    NOM_CMP='DZ',
-                   VALE_CALC= 1.98208435E-03,
+                   VALE_CALC=1.983237212303E-03,
                    VALE_REFE=Uz,
-                   TOLE_MACHINE=1.e-2,
+                   TOLE_MACHINE=1.E-3,
                    PRECISION=1.E-2,),
                 _F(NUME_ORDRE=1,
                    GROUP_NO='P8',
@@ -284,80 +290,12 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=1,
                    RESULTAT=RESU33,
                    NOM_CHAM='DEPL',
                    NOM_CMP='DZ',
-                   VALE_CALC= 1.98208056E-03,
+                   VALE_CALC=1.9832370251226E-03,
                    VALE_REFE=Uz,
-                   TOLE_MACHINE=1.e-2,
+                   TOLE_MACHINE=1.E-3,
                    PRECISION=1.E-2,),
-                ),
-          )
-
-# CAS 4 :
-
-h=0.05
-
-MAIL34=LIRE_MAILLAGE(FORMAT='MED',UNITE=24);
-
-MAIL34=MODI_MAILLAGE(reuse=MAIL34,MAILLAGE=MAIL34,
-ORIE_SHB=_F(GROUP_MA='GEOTOT'),)
-
-MAIL34=DEFI_GROUP(reuse =MAIL34, MAILLAGE=MAIL34,
-                CREA_GROUP_NO=(_F(GROUP_MA='SUENCAS',),
-                               _F(GROUP_MA='SUDEPIM',),
-                               _F(GROUP_MA='LI15',),
-                               _F(GROUP_MA='LI21',),
-                               _F(GROUP_MA='LI87',),),);
-
-CHMAT34=AFFE_MATERIAU(MAILLAGE=MAIL34,
-                  AFFE=_F(TOUT='OUI',MATER=MAT,),);
-
-MODMEC34=AFFE_MODELE(MAILLAGE=MAIL34,
-                    AFFE=_F(TOUT='OUI',
-                            PHENOMENE='MECANIQUE',
-                            MODELISATION='SHB',),);
-
-
-CHARG34=AFFE_CHAR_MECA(MODELE=MODMEC34,
-                      DDL_IMPO=(_F(GROUP_MA=('SUENCAS'),
-                                   DX=0.0,),
-                                _F(GROUP_MA='LI15',
-                                   DY=0.0,),
-                                _F(GROUP_MA='LI21',
-                                   DZ=0.0,),),
-                      FORCE_ARETE=(_F(GROUP_MA='LI87',
-                                      FZ=F/b,),),
-                           );
-
-RESU34=MECA_STATIQUE(MODELE=MODMEC34,
-                    CHAM_MATER=CHMAT34,
-                    EXCIT=_F(CHARGE=CHARG34,),
-                    SOLVEUR=_F(METHODE ='MULT_FRONT',NPREC=18 ),
-                    );
-
-Iy=b*h*h*h/12
-Uz=F*L*L*L/3/YG/Iy
-
-
-TEST_RESU(RESU=(_F(NUME_ORDRE=1,
-                   GROUP_NO='P7',
-                   REFERENCE='ANALYTIQUE',
-                   RESULTAT=RESU34,
-                   NOM_CHAM='DEPL',
-                   NOM_CMP='DZ',
-                   VALE_CALC=0.015831460891137,
-                   VALE_REFE=Uz,
-                   TOLE_MACHINE=1.e-2,
-                   PRECISION=0.02,),
-                _F(NUME_ORDRE=1,
-                   GROUP_NO='P8',
-                   REFERENCE='ANALYTIQUE',
-                   RESULTAT=RESU34,
-                   NOM_CHAM='DEPL',
-                   NOM_CMP='DZ',
-                   VALE_CALC=0.015831439038524,
-                   VALE_REFE=Uz,
-                   TOLE_MACHINE=1.e-2,
-                   PRECISION=0.02,),
                 ),
           )
 
 FIN()
+

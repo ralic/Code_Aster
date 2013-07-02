@@ -1,5 +1,4 @@
-# TITRE PLAQUE EN FLEXION AVEC DIVERS ELANCEMENTS. MODELISATION SHB15 MAILLAGE REGULIER
-#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# TITRE PLAQUE EN FLEXION AVEC DIVERS ELANCEMENTS. MODELISATION SHB15 MAILLAGE REGULIER=
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -82,13 +81,13 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=1,
                    TYPE_TEST='SOMM_ABS',
                    RESULTAT=RESU31,
                    NOM_CHAM='DEPL',
-                   VALE_CALC=23.403643056181998,
+                   VALE_CALC=23.403643056182,
                    ),
                 _F(NUME_ORDRE=1,
                    TYPE_TEST='SOMM_ABS',
                    RESULTAT=RESU31,
                    NOM_CHAM='SIEF_ELGA',
-                   VALE_CALC=77.780096589476997,
+                   VALE_CALC=77.780096589477,
                    ),
                 _F(NUME_ORDRE=1,
                    TYPE_TEST='SOMM_ABS',
@@ -106,13 +105,13 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=1,
                    TYPE_TEST='SOMM_ABS',
                    RESULTAT=RESU31,
                    NOM_CHAM='SIEQ_ELGA',
-                   VALE_CALC=1699.1798405101999,
+                   VALE_CALC=1699.1798405102,
                    ),
                 _F(NUME_ORDRE=1,
                    TYPE_TEST='SOMM_ABS',
                    RESULTAT=RESU31,
                    NOM_CHAM='SIEQ_ELNO',
-                   VALE_CALC=1.7980039965185E+03,
+                   VALE_CALC=1798.0039965185,
                    ),
                 ),
           )
@@ -134,40 +133,22 @@ Sig3=moment1*z3/Iy
 Sig4=moment1*z4/Iy
 Sig5=moment1*z5/Iy
 
-
-TEST_RESU(RESU=(_F(NUME_ORDRE=1,
-                   GROUP_NO='P7',
-                   RESULTAT=RESU31,
-                   NOM_CHAM='DEPL',
-                   NOM_CMP='DZ',
-                   VALE_CALC=1.9580000000000001E-09,
-                   TOLE_MACHINE=1.E-3,),
-                _F(NUME_ORDRE=1,
-                   GROUP_NO='P8',
-                   RESULTAT=RESU31,
-                   NOM_CHAM='DEPL',
-                   NOM_CMP='DZ',
-                   VALE_CALC=1.9650000000000001E-09,
-                   TOLE_MACHINE=1.E-3,),
-                ),
-          )
-
 TEST_RESU(RESU=(_F(NUME_ORDRE=1,
                    GROUP_NO='P7',
                    REFERENCE='ANALYTIQUE',
                    RESULTAT=RESU31,
                    NOM_CHAM='DEPL',
                    NOM_CMP='DZ',
-                   VALE_CALC= 1.95853700E-09,
+                   VALE_CALC=1.9585370009035E-09,
                    VALE_REFE=Uz,
-                   PRECISION=0.021000000000000001,),
+                   PRECISION=0.025,),
                 _F(NUME_ORDRE=1,
                    GROUP_NO='P8',
                    REFERENCE='ANALYTIQUE',
                    RESULTAT=RESU31,
                    NOM_CHAM='DEPL',
                    NOM_CMP='DZ',
-                   VALE_CALC= 1.96552976E-09,
+                   VALE_CALC=1.9655297605105E-09,
                    VALE_REFE=Uz,
                    PRECISION=0.02,),
                 ),
@@ -217,31 +198,13 @@ RESU32=MECA_STATIQUE(MODELE=MODMEC32,
 Iy=b*h*h*h/12
 Uz=F*L*L*L/3/YG/Iy
 
-
-TEST_RESU(RESU=(_F(NUME_ORDRE=1,
-                   GROUP_NO='P7',
-                   RESULTAT=RESU32,
-                   NOM_CHAM='DEPL',
-                   NOM_CMP='DZ',
-                   VALE_CALC=1.8610000000000001E-06,
-                   TOLE_MACHINE=1.E-3,),
-                _F(NUME_ORDRE=1,
-                   GROUP_NO='P8',
-                   RESULTAT=RESU32,
-                   NOM_CHAM='DEPL',
-                   NOM_CMP='DZ',
-                   VALE_CALC=1.863E-06,
-                   TOLE_MACHINE=1.E-3,),
-                ),
-          )
-
 TEST_RESU(RESU=(_F(NUME_ORDRE=1,
                    GROUP_NO='P7',
                    REFERENCE='ANALYTIQUE',
                    RESULTAT=RESU32,
                    NOM_CHAM='DEPL',
                    NOM_CMP='DZ',
-                   VALE_CALC= 1.86166931E-06,
+                   VALE_CALC=1.8616693065961E-06,
                    VALE_REFE=Uz,
                    PRECISION=0.070000000000000007,),
                 _F(NUME_ORDRE=1,
@@ -250,7 +213,7 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=1,
                    RESULTAT=RESU32,
                    NOM_CHAM='DEPL',
                    NOM_CMP='DZ',
-                   VALE_CALC= 1.86307789E-06,
+                   VALE_CALC=1.8630778815525E-06,
                    VALE_REFE=Uz,
                    PRECISION=0.070000000000000007,),
                 ),
@@ -292,53 +255,46 @@ CHARG33=AFFE_CHAR_MECA(MODELE=MODMEC33,
                                       FZ=F/b,),),
                            );
 
+# DANS CETTE CONFIGURATION LE PROBLEME DEVIENT TRES MAL CONDITIONNE (1.0E+13 DEJA)
+# L/h=1000 ET MAILLAGE DISTORDU
+# ON UTILISE MUMPS ET ON DESACTIVE LA DETECTION DE SINGULARITE AINSI QUE LA VERIFICATION DE QUALITE
 RESU33=MECA_STATIQUE(MODELE=MODMEC33,
                     CHAM_MATER=CHMAT33,
                     EXCIT=_F(CHARGE=CHARG33,),
-                    SOLVEUR=_F(METHODE ='MULT_FRONT',NPREC=11 ),
+                    SOLVEUR=_F(METHODE='MUMPS',
+                               NPREC=-1,
+                               RESI_RELA=-1.0,
+                               ),
+                    INFO=2,
                     );
 
 Iy=b*h*h*h/12
 Uz=F*L*L*L/3/YG/Iy
 
-TEST_RESU(RESU=(_F(NUME_ORDRE=1,
-                   GROUP_NO='P7',
-                   RESULTAT=RESU33,
-                   NOM_CHAM='DEPL',
-                   NOM_CMP='DZ',
-                   VALE_CALC=1.853E-3,
-                   TOLE_MACHINE=1.E-3,),
-                _F(NUME_ORDRE=1,
-                   GROUP_NO='P8',
-                   RESULTAT=RESU33,
-                   NOM_CHAM='DEPL',
-                   NOM_CMP='DZ',
-                   VALE_CALC=1.854E-3,
-                   TOLE_MACHINE=1.E-3,),
-                ),
-          )
-
+# LA SOLUTION OBTENUE PRESENTE UNE FAIBLE VARIABILITE ENTRE MACHINES QUI DECOULE
+# DU MAUVAIS CONDITIONNEMENT
 TEST_RESU(RESU=(_F(NUME_ORDRE=1,
                    GROUP_NO='P7',
                    REFERENCE='ANALYTIQUE',
                    RESULTAT=RESU33,
                    NOM_CHAM='DEPL',
                    NOM_CMP='DZ',
-                   VALE_CALC= 1.85374065E-03,
+                   VALE_CALC=1.8549686315396E-03,
                    VALE_REFE=Uz,
                    TOLE_MACHINE=1.e-3,
-                   PRECISION=0.073999999999999996,),
+                   PRECISION=0.075,),
                 _F(NUME_ORDRE=1,
                    GROUP_NO='P8',
                    REFERENCE='ANALYTIQUE',
                    RESULTAT=RESU33,
                    NOM_CHAM='DEPL',
                    NOM_CMP='DZ',
-                   VALE_CALC= 1.85453866E-03,
+                   VALE_CALC=1.8557543466477E-03    ,
                    VALE_REFE=Uz,
                    TOLE_MACHINE=1.e-3,
-                   PRECISION=0.072999999999999995,),
+                   PRECISION=0.075,),
                 ),
           )
 
 FIN()
+
