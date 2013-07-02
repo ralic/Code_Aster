@@ -46,7 +46,7 @@ subroutine lislic(nomo, prefob, indxch, ligcal)
 !
 !
     character(len=6) :: typlig
-    integer :: ibid
+    integer :: ibid(2)
     character(len=19) :: ligrmo
 !
 ! ----------------------------------------------------------------------

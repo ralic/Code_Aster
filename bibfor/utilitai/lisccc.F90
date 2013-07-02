@@ -53,7 +53,7 @@ subroutine lisccc(nomcmd, motclc, nbauth, nbnaut, mclaut)
 !
     integer :: tabcox(60), tabaut(60)
     integer :: nbtota, nbgcmd
-    integer :: ipose, iposit, iauth, ibid
+    integer :: ipose, iposit(2), iauth, ibid
     character(len=8) :: k8bid
     character(len=16) :: motclf
     logical :: lfind
@@ -121,8 +121,8 @@ subroutine lisccc(nomcmd, motclc, nbauth, nbnaut, mclaut)
                 else
                     call assert(.false.)
                 endif
-                call assert(iposit.ne.0)
-                if (iposit .eq. ipose) lfind = .true.
+                call assert(iposit(1).ne.0)
+                if (iposit(1) .eq. ipose) lfind = .true.
 21          continue
             if (lfind) then
                 nbauth = nbauth + 1

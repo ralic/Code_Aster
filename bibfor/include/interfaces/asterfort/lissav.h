@@ -15,7 +15,7 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
-interface 
+interface
     subroutine lissav(lischa, ichar, charge, typech, genrec,&
                       motclc, prefob, typapp, nomfct, typfct,&
                       phase, npuis)
@@ -32,4 +32,4 @@ interface
         real(kind=8) :: phase
         integer :: npuis
     end subroutine lissav
-end interface 
+end interface

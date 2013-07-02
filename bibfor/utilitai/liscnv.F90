@@ -53,11 +53,11 @@ subroutine liscnv(phenoz, base, lisold, lisnew)
     integer :: ichar, nbchar
     character(len=8) :: nomcha
     character(len=16) :: typapp, typfct
-    integer :: genrec, motclc(2)
+    integer :: genrec(2), motclc(2)
     character(len=8) :: typech, nomfct, k8bid
     character(len=13) :: prefob
     real(kind=8) :: phase
-    integer :: npuis, ibid
+    integer :: npuis, ibid(2)
 !
 ! ----------------------------------------------------------------------
 !
@@ -72,6 +72,7 @@ subroutine liscnv(phenoz, base, lisold, lisnew)
     call jeveuo(infcha, 'L', jinfch)
     call jeveuo(fomult, 'L', jalifc)
     nbchar = zi(jinfch)
+    ibid(1) = 0
 !
 ! --- CREATION NOUVELLE SD
 !
@@ -91,15 +92,15 @@ subroutine liscnv(phenoz, base, lisold, lisnew)
 !
 ! ----- GENRES DE LA CHARGE
 !
-        call lisdef('IDGE', prefob, ibid, k8bid, genrec)
+        call lisdef('IDGE', prefob, ibid(1), k8bid, genrec)
 !
 ! ----- TYPE DE LA CHARGE (COMPLEXE, FONCTION, REELLE)
 !
-        call lisdef('TYPC', prefob, genrec, typech, ibid)
+        call lisdef('TYPC', prefob, genrec(1), typech, ibid)
 !
 ! ----- MOT-CLEFS DE LA CHARGE
 !
-        call lisdef('IDMC', prefob, ibid, k8bid, motclc)
+        call lisdef('IDMC', prefob, ibid(1), k8bid, motclc)
 !
 ! ----- TYPE D'APPLICATION DE LA CHARGE
 !
@@ -112,7 +113,7 @@ subroutine liscnv(phenoz, base, lisold, lisnew)
 !
 ! ----- SAUVEGARDE DES INFORMATIONS
 !
-        call lissav(lisnew, ichar , nomcha, typech, genrec,&
+        call lissav(lisnew, ichar , nomcha, typech, genrec(1),&
                     motclc, prefob, typapp, nomfct, typfct,&
                     phase , npuis )
 !

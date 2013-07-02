@@ -17,18 +17,17 @@
 !
 interface
     subroutine mmaxkl(latabl, modele, thetai, mate, compor,&
-                      ncha, symech, chfond, nnoff, basloc,&
-                      courb, ndeg, thlagr, glagr, thlag2,&
-                      pair, ndimte, nbprup, noprup, fiss,&
-                      lonvec, ivec, vchar, resuco, lmelas,&
-                      lncas, lord, milieu, connex)
+                      symech, chfond, nnoff, basloc, courb, &
+                      ndeg, thlagr, glagr, thlag2, pair, &
+                      ndimte, nbprup, noprup, fiss, lonvec, &
+                      ivec, resuco, lmelas, lncas, lord, &
+                      milieu, connex, lischa)
         integer :: lonvec
         character(len=8) :: latabl
         character(len=8) :: modele
         character(len=8) :: thetai
         character(len=24) :: mate
         character(len=24) :: compor
-        integer :: ncha
         character(len=8) :: symech
         character(len=24) :: chfond
         integer :: nnoff
@@ -44,12 +43,12 @@ interface
         character(len=16) :: noprup(*)
         character(len=8) :: fiss
         integer :: ivec
-        character(len=19) :: vchar
         character(len=8) :: resuco
         logical :: lmelas
         logical :: lncas
         logical :: lord(lonvec)
         logical :: milieu
         logical :: connex
+        character(len=19) :: lischa
     end subroutine mmaxkl
 end interface

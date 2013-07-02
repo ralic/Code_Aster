@@ -21,6 +21,6 @@ interface
         character(*) :: optkz
         integer :: opti
         character(*) :: valkz
-        integer :: vali
+        integer :: vali(2)
     end subroutine lisdef
 end interface

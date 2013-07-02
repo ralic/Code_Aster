@@ -64,13 +64,13 @@ subroutine veevop(nomo, fnocal, instan, lisch2)
     logical :: l2d, l3d
     character(len=8) :: charge
     character(len=16) :: typapp, typfct
-    integer :: codcha
+    integer :: genrec(2)
     character(len=8) :: typech, nomfct
     character(len=13) :: prefob
     real(kind=8) :: r8bid
-    integer :: ibid
+    integer :: ibid, ibid2(2)
     character(len=8) :: typsd, k8bid
-    integer :: nbcham
+    integer :: nbcham, motclc(2)
 !
 ! ----------------------------------------------------------------------
 !
@@ -214,11 +214,12 @@ subroutine veevop(nomo, fnocal, instan, lisch2)
 !
 ! ----- GENRE DE LA CHARGE
 !
-        call lisdef('IDGE', prefob, ibid, k8bid, codcha)
+        ibid = 0
+        call lisdef('IDGE', prefob, ibid, k8bid, genrec)
 !
 ! ----- TYPE DE LA CHARGE
 !
-        call lisdef('TYPC', prefob, codcha, typech, ibid)
+        call lisdef('TYPC', prefob, genrec(1), typech, ibid2)
 !
 ! ----- TYPE D'APPLICATION DE LA CHARGE
 !
@@ -230,9 +231,11 @@ subroutine veevop(nomo, fnocal, instan, lisch2)
 !
 ! ----- SAUVEGARDE DES INFORMATIONS
 !
-        call lissav(lisch2, ichar, charge, typech, codcha,&
-                    prefob, typapp, nomfct, typfct, r8bid,&
-                    ibid)
+        motclc(1) = 0
+        motclc(2) = 0
+        call lissav(lisch2, ichar, charge, typech, genrec(1),&
+                    motclc, prefob, typapp, nomfct, typfct, &
+                    r8bid, ibid)
 !
 100 continue
 !

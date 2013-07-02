@@ -83,8 +83,8 @@ subroutine gcharg(modele, lischa, chvolu, ch1d2d, ch2d3d,&
     character(len=13) :: prefob
     integer :: motclc(2)
     logical :: lfchar, lfmult, lformu, lccomb, lpchar
-    integer :: nbauth, nbnaut, mclaut, iposit
-    integer :: iprec, ibid, itypob
+    integer :: nbauth, nbnaut, mclaut(2), iposit
+    integer :: iprec, ibid, itypob(2), ibid2(2)
     character(len=19) :: carteo,cartei
     logical :: lvolu, l1d2d, l2d3d, lpres
     logical :: lepsi, lpesa, lrota
@@ -174,7 +174,7 @@ subroutine gcharg(modele, lischa, chvolu, ch1d2d, ch2d3d,&
 !
 ! ----------------- MOT-CLEF DE LA CHARGE
 !
-                    call lisdef('MOTC', k24bid, iposit, motcle, ibid)
+                    call lisdef('MOTC', k24bid, iposit, motcle, ibid2)
                     if (motcle.eq.'DIRI_DUAL') goto 12
 !
 ! ----------------- PREFIXE DE L'OBJET DE LA CHARGE
@@ -184,7 +184,7 @@ subroutine gcharg(modele, lischa, chvolu, ch1d2d, ch2d3d,&
 ! ----------------- CARTE D'ENTREE
 !                  
                     call lisdef('CART', motcle, ibid, nomobj, itypob)
-                    call assert(itypob.eq.1)
+                    call assert(itypob(1).eq.1)
                     cartei = prefob(1:13)//nomobj(1:6)
 !
 ! ----------------- SELECTION SUIVANT TYPE

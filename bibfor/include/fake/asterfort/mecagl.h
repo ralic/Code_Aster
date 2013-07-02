@@ -17,11 +17,11 @@
 !
 interface
     subroutine mecagl(option, result, modele, depla, thetai,&
-                      mate, compor, nchar, lchar, symech,&
-                      chfond, nnoff, iord, ndeg, thlagr,&
-                      glagr, thlag2, milieu, ndimte, pair,&
-                      extim, time, nbprup, noprup, chvite,&
-                      chacce, lmelas, nomcas, kcalc, fonoeu)
+                      mate, compor, lischa, symech, chfond, &
+                      nnoff, iord, ndeg, thlagr, glagr, &
+                      thlag2, milieu, ndimte, pair, extim, &
+                      time, nbprup, noprup, chvite, chacce, &
+                      lmelas, nomcas, kcalc, fonoeu)
         character(len=16) :: option
         character(len=8) :: result
         character(len=8) :: modele
@@ -29,8 +29,7 @@ interface
         character(len=8) :: thetai
         character(len=24) :: mate
         character(len=24) :: compor
-        integer :: nchar
-        character(len=8) :: lchar(*)
+        character(len=19) :: lischa
         character(len=8) :: symech
         character(len=24) :: chfond
         integer :: nnoff

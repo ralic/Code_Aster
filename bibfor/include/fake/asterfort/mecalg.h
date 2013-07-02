@@ -17,17 +17,16 @@
 !
 interface
     subroutine mecalg(optioz, result, modele, depla, theta,&
-                      mate, nchar, lchar, symech, compor,&
-                      incr, time, iord, nbprup, noprup,&
-                      chvite, chacce, lmelas, nomcas, kcalc)
+                      mate, lischa, symech, compor, incr, &
+                      time, iord, nbprup, noprup, chvite, &
+                      chacce, lmelas, nomcas, kcalc)
         character(len=16) :: optioz
         character(len=8) :: result
         character(len=8) :: modele
         character(len=24) :: depla
         character(len=24) :: theta
         character(len=24) :: mate
-        integer :: nchar
-        character(len=8) :: lchar(*)
+        character(len=19) :: lischa
         character(len=8) :: symech
         character(len=24) :: compor
         logical :: incr

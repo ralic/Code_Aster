@@ -25,7 +25,7 @@ subroutine lisnol(lischa, genchz, nomlis, nbch)
 #include "asterfort/lisnnb.h"
     character(len=19) :: lischa
     character(len=24) :: nomlis
-    integer :: nbch
+    integer :: nbch, nbtmp(2)
     character(len=*) :: genchz
 !
 ! ----------------------------------------------------------------------
@@ -45,7 +45,7 @@ subroutine lisnol(lischa, genchz, nomlis, nbch)
 ! ----------------------------------------------------------------------
 !
     integer :: nbchar
-    integer :: ibid, iposit
+    integer :: ibid, iposit(2)
     character(len=8) :: k8bid
 !
 ! ----------------------------------------------------------------------
@@ -63,7 +63,8 @@ subroutine lisnol(lischa, genchz, nomlis, nbch)
 !
 ! ----- LISTE DES INDEX DE CHARGE POUR CE GENRE
 !
-        call lisdef('IDNS', nomlis, iposit, k8bid, nbch)
+        call lisdef('IDNS', nomlis, iposit(1), k8bid, nbtmp)
+        nbch = nbtmp(1)
     endif
 !
     call jedema()

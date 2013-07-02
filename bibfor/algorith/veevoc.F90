@@ -68,11 +68,11 @@ subroutine veevoc(nomo, mate, carele, varplu, lischa,&
     character(len=19) :: nomobj, lisch2
     character(len=13) :: prefob
     integer :: nbevoc, lastin
-    integer :: ichar, nbchar, itypob
+    integer :: ichar, nbchar, itypob(2)
     logical :: levoc, lxfem
     integer :: genrec
     character(len=8) :: k8bid
-    integer :: ibid, iposit, ier
+    integer :: ibid, iposit(2), ier
     character(len=8) :: fnocal
     integer :: jfnoe
     real(kind=8) :: instan
@@ -118,11 +118,11 @@ subroutine veevoc(nomo, mate, carele, varplu, lischa,&
 ! ------- NOM OBJET
 !
             call lisdef('POSG', 'EVOL_CHAR', ibid, k8bid, iposit)
-            call lisdef('OBJE', prefob, iposit, nomobj, itypob)
+            call lisdef('OBJE', prefob, iposit(1), nomobj, itypob)
 !
 ! ------- ON N'ATTEND PAS UNE CARTE !
 !
-            call assert(itypob.ne.1)
+            call assert(itypob(1).ne.1)
             call jeexin(nomobj, ier)
             call assert(ier.ne.0)
 !

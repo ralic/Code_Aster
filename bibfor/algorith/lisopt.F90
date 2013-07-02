@@ -52,12 +52,8 @@ subroutine lisopt(prefob, nomo, typech, indxch, option,&
 ! OUT PARAOU : NOM DU PARAMETRE DE SORTIE
 ! OUT LIGCAL : NOM DU LIGREL SUR LEQUEL ON FAIT LE CALCUL
 !
-!
-!
-!
-    integer :: ibid
     character(len=24) :: nomobj
-    integer :: itypob
+    integer :: itypob(2), ibid(2)
 !
 ! ----------------------------------------------------------------------
 !
@@ -79,7 +75,7 @@ subroutine lisopt(prefob, nomo, typech, indxch, option,&
 !
 ! --- ON ATTEND UNE CARTE !
 !
-    if (itypob .eq. 1) then
+    if (itypob(1) .eq. 1) then
         carte = nomobj(1:19)
     else
         call assert(.false.)

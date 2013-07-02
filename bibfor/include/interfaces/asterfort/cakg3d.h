@@ -17,7 +17,7 @@
 !
 interface
     subroutine cakg3d(option, result, modele, depla, thetai,&
-                      mate, compor, nchar, lchar, symech,&
+                      mate, compor, lischa, symech,&
                       chfond, nnoff, basloc, courb, iord,&
                       ndeg, thlagr, glagr, thlag2, pair,&
                       ndimte, extim, time, nbprup, noprup,&
@@ -30,8 +30,7 @@ interface
         character(len=8) :: thetai
         character(len=24) :: mate
         character(len=24) :: compor
-        integer :: nchar
-        character(len=8) :: lchar(*)
+        character(len=19) :: lischa
         character(len=8) :: symech
         character(len=24) :: chfond
         integer :: nnoff

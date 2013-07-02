@@ -40,7 +40,7 @@ function lisico(genchz, genrec)
 !
 ! ----------------------------------------------------------------------
 !
-    integer :: tabcod(30), iposit, ibid
+    integer :: tabcod(30), iposit(2), ibid
     character(len=8) :: k8bid
 !
 ! ----------------------------------------------------------------------
@@ -50,7 +50,7 @@ function lisico(genchz, genrec)
     lisico = .false.
     call lisdef('POSG', genchz, ibid, k8bid, iposit)
     call isdeco(genrec, tabcod, 30)
-    if (tabcod(iposit) .eq. 1) lisico = .true.
+    if (tabcod(iposit(1)) .eq. 1) lisico = .true.
 !
     call jedema()
 end function

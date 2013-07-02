@@ -45,7 +45,7 @@ function lisexi(prefob, indxch)
 !
 !
     character(len=24) :: nomobj
-    integer :: itypob
+    integer :: itypob(2)
     character(len=19) :: carte
     integer :: iret
 !
@@ -61,11 +61,11 @@ function lisexi(prefob, indxch)
 !
 ! --- VERIFICATION EXISTENCE
 !
-    if (itypob .eq. 1) then
+    if (itypob(1) .eq. 1) then
         carte = nomobj(1:19)
         call exisd('CARTE', carte, iret)
         if (iret .eq. 1) lisexi = .true.
-    else if (itypob.eq.0) then
+    else if (itypob(1) .eq. 0) then
         call jeexin(nomobj, iret)
         if (iret .ne. 0) lisexi = .true.
     else

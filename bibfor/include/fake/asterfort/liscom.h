@@ -16,8 +16,9 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine liscom(nomo, lischa)
-        character(len=8) :: nomo
-        character(len=19) :: lischa
+    subroutine liscom(nomo, codarr, lischa)
+    character(len=19) :: lischa
+    character(len=1) :: codarr
+    character(len=8) :: nomo
     end subroutine liscom
 end interface

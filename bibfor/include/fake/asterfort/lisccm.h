@@ -15,9 +15,10 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
-interface
-    subroutine lisccm(nomcmd, lischa)
+interface 
+    subroutine lisccm(nomcmd, codarr, lischa)
         character(len=16) :: nomcmd
+        character(len=1) :: codarr
         character(len=19) :: lischa
     end subroutine lisccm
-end interface
+end interface 

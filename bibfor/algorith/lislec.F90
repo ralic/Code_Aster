@@ -50,10 +50,10 @@ subroutine lislec(motfac, phenoz, base, lischa)
 !
 ! ----------------------------------------------------------------------
 !
-    integer :: iexci, nbexci, ibid
+    integer :: iexci, nbexci, ibid, ibid2(2)
     character(len=8) :: charge, k8bid
     character(len=16) :: typapp, typfct
-    integer :: genrec, motclc(2)
+    integer :: genrec(2), motclc(2)
     character(len=8) :: typech, nomfct
     character(len=13) :: prefob
     real(kind=8) :: phase
@@ -93,7 +93,7 @@ subroutine lislec(motfac, phenoz, base, lischa)
 !
 ! ----- TYPE DE LA CHARGE (COMPLEXE, FONCTION, REELLE)
 !
-        call lisdef('TYPC', prefob, genrec, typech, ibid)
+        call lisdef('TYPC', prefob, genrec(1), typech, ibid2)
 !
 ! ----- TYPE D'APPLICATION DE LA CHARGE
 !
@@ -106,7 +106,7 @@ subroutine lislec(motfac, phenoz, base, lischa)
 !
 ! ----- SAUVEGARDE DES INFORMATIONS
 !
-        call lissav(lischa, iexci, charge, typech, genrec,&
+        call lissav(lischa, iexci, charge, typech, genrec(1),&
                     motclc, prefob, typapp, nomfct, typfct,&
                     phase, npuis)
 !

@@ -16,14 +16,13 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine gcharm(fonc, charg, nomfon, nomf, time,&
-                      iord, chargm)
-        logical :: fonc
-        character(len=19) :: charg
-        character(len=24) :: nomfon
-        character(len=8) :: nomf
+    subroutine gcharm(lfchar, cartei, nomfct, newfct, time,&
+                      carteo)
+        logical :: lfchar
+        character(len=19) :: cartei
+        character(len=8) :: nomfct
+        character(len=8) :: newfct
         real(kind=8) :: time
-        integer :: iord
-        character(len=19) :: chargm
+        character(len=19) :: carteo
     end subroutine gcharm
 end interface

@@ -56,7 +56,7 @@ subroutine lisimp(lischa, ifm)
     character(len=16) :: typapp, typfct
     integer :: genrec, tabcod(30)
     character(len=24) :: lisgen, nomlis, gencha
-    integer :: jlisg, nbgenr, igenr, iposit
+    integer :: jlisg, nbgenr(2), igenr, iposit(2)
     character(len=13) :: prefob
     real(kind=8) :: phase
     integer :: npuis
@@ -118,7 +118,7 @@ subroutine lisimp(lischa, ifm)
 ! ----- BOUCLE SUR LES GENRES
 !
         write(6,*) '  * GENRES DE LA CHARGE:'
-        do 15 igenr = 1, nbgenr
+        do 15 igenr = 1, nbgenr(1)
             gencha = zk24(jlisg-1+igenr)
             nomlis = '&&LISIMP.NOMLIS'
 !
@@ -126,7 +126,7 @@ subroutine lisimp(lischa, ifm)
 !
             call lisdef('POSG', gencha, ibid, k8bid, iposit)
             call isdeco(genrec, tabcod, 30)
-            if (tabcod(iposit) .eq. 1) then
+            if (tabcod(iposit(1)) .eq. 1) then
 !
 ! --------- GENRE PRESENT DANS CETTE CHARGE
 !

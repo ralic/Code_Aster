@@ -518,7 +518,7 @@ subroutine op0100()
                     ndeg, thlagr, glagr, thlag2, pair,&
                     ndimte, nbpara, linopa, nomfis, nbord,&
                     ivec, resu, lmelas, lncas,zl( jnord),&
-                     milieu, connex, lischa)
+                    milieu, connex, lischa)
 !
 !     -------------------------------
 !     3.5. ==> CALCUL DE G, K_G (2D)

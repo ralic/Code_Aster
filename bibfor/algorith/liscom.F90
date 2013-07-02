@@ -29,8 +29,8 @@ subroutine liscom(nomo, codarr, lischa)
 #include "asterfort/u2mesk.h"
 #include "asterfort/u2mess.h"
     character(len=19) :: lischa
-    character(len=8) :: nomo
     character(len=1) :: codarr
+    character(len=8) :: nomo
 !
 ! ----------------------------------------------------------------------
 !
