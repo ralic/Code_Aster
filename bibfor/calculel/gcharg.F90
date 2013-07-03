@@ -2,26 +2,26 @@ subroutine gcharg(modele, lischa, chvolu, ch1d2d, ch2d3d,&
                   chpres, chepsi, chpesa, chrota, lfonc ,&
                   time  , iord)
     implicit none
-    include 'jeveux.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/gcchar.h'
-    include 'asterfort/gcfonc.h'
-    include 'asterfort/gcsele.h'
-    include 'asterfort/isdeco.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/lisccc.h'
-    include 'asterfort/lisdef.h'
-    include 'asterfort/lislch.h'
-    include 'asterfort/lislcm.h'
-    include 'asterfort/lislnf.h'
-    include 'asterfort/lisltc.h'
-    include 'asterfort/lisltf.h'
-    include 'asterfort/lisnnb.h'
-    include 'asterfort/mefor0.h'
-    include 'asterfort/mepres.h'
-    include 'asterfort/wkvect.h'
+#include "jeveux.h"
+#include "asterfort/assert.h"
+#include "asterfort/gcchar.h"
+#include "asterfort/gcfonc.h"
+#include "asterfort/gcsele.h"
+#include "asterfort/isdeco.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/lisccc.h"
+#include "asterfort/lisdef.h"
+#include "asterfort/lislch.h"
+#include "asterfort/lislcm.h"
+#include "asterfort/lislnf.h"
+#include "asterfort/lisltc.h"
+#include "asterfort/lisltf.h"
+#include "asterfort/lisnnb.h"
+#include "asterfort/mefor0.h"
+#include "asterfort/mepres.h"
+#include "asterfort/wkvect.h"
     integer :: iord
     character(len=8) :: modele
     character(len=19) :: lischa

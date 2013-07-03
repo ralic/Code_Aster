@@ -19,8 +19,8 @@ subroutine gcfonc(ichar ,iord  ,cartei,lfchar,lfmult,&
 ! ======================================================================
 !
     implicit none
-    include 'asterfort/codent.h'
-    include 'asterfort/gverfo.h'
+#include "asterfort/codent.h"
+#include "asterfort/gverfo.h"
     logical :: lfmult, lfchar
     integer :: ichar,iord
     character(len=8) :: newfct

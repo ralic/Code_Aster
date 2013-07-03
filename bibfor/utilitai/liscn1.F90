@@ -19,10 +19,10 @@ subroutine liscn1(lisold, nbchar, ichar, nomfct, typfct,&
 ! ======================================================================
 !
     implicit     none
-    include 'jeveux.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
+#include "jeveux.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
     character(len=19) :: lisold
     character(len=16) :: typfct
     character(len=8) :: nomfct

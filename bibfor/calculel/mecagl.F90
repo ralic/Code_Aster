@@ -7,41 +7,41 @@ subroutine mecagl(option, result, modele, depla, thetai,&
 ! aslint: disable=W1504
     implicit  none
 !
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterc/getfac.h'
-    include 'asterc/getvid.h'
-    include 'asterc/getvis.h'
-    include 'asterfort/alchml.h'
-    include 'asterfort/calcul.h'
-    include 'asterfort/chpchd.h'
-    include 'asterfort/chpver.h'
-    include 'asterfort/codent.h'
-    include 'asterfort/detrsd.h'
-    include 'asterfort/dismoi.h'
-    include 'asterfort/gcharg.h'
-    include 'asterfort/gimpgs.h'
-    include 'asterfort/gmeth1.h'
-    include 'asterfort/gmeth2.h'
-    include 'asterfort/gmeth3.h'
-    include 'asterfort/gmeth4.h'
-    include 'asterfort/infniv.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/mecact.h'
-    include 'asterfort/megeom.h'
-    include 'asterfort/mesomm.h'
-    include 'asterfort/rsexch.h'
-    include 'asterfort/tbajli.h'
-    include 'asterfort/tbajvi.h'
-    include 'asterfort/tbajvk.h'
-    include 'asterfort/tbajvr.h'
-    include 'asterfort/u2mess.h'
-    include 'asterfort/vrcins.h'
-    include 'asterfort/vrcref.h'
-    include 'asterfort/wkvect.h'
+#include "asterc/getfac.h"
+#include "asterc/getvid.h"
+#include "asterc/getvis.h"
+#include "asterfort/alchml.h"
+#include "asterfort/calcul.h"
+#include "asterfort/chpchd.h"
+#include "asterfort/chpver.h"
+#include "asterfort/codent.h"
+#include "asterfort/detrsd.h"
+#include "asterfort/dismoi.h"
+#include "asterfort/gcharg.h"
+#include "asterfort/gimpgs.h"
+#include "asterfort/gmeth1.h"
+#include "asterfort/gmeth2.h"
+#include "asterfort/gmeth3.h"
+#include "asterfort/gmeth4.h"
+#include "asterfort/infniv.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/mecact.h"
+#include "asterfort/megeom.h"
+#include "asterfort/mesomm.h"
+#include "asterfort/rsexch.h"
+#include "asterfort/tbajli.h"
+#include "asterfort/tbajvi.h"
+#include "asterfort/tbajvk.h"
+#include "asterfort/tbajvr.h"
+#include "asterfort/u2mess.h"
+#include "asterfort/vrcins.h"
+#include "asterfort/vrcref.h"
+#include "asterfort/wkvect.h"
     integer :: iord,  nbprup, ndimte
 !
     real(kind=8) :: time

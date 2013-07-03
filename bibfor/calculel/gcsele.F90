@@ -24,7 +24,7 @@ subroutine gcsele(motcle, chvolu, ch1d2d, ch2d3d, chpres,&
 ! aslint: disable=W1504
 !
     implicit none
-    include 'asterfort/assert.h'
+#include "asterfort/assert.h"
     character(len=16) :: motcle
     character(len=19) :: carte0
     logical :: lformu, lpchar, lccomb

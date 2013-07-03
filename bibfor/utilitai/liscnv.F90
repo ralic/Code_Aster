@@ -18,16 +18,16 @@ subroutine liscnv(phenoz, base, lisold, lisnew)
 ! ======================================================================
 !
     implicit      none
-    include 'jeveux.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/liscn1.h'
-    include 'asterfort/liscn2.h'
-    include 'asterfort/liscrs.h'
-    include 'asterfort/lisdef.h'
-    include 'asterfort/lisnnl.h'
-    include 'asterfort/lissav.h'
+#include "jeveux.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/liscn1.h"
+#include "asterfort/liscn2.h"
+#include "asterfort/liscrs.h"
+#include "asterfort/lisdef.h"
+#include "asterfort/lisnnl.h"
+#include "asterfort/lissav.h"
     character(len=*) :: phenoz
     character(len=19) :: lisold, lisnew
     character(len=1) :: base

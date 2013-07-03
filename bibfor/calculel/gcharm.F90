@@ -19,17 +19,17 @@ subroutine gcharm(lfchar, cartei, nomfct, newfct, time  ,&
 ! ======================================================================
 !
     implicit none
-    include 'jeveux.h'
-    include 'asterfort/codent.h'
-    include 'asterfort/copisd.h'
-    include 'asterfort/fointe.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jedupo.h'
-    include 'asterfort/jelira.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/lisnca.h'
-    include 'asterfort/u2mesk.h'
+#include "jeveux.h"
+#include "asterfort/codent.h"
+#include "asterfort/copisd.h"
+#include "asterfort/fointe.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jedupo.h"
+#include "asterfort/jelira.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/lisnca.h"
+#include "asterfort/u2mesk.h"
     logical :: lfchar
     character(len=8) :: nomfct,newfct
     real(kind=8) :: time

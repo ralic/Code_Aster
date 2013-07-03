@@ -18,9 +18,9 @@ subroutine lisnca(phenoz, charge, genchz, carte)
 ! ======================================================================
 !
     implicit      none
-    include 'asterfort/assert.h'
-    include 'asterfort/lisdef.h'
-    include 'asterfort/lisnnl.h'
+#include "asterfort/assert.h"
+#include "asterfort/lisdef.h"
+#include "asterfort/lisnnl.h"
     character(len=*) :: genchz, phenoz
     character(len=8) :: charge
     character(len=19) :: carte

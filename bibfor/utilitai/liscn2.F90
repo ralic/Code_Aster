@@ -18,10 +18,10 @@ subroutine liscn2(lisold, nbchar, ichar, typapp)
 ! ======================================================================
 !
     implicit     none
-    include 'jeveux.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
+#include "jeveux.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
     character(len=19) :: lisold
     character(len=16) :: typapp
     integer :: ichar, nbchar

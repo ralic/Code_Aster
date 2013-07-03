@@ -18,13 +18,13 @@ subroutine lisccc(nomcmd, motclc, nbauth, nbnaut, mclaut)
 ! ======================================================================
 !
     implicit     none
-    include 'jeveux.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/iscode.h'
-    include 'asterfort/isdeco.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/lisdef.h'
+#include "jeveux.h"
+#include "asterfort/assert.h"
+#include "asterfort/iscode.h"
+#include "asterfort/isdeco.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/lisdef.h"
     character(len=16) :: nomcmd
     integer :: motclc(2)
     integer :: nbnaut, nbauth, mclaut(2)

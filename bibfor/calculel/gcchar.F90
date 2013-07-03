@@ -20,14 +20,14 @@ subroutine gcchar(ichar , iprec , time  , carteo, lfchar,&
 ! ======================================================================
 !
     implicit none
-    include 'jeveux.h'
-    include 'asterfort/copisd.h'
-    include 'asterfort/detrsd.h'
-    include 'asterfort/gcharf.h'
-    include 'asterfort/gcharm.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/tecart.h'
-    include 'asterfort/u2mess.h'
+#include "jeveux.h"
+#include "asterfort/copisd.h"
+#include "asterfort/detrsd.h"
+#include "asterfort/gcharf.h"
+#include "asterfort/gcharm.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/tecart.h"
+#include "asterfort/u2mess.h"
     logical :: lfchar, lpchar, lformu, lfmult, lccomb
     character(len=24) :: oldfon
     character(len=8) ::  nomfct,newfct

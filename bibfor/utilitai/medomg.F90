@@ -18,18 +18,18 @@ subroutine medomg(result, numord, modele, mate, lischa)
 ! ======================================================================
 !
     implicit none
-    include 'jeveux.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/detrsd.h'
-    include 'asterfort/exixfe.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/lisccm.h'
-    include 'asterfort/liscnv.h'
-    include 'asterfort/liscom.h'
-    include 'asterfort/lislec.h'
-    include 'asterfort/rcmfmc.h'
-    include 'asterfort/rslesd.h'
+#include "jeveux.h"
+#include "asterfort/assert.h"
+#include "asterfort/detrsd.h"
+#include "asterfort/exixfe.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/lisccm.h"
+#include "asterfort/liscnv.h"
+#include "asterfort/liscom.h"
+#include "asterfort/lislec.h"
+#include "asterfort/rcmfmc.h"
+#include "asterfort/rslesd.h"
     integer :: numord
     character(len=8) :: modele, result
     character(len=24) :: mate
