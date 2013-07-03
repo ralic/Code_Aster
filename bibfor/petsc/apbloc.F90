@@ -18,6 +18,7 @@ subroutine apbloc(matass, solveu, tbloc)
 !
     implicit none
 ! person_in_charge: thomas.desoza at edf.fr
+#include "asterf_config.h"
 #include "jeveux.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/jedema.h"

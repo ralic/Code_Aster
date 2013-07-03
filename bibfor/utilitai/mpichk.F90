@@ -19,6 +19,7 @@ subroutine mpichk(nbpro4, iret)
 !
     implicit none
 !     ARGUMENT IN
+#include "asterf_config.h"
 #include "asterc/uttrst.h"
 #include "asterfort/comcou.h"
 #include "asterfort/gtstat.h"

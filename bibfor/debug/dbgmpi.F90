@@ -37,6 +37,7 @@ subroutine dbgmpi(ico)
 !
     implicit none
 ! DECLARATION PARAMETRES D'APPELS
+#include "asterf_config.h"
 #include "asterc/loisem.h"
 #include "asterfort/assert.h"
 #include "asterfort/mpicm0.h"

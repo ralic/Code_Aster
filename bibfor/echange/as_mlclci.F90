@@ -19,6 +19,7 @@ subroutine as_mlclci(fid, nordr, k64, ityp, nbn,&
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
     implicit none
+#include "asterf_config.h"
 #include "aster_types.h"
 #include "med/mlclci.h"
     aster_int :: fid, nordr, ityp, nbn, cret, ndim, tymasu, nbmasu

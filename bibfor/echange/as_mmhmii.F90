@@ -18,6 +18,7 @@ subroutine as_mmhmii(fid, indice, maa, dim, type, desc, cret)
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
     implicit none
+#include "asterf_config.h"
 #include "aster_types.h"
 #include "med/mmhmii.h"
     aster_int :: fid, dim, dimb, cret, indice, type, typtri, nbseq, typrep

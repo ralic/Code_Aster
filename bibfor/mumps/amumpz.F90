@@ -49,6 +49,7 @@ subroutine amumpz(action, kxmps, csolu, vcine, nbsol,&
 !---------------------------------------------------------------
 ! person_in_charge: olivier.boiteau at edf.fr
 !
+#include "asterf_config.h"
 #include "asterc/matfpe.h"
 #include "asterfort/amumpi.h"
 #include "asterfort/amumpm.h"

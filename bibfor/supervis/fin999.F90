@@ -25,6 +25,7 @@ subroutine fin999()
 !        * LES COMMUNICATEURS MPI
 !
 !-----------------------------------------------------------------------
+#include "asterf_config.h"
 #include "asterc/chkmsg.h"
 #include "asterc/dllcls.h"
 #include "asterfort/apetsc.h"

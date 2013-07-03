@@ -70,6 +70,7 @@ subroutine amumph(action, solvez, matasz, rsolu, csolu,&
 !----------------------------------------------------------------------
 ! person_in_charge: olivier.boiteau at edf.fr
 !
+#include "asterf_config.h"
 #include "asterfort/amumpc.h"
 #include "asterfort/amumpd.h"
 #include "asterfort/amumps.h"

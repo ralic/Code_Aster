@@ -44,6 +44,7 @@ subroutine amumpp(option, nbsol, kxmps, ldist, type,&
 !-----------------------------------------------------------------------
 ! person_in_charge: olivier.boiteau at edf.fr
 !
+#include "asterf_config.h"
 #include "asterc/r4maem.h"
 #include "asterc/r4miem.h"
 #include "asterc/r8maem.h"

@@ -19,6 +19,7 @@ subroutine as_msevac(fid, nomest, nomatt, tyatmd, nbrcmp,&
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
     implicit none
+#include "asterf_config.h"
 #include "aster_types.h"
 #include "med/msevac.h"
     character(len=*) :: nomest, nomatt

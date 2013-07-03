@@ -17,6 +17,7 @@ subroutine as_mficom(nom, hdfok, medok, cret)
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
     implicit none
+#include "asterf_config.h"
 #include "aster_types.h"
 ! person_in_charge: nicolas.sellenet at edf.fr
 #include "med/mficom.h"

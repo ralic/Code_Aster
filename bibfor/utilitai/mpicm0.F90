@@ -28,6 +28,7 @@ subroutine mpicm0(rang, nbproc)
 !
     implicit none
 ! DECLARATION PARAMETRES D'APPELS
+#include "asterf_config.h"
 #include "asterfort/comcou.h"
 #include "asterfort/mpierr.h"
     integer :: rang, nbproc

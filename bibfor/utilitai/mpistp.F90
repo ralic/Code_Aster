@@ -19,6 +19,7 @@ subroutine mpistp(imode)
 !
     implicit none
 !     ARGUMENT IN
+#include "asterf_config.h"
 #include "asterfort/assert.h"
 #include "asterfort/gtstat.h"
 #include "asterfort/jefini.h"

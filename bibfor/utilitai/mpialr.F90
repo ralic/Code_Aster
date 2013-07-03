@@ -23,6 +23,7 @@ subroutine mpialr()
 !       EN FIN D'EXECUTION, LE PROCESSEUR #0 DONNE A L'UTILISATEUR
 !       LA LISTE DES ALARMES QUI ONT ETE EMISES PAR PROCESSEUR.
 !-----------------------------------------------------------------------
+#include "asterf_config.h"
 #include "asterc/gtalrm.h"
 #include "asterfort/comcou.h"
 #include "asterfort/gtstat.h"

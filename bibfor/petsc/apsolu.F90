@@ -18,6 +18,7 @@ subroutine apsolu(kptsc, lmd, rsolu)
 !
     implicit none
 ! person_in_charge: thomas.desoza at edf.fr
+#include "asterf_config.h"
 #include "jeveux.h"
 #include "asterfort/assert.h"
 #include "asterfort/jedema.h"

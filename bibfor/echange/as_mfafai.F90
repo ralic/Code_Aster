@@ -19,6 +19,7 @@ subroutine as_mfafai(fid, maa, ind, fam, num,&
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
     implicit none
+#include "asterf_config.h"
 #include "aster_types.h"
 #include "med/mfafai.h"
     aster_int :: fid, num, cret, ind
