@@ -24,9 +24,11 @@ def configure(self):
     except Errors.ConfigurationError:
         if opts.enable_scotch == True:
             raise
-        self.env.append_value('DEFINES', '_DISABLE_SCOTCH')
+        self.define('_DISABLE_SCOTCH', 1)
+        self.undefine('HAVE_SCOTCH')
     else:
-        self.env.HAVE_SCOTCH = True
+        self.define('HAVE_SCOTCH', 1)
+        self.undefine('_DISABLE_SCOTCH')
 
 ###############################################################################
 
@@ -84,7 +86,7 @@ def check_scotch_headers(self):
 
 @Configure.conf
 def check_scotch_version(self):
-    # scotch.h may use int64_t without including <stdint.h >
+    # scotch.h may use int64_t without including <stdint.h>
     fragment = r'''
 #include <stdio.h>
 #include <stdint.h>

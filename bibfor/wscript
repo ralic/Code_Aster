@@ -1,9 +1,8 @@
 # coding=utf-8
 
-import shlex
 from functools import partial
 
-from waflib import Configure, Utils, Logs
+from waflib import Configure, Utils, Logs, Errors
 
 
 def options(self):
@@ -21,9 +20,9 @@ def configure(self):
         paths = self.srcnode.ant_glob(incpath, src=True, dir=True)
         paths = [d.abspath() for d in paths]
         self.env.append_value('INCLUDES', paths)
-    if self.env.HAVE_MUMPS:
+    if self.get_define('HAVE_MUMPS'):
         ant = 'bibfor/include_mumps-%s%s' \
-            % (self.env.MUMPS_version, opts.parallel and '_mpi' or '')
+            % (self.get_define('MUMPS_VERSION'), opts.parallel and '_mpi' or '')
         dirs = [d.abspath() for d in self.srcnode.ant_glob(ant, src=True, dir=True)]
         self.env.append_value('INCLUDES', dirs)
 
@@ -31,6 +30,8 @@ def configure(self):
     self.check_fortran_dummy_main()
     self.check_fortran_compiler_flags()
     self.check_fortran_mangling()
+    self.check_fortran_types()
+    self.check_optional_features()
     # insert flags before FCSHLIB_MARKER (and after FCSTLIB_MARKER)
     if self.env.OPTLIB_FLAGS:
         self.start_msg('Checking for OPTLIB_FLAGS')
@@ -50,22 +51,207 @@ def build(self):
     )
 
 ###############################################################################
+MAIN = "      program main\n      end program main\n"
 
 @Configure.conf
 def check_fortran_compiler_flags(self):
-    self.start_msg('Getting fortran compiler flags')
-    flags = []
     if self.env.FC_NAME == 'GFORTRAN':
         if self.env.DEST_CPU == 'x86_64':
-            flags += ['-fdefault-%s-%i' % (name, 8)
+            flags = ['-fdefault-%s-%i' % (name, 8)
                       for name in ('double', 'integer', 'real')]
-
+            self.check_fortran_compiler_options(flags)
+        self.check_fortran_compiler_options('-fno-aggressive-loop-optimizations')
     if self.env.FC_NAME == 'IFORT':
-        flags += ['-fpe0', '-traceback']
+        self.check_fortran_compiler_options(['-fpe0', '-traceback'])
         if self.env.DEST_CPU == 'x86_64':
-            flags += ['-%s%i' % (name, 8) for name in 'ir']
-    self.env.append_unique('FCFLAGS', flags)
+            self.check_fortran_compiler_options(['-i8', '-r8'])
+        # all Intel specific features must use: _USE_INTEL_IFORT && HAVE_xxx
+        # this marker must be specified on command line (using -D)
+        # because it must not be enabled by aslint
+        self.env.append_unique('DEFINES', '_USE_INTEL_IFORT')
+    self.start_msg('Setting fortran compiler flags')
     self.end_msg(self.env['FCFLAGS'])
+
+@Configure.conf
+def check_fortran_compiler_options(self, options):
+    """Check fortran compiler options"""
+    if type(options) not in (list, tuple):
+        options = [options]
+    self.start_msg('Checking for fortran option')
+    if self.check_fc(fragment=MAIN, fcflags=options, mandatory=False):
+        self.env.append_unique('FCFLAGS', options)
+        self.end_msg('yes (%s)' % ' '.join(options))
+    else:
+        self.end_msg('no (%s)' % ' '.join(options), 'YELLOW')
+
+@Configure.conf
+def check_fortran_types(self):
+    """Check fortran types and their matching C type"""
+    # to help in case of error in aster_depend.h or aster_types.h
+    self.define('HAVE_ASTER_TYPES', 1)
+    self.check_sizeof_integer4()
+    self.check_sizeof_integer()
+    self.check_sizeof_real4()
+    self.check_sizeof_real8()
+    self.check_sizeof_complex()
+    self.check_sizeof_string_size()
+
+@Configure.conf
+def code_checker(self, define, check, fragment, start_msg, error_msg,
+                 into=None, mandatory=True, setbool=False):
+    """Check the size of a type compiling 'fragment' code with 'check',
+    add 'define' macros. Raise ValueError if the return"""
+    self.start_msg(start_msg)
+    try:
+        size = check(fragment=fragment,
+                     mandatory=mandatory, execute=True, define_ret=True)
+        try:
+            size = size.strip() # raise AttributeError if size is None
+            if size.isdigit():
+                size = int(size)
+            if into and size not in into:
+                raise ValueError
+            val = 1 if setbool else size
+            self.define(define, val, quote=False)
+            # for easy access to the value in other wscripts
+            self.env[define] = val
+        except AttributeError:
+            raise
+        except ValueError:
+            raise Errors.ConfigurationError(error_msg % locals())
+    except AttributeError:
+        self.end_msg('no', 'YELLOW')
+        if setbool:
+            self.undefine(define)
+    else:
+        self.end_msg(size)
+
+@Configure.conf
+def check_sizeof_integer(self):
+    """Check fortran integer size"""
+    fragment = '\n'.join(["integer :: i", "print *, sizeof(i)", "end"])
+    self.code_checker('ASTER_INT_SIZE', self.check_fc, fragment,
+                      'Checking size of default integer',
+                      'unexpected value for sizeof(aster_int): %(size)s',
+                      into=(4, 8))
+    self.check_c_fortran_integer()
+
+@Configure.conf
+def check_sizeof_integer4(self):
+    """Check fortran integer4 size"""
+    fragment = '\n'.join(["integer(kind=4) :: i", "print *, sizeof(i)", "end"])
+    self.code_checker('ASTER_INT4_SIZE', self.check_fc, fragment,
+                      'Checking size of integer4',
+                      'unexpected value for sizeof(aster_int4): %(size)s',
+                      into=(4,))
+    self.check_c_fortran_integer4()
+
+@Configure.conf
+def check_sizeof_real4(self):
+    """Check fortran real4 size"""
+    fragment = '\n'.join(["real(kind=4) :: r", "print *, sizeof(r)", "end"])
+    self.code_checker('ASTER_REAL4_SIZE', self.check_fc, fragment,
+                      'Checking size of simple precision real',
+                      'unexpected value for sizeof(aster_real4): %(size)s',
+                      into=(4, 8))
+    self.check_c_fortran_real4()
+
+@Configure.conf
+def check_sizeof_real8(self):
+    """Check fortran real8 size"""
+    fragment = '\n'.join(["real(kind=8) :: r", "print *, sizeof(r)", "end"])
+    self.code_checker('ASTER_REAL8_SIZE', self.check_fc, fragment,
+                      'Checking size of double precision real',
+                      'unexpected value for sizeof(aster_real8): %(size)s',
+                      into=(4, 8))
+    self.check_c_fortran_real8()
+
+@Configure.conf
+def check_sizeof_complex(self):
+    """Check fortran complex size"""
+    fragment = '\n'.join(["complex(kind=8) :: r", "print *, sizeof(r)", "end"])
+    self.code_checker('ASTER_COMPLEX_SIZE', self.check_fc, fragment,
+                      'Checking size of double complex',
+                      'unexpected value for sizeof(aster_complex): %(size)s',
+                      into=(8, 16))
+
+@Configure.conf
+def check_sizeof_string_size(self):
+    """Check fortran string length size"""
+    self.start_msg('Setting type for fortran string length')
+    # prefer use ISO_C_BINDING
+    # ref: http://gcc.gnu.org/onlinedocs/gfortran/Interoperability-with-C.html
+    if self.env.FC_NAME == 'IFORT' or self.env['']:
+        typ = "size_t"
+    else:
+        typ = "unsigned int"
+    # because win64
+    if self.is_defined('_USE_LONG_LONG_INT'):
+        typ = "size_t"
+    self.define('ASTERC_STRING_SIZE', typ, quote=False)
+    self.end_msg(typ)
+
+def _test_type(size, values):
+    """return code using size and test_cmd"""
+    test_cmd = " else ".join(["test(%s)" % i for i in values])
+    code = r"""
+    #include <stdlib.h>
+    #include <stdio.h>
+    #define SIZE  %s
+    #define test(a) if (sizeof(a) == SIZE) { printf("%%s\n", #a); }
+    int main(void){
+        int ier;
+        %s
+        return 0;
+    }
+    """ % (size, test_cmd)
+    return code
+
+@Configure.conf
+def check_c_fortran_integer(self):
+    """Check the C type equivalent to fortran integer"""
+    assert self.env['ASTER_INT_SIZE'], "ASTER_INT_SIZE must be computed before"
+    into = ("int", "long", "long long")
+    fragment = _test_type(self.env['ASTER_INT_SIZE'], into)
+    self.code_checker('ASTERC_FORTRAN_INT', self.check_cc, fragment,
+                      'Checking the matching C type',
+                      'unexpected value for C integer type: %(size)s',
+                      into=into)
+    if self.env['ASTERC_FORTRAN_INT'] == "long long":
+        self.define('_USE_LONG_LONG_INT', 1)
+
+@Configure.conf
+def check_c_fortran_integer4(self):
+    """Check the C type equivalent to fortran integer"""
+    assert self.env['ASTER_INT4_SIZE'], "ASTER_INT4_SIZE must be computed before"
+    into = ("int", "short int", "long")
+    fragment = _test_type(self.env['ASTER_INT4_SIZE'], into)
+    self.code_checker('ASTERC_FORTRAN_INT4', self.check_cc, fragment,
+                      'Checking the matching C type',
+                      'unexpected value for C short int type: %(size)s',
+                      into=into)
+
+@Configure.conf
+def check_c_fortran_real4(self):
+    """Check the C type equivalent to fortran real4"""
+    assert self.env['ASTER_REAL4_SIZE'], "ASTER_REAL4_SIZE must be computed before"
+    into = ("float", "double")
+    fragment = _test_type(self.env['ASTER_REAL4_SIZE'], into)
+    self.code_checker('ASTERC_FORTRAN_REAL4', self.check_cc, fragment,
+                      'Checking the matching C type',
+                      'unexpected value for C float type: %(size)s',
+                      into=into)
+
+@Configure.conf
+def check_c_fortran_real8(self):
+    """Check the C type equivalent to fortran real8"""
+    assert self.env['ASTER_REAL8_SIZE'], "ASTER_REAL8_SIZE must be computed before"
+    into = ("double", "float")
+    fragment = _test_type(self.env['ASTER_REAL8_SIZE'], into)
+    self.code_checker('ASTERC_FORTRAN_REAL8', self.check_cc, fragment,
+                      'Checking the matching C type',
+                      'unexpected value for C double type: %(size)s',
+                      into=into)
 
 @Configure.conf
 def check_optimization_fcflags(self):
@@ -121,8 +307,8 @@ UU8tXTCiGNuXp22QFbmvgmINfLw7Ph8eLrAtdRU29JYGh7fjKwsufNa3+LF+AEX8l7U=
                 if code is with_volatile:
                     # should be used in jeveux*.h in future
                     DEF = 'USE_VOLATILE_COMMON'
-                    legend = 'VOLATILE is required, -D%s' % DEF
-                    self.env.append_unique('DEFINES', [DEF])
+                    legend = 'VOLATILE is required'
+                    self.define(DEF, 1)
                 else:
                     legend = 'VOLATILE not required'
                 break
@@ -130,3 +316,19 @@ UU8tXTCiGNuXp22QFbmvgmINfLw7Ph8eLrAtdRU29JYGh7fjKwsufNa3+LF+AEX8l7U=
             break
     self.env.append_unique('FCFLAGS', optflag)
     self.end_msg('%s (%s)' % (optflag, legend))
+
+@Configure.conf
+def check_optional_features(self):
+    """Check for optional features depending on compiler type or version"""
+    fragment = "\n".join(["call backtrace", "print *, 'yes'", "end"])
+    code_checker(self, 'HAVE_BACKTRACE', self.check_fc, fragment,
+                 'Check for backtrace feature',
+                 'failure', mandatory=False, setbool=True)
+
+    fragment = "\n".join(["use ifcore", "call tracebackqq(USER_EXIT_CODE=-1)",
+                          "print *, 'yes'", "end"])
+    code_checker(self, 'HAVE_TRACEBACKQQ', self.check_fc, fragment,
+                 'Check for tracebackqq feature',
+                 'failure', mandatory=False, setbool=True)
+
+

@@ -1,5 +1,5 @@
 /* ================================================================== */
-/* COPYRIGHT (C) 1991 - 2012  EDF R&D              WWW.CODE-ASTER.ORG */
+/* COPYRIGHT (C) 1991 - 2013  EDF R&D              WWW.CODE-ASTER.ORG */
 /*                                                                    */
 /* THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR      */
 /* MODIFY IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS     */
@@ -77,7 +77,7 @@ Compatibilité ascendantes :
 
 /* XXX end backward compatibility */
 
-
+#include "asterc_config.h"
 
 /* MS Windows platforms */
 #if defined _WINDOWS
@@ -87,17 +87,16 @@ Compatibilité ascendantes :
 #   ifdef _USE_64_BITS
 #       define _STRLEN_AT_END
 #       define _USE_LONG_LONG_INT
+#       define ASTER_INT_SIZE       8
+#       define ASTER_REAL8_SIZE     8
+#       define ASTERC_FORTRAN_INT   long long
 #   endif
 
 /* stdcall must be defined explicitly because it does not seem required anywhere */
-//#define _USE_STDCALL
 #   define _STRLEN_AT_END
 
 #else
 /* Linux & Unix platforms */
-#   ifndef _POSIX
-#       define _POSIX
-#   endif
 #   define _STRLEN_AT_END
 
 /* Linux but not Unix - see inisig.c */
@@ -108,62 +107,24 @@ Compatibilité ascendantes :
 /* end platforms type */
 #endif
 
-
-/* plates-formes 64 bits */
-#if defined _USE_64_BITS || LINUX64 || TRU64 || SOLARIS64 || IRIX64
-/* pour compatibilité si on arrive avec LINUX64 */
-#   ifndef _USE_64_BITS
-#      define _USE_64_BITS
-#   endif
-
-/* define INTEGER type */
-#   ifdef _USE_LONG_LONG_INT
-#      define INTEGER long long
-#   else
-#      define INTEGER long
-#   endif
-
-/* define STRING_SIZE type : may be previously defined */
-#   ifndef STRING_SIZE
-#      ifdef _USE_LONG_LONG_INT
-#         define STRING_SIZE size_t
-#      else
-#         ifdef _USE_INTEL_IFORT
-#             define STRING_SIZE size_t
-#         else
-#             define STRING_SIZE unsigned int
-#         endif
-#      endif
-#   endif
-
-#   define INTEGER4 int
-#   define LONG_INTEGER_BITS 64
-#   define LONG_INTEGER_MOTS 8
-#   define DOUBLE double
-#   define REAL4 float
-#   define LONG_REAL_MOTS 8
-#   define LONG_COMPLEX_MOTS 16
-#   define OFF_INIT  8
+#ifdef _USE_64_BITS
 #   define INTEGER_NB_CHIFFRES_SIGNIFICATIFS 19
 #   define REAL_NB_CHIFFRES_SIGNIFICATIFS    16
-
-/* plates-formes 32 bits */
 #else
-#   define INTEGER long
-#   define INTEGER4 int
-#   define LONG_INTEGER_BITS 32
-#   define LONG_INTEGER_MOTS 4
-#   ifndef STRING_SIZE
-#       define STRING_SIZE size_t
-#   endif
-#   define DOUBLE double
-#   define REAL4 float
-#   define LONG_REAL_MOTS 8
-#   define LONG_COMPLEX_MOTS 16
-#   define OFF_INIT  4
 #   define INTEGER_NB_CHIFFRES_SIGNIFICATIFS  9
-    #define REAL_NB_CHIFFRES_SIGNIFICATIFS    16
+#   define REAL_NB_CHIFFRES_SIGNIFICATIFS    16
 #endif
+
+#define STRING_SIZE         ASTERC_STRING_SIZE
+#define INTEGER4            ASTERC_FORTRAN_INT4
+#define INTEGER             ASTERC_FORTRAN_INT
+#define LONG_INTEGER_BITS   8 * ASTER_INT_SIZE
+#define LONG_INTEGER_MOTS   ASTER_INT_SIZE
+#define DOUBLE              ASTERC_FORTRAN_REAL8
+#define REAL4               ASTERC_FORTRAN_REAL4
+#define LONG_REAL_MOTS      ASTER_REAL8_SIZE
+#define LONG_COMPLEX_MOTS   ASTER_COMPLEX_SIZE
+#define OFF_INIT            ASTER_INT_SIZE
 
 /* Utilisation de getrlimit :
    _IGNORE_RLIMIT permet de ne pas utiliser getrlimit */

@@ -72,8 +72,8 @@ subroutine mpichk(nbpro4, iret)
 !
     if (rank .ne. 0) then
 !       CHAQUE PROCESSEUR ENVOIE ST_OK AU PROC #0
-        call mpisst(st_ok, resp0)
-        if (resp0 .ne. st_ok) then
+        call mpisst(ST_OK, resp0)
+        if (resp0 .ne. ST_OK) then
             iret = 1
             call u2mess('I', 'APPELMPI_80')
             call mpistp(2)
@@ -103,7 +103,7 @@ subroutine mpichk(nbpro4, iret)
                 if (term) then
                     nbterm = nbterm + 1
                     isterm(i) = .true.
-                    if (diag(i) .eq. st_er) then
+                    if (diag(i) .eq. ST_ER) then
                         call u2mesi('I', 'APPELMPI_84', 1, i)
                         call ststat(ST_ER_OTH)
                     endif
@@ -132,14 +132,14 @@ subroutine mpichk(nbpro4, iret)
             call u2mesi('I', 'APPELMPI_84', 1, 0)
         endif
 !       DIRE A CEUX QUI ONT REPONDU SI ON CONTINUE OU PAS
-        if (gtstat(st_ok)) then
-            istat = st_ok
+        if (gtstat(ST_OK)) then
+            istat = ST_OK
         else
-            istat = st_er
+            istat = ST_ER
         endif
         do 103 i = 1, np1
             if (isterm(i)) then
-                if (istat .ne. st_ok) then
+                if (istat .ne. ST_OK) then
                     call u2mesi('I', 'APPELMPI_81', 1, i)
                 endif
                 call MPI_SEND(istat, 1, MPI_INTEGER4, i, ST_TAG_CNT,&
@@ -148,7 +148,7 @@ subroutine mpichk(nbpro4, iret)
             endif
 103      continue
 !
-        if (.not. gtstat(st_ok)) then
+        if (.not. gtstat(ST_OK)) then
             iret = 1
             if (gtstat(ST_UN_OTH)) then
                 call mpistp(1)

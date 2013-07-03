@@ -57,7 +57,7 @@ subroutine mpicmw(iexc)
     call mpierr(iermpi)
 !
 !     SI PAS 'ST_OK', IL NE FAUT PAS COMMUNIQUER ENCORE UNE FOIS
-    if (nbpro4 .le. 1 .or. .not. gtstat(st_ok)) then
+    if (nbpro4 .le. 1 .or. .not. gtstat(ST_OK)) then
         goto 9999
     endif
 !
@@ -70,7 +70,7 @@ subroutine mpicmw(iexc)
             call u2mess('I', 'APPELMPI_92')
             call ststat(ST_EXCEPT)
         endif
-        call mpisst(st_er, iret)
+        call mpisst(ST_ER, iret)
 !
 !     SUR LE PROCESSEUR #0
     else

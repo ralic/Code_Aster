@@ -28,8 +28,8 @@ def configure(self):
         if opts.enable_mumps == True:
             raise
     else:
-        self.env.append_value('DEFINES', ['_HAVE_MUMPS'])
-        self.env.HAVE_MUMPS = True
+        self.define('_HAVE_MUMPS', 1)
+        self.define('HAVE_MUMPS', 1)
 
 ###############################################################################
 @Configure.conf
@@ -73,7 +73,7 @@ def get_mumps_version(self):
         to_search = 'bibfor/include_mumps-%s*/' % ret
         if not self.srcnode.ant_glob(to_search, src=True, dir=True):
             raise Errors.ConfigurationError('"%s" not compatible (see bibfor/include_mumps*)' % ret)
-        self.env.MUMPS_version = ret
+        self.define('MUMPS_VERSION', ret)
     except:
         self.end_msg('no', 'YELLOW')
         raise

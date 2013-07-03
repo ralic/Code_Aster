@@ -29,8 +29,8 @@ subroutine ststat(istat)
     integer :: iglbst
     common  / cglbst / iglbst
 !
-    if (istat .eq. st_ok) then
-        iglbst = st_ok
+    if (istat .eq. ST_OK) then
+        iglbst = ST_OK
     else
         iglbst = ior(istat, iglbst)
     endif

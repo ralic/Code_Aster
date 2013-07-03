@@ -25,8 +25,8 @@ def configure(self):
         if opts.enable_metis == True:
             raise
     else:
-        self.env.append_value('DEFINES', ['_HAVE_METIS'])
-        self.env.HAVE_METIS = True
+        self.define('_HAVE_METIS', 1)
+        self.define('HAVE_METIS', 1)
 
 ###############################################################################
 @Configure.conf

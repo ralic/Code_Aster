@@ -39,19 +39,23 @@ def configure(self):
     except Errors.ConfigurationError:
         if opts.enable_hdf5 == True:
             raise
-        self.env.append_unique('DEFINES', ['_DISABLE_HDF5'])
-        self.env.append_unique('DEFINES', ['_DISABLE_MED'])
+        self.define('_DISABLE_HDF5', 1)
+        self.define('_DISABLE_MED', 1)
+        self.undefine('HAVE_HDF5')
+        self.undefine('HAVE_MED')
     else:
-        self.env.HAVE_HDF5 = True
+        self.define('HAVE_HDF5', 1)
 
     try:
         self.check_med()
     except Errors.ConfigurationError, err:
         if opts.enable_med == True:
             raise
-        self.env.append_unique('DEFINES', ['_DISABLE_MED'])
+        self.define('_DISABLE_MED', 1)
+        self.undefine('HAVE_MED')
     else:
-        self.env.HAVE_MED = True
+        self.define('HAVE_MED', 1)
+        self.env.BUILD_MED = True
 
 ###############################################################################
 
@@ -127,7 +131,7 @@ def check_hdf5_api(self):
         check = partial(self.check_cc, execute=True, uselib_store='HDF5', use='HDF5 MATH')
         v18 = check(fragment=fragv18, mandatory=False)
         if not v18:
-            self.env.append_unique('DEFINES_HDF5', ['H5_NO_DEPRECATED_SYMBOLS'])
+            self.define('H5_NO_DEPRECATED_SYMBOLS', 1)
         self.to_log('try again by using H5_NO_DEPRECATED_SYMBOLS')
         check(fragment=fragv18, mandatory=True)
     except:
@@ -211,17 +215,10 @@ int main(void){
     printf("%d", (int)sizeof(integer));
     return 0;
 }'''
-    self.start_msg('Checking size of med_int integers')
-    use_short = False
-    try:
-        ret = self.check_cc(fragment=fragment, use='MED HDF5', uselib_store='MED',
-                            mandatory=True, execute=True,
-                            define_ret=True)
-        if int(ret) == 4 and self.env.HAVE_64_BITS:
-            self.env.append_unique('DEFINES', ['_USE_MED_SHORT_INT'])
-            use_short = True
-    except:
-        self.end_msg('no', 'YELLOW')
-        raise
-    else:
-        self.end_msg('%s%s' % (ret, ' (-D_USE_MED_SHORT_INT)' * use_short))
+    self.code_checker('MED_INT_SIZE', self.check_cc, fragment,
+                      'Checking size of med_int integers',
+                      'unexpected value for sizeof(med_int): %s',
+                      into=(4, 8))
+    #XXX compatibility
+    if self.env['MED_INT_SIZE'] == 4 and self.is_defined('_USE_64_BITS'):
+        self.define('_USE_MED_SHORT_INT', 1)

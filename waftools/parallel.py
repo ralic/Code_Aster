@@ -26,10 +26,7 @@ def configure(self):
     os.environ['FC'] = self.env.FC or default.pop(0)
     self.load_compilers()
     self.check_openmp()
-
     self.check_fortran_clib()
-    if self.env.FC_NAME == 'IFORT':
-        self.env.append_unique('DEFINES', '_USE_INTEL_IFORT')
 
 ###############################################################################
 
@@ -72,4 +69,4 @@ def check_openmp(self):
         self.env.append_value('FCFLAGS_OPENMP', ['-fopenmp'])
         self.env.append_value('FCLINKFLAGS_OPENMP', ['-fopenmp'])
     if self.env.FCFLAGS_OPENMP:
-        self.env.append_unique('DEFINES', ['_USE_OPENMP'])
+        self.define('_USE_OPENMP', 1)

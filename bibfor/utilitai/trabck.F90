@@ -23,18 +23,22 @@ subroutine trabck(cmess, iexit)
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
-#ifdef _USE_INTEL_IFORT
+! aslint: disable=W1304
+#include "asterf_config.h"
+#if _USE_INTEL_IFORT && HAVE_TRACEBACKQQ == 1
     use ifcore
 #endif
     implicit none
     character(len=*) :: cmess
     integer(kind=4) :: iexit
-!   Dummy argument si _USE_INTEL_IFORT n'est pas defini
+!   Dummy argument si HAVE_TRACEBACKQQ n'est pas defini
     integer :: dummy
-#ifdef _USE_INTEL_IFORT
+#if _USE_INTEL_IFORT && HAVE_TRACEBACKQQ == 1
     call TRACEBACKQQ(string=cmess, USER_EXIT_CODE=iexit)
+#elif HAVE_BACKTRACE == 1
+    call backtrace
 #else
-!     ON NE PEUT PAS APPELER U2MESS (RECURSIVITE)
+!   ON NE PEUT PAS APPELER U2MESS (RECURSIVITE)
     write(6,*) 'Traceback is not provided by the compiler'
     dummy = len(cmess) + iexit
 #endif

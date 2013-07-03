@@ -18,12 +18,12 @@ subroutine ib1mai()
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
     implicit none
-    include 'aster_constant.h'
+#   include "aster_constant.h"
 !     INITIALISATION, COMME IB0MAI, POUR LA PARTIE FORTRAN 90
 !
 !     LE JOUR OU ON FERA D'AUTRES INITIALISATIONS, IL FAUT CREER
 !     UNE ROUTINE STINIT() A APPELER DANS U2MESG
 !     (QUI APPELLE IB1MAI POUR LE MOMENT)
-    include 'asterfort/ststat.h'
-    call ststat(st_ok)
+#   include "asterfort/ststat.h"
+    call ststat(ST_OK)
 end subroutine

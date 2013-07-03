@@ -46,7 +46,7 @@ subroutine mpialr()
     call mpierr(iermpi)
     np1 = nbpro4 - 1
 !
-    if (.not. gtstat(st_ok)) then
+    if (.not. gtstat(ST_OK)) then
         if (rank .eq. 0) then
             call u2mess('I', 'CATAMESS_88')
         endif

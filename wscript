@@ -1,5 +1,17 @@
 # coding=utf-8
 
+"""
+Build script for Code_Aster
+
+
+Note:
+- All defines conditionning the compilation must be set using `conf.define()`.
+  They will be exported into `asterc_config.h`/`asterf_config.h`.
+
+- If some of them are also required during the build step, another variable
+  must be passed using `env` (ex. BUILD_MED)
+"""
+
 top = '.'
 out = 'build'
 
@@ -25,7 +37,7 @@ def options(self):
         '  INCLUDES  : extra include paths',
         '  DEFINES   : extra preprocessor defines',
         '  LINKFLAGS : extra C linker options',
-        '  LINKFLAGS : extra Fortran linker options',
+        '  FCLINKFLAGS : extra Fortran linker options',
         '  LIBPATH   : extra paths where to find libraries',
         '  LIB       : extra libraries to link with',
         '  STLIB     : extra static libraries to link with',
@@ -79,7 +91,7 @@ def configure(self):
 
     self.add_os_flags('FLAGS')
     self.add_os_flags('CFLAGS')
-    self.add_os_flags('FCLAGS')
+    self.add_os_flags('FCFLAGS')
     self.add_os_flags('LINKFLAGS')
     self.add_os_flags('FCLINKFLAGS')
     self.add_os_flags('LIB')
@@ -120,6 +132,7 @@ def configure(self):
     self.load('legacy', tooldir='waftools')
     self.check_optimization_options()
     self.env.install_tests = opts.install_tests
+    self.write_config_headers()
 
 def build(self):
     from Options import options as opts
@@ -190,12 +203,18 @@ def check_platform(self):
         os_name = 'linux'
     elif os_name == 'sunos':
         os_name = 'solaris'
-    if self.env.DEST_CPU.endswith('64') and not os_name.startswith('win'):
+    if self.env.DEST_CPU.endswith('64'):
         os_name += '64'
-        self.env.HAVE_64_BITS = True
+        self.define('_USE_64_BITS', 1)
     os_name = os_name.upper()
-    self.env.append_unique('DEFINES', [os_name])
-    self.end_msg('(-D%s)' % os_name)
+    if not os_name.startswith('win'):
+        self.define('_POSIX', 1)
+        self.undefine('_WINDOWS')
+        self.define(os_name, 1)
+    else:
+        self.define('_WINDOWS', 1)
+        self.undefine('_POSIX')
+    self.end_msg(os_name)
 
 @Configure.conf
 def check_optimization_options(self):
@@ -206,3 +225,64 @@ def check_optimization_options(self):
     self.check_optimization_cflags()
     self.check_optimization_fcflags()
     self.check_optimization_python()
+
+# same idea than waflib.Tools.c_config.write_config_header
+# but defines are not removed from `env`
+from waflib.Tools.c_config import DEFKEYS
+CMT = { 'C' : '/* %s */', 'Fortran' : '! %s' }
+
+@Configure.conf
+def write_config_headers(self):
+    """Write both xxxx_config.h files for C and Fortran,
+    then remove entries from DEFINES"""
+    for variant in ('debug', 'release'):
+        self.setenv(variant)
+        self.write_config_h('Fortran', variant)
+        self.write_config_h('C', variant)
+        for key in self.env[DEFKEYS]:
+            self.undefine(key)
+        self.env[DEFKEYS] = []
+
+@Configure.conf
+def write_config_h(self, language, variant, configfile=None, env=None):
+    """Write a configuration header containing defines
+    ASTERC defines will be used if language='C', not 'Fortran'.
+    """
+    self.start_msg('Write config file')
+    assert language in ('C', 'Fortran')
+    cmt = CMT[language]
+    configfile = configfile or 'aster%s_config.h' % language[0].lower()
+    env = env or self.env
+    guard = Utils.quote_define_name(configfile)
+    lst = [
+        cmt % "WARNING! All changes made to this file will be lost!",
+        "", "",
+        "#ifndef %s" % guard, "#define %s" % guard, "",
+        self.get_config_h(language),
+        "", "#endif", "",
+    ]
+    node = self.bldnode or self.path.get_bld()
+    node = node.make_node(osp.join(variant, configfile))
+    node.parent.mkdir()
+    node.write('\n'.join(lst))
+    self.env.append_unique('INCLUDES', node.parent.abspath())
+    # config files are not removed on "waf clean"
+    env.append_unique(Build.CFG_FILES, [node.abspath()])
+    self.end_msg(node.bldpath())
+
+@Configure.conf
+def get_config_h(self, language):
+    """Create the contents of a ``config.h`` file from the defines
+    set in conf.env.define_key / conf.env.include_key. No include guards are added.
+    """
+    cmt = CMT[language]
+    lst = []
+    for x in self.env[DEFKEYS]:
+        if language != 'C' and x.startswith('ASTERC'):
+            continue
+        if self.is_defined(x):
+            val = self.get_define(x)
+            lst.append('#define %s %s' % (x, val))
+        else:
+            lst.append(cmt % '#undef %s' % x)
+    return "\n".join(lst)

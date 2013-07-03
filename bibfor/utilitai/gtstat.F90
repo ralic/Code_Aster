@@ -31,8 +31,8 @@ function gtstat(istat)
     integer :: iglbst
     common  / cglbst / iglbst
 !
-    if (istat .eq. st_ok) then
-        gtstat = iglbst .eq. st_ok
+    if (istat .eq. ST_OK) then
+        gtstat = iglbst .eq. ST_OK
     else
         gtstat = iand(istat, iglbst) .eq. istat
     endif

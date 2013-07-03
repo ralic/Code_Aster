@@ -111,7 +111,7 @@ def build_as_shared(self, uses, shenv):
              use = ['NUMPY'],
     )
 
-    if shenv.HAVE_MED:
+    if shenv.BUILD_MED:
         self(
             features = 'c cshlib pyext',
               target = '../bibpyt/med_aster',
@@ -124,7 +124,7 @@ def build_as_shared(self, uses, shenv):
 def build_as_embeded(self, uses, stenv):
     get_srcs = self.path.get_src().ant_glob
 
-    excl = ['**/med_aster_module.c'] if not stenv.HAVE_MED else []
+    excl = ['**/med_aster_module.c'] if not stenv.BUILD_MED else []
 
     # required for Intel compiler
     main = 'main' if stenv.FC_MAIN == -1 or 'ifort' in stenv.LINK_FC else stenv.FC_MAIN
