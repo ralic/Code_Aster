@@ -27,14 +27,14 @@ subroutine as_mfaofi(fid, maa, ind, fam, num,&
 #   include "med/mfaofi.h"
 #   include "asterfort/conv_int.h"
 
-ast_int :: fid, num, attid(*), attval(*), natt, cret, ind
+aster_int :: fid, num, attid(*), attval(*), natt, cret, ind
 character(len=*) :: maa, fam, attdes(*) , gro(*)
 
 #ifdef _DISABLE_MED
     call u2mess('F', 'FERMETUR_2')
 #else
 
-#if med_int_kind != ast_int_kind
+#if med_int_kind != aster_int_kind
     med_int, allocatable :: attid4(:), attva4(:)
     med_int :: cret4,num4
 
@@ -43,8 +43,8 @@ character(len=*) :: maa, fam, attdes(*) , gro(*)
 
     call mfaofi(to_med_int(fid), maa, to_med_int(ind), fam, attid4,&
                 attva4, attdes, num4, gro, cret4)
-    num  = to_ast_int(num4)
-    cret = to_ast_int(cret4)
+    num  = to_aster_int(num4)
+    cret = to_aster_int(cret4)
     call conv_int('med->ast', natt, vi_ast=attid, vi_med=attid4)
     call conv_int('med->ast', natt, vi_ast=attval, vi_med=attva4)
 

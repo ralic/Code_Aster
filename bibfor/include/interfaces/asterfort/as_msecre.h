@@ -19,13 +19,13 @@
 interface
     subroutine as_msecre(fid, nomes, dim, nomms, tycell,&
                       tygems, tygees, cret)
-        ast_int :: fid
+        aster_int :: fid
         character(*) :: nomes
-        ast_int :: dim
+        aster_int :: dim
         character(*) :: nomms
-        ast_int :: tycell
-        ast_int :: tygems
-        ast_int :: tygees
-        ast_int :: cret
+        aster_int :: tycell
+        aster_int :: tygems
+        aster_int :: tygees
+        aster_int :: cret
     end subroutine as_msecre
 end interface

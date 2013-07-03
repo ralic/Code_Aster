@@ -22,14 +22,14 @@ subroutine as_mmhcor(fid, maa, coo, modcoo, cret)
 #   include "types/med_types.h"
 #   include "med/mmhcor.h"
     character(len=*) :: maa
-    ast_int :: fid, modcoo, cret
-    ast_int :: mdnont, mdnoit
+    aster_int :: fid, modcoo, cret
+    aster_int :: mdnont, mdnoit
     real(kind=8) :: coo(*)
 #ifdef _DISABLE_MED
     call u2mess('F', 'FERMETUR_2')
 #else
 
-#if med_int_kind != ast_int_kind
+#if med_int_kind != aster_int_kind
     med_int :: fid4, modco4, cret4
     med_int :: mdnon4, mdnoi4
     mdnont = -1

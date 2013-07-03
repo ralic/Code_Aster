@@ -22,7 +22,7 @@ subroutine as_mfdfin(fid, cha, ma, n, cunit,&
 #   include "types/aster_types.h"
 #   include "types/med_types.h"
 #   include "med/mfdfin.h"
-    ast_int :: fid, n, cret, lmesh, typen
+    aster_int :: fid, n, cret, lmesh, typen
     character(len=*) :: cha
     character(len=16) :: cunit, cname
     character(len=*) :: ma
@@ -31,7 +31,7 @@ subroutine as_mfdfin(fid, cha, ma, n, cunit,&
     call u2mess('F', 'FERMETUR_2')
 #else
 
-#if med_int_kind != ast_int_kind
+#if med_int_kind != aster_int_kind
     med_int :: fid4, n4, cret4, lmesh4, typen4
     fid4 = fid
     call mfdfin(fid4, cha, ma, lmesh4, typen4,&

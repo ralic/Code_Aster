@@ -18,8 +18,8 @@
 #include "types/aster_types.h"
 interface
     subroutine as_mficor(fid, descfi, cret)
-        ast_int :: fid
+        aster_int :: fid
         character(*) :: descfi
-        ast_int :: cret
+        aster_int :: cret
     end subroutine as_mficor
 end interface

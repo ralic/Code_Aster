@@ -21,7 +21,7 @@ subroutine as_mmhmii(fid, indice, maa, dim, type, desc, cret)
 #   include "types/aster_types.h"
 #   include "types/med_types.h"
 #   include "med/mmhmii.h"
-    ast_int :: fid, dim, dimb, cret, indice, type, typtri, nbseq, typrep
+    aster_int :: fid, dim, dimb, cret, indice, type, typtri, nbseq, typrep
     character(len=64) :: maa
     character(len=200) :: desc
     character(len=16) :: descdt
@@ -30,7 +30,7 @@ subroutine as_mmhmii(fid, indice, maa, dim, type, desc, cret)
     call u2mess('F', 'FERMETUR_2')
 #else
 
-#if med_int_kind != ast_int_kind
+#if med_int_kind != aster_int_kind
     med_int :: fid4, dim4, cret4, indic4, type4, dimb4, typtr4
     med_int :: nbseq4, typre4
     fid4 = fid

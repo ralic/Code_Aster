@@ -23,14 +23,14 @@ subroutine as_mlclow(fid, typgeo, refcoo, modeco, ngauss,&
 #   include "types/aster_types.h"
 #   include "types/med_types.h"
 #   include "med/mlclow.h"
-    ast_int :: fid, typgeo, modeco, ngauss, cret, ndim
+    aster_int :: fid, typgeo, modeco, ngauss, cret, ndim
     real(kind=8) :: refcoo(*), gscoo(*), wg(*)
     character(len=*) :: locname, nomasu
 #ifdef _DISABLE_MED
     call u2mess('F', 'FERMETUR_2')
 #else
 
-#if med_int_kind != ast_int_kind
+#if med_int_kind != aster_int_kind
     med_int :: fid4, typge4, mode_4, ngaus4, cret4, ndim4
     fid4 = fid
     typge4 = typgeo

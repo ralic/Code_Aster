@@ -21,13 +21,13 @@ subroutine as_mpfpsn(fid, pro, nbval, cret)
 #   include "types/aster_types.h"
 #   include "types/med_types.h"
 #   include "med/mpfpsn.h"
-    ast_int :: fid, nbval, cret
+    aster_int :: fid, nbval, cret
     character(len=*) :: pro
 #ifdef _DISABLE_MED
     call u2mess('F', 'FERMETUR_2')
 #else
 
-#if med_int_kind != ast_int_kind
+#if med_int_kind != aster_int_kind
     med_int :: fid4, nbval4, cret4
     fid4 = fid
     call mpfpsn(fid4, pro, nbval4, cret4)

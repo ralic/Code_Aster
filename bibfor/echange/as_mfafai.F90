@@ -22,13 +22,13 @@ subroutine as_mfafai(fid, maa, ind, fam, num,&
 #   include "types/aster_types.h"
 #   include "types/med_types.h"
 #   include "med/mfafai.h"
-    ast_int :: fid, num, cret, ind
+    aster_int :: fid, num, cret, ind
     character(len=*) :: maa, fam, gro(*)
 #ifdef _DISABLE_MED
     call u2mess('F', 'FERMETUR_2')
 #else
 
-#if med_int_kind != ast_int_kind
+#if med_int_kind != aster_int_kind
     med_int :: fid4, num4
     med_int :: cret4, ind4
 !      CALL ASSERT(LEN(MAA).EQ.32)

@@ -19,13 +19,13 @@
 interface
     subroutine as_mmhnme(fid, maa, quoi, typent, typgeo,&
                       typcon, n, cret)
-        ast_int :: fid
+        aster_int :: fid
         character(*) :: maa
-        ast_int :: quoi
-        ast_int :: typent
-        ast_int :: typgeo
-        ast_int :: typcon
-        ast_int :: n
-        ast_int :: cret
+        aster_int :: quoi
+        aster_int :: typent
+        aster_int :: typgeo
+        aster_int :: typcon
+        aster_int :: n
+        aster_int :: cret
     end subroutine as_mmhnme
 end interface

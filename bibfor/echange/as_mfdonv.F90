@@ -23,13 +23,13 @@ subroutine as_mfdonv(fid, cha, typent, typgeo, noma,&
 #   include "types/aster_types.h"
 #   include "types/med_types.h"
 #   include "med/mfdonv.h"
-    ast_int :: fid, typent, typgeo, stm, npr, nip, n, cret, numdt, numo, pit
+    aster_int :: fid, typent, typgeo, stm, npr, nip, n, cret, numdt, numo, pit
     character(len=*) :: cha, nompro, nomloc, noma
 #ifdef _DISABLE_MED
     call u2mess('F', 'FERMETUR_2')
 #else
 
-#if med_int_kind != ast_int_kind
+#if med_int_kind != aster_int_kind
     med_int :: fid4, typen4, typge4, stm4, npr4, nip4, n4, cret4
     med_int :: numdt4, numo4, pit4
     fid4 = fid

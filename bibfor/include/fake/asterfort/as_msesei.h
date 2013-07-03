@@ -20,19 +20,19 @@ interface
     subroutine as_msesei(idfimd, imasup, nomaes, nvtymd, dimest,&
                       nomasu, medcel, nbnosu, nbmssu, tygems,&
                       nbattc, prespr, nbattv, codret)
-        ast_int :: idfimd
-        ast_int :: imasup
+        aster_int :: idfimd
+        aster_int :: imasup
         character(*) :: nomaes
-        ast_int :: nvtymd
-        ast_int :: dimest
+        aster_int :: nvtymd
+        aster_int :: dimest
         character(*) :: nomasu
-        ast_int :: medcel
-        ast_int :: nbnosu
-        ast_int :: nbmssu
-        ast_int :: tygems
-        ast_int :: nbattc
-        ast_int :: prespr
-        ast_int :: nbattv
-        ast_int :: codret
+        aster_int :: medcel
+        aster_int :: nbnosu
+        aster_int :: nbmssu
+        aster_int :: tygems
+        aster_int :: nbattc
+        aster_int :: prespr
+        aster_int :: nbattv
+        aster_int :: codret
     end subroutine as_msesei
 end interface

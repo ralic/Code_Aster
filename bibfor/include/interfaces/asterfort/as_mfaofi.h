@@ -20,16 +20,16 @@ interface
     subroutine as_mfaofi(fid, maa, ind, fam, num,&
                       attid, attval, attdes, natt, gro,&
                       cret)
-        ast_int :: fid
+        aster_int :: fid
         character(*) :: maa
-        ast_int :: ind
+        aster_int :: ind
         character(*) :: fam
-        ast_int :: num
-        ast_int :: attid(*)
-        ast_int :: attval(*)
+        aster_int :: num
+        aster_int :: attid(*)
+        aster_int :: attval(*)
         character(*) :: attdes(*)
-        ast_int :: natt
+        aster_int :: natt
         character(*) :: gro(*)
-        ast_int :: cret
+        aster_int :: cret
     end subroutine as_mfaofi
 end interface

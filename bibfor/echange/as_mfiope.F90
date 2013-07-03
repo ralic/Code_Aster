@@ -22,12 +22,12 @@ subroutine as_mfiope(fid, nom, acces, cret)
 #   include "types/med_types.h"
 #   include "med/mfiope.h"
     character(len=*) :: nom
-    ast_int :: acces, fid, cret
+    aster_int :: acces, fid, cret
 #ifdef _DISABLE_MED
     call u2mess('F', 'FERMETUR_2')
 #else
 
-#if med_int_kind != ast_int_kind
+#if med_int_kind != aster_int_kind
     med_int :: acces4, fid4, cret4
     acces4 = acces
     call mfiope(fid4, nom, acces4, cret4)

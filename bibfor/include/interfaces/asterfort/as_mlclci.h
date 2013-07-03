@@ -19,13 +19,13 @@
 interface
     subroutine as_mlclci(fid, nordr, k64, ityp, nbn,&
                       ndim, nomasu, cret)
-        ast_int :: fid
-        ast_int :: nordr
+        aster_int :: fid
+        aster_int :: nordr
         character(len=64) :: k64
-        ast_int :: ityp
-        ast_int :: nbn
-        ast_int :: ndim
+        aster_int :: ityp
+        aster_int :: nbn
+        aster_int :: ndim
         character(*) :: nomasu
-        ast_int :: cret
+        aster_int :: cret
     end subroutine as_mlclci
 end interface

@@ -18,10 +18,10 @@
 #include "types/aster_types.h"
 interface
     subroutine as_mmhcor(fid, maa, coo, modcoo, cret)
-        ast_int :: fid
+        aster_int :: fid
         character(*) :: maa
         real(kind=8) :: coo(*)
-        ast_int :: modcoo
-        ast_int :: cret
+        aster_int :: modcoo
+        aster_int :: cret
     end subroutine as_mmhcor
 end interface

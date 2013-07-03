@@ -19,13 +19,13 @@
 interface
     subroutine as_mfdfdi(fid, ind, cha, type, comp,&
                       unit, nseqca, cret)
-        ast_int :: fid
-        ast_int :: ind
+        aster_int :: fid
+        aster_int :: ind
         character(*) :: cha
-        ast_int :: type
+        aster_int :: type
         character(*) :: comp(*)
         character(*) :: unit(*)
-        ast_int :: nseqca
-        ast_int :: cret
+        aster_int :: nseqca
+        aster_int :: cret
     end subroutine as_mfdfdi
 end interface

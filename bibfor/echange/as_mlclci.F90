@@ -22,14 +22,14 @@ subroutine as_mlclci(fid, nordr, k64, ityp, nbn,&
 #   include "types/aster_types.h"
 #   include "types/med_types.h"
 #   include "med/mlclci.h"
-    ast_int :: fid, nordr, ityp, nbn, cret, ndim, tymasu, nbmasu
+    aster_int :: fid, nordr, ityp, nbn, cret, ndim, tymasu, nbmasu
     character(len=64) :: k64, giname
     character(len=*) :: nomasu
 #ifdef _DISABLE_MED
     call u2mess('F', 'FERMETUR_2')
 #else
 
-#if med_int_kind != ast_int_kind
+#if med_int_kind != aster_int_kind
     med_int :: fid4, nordr4, ityp4, nbn4, cret4, ndim4, tymas4, nbmas4
     fid4 = fid
     nordr4 = nordr

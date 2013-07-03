@@ -19,12 +19,12 @@
 interface
     subroutine as_mmhraw(ifichi, nomail, typgeo, nomatt, nbrval,&
                       tabval, codret)
-        ast_int :: ifichi
+        aster_int :: ifichi
         character(*) :: nomail
-        ast_int :: typgeo
+        aster_int :: typgeo
         character(*) :: nomatt
-        ast_int :: nbrval
+        aster_int :: nbrval
         real(kind=8) :: tabval(*)
-        ast_int :: codret
+        aster_int :: codret
     end subroutine as_mmhraw
 end interface

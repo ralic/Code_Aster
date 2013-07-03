@@ -19,12 +19,12 @@
 interface
     subroutine as_mmhmii(fid, indice, maa, dim, type,&
                       desc, cret)
-        ast_int :: fid
-        ast_int :: indice
+        aster_int :: fid
+        aster_int :: indice
         character(*) :: maa
-        ast_int :: dim
-        ast_int :: type
+        aster_int :: dim
+        aster_int :: type
         character(*) :: desc
-        ast_int :: cret
+        aster_int :: cret
     end subroutine as_mmhmii
 end interface

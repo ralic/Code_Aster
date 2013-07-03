@@ -21,13 +21,13 @@ subroutine as_mfanfg(fid, maa, ind, n, cret)
 #   include "types/aster_types.h"
 #   include "types/med_types.h"
 #   include "med/mfanfg.h"
-    ast_int :: fid, ind, n, cret
+    aster_int :: fid, ind, n, cret
     character(len=*) :: maa
 #ifdef _DISABLE_MED
     call u2mess('F', 'FERMETUR_2')
 #else
 
-#if med_int_kind != ast_int_kind
+#if med_int_kind != aster_int_kind
     med_int :: fid4, ind4, n4, cret4
     fid4 = fid
     ind4 = ind

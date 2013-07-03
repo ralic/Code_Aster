@@ -19,12 +19,12 @@
 interface
     subroutine as_mlclor(fid, tr1, tr2, tr3, nbt,&
                       k64, cret)
-        ast_int :: fid
+        aster_int :: fid
         real(kind=8) :: tr1(*)
         real(kind=8) :: tr2(*)
         real(kind=8) :: tr3(*)
-        ast_int :: nbt
+        aster_int :: nbt
         character(len=64) :: k64
-        ast_int :: cret
+        aster_int :: cret
     end subroutine as_mlclor
 end interface

@@ -18,10 +18,10 @@
 #include "types/aster_types.h"
 interface
     subroutine as_mfaona(fid, maa, ind, n, cret)
-        ast_int :: fid
+        aster_int :: fid
         character(*) :: maa
-        ast_int :: ind
-        ast_int :: n
-        ast_int :: cret
+        aster_int :: ind
+        aster_int :: n
+        aster_int :: cret
     end subroutine as_mfaona
 end interface

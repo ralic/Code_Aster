@@ -19,12 +19,12 @@
 interface
     subroutine as_mfdcsi(fid, cha, ind, numdt, numo,&
                       dt, cret)
-        ast_int :: fid
+        aster_int :: fid
         character(*) :: cha
-        ast_int :: ind
-        ast_int :: numdt
-        ast_int :: numo
+        aster_int :: ind
+        aster_int :: numdt
+        aster_int :: numo
         real(kind=8) :: dt
-        ast_int :: cret
+        aster_int :: cret
     end subroutine as_mfdcsi
 end interface

@@ -24,15 +24,15 @@ subroutine as_mfdrpw(fid, cha, val, intlac, n,&
 #   include "types/med_types.h"
 #   include "med/mfdrpw.h"
     character(len=*) :: cha, profil, locname
-    ast_int :: fid, n, pflmod, typent, typgeo, cret
-    ast_int :: intlac, numco, numdt, numo
+    aster_int :: fid, n, pflmod, typent, typgeo, cret
+    aster_int :: intlac, numco, numdt, numo
     real(kind=8) :: dt
     real(kind=8) :: val(*)
 #ifdef _DISABLE_MED
     call u2mess('F', 'FERMETUR_2')
 #else
 
-#if med_int_kind != ast_int_kind
+#if med_int_kind != aster_int_kind
     med_int :: fid4, n4, pflmo4, typen4, typge4, cret4
     med_int :: intla4, numco4, numdt4, numo4
     fid4 = fid

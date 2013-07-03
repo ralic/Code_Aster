@@ -19,12 +19,12 @@
 interface
     subroutine as_mfdfin(fid, cha, ma, n, cunit,&
                       cname, cret)
-        ast_int :: fid
+        aster_int :: fid
         character(*) :: cha
         character(*) :: ma
-        ast_int :: n
+        aster_int :: n
         character(len=16) :: cunit(*)
         character(len=16) :: cname(*)
-        ast_int :: cret
+        aster_int :: cret
     end subroutine as_mfdfin
 end interface

@@ -23,17 +23,17 @@ subroutine as_mmhfnr(fid, maa, fam, n, typent,&
 #   include "types/med_types.h"
 #   include "asterfort/conv_int.h"
 #   include "med/mmhfnr.h"
-    ast_int :: fid, fam(*), n, typent, typgeo, cret, mdnont, mdnoit
+    aster_int :: fid, fam(*), n, typent, typgeo, cret, mdnont, mdnoit
     character(len=*) :: maa
 #ifdef _DISABLE_MED
     call u2mess('F', 'FERMETUR_2')
 #else
 
-#if med_int_kind != ast_int_kind
+#if med_int_kind != aster_int_kind
     med_int :: fid4, n4, typen4, typge4, cret4
     med_int :: mdnon4, mdnoi4
     med_int, allocatable :: fam4(:)
-    ast_int :: ic
+    aster_int :: ic
     mdnont = -1
     mdnoit = -1
     fid4 = fid

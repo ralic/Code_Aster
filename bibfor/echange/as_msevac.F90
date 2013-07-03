@@ -23,12 +23,12 @@ subroutine as_msevac(fid, nomest, nomatt, tyatmd, nbrcmp,&
 #   include "types/med_types.h"
 #   include "med/msevac.h"
     character(len=*) :: nomest, nomatt
-    ast_int :: fid, tyatmd, nbrcmp, cret
+    aster_int :: fid, tyatmd, nbrcmp, cret
 #ifdef _DISABLE_MED
     call u2mess('F', 'FERMETUR_2')
 #else
 
-#if med_int_kind != ast_int_kind
+#if med_int_kind != aster_int_kind
     med_int :: fid4, tyatm4, nbrcm4, cret4
     fid4 = fid
     tyatm4 = tyatmd

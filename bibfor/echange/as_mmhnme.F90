@@ -23,13 +23,13 @@ subroutine as_mmhnme(fid, maa, quoi, typent, typgeo,&
 #   include "types/med_types.h"
 #   include "med/mmhnme.h"
     character(len=*) :: maa
-    ast_int :: fid, typent, typgeo, cret, typcon, n, quoi, mdnont, mdnoit
-    ast_int :: chtseq, chttra
+    aster_int :: fid, typent, typgeo, cret, typcon, n, quoi, mdnont, mdnoit
+    aster_int :: chtseq, chttra
 #ifdef _DISABLE_MED
     call u2mess('F', 'FERMETUR_2')
 #else
 
-#if med_int_kind != ast_int_kind
+#if med_int_kind != aster_int_kind
     med_int :: fid4, typen4, typge4, cret4, typco4, n4, quoi4
     med_int :: mdnon4, mdnoi4, chtse4, chttr4
     mdnont = -1

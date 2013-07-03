@@ -23,16 +23,16 @@ subroutine as_mmhraw(ifichi, nomail, typgeo, nomatt, nbrval,&
 #   include "types/med_types.h"
 #   include "med/mmhraw.h"
     character(len=*) :: nomail, nomatt
-    ast_int :: ifichi, typgeo, nbrval, codret
+    aster_int :: ifichi, typgeo, nbrval, codret
     real(kind=8) :: tabval(*)
-    ast_int :: numdt, numit
+    aster_int :: numdt, numit
     parameter    (numdt = -1)
     parameter    (numit = -1)
 #ifdef _DISABLE_MED
     call u2mess('F', 'FERMETUR_2')
 #else
 
-#if med_int_kind != ast_int_kind
+#if med_int_kind != aster_int_kind
     med_int :: ifich4, typge4, nbrva4, codre4, numdt4, numit4
     ifich4 = ifichi
     typge4 = typgeo

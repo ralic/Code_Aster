@@ -21,12 +21,12 @@ subroutine as_mlcnlc(fid, ngauss, cret)
 #   include "types/aster_types.h"
 #   include "types/med_types.h"
 #   include "med/mlcnlc.h"
-    ast_int :: fid, ngauss, cret
+    aster_int :: fid, ngauss, cret
 #ifdef _DISABLE_MED
     call u2mess('F', 'FERMETUR_2')
 #else
 
-#if med_int_kind != ast_int_kind
+#if med_int_kind != aster_int_kind
     med_int :: fid4, ngaus4, cret4
     fid4 = fid
     call mlcnlc(fid4, ngaus4, cret4)

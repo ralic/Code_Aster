@@ -19,12 +19,12 @@
 interface
     subroutine as_mfafai(fid, maa, ind, fam, num,&
                       gro, cret)
-        ast_int :: fid
+        aster_int :: fid
         character(*) :: maa
-        ast_int :: ind
+        aster_int :: ind
         character(*) :: fam
-        ast_int :: num
+        aster_int :: num
         character(*) :: gro(*)
-        ast_int :: cret
+        aster_int :: cret
     end subroutine as_mfafai
 end interface

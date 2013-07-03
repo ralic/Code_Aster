@@ -24,13 +24,13 @@ subroutine as_msesei(idfimd, imasup, nomaes, nvtymd, dimest,&
 #   include "types/med_types.h"
 #   include "med/msesei.h"
     character(len=*) :: nomaes, nomasu
-    ast_int :: idfimd, imasup, nvtymd, dimest, medcel, nbnosu
-    ast_int :: nbmssu, tygems, nbattc, prespr, nbattv, codret
+    aster_int :: idfimd, imasup, nvtymd, dimest, medcel, nbnosu
+    aster_int :: nbmssu, tygems, nbattc, prespr, nbattv, codret
 #ifdef _DISABLE_MED
     call u2mess('F', 'FERMETUR_2')
 #else
 
-#if med_int_kind != ast_int_kind
+#if med_int_kind != aster_int_kind
     med_int :: idfim4, imasu4, nvtym4, dimes4, medce4, nbnos4
     med_int :: nbmss4, tygem4, nbatc4, presp4, nbatv4, codre4
     idfim4 = idfimd

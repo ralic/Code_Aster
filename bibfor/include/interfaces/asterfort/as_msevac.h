@@ -19,11 +19,11 @@
 interface
     subroutine as_msevac(fid, nomest, nomatt, tyatmd, nbrcmp,&
                       cret)
-        ast_int :: fid
+        aster_int :: fid
         character(*) :: nomest
         character(*) :: nomatt
-        ast_int :: tyatmd
-        ast_int :: nbrcmp
-        ast_int :: cret
+        aster_int :: tyatmd
+        aster_int :: nbrcmp
+        aster_int :: cret
     end subroutine as_msevac
 end interface

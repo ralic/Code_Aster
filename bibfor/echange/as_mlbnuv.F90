@@ -21,13 +21,13 @@ subroutine as_mlbnuv(maj, mini, rel, cret)
 #   include "types/aster_types.h"
 #   include "types/med_types.h"
 #   include "med/mlbnuv.h"
-    ast_int :: maj, mini, rel
-    ast_int :: cret
+    aster_int :: maj, mini, rel
+    aster_int :: cret
 #ifdef _DISABLE_MED
     call u2mess('F', 'FERMETUR_2')
 #else
 
-#if med_int_kind != ast_int_kind
+#if med_int_kind != aster_int_kind
     med_int :: maj4, min4, rel4
     med_int :: cret4
     call mlbnuv(maj4, min4, rel4, cret4)

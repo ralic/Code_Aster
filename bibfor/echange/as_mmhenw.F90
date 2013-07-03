@@ -24,14 +24,14 @@ subroutine as_mmhenw(fid, maa, num, n, typent,&
 #   include "asterfort/conv_int.h"
 #   include "med/mmhenw.h"
     character(len=*) :: maa
-    ast_int :: num(*)
-    ast_int :: fid, typent, typgeo, cret
-    ast_int :: n, mdnont, mdnoit
+    aster_int :: num(*)
+    aster_int :: fid, typent, typgeo, cret
+    aster_int :: n, mdnont, mdnoit
 #ifdef _DISABLE_MED
     call u2mess('F', 'FERMETUR_2')
 #else
 
-#if med_int_kind != ast_int_kind
+#if med_int_kind != aster_int_kind
     med_int, allocatable :: num4(:)
     med_int :: fid4, typen4, typge4, cret4
     med_int :: n4, mdnon4, mdnoi4

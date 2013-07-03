@@ -22,14 +22,14 @@ subroutine as_mfacre(fid, maa, fam, num, ngro,&
 #   include "types/aster_types.h"
 #   include "types/med_types.h"
 #   include "med/mfacre.h"
-    ast_int :: fid, num, ngro, cret
+    aster_int :: fid, num, ngro, cret
     character(len=*) :: maa, fam
     character(len=80) :: gro(*)
 #ifdef _DISABLE_MED
     call u2mess('F', 'FERMETUR_2')
 #else
 
-#if med_int_kind != ast_int_kind
+#if med_int_kind != aster_int_kind
     med_int :: fid4, num4, ngro4, cret4
     fid4 = fid
     num4 = num

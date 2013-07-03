@@ -20,20 +20,20 @@ interface
     subroutine as_mfdonv(fid, cha, typent, typgeo, noma,&
                       numdt, numo, pit, nompro, stm,&
                       npr, nomloc, nip, n, cret)
-        ast_int :: fid
+        aster_int :: fid
         character(*) :: cha
-        ast_int :: typent
-        ast_int :: typgeo
+        aster_int :: typent
+        aster_int :: typgeo
         character(*) :: noma
-        ast_int :: numdt
-        ast_int :: numo
-        ast_int :: pit
+        aster_int :: numdt
+        aster_int :: numo
+        aster_int :: pit
         character(*) :: nompro
-        ast_int :: stm
-        ast_int :: npr
+        aster_int :: stm
+        aster_int :: npr
         character(*) :: nomloc
-        ast_int :: nip
-        ast_int :: n
-        ast_int :: cret
+        aster_int :: nip
+        aster_int :: n
+        aster_int :: cret
     end subroutine as_mfdonv
 end interface

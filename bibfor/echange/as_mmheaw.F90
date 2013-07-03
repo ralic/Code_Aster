@@ -24,13 +24,13 @@ subroutine as_mmheaw(fid, maa, nom, n, typent,&
 #   include "med/mmheaw.h"
     character(len=*) :: maa
     character(len=*) :: nom
-    ast_int :: fid, typent, typgeo, cret, mdnont, mdnoit
-    ast_int :: n
+    aster_int :: fid, typent, typgeo, cret, mdnont, mdnoit
+    aster_int :: n
 #ifdef _DISABLE_MED
     call u2mess('F', 'FERMETUR_2')
 #else
 
-#if med_int_kind != ast_int_kind
+#if med_int_kind != aster_int_kind
     med_int :: fid4, typen4, typge4, cret4
     med_int :: n4, mdnon4, mdnoi4
     mdnont = -1

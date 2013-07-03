@@ -22,14 +22,14 @@ subroutine as_mfdcsi(fid, cha, ind, numdt, numo,&
 #   include "types/aster_types.h"
 #   include "types/med_types.h"
 #   include "med/mfdcsi.h"
-    ast_int :: fid, ind, numdt, numo, cret
+    aster_int :: fid, ind, numdt, numo, cret
     character(len=*) :: cha
     real(kind=8) :: dt
 #ifdef _DISABLE_MED
     call u2mess('F', 'FERMETUR_2')
 #else
 
-#if med_int_kind != ast_int_kind
+#if med_int_kind != aster_int_kind
     med_int :: fid4, ind4, numdt4, numo4, cret4
     fid4 = fid
     ind4 = ind

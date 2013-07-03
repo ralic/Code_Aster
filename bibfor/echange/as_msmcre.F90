@@ -25,12 +25,12 @@ subroutine as_msmcre(fid, nom, dim, desc, typrep,&
     character(len=*) :: nom
     character(len=*) :: desc
     character(len=16) :: nocomp, unit
-    ast_int :: fid, dim, cret, typrep
+    aster_int :: fid, dim, cret, typrep
 #ifdef _DISABLE_MED
     call u2mess('F', 'FERMETUR_2')
 #else
 
-#if med_int_kind != ast_int_kind
+#if med_int_kind != aster_int_kind
     med_int :: fid4, dim4, cret4, typre4
     fid4 = fid
     dim4 = dim

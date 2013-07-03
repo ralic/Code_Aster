@@ -19,12 +19,12 @@
 interface
     subroutine as_mmheaw(fid, maa, nom, n, typent,&
                       typgeo, cret)
-        ast_int :: fid
+        aster_int :: fid
         character(*) :: maa
         character(*) :: nom(*)
-        ast_int :: n
-        ast_int :: typent
-        ast_int :: typgeo
-        ast_int :: cret
+        aster_int :: n
+        aster_int :: typent
+        aster_int :: typgeo
+        aster_int :: cret
     end subroutine as_mmheaw
 end interface

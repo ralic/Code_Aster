@@ -18,8 +18,8 @@
 #include "types/aster_types.h"
 interface
     subroutine as_mlcnlc(fid, ngauss, cret)
-        ast_int :: fid
-        ast_int :: ngauss
-        ast_int :: cret
+        aster_int :: fid
+        aster_int :: ngauss
+        aster_int :: cret
     end subroutine as_mlcnlc
 end interface

@@ -21,13 +21,13 @@ subroutine as_mficor(fid, descfi, cret)
 #   include "types/aster_types.h"
 #   include "types/med_types.h"
 #   include "med/mficor.h"
-    ast_int :: fid, cret
+    aster_int :: fid, cret
     character(len=*) :: descfi
 #ifdef _DISABLE_MED
     call u2mess('F', 'FERMETUR_2')
 #else
 
-#if med_int_kind != ast_int_kind
+#if med_int_kind != aster_int_kind
     med_int :: fid4, cret4
     fid4 = fid
     call mficor(fid4, descfi, cret4)

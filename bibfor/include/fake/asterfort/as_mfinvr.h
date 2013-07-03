@@ -18,10 +18,10 @@
 #include "types/aster_types.h"
 interface
     subroutine as_mfinvr(fid, maj, mini, rel, cret)
-        ast_int :: fid
-        ast_int :: maj
-        ast_int :: mini
-        ast_int :: rel
-        ast_int :: cret
+        aster_int :: fid
+        aster_int :: maj
+        aster_int :: mini
+        aster_int :: rel
+        aster_int :: cret
     end subroutine as_mfinvr
 end interface

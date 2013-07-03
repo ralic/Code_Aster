@@ -18,8 +18,8 @@
 #include "types/aster_types.h"
 interface
     subroutine as_mfdnfd(fid, n, cret)
-        ast_int :: fid
-        ast_int :: n
-        ast_int :: cret
+        aster_int :: fid
+        aster_int :: n
+        aster_int :: cret
     end subroutine as_mfdnfd
 end interface

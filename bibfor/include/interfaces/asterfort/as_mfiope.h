@@ -18,9 +18,9 @@
 #include "types/aster_types.h"
 interface
     subroutine as_mfiope(fid, nom, acces, cret)
-        ast_int :: fid
+        aster_int :: fid
         character(*) :: nom
-        ast_int :: acces
-        ast_int :: cret
+        aster_int :: acces
+        aster_int :: cret
     end subroutine as_mfiope
 end interface

@@ -22,14 +22,14 @@ subroutine as_mpfprw(fid, pflval, nbval, pro, cret)
 #   include "types/med_types.h"
 #   include "med/mpfprw.h"
 #   include "asterfort/conv_int.h"
-    ast_int :: fid, nbval, cret
-    ast_int :: pflval(*)
+    aster_int :: fid, nbval, cret
+    aster_int :: pflval(*)
     character(len=*) :: pro
 #ifdef _DISABLE_MED
     call u2mess('F', 'FERMETUR_2')
 #else
 
-#if med_int_kind != ast_int_kind
+#if med_int_kind != aster_int_kind
     med_int :: fid4, nbval4, cret4
     med_int, allocatable :: pflva4(:)
     fid4 = fid

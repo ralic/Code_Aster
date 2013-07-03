@@ -20,17 +20,17 @@ interface
     subroutine as_mfdonp(fid, cha, numdt, numo, typent,&
                       typgeo, iterma, noma, nompro, nomloc,&
                       n, cret)
-        ast_int :: fid
+        aster_int :: fid
         character(*) :: cha
-        ast_int :: numdt
-        ast_int :: numo
-        ast_int :: typent
-        ast_int :: typgeo
-        ast_int :: iterma
+        aster_int :: numdt
+        aster_int :: numo
+        aster_int :: typent
+        aster_int :: typgeo
+        aster_int :: iterma
         character(*) :: noma
         character(*) :: nompro
         character(*) :: nomloc
-        ast_int :: n
-        ast_int :: cret
+        aster_int :: n
+        aster_int :: cret
     end subroutine as_mfdonp
 end interface

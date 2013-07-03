@@ -18,9 +18,9 @@
 #include "types/aster_types.h"
 interface
     subroutine as_mpfpsn(fid, pro, nbval, cret)
-        ast_int :: fid
+        aster_int :: fid
         character(*) :: pro
-        ast_int :: nbval
-        ast_int :: cret
+        aster_int :: nbval
+        aster_int :: cret
     end subroutine as_mpfpsn
 end interface

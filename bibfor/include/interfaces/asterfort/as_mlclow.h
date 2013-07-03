@@ -20,16 +20,16 @@ interface
     subroutine as_mlclow(fid, typgeo, refcoo, modeco, ngauss,&
                       gscoo, wg, locname, ndim, nomasu,&
                       cret)
-        ast_int :: fid
-        ast_int :: typgeo
+        aster_int :: fid
+        aster_int :: typgeo
         real(kind=8) :: refcoo(*)
-        ast_int :: modeco
-        ast_int :: ngauss
+        aster_int :: modeco
+        aster_int :: ngauss
         real(kind=8) :: gscoo(*)
         real(kind=8) :: wg(*)
         character(*) :: locname
-        ast_int :: ndim
+        aster_int :: ndim
         character(*) :: nomasu
-        ast_int :: cret
+        aster_int :: cret
     end subroutine as_mlclow
 end interface

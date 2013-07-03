@@ -18,9 +18,9 @@
 #include "types/aster_types.h"
 interface
     subroutine as_mlbnuv(maj, mini, rel, cret)
-        ast_int :: maj
-        ast_int :: mini
-        ast_int :: rel
-        ast_int :: cret
+        aster_int :: maj
+        aster_int :: mini
+        aster_int :: rel
+        aster_int :: cret
     end subroutine as_mlbnuv
 end interface

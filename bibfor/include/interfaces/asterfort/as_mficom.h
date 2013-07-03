@@ -19,8 +19,8 @@
 interface
     subroutine as_mficom(nom, hdfok, medok, cret)
         character(*) :: nom
-        ast_int :: hdfok
-        ast_int :: medok
-        ast_int :: cret
+        aster_int :: hdfok
+        aster_int :: medok
+        aster_int :: cret
     end subroutine as_mficom
 end interface

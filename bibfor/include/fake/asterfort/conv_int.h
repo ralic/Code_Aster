@@ -18,8 +18,8 @@
 interface
     subroutine conv_int(sens, nb, vi_ast, vi_med)
         character(len=*) :: sens
-        ast_int :: nb
-        ast_int :: vi_ast(nb)
+        aster_int :: nb
+        aster_int :: vi_ast(nb)
         med_int :: vi_med(nb)
     end subroutine conv_int
 end interface

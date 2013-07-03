@@ -18,9 +18,9 @@
 #include "types/aster_types.h"
 interface
     subroutine as_mfdnfc(fid, ind, n, cret)
-        ast_int :: fid
-        ast_int :: ind
-        ast_int :: n
-        ast_int :: cret
+        aster_int :: fid
+        aster_int :: ind
+        aster_int :: n
+        aster_int :: cret
     end subroutine as_mfdnfc
 end interface

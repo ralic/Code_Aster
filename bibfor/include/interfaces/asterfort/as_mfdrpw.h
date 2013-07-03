@@ -20,20 +20,20 @@ interface
     subroutine as_mfdrpw(fid, cha, val, intlac, n,&
                       locname, numco, profil, pflmod, typent,&
                       typgeo, numdt, dt, numo, cret)
-        ast_int :: fid
+        aster_int :: fid
         character(*) :: cha
         real(kind=8) :: val(*)
-        ast_int :: intlac
-        ast_int :: n
+        aster_int :: intlac
+        aster_int :: n
         character(*) :: locname
-        ast_int :: numco
+        aster_int :: numco
         character(*) :: profil
-        ast_int :: pflmod
-        ast_int :: typent
-        ast_int :: typgeo
-        ast_int :: numdt
+        aster_int :: pflmod
+        aster_int :: typent
+        aster_int :: typgeo
+        aster_int :: numdt
         real(kind=8) :: dt
-        ast_int :: numo
-        ast_int :: cret
+        aster_int :: numo
+        aster_int :: cret
     end subroutine as_mfdrpw
 end interface

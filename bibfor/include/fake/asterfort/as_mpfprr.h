@@ -18,10 +18,10 @@
 #include "types/aster_types.h"
 interface
     subroutine as_mpfprr(fid, pflval, n, pro, cret)
-        ast_int :: fid
-        ast_int :: pflval(*)
-        ast_int :: n
+        aster_int :: fid
+        aster_int :: pflval(*)
+        aster_int :: n
         character(*) :: pro
-        ast_int :: cret
+        aster_int :: cret
     end subroutine as_mpfprr
 end interface

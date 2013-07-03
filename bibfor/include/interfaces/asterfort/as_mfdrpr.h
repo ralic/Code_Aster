@@ -20,17 +20,17 @@ interface
     subroutine as_mfdrpr(fid, cha, val, intlac, numco,&
                       profil, pflmod, typent, typgeo, numdt,&
                       numo, cret)
-        ast_int :: fid
+        aster_int :: fid
         character(*) :: cha
         real(kind=8) :: val(*)
-        ast_int :: intlac
-        ast_int :: numco
+        aster_int :: intlac
+        aster_int :: numco
         character(*) :: profil
-        ast_int :: pflmod
-        ast_int :: typent
-        ast_int :: typgeo
-        ast_int :: numdt
-        ast_int :: numo
-        ast_int :: cret
+        aster_int :: pflmod
+        aster_int :: typent
+        aster_int :: typgeo
+        aster_int :: numdt
+        aster_int :: numo
+        aster_int :: cret
     end subroutine as_mfdrpr
 end interface

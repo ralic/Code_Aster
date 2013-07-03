@@ -18,7 +18,7 @@
 #include "types/aster_types.h"
 interface
     subroutine as_mficlo(fid, cret)
-        ast_int :: fid
-        ast_int :: cret
+        aster_int :: fid
+        aster_int :: cret
     end subroutine as_mficlo
 end interface

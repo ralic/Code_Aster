@@ -19,11 +19,11 @@
 interface
     subroutine as_mmhcow(fid, maa, coo, modcoo, n,&
                       cret)
-        ast_int :: fid
+        aster_int :: fid
         character(*) :: maa
         real(kind=8) :: coo(*)
-        ast_int :: modcoo
-        ast_int :: n
-        ast_int :: cret
+        aster_int :: modcoo
+        aster_int :: n
+        aster_int :: cret
     end subroutine as_mmhcow
 end interface

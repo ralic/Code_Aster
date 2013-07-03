@@ -21,12 +21,12 @@ subroutine as_mfdnfd(fid, n, cret)
 #   include "types/aster_types.h"
 #   include "types/med_types.h"
 #   include "med/mfdnfd.h"
-    ast_int :: fid, cret, n
+    aster_int :: fid, cret, n
 #ifdef _DISABLE_MED
     call u2mess('F', 'FERMETUR_2')
 #else
 
-#if med_int_kind != ast_int_kind
+#if med_int_kind != aster_int_kind
     med_int :: fid4, cret4, n4
     fid4 = fid
     call mfdnfd(fid4, n4, cret4)

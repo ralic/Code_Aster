@@ -19,13 +19,13 @@
 interface
     subroutine as_msmcre(fid, nom, dim, desc, typrep,&
                       nocomp, unit, cret)
-        ast_int :: fid
+        aster_int :: fid
         character(*) :: nom
-        ast_int :: dim
+        aster_int :: dim
         character(*) :: desc
-        ast_int :: typrep
+        aster_int :: typrep
         character(len=16) :: nocomp(3)
         character(len=16) :: unit(3)
-        ast_int :: cret
+        aster_int :: cret
     end subroutine as_msmcre
 end interface

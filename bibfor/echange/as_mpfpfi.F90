@@ -21,13 +21,13 @@ subroutine as_mpfpfi(fid, indice, pro, n, cret)
 #   include "types/aster_types.h"
 #   include "types/med_types.h"
 #   include "med/mpfpfi.h"
-    ast_int :: fid, n, cret, indice
+    aster_int :: fid, n, cret, indice
     character(len=*) :: pro
 #ifdef _DISABLE_MED
     call u2mess('F', 'FERMETUR_2')
 #else
 
-#if med_int_kind != ast_int_kind
+#if med_int_kind != aster_int_kind
     med_int :: fid4, n4, cret4, indic4
     fid4 = fid
     indic4 = indice

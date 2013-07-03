@@ -25,18 +25,18 @@ subroutine as_mmhcyw(fid, maa, conn, csize, switch,&
 #   include "med/mmhcyw.h"
 #   include "asterfort/conv_int.h"
     character(len=*) :: maa
-    ast_int :: fid, conn(*), csize, typent, typgeo, typcon, cret
-    ast_int :: n, switch, mdnont, mdnoit
+    aster_int :: fid, conn(*), csize, typent, typgeo, typcon, cret
+    aster_int :: n, switch, mdnont, mdnoit
     real(kind=8) :: mdnodt
 #ifdef _DISABLE_MED
     call u2mess('F', 'FERMETUR_2')
 #else
 
-#if med_int_kind != ast_int_kind
+#if med_int_kind != aster_int_kind
     med_int, allocatable :: conn4(:)
     med_int :: fid4, typen4, typge4, typco4, cret4
     med_int :: n4, switc4, mdnon4, mdnoi4
-    ast_int :: ic
+    aster_int :: ic
     mdnont = -1
     mdnoit = -1
     mdnodt = -1.d0

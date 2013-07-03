@@ -21,13 +21,13 @@ subroutine as_mficom(nom, hdfok, medok, cret)
 #   include "types/med_types.h"
 ! person_in_charge: nicolas.sellenet at edf.fr
 #   include "med/mficom.h"
-    ast_int :: cret, hdfok, medok
+    aster_int :: cret, hdfok, medok
     character(len=*) :: nom
 #ifdef _DISABLE_MED
     call u2mess('F', 'FERMETUR_2')
 #else
 
-#if med_int_kind != ast_int_kind
+#if med_int_kind != aster_int_kind
     med_int :: cret4, hdfok4, medok4
     call mficom(nom, hdfok4, medok4, cret4)
     cret = int(cret4, 8)

@@ -19,13 +19,13 @@
 interface
     subroutine as_mfdcre(fid, cha, nomamd, type, comp,&
                       unit, ncomp, cret)
-        ast_int :: fid
+        aster_int :: fid
         character(*) :: cha
         character(*) :: nomamd
-        ast_int :: type
+        aster_int :: type
         character(*) :: comp(*)
         character(*) :: unit(*)
-        ast_int :: ncomp
-        ast_int :: cret
+        aster_int :: ncomp
+        aster_int :: cret
     end subroutine as_mfdcre
 end interface

@@ -19,14 +19,14 @@
 interface
     subroutine as_mmhcyr(fid, maa, conn, csize, switch,&
                       typent, typgeo, typcon, cret)
-        ast_int :: fid
+        aster_int :: fid
         character(*) :: maa
-        ast_int :: conn(*)
-        ast_int :: csize
-        ast_int :: switch
-        ast_int :: typent
-        ast_int :: typgeo
-        ast_int :: typcon
-        ast_int :: cret
+        aster_int :: conn(*)
+        aster_int :: csize
+        aster_int :: switch
+        aster_int :: typent
+        aster_int :: typgeo
+        aster_int :: typcon
+        aster_int :: cret
     end subroutine as_mmhcyr
 end interface

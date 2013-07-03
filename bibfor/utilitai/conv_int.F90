@@ -17,7 +17,7 @@ subroutine conv_int(sens, nb, vi_ast, vi_med)
 ! ======================================================================
 !
 !     utilitaire de conversion de tableaux d'entiers :
-!     ast_int <---> ast_med
+!     aster_int <---> ast_med
 !
 !     sens= / 'ast->med'
 !           / 'med->ast'
@@ -28,8 +28,8 @@ subroutine conv_int(sens, nb, vi_ast, vi_med)
 
     implicit none
     character(len=*) :: sens
-    ast_int :: nb
-    ast_int :: vi_ast(nb)
+    aster_int :: nb
+    aster_int :: vi_ast(nb)
     med_int :: vi_med(nb)
     integer :: i
 

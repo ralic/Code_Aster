@@ -18,8 +18,8 @@
 #include "types/aster_types.h"
 interface
     subroutine as_mficow(fid, des, cret)
-        ast_int :: fid
+        aster_int :: fid
         character(*) :: des
-        ast_int :: cret
+        aster_int :: cret
     end subroutine as_mficow
 end interface

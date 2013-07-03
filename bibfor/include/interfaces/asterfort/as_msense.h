@@ -18,8 +18,8 @@
 #include "types/aster_types.h"
 interface
     subroutine as_msense(fid, nbmasu, cret)
-        ast_int :: fid
-        ast_int :: nbmasu
-        ast_int :: cret
+        aster_int :: fid
+        aster_int :: nbmasu
+        aster_int :: cret
     end subroutine as_msense
 end interface

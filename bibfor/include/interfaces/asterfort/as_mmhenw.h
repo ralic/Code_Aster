@@ -19,12 +19,12 @@
 interface
     subroutine as_mmhenw(fid, maa, num, n, typent,&
                       typgeo, cret)
-        ast_int :: fid
+        aster_int :: fid
         character(*) :: maa
-        ast_int :: num(*)
-        ast_int :: n
-        ast_int :: typent
-        ast_int :: typgeo
-        ast_int :: cret
+        aster_int :: num(*)
+        aster_int :: n
+        aster_int :: typent
+        aster_int :: typgeo
+        aster_int :: cret
     end subroutine as_mmhenw
 end interface

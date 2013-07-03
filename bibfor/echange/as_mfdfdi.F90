@@ -23,7 +23,7 @@ subroutine as_mfdfdi(fid, ind, cha, type, comp,&
 #   include "types/med_types.h"
 #   include "med/mfdfdi.h"
     character(len=*) :: cha, comp, unit
-    ast_int :: fid, ind, type, cret, lmail, nseqca
+    aster_int :: fid, ind, type, cret, lmail, nseqca
     character(len=64) :: nommai
     character(len=80) :: unidt
 !
@@ -33,7 +33,7 @@ subroutine as_mfdfdi(fid, ind, cha, type, comp,&
     call u2mess('F', 'FERMETUR_2')
 #else
 
-#if med_int_kind != ast_int_kind
+#if med_int_kind != aster_int_kind
     med_int :: fid4, ind4, type4, cret4, nseqc4, lmai4
     fid4 = fid
     ind4 = ind
