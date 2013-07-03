@@ -79,10 +79,10 @@ subroutine amumpp(option, nbsol, kxmps, ldist, type,&
 #include "jeveux.h"
     integer :: nicntl
     parameter (nicntl=26)
-    type (SMUMPS_STRUC) , pointer :: smpsk
-    type (CMUMPS_STRUC) , pointer :: cmpsk
-    type (DMUMPS_STRUC) , pointer :: dmpsk
-    type (ZMUMPS_STRUC) , pointer :: zmpsk
+    type (smumps_struc) , pointer :: smpsk
+    type (cmumps_struc) , pointer :: cmpsk
+    type (dmumps_struc) , pointer :: dmpsk
+    type (zmumps_struc) , pointer :: zmpsk
     integer :: n, nnbsol, rang, lmat, i, ierd, idvalc, ibid, jdelg, k, ifm, niv
     integer :: jdlg2, jj
     integer(kind=4) :: n4

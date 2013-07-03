@@ -187,8 +187,8 @@ subroutine prjlis(moda, maa, modb, mab, nbnoa,&
             call jenuno(jexnum(mab//'.NOMNOE', nunobi), nonob)
             if (niv .eq. 2) then
                 write (ifm,*) ' '
-                write (ifm,*) '_RELA IMPRESSION D''UNE RELATION&
-     &            LINEAIRE ENTRE '&
+                write (ifm,*) '_RELA IMPRESSION D''UNE RELATION'//&
+     &'            LINEAIRE ENTRE '&
      &            ,nbterm,' DDLS. (AVANT NORMALISATION DE LA RELATION)'
                 write (ifm,1001) -1.d0,nonob
             endif

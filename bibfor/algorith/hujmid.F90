@@ -266,8 +266,8 @@ subroutine hujmid(mod, crit, mater, nvi, deps,&
         write(6,*)'NR = ',nr
         write (ifm,'(A)') '------------------------------------------'
         write(6,*)'INDI =',(indi(i),i=1,nbmect)
-        write (ifm,'(A)') '- SIXX - SIYY - SIZZ - SIXY - SIXZ - SIYZ -&
-     &EPSVP - R1 - R2 - R3 - R4 - DLA1 - DLA2 - DLA3 - DLA4 -'
+        write (ifm,'(A)') '- SIXX - SIYY - SIZZ - SIXY - SIXZ - SIYZ -'//&
+     &'EPSVP - R1 - R2 - R3 - R4 - DLA1 - DLA2 - DLA3 - DLA4 -'
         write (ifm,1000) '  > ESSAI :: YF=',(yf(i),i=1,nr)
 !
     endif

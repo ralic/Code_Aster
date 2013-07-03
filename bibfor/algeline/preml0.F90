@@ -162,8 +162,8 @@ subroutine preml0(n1, n2, diag, col, delg,&
 80      end do
         if (iconne .gt. 0) then
             call u2mess('A', 'ALGELINE5_53')
-            write(ifm,*) 2*iconne ,' TERMES SUPPLEMENTAIRES DANS&
-     &    LA MATRICE INITIALE'
+            write(ifm,*) 2*iconne ,' TERMES SUPPLEMENTAIRES DANS'&
+     &'    LA MATRICE INITIALE'
         endif
     endif
 !

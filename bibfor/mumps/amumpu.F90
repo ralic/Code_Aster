@@ -85,23 +85,23 @@ subroutine amumpu(option, type, kxmps, usersm, nprec,&
 #   include "aster_mumps.h"
 #include "mpif.h"
 #include "jeveux.h"
-    type (SMUMPS_STRUC) , pointer :: smpsk
-    type (CMUMPS_STRUC) , pointer :: cmpsk
-    type (DMUMPS_STRUC) , pointer :: dmpsk
-    type (ZMUMPS_STRUC) , pointer :: zmpsk
+    type (smumps_struc) , pointer :: smpsk
+    type (cmumps_struc) , pointer :: cmpsk
+    type (dmumps_struc) , pointer :: dmpsk
+    type (zmumps_struc) , pointer :: zmpsk
     real(kind=8) :: rval(3), rval1, rval2, rval3, rval1b, rval2b, rval3b, rinf12
     real(kind=8) :: rinf13
     integer :: info16, info26, vali(10), icoefm, icn22, icn23, rang, n, iaux1
     integer :: iaux2, info3, nbproc, ifm, niv, ibid, ipiv, info28, info12, i
-    integer :: ierr, tmax, tmaxb, ltot, iret, ISIZEMU, NSIZEMU, NSIZEMA, execmu
+    integer :: ierr, tmax, tmaxb, ltot, iret, isizemu, nsizemu, nsizema, execmu
     integer :: info34, icnt33
 !      INTEGER*4     getpid
     integer(kind=4) :: pid, mpicou
     logical :: lpara, lpeak, lpb1
-    character(len=2) :: FSTRING
+    character(len=2) :: fstring
     character(len=8) :: k8tab(3)
     character(len=10) :: strpid
-    character(len=24) :: kpiv, valk(2), KSIZEMU
+    character(len=24) :: kpiv, valk(2), ksizemu
     character(len=50) :: str, buffer
     character(len=80) :: nvers
     character(len=256) :: jnom(2)
@@ -123,28 +123,28 @@ subroutine amumpu(option, type, kxmps, usersm, nprec,&
         lpara=(smpsk%nprocs.gt.1)
         nbproc=smpsk%nprocs
         rang=smpsk%myid
-        nvers=smpsk%VERSION_NUMBER
+        nvers=smpsk%version_number
         n=smpsk%n
         case ('C')
         cmpsk=>cmps(kxmps)
         lpara=(cmpsk%nprocs.gt.1)
         nbproc=cmpsk%nprocs
         rang=cmpsk%myid
-        nvers=cmpsk%VERSION_NUMBER
+        nvers=cmpsk%version_number
         n=cmpsk%n
         case ('D')
         dmpsk=>dmps(kxmps)
         lpara=(dmpsk%nprocs.gt.1)
         nbproc=dmpsk%nprocs
         rang=dmpsk%myid
-        nvers=dmpsk%VERSION_NUMBER
+        nvers=dmpsk%version_number
         n=dmpsk%n
         case ('Z')
         zmpsk=>zmps(kxmps)
         lpara=(zmpsk%nprocs.gt.1)
         nbproc=zmpsk%nprocs
         rang=zmpsk%myid
-        nvers=zmpsk%VERSION_NUMBER
+        nvers=zmpsk%version_number
         n=zmpsk%n
         case default
         call assert(.false.)
@@ -160,7 +160,7 @@ subroutine amumpu(option, type, kxmps, usersm, nprec,&
         smpsk%par=1
         smpsk%job=-1
         call smumps(smpsk)
-        nvers=smpsk%VERSION_NUMBER
+        nvers=smpsk%version_number
         smpsk%job=-2
         call smumps(smpsk)
         case ('C')
@@ -170,7 +170,7 @@ subroutine amumpu(option, type, kxmps, usersm, nprec,&
         cmpsk%par=1
         cmpsk%job=-1
         call cmumps(cmpsk)
-        nvers=cmpsk%VERSION_NUMBER
+        nvers=cmpsk%version_number
         cmpsk%job=-2
         call cmumps(cmpsk)
         case ('D')
@@ -180,7 +180,7 @@ subroutine amumpu(option, type, kxmps, usersm, nprec,&
         dmpsk%par=1
         dmpsk%job=-1
         call dmumps(dmpsk)
-        nvers=dmpsk%VERSION_NUMBER
+        nvers=dmpsk%version_number
         dmpsk%job=-2
         call dmumps(dmpsk)
         case ('Z')
@@ -190,7 +190,7 @@ subroutine amumpu(option, type, kxmps, usersm, nprec,&
         zmpsk%par=1
         zmpsk%job=-1
         call zmumps(zmpsk)
-        nvers=zmpsk%VERSION_NUMBER
+        nvers=zmpsk%version_number
         zmpsk%job=-2
         call zmumps(zmpsk)
         case default
@@ -228,15 +228,15 @@ subroutine amumpu(option, type, kxmps, usersm, nprec,&
             info3=info3/(1024*1024*nbproc)
         endif
 !
-! ---   NSIZEMA: TAILLE CUMULEE EN MO DES OBJETS MUMPS A,IRN,RHS..
+! ---   nsizema: TAILLE CUMULEE EN MO DES OBJETS MUMPS A,IRN,RHS..
 ! ---   EXECMU:  TAILLE EN MO DE L'EXECUTABLE MUMPS
         execmu=30
-        KSIZEMU='&&TAILLE_OBJ_MUMPS'
-        call jeveuo(KSIZEMU, 'L', ISIZEMU)
-        NSIZEMA=-999
+        ksizemu='&&TAILLE_OBJ_MUMPS'
+        call jeveuo(ksizemu, 'L', isizemu)
+        nsizema=-999
         do i = 1, nbproc
-            NSIZEMU=zi(ISIZEMU+i-1)
-            if (NSIZEMU .gt. NSIZEMA) NSIZEMA=NSIZEMU
+            nsizemu=zi(isizemu+i-1)
+            if (nsizemu .gt. nsizema) nsizema=nsizemu
         enddo
 !
 ! ---   MARGES POUR LES ESTIMATIONS (EN %) DE MUMPS IC ET OOC PLUS
@@ -253,8 +253,8 @@ subroutine amumpu(option, type, kxmps, usersm, nprec,&
         if (n .lt. 100) icoefm=50
 !
 ! ---   CONSOS MUMPS IC ET OOC MAX SUR TOUS LES PROCS
-        info16=int(info16*((icoefm+100)*1.d0/100.d0))+NSIZEMA+execmu
-        info26=int(info26*((icoefm+100)*1.d0/100.d0))+NSIZEMA+execmu
+        info16=int(info16*((icoefm+100)*1.d0/100.d0))+nsizema+execmu
+        info26=int(info26*((icoefm+100)*1.d0/100.d0))+nsizema+execmu
 ! ---
 ! ---   TMAX: MAX DE LA RAM DISPO =
 ! ---       MEM_JOB - COURANT_JEVEUX - RELIQUAT (PYTHON, EXEC ASTER...)
@@ -334,7 +334,7 @@ subroutine amumpu(option, type, kxmps, usersm, nprec,&
 ! -----------------------------------------------------------------
         if (tmax .ge. info16) then
             icn22=0
-            icn23=max(int(0.95*tmax),info16)-(NSIZEMA+execmu)
+            icn23=max(int(0.95*tmax),info16)-(nsizema+execmu)
         else
             call jjldyn(0, -1, ltot)
             k8tab(1)='MEM_TOTA'
@@ -355,10 +355,10 @@ subroutine amumpu(option, type, kxmps, usersm, nprec,&
             endif
             if (tmaxb .ge. info16) then
                 icn22=0
-                icn23=max(int(0.95*tmaxb),info16)-(NSIZEMA+execmu)
+                icn23=max(int(0.95*tmaxb),info16)-(nsizema+execmu)
             else if ((tmaxb.ge.info26).and.(tmaxb.lt.info16)) then
                 icn22=1
-                icn23=max(int(0.95*tmaxb),info26)-(NSIZEMA+execmu)
+                icn23=max(int(0.95*tmaxb),info26)-(nsizema+execmu)
             else
                 vali(1)=tmax
                 vali(2)=tmaxb
@@ -401,19 +401,19 @@ subroutine amumpu(option, type, kxmps, usersm, nprec,&
         case ('S')
         smpsk%icntl(22)=icn22
         smpsk%icntl(23)=icn23
-        smpsk%OOC_TMPDIR='.'
+        smpsk%ooc_tmpdir='.'
         case ('C')
         cmpsk%icntl(22)=icn22
         cmpsk%icntl(23)=icn23
-        cmpsk%OOC_TMPDIR='.'
+        cmpsk%ooc_tmpdir='.'
         case ('D')
         dmpsk%icntl(22)=icn22
         dmpsk%icntl(23)=icn23
-        dmpsk%OOC_TMPDIR='.'
+        dmpsk%ooc_tmpdir='.'
         case ('Z')
         zmpsk%icntl(22)=icn22
         zmpsk%icntl(23)=icn23
-        zmpsk%OOC_TMPDIR='.'
+        zmpsk%ooc_tmpdir='.'
         end select
 !
         if (niv .ge. 2) then
@@ -425,21 +425,21 @@ subroutine amumpu(option, type, kxmps, usersm, nprec,&
             pid=0
 !          PID=getpid()
             if (abs(pid) < 10) then
-                FSTRING = 'I1'
+                fstring = 'I1'
             else if (pid < 100) then
-                FSTRING = 'I2'
+                fstring = 'I2'
             else if (pid < 1000) then
-                FSTRING = 'I3'
+                fstring = 'I3'
             else if (pid < 10000) then
-                FSTRING = 'I4'
+                fstring = 'I4'
             else if (pid < 100000) then
-                FSTRING = 'I5'
+                fstring = 'I5'
             else if (pid < 1000000) then
-                FSTRING = 'I6'
+                fstring = 'I6'
             else
                 write(6,*)'READ_VMPEAK : PB FORMAT CHOICE !'
             endif
-            write(strpid,'('//FSTRING//')')pid
+            write(strpid,'('//fstring//')')pid
 !          str=""
 !          str="/proc/"//trim(adjustl(strpid))//"/status"
 !          CALL SYSTEM("cat "//str//" > fort.11")
@@ -449,8 +449,8 @@ subroutine amumpu(option, type, kxmps, usersm, nprec,&
             write(ifm,*)'<AMUMPU> GESTION MEMOIRE USERSM/ICN22/ICN23: ',&
      &      usersm,icn22,icn23
             write(ifm,*)'<AMUMPU> CONSO MUMPS EXEC/OBJET_AIRNJCN/IC/OOC ',&
-     &                 execmu,NSIZEMA,info16-(execmu+NSIZEMA),&
-     &                                info26-(execmu+NSIZEMA)
+     &                 execmu,nsizema,info16-(execmu+nsizema),&
+     &                                info26-(execmu+nsizema)
             write(ifm,*)'<AMUMPU> 1ERE ESTIMATION JEVEUX/RELIQUAT/TMAX: ',&
      &                 rval2,rval3,tmax
             write(ifm,*)'<AMUMPU> 2NDE ESTIMATION JEVEUX/RELIQUAT/TMAX: ',&
@@ -504,19 +504,19 @@ subroutine amumpu(option, type, kxmps, usersm, nprec,&
                         select case(type)
                         case ('S')
                         do i = 1, info28
-                            zi(ipiv+1+i)=smpsk%PIVNUL_LIST(i)
+                            zi(ipiv+1+i)=smpsk%pivnul_list(i)
                         enddo
                         case ('C')
                         do i = 1, info28
-                            zi(ipiv+1+i)=cmpsk%PIVNUL_LIST(i)
+                            zi(ipiv+1+i)=cmpsk%pivnul_list(i)
                         enddo
                         case ('D')
                         do i = 1, info28
-                            zi(ipiv+1+i)=dmpsk%PIVNUL_LIST(i)
+                            zi(ipiv+1+i)=dmpsk%pivnul_list(i)
                         enddo
                         case ('Z')
                         do i = 1, info28
-                            zi(ipiv+1+i)=zmpsk%PIVNUL_LIST(i)
+                            zi(ipiv+1+i)=zmpsk%pivnul_list(i)
                         enddo
                         end select
                     endif

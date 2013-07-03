@@ -228,8 +228,8 @@ subroutine op0118()
         write (ifm,210) dt, tini, tfin , npfft
     endif
 !
-    200 format ('<-PAS DE TEMPS->   <-TEMPS INITIAL->  <-TEMPS FINAL->&
-     &  <-NB PT FFT->')
+    200 format ('<-PAS DE TEMPS->   <-TEMPS INITIAL->  <-TEMPS FINAL->'//&
+     &'  <-NB PT FFT->')
     210 format (1p,2x,d11.4,8x,d11.4,8x,d11.4,8x, i6)
 !
     call jedema()

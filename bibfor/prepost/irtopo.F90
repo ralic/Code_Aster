@@ -346,12 +346,9 @@ subroutine irtopo(ioccur, formaf, ifichi, leresu, lresul,&
 830          continue
         endif
         call jeveuo('&&IRTOPO.LIST_TOPO', 'L', jtopo)
-        if (imxno .ne. 0 .or. imxgn .ne. 0 .or. imxma .ne. 0 .or. imxgm .ne. 0) write(&
-                                                                                ifichi,&
-                                                                                '(/,20X,A)'&
-                                                                                ) 'ENTITES ' //'T&
-                                                                                &OPOLOGIQUES SELE&
-                                                                                &CTIONNEES '
+        if (imxno .ne. 0 .or. imxgn .ne. 0 .or. imxma .ne. 0 .or. imxgm .ne. 0) then
+            write(ifichi, '(/,20X,A)') 'ENTITES ' //'TOPOLOGIQUES SELECTIONNEES '
+        endif
         if (imxno .ne. 0) then
             zk80(jnno-1+1)(1:11) = 'NOEUD    : '
             write(ifichi,'(1X,A80)') (zk80(jnno-1+ino),ino=1,imxno)

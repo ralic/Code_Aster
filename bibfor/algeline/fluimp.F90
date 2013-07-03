@@ -450,12 +450,12 @@ subroutine fluimp(itypfl, nivpar, nivdef, melflu, typflu,&
                 if (calcul(1)) then
 !
                     write (ifr,5007)('*',j=1,117)
-                    write (ifr,'(A)')' *   MODE    *      FREQUENCE(Hz)      *&
-     &    AMORTISSEMENT (%)    *  VITESSE EFFICACE (m/s) *&
-     &  VITESSE EFFICACE (m/s) *'
-                    write (ifr,'(A)')' *           *                         *&
-     &                         *       (GEVIBUS)         *&
-     &       TTES CMPS         *'
+                    write (ifr,'(A)')' *   MODE    *      FREQUENCE(Hz)      *'//&
+     &'    AMORTISSEMENT (%)    *  VITESSE EFFICACE (m/s) *'//&
+     &'  VITESSE EFFICACE (m/s) *'
+                    write (ifr,'(A)')' *           *                         *'//&
+     &'                         *       (GEVIBUS)         *'//&
+     &'       TTES CMPS         *'
 !
                     write (ifr,5007)('*',j=1,117)
                     write (ifr,5001) imod,freqi(imod),(amoc(im)*100),&

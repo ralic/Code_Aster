@@ -78,7 +78,7 @@ subroutine amumpc(action, kxmps, csolu, vcine, nbsol,&
 #   include "aster_mumps.h"
 #include "mpif.h"
 #include "jeveux.h"
-    type (CMUMPS_STRUC) , pointer :: cmpsk
+    type (cmumps_struc) , pointer :: cmpsk
     integer :: jslvk, jslvr, rang, nbproc, niv, ifm, ibid, ietdeb, ifactm
     integer :: ietrat, jrefa, nprec, jslvi, ifact, iaux, vali(4), pcpi
     character(len=1) ::  rouc, type, prec
@@ -420,8 +420,8 @@ subroutine amumpc(action, kxmps, csolu, vcine, nbsol,&
             if (.not.lquali .and. .not.lopfac) then
                 if (ldist) then
                     deallocate(cmpsk%a_loc,stat=ibid)
-                    deallocate(cmpsk%IRN_loc,stat=ibid)
-                    deallocate(cmpsk%JCN_loc,stat=ibid)
+                    deallocate(cmpsk%irn_loc,stat=ibid)
+                    deallocate(cmpsk%jcn_loc,stat=ibid)
                 else
                     deallocate(cmpsk%a,stat=ibid)
                     deallocate(cmpsk%irn,stat=ibid)
@@ -519,8 +519,8 @@ subroutine amumpc(action, kxmps, csolu, vcine, nbsol,&
             if ((( rang.eq.0).and.(.not.ldist)) .or. (ldist)) then
                 if (ldist) then
                     deallocate(cmpsk%a_loc,stat=ibid)
-                    deallocate(cmpsk%IRN_loc,stat=ibid)
-                    deallocate(cmpsk%JCN_loc,stat=ibid)
+                    deallocate(cmpsk%irn_loc,stat=ibid)
+                    deallocate(cmpsk%jcn_loc,stat=ibid)
                 else
                     deallocate(cmpsk%a,stat=ibid)
                     deallocate(cmpsk%irn,stat=ibid)

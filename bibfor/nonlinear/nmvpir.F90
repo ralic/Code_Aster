@@ -160,8 +160,6 @@ subroutine nmvpir(fami, kpg, ksp, ndim, typmod,&
 !
     if (typmod(1) .eq. 'C_PLAN') then
         iulmes = iunifi('MESSAGE')
-        write (iulmes,*) 'COMPORTEMENT ',compor(1)(1:10),' NON&
-     & PROGRAMME POUR DES ELEMENTS DE CONTRAINTES PLANES'
         call u2mess('F', 'ALGORITH6_92')
         goto 299
     endif

@@ -47,10 +47,10 @@ subroutine amumpi(option, lquali, ldist, kxmps, type)
 #include "jeveux.h"
     integer :: nicntl, ncntl
     parameter (nicntl=40,ncntl=15)
-    type (SMUMPS_STRUC) , pointer :: smpsk
-    type (CMUMPS_STRUC) , pointer :: cmpsk
-    type (DMUMPS_STRUC) , pointer :: dmpsk
-    type (ZMUMPS_STRUC) , pointer :: zmpsk
+    type (smumps_struc) , pointer :: smpsk
+    type (cmumps_struc) , pointer :: cmpsk
+    type (dmumps_struc) , pointer :: dmpsk
+    type (zmumps_struc) , pointer :: zmpsk
     integer :: ifm, niv, icntl(nicntl), i, jrefa, isymm, jslvk, isymv, isym
     integer :: jslvi, n1, n3, n5, nprec, ibid
     integer(kind=4) :: i4, mpicou, mpimum
@@ -290,13 +290,13 @@ subroutine amumpi(option, lquali, ldist, kxmps, type)
         icntl(22)=-999
         icntl(23)=-999
         if (type .eq. 'S') then
-            smpsk%OOC_TMPDIR='XXXX'
+            smpsk%ooc_tmpdir='XXXX'
         else if (type.eq.'C') then
-            cmpsk%OOC_TMPDIR='XXXX'
+            cmpsk%ooc_tmpdir='XXXX'
         else if (type.eq.'D') then
-            dmpsk%OOC_TMPDIR='XXXX'
+            dmpsk%ooc_tmpdir='XXXX'
         else if (type.eq.'Z') then
-            zmpsk%OOC_TMPDIR='XXXX'
+            zmpsk%ooc_tmpdir='XXXX'
         else
             call assert(.false.)
         endif

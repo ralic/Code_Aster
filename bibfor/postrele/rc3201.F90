@@ -773,8 +773,8 @@ subroutine rc3201(lpmpb, lsn, lsnet, lfatig, lrocht,&
     1015 format (1p,' SITUATION ',i4,' SN =',e12.5 ,&
      &    ' SN AVEC SEISME =',e12.5 )
     1016 format (1p,' SITUATION ',i4,' SN* =',e12.5 )
-    1017 format (1p,' SITUATION ',i4,' SN* =',e12.5,'&
-     &       SN* AVEC SEISME =',e12.5 )
+    1017 format (1p,' SITUATION ',i4,' SN* =',e12.5,&
+     &    ' SN* AVEC SEISME =',e12.5 )
     1018 format (1p,' SITUATION ',i4,' SP =',e12.5)
     1019 format (1p,' SITUATION ',i4,' AVEC SEISME : SP =',e12.5)
     1050 format (1p,' SITUATION ',i4,' SPMECA=',e12.5,' SPTHER=',e12.5,&

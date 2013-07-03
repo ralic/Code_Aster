@@ -137,7 +137,7 @@ subroutine jerazo(nomlu, ni, i1)
         do  i = j1, j2
             zi(jini+i) = 0
         end do
-    else if ( typei .eq. 'S' ) THEN
+    else if ( typei .eq. 'S' ) then
         do  i = j1, j2
              zi4(jini+i) = 0
         end do

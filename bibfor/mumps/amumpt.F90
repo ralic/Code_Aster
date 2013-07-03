@@ -54,16 +54,16 @@ subroutine amumpt(option, kmonit, temps, rang, nbproc,&
 #   include "aster_mumps.h"
 #include "mpif.h"
 #include "jeveux.h"
-    type (SMUMPS_STRUC) , pointer :: smpsk
-    type (CMUMPS_STRUC) , pointer :: cmpsk
-    type (DMUMPS_STRUC) , pointer :: dmpsk
-    type (ZMUMPS_STRUC) , pointer :: zmpsk
+    type (smumps_struc) , pointer :: smpsk
+    type (cmumps_struc) , pointer :: cmpsk
+    type (dmumps_struc) , pointer :: dmpsk
+    type (zmumps_struc) , pointer :: zmpsk
     integer :: ifm, niv, ibid, iaux1, iaux2, iaux3, k, i, n, info(100), iret
-    integer :: monit(12), ietfin, ietmax, ISIZEMU, execmu
+    integer :: monit(12), ietfin, ietmax, isizemu, execmu
     character(len=8) :: k8bid
     character(len=16) :: k16bid, nomcmd
     character(len=19) :: ktemp
-    character(len=24) :: KSIZEMU
+    character(len=24) :: ksizemu
     character(len=80) :: nvers
     real(kind=8) :: rmonit(18), rinfog(100), rctfin, retfin
     logical :: ldebug, lcmde
@@ -90,7 +90,7 @@ subroutine amumpt(option, kmonit, temps, rang, nbproc,&
         rinfog(7)=smpsk%rinfog(7)
         rinfog(9)=smpsk%rinfog(9)
         rinfog(10)=smpsk%rinfog(10)
-        nvers(1:15)='SMUMPS '//smpsk%VERSION_NUMBER
+        nvers(1:15)='SMUMPS '//smpsk%version_number
     else if (type.eq.'C') then
         cmpsk=>cmps(kxmps)
         n=cmpsk%n
@@ -101,7 +101,7 @@ subroutine amumpt(option, kmonit, temps, rang, nbproc,&
         rinfog(7)=cmpsk%rinfog(7)
         rinfog(9)=cmpsk%rinfog(9)
         rinfog(10)=cmpsk%rinfog(10)
-        nvers(1:15)='CMUMPS '//cmpsk%VERSION_NUMBER
+        nvers(1:15)='CMUMPS '//cmpsk%version_number
     else if (type.eq.'D') then
         dmpsk=>dmps(kxmps)
         n=dmpsk%n
@@ -112,7 +112,7 @@ subroutine amumpt(option, kmonit, temps, rang, nbproc,&
         rinfog(7)=dmpsk%rinfog(7)
         rinfog(9)=dmpsk%rinfog(9)
         rinfog(10)=dmpsk%rinfog(10)
-        nvers(1:15)='DMUMPS '//dmpsk%VERSION_NUMBER
+        nvers(1:15)='DMUMPS '//dmpsk%version_number
     else if (type.eq.'Z') then
         zmpsk=>zmps(kxmps)
         n=zmpsk%n
@@ -123,7 +123,7 @@ subroutine amumpt(option, kmonit, temps, rang, nbproc,&
         rinfog(7)=zmpsk%rinfog(7)
         rinfog(9)=zmpsk%rinfog(9)
         rinfog(10)=zmpsk%rinfog(10)
-        nvers(1:15)='ZMUMPS '//zmpsk%VERSION_NUMBER
+        nvers(1:15)='ZMUMPS '//zmpsk%version_number
     else
         call assert(.false.)
     endif
@@ -315,11 +315,11 @@ subroutine amumpt(option, kmonit, temps, rang, nbproc,&
                 enddo
 !
 ! -- MONITORING MEMOIRE
-! ---   ZI(ISIZEMU+RANG-1): TAILLE CUMULEE EN MO OBJETS MUMPS A,IRN...
+! ---   ZI(isizemu+RANG-1): TAILLE CUMULEE EN MO OBJETS MUMPS A,IRN...
 ! ---   EXECMU:  TAILLE EN MO DE L'EXECUTABLE MUMPS
                 execmu=30
                 KSIZEMU='&&TAILLE_OBJ_MUMPS'
-                call jeveuo(KSIZEMU, 'L', ISIZEMU)
+                call jeveuo(KSIZEMU, 'L', isizemu)
                 KSIZEMU='&&TAILLE_OBJ_MUMPS'
                 if (type .eq. 'S') then
                     ibid=smpsk%icntl(22)
@@ -346,9 +346,9 @@ subroutine amumpt(option, kmonit, temps, rang, nbproc,&
 !           REAJUSTEMENT POUR TENIR COMPTE DE LA TAILLE DE L'EXECUTABLE
 !           ET DES OBJETS PRE-ALLOUES AVANT L'ANALYSE
                 do k = 0, nbproc-1
-                    zi(monit(10)+k)=zi(monit(10)+k)+execmu+zi(ISIZEMU+k)
-                    zi(monit(11)+k)=zi(monit(11)+k)+execmu+zi(ISIZEMU+k)
-                    zi(monit(12)+k)=zi(monit(12)+k)+execmu+zi(ISIZEMU+k)
+                    zi(monit(10)+k)=zi(monit(10)+k)+execmu+zi(isizemu+k)
+                    zi(monit(11)+k)=zi(monit(11)+k)+execmu+zi(isizemu+k)
+                    zi(monit(12)+k)=zi(monit(12)+k)+execmu+zi(isizemu+k)
                 enddo
 !           POUR LE CALCUL DES MOYENNES
                 rmonit(1)=0.0

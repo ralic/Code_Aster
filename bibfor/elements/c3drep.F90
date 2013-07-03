@@ -42,7 +42,7 @@ subroutine c3drep(nomte, epais, alpha, beta, coord,&
     real(kind=8) :: zero, vectpt(9, 2, 3), vectmp(3, 3), pgltmp(3, 3)
     real(kind=8) :: matevn(2, 2, 10), matevg(2, 2, 10), v
 !
-    zero=0.D0
+    zero=0.d0
     call jeveuo('&INEL.'//nomte(1:8)//'.DESI', 'L', lzi)
     call jeveuo('&INEL.'//nomte(1:8)//'.DESR', 'L', lzr)
     nb1  =zi(lzi-1+1)

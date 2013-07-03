@@ -353,15 +353,15 @@ subroutine conori(ma)
                                 write (ifm,*)
                             endif
                             if (nbmac .eq. 3) call u2mess('F', 'ALGORITH2_30')
-                            if (nbmac .eq. 2 .and. (lface0.eqv. lface)) call u2mess('F',&
-                                                                                    'ALGORITH2_3&
-                                                                                    &0')
+                            if (nbmac .eq. 2 .and. (lface0.eqv. lface)) then
+                                call u2mess('F', 'ALGORITH2_30')
+                            endif
                             lface=lface0
                             if (lomod0) lomodi=.true.
                             if (loreo0) loreor=.true.
-                            if (nbmac .eq. 2 .and. (lomod0.or.loreo0)) call u2mess('F',&
-                                                                                   'ALGORITH2_30&
-                                                                                   &')
+                            if (nbmac .eq. 2 .and. (lomod0.or.loreo0)) then
+                                call u2mess('F', 'ALGORITH2_30')
+                            endif
                         endif
 !
 !     ==================================================================

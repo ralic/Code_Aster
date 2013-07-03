@@ -137,8 +137,7 @@ subroutine jedebu(nbfi, mxzon, idb)
     character(len=8) :: k8tab(6)
     parameter      ( mxlici = 67 )
     character(len=mxlici) :: clicit
-    data clicit/' ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789.$&_abcdefghijkl&
-     &mnopqrstuvwxyz'/
+    data clicit/' ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789.$&_abcdefghijklmnopqrstuvwxyz'/
 ! DEB ------------------------------------------------------------------
 !
 ! ON AFFECTE ZI(1), ZR(1) ET ZC(1) AVEC UNE VALEUR QUI PEUT FAIRE

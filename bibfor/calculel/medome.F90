@@ -152,10 +152,9 @@ subroutine medome(modele, mate, cara, kcha, ncha,&
                     materi, n3)
         call dismoi('F', 'BESOIN_MATER', modele, 'MODELE', ibid,&
                     k8b, ie)
-        if ((nomcmd.ne.'CALC_MATR_ELEM') .and. (n3.eq.0) .and. (k8b(1:3) .eq.'OUI')) call u2mess(&
-                                                                                     'A',&
-                                                                                     'CALCULEL3_&
-                                                                                     &40')
+        if ((nomcmd.ne.'CALC_MATR_ELEM') .and. (n3.eq.0) .and. (k8b(1:3) .eq.'OUI')) then
+            call u2mess('A', 'CALCULEL3_40')
+        endif
 !
         if (n3 .ne. 0) then
             call rcmfmc(materi, mate)
