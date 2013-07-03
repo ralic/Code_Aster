@@ -19,9 +19,8 @@ subroutine as_mmhraw(ifichi, nomail, typgeo, nomatt, nbrval,&
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
     implicit none
-#   include "types/aster_types.h"
-#   include "types/med_types.h"
-#   include "med/mmhraw.h"
+#include "aster_types.h"
+#include "med/mmhraw.h"
     character(len=*) :: nomail, nomatt
     aster_int :: ifichi, typgeo, nbrval, codret
     real(kind=8) :: tabval(*)

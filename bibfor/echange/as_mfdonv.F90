@@ -20,9 +20,8 @@ subroutine as_mfdonv(fid, cha, typent, typgeo, noma,&
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
     implicit none
-#   include "types/aster_types.h"
-#   include "types/med_types.h"
-#   include "med/mfdonv.h"
+#include "aster_types.h"
+#include "med/mfdonv.h"
     aster_int :: fid, typent, typgeo, stm, npr, nip, n, cret, numdt, numo, pit
     character(len=*) :: cha, nompro, nomloc, noma
 #ifdef _DISABLE_MED

@@ -65,7 +65,7 @@ subroutine apetsc(action, solvez, matasz, rsolu, vcinez,&
 !-----------------------------------------------------------------------
 !
 #ifdef _HAVE_PETSC
-#   include "aster_petsc.h"
+#include "aster_petsc.h"
 !----------------------------------------------------------------
 !
 !     VARIABLES LOCALES

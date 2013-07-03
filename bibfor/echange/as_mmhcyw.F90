@@ -20,10 +20,9 @@ subroutine as_mmhcyw(fid, maa, conn, csize, switch,&
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
     implicit none
-#   include "types/aster_types.h"
-#   include "types/med_types.h"
-#   include "med/mmhcyw.h"
-#   include "asterfort/conv_int.h"
+#include "aster_types.h"
+#include "med/mmhcyw.h"
+#include "asterfort/conv_int.h"
     character(len=*) :: maa
     aster_int :: fid, conn(*), csize, typent, typgeo, typcon, cret
     aster_int :: n, switch, mdnont, mdnoit

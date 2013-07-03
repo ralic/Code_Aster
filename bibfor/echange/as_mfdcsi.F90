@@ -19,9 +19,8 @@ subroutine as_mfdcsi(fid, cha, ind, numdt, numo,&
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
     implicit none
-#   include "types/aster_types.h"
-#   include "types/med_types.h"
-#   include "med/mfdcsi.h"
+#include "aster_types.h"
+#include "med/mfdcsi.h"
     aster_int :: fid, ind, numdt, numo, cret
     character(len=*) :: cha
     real(kind=8) :: dt

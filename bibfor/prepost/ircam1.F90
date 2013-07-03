@@ -69,21 +69,21 @@ subroutine ircam1(nofimd, nochmd, existc, ncmprf, numpt,&
 ! aslint: disable=W1504
     implicit none
 !
-#   include "jeveux.h"
-#   include "asterc/utflsh.h"
-#   include "asterfort/infniv.h"
-#   include "asterfort/ircmcc.h"
-#   include "asterfort/ircmec.h"
-#   include "asterfort/ircmva.h"
-#   include "asterfort/jedetr.h"
-#   include "asterfort/jeveuo.h"
-#   include "asterfort/as_mficlo.h"
-#   include "asterfort/as_mfdfin.h"
-#   include "asterfort/as_mfiope.h"
-#   include "asterfort/u2mesg.h"
-#   include "asterfort/u2mesk.h"
-#   include "asterfort/u2mess.h"
-#   include "asterfort/wkvect.h"
+#include "jeveux.h"
+#include "asterc/utflsh.h"
+#include "asterfort/infniv.h"
+#include "asterfort/ircmcc.h"
+#include "asterfort/ircmec.h"
+#include "asterfort/ircmva.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/as_mficlo.h"
+#include "asterfort/as_mfdfin.h"
+#include "asterfort/as_mfiope.h"
+#include "asterfort/u2mesg.h"
+#include "asterfort/u2mesk.h"
+#include "asterfort/u2mess.h"
+#include "asterfort/wkvect.h"
     integer :: ntymax
     parameter (ntymax = 69)
 !

@@ -18,9 +18,8 @@ subroutine as_msense(fid, nbmasu, cret)
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
     implicit none
-#   include "types/aster_types.h"
-#   include "types/med_types.h"
-#   include "med/msense.h"
+#include "aster_types.h"
+#include "med/msense.h"
     aster_int :: fid, nbmasu, cret
 #ifdef _DISABLE_MED
     call u2mess('F', 'FERMETUR_2')

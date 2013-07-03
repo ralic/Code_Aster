@@ -1,3 +1,6 @@
+#ifndef ASTER_TYPES_H
+#define ASTER_TYPES_H
+!
 !   COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 !   THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 !   IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
@@ -12,13 +15,14 @@
 !   YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 !   ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !      1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
-!  
-! Definition of types used by med
 !
-#ifndef MED_TYPES_H
-#define MED_TYPES_H
+! Definition of types used by aster
 !
 #include "asterf_config.h"
+!
+#define aster_int_kind  ASTER_INT_SIZE
+#define aster_int       integer(kind=aster_int_kind)
+#define to_aster_int(a) int(a, ASTER_INT_SIZE)
 !
 #define med_int_kind    MED_INT_SIZE
 #define med_int         integer(kind=med_int_kind)

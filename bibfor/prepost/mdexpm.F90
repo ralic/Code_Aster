@@ -41,14 +41,14 @@ subroutine mdexpm(nofimd, idfimd, nomamd, existm, ndim,&
 !
 ! 0.1. ==> ARGUMENTS
 !
-#   include "asterfort/assert.h"
-#   include "asterfort/lxlgut.h"
-#   include "asterfort/as_mficlo.h"
-#   include "asterfort/as_mmhmii.h"
-#   include "asterfort/as_mmhnmh.h"
-#   include "asterfort/as_mfiope.h"
-#   include "asterfort/u2mesg.h"
-#   include "asterfort/u2mess.h"
+#include "asterfort/assert.h"
+#include "asterfort/lxlgut.h"
+#include "asterfort/as_mficlo.h"
+#include "asterfort/as_mmhmii.h"
+#include "asterfort/as_mmhnmh.h"
+#include "asterfort/as_mfiope.h"
+#include "asterfort/u2mesg.h"
+#include "asterfort/u2mess.h"
     character(len=*) :: nofimd, nomamd
 !
     logical :: existm, ficexi, dejouv

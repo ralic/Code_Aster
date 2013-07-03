@@ -42,13 +42,13 @@ subroutine lrcmle(idfimd, nochmd, nbcmfi, nbvato, numpt,&
 !
 ! 0.1. ==> ARGUMENTS
 !
-#   include "jeveux.h"
-#   include "asterfort/infniv.h"
-#   include "asterfort/as_mfdrpr.h"
-#   include "asterfort/as_mfdonv.h"
-#   include "asterfort/as_mfdonp.h"
-#   include "asterfort/u2mesg.h"
-#   include "asterfort/wkvect.h"
+#include "jeveux.h"
+#include "asterfort/infniv.h"
+#include "asterfort/as_mfdrpr.h"
+#include "asterfort/as_mfdonv.h"
+#include "asterfort/as_mfdonp.h"
+#include "asterfort/u2mesg.h"
+#include "asterfort/wkvect.h"
     integer :: idfimd
     integer :: nbcmfi, nbvato, numpt, numord
     integer :: typent, typgeo

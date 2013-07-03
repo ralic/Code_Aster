@@ -40,12 +40,12 @@ subroutine ircmcc(idfimd, nomamd, nochmd, existc, ncmpve,&
 !
 ! 0.1. ==> ARGUMENTS
 !
-#   include "jeveux.h"
-#   include "asterfort/infniv.h"
-#   include "asterfort/jeveuo.h"
-#   include "asterfort/as_mfdcre.h"
-#   include "asterfort/u2mesg.h"
-#   include "asterfort/u2mesk.h"
+#include "jeveux.h"
+#include "asterfort/infniv.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/as_mfdcre.h"
+#include "asterfort/u2mesg.h"
+#include "asterfort/u2mesk.h"
     character(len=*) :: nomamd
     character(len=*) :: nochmd
     character(len=*) :: ntncmp, ntucmp

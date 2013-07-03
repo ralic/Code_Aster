@@ -1,3 +1,6 @@
+#ifndef ASTER_MUMPS_H
+#define ASTER_MUMPS_H
+!
 ! COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
@@ -40,3 +43,4 @@
     common /mumpsd/ dmps
     common /mumpsz/ zmps
 !----------------------------------------------------------------
+#endif

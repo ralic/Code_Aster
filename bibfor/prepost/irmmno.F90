@@ -34,15 +34,15 @@ subroutine irmmno(idfimd, nomamd, ndim, nbnoeu, coordo,&
 !
 ! 0.1. ==> ARGUMENTS
 !
-#   include "jeveux.h"
-#   include "asterfort/infniv.h"
-#   include "asterfort/jedema.h"
-#   include "asterfort/jedetr.h"
-#   include "asterfort/jemarq.h"
-#   include "asterfort/as_mmhcow.h"
-#   include "asterfort/as_mmheaw.h"
-#   include "asterfort/u2mesg.h"
-#   include "asterfort/wkvect.h"
+#include "jeveux.h"
+#include "asterfort/infniv.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/as_mmhcow.h"
+#include "asterfort/as_mmheaw.h"
+#include "asterfort/u2mesg.h"
+#include "asterfort/wkvect.h"
     integer :: idfimd
     integer :: ndim, nbnoeu
 !

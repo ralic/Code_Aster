@@ -82,7 +82,7 @@ subroutine amumpu(option, type, kxmps, usersm, nprec,&
     logical :: lresol
 !
 #ifdef _HAVE_MUMPS
-#   include "aster_mumps.h"
+#include "aster_mumps.h"
 #include "mpif.h"
 #include "jeveux.h"
     type (smumps_struc) , pointer :: smpsk

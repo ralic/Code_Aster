@@ -15,7 +15,7 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
-#include "types/aster_types.h"
+#include "aster_types.h"
 interface
     subroutine as_mmhmii(fid, indice, maa, dim, type,&
                       desc, cret)

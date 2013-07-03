@@ -42,7 +42,7 @@ subroutine amumpi(option, lquali, ldist, kxmps, type)
     character(len=1) :: type
 !
 #ifdef _HAVE_MUMPS
-#   include "aster_mumps.h"
+#include "aster_mumps.h"
 #include "mpif.h"
 #include "jeveux.h"
     integer :: nicntl, ncntl

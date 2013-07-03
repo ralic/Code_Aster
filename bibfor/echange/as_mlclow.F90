@@ -20,9 +20,8 @@ subroutine as_mlclow(fid, typgeo, refcoo, modeco, ngauss,&
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
     implicit none
-#   include "types/aster_types.h"
-#   include "types/med_types.h"
-#   include "med/mlclow.h"
+#include "aster_types.h"
+#include "med/mlclow.h"
     aster_int :: fid, typgeo, modeco, ngauss, cret, ndim
     real(kind=8) :: refcoo(*), gscoo(*), wg(*)
     character(len=*) :: locname, nomasu

@@ -75,7 +75,7 @@ subroutine amumpc(action, kxmps, csolu, vcine, nbsol,&
     logical :: prepos
 !
 #ifdef _HAVE_MUMPS
-#   include "aster_mumps.h"
+#include "aster_mumps.h"
 #include "mpif.h"
 #include "jeveux.h"
     type (cmumps_struc) , pointer :: cmpsk

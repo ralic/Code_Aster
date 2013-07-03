@@ -19,9 +19,8 @@ subroutine as_mfafai(fid, maa, ind, fam, num,&
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
     implicit none
-#   include "types/aster_types.h"
-#   include "types/med_types.h"
-#   include "med/mfafai.h"
+#include "aster_types.h"
+#include "med/mfafai.h"
     aster_int :: fid, num, cret, ind
     character(len=*) :: maa, fam, gro(*)
 #ifdef _DISABLE_MED

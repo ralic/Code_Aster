@@ -45,14 +45,14 @@ subroutine mdexma(nofimd, idfimd, nomamd, option, existm,&
 !
 ! 0.1. ==> ARGUMENTS
 !
-#   include "asterfort/lxlgut.h"
-#   include "asterfort/as_mficlo.h"
-#   include "asterfort/as_mmhmii.h"
-#   include "asterfort/as_mmhnmh.h"
-#   include "asterfort/as_mfiope.h"
-#   include "asterfort/u2mesg.h"
-#   include "asterfort/u2mesk.h"
-#   include "asterfort/u2mess.h"
+#include "asterfort/lxlgut.h"
+#include "asterfort/as_mficlo.h"
+#include "asterfort/as_mmhmii.h"
+#include "asterfort/as_mmhnmh.h"
+#include "asterfort/as_mfiope.h"
+#include "asterfort/u2mesg.h"
+#include "asterfort/u2mesk.h"
+#include "asterfort/u2mess.h"
     character(len=*) :: nofimd, nomamd
 !
     logical :: existm, ficexi, dejouv

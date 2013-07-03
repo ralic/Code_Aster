@@ -16,7 +16,7 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-#include "types/med_types.h"
+#include "aster_types.h"
     subroutine mfdrpw(fid, fname, numdt, numit, dt,&
                       etype, gtype, stm, pname, lname,&
                       swm, cs, n, val, cret)

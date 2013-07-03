@@ -70,7 +70,7 @@ subroutine apmain(action, kptsc, rsolu, vcine, istop,&
 !---------------------------------------------------------------
 !
 #ifdef _HAVE_PETSC
-#   include "aster_petsc.h"
+#include "aster_petsc.h"
 !----------------------------------------------------------------
 !
 !     VARIABLES LOCALES

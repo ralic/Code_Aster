@@ -49,22 +49,22 @@ subroutine mdexcc(nofimd, idfimd, nochmd, nbcmpc, nomcmc,&
 !
 ! 0.1. ==> ARGUMENTS
 !
-#   include "jeveux.h"
+#include "jeveux.h"
 !
-#   include "asterfort/codent.h"
-#   include "asterfort/jedetr.h"
-#   include "asterfort/jeexin.h"
-#   include "asterfort/jelira.h"
-#   include "asterfort/jeveuo.h"
-#   include "asterfort/lxlgut.h"
-#   include "asterfort/as_mfdfdi.h"
-#   include "asterfort/as_mficlo.h"
-#   include "asterfort/as_mfdnfd.h"
-#   include "asterfort/as_mfdnfc.h"
-#   include "asterfort/as_mfiope.h"
-#   include "asterfort/u2mesg.h"
-#   include "asterfort/u2mess.h"
-#   include "asterfort/wkvect.h"
+#include "asterfort/codent.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jeexin.h"
+#include "asterfort/jelira.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/lxlgut.h"
+#include "asterfort/as_mfdfdi.h"
+#include "asterfort/as_mficlo.h"
+#include "asterfort/as_mfdnfd.h"
+#include "asterfort/as_mfdnfc.h"
+#include "asterfort/as_mfiope.h"
+#include "asterfort/u2mesg.h"
+#include "asterfort/u2mess.h"
+#include "asterfort/wkvect.h"
     character(len=*) :: nofimd, nochmd
     character(len=*) :: nomcmc, nmcmfi
 !

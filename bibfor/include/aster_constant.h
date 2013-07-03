@@ -1,3 +1,6 @@
+#ifndef ASTER_CONSTANT_H
+#define ASTER_CONSTANT_H
+!
 !   COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 !   THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 !   IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
@@ -33,9 +36,6 @@
 !   ST_TAG_CHK : mpi communication tag for the check step of the status
 !   ST_TAG_CNT : mpi communication tag for the continue or stop
 !   ST_TAG_ALR : mpi communication tag for the alarm check
-!
-#ifndef ASTER_CONSTANT_H
-#define ASTER_CONSTANT_H
 !
 #define ST_ER       1
 #define ST_OK       0

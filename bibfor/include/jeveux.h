@@ -1,3 +1,6 @@
+#ifndef JEVEUX_H
+#define JEVEUX_H
+!
 ! COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
@@ -35,3 +38,4 @@
     character(len=80)                                           :: zk80
     common  / kvarje / zk8(1), zk16(1), zk24(1), zk32(1), zk80(1)
 !---------- FIN  COMMUNS NORMALISES  JEVEUX ----------------------------
+#endif

@@ -20,9 +20,8 @@ subroutine as_msesei(idfimd, imasup, nomaes, nvtymd, dimest,&
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
     implicit none
-#   include "types/aster_types.h"
-#   include "types/med_types.h"
-#   include "med/msesei.h"
+#include "aster_types.h"
+#include "med/msesei.h"
     character(len=*) :: nomaes, nomasu
     aster_int :: idfimd, imasup, nvtymd, dimest, medcel, nbnosu
     aster_int :: nbmssu, tygems, nbattc, prespr, nbattv, codret

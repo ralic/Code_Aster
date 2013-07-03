@@ -18,9 +18,8 @@ subroutine as_mlbnuv(maj, mini, rel, cret)
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
     implicit none
-#   include "types/aster_types.h"
-#   include "types/med_types.h"
-#   include "med/mlbnuv.h"
+#include "aster_types.h"
+#include "med/mlbnuv.h"
     aster_int :: maj, mini, rel
     aster_int :: cret
 #ifdef _DISABLE_MED

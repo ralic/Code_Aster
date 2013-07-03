@@ -45,20 +45,20 @@ subroutine lrmmfa(fid, nomamd, nbnoeu, nbmail, grpnoe,&
 !
     implicit none
 !
-#   include "jeveux.h"
-#   include "asterfort/infniv.h"
-#   include "asterfort/jecrec.h"
-#   include "asterfort/jedema.h"
-#   include "asterfort/jedetr.h"
-#   include "asterfort/jemarq.h"
-#   include "asterfort/jeveuo.h"
-#   include "asterfort/lrmmf1.h"
-#   include "asterfort/lrmmf4.h"
-#   include "asterfort/as_mmhfnr.h"
-#   include "asterfort/as_mfanfa.h"
-#   include "asterfort/u2mesg.h"
-#   include "asterfort/u2mess.h"
-#   include "asterfort/wkvect.h"
+#include "jeveux.h"
+#include "asterfort/infniv.h"
+#include "asterfort/jecrec.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/lrmmf1.h"
+#include "asterfort/lrmmf4.h"
+#include "asterfort/as_mmhfnr.h"
+#include "asterfort/as_mfanfa.h"
+#include "asterfort/u2mesg.h"
+#include "asterfort/u2mess.h"
+#include "asterfort/wkvect.h"
     integer :: ntymax
     parameter (ntymax = 69)
 !

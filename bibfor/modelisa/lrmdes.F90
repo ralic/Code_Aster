@@ -34,12 +34,12 @@ subroutine lrmdes(fid, nbltit, descfi, titre)
 !
 ! 0.1. ==> ARGUMENTS
 !
-#   include "jeveux.h"
-#   include "asterfort/enlird.h"
-#   include "asterfort/jedema.h"
-#   include "asterfort/jemarq.h"
-#   include "asterfort/as_mficor.h"
-#   include "asterfort/wkvect.h"
+#include "jeveux.h"
+#include "asterfort/enlird.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/as_mficor.h"
+#include "asterfort/wkvect.h"
     integer :: fid
     integer :: nbltit
 !

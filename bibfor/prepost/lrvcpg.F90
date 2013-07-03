@@ -50,23 +50,23 @@ subroutine lrvcpg(idfimd, nbpgm, nbpga, nomtm, tygeos,&
 !
     implicit none
 !
-#   include "jeveux.h"
+#include "jeveux.h"
 !
-#   include "asterfort/assert.h"
-#   include "asterfort/elraga.h"
-#   include "asterfort/infniv.h"
-#   include "asterfort/jedema.h"
-#   include "asterfort/jedetr.h"
-#   include "asterfort/jemarq.h"
-#   include "asterfort/jenonu.h"
-#   include "asterfort/jexnom.h"
-#   include "asterfort/as_mlclci.h"
-#   include "asterfort/as_mlclor.h"
-#   include "asterfort/u2mesg.h"
-#   include "asterfort/u2mesi.h"
-#   include "asterfort/u2mesk.h"
-#   include "asterfort/u2mess.h"
-#   include "asterfort/wkvect.h"
+#include "asterfort/assert.h"
+#include "asterfort/elraga.h"
+#include "asterfort/infniv.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jenonu.h"
+#include "asterfort/jexnom.h"
+#include "asterfort/as_mlclci.h"
+#include "asterfort/as_mlclor.h"
+#include "asterfort/u2mesg.h"
+#include "asterfort/u2mesi.h"
+#include "asterfort/u2mesk.h"
+#include "asterfort/u2mess.h"
+#include "asterfort/wkvect.h"
     integer :: tygeos, nbpgm, nbpga, nloc, nutyma, idfimd
     integer :: permu(nbpgm), codret
     character(len=8) :: elrefa, elrefm, fapg, nomtm

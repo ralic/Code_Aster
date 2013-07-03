@@ -18,9 +18,8 @@ subroutine as_mpfpfi(fid, indice, pro, n, cret)
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
     implicit none
-#   include "types/aster_types.h"
-#   include "types/med_types.h"
-#   include "med/mpfpfi.h"
+#include "aster_types.h"
+#include "med/mpfpfi.h"
     aster_int :: fid, n, cret, indice
     character(len=*) :: pro
 #ifdef _DISABLE_MED

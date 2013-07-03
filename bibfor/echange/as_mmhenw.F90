@@ -19,10 +19,9 @@ subroutine as_mmhenw(fid, maa, num, n, typent,&
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
     implicit none
-#   include "types/aster_types.h"
-#   include "types/med_types.h"
-#   include "asterfort/conv_int.h"
-#   include "med/mmhenw.h"
+#include "aster_types.h"
+#include "asterfort/conv_int.h"
+#include "med/mmhenw.h"
     character(len=*) :: maa
     aster_int :: num(*)
     aster_int :: fid, typent, typgeo, cret

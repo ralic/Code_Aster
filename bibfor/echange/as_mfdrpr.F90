@@ -20,9 +20,8 @@ subroutine as_mfdrpr(fid, cha, val, intlac, numco,&
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
     implicit none
-#   include "types/aster_types.h"
-#   include "types/med_types.h"
-#   include "med/mfdrpr.h"
+#include "aster_types.h"
+#include "med/mfdrpr.h"
     character(len=*) :: cha, profil
     aster_int :: fid, typent, typgeo, cret
     aster_int :: intlac, numco, numdt, numo, pflmod

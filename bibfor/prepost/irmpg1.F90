@@ -53,17 +53,17 @@ subroutine irmpg1(nofimd, nomfpg, nbnoto, nbrepg, nbsp,&
 !
 ! 0.1. ==> ARGUMENTS
 !
-#   include "asterfort/codent.h"
-#   include "asterfort/infniv.h"
-#   include "asterfort/lxlgut.h"
-#   include "asterfort/as_mficlo.h"
-#   include "asterfort/as_mlclow.h"
-#   include "asterfort/as_mlclci.h"
-#   include "asterfort/as_mlclor.h"
-#   include "asterfort/as_mlcnlc.h"
-#   include "asterfort/as_mfiope.h"
-#   include "asterfort/u2mesg.h"
-#   include "asterfort/u2mess.h"
+#include "asterfort/codent.h"
+#include "asterfort/infniv.h"
+#include "asterfort/lxlgut.h"
+#include "asterfort/as_mficlo.h"
+#include "asterfort/as_mlclow.h"
+#include "asterfort/as_mlclci.h"
+#include "asterfort/as_mlclor.h"
+#include "asterfort/as_mlcnlc.h"
+#include "asterfort/as_mfiope.h"
+#include "asterfort/u2mesg.h"
+#include "asterfort/u2mess.h"
     integer :: nbnoto, nbrepg, nbsp, ndim, typgeo
 !
     real(kind=8) :: refcoo(*), gscoo(*), wg(*)

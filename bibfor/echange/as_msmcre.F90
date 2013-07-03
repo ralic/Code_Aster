@@ -19,9 +19,8 @@ subroutine as_msmcre(fid, nom, dim, desc, typrep,&
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
     implicit none
-#   include "types/aster_types.h"
-#   include "types/med_types.h"
-#   include "med/msmcre.h"
+#include "aster_types.h"
+#include "med/msmcre.h"
     character(len=*) :: nom
     character(len=*) :: desc
     character(len=16) :: nocomp, unit

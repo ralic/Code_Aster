@@ -18,9 +18,8 @@ subroutine as_mficow(fid, des, cret)
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
     implicit none
-#   include "types/aster_types.h"
-#   include "types/med_types.h"
-#   include "med/mficow.h"
+#include "aster_types.h"
+#include "med/mficow.h"
     aster_int :: fid, cret
     character(len=*) :: des
 #ifdef _DISABLE_MED

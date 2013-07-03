@@ -50,10 +50,10 @@ subroutine mdchin(nofimd, idfimd, nochmd, typent, typgeo,&
 !
 ! 0.1. ==> ARGUMENTS
 !
-#   include "asterfort/mdchii.h"
-#   include "asterfort/as_mficlo.h"
-#   include "asterfort/as_mfiope.h"
-#   include "asterfort/u2mesg.h"
+#include "asterfort/mdchii.h"
+#include "asterfort/as_mficlo.h"
+#include "asterfort/as_mfiope.h"
+#include "asterfort/u2mesg.h"
     integer :: nbtv
     integer :: typent, typgeo
     integer :: codret

@@ -29,7 +29,7 @@ subroutine ldsp1(pc, ierr)
 #include "asterfort/jeveuo.h"
 #include "asterfort/pcmump.h"
 #ifdef _HAVE_PETSC
-#   include "aster_petsc.h"
+#include "aster_petsc.h"
 !----------------------------------------------------------------
 !     VARIABLES LOCALES
     integer :: jrefa, iret

@@ -2,17 +2,17 @@ subroutine irmaes(idfimd, nomaas, nomamd, nbimpr, caimpi,&
                   modnum, nuanom, nomtyp, nnotyp, sdcarm)
     implicit none
 !
-#   include "asterc/indik8.h"
-#   include "asterfort/cesexi.h"
-#   include "asterfort/exisd.h"
-#   include "asterfort/jedetr.h"
-#   include "asterfort/jelira.h"
-#   include "asterfort/jeveuo.h"
-#   include "asterfort/jexatr.h"
-#   include "asterfort/as_mmhcyw.h"
-#   include "asterfort/as_mmhraw.h"
-#   include "asterfort/u2mesg.h"
-#   include "asterfort/wkvect.h"
+#include "asterc/indik8.h"
+#include "asterfort/cesexi.h"
+#include "asterfort/exisd.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jelira.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/jexatr.h"
+#include "asterfort/as_mmhcyw.h"
+#include "asterfort/as_mmhraw.h"
+#include "asterfort/u2mesg.h"
+#include "asterfort/wkvect.h"
     integer :: ntymax
     parameter (ntymax = 69)
 !
@@ -59,7 +59,7 @@ subroutine irmaes(idfimd, nomaas, nomamd, nbimpr, caimpi,&
 !   SDCARM  K*   SD_CARA_ELEM EN CHAM_ELEM_S
 !
 !
-#   include "jeveux.h"
+#include "jeveux.h"
 !
 !
     integer :: codret, ipoin, ityp, letype, ino, iret, nbcmp, iad

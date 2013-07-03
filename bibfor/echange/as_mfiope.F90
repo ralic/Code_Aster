@@ -18,9 +18,8 @@ subroutine as_mfiope(fid, nom, acces, cret)
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
     implicit none
-#   include "types/aster_types.h"
-#   include "types/med_types.h"
-#   include "med/mfiope.h"
+#include "aster_types.h"
+#include "med/mfiope.h"
     character(len=*) :: nom
     aster_int :: acces, fid, cret
 #ifdef _DISABLE_MED

@@ -22,10 +22,9 @@ subroutine as_mfaofi(fid, maa, ind, fam, num,&
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
     implicit none
-#   include "types/aster_types.h"
-#   include "types/med_types.h"
-#   include "med/mfaofi.h"
-#   include "asterfort/conv_int.h"
+#include "aster_types.h"
+#include "med/mfaofi.h"
+#include "asterfort/conv_int.h"
 
 aster_int :: fid, num, attid(*), attval(*), natt, cret, ind
 character(len=*) :: maa, fam, attdes(*) , gro(*)

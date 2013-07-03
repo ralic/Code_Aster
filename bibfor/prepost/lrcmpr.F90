@@ -34,13 +34,13 @@ subroutine lrcmpr(idfimd, nomprf, ntproa, lgproa, codret)
 !
 ! 0.1. ==> ARGUMENTS
 !
-#   include "jeveux.h"
-#   include "asterfort/infniv.h"
-#   include "asterfort/jedetr.h"
-#   include "asterfort/as_mpfpsn.h"
-#   include "asterfort/as_mpfprr.h"
-#   include "asterfort/u2mesg.h"
-#   include "asterfort/wkvect.h"
+#include "jeveux.h"
+#include "asterfort/infniv.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/as_mpfpsn.h"
+#include "asterfort/as_mpfprr.h"
+#include "asterfort/u2mesg.h"
+#include "asterfort/wkvect.h"
     integer :: idfimd
     integer :: lgproa
     integer :: codret

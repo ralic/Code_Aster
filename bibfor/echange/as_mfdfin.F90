@@ -19,9 +19,8 @@ subroutine as_mfdfin(fid, cha, ma, n, cunit,&
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
     implicit none
-#   include "types/aster_types.h"
-#   include "types/med_types.h"
-#   include "med/mfdfin.h"
+#include "aster_types.h"
+#include "med/mfdfin.h"
     aster_int :: fid, n, cret, lmesh, typen
     character(len=*) :: cha
     character(len=16) :: cunit, cname

@@ -46,11 +46,11 @@ subroutine ircmec(idfimd, nochmd, nomprf, nolopg, numpt,&
 !
 ! 0.1. ==> ARGUMENTS
 !
-#   include "jeveux.h"
-#   include "asterfort/infniv.h"
-#   include "asterfort/as_mfdrpw.h"
-#   include "asterfort/u2mesg.h"
-#   include "asterfort/u2mess.h"
+#include "jeveux.h"
+#include "asterfort/infniv.h"
+#include "asterfort/as_mfdrpw.h"
+#include "asterfort/u2mesg.h"
+#include "asterfort/u2mess.h"
     character(len=*) :: nochmd, nomprf, nolopg
 !
     integer :: idfimd

@@ -19,9 +19,8 @@ subroutine as_mfdfdi(fid, ind, cha, type, comp,&
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
     implicit none
-#   include "types/aster_types.h"
-#   include "types/med_types.h"
-#   include "med/mfdfdi.h"
+#include "aster_types.h"
+#include "med/mfdfdi.h"
     character(len=*) :: cha, comp, unit
     aster_int :: fid, ind, type, cret, lmail, nseqca
     character(len=64) :: nommai

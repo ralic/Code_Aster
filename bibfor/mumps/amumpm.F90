@@ -67,7 +67,7 @@ subroutine amumpm(ldist, kxmps, kmonit, impr, ifmump,&
     character(len=24) :: kmonit(12)
 !
 #ifdef _HAVE_MUMPS
-#   include "aster_mumps.h"
+#include "aster_mumps.h"
 #include "mpif.h"
 #include "jeveux.h"
 !

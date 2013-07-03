@@ -19,9 +19,8 @@ subroutine as_msmsmi(fid, iterat, nom, dim, desc,&
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
     implicit none
-#   include "types/aster_types.h"
-#   include "types/med_types.h"
-#   include "med/msmsmi.h"
+#include "aster_types.h"
+#include "med/msmsmi.h"
     character(len=*) :: nom
     character(len=*) :: desc
     character(len=16) :: nocomp, unit

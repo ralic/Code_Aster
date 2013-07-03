@@ -19,9 +19,8 @@ subroutine as_mmhnme(fid, maa, quoi, typent, typgeo,&
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
     implicit none
-#   include "types/aster_types.h"
-#   include "types/med_types.h"
-#   include "med/mmhnme.h"
+#include "aster_types.h"
+#include "med/mmhnme.h"
     character(len=*) :: maa
     aster_int :: fid, typent, typgeo, cret, typcon, n, quoi, mdnont, mdnoit
     aster_int :: chtseq, chttra

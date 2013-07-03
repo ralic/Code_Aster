@@ -53,21 +53,21 @@ subroutine irmmma(fid, nomamd, nbmail, connex, point,&
 !
     implicit none
 !
-#   include "jeveux.h"
+#include "jeveux.h"
 !
-#   include "asterfort/infniv.h"
-#   include "asterfort/jedema.h"
-#   include "asterfort/jedetr.h"
-#   include "asterfort/jemarq.h"
-#   include "asterfort/jenonu.h"
-#   include "asterfort/jexnom.h"
-#   include "asterfort/as_mmhcyw.h"
-#   include "asterfort/as_mmheaw.h"
-#   include "asterfort/as_mmhenw.h"
-#   include "asterfort/u2mesg.h"
-#   include "asterfort/u2mesk.h"
-#   include "asterfort/u2mess.h"
-#   include "asterfort/wkvect.h"
+#include "asterfort/infniv.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jenonu.h"
+#include "asterfort/jexnom.h"
+#include "asterfort/as_mmhcyw.h"
+#include "asterfort/as_mmheaw.h"
+#include "asterfort/as_mmhenw.h"
+#include "asterfort/u2mesg.h"
+#include "asterfort/u2mesk.h"
+#include "asterfort/u2mess.h"
+#include "asterfort/wkvect.h"
     integer :: ntymax
     parameter (ntymax = 69)
 !

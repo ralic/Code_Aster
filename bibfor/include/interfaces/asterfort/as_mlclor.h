@@ -15,7 +15,7 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
-#include "types/aster_types.h"
+#include "aster_types.h"
 interface
     subroutine as_mlclor(fid, tr1, tr2, tr3, nbt,&
                       k64, cret)

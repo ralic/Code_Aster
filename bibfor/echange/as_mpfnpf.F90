@@ -18,9 +18,8 @@ subroutine as_mpfnpf(fid, n, cret)
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
     implicit none
-#   include "types/aster_types.h"
-#   include "types/med_types.h"
-#   include "med/mpfnpf.h"
+#include "aster_types.h"
+#include "med/mpfnpf.h"
     aster_int :: fid, n, cret
 #ifdef _DISABLE_MED
     call u2mess('F', 'FERMETUR_2')

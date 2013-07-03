@@ -74,7 +74,7 @@ subroutine amumpp(option, nbsol, kxmps, ldist, type,&
     complex(kind=8) :: csolu(*)
 !
 #ifdef _HAVE_MUMPS
-#   include "aster_mumps.h"
+#include "aster_mumps.h"
 #include "mpif.h"
 #include "jeveux.h"
     integer :: nicntl

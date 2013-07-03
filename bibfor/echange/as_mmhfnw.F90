@@ -19,10 +19,9 @@ subroutine as_mmhfnw(fid, maa, fam, n, typent,&
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
     implicit none
-#   include "types/aster_types.h"
-#   include "types/med_types.h"
-#   include "asterfort/conv_int.h"
-#   include "med/mmhfnw.h"
+#include "aster_types.h"
+#include "asterfort/conv_int.h"
+#include "med/mmhfnw.h"
     aster_int :: fid, fam(*), n, typent, typgeo, cret, mdnont, mdnoit
     character(len=*) :: maa
 #ifdef _DISABLE_MED

@@ -19,9 +19,8 @@ subroutine as_mlclci(fid, nordr, k64, ityp, nbn,&
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
     implicit none
-#   include "types/aster_types.h"
-#   include "types/med_types.h"
-#   include "med/mlclci.h"
+#include "aster_types.h"
+#include "med/mlclci.h"
     aster_int :: fid, nordr, ityp, nbn, cret, ndim, tymasu, nbmasu
     character(len=64) :: k64, giname
     character(len=*) :: nomasu

@@ -33,18 +33,18 @@ subroutine ircmpf(nofimd, nvalty, profil, noprof)
 !
 ! 0.1. ==> ARGUMENTS
 !
-#   include "jeveux.h"
-#   include "asterfort/codent.h"
-#   include "asterfort/infniv.h"
-#   include "asterfort/jedetr.h"
-#   include "asterfort/as_mficlo.h"
-#   include "asterfort/as_mpfnpf.h"
-#   include "asterfort/as_mfiope.h"
-#   include "asterfort/as_mpfprw.h"
-#   include "asterfort/as_mpfprr.h"
-#   include "asterfort/as_mpfpfi.h"
-#   include "asterfort/u2mesg.h"
-#   include "asterfort/wkvect.h"
+#include "jeveux.h"
+#include "asterfort/codent.h"
+#include "asterfort/infniv.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/as_mficlo.h"
+#include "asterfort/as_mpfnpf.h"
+#include "asterfort/as_mfiope.h"
+#include "asterfort/as_mpfprw.h"
+#include "asterfort/as_mpfprr.h"
+#include "asterfort/as_mpfpfi.h"
+#include "asterfort/u2mesg.h"
+#include "asterfort/wkvect.h"
     integer :: nvalty, profil(nvalty)
 !
     character(len=*) :: nofimd

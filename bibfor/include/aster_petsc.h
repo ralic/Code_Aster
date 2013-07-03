@@ -1,3 +1,6 @@
+#ifndef ASTER_PETSC_H
+#define ASTER_PETSC_H
+!
 ! COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
@@ -42,3 +45,4 @@
     VecScatter :: xscatt
     common /ldltsp/xlocal,xscatt,xglobal,spsomu,spmat,spsolv
 !----------------------------------------------------------------
+#endif

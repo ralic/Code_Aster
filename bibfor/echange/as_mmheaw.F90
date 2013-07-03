@@ -19,9 +19,8 @@ subroutine as_mmheaw(fid, maa, nom, n, typent,&
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
     implicit none
-#   include "types/aster_types.h"
-#   include "types/med_types.h"
-#   include "med/mmheaw.h"
+#include "aster_types.h"
+#include "med/mmheaw.h"
     character(len=*) :: maa
     character(len=*) :: nom
     aster_int :: fid, typent, typgeo, cret, mdnont, mdnoit

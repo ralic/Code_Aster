@@ -40,7 +40,7 @@ subroutine appcrs(kptsc, lmd)
 !----------------------------------------------------------------
 !
 #ifdef _HAVE_PETSC
-#   include "aster_petsc.h"
+#include "aster_petsc.h"
 !----------------------------------------------------------------
 !
 !     VARIABLES LOCALES

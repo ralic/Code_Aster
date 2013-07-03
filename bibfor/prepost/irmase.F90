@@ -2,19 +2,19 @@ subroutine irmase(nofimd, typsec, nbrcou, nbsect, nummai,&
                   sdcarm, nomase)
     implicit none
 !
-#   include "asterc/r8pi.h"
-#   include "asterfort/assert.h"
-#   include "asterfort/cesexi.h"
-#   include "asterfort/jedetr.h"
-#   include "asterfort/jeveuo.h"
-#   include "asterfort/as_mmhcow.h"
-#   include "asterfort/as_mficlo.h"
-#   include "asterfort/as_msmcre.h"
-#   include "asterfort/as_msmsmi.h"
-#   include "asterfort/as_msmnsm.h"
-#   include "asterfort/as_mfiope.h"
-#   include "asterfort/u2mesg.h"
-#   include "asterfort/wkvect.h"
+#include "asterc/r8pi.h"
+#include "asterfort/assert.h"
+#include "asterfort/cesexi.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/as_mmhcow.h"
+#include "asterfort/as_mficlo.h"
+#include "asterfort/as_msmcre.h"
+#include "asterfort/as_msmsmi.h"
+#include "asterfort/as_msmnsm.h"
+#include "asterfort/as_mfiope.h"
+#include "asterfort/u2mesg.h"
+#include "asterfort/wkvect.h"
     character(len=8) :: sdcarm
     character(len=*) :: nofimd, typsec, nomase
     integer :: nbrcou, nbsect, nummai
@@ -49,7 +49,7 @@ subroutine irmase(nofimd, typsec, nbrcou, nbsect, nummai,&
 !   SDCARM  K8   CARA_ELEM CONVERTIT EN CHAM_ELEM_S
 !   NOMASE  K*   NOM MED DU MAILLAGE SECTION
 !
-#   include "jeveux.h"
+#include "jeveux.h"
 !
     integer :: idfimd, nbpoin, ipoint, jcoopt, nbrayo, icouch, irayon
     integer :: edleaj, postmp, codret, edcart, jmasup, jcesc, jcesd

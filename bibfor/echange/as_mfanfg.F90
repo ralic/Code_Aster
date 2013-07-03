@@ -18,9 +18,8 @@ subroutine as_mfanfg(fid, maa, ind, n, cret)
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
     implicit none
-#   include "types/aster_types.h"
-#   include "types/med_types.h"
-#   include "med/mfanfg.h"
+#include "aster_types.h"
+#include "med/mfanfg.h"
     aster_int :: fid, ind, n, cret
     character(len=*) :: maa
 #ifdef _DISABLE_MED

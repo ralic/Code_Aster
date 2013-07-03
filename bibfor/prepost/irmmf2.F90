@@ -61,18 +61,18 @@ subroutine irmmf2(fid, nomamd, typent, nbrent, nbgrou,&
 !
 ! 0.1. ==> ARGUMENTS
 !
-#   include "jeveux.h"
+#include "jeveux.h"
 !
-#   include "asterfort/desgfa.h"
-#   include "asterfort/jelira.h"
-#   include "asterfort/jeveuo.h"
-#   include "asterfort/jexnum.h"
-#   include "asterfort/mdnofa.h"
-#   include "asterfort/as_mfacre.h"
-#   include "asterfort/as_mmhfnw.h"
-#   include "asterfort/nomgfa.h"
-#   include "asterfort/setgfa.h"
-#   include "asterfort/u2mesg.h"
+#include "asterfort/desgfa.h"
+#include "asterfort/jelira.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/jexnum.h"
+#include "asterfort/mdnofa.h"
+#include "asterfort/as_mfacre.h"
+#include "asterfort/as_mmhfnw.h"
+#include "asterfort/nomgfa.h"
+#include "asterfort/setgfa.h"
+#include "asterfort/u2mesg.h"
     integer :: fid
     integer :: typgeo(*), nmatyp(*)
     integer :: typent, nbrent, nbgrou

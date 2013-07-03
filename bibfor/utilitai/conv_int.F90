@@ -23,8 +23,7 @@ subroutine conv_int(sens, nb, vi_ast, vi_med)
 !           / 'med->ast'
 !     nb : nombre de valeurs dans les tableaux vi_ast et vi_med
 !
-#   include "types/aster_types.h"
-#   include "types/med_types.h"
+#include "aster_types.h"
 
     implicit none
     character(len=*) :: sens

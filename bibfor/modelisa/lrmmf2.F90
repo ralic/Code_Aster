@@ -48,9 +48,9 @@ subroutine lrmmf2(fid, nomamd, nbrfam, carafa, nbgrmx,&
 !
 ! 0.1. ==> ARGUMENTS
 !
-#   include "asterfort/as_mfaona.h"
-#   include "asterfort/as_mfanfg.h"
-#   include "asterfort/u2mesg.h"
+#include "asterfort/as_mfaona.h"
+#include "asterfort/as_mfanfg.h"
+#include "asterfort/u2mesg.h"
     integer :: fid
     integer :: nbrfam
     integer :: carafa(3, nbrfam)

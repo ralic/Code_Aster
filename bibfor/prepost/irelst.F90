@@ -1,28 +1,28 @@
 subroutine irelst(nofimd, chanom, typech, nomaas, nomamd,&
                   nbimpr, caimpi, caimpk, sdcarm)
     implicit none
-#   include "asterfort/assert.h"
-#   include "asterfort/elref2.h"
-#   include "asterfort/irmaes.h"
-#   include "asterfort/jedetr.h"
-#   include "asterfort/jenuno.h"
-#   include "asterfort/jeveuo.h"
-#   include "asterfort/jexnum.h"
-#   include "asterfort/juveca.h"
-#   include "asterfort/lrmtyp.h"
-#   include "asterfort/as_mmhcyw.h"
-#   include "asterfort/as_mmhcow.h"
-#   include "asterfort/as_msevac.h"
-#   include "asterfort/as_msecre.h"
-#   include "asterfort/as_msesei.h"
-#   include "asterfort/as_msense.h"
-#   include "asterfort/as_mficlo.h"
-#   include "asterfort/as_msmcre.h"
-#   include "asterfort/as_msmsmi.h"
-#   include "asterfort/as_mfiope.h"
-#   include "asterfort/u2mesg.h"
-#   include "asterfort/uteref.h"
-#   include "asterfort/wkvect.h"
+#include "asterfort/assert.h"
+#include "asterfort/elref2.h"
+#include "asterfort/irmaes.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jenuno.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/jexnum.h"
+#include "asterfort/juveca.h"
+#include "asterfort/lrmtyp.h"
+#include "asterfort/as_mmhcyw.h"
+#include "asterfort/as_mmhcow.h"
+#include "asterfort/as_msevac.h"
+#include "asterfort/as_msecre.h"
+#include "asterfort/as_msesei.h"
+#include "asterfort/as_msense.h"
+#include "asterfort/as_mficlo.h"
+#include "asterfort/as_msmcre.h"
+#include "asterfort/as_msmsmi.h"
+#include "asterfort/as_mfiope.h"
+#include "asterfort/u2mesg.h"
+#include "asterfort/uteref.h"
+#include "asterfort/wkvect.h"
     character(len=8) :: nomaas, typech, sdcarm
     character(len=*) :: nofimd
     character(len=19) :: chanom
@@ -62,7 +62,7 @@ subroutine irelst(nofimd, chanom, typech, nomaas, nomamd,&
 !   CAIMPK  K80* CARACTERES POUR CHAQUE IMPRESSION
 !   SDCARM  K*   SD_CARA_ELEM EN CHAM_ELEM_S
 !
-#   include "jeveux.h"
+#include "jeveux.h"
 !
 !
     integer :: inimpr, nbcouc, nbsect, nummai, lgmax, ntypef, codret

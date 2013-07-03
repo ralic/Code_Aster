@@ -43,15 +43,15 @@ subroutine lrmmdi(fid, nomamd, typgeo, nomtyp, nnotyp,&
 !
 ! 0.1. ==> ARGUMENTS
 !
-#   include "jeveux.h"
-#   include "asterfort/codent.h"
-#   include "asterfort/jedema.h"
-#   include "asterfort/jemarq.h"
-#   include "asterfort/lxlgut.h"
-#   include "asterfort/as_mmhnme.h"
-#   include "asterfort/u2mesk.h"
-#   include "asterfort/u2mess.h"
-#   include "asterfort/wkvect.h"
+#include "jeveux.h"
+#include "asterfort/codent.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/lxlgut.h"
+#include "asterfort/as_mmhnme.h"
+#include "asterfort/u2mesk.h"
+#include "asterfort/u2mess.h"
+#include "asterfort/wkvect.h"
     integer :: fid
     integer :: nbnoeu, nbmail, nbnoma
     integer :: typgeo(*), nmatyp(*), nnotyp(*)

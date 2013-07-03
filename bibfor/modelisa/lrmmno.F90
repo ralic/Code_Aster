@@ -35,22 +35,22 @@ subroutine lrmmno(fid, nomam2, ndim, nbnoeu, nomu,&
 !
 ! 0.1. ==> ARGUMENTS
 !
-#   include "jeveux.h"
+#include "jeveux.h"
 !
-#   include "asterfort/codent.h"
-#   include "asterfort/codlet.h"
-#   include "asterfort/jecreo.h"
-#   include "asterfort/jecroc.h"
-#   include "asterfort/jedema.h"
-#   include "asterfort/jedetr.h"
-#   include "asterfort/jeecra.h"
-#   include "asterfort/jemarq.h"
-#   include "asterfort/jenonu.h"
-#   include "asterfort/jexnom.h"
-#   include "asterfort/as_mmhcor.h"
-#   include "asterfort/as_mmhear.h"
-#   include "asterfort/u2mesg.h"
-#   include "asterfort/wkvect.h"
+#include "asterfort/codent.h"
+#include "asterfort/codlet.h"
+#include "asterfort/jecreo.h"
+#include "asterfort/jecroc.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jeecra.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jenonu.h"
+#include "asterfort/jexnom.h"
+#include "asterfort/as_mmhcor.h"
+#include "asterfort/as_mmhear.h"
+#include "asterfort/u2mesg.h"
+#include "asterfort/wkvect.h"
     integer :: fid
     integer :: ndim, nbnoeu
     integer :: ifm, infmed

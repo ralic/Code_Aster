@@ -18,9 +18,8 @@ subroutine as_mfdncn(fid, cha, n, cret)
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
     implicit none
-#   include "types/aster_types.h"
-#   include "types/med_types.h"
-#   include "med/mfdncn.h"
+#include "aster_types.h"
+#include "med/mfdncn.h"
     aster_int :: fid, cret, n
     character(len=*) :: cha
 #ifdef _DISABLE_MED

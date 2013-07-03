@@ -1,3 +1,6 @@
+#ifndef JEVEUX_PRIVATE_H
+#define JEVEUX_PRIVATE_H
+!
 ! COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
@@ -51,3 +54,4 @@
     common /kzonje/  k1zon(8)
     equivalence    ( iszon(1), k1zon(1), r8zon(1), lszon(1), i4zon(1))
 !---------- FIN COMMONS INTERNES JEVEUX
+#endif

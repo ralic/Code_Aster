@@ -36,7 +36,7 @@ subroutine apsolu(kptsc, lmd, rsolu)
 !----------------------------------------------------------------
 #ifdef _HAVE_PETSC
 !
-#   include "aster_petsc.h"
+#include "aster_petsc.h"
 !
 !     VARIABLES LOCALES
     integer :: jnequ, jnequl, jnuglp, jnugl, jprddl, nloc, nglo, rang

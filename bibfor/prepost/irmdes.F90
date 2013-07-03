@@ -30,14 +30,14 @@ subroutine irmdes(idfimd, titre, nbtitr, infmed)
 !
 ! 0.1. ==> ARGUMENTS
 !
-#   include "asterc/gtoptk.h"
-#   include "asterfort/enlird.h"
-#   include "asterfort/jedema.h"
-#   include "asterfort/jemarq.h"
-#   include "asterfort/lxlgut.h"
-#   include "asterfort/as_mficow.h"
-#   include "asterfort/u2mesg.h"
-#   include "asterfort/u2mesk.h"
+#include "asterc/gtoptk.h"
+#include "asterfort/enlird.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/lxlgut.h"
+#include "asterfort/as_mficow.h"
+#include "asterfort/u2mesg.h"
+#include "asterfort/u2mesk.h"
     integer :: idfimd
     integer :: infmed, nbtitr
 !

@@ -39,7 +39,7 @@ subroutine apvsmb(kptsc, lmd, rsolu)
 !----------------------------------------------------------------
 #ifdef _HAVE_PETSC
 !
-#   include "aster_petsc.h"
+#include "aster_petsc.h"
 !
 !     VARIABLES LOCALES
     integer :: nsmdi, tbloc, rang, nbproc, jnequ, jnequl, jnugl, jnuglp

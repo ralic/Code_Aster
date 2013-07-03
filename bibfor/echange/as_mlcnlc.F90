@@ -18,9 +18,8 @@ subroutine as_mlcnlc(fid, ngauss, cret)
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
     implicit none
-#   include "types/aster_types.h"
-#   include "types/med_types.h"
-#   include "med/mlcnlc.h"
+#include "aster_types.h"
+#include "med/mlcnlc.h"
     aster_int :: fid, ngauss, cret
 #ifdef _DISABLE_MED
     call u2mess('F', 'FERMETUR_2')

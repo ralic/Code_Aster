@@ -18,9 +18,8 @@ subroutine as_mpfpsn(fid, pro, nbval, cret)
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
     implicit none
-#   include "types/aster_types.h"
-#   include "types/med_types.h"
-#   include "med/mpfpsn.h"
+#include "aster_types.h"
+#include "med/mpfpsn.h"
     aster_int :: fid, nbval, cret
     character(len=*) :: pro
 #ifdef _DISABLE_MED
